@@ -551,7 +551,7 @@ export default function DashboardV2() {
                       handle={`$${formatAmount(tvl, USD_DECIMALS, 0, true)}`}
                       position="right-bottom"
                       renderContent={() => (
-                        <span>{t`Assets Under Management: GMX staked (All chains) + GLP pool (${chainName})`}</span>
+                        <span>{t`Assets Under Management: GMX staked (All chains) + GLP pool (${chainName}).`}</span>
                       )}
                     />
                   </div>
@@ -564,7 +564,14 @@ export default function DashboardV2() {
                     <TooltipComponent
                       handle={`$${formatAmount(aum, USD_DECIMALS, 0, true)}`}
                       position="right-bottom"
-                      renderContent={() => <span>{t`Total value of tokens in GLP pool (${chainName})`}</span>}
+                      renderContent={() => (
+                        <Trans>
+                          <p>Total value of tokens in GLP pool ({chainName}).</p>
+                          <p>
+                            Other websites may show a higher value as they add positions' collaterals to the GLP pool.
+                          </p>
+                        </Trans>
+                      )}
                     />
                   </div>
                 </div>
@@ -1010,6 +1017,7 @@ export default function DashboardV2() {
                           <TooltipComponent
                             handle={`$${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`}
                             position="right-bottom"
+                            className="nowrap"
                             renderContent={() => {
                               return (
                                 <>

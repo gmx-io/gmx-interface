@@ -1,4 +1,7 @@
-import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, MAINNET, TESTNET } from "./chains";
+import { ethers } from "ethers";
+import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, AVALANCHE_FUJI, MAINNET, TESTNET } from "./chains";
+
+const { AddressZero } = ethers.constants;
 
 export const XGMT_EXCLUDED_ACCOUNTS = [
   "0x330eef6b9b1ea6edd620c825c9919dc8b611d5d5",
@@ -110,6 +113,8 @@ const CONTRACTS = {
     // UniswapGmxEthPool: "0x80A9ae39310abf666A87C743d6ebBD0E8C42158E",
     ReferralStorage: "0x0000000000000000000000000000000000000000",
     ReferralReader: "0x0000000000000000000000000000000000000000",
+
+    Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
   },
   [ARBITRUM]: {
     // arbitrum mainnet
@@ -117,8 +122,9 @@ const CONTRACTS = {
     Router: "0xaBBc5F99639c9B6bCb58544ddf04EFA6802F4064",
     VaultReader: "0xfebB9f4CAC4cD523598fE1C5771181440143F24A",
     Reader: "0x2b43c90D1B727cEe1Df34925bcd5Ace52Ec37694",
-    GlpManager: "0x321F653eED006AD1C29D174e17d96351BDe22649",
+    GlpManager: "0x3963FfC9dff443c2A94f21b129D429891E32ec18",
     RewardRouter: "0xA906F338CB21815cBc4Bc87ace9e68c87eF8d8F1",
+    GlpRewardRouter: "0xB95DB5B167D75e6d04227CfFFA61069348d271F5",
     RewardReader: "0x8BFb8e82Ee4569aee78D03235ff465Bd436D40E0",
     NATIVE_TOKEN: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
     GLP: "0x4277f8F2c384827B5273592FF7CeBd9f2C1ac258",
@@ -149,6 +155,8 @@ const CONTRACTS = {
     UniswapGmxEthPool: "0x80A9ae39310abf666A87C743d6ebBD0E8C42158E",
     ReferralStorage: "0xe6fab3f0c7199b0d34d7fbe83394fc0e0d06e99d",
     ReferralReader: "0x8Aa382760BCdCe8644C33e6C2D52f6304A76F5c8",
+
+    Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
   },
   [AVALANCHE]: {
     // avalanche
@@ -156,8 +164,9 @@ const CONTRACTS = {
     Router: "0x5F719c2F1095F7B9fc68a68e35B51194f4b6abe8",
     VaultReader: "0x66eC8fc33A26feAEAe156afA3Cb46923651F6f0D",
     Reader: "0x2eFEE1950ededC65De687b40Fd30a7B5f4544aBd",
-    GlpManager: "0xe1ae4d4b06A5Fe1fc288f6B4CD72f9F8323B107F",
+    GlpManager: "0xD152c7F25db7F4B95b7658323c5F33d176818EE4",
     RewardRouter: "0x82147C5A7E850eA4E28155DF107F2590fD4ba327",
+    GlpRewardRouter: "0xB70B91CE0771d3f4c81D87660f71Da31d48eB3B3",
     RewardReader: "0x04Fc11Bd28763872d143637a7c768bD96E44c1b6",
     NATIVE_TOKEN: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
     GLP: "0x01234181085565ed162a948b6a5e88758CD7c7b8",
@@ -189,6 +198,48 @@ const CONTRACTS = {
     TraderJoeGmxAvaxPool: "0x0c91a070f862666bbcce281346be45766d874d98",
     ReferralStorage: "0x827ed045002ecdabeb6e2b0d1604cf5fc3d322f8",
     ReferralReader: "0x505Ce16D3017be7D76a7C2631C0590E71A975083",
+
+    Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
+  },
+
+  [AVALANCHE_FUJI]: {
+    Vault: AddressZero,
+    Router: AddressZero,
+    VaultReader: AddressZero,
+    Reader: AddressZero,
+    GlpManager: AddressZero,
+    RewardRouter: AddressZero,
+    RewardReader: AddressZero,
+    NATIVE_TOKEN: "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
+    GLP: AddressZero,
+    GMX: AddressZero,
+    ES_GMX: AddressZero,
+    BN_GMX: AddressZero,
+    USDG: AddressZero,
+    ES_GMX_IOU: AddressZero,
+
+    StakedGmxTracker: AddressZero,
+    BonusGmxTracker: AddressZero,
+    FeeGmxTracker: AddressZero,
+    StakedGlpTracker: AddressZero,
+    FeeGlpTracker: AddressZero,
+
+    StakedGmxDistributor: AddressZero,
+    StakedGlpDistributor: AddressZero,
+
+    GmxVester: AddressZero,
+    GlpVester: AddressZero,
+
+    OrderBook: AddressZero,
+    OrderExecutor: AddressZero,
+    OrderBookReader: AddressZero,
+
+    PositionRouter: AddressZero,
+    PositionManager: AddressZero,
+
+    TraderJoeGmxAvaxPool: AddressZero,
+    ReferralStorage: AddressZero,
+    ReferralReader: AddressZero,
   },
 };
 

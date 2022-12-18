@@ -100,7 +100,7 @@ export function Header({
               <img src={logoSmallImg} className="small" alt="GMX Logo" />
             </Link>
             {isHomeSite() ? (
-              <HomeHeaderLinks />
+              <HomeHeaderLinks redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal} />
             ) : (
               <AppHeaderLinks redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal} />
             )}
@@ -156,7 +156,12 @@ export function Header({
             transition={{ duration: 0.2 }}
           >
             {isHomeSite() ? (
-              <HomeHeaderLinks small clickCloseIcon={() => setIsDrawerVisible(false)} />
+              <HomeHeaderLinks
+                small
+                clickCloseIcon={() => setIsDrawerVisible(false)}
+                redirectPopupTimestamp={redirectPopupTimestamp}
+                showRedirectModal={showRedirectModal}
+              />
             ) : (
               <AppHeaderLinks
                 small

@@ -210,11 +210,11 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
         {isArbitrum && (
           <div className="exchange-info-group">
             <div className="BuyGMXGLP-description">
-              <Trans>GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:</Trans>
+              <Trans>GMX bonds can be bought on Bond Protocol with a discount and a small vesting period:</Trans>
             </div>
             <div className="buttons-group col-1">
-              <Button imgSrc={ohmArbitrumIcon} href="https://pro.olympusdao.finance/#/partners/GMX">
-                Olympus Pro
+              <Button imgSrc={ohmArbitrumIcon} href="https://app.bondprotocol.finance/#/issuers/GMX">
+                Bond Protocol
               </Button>
             </div>
           </div>

@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { getContract } from "config/contracts";
 import useSWR from "swr";
 
 import OrderBookReader from "abis/OrderBookReader.json";
 import OrderBook from "abis/OrderBook.json";
 
-import { CHAIN_ID, getExplorerUrl } from "config/chains";
+import { CHAIN_ID, ETH_MAINNET, getExplorerUrl, getRpcUrl } from "config/chains";
 import { getServerBaseUrl } from "config/backend";
 import { getMostAbundantStableToken } from "domain/tokens";
 import { getTokenInfo } from "domain/tokens/utils";
@@ -17,6 +17,7 @@ import { isValidToken } from "config/tokens";
 import { useChainId } from "./chains";
 import { isValidTimestamp } from "./dates";
 import { t } from "@lingui/macro";
+import { isLocal } from "config/env";
 
 const { AddressZero } = ethers.constants;
 
@@ -55,7 +56,7 @@ export const LIQUIDATION_FEE = expandDecimals(5, USD_DECIMALS);
 
 export const TRADES_PAGE_SIZE = 100;
 
-export const GLP_COOLDOWN_DURATION = 15 * 60;
+export const GLP_COOLDOWN_DURATION = 0;
 export const THRESHOLD_REDEMPTION_VALUE = expandDecimals(993, 27); // 0.993
 export const FUNDING_RATE_PRECISION = 1000000;
 
@@ -100,6 +101,7 @@ export function getLiquidationPriceFromDelta({ liquidationAmount, size, collater
   if (liquidationAmount.gt(collateral)) {
     const liquidationDelta = liquidationAmount.sub(collateral);
     const priceDelta = liquidationDelta.mul(averagePrice).div(size);
+
     return isLong ? averagePrice.add(priceDelta) : averagePrice.sub(priceDelta);
   }
 
@@ -742,6 +744,20 @@ export function getLeverage({
   return nextSize.mul(BASIS_POINTS_DIVISOR).div(remainingCollateral);
 }
 
+export function getFundingFee(data: {
+  size: BigNumber;
+  entryFundingRate?: BigNumber;
+  cumulativeFundingRate?: BigNumber;
+}) {
+  let { entryFundingRate, cumulativeFundingRate, size } = data;
+
+  if (entryFundingRate && cumulativeFundingRate) {
+    return size.mul(cumulativeFundingRate.sub(entryFundingRate)).div(FUNDING_RATE_PRECISION);
+  }
+
+  return;
+}
+
 export function getLiquidationPrice(data) {
   let {
     isLong,
@@ -775,6 +791,9 @@ export function getLiquidationPrice(data) {
       nextSize = size.sub(sizeDelta);
     }
 
+    const marginFee = getMarginFee(sizeDelta);
+    remainingCollateral = remainingCollateral.sub(marginFee);
+
     if (includeDelta && !hasProfit) {
       const adjustedDelta = sizeDelta.mul(delta).div(size);
       remainingCollateral = remainingCollateral.sub(adjustedDelta);
@@ -793,6 +812,7 @@ export function getLiquidationPrice(data) {
   }
 
   let positionFee = getMarginFee(size).add(LIQUIDATION_FEE);
+
   if (entryFundingRate && cumulativeFundingRate) {
     const fundingFee = size.mul(cumulativeFundingRate.sub(entryFundingRate)).div(FUNDING_RATE_PRECISION);
     positionFee = positionFee.add(fundingFee);
@@ -817,6 +837,7 @@ export function getLiquidationPrice(data) {
   if (!liquidationPriceForFees) {
     return liquidationPriceForMaxLeverage;
   }
+
   if (!liquidationPriceForMaxLeverage) {
     return liquidationPriceForFees;
   }
@@ -877,7 +898,7 @@ export function useENS(address) {
   useEffect(() => {
     async function resolveENS() {
       if (address) {
-        const provider = new ethers.providers.JsonRpcProvider("https://rpc.ankr.com/eth");
+        const provider = new ethers.providers.JsonRpcProvider(getRpcUrl(ETH_MAINNET));
         const name = await provider.lookupAddress(address.toLowerCase());
         if (name) setENSName(name);
       }
@@ -1369,14 +1390,6 @@ export function isHashZero(value) {
 }
 export function isAddressZero(value) {
   return value === ethers.constants.AddressZero;
-}
-
-export function isDevelopment() {
-  return !window.location.host?.includes("gmx.io") && !window.location.host?.includes("ipfs.io");
-}
-
-export function isLocal() {
-  return window.location.host?.includes("localhost");
 }
 
 export function getHomeUrl() {

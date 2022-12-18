@@ -24,6 +24,7 @@ import {
   getNextToAmount,
   USDG_DECIMALS,
   adjustForDecimals,
+  isAddressZero,
   MAX_ALLOWED_LEVERAGE,
 } from "lib/legacy";
 import { ARBITRUM, getChainName, getConstant, IS_NETWORK_DISABLED } from "config/chains";
@@ -46,7 +47,7 @@ import { CLOSE_POSITION_RECEIVE_TOKEN_KEY, SLIPPAGE_BPS_KEY } from "config/local
 import { getTokenInfo, getUsd } from "domain/tokens/utils";
 import { usePrevious } from "lib/usePrevious";
 import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
-import { getTokens } from "config/tokens";
+import { getTokens, getWrappedToken } from "config/tokens";
 import { formatDateTime, getTimeRemaining } from "lib/dates";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
@@ -139,6 +140,7 @@ export default function PositionSeller(props) {
     minExecutionFeeErrorMessage,
     usdgSupply,
     totalTokenWeights,
+    isContractAccount,
   } = props;
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey([chainId, "Exchange-keep-leverage"], true);
@@ -149,8 +151,10 @@ export default function PositionSeller(props) {
   const prevIsVisible = usePrevious(isVisible);
   const positionRouterAddress = getContract(chainId, "PositionRouter");
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
-  const toTokens = getTokens(chainId);
   const longOrShortText = position?.isLong ? t`Long` : t`Short`;
+
+  const toTokens = isContractAccount ? getTokens(chainId).filter((t) => !t.isNative) : getTokens(chainId);
+  const wrappedToken = getWrappedToken(chainId);
 
   const [savedRecieveTokenAddress, setSavedRecieveTokenAddress] = useLocalStorageByChainId(
     chainId,
@@ -277,6 +281,20 @@ export default function PositionSeller(props) {
   let swapFee;
   let totalFees = bigNumberify(0);
 
+  useEffect(() => {
+    if (isSwapAllowed && isContractAccount && isAddressZero(receiveToken.address)) {
+      setSwapToToken(wrappedToken);
+      setSavedRecieveTokenAddress(wrappedToken.address);
+    }
+  }, [
+    isContractAccount,
+    isSwapAllowed,
+    nativeTokenSymbol,
+    receiveToken?.address,
+    wrappedToken,
+    setSavedRecieveTokenAddress,
+  ]);
+
   let executionFee = orderOption === STOP ? getConstant(chainId, "DECREASE_ORDER_EXECUTION_GAS_FEE") : minExecutionFee;
 
   let executionFeeUsd = getUsd(executionFee, nativeTokenAddress, false, infoTokens) || bigNumberify(0);
@@ -308,7 +326,7 @@ export default function PositionSeller(props) {
       }
     }
 
-    if (sizeDelta) {
+    if (sizeDelta && position.size.gt(0)) {
       adjustedDelta = nextDelta.mul(sizeDelta).div(position.size);
     }
 
@@ -357,6 +375,10 @@ export default function PositionSeller(props) {
     }
 
     receiveToken = isSwapAllowed && swapToToken ? swapToToken : collateralToken;
+
+    if (isSwapAllowed && isContractAccount && isAddressZero(receiveToken.address)) {
+      receiveToken = wrappedToken;
+    }
 
     // Calculate swap fees
     if (isSwapAllowed && swapToToken) {
@@ -458,7 +480,7 @@ export default function PositionSeller(props) {
   }
 
   const [deltaStr, deltaPercentageStr] = useMemo(() => {
-    if (!position || !position.markPrice) {
+    if (!position || !position.markPrice || position.collateral.eq(0)) {
       return ["-", "-"];
     }
     if (orderOption !== STOP) {
@@ -493,6 +515,9 @@ export default function PositionSeller(props) {
   }, [position, triggerPriceUsd, orderOption, fromAmount]);
 
   const getError = () => {
+    if (isSwapAllowed && isContractAccount && isAddressZero(receiveToken?.address)) {
+      return t`${nativeTokenSymbol} can not be sent to smart contract addresses. Select another token.`;
+    }
     if (IS_NETWORK_DISABLED[chainId]) {
       if (orderOption === STOP) return [t`Trigger order disabled, pending ${getChainName(chainId)} upgrade`];
       return [t`Position close disabled, pending ${getChainName(chainId)} upgrade`];
@@ -713,7 +738,7 @@ export default function PositionSeller(props) {
       }
     }
 
-    const withdrawETH = isUnwrap;
+    const withdrawETH = isUnwrap && !isContractAccount;
 
     const params = [
       path, // _path

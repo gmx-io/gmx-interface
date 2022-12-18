@@ -7,12 +7,12 @@ import { HiDotsVertical } from "react-icons/hi";
 import "./NetworkDropdown.css";
 import language24Icon from "img/ic_language24.svg";
 import settingsIcon from "img/ic_settings_16.svg";
-import arbitrumIcon from "img/ic_arbitrum_24.svg";
-import avaxIcon from "img/ic_avalanche_24.svg";
 import { importImage } from "lib/legacy";
 import { defaultLocale } from "lib/i18n";
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 import LanguageModalContent from "./LanguageModalContent";
+import { useChainId } from "lib/chains";
+import { getChainIcon } from "config/chains";
 
 const LANGUAGE_MODAL_KEY: string = "LANGUAGE";
 const NETWORK_MODAL_KEY: string = "NETWORK";
@@ -82,14 +82,14 @@ export default function NetworkDropdown(props) {
   );
 }
 function NavIcons({ selectorLabel }) {
+  const { chainId } = useChainId();
+
+  const icon = importImage(getChainIcon(chainId, 24));
+
   return (
     <>
       <button className={cx("btn-primary small transparent")}>
-        <img
-          className="network-dropdown-icon"
-          src={selectorLabel === "Arbitrum" ? arbitrumIcon : avaxIcon}
-          alt={selectorLabel}
-        />
+        <img className="network-dropdown-icon" src={icon} alt={selectorLabel} />
       </button>
       <div className="network-dropdown-seperator" />
       <button className={cx("btn-primary small transparent")}>

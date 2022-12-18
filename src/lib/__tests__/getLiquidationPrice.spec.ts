@@ -1,10 +1,10 @@
 import { getLiquidationPrice } from "lib/legacy";
 import { bigNumberify, expandDecimals } from "lib/numbers";
 
-describe("Helpers", function () {
+describe("getLiquidationPrice", function () {
   const cases = [
     {
-      // simple by max leverage
+      name: "simple by max leverage",
       isLong: true,
       size: expandDecimals(50000, 30),
       collateral: expandDecimals(10000, 30),
@@ -14,7 +14,7 @@ describe("Helpers", function () {
       expected: expandDecimals(40500, 30),
     },
     {
-      // liq price by fees
+      name: "liq price by fees",
       isLong: true,
       size: expandDecimals(50000, 30),
       collateral: expandDecimals(10000, 30),
@@ -24,7 +24,7 @@ describe("Helpers", function () {
       expected: expandDecimals(41055, 30),
     },
     {
-      // with size increase
+      name: "with size increase",
       isLong: true,
       size: expandDecimals(50000, 30),
       collateral: expandDecimals(10000, 30),
@@ -36,7 +36,7 @@ describe("Helpers", function () {
       increaseSize: true,
     },
     {
-      // with size decrease
+      name: "with size decrease",
       isLong: true,
       size: expandDecimals(50000, 30),
       collateral: expandDecimals(10000, 30),
@@ -47,7 +47,7 @@ describe("Helpers", function () {
       sizeDelta: expandDecimals(25000, 30),
     },
     {
-      // with pending losses
+      name: "with pending losses",
       isLong: true,
       size: expandDecimals(50000, 30),
       collateral: expandDecimals(10000, 30),
@@ -61,7 +61,7 @@ describe("Helpers", function () {
       expected: expandDecimals(35660, 30),
     },
     {
-      // with pending profit (no difference)
+      name: "with pending profit (no difference)",
       isLong: true,
       size: expandDecimals(50000, 30),
       collateral: expandDecimals(10000, 30),
@@ -74,8 +74,9 @@ describe("Helpers", function () {
       includeDelta: true,
       expected: expandDecimals(30660, 30),
     },
+    ////
     {
-      // decrease collateral
+      name: "decrease collateral",
       isLong: true,
       size: expandDecimals(50000, 30),
       collateral: expandDecimals(10000, 30),
@@ -86,7 +87,7 @@ describe("Helpers", function () {
       collateralDelta: expandDecimals(1000, 30),
     },
     {
-      // increase collateral
+      name: "increase collateral",
       isLong: true,
       size: expandDecimals(50000, 30),
       collateral: expandDecimals(10000, 30),
@@ -98,10 +99,12 @@ describe("Helpers", function () {
       increaseCollateral: true,
     },
   ];
-  it("getLiquidationPrice", function () {
-    for (const case_ of cases) {
+
+  for (const { name: caseName, expected, ...case_ } of cases) {
+    it(`getLiquidationPrice: ${caseName}`, function () {
       const liqPrice = getLiquidationPrice(case_);
-      expect(liqPrice).toEqual(case_.expected);
-    }
-  });
+
+      expect(liqPrice).toEqual(expected);
+    });
+  }
 });
