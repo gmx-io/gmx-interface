@@ -7,19 +7,13 @@ import { Market, MarketPoolType } from "domain/synthetics/markets/types";
 import { useChainId } from "lib/chains";
 import { useEffect, useMemo, useState } from "react";
 
-import { Mode, modeTexts, Operation, operationTexts, PoolDelta } from "../constants";
+import { getSubmitError, Mode, modeTexts, Operation, operationTexts, PoolDelta } from "../utils";
 import { MarketDropdown } from "../MarketDropdown/MarketDropdown";
 
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { getMarket, getMarketPoolData, getTokenPoolType } from "domain/synthetics/markets/utils";
-import {
-  adaptToInfoTokens,
-  formatTokenAmount,
-  formatUsdAmount,
-  getTokenData,
-  getUsdFromTokenAmount,
-} from "domain/synthetics/tokens";
+import { adaptToInfoTokens, formatTokenAmount, formatUsdAmount, getUsdFromTokenAmount } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { IoMdSwap } from "react-icons/io";
 
@@ -128,11 +122,12 @@ export function MarketPoolSwapBox(p: Props) {
       return tokenPool === poolType;
     });
 
-    if (!poolTokenState?.tokenAddress) return undefined;
+    if (!poolTokenState?.tokenAddress || !poolTokenState?.token) return undefined;
 
     return {
       tokenAddress: poolTokenState.tokenAddress,
       poolType,
+      token: poolTokenState.token,
       tokenAmount: poolTokenState.tokenAmount,
       usdAmount: poolTokenState.usdAmount,
       // prettier-ignore
@@ -143,77 +138,30 @@ export function MarketPoolSwapBox(p: Props) {
   }
 
   function getSubmitButtonState(): { text: string; disabled?: boolean; onClick?: () => void } {
-    if (!market) {
+    const error = getSubmitError({
+      operation: operationTab,
+      tokensData,
+      marketTokensData,
+      poolsData: marketPoolsData,
+      market,
+      marketTokenAmount: marketTokenState.tokenAmount,
+      longDelta,
+      shortDelta,
+      isHighPriceImpact,
+      isHighPriceImpactAccepted,
+    });
+
+    if (error) {
       return {
-        text: t`Select a market`,
+        text: error,
         disabled: true,
       };
     }
 
-    if (!marketTokenState.usdAmount.gt(0)) {
-      return {
-        text: t`Enter an amount`,
-        disabled: true,
-      };
-    }
-
-    if (isHighPriceImpact && !isHighPriceImpactAccepted) {
-      return {
-        text: t`Need to accept price impact`,
-        disabled: true,
-      };
-    }
-
-    if (operationTab === Operation.deposit) {
-      const insuficcientBalanceToken = [firstTokenState, secondTokenState].find(
-        (tokenState) =>
-          tokenState.tokenAddress && (!tokenState.balance || tokenState.tokenAmount.gt(tokenState.balance))
-      );
-
-      if (insuficcientBalanceToken?.token) {
-        return {
-          text: t`Insufficient ${insuficcientBalanceToken.token.symbol} balance`,
-          disabled: true,
-        };
-      }
-
-      return {
-        text: t`Buy GM`,
-        onClick: onSubmit,
-      };
-    } else {
-      if (marketTokenState.tokenAmount.gt(marketTokenState.balance || BigNumber.from(0))) {
-        return {
-          text: t`Insufficient ${marketTokenState.token?.symbol} balance`,
-          disabled: true,
-        };
-      }
-
-      const pools = getMarketPoolData(marketPoolsData, market.marketTokenAddress);
-
-      if (shortDelta && shortDelta.tokenAmount.gt(pools?.shortPoolAmount || BigNumber.from(0))) {
-        const shortToken = getTokenData(tokensData, shortDelta.tokenAddress);
-
-        return {
-          text: t`Insufficient ${shortToken?.symbol} liquidity`,
-          disabled: true,
-        };
-      }
-
-      if (longDelta && longDelta.tokenAmount.gt(pools?.longPoolAmount || BigNumber.from(0))) {
-        const longToken = getTokenData(tokensData, longDelta.tokenAddress);
-
-        return {
-          text: t`Insufficient ${longToken?.symbol} liquidity`,
-          disabled: true,
-        };
-      }
-
-      return {
-        text: t`Sell GM`,
-        onClick: onSubmit,
-      };
-    }
+    return {
+      text: operationTab === Operation.deposit ? t`Buy GM` : t`Sell GM`,
+      onClick: onSubmit,
+    };
   }
 
   function onSwitchOperation() {

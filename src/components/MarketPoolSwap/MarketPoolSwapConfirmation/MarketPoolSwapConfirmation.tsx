@@ -12,21 +12,27 @@ import { createWithdrawalTxn } from "domain/synthetics/markets/createWithdrawalT
 import { TokensData } from "domain/synthetics/tokens/types";
 import { useTokenAllowance } from "domain/synthetics/tokens/useTokenAllowance";
 import {
+  convertToUsdByPrice,
   formatTokenAmount,
   formatTokenAmountWithUsd,
   getTokenAmountFromUsd,
   getTokenData,
-  getUsdFromTokenAmount,
   needTokenApprove,
 } from "domain/synthetics/tokens/utils";
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { useMemo } from "react";
-import { Operation, operationTexts, PoolDelta } from "../constants";
+import { getSubmitError, Operation, operationTexts, PoolDelta } from "../utils";
 
 import { MarketPoolFees } from "components/MarketPoolFees/MarketPoolFees";
-import { getMarket, getMarketTokenData, useMarketsData, useMarketTokensData } from "domain/synthetics/markets";
+import {
+  getMarket,
+  getMarketTokenData,
+  useMarketsData,
+  useMarketsPoolsData,
+  useMarketTokensData,
+} from "domain/synthetics/markets";
 import { useAvailableTradeTokensData } from "domain/synthetics/tokens";
 
 import "./MarketPoolSwapConfirmation.scss";
@@ -34,7 +40,7 @@ import "./MarketPoolSwapConfirmation.scss";
 type Props = {
   onClose: () => void;
   marketTokenAddress: string;
-  marketTokenAmount?: BigNumber;
+  marketTokenAmount: BigNumber;
   longDelta?: PoolDelta;
   shortDelta?: PoolDelta;
   priceImpact?: PriceImpact;
@@ -47,15 +53,12 @@ type Props = {
   onSubmitted: () => void;
 };
 
-function getTokenText(tokensData: TokensData, tokenAddress?: string, swapAmount?: BigNumber) {
-  if (!tokenAddress || !swapAmount) return undefined;
+function getTokenText(token?: Token, tokenAmount?: BigNumber, price?: BigNumber) {
+  if (!token || !price || !tokenAmount) return undefined;
 
-  const usdAmount = getUsdFromTokenAmount(tokensData, tokenAddress, swapAmount);
-  const token = getTokenData(tokensData, tokenAddress);
+  const usdAmount = convertToUsdByPrice(tokenAmount, token.decimals, price);
 
-  if (!usdAmount || !token) return undefined;
-
-  return formatTokenAmountWithUsd(swapAmount, usdAmount, token.symbol, token.decimals);
+  return formatTokenAmountWithUsd(tokenAmount, usdAmount, token.symbol, token.decimals);
 }
 
 export function MarketPoolSwapConfirmation(p: Props) {
@@ -69,6 +72,7 @@ export function MarketPoolSwapConfirmation(p: Props) {
 
   const marketsData = useMarketsData(chainId);
   const marketTokensData = useMarketTokensData(chainId);
+  const poolsData = useMarketsPoolsData(chainId);
   const tokensData = useAvailableTradeTokensData(chainId);
 
   const tokenAllowanceData = useTokenAllowance(chainId, {
@@ -78,13 +82,15 @@ export function MarketPoolSwapConfirmation(p: Props) {
 
   const isDeposit = p.operationType === Operation.deposit;
 
-  const firstTokenText = getTokenText(tokensData, p.longDelta?.tokenAddress, p.longDelta?.tokenAmount);
-  const secondTokenText = getTokenText(tokensData, p.shortDelta?.tokenAddress, p.shortDelta?.tokenAmount);
-  const marketTokenText = getTokenText(marketTokensData, p.marketTokenAddress, p.marketTokenAmount);
+  const marketToken = getMarketTokenData(marketTokensData, p.marketTokenAddress);
+  const longToken = getTokenData(tokensData, p.longDelta?.tokenAddress);
+  const shortToken = getTokenData(tokensData, p.shortDelta?.tokenAddress);
+
+  const longTokenText = getTokenText(longToken, p.longDelta?.tokenAmount, longToken?.prices?.maxPrice);
+  const shortTokenText = getTokenText(shortToken, p.shortDelta?.tokenAmount, shortToken?.prices?.maxPrice);
+  const marketTokenText = getTokenText(marketToken, p.marketTokenAmount, marketToken?.prices?.maxPrice);
 
   const market = getMarket(marketsData, p.marketTokenAddress);
-
-  const marketToken = getMarketTokenData(marketTokensData, p.marketTokenAddress);
 
   const isAllowanceLoaded = Object.keys(tokenAllowanceData).length > 0;
 
@@ -105,6 +111,24 @@ export function MarketPoolSwapConfirmation(p: Props) {
   }, [isDeposit, p.longDelta, p.marketTokenAddress, p.marketTokenAmount, p.shortDelta, tokenAllowanceData]);
 
   function getSubmitButtonState(): { text: string; disabled?: boolean; onClick?: () => void } {
+    const error = getSubmitError({
+      operation: p.operationType,
+      tokensData,
+      marketTokensData,
+      poolsData,
+      market,
+      marketTokenAmount: p.marketTokenAmount,
+      longDelta: p.longDelta,
+      shortDelta: p.shortDelta,
+    });
+
+    if (error) {
+      return {
+        text: error,
+        disabled: true,
+      };
+    }
+
     if (!isAllowanceLoaded || !marketToken) {
       return {
         text: t`Loading...`,
@@ -194,14 +218,11 @@ export function MarketPoolSwapConfirmation(p: Props) {
         <div className={cx("Confirmation-box-main MarketPoolSwapConfirmation-main")}>
           {p.operationType === Operation.deposit && (
             <>
-              <div>
-                <Trans>Pay</Trans>&nbsp;{firstTokenText}
-              </div>
-              {secondTokenText && (
-                <div>
-                  <Trans>Pay</Trans>&nbsp;{secondTokenText}
+              {[longTokenText, shortTokenText].filter(Boolean).map((text) => (
+                <div key={text}>
+                  <Trans>Pay</Trans>&nbsp;{text}
                 </div>
-              )}
+              ))}
               <div className="Confirmation-box-main-icon"></div>
               <div>
                 <Trans>Receive</Trans>&nbsp;{marketTokenText}
@@ -214,14 +235,11 @@ export function MarketPoolSwapConfirmation(p: Props) {
                 <Trans>Pay</Trans>&nbsp;{marketTokenText}
               </div>
               <div className="Confirmation-box-main-icon"></div>
-              <div>
-                <Trans>Receive</Trans>&nbsp;{firstTokenText}
-              </div>
-              {secondTokenText && (
-                <div>
-                  <Trans>Receive</Trans>&nbsp;{secondTokenText}
+              {[longTokenText, shortTokenText].filter(Boolean).map((text) => (
+                <div key={text}>
+                  <Trans>Receive</Trans>&nbsp;{text}
                 </div>
-              )}
+              ))}
             </>
           )}
         </div>
