@@ -1674,6 +1674,11 @@ msgstr "Insufficient staked tokens"
 msgid "Insufficient {0} balance"
 msgstr "Insufficient {0} balance"
 
+#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
+#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
+msgid "Insufficient {0} liquidity"
+msgstr "Insufficient {0} liquidity"
+
 #: src/pages/NftWallet/NftWallet.js
 msgid "Invalid NFT Address"
 msgstr "Invalid NFT Address"
@@ -2824,6 +2829,10 @@ msgstr "Select Language"
 #: src/components/Exchange/PositionDropdown.js
 msgid "Select Market"
 msgstr "Select Market"
+
+#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
+msgid "Select a market"
+msgstr "Select a market"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Select an option"

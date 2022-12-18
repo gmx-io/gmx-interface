@@ -1674,6 +1674,11 @@ msgstr "投注代币不足"
 msgid "Insufficient {0} balance"
 msgstr " {0}余额不足"
 
+#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
+#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
+msgid "Insufficient {0} liquidity"
+msgstr ""
+
 #: src/pages/NftWallet/NftWallet.js
 msgid "Invalid NFT Address"
 msgstr ""
@@ -2817,6 +2822,10 @@ msgstr "选择语言"
 #: src/components/Exchange/PositionDropdown.js
 msgid "Select Market"
 msgstr "选择市场"
+
+#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
+msgid "Select a market"
+msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Select an option"
