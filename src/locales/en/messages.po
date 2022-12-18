@@ -794,8 +794,13 @@ msgid "Confirm Swap"
 msgstr "Confirm Swap"
 
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
 msgid "Confirm {0}"
 msgstr "Confirm {0}"
+
+#: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
+msgid "Confirm {0} {1}"
+msgstr "Confirm {0} {1}"
 
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 msgid "Confirm {operationText} {0} GM"
@@ -882,6 +887,10 @@ msgstr "Could not increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {
 #: src/pages/Exchange/Exchange.js
 msgid "Could not increase {tokenSymbol} {longOrShortText} within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page."
 msgstr "Could not increase {tokenSymbol} {longOrShortText} within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page."
+
+#: src/components/SyntheticsSwap/utils.ts
+msgid "Couldn't find a swap path"
+msgstr "Couldn't find a swap path"
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/AddAffiliateCode.js
@@ -1256,7 +1265,7 @@ msgstr "Enter a price"
 #: src/components/Glp/GlpSwap.js
 #: src/components/MarketPoolSwap/utils.ts
 #: src/components/Migration/Migration.js
-#: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
+#: src/components/SyntheticsSwap/utils.ts
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -1651,6 +1660,7 @@ msgstr "Insufficient staked tokens"
 #: src/components/Glp/GlpSwap.js
 #: src/components/MarketPoolSwap/utils.ts
 #: src/components/MarketPoolSwap/utils.ts
+#: src/components/SyntheticsSwap/utils.ts
 msgid "Insufficient {0} balance"
 msgstr "Insufficient {0} balance"
 
@@ -1766,7 +1776,7 @@ msgstr "Leverage:"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
+#: src/components/SyntheticsSwap/utils.ts
 msgid "Limit"
 msgstr "Limit"
 
@@ -1851,6 +1861,8 @@ msgstr "Liquidity data not loaded"
 #: src/components/Exchange/PositionsList.js
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 #: src/components/MarketPoolSwap/utils.ts
+#: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
+#: src/components/SyntheticsSwap/utils.ts
 msgid "Loading..."
 msgstr "Loading..."
 
@@ -1874,7 +1886,7 @@ msgstr "Loading..."
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
-#: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
+#: src/components/SyntheticsSwap/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
@@ -1957,7 +1969,7 @@ msgstr "Mark: {0}"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
+#: src/components/SyntheticsSwap/utils.ts
 msgid "Market"
 msgstr "Market"
 
@@ -2419,6 +2431,7 @@ msgstr "Partnerships and Integrations"
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
 msgid "Pay"
 msgstr "Pay"
 
@@ -2437,6 +2450,10 @@ msgstr "Pay:"
 #: src/components/Exchange/SwapBox.js
 msgid "Pay: {0} USD"
 msgstr "Pay: {0} USD"
+
+#: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
+msgid "Pending {0} approval"
+msgstr "Pending {0} approval"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Platform and GLP index tokens."
@@ -2662,6 +2679,7 @@ msgstr "Rebates earned by this account as an affiliate."
 #: src/components/Glp/GlpSwap.js
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
 msgid "Receive"
 msgstr "Receive"
 
@@ -2848,7 +2866,7 @@ msgstr "Select an option"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
+#: src/components/SyntheticsSwap/utils.ts
 msgid "Select different tokens"
 msgstr "Select different tokens"
 
@@ -2933,7 +2951,7 @@ msgstr "Share Position"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
-#: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
+#: src/components/SyntheticsSwap/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
@@ -3111,7 +3129,7 @@ msgstr "Supply"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
+#: src/components/SyntheticsSwap/utils.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Swap"
 msgstr "Swap"
@@ -3583,7 +3601,7 @@ msgstr "Transferring"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
+#: src/components/SyntheticsSwap/utils.ts
 msgid "Trigger"
 msgstr "Trigger"
 
