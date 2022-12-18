@@ -131,8 +131,9 @@ export default function BuyGMX() {
               <div className="buttons-group">
                 {TRANSFER_EXCHANGES.filter((e) => e.networks.includes(chainId)).map((exchange) => {
                   const icon = importImage(exchange.icon) || "";
+                  const link = exchange.links ? exchange.links[chainId] : exchange.link;
                   return (
-                    <Button key={exchange.name} href={exchange.link} imgSrc={icon}>
+                    <Button key={exchange.name} href={link} imgSrc={icon}>
                       {exchange.name}
                     </Button>
                   );
@@ -235,8 +236,9 @@ function CentralisedExchanges({ chainId }) {
           <div className="buttons-group">
             {CENTRALISED_EXCHANGES.filter((e) => e.networks.includes(chainId)).map((exchange) => {
               const icon = importImage(exchange.icon) || "";
+              const link = exchange.links ? exchange.links[chainId] : exchange.link;
               return (
-                <Button key={exchange.name} href={exchange.link} imgSrc={icon}>
+                <Button key={exchange.name} href={link} imgSrc={icon}>
                   {exchange.name}
                 </Button>
               );

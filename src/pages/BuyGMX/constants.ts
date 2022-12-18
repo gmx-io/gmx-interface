@@ -165,7 +165,12 @@ export const TRANSFER_EXCHANGES: Exchange[] = [
     name: "O3",
     icon: "ic_o3.png",
     networks: [ARBITRUM, AVALANCHE],
-    link: "https://o3swap.com/swap",
+    links: {
+      [ARBITRUM]:
+        "https://o3swap.com/swap?src_chain=1&dst_chain=42161&dst_token_hash=0x0000000000000000000000000000000000000000",
+      [AVALANCHE]:
+        "https://o3swap.com/swap?src_chain=1&dst_chain=43114&dst_token_hash=0x0000000000000000000000000000000000000000",
+    },
   },
   {
     name: "Across",
@@ -270,10 +275,19 @@ export const DECENTRALISED_AGGRIGATORS: Exchange[] = [
     networks: [AVALANCHE],
   },
   {
-    name: "Odos",
-    icon: "ic_odos.png",
-    link: "https://app.odos.xyz/",
-    networks: [ARBITRUM],
+    name: "Yieldyak",
+    icon: "ic_yield_yak.png",
+    link: `https://yieldyak.com/swap?outputCurrency=${AVALANCHE_GMX}`,
+    networks: [AVALANCHE],
+  },
+  {
+    name: "UniDex",
+    icon: "ic_unidex.png",
+    links: {
+      [ARBITRUM]: `https://app.unidex.exchange/trading/42161/0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee/${ARBITRUM_GMX}`,
+      [AVALANCHE]: `https://app.unidex.exchange/trading/43114/0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee/${AVALANCHE_GMX}`,
+    },
+    networks: [ARBITRUM, AVALANCHE],
   },
   {
     name: "Firebird",
