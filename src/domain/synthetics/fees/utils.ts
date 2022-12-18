@@ -9,8 +9,11 @@ export function formatFee(feeUsd?: BigNumber, feeBp?: BigNumber) {
   if (!feeUsd?.abs().gt(0)) {
     return "...";
   }
+  const isNegative = feeUsd.lt(0);
 
-  return feeBp ? `${formatAmount(feeBp, 2, 2)}% (${formatUsdAmount(feeUsd)})` : formatUsdAmount(feeUsd);
+  return feeBp
+    ? `${isNegative ? "-" : ""}${formatAmount(feeBp, 2, 2)}% (${formatUsdAmount(feeUsd)})`
+    : formatUsdAmount(feeUsd);
 }
 
 export function getPriceImpactConfig(data: PriceImpactConfigsData, marketAddress?: string) {
