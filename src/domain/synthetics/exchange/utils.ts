@@ -106,6 +106,8 @@ export function getSwapPath(
 
   const initialMarkets = marketsByTokens[fromToken];
 
+  if (!initialMarkets) return undefined;
+
   const theSameMarketSwap = initialMarkets.find((market) => {
     return (
       [market.longTokenAddress, market.shortTokenAddress].includes(toToken) &&
@@ -139,7 +141,7 @@ export function getSwapPath(
   }
 
   if (!intercetedInitialMarket || !intercetedTargetMarket) {
-    return [];
+    return undefined;
   }
 
   const swapPath = [intercetedInitialMarket.marketTokenAddress, intercetedTargetMarket.marketTokenAddress];

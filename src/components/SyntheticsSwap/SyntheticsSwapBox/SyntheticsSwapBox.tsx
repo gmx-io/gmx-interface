@@ -1,5 +1,4 @@
 import { t, Trans } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
 import cx from "classnames";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Checkbox from "components/Checkbox/Checkbox";
@@ -14,9 +13,8 @@ import {
   SYNTHETICS_SWAP_OPERATION_KEY,
 } from "config/localStorage";
 import { getWrappedToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { useUserReferralCode } from "domain/referrals";
 import { getPositionMarketsPath, getSwapPath, useSwapTokenState } from "domain/synthetics/exchange";
-import { createOrderTxn, OrderType } from "domain/synthetics/exchange/createOrderTxn";
+import { getExecutionFee } from "domain/synthetics/fees";
 import { getMarkets, useMarketsData, useMarketsPoolsData } from "domain/synthetics/markets";
 import {
   adaptToInfoTokens,
@@ -30,53 +28,17 @@ import {
 } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
-import longImg from "img/long.svg";
-import shortImg from "img/short.svg";
-import swapImg from "img/swap.svg";
+
 import { useChainId } from "lib/chains";
 import { BASIS_POINTS_DIVISOR, PRECISION, USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { bigNumberify, expandDecimals, formatAmount, parseValue } from "lib/numbers";
+import { bigNumberify, formatAmount, parseValue } from "lib/numbers";
 import { useEffect, useMemo, useState } from "react";
 import { IoMdSwap } from "react-icons/io";
+import { SyntheticsSwapConfirmation } from "../SyntheticsSwapConfirmation/SyntheticsSwapConfirmation";
+import { avaialbleModes, getSubmitError, Mode, modeTexts, Operation, operationIcons, operationTexts } from "../utils";
 
 import "./SyntheticsSwapBox.scss";
-
-enum Operation {
-  Long = "Long",
-  Short = "Short",
-  Swap = "Swap",
-}
-
-enum Mode {
-  Market = "Market",
-  Limit = "Limit",
-  Trigger = "Trigger",
-}
-
-const operationTexts = {
-  [Operation.Long]: t`Long`,
-  [Operation.Short]: t`Short`,
-  [Operation.Swap]: t`Swap`,
-};
-
-const operationIcons = {
-  [Operation.Long]: longImg,
-  [Operation.Short]: shortImg,
-  [Operation.Swap]: swapImg,
-};
-
-const modeTexts = {
-  [Mode.Market]: t`Market`,
-  [Mode.Limit]: t`Limit`,
-  [Mode.Trigger]: t`Trigger`,
-};
-
-const avaialbleModes = {
-  [Operation.Long]: [Mode.Market, Mode.Limit],
-  [Operation.Short]: [Mode.Market, Mode.Limit],
-  [Operation.Swap]: [Mode.Market, Mode.Limit],
-};
 
 enum FocusedInput {
   From = "From",
@@ -138,11 +100,9 @@ export function getNextTokenAmount(p: {
 
 export function SyntheticsSwapBox(p: Props) {
   const { chainId } = useChainId();
-  const { library, account } = useWeb3React();
 
   const marketsData = useMarketsData(chainId);
   const poolsData = useMarketsPoolsData(chainId);
-  const referralCodeData = useUserReferralCode(library, chainId, account);
   const tokensData = useAvailableTradeTokensData(chainId);
 
   const [focusedInput, setFocusedInput] = useState<FocusedInput>();
@@ -159,6 +119,8 @@ export function SyntheticsSwapBox(p: Props) {
   const isTriggerPriceAllowed = !isSwap && isLimit;
   const isSwapTriggerRatioAllowed = isSwap && isLimit;
   const isLeverageAllowed = isLong || isShort;
+
+  const [isConfirming, setIsConfirming] = useState(false);
 
   const fromTokenState = useSwapTokenState(tokensData);
   const toTokenState = useSwapTokenState(tokensData, { useMaxPrice: true });
@@ -177,7 +139,7 @@ export function SyntheticsSwapBox(p: Props) {
   const triggerPrice = isTriggerPriceAllowed ? parseValue(triggerPriceValue, USD_DECIMALS) : undefined;
 
   const toTokenPrice = triggerPrice?.gt(0) ? triggerPrice : toTokenState.price;
-  const toTokenUsdAmount =
+  const sizeDeltaUsd =
     toTokenState.token && toTokenPrice
       ? convertToUsdByPrice(toTokenState.tokenAmount, toTokenState.token?.decimals, toTokenPrice)
       : BigNumber.from(0);
@@ -225,10 +187,29 @@ export function SyntheticsSwapBox(p: Props) {
 
   const nativeToken = getTokenData(tokensData, NATIVE_TOKEN_ADDRESS);
 
-  const executionFeeUsd = expandDecimals(1, 28);
-  const executionFee = nativeToken?.prices
-    ? convertFromUsdByPrice(executionFeeUsd, nativeToken.decimals, nativeToken.prices.maxPrice)
-    : undefined;
+  const executionFee = getExecutionFee(tokensData);
+
+  const swapPath = useMemo(() => {
+    if (!fromTokenState.tokenAddress || !toTokenState.tokenAddress) return undefined;
+
+    if (isSwap) {
+      return getSwapPath(
+        marketsData,
+        poolsData,
+        fromTokenState.tokenAddress,
+        toTokenState.tokenAddress,
+        toTokenState.usdAmount
+      );
+    }
+
+    return getPositionMarketsPath(
+      marketsData,
+      poolsData,
+      fromTokenState.tokenAddress,
+      toTokenState.tokenAddress,
+      toTokenState.usdAmount
+    );
+  }, [fromTokenState.tokenAddress, isSwap, marketsData, poolsData, toTokenState.tokenAddress, toTokenState.usdAmount]);
 
   const submitButtonState = getSubmitButtonState();
 
@@ -256,25 +237,26 @@ export function SyntheticsSwapBox(p: Props) {
   }
 
   function getSubmitButtonState(): { text: string; disabled?: boolean; onClick?: () => void } {
-    if (isSwap) {
-      if (fromTokenState.tokenAddress === toTokenState.tokenAddress) {
-        return {
-          text: t`Select different tokens`,
-          disabled: true,
-        };
-      }
-    }
+    const error = getSubmitError({
+      operationType: operationTab!,
+      mode: modeTab!,
+      tokensData,
+      fromTokenAddress: fromTokenState.tokenAddress,
+      toTokenAddress: toTokenState.tokenAddress,
+      fromTokenAmount: fromTokenState.tokenAmount,
+      swapPath,
+    });
 
-    if (!fromTokenState.usdAmount.gt(0)) {
+    if (error) {
       return {
-        text: t`Enter an amount`,
+        text: error,
         disabled: true,
       };
     }
 
     return {
       text: `${operationTexts[operationTab!]} ${toTokenState.token?.symbol}`,
-      onClick: onSubmit,
+      onClick: () => setIsConfirming(true),
     };
   }
 
@@ -289,69 +271,6 @@ export function SyntheticsSwapBox(p: Props) {
     toTokenState.setInputValue(fromTokenState.inputValue || "");
 
     setFocusedInput((old) => (old === FocusedInput.From ? FocusedInput.To : FocusedInput.From));
-  }
-
-  function onSubmit() {
-    const price = toTokenState.price;
-
-    if (!account || !fromTokenState.tokenAddress || !toTokenState.tokenAddress || !price) return;
-
-    if (isLong || isShort) {
-      const swapPath = getPositionMarketsPath(
-        marketsData,
-        poolsData,
-        fromTokenState.tokenAddress,
-        toTokenState.tokenAddress,
-        toTokenState.usdAmount
-      );
-
-      if (!swapPath) return;
-
-      createOrderTxn(chainId, library, {
-        account,
-        marketAddress: swapPath[0],
-        initialCollateralAddress: fromTokenState.tokenAddress,
-        initialCollateralAmount: fromTokenState.tokenAmount,
-        swapPath: swapPath,
-        sizeDeltaUsd: toTokenState.usdAmount,
-        triggerPrice: BigNumber.from(0),
-        acceptablePrice: price,
-        executionFee: executionFee!,
-        isLong: isLong,
-        orderType: OrderType.MarketIncrease,
-        minOutputAmount: BigNumber.from(0),
-        referralCode: referralCodeData?.userReferralCodeString,
-      });
-    }
-
-    if (isSwap) {
-      const swapPath = getSwapPath(
-        marketsData,
-        poolsData,
-        fromTokenState.tokenAddress,
-        toTokenState.tokenAddress,
-        toTokenState.usdAmount
-      );
-
-      if (!swapPath) return;
-
-      createOrderTxn(chainId, library, {
-        account,
-        marketAddress: swapPath[0],
-        initialCollateralAddress: fromTokenState.tokenAddress!,
-        initialCollateralAmount: fromTokenState.tokenAmount,
-        swapPath: swapPath,
-        receiveTokenAddress: toTokenState.tokenAddress,
-        sizeDeltaUsd: toTokenState.usdAmount,
-        triggerPrice: BigNumber.from(0),
-        acceptablePrice: price,
-        executionFee: executionFee!,
-        isLong: false,
-        orderType: OrderType.MarketSwap,
-        minOutputAmount: BigNumber.from(0),
-        referralCode: referralCodeData?.userReferralCodeString,
-      });
-    }
   }
 
   useEffect(
@@ -490,7 +409,7 @@ export function SyntheticsSwapBox(p: Props) {
 
         <BuyInputSection
           topLeftLabel={operationTab === Operation.Swap ? t`Receive:` : `${operationTexts[operationTab!]}:`}
-          topLeftValue={formatUsdAmount(toTokenUsdAmount)}
+          topLeftValue={formatUsdAmount(sizeDeltaUsd)}
           topRightLabel={operationTab === Operation.Swap ? t`Balance:` : t`Leverage:`}
           topRightValue={
             operationTab === Operation.Swap
@@ -606,21 +525,26 @@ export function SyntheticsSwapBox(p: Props) {
         </SubmitButton>
       </div>
 
-      {/* {isConfirming && (
-        <MarketPoolSwapConfirmation
-          longDelta={longDelta}
-          shortDelta={shortDelta}
-          marketTokenAmount={marketTokenState.tokenAmount}
-          marketTokenAddress={p.selectedMarketAddress!}
-          onClose={() => setIsConfirming(false)}
-          tokensData={tokensData}
-          priceImpact={priceImpact}
-          fees={fees}
-          executionFee={executionFee}
-          operationType={operationTab}
+      {isConfirming && (
+        <SyntheticsSwapConfirmation
+          fromTokenAddress={fromTokenState.tokenAddress!}
+          fromTokenAmount={fromTokenState.tokenAmount!}
+          toTokenAddress={toTokenState.tokenAddress!}
+          toTokenAmount={toTokenState.tokenAmount!}
+          // priceImpact={priceImpact}
+          triggerPrice={triggerPrice}
+          acceptablePrice={toTokenState.price!}
+          sizeDeltaUsd={sizeDeltaUsd}
+          executionFee={executionFee!.feeTokenAmount!}
+          executionFeeUsd={executionFee!.feeUsd!}
+          executionFeeToken={executionFee!.feeToken!}
+          swapPath={swapPath!}
+          mode={modeTab!}
+          operationType={operationTab!}
           onSubmitted={() => setIsConfirming(false)}
+          onClose={() => setIsConfirming(false)}
         />
-      )} */}
+      )}
     </div>
   );
 }

@@ -41,13 +41,13 @@ const orderTypeTexts = {
 
 type Params = {
   account: string;
-  marketAddress: string;
+  marketAddress?: string;
   initialCollateralAddress: string;
   initialCollateralAmount: BigNumber;
   receiveTokenAddress?: string;
   swapPath: string[];
   sizeDeltaUsd: BigNumber;
-  triggerPrice: BigNumber;
+  triggerPrice?: BigNumber;
   acceptablePrice: BigNumber;
   executionFee: BigNumber;
   isLong: boolean;
@@ -82,14 +82,14 @@ export function createOrderTxn(chainId: number, library: Web3Provider, p: Params
             receiver: p.account,
             initialCollateralToken: getCorrectTokenAddress(chainId, p.initialCollateralAddress, "wrapped"),
             callbackContract: ethers.constants.AddressZero,
-            market: p.marketAddress,
+            market: p.marketAddress || ethers.constants.AddressZero,
             swapPath: p.swapPath,
             executionFee: p.executionFee,
             callbackGasLimit: BigNumber.from(0),
           },
           numbers: {
             sizeDeltaUsd: p.sizeDeltaUsd,
-            triggerPrice: p.triggerPrice,
+            triggerPrice: p.triggerPrice || p.acceptablePrice,
             acceptablePrice: p.acceptablePrice,
             executionFee: p.executionFee,
             callbackGasLimit: BigNumber.from(0),
