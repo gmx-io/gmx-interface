@@ -1025,7 +1025,7 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
-#: src/components/MarketPoolSwap/constants.ts
+#: src/components/MarketPoolSwap/utils.ts
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1271,7 +1271,7 @@ msgstr "Introduce un precio"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
-#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
+#: src/components/MarketPoolSwap/utils.ts
 #: src/components/Migration/Migration.js
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV1.js
@@ -1669,13 +1669,13 @@ msgstr "Insuficientes tokens stakeados"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
-#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
-#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
+#: src/components/MarketPoolSwap/utils.ts
+#: src/components/MarketPoolSwap/utils.ts
 msgid "Insufficient {0} balance"
 msgstr "Balance {0} insuficiente"
 
-#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
-#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
+#: src/components/MarketPoolSwap/utils.ts
+#: src/components/MarketPoolSwap/utils.ts
 msgid "Insufficient {0} liquidity"
 msgstr ""
 
@@ -1842,6 +1842,7 @@ msgstr "Datos de liquidez no cargados"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+#: src/components/MarketPoolSwap/utils.ts
 msgid "Loading..."
 msgstr "Cargando..."
 
@@ -2146,7 +2147,7 @@ msgstr ""
 msgid "NFT Wallet"
 msgstr ""
 
-#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
+#: src/components/MarketPoolSwap/utils.ts
 msgid "Need to accept price impact"
 msgstr ""
 
@@ -2375,7 +2376,7 @@ msgstr ""
 msgid "Page outdated, please refresh"
 msgstr "Página obsoleta, por favor actualice"
 
-#: src/components/MarketPoolSwap/constants.ts
+#: src/components/MarketPoolSwap/utils.ts
 msgid "Pair"
 msgstr ""
 
@@ -2401,7 +2402,6 @@ msgstr "Asociaciones e Integraciones"
 #: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
 #: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
 #: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
-#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 msgid "Pay"
@@ -2653,7 +2653,6 @@ msgstr "Reembolsos ganados por esta cuenta como afiliado."
 #: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
-#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 msgid "Receive"
 msgstr "Recibir"
 
@@ -2824,8 +2823,8 @@ msgid "Select Market"
 msgstr "Seleccionar Idioma"
 
 #: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
-msgid "Select a market"
-msgstr ""
+#~ msgid "Select a market"
+#~ msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Select an option"
@@ -2950,7 +2949,7 @@ msgstr ""
 msgid "Simple Swaps"
 msgstr "Intercambios Simples"
 
-#: src/components/MarketPoolSwap/constants.ts
+#: src/components/MarketPoolSwap/utils.ts
 msgid "Single"
 msgstr ""
 
@@ -3840,7 +3839,7 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
-#: src/components/MarketPoolSwap/constants.ts
+#: src/components/MarketPoolSwap/utils.ts
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Withdraw"
