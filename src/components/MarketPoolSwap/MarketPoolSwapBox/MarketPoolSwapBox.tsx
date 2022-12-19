@@ -29,6 +29,7 @@ import { HIGH_PRICE_IMPACT_BP } from "config/synthetics";
 import { useAvailableTradeTokensData } from "domain/synthetics/tokens";
 
 import "./MarketPoolSwapBox.scss";
+import { MarketPoolSwapStatus } from "../MarketPoolSwapStatus/MarketPoolSwapStatus";
 
 type Props = {
   selectedMarketAddress?: string;
@@ -49,6 +50,7 @@ export function MarketPoolSwapBox(p: Props) {
   const [operationTab, setOperationTab] = useState(Operation.deposit);
   const [modeTab, setModeTab] = useState(Mode.single);
   const [isConfirming, setIsConfirming] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
 
   const tokensData = useAvailableTradeTokensData(chainId);
@@ -401,10 +403,15 @@ export function MarketPoolSwapBox(p: Props) {
           executionFeeUsd={executionFee?.feeUsd}
           executionFeeToken={executionFee?.feeToken}
           operationType={operationTab}
-          onSubmitted={() => setIsConfirming(false)}
+          onSubmitted={() => {
+            setIsConfirming(false);
+            setIsProcessing(true);
+          }}
           onClose={() => setIsConfirming(false)}
         />
       )}
+
+      {isProcessing && <MarketPoolSwapStatus operationType={operationTab} onClose={() => setIsProcessing(false)} />}
     </div>
   );
 }

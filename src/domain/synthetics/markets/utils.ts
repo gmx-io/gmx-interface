@@ -36,8 +36,8 @@ export function getMarketPoolData(poolsData: MarketsPoolsData, marketAddress?: s
 export function getTokenPoolAmount(
   marketsData: MarketsData,
   poolsData: MarketsPoolsData,
-  marketAddress: string,
-  tokenAddress: string
+  marketAddress?: string,
+  tokenAddress?: string
 ) {
   const pools = getMarketPoolData(poolsData, marketAddress);
   const market = getMarket(marketsData, marketAddress);

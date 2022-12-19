@@ -36,6 +36,7 @@ import { bigNumberify, formatAmount, parseValue } from "lib/numbers";
 import { useEffect, useMemo, useState } from "react";
 import { IoMdSwap } from "react-icons/io";
 import { SyntheticsSwapConfirmation } from "../SyntheticsSwapConfirmation/SyntheticsSwapConfirmation";
+import { SyntheticSwapStatus } from "../SyntheticsSwapStatus/SyntheticsSwapStatus";
 import { avaialbleModes, getSubmitError, Mode, modeTexts, Operation, operationIcons, operationTexts } from "../utils";
 
 import "./SyntheticsSwapBox.scss";
@@ -121,6 +122,7 @@ export function SyntheticsSwapBox(p: Props) {
   const isLeverageAllowed = isLong || isShort;
 
   const [isConfirming, setIsConfirming] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const fromTokenState = useSwapTokenState(tokensData);
   const toTokenState = useSwapTokenState(tokensData, { useMaxPrice: true });
@@ -198,7 +200,7 @@ export function SyntheticsSwapBox(p: Props) {
         poolsData,
         fromTokenState.tokenAddress,
         toTokenState.tokenAddress,
-        toTokenState.usdAmount
+        toTokenState.tokenAmount
       );
     }
 
@@ -207,9 +209,16 @@ export function SyntheticsSwapBox(p: Props) {
       poolsData,
       fromTokenState.tokenAddress,
       toTokenState.tokenAddress,
-      toTokenState.usdAmount
+      toTokenState.tokenAmount
     );
-  }, [fromTokenState.tokenAddress, isSwap, marketsData, poolsData, toTokenState.tokenAddress, toTokenState.usdAmount]);
+  }, [
+    fromTokenState.tokenAddress,
+    isSwap,
+    marketsData,
+    poolsData,
+    toTokenState.tokenAddress,
+    toTokenState.tokenAmount,
+  ]);
 
   const submitButtonState = getSubmitButtonState();
 
@@ -541,10 +550,15 @@ export function SyntheticsSwapBox(p: Props) {
           swapPath={swapPath!}
           mode={modeTab!}
           operationType={operationTab!}
-          onSubmitted={() => setIsConfirming(false)}
+          onSubmitted={() => {
+            setIsConfirming(false);
+            setIsProcessing(true);
+          }}
           onClose={() => setIsConfirming(false)}
         />
       )}
+
+      {isProcessing && <SyntheticSwapStatus operationType={operationTab!} onClose={() => setIsProcessing(false)} />}
     </div>
   );
 }

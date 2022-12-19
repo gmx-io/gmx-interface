@@ -56,6 +56,8 @@ export function getPositionMarketsPath(
 
   const initialMarkets = marketsByTokens[fromToken];
 
+  if (!initialMarkets) return undefined;
+
   const theSameMarketSwap = initialMarkets.find((market) => {
     return market.indexTokenAddress === toIndexToken;
   });
@@ -86,7 +88,7 @@ export function getPositionMarketsPath(
   }
 
   if (!intercetedInitialMarket || !intercetedTargetMarket) {
-    return [];
+    return undefined;
   }
 
   const swapPath = [intercetedInitialMarket.marketTokenAddress, intercetedTargetMarket.marketTokenAddress];
@@ -100,7 +102,7 @@ export function getSwapPath(
   poolsData: MarketsPoolsData,
   fromToken: string,
   toToken: string,
-  amountUsd: BigNumber
+  toAmount: BigNumber
 ) {
   const marketsByTokens = getMarketsByTokens(marketsData);
 
@@ -111,7 +113,7 @@ export function getSwapPath(
   const theSameMarketSwap = initialMarkets.find((market) => {
     return (
       [market.longTokenAddress, market.shortTokenAddress].includes(toToken) &&
-      getTokenPoolAmount(marketsData, poolsData, market.marketTokenAddress, toToken)?.gt(amountUsd)
+      getTokenPoolAmount(marketsData, poolsData, market.marketTokenAddress, toToken)?.gt(toAmount)
     );
   });
 
@@ -119,7 +121,7 @@ export function getSwapPath(
     return [theSameMarketSwap.marketTokenAddress];
   }
 
-  const targetMarkets = filterMarketsByLiquidity(marketsData, poolsData, marketsByTokens[toToken], toToken, amountUsd);
+  const targetMarkets = filterMarketsByLiquidity(marketsData, poolsData, marketsByTokens[toToken], toToken, toAmount);
 
   let intercetedInitialMarket;
   let intercetedTargetMarket;

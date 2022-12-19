@@ -1,77 +1,76 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
-import { SWRConfig } from "swr";
-import { ethers } from "ethers";
-import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
+import { useWeb3React, Web3ReactProvider } from "@web3-react/core";
+import { ethers } from "ethers";
 import useScrollToTop from "lib/useScrollToTop";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { SWRConfig } from "swr";
 
-import { Switch, Route, HashRouter as Router, Redirect, useLocation, useHistory } from "react-router-dom";
+import { HashRouter as Router, Redirect, Route, Switch, useHistory, useLocation } from "react-router-dom";
 
 import {
-  DEFAULT_SLIPPAGE_AMOUNT,
   BASIS_POINTS_DIVISOR,
+  DEFAULT_SLIPPAGE_AMOUNT,
   getAppBaseUrl,
   isHomeSite,
   isMobileDevice,
   REFERRAL_CODE_QUERY_PARAM,
 } from "lib/legacy";
 
-import Home from "pages/Home/Home";
+import Actions from "pages/Actions/Actions";
+import BeginAccountTransfer from "pages/BeginAccountTransfer/BeginAccountTransfer";
+import Buy from "pages/Buy/Buy";
+import BuyGlp from "pages/BuyGlp/BuyGlp";
+import BuyGMX from "pages/BuyGMX/BuyGMX";
+import ClaimEsGmx from "pages/ClaimEsGmx/ClaimEsGmx";
+import CompleteAccountTransfer from "pages/CompleteAccountTransfer/CompleteAccountTransfer";
 import Dashboard from "pages/Dashboard/Dashboard";
 import Ecosystem from "pages/Ecosystem/Ecosystem";
-import Stake from "pages/Stake/Stake";
 import { Exchange } from "pages/Exchange/Exchange";
-import Actions from "pages/Actions/Actions";
+import Home from "pages/Home/Home";
+import NftWallet from "pages/NftWallet/NftWallet";
 import OrdersOverview from "pages/OrdersOverview/OrdersOverview";
 import PositionsOverview from "pages/PositionsOverview/PositionsOverview";
 import Referrals from "pages/Referrals/Referrals";
-import BuyGlp from "pages/BuyGlp/BuyGlp";
-import BuyGMX from "pages/BuyGMX/BuyGMX";
-import Buy from "pages/Buy/Buy";
-import NftWallet from "pages/NftWallet/NftWallet";
-import ClaimEsGmx from "pages/ClaimEsGmx/ClaimEsGmx";
-import BeginAccountTransfer from "pages/BeginAccountTransfer/BeginAccountTransfer";
-import CompleteAccountTransfer from "pages/CompleteAccountTransfer/CompleteAccountTransfer";
+import Stake from "pages/Stake/Stake";
 
+import Checkbox from "components/Checkbox/Checkbox";
+import Modal from "components/Modal/Modal";
 import { cssTransition, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Modal from "components/Modal/Modal";
-import Checkbox from "components/Checkbox/Checkbox";
 
-import "styles/Shared.css";
 import "styles/Font.css";
-import "./App.scss";
 import "styles/Input.css";
+import "styles/Shared.css";
+import "./App.scss";
 
-import metamaskImg from "img/metamask.png";
-import coinbaseImg from "img/coinbaseWallet.png";
-import walletConnectImg from "img/walletconnect-circle-blue.svg";
-import useEventToast from "components/EventToast/useEventToast";
-import EventToastContainer from "components/EventToast/EventToastContainer";
 import SEO from "components/Common/SEO";
+import EventToastContainer from "components/EventToast/EventToastContainer";
+import useEventToast from "components/EventToast/useEventToast";
+import { decodeReferralCode, encodeReferralCode } from "domain/referrals";
+import coinbaseImg from "img/coinbaseWallet.png";
+import metamaskImg from "img/metamask.png";
+import walletConnectImg from "img/walletconnect-circle-blue.svg";
 import useRouteQuery from "lib/useRouteQuery";
-import { encodeReferralCode, decodeReferralCode } from "domain/referrals";
 
-import { getContract } from "config/contracts";
+import PositionRouter from "abis/PositionRouter.json";
 import VaultV2 from "abis/VaultV2.json";
 import VaultV2b from "abis/VaultV2b.json";
-import PositionRouter from "abis/PositionRouter.json";
+import { RedirectPopupModal } from "components/ModalViews/RedirectModal";
+import { getContract } from "config/contracts";
+import { REDIRECT_POPUP_TIMESTAMP_KEY } from "config/localStorage";
+import Jobs from "pages/Jobs/Jobs";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
 import ReferralTerms from "pages/ReferralTerms/ReferralTerms";
 import TermsAndConditions from "pages/TermsAndConditions/TermsAndConditions";
 import { useLocalStorage } from "react-use";
-import { RedirectPopupModal } from "components/ModalViews/RedirectModal";
-import { REDIRECT_POPUP_TIMESTAMP_KEY } from "config/localStorage";
-import Jobs from "pages/Jobs/Jobs";
 
 import { i18n } from "@lingui/core";
+import { t, Trans } from "@lingui/macro";
 import { I18nProvider } from "@lingui/react";
-import { Trans, t } from "@lingui/macro";
-import { defaultLocale, dynamicActivate } from "lib/i18n";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import { Header } from "components/Header/Header";
-import { ARBITRUM, AVALANCHE, getAlchemyWsUrl, getExplorerUrl } from "config/chains";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { helperToast } from "lib/helperToast";
+import { ARBITRUM, getExplorerUrl } from "config/chains";
+import { isDevelopment } from "config/env";
 import {
   CURRENT_PROVIDER_LOCALSTORAGE_KEY,
   DISABLE_ORDER_VALIDATION_KEY,
@@ -83,6 +82,10 @@ import {
   SHOW_PNL_AFTER_FEES_KEY,
   SLIPPAGE_BPS_KEY,
 } from "config/localStorage";
+import { useChainId } from "lib/chains";
+import { helperToast } from "lib/helperToast";
+import { defaultLocale, dynamicActivate } from "lib/i18n";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   activateInjectedProvider,
   clearWalletConnectData,
@@ -95,11 +98,10 @@ import {
   useHandleUnsupportedNetwork,
   useInactiveListener,
 } from "lib/wallets";
-import { useChainId } from "lib/chains";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import { SyntheticsPoolsPage } from "pages/SyntheticsPoolsPage/SyntheticsPoolsPage";
-import { isDevelopment } from "config/env";
 import { SyntheticsTradePage } from "pages/SyntheticsTradePage/SyntheticsTradePage";
+import { getWsProvider } from "lib/rpc";
+import { ContractEventsProvider } from "lib/contracts";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -118,24 +120,6 @@ const Zoom = cssTransition({
   collapseDuration: 200,
   duration: 200,
 });
-
-const arbWsProvider = new ethers.providers.WebSocketProvider(getAlchemyWsUrl());
-
-const avaxWsProvider = new ethers.providers.JsonRpcProvider("https://api.avax.network/ext/bc/C/rpc");
-avaxWsProvider.pollingInterval = 2000;
-
-function getWsProvider(active, chainId) {
-  if (!active) {
-    return;
-  }
-  if (chainId === ARBITRUM) {
-    return arbWsProvider;
-  }
-
-  if (chainId === AVALANCHE) {
-    return avaxWsProvider;
-  }
-}
 
 function FullApp() {
   const isHome = isHomeSite();
@@ -659,13 +643,15 @@ function App() {
   return (
     <SWRConfig value={{ refreshInterval: 5000 }}>
       <Web3ReactProvider getLibrary={getLibrary}>
-        <SEO>
-          <Router>
-            <I18nProvider i18n={i18n}>
-              <FullApp />
-            </I18nProvider>
-          </Router>
-        </SEO>
+        <ContractEventsProvider>
+          <SEO>
+            <Router>
+              <I18nProvider i18n={i18n}>
+                <FullApp />
+              </I18nProvider>
+            </Router>
+          </SEO>
+        </ContractEventsProvider>
       </Web3ReactProvider>
     </SWRConfig>
   );
