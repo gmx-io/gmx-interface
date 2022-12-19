@@ -6,10 +6,17 @@ import simpleSwapIcon from "img/ic_simpleswaps.svg";
 import costIcon from "img/ic_cost.svg";
 import liquidityIcon from "img/ic_liquidity.svg";
 import totaluserIcon from "img/ic_totaluser.svg";
+import asurasLogo from "./HomepageAssets/asurasLogo.svg";
+import ethLogo from './HomepageAssets/eth_icon.png'
+import wbtcLogo from './HomepageAssets/wbtc_icon.png'
+import usdcLogo from './HomepageAssets/usd-coin.png'
+import usdtLogo from './HomepageAssets/tether-logo.png'
+import daiLogo from './HomepageAssets/dai-logo.png'
+import alpLogo from './HomepageAssets/ALP.svg'
+import asrLogo from './HomepageAssets/ASR.svg'
 
 import arbitrumIcon from "img/ic_arbitrum_96.svg";
-import avaIcon from "img/ic_avalanche_96.svg";
-
+import ecosystemScreen from "./HomepageAssets/ecosystem.svg";
 import statsIcon from "img/ic_stats.svg";
 import tradingIcon from "img/ic_trading.svg";
 
@@ -18,15 +25,18 @@ import useSWR from "swr";
 import { USD_DECIMALS, getTotalVolumeSum } from "lib/legacy";
 
 import { useUserStat } from "domain/legacy";
-
+import artwork from "./HomepageAssets/Artwork_ASURAS.svg"
 import TokenCard from "components/TokenCard/TokenCard";
 import { Trans } from "@lingui/macro";
 import { HeaderLink } from "components/Header/HeaderLink";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { getServerUrl } from "config/backend";
 import { bigNumberify, formatAmount, numberWithCommas } from "lib/numbers";
+import { GradientButton } from "components/LandingPageComponents/BlueButtonComponents/BlueButtonComponent";
+import { Header } from "components/Header/Header";
 
 export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
+
   // const [openedFAQIndex, setOpenedFAQIndex] = useState(null)
   // const faqContent = [{
   //   id: 1,
@@ -138,189 +148,262 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
 
   return (
     <div className="Home">
-      <div className="Home-top">
-        {/* <div className="Home-top-image"></div> */}
-        <div className="Home-title-section-container default-container">
-          <div className="Home-title-section">
-            <div className="Home-title">
-              <Trans>
-                Decentralized
-                <br />
-                Perpetual Exchange
-              </Trans>
+      <div className="asset-img">
+      <Header />
+        <div className="home-wrapper">              
+          <div className="content-wrapper">
+          <div className="content-text-wrapper">
+              <p className="content-text">
+                <span className="text-blue">Decentralized</span>
+                <br/>Spot & Perpetual Exchange
+              </p>
             </div>
-            <div className="Home-description">
-              <Trans>
-                Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet
-              </Trans>
+            <p className="text-blue">No price impact, reduced liquidation   <br/>risks and up to 30x leverage.</p>
+            <div className="content-footer">  
+              <div className="button-wrapper">   
+                <GradientButton >
+                  LAUNCH APP
+                </GradientButton>
+                <span className="learn-more">Learn more {">"}</span>
+              </div>
+              <div className="footer-content">
+                <span className="live-on-arbitrum">LIVE ON
+                  <img className="arbitrum-icon" src={arbitrumIcon} width={30}/>
+                  ARBITRUM</span>
+              </div>
+              <div className="button-wrapper">   
+                <GradientButton bgColor="none" boderColor="#00b4c9ff">
+                  BUY ASR
+                </GradientButton>
+                <span className="learn-more">Our Token Sale is Live!</span>
+              </div>
             </div>
-            <LaunchExchangeButton />
+            
           </div>
+          <div className="main-page-empty-block">
+            
+            </div>
         </div>
-        <div className="Home-latest-info-container default-container">
-          <div className="Home-latest-info-block">
-            <img src={tradingIcon} alt="Total Trading Volume Icon" className="Home-latest-info__icon" />
-            <div className="Home-latest-info-content">
-              <div className="Home-latest-info__title">
-                <Trans>Total Trading Volume</Trans>
-              </div>
-              <div className="Home-latest-info__value">${formatAmount(totalVolumeSum, USD_DECIMALS, 0, true)}</div>
+      <div className="home-stats-wrapper">
+        <div className="dex-stats-wrapper">
+          <div className="stat-wrapper">
+          <img src={tradingIcon} width={60}/>
+            <div className="stat-content-wrapper">
+              <h1 className="stat-content-heading">Total Trading Volume</h1>
+              <p  className="stat-content-values">$88,802,522</p>
             </div>
           </div>
-          <div className="Home-latest-info-block">
-            <img src={statsIcon} alt="Open Interest Icon" className="Home-latest-info__icon" />
-            <div className="Home-latest-info-content">
-              <div className="Home-latest-info__title">
-                <Trans>Open Interest</Trans>
-              </div>
-              <div className="Home-latest-info__value">${formatAmount(openInterest, USD_DECIMALS, 0, true)}</div>
+          <div className="stat-wrapper">
+          <img src={statsIcon} width={60}/>
+            <div className="stat-content-wrapper">
+              <h1 className="stat-content-heading">Open Interest</h1>
+              <p  className="stat-content-values">$36,583,458</p>
             </div>
           </div>
-          <div className="Home-latest-info-block">
-            <img src={totaluserIcon} alt="Total Users Icon" className="Home-latest-info__icon" />
-            <div className="Home-latest-info-content">
-              <div className="Home-latest-info__title">
-                <Trans>Total Users</Trans>
-              </div>
-              <div className="Home-latest-info__value">{numberWithCommas(totalUsers.toFixed(0))}</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="Home-benefits-section">
-        <div className="Home-benefits default-container">
-          <div className="Home-benefit">
-            <div className="Home-benefit-icon">
-              <img src={liquidityIcon} alt="Reduce Liquidation Risks Icon" className="Home-benefit-icon-symbol" />
-              <div className="Home-benefit-title">
-                <Trans>Reduce Liquidation Risks</Trans>
-              </div>
-            </div>
-            <div className="Home-benefit-description">
-              <Trans>
-                An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe
-                from temporary wicks.
-              </Trans>
-            </div>
-          </div>
-          <div className="Home-benefit">
-            <div className="Home-benefit-icon">
-              <img src={costIcon} alt="Save on Costs Icon" className="Home-benefit-icon-symbol" />
-              <div className="Home-benefit-title">
-                <Trans>Save on Costs</Trans>
-              </div>
-            </div>
-            <div className="Home-benefit-description">
-              <Trans>
-                Enter and exit positions with minimal spread and zero price impact. Get the optimal price without
-                incurring additional costs.
-              </Trans>
-            </div>
-          </div>
-          <div className="Home-benefit">
-            <div className="Home-benefit-icon">
-              <img src={simpleSwapIcon} alt="Simple Swaps Icon" className="Home-benefit-icon-symbol" />
-              <div className="Home-benefit-title">
-                <Trans>Simple Swaps</Trans>
-              </div>
-            </div>
-            <div className="Home-benefit-description">
-              <Trans>
-                Open positions through a simple swap interface. Conveniently swap from any supported asset into the
-                position of your choice.
-              </Trans>
+          <div className="stat-wrapper">
+          <img src={totaluserIcon} width={60}/>
+            <div className="stat-content-wrapper">
+              <h1 className="stat-content-heading">Total Users</h1>
+              <p  className="stat-content-values">177,924</p>
             </div>
           </div>
         </div>
       </div>
-      <div className="Home-cta-section">
-        <div className="Home-cta-container default-container">
-          <div className="Home-cta-info">
-            <div className="Home-cta-info__title">
-              <Trans>Available on your preferred network</Trans>
-            </div>
-            <div className="Home-cta-info__description">
-              <Trans>GMX is currently live on Arbitrum and Avalanche.</Trans>
+      </div>
+      <div className="main-stats-wrapper"> 
+        <div className="main-stats">
+          <div className="main-stat">        
+             <img className="main-stat-icon" src={liquidityIcon} />
+            <div className="main-stat-content-wrapper">
+              <h1 className="main-stat-heading">Reduced Liquidation Risks</h1>
+              <p className="main-stat-text">An aggregate of high-quality price
+              feeds determine when liquidations
+              occur. This keeps positions safe
+              from temporary wicks.
+              </p>
             </div>
           </div>
-          <div className="Home-cta-options">
-            <div className="Home-cta-option Home-cta-option-arbitrum">
-              <div className="Home-cta-option-icon">
-                <img src={arbitrumIcon} alt="Arbitrum Icon" />
+          <div className="main-stat">
+            <img className="main-stat-icon" src={costIcon} />
+            <div className="main-stat-content-wrapper">
+              <h1 className="main-stat-heading">Low Costs</h1>
+              <p className="main-stat-text">Enter and exit positions with
+              minimal spread and zero price
+              impact. Get the optimal price
+              without incurring additional costs.
+              </p>
+            </div>
+          </div>
+          <div className="main-stat">      
+            <img className="main-stat-icon" src={simpleSwapIcon} />
+            <div className="main-stat-content-wrapper">
+              <h1 className="main-stat-heading">Simple Swaps</h1>
+              <p className="main-stat-text">Open positions through a simple
+              swap interface. Conveniently swap
+              from any supported asset into the
+              position of your choice.
+            </p>
+           </div>
+          </div>
+        </div>
+      </div>
+      <div className="lower-content-wrapper">
+        <div className="supported-network-text">
+          <h2 className="currencies-block">    
+            <p className="supported-network-p">Networks & Currencies</p>
+          </h2>
+        </div>
+      </div>
+      <div className="start-trading-wrapper">
+          <img src={arbitrumIcon} />
+          <div className="start-trading">
+            <p className="arbitrum-text">ARBITRUM</p>
+            <GradientButton fontWeight="900" fontSize="26px" >
+              LAUNCH APP
+            </GradientButton>
+          </div>
+        </div>
+      <div className="tokens-list">
+       <div className="token-item">
+          <img src={ethLogo} width={60}/>
+          <div className="token-info">
+            <p className="token-symbol">ETH</p>
+            <h1 className="token-name">Ethereum</h1>
+          </div>
+       </div>
+       <div className="token-item">
+          <div className="wbtc-bg">
+            <img src={wbtcLogo} width={60}/>
+          </div>
+          <div className="token-info">
+            <p className="token-symbol">WBTC</p>
+            <h1 className="token-name">Wrapped Bitcoin</h1>
+          </div>
+        </div>
+        <div className="token-item">
+          <img src={usdcLogo} width={60}/>
+          <div className="token-info">
+            <p className="token-symbol">USDC</p>
+            <h1 className="token-name">USD Coin</h1>
+          </div>
+       </div>
+       <div className="token-item">
+          <img src={usdtLogo} width={60}/>
+          <div className="token-info">
+            <p className="token-symbol">USDT</p>
+            <h1 className="token-name">Tether</h1>
+          </div>
+        </div>
+        <div className="token-item">
+          <img src={daiLogo} width={60}/>
+          <div className="token-info">
+            <p className="token-symbol">DAI</p>
+            <h1 className="token-name">Dai</h1>
+          </div>
+       </div>
+      </div>
+      <div>
+        <h2 className="our-tokens">Our Tokens</h2>
+        <div className="cards-wrapper">
+          <div className="asr-card">
+            <div className="asr-logo">
+              <img src={asrLogo} width={200}/>
+            </div>
+            <h4 className="header-text">ASR is the utility and governance token token. </h4>
+            <div className="asr-token-data-wrapper">
+              <div className="asr-token-data">
+                <ul>
+                  <li>
+                    Accrues 30% of the platform's generated net fees.
+                  </li>
+                  <li>
+                    ASR stakers will earn rewards in the form of <br/>
+                    esASR (Escrowed ASR). 
+                  </li>
+                  <li>
+                    Govern the ASURAS DAO
+                  </li>
+                  <li>
+                    The max supply is 21 million ASR which is the total amount of tokens
+                    that can be ever used to bootstrap the platform.
+                  </li>            
+                </ul>
               </div>
-              <div className="Home-cta-option-info">
-                <div className="Home-cta-option-title">Arbitrum</div>
-                <div className="Home-cta-option-action">
-                  <LaunchExchangeButton />
+            </div>
+            <div className="alp-content-wrapper">
+              <div className="asr-earnings">
+                <div>
+                  <h3>APR:</h3>
+                  <p className="text-green">10.51%</p>
                 </div>
+                <div>
+                  <h3>Total Earned:</h3>
+                  <p className="text-green">$10,458</p>
+                </div>              
+              </div>
+              <div className="buy-asr">
+                <GradientButton fontSize="26px" fontWeight="bold" padding="1.5rem 10rem">
+                  Buy ASR
+                </GradientButton>  
+                <span  className="learn-more">Learn more {">"}</span>
+              </div>             
+            </div>
+            <p className="asr-footer-text">ASR's price is entirely speculative.</p>
+          </div>
+          <div className="asr-card">
+            <div className="asr-logo">
+              <img src={alpLogo} width={200}/>
+            </div>
+            <h4 className="header-text">ALP is “ASURAS Liquidity Pool” token with no impermanent loss. </h4>
+            <div className="asr-token-data-wrapper">
+              <div className="asr-token-data">
+                <ul>
+                  <li>
+                    Accrues 70% of the platform's generated net fees.
+                  </li>
+                  <li>
+                    Makes a profit when leverage traders make a loss and vice versa.
+                  </li>
+                  <li>
+                    An index token with price exposure to the assets used on the
+                    platform.
+                  </li>            
+                  <li>
+                    ALP holders will earn rewards in the form of <br/>
+                    esASR (Escrowed ASR).
+                  </li>      
+                </ul>
               </div>
             </div>
-            <div className="Home-cta-option Home-cta-option-ava">
-              <div className="Home-cta-option-icon">
-                <img src={avaIcon} alt="Avalanche Icon" />
-              </div>
-              <div className="Home-cta-option-info">
-                <div className="Home-cta-option-title">Avalanche</div>
-                <div className="Home-cta-option-action">
-                  <LaunchExchangeButton />
+            <div className="asr-content-wrapper">
+              <div className="asr-earnings">
+                <div>
+                  <h3>APR:</h3>
+                  <p className="text-green">19.91%</p>
                 </div>
+                <div>
+                  <h3>Total Earned:</h3>
+                  <p className="text-green">$22,858</p>
+                </div>              
               </div>
+              <div className="buy-alp">
+                <GradientButton fontSize="26px" fontWeight="bold" padding="1.5rem 10rem" >
+                    Buy ALP
+                </GradientButton>  
+                <span  className="learn-more">Learn more {">"}</span>
+              </div>             
             </div>
+            <p className="alp-footer-text">ALP's price depends on the prices of tokens that are indexed..</p>
           </div>
         </div>
+        <div>
+          <h2 className="ecosystem-heading">The Ecosystem</h2>
+          <div className="ecosystem-screen-wrapper">
+            <img className="ecosystem-screen" src={ecosystemScreen}/>
+          </div>
+        </div>
+       <Footer />
       </div>
-      <div className="Home-token-card-section">
-        <div className="Home-token-card-container default-container">
-          <div className="Home-token-card-info">
-            <div className="Home-token-card-info__title">
-              <Trans>Two tokens create our ecosystem</Trans>
-            </div>
-          </div>
-          <TokenCard showRedirectModal={showRedirectModal} redirectPopupTimestamp={redirectPopupTimestamp} />
-        </div>
-      </div>
-
-      {/* <div className="Home-video-section">
-        <div className="Home-video-container default-container">
-          <div className="Home-video-block">
-            <img src={gmxBigIcon} alt="gmxbig" />
-          </div>
-        </div>
-      </div> */}
-      {/* <div className="Home-faqs-section">
-        <div className="Home-faqs-container default-container">
-          <div className="Home-faqs-introduction">
-            <div className="Home-faqs-introduction__title">FAQs</div>
-            <div className="Home-faqs-introduction__description">Most asked questions. If you wish to learn more, please head to our Documentation page.</div>
-            <a href="https://gmxio.gitbook.io/gmx/" className="default-btn Home-faqs-documentation">Documentation</a>
-          </div>
-          <div className="Home-faqs-content-block">
-            {
-              faqContent.map((content, index) => (
-                <div className="Home-faqs-content" key={index} onClick={() => toggleFAQContent(index)}>
-                  <div className="Home-faqs-content-header">
-                    <div className="Home-faqs-content-header__icon">
-                      {
-                        openedFAQIndex === index ? <FiMinus className="opened" /> : <FiPlus className="closed" />
-                      }
-                    </div>
-                    <div className="Home-faqs-content-header__text">
-                      { content.question }
-                    </div>
-                  </div>
-                  <div className={ openedFAQIndex === index ? "Home-faqs-content-main opened" : "Home-faqs-content-main" }>
-                    <div className="Home-faqs-content-main__text">
-                      <div dangerouslySetInnerHTML={{__html: content.answer}} >
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))
-            }
-          </div>
-        </div>
-      </div> */}
-      <Footer showRedirectModal={showRedirectModal} redirectPopupTimestamp={redirectPopupTimestamp} />
     </div>
   );
 }

@@ -1,14 +1,11 @@
 .Footer-wrapper {
   text-align: center;
-  padding-top: 4rem;
-  background: #16182e;
+  padding-top: 1rem;
+  background: #05101dff;
   width: 100vw;
-  position: absolute;
-  transform: translateX(-50%);
-  left: 50%;
-  height: 20rem;
+  height: 22rem;
   bottom: 0;
-  border-top: 1px solid #282b4c;
+
 }
 
 .Footer-logo {
@@ -26,7 +23,7 @@
   margin: 0 auto;
   display: flex;
   justify-content: center;
-  margin-bottom: 2.4rem;
+  margin-bottom: 2rem;
 }
 .Footer-link {
   color: #a0a3c4;
@@ -66,7 +63,7 @@
   display: block;
 }
 .Footer-links {
-  padding-bottom: 4rem;
+  margin-bottom: 2rem;
   display: flex;
   justify-content: center;
 }

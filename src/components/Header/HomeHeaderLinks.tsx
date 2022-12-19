@@ -18,24 +18,24 @@ type HomeLink = { label: string; link: string; isHomeLink?: boolean | false };
 
 const HOME_MENUS: HomeLink[] = [
   {
-    label: t`App`,
+    label: t`Market`,
     isHomeLink: true,
     link: "/trade",
   },
   {
-    label: t`Protocol`,
+    label: t`GOVERNANCE`,
     link: "https://github.com/gmx-io",
   },
   {
-    label: t`Governance`,
+    label: t`VOTING`,
     link: "https://gov.gmx.io/",
   },
   {
-    label: t`Voting`,
+    label: t`PRESALE`,
     link: "https://snapshot.org/#/gmx.eth",
   },
   {
-    label: t`Docs`,
+    label: t`MORE`,
     link: "https://gmxio.gitbook.io/gmx/",
   },
 ];
@@ -53,6 +53,7 @@ export function HomeHeaderLinks({ small, clickCloseIcon, redirectPopupTimestamp,
             onClick={() => clickCloseIcon && clickCloseIcon()}
           >
             <FiX className="App-header-menu-icon" />
+            
           </div>
         </div>
       )}

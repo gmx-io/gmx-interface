@@ -6,7 +6,7 @@ import { NavLink } from "react-router-dom";
 import { isHomeSite, getAppBaseUrl, shouldShowRedirectModal } from "lib/legacy";
 import { FOOTER_LINKS, SOCIAL_LINKS } from "./constants";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-
+import asurasLogo from "../../pages/Home/HomepageAssets/asurasLogo.svg"
 type Props = { showRedirectModal?: (to: string) => void; redirectPopupTimestamp?: () => void };
 
 export default function Footer({ showRedirectModal, redirectPopupTimestamp }: Props) {
@@ -15,9 +15,9 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp }: Pr
   return (
     <div className="Footer">
       <div className={cx("Footer-wrapper", { home: isHome })}>
-        <div className="Footer-logo">
-          <img src={logoImg} alt="MetaMask" />
-        </div>
+         <div className="asuras-logo-wrapper">
+              <img className="asuras-footer-logo" src={asurasLogo}/>
+          </div>
         <div className="Footer-social-link-block">
           {SOCIAL_LINKS.map((platform) => {
             return (
