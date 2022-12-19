@@ -176,7 +176,7 @@ export const TRANSFER_EXCHANGES: Exchange[] = [
     name: "Across",
     icon: "ic_across.svg",
     networks: [ARBITRUM],
-    link: "https://across.to/bridge?from=1&to=42161&asset=ETH&amount=1",
+    link: "https://across.to/bridge?from=1&to=42161&asset=ETH",
   },
 ];
 
