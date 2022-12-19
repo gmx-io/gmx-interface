@@ -1,12 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
-
 .header-wrapper {
   display: flex;
   justify-content: space-around;
   align-items: center;
   height: 30rem;
-  font-family: 'Montserrat';
 }
+
 .logo-wrapper{
   width: 35rem;
   height: 15rem;
@@ -41,5 +39,5 @@
   padding-left: 3.5rem;
 }
 .launch-dapp-btn {
-  margin-right: 11rem;
+  margin-right: 12rem;
 }

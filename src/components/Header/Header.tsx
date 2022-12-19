@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import asurasLogo from "./HeaderAssets/asurasLogo.png";
 
-
 import "./Header.css";
 import { GradientButton } from "components/LandingPageComponents/BlueButtonComponents/BlueButtonComponent";
-
 
 export function Header() {
 

@@ -1,4 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
+@font-face {
+  font-family: "Montserrat";
+  src: url("../../fonts/Montserrat/static/Montserrat-Medium.ttf");
+  font-weight: bold;
+}
 
 .Home {
   min-height: 100vh;

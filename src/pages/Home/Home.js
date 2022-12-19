@@ -2,10 +2,10 @@ import React from "react";
 import Footer from "components/Footer/Footer";
 import "./Home.css";
 
-import simpleSwapIcon from "img/ic_simpleswaps.svg";
-import costIcon from "img/ic_cost.svg";
-import liquidityIcon from "img/ic_liquidity.svg";
-import totaluserIcon from "img/ic_totaluser.svg";
+import simpleSwapIcon from "./HomepageAssets/Swap.svg";
+import costIcon from "./HomepageAssets/SaveCosts.svg";
+import liquidityIcon from "./HomepageAssets/Liquidity.svg";
+import totaluserIcon from "./HomepageAssets/User.svg";
 import asurasLogo from "./HomepageAssets/asurasLogo.svg";
 import ethLogo from './HomepageAssets/eth_icon.png'
 import wbtcLogo from './HomepageAssets/wbtc_icon.png'
@@ -17,8 +17,8 @@ import asrLogo from './HomepageAssets/ASR.svg'
 
 import arbitrumIcon from "img/ic_arbitrum_96.svg";
 import ecosystemScreen from "./HomepageAssets/ecosystem.svg";
-import statsIcon from "img/ic_stats.svg";
-import tradingIcon from "img/ic_trading.svg";
+import statsIcon from "./HomepageAssets/OpenInterest.svg";
+import tradingIcon from "./HomepageAssets/Trading.svg";
 
 import useSWR from "swr";
 
@@ -34,6 +34,7 @@ import { getServerUrl } from "config/backend";
 import { bigNumberify, formatAmount, numberWithCommas } from "lib/numbers";
 import { GradientButton } from "components/LandingPageComponents/BlueButtonComponents/BlueButtonComponent";
 import { Header } from "components/Header/Header";
+import { Redirect } from "react-router-dom";
 
 export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
 
