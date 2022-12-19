@@ -313,9 +313,12 @@ export default function PositionsList(props) {
                                   label={t`Borrow Fee / Day`}
                                   value={`-$${borrowFeeUSD}`}
                                 />
-                                <span>
-                                  <Trans>Use the Edit Collateral icon to deposit or withdraw collateral.</Trans>
-                                </span>
+
+                                {!hideActions && (
+                                  <span>
+                                    <Trans>Use the Edit Collateral icon to deposit or withdraw collateral.</Trans>
+                                  </span>
+                                )}
                               </>
                             );
                           }}
