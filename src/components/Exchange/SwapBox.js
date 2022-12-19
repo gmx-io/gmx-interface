@@ -1188,7 +1188,7 @@ export default function SwapBox(props) {
           return t`High USDG Slippage, Long Anyway`;
         }
       }
-      return t`Long ${toToken.symbol}`;
+      return t`toToken.symbol}`;
     }
 
     return t`Short ${toToken.symbol}`;

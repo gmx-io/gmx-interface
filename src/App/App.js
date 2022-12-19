@@ -339,6 +339,7 @@ function FullApp() {
     setSelectedToPage(to);
   };
 
+  console.log('isHome',isHome)
   useEffect(() => {
     const checkPendingTxns = async () => {
       const updatedPendingTxns = [];
@@ -436,13 +437,17 @@ function FullApp() {
     <>
       <div className="App">
         <div className="App-content">
-          {/* <Header
+          {!isHome && (
+            <Header
             disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
             openSettings={openSettings}
             setWalletModalVisible={setWalletModalVisible}
             redirectPopupTimestamp={redirectPopupTimestamp}
             showRedirectModal={showRedirectModal}
-          /> */}
+            isHome={isHome}
+          />
+          )}
+          
           {isHome && (
             <Switch>
               <Route exact path="/">

@@ -39,6 +39,77 @@
   padding-left: 3.5rem;
   text-decoration: none;
 }
+
 .launch-dapp-btn {
   margin-right: 12rem;
 } 
+
+@media (max-width: 1440px) { 
+
+  .header-wrapper {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 15rem;
+  }
+  
+  .logo-wrapper{
+    width: 20rem;
+    height: 5rem;
+    margin-left: 10rem;
+  }
+  
+  .logo {
+    position: relative;
+    width: 40rem;
+    height: 30rem;
+    top: -12.5rem;
+    left: -11rem;
+  }
+  
+  .navbar-items {
+    display: flex;
+    justify-content: start;
+    flex-direction: row;
+    list-style-type: none;
+    font-size: 16px;
+    margin-right: 10rem;  
+  }
+  
+  .navbar-wrapper{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    width: 55%;
+  }
+  
+  .navbar-item {
+    text-align: center;
+    font-family: 'Montserrat';
+    padding-left: 3.5rem;
+    text-decoration: none;
+  }
+  .content-wrapper {
+  margin-left: 2rem;
+  }
+  .launch-dapp-btn {
+    margin-right: 6rem;
+  } 
+  
+  .asr-content-wrapper{
+    margin-left: -2rem;
+  }
+  .alp-content-wrapper{
+    margin-left: -2rem;
+  }
+  .supported-network-text{
+    margin-left: 3rem;
+  }
+  .our-tokens{
+    margin-left:12rem;
+  }
+  .ecosystem-heading{
+    margin-left:12rem;
+
+  }
+ }

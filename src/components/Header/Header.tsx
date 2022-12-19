@@ -8,7 +8,7 @@ import { HeaderLink } from "./HeaderLink";
 import { Trans } from "@lingui/react";
 import { getAppBaseUrl, getDashboardPageUrl, getHomeUrl, getTradePageUrl } from "lib/legacy";
 
-export function Header({redirectPopupTimestamp,showRedirectModal}) {
+export function Header({redirectPopupTimestamp,showRedirectModal, isHome}) {
 
   const LaunchExchangeButton = () => {
     return (
@@ -37,10 +37,12 @@ export function Header({redirectPopupTimestamp,showRedirectModal}) {
             <a onClick={() => alert('Page not ready')} className="navbar-item">EARN</a>
             <a onClick={() => alert('Page not ready')} className="navbar-item">BUY</a>
             <a href={getTradePageUrl()} className="navbar-item">MARKET</a>
-            <a onClick={() => alert('Page not ready')} className="navbar-item">MORE</a>
+            <a href={getAppBaseUrl()} className="navbar-item">MORE</a>
           </ul>
-        </div>        
-          <LaunchExchangeButton />        
+        </div>   
+        {!isHome && (
+          <LaunchExchangeButton />
+        )}     
       </header>
     </>
   );

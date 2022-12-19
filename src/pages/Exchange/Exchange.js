@@ -924,6 +924,7 @@ export const Exchange = forwardRef((props, ref) => {
   };
 
   return (
+    <div>
     <div className="Exchange page-layout">
       {showBanner && <ExchangeBanner hideBanner={hideBanner} />}
       <div className="Exchange-content">
@@ -987,7 +988,9 @@ export const Exchange = forwardRef((props, ref) => {
         </div>
         <div className="Exchange-lists small">{getListSection()}</div>
       </div>
-      <Footer />
+      
+    </div>
+    <Footer />
     </div>
   );
 });

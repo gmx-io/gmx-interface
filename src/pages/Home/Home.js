@@ -34,8 +34,7 @@ import { getServerUrl } from "config/backend";
 import { bigNumberify, formatAmount, numberWithCommas } from "lib/numbers";
 import { GradientButton } from "components/LandingPageComponents/BlueButtonComponents/BlueButtonComponent";
 import { Header } from "components/Header/Header";
-import { Redirect } from "react-router-dom";
-import { ethers } from "ethers";
+
 
 export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
 
@@ -309,7 +308,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
             <div className="asr-logo">
               <img src={asrLogo} width={200}/>
             </div>
-            <h4 className="header-text">ASR is the utility and governance token token. </h4>
+            <h4 className="header-text">ASR is the utility and governance token. </h4>
             <div className="asr-token-data-wrapper">
               <div className="asr-token-data">
                 <ul>

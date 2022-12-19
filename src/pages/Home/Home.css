@@ -9,7 +9,6 @@
   min-height: 100vh;
   background-color: #010610ff;
   width: 100%;
-
 }
 
 .home-page-asset-wrapper {
@@ -45,6 +44,7 @@
   justify-content: space-between;
   text-align: center;
   margin-top: 100px;
+  width: 80%;
 }
 
 .footer-content {
@@ -403,4 +403,73 @@ margin-left: 9rem;
 
 .main-page-empty-block {
   width: 30%;
+}
+
+@media (max-width: 1440px) { 
+
+  .content-text {
+    font-size: 36px;
+  }
+
+  .content-footer{
+    margin-top: 3rem;
+  }
+  
+  .live-on-arbitrum {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
+    font-weight: 900;
+    color: #6a80a1;
+    width: 40%;
+  }
+
+  .learn-more{
+    font-size: 14px;
+  }
+
+  .dex-stats-wrapper{
+    margin-top: 8rem;
+  }
+
+  .stat-wrapper {
+    background-color: #05101dff;
+    border-radius: 20px;
+    width: 20%;
+    height: 10rem;
+    display: flex;
+    justify-content: space-evenly;
+  }
+
+  .stat-content-heading{
+    font-size: 16px;
+  }
+
+  .stat-content-values{
+    font-size: 26px;
+  }
+
+  .asr-card {
+    font-size: 12px;
+  }
+
+  .tokens-list{
+    width: 100%;
+  }
+
+  .token-item{
+    margin-left:2%;
+  }
+
+  .asuras-footer-logo {
+    position: absolute;
+    bottom: 4rem;
+    width: 20%;
+   }
+   .content-wrapper{
+    padding-left: 0rem;
+
+   }
+  
 }
