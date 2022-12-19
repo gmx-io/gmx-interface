@@ -436,13 +436,13 @@ function FullApp() {
     <>
       <div className="App">
         <div className="App-content">
-          <Header
+          {/* <Header
             disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
             openSettings={openSettings}
             setWalletModalVisible={setWalletModalVisible}
             redirectPopupTimestamp={redirectPopupTimestamp}
             showRedirectModal={showRedirectModal}
-          />
+          /> */}
           {isHome && (
             <Switch>
               <Route exact path="/">
@@ -458,7 +458,7 @@ function FullApp() {
                 <PageNotFound />
               </Route>
             </Switch>
-          )}
+          )}          
           {!isHome && (
             <Switch>
               <Route exact path="/">

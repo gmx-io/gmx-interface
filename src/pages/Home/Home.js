@@ -16,8 +16,7 @@ import alpLogo from './HomepageAssets/ALP.svg'
 import asrLogo from './HomepageAssets/ASR.svg'
 
 import arbitrumIcon from "img/ic_arbitrum_96.svg";
-import avaIcon from "img/ic_avalanche_96.svg";
-import ecosystemScreen from "./HomepageAssets/ecosystem.png";
+import ecosystemScreen from "./HomepageAssets/ecosystem.svg";
 import statsIcon from "img/ic_stats.svg";
 import tradingIcon from "img/ic_trading.svg";
 
@@ -26,7 +25,7 @@ import useSWR from "swr";
 import { USD_DECIMALS, getTotalVolumeSum } from "lib/legacy";
 
 import { useUserStat } from "domain/legacy";
-import screen from "./HomepageAssets/screen.png"
+import artwork from "./HomepageAssets/Artwork_ASURAS.svg"
 import TokenCard from "components/TokenCard/TokenCard";
 import { Trans } from "@lingui/macro";
 import { HeaderLink } from "components/Header/HeaderLink";
@@ -34,8 +33,10 @@ import { ARBITRUM, AVALANCHE } from "config/chains";
 import { getServerUrl } from "config/backend";
 import { bigNumberify, formatAmount, numberWithCommas } from "lib/numbers";
 import { GradientButton } from "components/LandingPageComponents/BlueButtonComponents/BlueButtonComponent";
+import { Header } from "components/Header/Header";
 
 export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
+
   // const [openedFAQIndex, setOpenedFAQIndex] = useState(null)
   // const faqContent = [{
   //   id: 1,
@@ -147,34 +148,42 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
 
   return (
     <div className="Home">
-      <div className="home-wrapper">
-        <div className="content-wrapper">
-         <div className="content-text-wrapper">
-            <p className="content-text">
-              <span className="text-blue">Decentralized</span>
-              <br/>Spot & Perpetual Exchange
-            </p>
-          </div>
-          <p className="text-blue">No price impact, reduced liquidation   <br/>risks and up to 30x leverage.</p>
-          <div className="content-footer">  
-            <div className="button-wrapper">   
-              <GradientButton>
-                LAUNCH APP
-              </GradientButton>
-              <span className="learn-more">Learn more {">"}</span>
+      <div className="asset-img">
+      <Header />
+        <div className="home-wrapper">              
+          <div className="content-wrapper">
+          <div className="content-text-wrapper">
+              <p className="content-text">
+                <span className="text-blue">Decentralized</span>
+                <br/>Spot & Perpetual Exchange
+              </p>
             </div>
-            <div className="footer-content">
-              <span className="live-on-arbitrum">LIVE ON
-                <img src={arbitrumIcon} width={30}/>
-                 ARBITRUM</span>
+            <p className="text-blue">No price impact, reduced liquidation   <br/>risks and up to 30x leverage.</p>
+            <div className="content-footer">  
+              <div className="button-wrapper">   
+                <GradientButton >
+                  LAUNCH APP
+                </GradientButton>
+                <span className="learn-more">Learn more {">"}</span>
+              </div>
+              <div className="footer-content">
+                <span className="live-on-arbitrum">LIVE ON
+                  <img className="arbitrum-icon" src={arbitrumIcon} width={30}/>
+                  ARBITRUM</span>
+              </div>
+              <div className="button-wrapper">   
+                <GradientButton bgColor="none" boderColor="#00b4c9ff">
+                  BUY ASR
+                </GradientButton>
+                <span className="learn-more">Our Token Sale is Live!</span>
+              </div>
             </div>
+            
           </div>
+          <div className="main-page-empty-block">
+            
+            </div>
         </div>
-        
-        <div className="home-screenshot">  
-          <img className="img-screenshot" src={screen} />
-        </div>
-      </div>
       <div className="home-stats-wrapper">
         <div className="dex-stats-wrapper">
           <div className="stat-wrapper">
@@ -199,6 +208,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
             </div>
           </div>
         </div>
+      </div>
       </div>
       <div className="main-stats-wrapper"> 
         <div className="main-stats">
@@ -239,21 +249,20 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
       </div>
       <div className="lower-content-wrapper">
         <div className="supported-network-text">
-          <h2 className="currencies-block">
-            Supported
+          <h2 className="currencies-block">    
             <p className="supported-network-p">Networks & Currencies</p>
           </h2>
         </div>
-        <div className="start-trading-wrapper">
+      </div>
+      <div className="start-trading-wrapper">
           <img src={arbitrumIcon} />
           <div className="start-trading">
             <p className="arbitrum-text">ARBITRUM</p>
-            <GradientButton fontWeight="900" fontSize="26px" padding="2px 15px">
-              Launch app
+            <GradientButton fontWeight="900" fontSize="26px" >
+              LAUNCH APP
             </GradientButton>
           </div>
         </div>
-      </div>
       <div className="tokens-list">
        <div className="token-item">
           <img src={ethLogo} width={60}/>
@@ -312,6 +321,9 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
                     esASR (Escrowed ASR). 
                   </li>
                   <li>
+                    Govern the ASURAS DAO
+                  </li>
+                  <li>
                     The max supply is 21 million ASR which is the total amount of tokens
                     that can be ever used to bootstrap the platform.
                   </li>            
@@ -330,7 +342,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
                 </div>              
               </div>
               <div className="buy-asr">
-                <GradientButton fontSize="26px" fontWeight="bold" padding="0.5rem 8rem">
+                <GradientButton fontSize="26px" fontWeight="bold" padding="1.5rem 10rem">
                   Buy ASR
                 </GradientButton>  
                 <span  className="learn-more">Learn more {">"}</span>
@@ -375,7 +387,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
                 </div>              
               </div>
               <div className="buy-alp">
-                <GradientButton fontSize="26px" fontWeight="bold" padding="0.5rem 8rem">
+                <GradientButton fontSize="26px" fontWeight="bold" padding="1.5rem 10rem" >
                     Buy ALP
                 </GradientButton>  
                 <span  className="learn-more">Learn more {">"}</span>

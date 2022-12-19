@@ -24,9 +24,11 @@ export function Header() {
             <li className="navbar-item">MORE</li>
           </ul>
         </div>
+        <div className="launch-dapp-btn">
         <GradientButton >
           LAUNCH APP
         </GradientButton>
+        </div>
       </header>
     </>
   );
