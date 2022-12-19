@@ -7,10 +7,9 @@ type Props = {
   children: ReactNode;
   className?: string;
   tooltipText?: string;
-  footer?: React.ReactNode;
 };
 
-function Card({ title, children, className, tooltipText, footer }: Props) {
+function Card({ title, children, className, tooltipText }: Props) {
   return (
     <div className={`card ${className ? className : ""}`}>
       {tooltipText ? (
@@ -24,12 +23,6 @@ function Card({ title, children, className, tooltipText, footer }: Props) {
       )}
       <div className="card-divider"></div>
       <div className="card-body">{children}</div>
-      {footer && (
-        <>
-          <div className="card-divider" />
-          {footer}
-        </>
-      )}
     </div>
   );
 }

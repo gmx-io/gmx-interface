@@ -25,7 +25,9 @@ import { bigNumberify, formatAmount } from "lib/numbers";
 import { getNativeToken, getToken } from "config/tokens";
 import { formatDate } from "lib/dates";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import Pagination from "components/Pagination/Pagination";
 import usePagination from "./usePagination";
+import TransparentButton from "components/Buttons/TransparentButton";
 
 function AffiliatesStats({
   referralsData,
@@ -42,13 +44,7 @@ function AffiliatesStats({
   const close = () => setIsAddReferralCodeModalOpen(false);
 
   const { cumulativeStats, referrerTotalStats, rebateDistributions, referrerTierInfo } = referralsData;
-  const {
-    currentData: rebates,
-    onNextClick,
-    onPrevClick,
-    isNextEnabled,
-    isPrevEnabled,
-  } = usePagination(rebateDistributions, 10);
+  const { page, currentData, setPage, pageCount } = usePagination(rebateDistributions);
 
   const allReferralCodes = referrerTotalStats.map((c) => c.referralCode.trim());
   const finalAffiliatesTotalStats = useMemo(
@@ -112,12 +108,12 @@ function AffiliatesStats({
                   {referrerTierInfo && t`Tier ${getTierIdDisplay(tierId)} (${tierRebateInfo[tierId]}% rebate)`}
                 </span>
               </p>
-              <button className="transparent-btn" onClick={open}>
+              <TransparentButton onClick={open}>
                 <FiPlus />{" "}
                 <span className="ml-small">
                   <Trans>Create</Trans>
                 </span>
-              </button>
+              </TransparentButton>
             </div>
           }
         >
@@ -222,20 +218,7 @@ function AffiliatesStats({
       </div>
       {rebateDistributions?.length > 0 ? (
         <div className="reward-history">
-          <Card
-            title={t`Rewards Distribution History`}
-            tooltipText={t`Rewards are airdropped weekly.`}
-            footer={
-              <div className="card-footer">
-                <button className="App-button-option App-card-option" disabled={!isPrevEnabled()} onClick={onPrevClick}>
-                  Prev
-                </button>
-                <button className="App-button-option App-card-option" disabled={!isNextEnabled()} onClick={onNextClick}>
-                  Next
-                </button>
-              </div>
-            }
-          >
+          <Card title={t`Rewards Distribution History`} tooltipText={t`Rewards are airdropped weekly.`}>
             <div className="table-wrapper">
               <table className="referral-table">
                 <thead>
@@ -252,7 +235,7 @@ function AffiliatesStats({
                   </tr>
                 </thead>
                 <tbody>
-                  {rebates.map((rebate, index) => {
+                  {currentData.map((rebate, index) => {
                     let tokenInfo;
                     try {
                       tokenInfo = getToken(chainId, rebate.token);
@@ -280,6 +263,7 @@ function AffiliatesStats({
               </table>
             </div>
           </Card>
+          <Pagination page={page} pageCount={pageCount} onPageChange={(page) => setPage(page)} />
         </div>
       ) : (
         <EmptyMessage

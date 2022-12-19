@@ -23,8 +23,3 @@
 .card-body {
   padding: 1.5rem;
 }
-
-.card-footer {
-  display: flex;
-  justify-content: end;
-}
