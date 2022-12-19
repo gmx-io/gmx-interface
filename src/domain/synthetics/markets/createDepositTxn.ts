@@ -50,7 +50,8 @@ export function createDepositTxn(chainId: number, library: Web3Provider, p: Para
         receiver: p.account,
         callbackContract: ethers.constants.AddressZero,
         market: p.marketTokenAddress,
-        minMarketTokens: p.minMarketTokens,
+        // TODO: correct slippage
+        minMarketTokens: p.minMarketTokens?.div(2) || BigNumber.from(0),
         shouldUnwrapNativeToken: isNativeDeposit,
         executionFee: p.executionFee,
         callbackGasLimit: BigNumber.from(0),
