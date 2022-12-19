@@ -275,21 +275,6 @@ export const DECENTRALISED_AGGRIGATORS: Exchange[] = [
     networks: [AVALANCHE],
   },
   {
-    name: "Yieldyak",
-    icon: "ic_yield_yak.png",
-    link: `https://yieldyak.com/swap?outputCurrency=${AVALANCHE_GMX}`,
-    networks: [AVALANCHE],
-  },
-  {
-    name: "UniDex",
-    icon: "ic_unidex.png",
-    links: {
-      [ARBITRUM]: `https://app.unidex.exchange/trading/42161/0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee/${ARBITRUM_GMX}`,
-      [AVALANCHE]: `https://app.unidex.exchange/trading/43114/0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee/${AVALANCHE_GMX}`,
-    },
-    networks: [ARBITRUM, AVALANCHE],
-  },
-  {
     name: "Firebird",
     icon: "ic_firebird.png",
     link: "https://app.firebird.finance/swap",
