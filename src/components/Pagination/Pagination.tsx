@@ -1,5 +1,4 @@
 import TransparentButton from "components/Buttons/TransparentButton";
-import { ReactElement } from "react";
 import "./Pagination.css";
 
 type Props = {
@@ -8,46 +7,45 @@ type Props = {
   onPageChange: any;
 };
 
+function range(start, end) {
+  let length = end - start + 1;
+  return Array.from({ length }, (_, idx) => idx + start);
+}
+
+function getPageNumbers(current, max) {
+  if (max === 2) {
+    return [1, 2];
+  }
+  if (current <= 1) {
+    return range(current, current + 2);
+  }
+
+  if (current + 1 <= max) {
+    return range(current - 1, current + 1);
+  }
+
+  if (current <= max) {
+    return range(current - 2, current);
+  }
+  return [];
+}
+
 export default function Pagination({ page, pageCount, onPageChange }: Props) {
-  const middleButtons = () => {
-    const buttons: ReactElement[] = [];
-
-    let i = -1;
-    while (true) {
-      if (page + i < 1) {
-        i++;
-        continue;
-      }
-
-      if (page + i > pageCount) {
-        break;
-      }
-
-      let currentPage = page + i;
-
-      buttons.push(
-        <button
-          key={currentPage}
-          className={"pagination-btn" + (currentPage === page ? " active" : "")}
-          onClick={() => onPageChange(currentPage)}
-        >
-          {currentPage}
-        </button>
-      );
-
-      i++;
-
-      if (buttons.length === 3) {
-        break;
-      }
-    }
-
-    return buttons;
-  };
-
   if (pageCount <= 1) {
     return <></>;
   }
+
+  const middleButtons = getPageNumbers(page, pageCount).map((pageNumber) => {
+    return (
+      <button
+        key={pageNumber}
+        className={"pagination-btn" + (pageNumber === page ? " active" : "")}
+        onClick={() => onPageChange(pageNumber)}
+      >
+        {pageNumber}
+      </button>
+    );
+  });
 
   return (
     <div className="pagination">
@@ -58,7 +56,7 @@ export default function Pagination({ page, pageCount, onPageChange }: Props) {
         <TransparentButton onClick={() => onPageChange(page - 1)} disabled={page <= 1}>
           {"<"}
         </TransparentButton>
-        <div className="pagination-btn-middle">{middleButtons()}</div>
+        <div className="pagination-btn-middle">{middleButtons}</div>
         <TransparentButton onClick={() => onPageChange(page + 1)} disabled={page >= pageCount}>
           {">"}
         </TransparentButton>

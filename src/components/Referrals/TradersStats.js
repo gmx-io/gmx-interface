@@ -20,12 +20,7 @@ import Pagination from "components/Pagination/Pagination";
 function TradersStats({ referralsData, traderTier, chainId, userReferralCodeString, setPendingTxns, pendingTxns }) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const editModalRef = useRef(null);
-  const {
-    currentData: distributions,
-    page,
-    setPage,
-    pageCount,
-  } = usePagination(referralsData?.discountDistributions, 10);
+  const { currentData: distributions, page, setPage, pageCount } = usePagination(referralsData?.discountDistributions);
 
   const open = () => setIsEditModalOpen(true);
   const close = () => setIsEditModalOpen(false);

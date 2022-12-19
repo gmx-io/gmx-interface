@@ -45,7 +45,6 @@ function AffiliatesStats({
 
   const { cumulativeStats, referrerTotalStats, rebateDistributions, referrerTierInfo } = referralsData;
   const { page, currentData, setPage, pageCount } = usePagination(rebateDistributions);
-
   const allReferralCodes = referrerTotalStats.map((c) => c.referralCode.trim());
   const finalAffiliatesTotalStats = useMemo(
     () =>
@@ -58,6 +57,12 @@ function AffiliatesStats({
     [allReferralCodes, referrerTotalStats, recentlyAddedCodes]
   );
 
+  const {
+    page: affiliatesPage,
+    currentData: affiliatesData,
+    setPage: setAffiliatePage,
+    pageCount: affiliatesPageCount,
+  } = usePagination(finalAffiliatesTotalStats);
   const tierId = referrerTierInfo?.tierId;
   let referrerRebates = bigNumberify(0);
   if (cumulativeStats && cumulativeStats.totalRebateUsd && cumulativeStats.discountUsd) {
@@ -136,7 +141,7 @@ function AffiliatesStats({
                 </tr>
               </thead>
               <tbody>
-                {finalAffiliatesTotalStats.map((stat, index) => {
+                {affiliatesData.map((stat, index) => {
                   const ownerOnOtherChain = stat?.ownerOnOtherChain;
                   let referrerRebate = bigNumberify(0);
                   if (stat && stat.totalRebateUsd && stat.discountUsd) {
@@ -215,6 +220,11 @@ function AffiliatesStats({
             </table>
           </div>
         </Card>
+        <Pagination
+          page={affiliatesPage}
+          pageCount={affiliatesPageCount}
+          onPageChange={(page) => setAffiliatePage(page)}
+        />
       </div>
       {rebateDistributions?.length > 0 ? (
         <div className="reward-history">

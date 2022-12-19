@@ -6,10 +6,10 @@ export default function usePagination(data = [], postPerPage = 10) {
   const pageCount = Math.round(data.length / postPerPage);
 
   useEffect(() => {
-    const startIndex = (page - 1) * 10;
-    const endIndex = page * 10;
+    const startIndex = (page - 1) * postPerPage;
+    const endIndex = page * postPerPage;
     setCurrentData(data.slice(startIndex, endIndex));
-  }, [page, data]);
+  }, [page, data, postPerPage]);
 
   return {
     currentData,
