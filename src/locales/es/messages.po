@@ -2314,6 +2314,8 @@ msgid "Order"
 msgstr "Orden"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
 msgid "Order cancelled"
 msgstr ""
 
@@ -2336,6 +2338,11 @@ msgstr "¡Orden creada!"
 #: src/components/Exchange/PositionSeller.js
 msgid "Order creation failed."
 msgstr "Falló la creación de la orden"
+
+#: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
+msgid "Order executed"
+msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Order size exceeds position"
@@ -4218,6 +4225,11 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 msgid "{0} selected in order form"
 msgstr "{0} seleccionado en el formulario de órden"
+
+#: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
+msgid "{0} status"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
