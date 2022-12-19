@@ -35,6 +35,7 @@ import { bigNumberify, formatAmount, numberWithCommas } from "lib/numbers";
 import { GradientButton } from "components/LandingPageComponents/BlueButtonComponents/BlueButtonComponent";
 import { Header } from "components/Header/Header";
 import { Redirect } from "react-router-dom";
+import { ethers } from "ethers";
 
 export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
 
@@ -142,15 +143,17 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
         redirectPopupTimestamp={redirectPopupTimestamp}
         showRedirectModal={showRedirectModal}
       >
-        <Trans>Launch App</Trans>
+        <Trans>LAUNCH APP</Trans>
       </HeaderLink>
     );
   };
 
+
   return (
     <div className="Home">
       <div className="asset-img">
-      <Header />
+      <Header redirectPopupTimestamp={redirectPopupTimestamp}
+            showRedirectModal={showRedirectModal} />
         <div className="home-wrapper">              
           <div className="content-wrapper">
           <div className="content-text-wrapper">
@@ -162,9 +165,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
             <p className="text-blue">No price impact, reduced liquidation   <br/>risks and up to 30x leverage.</p>
             <div className="content-footer">  
               <div className="button-wrapper">   
-                <GradientButton >
-                  LAUNCH APP
-                </GradientButton>
+                <LaunchExchangeButton/>
                 <span className="learn-more">Learn more {">"}</span>
               </div>
               <div className="footer-content">
@@ -191,21 +192,21 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
           <img src={tradingIcon} width={60}/>
             <div className="stat-content-wrapper">
               <h1 className="stat-content-heading">Total Trading Volume</h1>
-              <p  className="stat-content-values">$88,802,522</p>
+              <p  className="stat-content-values">${formatAmount(totalVolumeSum, USD_DECIMALS, 0, true)}</p>
             </div>
           </div>
           <div className="stat-wrapper">
           <img src={statsIcon} width={60}/>
             <div className="stat-content-wrapper">
               <h1 className="stat-content-heading">Open Interest</h1>
-              <p  className="stat-content-values">$36,583,458</p>
+              <p  className="stat-content-values">${formatAmount(openInterest, USD_DECIMALS, 0, true)}</p>
             </div>
           </div>
           <div className="stat-wrapper">
           <img src={totaluserIcon} width={60}/>
             <div className="stat-content-wrapper">
               <h1 className="stat-content-heading">Total Users</h1>
-              <p  className="stat-content-values">177,924</p>
+              <p  className="stat-content-values">{numberWithCommas(totalUsers.toFixed(0))}</p>
             </div>
           </div>
         </div>
@@ -259,9 +260,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
           <img src={arbitrumIcon} />
           <div className="start-trading">
             <p className="arbitrum-text">ARBITRUM</p>
-            <GradientButton fontWeight="900" fontSize="26px" >
-              LAUNCH APP
-            </GradientButton>
+            <LaunchExchangeButton />
           </div>
         </div>
       <div className="tokens-list">

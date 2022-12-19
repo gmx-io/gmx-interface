@@ -37,7 +37,8 @@
   text-align: center;
   font-family: 'Montserrat';
   padding-left: 3.5rem;
+  text-decoration: none;
 }
 .launch-dapp-btn {
   margin-right: 12rem;
-}
+} 

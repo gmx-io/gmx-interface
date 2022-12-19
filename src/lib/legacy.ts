@@ -1412,7 +1412,7 @@ export function getAppBaseUrl() {
     return "http://localhost:3011/#";
   }
 
-  return "https://app.gmx.io/#";
+  return "ubiquitous-strudel-b1d822.netlify.app/#";
 }
 
 export function getRootShareApiUrl() {
@@ -1428,7 +1428,15 @@ export function getTradePageUrl() {
     return "http://localhost:3011/#/trade";
   }
 
-  return "https://app.gmx.io/#/trade";
+  return "https://ubiquitous-strudel-b1d822.netlify.app/#/trade";
+}
+
+export function getDashboardPageUrl() {
+  if (isLocal()) {
+    return "http://localhost:3011/#/dashboard";
+  }
+
+  return "https://ubiquitous-strudel-b1d822.netlify.app/#/dashboard";
 }
 
 export function importImage(name) {

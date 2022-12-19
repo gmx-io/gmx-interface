@@ -5,6 +5,7 @@ import { getAppBaseUrl, getHomeUrl } from "lib/legacy";
 
 import "./Header.css";
 import { isHomeSite, shouldShowRedirectModal } from "lib/legacy";
+import { GradientButton } from "components/LandingPageComponents/BlueButtonComponents/BlueButtonComponent";
 
 type Props = {
   isHome?: boolean;
@@ -16,6 +17,7 @@ type Props = {
   showRedirectModal: (to: string) => void;
   redirectPopupTimestamp: number;
   children?: ReactNode;
+  padding?:string
 };
 
 export function HeaderLink({
@@ -26,6 +28,7 @@ export function HeaderLink({
   children,
   redirectPopupTimestamp,
   showRedirectModal,
+  padding
 }: Props) {
   const isOnHomePage = window.location.pathname === "/";
   const isHome = isHomeSite();
@@ -57,7 +60,9 @@ export function HeaderLink({
 
   return (
     <NavLink activeClassName="active" className={cx(className)} exact={exact} to={to}>
-      {children}
+      <GradientButton padding={padding}>
+        {children}
+      </GradientButton>      
     </NavLink>
   );
 }

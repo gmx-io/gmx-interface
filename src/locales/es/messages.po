@@ -1618,13 +1618,16 @@ msgstr ""
 msgid "Keep leverage at {0}x"
 msgstr ""
 
+#: src/pages/Home/Home.js
+msgid "LAUNCH APP"
+msgstr ""
+
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Language"
 msgstr ""
 
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/ModalViews/RedirectModal.js
-#: src/pages/Home/Home.js
 msgid "Launch App"
 msgstr ""
 

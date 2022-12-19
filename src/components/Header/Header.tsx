@@ -3,8 +3,26 @@ import asurasLogo from "./HeaderAssets/asurasLogo.png";
 
 import "./Header.css";
 import { GradientButton } from "components/LandingPageComponents/BlueButtonComponents/BlueButtonComponent";
+import { Link, NavLink } from "react-router-dom";
+import { HeaderLink } from "./HeaderLink";
+import { Trans } from "@lingui/react";
+import { getAppBaseUrl, getDashboardPageUrl, getHomeUrl, getTradePageUrl } from "lib/legacy";
 
-export function Header() {
+export function Header({redirectPopupTimestamp,showRedirectModal}) {
+
+  const LaunchExchangeButton = () => {
+    return (
+      <HeaderLink
+        className="header-btn"
+        to="/trade"
+        redirectPopupTimestamp={redirectPopupTimestamp}
+        showRedirectModal={showRedirectModal}
+      >
+        <p>LAUNCH APP</p>
+      </HeaderLink>
+    );
+  };
+
 
   return (
     <>
@@ -14,19 +32,15 @@ export function Header() {
         </div>
         <div className="navbar-wrapper">
           <ul className="navbar-items">
-            <li className="navbar-item">PRESALE</li>
-            <li className="navbar-item">DASHBOARD</li>
-            <li className="navbar-item">EARN</li>
-            <li className="navbar-item">BUY</li>
-            <li className="navbar-item">MARKET</li>
-            <li className="navbar-item">MORE</li>
+            <a onClick={() => alert('Page not ready')} className="navbar-item">PRESALE</a>
+            <a href={getDashboardPageUrl()} className="navbar-item">DASHBOARD</a>
+            <a onClick={() => alert('Page not ready')} className="navbar-item">EARN</a>
+            <a onClick={() => alert('Page not ready')} className="navbar-item">BUY</a>
+            <a href={getTradePageUrl()} className="navbar-item">MARKET</a>
+            <a onClick={() => alert('Page not ready')} className="navbar-item">MORE</a>
           </ul>
-        </div>
-        <div className="launch-dapp-btn">
-        <GradientButton >
-          LAUNCH APP
-        </GradientButton>
-        </div>
+        </div>        
+          <LaunchExchangeButton />        
       </header>
     </>
   );
