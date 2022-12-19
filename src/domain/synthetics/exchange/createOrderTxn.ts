@@ -46,11 +46,11 @@ type Params = {
   initialCollateralAmount: BigNumber;
   receiveTokenAddress?: string;
   swapPath: string[];
-  sizeDeltaUsd: BigNumber;
+  sizeDeltaUsd?: BigNumber;
   triggerPrice?: BigNumber;
-  acceptablePrice: BigNumber;
+  acceptablePrice?: BigNumber;
   executionFee: BigNumber;
-  isLong: boolean;
+  isLong?: boolean;
   orderType: OrderType;
   minOutputAmount: BigNumber;
   referralCode?: string;
@@ -88,15 +88,15 @@ export function createOrderTxn(chainId: number, library: Web3Provider, p: Params
             callbackGasLimit: BigNumber.from(0),
           },
           numbers: {
-            sizeDeltaUsd: p.sizeDeltaUsd,
-            triggerPrice: p.triggerPrice || p.acceptablePrice,
-            acceptablePrice: p.acceptablePrice,
+            sizeDeltaUsd: p.sizeDeltaUsd || BigNumber.from(0),
+            triggerPrice: p.triggerPrice || BigNumber.from(0),
+            acceptablePrice: p.acceptablePrice || BigNumber.from(0),
             executionFee: p.executionFee,
             callbackGasLimit: BigNumber.from(0),
             minOutputAmount: p.minOutputAmount,
           },
           orderType: p.orderType,
-          isLong: p.isLong,
+          isLong: p.isLong || false,
           shouldUnwrapNativeToken: isNativeReceive,
         },
         encodeReferralCode(p.referralCode || ""),

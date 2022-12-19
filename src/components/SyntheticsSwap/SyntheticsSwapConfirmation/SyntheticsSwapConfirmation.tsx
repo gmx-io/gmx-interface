@@ -23,6 +23,7 @@ import { getSubmitError, Mode, Operation, operationTexts } from "../utils";
 import { useUserReferralCode } from "domain/referrals";
 
 import "./SyntheticsSwapConfirmation.scss";
+import { expandDecimals } from "lib/numbers";
 
 type Props = {
   operationType: Operation;
@@ -127,10 +128,10 @@ export function SyntheticsSwapConfirmation(p: Props) {
           marketAddress: marketAddress,
           initialCollateralAddress: p.fromTokenAddress,
           initialCollateralAmount: p.fromTokenAmount,
-          swapPath: p.swapPath,
+          swapPath: [],
           sizeDeltaUsd: p.sizeDeltaUsd,
           triggerPrice: p.triggerPrice,
-          acceptablePrice: p.acceptablePrice,
+          acceptablePrice: p.acceptablePrice.add(expandDecimals(100, 30)),
           executionFee: p.executionFee,
           isLong: p.operationType === Operation.Long,
           orderType,
@@ -151,12 +152,10 @@ export function SyntheticsSwapConfirmation(p: Props) {
         initialCollateralAmount: p.fromTokenAmount,
         swapPath: p.swapPath,
         receiveTokenAddress: p.toTokenAddress,
-        sizeDeltaUsd: p.sizeDeltaUsd,
         // TODO
         // triggerPrice: BigNumber.from(0),
-        acceptablePrice: p.acceptablePrice,
+        // acceptablePrice: p.acceptablePrice.add(expandDecimals(100, 30)),
         executionFee: p.executionFee!,
-        isLong: false,
         orderType,
         minOutputAmount: BigNumber.from(0),
         referralCode: referralCodeData?.userReferralCodeString,
