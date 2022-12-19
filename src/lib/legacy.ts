@@ -1412,7 +1412,7 @@ export function getAppBaseUrl() {
     return "http://localhost:3011/#";
   }
 
-  return "ubiquitous-strudel-b1d822.netlify.app/#";
+  return "https://ubiquitous-strudel-b1d822.netlify.app/#";
 }
 
 export function getRootShareApiUrl() {
