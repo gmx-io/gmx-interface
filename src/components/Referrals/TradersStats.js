@@ -14,10 +14,18 @@ import { formatAmount } from "lib/numbers";
 import { getNativeToken, getToken } from "config/tokens";
 import { formatDate } from "lib/dates";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import usePagination from "./usePagination";
 
 function TradersStats({ referralsData, traderTier, chainId, userReferralCodeString, setPendingTxns, pendingTxns }) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const editModalRef = useRef(null);
+  const {
+    currentData: discountDistributions,
+    onNextClick,
+    onPrevClick,
+    isNextEnabled,
+    isPrevEnabled,
+  } = usePagination(referralsData?.discountDistributions, 10);
 
   const open = () => setIsEditModalOpen(true);
   const close = () => setIsEditModalOpen(false);
@@ -79,9 +87,22 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
           </div>
         </Modal>
       </div>
-      {referralsData?.discountDistributions.length > 0 ? (
+      {discountDistributions.length > 0 ? (
         <div className="reward-history">
-          <Card title={t`Rebates Distribution History`} tooltipText={t`Rebates are airdropped weekly.`}>
+          <Card
+            title={t`Rebates Distribution History`}
+            tooltipText={t`Rebates are airdropped weekly.`}
+            footer={
+              <div className="card-footer">
+                <button className="App-button-option App-card-option" disabled={!isPrevEnabled()} onClick={onPrevClick}>
+                  Prev
+                </button>
+                <button className="App-button-option App-card-option" disabled={!isNextEnabled()} onClick={onNextClick}>
+                  Next
+                </button>
+              </div>
+            }
+          >
             <div className="table-wrapper">
               <table className="referral-table">
                 <thead>
@@ -98,7 +119,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                   </tr>
                 </thead>
                 <tbody>
-                  {referralsData?.discountDistributions.map((rebate, index) => {
+                  {discountDistributions.map((rebate, index) => {
                     let tokenInfo;
                     try {
                       tokenInfo = getToken(chainId, rebate.token);

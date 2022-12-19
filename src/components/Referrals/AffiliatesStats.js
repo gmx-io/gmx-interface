@@ -25,6 +25,7 @@ import { bigNumberify, formatAmount } from "lib/numbers";
 import { getNativeToken, getToken } from "config/tokens";
 import { formatDate } from "lib/dates";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import usePagination from "./usePagination";
 
 function AffiliatesStats({
   referralsData,
@@ -41,6 +42,14 @@ function AffiliatesStats({
   const close = () => setIsAddReferralCodeModalOpen(false);
 
   const { cumulativeStats, referrerTotalStats, rebateDistributions, referrerTierInfo } = referralsData;
+  const {
+    currentData: rebates,
+    onNextClick,
+    onPrevClick,
+    isNextEnabled,
+    isPrevEnabled,
+  } = usePagination(rebateDistributions, 10);
+
   const allReferralCodes = referrerTotalStats.map((c) => c.referralCode.trim());
   const finalAffiliatesTotalStats = useMemo(
     () =>
@@ -213,7 +222,20 @@ function AffiliatesStats({
       </div>
       {rebateDistributions?.length > 0 ? (
         <div className="reward-history">
-          <Card title={t`Rewards Distribution History`} tooltipText={t`Rewards are airdropped weekly.`}>
+          <Card
+            title={t`Rewards Distribution History`}
+            tooltipText={t`Rewards are airdropped weekly.`}
+            footer={
+              <div className="card-footer">
+                <button className="App-button-option App-card-option" disabled={!isPrevEnabled()} onClick={onPrevClick}>
+                  Prev
+                </button>
+                <button className="App-button-option App-card-option" disabled={!isNextEnabled()} onClick={onNextClick}>
+                  Next
+                </button>
+              </div>
+            }
+          >
             <div className="table-wrapper">
               <table className="referral-table">
                 <thead>
@@ -230,7 +252,7 @@ function AffiliatesStats({
                   </tr>
                 </thead>
                 <tbody>
-                  {rebateDistributions.map((rebate, index) => {
+                  {rebates.map((rebate, index) => {
                     let tokenInfo;
                     try {
                       tokenInfo = getToken(chainId, rebate.token);

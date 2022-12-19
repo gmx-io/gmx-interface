@@ -1422,8 +1422,8 @@ msgid "GMX Weekly Updates"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:"
-msgstr "GMX债券可以在Olympus Pro上购买，可获得折扣，并且有较小的归属期"
+msgid "GMX bonds can be bought on Bond Protocol with a discount and a small vesting period:"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX community discussion"
