@@ -1779,7 +1779,7 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Long {0}"
-msgstr "Largo {0}"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Longing..."
