@@ -36,7 +36,7 @@ import { GradientButton } from "components/LandingPageComponents/BlueButtonCompo
 import { Header } from "components/Header/Header";
 
 
-export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
+export default function Home({ showRedirectModal, redirectPopupTimestamp,isHome }) {
 
   // const [openedFAQIndex, setOpenedFAQIndex] = useState(null)
   // const faqContent = [{
@@ -147,12 +147,11 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
     );
   };
 
-
   return (
     <div className="Home">
       <div className="asset-img">
       <Header redirectPopupTimestamp={redirectPopupTimestamp}
-            showRedirectModal={showRedirectModal} />
+            showRedirectModal={showRedirectModal} isHome={isHome}/>
         <div className="home-wrapper">              
           <div className="content-wrapper">
           <div className="content-text-wrapper">

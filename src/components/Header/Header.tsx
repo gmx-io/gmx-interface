@@ -9,7 +9,7 @@ import { Trans } from "@lingui/react";
 import { getAppBaseUrl, getDashboardPageUrl, getHomeUrl, getTradePageUrl } from "lib/legacy";
 
 export function Header({redirectPopupTimestamp,showRedirectModal, isHome}) {
-
+  console.log('isHome',isHome)
   const LaunchExchangeButton = () => {
     return (
       <HeaderLink
@@ -40,7 +40,7 @@ export function Header({redirectPopupTimestamp,showRedirectModal, isHome}) {
             <a href={getAppBaseUrl()} className="navbar-item">MORE</a>
           </ul>
         </div>   
-        {!isHome && (
+        {isHome && (
           <LaunchExchangeButton />
         )}     
       </header>

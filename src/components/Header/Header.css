@@ -89,9 +89,11 @@
     padding-left: 3.5rem;
     text-decoration: none;
   }
+
   .content-wrapper {
   margin-left: 2rem;
   }
+
   .launch-dapp-btn {
     margin-right: 6rem;
   } 
@@ -99,17 +101,31 @@
   .asr-content-wrapper{
     margin-left: -2rem;
   }
+
   .alp-content-wrapper{
     margin-left: -2rem;
   }
+
   .supported-network-text{
     margin-left: 3rem;
   }
+
   .our-tokens{
     margin-left:12rem;
   }
+
   .ecosystem-heading{
     margin-left:12rem;
-
   }
+
+  .main-stat-heading {
+    font-size: 24px;
+  }
+
+  .main-stat-text {
+    font-size: 14px;
+  }
+
+  
+
  }
