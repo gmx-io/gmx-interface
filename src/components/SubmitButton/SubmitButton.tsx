@@ -25,6 +25,7 @@ export const SubmitButton = React.forwardRef<HTMLButtonElement, Props>(function 
       return {
         children: t`Connect wallet`,
         onClick: p.onConnectWallet,
+        disabled: false,
       };
     }
 
@@ -38,7 +39,7 @@ export const SubmitButton = React.forwardRef<HTMLButtonElement, Props>(function 
   return (
     <button
       ref={ref}
-      className={cx("App-cta", "Exchange-swap-button", { muted: disabled }, className)}
+      className={cx("App-cta", "Exchange-swap-button", { muted: buttonState.disabled }, className)}
       onClick={buttonState.onClick}
       disabled={buttonState.disabled}
       {...htmlButtonProps}

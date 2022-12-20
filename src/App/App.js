@@ -485,7 +485,7 @@ function FullApp() {
               )}
               {isDevelopment() && (
                 <Route exact path="/synthetics">
-                  <SyntheticsTradePage connectWallet={connectWallet} />
+                  <SyntheticsTradePage onConnectWallet={connectWallet} />
                 </Route>
               )}
               <Route exact path="/buy_glp">
