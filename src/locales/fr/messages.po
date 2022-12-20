@@ -89,6 +89,10 @@ msgstr ""
 msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
 msgstr ""
 
+#: src/components/Header/AppHeaderLinks.tsx
+msgid "ABOUT"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -114,7 +118,6 @@ msgstr ""
 msgid "AVAILABLE"
 msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
@@ -339,6 +342,10 @@ msgstr ""
 msgid "Avalanche Icon"
 msgstr ""
 
+#: src/components/Header/AppHeaderLinks.tsx
+msgid "BUY"
+msgstr ""
+
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "BUY ASR"
 msgstr ""
@@ -393,10 +400,6 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.js
 msgid "Borrow fee"
 msgstr ""
-
-#: src/components/Header/AppHeaderLinks.tsx
-msgid "Buy"
-msgstr "Acheter"
 
 #: src/pages/BuyGlp/BuyGlp.js
 msgid "Buy / Sell GLP"
@@ -909,6 +912,10 @@ msgstr ""
 msgid "Current {0} shorts"
 msgstr ""
 
+#: src/components/Header/AppHeaderLinks.tsx
+msgid "DASHBOARD"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
@@ -916,10 +923,6 @@ msgstr ""
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "DEX Aggregator"
 msgstr ""
-
-#: src/components/Header/AppHeaderLinks.tsx
-msgid "Dashboard"
-msgstr "Tableau de bord"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Dashboard for GMX referral stats"
@@ -1058,13 +1061,16 @@ msgid "Download"
 msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
+msgid "EARN"
+msgstr ""
+
+#: src/components/Header/AppHeaderLinks.tsx
+msgid "ECOSYSTEM"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 msgid "Earn"
 msgstr "Gagner"
-
-#: src/components/Header/AppHeaderLinks.tsx
-msgid "Ecosystem"
-msgstr "Écosystème"
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -2458,6 +2464,10 @@ msgstr ""
 msgid "Purchase Insurance"
 msgstr ""
 
+#: src/components/Header/AppHeaderLinks.tsx
+msgid "REFERRALS"
+msgstr ""
+
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Read more"
@@ -2552,7 +2562,6 @@ msgstr ""
 msgid "Referral code updated!"
 msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Referrals/Referrals.js
 msgid "Referrals"
 msgstr "Parrainages"

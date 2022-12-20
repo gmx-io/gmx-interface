@@ -89,6 +89,10 @@ msgstr "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
 msgstr "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
 
+#: src/components/Header/AppHeaderLinks.tsx
+msgid "ABOUT"
+msgstr "ABOUT"
+
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -114,7 +118,6 @@ msgstr "AUM"
 msgid "AVAILABLE"
 msgstr "AVAILABLE"
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
@@ -339,6 +342,10 @@ msgstr "Avalanche APR:"
 msgid "Avalanche Icon"
 msgstr "Avalanche Icon"
 
+#: src/components/Header/AppHeaderLinks.tsx
+msgid "BUY"
+msgstr "BUY"
+
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "BUY ASR"
 msgstr "BUY ASR"
@@ -393,10 +400,6 @@ msgstr "Borrow Fee / Day"
 #: src/components/Exchange/TradeHistory.js
 msgid "Borrow fee"
 msgstr "Borrow fee"
-
-#: src/components/Header/AppHeaderLinks.tsx
-msgid "Buy"
-msgstr "Buy"
 
 #: src/pages/BuyGlp/BuyGlp.js
 msgid "Buy / Sell GLP"
@@ -909,6 +912,10 @@ msgstr "Current {0} long"
 msgid "Current {0} shorts"
 msgstr "Current {0} shorts"
 
+#: src/components/Header/AppHeaderLinks.tsx
+msgid "DASHBOARD"
+msgstr "DASHBOARD"
+
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
@@ -916,10 +923,6 @@ msgstr "Current {0} shorts"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "DEX Aggregator"
 msgstr "DEX Aggregator"
-
-#: src/components/Header/AppHeaderLinks.tsx
-msgid "Dashboard"
-msgstr "Dashboard"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Dashboard for GMX referral stats"
@@ -1058,13 +1061,16 @@ msgid "Download"
 msgstr "Download"
 
 #: src/components/Header/AppHeaderLinks.tsx
+msgid "EARN"
+msgstr "EARN"
+
+#: src/components/Header/AppHeaderLinks.tsx
+msgid "ECOSYSTEM"
+msgstr "ECOSYSTEM"
+
 #: src/pages/Stake/StakeV2.js
 msgid "Earn"
 msgstr "Earn"
-
-#: src/components/Header/AppHeaderLinks.tsx
-msgid "Ecosystem"
-msgstr "Ecosystem"
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -2461,6 +2467,10 @@ msgstr "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps a
 msgid "Purchase Insurance"
 msgstr "Purchase Insurance"
 
+#: src/components/Header/AppHeaderLinks.tsx
+msgid "REFERRALS"
+msgstr "REFERRALS"
+
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Read more"
@@ -2555,7 +2565,6 @@ msgstr "Referral code updated failed."
 msgid "Referral code updated!"
 msgstr "Referral code updated!"
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Referrals/Referrals.js
 msgid "Referrals"
 msgstr "Referrals"
