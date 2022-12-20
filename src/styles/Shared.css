@@ -222,6 +222,7 @@ a.plain {
   font-weight:'normal';
   font-size:'16px';
   text-decoration: none;
+  cursor: pointer;
 }
 
 .default-btn2 {
