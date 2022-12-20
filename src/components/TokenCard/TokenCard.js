@@ -2,9 +2,6 @@ import React, { useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Trans } from "@lingui/macro";
 
-import gmxBigIcon from "img/ic_gmx_custom.svg";
-import glpBigIcon from "img/ic_glp_custom.svg";
-
 import { isHomeSite } from "lib/legacy";
 
 import { useWeb3React } from "@web3-react/core";
@@ -15,6 +12,12 @@ import { ARBITRUM, AVALANCHE } from "config/chains";
 import { switchNetwork } from "lib/wallets";
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { getIcons } from "config/icons";
+
+const glpIcon = getIcons(null, "glp");
+const gmxIcon = getIcons(null, "gmx");
+
+console.log({ glpIcon, gmxIcon });
 
 export default function TokenCard({ showRedirectModal, redirectPopupTimestamp }) {
   const isHome = isHomeSite();
@@ -62,7 +65,7 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
     <div className="Home-token-card-options">
       <div className="Home-token-card-option">
         <div className="Home-token-card-option-icon">
-          <img src={gmxBigIcon} alt="gmxBigIcon" /> GMX
+          <img src={gmxIcon} width="40px" alt="GMX Icons" /> GMX
         </div>
         <div className="Home-token-card-option-info">
           <div className="Home-token-card-option-title">
@@ -89,7 +92,7 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
       </div>
       <div className="Home-token-card-option">
         <div className="Home-token-card-option-icon">
-          <img src={glpBigIcon} alt="glpBigIcon" /> GLP
+          <img src={glpIcon} width="40px" alt="GLP Icon" /> GLP
         </div>
         <div className="Home-token-card-option-info">
           <div className="Home-token-card-option-title">
