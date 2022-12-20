@@ -1,0 +1,60 @@
+import { Trans } from "@lingui/macro";
+import { SyntheticsPosition } from "components/SyntheticsPosition/SyntheticsPosition";
+import { getPositions, usePositionsData } from "domain/synthetics/positions";
+import { useChainId } from "lib/chains";
+
+export function SyntheticsPositionsList() {
+  const { chainId } = useChainId();
+
+  const positionsData = usePositionsData(chainId);
+  const positions = getPositions(positionsData);
+
+  return (
+    <div>
+      <table className="Exchange-list Orders App-box">
+        <tbody>
+          <tr className="Exchange-list-header">
+            <th>
+              <div>
+                <Trans>Position</Trans>
+              </div>
+            </th>
+            <th>
+              <div>
+                <Trans>Net Value</Trans>
+              </div>
+            </th>
+            <th>
+              <div>
+                <Trans>Size</Trans>
+              </div>
+            </th>
+            <th>
+              <div>
+                <Trans>Collateral</Trans>
+              </div>
+            </th>
+            <th>
+              <div>
+                <Trans>Mark Price</Trans>
+              </div>
+            </th>
+            <th>
+              <div>
+                <Trans>Entry Price</Trans>
+              </div>
+            </th>
+            <th>
+              <div>
+                <Trans>Liq Price</Trans>
+              </div>
+            </th>
+          </tr>
+          {positions.map((position) => (
+            <SyntheticsPosition key={position.key} position={position} />
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}

@@ -716,6 +716,7 @@ msgstr "Coinbase 지갑이 존재하지 않습니다."
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/SyntheticsPositionsList/SyntheticsPositionsList.tsx
 msgid "Collateral"
 msgstr "담보"
 
@@ -1290,6 +1291,7 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/SyntheticsPositionsList/SyntheticsPositionsList.tsx
 msgid "Entry Price"
 msgstr "진입 가격"
 
@@ -1780,11 +1782,11 @@ msgstr ""
 msgid "Limit"
 msgstr ""
 
-#: src/domain/synthetics/exchange/createOrderTxn.ts
+#: src/config/synthetics.ts
 msgid "Limit Decrease"
 msgstr ""
 
-#: src/domain/synthetics/exchange/createOrderTxn.ts
+#: src/config/synthetics.ts
 msgid "Limit Increase"
 msgstr ""
 
@@ -1793,7 +1795,7 @@ msgstr ""
 msgid "Limit Price"
 msgstr ""
 
-#: src/domain/synthetics/exchange/createOrderTxn.ts
+#: src/config/synthetics.ts
 msgid "Limit Swap"
 msgstr ""
 
@@ -1815,6 +1817,10 @@ msgstr "링크"
 
 #: src/components/Exchange/PositionShare.js
 msgid "Link copied to clipboard."
+msgstr ""
+
+#: src/components/SyntheticsPositionsList/SyntheticsPositionsList.tsx
+msgid "Liq Price"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -1842,7 +1848,7 @@ msgid ""
 "{2} Price: {3} USD"
 msgstr ""
 
-#: src/domain/synthetics/exchange/createOrderTxn.ts
+#: src/config/synthetics.ts
 msgid "Liquidation"
 msgstr ""
 
@@ -1883,6 +1889,8 @@ msgstr "로딩중..."
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/SyntheticsOrder/SyntheticsOrder.tsx
+#: src/components/SyntheticsPosition/SyntheticsPosition.tsx
 #: src/components/SyntheticsSwap/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
@@ -1947,6 +1955,7 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/SyntheticsPositionsList/SyntheticsPositionsList.tsx
 msgid "Mark Price"
 msgstr "시장 평균가"
 
@@ -1978,15 +1987,15 @@ msgstr ""
 msgid "Market Cap"
 msgstr "시가총액"
 
-#: src/domain/synthetics/exchange/createOrderTxn.ts
+#: src/config/synthetics.ts
 msgid "Market Decrease"
 msgstr ""
 
-#: src/domain/synthetics/exchange/createOrderTxn.ts
+#: src/config/synthetics.ts
 msgid "Market Increase"
 msgstr ""
 
-#: src/domain/synthetics/exchange/createOrderTxn.ts
+#: src/config/synthetics.ts
 msgid "Market Swap"
 msgstr ""
 
@@ -2184,6 +2193,7 @@ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/SyntheticsPositionsList/SyntheticsPositionsList.tsx
 msgid "Net Value"
 msgstr "순이익"
 
@@ -2309,6 +2319,7 @@ msgid "Optimal compound interval calculator"
 msgstr ""
 
 #: src/components/Exchange/OrdersList.js
+#: src/components/SyntheticsOrdersList/SyntheticsOrdersList.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Order"
 msgstr "주문"
@@ -2509,6 +2520,7 @@ msgid "Pool amount"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
+#: src/components/SyntheticsPositionsList/SyntheticsPositionsList.tsx
 msgid "Position"
 msgstr "포지션"
 
@@ -2955,6 +2967,8 @@ msgstr "포지션 공유"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/SyntheticsOrder/SyntheticsOrder.tsx
+#: src/components/SyntheticsPosition/SyntheticsPosition.tsx
 #: src/components/SyntheticsSwap/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
@@ -2995,6 +3009,7 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/SyntheticsPositionsList/SyntheticsPositionsList.tsx
 msgid "Size"
 msgstr "사이즈"
 
@@ -3097,7 +3112,7 @@ msgstr "스테이킹중..."
 msgid "Stats"
 msgstr "통계"
 
-#: src/domain/synthetics/exchange/createOrderTxn.ts
+#: src/config/synthetics.ts
 msgid "Stop Loss Decrease"
 msgstr ""
 
@@ -3118,7 +3133,11 @@ msgid "Success withdrawal order"
 msgstr ""
 
 #: src/domain/synthetics/exchange/createOrderTxn.ts
-msgid "Success {0} order"
+#~ msgid "Success {0} order"
+#~ msgstr ""
+
+#: src/domain/synthetics/orders/createOrderTxn.ts
+msgid "Success {orderLabel} order"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV1.js
@@ -3638,6 +3657,7 @@ msgid "Txn failed. <0>View</0>"
 msgstr ""
 
 #: src/components/Exchange/OrdersList.js
+#: src/components/SyntheticsOrdersList/SyntheticsOrdersList.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Type"
 msgstr "타입"
@@ -4115,6 +4135,10 @@ msgstr ""
 msgid "time to liq"
 msgstr ""
 
+#: src/components/SyntheticsOrder/SyntheticsOrder.tsx
+msgid "via"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.js
 msgid "view"
 msgstr ""
@@ -4196,12 +4220,12 @@ msgid "{0} is required for collateral."
 msgstr ""
 
 #: src/domain/synthetics/exchange/createOrderTxn.ts
-msgid "{0} order failed"
-msgstr ""
+#~ msgid "{0} order failed"
+#~ msgstr ""
 
 #: src/domain/synthetics/exchange/createOrderTxn.ts
-msgid "{0} order sent"
-msgstr ""
+#~ msgid "{0} order sent"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "{0} pool exceeded"
@@ -4283,6 +4307,14 @@ msgstr "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "{nativeTokenSymbol} can not be sent to smart contract addresses. Select another token."
+msgstr ""
+
+#: src/domain/synthetics/orders/createOrderTxn.ts
+msgid "{orderLabel} order failed"
+msgstr ""
+
+#: src/domain/synthetics/orders/createOrderTxn.ts
+msgid "{orderLabel} order sent"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js

@@ -6,6 +6,7 @@ import useSWR from "swr";
 import { useMemo } from "react";
 import { getOracleKeeperUrl } from "config/oracleKeeper";
 import { USD_DECIMALS } from "lib/legacy";
+import { parseOraclePrice } from "./utils";
 
 export type TokenPricesData = {
   [address: string]: TokenPrices;
@@ -68,8 +69,4 @@ function formatResponse(chainId: number, response: BackendResponse = []) {
   }
 
   return result;
-}
-
-function parseOraclePrice(price: string, tokenDecimals: number, oracleDecimals: number) {
-  return expandDecimals(price, tokenDecimals + oracleDecimals);
 }

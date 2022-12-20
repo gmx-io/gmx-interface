@@ -13,9 +13,10 @@ import {
   SYNTHETICS_SWAP_OPERATION_KEY,
 } from "config/localStorage";
 import { getWrappedToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { getPositionMarketsPath, getSwapPath, useSwapTokenState } from "domain/synthetics/exchange";
+import { useSwapTokenState } from "domain/synthetics/exchange";
 import { getExecutionFee } from "domain/synthetics/fees";
 import { getMarkets, useMarketsData, useMarketsPoolsData } from "domain/synthetics/markets";
+import { getPositionMarketsPath, getSwapPath } from "domain/synthetics/orders";
 import {
   adaptToInfoTokens,
   convertFromUsdByPrice,

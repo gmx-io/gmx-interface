@@ -1,5 +1,5 @@
-import { getPositionMarketsPath, getSwapPath } from "domain/synthetics/exchange";
 import { MarketsData, MarketsPoolsData } from "domain/synthetics/markets";
+import { getPositionMarketsPath, getSwapPath } from "domain/synthetics/orders";
 import { BigNumber } from "ethers";
 
 const marketsData: MarketsData = {

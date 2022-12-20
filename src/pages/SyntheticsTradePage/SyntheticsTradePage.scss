@@ -24,6 +24,23 @@
   position: relative;
 }
 
+.SyntheticsTrade-list-tab-container {
+  display: grid;
+  grid-template-columns: auto auto;
+  padding-left: 0.8rem;
+  padding-right: 0.8rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1.05rem;
+}
+
+.SyntheticsTrade-lists.large {
+  display: block;
+}
+
+.SyntheticsTrade-lists.small {
+  display: none;
+}
+
 @media (max-width: 1500px) {
   .SyntheticsTrade-swap-box {
     width: 38.75rem;
@@ -37,6 +54,14 @@
 
   .SyntheticsTrade-swap-box {
     width: auto;
+  }
+
+  .SyntheticsTrade-lists.small {
+    display: block;
+  }
+
+  .SyntheticsTrade-lists.large {
+    display: none;
   }
 }
 

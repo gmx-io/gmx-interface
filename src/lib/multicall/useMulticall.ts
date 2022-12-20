@@ -37,19 +37,26 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
   const swrResult = useSWR<TResult | undefined>(swrFullKey, {
     ...swrOpts,
     fetcher: async () => {
-      // prettier-ignore
-      const request = typeof params.request === "function" 
-        ? params.request(chainId, params.key as CacheKey) 
-        : params.request;
+      try {
+        // prettier-ignore
+        const request = typeof params.request === "function" 
+      ? params.request(chainId, params.key as CacheKey) 
+      : params.request;
 
-      const response = await executeMulticall(chainId, library, request);
+        const response = await executeMulticall(chainId, library, request);
 
-      // prettier-ignore
-      const result = typeof params.parseResponse === "function" 
-            ? params.parseResponse(response, chainId, params.key as CacheKey) 
-            : response;
+        // prettier-ignore
+        const result = typeof params.parseResponse === "function" 
+          ? params.parseResponse(response, chainId, params.key as CacheKey) 
+          : response;
 
-      return result as TResult;
+        return result as TResult;
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error(e);
+
+        throw e;
+      }
     },
   });
 

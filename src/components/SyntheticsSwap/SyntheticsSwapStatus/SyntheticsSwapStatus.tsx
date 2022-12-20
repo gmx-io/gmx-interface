@@ -56,7 +56,7 @@ export function SyntheticSwapStatus(p: Props) {
   useEffect(() => {
     // TODO: get logs
     function onOrderCreated(key, [orderAddresses], txnParams) {
-      console.log("onOrderCreated", key, orderAddresses, txnParams);
+      // console.log("onOrderCreated", key, orderAddresses, txnParams);
       // if (orderAddresses.account !== account) return;
 
       setDepositKey(key);
@@ -64,14 +64,15 @@ export function SyntheticSwapStatus(p: Props) {
     }
 
     function onOrderExecuted(key, txnParams) {
-      console.log("onOrderExecuted", key, txnParams);
+      // eslint-disable-next-line no-console
+      // console.log("onOrderExecuted", key, txnParams);
       // if (key !== depositKey) return;
 
       setOrderExecutedTxnHash(txnParams.transactionHash);
     }
 
     function onOrderCancelled(key, txnParams) {
-      console.log("onOrderCancelled", key, txnParams);
+      // console.log("onOrderCancelled", key, txnParams);
       // if (key !== depositKey) return;
 
       setOrderCancelledTxnHash(txnParams.transactionHash);

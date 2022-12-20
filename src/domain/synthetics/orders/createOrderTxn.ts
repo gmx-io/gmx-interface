@@ -4,40 +4,10 @@ import { getContract } from "config/contracts";
 import { BigNumber, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import ExchangeRouter from "abis/ExchangeRouter.json";
-import { getCorrectTokenAddress, NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { getCorrectTokenAddress, getToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { encodeReferralCode } from "domain/referrals";
-
-export enum OrderType {
-  // the order will be cancelled if the minOutputAmount cannot be fulfilled
-  MarketSwap,
-  // @dev LimitSwap: swap token A to token B if the minOutputAmount can be fulfilled
-  LimitSwap,
-  // @dev MarketIncrease: increase position at the current market price
-  // the order will be cancelled if the position cannot be increased at the acceptablePrice
-  MarketIncrease,
-  // @dev LimitIncrease: increase position if the triggerPrice is reached and the acceptablePrice can be fulfilled
-  LimitIncrease,
-  // @dev MarketDecrease: decrease position at the curent market price
-  // the order will be cancelled if the position cannot be decreased at the acceptablePrice
-  MarketDecrease,
-  // @dev LimitDecrease: decrease position if the triggerPrice is reached and the acceptablePrice can be fulfilled
-  LimitDecrease,
-  // @dev StopLossDecrease: decrease position if the triggerPrice is reached and the acceptablePrice can be fulfilled
-  StopLossDecrease,
-  // @dev Liquidation: allows liquidation of positions if the criteria for liquidation are met
-  Liquidation,
-}
-
-const orderTypeTexts = {
-  [OrderType.MarketSwap]: t`Market Swap`,
-  [OrderType.LimitSwap]: t`Limit Swap`,
-  [OrderType.MarketIncrease]: t`Market Increase`,
-  [OrderType.LimitIncrease]: t`Limit Increase`,
-  [OrderType.MarketDecrease]: t`Market Decrease`,
-  [OrderType.LimitDecrease]: t`Limit Decrease`,
-  [OrderType.StopLossDecrease]: t`Stop Loss Decrease`,
-  [OrderType.Liquidation]: t`Liquidation`,
-};
+import { convertToContractPrice } from "../tokens";
+import { OrderType, orderTypeLabels } from "config/synthetics";
 
 type Params = {
   account: string;
@@ -45,6 +15,7 @@ type Params = {
   initialCollateralAddress: string;
   initialCollateralAmount: BigNumber;
   receiveTokenAddress?: string;
+  indexTokenAddress?: string;
   swapPath: string[];
   sizeDeltaUsd?: BigNumber;
   triggerPrice?: BigNumber;
@@ -64,6 +35,13 @@ export function createOrderTxn(chainId: number, library: Web3Provider, p: Params
   const isNativeReceive = p.receiveTokenAddress === NATIVE_TOKEN_ADDRESS;
 
   const wntPayment = isNativePayment ? p.initialCollateralAmount : BigNumber.from(0);
+
+  const indexToken = p.indexTokenAddress ? getToken(chainId, p.indexTokenAddress) : undefined;
+
+  const acceptablePrice =
+    indexToken && p.acceptablePrice
+      ? convertToContractPrice(p.acceptablePrice || BigNumber.from(0), indexToken.decimals)
+      : BigNumber.from(0);
 
   const wntAmount = p.executionFee.add(wntPayment);
 
@@ -90,7 +68,7 @@ export function createOrderTxn(chainId: number, library: Web3Provider, p: Params
           numbers: {
             sizeDeltaUsd: p.sizeDeltaUsd || BigNumber.from(0),
             triggerPrice: p.triggerPrice || BigNumber.from(0),
-            acceptablePrice: p.acceptablePrice || BigNumber.from(0),
+            acceptablePrice: acceptablePrice,
             executionFee: p.executionFee,
             callbackGasLimit: BigNumber.from(0),
             minOutputAmount: p.minOutputAmount,
@@ -111,11 +89,13 @@ export function createOrderTxn(chainId: number, library: Web3Provider, p: Params
   // eslint-disable-next-line no-console
   console.log("multicall", multicall);
 
+  const orderLabel = orderTypeLabels[p.orderType];
+
   return callContract(chainId, contract, "multicall", [encodedPayload], {
     value: wntAmount,
     gasLimit: 10 ** 6,
-    sentMsg: t`${orderTypeTexts[p.orderType]} order sent`,
-    successMsg: t`Success ${orderTypeTexts[p.orderType]} order`,
-    failMsg: t`${orderTypeTexts[p.orderType]} order failed`,
+    sentMsg: t`${orderLabel} order sent`,
+    successMsg: t`Success ${orderLabel} order`,
+    failMsg: t`${orderLabel} order failed`,
   });
 }

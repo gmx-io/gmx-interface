@@ -17,13 +17,14 @@ import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 
 import { useAvailableTradeTokensData } from "domain/synthetics/tokens";
-import { createOrderTxn, OrderType } from "domain/synthetics/exchange";
 
 import { getSubmitError, Mode, Operation, operationTexts } from "../utils";
 import { useUserReferralCode } from "domain/referrals";
 
 import "./SyntheticsSwapConfirmation.scss";
 import { expandDecimals } from "lib/numbers";
+import { createOrderTxn } from "domain/synthetics/orders";
+import { OrderType } from "config/synthetics";
 
 type Props = {
   operationType: Operation;
@@ -128,7 +129,8 @@ export function SyntheticsSwapConfirmation(p: Props) {
           marketAddress: marketAddress,
           initialCollateralAddress: p.fromTokenAddress,
           initialCollateralAmount: p.fromTokenAmount,
-          swapPath: [],
+          swapPath: p.swapPath,
+          indexTokenAddress: p.toTokenAddress,
           sizeDeltaUsd: p.sizeDeltaUsd,
           triggerPrice: p.triggerPrice,
           acceptablePrice: p.acceptablePrice.add(expandDecimals(100, 30)),
