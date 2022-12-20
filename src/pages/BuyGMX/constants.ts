@@ -86,7 +86,12 @@ export const BUY_NATIVE_TOKENS: Exchange[] = [
     name: "O3",
     icon: "ic_o3.png",
     networks: [ARBITRUM, AVALANCHE],
-    link: "https://o3swap.com/swap",
+    links: {
+      [ARBITRUM]:
+        "https://o3swap.com/swap?src_chain=1&dst_chain=42161&dst_token_hash=0x0000000000000000000000000000000000000000",
+      [AVALANCHE]:
+        "https://o3swap.com/swap?src_chain=1&dst_chain=43114&dst_token_hash=0x0000000000000000000000000000000000000000",
+    },
   },
   {
     name: "Banxa",
