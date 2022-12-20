@@ -17,8 +17,6 @@ import { getIcons } from "config/icons";
 const glpIcon = getIcons(null, "glp");
 const gmxIcon = getIcons(null, "gmx");
 
-console.log({ glpIcon, gmxIcon });
-
 export default function TokenCard({ showRedirectModal, redirectPopupTimestamp }) {
   const isHome = isHomeSite();
   const { chainId } = useChainId();
