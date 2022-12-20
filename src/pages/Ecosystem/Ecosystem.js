@@ -633,8 +633,8 @@ export default function Ecosystem() {
             })}
           </div>
         </div>
-        <Footer />
       </div>
+      <Footer />
     </SEO>
   );
 }

@@ -45,17 +45,17 @@ export function AppHeaderLinks({
           redirectPopupTimestamp={redirectPopupTimestamp}
           showRedirectModal={showRedirectModal}
         >
-          <Trans>Dashboard</Trans>
+          <Trans>DASHBOARD</Trans>
         </HeaderLink>
       </div>
       <div className="App-header-link-container">
         <HeaderLink to="/earn" redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal}>
-          <Trans>Earn</Trans>
+          <Trans>EARN</Trans>
         </HeaderLink>
       </div>
       <div className="App-header-link-container">
         <HeaderLink to="/buy" redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal}>
-          <Trans>Buy</Trans>
+          <Trans>BUY</Trans>
         </HeaderLink>
       </div>
       <div className="App-header-link-container">
@@ -64,7 +64,7 @@ export function AppHeaderLinks({
           redirectPopupTimestamp={redirectPopupTimestamp}
           showRedirectModal={showRedirectModal}
         >
-          <Trans>Referrals</Trans>
+          <Trans>REFERRALS</Trans>
         </HeaderLink>
       </div>
       <div className="App-header-link-container">
@@ -73,12 +73,12 @@ export function AppHeaderLinks({
           redirectPopupTimestamp={redirectPopupTimestamp}
           showRedirectModal={showRedirectModal}
         >
-          <Trans>Ecosystem</Trans>
+          <Trans>ECOSYSTEM</Trans>
         </HeaderLink>
       </div>
       <div className="App-header-link-container">
         <ExternalLink href="https://gmxio.gitbook.io/gmx/">
-          <Trans>About</Trans>
+          <Trans>ABOUT</Trans>
         </ExternalLink>
       </div>
       {small && !isHomeSite() && (

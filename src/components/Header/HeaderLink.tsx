@@ -60,9 +60,7 @@ export function HeaderLink({
 
   return (
     <NavLink activeClassName="active" className={cx(className)} exact={exact} to={to}>
-      <GradientButton padding={padding}>
-        {children}
-      </GradientButton>      
+      {children}
     </NavLink>
   );
 }
