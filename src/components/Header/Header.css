@@ -154,6 +154,19 @@
     margin-top: 4rem;
   }
   .ecosystem-heading {
+    margin-left:9rem;
+  }
+}
+
+
+@media (max-width: 320px){
+  .our-tokens {
+    margin-left: 9rem;
+  }
+  .asr-content-wrapper {
+    margin-top: 4rem;
+  }
+  .ecosystem-heading {
     margin-left:6rem;
   }
 }
