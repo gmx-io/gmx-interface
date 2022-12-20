@@ -44,7 +44,7 @@ export const FIAT_GATEWAYS: Exchange[] = [
     },
   },
   {
-    name: "Tansak",
+    name: "Transak",
     icon: "ic_tansak.svg",
     networks: [ARBITRUM],
     link: "https://global.transak.com/?apiKey=28a15a9b-d94e-4944-99cc-6aa35b45cc74&networks=arbitrum&defaultCryptoCurrency=GMX&isAutoFillUserData=true&hideMenu=true&isFeeCalculationHidden=true",
@@ -98,7 +98,7 @@ export const BUY_NATIVE_TOKENS: Exchange[] = [
     },
   },
   {
-    name: "Tansak",
+    name: "Transak",
     icon: "ic_tansak.svg",
     networks: [ARBITRUM, AVALANCHE],
     links: {
