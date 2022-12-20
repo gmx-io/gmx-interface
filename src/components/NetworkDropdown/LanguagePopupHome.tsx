@@ -15,13 +15,13 @@ export default function LanguagePopupHome() {
 
   return (
     <>
-      <div className="App-header-network App-header-language" onClick={() => setIsLanguageModalOpen(true)}>
+      {/* <div className="App-header-network App-header-language" onClick={() => setIsLanguageModalOpen(true)}>
         <div className={cx("network-dropdown", { "homepage-header": isHomeSite() })}>
           <button className={cx("btn-primary small transparent")}>
             <img className="network-dropdown-icon" src={language24Icon} alt="Select Language" />
           </button>
         </div>
-      </div>
+      </div> */}
 
       <ModalWithPortal
         className="language-popup"

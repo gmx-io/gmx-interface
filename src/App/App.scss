@@ -20,22 +20,22 @@
 }
 
 .App-header.large {
-  height: 6.2rem;
-  backdrop-filter: blur(4px);
+  height: 10rem;
+  // backdrop-filter: blur(4px);
   display: flex;
   justify-content: space-between;
   position: relative;
   padding-left: 3.2rem;
   padding-right: 3.2rem;
-  background: transparent 0% 0% no-repeat padding-box;
-  border-bottom: 1px solid #ffffff10;
+  // background: transparent 0% 0% no-repeat padding-box;
+  // border-bottom: 1px solid #ffffff10;
 }
 
 .App-header.large::after {
   height: 1.3rem;
   width: 100%;
   content: " ";
-  background: transparent linear-gradient(180deg, #00000030 0%, #00000000 100%) 0% 0% no-repeat padding-box;
+  // background: transparent linear-gradient(180deg, #00000030 0%, #00000000 100%) 0% 0% no-repeat padding-box;
   position: absolute;
   bottom: -1.3rem;
   left: 0;
@@ -43,6 +43,7 @@
 
 .App-header.large .App-header-links {
   display: flex;
+  margin-left: 30rem;
 }
 
 .App-header.small {
@@ -101,13 +102,13 @@
   display: flex;
   align-items: center;
   z-index: 3;
-  margin-left: 1.6rem;
+  margin-left: 10.6rem;
   justify-content: space-between;
 }
 
 .App-header-container-left {
   display: flex;
-  align-items: center;
+  align-items: center;  
 }
 
 .App-header-top {
@@ -596,16 +597,19 @@ button.App-connect-wallet:hover {
 .App-header a.App-header-link-main,
 .App-header .App-header-link-main {
   font-size: 1.7rem;
-  padding: 1.5rem;
-  margin-left: -1.5rem;
   display: flex;
-  margin-right: 1.2rem;
+  background-position: right;
 }
-
+.asuras_logo_big {
+  
+}
 .App-header-link-main img {
   display: inline-block;
-  height: 2.15rem;
+  position: absolute;
+  height: 30.15rem;
   vertical-align: middle;
+  top: -10rem;
+  left: 1rem;
 }
 
 .App-header-link-main img.small {
@@ -641,6 +645,7 @@ button.App-connect-wallet:hover {
   font-size: var(--font-base);
   line-height: 1.8rem;
   font-weight: normal;
+  
 }
 
 .App-header-container-left .a.active,
@@ -1356,7 +1361,7 @@ button.App-button {
     margin-right: 0.6rem;
   }
   .App-header-trade-link a {
-    padding: 0 0.8rem;
+    padding: 1.5rem 1.8rem;
   }
 
   .App-header-user-netowork {

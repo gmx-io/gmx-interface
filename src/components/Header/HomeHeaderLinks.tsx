@@ -18,20 +18,20 @@ type HomeLink = { label: string; link: string; isHomeLink?: boolean | false };
 
 const HOME_MENUS: HomeLink[] = [
   {
-    label: t`Market`,
+    label: t`BUY ASR`,
     isHomeLink: true,
     link: "/trade",
   },
   {
-    label: t`GOVERNANCE`,
+    label: t`PROTOCOL`,
     link: "https://github.com/gmx-io",
   },
   {
-    label: t`VOTING`,
+    label: t`GOVERNANCE`,
     link: "https://gov.gmx.io/",
   },
   {
-    label: t`PRESALE`,
+    label: t`VOTING`,
     link: "https://snapshot.org/#/gmx.eth",
   },
   {

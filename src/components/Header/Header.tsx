@@ -1,49 +1,179 @@
-import { useEffect, useState } from "react";
-import asurasLogo from "./HeaderAssets/asurasLogo.png";
+import React, { ReactNode, useEffect, useState } from "react";
+import cx from "classnames";
+
+import { AppHeaderUser } from "./AppHeaderUser";
+import { AppHeaderLinks } from "./AppHeaderLinks";
+
+import logoImg from "../../pages/Home/HomepageAssets/asurasLogo.svg";
+import logoSmallImg from "img/logo_GMX_small.svg";
+import { RiMenuLine } from "react-icons/ri";
+import { FaTimes } from "react-icons/fa";
+import { AnimatePresence as FramerAnimatePresence, motion } from "framer-motion";
 
 import "./Header.css";
-import { GradientButton } from "components/LandingPageComponents/BlueButtonComponents/BlueButtonComponent";
-import { Link, NavLink } from "react-router-dom";
-import { HeaderLink } from "./HeaderLink";
-import { Trans } from "@lingui/react";
-import { getAppBaseUrl, getDashboardPageUrl, getHomeUrl, getTradePageUrl } from "lib/legacy";
+import { Link } from "react-router-dom";
+import { isHomeSite } from "lib/legacy";
+import { HomeHeaderLinks } from "./HomeHeaderLinks";
 
-export function Header({redirectPopupTimestamp,showRedirectModal, isHome}) {
-  console.log('isHome',isHome)
-  const LaunchExchangeButton = () => {
-    return (
-      <HeaderLink
-        className="header-btn"
-        to="/trade"
-        redirectPopupTimestamp={redirectPopupTimestamp}
-        showRedirectModal={showRedirectModal}
-      >
-        <p>LAUNCH APP</p>
-      </HeaderLink>
-    );
-  };
+// Fix framer-motion old React FC type (solved in react 18)
+const AnimatePresence = (props: React.ComponentProps<typeof FramerAnimatePresence> & { children: ReactNode }) => (
+  <FramerAnimatePresence {...props} />
+);
 
+const fadeVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1 },
+};
+
+const slideVariants = {
+  hidden: { x: "-100%" },
+  visible: { x: 0 },
+};
+
+type Props = {
+  disconnectAccountAndCloseSettings: () => void;
+  openSettings: () => void;
+  setWalletModalVisible: (visible: boolean) => void;
+  redirectPopupTimestamp: number;
+  showRedirectModal: (to: string) => void;
+};
+
+export function Header({
+  disconnectAccountAndCloseSettings,
+  openSettings,
+  setWalletModalVisible,
+  redirectPopupTimestamp,
+  showRedirectModal,
+}: Props) {
+  const [isDrawerVisible, setIsDrawerVisible] = useState(false);
+  const [isNativeSelectorModalVisible, setIsNativeSelectorModalVisible] = useState(false);
+
+  useEffect(() => {
+    if (isDrawerVisible) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isDrawerVisible]);
 
   return (
     <>
-      <header className="header-wrapper">
-        <div className="logo-wrapper">
-          <img src={asurasLogo} className="logo" alt="Asuras Logo"/>
+      {isDrawerVisible && (
+        <AnimatePresence>
+          {isDrawerVisible && (
+            <motion.div
+              className="App-header-backdrop"
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              variants={fadeVariants}
+              transition={{ duration: 0.2 }}
+              onClick={() => setIsDrawerVisible(!isDrawerVisible)}
+            ></motion.div>
+          )}
+        </AnimatePresence>
+      )}
+      {isNativeSelectorModalVisible && (
+        <AnimatePresence>
+          {isNativeSelectorModalVisible && (
+            <motion.div
+              className="selector-backdrop"
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              variants={fadeVariants}
+              transition={{ duration: 0.2 }}
+              onClick={() => setIsNativeSelectorModalVisible(!isNativeSelectorModalVisible)}
+            ></motion.div>
+          )}
+        </AnimatePresence>
+      )}
+      <header>
+        <div className="App-header large">
+          <div className="App-header-container-left">
+            <Link className="App-header-link-main" to="/">
+              <img src={logoImg} className="asuras_logo_big" />
+              <img src={logoSmallImg} className="small" alt="GMX Logo" />
+            </Link>
+            {isHomeSite() ? (
+              <HomeHeaderLinks redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal} />
+            ) : (
+              <AppHeaderLinks redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal} />
+            )}
+          </div>
+          <div className="App-header-container-right">
+            <AppHeaderUser
+              disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
+              openSettings={openSettings}
+              setWalletModalVisible={setWalletModalVisible}
+              redirectPopupTimestamp={redirectPopupTimestamp}
+              showRedirectModal={showRedirectModal}
+            />
+          </div>
         </div>
-        <div className="navbar-wrapper">
-          <ul className="navbar-items">
-            <a onClick={() => alert('Page not ready')} className="navbar-item">PRESALE</a>
-            <a href={getDashboardPageUrl()} className="navbar-item">DASHBOARD</a>
-            <a onClick={() => alert('Page not ready')} className="navbar-item">EARN</a>
-            <a onClick={() => alert('Page not ready')} className="navbar-item">BUY</a>
-            <a href={getTradePageUrl()} className="navbar-item">MARKET</a>
-            <a href={getAppBaseUrl()} className="navbar-item">MORE</a>
-          </ul>
-        </div>   
-        {isHome && (
-          <LaunchExchangeButton />
-        )}     
+        <div className={cx("App-header", "small", { active: isDrawerVisible })}>
+          <div
+            className={cx("App-header-link-container", "App-header-top", {
+              active: isDrawerVisible,
+            })}
+          >
+            <div className="App-header-container-left">
+              <div className="App-header-menu-icon-block" onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
+                {!isDrawerVisible && <RiMenuLine className="App-header-menu-icon" />}
+                {isDrawerVisible && <FaTimes className="App-header-menu-icon" />}
+              </div>
+              <div className="App-header-link-main clickable" onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
+                <img src={logoImg} className="big" alt="GMX Logo" />
+                <img src={logoSmallImg} className="small" alt="GMX Logo" />
+              </div>
+            </div>
+            <div className="App-header-container-right">
+              <AppHeaderUser
+                disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
+                openSettings={openSettings}
+                small
+                setWalletModalVisible={setWalletModalVisible}
+                redirectPopupTimestamp={redirectPopupTimestamp}
+                showRedirectModal={showRedirectModal}
+              />
+            </div>
+          </div>
+        </div>
       </header>
+      <AnimatePresence>
+        {isDrawerVisible && (
+          <motion.div
+            onClick={() => setIsDrawerVisible(false)}
+            className="App-header-links-container App-header-drawer"
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            variants={slideVariants}
+            transition={{ duration: 0.2 }}
+          >
+            {isHomeSite() ? (
+              <HomeHeaderLinks
+                small
+                clickCloseIcon={() => setIsDrawerVisible(false)}
+                redirectPopupTimestamp={redirectPopupTimestamp}
+                showRedirectModal={showRedirectModal}
+              />
+            ) : (
+              <AppHeaderLinks
+                small
+                openSettings={openSettings}
+                clickCloseIcon={() => setIsDrawerVisible(false)}
+                redirectPopupTimestamp={redirectPopupTimestamp}
+                showRedirectModal={showRedirectModal}
+              />
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }

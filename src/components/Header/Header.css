@@ -126,6 +126,23 @@
     font-size: 14px;
   }
 
-  
-
  }
+
+ @media (max-width: 425px) { 
+
+  .supported-network-text{
+    margin-left: 6rem;
+  }
+  .our-tokens {
+    margin-left: 15rem;
+  }
+  .our-tokens {
+    margin-top: 7rem;
+  }
+ }
+@media (max-width: 375px){
+  .our-tokens {
+    margin-left: 11rem;
+  }
+}
+ 

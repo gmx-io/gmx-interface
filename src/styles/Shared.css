@@ -253,6 +253,50 @@ a.plain {
     margin-right: 4rem;
   }
 }
+
+@media (max-width: 475px) { 
+  .default-btn {
+    font-family: 'Montserrat';
+    padding: 1rem 4rem;
+    background: #00b4c9ff;
+    border-radius: 7px;;  
+    text-decoration: none;
+    font-size: 12px;
+  }
+
+  .header-btn {
+    font-family: 'Montserrat';
+    padding: 0.1rem 3rem;
+    background: #00b4c9ff;
+    border-radius: 7px;;  
+    text-decoration: none;
+    margin-right: 4rem;
+  }
+}
+
+@media (max-width: 375px) { 
+  .default-btn {
+    font-family: 'Montserrat';
+    padding: 1rem 3rem;
+    background: #00b4c9ff;
+    border-radius: 7px;;  
+    text-decoration: none;
+    font-size: 12px;
+  }
+
+}
+
+@media (max-width: 325px) { 
+  .default-btn {
+    font-family: 'Montserrat';
+    padding: 1rem 2rem;
+    background: #00b4c9ff;
+    border-radius: 7px;;  
+    text-decoration: none;
+    font-size: 8px;
+  }
+
+}
 /* .default-btn:hover {
   background: var(--primary-btn-hover);
 } */

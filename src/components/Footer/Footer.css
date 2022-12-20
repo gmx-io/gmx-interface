@@ -78,9 +78,16 @@
   }
 }
 
+@media (max-width: 440px) {
+  .Footer-links {
+    flex-direction: column;
+    margin-bottom: 5rem;
+  }
+}
 @media (max-width: 580px) {
   .Footer-links {
     flex-direction: column;
+    margin-bottom: 5rem;
   }
   .Footer-links > a {
     padding-right: 0;

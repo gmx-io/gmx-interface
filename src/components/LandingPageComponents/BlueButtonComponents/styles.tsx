@@ -14,4 +14,18 @@ export const StyledButton = styled.button<{ fontWeight?: string, fontSize?:strin
       font-size:12px;   
     }
   }
+  @media (max-width: 425px) {
+    padding: 1rem 4rem;   
+    font-size: 12px;   
+  }
+  @media (max-width: 375px) { 
+    padding: 1rem 3rem;   
+    font-size: 12px;  
+  }
+  @media (max-width: 320px) { 
+    padding: 1rem 2rem;   
+    font-size: 8px;  
+    width:70%;
+  }
+}
 `

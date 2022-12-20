@@ -336,7 +336,6 @@ margin-left: 9rem;
   justify-content: center;
   height: 10rem;
 }
-  
  .asuras-footer-logo {
   position: absolute;
   bottom: 0.1rem;
@@ -472,4 +471,131 @@ margin-left: 9rem;
 
    }
   
+}
+
+
+@media (max-width: 425px) { 
+  .main-page-empty-block {
+    display: none;
+  } 
+
+  .home-wrapper{ 
+    display: block;
+  }
+
+  .content-wrapper {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+  }
+
+  .content-footer {
+    width: 90%;
+    display: flex;
+  }
+
+  .footer-content {
+    display: none;
+  }
+
+  .live-on-arbitrum {
+    display: flex;
+  }
+
+  .dex-stats-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin-top:4rem;
+  }
+  .stat-wrapper{
+    width: 80%;
+    justify-content: space-around;
+    margin-top: 4rem;
+  }
+  .stat-content-wrapper {
+    width: 40%;
+    margin-right: 5rem;
+  }
+  .stat-content-values{
+    font-size: 20px;
+  }
+  .stat-content-heading {
+    font-size: 14px;
+  }
+  .main-stats-wrapper {
+    height: 60rem;
+  }
+  .main-stats{
+    display: flex;
+    flex-direction: column;
+    align-items:flex-start;
+  }
+
+  .main-stat {
+    display: flex;
+    width: 80%;
+  }
+  .main-stat-content-wrapper {
+
+  }
+  .main-stat-content-wrapper {
+    width: 100%;
+  }
+ 
+  .currencies-block{
+    margin-left:0rem;
+  }
+
+  .tokens-list{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    justify-content: center;
+    margin-top: 4rem;
+  }
+
+  .token-name{
+    font-size: 16px;
+
+  }
+  .token-item {
+    margin-left: 4rem; 
+    margin-top: 2rem;  
+  }
+  
+  .cards-wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .asr-card{
+    width: 90%;
+    margin-left: 2rem;
+  }
+  .asr-earnings{
+    margin-left: 2rem;
+  }
+
+  .ecosystem-screen{
+    width: 100%;
+  }
+  
+  .asuras-footer-logo{
+    width: 40%;
+    bottom: 8rem;
+  }
+}
+
+
+@media (max-width: 375px) { 
+  .main-page-empty-block {
+    display: none;
+  } 
+  .token-item {
+    margin-left: 2rem;
+    margin-top: 2rem;
+  }
+  .learn-more{
+    font-size: 10px;
+  }
+
 }

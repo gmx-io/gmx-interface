@@ -147,7 +147,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp,isHome 
     );
   };
 
-  return (
+  return (  
     <div className="Home">
       <div className="asset-img">
       <Header redirectPopupTimestamp={redirectPopupTimestamp}
