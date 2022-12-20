@@ -23,9 +23,13 @@ export const StyledButton = styled.button<{ fontWeight?: string, fontSize?:strin
     font-size: 12px;  
   }
   @media (max-width: 320px) { 
-    padding: 1rem 2rem;   
+    display: flex;
+    justify-content: center;
+    padding: 0.5rem 5rem;   
     font-size: 8px;  
     width:70%;
+    text-align:center;
   }
+  
 }
 `

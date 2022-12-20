@@ -128,7 +128,7 @@ export function Header({
               </div>
               <div className="App-header-link-main clickable" onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
                 <img src={logoImg} className="big" alt="GMX Logo" />
-                <img src={logoSmallImg} className="small" alt="GMX Logo" />
+                <img src={logoImg} className="big" alt="GMX Logo" />
               </div>
             </div>
             <div className="App-header-container-right">

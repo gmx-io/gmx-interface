@@ -599,3 +599,75 @@ margin-left: 9rem;
   }
 
 }
+
+@media (max-width: 320px){
+  .main-stat {
+      display: flex;
+      width: 80%;
+      margin-bottom: 4rem;
+      margin-top: 4rem;
+
+      align-items: center;
+  }
+
+  .main-stats-wrapper {
+    height: 80rem;
+    font-size: 12px;
+  }
+
+  .main-stat-heading{
+    font-size: 14px;
+  }
+
+  .stat-wrapper{
+    width: 90%;
+    border-radius: 10px;
+  }
+  
+  .content-text {
+    font-size: 32px;
+  }
+
+  .asr-logo {
+    margin-top: 0rem;
+    margin-bottom: 0rem;
+  }
+  .text-green{
+    font-size: 12px;
+  }
+  .asr-token-data-wrapper{
+    margin-bottom: 3rem;
+  }
+  .asr-earnings{
+    margin-left: 4rem;
+  }
+  .alp-footer-text{
+    margin-left:1rem;
+    margin-right: 1rem;
+  }
+  .buy-asr{
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    margin-right: 2rem;
+  }
+  .buy-alp{
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    margin-right: 2rem;
+  }
+  .learn-more{
+    text-align: center;
+    margin-right: 2rem;
+  }
+  .token-symbol{
+    font-size: 14px;
+  }
+  .token-name{
+    font-size: 12px;
+  }
+  .token-item{
+    margin-left:1rem;
+  }
+}

@@ -339,6 +339,10 @@ msgstr "Avalanche APR"
 msgid "Avalanche Icon"
 msgstr ""
 
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "BUY ASR"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Balance"
 msgstr "Balance"
@@ -1836,7 +1840,6 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/Header/HomeHeaderLinks.tsx
 msgid "Market"
 msgstr ""
 
@@ -2235,14 +2238,14 @@ msgstr "Resumen"
 msgid "POOL"
 msgstr "RESERVA"
 
-#: src/components/Header/HomeHeaderLinks.tsx
-msgid "PRESALE"
-msgstr ""
-
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "PRICE"
 msgstr "PRECIO"
+
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "PROTOCOL"
+msgstr ""
 
 #: src/pages/PageNotFound/PageNotFound.js
 msgid "Page not found"
