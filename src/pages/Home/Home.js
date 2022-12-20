@@ -34,6 +34,7 @@ import { getServerUrl } from "config/backend";
 import { bigNumberify, formatAmount, numberWithCommas } from "lib/numbers";
 import { GradientButton } from "components/LandingPageComponents/BlueButtonComponents/BlueButtonComponent";
 import { Header } from "components/Header/Header";
+import { Link, NavLink } from "react-router-dom";
 
 
 export default function Home({ showRedirectModal, redirectPopupTimestamp,isHome }) {
@@ -141,8 +142,9 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp,isHome 
         to="/trade"
         redirectPopupTimestamp={redirectPopupTimestamp}
         showRedirectModal={showRedirectModal}
+        
       >
-        <Trans>LAUNCH APP</Trans>
+        <Trans >LAUNCH APP</Trans>
       </HeaderLink>
     );
   };
@@ -164,7 +166,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp,isHome 
             <div className="content-footer">  
               <div className="button-wrapper">   
                 <LaunchExchangeButton/>
-                <span className="learn-more">Learn more {">"}</span>
+                <span className="learn-more" style={{cursor:'pointer'}}><a style={{textDecoration:'none'}} href="https://gmxio.gitbook.io/gmx/" target="_blank">Learn more</a>  {">"}</span>
               </div>
               <div className="footer-content">
                 <span className="live-on-arbitrum">LIVE ON
@@ -343,7 +345,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp,isHome 
                 <GradientButton fontSize="26px" fontWeight="bold" padding="1.5rem 10rem">
                   Buy ASR
                 </GradientButton>  
-                <span  className="learn-more">Learn more {">"}</span>
+                <span  className="learn-more"><a style={{textDecoration:'none'}} href="https://gmxio.gitbook.io/gmx/" target="_blank">Learn more</a> {">"}</span>
               </div>             
             </div>
             <p className="asr-footer-text">ASR's price is entirely speculative.</p>
@@ -388,7 +390,9 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp,isHome 
                 <GradientButton fontSize="26px" fontWeight="bold" padding="1.5rem 10rem" >
                     Buy ALP
                 </GradientButton>  
-                <span  className="learn-more">Learn more {">"}</span>
+                <span className="learn-more">
+                  <a style={{textDecoration:'none'}} href="https://gmxio.gitbook.io/gmx/" target="_blank">Learn more
+                  </a> {">"}</span>
               </div>             
             </div>
             <p className="alp-footer-text">ALP's price depends on the prices of tokens that are indexed..</p>
