@@ -42,6 +42,6 @@ export function getIcons(network, label) {
   if (!network) {
     return ICONS[label];
   }
-  if (![ARBITRUM, AVALANCHE].includes(network)) return "";
+  if (![ARBITRUM, AVALANCHE].includes(network)) return;
   return label ? ICONS[network][label] : ICONS[network];
 }

@@ -15,6 +15,7 @@ import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
 import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, getChainName } from "config/chains";
 import { switchNetwork } from "lib/wallets";
 import { useChainId } from "lib/chains";
+import { getIcons } from "config/icons";
 
 type Props = {
   openSettings: () => void;
@@ -41,13 +42,13 @@ export function AppHeaderUser({
     {
       label: getChainName(ARBITRUM),
       value: ARBITRUM,
-      icon: "ic_arbitrum_24.svg",
+      icon: getIcons(ARBITRUM, "network"),
       color: "#264f79",
     },
     {
       label: getChainName(AVALANCHE),
       value: AVALANCHE,
-      icon: "ic_avalanche_24.svg",
+      icon: getIcons(AVALANCHE, "network"),
       color: "#E841424D",
     },
   ];
@@ -55,7 +56,7 @@ export function AppHeaderUser({
     networkOptions.push({
       label: getChainName(ARBITRUM_TESTNET),
       value: ARBITRUM_TESTNET,
-      icon: "ic_arbitrum_24.svg",
+      icon: getIcons(ARBITRUM, "network"),
       color: "#264f79",
     });
   }

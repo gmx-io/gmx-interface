@@ -156,7 +156,6 @@ function NetworkMenuItems({ networkOptions, selectorLabel, onNetworkSelect }) {
     await onNetworkSelect(option);
   }
   return networkOptions.map((network) => {
-    const networkIcon = importImage(network.icon);
     return (
       <Menu.Item key={network.value}>
         <div
@@ -165,7 +164,7 @@ function NetworkMenuItems({ networkOptions, selectorLabel, onNetworkSelect }) {
         >
           <div className="menu-item-group">
             <div className="menu-item-icon">
-              <img className="network-dropdown-icon" src={networkIcon} alt={network.label} />
+              <img className="network-dropdown-icon" src={network.icon} alt={network.label} />
             </div>
             <span className="network-dropdown-item-label">{network.label}</span>
           </div>
