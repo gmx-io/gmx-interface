@@ -1294,6 +1294,7 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/SyntheticsPositionsList/SyntheticsPositionsList.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
 msgid "Entry Price"
 msgstr "エントリー価格"
 
@@ -1326,6 +1327,7 @@ msgstr "執行手数料"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/MarketPoolFees/MarketPoolFees.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapFees/SyntheticsSwapFees.tsx
 msgid "Execution fee"
 msgstr ""
 
@@ -1351,6 +1353,7 @@ msgid "Fees"
 msgstr "手数料"
 
 #: src/components/MarketPoolFees/MarketPoolFees.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapFees/SyntheticsSwapFees.tsx
 msgid "Fees and price impact"
 msgstr ""
 
@@ -1762,6 +1765,7 @@ msgstr "残りのポジションが10 USD以下"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
 msgid "Leverage"
 msgstr "レバレッジ"
 
@@ -2604,6 +2608,7 @@ msgid "Price conditions are met"
 msgstr ""
 
 #: src/components/MarketPoolFees/MarketPoolFees.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapFees/SyntheticsSwapFees.tsx
 msgid "Price impact"
 msgstr ""
 

@@ -1294,6 +1294,7 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/SyntheticsPositionsList/SyntheticsPositionsList.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
 msgid "Entry Price"
 msgstr ""
 
@@ -1326,6 +1327,7 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/MarketPoolFees/MarketPoolFees.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapFees/SyntheticsSwapFees.tsx
 msgid "Execution fee"
 msgstr ""
 
@@ -1351,6 +1353,7 @@ msgid "Fees"
 msgstr ""
 
 #: src/components/MarketPoolFees/MarketPoolFees.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapFees/SyntheticsSwapFees.tsx
 msgid "Fees and price impact"
 msgstr ""
 
@@ -1762,6 +1765,7 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
 msgid "Leverage"
 msgstr ""
 
@@ -2604,6 +2608,7 @@ msgid "Price conditions are met"
 msgstr ""
 
 #: src/components/MarketPoolFees/MarketPoolFees.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapFees/SyntheticsSwapFees.tsx
 msgid "Price impact"
 msgstr ""
 

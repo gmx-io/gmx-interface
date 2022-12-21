@@ -48,6 +48,7 @@ import {
 } from "../utils";
 
 import "./SyntheticsSwapBox.scss";
+import { SyntheticsSwapFees } from "../SyntheticsSwapFees/SyntheticsSwapFees";
 
 enum FocusedInput {
   From = "From",
@@ -131,6 +132,7 @@ export function SyntheticsSwapBox(p: Props) {
   const nativeToken = getTokenData(tokensData, NATIVE_TOKEN_ADDRESS);
 
   const executionFee = getExecutionFee(tokensData);
+  const totalFeeUsd = BigNumber.from(0).sub(executionFee?.feeUsd || BigNumber.from(0));
 
   const submitButtonState = getSubmitButtonState();
 
@@ -228,20 +230,23 @@ export function SyntheticsSwapBox(p: Props) {
   );
 
   useEffect(
-    function initToken() {
-      if (!fromTokenState.tokenAddress && nativeToken) {
-        fromTokenState.setTokenAddress(nativeToken.address);
+    function updateTokenInputs() {
+      if (
+        availableFromTokens.length &&
+        !availableFromTokens.find((token) => token.address === fromTokenState.tokenAddress)
+      ) {
+        fromTokenState.setTokenAddress(availableFromTokens[0].address);
       }
 
-      if (!toTokenState.tokenAddress && nativeToken) {
-        toTokenState.setTokenAddress(nativeToken.address);
+      if (availableToTokens.length && !availableToTokens.find((token) => token.address === toTokenState.tokenAddress)) {
+        toTokenState.setTokenAddress(availableToTokens[0].address);
       }
     },
-    [fromTokenState, nativeToken, toTokenState]
+    [availableFromTokens, availableToTokens, fromTokenState, nativeToken, toTokenState]
   );
 
   useEffect(
-    function initMode() {
+    function updateMode() {
       if (operationTab && modeTab && !avaialbleModes[operationTab].includes(modeTab)) {
         setModeTab(avaialbleModes[operationTab][0]);
       }
@@ -386,32 +391,6 @@ export function SyntheticsSwapBox(p: Props) {
         )}
       </div>
 
-      {/* <div className="SyntheticsSwapBox-info-section">
-        <InfoRow
-          label={<Trans>Fees and price impact</Trans>}
-          value={
-            <Tooltip
-              handle={formatFee(fees)}
-              position="right-bottom"
-              renderContent={() => (
-                <div className="text-white">
-                  <StatsTooltipRow
-                    label={t`Price impact`}
-                    value={formatFee(priceImpact?.impact, priceImpact?.basisPoints)}
-                    showDollar={false}
-                  />
-                  <StatsTooltipRow
-                    label={t`Execution fee`}
-                    value={formatTokenAmount(executionFee, nativeToken?.decimals, nativeToken?.symbol)}
-                    showDollar={false}
-                  />
-                </div>
-              )}
-            />
-          }
-        />
-      </div> */}
-
       {isLeverageAllowed && (
         <>
           <div className="Exchange-leverage-slider-settings">
@@ -427,22 +406,42 @@ export function SyntheticsSwapBox(p: Props) {
         </>
       )}
 
-      {isSelectCollateralAllowed && collateralTokenAddress && availableCollaterals && (
-        <InfoRow
-          label={t`Collateral In`}
-          value={
-            <TokenSelector
-              label={t`Collateral In`}
-              className="GlpSwap-from-token"
-              chainId={chainId}
-              tokenAddress={collateralTokenAddress}
-              onSelectToken={(token) => setCollateralTokenAddress(token.address)}
-              tokens={availableCollaterals}
-              showTokenImgInDropdown={true}
-            />
-          }
+      <div className="SyntheticsSwapBox-info-section">
+        {isSelectCollateralAllowed && collateralTokenAddress && availableCollaterals && (
+          <InfoRow
+            label={t`Collateral In`}
+            className="SyntheticsSwapBox-info-row"
+            value={
+              <TokenSelector
+                label={t`Collateral In`}
+                className="GlpSwap-from-token"
+                chainId={chainId}
+                tokenAddress={collateralTokenAddress}
+                onSelectToken={(token) => setCollateralTokenAddress(token.address)}
+                tokens={availableCollaterals}
+                showTokenImgInDropdown={true}
+              />
+            }
+          />
+        )}
+        {isLeverageAllowed && leverageOption && (
+          <InfoRow className="SyntheticsSwapBox-info-row" label={t`Leverage`} value={`${leverageOption.toFixed(2)}x`} />
+        )}
+        {isPosition && (
+          <InfoRow
+            className="SyntheticsSwapBox-info-row"
+            label={t`Entry Price`}
+            value={formatUsdAmount(toTokenState.price)}
+          />
+        )}
+        <SyntheticsSwapFees
+          executionFee={executionFee?.feeTokenAmount}
+          executionFeeUsd={executionFee?.feeUsd}
+          executionFeeToken={executionFee?.feeToken}
+          totalFeeUsd={totalFeeUsd}
+          priceImpact={undefined}
         />
-      )}
+      </div>
 
       <div className="Exchange-swap-button-container">
         <SubmitButton
