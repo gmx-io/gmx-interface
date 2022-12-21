@@ -1,13 +1,27 @@
-import {
-  findSwapPath,
-  getMarketsGraph,
-  getSwapParamsForPosition,
-  parseMarketCombination,
-} from "domain/synthetics/exchange";
-import { MarketsData, MarketsPoolsData } from "domain/synthetics/markets";
+import { findSwapPath, getMarketsGraph, getSwapParamsForPosition } from "domain/synthetics/exchange";
+import { MarketsData, MarketsPoolsData, getMarkets } from "domain/synthetics/markets";
 import { BigNumber } from "ethers";
 
-const markets = [
+const SEPARATOR = ":";
+
+// function getMarketCombination(market: Market) {
+//   const { marketTokenAddress, longTokenAddress, shortTokenAddress, indexTokenAddress } = market;
+
+//   return [marketTokenAddress, longTokenAddress, shortTokenAddress, indexTokenAddress].join(SEPARATOR);
+// }
+
+function parseMarketCombination(marketCombination: string) {
+  const [market, indexToken, longToken, shortToken] = marketCombination.split(SEPARATOR);
+
+  return {
+    market,
+    longToken,
+    shortToken,
+    indexToken,
+  };
+}
+
+const marketsKeys = [
   "AVAX-AVAX-USDC",
   "ETH-ETH-USDC",
   "ETH-ETH-DAI",
@@ -17,10 +31,7 @@ const markets = [
   "SPOT-DAI-USDC",
 ];
 
-// format: market:longToken:shortToken:indexToken
-const marketsCombinations = markets.map((market) => `${market}:${market.replaceAll("-", ":")}`);
-
-const { collateralsGraph } = getMarketsGraph(marketsCombinations);
+const marketsCombinations = marketsKeys.map((market) => `${market}:${market.replaceAll("-", ":")}`);
 
 const marketsData: MarketsData = marketsCombinations.reduce((acc, comb) => {
   const { market, longToken, shortToken, indexToken } = parseMarketCombination(comb);
@@ -36,7 +47,12 @@ const marketsData: MarketsData = marketsCombinations.reduce((acc, comb) => {
 
   return acc;
 }, {} as MarketsData);
-const poolsData: MarketsPoolsData = markets.reduce((acc, market) => {
+
+const markets = getMarkets(marketsData);
+
+const { collateralsGraph } = getMarketsGraph(markets);
+
+const poolsData: MarketsPoolsData = marketsKeys.reduce((acc, market) => {
   acc[market] = {
     longPoolAmount: BigNumber.from(10),
     shortPoolAmount: BigNumber.from(10),
@@ -228,7 +244,7 @@ describe("getSwapPath", () => {
         poolsData,
       },
       {
-        name: "no swapPath invalid collateral",
+        name: "no swapPath - invalid collateral",
         from: "ETH",
         collateral: "USDC",
         index: "BTC",

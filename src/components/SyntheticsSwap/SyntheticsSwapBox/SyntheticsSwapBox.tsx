@@ -12,33 +12,40 @@ import {
   SYNTHETICS_SWAP_MODE_KEY,
   SYNTHETICS_SWAP_OPERATION_KEY,
 } from "config/localStorage";
-import { getWrappedToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { useSwapTokenState } from "domain/synthetics/exchange";
+import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { useTokenInputState } from "domain/synthetics/exchange";
 import { getExecutionFee } from "domain/synthetics/fees";
-import { getMarkets, useMarketsData, useMarketsPoolsData } from "domain/synthetics/markets";
+import { useMarketsData, useMarketsPoolsData } from "domain/synthetics/markets";
 import { getPositionMarketsPath, getSwapPath } from "domain/synthetics/orders";
 import {
-  adaptToInfoTokens,
-  convertFromUsdByPrice,
   convertToUsdByPrice,
   formatTokenAmount,
   formatUsdAmount,
   getTokenData,
-  TokenData,
   useAvailableTradeTokensData,
 } from "domain/synthetics/tokens";
-import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 
 import { useChainId } from "lib/chains";
-import { BASIS_POINTS_DIVISOR, PRECISION, USD_DECIMALS } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { bigNumberify, formatAmount, parseValue } from "lib/numbers";
 import { useEffect, useMemo, useState } from "react";
 import { IoMdSwap } from "react-icons/io";
 import { SyntheticsSwapConfirmation } from "../SyntheticsSwapConfirmation/SyntheticsSwapConfirmation";
 import { SyntheticSwapStatus } from "../SyntheticsSwapStatus/SyntheticsSwapStatus";
-import { avaialbleModes, getSubmitError, Mode, modeTexts, Operation, operationIcons, operationTexts } from "../utils";
+import {
+  avaialbleModes,
+  getNextTokenAmount,
+  getSubmitError,
+  Mode,
+  modeTexts,
+  Operation,
+  operationIcons,
+  operationTexts,
+  useAvailableSwapTokens,
+  useSwapTriggerRatioState,
+} from "../utils";
 
 import "./SyntheticsSwapBox.scss";
 
@@ -50,55 +57,6 @@ enum FocusedInput {
 type Props = {
   onConnectWallet: () => void;
 };
-
-const TRIGGER_RATIO_PRECISION = PRECISION;
-const LEVERAGE_PRECISION = BigNumber.from(BASIS_POINTS_DIVISOR);
-
-export function getNextTokenAmount(p: {
-  fromTokenAmount: BigNumber;
-  fromTokenPrice: BigNumber;
-  fromToken: Token;
-  toToken: Token;
-  toTokenPrice: BigNumber;
-  triggerPrice?: BigNumber;
-  shouldInvertTriggerPrice?: boolean;
-  swapTriggerRatio?: BigNumber;
-  shouldInvertRatio?: boolean;
-  leverageMultiplier?: BigNumber;
-  shouldInvertLeverage?: boolean;
-}) {
-  const fromUsdAmount = convertToUsdByPrice(p.fromTokenAmount, p.fromToken.decimals, p.fromTokenPrice);
-
-  let toAmount: BigNumber | undefined = convertFromUsdByPrice(fromUsdAmount, p.toToken.decimals, p.toTokenPrice);
-
-  if (!toAmount || !fromUsdAmount) return undefined;
-
-  if (p.swapTriggerRatio?.gt(0)) {
-    const ratio = p.shouldInvertRatio
-      ? p.swapTriggerRatio
-      : TRIGGER_RATIO_PRECISION.mul(TRIGGER_RATIO_PRECISION).div(p.swapTriggerRatio);
-
-    toAmount = p.fromTokenAmount.mul(ratio).div(TRIGGER_RATIO_PRECISION);
-  } else if (p.triggerPrice?.gt(0)) {
-    if (p.shouldInvertTriggerPrice) {
-      const toAmountUsd = convertToUsdByPrice(p.fromTokenAmount, p.fromToken.decimals, p.triggerPrice);
-
-      toAmount = convertFromUsdByPrice(toAmountUsd, p.toToken.decimals, p.toTokenPrice);
-    } else {
-      toAmount = convertFromUsdByPrice(fromUsdAmount, p.toToken.decimals, p.triggerPrice);
-    }
-  }
-
-  if (p.leverageMultiplier) {
-    const leverage = p.shouldInvertLeverage
-      ? LEVERAGE_PRECISION.mul(LEVERAGE_PRECISION).div(p.leverageMultiplier)
-      : p.leverageMultiplier;
-
-    toAmount = toAmount?.mul(leverage).div(LEVERAGE_PRECISION);
-  }
-
-  return toAmount;
-}
 
 export function SyntheticsSwapBox(p: Props) {
   const { chainId } = useChainId();
@@ -118,6 +76,7 @@ export function SyntheticsSwapBox(p: Props) {
   const isShort = operationTab === Operation.Short;
   const isSwap = operationTab === Operation.Swap;
   const isLimit = modeTab === Mode.Limit;
+
   const isTriggerPriceAllowed = !isSwap && isLimit;
   const isSwapTriggerRatioAllowed = isSwap && isLimit;
   const isLeverageAllowed = isLong || isShort;
@@ -125,8 +84,8 @@ export function SyntheticsSwapBox(p: Props) {
   const [isConfirming, setIsConfirming] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const fromTokenState = useSwapTokenState(tokensData);
-  const toTokenState = useSwapTokenState(tokensData, { useMaxPrice: true });
+  const fromTokenState = useTokenInputState(tokensData);
+  const toTokenState = useTokenInputState(tokensData, { useMaxPrice: true });
 
   const [leverageOption, setLeverageOption] = useLocalStorageSerializeKey<number | undefined>(
     [chainId, LEVERAGE_OPTION_KEY],
@@ -147,46 +106,16 @@ export function SyntheticsSwapBox(p: Props) {
       ? convertToUsdByPrice(toTokenState.tokenAmount, toTokenState.token?.decimals, toTokenPrice)
       : BigNumber.from(0);
 
-  const [swapTriggerRatioValue, setSwapTriggerRatioValue] = useState<string | undefined>();
-  const swapRatio = getSwapTrigerRatio();
+  const swapRatio = useSwapTriggerRatioState({
+    isAllowed: isSwapTriggerRatioAllowed,
+    fromTokenPrice: fromTokenState.price,
+    toTokenPrice: toTokenState.price,
+  });
 
-  const { availableFromTokens, availableToTokens } = useMemo(() => {
-    const longCollateralsMap: { [key: string]: TokenData | undefined } = {};
-    const shortCollateralsMap: { [key: string]: TokenData | undefined } = {};
-    const indexTokensMap: { [key: string]: TokenData | undefined } = {};
-
-    const markets = getMarkets(marketsData);
-    const wrappedToken = getWrappedToken(chainId);
-
-    for (const market of markets) {
-      longCollateralsMap[market.longTokenAddress] = getTokenData(tokensData, market.longTokenAddress);
-      shortCollateralsMap[market.shortTokenAddress] = getTokenData(tokensData, market.shortTokenAddress);
-      indexTokensMap[market.indexTokenAddress] = getTokenData(tokensData, market.indexTokenAddress);
-    }
-
-    if (NATIVE_TOKEN_ADDRESS in longCollateralsMap && wrappedToken) {
-      longCollateralsMap[wrappedToken.address] = getTokenData(tokensData, wrappedToken.address);
-    }
-
-    if (NATIVE_TOKEN_ADDRESS in shortCollateralsMap && wrappedToken) {
-      shortCollateralsMap[wrappedToken.address] = getTokenData(tokensData, wrappedToken.address);
-    }
-
-    const availableFromTokens: Token[] = Object.values(longCollateralsMap)
-      .concat(Object.values(shortCollateralsMap))
-      .filter(Boolean) as Token[];
-
-    const availableToTokens: Token[] = isSwap
-      ? [...availableFromTokens]
-      : (Object.values(indexTokensMap).filter(Boolean) as Token[]);
-
-    return {
-      availableFromTokens,
-      availableToTokens,
-    };
-  }, [chainId, isSwap, marketsData, tokensData]);
-
-  const infoTokens = useMemo(() => adaptToInfoTokens(tokensData), [tokensData]);
+  const { availableFromTokens, availableToTokens, infoTokens } = useAvailableSwapTokens({
+    isSwap,
+    fromTokenAddress: fromTokenState.tokenAddress,
+  });
 
   const nativeToken = getTokenData(tokensData, NATIVE_TOKEN_ADDRESS);
 
@@ -222,29 +151,6 @@ export function SyntheticsSwapBox(p: Props) {
   ]);
 
   const submitButtonState = getSubmitButtonState();
-
-  function getSwapTrigerRatio() {
-    if (!isSwapTriggerRatioAllowed || !fromTokenState.price || !toTokenState.price) return undefined;
-
-    const isFromGreater = fromTokenState.price.gt(toTokenState.price);
-
-    const ratio = parseValue(swapTriggerRatioValue || "0", USD_DECIMALS);
-
-    let markRatio = isFromGreater
-      ? fromTokenState.price.mul(PRECISION).div(toTokenState.price)
-      : toTokenState.price.mul(PRECISION).div(fromTokenState.price);
-
-    const text = isFromGreater
-      ? `${toTokenState.token?.symbol} per ${fromTokenState.token?.symbol}`
-      : `${fromTokenState.token?.symbol} per ${toTokenState.token?.symbol}`;
-
-    return {
-      ratio,
-      isFromGreater,
-      markRatio,
-      swapRatioText: text,
-    };
-  }
 
   function getSubmitButtonState(): { text: string; disabled?: boolean; onClick?: () => void } {
     const error = getSubmitError({
@@ -289,16 +195,17 @@ export function SyntheticsSwapBox(p: Props) {
       if (!fromTokenState.token || !toTokenState.token || !toTokenState.price || !fromTokenState.price) return;
 
       if (focusedInput === FocusedInput.From) {
+        // Set toToken value
         const toAmount = getNextTokenAmount({
+          fromToken: fromTokenState.token,
           fromTokenAmount: fromTokenState.tokenAmount,
           fromTokenPrice: fromTokenState.price,
-          fromToken: fromTokenState.token,
-          toTokenPrice: toTokenState.price,
           toToken: toTokenState.token,
+          toTokenPrice: toTokenState.price,
           triggerPrice,
           shouldInvertTriggerPrice: false,
           swapTriggerRatio: swapRatio?.ratio,
-          shouldInvertRatio: swapRatio && !swapRatio.isFromGreater,
+          shouldInvertRatio: swapRatio?.biggestSide === "to",
           leverageMultiplier,
           shouldInvertLeverage: false,
         });
@@ -308,16 +215,17 @@ export function SyntheticsSwapBox(p: Props) {
       }
 
       if (focusedInput === FocusedInput.To) {
+        // Set fromToken value
         const fromAmount = getNextTokenAmount({
+          fromToken: toTokenState.token,
           fromTokenAmount: toTokenState.tokenAmount,
           fromTokenPrice: toTokenState.price,
-          fromToken: toTokenState.token,
-          toTokenPrice: fromTokenState.price,
           toToken: fromTokenState.token,
+          toTokenPrice: fromTokenState.price,
           triggerPrice,
           shouldInvertTriggerPrice: true,
           swapTriggerRatio: swapRatio?.ratio,
-          shouldInvertRatio: swapRatio?.isFromGreater,
+          shouldInvertRatio: swapRatio?.biggestSide === "from",
           leverageMultiplier,
           shouldInvertLeverage: true,
         });
@@ -330,7 +238,7 @@ export function SyntheticsSwapBox(p: Props) {
       fromTokenState,
       leverageMultiplier,
       swapRatio,
-      swapRatio?.isFromGreater,
+      swapRatio?.biggestSide,
       swapRatio?.ratio,
       toTokenState,
       triggerPrice,
@@ -471,14 +379,16 @@ export function SyntheticsSwapBox(p: Props) {
             topLeftLabel={t`Price`}
             topRightValue={formatAmount(swapRatio.markRatio, USD_DECIMALS, 4)}
             onClickTopRightLabel={() => {
-              setSwapTriggerRatioValue(formatAmount(swapRatio.markRatio, USD_DECIMALS, 4));
+              swapRatio.setInputValue(formatAmount(swapRatio.markRatio, USD_DECIMALS, 4));
             }}
-            inputValue={swapTriggerRatioValue}
+            inputValue={swapRatio.inputValue}
             onInputValueChange={(e) => {
-              setSwapTriggerRatioValue(e.target.value);
+              swapRatio.setInputValue(e.target.value);
             }}
           >
-            {swapRatio.swapRatioText}
+            {swapRatio.biggestSide === "from"
+              ? `${toTokenState.token?.symbol} per ${fromTokenState.token?.symbol}`
+              : `${fromTokenState.token?.symbol} per ${toTokenState.token?.symbol}`}
           </BuyInputSection>
         )}
       </div>

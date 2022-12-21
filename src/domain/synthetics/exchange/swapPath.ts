@@ -34,31 +34,17 @@ type SwapData = {
 
 type SwapPathItem = { market: string; fee: BigNumber };
 
-const SEPARATOR = ":";
-
-export function getMarketCombination(market: Market) {
-  const { marketTokenAddress, longTokenAddress, shortTokenAddress, indexTokenAddress } = market;
-
-  return [marketTokenAddress, longTokenAddress, shortTokenAddress, indexTokenAddress].join(SEPARATOR);
-}
-
-export function parseMarketCombination(marketCombination: string) {
-  const [market, indexToken, longToken, shortToken] = marketCombination.split(SEPARATOR);
-
-  return {
-    market,
-    longToken,
-    shortToken,
-    indexToken,
-  };
-}
-
-export function getMarketsGraph(combinations: MarketCombination[]) {
+export function getMarketsGraph(markets: Market[]) {
   const collateralsGraph: MarketsGraph = {};
   const indexGraph: MarketsGraph = {};
 
-  for (const combination of combinations) {
-    const { market, longToken, shortToken, indexToken } = parseMarketCombination(combination);
+  for (const m of markets) {
+    const {
+      marketTokenAddress: market,
+      longTokenAddress: longToken,
+      shortTokenAddress: shortToken,
+      indexTokenAddress: indexToken,
+    } = m;
 
     collateralsGraph[longToken] = collateralsGraph[longToken] || [];
     collateralsGraph[shortToken] = collateralsGraph[shortToken] || [];

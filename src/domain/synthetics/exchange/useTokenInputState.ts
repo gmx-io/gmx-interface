@@ -9,7 +9,7 @@ import {
 import { BigNumber } from "ethers";
 import { formatAmountFree, parseValue } from "lib/numbers";
 
-export type SwapTokenState = {
+export type TokenInputState = {
   token?: TokenData;
   inputValue?: string;
   tokenAddress?: string;
@@ -24,13 +24,13 @@ export type SwapTokenState = {
   setTokenAddress: (val?: string) => void;
 };
 
-export function useSwapTokenState(
+export function useTokenInputState(
   tokensData: TokensData,
   params: {
     initialTokenAddress?: string;
     useMaxPrice?: boolean;
   } = {}
-): SwapTokenState {
+): TokenInputState {
   const [inputValue, setInputValue] = useState<string>("");
   const [tokenAddress, setTokenAddress] = useState<string | undefined>(params.initialTokenAddress);
 

@@ -17,7 +17,7 @@ import { adaptToInfoTokens, formatTokenAmount, formatUsdAmount, getUsdFromTokenA
 import { BigNumber } from "ethers";
 import { IoMdSwap } from "react-icons/io";
 
-import { useSwapTokenState } from "domain/synthetics/exchange";
+import { useTokenInputState } from "domain/synthetics/exchange";
 import { usePriceImpactConfigs } from "domain/synthetics/fees/usePriceImpactConfigs";
 import { getExecutionFee, getPriceImpact } from "domain/synthetics/fees/utils";
 import { useMarketsData, useMarketsPoolsData, useMarketTokensData } from "domain/synthetics/markets";
@@ -74,10 +74,10 @@ export function MarketPoolSwapBox(p: Props) {
     return availableAddresses.map((address) => getToken(chainId, address));
   }, [chainId, market]);
 
-  const firstTokenState = useSwapTokenState(tokensData, { useMaxPrice: operationTab === Operation.withdraw });
-  const secondTokenState = useSwapTokenState(tokensData, { useMaxPrice: operationTab === Operation.withdraw });
+  const firstTokenState = useTokenInputState(tokensData, { useMaxPrice: operationTab === Operation.withdraw });
+  const secondTokenState = useTokenInputState(tokensData, { useMaxPrice: operationTab === Operation.withdraw });
 
-  const marketTokenState = useSwapTokenState(marketTokensData, { useMaxPrice: operationTab === Operation.deposit });
+  const marketTokenState = useTokenInputState(marketTokensData, { useMaxPrice: operationTab === Operation.deposit });
 
   const [focusedInput, setFocusedInput] = useState<FocusedInput>();
 
