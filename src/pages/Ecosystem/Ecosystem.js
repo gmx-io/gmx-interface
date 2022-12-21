@@ -368,6 +368,15 @@ export default function Ecosystem() {
       announcementLink: "https://twitter.com/yieldyak_/status/1484458884827947008",
       chainIds: [AVALANCHE],
     },
+    {
+      title: "Plutus",
+      link: "https://plutusdao.io/vaults",
+      linkLabel: "plutusdao.io",
+      about: t`GLP autocompounding vaults`,
+      announcementLabel: "medium.com",
+      announcementLink: "https://medium.com/@plutusdao.io/product-release-plutus-vaults-d0b0252cdf03",
+      chainIds: [ARBITRUM],
+    },
   ];
 
   const telegramGroups = [
