@@ -1373,6 +1373,10 @@ msgid "GLP Vault"
 msgstr "GLP Vault"
 
 #: src/pages/Ecosystem/Ecosystem.js
+msgid "GLP and GMX autocompounding vaults"
+msgstr "GLP and GMX autocompounding vaults"
+
+#: src/pages/Ecosystem/Ecosystem.js
 msgid "GLP autocompounding vaults"
 msgstr "GLP autocompounding vaults"
 
@@ -2177,6 +2181,10 @@ msgstr "Open positions through a simple swap interface. Conveniently swap from a
 msgid "Open positions: {0}<0/>Under risk: {1}"
 msgstr "Open positions: {0}<0/>Under risk: {1}"
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Open trades ranking and stats"
+msgstr "Open trades ranking and stats"
+
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Open {0} {longOrShortText}"
 msgstr "Open {0} {longOrShortText}"
@@ -2261,6 +2269,10 @@ msgstr "Orders ({0})"
 #: src/pages/Exchange/Exchange.js
 msgid "Orders cancelled."
 msgstr "Orders cancelled."
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Overall protocol analytics"
+msgstr "Overall protocol analytics"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Overview"
@@ -2804,6 +2816,10 @@ msgstr "Shorting..."
 msgid "Simple Swaps"
 msgstr "Simple Swaps"
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Simulate your hedge strategy"
+msgstr "Simulate your hedge strategy"
+
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
@@ -2823,6 +2839,10 @@ msgstr "Speed up page loading"
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Spread"
 msgstr "Spread"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Spreadsheet for position calculations"
+msgstr "Spreadsheet for position calculations"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Stablecoin Percentage"
@@ -3047,6 +3067,10 @@ msgstr "Telegram Group (Portuguese)"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram Groups"
 msgstr "Telegram Groups"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Telegram bot for GMX Swaps monitoring"
+msgstr "Telegram bot for GMX Swaps monitoring"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram bot for GMX position updates"

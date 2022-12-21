@@ -1373,6 +1373,10 @@ msgid "GLP Vault"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
+msgid "GLP and GMX autocompounding vaults"
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
 msgid "GLP autocompounding vaults"
 msgstr ""
 
@@ -2174,6 +2178,10 @@ msgstr "Abre posiciones a través de una simple interfaz de intercambio. Interca
 msgid "Open positions: {0}<0/>Under risk: {1}"
 msgstr ""
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Open trades ranking and stats"
+msgstr ""
+
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Open {0} {longOrShortText}"
 msgstr ""
@@ -2258,6 +2266,10 @@ msgstr ""
 #: src/pages/Exchange/Exchange.js
 msgid "Orders cancelled."
 msgstr "Órdenes canceladas."
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Overall protocol analytics"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Overview"
@@ -2801,6 +2813,10 @@ msgstr ""
 msgid "Simple Swaps"
 msgstr "Intercambios Simples"
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Simulate your hedge strategy"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
@@ -2819,6 +2835,10 @@ msgstr "Acelerar la carga de la página"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Spread"
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Spreadsheet for position calculations"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
@@ -3044,6 +3064,10 @@ msgstr ""
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram Groups"
 msgstr "Grupos de Telegram"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Telegram bot for GMX Swaps monitoring"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram bot for GMX position updates"
