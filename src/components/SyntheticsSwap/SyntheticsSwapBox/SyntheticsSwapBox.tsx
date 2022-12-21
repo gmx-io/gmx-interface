@@ -377,7 +377,7 @@ export function SyntheticsSwapBox(p: Props) {
             topLeftLabel={t`Price`}
             topRightValue={formatAmount(swapRatio.markRatio, USD_DECIMALS, 4)}
             onClickTopRightLabel={() => {
-              swapRatio.setInputValue(formatAmount(swapRatio.markRatio, USD_DECIMALS, 4));
+              swapRatio.setInputValue(formatAmount(swapRatio.markRatio, USD_DECIMALS, 10));
             }}
             inputValue={swapRatio.inputValue}
             onInputValueChange={(e) => {
