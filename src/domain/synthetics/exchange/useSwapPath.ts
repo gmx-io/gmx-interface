@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { SwapParams, findSwapPath, getMarketsGraph, getSwapPathForPosition } from "./swapPath";
 import { getSwapFee, usePriceImpactConfigs } from "domain/synthetics/fees";
 import { useAvailableTradeTokensData } from "domain/synthetics/tokens";
+import { getCorrectTokenAddress } from "config/tokens";
 
 export type SwapRoute = {
   market?: string;
@@ -94,14 +95,17 @@ export function useSwapPath(p: {
 
   // TODO: find all paths and estimate fees after that
   useEffect(() => {
-    const isSwap = p.fromToken && p.toToken && !p.indexToken;
-
     if (!p.amountUsd?.gt(0)) return;
 
-    if (isSwap) {
+    if (p.isSwap) {
+      if (!p.fromToken || !p.toToken) return;
+
+      const fromToken = getCorrectTokenAddress(chainId, p.fromToken, "native");
+      const toToken = getCorrectTokenAddress(chainId, p.toToken, "native");
+
       debouncedUpdateSwapPath({
-        fromToken: p.fromToken!,
-        toToken: p.toToken!,
+        fromToken: fromToken,
+        toToken: toToken,
         indexToken: p.indexToken,
         amountUsd: p.amountUsd,
         feeEstimator,
@@ -109,15 +113,19 @@ export function useSwapPath(p: {
     } else {
       if (!p.fromToken || !p.collateralToken || !p.indexToken) return;
 
+      const fromToken = getCorrectTokenAddress(chainId, p.fromToken, "native");
+      const toToken = getCorrectTokenAddress(chainId, p.collateralToken, "native");
+
       debouncedUpdateSwapPathForPosition({
-        fromToken: p.fromToken,
-        toToken: p.collateralToken,
+        fromToken: fromToken,
+        toToken: toToken,
         indexToken: p.indexToken,
         amountUsd: p.amountUsd,
         feeEstimator,
       });
     }
   }, [
+    chainId,
     debouncedUpdateSwapPath,
     debouncedUpdateSwapPathForPosition,
     feeEstimator,
@@ -125,6 +133,7 @@ export function useSwapPath(p: {
     p.collateralToken,
     p.fromToken,
     p.indexToken,
+    p.isSwap,
     p.toToken,
   ]);
 

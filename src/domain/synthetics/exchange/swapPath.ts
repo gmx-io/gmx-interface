@@ -117,6 +117,10 @@ export function findPath(
 
   const edges = graph[from];
 
+  if (!edges?.length) {
+    return undefined;
+  }
+
   const isTargetTo = to === swapParams.toToken;
   const needCheckIndex = swapParams.indexToken && isTargetTo;
 

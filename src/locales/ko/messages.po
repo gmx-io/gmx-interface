@@ -1897,6 +1897,7 @@ msgstr "로딩중..."
 #: src/components/Exchange/TradeHistory.js
 #: src/components/SyntheticsOrder/SyntheticsOrder.tsx
 #: src/components/SyntheticsPosition/SyntheticsPosition.tsx
+#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
 #: src/components/SyntheticsSwap/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
@@ -1916,6 +1917,10 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Long Positions"
 msgstr "롱 포지션"
+
+#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
+msgid "Long liquidity"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV1.js
 msgid "Long positions: {0} USD, Short positions: {1} USD, {volumeLabel} volume: {2} USD"
@@ -1981,6 +1986,7 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
 #: src/components/SyntheticsSwap/utils.ts
 msgid "Market"
 msgstr ""
@@ -2976,6 +2982,7 @@ msgstr "포지션 공유"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/SyntheticsOrder/SyntheticsOrder.tsx
 #: src/components/SyntheticsPosition/SyntheticsPosition.tsx
+#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
 #: src/components/SyntheticsSwap/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
@@ -2995,6 +3002,10 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Short Positions"
 msgstr "숏 포지션"
+
+#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
+msgid "Short liquidity"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Short {0}"
@@ -3159,6 +3170,7 @@ msgstr "공급량"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
 #: src/components/SyntheticsSwap/utils.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Swap"
@@ -3200,6 +3212,10 @@ msgstr "스왑 제출완료"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Swap submitted."
+msgstr ""
+
+#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
+msgid "Swap to {0}"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -4226,6 +4242,11 @@ msgstr ""
 msgid "{0} is required for collateral."
 msgstr ""
 
+#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
+#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
+msgid "{0} liquidity"
+msgstr ""
+
 #: src/domain/synthetics/exchange/createOrderTxn.ts
 #~ msgid "{0} order failed"
 #~ msgstr ""
@@ -4322,6 +4343,10 @@ msgstr ""
 
 #: src/domain/synthetics/orders/createOrderTxn.ts
 msgid "{orderLabel} order sent"
+msgstr ""
+
+#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
+msgid "{positionTypeText} {0}"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js

@@ -1900,6 +1900,7 @@ msgstr "Loading..."
 #: src/components/Exchange/TradeHistory.js
 #: src/components/SyntheticsOrder/SyntheticsOrder.tsx
 #: src/components/SyntheticsPosition/SyntheticsPosition.tsx
+#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
 #: src/components/SyntheticsSwap/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
@@ -1919,6 +1920,10 @@ msgstr "Long Collateral"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Long Positions"
 msgstr "Long Positions"
+
+#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
+msgid "Long liquidity"
+msgstr "Long liquidity"
 
 #: src/pages/Dashboard/DashboardV1.js
 msgid "Long positions: {0} USD, Short positions: {1} USD, {volumeLabel} volume: {2} USD"
@@ -1984,6 +1989,7 @@ msgstr "Mark: {0}"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
 #: src/components/SyntheticsSwap/utils.ts
 msgid "Market"
 msgstr "Market"
@@ -2979,6 +2985,7 @@ msgstr "Share Position"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/SyntheticsOrder/SyntheticsOrder.tsx
 #: src/components/SyntheticsPosition/SyntheticsPosition.tsx
+#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
 #: src/components/SyntheticsSwap/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
@@ -2998,6 +3005,10 @@ msgstr "Short Collateral"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Short Positions"
 msgstr "Short Positions"
+
+#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
+msgid "Short liquidity"
+msgstr "Short liquidity"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Short {0}"
@@ -3162,6 +3173,7 @@ msgstr "Supply"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
 #: src/components/SyntheticsSwap/utils.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Swap"
@@ -3204,6 +3216,10 @@ msgstr "Swap submitted!"
 #: src/components/Exchange/SwapBox.js
 msgid "Swap submitted."
 msgstr "Swap submitted."
+
+#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
+msgid "Swap to {0}"
+msgstr "Swap to {0}"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Swap {0} USDG for {1} {2}"
@@ -4229,6 +4245,11 @@ msgstr "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> 
 msgid "{0} is required for collateral."
 msgstr "{0} is required for collateral."
 
+#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
+#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
+msgid "{0} liquidity"
+msgstr "{0} liquidity"
+
 #: src/domain/synthetics/exchange/createOrderTxn.ts
 #~ msgid "{0} order failed"
 #~ msgstr "{0} order failed"
@@ -4335,6 +4356,10 @@ msgstr "{orderLabel} order failed"
 #: src/domain/synthetics/orders/createOrderTxn.ts
 msgid "{orderLabel} order sent"
 msgstr "{orderLabel} order sent"
+
+#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
+msgid "{positionTypeText} {0}"
+msgstr "{positionTypeText} {0}"
 
 #: src/components/Exchange/SwapBox.js
 msgid "{swapOption, select, LONG {Longing} SHORT {Shorting}} {0} not supported"
