@@ -1,8 +1,8 @@
-import { useChainId } from "lib/chains";
 import { getMarkets, useMarketsData, useMarketsPoolsData } from "domain/synthetics/markets";
 import { BigNumber } from "ethers";
-import { useMemo } from "react";
+import { useChainId } from "lib/chains";
 import { debounce } from "lodash";
+import { useMemo } from "react";
 import { SwapData, findSwapPath, getMarketsGraph, getSwapParamsForPosition } from "./swapPath";
 
 const debouncedFindSwapPath: typeof findSwapPath = debounce(findSwapPath, 100);
@@ -17,6 +17,7 @@ export function useSwapRoute(p: {
   fromToken?: string;
   toToken?: string;
   indexToken?: string;
+  collateralToken?: string;
   isSwap?: boolean;
   amount?: BigNumber;
 }): SwapRoute | undefined {
@@ -33,16 +34,16 @@ export function useSwapRoute(p: {
   const swapRoute = useMemo(() => {
     if (!p.fromToken || !p.toToken || !p.amount) return undefined;
 
-    const swapData: SwapData = {
-      marketsData,
-      poolsData,
-      fromToken: p.fromToken,
-      toToken: p.toToken,
-      indexToken: p.indexToken,
-      amount: p.amount,
-    };
-
     if (p.isSwap) {
+      const swapData: SwapData = {
+        marketsData,
+        poolsData,
+        fromToken: p.fromToken,
+        toToken: p.toToken,
+        indexToken: p.indexToken,
+        amount: p.amount,
+      };
+
       const swapPath = debouncedFindSwapPath(swapData, graph);
 
       if (!swapPath) return undefined;
@@ -50,17 +51,28 @@ export function useSwapRoute(p: {
       return {
         swapPath: swapPath.map((p) => p.market),
       };
+    } else {
+      if (!p.collateralToken || !p.indexToken) return undefined;
+
+      const swapData: SwapData = {
+        marketsData,
+        poolsData,
+        fromToken: p.fromToken,
+        toToken: p.collateralToken,
+        indexToken: p.indexToken,
+        amount: p.amount,
+      };
+
+      const positionParams = debouncedGetSwapParamsForPosition(swapData, graph);
+
+      if (!positionParams) return undefined;
+
+      return {
+        swapPath: positionParams.swapPath.map((p) => p.market),
+        market: positionParams.market,
+      };
     }
-
-    const positionParams = debouncedGetSwapParamsForPosition(swapData, graph);
-
-    if (!positionParams) return undefined;
-
-    return {
-      swapPath: positionParams.swapPath.map((p) => p.market),
-      market: positionParams.market,
-    };
-  }, [graph, marketsData, p.amount, p.fromToken, p.indexToken, p.isSwap, p.toToken, poolsData]);
+  }, [graph, marketsData, p.amount, p.collateralToken, p.fromToken, p.indexToken, p.isSwap, p.toToken, poolsData]);
 
   return swapRoute;
 }

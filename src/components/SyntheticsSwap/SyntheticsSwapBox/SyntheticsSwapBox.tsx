@@ -23,6 +23,8 @@ import {
   useAvailableTradeTokensData,
 } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
+import { useSwapRoute } from "domain/synthetics/exchange/useSwapPath";
+import { InfoRow } from "components/InfoRow/InfoRow";
 
 import { useChainId } from "lib/chains";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "lib/legacy";
@@ -46,7 +48,6 @@ import {
 } from "../utils";
 
 import "./SyntheticsSwapBox.scss";
-import { useSwapRoute } from "domain/synthetics/exchange/useSwapPath";
 
 enum FocusedInput {
   From = "From",
@@ -78,12 +79,20 @@ export function SyntheticsSwapBox(p: Props) {
   const isTriggerPriceAllowed = !isSwap && isLimit;
   const isSwapTriggerRatioAllowed = isSwap && isLimit;
   const isLeverageAllowed = isLong || isShort;
+  const isSelectCollateralAllowed = isPosition;
 
   const [isConfirming, setIsConfirming] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
   const fromTokenState = useTokenInputState(tokensData);
   const toTokenState = useTokenInputState(tokensData, { useMaxPrice: true });
+
+  const [collateralTokenAddress, setCollateralTokenAddress] = useState<string>();
+
+  const { availableFromTokens, availableToTokens, availableCollaterals, infoTokens } = useAvailableSwapTokens({
+    isSwap,
+    indexTokenAddress: isPosition ? toTokenState.tokenAddress : undefined,
+  });
 
   const [leverageOption, setLeverageOption] = useLocalStorageSerializeKey<number | undefined>(
     [chainId, LEVERAGE_OPTION_KEY],
@@ -112,15 +121,11 @@ export function SyntheticsSwapBox(p: Props) {
 
   const swapRoute = useSwapRoute({
     isSwap,
-    fromToken: fromTokenState.token?.address,
-    toToken: toTokenState.token?.address,
-    indexToken: isPosition ? toTokenState.token?.address : undefined,
+    fromToken: fromTokenState.tokenAddress,
+    toToken: toTokenState.tokenAddress,
+    collateralToken: isPosition ? collateralTokenAddress : undefined,
+    indexToken: isPosition ? toTokenState.tokenAddress : undefined,
     amount: fromTokenState.tokenAmount,
-  });
-
-  const { availableFromTokens, availableToTokens, infoTokens } = useAvailableSwapTokens({
-    isSwap,
-    fromTokenAddress: fromTokenState.tokenAddress,
   });
 
   const nativeToken = getTokenData(tokensData, NATIVE_TOKEN_ADDRESS);
@@ -242,6 +247,17 @@ export function SyntheticsSwapBox(p: Props) {
       }
     },
     [modeTab, operationTab, setModeTab]
+  );
+
+  useEffect(
+    function updateCollateral() {
+      if (!isSelectCollateralAllowed || !availableCollaterals?.length) return;
+
+      if (!collateralTokenAddress || !availableCollaterals.find((token) => token.address === collateralTokenAddress)) {
+        setCollateralTokenAddress(availableCollaterals[0].address);
+      }
+    },
+    [availableCollaterals, collateralTokenAddress, isSelectCollateralAllowed]
   );
 
   return (
@@ -411,6 +427,23 @@ export function SyntheticsSwapBox(p: Props) {
         </>
       )}
 
+      {isSelectCollateralAllowed && collateralTokenAddress && availableCollaterals && (
+        <InfoRow
+          label={t`Collateral In`}
+          value={
+            <TokenSelector
+              label={t`Collateral In`}
+              className="GlpSwap-from-token"
+              chainId={chainId}
+              tokenAddress={collateralTokenAddress}
+              onSelectToken={(token) => setCollateralTokenAddress(token.address)}
+              tokens={availableCollaterals}
+              showTokenImgInDropdown={true}
+            />
+          }
+        />
+      )}
+
       <div className="Exchange-swap-button-container">
         <SubmitButton
           authRequired
@@ -428,6 +461,7 @@ export function SyntheticsSwapBox(p: Props) {
           fromTokenAmount={fromTokenState.tokenAmount}
           toTokenAddress={toTokenState.tokenAddress!}
           toTokenAmount={toTokenState.tokenAmount}
+          collateralTokenAddress={collateralTokenAddress}
           // priceImpact={priceImpact}
           triggerPrice={triggerPrice}
           acceptablePrice={toTokenState.price!}

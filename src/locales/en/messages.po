@@ -729,6 +729,8 @@ msgstr "Collateral ({0})"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
 msgid "Collateral In"
 msgstr "Collateral In"
 

@@ -174,7 +174,7 @@ export function useSwapTriggerRatioState(p: {
   };
 }
 
-export function useAvailableSwapTokens(p: { fromTokenAddress?: string; isSwap: boolean }) {
+export function useAvailableSwapTokens(p: { indexTokenAddress?: string; isSwap: boolean }) {
   const { chainId } = useChainId();
 
   const marketsData = useMarketsData(chainId);
@@ -186,11 +186,11 @@ export function useAvailableSwapTokens(p: { fromTokenAddress?: string; isSwap: b
   const infoTokens = useMemo(() => adaptToInfoTokens(tokensData), [tokensData]);
 
   const { longCollaterals, shortCollaterals, indexTokens, indexCollateralsMap } = useMemo(() => {
-    const longMap: { [key: string]: Token } = {};
-    const shortMap: { [key: string]: Token } = {};
-    const indexMap: { [key: string]: Token } = {};
+    const longMap: { [address: string]: Token } = {};
+    const shortMap: { [address: string]: Token } = {};
+    const indexMap: { [address: string]: Token } = {};
 
-    const indexCollateralsMap: { [key: string]: { [key: string]: Token } } = {};
+    const indexCollateralsMap: { [indexAddress: string]: { [collateral: string]: Token } } = {};
 
     for (const market of markets) {
       const longToken = getTokenData(tokensData, market.longTokenAddress)!;
@@ -201,16 +201,17 @@ export function useAvailableSwapTokens(p: { fromTokenAddress?: string; isSwap: b
       shortMap[shortToken.address] = shortToken;
       indexMap[indexToken.address] = indexToken;
 
-      indexCollateralsMap[indexToken.address] = indexCollateralsMap[indexToken.address] || {};
+      if (longToken.address === NATIVE_TOKEN_ADDRESS) {
+        longMap[wrappedToken.address] = wrappedToken;
+      }
 
+      if (shortToken.address === NATIVE_TOKEN_ADDRESS) {
+        shortMap[wrappedToken.address] = wrappedToken;
+      }
+
+      indexCollateralsMap[indexToken.address] = indexCollateralsMap[indexToken.address] || {};
       indexCollateralsMap[indexToken.address][longToken.address] = longToken;
       indexCollateralsMap[indexToken.address][shortToken.address] = shortToken;
-
-      if ([longToken.address, shortToken.address].includes(NATIVE_TOKEN_ADDRESS)) {
-        longMap[wrappedToken.address] = wrappedToken;
-        shortMap[wrappedToken.address] = wrappedToken;
-        indexCollateralsMap[indexToken.address][wrappedToken.address] = wrappedToken;
-      }
     }
 
     return {
@@ -224,7 +225,10 @@ export function useAvailableSwapTokens(p: { fromTokenAddress?: string; isSwap: b
   const availableFromTokens: Token[] = longCollaterals.concat(shortCollaterals);
   const availableToTokens: Token[] = p.isSwap ? availableFromTokens : indexTokens;
 
-  const availableCollaterals = !p.isSwap && p.fromTokenAddress ? indexCollateralsMap[p.fromTokenAddress] : undefined;
+  const availableCollaterals =
+    !p.isSwap && p.indexTokenAddress
+      ? (Object.values(indexCollateralsMap[p.indexTokenAddress] || {}) as Token[])
+      : undefined;
 
   return {
     availableFromTokens,

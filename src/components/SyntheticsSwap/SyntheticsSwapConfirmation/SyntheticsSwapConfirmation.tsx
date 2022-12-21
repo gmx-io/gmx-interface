@@ -35,6 +35,7 @@ type Props = {
   fromTokenAmount?: BigNumber;
   toTokenAddress?: string;
   toTokenAmount?: BigNumber;
+  collateralTokenAddress?: string;
   sizeDeltaUsd?: BigNumber;
   acceptablePrice?: BigNumber;
   triggerPrice?: BigNumber;
