@@ -15,8 +15,6 @@ import {
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { useTokenInputState } from "domain/synthetics/exchange";
 import { getExecutionFee } from "domain/synthetics/fees";
-import { useMarketsData, useMarketsPoolsData } from "domain/synthetics/markets";
-import { getPositionMarketsPath, getSwapPath } from "domain/synthetics/orders";
 import {
   convertToUsdByPrice,
   formatTokenAmount,
@@ -30,7 +28,7 @@ import { useChainId } from "lib/chains";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { bigNumberify, formatAmount, parseValue } from "lib/numbers";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { IoMdSwap } from "react-icons/io";
 import { SyntheticsSwapConfirmation } from "../SyntheticsSwapConfirmation/SyntheticsSwapConfirmation";
 import { SyntheticSwapStatus } from "../SyntheticsSwapStatus/SyntheticsSwapStatus";
@@ -48,6 +46,7 @@ import {
 } from "../utils";
 
 import "./SyntheticsSwapBox.scss";
+import { useSwapRoute } from "domain/synthetics/exchange/useSwapPath";
 
 enum FocusedInput {
   From = "From",
@@ -61,8 +60,6 @@ type Props = {
 export function SyntheticsSwapBox(p: Props) {
   const { chainId } = useChainId();
 
-  const marketsData = useMarketsData(chainId);
-  const poolsData = useMarketsPoolsData(chainId);
   const tokensData = useAvailableTradeTokensData(chainId);
 
   const [focusedInput, setFocusedInput] = useState<FocusedInput>();
@@ -75,6 +72,7 @@ export function SyntheticsSwapBox(p: Props) {
   const isLong = operationTab === Operation.Long;
   const isShort = operationTab === Operation.Short;
   const isSwap = operationTab === Operation.Swap;
+  const isPosition = !isSwap;
   const isLimit = modeTab === Mode.Limit;
 
   const isTriggerPriceAllowed = !isSwap && isLimit;
@@ -112,6 +110,14 @@ export function SyntheticsSwapBox(p: Props) {
     toTokenPrice: toTokenState.price,
   });
 
+  const swapRoute = useSwapRoute({
+    isSwap,
+    fromToken: fromTokenState.token?.address,
+    toToken: toTokenState.token?.address,
+    indexToken: isPosition ? toTokenState.token?.address : undefined,
+    amount: fromTokenState.tokenAmount,
+  });
+
   const { availableFromTokens, availableToTokens, infoTokens } = useAvailableSwapTokens({
     isSwap,
     fromTokenAddress: fromTokenState.tokenAddress,
@@ -120,35 +126,6 @@ export function SyntheticsSwapBox(p: Props) {
   const nativeToken = getTokenData(tokensData, NATIVE_TOKEN_ADDRESS);
 
   const executionFee = getExecutionFee(tokensData);
-
-  const swapPath = useMemo(() => {
-    if (!fromTokenState.tokenAddress || !toTokenState.tokenAddress) return undefined;
-
-    if (isSwap) {
-      return getSwapPath(
-        marketsData,
-        poolsData,
-        fromTokenState.tokenAddress,
-        toTokenState.tokenAddress,
-        toTokenState.tokenAmount
-      );
-    }
-
-    return getPositionMarketsPath(
-      marketsData,
-      poolsData,
-      fromTokenState.tokenAddress,
-      toTokenState.tokenAddress,
-      toTokenState.tokenAmount
-    );
-  }, [
-    fromTokenState.tokenAddress,
-    isSwap,
-    marketsData,
-    poolsData,
-    toTokenState.tokenAddress,
-    toTokenState.tokenAmount,
-  ]);
 
   const submitButtonState = getSubmitButtonState();
 
@@ -160,7 +137,7 @@ export function SyntheticsSwapBox(p: Props) {
       fromTokenAddress: fromTokenState.tokenAddress,
       toTokenAddress: toTokenState.tokenAddress,
       fromTokenAmount: fromTokenState.tokenAmount,
-      swapPath,
+      swapPath: swapRoute?.swapPath,
     });
 
     if (error) {
@@ -448,17 +425,17 @@ export function SyntheticsSwapBox(p: Props) {
       {isConfirming && (
         <SyntheticsSwapConfirmation
           fromTokenAddress={fromTokenState.tokenAddress!}
-          fromTokenAmount={fromTokenState.tokenAmount!}
+          fromTokenAmount={fromTokenState.tokenAmount}
           toTokenAddress={toTokenState.tokenAddress!}
-          toTokenAmount={toTokenState.tokenAmount!}
+          toTokenAmount={toTokenState.tokenAmount}
           // priceImpact={priceImpact}
           triggerPrice={triggerPrice}
           acceptablePrice={toTokenState.price!}
           sizeDeltaUsd={sizeDeltaUsd}
-          executionFee={executionFee!.feeTokenAmount!}
-          executionFeeUsd={executionFee!.feeUsd!}
-          executionFeeToken={executionFee!.feeToken!}
-          swapPath={swapPath!}
+          executionFee={executionFee?.feeTokenAmount}
+          executionFeeUsd={executionFee?.feeUsd}
+          executionFeeToken={executionFee?.feeToken}
+          swapRoute={swapRoute}
           mode={modeTab!}
           operationType={operationTab!}
           onSubmitted={() => {

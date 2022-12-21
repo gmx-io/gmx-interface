@@ -9,41 +9,47 @@ import { encodeReferralCode } from "domain/referrals";
 import { convertToContractPrice } from "../tokens";
 import { OrderType, orderTypeLabels } from "config/synthetics";
 
-type Params = {
+type CommonParams = {
   account: string;
-  marketAddress?: string;
-  initialCollateralAddress: string;
-  initialCollateralAmount: BigNumber;
-  receiveTokenAddress?: string;
-  indexTokenAddress?: string;
-  swapPath: string[];
-  sizeDeltaUsd?: BigNumber;
-  triggerPrice?: BigNumber;
-  acceptablePrice?: BigNumber;
   executionFee: BigNumber;
-  isLong?: boolean;
-  orderType: OrderType;
-  minOutputAmount: BigNumber;
   referralCode?: string;
 };
+
+type PositionParams = CommonParams & {
+  marketAddress: string;
+  swapPath: string[];
+  initialCollateralAddress: string;
+  initialCollateralAmount: BigNumber;
+  indexTokenAddress: string;
+  triggerPrice?: BigNumber;
+  acceptablePrice: BigNumber;
+  sizeDeltaUsd: BigNumber;
+  isLong: boolean;
+  orderType: OrderType.MarketIncrease | OrderType.LimitIncrease;
+};
+
+type SwapParams = CommonParams & {
+  initialCollateralAddress: string;
+  initialCollateralAmount: BigNumber;
+  swapPath: string[];
+  receiveTokenAddress: string;
+  minOutputAmount: BigNumber;
+  orderType: OrderType.MarketSwap | OrderType.LimitSwap;
+};
+
+type Params = PositionParams | SwapParams;
 
 export function createOrderTxn(chainId: number, library: Web3Provider, p: Params) {
   const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, library.getSigner());
   const orderStoreAddress = getContract(chainId, "OrderStore");
 
   const isNativePayment = p.initialCollateralAddress === NATIVE_TOKEN_ADDRESS;
-  const isNativeReceive = p.receiveTokenAddress === NATIVE_TOKEN_ADDRESS;
 
-  const wntPayment = isNativePayment ? p.initialCollateralAmount : BigNumber.from(0);
+  const wntAmount = p.executionFee.add(isNativePayment ? p.initialCollateralAmount : BigNumber.from(0));
 
-  const indexToken = p.indexTokenAddress ? getToken(chainId, p.indexTokenAddress) : undefined;
+  const isSwapOrder = p.orderType === OrderType.MarketSwap || p.orderType === OrderType.LimitSwap;
 
-  const acceptablePrice =
-    indexToken && p.acceptablePrice
-      ? convertToContractPrice(p.acceptablePrice || BigNumber.from(0), indexToken.decimals)
-      : BigNumber.from(0);
-
-  const wntAmount = p.executionFee.add(wntPayment);
+  const txnParams = isSwapOrder ? getSwapTxnParams(p) : getPositionTxnParams(p as PositionParams, chainId);
 
   const multicall = [
     { method: "sendWnt", params: [orderStoreAddress, wntAmount] },
@@ -60,22 +66,22 @@ export function createOrderTxn(chainId: number, library: Web3Provider, p: Params
             receiver: p.account,
             initialCollateralToken: getCorrectTokenAddress(chainId, p.initialCollateralAddress, "wrapped"),
             callbackContract: ethers.constants.AddressZero,
-            market: p.marketAddress || ethers.constants.AddressZero,
+            market: txnParams.market,
             swapPath: p.swapPath,
             executionFee: p.executionFee,
             callbackGasLimit: BigNumber.from(0),
           },
           numbers: {
-            sizeDeltaUsd: p.sizeDeltaUsd || BigNumber.from(0),
-            triggerPrice: p.triggerPrice || BigNumber.from(0),
-            acceptablePrice: acceptablePrice,
+            sizeDeltaUsd: txnParams.sizeDeltaUsd,
+            triggerPrice: txnParams.triggerPrice,
+            acceptablePrice: txnParams.acceptablePrice,
             executionFee: p.executionFee,
             callbackGasLimit: BigNumber.from(0),
-            minOutputAmount: p.minOutputAmount,
+            minOutputAmount: txnParams.minOutputAmount,
           },
           orderType: p.orderType,
-          isLong: p.isLong || false,
-          shouldUnwrapNativeToken: isNativeReceive,
+          isLong: txnParams.isLong,
+          shouldUnwrapNativeToken: txnParams.shouldUnwrapNativeToken,
         },
         encodeReferralCode(p.referralCode || ""),
       ],
@@ -98,4 +104,35 @@ export function createOrderTxn(chainId: number, library: Web3Provider, p: Params
     successMsg: t`Success ${orderLabel} order`,
     failMsg: t`${orderLabel} order failed`,
   });
+}
+
+function getSwapTxnParams(p: SwapParams) {
+  const isNativeReceive = p.receiveTokenAddress === NATIVE_TOKEN_ADDRESS;
+
+  return {
+    market: ethers.constants.AddressZero,
+    sizeDeltaUsd: BigNumber.from(0),
+    triggerPrice: BigNumber.from(0),
+    acceptablePrice: BigNumber.from(0),
+    minOutputAmount: p.minOutputAmount.div(2),
+    isLong: false,
+    shouldUnwrapNativeToken: isNativeReceive,
+  };
+}
+
+function getPositionTxnParams(p: PositionParams, chainId: number) {
+  const indexToken = getToken(chainId, p.indexTokenAddress);
+
+  const acceptablePrice = convertToContractPrice(p.acceptablePrice || BigNumber.from(0), indexToken.decimals);
+  const triggerPrice = convertToContractPrice(p.triggerPrice || BigNumber.from(0), indexToken.decimals);
+
+  return {
+    market: p.marketAddress,
+    sizeDeltaUsd: p.sizeDeltaUsd,
+    triggerPrice: triggerPrice,
+    acceptablePrice,
+    minOutputAmount: BigNumber.from(0),
+    isLong: p.isLong,
+    shouldUnwrapNativeToken: false,
+  };
 }

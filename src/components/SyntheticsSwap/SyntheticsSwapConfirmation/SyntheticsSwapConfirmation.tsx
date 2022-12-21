@@ -21,25 +21,27 @@ import { useAvailableTradeTokensData } from "domain/synthetics/tokens";
 import { getSubmitError, Mode, Operation, operationTexts } from "../utils";
 import { useUserReferralCode } from "domain/referrals";
 
-import "./SyntheticsSwapConfirmation.scss";
 import { expandDecimals } from "lib/numbers";
 import { createOrderTxn } from "domain/synthetics/orders";
 import { OrderType } from "config/synthetics";
+import { SwapRoute } from "domain/synthetics/exchange";
+
+import "./SyntheticsSwapConfirmation.scss";
 
 type Props = {
   operationType: Operation;
   mode: Mode;
-  fromTokenAddress: string;
-  fromTokenAmount: BigNumber;
-  toTokenAddress: string;
-  toTokenAmount: BigNumber;
-  sizeDeltaUsd: BigNumber;
-  acceptablePrice: BigNumber;
+  fromTokenAddress?: string;
+  fromTokenAmount?: BigNumber;
+  toTokenAddress?: string;
+  toTokenAmount?: BigNumber;
+  sizeDeltaUsd?: BigNumber;
+  acceptablePrice?: BigNumber;
   triggerPrice?: BigNumber;
-  executionFee: BigNumber;
-  executionFeeUsd: BigNumber;
-  executionFeeToken: Token;
-  swapPath: string[];
+  executionFee?: BigNumber;
+  executionFeeUsd?: BigNumber;
+  executionFeeToken?: Token;
+  swapRoute?: SwapRoute;
   onClose: () => void;
   onSubmitted: () => void;
 };
@@ -62,7 +64,7 @@ export function SyntheticsSwapConfirmation(p: Props) {
 
   const tokenAllowanceData = useTokenAllowance(chainId, {
     spenderAddress: routerAddress,
-    tokenAddresses: [p.fromTokenAddress],
+    tokenAddresses: p.fromTokenAddress ? [p.fromTokenAddress] : [],
   });
 
   const fromToken = getTokenData(tokensData, p.fromTokenAddress);
@@ -83,7 +85,7 @@ export function SyntheticsSwapConfirmation(p: Props) {
       fromTokenAddress: p.fromTokenAddress,
       fromTokenAmount: p.fromTokenAmount,
       toTokenAddress: p.toTokenAddress,
-      swapPath: p.swapPath,
+      swapPath: p.swapRoute?.swapPath,
     });
 
     if (error) {
@@ -116,20 +118,23 @@ export function SyntheticsSwapConfirmation(p: Props) {
   }
 
   function onSubmit() {
-    if (!account || !p.fromTokenAddress || !p.toTokenAddress || !p.executionFee || !p.swapPath) return;
+    if (!account || !p.fromTokenAddress || !p.toTokenAddress || !p.executionFee || !p.swapRoute || !p.fromTokenAmount)
+      return;
 
     if ([Operation.Long, Operation.Short].includes(p.operationType)) {
       if ([Mode.Market, Mode.Limit].includes(p.mode)) {
         const orderType = p.mode === Mode.Limit ? OrderType.LimitIncrease : OrderType.MarketIncrease;
 
-        const marketAddress = p.swapPath[p.swapPath.length - 1];
+        const { market, swapPath } = p.swapRoute;
+
+        if (!market || !p.sizeDeltaUsd || !p.acceptablePrice) return;
 
         createOrderTxn(chainId, library, {
           account,
-          marketAddress: marketAddress,
+          marketAddress: market,
           initialCollateralAddress: p.fromTokenAddress,
           initialCollateralAmount: p.fromTokenAmount,
-          swapPath: p.swapPath,
+          swapPath: swapPath,
           indexTokenAddress: p.toTokenAddress,
           sizeDeltaUsd: p.sizeDeltaUsd,
           triggerPrice: p.triggerPrice,
@@ -137,27 +142,23 @@ export function SyntheticsSwapConfirmation(p: Props) {
           executionFee: p.executionFee,
           isLong: p.operationType === Operation.Long,
           orderType,
-          minOutputAmount: BigNumber.from(0),
           referralCode: referralCodeData?.userReferralCodeString,
         }).then(p.onSubmitted);
       }
     }
 
     if (p.operationType === Operation.Swap) {
-      if (!p.swapPath) return;
-
       const orderType = p.mode === Mode.Limit ? OrderType.LimitSwap : OrderType.MarketSwap;
+
+      const { swapPath } = p.swapRoute;
 
       createOrderTxn(chainId, library, {
         account,
         initialCollateralAddress: p.fromTokenAddress,
         initialCollateralAmount: p.fromTokenAmount,
-        swapPath: p.swapPath,
+        swapPath: swapPath,
         receiveTokenAddress: p.toTokenAddress,
-        // TODO
-        // triggerPrice: BigNumber.from(0),
-        // acceptablePrice: p.acceptablePrice.add(expandDecimals(100, 30)),
-        executionFee: p.executionFee!,
+        executionFee: p.executionFee,
         orderType,
         minOutputAmount: BigNumber.from(0),
         referralCode: referralCodeData?.userReferralCodeString,
@@ -200,7 +201,7 @@ export function SyntheticsSwapConfirmation(p: Props) {
             <div className="SyntheticsSwapConfirmation-approve-tokens">
               <div className="SyntheticsSwapConfirmation-approve-token">
                 <ApproveTokenButton
-                  tokenAddress={p.fromTokenAddress}
+                  tokenAddress={fromToken.address}
                   tokenSymbol={fromToken.symbol}
                   spenderAddress={routerAddress}
                 />

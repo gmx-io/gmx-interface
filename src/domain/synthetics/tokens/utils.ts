@@ -44,7 +44,7 @@ export function getTokenAllowance(allowanceData: TokenAllowancesData, address?: 
   return allowanceData[address];
 }
 
-export function needTokenApprove(tokenAllowanceData: TokenAllowancesData, tokenAddress: string, amount?: BigNumber) {
+export function needTokenApprove(tokenAllowanceData: TokenAllowancesData, tokenAddress?: string, amount?: BigNumber) {
   const allowance = getTokenAllowance(tokenAllowanceData, tokenAddress);
 
   if (!allowance || !amount) return false;

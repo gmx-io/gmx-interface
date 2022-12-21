@@ -23,7 +23,7 @@ export type MarketsGraph = {
   [token: string]: TokenNode;
 };
 
-type SwapData = {
+export type SwapData = {
   marketsData: MarketsData;
   poolsData: MarketsPoolsData;
   fromToken: string;
@@ -33,6 +33,25 @@ type SwapData = {
 };
 
 type SwapPathItem = { market: string; fee: BigNumber };
+
+const SEPARATOR = ":";
+
+export function getMarketCombination(market: Market) {
+  const { marketTokenAddress, longTokenAddress, shortTokenAddress, indexTokenAddress } = market;
+
+  return [marketTokenAddress, longTokenAddress, shortTokenAddress, indexTokenAddress].join(SEPARATOR);
+}
+
+export function parseMarketCombination(marketCombination: string) {
+  const [market, indexToken, longToken, shortToken] = marketCombination.split(SEPARATOR);
+
+  return {
+    market,
+    longToken,
+    shortToken,
+    indexToken,
+  };
+}
 
 export function getMarketsGraph(markets: Market[]) {
   const collateralsGraph: MarketsGraph = {};
@@ -68,7 +87,6 @@ export function getMarketsGraph(markets: Market[]) {
 // TODO?
 // export function getByMainTokens(marketCombinations: string[], from: string, to: string) {
 // }
-
 export function getSwapParamsForPosition(data: SwapData, graph: MarketsGraph) {
   const { fromToken, toToken, indexToken } = data;
 
