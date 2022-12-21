@@ -100,11 +100,11 @@ export function getNextTokenAmount(p: {
   toToken: Token;
   toTokenPrice: BigNumber;
   triggerPrice?: BigNumber;
-  shouldInvertTriggerPrice?: boolean;
+  isInvertedTriggerPrice?: boolean;
   swapTriggerRatio?: BigNumber;
-  shouldInvertRatio?: boolean;
+  isInvertedTriggerRatio?: boolean;
   leverageMultiplier?: BigNumber;
-  shouldInvertLeverage?: boolean;
+  isInvertedLeverage?: boolean;
 }) {
   const fromUsdAmount = convertToUsdByPrice(p.fromTokenAmount, p.fromToken.decimals, p.fromTokenPrice);
 
@@ -113,23 +113,23 @@ export function getNextTokenAmount(p: {
   if (!toAmount || !fromUsdAmount) return undefined;
 
   if (p.swapTriggerRatio?.gt(0)) {
-    const ratio = p.shouldInvertRatio
+    const ratio = p.isInvertedTriggerRatio
       ? p.swapTriggerRatio
       : TRIGGER_RATIO_PRECISION.mul(TRIGGER_RATIO_PRECISION).div(p.swapTriggerRatio);
 
     toAmount = p.fromTokenAmount.mul(ratio).div(TRIGGER_RATIO_PRECISION);
   } else if (p.triggerPrice?.gt(0)) {
-    if (p.shouldInvertTriggerPrice) {
-      const toAmountUsd = convertToUsdByPrice(p.fromTokenAmount, p.fromToken.decimals, p.triggerPrice);
+    if (p.isInvertedTriggerPrice) {
+      const toAmountTriggerUsd = convertToUsdByPrice(p.fromTokenAmount, p.fromToken.decimals, p.triggerPrice);
 
-      toAmount = convertFromUsdByPrice(toAmountUsd, p.toToken.decimals, p.toTokenPrice);
+      toAmount = convertFromUsdByPrice(toAmountTriggerUsd, p.toToken.decimals, p.toTokenPrice);
     } else {
       toAmount = convertFromUsdByPrice(fromUsdAmount, p.toToken.decimals, p.triggerPrice);
     }
   }
 
   if (p.leverageMultiplier) {
-    const leverage = p.shouldInvertLeverage
+    const leverage = p.isInvertedLeverage
       ? LEVERAGE_PRECISION.mul(LEVERAGE_PRECISION).div(p.leverageMultiplier)
       : p.leverageMultiplier;
 

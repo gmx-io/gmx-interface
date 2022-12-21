@@ -187,11 +187,11 @@ export function SyntheticsSwapBox(p: Props) {
           toToken: toTokenState.token,
           toTokenPrice: toTokenState.price,
           triggerPrice,
-          shouldInvertTriggerPrice: false,
+          isInvertedTriggerPrice: false,
           swapTriggerRatio: swapRatio?.ratio,
-          shouldInvertRatio: swapRatio?.biggestSide === "to",
+          isInvertedTriggerRatio: swapRatio?.biggestSide === "to",
           leverageMultiplier,
-          shouldInvertLeverage: false,
+          isInvertedLeverage: false,
         });
 
         toTokenState.setValueByTokenAmount(toAmount);
@@ -207,11 +207,11 @@ export function SyntheticsSwapBox(p: Props) {
           toToken: fromTokenState.token,
           toTokenPrice: fromTokenState.price,
           triggerPrice,
-          shouldInvertTriggerPrice: true,
+          isInvertedTriggerPrice: true,
           swapTriggerRatio: swapRatio?.ratio,
-          shouldInvertRatio: swapRatio?.biggestSide === "from",
+          isInvertedTriggerRatio: swapRatio?.biggestSide === "from",
           leverageMultiplier,
-          shouldInvertLeverage: true,
+          isInvertedLeverage: true,
         });
 
         fromTokenState.setValueByTokenAmount(fromAmount);
