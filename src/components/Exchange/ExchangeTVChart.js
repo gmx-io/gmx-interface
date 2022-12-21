@@ -172,6 +172,13 @@ export default function ExchangeTVChart(props) {
     });
   }, [orders, chartToken, swapOption, chainId]);
 
+  const currentPositions = useMemo(() => {
+    if (!positions || !chartToken) {
+      return [];
+    }
+    return positions.filter((p) => p.indexToken.address === chartToken.address);
+  }, [chartToken, positions]);
+
   const ref = useRef(null);
   const chartRef = useRef(null);
 
@@ -292,9 +299,9 @@ export default function ExchangeTVChart(props) {
           );
         });
       }
-      if (positions && positions.length > 0) {
+      if (currentPositions && currentPositions.length > 0) {
         const color = "#3a3e5e";
-        positions.forEach((position) => {
+        currentPositions.forEach((position) => {
           const longOrShortText = position.isLong ? t`Long` : t`Short`;
           lines.push(
             currentSeries.createPriceLine({
@@ -318,7 +325,7 @@ export default function ExchangeTVChart(props) {
     return () => {
       lines.forEach((line) => currentSeries.removePriceLine(line));
     };
-  }, [currentOrders, positions, currentSeries, chainId, savedShouldShowPositionLines]);
+  }, [currentOrders, currentSeries, chainId, savedShouldShowPositionLines, currentPositions]);
 
   const candleStatsHtml = useMemo(() => {
     if (!priceData) {
