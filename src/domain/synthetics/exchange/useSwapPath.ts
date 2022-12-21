@@ -1,78 +1,138 @@
-import { getMarkets, useMarketsData, useMarketsPoolsData } from "domain/synthetics/markets";
-import { BigNumber } from "ethers";
+import { getPoolAmountUsd, useMarketsData, useMarketsPoolsData } from "domain/synthetics/markets";
+import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { debounce } from "lodash";
-import { useMemo } from "react";
-import { SwapData, findSwapPath, getMarketsGraph, getSwapParamsForPosition } from "./swapPath";
-
-const debouncedFindSwapPath: typeof findSwapPath = debounce(findSwapPath, 100);
-const debouncedGetSwapParamsForPosition: typeof getSwapParamsForPosition = debounce(getSwapParamsForPosition, 100);
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { SwapParams, findSwapPath, getMarketsGraph, getSwapPathForPosition } from "./swapPath";
+import { getSwapFee, usePriceImpactConfigs } from "domain/synthetics/fees";
+import { useAvailableTradeTokensData } from "domain/synthetics/tokens";
 
 export type SwapRoute = {
   market?: string;
   swapPath: string[];
+  swapFeesUsd: BigNumber;
 };
 
-export function useSwapRoute(p: {
+export function useSwapPath(p: {
+  isSwap: boolean;
   fromToken?: string;
   toToken?: string;
+
+  // for positions
   indexToken?: string;
   collateralToken?: string;
-  isSwap?: boolean;
-  amount?: BigNumber;
+
+  // which amount?
+  amountUsd?: BigNumber;
 }): SwapRoute | undefined {
   const { chainId } = useChainId();
+
+  const [swapPath, setSwapPath] = useState<string[] | undefined>();
+  const [market, setMarket] = useState<string | undefined>();
+  const [swapFeesUsd, setSwapFeesUsd] = useState<BigNumber | undefined>();
+
   const marketsData = useMarketsData(chainId);
   const poolsData = useMarketsPoolsData(chainId);
+  const tokensData = useAvailableTradeTokensData(chainId);
+  const priceImpactConfigsData = usePriceImpactConfigs(chainId);
 
   const graph = useMemo(() => {
-    const markets = getMarkets(marketsData);
-
-    return getMarketsGraph(markets).collateralsGraph;
+    return getMarketsGraph(marketsData);
   }, [marketsData]);
 
-  const swapRoute = useMemo(() => {
-    if (!p.fromToken || !p.toToken || !p.amount) return undefined;
+  const feeEstimator = useCallback(
+    (market: string, fromToken: string, toToken: string, amountUsd: BigNumber) => {
+      const toPool = getPoolAmountUsd(marketsData, poolsData, tokensData, market, toToken);
 
-    if (p.isSwap) {
-      const swapData: SwapData = {
+      // TODO: check for reserves
+      if (!toPool?.gt(amountUsd)) return ethers.constants.MaxUint256;
+
+      const fees = getSwapFee(
         marketsData,
         poolsData,
-        fromToken: p.fromToken,
-        toToken: p.toToken,
+        tokensData,
+        priceImpactConfigsData,
+        market,
+        fromToken,
+        toToken,
+        amountUsd
+      );
+
+      // if there are no valid fees, return infinity
+      if (!fees) return ethers.constants.MaxUint256;
+
+      const totalFee = fees.swapFee.add(fees.priceImpact.impact);
+
+      return totalFee;
+    },
+    [marketsData, poolsData, priceImpactConfigsData, tokensData]
+  );
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedUpdateSwapPath = useCallback(
+    debounce((swapParams: SwapParams) => {
+      const swapPath = findSwapPath(swapParams, graph);
+
+      setSwapPath(swapPath?.map((p) => p.market));
+      setSwapFeesUsd(swapPath?.reduce((acc, p) => acc.add(p.feeUsd), BigNumber.from(0)));
+      setMarket(undefined);
+    }, 100),
+    [graph]
+  );
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedUpdateSwapPathForPosition = useCallback(
+    debounce((swapParams: SwapParams) => {
+      const result = getSwapPathForPosition(marketsData, swapParams, graph);
+
+      setSwapPath(result?.swapPath.map((p) => p.market));
+      setSwapFeesUsd(result?.swapPath.reduce((acc, p) => acc.add(p.feeUsd), BigNumber.from(0)));
+      setMarket(result?.market);
+    }, 100),
+    [graph]
+  );
+
+  // TODO: find all paths and estimate fees after that
+  useEffect(() => {
+    const isSwap = p.fromToken && p.toToken && !p.indexToken;
+
+    if (!p.amountUsd?.gt(0)) return;
+
+    if (isSwap) {
+      debouncedUpdateSwapPath({
+        fromToken: p.fromToken!,
+        toToken: p.toToken!,
         indexToken: p.indexToken,
-        amount: p.amount,
-      };
-
-      const swapPath = debouncedFindSwapPath(swapData, graph);
-
-      if (!swapPath) return undefined;
-
-      return {
-        swapPath: swapPath.map((p) => p.market),
-      };
+        amountUsd: p.amountUsd,
+        feeEstimator,
+      });
     } else {
-      if (!p.collateralToken || !p.indexToken) return undefined;
+      if (!p.fromToken || !p.collateralToken || !p.indexToken) return;
 
-      const swapData: SwapData = {
-        marketsData,
-        poolsData,
+      debouncedUpdateSwapPathForPosition({
         fromToken: p.fromToken,
         toToken: p.collateralToken,
         indexToken: p.indexToken,
-        amount: p.amount,
-      };
-
-      const positionParams = debouncedGetSwapParamsForPosition(swapData, graph);
-
-      if (!positionParams) return undefined;
-
-      return {
-        swapPath: positionParams.swapPath.map((p) => p.market),
-        market: positionParams.market,
-      };
+        amountUsd: p.amountUsd,
+        feeEstimator,
+      });
     }
-  }, [graph, marketsData, p.amount, p.collateralToken, p.fromToken, p.indexToken, p.isSwap, p.toToken, poolsData]);
+  }, [
+    debouncedUpdateSwapPath,
+    debouncedUpdateSwapPathForPosition,
+    feeEstimator,
+    p.amountUsd,
+    p.collateralToken,
+    p.fromToken,
+    p.indexToken,
+    p.toToken,
+  ]);
 
-  return swapRoute;
+  if (!swapPath || !swapFeesUsd) return undefined;
+
+  return {
+    swapPath,
+    market,
+    swapFeesUsd,
+  };
 }

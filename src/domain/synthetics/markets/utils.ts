@@ -1,6 +1,6 @@
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { TokensData } from "../tokens/types";
-import { getTokenData } from "../tokens/utils";
+import { getTokenData, getUsdFromTokenAmount } from "../tokens/utils";
 import { MarketPoolType, MarketsData, MarketsPoolsData, MarketTokensData } from "./types";
 
 export function getMarket(marketsData: MarketsData, marketAddress?: string) {
@@ -53,6 +53,19 @@ export function getTokenPoolAmount(
   }
 
   return undefined;
+}
+
+export function getPoolAmountUsd(
+  marketsData: MarketsData,
+  poolsData: MarketsPoolsData,
+  tokensData: TokensData,
+  marketAddress?: string,
+  tokenAddress?: string,
+  useMaxPrice?: boolean
+) {
+  const tokenAmount = getTokenPoolAmount(marketsData, poolsData, marketAddress, tokenAddress);
+
+  return getUsdFromTokenAmount(tokensData, tokenAddress, tokenAmount, useMaxPrice);
 }
 
 export function getTokenPoolType(

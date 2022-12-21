@@ -27,6 +27,8 @@ export function useTokensData(chainId: number, p: { tokenAddresses: string[] }):
         };
         return tokensData;
       }, {}),
-    [balancesData, p.tokenAddresses, pricesData, tokenConfigs]
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [balancesData, p.tokenAddresses.join("-"), pricesData, tokenConfigs]
   );
 }

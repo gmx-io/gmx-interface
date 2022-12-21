@@ -23,7 +23,7 @@ import {
   useAvailableTradeTokensData,
 } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
-import { useSwapRoute } from "domain/synthetics/exchange/useSwapPath";
+import { useSwapPath } from "domain/synthetics/exchange/useSwapPath";
 import { InfoRow } from "components/InfoRow/InfoRow";
 
 import { useChainId } from "lib/chains";
@@ -120,13 +120,13 @@ export function SyntheticsSwapBox(p: Props) {
     toTokenPrice: toTokenState.price,
   });
 
-  const swapRoute = useSwapRoute({
+  const swapRoute = useSwapPath({
     isSwap,
     fromToken: fromTokenState.tokenAddress,
-    toToken: toTokenState.tokenAddress,
+    toToken: isSwap ? toTokenState.tokenAddress : undefined,
     collateralToken: isPosition ? collateralTokenAddress : undefined,
     indexToken: isPosition ? toTokenState.tokenAddress : undefined,
-    amount: fromTokenState.tokenAmount,
+    amountUsd: isPosition ? fromTokenState.usdAmount : toTokenState.usdAmount,
   });
 
   const nativeToken = getTokenData(tokensData, NATIVE_TOKEN_ADDRESS);

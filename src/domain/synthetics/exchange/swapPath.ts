@@ -1,61 +1,47 @@
-import { getMarkets, getTokenPoolAmount, Market, MarketsData, MarketsPoolsData } from "domain/synthetics/markets";
-import { BigNumber, ethers } from "ethers";
+import { getMarkets, MarketsData } from "domain/synthetics/markets";
+import { BigNumber } from "ethers";
 
-// Format: market:longToken:shortToken:indexToken
-export type MarketCombination = string;
-
-export type MarketVertex = {
+export type MarketEdge = {
   market: string;
-  toToken: string;
+  // opposite token
+  opposite: string;
   indexToken: string;
 };
 
-export type TokenNode = MarketVertex[];
-
 /**
  * graph = {
- *  A: [{toToken: B, market: m}, {toToken: C, market: m}],
- *  B: [{toToken: A, market: m}, {toToken: C, market: m}],
- *  C: [{toToken: A, market: m}, {toToken: B, market: m}],
+ *  A: [{opposite: B, market: m}, {opposite: C, market: m}],
+ *  B: [{opposite: A, market: m}, {opposite: C, market: m}],
+ *  C: [{opposite: A, market: m}, {opposite: B, market: m}],
  * }
  */
 export type MarketsGraph = {
-  [token: string]: TokenNode;
+  [token: string]: MarketEdge[];
 };
 
-export type SwapData = {
-  marketsData: MarketsData;
-  poolsData: MarketsPoolsData;
+export type FeeEstimator = (market: string, fromToken: string, toToken: string, amountUsd: BigNumber) => BigNumber;
+
+export type SwapParams = {
+  // start token
   fromToken: string;
+  // swap end token or collateral for a position
   toToken: string;
+  // index token for a position
   indexToken?: string;
-  amount: BigNumber;
+  // amount of fromToken to swap in usd
+  amountUsd: BigNumber;
+  // a function to estimate the fee for a swap
+  feeEstimator: FeeEstimator;
 };
 
-type SwapPathItem = { market: string; fee: BigNumber };
+export type SwapPathItem = { market: string; feeUsd: BigNumber };
 
-const SEPARATOR = ":";
+export type SwapPath = SwapPathItem[];
 
-export function getMarketCombination(market: Market) {
-  const { marketTokenAddress, longTokenAddress, shortTokenAddress, indexTokenAddress } = market;
+export function getMarketsGraph(marketsData: MarketsData): MarketsGraph {
+  const markets = getMarkets(marketsData);
 
-  return [marketTokenAddress, longTokenAddress, shortTokenAddress, indexTokenAddress].join(SEPARATOR);
-}
-
-export function parseMarketCombination(marketCombination: string) {
-  const [market, indexToken, longToken, shortToken] = marketCombination.split(SEPARATOR);
-
-  return {
-    market,
-    longToken,
-    shortToken,
-    indexToken,
-  };
-}
-
-export function getMarketsGraph(markets: Market[]) {
-  const collateralsGraph: MarketsGraph = {};
-  const indexGraph: MarketsGraph = {};
+  const graph: MarketsGraph = {};
 
   for (const m of markets) {
     const {
@@ -65,33 +51,26 @@ export function getMarketsGraph(markets: Market[]) {
       indexTokenAddress: indexToken,
     } = m;
 
-    collateralsGraph[longToken] = collateralsGraph[longToken] || [];
-    collateralsGraph[shortToken] = collateralsGraph[shortToken] || [];
+    graph[longToken] = graph[longToken] || [];
+    graph[shortToken] = graph[shortToken] || [];
 
-    collateralsGraph[longToken].push({ market, toToken: shortToken, indexToken });
-    collateralsGraph[shortToken].push({
+    graph[longToken].push({ market, opposite: shortToken, indexToken });
+    graph[shortToken].push({
       market,
-      toToken: longToken,
+      opposite: longToken,
       indexToken,
     });
-
-    indexGraph[indexToken] = indexGraph[indexToken] || [];
   }
 
-  return {
-    collateralsGraph,
-    indexGraph,
-  };
+  return graph;
 }
 
-// TODO?
-// export function getByMainTokens(marketCombinations: string[], from: string, to: string) {
-// }
-export function getSwapParamsForPosition(data: SwapData, graph: MarketsGraph) {
-  const { fromToken, toToken, indexToken } = data;
+export function getSwapPathForPosition(marketsData: MarketsData, swapParams: SwapParams, graph: MarketsGraph) {
+  const { fromToken, toToken, indexToken } = swapParams;
 
+  // no swap needed
   if (fromToken === toToken) {
-    const markets = getMarkets(data.marketsData);
+    const markets = getMarkets(marketsData);
 
     const market = markets.find(
       (m) => m.indexTokenAddress === indexToken && [m.longTokenAddress, m.shortTokenAddress].includes(toToken)
@@ -107,7 +86,7 @@ export function getSwapParamsForPosition(data: SwapData, graph: MarketsGraph) {
     };
   }
 
-  const swapPath = findSwapPath(data, graph);
+  const swapPath = findSwapPath(swapParams, graph);
 
   if (!swapPath) {
     return undefined;
@@ -121,69 +100,56 @@ export function getSwapParamsForPosition(data: SwapData, graph: MarketsGraph) {
   };
 }
 
-// TODO: price impact + swap fee
-export function getSwapFee(data: SwapData, vertex: MarketVertex, amount: BigNumber) {
-  const { marketsData, poolsData } = data;
-
-  const toPool = getTokenPoolAmount(marketsData, poolsData, vertex.market, vertex.toToken);
-
-  if (!toPool || toPool.lt(amount)) return ethers.constants.MaxUint256;
-
-  return BigNumber.from(0);
-}
-
-export function findSwapPath(data: SwapData, graph: MarketsGraph) {
-  return findPath(data, graph, data.fromToken, data.toToken, data.amount);
+export function findSwapPath(data: SwapParams, graph: MarketsGraph) {
+  return findPath(data, graph, data.fromToken, data.toToken);
 }
 
 export function findPath(
-  data: SwapData,
+  swapParams: SwapParams,
   graph: MarketsGraph,
   from: string,
   to: string,
-  amount: BigNumber,
   maxDepth = 3
-): SwapPathItem[] | undefined {
+): SwapPath | undefined {
   if (maxDepth === 0) {
     return undefined;
   }
 
-  const vertexes = graph[from];
+  const edges = graph[from];
 
-  const isTargetTo = to === data.toToken;
-  const needCheckIndex = data.indexToken && isTargetTo;
+  const isTargetTo = to === swapParams.toToken;
+  const needCheckIndex = swapParams.indexToken && isTargetTo;
 
-  const targetVertexes = vertexes.filter((v) => {
-    return v.toToken === to && (!needCheckIndex || v.indexToken === data.indexToken);
+  const targetEdges = edges.filter((v) => {
+    return v.opposite === to && (!needCheckIndex || v.indexToken === swapParams.indexToken);
   });
 
-  if (targetVertexes.length > 0) {
-    let bestSwap = targetVertexes[0];
-    let bestSwapFee = getSwapFee(data, bestSwap, amount);
+  if (targetEdges.length > 0) {
+    let bestSwap = targetEdges[0];
+    let bestSwapFee = swapParams.feeEstimator(bestSwap.market, from, bestSwap.opposite, swapParams.amountUsd);
 
-    if (amount.gt(bestSwapFee)) {
-      for (const v of targetVertexes) {
-        const swapFee = getSwapFee(data, v, amount);
+    if (swapParams.amountUsd.gt(bestSwapFee)) {
+      for (const e of targetEdges) {
+        const swapFee = swapParams.feeEstimator(e.market, from, e.opposite, swapParams.amountUsd);
 
         if (swapFee.lt(bestSwapFee)) {
-          bestSwap = v;
+          bestSwap = e;
           bestSwapFee = swapFee;
         }
       }
 
-      return [{ market: bestSwap.market, fee: bestSwapFee }];
+      return [{ market: bestSwap.market, feeUsd: bestSwapFee }];
     }
   }
 
-  for (const v of vertexes) {
-    const swapFee = getSwapFee(data, v, amount);
-    const vSwap = { market: v.market, fee: swapFee };
+  for (const e of edges) {
+    const swapFee = swapParams.feeEstimator(e.market, from, e.opposite, swapParams.amountUsd);
 
-    if (amount.gt(swapFee)) {
-      const path = findPath(data, graph, v.toToken, to, amount, maxDepth - 1);
+    if (swapParams.amountUsd.gt(swapFee)) {
+      const path = findPath(swapParams, graph, e.opposite, to, maxDepth - 1);
 
       if (path) {
-        return [vSwap, ...path];
+        return [{ market: e.market, feeUsd: swapFee }, ...path];
       }
     }
   }

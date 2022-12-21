@@ -1,9 +1,10 @@
 import { BigNumber } from "ethers";
-import { BASIS_POINTS_DIVISOR } from "lib/legacy";
-import { bigNumberify, expandDecimals, formatAmount } from "lib/numbers";
+import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "lib/legacy";
+import { bigNumberify, expandDecimals, formatAmount, parseValue } from "lib/numbers";
 import { convertFromUsdByPrice, formatUsdAmount, getTokenData, TokensData } from "domain/synthetics/tokens";
 import { PriceImpact, PriceImpactConfigsData } from "./types";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { MarketsData, MarketsPoolsData, getPoolAmountUsd } from "../markets";
 
 export function formatFee(feeUsd?: BigNumber, feeBp?: BigNumber) {
   if (!feeUsd?.abs().gt(0)) {
@@ -34,6 +35,35 @@ export function getExecutionFee(tokensData: TokensData) {
     feeUsd: feeUsd,
     feeTokenAmount,
     feeToken: nativeToken,
+  };
+}
+
+export function getSwapFee(
+  marketsData: MarketsData,
+  poolsData: MarketsPoolsData,
+  tokensData: TokensData,
+  priceImpactConfigsData: PriceImpactConfigsData,
+  market: string,
+  fromToken: string,
+  toToken: string,
+  usdAmount: BigNumber
+) {
+  const fromPoolUsd = getPoolAmountUsd(marketsData, poolsData, tokensData, market, fromToken);
+  const toPoolUsd = getPoolAmountUsd(marketsData, poolsData, tokensData, market, toToken);
+
+  const fromDelta = usdAmount;
+  const toDelta = BigNumber.from(0).sub(usdAmount);
+
+  const priceImpact = getPriceImpact(priceImpactConfigsData, market, fromPoolUsd, toPoolUsd, fromDelta, toDelta);
+
+  if (!priceImpact) return undefined;
+
+  // TODO: get swap fee from contract
+  const swapFee = BigNumber.from(0).sub(parseValue("0.01", USD_DECIMALS)!);
+
+  return {
+    swapFee,
+    priceImpact,
   };
 }
 

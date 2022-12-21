@@ -1,26 +1,14 @@
-import { findSwapPath, getMarketsGraph, getSwapParamsForPosition } from "domain/synthetics/exchange";
-import { MarketsData, MarketsPoolsData, getMarkets } from "domain/synthetics/markets";
-import { BigNumber } from "ethers";
+import {
+  FeeEstimator,
+  SwapParams,
+  findSwapPath,
+  getMarketsGraph,
+  getSwapPathForPosition,
+} from "domain/synthetics/exchange";
+import { MarketsData, MarketsPoolsData, getTokenPoolAmount } from "domain/synthetics/markets";
+import { BigNumber, ethers } from "ethers";
 
-const SEPARATOR = ":";
-
-// function getMarketCombination(market: Market) {
-//   const { marketTokenAddress, longTokenAddress, shortTokenAddress, indexTokenAddress } = market;
-
-//   return [marketTokenAddress, longTokenAddress, shortTokenAddress, indexTokenAddress].join(SEPARATOR);
-// }
-
-function parseMarketCombination(marketCombination: string) {
-  const [market, indexToken, longToken, shortToken] = marketCombination.split(SEPARATOR);
-
-  return {
-    market,
-    longToken,
-    shortToken,
-    indexToken,
-  };
-}
-
+// indexToken-longToken-shortToken
 const marketsKeys = [
   "AVAX-AVAX-USDC",
   "ETH-ETH-USDC",
@@ -31,10 +19,11 @@ const marketsKeys = [
   "SPOT-DAI-USDC",
 ];
 
-const marketsCombinations = marketsKeys.map((market) => `${market}:${market.replaceAll("-", ":")}`);
+// market:indexToken:longToken:shortToken
+const marketsCombinations = marketsKeys.map((key) => `${key}:${key.replaceAll("-", ":")}`);
 
 const marketsData: MarketsData = marketsCombinations.reduce((acc, comb) => {
-  const { market, longToken, shortToken, indexToken } = parseMarketCombination(comb);
+  const [market, indexToken, longToken, shortToken] = comb.split(":");
 
   acc[market] = {
     marketTokenAddress: market,
@@ -48,9 +37,7 @@ const marketsData: MarketsData = marketsCombinations.reduce((acc, comb) => {
   return acc;
 }, {} as MarketsData);
 
-const markets = getMarkets(marketsData);
-
-const { collateralsGraph } = getMarketsGraph(markets);
+const graph = getMarketsGraph(marketsData);
 
 const poolsData: MarketsPoolsData = marketsKeys.reduce((acc, market) => {
   acc[market] = {
@@ -61,6 +48,17 @@ const poolsData: MarketsPoolsData = marketsKeys.reduce((acc, market) => {
   return acc;
 }, {});
 
+// mocked estimator, only checks for pool amounts
+const feeEstimatorFactory =
+  (poolsData): FeeEstimator =>
+  (market, from, to, amountUsd) => {
+    const toPool = getTokenPoolAmount(marketsData, poolsData, market, to);
+
+    if (!toPool || toPool.lt(amountUsd)) return ethers.constants.MaxUint256;
+
+    return BigNumber.from(1);
+  };
+
 describe("getSwapPath", () => {
   describe("for swaps", () => {
     const tests = [
@@ -68,39 +66,44 @@ describe("getSwapPath", () => {
         name: "the same market",
         from: "ETH",
         to: "USDC",
-        amount: BigNumber.from(5),
+        amountUsd: BigNumber.from(5),
         expected: ["ETH-ETH-USDC"],
+        expectedFee: BigNumber.from(1),
         poolsData,
       },
       {
         name: "the same market",
         from: "USDC",
         to: "ETH",
-        amount: BigNumber.from(5),
+        amountUsd: BigNumber.from(5),
         expected: ["ETH-ETH-USDC"],
+        expectedFee: BigNumber.from(1),
         poolsData,
       },
       {
         name: "different markets",
         from: "ETH",
         to: "AVAX",
-        amount: BigNumber.from(5),
+        amountUsd: BigNumber.from(5),
         expected: ["ETH-ETH-USDC", "AVAX-AVAX-USDC"],
+        expectedFee: BigNumber.from(2),
         poolsData,
       },
       {
         name: "different markets via spot",
         from: "AVAX",
         to: "BTC",
-        amount: BigNumber.from(5),
+        amountUsd: BigNumber.from(5),
         expected: ["AVAX-AVAX-USDC", "SPOT-USDC-DAI", "BTC-BTC-DAI"],
+        expectedFee: BigNumber.from(3),
         poolsData,
       },
+      // TODO: find shortest
       // {
       //   name: "different markets shortest via spot",
       //   from: "DAI",
       //   to: "AVAX",
-      //   amount: BigNumber.from(5),
+      //   amountUsd: BigNumber.from(5),
       //   expected: ["SPOT-USDC-DAI", "AVAX-AVAX-USDC"],
       //   poolsData,
       // },
@@ -108,8 +111,9 @@ describe("getSwapPath", () => {
         name: "different markets via spot based on pools",
         from: "AVAX",
         to: "BTC",
-        amount: BigNumber.from(5),
+        amountUsd: BigNumber.from(5),
         expected: ["AVAX-AVAX-USDC", "SPOT-DAI-USDC", "BTC-BTC-DAI"],
+        expectedFee: BigNumber.from(3),
         poolsData: {
           ...poolsData,
           "SPOT-USDC-DAI": {
@@ -122,8 +126,9 @@ describe("getSwapPath", () => {
         name: "different markets without spot based on pools",
         from: "AVAX",
         to: "DAI",
-        amount: BigNumber.from(5),
+        amountUsd: BigNumber.from(5),
         expected: ["AVAX-AVAX-USDC", "ETH-ETH-USDC", "ETH-ETH-DAI"],
+        expectedFee: BigNumber.from(3),
         poolsData: {
           ...poolsData,
           "SPOT-USDC-DAI": {
@@ -140,25 +145,39 @@ describe("getSwapPath", () => {
         name: "Long -> Short via spot",
         from: "AVAX",
         to: "DAI",
-        amount: BigNumber.from(5),
+        amountUsd: BigNumber.from(5),
         expected: ["AVAX-AVAX-USDC", "SPOT-USDC-DAI"],
+        expectedFee: BigNumber.from(2),
         poolsData,
       },
       {
         name: "no swapPath",
         from: "BTC",
         to: "USDT",
-        amount: BigNumber.from(5),
+        amountUsd: BigNumber.from(5),
+        expectedFee: undefined,
         expected: undefined,
         poolsData,
       },
     ];
 
-    for (const { name, from, to, poolsData, amount, expected } of tests) {
+    for (const { name, from, to, poolsData, amountUsd, expected, expectedFee } of tests) {
       it(`${name}: ${from} -> ${to}`, () => {
-        const result = findSwapPath({ marketsData, poolsData, fromToken: from, toToken: to, amount }, collateralsGraph);
+        const swapParams = {
+          marketsData,
+          poolsData,
+          fromToken: from,
+          toToken: to,
+          amountUsd,
+          feeEstimator: feeEstimatorFactory(poolsData),
+          tokensData: {},
+        };
+
+        const result = findSwapPath(swapParams, graph);
 
         expect(result?.map((swap) => swap.market)).toEqual(expected);
+        const fee = result?.reduce((acc, swap) => acc.add(swap.feeUsd), BigNumber.from(0));
+        expect(fee).toEqual(expectedFee);
       });
     }
   });
@@ -170,9 +189,10 @@ describe("getSwapPath", () => {
         from: "ETH",
         collateral: "ETH",
         index: "ETH",
-        amount: BigNumber.from(1),
+        amountUsd: BigNumber.from(5),
         expectedPath: [],
         expectedMarket: "ETH-ETH-USDC",
+        expectedFee: BigNumber.from(0),
         marketsCombinations,
         poolsData,
       },
@@ -181,9 +201,10 @@ describe("getSwapPath", () => {
         from: "USDC",
         collateral: "USDC",
         index: "ETH",
-        amount: BigNumber.from(1),
+        amountUsd: BigNumber.from(5),
         expectedPath: [],
         expectedMarket: "ETH-ETH-USDC",
+        expectedFee: BigNumber.from(0),
         marketsCombinations,
         poolsData,
       },
@@ -193,9 +214,10 @@ describe("getSwapPath", () => {
         collateral: "USDC",
         index: "ETH",
         isLong: true,
-        amount: BigNumber.from(1),
+        amountUsd: BigNumber.from(5),
         expectedPath: ["ETH-ETH-USDC"],
         expectedMarket: "ETH-ETH-USDC",
+        expectedFee: BigNumber.from(1),
         marketsCombinations,
         poolsData,
       },
@@ -204,9 +226,10 @@ describe("getSwapPath", () => {
         from: "ETH",
         collateral: "USDC",
         index: "ETH",
-        amount: BigNumber.from(1),
+        amountUsd: BigNumber.from(5),
         expectedPath: ["ETH-ETH-USDC"],
         expectedMarket: "ETH-ETH-USDC",
+        expectedFee: BigNumber.from(1),
         marketsCombinations,
         poolsData,
       },
@@ -216,7 +239,7 @@ describe("getSwapPath", () => {
       //   from: "ETH",
       //   collateral: "DAI",
       //   index: "BTC",
-      //   amount: BigNumber.from(1),
+      //   amountUsd: BigNumber.from(1),
       //   expectedPath: ["ETH-ETH-USDC", "SPOT-USDC-DAI", "BTC-BTC-DAI"],
       //   marketsCombinations,
       //   poolsData,
@@ -226,9 +249,10 @@ describe("getSwapPath", () => {
         from: "ETH",
         collateral: "AVAX",
         index: "AVAX",
-        amount: BigNumber.from(1),
+        amountUsd: BigNumber.from(5),
         expectedPath: ["ETH-ETH-USDC", "AVAX-AVAX-USDC"],
         expectedMarket: "AVAX-AVAX-USDC",
+        expectedFee: BigNumber.from(2),
         marketsCombinations,
         poolsData,
       },
@@ -237,9 +261,10 @@ describe("getSwapPath", () => {
         from: "ETH",
         collateral: "USDC",
         index: "AVAX",
-        amount: BigNumber.from(1),
+        amountUsd: BigNumber.from(5),
         expectedPath: ["ETH-ETH-USDC", "AVAX-AVAX-USDC", "AVAX-AVAX-USDC"],
         expectedMarket: "AVAX-AVAX-USDC",
+        expectedFee: BigNumber.from(3),
         marketsCombinations,
         poolsData,
       },
@@ -248,21 +273,33 @@ describe("getSwapPath", () => {
         from: "ETH",
         collateral: "USDC",
         index: "BTC",
-        amount: BigNumber.from(1),
+        amountUsd: BigNumber.from(5),
         expectedPath: undefined,
+        expectedFee: undefined,
+        expectedMarket: undefined,
         marketsCombinations,
         poolsData,
       },
     ];
 
-    for (const { name, from, collateral, index, poolsData, amount, expectedPath, expectedMarket } of tests) {
+    for (const { name, from, collateral, index, amountUsd, expectedPath, expectedMarket, expectedFee } of tests) {
       it(`${name}: ${from} -> ${collateral} : ${index}`, () => {
-        const swapData = { marketsData, poolsData, fromToken: from, toToken: collateral, indexToken: index, amount };
+        const swapParams: SwapParams = {
+          fromToken: from,
+          toToken: collateral,
+          indexToken: index,
+          amountUsd,
+          feeEstimator: feeEstimatorFactory(poolsData),
+        };
 
-        const result = getSwapParamsForPosition(swapData, collateralsGraph);
+        const result = getSwapPathForPosition(marketsData, swapParams, graph);
 
         expect(result?.swapPath.map((swap) => swap.market)).toEqual(expectedPath);
         expect(result?.market).toEqual(expectedMarket);
+
+        const fee = result?.swapPath.reduce((acc, swap) => acc.add(swap.feeUsd), BigNumber.from(0));
+
+        expect(fee).toEqual(expectedFee);
       });
     }
   });
