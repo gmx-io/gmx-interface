@@ -9,6 +9,7 @@ import { getTokenInfo } from "domain/tokens/utils";
 import { formatAmount, numberWithCommas } from "lib/numbers";
 import { getToken, getTokens } from "config/tokens";
 import TVChartContainer from "components/TVChartContainer/TVChartContainer";
+import { t } from "@lingui/macro";
 
 const PRICE_LINE_TEXT_WIDTH = 15;
 
@@ -89,23 +90,48 @@ export default function ExchangeTVChart(props) {
       return [];
     }
 
-    return orders.filter((order) => {
-      if (order.type === SWAP) {
-        // we can't show non-stable to non-stable swap orders with existing charts
-        // so to avoid users confusion we'll show only long/short orders
-        return false;
-      }
+    return orders
+      .filter((order) => {
+        if (order.type === SWAP) {
+          // we can't show non-stable to non-stable swap orders with existing charts
+          // so to avoid users confusion we'll show only long/short orders
+          return false;
+        }
 
-      const indexToken = getToken(chainId, order.indexToken);
-      return order.indexToken === chartToken.address || (chartToken.isNative && indexToken.isWrapped);
-    });
+        const indexToken = getToken(chainId, order.indexToken);
+        return order.indexToken === chartToken.address || (chartToken.isNative && indexToken.isWrapped);
+      })
+      .map((order) => {
+        const indexToken = getToken(chainId, order.indexToken);
+        let tokenSymbol;
+        if (indexToken && indexToken.symbol) {
+          tokenSymbol = indexToken.isWrapped ? indexToken.baseSymbol : indexToken.symbol;
+        }
+        const title = `${order.type === INCREASE ? t`Inc.` : t`Dec.`} ${tokenSymbol} ${
+          order.isLong ? t`Long` : t`Short`
+        }`;
+        return { title, price: parseFloat(formatAmount(order.triggerPrice, USD_DECIMALS, 2)) };
+      });
   }, [orders, chartToken, swapOption, chainId]);
 
   const currentPositions = useMemo(() => {
     if (!positions || !chartToken) {
       return [];
     }
-    return positions.filter((p) => p.indexToken.address === chartToken.address);
+    return positions
+      .filter((p) => p.indexToken.address === chartToken.address)
+      .map((position) => {
+        return {
+          open: {
+            price: parseFloat(formatAmount(position.averagePrice, USD_DECIMALS, 2)),
+            title: `Open ${position.indexToken.symbol} ${position.isLong ? "Long" : "Short"}`,
+          },
+          liq: {
+            price: parseFloat(formatAmount(getLiquidationPrice(position), USD_DECIMALS, 2)),
+            title: `Liq. ${position.indexToken.symbol} ${position.isLong ? "Long" : "Short"}`,
+          },
+        };
+      });
   }, [chartToken, positions]);
 
   const ref = useRef(null);
@@ -293,6 +319,7 @@ export default function ExchangeTVChart(props) {
         {chartToken.symbol && chainId && (
           <TVChartContainer
             currentPositions={currentPositions}
+            currentOrders={currentOrders}
             savedShouldShowPositionLines={savedShouldShowPositionLines}
             symbol={chartToken.symbol}
             chainId={chainId}

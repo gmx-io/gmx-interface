@@ -921,6 +921,10 @@ msgstr ""
 msgid "DeFi Portfolio Tracker"
 msgstr ""
 
+#: src/components/Exchange/ExchangeTVChart.js
+msgid "Dec."
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Decentralized Finance Dashboard"
 msgstr ""
@@ -1479,6 +1483,10 @@ msgstr ""
 msgid "Image generation error, please refresh and try again."
 msgstr ""
 
+#: src/components/Exchange/ExchangeTVChart.js
+msgid "Inc."
+msgstr ""
+
 #: src/App/App.js
 msgid "Include PnL in leverage display"
 msgstr ""
@@ -1734,6 +1742,7 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js
@@ -2718,6 +2727,7 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js

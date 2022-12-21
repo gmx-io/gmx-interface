@@ -1,7 +1,5 @@
-import { getLiquidationPrice, USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatAmount } from "lib/numbers";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getKeyByValue, supportedResolutions } from "./api";
 import useDatafeed from "./useDatafeed";
 const DEFAULT_PERIOD = "4h";
@@ -20,60 +18,53 @@ const defaultProps = {
   header_widget_dom_node: false,
 };
 
-export default function TVChartContainer({ symbol, chainId, savedShouldShowPositionLines, currentPositions }) {
+export default function TVChartContainer({
+  symbol,
+  chainId,
+  savedShouldShowPositionLines,
+  currentPositions,
+  currentOrders,
+}) {
   const tvChartRef = useRef();
   const tvWidgetRef = useRef(null);
   const [chartReady, setChartReady] = useState(false);
   let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
   const datafeed = useDatafeed();
 
-  const positionsChartInfo = useMemo(() => {
-    return currentPositions.reduce((acc, position) => {
-      acc[position.key] = {
-        open: {
-          price: parseFloat(formatAmount(position.averagePrice, USD_DECIMALS, 2)),
-          title: `Open ${position.indexToken.symbol} ${position.isLong ? "Long" : "Short"}`,
-        },
-        liq: {
-          price: parseFloat(formatAmount(getLiquidationPrice(position), USD_DECIMALS, 2)),
-          title: `Liq. ${position.indexToken.symbol} ${position.isLong ? "Long" : "Short"}`,
-        },
-      };
-      return acc;
-    }, {});
-  }, [currentPositions]);
-
   function createPositionLine(title, price) {
+    if (!tvWidgetRef?.current) return;
     return tvWidgetRef.current
       .activeChart()
-      .createPositionLine()
+      .createPositionLine({ id: Math.random() })
       .setText(title)
       .setPrice(price)
       .setQuantity("")
       .setLineStyle(1)
+      .setLineLength(0)
       .setBodyTextColor("#fff")
       .setLineColor("#3a3e5e")
       .setBodyBackgroundColor("#3a3e5e")
+      .setBodyBorderColor("#3a3e5e")
       .setBodyBorderColor("#3a3e5e");
   }
 
   useEffect(() => {
     const lines = [];
-    if (!chartReady || !positionsChartInfo) return;
+    if (!chartReady) return;
     if (savedShouldShowPositionLines) {
       currentPositions.forEach((position) => {
-        const positionChartInfo = positionsChartInfo[position.key];
-        if (positionChartInfo) {
-          const { open, liq } = positionChartInfo;
-          lines.push(createPositionLine(open.title, open.price));
-          lines.push(createPositionLine(liq.title, liq.price));
-        }
+        const { open, liq } = position;
+        lines.push(createPositionLine(open.title, open.price));
+        lines.push(createPositionLine(liq.title, liq.price));
+      });
+      currentOrders.forEach((order) => {
+        lines.push(createPositionLine(order.title, order.price));
       });
     }
     return () => {
-      lines.forEach((line) => line.remove());
+      lines.forEach((line) => line?.remove());
     };
-  }, [chartReady, positionsChartInfo, currentPositions, savedShouldShowPositionLines]);
+  }, [chartReady, currentPositions, savedShouldShowPositionLines, currentOrders]);
 
   useEffect(() => {
     if (chartReady && tvWidgetRef.current && symbol !== tvWidgetRef.current?.activeChart()?.symbol()) {
@@ -99,7 +90,7 @@ export default function TVChartContainer({ symbol, chainId, savedShouldShowPosit
     });
 
     const widgetOptions = {
-      debug: false,
+      debug: true,
       symbol: symbol,
       datafeed: datafeed,
       theme: defaultProps.theme,

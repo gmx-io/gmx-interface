@@ -72,9 +72,18 @@ export default function useDatafeed() {
         if (activeTicker.current !== ticker) {
           activeTicker.current = ticker;
         }
-        const bars = await getHistoryBars({ chainId, ticker, resolution, isStable, firstDataRequest, to, from });
-        const filteredBars = bars.filter((bar) => bar.time >= from * 1000 && bar.time < toWithOffset * 1000);
-        filteredBars.length > 0 ? onHistoryCallback(filteredBars) : onErrorCallback("Something went wrong!");
+
+        try {
+          const bars = await getHistoryBars({ chainId, ticker, resolution, isStable, firstDataRequest, to, from });
+          const filteredBars = bars.filter((bar) => bar.time >= from * 1000 && bar.time < toWithOffset * 1000);
+          if (filteredBars.length > 0) {
+            onHistoryCallback(filteredBars, { noData: false });
+          } else {
+            onHistoryCallback(filteredBars, { noData: true });
+          }
+        } catch {
+          onErrorCallback("Something went wrong!");
+        }
       },
 
       subscribeBars: async (symbolInfo, resolution, onRealtimeCallback, _uid, onResetCacheNeededCallback) => {
