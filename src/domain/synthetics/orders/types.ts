@@ -1,6 +1,33 @@
 import { OrderType } from "config/synthetics";
 import { BigNumber } from "ethers";
 
+export type ContractOrder = {
+  addresses: {
+    account: string;
+    callbackContract: string;
+    initialCollateralToken: string;
+    market: string;
+    receiver: string;
+    swapPath: string[];
+  };
+  numbers: {
+    acceptablePrice: BigNumber;
+    callbackGasLimit: BigNumber;
+    executionFee: BigNumber;
+    initialCollateralDeltaAmount: BigNumber;
+    minOutputAmount: BigNumber;
+    sizeDeltaUsd: BigNumber;
+    triggerPrice: BigNumber;
+    updatedAtBlock: BigNumber;
+  };
+  flags: {
+    isFrozen: boolean;
+    isLong: boolean;
+    orderType: OrderType;
+    shouldUnwrapNativeToken: boolean;
+  };
+};
+
 export type Order = {
   key: string;
   account: string;

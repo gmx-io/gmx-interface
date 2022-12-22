@@ -576,7 +576,15 @@ export function SyntheticsSwapBox(p: Props) {
         />
       )}
 
-      {isProcessing && <SyntheticSwapStatus operationType={operationTab!} onClose={() => setIsProcessing(false)} />}
+      {isProcessing && (
+        <SyntheticSwapStatus
+          isLong={isLong}
+          isSwap={isSwap}
+          fromToken={fromTokenState.tokenAddress}
+          toToken={toTokenState.tokenAddress}
+          onClose={() => setIsProcessing(false)}
+        />
+      )}
     </>
   );
 }

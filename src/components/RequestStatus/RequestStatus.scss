@@ -1,0 +1,21 @@
+.RequestStatus {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  font-size: var(--font-sm);
+}
+
+.RequestStatus-status {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.RequestStatus-spin {
+  height: 2rem;
+  width: 2rem;
+  color: #3749e6;
+  margin-left: -0.3rem;
+}

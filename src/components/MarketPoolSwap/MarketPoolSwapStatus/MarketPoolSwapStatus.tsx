@@ -1,97 +1,76 @@
-import { t } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import Modal from "components/Modal/Modal";
-import { getExplorerUrl } from "config/chains";
-import { useChainId } from "lib/chains";
-import { useContractEvents } from "lib/contracts";
-import { useEffect, useState } from "react";
-import { ImSpinner2 } from "react-icons/im";
-import { Operation, operationTexts } from "../utils";
+import { Operation } from "../utils";
 
 type Props = {
   operationType: Operation;
   onClose: () => void;
 };
 
-function StatusItem(p: { isLoading?: boolean; text: string; txnHash?: string }) {
-  const { chainId } = useChainId();
-
-  const txnLink = `${getExplorerUrl(chainId)}tx/${p.txnHash}`;
-
-  return (
-    <div>
-      {p.text}
-      {p.isLoading && <ImSpinner2 className="spin ApproveTokenButton-spin" />}
-      {p.txnHash && <ExternalLink href={txnLink}>View</ExternalLink>}
-    </div>
-  );
-}
-
 export function MarketPoolSwapStatus(p: Props) {
-  const { account } = useWeb3React();
+  // const { account } = useWeb3React();
 
-  const { subscribe, unsubscribe } = useContractEvents();
-  const [depositKey, setDepositKey] = useState<string>();
+  return null;
 
-  const [depositCreatedTxnHash, setDepositCreatedTxnHash] = useState<string>();
-  const [depositExecutedTxnHash, setDepositExecutedTxnHash] = useState<string>();
-  const [depositCancelledTxnHash, setDepositCancelledTxnHash] = useState<string>();
+  // const { subscribe, unsubscribe } = useContractEvents();
+  // const [depositKey, setDepositKey] = useState<string>();
 
-  let orderExecuionStatusText = "Order processing";
-  let orderExecutionTxnHash: string | undefined = undefined;
+  // const [depositCreatedTxnHash, setDepositCreatedTxnHash] = useState<string>();
+  // const [depositExecutedTxnHash, setDepositExecutedTxnHash] = useState<string>();
+  // const [depositCancelledTxnHash, setDepositCancelledTxnHash] = useState<string>();
 
-  const isOrderExecutionLoading = Boolean(depositKey && !depositExecutedTxnHash && !depositCancelledTxnHash);
+  // let orderExecuionStatusText = "Order processing";
+  // let orderExecutionTxnHash: string | undefined = undefined;
 
-  if (depositExecutedTxnHash) {
-    orderExecuionStatusText = t`Order executed`;
-    orderExecutionTxnHash = depositExecutedTxnHash;
-  }
+  // const isOrderExecutionLoading = Boolean(depositKey && !depositExecutedTxnHash && !depositCancelledTxnHash);
 
-  if (depositCancelledTxnHash) {
-    orderExecuionStatusText = t`Order cancelled`;
-    orderExecutionTxnHash = depositCancelledTxnHash;
-  }
+  // if (depositExecutedTxnHash) {
+  //   orderExecuionStatusText = t`Order executed`;
+  //   orderExecutionTxnHash = depositExecutedTxnHash;
+  // }
 
-  useEffect(() => {
-    // TODO: get logs
-    function onDepositCreated(key, [depositProps], txnParams) {
-      if (depositProps.account !== account) return;
+  // if (depositCancelledTxnHash) {
+  //   orderExecuionStatusText = t`Order cancelled`;
+  //   orderExecutionTxnHash = depositCancelledTxnHash;
+  // }
 
-      setDepositKey(key);
-      setDepositCreatedTxnHash(txnParams.transactionHash);
-    }
+  // useEffect(() => {
+  //   // TODO: get logs
+  //   function onDepositCreated(key, [depositProps], txnParams) {
+  //     if (depositProps.account !== account) return;
 
-    function onDepositExecuted(key, txnParams) {
-      if (key !== depositKey) return;
-      setDepositExecutedTxnHash(txnParams.transactionHash);
-    }
+  //     setDepositKey(key);
+  //     setDepositCreatedTxnHash(txnParams.transactionHash);
+  //   }
 
-    function onDepositCancelled(key, txnParams) {
-      if (key !== depositKey) return;
-      setDepositCancelledTxnHash(txnParams.transactionHash);
-    }
+  //   function onDepositExecuted(key, txnParams) {
+  //     if (key !== depositKey) return;
+  //     setDepositExecutedTxnHash(txnParams.transactionHash);
+  //   }
 
-    subscribe("EventEmitter", "DepositCreated", onDepositCreated);
-    subscribe("EventEmitter", "DepositExecuted", onDepositExecuted);
-    subscribe("EventEmitter", "DepositCancelled", onDepositCancelled);
+  //   function onDepositCancelled(key, txnParams) {
+  //     if (key !== depositKey) return;
+  //     setDepositCancelledTxnHash(txnParams.transactionHash);
+  //   }
 
-    return () => {
-      unsubscribe("EventEmitter", "DepositCreated", onDepositCreated);
-      unsubscribe("EventEmitter", "DepositExecuted", onDepositExecuted);
-      unsubscribe("EventEmitter", "DepositCancelled", onDepositCancelled);
-    };
-  }, [account, depositKey, subscribe, unsubscribe]);
+  //   subscribe("EventEmitter", "DepositCreated", onDepositCreated);
+  //   subscribe("EventEmitter", "DepositExecuted", onDepositExecuted);
+  //   subscribe("EventEmitter", "DepositCancelled", onDepositCancelled);
 
-  return (
-    <Modal
-      isVisible={true}
-      setIsVisible={p.onClose}
-      label={t`${operationTexts[p.operationType]} status`}
-      allowContentTouchMove
-    >
-      <StatusItem text={`Order create status`} txnHash={depositCreatedTxnHash} isLoading={!depositCreatedTxnHash} />
-      <StatusItem text={orderExecuionStatusText} isLoading={isOrderExecutionLoading} txnHash={orderExecutionTxnHash} />
-    </Modal>
-  );
+  //   return () => {
+  //     unsubscribe("EventEmitter", "DepositCreated", onDepositCreated);
+  //     unsubscribe("EventEmitter", "DepositExecuted", onDepositExecuted);
+  //     unsubscribe("EventEmitter", "DepositCancelled", onDepositCancelled);
+  //   };
+  // }, [account, depositKey, subscribe, unsubscribe]);
+
+  // return (
+  //   <Modal
+  //     isVisible={true}
+  //     setIsVisible={p.onClose}
+  //     label={t`${operationTexts[p.operationType]} status`}
+  //     allowContentTouchMove
+  //   >
+  //     <OrderStatus text={`Order create status`} txnHash={depositCreatedTxnHash} isLoading={!depositCreatedTxnHash} />
+  //     <OrderStatus text={orderExecuionStatusText} isLoading={isOrderExecutionLoading} txnHash={orderExecutionTxnHash} />
+  //   </Modal>
+  // );
 }

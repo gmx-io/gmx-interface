@@ -100,8 +100,8 @@ import {
 } from "lib/wallets";
 import { SyntheticsPoolsPage } from "pages/SyntheticsPoolsPage/SyntheticsPoolsPage";
 import { SyntheticsTradePage } from "pages/SyntheticsTradePage/SyntheticsTradePage";
+import { ContractEventsProvider } from "domain/synthetics/contractEvents";
 import { getWsProvider } from "lib/rpc";
-import { ContractEventsProvider } from "lib/contracts";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;

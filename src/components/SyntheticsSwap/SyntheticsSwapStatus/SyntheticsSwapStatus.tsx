@@ -1,103 +1,115 @@
 import { t } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
-import ExternalLink from "components/ExternalLink/ExternalLink";
+
 import Modal from "components/Modal/Modal";
-import { getExplorerUrl } from "config/chains";
-import { useChainId } from "lib/chains";
-import { useContractEvents } from "lib/contracts";
+import { useContractEventsContext } from "domain/synthetics/contractEvents";
+
+import { SubmitButton } from "components/SubmitButton/SubmitButton";
+import { RequestStatus } from "components/RequestStatus/RequestStatus";
 import { useEffect, useState } from "react";
-import { ImSpinner2 } from "react-icons/im";
-import { Operation, operationTexts } from "../utils";
+import { useChainId } from "lib/chains";
+import { getTokenData, useAvailableTradeTokensData } from "domain/synthetics/tokens";
+
+import "./RequestStatus.scss";
 
 type Props = {
-  operationType: Operation;
+  isSwap: boolean;
+  isLong: boolean;
+  fromToken?: string;
+  toToken?: string;
   onClose: () => void;
 };
 
-function StatusItem(p: { isLoading?: boolean; text: string; txnHash?: string }) {
-  const { chainId } = useChainId();
-
-  const txnLink = `${getExplorerUrl(chainId)}tx/${p.txnHash}`;
-
-  return (
-    <div>
-      {p.text}
-      {p.isLoading && <ImSpinner2 className="spin ApproveTokenButton-spin" />}
-      {p.txnHash && <ExternalLink href={txnLink}>View</ExternalLink>}
-    </div>
-  );
-}
-
 export function SyntheticSwapStatus(p: Props) {
-  const { account } = useWeb3React();
+  const [orderKey, setOrderKey] = useState<string>();
 
-  const { subscribe, unsubscribe } = useContractEvents();
-  const [depositKey, setDepositKey] = useState<string>();
+  const { chainId } = useChainId();
+  const tokensData = useAvailableTradeTokensData(chainId);
 
-  const [orderCreatedTxnHash, setOrderCreatedTxnHash] = useState<string>();
-  const [orderExecutedTxnHash, setOrderExecutedTxnHash] = useState<string>();
-  const [orderCancelledTxnHash, setOrderCancelledTxnHash] = useState<string>();
+  const { getPendingOrders, getOrderEvents, setIsOrderViewed } = useContractEventsContext();
 
-  let orderExecuionStatusText = "Order processing";
-  let orderExecutionTxnHash: string | undefined = undefined;
+  const { createdTxnHash, cancelledTxnHash, executedTxnHash } = getOrderEvents(orderKey) || {};
 
-  const isOrderExecutionLoading = Boolean(depositKey && !orderExecutedTxnHash && !orderCancelledTxnHash);
+  function getOrderStatusText(stage: "creating" | "execution") {
+    const from = getTokenData(tokensData, p.fromToken);
+    const to = getTokenData(tokensData, p.toToken);
 
-  if (orderExecutedTxnHash) {
-    orderExecuionStatusText = t`Order executed`;
-    orderExecutionTxnHash = orderExecutedTxnHash;
+    if (!from || !to) {
+      return t`Unknown order`;
+    }
+
+    if (p.isSwap) {
+      if (stage === "creating") {
+        if (orderKey) {
+          return t`Swap ${from.symbol} to ${to.symbol} request sent`;
+        }
+
+        return t`Sending swap ${from.symbol} request`;
+      }
+
+      if (stage === "execution") {
+        if (cancelledTxnHash) {
+          return t`Swap cancelled`;
+        }
+
+        if (executedTxnHash) {
+          return t`Swapped ${from.symbol} to ${to.symbol}`;
+        }
+
+        return t`Fulfilling swap ${from.symbol} to ${to.symbol} request`;
+      }
+    }
+
+    const longText = p.isLong ? t`Long` : t`Short`;
+
+    if (stage === "creating") {
+      if (orderKey) {
+        return t`${longText} ${to.symbol} request sent`;
+      }
+
+      return t`Sending ${longText} ${to.symbol} request`;
+    }
+
+    if (stage === "execution") {
+      if (cancelledTxnHash) {
+        return t`${longText} ${to.symbol} cancelled`;
+      }
+
+      if (executedTxnHash) {
+        return t`${longText} ${to.symbol} executed`;
+      }
+
+      return t`Fulfilling ${longText} ${to.symbol} request`;
+    }
+
+    return t`Unknown order`;
   }
 
-  if (orderCancelledTxnHash) {
-    orderExecuionStatusText = t`Order cancelled`;
-    orderExecutionTxnHash = orderCancelledTxnHash;
-  }
+  const isProcessing = !cancelledTxnHash && !executedTxnHash;
+
+  const pendingOrder = getPendingOrders()[0];
 
   useEffect(() => {
-    // TODO: get logs
-    function onOrderCreated(key, [orderAddresses], txnParams) {
-      // console.log("onOrderCreated", key, orderAddresses, txnParams);
-      // if (orderAddresses.account !== account) return;
-
-      setDepositKey(key);
-      setOrderCreatedTxnHash(txnParams.transactionHash);
+    if (pendingOrder && pendingOrder.key !== orderKey) {
+      setIsOrderViewed(pendingOrder.key);
+      setOrderKey(pendingOrder.key);
     }
-
-    function onOrderExecuted(key, txnParams) {
-      // eslint-disable-next-line no-console
-      // console.log("onOrderExecuted", key, txnParams);
-      // if (key !== depositKey) return;
-
-      setOrderExecutedTxnHash(txnParams.transactionHash);
-    }
-
-    function onOrderCancelled(key, txnParams) {
-      // console.log("onOrderCancelled", key, txnParams);
-      // if (key !== depositKey) return;
-
-      setOrderCancelledTxnHash(txnParams.transactionHash);
-    }
-
-    subscribe("EventEmitter", "OrderCreated", onOrderCreated);
-    subscribe("EventEmitter", "OrderExecuted", onOrderExecuted);
-    subscribe("EventEmitter", "OrderCancelled", onOrderCancelled);
-
-    return () => {
-      unsubscribe("EventEmitter", "OrderCreated", onOrderCreated);
-      unsubscribe("EventEmitter", "OrderExecuted", onOrderExecuted);
-      unsubscribe("EventEmitter", "OrderCancelled", onOrderCancelled);
-    };
-  }, [account, depositKey, subscribe, unsubscribe]);
+  }, [orderKey, pendingOrder, setIsOrderViewed]);
 
   return (
-    <Modal
-      isVisible={true}
-      setIsVisible={p.onClose}
-      label={t`${operationTexts[p.operationType]} status`}
-      allowContentTouchMove
-    >
-      <StatusItem text={`Order create status`} txnHash={orderCreatedTxnHash} isLoading={!orderCreatedTxnHash} />
-      <StatusItem text={orderExecuionStatusText} isLoading={isOrderExecutionLoading} txnHash={orderExecutionTxnHash} />
-    </Modal>
+    <div className="Confirmation-box">
+      <Modal isVisible={true} setIsVisible={p.onClose} label={t`Order status`} allowContentTouchMove>
+        <RequestStatus text={getOrderStatusText("creating")} txnHash={createdTxnHash} isLoading={!createdTxnHash} />
+
+        <RequestStatus
+          text={getOrderStatusText("execution")}
+          isLoading={Boolean(orderKey && !executedTxnHash && !cancelledTxnHash)}
+          txnHash={cancelledTxnHash || executedTxnHash}
+        />
+
+        <div className="App-card-divider" />
+
+        <SubmitButton disabled={isProcessing}>{isProcessing ? t`Processing...` : t`Close`}</SubmitButton>
+      </Modal>
+    </div>
   );
 }

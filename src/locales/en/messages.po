@@ -666,6 +666,7 @@ msgstr "Click on a row to select the position's market, then use the swap box to
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
 msgid "Close"
 msgstr "Close"
 
@@ -1431,6 +1432,14 @@ msgstr "Forfeit profit and {action}"
 msgid "Forfeit profit not checked"
 msgstr "Forfeit profit not checked"
 
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
+msgid "Fulfilling swap {0} to {1} request"
+msgstr "Fulfilling swap {0} to {1} request"
+
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
+msgid "Fulfilling {longText} {0} request"
+msgstr "Fulfilling {longText} {0} request"
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GBC NFTs APR tracker and rewards"
 msgstr "GBC NFTs APR tracker and rewards"
@@ -1925,6 +1934,7 @@ msgstr "Loading..."
 #: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
 #: src/components/SyntheticsSwap/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
@@ -2382,8 +2392,6 @@ msgid "Order"
 msgstr "Order"
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
-#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
 msgid "Order cancelled"
 msgstr "Order cancelled"
 
@@ -2409,8 +2417,8 @@ msgstr "Order creation failed."
 
 #: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
-msgid "Order executed"
-msgstr "Order executed"
+#~ msgid "Order executed"
+#~ msgstr "Order executed"
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Order size exceeds position"
@@ -2424,6 +2432,10 @@ msgstr "Order size is 0"
 #: src/lib/legacy.ts
 msgid "Order size is bigger than position, will only be executable if position increases"
 msgstr "Order size is bigger than position, will only be executable if position increases"
+
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
+msgid "Order status"
+msgstr "Order status"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Order submitted!"
@@ -2682,6 +2694,10 @@ msgstr "Price on Arbitrum"
 #: src/pages/Stake/StakeV2.js
 msgid "Price on Avalanche"
 msgstr "Price on Avalanche"
+
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
+msgid "Processing..."
+msgstr "Processing..."
 
 #: src/pages/Actions/Actions.js
 msgid "Profit"
@@ -2991,6 +3007,14 @@ msgstr "Sender has withdrawn all tokens from GLP Vesting Vault"
 msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr "Sender has withdrawn all tokens from GMX Vesting Vault"
 
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
+msgid "Sending swap {0} request"
+msgstr "Sending swap {0} request"
+
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
+msgid "Sending {longText} {0} request"
+msgstr "Sending {longText} {0} request"
+
 #: src/App/App.js
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -3032,6 +3056,7 @@ msgstr "Share Position"
 #: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
 #: src/components/SyntheticsSwap/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
@@ -3246,6 +3271,10 @@ msgstr "Swap Order submitted!"
 msgid "Swap active: {0}, executed: {1}, cancelled: {2}"
 msgstr "Swap active: {0}, executed: {1}, cancelled: {2}"
 
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
+msgid "Swap cancelled"
+msgstr "Swap cancelled"
+
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -3293,6 +3322,10 @@ msgstr "Swap {0} to {1} Fee"
 msgid "Swap {0} to {1} on 1inch"
 msgstr "Swap {0} to {1} on 1inch"
 
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
+msgid "Swap {0} to {1} request sent"
+msgstr "Swap {0} to {1} request sent"
+
 #: src/components/Exchange/TradeHistory.js
 msgid "Swap {0} {1} for {2} USDG"
 msgstr "Swap {0} {1} for {2} USDG"
@@ -3300,6 +3333,10 @@ msgstr "Swap {0} {1} for {2} USDG"
 #: src/components/Exchange/TradeHistory.js
 msgid "Swap {0} {1} for {2} {3}"
 msgstr "Swap {0} {1} for {2} {3}"
+
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
+msgid "Swapped {0} to {1}"
+msgstr "Swapped {0} to {1}"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -3756,6 +3793,11 @@ msgstr "UTILIZATION"
 msgid "Uniswap"
 msgstr "Uniswap"
 
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
+msgid "Unknown order"
+msgstr "Unknown order"
+
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -3886,6 +3928,8 @@ msgid "Vesting Status"
 msgstr "Vesting Status"
 
 #: src/App/App.js
+#: src/lib/contracts/notifications.tsx
+#: src/lib/contracts/notifications.tsx
 #: src/pages/Exchange/Exchange.js
 #: src/pages/Exchange/Exchange.js
 msgid "View"
@@ -4346,8 +4390,8 @@ msgstr "{0} selected in order form"
 
 #: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
-msgid "{0} status"
-msgstr "{0} status"
+#~ msgid "{0} status"
+#~ msgstr "{0} status"
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -4403,6 +4447,18 @@ msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger ord
 #: src/components/Exchange/ConfirmationBox.js
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
+
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
+msgid "{longText} {0} cancelled"
+msgstr "{longText} {0} cancelled"
+
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
+msgid "{longText} {0} executed"
+msgstr "{longText} {0} executed"
+
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
+msgid "{longText} {0} request sent"
+msgstr "{longText} {0} request sent"
 
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"

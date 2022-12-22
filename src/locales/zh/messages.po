@@ -666,6 +666,7 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
 msgid "Close"
 msgstr "收盘"
 
@@ -1431,6 +1432,14 @@ msgstr ""
 msgid "Forfeit profit not checked"
 msgstr "未检查没收利润"
 
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
+msgid "Fulfilling swap {0} to {1} request"
+msgstr ""
+
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
+msgid "Fulfilling {longText} {0} request"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GBC NFTs APR tracker and rewards"
 msgstr ""
@@ -1922,6 +1931,7 @@ msgstr "加载中..."
 #: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
 #: src/components/SyntheticsSwap/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
@@ -2379,8 +2389,6 @@ msgid "Order"
 msgstr "订单"
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
-#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
 msgid "Order cancelled"
 msgstr ""
 
@@ -2406,8 +2414,8 @@ msgstr "订单创建失败"
 
 #: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
-msgid "Order executed"
-msgstr ""
+#~ msgid "Order executed"
+#~ msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Order size exceeds position"
@@ -2420,6 +2428,10 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 #: src/lib/legacy.ts
 msgid "Order size is bigger than position, will only be executable if position increases"
+msgstr ""
+
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
+msgid "Order status"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
@@ -2678,6 +2690,10 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Price on Avalanche"
+msgstr ""
+
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
+msgid "Processing..."
 msgstr ""
 
 #: src/pages/Actions/Actions.js
@@ -2988,6 +3004,14 @@ msgstr "发送者已从GLP授权金库中撤回所有代币"
 msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr "发送者已从GMX授权金库中撤回所有代币"
 
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
+msgid "Sending swap {0} request"
+msgstr ""
+
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
+msgid "Sending {longText} {0} request"
+msgstr ""
+
 #: src/App/App.js
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -3029,6 +3053,7 @@ msgstr "分享仓位"
 #: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
 #: src/components/SyntheticsSwap/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
@@ -3243,6 +3268,10 @@ msgstr "交易订单送出"
 msgid "Swap active: {0}, executed: {1}, cancelled: {2}"
 msgstr ""
 
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
+msgid "Swap cancelled"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -3290,12 +3319,20 @@ msgstr ""
 msgid "Swap {0} to {1} on 1inch"
 msgstr ""
 
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
+msgid "Swap {0} to {1} request sent"
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.js
 msgid "Swap {0} {1} for {2} USDG"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Swap {0} {1} for {2} {3}"
+msgstr ""
+
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
+msgid "Swapped {0} to {1}"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -3753,6 +3790,11 @@ msgstr "使用方法"
 msgid "Uniswap"
 msgstr ""
 
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
+msgid "Unknown order"
+msgstr ""
+
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -3883,6 +3925,8 @@ msgid "Vesting Status"
 msgstr "授权状态"
 
 #: src/App/App.js
+#: src/lib/contracts/notifications.tsx
+#: src/lib/contracts/notifications.tsx
 #: src/pages/Exchange/Exchange.js
 #: src/pages/Exchange/Exchange.js
 msgid "View"
@@ -4343,8 +4387,8 @@ msgstr "{0}在指令表中选择"
 
 #: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
-msgid "{0} status"
-msgstr ""
+#~ msgid "{0} status"
+#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -4390,6 +4434,18 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
+msgstr ""
+
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
+msgid "{longText} {0} cancelled"
+msgstr ""
+
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
+msgid "{longText} {0} executed"
+msgstr ""
+
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
+msgid "{longText} {0} request sent"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
