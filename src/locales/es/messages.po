@@ -1915,14 +1915,18 @@ msgstr "Largo"
 msgid "Long Collateral"
 msgstr ""
 
+#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
+msgid "Long Pool"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Long Positions"
 msgstr "Posiciones Largas"
 
 #: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
-msgid "Long liquidity"
-msgstr ""
+#~ msgid "Long liquidity"
+#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV1.js
 msgid "Long positions: {0} USD, Short positions: {1} USD, {volumeLabel} volume: {2} USD"
@@ -2299,6 +2303,14 @@ msgstr ""
 #: src/pages/Home/Home.js
 msgid "Open Interest"
 msgstr "Interés Abierto"
+
+#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
+msgid "Open Interest Long"
+msgstr ""
+
+#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
+msgid "Open Interest Short"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Open a position"
@@ -3001,14 +3013,18 @@ msgstr "Corto"
 msgid "Short Collateral"
 msgstr ""
 
+#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
+msgid "Short Pool"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Short Positions"
 msgstr "Posiciones en Corto"
 
 #: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
-msgid "Short liquidity"
-msgstr ""
+#~ msgid "Short liquidity"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Short {0}"
@@ -4218,6 +4234,11 @@ msgstr "¡{0} GLP vendido por {1} {2}!"
 msgid "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
 msgstr ""
 
+#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
+#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
+msgid "{0} Pool Amount"
+msgstr ""
+
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "{0} Pool Capacity Reached"
 msgstr ""
@@ -4247,8 +4268,8 @@ msgstr ""
 
 #: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
 #: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
-msgid "{0} liquidity"
-msgstr ""
+#~ msgid "{0} liquidity"
+#~ msgstr ""
 
 #: src/domain/synthetics/exchange/createOrderTxn.ts
 #~ msgid "{0} order failed"

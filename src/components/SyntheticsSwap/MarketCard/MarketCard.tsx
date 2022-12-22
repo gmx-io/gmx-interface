@@ -4,11 +4,13 @@ import {
   getMarket,
   getMarketName,
   getMarketPoolData,
+  getOpenInterest,
   useMarketsData,
   useMarketsPoolsData,
 } from "domain/synthetics/markets";
+import { useOpenInterestData } from "domain/synthetics/markets/useOpenInterestData";
 import {
-  formatTokenAmountWithUsd,
+  formatUsdAmount,
   getTokenData,
   getUsdFromTokenAmount,
   useAvailableTradeTokensData,
@@ -30,6 +32,7 @@ export function MarketCard(p: Props) {
 
   const marketsData = useMarketsData(chainId);
   const poolsData = useMarketsPoolsData(chainId);
+  const openInterestData = useOpenInterestData(chainId);
   const tokensData = useAvailableTradeTokensData(chainId);
 
   const market = getMarket(marketsData, p.marketAddress || p.swapPath?.[p.swapPath.length - 1]);
@@ -47,6 +50,8 @@ export function MarketCard(p: Props) {
   const longPoolAmountUsd = getUsdFromTokenAmount(tokensData, market?.longTokenAddress, longPoolAmount);
 
   const shortPoolAmountUsd = getUsdFromTokenAmount(tokensData, market?.shortTokenAddress, shortPoolAmount);
+
+  const openInterest = getOpenInterest(openInterestData, market?.marketTokenAddress);
 
   function getTitle() {
     if (p.isSwap) {
@@ -71,20 +76,37 @@ export function MarketCard(p: Props) {
       <div className="App-card-content">
         <InfoRow label={t`Market`} value={marketName || "..."} />
 
-        <InfoRow
-          label={p.isSwap ? t`${longToken?.symbol} liquidity` : t`Long liquidity`}
-          value={
-            formatTokenAmountWithUsd(longPoolAmount, longPoolAmountUsd, longToken?.symbol, longToken?.decimals) || "..."
-          }
-        />
+        {p.isSwap && (
+          <>
+            <InfoRow
+              label={t`${longToken?.symbol} Pool Amount`}
+              value={longPoolAmountUsd ? formatUsdAmount(longPoolAmountUsd) : "..."}
+            />
 
-        <InfoRow
-          label={p.isSwap ? t`${shortToken?.symbol} liquidity` : t`Short liquidity`}
-          value={
-            formatTokenAmountWithUsd(shortPoolAmount, shortPoolAmountUsd, shortToken?.symbol, shortToken?.decimals) ||
-            "..."
-          }
-        />
+            <InfoRow
+              label={t`${shortToken?.symbol} Pool Amount`}
+              value={shortPoolAmountUsd ? formatUsdAmount(shortPoolAmountUsd) : "..."}
+            />
+          </>
+        )}
+
+        {!p.isSwap && (
+          <>
+            <InfoRow label={t`Long Pool`} value={longPoolAmountUsd ? formatUsdAmount(longPoolAmountUsd) : "..."} />
+
+            <InfoRow label={t`Short Pool`} value={shortPoolAmountUsd ? formatUsdAmount(shortPoolAmountUsd) : "..."} />
+
+            <InfoRow
+              label={t`Open Interest Long`}
+              value={openInterest?.longInterest ? formatUsdAmount(openInterest.longInterest) : "..."}
+            />
+
+            <InfoRow
+              label={t`Open Interest Short`}
+              value={openInterest?.shortInterest ? formatUsdAmount(openInterest.shortInterest) : "..."}
+            />
+          </>
+        )}
       </div>
     </div>
   );

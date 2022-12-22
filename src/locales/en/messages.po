@@ -1918,14 +1918,18 @@ msgstr "Long"
 msgid "Long Collateral"
 msgstr "Long Collateral"
 
+#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
+msgid "Long Pool"
+msgstr "Long Pool"
+
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Long Positions"
 msgstr "Long Positions"
 
 #: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
-msgid "Long liquidity"
-msgstr "Long liquidity"
+#~ msgid "Long liquidity"
+#~ msgstr "Long liquidity"
 
 #: src/pages/Dashboard/DashboardV1.js
 msgid "Long positions: {0} USD, Short positions: {1} USD, {volumeLabel} volume: {2} USD"
@@ -2302,6 +2306,14 @@ msgstr "Open + Close fee"
 #: src/pages/Home/Home.js
 msgid "Open Interest"
 msgstr "Open Interest"
+
+#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
+msgid "Open Interest Long"
+msgstr "Open Interest Long"
+
+#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
+msgid "Open Interest Short"
+msgstr "Open Interest Short"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Open a position"
@@ -3004,14 +3016,18 @@ msgstr "Short"
 msgid "Short Collateral"
 msgstr "Short Collateral"
 
+#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
+msgid "Short Pool"
+msgstr "Short Pool"
+
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Short Positions"
 msgstr "Short Positions"
 
 #: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
-msgid "Short liquidity"
-msgstr "Short liquidity"
+#~ msgid "Short liquidity"
+#~ msgstr "Short liquidity"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Short {0}"
@@ -4221,6 +4237,11 @@ msgstr "{0} GLP sold for {1} {2}!"
 msgid "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
 msgstr "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
 
+#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
+#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
+msgid "{0} Pool Amount"
+msgstr "{0} Pool Amount"
+
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "{0} Pool Capacity Reached"
 msgstr "{0} Pool Capacity Reached"
@@ -4250,8 +4271,8 @@ msgstr "{0} is required for collateral."
 
 #: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
 #: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
-msgid "{0} liquidity"
-msgstr "{0} liquidity"
+#~ msgid "{0} liquidity"
+#~ msgstr "{0} liquidity"
 
 #: src/domain/synthetics/exchange/createOrderTxn.ts
 #~ msgid "{0} order failed"
