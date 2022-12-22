@@ -28,7 +28,7 @@ export default function TVChartContainer({
   const tvChartRef = useRef();
   const tvWidgetRef = useRef(null);
   const [chartReady, setChartReady] = useState(false);
-  let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
+  let [period] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
   const datafeed = useDatafeed();
 
   function createPositionLine(title, price) {
@@ -100,24 +100,16 @@ export default function TVChartContainer({
       locale: "en",
       disabled_features: [
         "use_localstorage_for_settings",
-        "timeframes_toolbar",
         "volume_force_overlay",
         "show_logo_on_all_charts",
         "caption_buttons_text_if_possible",
-        "header_settings",
         "create_volume_indicator_by_default",
         "header_compare",
         "compare_symbol",
-        "header_screenshot",
         "display_market_status",
-        "header_saveload",
-        "header_undo_redo",
         "header_interval_dialog_button",
         "show_interval_dialog_on_key_press",
         "header_symbol_search",
-        "header_resolutions",
-        "header_indicators",
-        "header_chart_type",
       ],
       charts_storage_url: defaultProps.chartsStorageUrl,
       charts_storage_api_version: defaultProps.chartsStorageApiVersion,
@@ -143,34 +135,6 @@ export default function TVChartContainer({
     };
     tvWidgetRef.current = new window.TradingView.widget(widgetOptions);
     tvWidgetRef.current.onChartReady(function () {
-      tvWidgetRef.current.headerReady().then(() => {
-        Object.keys(supportedResolutions).forEach((res) => {
-          const btn = tvWidgetRef.current.createButton();
-          btn.classList.add("resolution-btn");
-          if (period === supportedResolutions[res]) {
-            btn.classList.add("active-resolution-btn");
-            tvWidgetRef.current.chart().setResolution(res);
-          }
-
-          btn.textContent = supportedResolutions[res];
-          btn.addEventListener("click", (event) => {
-            tvWidgetRef.current.chart().setResolution(res, () => {
-              setPeriod(supportedResolutions[res]);
-              const allButtons =
-                event.target.parentElement.parentElement.parentElement.querySelectorAll(".resolution-btn");
-              allButtons.forEach((btn) => btn.classList.remove("active-resolution-btn"));
-              event.target.classList.add("active-resolution-btn");
-            });
-          });
-        });
-        const indicatorsBtn = tvWidgetRef.current.createButton();
-        indicatorsBtn.textContent = "Indicators";
-        indicatorsBtn.classList.add("indicator-btn");
-        indicatorsBtn.addEventListener("click", () => {
-          tvWidgetRef.current.activeChart().executeActionById("insertIndicator");
-        });
-      });
-
       setChartReady(true);
     });
 
