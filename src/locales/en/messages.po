@@ -199,8 +199,12 @@ msgid "Allow up to 1% slippage"
 msgstr "Allow up to 1% slippage"
 
 #: src/components/ApproveTokenButton/ApproveTokenButton.tsx
-msgid "Allow {0} to spent"
-msgstr "Allow {0} to spent"
+msgid "Allow {0} to be spent"
+msgstr "Allow {0} to be spent"
+
+#: src/components/ApproveTokenButton/ApproveTokenButton.tsx
+#~ msgid "Allow {0} to spent"
+#~ msgstr "Allow {0} to spent"
 
 #: src/App/App.js
 #: src/components/Exchange/ConfirmationBox.js
