@@ -1,3 +1,4 @@
+import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 
 export type PriceImpactConfig = {
@@ -13,4 +14,10 @@ export type PriceImpactConfigsData = {
 export type PriceImpact = {
   impact: BigNumber;
   basisPoints: BigNumber;
+};
+
+export type ExecutionFeeParams = {
+  feeUsd?: BigNumber;
+  feeTokenAmount?: BigNumber;
+  feeToken: Token;
 };

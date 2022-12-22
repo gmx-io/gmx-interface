@@ -17,4 +17,7 @@ export const LEVERAGE_OPTION_KEY = "leverage-option";
 export const LEVERAGE_ENABLED_KEY = "leverage-enabled";
 export const SYNTHETICS_SWAP_OPERATION_KEY = "synthetics-swap-operation";
 export const SYNTHETICS_SWAP_MODE_KEY = "synthetics-swap-mode";
+export const SYNTHETICS_SWAP_FROM_TOKEN_KEY = "synthetics-swap-from-token";
+export const SYNTHETICS_SWAP_TO_TOKEN_KEY = "synthetics-swap-to-token";
+export const SYNTHETICS_SWAP_COLLATERAL_KEY = "synthetics-swap-collateral-token";
 export const PRODUCTION_PREVIEW_KEY = "production-preview";

@@ -1,10 +1,10 @@
+import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { TokensData, convertFromUsdByPrice, formatUsdAmount, getTokenData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "lib/legacy";
 import { bigNumberify, expandDecimals, formatAmount, parseValue } from "lib/numbers";
-import { convertFromUsdByPrice, formatUsdAmount, getTokenData, TokensData } from "domain/synthetics/tokens";
-import { PriceImpact, PriceImpactConfigsData } from "./types";
-import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { MarketsData, MarketsPoolsData, getPoolAmountUsd } from "../markets";
+import { ExecutionFeeParams, PriceImpact, PriceImpactConfigsData } from "./types";
 
 export function formatFee(feeUsd?: BigNumber, feeBp?: BigNumber) {
   if (!feeUsd?.abs().gt(0)) {
@@ -23,7 +23,7 @@ export function getPriceImpactConfig(data: PriceImpactConfigsData, marketAddress
   return data[marketAddress];
 }
 
-export function getExecutionFee(tokensData: TokensData) {
+export function getExecutionFee(tokensData: TokensData): ExecutionFeeParams | undefined {
   const nativeToken = getTokenData(tokensData, NATIVE_TOKEN_ADDRESS);
 
   if (!nativeToken?.prices) return undefined;

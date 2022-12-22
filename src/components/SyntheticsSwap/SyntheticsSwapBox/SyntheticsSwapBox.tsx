@@ -1,7 +1,8 @@
-import { t, Trans } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Checkbox from "components/Checkbox/Checkbox";
+import { InfoRow } from "components/InfoRow/InfoRow";
 import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import Tab from "components/Tab/Tab";
@@ -9,12 +10,15 @@ import TokenSelector from "components/TokenSelector/TokenSelector";
 import {
   LEVERAGE_ENABLED_KEY,
   LEVERAGE_OPTION_KEY,
+  SYNTHETICS_SWAP_COLLATERAL_KEY,
+  SYNTHETICS_SWAP_FROM_TOKEN_KEY,
   SYNTHETICS_SWAP_MODE_KEY,
   SYNTHETICS_SWAP_OPERATION_KEY,
+  SYNTHETICS_SWAP_TO_TOKEN_KEY,
 } from "config/localStorage";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { useTokenInputState } from "domain/synthetics/exchange";
-import { getExecutionFee } from "domain/synthetics/fees";
+import { useSwapPath } from "domain/synthetics/exchange/useSwapPath";
 import {
   convertToUsdByPrice,
   formatTokenAmount,
@@ -23,11 +27,9 @@ import {
   useAvailableTradeTokensData,
 } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
-import { useSwapPath } from "domain/synthetics/exchange/useSwapPath";
-import { InfoRow } from "components/InfoRow/InfoRow";
 
 import { useChainId } from "lib/chains";
-import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR, USD_DECIMALS, getLiquidationPrice } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { bigNumberify, formatAmount, parseValue } from "lib/numbers";
 import { useEffect, useState } from "react";
@@ -35,21 +37,22 @@ import { IoMdSwap } from "react-icons/io";
 import { SyntheticsSwapConfirmation } from "../SyntheticsSwapConfirmation/SyntheticsSwapConfirmation";
 import { SyntheticSwapStatus } from "../SyntheticsSwapStatus/SyntheticsSwapStatus";
 import {
+  Mode,
+  Operation,
   avaialbleModes,
   getNextTokenAmount,
   getSubmitError,
-  Mode,
   modeTexts,
-  Operation,
   operationIcons,
   operationTexts,
   useAvailableSwapTokens,
+  useFeesState,
   useSwapTriggerRatioState,
 } from "../utils";
 
-import "./SyntheticsSwapBox.scss";
-import { SyntheticsSwapFees } from "../SyntheticsSwapFees/SyntheticsSwapFees";
 import { MarketCard } from "../MarketCard/MarketCard";
+import { SyntheticsSwapFees } from "../SyntheticsSwapFees/SyntheticsSwapFees";
+import "./SyntheticsSwapBox.scss";
 
 enum FocusedInput {
   From = "From",
@@ -86,10 +89,25 @@ export function SyntheticsSwapBox(p: Props) {
   const [isConfirming, setIsConfirming] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const fromTokenState = useTokenInputState(tokensData);
-  const toTokenState = useTokenInputState(tokensData, { useMaxPrice: true });
+  const nativeToken = getTokenData(tokensData, NATIVE_TOKEN_ADDRESS);
 
-  const [collateralTokenAddress, setCollateralTokenAddress] = useState<string>();
+  const [savedFromToken, setSavedFromToken] = useLocalStorageSerializeKey<string | undefined>(
+    [chainId, SYNTHETICS_SWAP_FROM_TOKEN_KEY],
+    undefined
+  );
+
+  const [savedToToken, setSavedToToken] = useLocalStorageSerializeKey<string | undefined>(
+    [chainId, SYNTHETICS_SWAP_TO_TOKEN_KEY],
+    undefined
+  );
+
+  const fromTokenState = useTokenInputState(tokensData, { initialTokenAddress: savedFromToken });
+  const toTokenState = useTokenInputState(tokensData, { useMaxPrice: true, initialTokenAddress: savedToToken });
+
+  const [collateralTokenAddress, setCollateralTokenAddress] = useLocalStorageSerializeKey<string | undefined>(
+    [chainId, SYNTHETICS_SWAP_COLLATERAL_KEY],
+    undefined
+  );
 
   const { availableFromTokens, availableToTokens, availableCollaterals, infoTokens } = useAvailableSwapTokens({
     isSwap,
@@ -109,10 +127,11 @@ export function SyntheticsSwapBox(p: Props) {
   const [triggerPriceValue, setTriggerPriceValue] = useState<string>("");
   const triggerPrice = isTriggerPriceAllowed ? parseValue(triggerPriceValue, USD_DECIMALS) : undefined;
 
-  const toTokenPrice = triggerPrice?.gt(0) ? triggerPrice : toTokenState.price;
+  const entryPrice = triggerPrice?.gt(0) ? triggerPrice : toTokenState.price;
+
   const sizeDeltaUsd =
-    toTokenState.token && toTokenPrice
-      ? convertToUsdByPrice(toTokenState.tokenAmount, toTokenState.token?.decimals, toTokenPrice)
+    toTokenState.token && entryPrice
+      ? convertToUsdByPrice(toTokenState.tokenAmount, toTokenState.token?.decimals, entryPrice)
       : BigNumber.from(0);
 
   const swapRatio = useSwapTriggerRatioState({
@@ -130,12 +149,29 @@ export function SyntheticsSwapBox(p: Props) {
     amountUsd: isPosition ? fromTokenState.usdAmount : toTokenState.usdAmount,
   });
 
-  const nativeToken = getTokenData(tokensData, NATIVE_TOKEN_ADDRESS);
+  const fees = useFeesState({ isSwap, isLong, marketAddress: swapRoute?.market, sizeDeltaUsd });
 
-  const executionFee = getExecutionFee(tokensData);
-  const totalFeeUsd = BigNumber.from(0).sub(executionFee?.feeUsd || BigNumber.from(0));
+  const liqPrice = getLiqPrice();
 
   const submitButtonState = getSubmitButtonState();
+
+  function getLiqPrice() {
+    if (!isPosition || !collateralTokenAddress) return undefined;
+
+    // TODO: for exisiting position
+    return getLiquidationPrice({
+      isLong,
+      size: BigNumber.from(0),
+      collateral: BigNumber.from(0),
+      averagePrice: entryPrice,
+      entryFundingRate: BigNumber.from(0),
+      cumulativeFundingRate: BigNumber.from(0),
+      sizeDelta: sizeDeltaUsd,
+      collateralDelta: fromTokenState.usdAmount,
+      increaseCollateral: true,
+      increaseSize: true,
+    });
+  }
 
   function getSubmitButtonState(): { text: string; disabled?: boolean; onClick?: () => void } {
     const error = getSubmitError({
@@ -146,6 +182,8 @@ export function SyntheticsSwapBox(p: Props) {
       toTokenAddress: toTokenState.tokenAddress,
       fromTokenAmount: fromTokenState.tokenAmount,
       swapPath: swapRoute?.swapPath,
+      isHighPriceImpact: fees.isHighPriceImpact,
+      isHighPriceImpactAccepted: fees.isHighPriceImpactAccepted,
     });
 
     if (error) {
@@ -231,7 +269,24 @@ export function SyntheticsSwapBox(p: Props) {
   );
 
   useEffect(
+    function updateMode() {
+      if (operationTab && modeTab && !avaialbleModes[operationTab].includes(modeTab)) {
+        setModeTab(avaialbleModes[operationTab][0]);
+      }
+    },
+    [modeTab, operationTab, setModeTab]
+  );
+
+  useEffect(
     function updateTokenInputs() {
+      if (fromTokenState.tokenAddress !== savedFromToken) {
+        setSavedFromToken(fromTokenState.tokenAddress);
+      }
+
+      if (toTokenState.tokenAddress !== savedToToken) {
+        setSavedToToken(toTokenState.tokenAddress);
+      }
+
       if (
         availableFromTokens.length &&
         !availableFromTokens.find((token) => token.address === fromTokenState.tokenAddress)
@@ -243,16 +298,17 @@ export function SyntheticsSwapBox(p: Props) {
         toTokenState.setTokenAddress(availableToTokens[0].address);
       }
     },
-    [availableFromTokens, availableToTokens, fromTokenState, nativeToken, toTokenState]
-  );
-
-  useEffect(
-    function updateMode() {
-      if (operationTab && modeTab && !avaialbleModes[operationTab].includes(modeTab)) {
-        setModeTab(avaialbleModes[operationTab][0]);
-      }
-    },
-    [modeTab, operationTab, setModeTab]
+    [
+      availableFromTokens,
+      availableToTokens,
+      fromTokenState,
+      nativeToken,
+      savedFromToken,
+      savedToToken,
+      setSavedFromToken,
+      setSavedToToken,
+      toTokenState,
+    ]
   );
 
   useEffect(
@@ -263,7 +319,7 @@ export function SyntheticsSwapBox(p: Props) {
         setCollateralTokenAddress(availableCollaterals[0].address);
       }
     },
-    [availableCollaterals, collateralTokenAddress, isSelectCollateralAllowed]
+    [availableCollaterals, collateralTokenAddress, isSelectCollateralAllowed, setCollateralTokenAddress]
   );
 
   return (
@@ -426,28 +482,45 @@ export function SyntheticsSwapBox(p: Props) {
               }
             />
           )}
-          {isLeverageAllowed && leverageOption && (
+          {isLeverageAllowed && (
             <InfoRow
               className="SyntheticsSwapBox-info-row"
               label={t`Leverage`}
-              value={`${leverageOption.toFixed(2)}x`}
+              value={leverageOption ? `${leverageOption.toFixed(2)}x` : "..."}
             />
           )}
           {isPosition && (
             <InfoRow
               className="SyntheticsSwapBox-info-row"
               label={t`Entry Price`}
-              value={formatUsdAmount(toTokenState.price)}
+              value={entryPrice ? formatUsdAmount(entryPrice) : "..."}
+            />
+          )}
+          {isPosition && (
+            <InfoRow
+              className="SyntheticsSwapBox-info-row"
+              label={t`Liq. Price`}
+              value={liqPrice ? formatUsdAmount(liqPrice) : "..."}
             />
           )}
           <SyntheticsSwapFees
-            executionFee={executionFee?.feeTokenAmount}
-            executionFeeUsd={executionFee?.feeUsd}
-            executionFeeToken={executionFee?.feeToken}
-            totalFeeUsd={totalFeeUsd}
-            priceImpact={undefined}
+            executionFee={fees?.executionFee?.feeTokenAmount}
+            executionFeeUsd={fees.executionFee?.feeUsd}
+            executionFeeToken={fees.executionFee?.feeToken}
+            totalFeeUsd={fees.totalFeeUsd}
+            priceImpact={fees.positionPriceImpact}
           />
         </div>
+
+        {fees.isHighPriceImpact && fees.setIsHighPriceImpactAccepted && (
+          <div className="SyntheticsSwapBox-warnings">
+            <Checkbox asRow isChecked={fees.isHighPriceImpactAccepted} setIsChecked={fees.setIsHighPriceImpactAccepted}>
+              <span className="muted font-sm">
+                <Trans>I am aware of the high price impact</Trans>
+              </span>
+            </Checkbox>
+          </div>
+        )}
 
         <div className="Exchange-swap-button-container">
           <SubmitButton
@@ -468,8 +541,8 @@ export function SyntheticsSwapBox(p: Props) {
           marketAddress={swapRoute?.market}
           swapPath={swapRoute?.swapPath}
           fromTokenAddress={fromTokenState.tokenAddress}
-          toTokenAddress={toTokenState.tokenAddress}
-          indexTokenAddress={isPosition ? toTokenState.tokenAddress : undefined}
+          toTokenAddress={isPosition ? collateralTokenAddress : toTokenState.tokenAddress}
+          indexTokenAddress={toTokenState.tokenAddress}
         />
       </div>
 
@@ -480,13 +553,10 @@ export function SyntheticsSwapBox(p: Props) {
           toTokenAddress={toTokenState.tokenAddress!}
           toTokenAmount={toTokenState.tokenAmount}
           collateralTokenAddress={collateralTokenAddress}
-          // priceImpact={priceImpact}
           triggerPrice={triggerPrice}
           acceptablePrice={toTokenState.price!}
           sizeDeltaUsd={sizeDeltaUsd}
-          executionFee={executionFee?.feeTokenAmount}
-          executionFeeUsd={executionFee?.feeUsd}
-          executionFeeToken={executionFee?.feeToken}
+          fees={fees}
           swapRoute={swapRoute}
           mode={modeTab!}
           operationType={operationTab!}

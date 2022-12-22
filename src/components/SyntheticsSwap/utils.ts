@@ -1,12 +1,21 @@
 import { t } from "@lingui/macro";
+import { HIGH_PRICE_IMPACT_BP } from "config/synthetics";
 import { NATIVE_TOKEN_ADDRESS, getWrappedToken } from "config/tokens";
-import { getMarkets, useMarketsData } from "domain/synthetics/markets";
 import {
+  ExecutionFeeParams,
+  PriceImpact,
+  getExecutionFee,
+  getPriceImpact,
+  usePriceImpactConfigs,
+} from "domain/synthetics/fees";
+import { getMarkets, getOpenInterest, useMarketsData } from "domain/synthetics/markets";
+import { useOpenInterestData } from "domain/synthetics/markets/useOpenInterestData";
+import {
+  TokensData,
   adaptToInfoTokens,
   convertFromUsdByPrice,
   convertToUsdByPrice,
   getTokenData,
-  TokensData,
   useAvailableTradeTokensData,
 } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
@@ -16,7 +25,7 @@ import longImg from "img/long.svg";
 import shortImg from "img/short.svg";
 import swapImg from "img/swap.svg";
 import { useChainId } from "lib/chains";
-import { BASIS_POINTS_DIVISOR, PRECISION, USD_DECIMALS } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR, PRECISION, USD_DECIMALS, adjustForDecimals } from "lib/legacy";
 import { parseValue } from "lib/numbers";
 import { useMemo, useState } from "react";
 
@@ -67,6 +76,8 @@ export function getSubmitError(p: {
   fromTokenAmount?: BigNumber;
   toTokenAddress?: string;
   swapPath?: string[];
+  isHighPriceImpact?: boolean;
+  isHighPriceImpactAccepted?: boolean;
 }) {
   const fromToken = getTokenData(p.tokensData, p.fromTokenAddress);
 
@@ -91,6 +102,10 @@ export function getSubmitError(p: {
   if (!p.swapPath) {
     return t`Couldn't find a swap path`;
   }
+
+  if (p.isHighPriceImpact && !p.isHighPriceImpactAccepted) {
+    return t`Need to accept price impact`;
+  }
 }
 
 export function getNextTokenAmount(p: {
@@ -106,25 +121,27 @@ export function getNextTokenAmount(p: {
   leverageMultiplier?: BigNumber;
   isInvertedLeverage?: boolean;
 }) {
-  const fromUsdAmount = convertToUsdByPrice(p.fromTokenAmount, p.fromToken.decimals, p.fromTokenPrice);
+  const fromUsd = convertToUsdByPrice(p.fromTokenAmount, p.fromToken.decimals, p.fromTokenPrice);
 
-  let toAmount = convertFromUsdByPrice(fromUsdAmount, p.toToken.decimals, p.toTokenPrice);
+  let toAmount = convertFromUsdByPrice(fromUsd, p.toToken.decimals, p.toTokenPrice);
 
-  if (!toAmount || !fromUsdAmount) return undefined;
+  if (!toAmount || !fromUsd) return undefined;
 
   if (p.swapTriggerRatio?.gt(0)) {
     const ratio = p.isInvertedTriggerRatio
-      ? p.swapTriggerRatio
-      : TRIGGER_RATIO_PRECISION.mul(TRIGGER_RATIO_PRECISION).div(p.swapTriggerRatio);
+      ? TRIGGER_RATIO_PRECISION.mul(TRIGGER_RATIO_PRECISION).div(p.swapTriggerRatio)
+      : p.swapTriggerRatio;
 
-    toAmount = p.fromTokenAmount.mul(ratio).div(TRIGGER_RATIO_PRECISION);
+    const adjustedDecimalsRatio = adjustForDecimals(ratio, p.fromToken.decimals, p.toToken.decimals);
+
+    toAmount = p.fromTokenAmount.mul(adjustedDecimalsRatio).div(TRIGGER_RATIO_PRECISION);
   } else if (p.triggerPrice?.gt(0)) {
     if (p.isInvertedTriggerPrice) {
-      const toAmountTriggerUsd = convertToUsdByPrice(p.fromTokenAmount, p.fromToken.decimals, p.triggerPrice);
+      const toTriggerUsd = convertToUsdByPrice(p.fromTokenAmount, p.fromToken.decimals, p.triggerPrice);
 
-      toAmount = convertFromUsdByPrice(toAmountTriggerUsd, p.toToken.decimals, p.toTokenPrice);
+      toAmount = convertFromUsdByPrice(toTriggerUsd, p.toToken.decimals, p.toTokenPrice);
     } else {
-      toAmount = convertFromUsdByPrice(fromUsdAmount, p.toToken.decimals, p.triggerPrice);
+      toAmount = convertFromUsdByPrice(fromUsd, p.toToken.decimals, p.triggerPrice);
     }
   }
 
@@ -163,7 +180,7 @@ export function useSwapTriggerRatioState(p: {
   let markRatio =
     biggestSide === "from"
       ? p.fromTokenPrice.mul(PRECISION).div(p.toTokenPrice)
-      : p.fromTokenPrice.mul(PRECISION).div(p.toTokenPrice);
+      : p.toTokenPrice.mul(PRECISION).div(p.fromTokenPrice);
 
   return {
     inputValue,
@@ -235,5 +252,74 @@ export function useAvailableSwapTokens(p: { indexTokenAddress?: string; isSwap: 
     availableToTokens,
     availableCollaterals,
     infoTokens,
+  };
+}
+
+export type Fees = {
+  executionFee?: ExecutionFeeParams;
+  totalFeeUsd: BigNumber;
+  positionPriceImpact?: PriceImpact;
+  isHighPriceImpactAccepted?: boolean;
+  isHighPriceImpact?: boolean;
+  setIsHighPriceImpactAccepted?: (v: boolean) => void;
+};
+
+export function useFeesState(p: {
+  isSwap: boolean;
+  marketAddress?: string;
+  isLong: boolean;
+  sizeDeltaUsd?: BigNumber;
+}): Fees {
+  const { chainId } = useChainId();
+
+  const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
+
+  const tokensData = useAvailableTradeTokensData(chainId);
+  const openInterestData = useOpenInterestData(chainId);
+  const priceImpactConfigs = usePriceImpactConfigs(chainId);
+
+  const executionFee = getExecutionFee(tokensData);
+
+  if (p.isSwap) {
+    const totalFeeUsd = BigNumber.from(0).sub(executionFee?.feeUsd || BigNumber.from(0));
+
+    // todo: swap fees
+    return {
+      executionFee,
+      totalFeeUsd,
+    };
+  }
+
+  const openInterest = getOpenInterest(openInterestData, p.marketAddress);
+
+  const currentLong = openInterest?.longInterest;
+  const currentShort = openInterest?.shortInterest;
+
+  const longDeltaUsd = p.isLong ? p.sizeDeltaUsd : BigNumber.from(0);
+  const shortDeltaUsd = p.isLong ? BigNumber.from(0) : p.sizeDeltaUsd;
+
+  const positionPriceImpact = getPriceImpact(
+    priceImpactConfigs,
+    p.marketAddress,
+    currentLong,
+    currentShort,
+    longDeltaUsd,
+    shortDeltaUsd
+  );
+
+  const totalFeeUsd = BigNumber.from(0)
+    .sub(executionFee?.feeUsd || BigNumber.from(0))
+    .add(positionPriceImpact?.impact || BigNumber.from(0));
+
+  const isHighPriceImpact =
+    positionPriceImpact?.impact.lt(0) && positionPriceImpact?.basisPoints.gte(HIGH_PRICE_IMPACT_BP);
+
+  return {
+    executionFee,
+    totalFeeUsd,
+    positionPriceImpact,
+    isHighPriceImpact,
+    isHighPriceImpactAccepted,
+    setIsHighPriceImpactAccepted,
   };
 }

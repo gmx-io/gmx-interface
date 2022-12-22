@@ -35,3 +35,12 @@ export type MarketPoolData = {
 export type MarketsPoolsData = {
   [marketAddress: string]: MarketPoolData;
 };
+
+export type MarketOpenInterest = {
+  longInterest: BigNumber;
+  shortInterest: BigNumber;
+};
+
+export type OpenInterestData = {
+  [marketAddress: string]: MarketOpenInterest;
+};

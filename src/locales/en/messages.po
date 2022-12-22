@@ -1561,6 +1561,7 @@ msgid "High USDG Slippage, Long Anyway"
 msgstr "High USDG Slippage, Long Anyway"
 
 #: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
 msgid "I am aware of the high price impact"
 msgstr "I am aware of the high price impact"
 
@@ -1836,6 +1837,7 @@ msgstr "Liq Price"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
 msgid "Liq. Price"
 msgstr "Liq. Price"
 
@@ -2203,6 +2205,7 @@ msgid "NFT Wallet"
 msgstr "NFT Wallet"
 
 #: src/components/MarketPoolSwap/utils.ts
+#: src/components/SyntheticsSwap/utils.ts
 msgid "Need to accept price impact"
 msgstr "Need to accept price impact"
 

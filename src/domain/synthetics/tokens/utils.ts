@@ -114,6 +114,10 @@ export function formatTokenAmountWithUsd(
   tokenSymbol?: string,
   tokenDecimals?: number
 ) {
+  if (!tokenAmount || !usdAmount || !tokenSymbol || !tokenDecimals) {
+    return "";
+  }
+
   return `${formatTokenAmount(tokenAmount, tokenDecimals)} ${tokenSymbol} (${formatUsdAmount(usdAmount)})`;
 }
 

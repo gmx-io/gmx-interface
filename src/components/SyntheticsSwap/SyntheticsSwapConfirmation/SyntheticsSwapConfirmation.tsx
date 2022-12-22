@@ -8,7 +8,9 @@ import { getContract } from "config/contracts";
 import { useTokenAllowance } from "domain/synthetics/tokens/useTokenAllowance";
 import {
   convertToUsdByPrice,
+  formatTokenAmount,
   formatTokenAmountWithUsd,
+  formatUsdAmount,
   getTokenData,
   needTokenApprove,
 } from "domain/synthetics/tokens/utils";
@@ -18,19 +20,20 @@ import { useChainId } from "lib/chains";
 
 import { useAvailableTradeTokensData } from "domain/synthetics/tokens";
 
-import { getSubmitError, Mode, Operation, operationTexts } from "../utils";
+import { Fees, getSubmitError, Mode, Operation, operationTexts } from "../utils";
 import { useUserReferralCode } from "domain/referrals";
 
-import { expandDecimals } from "lib/numbers";
 import { createOrderTxn } from "domain/synthetics/orders";
 import { OrderType } from "config/synthetics";
 import { SwapRoute } from "domain/synthetics/exchange";
 
 import "./SyntheticsSwapConfirmation.scss";
+import { getMarketName, useMarketsData } from "domain/synthetics/markets";
 
 type Props = {
   operationType: Operation;
   mode: Mode;
+  fees: Fees;
   fromTokenAddress?: string;
   fromTokenAmount?: BigNumber;
   toTokenAddress?: string;
@@ -39,9 +42,6 @@ type Props = {
   sizeDeltaUsd?: BigNumber;
   acceptablePrice?: BigNumber;
   triggerPrice?: BigNumber;
-  executionFee?: BigNumber;
-  executionFeeUsd?: BigNumber;
-  executionFeeToken?: Token;
   swapRoute?: SwapRoute;
   onClose: () => void;
   onSubmitted: () => void;
@@ -61,6 +61,7 @@ export function SyntheticsSwapConfirmation(p: Props) {
   const routerAddress = getContract(chainId, "SyntheticsRouter");
 
   const tokensData = useAvailableTradeTokensData(chainId);
+  const marketsData = useMarketsData(chainId);
   const referralCodeData = useUserReferralCode(library, chainId, account);
 
   const tokenAllowanceData = useTokenAllowance(chainId, {
@@ -119,16 +120,48 @@ export function SyntheticsSwapConfirmation(p: Props) {
   }
 
   function onSubmit() {
-    if (!account || !p.fromTokenAddress || !p.toTokenAddress || !p.executionFee || !p.swapRoute || !p.fromTokenAmount)
+    if (
+      !account ||
+      !p.fromTokenAddress ||
+      !p.toTokenAddress ||
+      !p.fees.executionFee?.feeTokenAmount ||
+      !p.swapRoute ||
+      !p.fromTokenAmount
+    )
       return;
 
     if ([Operation.Long, Operation.Short].includes(p.operationType)) {
       if ([Mode.Market, Mode.Limit].includes(p.mode)) {
-        const orderType = p.mode === Mode.Limit ? OrderType.LimitIncrease : OrderType.MarketIncrease;
-
         const { market, swapPath } = p.swapRoute;
 
         if (!market || !p.sizeDeltaUsd || !p.acceptablePrice) return;
+
+        const orderType = p.mode === Mode.Limit ? OrderType.LimitIncrease : OrderType.MarketIncrease;
+        const isLong = p.operationType === Operation.Long;
+
+        // const priceBasisPoints = isLong
+        //   ? BASIS_POINTS_DIVISOR - DEFAULT_SLIPPAGE_AMOUNT * 5
+        //   : BASIS_POINTS_DIVISOR + DEFAULT_SLIPPAGE_AMOUNT * 5;
+
+        const acceptablePrice = isLong ? p.acceptablePrice.add(p.acceptablePrice.div(2)) : p.acceptablePrice.div(2);
+
+        // eslint-disable-next-line no-console
+        console.log("order params", {
+          marketAddress: getMarketName(marketsData, tokensData, market),
+          initialCollateralAddress: getTokenData(tokensData, p.fromTokenAddress)?.symbol,
+          initialCollateralAmount: formatTokenAmount(
+            p.fromTokenAmount,
+            getTokenData(tokensData, p.fromTokenAddress)?.decimals
+          ),
+          swapPath: swapPath.map((market) => getMarketName(marketsData, tokensData, market)),
+          indexTokenAddress: getTokenData(tokensData, p.toTokenAddress)?.symbol,
+          sizeDeltaUsd: formatUsdAmount(p.sizeDeltaUsd),
+          triggerPrice: formatUsdAmount(p.triggerPrice),
+          acceptablePrice: formatUsdAmount(acceptablePrice),
+          executionFee: p.fees.executionFee?.feeTokenAmount,
+          isLong,
+          orderType,
+        });
 
         createOrderTxn(chainId, library, {
           account,
@@ -139,9 +172,9 @@ export function SyntheticsSwapConfirmation(p: Props) {
           indexTokenAddress: p.toTokenAddress,
           sizeDeltaUsd: p.sizeDeltaUsd,
           triggerPrice: p.triggerPrice,
-          acceptablePrice: p.acceptablePrice.add(expandDecimals(100, 30)),
-          executionFee: p.executionFee,
-          isLong: p.operationType === Operation.Long,
+          acceptablePrice,
+          executionFee: p.fees.executionFee.feeTokenAmount,
+          isLong,
           orderType,
           referralCode: referralCodeData?.userReferralCodeString,
         }).then(p.onSubmitted);
@@ -153,13 +186,15 @@ export function SyntheticsSwapConfirmation(p: Props) {
 
       const { swapPath } = p.swapRoute;
 
+      // const minOutputAmount = p.toTokenAmount.sub(p.toTokenAmount.div(100));
+
       createOrderTxn(chainId, library, {
         account,
         initialCollateralAddress: p.fromTokenAddress,
         initialCollateralAmount: p.fromTokenAmount,
         swapPath: swapPath,
         receiveTokenAddress: p.toTokenAddress,
-        executionFee: p.executionFee,
+        executionFee: p.fees.executionFee.feeTokenAmount,
         orderType,
         minOutputAmount: BigNumber.from(0),
         referralCode: referralCodeData?.userReferralCodeString,
