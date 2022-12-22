@@ -7,7 +7,7 @@ export function SyntheticsPositionsList() {
   const { chainId } = useChainId();
 
   const positionsData = usePositionsData(chainId);
-  const positions = getPositions(positionsData);
+  const positions = getPositions(positionsData).reverse();
 
   return (
     <div>

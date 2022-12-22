@@ -1,5 +1,6 @@
 import { Trans } from "@lingui/macro";
 import { SyntheticsOrder } from "components/SyntheticsOrder/SyntheticsOrder";
+import { OrderType } from "config/synthetics";
 import { getOrders } from "domain/synthetics/orders";
 import { useOrdersData } from "domain/synthetics/orders/useOrdersData";
 import { useChainId } from "lib/chains";
@@ -8,7 +9,10 @@ export function SyntheticsOrdersList() {
   const { chainId } = useChainId();
 
   const ordersData = useOrdersData(chainId);
-  const orders = getOrders(ordersData);
+
+  const orders = getOrders(ordersData)
+    .filter((order) => [OrderType.LimitIncrease, OrderType.LimitIncrease, OrderType.LimitSwap].includes(order.type))
+    .reverse();
 
   return (
     <div>

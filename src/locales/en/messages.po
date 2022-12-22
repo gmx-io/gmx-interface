@@ -411,6 +411,10 @@ msgstr "Borrow Fee / Day"
 msgid "Borrow fee"
 msgstr "Borrow fee"
 
+#: src/components/SyntheticsPosition/SyntheticsPosition.tsx
+msgid "Borrow fee:"
+msgstr "Borrow fee:"
+
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 msgid "Buy"
@@ -1635,6 +1639,7 @@ msgstr "Index"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/SyntheticsPosition/SyntheticsPosition.tsx
 msgid "Initial Collateral"
 msgstr "Initial Collateral"
 
@@ -2242,6 +2247,7 @@ msgstr "Net Value"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/SyntheticsPosition/SyntheticsPosition.tsx
 msgid "Net Value: Initial Collateral + PnL - Borrow Fee"
 msgstr "Net Value: Initial Collateral + PnL - Borrow Fee"
 
@@ -2546,6 +2552,7 @@ msgstr "Please switch your network to Arbitrum."
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/SyntheticsPosition/SyntheticsPosition.tsx
 #: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr "PnL"
