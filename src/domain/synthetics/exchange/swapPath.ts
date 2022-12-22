@@ -34,7 +34,7 @@ export type SwapParams = {
   feeEstimator: FeeEstimator;
 };
 
-export type SwapPathItem = { market: string; feeUsd: BigNumber };
+export type SwapPathItem = { market: string; to: string; feeUsd: BigNumber };
 
 export type SwapPath = SwapPathItem[];
 
@@ -142,7 +142,7 @@ export function findPath(
         }
       }
 
-      return [{ market: bestSwap.market, feeUsd: bestSwapFee }];
+      return [{ market: bestSwap.market, to: bestSwap.opposite, feeUsd: bestSwapFee }];
     }
   }
 
@@ -153,7 +153,7 @@ export function findPath(
       const path = findPath(swapParams, graph, e.opposite, to, maxDepth - 1);
 
       if (path) {
-        return [{ market: e.market, feeUsd: swapFee }, ...path];
+        return [{ market: e.market, to: e.opposite, feeUsd: swapFee }, ...path];
       }
     }
   }

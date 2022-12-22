@@ -52,6 +52,7 @@ import {
 
 import { MarketCard } from "../MarketCard/MarketCard";
 import { SyntheticsSwapFees } from "../SyntheticsSwapFees/SyntheticsSwapFees";
+
 import "./SyntheticsSwapBox.scss";
 
 enum FocusedInput {
@@ -149,7 +150,14 @@ export function SyntheticsSwapBox(p: Props) {
     amountUsd: isPosition ? fromTokenState.usdAmount : toTokenState.usdAmount,
   });
 
-  const fees = useFeesState({ isSwap, isLong, marketAddress: swapRoute?.market, sizeDeltaUsd });
+  const fees = useFeesState({
+    isSwap,
+    isLong,
+    marketAddress: swapRoute?.market,
+    sizeDeltaUsd,
+    swapPath: swapRoute?.fullSwapPath,
+    swapFeeUsd: swapRoute?.swapFeesUsd,
+  });
 
   const liqPrice = getLiqPrice();
 
@@ -503,13 +511,7 @@ export function SyntheticsSwapBox(p: Props) {
               value={liqPrice ? formatUsdAmount(liqPrice) : "..."}
             />
           )}
-          <SyntheticsSwapFees
-            executionFee={fees?.executionFee?.feeTokenAmount}
-            executionFeeUsd={fees.executionFee?.feeUsd}
-            executionFeeToken={fees.executionFee?.feeToken}
-            totalFeeUsd={fees.totalFeeUsd}
-            priceImpact={fees.positionPriceImpact}
-          />
+          <SyntheticsSwapFees fees={fees} />
         </div>
 
         {fees.isHighPriceImpact && fees.setIsHighPriceImpactAccepted && (
@@ -550,10 +552,16 @@ export function SyntheticsSwapBox(p: Props) {
         <SyntheticsSwapConfirmation
           fromTokenAddress={fromTokenState.tokenAddress!}
           fromTokenAmount={fromTokenState.tokenAmount}
+          fromTokenPrice={fromTokenState.price}
           toTokenAddress={toTokenState.tokenAddress!}
           toTokenAmount={toTokenState.tokenAmount}
+          toTokenPrice={toTokenState.price}
           collateralTokenAddress={collateralTokenAddress}
           triggerPrice={triggerPrice}
+          entryPrice={entryPrice}
+          liqPrice={liqPrice}
+          swapTriggerRatio={swapRatio?.ratio}
+          leverage={leverageOption}
           acceptablePrice={toTokenState.price!}
           sizeDeltaUsd={sizeDeltaUsd}
           fees={fees}

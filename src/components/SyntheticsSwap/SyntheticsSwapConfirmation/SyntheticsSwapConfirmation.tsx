@@ -12,6 +12,7 @@ import {
   formatTokenAmountWithUsd,
   formatUsdAmount,
   getTokenData,
+  getUsdFromTokenAmount,
   needTokenApprove,
 } from "domain/synthetics/tokens/utils";
 import { Token } from "domain/tokens";
@@ -20,15 +21,19 @@ import { useChainId } from "lib/chains";
 
 import { useAvailableTradeTokensData } from "domain/synthetics/tokens";
 
-import { Fees, getSubmitError, Mode, Operation, operationTexts } from "../utils";
 import { useUserReferralCode } from "domain/referrals";
+import { Fees, getSubmitError, Mode, Operation, operationTexts } from "../utils";
 
-import { createOrderTxn } from "domain/synthetics/orders";
 import { OrderType } from "config/synthetics";
 import { SwapRoute } from "domain/synthetics/exchange";
+import { createOrderTxn } from "domain/synthetics/orders";
 
-import "./SyntheticsSwapConfirmation.scss";
+import { InfoRow } from "components/InfoRow/InfoRow";
 import { getMarketName, useMarketsData } from "domain/synthetics/markets";
+import { USD_DECIMALS } from "lib/legacy";
+import { formatAmount } from "lib/numbers";
+import { SyntheticsSwapFees } from "../SyntheticsSwapFees/SyntheticsSwapFees";
+import "./SyntheticsSwapConfirmation.scss";
 
 type Props = {
   operationType: Operation;
@@ -38,10 +43,16 @@ type Props = {
   fromTokenAmount?: BigNumber;
   toTokenAddress?: string;
   toTokenAmount?: BigNumber;
+  fromTokenPrice?: BigNumber;
+  toTokenPrice?: BigNumber;
   collateralTokenAddress?: string;
   sizeDeltaUsd?: BigNumber;
+  entryPrice?: BigNumber;
+  liqPrice?: BigNumber;
+  leverage?: number;
   acceptablePrice?: BigNumber;
   triggerPrice?: BigNumber;
+  swapTriggerRatio?: BigNumber;
   swapRoute?: SwapRoute;
   onClose: () => void;
   onSubmitted: () => void;
@@ -72,12 +83,27 @@ export function SyntheticsSwapConfirmation(p: Props) {
   const fromToken = getTokenData(tokensData, p.fromTokenAddress);
   const toToken = getTokenData(tokensData, p.toTokenAddress);
 
+  const collateralUsd = getUsdFromTokenAmount(tokensData, fromToken?.address, p.fromTokenAmount);
+
   const fromTokenText = getTokenText(fromToken, p.fromTokenAmount, fromToken?.prices?.minPrice);
   const toTokenText = getTokenText(toToken, p.toTokenAmount, toToken?.prices?.maxPrice);
 
   const isAllowanceLoaded = Object.keys(tokenAllowanceData).length > 0;
 
   const needFromTokenApproval = needTokenApprove(tokenAllowanceData, p.fromTokenAddress, p.fromTokenAmount);
+
+  const isSwap = p.operationType === Operation.Swap;
+  const isPosition = [Operation.Long, Operation.Short].includes(p.operationType);
+  const isLimit = p.mode === Mode.Limit;
+  const isLong = p.operationType === Operation.Long;
+
+  function getReceiveText() {
+    if (p.operationType === Operation.Swap) {
+      return t`Receive`;
+    }
+
+    return p.operationType === Operation.Long ? t`Long` : t`Short`;
+  }
 
   function getSubmitButtonState(): { text: string; disabled?: boolean; onClick?: () => void } {
     const error = getSubmitError({
@@ -111,7 +137,15 @@ export function SyntheticsSwapConfirmation(p: Props) {
       };
     }
 
-    const text = t`Confirm ${operationTexts[p.operationType]} ${toToken.symbol}`;
+    let text = "";
+
+    if (isSwap) {
+      text = t`Swap`;
+    } else if (isLimit) {
+      text = t`Create Limit Order`;
+    } else {
+      text = isLong ? t`Long` : t`Short`;
+    }
 
     return {
       text,
@@ -218,17 +252,46 @@ export function SyntheticsSwapConfirmation(p: Props) {
           </div>
           <div className="Confirmation-box-main-icon"></div>
           <div>
-            <Trans>Receive</Trans>&nbsp;{toTokenText}
+            {getReceiveText()}&nbsp;{toTokenText}
           </div>
         </div>
 
-        {/* <MarketPoolFees
-          priceImpact={p.priceImpact}
-          executionFeeToken={p.executionFeeToken}
-          totalFeeUsd={p.feesUsd}
-          executionFee={p.executionFee}
-          executionFeeUsd={p.executionFeeUsd}
-        /> */}
+        {isSwap && (
+          <>
+            <InfoRow
+              label={t`Min Receive`}
+              value={formatTokenAmount(p.toTokenAmount, toToken?.decimals, toToken?.symbol)}
+            />
+
+            {p.swapTriggerRatio?.gt(0) && (
+              <InfoRow label={t`Price`} value={formatAmount(p.swapTriggerRatio, USD_DECIMALS, 4)} />
+            )}
+
+            <InfoRow label={t`${fromToken?.symbol} Price`} value={formatUsdAmount(p.fromTokenPrice)} />
+            <InfoRow label={t`${toToken?.symbol} Price`} value={formatUsdAmount(p.toTokenPrice)} />
+          </>
+        )}
+
+        {isPosition && (
+          <>
+            <InfoRow label={t`Collateral In`} value={getTokenData(tokensData, p.collateralTokenAddress)?.symbol} />
+            <InfoRow label={t`Collateral`} value={collateralUsd ? formatUsdAmount(collateralUsd) : "..."} />
+
+            {p.leverage && <InfoRow label={t`Leverage`} value={`${p.leverage?.toFixed(2)}x`} />}
+
+            <div className="App-card-divider" />
+
+            {p.entryPrice && !isLimit && <InfoRow label={t`Entry price`} value={formatUsdAmount(p.entryPrice)} />}
+
+            {p.triggerPrice && <InfoRow label={t`Trigger price`} value={formatUsdAmount(p.triggerPrice)} />}
+
+            {p.liqPrice && <InfoRow label={t`Liq price`} value={formatUsdAmount(p.liqPrice)} />}
+          </>
+        )}
+
+        <div className="App-card-divider" />
+
+        <SyntheticsSwapFees fees={p.fees} />
 
         {needFromTokenApproval && fromToken && (
           <>

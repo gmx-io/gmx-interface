@@ -3,7 +3,7 @@ import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { debounce } from "lodash";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { SwapParams, findSwapPath, getMarketsGraph, getSwapPathForPosition } from "./swapPath";
+import { SwapParams, SwapPathItem, findSwapPath, getMarketsGraph, getSwapPathForPosition } from "./swapPath";
 import { getSwapFee, usePriceImpactConfigs } from "domain/synthetics/fees";
 import { useAvailableTradeTokensData } from "domain/synthetics/tokens";
 import { getCorrectTokenAddress } from "config/tokens";
@@ -12,6 +12,7 @@ export type SwapRoute = {
   market?: string;
   swapPath: string[];
   swapFeesUsd: BigNumber;
+  fullSwapPath?: SwapPathItem[];
 };
 
 export function useSwapPath(p: {
@@ -31,6 +32,7 @@ export function useSwapPath(p: {
   const [swapPath, setSwapPath] = useState<string[] | undefined>();
   const [market, setMarket] = useState<string | undefined>();
   const [swapFeesUsd, setSwapFeesUsd] = useState<BigNumber | undefined>();
+  const [fullSwapPath, setFullSwapPath] = useState<SwapPathItem[]>();
 
   const marketsData = useMarketsData(chainId);
   const poolsData = useMarketsPoolsData(chainId);
@@ -77,7 +79,8 @@ export function useSwapPath(p: {
       setSwapPath(swapPath?.map((p) => p.market));
       setSwapFeesUsd(swapPath?.reduce((acc, p) => acc.add(p.feeUsd), BigNumber.from(0)));
       setMarket(undefined);
-    }, 100),
+      setFullSwapPath(swapPath);
+    }, 10),
     [graph]
   );
 
@@ -89,7 +92,8 @@ export function useSwapPath(p: {
       setSwapPath(result?.swapPath.map((p) => p.market));
       setSwapFeesUsd(result?.swapPath.reduce((acc, p) => acc.add(p.feeUsd), BigNumber.from(0)));
       setMarket(result?.market);
-    }, 100),
+      setFullSwapPath(result?.swapPath);
+    }, 10),
     [graph]
   );
 
@@ -143,5 +147,6 @@ export function useSwapPath(p: {
     swapPath,
     market,
     swapFeesUsd,
+    fullSwapPath,
   };
 }

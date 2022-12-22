@@ -1,6 +1,7 @@
 import { t } from "@lingui/macro";
 import { HIGH_PRICE_IMPACT_BP } from "config/synthetics";
 import { NATIVE_TOKEN_ADDRESS, getWrappedToken } from "config/tokens";
+import { SwapPathItem } from "domain/synthetics/exchange";
 import {
   ExecutionFeeParams,
   PriceImpact,
@@ -262,6 +263,8 @@ export type Fees = {
   isHighPriceImpactAccepted?: boolean;
   isHighPriceImpact?: boolean;
   setIsHighPriceImpactAccepted?: (v: boolean) => void;
+  swapPath?: SwapPathItem[];
+  swapFeeUsd?: BigNumber;
 };
 
 export function useFeesState(p: {
@@ -269,6 +272,8 @@ export function useFeesState(p: {
   marketAddress?: string;
   isLong: boolean;
   sizeDeltaUsd?: BigNumber;
+  swapPath?: SwapPathItem[];
+  swapFeeUsd?: BigNumber;
 }): Fees {
   const { chainId } = useChainId();
 
@@ -281,12 +286,16 @@ export function useFeesState(p: {
   const executionFee = getExecutionFee(tokensData);
 
   if (p.isSwap) {
-    const totalFeeUsd = BigNumber.from(0).sub(executionFee?.feeUsd || BigNumber.from(0));
+    const totalFeeUsd = BigNumber.from(0)
+      .sub(executionFee?.feeUsd || BigNumber.from(0))
+      .add(p.swapFeeUsd || BigNumber.from(0));
 
     // todo: swap fees
     return {
       executionFee,
       totalFeeUsd,
+      swapPath: p.swapPath,
+      swapFeeUsd: p.swapFeeUsd,
     };
   }
 
@@ -308,6 +317,7 @@ export function useFeesState(p: {
   );
 
   const totalFeeUsd = BigNumber.from(0)
+    .add(p.swapFeeUsd || BigNumber.from(0))
     .sub(executionFee?.feeUsd || BigNumber.from(0))
     .add(positionPriceImpact?.impact || BigNumber.from(0));
 
@@ -316,6 +326,8 @@ export function useFeesState(p: {
 
   return {
     executionFee,
+    swapFeeUsd: p.swapFeeUsd,
+    swapPath: p.swapPath,
     totalFeeUsd,
     positionPriceImpact,
     isHighPriceImpact,

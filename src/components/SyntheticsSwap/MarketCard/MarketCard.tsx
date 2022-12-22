@@ -17,6 +17,8 @@ import {
 } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 
+import "./MarketCard.scss";
+
 export type Props = {
   swapPath?: string[];
   marketAddress?: string;
@@ -74,16 +76,17 @@ export function MarketCard(p: Props) {
       <div className="App-card-title">{getTitle()}</div>
       <div className="App-card-divider" />
       <div className="App-card-content">
-        <InfoRow label={t`Market`} value={marketName || "..."} />
+        <InfoRow className="info-row" label={t`Market`} value={marketName || "..."} />
 
         {p.isSwap && (
           <>
             <InfoRow
+              className="info-row"
               label={t`${longToken?.symbol} Pool Amount`}
               value={longPoolAmountUsd ? formatUsdAmount(longPoolAmountUsd) : "..."}
             />
-
             <InfoRow
+              className="info-row"
               label={t`${shortToken?.symbol} Pool Amount`}
               value={shortPoolAmountUsd ? formatUsdAmount(shortPoolAmountUsd) : "..."}
             />
@@ -92,16 +95,26 @@ export function MarketCard(p: Props) {
 
         {!p.isSwap && (
           <>
-            <InfoRow label={t`Long Pool`} value={longPoolAmountUsd ? formatUsdAmount(longPoolAmountUsd) : "..."} />
-
-            <InfoRow label={t`Short Pool`} value={shortPoolAmountUsd ? formatUsdAmount(shortPoolAmountUsd) : "..."} />
+            <InfoRow
+              className="info-row"
+              label={t`Long Pool`}
+              value={longPoolAmountUsd ? formatUsdAmount(longPoolAmountUsd) : "..."}
+            />
 
             <InfoRow
+              className="info-row"
+              label={t`Short Pool`}
+              value={shortPoolAmountUsd ? formatUsdAmount(shortPoolAmountUsd) : "..."}
+            />
+
+            <InfoRow
+              className="info-row"
               label={t`Open Interest Long`}
               value={openInterest?.longInterest ? formatUsdAmount(openInterest.longInterest) : "..."}
             />
 
             <InfoRow
+              className="info-row"
               label={t`Open Interest Short`}
               value={openInterest?.shortInterest ? formatUsdAmount(openInterest.shortInterest) : "..."}
             />

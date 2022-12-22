@@ -1,23 +1,27 @@
-import { t, Trans } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
+import cx from "classnames";
 import { InfoRow } from "components/InfoRow/InfoRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
-import { formatFee, PriceImpact } from "domain/synthetics/fees";
-import { formatTokenAmountWithUsd } from "domain/synthetics/tokens";
-import { Token } from "domain/tokens";
-import cx from "classnames";
-import { BigNumber } from "ethers";
+import { formatFee } from "domain/synthetics/fees";
+import {
+  formatTokenAmountWithUsd,
+  formatUsdAmount,
+  getTokenData,
+  useAvailableTradeTokensData,
+} from "domain/synthetics/tokens";
+import { useChainId } from "lib/chains";
+import { Fees } from "../utils";
 
 type Props = {
-  priceImpact?: PriceImpact;
-  executionFee?: BigNumber;
-  executionFeeUsd?: BigNumber;
-  executionFeeToken?: Token;
-  totalFeeUsd?: BigNumber;
+  fees: Fees;
 };
 
 export function SyntheticsSwapFees(p: Props) {
-  const { priceImpact, executionFee, executionFeeUsd, totalFeeUsd, executionFeeToken } = p;
+  const { chainId } = useChainId();
+  const tokensData = useAvailableTradeTokensData(chainId);
+
+  const { positionPriceImpact, executionFee, totalFeeUsd, swapPath } = p.fees;
 
   return (
     <InfoRow
@@ -28,18 +32,30 @@ export function SyntheticsSwapFees(p: Props) {
           position="right-bottom"
           renderContent={() => (
             <div>
-              <StatsTooltipRow
-                label={t`Price impact`}
-                value={formatFee(priceImpact?.impact, priceImpact?.basisPoints)}
-                showDollar={false}
-              />
+              {positionPriceImpact?.impact && positionPriceImpact?.basisPoints && (
+                <StatsTooltipRow
+                  label={t`Price impact`}
+                  value={formatFee(positionPriceImpact?.impact, positionPriceImpact?.basisPoints)}
+                  showDollar={false}
+                />
+              )}
+
+              {swapPath?.map((item) => (
+                <StatsTooltipRow
+                  key={`${item.market}-${item.to}`}
+                  label={t`Swap to ${getTokenData(tokensData, item.to)?.symbol}`}
+                  value={formatUsdAmount(item.feeUsd)}
+                  showDollar={false}
+                />
+              ))}
+
               <StatsTooltipRow
                 label={t`Execution fee`}
                 value={formatTokenAmountWithUsd(
-                  executionFee,
-                  executionFeeUsd,
-                  executionFeeToken?.symbol,
-                  executionFeeToken?.decimals
+                  executionFee?.feeTokenAmount,
+                  executionFee?.feeUsd,
+                  executionFee?.feeToken?.symbol,
+                  executionFee?.feeToken?.decimals
                 )}
                 showDollar={false}
               />

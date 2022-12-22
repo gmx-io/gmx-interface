@@ -717,6 +717,7 @@ msgstr "Coinbase Wallet no detectada."
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/SyntheticsPositionsList/SyntheticsPositionsList.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
 msgid "Collateral"
 msgstr "Garantía"
 
@@ -731,6 +732,7 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
 msgid "Collateral In"
 msgstr ""
 
@@ -802,8 +804,8 @@ msgid "Confirm {0}"
 msgstr ""
 
 #: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
-msgid "Confirm {0} {1}"
-msgstr ""
+#~ msgid "Confirm {0} {1}"
+#~ msgstr ""
 
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 msgid "Confirm {operationText} {0} GM"
@@ -903,6 +905,10 @@ msgstr ""
 #: src/pages/Stake/StakeV1.js
 msgid "Create"
 msgstr "Crear"
+
+#: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
+msgid "Create Limit Order"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
@@ -1297,6 +1303,10 @@ msgstr ""
 #: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
 msgid "Entry Price"
 msgstr "Precio de Entrada"
+
+#: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
+msgid "Entry price"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1767,6 +1777,7 @@ msgstr "Posición restante por debajo de 10 USD"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
 msgid "Leverage"
 msgstr "Apalancamiento"
 
@@ -1828,6 +1839,10 @@ msgstr ""
 
 #: src/components/SyntheticsPositionsList/SyntheticsPositionsList.tsx
 msgid "Liq Price"
+msgstr ""
+
+#: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
+msgid "Liq price"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -1900,6 +1915,8 @@ msgstr "Cargando..."
 #: src/components/SyntheticsOrder/SyntheticsOrder.tsx
 #: src/components/SyntheticsPosition/SyntheticsPosition.tsx
 #: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
 #: src/components/SyntheticsSwap/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
@@ -2148,6 +2165,10 @@ msgstr ""
 
 #: src/components/Migration/Migration.js
 msgid "Migration submitted! <0>View status.</0>"
+msgstr ""
+
+#: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
+msgid "Min Receive"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
@@ -2589,6 +2610,7 @@ msgstr ""
 #: src/components/SyntheticsMarketStats/SyntheticsMarketStats.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV1.js
@@ -2998,6 +3020,8 @@ msgstr "Compartir Posición"
 #: src/components/SyntheticsOrder/SyntheticsOrder.tsx
 #: src/components/SyntheticsPosition/SyntheticsPosition.tsx
 #: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
 #: src/components/SyntheticsSwap/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
@@ -3190,6 +3214,7 @@ msgstr "Suministros"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
 #: src/components/SyntheticsSwap/utils.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Swap"
@@ -3234,6 +3259,7 @@ msgid "Swap submitted."
 msgstr ""
 
 #: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapFees/SyntheticsSwapFees.tsx
 msgid "Swap to {0}"
 msgstr ""
 
@@ -3676,6 +3702,10 @@ msgstr "Precio de Activación"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Trigger order disabled, pending {0} upgrade"
+msgstr ""
+
+#: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
+msgid "Trigger price"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -4247,6 +4277,8 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
 msgid "{0} Price"
 msgstr ""
 
