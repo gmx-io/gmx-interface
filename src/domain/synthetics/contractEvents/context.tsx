@@ -41,44 +41,50 @@ export function ContractEventsProvider({ children }: { children: ReactNode }) {
         // ...ignore
       }
 
+      // TODO: refs?
       function onOrderCreated(key, orderParams: ContractOrder, txnParams) {
         if (orderParams.addresses.account !== account) return;
 
-        setOrderEvents((orderEvents) => ({
-          ...orderEvents,
-          [key]: {
-            key,
-            orderParams,
-            createdEvent: orderParams,
-            createdTxnHash: txnParams.transactionHash,
-          },
-        }));
+        setOrderEvents((orderEvents) => {
+          return {
+            ...orderEvents,
+            [key]: {
+              key,
+              orderParams,
+              createdTxnHash: txnParams.transactionHash,
+            },
+          };
+        });
       }
 
       function onOrderCancelled(key, txnParams) {
-        if (!orderEvents[key]) return;
+        setOrderEvents((orderEvents) => {
+          if (!orderEvents[key]) return orderEvents;
 
-        setOrderEvents((orderEvents) => ({
-          ...orderEvents,
-          [key]: {
-            ...orderEvents[key],
-            cancelledTxnHash: txnParams.transactionHash,
-          },
-        }));
+          return {
+            ...orderEvents,
+            [key]: {
+              ...orderEvents[key],
+              cancelledTxnHash: txnParams.transactionHash,
+            },
+          };
+        });
 
         pushErrorNotification(chainId, "Order cancelled", txnParams);
       }
 
       function onOrderExecuted(key, txnParams) {
-        if (!orderEvents[key]) return;
+        setOrderEvents((orderEvents) => {
+          if (!orderEvents[key]) return orderEvents;
 
-        setOrderEvents((orderEvents) => ({
-          ...orderEvents,
-          [key]: {
-            ...orderEvents[key],
-            executedEvent: txnParams.transactionHash,
-          },
-        }));
+          return {
+            ...orderEvents,
+            [key]: {
+              ...orderEvents[key],
+              executedTxnHash: txnParams.transactionHash,
+            },
+          };
+        });
 
         pushSuccessNotification(chainId, "Order executed", txnParams);
       }
@@ -87,14 +93,33 @@ export function ContractEventsProvider({ children }: { children: ReactNode }) {
       wsEventEmitter?.on("OrderCancelled", onOrderCancelled);
       wsEventEmitter?.on("OrderExecuted", onOrderExecuted);
 
+      wsEventEmitter?.on("DepositCreated", onOrderCreated);
+      wsEventEmitter?.on("DepositCancelled", onOrderCancelled);
+      wsEventEmitter?.on("DepositExecuted", onOrderExecuted);
+
+      wsEventEmitter?.on("WithdrawalCreated", onOrderCreated);
+      wsEventEmitter?.on("WithdrawalCancelled", onOrderCancelled);
+      wsEventEmitter?.on("WithdrawalExecuted", onOrderExecuted);
+
       return () => {
         wsEventEmitter?.off("OrderCreated", onOrderCreated);
         wsEventEmitter?.off("OrderCancelled", onOrderCancelled);
         wsEventEmitter?.off("OrderExecuted", onOrderExecuted);
+
+        wsEventEmitter?.off("DepositCreated", onOrderCreated);
+        wsEventEmitter?.off("DepositCancelled", onOrderCancelled);
+        wsEventEmitter?.off("DepositExecuted", onOrderExecuted);
+
+        wsEventEmitter?.off("WithdrawalCreated", onOrderCreated);
+        wsEventEmitter?.off("WithdrawalCancelled", onOrderCancelled);
+        wsEventEmitter?.off("WithdrawalExecuted", onOrderExecuted);
       };
     },
-    [account, active, chainId, orderEvents]
+    [account, active, chainId]
   );
+
+  // eslint-disable-next-line no-console
+  console.debug("orderEvents", orderEvents);
 
   const state = useMemo(() => {
     function getPendingOrders() {

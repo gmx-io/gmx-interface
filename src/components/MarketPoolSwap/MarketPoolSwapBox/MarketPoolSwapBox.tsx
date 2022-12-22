@@ -411,7 +411,15 @@ export function MarketPoolSwapBox(p: Props) {
         />
       )}
 
-      {isProcessing && <MarketPoolSwapStatus operationType={operationTab} onClose={() => setIsProcessing(false)} />}
+      {isProcessing && (
+        <MarketPoolSwapStatus
+          firstToken={firstTokenState.tokenAddress!}
+          secondToken={secondTokenState.tokenAddress}
+          market={market?.marketTokenAddress!}
+          isDeposit={operationTab === Operation.deposit}
+          onClose={() => setIsProcessing(false)}
+        />
+      )}
     </div>
   );
 }

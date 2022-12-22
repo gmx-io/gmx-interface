@@ -9,8 +9,6 @@ import { useEffect, useState } from "react";
 import { useChainId } from "lib/chains";
 import { getTokenData, useAvailableTradeTokensData } from "domain/synthetics/tokens";
 
-import "./RequestStatus.scss";
-
 type Props = {
   isSwap: boolean;
   isLong: boolean;
@@ -43,7 +41,7 @@ export function SyntheticSwapStatus(p: Props) {
           return t`Swap ${from.symbol} to ${to.symbol} request sent`;
         }
 
-        return t`Sending swap ${from.symbol} request`;
+        return t`Sending swap ${from.symbol} to ${to.symbol} request`;
       }
 
       if (stage === "execution") {
@@ -86,14 +84,17 @@ export function SyntheticSwapStatus(p: Props) {
 
   const isProcessing = !cancelledTxnHash && !executedTxnHash;
 
-  const pendingOrder = getPendingOrders()[0];
-
   useEffect(() => {
-    if (pendingOrder && pendingOrder.key !== orderKey) {
+    const pendingOrder = getPendingOrders()[0];
+
+    if (pendingOrder) {
       setIsOrderViewed(pendingOrder.key);
-      setOrderKey(pendingOrder.key);
+
+      if (pendingOrder.key !== orderKey) {
+        setOrderKey(pendingOrder.key);
+      }
     }
-  }, [orderKey, pendingOrder, setIsOrderViewed]);
+  }, [getPendingOrders, orderKey, setIsOrderViewed]);
 
   return (
     <div className="Confirmation-box">

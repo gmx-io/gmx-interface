@@ -1,76 +1,104 @@
-import { Operation } from "../utils";
+import { t } from "@lingui/macro";
+
+import Modal from "components/Modal/Modal";
+import { useContractEventsContext } from "domain/synthetics/contractEvents";
+
+import { SubmitButton } from "components/SubmitButton/SubmitButton";
+import { RequestStatus } from "components/RequestStatus/RequestStatus";
+import { useEffect, useState } from "react";
+import { useChainId } from "lib/chains";
+import { getTokenData, useAvailableTradeTokensData } from "domain/synthetics/tokens";
+import { getMarketName, useMarketsData } from "domain/synthetics/markets";
 
 type Props = {
-  operationType: Operation;
+  isDeposit: boolean;
+  firstToken: string;
+  secondToken?: string;
+  market: string;
   onClose: () => void;
 };
 
 export function MarketPoolSwapStatus(p: Props) {
-  // const { account } = useWeb3React();
+  const [orderKey, setOrderKey] = useState<string>();
 
-  return null;
+  const { chainId } = useChainId();
 
-  // const { subscribe, unsubscribe } = useContractEvents();
-  // const [depositKey, setDepositKey] = useState<string>();
+  const tokensData = useAvailableTradeTokensData(chainId);
+  const marketsData = useMarketsData(chainId);
 
-  // const [depositCreatedTxnHash, setDepositCreatedTxnHash] = useState<string>();
-  // const [depositExecutedTxnHash, setDepositExecutedTxnHash] = useState<string>();
-  // const [depositCancelledTxnHash, setDepositCancelledTxnHash] = useState<string>();
+  const { getPendingOrders, getOrderEvents, setIsOrderViewed } = useContractEventsContext();
 
-  // let orderExecuionStatusText = "Order processing";
-  // let orderExecutionTxnHash: string | undefined = undefined;
+  const { createdTxnHash, cancelledTxnHash, executedTxnHash } = getOrderEvents(orderKey) || {};
 
-  // const isOrderExecutionLoading = Boolean(depositKey && !depositExecutedTxnHash && !depositCancelledTxnHash);
+  const orderTypeText = p.isDeposit ? t`Deposit` : t`Withdrawal`;
 
-  // if (depositExecutedTxnHash) {
-  //   orderExecuionStatusText = t`Order executed`;
-  //   orderExecutionTxnHash = depositExecutedTxnHash;
-  // }
+  function getOrderStatusText(stage: "creating" | "execution") {
+    const marketName = getMarketName(marketsData, tokensData, p.market);
 
-  // if (depositCancelledTxnHash) {
-  //   orderExecuionStatusText = t`Order cancelled`;
-  //   orderExecutionTxnHash = depositCancelledTxnHash;
-  // }
+    const firstToken = getTokenData(tokensData, p.firstToken);
+    const secondToken = getTokenData(tokensData, p.secondToken);
 
-  // useEffect(() => {
-  //   // TODO: get logs
-  //   function onDepositCreated(key, [depositProps], txnParams) {
-  //     if (depositProps.account !== account) return;
+    if (!marketName) {
+      return t`Unknown order`;
+    }
 
-  //     setDepositKey(key);
-  //     setDepositCreatedTxnHash(txnParams.transactionHash);
-  //   }
+    const tokensText = [firstToken, secondToken]
+      .filter(Boolean)
+      .map((t) => t!.symbol)
+      .join(" and ");
 
-  //   function onDepositExecuted(key, txnParams) {
-  //     if (key !== depositKey) return;
-  //     setDepositExecutedTxnHash(txnParams.transactionHash);
-  //   }
+    if (stage === "creating") {
+      if (orderKey) {
+        return t`${orderTypeText} ${tokensText} request sent`;
+      }
 
-  //   function onDepositCancelled(key, txnParams) {
-  //     if (key !== depositKey) return;
-  //     setDepositCancelledTxnHash(txnParams.transactionHash);
-  //   }
+      return t`Sending ${orderTypeText.toLocaleLowerCase()} ${tokensText} request`;
+    }
 
-  //   subscribe("EventEmitter", "DepositCreated", onDepositCreated);
-  //   subscribe("EventEmitter", "DepositExecuted", onDepositExecuted);
-  //   subscribe("EventEmitter", "DepositCancelled", onDepositCancelled);
+    if (stage === "execution") {
+      if (cancelledTxnHash) {
+        return t`${orderTypeText} cancelled`;
+      }
 
-  //   return () => {
-  //     unsubscribe("EventEmitter", "DepositCreated", onDepositCreated);
-  //     unsubscribe("EventEmitter", "DepositExecuted", onDepositExecuted);
-  //     unsubscribe("EventEmitter", "DepositCancelled", onDepositCancelled);
-  //   };
-  // }, [account, depositKey, subscribe, unsubscribe]);
+      if (executedTxnHash) {
+        return t`Executed ${orderTypeText.toLowerCase()} ${tokensText}`;
+      }
 
-  // return (
-  //   <Modal
-  //     isVisible={true}
-  //     setIsVisible={p.onClose}
-  //     label={t`${operationTexts[p.operationType]} status`}
-  //     allowContentTouchMove
-  //   >
-  //     <OrderStatus text={`Order create status`} txnHash={depositCreatedTxnHash} isLoading={!depositCreatedTxnHash} />
-  //     <OrderStatus text={orderExecuionStatusText} isLoading={isOrderExecutionLoading} txnHash={orderExecutionTxnHash} />
-  //   </Modal>
-  // );
+      return t`Fulfilling ${orderTypeText.toLowerCase()} ${tokensText} request`;
+    }
+
+    return t`Unknown order`;
+  }
+
+  const isProcessing = !cancelledTxnHash && !executedTxnHash;
+
+  useEffect(() => {
+    const pendingOrder = getPendingOrders()[0];
+
+    if (pendingOrder) {
+      setIsOrderViewed(pendingOrder.key);
+
+      if (pendingOrder.key !== orderKey) {
+        setOrderKey(pendingOrder.key);
+      }
+    }
+  }, [getPendingOrders, orderKey, setIsOrderViewed]);
+
+  return (
+    <div className="Confirmation-box">
+      <Modal isVisible={true} setIsVisible={p.onClose} label={t`${orderTypeText} status`} allowContentTouchMove>
+        <RequestStatus text={getOrderStatusText("creating")} txnHash={createdTxnHash} isLoading={!createdTxnHash} />
+
+        <RequestStatus
+          text={getOrderStatusText("execution")}
+          isLoading={Boolean(orderKey && !executedTxnHash && !cancelledTxnHash)}
+          txnHash={cancelledTxnHash || executedTxnHash}
+        />
+
+        <div className="App-card-divider" />
+
+        <SubmitButton disabled={isProcessing}>{isProcessing ? t`Processing...` : t`Close`}</SubmitButton>
+      </Modal>
+    </div>
+  );
 }
