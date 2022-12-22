@@ -666,6 +666,7 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
 msgid "Close"
 msgstr "收盘"
@@ -1046,6 +1047,7 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
+#: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
 #: src/components/MarketPoolSwap/utils.ts
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1334,6 +1336,10 @@ msgstr ""
 msgid "Execute Order: {0, select, Increase {Increase} Decrease {Decrease}} {1} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 msgstr ""
 
+#: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
+msgid "Executed {0} {tokensText}"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
@@ -1434,6 +1440,10 @@ msgstr "未检查没收利润"
 
 #: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
 msgid "Fulfilling swap {0} to {1} request"
+msgstr ""
+
+#: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
+msgid "Fulfilling {0} {tokensText} request"
 msgstr ""
 
 #: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
@@ -2692,6 +2702,7 @@ msgstr ""
 msgid "Price on Avalanche"
 msgstr ""
 
+#: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
 msgid "Processing..."
 msgstr ""
@@ -3005,7 +3016,15 @@ msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr "发送者已从GMX授权金库中撤回所有代币"
 
 #: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
-msgid "Sending swap {0} request"
+#~ msgid "Sending swap {0} request"
+#~ msgstr ""
+
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
+msgid "Sending swap {0} to {1} request"
+msgstr ""
+
+#: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
+msgid "Sending {0} {tokensText} request"
 msgstr ""
 
 #: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
@@ -3790,6 +3809,8 @@ msgstr "使用方法"
 msgid "Uniswap"
 msgstr ""
 
+#: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
+#: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
 msgid "Unknown order"
@@ -4058,6 +4079,10 @@ msgstr "提领送出"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Withdraw {0} USD from {1} {longOrShortText}"
+msgstr ""
+
+#: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
+msgid "Withdrawal"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
@@ -4462,6 +4487,18 @@ msgstr ""
 
 #: src/domain/synthetics/orders/createOrderTxn.ts
 msgid "{orderLabel} order sent"
+msgstr ""
+
+#: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
+msgid "{orderTypeText} cancelled"
+msgstr ""
+
+#: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
+msgid "{orderTypeText} status"
+msgstr ""
+
+#: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
+msgid "{orderTypeText} {tokensText} request sent"
 msgstr ""
 
 #: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx

@@ -666,6 +666,7 @@ msgstr "Click on a row to select the position's market, then use the swap box to
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
 msgid "Close"
 msgstr "Close"
@@ -1046,6 +1047,7 @@ msgstr "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
+#: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
 #: src/components/MarketPoolSwap/utils.ts
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1334,6 +1336,10 @@ msgstr "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 msgid "Execute Order: {0, select, Increase {Increase} Decrease {Decrease}} {1} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 msgstr "Execute Order: {0, select, Increase {Increase} Decrease {Decrease}} {1} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 
+#: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
+msgid "Executed {0} {tokensText}"
+msgstr "Executed {0} {tokensText}"
+
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
@@ -1435,6 +1441,10 @@ msgstr "Forfeit profit not checked"
 #: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
 msgid "Fulfilling swap {0} to {1} request"
 msgstr "Fulfilling swap {0} to {1} request"
+
+#: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
+msgid "Fulfilling {0} {tokensText} request"
+msgstr "Fulfilling {0} {tokensText} request"
 
 #: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
 msgid "Fulfilling {longText} {0} request"
@@ -2695,6 +2705,7 @@ msgstr "Price on Arbitrum"
 msgid "Price on Avalanche"
 msgstr "Price on Avalanche"
 
+#: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
 msgid "Processing..."
 msgstr "Processing..."
@@ -3008,8 +3019,16 @@ msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr "Sender has withdrawn all tokens from GMX Vesting Vault"
 
 #: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
-msgid "Sending swap {0} request"
-msgstr "Sending swap {0} request"
+#~ msgid "Sending swap {0} request"
+#~ msgstr "Sending swap {0} request"
+
+#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
+msgid "Sending swap {0} to {1} request"
+msgstr "Sending swap {0} to {1} request"
+
+#: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
+msgid "Sending {0} {tokensText} request"
+msgstr "Sending {0} {tokensText} request"
 
 #: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
 msgid "Sending {longText} {0} request"
@@ -3793,6 +3812,8 @@ msgstr "UTILIZATION"
 msgid "Uniswap"
 msgstr "Uniswap"
 
+#: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
+#: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
 msgid "Unknown order"
@@ -4062,6 +4083,10 @@ msgstr "Withdraw submitted."
 #: src/components/Exchange/TradeHistory.js
 msgid "Withdraw {0} USD from {1} {longOrShortText}"
 msgstr "Withdraw {0} USD from {1} {longOrShortText}"
+
+#: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
+msgid "Withdrawal"
+msgstr "Withdrawal"
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Withdrawal failed."
@@ -4475,6 +4500,18 @@ msgstr "{orderLabel} order failed"
 #: src/domain/synthetics/orders/createOrderTxn.ts
 msgid "{orderLabel} order sent"
 msgstr "{orderLabel} order sent"
+
+#: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
+msgid "{orderTypeText} cancelled"
+msgstr "{orderTypeText} cancelled"
+
+#: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
+msgid "{orderTypeText} status"
+msgstr "{orderTypeText} status"
+
+#: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
+msgid "{orderTypeText} {tokensText} request sent"
+msgstr "{orderTypeText} {tokensText} request sent"
 
 #: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
 msgid "{positionTypeText} {0}"
