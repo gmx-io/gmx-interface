@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getMarket, useMarketsData } from "domain/synthetics/markets";
@@ -18,6 +18,7 @@ import { expandDecimals } from "lib/numbers";
 
 type Props = {
   position: PositionInfo;
+  onClosePositionClick: () => void;
 };
 
 export function SyntheticsPosition(p: Props) {
@@ -100,6 +101,11 @@ export function SyntheticsPosition(p: Props) {
       <td>{formatUsdAmount(indexToken?.prices?.minPrice)}</td>
       <td>{formatUsdAmount(entryPrice)}</td>
       <td>{formatUsdAmount(liqPrice)}</td>
+      <td>
+        <button className="Exchange-list-action" onClick={p.onClosePositionClick}>
+          <Trans>Close</Trans>
+        </button>
+      </td>
     </tr>
   );
 }

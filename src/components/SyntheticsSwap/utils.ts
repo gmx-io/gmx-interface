@@ -39,7 +39,8 @@ export enum Operation {
 export enum Mode {
   Market = "Market",
   Limit = "Limit",
-  Trigger = "Trigger",
+  StopLoss = "StopLoss",
+  TakeProfit = "TakeProfit",
 }
 
 export const operationTexts = {
@@ -57,12 +58,13 @@ export const operationIcons = {
 export const modeTexts = {
   [Mode.Market]: t`Market`,
   [Mode.Limit]: t`Limit`,
-  [Mode.Trigger]: t`Trigger`,
+  [Mode.StopLoss]: t`StopLoss`,
+  [Mode.TakeProfit]: t`TakeProfit`,
 };
 
 export const avaialbleModes = {
-  [Operation.Long]: [Mode.Market, Mode.Limit],
-  [Operation.Short]: [Mode.Market, Mode.Limit],
+  [Operation.Long]: [Mode.Market, Mode.Limit, Mode.StopLoss, Mode.TakeProfit],
+  [Operation.Short]: [Mode.Market, Mode.Limit, Mode.StopLoss, Mode.TakeProfit],
   [Operation.Swap]: [Mode.Market, Mode.Limit],
 };
 
