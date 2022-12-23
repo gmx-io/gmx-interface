@@ -25,6 +25,7 @@ export function SyntheticsOrder(p: Props) {
   const market = getMarket(marketsData, order.market);
 
   const isSwapOrder = [OrderType.MarketSwap, OrderType.LimitSwap].includes(order.type);
+
   const isPositionOrder = [
     OrderType.MarketIncrease,
     OrderType.LimitIncrease,
@@ -36,16 +37,18 @@ export function SyntheticsOrder(p: Props) {
   const swapPathText = order.swapPath.map((market) => getMarketName(marketsData, tokensData, market)).join(" > ");
 
   function getOrderName() {
-    if (!market) return "";
-
     if (isPositionOrder) {
+      if (!market) return "";
+
       const indexToken = getTokenData(tokensData, market.indexTokenAddress);
+
+      const triggerPrice = formatUsdAmount(order.triggerPrice);
 
       const longText = order.isLong ? t`Long` : t`Short`;
 
       const sizeText = formatUsdAmount(order.sizeDeltaUsd);
 
-      return `${longText} ${indexToken?.symbol || ""} ${sizeText}`;
+      return `${longText} ${indexToken?.symbol || ""} ${sizeText} ${t`at`} ${triggerPrice}`;
     }
 
     if (isSwapOrder) {
@@ -62,7 +65,7 @@ export function SyntheticsOrder(p: Props) {
     <tr className="Exhange-list-item">
       <td>{order.typeLabel}</td>
       <td>
-        {orderName} {swapPathText && `${t`via`} ${swapPathText}`}
+        {orderName} {swapPathText}
       </td>
     </tr>
   );

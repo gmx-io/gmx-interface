@@ -4254,6 +4254,10 @@ msgstr "Your wallet: {0}"
 msgid "account"
 msgstr "account"
 
+#: src/components/SyntheticsOrder/SyntheticsOrder.tsx
+msgid "at"
+msgstr "at"
+
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "collateral"
 msgstr "collateral"
@@ -4291,8 +4295,8 @@ msgid "time to liq"
 msgstr "time to liq"
 
 #: src/components/SyntheticsOrder/SyntheticsOrder.tsx
-msgid "via"
-msgstr "via"
+#~ msgid "via"
+#~ msgstr "via"
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "view"

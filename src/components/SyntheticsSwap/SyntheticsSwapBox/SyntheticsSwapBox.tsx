@@ -81,6 +81,7 @@ export function SyntheticsSwapBox(p: Props) {
   const isSwap = operationTab === Operation.Swap;
   const isPosition = !isSwap;
   const isLimit = modeTab === Mode.Limit;
+  const isMarket = modeTab === Mode.Market;
 
   const isTriggerPriceAllowed = !isSwap && isLimit;
   const isSwapTriggerRatioAllowed = isSwap && isLimit;
@@ -192,6 +193,8 @@ export function SyntheticsSwapBox(p: Props) {
       swapPath: swapRoute?.swapPath,
       isHighPriceImpact: fees.isHighPriceImpact,
       isHighPriceImpactAccepted: fees.isHighPriceImpactAccepted,
+      triggerPrice,
+      swapTriggerRatio: swapRatio?.ratio,
     });
 
     if (error) {
@@ -570,7 +573,9 @@ export function SyntheticsSwapBox(p: Props) {
           operationType={operationTab!}
           onSubmitted={() => {
             setIsConfirming(false);
-            setIsProcessing(true);
+            if (isMarket) {
+              setIsProcessing(true);
+            }
           }}
           onClose={() => setIsConfirming(false)}
         />

@@ -10,10 +10,10 @@ export function useOpenInterestData(chainId: number): OpenInterestData {
     return Object.keys(marketsData).reduce((req, address) => {
       const market = getMarket(marketsData, address);
 
-      req[`${address}-longToken-long`] = openInterestKey(address, market!.shortTokenAddress, true);
+      req[`${address}-longToken-long`] = openInterestKey(address, market!.longTokenAddress, true);
       req[`${address}-shortToken-short`] = openInterestKey(address, market!.shortTokenAddress, false);
 
-      req[`${address}-longToken-short`] = openInterestKey(address, market!.shortTokenAddress, false);
+      req[`${address}-longToken-short`] = openInterestKey(address, market!.longTokenAddress, false);
       req[`${address}-shortToken-long`] = openInterestKey(address, market!.shortTokenAddress, true);
 
       return req;

@@ -29,8 +29,8 @@ export function usePriceImpactConfigs(chainId: number): PriceImpactConfigsData {
 
       acc[address] = {
         // TODO: remove it after contracts will send correct values
-        factorPositive: factorPositive?.gte(expandDecimals(1, 20)) ? factorPositive : expandDecimals(1, 22),
-        factorNegative: factorNegative?.gte(expandDecimals(1, 20)) ? factorNegative : expandDecimals(1, 22),
+        factorPositive: factorPositive?.gte(expandDecimals(1, 20)) ? factorPositive : expandDecimals(1, 26),
+        factorNegative: factorNegative?.gte(expandDecimals(1, 20)) ? factorNegative : expandDecimals(1, 26),
         exponentFactor: exponentFactor?.gte(expandDecimals(1, 30)) ? exponentFactor : expandDecimals(2, 30),
       };
 

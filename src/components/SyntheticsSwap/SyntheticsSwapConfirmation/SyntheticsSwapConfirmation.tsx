@@ -114,6 +114,8 @@ export function SyntheticsSwapConfirmation(p: Props) {
       fromTokenAmount: p.fromTokenAmount,
       toTokenAddress: p.toTokenAddress,
       swapPath: p.swapRoute?.swapPath,
+      triggerPrice: p.triggerPrice,
+      swapTriggerRatio: p.swapTriggerRatio,
     });
 
     if (error) {
@@ -164,6 +166,10 @@ export function SyntheticsSwapConfirmation(p: Props) {
     )
       return;
 
+    function applySlippage(price: BigNumber) {
+      return isLong ? price.add(price.div(10)) : price.div(10);
+    }
+
     if ([Operation.Long, Operation.Short].includes(p.operationType)) {
       if ([Mode.Market, Mode.Limit].includes(p.mode)) {
         const { market, swapPath } = p.swapRoute;
@@ -176,8 +182,8 @@ export function SyntheticsSwapConfirmation(p: Props) {
         // const priceBasisPoints = isLong
         //   ? BASIS_POINTS_DIVISOR - DEFAULT_SLIPPAGE_AMOUNT * 5
         //   : BASIS_POINTS_DIVISOR + DEFAULT_SLIPPAGE_AMOUNT * 5;
-
-        const acceptablePrice = isLong ? p.acceptablePrice.add(p.acceptablePrice.div(2)) : p.acceptablePrice.div(2);
+        const triggerPrice = p.triggerPrice ? p.triggerPrice : undefined;
+        const acceptablePrice = applySlippage(triggerPrice || p.acceptablePrice);
 
         // eslint-disable-next-line no-console
         console.log("order params", {
@@ -190,7 +196,7 @@ export function SyntheticsSwapConfirmation(p: Props) {
           swapPath: swapPath.map((market) => getMarketName(marketsData, tokensData, market)),
           indexTokenAddress: getTokenData(tokensData, p.toTokenAddress)?.symbol,
           sizeDeltaUsd: formatUsdAmount(p.sizeDeltaUsd),
-          triggerPrice: formatUsdAmount(p.triggerPrice),
+          triggerPrice: formatUsdAmount(triggerPrice),
           acceptablePrice: formatUsdAmount(acceptablePrice),
           executionFee: p.fees.executionFee?.feeTokenAmount,
           isLong,
@@ -205,7 +211,7 @@ export function SyntheticsSwapConfirmation(p: Props) {
           swapPath: swapPath,
           indexTokenAddress: p.toTokenAddress,
           sizeDeltaUsd: p.sizeDeltaUsd,
-          triggerPrice: p.triggerPrice,
+          triggerPrice,
           acceptablePrice,
           executionFee: p.fees.executionFee.feeTokenAmount,
           isLong,
@@ -220,8 +226,6 @@ export function SyntheticsSwapConfirmation(p: Props) {
 
       const { swapPath } = p.swapRoute;
 
-      // const minOutputAmount = p.toTokenAmount.sub(p.toTokenAmount.div(100));
-
       createOrderTxn(chainId, library, {
         account,
         initialCollateralAddress: p.fromTokenAddress,
@@ -230,7 +234,7 @@ export function SyntheticsSwapConfirmation(p: Props) {
         receiveTokenAddress: p.toTokenAddress,
         executionFee: p.fees.executionFee.feeTokenAmount,
         orderType,
-        minOutputAmount: BigNumber.from(0),
+        minOutputAmount: p.toTokenAmount?.sub(p.toTokenAmount.div(90)) || BigNumber.from(0),
         referralCode: referralCodeData?.userReferralCodeString,
       }).then(p.onSubmitted);
     }

@@ -128,3 +128,7 @@ export function parseOraclePrice(price: string, tokenDecimals: number, oracleDec
 export function convertToContractPrice(price: BigNumber, tokenDecimals: number) {
   return price.div(expandDecimals(1, tokenDecimals));
 }
+
+export function parseContractPrice(price: BigNumber, tokenDecimals: number) {
+  return price.mul(expandDecimals(1, tokenDecimals));
+}

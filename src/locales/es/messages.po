@@ -4251,6 +4251,10 @@ msgstr ""
 msgid "account"
 msgstr ""
 
+#: src/components/SyntheticsOrder/SyntheticsOrder.tsx
+msgid "at"
+msgstr ""
+
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "collateral"
 msgstr ""
@@ -4288,8 +4292,8 @@ msgid "time to liq"
 msgstr ""
 
 #: src/components/SyntheticsOrder/SyntheticsOrder.tsx
-msgid "via"
-msgstr ""
+#~ msgid "via"
+#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "view"

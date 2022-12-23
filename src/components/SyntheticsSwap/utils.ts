@@ -77,6 +77,8 @@ export function getSubmitError(p: {
   fromTokenAmount?: BigNumber;
   toTokenAddress?: string;
   swapPath?: string[];
+  triggerPrice?: BigNumber;
+  swapTriggerRatio?: BigNumber;
   isHighPriceImpact?: boolean;
   isHighPriceImpactAccepted?: boolean;
 }) {
@@ -106,6 +108,18 @@ export function getSubmitError(p: {
 
   if (p.isHighPriceImpact && !p.isHighPriceImpactAccepted) {
     return t`Need to accept price impact`;
+  }
+
+  if (p.mode === Mode.Limit) {
+    if (p.operationType === Operation.Swap) {
+      if (!p.swapTriggerRatio?.gt(0)) {
+        return t`Enter a swap trigger ratio`;
+      }
+    } else {
+      if (!p.triggerPrice?.gt(0)) {
+        return t`Enter a trigger price`;
+      }
+    }
   }
 }
 

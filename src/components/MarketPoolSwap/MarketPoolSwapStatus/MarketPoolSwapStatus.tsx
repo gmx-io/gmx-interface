@@ -97,7 +97,9 @@ export function MarketPoolSwapStatus(p: Props) {
 
         <div className="App-card-divider" />
 
-        <SubmitButton disabled={isProcessing}>{isProcessing ? t`Processing...` : t`Close`}</SubmitButton>
+        <SubmitButton onClick={p.onClose} disabled={isProcessing}>
+          {isProcessing ? t`Processing...` : t`Close`}
+        </SubmitButton>
       </Modal>
     </div>
   );

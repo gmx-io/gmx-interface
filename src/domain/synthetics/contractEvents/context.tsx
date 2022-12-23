@@ -1,13 +1,13 @@
 import { useWeb3React } from "@web3-react/core";
+import EventEmitter from "abis/EventEmitter.json";
 import { getContract } from "config/contracts";
 import { ethers } from "ethers";
 import { useChainId } from "lib/chains";
-import EventEmitter from "abis/EventEmitter.json";
-import { getWsProvider } from "lib/rpc";
-import { ReactNode, createContext, useEffect, useState, useMemo, useContext } from "react";
 import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
-import { OrderEvents } from "./types";
+import { getWsProvider } from "lib/rpc";
+import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react";
 import { ContractOrder } from "../orders";
+import { OrderEvents } from "./types";
 
 export type ContractEventsContextType = {
   getPendingOrders: () => OrderEvents[];
