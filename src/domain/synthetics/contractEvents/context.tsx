@@ -58,6 +58,8 @@ export function ContractEventsProvider({ children }: { children: ReactNode }) {
       }
 
       function onOrderCancelled(key, txnParams) {
+        console.log("onOrderCancelled", key, txnParams);
+
         setOrderEvents((orderEvents) => {
           if (!orderEvents[key]) return orderEvents;
 

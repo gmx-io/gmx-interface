@@ -671,6 +671,9 @@ msgstr "Click on a row to select the position's market, then use the swap box to
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
+#: src/components/SyntheticsPosition/SyntheticsPosition.tsx
+#: src/components/SyntheticsPositionSeller/SyntheticsPositionSeller.tsx
+#: src/components/SyntheticsPositionSeller/SyntheticsPositionSeller.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
 msgid "Close"
 msgstr "Close"
@@ -690,6 +693,10 @@ msgstr "Close to execution price"
 #: src/components/Exchange/PositionSeller.js
 msgid "Close without profit"
 msgstr "Close without profit"
+
+#: src/components/SyntheticsPositionSeller/SyntheticsPositionSeller.tsx
+msgid "Close {0} {1}"
+msgstr "Close {0} {1}"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close {longOrShortText} {0}"
@@ -1953,6 +1960,7 @@ msgstr "Loading..."
 #: src/components/Exchange/TradeHistory.js
 #: src/components/SyntheticsOrder/SyntheticsOrder.tsx
 #: src/components/SyntheticsPosition/SyntheticsPosition.tsx
+#: src/components/SyntheticsPositionSeller/SyntheticsPositionSeller.tsx
 #: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
@@ -2073,6 +2081,10 @@ msgstr "Market Increase"
 #: src/config/synthetics.ts
 msgid "Market Swap"
 msgstr "Market Swap"
+
+#: src/components/SyntheticsPositionSeller/SyntheticsPositionSeller.tsx
+msgid "Max"
+msgstr "Max"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Max Capacity"
@@ -2794,6 +2806,7 @@ msgstr "Rebates earned by this account as an affiliate."
 #: src/components/Glp/GlpSwap.js
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+#: src/components/SyntheticsPositionSeller/SyntheticsPositionSeller.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
 msgid "Receive"
 msgstr "Receive"
@@ -3084,6 +3097,7 @@ msgstr "Share Position"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/SyntheticsOrder/SyntheticsOrder.tsx
 #: src/components/SyntheticsPosition/SyntheticsPosition.tsx
+#: src/components/SyntheticsPositionSeller/SyntheticsPositionSeller.tsx
 #: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
@@ -3243,6 +3257,10 @@ msgstr "Stats"
 msgid "Stop Loss Decrease"
 msgstr "Stop Loss Decrease"
 
+#: src/components/SyntheticsSwap/utils.ts
+msgid "StopLoss"
+msgstr "StopLoss"
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Structured Products"
 msgstr "Structured Products"
@@ -3395,6 +3413,10 @@ msgstr "TOKEN"
 #: src/components/Exchange/SwapBox.js
 msgid "Take-profit and stop-loss orders can be set after opening a position. <0/><1/>There will be a \"Close\" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>."
 msgstr "Take-profit and stop-loss orders can be set after opening a position. <0/><1/>There will be a \"Close\" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>."
+
+#: src/components/SyntheticsSwap/utils.ts
+msgid "TakeProfit"
+msgstr "TakeProfit"
 
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -3770,7 +3792,6 @@ msgstr "Transferring"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/SyntheticsSwap/utils.ts
 msgid "Trigger"
 msgstr "Trigger"
 
