@@ -1274,6 +1274,14 @@ msgstr "コードを入力"
 msgid "Enter a price"
 msgstr "価格を入力"
 
+#: src/components/SyntheticsSwap/utils.ts
+msgid "Enter a swap trigger ratio"
+msgstr ""
+
+#: src/components/SyntheticsSwap/utils.ts
+msgid "Enter a trigger price"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
