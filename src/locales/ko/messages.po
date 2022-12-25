@@ -672,6 +672,8 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 #: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
 #: src/components/SyntheticsPosition/SyntheticsPosition.tsx
+#: src/components/SyntheticsPositionEditor/SyntheticsPositionEditor.tsx
+#: src/components/SyntheticsPositionEditor/SyntheticsPositionEditor.tsx
 #: src/components/SyntheticsPositionSeller/SyntheticsPositionSeller.tsx
 #: src/components/SyntheticsPositionSeller/SyntheticsPositionSeller.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
@@ -694,6 +696,7 @@ msgstr ""
 msgid "Close without profit"
 msgstr "수익없이 포지션 종료"
 
+#: src/components/SyntheticsPositionEditor/SyntheticsPositionEditor.tsx
 #: src/components/SyntheticsPositionSeller/SyntheticsPositionSeller.tsx
 msgid "Close {0} {1}"
 msgstr ""
@@ -739,6 +742,7 @@ msgid "Collateral"
 msgstr "담보"
 
 #: src/components/Exchange/PositionSeller.js
+#: src/components/SyntheticsPositionSeller/SyntheticsPositionSeller.tsx
 msgid "Collateral ({0})"
 msgstr ""
 
@@ -1957,6 +1961,7 @@ msgstr "로딩중..."
 #: src/components/Exchange/TradeHistory.js
 #: src/components/SyntheticsOrder/SyntheticsOrder.tsx
 #: src/components/SyntheticsPosition/SyntheticsPosition.tsx
+#: src/components/SyntheticsPositionEditor/SyntheticsPositionEditor.tsx
 #: src/components/SyntheticsPositionSeller/SyntheticsPositionSeller.tsx
 #: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
@@ -2079,6 +2084,7 @@ msgstr ""
 msgid "Market Swap"
 msgstr ""
 
+#: src/components/SyntheticsPositionEditor/SyntheticsPositionEditor.tsx
 #: src/components/SyntheticsPositionSeller/SyntheticsPositionSeller.tsx
 msgid "Max"
 msgstr ""
@@ -2803,6 +2809,7 @@ msgstr "어필리에이트로서 이 계정이 획득한 리베이트."
 #: src/components/Glp/GlpSwap.js
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+#: src/components/SyntheticsPositionEditor/SyntheticsPositionEditor.tsx
 #: src/components/SyntheticsPositionSeller/SyntheticsPositionSeller.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
 msgid "Receive"
@@ -3094,6 +3101,7 @@ msgstr "포지션 공유"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/SyntheticsOrder/SyntheticsOrder.tsx
 #: src/components/SyntheticsPosition/SyntheticsPosition.tsx
+#: src/components/SyntheticsPositionEditor/SyntheticsPositionEditor.tsx
 #: src/components/SyntheticsPositionSeller/SyntheticsPositionSeller.tsx
 #: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
@@ -3147,6 +3155,7 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/SyntheticsPositionSeller/SyntheticsPositionSeller.tsx
 #: src/components/SyntheticsPositionsList/SyntheticsPositionsList.tsx
 msgid "Size"
 msgstr "사이즈"
