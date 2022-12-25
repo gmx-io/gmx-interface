@@ -44,6 +44,7 @@ export function ContractEventsProvider({ children }: { children: ReactNode }) {
       // TODO: refs?
       function onOrderCreated(key, orderParams: ContractOrder, txnParams) {
         if (orderParams.addresses.account !== account) return;
+        console.log("onOrderCreated", key, orderParams, txnParams);
 
         setOrderEvents((orderEvents) => {
           return {

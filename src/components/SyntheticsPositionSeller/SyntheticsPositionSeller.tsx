@@ -11,8 +11,8 @@ import {
 } from "domain/synthetics/tokens";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { useState } from "react";
-import { parseValue } from "lib/numbers";
-import { USD_DECIMALS } from "lib/legacy";
+import { formatAmount, parseValue } from "lib/numbers";
+import { DUST_USD, USD_DECIMALS } from "lib/legacy";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 
 import { Trans, t } from "@lingui/macro";
@@ -20,6 +20,10 @@ import { createOrderTxn } from "domain/synthetics/orders";
 import { OrderType } from "config/synthetics";
 import { useWeb3React } from "@web3-react/core";
 import { getExecutionFee } from "domain/synthetics/fees";
+
+import { InfoRow } from "components/InfoRow/InfoRow";
+import { BsArrowRight } from "react-icons/bs";
+import { BigNumber } from "ethers";
 
 import "./SyntheticsPositionSeller.scss";
 
@@ -36,20 +40,92 @@ export function SyntheticsPositionSeller(p: Props) {
   const marketsData = useMarketsData(chainId);
   const tokensData = useAvailableTradeTokensData(chainId);
 
-  const [closeSizeInput, setCloseSizeInput] = useState("");
-
-  const closeSize = parseValue(closeSizeInput || "0", USD_DECIMALS);
-
   const position = getPosition(positionsData, p.positionKey);
-
   const market = getMarket(marketsData, position?.marketAddress);
-
   const indexToken = getTokenData(tokensData, market?.indexTokenAddress);
-  const minPrice = indexToken?.prices?.maxPrice;
+  const collateralToken = getTokenData(tokensData, position?.collateralTokenAddress);
 
   const currentSize = getUsdFromTokenAmount(tokensData, indexToken?.address, position?.sizeInTokens);
-
   const maxCloseSize = currentSize;
+
+  const [sizeInput, setSizeInput] = useState("");
+  const sizeInputUsd = parseValue(sizeInput || "0", USD_DECIMALS)!;
+  const isClosing = currentSize?.sub(sizeInputUsd).lt(DUST_USD);
+  const sizeDelta = isClosing ? currentSize : sizeInputUsd;
+
+  const keepLeverage = true;
+  const nextHasProfit = true;
+  let adjustedDelta = BigNumber.from(0);
+  const positionFee = BigNumber.from(0);
+  const fundingFee = BigNumber.from(0);
+
+  const positionDelta = BigNumber.from(0);
+  const positionHasProfit = true;
+  const collateralUsd = getUsdFromTokenAmount(tokensData, collateralToken?.address, position?.collateralAmount);
+  let collateralDeltaUsd = BigNumber.from(0);
+
+  if (keepLeverage && sizeDelta && !isClosing && collateralUsd && currentSize) {
+    collateralDeltaUsd = sizeDelta.mul(collateralUsd).div(currentSize);
+
+    if (!nextHasProfit) {
+      const deductions = adjustedDelta.add(positionFee).add(fundingFee);
+      if (collateralDeltaUsd.gt(deductions)) {
+        collateralDeltaUsd = collateralDeltaUsd = collateralDeltaUsd.sub(deductions);
+      } else {
+        collateralDeltaUsd = BigNumber.from(0);
+      }
+    }
+  }
+
+  let nextCollateralUsd = BigNumber.from(0);
+
+  if (!isClosing) {
+    if (collateralUsd) {
+      nextCollateralUsd = collateralUsd;
+      if (collateralDeltaUsd?.gt(0)) {
+        nextCollateralUsd = collateralUsd.sub(collateralDeltaUsd);
+      } else if (positionDelta && positionDelta.gt(0) && sizeDelta) {
+        if (!positionHasProfit) {
+          nextCollateralUsd = nextCollateralUsd.sub(nextCollateralUsd);
+        }
+      }
+    }
+  }
+
+  //   const [deltaStr, deltaPercentageStr] = useMemo(() => {
+  //     if (!position || !position.markPrice || position.collateral.eq(0)) {
+  //       return ["-", "-"];
+  //     }
+  //     if (orderOption !== STOP) {
+  //       const { pendingDelta, pendingDeltaPercentage, hasProfit } = calculatePositionDelta(
+  //         position.markPrice,
+  //         position,
+  //         fromAmount
+  //       );
+  //       const { deltaStr, deltaPercentageStr } = getDeltaStr({
+  //         delta: pendingDelta,
+  //         deltaPercentage: pendingDeltaPercentage,
+  //         hasProfit,
+  //       });
+  //       return [deltaStr, deltaPercentageStr];
+  //     }
+  //     if (!triggerPriceUsd || triggerPriceUsd.eq(0)) {
+  //       return ["-", "-"];
+  //     }
+
+  //     const { pendingDelta, pendingDeltaPercentage, hasProfit } = calculatePositionDelta(
+  //       triggerPriceUsd,
+  //       position,
+  //       fromAmount
+  //     );
+
+  //     const { deltaStr, deltaPercentageStr } = getDeltaStr({
+  //       delta: pendingDelta,
+  //       deltaPercentage: pendingDeltaPercentage,
+  //       hasProfit,
+  //     });
+  //     return [deltaStr, deltaPercentageStr];
+  //   }, [position, triggerPriceUsd, orderOption, fromAmount]);
 
   const executionFee = getExecutionFee(tokensData);
 
@@ -74,16 +150,16 @@ export function SyntheticsPositionSeller(p: Props) {
   }
 
   function onSubmit() {
-    if (!minPrice || !account || !position || !closeSize?.gt(0) || !executionFee?.feeTokenAmount) return;
+    if (!indexToken?.prices || !account || !position || !sizeDelta?.gt(0) || !executionFee?.feeTokenAmount) return;
 
     function getAcceptablePrice() {
       if (position!.isLong) {
-        const price = indexToken?.prices?.maxPrice;
+        const price = indexToken!.prices!.maxPrice;
 
         return price?.div(2);
       }
 
-      const price = indexToken?.prices?.maxPrice;
+      const price = indexToken!.prices!.maxPrice;
 
       return price?.add(price.div(2));
     }
@@ -97,10 +173,10 @@ export function SyntheticsPositionSeller(p: Props) {
       marketAddress: position.marketAddress,
       indexTokenAddress: indexToken.address,
       swapPath: [],
-      initialCollateralAmount: getTokenAmountFromUsd(collateralDelta, )
+      initialCollateralAmount: getTokenAmountFromUsd(tokensData, collateralToken!.address, collateralDeltaUsd),
       initialCollateralAddress: position.collateralTokenAddress,
       acceptablePrice,
-      sizeDeltaUsd: closeSize,
+      sizeDeltaUsd: sizeDelta,
       orderType: OrderType.MarketDecrease,
       isLong: position.isLong,
       executionFee: executionFee.feeTokenAmount,
@@ -130,10 +206,10 @@ export function SyntheticsPositionSeller(p: Props) {
           topLeftLabel={t`Close`}
           topRightLabel={t`Max`}
           topRightValue={formatUsdAmount(maxCloseSize)}
-          inputValue={closeSizeInput}
-          onInputValueChange={(e) => setCloseSizeInput(e.target.value)}
-          showMaxButton={maxCloseSize?.gt(0) && !closeSize?.eq(maxCloseSize)}
-          onClickMax={() => setCloseSizeInput(formatUsdAmount(maxCloseSize))}
+          inputValue={sizeInput}
+          onInputValueChange={(e) => setSizeInput(e.target.value)}
+          showMaxButton={maxCloseSize?.gt(0) && !sizeDelta?.eq(maxCloseSize)}
+          onClickMax={() => setSizeInput(formatAmount(maxCloseSize, USD_DECIMALS, 2))}
         >
           USD
         </BuyInputSection>
@@ -200,6 +276,7 @@ export function SyntheticsPositionSeller(p: Props) {
               />
             </ExchangeInfoRow>
           </div> */}
+
           {/* 
           <div className="Exchange-info-row top-line">
             <div className="Exchange-info-label">
@@ -234,45 +311,43 @@ export function SyntheticsPositionSeller(p: Props) {
               </>
             }
           /> */}
-          {/* 
+
           <InfoRow
             label={t`Size`}
             value={
               <>
-                {position && position.size && fromAmount && (
+                {currentSize?.gt(0) && sizeDelta?.gt(0) && (
                   <div>
                     <div className="inline-block muted">
-                      ${formatAmount(position.size, USD_DECIMALS, 2, true)}
+                      {formatUsdAmount(currentSize)}
                       <BsArrowRight className="transition-arrow" />
                     </div>
-                    ${formatAmount(position.size.sub(fromAmount), USD_DECIMALS, 2, true)}
+                    {formatUsdAmount(currentSize.sub(sizeDelta))}
                   </div>
                 )}
-                {position && position.size && !fromAmount && (
-                  <div>${formatAmount(position.size, USD_DECIMALS, 2, true)}</div>
-                )}
+                {currentSize && !sizeDelta?.gt(0) && <div>{formatUsdAmount(currentSize)}</div>}
               </>
             }
-          /> */}
+          />
 
-          {/* <InfoRow
-            label={t`Collateral ({collateralToken.symbol})`}
+          <InfoRow
+            label={t`Collateral (${collateralToken?.symbol})`}
             value={
               <>
-                {nextCollateral && !nextCollateral.eq(position.collateral) ? (
+                {collateralUsd && nextCollateralUsd && !nextCollateralUsd.eq(collateralUsd) ? (
                   <div>
                     <div className="inline-block muted">
-                      ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
+                      {formatUsdAmount(collateralUsd)}
                       <BsArrowRight className="transition-arrow" />
                     </div>
-                    ${formatAmount(nextCollateral, USD_DECIMALS, 2, true)}
+                    {formatUsdAmount(nextCollateralUsd)}
                   </div>
                 ) : (
-                  `$${formatAmount(position.collateral, USD_DECIMALS, 4, true)}`
+                  formatUsdAmount(collateralUsd)
                 )}
               </>
             }
-          /> */}
+          />
 
           {/* {keepLeverage && (
             <InfoRow
