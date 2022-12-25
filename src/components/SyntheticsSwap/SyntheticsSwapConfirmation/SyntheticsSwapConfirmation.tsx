@@ -33,6 +33,7 @@ import { getMarketName, useMarketsData } from "domain/synthetics/markets";
 import { USD_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
 import { SyntheticsSwapFees } from "../SyntheticsSwapFees/SyntheticsSwapFees";
+
 import "./SyntheticsSwapConfirmation.scss";
 
 type Props = {
@@ -174,7 +175,7 @@ export function SyntheticsSwapConfirmation(p: Props) {
       if ([Mode.Market, Mode.Limit].includes(p.mode)) {
         const { market, swapPath } = p.swapRoute;
 
-        if (!market || !p.sizeDeltaUsd || !p.acceptablePrice) return;
+        if (!market || !p.sizeDeltaUsd || !p.acceptablePrice || !fromToken?.prices || !toToken?.prices) return;
 
         const orderType = p.mode === Mode.Limit ? OrderType.LimitIncrease : OrderType.MarketIncrease;
         const isLong = p.operationType === Operation.Long;
@@ -203,6 +204,8 @@ export function SyntheticsSwapConfirmation(p: Props) {
           orderType,
         });
 
+        console.log(fromToken, toToken);
+
         createOrderTxn(chainId, library, {
           account,
           marketAddress: market,
@@ -217,6 +220,11 @@ export function SyntheticsSwapConfirmation(p: Props) {
           isLong,
           orderType,
           referralCode: referralCodeData?.userReferralCodeString,
+          simulationPrimaryPrices: [fromToken, toToken].reduce((acc, tokenData) => {
+            acc[tokenData.address] = tokenData.prices;
+
+            return acc;
+          }, {}),
         }).then(p.onSubmitted);
       }
     }
@@ -226,17 +234,17 @@ export function SyntheticsSwapConfirmation(p: Props) {
 
       const { swapPath } = p.swapRoute;
 
-      createOrderTxn(chainId, library, {
-        account,
-        initialCollateralAddress: p.fromTokenAddress,
-        initialCollateralAmount: p.fromTokenAmount,
-        swapPath: swapPath,
-        receiveTokenAddress: p.toTokenAddress,
-        executionFee: p.fees.executionFee.feeTokenAmount,
-        orderType,
-        minOutputAmount: p.toTokenAmount?.sub(p.toTokenAmount.div(90)) || BigNumber.from(0),
-        referralCode: referralCodeData?.userReferralCodeString,
-      }).then(p.onSubmitted);
+      // createOrderTxn(chainId, library, {
+      //   account,
+      //   initialCollateralAddress: p.fromTokenAddress,
+      //   initialCollateralAmount: p.fromTokenAmount,
+      //   swapPath: swapPath,
+      //   receiveTokenAddress: p.toTokenAddress,
+      //   executionFee: p.fees.executionFee.feeTokenAmount,
+      //   orderType,
+      //   minOutputAmount: p.toTokenAmount?.sub(p.toTokenAmount.div(90)) || BigNumber.from(0),
+      //   referralCode: referralCodeData?.userReferralCodeString,
+      // }).then(p.onSubmitted);
     }
   }
 

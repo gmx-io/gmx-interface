@@ -2,6 +2,7 @@ import { hashString, hashData } from "lib/hash";
 
 export const SWAP_IMPACT_FACTOR = hashString("SWAP_IMPACT_FACTOR");
 export const SWAP_IMPACT_EXPONENT_FACTOR = hashString("SWAP_IMPACT_EXPONENT_FACTOR");
+export const NONCE = hashString("NONCE");
 
 const OPEN_INTEREST = hashString("OPEN_INTEREST");
 
