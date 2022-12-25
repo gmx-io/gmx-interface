@@ -4,6 +4,7 @@ import Modal from "components/Modal/Modal";
 import { getMarket, useMarketsData } from "domain/synthetics/markets";
 import {
   formatUsdAmount,
+  getTokenAmountFromUsd,
   getTokenData,
   getUsdFromTokenAmount,
   useAvailableTradeTokensData,
@@ -96,6 +97,7 @@ export function SyntheticsPositionSeller(p: Props) {
       marketAddress: position.marketAddress,
       indexTokenAddress: indexToken.address,
       swapPath: [],
+      initialCollateralAmount: getTokenAmountFromUsd(collateralDelta, )
       initialCollateralAddress: position.collateralTokenAddress,
       acceptablePrice,
       sizeDeltaUsd: closeSize,

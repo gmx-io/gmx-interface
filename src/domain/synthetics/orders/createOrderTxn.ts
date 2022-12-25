@@ -49,9 +49,17 @@ export function createOrderTxn(chainId: number, library: Web3Provider, p: Params
   const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, library.getSigner());
   const orderStoreAddress = getContract(chainId, "OrderStore");
 
+  const isIncreaseOrder = [
+    OrderType.MarketIncrease,
+    OrderType.LimitIncrease,
+    OrderType.MarketSwap,
+    OrderType.LimitSwap,
+  ].includes(p.orderType);
+
   const isNativePayment = p.initialCollateralAddress === NATIVE_TOKEN_ADDRESS;
 
-  const wntPayment = isNativePayment && p.initialCollateralAmount ? p.initialCollateralAmount : BigNumber.from(0);
+  const wntPayment =
+    isIncreaseOrder && isNativePayment && p.initialCollateralAmount ? p.initialCollateralAmount : BigNumber.from(0);
 
   const wntAmount = p.executionFee.add(wntPayment);
 
@@ -62,7 +70,7 @@ export function createOrderTxn(chainId: number, library: Web3Provider, p: Params
   const multicall = [
     { method: "sendWnt", params: [orderStoreAddress, wntAmount] },
 
-    !isNativePayment && p.initialCollateralAmount
+    isIncreaseOrder && !isNativePayment && p.initialCollateralAmount
       ? { method: "sendTokens", params: [p.initialCollateralAddress, orderStoreAddress, p.initialCollateralAmount] }
       : undefined,
 
