@@ -24,7 +24,7 @@ export function getMarketName(marketsData: MarketsData, tokensData: TokensData, 
 
   if (!indexToken || !longToken || !shortToken) return undefined;
 
-  return `GM: ${indexToken.symbol}/${market.perp} : [${longToken.symbol}/${shortToken.symbol}]`;
+  return `GM: ${indexToken.symbol}/${market.perp} [${longToken.symbol}-${shortToken.symbol}]`;
 }
 
 export function getMarketPoolData(poolsData: MarketsPoolsData, marketAddress?: string) {
