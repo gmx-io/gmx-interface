@@ -120,6 +120,7 @@ export function SyntheticsSwapBox(p: Props) {
     [chainId, LEVERAGE_OPTION_KEY],
     2
   );
+
   const [isLeverageEnabled, setIsLeverageEnabled] = useLocalStorageSerializeKey([chainId, LEVERAGE_ENABLED_KEY], true);
   const leverageMultiplier =
     isLeverageAllowed && isLeverageEnabled && leverageOption

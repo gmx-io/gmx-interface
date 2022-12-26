@@ -1,4 +1,5 @@
 import { Trans, t } from "@lingui/macro";
+import PositionDropdown from "components/Exchange/PositionDropdown";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getMarket, useMarketsData } from "domain/synthetics/markets";
@@ -19,6 +20,7 @@ import { expandDecimals } from "lib/numbers";
 type Props = {
   position: PositionInfo;
   onClosePositionClick: () => void;
+  onEditCollateralClick: () => void;
 };
 
 export function SyntheticsPosition(p: Props) {
@@ -105,6 +107,13 @@ export function SyntheticsPosition(p: Props) {
         <button className="Exchange-list-action" onClick={p.onClosePositionClick}>
           <Trans>Close</Trans>
         </button>
+      </td>
+      <td>
+        <PositionDropdown
+          handleEditCollateral={p.onEditCollateralClick}
+          handleShare={() => null}
+          handleMarketSelect={() => null}
+        />
       </td>
     </tr>
   );

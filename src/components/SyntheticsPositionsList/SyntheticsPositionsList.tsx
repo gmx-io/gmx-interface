@@ -7,7 +7,9 @@ import { useState } from "react";
 
 export function SyntheticsPositionsList() {
   const { chainId } = useChainId();
+
   const [closingPositionKey, setClosingPositionKey] = useState<string>();
+  const [editingPositionKey, setEditingPositionKey] = useState<string>();
 
   const positionsData = usePositionsData(chainId);
   const positions = getPositions(positionsData).reverse();
@@ -55,6 +57,7 @@ export function SyntheticsPositionsList() {
           </tr>
           {positions.map((position) => (
             <SyntheticsPosition
+              onEditCollateralClick={() => setEditingPositionKey(position.key)}
               onClosePositionClick={() => setClosingPositionKey(position.key)}
               key={position.key}
               position={position}

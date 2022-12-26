@@ -9,9 +9,6 @@ import {
   useAvailableTradeTokensData,
 } from "domain/synthetics/tokens";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import { useState } from "react";
-import { parseValue } from "lib/numbers";
-import { USD_DECIMALS } from "lib/legacy";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 
 import { Trans, t } from "@lingui/macro";
@@ -19,6 +16,7 @@ import { createOrderTxn } from "domain/synthetics/orders";
 import { OrderType } from "config/synthetics";
 import { useWeb3React } from "@web3-react/core";
 import { getExecutionFee } from "domain/synthetics/fees";
+import Tab from "components/Tab/Tab";
 
 import "./SyntheticsPositionSeller.scss";
 
@@ -27,7 +25,17 @@ type Props = {
   onClose: () => void;
 };
 
-export function SyntheticsPositionSeller(p: Props) {
+enum Operation {
+  Deposit = "Deposit",
+  Withdraw = "Withdraw",
+}
+
+const operationLabels = {
+  [Operation.Deposit]: t`Deposit`,
+  [Operation.Withdraw]: t`Withdraw`,
+};
+
+export function SyntheticsPositionEditor(p: Props) {
   const { chainId } = useChainId();
   const { library, account } = useWeb3React();
 
@@ -35,16 +43,9 @@ export function SyntheticsPositionSeller(p: Props) {
   const marketsData = useMarketsData(chainId);
   const tokensData = useAvailableTradeTokensData(chainId);
 
-  const [closeSizeInput, setCloseSizeInput] = useState("");
-
-  const closeSize = parseValue(closeSizeInput || "0", USD_DECIMALS);
-
   const position = getPosition(positionsData, p.positionKey);
-
   const market = getMarket(marketsData, position?.marketAddress);
-
   const indexToken = getTokenData(tokensData, market?.indexTokenAddress);
-  const minPrice = indexToken?.prices?.maxPrice;
 
   const currentSize = getUsdFromTokenAmount(tokensData, indexToken?.address, position?.sizeInTokens);
 
@@ -73,7 +74,7 @@ export function SyntheticsPositionSeller(p: Props) {
   }
 
   function onSubmit() {
-    if (!minPrice || !account || !position || !closeSize?.gt(0) || !executionFee?.feeTokenAmount) return;
+    if (!account || !position || !executionFee?.feeTokenAmount) return;
 
     function getAcceptablePrice() {
       if (position!.isLong) {
@@ -119,11 +120,13 @@ export function SyntheticsPositionSeller(p: Props) {
         setIsVisible={p.onClose}
         label={
           <Trans>
-            Close {position?.isLong ? t`Long` : t`Short`} {indexToken?.symbol}
+            Edit {position?.isLong ? t`Long` : t`Short`} {indexToken?.symbol}
           </Trans>
         }
         allowContentTouchMove
       >
+        <Tab options={Object.values(Operation)} optionLabels={operationLabels} />
+
         <BuyInputSection
           topLeftLabel={t`Close`}
           topRightLabel={t`Max`}
@@ -359,10 +362,6 @@ export function SyntheticsPositionSeller(p: Props) {
           </div> */}
 
           <div className="Exchange-info-row PositionSeller-receive-row top-line">
-            <div className="Exchange-info-label">
-              <Trans>Receive</Trans>
-            </div>
-
             {/* {!isSwapAllowed && receiveToken && (
               <div className="align-right PositionSelector-selected-receive-token">
                 {formatAmount(convertedReceiveAmount, receiveToken.decimals, 4, true)}
