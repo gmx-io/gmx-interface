@@ -58,8 +58,8 @@ export const operationIcons = {
 export const modeTexts = {
   [Mode.Market]: t`Market`,
   [Mode.Limit]: t`Limit`,
-  [Mode.StopLoss]: t`StopLoss`,
-  [Mode.TakeProfit]: t`TakeProfit`,
+  [Mode.StopLoss]: t`Stop Loss`,
+  [Mode.TakeProfit]: t`Take Profit`,
 };
 
 export const avaialbleModes = {

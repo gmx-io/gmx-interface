@@ -15,14 +15,17 @@ type CommonParams = {
   referralCode?: string;
 };
 
+// TODO separate by Order type
 type PositionParams = CommonParams & {
   marketAddress: string;
   swapPath: string[];
   initialCollateralAddress: string;
   initialCollateralAmount?: BigNumber;
   indexTokenAddress: string;
+  minOutputAmount?: BigNumber;
   triggerPrice?: BigNumber;
-  acceptablePrice: BigNumber;
+  acceptablePrice?: BigNumber;
+  receiveTokenAddress?: string;
   sizeDeltaUsd?: BigNumber;
   isLong: boolean;
   orderType:
@@ -57,10 +60,8 @@ export function createOrderTxn(chainId: number, library: Web3Provider, p: Params
   ].includes(p.orderType);
 
   const isNativePayment = p.initialCollateralAddress === NATIVE_TOKEN_ADDRESS;
-
   const wntPayment =
     isIncreaseOrder && isNativePayment && p.initialCollateralAmount ? p.initialCollateralAmount : BigNumber.from(0);
-
   const wntAmount = p.executionFee.add(wntPayment);
 
   const isSwapOrder = p.orderType === OrderType.MarketSwap || p.orderType === OrderType.LimitSwap;
@@ -146,10 +147,10 @@ function getPositionTxnParams(p: PositionParams, chainId: number) {
 
   return {
     market: p.marketAddress,
-    sizeDeltaUsd: p.sizeDeltaUsd,
+    sizeDeltaUsd: p.sizeDeltaUsd || BigNumber.from(0),
     triggerPrice,
-    acceptablePrice,
-    minOutputAmount: BigNumber.from(0),
+    acceptablePrice: acceptablePrice,
+    minOutputAmount: p.minOutputAmount || BigNumber.from(0),
     isLong: p.isLong,
     shouldUnwrapNativeToken: false,
   };

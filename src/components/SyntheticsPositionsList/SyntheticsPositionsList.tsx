@@ -1,5 +1,6 @@
 import { Trans } from "@lingui/macro";
 import { SyntheticsPosition } from "components/SyntheticsPosition/SyntheticsPosition";
+import { SyntheticsPositionEditor } from "components/SyntheticsPositionEditor/SyntheticsPositionEditor";
 import { SyntheticsPositionSeller } from "components/SyntheticsPositionSeller/SyntheticsPositionSeller";
 import { getPositions, usePositionsData } from "domain/synthetics/positions";
 import { useChainId } from "lib/chains";
@@ -68,6 +69,10 @@ export function SyntheticsPositionsList() {
 
       {closingPositionKey && (
         <SyntheticsPositionSeller positionKey={closingPositionKey} onClose={() => setClosingPositionKey(undefined)} />
+      )}
+
+      {editingPositionKey && (
+        <SyntheticsPositionEditor positionKey={editingPositionKey} onClose={() => setEditingPositionKey(undefined)} />
       )}
     </div>
   );
