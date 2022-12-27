@@ -20,7 +20,11 @@ import Pagination from "components/Pagination/Pagination";
 function TradersStats({ referralsData, traderTier, chainId, userReferralCodeString, setPendingTxns, pendingTxns }) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const editModalRef = useRef(null);
-  const { currentData: distributions, page, setPage, pageCount } = usePagination(referralsData?.discountDistributions);
+  const { getCurrentData, currentPage, setCurrentPage, pageCount } = usePagination(
+    referralsData?.discountDistributions
+  );
+
+  const currentDiscountDistributions = getCurrentData();
 
   const open = () => setIsEditModalOpen(true);
   const close = () => setIsEditModalOpen(false);
@@ -82,7 +86,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
           </div>
         </Modal>
       </div>
-      {distributions.length > 0 ? (
+      {currentDiscountDistributions.length > 0 ? (
         <div className="reward-history">
           <Card title={t`Rebates Distribution History`} tooltipText={t`Rebates are airdropped weekly.`}>
             <div className="table-wrapper">
@@ -101,7 +105,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                   </tr>
                 </thead>
                 <tbody>
-                  {distributions.map((rebate, index) => {
+                  {currentDiscountDistributions.map((rebate, index) => {
                     let tokenInfo;
                     try {
                       tokenInfo = getToken(chainId, rebate.token);
@@ -127,7 +131,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
               </table>
             </div>
           </Card>
-          <Pagination page={page} pageCount={pageCount} onPageChange={(page) => setPage(page)} />
+          <Pagination page={currentPage} pageCount={pageCount} onPageChange={(page) => setCurrentPage(page)} />
         </div>
       ) : (
         <EmptyMessage

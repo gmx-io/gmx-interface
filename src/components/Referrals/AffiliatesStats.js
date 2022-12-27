@@ -44,7 +44,14 @@ function AffiliatesStats({
   const close = () => setIsAddReferralCodeModalOpen(false);
 
   const { cumulativeStats, referrerTotalStats, rebateDistributions, referrerTierInfo } = referralsData;
-  const { page, currentData, setPage, pageCount } = usePagination(rebateDistributions);
+  const {
+    currentPage: currentRebatePage,
+    getCurrentData: getCurrentRebateData,
+    setCurrentPage: setCurrentRebatePage,
+    pageCount: rebatePageCount,
+  } = usePagination(rebateDistributions);
+
+  const currentRebateData = getCurrentRebateData();
   const allReferralCodes = referrerTotalStats.map((c) => c.referralCode.trim());
   const finalAffiliatesTotalStats = useMemo(
     () =>
@@ -58,12 +65,15 @@ function AffiliatesStats({
   );
 
   const {
-    page: affiliatesPage,
-    currentData: affiliatesData,
-    setPage: setAffiliatePage,
+    currentPage: currentAffiliatesPage,
+    getCurrentData: getCurrentAffiliatesData,
+    setCurrentPage: setCurrentAffiliatesPage,
     pageCount: affiliatesPageCount,
   } = usePagination(finalAffiliatesTotalStats);
+
+  const currentAffiliatesData = getCurrentAffiliatesData();
   const tierId = referrerTierInfo?.tierId;
+
   let referrerRebates = bigNumberify(0);
   if (cumulativeStats && cumulativeStats.totalRebateUsd && cumulativeStats.discountUsd) {
     referrerRebates = cumulativeStats.totalRebateUsd.sub(cumulativeStats.discountUsd);
@@ -141,7 +151,7 @@ function AffiliatesStats({
                 </tr>
               </thead>
               <tbody>
-                {affiliatesData.map((stat, index) => {
+                {currentAffiliatesData.map((stat, index) => {
                   const ownerOnOtherChain = stat?.ownerOnOtherChain;
                   let referrerRebate = bigNumberify(0);
                   if (stat && stat.totalRebateUsd && stat.discountUsd) {
@@ -221,12 +231,12 @@ function AffiliatesStats({
           </div>
         </Card>
         <Pagination
-          page={affiliatesPage}
+          page={currentAffiliatesPage}
           pageCount={affiliatesPageCount}
-          onPageChange={(page) => setAffiliatePage(page)}
+          onPageChange={(page) => setCurrentAffiliatesPage(page)}
         />
       </div>
-      {rebateDistributions?.length > 0 ? (
+      {currentRebateData.length > 0 ? (
         <div className="reward-history">
           <Card title={t`Rewards Distribution History`} tooltipText={t`Rewards are airdropped weekly.`}>
             <div className="table-wrapper">
@@ -245,7 +255,7 @@ function AffiliatesStats({
                   </tr>
                 </thead>
                 <tbody>
-                  {currentData.map((rebate, index) => {
+                  {currentRebateData.map((rebate, index) => {
                     let tokenInfo;
                     try {
                       tokenInfo = getToken(chainId, rebate.token);
@@ -273,7 +283,11 @@ function AffiliatesStats({
               </table>
             </div>
           </Card>
-          <Pagination page={page} pageCount={pageCount} onPageChange={(page) => setPage(page)} />
+          <Pagination
+            page={currentRebatePage}
+            pageCount={rebatePageCount}
+            onPageChange={(page) => setCurrentRebatePage(page)}
+          />
         </div>
       ) : (
         <EmptyMessage

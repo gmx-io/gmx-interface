@@ -12,7 +12,7 @@ function range(start, end) {
   return Array.from({ length }, (_, idx) => idx + start);
 }
 
-function getPageNumbers(current, max) {
+function getPageNumbers(current, max = 1) {
   if (max === 2) {
     return [1, 2];
   }

@@ -1,20 +1,46 @@
 import { useEffect, useState } from "react";
 
-export default function usePagination(data = [], postPerPage = 10) {
-  const [currentData, setCurrentData] = useState<any>([]);
-  const [page, setPage] = useState<number>(1);
-  const pageCount = Math.round(data.length / postPerPage);
+type UsePagination = {
+  currentPage: number;
+  pageCount: number;
+  getCurrentData: () => void;
+  setCurrentPage: (num: number) => void;
+};
+
+export const paginate = ({ total, current, size }) => {
+  const pages = Math.ceil(total / size);
+
+  if (current < 1) {
+    current = 1;
+  } else if (current > pages) {
+    current = pages;
+  }
+
+  const start = (current - 1) * size;
+  const end = Math.min(start + size - 1, total - 1);
+  return {
+    start,
+    end,
+  };
+};
+
+export default function usePagination(items = [], size = 10): UsePagination {
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(Math.ceil(items.length / size));
 
   useEffect(() => {
-    const startIndex = (page - 1) * postPerPage;
-    const endIndex = page * postPerPage;
-    setCurrentData(data.slice(startIndex, endIndex));
-  }, [page, data, postPerPage]);
+    setTotalPages(Math.ceil(items.length / size));
+  }, [items, size]);
+
+  function getCurrentData() {
+    const { start, end } = paginate({ total: items.length, current: currentPage, size });
+    return items.slice(start, end + 1);
+  }
 
   return {
-    currentData,
-    page,
-    setPage,
-    pageCount,
+    currentPage,
+    setCurrentPage,
+    pageCount: totalPages,
+    getCurrentData,
   };
 }
