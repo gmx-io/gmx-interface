@@ -162,7 +162,7 @@ export default function Ecosystem() {
       about: t`Simulate your hedge strategy`,
       creatorLabel: "@kyzoeth",
       creatorLink: "https://twitter.com/kyzoeth",
-      chainIds: [ARBITRUM, AVALANCHE],
+      chainIds: [ARBITRUM],
     },
     {
       title: "GMX Swaps",
