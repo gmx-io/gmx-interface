@@ -112,7 +112,7 @@ export default function TVChartContainer({
         "show_interval_dialog_on_key_press",
         "header_symbol_search",
       ],
-      enabled_features: ["side_toolbar_in_fullscreen_mode", "header_in_fullscreen_mode"],
+      enabled_features: ["side_toolbar_in_fullscreen_mode", "header_in_fullscreen_mode", "hide_resolution_in_legend"],
       charts_storage_url: defaultProps.chartsStorageUrl,
       charts_storage_api_version: defaultProps.chartsStorageApiVersion,
       client_id: defaultProps.clientId,

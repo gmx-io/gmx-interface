@@ -10,6 +10,7 @@ import { formatAmount, numberWithCommas } from "lib/numbers";
 import { getToken, getTokens } from "config/tokens";
 import TVChartContainer from "components/TVChartContainer/TVChartContainer";
 import { t } from "@lingui/macro";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 
 const PRICE_LINE_TEXT_WIDTH = 15;
 
@@ -59,12 +60,9 @@ export default function ExchangeTVChart(props) {
     orders,
     setToTokenAddress,
   } = props;
-  // const [currentChart, setCurrentChart] = useState();
   const [currentSeries] = useState();
-  // const [currentSeries, setCurrentSeries] = useState();
 
-  // let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
-  let period = "5m";
+  let [period] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
   if (!(period in CHART_PERIODS)) {
     period = DEFAULT_PERIOD;
   }

@@ -52,7 +52,7 @@ async function getLastHistoryBar(ticker, resolution, chainId) {
   return formatBar({ ..._prices[_prices.length - 1], ticker });
 }
 
-export async function getHistoryBars({ ticker, resolution, firstDataRequest, chainId, isStable, to, from }) {
+export async function getHistoryBars({ ticker, resolution, chainId, isStable, to, from }) {
   const period = supportedResolutions[resolution];
   const bars = isStable ? getStablePriceData(period) : await getTokenChartPrice(chainId, ticker, period, to, from);
   return bars.map(formatBar);

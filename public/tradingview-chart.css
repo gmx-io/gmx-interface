@@ -28,3 +28,8 @@ html.theme-dark .chart-page {
 html.theme-dark .chart-container {
   border: none;
 }
+
+html.theme-dark .chart-controls-bar {
+  display: none;
+  height: 0;
+}
