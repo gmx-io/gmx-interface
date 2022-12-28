@@ -156,7 +156,7 @@ export default function ExchangeTVChart(props) {
   const previousMarketName = usePrevious(marketName);
 
   const currentOrders = useMemo(() => {
-    if (swapOption === SWAP || !chartToken) {
+    if (!chartToken) {
       return [];
     }
 
@@ -170,7 +170,7 @@ export default function ExchangeTVChart(props) {
       const indexToken = getToken(chainId, order.indexToken);
       return order.indexToken === chartToken.address || (chartToken.isNative && indexToken.isWrapped);
     });
-  }, [orders, chartToken, swapOption, chainId]);
+  }, [orders, chartToken, chainId]);
 
   const currentPositions = useMemo(() => {
     if (!positions || !chartToken) {
