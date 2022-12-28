@@ -35,12 +35,13 @@ export default function TVChartContainer({
     if (!tvWidgetRef?.current) return;
     return tvWidgetRef.current
       .activeChart()
-      .createPositionLine({ id: Math.random() })
+      .createPositionLine()
       .setText(title)
       .setPrice(price)
       .setQuantity("")
       .setLineStyle(1)
       .setLineLength(0)
+      .setBodyFont(`normal 11px "Relative", sans-serif`)
       .setBodyTextColor("#fff")
       .setLineColor("#3a3e5e")
       .setBodyBackgroundColor("#3a3e5e")
@@ -90,7 +91,7 @@ export default function TVChartContainer({
     });
 
     const widgetOptions = {
-      debug: true,
+      debug: false,
       symbol: symbol,
       datafeed: datafeed,
       theme: defaultProps.theme,
@@ -111,6 +112,7 @@ export default function TVChartContainer({
         "show_interval_dialog_on_key_press",
         "header_symbol_search",
       ],
+      enabled_features: ["side_toolbar_in_fullscreen_mode", "header_in_fullscreen_mode"],
       charts_storage_url: defaultProps.chartsStorageUrl,
       charts_storage_api_version: defaultProps.chartsStorageApiVersion,
       client_id: defaultProps.clientId,
