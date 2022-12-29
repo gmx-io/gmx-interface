@@ -179,9 +179,6 @@ export function SyntheticsSwapConfirmation(p: Props) {
         const orderType = p.mode === Mode.Limit ? OrderType.LimitIncrease : OrderType.MarketIncrease;
         const isLong = p.operationType === Operation.Long;
 
-        // const priceBasisPoints = isLong
-        //   ? BASIS_POINTS_DIVISOR - DEFAULT_SLIPPAGE_AMOUNT * 5
-        //   : BASIS_POINTS_DIVISOR + DEFAULT_SLIPPAGE_AMOUNT * 5;
         const triggerPrice = p.triggerPrice ? p.triggerPrice : undefined;
         const acceptablePrice = applySlippage(triggerPrice || p.acceptablePrice);
 

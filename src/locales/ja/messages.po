@@ -671,6 +671,11 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
+#: src/components/SyntheticsPosition/SyntheticsPosition.tsx
+#: src/components/SyntheticsPositionEditor/SyntheticsPositionEditor.tsx
+#: src/components/SyntheticsPositionEditor/SyntheticsPositionEditor.tsx
+#: src/components/SyntheticsPositionSeller/SyntheticsPositionSeller.tsx
+#: src/components/SyntheticsPositionSeller/SyntheticsPositionSeller.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
 msgid "Close"
 msgstr "クローズ"
@@ -690,6 +695,11 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 msgid "Close without profit"
 msgstr "利益なしでクローズ"
+
+#: src/components/SyntheticsPositionEditor/SyntheticsPositionEditor.tsx
+#: src/components/SyntheticsPositionSeller/SyntheticsPositionSeller.tsx
+msgid "Close {0} {1}"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close {longOrShortText} {0}"
@@ -732,6 +742,7 @@ msgid "Collateral"
 msgstr "担保"
 
 #: src/components/Exchange/PositionSeller.js
+#: src/components/SyntheticsPositionSeller/SyntheticsPositionSeller.tsx
 msgid "Collateral ({0})"
 msgstr ""
 
@@ -1950,6 +1961,8 @@ msgstr "ロード中"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/SyntheticsOrder/SyntheticsOrder.tsx
 #: src/components/SyntheticsPosition/SyntheticsPosition.tsx
+#: src/components/SyntheticsPositionEditor/SyntheticsPositionEditor.tsx
+#: src/components/SyntheticsPositionSeller/SyntheticsPositionSeller.tsx
 #: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
@@ -2069,6 +2082,11 @@ msgstr ""
 
 #: src/config/synthetics.ts
 msgid "Market Swap"
+msgstr ""
+
+#: src/components/SyntheticsPositionEditor/SyntheticsPositionEditor.tsx
+#: src/components/SyntheticsPositionSeller/SyntheticsPositionSeller.tsx
+msgid "Max"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
@@ -2791,6 +2809,8 @@ msgstr "アフィリエイトとしてこのアカウントが獲得したリベ
 #: src/components/Glp/GlpSwap.js
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+#: src/components/SyntheticsPositionEditor/SyntheticsPositionEditor.tsx
+#: src/components/SyntheticsPositionSeller/SyntheticsPositionSeller.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
 msgid "Receive"
 msgstr "受け取る"
@@ -3081,6 +3101,8 @@ msgstr "ポジションをシェア"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/SyntheticsOrder/SyntheticsOrder.tsx
 #: src/components/SyntheticsPosition/SyntheticsPosition.tsx
+#: src/components/SyntheticsPositionEditor/SyntheticsPositionEditor.tsx
+#: src/components/SyntheticsPositionSeller/SyntheticsPositionSeller.tsx
 #: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapConfirmation/SyntheticsSwapConfirmation.tsx
@@ -3133,6 +3155,7 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/SyntheticsPositionSeller/SyntheticsPositionSeller.tsx
 #: src/components/SyntheticsPositionsList/SyntheticsPositionsList.tsx
 msgid "Size"
 msgstr "サイズ"
@@ -3238,6 +3261,10 @@ msgstr "統計"
 
 #: src/config/synthetics.ts
 msgid "Stop Loss Decrease"
+msgstr ""
+
+#: src/components/SyntheticsSwap/utils.ts
+msgid "StopLoss"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -3391,6 +3418,10 @@ msgstr "トークン"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Take-profit and stop-loss orders can be set after opening a position. <0/><1/>There will be a \"Close\" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>."
+msgstr ""
+
+#: src/components/SyntheticsSwap/utils.ts
+msgid "TakeProfit"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
@@ -3767,7 +3798,6 @@ msgstr "移転中"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/SyntheticsSwap/utils.ts
 msgid "Trigger"
 msgstr ""
 

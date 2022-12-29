@@ -15,17 +15,25 @@ type CommonParams = {
   referralCode?: string;
 };
 
+// TODO separate by Order type
 type PositionParams = CommonParams & {
   marketAddress: string;
   swapPath: string[];
   initialCollateralAddress: string;
-  initialCollateralAmount: BigNumber;
+  initialCollateralAmount?: BigNumber;
   indexTokenAddress: string;
+  minOutputAmount?: BigNumber;
   triggerPrice?: BigNumber;
-  acceptablePrice: BigNumber;
-  sizeDeltaUsd: BigNumber;
+  acceptablePrice?: BigNumber;
+  receiveTokenAddress?: string;
+  sizeDeltaUsd?: BigNumber;
   isLong: boolean;
-  orderType: OrderType.MarketIncrease | OrderType.LimitIncrease;
+  orderType:
+    | OrderType.MarketIncrease
+    | OrderType.LimitIncrease
+    | OrderType.MarketDecrease
+    | OrderType.LimitDecrease
+    | OrderType.StopLossDecrease;
 };
 
 type SwapParams = CommonParams & {
@@ -39,13 +47,22 @@ type SwapParams = CommonParams & {
 
 type Params = PositionParams | SwapParams;
 
+// TODO: unit tests
 export function createOrderTxn(chainId: number, library: Web3Provider, p: Params) {
   const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, library.getSigner());
   const orderStoreAddress = getContract(chainId, "OrderStore");
 
-  const isNativePayment = p.initialCollateralAddress === NATIVE_TOKEN_ADDRESS;
+  const isIncreaseOrder = [
+    OrderType.MarketIncrease,
+    OrderType.LimitIncrease,
+    OrderType.MarketSwap,
+    OrderType.LimitSwap,
+  ].includes(p.orderType);
 
-  const wntAmount = p.executionFee.add(isNativePayment ? p.initialCollateralAmount : BigNumber.from(0));
+  const isNativePayment = p.initialCollateralAddress === NATIVE_TOKEN_ADDRESS;
+  const wntPayment =
+    isIncreaseOrder && isNativePayment && p.initialCollateralAmount ? p.initialCollateralAmount : BigNumber.from(0);
+  const wntAmount = p.executionFee.add(wntPayment);
 
   const isSwapOrder = p.orderType === OrderType.MarketSwap || p.orderType === OrderType.LimitSwap;
 
@@ -54,7 +71,7 @@ export function createOrderTxn(chainId: number, library: Web3Provider, p: Params
   const multicall = [
     { method: "sendWnt", params: [orderStoreAddress, wntAmount] },
 
-    !isNativePayment
+    isIncreaseOrder && !isNativePayment && p.initialCollateralAmount
       ? { method: "sendTokens", params: [p.initialCollateralAddress, orderStoreAddress, p.initialCollateralAmount] }
       : undefined,
 
@@ -64,7 +81,9 @@ export function createOrderTxn(chainId: number, library: Web3Provider, p: Params
         {
           addresses: {
             receiver: p.account,
-            initialCollateralToken: getCorrectTokenAddress(chainId, p.initialCollateralAddress, "wrapped"),
+            initialCollateralToken: p.initialCollateralAddress
+              ? getCorrectTokenAddress(chainId, p.initialCollateralAddress, "wrapped")
+              : ethers.constants.AddressZero,
             callbackContract: ethers.constants.AddressZero,
             market: txnParams.market,
             swapPath: p.swapPath,
@@ -128,10 +147,10 @@ function getPositionTxnParams(p: PositionParams, chainId: number) {
 
   return {
     market: p.marketAddress,
-    sizeDeltaUsd: p.sizeDeltaUsd,
-    triggerPrice: triggerPrice,
-    acceptablePrice,
-    minOutputAmount: BigNumber.from(0),
+    sizeDeltaUsd: p.sizeDeltaUsd || BigNumber.from(0),
+    triggerPrice,
+    acceptablePrice: acceptablePrice,
+    minOutputAmount: p.minOutputAmount || BigNumber.from(0),
     isLong: p.isLong,
     shouldUnwrapNativeToken: false,
   };

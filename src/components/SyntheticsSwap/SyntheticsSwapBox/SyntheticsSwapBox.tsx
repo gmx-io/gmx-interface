@@ -77,16 +77,19 @@ export function SyntheticsSwapBox(p: Props) {
   const [modeTab, setModeTab] = useLocalStorageSerializeKey([chainId, SYNTHETICS_SWAP_MODE_KEY], Mode.Market);
 
   const isLong = operationTab === Operation.Long;
-  const isShort = operationTab === Operation.Short;
   const isSwap = operationTab === Operation.Swap;
   const isPosition = !isSwap;
   const isLimit = modeTab === Mode.Limit;
   const isMarket = modeTab === Mode.Market;
+  const isStop = modeTab === Mode.StopLoss || modeTab === Mode.TakeProfit;
 
-  const isTriggerPriceAllowed = !isSwap && isLimit;
+  // TODO: separate to components?
+  const isTokensAllowed = !isStop;
+  const isCloseSizeAllowed = isStop;
+  const isTriggerPriceAllowed = !isSwap && (isLimit || isStop);
   const isSwapTriggerRatioAllowed = isSwap && isLimit;
-  const isLeverageAllowed = isLong || isShort;
-  const isSelectCollateralAllowed = isPosition;
+  const isLeverageAllowed = isPosition && !isStop;
+  const isSelectCollateralAllowed = isPosition && !isStop;
 
   const [isConfirming, setIsConfirming] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -111,6 +114,9 @@ export function SyntheticsSwapBox(p: Props) {
     undefined
   );
 
+  const [sizeInput, setSizeInput] = useState("");
+  const sizeInputUsd = parseValue(sizeInput || "0", USD_DECIMALS)!;
+
   const { availableFromTokens, availableToTokens, availableCollaterals, infoTokens } = useAvailableSwapTokens({
     isSwap,
     indexTokenAddress: isPosition ? toTokenState.tokenAddress : undefined,
@@ -120,6 +126,7 @@ export function SyntheticsSwapBox(p: Props) {
     [chainId, LEVERAGE_OPTION_KEY],
     2
   );
+
   const [isLeverageEnabled, setIsLeverageEnabled] = useLocalStorageSerializeKey([chainId, LEVERAGE_ENABLED_KEY], true);
   const leverageMultiplier =
     isLeverageAllowed && isLeverageEnabled && leverageOption
@@ -355,74 +362,92 @@ export function SyntheticsSwapBox(p: Props) {
         />
 
         <div className={cx("SyntheticsSwapBox-form-layout")}>
-          <BuyInputSection
-            topLeftLabel={t`Pay:`}
-            topLeftValue={formatUsdAmount(fromTokenState.usdAmount)}
-            topRightLabel={t`Balance:`}
-            topRightValue={formatTokenAmount(fromTokenState.balance, fromTokenState.token?.decimals)}
-            inputValue={fromTokenState.inputValue}
-            onInputValueChange={(e) => {
-              setFocusedInput(FocusedInput.From);
-              fromTokenState.setInputValue(e.target.value);
-            }}
-            showMaxButton={fromTokenState.shouldShowMaxButton}
-            onClickMax={() => {
-              setFocusedInput(FocusedInput.From);
-              fromTokenState.setValueByTokenAmount(fromTokenState.balance);
-            }}
-          >
-            {fromTokenState.tokenAddress && (
-              <TokenSelector
-                label={t`Pay`}
-                chainId={chainId}
-                tokenAddress={fromTokenState.tokenAddress}
-                onSelectToken={(token) => fromTokenState.setTokenAddress(token.address)}
-                tokens={availableFromTokens}
-                infoTokens={infoTokens}
-                className="GlpSwap-from-token"
-                showSymbolImage={true}
-                showTokenImgInDropdown={true}
-              />
-            )}
-          </BuyInputSection>
+          {isTokensAllowed && (
+            <>
+              <BuyInputSection
+                topLeftLabel={t`Pay:`}
+                topLeftValue={formatUsdAmount(fromTokenState.usdAmount)}
+                topRightLabel={t`Balance:`}
+                topRightValue={formatTokenAmount(fromTokenState.balance, fromTokenState.token?.decimals)}
+                inputValue={fromTokenState.inputValue}
+                onInputValueChange={(e) => {
+                  setFocusedInput(FocusedInput.From);
+                  fromTokenState.setInputValue(e.target.value);
+                }}
+                showMaxButton={fromTokenState.shouldShowMaxButton}
+                onClickMax={() => {
+                  setFocusedInput(FocusedInput.From);
+                  fromTokenState.setValueByTokenAmount(fromTokenState.balance);
+                }}
+              >
+                {fromTokenState.tokenAddress && (
+                  <TokenSelector
+                    label={t`Pay`}
+                    chainId={chainId}
+                    tokenAddress={fromTokenState.tokenAddress}
+                    onSelectToken={(token) => fromTokenState.setTokenAddress(token.address)}
+                    tokens={availableFromTokens}
+                    infoTokens={infoTokens}
+                    className="GlpSwap-from-token"
+                    showSymbolImage={true}
+                    showTokenImgInDropdown={true}
+                  />
+                )}
+              </BuyInputSection>
 
-          <div className="AppOrder-ball-container" onClick={onSwitchTokens}>
-            <div className="AppOrder-ball">
-              <IoMdSwap className="Exchange-swap-ball-icon" />
-            </div>
-          </div>
+              <div className="AppOrder-ball-container" onClick={onSwitchTokens}>
+                <div className="AppOrder-ball">
+                  <IoMdSwap className="Exchange-swap-ball-icon" />
+                </div>
+              </div>
 
-          <BuyInputSection
-            topLeftLabel={operationTab === Operation.Swap ? t`Receive:` : `${operationTexts[operationTab!]}:`}
-            topLeftValue={formatUsdAmount(sizeDeltaUsd)}
-            topRightLabel={operationTab === Operation.Swap ? t`Balance:` : t`Leverage:`}
-            topRightValue={
-              operationTab === Operation.Swap
-                ? formatTokenAmount(toTokenState.balance, toTokenState.token?.decimals)
-                : `${leverageOption?.toFixed(2)}x`
-            }
-            inputValue={toTokenState.inputValue}
-            onInputValueChange={(e) => {
-              setFocusedInput(FocusedInput.To);
-              toTokenState.setInputValue(e.target.value);
-            }}
-            showMaxButton={false}
-          >
-            {toTokenState.tokenAddress && (
-              <TokenSelector
-                label={operationTab === Operation.Swap ? t`Receive:` : operationTexts[operationTab!]}
-                chainId={chainId}
-                tokenAddress={toTokenState.tokenAddress}
-                onSelectToken={(token) => toTokenState.setTokenAddress(token.address)}
-                tokens={availableToTokens}
-                infoTokens={infoTokens}
-                className="GlpSwap-from-token"
-                showSymbolImage={true}
-                showBalances={operationTab === Operation.Swap}
-                showTokenImgInDropdown={true}
-              />
-            )}
-          </BuyInputSection>
+              <BuyInputSection
+                topLeftLabel={operationTab === Operation.Swap ? t`Receive:` : `${operationTexts[operationTab!]}:`}
+                topLeftValue={formatUsdAmount(sizeDeltaUsd)}
+                topRightLabel={operationTab === Operation.Swap ? t`Balance:` : t`Leverage:`}
+                topRightValue={
+                  operationTab === Operation.Swap
+                    ? formatTokenAmount(toTokenState.balance, toTokenState.token?.decimals)
+                    : `${leverageOption?.toFixed(2)}x`
+                }
+                inputValue={toTokenState.inputValue}
+                onInputValueChange={(e) => {
+                  setFocusedInput(FocusedInput.To);
+                  toTokenState.setInputValue(e.target.value);
+                }}
+                showMaxButton={false}
+              >
+                {toTokenState.tokenAddress && (
+                  <TokenSelector
+                    label={operationTab === Operation.Swap ? t`Receive:` : operationTexts[operationTab!]}
+                    chainId={chainId}
+                    tokenAddress={toTokenState.tokenAddress}
+                    onSelectToken={(token) => toTokenState.setTokenAddress(token.address)}
+                    tokens={availableToTokens}
+                    infoTokens={infoTokens}
+                    className="GlpSwap-from-token"
+                    showSymbolImage={true}
+                    showBalances={operationTab === Operation.Swap}
+                    showTokenImgInDropdown={true}
+                  />
+                )}
+              </BuyInputSection>
+            </>
+          )}
+
+          {isCloseSizeAllowed && (
+            <BuyInputSection
+              topLeftLabel={t`Close`}
+              topRightLabel={t`Max`}
+              // topRightValue={formatUsdAmount(maxCloseSize)}
+              inputValue={sizeInput}
+              onInputValueChange={(e) => setSizeInput(e.target.value)}
+              // showMaxButton={maxCloseSize?.gt(0) && !sizeDelta?.eq(maxCloseSize)}
+              // onClickMax={() => setSizeInput(formatAmount(maxCloseSize, USD_DECIMALS, 2))}
+            >
+              USD
+            </BuyInputSection>
+          )}
 
           {isTriggerPriceAllowed && (
             <BuyInputSection

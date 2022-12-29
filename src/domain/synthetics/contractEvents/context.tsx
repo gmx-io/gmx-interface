@@ -57,7 +57,7 @@ export function ContractEventsProvider({ children }: { children: ReactNode }) {
         });
       }
 
-      function onOrderCancelled(key, txnParams) {
+      function onOrderCancelled(key, data, txnParams) {
         setOrderEvents((orderEvents) => {
           if (!orderEvents[key]) return orderEvents;
 

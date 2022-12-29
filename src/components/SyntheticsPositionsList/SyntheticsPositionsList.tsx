@@ -1,10 +1,16 @@
 import { Trans } from "@lingui/macro";
 import { SyntheticsPosition } from "components/SyntheticsPosition/SyntheticsPosition";
+import { SyntheticsPositionEditor } from "components/SyntheticsPositionEditor/SyntheticsPositionEditor";
+import { SyntheticsPositionSeller } from "components/SyntheticsPositionSeller/SyntheticsPositionSeller";
 import { getPositions, usePositionsData } from "domain/synthetics/positions";
 import { useChainId } from "lib/chains";
+import { useState } from "react";
 
 export function SyntheticsPositionsList() {
   const { chainId } = useChainId();
+
+  const [closingPositionKey, setClosingPositionKey] = useState<string>();
+  const [editingPositionKey, setEditingPositionKey] = useState<string>();
 
   const positionsData = usePositionsData(chainId);
   const positions = getPositions(positionsData).reverse();
@@ -51,10 +57,23 @@ export function SyntheticsPositionsList() {
             </th>
           </tr>
           {positions.map((position) => (
-            <SyntheticsPosition key={position.key} position={position} />
+            <SyntheticsPosition
+              onEditCollateralClick={() => setEditingPositionKey(position.key)}
+              onClosePositionClick={() => setClosingPositionKey(position.key)}
+              key={position.key}
+              position={position}
+            />
           ))}
         </tbody>
       </table>
+
+      {closingPositionKey && (
+        <SyntheticsPositionSeller positionKey={closingPositionKey} onClose={() => setClosingPositionKey(undefined)} />
+      )}
+
+      {editingPositionKey && (
+        <SyntheticsPositionEditor positionKey={editingPositionKey} onClose={() => setEditingPositionKey(undefined)} />
+      )}
     </div>
   );
 }
