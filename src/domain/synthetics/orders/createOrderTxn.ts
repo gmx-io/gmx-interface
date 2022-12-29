@@ -10,8 +10,6 @@ import { OrderType, orderTypeLabels } from "config/synthetics";
 import { NONCE } from "../dataStore";
 import { getProvider } from "lib/rpc";
 import { hashData } from "lib/hash";
-import { callContract } from "lib/contracts";
-import { t } from "@lingui/macro";
 
 type CommonParams = {
   account: string;
@@ -47,23 +45,9 @@ type Params = PositionParams | SwapParams;
 export async function createOrderTxn(chainId: number, library: Web3Provider, p: Params) {
   const provider = getProvider(undefined, chainId) as JsonRpcProvider;
 
-  const dataStore = new ethers.Contract(getContract(chainId, "DataStore"), DataStore.abi, library.getSigner());
-
-  const exchnangeRouter = new ethers.Contract(
-    getContract(chainId, "ExchangeRouter"),
-    ExchangeRouter.abi,
-    library.getSigner()
-  );
-
-  const blockNumber = await provider.getBlockNumber();
-
-  console.log("blockNumber", blockNumber);
-
-  const nonce = await dataStore.getUint(NONCE, { blockTag: blockNumber });
-  const nextNonce = nonce.add(1);
-  const nextKey = hashData(["uint256"], [nextNonce]);
-
   const orderStoreAddress = getContract(chainId, "OrderStore");
+  const dataStore = new ethers.Contract(getContract(chainId, "DataStore"), DataStore.abi, library.getSigner());
+  const exchnangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, provider);
 
   const isNativePayment = p.initialCollateralAddress === NATIVE_TOKEN_ADDRESS;
 
@@ -109,6 +93,11 @@ export async function createOrderTxn(chainId: number, library: Web3Provider, p: 
       ],
     },
   ];
+
+  const blockNumber = await provider.getBlockNumber();
+  const nonce = await dataStore.getUint(NONCE, { blockTag: blockNumber });
+  const nextNonce = nonce.add(1);
+  const nextKey = hashData(["uint256"], [nextNonce]);
 
   const simulationPrimaryParams = getSimulationPricesParams(chainId, p.simulationPrimaryPrices);
 
@@ -156,13 +145,15 @@ export async function createOrderTxn(chainId: number, library: Web3Provider, p: 
 
   const orderLabel = orderTypeLabels[p.orderType];
 
-  return callContract(chainId, exchnangeRouter, "multicall", [encodedPayload], {
-    value: wntAmount,
-    gasLimit: 10 ** 6,
-    sentMsg: t`${orderLabel} order sent`,
-    successMsg: t`Success ${orderLabel} order`,
-    failMsg: t`${orderLabel} order failed`,
-  });
+  return Promise.reject("");
+
+  // return callContract(chainId, exchnangeRouter, "multicall", [encodedPayload], {
+  //   value: wntAmount,
+  //   gasLimit: 10 ** 6,
+  //   sentMsg: t`${orderLabel} order sent`,
+  //   successMsg: t`Success ${orderLabel} order`,
+  //   failMsg: t`${orderLabel} order failed`,
+  // });
 }
 
 function getSwapTxnParams(p: SwapParams) {
