@@ -5,11 +5,14 @@ import ExchangeRouter from "abis/ExchangeRouter.json";
 import DataStore from "abis/DataStore.json";
 import { getCorrectTokenAddress, getToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { encodeReferralCode } from "domain/referrals";
+import { mapKeys } from "lodash";
 import { TokenPrices, convertToContractPrice } from "../tokens";
 import { OrderType, orderTypeLabels } from "config/synthetics";
 import { NONCE } from "../dataStore";
 import { getProvider } from "lib/rpc";
 import { hashData } from "lib/hash";
+import { callContract } from "lib/contracts";
+import { t } from "@lingui/macro";
 
 type CommonParams = {
   account: string;
@@ -46,7 +49,7 @@ export async function createOrderTxn(chainId: number, library: Web3Provider, p: 
   const provider = getProvider(undefined, chainId) as JsonRpcProvider;
 
   const orderStoreAddress = getContract(chainId, "OrderStore");
-  const dataStore = new ethers.Contract(getContract(chainId, "DataStore"), DataStore.abi, library.getSigner());
+  const dataStore = new ethers.Contract(getContract(chainId, "DataStore"), DataStore.abi, provider);
   const exchnangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, provider);
 
   const isNativePayment = p.initialCollateralAddress === NATIVE_TOKEN_ADDRESS;
@@ -87,7 +90,7 @@ export async function createOrderTxn(chainId: number, library: Web3Provider, p: 
           },
           orderType: p.orderType,
           isLong: txnParams.isLong,
-          shouldUnwrapNativeToken: txnParams.shouldUnwrapNativeToken,
+          shouldUnwrapNativeToken: true,
         },
         encodeReferralCode(p.referralCode || ""),
       ],
@@ -96,14 +99,12 @@ export async function createOrderTxn(chainId: number, library: Web3Provider, p: 
 
   const blockNumber = await provider.getBlockNumber();
   const nonce = await dataStore.getUint(NONCE, { blockTag: blockNumber });
-  const nextNonce = nonce.add(1);
+  const nextNonce = nonce.add(10);
   const nextKey = hashData(["uint256"], [nextNonce]);
 
   const simulationPrimaryParams = getSimulationPricesParams(chainId, p.simulationPrimaryPrices);
 
-  console.log("simulationPrimaryParams", simulationPrimaryParams, p.simulationPrimaryPrices);
-
-  const sumulateMulticall = [
+  const simulateMulticall = [
     ...multicall,
     {
       method: "simulateExecuteOrder",
@@ -120,18 +121,21 @@ export async function createOrderTxn(chainId: number, library: Web3Provider, p: 
   ];
 
   // eslint-disable-next-line no-console
-  console.log("simulate multicall", sumulateMulticall);
+  console.log("simulate multicall", simulateMulticall, nextKey);
 
-  const encodedSimulationPayload = sumulateMulticall
+  const encodedSimulationPayload = simulateMulticall
     .filter(Boolean)
     .map((call) => exchnangeRouter.interface.encodeFunctionData(call!.method, call!.params));
 
   try {
-    await exchnangeRouter.callStatic.multicall(encodedSimulationPayload, {
+    const res = await exchnangeRouter.callStatic.multicall(encodedSimulationPayload, {
       gasLimit: 10 ** 6,
       blockTag: blockNumber,
       value: wntAmount,
+      from: p.account,
     });
+
+    console.log("simulation result", res);
   } catch (e) {
     console.log("simulation error", e);
   }
@@ -145,7 +149,7 @@ export async function createOrderTxn(chainId: number, library: Web3Provider, p: 
 
   const orderLabel = orderTypeLabels[p.orderType];
 
-  return Promise.reject("");
+  // return Promise.reject("");
 
   // return callContract(chainId, exchnangeRouter, "multicall", [encodedPayload], {
   //   value: wntAmount,
@@ -188,10 +192,13 @@ function getPositionTxnParams(chainId: number, p: PositionParams) {
 }
 
 function getSimulationPricesParams(chainId: number, pricesMap: { [address: string]: TokenPrices }) {
-  const addresses = Object.keys(pricesMap);
+  const _pricesMap = mapKeys(pricesMap, (val, address) => getCorrectTokenAddress(chainId, address, "wrapped"));
+
+  const addresses = Object.keys(_pricesMap);
+
   const prices = addresses.map((address) => {
     const { decimals } = getToken(chainId, address);
-    const prices = pricesMap[address];
+    const prices = _pricesMap[address];
 
     return {
       min: convertToContractPrice(prices.minPrice, decimals),

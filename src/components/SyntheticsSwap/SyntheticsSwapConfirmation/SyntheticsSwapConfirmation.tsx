@@ -232,19 +232,26 @@ export function SyntheticsSwapConfirmation(p: Props) {
     if (p.operationType === Operation.Swap) {
       const orderType = p.mode === Mode.Limit ? OrderType.LimitSwap : OrderType.MarketSwap;
 
+      if (!fromToken?.prices || !toToken?.prices) return;
+
       const { swapPath } = p.swapRoute;
 
-      // createOrderTxn(chainId, library, {
-      //   account,
-      //   initialCollateralAddress: p.fromTokenAddress,
-      //   initialCollateralAmount: p.fromTokenAmount,
-      //   swapPath: swapPath,
-      //   receiveTokenAddress: p.toTokenAddress,
-      //   executionFee: p.fees.executionFee.feeTokenAmount,
-      //   orderType,
-      //   minOutputAmount: p.toTokenAmount?.sub(p.toTokenAmount.div(90)) || BigNumber.from(0),
-      //   referralCode: referralCodeData?.userReferralCodeString,
-      // }).then(p.onSubmitted);
+      createOrderTxn(chainId, library, {
+        account,
+        initialCollateralAddress: p.fromTokenAddress,
+        initialCollateralAmount: p.fromTokenAmount,
+        swapPath: swapPath,
+        receiveTokenAddress: p.toTokenAddress,
+        executionFee: p.fees.executionFee.feeTokenAmount,
+        orderType,
+        minOutputAmount: p.toTokenAmount?.sub(p.toTokenAmount.div(90)) || BigNumber.from(0),
+        referralCode: referralCodeData?.userReferralCodeString,
+        simulationPrimaryPrices: [fromToken, toToken].reduce((acc, tokenData) => {
+          acc[tokenData.address] = tokenData.prices;
+
+          return acc;
+        }, {}),
+      }).then(p.onSubmitted);
     }
   }
 
