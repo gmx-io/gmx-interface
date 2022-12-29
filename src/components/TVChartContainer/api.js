@@ -15,8 +15,6 @@ export function getKeyByValue(object, value) {
   return Object.keys(object).find((key) => object[key] === value);
 }
 
-let lastTicker;
-let lastBar;
 const timezoneOffset = -new Date().getTimezoneOffset() * 60;
 
 async function getTokenChartPrice(chainId, symbol, period, to, from) {
@@ -58,15 +56,31 @@ export async function getHistoryBars({ ticker, resolution, chainId, isStable, to
   return bars.map(formatBar);
 }
 
+const getLastBarAfterInterval = (function () {
+  let startTime = 0;
+  let lastBar, lastTicker;
+
+  return async function main(ticker, period, chainId) {
+    const currentTime = Date.now();
+    if (currentTime - startTime >= 60000 || lastTicker !== ticker) {
+      lastBar = await getLastHistoryBar(ticker, period, chainId);
+      startTime = currentTime;
+      lastTicker = ticker;
+    }
+    return lastBar;
+  };
+})();
+
 export async function getLiveBar({ ticker, resolution, chainId, isStable }) {
   if (isStable || !ticker) return;
   const period = supportedResolutions[resolution];
   const periodSeconds = CHART_PERIODS[period];
   const currentCandleTime = (Math.floor(Date.now() / 1000 / periodSeconds) * periodSeconds + timezoneOffset) * 1000;
-  if (!lastBar || lastTicker !== ticker) {
-    lastTicker = ticker;
-    lastBar = await getLastHistoryBar(ticker, period, chainId);
-  }
+
+  let lastBar = await getLastBarAfterInterval(ticker, period, chainId);
+
+  if (!lastBar) return;
+
   const currentPrice = await getCurrentPrice(chainId, ticker);
   const averagePriceValue = parseFloat(formatAmount(currentPrice, USD_DECIMALS, 4));
   if (lastBar.time && currentCandleTime === lastBar.time && ticker === lastBar.ticker) {
@@ -80,10 +94,10 @@ export async function getLiveBar({ ticker, resolution, chainId, isStable }) {
   } else {
     const newBar = {
       time: currentCandleTime,
-      open: averagePriceValue,
+      open: lastBar.close,
       close: averagePriceValue,
-      high: averagePriceValue,
-      low: averagePriceValue,
+      high: Math.max(lastBar.close, averagePriceValue),
+      low: Math.min(lastBar.close, averagePriceValue),
       ticker,
     };
     lastBar = newBar;
