@@ -62,7 +62,7 @@ const getLastBarAfterInterval = (function () {
 
   return async function main(ticker, period, chainId) {
     const currentTime = Date.now();
-    if (currentTime - startTime >= 60000 || lastTicker !== ticker) {
+    if (currentTime - startTime > 60000 || lastTicker !== ticker) {
       lastBar = await getLastHistoryBar(ticker, period, chainId);
       startTime = currentTime;
       lastTicker = ticker;

@@ -1,5 +1,5 @@
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { getKeyByValue, supportedResolutions } from "./api";
 import useDatafeed from "./useDatafeed";
 const DEFAULT_PERIOD = "4h";
@@ -31,23 +31,26 @@ export default function TVChartContainer({
   let [period] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
   const datafeed = useDatafeed();
 
-  function createPositionLine(title, price) {
-    if (!tvWidgetRef?.current) return;
-    return tvWidgetRef.current
-      .activeChart()
-      .createPositionLine()
-      .setText(title)
-      .setPrice(price)
-      .setQuantity("")
-      .setLineStyle(1)
-      .setLineLength(0)
-      .setBodyFont(`normal 11px "Relative", sans-serif`)
-      .setBodyTextColor("#fff")
-      .setLineColor("#3a3e5e")
-      .setBodyBackgroundColor("#3a3e5e")
-      .setBodyBorderColor("#3a3e5e")
-      .setBodyBorderColor("#3a3e5e");
-  }
+  const drawLineOnChart = useCallback(
+    (title, price) => {
+      if (!chartReady || !tvWidgetRef.current) return;
+      return tvWidgetRef.current
+        .activeChart()
+        .createPositionLine({ disableUndo: true })
+        .setText(title)
+        .setPrice(price)
+        .setQuantity("")
+        .setLineStyle(1)
+        .setLineLength(0)
+        .setBodyFont(`normal 12pt "Relative", sans-serif`)
+        .setBodyTextColor("#fff")
+        .setLineColor("#3a3e5e")
+        .setBodyBackgroundColor("#3a3e5e")
+        .setBodyBorderColor("#3a3e5e")
+        .setBodyBorderColor("#3a3e5e");
+    },
+    [chartReady]
+  );
 
   useEffect(() => {
     const lines = [];
@@ -55,17 +58,17 @@ export default function TVChartContainer({
     if (savedShouldShowPositionLines) {
       currentPositions.forEach((position) => {
         const { open, liq } = position;
-        lines.push(createPositionLine(open.title, open.price));
-        lines.push(createPositionLine(liq.title, liq.price));
+        lines.push(drawLineOnChart(open.title, open.price));
+        lines.push(drawLineOnChart(liq.title, liq.price));
       });
       currentOrders.forEach((order) => {
-        lines.push(createPositionLine(order.title, order.price));
+        lines.push(drawLineOnChart(order.title, order.price));
       });
     }
     return () => {
       lines.forEach((line) => line?.remove());
     };
-  }, [chartReady, currentPositions, savedShouldShowPositionLines, currentOrders]);
+  }, [chartReady, currentPositions, savedShouldShowPositionLines, currentOrders, drawLineOnChart]);
 
   useEffect(() => {
     if (chartReady && tvWidgetRef.current && symbol !== tvWidgetRef.current?.activeChart()?.symbol()) {
