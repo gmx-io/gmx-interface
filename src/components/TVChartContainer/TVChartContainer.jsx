@@ -34,6 +34,7 @@ export default function TVChartContainer({
   const drawLineOnChart = useCallback(
     (title, price) => {
       if (!chartReady || !tvWidgetRef.current) return;
+
       return tvWidgetRef.current
         .activeChart()
         .createPositionLine({ disableUndo: true })
@@ -46,7 +47,6 @@ export default function TVChartContainer({
         .setBodyTextColor("#fff")
         .setLineColor("#3a3e5e")
         .setBodyBackgroundColor("#3a3e5e")
-        .setBodyBorderColor("#3a3e5e")
         .setBodyBorderColor("#3a3e5e");
     },
     [chartReady]
