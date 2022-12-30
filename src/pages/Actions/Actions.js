@@ -140,6 +140,7 @@ export default function Actions() {
             chainId={chainId}
             nativeTokenAddress={nativeTokenAddress}
             showPnlAfterFees={false}
+            hideActions
           />
         </div>
       )}

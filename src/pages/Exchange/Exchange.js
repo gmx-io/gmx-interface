@@ -6,7 +6,6 @@ import { ethers } from "ethers";
 import cx from "classnames";
 
 import {
-  FUNDING_RATE_PRECISION,
   BASIS_POINTS_DIVISOR,
   MARGIN_FEE_BASIS_POINTS,
   SWAP,
@@ -19,6 +18,7 @@ import {
   getDeltaStr,
   useAccountOrders,
   getPageTitle,
+  getFundingFee,
 } from "lib/legacy";
 import { getConstant, getExplorerUrl } from "config/chains";
 import { approvePlugin, useMinExecutionFee, cancelMultipleOrders } from "domain/legacy";
@@ -96,14 +96,6 @@ function pushErrorNotification(chainId, message, e) {
       </ExternalLink>
     </div>
   );
-}
-
-function getFundingFee(data) {
-  let { entryFundingRate, cumulativeFundingRate, size } = data;
-  if (entryFundingRate && cumulativeFundingRate) {
-    return size.mul(cumulativeFundingRate.sub(entryFundingRate)).div(FUNDING_RATE_PRECISION);
-  }
-  return;
 }
 
 const getTokenAddress = (token, nativeTokenAddress) => {

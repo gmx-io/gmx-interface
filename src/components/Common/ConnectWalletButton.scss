@@ -21,6 +21,12 @@
     margin-left: 0.8rem;
     letter-spacing: 0;
   }
+  &:hover {
+    background: var(--dark-blue-hover);
+  }
+  &:active {
+    background: var(--dark-blue-active);
+  }
 }
 
 @media (max-width: 450px) {

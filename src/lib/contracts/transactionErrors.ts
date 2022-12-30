@@ -21,6 +21,7 @@ const TX_ERROR_PATTERNS: { [key: string]: ErrorPattern[] } = {
     { msg: "Request limit exceeded" },
     { msg: "Internal JSON-RPC error" },
     { msg: "Response has no error or result" },
+    { msg: "we can't execute this request" },
     { msg: "couldn't connect to the network" },
   ],
 };

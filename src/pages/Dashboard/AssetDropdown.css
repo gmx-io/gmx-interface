@@ -41,3 +41,6 @@
   margin: 0;
   margin-left: 0.5rem;
 }
+.asset-item .asset-item-icon {
+  max-height: 1.6rem;
+}
