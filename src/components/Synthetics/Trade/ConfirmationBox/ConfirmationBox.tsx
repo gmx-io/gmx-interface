@@ -22,7 +22,7 @@ import { useChainId } from "lib/chains";
 import { useAvailableTradeTokensData } from "domain/synthetics/tokens";
 
 import { useUserReferralCode } from "domain/referrals";
-import { Fees, getSubmitError, Mode, Operation, operationTexts } from "../utils";
+import { Fees, getSubmitError, TradeMode, TradeType, tradeTypeLabels } from "../utils";
 
 import { OrderType } from "config/synthetics";
 import { SwapRoute } from "domain/synthetics/exchange";
@@ -36,8 +36,8 @@ import { TradeFees } from "../TradeFees/TradeFees";
 import "./ConfirmationBox.scss";
 
 type Props = {
-  operationType: Operation;
-  mode: Mode;
+  operationType: TradeType;
+  mode: TradeMode;
   fees: Fees;
   fromTokenAddress?: string;
   fromTokenAmount?: BigNumber;
@@ -92,17 +92,17 @@ export function ConfirmationBox(p: Props) {
 
   const needFromTokenApproval = needTokenApprove(tokenAllowanceData, p.fromTokenAddress, p.fromTokenAmount);
 
-  const isSwap = p.operationType === Operation.Swap;
-  const isPosition = [Operation.Long, Operation.Short].includes(p.operationType);
-  const isLimit = p.mode === Mode.Limit;
-  const isLong = p.operationType === Operation.Long;
+  const isSwap = p.operationType === TradeType.Swap;
+  const isPosition = [TradeType.Long, TradeType.Short].includes(p.operationType);
+  const isLimit = p.mode === TradeMode.Limit;
+  const isLong = p.operationType === TradeType.Long;
 
   function getReceiveText() {
-    if (p.operationType === Operation.Swap) {
+    if (p.operationType === TradeType.Swap) {
       return t`Receive`;
     }
 
-    return p.operationType === Operation.Long ? t`Long` : t`Short`;
+    return p.operationType === TradeType.Long ? t`Long` : t`Short`;
   }
 
   function getSubmitButtonState(): { text: string; disabled?: boolean; onClick?: () => void } {
@@ -170,14 +170,14 @@ export function ConfirmationBox(p: Props) {
       return isLong ? price.add(price.div(10)) : price.div(10);
     }
 
-    if ([Operation.Long, Operation.Short].includes(p.operationType)) {
-      if ([Mode.Market, Mode.Limit].includes(p.mode)) {
+    if ([TradeType.Long, TradeType.Short].includes(p.operationType)) {
+      if ([TradeMode.Market, TradeMode.Limit].includes(p.mode)) {
         const { market, swapPath } = p.swapRoute;
 
         if (!market || !p.sizeDeltaUsd || !p.acceptablePrice) return;
 
-        const orderType = p.mode === Mode.Limit ? OrderType.LimitIncrease : OrderType.MarketIncrease;
-        const isLong = p.operationType === Operation.Long;
+        const orderType = p.mode === TradeMode.Limit ? OrderType.LimitIncrease : OrderType.MarketIncrease;
+        const isLong = p.operationType === TradeType.Long;
 
         const triggerPrice = p.triggerPrice ? p.triggerPrice : undefined;
         const acceptablePrice = applySlippage(triggerPrice || p.acceptablePrice);
@@ -218,8 +218,8 @@ export function ConfirmationBox(p: Props) {
       }
     }
 
-    if (p.operationType === Operation.Swap) {
-      const orderType = p.mode === Mode.Limit ? OrderType.LimitSwap : OrderType.MarketSwap;
+    if (p.operationType === TradeType.Swap) {
+      const orderType = p.mode === TradeMode.Limit ? OrderType.LimitSwap : OrderType.MarketSwap;
 
       const { swapPath } = p.swapRoute;
 
@@ -244,7 +244,7 @@ export function ConfirmationBox(p: Props) {
       <Modal
         isVisible={true}
         setIsVisible={p.onClose}
-        label={t`Confirm ${operationTexts[p.operationType]}`}
+        label={t`Confirm ${tradeTypeLabels[p.operationType]}`}
         allowContentTouchMove
       >
         <div className={cx("Confirmation-box-main ConfirmationBox-main")}>

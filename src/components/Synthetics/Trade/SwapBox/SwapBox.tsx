@@ -37,14 +37,14 @@ import { IoMdSwap } from "react-icons/io";
 import { ConfirmationBox } from "../ConfirmationBox/ConfirmationBox";
 import { OrderStatus } from "../OrderStatus/OrderStatus";
 import {
-  Mode,
-  Operation,
+  TradeMode,
+  TradeType,
   avaialbleModes,
   getNextTokenAmount,
   getSubmitError,
-  modeTexts,
-  operationIcons,
-  operationTexts,
+  tradeModeLabels,
+  tradeTypeIcons,
+  tradeTypeLabels,
   useAvailableSwapTokens,
   useFeesState,
   useSwapTriggerRatioState,
@@ -72,16 +72,16 @@ export function SwapBox(p: Props) {
   const [focusedInput, setFocusedInput] = useState<FocusedInput>();
   const [operationTab, setOperationTab] = useLocalStorageSerializeKey(
     [chainId, SYNTHETICS_SWAP_OPERATION_KEY],
-    Operation.Long
+    TradeType.Long
   );
-  const [modeTab, setModeTab] = useLocalStorageSerializeKey([chainId, SYNTHETICS_SWAP_MODE_KEY], Mode.Market);
+  const [modeTab, setModeTab] = useLocalStorageSerializeKey([chainId, SYNTHETICS_SWAP_MODE_KEY], TradeMode.Market);
 
-  const isLong = operationTab === Operation.Long;
-  const isSwap = operationTab === Operation.Swap;
+  const isLong = operationTab === TradeType.Long;
+  const isSwap = operationTab === TradeType.Swap;
   const isPosition = !isSwap;
-  const isLimit = modeTab === Mode.Limit;
-  const isMarket = modeTab === Mode.Market;
-  const isStop = modeTab === Mode.StopLoss || modeTab === Mode.TakeProfit;
+  const isLimit = modeTab === TradeMode.Limit;
+  const isMarket = modeTab === TradeMode.Market;
+  const isStop = modeTab === TradeMode.StopLoss || modeTab === TradeMode.TakeProfit;
 
   // TODO: separate to components?
   const isTokensAllowed = !isStop;
@@ -212,7 +212,7 @@ export function SwapBox(p: Props) {
     }
 
     return {
-      text: `${operationTexts[operationTab!]} ${toTokenState.token?.symbol}`,
+      text: `${tradeTypeLabels[operationTab!]} ${toTokenState.token?.symbol}`,
       onClick: () => setIsConfirming(true),
     };
   }
@@ -344,9 +344,9 @@ export function SwapBox(p: Props) {
     <>
       <div className={`App-box SwapBox`}>
         <Tab
-          icons={operationIcons}
-          options={Object.values(Operation)}
-          optionLabels={operationTexts}
+          icons={tradeTypeIcons}
+          options={Object.values(TradeType)}
+          optionLabels={tradeTypeLabels}
           option={operationTab}
           onChange={setOperationTab}
           className="SwapBox-option-tabs"
@@ -354,7 +354,7 @@ export function SwapBox(p: Props) {
 
         <Tab
           options={Object.values(avaialbleModes[operationTab!])}
-          optionLabels={modeTexts}
+          optionLabels={tradeModeLabels}
           className="SwapBox-asset-options-tabs"
           type="inline"
           option={modeTab}
@@ -402,11 +402,11 @@ export function SwapBox(p: Props) {
               </div>
 
               <BuyInputSection
-                topLeftLabel={operationTab === Operation.Swap ? t`Receive:` : `${operationTexts[operationTab!]}:`}
+                topLeftLabel={operationTab === TradeType.Swap ? t`Receive:` : `${tradeTypeLabels[operationTab!]}:`}
                 topLeftValue={formatUsdAmount(sizeDeltaUsd)}
-                topRightLabel={operationTab === Operation.Swap ? t`Balance:` : t`Leverage:`}
+                topRightLabel={operationTab === TradeType.Swap ? t`Balance:` : t`Leverage:`}
                 topRightValue={
-                  operationTab === Operation.Swap
+                  operationTab === TradeType.Swap
                     ? formatTokenAmount(toTokenState.balance, toTokenState.token?.decimals)
                     : `${leverageOption?.toFixed(2)}x`
                 }
@@ -419,7 +419,7 @@ export function SwapBox(p: Props) {
               >
                 {toTokenState.tokenAddress && (
                   <TokenSelector
-                    label={operationTab === Operation.Swap ? t`Receive:` : operationTexts[operationTab!]}
+                    label={operationTab === TradeType.Swap ? t`Receive:` : tradeTypeLabels[operationTab!]}
                     chainId={chainId}
                     tokenAddress={toTokenState.tokenAddress}
                     onSelectToken={(token) => toTokenState.setTokenAddress(token.address)}
@@ -427,7 +427,7 @@ export function SwapBox(p: Props) {
                     infoTokens={infoTokens}
                     className="GlpSwap-from-token"
                     showSymbolImage={true}
-                    showBalances={operationTab === Operation.Swap}
+                    showBalances={operationTab === TradeType.Swap}
                     showTokenImgInDropdown={true}
                   />
                 )}

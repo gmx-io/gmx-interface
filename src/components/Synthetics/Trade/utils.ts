@@ -30,50 +30,50 @@ import { BASIS_POINTS_DIVISOR, PRECISION, USD_DECIMALS, adjustForDecimals } from
 import { parseValue } from "lib/numbers";
 import { useMemo, useState } from "react";
 
-export enum Operation {
+export enum TradeType {
   Long = "Long",
   Short = "Short",
   Swap = "Swap",
 }
 
-export enum Mode {
+export enum TradeMode {
   Market = "Market",
   Limit = "Limit",
   StopLoss = "StopLoss",
   TakeProfit = "TakeProfit",
 }
 
-export const operationTexts = {
-  [Operation.Long]: t`Long`,
-  [Operation.Short]: t`Short`,
-  [Operation.Swap]: t`Swap`,
+export const tradeTypeLabels = {
+  [TradeType.Long]: t`Long`,
+  [TradeType.Short]: t`Short`,
+  [TradeType.Swap]: t`Swap`,
 };
 
-export const operationIcons = {
-  [Operation.Long]: longImg,
-  [Operation.Short]: shortImg,
-  [Operation.Swap]: swapImg,
+export const tradeTypeIcons = {
+  [TradeType.Long]: longImg,
+  [TradeType.Short]: shortImg,
+  [TradeType.Swap]: swapImg,
 };
 
-export const modeTexts = {
-  [Mode.Market]: t`Market`,
-  [Mode.Limit]: t`Limit`,
-  [Mode.StopLoss]: t`Stop Loss`,
-  [Mode.TakeProfit]: t`Take Profit`,
+export const tradeModeLabels = {
+  [TradeMode.Market]: t`Market`,
+  [TradeMode.Limit]: t`Limit`,
+  [TradeMode.StopLoss]: t`Stop Loss`,
+  [TradeMode.TakeProfit]: t`Take Profit`,
 };
 
 export const avaialbleModes = {
-  [Operation.Long]: [Mode.Market, Mode.Limit, Mode.StopLoss, Mode.TakeProfit],
-  [Operation.Short]: [Mode.Market, Mode.Limit, Mode.StopLoss, Mode.TakeProfit],
-  [Operation.Swap]: [Mode.Market, Mode.Limit],
+  [TradeType.Long]: [TradeMode.Market, TradeMode.Limit],
+  [TradeType.Short]: [TradeMode.Market, TradeMode.Limit],
+  [TradeType.Swap]: [TradeMode.Market, TradeMode.Limit],
 };
 
 const TRIGGER_RATIO_PRECISION = PRECISION;
 const LEVERAGE_PRECISION = BigNumber.from(BASIS_POINTS_DIVISOR);
 
 export function getSubmitError(p: {
-  operationType: Operation;
-  mode: Mode;
+  operationType: TradeType;
+  mode: TradeMode;
   tokensData: TokensData;
   fromTokenAddress?: string;
   fromTokenAmount?: BigNumber;
@@ -94,7 +94,7 @@ export function getSubmitError(p: {
     return t`Insufficient ${fromToken.symbol} balance`;
   }
 
-  if (p.operationType === Operation.Swap) {
+  if (p.operationType === TradeType.Swap) {
     if (p.fromTokenAddress === p.toTokenAddress) {
       return t`Select different tokens`;
     }
@@ -112,8 +112,8 @@ export function getSubmitError(p: {
     return t`Need to accept price impact`;
   }
 
-  if (p.mode === Mode.Limit) {
-    if (p.operationType === Operation.Swap) {
+  if (p.mode === TradeMode.Limit) {
+    if (p.operationType === TradeType.Swap) {
       if (!p.swapTriggerRatio?.gt(0)) {
         return t`Enter a swap trigger ratio`;
       }
