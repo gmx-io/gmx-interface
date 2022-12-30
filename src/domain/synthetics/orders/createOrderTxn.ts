@@ -50,7 +50,11 @@ export async function createOrderTxn(chainId: number, library: Web3Provider, p: 
 
   const orderStoreAddress = getContract(chainId, "OrderStore");
   const dataStore = new ethers.Contract(getContract(chainId, "DataStore"), DataStore.abi, provider);
-  const exchnangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, provider);
+  const exchnangeRouter = new ethers.Contract(
+    getContract(chainId, "ExchangeRouter"),
+    ExchangeRouter.abi,
+    library.getSigner()
+  );
 
   const isNativePayment = p.initialCollateralAddress === NATIVE_TOKEN_ADDRESS;
 
@@ -99,7 +103,7 @@ export async function createOrderTxn(chainId: number, library: Web3Provider, p: 
 
   const blockNumber = await provider.getBlockNumber();
   const nonce = await dataStore.getUint(NONCE, { blockTag: blockNumber });
-  const nextNonce = nonce.add(10);
+  const nextNonce = nonce.add(1);
   const nextKey = hashData(["uint256"], [nextNonce]);
 
   const simulationPrimaryParams = getSimulationPricesParams(chainId, p.simulationPrimaryPrices);
@@ -127,6 +131,8 @@ export async function createOrderTxn(chainId: number, library: Web3Provider, p: 
     .filter(Boolean)
     .map((call) => exchnangeRouter.interface.encodeFunctionData(call!.method, call!.params));
 
+  // console.log("hi");
+
   try {
     const res = await exchnangeRouter.callStatic.multicall(encodedSimulationPayload, {
       gasLimit: 10 ** 6,
@@ -134,6 +140,22 @@ export async function createOrderTxn(chainId: number, library: Web3Provider, p: 
       value: wntAmount,
       from: p.account,
     });
+
+    // const res = await exchnangeRouter.callStatic.simulateExecuteOrder(
+    //   nextKey,
+    //   {
+    //     primaryTokens: simulationPrimaryParams.addresses,
+    //     primaryPrices: simulationPrimaryParams.prices,
+    //     secondaryTokens: [],
+    //     secondaryPrices: [],
+    //   },
+    //   {
+    //     gasLimit: 10 ** 6,
+    //     blockTag: blockNumber,
+    //     value: wntAmount,
+    //     from: p.account,
+    //   }
+    // );
 
     console.log("simulation result", res);
   } catch (e) {
@@ -151,13 +173,13 @@ export async function createOrderTxn(chainId: number, library: Web3Provider, p: 
 
   // return Promise.reject("");
 
-  // return callContract(chainId, exchnangeRouter, "multicall", [encodedPayload], {
-  //   value: wntAmount,
-  //   gasLimit: 10 ** 6,
-  //   sentMsg: t`${orderLabel} order sent`,
-  //   successMsg: t`Success ${orderLabel} order`,
-  //   failMsg: t`${orderLabel} order failed`,
-  // });
+  return callContract(chainId, exchnangeRouter, "multicall", [encodedPayload], {
+    value: wntAmount,
+    gasLimit: 10 ** 6,
+    sentMsg: t`${orderLabel} order sent`,
+    successMsg: t`Success ${orderLabel} order`,
+    failMsg: t`${orderLabel} order failed`,
+  });
 }
 
 function getSwapTxnParams(p: SwapParams) {

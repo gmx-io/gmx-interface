@@ -23,6 +23,9 @@ const avax = getTokenBySymbol(chainId, "AVAX");
 const wavax = getTokenBySymbol(chainId, "WAVAX");
 
 const avaxPrice = convertToContractPrice(parseValue("11.16", USD_DECIMALS)!, avax.decimals);
+const ethPrice = convertToContractPrice(parseValue("1203.09", USD_DECIMALS)!, avax.decimals);
+const usdcPrice = convertToContractPrice(parseValue("1", USD_DECIMALS)!, 30);
+
 const executionFee = parseValue("0.001", avax.decimals)!;
 
 const tests = [
@@ -108,11 +111,24 @@ describe("simulateOrder", () => {
       const wntAmount = test.multicall.find((call) => call.method === "sendWnt")?.params[1];
 
       try {
-        const res = await exchangeRouter.callStatic.multicall(encodedPayload, {
-          value: wntAmount,
-          from: account,
-          gasLimit: 10 ** 6,
-        });
+        const res = await exchangeRouter.callStatic.simulateExecuteOrder(
+          "0x8dc6fb69531d98d70dc0420e638d2dfd04e09e1ec783ede9aac77da9c5a0dac4",
+          {
+            primaryTokens: ["0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514", "0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F"],
+            primaryPrices: [
+              { min: ethPrice, max: ethPrice },
+              { min: usdcPrice, max: usdcPrice },
+            ],
+            secondaryTokens: [],
+            secondaryPrices: [],
+          },
+          {
+            gasLimit: 10 ** 6,
+            blockTag: blockNumber,
+            value: wntAmount,
+            from: account,
+          }
+        );
 
         console.log("simulation result", res);
       } catch (e) {

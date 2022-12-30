@@ -220,7 +220,7 @@ export function SyntheticsSwapConfirmation(p: Props) {
           isLong,
           orderType,
           referralCode: referralCodeData?.userReferralCodeString,
-          simulationPrimaryPrices: [fromToken, toToken].reduce((acc, tokenData) => {
+          simulationPrimaryPrices: Object.values(tokensData).reduce((acc, tokenData) => {
             acc[tokenData.address] = tokenData.prices;
 
             return acc;
@@ -246,7 +246,7 @@ export function SyntheticsSwapConfirmation(p: Props) {
         orderType,
         minOutputAmount: p.toTokenAmount?.sub(p.toTokenAmount.div(90)) || BigNumber.from(0),
         referralCode: referralCodeData?.userReferralCodeString,
-        simulationPrimaryPrices: [fromToken, toToken].reduce((acc, tokenData) => {
+        simulationPrimaryPrices: Object.values(tokensData).reduce((acc, tokenData) => {
           acc[tokenData.address] = tokenData.prices;
 
           return acc;
