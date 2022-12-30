@@ -98,8 +98,8 @@ import {
   useHandleUnsupportedNetwork,
   useInactiveListener,
 } from "lib/wallets";
-import { SyntheticsPoolsPage } from "pages/SyntheticsPoolsPage/SyntheticsPoolsPage";
-import { SyntheticsTradePage } from "pages/SyntheticsTradePage/SyntheticsTradePage";
+import { MarketPoolsPage } from "pages/MarketPoolsPage/MarketPoolsPage";
+import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { ContractEventsProvider } from "domain/synthetics/contractEvents";
 import { getWsProvider } from "lib/rpc";
 
@@ -480,12 +480,12 @@ function FullApp() {
               </Route>
               {isDevelopment() && (
                 <Route exact path="/pools">
-                  <SyntheticsPoolsPage connectWallet={connectWallet} />
+                  <MarketPoolsPage connectWallet={connectWallet} />
                 </Route>
               )}
               {isDevelopment() && (
                 <Route exact path="/synthetics">
-                  <SyntheticsTradePage onConnectWallet={connectWallet} />
+                  <SyntheticsPage onConnectWallet={connectWallet} />
                 </Route>
               )}
               <Route exact path="/buy_glp">

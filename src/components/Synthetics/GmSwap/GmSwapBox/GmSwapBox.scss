@@ -1,0 +1,53 @@
+.GmSwapBox {
+  border-radius: 0.4rem;
+  padding: 1.5rem;
+  padding-top: 0;
+}
+
+.GmSwapBox .Exchange-swap-option-tabs {
+  margin: 1.5rem 0;
+}
+
+.GmSwapBox-asset-options-tabs {
+  margin: 1.5rem 0;
+}
+
+.GmSwapBox-info-section {
+  margin-bottom: 0.8rem;
+}
+
+.GmSwapBox-market-dropdown {
+  margin-top: 1.5rem;
+  margin-left: -0.5rem;
+}
+
+.GmSwapBox-form-layout {
+  display: flex;
+  flex-direction: column;
+
+  &.reverse {
+    flex-direction: column-reverse;
+  }
+}
+
+.GmSwapBox-warnings {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 900px) {
+  .GmSwapBox-content {
+    flex-wrap: wrap;
+  }
+
+  .GmSwapBox-content .GlpSwap-stats-card {
+    margin: 0;
+    margin-bottom: 3.1rem;
+    max-width: 100%;
+  }
+
+  .GmSwapBox-content .GlpSwap-box {
+    margin: 0;
+    max-width: 100%;
+  }
+}
