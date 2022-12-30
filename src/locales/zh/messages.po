@@ -2168,10 +2168,6 @@ msgstr ""
 msgid "Opening..."
 msgstr ""
 
-#: src/pages/Ecosystem/Ecosystem.js
-msgid "Optimal compound interval calculator"
-msgstr ""
-
 #: src/components/Exchange/OrdersList.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Order"
@@ -2445,8 +2441,8 @@ msgid "Profit price: {0} ${1}. This rule applies for the next {2}, until {3}."
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Projects developed by the GMX community."
-msgstr "由GMX社区所开发项目"
+msgid "Projects developed by the GMX community. Please exercise caution in interacting with any site, the project's are fully maintained by community developers."
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Projects integrated with GMX."
