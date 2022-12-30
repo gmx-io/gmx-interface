@@ -92,12 +92,11 @@ async function isFallbackProvider(provider: JsonRpcProvider) {
   return FALLBACK_PROVIDERS[provider.network.chainId].includes(provider.connection.url);
 }
 
-jest.setTimeout(10000);
-
 describe("executeMulticall", () => {
   const ethTesting = generateTestingUtils({ providerType: "MetaMask" });
 
   beforeAll(() => {
+    jest.setTimeout(10000);
     window.ethereum = ethTesting.getProvider();
   });
 

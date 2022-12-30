@@ -68,7 +68,7 @@
     "build-home": "INLINE_RUNTIME_CHUNK=false env-cmd -e production-home react-scripts build",
     "build-app": "INLINE_RUNTIME_CHUNK=false env-cmd -e production-app yarn test:ci && react-scripts build",
     "test": "react-scripts test",
-    "test:ci": "react-scripts test --watchAll=false",
+    "test:ci": "react-scripts test --watchAll=false --forceExit",
     "eject": "react-scripts eject",
     "lint": "node node_modules/.bin/eslint src",
     "pre-commit": "npm run test -- --watchAll=false && npm run lint",
