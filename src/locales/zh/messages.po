@@ -670,7 +670,7 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/GmSwap/GmOrderStatus/OrderStatus.tsx
+#: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
@@ -1060,7 +1060,7 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
-#: src/components/Synthetics/GmSwap/GmOrderStatus/OrderStatus.tsx
+#: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
 #: src/components/Synthetics/GmSwap/utils.ts
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
@@ -1363,7 +1363,7 @@ msgstr ""
 msgid "Execute Order: {0, select, Increase {Increase} Decrease {Decrease}} {1} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 msgstr ""
 
-#: src/components/Synthetics/GmSwap/GmOrderStatus/OrderStatus.tsx
+#: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
 msgid "Executed {0} {tokensText}"
 msgstr ""
 
@@ -1469,7 +1469,7 @@ msgstr "未检查没收利润"
 msgid "Fulfilling swap {0} to {1} request"
 msgstr ""
 
-#: src/components/Synthetics/GmSwap/GmOrderStatus/OrderStatus.tsx
+#: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
 msgid "Fulfilling {0} {tokensText} request"
 msgstr ""
 
@@ -1851,11 +1851,11 @@ msgstr ""
 msgid "Limit"
 msgstr ""
 
-#: src/config/synthetics.ts
+#: src/domain/synthetics/orders/constants.ts
 msgid "Limit Decrease"
 msgstr ""
 
-#: src/config/synthetics.ts
+#: src/domain/synthetics/orders/constants.ts
 msgid "Limit Increase"
 msgstr ""
 
@@ -1864,7 +1864,7 @@ msgstr ""
 msgid "Limit Price"
 msgstr ""
 
-#: src/config/synthetics.ts
+#: src/domain/synthetics/orders/constants.ts
 msgid "Limit Swap"
 msgstr ""
 
@@ -1922,7 +1922,7 @@ msgid ""
 "{2} Price: {3} USD"
 msgstr ""
 
-#: src/config/synthetics.ts
+#: src/domain/synthetics/orders/constants.ts
 msgid "Liquidation"
 msgstr ""
 
@@ -2076,15 +2076,15 @@ msgstr ""
 msgid "Market Cap"
 msgstr "标记上限"
 
-#: src/config/synthetics.ts
+#: src/domain/synthetics/orders/constants.ts
 msgid "Market Decrease"
 msgstr ""
 
-#: src/config/synthetics.ts
+#: src/domain/synthetics/orders/constants.ts
 msgid "Market Increase"
 msgstr ""
 
-#: src/config/synthetics.ts
+#: src/domain/synthetics/orders/constants.ts
 msgid "Market Swap"
 msgstr ""
 
@@ -2734,7 +2734,7 @@ msgstr ""
 msgid "Price on Avalanche"
 msgstr ""
 
-#: src/components/Synthetics/GmSwap/GmOrderStatus/OrderStatus.tsx
+#: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
 msgid "Processing..."
 msgstr ""
@@ -3060,7 +3060,7 @@ msgstr "发送者已从GMX授权金库中撤回所有代币"
 msgid "Sending swap {0} to {1} request"
 msgstr ""
 
-#: src/components/Synthetics/GmSwap/GmOrderStatus/OrderStatus.tsx
+#: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
 msgid "Sending {0} {tokensText} request"
 msgstr ""
 
@@ -3268,7 +3268,7 @@ msgstr "统计数据"
 msgid "Stop Loss"
 msgstr ""
 
-#: src/config/synthetics.ts
+#: src/domain/synthetics/orders/constants.ts
 msgid "Stop Loss Decrease"
 msgstr ""
 
@@ -3864,8 +3864,8 @@ msgstr "使用方法"
 msgid "Uniswap"
 msgstr ""
 
-#: src/components/Synthetics/GmSwap/GmOrderStatus/OrderStatus.tsx
-#: src/components/Synthetics/GmSwap/GmOrderStatus/OrderStatus.tsx
+#: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
+#: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
 msgid "Unknown order"
@@ -4138,7 +4138,7 @@ msgstr "提领送出"
 msgid "Withdraw {0} USD from {1} {longOrShortText}"
 msgstr ""
 
-#: src/components/Synthetics/GmSwap/GmOrderStatus/OrderStatus.tsx
+#: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
 msgid "Withdrawal"
 msgstr ""
 
@@ -4550,15 +4550,15 @@ msgstr ""
 msgid "{orderLabel} order sent"
 msgstr ""
 
-#: src/components/Synthetics/GmSwap/GmOrderStatus/OrderStatus.tsx
+#: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
 msgid "{orderTypeText} cancelled"
 msgstr ""
 
-#: src/components/Synthetics/GmSwap/GmOrderStatus/OrderStatus.tsx
+#: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
 msgid "{orderTypeText} status"
 msgstr ""
 
-#: src/components/Synthetics/GmSwap/GmOrderStatus/OrderStatus.tsx
+#: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
 msgid "{orderTypeText} {tokensText} request sent"
 msgstr ""
 
