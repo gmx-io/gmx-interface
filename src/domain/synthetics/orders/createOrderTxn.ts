@@ -2,7 +2,7 @@ import { Web3Provider } from "@ethersproject/providers";
 import { getContract } from "config/contracts";
 import { BigNumber, ethers } from "ethers";
 import ExchangeRouter from "abis/ExchangeRouter.json";
-import { getCorrectTokenAddress, getToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { getConvertedTokenAddress, getToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { encodeReferralCode } from "domain/referrals";
 import { convertToContractPrice } from "../tokens";
 import { OrderType } from "./types";
@@ -83,7 +83,7 @@ export async function createOrderTxn(chainId: number, library: Web3Provider, p: 
           addresses: {
             receiver: p.account,
             initialCollateralToken: p.initialCollateralAddress
-              ? getCorrectTokenAddress(chainId, p.initialCollateralAddress, "wrapped")
+              ? getConvertedTokenAddress(chainId, p.initialCollateralAddress, "wrapped")
               : ethers.constants.AddressZero,
             callbackContract: ethers.constants.AddressZero,
             market: txnParams.market,

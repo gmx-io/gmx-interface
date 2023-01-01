@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { SwapParams, SwapPathItem, findSwapPath, getMarketsGraph, getSwapPathForPosition } from "./swapPath";
 import { getSwapFee, usePriceImpactConfigs } from "domain/synthetics/fees";
 import { useAvailableTokensData } from "domain/synthetics/tokens";
-import { getCorrectTokenAddress } from "config/tokens";
+import { getConvertedTokenAddress } from "config/tokens";
 
 export type SwapRoute = {
   market?: string;
@@ -104,8 +104,8 @@ export function useSwapPath(p: {
     if (p.isSwap) {
       if (!p.fromToken || !p.toToken) return;
 
-      const fromToken = getCorrectTokenAddress(chainId, p.fromToken, "native");
-      const toToken = getCorrectTokenAddress(chainId, p.toToken, "native");
+      const fromToken = getConvertedTokenAddress(chainId, p.fromToken, "wrapped");
+      const toToken = getConvertedTokenAddress(chainId, p.toToken, "wrapped");
 
       debouncedUpdateSwapPath({
         fromToken: fromToken,
@@ -117,13 +117,15 @@ export function useSwapPath(p: {
     } else {
       if (!p.fromToken || !p.collateralToken || !p.indexToken) return;
 
-      const fromToken = getCorrectTokenAddress(chainId, p.fromToken, "native");
-      const toToken = getCorrectTokenAddress(chainId, p.collateralToken, "native");
+      // Todo: to swapPath
+      const fromToken = getConvertedTokenAddress(chainId, p.fromToken, "wrapped");
+      const toToken = getConvertedTokenAddress(chainId, p.collateralToken, "wrapped");
+      const indexToken = getConvertedTokenAddress(chainId, p.indexToken, "wrapped");
 
       debouncedUpdateSwapPathForPosition({
         fromToken: fromToken,
         toToken: toToken,
-        indexToken: p.indexToken,
+        indexToken,
         amountUsd: p.amountUsd,
         feeEstimator,
       });

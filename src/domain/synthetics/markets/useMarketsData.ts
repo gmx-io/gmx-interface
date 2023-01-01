@@ -2,7 +2,7 @@ import { getContract } from "config/contracts";
 import MarketStore from "abis/MarketStore.json";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import { useMulticall } from "lib/multicall";
-import { getCorrectTokenAddress } from "config/tokens";
+import { getWrappedToken } from "config/tokens";
 import { useMemo } from "react";
 import { Market, MarketsData } from "./types";
 
@@ -39,16 +39,23 @@ export function useMarketsData(chainId: number): MarketsData {
       },
     }),
     parseResponse: (res) => {
+      const wrappedToken = getWrappedToken(chainId);
+
       const marketsMap: { [address: string]: Market } = {};
 
       for (let market of res.reader.markets.returnValues) {
+        const [marketTokenAddress, indexTokenAddress, longTokenAddress, shortTokenAddress, data] = market;
+
         try {
-          marketsMap[market[0]] = {
-            marketTokenAddress: market[0],
-            indexTokenAddress: getCorrectTokenAddress(chainId, market[1], "native"),
-            longTokenAddress: getCorrectTokenAddress(chainId, market[2], "native"),
-            shortTokenAddress: market[3],
-            data: market[4],
+          marketsMap[marketTokenAddress] = {
+            marketTokenAddress,
+            indexTokenAddress,
+            longTokenAddress,
+            shortTokenAddress,
+            isIndexWrapped: indexTokenAddress === wrappedToken.address,
+            isLongWrapped: longTokenAddress === wrappedToken.address,
+            isShortWrapped: shortTokenAddress === wrappedToken.address,
+            data,
             // TODO: store in configs?
             perp: "USD",
           };

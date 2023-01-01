@@ -11,6 +11,9 @@ export type Market = {
   indexTokenAddress: string;
   longTokenAddress: string;
   shortTokenAddress: string;
+  isIndexWrapped: boolean;
+  isLongWrapped: boolean;
+  isShortWrapped: boolean;
   data: string;
   perp: string;
 };

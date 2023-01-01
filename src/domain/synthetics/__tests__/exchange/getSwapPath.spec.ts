@@ -8,6 +8,8 @@ import {
 import { MarketsData, MarketsPoolsData, getTokenPoolAmount } from "domain/synthetics/markets";
 import { BigNumber, ethers } from "ethers";
 
+const NATIVE_TOKEN = "AVAX";
+
 // indexToken-longToken-shortToken
 const marketsKeys = [
   "AVAX-AVAX-USDC",
@@ -30,6 +32,9 @@ const marketsData: MarketsData = marketsCombinations.reduce((acc, comb) => {
     shortTokenAddress: shortToken,
     longTokenAddress: longToken,
     indexTokenAddress: indexToken,
+    isLongWrapped: longToken === NATIVE_TOKEN,
+    isShortWrapped: shortToken === NATIVE_TOKEN,
+    isIndexWrapped: indexToken === NATIVE_TOKEN,
     perp: "USD",
     data: "",
   };

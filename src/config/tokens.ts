@@ -735,7 +735,7 @@ export function getTokenBySymbol(chainId: number, symbol: string) {
   return token;
 }
 
-export function getCorrectTokenAddress(chainId: number, address: string, convertTo?: "wrapped" | "native") {
+export function getConvertedTokenAddress(chainId: number, address: string, convertTo?: "wrapped" | "native") {
   const wrappedToken = getWrappedToken(chainId);
 
   if (convertTo === "wrapped" && address === NATIVE_TOKEN_ADDRESS) {

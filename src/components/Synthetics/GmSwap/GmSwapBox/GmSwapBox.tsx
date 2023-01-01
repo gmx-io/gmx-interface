@@ -64,11 +64,12 @@ export function GmSwapBox(p: Props) {
   const availableTokens = useMemo(() => {
     if (!market) return [];
 
+    const wrappedToken = getWrappedToken(chainId);
+
     const availableAddresses = [market.longTokenAddress, market.shortTokenAddress];
 
-    if (availableAddresses.includes(NATIVE_TOKEN_ADDRESS)) {
-      const wrappedToken = getWrappedToken(chainId);
-      availableAddresses.push(wrappedToken.address);
+    if (availableAddresses.includes(wrappedToken.address)) {
+      availableAddresses.unshift(NATIVE_TOKEN_ADDRESS);
     }
 
     return availableAddresses.map((address) => getToken(chainId, address));
@@ -119,7 +120,7 @@ export function GmSwapBox(p: Props) {
     if (!market) return undefined;
 
     const poolTokenState = [firstTokenState, secondTokenState].find((tokenState) => {
-      const tokenPool = getTokenPoolType(marketsData, tokensData, market.marketTokenAddress, tokenState.tokenAddress);
+      const tokenPool = getTokenPoolType(marketsData, market.marketTokenAddress, tokenState.tokenAddress);
 
       return tokenPool === poolType;
     });

@@ -21,7 +21,9 @@ export function getMarketName(
 ) {
   const market = getMarket(marketsData, marketAddress);
 
-  const indexToken = getTokenData(tokensData, market?.indexTokenAddress);
+  const indexAddress = market?.isIndexWrapped ? NATIVE_TOKEN_ADDRESS : market?.indexTokenAddress;
+
+  const indexToken = getTokenData(tokensData, indexAddress);
   const longToken = getTokenData(tokensData, market?.longTokenAddress);
   const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
 
@@ -56,14 +58,15 @@ export function getTokenPoolAmount(
 ) {
   const pools = getMarketPoolData(poolsData, marketAddress);
   const market = getMarket(marketsData, marketAddress);
+  const tokenPoolType = getTokenPoolType(marketsData, marketAddress, tokenAddress);
 
-  if (!market || !pools) return undefined;
+  if (!market || !pools || !tokenPoolType) return undefined;
 
-  if (tokenAddress === market.longTokenAddress) {
+  if (tokenPoolType === MarketPoolType.Long) {
     return pools.longPoolAmount;
   }
 
-  if (tokenAddress === market.shortTokenAddress) {
+  if (tokenPoolType === MarketPoolType.Short) {
     return pools.shortPoolAmount;
   }
 
@@ -83,25 +86,16 @@ export function getPoolAmountUsd(
   return getUsdFromTokenAmount(tokensData, tokenAddress, tokenAmount, useMaxPrice);
 }
 
-export function getTokenPoolType(
-  marketsData: MarketsData,
-  tokensData: TokensData,
-  marketAddress?: string,
-  tokenAddress?: string
-) {
+export function getTokenPoolType(marketsData: MarketsData, marketAddress?: string, tokenAddress?: string) {
   const market = getMarket(marketsData, marketAddress);
-  const token = getTokenData(tokensData, tokenAddress);
 
   if (!market) return undefined;
 
-  if (
-    market.longTokenAddress === tokenAddress ||
-    (market.longTokenAddress === NATIVE_TOKEN_ADDRESS && token?.isWrapped)
-  ) {
+  if (market.longTokenAddress === tokenAddress || (market.isLongWrapped && tokenAddress === NATIVE_TOKEN_ADDRESS)) {
     return MarketPoolType.Long;
   }
 
-  if (market.shortTokenAddress === tokenAddress) {
+  if (market.shortTokenAddress === tokenAddress || (market.isShortWrapped && tokenAddress === NATIVE_TOKEN_ADDRESS)) {
     return MarketPoolType.Short;
   }
 

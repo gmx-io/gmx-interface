@@ -2,7 +2,7 @@ import { useWeb3React } from "@web3-react/core";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import TokenAbi from "abis/Token.json";
 import { getContract } from "config/contracts";
-import { getCorrectTokenAddress, getTokenBySymbol } from "config/tokens";
+import { getConvertedTokenAddress, getTokenBySymbol } from "config/tokens";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { useMemo } from "react";
 import { getTokenData, TokenData, useAvailableTokensData } from "domain/synthetics/tokens";
@@ -37,9 +37,9 @@ export function useMarketTokensData(chainId: number): MarketTokensData {
       if (longPrices && shortPrices && indexPrices) {
         const marketProps = {
           marketToken: market.marketTokenAddress,
-          longToken: getCorrectTokenAddress(chainId, market.longTokenAddress, "wrapped"),
+          longToken: market.longTokenAddress,
           shortToken: market.shortTokenAddress,
-          indexToken: market.indexTokenAddress,
+          indexToken: getConvertedTokenAddress(chainId, market.indexTokenAddress, "wrapped"),
           data: market.data,
         };
 
