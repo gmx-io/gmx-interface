@@ -79,7 +79,7 @@ import { usePrevious } from "lib/usePrevious";
 import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "config/tokens";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { ErrorCodes, ErrorTypes } from "./constants";
+import { ErrorCode, ErrorDisplayType } from "./constants";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -842,7 +842,7 @@ export default function SwapBox(props) {
       const nextUsdgAmount = fromTokenInfo.usdgAmount.add(usdgFromAmount);
 
       if (nextUsdgAmount.gt(fromTokenInfo.maxUsdgAmount)) {
-        return [t`${fromTokenInfo.symbol} pool exceeded`, ErrorTypes.tooltip, ErrorCodes.poolExceeded];
+        return [t`${fromTokenInfo.symbol} pool exceeded`, ErrorDisplayType.Tooltip, ErrorCode.PoolExceeded];
       }
     }
 
@@ -936,7 +936,7 @@ export default function SwapBox(props) {
           toTokenInfo.bufferAmount &&
           toTokenInfo.bufferAmount.gt(toTokenInfo.poolAmount.sub(swapAmount))
         ) {
-          return [t`Insufficient liquidity`, ErrorTypes.modal, ErrorCodes.buffer];
+          return [t`Insufficient liquidity`, ErrorDisplayType.Modal, ErrorCode.Buffer];
         }
 
         if (
@@ -951,8 +951,8 @@ export default function SwapBox(props) {
           if (nextUsdgAmount.gt(fromTokenInfo.maxUsdgAmount)) {
             return [
               t`${fromTokenInfo.symbol} pool exceeded, try different token`,
-              ErrorTypes.modal,
-              ErrorCodes.maxUSDG,
+              ErrorDisplayType.Modal,
+              ErrorCode.MaxUSDG,
             ];
           }
         }
@@ -997,7 +997,7 @@ export default function SwapBox(props) {
           shortCollateralToken.bufferAmount.gt(shortCollateralToken.poolAmount.sub(stableTokenAmount))
         ) {
           // suggest swapping to collateralToken
-          return [t`Insufficient liquidity, change "Collateral In"`, ErrorTypes.modal, ErrorCodes.buffer];
+          return [t`Insufficient liquidity, change "Collateral In"`, ErrorDisplayType.Modal, ErrorCode.Buffer];
         }
 
         if (
@@ -1011,8 +1011,8 @@ export default function SwapBox(props) {
           if (nextUsdgAmount.gt(fromTokenInfo.maxUsdgAmount)) {
             return [
               t`${fromTokenInfo.symbol} pool exceeded, try different token`,
-              ErrorTypes.modal,
-              ErrorCodes.maxUSDG,
+              ErrorDisplayType.Modal,
+              ErrorCode.MaxUSDG,
             ];
           }
         }
@@ -1096,7 +1096,7 @@ export default function SwapBox(props) {
       return true;
     }
     const [error, errorType] = getError();
-    if (error && errorType !== ErrorTypes.modal) {
+    if (error && errorType !== ErrorDisplayType.Modal) {
       return false;
     }
     if (needOrderBookApproval && isWaitingForPluginApproval) {
@@ -1132,7 +1132,7 @@ export default function SwapBox(props) {
       return t`Incorrect Network`;
     }
     const [error, errorType] = getError();
-    if (error && errorType !== ErrorTypes.modal) {
+    if (error && errorType !== ErrorDisplayType.Modal) {
       return error;
     }
 
@@ -1688,7 +1688,7 @@ export default function SwapBox(props) {
 
     const [, errorType, errorCode] = getError();
 
-    if (errorType === ErrorTypes.modal) {
+    if (errorType === ErrorDisplayType.Modal) {
       setModalError(errorCode);
       return;
     }
@@ -1816,7 +1816,7 @@ export default function SwapBox(props) {
   }
 
   const ERROR_TOOLTIP_MSG = {
-    [ErrorCodes.poolExceeded]: t`GLP doesn't accept this amount of ${fromTokenInfo.symbol}.`,
+    [ErrorCode.PoolExceeded]: t`GLP doesn't accept this amount of ${fromTokenInfo.symbol}.`,
   };
 
   const SWAP_LABELS = {
@@ -1828,10 +1828,10 @@ export default function SwapBox(props) {
   function renderPrimaryButton() {
     const [errorMessage, errorType, errorCode] = getError();
     const primaryTextMessage = getPrimaryText();
-    if (errorType === ErrorTypes.tooltip && errorMessage === primaryTextMessage) {
+    if (errorType === ErrorDisplayType.Tooltip && errorMessage === primaryTextMessage && ERROR_TOOLTIP_MSG[errorCode]) {
       return (
         <Tooltip
-          onDisabled
+          isHandlerDisabled
           handle={
             <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
               {primaryTextMessage}

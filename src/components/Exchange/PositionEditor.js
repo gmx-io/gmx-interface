@@ -30,7 +30,7 @@ import { approveTokens, shouldRaiseGasError } from "domain/tokens";
 import { usePrevious } from "lib/usePrevious";
 import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { ErrorCodes, ErrorTypes } from "./constants";
+import { ErrorCode, ErrorDisplayType } from "./constants";
 
 const DEPOSIT = "Deposit";
 const WITHDRAW = "Withdraw";
@@ -211,10 +211,10 @@ export default function PositionEditor(props) {
 
     if (!isDeposit && fromAmount && nextLiquidationPrice) {
       if (position.isLong && position.markPrice.lt(nextLiquidationPrice)) {
-        return [t`Invalid liq. price`, ErrorTypes.tooltip, ErrorCodes.invalidLiqPrice];
+        return [t`Invalid liq. price`, ErrorDisplayType.Tooltip, ErrorCode.InvalidLiqPrice];
       }
       if (!position.isLong && position.markPrice.gt(nextLiquidationPrice)) {
-        return [t`Invalid liq. price`, ErrorTypes.tooltip, ErrorCodes.invalidLiqPrice];
+        return [t`Invalid liq. price`, ErrorDisplayType.Tooltip, ErrorCode.InvalidLiqPrice];
       }
     }
 
@@ -464,16 +464,16 @@ export default function PositionEditor(props) {
     [WITHDRAW]: t`Withdraw`,
   };
   const ERROR_TOOLTIP_MSG = {
-    [ErrorCodes.invalidLiqPrice]: t`Liquidation price would cross mark price.`,
+    [ErrorCode.InvalidLiqPrice]: t`Liquidation price would cross mark price.`,
   };
 
   function renderPrimaryButton() {
     const [errorMessage, errorType, errorCode] = getError();
     const primaryTextMessage = getPrimaryText();
-    if (errorType === ErrorTypes.tooltip && errorMessage === primaryTextMessage) {
+    if (errorType === ErrorDisplayType.Tooltip && errorMessage === primaryTextMessage && ERROR_TOOLTIP_MSG[errorCode]) {
       return (
         <Tooltip
-          onDisabled
+          isHandlerDisabled
           handle={
             <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
               {primaryTextMessage}

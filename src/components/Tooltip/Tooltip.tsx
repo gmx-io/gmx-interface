@@ -1,6 +1,5 @@
 import cx from "classnames";
 import { useCallback, useState, useRef } from "react";
-import Wrapper from "./Wrapper";
 import { IS_TOUCH } from "config/env";
 
 const OPEN_DELAY = 0;
@@ -14,13 +13,13 @@ type Props = {
   className?: string;
   disableHandleStyle?: boolean;
   handleClassName?: string;
-  onDisabled?: boolean;
+  isHandlerDisabled?: boolean;
 };
 
 export default function Tooltip(props: Props) {
   const [visible, setVisible] = useState(false);
-  const intervalCloseRef = useRef<null | number>(null);
-  const intervalOpenRef = useRef<null | number>(null);
+  const intervalCloseRef = useRef<ReturnType<typeof setTimeout> | null>();
+  const intervalOpenRef = useRef<ReturnType<typeof setTimeout> | null>();
 
   const position = props.position ?? "left-bottom";
   const trigger = props.trigger ?? "hover";
@@ -32,7 +31,7 @@ export default function Tooltip(props: Props) {
       intervalCloseRef.current = null;
     }
     if (!intervalOpenRef.current) {
-      intervalOpenRef.current = window.setTimeout(() => {
+      intervalOpenRef.current = setTimeout(() => {
         setVisible(true);
         intervalOpenRef.current = null;
       }, OPEN_DELAY);
@@ -54,7 +53,7 @@ export default function Tooltip(props: Props) {
   }, [setVisible, intervalCloseRef, trigger]);
 
   const onMouseLeave = useCallback(() => {
-    intervalCloseRef.current = window.setTimeout(() => {
+    intervalCloseRef.current = setTimeout(() => {
       setVisible(false);
       intervalCloseRef.current = null;
     }, CLOSE_DELAY);
@@ -71,7 +70,8 @@ export default function Tooltip(props: Props) {
       <span
         className={cx({ "Tooltip-handle": !props.disableHandleStyle }, [props.handleClassName], { active: visible })}
       >
-        <Wrapper onDisabled={props.onDisabled}>{props.handle}</Wrapper>
+        {/* For onMouseLeave to work on disabled button https://github.com/react-component/tooltip/issues/18#issuecomment-411476678 */}
+        {props.isHandlerDisabled ? <div className="Tooltip-disabled-wrapper">{props.handle}</div> : <>{props.handle}</>}
       </span>
       {visible && <div className={cx(["Tooltip-popup", position])}>{props.renderContent()}</div>}
     </span>

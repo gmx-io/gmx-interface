@@ -1,11 +1,11 @@
-export enum ErrorCodes {
-  poolExceeded = "POOL_EXCEEDED",
-  buffer = "BUFFER",
-  maxUSDG = "MAX_USDG",
-  invalidLiqPrice = "INVALID_LIQ_PRICE",
+export enum ErrorCode {
+  PoolExceeded = "POOL_EXCEEDED",
+  Buffer = "BUFFER",
+  MaxUSDG = "MAX_USDG",
+  InvalidLiqPrice = "INVALID_LIQ_PRICE",
 }
 
-export enum ErrorTypes {
-  modal = "MODAL",
-  tooltip = "TOOLTIP",
+export enum ErrorDisplayType {
+  Modal = "MODAL",
+  Tooltip = "TOOLTIP",
 }
