@@ -1,14 +1,14 @@
 import { Web3Provider } from "@ethersproject/providers";
-import { t } from "@lingui/macro";
 import { getContract } from "config/contracts";
 import { BigNumber, ethers } from "ethers";
-import { callContract } from "lib/contracts";
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getCorrectTokenAddress, getToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { encodeReferralCode } from "domain/referrals";
 import { convertToContractPrice } from "../tokens";
 import { OrderType } from "./types";
 import { orderTypeLabels } from "./constants";
+import { callContract } from "lib/contracts";
+import { t } from "@lingui/macro";
 
 type CommonParams = {
   account: string;
@@ -49,7 +49,7 @@ type SwapParams = CommonParams & {
 type Params = PositionParams | SwapParams;
 
 // TODO: unit tests
-export function createOrderTxn(chainId: number, library: Web3Provider, p: Params) {
+export async function createOrderTxn(chainId: number, library: Web3Provider, p: Params) {
   const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, library.getSigner());
   const orderStoreAddress = getContract(chainId, "OrderStore");
 
@@ -119,7 +119,6 @@ export function createOrderTxn(chainId: number, library: Web3Provider, p: Params
 
   return callContract(chainId, contract, "multicall", [encodedPayload], {
     value: wntAmount,
-    gasLimit: 10 ** 6,
     sentMsg: t`${orderLabel} order sent`,
     successMsg: t`Success ${orderLabel} order`,
     failMsg: t`${orderLabel} order failed`,

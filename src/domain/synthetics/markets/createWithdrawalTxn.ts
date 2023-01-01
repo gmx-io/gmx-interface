@@ -46,7 +46,6 @@ export function createWithdrawalTxn(chainId: number, library: Web3Provider, p: P
 
   return callContract(chainId, contract, "multicall", [multicall], {
     value: wntAmount,
-    gasLimit: 10 ** 6,
     sentMsg: t`Withdrawal order sent`,
     successMsg: t`Success withdrawal order`,
     failMsg: t`Withdrawal order failed`,

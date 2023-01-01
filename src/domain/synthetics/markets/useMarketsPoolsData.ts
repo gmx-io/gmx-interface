@@ -6,6 +6,7 @@ import { useMulticall } from "lib/multicall";
 import { useMarketsData } from "./useMarketsData";
 import { MarketsPoolsData } from "./types";
 import { poolAmountKey, reserveFactorKey } from "../dataStore";
+import { getCorrectTokenAddress } from "config/tokens";
 
 export function useMarketsPoolsData(chainId: number): MarketsPoolsData {
   const marketsData = useMarketsData(chainId);
@@ -26,11 +27,13 @@ export function useMarketsPoolsData(chainId: number): MarketsPoolsData {
           return Object.assign(calls, {
             [`${marketAddress}-longPoolAmount`]: {
               methodName: "getUint",
-              params: [poolAmountKey(marketAddress, market.longTokenAddress)],
+              params: [
+                poolAmountKey(marketAddress, getCorrectTokenAddress(chainId, market.longTokenAddress, "wrapped")),
+              ],
             },
             [`${marketAddress}-shortPoolAmount`]: {
               methodName: "getUint",
-              params: [poolAmountKey(marketAddress, market!.shortTokenAddress)],
+              params: [poolAmountKey(marketAddress, market.shortTokenAddress)],
             },
             [`${marketAddress}-reserveFactor-long`]: {
               methodName: "getUint",

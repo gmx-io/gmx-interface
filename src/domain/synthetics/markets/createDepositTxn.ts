@@ -61,7 +61,6 @@ export function createDepositTxn(chainId: number, library: Web3Provider, p: Para
 
   return callContract(chainId, contract, "multicall", [multicall], {
     value: wntAmount,
-    gasLimit: 10 ** 6,
     sentMsg: t`Deposit order sent`,
     successMsg: t`Success deposit order`,
     failMsg: t`Despoit order failed`,
