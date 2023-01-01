@@ -1,58 +1,77 @@
-import { useMemo } from "react";
-import { openInterestKey, useDataStoreKeys } from "domain/synthetics/dataStore";
+import { openInterestKey } from "domain/synthetics/dataStore";
+import DataStore from "abis/DataStore.json";
 import { OpenInterestData, getMarket, useMarketsData } from "../markets";
 import { BigNumber } from "ethers";
+import { getContract } from "config/contracts";
+import { useMulticall } from "lib/multicall";
+import { useMemo } from "react";
 
 export function useOpenInterestData(chainId: number): OpenInterestData {
   const marketsData = useMarketsData(chainId);
 
-  const dataStoreReq = useMemo(() => {
-    return Object.keys(marketsData).reduce((req, address) => {
-      const market = getMarket(marketsData, address);
+  const marketAddresses = Object.keys(marketsData);
 
-      req[`${address}-longToken-long`] = openInterestKey(address, market!.longTokenAddress, true);
-      req[`${address}-shortToken-short`] = openInterestKey(address, market!.shortTokenAddress, false);
+  const cacheKey = marketAddresses.length > 0 ? [marketAddresses.join("-")] : null;
 
-      req[`${address}-longToken-short`] = openInterestKey(address, market!.longTokenAddress, false);
-      req[`${address}-shortToken-long`] = openInterestKey(address, market!.shortTokenAddress, true);
+  const { data } = useMulticall(chainId, "useOpenInterestData", {
+    key: cacheKey,
+    request: () => ({
+      dataStore: {
+        contractAddress: getContract(chainId, "DataStore"),
+        abi: DataStore.abi,
+        calls: marketAddresses.reduce((calls, marketAddress) => {
+          const market = getMarket(marketsData, marketAddress);
 
-      return req;
-    }, {});
-  }, [marketsData]);
+          return Object.assign(calls, {
+            [`${marketAddress}-longToken-long`]: {
+              methodName: "getUint",
+              params: [openInterestKey(marketAddress, market!.longTokenAddress, true)],
+            },
+            [`${marketAddress}-shortToken-long`]: {
+              methodName: "getUint",
+              params: [openInterestKey(marketAddress, market!.shortTokenAddress, true)],
+            },
+            [`${marketAddress}-longToken-short`]: {
+              methodName: "getUint",
+              params: [openInterestKey(marketAddress, market!.longTokenAddress, false)],
+            },
+            [`${marketAddress}-shortToken-short`]: {
+              methodName: "getUint",
+              params: [openInterestKey(marketAddress, market!.shortTokenAddress, false)],
+            },
+          });
+        }, {}),
+      },
+    }),
+    parseResponse: (res) =>
+      marketAddresses.reduce((result: OpenInterestData, address) => {
+        const longInterestUsingLongToken = res.dataStore[`${address}-longToken-long`].returnValues[0];
+        const longInterestUsingShortToken = res.dataStore[`${address}-shortToken-long`].returnValues[0];
 
-  const dataStoreResult = useDataStoreKeys(chainId, {
-    method: "getUint",
-    keys: dataStoreReq,
+        const shortInterestUsingLongToken = res.dataStore[`${address}-longToken-short`].returnValues[0];
+        const shortInterestUsingShortToken = res.dataStore[`${address}-shortToken-short`].returnValues[0];
+
+        if (
+          ![
+            longInterestUsingLongToken,
+            longInterestUsingShortToken,
+            shortInterestUsingLongToken,
+            shortInterestUsingShortToken,
+          ].every(BigNumber.isBigNumber)
+        ) {
+          return result;
+        }
+
+        result[address] = {
+          longInterest: BigNumber.from(0).add(longInterestUsingLongToken).add(longInterestUsingShortToken),
+          shortInterest: BigNumber.from(0).add(shortInterestUsingLongToken).add(shortInterestUsingShortToken),
+        };
+
+        return result;
+      }, {} as OpenInterestData),
   });
 
-  const result = useMemo(() => {
-    if (!dataStoreResult) return {};
-
-    const openInterestData = Object.keys(marketsData).reduce((acc: OpenInterestData, address) => {
-      const longInterestUsingLongToken = dataStoreResult[`${address}-longToken-long`];
-      const longInterestUsingShortToken = dataStoreResult[`${address}-shortToken-long`];
-
-      const shortInterestUsingLongToken = dataStoreResult[`${address}-longToken-short`];
-      const shortInterestUsingShortToken = dataStoreResult[`${address}-shortToken-short`];
-
-      const longInterest = BigNumber.from(0)
-        .add(longInterestUsingLongToken || BigNumber.from(0))
-        .add(longInterestUsingShortToken || BigNumber.from(0));
-
-      const shortInterest = BigNumber.from(0)
-        .add(shortInterestUsingLongToken || BigNumber.from(0))
-        .add(shortInterestUsingShortToken || BigNumber.from(0));
-
-      acc[address] = {
-        longInterest,
-        shortInterest,
-      };
-
-      return acc;
-    }, {} as OpenInterestData);
-
-    return openInterestData;
-  }, [dataStoreResult, marketsData]);
-
-  return result;
+  return useMemo(() => {
+    return data || {};
+  }, [data]);
 }

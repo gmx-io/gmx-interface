@@ -1,45 +1,63 @@
 import { useMemo } from "react";
-import { swapImpactExponentFactorKey, swapImpactFactorKey, useDataStoreKeys } from "domain/synthetics/dataStore";
+import { swapImpactExponentFactorKey, swapImpactFactorKey } from "domain/synthetics/dataStore";
+import DataStore from "abis/DataStore.json";
 import { PriceImpactConfigsData } from "./types";
 import { useMarketsData } from "../markets";
-import { expandDecimals } from "lib/numbers";
+import { useMulticall } from "lib/multicall";
+import { getContract } from "config/contracts";
 
 export function usePriceImpactConfigs(chainId: number): PriceImpactConfigsData {
   const marketsData = useMarketsData(chainId);
 
   const marketAddresses = Object.keys(marketsData);
 
-  const dataStoreReq: { [key: string]: string } = {};
+  const cacheKey = marketAddresses.length > 0 ? [marketAddresses.join("-")] : null;
 
-  marketAddresses.forEach((address) => {
-    dataStoreReq[`${address}-impactFactor-positive`] = swapImpactFactorKey(address, true);
-    dataStoreReq[`${address}-impactFactor-negative`] = swapImpactFactorKey(address, false);
-    dataStoreReq[`${address}-exponentImpactFactor`] = swapImpactExponentFactorKey(address);
+  const { data } = useMulticall(chainId, "usePriceImpactConfigs", {
+    key: cacheKey,
+    request: () => ({
+      dataStore: {
+        contractAddress: getContract(chainId, "DataStore"),
+        abi: DataStore.abi,
+        calls: marketAddresses.reduce((calls, marketAddress) => {
+          return Object.assign(calls, {
+            [`${marketAddress}-impactFactor-positive`]: {
+              methodName: "getUint",
+              params: [swapImpactFactorKey(marketAddress, true)],
+            },
+            [`${marketAddress}-impactFactor-negative`]: {
+              methodName: "getUint",
+              params: [swapImpactFactorKey(marketAddress, false)],
+            },
+            [`${marketAddress}-exponentImpactFactor`]: {
+              methodName: "getUint",
+              params: [swapImpactExponentFactorKey(marketAddress)],
+            },
+          });
+        }, {}),
+      },
+    }),
+    parseResponse: (res) =>
+      marketAddresses.reduce((result: PriceImpactConfigsData, address) => {
+        const factorPositive = res.dataStore[`${address}-impactFactor-positive`].returnValues[0];
+        const factorNegative = res.dataStore[`${address}-impactFactor-negative`].returnValues[0];
+        const exponentFactor = res.dataStore[`${address}-exponentImpactFactor`].returnValues[0];
+
+        if (!factorNegative || !factorPositive || !exponentFactor) {
+          return result;
+        }
+
+        result[address] = {
+          factorPositive,
+          factorNegative,
+          exponentFactor,
+        };
+
+        return result as PriceImpactConfigsData;
+      }, {}),
   });
 
-  const dataStoreResult = useDataStoreKeys(chainId, { keys: dataStoreReq, method: "getUint" });
-
-  const result: PriceImpactConfigsData = useMemo(() => {
-    if (!dataStoreResult) return {};
-
-    const priceImpactConfigs = marketAddresses.reduce((acc, address) => {
-      const factorPositive = dataStoreResult[`${address}-impactFactor-positive`];
-      const factorNegative = dataStoreResult[`${address}-impactFactor-negative`];
-      const exponentFactor = dataStoreResult[`${address}-exponentImpactFactor`];
-
-      acc[address] = {
-        // TODO: remove it after contracts will send correct values
-        factorPositive: factorPositive?.gte(expandDecimals(1, 20)) ? factorPositive : expandDecimals(1, 26),
-        factorNegative: factorNegative?.gte(expandDecimals(1, 20)) ? factorNegative : expandDecimals(1, 26),
-        exponentFactor: exponentFactor?.gte(expandDecimals(1, 30)) ? exponentFactor : expandDecimals(2, 30),
-      };
-
-      return acc;
-    }, {} as PriceImpactConfigsData);
-
-    return priceImpactConfigs;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dataStoreResult, marketAddresses.join("-")]);
-
-  return result;
+  return useMemo(() => {
+    return data || {};
+  }, [data]);
 }
