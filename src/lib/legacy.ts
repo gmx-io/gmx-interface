@@ -17,6 +17,7 @@ import { isValidToken } from "config/tokens";
 import { useChainId } from "./chains";
 import { isValidTimestamp } from "./dates";
 import { t } from "@lingui/macro";
+import { isLocal } from "config/env";
 
 const { AddressZero } = ethers.constants;
 
@@ -1389,14 +1390,6 @@ export function isHashZero(value) {
 }
 export function isAddressZero(value) {
   return value === ethers.constants.AddressZero;
-}
-
-export function isDevelopment() {
-  return !window.location.host?.includes("gmx.io") && !window.location.host?.includes("ipfs.io");
-}
-
-export function isLocal() {
-  return window.location.host?.includes("localhost");
 }
 
 export function getHomeUrl() {
