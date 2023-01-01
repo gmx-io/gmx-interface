@@ -1,11 +1,12 @@
 .theme-dark:root {
   --tv-color-pane-background: #16182e;
   --tv-color-platform-background: #16182e;
+  --tv-color-pane-background-secondary: #16182e;
   --tv-color-toolbar-button-text-active: #b2b5be;
   --tv-color-toolbar-button-text-hover: #b2b5be;
   --tv-color-toolbar-button-background-hover: #1e223de6;
   --tv-color-toolbar-button-text-active: #2962ff;
-  --color-accent: #2962ff;
+  --tv-color-toolbar-button-background-expanded: #16182e;
 }
 
 html.theme-dark .chart-page {
@@ -19,4 +20,35 @@ html.theme-dark .chart-container {
 html.theme-dark .chart-controls-bar {
   display: none;
   height: 0;
+}
+
+.menuWrap-g78rwseC {
+  background-color: #20243f !important;
+}
+
+.item-2IihgTnv {
+  cursor: pointer;
+  background-color: #20243f !important;
+  color: #b2b5be !important;
+}
+.item-2IihgTnv:hover {
+  background-color: #1e223de6 !important;
+}
+
+.dialog-2AogBbC7 {
+  background-color: #20243f !important;
+}
+
+.close-2sL5JydP {
+  color: #6f6e84 !important;
+}
+
+.close-2sL5JydP:hover {
+  background-color: transparent !important;
+  color: #f7f7f7 !important;
+  cursor: pointer;
+}
+
+html.theme-dark .shortcut-2IihgTnv {
+  color: #b2b5be !important;
 }
