@@ -103,7 +103,6 @@ export default function TVChartContainer({
       library_path: defaultProps.libraryPath,
       locale: "en",
       disabled_features: [
-        "use_localstorage_for_settings",
         "volume_force_overlay",
         "show_logo_on_all_charts",
         "caption_buttons_text_if_possible",
@@ -114,8 +113,14 @@ export default function TVChartContainer({
         "header_interval_dialog_button",
         "show_interval_dialog_on_key_press",
         "header_symbol_search",
+        "popup_hints",
       ],
-      enabled_features: ["side_toolbar_in_fullscreen_mode", "header_in_fullscreen_mode", "hide_resolution_in_legend"],
+      enabled_features: [
+        "side_toolbar_in_fullscreen_mode",
+        "header_in_fullscreen_mode",
+        "hide_resolution_in_legend",
+        "items_favoriting",
+      ],
       charts_storage_url: defaultProps.chartsStorageUrl,
       charts_storage_api_version: defaultProps.chartsStorageApiVersion,
       client_id: defaultProps.clientId,
@@ -141,6 +146,10 @@ export default function TVChartContainer({
     tvWidgetRef.current = new window.TradingView.widget(widgetOptions);
     tvWidgetRef.current.onChartReady(function () {
       setChartReady(true);
+      tvWidgetRef.current.applyOverrides({
+        "paneProperties.background": "#16182e",
+        "paneProperties.backgroundType": "solid",
+      });
     });
 
     return () => {

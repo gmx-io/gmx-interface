@@ -3,23 +3,9 @@
   --tv-color-platform-background: #16182e;
   --tv-color-toolbar-button-text-active: #b2b5be;
   --tv-color-toolbar-button-text-hover: #b2b5be;
-  --tv-color-toolbar-button-text-active-hover: #b2b5be;
   --tv-color-toolbar-button-background-hover: #1e223de6;
-  --tv-color-toolbar-button-text-active: #2d42fc;
-}
-
-.resolution-btn,
-.indicator-btn {
-  cursor: pointer;
-}
-.resolution-btn:hover,
-.indicator-btn:hover {
-  color: #fff !important;
-}
-
-.active-resolution-btn {
-  color: #fff !important;
-  font-weight: 800;
+  --tv-color-toolbar-button-text-active: #2962ff;
+  --color-accent: #2962ff;
 }
 
 html.theme-dark .chart-page {
