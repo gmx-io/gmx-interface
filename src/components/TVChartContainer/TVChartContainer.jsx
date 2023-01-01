@@ -102,6 +102,7 @@ export default function TVChartContainer({
       container: tvChartRef.current,
       library_path: defaultProps.libraryPath,
       locale: "en",
+      loading_screen: { backgroundColor: "#16182e", foregroundColor: "#2962ff" },
       disabled_features: [
         "volume_force_overlay",
         "show_logo_on_all_charts",
@@ -114,6 +115,7 @@ export default function TVChartContainer({
         "show_interval_dialog_on_key_press",
         "header_symbol_search",
         "popup_hints",
+        "header_saveload",
       ],
       enabled_features: [
         "side_toolbar_in_fullscreen_mode",

@@ -361,7 +361,7 @@
 
 .ExchangeChart.tv .ExchangeChart-bottom-content {
   position: absolute;
-  bottom: 0.8rem;
+  bottom: 0;
   left: 0;
   right: 0;
   top: 0;
@@ -923,7 +923,7 @@ table.Exchange-list-small td {
 
   .ExchangeChart.tv .ExchangeChart-bottom-content {
     position: absolute;
-    bottom: 0.8rem;
+    bottom: 0;
     left: 0;
     right: 0;
     top: 0;
