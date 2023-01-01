@@ -83,3 +83,21 @@ html.theme-dark .common-tooltip__body-36YLR71G {
 html.theme-dark .common-tooltip__ear-holder-36YLR71G:after {
   display: none;
 }
+
+html.theme-dark .color-green-xRobF0EE.variant-primary-xRobF0EE {
+  --ui-lib-button-default-color-content: #fff;
+  --ui-lib-button-default-color-border: var(--accent);
+  --ui-lib-button-default-color-bg: var(--accent);
+  cursor: pointer;
+}
+html.theme-dark .color-green-xRobF0EE.variant-primary-xRobF0EE:hover {
+  background: #4f60fc;
+}
+
+html.theme-dark .color-gray-xRobF0EE.variant-secondary-xRobF0EE {
+  cursor: pointer;
+}
+html.theme-dark .color-gray-xRobF0EE.variant-secondary-xRobF0EE:hover {
+  background: var(--dark-blue-bg);
+  border-color: var(--dark-blue-bg);
+}
