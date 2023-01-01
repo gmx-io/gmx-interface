@@ -26,6 +26,17 @@ const FEED_ID_MAP = {
 };
 const timezoneOffset = -new Date().getTimezoneOffset() * 60;
 
+function formatBarInfo(bar) {
+  const { t, o: open, c: close, h: high, l: low } = bar;
+  return {
+    time: t + timezoneOffset,
+    open,
+    close,
+    high,
+    low,
+  };
+}
+
 export function fillGaps(prices, periodSeconds) {
   if (prices.length < 2) {
     return prices;
@@ -54,6 +65,24 @@ export function fillGaps(prices, periodSeconds) {
   }
 
   return newPrices;
+}
+
+export async function getLimitChartPricesFromStats(chainId, symbol, period, limit = 1) {
+  if (["WBTC", "WETH", "WAVAX"].includes(symbol)) {
+    symbol = symbol.substr(1);
+  } else if (symbol === "BTC.b") {
+    symbol = "BTC";
+  }
+
+  const url = `${GMX_STATS_API_URL}/candles/${symbol}?preferableChainId=${chainId}&period=${period}&limit=${limit}`;
+
+  const response = await fetch(url);
+  if (response.status !== 200) {
+    throw new Error("cannot fetch limit price data");
+  }
+  const _prices = await response.json().then(({ prices }) => prices);
+  const prices = _prices.map(formatBarInfo);
+  return prices;
 }
 
 export async function getChartPricesFromStats(chainId, symbol, period) {
@@ -109,13 +138,7 @@ export async function getChartPricesFromStats(chainId, symbol, period) {
     );
   }
 
-  prices = prices.map(({ t, o: open, c: close, h: high, l: low }) => ({
-    time: t + timezoneOffset,
-    open,
-    close,
-    high,
-    low,
-  }));
+  prices = prices.map(formatBarInfo);
   return prices;
 }
 

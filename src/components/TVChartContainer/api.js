@@ -1,10 +1,15 @@
 import { getServerUrl } from "config/backend";
 import { getTokenBySymbol, getWrappedToken } from "config/tokens";
-import { getChainlinkChartPricesFromGraph, getChartPricesFromStats, getStablePriceData } from "domain/prices";
+import {
+  getChainlinkChartPricesFromGraph,
+  getChartPricesFromStats,
+  getLimitChartPricesFromStats,
+  getStablePriceData,
+} from "domain/prices";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
 
-function formatBar(bar) {
+function formatTimeInBar(bar) {
   return {
     ...bar,
     time: bar.time * 1000,
@@ -36,24 +41,29 @@ async function getTokenChartPrice(chainId, symbol, period, to, from) {
 }
 
 async function getCurrentPrice(chainId, symbol) {
-  const indexPricesUrl = getServerUrl(chainId, "/prices");
-  const indexPrices = await fetch(indexPricesUrl).then((res) => res.json());
-  let symbolInfo = getTokenBySymbol(chainId, symbol);
-  if (symbolInfo.isNative) {
-    symbolInfo = getWrappedToken(chainId);
+  try {
+    const indexPricesUrl = getServerUrl(chainId, "/prices");
+    const indexPrices = await fetch(indexPricesUrl).then((res) => res.json());
+    let symbolInfo = getTokenBySymbol(chainId, symbol);
+    if (symbolInfo.isNative) {
+      symbolInfo = getWrappedToken(chainId);
+    }
+    return indexPrices[symbolInfo.address];
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error(err);
   }
-  return indexPrices[symbolInfo.address];
 }
 
 async function getLastHistoryBar(ticker, resolution, chainId) {
-  const _prices = await getTokenChartPrice(chainId, ticker, resolution);
-  return formatBar({ ..._prices[_prices.length - 1], ticker });
+  const prices = await getLimitChartPricesFromStats(chainId, ticker, resolution);
+  return formatTimeInBar({ ...prices[prices.length - 1], ticker });
 }
 
 export async function getHistoryBars({ ticker, resolution, chainId, isStable, to, from }) {
   const period = supportedResolutions[resolution];
   const bars = isStable ? getStablePriceData(period) : await getTokenChartPrice(chainId, ticker, period, to, from);
-  return bars.map(formatBar);
+  return bars.map(formatTimeInBar);
 }
 
 const getLastBarAfterInterval = (function () {
@@ -62,7 +72,7 @@ const getLastBarAfterInterval = (function () {
 
   return async function main(ticker, period, chainId) {
     const currentTime = Date.now();
-    if (currentTime - startTime > 60000 || lastTicker !== ticker) {
+    if (currentTime - startTime > 30000 || lastTicker !== ticker) {
       lastBar = await getLastHistoryBar(ticker, period, chainId);
       startTime = currentTime;
       lastTicker = ticker;
