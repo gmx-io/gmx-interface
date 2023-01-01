@@ -1,6 +1,6 @@
 import { useWeb3React } from "@web3-react/core";
 import { getContract } from "config/contracts";
-import SyntheticsReaderV2 from "abis/SyntheticsReaderV2.json";
+import SyntheticsReader from "abis/SyntheticsReader.json";
 import { useMulticall } from "lib/multicall";
 import { PositionsData } from "./types";
 import { getPositionKey } from "./utils";
@@ -14,8 +14,8 @@ export function usePositionsData(chainId: number): PositionsData {
     key: account ? [account] : null,
     request: () => ({
       reader: {
-        contractAddress: getContract(chainId, "SyntheticsReaderV2"),
-        abi: SyntheticsReaderV2.abi,
+        contractAddress: getContract(chainId, "SyntheticsReader"),
+        abi: SyntheticsReader.abi,
         calls: {
           positions: {
             methodName: "getAccountPositionInfoList",

@@ -1,7 +1,7 @@
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { TokensData } from "../tokens/types";
 import { getTokenData, getUsdFromTokenAmount } from "../tokens/utils";
-import { MarketPoolType, MarketsData, MarketsPoolsData, MarketTokensData, OpenInterestData } from "./types";
+import { MarketPoolType, MarketsData, MarketsPoolsData, MarketTokensData, MarketsOpenInterestData } from "./types";
 
 export function getMarket(marketsData: MarketsData, marketAddress?: string) {
   if (!marketAddress) return undefined;
@@ -42,7 +42,7 @@ export function getMarketPoolData(poolsData: MarketsPoolsData, marketAddress?: s
   return poolsData[marketAddress];
 }
 
-export function getOpenInterest(openInterestData: OpenInterestData, marketAddress?: string) {
+export function getOpenInterest(openInterestData: MarketsOpenInterestData, marketAddress?: string) {
   if (!marketAddress) return undefined;
 
   return openInterestData[marketAddress];

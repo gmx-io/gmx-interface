@@ -27,20 +27,22 @@ export type MarketTokensData = {
   [marketAddress: string]: MarketTokenData;
 };
 
-export type MarketPoolData = {
+export type PoolData = {
   longPoolAmount: BigNumber;
   shortPoolAmount: BigNumber;
+  reserveFactorLong: BigNumber;
+  reserveFactorShort: BigNumber;
 };
 
 export type MarketsPoolsData = {
-  [marketAddress: string]: MarketPoolData;
+  [marketAddress: string]: PoolData;
 };
 
-export type MarketOpenInterest = {
+export type OpenInterestData = {
   longInterest: BigNumber;
   shortInterest: BigNumber;
 };
 
-export type OpenInterestData = {
-  [marketAddress: string]: MarketOpenInterest;
+export type MarketsOpenInterestData = {
+  [marketAddress: string]: OpenInterestData;
 };

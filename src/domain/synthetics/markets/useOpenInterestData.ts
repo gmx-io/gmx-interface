@@ -1,12 +1,13 @@
 import { openInterestKey } from "domain/synthetics/dataStore";
 import DataStore from "abis/DataStore.json";
-import { OpenInterestData, getMarket, useMarketsData } from "../markets";
-import { BigNumber } from "ethers";
 import { getContract } from "config/contracts";
 import { useMulticall } from "lib/multicall";
 import { useMemo } from "react";
+import { getMarket } from "./utils";
+import { useMarketsData } from "./useMarketsData";
+import { MarketsOpenInterestData } from "./types";
 
-export function useOpenInterestData(chainId: number): OpenInterestData {
+export function useOpenInterestData(chainId: number): MarketsOpenInterestData {
   const marketsData = useMarketsData(chainId);
 
   const marketAddresses = Object.keys(marketsData);
@@ -44,7 +45,7 @@ export function useOpenInterestData(chainId: number): OpenInterestData {
       },
     }),
     parseResponse: (res) =>
-      marketAddresses.reduce((result: OpenInterestData, address) => {
+      marketAddresses.reduce((result: MarketsOpenInterestData, address) => {
         const longInterestUsingLongToken = res.dataStore[`${address}-longToken-long`].returnValues[0];
         const longInterestUsingShortToken = res.dataStore[`${address}-shortToken-long`].returnValues[0];
 
@@ -52,23 +53,21 @@ export function useOpenInterestData(chainId: number): OpenInterestData {
         const shortInterestUsingShortToken = res.dataStore[`${address}-shortToken-short`].returnValues[0];
 
         if (
-          ![
-            longInterestUsingLongToken,
-            longInterestUsingShortToken,
-            shortInterestUsingLongToken,
-            shortInterestUsingShortToken,
-          ].every(BigNumber.isBigNumber)
+          !longInterestUsingLongToken ||
+          !longInterestUsingShortToken ||
+          !shortInterestUsingLongToken ||
+          !shortInterestUsingShortToken
         ) {
           return result;
         }
 
         result[address] = {
-          longInterest: BigNumber.from(0).add(longInterestUsingLongToken).add(longInterestUsingShortToken),
-          shortInterest: BigNumber.from(0).add(shortInterestUsingLongToken).add(shortInterestUsingShortToken),
+          longInterest: longInterestUsingLongToken.add(longInterestUsingShortToken),
+          shortInterest: shortInterestUsingLongToken.add(shortInterestUsingShortToken),
         };
 
         return result;
-      }, {} as OpenInterestData),
+      }, {} as MarketsOpenInterestData),
   });
 
   return useMemo(() => {
