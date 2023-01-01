@@ -321,6 +321,7 @@ export default function ExchangeTVChart(props) {
             savedShouldShowPositionLines={savedShouldShowPositionLines}
             symbol={chartToken.symbol}
             chainId={chainId}
+            onSelectToken={onSelectToken}
           />
         )}
       </div>

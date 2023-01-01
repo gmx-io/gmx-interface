@@ -1,14 +1,16 @@
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getKeyByValue, supportedResolutions } from "./api";
+import { getTokenBySymbol } from "config/tokens";
 import useDatafeed from "./useDatafeed";
+import { TV_SAVE_LOAD_CHARTS } from "config/localStorage";
+import { useLocalStorage } from "react-use";
 const DEFAULT_PERIOD = "4h";
 
 const defaultProps = {
   theme: "Dark",
   containerId: "tv_chart_container",
   libraryPath: "/charting_library/",
-  chartsStorageUrl: "https://saveload.tradingview.com",
   chartsStorageApiVersion: "1.1",
   clientId: "tradingview.com",
   userId: "public_user_id",
@@ -24,11 +26,13 @@ export default function TVChartContainer({
   savedShouldShowPositionLines,
   currentPositions,
   currentOrders,
+  onSelectToken,
 }) {
   const tvChartRef = useRef();
   const tvWidgetRef = useRef(null);
   const [chartReady, setChartReady] = useState(false);
   let [period] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
+  let [tvCharts, setTvCharts] = useLocalStorage(TV_SAVE_LOAD_CHARTS, []);
   const datafeed = useDatafeed();
 
   const drawLineOnChart = useCallback(
@@ -103,6 +107,52 @@ export default function TVChartContainer({
       library_path: defaultProps.libraryPath,
       locale: "en",
       loading_screen: { backgroundColor: "#16182e", foregroundColor: "#2962ff" },
+      save_load_adapter: {
+        charts: tvCharts,
+        getAllCharts: function () {
+          return Promise.resolve(this.charts);
+        },
+
+        removeChart: function (id) {
+          for (let i = 0; i < this.charts.length; ++i) {
+            if (this.charts[i].id === id) {
+              this.charts.splice(i, 1);
+              setTvCharts(this.charts);
+              return Promise.resolve();
+            }
+          }
+
+          return Promise.reject();
+        },
+
+        saveChart: function (chartData) {
+          if (!chartData.id) {
+            chartData.id = Math.random().toString();
+          } else {
+            this.removeChart(chartData.id);
+          }
+
+          chartData.timestamp = new Date().valueOf();
+
+          this.charts.push(chartData);
+
+          setTvCharts(this.charts);
+
+          return Promise.resolve(chartData.id);
+        },
+
+        getChartContent: function (id) {
+          for (let i = 0; i < this.charts.length; ++i) {
+            if (this.charts[i].id === id) {
+              const { content, symbol } = this.charts[i];
+              const tokenInfo = getTokenBySymbol(chainId, symbol);
+              onSelectToken(tokenInfo);
+              return Promise.resolve(content);
+            }
+          }
+          return Promise.reject();
+        },
+      },
       disabled_features: [
         "volume_force_overlay",
         "show_logo_on_all_charts",
@@ -115,7 +165,6 @@ export default function TVChartContainer({
         "show_interval_dialog_on_key_press",
         "header_symbol_search",
         "popup_hints",
-        "header_saveload",
       ],
       enabled_features: [
         "side_toolbar_in_fullscreen_mode",
