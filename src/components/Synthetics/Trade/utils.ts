@@ -17,7 +17,7 @@ import {
   convertFromUsdByPrice,
   convertToUsdByPrice,
   getTokenData,
-  useAvailableTradeTokensData,
+  useAvailableTokensData,
 } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
@@ -212,7 +212,7 @@ export function useAvailableSwapTokens(p: { indexTokenAddress?: string; isSwap: 
   const { chainId } = useChainId();
 
   const marketsData = useMarketsData(chainId);
-  const tokensData = useAvailableTradeTokensData(chainId);
+  const tokensData = useAvailableTokensData(chainId);
 
   const wrappedToken = getWrappedToken(chainId);
   const markets = getMarkets(marketsData);
@@ -295,7 +295,7 @@ export function useFeesState(p: {
 
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
 
-  const tokensData = useAvailableTradeTokensData(chainId);
+  const tokensData = useAvailableTokensData(chainId);
   const openInterestData = useOpenInterestData(chainId);
   const priceImpactConfigs = usePriceImpactConfigs(chainId);
 

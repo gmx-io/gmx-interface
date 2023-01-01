@@ -5,7 +5,7 @@ import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenBu
 import Modal from "components/Modal/Modal";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { getContract } from "config/contracts";
-import { useTokenAllowance } from "domain/synthetics/tokens/useTokenAllowance";
+import { useTokenAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 import {
   convertToUsdByPrice,
   formatTokenAmount,
@@ -19,14 +19,13 @@ import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 
-import { useAvailableTradeTokensData } from "domain/synthetics/tokens";
+import { useAvailableTokensData } from "domain/synthetics/tokens";
 
 import { useUserReferralCode } from "domain/referrals";
 import { Fees, getSubmitError, TradeMode, TradeType, tradeTypeLabels } from "../utils";
 
-import { OrderType } from "config/synthetics";
 import { SwapRoute } from "domain/synthetics/exchange";
-import { createOrderTxn } from "domain/synthetics/orders";
+import { createOrderTxn, OrderType } from "domain/synthetics/orders";
 
 import { InfoRow } from "components/InfoRow/InfoRow";
 import { getMarketName, useMarketsData } from "domain/synthetics/markets";
@@ -71,11 +70,11 @@ export function ConfirmationBox(p: Props) {
   const { chainId } = useChainId();
   const routerAddress = getContract(chainId, "SyntheticsRouter");
 
-  const tokensData = useAvailableTradeTokensData(chainId);
+  const tokensData = useAvailableTokensData(chainId);
   const marketsData = useMarketsData(chainId);
   const referralCodeData = useUserReferralCode(library, chainId, account);
 
-  const tokenAllowanceData = useTokenAllowance(chainId, {
+  const tokenAllowanceData = useTokenAllowanceData(chainId, {
     spenderAddress: routerAddress,
     tokenAddresses: p.fromTokenAddress ? [p.fromTokenAddress] : [],
   });

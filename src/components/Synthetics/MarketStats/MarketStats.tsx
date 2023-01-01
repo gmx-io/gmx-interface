@@ -6,7 +6,6 @@ import { useChainId } from "lib/chains";
 import { importImage } from "lib/legacy";
 import { useMemo } from "react";
 import { CardRow } from "components/CardRow/CardRow";
-import { PLACEHOLDER_MARKET_NAME } from "config/synthetics";
 
 import "./MarketStats.scss";
 import {
@@ -23,7 +22,7 @@ import {
   formatTokenAmountWithUsd,
   formatUsdAmount,
   getUsdFromTokenAmount,
-  useAvailableTradeTokensData,
+  useAvailableTokensData,
 } from "domain/synthetics/tokens";
 
 type Props = {
@@ -35,11 +34,11 @@ export function MarketStats(p: Props) {
 
   const marketsData = useMarketsData(chainId);
   const poolsData = useMarketsPoolsData(chainId);
-  const tokensData = useAvailableTradeTokensData(chainId);
+  const tokensData = useAvailableTokensData(chainId);
   const marketTokensData = useMarketTokensData(chainId);
 
   const market = getMarket(marketsData, p.marketKey);
-  const marketName = getMarketName(marketsData, tokensData, market?.marketTokenAddress);
+  const marketName = getMarketName(marketsData, tokensData, market?.marketTokenAddress, true);
 
   const marketToken = getMarketTokenData(marketTokensData, p.marketKey);
   const marketPrice = marketToken?.prices?.maxPrice;
@@ -84,7 +83,7 @@ export function MarketStats(p: Props) {
             />
           </div>
           <div className="App-card-title-mark-info">
-            <div className="App-card-title-mark-title">{marketName || PLACEHOLDER_MARKET_NAME}</div>
+            <div className="App-card-title-mark-title">{marketName}</div>
             <div className="App-card-title-mark-subtitle">GMX Market tokens</div>
           </div>
           {/* TODO */}

@@ -9,12 +9,7 @@ import {
   useMarketsPoolsData,
 } from "domain/synthetics/markets";
 import { useOpenInterestData } from "domain/synthetics/markets/useOpenInterestData";
-import {
-  formatUsdAmount,
-  getTokenData,
-  getUsdFromTokenAmount,
-  useAvailableTradeTokensData,
-} from "domain/synthetics/tokens";
+import { formatUsdAmount, getTokenData, getUsdFromTokenAmount, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 
 import "./MarketCard.scss";
@@ -35,7 +30,7 @@ export function MarketCard(p: Props) {
   const marketsData = useMarketsData(chainId);
   const poolsData = useMarketsPoolsData(chainId);
   const openInterestData = useOpenInterestData(chainId);
-  const tokensData = useAvailableTradeTokensData(chainId);
+  const tokensData = useAvailableTokensData(chainId);
 
   const market = getMarket(marketsData, p.marketAddress || p.swapPath?.[p.swapPath.length - 1]);
   const marketName = getMarketName(marketsData, tokensData, market?.marketTokenAddress);

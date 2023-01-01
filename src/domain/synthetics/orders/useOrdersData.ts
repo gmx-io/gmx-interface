@@ -4,12 +4,12 @@ import { useMulticall } from "lib/multicall";
 import { useMemo } from "react";
 import { OrdersData } from "./types";
 import { useWeb3React } from "@web3-react/core";
-import { orderTypeLabels } from "config/synthetics";
 import { bigNumberify } from "lib/numbers";
 import { getMarket, useMarketsData } from "domain/synthetics/markets";
 import { parseContractPrice } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { getToken } from "config/tokens";
+import { orderTypeLabels } from "./constants";
 
 export function useOrdersData(chainId: number): OrdersData {
   const { account } = useWeb3React();

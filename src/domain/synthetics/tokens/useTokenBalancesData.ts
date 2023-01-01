@@ -8,7 +8,7 @@ import { useMulticall } from "lib/multicall";
 import { useMemo } from "react";
 import { TokenBalancesData } from "./types";
 
-export function useTokenBalances(chainId: number, p: { tokenAddresses: string[] }): TokenBalancesData {
+export function useTokenBalancesData(chainId: number, p: { tokenAddresses: string[] }): TokenBalancesData {
   const { account } = useWeb3React();
 
   const { data: tokenBalances } = useMulticall(chainId, "useTokenBalances", {

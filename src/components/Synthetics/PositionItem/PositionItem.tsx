@@ -9,7 +9,7 @@ import {
   formatUsdAmount,
   getTokenData,
   getUsdFromTokenAmount,
-  useAvailableTradeTokensData,
+  useAvailableTokensData,
 } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
@@ -28,7 +28,7 @@ export function PositionItem(p: Props) {
   const { position } = p;
 
   const marketsData = useMarketsData(chainId);
-  const tokensData = useAvailableTradeTokensData(chainId);
+  const tokensData = useAvailableTokensData(chainId);
 
   const market = getMarket(marketsData, position.marketAddress);
   const indexToken = getTokenData(tokensData, market?.indexTokenAddress);

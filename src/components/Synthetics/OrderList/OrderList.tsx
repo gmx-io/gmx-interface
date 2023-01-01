@@ -1,7 +1,6 @@
 import { Trans } from "@lingui/macro";
 import { OrderItem } from "components/Synthetics/OrderItem/OrderItem";
-import { OrderType } from "config/synthetics";
-import { getOrders } from "domain/synthetics/orders";
+import { OrderType, getOrders } from "domain/synthetics/orders";
 import { useOrdersData } from "domain/synthetics/orders/useOrdersData";
 import { useChainId } from "lib/chains";
 

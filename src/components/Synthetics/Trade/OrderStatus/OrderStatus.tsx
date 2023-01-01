@@ -7,7 +7,7 @@ import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { RequestStatus } from "components/RequestStatus/RequestStatus";
 import { useEffect, useState } from "react";
 import { useChainId } from "lib/chains";
-import { getTokenData, useAvailableTradeTokensData } from "domain/synthetics/tokens";
+import { getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 
 type Props = {
   isSwap: boolean;
@@ -21,7 +21,7 @@ export function OrderStatus(p: Props) {
   const [orderKey, setOrderKey] = useState<string>();
 
   const { chainId } = useChainId();
-  const tokensData = useAvailableTradeTokensData(chainId);
+  const tokensData = useAvailableTokensData(chainId);
 
   const { getPendingOrders, getOrderEvents, setIsOrderViewed } = useContractEventsContext();
 

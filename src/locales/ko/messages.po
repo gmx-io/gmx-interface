@@ -2454,7 +2454,7 @@ msgstr "주문 생성!"
 msgid "Order creation failed."
 msgstr "주문 생성 실패."
 
-#: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
+#: src/components/MarketPoolSwap/GmOrderStatus/GmOrderStatus.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
 #~ msgid "Order executed"
 #~ msgstr ""
@@ -4471,7 +4471,7 @@ msgstr ""
 msgid "{0} selected in order form"
 msgstr "{0}이(가) 주문 폼에서 선택되었습니다."
 
-#: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
+#: src/components/MarketPoolSwap/GmOrderStatus/GmOrderStatus.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
 #~ msgid "{0} status"
 #~ msgstr ""

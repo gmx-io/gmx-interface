@@ -26,10 +26,10 @@ import { GmConfirmationBox } from "../GmConfirmationBox/GmConfirmationBox";
 import Checkbox from "components/Checkbox/Checkbox";
 import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
 import { HIGH_PRICE_IMPACT_BP } from "config/synthetics";
-import { useAvailableTradeTokensData } from "domain/synthetics/tokens";
+import { useAvailableTokensData } from "domain/synthetics/tokens";
 
 import "./GmSwapBox.scss";
-import { MarketPoolSwapStatus } from "../GmOrderStatus/OrderStatus";
+import { GmOrderStatus } from "../GmOrderStatus/GmOrderStatus";
 
 type Props = {
   selectedMarketAddress?: string;
@@ -53,7 +53,7 @@ export function GmSwapBox(p: Props) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
 
-  const tokensData = useAvailableTradeTokensData(chainId);
+  const tokensData = useAvailableTokensData(chainId);
   const marketsData = useMarketsData(chainId);
   const marketTokensData = useMarketTokensData(chainId);
   const marketPoolsData = useMarketsPoolsData(chainId);
@@ -412,7 +412,7 @@ export function GmSwapBox(p: Props) {
       )}
 
       {isProcessing && (
-        <MarketPoolSwapStatus
+        <GmOrderStatus
           firstToken={firstTokenState.tokenAddress!}
           secondToken={secondTokenState.tokenAddress}
           market={market?.marketTokenAddress!}

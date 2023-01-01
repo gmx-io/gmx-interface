@@ -1,13 +1,7 @@
 import { t } from "@lingui/macro";
-import { OrderType } from "config/synthetics";
 import { getMarket, getMarketName, useMarketsData } from "domain/synthetics/markets";
-import { Order } from "domain/synthetics/orders";
-import {
-  formatTokenAmount,
-  formatUsdAmount,
-  getTokenData,
-  useAvailableTradeTokensData,
-} from "domain/synthetics/tokens";
+import { Order, OrderType } from "domain/synthetics/orders";
+import { formatTokenAmount, formatUsdAmount, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 
 type Props = {
@@ -18,7 +12,7 @@ export function OrderItem(p: Props) {
   const { chainId } = useChainId();
 
   const marketsData = useMarketsData(chainId);
-  const tokensData = useAvailableTradeTokensData(chainId);
+  const tokensData = useAvailableTokensData(chainId);
 
   const { order } = p;
 

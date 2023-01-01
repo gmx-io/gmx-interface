@@ -8,7 +8,7 @@ import {
   formatTokenAmountWithUsd,
   formatUsdAmount,
   getTokenData,
-  useAvailableTradeTokensData,
+  useAvailableTokensData,
 } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { Fees } from "../utils";
@@ -19,7 +19,7 @@ type Props = {
 
 export function TradeFees(p: Props) {
   const { chainId } = useChainId();
-  const tokensData = useAvailableTradeTokensData(chainId);
+  const tokensData = useAvailableTokensData(chainId);
 
   const { positionPriceImpact, executionFee, totalFeeUsd, swapPath } = p.fees;
 

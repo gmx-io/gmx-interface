@@ -8,7 +8,7 @@ import {
   formatUsdAmount,
   getTokenData,
   getUsdFromTokenAmount,
-  useAvailableTradeTokensData,
+  useAvailableTokensData,
 } from "domain/synthetics/tokens";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
@@ -21,8 +21,7 @@ import { useTokenInputState } from "domain/synthetics/exchange";
 import { formatAmountFree, parseValue } from "lib/numbers";
 import { USD_DECIMALS } from "lib/legacy";
 import { getTokenAmountFromUsd } from "domain/synthetics/tokens";
-import { createOrderTxn } from "domain/synthetics/orders";
-import { OrderType } from "config/synthetics";
+import { OrderType, createOrderTxn } from "domain/synthetics/orders";
 
 import "./PositionEditor.scss";
 
@@ -47,7 +46,7 @@ export function PositionEditor(p: Props) {
 
   const positionsData = usePositionsData(chainId);
   const marketsData = useMarketsData(chainId);
-  const tokensData = useAvailableTradeTokensData(chainId);
+  const tokensData = useAvailableTokensData(chainId);
 
   const position = getPosition(positionsData, p.positionKey);
   const market = getMarket(marketsData, position?.marketAddress);

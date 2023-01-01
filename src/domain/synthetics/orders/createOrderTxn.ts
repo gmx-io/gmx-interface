@@ -7,7 +7,8 @@ import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getCorrectTokenAddress, getToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { encodeReferralCode } from "domain/referrals";
 import { convertToContractPrice } from "../tokens";
-import { OrderType, orderTypeLabels } from "config/synthetics";
+import { OrderType } from "./types";
+import { orderTypeLabels } from "./constants";
 
 type CommonParams = {
   account: string;

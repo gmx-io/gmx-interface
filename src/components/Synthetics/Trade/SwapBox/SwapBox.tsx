@@ -24,7 +24,7 @@ import {
   formatTokenAmount,
   formatUsdAmount,
   getTokenData,
-  useAvailableTradeTokensData,
+  useAvailableTokensData,
 } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 
@@ -67,7 +67,7 @@ type Props = {
 export function SwapBox(p: Props) {
   const { chainId } = useChainId();
 
-  const tokensData = useAvailableTradeTokensData(chainId);
+  const tokensData = useAvailableTokensData(chainId);
 
   const [focusedInput, setFocusedInput] = useState<FocusedInput>();
   const [operationTab, setOperationTab] = useLocalStorageSerializeKey(

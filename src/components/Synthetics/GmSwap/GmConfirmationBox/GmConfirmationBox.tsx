@@ -10,7 +10,7 @@ import { PriceImpact } from "domain/synthetics/fees/types";
 import { createDepositTxn } from "domain/synthetics/markets/createDepositTxn";
 import { createWithdrawalTxn } from "domain/synthetics/markets/createWithdrawalTxn";
 import { TokensData } from "domain/synthetics/tokens/types";
-import { useTokenAllowance } from "domain/synthetics/tokens/useTokenAllowance";
+import { useTokenAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 import {
   convertToUsdByPrice,
   formatTokenAmount,
@@ -33,7 +33,7 @@ import {
   useMarketsPoolsData,
   useMarketTokensData,
 } from "domain/synthetics/markets";
-import { useAvailableTradeTokensData } from "domain/synthetics/tokens";
+import { useAvailableTokensData } from "domain/synthetics/tokens";
 
 import "./GmConfirmationBox.scss";
 
@@ -73,9 +73,9 @@ export function GmConfirmationBox(p: Props) {
   const marketsData = useMarketsData(chainId);
   const marketTokensData = useMarketTokensData(chainId);
   const poolsData = useMarketsPoolsData(chainId);
-  const tokensData = useAvailableTradeTokensData(chainId);
+  const tokensData = useAvailableTokensData(chainId);
 
-  const tokenAllowanceData = useTokenAllowance(chainId, {
+  const tokenAllowanceData = useTokenAllowanceData(chainId, {
     spenderAddress: routerAddress,
     tokenAddresses,
   });

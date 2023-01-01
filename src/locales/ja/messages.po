@@ -2454,7 +2454,7 @@ msgstr "注文作成完了!"
 msgid "Order creation failed."
 msgstr "注文が作成できませんでした。"
 
-#: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
+#: src/components/MarketPoolSwap/GmOrderStatus/GmOrderStatus.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
 #~ msgid "Order executed"
 #~ msgstr ""
@@ -4471,7 +4471,7 @@ msgstr ""
 msgid "{0} selected in order form"
 msgstr "{0}がオーダーフォームで選択されました"
 
-#: src/components/MarketPoolSwap/MarketPoolSwapStatus/MarketPoolSwapStatus.tsx
+#: src/components/MarketPoolSwap/GmOrderStatus/GmOrderStatus.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
 #~ msgid "{0} status"
 #~ msgstr ""

@@ -7,7 +7,7 @@ import { useMulticall } from "lib/multicall";
 import { useMemo } from "react";
 import { TokenAllowancesData } from "./types";
 
-export function useTokenAllowance(
+export function useTokenAllowanceData(
   chainId: number,
   p: { spenderAddress?: string; tokenAddresses: string[] }
 ): TokenAllowancesData {

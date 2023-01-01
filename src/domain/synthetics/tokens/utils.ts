@@ -10,7 +10,7 @@ export function getTokenData(tokensData: TokensData, address?: string) {
   return tokensData[address];
 }
 
-export function getTokensDataArr(tokensData: TokensData) {
+export function getTokensDataArray(tokensData: TokensData) {
   return Object.keys(tokensData).map((address) => getTokenData(tokensData, address)!);
 }
 

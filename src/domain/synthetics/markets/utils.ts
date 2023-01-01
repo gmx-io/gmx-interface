@@ -13,16 +13,25 @@ export function getMarkets(marketsData: MarketsData) {
   return Object.keys(marketsData).map((address) => getMarket(marketsData, address)!);
 }
 
-export function getMarketName(marketsData: MarketsData, tokensData: TokensData, marketAddress?: string) {
+export function getMarketName(
+  marketsData: MarketsData,
+  tokensData: TokensData,
+  marketAddress?: string,
+  fallbackToPlaceholder?: boolean
+) {
   const market = getMarket(marketsData, marketAddress);
 
-  if (!market) return undefined;
+  const indexToken = getTokenData(tokensData, market?.indexTokenAddress);
+  const longToken = getTokenData(tokensData, market?.longTokenAddress);
+  const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
 
-  const indexToken = getTokenData(tokensData, market.indexTokenAddress);
-  const longToken = getTokenData(tokensData, market.longTokenAddress);
-  const shortToken = getTokenData(tokensData, market.shortTokenAddress);
+  if (!market || !indexToken || !longToken || !shortToken) {
+    if (fallbackToPlaceholder) {
+      return "GM: ---/--- [-------]";
+    }
 
-  if (!indexToken || !longToken || !shortToken) return undefined;
+    return undefined;
+  }
 
   return `GM: ${indexToken.symbol}/${market.perp} [${longToken.symbol}-${shortToken.symbol}]`;
 }

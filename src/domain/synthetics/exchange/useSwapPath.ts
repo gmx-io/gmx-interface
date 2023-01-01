@@ -5,7 +5,7 @@ import { debounce } from "lodash";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { SwapParams, SwapPathItem, findSwapPath, getMarketsGraph, getSwapPathForPosition } from "./swapPath";
 import { getSwapFee, usePriceImpactConfigs } from "domain/synthetics/fees";
-import { useAvailableTradeTokensData } from "domain/synthetics/tokens";
+import { useAvailableTokensData } from "domain/synthetics/tokens";
 import { getCorrectTokenAddress } from "config/tokens";
 
 export type SwapRoute = {
@@ -36,7 +36,7 @@ export function useSwapPath(p: {
 
   const marketsData = useMarketsData(chainId);
   const poolsData = useMarketsPoolsData(chainId);
-  const tokensData = useAvailableTradeTokensData(chainId);
+  const tokensData = useAvailableTokensData(chainId);
   const priceImpactConfigsData = usePriceImpactConfigs(chainId);
 
   const graph = useMemo(() => {

@@ -1,18 +1,18 @@
 import { getAvailableTradeTokens, getTokensMap } from "config/tokens";
 import { useMemo } from "react";
 import { TokensData } from "./types";
-import { useTokenBalances } from "./useTokenBalances";
-import { useTokenRecentPrices } from "./useTokenRecentPrices";
+import { useTokenBalancesData } from "./useTokenBalancesData";
+import { useTokenRecentPricesData } from "./useTokenRecentPricesData";
 
-export function useAvailableTradeTokensData(chainId: number) {
+export function useAvailableTokensData(chainId: number) {
   const tokenAddresses = getAvailableTradeTokens(chainId, { includeSynthetic: true }).map((token) => token.address);
 
   return useTokensData(chainId, { tokenAddresses });
 }
 
 export function useTokensData(chainId: number, p: { tokenAddresses: string[] }): TokensData {
-  const balancesData = useTokenBalances(chainId, { tokenAddresses: p.tokenAddresses });
-  const pricesData = useTokenRecentPrices(chainId);
+  const balancesData = useTokenBalancesData(chainId, { tokenAddresses: p.tokenAddresses });
+  const pricesData = useTokenRecentPricesData(chainId);
   const tokenConfigs = getTokensMap(chainId);
 
   return useMemo(

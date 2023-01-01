@@ -7,7 +7,7 @@ import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { RequestStatus } from "components/RequestStatus/RequestStatus";
 import { useEffect, useState } from "react";
 import { useChainId } from "lib/chains";
-import { getTokenData, useAvailableTradeTokensData } from "domain/synthetics/tokens";
+import { getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { getMarketName, useMarketsData } from "domain/synthetics/markets";
 
 type Props = {
@@ -18,12 +18,12 @@ type Props = {
   onClose: () => void;
 };
 
-export function MarketPoolSwapStatus(p: Props) {
+export function GmOrderStatus(p: Props) {
   const [orderKey, setOrderKey] = useState<string>();
 
   const { chainId } = useChainId();
 
-  const tokensData = useAvailableTradeTokensData(chainId);
+  const tokensData = useAvailableTokensData(chainId);
   const marketsData = useMarketsData(chainId);
 
   const { getPendingOrders, getOrderEvents, setIsOrderViewed } = useContractEventsContext();
