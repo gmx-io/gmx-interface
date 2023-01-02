@@ -1,24 +1,11 @@
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getKeyByValue, supportedResolutions } from "./api";
-import { getTokenBySymbol } from "config/tokens";
 import useDatafeed from "./useDatafeed";
 import { TV_SAVE_LOAD_CHARTS } from "config/localStorage";
 import { useLocalStorage } from "react-use";
+import { defaultChartProps, SaveLoadAdapter } from "./constants";
 const DEFAULT_PERIOD = "4h";
-
-const defaultProps = {
-  theme: "Dark",
-  containerId: "tv_chart_container",
-  libraryPath: "/charting_library/",
-  chartsStorageApiVersion: "1.1",
-  clientId: "tradingview.com",
-  userId: "public_user_id",
-  fullscreen: false,
-  autosize: true,
-  studiesOverrides: {},
-  header_widget_dom_node: false,
-};
 
 export default function TVChartContainer({
   symbol,
@@ -46,7 +33,7 @@ export default function TVChartContainer({
         .setPrice(price)
         .setQuantity("")
         .setLineStyle(1)
-        .setLineLength(0)
+        .setLineLength(1)
         .setBodyFont(`normal 12pt "Relative", sans-serif`)
         .setBodyTextColor("#fff")
         .setLineColor("#3a3e5e")
@@ -81,118 +68,26 @@ export default function TVChartContainer({
   }, [symbol, chartReady]);
 
   useEffect(() => {
-    const mainSeriesProperties = ["candleStyle", "hollowCandleStyle", "haStyle", "barStyle"];
-    let chartStyleOverrides = {};
-    mainSeriesProperties.forEach((prop) => {
-      chartStyleOverrides = {
-        ...chartStyleOverrides,
-        [`mainSeriesProperties.${prop}.barColorsOnPrevClose`]: true,
-        [`mainSeriesProperties.${prop}.drawWick`]: true,
-        [`mainSeriesProperties.${prop}.drawBorder`]: false,
-        [`mainSeriesProperties.${prop}.borderVisible`]: false,
-        [`mainSeriesProperties.${prop}.upColor`]: "#0ecc83",
-        [`mainSeriesProperties.${prop}.downColor`]: "#fa3c58",
-        [`mainSeriesProperties.${prop}.wickUpColor`]: "#0ecc83",
-        [`mainSeriesProperties.${prop}.wickDownColor`]: "#fa3c58",
-      };
-    });
-
     const widgetOptions = {
       debug: false,
       symbol: symbol,
       datafeed: datafeed,
-      theme: defaultProps.theme,
+      theme: defaultChartProps.theme,
       interval: getKeyByValue(supportedResolutions, period),
       container: tvChartRef.current,
-      library_path: defaultProps.libraryPath,
-      locale: "en",
-      loading_screen: { backgroundColor: "#16182e", foregroundColor: "#2962ff" },
-      save_load_adapter: {
-        charts: tvCharts,
-        getAllCharts: function () {
-          return Promise.resolve(this.charts);
-        },
-
-        removeChart: function (id) {
-          for (let i = 0; i < this.charts.length; ++i) {
-            if (this.charts[i].id === id) {
-              this.charts.splice(i, 1);
-              setTvCharts(this.charts);
-              return Promise.resolve();
-            }
-          }
-
-          return Promise.reject();
-        },
-
-        saveChart: function (chartData) {
-          if (!chartData.id) {
-            chartData.id = Math.random().toString();
-          } else {
-            this.removeChart(chartData.id);
-          }
-
-          chartData.timestamp = new Date().valueOf();
-
-          this.charts.push(chartData);
-
-          setTvCharts(this.charts);
-
-          return Promise.resolve(chartData.id);
-        },
-
-        getChartContent: function (id) {
-          for (let i = 0; i < this.charts.length; ++i) {
-            if (this.charts[i].id === id) {
-              const { content, symbol } = this.charts[i];
-              const tokenInfo = getTokenBySymbol(chainId, symbol);
-              onSelectToken(tokenInfo);
-              return Promise.resolve(content);
-            }
-          }
-          return Promise.reject();
-        },
-      },
-      disabled_features: [
-        "volume_force_overlay",
-        "show_logo_on_all_charts",
-        "caption_buttons_text_if_possible",
-        "create_volume_indicator_by_default",
-        "header_compare",
-        "compare_symbol",
-        "display_market_status",
-        "header_interval_dialog_button",
-        "show_interval_dialog_on_key_press",
-        "header_symbol_search",
-        "popup_hints",
-      ],
-      enabled_features: [
-        "side_toolbar_in_fullscreen_mode",
-        "header_in_fullscreen_mode",
-        "hide_resolution_in_legend",
-        "items_favoriting",
-      ],
-      charts_storage_url: defaultProps.chartsStorageUrl,
-      charts_storage_api_version: defaultProps.chartsStorageApiVersion,
-      client_id: defaultProps.clientId,
-      user_id: defaultProps.userId,
-      fullscreen: defaultProps.fullscreen,
-      autosize: defaultProps.autosize,
+      library_path: defaultChartProps.libraryPath,
+      locale: defaultChartProps.locale,
+      loading_screen: defaultChartProps.loading_screen,
+      save_load_adapter: new SaveLoadAdapter(chainId, tvCharts, setTvCharts, onSelectToken),
+      enabled_features: defaultChartProps.enabled_features,
+      disabled_features: defaultChartProps.disabled_features,
+      client_id: defaultChartProps.clientId,
+      user_id: defaultChartProps.userId,
+      fullscreen: defaultChartProps.fullscreen,
+      autosize: defaultChartProps.autosize,
       custom_css_url: "/tradingview-chart.css",
-      studies_overrides: defaultProps.studiesOverrides,
-      overrides: {
-        "paneProperties.background": "#16182e",
-        "paneProperties.backgroundType": "solid",
-        "paneProperties.vertGridProperties.color": "rgba(35, 38, 59, 1)",
-        "paneProperties.vertGridProperties.style": 2,
-        "paneProperties.horzGridProperties.color": "rgba(35, 38, 59, 1)",
-        "paneProperties.horzGridProperties.style": 2,
-        "mainSeriesProperties.priceLineColor": "#3a3e5e",
-        "scalesProperties.statusViewStyle.symbolTextSource": "ticker",
-        "scalesProperties.textColor": "#fff",
-        "scalesProperties.lineColor": "#16182e",
-        ...chartStyleOverrides,
-      },
+      studies_overrides: defaultChartProps.studiesOverrides,
+      overrides: defaultChartProps.overrides,
     };
     tvWidgetRef.current = new window.TradingView.widget(widgetOptions);
     tvWidgetRef.current.onChartReady(function () {
