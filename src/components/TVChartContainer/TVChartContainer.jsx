@@ -18,36 +18,33 @@ export default function TVChartContainer({
   const tvChartRef = useRef();
   const tvWidgetRef = useRef(null);
   const [chartReady, setChartReady] = useState(false);
-  let [period] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
+  let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
   let [tvCharts, setTvCharts] = useLocalStorage(TV_SAVE_LOAD_CHARTS, []);
   const datafeed = useDatafeed();
 
-  const drawLineOnChart = useCallback(
-    (title, price) => {
-      if (tvWidgetRef.current && chartReady) {
-        return tvWidgetRef.current
-          .activeChart()
-          .createPositionLine({ disableUndo: true })
-          .setText(title)
-          .setPrice(price)
-          .setQuantity("")
-          .setLineStyle(1)
-          .setLineLength(1)
-          .setBodyFont(`normal 12pt "Relative", sans-serif`)
-          .setBodyTextColor("#fff")
-          .setLineColor("#3a3e5e")
-          .setBodyBackgroundColor("#3a3e5e")
-          .setBodyBorderColor("#3a3e5e");
-      }
-    },
-    [chartReady]
-  );
+  const drawLineOnChart = useCallback((title, price) => {
+    if (tvWidgetRef.current?.activeChart().dataReady()) {
+      return tvWidgetRef.current
+        .activeChart()
+        .createPositionLine({ disableUndo: true })
+        .setText(title)
+        .setPrice(price)
+        .setQuantity("")
+        .setLineStyle(1)
+        .setLineLength(1)
+        .setBodyFont(`normal 12pt "Relative", sans-serif`)
+        .setBodyTextColor("#fff")
+        .setLineColor("#3a3e5e")
+        .setBodyBackgroundColor("#3a3e5e")
+        .setBodyBorderColor("#3a3e5e");
+    }
+  }, []);
 
   useEffect(() => {
     const lines = [];
 
     if (savedShouldShowPositionLines) {
-      if (tvWidgetRef.current && chartReady) {
+      if (tvWidgetRef.current?.activeChart().dataReady()) {
         currentPositions.forEach((position) => {
           const { open, liq } = position;
           lines.push(drawLineOnChart(open.title, open.price));
@@ -67,7 +64,7 @@ export default function TVChartContainer({
     if (chartReady && tvWidgetRef.current && symbol !== tvWidgetRef.current?.activeChart()?.symbol()) {
       tvWidgetRef.current.setSymbol(symbol, tvWidgetRef.current.activeChart().resolution(), () => {});
     }
-  }, [symbol, chartReady]);
+  }, [symbol, chartReady, period]);
 
   useEffect(() => {
     const widgetOptions = {
@@ -92,12 +89,22 @@ export default function TVChartContainer({
       overrides: defaultChartProps.overrides,
     };
     tvWidgetRef.current = new window.TradingView.widget(widgetOptions);
+
     tvWidgetRef.current.onChartReady(function () {
       setChartReady(true);
       tvWidgetRef.current.applyOverrides({
         "paneProperties.background": "#16182e",
         "paneProperties.backgroundType": "solid",
       });
+      tvWidgetRef.current
+        .activeChart()
+        .onIntervalChanged()
+        .subscribe(null, (interval) => {
+          if (supportedResolutions[interval]) {
+            const period = supportedResolutions[interval];
+            setPeriod(period);
+          }
+        });
     });
 
     return () => {

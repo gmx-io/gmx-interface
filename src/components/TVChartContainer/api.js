@@ -68,14 +68,15 @@ export async function getHistoryBars({ ticker, resolution, chainId, isStable, to
 
 const getLastBarAfterInterval = (function () {
   let startTime = 0;
-  let lastBar, lastTicker;
+  let lastBar, lastTicker, lastPeriod;
 
   return async function main(ticker, period, chainId) {
     const currentTime = Date.now();
-    if (currentTime - startTime > 15000 || lastTicker !== ticker) {
+    if (currentTime - startTime > 15000 || lastTicker !== ticker || lastPeriod !== period) {
       lastBar = await getLastHistoryBar(ticker, period, chainId);
       startTime = currentTime;
       lastTicker = ticker;
+      lastPeriod = period;
     }
     return lastBar;
   };
