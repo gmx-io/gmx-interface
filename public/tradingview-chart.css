@@ -61,7 +61,7 @@ html.theme-dark .item-f5BaKrKq.interactive-f5BaKrKq {
   cursor: pointer;
 }
 
-html.theme-dark .tab-DggvOZTm:hover,
+html.theme-dark .tab-DggvOZTm:not(.active-DggvOZTm):hover,
 html.theme-dark .item-f5BaKrKq.interactive-f5BaKrKq:hover {
   background-color: var(--dark-blue-bg) !important;
 }
@@ -72,6 +72,8 @@ html.theme-dark .wrap-3jbioG5e,
 .iconButton-i5o9yNmy,
 .bg-5-QHyx-s,
 .tab-DggvOZTm,
+.row-NcPpqR9x,
+.colorPicker-3gSLMlhu,
 .title-DggvOZTm {
   cursor: pointer;
 }

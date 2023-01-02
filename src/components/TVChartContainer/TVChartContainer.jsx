@@ -24,37 +24,39 @@ export default function TVChartContainer({
 
   const drawLineOnChart = useCallback(
     (title, price) => {
-      if (!chartReady || !tvWidgetRef.current) return;
-
-      return tvWidgetRef.current
-        .activeChart()
-        .createPositionLine({ disableUndo: true })
-        .setText(title)
-        .setPrice(price)
-        .setQuantity("")
-        .setLineStyle(1)
-        .setLineLength(1)
-        .setBodyFont(`normal 12pt "Relative", sans-serif`)
-        .setBodyTextColor("#fff")
-        .setLineColor("#3a3e5e")
-        .setBodyBackgroundColor("#3a3e5e")
-        .setBodyBorderColor("#3a3e5e");
+      if (tvWidgetRef.current && chartReady) {
+        return tvWidgetRef.current
+          .activeChart()
+          .createPositionLine({ disableUndo: true })
+          .setText(title)
+          .setPrice(price)
+          .setQuantity("")
+          .setLineStyle(1)
+          .setLineLength(1)
+          .setBodyFont(`normal 12pt "Relative", sans-serif`)
+          .setBodyTextColor("#fff")
+          .setLineColor("#3a3e5e")
+          .setBodyBackgroundColor("#3a3e5e")
+          .setBodyBorderColor("#3a3e5e");
+      }
     },
     [chartReady]
   );
 
   useEffect(() => {
     const lines = [];
-    if (!chartReady) return;
+
     if (savedShouldShowPositionLines) {
-      currentPositions.forEach((position) => {
-        const { open, liq } = position;
-        lines.push(drawLineOnChart(open.title, open.price));
-        lines.push(drawLineOnChart(liq.title, liq.price));
-      });
-      currentOrders.forEach((order) => {
-        lines.push(drawLineOnChart(order.title, order.price));
-      });
+      if (tvWidgetRef.current && chartReady) {
+        currentPositions.forEach((position) => {
+          const { open, liq } = position;
+          lines.push(drawLineOnChart(open.title, open.price));
+          lines.push(drawLineOnChart(liq.title, liq.price));
+        });
+        currentOrders.forEach((order) => {
+          lines.push(drawLineOnChart(order.title, order.price));
+        });
+      }
     }
     return () => {
       lines.forEach((line) => line?.remove());

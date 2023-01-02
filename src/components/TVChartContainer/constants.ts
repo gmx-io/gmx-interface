@@ -49,6 +49,7 @@ export class SaveLoadAdapter {
   setTvCharts: (a: any[]) => void;
   onSelectToken: (token: Token) => void;
   chainId: number;
+
   constructor(chainId, charts, setTvCharts, onSelectToken) {
     this.charts = charts;
     this.setTvCharts = setTvCharts;
