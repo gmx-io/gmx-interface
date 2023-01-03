@@ -16,7 +16,7 @@ import { DUST_USD, USD_DECIMALS } from "lib/legacy";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 
 import { Trans, t } from "@lingui/macro";
-import { OrderType, createOrderTxn } from "domain/synthetics/orders";
+import { OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
 import { useWeb3React } from "@web3-react/core";
 import { getExecutionFee } from "domain/synthetics/fees";
 
@@ -167,18 +167,21 @@ export function PositionSeller(p: Props) {
 
     if (!acceptablePrice) return;
 
-    createOrderTxn(chainId, library, {
+    createDecreaseOrderTxn(chainId, library, {
       account,
-      marketAddress: position.marketAddress,
+      market: position.marketAddress,
       indexTokenAddress: indexToken.address,
       swapPath: [],
       initialCollateralAmount: getTokenAmountFromUsd(tokensData, collateralToken!.address, collateralDeltaUsd),
       initialCollateralAddress: position.collateralTokenAddress,
+      receiveTokenAddress: position.collateralTokenAddress,
+      minOutputAmount: BigNumber.from(0),
       acceptablePrice,
       sizeDeltaUsd: sizeDelta,
       orderType: OrderType.MarketDecrease,
       isLong: position.isLong,
       executionFee: executionFee.feeTokenAmount,
+      tokensData,
     });
   }
 

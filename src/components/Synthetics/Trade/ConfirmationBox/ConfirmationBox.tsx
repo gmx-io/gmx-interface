@@ -25,10 +25,10 @@ import { useUserReferralCode } from "domain/referrals";
 import { Fees, getSubmitError, TradeMode, TradeType, tradeTypeLabels } from "../utils";
 
 import { SwapRoute } from "domain/synthetics/exchange";
-import { createOrderTxn, OrderType } from "domain/synthetics/orders";
+import { OrderType, createIncreaseOrderTxn, createSwapOrderTxn } from "domain/synthetics/orders";
 
 import { InfoRow } from "components/InfoRow/InfoRow";
-import { getMarketName, useMarketsData } from "domain/synthetics/markets";
+
 import { USD_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
 import { TradeFees } from "../TradeFees/TradeFees";
@@ -71,7 +71,6 @@ export function ConfirmationBox(p: Props) {
   const routerAddress = getContract(chainId, "SyntheticsRouter");
 
   const tokensData = useAvailableTokensData(chainId);
-  const marketsData = useMarketsData(chainId);
   const referralCodeData = useUserReferralCode(library, chainId, account);
 
   const tokenAllowanceData = useTokenAllowanceData(chainId, {
@@ -181,27 +180,9 @@ export function ConfirmationBox(p: Props) {
         const triggerPrice = p.triggerPrice ? p.triggerPrice : undefined;
         const acceptablePrice = applySlippage(triggerPrice || p.acceptablePrice);
 
-        // eslint-disable-next-line no-console
-        console.log("order params", {
-          marketAddress: getMarketName(marketsData, tokensData, market),
-          initialCollateralAddress: getTokenData(tokensData, p.fromTokenAddress)?.symbol,
-          initialCollateralAmount: formatTokenAmount(
-            p.fromTokenAmount,
-            getTokenData(tokensData, p.fromTokenAddress)?.decimals
-          ),
-          swapPath: swapPath.map((market) => getMarketName(marketsData, tokensData, market)),
-          indexTokenAddress: getTokenData(tokensData, p.toTokenAddress)?.symbol,
-          sizeDeltaUsd: formatUsdAmount(p.sizeDeltaUsd),
-          triggerPrice: formatUsdAmount(triggerPrice),
-          acceptablePrice: formatUsdAmount(acceptablePrice),
-          executionFee: p.fees.executionFee?.feeTokenAmount,
-          isLong,
-          orderType,
-        });
-
-        createOrderTxn(chainId, library, {
+        createIncreaseOrderTxn(chainId, library, {
           account,
-          marketAddress: market,
+          market,
           initialCollateralAddress: p.fromTokenAddress,
           initialCollateralAmount: p.fromTokenAmount,
           swapPath: swapPath,
@@ -213,6 +194,7 @@ export function ConfirmationBox(p: Props) {
           isLong,
           orderType,
           referralCode: referralCodeData?.userReferralCodeString,
+          tokensData,
         }).then(p.onSubmitted);
       }
     }
@@ -222,16 +204,17 @@ export function ConfirmationBox(p: Props) {
 
       const { swapPath } = p.swapRoute;
 
-      createOrderTxn(chainId, library, {
+      createSwapOrderTxn(chainId, library, {
         account,
-        initialCollateralAddress: p.fromTokenAddress,
-        initialCollateralAmount: p.fromTokenAmount,
+        fromTokenAddress: p.fromTokenAddress,
+        fromTokenAmount: p.fromTokenAmount,
         swapPath: swapPath,
-        receiveTokenAddress: p.toTokenAddress,
+        toTokenAddress: p.toTokenAddress,
         executionFee: p.fees.executionFee.feeTokenAmount,
         orderType,
         minOutputAmount: p.toTokenAmount?.sub(p.toTokenAmount.div(90)) || BigNumber.from(0),
         referralCode: referralCodeData?.userReferralCodeString,
+        tokensData,
       }).then(p.onSubmitted);
     }
   }

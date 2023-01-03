@@ -12,16 +12,16 @@ import {
 } from "domain/synthetics/tokens";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
-
+import Tab from "components/Tab/Tab";
 import { Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import { getExecutionFee } from "domain/synthetics/fees";
-import Tab from "components/Tab/Tab";
 import { useTokenInputState } from "domain/synthetics/exchange";
 import { formatAmountFree, parseValue } from "lib/numbers";
 import { USD_DECIMALS } from "lib/legacy";
 import { getTokenAmountFromUsd } from "domain/synthetics/tokens";
-import { OrderType, createOrderTxn } from "domain/synthetics/orders";
+import { OrderType, createDecreaseOrderTxn, createIncreaseOrderTxn } from "domain/synthetics/orders";
+import { BigNumber } from "ethers";
 
 import "./PositionEditor.scss";
 
@@ -109,28 +109,38 @@ export function PositionEditor(p: Props) {
     if (!acceptablePrice) return;
 
     if (operation === Operation.Deposit) {
-      createOrderTxn(chainId, library, {
+      createIncreaseOrderTxn(chainId, library, {
         account,
-        marketAddress: position.marketAddress,
+        market: position.marketAddress,
         indexTokenAddress: indexToken.address,
         swapPath: [],
         initialCollateralAddress: position.collateralTokenAddress,
         initialCollateralAmount: depositInput.tokenAmount,
+        acceptablePrice: acceptablePrice,
         orderType: OrderType.MarketIncrease,
+        sizeDeltaUsd: BigNumber.from(0),
         isLong: position.isLong,
         executionFee: executionFee.feeTokenAmount,
+        tokensData,
       });
     } else {
-      createOrderTxn(chainId, library, {
+      if (!withdrawTokenAmount) return;
+
+      createDecreaseOrderTxn(chainId, library, {
         account,
-        marketAddress: position.marketAddress,
+        market: position.marketAddress,
         indexTokenAddress: indexToken.address,
         swapPath: [],
         initialCollateralAddress: position.collateralTokenAddress,
         initialCollateralAmount: withdrawTokenAmount,
+        receiveTokenAddress: position.collateralTokenAddress,
+        sizeDeltaUsd: BigNumber.from(0),
+        acceptablePrice: acceptablePrice,
+        minOutputAmount: withdrawTokenAmount,
         orderType: OrderType.MarketDecrease,
         isLong: position.isLong,
         executionFee: executionFee.feeTokenAmount,
+        tokensData,
       });
     }
   }

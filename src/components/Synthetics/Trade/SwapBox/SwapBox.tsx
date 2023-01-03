@@ -83,7 +83,6 @@ export function SwapBox(p: Props) {
   const isMarket = modeTab === TradeMode.Market;
   const isStop = modeTab === TradeMode.StopLoss || modeTab === TradeMode.TakeProfit;
 
-  // TODO: separate to components?
   const isTokensAllowed = !isStop;
   const isCloseSizeAllowed = isStop;
   const isTriggerPriceAllowed = !isSwap && (isLimit || isStop);

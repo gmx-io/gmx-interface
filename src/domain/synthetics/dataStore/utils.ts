@@ -1,10 +1,12 @@
+import { BigNumber } from "ethers";
 import { hashString, hashData } from "lib/hash";
 
-const SWAP_IMPACT_FACTOR = hashString("SWAP_IMPACT_FACTOR");
-const SWAP_IMPACT_EXPONENT_FACTOR = hashString("SWAP_IMPACT_EXPONENT_FACTOR");
-const OPEN_INTEREST = hashString("OPEN_INTEREST");
-const POOL_AMOUNT = hashString("POOL_AMOUNT");
-const RESERVE_FACTOR = hashString("RESERVE_FACTOR");
+export const SWAP_IMPACT_FACTOR = hashString("SWAP_IMPACT_FACTOR");
+export const SWAP_IMPACT_EXPONENT_FACTOR = hashString("SWAP_IMPACT_EXPONENT_FACTOR");
+export const OPEN_INTEREST = hashString("OPEN_INTEREST");
+export const POOL_AMOUNT = hashString("POOL_AMOUNT");
+export const RESERVE_FACTOR = hashString("RESERVE_FACTOR");
+export const NONCE = hashString("NONCE");
 
 export function swapImpactFactorKey(marketAddress: string, isPositive: boolean) {
   return hashData(["bytes32", "address", "bool"], [SWAP_IMPACT_FACTOR, marketAddress, isPositive]);
@@ -24,4 +26,8 @@ export function poolAmountKey(market: string, token: string) {
 
 export function reserveFactorKey(market: string, isLong: boolean) {
   return hashData(["bytes32", "address", "bool"], [RESERVE_FACTOR, market, isLong]);
+}
+
+export function orderKey(nonce: BigNumber) {
+  return hashData(["uint256"], [nonce]);
 }

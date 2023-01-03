@@ -337,7 +337,7 @@ const CONTRACTS = {
     PositionManager: AddressZero,
 
     TraderJoeGmxAvaxPool: AddressZero,
-    ReferralStorage: AddressZero,
+    ReferralStorage: "0x2138a6a72f8C5AEe7BA0B0905aA0e6c1467aC8b7",
     ReferralReader: AddressZero,
 
     // Synthetics
