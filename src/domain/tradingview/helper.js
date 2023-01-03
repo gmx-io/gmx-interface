@@ -1,3 +1,4 @@
+import { supportedResolutions } from "components/TVChartContainer/constants";
 import { getServerUrl } from "config/backend";
 import { getTokenBySymbol, getWrappedToken } from "config/tokens";
 import {
@@ -15,17 +16,13 @@ function formatTimeInBar(bar) {
     time: bar.time * 1000,
   };
 }
-export const supportedResolutions = { 5: "5m", 15: "15m", 60: "1h", 240: "4h", "1D": "1d" };
-export function getKeyByValue(object, value) {
-  return Object.keys(object).find((key) => object[key] === value);
-}
 
 const timezoneOffset = -new Date().getTimezoneOffset() * 60;
 
-async function getTokenChartPrice(chainId, symbol, period, to, from) {
+async function getTokenChartPrice(chainId, symbol, period) {
   let prices;
   try {
-    prices = await getChartPricesFromStats(chainId, symbol, period, to, from);
+    prices = await getChartPricesFromStats(chainId, symbol, period);
   } catch (ex) {
     // eslint-disable-next-line no-console
     console.warn(ex, "Switching to graph chainlink data");
@@ -60,9 +57,9 @@ async function getLastHistoryBar(ticker, resolution, chainId) {
   return formatTimeInBar({ ...prices[prices.length - 1], ticker });
 }
 
-export async function getHistoryBars({ ticker, resolution, chainId, isStable, to, from }) {
+export async function getHistoryBars({ ticker, resolution, chainId, isStable, countBack }) {
   const period = supportedResolutions[resolution];
-  const bars = isStable ? getStablePriceData(period) : await getTokenChartPrice(chainId, ticker, period, to, from);
+  const bars = isStable ? getStablePriceData(period, countBack) : await getTokenChartPrice(chainId, ticker, period);
   return bars.map(formatTimeInBar);
 }
 
@@ -82,9 +79,10 @@ const getLastBarAfterInterval = (function () {
   };
 })();
 
-export async function getLiveBar({ ticker, resolution, chainId, isStable }) {
-  if (isStable || !ticker) return;
+export async function getLiveBar({ ticker, resolution, chainId }) {
   const period = supportedResolutions[resolution];
+  if (!ticker || !period || !chainId) return;
+
   const periodSeconds = CHART_PERIODS[period];
   const currentCandleTime = (Math.floor(Date.now() / 1000 / periodSeconds) * periodSeconds + timezoneOffset) * 1000;
 

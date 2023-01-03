@@ -1,10 +1,9 @@
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { getKeyByValue, supportedResolutions } from "./api";
-import useDatafeed from "./useDatafeed";
 import { TV_SAVE_LOAD_CHARTS } from "config/localStorage";
 import { useLocalStorage } from "react-use";
-import { defaultChartProps, SaveLoadAdapter } from "./constants";
+import { defaultChartProps, getKeyByValue, SaveLoadAdapter, supportedResolutions } from "./constants";
+import useTVDatafeed from "domain/tradingview/useTVDatafeed";
 const DEFAULT_PERIOD = "4h";
 
 export default function TVChartContainer({
@@ -20,48 +19,48 @@ export default function TVChartContainer({
   const [chartReady, setChartReady] = useState(false);
   let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
   let [tvCharts, setTvCharts] = useLocalStorage(TV_SAVE_LOAD_CHARTS, []);
-  const datafeed = useDatafeed();
+  const datafeed = useTVDatafeed();
 
-  const drawLineOnChart = useCallback((title, price) => {
-    if (tvWidgetRef.current?.activeChart().dataReady()) {
-      return tvWidgetRef.current
-        .activeChart()
-        .createPositionLine({ disableUndo: true })
-        .setText(title)
-        .setPrice(price)
-        .setQuantity("")
-        .setLineStyle(1)
-        .setLineLength(1)
-        .setBodyFont(`normal 12pt "Relative", sans-serif`)
-        .setBodyTextColor("#fff")
-        .setLineColor("#3a3e5e")
-        .setBodyBackgroundColor("#3a3e5e")
-        .setBodyBorderColor("#3a3e5e");
-    }
-  }, []);
+  const drawLineOnChart = useCallback(
+    (title, price) => {
+      if (chartReady && tvWidgetRef.current?.activeChart?.().dataReady()) {
+        return tvWidgetRef.current
+          .activeChart()
+          .createPositionLine({ disableUndo: true })
+          .setText(title)
+          .setPrice(price)
+          .setQuantity("")
+          .setLineStyle(1)
+          .setLineLength(1)
+          .setBodyFont(`normal 12pt "Relative", sans-serif`)
+          .setBodyTextColor("#fff")
+          .setLineColor("#3a3e5e")
+          .setBodyBackgroundColor("#3a3e5e")
+          .setBodyBorderColor("#3a3e5e");
+      }
+    },
+    [chartReady]
+  );
 
   useEffect(() => {
     const lines = [];
-
     if (savedShouldShowPositionLines) {
-      if (tvWidgetRef.current?.activeChart().dataReady()) {
-        currentPositions.forEach((position) => {
-          const { open, liq } = position;
-          lines.push(drawLineOnChart(open.title, open.price));
-          lines.push(drawLineOnChart(liq.title, liq.price));
-        });
-        currentOrders.forEach((order) => {
-          lines.push(drawLineOnChart(order.title, order.price));
-        });
-      }
+      currentPositions.forEach((position) => {
+        const { open, liq } = position;
+        lines.push(drawLineOnChart(open.title, open.price));
+        lines.push(drawLineOnChart(liq.title, liq.price));
+      });
+      currentOrders.forEach((order) => {
+        lines.push(drawLineOnChart(order.title, order.price));
+      });
     }
     return () => {
       lines.forEach((line) => line?.remove());
     };
-  }, [chartReady, currentPositions, savedShouldShowPositionLines, currentOrders, drawLineOnChart]);
+  }, [currentPositions, savedShouldShowPositionLines, currentOrders, drawLineOnChart]);
 
   useEffect(() => {
-    if (chartReady && tvWidgetRef.current && symbol !== tvWidgetRef.current?.activeChart()?.symbol()) {
+    if (chartReady && tvWidgetRef.current && symbol !== tvWidgetRef.current?.activeChart?.().symbol()) {
       tvWidgetRef.current.setSymbol(symbol, tvWidgetRef.current.activeChart().resolution(), () => {});
     }
   }, [symbol, chartReady, period]);

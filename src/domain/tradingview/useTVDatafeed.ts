@@ -1,14 +1,10 @@
+import { supportedResolutions } from "components/TVChartContainer/constants";
 import { getTokens } from "config/tokens";
 import { useChainId } from "lib/chains";
 import { useMemo, useRef } from "react";
-import { getHistoryBars, getLiveBar } from "./api";
+import { getHistoryBars, getLiveBar } from "./helper";
 
-export const supportedResolutions = { 5: "5m", 15: "15m", 60: "1h", 240: "4h", "1D": "1d" };
 const timezoneOffset = -new Date().getTimezoneOffset() * 60;
-
-export function getKeyByValue(object, value) {
-  return Object.keys(object).find((key) => object[key] === value);
-}
 
 const configurationData = {
   supported_resolutions: Object.keys(supportedResolutions),
@@ -18,17 +14,9 @@ const configurationData = {
   reset_cache_timeout: 100,
 };
 
-let onResetCache;
-
-export function getOnResetCache() {
-  if (onResetCache) {
-    return onResetCache;
-  }
-}
-
-export default function useDatafeed() {
+export default function useTVDatafeed() {
   const { chainId } = useChainId();
-  const intervalRef = useRef();
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>();
   const activeTicker = useRef();
   return useMemo(() => {
     return {
@@ -43,16 +31,18 @@ export default function useDatafeed() {
 
           return {
             name: symbol,
+            type: "crypto",
             description: symbol + " / USD",
             ticker: symbol,
             session: "24x7",
             minmov: 1,
             pricescale: 100, // 	or 100
-            timezone: "UTC",
+            timezone: "Etc/UTC",
             has_intraday: true,
             has_daily: true,
             currency_code: "USD",
-            chainId: Number(chainId),
+            visible_plots_set: true,
+            exchange: "GMX",
             isStable: stableTokens.includes(symbol),
           };
         };
@@ -62,19 +52,25 @@ export default function useDatafeed() {
       },
 
       getBars: async (symbolInfo, resolution, periodParams, onHistoryCallback, onErrorCallback) => {
-        const { from, to, firstDataRequest } = periodParams;
+        const { from, to, countBack } = periodParams;
         const toWithOffset = to + timezoneOffset;
 
         if (!supportedResolutions[resolution]) {
           return onErrorCallback("[getBars] Invalid resolution");
         }
-        const { ticker, chainId, isStable } = symbolInfo;
+        const { ticker, isStable } = symbolInfo;
         if (activeTicker.current !== ticker) {
           activeTicker.current = ticker;
         }
 
         try {
-          const bars = await getHistoryBars({ chainId, ticker, resolution, isStable, firstDataRequest, to, from });
+          const bars = await getHistoryBars({
+            chainId,
+            ticker,
+            resolution,
+            isStable,
+            countBack,
+          });
           const filteredBars = bars.filter((bar) => bar.time >= from * 1000 && bar.time < toWithOffset * 1000);
           if (filteredBars.length > 0) {
             onHistoryCallback(filteredBars, { noData: false });
@@ -86,21 +82,22 @@ export default function useDatafeed() {
         }
       },
 
-      subscribeBars: async (symbolInfo, resolution, onRealtimeCallback, _uid, onResetCacheNeededCallback) => {
-        const { chainId, ticker, isStable } = symbolInfo;
-        clearInterval(intervalRef.current);
-        onResetCache = onResetCacheNeededCallback;
+      subscribeBars: async (symbolInfo, resolution, onRealtimeCallback) => {
+        const { ticker, isStable } = symbolInfo;
+        intervalRef.current && clearInterval(intervalRef.current);
 
-        intervalRef.current = setInterval(function () {
-          getLiveBar({ chainId, ticker, resolution, isStable }).then((bar) => {
-            if (ticker === activeTicker.current) {
-              onRealtimeCallback(bar);
-            }
-          });
-        }, 500);
+        if (!isStable) {
+          intervalRef.current = setInterval(function () {
+            getLiveBar({ chainId, ticker, resolution }).then((bar) => {
+              if (ticker === activeTicker.current) {
+                onRealtimeCallback(bar);
+              }
+            });
+          }, 500);
+        }
       },
       unsubscribeBars: () => {
-        clearInterval(intervalRef.current);
+        intervalRef.current && clearInterval(intervalRef.current);
       },
     };
   }, [chainId, activeTicker]);

@@ -304,11 +304,11 @@ function appendCurrentAveragePrice(prices, currentAveragePrice, period) {
   }
 }
 
-export function getStablePriceData(period) {
+export function getStablePriceData(period, countBack = 100) {
   const periodSeconds = CHART_PERIODS[period];
   const now = Math.floor(Date.now() / 1000 / periodSeconds) * periodSeconds;
   let priceData: any = [];
-  for (let i = 100; i > 0; i--) {
+  for (let i = countBack; i > 0; i--) {
     priceData.push({
       time: now - i * periodSeconds,
       open: 1,

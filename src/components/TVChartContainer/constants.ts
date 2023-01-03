@@ -1,6 +1,12 @@
 import { getTokenBySymbol } from "config/tokens";
 import { Token } from "domain/tokens";
 
+export const supportedResolutions = { 5: "5m", 15: "15m", 60: "1h", 240: "4h", "1D": "1d" };
+
+export function getKeyByValue(object, value) {
+  return Object.keys(object).find((key) => object[key] === value);
+}
+
 const chartStyleOverrides = ["candleStyle", "hollowCandleStyle", "haStyle"].reduce((acc, cv) => {
   acc[`mainSeriesProperties.${cv}.drawWick`] = true;
   acc[`mainSeriesProperties.${cv}.drawBorder`] = false;
