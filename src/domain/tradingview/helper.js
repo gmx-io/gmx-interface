@@ -1,4 +1,3 @@
-import { supportedResolutions } from "components/TVChartContainer/constants";
 import { getServerUrl } from "config/backend";
 import { getTokenBySymbol, getWrappedToken } from "config/tokens";
 import {
@@ -6,9 +5,16 @@ import {
   getChartPricesFromStats,
   getLimitChartPricesFromStats,
   getStablePriceData,
+  timezoneOffset,
 } from "domain/prices";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
+
+export const supportedResolutions = { 5: "5m", 15: "15m", 60: "1h", 240: "4h", "1D": "1d" };
+
+export function getPeriodFromResolutions(value, object = supportedResolutions) {
+  return Object.keys(object).find((key) => object[key] === value);
+}
 
 function formatTimeInBar(bar) {
   return {
@@ -16,8 +22,6 @@ function formatTimeInBar(bar) {
     time: bar.time * 1000,
   };
 }
-
-const timezoneOffset = -new Date().getTimezoneOffset() * 60;
 
 async function getTokenChartPrice(chainId, symbol, period) {
   let prices;
@@ -37,7 +41,7 @@ async function getTokenChartPrice(chainId, symbol, period) {
   return prices;
 }
 
-async function getCurrentPrice(chainId, symbol) {
+async function getCurrentPriceOfToken(chainId, symbol) {
   try {
     const indexPricesUrl = getServerUrl(chainId, "/prices");
     const indexPrices = await fetch(indexPricesUrl).then((res) => res.json());
@@ -52,15 +56,15 @@ async function getCurrentPrice(chainId, symbol) {
   }
 }
 
-async function getLastHistoryBar(ticker, resolution, chainId) {
-  const prices = await getLimitChartPricesFromStats(chainId, ticker, resolution);
-  return formatTimeInBar({ ...prices[prices.length - 1], ticker });
-}
-
 export async function getHistoryBars({ ticker, resolution, chainId, isStable, countBack }) {
   const period = supportedResolutions[resolution];
   const bars = isStable ? getStablePriceData(period, countBack) : await getTokenChartPrice(chainId, ticker, period);
   return bars.map(formatTimeInBar);
+}
+
+async function getLastHistoryBar(ticker, resolution, chainId) {
+  const prices = await getLimitChartPricesFromStats(chainId, ticker, resolution);
+  return formatTimeInBar({ ...prices[prices.length - 1], ticker });
 }
 
 const getLastBarAfterInterval = (function () {
@@ -90,7 +94,7 @@ export async function getLiveBar({ ticker, resolution, chainId }) {
 
   if (!lastBar) return;
 
-  const currentPrice = await getCurrentPrice(chainId, ticker);
+  const currentPrice = await getCurrentPriceOfToken(chainId, ticker);
   const averagePriceValue = parseFloat(formatAmount(currentPrice, USD_DECIMALS, 4));
   if (lastBar.time && currentCandleTime === lastBar.time && ticker === lastBar.ticker) {
     return {

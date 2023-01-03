@@ -1,12 +1,6 @@
 import { getTokenBySymbol } from "config/tokens";
 import { Token } from "domain/tokens";
 
-export const supportedResolutions = { 5: "5m", 15: "15m", 60: "1h", 240: "4h", "1D": "1d" };
-
-export function getKeyByValue(object, value) {
-  return Object.keys(object).find((key) => object[key] === value);
-}
-
 const chartStyleOverrides = ["candleStyle", "hollowCandleStyle", "haStyle"].reduce((acc, cv) => {
   acc[`mainSeriesProperties.${cv}.drawWick`] = true;
   acc[`mainSeriesProperties.${cv}.drawBorder`] = false;
@@ -113,9 +107,7 @@ export class SaveLoadAdapter {
 export const defaultChartProps = {
   theme: "Dark",
   locale: "en",
-  containerId: "tv_chart_container",
-  libraryPath: "/charting_library/",
-  chartsStorageApiVersion: "1.1",
+  library_path: "/charting_library/",
   clientId: "tradingview.com",
   userId: "public_user_id",
   fullscreen: false,
@@ -125,5 +117,6 @@ export const defaultChartProps = {
   overrides: chartOverrides,
   enabled_features: enabledFeatures,
   disabled_features: disabledFeatures,
+  custom_css_url: "/tradingview-chart.css",
   loading_screen: { backgroundColor: "#16182e", foregroundColor: "#2962ff" },
 };

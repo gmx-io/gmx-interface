@@ -62,7 +62,7 @@ export default function ExchangeTVChart(props) {
   } = props;
   const [currentSeries] = useState();
 
-  let [period] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
+  let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
   if (!(period in CHART_PERIODS)) {
     period = DEFAULT_PERIOD;
   }
@@ -322,6 +322,8 @@ export default function ExchangeTVChart(props) {
             symbol={chartToken.symbol}
             chainId={chainId}
             onSelectToken={onSelectToken}
+            period={period}
+            setPeriod={setPeriod}
           />
         )}
       </div>

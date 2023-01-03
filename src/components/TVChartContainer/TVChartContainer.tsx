@@ -1,10 +1,21 @@
-import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { TV_SAVE_LOAD_CHARTS } from "config/localStorage";
 import { useLocalStorage } from "react-use";
-import { defaultChartProps, getKeyByValue, SaveLoadAdapter, supportedResolutions } from "./constants";
+import { defaultChartProps, SaveLoadAdapter } from "./constants";
 import useTVDatafeed from "domain/tradingview/useTVDatafeed";
-const DEFAULT_PERIOD = "4h";
+import { IChartingLibraryWidget, IPositionLineAdapter } from "./charting_library/charting_library";
+import { getPeriodFromResolutions, supportedResolutions } from "domain/tradingview/helper";
+
+type Props = {
+  symbol: string;
+  chainId: number;
+  savedShouldShowPositionLines: boolean;
+  currentPositions: any[];
+  currentOrders: any[];
+  onSelectToken: () => void;
+  period: string;
+  setPeriod: (period: string) => void;
+};
 
 export default function TVChartContainer({
   symbol,
@@ -13,11 +24,12 @@ export default function TVChartContainer({
   currentPositions,
   currentOrders,
   onSelectToken,
-}) {
-  const tvChartRef = useRef();
-  const tvWidgetRef = useRef(null);
+  period,
+  setPeriod,
+}: Props) {
+  const chartContainerRef = useRef<HTMLDivElement | null>(null);
+  const tvWidgetRef = useRef<IChartingLibraryWidget | null>(null);
   const [chartReady, setChartReady] = useState(false);
-  let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
   let [tvCharts, setTvCharts] = useLocalStorage(TV_SAVE_LOAD_CHARTS, []);
   const datafeed = useTVDatafeed();
 
@@ -43,7 +55,7 @@ export default function TVChartContainer({
   );
 
   useEffect(() => {
-    const lines = [];
+    const lines: (IPositionLineAdapter | undefined)[] = [];
     if (savedShouldShowPositionLines) {
       currentPositions.forEach((position) => {
         const { open, liq } = position;
@@ -71,32 +83,32 @@ export default function TVChartContainer({
       symbol: symbol,
       datafeed: datafeed,
       theme: defaultChartProps.theme,
-      interval: getKeyByValue(supportedResolutions, period),
-      container: tvChartRef.current,
-      library_path: defaultChartProps.libraryPath,
+      container: chartContainerRef.current,
+      library_path: defaultChartProps.library_path,
       locale: defaultChartProps.locale,
       loading_screen: defaultChartProps.loading_screen,
-      save_load_adapter: new SaveLoadAdapter(chainId, tvCharts, setTvCharts, onSelectToken),
       enabled_features: defaultChartProps.enabled_features,
       disabled_features: defaultChartProps.disabled_features,
       client_id: defaultChartProps.clientId,
       user_id: defaultChartProps.userId,
       fullscreen: defaultChartProps.fullscreen,
       autosize: defaultChartProps.autosize,
-      custom_css_url: "/tradingview-chart.css",
+      custom_css_url: defaultChartProps.custom_css_url,
       studies_overrides: defaultChartProps.studiesOverrides,
       overrides: defaultChartProps.overrides,
+      interval: getPeriodFromResolutions(period),
+      save_load_adapter: new SaveLoadAdapter(chainId, tvCharts, setTvCharts, onSelectToken),
     };
     tvWidgetRef.current = new window.TradingView.widget(widgetOptions);
 
-    tvWidgetRef.current.onChartReady(function () {
+    tvWidgetRef.current?.onChartReady(function () {
       setChartReady(true);
-      tvWidgetRef.current.applyOverrides({
+      tvWidgetRef.current?.applyOverrides({
         "paneProperties.background": "#16182e",
         "paneProperties.backgroundType": "solid",
       });
       tvWidgetRef.current
-        .activeChart()
+        ?.activeChart()
         .onIntervalChanged()
         .subscribe(null, (interval) => {
           if (supportedResolutions[interval]) {
@@ -107,11 +119,13 @@ export default function TVChartContainer({
     });
 
     return () => {
-      tvWidgetRef.current.remove();
-      tvWidgetRef.current = null;
+      if (tvWidgetRef.current) {
+        tvWidgetRef.current.remove();
+        tvWidgetRef.current = null;
+      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return <div ref={tvChartRef} className="TVChartContainer ExchangeChart-bottom-content" />;
+  return <div ref={chartContainerRef} className="TVChartContainer ExchangeChart-bottom-content" />;
 }

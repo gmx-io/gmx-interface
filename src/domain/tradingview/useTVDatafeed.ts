@@ -1,10 +1,8 @@
-import { supportedResolutions } from "components/TVChartContainer/constants";
 import { getTokens } from "config/tokens";
+import { timezoneOffset } from "domain/prices";
 import { useChainId } from "lib/chains";
 import { useMemo, useRef } from "react";
-import { getHistoryBars, getLiveBar } from "./helper";
-
-const timezoneOffset = -new Date().getTimezoneOffset() * 60;
+import { getHistoryBars, getLiveBar, supportedResolutions } from "./helper";
 
 const configurationData = {
   supported_resolutions: Object.keys(supportedResolutions),
@@ -42,7 +40,6 @@ export default function useTVDatafeed() {
             has_daily: true,
             currency_code: "USD",
             visible_plots_set: true,
-            exchange: "GMX",
             isStable: stableTokens.includes(symbol),
           };
         };
