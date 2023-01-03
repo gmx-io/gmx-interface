@@ -1298,8 +1298,8 @@ msgid "Enter a swap trigger ratio"
 msgstr ""
 
 #: src/components/Synthetics/Trade/utils.ts
-msgid "Enter a trigger price"
-msgstr ""
+#~ msgid "Enter a trigger price"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -3844,6 +3844,14 @@ msgstr ""
 
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Trigger price"
+msgstr ""
+
+#: src/components/Synthetics/Trade/utils.ts
+msgid "Trigger price must be higher than mark price"
+msgstr ""
+
+#: src/components/Synthetics/Trade/utils.ts
+msgid "Trigger price must be lower than mark price"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js

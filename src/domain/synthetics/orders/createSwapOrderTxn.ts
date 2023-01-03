@@ -2,11 +2,11 @@ import { Web3Provider } from "@ethersproject/providers";
 import { t } from "@lingui/macro";
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
-import { NATIVE_TOKEN_ADDRESS, getConvertedTokenAddress, getToken } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS, getConvertedTokenAddress } from "config/tokens";
 import { encodeReferralCode } from "domain/referrals";
 import { BigNumber, ethers } from "ethers";
 import { callContract } from "lib/contracts";
-import { TokensData, formatTokenAmount } from "../tokens";
+import { TokensData, formatTokenAmount, getTokenData } from "../tokens";
 import { OrderType } from "./types";
 import { isDevelopment } from "config/env";
 import { simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
@@ -23,6 +23,8 @@ export type SwapOrderParams = {
   toTokenAddress: string;
   swapPath: string[];
   minOutputAmount: BigNumber;
+  priceImpactDeltaUsd: BigNumber;
+  allowedSlippage: number;
   orderType: OrderType.MarketSwap | OrderType.LimitSwap;
 };
 
@@ -35,13 +37,21 @@ export async function createSwapOrderTxn(chainId: number, library: Web3Provider,
 
   const orderStoreAddress = getContract(chainId, "OrderStore");
 
-  // TODO: native token swap?
   const isNativePayment = p.fromTokenAddress === NATIVE_TOKEN_ADDRESS;
   const isNativeReceive = p.toTokenAddress === NATIVE_TOKEN_ADDRESS;
 
   const wntSwapAmount = isNativePayment ? p.fromTokenAmount : BigNumber.from(0);
 
   const wntAmount = wntSwapAmount.add(p.executionFee);
+
+  const fromToken = getTokenData(p.tokensData, p.fromTokenAddress);
+  const toToken = getTokenData(p.tokensData, p.toTokenAddress);
+
+  if (!fromToken?.prices || !toToken?.prices) {
+    throw new Error("Token prices not available");
+  }
+
+  const amountOut = p.minOutputAmount.sub(p.minOutputAmount.div(10));
 
   const multicall = [
     { method: "sendWnt", params: [orderStoreAddress, wntAmount] },
@@ -67,7 +77,7 @@ export async function createSwapOrderTxn(chainId: number, library: Web3Provider,
             acceptablePrice: BigNumber.from(0),
             executionFee: p.executionFee,
             callbackGasLimit: BigNumber.from(0),
-            minOutputAmount: p.minOutputAmount,
+            minOutputAmount: amountOut,
           },
           orderType: p.orderType,
           isLong: false,
@@ -80,24 +90,25 @@ export async function createSwapOrderTxn(chainId: number, library: Web3Provider,
 
   if (isDevelopment()) {
     // eslint-disable-next-line no-console
-    console.debug("swapTxn multicall", multicall);
+    console.debug("swapTxn multicall", multicall, {
+      minOutputAmount: formatTokenAmount(amountOut, toToken.decimals, toToken.symbol),
+    });
   }
 
   const encodedPayload = multicall
     .filter(Boolean)
     .map((call) => exchangeRouter.interface.encodeFunctionData(call!.method, call!.params));
 
-  const fromToken = getToken(chainId, p.fromTokenAddress);
-  const toToken = getToken(chainId, p.toTokenAddress);
   const fromText = formatTokenAmount(p.fromTokenAmount, fromToken.decimals, fromToken.symbol);
   const toText = formatTokenAmount(p.minOutputAmount, toToken.decimals, toToken.symbol);
 
   const orderLabel = t`Swap ${fromText} to ${toText}`;
 
   await simulateExecuteOrderTxn(chainId, library, {
+    primaryPricesMap: {},
     secondaryPricesMap: {},
     createOrderMulticallPayload: encodedPayload,
-    value: p.executionFee,
+    value: wntAmount,
     tokensData: p.tokensData,
   });
 

@@ -193,6 +193,7 @@ export function SwapBox(p: Props) {
       operationType: operationTab!,
       mode: modeTab!,
       tokensData,
+      markPrice: toTokenState.price,
       fromTokenAddress: fromTokenState.tokenAddress,
       toTokenAddress: toTokenState.tokenAddress,
       fromTokenAmount: fromTokenState.tokenAmount,

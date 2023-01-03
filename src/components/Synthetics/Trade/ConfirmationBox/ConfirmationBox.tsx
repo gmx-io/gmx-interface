@@ -18,20 +18,16 @@ import {
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-
 import { useAvailableTokensData } from "domain/synthetics/tokens";
-
 import { useUserReferralCode } from "domain/referrals";
 import { Fees, getSubmitError, TradeMode, TradeType, tradeTypeLabels } from "../utils";
-
 import { SwapRoute } from "domain/synthetics/exchange";
 import { OrderType, createIncreaseOrderTxn, createSwapOrderTxn } from "domain/synthetics/orders";
-
 import { InfoRow } from "components/InfoRow/InfoRow";
-
-import { USD_DECIMALS } from "lib/legacy";
+import { DEFAULT_SLIPPAGE_AMOUNT, USD_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
 import { TradeFees } from "../TradeFees/TradeFees";
+
 import "./ConfirmationBox.scss";
 
 type Props = {
@@ -105,6 +101,7 @@ export function ConfirmationBox(p: Props) {
 
   function getSubmitButtonState(): { text: string; disabled?: boolean; onClick?: () => void } {
     const error = getSubmitError({
+      markPrice: p.toTokenPrice,
       operationType: p.operationType,
       mode: p.mode,
       tokensData,
@@ -164,21 +161,11 @@ export function ConfirmationBox(p: Props) {
     )
       return;
 
-    function applySlippage(price: BigNumber) {
-      return isLong ? price.add(price.div(10)) : price.div(10);
-    }
-
     if ([TradeType.Long, TradeType.Short].includes(p.operationType)) {
       if ([TradeMode.Market, TradeMode.Limit].includes(p.mode)) {
         const { market, swapPath } = p.swapRoute;
 
-        if (!market || !p.sizeDeltaUsd || !p.acceptablePrice) return;
-
-        const orderType = p.mode === TradeMode.Limit ? OrderType.LimitIncrease : OrderType.MarketIncrease;
-        const isLong = p.operationType === TradeType.Long;
-
-        const triggerPrice = p.triggerPrice ? p.triggerPrice : undefined;
-        const acceptablePrice = applySlippage(triggerPrice || p.acceptablePrice);
+        if (!market || !p.sizeDeltaUsd || !toToken?.prices) return;
 
         createIncreaseOrderTxn(chainId, library, {
           account,
@@ -188,11 +175,12 @@ export function ConfirmationBox(p: Props) {
           swapPath: swapPath,
           indexTokenAddress: p.toTokenAddress,
           sizeDeltaUsd: p.sizeDeltaUsd,
-          triggerPrice,
-          acceptablePrice,
+          triggerPrice: p.triggerPrice,
+          priceImpactDelta: p.fees.positionPriceImpact?.impact || BigNumber.from(0),
+          allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
           executionFee: p.fees.executionFee.feeTokenAmount,
-          isLong,
-          orderType,
+          isLong: p.operationType === TradeType.Long,
+          orderType: p.mode === TradeMode.Limit ? OrderType.LimitIncrease : OrderType.MarketIncrease,
           referralCode: referralCodeData?.userReferralCodeString,
           tokensData,
         }).then(p.onSubmitted);
@@ -200,6 +188,8 @@ export function ConfirmationBox(p: Props) {
     }
 
     if (p.operationType === TradeType.Swap) {
+      if (!p.toTokenAmount) return;
+
       const orderType = p.mode === TradeMode.Limit ? OrderType.LimitSwap : OrderType.MarketSwap;
 
       const { swapPath } = p.swapRoute;
@@ -212,8 +202,10 @@ export function ConfirmationBox(p: Props) {
         toTokenAddress: p.toTokenAddress,
         executionFee: p.fees.executionFee.feeTokenAmount,
         orderType,
-        minOutputAmount: p.toTokenAmount?.sub(p.toTokenAmount.div(90)) || BigNumber.from(0),
+        minOutputAmount: p.toTokenAmount,
         referralCode: referralCodeData?.userReferralCodeString,
+        priceImpactDeltaUsd: p.fees.swapFeeUsd!,
+        allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
         tokensData,
       }).then(p.onSubmitted);
     }

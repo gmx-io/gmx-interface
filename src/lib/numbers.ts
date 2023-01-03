@@ -139,3 +139,11 @@ export function numberWithCommas(x: BigNumberish) {
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   return parts.join(".");
 }
+
+export function roundUpDivision(a: BigNumber, b: BigNumber) {
+  if (a.lt(0)) {
+    return a.sub(b).add(1).div(b);
+  }
+
+  return a.add(b).sub(1).div(b);
+}

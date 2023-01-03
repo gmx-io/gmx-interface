@@ -92,6 +92,7 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
   const orderLabel = t`Decrease ${longText} ${indexToken.symbol} by ${formatUsdAmount(p.sizeDeltaUsd)}`;
 
   await simulateExecuteOrderTxn(chainId, library, {
+    primaryPricesMap: {},
     secondaryPricesMap: {},
     createOrderMulticallPayload: encodedPayload,
     value: wntAmount,

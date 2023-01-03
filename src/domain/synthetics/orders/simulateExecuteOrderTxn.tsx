@@ -3,22 +3,31 @@ import DataStore from "abis/DataStore.json";
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
 import { getConvertedTokenAddress } from "config/tokens";
-import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
+import {
+  TokenPrices,
+  TokensData,
+  convertToContractPrice,
+  formatUsdAmount,
+  getTokenData,
+} from "domain/synthetics/tokens";
 import { BigNumber, ethers } from "ethers";
+import _ from "lodash";
 import { NONCE, orderKey } from "domain/synthetics/dataStore";
 import { helperToast } from "lib/helperToast";
 import { Trans } from "@lingui/macro";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
+import { expandDecimals } from "lib/numbers";
 
 export type MulticallRequest = { method: string; params: any[] }[];
 
-export type SecondaryPricesMap = {
-  [address: string]: TokenPrices;
+export type PriceOverrides = {
+  [address: string]: TokenPrices | undefined;
 };
 
 type SimulateExecuteOrderParams = {
   createOrderMulticallPayload: string[];
-  secondaryPricesMap: SecondaryPricesMap;
+  secondaryPricesMap: PriceOverrides;
+  primaryPricesMap: PriceOverrides;
   tokensData: TokensData;
   value: BigNumber;
 };
@@ -42,6 +51,7 @@ export async function simulateExecuteOrderTxn(chainId: number, library: Web3Prov
   const { primaryTokens, primaryPrices, secondaryTokens, secondaryPrices } = getSimulationPrices(
     chainId,
     p.tokensData,
+    p.primaryPricesMap,
     p.secondaryPricesMap
   );
 
@@ -59,7 +69,7 @@ export async function simulateExecuteOrderTxn(chainId: number, library: Web3Prov
   ];
 
   try {
-    await exchangeRouter.callStatic.multicall(simulationPayload, { value: p.value });
+    await exchangeRouter.callStatic.multicall(simulationPayload, { value: p.value, blockTag: blockNumber });
   } catch (e) {
     if (e.data?.message.includes(SUCCESS_SIMULATION_PATTERN)) {
       return undefined;
@@ -79,7 +89,12 @@ export async function simulateExecuteOrderTxn(chainId: number, library: Web3Prov
   }
 }
 
-function getSimulationPrices(chainId: number, tokensData: TokensData, secondaryPricesMap: SecondaryPricesMap) {
+function getSimulationPrices(
+  chainId: number,
+  tokensData: TokensData,
+  primaryPricesMap: PriceOverrides,
+  secondaryPricesMap: PriceOverrides
+) {
   const tokenAddresses = Object.keys(tokensData);
 
   const primaryTokens: string[] = [];
@@ -97,12 +112,21 @@ function getSimulationPrices(chainId: number, tokensData: TokensData, secondaryP
 
     primaryTokens.push(convertedAddress);
 
-    const primaryPrice = {
+    const currentPrice = {
       min: convertToContractPrice(token.prices.minPrice, token.decimals),
       max: convertToContractPrice(token.prices.maxPrice, token.decimals),
     };
 
-    primaryPrices.push(primaryPrice);
+    const primaryOverridedPrice = primaryPricesMap[address];
+
+    if (primaryOverridedPrice) {
+      primaryPrices.push({
+        min: convertToContractPrice(primaryOverridedPrice.minPrice, token.decimals),
+        max: convertToContractPrice(primaryOverridedPrice.maxPrice, token.decimals),
+      });
+    } else {
+      primaryPrices.push(currentPrice);
+    }
 
     const secondaryOverridedPrice = secondaryPricesMap[address];
 
@@ -112,9 +136,29 @@ function getSimulationPrices(chainId: number, tokensData: TokensData, secondaryP
         max: convertToContractPrice(secondaryOverridedPrice.maxPrice, token.decimals),
       });
     } else {
-      secondaryPrices.push(primaryPrice);
+      secondaryPrices.push(currentPrice);
     }
   }
+
+  // eslint-disable-next-line no-console
+  console.log("prices", {
+    primaryPricesMap: _.mapValues(primaryPricesMap, (v) => ({
+      min: formatUsdAmount(v?.minPrice),
+      max: formatUsdAmount(v?.maxPrice),
+    })),
+    secondaryPricesMap: _.mapValues(secondaryPricesMap, (v) => ({
+      min: formatUsdAmount(v?.minPrice),
+      max: formatUsdAmount(v?.maxPrice),
+    })),
+    primaryPrices: primaryPrices.map((v) => ({
+      min: formatUsdAmount(v.min.mul(expandDecimals(1, 18))),
+      max: formatUsdAmount(v.max.mul(expandDecimals(1, 18))),
+    })),
+    secondaryPrices: secondaryPrices.map((v) => ({
+      min: formatUsdAmount(v.min.mul(expandDecimals(1, 18))),
+      max: formatUsdAmount(v.max.mul(expandDecimals(1, 18))),
+    })),
+  });
 
   return {
     primaryTokens,

@@ -18,7 +18,7 @@ import { useWeb3React } from "@web3-react/core";
 import { getExecutionFee } from "domain/synthetics/fees";
 import { useTokenInputState } from "domain/synthetics/exchange";
 import { formatAmountFree, parseValue } from "lib/numbers";
-import { USD_DECIMALS } from "lib/legacy";
+import { DEFAULT_SLIPPAGE_AMOUNT, USD_DECIMALS } from "lib/legacy";
 import { getTokenAmountFromUsd } from "domain/synthetics/tokens";
 import { OrderType, createDecreaseOrderTxn, createIncreaseOrderTxn } from "domain/synthetics/orders";
 import { BigNumber } from "ethers";
@@ -106,7 +106,7 @@ export function PositionEditor(p: Props) {
 
     const acceptablePrice = getAcceptablePrice();
 
-    if (!acceptablePrice) return;
+    if (!indexToken.prices) return;
 
     if (operation === Operation.Deposit) {
       createIncreaseOrderTxn(chainId, library, {
@@ -116,7 +116,8 @@ export function PositionEditor(p: Props) {
         swapPath: [],
         initialCollateralAddress: position.collateralTokenAddress,
         initialCollateralAmount: depositInput.tokenAmount,
-        acceptablePrice: acceptablePrice,
+        priceImpactDelta: BigNumber.from(0),
+        allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
         orderType: OrderType.MarketIncrease,
         sizeDeltaUsd: BigNumber.from(0),
         isLong: position.isLong,
@@ -135,7 +136,7 @@ export function PositionEditor(p: Props) {
         initialCollateralAmount: withdrawTokenAmount,
         receiveTokenAddress: position.collateralTokenAddress,
         sizeDeltaUsd: BigNumber.from(0),
-        acceptablePrice: acceptablePrice,
+        acceptablePrice: acceptablePrice!,
         minOutputAmount: withdrawTokenAmount,
         orderType: OrderType.MarketDecrease,
         isLong: position.isLong,

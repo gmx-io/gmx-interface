@@ -78,6 +78,7 @@ export function getSubmitError(p: {
   fromTokenAddress?: string;
   fromTokenAmount?: BigNumber;
   toTokenAddress?: string;
+  markPrice?: BigNumber;
   swapPath?: string[];
   triggerPrice?: BigNumber;
   swapTriggerRatio?: BigNumber;
@@ -94,12 +95,6 @@ export function getSubmitError(p: {
     return t`Insufficient ${fromToken.symbol} balance`;
   }
 
-  if (p.operationType === TradeType.Swap) {
-    if (p.fromTokenAddress === p.toTokenAddress) {
-      return t`Select different tokens`;
-    }
-  }
-
   if (!p.fromTokenAmount?.gt(0)) {
     return t`Enter an amount`;
   }
@@ -112,14 +107,30 @@ export function getSubmitError(p: {
     return t`Need to accept price impact`;
   }
 
-  if (p.mode === TradeMode.Limit) {
-    if (p.operationType === TradeType.Swap) {
+  if (p.operationType === TradeType.Swap) {
+    if (p.fromTokenAddress === p.toTokenAddress) {
+      return t`Select different tokens`;
+    }
+
+    if (p.mode === TradeMode.Limit) {
       if (!p.swapTriggerRatio?.gt(0)) {
         return t`Enter a swap trigger ratio`;
       }
-    } else {
-      if (!p.triggerPrice?.gt(0)) {
-        return t`Enter a trigger price`;
+    }
+  }
+
+  if (p.operationType === TradeType.Long) {
+    if (p.mode === TradeMode.Limit) {
+      if (!p.triggerPrice || !p.markPrice || p.triggerPrice.gt(p.markPrice)) {
+        return t`Trigger price must be lower than mark price`;
+      }
+    }
+  }
+
+  if (p.operationType === TradeType.Short) {
+    if (p.mode === TradeMode.Limit) {
+      if (!p.triggerPrice || !p.markPrice || p.triggerPrice?.lt(p.markPrice)) {
+        return t`Trigger price must be higher than mark price`;
       }
     }
   }

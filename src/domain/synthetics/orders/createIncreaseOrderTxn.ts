@@ -2,14 +2,15 @@ import { Web3Provider } from "@ethersproject/providers";
 import { t } from "@lingui/macro";
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
-import { NATIVE_TOKEN_ADDRESS, getConvertedTokenAddress, getToken } from "config/tokens";
+import { isDevelopment } from "config/env";
+import { NATIVE_TOKEN_ADDRESS, getConvertedTokenAddress } from "config/tokens";
 import { encodeReferralCode } from "domain/referrals";
+import { TokensData, convertToContractPrice, formatUsdAmount, getTokenData } from "domain/synthetics/tokens";
 import { BigNumber, ethers } from "ethers";
 import { callContract } from "lib/contracts";
-import { TokensData, convertToContractPrice, formatUsdAmount } from "../tokens";
+import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
 import { OrderType } from "./types";
-import { simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
-import { isDevelopment } from "config/env";
+import { getAcceptablePriceForPositionOrder } from "./utils";
 
 const { AddressZero } = ethers.constants;
 
@@ -24,7 +25,8 @@ type IncreaseOrderParams = {
   initialCollateralAmount: BigNumber;
   indexTokenAddress: string;
   triggerPrice?: BigNumber;
-  acceptablePrice: BigNumber;
+  priceImpactDelta: BigNumber;
+  allowedSlippage: number;
   sizeDeltaUsd: BigNumber;
   isLong: boolean;
   orderType: OrderType.MarketIncrease | OrderType.LimitIncrease;
@@ -45,7 +47,19 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
 
   const wntAmount = wntCollateralAmount.add(p.executionFee);
 
-  const indexToken = getToken(chainId, p.indexTokenAddress);
+  const indexToken = getTokenData(p.tokensData, p.indexTokenAddress);
+
+  if (!indexToken?.prices) throw new Error("Index token prices are not available");
+
+  const acceptablePrice = getAcceptablePriceForPositionOrder({
+    isIncrease: true,
+    isLong: p.isLong,
+    priceImpactDelta: p.priceImpactDelta,
+    triggerPrice: p.triggerPrice,
+    indexTokenPrices: indexToken.prices!,
+    sizeDeltaUsd: p.sizeDeltaUsd,
+    allowedSlippage: p.allowedSlippage,
+  });
 
   const multicall = [
     { method: "sendWnt", params: [orderStoreAddress, wntAmount] },
@@ -67,8 +81,8 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
           },
           numbers: {
             sizeDeltaUsd: p.sizeDeltaUsd,
-            triggerPrice: convertToContractPrice(p.triggerPrice || BigNumber.from(0), indexToken.decimals),
-            acceptablePrice: convertToContractPrice(p.acceptablePrice, indexToken.decimals),
+            triggerPrice: convertToContractPrice(p.triggerPrice || BigNumber.from(0), indexToken!.decimals),
+            acceptablePrice: convertToContractPrice(acceptablePrice, indexToken!.decimals),
             executionFee: p.executionFee,
             callbackGasLimit: BigNumber.from(0),
             minOutputAmount: BigNumber.from(0),
@@ -84,7 +98,10 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
 
   if (isDevelopment()) {
     // eslint-disable-next-line no-console
-    console.debug("positionIncreaseTxn multicall", multicall);
+    console.debug("positionIncreaseTxn multicall", multicall, {
+      acceptablePrice: formatUsdAmount(acceptablePrice),
+      triggerPrice: formatUsdAmount(p.triggerPrice),
+    });
   }
 
   const encodedPayload = multicall
@@ -95,8 +112,24 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
 
   const orderLabel = t`Increase ${longText} ${indexToken.symbol} by ${formatUsdAmount(p.sizeDeltaUsd)}`;
 
+  const primaryPricesMap: PriceOverrides = {};
+  const secondaryPricesMap: PriceOverrides = {};
+
+  if (p.triggerPrice) {
+    secondaryPricesMap[p.indexTokenAddress] = {
+      minPrice: p.triggerPrice,
+      maxPrice: p.triggerPrice,
+    };
+  } else {
+    primaryPricesMap[p.indexTokenAddress] = {
+      minPrice: acceptablePrice,
+      maxPrice: acceptablePrice,
+    };
+  }
+
   await simulateExecuteOrderTxn(chainId, library, {
-    secondaryPricesMap: {},
+    primaryPricesMap,
+    secondaryPricesMap,
     createOrderMulticallPayload: encodedPayload,
     value: wntAmount,
     tokensData: p.tokensData,

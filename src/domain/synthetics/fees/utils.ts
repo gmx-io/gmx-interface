@@ -1,8 +1,14 @@
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { TokensData, convertFromUsdByPrice, formatUsdAmount, getTokenData } from "domain/synthetics/tokens";
+import {
+  TokenPrices,
+  TokensData,
+  convertFromUsdByPrice,
+  formatUsdAmount,
+  getTokenData,
+} from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "lib/legacy";
-import { bigNumberify, expandDecimals, formatAmount, parseValue } from "lib/numbers";
+import { bigNumberify, expandDecimals, formatAmount, parseValue, roundUpDivision } from "lib/numbers";
 import { MarketsData, MarketsPoolsData, getPoolAmountUsd } from "../markets";
 import { ExecutionFeeParams, PriceImpact, PriceImpactConfigsData } from "./types";
 
@@ -65,6 +71,30 @@ export function getSwapFee(
     swapFee,
     priceImpact,
   };
+}
+
+export function applySwapImpactWithCap(p: { tokenPrices: TokenPrices; priceImpactUsd: BigNumber }) {
+  // positive impact: minimize impactAmount, use tokenPrice.max
+  // negative impact: maximize impactAmount, use tokenPrice.min
+  const price = p.priceImpactUsd.gt(0) ? p.tokenPrices.maxPrice : p.tokenPrices.minPrice;
+
+  let impactAmount: BigNumber;
+
+  if (p.priceImpactUsd.gt(0)) {
+    // round positive impactAmount down, this will be deducted from the swap impact pool for the user
+    impactAmount = p.priceImpactUsd.div(price);
+
+    // const maxImpactAmount = getSwapImpactPoolAmount(dataStore, market, token).toInt256();
+
+    // if (impactAmount > maxImpactAmount) {
+    //     impactAmount = maxImpactAmount;
+    // }
+  } else {
+    // round negative impactAmount up, this will be deducted from the user
+    impactAmount = roundUpDivision(p.priceImpactUsd, price);
+  }
+
+  return impactAmount;
 }
 
 /**

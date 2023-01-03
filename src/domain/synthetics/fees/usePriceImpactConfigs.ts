@@ -6,6 +6,29 @@ import { useMarketsData } from "../markets";
 import { useMulticall } from "lib/multicall";
 import { getContract } from "config/contracts";
 
+// TODO
+/**
+ * 
+ * @param chainId 
+ * @returns 
+ * // @dev get the position impact pool amount
+    // @param dataStore DataStore
+    // @param market the market to check
+    // @return the position impact pool amount
+    function getPositionImpactPoolAmount(DataStore dataStore, address market) internal view returns (uint256) {
+        return dataStore.getUint(Keys.positionImpactPoolAmountKey(market));
+    }
+
+    // @dev get the swap impact pool amount
+    // @param dataStore DataStore
+    // @param market the market to check
+    // @param token the token to check
+    // @return the swap impact pool amount
+    function getSwapImpactPoolAmount(DataStore dataStore, address market, address token) internal view returns (uint256) {
+        return dataStore.getUint(Keys.swapImpactPoolAmountKey(market, token));
+    }
+ */
+
 export function usePriceImpactConfigs(chainId: number): PriceImpactConfigsData {
   const marketsData = useMarketsData(chainId);
 

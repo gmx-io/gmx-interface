@@ -1298,8 +1298,8 @@ msgid "Enter a swap trigger ratio"
 msgstr "Enter a swap trigger ratio"
 
 #: src/components/Synthetics/Trade/utils.ts
-msgid "Enter a trigger price"
-msgstr "Enter a trigger price"
+#~ msgid "Enter a trigger price"
+#~ msgstr "Enter a trigger price"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -3848,6 +3848,14 @@ msgstr "Trigger order disabled, pending {0} upgrade"
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Trigger price"
 msgstr "Trigger price"
+
+#: src/components/Synthetics/Trade/utils.ts
+msgid "Trigger price must be higher than mark price"
+msgstr "Trigger price must be higher than mark price"
+
+#: src/components/Synthetics/Trade/utils.ts
+msgid "Trigger price must be lower than mark price"
+msgstr "Trigger price must be lower than mark price"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right"
