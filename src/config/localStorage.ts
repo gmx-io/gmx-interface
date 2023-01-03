@@ -13,3 +13,5 @@ export const SHOULD_SHOW_POSITION_LINES_KEY = "Exchange-swap-should-show-positio
 export const REFERRAL_CODE_KEY = "GMX-referralCode";
 export const REFERRALS_SELECTED_TAB_KEY = "Referrals-selected-tab";
 export const TV_SAVE_LOAD_CHARTS = "tv-save-load-charts";
+export const REDIRECT_POPUP_TIMESTAMP_KEY = "redirect-popup-timestamp";
+export const PRODUCTION_PREVIEW_KEY = "production-preview";

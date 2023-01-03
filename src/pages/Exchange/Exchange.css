@@ -433,6 +433,16 @@
   margin-top: 8px;
 }
 
+.active-order-tooltip {
+  background: var(--dark-blue-hover);
+  padding: 0.75rem;
+  border-radius: var(--border-radius-sm);
+  white-space: normal;
+}
+.active-order-tooltip > .active-oredr-error {
+  margin-top: 0.5rem;
+}
+
 .order-error span {
   text-decoration-color: var(--error-red);
   color: var(--error-red);

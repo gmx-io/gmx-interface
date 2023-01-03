@@ -30,19 +30,19 @@ msgid "<0/>Profit price: {0} ${1}. This rule applies for the next {2}, until {3}
 msgstr ""
 
 #: src/App/App.js
-msgid "<0>Install Coinbase Wallet</0> to start using GMX"
+msgid "<0>Install Coinbase Wallet</0> to start using GMX."
 msgstr ""
 
 #: src/App/App.js
-msgid "<0>Install Coinbase Wallet</0>, and use GMX with its built-in browser"
+msgid "<0>Install Coinbase Wallet</0>, and use GMX with its built-in browser."
 msgstr ""
 
 #: src/App/App.js
-msgid "<0>Install MetaMask</0> to start using GMX"
+msgid "<0>Install MetaMask</0> to start using GMX."
 msgstr ""
 
 #: src/App/App.js
-msgid "<0>Install MetaMask</0>, and use GMX with its built-in browser"
+msgid "<0>Install MetaMask</0>, and use GMX with its built-in browser."
 msgstr ""
 
 #: src/components/Exchange/OrdersToa.js
@@ -65,8 +65,12 @@ msgstr ""
 msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
 msgstr ""
 
+#: src/pages/Dashboard/DashboardV2.js
+msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>Other websites may show a higher value as they add positions' collaterals to the GLP pool.</1>"
+msgstr ""
+
 #: src/lib/wallets/index.tsx
-msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2><3>Add {2}</3>"
+msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -205,6 +209,10 @@ msgstr ""
 msgid "Amount of traders you referred."
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
+msgid "Amount should be greater than zero"
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Amount to claim"
 msgstr ""
@@ -215,6 +223,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Announcement"
+msgstr ""
+
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "App"
 msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
@@ -285,7 +297,7 @@ msgid "Assets Under Management"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
-msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})"
+msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})."
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -359,6 +371,7 @@ msgid "Boost your rewards with Multiplier Points. <0>More info</0>."
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -795,7 +808,7 @@ msgstr ""
 msgid "Copy"
 msgstr ""
 
-#: src/components/AddressDropdown/AddressDropdown.js
+#: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "Copy Address"
 msgstr ""
 
@@ -948,7 +961,6 @@ msgstr "Децентрализованная<0/>бессрочная биржа"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/TradeHistory.js
 msgid "Decrease"
 msgstr ""
@@ -1025,7 +1037,7 @@ msgstr ""
 msgid "Disable order validations"
 msgstr ""
 
-#: src/components/AddressDropdown/AddressDropdown.js
+#: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "Disconnect"
 msgstr ""
 
@@ -1182,7 +1194,6 @@ msgstr ""
 msgid "Enter a price"
 msgstr ""
 
-#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
@@ -1399,7 +1410,7 @@ msgid "GMX Weekly Updates"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:"
+msgid "GMX bonds can be bought on Bond Protocol with a discount and a small vesting period:"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -1506,7 +1517,6 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/TradeHistory.js
 msgid "Increase"
@@ -1744,7 +1754,6 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
@@ -1981,14 +1990,16 @@ msgstr ""
 msgid "Min leverage: 1.1x"
 msgstr ""
 
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
 msgid "Min order: 10 USD"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Min required collateral"
+msgstr ""
+
+#: src/components/Exchange/PositionEditor.js
+msgid "Min residual collateral: 10 USD"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -2035,12 +2046,12 @@ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-msgid "Net Value: Initial Collateral - Borrow Fee + PnL"
+msgid "Net Value: Initial Collateral + PnL - Borrow Fee"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-msgid "Net Value: Initial Collateral - Fees + PnL"
+msgid "Net Value: Initial Collateral + PnL - Fees"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -2108,10 +2119,6 @@ msgstr ""
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 msgstr ""
 
-#: src/pages/BuyGlp/BuyGlp.js
-msgid "Note that there is a minimum holding time of 15 minutes after a purchase.<0/>View <1>staking</1> page."
-msgstr ""
-
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
 msgstr ""
@@ -2148,10 +2155,6 @@ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 msgid "Opening..."
-msgstr ""
-
-#: src/pages/Ecosystem/Ecosystem.js
-msgid "Optimal compound interval calculator"
 msgstr ""
 
 #: src/components/Exchange/OrdersList.js
@@ -2427,7 +2430,7 @@ msgid "Profit price: {0} ${1}. This rule applies for the next {2}, until {3}."
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Projects developed by the GMX community."
+msgid "Projects developed by the GMX community. Please exercise caution in interacting with any site, the project's are fully maintained by community developers."
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -2728,7 +2731,6 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ExchangeTVChart.js
-#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -3061,6 +3063,10 @@ msgstr ""
 msgid "The order will only execute if the price conditions are met and there is sufficient liquidity"
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
+msgid "The pending borrow fee will be charged on this transaction."
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
 msgstr ""
@@ -3249,10 +3255,6 @@ msgstr ""
 
 #: src/pages/Dashboard/DashboardV1.js
 msgid "Total fees earned since {0}: {1} USD<0/>Fee assets: {feeText}"
-msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Total value of tokens in GLP pool ({chainName})"
 msgstr ""
 
 #: src/components/StatsTooltip/StatsTooltip.tsx
@@ -3544,7 +3546,11 @@ msgstr ""
 msgid "View"
 msgstr ""
 
-#: src/components/AddressDropdown/AddressDropdown.js
+#: src/pages/BuyGlp/BuyGlp.js
+msgid "View <0>staking</0> page."
+msgstr ""
+
+#: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "View in Explorer"
 msgstr ""
 
@@ -3961,10 +3967,6 @@ msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for ve
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-msgid "{0} {1} {longOrShortText}, -{2} USD, {3} Price: ${4} USD"
-msgstr ""
-
-#: src/components/Exchange/TradeHistory.js
 msgid ""
 "{0}:\n"
 "Swap {amountInDisplay} {1} for {minOutDisplay} {2},\n"
@@ -3976,6 +3978,10 @@ msgid ""
 "{0}:\n"
 "{1},\n"
 "Price: {priceDisplay}"
+msgstr ""
+
+#: src/components/Exchange/TradeHistory.js
+msgid "{0}  {1} {longOrShortText}, -{2} USD, {3} Price: ${4} USD"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -4003,6 +4009,10 @@ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
+msgstr ""
+
+#: src/components/Exchange/PositionSeller.js
+msgid "{nativeTokenSymbol} can not be sent to smart contract addresses. Select another token."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js

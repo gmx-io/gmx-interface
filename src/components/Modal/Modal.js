@@ -20,7 +20,7 @@ export default function Modal(props) {
 
   useEffect(() => {
     function close(e) {
-      if (e.keyCode === 27) {
+      if (e.keyCode === 27 && setIsVisible) {
         setIsVisible(false);
       }
     }

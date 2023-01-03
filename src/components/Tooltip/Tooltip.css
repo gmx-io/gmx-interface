@@ -9,8 +9,9 @@
   border-radius: 4px;
   padding: 1.05rem;
   letter-spacing: 0.4px;
-  min-width: 25rem;
+  min-width: 28rem;
   text-align: left;
+  white-space: normal;
   background: linear-gradient(90deg, #0b0b0f 0%, rgba(10, 13, 28, 1) 100%);
   z-index: 1000;
 }
@@ -138,6 +139,9 @@
     min-width: 20rem;
   }
   .Tooltip-row > .Tooltip-row-value {
+    text-align: left;
+  }
+  .Tooltip-row-values li:not(:first-child) {
     text-align: left;
   }
 }
