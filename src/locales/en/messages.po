@@ -1048,6 +1048,10 @@ msgstr "Decrease"
 msgid "Decrease active: {0}, executed: {1}, cancelled: {2}"
 msgstr "Decrease active: {0}, executed: {1}, cancelled: {2}"
 
+#: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
+msgid "Decrease {longText} {0} by {1}"
+msgstr "Decrease {longText} {0} by {1}"
+
 #: src/components/Exchange/TradeHistory.js
 msgid "Decreased"
 msgstr "Decreased"
@@ -1363,6 +1367,10 @@ msgstr "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 msgid "Execute Order: {0, select, Increase {Increase} Decrease {Decrease}} {1} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 msgstr "Execute Order: {0, select, Increase {Increase} Decrease {Decrease}} {1} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 
+#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
+msgid "Execute order simulation failed."
+msgstr "Execute order simulation failed."
+
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
 msgid "Executed {0} {tokensText}"
 msgstr "Executed {0} {tokensText}"
@@ -1673,6 +1681,10 @@ msgstr "Increase active: {0}, executed: {1}, cancelled: {2}"
 msgid "Increase {0} {longOrShortText}, +{1} USD, {2} Price: {3} USD"
 msgstr "Increase {0} {longOrShortText}, +{1} USD, {2} Price: {3} USD"
 
+#: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
+msgid "Increase {longText} {0} by {1}"
+msgstr "Increase {longText} {0} by {1}"
+
 #: src/pages/Exchange/Exchange.js
 msgid "Increased {tokenSymbol} {longOrShortText}, +{0} USD."
 msgstr "Increased {tokenSymbol} {longOrShortText}, +{0} USD."
@@ -1975,6 +1987,8 @@ msgstr "Loading..."
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/Trade/utils.ts
+#: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
+#: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
@@ -3116,6 +3130,8 @@ msgstr "Share Position"
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/Trade/utils.ts
+#: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
+#: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
@@ -3300,8 +3316,8 @@ msgstr "Success withdrawal order"
 #~ msgstr "Success {0} order"
 
 #: src/domain/synthetics/orders/createOrderTxn.ts
-msgid "Success {orderLabel} order"
-msgstr "Success {orderLabel} order"
+#~ msgid "Success {orderLabel} order"
+#~ msgstr "Success {orderLabel} order"
 
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV1.js
@@ -3400,6 +3416,10 @@ msgstr "Swap {0} {1} for {2} USDG"
 #: src/components/Exchange/TradeHistory.js
 msgid "Swap {0} {1} for {2} {3}"
 msgstr "Swap {0} {1} for {2} {3}"
+
+#: src/domain/synthetics/orders/createSwapOrderTxn.ts
+msgid "Swap {fromText} to {toText}"
+msgstr "Swap {fromText} to {toText}"
 
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
 msgid "Swapped {0} to {1}"
@@ -4554,11 +4574,21 @@ msgstr "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
 msgid "{nativeTokenSymbol} can not be sent to smart contract addresses. Select another token."
 msgstr "{nativeTokenSymbol} can not be sent to smart contract addresses. Select another token."
 
-#: src/domain/synthetics/orders/createOrderTxn.ts
+#: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
+#: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
+#: src/domain/synthetics/orders/createSwapOrderTxn.ts
+msgid "{orderLabel} order created"
+msgstr "{orderLabel} order created"
+
+#: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
+#: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
+#: src/domain/synthetics/orders/createSwapOrderTxn.ts
 msgid "{orderLabel} order failed"
 msgstr "{orderLabel} order failed"
 
-#: src/domain/synthetics/orders/createOrderTxn.ts
+#: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
+#: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
+#: src/domain/synthetics/orders/createSwapOrderTxn.ts
 msgid "{orderLabel} order sent"
 msgstr "{orderLabel} order sent"
 

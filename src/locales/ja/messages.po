@@ -1048,6 +1048,10 @@ msgstr ""
 msgid "Decrease active: {0}, executed: {1}, cancelled: {2}"
 msgstr ""
 
+#: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
+msgid "Decrease {longText} {0} by {1}"
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.js
 msgid "Decreased"
 msgstr ""
@@ -1363,6 +1367,10 @@ msgstr ""
 msgid "Execute Order: {0, select, Increase {Increase} Decrease {Decrease}} {1} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 msgstr ""
 
+#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
+msgid "Execute order simulation failed."
+msgstr ""
+
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
 msgid "Executed {0} {tokensText}"
 msgstr ""
@@ -1673,6 +1681,10 @@ msgstr ""
 msgid "Increase {0} {longOrShortText}, +{1} USD, {2} Price: {3} USD"
 msgstr ""
 
+#: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
+msgid "Increase {longText} {0} by {1}"
+msgstr ""
+
 #: src/pages/Exchange/Exchange.js
 msgid "Increased {tokenSymbol} {longOrShortText}, +{0} USD."
 msgstr ""
@@ -1972,6 +1984,8 @@ msgstr "ロード中"
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/Trade/utils.ts
+#: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
+#: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
@@ -3113,6 +3127,8 @@ msgstr "ポジションをシェア"
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/Trade/utils.ts
+#: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
+#: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
@@ -3297,8 +3313,8 @@ msgstr ""
 #~ msgstr ""
 
 #: src/domain/synthetics/orders/createOrderTxn.ts
-msgid "Success {orderLabel} order"
-msgstr ""
+#~ msgid "Success {orderLabel} order"
+#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV1.js
@@ -3396,6 +3412,10 @@ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Swap {0} {1} for {2} {3}"
+msgstr ""
+
+#: src/domain/synthetics/orders/createSwapOrderTxn.ts
+msgid "Swap {fromText} to {toText}"
 msgstr ""
 
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
@@ -4542,11 +4562,21 @@ msgstr "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR(実質年利)"
 msgid "{nativeTokenSymbol} can not be sent to smart contract addresses. Select another token."
 msgstr ""
 
-#: src/domain/synthetics/orders/createOrderTxn.ts
+#: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
+#: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
+#: src/domain/synthetics/orders/createSwapOrderTxn.ts
+msgid "{orderLabel} order created"
+msgstr ""
+
+#: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
+#: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
+#: src/domain/synthetics/orders/createSwapOrderTxn.ts
 msgid "{orderLabel} order failed"
 msgstr ""
 
-#: src/domain/synthetics/orders/createOrderTxn.ts
+#: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
+#: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
+#: src/domain/synthetics/orders/createSwapOrderTxn.ts
 msgid "{orderLabel} order sent"
 msgstr ""
 
