@@ -120,15 +120,6 @@ export default function Ecosystem() {
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
-      title: "GMX Compound Calculator",
-      link: "https://docs.google.com/spreadsheets/d/14DiIE1wZkK9-Y5xSx1PzIgmpcj4ccz1YVw5nwzIWLgI/edit#gid=0",
-      linkLabel: "docs.google.com",
-      about: t`Optimal compound interval calculator`,
-      creatorLabel: "@ChasenKaminsky",
-      creatorLink: "https://twitter.com/ChasenKaminsky",
-      chainIds: [AVALANCHE],
-    },
-    {
       title: "GMX Trading Stats",
       link: "https://t.me/GMXTradingStats",
       linkLabel: "t.me",
@@ -514,7 +505,11 @@ export default function Ecosystem() {
               <Trans>Community Projects</Trans>
             </div>
             <div className="Page-description">
-              <Trans>Projects developed by the GMX community.</Trans>
+              <Trans>
+                Projects developed by the GMX community. <br />
+                Please exercise caution when interacting with any app, apps are fully maintained by community
+                developers.
+              </Trans>
             </div>
           </div>
           <div className="DashboardV2-projects">
