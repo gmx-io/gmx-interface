@@ -80,11 +80,7 @@ export default function TVChartContainer({
 
   useEffect(() => {
     if (chartReady && tvWidgetRef.current) {
-      if (tvWidgetRef.current.activeChart().getCheckableActionState("drawingToolbarAction")) {
-        if (isMobile) {
-          tvWidgetRef.current?.activeChart().executeActionById("drawingToolbarAction");
-        }
-      } else {
+      if (isMobile && tvWidgetRef.current.activeChart().getCheckableActionState("drawingToolbarAction")) {
         tvWidgetRef.current?.activeChart().executeActionById("drawingToolbarAction");
       }
     }
