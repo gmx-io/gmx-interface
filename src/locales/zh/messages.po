@@ -2145,7 +2145,7 @@ msgstr "暂时没有交易"
 
 #: src/components/Exchange/OrdersToa.js
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
-msgstr "请注意，订单不保证被执行。<0/><1/>可能发生在几种情况下，包括但不限于:<<<<<<< HEAD"
+msgstr "请注意，订单不保证被执行。<0/><1/>可能发生在几种情况下，包括但不限于:"
 
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."

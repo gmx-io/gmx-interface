@@ -2145,7 +2145,7 @@ msgstr "거래가 아직 없습니다"
 
 #: src/components/Exchange/OrdersToa.js
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
-msgstr "주문 실행은 보장되지 않습니다.<0/><1/>이것은 다음과 같은 상황에 일어날 수 있습니다:<<<<<<< HEAD"
+msgstr "주문 실행은 보장되지 않습니다.<0/><1/>이것은 다음과 같은 상황에 일어날 수 있습니다:"
 
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
@@ -2187,7 +2187,7 @@ msgstr "{0} {longOrShortText} 열기"
 
 #: src/components/Exchange/PositionsList.js
 msgid "Opening..."
-msgstr "여는 중...<<<<<<< HEAD"
+msgstr "여는 중..."
 
 #: src/components/Exchange/OrdersList.js
 #: src/pages/OrdersOverview/OrdersOverview.js

@@ -3161,7 +3161,7 @@ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "This is the network cost required to execute the {depositOrWithdrawalText}.<0/><1/><2>More Info</2>"
-msgstr "Il s'agit du coût réseau nécessaire à l'exécution de la {depositOrWithdrawalText. <0/><1/><2>Plus d'infos</2>"
+msgstr "Il s'agit du coût réseau nécessaire à l'exécution de la {depositOrWithdrawalText}. <0/><1/><2>Plus d'infos</2>"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "This order will forfeit a <0>profit</0> of {deltaStr}. <1/>"
@@ -3903,7 +3903,7 @@ msgstr "retrait"
 
 #: src/pages/Exchange/Exchange.js
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
-msgstr "{0, plural, one {Cancel order} autre {Cancel # orders}}"
+msgstr "{0, plural, one {Annuler la commande} other {Annuler # commandes}}"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "{0} Approved!"
@@ -3978,7 +3978,7 @@ msgstr "{0} pool dépassé, essayez un autre token"
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrderEditor.js
 msgid "{0} price"
-msgstr "0} prix"
+msgstr "{0} prix"
 
 #: src/components/Glp/GlpSwap.js
 msgid "{0} selected in order form"
@@ -4030,11 +4030,11 @@ msgstr "{chainName} Stats totales à partir de {totalStatsStartDate}.<0/> Pour d
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
-msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} autre {You have # active trigger orders that could impact this position.}}"
+msgstr "{existingTriggerOrderLength, plural, one {Vous avez une commande de déclenchement active qui pourrait affecter cette position.} other {Vous avez # commandes de déclenchement actives qui pourraient affecter cette position.}}"
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
-msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} autre {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
+msgstr "{existingTriggerOrderLength, plural, one {Vous avez une commande de déclenchement active qui pourrait être exécutée immédiatement après l'ouverture de cette position. Veuillez annuler la commande ou accepter la confirmation pour continuer.} other {Vous avez # commandes de déclenchement actives qui pourraient être exécutées immédiatement après l'ouverture de cette position. Veuillez annuler les commandes ou accepter la confirmation pour continuer.}}"
 
 #: src/components/Exchange/PositionsList.js
 msgid "{longOrShortText} {0} market selected"
