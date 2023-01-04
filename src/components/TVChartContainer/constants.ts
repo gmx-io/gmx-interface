@@ -26,6 +26,8 @@ const chartOverrides = {
   ...chartStyleOverrides,
 };
 
+export const disabledFeaturesOnMonile = ["header_saveload", "header_fullscreen_button"];
+
 const disabledFeatures = [
   "volume_force_overlay",
   "show_logo_on_all_charts",
@@ -38,6 +40,7 @@ const disabledFeatures = [
   "show_interval_dialog_on_key_press",
   "header_symbol_search",
   "popup_hints",
+  "header_in_fullscreen_mode",
 ];
 const enabledFeatures = [
   "side_toolbar_in_fullscreen_mode",

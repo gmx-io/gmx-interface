@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { TV_SAVE_LOAD_CHARTS } from "config/localStorage";
-import { useLocalStorage } from "react-use";
-import { defaultChartProps, SaveLoadAdapter } from "./constants";
+import { useLocalStorage, useMedia } from "react-use";
+import { defaultChartProps, disabledFeaturesOnMonile, SaveLoadAdapter } from "./constants";
 import useTVDatafeed from "domain/tradingview/useTVDatafeed";
 import { IChartingLibraryWidget, IPositionLineAdapter } from "./charting_library/charting_library";
 import { getPeriodFromResolutions, supportedResolutions } from "domain/tradingview/helper";
@@ -32,6 +32,7 @@ export default function TVChartContainer({
   const [chartReady, setChartReady] = useState(false);
   let [tvCharts, setTvCharts] = useLocalStorage(TV_SAVE_LOAD_CHARTS, []);
   const datafeed = useTVDatafeed();
+  const isMobile = useMedia("(max-width: 550px)");
 
   const drawLineOnChart = useCallback(
     (title, price) => {
@@ -78,6 +79,18 @@ export default function TVChartContainer({
   }, [symbol, chartReady, period]);
 
   useEffect(() => {
+    if (chartReady && tvWidgetRef.current) {
+      if (tvWidgetRef.current.activeChart().getCheckableActionState("drawingToolbarAction")) {
+        if (isMobile) {
+          tvWidgetRef.current?.activeChart().executeActionById("drawingToolbarAction");
+        }
+      } else {
+        tvWidgetRef.current?.activeChart().executeActionById("drawingToolbarAction");
+      }
+    }
+  }, [isMobile, chartReady]);
+
+  useEffect(() => {
     const widgetOptions = {
       debug: false,
       symbol: symbol,
@@ -88,7 +101,9 @@ export default function TVChartContainer({
       locale: defaultChartProps.locale,
       loading_screen: defaultChartProps.loading_screen,
       enabled_features: defaultChartProps.enabled_features,
-      disabled_features: defaultChartProps.disabled_features,
+      disabled_features: isMobile
+        ? defaultChartProps.disabled_features.concat(disabledFeaturesOnMonile)
+        : defaultChartProps.disabled_features,
       client_id: defaultChartProps.clientId,
       user_id: defaultChartProps.userId,
       fullscreen: defaultChartProps.fullscreen,
