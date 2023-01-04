@@ -100,8 +100,8 @@ export async function getLiveBar({ ticker, resolution, chainId }) {
     return {
       ...lastBar,
       close: averagePriceValue,
-      high: Math.max(lastBar.high, averagePriceValue),
-      low: Math.min(lastBar.low, averagePriceValue),
+      high: Math.max(lastBar.open, lastBar.high, averagePriceValue),
+      low: Math.min(lastBar.open, lastBar.low, averagePriceValue),
       ticker,
     };
   } else {
