@@ -7,14 +7,14 @@ import connectWalletImg from "img/ic_wallet_24.svg";
 
 import "./Header.css";
 import { isHomeSite, getAccountUrl } from "lib/legacy";
-import { isDevelopment } from "lib/legacy";
 import cx from "classnames";
 import { Trans } from "@lingui/macro";
 import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
 import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
-import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, getChainName } from "config/chains";
+import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, AVALANCHE_FUJI, getChainIcon, getChainName } from "config/chains";
 import { switchNetwork } from "lib/wallets";
 import { useChainId } from "lib/chains";
+import { isDevelopment } from "config/env";
 
 type Props = {
   openSettings: () => void;
@@ -24,6 +24,36 @@ type Props = {
   redirectPopupTimestamp: number;
   showRedirectModal: (to: string) => void;
 };
+
+const NETWORK_OPTIONS = [
+  {
+    label: getChainName(ARBITRUM),
+    value: ARBITRUM,
+    icon: getChainIcon(ARBITRUM, 24),
+    color: "#264f79",
+  },
+  {
+    label: getChainName(AVALANCHE),
+    value: AVALANCHE,
+    icon: getChainIcon(AVALANCHE, 24),
+    color: "#E841424D",
+  },
+];
+
+if (isDevelopment()) {
+  NETWORK_OPTIONS.push({
+    label: getChainName(ARBITRUM_TESTNET),
+    value: ARBITRUM_TESTNET,
+    icon: getChainIcon(ARBITRUM_TESTNET, 24),
+    color: "#264f79",
+  });
+  NETWORK_OPTIONS.push({
+    label: getChainName(AVALANCHE_FUJI),
+    value: AVALANCHE_FUJI,
+    icon: getChainIcon(AVALANCHE_FUJI, 24),
+    color: "#E841424D",
+  });
+}
 
 export function AppHeaderUser({
   openSettings,
@@ -36,29 +66,6 @@ export function AppHeaderUser({
   const { chainId } = useChainId();
   const { active, account } = useWeb3React();
   const showConnectionOptions = !isHomeSite();
-
-  const networkOptions = [
-    {
-      label: getChainName(ARBITRUM),
-      value: ARBITRUM,
-      icon: "ic_arbitrum_24.svg",
-      color: "#264f79",
-    },
-    {
-      label: getChainName(AVALANCHE),
-      value: AVALANCHE,
-      icon: "ic_avalanche_24.svg",
-      color: "#E841424D",
-    },
-  ];
-  if (isDevelopment()) {
-    networkOptions.push({
-      label: getChainName(ARBITRUM_TESTNET),
-      value: ARBITRUM_TESTNET,
-      icon: "ic_arbitrum_24.svg",
-      color: "#264f79",
-    });
-  }
 
   useEffect(() => {
     if (active) {
@@ -99,7 +106,7 @@ export function AppHeaderUser({
             </ConnectWalletButton>
             <NetworkDropdown
               small={small}
-              networkOptions={networkOptions}
+              networkOptions={NETWORK_OPTIONS}
               selectorLabel={selectorLabel}
               onNetworkSelect={onNetworkSelect}
               openSettings={openSettings}
@@ -138,7 +145,7 @@ export function AppHeaderUser({
           </div>
           <NetworkDropdown
             small={small}
-            networkOptions={networkOptions}
+            networkOptions={NETWORK_OPTIONS}
             selectorLabel={selectorLabel}
             onNetworkSelect={onNetworkSelect}
             openSettings={openSettings}

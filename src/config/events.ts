@@ -284,7 +284,7 @@ export const appEventsData: EventData[] = [
     isActive: true,
     validTill: "18 Dec 2022, 12:00",
     bodyText:
-      "The GLP Manager address will be updated this week based on the linked post, after the update, existing users will need to approve the new GLP Manager to buy GLP tokens.",
+      "The GLP Manager address has been updated based on the linked post, existing users will need to approve the new GLP Manager to buy GLP tokens.",
     buttons: [
       {
         text: "Read More",
