@@ -1,12 +1,5 @@
 import { useEffect, useState } from "react";
 
-type UsePagination = {
-  currentPage: number;
-  pageCount: number;
-  getCurrentData: () => void;
-  setCurrentPage: (num: number) => void;
-};
-
 export const paginate = ({ total, current, size }) => {
   const pages = Math.ceil(total / size);
 
@@ -24,7 +17,7 @@ export const paginate = ({ total, current, size }) => {
   };
 };
 
-export default function usePagination(items = [], size = 10): UsePagination {
+export default function usePagination(items = [], size = 10) {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(Math.ceil(items.length / size));
 
