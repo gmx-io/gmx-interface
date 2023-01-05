@@ -338,8 +338,7 @@ export default function TradeHistory(props) {
           );
         }
         const actionDisplay = isLiquidation ? t`Partially Liquidated` : t`Decreased`;
-        return t`
-        ${actionDisplay} ${indexToken.symbol} ${longOrShortText},
+        return t`${actionDisplay} ${indexToken.symbol} ${longOrShortText},
         -${formatAmount(params.sizeDelta, USD_DECIMALS, 2, true)} USD,
         ${indexToken.symbol} Price: ${formatAmount(params.price, USD_DECIMALS, 2, true)} USD
       `;
@@ -444,12 +443,12 @@ export default function TradeHistory(props) {
           ? formatAmount(order.minOut, toToken.decimals, toToken.isStable ? 2 : 4, true)
           : "";
 
-        return t`
-        ${getOrderActionTitle(tradeData.action)}:
-        Swap ${amountInDisplay} ${fromToken?.symbol || ""} for ${minOutDisplay} ${toToken?.symbol || ""},
+        return t`${getOrderActionTitle(tradeData.action)}: Swap ${amountInDisplay}
+        ${fromToken?.symbol || ""} for ${minOutDisplay} ${toToken?.symbol || ""},
         Price: ${getExchangeRateDisplay(order.triggerRatio, fromToken, toToken)}`;
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [getTokenInfo, infoTokens, nativeTokenAddress, chainId, liquidationsDataMap]
   );
 

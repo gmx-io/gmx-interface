@@ -76,25 +76,23 @@ export async function callContract(
     switch (type) {
       case NOT_ENOUGH_FUNDS:
         failMsg = (
-          <div>
-            <Trans>
-              There is not enough ETH in your account on Arbitrum to send this transaction.
-              <br />
-              <br />
-              <ExternalLink href="https://arbitrum.io/bridge-tutorial/">Bridge ETH to Arbitrum</ExternalLink>
-            </Trans>
-          </div>
+          <Trans>
+            There is not enough ETH in your account on Arbitrum to send this transaction.
+            <br />
+            <br />
+            <ExternalLink href="https://arbitrum.io/bridge-tutorial/">Bridge ETH to Arbitrum</ExternalLink>
+          </Trans>
         );
         break;
       case NETWORK_CHANGED:
         failMsg = (
-          <div>
+          <Trans>
             <div>Your wallet is not connected to {getChainName(chainId)}.</div>
             <br />
             <div className="clickable underline" onClick={() => switchNetwork(chainId, true)}>
               Switch to {getChainName(chainId)}
             </div>
-          </div>
+          </Trans>
         );
         break;
       case USER_DENIED:
