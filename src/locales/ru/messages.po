@@ -1384,6 +1384,14 @@ msgstr "GLP Пул"
 msgid "GLP Vault"
 msgstr "Хранилище GLP"
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "GLP and GMX autocompounding vaults"
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "GLP autocompounding vaults"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "Покупка GLP приостановлена, ожидается {0} обновление"
@@ -2193,6 +2201,10 @@ msgstr "Открывайте позиции с помощью простого �
 msgid "Open positions: {0}<0/>Under risk: {1}"
 msgstr "Открытие позиций: {0}<0/>Под риском: {1}"
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Open trades ranking and stats"
+msgstr ""
+
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Open {0} {longOrShortText}"
 msgstr "Открыть {0} {longOrShortText}"
@@ -2273,6 +2285,10 @@ msgstr "Ордера ({0})"
 #: src/pages/Exchange/Exchange.js
 msgid "Orders cancelled."
 msgstr "Ордера отменены"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Overall protocol analytics"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Overview"
@@ -2817,6 +2833,10 @@ msgstr "Шортинг..."
 msgid "Simple Swaps"
 msgstr "Простые Обмены"
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Simulate your hedge strategy"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
@@ -2836,6 +2856,10 @@ msgstr "Ускорить загрузку страницы"
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Spread"
 msgstr "Спред"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Spreadsheet for position calculations"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Stablecoin Percentage"
@@ -3060,6 +3084,10 @@ msgstr "Группа в Телеграмме (Португальский язы�
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram Groups"
 msgstr "Группы в Телеграмме "
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Telegram bot for GMX Swaps monitoring"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram bot for GMX position updates"

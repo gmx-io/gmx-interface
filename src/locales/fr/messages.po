@@ -1384,6 +1384,14 @@ msgstr "Pool de GLP"
 msgid "GLP Vault"
 msgstr "Coffre GLP"
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "GLP and GMX autocompounding vaults"
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "GLP autocompounding vaults"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "Achat GLP désactivé, en attente de {0} actualisations"
@@ -2193,6 +2201,10 @@ msgstr "Ouvrez ces positions dans une interface d'échange simple. Échangez fac
 msgid "Open positions: {0}<0/>Under risk: {1}"
 msgstr "Positions ouvertes: {0}<0/>Sous risque: {1}"
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Open trades ranking and stats"
+msgstr ""
+
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Open {0} {longOrShortText}"
 msgstr "Ouvert {0} {longOrShortText}"
@@ -2273,6 +2285,10 @@ msgstr "Ordres ({0})"
 #: src/pages/Exchange/Exchange.js
 msgid "Orders cancelled."
 msgstr "Ordres annulés."
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Overall protocol analytics"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Overview"
@@ -2817,6 +2833,10 @@ msgstr "Short en cours..."
 msgid "Simple Swaps"
 msgstr "Échanges simples"
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Simulate your hedge strategy"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
@@ -2836,6 +2856,10 @@ msgstr "Accélérer le chargement de la page"
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Spread"
 msgstr "Marge"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Spreadsheet for position calculations"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Stablecoin Percentage"
@@ -3060,6 +3084,10 @@ msgstr "Groupe Telegram (langue Portugaise)"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram Groups"
 msgstr "Groupes Telegram"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Telegram bot for GMX Swaps monitoring"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram bot for GMX position updates"

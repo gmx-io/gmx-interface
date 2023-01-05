@@ -1384,6 +1384,14 @@ msgstr "GLPプール"
 msgid "GLP Vault"
 msgstr "GLPボールト"
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "GLP and GMX autocompounding vaults"
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "GLP autocompounding vaults"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "{0}アップグレード未完了のためGLP購入は停止中です"
@@ -2193,6 +2201,10 @@ msgstr "シンプルなスワップインターフェースでポジションを
 msgid "Open positions: {0}<0/>Under risk: {1}"
 msgstr "オープンのポジション: {0}<0/>リスクあり: {1}"
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Open trades ranking and stats"
+msgstr ""
+
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Open {0} {longOrShortText}"
 msgstr "{0} {longOrShortText}をオープンする"
@@ -2273,6 +2285,10 @@ msgstr "注文 ({0})"
 #: src/pages/Exchange/Exchange.js
 msgid "Orders cancelled."
 msgstr "注文がキャンセルされました。"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Overall protocol analytics"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Overview"
@@ -2817,6 +2833,10 @@ msgstr "ショート中..."
 msgid "Simple Swaps"
 msgstr "シンプルなスワップ"
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Simulate your hedge strategy"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
@@ -2836,6 +2856,10 @@ msgstr "ページの読み込みを速くする"
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Spread"
 msgstr "スプレッド"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Spreadsheet for position calculations"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Stablecoin Percentage"
@@ -3060,6 +3084,10 @@ msgstr "Telegramグループ (ポルトガル語)"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram Groups"
 msgstr "Telegramグループ"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Telegram bot for GMX Swaps monitoring"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram bot for GMX position updates"

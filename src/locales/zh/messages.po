@@ -1384,6 +1384,14 @@ msgstr "GLP池"
 msgid "GLP Vault"
 msgstr "GLP库"
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "GLP and GMX autocompounding vaults"
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "GLP autocompounding vaults"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "GLP购买已禁止，等待{0}升级"
@@ -2193,6 +2201,10 @@ msgstr "通过简单的互换界面开立头寸。方便地从任何币值换成
 msgid "Open positions: {0}<0/>Under risk: {1}"
 msgstr "未结头寸: {0}<0/>风险之下: {1}"
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Open trades ranking and stats"
+msgstr ""
+
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Open {0} {longOrShortText}"
 msgstr "开仓 {0} {longOrShortText}"
@@ -2273,6 +2285,10 @@ msgstr "订单 ({0})"
 #: src/pages/Exchange/Exchange.js
 msgid "Orders cancelled."
 msgstr "订单取消"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Overall protocol analytics"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Overview"
@@ -2817,6 +2833,10 @@ msgstr "做空中..."
 msgid "Simple Swaps"
 msgstr "简易交易"
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Simulate your hedge strategy"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
@@ -2836,6 +2856,10 @@ msgstr "加速页面加载"
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Spread"
 msgstr "分散"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Spreadsheet for position calculations"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Stablecoin Percentage"
@@ -3060,6 +3084,10 @@ msgstr "电报群（葡萄牙文）"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram Groups"
 msgstr "电报群"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Telegram bot for GMX Swaps monitoring"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram bot for GMX position updates"

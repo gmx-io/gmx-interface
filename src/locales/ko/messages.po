@@ -1384,6 +1384,14 @@ msgstr "GLP 풀"
 msgid "GLP Vault"
 msgstr "GLP 볼트"
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "GLP and GMX autocompounding vaults"
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "GLP autocompounding vaults"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "{0} 업그레이드를 위해 GLP 구매가 비활성화되었습니다"
@@ -2193,6 +2201,10 @@ msgstr "간단한 스왑 인터페이스를 통해 포지션을 열어보세요.
 msgid "Open positions: {0}<0/>Under risk: {1}"
 msgstr "열린 포지션: {0}<0>리스크: {1}"
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Open trades ranking and stats"
+msgstr ""
+
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Open {0} {longOrShortText}"
 msgstr "{0} {longOrShortText} 열기"
@@ -2273,6 +2285,10 @@ msgstr "주문 ({0})"
 #: src/pages/Exchange/Exchange.js
 msgid "Orders cancelled."
 msgstr "주문 취소"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Overall protocol analytics"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Overview"
@@ -2817,6 +2833,10 @@ msgstr "숏 실행중..."
 msgid "Simple Swaps"
 msgstr "간단한 스왑"
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Simulate your hedge strategy"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
@@ -2836,6 +2856,10 @@ msgstr "페이지 로드 속도 향상"
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Spread"
 msgstr "스프레드"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Spreadsheet for position calculations"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Stablecoin Percentage"
@@ -3060,6 +3084,10 @@ msgstr "텔레그램 그룹 (포르투갈어)"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram Groups"
 msgstr "텔레그램 그룹"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Telegram bot for GMX Swaps monitoring"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram bot for GMX position updates"
