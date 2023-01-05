@@ -1,6 +1,6 @@
 import Davatar from "@davatar/react";
 import { Menu } from "@headlessui/react";
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { ETH_MAINNET } from "config/chains";
 import copy from "img/ic_copy_16.svg";
 import externalLink from "img/ic_new_link_16.svg";
@@ -44,7 +44,7 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
               className="menu-item"
               onClick={() => {
                 copyToClipboard(account);
-                helperToast.success("Address copied to your clipboard");
+                helperToast.success(t`Address copied to your clipboard`);
               }}
             >
               <img src={copy} alt="Copy user address" />
