@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import cx from "classnames";
-import { Trans, t, select } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import Tooltip from "../Tooltip/Tooltip";
 import PositionSeller from "./PositionSeller";
 import PositionEditor from "./PositionEditor";
@@ -124,9 +124,8 @@ export default function PositionsList(props) {
 
   const onPositionClick = (position) => {
     if (hideActions) return;
-    helperToast.success(
-      t`${select(position.isLong, { true: "Long", false: "Short" })} ${position.indexToken.symbol} market selected`
-    );
+    const longOrShortText = position.isLong ? t`Long` : t`Short`;
+    helperToast.success(t`${longOrShortText} ${position.indexToken.symbol} market selected`);
     setMarket(position.isLong ? LONG : SHORT, position.indexToken.address);
   };
 

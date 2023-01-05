@@ -73,6 +73,10 @@ msgstr ""
 msgid "<0>The pool's capacity has been reached for {0}. Please use another token to buy GLP.</0><1>Check the \"Save on Fees\" section for tokens with the lowest fees.</1>"
 msgstr ""
 
+#: src/components/Exchange/OrdersList.js
+msgid "<0>The price that orders can be executed at may differ slightly from the chart price, as market orders update oracle prices, while limit/trigger orders do not.</0><1>This can also cause limit/triggers to not be executed if the price is not reached for long enough. <2>Read more</2>.</1>"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
 msgstr ""
@@ -81,6 +85,7 @@ msgstr ""
 msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>Other websites may show a higher value as they add positions' collaterals to the GLP pool.</1>"
 msgstr ""
 
+#: src/lib/contracts/callContract.tsx
 #: src/lib/wallets/index.tsx
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr ""
@@ -175,6 +180,10 @@ msgstr ""
 
 #: src/components/Exchange/OrdersToa.js
 msgid "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
+msgstr ""
+
+#: src/components/AddressDropdown/AddressDropdown.tsx
+msgid "Address copied to your clipboard"
 msgstr ""
 
 #: src/pages/Referrals/Referrals.js
@@ -873,7 +882,7 @@ msgid "Create {0} Order"
 msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.js
-msgid "Created"
+msgid "Created At"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -971,6 +980,8 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Exchange/TradeHistory.js
+#: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
 msgstr ""
 
@@ -1246,6 +1257,7 @@ msgid "Escrowed GMX"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Stake/GMXAprTooltip.tsx
 msgid "Escrowed GMX APR"
 msgstr ""
 
@@ -1258,7 +1270,7 @@ msgid "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Execute Order: {0, select, Increase {Increase} Decrease {Decrease}} {1} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
+msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -1366,8 +1378,20 @@ msgstr ""
 msgid "GLP Vault"
 msgstr ""
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "GLP and GMX autocompounding vaults"
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "GLP autocompounding vaults"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 msgid "GLP buy disabled, pending {0} upgrade"
+msgstr ""
+
+#: src/components/Exchange/SwapBox.js
+msgid "GLP doesn't accept this amount of {0}."
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
@@ -1525,6 +1549,8 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Exchange/TradeHistory.js
+#: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase"
 msgstr ""
 
@@ -1748,6 +1774,10 @@ msgstr ""
 msgid "Liquidation Fee"
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
+msgid "Liquidation price would cross mark price."
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "Liquidity data not loaded"
@@ -1767,6 +1797,7 @@ msgstr ""
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
@@ -1825,10 +1856,6 @@ msgstr ""
 msgid "MEV Optimizer"
 msgstr ""
 
-#: src/pages/OrdersOverview/OrdersOverview.js
-msgid "Mark"
-msgstr ""
-
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -1836,6 +1863,7 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Mark Price"
 msgstr ""
 
@@ -2164,16 +2192,16 @@ msgstr ""
 msgid "Open positions: {0}<0/>Under risk: {1}"
 msgstr ""
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Open trades ranking and stats"
+msgstr ""
+
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Open {0} {longOrShortText}"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 msgid "Opening..."
-msgstr ""
-
-#: src/pages/Ecosystem/Ecosystem.js
-msgid "Optimal compound interval calculator"
 msgstr ""
 
 #: src/components/Exchange/OrdersList.js
@@ -2247,6 +2275,10 @@ msgstr ""
 
 #: src/pages/Exchange/Exchange.js
 msgid "Orders cancelled."
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Overall protocol analytics"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
@@ -2449,7 +2481,7 @@ msgid "Profit price: {0} ${1}. This rule applies for the next {2}, until {3}."
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Projects developed by the GMX community."
+msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -2756,6 +2788,7 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -2791,6 +2824,10 @@ msgstr ""
 msgid "Simple Swaps"
 msgstr ""
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Simulate your hedge strategy"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
@@ -2809,6 +2846,10 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Spread"
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Spreadsheet for position calculations"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
@@ -3036,6 +3077,10 @@ msgid "Telegram Groups"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
+msgid "Telegram bot for GMX Swaps monitoring"
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram bot for GMX position updates"
 msgstr ""
 
@@ -3089,10 +3134,6 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
-msgstr ""
-
-#: src/components/Exchange/OrdersList.js
-msgid "The price that orders can be executed at may differ slightly from the chart price, as market orders update oracle prices, while limit/trigger orders do not."
 msgstr ""
 
 #: src/components/Exchange/OrdersList.js
@@ -3294,10 +3335,6 @@ msgstr ""
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "TraderJoe"
-msgstr ""
-
 #: src/pages/Referrals/Referrals.js
 msgid "Traders"
 msgstr ""
@@ -3427,10 +3464,6 @@ msgstr ""
 msgid "UTILIZATION"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Uniswap"
-msgstr ""
-
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -3469,6 +3502,10 @@ msgstr ""
 
 #: src/pages/Stake/StakeV1.js
 msgid "Unstake submitted! <0>View status.</0>"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Unstaking will burn <0>{0} Multiplier Points</0>. {1}"
 msgstr ""
 
 #: src/pages/Stake/StakeV1.js
@@ -3894,14 +3931,6 @@ msgstr ""
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgstr ""
 
-#: src/components/Exchange/PositionsList.js
-msgid "{0, select, true {Long} false {Short}} {1} market selected"
-msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "{0}"
-msgstr ""
-
 #: src/domain/tokens/approveTokens.tsx
 msgid "{0} Approved!"
 msgstr ""
@@ -3951,7 +3980,7 @@ msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> toke
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
-msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1},  and to <3>swap</3> {2} for other tokens."
+msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -3986,11 +4015,8 @@ msgstr ""
 msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
 msgstr ""
 
-#: src/components/Exchange/TradeHistory.js
-msgid ""
-"{0}:\n"
-"Swap {amountInDisplay} {1} for {minOutDisplay} {2},\n"
-"Price: {3}"
+#: src/components/Exchange/SwapBox.js
+msgid "{0} {1} not supported"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -3998,6 +4024,13 @@ msgid ""
 "{0}:\n"
 "{1},\n"
 "Price: {priceDisplay}"
+msgstr ""
+
+#: src/components/Exchange/TradeHistory.js
+msgid ""
+"{0}: Swap {amountInDisplay}\n"
+"{1} for {minOutDisplay} {2},\n"
+"Price: {3}"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -4027,16 +4060,32 @@ msgstr ""
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr ""
 
+#: src/components/Exchange/PositionsList.js
+msgid "{longOrShortText} {0} market selected"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js
-msgid "{nativeTokenSymbol} can not be sent to smart contract addresses. Select another token."
+#: src/components/Stake/GMXAprTooltip.tsx
+msgid "{nativeTokenSymbol} APR"
 msgstr ""
 
-#: src/components/Exchange/SwapBox.js
-msgid "{swapOption, select, LONG {Longing} SHORT {Shorting}} {0} not supported"
+#: src/components/Stake/GMXAprTooltip.tsx
+msgid "{nativeTokenSymbol} Base APR"
+msgstr ""
+
+#: src/components/Stake/GMXAprTooltip.tsx
+msgid "{nativeTokenSymbol} Boosted APR"
+msgstr ""
+
+#: src/components/Stake/GMXAprTooltip.tsx
+msgid "{nativeTokenSymbol} Total APR"
+msgstr ""
+
+#: src/components/Exchange/PositionSeller.js
+msgid "{nativeTokenSymbol} can not be sent to smart contract addresses. Select another token."
 msgstr ""
 
 #: src/components/StatsTooltip/StatsTooltip.tsx
