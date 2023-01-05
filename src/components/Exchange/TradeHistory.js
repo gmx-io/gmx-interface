@@ -11,6 +11,7 @@ import {
   TRADES_PAGE_SIZE,
   deserialize,
   getExchangeRateDisplay,
+  INCREASE,
 } from "lib/legacy";
 import { useTrades, useLiquidationsData } from "domain/legacy";
 import { getContract } from "config/contracts";
@@ -94,12 +95,6 @@ export default function TradeHistory(props) {
   const { account, infoTokens, getTokenInfo, chainId, nativeTokenAddress, shouldShowPaginationButtons } = props;
   const [pageIds, setPageIds] = useState({});
   const [pageIndex, setPageIndex] = useState(0);
-
-  const ORDER_TYPE_LABELS = {
-    Increase: t`Increase`,
-    Decrease: t`Decrease`,
-    Swap: t`Swap`,
-  };
 
   const getAfterId = () => {
     return pageIds[pageIndex];
@@ -378,6 +373,7 @@ export default function TradeHistory(props) {
           return defaultMsg;
         }
         const longShortDisplay = order.isLong ? t`Long` : t`Short`;
+        const orderTypeText = order.type === INCREASE ? t`Increase` : t`Decrease`;
         const executionPriceDisplay = formatAmount(order.executionPrice, USD_DECIMALS, 2, true);
         const sizeDeltaDisplay = `${order.type === "Increase" ? "+" : "-"}${formatAmount(
           order.sizeDelta,
@@ -385,9 +381,7 @@ export default function TradeHistory(props) {
           2,
           true
         )}`;
-        return t`Execute Order: ${ORDER_TYPE_LABELS[order.type]} ${
-          indexToken.symbol
-        } ${longShortDisplay} ${sizeDeltaDisplay} USD, Price: ${executionPriceDisplay} USD`;
+        return t`Execute Order: ${orderTypeText} ${indexToken.symbol} ${longShortDisplay} ${sizeDeltaDisplay} USD, Price: ${executionPriceDisplay} USD`;
       }
 
       if (

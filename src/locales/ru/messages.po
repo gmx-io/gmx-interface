@@ -73,6 +73,10 @@ msgstr "<0>Вернуться к </0><1>Домашняя страница</1> <2
 msgid "<0>The pool's capacity has been reached for {0}. Please use another token to buy GLP.</0><1>Check the \"Save on Fees\" section for tokens with the lowest fees.</1>"
 msgstr "<0>Вместимость пула достигла {0}. Пожалуйста, используйте другой токен для покупки GLP.</0><1>Проверьте раздел \"Сэкономьте на комиссии\" для токенов с самыми низкими комиссиями.</1>"
 
+#: src/components/Exchange/OrdersList.js
+msgid "<0>The price that orders can be executed at may differ slightly from the chart price, as market orders update oracle prices, while limit/trigger orders do not.</0><1>This can also cause limit/triggers to not be executed if the price is not reached for long enough. <2>Read more</2>.</1>"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
 msgstr "<0>Это приведет к выводу и снятию с резерва всех токенов, а также приостановит вестниг.<1/><2/>токены esGMX, которые были конвертированы в GMX, останутся токенами GMX.<3/><4/>Чтобы получить токены GMX без вывода средств, используйте кнопку \"Заявка\" под разделом Общие Вознаграждения.<5/><6/></0>\""
@@ -980,6 +984,7 @@ msgstr "Децентрализованная<0/>Бессрочная Биржа"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Exchange/TradeHistory.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
 msgstr "Уменьшить"
@@ -1269,7 +1274,7 @@ msgid "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 msgstr "Выполнить Ордер: Поменять {fromAmountDisplay} {0} на {toAmountDisplay} {1}"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Execute Order: {0} {1} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
+msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -1383,6 +1388,10 @@ msgstr "Хранилище GLP"
 #: src/components/Glp/GlpSwap.js
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "Покупка GLP приостановлена, ожидается {0} обновление"
+
+#: src/components/Exchange/SwapBox.js
+msgid "GLP doesn't accept this amount of {0}."
+msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
 msgid "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
@@ -1538,6 +1547,7 @@ msgstr "Неправильная сеть"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/pages/OrdersOverview/OrdersOverview.js
@@ -1766,6 +1776,10 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.js
 msgid "Liquidation fee"
 msgstr "Ликвидационная комиссия"
+
+#: src/components/Exchange/PositionEditor.js
+msgid "Liquidation price would cross mark price."
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -3107,10 +3121,6 @@ msgid "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1
 msgstr "Позиция будет открыта на {0} USD с максимальным скольжением в {1}%.<0/><1/>Сумма скольжения может быть настроена в разделе Настройки, который можно найти, нажав на свой адрес в правом верхнем углу страницы после подключения кошелька.<2/><3/><4>Более подробная информация</4>"
 
 #: src/components/Exchange/OrdersList.js
-msgid "The price that orders can be executed at may differ slightly from the chart price, as market orders update oracle prices, while limit/trigger orders do not."
-msgstr "Цена, по которой могут быть исполнены ордера, может немного отличаться от цены графика, поскольку рыночные ордера обновляют оракулы цен, а лимитные/триггерные ордера - нет."
-
-#: src/components/Exchange/OrdersList.js
 msgid "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
 msgstr "Цена, по которой может быть исполнен ордер, может немного отличаться от цены на графике, поскольку рыночные ордера могут изменять цену, а лимитные/триггерные ордера - нет."
 
@@ -3903,7 +3913,7 @@ msgstr "вывод"
 
 #: src/pages/Exchange/Exchange.js
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
-msgstr "{0, plural, one {Отменить заказ} other {Отменить # заказов}}"
+msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "{0} Approved!"
@@ -3989,6 +3999,10 @@ msgstr "{0} выбран в форме ордера"
 msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
 msgstr "{0} токены были конвертированы в GMX из {1} esGMX внесенные для вестинга."
 
+#: src/components/Exchange/SwapBox.js
+msgid "{0} {1} not supported"
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.js
 msgid ""
 "{0}:\n"
@@ -4035,7 +4049,7 @@ msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger ord
 
 #: src/components/Exchange/PositionsList.js
 msgid "{longOrShortText} {0} market selected"
-msgstr "{longOrShortText} {0} рынок выбран"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
@@ -4060,10 +4074,6 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 msgid "{nativeTokenSymbol} can not be sent to smart contract addresses. Select another token."
 msgstr ""
-
-#: src/components/Exchange/SwapBox.js
-msgid "{swapOption, select, LONG {Longing} SHORT {Shorting}} {0} not supported"
-msgstr "{swapOption, select, LONG {Longing} ШОРТ {Shorting}} {0} не поддерживается"
 
 #: src/components/StatsTooltip/StatsTooltip.tsx
 msgid "{title} on Arbitrum:"

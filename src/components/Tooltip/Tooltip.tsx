@@ -5,17 +5,27 @@ import { IS_TOUCH } from "config/env";
 const OPEN_DELAY = 0;
 const CLOSE_DELAY = 100;
 
-export default function Tooltip(props) {
+type Props = {
+  handle: React.ReactNode;
+  renderContent: () => React.ReactNode;
+  position?: string;
+  trigger?: string;
+  className?: string;
+  disableHandleStyle?: boolean;
+  handleClassName?: string;
+  isHandlerDisabled?: boolean;
+};
+
+export default function Tooltip(props: Props) {
   const [visible, setVisible] = useState(false);
-  const intervalCloseRef = useRef(null);
-  const intervalOpenRef = useRef(null);
+  const intervalCloseRef = useRef<ReturnType<typeof setTimeout> | null>();
+  const intervalOpenRef = useRef<ReturnType<typeof setTimeout> | null>();
 
   const position = props.position ?? "left-bottom";
   const trigger = props.trigger ?? "hover";
 
   const onMouseEnter = useCallback(() => {
     if (trigger !== "hover" || IS_TOUCH) return;
-
     if (intervalCloseRef.current) {
       clearInterval(intervalCloseRef.current);
       intervalCloseRef.current = null;
@@ -60,7 +70,8 @@ export default function Tooltip(props) {
       <span
         className={cx({ "Tooltip-handle": !props.disableHandleStyle }, [props.handleClassName], { active: visible })}
       >
-        {props.handle}
+        {/* For onMouseLeave to work on disabled button https://github.com/react-component/tooltip/issues/18#issuecomment-411476678 */}
+        {props.isHandlerDisabled ? <div className="Tooltip-disabled-wrapper">{props.handle}</div> : <>{props.handle}</>}
       </span>
       {visible && <div className={cx(["Tooltip-popup", position])}>{props.renderContent()}</div>}
     </span>

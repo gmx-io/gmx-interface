@@ -73,6 +73,10 @@ msgstr "<0>Retourner à </0><1>la page d'accueil</1> <2>ou </2> <3>échanger</3>
 msgid "<0>The pool's capacity has been reached for {0}. Please use another token to buy GLP.</0><1>Check the \"Save on Fees\" section for tokens with the lowest fees.</1>"
 msgstr "<0>La capacité du pool a été atteinte pour {0}. Veuillez utiliser un autre token pour acheter GLP.</0><1>Vérifier la section \"économiser sur les frais\" pour les tokens ayant les meilleur frais.</1>"
 
+#: src/components/Exchange/OrdersList.js
+msgid "<0>The price that orders can be executed at may differ slightly from the chart price, as market orders update oracle prices, while limit/trigger orders do not.</0><1>This can also cause limit/triggers to not be executed if the price is not reached for long enough. <2>Read more</2>.</1>"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
 msgstr "<0>Cela retirera et libérera tous les tokens et mettra en pause l'acquisition par vesting.<1/><2/>Les tokens esGMX qui ont été convertis en GMX resteront des tokens GMX.<3/><4/>Pour réclamer les tokens GMX sans effectuer de retrait, utilisez le bouton \"Réclamer\" dans la section Récompenses totales.<5/><6/></0>\""
@@ -980,6 +984,7 @@ msgstr "Décentralisé <0/>Bourse perpétuelle"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Exchange/TradeHistory.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
 msgstr "Diminuer"
@@ -1269,7 +1274,7 @@ msgid "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 msgstr "Exécuter l'ordre: Échanger {fromAmountDisplay} {0} pour {toAmountDisplay} {1}"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Execute Order: {0} {1} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
+msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -1383,6 +1388,10 @@ msgstr "Coffre GLP"
 #: src/components/Glp/GlpSwap.js
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "Achat GLP désactivé, en attente de {0} actualisations"
+
+#: src/components/Exchange/SwapBox.js
+msgid "GLP doesn't accept this amount of {0}."
+msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
 msgid "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
@@ -1538,6 +1547,7 @@ msgstr "Réseau incorrect"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/pages/OrdersOverview/OrdersOverview.js
@@ -1766,6 +1776,10 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.js
 msgid "Liquidation fee"
 msgstr "Frais de Liquidation"
+
+#: src/components/Exchange/PositionEditor.js
+msgid "Liquidation price would cross mark price."
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -3107,10 +3121,6 @@ msgid "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1
 msgstr "La position sera ouverte à  {0} USD avec un glissement max. de {1}%.<0/><1/> La somme du glissement peut être configurée dans la rubrique Paramètres, que vous trouverez en cliquant sur votre adresse en haut à droite de la page après avoir connecté votre portefeuille. <2/><3/><4>Plus d'infos</4>"
 
 #: src/components/Exchange/OrdersList.js
-msgid "The price that orders can be executed at may differ slightly from the chart price, as market orders update oracle prices, while limit/trigger orders do not."
-msgstr "Le prix auquel les ordres peuvent être exécutés peut différer légèrement du prix du graphique, car les ordres de la bourse mettent à jour les prix de l'oracle, alors que les ordres à cours limité/de déclenchement ne le font pas."
-
-#: src/components/Exchange/OrdersList.js
 msgid "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
 msgstr "Le prix auquel l'ordre peut être exécuté peut différer légèrement du prix du graphique, car les ordres de la bourse peuvent modifier le prix alors que les ordres à cours limité ou à seuil de déclenchement ne le peuvent pas."
 
@@ -3903,7 +3913,7 @@ msgstr "retrait"
 
 #: src/pages/Exchange/Exchange.js
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
-msgstr "{0, plural, one {Annuler la commande} other {Annuler # commandes}}"
+msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "{0} Approved!"
@@ -3989,6 +3999,10 @@ msgstr "{0} sélectionné dans le formulaire d'ordre"
 msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
 msgstr "Les tokens {0} ont été convertis en GMX depuis les {1} esGMX déposés pour le vesting."
 
+#: src/components/Exchange/SwapBox.js
+msgid "{0} {1} not supported"
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.js
 msgid ""
 "{0}:\n"
@@ -4063,10 +4077,6 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 msgid "{nativeTokenSymbol} can not be sent to smart contract addresses. Select another token."
 msgstr ""
-
-#: src/components/Exchange/SwapBox.js
-msgid "{swapOption, select, LONG {Longing} SHORT {Shorting}} {0} not supported"
-msgstr "{swapOption, select, LONG {Longing} SHORT {Shorting}} {0} non supporté"
 
 #: src/components/StatsTooltip/StatsTooltip.tsx
 msgid "{title} on Arbitrum:"

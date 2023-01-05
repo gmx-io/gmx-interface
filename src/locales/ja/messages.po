@@ -73,6 +73,10 @@ msgstr "<0>戻る </0><1>ホームページへ</1> <2>or </2> <3>トレードへ
 msgid "<0>The pool's capacity has been reached for {0}. Please use another token to buy GLP.</0><1>Check the \"Save on Fees\" section for tokens with the lowest fees.</1>"
 msgstr "<0>{0}についてプールの許容額に達しました。GLPを購入するには別のトークンを使用してください。</0><1>最も手数料の低いトークンを確認するには \"手数料を節約\" のセクションをチェックしてください。</1>"
 
+#: src/components/Exchange/OrdersList.js
+msgid "<0>The price that orders can be executed at may differ slightly from the chart price, as market orders update oracle prices, while limit/trigger orders do not.</0><1>This can also cause limit/triggers to not be executed if the price is not reached for long enough. <2>Read more</2>.</1>"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
 msgstr "<0>これによりすべてのトークンは引き出され、リザーブから解除され、べスティングは停止されます。<1/><2/>GMXへ転換されたesGMXトークンはGMXトークンとなります。<3/><4/>引き出しをせずにGMXトークンを請求するには全報酬セクションの下部にある\"請求\"ボタンを使用してください。<5/><6/></0>"
@@ -980,6 +984,7 @@ msgstr "分散型<0/>パーペチュアル取引所"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Exchange/TradeHistory.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
 msgstr "減額"
@@ -1269,7 +1274,7 @@ msgid "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 msgstr "注文執行: {fromAmountDisplay} {0}を {toAmountDisplay} {1}にスワップ"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Execute Order: {0} {1} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
+msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -1383,6 +1388,10 @@ msgstr "GLPボールト"
 #: src/components/Glp/GlpSwap.js
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "{0}アップグレード未完了のためGLP購入は停止中です"
+
+#: src/components/Exchange/SwapBox.js
+msgid "GLP doesn't accept this amount of {0}."
+msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
 msgid "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
@@ -1538,6 +1547,7 @@ msgstr "誤ったネットワーク"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/pages/OrdersOverview/OrdersOverview.js
@@ -1766,6 +1776,10 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.js
 msgid "Liquidation fee"
 msgstr "清算手数料"
+
+#: src/components/Exchange/PositionEditor.js
+msgid "Liquidation price would cross mark price."
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -3107,10 +3121,6 @@ msgid "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1
 msgstr "ポジションは最大スリッページ {1}%で{0} USDでオープンされます。<0/><1/>スリッページを変更するには、ウォレット接続後にページの右上に表示されるアドレスをクリックしたときに表れる設定メニューで設定してください。<2/><3/><4>詳細情報</4>"
 
 #: src/components/Exchange/OrdersList.js
-msgid "The price that orders can be executed at may differ slightly from the chart price, as market orders update oracle prices, while limit/trigger orders do not."
-msgstr "注文が執行され得る価格はチャートに表示された価格と多少異なることがありますが、それはマーケット注文がオラクルの価格を更新するのに対して、リミット注文やトリガー注文はオラクルの価格を更新しないためです。"
-
-#: src/components/Exchange/OrdersList.js
 msgid "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
 msgstr "注文が執行され得る価格はチャートに表示された価格と多少異なることがありますが、それはマーケット注文が価格を変えうるのに対して、リミット注文やトリガー注文が価格を変えることはないためです。"
 
@@ -3903,7 +3913,7 @@ msgstr "出金"
 
 #: src/pages/Exchange/Exchange.js
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
-msgstr "{0, plural, one {オーダーをキャンセルする} other {#オーダーをキャンセルする}}"
+msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "{0} Approved!"
@@ -3989,6 +3999,10 @@ msgstr "{0}が注文フォームで選択されました"
 msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
 msgstr "{0}トークンがべスティング用に入金された{1} esGMXからGMXに変換されました。"
 
+#: src/components/Exchange/SwapBox.js
+msgid "{0} {1} not supported"
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.js
 msgid ""
 "{0}:\n"
@@ -4035,7 +4049,7 @@ msgstr "{existingTriggerOrderLength, plural, one {このポジションをオー
 
 #: src/components/Exchange/PositionsList.js
 msgid "{longOrShortText} {0} market selected"
-msgstr "{longOrShortText} {0} 選択されたマーケット"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
@@ -4060,10 +4074,6 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 msgid "{nativeTokenSymbol} can not be sent to smart contract addresses. Select another token."
 msgstr ""
-
-#: src/components/Exchange/SwapBox.js
-msgid "{swapOption, select, LONG {Longing} SHORT {Shorting}} {0} not supported"
-msgstr "{swapOption, select, LONG {Longing} SHORT {Shorting}} {0} サポートされていません"
 
 #: src/components/StatsTooltip/StatsTooltip.tsx
 msgid "{title} on Arbitrum:"

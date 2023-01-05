@@ -73,6 +73,10 @@ msgstr "<0>Zurück zu </0><1>Homepage</1> <2>oder </2> <3>Traden</3>"
 msgid "<0>The pool's capacity has been reached for {0}. Please use another token to buy GLP.</0><1>Check the \"Save on Fees\" section for tokens with the lowest fees.</1>"
 msgstr "<0>Die Kapazität des Pools wurde für {0} erreicht. Bitte verwende einen anderen Token, um GLP zu kaufen.</0><1>Suche im Abschnitt \"Sparen bei den Gebühren\" nach Token mit den niedrigsten Gebühren.</1>"
 
+#: src/components/Exchange/OrdersList.js
+msgid "<0>The price that orders can be executed at may differ slightly from the chart price, as market orders update oracle prices, while limit/trigger orders do not.</0><1>This can also cause limit/triggers to not be executed if the price is not reached for long enough. <2>Read more</2>.</1>"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
 msgstr "<0>Damit werden alle Token abgehoben und die Reservierung aufgehoben, sowie das Vesting unterbrochen.<1/><2/>esGMX-Token, die in GMX umgewandelt wurden, bleiben als GMX-Token erhalten.<3/><4/>Um GMX-Token zu beanspruchen, ohne sie abzuheben, verwende den Button \"Beanspruchen\" unter dem Abschnitt \"Gesamtbelohnungen\".<5/><6/></0>"
@@ -980,6 +984,7 @@ msgstr "Dezentralisierte<0/>Perpetual Börse"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Exchange/TradeHistory.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
 msgstr "Verringern"
@@ -1269,7 +1274,7 @@ msgid "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 msgstr "Order ausführen: Tausche {fromAmountDisplay} {0} gegen {toAmountDisplay} {1}"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Execute Order: {0} {1} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
+msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -1383,6 +1388,10 @@ msgstr "GLP-Tresor"
 #: src/components/Glp/GlpSwap.js
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "GLP-Kauf deaktiviert, {0} Aktualisierung steht noch aus"
+
+#: src/components/Exchange/SwapBox.js
+msgid "GLP doesn't accept this amount of {0}."
+msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
 msgid "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
@@ -1538,6 +1547,7 @@ msgstr "Falsches Netzwerk"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/pages/OrdersOverview/OrdersOverview.js
@@ -1766,6 +1776,10 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.js
 msgid "Liquidation fee"
 msgstr "Liquidierungsgebühr"
+
+#: src/components/Exchange/PositionEditor.js
+msgid "Liquidation price would cross mark price."
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -3107,10 +3121,6 @@ msgid "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1
 msgstr "Die Position wird zu {0} USD mit einer maximalen Slippage von {1}% eröffnet.<0/><1/>Die Höhe des Slippage kann unter Einstellungen konfiguriert werden, die du findest, wenn du auf deiner Adresse oben rechts auf der Seite klickst, nachdem du deine Wallet verbunden hast.<2/><3/><4>Mehr Info</4>"
 
 #: src/components/Exchange/OrdersList.js
-msgid "The price that orders can be executed at may differ slightly from the chart price, as market orders update oracle prices, while limit/trigger orders do not."
-msgstr "Der Preis, zu dem Aufträge ausgeführt werden können, kann geringfügig vom Chartpreis abweichen, da Marktaufträge die Orakelpreise aktualisieren, während Limit-/Trigger-Aufträge dies nicht tun."
-
-#: src/components/Exchange/OrdersList.js
 msgid "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
 msgstr "Der Preis, zu dem der Auftrag ausgeführt werden kann, kann geringfügig vom Chartpreis abweichen, da Marktaufträge den Preis ändern können, Limit-/Trigger-Aufträge hingegen nicht."
 
@@ -3903,7 +3913,7 @@ msgstr "Abheben"
 
 #: src/pages/Exchange/Exchange.js
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
-msgstr "{0, plural, one {Order abbrechen} other {# Order abbrechen}}"
+msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "{0} Approved!"
@@ -3989,6 +3999,10 @@ msgstr "{0} ausgewählt im Orderformular"
 msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
 msgstr "{0} Token wurden von den {1} esGMX, die als Kollateral hinterlegt wurden, in GMX umgewandelt."
 
+#: src/components/Exchange/SwapBox.js
+msgid "{0} {1} not supported"
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.js
 msgid ""
 "{0}:\n"
@@ -4035,7 +4049,7 @@ msgstr "{existingTriggerOrderLength, plural, one {Du hast eine aktiven Trigger-O
 
 #: src/components/Exchange/PositionsList.js
 msgid "{longOrShortText} {0} market selected"
-msgstr "{longOrShortText} {0} Markt ausgewählt"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
@@ -4060,10 +4074,6 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 msgid "{nativeTokenSymbol} can not be sent to smart contract addresses. Select another token."
 msgstr ""
-
-#: src/components/Exchange/SwapBox.js
-msgid "{swapOption, select, LONG {Longing} SHORT {Shorting}} {0} not supported"
-msgstr "{swapOption, select, LONG {Longing} SHORT {Shorting}} {0} nicht unterstützt"
 
 #: src/components/StatsTooltip/StatsTooltip.tsx
 msgid "{title} on Arbitrum:"

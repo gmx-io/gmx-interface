@@ -73,6 +73,10 @@ msgstr "<0>Return to </0><1>Homepage</1> <2>or </2> <3>Trade</3>"
 msgid "<0>The pool's capacity has been reached for {0}. Please use another token to buy GLP.</0><1>Check the \"Save on Fees\" section for tokens with the lowest fees.</1>"
 msgstr "<0>The pool's capacity has been reached for {0}. Please use another token to buy GLP.</0><1>Check the \"Save on Fees\" section for tokens with the lowest fees.</1>"
 
+#: src/components/Exchange/OrdersList.js
+msgid "<0>The price that orders can be executed at may differ slightly from the chart price, as market orders update oracle prices, while limit/trigger orders do not.</0><1>This can also cause limit/triggers to not be executed if the price is not reached for long enough. <2>Read more</2>.</1>"
+msgstr "<0>The price that orders can be executed at may differ slightly from the chart price, as market orders update oracle prices, while limit/trigger orders do not.</0><1>This can also cause limit/triggers to not be executed if the price is not reached for long enough. <2>Read more</2>.</1>"
+
 #: src/pages/Stake/StakeV2.js
 msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
 msgstr "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
@@ -980,6 +984,7 @@ msgstr "Decentralized<0/>Perpetual Exchange"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Exchange/TradeHistory.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
 msgstr "Decrease"
@@ -1269,8 +1274,8 @@ msgid "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 msgstr "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Execute Order: {0} {1} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
-msgstr "Execute Order: {0} {1} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
+msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
+msgstr "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
@@ -1383,6 +1388,10 @@ msgstr "GLP Vault"
 #: src/components/Glp/GlpSwap.js
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "GLP buy disabled, pending {0} upgrade"
+
+#: src/components/Exchange/SwapBox.js
+msgid "GLP doesn't accept this amount of {0}."
+msgstr "GLP doesn't accept this amount of {0}."
 
 #: src/components/TokenCard/TokenCard.js
 msgid "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
@@ -1538,6 +1547,7 @@ msgstr "Incorrect network"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/pages/OrdersOverview/OrdersOverview.js
@@ -1766,6 +1776,10 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.js
 msgid "Liquidation fee"
 msgstr "Liquidation fee"
+
+#: src/components/Exchange/PositionEditor.js
+msgid "Liquidation price would cross mark price."
+msgstr "Liquidation price would cross mark price."
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -3107,10 +3121,6 @@ msgid "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1
 msgstr "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
 
 #: src/components/Exchange/OrdersList.js
-msgid "The price that orders can be executed at may differ slightly from the chart price, as market orders update oracle prices, while limit/trigger orders do not."
-msgstr "The price that orders can be executed at may differ slightly from the chart price, as market orders update oracle prices, while limit/trigger orders do not."
-
-#: src/components/Exchange/OrdersList.js
 msgid "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
 msgstr "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
 
@@ -3989,6 +3999,10 @@ msgstr "{0} selected in order form"
 msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
 msgstr "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
 
+#: src/components/Exchange/SwapBox.js
+msgid "{0} {1} not supported"
+msgstr "{0} {1} not supported"
+
 #: src/components/Exchange/TradeHistory.js
 msgid ""
 "{0}:\n"
@@ -4066,10 +4080,6 @@ msgstr "{nativeTokenSymbol} Total APR"
 #: src/components/Exchange/PositionSeller.js
 msgid "{nativeTokenSymbol} can not be sent to smart contract addresses. Select another token."
 msgstr "{nativeTokenSymbol} can not be sent to smart contract addresses. Select another token."
-
-#: src/components/Exchange/SwapBox.js
-msgid "{swapOption, select, LONG {Longing} SHORT {Shorting}} {0} not supported"
-msgstr "{swapOption, select, LONG {Longing} SHORT {Shorting}} {0} not supported"
 
 #: src/components/StatsTooltip/StatsTooltip.tsx
 msgid "{title} on Arbitrum:"
