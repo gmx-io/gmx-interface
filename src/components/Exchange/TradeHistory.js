@@ -11,6 +11,7 @@ import {
   TRADES_PAGE_SIZE,
   deserialize,
   getExchangeRateDisplay,
+  INCREASE,
 } from "lib/legacy";
 import { useTrades, useLiquidationsData } from "domain/legacy";
 import { getContract } from "config/contracts";
@@ -20,7 +21,7 @@ import { getExplorerUrl } from "config/chains";
 import { bigNumberify, formatAmount } from "lib/numbers";
 import { formatDateTime } from "lib/dates";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
-import { select, t, Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 const { AddressZero } = ethers.constants;
@@ -373,6 +374,7 @@ export default function TradeHistory(props) {
           return defaultMsg;
         }
         const longShortDisplay = order.isLong ? t`Long` : t`Short`;
+        const orderTypeText = order.type === INCREASE ? t`Increase` : t`Decrease`;
         const executionPriceDisplay = formatAmount(order.executionPrice, USD_DECIMALS, 2, true);
         const sizeDeltaDisplay = `${order.type === "Increase" ? "+" : "-"}${formatAmount(
           order.sizeDelta,
@@ -380,9 +382,7 @@ export default function TradeHistory(props) {
           2,
           true
         )}`;
-        return t`Execute Order: ${select(order.type, { Increase: "Increase", Decrease: "Decrease" })} ${
-          indexToken.symbol
-        } ${longShortDisplay} ${sizeDeltaDisplay} USD, Price: ${executionPriceDisplay} USD`;
+        return t`Execute Order: ${orderTypeText} ${indexToken.symbol} ${longShortDisplay} ${sizeDeltaDisplay} USD, Price: ${executionPriceDisplay} USD`;
       }
 
       if (
