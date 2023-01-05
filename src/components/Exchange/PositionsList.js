@@ -245,7 +245,7 @@ export default function PositionsList(props) {
                   .mul(position.size)
                   .mul(24)
                   .div(FUNDING_RATE_PRECISION);
-                borrowFeeUSD = formatAmount(borrowFeeRate, USD_DECIMALS, 2);
+                borrowFeeUSD = formatAmount(borrowFeeRate, USD_DECIMALS, 2, true);
               }
 
               return (
@@ -307,10 +307,17 @@ export default function PositionsList(props) {
                                   label={t`Borrow Fee`}
                                   value={formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
                                 />
-                                <StatsTooltipRow label={t`Borrow Fee / Day`} value={borrowFeeUSD} />
-                                <span>
-                                  <Trans>Use the Edit Collateral icon to deposit or withdraw collateral.</Trans>
-                                </span>
+                                <StatsTooltipRow
+                                  showDollar={false}
+                                  label={t`Borrow Fee / Day`}
+                                  value={`-$${borrowFeeUSD}`}
+                                />
+
+                                {!hideActions && (
+                                  <span>
+                                    <Trans>Use the Edit Collateral icon to deposit or withdraw collateral.</Trans>
+                                  </span>
+                                )}
                               </>
                             );
                           }}
@@ -369,9 +376,10 @@ export default function PositionsList(props) {
                                   value={formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
                                 />
                                 <StatsTooltipRow
-                                  label={t`Open + Close fee`}
+                                  label={t`Open + Close Fees`}
                                   value={formatAmount(position.positionFee, USD_DECIMALS, 2, true)}
                                 />
+                                <br />
                                 <StatsTooltipRow
                                   label={t`PnL After Fees`}
                                   value={[position.deltaAfterFeesStr, `(${position.deltaAfterFeesPercentageStr})`]}
@@ -537,7 +545,7 @@ export default function PositionsList(props) {
                 .mul(position.size)
                 .mul(24)
                 .div(FUNDING_RATE_PRECISION);
-              borrowFeeUSD = formatAmount(borrowFeeRate, USD_DECIMALS, 2);
+              borrowFeeUSD = formatAmount(borrowFeeRate, USD_DECIMALS, 2, true);
             }
 
             return (
@@ -583,10 +591,11 @@ export default function PositionsList(props) {
                                 value={`-$${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}`}
                               />
                               <StatsTooltipRow
-                                label={t`Open + Close fee`}
+                                label={t`Open + Close Fees`}
                                 showDollar={false}
                                 value={`-$${formatAmount(position.positionFee, USD_DECIMALS, 2, true)}`}
                               />
+                              <br />
                               <StatsTooltipRow
                                 label={t`PnL After Fees`}
                                 value={[position.deltaAfterFeesStr, `(${position.deltaAfterFeesPercentageStr})`]}

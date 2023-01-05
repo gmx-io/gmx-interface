@@ -393,11 +393,13 @@ msgstr "Aumenta tus recompensas con los Puntos Multiplicadores. <0>Más informa
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/TradeHistory.js
 msgid "Borrow Fee"
 msgstr "Tasa de Préstamo"
 
@@ -405,11 +407,6 @@ msgstr "Tasa de Préstamo"
 #: src/components/Exchange/PositionsList.js
 msgid "Borrow Fee / Day"
 msgstr "Tasa de Préstamo / Día"
-
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/TradeHistory.js
-msgid "Borrow fee"
-msgstr "Tasa de Préstamo"
 
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Buy"
@@ -681,8 +678,8 @@ msgid "Close: {convertedAmountFormatted} {0}"
 msgstr "Cerrar: {convertedAmountFormatted} {0}"
 
 #: src/components/Exchange/PositionSeller.js
-msgid "Closing fee"
-msgstr "Comisión de cierre"
+msgid "Closing Fee"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Closing..."
@@ -1279,11 +1276,8 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
-msgid "Execution Fee"
-msgstr "Comisión de Ejecución"
-
 #: src/components/Exchange/PositionSeller.js
-msgid "Execution fee"
+msgid "Execution Fee"
 msgstr "Comisión de Ejecución"
 
 #: src/components/Exchange/SwapBox.js
@@ -1780,8 +1774,8 @@ msgstr ""
 "{2} Precio: {3} USD"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Liquidation fee"
-msgstr "Comisión de liquidación"
+msgid "Liquidation Fee"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Liquidation price would cross mark price."
@@ -2104,8 +2098,8 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
-msgid "Network fee"
-msgstr "Comisión de red"
+msgid "Network Fee"
+msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -2173,8 +2167,8 @@ msgstr "Solo letras, números y guiones bajos están permitidos"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-msgid "Open + Close fee"
-msgstr "Fee de Apertura + Cierre"
+msgid "Open + Close Fees"
+msgstr ""
 
 #: src/pages/Home/Home.js
 msgid "Open Interest"
@@ -2971,6 +2965,10 @@ msgstr "Suministros"
 msgid "Swap"
 msgstr "Intercambiar"
 
+#: src/components/Exchange/PositionSeller.js
+msgid "Swap Fee"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Swap Order created!"
 msgstr "¡Orden de Intercambio creada!"
@@ -2992,10 +2990,6 @@ msgstr "Intercambio activo: {0}, ejecutado: {1}, cancelado: {2}"
 #: src/components/Exchange/SwapBox.js
 msgid "Swap failed."
 msgstr "Falló el Intercambio."
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Swap fee"
-msgstr "Comisión de intercambio"
 
 #: src/components/Glp/SwapErrorModal.tsx
 msgid "Swap on 1inch"

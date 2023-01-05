@@ -393,11 +393,13 @@ msgstr "マルチプライヤーポイントで報酬をブーストする。<0>
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/TradeHistory.js
 msgid "Borrow Fee"
 msgstr "借入手数料"
 
@@ -405,11 +407,6 @@ msgstr "借入手数料"
 #: src/components/Exchange/PositionsList.js
 msgid "Borrow Fee / Day"
 msgstr "1日あたり借入手数料"
-
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/TradeHistory.js
-msgid "Borrow fee"
-msgstr "借入手数料"
 
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Buy"
@@ -681,8 +678,8 @@ msgid "Close: {convertedAmountFormatted} {0}"
 msgstr "クローズ: {convertedAmountFormatted} {0}"
 
 #: src/components/Exchange/PositionSeller.js
-msgid "Closing fee"
-msgstr "クローズ手数料"
+msgid "Closing Fee"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Closing..."
@@ -1279,11 +1276,8 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
-msgid "Execution Fee"
-msgstr "執行手数料"
-
 #: src/components/Exchange/PositionSeller.js
-msgid "Execution fee"
+msgid "Execution Fee"
 msgstr "執行手数料"
 
 #: src/components/Exchange/SwapBox.js
@@ -1780,8 +1774,8 @@ msgstr ""
 "{2} 価格: {3} USD"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Liquidation fee"
-msgstr "清算手数料"
+msgid "Liquidation Fee"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Liquidation price would cross mark price."
@@ -2104,8 +2098,8 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
-msgid "Network fee"
-msgstr "ネットワーク手数料"
+msgid "Network Fee"
+msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -2173,8 +2167,8 @@ msgstr "英数字とアンダースコア記号のみ使用できます。"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-msgid "Open + Close fee"
-msgstr "オープンおよびクローズ手数料"
+msgid "Open + Close Fees"
+msgstr ""
 
 #: src/pages/Home/Home.js
 msgid "Open Interest"
@@ -2971,6 +2965,10 @@ msgstr "供給量"
 msgid "Swap"
 msgstr "スワップ"
 
+#: src/components/Exchange/PositionSeller.js
+msgid "Swap Fee"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Swap Order created!"
 msgstr "スワップ注文作成完了!"
@@ -2992,10 +2990,6 @@ msgstr "スワップ アクティブ: {0} 執行済: {1}  キャンセル済: {2
 #: src/components/Exchange/SwapBox.js
 msgid "Swap failed."
 msgstr "スワップできませんでした。"
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Swap fee"
-msgstr "スワップ手数料"
 
 #: src/components/Glp/SwapErrorModal.tsx
 msgid "Swap on 1inch"

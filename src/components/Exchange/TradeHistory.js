@@ -73,13 +73,13 @@ function renderLiquidationTooltip(liquidationData, label) {
             value={formatAmount(minCollateral, USD_DECIMALS, 2, true)}
           />
           <StatsTooltipRow
-            label={t`Borrow fee`}
+            label={t`Borrow Fee`}
             showDollar
             value={formatAmount(liquidationData.borrowFee, USD_DECIMALS, 2, true)}
           />
           <StatsTooltipRow label={t`PnL`} value={`-$${formatAmount(liquidationData.loss, USD_DECIMALS, 2, true)}`} />
           {liquidationData.type === "full" && (
-            <StatsTooltipRow label={t`Liquidation fee`} showDollar value={formatAmount(LIQUIDATION_FEE, 30, 2, true)} />
+            <StatsTooltipRow label={t`Liquidation Fee`} showDollar value={formatAmount(LIQUIDATION_FEE, 30, 2, true)} />
           )}
         </>
       )}

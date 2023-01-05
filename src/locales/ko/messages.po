@@ -393,11 +393,13 @@ msgstr "멀티플라이어 포인트를 사용해서 보상을 증가시키세�
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/TradeHistory.js
 msgid "Borrow Fee"
 msgstr "차용 수수료"
 
@@ -405,11 +407,6 @@ msgstr "차용 수수료"
 #: src/components/Exchange/PositionsList.js
 msgid "Borrow Fee / Day"
 msgstr "차용 수수료 / 일"
-
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/TradeHistory.js
-msgid "Borrow fee"
-msgstr "차용 수수료"
 
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Buy"
@@ -681,8 +678,8 @@ msgid "Close: {convertedAmountFormatted} {0}"
 msgstr "종료: {convertedAmountFormatted} {0}"
 
 #: src/components/Exchange/PositionSeller.js
-msgid "Closing fee"
-msgstr "종료 수수료"
+msgid "Closing Fee"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Closing..."
@@ -1279,11 +1276,8 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
-msgid "Execution Fee"
-msgstr "실행 수수료"
-
 #: src/components/Exchange/PositionSeller.js
-msgid "Execution fee"
+msgid "Execution Fee"
 msgstr "실행 수수료"
 
 #: src/components/Exchange/SwapBox.js
@@ -1780,8 +1774,8 @@ msgstr ""
 "{2} 가격: {3} USD"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Liquidation fee"
-msgstr "청산 수수료"
+msgid "Liquidation Fee"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Liquidation price would cross mark price."
@@ -2104,8 +2098,8 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
-msgid "Network fee"
-msgstr "네트워크 수수료"
+msgid "Network Fee"
+msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -2173,8 +2167,8 @@ msgstr "문자, 숫자 및 언더스코어만 가능합니다"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-msgid "Open + Close fee"
-msgstr "열기 + 닫기(종료) 수수료"
+msgid "Open + Close Fees"
+msgstr ""
 
 #: src/pages/Home/Home.js
 msgid "Open Interest"
@@ -2971,6 +2965,10 @@ msgstr "공급량"
 msgid "Swap"
 msgstr "스왑"
 
+#: src/components/Exchange/PositionSeller.js
+msgid "Swap Fee"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Swap Order created!"
 msgstr "스완 주문 생성!"
@@ -2992,10 +2990,6 @@ msgstr "스왑 액티브: {0}, 실행 완료: {1}, 취소 완료: {2}"
 #: src/components/Exchange/SwapBox.js
 msgid "Swap failed."
 msgstr "스왑 실패."
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Swap fee"
-msgstr "스왑 수수료"
 
 #: src/components/Glp/SwapErrorModal.tsx
 msgid "Swap on 1inch"

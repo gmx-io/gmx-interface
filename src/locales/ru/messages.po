@@ -393,11 +393,13 @@ msgstr "Повышайте свои вознаграждения с помощь
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/TradeHistory.js
 msgid "Borrow Fee"
 msgstr "Комиссия за Пользование Кредитом"
 
@@ -405,11 +407,6 @@ msgstr "Комиссия за Пользование Кредитом"
 #: src/components/Exchange/PositionsList.js
 msgid "Borrow Fee / Day"
 msgstr "Комиссия за пользование кредитом / день"
-
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/TradeHistory.js
-msgid "Borrow fee"
-msgstr "Комиссия за пользование кредитом"
 
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Buy"
@@ -681,8 +678,8 @@ msgid "Close: {convertedAmountFormatted} {0}"
 msgstr "Закрыть: {convertedAmountFormatted} {0}"
 
 #: src/components/Exchange/PositionSeller.js
-msgid "Closing fee"
-msgstr "Комиссия за закрытие"
+msgid "Closing Fee"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Closing..."
@@ -1279,12 +1276,9 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionSeller.js
 msgid "Execution Fee"
 msgstr "Комиссия за Исполнение"
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Execution fee"
-msgstr "Комиссия за исполнение"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Exit Price"
@@ -1780,8 +1774,8 @@ msgstr ""
 "{2} Цена: {3} USD"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Liquidation fee"
-msgstr "Ликвидационная комиссия"
+msgid "Liquidation Fee"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Liquidation price would cross mark price."
@@ -2104,8 +2098,8 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
-msgid "Network fee"
-msgstr "Комиссия за пользование сетью"
+msgid "Network Fee"
+msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -2173,8 +2167,8 @@ msgstr "Допускаются только буквы, цифры и знаки
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-msgid "Open + Close fee"
-msgstr "Комиссия за открытие + закрытие"
+msgid "Open + Close Fees"
+msgstr ""
 
 #: src/pages/Home/Home.js
 msgid "Open Interest"
@@ -2971,6 +2965,10 @@ msgstr "Обеспечение"
 msgid "Swap"
 msgstr "Обмен"
 
+#: src/components/Exchange/PositionSeller.js
+msgid "Swap Fee"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Swap Order created!"
 msgstr "Создан Обменный Ордер"
@@ -2992,10 +2990,6 @@ msgstr "Обмен активен: {0}, выполнен: {1}, отменен: {
 #: src/components/Exchange/SwapBox.js
 msgid "Swap failed."
 msgstr "Обмен не выполнен"
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Swap fee"
-msgstr "Комиссия за обмен"
 
 #: src/components/Glp/SwapErrorModal.tsx
 msgid "Swap on 1inch"

@@ -393,22 +393,19 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/TradeHistory.js
 msgid "Borrow Fee"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Borrow Fee / Day"
-msgstr ""
-
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/TradeHistory.js
-msgid "Borrow fee"
 msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
@@ -681,7 +678,7 @@ msgid "Close: {convertedAmountFormatted} {0}"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
-msgid "Closing fee"
+msgid "Closing Fee"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
@@ -1279,11 +1276,8 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
-msgid "Execution Fee"
-msgstr ""
-
 #: src/components/Exchange/PositionSeller.js
-msgid "Execution fee"
+msgid "Execution Fee"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -1777,7 +1771,7 @@ msgid ""
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Liquidation fee"
+msgid "Liquidation Fee"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
@@ -2101,7 +2095,7 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
-msgid "Network fee"
+msgid "Network Fee"
 msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -2170,7 +2164,7 @@ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-msgid "Open + Close fee"
+msgid "Open + Close Fees"
 msgstr ""
 
 #: src/pages/Home/Home.js
@@ -2968,6 +2962,10 @@ msgstr ""
 msgid "Swap"
 msgstr ""
 
+#: src/components/Exchange/PositionSeller.js
+msgid "Swap Fee"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Swap Order created!"
 msgstr ""
@@ -2988,10 +2986,6 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "Swap failed."
-msgstr ""
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Swap fee"
 msgstr ""
 
 #: src/components/Glp/SwapErrorModal.tsx
