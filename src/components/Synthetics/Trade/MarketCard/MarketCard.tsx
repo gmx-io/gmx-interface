@@ -27,10 +27,10 @@ export type Props = {
 export function MarketCard(p: Props) {
   const { chainId } = useChainId();
 
-  const marketsData = useMarketsData(chainId);
-  const poolsData = useMarketsPoolsData(chainId);
-  const openInterestData = useOpenInterestData(chainId);
-  const tokensData = useAvailableTokensData(chainId);
+  const { marketsData } = useMarketsData(chainId);
+  const { poolsData } = useMarketsPoolsData(chainId);
+  const { openInterestData } = useOpenInterestData(chainId);
+  const { tokensData } = useAvailableTokensData(chainId);
 
   const market = getMarket(marketsData, p.marketAddress || p.swapPath?.[p.swapPath.length - 1]);
   const marketName = getMarketName(marketsData, tokensData, market?.marketTokenAddress);

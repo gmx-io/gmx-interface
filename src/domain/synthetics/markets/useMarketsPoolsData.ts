@@ -7,12 +7,17 @@ import { useMarketsData } from "./useMarketsData";
 import { MarketsPoolsData } from "./types";
 import { poolAmountKey, reserveFactorKey } from "../dataStore";
 
-export function useMarketsPoolsData(chainId: number): MarketsPoolsData {
-  const marketsData = useMarketsData(chainId);
+type MarketPoolsResult = {
+  isLoading: boolean;
+  poolsData: MarketsPoolsData;
+};
+
+export function useMarketsPoolsData(chainId: number): MarketPoolsResult {
+  const { marketsData } = useMarketsData(chainId);
 
   const marketAddresses = Object.keys(marketsData);
 
-  const { data: marketPools } = useMulticall(chainId, "useMarketPools", {
+  const { data, isLoading } = useMulticall(chainId, "useMarketPools", {
     key: marketAddresses.length > 0 && [marketAddresses.join("-")],
     request: () => ({
       dataStore: {
@@ -65,6 +70,9 @@ export function useMarketsPoolsData(chainId: number): MarketsPoolsData {
   });
 
   return useMemo(() => {
-    return marketPools || {};
-  }, [marketPools]);
+    return {
+      poolsData: data || {},
+      isLoading,
+    };
+  }, [data, isLoading]);
 }

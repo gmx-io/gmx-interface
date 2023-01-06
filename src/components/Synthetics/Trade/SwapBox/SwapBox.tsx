@@ -67,7 +67,7 @@ type Props = {
 export function SwapBox(p: Props) {
   const { chainId } = useChainId();
 
-  const tokensData = useAvailableTokensData(chainId);
+  const { tokensData } = useAvailableTokensData(chainId);
 
   const [focusedInput, setFocusedInput] = useState<FocusedInput>();
   const [operationTab, setOperationTab] = useLocalStorageSerializeKey(

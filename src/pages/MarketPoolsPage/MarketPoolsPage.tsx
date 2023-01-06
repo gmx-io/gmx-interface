@@ -17,7 +17,7 @@ type Props = {
 export function MarketPoolsPage(p: Props) {
   const { chainId } = useChainId();
 
-  const marketsData = useMarketsData(chainId);
+  const { marketsData } = useMarketsData(chainId);
   const markets = getMarkets(marketsData);
 
   // TODO: localStorage?

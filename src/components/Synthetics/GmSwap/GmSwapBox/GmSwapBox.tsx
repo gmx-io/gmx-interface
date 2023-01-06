@@ -53,10 +53,10 @@ export function GmSwapBox(p: Props) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
 
-  const tokensData = useAvailableTokensData(chainId);
-  const marketsData = useMarketsData(chainId);
-  const marketTokensData = useMarketTokensData(chainId);
-  const marketPoolsData = useMarketsPoolsData(chainId);
+  const { tokensData } = useAvailableTokensData(chainId);
+  const { marketsData } = useMarketsData(chainId);
+  const { marketTokensData } = useMarketTokensData(chainId);
+  const { poolsData } = useMarketsPoolsData(chainId);
   const priceImpactConfigsData = usePriceImpactConfigs(chainId);
 
   const market = getMarket(marketsData, p.selectedMarketAddress);
@@ -85,7 +85,7 @@ export function GmSwapBox(p: Props) {
   const longDelta = getDeltaByPoolType(MarketPoolType.Long);
   const shortDelta = getDeltaByPoolType(MarketPoolType.Short);
 
-  const marketPools = getMarketPoolData(marketPoolsData, market?.marketTokenAddress);
+  const marketPools = getMarketPoolData(poolsData, market?.marketTokenAddress);
 
   const currentLongUsd = getUsdFromTokenAmount(tokensData, market?.longTokenAddress, marketPools?.longPoolAmount, true);
   const currentShortUsd = getUsdFromTokenAmount(
@@ -145,7 +145,7 @@ export function GmSwapBox(p: Props) {
       operation: operationTab,
       tokensData,
       marketTokensData,
-      poolsData: marketPoolsData,
+      poolsData,
       market,
       marketTokenAmount: marketTokenState.tokenAmount,
       longDelta,

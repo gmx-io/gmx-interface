@@ -1,16 +1,12 @@
 import { getTokenBySymbol, getTokens, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { jsonFetcher } from "lib/fetcher";
 import { expandDecimals } from "lib/numbers";
-import { TokenPrices } from "./types";
 import useSWR from "swr";
 import { useMemo } from "react";
 import { getOracleKeeperUrl } from "config/oracleKeeper";
 import { USD_DECIMALS } from "lib/legacy";
 import { parseOraclePrice } from "./utils";
-
-export type TokenPricesData = {
-  [address: string]: TokenPrices;
-};
+import { TokenPricesData } from "./types";
 
 type BackendResponse = {
   minPrice: string;
@@ -21,18 +17,26 @@ type BackendResponse = {
   updatedAt: number;
 }[];
 
-export function useTokenRecentPricesData(chainId: number): TokenPricesData {
+type TokenPricesDataResult = {
+  pricesData: TokenPricesData;
+  isLoading: boolean;
+};
+
+export function useTokenRecentPricesData(chainId: number): TokenPricesDataResult {
   const url = getOracleKeeperUrl(chainId, "/prices/tickers");
 
-  const { data } = useSWR<BackendResponse>(url, { fetcher: jsonFetcher });
+  const { data, isValidating, error } = useSWR<BackendResponse>(url, { fetcher: jsonFetcher });
 
   return useMemo(() => {
-    return formatResponse(chainId, data);
-  }, [data, chainId]);
+    return {
+      pricesData: formatResponse(chainId, data),
+      isLoading: isValidating && !data && !error,
+    };
+  }, [chainId, data, isValidating, error]);
 }
 
-function formatResponse(chainId: number, response: BackendResponse = []) {
-  const result = response.reduce((acc, priceItem) => {
+function formatResponse(chainId: number, response: BackendResponse = []): TokenPricesData {
+  const result = response.reduce((acc: TokenPricesData, priceItem) => {
     let tokenConfig: any;
 
     try {
@@ -49,7 +53,7 @@ function formatResponse(chainId: number, response: BackendResponse = []) {
     };
 
     return acc;
-  }, {} as any);
+  }, {} as TokenPricesData);
 
   const stableTokens = getTokens(chainId).filter((token) => token.isStable);
 

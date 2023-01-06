@@ -7,14 +7,19 @@ import { getMarket } from "./utils";
 import { useMarketsData } from "./useMarketsData";
 import { MarketsOpenInterestData } from "./types";
 
-export function useOpenInterestData(chainId: number): MarketsOpenInterestData {
-  const marketsData = useMarketsData(chainId);
+type OpenInterestDataResult = {
+  openInterestData: MarketsOpenInterestData;
+  isLoading: boolean;
+};
+
+export function useOpenInterestData(chainId: number): OpenInterestDataResult {
+  const { marketsData } = useMarketsData(chainId);
 
   const marketAddresses = Object.keys(marketsData);
 
   const cacheKey = marketAddresses.length > 0 ? [marketAddresses.join("-")] : null;
 
-  const { data } = useMulticall(chainId, "useOpenInterestData", {
+  const { data, isLoading } = useMulticall(chainId, "useOpenInterestData", {
     key: cacheKey,
     request: () => ({
       dataStore: {
@@ -71,6 +76,9 @@ export function useOpenInterestData(chainId: number): MarketsOpenInterestData {
   });
 
   return useMemo(() => {
-    return data || {};
-  }, [data]);
+    return {
+      openInterestData: data || {},
+      isLoading,
+    };
+  }, [data, isLoading]);
 }

@@ -21,7 +21,7 @@ export function OrderStatus(p: Props) {
   const [orderKey, setOrderKey] = useState<string>();
 
   const { chainId } = useChainId();
-  const tokensData = useAvailableTokensData(chainId);
+  const { tokensData } = useAvailableTokensData(chainId);
 
   const { getPendingOrders, getOrderEvents, setIsOrderViewed } = useContractEventsContext();
 

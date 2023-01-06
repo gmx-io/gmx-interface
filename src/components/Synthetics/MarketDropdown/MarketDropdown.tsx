@@ -21,8 +21,8 @@ export type Props = {
 export function MarketDropdown(p: Props) {
   const { chainId } = useChainId();
 
-  const marketsData = useMarketsData(chainId);
-  const tokensData = useAvailableTokensData(chainId);
+  const { marketsData } = useMarketsData(chainId);
+  const { tokensData } = useAvailableTokensData(chainId);
 
   const markets = getMarkets(marketsData);
 

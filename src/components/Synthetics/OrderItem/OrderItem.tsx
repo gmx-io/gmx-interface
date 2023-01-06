@@ -11,8 +11,8 @@ type Props = {
 export function OrderItem(p: Props) {
   const { chainId } = useChainId();
 
-  const marketsData = useMarketsData(chainId);
-  const tokensData = useAvailableTokensData(chainId);
+  const { marketsData } = useMarketsData(chainId);
+  const { tokensData } = useAvailableTokensData(chainId);
 
   const { order } = p;
 

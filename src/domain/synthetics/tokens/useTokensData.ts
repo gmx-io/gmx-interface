@@ -4,31 +4,37 @@ import { TokensData } from "./types";
 import { useTokenBalancesData } from "./useTokenBalancesData";
 import { useTokenRecentPricesData } from "./useTokenRecentPricesData";
 
-export function useAvailableTokensData(chainId: number) {
+type TokensDataResult = {
+  tokensData: TokensData;
+  isLoading: boolean;
+};
+
+export function useAvailableTokensData(chainId: number): TokensDataResult {
   const tokenAddresses = getAvailableTradeTokens(chainId, { includeSynthetic: true }).map((token) => token.address);
 
   return useTokensData(chainId, { tokenAddresses });
 }
 
-export function useTokensData(chainId: number, p: { tokenAddresses: string[] }): TokensData {
-  const balancesData = useTokenBalancesData(chainId, { tokenAddresses: p.tokenAddresses });
-  const pricesData = useTokenRecentPricesData(chainId);
+export function useTokensData(chainId: number, p: { tokenAddresses: string[] }): TokensDataResult {
+  const { balancesData, isLoading: isBalancesLoading } = useTokenBalancesData(chainId, {
+    tokenAddresses: p.tokenAddresses,
+  });
+
+  const { pricesData: tokenPricesData, isLoading: isPricesLoading } = useTokenRecentPricesData(chainId);
   const tokenConfigs = getTokensMap(chainId);
 
-  return useMemo(
-    () =>
-      p.tokenAddresses.reduce((tokensData, tokenAddress) => {
-        const token = tokenConfigs[tokenAddress];
-
-        tokensData[token.address] = {
-          ...token,
-          prices: pricesData[token.address],
-          balance: balancesData[token.address],
+  return useMemo(() => {
+    return {
+      tokensData: p.tokenAddresses.reduce((tokensData: TokensData, tokenAddress) => {
+        tokensData[tokenAddress] = {
+          ...tokenConfigs[tokenAddress],
+          prices: tokenPricesData[tokenAddress],
+          balance: balancesData[tokenAddress],
         };
         return tokensData;
-      }, {}),
-
+      }, {} as TokensData),
+      isLoading: isBalancesLoading || isPricesLoading,
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [balancesData, p.tokenAddresses.join("-"), pricesData, tokenConfigs]
-  );
+  }, [p.tokenAddresses.join(), tokenConfigs]);
 }

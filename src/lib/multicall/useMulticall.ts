@@ -40,15 +40,15 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
       try {
         // prettier-ignore
         const request = typeof params.request === "function" 
-      ? params.request(chainId, params.key as CacheKey) 
-      : params.request;
+            ? params.request(chainId, params.key as CacheKey) 
+            : params.request;
 
         const response = await executeMulticall(chainId, library, request);
 
         // prettier-ignore
-        const result = typeof params.parseResponse === "function" 
-          ? params.parseResponse(response, chainId, params.key as CacheKey) 
-          : response;
+        const result = typeof params.parseResponse === "function"
+            ? params.parseResponse(response, chainId, params.key as CacheKey)
+            : response;
 
         return result as TResult;
       } catch (e) {
@@ -60,5 +60,10 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
     },
   });
 
-  return swrResult;
+  const isLoading = swrResult.isValidating && !swrResult.error && !swrResult.data;
+
+  return {
+    ...swrResult,
+    isLoading,
+  };
 }

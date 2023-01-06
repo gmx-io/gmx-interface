@@ -19,7 +19,7 @@ type Props = {
 
 export function TradeFees(p: Props) {
   const { chainId } = useChainId();
-  const tokensData = useAvailableTokensData(chainId);
+  const { tokensData } = useAvailableTokensData(chainId);
 
   const { positionPriceImpact, executionFee, totalFeeUsd, swapPath } = p.fees;
 

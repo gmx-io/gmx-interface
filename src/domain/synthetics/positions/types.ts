@@ -31,7 +31,8 @@ export type Position = {
 };
 
 export type AggregatedPositionData = Position & {
-  currentSizeUsd?: BigNumber;
+  marketName?: string;
+  currentValueUsd?: BigNumber;
   collateralUsd?: BigNumber;
   indexToken?: TokenData;
   collateralToken?: TokenData;

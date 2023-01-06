@@ -66,10 +66,10 @@ export function ConfirmationBox(p: Props) {
   const { chainId } = useChainId();
   const routerAddress = getContract(chainId, "SyntheticsRouter");
 
-  const tokensData = useAvailableTokensData(chainId);
+  const { tokensData } = useAvailableTokensData(chainId);
   const referralCodeData = useUserReferralCode(library, chainId, account);
 
-  const tokenAllowanceData = useTokenAllowanceData(chainId, {
+  const { tokenAllowanceData } = useTokenAllowanceData(chainId, {
     spenderAddress: routerAddress,
     tokenAddresses: p.fromTokenAddress ? [p.fromTokenAddress] : [],
   });

@@ -222,8 +222,8 @@ export function useSwapTriggerRatioState(p: {
 export function useAvailableSwapTokens(p: { indexTokenAddress?: string; isSwap: boolean }) {
   const { chainId } = useChainId();
 
-  const marketsData = useMarketsData(chainId);
-  const tokensData = useAvailableTokensData(chainId);
+  const { marketsData } = useMarketsData(chainId);
+  const { tokensData } = useAvailableTokensData(chainId);
 
   const markets = getMarkets(marketsData);
 
@@ -309,8 +309,8 @@ export function useFeesState(p: {
 
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
 
-  const tokensData = useAvailableTokensData(chainId);
-  const openInterestData = useOpenInterestData(chainId);
+  const { tokensData } = useAvailableTokensData(chainId);
+  const { openInterestData } = useOpenInterestData(chainId);
   const priceImpactConfigs = usePriceImpactConfigs(chainId);
 
   const executionFee = getExecutionFee(tokensData);

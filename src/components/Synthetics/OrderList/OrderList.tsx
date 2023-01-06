@@ -7,7 +7,7 @@ import { useChainId } from "lib/chains";
 export function OrderList() {
   const { chainId } = useChainId();
 
-  const ordersData = useOrdersData(chainId);
+  const { ordersData } = useOrdersData(chainId);
 
   const orders = getOrders(ordersData)
     .filter((order) => [OrderType.LimitIncrease, OrderType.LimitIncrease, OrderType.LimitSwap].includes(order.type))

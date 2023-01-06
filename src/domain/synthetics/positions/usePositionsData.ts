@@ -8,10 +8,15 @@ import { useMemo } from "react";
 import { bigNumberify } from "lib/numbers";
 import { BigNumber } from "ethers";
 
-export function usePositionsData(chainId: number): PositionsData {
+type PositionsDataResult = {
+  positionsData: PositionsData;
+  isLoading: boolean;
+};
+
+export function usePositionsData(chainId: number): PositionsDataResult {
   const { account } = useWeb3React();
 
-  const { data: positionsMap } = useMulticall(chainId, "usePositionsData-positions", {
+  const { data, isLoading } = useMulticall(chainId, "usePositionsData-positions", {
     key: account ? [account] : null,
     request: () => ({
       reader: {
@@ -96,6 +101,9 @@ export function usePositionsData(chainId: number): PositionsData {
   });
 
   return useMemo(() => {
-    return positionsMap || {};
-  }, [positionsMap]);
+    return {
+      positionsData: data || {},
+      isLoading,
+    };
+  }, [data, isLoading]);
 }

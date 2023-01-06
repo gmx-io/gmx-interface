@@ -70,12 +70,12 @@ export function GmConfirmationBox(p: Props) {
     Boolean
   ) as string[];
 
-  const marketsData = useMarketsData(chainId);
-  const marketTokensData = useMarketTokensData(chainId);
-  const poolsData = useMarketsPoolsData(chainId);
-  const tokensData = useAvailableTokensData(chainId);
+  const { marketsData } = useMarketsData(chainId);
+  const { marketTokensData } = useMarketTokensData(chainId);
+  const { poolsData } = useMarketsPoolsData(chainId);
+  const { tokensData } = useAvailableTokensData(chainId);
 
-  const tokenAllowanceData = useTokenAllowanceData(chainId, {
+  const { tokenAllowanceData } = useTokenAllowanceData(chainId, {
     spenderAddress: routerAddress,
     tokenAddresses,
   });

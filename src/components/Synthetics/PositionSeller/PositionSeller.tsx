@@ -7,12 +7,7 @@ import {
 } from "domain/synthetics/positions";
 import { useChainId } from "lib/chains";
 import Modal from "components/Modal/Modal";
-import {
-  formatTokenAmount,
-  formatUsdAmount,
-  getTokenAmountFromUsd,
-  useAvailableTokensData,
-} from "domain/synthetics/tokens";
+import { formatUsdAmount, getTokenAmountFromUsd, useAvailableTokensData } from "domain/synthetics/tokens";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { useState } from "react";
 import { formatAmount, parseValue } from "lib/numbers";
@@ -57,26 +52,25 @@ function getNextCollateralUsd(p: {
 }
 
 export function PositionSeller(p: Props) {
+  const { position } = p;
   const { chainId } = useChainId();
   const { library, account } = useWeb3React();
-  const { position } = p;
-
-  const tokensData = useAvailableTokensData(chainId);
-
-  const [sizeInput, setSizeInput] = useState("");
-  const sizeInputUsd = parseValue(sizeInput || "0", USD_DECIMALS)!;
-
-  const isClosing = position.sizeInUsd?.sub(sizeInputUsd).lt(DUST_USD);
-
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey([chainId, KEEP_LEVERAGE_FOR_DECREASE_KEY], true);
+
+  const { tokensData } = useAvailableTokensData(chainId);
+
+  const [closeSizeInputValue, setCloseSizeInputValue] = useState("");
+  const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
+
+  const isClosing = position.sizeInUsd?.sub(closeSizeUsd).lt(DUST_USD);
 
   const fees = BigNumber.from(0);
 
-  const sizeDelta = isClosing ? position.sizeInUsd : sizeInputUsd;
+  const sizeDelta = isClosing ? position.sizeInUsd : closeSizeUsd;
 
   const collateralDeltaUsd =
-    keepLeverage && position.collateralUsd && sizeDelta && position.currentSizeUsd
-      ? sizeDelta.mul(position.collateralUsd).div(position.currentSizeUsd)
+    keepLeverage && position.collateralUsd && sizeDelta && position.currentValueUsd
+      ? sizeDelta.mul(position.collateralUsd).div(position.currentValueUsd)
       : BigNumber.from(0);
 
   const nextCollateralUsd = getNextCollateralUsd({
@@ -91,7 +85,7 @@ export function PositionSeller(p: Props) {
 
   const nextLiqPrice = nextSizeUsd.gt(0)
     ? getLiquidationPrice({
-        currentSizeUsd: nextSizeUsd,
+        sizeUsd: nextSizeUsd,
         collateralUsd: nextCollateralUsd,
         feesUsd: fees,
         averagePrice: position.averagePrice,
@@ -183,7 +177,7 @@ export function PositionSeller(p: Props) {
       !position ||
       !sizeDelta?.gt(0) ||
       !executionFee?.feeTokenAmount ||
-      !position.currentSizeUsd
+      !position.currentValueUsd
     )
       return;
 
@@ -191,7 +185,7 @@ export function PositionSeller(p: Props) {
       ? getTokenAmountFromUsd(tokensData, position.collateralToken!.address, collateralDeltaUsd)
       : BigNumber.from(0);
 
-    const adjustedSizeDeltaUsd = position.sizeInUsd.mul(sizeDelta).div(position.currentSizeUsd);
+    const adjustedSizeDeltaUsd = position.sizeInUsd.mul(sizeDelta).div(position.currentValueUsd);
 
     // console.log("params", {
     //   collateralAmount: formatTokenAmount(collateralAmount, position.collateralToken!.decimals),
@@ -238,11 +232,11 @@ export function PositionSeller(p: Props) {
         <BuyInputSection
           topLeftLabel={t`Close`}
           topRightLabel={t`Max`}
-          topRightValue={formatUsdAmount(position.currentSizeUsd)}
-          inputValue={sizeInput}
-          onInputValueChange={(e) => setSizeInput(e.target.value)}
-          showMaxButton={position.currentSizeUsd?.gt(0) && !sizeDelta?.eq(position.currentSizeUsd)}
-          onClickMax={() => setSizeInput(formatAmount(position.currentSizeUsd, USD_DECIMALS, 2))}
+          topRightValue={formatUsdAmount(position.currentValueUsd)}
+          inputValue={closeSizeInputValue}
+          onInputValueChange={(e) => setCloseSizeInputValue(e.target.value)}
+          showMaxButton={position.currentValueUsd?.gt(0) && !sizeDelta?.eq(position.currentValueUsd)}
+          onClickMax={() => setCloseSizeInputValue(formatAmount(position.currentValueUsd, USD_DECIMALS, 2))}
         >
           USD
         </BuyInputSection>
@@ -337,9 +331,9 @@ export function PositionSeller(p: Props) {
             label={t`Size`}
             value={
               <ValueTransition
-                from={formatUsdAmount(position.currentSizeUsd)}
+                from={formatUsdAmount(position.currentValueUsd)}
                 to={
-                  position.currentSizeUsd && nextSizeUsd && !nextSizeUsd.eq(position.currentSizeUsd)
+                  position.currentValueUsd && nextSizeUsd && !nextSizeUsd.eq(position.currentValueUsd)
                     ? formatUsdAmount(nextSizeUsd)
                     : undefined
                 }

@@ -1,13 +1,13 @@
-import { Trans } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 
-import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
 import { PositionEditor } from "components/Synthetics/PositionEditor/PositionEditor";
+import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
 import { PositionSeller } from "components/Synthetics/PositionSeller/PositionSeller";
+import { useMarketsData } from "domain/synthetics/markets";
 import { getAggregatedPositionData, usePositionsData } from "domain/synthetics/positions";
+import { useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { useMemo, useState } from "react";
-import { useMarketsData } from "domain/synthetics/markets";
-import { useAvailableTokensData } from "domain/synthetics/tokens";
 
 export function PositionList() {
   const { chainId } = useChainId();
@@ -15,9 +15,10 @@ export function PositionList() {
   const [closingPositionKey, setClosingPositionKey] = useState<string>();
   const [editingPositionKey, setEditingPositionKey] = useState<string>();
 
-  const positionsData = usePositionsData(chainId);
-  const marketsData = useMarketsData(chainId);
-  const tokensData = useAvailableTokensData(chainId);
+  const { positionsData, isLoading: isPositionsLoading } = usePositionsData(chainId);
+
+  const { marketsData } = useMarketsData(chainId);
+  const { tokensData } = useAvailableTokensData(chainId);
 
   const positions = useMemo(() => {
     return Object.keys(positionsData)
@@ -26,7 +27,7 @@ export function PositionList() {
   }, [marketsData, positionsData, tokensData]);
 
   const closingPosition = positions.find((position) => position.key === closingPositionKey);
-  const editingPosition = positions.find((position) => position.key === editingPositionKey);
+  // const editingPosition = positions.find((position) => position.key === editingPositionKey);
 
   return (
     <div>
@@ -69,6 +70,15 @@ export function PositionList() {
               </div>
             </th>
           </tr>
+          {positions.length === 0 && (
+            <tr>
+              <td colSpan={15}>
+                <div className="Exchange-empty-positions-list-note">
+                  {isPositionsLoading ? t`Loading...` : t`No open positions`}
+                </div>
+              </td>
+            </tr>
+          )}
           {positions.map((position) => (
             <PositionItem
               onEditCollateralClick={() => setEditingPositionKey(position.key)}

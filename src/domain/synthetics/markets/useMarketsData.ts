@@ -6,7 +6,12 @@ import { getWrappedToken } from "config/tokens";
 import { useMemo } from "react";
 import { Market, MarketsData } from "./types";
 
-export function useMarketsData(chainId: number): MarketsData {
+type MarketsDataResult = {
+  marketsData: MarketsData;
+  isLoading?: boolean;
+};
+
+export function useMarketsData(chainId: number): MarketsDataResult {
   const { data: marketsCount } = useMulticall(chainId, "useMarkets-count", {
     key: [],
     request: {
@@ -24,7 +29,7 @@ export function useMarketsData(chainId: number): MarketsData {
     parseResponse: (res) => res.marketStore.count.returnValues[0] as number,
   });
 
-  const { data: marketsMap } = useMulticall(chainId, "useMarkets-markets", {
+  const { data: marketsData, isLoading } = useMulticall(chainId, "useMarkets-markets", {
     key: Boolean(marketsCount) && [marketsCount],
     request: () => ({
       reader: {
@@ -69,6 +74,9 @@ export function useMarketsData(chainId: number): MarketsData {
   });
 
   return useMemo(() => {
-    return marketsMap || {};
-  }, [marketsMap]);
+    return {
+      marketsData: marketsData || {},
+      isLoading,
+    };
+  }, [isLoading, marketsData]);
 }

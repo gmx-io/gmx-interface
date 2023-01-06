@@ -1,20 +1,25 @@
-import { getContract } from "config/contracts";
-import OrderStore from "abis/OrderStore.json";
-import { useMulticall } from "lib/multicall";
-import { useMemo } from "react";
-import { OrdersData } from "./types";
 import { useWeb3React } from "@web3-react/core";
-import { bigNumberify } from "lib/numbers";
+import OrderStore from "abis/OrderStore.json";
+import { getContract } from "config/contracts";
+import { getToken } from "config/tokens";
 import { getMarket, useMarketsData } from "domain/synthetics/markets";
 import { parseContractPrice } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
-import { getToken } from "config/tokens";
+import { useMulticall } from "lib/multicall";
+import { bigNumberify } from "lib/numbers";
+import { useMemo } from "react";
 import { orderTypeLabels } from "./constants";
+import { OrdersData } from "./types";
 
-export function useOrdersData(chainId: number): OrdersData {
+type OrdersResult = {
+  ordersData: OrdersData;
+  isLoading: boolean;
+};
+
+export function useOrdersData(chainId: number): OrdersResult {
   const { account } = useWeb3React();
 
-  const marketsData = useMarketsData(chainId);
+  const { marketsData } = useMarketsData(chainId);
 
   const { data: orderKeys = [] } = useMulticall(chainId, "useOrdersData-keys", {
     key: account ? [account] : null,
@@ -36,7 +41,7 @@ export function useOrdersData(chainId: number): OrdersData {
 
   const marketsKeys = Object.keys(marketsData);
 
-  const { data: ordersMap } = useMulticall(chainId, "useOrdersData-orders", {
+  const { data: ordersData, isLoading } = useMulticall(chainId, "useOrdersData-orders", {
     key:
       account && orderKeys.length && marketsKeys.length ? [account, orderKeys.join("-"), marketsKeys.join("-")] : null,
     request: () => ({
@@ -107,6 +112,9 @@ export function useOrdersData(chainId: number): OrdersData {
   });
 
   return useMemo(() => {
-    return ordersMap || {};
-  }, [ordersMap]);
+    return {
+      ordersData: ordersData || {},
+      isLoading,
+    };
+  }, [isLoading, ordersData]);
 }

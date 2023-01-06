@@ -14,6 +14,10 @@ export type TokenBalancesData = {
   [tokenAddress: string]: BigNumber;
 };
 
+export type TokenPricesData = {
+  [address: string]: TokenPrices;
+};
+
 export type TokenData = Token & {
   balance?: BigNumber;
   prices?: TokenPrices;

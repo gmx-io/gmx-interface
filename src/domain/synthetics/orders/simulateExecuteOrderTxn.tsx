@@ -18,6 +18,7 @@ import { Trans } from "@lingui/macro";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import { expandDecimals } from "lib/numbers";
 import { callContract } from "lib/contracts";
+import { isDevelopment } from "config/env";
 
 export type MulticallRequest = { method: string; params: any[] }[];
 
@@ -73,12 +74,13 @@ export async function simulateExecuteOrderTxn(chainId: number, library: Web3Prov
   ];
 
   try {
-    if (SHOULD_MINE) {
+    if (SHOULD_MINE && isDevelopment()) {
       const txn = await callContract(chainId, exchangeRouter, "multicall", [simulationPayload], {
         value: p.value,
         gasLimit: 11 ** 6,
       });
 
+      // eslint-disable-next-line no-console
       console.log("simulationTxn", txn);
     } else {
       await exchangeRouter.callStatic.multicall(simulationPayload, { value: p.value, blockTag: blockNumber });

@@ -30,7 +30,7 @@ import { getContract } from "config/contracts";
  */
 
 export function usePriceImpactConfigs(chainId: number): PriceImpactConfigsData {
-  const marketsData = useMarketsData(chainId);
+  const { marketsData } = useMarketsData(chainId);
 
   const marketAddresses = Object.keys(marketsData);
 

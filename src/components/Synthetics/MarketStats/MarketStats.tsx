@@ -32,10 +32,10 @@ type Props = {
 export function MarketStats(p: Props) {
   const { chainId } = useChainId();
 
-  const marketsData = useMarketsData(chainId);
-  const poolsData = useMarketsPoolsData(chainId);
-  const tokensData = useAvailableTokensData(chainId);
-  const marketTokensData = useMarketTokensData(chainId);
+  const { marketsData } = useMarketsData(chainId);
+  const { poolsData } = useMarketsPoolsData(chainId);
+  const { tokensData } = useAvailableTokensData(chainId);
+  const { marketTokensData } = useMarketTokensData(chainId);
 
   const market = getMarket(marketsData, p.marketKey);
   const marketName = getMarketName(marketsData, tokensData, market?.marketTokenAddress, true);

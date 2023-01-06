@@ -1,5 +1,5 @@
 import { expandDecimals, formatAmount } from "lib/numbers";
-import { MarketsData, getMarket } from "../markets";
+import { MarketsData, getMarket, getMarketName } from "../markets";
 import { TokenPrices, TokensData, convertToUsdByPrice, formatUsdAmount, getTokenData } from "../tokens";
 import { AggregatedPositionData, PositionsData } from "./types";
 import { BASIS_POINTS_DIVISOR, MAX_LEVERAGE } from "lib/legacy";
@@ -32,6 +32,8 @@ export function getAggregatedPositionData(
 
   if (!position) return undefined;
 
+  const marketName = getMarketName(marketsData, tokensData, position.marketAddress);
+
   const markPrice = position.isLong ? indexToken?.prices?.minPrice : indexToken?.prices?.maxPrice;
   const pnlPrice = getPriceForPnl(indexToken?.prices, position.isLong, false);
   const averagePrice = indexToken?.prices?.minPrice.add(indexToken?.prices?.maxPrice).div(2);
@@ -42,7 +44,7 @@ export function getAggregatedPositionData(
     ? position.sizeInUsd.div(position.sizeInTokens).mul(expandDecimals(1, indexToken.decimals))
     : undefined;
 
-  const currentSizeUsd =
+  const currentValueUsd =
     indexToken && pnlPrice ? convertToUsdByPrice(position.sizeInTokens, indexToken.decimals, pnlPrice) : undefined;
 
   const collateralUsd =
@@ -52,23 +54,10 @@ export function getAggregatedPositionData(
 
   const collateralUsdAfterFees = collateralUsd;
 
-  // console.log("pos", {
-  //   positionKey: position.key,
-  //   indexToken: indexToken?.symbol,
-  //   indexPrice: formatUsdAmount(pnlPrice),
-  //   collateralToken: collateralToken?.symbol,
-  //   collateralPrice: formatUsdAmount(collateralPrice),
-  //   currentSizeUsd: formatUsdAmount(currentSizeUsd),
-  //   sizeInTokens: formatTokenAmount(position.sizeInTokens, indexToken?.decimals),
-  //   sizeInUsd: formatUsdAmount(position.sizeInUsd),
-  //   collateralAmount: formatTokenAmount(position.collateralAmount, collateralToken?.decimals),
-  //   collateralUsd: formatUsdAmount(collateralUsd),
-  // });
-
-  const pnl = currentSizeUsd
+  const pnl = currentValueUsd
     ? position.isLong
-      ? currentSizeUsd.sub(position.sizeInUsd)
-      : position.sizeInUsd.sub(currentSizeUsd)
+      ? currentValueUsd.sub(position.sizeInUsd)
+      : position.sizeInUsd.sub(currentValueUsd)
     : undefined;
 
   const pnlPercentage = collateralUsd && pnl ? pnl.mul(BASIS_POINTS_DIVISOR).div(collateralUsd) : undefined;
@@ -76,12 +65,12 @@ export function getAggregatedPositionData(
   const netValue = pnl && collateralUsd ? collateralUsd.add(pnl).sub(position.pendingBorrowingFees) : undefined;
 
   const leverage = getLeverage({
-    sizeUsd: currentSizeUsd,
+    sizeUsd: currentValueUsd,
     collateralUsd,
   });
 
   const liqPrice = getLiquidationPrice({
-    currentSizeUsd,
+    sizeUsd: currentValueUsd,
     collateralUsd,
     averagePrice,
     isLong: position.isLong,
@@ -90,9 +79,10 @@ export function getAggregatedPositionData(
 
   return {
     ...position,
+    marketName,
     indexToken,
     collateralToken,
-    currentSizeUsd,
+    currentValueUsd,
     collateralUsd,
     collateralUsdAfterFees,
     averagePrice,
@@ -107,25 +97,25 @@ export function getAggregatedPositionData(
 }
 
 export function getLiquidationPrice(p: {
-  currentSizeUsd?: BigNumber;
+  sizeUsd?: BigNumber;
   collateralUsd?: BigNumber;
   feesUsd?: BigNumber;
   averagePrice?: BigNumber;
   isLong?: boolean;
 }) {
-  if (!p.currentSizeUsd || !p.collateralUsd || !p.averagePrice) return undefined;
+  if (!p.sizeUsd || !p.collateralUsd || !p.averagePrice) return undefined;
 
   const liqPriceForFees = getLiquidationPriceFromDelta({
     liquidationAmountUsd: p.feesUsd,
-    sizeUsd: p.currentSizeUsd,
+    sizeUsd: p.sizeUsd,
     collateralUsd: p.collateralUsd,
     averagePrice: p.averagePrice,
     isLong: p.isLong,
   });
 
   const liqPriceForMaxLeverage = getLiquidationPriceFromDelta({
-    liquidationAmountUsd: p.currentSizeUsd.mul(BASIS_POINTS_DIVISOR).div(MAX_LEVERAGE),
-    sizeUsd: p.currentSizeUsd,
+    liquidationAmountUsd: p.sizeUsd.mul(BASIS_POINTS_DIVISOR).div(MAX_LEVERAGE),
+    sizeUsd: p.sizeUsd,
     collateralUsd: p.collateralUsd,
     averagePrice: p.averagePrice,
     isLong: p.isLong,

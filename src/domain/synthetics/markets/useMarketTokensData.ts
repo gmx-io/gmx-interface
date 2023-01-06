@@ -12,13 +12,18 @@ import { getMarket, getMarketName } from "./utils";
 import { expandDecimals } from "lib/numbers";
 import { USD_DECIMALS } from "lib/legacy";
 
-export function useMarketTokensData(chainId: number): MarketTokensData {
+type MarketTokensDataResult = {
+  marketTokensData: MarketTokensData;
+  isLoading: boolean;
+};
+
+export function useMarketTokensData(chainId: number): MarketTokensDataResult {
   const { account } = useWeb3React();
 
   const dataStoreAddress = getContract(chainId, "DataStore");
 
-  const tokensData = useAvailableTokensData(chainId);
-  const marketsData = useMarketsData(chainId);
+  const { tokensData } = useAvailableTokensData(chainId);
+  const { marketsData } = useMarketsData(chainId);
 
   const marketAddresses = Object.keys(marketsData);
 
@@ -83,7 +88,7 @@ export function useMarketTokensData(chainId: number): MarketTokensData {
 
   const reqKeys = Object.keys(requests).join("-");
 
-  const { data: marketTokensData } = useMulticall(chainId, "useMarketTokensData", {
+  const { data: marketTokensData, isLoading } = useMulticall(chainId, "useMarketTokensData", {
     key: reqKeys.length > 0 ? [account, reqKeys] : null,
     request: requests,
     parseResponse: (res) =>
@@ -112,8 +117,11 @@ export function useMarketTokensData(chainId: number): MarketTokensData {
   });
 
   return useMemo(() => {
-    return marketTokensData || {};
-  }, [marketTokensData]);
+    return {
+      marketTokensData: marketTokensData || {},
+      isLoading,
+    };
+  }, [isLoading, marketTokensData]);
 }
 
 function formatPrices(token?: TokenData) {

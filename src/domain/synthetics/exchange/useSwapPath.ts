@@ -34,9 +34,9 @@ export function useSwapPath(p: {
   const [swapFeesUsd, setSwapFeesUsd] = useState<BigNumber | undefined>();
   const [fullSwapPath, setFullSwapPath] = useState<SwapPathItem[]>();
 
-  const marketsData = useMarketsData(chainId);
-  const poolsData = useMarketsPoolsData(chainId);
-  const tokensData = useAvailableTokensData(chainId);
+  const { marketsData } = useMarketsData(chainId);
+  const { poolsData } = useMarketsPoolsData(chainId);
+  const { tokensData } = useAvailableTokensData(chainId);
   const priceImpactConfigsData = usePriceImpactConfigs(chainId);
 
   const graph = useMemo(() => {

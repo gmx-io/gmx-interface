@@ -23,8 +23,8 @@ export function GmOrderStatus(p: Props) {
 
   const { chainId } = useChainId();
 
-  const tokensData = useAvailableTokensData(chainId);
-  const marketsData = useMarketsData(chainId);
+  const { tokensData } = useAvailableTokensData(chainId);
+  const { marketsData } = useMarketsData(chainId);
 
   const { getPendingOrders, getOrderEvents, setIsOrderViewed } = useContractEventsContext();
 

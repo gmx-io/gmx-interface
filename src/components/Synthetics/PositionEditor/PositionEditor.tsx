@@ -1,27 +1,27 @@
-import { useEffect, useState } from "react";
-import { getPosition, usePositionsData } from "domain/synthetics/positions";
-import { useChainId } from "lib/chains";
+import { Trans, t } from "@lingui/macro";
+import { useWeb3React } from "@web3-react/core";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Modal from "components/Modal/Modal";
+import { SubmitButton } from "components/SubmitButton/SubmitButton";
+import Tab from "components/Tab/Tab";
+import { useTokenInputState } from "domain/synthetics/exchange";
+import { getExecutionFee } from "domain/synthetics/fees";
 import { getMarket, useMarketsData } from "domain/synthetics/markets";
+import { OrderType, createIncreaseOrderTxn } from "domain/synthetics/orders";
+import { getPosition, usePositionsData } from "domain/synthetics/positions";
 import {
   formatTokenAmount,
   formatUsdAmount,
+  getTokenAmountFromUsd,
   getTokenData,
   getUsdFromTokenAmount,
   useAvailableTokensData,
 } from "domain/synthetics/tokens";
-import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import { SubmitButton } from "components/SubmitButton/SubmitButton";
-import Tab from "components/Tab/Tab";
-import { Trans, t } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
-import { getExecutionFee } from "domain/synthetics/fees";
-import { useTokenInputState } from "domain/synthetics/exchange";
-import { formatAmountFree, parseValue } from "lib/numbers";
-import { DEFAULT_SLIPPAGE_AMOUNT, USD_DECIMALS } from "lib/legacy";
-import { getTokenAmountFromUsd } from "domain/synthetics/tokens";
-import { OrderType, createDecreaseOrderTxn, createIncreaseOrderTxn } from "domain/synthetics/orders";
 import { BigNumber } from "ethers";
+import { useChainId } from "lib/chains";
+import { DEFAULT_SLIPPAGE_AMOUNT, USD_DECIMALS } from "lib/legacy";
+import { formatAmountFree, parseValue } from "lib/numbers";
+import { useEffect, useState } from "react";
 
 import "./PositionEditor.scss";
 
@@ -44,9 +44,9 @@ export function PositionEditor(p: Props) {
   const { chainId } = useChainId();
   const { account, library } = useWeb3React();
 
-  const positionsData = usePositionsData(chainId);
-  const marketsData = useMarketsData(chainId);
-  const tokensData = useAvailableTokensData(chainId);
+  const { positionsData } = usePositionsData(chainId);
+  const { marketsData } = useMarketsData(chainId);
+  const { tokensData } = useAvailableTokensData(chainId);
 
   const position = getPosition(positionsData, p.positionKey);
   const market = getMarket(marketsData, position?.marketAddress);
@@ -92,19 +92,7 @@ export function PositionEditor(p: Props) {
   function onSubmit() {
     if (!account || !position || !executionFee?.feeTokenAmount || !indexToken) return;
 
-    function getAcceptablePrice() {
-      if (position!.isLong) {
-        const price = indexToken?.prices?.maxPrice;
-
-        return price?.div(2);
-      }
-
-      const price = indexToken?.prices?.maxPrice;
-
-      return price?.add(price.div(2));
-    }
-
-    const acceptablePrice = getAcceptablePrice();
+    // const acceptablePrice = getAcceptablePrice();
 
     if (!indexToken.prices) return;
 

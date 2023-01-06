@@ -7,15 +7,20 @@ import { useMulticall } from "lib/multicall";
 import { useMemo } from "react";
 import { TokenAllowancesData } from "./types";
 
+type TokenAllowanceResult = {
+  tokenAllowanceData: TokenAllowancesData;
+  isLoading: boolean;
+};
+
 export function useTokenAllowanceData(
   chainId: number,
   p: { spenderAddress?: string; tokenAddresses: string[] }
-): TokenAllowancesData {
+): TokenAllowanceResult {
   const { account } = useWeb3React();
 
   const wrappedToken = getWrappedToken(chainId);
 
-  const { data: tokenAllowance } = useMulticall(chainId, "useTokenAllowance", {
+  const { data: tokenAllowance, isLoading } = useMulticall(chainId, "useTokenAllowance", {
     key:
       account && p.spenderAddress && p.tokenAddresses.length > 0
         ? [account, p.spenderAddress, p.tokenAddresses.join("-")]
@@ -50,6 +55,9 @@ export function useTokenAllowanceData(
   });
 
   return useMemo(() => {
-    return tokenAllowance || {};
-  }, [tokenAllowance]);
+    return {
+      tokenAllowanceData: tokenAllowance || {},
+      isLoading,
+    };
+  }, [isLoading, tokenAllowance]);
 }
