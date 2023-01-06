@@ -3,7 +3,6 @@ import Multicall from "abis/Multicall.json";
 import Token from "abis/Token.json";
 import { getContract } from "config/contracts";
 import { getToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { BigNumber } from "ethers";
 import { useMulticall } from "lib/multicall";
 import { useMemo } from "react";
 import { TokenBalancesData } from "./types";
@@ -50,15 +49,12 @@ export function useTokenBalancesData(chainId: number, p: { tokenAddresses: strin
 
         return acc;
       }, {}),
-    parseResponse: (res) => {
-      const tokenBalances: { [address: string]: BigNumber } = {};
+    parseResponse: (res) =>
+      Object.keys(res).reduce((tokenBalances: TokenBalancesData, tokenAddress) => {
+        tokenBalances[tokenAddress] = res[tokenAddress].balance.returnValues[0];
 
-      Object.keys(res).forEach((address) => {
-        tokenBalances[address] = res[address].balance.returnValues[0] || BigNumber.from(0);
-      });
-
-      return tokenBalances;
-    },
+        return tokenBalances;
+      }, {} as TokenBalancesData),
   });
 
   return useMemo(() => {

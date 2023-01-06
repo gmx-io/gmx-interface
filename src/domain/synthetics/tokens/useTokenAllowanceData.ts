@@ -1,7 +1,6 @@
 import { useWeb3React } from "@web3-react/core";
 import Token from "abis/Token.json";
 import { getWrappedToken } from "config/tokens";
-import { BigNumber } from "ethers";
 import { isAddressZero } from "lib/legacy";
 import { useMulticall } from "lib/multicall";
 import { useMemo } from "react";
@@ -41,17 +40,13 @@ export function useTokenAllowanceData(
 
         return contracts;
       }, {}),
-    parseResponse: (res) => {
-      const tokenAllowance: { [address: string]: BigNumber } = {};
 
-      Object.keys(res).forEach((address) => {
-        const tokenResult = res[address];
+    parseResponse: (res) =>
+      Object.keys(res).reduce((tokenAllowance: TokenAllowancesData, address) => {
+        tokenAllowance[address] = res[address].allowance.returnValues[0];
 
-        tokenAllowance[address] = tokenResult.allowance.returnValues[0];
-      });
-
-      return tokenAllowance;
-    },
+        return tokenAllowance;
+      }, {} as TokenAllowancesData),
   });
 
   return useMemo(() => {
