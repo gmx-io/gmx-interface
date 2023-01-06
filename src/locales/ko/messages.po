@@ -1795,8 +1795,11 @@ msgstr ""
 msgid "Jobs"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+msgid "Keep leverage at {0}"
+msgstr ""
+
+#: src/components/Exchange/PositionSeller.js
 msgid "Keep leverage at {0}x"
 msgstr ""
 
@@ -1841,6 +1844,7 @@ msgstr "남은 포지션이 10 USD 미만입니다."
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 msgid "Leverage"
@@ -1953,6 +1957,7 @@ msgstr "유동성 데이터를 불러오지 못하였습니다."
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/utils.ts
+#: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Loading..."
@@ -2364,6 +2369,7 @@ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/Synthetics/PositionList/PositionList.tsx
 msgid "No open positions"
 msgstr "열려있는 포지션이 없습니다"
 
