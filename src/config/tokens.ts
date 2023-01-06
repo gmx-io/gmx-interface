@@ -464,7 +464,7 @@ export const SYNTHETIC_TOKENS = {
       symbol: "SOL",
       decimals: 18,
       address: "0x36E6dc3CF44FDb8C62c5a11B457A28041f4C6eEF",
-      isNative: true,
+      isNative: false,
       isShortable: true,
       isSynthetic: true,
       imageUrl: "https://assets.coingecko.com/coins/images/4128/small/solana.png?1640133422",

@@ -16,19 +16,20 @@ export function useAvailableTokensData(chainId: number): TokensDataResult {
 }
 
 export function useTokensData(chainId: number, p: { tokenAddresses: string[] }): TokensDataResult {
+  const tokenConfigs = getTokensMap(chainId);
+
   const { balancesData, isLoading: isBalancesLoading } = useTokenBalancesData(chainId, {
     tokenAddresses: p.tokenAddresses,
   });
 
-  const { pricesData: tokenPricesData, isLoading: isPricesLoading } = useTokenRecentPricesData(chainId);
-  const tokenConfigs = getTokensMap(chainId);
+  const { pricesData, isLoading: isPricesLoading } = useTokenRecentPricesData(chainId);
 
   return useMemo(() => {
     return {
       tokensData: p.tokenAddresses.reduce((tokensData: TokensData, tokenAddress) => {
         tokensData[tokenAddress] = {
           ...tokenConfigs[tokenAddress],
-          prices: tokenPricesData[tokenAddress],
+          prices: pricesData[tokenAddress],
           balance: balancesData[tokenAddress],
         };
         return tokensData;
