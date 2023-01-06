@@ -56,7 +56,7 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
     isLong: p.isLong,
     priceImpactDelta: p.priceImpactDelta,
     triggerPrice: p.triggerPrice,
-    indexTokenPrices: indexToken.prices!,
+    indexTokenPrices: indexToken.prices,
     sizeDeltaUsd: p.sizeDeltaUsd,
     allowedSlippage: p.allowedSlippage,
   });
@@ -108,32 +108,31 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
     .filter(Boolean)
     .map((call) => exchangeRouter.interface.encodeFunctionData(call!.method, call!.params));
 
-  const longText = p.isLong ? t`Long` : t`Short`;
-
-  const orderLabel = t`Increase ${longText} ${indexToken.symbol} by ${formatUsdAmount(p.sizeDeltaUsd)}`;
-
-  const primaryPricesMap: PriceOverrides = {};
-  const secondaryPricesMap: PriceOverrides = {};
+  const primaryPriceOverrides: PriceOverrides = {};
+  const secondaryPriceOverrides: PriceOverrides = {};
 
   if (p.triggerPrice) {
-    secondaryPricesMap[p.indexTokenAddress] = {
+    secondaryPriceOverrides[p.indexTokenAddress] = {
       minPrice: p.triggerPrice,
       maxPrice: p.triggerPrice,
     };
   } else {
-    primaryPricesMap[p.indexTokenAddress] = {
+    primaryPriceOverrides[p.indexTokenAddress] = {
       minPrice: acceptablePrice,
       maxPrice: acceptablePrice,
     };
   }
 
   await simulateExecuteOrderTxn(chainId, library, {
-    primaryPricesMap,
-    secondaryPricesMap,
+    primaryPriceOverrides,
+    secondaryPriceOverrides,
     createOrderMulticallPayload: encodedPayload,
     value: wntAmount,
     tokensData: p.tokensData,
   });
+
+  const longText = p.isLong ? t`Long` : t`Short`;
+  const orderLabel = t`Increase ${longText} ${indexToken.symbol} by ${formatUsdAmount(p.sizeDeltaUsd)}`;
 
   return callContract(chainId, exchangeRouter, "multicall", [encodedPayload], {
     value: wntAmount,

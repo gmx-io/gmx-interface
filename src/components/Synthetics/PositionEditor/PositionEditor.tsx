@@ -127,22 +127,22 @@ export function PositionEditor(p: Props) {
     } else {
       if (!withdrawTokenAmount) return;
 
-      createDecreaseOrderTxn(chainId, library, {
-        account,
-        market: position.marketAddress,
-        indexTokenAddress: indexToken.address,
-        swapPath: [],
-        initialCollateralAddress: position.collateralTokenAddress,
-        initialCollateralAmount: withdrawTokenAmount,
-        receiveTokenAddress: position.collateralTokenAddress,
-        sizeDeltaUsd: BigNumber.from(0),
-        acceptablePrice: acceptablePrice!,
-        minOutputAmount: withdrawTokenAmount,
-        orderType: OrderType.MarketDecrease,
-        isLong: position.isLong,
-        executionFee: executionFee.feeTokenAmount,
-        tokensData,
-      });
+      // createDecreaseOrderTxn(chainId, library, {
+      //   account,
+      //   market: position.marketAddress,
+      //   indexTokenAddress: indexToken.address,
+      //   swapPath: [],
+      //   initialCollateralAddress: position.collateralTokenAddress,
+      //   initialCollateralAmount: withdrawTokenAmount,
+      //   receiveTokenAddress: position.collateralTokenAddress,
+      //   sizeDeltaUsd: BigNumber.from(0),
+      //   acceptablePrice: acceptablePrice!,
+      //   minOutputAmount: withdrawTokenAmount,
+      //   orderType: OrderType.MarketDecrease,
+      //   isLong: position.isLong,
+      //   executionFee: executionFee.feeTokenAmount,
+      //   tokensData,
+      // });
     }
   }
 

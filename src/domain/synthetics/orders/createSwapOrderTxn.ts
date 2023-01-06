@@ -23,8 +23,6 @@ export type SwapOrderParams = {
   toTokenAddress: string;
   swapPath: string[];
   minOutputAmount: BigNumber;
-  priceImpactDeltaUsd: BigNumber;
-  allowedSlippage: number;
   orderType: OrderType.MarketSwap | OrderType.LimitSwap;
 };
 
@@ -99,18 +97,21 @@ export async function createSwapOrderTxn(chainId: number, library: Web3Provider,
     .filter(Boolean)
     .map((call) => exchangeRouter.interface.encodeFunctionData(call!.method, call!.params));
 
+  // TODO: simulation for limit swaps
+  if (p.orderType !== OrderType.LimitSwap) {
+    await simulateExecuteOrderTxn(chainId, library, {
+      primaryPriceOverrides: {},
+      secondaryPriceOverrides: {},
+      createOrderMulticallPayload: encodedPayload,
+      value: wntAmount,
+      tokensData: p.tokensData,
+    });
+  }
+
   const fromText = formatTokenAmount(p.fromTokenAmount, fromToken.decimals, fromToken.symbol);
   const toText = formatTokenAmount(p.minOutputAmount, toToken.decimals, toToken.symbol);
 
   const orderLabel = t`Swap ${fromText} to ${toText}`;
-
-  await simulateExecuteOrderTxn(chainId, library, {
-    primaryPricesMap: {},
-    secondaryPricesMap: {},
-    createOrderMulticallPayload: encodedPayload,
-    value: wntAmount,
-    tokensData: p.tokensData,
-  });
 
   return callContract(chainId, exchangeRouter, "multicall", [encodedPayload], {
     value: wntAmount,

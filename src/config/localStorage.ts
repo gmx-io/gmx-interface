@@ -15,6 +15,7 @@ export const REFERRALS_SELECTED_TAB_KEY = "Referrals-selected-tab";
 export const REDIRECT_POPUP_TIMESTAMP_KEY = "redirect-popup-timestamp";
 export const LEVERAGE_OPTION_KEY = "leverage-option";
 export const LEVERAGE_ENABLED_KEY = "leverage-enabled";
+export const KEEP_LEVERAGE_FOR_DECREASE_KEY = "Exchange-keep-leverage";
 export const SYNTHETICS_SWAP_OPERATION_KEY = "synthetics-swap-operation";
 export const SYNTHETICS_SWAP_MODE_KEY = "synthetics-swap-mode";
 export const SYNTHETICS_SWAP_FROM_TOKEN_KEY = "synthetics-swap-from-token";

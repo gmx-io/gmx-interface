@@ -204,8 +204,6 @@ export function ConfirmationBox(p: Props) {
         orderType,
         minOutputAmount: p.toTokenAmount,
         referralCode: referralCodeData?.userReferralCodeString,
-        priceImpactDeltaUsd: p.fees.swapFeeUsd!,
-        allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
         tokensData,
       }).then(p.onSubmitted);
     }

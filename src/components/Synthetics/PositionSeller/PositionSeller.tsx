@@ -1,95 +1,128 @@
-import { getPosition, usePositionsData } from "domain/synthetics/positions";
+import {
+  AggregatedPositionData,
+  formatLeverage,
+  formatPnl,
+  getLeverage,
+  getLiquidationPrice,
+} from "domain/synthetics/positions";
 import { useChainId } from "lib/chains";
 import Modal from "components/Modal/Modal";
-import { getMarket, useMarketsData } from "domain/synthetics/markets";
-import {
-  formatUsdAmount,
-  getTokenAmountFromUsd,
-  getTokenData,
-  getUsdFromTokenAmount,
-  useAvailableTokensData,
-} from "domain/synthetics/tokens";
+import { formatUsdAmount, getTokenAmountFromUsd, useAvailableTokensData } from "domain/synthetics/tokens";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { useState } from "react";
 import { formatAmount, parseValue } from "lib/numbers";
-import { DUST_USD, USD_DECIMALS } from "lib/legacy";
+import { DEFAULT_SLIPPAGE_AMOUNT, DUST_USD, USD_DECIMALS } from "lib/legacy";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
-
 import { Trans, t } from "@lingui/macro";
 import { OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
 import { useWeb3React } from "@web3-react/core";
 import { getExecutionFee } from "domain/synthetics/fees";
-
 import { InfoRow } from "components/InfoRow/InfoRow";
 import { BsArrowRight } from "react-icons/bs";
 import { BigNumber } from "ethers";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { KEEP_LEVERAGE_FOR_DECREASE_KEY } from "config/localStorage";
+import Checkbox from "components/Checkbox/Checkbox";
 
 import "./PositionSeller.scss";
+import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 type Props = {
-  positionKey: string;
+  position: AggregatedPositionData;
   onClose: () => void;
 };
+
+function getNextCollateralUsd(p: {
+  isClosing?: boolean;
+  collateralUsd?: BigNumber;
+  collateralDeltaUsd?: BigNumber;
+  fees?: BigNumber;
+  pnl?: BigNumber;
+}) {
+  if (!p.collateralUsd || !p.collateralDeltaUsd || !p.fees) return undefined;
+
+  if (p.isClosing) return BigNumber.from(0);
+
+  let nextCollateralUsd = p.collateralUsd.sub(p.collateralDeltaUsd).sub(p.fees);
+
+  if (p.pnl?.lt(0)) {
+    nextCollateralUsd = nextCollateralUsd.add(p.pnl);
+  }
+
+  return nextCollateralUsd;
+}
 
 export function PositionSeller(p: Props) {
   const { chainId } = useChainId();
   const { library, account } = useWeb3React();
+  const { position } = p;
 
-  const positionsData = usePositionsData(chainId);
-  const marketsData = useMarketsData(chainId);
   const tokensData = useAvailableTokensData(chainId);
-
-  const position = getPosition(positionsData, p.positionKey);
-  const market = getMarket(marketsData, position?.marketAddress);
-  const indexToken = getTokenData(tokensData, market?.indexTokenAddress);
-  const collateralToken = getTokenData(tokensData, position?.collateralTokenAddress);
-
-  const currentSize = getUsdFromTokenAmount(tokensData, indexToken?.address, position?.sizeInTokens);
-  const maxCloseSize = currentSize;
 
   const [sizeInput, setSizeInput] = useState("");
   const sizeInputUsd = parseValue(sizeInput || "0", USD_DECIMALS)!;
-  const isClosing = currentSize?.sub(sizeInputUsd).lt(DUST_USD);
-  const sizeDelta = isClosing ? currentSize : sizeInputUsd;
 
-  const keepLeverage = true;
-  const nextHasProfit = true;
-  let adjustedDelta = BigNumber.from(0);
-  const positionFee = BigNumber.from(0);
-  const fundingFee = BigNumber.from(0);
+  const isClosing = position.sizeInUsd?.sub(sizeInputUsd).lt(DUST_USD);
 
-  const positionDelta = BigNumber.from(0);
-  const positionHasProfit = true;
-  const collateralUsd = getUsdFromTokenAmount(tokensData, collateralToken?.address, position?.collateralAmount);
-  let collateralDeltaUsd = BigNumber.from(0);
+  const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey([chainId, KEEP_LEVERAGE_FOR_DECREASE_KEY], true);
 
-  if (keepLeverage && sizeDelta && !isClosing && collateralUsd && currentSize) {
-    collateralDeltaUsd = sizeDelta.mul(collateralUsd).div(currentSize);
+  const fees = BigNumber.from(0);
 
-    if (!nextHasProfit) {
-      const deductions = adjustedDelta.add(positionFee).add(fundingFee);
-      if (collateralDeltaUsd.gt(deductions)) {
-        collateralDeltaUsd = collateralDeltaUsd = collateralDeltaUsd.sub(deductions);
-      } else {
-        collateralDeltaUsd = BigNumber.from(0);
-      }
-    }
-  }
+  const sizeDelta = isClosing ? position.sizeInUsd : sizeInputUsd;
 
-  let nextCollateralUsd = BigNumber.from(0);
+  const collateralDeltaUsd =
+    keepLeverage && position.collateralUsd && sizeDelta && position.currentSizeUsd
+      ? sizeDelta.mul(position.collateralUsd).div(position.currentSizeUsd)
+      : BigNumber.from(0);
 
-  if (!isClosing) {
-    if (collateralUsd) {
-      nextCollateralUsd = collateralUsd;
-      if (collateralDeltaUsd?.gt(0)) {
-        nextCollateralUsd = collateralUsd.sub(collateralDeltaUsd);
-      } else if (positionDelta && positionDelta.gt(0) && sizeDelta) {
-        if (!positionHasProfit) {
-          nextCollateralUsd = nextCollateralUsd.sub(nextCollateralUsd);
-        }
-      }
-    }
-  }
+  const nextCollateralUsd = getNextCollateralUsd({
+    isClosing,
+    collateralUsd: position.collateralUsd,
+    collateralDeltaUsd,
+    fees,
+    pnl: position.pnl,
+  });
+
+  const nextSizeUsd = isClosing ? BigNumber.from(0) : position.sizeInUsd?.sub(sizeDelta);
+
+  const nextLiqPrice = nextSizeUsd.gt(0)
+    ? getLiquidationPrice({
+        currentSizeUsd: nextSizeUsd,
+        collateralUsd: nextCollateralUsd,
+        feesUsd: fees,
+        averagePrice: position.averagePrice,
+        isLong: position.isLong,
+      })
+    : undefined;
+
+  const nextLeverage = nextSizeUsd.gt(0)
+    ? getLeverage({
+        sizeUsd: nextSizeUsd,
+        collateralUsd: nextCollateralUsd,
+      })
+    : undefined;
+
+  // let adjustedDelta = BigNumber.from(0);
+
+  // const positionFee = BigNumber.from(0);
+  // const fundingFee = BigNumber.from(0);
+
+  // TODO: fees
+
+  // const positionHasProfit = pnl?.gt(0);
+
+  // if (!isClosing) {
+  //   if (collateralUsd) {
+  //     nextCollateralUsd = collateralUsd;
+  //     if (collateralDeltaUsd?.gt(0)) {
+  //       nextCollateralUsd = collateralUsd.sub(collateralDeltaUsd);
+  //     } else if (positionDelta && positionDelta.gt(0) && sizeDelta) {
+  //       if (!positionHasProfit) {
+  //         nextCollateralUsd = nextCollateralUsd.sub(nextCollateralUsd);
+  //       }
+  //     }
+  //   }
+  // }
 
   //   const [deltaStr, deltaPercentageStr] = useMemo(() => {
   //     if (!position || !position.markPrice || position.collateral.eq(0)) {
@@ -149,35 +182,33 @@ export function PositionSeller(p: Props) {
   }
 
   function onSubmit() {
-    if (!indexToken?.prices || !account || !position || !sizeDelta?.gt(0) || !executionFee?.feeTokenAmount) return;
+    if (
+      !position.indexToken ||
+      !account ||
+      !position ||
+      !sizeDelta?.gt(0) ||
+      !executionFee?.feeTokenAmount ||
+      !position.currentSizeUsd
+    )
+      return;
 
-    function getAcceptablePrice() {
-      if (position!.isLong) {
-        const price = indexToken!.prices!.maxPrice;
+    const collateralAmount = collateralDeltaUsd?.gt(0)
+      ? getTokenAmountFromUsd(tokensData, position.collateralToken!.address, collateralDeltaUsd)
+      : BigNumber.from(0);
 
-        return price?.div(2);
-      }
-
-      const price = indexToken!.prices!.maxPrice;
-
-      return price?.add(price.div(2));
-    }
-
-    const acceptablePrice = getAcceptablePrice();
-
-    if (!acceptablePrice) return;
+    const adjustedSizeDeltaUsd = position.sizeInUsd.mul(sizeDelta).div(position.currentSizeUsd);
 
     createDecreaseOrderTxn(chainId, library, {
       account,
       market: position.marketAddress,
-      indexTokenAddress: indexToken.address,
+      indexTokenAddress: position.indexToken.address,
       swapPath: [],
-      initialCollateralAmount: getTokenAmountFromUsd(tokensData, collateralToken!.address, collateralDeltaUsd),
+      initialCollateralAmount: collateralAmount,
       initialCollateralAddress: position.collateralTokenAddress,
       receiveTokenAddress: position.collateralTokenAddress,
-      minOutputAmount: BigNumber.from(0),
-      acceptablePrice,
-      sizeDeltaUsd: sizeDelta,
+      priceImpactDelta: BigNumber.from(0),
+      allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
+      sizeDeltaUsd: adjustedSizeDeltaUsd,
       orderType: OrderType.MarketDecrease,
       isLong: position.isLong,
       executionFee: executionFee.feeTokenAmount,
@@ -192,14 +223,14 @@ export function PositionSeller(p: Props) {
   const submitButtonState = getSubmitButtonState();
 
   return (
-    <div className="PositionEditor">
+    <div className="PositionEditor PositionSeller">
       <Modal
         className="PositionSeller-modal"
         isVisible={true}
         setIsVisible={p.onClose}
         label={
           <Trans>
-            Close {position?.isLong ? t`Long` : t`Short`} {indexToken?.symbol}
+            Close {position?.isLong ? t`Long` : t`Short`} {position.indexToken?.symbol}
           </Trans>
         }
         allowContentTouchMove
@@ -207,15 +238,16 @@ export function PositionSeller(p: Props) {
         <BuyInputSection
           topLeftLabel={t`Close`}
           topRightLabel={t`Max`}
-          topRightValue={formatUsdAmount(maxCloseSize)}
+          topRightValue={formatUsdAmount(position.currentSizeUsd)}
           inputValue={sizeInput}
           onInputValueChange={(e) => setSizeInput(e.target.value)}
-          showMaxButton={maxCloseSize?.gt(0) && !sizeDelta?.eq(maxCloseSize)}
-          onClickMax={() => setSizeInput(formatAmount(maxCloseSize, USD_DECIMALS, 2))}
+          showMaxButton={position.currentSizeUsd?.gt(0) && !sizeDelta?.eq(position.currentSizeUsd)}
+          onClickMax={() => setSizeInput(formatAmount(position.currentSizeUsd, USD_DECIMALS, 2))}
         >
           USD
         </BuyInputSection>
 
+        {/* FOR SL/TP */}
         {/* {MIN_PROFIT_TIME > 0 && profitPrice && nextDelta.eq(0) && nextHasProfit && (
           <div className="Confirmation-box-warning">
             <Trans>
@@ -233,8 +265,9 @@ export function PositionSeller(p: Props) {
           </div>
         )} */}
 
-        <div className="PositionEditor-info-box">
+        <div className="PositionEditor-info-box PositionSeller-info-box">
           {/* {minExecutionFeeErrorMessage && <div className="Confirmation-box-warning">{minExecutionFeeErrorMessage}</div>} */}
+
           {/* {hasPendingProfit && orderOption !== STOP && (
             <div className="PositionEditor-accept-profit-warning">
               <Checkbox isChecked={isProfitWarningAccepted} setIsChecked={setIsProfitWarningAccepted}>
@@ -243,13 +276,15 @@ export function PositionSeller(p: Props) {
             </div>
           )} */}
 
-          {/* <div className="PositionEditor-keep-leverage-settings">
+          <div className="PositionEditor-keep-leverage-settings">
             <Checkbox isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
               <span className="muted font-sm">
-                <Trans>Keep leverage at {formatAmount(position.leverage, 4, 2)}x</Trans>
+                <Trans>Keep leverage at {position.leverage ? formatLeverage(position.leverage) : "..."}</Trans>
               </span>
             </Checkbox>
-          </div> */}
+          </div>
+
+          <div className="App-card-divider" />
 
           {/* <div className="PositionEditor-allow-higher-slippage">
             <Checkbox isChecked={isHigherSlippageAllowed} setIsChecked={setIsHigherSlippageAllowed}>
@@ -279,104 +314,70 @@ export function PositionSeller(p: Props) {
             </ExchangeInfoRow>
           </div> */}
 
-          {/* 
-          <div className="Exchange-info-row top-line">
-            <div className="Exchange-info-label">
-              <Trans>Mark Price</Trans>
-            </div>
-            <div className="align-right">${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}</div>
-          </div> */}
+          <InfoRow label={t`Mark Price`} value={formatUsdAmount(position.markPrice)} />
+          <InfoRow label={t`Entry Price`} value={formatUsdAmount(position.entryPrice)} />
 
-          {/* <InfoRow label={t`Entry Price`} value={formatAmount(position.averagePrice, USD_DECIMALS, 2, true)} /> */}
-
-          {/* <InfoRow
+          <InfoRow
             label={t`Liq Price`}
             value={
-              <>
-                {isClosing && orderOption !== STOP && "-"}
-                {(!isClosing || orderOption === STOP) && (
-                  <div>
-                    {(!nextLiquidationPrice || nextLiquidationPrice.eq(liquidationPrice)) && (
-                      <div>{`$${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}`}</div>
-                    )}
-                    {nextLiquidationPrice && !nextLiquidationPrice.eq(liquidationPrice) && (
-                      <div>
-                        <div className="inline-block muted">
-                          ${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}
-                          <BsArrowRight className="transition-arrow" />
-                        </div>
-                        ${formatAmount(nextLiquidationPrice, USD_DECIMALS, 2, true)}
-                      </div>
-                    )}
-                  </div>
-                )}
-              </>
+              nextSizeUsd.gt(0) && position.liqPrice ? (
+                <ValueTransition
+                  from={formatUsdAmount(position.liqPrice)}
+                  to={nextLiqPrice && !nextLiqPrice.eq(position.liqPrice) ? formatUsdAmount(nextLiqPrice) : undefined}
+                />
+              ) : (
+                "-"
+              )
             }
-          /> */}
+          />
+
+          <div className="App-card-divider" />
 
           <InfoRow
             label={t`Size`}
             value={
-              <>
-                {currentSize?.gt(0) && sizeDelta?.gt(0) && (
-                  <div>
-                    <div className="inline-block muted">
-                      {formatUsdAmount(currentSize)}
-                      <BsArrowRight className="transition-arrow" />
-                    </div>
-                    {formatUsdAmount(currentSize.sub(sizeDelta))}
-                  </div>
-                )}
-                {currentSize && !sizeDelta?.gt(0) && <div>{formatUsdAmount(currentSize)}</div>}
-              </>
+              <ValueTransition
+                from={formatUsdAmount(position.currentSizeUsd)}
+                to={
+                  position.currentSizeUsd && nextSizeUsd && !nextSizeUsd.eq(position.currentSizeUsd)
+                    ? formatUsdAmount(nextSizeUsd)
+                    : undefined
+                }
+              />
             }
           />
 
           <InfoRow
-            label={t`Collateral (${collateralToken?.symbol})`}
+            label={t`Collateral (${position.collateralToken?.symbol})`}
             value={
-              <>
-                {collateralUsd && nextCollateralUsd && !nextCollateralUsd.eq(collateralUsd) ? (
-                  <div>
-                    <div className="inline-block muted">
-                      {formatUsdAmount(collateralUsd)}
-                      <BsArrowRight className="transition-arrow" />
-                    </div>
-                    {formatUsdAmount(nextCollateralUsd)}
-                  </div>
-                ) : (
-                  formatUsdAmount(collateralUsd)
-                )}
-              </>
+              <ValueTransition
+                from={formatUsdAmount(position.collateralUsd)}
+                to={
+                  nextCollateralUsd && position.collateralUsd && !nextCollateralUsd.eq(position.collateralUsd)
+                    ? formatUsdAmount(nextCollateralUsd)
+                    : undefined
+                }
+              />
             }
           />
 
-          {/* {keepLeverage && (
+          {keepLeverage && (
             <InfoRow
               label={t`Leverage`}
               value={
-                <>
-                  {isClosing && "-"}
-                  {!isClosing && (
-                    <div>
-                      {!nextLeverage && <div>{formatAmount(position.leverage, 4, 2)}x</div>}
-                      {nextLeverage && (
-                        <div>
-                          <div className="inline-block muted">
-                            {formatAmount(position.leverage, 4, 2)}x
-                            <BsArrowRight className="transition-arrow" />
-                          </div>
-                          {formatAmount(nextLeverage, 4, 2)}x
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </>
+                <ValueTransition
+                  from={position.leverage ? formatLeverage(position.leverage) : "..."}
+                  to={
+                    nextLeverage && position.leverage && !nextLeverage.eq(position.leverage)
+                      ? formatLeverage(nextLeverage)
+                      : undefined
+                  }
+                />
               }
             />
-          )} */}
+          )}
 
-          {/* <InfoRow label={t`PnL`} value={{ deltaStr }({ deltaPercentageStr })} /> */}
+          <InfoRow label={t`PnL`} value={position.pnl ? formatPnl(position.pnl, position.pnlPercentage) : "..."} />
 
           {/* <div className="Exchange-info-row">
             <div className="Exchange-info-label">

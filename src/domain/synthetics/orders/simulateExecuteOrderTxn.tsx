@@ -26,8 +26,8 @@ export type PriceOverrides = {
 
 type SimulateExecuteOrderParams = {
   createOrderMulticallPayload: string[];
-  secondaryPricesMap: PriceOverrides;
-  primaryPricesMap: PriceOverrides;
+  secondaryPriceOverrides: PriceOverrides;
+  primaryPriceOverrides: PriceOverrides;
   tokensData: TokensData;
   value: BigNumber;
 };
@@ -51,8 +51,8 @@ export async function simulateExecuteOrderTxn(chainId: number, library: Web3Prov
   const { primaryTokens, primaryPrices, secondaryTokens, secondaryPrices } = getSimulationPrices(
     chainId,
     p.tokensData,
-    p.primaryPricesMap,
-    p.secondaryPricesMap
+    p.primaryPriceOverrides,
+    p.secondaryPriceOverrides
   );
 
   const simulationPayload = [

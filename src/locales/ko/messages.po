@@ -1338,6 +1338,7 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/PositionList/PositionList.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 msgid "Entry Price"
 msgstr "진입 가격"
@@ -1795,6 +1796,7 @@ msgid "Jobs"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Keep leverage at {0}x"
 msgstr ""
 
@@ -1901,6 +1903,7 @@ msgid "Link copied to clipboard."
 msgstr ""
 
 #: src/components/Synthetics/PositionList/PositionList.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Liq Price"
 msgstr ""
 
@@ -2058,6 +2061,7 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionList/PositionList.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Mark Price"
 msgstr "시장 평균가"
 
@@ -2618,6 +2622,7 @@ msgstr "네트워크를 Arbitrum으로 변경해주세요."
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr "손익"

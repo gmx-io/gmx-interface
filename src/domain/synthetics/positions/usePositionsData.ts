@@ -6,6 +6,7 @@ import { PositionsData } from "./types";
 import { getPositionKey } from "./utils";
 import { useMemo } from "react";
 import { bigNumberify } from "lib/numbers";
+import { BigNumber } from "ethers";
 
 export function usePositionsData(chainId: number): PositionsData {
   const { account } = useWeb3React();
@@ -77,7 +78,7 @@ export function usePositionsData(chainId: number): PositionsData {
           increasedAtBlock,
           decreasedAtBlock,
           isLong,
-          pendingBorrowingFees,
+          pendingBorrowingFees: bigNumberify(pendingBorrowingFees) || BigNumber.from(0),
           pendingFundingFees: {
             fundingFeeAmount,
             claimableLongTokenAmount,

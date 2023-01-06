@@ -1,6 +1,6 @@
 import { BigNumber } from "ethers";
 import { OrdersData } from "./types";
-import { TokenPrices } from "domain/synthetics/tokens";
+import { TokenData, TokenPrices } from "domain/synthetics/tokens";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";
 import { applySwapImpactWithCap } from "../fees";
 
@@ -51,6 +51,15 @@ export function getMinOutputAmountForSwapOrder(p: {
   }
 
   return amountOut;
+}
+
+export function getMinOutputAmountForDecreaseOrder(p: {
+  collateralToken: TokenData;
+  sizeDeltaUsd: BigNumber;
+  acceptablePrice: BigNumber;
+}) {
+  //TODO
+  return BigNumber.from(0);
 }
 
 export function getAcceptablePriceForPositionOrder(p: {

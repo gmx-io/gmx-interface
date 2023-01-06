@@ -1,4 +1,5 @@
 import { BigNumber } from "ethers";
+import { TokenData } from "../tokens";
 
 export type PositionFundingFees = {
   fundingFeeAmount: BigNumber;
@@ -25,13 +26,27 @@ export type Position = {
   decreasedAtBlock: BigNumber;
   isLong: boolean;
   data: string;
-};
-
-export type PositionInfo = Position & {
   pendingBorrowingFees: BigNumber;
   pendingFundingFees: PositionFundingFees;
 };
 
+export type AggregatedPositionData = Position & {
+  currentSizeUsd?: BigNumber;
+  collateralUsd?: BigNumber;
+  indexToken?: TokenData;
+  collateralToken?: TokenData;
+  averagePrice?: BigNumber;
+  markPrice?: BigNumber;
+  pnl?: BigNumber;
+  pnlPercentage?: BigNumber;
+  collateralUsdAfterFees?: BigNumber;
+  entryPrice?: BigNumber;
+  netValue?: BigNumber;
+  liqPrice?: BigNumber;
+  leverage?: BigNumber;
+  hasProfit?: boolean;
+};
+
 export type PositionsData = {
-  [positionKey: string]: PositionInfo;
+  [positionKey: string]: Position;
 };
