@@ -52,6 +52,19 @@ export function getAggregatedPositionData(
 
   const collateralUsdAfterFees = collateralUsd;
 
+  // console.log("pos", {
+  //   positionKey: position.key,
+  //   indexToken: indexToken?.symbol,
+  //   indexPrice: formatUsdAmount(pnlPrice),
+  //   collateralToken: collateralToken?.symbol,
+  //   collateralPrice: formatUsdAmount(collateralPrice),
+  //   currentSizeUsd: formatUsdAmount(currentSizeUsd),
+  //   sizeInTokens: formatTokenAmount(position.sizeInTokens, indexToken?.decimals),
+  //   sizeInUsd: formatUsdAmount(position.sizeInUsd),
+  //   collateralAmount: formatTokenAmount(position.collateralAmount, collateralToken?.decimals),
+  //   collateralUsd: formatUsdAmount(collateralUsd),
+  // });
+
   const pnl = currentSizeUsd
     ? position.isLong
       ? currentSizeUsd.sub(position.sizeInUsd)

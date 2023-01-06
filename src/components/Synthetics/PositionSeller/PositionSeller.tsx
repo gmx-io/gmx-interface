@@ -7,7 +7,12 @@ import {
 } from "domain/synthetics/positions";
 import { useChainId } from "lib/chains";
 import Modal from "components/Modal/Modal";
-import { formatUsdAmount, getTokenAmountFromUsd, useAvailableTokensData } from "domain/synthetics/tokens";
+import {
+  formatTokenAmount,
+  formatUsdAmount,
+  getTokenAmountFromUsd,
+  useAvailableTokensData,
+} from "domain/synthetics/tokens";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { useState } from "react";
 import { formatAmount, parseValue } from "lib/numbers";
@@ -18,7 +23,6 @@ import { OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
 import { useWeb3React } from "@web3-react/core";
 import { getExecutionFee } from "domain/synthetics/fees";
 import { InfoRow } from "components/InfoRow/InfoRow";
-import { BsArrowRight } from "react-icons/bs";
 import { BigNumber } from "ethers";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { KEEP_LEVERAGE_FOR_DECREASE_KEY } from "config/localStorage";
@@ -101,15 +105,6 @@ export function PositionSeller(p: Props) {
         collateralUsd: nextCollateralUsd,
       })
     : undefined;
-
-  // let adjustedDelta = BigNumber.from(0);
-
-  // const positionFee = BigNumber.from(0);
-  // const fundingFee = BigNumber.from(0);
-
-  // TODO: fees
-
-  // const positionHasProfit = pnl?.gt(0);
 
   // if (!isClosing) {
   //   if (collateralUsd) {
@@ -197,6 +192,11 @@ export function PositionSeller(p: Props) {
       : BigNumber.from(0);
 
     const adjustedSizeDeltaUsd = position.sizeInUsd.mul(sizeDelta).div(position.currentSizeUsd);
+
+    // console.log("params", {
+    //   collateralAmount: formatTokenAmount(collateralAmount, position.collateralToken!.decimals),
+    //   sizeDeltaUsd: formatUsdAmount(adjustedSizeDeltaUsd),
+    // });
 
     createDecreaseOrderTxn(chainId, library, {
       account,

@@ -17,6 +17,7 @@ import { helperToast } from "lib/helperToast";
 import { Trans } from "@lingui/macro";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import { expandDecimals } from "lib/numbers";
+import { callContract } from "lib/contracts";
 
 export type MulticallRequest = { method: string; params: any[] }[];
 
@@ -33,6 +34,9 @@ type SimulateExecuteOrderParams = {
 };
 
 const SUCCESS_SIMULATION_PATTERN = "End of oracle price simulation";
+
+// only for debugging empty reverts
+const SHOULD_MINE = false;
 
 export async function simulateExecuteOrderTxn(chainId: number, library: Web3Provider, p: SimulateExecuteOrderParams) {
   const dataStore = new ethers.Contract(getContract(chainId, "DataStore"), DataStore.abi, library.getSigner());
@@ -69,7 +73,16 @@ export async function simulateExecuteOrderTxn(chainId: number, library: Web3Prov
   ];
 
   try {
-    await exchangeRouter.callStatic.multicall(simulationPayload, { value: p.value, blockTag: blockNumber });
+    if (SHOULD_MINE) {
+      const txn = await callContract(chainId, exchangeRouter, "multicall", [simulationPayload], {
+        value: p.value,
+        gasLimit: 11 ** 6,
+      });
+
+      console.log("simulationTxn", txn);
+    } else {
+      await exchangeRouter.callStatic.multicall(simulationPayload, { value: p.value, blockTag: blockNumber });
+    }
   } catch (e) {
     if (e.data?.message.includes(SUCCESS_SIMULATION_PATTERN)) {
       return undefined;
