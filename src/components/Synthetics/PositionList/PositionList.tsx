@@ -100,6 +100,16 @@ export function PositionList() {
       {editingPositionKey && (
         <PositionEditor positionKey={editingPositionKey} onClose={() => setEditingPositionKey(undefined)} />
       )}
+
+      {/* {sharingPosition && (
+        <PositionShare
+          isPositionShareModalOpen={true}
+          setIsPositionShareModalOpen={() => setSharingPositionKey(undefined)}
+          positionToShare={sharingPosition}
+          chainId={chainId}
+          account={account}
+        />
+      )} */}
     </div>
   );
 }

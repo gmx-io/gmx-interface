@@ -3128,7 +3128,6 @@ msgid "Settings"
 msgstr "Settings"
 
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/Position/PositionSmall.tsx
 msgid "Share"
 msgstr "Share"
 

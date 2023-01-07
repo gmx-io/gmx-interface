@@ -6,7 +6,9 @@ import { BiSelectMultiple } from "react-icons/bi";
 import { RiShareBoxFill } from "react-icons/ri";
 import "./PositionDropdown.css";
 
-function PositionDropdown({ handleEditCollateral, handleShare, handleMarketSelect }) {
+function PositionDropdown(p) {
+  const { handleEditCollateral, handleShare, handleMarketSelect } = p;
+
   return (
     <Menu>
       <Menu.Button as="div">
@@ -32,14 +34,16 @@ function PositionDropdown({ handleEditCollateral, handleShare, handleMarketSelec
               </p>
             </div>
           </Menu.Item>
-          <Menu.Item>
-            <div className="menu-item" onClick={handleShare}>
-              <RiShareBoxFill fontSize={16} />
-              <p>
-                <Trans>Share Position</Trans>
-              </p>
-            </div>
-          </Menu.Item>
+          {handleShare && (
+            <Menu.Item>
+              <div className="menu-item" onClick={handleShare}>
+                <RiShareBoxFill fontSize={16} />
+                <p>
+                  <Trans>Share Position</Trans>
+                </p>
+              </div>
+            </Menu.Item>
+          )}
         </Menu.Items>
       </div>
     </Menu>

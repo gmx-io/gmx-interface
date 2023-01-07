@@ -102,11 +102,7 @@ export function PositionLarge(p: CommonProps) {
         </button>
       </td>
       <td>
-        <PositionDropdown
-          handleEditCollateral={p.onEditCollateralClick}
-          handleShare={p.onShareClick}
-          handleMarketSelect={p.onSelectMarketClick}
-        />
+        <PositionDropdown handleEditCollateral={p.onEditCollateralClick} handleMarketSelect={p.onSelectMarketClick} />
       </td>
     </tr>
   );

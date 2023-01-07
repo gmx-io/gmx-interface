@@ -4,6 +4,8 @@ import { Collateral, NetValue, CommonProps, PositionOrders } from "./Common";
 import { formatLeverage, formatPnl } from "domain/synthetics/positions";
 import { formatUsdAmount } from "domain/synthetics/tokens";
 
+import "./PositionSmall.scss";
+
 export function PositionSmall(p: CommonProps) {
   return (
     <div className="App-card">
@@ -111,7 +113,7 @@ export function PositionSmall(p: CommonProps) {
       {!p.hideActions && (
         <>
           <div className="App-card-divider"></div>
-          <div className="App-card-options">
+          <div className="App-card-options Position-buttons-container">
             <button
               className="App-button-option App-card-option"
               disabled={p.position.sizeInUsd.eq(0)}
@@ -126,13 +128,13 @@ export function PositionSmall(p: CommonProps) {
             >
               <Trans>Edit Collateral</Trans>
             </button>
-            <button
+            {/* <button
               className="Exchange-list-action App-button-option App-card-option"
               onClick={p.onShareClick}
               disabled={p.position.sizeInUsd.eq(0)}
             >
               <Trans>Share</Trans>
-            </button>
+            </button> */}
           </div>
         </>
       )}
