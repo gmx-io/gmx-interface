@@ -22,7 +22,6 @@ export function getMinOutputAmountForSwapOrder(p: {
   priceImpactDeltaUsd: BigNumber;
 }) {
   // priceImpact in usd?
-
   let amountOut: BigNumber;
 
   // todo on each swap step?

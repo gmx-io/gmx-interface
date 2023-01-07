@@ -209,6 +209,8 @@ export function formatPnl(pnl?: BigNumber, pnlPercentage?: BigNumber) {
   return `${sign}${formatUsdAmount(pnl?.abs())} (${sign}${formatAmount(pnlPercentage?.abs(), 2, 2)}%)`;
 }
 
-export function formatLeverage(leverage: BigNumber) {
+export function formatLeverage(leverage?: BigNumber) {
+  if (!leverage) return "...";
+
   return `${formatAmount(leverage, 4, 2)}x`;
 }

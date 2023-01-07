@@ -1,13 +1,12 @@
 import { Trans, t } from "@lingui/macro";
-
 import { PositionEditor } from "components/Synthetics/PositionEditor/PositionEditor";
-import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
 import { PositionSeller } from "components/Synthetics/PositionSeller/PositionSeller";
 import { useMarketsData } from "domain/synthetics/markets";
 import { getAggregatedPositionData, usePositionsData } from "domain/synthetics/positions";
 import { useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { useMemo, useState } from "react";
+import { PositionSmall, PositionLarge } from "components/Synthetics/Position/Position";
 
 export function PositionList() {
   const { chainId } = useChainId();
@@ -32,61 +31,63 @@ export function PositionList() {
 
   return (
     <div>
-      <table className="Exchange-list Orders App-box">
+      <div className="Exchange-list small">
+        {positions.length === 0 && (
+          <div className="Exchange-empty-positions-list-note App-card">
+            {isDataLoading ? t`Loading...` : t`No open positions`}
+          </div>
+        )}
+        {!isDataLoading &&
+          positions.map((position) => (
+            <PositionSmall
+              key={position.key}
+              position={position}
+              onEditCollateralClick={() => setEditingPositionKey(position.key)}
+              onClosePositionClick={() => setClosingPositionKey(position.key)}
+              onOrdersClick={() => {}}
+              onSelectMarketClick={() => {}}
+              onShareClick={() => {}}
+              showPnlAfterFees={false}
+            />
+          ))}
+      </div>
+
+      <table className="Exchange-list large App-box">
         <tbody>
           <tr className="Exchange-list-header">
             <th>
-              <div>
-                <Trans>Position</Trans>
-              </div>
+              <Trans>Position</Trans>
             </th>
             <th>
-              <div>
-                <Trans>Net Value</Trans>
-              </div>
+              <Trans>Net Value</Trans>
             </th>
             <th>
-              <div>
-                <Trans>Size</Trans>
-              </div>
+              <Trans>Size</Trans>
             </th>
             <th>
-              <div>
-                <Trans>Collateral</Trans>
-              </div>
+              <Trans>Collateral</Trans>
             </th>
             <th>
-              <div>
-                <Trans>Mark Price</Trans>
-              </div>
+              <Trans>Mark Price</Trans>
             </th>
             <th>
-              <div>
-                <Trans>Entry Price</Trans>
-              </div>
+              <Trans>Entry Price</Trans>
             </th>
             <th>
-              <div>
-                <Trans>Liq Price</Trans>
-              </div>
+              <Trans>Liq Price</Trans>
             </th>
           </tr>
-          {positions.length === 0 && (
-            <tr>
-              <td colSpan={15}>
-                <div className="Exchange-empty-positions-list-note">
-                  {isDataLoading ? t`Loading...` : t`No open positions`}
-                </div>
-              </td>
-            </tr>
-          )}
           {!isDataLoading &&
             positions.map((position) => (
-              <PositionItem
-                onEditCollateralClick={() => setEditingPositionKey(position.key)}
-                onClosePositionClick={() => setClosingPositionKey(position.key)}
+              <PositionLarge
                 key={position.key}
                 position={position}
+                onEditCollateralClick={() => setEditingPositionKey(position.key)}
+                onClosePositionClick={() => setClosingPositionKey(position.key)}
+                onOrdersClick={() => {}}
+                onSelectMarketClick={() => {}}
+                onShareClick={() => {}}
+                showPnlAfterFees={false}
               />
             ))}
         </tbody>
