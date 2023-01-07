@@ -16,15 +16,16 @@ export function PositionList() {
   const [editingPositionKey, setEditingPositionKey] = useState<string>();
 
   const { positionsData, isLoading: isPositionsLoading } = usePositionsData(chainId);
-
-  const { marketsData } = useMarketsData(chainId);
-  const { tokensData } = useAvailableTokensData(chainId);
+  const { marketsData, isLoading: isMarketsLoading } = useMarketsData(chainId);
+  const { tokensData, isLoading: isTokensLoading } = useAvailableTokensData(chainId);
 
   const positions = useMemo(() => {
     return Object.keys(positionsData)
       .map((key) => getAggregatedPositionData(positionsData, marketsData, tokensData, key)!)
       .reverse();
   }, [marketsData, positionsData, tokensData]);
+
+  const isDataLoading = isPositionsLoading || isMarketsLoading || isTokensLoading;
 
   const closingPosition = positions.find((position) => position.key === closingPositionKey);
   // const editingPosition = positions.find((position) => position.key === editingPositionKey);
@@ -74,19 +75,20 @@ export function PositionList() {
             <tr>
               <td colSpan={15}>
                 <div className="Exchange-empty-positions-list-note">
-                  {isPositionsLoading ? t`Loading...` : t`No open positions`}
+                  {isDataLoading ? t`Loading...` : t`No open positions`}
                 </div>
               </td>
             </tr>
           )}
-          {positions.map((position) => (
-            <PositionItem
-              onEditCollateralClick={() => setEditingPositionKey(position.key)}
-              onClosePositionClick={() => setClosingPositionKey(position.key)}
-              key={position.key}
-              position={position}
-            />
-          ))}
+          {!isDataLoading &&
+            positions.map((position) => (
+              <PositionItem
+                onEditCollateralClick={() => setEditingPositionKey(position.key)}
+                onClosePositionClick={() => setClosingPositionKey(position.key)}
+                key={position.key}
+                position={position}
+              />
+            ))}
         </tbody>
       </table>
 

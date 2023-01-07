@@ -47,7 +47,6 @@ export function PositionItem(p: Props) {
             {position.isLong ? t`Long` : t`Short`}
           </span>
         </div>
-        <div></div>
       </td>
       <td>
         {/* netValue */}
@@ -85,6 +84,7 @@ export function PositionItem(p: Props) {
                   showDollar={false}
                   value={`-$${formatAmount(position.positionFee, USD_DECIMALS, 2, true)}`}
                 />
+
                 <StatsTooltipRow
                   label={t`PnL After Fees`}
                   value={[position.deltaAfterFeesStr, `(${position.deltaAfterFeesPercentageStr})`]}
@@ -164,7 +164,11 @@ export function PositionItem(p: Props) {
                     </div>
                   )}
 
-                  <StatsTooltipRow label={t`Initial Collateral`} value={formatUsdAmount(position.collateralUsd)} />
+                  <StatsTooltipRow
+                    label={t`Initial Collateral`}
+                    value={formatUsdAmount(position.collateralUsd)}
+                    showDollar={false}
+                  />
 
                   <StatsTooltipRow label={t`Borrow Fee`} showDollar={false} value={"..."} />
 
