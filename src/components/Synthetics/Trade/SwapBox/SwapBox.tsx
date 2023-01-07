@@ -16,7 +16,7 @@ import {
   SYNTHETICS_SWAP_OPERATION_KEY,
   SYNTHETICS_SWAP_TO_TOKEN_KEY,
 } from "config/localStorage";
-import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS, getConvertedTokenAddress } from "config/tokens";
 import { useTokenInputState } from "domain/synthetics/exchange";
 import { useSwapPath } from "domain/synthetics/exchange/useSwapPath";
 import {
@@ -54,6 +54,7 @@ import { MarketCard } from "../MarketCard/MarketCard";
 import { TradeFees } from "../TradeFees/TradeFees";
 
 import "./SwapBox.scss";
+import { getMarket, getMarketByTokens, useMarketsData } from "domain/synthetics/markets";
 
 enum FocusedInput {
   From = "From",
@@ -62,12 +63,16 @@ enum FocusedInput {
 
 type Props = {
   onConnectWallet: () => void;
+  selectedMarketAddress?: string;
+  onSelectMarketAddress: (marketAddress: string) => void;
 };
 
 export function SwapBox(p: Props) {
   const { chainId } = useChainId();
+  const { onSelectMarketAddress } = p;
 
   const { tokensData } = useAvailableTokensData(chainId);
+  const { marketsData } = useMarketsData(chainId);
 
   const [focusedInput, setFocusedInput] = useState<FocusedInput>();
   const [operationTab, setOperationTab] = useLocalStorageSerializeKey(
@@ -104,6 +109,8 @@ export function SwapBox(p: Props) {
     [chainId, SYNTHETICS_SWAP_TO_TOKEN_KEY],
     undefined
   );
+
+  const selectedMarket = getMarket(marketsData, p.selectedMarketAddress);
 
   const fromTokenState = useTokenInputState(tokensData, { initialTokenAddress: savedFromToken });
   const toTokenState = useTokenInputState(tokensData, { useMaxPrice: true, initialTokenAddress: savedToToken });
@@ -230,6 +237,24 @@ export function SwapBox(p: Props) {
     setFocusedInput((old) => (old === FocusedInput.From ? FocusedInput.To : FocusedInput.From));
   }
 
+  function onSelectToToken(tokenAddress: string) {
+    toTokenState.setTokenAddress(tokenAddress);
+
+    if (isPosition && collateralTokenAddress) {
+      const indexAddress = getConvertedTokenAddress(chainId, tokenAddress, "wrapped");
+
+      const shouldUpdateMarket = !selectedMarket || selectedMarket.indexTokenAddress !== indexAddress;
+
+      if (shouldUpdateMarket) {
+        const market = getMarketByTokens(marketsData, indexAddress);
+
+        if (market) {
+          p.onSelectMarketAddress(market.marketTokenAddress);
+        }
+      }
+    }
+  }
+
   useEffect(
     // TODO: fees
     function syncInputValuesEff() {
@@ -297,6 +322,14 @@ export function SwapBox(p: Props) {
 
   useEffect(
     function updateTokenInputs() {
+      if (isPosition && selectedMarket && toTokenState.tokenAddress) {
+        const convetedIndexAddress = getConvertedTokenAddress(chainId, toTokenState.tokenAddress, "wrapped");
+
+        if (selectedMarket.indexTokenAddress !== convetedIndexAddress) {
+          toTokenState.setTokenAddress(getConvertedTokenAddress(chainId, selectedMarket.indexTokenAddress, "native"));
+        }
+      }
+
       if (fromTokenState.tokenAddress !== savedFromToken) {
         setSavedFromToken(fromTokenState.tokenAddress);
       }
@@ -326,6 +359,9 @@ export function SwapBox(p: Props) {
       setSavedFromToken,
       setSavedToToken,
       toTokenState,
+      selectedMarket,
+      isPosition,
+      chainId,
     ]
   );
 
@@ -337,7 +373,17 @@ export function SwapBox(p: Props) {
         setCollateralTokenAddress(availableCollaterals[0].address);
       }
     },
-    [availableCollaterals, collateralTokenAddress, isSelectCollateralAllowed, setCollateralTokenAddress]
+    [
+      availableCollaterals,
+      chainId,
+      collateralTokenAddress,
+      isSelectCollateralAllowed,
+      marketsData,
+      onSelectMarketAddress,
+      selectedMarket,
+      setCollateralTokenAddress,
+      toTokenState.tokenAddress,
+    ]
   );
 
   return (
@@ -422,7 +468,7 @@ export function SwapBox(p: Props) {
                     label={operationTab === TradeType.Swap ? t`Receive:` : tradeTypeLabels[operationTab!]}
                     chainId={chainId}
                     tokenAddress={toTokenState.tokenAddress}
-                    onSelectToken={(token) => toTokenState.setTokenAddress(token.address)}
+                    onSelectToken={(token) => onSelectToToken(token.address)}
                     tokens={availableToTokens}
                     infoTokens={infoTokens}
                     className="GlpSwap-from-token"

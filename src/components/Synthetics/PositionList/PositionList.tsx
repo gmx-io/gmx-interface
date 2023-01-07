@@ -8,7 +8,11 @@ import { useChainId } from "lib/chains";
 import { useMemo, useState } from "react";
 import { PositionSmall, PositionLarge } from "components/Synthetics/Position/Position";
 
-export function PositionList() {
+type Props = {
+  onSelectMarket: (marketAddress: string) => void;
+};
+
+export function PositionList(p: Props) {
   const { chainId } = useChainId();
 
   const [closingPositionKey, setClosingPositionKey] = useState<string>();
@@ -45,7 +49,7 @@ export function PositionList() {
               onEditCollateralClick={() => setEditingPositionKey(position.key)}
               onClosePositionClick={() => setClosingPositionKey(position.key)}
               onOrdersClick={() => {}}
-              onSelectMarketClick={() => {}}
+              onSelectMarketClick={() => p.onSelectMarket(position.marketAddress)}
               onShareClick={() => {}}
               showPnlAfterFees={false}
             />
@@ -85,7 +89,7 @@ export function PositionList() {
                 onEditCollateralClick={() => setEditingPositionKey(position.key)}
                 onClosePositionClick={() => setClosingPositionKey(position.key)}
                 onOrdersClick={() => {}}
-                onSelectMarketClick={() => {}}
+                onSelectMarketClick={() => p.onSelectMarket(position.marketAddress)}
                 onShareClick={() => {}}
                 showPnlAfterFees={false}
               />

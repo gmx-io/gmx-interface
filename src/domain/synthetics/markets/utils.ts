@@ -13,6 +13,20 @@ export function getMarkets(marketsData: MarketsData) {
   return Object.keys(marketsData).map((address) => getMarket(marketsData, address)!);
 }
 
+export function getMarketByTokens(marketsData: MarketsData, indexToken?: string, collateralToken?: string) {
+  const markets = getMarkets(marketsData);
+
+  return markets.find((market) => {
+    const byIndex = indexToken ? market.indexTokenAddress === indexToken : true;
+
+    const byCollateral = collateralToken
+      ? [market.longTokenAddress, market.shortTokenAddress].includes(collateralToken)
+      : true;
+
+    return byIndex && byCollateral;
+  });
+}
+
 export function getMarketName(
   marketsData: MarketsData,
   tokensData: TokensData,

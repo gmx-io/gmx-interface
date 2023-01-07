@@ -18,6 +18,7 @@ enum ListSection {
 
 export function SyntheticsPage(p: Props) {
   const [listSection, setListSection] = useState(ListSection.Positions);
+  const [selectedMarketAddress, setSelectedMarketAddress] = useState<string>();
 
   return (
     <div className="SyntheticsTrade page-layout">
@@ -35,6 +36,7 @@ export function SyntheticsPage(p: Props) {
           >
             The chart
           </div>
+
           {/* <ExchangeTVChart
             fromTokenAddress={fromTokenAddress}
             toTokenAddress={toTokenAddress}
@@ -46,6 +48,7 @@ export function SyntheticsPage(p: Props) {
             orders={orders}
             setToTokenAddress={setToTokenAddress}
           /> */}
+
           <div className="SyntheticsTrade-lists large">
             <div className="SyntheticsTrade-list-tab-container">
               <Tab
@@ -57,15 +60,21 @@ export function SyntheticsPage(p: Props) {
                 className="Exchange-list-tabs"
               />
             </div>
-            {listSection === ListSection.Positions && <PositionList />}
+            {listSection === ListSection.Positions && <PositionList onSelectMarket={setSelectedMarketAddress} />}
             {listSection === ListSection.Orders && <OrderList />}
           </div>
         </div>
+
         <div className="SyntheticsTrade-right">
           <div className="SyntheticsTrade-swap-box">
-            <SwapBox onConnectWallet={p.onConnectWallet} />
+            <SwapBox
+              onSelectMarketAddress={setSelectedMarketAddress}
+              selectedMarketAddress={selectedMarketAddress}
+              onConnectWallet={p.onConnectWallet}
+            />
           </div>
         </div>
+
         <div className="SyntheticsTrade-lists small">
           <div className="SyntheticsTrade-list-tab-container">
             <Tab
@@ -77,7 +86,7 @@ export function SyntheticsPage(p: Props) {
               className="Exchange-list-tabs"
             />
           </div>
-          {listSection === ListSection.Positions && <PositionList />}
+          {listSection === ListSection.Positions && <PositionList onSelectMarket={setSelectedMarketAddress} />}
           {listSection === ListSection.Orders && <OrderList />}
         </div>
       </div>
