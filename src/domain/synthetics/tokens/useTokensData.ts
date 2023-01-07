@@ -37,5 +37,5 @@ export function useTokensData(chainId: number, p: { tokenAddresses: string[] }):
       isLoading: isBalancesLoading || isPricesLoading,
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [p.tokenAddresses.join(), tokenConfigs]);
+  }, [p.tokenAddresses.join(), tokenConfigs, pricesData, balancesData]);
 }

@@ -17,7 +17,8 @@ export function getMarketName(
   marketsData: MarketsData,
   tokensData: TokensData,
   marketAddress?: string,
-  fallbackToPlaceholder?: boolean
+  fallbackToPlaceholder?: boolean,
+  includeGm: boolean = true
 ) {
   const market = getMarket(marketsData, marketAddress);
 
@@ -27,15 +28,17 @@ export function getMarketName(
   const longToken = getTokenData(tokensData, market?.longTokenAddress);
   const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
 
+  const gmText = includeGm ? "GM: " : "";
+
   if (!market || !indexToken || !longToken || !shortToken) {
     if (fallbackToPlaceholder) {
-      return "GM: ---/--- [-------]";
+      return `${gmText} ---/--- [-------]`;
     }
 
     return undefined;
   }
 
-  return `GM: ${indexToken.symbol}/${market.perp} [${longToken.symbol}-${shortToken.symbol}]`;
+  return `${gmText} ${indexToken.symbol}/${market.perp} [${longToken.symbol}-${shortToken.symbol}]`;
 }
 
 export function getMarketPoolData(poolsData: MarketsPoolsData, marketAddress?: string) {

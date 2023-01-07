@@ -29,7 +29,7 @@ export function useTokenRecentPricesData(chainId: number): TokenPricesDataResult
 
   return useMemo(() => {
     return {
-      pricesData: formatResponse(chainId, data),
+      pricesData: data ? formatResponse(chainId, data) : {},
       isLoading: isValidating && !data && !error,
     };
   }, [chainId, data, isValidating, error]);

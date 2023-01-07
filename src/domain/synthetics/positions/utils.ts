@@ -1,9 +1,9 @@
+import { BigNumber } from "ethers";
+import { BASIS_POINTS_DIVISOR, MAX_LEVERAGE, USD_DECIMALS } from "lib/legacy";
 import { expandDecimals, formatAmount } from "lib/numbers";
 import { MarketsData, getMarket, getMarketName } from "../markets";
 import { TokenPrices, TokensData, convertToUsdByPrice, formatUsdAmount, getTokenData } from "../tokens";
 import { AggregatedPositionData, PositionsData } from "./types";
-import { BASIS_POINTS_DIVISOR, MAX_LEVERAGE } from "lib/legacy";
-import { BigNumber } from "ethers";
 
 export function getPositions(positionsData: PositionsData) {
   return Object.values(positionsData);
@@ -32,7 +32,7 @@ export function getAggregatedPositionData(
 
   if (!position) return undefined;
 
-  const marketName = getMarketName(marketsData, tokensData, position.marketAddress);
+  const marketName = getMarketName(marketsData, tokensData, position?.marketAddress, false, false);
 
   const markPrice = position.isLong ? indexToken?.prices?.minPrice : indexToken?.prices?.maxPrice;
   const pnlPrice = getPriceForPnl(indexToken?.prices, position.isLong, false);
@@ -53,6 +53,8 @@ export function getAggregatedPositionData(
       : undefined;
 
   const collateralUsdAfterFees = collateralUsd;
+
+  const hasLowCollateral = collateralUsdAfterFees?.lt(expandDecimals(1, USD_DECIMALS));
 
   const pnl = currentValueUsd
     ? position.isLong
@@ -85,6 +87,7 @@ export function getAggregatedPositionData(
     currentValueUsd,
     collateralUsd,
     collateralUsdAfterFees,
+    hasLowCollateral,
     averagePrice,
     markPrice,
     pnl,
