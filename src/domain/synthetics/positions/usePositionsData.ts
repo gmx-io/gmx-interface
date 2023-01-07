@@ -1,12 +1,11 @@
 import { useWeb3React } from "@web3-react/core";
-import { getContract } from "config/contracts";
 import SyntheticsReader from "abis/SyntheticsReader.json";
+import { getContract } from "config/contracts";
 import { useMulticall } from "lib/multicall";
+import { bigNumberify } from "lib/numbers";
+import { useMemo } from "react";
 import { PositionsData } from "./types";
 import { getPositionKey } from "./utils";
-import { useMemo } from "react";
-import { bigNumberify } from "lib/numbers";
-import { BigNumber } from "ethers";
 
 type PositionsDataResult = {
   positionsData: PositionsData;
@@ -83,7 +82,7 @@ export function usePositionsData(chainId: number): PositionsDataResult {
           increasedAtBlock,
           decreasedAtBlock,
           isLong,
-          pendingBorrowingFees: bigNumberify(pendingBorrowingFees) || BigNumber.from(0),
+          pendingBorrowingFees: bigNumberify(pendingBorrowingFees)!,
           pendingFundingFees: {
             fundingFeeAmount,
             claimableLongTokenAmount,
