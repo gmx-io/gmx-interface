@@ -1,0 +1,216 @@
+:root {
+  --border-radius-xs: 0.4rem;
+  --border-radius-sm: 0.8rem;
+  --border-radius-m: 1rem;
+  --border-radius-l: 1.8rem;
+}
+.App-box,
+.App-box-highlight,
+.App-box-solid,
+.App-card,
+.App-card-primary {
+  border: none;
+  border-radius: var(--border-radius-m);
+}
+
+.App-card {
+  border: none;
+  border-radius: var(--border-radius-m);
+}
+
+.App-cta {
+  border-radius: var(--border-radius-m);
+}
+.App-header-user-address,
+.App-header-user-address,
+.default-btn {
+  border-radius: var(--border-radius-sm);
+}
+
+.Tab.block {
+  border-radius: var(--border-radius-m);
+  padding: 2px;
+  .Tab-option {
+    border-radius: var(--border-radius-sm);
+    &:hover {
+      opacity: 1;
+      background: transparent;
+    }
+    &.active {
+      background: rgba(180, 187, 255, 0.2);
+    }
+  }
+  .Tab-active-icon {
+    display: inline-flex;
+    margin-right: 0.8rem;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    transform: scale(1);
+  }
+}
+
+.ExchangeChart-bottom-controls .Tab .Tab-option {
+  padding: 1rem 0;
+}
+
+.Exchange-swap-option-tabs {
+  .Tab-option.active > .Tab-option-icon {
+    vertical-align: middle;
+    margin-right: 0.8rem;
+    transform: scale(1);
+    // box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.25);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    padding: 0.35rem;
+  }
+  .Tab-option.active:nth-child(1) > .Tab-option-icon {
+    background: #148634;
+  }
+  .Tab-option.active:nth-child(2) > .Tab-option-icon {
+    background: #a43030;
+  }
+  .Tab-option.active:nth-child(3) > .Tab-option-icon {
+    background: #2e42f3;
+  }
+}
+
+.Exchange-swap-ball {
+  top: -2.51rem;
+}
+
+.Exchange-swap-max {
+  border-radius: var(--border-radius-xs);
+  background: rgba(180, 187, 255, 0.1);
+  color: rgba(199, 202, 255, 0.8);
+  &:hover {
+    background: rgba(145, 159, 255, 0.3);
+  }
+}
+
+.Exchange-swap-box-inner {
+  border-radius: var(--border-radius-l) !important;
+}
+
+.Exchange-swap-box .Tab {
+  margin-bottom: 1rem;
+}
+
+.Exchange-swap-order-type-tabs {
+  padding-left: 1.4rem;
+}
+
+.Exchange-swap-box-inner {
+  .swap-from {
+    border-radius: var(--border-radius-m) var(--border-radius-m) var(--border-radius-xs) var(--border-radius-xs);
+    margin-bottom: 0.6rem;
+  }
+  .swap-to {
+    border-radius: var(--border-radius-xs) var(--border-radius-xs) var(--border-radius-m) var(--border-radius-m);
+  }
+}
+
+.Tab.inline .Tab-option {
+  margin-right: 2rem;
+  position: relative;
+}
+
+.Tab.inline .Tab-option.active::after {
+  content: "";
+  position: absolute;
+  height: 2px;
+  background-color: #2c42fa;
+  bottom: -0.5rem;
+  left: 0;
+  right: 0;
+}
+
+.Exchange-list-tab-container {
+  padding-left: 1.4rem;
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.Exchange-leverage-box,
+.Exchange-swap-box-info {
+  padding: 0 0.2rem;
+}
+
+.App-slider .rc-slider-handle {
+  background: #16182e;
+  border: solid 2px #fff;
+  width: 20px;
+  height: 20px;
+  margin-top: -7px;
+}
+
+.App-slider .rc-slider-dot.rc-slider-dot-active {
+  background: #fff;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: none;
+  top: -3px;
+}
+
+.App-slider .rc-slider-dot {
+  background: #16182e;
+  border: solid 2px #24263a;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  margin-left: -4px;
+}
+
+.App-slider .rc-slider-track {
+  background: linear-gradient(270deg, #e74e5d 0%, #f77c34 48.23%, #cdbc26 65.1%, #5ec989 82.61%), #3141f2;
+  height: 0.8rem;
+}
+.rc-slider-step {
+  height: 0.8rem;
+}
+
+.App-slider .rc-slider-rail {
+  background: linear-gradient(90deg, #1e223d, #282d4a);
+  height: 0.8rem;
+  border-radius: 0;
+}
+
+.Exchange-leverage-slider-settings {
+  .Checkbox-icon.inactive {
+    visibility: hidden;
+  }
+
+  .Checkbox:not(.selected) .Checkbox-icon-wrapper {
+    background: hsla(0, 0%, 100%, 0.7);
+  }
+
+  .Checkbox-icon-wrapper {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    text-indent: -9999px;
+    width: 27px;
+    height: 16px;
+    background: #3d51ff;
+    border-radius: 100px;
+    position: relative;
+  }
+
+  .Checkbox-icon-wrapper:after {
+    content: "";
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    width: 14px;
+    height: 14px;
+    background: #fff;
+    border-radius: 90px;
+    transition: 0.3s;
+  }
+  .Checkbox.selected .Checkbox-icon-wrapper:after {
+    left: 12px;
+  }
+}

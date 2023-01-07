@@ -756,29 +756,46 @@ input.Exchange-swap-input.small {
   transform: rotate(90deg);
   font-size: 2rem;
   opacity: 0.7;
+  position: absolute;
 }
 
 .Exchange-swap-ball {
   position: absolute;
-  width: 3.565rem;
-  height: 3.565rem;
+  width: 4.6rem;
+  height: 4.6rem;
   left: 50%;
   margin-left: -1.7825rem;
   top: -1.9375rem;
   border-radius: 3.1rem;
   cursor: pointer;
   user-select: none;
-  background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, rgba(46, 61, 205, 1) 100%);
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.Exchange-swap-ball:hover {
-  background: linear-gradient(90deg, rgba(58, 78, 252, 1) 0%, rgba(51, 68, 222, 1) 100%);
+.Exchange-swap-ball-icon-wrapper {
+  width: 3.6rem;
+  height: 3.6rem;
+  position: absolute;
+  background: #2a2f51;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 3.2rem;
 }
 
-.Exchange-swap-ball:hover .Exchange-swap-ball-icon {
+.Exchange-swap-ball-icon-wrapper:hover {
+  color: white;
+}
+
+.Exchange-swap-ball-icon-wrapper:active {
+  background: #4c527e;
+  color: white;
+}
+
+.Exchange-swap-ball-icon-wrapper:hover .Exchange-swap-ball-icon {
   opacity: 1;
 }
 

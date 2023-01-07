@@ -61,6 +61,7 @@ import WETH from "abis/WETH.json";
 import longImg from "img/long.svg";
 import shortImg from "img/short.svg";
 import swapImg from "img/swap.svg";
+import swapBallBg from "img/ic_swap_ball_bg.svg";
 
 import { useUserReferralCode } from "domain/referrals";
 import NoLiquidityErrorModal from "./NoLiquidityErrorModal";
@@ -86,7 +87,6 @@ const SWAP_ICONS = {
   [SHORT]: shortImg,
   [SWAP]: swapImg,
 };
-
 const { AddressZero } = ethers.constants;
 
 const leverageSliderHandle = (props) => {
@@ -1769,17 +1769,12 @@ export default function SwapBox(props) {
   }
 
   const leverageMarks = {
-    2: "2x",
-    5: "5x",
-    10: "10x",
-    15: "15x",
-    20: "20x",
-    25: "25x",
-    30: "30x",
-    35: "35x",
-    40: "40x",
-    45: "45x",
-    50: "50x",
+    2: "x2",
+    10: "x10",
+    20: "x20",
+    30: "x30",
+    40: "x40",
+    50: "x50",
   };
 
   if (!fromToken || !toToken) {
@@ -1883,7 +1878,7 @@ export default function SwapBox(props) {
         </div>
         {showFromAndToSection && (
           <React.Fragment>
-            <div className="Exchange-swap-section">
+            <div className="Exchange-swap-section swap-from">
               <div className="Exchange-swap-section-top">
                 <div className="muted">
                   {fromUsdMin && (
@@ -1931,10 +1926,13 @@ export default function SwapBox(props) {
             </div>
             <div className="Exchange-swap-ball-container">
               <div className="Exchange-swap-ball" onClick={switchTokens}>
-                <IoMdSwap className="Exchange-swap-ball-icon" />
+                <img src={swapBallBg} alt="Swap Ball" />
+                <div className="Exchange-swap-ball-icon-wrapper">
+                  <IoMdSwap className="Exchange-swap-ball-icon" />
+                </div>
               </div>
             </div>
-            <div className="Exchange-swap-section">
+            <div className="Exchange-swap-section swap-to">
               <div className="Exchange-swap-section-top">
                 <div className="muted">
                   {toUsdMax && (
