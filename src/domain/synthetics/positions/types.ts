@@ -40,13 +40,16 @@ export type AggregatedPositionData = Position & {
   markPrice?: BigNumber;
   pnl?: BigNumber;
   pnlPercentage?: BigNumber;
-  hasLowCollateral?: boolean;
+  pnlAfterFees?: BigNumber;
+  pnlAfterFeesPercentage?: BigNumber;
   collateralUsdAfterFees?: BigNumber;
+  hasLowCollateral?: boolean;
   entryPrice?: BigNumber;
   netValue?: BigNumber;
   liqPrice?: BigNumber;
   leverage?: BigNumber;
   hasProfit?: boolean;
+  totalPendingFeesUsd?: BigNumber;
 };
 
 export type PositionsData = {

@@ -52,10 +52,6 @@ export function getAggregatedPositionData(
       ? convertToUsdByPrice(position.collateralAmount, collateralToken.decimals, collateralPrice)
       : undefined;
 
-  const collateralUsdAfterFees = collateralUsd;
-
-  const hasLowCollateral = collateralUsdAfterFees?.lt(expandDecimals(1, USD_DECIMALS));
-
   const pnl = currentValueUsd
     ? position.isLong
       ? currentValueUsd.sub(position.sizeInUsd)
@@ -64,7 +60,18 @@ export function getAggregatedPositionData(
 
   const pnlPercentage = collateralUsd && pnl ? pnl.mul(BASIS_POINTS_DIVISOR).div(collateralUsd) : undefined;
 
+  const totalPendingFeesUsd = position.pendingBorrowingFees;
+
   const netValue = pnl && collateralUsd ? collateralUsd.add(pnl).sub(position.pendingBorrowingFees) : undefined;
+
+  const collateralUsdAfterFees = collateralUsd?.sub(totalPendingFeesUsd);
+  const pnlAfterFees = pnl?.sub(totalPendingFeesUsd);
+  const pnlAfterFeesPercentage =
+    collateralUsdAfterFees && pnlAfterFees
+      ? pnlAfterFees.mul(BASIS_POINTS_DIVISOR).div(collateralUsdAfterFees)
+      : undefined;
+
+  const hasLowCollateral = collateralUsdAfterFees?.lt(expandDecimals(1, USD_DECIMALS));
 
   const leverage = getLeverage({
     sizeUsd: currentValueUsd,
@@ -92,10 +99,13 @@ export function getAggregatedPositionData(
     markPrice,
     pnl,
     pnlPercentage,
+    pnlAfterFees,
+    pnlAfterFeesPercentage,
     netValue,
     leverage,
     liqPrice,
     entryPrice,
+    totalPendingFeesUsd,
   };
 }
 
