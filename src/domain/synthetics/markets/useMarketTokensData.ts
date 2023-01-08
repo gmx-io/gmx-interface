@@ -3,14 +3,14 @@ import SyntheticsReader from "abis/SyntheticsReader.json";
 import TokenAbi from "abis/Token.json";
 import { getContract } from "config/contracts";
 import { getTokenBySymbol } from "config/tokens";
+import { TokenData, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
+import { USD_DECIMALS } from "lib/legacy";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
+import { expandDecimals } from "lib/numbers";
 import { useMemo } from "react";
-import { getTokenData, TokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { MarketTokensData } from "./types";
 import { useMarketsData } from "./useMarketsData";
 import { getMarket, getMarketName } from "./utils";
-import { expandDecimals } from "lib/numbers";
-import { USD_DECIMALS } from "lib/legacy";
 
 type MarketTokensDataResult = {
   marketTokensData: MarketTokensData;
@@ -24,6 +24,45 @@ export function useMarketTokensData(chainId: number): MarketTokensDataResult {
 
   const { tokensData } = useAvailableTokensData(chainId);
   const { marketsData } = useMarketsData(chainId);
+
+  // useEffect(() => {
+  //   const marketAddresses = Object.keys(marketsData);
+  //   const market = getMarket(marketsData, marketAddresses[0])!;
+
+  //   const longToken = getTokenData(tokensData, market?.longTokenAddress);
+  //   const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
+  //   const indexToken = getTokenData(tokensData, market?.indexTokenAddress);
+
+  //   const longPrices = formatPrices(longToken);
+  //   const shortPrices = formatPrices(shortToken);
+  //   const indexPrices = formatPrices(indexToken);
+
+  //   if (longPrices && shortPrices && indexPrices) {
+  //     const prices = {
+  //       longTokenPrice: longPrices,
+  //       shortTokenPrice: shortPrices,
+  //       indexTokenPrice: indexPrices,
+  //     };
+
+  //     const ex = new ethers.Contract(
+  //       getContract(chainId, "SyntheticsReader"),
+  //       SyntheticsReader.abi,
+  //       getProvider(undefined, chainId)
+  //     );
+
+  //     const params = [dataStoreAddress, getContract(chainId, "MarketStore"), prices, marketAddresses[0]];
+
+  //     console.log(params);
+
+  //     ex.getMarketInfo(...params)
+  //       .then((res) => {
+  //         console.log(res);
+  //       })
+  //       .catch((e) => {
+  //         console.log(e);
+  //       });
+  //   }
+  // }, [chainId, dataStoreAddress, marketsData, tokensData]);
 
   const marketAddresses = Object.keys(marketsData);
 

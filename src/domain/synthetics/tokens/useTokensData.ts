@@ -24,9 +24,11 @@ export function useTokensData(chainId: number, p: { tokenAddresses: string[] }):
 
   const { pricesData, isLoading: isPricesLoading } = useTokenRecentPricesData(chainId);
 
+  const tokenKeys = p.tokenAddresses.join("-");
+
   return useMemo(() => {
     return {
-      tokensData: p.tokenAddresses.reduce((tokensData: TokensData, tokenAddress) => {
+      tokensData: tokenKeys.split("-").reduce((tokensData: TokensData, tokenAddress) => {
         tokensData[tokenAddress] = {
           ...tokenConfigs[tokenAddress],
           prices: pricesData[tokenAddress],
@@ -36,6 +38,5 @@ export function useTokensData(chainId: number, p: { tokenAddresses: string[] }):
       }, {} as TokensData),
       isLoading: isBalancesLoading || isPricesLoading,
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [p.tokenAddresses.join(), tokenConfigs, pricesData, balancesData]);
+  }, [tokenKeys, isBalancesLoading, isPricesLoading, tokenConfigs, pricesData, balancesData]);
 }

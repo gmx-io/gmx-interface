@@ -1,5 +1,6 @@
 import { BigNumber } from "ethers";
-import { TokenData } from "../tokens";
+import { TokenData } from "domain/synthetics/tokens";
+import { Market } from "domain/synthetics/markets";
 
 export type PositionFundingFees = {
   fundingFeeAmount: BigNumber;
@@ -32,10 +33,11 @@ export type Position = {
 
 export type AggregatedPositionData = Position & {
   marketName?: string;
-  currentValueUsd?: BigNumber;
-  collateralUsd?: BigNumber;
+  market?: Market;
   indexToken?: TokenData;
   collateralToken?: TokenData;
+  currentValueUsd?: BigNumber;
+  collateralUsd?: BigNumber;
   averagePrice?: BigNumber;
   markPrice?: BigNumber;
   pnl?: BigNumber;
@@ -54,4 +56,8 @@ export type AggregatedPositionData = Position & {
 
 export type PositionsData = {
   [positionKey: string]: Position;
+};
+
+export type AggregatedPositionsData = {
+  [positionKey: string]: AggregatedPositionData;
 };
