@@ -1,9 +1,10 @@
 import { useWeb3React } from "@web3-react/core";
 import SyntheticsReader from "abis/SyntheticsReader.json";
+import PositionStore from "abis/PositionStore.json";
 import { getContract } from "config/contracts";
 import { useMulticall } from "lib/multicall";
 import { bigNumberify } from "lib/numbers";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { PositionsData } from "./types";
 import { getPositionKey } from "./utils";
 
@@ -12,12 +13,28 @@ type PositionsDataResult = {
   isLoading: boolean;
 };
 
+const DEFAULT_COUNT = 100;
+
 export function usePositionsData(chainId: number): PositionsDataResult {
   const { account } = useWeb3React();
 
-  const { data, isLoading } = useMulticall(chainId, "usePositionsData-positions", {
-    key: account ? [account] : null,
+  const [positionsData, setPositionsData] = useState<PositionsData>({});
+  const [startIndex, setStartIndex] = useState(0);
+  const [endIndex, setEndIndex] = useState(DEFAULT_COUNT);
+
+  const { data, isLoading } = useMulticall(chainId, "usePositionsData", {
+    key: account ? [account, startIndex, endIndex] : null,
     request: () => ({
+      positionStore: {
+        contractAddress: getContract(chainId, "PositionStore"),
+        abi: PositionStore.abi,
+        calls: {
+          count: {
+            methodName: "getAccountPositionCount",
+            params: [account],
+          },
+        },
+      },
       reader: {
         contractAddress: getContract(chainId, "SyntheticsReader"),
         abi: SyntheticsReader.abi,
@@ -29,61 +46,38 @@ export function usePositionsData(chainId: number): PositionsDataResult {
               getContract(chainId, "MarketStore"),
               getContract(chainId, "PositionStore"),
               account,
-              0,
-              // TODO: pagination
-              100,
+              startIndex,
+              endIndex,
             ],
           },
         },
       },
     }),
-    parseResponse: (res) =>
-      res.reader.positions.returnValues.reduce((positionsMap: PositionsData, positionInfo) => {
-        // TODO: parsing from abi?
-        const [positionProps, pendingBorrowingFees, fundingFees] = positionInfo;
-        const [addresses, numbers, flags, data] = positionProps;
-        const [account, marketAddress, collateralTokenAddress] = addresses;
-        const [
-          sizeInUsd,
-          sizeInTokens,
-          collateralAmount,
-          borrowingFactor,
-          longTokenFundingAmountPerSize,
-          shortTokenFundingAmountPerSize,
-          increasedAtBlock,
-          decreasedAtBlock,
-        ] = numbers.map(bigNumberify);
+    parseResponse: (res) => {
+      const count = Number(res.positionStore.count.returnValues[0]);
+      const positions = res.reader.positions.returnValues;
 
-        const [isLong] = flags;
+      return {
+        count,
+        positionsData: positions.reduce((positionsMap: PositionsData, positionInfo) => {
+          // TODO: parsing from abi?
+          const [positionProps, pendingBorrowingFees, fundingFees] = positionInfo;
+          const [addresses, numbers, flags, data] = positionProps;
+          const [account, marketAddress, collateralTokenAddress] = addresses;
+          const [
+            sizeInUsd,
+            sizeInTokens,
+            collateralAmount,
+            borrowingFactor,
+            longTokenFundingAmountPerSize,
+            shortTokenFundingAmountPerSize,
+            increasedAtBlock,
+            decreasedAtBlock,
+          ] = numbers.map(bigNumberify);
 
-        const [
-          fundingFeeAmount,
-          claimableLongTokenAmount,
-          claimableShortTokenAmount,
-          latestLongTokenFundingAmountPerSize,
-          latestShortTokenFundingAmountPerSize,
-          hasPendingLongTokenFundingFee,
-          hasPendingShortTokenFundingFee,
-        ] = fundingFees.map((item) => (typeof item === "boolean" ? item : bigNumberify(item)));
+          const [isLong] = flags;
 
-        const positionKey = getPositionKey(account, marketAddress, collateralTokenAddress, isLong);
-
-        positionsMap[positionKey] = {
-          key: positionKey,
-          account,
-          marketAddress,
-          collateralTokenAddress,
-          sizeInUsd,
-          sizeInTokens,
-          collateralAmount,
-          borrowingFactor,
-          longTokenFundingAmountPerSize,
-          shortTokenFundingAmountPerSize,
-          increasedAtBlock,
-          decreasedAtBlock,
-          isLong,
-          pendingBorrowingFees: bigNumberify(pendingBorrowingFees)!,
-          pendingFundingFees: {
+          const [
             fundingFeeAmount,
             claimableLongTokenAmount,
             claimableShortTokenAmount,
@@ -91,18 +85,61 @@ export function usePositionsData(chainId: number): PositionsDataResult {
             latestShortTokenFundingAmountPerSize,
             hasPendingLongTokenFundingFee,
             hasPendingShortTokenFundingFee,
-          },
-          data,
-        };
+          ] = fundingFees.map((item) => (typeof item === "boolean" ? item : bigNumberify(item)));
 
-        return positionsMap;
-      }, {} as PositionsData),
+          const positionKey = getPositionKey(account, marketAddress, collateralTokenAddress, isLong);
+
+          positionsMap[positionKey] = {
+            key: positionKey,
+            account,
+            marketAddress,
+            collateralTokenAddress,
+            sizeInUsd,
+            sizeInTokens,
+            collateralAmount,
+            borrowingFactor,
+            longTokenFundingAmountPerSize,
+            shortTokenFundingAmountPerSize,
+            increasedAtBlock,
+            decreasedAtBlock,
+            isLong,
+            pendingBorrowingFees: bigNumberify(pendingBorrowingFees)!,
+            pendingFundingFees: {
+              fundingFeeAmount,
+              claimableLongTokenAmount,
+              claimableShortTokenAmount,
+              latestLongTokenFundingAmountPerSize,
+              latestShortTokenFundingAmountPerSize,
+              hasPendingLongTokenFundingFee,
+              hasPendingShortTokenFundingFee,
+            },
+            data,
+          };
+
+          return positionsMap;
+        }, {} as PositionsData),
+      };
+    },
   });
+
+  useEffect(() => {
+    if (data?.count && data.count > endIndex) {
+      setStartIndex(endIndex);
+      setEndIndex(data.count);
+    }
+
+    if (data?.positionsData) {
+      setPositionsData((old) => ({
+        ...old,
+        ...data.positionsData,
+      }));
+    }
+  }, [data?.count, data?.positionsData, endIndex]);
 
   return useMemo(() => {
     return {
-      positionsData: data || {},
-      isLoading,
+      positionsData,
+      isLoading: isLoading,
     };
-  }, [data, isLoading]);
+  }, [isLoading, positionsData]);
 }

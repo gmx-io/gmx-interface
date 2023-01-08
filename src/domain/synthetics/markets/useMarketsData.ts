@@ -8,7 +8,7 @@ import { MarketsData } from "./types";
 
 type MarketsDataResult = {
   marketsData: MarketsData;
-  isLoading?: boolean;
+  isLoading: boolean;
 };
 
 const DEFAULT_COUNT = 100;
