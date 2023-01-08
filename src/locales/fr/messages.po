@@ -211,10 +211,6 @@ msgstr "Permettre jusqu'à 1 % de glissement"
 msgid "Allow {0} to be spent"
 msgstr ""
 
-#: src/components/ApproveTokenButton/ApproveTokenButton.tsx
-#~ msgid "Allow {0} to spent"
-#~ msgstr ""
-
 #: src/App/App.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
@@ -837,10 +833,6 @@ msgstr "Confirmer l'échange"
 msgid "Confirm {0}"
 msgstr ""
 
-#: src/components/SyntheticsSwap/ConfirmationBox/ConfirmationBox.tsx
-#~ msgid "Confirm {0} {1}"
-#~ msgstr ""
-
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "Confirm {operationText} {0} GM"
 msgstr ""
@@ -1314,10 +1306,6 @@ msgstr "Indiquer un prix"
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Enter a swap trigger ratio"
 msgstr ""
-
-#: src/components/Synthetics/Trade/utils.ts
-#~ msgid "Enter a trigger price"
-#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2063,10 +2051,6 @@ msgstr ""
 msgid "Long Positions"
 msgstr "Positions long"
 
-#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
-#~ msgid "Long liquidity"
-#~ msgstr ""
-
 #: src/pages/Dashboard/DashboardV1.js
 msgid "Long positions: {0} USD, Short positions: {1} USD, {volumeLabel} volume: {2} USD"
 msgstr ""
@@ -2534,11 +2518,6 @@ msgstr "Ordre créé!"
 msgid "Order creation failed."
 msgstr "L'ordre a échoué"
 
-#: src/components/MarketPoolSwap/GmOrderStatus/GmOrderStatus.tsx
-#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
-#~ msgid "Order executed"
-#~ msgstr ""
-
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Order size exceeds position"
 msgstr "Montant de l'ordre dépasse la position"
@@ -2840,10 +2819,6 @@ msgid "Projects developed by the GMX community. <0/>Please exercise caution when
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-#~ msgid "Projects developed by the GMX community. Please exercise caution in interacting with any site, the project's are fully maintained by community developers."
-#~ msgstr ""
-
-#: src/pages/Ecosystem/Ecosystem.js
 msgid "Projects integrated with GMX."
 msgstr "Projets intégrés à GMX\"."
 
@@ -3140,10 +3115,6 @@ msgstr "L'expéditeur a retiré tous les tokens du coffre de Vesting GLP."
 msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr "L'expéditeur a retiré tous les tokens du coffre de Vesting GLP."
 
-#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
-#~ msgid "Sending swap {0} request"
-#~ msgstr ""
-
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
 msgid "Sending swap {0} to {1} request"
 msgstr ""
@@ -3227,10 +3198,6 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Short Positions"
 msgstr "Positions Shorts"
-
-#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
-#~ msgid "Short liquidity"
-#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Short {0}"
@@ -3373,10 +3340,6 @@ msgstr ""
 msgid "Stop Loss Decrease"
 msgstr ""
 
-#: src/components/SyntheticsSwap/utils.ts
-#~ msgid "StopLoss"
-#~ msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Structured Products"
 msgstr "Produits structurés"
@@ -3392,14 +3355,6 @@ msgstr ""
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
 msgid "Success withdrawal order"
 msgstr ""
-
-#: src/domain/synthetics/exchange/createOrderTxn.ts
-#~ msgid "Success {0} order"
-#~ msgstr ""
-
-#: src/domain/synthetics/orders/createOrderTxn.ts
-#~ msgid "Success {orderLabel} order"
-#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV1.js
@@ -3537,10 +3492,6 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 msgid "Take-profit and stop-loss orders can be set after opening a position. <0/><1/>There will be a \"Close\" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>."
 msgstr "Les ordres Take-profit et Stop-loss peuvent être définis après l'ouverture d'une position. <0/><1/>Il y aura un bouton \"Fermer\"sur chaque ligne de position, en cliquant dessus, vous afficherez l'option pour définir des ordres de déclenchement. <2/><3/> Pour des captures d'écran et pour plus informations, veuillez consulter la page </4>."
-
-#: src/components/SyntheticsSwap/utils.ts
-#~ msgid "TakeProfit"
-#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -4463,10 +4414,6 @@ msgstr "staké"
 msgid "time to liq"
 msgstr "temps de liquider"
 
-#: src/components/OrderItem/OrderItem.tsx
-#~ msgid "via"
-#~ msgstr ""
-
 #: src/components/Exchange/ConfirmationBox.js
 msgid "view"
 msgstr "voir"
@@ -4546,19 +4493,6 @@ msgstr "{0} est en dessous de son poids cible.<0/><1/>Obtenez une réduction des
 msgid "{0} is required for collateral."
 msgstr "{0} est requis comme collatéral."
 
-#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
-#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
-#~ msgid "{0} liquidity"
-#~ msgstr ""
-
-#: src/domain/synthetics/exchange/createOrderTxn.ts
-#~ msgid "{0} order failed"
-#~ msgstr ""
-
-#: src/domain/synthetics/exchange/createOrderTxn.ts
-#~ msgid "{0} order sent"
-#~ msgstr ""
-
 #: src/components/Exchange/SwapBox.js
 msgid "{0} pool exceeded"
 msgstr "{0} pool dépassé"
@@ -4581,11 +4515,6 @@ msgstr "{0} prix"
 #: src/components/Glp/GlpSwap.js
 msgid "{0} selected in order form"
 msgstr "{0} sélectionné dans le formulaire d'ordre"
-
-#: src/components/MarketPoolSwap/GmOrderStatus/GmOrderStatus.tsx
-#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
-#~ msgid "{0} status"
-#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js

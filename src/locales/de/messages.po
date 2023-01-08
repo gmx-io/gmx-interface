@@ -419,11 +419,6 @@ msgstr "Leihgebühr"
 msgid "Borrow Fee / Day"
 msgstr "Leihgebühr / Tag"
 
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/TradeHistory.js
-#~ msgid "Borrow fee"
-#~ msgstr ""
-
 #: src/components/Synthetics/Position/Common.tsx
 msgid "Borrow fee:"
 msgstr ""
@@ -1376,10 +1371,6 @@ msgstr "Ausführen"
 #: src/components/Exchange/TradeHistory.js
 msgid "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 msgstr "Order ausführen: Tausche {fromAmountDisplay} {0} gegen {toAmountDisplay} {1}"
-
-#: src/components/Exchange/TradeHistory.js
-#~ msgid "Execute Order: {0, select, Increase {Increase} Decrease {Decrease}} {1} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
-#~ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
@@ -2828,10 +2819,6 @@ msgid "Projects developed by the GMX community. <0/>Please exercise caution when
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-#~ msgid "Projects developed by the GMX community. Please exercise caution in interacting with any site, the project's are fully maintained by community developers."
-#~ msgstr ""
-
-#: src/pages/Ecosystem/Ecosystem.js
 msgid "Projects integrated with GMX."
 msgstr "Mit GMX integrierte Projekte."
 
@@ -3933,10 +3920,6 @@ msgstr "USDG Schulden"
 msgid "UTILIZATION"
 msgstr "NUTZUNG"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-#~ msgid "Uniswap"
-#~ msgstr ""
-
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
@@ -4446,14 +4429,6 @@ msgstr ""
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 msgstr ""
-
-#: src/components/Exchange/PositionsList.js
-#~ msgid "{0, select, true {Long} false {Short}} {1} market selected"
-#~ msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-#~ msgid "{0}"
-#~ msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "{0} Approved!"

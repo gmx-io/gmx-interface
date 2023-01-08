@@ -4,6 +4,7 @@ import { expandDecimals, formatAmount } from "lib/numbers";
 import { MarketsData, getMarket, getMarketName } from "../markets";
 import { TokenPrices, TokensData, convertToUsdByPrice, formatUsdAmount, getTokenData } from "../tokens";
 import { AggregatedPositionData, PositionsData } from "./types";
+import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 
 export function getPosition(positionsData: PositionsData, positionKey?: string) {
   if (!positionKey) return undefined;
@@ -24,7 +25,11 @@ export function getAggregatedPositionData(
   const position = getPosition(positionsData, positionKey);
   const market = getMarket(marketsData, position?.marketAddress);
   const collateralToken = getTokenData(tokensData, position?.collateralTokenAddress);
-  const indexToken = getTokenData(tokensData, market?.indexTokenAddress);
+
+  const indexToken = getTokenData(
+    tokensData,
+    market?.isIndexWrapped ? NATIVE_TOKEN_ADDRESS : market?.indexTokenAddress
+  );
 
   if (!position) return undefined;
 

@@ -211,10 +211,6 @@ msgstr "最大1%のスリッページを許容する"
 msgid "Allow {0} to be spent"
 msgstr ""
 
-#: src/components/ApproveTokenButton/ApproveTokenButton.tsx
-#~ msgid "Allow {0} to spent"
-#~ msgstr ""
-
 #: src/App/App.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
@@ -837,10 +833,6 @@ msgstr "スワップを確認する"
 msgid "Confirm {0}"
 msgstr ""
 
-#: src/components/SyntheticsSwap/ConfirmationBox/ConfirmationBox.tsx
-#~ msgid "Confirm {0} {1}"
-#~ msgstr ""
-
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "Confirm {operationText} {0} GM"
 msgstr ""
@@ -1314,10 +1306,6 @@ msgstr "価格を入力"
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Enter a swap trigger ratio"
 msgstr ""
-
-#: src/components/Synthetics/Trade/utils.ts
-#~ msgid "Enter a trigger price"
-#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2063,10 +2051,6 @@ msgstr ""
 msgid "Long Positions"
 msgstr "ロングポジション"
 
-#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
-#~ msgid "Long liquidity"
-#~ msgstr ""
-
 #: src/pages/Dashboard/DashboardV1.js
 msgid "Long positions: {0} USD, Short positions: {1} USD, {volumeLabel} volume: {2} USD"
 msgstr "ロングポジション: {0} USD ショートポジション: {1} USD  {volumeLabel} 取引高: {2} USD"
@@ -2534,11 +2518,6 @@ msgstr "注文作成完了!"
 msgid "Order creation failed."
 msgstr "注文が作成できませんでした。"
 
-#: src/components/MarketPoolSwap/GmOrderStatus/GmOrderStatus.tsx
-#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
-#~ msgid "Order executed"
-#~ msgstr ""
-
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Order size exceeds position"
 msgstr "注文のサイズがポジションを超えています"
@@ -2840,10 +2819,6 @@ msgid "Projects developed by the GMX community. <0/>Please exercise caution when
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-#~ msgid "Projects developed by the GMX community. Please exercise caution in interacting with any site, the project's are fully maintained by community developers."
-#~ msgstr ""
-
-#: src/pages/Ecosystem/Ecosystem.js
 msgid "Projects integrated with GMX."
 msgstr "GMXと統合されているプロジェクト"
 
@@ -3140,10 +3115,6 @@ msgstr "送信側はGLPのべスティングボールトからすべてのトー
 msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr "送信側はGMXのべスティングボールトからすべてのトークンを引き出しました。"
 
-#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
-#~ msgid "Sending swap {0} request"
-#~ msgstr ""
-
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
 msgid "Sending swap {0} to {1} request"
 msgstr ""
@@ -3227,10 +3198,6 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Short Positions"
 msgstr "ショートポジション"
-
-#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
-#~ msgid "Short liquidity"
-#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Short {0}"
@@ -3373,10 +3340,6 @@ msgstr ""
 msgid "Stop Loss Decrease"
 msgstr ""
 
-#: src/components/SyntheticsSwap/utils.ts
-#~ msgid "StopLoss"
-#~ msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Structured Products"
 msgstr "ストラクチャードプロダクト"
@@ -3392,14 +3355,6 @@ msgstr ""
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
 msgid "Success withdrawal order"
 msgstr ""
-
-#: src/domain/synthetics/exchange/createOrderTxn.ts
-#~ msgid "Success {0} order"
-#~ msgstr ""
-
-#: src/domain/synthetics/orders/createOrderTxn.ts
-#~ msgid "Success {orderLabel} order"
-#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV1.js
@@ -3537,10 +3492,6 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 msgid "Take-profit and stop-loss orders can be set after opening a position. <0/><1/>There will be a \"Close\" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>."
 msgstr "テイクプロフィット注文とストップロス注文はポジションをオープンしてからセットすることができます。<0/><1/>それぞれのポジションの行に\"クローズ\"ボタンが表れ、それをクリックするとトリガー注文をセットするための選択肢が表示されます。<2/><3/>スクリーンショットや詳細情報については<4>文書</4>を読んでください。"
-
-#: src/components/SyntheticsSwap/utils.ts
-#~ msgid "TakeProfit"
-#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -4463,10 +4414,6 @@ msgstr "ステーク済"
 msgid "time to liq"
 msgstr "清算までの時間"
 
-#: src/components/OrderItem/OrderItem.tsx
-#~ msgid "via"
-#~ msgstr ""
-
 #: src/components/Exchange/ConfirmationBox.js
 msgid "view"
 msgstr "見る"
@@ -4546,19 +4493,6 @@ msgstr "{0}はターゲットウェイトより低くなっています。<0/><1
 msgid "{0} is required for collateral."
 msgstr "担保に{0}が必要です。"
 
-#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
-#: src/components/SyntheticsSwap/MarketCard/MarketCard.tsx
-#~ msgid "{0} liquidity"
-#~ msgstr ""
-
-#: src/domain/synthetics/exchange/createOrderTxn.ts
-#~ msgid "{0} order failed"
-#~ msgstr ""
-
-#: src/domain/synthetics/exchange/createOrderTxn.ts
-#~ msgid "{0} order sent"
-#~ msgstr ""
-
 #: src/components/Exchange/SwapBox.js
 msgid "{0} pool exceeded"
 msgstr "{0}のプールを超過しています"
@@ -4581,11 +4515,6 @@ msgstr "{0} 価格"
 #: src/components/Glp/GlpSwap.js
 msgid "{0} selected in order form"
 msgstr "{0}が注文フォームで選択されました"
-
-#: src/components/MarketPoolSwap/GmOrderStatus/GmOrderStatus.tsx
-#: src/components/SyntheticsSwap/SyntheticsSwapStatus/SyntheticsSwapStatus.tsx
-#~ msgid "{0} status"
-#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js

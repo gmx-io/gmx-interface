@@ -3,18 +3,24 @@ import MarketStore from "abis/MarketStore.json";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import { useMulticall } from "lib/multicall";
 import { getWrappedToken } from "config/tokens";
-import { useMemo } from "react";
-import { Market, MarketsData } from "./types";
+import { useEffect, useMemo, useState } from "react";
+import { MarketsData } from "./types";
 
 type MarketsDataResult = {
   marketsData: MarketsData;
   isLoading?: boolean;
 };
 
+const DEFAULT_COUNT = 100;
+
 export function useMarketsData(chainId: number): MarketsDataResult {
-  const { data: marketsCount } = useMulticall(chainId, "useMarkets-count", {
-    key: [],
-    request: {
+  const [marketsData, setMarketsData] = useState<MarketsData>({});
+  const [startIndex, setStartIndex] = useState(0);
+  const [endIndex, setEndIndex] = useState(DEFAULT_COUNT);
+
+  const { data, isLoading } = useMulticall(chainId, "useMarketsData", {
+    key: [startIndex, endIndex],
+    request: () => ({
       marketStore: {
         contractAddress: getContract(chainId, "MarketStore"),
         abi: MarketStore.abi,
@@ -25,57 +31,66 @@ export function useMarketsData(chainId: number): MarketsDataResult {
           },
         },
       },
-    },
-    parseResponse: (res) => res.marketStore.count.returnValues[0] as number,
-  });
-
-  const { data: marketsData, isLoading } = useMulticall(chainId, "useMarkets-markets", {
-    key: Boolean(marketsCount) && [marketsCount],
-    request: () => ({
       reader: {
         contractAddress: getContract(chainId, "SyntheticsReader"),
         abi: SyntheticsReader.abi,
         calls: {
           markets: {
             methodName: "getMarkets",
-            params: [getContract(chainId, "MarketStore"), 0, marketsCount],
+            params: [getContract(chainId, "MarketStore"), startIndex, endIndex],
           },
         },
       },
     }),
     parseResponse: (res) => {
+      const count = Number(res.marketStore.count.returnValues[0]);
+      const markets = res.reader.markets.returnValues;
       const wrappedToken = getWrappedToken(chainId);
 
-      const marketsMap: { [address: string]: Market } = {};
+      return {
+        count,
+        marketsData: markets.reduce((acc: MarketsData, market) => {
+          const [marketTokenAddress, indexTokenAddress, longTokenAddress, shortTokenAddress, data] = market;
+          try {
+            acc[marketTokenAddress] = {
+              marketTokenAddress,
+              indexTokenAddress,
+              longTokenAddress,
+              shortTokenAddress,
+              isIndexWrapped: indexTokenAddress === wrappedToken.address,
+              isLongWrapped: longTokenAddress === wrappedToken.address,
+              isShortWrapped: shortTokenAddress === wrappedToken.address,
+              data,
+              // TODO: store in configs?
+              perp: "USD",
+            };
+          } catch (e) {
+            // ignore parsing errors on unknown tokens
+          }
 
-      for (let market of res.reader.markets.returnValues) {
-        const [marketTokenAddress, indexTokenAddress, longTokenAddress, shortTokenAddress, data] = market;
-
-        try {
-          marketsMap[marketTokenAddress] = {
-            marketTokenAddress,
-            indexTokenAddress,
-            longTokenAddress,
-            shortTokenAddress,
-            isIndexWrapped: indexTokenAddress === wrappedToken.address,
-            isLongWrapped: longTokenAddress === wrappedToken.address,
-            isShortWrapped: shortTokenAddress === wrappedToken.address,
-            data,
-            // TODO: store in configs?
-            perp: "USD",
-          };
-        } catch (e) {
-          // ignore parsing errors on unknown tokens
-        }
-      }
-
-      return marketsMap;
+          return acc;
+        }, {} as MarketsData),
+      };
     },
   });
 
+  useEffect(() => {
+    if (data?.count && data.count > endIndex) {
+      setStartIndex(endIndex);
+      setEndIndex(data.count);
+    }
+
+    if (data?.marketsData) {
+      setMarketsData((old) => ({
+        ...old,
+        ...data.marketsData,
+      }));
+    }
+  }, [data?.count, data?.marketsData, endIndex]);
+
   return useMemo(() => {
     return {
-      marketsData: marketsData || {},
+      marketsData,
       isLoading,
     };
   }, [isLoading, marketsData]);
