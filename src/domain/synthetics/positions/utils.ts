@@ -23,6 +23,9 @@ export function getAggregatedPositionData(
   positionKey?: string
 ): AggregatedPositionData | undefined {
   const position = getPosition(positionsData, positionKey);
+
+  if (!position) return undefined;
+
   const market = getMarket(marketsData, position?.marketAddress);
   const collateralToken = getTokenData(tokensData, position?.collateralTokenAddress);
 
@@ -30,8 +33,6 @@ export function getAggregatedPositionData(
     tokensData,
     market?.isIndexWrapped ? NATIVE_TOKEN_ADDRESS : market?.indexTokenAddress
   );
-
-  if (!position) return undefined;
 
   const marketName = getMarketName(marketsData, tokensData, position?.marketAddress, false, false);
 

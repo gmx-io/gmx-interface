@@ -6,7 +6,6 @@ import { useChainId } from "lib/chains";
 import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
 import { getWsProvider } from "lib/rpc";
 import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react";
-import { ContractOrder } from "../orders";
 import { OrderEvents } from "./types";
 
 export type ContractEventsContextType = {
@@ -42,7 +41,7 @@ export function ContractEventsProvider({ children }: { children: ReactNode }) {
       }
 
       // TODO: refs?
-      function onOrderCreated(key, orderParams: ContractOrder, txnParams) {
+      function onOrderCreated(key, orderParams, txnParams) {
         if (orderParams.addresses.account !== account) return;
 
         setOrderEvents((orderEvents) => {

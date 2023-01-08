@@ -74,6 +74,7 @@ msgid "<0>The pool's capacity has been reached for {0}. Please use another token
 msgstr "<0>Die Kapazität des Pools wurde für {0} erreicht. Bitte verwende einen anderen Token, um GLP zu kaufen.</0><1>Suche im Abschnitt \"Sparen bei den Gebühren\" nach Token mit den niedrigsten Gebühren.</1>"
 
 #: src/components/Exchange/OrdersList.js
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "<0>The price that orders can be executed at may differ slightly from the chart price, as market orders update oracle prices, while limit/trigger orders do not.</0><1>This can also cause limit/triggers to not be executed if the price is not reached for long enough. <2>Read more</2>.</1>"
 msgstr ""
 
@@ -127,6 +128,12 @@ msgstr "VERFÜGBAR"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "About"
 msgstr "Über"
+
+#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.ts
+msgid "Above"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Accept confirmation of trigger orders"
@@ -387,6 +394,12 @@ msgstr "Balance: {0}"
 msgid "Begin Transfer"
 msgstr "Übertragung beginnen"
 
+#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.ts
+msgid "Below"
+msgstr ""
+
 #: src/components/Migration/Migration.js
 #: src/components/Migration/Migration.js
 msgid "Bonus Tokens"
@@ -409,17 +422,17 @@ msgstr "Steigere deine Belohnungen mit Multiplikatorpunkten. <0>Mehr Infos</0>.
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/Position/Common.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Borrow Fee"
 msgstr "Leihgebühr"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/Position/Common.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Borrow Fee / Day"
 msgstr "Leihgebühr / Tag"
 
-#: src/components/Synthetics/Position/Common.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Borrow fee:"
 msgstr ""
 
@@ -556,6 +569,8 @@ msgstr "Kann wegen eines Fehlers nicht ausgeführt werden"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Cancel"
 msgstr "Abbruch"
 
@@ -670,7 +685,7 @@ msgstr "Beanspruchen..."
 msgid "Click on a row to select the position's market, then use the swap box to increase your position size if needed."
 msgstr ""
 
-#: src/components/Synthetics/Position/PositionLarge.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Click on a row to select the position's market, then use the swap box to increase your position size, or to set stop-loss / take-profit orders. if needed."
 msgstr ""
 
@@ -679,8 +694,8 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
-#: src/components/Synthetics/Position/PositionLarge.tsx
-#: src/components/Synthetics/Position/PositionSmall.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
@@ -743,7 +758,9 @@ msgstr "Coinbase Wallet nicht erkannt."
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/Position/PositionSmall.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Collateral"
@@ -759,7 +776,7 @@ msgstr "Kollateral ({0})"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/Synthetics/Position/Common.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 #: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
@@ -1061,6 +1078,10 @@ msgstr ""
 msgid "Decrease {longText} {0} by {1}"
 msgstr ""
 
+#: src/domain/synthetics/orders/utils.ts
+msgid "Decrease {tokenText} by {sizeText}"
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.js
 msgid "Decreased"
 msgstr "Verringert"
@@ -1177,12 +1198,14 @@ msgstr "Ökosystem"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Edit"
 msgstr "Bearbeiten"
 
 #: src/components/Exchange/PositionDropdown.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/Position/PositionSmall.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Edit Collateral"
 msgstr "Kollateral bearbeiten"
 
@@ -1343,7 +1366,7 @@ msgstr "Neuen Preis eingeben"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/Synthetics/Position/PositionSmall.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
@@ -1708,6 +1731,10 @@ msgstr ""
 msgid "Increase {longText} {0} by {1}"
 msgstr ""
 
+#: src/domain/synthetics/orders/utils.ts
+msgid "Increase {tokenText} by {sizeText}"
+msgstr ""
+
 #: src/pages/Exchange/Exchange.js
 msgid "Increased {tokenSymbol} {longOrShortText}, +{0} USD."
 msgstr "Erhöht {tokenSymbol} {longOrShortText}, +{0} USD."
@@ -1720,8 +1747,8 @@ msgstr "Index"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/Position/Common.tsx
-#: src/components/Synthetics/Position/Common.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Initial Collateral"
 msgstr "Ursprüngliches Kollateral"
 
@@ -1867,7 +1894,7 @@ msgstr "Verbleibende Position unter 10 USD"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/Synthetics/Position/PositionSmall.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
@@ -1889,6 +1916,7 @@ msgstr ""
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Limit"
 msgstr ""
@@ -1946,7 +1974,7 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/Synthetics/Position/PositionSmall.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 msgid "Liq. Price"
 msgstr "Liq. Preis"
@@ -1989,6 +2017,7 @@ msgstr "Liquiditätsdaten nicht geladen"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/utils.ts
+#: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/utils.ts
@@ -2016,10 +2045,9 @@ msgstr "Lädt..."
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/components/Synthetics/Position/PositionLarge.tsx
-#: src/components/Synthetics/Position/PositionSmall.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
@@ -2028,6 +2056,7 @@ msgstr "Lädt..."
 #: src/components/Synthetics/Trade/utils.ts
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
+#: src/domain/synthetics/orders/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
@@ -2091,7 +2120,9 @@ msgstr "MEV-Optimierer"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/Position/PositionSmall.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/OrderList/OrderList.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
@@ -2114,8 +2145,8 @@ msgstr "Mark: {0}"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/Synthetics/Position/PositionLarge.tsx
-#: src/components/Synthetics/Position/PositionSmall.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Market"
@@ -2347,20 +2378,20 @@ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/Position/PositionSmall.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 msgid "Net Value"
 msgstr "Nettowert"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/Position/Common.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Net Value: Initial Collateral + PnL - Borrow Fee"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/Position/Common.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Net Value: Initial Collateral + PnL - Fees"
 msgstr ""
 
@@ -2409,6 +2440,10 @@ msgstr "Keine offenen Stellen"
 msgid "No open positions at GMX currently"
 msgstr "Derzeit keine offenen Positionen bei GMX"
 
+#: src/components/Synthetics/OrderList/OrderList.tsx
+msgid "No orders"
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "No position"
 msgstr "Keine Position"
@@ -2439,7 +2474,7 @@ msgstr "Es sind nur Buchstaben, Zahlen und Unterstriche erlaubt."
 msgid "Open + Close Fees"
 msgstr ""
 
-#: src/components/Synthetics/Position/Common.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Open + Close fee"
 msgstr ""
 
@@ -2552,7 +2587,7 @@ msgid "Order updated!"
 msgstr "Orderupdate übermittelt!"
 
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/Position/PositionSmall.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
 msgid "Orders"
@@ -2667,8 +2702,8 @@ msgstr "Bitte wechsle dein Netzwerk zu Arbitrum."
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/Position/Common.tsx
-#: src/components/Synthetics/Position/PositionSmall.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/pages/Actions/Actions.js
 msgid "PnL"
@@ -2676,7 +2711,7 @@ msgstr "PnL"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/Position/Common.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "PnL After Fees"
 msgstr "PnL nach Gebühren"
 
@@ -2736,6 +2771,8 @@ msgstr "Prev"
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 #: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
@@ -3164,10 +3201,9 @@ msgstr "Position teilen"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/components/Synthetics/Position/PositionLarge.tsx
-#: src/components/Synthetics/Position/PositionSmall.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
@@ -3176,6 +3212,7 @@ msgstr "Position teilen"
 #: src/components/Synthetics/Trade/utils.ts
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
+#: src/domain/synthetics/orders/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
@@ -3223,7 +3260,7 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/Position/PositionSmall.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Size"
@@ -3338,6 +3375,10 @@ msgstr ""
 
 #: src/domain/synthetics/orders/constants.ts
 msgid "Stop Loss Decrease"
+msgstr ""
+
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+msgid "Stop Market"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -3456,6 +3497,10 @@ msgstr ""
 
 #: src/domain/synthetics/orders/createSwapOrderTxn.ts
 msgid "Swap {fromText} to {toText}"
+msgstr ""
+
+#: src/domain/synthetics/orders/utils.ts
+msgid "Swap {fromTokenText} for {toTokenText}"
 msgstr ""
 
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
@@ -3994,11 +4039,11 @@ msgid "Updating Order..."
 msgstr "Order updaten..."
 
 #: src/components/Referrals/JoinReferralCode.js
-#: src/components/Synthetics/Position/PositionLarge.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Updating..."
 msgstr ""
 
-#: src/components/Synthetics/Position/PositionLarge.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Use the \"Close\" button to reduce your position size"
 msgstr ""
 
@@ -4012,7 +4057,7 @@ msgstr "Verwende den Button \"Zusammensetzen\", um deine Multiplikatorpunkte zu 
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/Position/Common.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Use the Edit Collateral icon to deposit or withdraw collateral."
 msgstr "Verwende das Symbol Kollateral bearbeiten, um Kollateral zu hinterlegen oder zurückzuziehen."
 
@@ -4116,7 +4161,7 @@ msgstr "WARNUNG: Hohe Gebühren"
 msgid "WARNING: This position has a low amount of collateral after deducting borrowing fees, deposit more collateral to reduce the position's liquidation risk."
 msgstr ""
 
-#: src/components/Synthetics/Position/Common.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "WARNING: This position has a low amount of collateral after deducting fees, deposit more collateral to reduce the position's liquidation risk."
 msgstr ""
 
@@ -4350,6 +4395,10 @@ msgstr "Du wirst mind. {0} {1} erhalten, wenn dieser Auftrag ausgeführt wird. D
 msgid "You will receive at least {0} {1} if this order is executed. The execution price may vary depending on swap fees at the time the order is executed."
 msgstr "Du wirst mind. {0} {1} erhalten, wenn dieser Auftrag ausgeführt wird. Der Ausführungspreis kann je nach den Swap-Gebühren zum Zeitpunkt der Auftragsausführung variieren."
 
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+msgid "You will receive at least {toAmountText} if this order is executed. The execution price may vary depending on swap fees at the time the order is executed."
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 msgstr "Dein esGMX-Guthaben (IOU) verringert sich nach der Beanspruchung um deinen beanspruchten Betrag, dies ist ein zu erwartendes Verhalten."
@@ -4375,8 +4424,8 @@ msgid "account"
 msgstr ""
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-msgid "at"
-msgstr ""
+#~ msgid "at"
+#~ msgstr ""
 
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "collateral"

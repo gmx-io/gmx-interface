@@ -1,14 +1,10 @@
 import { useWeb3React } from "@web3-react/core";
 import OrderStore from "abis/OrderStore.json";
+import SyntheticsReader from "abis/SyntheticsReader.json";
 import { getContract } from "config/contracts";
-import { getToken } from "config/tokens";
-import { getMarket, useMarketsData } from "domain/synthetics/markets";
-import { parseContractPrice } from "domain/synthetics/tokens";
-import { BigNumber } from "ethers";
 import { useMulticall } from "lib/multicall";
 import { bigNumberify } from "lib/numbers";
-import { useMemo } from "react";
-import { orderTypeLabels } from "./constants";
+import { useEffect, useMemo, useState } from "react";
 import { OrdersData } from "./types";
 
 type OrdersResult = {
@@ -16,104 +12,114 @@ type OrdersResult = {
   isLoading: boolean;
 };
 
+const DEFAULT_COUNT = 100;
+
 export function useOrdersData(chainId: number): OrdersResult {
   const { account } = useWeb3React();
 
-  const { marketsData } = useMarketsData(chainId);
+  const [ordersData, setOrdersData] = useState<OrdersData>({});
+  const [startIndex, setStartIndex] = useState(0);
+  const [endIndex, setEndIndex] = useState(DEFAULT_COUNT);
 
-  const { data: orderKeys = [] } = useMulticall(chainId, "useOrdersData-keys", {
-    key: account ? [account] : null,
-    request: {
-      orderStore: {
-        contractAddress: getContract(chainId, "OrderStore"),
-        abi: OrderStore.abi,
-        calls: {
-          keys: {
-            methodName: "getAccountOrderKeys",
-            // TODO: pagination
-            params: [account, 0, 100],
-          },
-        },
-      },
-    },
-    parseResponse: (res) => res.orderStore.keys.returnValues as string[],
-  });
-
-  const marketsKeys = Object.keys(marketsData);
-
-  const { data: ordersData, isLoading } = useMulticall(chainId, "useOrdersData-orders", {
-    key:
-      account && orderKeys.length && marketsKeys.length ? [account, orderKeys.join("-"), marketsKeys.join("-")] : null,
+  const { data, isLoading } = useMulticall(chainId, "useOrdersData", {
+    key: account ? [account, startIndex, endIndex] : null,
     request: () => ({
       orderStore: {
         contractAddress: getContract(chainId, "OrderStore"),
         abi: OrderStore.abi,
-        calls: orderKeys.reduce((calls, key) => {
-          calls[key] = {
-            methodName: "get",
-            params: [key],
-          };
-
-          return calls;
-        }, {}),
+        calls: {
+          count: {
+            methodName: "getAccountOrderCount",
+            params: [account],
+          },
+          keys: {
+            methodName: "getAccountOrderKeys",
+            params: [account, startIndex, endIndex],
+          },
+        },
+      },
+      reader: {
+        contractAddress: getContract(chainId, "SyntheticsReader"),
+        abi: SyntheticsReader.abi,
+        calls: {
+          orders: {
+            methodName: "getAccountOrders",
+            params: [getContract(chainId, "OrderStore"), account, startIndex, endIndex],
+          },
+        },
       },
     }),
-    parseResponse: (res) =>
-      Object.keys(res.orderStore).reduce((ordersMap: OrdersData, key: string) => {
-        const order = res.orderStore[key].returnValues;
+    parseResponse: (res) => {
+      const count = Number(res.orderStore.count.returnValues[0]);
+      const orderKeys = res.orderStore.keys.returnValues;
+      const orders = res.reader.orders.returnValues;
 
-        if (!order) return ordersMap;
+      return {
+        count,
+        ordersData: orders.reduce((acc: OrdersData, order, i) => {
+          // TODO: parsing from abi?
+          const key = orderKeys[i];
+          const [addresses, numbers, flags, data] = order;
+          const [account, receiver, callbackContract, marketAddress, initialCollateralToken, swapPath] = addresses;
+          const [
+            sizeDeltaUsd,
+            initialCollateralDeltaAmount,
+            triggerPrice,
+            acceptablePrice,
+            executionFee,
+            callbackGasLimit,
+            minOutputAmount,
+            updatedAtBlock,
+          ] = numbers.map(bigNumberify);
 
-        const [addresses, numbers, flags, data] = order;
-        const [account, receiver, callbackContract, marketAddress, initialCollateralToken, swapPath] = addresses;
-        const [
-          sizeDeltaUsd,
-          initialCollateralDeltaAmount,
-          triggerPrice,
-          acceptablePrice,
-          executionFee,
-          callbackGasLimit,
-          minOutputAmount,
-          updatedAtBlock,
-        ] = numbers.map(bigNumberify);
+          const [orderType, isLong, shouldUnwrapNativeToken, isFrozen] = flags;
 
-        const [orderType, isLong, shouldUnwrapNativeToken, isFrozen] = flags;
+          acc[key] = {
+            key,
+            account,
+            receiver,
+            callbackContract,
+            marketAddress,
+            initialCollateralTokenAddress: initialCollateralToken,
+            swapPath,
+            sizeDeltaUsd,
+            initialCollateralDeltaAmount,
+            contractTriggerPrice: triggerPrice,
+            contractAcceptablePrice: acceptablePrice,
+            executionFee,
+            callbackGasLimit,
+            minOutputAmount,
+            updatedAtBlock,
+            isLong,
+            shouldUnwrapNativeToken,
+            isFrozen,
+            orderType,
+            data,
+          };
 
-        const market = getMarket(marketsData, marketAddress);
-
-        const indexToken = market ? getToken(chainId, market.indexTokenAddress) : undefined;
-
-        ordersMap[key] = {
-          key,
-          account,
-          receiver,
-          callbackContract,
-          market: marketAddress,
-          initialCollateralToken,
-          swapPath,
-          sizeDeltaUsd,
-          initialCollateralDeltaAmount,
-          triggerPrice: indexToken ? parseContractPrice(triggerPrice, indexToken.decimals) : BigNumber.from(0),
-          acceptablePrice: indexToken ? parseContractPrice(acceptablePrice, indexToken.decimals) : BigNumber.from(0),
-          executionFee,
-          callbackGasLimit,
-          minOutputAmount,
-          updatedAtBlock,
-          typeLabel: orderTypeLabels[orderType],
-          type: orderType,
-          isLong,
-          shouldUnwrapNativeToken,
-          isFrozen,
-          data,
-        };
-
-        return ordersMap;
-      }, {} as OrdersData),
+          return acc;
+        }, {} as OrdersData),
+      };
+    },
   });
+
+  useEffect(() => {
+    if (data?.count && data.count > endIndex) {
+      setStartIndex(endIndex);
+      setEndIndex(data.count);
+    }
+
+    if (data?.ordersData) {
+      setOrdersData((old) => ({
+        ...old,
+        ...data.ordersData,
+      }));
+    }
+  }, [data?.count, data?.ordersData, endIndex]);
 
   return useMemo(() => {
     return {
-      ordersData: ordersData || {},
+      ordersData,
       isLoading,
     };
   }, [isLoading, ordersData]);

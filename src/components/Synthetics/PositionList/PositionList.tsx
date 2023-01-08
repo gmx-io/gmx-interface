@@ -1,5 +1,5 @@
 import { Trans, t } from "@lingui/macro";
-import { PositionLarge, PositionSmall } from "components/Synthetics/Position/Position";
+import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
 import { PositionEditor } from "components/Synthetics/PositionEditor/PositionEditor";
 import { PositionSeller } from "components/Synthetics/PositionSeller/PositionSeller";
 import { useAggregatedPositionsData } from "domain/synthetics/positions/useAggregatedPositionsData";
@@ -35,7 +35,7 @@ export function PositionList(p: Props) {
         )}
         {!isDataLoading &&
           positions.map((position) => (
-            <PositionSmall
+            <PositionItem
               key={position.key}
               position={position}
               onEditCollateralClick={() => setEditingPositionKey(position.key)}
@@ -44,6 +44,7 @@ export function PositionList(p: Props) {
               onSelectMarketClick={() => p.onSelectMarket(position.marketAddress)}
               onShareClick={() => {}}
               showPnlAfterFees={false}
+              isLarge={false}
             />
           ))}
       </div>
@@ -75,7 +76,7 @@ export function PositionList(p: Props) {
           </tr>
           {!isDataLoading &&
             positions.map((position) => (
-              <PositionLarge
+              <PositionItem
                 key={position.key}
                 position={position}
                 onEditCollateralClick={() => setEditingPositionKey(position.key)}
@@ -84,6 +85,7 @@ export function PositionList(p: Props) {
                 onSelectMarketClick={() => p.onSelectMarket(position.marketAddress)}
                 onShareClick={() => {}}
                 showPnlAfterFees={false}
+                isLarge={true}
               />
             ))}
         </tbody>

@@ -1,8 +1,8 @@
-import { InfoTokens } from "domain/tokens";
+import { InfoTokens, TokenInfo } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import { expandDecimals, formatAmount, formatAmountFree } from "lib/numbers";
-import { TokenAllowancesData, TokensData } from "./types";
+import { TokenAllowancesData, TokenData, TokensData } from "./types";
 
 export function getTokenData(tokensData: TokensData, address?: string) {
   if (!address) return undefined;
@@ -57,18 +57,25 @@ export function needTokenApprove(tokenAllowanceData: TokenAllowancesData, tokenA
  */
 export function adaptToInfoTokens(tokensData: TokensData): InfoTokens {
   const infoTokens = Object.keys(tokensData).reduce((acc, address) => {
-    const { prices, ...tokenData } = getTokenData(tokensData, address)!;
+    const tokenData = getTokenData(tokensData, address)!;
 
-    acc[address] = {
-      ...tokenData,
-      minPrice: prices?.minPrice,
-      maxPrice: prices?.maxPrice,
-    };
+    acc[address] = adaptToTokenInfo(tokenData);
 
     return acc;
   }, {} as InfoTokens);
 
   return infoTokens;
+}
+
+/**
+ * Used to adapt Synthetics tokens to InfoTokens where it's possible
+ */
+export function adaptToTokenInfo(tokenData: TokenData): TokenInfo {
+  return {
+    ...tokenData,
+    minPrice: tokenData.prices?.minPrice,
+    maxPrice: tokenData.prices?.maxPrice,
+  };
 }
 
 export function convertFromUsdByPrice(usdAmount: BigNumber, tokenDecimals: number, price: BigNumber) {

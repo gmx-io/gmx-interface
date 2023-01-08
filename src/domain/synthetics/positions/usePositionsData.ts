@@ -17,7 +17,6 @@ const DEFAULT_COUNT = 100;
 
 export function usePositionsData(chainId: number): PositionsDataResult {
   const { account } = useWeb3React();
-
   const [positionsData, setPositionsData] = useState<PositionsData>({});
   const [startIndex, setStartIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(DEFAULT_COUNT);

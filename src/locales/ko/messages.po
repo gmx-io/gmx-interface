@@ -74,6 +74,7 @@ msgid "<0>The pool's capacity has been reached for {0}. Please use another token
 msgstr "<0>풀의 최대허용량이 {0}에 도달했습니다. 다른 토큰을 이용해 GLP를 구매해주세요.</0><1>\"수수료 절약\" 섹션을 통해 가장 저렴한 수수료를 확인하세요.</1>"
 
 #: src/components/Exchange/OrdersList.js
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "<0>The price that orders can be executed at may differ slightly from the chart price, as market orders update oracle prices, while limit/trigger orders do not.</0><1>This can also cause limit/triggers to not be executed if the price is not reached for long enough. <2>Read more</2>.</1>"
 msgstr ""
 
@@ -127,6 +128,12 @@ msgstr "사용가능"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "About"
 msgstr "대하여"
+
+#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.ts
+msgid "Above"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Accept confirmation of trigger orders"
@@ -387,6 +394,12 @@ msgstr "잔고: {0}"
 msgid "Begin Transfer"
 msgstr "전송시작"
 
+#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.ts
+msgid "Below"
+msgstr ""
+
 #: src/components/Migration/Migration.js
 #: src/components/Migration/Migration.js
 msgid "Bonus Tokens"
@@ -409,17 +422,17 @@ msgstr "멀티플라이어 포인트를 사용해서 보상을 증가시키세�
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/Position/Common.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Borrow Fee"
 msgstr "차용 수수료"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/Position/Common.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Borrow Fee / Day"
 msgstr "차용 수수료 / 일"
 
-#: src/components/Synthetics/Position/Common.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Borrow fee:"
 msgstr ""
 
@@ -556,6 +569,8 @@ msgstr "에러로 인해 실행되지 못했습니다"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Cancel"
 msgstr "취소"
 
@@ -670,7 +685,7 @@ msgstr "수령중..."
 msgid "Click on a row to select the position's market, then use the swap box to increase your position size if needed."
 msgstr "포지션 마켓을 선택하세요. 그 후 스왑 박스를 통해 필요한 만큼 사이즈를 조정하세요."
 
-#: src/components/Synthetics/Position/PositionLarge.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Click on a row to select the position's market, then use the swap box to increase your position size, or to set stop-loss / take-profit orders. if needed."
 msgstr ""
 
@@ -679,8 +694,8 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
-#: src/components/Synthetics/Position/PositionLarge.tsx
-#: src/components/Synthetics/Position/PositionSmall.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
@@ -743,7 +758,9 @@ msgstr "Coinbase 지갑이 존재하지 않습니다."
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/Position/PositionSmall.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Collateral"
@@ -759,7 +776,7 @@ msgstr "담보 ({0})"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/Synthetics/Position/Common.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 #: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
@@ -1061,6 +1078,10 @@ msgstr "감소 액티브: {0}, 실행 완료: {1} 취소 완료: {2}"
 msgid "Decrease {longText} {0} by {1}"
 msgstr ""
 
+#: src/domain/synthetics/orders/utils.ts
+msgid "Decrease {tokenText} by {sizeText}"
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.js
 msgid "Decreased"
 msgstr "감소 완료"
@@ -1177,12 +1198,14 @@ msgstr "이코시스템"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Edit"
 msgstr "수정"
 
 #: src/components/Exchange/PositionDropdown.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/Position/PositionSmall.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Edit Collateral"
 msgstr "담보 수정"
 
@@ -1343,7 +1366,7 @@ msgstr "새로운 가격 입력"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/Synthetics/Position/PositionSmall.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
@@ -1708,6 +1731,10 @@ msgstr "{0} {longOrShortText}을 증가, +{1} USD, {2} 가격: {3} USD"
 msgid "Increase {longText} {0} by {1}"
 msgstr ""
 
+#: src/domain/synthetics/orders/utils.ts
+msgid "Increase {tokenText} by {sizeText}"
+msgstr ""
+
 #: src/pages/Exchange/Exchange.js
 msgid "Increased {tokenSymbol} {longOrShortText}, +{0} USD."
 msgstr "{tokenSymbol} {longOrShortText} 증가 완료, +{0} USD."
@@ -1720,8 +1747,8 @@ msgstr "인덱스"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/Position/Common.tsx
-#: src/components/Synthetics/Position/Common.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Initial Collateral"
 msgstr "최초 담보"
 
@@ -1867,7 +1894,7 @@ msgstr "남은 포지션이 10 USD 미만입니다."
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/Synthetics/Position/PositionSmall.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
@@ -1889,6 +1916,7 @@ msgstr ""
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Limit"
 msgstr "지정가"
@@ -1946,7 +1974,7 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/Synthetics/Position/PositionSmall.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 msgid "Liq. Price"
 msgstr "청산가"
@@ -1989,6 +2017,7 @@ msgstr "유동성 데이터를 불러오지 못하였습니다."
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/utils.ts
+#: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/utils.ts
@@ -2016,10 +2045,9 @@ msgstr "로딩중..."
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/components/Synthetics/Position/PositionLarge.tsx
-#: src/components/Synthetics/Position/PositionSmall.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
@@ -2028,6 +2056,7 @@ msgstr "로딩중..."
 #: src/components/Synthetics/Trade/utils.ts
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
+#: src/domain/synthetics/orders/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
@@ -2091,7 +2120,9 @@ msgstr "MEV 옵티마이저"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/Position/PositionSmall.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/OrderList/OrderList.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
@@ -2114,8 +2145,8 @@ msgstr "시장 평균가: {0}"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/Synthetics/Position/PositionLarge.tsx
-#: src/components/Synthetics/Position/PositionSmall.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Market"
@@ -2347,20 +2378,20 @@ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/Position/PositionSmall.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 msgid "Net Value"
 msgstr "순이익"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/Position/Common.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Net Value: Initial Collateral + PnL - Borrow Fee"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/Position/Common.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Net Value: Initial Collateral + PnL - Fees"
 msgstr ""
 
@@ -2409,6 +2440,10 @@ msgstr "열려있는 포지션이 없습니다"
 msgid "No open positions at GMX currently"
 msgstr "현재 GMX에서 열려있는 포지션이 없습니다."
 
+#: src/components/Synthetics/OrderList/OrderList.tsx
+msgid "No orders"
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "No position"
 msgstr "열려있는 포지션이 없음"
@@ -2439,7 +2474,7 @@ msgstr "문자, 숫자 및 언더스코어만 가능합니다"
 msgid "Open + Close Fees"
 msgstr ""
 
-#: src/components/Synthetics/Position/Common.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Open + Close fee"
 msgstr ""
 
@@ -2552,7 +2587,7 @@ msgid "Order updated!"
 msgstr "주문 업데이트됨!"
 
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/Position/PositionSmall.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
 msgid "Orders"
@@ -2667,8 +2702,8 @@ msgstr "네트워크를 Arbitrum으로 변경해주세요."
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/Position/Common.tsx
-#: src/components/Synthetics/Position/PositionSmall.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/pages/Actions/Actions.js
 msgid "PnL"
@@ -2676,7 +2711,7 @@ msgstr "PnL"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/Position/Common.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "PnL After Fees"
 msgstr "수수료 제외한 PnL"
 
@@ -2736,6 +2771,8 @@ msgstr "이전"
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 #: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
@@ -3164,10 +3201,9 @@ msgstr "포지션 공유"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/components/Synthetics/Position/PositionLarge.tsx
-#: src/components/Synthetics/Position/PositionSmall.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
@@ -3176,6 +3212,7 @@ msgstr "포지션 공유"
 #: src/components/Synthetics/Trade/utils.ts
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
+#: src/domain/synthetics/orders/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
@@ -3223,7 +3260,7 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/Position/PositionSmall.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Size"
@@ -3338,6 +3375,10 @@ msgstr ""
 
 #: src/domain/synthetics/orders/constants.ts
 msgid "Stop Loss Decrease"
+msgstr ""
+
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+msgid "Stop Market"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -3456,6 +3497,10 @@ msgstr "{0} {1}을 {2} {3}으로 스왑"
 
 #: src/domain/synthetics/orders/createSwapOrderTxn.ts
 msgid "Swap {fromText} to {toText}"
+msgstr ""
+
+#: src/domain/synthetics/orders/utils.ts
+msgid "Swap {fromTokenText} for {toTokenText}"
 msgstr ""
 
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
@@ -3994,11 +4039,11 @@ msgid "Updating Order..."
 msgstr "주문 업데이트중..."
 
 #: src/components/Referrals/JoinReferralCode.js
-#: src/components/Synthetics/Position/PositionLarge.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Updating..."
 msgstr "업데이트중..."
 
-#: src/components/Synthetics/Position/PositionLarge.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Use the \"Close\" button to reduce your position size"
 msgstr ""
 
@@ -4012,7 +4057,7 @@ msgstr "멀티플라이어 포인트를 스테이킹하기 위해 \"수령 후 �
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/Position/Common.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Use the Edit Collateral icon to deposit or withdraw collateral."
 msgstr "담보 예치 혹은 인출을 위해 담보 수정하기 아이콘을 사용하세요."
 
@@ -4116,7 +4161,7 @@ msgstr "경고: 높은 수수료"
 msgid "WARNING: This position has a low amount of collateral after deducting borrowing fees, deposit more collateral to reduce the position's liquidation risk."
 msgstr "경고: 이 포지션은 차용수수료를 차감하면 담보액이 낮습니다. 포지션 청산 위험을 줄이기 위해 담보액을 늘려주세요."
 
-#: src/components/Synthetics/Position/Common.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "WARNING: This position has a low amount of collateral after deducting fees, deposit more collateral to reduce the position's liquidation risk."
 msgstr ""
 
@@ -4350,6 +4395,10 @@ msgstr "해당 주문이 실행되게 되면 최소 {0} {1}을 받을 수 있습
 msgid "You will receive at least {0} {1} if this order is executed. The execution price may vary depending on swap fees at the time the order is executed."
 msgstr "해당 주문이 실행되게 되면 최소 {0} {1}을 받을 수 있습니다. 정확한 실행가격은 주문이 실행된 스왑 수수료에 의해 상이합니다."
 
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+msgid "You will receive at least {toAmountText} if this order is executed. The execution price may vary depending on swap fees at the time the order is executed."
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 msgstr "귀하의 esGMX(IOU) 잔액은 수령 후 수령액만큼 감소하는데 이는 상정된 행동입니다."
@@ -4375,8 +4424,8 @@ msgid "account"
 msgstr "게정"
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-msgid "at"
-msgstr ""
+#~ msgid "at"
+#~ msgstr ""
 
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "collateral"
