@@ -142,7 +142,6 @@ export default function TokenSelector(props: Props) {
                 {tokenState.disabled && tokenState.message && (
                   <TooltipWithPortal
                     className="TokenSelector-tooltip"
-                    portalClassName="TokenSelector-tooltip-portal"
                     handle={<div className="TokenSelector-tooltip-backing" />}
                     position={tokenIndex < filteredTokens.length / 2 ? "center-bottom" : "center-top"}
                     disableHandleStyle
