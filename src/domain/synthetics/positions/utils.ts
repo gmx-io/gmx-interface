@@ -5,10 +5,6 @@ import { MarketsData, getMarket, getMarketName } from "../markets";
 import { TokenPrices, TokensData, convertToUsdByPrice, formatUsdAmount, getTokenData } from "../tokens";
 import { AggregatedPositionData, PositionsData } from "./types";
 
-export function getPositions(positionsData: PositionsData) {
-  return Object.values(positionsData);
-}
-
 export function getPosition(positionsData: PositionsData, positionKey?: string) {
   if (!positionKey) return undefined;
 

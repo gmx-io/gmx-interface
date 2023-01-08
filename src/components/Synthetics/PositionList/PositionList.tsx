@@ -1,12 +1,10 @@
 import { Trans, t } from "@lingui/macro";
+import { PositionLarge, PositionSmall } from "components/Synthetics/Position/Position";
 import { PositionEditor } from "components/Synthetics/PositionEditor/PositionEditor";
 import { PositionSeller } from "components/Synthetics/PositionSeller/PositionSeller";
-import { useMarketsData } from "domain/synthetics/markets";
-import { getAggregatedPositionData, usePositionsData } from "domain/synthetics/positions";
-import { useAvailableTokensData } from "domain/synthetics/tokens";
+import { useAggregatedPositionsData } from "domain/synthetics/positions/useAggregatedPositionsData";
 import { useChainId } from "lib/chains";
-import { useMemo, useState } from "react";
-import { PositionSmall, PositionLarge } from "components/Synthetics/Position/Position";
+import { useState } from "react";
 
 type Props = {
   onSelectMarket: (marketAddress: string) => void;
@@ -18,17 +16,11 @@ export function PositionList(p: Props) {
   const [closingPositionKey, setClosingPositionKey] = useState<string>();
   const [editingPositionKey, setEditingPositionKey] = useState<string>();
 
-  const { positionsData, isLoading: isPositionsLoading } = usePositionsData(chainId);
-  const { marketsData, isLoading: isMarketsLoading } = useMarketsData(chainId);
-  const { tokensData, isLoading: isTokensLoading } = useAvailableTokensData(chainId);
+  const { aggregatedPositionsData, isLoading } = useAggregatedPositionsData(chainId);
 
-  const positions = useMemo(() => {
-    return Object.keys(positionsData)
-      .map((key) => getAggregatedPositionData(positionsData, marketsData, tokensData, key)!)
-      .reverse();
-  }, [marketsData, positionsData, tokensData]);
+  const positions = Object.values(aggregatedPositionsData);
 
-  const isDataLoading = isPositionsLoading || isMarketsLoading || isTokensLoading;
+  const isDataLoading = isLoading;
 
   const closingPosition = positions.find((position) => position.key === closingPositionKey);
   // const editingPosition = positions.find((position) => position.key === editingPositionKey);
