@@ -707,6 +707,10 @@ msgstr "포지션 종료"
 msgid "Close failed."
 msgstr "포지션 종료 실패"
 
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+msgid "Close size is greater than position size"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Close submitted!"
 msgstr "포지션 종료 제출 완료"
@@ -1325,6 +1329,10 @@ msgstr "코드 입력"
 #: src/components/Exchange/SwapBox.js
 msgid "Enter a price"
 msgstr "가격 입력"
+
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+msgid "Enter a size"
+msgstr ""
 
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Enter a swap trigger ratio"
@@ -2915,6 +2923,7 @@ msgstr "어필리에이트로서 이 계정이 획득한 소개 보수."
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Receive"
