@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ReactNode } from "react";
 import cx from "classnames";
 
 import { BiChevronDown } from "react-icons/bi";
@@ -30,7 +30,7 @@ type Props = {
   showMintingCap?: boolean;
   mintingCap?: BigNumber;
   disabled?: boolean;
-  selectedTokenLabel?: string;
+  selectedTokenLabel?: ReactNode | string;
   showBalances?: boolean;
   showTokenImgInDropdown?: boolean;
   showSymbolImage?: boolean;

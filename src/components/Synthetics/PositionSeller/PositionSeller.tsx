@@ -7,9 +7,16 @@ import {
 } from "domain/synthetics/positions";
 import { useChainId } from "lib/chains";
 import Modal from "components/Modal/Modal";
-import { formatUsdAmount, getTokenAmountFromUsd, useAvailableTokensData } from "domain/synthetics/tokens";
+import {
+  adaptToInfoTokens,
+  formatTokenAmountWithUsd,
+  formatUsdAmount,
+  getTokenAmountFromUsd,
+  getTokenData,
+  useAvailableTokensData,
+} from "domain/synthetics/tokens";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { formatAmount, parseValue } from "lib/numbers";
 import { DEFAULT_SLIPPAGE_AMOUNT, DUST_USD, USD_DECIMALS } from "lib/legacy";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
@@ -22,9 +29,10 @@ import { BigNumber } from "ethers";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { KEEP_LEVERAGE_FOR_DECREASE_KEY } from "config/localStorage";
 import Checkbox from "components/Checkbox/Checkbox";
+import { ValueTransition } from "components/ValueTransition/ValueTransition";
+import TokenSelector from "components/TokenSelector/TokenSelector";
 
 import "./PositionSeller.scss";
-import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 type Props = {
   position: AggregatedPositionData;
@@ -56,13 +64,16 @@ export function PositionSeller(p: Props) {
   const { chainId } = useChainId();
   const { library, account } = useWeb3React();
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey([chainId, KEEP_LEVERAGE_FOR_DECREASE_KEY], true);
-
   const { tokensData } = useAvailableTokensData(chainId);
+  const infoTokens = adaptToInfoTokens(tokensData);
 
   const [closeSizeInputValue, setCloseSizeInputValue] = useState("");
   const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
-
   const isClosing = position.sizeInUsd?.sub(closeSizeUsd).lt(DUST_USD);
+
+  const [receiveTokenAddress, setReceiveTokenAddress] = useState<string>();
+  const receiveTokenOptions = Object.values(tokensData);
+  const receiveToken = getTokenData(tokensData, receiveTokenAddress);
 
   const fees = BigNumber.from(0);
 
@@ -73,6 +84,11 @@ export function PositionSeller(p: Props) {
       ? sizeDelta.mul(position.collateralUsd).div(position.currentValueUsd)
       : BigNumber.from(0);
 
+  const receiveUsd = collateralDeltaUsd;
+  const receiveTokenAmount = getTokenAmountFromUsd(tokensData, receiveTokenAddress, receiveUsd, false);
+
+  const nextSizeUsd = isClosing ? BigNumber.from(0) : position.sizeInUsd?.sub(sizeDelta);
+
   const nextCollateralUsd = getNextCollateralUsd({
     isClosing,
     collateralUsd: position.collateralUsd,
@@ -80,8 +96,6 @@ export function PositionSeller(p: Props) {
     fees,
     pnl: position.pnl,
   });
-
-  const nextSizeUsd = isClosing ? BigNumber.from(0) : position.sizeInUsd?.sub(sizeDelta);
 
   const nextLiqPrice = nextSizeUsd.gt(0)
     ? getLiquidationPrice({
@@ -100,72 +114,36 @@ export function PositionSeller(p: Props) {
       })
     : undefined;
 
-  // if (!isClosing) {
-  //   if (collateralUsd) {
-  //     nextCollateralUsd = collateralUsd;
-  //     if (collateralDeltaUsd?.gt(0)) {
-  //       nextCollateralUsd = collateralUsd.sub(collateralDeltaUsd);
-  //     } else if (positionDelta && positionDelta.gt(0) && sizeDelta) {
-  //       if (!positionHasProfit) {
-  //         nextCollateralUsd = nextCollateralUsd.sub(nextCollateralUsd);
-  //       }
-  //     }
-  //   }
-  // }
-
-  //   const [deltaStr, deltaPercentageStr] = useMemo(() => {
-  //     if (!position || !position.markPrice || position.collateral.eq(0)) {
-  //       return ["-", "-"];
-  //     }
-  //     if (orderOption !== STOP) {
-  //       const { pendingDelta, pendingDeltaPercentage, hasProfit } = calculatePositionDelta(
-  //         position.markPrice,
-  //         position,
-  //         fromAmount
-  //       );
-  //       const { deltaStr, deltaPercentageStr } = getDeltaStr({
-  //         delta: pendingDelta,
-  //         deltaPercentage: pendingDeltaPercentage,
-  //         hasProfit,
-  //       });
-  //       return [deltaStr, deltaPercentageStr];
-  //     }
-  //     if (!triggerPriceUsd || triggerPriceUsd.eq(0)) {
-  //       return ["-", "-"];
-  //     }
-
-  //     const { pendingDelta, pendingDeltaPercentage, hasProfit } = calculatePositionDelta(
-  //       triggerPriceUsd,
-  //       position,
-  //       fromAmount
-  //     );
-
-  //     const { deltaStr, deltaPercentageStr } = getDeltaStr({
-  //       delta: pendingDelta,
-  //       deltaPercentage: pendingDeltaPercentage,
-  //       hasProfit,
-  //     });
-  //     return [deltaStr, deltaPercentageStr];
-  //   }, [position, triggerPriceUsd, orderOption, fromAmount]);
+  useEffect(() => {
+    if (!receiveTokenAddress && position.collateralToken) {
+      setReceiveTokenAddress(position.collateralToken?.address);
+    }
+  }, [position.collateralToken, receiveTokenAddress]);
 
   const executionFee = getExecutionFee(tokensData);
 
+  function getError() {
+    if (!closeSizeUsd.gt(0)) {
+      return t`Enter a size`;
+    }
+
+    if (closeSizeUsd.gt(position.sizeInUsd)) {
+      return t`Close size is greater than position size`;
+    }
+  }
+
   function getSubmitButtonState(): { text: string; disabled?: boolean; onClick?: () => void } {
-    // const error = getError();
+    const error = getError();
 
-    // if (error) {
-    //   return error;
-    // }
-
-    // if (hasPendingProfit) {
-    //   return t`Close without profit`;
-    // }
-
-    // return isSubmitting ? t`Closing...` : t`Close`;
+    if (error) {
+      return {
+        text: error,
+        disabled: true,
+      };
+    }
 
     return {
       text: t`Close`,
-      disabled: false,
       onClick: onSubmit,
     };
   }
@@ -186,11 +164,6 @@ export function PositionSeller(p: Props) {
       : BigNumber.from(0);
 
     const adjustedSizeDeltaUsd = position.sizeInUsd.mul(sizeDelta).div(position.currentValueUsd);
-
-    // console.log("params", {
-    //   collateralAmount: formatTokenAmount(collateralAmount, position.collateralToken!.decimals),
-    //   sizeDeltaUsd: formatUsdAmount(adjustedSizeDeltaUsd),
-    // });
 
     createDecreaseOrderTxn(chainId, library, {
       account,
@@ -241,34 +214,8 @@ export function PositionSeller(p: Props) {
           USD
         </BuyInputSection>
 
-        {/* FOR SL/TP */}
-        {/* {MIN_PROFIT_TIME > 0 && profitPrice && nextDelta.eq(0) && nextHasProfit && (
-          <div className="Confirmation-box-warning">
-            <Trans>
-              Reducing the position at the current price will forfeit a&nbsp;
-              <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change">
-                pending profit
-              </ExternalLink>{" "}
-              of {deltaText}. <br />
-            </Trans>
-            <Trans>
-              <br />
-              Profit price: {isLong ? ">" : "<"} ${formatUsdAmount(profitPrice, USD_DECIMALS, 2, true)}. This rule
-              applies for the next {getTimeRemaining(minProfitExpiration)}, until {formatDateTime(minProfitExpiration)}.
-            </Trans>
-          </div>
-        )} */}
-
         <div className="PositionEditor-info-box PositionSeller-info-box">
           {/* {minExecutionFeeErrorMessage && <div className="Confirmation-box-warning">{minExecutionFeeErrorMessage}</div>} */}
-
-          {/* {hasPendingProfit && orderOption !== STOP && (
-            <div className="PositionEditor-accept-profit-warning">
-              <Checkbox isChecked={isProfitWarningAccepted} setIsChecked={setIsProfitWarningAccepted}>
-                <span className="muted">Forfeit profit</span>
-              </Checkbox>
-            </div>
-          )} */}
 
           <div className="PositionEditor-keep-leverage-settings">
             <Checkbox isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
@@ -373,159 +320,36 @@ export function PositionSeller(p: Props) {
 
           <InfoRow label={t`PnL`} value={position.pnl ? formatPnl(position.pnl, position.pnlPercentage) : "..."} />
 
-          {/* <div className="Exchange-info-row">
-            <div className="Exchange-info-label">
-              <Trans>Fees</Trans>
-            </div>
-            <div className="align-right">
-              <Tooltip
-                position="right-top"
-                className="PositionSeller-fees-tooltip"
-                handle={
-                  <div>
-                    {totalFees ? `$${formatAmount(totalFees.add(executionFeeUsd), USD_DECIMALS, 2, true)}` : "-"}
-                  </div>
-                }
-                renderContent={() => (
-                  <div>
-                    {fundingFee && (
-                      <StatsTooltipRow label={t`Borrow fee`} value={formatAmount(fundingFee, USD_DECIMALS, 2, true)} />
-                    )}
+          <div className="App-card-divider" />
 
-                    {positionFee && (
-                      <StatsTooltipRow
-                        label={t`Closing fee`}
-                        value={formatAmount(positionFee, USD_DECIMALS, 2, true)}
-                      />
-                    )}
-
-                    {swapFee && (
-                      <StatsTooltipRow
-                        label={t`Swap fee`}
-                        showDollar={false}
-                        value={`${formatAmount(swapFeeToken, collateralToken.decimals, 5)} ${collateralToken.symbol}
-                             ($${formatAmount(swapFee, USD_DECIMALS, 2, true)})`}
-                      />
-                    )}
-
-                    <StatsTooltipRow
-                      label={t`Execution fee`}
-                      showDollar={false}
-                      value={`${formatAmount(executionFee, 18, 5, true)} ${nativeTokenSymbol} ($${formatAmount(
-                        executionFeeUsd,
-                        USD_DECIMALS,
-                        2
-                      )})`}
-                    />
-
-                    <br />
-
-                    <div className="PositionSeller-fee-item">
-                      <Trans>
-                        <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#fees">More Info</ExternalLink> about
-                        fees.
-                      </Trans>
-                    </div>
-                  </div>
-                )}
-              />
-            </div>
-          </div> */}
-
-          <div className="Exchange-info-row PositionSeller-receive-row top-line">
-            <div className="Exchange-info-label">
-              <Trans>Receive</Trans>
-            </div>
-
-            {/* {!isSwapAllowed && receiveToken && (
-              <div className="align-right PositionSelector-selected-receive-token">
-                {formatAmount(convertedReceiveAmount, receiveToken.decimals, 4, true)}
-                &nbsp;{receiveToken.symbol} ($
-                {formatAmount(receiveAmount, USD_DECIMALS, 2, true)})
-              </div>
-            )} */}
-
-            {/* {isSwapAllowed && receiveToken && (
-              <div className="align-right">
+          <InfoRow
+            label={t`Receive`}
+            className="Exchange-info-row PositionSeller-receive-row "
+            value={
+              receiveTokenAddress && (
                 <TokenSelector
-                  // Scroll lock lead to side effects
-                  // if it applied on modal inside another modal
-                  disableBodyScrollLock={true}
-                  className={cx("PositionSeller-token-selector", {
-                    warning: isNotEnoughReceiveTokenLiquidity || isCollateralPoolCapacityExceeded,
-                  })}
                   label={t`Receive`}
-                  showBalances={false}
+                  className="GlpSwap-from-token"
                   chainId={chainId}
-                  tokenAddress={receiveToken.address}
-                  onSelectToken={(token) => {
-                    setSwapToToken(token);
-                    setSavedRecieveTokenAddress(token.address);
-                  }}
-                  tokens={toTokens}
-                  getTokenState={(tokenOptionInfo) => {
-                    if (!shouldSwap(collateralToken, tokenOptionInfo)) {
-                      return;
-                    }
-
-                    const convertedTokenAmount = getTokenAmountFromUsd(
-                      infoTokens,
-                      tokenOptionInfo.address,
-                      receiveAmount
-                    );
-
-                    const isNotEnoughLiquidity =
-                      tokenOptionInfo.availableAmount.lt(convertedTokenAmount) ||
-                      tokenOptionInfo.bufferAmount.gt(tokenOptionInfo.poolAmount.sub(convertedTokenAmount));
-
-                    if (isNotEnoughLiquidity) {
-                      const { maxIn, maxOut, maxInUsd, maxOutUsd } = getSwapLimits(
-                        infoTokens,
-                        collateralToken.address,
-                        tokenOptionInfo.address
-                      );
-
-                      const collateralInfo = getTokenInfo(infoTokens, collateralToken.address);
-
-                      return {
-                        disabled: true,
-                        message: (
-                          <div>
-                            <Trans>Insufficient Available Liquidity to swap to {tokenOptionInfo.symbol}:</Trans>
-                            <br />
-                            <br />
-                            <StatsTooltipRow
-                              label={t`Max ${collateralInfo.symbol} in`}
-                              value={[
-                                `${formatAmount(maxIn, collateralInfo.decimals, 0, true)} ${collateralInfo.symbol}`,
-                                `($${formatAmount(maxInUsd, USD_DECIMALS, 0, true)})`,
-                              ]}
-                            />
-                            <br />
-                            <StatsTooltipRow
-                              label={t`Max ${tokenOptionInfo.symbol} out`}
-                              value={[
-                                `${formatAmount(maxOut, tokenOptionInfo.decimals, 2, true)} ${tokenOptionInfo.symbol}`,
-                                `($${formatAmount(maxOutUsd, USD_DECIMALS, 2, true)})`,
-                              ]}
-                            />
-                          </div>
-                        ),
-                      };
-                    }
-                  }}
                   infoTokens={infoTokens}
+                  tokenAddress={receiveTokenAddress}
+                  onSelectToken={(token) => setReceiveTokenAddress(token.address)}
+                  tokens={receiveTokenOptions}
                   showTokenImgInDropdown={true}
                   selectedTokenLabel={
                     <span className="PositionSelector-selected-receive-token">
-                      {formatAmount(convertedReceiveAmount, receiveToken.decimals, 4, true)}&nbsp;
-                      {receiveToken.symbol} (${formatAmount(receiveAmount, USD_DECIMALS, 2, true)})
+                      {formatTokenAmountWithUsd(
+                        receiveTokenAmount,
+                        receiveUsd,
+                        receiveToken?.symbol,
+                        receiveToken?.decimals
+                      )}
                     </span>
                   }
                 />
-              </div>
-            )} */}
-          </div>
+              )
+            }
+          />
         </div>
         <div className="Exchange-swap-button-container">
           <SubmitButton onClick={submitButtonState.onClick} disabled={submitButtonState.disabled} authRequired>
