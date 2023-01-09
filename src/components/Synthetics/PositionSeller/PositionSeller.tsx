@@ -11,21 +11,22 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { KEEP_LEVERAGE_FOR_DECREASE_KEY } from "config/localStorage";
 import { getConvertedTokenAddress } from "config/tokens";
 import { getExecutionFee } from "domain/synthetics/fees";
-import { OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
+import {
+  OrderType,
+  createDecreaseOrderTxn,
+  getCollateralDeltaUsdForDecreaseOrder,
+  getCollateralOutForDecreaseOrder,
+  getNextCollateralUsdForDecreaseOrder,
+} from "domain/synthetics/orders";
 import {
   AggregatedPositionData,
-  Position,
   formatLeverage,
   formatPnl,
   getLeverage,
   getLiquidationPrice,
-  getPriceForPnl,
 } from "domain/synthetics/positions";
 import {
-  TokenData,
   adaptToInfoTokens,
-  convertFromUsdByPrice,
-  convertToUsdByPrice,
   formatTokenAmountWithUsd,
   formatUsdAmount,
   getTokenAmountFromUsd,
@@ -47,159 +48,6 @@ type Props = {
   onClose: () => void;
 };
 
-// function getDecreaseOrderFees(p: {
-//   priceImpactConfigsData: PriceImpactConfigsData,
-//   openInterestData: MarketsOpenInterestData,
-//   tokensData: TokensData,
-//   position: AggregatedPositionData,
-//  }) {
-//   const executionFee = getExecutionFee(p.tokensData);
-
-//   const marketOpenInterest = getOpenInterest(p.openInterestData, p.position.marketAddress);
-
-//   const priceImpact = getPriceImpact(
-//     p.priceImpactConfigsData,
-//     p.position.marketAddress,
-//     marketOpenInterest?.longInterest,
-//     marketOpenInterest?.shortInterest,
-//   );
-
-//   const fundingFee = p.position.pendingFundingFeesUsd;
-//   const borrowingFee = p.position.pendingBorrowingFees;
-
-//   const receiveUsdDelta = BigNumber.from(0);
-
-//   return {
-
-//   };
-// }
-
-function getCollateralDeltaUsd(p: {
-  isClosing?: boolean;
-  keepLeverage?: boolean;
-  sizeDeltaUsd?: BigNumber;
-  positionSizeInUsd?: BigNumber;
-  positionCollateralUsd?: BigNumber;
-}) {
-  if (!p.positionCollateralUsd || !p.positionSizeInUsd) return undefined;
-
-  if (p.isClosing) return p.positionCollateralUsd;
-
-  if (!p.keepLeverage || !p.sizeDeltaUsd) return BigNumber.from(0);
-
-  const collateralDeltaUsd = p.sizeDeltaUsd.mul(p.positionCollateralUsd).div(p.positionSizeInUsd);
-
-  return collateralDeltaUsd;
-}
-
-function getNextCollateralUsd(p: {
-  isClosing?: boolean;
-  sizeDeltaUsd?: BigNumber;
-  collateralUsd?: BigNumber;
-  collateralDeltaUsd?: BigNumber;
-  pnl?: BigNumber;
-}) {
-  if (!p.collateralUsd) return undefined;
-
-  if (p.isClosing) return BigNumber.from(0);
-
-  let nextCollateralUsd = p.collateralUsd.sub(p.collateralDeltaUsd || BigNumber.from(0));
-
-  if (p.pnl?.lt(0) && p.sizeDeltaUsd?.gt(0)) {
-    nextCollateralUsd = nextCollateralUsd.sub(p.pnl.abs());
-  }
-
-  return nextCollateralUsd;
-}
-
-function getPositionPnlUsd(position?: Position, indexToken?: TokenData, sizeDeltaUsd?: BigNumber) {
-  const pnlPrice = getPriceForPnl(indexToken?.prices, position?.isLong);
-
-  if (!pnlPrice || !indexToken || !position || !sizeDeltaUsd) return undefined;
-
-  const positionValue = convertToUsdByPrice(position.sizeInTokens, indexToken.decimals, pnlPrice);
-  const totalPnl = positionValue.sub(position.sizeInUsd).mul(position.isLong ? 1 : -1);
-
-  let sizeDeltaInTokens: BigNumber;
-
-  if (position.sizeInUsd.eq(sizeDeltaUsd)) {
-    sizeDeltaInTokens = position.sizeInTokens;
-  } else {
-    if (position.isLong) {
-      // roudUpDivision
-      sizeDeltaInTokens = sizeDeltaUsd.mul(position.sizeInTokens).div(position.sizeInUsd);
-    } else {
-      sizeDeltaInTokens = sizeDeltaUsd.mul(position.sizeInTokens).div(position.sizeInUsd);
-    }
-  }
-
-  const positionPnlUsd = totalPnl.mul(sizeDeltaInTokens).div(position.sizeInTokens);
-
-  return { positionPnlUsd, sizeDeltaInTokens };
-}
-
-function getCollateralOutAmount(p: {
-  position?: Position;
-  indexToken?: TokenData;
-  collateralToken?: TokenData;
-  sizeDeltaUsd: BigNumber;
-  pnlToken?: TokenData;
-  collateralDeltaAmount: BigNumber;
-  feesUsd: BigNumber;
-  priceImpactUsd: BigNumber;
-}) {
-  let receiveAmount = p.collateralDeltaAmount;
-
-  const pnlData = getPositionPnlUsd(p.position, p.indexToken, p.sizeDeltaUsd);
-
-  const pnlUsd = pnlData?.positionPnlUsd;
-
-  if (!pnlUsd || !p.collateralToken?.prices || !p.pnlToken) return undefined;
-
-  if (pnlUsd.lt(0)) {
-    const deductedPnl = convertFromUsdByPrice(
-      pnlUsd.abs(),
-      p.collateralToken.decimals,
-      p.collateralToken.prices.minPrice
-    )!;
-
-    receiveAmount = receiveAmount.sub(deductedPnl);
-  } else {
-    const addedPnl = convertFromUsdByPrice(pnlUsd, p.collateralToken.decimals, p.collateralToken.prices.maxPrice)!;
-
-    //   if (wasSwapped) {
-    //     values.outputAmount += swapOutputAmount;
-    // } else {
-    //     if (params.position.collateralToken() == cache.pnlToken) {
-    //         values.outputAmount += pnlAmountForUser;
-    //     } else {
-    //         // store the pnlAmountForUser separately as it differs from the collateralToken
-    //         values.pnlAmountForUser = pnlAmountForUser;
-    //     }
-    // }
-
-    receiveAmount = receiveAmount.add(addedPnl);
-  }
-
-  const feesAmount = convertFromUsdByPrice(p.feesUsd, p.collateralToken.decimals, p.collateralToken.prices.minPrice)!;
-
-  receiveAmount = receiveAmount.sub(feesAmount);
-
-  const priceImpactAmount = convertFromUsdByPrice(
-    p.priceImpactUsd,
-    p.collateralToken.decimals,
-    p.collateralToken.prices.minPrice
-  )!;
-
-  receiveAmount = receiveAmount.sub(priceImpactAmount);
-
-  if (receiveAmount.lte(0)) {
-    return BigNumber.from(0);
-  }
-
-  return receiveAmount;
-}
-
 export function PositionSeller(p: Props) {
   const { position } = p;
   const { chainId } = useChainId();
@@ -219,7 +67,7 @@ export function PositionSeller(p: Props) {
   const sizeDeltaUsd = isClosing ? maxCloseSize : closeUsd;
   const nextSizeUsd = position.sizeInUsd.sub(sizeDeltaUsd);
 
-  const collateralDeltaUsd = getCollateralDeltaUsd({
+  const collateralDeltaUsd = getCollateralDeltaUsdForDecreaseOrder({
     isClosing,
     keepLeverage,
     positionCollateralUsd: position.collateralUsd,
@@ -229,7 +77,7 @@ export function PositionSeller(p: Props) {
 
   const collateralDeltaAmount = getTokenAmountFromUsd(tokensData, position.collateralTokenAddress, collateralDeltaUsd);
 
-  const nextCollateralUsd = getNextCollateralUsd({
+  const nextCollateralUsd = getNextCollateralUsdForDecreaseOrder({
     isClosing,
     collateralUsd: position.collateralUsd,
     collateralDeltaUsd,
@@ -241,7 +89,7 @@ export function PositionSeller(p: Props) {
   const receiveTokenOptions = Object.values(tokensData);
   const receiveToken = getTokenData(tokensData, receiveTokenAddress);
 
-  const collateralOutAmount = getCollateralOutAmount({
+  const collateralOutAmount = getCollateralOutForDecreaseOrder({
     position,
     indexToken: position.indexToken,
     collateralToken: position.collateralToken,
