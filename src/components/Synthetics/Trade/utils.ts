@@ -39,8 +39,7 @@ export enum TradeType {
 export enum TradeMode {
   Market = "Market",
   Limit = "Limit",
-  StopLoss = "StopLoss",
-  TakeProfit = "TakeProfit",
+  Trigger = "Trigger",
 }
 
 export const tradeTypeLabels = {
@@ -58,8 +57,7 @@ export const tradeTypeIcons = {
 export const tradeModeLabels = {
   [TradeMode.Market]: t`Market`,
   [TradeMode.Limit]: t`Limit`,
-  [TradeMode.StopLoss]: t`Stop Loss`,
-  [TradeMode.TakeProfit]: t`Take Profit`,
+  [TradeMode.Trigger]: t`Trigger`,
 };
 
 export const avaialbleModes = {

@@ -35,7 +35,7 @@ import { bigNumberify, formatAmount, parseValue } from "lib/numbers";
 import { useEffect, useState } from "react";
 import { IoMdSwap } from "react-icons/io";
 import { ConfirmationBox } from "../ConfirmationBox/ConfirmationBox";
-import { OrderStatus } from "../OrderStatus/OrderStatus";
+import { OrderStatus } from "../../OrderStatus/OrderStatus";
 import {
   TradeMode,
   TradeType,
@@ -55,6 +55,7 @@ import { TradeFees } from "../TradeFees/TradeFees";
 
 import "./SwapBox.scss";
 import { getMarket, getMarketByTokens, useMarketsData } from "domain/synthetics/markets";
+import { OrderType } from "domain/synthetics/orders";
 
 enum FocusedInput {
   From = "From",
@@ -86,7 +87,7 @@ export function SwapBox(p: Props) {
   const isPosition = !isSwap;
   const isLimit = modeTab === TradeMode.Limit;
   const isMarket = modeTab === TradeMode.Market;
-  const isStop = modeTab === TradeMode.StopLoss || modeTab === TradeMode.TakeProfit;
+  const isStop = modeTab === TradeMode.Trigger;
 
   const isTokensAllowed = !isStop;
   const isCloseSizeAllowed = isStop;
@@ -654,10 +655,13 @@ export function SwapBox(p: Props) {
 
       {isProcessing && (
         <OrderStatus
-          isLong={isLong}
-          isSwap={isSwap}
-          fromToken={fromTokenState.tokenAddress}
-          toToken={toTokenState.tokenAddress}
+          orderType={isSwap ? OrderType.MarketSwap : OrderType.MarketIncrease}
+          marketAddress={swapRoute?.market}
+          initialCollateralAddress={isSwap ? fromTokenState.tokenAddress : undefined}
+          initialCollateralAmount={isSwap ? fromTokenState.tokenAmount : undefined}
+          toSwapTokenAddress={isSwap ? toTokenState.tokenAddress : undefined}
+          sizeDeltaUsd={sizeDeltaUsd}
+          isLong={isSwap ? undefined : isLong}
           onClose={() => setIsProcessing(false)}
         />
       )}

@@ -77,6 +77,8 @@ export function GmOrderStatus(p: Props) {
   }
 
   useEffect(() => {
+    if (orderKey) return;
+
     if (p.isDeposit) {
       const pendingOrder = Object.values(depositStatuses).find(
         (depositStatus) => !depositStatus.isTouched && depositStatus.data.addresses.market === p.market
@@ -101,7 +103,7 @@ export function GmOrderStatus(p: Props) {
   return (
     <div className="Confirmation-box">
       <Modal isVisible={true} setIsVisible={p.onClose} label={t`${orderTypeText} status`} allowContentTouchMove>
-        <div className={cx("Confirmation-box-main GmConfirmationBox-main")}>
+        <div className={cx("Confirmation-box-main")}>
           {p.isDeposit && <Trans>Depositing to {marketName}</Trans>}
           {!p.isDeposit && <Trans>Withdrawal from {marketName}</Trans>}
         </div>

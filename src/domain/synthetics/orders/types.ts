@@ -28,7 +28,7 @@ export type RawContractOrder = {
     account: string;
     receiver: string;
     callbackContract: string;
-    marketAddress: string;
+    market: string;
     initialCollateralToken: string;
     swapPath: string[];
   };
@@ -43,7 +43,7 @@ export type RawContractOrder = {
     updatedAtBlock: BigNumber;
   };
   flags: {
-    orderType: boolean;
+    orderType: OrderType;
     isLong: boolean;
     shouldUnwrapNativeToken: boolean;
     isFrozen: boolean;
