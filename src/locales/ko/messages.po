@@ -240,6 +240,7 @@ msgid "Amount of traders you referred."
 msgstr "추천한 거래자 수"
 
 #: src/components/Exchange/PositionEditor.js
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Amount should be greater than zero"
 msgstr ""
 
@@ -418,6 +419,7 @@ msgstr "멀티플라이어 포인트를 사용해서 보상을 증가시키세�
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Borrow Fee"
 msgstr "차용 수수료"
@@ -767,6 +769,7 @@ msgid "Collateral"
 msgstr "담보"
 
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Collateral ({0})"
 msgstr "담보 ({0})"
@@ -1345,6 +1348,7 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
 #: src/components/Synthetics/GmSwap/utils.ts
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/utils.ts
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
@@ -1446,6 +1450,7 @@ msgid "Fees"
 msgstr "수수료"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/TradeFees/TradeFees.tsx
 msgid "Fees and price impact"
@@ -1521,6 +1526,10 @@ msgstr ""
 
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
 msgid "Fulfilling {longText} {0} request"
+msgstr ""
+
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+msgid "Funding Fee"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -1900,6 +1909,7 @@ msgstr "남은 포지션이 10 USD 미만입니다."
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
@@ -1964,6 +1974,7 @@ msgstr "링크"
 msgid "Link copied to clipboard."
 msgstr "클립보드로 링크가 복사되었습니다."
 
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Liq Price"
@@ -2128,6 +2139,7 @@ msgstr "MEV 옵티마이저"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
@@ -3267,6 +3279,7 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
@@ -3623,7 +3636,12 @@ msgid "The order will only execute if the price conditions are met and there is 
 msgstr "주문은 가격 조건 및 유동성 충분 요건이 만족하는 경우에만 실행됩니다"
 
 #: src/components/Exchange/PositionEditor.js
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "The pending borrow fee will be charged on this transaction."
+msgstr ""
+
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+msgid "The pending funding fee will be charged on this transaction."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js

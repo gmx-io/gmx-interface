@@ -145,11 +145,11 @@ export function PositionEditor(p: Props) {
       createIncreaseOrderTxn(chainId, library, {
         account,
         market: p.position.marketAddress,
-        indexTokenAddress: p.position.indexToken?.address,
+        indexTokenAddress: p.position.indexToken.address,
         swapPath: [],
         initialCollateralAddress: p.position.collateralTokenAddress,
         initialCollateralAmount: depositInput.tokenAmount,
-        priceImpactDelta: BigNumber.from(0),
+        priceImpactDelta: BigNumber.from(1),
         allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
         orderType: OrderType.MarketIncrease,
         sizeDeltaUsd: BigNumber.from(0),

@@ -240,6 +240,7 @@ msgid "Amount of traders you referred."
 msgstr "Amount of traders you referred."
 
 #: src/components/Exchange/PositionEditor.js
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Amount should be greater than zero"
 msgstr "Amount should be greater than zero"
 
@@ -418,6 +419,7 @@ msgstr "Boost your rewards with Multiplier Points. <0>More info</0>."
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Borrow Fee"
 msgstr "Borrow Fee"
@@ -767,6 +769,7 @@ msgid "Collateral"
 msgstr "Collateral"
 
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Collateral ({0})"
 msgstr "Collateral ({0})"
@@ -1345,6 +1348,7 @@ msgstr "Enter a swap trigger ratio"
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
 #: src/components/Synthetics/GmSwap/utils.ts
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/utils.ts
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
@@ -1446,6 +1450,7 @@ msgid "Fees"
 msgstr "Fees"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/TradeFees/TradeFees.tsx
 msgid "Fees and price impact"
@@ -1522,6 +1527,10 @@ msgstr "Fulfilling {0} {tokensText} request"
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
 msgid "Fulfilling {longText} {0} request"
 msgstr "Fulfilling {longText} {0} request"
+
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+msgid "Funding Fee"
+msgstr "Funding Fee"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GBC NFTs APR tracker and rewards"
@@ -1900,6 +1909,7 @@ msgstr "Leftover position below 10 USD"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
@@ -1964,6 +1974,7 @@ msgstr "Link"
 msgid "Link copied to clipboard."
 msgstr "Link copied to clipboard."
 
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Liq Price"
@@ -2128,6 +2139,7 @@ msgstr "MEV Optimizer"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
@@ -3267,6 +3279,7 @@ msgstr "Single"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
@@ -3623,8 +3636,13 @@ msgid "The order will only execute if the price conditions are met and there is 
 msgstr "The order will only execute if the price conditions are met and there is sufficient liquidity"
 
 #: src/components/Exchange/PositionEditor.js
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "The pending borrow fee will be charged on this transaction."
 msgstr "The pending borrow fee will be charged on this transaction."
+
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+msgid "The pending funding fee will be charged on this transaction."
+msgstr "The pending funding fee will be charged on this transaction."
 
 #: src/components/Exchange/SwapBox.js
 msgid "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"

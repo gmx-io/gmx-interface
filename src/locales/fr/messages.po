@@ -240,6 +240,7 @@ msgid "Amount of traders you referred."
 msgstr "Le nombre de traders que vous avez parrainés."
 
 #: src/components/Exchange/PositionEditor.js
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Amount should be greater than zero"
 msgstr ""
 
@@ -418,6 +419,7 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Borrow Fee"
 msgstr "Commission d'emprunt"
@@ -767,6 +769,7 @@ msgid "Collateral"
 msgstr "Collatéral"
 
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Collateral ({0})"
 msgstr "Collatéral ({0})"
@@ -1345,6 +1348,7 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
 #: src/components/Synthetics/GmSwap/utils.ts
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/utils.ts
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
@@ -1446,6 +1450,7 @@ msgid "Fees"
 msgstr "FRAIS"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/TradeFees/TradeFees.tsx
 msgid "Fees and price impact"
@@ -1521,6 +1526,10 @@ msgstr ""
 
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
 msgid "Fulfilling {longText} {0} request"
+msgstr ""
+
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+msgid "Funding Fee"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -1900,6 +1909,7 @@ msgstr "Il reste moins de 10 USD dans la position"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
@@ -1964,6 +1974,7 @@ msgstr "Lien"
 msgid "Link copied to clipboard."
 msgstr "Le lien a été copié dans le presse-papiers."
 
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Liq Price"
@@ -2128,6 +2139,7 @@ msgstr "Optimiseur MEV"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
@@ -3267,6 +3279,7 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
@@ -3623,7 +3636,12 @@ msgid "The order will only execute if the price conditions are met and there is 
 msgstr "L'ordre ne sera exécuté que si les conditions de prix sont remplies et si la liquidité est suffisante."
 
 #: src/components/Exchange/PositionEditor.js
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "The pending borrow fee will be charged on this transaction."
+msgstr ""
+
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+msgid "The pending funding fee will be charged on this transaction."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js

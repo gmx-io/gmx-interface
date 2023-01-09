@@ -240,6 +240,7 @@ msgid "Amount of traders you referred."
 msgstr "あなたが紹介したトレーダー数"
 
 #: src/components/Exchange/PositionEditor.js
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Amount should be greater than zero"
 msgstr ""
 
@@ -418,6 +419,7 @@ msgstr "マルチプライヤーポイントで報酬をブーストする。<0>
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Borrow Fee"
 msgstr "借入手数料"
@@ -767,6 +769,7 @@ msgid "Collateral"
 msgstr "担保"
 
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Collateral ({0})"
 msgstr "担保  ({0})"
@@ -1345,6 +1348,7 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
 #: src/components/Synthetics/GmSwap/utils.ts
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/utils.ts
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
@@ -1446,6 +1450,7 @@ msgid "Fees"
 msgstr "手数料"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/TradeFees/TradeFees.tsx
 msgid "Fees and price impact"
@@ -1521,6 +1526,10 @@ msgstr ""
 
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
 msgid "Fulfilling {longText} {0} request"
+msgstr ""
+
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+msgid "Funding Fee"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -1900,6 +1909,7 @@ msgstr "残りのポジションが10 USD以下"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
@@ -1964,6 +1974,7 @@ msgstr "リンク"
 msgid "Link copied to clipboard."
 msgstr "リンクがクリップボードにコピーされました"
 
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Liq Price"
@@ -2128,6 +2139,7 @@ msgstr "MEVオプティマイザー"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
@@ -3267,6 +3279,7 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
@@ -3623,7 +3636,12 @@ msgid "The order will only execute if the price conditions are met and there is 
 msgstr "価格の条件が満たされ、さらに十分な流動性が存在している場合にのみ注文は執行されます。"
 
 #: src/components/Exchange/PositionEditor.js
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "The pending borrow fee will be charged on this transaction."
+msgstr ""
+
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+msgid "The pending funding fee will be charged on this transaction."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
