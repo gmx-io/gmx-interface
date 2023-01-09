@@ -23,7 +23,7 @@ export function PositionList(p: Props) {
   const isDataLoading = isLoading;
 
   const closingPosition = positions.find((position) => position.key === closingPositionKey);
-  // const editingPosition = positions.find((position) => position.key === editingPositionKey);
+  const editingPosition = positions.find((position) => position.key === editingPositionKey);
 
   return (
     <div>
@@ -95,8 +95,8 @@ export function PositionList(p: Props) {
         <PositionSeller position={closingPosition} onClose={() => setClosingPositionKey(undefined)} />
       )}
 
-      {editingPositionKey && (
-        <PositionEditor positionKey={editingPositionKey} onClose={() => setEditingPositionKey(undefined)} />
+      {editingPosition && (
+        <PositionEditor position={editingPosition} onClose={() => setEditingPositionKey(undefined)} />
       )}
 
       {/* {sharingPosition && (

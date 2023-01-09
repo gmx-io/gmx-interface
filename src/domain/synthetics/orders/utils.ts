@@ -327,6 +327,8 @@ export function getNextCollateralUsdForDecreaseOrder(p: {
     nextCollateralUsd = nextCollateralUsd.sub(p.pnl.abs());
   }
 
+  if (nextCollateralUsd.lt(0)) return BigNumber.from(0);
+
   return nextCollateralUsd;
 }
 
