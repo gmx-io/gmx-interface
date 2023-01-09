@@ -16,9 +16,18 @@ import {
 import { isDevelopment } from "config/env";
 import { RawContractOrder } from "../orders";
 import { RawContractDeposit, RawContractWithdrawal } from "../markets";
-import { addByKey, updateByKey } from "lib/stateUtils";
 
 export const ContractEventsContext = createContext({});
+
+export function addByKey<T>(state: { [key: string]: T }, key: string, data: T) {
+  return { ...state, [key]: data };
+}
+
+export function updateByKey<T>(state: { [key: string]: T }, key: string, data: Partial<T>) {
+  if (!state[key]) return state;
+
+  return { ...state, [key]: { ...state[key], ...data } };
+}
 
 export function ContractEventsProvider({ children }: { children: ReactNode }) {
   const { chainId } = useChainId();
