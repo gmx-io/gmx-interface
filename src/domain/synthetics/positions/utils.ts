@@ -27,8 +27,9 @@ export function getAggregatedPositionData(
   if (!position) return undefined;
 
   const market = getMarket(marketsData, position?.marketAddress);
-  const collateralToken = getTokenData(tokensData, position?.collateralTokenAddress);
 
+  const collateralToken = getTokenData(tokensData, position?.collateralTokenAddress);
+  const pnlToken = getTokenData(tokensData, position.isLong ? market?.longTokenAddress : market?.shortTokenAddress);
   const indexToken = getTokenData(
     tokensData,
     market?.isIndexWrapped ? NATIVE_TOKEN_ADDRESS : market?.indexTokenAddress
@@ -54,11 +55,7 @@ export function getAggregatedPositionData(
       ? convertToUsdByPrice(position.collateralAmount, collateralToken.decimals, collateralPrice)
       : undefined;
 
-  const pnl = currentValueUsd
-    ? position.isLong
-      ? currentValueUsd.sub(position.sizeInUsd)
-      : position.sizeInUsd.sub(currentValueUsd)
-    : undefined;
+  const pnl = currentValueUsd?.sub(position.sizeInUsd).mul(position.isLong ? 1 : -1);
 
   const pnlPercentage = collateralUsd && pnl ? pnl.mul(BASIS_POINTS_DIVISOR).div(collateralUsd) : undefined;
 
@@ -84,12 +81,12 @@ export function getAggregatedPositionData(
   const hasLowCollateral = collateralUsdAfterFees?.lt(expandDecimals(1, USD_DECIMALS));
 
   const leverage = getLeverage({
-    sizeUsd: currentValueUsd,
+    sizeUsd: position.sizeInUsd,
     collateralUsd,
   });
 
   const liqPrice = getLiquidationPrice({
-    sizeUsd: currentValueUsd,
+    sizeUsd: position.sizeInUsd,
     collateralUsd,
     averagePrice,
     isLong: position.isLong,
@@ -102,6 +99,7 @@ export function getAggregatedPositionData(
     marketName,
     indexToken,
     collateralToken,
+    pnlToken,
     currentValueUsd,
     collateralUsd,
     collateralUsdAfterFees,

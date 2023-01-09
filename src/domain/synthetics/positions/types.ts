@@ -36,6 +36,7 @@ export type AggregatedPositionData = Position & {
   market?: Market;
   indexToken?: TokenData;
   collateralToken?: TokenData;
+  pnlToken?: TokenData;
   currentValueUsd?: BigNumber;
   collateralUsd?: BigNumber;
   averagePrice?: BigNumber;

@@ -130,8 +130,6 @@ msgid "About"
 msgstr "关于"
 
 #: src/domain/synthetics/orders/utils.ts
-#: src/domain/synthetics/orders/utils.ts
-#: src/domain/synthetics/orders/utils.ts
 msgid "Above"
 msgstr ""
 
@@ -394,8 +392,6 @@ msgstr "余额: {0}"
 msgid "Begin Transfer"
 msgstr "开始转移"
 
-#: src/domain/synthetics/orders/utils.ts
-#: src/domain/synthetics/orders/utils.ts
 #: src/domain/synthetics/orders/utils.ts
 msgid "Below"
 msgstr ""
@@ -1331,8 +1327,8 @@ msgid "Enter a price"
 msgstr "輸入價錢"
 
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-msgid "Enter a size"
-msgstr ""
+#~ msgid "Enter a size"
+#~ msgstr ""
 
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Enter a swap trigger ratio"
@@ -1349,6 +1345,7 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
 #: src/components/Synthetics/GmSwap/utils.ts
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/utils.ts
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV1.js
@@ -1449,6 +1446,7 @@ msgid "Fees"
 msgstr "费用"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/TradeFees/TradeFees.tsx
 msgid "Fees and price impact"
 msgstr ""

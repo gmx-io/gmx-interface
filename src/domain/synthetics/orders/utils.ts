@@ -14,6 +14,12 @@ import { applySwapImpactWithCap } from "domain/synthetics/fees";
 import { MarketsData, getMarket, getMarketName } from "domain/synthetics/markets";
 import { t } from "@lingui/macro";
 
+/**
+ * TODO:
+ * address public constant SWAP_PNL_TOKEN_TO_COLLATERAL_TOKEN = address(2);
+ * address public constant SWAP_COLLATERAL_TOKEN_TO_PNL_TOKEN = address(3);
+ */
+
 export function getOrder(ordersData: OrdersData, orderKey?: string) {
   if (!orderKey) return undefined;
 
@@ -147,20 +153,23 @@ export function getMarkPriceForOrder(isIncrease?: boolean, isLong?: boolean, tok
   return maximisePrice ? tokenPrices?.maxPrice : tokenPrices?.minPrice;
 }
 
-export function getTriggerPricePrefix(orderType?: OrderType, isLong?: boolean) {
+export function getTriggerPricePrefix(orderType?: OrderType, isLong?: boolean, asSign?: boolean) {
   if (!orderType || typeof isLong === "undefined") return undefined;
 
+  const BELOW = asSign ? "<" : t`Below`;
+  const ABOVE = asSign ? ">" : t`Above`;
+
   if (orderType === OrderType.LimitIncrease) {
-    return isLong ? t`Below` : t`Above`;
+    return isLong ? BELOW : ABOVE;
   }
 
   if (orderType === OrderType.StopLossDecrease) {
-    return isLong ? t`Below` : t`Above`;
+    return isLong ? BELOW : ABOVE;
   }
 
   // Take-profit
   if (orderType === OrderType.LimitDecrease) {
-    return isLong ? t`Above` : t`Below`;
+    return isLong ? ABOVE : BELOW;
   }
 }
 
