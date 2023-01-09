@@ -693,6 +693,7 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
+#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
@@ -1069,6 +1070,8 @@ msgstr ""
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
 msgstr ""
@@ -1086,11 +1089,16 @@ msgid "Decrease {tokenText} by {sizeText}"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 msgid "Decreased"
 msgstr ""
 
 #: src/pages/Exchange/Exchange.js
 msgid "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
+msgstr ""
+
+#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+msgid "Decreasing"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
@@ -1520,9 +1528,17 @@ msgstr ""
 msgid "Forfeit profit not checked"
 msgstr ""
 
+#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+msgid "Fulfilling swap {0} for {1} request"
+msgstr ""
+
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
 #~ msgid "Fulfilling swap {0} to {1} request"
 #~ msgstr ""
+
+#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+msgid "Fulfilling {0} {1} {longText} request"
+msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
 msgid "Fulfilling {0} {tokensText} request"
@@ -1738,6 +1754,8 @@ msgstr ""
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase"
 msgstr ""
@@ -1758,8 +1776,16 @@ msgstr ""
 msgid "Increase {tokenText} by {sizeText}"
 msgstr ""
 
+#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+msgid "Increased"
+msgstr ""
+
 #: src/pages/Exchange/Exchange.js
 msgid "Increased {tokenSymbol} {longOrShortText}, +{0} USD."
+msgstr ""
+
+#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+msgid "Increasing"
 msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.js
@@ -1946,12 +1972,12 @@ msgid "Limit"
 msgstr ""
 
 #: src/domain/synthetics/orders/constants.ts
-msgid "Limit Decrease"
-msgstr ""
+#~ msgid "Limit Decrease"
+#~ msgstr ""
 
 #: src/domain/synthetics/orders/constants.ts
-msgid "Limit Increase"
-msgstr ""
+#~ msgid "Limit Increase"
+#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
@@ -1959,8 +1985,8 @@ msgid "Limit Price"
 msgstr ""
 
 #: src/domain/synthetics/orders/constants.ts
-msgid "Limit Swap"
-msgstr ""
+#~ msgid "Limit Swap"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Limit order creation failed."
@@ -2020,8 +2046,8 @@ msgid ""
 msgstr ""
 
 #: src/domain/synthetics/orders/constants.ts
-msgid "Liquidation"
-msgstr ""
+#~ msgid "Liquidation"
+#~ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Liquidation Fee"
@@ -2067,6 +2093,7 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -2183,16 +2210,16 @@ msgid "Market Cap"
 msgstr ""
 
 #: src/domain/synthetics/orders/constants.ts
-msgid "Market Decrease"
-msgstr ""
+#~ msgid "Market Decrease"
+#~ msgstr ""
 
 #: src/domain/synthetics/orders/constants.ts
-msgid "Market Increase"
-msgstr ""
+#~ msgid "Market Increase"
+#~ msgstr ""
 
 #: src/domain/synthetics/orders/constants.ts
-msgid "Market Swap"
-msgstr ""
+#~ msgid "Market Swap"
+#~ msgstr ""
 
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
@@ -2591,9 +2618,9 @@ msgstr ""
 msgid "Order size is bigger than position, will only be executable if position increases"
 msgstr ""
 
-#: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
-#~ msgid "Order status"
-#~ msgstr ""
+#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+msgid "Order status"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Order submitted!"
@@ -2865,6 +2892,7 @@ msgid "Price on Avalanche"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
+#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 msgid "Processing..."
 msgstr ""
 
@@ -3178,9 +3206,17 @@ msgstr ""
 msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr ""
 
+#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+msgid "Sending swap {0} for {1} request"
+msgstr ""
+
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
 #~ msgid "Sending swap {0} to {1} request"
 #~ msgstr ""
+
+#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+msgid "Sending {0} {1} {longText} request"
+msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
 msgid "Sending {0} {tokensText} request"
@@ -3227,6 +3263,7 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -3396,12 +3433,12 @@ msgid "Stats"
 msgstr ""
 
 #: src/components/Synthetics/Trade/utils.ts
-msgid "Stop Loss"
-msgstr ""
+#~ msgid "Stop Loss"
+#~ msgstr ""
 
 #: src/domain/synthetics/orders/constants.ts
-msgid "Stop Loss Decrease"
-msgstr ""
+#~ msgid "Stop Loss Decrease"
+#~ msgstr ""
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Stop Market"
@@ -3493,6 +3530,18 @@ msgstr ""
 msgid "Swap {0} USDG for {1} {2}"
 msgstr ""
 
+#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+msgid "Swap {0} for {1}"
+msgstr ""
+
+#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+msgid "Swap {0} for {1} cancelled"
+msgstr ""
+
+#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+msgid "Swap {0} for {1} request sent"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 msgid "Swap {0} on 1inch"
 msgstr ""
@@ -3529,6 +3578,10 @@ msgstr ""
 msgid "Swap {fromTokenText} for {toTokenText}"
 msgstr ""
 
+#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+msgid "Swapped {0} for {1}"
+msgstr ""
+
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
 #~ msgid "Swapped {0} to {1}"
 #~ msgstr ""
@@ -3557,8 +3610,8 @@ msgid "TOKEN"
 msgstr ""
 
 #: src/components/Synthetics/Trade/utils.ts
-msgid "Take Profit"
-msgstr ""
+#~ msgid "Take Profit"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Take-profit and stop-loss orders can be set after opening a position. <0/><1/>There will be a \"Close\" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>."
@@ -3939,6 +3992,7 @@ msgstr ""
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/Trade/utils.ts
 msgid "Trigger"
 msgstr ""
 
@@ -3996,12 +4050,10 @@ msgstr ""
 msgid "UTILIZATION"
 msgstr ""
 
-#: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
-#: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
-#: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
-#: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
-#~ msgid "Unknown order"
-#~ msgstr ""
+#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+msgid "Unknown order"
+msgstr ""
 
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -4714,6 +4766,22 @@ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
 msgid "{orderTypeText} status"
+msgstr ""
+
+#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+msgid "{orderTypeText} {0} {longText}"
+msgstr ""
+
+#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+msgid "{orderTypeText} {0} {longText} by {1}"
+msgstr ""
+
+#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+msgid "{orderTypeText} {0} {longText} cancelled"
+msgstr ""
+
+#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+msgid "{orderTypeText} {0} {longText} request sent"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
