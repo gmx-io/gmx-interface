@@ -697,7 +697,6 @@ msgstr ""
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 msgid "Close"
 msgstr "Cerrar"
@@ -1149,6 +1148,10 @@ msgstr "Depositado {0} USD en {tokenSymbol} {longOrShortText}"
 msgid "Deposited!"
 msgstr "¡Depositado!"
 
+#: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
+msgid "Depositing to {marketName}"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 #: src/pages/Stake/StakeV2.js
 msgid "Depositing..."
@@ -1518,16 +1521,16 @@ msgid "Forfeit profit not checked"
 msgstr "Renuncia de ganancias no marcada"
 
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
-msgid "Fulfilling swap {0} to {1} request"
-msgstr ""
+#~ msgid "Fulfilling swap {0} to {1} request"
+#~ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
 msgid "Fulfilling {0} {tokensText} request"
 msgstr ""
 
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
-msgid "Fulfilling {longText} {0} request"
-msgstr ""
+#~ msgid "Fulfilling {longText} {0} request"
+#~ msgstr ""
 
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Funding Fee"
@@ -2074,7 +2077,6 @@ msgstr "Cargando..."
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/Trade/utils.ts
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
@@ -2593,8 +2595,8 @@ msgid "Order size is bigger than position, will only be executable if position i
 msgstr "El tamaño de la orden es mayor que la posición, sólo se ejecutará si la posición se incrementa"
 
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
-msgid "Order status"
-msgstr ""
+#~ msgid "Order status"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Order submitted!"
@@ -2866,7 +2868,6 @@ msgid "Price on Avalanche"
 msgstr "Precio en Avalanche"
 
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
-#: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
 msgid "Processing..."
 msgstr ""
 
@@ -3181,16 +3182,16 @@ msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr "El remitente ha retirado todos los tokens del Cajas de Adquisición GMX"
 
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
-msgid "Sending swap {0} to {1} request"
-msgstr ""
+#~ msgid "Sending swap {0} to {1} request"
+#~ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
 msgid "Sending {0} {tokensText} request"
 msgstr ""
 
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
-msgid "Sending {longText} {0} request"
-msgstr ""
+#~ msgid "Sending {longText} {0} request"
+#~ msgstr ""
 
 #: src/App/App.js
 #: src/components/Header/AppHeaderLinks.tsx
@@ -3236,7 +3237,6 @@ msgstr "Compartir Posición"
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/Trade/utils.ts
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
@@ -3466,8 +3466,8 @@ msgid "Swap active: {0}, executed: {1}, cancelled: {2}"
 msgstr "Intercambio activo: {0}, ejecutado: {1}, cancelado: {2}"
 
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
-msgid "Swap cancelled"
-msgstr ""
+#~ msgid "Swap cancelled"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -3513,8 +3513,8 @@ msgid "Swap {0} to {1} on 1inch"
 msgstr "Intercambiar {0} a {1} en 1inch"
 
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
-msgid "Swap {0} to {1} request sent"
-msgstr ""
+#~ msgid "Swap {0} to {1} request sent"
+#~ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Swap {0} {1} for {2} USDG"
@@ -3533,8 +3533,8 @@ msgid "Swap {fromTokenText} for {toTokenText}"
 msgstr ""
 
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
-msgid "Swapped {0} to {1}"
-msgstr ""
+#~ msgid "Swapped {0} to {1}"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -4003,8 +4003,8 @@ msgstr "UTILIZACIÓN"
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
-msgid "Unknown order"
-msgstr ""
+#~ msgid "Unknown order"
+#~ msgstr ""
 
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -4294,6 +4294,10 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 msgid "Withdrawal failed."
 msgstr "Retiro fallido."
+
+#: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
+msgid "Withdrawal from {marketName}"
+msgstr ""
 
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
 msgid "Withdrawal order failed"
@@ -4660,16 +4664,16 @@ msgid "{longOrShortText} {0} market selected"
 msgstr ""
 
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
-msgid "{longText} {0} cancelled"
-msgstr ""
+#~ msgid "{longText} {0} cancelled"
+#~ msgstr ""
 
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
-msgid "{longText} {0} executed"
-msgstr ""
+#~ msgid "{longText} {0} executed"
+#~ msgstr ""
 
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
-msgid "{longText} {0} request sent"
-msgstr ""
+#~ msgid "{longText} {0} request sent"
+#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
