@@ -37,6 +37,48 @@ export type PoolData = {
   reserveFactorShort: BigNumber;
 };
 
+export type RawContractDeposit = {
+  addresses: {
+    account: string;
+    receiver: string;
+    callbackContract: string;
+    market: string;
+  };
+  numbers: {
+    longTokenAmount: BigNumber;
+    shortTokenAmount: BigNumber;
+    minMarketTokens: BigNumber;
+    updatedAtBlock: BigNumber;
+    executionFee: BigNumber;
+    callbackGasLimit: BigNumber;
+  };
+  flags: {
+    shouldUnwrapNativeToken: boolean;
+  };
+  data: string;
+};
+
+export type RawContractWithdrawal = {
+  addresses: {
+    account: string;
+    receiver: string;
+    callbackContract: string;
+    market: string;
+  };
+  numbers: {
+    marketTokenAmount: BigNumber;
+    minLongTokenAmount: BigNumber;
+    minShortTokenAmount: BigNumber;
+    updatedAtBlock: BigNumber;
+    executionFee: BigNumber;
+    callbackGasLimit: BigNumber;
+  };
+  flags: {
+    shouldUnwrapNativeToken: boolean;
+  };
+  data: string;
+};
+
 export type MarketsPoolsData = {
   [marketAddress: string]: PoolData;
 };

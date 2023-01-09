@@ -17,7 +17,7 @@ type Params = {
   executionFee: BigNumber;
 };
 
-export function createDepositTxn(chainId: number, library: Web3Provider, p: Params) {
+export async function createDepositTxn(chainId: number, library: Web3Provider, p: Params) {
   const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, library.getSigner());
   const depositStoreAdress = getContract(chainId, "DepositStore");
 

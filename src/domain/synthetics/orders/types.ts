@@ -23,6 +23,34 @@ export enum OrderType {
   Liquidation,
 }
 
+export type RawContractOrder = {
+  addresses: {
+    account: string;
+    receiver: string;
+    callbackContract: string;
+    marketAddress: string;
+    initialCollateralToken: string;
+    swapPath: string[];
+  };
+  numbers: {
+    sizeDeltaUsd: BigNumber;
+    initialCollateralDeltaAmount: BigNumber;
+    triggerPrice: BigNumber;
+    acceptablePrice: BigNumber;
+    executionFee: BigNumber;
+    callbackGasLimit: BigNumber;
+    minOutputAmount: BigNumber;
+    updatedAtBlock: BigNumber;
+  };
+  flags: {
+    orderType: boolean;
+    isLong: boolean;
+    shouldUnwrapNativeToken: boolean;
+    isFrozen: boolean;
+  };
+  data: string;
+};
+
 export type Order = {
   key: string;
   account: string;
@@ -46,14 +74,14 @@ export type Order = {
   data: string;
 };
 
-export type OrderTypeFlags = {
-  isSwapOrder: boolean;
-  isPositionOrder: boolean;
-  isIncrease: boolean;
-  isDecrease: boolean;
-  isLimit: boolean;
-  isStopTrigger: boolean;
-};
+// export type OrderTypeFlags = {
+//   isSwapOrder: boolean;
+//   isPositionOrder: boolean;
+//   isIncrease: boolean;
+//   isDecrease: boolean;
+//   isLimit: boolean;
+//   isStopTrigger: boolean;
+// };
 
 export type AggregatedOrderData = Order & {
   title?: string;

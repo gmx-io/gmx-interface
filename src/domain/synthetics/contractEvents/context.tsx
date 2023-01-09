@@ -3,28 +3,30 @@ import EventEmitter from "abis/EventEmitter.json";
 import { getContract } from "config/contracts";
 import { ethers } from "ethers";
 import { useChainId } from "lib/chains";
-import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
+import { pushSuccessNotification } from "lib/contracts";
 import { getWsProvider } from "lib/rpc";
-import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react";
-import { OrderEvents } from "./types";
+import { ReactNode, createContext, useEffect, useMemo, useState } from "react";
+import {
+  ContractEventsContextType,
+  DepositStatusEvents,
+  EventTxnParams,
+  OrderStatusEvents,
+  WithdrawalStatusEvents,
+} from "./types";
+import { isDevelopment } from "config/env";
+import { RawContractOrder } from "../orders";
+import { RawContractDeposit, RawContractWithdrawal } from "../markets";
+import { addByKey, updateByKey } from "lib/stateUtils";
 
-export type ContractEventsContextType = {
-  getPendingOrders: () => OrderEvents[];
-  getOrderEvents: (key?: string) => OrderEvents | undefined;
-  setIsOrderViewed: (key: string) => void;
-};
-
-const ContractEventsContext = createContext({});
-
-export function useContractEventsContext() {
-  return useContext(ContractEventsContext) as ContractEventsContextType;
-}
+export const ContractEventsContext = createContext({});
 
 export function ContractEventsProvider({ children }: { children: ReactNode }) {
   const { chainId } = useChainId();
   const { active, account } = useWeb3React();
 
-  const [orderEvents, setOrderEvents] = useState<{ [key: string]: OrderEvents }>({});
+  const [orderStatuses, setOrderStatuses] = useState<{ [key: string]: OrderStatusEvents }>({});
+  const [depositStatuses, setDepositStatuses] = useState<{ [key: string]: DepositStatusEvents }>({});
+  const [withdrawalStatuses, setWithdrawalStatuses] = useState<{ [key: string]: WithdrawalStatusEvents }>({});
 
   useEffect(
     function subscribe() {
@@ -32,122 +34,111 @@ export function ContractEventsProvider({ children }: { children: ReactNode }) {
 
       if (!wsProvider) return;
 
-      let wsEventEmitter: ethers.Contract | undefined;
+      const contracts: { [name: string]: ethers.Contract } = {};
 
       try {
-        wsEventEmitter = new ethers.Contract(getContract(chainId, "EventEmitter"), EventEmitter.abi, wsProvider);
+        contracts.EventEmitter = new ethers.Contract(
+          getContract(chainId, "EventEmitter"),
+          EventEmitter.abi,
+          wsProvider
+        );
       } catch (e) {
-        // ...ignore
+        // ...ignore on unsupported chains
       }
 
-      // TODO: refs?
-      function onOrderCreated(key, orderParams, txnParams) {
-        if (orderParams.addresses.account !== account) return;
+      const handlers = {
+        EventEmitter: {
+          OrderCreated: (key: string, data: RawContractOrder, txnParams: EventTxnParams) => {
+            if (data.addresses.account !== account) return;
+            setOrderStatuses((old) => addByKey(old, key, { key, data, createdTxnHash: txnParams.transactionHash }));
+          },
 
-        setOrderEvents((orderEvents) => {
-          return {
-            ...orderEvents,
-            [key]: {
-              key,
-              orderParams,
-              createdTxnHash: txnParams.transactionHash,
-            },
-          };
+          OrderExecuted: (key: string, txnParams: EventTxnParams) => {
+            setOrderStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
+
+            pushSuccessNotification(chainId, "Order executed", txnParams);
+          },
+
+          OrderCancelled: (key: string, data, txnParams: EventTxnParams) => {
+            setOrderStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
+          },
+
+          DepositCreated: (key: string, data: RawContractDeposit, txnParams: EventTxnParams) => {
+            if (data.addresses.account !== account) return;
+            setDepositStatuses((old) => addByKey(old, key, { key, data, createdTxnHash: txnParams.transactionHash }));
+          },
+
+          DepositExecuted: (key: string, txnParams: EventTxnParams) => {
+            setDepositStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
+
+            pushSuccessNotification(chainId, "Order executed", txnParams);
+          },
+
+          DepositCancelled: (key: string, data, txnParams: EventTxnParams) => {
+            setDepositStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
+          },
+
+          WithdrawalCreated: (key: string, data: RawContractWithdrawal, txnParams: EventTxnParams) => {
+            if (data.addresses.account !== account) return;
+            setWithdrawalStatuses((old) =>
+              addByKey(old, key, { key, data, createdTxnHash: txnParams.transactionHash })
+            );
+          },
+
+          WithdrawalExecuted: (key: string, txnParams: EventTxnParams) => {
+            setWithdrawalStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
+
+            pushSuccessNotification(chainId, "Order executed", txnParams);
+          },
+
+          WithdrawalCancelled: (key: string, data, txnParams: EventTxnParams) => {
+            setWithdrawalStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
+          },
+        },
+      };
+
+      Object.keys(contracts).forEach((contractName) => {
+        Object.keys(handlers[contractName]).forEach((eventName) => {
+          const handler = handlers[contractName][eventName];
+
+          contracts[contractName].on(eventName, handler);
         });
-      }
-
-      function onOrderCancelled(key, data, txnParams) {
-        setOrderEvents((orderEvents) => {
-          if (!orderEvents[key]) return orderEvents;
-
-          return {
-            ...orderEvents,
-            [key]: {
-              ...orderEvents[key],
-              cancelledTxnHash: txnParams.transactionHash,
-            },
-          };
-        });
-
-        pushErrorNotification(chainId, "Order cancelled", txnParams);
-      }
-
-      function onOrderExecuted(key, txnParams) {
-        setOrderEvents((orderEvents) => {
-          if (!orderEvents[key]) return orderEvents;
-
-          return {
-            ...orderEvents,
-            [key]: {
-              ...orderEvents[key],
-              executedTxnHash: txnParams.transactionHash,
-            },
-          };
-        });
-
-        pushSuccessNotification(chainId, "Order executed", txnParams);
-      }
-
-      wsEventEmitter?.on("OrderCreated", onOrderCreated);
-      wsEventEmitter?.on("OrderCancelled", onOrderCancelled);
-      wsEventEmitter?.on("OrderExecuted", onOrderExecuted);
-
-      wsEventEmitter?.on("DepositCreated", onOrderCreated);
-      wsEventEmitter?.on("DepositCancelled", onOrderCancelled);
-      wsEventEmitter?.on("DepositExecuted", onOrderExecuted);
-
-      wsEventEmitter?.on("WithdrawalCreated", onOrderCreated);
-      wsEventEmitter?.on("WithdrawalCancelled", onOrderCancelled);
-      wsEventEmitter?.on("WithdrawalExecuted", onOrderExecuted);
+      });
 
       return () => {
-        wsEventEmitter?.off("OrderCreated", onOrderCreated);
-        wsEventEmitter?.off("OrderCancelled", onOrderCancelled);
-        wsEventEmitter?.off("OrderExecuted", onOrderExecuted);
+        Object.keys(contracts).forEach((contractName) => {
+          Object.keys(handlers[contractName]).forEach((eventName) => {
+            const handler = handlers[contractName][eventName];
 
-        wsEventEmitter?.off("DepositCreated", onOrderCreated);
-        wsEventEmitter?.off("DepositCancelled", onOrderCancelled);
-        wsEventEmitter?.off("DepositExecuted", onOrderExecuted);
-
-        wsEventEmitter?.off("WithdrawalCreated", onOrderCreated);
-        wsEventEmitter?.off("WithdrawalCancelled", onOrderCancelled);
-        wsEventEmitter?.off("WithdrawalExecuted", onOrderExecuted);
+            contracts[contractName].off(eventName, handler);
+          });
+        });
       };
     },
     [account, active, chainId]
   );
 
-  // eslint-disable-next-line no-console
-  console.debug("orderEvents", orderEvents);
+  if (isDevelopment()) {
+    // eslint-disable-next-line no-console
+    console.debug("events", { orderStatuses, depositStatuses, withdrawalStatuses });
+  }
 
-  const state = useMemo(() => {
-    function getPendingOrders() {
-      return Object.values(orderEvents).filter(
-        (orderEvent) => !orderEvent.cancelledTxnHash && !orderEvent.executedTxnHash && !orderEvent.isViewed
-      );
-    }
-
-    function getOrderEvents(key?: string) {
-      if (!key) return undefined;
-      return orderEvents[key];
-    }
-
-    function setIsOrderViewed(key: string) {
-      setOrderEvents((orderEvents) => ({
-        ...orderEvents,
-        [key]: {
-          ...orderEvents[key],
-          isViewed: true,
-        },
-      }));
-    }
-
+  const contextState: ContractEventsContextType = useMemo(() => {
     return {
-      getPendingOrders,
-      getOrderEvents,
-      setIsOrderViewed,
+      orderStatuses,
+      depositStatuses,
+      withdrawalStatuses,
+      touchOrderStatus: (key: string) => {
+        setOrderStatuses((old) => updateByKey(old, key, { isTouched: true }));
+      },
+      touchDepositStatus: (key: string) => {
+        setDepositStatuses((old) => updateByKey(old, key, { isTouched: true }));
+      },
+      touchWithdrawalStatus: (key: string) => {
+        setWithdrawalStatuses((old) => updateByKey(old, key, { isTouched: true }));
+      },
     };
-  }, [orderEvents]);
+  }, [depositStatuses, orderStatuses, withdrawalStatuses]);
 
-  return <ContractEventsContext.Provider value={state}>{children}</ContractEventsContext.Provider>;
+  return <ContractEventsContext.Provider value={contextState}>{children}</ContractEventsContext.Provider>;
 }

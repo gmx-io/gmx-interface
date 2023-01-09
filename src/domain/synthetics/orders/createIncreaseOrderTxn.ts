@@ -123,13 +123,13 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
     };
   }
 
-  await simulateExecuteOrderTxn(chainId, library, {
-    primaryPriceOverrides,
-    secondaryPriceOverrides,
-    createOrderMulticallPayload: encodedPayload,
-    value: wntAmount,
-    tokensData: p.tokensData,
-  });
+  // await simulateExecuteOrderTxn(chainId, library, {
+  //   primaryPriceOverrides,
+  //   secondaryPriceOverrides,
+  //   createOrderMulticallPayload: encodedPayload,
+  //   value: wntAmount,
+  //   tokensData: p.tokensData,
+  // });
 
   const longText = p.isLong ? t`Long` : t`Short`;
   const orderLabel = t`Increase ${longText} ${indexToken.symbol} by ${formatUsdAmount(p.sizeDeltaUsd)}`;

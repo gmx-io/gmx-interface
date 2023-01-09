@@ -1,5 +1,5 @@
 import { BigNumber } from "ethers";
-import { AggregatedOrderData, OrderType, OrdersData } from "./types";
+import { AggregatedOrderData, AggregatedOrdersData, OrderType, OrdersData } from "./types";
 import {
   TokenData,
   TokenPrices,
@@ -27,6 +27,29 @@ export function getOrder(ordersData: OrdersData, orderKey?: string) {
   if (!orderKey) return undefined;
 
   return ordersData[orderKey];
+}
+
+export function getPositionOrders(
+  ordersData: AggregatedOrdersData,
+  marketAddress?: string,
+  collateralToken?: string,
+  isLong?: boolean
+) {
+  if (!marketAddress && !collateralToken && isLong === undefined) return [];
+
+  return Object.values(ordersData).filter((order) => {
+    if (isMarketOrder(order.orderType) || isSwapOrder(order.orderType)) return false;
+
+    if (marketAddress && order.marketAddress !== marketAddress) return false;
+    if (collateralToken && order.initialCollateralTokenAddress !== collateralToken) return false;
+    if (isLong !== undefined && order.isLong !== isLong) return false;
+
+    return true;
+  });
+}
+
+export function isMarketOrder(orderType: OrderType) {
+  return [OrderType.MarketDecrease, OrderType.MarketIncrease, OrderType.MarketSwap].includes(orderType);
 }
 
 export function isLimitOrder(orderType: OrderType) {

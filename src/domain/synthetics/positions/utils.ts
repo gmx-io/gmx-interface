@@ -12,8 +12,16 @@ export function getPosition(positionsData: PositionsData, positionKey?: string) 
   return positionsData[positionKey];
 }
 
-export function getPositionKey(account: string, market: string, collateralToken: string, isLong: boolean) {
+export function getPositionKey(account?: string, market?: string, collateralToken?: string, isLong?: boolean) {
+  if (!account || !market || !collateralToken || isLong === undefined) return undefined;
+
   return `${account}-${market}-${collateralToken}-${isLong}`;
+}
+
+export function parsePositionKey(positionKey: string) {
+  const [account, market, collateralToken, isLong] = positionKey.split("-");
+
+  return { account, market, collateralToken, isLong: isLong === "true" };
 }
 
 export function getAggregatedPositionData(

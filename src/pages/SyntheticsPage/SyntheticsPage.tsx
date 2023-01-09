@@ -60,7 +60,12 @@ export function SyntheticsPage(p: Props) {
                 className="Exchange-list-tabs"
               />
             </div>
-            {listSection === ListSection.Positions && <PositionList onSelectMarket={setSelectedMarketAddress} />}
+            {listSection === ListSection.Positions && (
+              <PositionList
+                onOrdersClick={() => setListSection(ListSection.Orders)}
+                onSelectMarket={setSelectedMarketAddress}
+              />
+            )}
             {listSection === ListSection.Orders && <OrderList />}
           </div>
         </div>
@@ -86,7 +91,12 @@ export function SyntheticsPage(p: Props) {
               className="Exchange-list-tabs"
             />
           </div>
-          {listSection === ListSection.Positions && <PositionList onSelectMarket={setSelectedMarketAddress} />}
+          {listSection === ListSection.Positions && (
+            <PositionList
+              onOrdersClick={() => setListSection(ListSection.Orders)}
+              onSelectMarket={setSelectedMarketAddress}
+            />
+          )}
           {listSection === ListSection.Orders && <OrderList />}
         </div>
       </div>

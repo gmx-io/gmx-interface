@@ -5,9 +5,11 @@ import { PositionSeller } from "components/Synthetics/PositionSeller/PositionSel
 import { useAggregatedPositionsData } from "domain/synthetics/positions/useAggregatedPositionsData";
 import { useChainId } from "lib/chains";
 import { useState } from "react";
+import { useAggregatedOrdersData } from "domain/synthetics/orders/useAggregatedOrdersData";
 
 type Props = {
   onSelectMarket: (marketAddress: string) => void;
+  onOrdersClick: () => void;
 };
 
 export function PositionList(p: Props) {
@@ -17,6 +19,7 @@ export function PositionList(p: Props) {
   const [editingPositionKey, setEditingPositionKey] = useState<string>();
 
   const { aggregatedPositionsData, isLoading } = useAggregatedPositionsData(chainId);
+  const { aggregatedOrdersData } = useAggregatedOrdersData(chainId);
 
   const positions = Object.values(aggregatedPositionsData);
 
@@ -37,12 +40,12 @@ export function PositionList(p: Props) {
           positions.map((position) => (
             <PositionItem
               key={position.key}
+              ordersData={aggregatedOrdersData}
               position={position}
               onEditCollateralClick={() => setEditingPositionKey(position.key)}
               onClosePositionClick={() => setClosingPositionKey(position.key)}
-              onOrdersClick={() => {}}
+              onOrdersClick={p.onOrdersClick}
               onSelectMarketClick={() => p.onSelectMarket(position.marketAddress)}
-              onShareClick={() => {}}
               showPnlAfterFees={false}
               isLarge={false}
             />
@@ -78,12 +81,12 @@ export function PositionList(p: Props) {
             positions.map((position) => (
               <PositionItem
                 key={position.key}
+                ordersData={aggregatedOrdersData}
                 position={position}
                 onEditCollateralClick={() => setEditingPositionKey(position.key)}
                 onClosePositionClick={() => setClosingPositionKey(position.key)}
-                onOrdersClick={() => {}}
+                onOrdersClick={p.onOrdersClick}
                 onSelectMarketClick={() => p.onSelectMarket(position.marketAddress)}
-                onShareClick={() => {}}
                 showPnlAfterFees={false}
                 isLarge={true}
               />

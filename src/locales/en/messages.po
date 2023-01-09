@@ -159,6 +159,7 @@ msgid "Actions"
 msgstr "Actions"
 
 #: src/components/Exchange/PositionsList.js
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Active Orders"
 msgstr "Active Orders"
 
@@ -1532,6 +1533,10 @@ msgstr "Fulfilling {longText} {0} request"
 msgid "Funding Fee"
 msgstr "Funding Fee"
 
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Funding fee:"
+msgstr "Funding fee:"
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GBC NFTs APR tracker and rewards"
 msgstr "GBC NFTs APR tracker and rewards"
@@ -2403,9 +2408,12 @@ msgstr "Net Value"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Net Value: Initial Collateral + PnL - Borrow Fee"
 msgstr "Net Value: Initial Collateral + PnL - Borrow Fee"
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Funding Fee"
+msgstr "Net Value: Initial Collateral + PnL - Borrow Fee - Funding Fee"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -2612,6 +2620,7 @@ msgid "Orders"
 msgstr "Orders"
 
 #: src/components/Exchange/PositionsList.js
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/pages/Exchange/Exchange.js
 msgid "Orders ({0})"
 msgstr "Orders ({0})"

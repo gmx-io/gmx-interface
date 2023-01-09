@@ -1,10 +1,15 @@
-import { AggregatedPositionData } from "domain/synthetics/positions";
 import { Trans, t } from "@lingui/macro";
+import cx from "classnames";
 import PositionDropdown from "components/Exchange/PositionDropdown";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
-import cx from "classnames";
-import { formatLeverage, formatPnl } from "domain/synthetics/positions";
+import {
+  AggregatedOrdersData,
+  getPositionOrders,
+  getTriggerPricePrefix,
+  isIncreaseOrder,
+} from "domain/synthetics/orders";
+import { AggregatedPositionData, formatLeverage, formatPnl } from "domain/synthetics/positions";
 import { formatUsdAmount } from "domain/synthetics/tokens";
 import { AiOutlineEdit } from "react-icons/ai";
 
@@ -12,6 +17,7 @@ import "./PositionItem.scss";
 
 export type Props = {
   position: AggregatedPositionData;
+  ordersData: AggregatedOrdersData;
   positionOrders?: any[];
   hideActions?: boolean;
   showPnlAfterFees?: boolean;
@@ -24,6 +30,16 @@ export type Props = {
 };
 
 export function PositionItem(p: Props) {
+  const positionOrders = getPositionOrders(
+    p.ordersData,
+    p.position.marketAddress,
+    p.position.collateralTokenAddress,
+    p.position.isLong
+  );
+
+  // TODO:
+  const hasOrderError = false;
+
   function renderNetValue() {
     return (
       <Tooltip
@@ -34,7 +50,7 @@ export function PositionItem(p: Props) {
           <div>
             {p.showPnlAfterFees
               ? t`Net Value: Initial Collateral + PnL - Fees`
-              : t`Net Value: Initial Collateral + PnL - Borrow Fee`}
+              : t`Net Value: Initial Collateral + PnL - Borrow Fee - Funding Fee`}
             <br />
             <br />
             <StatsTooltipRow
@@ -48,10 +64,16 @@ export function PositionItem(p: Props) {
               value={formatUsdAmount(p.position.pendingBorrowingFees?.mul(-1))}
               showDollar={false}
             />
+            <StatsTooltipRow
+              label={t`Funding fee:`}
+              value={formatUsdAmount(p.position.pendingFundingFeesUsd?.mul(-1))}
+              showDollar={false}
+            />
             <StatsTooltipRow label={t`Open + Close fee`} showDollar={false} value={"-$0.00"} />
+            <br />
             <StatsTooltipRow
               label={t`PnL After Fees`}
-              value={formatUsdAmount(p.position.pnlAfterFees)}
+              value={formatPnl(p.position.pnlAfterFees, p.position.pnlAfterFeesPercentage)}
               showDollar={false}
             />
           </div>
@@ -109,40 +131,40 @@ export function PositionItem(p: Props) {
   }
 
   function renderPositionOrders() {
-    return null;
-    // return (
-    //   <div onClick={() => p.onOrdersClick()}>
-    //     <Tooltip
-    //       handle={t`Orders (${p.positionOrders.length})`}
-    //       position="left-bottom"
-    //       handleClassName={cx(["Exchange-list-info-label", "Exchange-position-list-orders", "plain", "clickable"], {
-    //         muted: !hasOrderError,
-    //         negative: hasOrderError,
-    //       })}
-    //       renderContent={() => {
-    //         return (
-    //           <>
-    //             <strong>
-    //               <Trans>Active Orders</Trans>
-    //             </strong>
-    //             {positionOrders.map((order) => {
-    //               return (
-    //                 <div
-    //                   key={`${order.isLong}-${order.type}-${order.index}`}
-    //                   className="Position-list-order active-order-tooltip"
-    //                 >
-    //                   {order.triggerAboveThreshold ? ">" : "<"} {formatAmount(order.triggerPrice, 30, 2, true)}:
-    //                   {order.type === INCREASE ? " +" : " -"}${formatAmount(order.sizeDelta, 30, 2, true)}
-    //                   {order.error && <div className="negative active-oredr-error">{order.error}</div>}
-    //                 </div>
-    //               );
-    //             })}
-    //           </>
-    //         );
-    //       }}
-    //     />
-    //   </div>
-    // );
+    if (positionOrders.length === 0) return null;
+
+    return (
+      <div onClick={p.onOrdersClick}>
+        <Tooltip
+          handle={t`Orders (${positionOrders.length})`}
+          position="left-bottom"
+          handleClassName={cx(["Exchange-list-info-label", "Exchange-position-list-orders", "plain", "clickable"], {
+            muted: !hasOrderError,
+            negative: hasOrderError,
+          })}
+          renderContent={() => {
+            return (
+              <>
+                <strong>
+                  <Trans>Active Orders</Trans>
+                </strong>
+                {positionOrders.map((order) => {
+                  return (
+                    <div key={order.key} className="Position-list-order active-order-tooltip">
+                      {getTriggerPricePrefix(order.orderType, order.isLong)} {formatUsdAmount(order.triggerPrice)}:
+                      {isIncreaseOrder(order.orderType) ? "+" : "-"}
+                      {formatUsdAmount(order.sizeDeltaUsd)}
+                      {/* TODO: */}
+                      {/* {order.error && <div className="negative active-oredr-error">{order.error}</div>} */}
+                    </div>
+                  );
+                })}
+              </>
+            );
+          }}
+        />
+      </div>
+    );
   }
 
   function renderLarge() {
