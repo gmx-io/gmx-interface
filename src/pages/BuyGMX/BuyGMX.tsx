@@ -105,7 +105,7 @@ export default function BuyGMX() {
                 )}
               </div>
               <div className="buttons-group">
-                {BUY_NATIVE_TOKENS.filter((e) => Object.keys(e.links).includes(String(chainId))).map((exchange) => {
+                {BUY_NATIVE_TOKENS.filter((e) => chainId in e.links).map((exchange) => {
                   const icon = importImage(exchange.icon) || "";
                   const link = exchange.links[chainId];
                   return (
@@ -129,7 +129,7 @@ export default function BuyGMX() {
                 </div>
               )}
               <div className="buttons-group">
-                {TRANSFER_EXCHANGES.filter((e) => Object.keys(e.links).includes(String(chainId))).map((exchange) => {
+                {TRANSFER_EXCHANGES.filter((e) => chainId in e.links).map((exchange) => {
                   const icon = importImage(exchange.icon) || "";
                   const link = exchange.links[chainId];
                   return (
@@ -181,7 +181,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
             <Trans>Buy GMX using Decentralized Exchange Aggregators:</Trans>
           </div>
           <div className="buttons-group">
-            {DECENTRALISED_AGGRIGATORS.filter((e) => Object.keys(e.links).includes(String(chainId))).map((exchange) => {
+            {DECENTRALISED_AGGRIGATORS.filter((e) => chainId in e.links).map((exchange) => {
               const icon = importImage(exchange.icon) || "";
               const link = exchange.links[chainId];
               return (
@@ -197,7 +197,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
             <Trans>Buy GMX using any token from any network:</Trans>
           </div>
           <div className="buttons-group">
-            {GMX_FROM_ANY_NETWORKS.filter((e) => Object.keys(e.links).includes(String(chainId))).map((exchange) => {
+            {GMX_FROM_ANY_NETWORKS.filter((e) => chainId in e.links).map((exchange) => {
               const icon = importImage(exchange.icon) || "";
               const link = exchange.links[chainId];
               return (
@@ -234,7 +234,7 @@ function CentralisedExchanges({ chainId }) {
             <Trans>Buy GMX from centralized exchanges:</Trans>
           </div>
           <div className="buttons-group">
-            {CENTRALISED_EXCHANGES.filter((e) => Object.keys(e.links).includes(String(chainId))).map((exchange) => {
+            {CENTRALISED_EXCHANGES.filter((e) => chainId in e.links).map((exchange) => {
               const icon = importImage(exchange.icon) || "";
               const link = exchange.links[chainId];
               return (
@@ -251,7 +251,7 @@ function CentralisedExchanges({ chainId }) {
             <Trans>Buy GMX using FIAT gateways:</Trans>
           </div>
           <div className="buttons-group col-2">
-            {FIAT_GATEWAYS.filter((e) => Object.keys(e.links).includes(String(chainId))).map((exchange) => {
+            {FIAT_GATEWAYS.filter((e) => chainId in e.links).map((exchange) => {
               const icon = importImage(exchange.icon) || "";
               let link = exchange.links[chainId];
 

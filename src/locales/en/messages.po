@@ -2444,8 +2444,8 @@ msgid "Profit price: {0} ${1}. This rule applies for the next {2}, until {3}."
 msgstr "Profit price: {0} ${1}. This rule applies for the next {2}, until {3}."
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Projects developed by the GMX community. Please exercise caution in interacting with any site, the project's are fully maintained by community developers."
-msgstr "Projects developed by the GMX community. Please exercise caution in interacting with any site, the project's are fully maintained by community developers."
+msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
+msgstr "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Projects integrated with GMX."
