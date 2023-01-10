@@ -656,7 +656,7 @@ export default function ConfirmationBox(props) {
                     return (
                       <>
                         <StatsTooltipRow
-                          label={t`Network fee`}
+                          label={t`Network Fee`}
                           value={`${formatAmountFree(minExecutionFee, 18, 5)} ${nativeTokenSymbol} ($${formatAmount(
                             minExecutionFeeUSD,
                             USD_DECIMALS,

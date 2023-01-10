@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import cx from "classnames";
 
 import "./Tooltip.css";
@@ -8,29 +8,50 @@ import Portal from "../Common/Portal";
 const OPEN_DELAY = 0;
 const CLOSE_DELAY = 100;
 
-export default function TooltipWithPortal(props) {
+type Props = {
+  handle: React.ReactNode;
+  renderContent: () => React.ReactNode;
+  position?: string;
+  trigger?: string;
+  className?: string;
+  disableHandleStyle?: boolean;
+  handleClassName?: string;
+  isHandlerDisabled?: boolean;
+  fitHandleWidth?: boolean;
+  closeOnDoubleClick?: boolean;
+};
+
+type Coords = {
+  height?: number;
+  width?: number;
+  left?: number;
+  top?: number;
+};
+
+export default function TooltipWithPortal(props: Props) {
   const [visible, setVisible] = useState(false);
-  const [coords, setCoords] = useState({});
-  const [tooltipWidth, setTooltipWidth] = useState();
-  const intervalCloseRef = useRef(null);
-  const intervalOpenRef = useRef(null);
+  const [coords, setCoords] = useState<Coords>({});
+  const [tooltipWidth, setTooltipWidth] = useState<string>();
+  const intervalCloseRef = useRef<ReturnType<typeof setTimeout> | null>();
+  const intervalOpenRef = useRef<ReturnType<typeof setTimeout> | null>();
 
   const position = props.position ?? "left-bottom";
   const trigger = props.trigger ?? "hover";
-  const handlerRef = useRef();
+  const handlerRef = useRef<null | HTMLInputElement>(null);
 
   const updateTooltipCoords = useCallback(() => {
-    const rect = handlerRef.current.getBoundingClientRect();
+    const rect = handlerRef?.current?.getBoundingClientRect();
 
-    setCoords({
-      height: rect.height,
-      width: rect.width,
-      left: rect.x,
-      top: rect.y + window.scrollY,
-    });
-
-    if (props.fitHandleWidth) {
-      setTooltipWidth(`${rect.width}px`);
+    if (rect) {
+      setCoords({
+        height: rect.height,
+        width: rect.width,
+        left: rect.x,
+        top: rect.y + window.scrollY,
+      });
+      if (props.fitHandleWidth) {
+        setTooltipWidth(`${rect.width}px`);
+      }
     }
   }, [handlerRef, props.fitHandleWidth]);
 
@@ -89,7 +110,8 @@ export default function TooltipWithPortal(props) {
         className={cx({ "Tooltip-handle": !props.disableHandleStyle }, [props.handleClassName], { active: visible })}
         ref={handlerRef}
       >
-        {props.handle}
+        {/* For onMouseLeave to work on disabled button https://github.com/react-component/tooltip/issues/18#issuecomment-411476678 */}
+        {props.isHandlerDisabled ? <div className="Tooltip-disabled-wrapper">{props.handle}</div> : <>{props.handle}</>}
       </span>
       {visible && coords.left && (
         <Portal>

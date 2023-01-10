@@ -160,7 +160,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
             </div>
             <div className="buttons-group col-1">
               <Button imgSrc={uniswapArbitrumIcon} href={externalLinks.buyGmx.uniswap}>
-                <Trans>Uniswap</Trans>
+                Uniswap
               </Button>
             </div>
           </div>
@@ -171,7 +171,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
             </div>
             <div className="buttons-group col-1">
               <Button imgSrc={traderjoeIcon} href={externalLinks.buyGmx.traderjoe}>
-                <Trans>TraderJoe</Trans>
+                TraderJoe
               </Button>
             </div>
           </div>
@@ -186,7 +186,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
               const link = exchange.links[chainId];
               return (
                 <Button key={exchange.name} imgSrc={icon} href={link}>
-                  <Trans>{exchange.name}</Trans>
+                  {exchange.name}
                 </Button>
               );
             })}

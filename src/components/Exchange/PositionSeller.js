@@ -1141,21 +1141,21 @@ export default function PositionSeller(props) {
                     <div>
                       {fundingFee && (
                         <StatsTooltipRow
-                          label={t`Borrow fee`}
+                          label={t`Borrow Fee`}
                           value={formatAmount(fundingFee, USD_DECIMALS, 2, true)}
                         />
                       )}
 
                       {positionFee && (
                         <StatsTooltipRow
-                          label={t`Closing fee`}
+                          label={t`Closing Fee`}
                           value={formatAmount(positionFee, USD_DECIMALS, 2, true)}
                         />
                       )}
 
                       {swapFee && (
                         <StatsTooltipRow
-                          label={t`Swap fee`}
+                          label={t`Swap Fee`}
                           showDollar={false}
                           value={`${formatAmount(swapFeeToken, collateralToken.decimals, 5)} ${collateralToken.symbol}
                            ($${formatAmount(swapFee, USD_DECIMALS, 2, true)})`}
@@ -1163,7 +1163,7 @@ export default function PositionSeller(props) {
                       )}
 
                       <StatsTooltipRow
-                        label={t`Execution fee`}
+                        label={t`Execution Fee`}
                         showDollar={false}
                         value={`${formatAmount(executionFee, 18, 5, true)} ${nativeTokenSymbol} ($${formatAmount(
                           executionFeeUsd,
