@@ -2069,6 +2069,8 @@ msgstr "未加载流动资金数据"
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/utils.ts
 #: src/components/Synthetics/OrderList/OrderList.tsx
+#: src/components/Synthetics/OrderList/OrderList.tsx
+#: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/utils.ts
@@ -2478,6 +2480,8 @@ msgstr "没有esGMX可供索取"
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
+#: src/components/Synthetics/OrderList/OrderList.tsx
+#: src/components/Synthetics/OrderList/OrderList.tsx
 msgid "No open orders"
 msgstr "没有未完成的订单"
 
@@ -2488,6 +2492,7 @@ msgstr "没有未结头寸，除非有头寸，否则订单不能被执行"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionList/PositionList.tsx
+#: src/components/Synthetics/PositionList/PositionList.tsx
 msgid "No open positions"
 msgstr "没有未结头寸"
 
@@ -2496,8 +2501,8 @@ msgid "No open positions at GMX currently"
 msgstr "目前在GMX没有未结头寸"
 
 #: src/components/Synthetics/OrderList/OrderList.tsx
-msgid "No orders"
-msgstr ""
+#~ msgid "No orders"
+#~ msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "No position"

@@ -1,6 +1,7 @@
 import { BigNumber } from "ethers";
 import { TokenData } from "domain/synthetics/tokens";
 import { Market } from "domain/synthetics/markets";
+import { PositionUpdate } from "../contractEvents";
 
 export type PositionFundingFees = {
   fundingFeeAmount: BigNumber;
@@ -53,6 +54,7 @@ export type AggregatedPositionData = Position & {
   leverage?: BigNumber;
   pendingFundingFeesUsd?: BigNumber;
   totalPendingFeesUsd?: BigNumber;
+  pendingUpdate?: PositionUpdate;
 };
 
 export type PositionsData = {

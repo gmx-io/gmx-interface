@@ -10,7 +10,9 @@ import { TokensData, convertToContractPrice, formatUsdAmount, getTokenData } fro
 import { OrderType } from "./types";
 import { isDevelopment } from "config/env";
 import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
-import { getAcceptablePriceForPositionOrder } from "./utils";
+import { getAcceptablePriceForPositionOrder, isMarketOrder } from "./utils";
+import { getPositionKey } from "../positions";
+import { PositionUpdate } from "../contractEvents";
 
 const { AddressZero } = ethers.constants;
 
@@ -23,14 +25,16 @@ export type DecreaseOrderParams = {
   swapPath: string[];
   initialCollateralAddress: string;
   initialCollateralAmount?: BigNumber;
+  targetCollateralAddress: string;
   indexTokenAddress: string;
   receiveTokenAddress: string;
   triggerPrice?: BigNumber;
   priceImpactDelta: BigNumber;
   allowedSlippage: number;
-  sizeDeltaUsd: BigNumber;
+  sizeDeltaUsd?: BigNumber;
   isLong: boolean;
   orderType: OrderType.MarketDecrease | OrderType.LimitDecrease | OrderType.StopLossDecrease;
+  setPendingPositionUpdate: (update: PositionUpdate) => void;
 };
 
 export async function createDecreaseOrderTxn(chainId: number, library: Web3Provider, p: DecreaseOrderParams) {
@@ -124,6 +128,18 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
     value: wntAmount,
     tokensData: p.tokensData,
   });
+
+  if (isMarketOrder(p.orderType)) {
+    p.setPendingPositionUpdate({
+      positionKey: getPositionKey(
+        p.account,
+        p.market,
+        p.targetCollateralAddress || p.initialCollateralAddress,
+        p.isLong
+      )!,
+      isIncrease: false,
+    });
+  }
 
   const longText = p.isLong ? t`Long` : t`Short`;
 

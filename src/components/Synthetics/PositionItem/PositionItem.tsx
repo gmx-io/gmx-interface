@@ -14,6 +14,7 @@ import { formatUsdAmount } from "domain/synthetics/tokens";
 import { AiOutlineEdit } from "react-icons/ai";
 
 import "./PositionItem.scss";
+import { ImSpinner2 } from "react-icons/im";
 
 export type Props = {
   position: AggregatedPositionData;
@@ -183,7 +184,7 @@ export function PositionItem(p: Props) {
                 </div>
               )}
             />
-            {/* {position.hasPendingChanges && <ImSpinner2 className="spin position-loading-icon" />} */}
+            {p.position.pendingUpdate && <ImSpinner2 className="spin position-loading-icon" />}
           </div>
           <div className="Exchange-list-info-label" onClick={p.onSelectMarketClick}>
             <span className="muted">{formatLeverage(p.position.leverage)}&nbsp;</span>
@@ -268,6 +269,7 @@ export function PositionItem(p: Props) {
       <div className="App-card">
         <div className="App-card-title">
           <span className="Exchange-list-title">{p.position.indexToken?.symbol}</span>
+          {p.position.pendingUpdate && <ImSpinner2 className="spin position-loading-icon" />}
         </div>
         <div className="App-card-divider" />
         <div className="App-card-content">

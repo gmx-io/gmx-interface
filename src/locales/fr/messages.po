@@ -2069,6 +2069,8 @@ msgstr "Les données de liquidité ne sont pas chargées"
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/utils.ts
 #: src/components/Synthetics/OrderList/OrderList.tsx
+#: src/components/Synthetics/OrderList/OrderList.tsx
+#: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/utils.ts
@@ -2478,6 +2480,8 @@ msgstr "Pas d'esGMX à réclamer"
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
+#: src/components/Synthetics/OrderList/OrderList.tsx
+#: src/components/Synthetics/OrderList/OrderList.tsx
 msgid "No open orders"
 msgstr "Pas d'ordres ouverts"
 
@@ -2488,6 +2492,7 @@ msgstr "Pas de position ouverte, l'ordre ne peut être exécuté que si une posi
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionList/PositionList.tsx
+#: src/components/Synthetics/PositionList/PositionList.tsx
 msgid "No open positions"
 msgstr "Pas de position ouverte"
 
@@ -2496,8 +2501,8 @@ msgid "No open positions at GMX currently"
 msgstr "Aucune position ouverte actuellement chez GMX"
 
 #: src/components/Synthetics/OrderList/OrderList.tsx
-msgid "No orders"
-msgstr ""
+#~ msgid "No orders"
+#~ msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "No position"

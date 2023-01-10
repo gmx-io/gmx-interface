@@ -29,6 +29,7 @@ import { formatAmount } from "lib/numbers";
 import { TradeFees } from "../TradeFees/TradeFees";
 
 import "./ConfirmationBox.scss";
+import { useContractEvents } from "domain/synthetics/contractEvents";
 
 type Props = {
   operationType: TradeType;
@@ -65,6 +66,7 @@ export function ConfirmationBox(p: Props) {
   const { library, account } = useWeb3React();
   const { chainId } = useChainId();
   const routerAddress = getContract(chainId, "SyntheticsRouter");
+  const { setPendingPositionUpdate } = useContractEvents();
 
   const { tokensData } = useAvailableTokensData(chainId);
   const referralCodeData = useUserReferralCode(library, chainId, account);
@@ -172,6 +174,7 @@ export function ConfirmationBox(p: Props) {
           market,
           initialCollateralAddress: p.fromTokenAddress,
           initialCollateralAmount: p.fromTokenAmount,
+          targetCollateralAddress: p.collateralTokenAddress,
           swapPath: swapPath,
           indexTokenAddress: p.toTokenAddress,
           sizeDeltaUsd: p.sizeDeltaUsd,
@@ -183,6 +186,7 @@ export function ConfirmationBox(p: Props) {
           orderType: p.mode === TradeMode.Limit ? OrderType.LimitIncrease : OrderType.MarketIncrease,
           referralCode: referralCodeData?.userReferralCodeString,
           tokensData,
+          setPendingPositionUpdate,
         }).then(p.onSubmitted);
       }
     }

@@ -104,6 +104,13 @@ export function useOrdersData(chainId: number): OrdersResult {
   });
 
   useEffect(() => {
+    if (!account) {
+      setOrdersData({});
+      setStartIndex(0);
+      setEndIndex(DEFAULT_COUNT);
+      return;
+    }
+
     if (data?.count && data.count > endIndex) {
       setStartIndex(endIndex);
       setEndIndex(data.count);
@@ -115,7 +122,7 @@ export function useOrdersData(chainId: number): OrdersResult {
         ...data.ordersData,
       }));
     }
-  }, [data?.count, data?.ordersData, endIndex]);
+  }, [account, data?.count, data?.ordersData, endIndex]);
 
   return useMemo(() => {
     return {

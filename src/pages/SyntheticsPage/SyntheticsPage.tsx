@@ -6,6 +6,9 @@ import { useState } from "react";
 import "./SyntheticsPage.scss";
 import { OrderList } from "components/Synthetics/OrderList/OrderList";
 import { PositionList } from "components/Synthetics/PositionList/PositionList";
+import { useAggregatedPositionsData } from "domain/synthetics/positions/useAggregatedPositionsData";
+import { useChainId } from "lib/chains";
+import { useAggregatedOrdersData } from "domain/synthetics/orders/useAggregatedOrdersData";
 
 type Props = {
   onConnectWallet: () => void;
@@ -17,8 +20,12 @@ enum ListSection {
 }
 
 export function SyntheticsPage(p: Props) {
+  const { chainId } = useChainId();
   const [listSection, setListSection] = useState(ListSection.Positions);
   const [selectedMarketAddress, setSelectedMarketAddress] = useState<string>();
+
+  const { aggregatedPositionsData, isLoading: isPositionsLoading } = useAggregatedPositionsData(chainId);
+  const { aggregatedOrdersData, isLoading: isOrdersLoading } = useAggregatedOrdersData(chainId);
 
   return (
     <div className="SyntheticsTrade page-layout">
@@ -62,11 +69,16 @@ export function SyntheticsPage(p: Props) {
             </div>
             {listSection === ListSection.Positions && (
               <PositionList
+                positionsData={aggregatedPositionsData}
+                ordersData={aggregatedOrdersData}
+                isLoading={isPositionsLoading}
                 onOrdersClick={() => setListSection(ListSection.Orders)}
                 onSelectMarket={setSelectedMarketAddress}
               />
             )}
-            {listSection === ListSection.Orders && <OrderList />}
+            {listSection === ListSection.Orders && (
+              <OrderList ordersData={aggregatedOrdersData} isLoading={isOrdersLoading} />
+            )}
           </div>
         </div>
 
@@ -93,11 +105,16 @@ export function SyntheticsPage(p: Props) {
           </div>
           {listSection === ListSection.Positions && (
             <PositionList
+              positionsData={aggregatedPositionsData}
+              ordersData={aggregatedOrdersData}
+              isLoading={isPositionsLoading}
               onOrdersClick={() => setListSection(ListSection.Orders)}
               onSelectMarket={setSelectedMarketAddress}
             />
           )}
-          {listSection === ListSection.Orders && <OrderList />}
+          {listSection === ListSection.Orders && (
+            <OrderList ordersData={aggregatedOrdersData} isLoading={isOrdersLoading} />
+          )}
         </div>
       </div>
       <Footer />

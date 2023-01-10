@@ -25,6 +25,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import "./PositionEditor.scss";
+import { useContractEvents } from "domain/synthetics/contractEvents";
 
 type Props = {
   position: AggregatedPositionData;
@@ -44,6 +45,7 @@ const operationLabels = {
 export function PositionEditor(p: Props) {
   const { chainId } = useChainId();
   const { account, library } = useWeb3React();
+  const { setPendingPositionUpdate } = useContractEvents();
   const [operation, setOperation] = useState(Operation.Deposit);
   const isDeposit = operation === Operation.Deposit;
 
@@ -156,6 +158,7 @@ export function PositionEditor(p: Props) {
         isLong: p.position.isLong,
         executionFee: executionFee.feeTokenAmount,
         tokensData,
+        setPendingPositionUpdate,
       });
     } else {
       if (!withdrawTokenAmount) return;

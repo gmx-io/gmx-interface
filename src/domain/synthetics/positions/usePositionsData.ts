@@ -122,6 +122,13 @@ export function usePositionsData(chainId: number): PositionsDataResult {
   });
 
   useEffect(() => {
+    if (!account) {
+      setPositionsData({});
+      setStartIndex(0);
+      setEndIndex(DEFAULT_COUNT);
+      return;
+    }
+
     if (data?.count && data.count > endIndex) {
       setStartIndex(endIndex);
       setEndIndex(data.count);
@@ -133,7 +140,7 @@ export function usePositionsData(chainId: number): PositionsDataResult {
         ...data.positionsData,
       }));
     }
-  }, [data?.count, data?.positionsData, endIndex]);
+  }, [account, data?.positionsData, data?.count, endIndex]);
 
   return useMemo(() => {
     return {

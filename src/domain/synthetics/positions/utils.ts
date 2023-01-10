@@ -5,6 +5,8 @@ import { MarketsData, getMarket, getMarketName } from "../markets";
 import { TokenPrices, TokensData, convertToUsdByPrice, formatUsdAmount, getTokenData } from "../tokens";
 import { AggregatedPositionData, PositionsData } from "./types";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { PositionsUpdates } from "../contractEvents";
+import { getPositionUpdate } from "../contractEvents/utils";
 
 export function getPosition(positionsData: PositionsData, positionKey?: string) {
   if (!positionKey) return undefined;
@@ -28,11 +30,26 @@ export function getAggregatedPositionData(
   positionsData: PositionsData,
   marketsData: MarketsData,
   tokensData: TokensData,
+  pendingUpdates: PositionsUpdates,
+  contractUpdates: PositionsUpdates,
   positionKey?: string
 ): AggregatedPositionData | undefined {
   const position = getPosition(positionsData, positionKey);
 
   if (!position) return undefined;
+
+  const pendingUpdate = getPositionUpdate(pendingUpdates, positionKey, { maxAge: 600 * 1000 });
+
+  const contractUpdate = getPositionUpdate(contractUpdates, positionKey, {
+    maxIncreasedAtBlock: position.increasedAtBlock,
+    maxDecreasedAtBlock: position.decreasedAtBlock,
+  });
+
+  if (contractUpdate) {
+    const sign = contractUpdate.isIncrease ? 1 : -1;
+    position.sizeInUsd = position.sizeInUsd.add(contractUpdate.sizeDeltaUsd?.mul(sign) || 0);
+    position.collateralAmount = position.collateralAmount.add(contractUpdate.collateralDeltaAmount?.mul(sign) || 0);
+  }
 
   const market = getMarket(marketsData, position?.marketAddress);
 
@@ -124,6 +141,7 @@ export function getAggregatedPositionData(
     entryPrice,
     pendingFundingFeesUsd,
     totalPendingFeesUsd,
+    pendingUpdate,
   };
 }
 

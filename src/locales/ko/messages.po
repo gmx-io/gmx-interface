@@ -2069,6 +2069,8 @@ msgstr "유동성 데이터를 불러오지 못하였습니다."
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/utils.ts
 #: src/components/Synthetics/OrderList/OrderList.tsx
+#: src/components/Synthetics/OrderList/OrderList.tsx
+#: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/utils.ts
@@ -2478,6 +2480,8 @@ msgstr "수령할 수 있는 esGMX가 없습니다"
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
+#: src/components/Synthetics/OrderList/OrderList.tsx
+#: src/components/Synthetics/OrderList/OrderList.tsx
 msgid "No open orders"
 msgstr "열려있는 주문이 없습니다"
 
@@ -2488,6 +2492,7 @@ msgstr "열려있는 포지션이 없습니다. 열려있는 포지션이 없는
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionList/PositionList.tsx
+#: src/components/Synthetics/PositionList/PositionList.tsx
 msgid "No open positions"
 msgstr "열려있는 포지션이 없습니다"
 
@@ -2496,8 +2501,8 @@ msgid "No open positions at GMX currently"
 msgstr "현재 GMX에서 열려있는 포지션이 없습니다."
 
 #: src/components/Synthetics/OrderList/OrderList.tsx
-msgid "No orders"
-msgstr ""
+#~ msgid "No orders"
+#~ msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "No position"

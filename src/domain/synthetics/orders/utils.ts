@@ -22,7 +22,6 @@ import { Position, getPriceForPnl } from "../positions";
  * address public constant SWAP_PNL_TOKEN_TO_COLLATERAL_TOKEN = address(2);
  * address public constant SWAP_COLLATERAL_TOKEN_TO_PNL_TOKEN = address(3);
  */
-
 export function getOrder(ordersData: OrdersData, orderKey?: string) {
   if (!orderKey) return undefined;
 
@@ -31,9 +30,9 @@ export function getOrder(ordersData: OrdersData, orderKey?: string) {
 
 export function getPositionOrders(
   ordersData: AggregatedOrdersData,
-  marketAddress?: string,
-  collateralToken?: string,
-  isLong?: boolean
+  marketAddress: string,
+  collateralToken: string,
+  isLong: boolean
 ) {
   if (!marketAddress && !collateralToken && isLong === undefined) return [];
 
@@ -111,7 +110,9 @@ export function getAggregatedOrderData(
 }
 
 export function getToTokenFromSwapPath(marketsData: MarketsData, initialCollateral?: string, swapPath?: string[]) {
-  if (!initialCollateral || !swapPath?.length) return undefined;
+  if (!initialCollateral || !swapPath) return undefined;
+
+  if (swapPath.length === 0) return initialCollateral;
 
   const [firstMarketAddress, ...marketAddresses] = swapPath;
 
@@ -250,7 +251,7 @@ export function getAcceptablePriceForPositionOrder(p: {
   isIncrease: boolean;
   isLong: boolean;
   triggerPrice?: BigNumber;
-  sizeDeltaUsd: BigNumber;
+  sizeDeltaUsd?: BigNumber;
   priceImpactDelta: BigNumber;
   indexTokenPrices: TokenPrices;
   allowedSlippage: number;
@@ -279,11 +280,11 @@ export function getAcceptablePriceForPositionOrder(p: {
 
   acceptablePrice = acceptablePrice.mul(slippageBasisPoints).div(BASIS_POINTS_DIVISOR);
 
-  const shouldFlipPriceImpact = p.isIncrease ? p.isLong : !p.isLong;
-
-  const priceImpactForPriceAdjustment = shouldFlipPriceImpact ? p.priceImpactDelta.mul(-1) : p.priceImpactDelta;
-
-  acceptablePrice = acceptablePrice.mul(p.sizeDeltaUsd.add(priceImpactForPriceAdjustment)).div(p.sizeDeltaUsd);
+  if (p.sizeDeltaUsd) {
+    const shouldFlipPriceImpact = p.isIncrease ? p.isLong : !p.isLong;
+    const priceImpactForPriceAdjustment = shouldFlipPriceImpact ? p.priceImpactDelta.mul(-1) : p.priceImpactDelta;
+    acceptablePrice = acceptablePrice.mul(p.sizeDeltaUsd.add(priceImpactForPriceAdjustment)).div(p.sizeDeltaUsd);
+  }
 
   return acceptablePrice;
 }

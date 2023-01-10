@@ -1,22 +1,19 @@
 import { Trans, t } from "@lingui/macro";
-import { isLimitOrder, isStopMarketOrder } from "domain/synthetics/orders";
-import { useAggregatedOrdersData } from "domain/synthetics/orders/useAggregatedOrdersData";
-import { useChainId } from "lib/chains";
+import { AggregatedOrdersData, isLimitOrder, isStopMarketOrder } from "domain/synthetics/orders";
 import { OrderItem } from "../OrderItem/OrderItem";
 import Checkbox from "components/Checkbox/Checkbox";
 import { useState } from "react";
 
 type Props = {
   hideActions?: boolean;
+  ordersData: AggregatedOrdersData;
+  isLoading: boolean;
 };
 
 export function OrderList(p: Props) {
-  const { chainId } = useChainId();
   const [selectedOrders, setSelectedOrders] = useState<{ [key: string]: boolean }>({});
 
-  const { aggregatedOrdersData, isLoading } = useAggregatedOrdersData(chainId);
-
-  const orders = Object.values(aggregatedOrdersData).filter(
+  const orders = Object.values(p.ordersData).filter(
     (order) => isLimitOrder(order.orderType) || isStopMarketOrder(order.orderType)
   );
 
@@ -37,9 +34,11 @@ export function OrderList(p: Props) {
     <>
       <div className="Exchange-list Orders small">
         {orders.length === 0 && (
-          <div className="Exchange-empty-positions-list-note App-card">{isLoading ? t`Loading...` : t`No orders`}</div>
+          <div className="Exchange-empty-positions-list-note App-card">
+            {p.isLoading ? t`Loading...` : t`No open orders`}
+          </div>
         )}
-        {!isLoading && orders.map((order) => <OrderItem key={order.key} order={order} isLarge={false} />)}
+        {!p.isLoading && orders.map((order) => <OrderItem key={order.key} order={order} isLarge={false} />)}
       </div>
 
       <table className="Exchange-list Orders large App-box">
@@ -74,7 +73,12 @@ export function OrderList(p: Props) {
               </div>
             </th>
           </tr>
-          {!isLoading &&
+          {orders.length === 0 && (
+            <tr>
+              <td colSpan={5}>{p.isLoading ? t`Loading...` : t`No open orders`}</td>
+            </tr>
+          )}
+          {!p.isLoading &&
             orders.map((order) => (
               <OrderItem
                 isSelected={selectedOrders[order.key]}

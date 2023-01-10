@@ -2069,6 +2069,8 @@ msgstr "流動性データがロードされていません"
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/utils.ts
 #: src/components/Synthetics/OrderList/OrderList.tsx
+#: src/components/Synthetics/OrderList/OrderList.tsx
+#: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/utils.ts
@@ -2478,6 +2480,8 @@ msgstr "請求できるesGMXはありません"
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
+#: src/components/Synthetics/OrderList/OrderList.tsx
+#: src/components/Synthetics/OrderList/OrderList.tsx
 msgid "No open orders"
 msgstr "オープンの注文はありません"
 
@@ -2488,6 +2492,7 @@ msgstr "オープンのポジションはありません。オープンのポジ
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionList/PositionList.tsx
+#: src/components/Synthetics/PositionList/PositionList.tsx
 msgid "No open positions"
 msgstr "オープンのポジションはありません"
 
@@ -2496,8 +2501,8 @@ msgid "No open positions at GMX currently"
 msgstr "現在GMXにオープンのポジションはありません"
 
 #: src/components/Synthetics/OrderList/OrderList.tsx
-msgid "No orders"
-msgstr ""
+#~ msgid "No orders"
+#~ msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "No position"

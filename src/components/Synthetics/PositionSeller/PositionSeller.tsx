@@ -42,6 +42,7 @@ import { formatAmount, parseValue } from "lib/numbers";
 import { useEffect, useState } from "react";
 
 import "./PositionSeller.scss";
+import { useContractEvents } from "domain/synthetics/contractEvents";
 
 type Props = {
   position: AggregatedPositionData;
@@ -52,6 +53,7 @@ export function PositionSeller(p: Props) {
   const { position } = p;
   const { chainId } = useChainId();
   const { library, account } = useWeb3React();
+  const { setPendingPositionUpdate } = useContractEvents();
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey([chainId, KEEP_LEVERAGE_FOR_DECREASE_KEY], true);
   const { tokensData } = useAvailableTokensData(chainId);
   const infoTokens = adaptToInfoTokens(tokensData);
@@ -158,7 +160,14 @@ export function PositionSeller(p: Props) {
   }
 
   function onSubmit() {
-    if (!position.indexToken || !account || !position || !executionFee?.feeTokenAmount || !position.currentValueUsd)
+    if (
+      !position.indexToken ||
+      !account ||
+      !position ||
+      !executionFee?.feeTokenAmount ||
+      !position.currentValueUsd ||
+      !receiveToken?.address
+    )
       return;
 
     createDecreaseOrderTxn(chainId, library, {
@@ -168,6 +177,7 @@ export function PositionSeller(p: Props) {
       swapPath: [],
       initialCollateralAmount: collateralDeltaAmount,
       initialCollateralAddress: position.collateralTokenAddress,
+      targetCollateralAddress: receiveToken.address,
       receiveTokenAddress: position.collateralTokenAddress,
       priceImpactDelta: BigNumber.from(0),
       allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
@@ -176,6 +186,7 @@ export function PositionSeller(p: Props) {
       isLong: position.isLong,
       executionFee: executionFee.feeTokenAmount,
       tokensData,
+      setPendingPositionUpdate,
     });
   }
 

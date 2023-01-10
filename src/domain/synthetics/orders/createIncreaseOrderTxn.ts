@@ -8,9 +8,11 @@ import { encodeReferralCode } from "domain/referrals";
 import { TokensData, convertToContractPrice, formatUsdAmount, getTokenData } from "domain/synthetics/tokens";
 import { BigNumber, ethers } from "ethers";
 import { callContract } from "lib/contracts";
+import { ContractEventsContextType } from "../contractEvents";
+import { getPositionKey } from "../positions";
 import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
 import { OrderType } from "./types";
-import { getAcceptablePriceForPositionOrder } from "./utils";
+import { getAcceptablePriceForPositionOrder, isMarketOrder } from "./utils";
 
 const { AddressZero } = ethers.constants;
 
@@ -18,11 +20,11 @@ type IncreaseOrderParams = {
   account: string;
   executionFee: BigNumber;
   referralCode?: string;
-  tokensData: TokensData;
   market: string;
   swapPath: string[];
   initialCollateralAddress: string;
   initialCollateralAmount: BigNumber;
+  targetCollateralAddress?: string;
   indexTokenAddress: string;
   triggerPrice?: BigNumber;
   priceImpactDelta: BigNumber;
@@ -30,6 +32,8 @@ type IncreaseOrderParams = {
   sizeDeltaUsd: BigNumber;
   isLong: boolean;
   orderType: OrderType.MarketIncrease | OrderType.LimitIncrease;
+  tokensData: TokensData;
+  setPendingPositionUpdate: ContractEventsContextType["setPendingPositionUpdate"];
 };
 
 export async function createIncreaseOrderTxn(chainId: number, library: Web3Provider, p: IncreaseOrderParams) {
@@ -130,6 +134,18 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
     value: wntAmount,
     tokensData: p.tokensData,
   });
+
+  if (isMarketOrder(p.orderType)) {
+    p.setPendingPositionUpdate({
+      positionKey: getPositionKey(
+        p.account,
+        p.market,
+        p.targetCollateralAddress || p.initialCollateralAddress,
+        p.isLong
+      )!,
+      isIncrease: true,
+    });
+  }
 
   const longText = p.isLong ? t`Long` : t`Short`;
   const orderLabel = t`Increase ${longText} ${indexToken.symbol} by ${formatUsdAmount(p.sizeDeltaUsd)}`;

@@ -1,29 +1,26 @@
 import { Trans, t } from "@lingui/macro";
-import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
 import { PositionEditor } from "components/Synthetics/PositionEditor/PositionEditor";
+import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
 import { PositionSeller } from "components/Synthetics/PositionSeller/PositionSeller";
-import { useAggregatedPositionsData } from "domain/synthetics/positions/useAggregatedPositionsData";
-import { useChainId } from "lib/chains";
+import { AggregatedOrdersData } from "domain/synthetics/orders";
+import { AggregatedPositionsData } from "domain/synthetics/positions";
 import { useState } from "react";
-import { useAggregatedOrdersData } from "domain/synthetics/orders/useAggregatedOrdersData";
 
 type Props = {
   onSelectMarket: (marketAddress: string) => void;
+  positionsData: AggregatedPositionsData;
+  ordersData: AggregatedOrdersData;
+  isLoading: boolean;
   onOrdersClick: () => void;
 };
 
 export function PositionList(p: Props) {
-  const { chainId } = useChainId();
-
   const [closingPositionKey, setClosingPositionKey] = useState<string>();
   const [editingPositionKey, setEditingPositionKey] = useState<string>();
 
-  const { aggregatedPositionsData, isLoading } = useAggregatedPositionsData(chainId);
-  const { aggregatedOrdersData } = useAggregatedOrdersData(chainId);
+  const positions = Object.values(p.positionsData);
 
-  const positions = Object.values(aggregatedPositionsData);
-
-  const isDataLoading = isLoading;
+  const isDataLoading = p.isLoading;
 
   const closingPosition = positions.find((position) => position.key === closingPositionKey);
   const editingPosition = positions.find((position) => position.key === editingPositionKey);
@@ -40,7 +37,7 @@ export function PositionList(p: Props) {
           positions.map((position) => (
             <PositionItem
               key={position.key}
-              ordersData={aggregatedOrdersData}
+              ordersData={p.ordersData}
               position={position}
               onEditCollateralClick={() => setEditingPositionKey(position.key)}
               onClosePositionClick={() => setClosingPositionKey(position.key)}
@@ -77,11 +74,20 @@ export function PositionList(p: Props) {
               <Trans>Liq Price</Trans>
             </th>
           </tr>
+          {positions.length === 0 && (
+            <tr>
+              <td colSpan={15}>
+                <div className="Exchange-empty-positions-list-note">
+                  {isDataLoading ? t`Loading...` : t`No open positions`}
+                </div>
+              </td>
+            </tr>
+          )}
           {!isDataLoading &&
             positions.map((position) => (
               <PositionItem
                 key={position.key}
-                ordersData={aggregatedOrdersData}
+                ordersData={p.ordersData}
                 position={position}
                 onEditCollateralClick={() => setEditingPositionKey(position.key)}
                 onClosePositionClick={() => setClosingPositionKey(position.key)}
