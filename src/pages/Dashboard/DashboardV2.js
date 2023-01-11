@@ -31,7 +31,7 @@ import Footer from "components/Footer/Footer";
 
 import "./DashboardV2.css";
 
-import gmx40Icon from "img/ic_gmx_40.svg";
+import gmx40Icon from "img/logo_small.png";
 import glp40Icon from "img/ic_glp_40.svg";
 import avalanche16Icon from "img/ic_avalanche_16.svg";
 import arbitrum16Icon from "img/ic_arbitrum_16.svg";
