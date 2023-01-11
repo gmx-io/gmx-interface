@@ -459,10 +459,6 @@ msgstr ""
 msgid "Buy GMX from centralized services"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX on {0}"
-msgstr ""
-
 #: src/pages/Buy/Buy.js
 msgid "Buy GMX or GLP"
 msgstr ""
@@ -477,6 +473,10 @@ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using any token from any network:"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "Buy NOVA on {0}"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -929,6 +929,10 @@ msgstr ""
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "DEX Aggregator"
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.js
+msgid "DUEX is the liquidity provider token. Accrues 70% of the platform's generated fees."
 msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
@@ -1392,10 +1396,6 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "GLP doesn't accept this amount of {0}."
-msgstr ""
-
-#: src/components/TokenCard/TokenCard.js
-msgid "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -3214,7 +3214,7 @@ msgid "To complete the transfer, you must switch your connected account to {rece
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "To purchase GMX on the {0} blockchain, please <0>change your network</0>."
+msgid "To purchase NOVA on the {0} blockchain, please <0>change your network</0>."
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js

@@ -459,10 +459,6 @@ msgstr ""
 msgid "Buy GMX from centralized services"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX on {0}"
-msgstr ""
-
 #: src/pages/Buy/Buy.js
 msgid "Buy GMX or GLP"
 msgstr "Comprar GMX o GLP"
@@ -477,6 +473,10 @@ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using any token from any network:"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "Buy NOVA on {0}"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -930,6 +930,10 @@ msgstr "Actual {0} a corto "
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "DEX Aggregator"
 msgstr "Agregador de DEX"
+
+#: src/components/TokenCard/TokenCard.js
+msgid "DUEX is the liquidity provider token. Accrues 70% of the platform's generated fees."
+msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Dashboard"
@@ -1393,10 +1397,6 @@ msgstr "Compra de GLP desactivada, actualización {0} pendiente"
 #: src/components/Exchange/SwapBox.js
 msgid "GLP doesn't accept this amount of {0}."
 msgstr ""
-
-#: src/components/TokenCard/TokenCard.js
-msgid "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
-msgstr "GLP es el token proveedor de liquidez. Acumula el 70% de las comisiones generadas por la plataforma."
 
 #: src/components/Glp/GlpSwap.js
 msgid "GLP sell disabled, pending {0} upgrade"
@@ -3217,7 +3217,7 @@ msgid "To complete the transfer, you must switch your connected account to {rece
 msgstr "Para completar la transferencia, debes cambiar tu cuenta conectada a {receiver}."
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "To purchase GMX on the {0} blockchain, please <0>change your network</0>."
+msgid "To purchase NOVA on the {0} blockchain, please <0>change your network</0>."
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
