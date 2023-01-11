@@ -51,6 +51,24 @@ input {
 }
 
 :root {
+  /* --dark-blue: #17182c;
+  --dark-blue-bg: #16182e;
+  --dark-blue-accent: #a0a3c4;
+  --primary-btn-hover: #4f60fc;
+  --primary-btn-active: #5f6ffd;
+  --dark-blue-hover: #808aff14;
+  --dark-blue-border: #ffffff29;
+  --dark-blue-active: #818cef33;
+  --avax-red: #e84143;
+  --arbitrum-blue: #28a0f0;
+  --border-radius-sm: 0.4rem;
+  --error-red: #fa3c58;
+  --font-sm: 1.4rem;
+  --font-base: 1.5rem;
+  --font-md: 1.6rem;
+  --font-lg: 2.4rem;
+  --font-xl: 3.4rem; */
+
   --dark-blue: #17182c;
   --dark-blue-bg: #16182e;
   --dark-blue-accent: #a0a3c4;
@@ -68,6 +86,8 @@ input {
   --font-md: 1.6rem;
   --font-lg: 2.4rem;
   --font-xl: 3.4rem;
+
+  --grayis-black: rgb(15, 15, 15);
 }
 
 a {
@@ -203,7 +223,7 @@ a.plain {
 }
 
 .default-btn {
-  background: #28a0f0;
+  background: var(--arbitrum-blue);
   border-radius: 4px;
   font-size: var(--font-sm);
   line-height: 2rem;
