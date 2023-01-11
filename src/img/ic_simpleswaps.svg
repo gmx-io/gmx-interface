@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="42.872" height="40" viewBox="0 0 42.872 40">
   <g id="ic_simpleswaps" transform="translate(1.436)">
     <rect id="Rectangle_1" data-name="Rectangle 1" width="40" height="40" rx="4" transform="translate(0)" fill="none"/>
-    <path id="Path_178" data-name="Path 178" d="M20.7,23.181H6.633a3.309,3.309,0,0,1-2.34-5.649L7.4,14.422.969,7.989a3.31,3.31,0,0,1,0-4.68L3.309.97a3.31,3.31,0,0,1,4.681,0L14.422,7.4l3.109-3.109a3.309,3.309,0,0,1,5.65,2.34V20.7A2.482,2.482,0,0,1,20.7,23.181Z" transform="translate(14.956 0.435) rotate(45)" fill="#04cfd0"/>
+    <path id="Path_178" data-name="Path 178" d="M20.7,23.181H6.633a3.309,3.309,0,0,1-2.34-5.649L7.4,14.422.969,7.989a3.31,3.31,0,0,1,0-4.68L3.309.97a3.31,3.31,0,0,1,4.681,0L14.422,7.4l3.109-3.109a3.309,3.309,0,0,1,5.65,2.34V20.7A2.482,2.482,0,0,1,20.7,23.181Z" transform="translate(14.956 0.435) rotate(45)" fill="#28a0f0"/>
     <path id="Path_179" data-name="Path 179" d="M2.482,0H16.548a3.309,3.309,0,0,1,2.34,5.649L15.779,8.759l6.432,6.433a3.31,3.31,0,0,1,0,4.68l-2.339,2.339a3.31,3.31,0,0,1-4.681,0L8.759,15.779,5.65,18.888A3.309,3.309,0,0,1,0,16.548V2.482A2.482,2.482,0,0,1,2.482,0Z" transform="translate(25.046 2.814) rotate(45)" fill="#303fd0"/>
-    <path id="Intersection_3" data-name="Intersection 3" d="M7.707,12.224h-4.4A3.308,3.308,0,0,1,.971,6.575L7.544,0V7.925h4.4a3.309,3.309,0,0,1,2.34,5.649L7.707,20.148Z" transform="translate(12.375 7.941)" fill="#04cfd0" stroke="rgba(0,0,0,0)" stroke-width="1" style="mix-blend-mode: screen;isolation: isolate"/>
+    <path id="Intersection_3" data-name="Intersection 3" d="M7.707,12.224h-4.4A3.308,3.308,0,0,1,.971,6.575L7.544,0V7.925h4.4a3.309,3.309,0,0,1,2.34,5.649L7.707,20.148Z" transform="translate(12.375 7.941)" fill="#28a0f0" stroke="rgba(0,0,0,0)" stroke-width="1" style="mix-blend-mode: screen;isolation: isolate"/>
   </g>
 </svg>

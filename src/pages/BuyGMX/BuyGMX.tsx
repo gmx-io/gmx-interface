@@ -43,13 +43,13 @@ export default function BuyGMX() {
         <div className="section-title-block">
           <div className="section-title-content">
             <div className="Page-title">
-              <Trans>Buy GMX on {getChainName(chainId)}</Trans>
+              <Trans>Buy NOVA on {getChainName(chainId)}</Trans>
             </div>
             <div className="Page-description">
               <Trans>Choose to buy from decentralized or centralized exchanges.</Trans>
               <br />
               <Trans>
-                To purchase GMX on the {isArbitrum ? "Avalanche" : "Arbitrum"} blockchain, please{" "}
+                To purchase NOVA on the {isArbitrum ? "Avalanche" : "Arbitrum"} blockchain, please{" "}
                 <span onClick={() => onNetworkSelect(isArbitrum ? AVALANCHE : ARBITRUM)}>change your network</span>.
               </Trans>
             </div>
