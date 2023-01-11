@@ -5,6 +5,10 @@
   font-size: var(--font-base);
 }
 
+.border {
+  border: 2px solid red;
+}
+
 .App-header-backdrop {
   position: fixed;
   z-index: 10;
@@ -28,7 +32,7 @@
   padding-left: 3.2rem;
   padding-right: 3.2rem;
   background: transparent 0% 0% no-repeat padding-box;
-  border-bottom: 1px solid #ffffff10;
+  border-bottom: 1px solid #ffffff28;
 }
 
 .App-header.large::after {
@@ -929,7 +933,9 @@ button.App-button-option:disabled {
 
 .App-content {
   position: static !important;
-  background: radial-gradient(ellipse at top,#072e49 10%,transparent 80%),radial-gradient(ellipse at bottom,#120e44 10%,transparent 80%)!important;
+  // background: radial-gradient(ellipse at top, #072e49 10%, transparent 80%),
+  //   radial-gradient(ellipse at bottom, #120e44 10%, transparent 80%) !important;
+  background: var(--grayis-black);
 }
 
 .App-footer {
