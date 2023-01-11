@@ -114,7 +114,6 @@ export default function GlpSwap(props) {
   const tabLabel = isBuying ? t`Buy GLP` : t`Sell GLP`;
   const { active, library, account } = useWeb3React();
   const { chainId } = useChainId();
-  // const chainName = getChainName(chainId)
   const tokens = getTokens(chainId);
   const whitelistedTokens = getWhitelistedTokens(chainId);
   const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);

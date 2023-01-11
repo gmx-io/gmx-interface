@@ -304,11 +304,6 @@ msgstr "Одобрение..."
 msgid "Arbitrum APR:"
 msgstr "Годовой Процентный Отчет Arbitrum:"
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Arbitrum Icon"
-msgstr "Икона Arbitrum"
-
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
 msgstr "Поскольку в GLP недостаточно ликвидности для обмена {0} на {swapTokenSymbol}, вы можете воспользоваться приведенной ниже опцией, чтобы сделать это:"
@@ -354,11 +349,6 @@ msgstr "Доступно:"
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
 msgstr "Годовой Процентный Отчет Avalanche:"
-
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Avalanche Icon"
-msgstr "Икона Avalanche"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Balance"
