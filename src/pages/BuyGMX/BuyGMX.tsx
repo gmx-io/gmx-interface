@@ -239,7 +239,7 @@ function CentralisedExchanges({ chainId, externalLinks }) {
 
         <div className="exchange-info-group">
           <div className="BuyGMXGLP-description">
-            <Trans>Buy GMX using FIAT gateways:</Trans>
+            <Trans>Buy NOVA using FIAT gateways:</Trans>
           </div>
           <div className="buttons-group col-2">
             <Button href="https://www.binancecnt.com/en/buy-sell-crypto" imgSrc={Binance}>
