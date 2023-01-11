@@ -26,41 +26,41 @@ const NETWORK_ICON_ALTS = {
 export default function Ecosystem() {
   const gmxPages = [
     {
-      title: "GMX Governance",
+      title: "NOVA Governance",
       link: "https://gov.gmx.io/",
-      linkLabel: "gov.gmx.io",
-      about: t`GMX Governance Page`,
+      linkLabel: "gov.NOVA.io",
+      about: t`NOVA Governance Page`,
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
-      title: "GMX Stats",
+      title: "NOVA Stats",
       link: "https://stats.gmx.io/",
-      linkLabel: "stats.gmx.io",
-      about: t`GMX Stats Page`,
+      linkLabel: "stats.NOVA.io",
+      about: t`NOVA Stats Page`,
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
-      title: "GMX Proposals",
+      title: "NOVA Proposals",
       link: "https://snapshot.org/#/gmx.eth",
       linkLabel: "snapshot.org",
-      about: t`GMX Proposals Voting page`,
+      about: t`NOVA Proposals Voting page`,
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
-      title: "GMX Announcements",
+      title: "NOVA Announcements",
       link: "https://t.me/GMX_Announcements",
       linkLabel: "t.me",
-      about: t`GMX Announcements and Updates`,
+      about: t`NOVA Announcements and Updates`,
       chainIds: [ARBITRUM, AVALANCHE],
     },
   ];
 
   const communityProjects = [
     {
-      title: "GMX Blueberry Club",
+      title: "NOVA Blueberry Club",
       link: "https://www.blueberry.club/",
       linkLabel: "blueberry.club",
-      about: t`GMX Blueberry NFTs`,
+      about: t`NOVA Blueberry NFTs`,
       creatorLabel: "@xm92boi",
       creatorLink: "https://t.me/xm92boi",
       chainIds: [ARBITRUM],
