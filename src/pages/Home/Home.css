@@ -12,11 +12,24 @@
   position: relative;
   /* height: 52.581rem; */
   padding-bottom: 6.4rem;
-  background: url("img/bg.png");
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: right;
+
   margin-top: -6.2rem;
+  z-index: 1;
+}
+
+.Home-top::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url("img/crystels.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  z-index: -1;
+  opacity: 0.3;
 }
 
 .Home-title {
@@ -32,14 +45,15 @@
   /* z-index: 2; */
   width: 100%;
   /* padding-top: 7.548rem; */
-  padding-top: 6.2rem;
+  padding-top: 4.2rem;
 }
 
 .Home-title-section {
-  max-width: 53rem;
+  /* max-width: 53rem; */
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  text-align: center;
 }
 
 .Home-description {
@@ -51,7 +65,8 @@
 }
 
 .Home-benefits-section {
-  background: #061127;
+  /* background: #061127; */
+  background: rgba(56, 62, 83);
 }
 
 .Home-benefits {
@@ -90,7 +105,8 @@
 }
 
 .Home-cta-section {
-  background: #101124;
+  /* background: rgb(27, 33, 46); */
+  background: var(--grayis-black);
 }
 
 .Home-cta-container {
@@ -202,7 +218,9 @@
 .Home-token-card-section {
   padding-top: 7.75rem;
   padding-bottom: 7.75rem;
-  background: #17182c;
+  /* background: #17182c; */
+  /* background: rgb(20, 50, 71); */
+  background: rgba(56, 62, 83);
   margin-bottom: -4.65rem;
 }
 
@@ -233,6 +251,7 @@
   box-shadow: 0px 0.5rem 1.3rem #00000085;
   border: 1px solid #2a2b3d;
   border-radius: 4px;
+  background: var(--grayis-black) 0% 0% no-repeat padding-box;
 }
 
 .Home-token-card-option-icon {
@@ -292,12 +311,12 @@
 }
 
 .Home-latest-info-block {
-  background: #28a0f061 0% 0% no-repeat padding-box;
+  background: rgba(44, 54, 74, 0.38) 0% 0% no-repeat padding-box;
   box-shadow: 0px 0.5rem 2.2rem #0000001f;
   box-shadow: 0px 1.2rem 1.7rem #00000024;
   box-shadow: 0px 0.7rem 0.8rem #00000033;
   /* mix-blend-mode: multiply; */
-  border: 1px solid #ffffff14;
+  border: 1px solid #ffffff2d;
   border-radius: 4px;
   max-width: 38rem;
   width: 100%;
