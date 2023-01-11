@@ -62,7 +62,7 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
     <div className="Home-token-card-options">
       <div className="Home-token-card-option">
         <div className="Home-token-card-option-icon">
-          <img src={gmxBigIcon} alt="gmxBigIcon" /> GMX
+          <img src={gmxBigIcon} alt="gmxBigIcon" /> nova
         </div>
         <div className="Home-token-card-option-info">
           <div className="Home-token-card-option-title">

@@ -742,7 +742,7 @@ export default function DashboardV2() {
                         <img src={gmx40Icon} alt="GMX Token Icon" />
                       </div>
                       <div className="App-card-title-mark-info">
-                        <div className="App-card-title-mark-title">GMX</div>
+                        <div className="App-card-title-mark-title">nova</div>
                         <div className="App-card-title-mark-subtitle">GMX</div>
                       </div>
                       <div>
