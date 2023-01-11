@@ -9,6 +9,9 @@ import { PositionList } from "components/Synthetics/PositionList/PositionList";
 import { useAggregatedPositionsData } from "domain/synthetics/positions/useAggregatedPositionsData";
 import { useChainId } from "lib/chains";
 import { useAggregatedOrdersData } from "domain/synthetics/orders/useAggregatedOrdersData";
+import { getPosition } from "domain/synthetics/positions";
+import { t } from "@lingui/macro";
+import { useLocalStorageByChainId } from "lib/localStorage";
 
 type Props = {
   onConnectWallet: () => void;
@@ -21,11 +24,17 @@ enum ListSection {
 
 export function SyntheticsPage(p: Props) {
   const { chainId } = useChainId();
-  const [listSection, setListSection] = useState(ListSection.Positions);
+
+  const [listSection, setListSection] = useLocalStorageByChainId(chainId, "List-section-v3", ListSection.Positions);
+
   const [selectedMarketAddress, setSelectedMarketAddress] = useState<string>();
+  const [selectedCollateralAddress, setSelectedCollateralAddress] = useState<string>();
 
   const { aggregatedPositionsData, isLoading: isPositionsLoading } = useAggregatedPositionsData(chainId);
   const { aggregatedOrdersData, isLoading: isOrdersLoading } = useAggregatedOrdersData(chainId);
+
+  const positionsCount = Object.keys(aggregatedPositionsData).length;
+  const ordersCount = Object.keys(aggregatedOrdersData).length;
 
   return (
     <div className="SyntheticsTrade page-layout">
@@ -60,7 +69,10 @@ export function SyntheticsPage(p: Props) {
             <div className="SyntheticsTrade-list-tab-container">
               <Tab
                 options={Object.keys(ListSection)}
-                optionLabels={ListSection}
+                optionLabels={{
+                  [ListSection.Positions]: t`Positions${positionsCount ? ` (${positionsCount})` : ""}`,
+                  [ListSection.Orders]: t`Orders${ordersCount ? ` (${ordersCount})` : ""}`,
+                }}
                 option={listSection}
                 onChange={(section) => setListSection(section)}
                 type="inline"
@@ -73,7 +85,7 @@ export function SyntheticsPage(p: Props) {
                 ordersData={aggregatedOrdersData}
                 isLoading={isPositionsLoading}
                 onOrdersClick={() => setListSection(ListSection.Orders)}
-                onSelectMarket={setSelectedMarketAddress}
+                onSelectPositionClick={setSelectedMarketAddress}
               />
             )}
             {listSection === ListSection.Orders && (
@@ -85,8 +97,11 @@ export function SyntheticsPage(p: Props) {
         <div className="SyntheticsTrade-right">
           <div className="SyntheticsTrade-swap-box">
             <SwapBox
+              positionsData={aggregatedPositionsData}
               onSelectMarketAddress={setSelectedMarketAddress}
+              onSelectCollateralAddress={setSelectedCollateralAddress}
               selectedMarketAddress={selectedMarketAddress}
+              selectedCollateralAddress={selectedCollateralAddress}
               onConnectWallet={p.onConnectWallet}
             />
           </div>
@@ -109,7 +124,11 @@ export function SyntheticsPage(p: Props) {
               ordersData={aggregatedOrdersData}
               isLoading={isPositionsLoading}
               onOrdersClick={() => setListSection(ListSection.Orders)}
-              onSelectMarket={setSelectedMarketAddress}
+              onSelectPositionClick={(key) => {
+                const position = getPosition(aggregatedPositionsData, key)!;
+                setSelectedMarketAddress(position.marketAddress);
+                setSelectedCollateralAddress(position.collateralTokenAddress);
+              }}
             />
           )}
           {listSection === ListSection.Orders && (

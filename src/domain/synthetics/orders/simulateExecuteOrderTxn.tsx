@@ -77,11 +77,10 @@ export async function simulateExecuteOrderTxn(chainId: number, library: Web3Prov
     if (SHOULD_MINE && isDevelopment()) {
       const txn = await callContract(chainId, exchangeRouter, "multicall", [simulationPayload], {
         value: p.value,
-        gasLimit: 11 ** 6,
+        gasLimit: 12 ** 6,
       });
 
-      // eslint-disable-next-line no-console
-      console.log("simulationTxn", txn);
+      throw new Error(`debug simulation ended ${txn.hash}`);
     } else {
       await exchangeRouter.callStatic.multicall(simulationPayload, { value: p.value, blockTag: blockNumber });
     }

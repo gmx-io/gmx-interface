@@ -5,7 +5,13 @@ import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
 import { NATIVE_TOKEN_ADDRESS, getConvertedTokenAddress } from "config/tokens";
 import { encodeReferralCode } from "domain/referrals";
-import { TokensData, convertToContractPrice, formatUsdAmount, getTokenData } from "domain/synthetics/tokens";
+import {
+  TokensData,
+  convertToContractPrice,
+  formatUsdAmount,
+  getTokenData,
+  getUsdFromTokenAmount,
+} from "domain/synthetics/tokens";
 import { BigNumber, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { ContractEventsContextType } from "../contractEvents";
@@ -85,6 +91,7 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
           },
           numbers: {
             sizeDeltaUsd: p.sizeDeltaUsd,
+            initialCollateralDeltaAmount: BigNumber.from(0),
             triggerPrice: convertToContractPrice(p.triggerPrice || BigNumber.from(0), indexToken!.decimals),
             acceptablePrice: convertToContractPrice(acceptablePrice, indexToken!.decimals),
             executionFee: p.executionFee,
@@ -135,25 +142,29 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
     tokensData: p.tokensData,
   });
 
-  if (isMarketOrder(p.orderType)) {
-    p.setPendingPositionUpdate({
-      positionKey: getPositionKey(
-        p.account,
-        p.market,
-        p.targetCollateralAddress || p.initialCollateralAddress,
-        p.isLong
-      )!,
-      isIncrease: true,
-    });
-  }
-
   const longText = p.isLong ? t`Long` : t`Short`;
   const orderLabel = t`Increase ${longText} ${indexToken.symbol} by ${formatUsdAmount(p.sizeDeltaUsd)}`;
 
-  return callContract(chainId, exchangeRouter, "multicall", [encodedPayload], {
+  const txn = await callContract(chainId, exchangeRouter, "multicall", [encodedPayload], {
     value: wntAmount,
     sentMsg: t`${orderLabel} order sent`,
     successMsg: t`${orderLabel} order created`,
     failMsg: t`${orderLabel} order failed`,
+  }).then(() => {
+    if (isMarketOrder(p.orderType)) {
+      p.setPendingPositionUpdate({
+        positionKey: getPositionKey(
+          p.account,
+          p.market,
+          p.targetCollateralAddress || p.initialCollateralAddress,
+          p.isLong
+        )!,
+        sizeDeltaUsd: p.sizeDeltaUsd,
+        sizeDeltaInTokens: getUsdFromTokenAmount(p.tokensData, p.indexTokenAddress, p.sizeDeltaUsd),
+        isIncrease: true,
+      });
+    }
   });
+
+  return txn;
 }

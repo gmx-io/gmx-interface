@@ -61,8 +61,8 @@ export const tradeModeLabels = {
 };
 
 export const avaialbleModes = {
-  [TradeType.Long]: [TradeMode.Market, TradeMode.Limit],
-  [TradeType.Short]: [TradeMode.Market, TradeMode.Limit],
+  [TradeType.Long]: [TradeMode.Market, TradeMode.Limit, TradeMode.Trigger],
+  [TradeType.Short]: [TradeMode.Market, TradeMode.Limit, TradeMode.Trigger],
   [TradeType.Swap]: [TradeMode.Market, TradeMode.Limit],
 };
 
@@ -82,8 +82,21 @@ export function getSubmitError(p: {
   swapTriggerRatio?: BigNumber;
   isHighPriceImpact?: boolean;
   isHighPriceImpactAccepted?: boolean;
+  closeSizeUsd?: BigNumber;
 }) {
   const fromToken = getTokenData(p.tokensData, p.fromTokenAddress);
+
+  if (p.mode === TradeMode.Trigger) {
+    if (!p.closeSizeUsd?.gt(0)) {
+      return t`Enter a size`;
+    }
+
+    if (!p.triggerPrice?.gt(0)) {
+      return t`Enter a trigger price`;
+    }
+
+    return undefined;
+  }
 
   if (!fromToken) {
     return t`Loading...`;

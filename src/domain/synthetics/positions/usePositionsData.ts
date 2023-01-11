@@ -17,6 +17,7 @@ const DEFAULT_COUNT = 100;
 
 export function usePositionsData(chainId: number): PositionsDataResult {
   const { account } = useWeb3React();
+
   const [positionsData, setPositionsData] = useState<PositionsData>({});
   const [startIndex, setStartIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(DEFAULT_COUNT);
@@ -85,6 +86,8 @@ export function usePositionsData(chainId: number): PositionsDataResult {
             hasPendingLongTokenFundingFee,
             hasPendingShortTokenFundingFee,
           ] = fundingFees.map((item) => (typeof item === "boolean" ? item : bigNumberify(item)));
+
+          // if (!WHITELISTED_MARKETS.includes(marketAddress)) return positionsMap;
 
           const positionKey = getPositionKey(account, marketAddress, collateralTokenAddress, isLong)!;
 

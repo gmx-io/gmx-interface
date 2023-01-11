@@ -5,7 +5,6 @@ import Checkbox from "components/Checkbox/Checkbox";
 import { InfoRow } from "components/InfoRow/InfoRow";
 import Modal from "components/Modal/Modal";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
-import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { KEEP_LEVERAGE_FOR_DECREASE_KEY } from "config/localStorage";
@@ -26,7 +25,6 @@ import {
   getLiquidationPrice,
 } from "domain/synthetics/positions";
 import {
-  adaptToInfoTokens,
   formatTokenAmountWithUsd,
   formatUsdAmount,
   getTokenAmountFromUsd,
@@ -41,8 +39,8 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, parseValue } from "lib/numbers";
 import { useEffect, useState } from "react";
 
-import "./PositionSeller.scss";
 import { useContractEvents } from "domain/synthetics/contractEvents";
+import "./PositionSeller.scss";
 
 type Props = {
   position: AggregatedPositionData;
@@ -56,7 +54,7 @@ export function PositionSeller(p: Props) {
   const { setPendingPositionUpdate } = useContractEvents();
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey([chainId, KEEP_LEVERAGE_FOR_DECREASE_KEY], true);
   const { tokensData } = useAvailableTokensData(chainId);
-  const infoTokens = adaptToInfoTokens(tokensData);
+  // const infoTokens = adaptToInfoTokens(tokensData);
 
   const fees = BigNumber.from(0);
 
@@ -88,7 +86,7 @@ export function PositionSeller(p: Props) {
   });
 
   const [receiveTokenAddress, setReceiveTokenAddress] = useState<string>();
-  const receiveTokenOptions = Object.values(tokensData);
+  // const receiveTokenOptions = Object.values(tokensData);
   const receiveToken = getTokenData(tokensData, receiveTokenAddress);
 
   const collateralOutAmount = getCollateralOutForDecreaseOrder({
@@ -175,7 +173,7 @@ export function PositionSeller(p: Props) {
       market: position.marketAddress,
       indexTokenAddress: position.indexToken.address,
       swapPath: [],
-      initialCollateralAmount: collateralDeltaAmount,
+      initialCollateralDeltaAmount: collateralDeltaAmount || BigNumber.from(0),
       initialCollateralAddress: position.collateralTokenAddress,
       targetCollateralAddress: receiveToken.address,
       receiveTokenAddress: position.collateralTokenAddress,
@@ -360,28 +358,32 @@ export function PositionSeller(p: Props) {
             label={t`Receive`}
             className="Exchange-info-row PositionSeller-receive-row "
             value={
-              receiveTokenAddress && (
-                <TokenSelector
-                  label={t`Receive`}
-                  className="GlpSwap-from-token"
-                  chainId={chainId}
-                  infoTokens={infoTokens}
-                  tokenAddress={receiveTokenAddress}
-                  onSelectToken={(token) => setReceiveTokenAddress(token.address)}
-                  tokens={receiveTokenOptions}
-                  showTokenImgInDropdown={true}
-                  selectedTokenLabel={
-                    <span className="PositionSelector-selected-receive-token">
-                      {formatTokenAmountWithUsd(
-                        receiveTokenAmount,
-                        receiveUsd,
-                        receiveToken?.symbol,
-                        receiveToken?.decimals
-                      )}
-                    </span>
-                  }
-                />
-              )
+              <span className="PositionSelector-selected-receive-token">
+                {formatTokenAmountWithUsd(receiveTokenAmount, receiveUsd, receiveToken?.symbol, receiveToken?.decimals)}
+              </span>
+              // TODO: add receive token selector
+              // receiveTokenAddress && (
+              //   <TokenSelector
+              //     label={t`Receive`}
+              //     className="GlpSwap-from-token"
+              //     chainId={chainId}
+              //     infoTokens={infoTokens}
+              //     tokenAddress={receiveTokenAddress}
+              //     onSelectToken={(token) => setReceiveTokenAddress(token.address)}
+              //     tokens={receiveTokenOptions}
+              //     showTokenImgInDropdown={true}
+              //     selectedTokenLabel={
+              //       <span className="PositionSelector-selected-receive-token">
+              //         {formatTokenAmountWithUsd(
+              //           receiveTokenAmount,
+              //           receiveUsd,
+              //           receiveToken?.symbol,
+              //           receiveToken?.decimals
+              //         )}
+              //       </span>
+              //     }
+              //   />
+              // )
             }
           />
         </div>

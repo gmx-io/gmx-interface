@@ -24,7 +24,7 @@ export type DecreaseOrderParams = {
   market: string;
   swapPath: string[];
   initialCollateralAddress: string;
-  initialCollateralAmount?: BigNumber;
+  initialCollateralDeltaAmount: BigNumber;
   targetCollateralAddress: string;
   indexTokenAddress: string;
   receiveTokenAddress: string;
@@ -82,6 +82,7 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
           },
           numbers: {
             sizeDeltaUsd: p.sizeDeltaUsd,
+            initialCollateralDeltaAmount: p.initialCollateralDeltaAmount,
             triggerPrice: convertToContractPrice(p.triggerPrice || BigNumber.from(0), indexToken.decimals),
             acceptablePrice: convertToContractPrice(acceptablePrice, indexToken.decimals),
             executionFee: p.executionFee,
@@ -115,10 +116,10 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
       maxPrice: p.triggerPrice,
     };
   } else {
-    primaryPriceOverrides[p.indexTokenAddress] = {
-      minPrice: acceptablePrice,
-      maxPrice: acceptablePrice,
-    };
+    // primaryPriceOverrides[p.indexTokenAddress] = {
+    //   minPrice: acceptablePrice,
+    //   maxPrice: acceptablePrice,
+    // };
   }
 
   await simulateExecuteOrderTxn(chainId, library, {
@@ -129,26 +130,28 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
     tokensData: p.tokensData,
   });
 
-  if (isMarketOrder(p.orderType)) {
-    p.setPendingPositionUpdate({
-      positionKey: getPositionKey(
-        p.account,
-        p.market,
-        p.targetCollateralAddress || p.initialCollateralAddress,
-        p.isLong
-      )!,
-      isIncrease: false,
-    });
-  }
-
   const longText = p.isLong ? t`Long` : t`Short`;
 
   const orderLabel = t`Decrease ${longText} ${indexToken.symbol} by ${formatUsdAmount(p.sizeDeltaUsd)}`;
 
-  return callContract(chainId, exchangeRouter, "multicall", [encodedPayload], {
+  const txn = await callContract(chainId, exchangeRouter, "multicall", [encodedPayload], {
     value: wntAmount,
     sentMsg: t`${orderLabel} order sent`,
     successMsg: t`${orderLabel} order created`,
     failMsg: t`${orderLabel} order failed`,
+  }).then(() => {
+    if (isMarketOrder(p.orderType)) {
+      p.setPendingPositionUpdate({
+        positionKey: getPositionKey(
+          p.account,
+          p.market,
+          p.targetCollateralAddress || p.initialCollateralAddress,
+          p.isLong
+        )!,
+        isIncrease: false,
+      });
+    }
   });
+
+  return txn;
 }

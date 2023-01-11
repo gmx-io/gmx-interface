@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { uniq } from "lodash";
 import { useMarketsData } from "../markets";
 import { useAvailableTokensData } from "../tokens";
 import { usePositionsData } from "./usePositionsData";
@@ -18,18 +19,22 @@ export function useAggregatedPositionsData(chainId: number): AggregatedPositions
   const { positionsData, isLoading: isPositionsLoading } = usePositionsData(chainId);
 
   return useMemo(() => {
-    const positionKeys = Object.keys(positionsData);
+    const positionKeys = uniq(Object.keys(positionsData).concat(Object.keys(pendingPositionsUpdates)));
 
     return {
-      aggregatedPositionsData: positionKeys.reduce((acc: AggregatedPositionsData, positionKey) => {
-        acc[positionKey] = getAggregatedPositionData(
+      aggregatedPositionsData: positionKeys.reduce((acc: AggregatedPositionsData, positionKey: string) => {
+        const position = getAggregatedPositionData(
           positionsData,
           marketsData,
           tokensData,
           pendingPositionsUpdates,
           positionsUpdates,
           positionKey
-        )!;
+        );
+
+        if (position) {
+          acc[positionKey] = position;
+        }
 
         return acc;
       }, {} as AggregatedPositionsData),

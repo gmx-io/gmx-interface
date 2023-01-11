@@ -6,7 +6,7 @@ type Props = {
 };
 
 export function ValueTransition(p: Props) {
-  if (!p.to) return <>{p.from}</>;
+  if (!p.to || p.to === p.from) return <>{p.from}</>;
 
   return (
     <>

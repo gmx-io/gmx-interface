@@ -765,13 +765,14 @@ msgstr "无法侦测Coinbase钱包"
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
-#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Collateral"
 msgstr "抵押品"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 msgid "Collateral ({0})"
 msgstr "抵押品({0})"
 
@@ -848,6 +849,10 @@ msgstr "确认做空"
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Confirm Swap"
 msgstr "确认交换"
+
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+msgid "Confirm Trigger Order"
+msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
@@ -966,6 +971,10 @@ msgstr "创建指令"
 msgid "Create Referral Code"
 msgstr "创建推荐代码"
 
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+msgid "Create Trigger Order"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Create {0} Order"
 msgstr "创建 {0} 订单"
@@ -1072,6 +1081,7 @@ msgstr "去中心化<0/>永续交易所"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
 msgstr "减少"
@@ -1079,6 +1089,11 @@ msgstr "减少"
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease active: {0}, executed: {1}, cancelled: {2}"
 msgstr "减少活跃度: {0}, 已执行: {1}, 已取消: {2}"
+
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+msgid "Decrease size"
+msgstr ""
 
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
 msgid "Decrease {longText} {0} by {1}"
@@ -1341,12 +1356,16 @@ msgstr "输入代码"
 msgid "Enter a price"
 msgstr "輸入價錢"
 
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#~ msgid "Enter a size"
-#~ msgstr ""
+#: src/components/Synthetics/Trade/utils.ts
+msgid "Enter a size"
+msgstr ""
 
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Enter a swap trigger ratio"
+msgstr ""
+
+#: src/components/Synthetics/Trade/utils.ts
+msgid "Enter a trigger price"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
@@ -1390,6 +1409,7 @@ msgstr "输入新价钱"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 msgid "Entry Price"
 msgstr "入场价格"
@@ -1895,6 +1915,8 @@ msgid "Jobs"
 msgstr "工作"
 
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 msgid "Keep leverage at {0}"
 msgstr ""
 
@@ -1947,6 +1969,8 @@ msgstr "剩余低于5美元以下的头寸"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 #: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 msgid "Leverage"
 msgstr "杠杆"
@@ -2015,8 +2039,8 @@ msgid "Liq Price"
 msgstr ""
 
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-msgid "Liq price"
-msgstr ""
+#~ msgid "Liq price"
+#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrderEditor.js
@@ -2026,6 +2050,9 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 #: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 msgid "Liq. Price"
 msgstr "流动资金价格"
@@ -2105,6 +2132,7 @@ msgstr "加载中..."
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/Trade/utils.ts
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
@@ -2179,6 +2207,8 @@ msgstr "MEV优化器"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Mark Price"
 msgstr "标价"
@@ -2202,6 +2232,7 @@ msgstr "标识: {0}"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Market"
 msgstr "市场"
@@ -2229,7 +2260,6 @@ msgstr "标记上限"
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 msgid "Max"
 msgstr ""
 
@@ -2580,6 +2610,8 @@ msgid "Open {0} {longOrShortText}"
 msgstr "开仓 {0} {longOrShortText}"
 
 #: src/components/Exchange/PositionsList.js
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Opening..."
 msgstr "开仓中"
 
@@ -2766,6 +2798,7 @@ msgstr "请将您的网络切换到Arbitrum"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr "PnL"
@@ -2977,7 +3010,7 @@ msgstr "该账户作为合作公司赚取的回扣"
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Receive"
 msgstr "收取"
@@ -3157,6 +3190,10 @@ msgstr "选择语言"
 msgid "Select Market"
 msgstr "选择市场"
 
+#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+msgid "Select a market"
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Select an option"
 msgstr "选择一个方案"
@@ -3278,6 +3315,7 @@ msgstr "分享仓位"
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/Trade/utils.ts
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
@@ -3334,6 +3372,8 @@ msgstr ""
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 msgid "Size"
 msgstr "规模"
 
@@ -3449,8 +3489,8 @@ msgstr "统计数据"
 #~ msgstr ""
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-msgid "Stop Market"
-msgstr ""
+#~ msgid "Stop Market"
+#~ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Structured Products"
@@ -4000,11 +4040,14 @@ msgstr "转移中"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Trigger"
 msgstr "触发"
 
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 msgid "Trigger Price"
 msgstr "触发价格"
 
@@ -4013,8 +4056,8 @@ msgid "Trigger order disabled, pending {0} upgrade"
 msgstr "触发指令被禁用，等待{0}升级"
 
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-msgid "Trigger price"
-msgstr ""
+#~ msgid "Trigger price"
+#~ msgstr ""
 
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Trigger price must be higher than mark price"
@@ -4130,7 +4173,6 @@ msgid "Updating Order..."
 msgstr "更新指令中..."
 
 #: src/components/Referrals/JoinReferralCode.js
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Updating..."
 msgstr "更新中..."
 

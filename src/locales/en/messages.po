@@ -765,13 +765,14 @@ msgstr "Coinbase Wallet not detected."
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
-#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Collateral"
 msgstr "Collateral"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 msgid "Collateral ({0})"
 msgstr "Collateral ({0})"
 
@@ -848,6 +849,10 @@ msgstr "Confirm Short"
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Confirm Swap"
 msgstr "Confirm Swap"
+
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+msgid "Confirm Trigger Order"
+msgstr "Confirm Trigger Order"
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
@@ -966,6 +971,10 @@ msgstr "Create Order"
 msgid "Create Referral Code"
 msgstr "Create Referral Code"
 
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+msgid "Create Trigger Order"
+msgstr "Create Trigger Order"
+
 #: src/components/Exchange/SwapBox.js
 msgid "Create {0} Order"
 msgstr "Create {0} Order"
@@ -1072,6 +1081,7 @@ msgstr "Decentralized<0/>Perpetual Exchange"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
 msgstr "Decrease"
@@ -1079,6 +1089,11 @@ msgstr "Decrease"
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease active: {0}, executed: {1}, cancelled: {2}"
 msgstr "Decrease active: {0}, executed: {1}, cancelled: {2}"
+
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+msgid "Decrease size"
+msgstr "Decrease size"
 
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
 msgid "Decrease {longText} {0} by {1}"
@@ -1341,13 +1356,17 @@ msgstr "Enter a code"
 msgid "Enter a price"
 msgstr "Enter a price"
 
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#~ msgid "Enter a size"
-#~ msgstr "Enter a size"
+#: src/components/Synthetics/Trade/utils.ts
+msgid "Enter a size"
+msgstr "Enter a size"
 
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Enter a swap trigger ratio"
 msgstr "Enter a swap trigger ratio"
+
+#: src/components/Synthetics/Trade/utils.ts
+msgid "Enter a trigger price"
+msgstr "Enter a trigger price"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -1390,6 +1409,7 @@ msgstr "Enter new Price"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 msgid "Entry Price"
 msgstr "Entry Price"
@@ -1895,6 +1915,8 @@ msgid "Jobs"
 msgstr "Jobs"
 
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 msgid "Keep leverage at {0}"
 msgstr "Keep leverage at {0}"
 
@@ -1947,6 +1969,8 @@ msgstr "Leftover position below 10 USD"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 #: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 msgid "Leverage"
 msgstr "Leverage"
@@ -2015,8 +2039,8 @@ msgid "Liq Price"
 msgstr "Liq Price"
 
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-msgid "Liq price"
-msgstr "Liq price"
+#~ msgid "Liq price"
+#~ msgstr "Liq price"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrderEditor.js
@@ -2026,6 +2050,9 @@ msgstr "Liq price"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 #: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 msgid "Liq. Price"
 msgstr "Liq. Price"
@@ -2105,6 +2132,7 @@ msgstr "Loading..."
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/Trade/utils.ts
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
@@ -2179,6 +2207,8 @@ msgstr "MEV Optimizer"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Mark Price"
 msgstr "Mark Price"
@@ -2202,6 +2232,7 @@ msgstr "Mark: {0}"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Market"
 msgstr "Market"
@@ -2229,7 +2260,6 @@ msgstr "Market Cap"
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 msgid "Max"
 msgstr "Max"
 
@@ -2580,6 +2610,8 @@ msgid "Open {0} {longOrShortText}"
 msgstr "Open {0} {longOrShortText}"
 
 #: src/components/Exchange/PositionsList.js
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Opening..."
 msgstr "Opening..."
 
@@ -2766,6 +2798,7 @@ msgstr "Please switch your network to Arbitrum."
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr "PnL"
@@ -2977,7 +3010,7 @@ msgstr "Rebates earned by this account as an affiliate."
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Receive"
 msgstr "Receive"
@@ -3157,6 +3190,10 @@ msgstr "Select Language"
 msgid "Select Market"
 msgstr "Select Market"
 
+#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+msgid "Select a market"
+msgstr "Select a market"
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Select an option"
 msgstr "Select an option"
@@ -3278,6 +3315,7 @@ msgstr "Share Position"
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/Trade/utils.ts
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
@@ -3334,6 +3372,8 @@ msgstr "Single"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 msgid "Size"
 msgstr "Size"
 
@@ -3449,8 +3489,8 @@ msgstr "Stats"
 #~ msgstr "Stop Loss Decrease"
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-msgid "Stop Market"
-msgstr "Stop Market"
+#~ msgid "Stop Market"
+#~ msgstr "Stop Market"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Structured Products"
@@ -4000,11 +4040,14 @@ msgstr "Transferring"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Trigger"
 msgstr "Trigger"
 
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 msgid "Trigger Price"
 msgstr "Trigger Price"
 
@@ -4013,8 +4056,8 @@ msgid "Trigger order disabled, pending {0} upgrade"
 msgstr "Trigger order disabled, pending {0} upgrade"
 
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-msgid "Trigger price"
-msgstr "Trigger price"
+#~ msgid "Trigger price"
+#~ msgstr "Trigger price"
 
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Trigger price must be higher than mark price"
@@ -4130,7 +4173,6 @@ msgid "Updating Order..."
 msgstr "Updating Order..."
 
 #: src/components/Referrals/JoinReferralCode.js
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Updating..."
 msgstr "Updating..."
 

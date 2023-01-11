@@ -3,7 +3,7 @@ import { BASIS_POINTS_DIVISOR, MAX_LEVERAGE, USD_DECIMALS } from "lib/legacy";
 import { expandDecimals, formatAmount } from "lib/numbers";
 import { MarketsData, getMarket, getMarketName } from "../markets";
 import { TokenPrices, TokensData, convertToUsdByPrice, formatUsdAmount, getTokenData } from "../tokens";
-import { AggregatedPositionData, PositionsData } from "./types";
+import { AggregatedPositionData, Position, PositionsData } from "./types";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { PositionsUpdates } from "../contractEvents";
 import { getPositionUpdate } from "../contractEvents/utils";
@@ -34,21 +34,60 @@ export function getAggregatedPositionData(
   contractUpdates: PositionsUpdates,
   positionKey?: string
 ): AggregatedPositionData | undefined {
-  const position = getPosition(positionsData, positionKey);
+  if (!positionKey) return undefined;
+
+  const rawPosition = getPosition(positionsData, positionKey);
+  const pendingUpdate = getPositionUpdate(pendingUpdates, positionKey, { maxAge: 600 * 1000 });
+
+  let position: Position | undefined;
+  let isOpening = false;
+
+  if (rawPosition) {
+    position = { ...rawPosition };
+  } else if (pendingUpdate && pendingUpdate.isIncrease) {
+    isOpening = true;
+    const { account, market, collateralToken, isLong } = parsePositionKey(positionKey);
+
+    position = {
+      key: positionKey,
+      account,
+      marketAddress: market,
+      collateralTokenAddress: collateralToken,
+      isLong,
+      sizeInUsd: pendingUpdate.sizeDeltaUsd || BigNumber.from(0),
+      collateralAmount: pendingUpdate.collateralDeltaAmount || BigNumber.from(0),
+      sizeInTokens: pendingUpdate.sizeDeltaInTokens || BigNumber.from(0),
+      increasedAtBlock: BigNumber.from(0),
+      decreasedAtBlock: BigNumber.from(0),
+      borrowingFactor: BigNumber.from(0),
+      pendingBorrowingFees: BigNumber.from(0),
+      longTokenFundingAmountPerSize: BigNumber.from(0),
+      shortTokenFundingAmountPerSize: BigNumber.from(0),
+      data: "0x",
+      pendingFundingFees: {
+        fundingFeeAmount: BigNumber.from(0),
+        claimableLongTokenAmount: BigNumber.from(0),
+        claimableShortTokenAmount: BigNumber.from(0),
+        latestLongTokenFundingAmountPerSize: BigNumber.from(0),
+        latestShortTokenFundingAmountPerSize: BigNumber.from(0),
+        hasPendingLongTokenFundingFee: false,
+        hasPendingShortTokenFundingFee: false,
+      },
+    };
+  }
 
   if (!position) return undefined;
 
-  const pendingUpdate = getPositionUpdate(pendingUpdates, positionKey, { maxAge: 600 * 1000 });
-
   const contractUpdate = getPositionUpdate(contractUpdates, positionKey, {
-    maxIncreasedAtBlock: position.increasedAtBlock,
-    maxDecreasedAtBlock: position.decreasedAtBlock,
+    minIncreasedAtBlock: position.increasedAtBlock,
+    minDecreasedAtBlock: position.decreasedAtBlock,
   });
 
   if (contractUpdate) {
     const sign = contractUpdate.isIncrease ? 1 : -1;
     position.sizeInUsd = position.sizeInUsd.add(contractUpdate.sizeDeltaUsd?.mul(sign) || 0);
     position.collateralAmount = position.collateralAmount.add(contractUpdate.collateralDeltaAmount?.mul(sign) || 0);
+    position.sizeInTokens = position.sizeInTokens.add(contractUpdate.sizeDeltaInTokens?.mul(sign) || 0);
   }
 
   const market = getMarket(marketsData, position?.marketAddress);
@@ -68,9 +107,10 @@ export function getAggregatedPositionData(
 
   const collateralPrice = getPriceForPnl(collateralToken?.prices, position.isLong, false);
 
-  const entryPrice = indexToken
-    ? position.sizeInUsd.div(position.sizeInTokens).mul(expandDecimals(1, indexToken.decimals))
-    : undefined;
+  const entryPrice =
+    indexToken && position.sizeInTokens.gt(0)
+      ? position.sizeInUsd.div(position.sizeInTokens).mul(expandDecimals(1, indexToken.decimals))
+      : undefined;
 
   const currentValueUsd =
     indexToken && pnlPrice ? convertToUsdByPrice(position.sizeInTokens, indexToken.decimals, pnlPrice) : undefined;
@@ -82,10 +122,10 @@ export function getAggregatedPositionData(
 
   const pnl = currentValueUsd?.sub(position.sizeInUsd).mul(position.isLong ? 1 : -1);
 
-  const pnlPercentage = collateralUsd && pnl ? pnl.mul(BASIS_POINTS_DIVISOR).div(collateralUsd) : undefined;
+  const pnlPercentage = collateralUsd?.gt(0) && pnl ? pnl.mul(BASIS_POINTS_DIVISOR).div(collateralUsd) : undefined;
 
   const pendingFundingFeesUsd =
-    collateralPrice && collateralToken
+    collateralPrice && collateralToken && collateralUsd?.gt(0)
       ? convertToUsdByPrice(position.pendingFundingFees.fundingFeeAmount, collateralToken.decimals, collateralPrice)
       : undefined;
 
@@ -99,7 +139,7 @@ export function getAggregatedPositionData(
   const pnlAfterFees = totalPendingFeesUsd ? pnl?.sub(totalPendingFeesUsd) : undefined;
 
   const pnlAfterFeesPercentage =
-    collateralUsdAfterFees && pnlAfterFees
+    collateralUsdAfterFees?.gt(0) && pnlAfterFees
       ? pnlAfterFees.mul(BASIS_POINTS_DIVISOR).div(collateralUsdAfterFees)
       : undefined;
 
@@ -142,6 +182,8 @@ export function getAggregatedPositionData(
     pendingFundingFeesUsd,
     totalPendingFeesUsd,
     pendingUpdate,
+    hasPendingChanges: Boolean(pendingUpdate),
+    isOpening,
   };
 }
 
@@ -152,7 +194,7 @@ export function getLiquidationPrice(p: {
   averagePrice?: BigNumber;
   isLong?: boolean;
 }) {
-  if (!p.sizeUsd || !p.collateralUsd || !p.averagePrice) return undefined;
+  if (!p.sizeUsd?.gt(0) || !p.collateralUsd?.gt(0) || !p.averagePrice) return undefined;
 
   const liqPriceForFees = getLiquidationPriceFromDelta({
     liquidationAmountUsd: p.feesUsd,
@@ -194,7 +236,7 @@ export function getLiquidationPriceFromDelta(p: {
   averagePrice?: BigNumber;
   isLong?: boolean;
 }) {
-  if (!p.sizeUsd || !p.collateralUsd || !p.averagePrice || !p.liquidationAmountUsd) {
+  if (!p.sizeUsd?.gt(0) || !p.collateralUsd?.gt(0) || !p.averagePrice || !p.liquidationAmountUsd) {
     return undefined;
   }
 
@@ -230,7 +272,11 @@ export function getPriceForPnl(tokenPrices?: TokenPrices, isLong?: boolean, maxi
 }
 
 export function formatPnl(pnl?: BigNumber, pnlPercentage?: BigNumber) {
-  const sign = pnl && pnl.lt(0) ? "-" : "+";
+  let sign = "";
+
+  if (pnl && !pnl.eq(0)) {
+    sign = pnl.lt(0) ? "-" : "+";
+  }
 
   return `${sign}${formatUsdAmount(pnl?.abs())} (${sign}${formatAmount(pnlPercentage?.abs(), 2, 2)}%)`;
 }

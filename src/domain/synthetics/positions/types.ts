@@ -55,6 +55,8 @@ export type AggregatedPositionData = Position & {
   pendingFundingFeesUsd?: BigNumber;
   totalPendingFeesUsd?: BigNumber;
   pendingUpdate?: PositionUpdate;
+  hasPendingChanges?: boolean;
+  isOpening?: boolean;
 };
 
 export type PositionsData = {

@@ -1,5 +1,6 @@
-import { BigNumber } from "ethers";
-import { AggregatedOrderData, AggregatedOrdersData, OrderType, OrdersData } from "./types";
+import { t } from "@lingui/macro";
+import { applySwapImpactWithCap } from "domain/synthetics/fees";
+import { MarketsData, getMarket, getMarketName } from "domain/synthetics/markets";
 import {
   TokenData,
   TokenPrices,
@@ -11,17 +12,14 @@ import {
   getTokenData,
   parseContractPrice,
 } from "domain/synthetics/tokens";
+import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";
-import { applySwapImpactWithCap } from "domain/synthetics/fees";
-import { MarketsData, getMarket, getMarketName } from "domain/synthetics/markets";
-import { t } from "@lingui/macro";
 import { Position, getPriceForPnl } from "../positions";
+import { AggregatedOrderData, AggregatedOrdersData, OrderType, OrdersData } from "./types";
 
-/**
- * TODO:
- * address public constant SWAP_PNL_TOKEN_TO_COLLATERAL_TOKEN = address(2);
- * address public constant SWAP_COLLATERAL_TOKEN_TO_PNL_TOKEN = address(3);
- */
+export const SWAP_PNL_TOKEN_TO_COLLATERAL_TOKEN = "0x0000000000000000000000000000000000000002";
+export const SWAP_COLLATERAL_TOKEN_TO_PNL_TOKEN = "0x0000000000000000000000000000000000000003";
+
 export function getOrder(ordersData: OrdersData, orderKey?: string) {
   if (!orderKey) return undefined;
 
@@ -80,6 +78,10 @@ export function getAggregatedOrderData(
   const order = getOrder(ordersData, orderKey);
 
   if (!order) return undefined;
+
+  const isTriggerOrder = isLimitOrder(order?.orderType) || isStopMarketOrder(order?.orderType);
+
+  if (!isTriggerOrder) return undefined;
 
   const market = getMarket(marketsData, order.marketAddress);
   const marketName = getMarketName(marketsData, tokensData, order.marketAddress, false, false);
@@ -180,7 +182,7 @@ export function getMarkPriceForOrder(isIncrease?: boolean, isLong?: boolean, tok
   return maximisePrice ? tokenPrices?.maxPrice : tokenPrices?.minPrice;
 }
 
-export function getTriggerPricePrefix(orderType?: OrderType, isLong?: boolean, asSign?: boolean) {
+export function getTriggerPricePrefix(orderType?: OrderType, isLong?: boolean, asSign: boolean = true) {
   if (!orderType || typeof isLong === "undefined") return undefined;
 
   const BELOW = asSign ? "<" : t`Below`;
@@ -280,7 +282,7 @@ export function getAcceptablePriceForPositionOrder(p: {
 
   acceptablePrice = acceptablePrice.mul(slippageBasisPoints).div(BASIS_POINTS_DIVISOR);
 
-  if (p.sizeDeltaUsd) {
+  if (p.sizeDeltaUsd?.gt(0)) {
     const shouldFlipPriceImpact = p.isIncrease ? p.isLong : !p.isLong;
     const priceImpactForPriceAdjustment = shouldFlipPriceImpact ? p.priceImpactDelta.mul(-1) : p.priceImpactDelta;
     acceptablePrice = acceptablePrice.mul(p.sizeDeltaUsd.add(priceImpactForPriceAdjustment)).div(p.sizeDeltaUsd);
@@ -391,6 +393,7 @@ export function getCollateralOutForDecreaseOrder(p: {
   collateralDeltaAmount: BigNumber;
   feesUsd: BigNumber;
   priceImpactUsd: BigNumber;
+  allowWithoutPosition?: boolean;
 }) {
   let receiveAmount = p.collateralDeltaAmount;
 

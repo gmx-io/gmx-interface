@@ -765,13 +765,14 @@ msgstr "Coinbase 지갑이 존재하지 않습니다."
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
-#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Collateral"
 msgstr "담보"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 msgid "Collateral ({0})"
 msgstr "담보 ({0})"
 
@@ -848,6 +849,10 @@ msgstr "숏 포지션 확인"
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Confirm Swap"
 msgstr "스왑 확인"
+
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+msgid "Confirm Trigger Order"
+msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
@@ -966,6 +971,10 @@ msgstr "주문 생성"
 msgid "Create Referral Code"
 msgstr "추천 코드 생성"
 
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+msgid "Create Trigger Order"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Create {0} Order"
 msgstr "{0} 주문 생성하기"
@@ -1072,6 +1081,7 @@ msgstr "탈중앙화<0/>퍼페추얼 거래소"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
 msgstr "감소"
@@ -1079,6 +1089,11 @@ msgstr "감소"
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease active: {0}, executed: {1}, cancelled: {2}"
 msgstr "감소 액티브: {0}, 실행 완료: {1} 취소 완료: {2}"
+
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+msgid "Decrease size"
+msgstr ""
 
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
 msgid "Decrease {longText} {0} by {1}"
@@ -1341,12 +1356,16 @@ msgstr "코드 입력"
 msgid "Enter a price"
 msgstr "가격 입력"
 
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#~ msgid "Enter a size"
-#~ msgstr ""
+#: src/components/Synthetics/Trade/utils.ts
+msgid "Enter a size"
+msgstr ""
 
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Enter a swap trigger ratio"
+msgstr ""
+
+#: src/components/Synthetics/Trade/utils.ts
+msgid "Enter a trigger price"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
@@ -1390,6 +1409,7 @@ msgstr "새로운 가격 입력"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 msgid "Entry Price"
 msgstr "진입 가격"
@@ -1895,6 +1915,8 @@ msgid "Jobs"
 msgstr "구인"
 
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 msgid "Keep leverage at {0}"
 msgstr ""
 
@@ -1947,6 +1969,8 @@ msgstr "남은 포지션이 10 USD 미만입니다."
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 #: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 msgid "Leverage"
 msgstr "레버리지"
@@ -2015,8 +2039,8 @@ msgid "Liq Price"
 msgstr ""
 
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-msgid "Liq price"
-msgstr ""
+#~ msgid "Liq price"
+#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrderEditor.js
@@ -2026,6 +2050,9 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 #: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 msgid "Liq. Price"
 msgstr "청산가"
@@ -2105,6 +2132,7 @@ msgstr "로딩중..."
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/Trade/utils.ts
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
@@ -2179,6 +2207,8 @@ msgstr "MEV 옵티마이저"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Mark Price"
 msgstr "시장 평균가"
@@ -2202,6 +2232,7 @@ msgstr "시장 평균가: {0}"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Market"
 msgstr "마켓"
@@ -2229,7 +2260,6 @@ msgstr "시가총액"
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 msgid "Max"
 msgstr ""
 
@@ -2580,6 +2610,8 @@ msgid "Open {0} {longOrShortText}"
 msgstr "{0} {longOrShortText} 열기"
 
 #: src/components/Exchange/PositionsList.js
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Opening..."
 msgstr "여는 중..."
 
@@ -2766,6 +2798,7 @@ msgstr "네트워크를 Arbitrum으로 변경해주세요."
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr "PnL"
@@ -2977,7 +3010,7 @@ msgstr "어필리에이트로서 이 계정이 획득한 소개 보수."
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Receive"
 msgstr "수령하기"
@@ -3157,6 +3190,10 @@ msgstr "언어 선택"
 msgid "Select Market"
 msgstr "마켓 선택"
 
+#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+msgid "Select a market"
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Select an option"
 msgstr "옵션 선택"
@@ -3278,6 +3315,7 @@ msgstr "포지션 공유"
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/Trade/utils.ts
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
@@ -3334,6 +3372,8 @@ msgstr ""
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 msgid "Size"
 msgstr "사이즈"
 
@@ -3449,8 +3489,8 @@ msgstr "통계"
 #~ msgstr ""
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-msgid "Stop Market"
-msgstr ""
+#~ msgid "Stop Market"
+#~ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Structured Products"
@@ -4000,11 +4040,14 @@ msgstr "이전중"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Trigger"
 msgstr "트리거"
 
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 msgid "Trigger Price"
 msgstr "트리거 가격"
 
@@ -4013,8 +4056,8 @@ msgid "Trigger order disabled, pending {0} upgrade"
 msgstr "{0} 업그레이들 위해 트리거 주문이 비활성화되었습니다."
 
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-msgid "Trigger price"
-msgstr ""
+#~ msgid "Trigger price"
+#~ msgstr ""
 
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Trigger price must be higher than mark price"
@@ -4130,7 +4173,6 @@ msgid "Updating Order..."
 msgstr "주문 업데이트중..."
 
 #: src/components/Referrals/JoinReferralCode.js
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Updating..."
 msgstr "업데이트중..."
 

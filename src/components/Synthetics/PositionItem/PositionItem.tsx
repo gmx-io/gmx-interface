@@ -25,7 +25,7 @@ export type Props = {
   onClosePositionClick?: () => void;
   onEditCollateralClick?: () => void;
   onShareClick?: () => void;
-  onSelectMarketClick?: () => void;
+  onSelectPositionClick?: () => void;
   onOrdersClick?: () => void;
   isLarge: boolean;
 };
@@ -171,7 +171,7 @@ export function PositionItem(p: Props) {
   function renderLarge() {
     return (
       <tr className="Exhange-list-item">
-        <td className="clickable" onClick={p.onSelectMarketClick}>
+        <td className="clickable" onClick={p.onSelectPositionClick}>
           {/* title */}
           <div className="Exchange-list-title">
             <Tooltip
@@ -186,7 +186,7 @@ export function PositionItem(p: Props) {
             />
             {p.position.pendingUpdate && <ImSpinner2 className="spin position-loading-icon" />}
           </div>
-          <div className="Exchange-list-info-label" onClick={p.onSelectMarketClick}>
+          <div className="Exchange-list-info-label" onClick={p.onSelectPositionClick}>
             <span className="muted">{formatLeverage(p.position.leverage)}&nbsp;</span>
             <span className={cx({ positive: p.position.isLong, negative: !p.position.isLong })}>
               {p.position.isLong ? t`Long` : t`Short`}
@@ -195,22 +195,26 @@ export function PositionItem(p: Props) {
         </td>
         <td>
           {/* netValue */}
-          {!p.position.netValue && t`Updating...`}
-          {p.position.netValue && renderNetValue()}
-          {p.position.pnl && (
-            <div
-              className={cx("Exchange-list-info-label", {
-                positive: p.position.pnl.gt(0),
-                negative: p.position.pnl.lt(0),
-                muted: p.position.pnl.eq(0),
-              })}
-            >
-              {formatPnl(p.position.pnl, p.position.pnlPercentage)}
-            </div>
+          {p.position.isOpening ? (
+            t`Opening...`
+          ) : (
+            <>
+              {p.position.netValue?.gt(0) && renderNetValue()}
+              {p.position.pnl && (
+                <div
+                  className={cx("Exchange-list-info-label", {
+                    positive: p.position.pnl.gt(0),
+                    negative: p.position.pnl.lt(0),
+                    muted: p.position.pnl.eq(0),
+                  })}
+                >
+                  {formatPnl(p.position.pnl, p.position.pnlPercentage)}
+                </div>
+              )}
+            </>
           )}
         </td>
         <td>
-          {/* size */}
           {formatUsdAmount(p.position.sizeInUsd)}
           {renderPositionOrders()}
         </td>
@@ -218,7 +222,7 @@ export function PositionItem(p: Props) {
           {/* collateral */}
           <div className="position-list-collateral">{renderCollateral()}</div>
         </td>
-        <td className="clickable" onClick={p.onSelectMarketClick}>
+        <td className="clickable" onClick={p.onSelectPositionClick}>
           {/* markPrice */}
           <Tooltip
             handle={formatUsdAmount(p.position.markPrice)}
@@ -241,24 +245,31 @@ export function PositionItem(p: Props) {
         </td>
         <td>
           {/* entryPrice */}
-          {formatUsdAmount(p.position.entryPrice)}
+          {p.position.isOpening ? t`Opening...` : formatUsdAmount(p.position.entryPrice)}
         </td>
         <td>
           {/* liqPrice */}
-          {formatUsdAmount(p.position.liqPrice)}
+          {p.position.isOpening ? formatUsdAmount(p.position.liqPrice) : formatUsdAmount(p.position.liqPrice)}
         </td>
         <td>
           {/* Close */}
-          <button
-            className="Exchange-list-action"
-            onClick={p.onClosePositionClick}
-            disabled={p.position.sizeInUsd.eq(0)}
-          >
-            <Trans>Close</Trans>
-          </button>
+          {!p.position.isOpening && !p.hideActions && (
+            <button
+              className="Exchange-list-action"
+              onClick={p.onClosePositionClick}
+              disabled={p.position.sizeInUsd.eq(0)}
+            >
+              <Trans>Close</Trans>
+            </button>
+          )}
         </td>
         <td>
-          <PositionDropdown handleEditCollateral={p.onEditCollateralClick} handleMarketSelect={p.onSelectMarketClick} />
+          {!p.position.isOpening && !p.hideActions && (
+            <PositionDropdown
+              handleEditCollateral={p.onEditCollateralClick}
+              handleMarketSelect={p.onSelectPositionClick}
+            />
+          )}
         </td>
       </tr>
     );

@@ -31,13 +31,15 @@ export type PositionUpdate = {
   isIncrease: boolean;
   positionKey: string;
   updatedAt?: number;
-  updatedAtBlock?: BigNumber;
+  updatedAtBlock?: number;
   sizeDeltaUsd?: BigNumber;
+  sizeDeltaInTokens?: BigNumber;
   collateralDeltaAmount?: BigNumber;
 };
 
 export type EventTxnParams = {
   transactionHash: string;
+  blockNumber: number;
 };
 
 export type OrderStatuses = {

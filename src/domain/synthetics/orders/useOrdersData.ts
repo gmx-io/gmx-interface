@@ -74,6 +74,8 @@ export function useOrdersData(chainId: number): OrdersResult {
 
           const [orderType, isLong, shouldUnwrapNativeToken, isFrozen] = flags;
 
+          // if (!WHITELISTED_MARKETS.includes(marketAddress)) return acc;
+
           acc[key] = {
             key,
             account,

@@ -59,14 +59,11 @@ export function ContractEventsProvider({ children }: { children: ReactNode }) {
         sizeDeltaInUsd: BigNumber,
         sizeDeltaInTokens: BigNumber,
         collateralDeltaAmount: BigNumber,
-        pnlAmountForPool: BigNumber,
         remainingCollateralAmount: BigNumber,
-        outputAmount: BigNumber,
         orderType: OrderType,
         txnParams: EventTxnParams
       ) => {
         // eslint-disable-next-line no-console
-        console.log("increased", txnParams);
         if (account !== currentAccount) return;
 
         const positionKey = getPositionKey(account, market, collateralToken, isLong);
@@ -78,6 +75,8 @@ export function ContractEventsProvider({ children }: { children: ReactNode }) {
               isIncrease: true,
               sizeDeltaUsd: sizeDeltaInUsd,
               collateralDeltaAmount,
+              sizeDeltaInTokens,
+              updatedAtBlock: txnParams.blockNumber,
               updatedAt: Date.now(),
             })
           );
@@ -101,7 +100,6 @@ export function ContractEventsProvider({ children }: { children: ReactNode }) {
         txnParams: EventTxnParams
       ) => {
         // eslint-disable-next-line no-console
-        console.log("decreased", txnParams);
         if (account !== currentAccount) return;
 
         const positionKey = getPositionKey(account, market, collateralToken, isLong);
@@ -111,8 +109,10 @@ export function ContractEventsProvider({ children }: { children: ReactNode }) {
             setByKey(old, positionKey, {
               isIncrease: false,
               sizeDeltaUsd: sizeDeltaInUsd,
+              sizeDeltaInTokens,
               collateralDeltaAmount: collateralDeltaAmount,
               updatedAt: Date.now(),
+              updatedAtBlock: txnParams.blockNumber,
               positionKey,
             })
           );
@@ -128,7 +128,7 @@ export function ContractEventsProvider({ children }: { children: ReactNode }) {
       OrderExecuted: (key: string, txnParams: EventTxnParams) => {
         setOrderStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
 
-        const order = orderStatuses[key].data;
+        const order = orderStatuses[key]?.data;
 
         if (order) {
           const orderLabel = orderTypeLabels[order.flags.orderType];
@@ -157,7 +157,7 @@ export function ContractEventsProvider({ children }: { children: ReactNode }) {
       OrderCancelled: (key: string, data, txnParams: EventTxnParams) => {
         setOrderStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
 
-        const order = orderStatuses[key].data;
+        const order = orderStatuses[key]?.data;
 
         if (order) {
           const orderLabel = orderTypeLabels[order.flags.orderType];

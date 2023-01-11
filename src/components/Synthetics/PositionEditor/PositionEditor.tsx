@@ -7,7 +7,12 @@ import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import Tab from "components/Tab/Tab";
 import { useTokenInputState } from "domain/synthetics/exchange";
 import { getExecutionFee } from "domain/synthetics/fees";
-import { OrderType, createIncreaseOrderTxn, getNextCollateralUsdForDecreaseOrder } from "domain/synthetics/orders";
+import {
+  OrderType,
+  createDecreaseOrderTxn,
+  createIncreaseOrderTxn,
+  getNextCollateralUsdForDecreaseOrder,
+} from "domain/synthetics/orders";
 import { AggregatedPositionData, formatLeverage, getLeverage, getLiquidationPrice } from "domain/synthetics/positions";
 import {
   formatTokenAmount,
@@ -163,22 +168,24 @@ export function PositionEditor(p: Props) {
     } else {
       if (!withdrawTokenAmount) return;
 
-      // createDecreaseOrderTxn(chainId, library, {
-      //   account,
-      //   market: position.marketAddress,
-      //   indexTokenAddress: indexToken.address,
-      //   swapPath: [],
-      //   initialCollateralAddress: position.collateralTokenAddress,
-      //   initialCollateralAmount: withdrawTokenAmount,
-      //   receiveTokenAddress: position.collateralTokenAddress,
-      //   sizeDeltaUsd: BigNumber.from(0),
-      //   acceptablePrice: acceptablePrice!,
-      //   minOutputAmount: withdrawTokenAmount,
-      //   orderType: OrderType.MarketDecrease,
-      //   isLong: position.isLong,
-      //   executionFee: executionFee.feeTokenAmount,
-      //   tokensData,
-      // });
+      createDecreaseOrderTxn(chainId, library, {
+        account,
+        market: p.position.marketAddress,
+        indexTokenAddress: p.position.indexToken.address,
+        swapPath: [],
+        initialCollateralDeltaAmount: withdrawTokenAmount,
+        initialCollateralAddress: p.position.collateralTokenAddress,
+        targetCollateralAddress: p.position.collateralTokenAddress,
+        receiveTokenAddress: p.position.collateralTokenAddress,
+        priceImpactDelta: BigNumber.from(0),
+        allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
+        sizeDeltaUsd: BigNumber.from(0),
+        orderType: OrderType.MarketDecrease,
+        isLong: p.position.isLong,
+        executionFee: executionFee.feeTokenAmount,
+        tokensData,
+        setPendingPositionUpdate,
+      });
     }
   }
 

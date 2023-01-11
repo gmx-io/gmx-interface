@@ -20,7 +20,11 @@ export function useAggregatedOrdersData(chainId: number): AggregatedOrdersDataRe
 
     return {
       aggregatedOrdersData: orderKeys.reduce((acc: AggregatedOrdersData, key) => {
-        acc[key] = getAggregatedOrderData(ordersData, marketsData, tokensData, key)!;
+        const aggregatedOrder = getAggregatedOrderData(ordersData, marketsData, tokensData, key);
+
+        if (aggregatedOrder) {
+          acc[key] = aggregatedOrder;
+        }
 
         return acc;
       }, {} as AggregatedOrdersData),

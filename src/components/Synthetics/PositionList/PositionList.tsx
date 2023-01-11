@@ -7,7 +7,7 @@ import { AggregatedPositionsData } from "domain/synthetics/positions";
 import { useState } from "react";
 
 type Props = {
-  onSelectMarket: (marketAddress: string) => void;
+  onSelectPositionClick: (key: string) => void;
   positionsData: AggregatedPositionsData;
   ordersData: AggregatedOrdersData;
   isLoading: boolean;
@@ -42,7 +42,7 @@ export function PositionList(p: Props) {
               onEditCollateralClick={() => setEditingPositionKey(position.key)}
               onClosePositionClick={() => setClosingPositionKey(position.key)}
               onOrdersClick={p.onOrdersClick}
-              onSelectMarketClick={() => p.onSelectMarket(position.marketAddress)}
+              onSelectPositionClick={() => p.onSelectPositionClick(position.key)}
               showPnlAfterFees={false}
               isLarge={false}
             />
@@ -92,7 +92,7 @@ export function PositionList(p: Props) {
                 onEditCollateralClick={() => setEditingPositionKey(position.key)}
                 onClosePositionClick={() => setClosingPositionKey(position.key)}
                 onOrdersClick={p.onOrdersClick}
-                onSelectMarketClick={() => p.onSelectMarket(position.marketAddress)}
+                onSelectPositionClick={() => p.onSelectPositionClick(position.marketAddress)}
                 showPnlAfterFees={false}
                 isLarge={true}
               />

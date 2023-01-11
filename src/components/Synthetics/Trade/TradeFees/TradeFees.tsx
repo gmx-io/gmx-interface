@@ -29,7 +29,7 @@ export function TradeFees(p: Props) {
       value={
         <Tooltip
           handle={<span className={cx({ positive: totalFeeUsd?.gt(0) })}>{formatFee(totalFeeUsd)}</span>}
-          position="right-bottom"
+          position="right-top"
           renderContent={() => (
             <div>
               {positionPriceImpact?.impact && positionPriceImpact?.basisPoints && (
