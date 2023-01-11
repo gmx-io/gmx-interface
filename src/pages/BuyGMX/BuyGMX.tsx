@@ -151,7 +151,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
         {isArbitrum ? (
           <div className="exchange-info-group">
             <div className="BuyGMXGLP-description">
-              <Trans>Buy GMX from Uniswap (make sure to select Arbitrum):</Trans>
+              <Trans>Buy NOVA from Uniswap (make sure to select Arbitrum):</Trans>
             </div>
             <div className="buttons-group col-1">
               <Button imgSrc={Uniswap} href={externalLinks.buyGmx.uniswap}>
@@ -162,7 +162,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
         ) : (
           <div className="exchange-info-group">
             <div className="BuyGMXGLP-description">
-              <Trans>Buy GMX from Traderjoe:</Trans>
+              <Trans>Buy NOVA from Traderjoe:</Trans>
             </div>
             <div className="buttons-group col-1">
               <Button imgSrc={Traderjoe} href={externalLinks.buyGmx.traderjoe}>
@@ -173,7 +173,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
         )}
         <div className="exchange-info-group">
           <div className="BuyGMXGLP-description">
-            <Trans>Buy GMX using Decentralized Exchange Aggregators:</Trans>
+            <Trans>Buy NOVA  using Decentralized Exchange Aggregators:</Trans>
           </div>
           <div className="buttons-group">
             {DECENTRALISED_AGGRIGATORS.filter((e) => e.networks.includes(chainId)).map((exchange) => {
@@ -189,7 +189,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
         </div>
         <div className="exchange-info-group">
           <div className="BuyGMXGLP-description">
-            <Trans>Buy GMX using any token from any network:</Trans>
+            <Trans>Buy NOVA using any token from any network:</Trans>
           </div>
           <div className="buttons-group">
             <Button href={externalLinks.bungee} imgSrc={Bungee}>
@@ -203,7 +203,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
         {isArbitrum && (
           <div className="exchange-info-group">
             <div className="BuyGMXGLP-description">
-              <Trans>GMX bonds can be bought on Bond Protocol with a discount and a small vesting period:</Trans>
+              <Trans>NOVA bonds can be bought on Bond Protocol with a discount and a small vesting period:</Trans>
             </div>
             <div className="buttons-group col-1">
               <Button imgSrc={ohmArbitrum} href="https://app.bondprotocol.finance/#/issuers/GMX">
@@ -223,7 +223,7 @@ function CentralisedExchanges({ chainId, externalLinks }) {
       <div className="App-card-content">
         <div className="exchange-info-group">
           <div className="BuyGMXGLP-description">
-            <Trans>Buy GMX from centralized exchanges:</Trans>
+            <Trans>Buy NOVA from centralized exchanges:</Trans>
           </div>
           <div className="buttons-group">
             {CENTRALISED_EXCHANGES.filter((e) => e.networks.includes(chainId)).map((exchange) => {

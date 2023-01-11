@@ -549,14 +549,14 @@ export default function DashboardV2() {
                       handle={`$${formatAmount(tvl, USD_DECIMALS, 0, true)}`}
                       position="right-bottom"
                       renderContent={() => (
-                        <span>{t`Assets Under Management: GMX staked (All chains) + GLP pool (${chainName}).`}</span>
+                        <span>{t`Assets Under Management: NOVA staked (All chains) + DUEX pool (${chainName}).`}</span>
                       )}
                     />
                   </div>
                 </div>
                 <div className="App-card-row">
                   <div className="label">
-                    <Trans>GLP Pool</Trans>
+                    <Trans>DUEX Pool</Trans>
                   </div>
                   <div>
                     <TooltipComponent
@@ -564,9 +564,9 @@ export default function DashboardV2() {
                       position="right-bottom"
                       renderContent={() => (
                         <Trans>
-                          <p>Total value of tokens in GLP pool ({chainName}).</p>
+                          <p>Total value of tokens in DUEX pool ({chainName}).</p>
                           <p>
-                            Other websites may show a higher value as they add positions' collaterals to the GLP pool.
+                            Other websites may show a higher value as they add positions' collaterals to the DUEX pool.
                           </p>
                         </Trans>
                       )}
@@ -729,7 +729,7 @@ export default function DashboardV2() {
               {chainId === ARBITRUM && <img src={arbitrum24Icon} alt="arbitrum24Icon" />}
             </div>
             <div className="Page-description">
-              <Trans>Platform and GLP index tokens.</Trans>
+              <Trans>Platform and DUEX index tokens.</Trans>
             </div>
           </div>
           <div className="DashboardV2-token-cards">
@@ -739,14 +739,14 @@ export default function DashboardV2() {
                   <div className="App-card-title">
                     <div className="App-card-title-mark">
                       <div className="App-card-title-mark-icon">
-                        <img src={gmx40Icon} alt="GMX Token Icon" />
+                        <img src={gmx40Icon} alt="NOVA Token Icon" />
                       </div>
                       <div className="App-card-title-mark-info">
-                        <div className="App-card-title-mark-title">nova</div>
-                        <div className="App-card-title-mark-subtitle">GMX</div>
+                        <div className="App-card-title-mark-title">NOVA</div>
+                        <div className="App-card-title-mark-subtitle">NOVA</div>
                       </div>
                       <div>
-                        <AssetDropdown assetSymbol="GMX" />
+                        <AssetDropdown assetSymbol="NOVA" />
                       </div>
                     </div>
                   </div>
@@ -785,7 +785,7 @@ export default function DashboardV2() {
                       <div className="label">
                         <Trans>Supply</Trans>
                       </div>
-                      <div>{formatAmount(totalGmxSupply, GMX_DECIMALS, 0, true)} GMX</div>
+                      <div>{formatAmount(totalGmxSupply, GMX_DECIMALS, 0, true)} NOVA</div>
                     </div>
                     <div className="App-card-row">
                       <div className="label">
@@ -872,11 +872,11 @@ export default function DashboardV2() {
                         )}
                       </div>
                       <div className="App-card-title-mark-info">
-                        <div className="App-card-title-mark-title">GLP</div>
-                        <div className="App-card-title-mark-subtitle">GLP</div>
+                        <div className="App-card-title-mark-title">DUEX</div>
+                        <div className="App-card-title-mark-subtitle">DUEX</div>
                       </div>
                       <div>
-                        <AssetDropdown assetSymbol="GLP" />
+                        <AssetDropdown assetSymbol="DUEX" />
                       </div>
                     </div>
                   </div>
@@ -892,7 +892,7 @@ export default function DashboardV2() {
                       <div className="label">
                         <Trans>Supply</Trans>
                       </div>
-                      <div>{formatAmount(glpSupply, GLP_DECIMALS, 0, true)} GLP</div>
+                      <div>{formatAmount(glpSupply, GLP_DECIMALS, 0, true)} DUEX</div>
                     </div>
                     <div className="App-card-row">
                       <div className="label">
@@ -949,7 +949,7 @@ export default function DashboardV2() {
                         ))}
                       </Pie>
                       <text x={"50%"} y={"50%"} fill="white" textAnchor="middle" dominantBaseline="middle">
-                        GLP Pool
+                      DUEX Pool
                       </text>
                       <Tooltip content={<CustomTooltip />} />
                     </PieChart>
@@ -959,7 +959,7 @@ export default function DashboardV2() {
             </div>
             <div className="token-table-wrapper App-card">
               <div className="App-card-title">
-                <Trans>GLP Index Composition</Trans>{" "}
+                <Trans>DUEX Index Composition</Trans>{" "}
                 {chainId === AVALANCHE && <img src={avalanche16Icon} alt={t`Avalanche Icon`} />}
                 {chainId === ARBITRUM && <img src={arbitrum16Icon} alt={t`Arbitrum Icon`} />}
               </div>
