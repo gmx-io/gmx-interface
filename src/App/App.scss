@@ -929,7 +929,7 @@ button.App-button-option:disabled {
 
 .App-content {
   position: static !important;
-  background-color: radial-gradient(ellipse at top,#072e49 10%,transparent 80%),radial-gradient(ellipse at bottom,#120e44 10%,transparent 80%)!important;
+  background: radial-gradient(ellipse at top,#072e49 10%,transparent 80%),radial-gradient(ellipse at bottom,#120e44 10%,transparent 80%)!important;
 }
 
 .App-footer {
