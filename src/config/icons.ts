@@ -33,9 +33,7 @@ const ICONS = {
   },
 };
 
-type Icons = typeof ICONS;
-
-export function getIcon(chainId, label) {
+export function getIcon(chainId: number | "common", label: string) {
   if (!chainId || !label) return;
   if (chainId in ICONS) {
     if (label in ICONS[chainId]) {
@@ -43,7 +41,7 @@ export function getIcon(chainId, label) {
     }
   }
 }
-export function getCurrentIcons<TChain extends keyof Icons>(chainId: TChain) {
+export function getCurrentIcons(chainId: number | "common") {
   if (!chainId) return;
   if (chainId in ICONS) {
     return ICONS[chainId];
