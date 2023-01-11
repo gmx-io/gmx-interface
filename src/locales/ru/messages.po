@@ -302,7 +302,7 @@ msgstr "Одобрение..."
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Arbitrum APR:"
-msgstr "Годовой Процентный Отчет Arbitrum:<<<<<<< HEAD======="
+msgstr "Годовой Процентный Отчет Arbitrum:"
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"

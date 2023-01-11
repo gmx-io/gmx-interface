@@ -348,7 +348,7 @@ msgstr "利用可能"
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
-msgstr "AvalancheでのAPR(実質年利)<<<<<<< HEAD======="
+msgstr "Avalanche APR"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Balance"

@@ -302,7 +302,7 @@ msgstr " Genehmigung..."
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Arbitrum APR:"
-msgstr "Arbitrum APR:<<<<<<< HEAD======="
+msgstr "Arbitrum APR:"
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
@@ -348,7 +348,7 @@ msgstr "Verfügbar:"
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
-msgstr "Aclanche APR<<<<<<< HEAD======="
+msgstr "Available APR:"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Balance"
