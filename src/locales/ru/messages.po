@@ -1415,10 +1415,6 @@ msgid "GMX Governance Page"
 msgstr "Страница Управления GMX"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX Pages"
-msgstr "Страницы GMX"
-
-#: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX Perpetuals Data"
 msgstr "Данные по Бессрочным контрактам GMX"
 
@@ -1448,14 +1444,6 @@ msgid "GMX community discussion"
 msgstr "Обсуждения в сообществе GMX"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX dashboards and analytics."
-msgstr "Панели управления GMX и аналитика."
-
-#: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX ecosystem pages."
-msgstr "Страницы экосистемы GMX."
-
-#: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX explorer for stats and traders"
 msgstr "Проводник GMX для статистики и трейдеров"
 
@@ -1463,17 +1451,9 @@ msgstr "Проводник GMX для статистики и трейдеров
 msgid "GMX fundamentals"
 msgstr "Фундаментальные показатели GMX"
 
-#: src/pages/Home/Home.js
-msgid "GMX is currently live on Arbitrum and Avalanche."
-msgstr "В настоящее время GMX работает на Arbitrum и Avalanche."
-
 #: src/pages/Jobs/Jobs.js
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 msgstr "В настоящее время GMX не ведет активного поиска новых сотрудников. Однако, если вы считаете, что можете внести свой вклад в проект, пожалуйста, напишите <0>jobs@gmx.io</0>."
-
-#: src/components/TokenCard/TokenCard.js
-msgid "GMX is the utility and governance token. Accrues 30% of the platform's generated fees."
-msgstr "GMX это токен утилиты и управления. Обеспечивает 30% генерируемых платформой комиссий."
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX staking calculator"
@@ -2081,6 +2061,26 @@ msgstr "NFT ID"
 msgid "NFT Wallet"
 msgstr "NFT Кошелёк"
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "NOVA Pages"
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "NOVA dashboards and analytics."
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "NOVA ecosystem pages."
+msgstr ""
+
+#: src/pages/Home/Home.js
+msgid "NOVA is currently live on Arbitrum and Avalanche."
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.js
+msgid "NOVA is the utility and governance token. Accrues 30% of the platform's generated fees."
+msgstr ""
+
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Net Value"
@@ -2484,12 +2484,12 @@ msgid "Profit price: {0} ${1}. This rule applies for the next {2}, until {3}."
 msgstr "Цена прибыли: {0} ${1}. Это правило действует для следующих {2}, до {3}."
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
+msgid "Projects developed by the NOVA community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Projects integrated with GMX."
-msgstr "Проекты, интегрированные с GMX."
+msgid "Projects integrated with NOVA."
+msgstr ""
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Proof of Reserves"

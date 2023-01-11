@@ -1415,10 +1415,6 @@ msgid "GMX Governance Page"
 msgstr "GMX治理页面"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX Pages"
-msgstr "GMX页面"
-
-#: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX Perpetuals Data"
 msgstr "GMX永续产品数据"
 
@@ -1448,14 +1444,6 @@ msgid "GMX community discussion"
 msgstr "GMX社区讨论"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX dashboards and analytics."
-msgstr "GMX信息板和分析"
-
-#: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX ecosystem pages."
-msgstr "GMX 生态系统页面"
-
-#: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX explorer for stats and traders"
 msgstr "用于统计和交易的GMX探索器"
 
@@ -1463,17 +1451,9 @@ msgstr "用于统计和交易的GMX探索器"
 msgid "GMX fundamentals"
 msgstr "GMX基础"
 
-#: src/pages/Home/Home.js
-msgid "GMX is currently live on Arbitrum and Avalanche."
-msgstr "GMX目前在Arbitrum和Avalanche上线"
-
 #: src/pages/Jobs/Jobs.js
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 msgstr "GMX目前没有积极寻找新员工。但是，如果你认为你能为项目做出贡献，请发电子邮件到<0>jobs@gmx.io</0>"
-
-#: src/components/TokenCard/TokenCard.js
-msgid "GMX is the utility and governance token. Accrues 30% of the platform's generated fees."
-msgstr "GMX是效用和治理代币。拥有30%累积平台产生的费用"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX staking calculator"
@@ -2081,6 +2061,26 @@ msgstr "NFT ID"
 msgid "NFT Wallet"
 msgstr "NFT钱包"
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "NOVA Pages"
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "NOVA dashboards and analytics."
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "NOVA ecosystem pages."
+msgstr ""
+
+#: src/pages/Home/Home.js
+msgid "NOVA is currently live on Arbitrum and Avalanche."
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.js
+msgid "NOVA is the utility and governance token. Accrues 30% of the platform's generated fees."
+msgstr ""
+
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Net Value"
@@ -2484,12 +2484,12 @@ msgid "Profit price: {0} ${1}. This rule applies for the next {2}, until {3}."
 msgstr "盈利价格：{0}美元{1}此规则适用于接下来的{2}，直到{3}"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
+msgid "Projects developed by the NOVA community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Projects integrated with GMX."
-msgstr "与GMX整合的项目"
+msgid "Projects integrated with NOVA."
+msgstr ""
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Proof of Reserves"

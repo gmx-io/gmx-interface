@@ -459,10 +459,10 @@ export default function Ecosystem() {
             <div className="section-title-icon" />
             <div className="section-title-content">
               <div className="Page-title">
-                <Trans>GMX Pages</Trans>
+                <Trans>NOVA Pages</Trans>
               </div>
               <div className="Page-description">
-                <Trans>GMX ecosystem pages.</Trans>
+                <Trans>NOVA ecosystem pages.</Trans>
               </div>
             </div>
           </div>
@@ -506,7 +506,7 @@ export default function Ecosystem() {
             </div>
             <div className="Page-description">
               <Trans>
-                Projects developed by the GMX community. <br />
+                Projects developed by the NOVA community. <br />
                 Please exercise caution when interacting with any app, apps are fully maintained by community
                 developers.
               </Trans>
@@ -559,7 +559,7 @@ export default function Ecosystem() {
               <Trans>Dashboards</Trans>
             </div>
             <div className="Page-description">
-              <Trans>GMX dashboards and analytics.</Trans>
+              <Trans>NOVA dashboards and analytics.</Trans>
             </div>
           </div>
           <div className="DashboardV2-projects">
@@ -610,7 +610,7 @@ export default function Ecosystem() {
               <Trans>Partnerships and Integrations</Trans>
             </div>
             <div className="Page-description">
-              <Trans>Projects integrated with GMX.</Trans>
+              <Trans>Projects integrated with NOVA.</Trans>
             </div>
           </div>
           <div className="DashboardV2-projects">

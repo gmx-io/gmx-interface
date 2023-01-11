@@ -61,7 +61,7 @@
   "scripts": {
     "start": "PORT=3010 react-scripts --openssl-legacy-provider start",
     "start-home": "yarn lingui:prepare && PORT=3010 env-cmd -e development-home react-scripts --openssl-legacy-provider start",
-    "start-app": "yarn lingui:prepare && PORT=3011 env-cmd -e development-app react-scripts start",
+    "start-app": "yarn lingui:prepare && PORT=3011 env-cmd -e development-app react-scripts --openssl-legacy-provider start",
     "start-win": "set PORT=3010&react-scripts start",
     "build": "INLINE_RUNTIME_CHUNK=false yarn test:ci && react-scripts build",
     "build-home": "INLINE_RUNTIME_CHUNK=false env-cmd -e production-home react-scripts build",

@@ -5,7 +5,7 @@ import { AppHeaderUser } from "./AppHeaderUser";
 import { AppHeaderLinks } from "./AppHeaderLinks";
 
 import logoImg from "img/logo-main.png";
-import logoSmallImg from "img/logo_GMX_small.svg";
+import logoSmallImg from "img/logo_small.png";
 import { RiMenuLine } from "react-icons/ri";
 import { FaTimes } from "react-icons/fa";
 import { AnimatePresence as FramerAnimatePresence, motion } from "framer-motion";
@@ -96,7 +96,7 @@ export function Header({
         <div className="App-header large">
           <div className="App-header-container-left">
             <Link className="App-header-link-main" to="/">
-              <img src={logoImg} className="big" alt="Nova Logo" /> NOVA
+              <img src={logoImg} className="big" alt="Nova Logo" />
               <img src={logoSmallImg} className="small" alt="Nova Logo" />
             </Link>
             {isHomeSite() ? (
