@@ -11,6 +11,7 @@ import {
   TRADES_PAGE_SIZE,
   deserialize,
   getExchangeRateDisplay,
+  INCREASE,
 } from "lib/legacy";
 import { useTrades, useLiquidationsData } from "domain/legacy";
 import { getContract } from "config/contracts";
@@ -20,7 +21,7 @@ import { getExplorerUrl } from "config/chains";
 import { bigNumberify, formatAmount } from "lib/numbers";
 import { formatDateTime } from "lib/dates";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
-import { select, t, Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 const { AddressZero } = ethers.constants;
@@ -72,13 +73,13 @@ function renderLiquidationTooltip(liquidationData, label) {
             value={formatAmount(minCollateral, USD_DECIMALS, 2, true)}
           />
           <StatsTooltipRow
-            label={t`Borrow fee`}
+            label={t`Borrow Fee`}
             showDollar
             value={formatAmount(liquidationData.borrowFee, USD_DECIMALS, 2, true)}
           />
           <StatsTooltipRow label={t`PnL`} value={`-$${formatAmount(liquidationData.loss, USD_DECIMALS, 2, true)}`} />
           {liquidationData.type === "full" && (
-            <StatsTooltipRow label={t`Liquidation fee`} showDollar value={formatAmount(LIQUIDATION_FEE, 30, 2, true)} />
+            <StatsTooltipRow label={t`Liquidation Fee`} showDollar value={formatAmount(LIQUIDATION_FEE, 30, 2, true)} />
           )}
         </>
       )}
@@ -337,8 +338,7 @@ export default function TradeHistory(props) {
           );
         }
         const actionDisplay = isLiquidation ? t`Partially Liquidated` : t`Decreased`;
-        return t`
-        ${actionDisplay} ${indexToken.symbol} ${longOrShortText},
+        return t`${actionDisplay} ${indexToken.symbol} ${longOrShortText},
         -${formatAmount(params.sizeDelta, USD_DECIMALS, 2, true)} USD,
         ${indexToken.symbol} Price: ${formatAmount(params.price, USD_DECIMALS, 2, true)} USD
       `;
@@ -373,6 +373,7 @@ export default function TradeHistory(props) {
           return defaultMsg;
         }
         const longShortDisplay = order.isLong ? t`Long` : t`Short`;
+        const orderTypeText = order.type === INCREASE ? t`Increase` : t`Decrease`;
         const executionPriceDisplay = formatAmount(order.executionPrice, USD_DECIMALS, 2, true);
         const sizeDeltaDisplay = `${order.type === "Increase" ? "+" : "-"}${formatAmount(
           order.sizeDelta,
@@ -380,9 +381,7 @@ export default function TradeHistory(props) {
           2,
           true
         )}`;
-        return t`Execute Order: ${select(order.type, { Increase: "Increase", Decrease: "Decrease" })} ${
-          indexToken.symbol
-        } ${longShortDisplay} ${sizeDeltaDisplay} USD, Price: ${executionPriceDisplay} USD`;
+        return t`Execute Order: ${orderTypeText} ${indexToken.symbol} ${longShortDisplay} ${sizeDeltaDisplay} USD, Price: ${executionPriceDisplay} USD`;
       }
 
       if (
@@ -444,12 +443,12 @@ export default function TradeHistory(props) {
           ? formatAmount(order.minOut, toToken.decimals, toToken.isStable ? 2 : 4, true)
           : "";
 
-        return t`
-        ${getOrderActionTitle(tradeData.action)}:
-        Swap ${amountInDisplay} ${fromToken?.symbol || ""} for ${minOutDisplay} ${toToken?.symbol || ""},
+        return t`${getOrderActionTitle(tradeData.action)}: Swap ${amountInDisplay}
+        ${fromToken?.symbol || ""} for ${minOutDisplay} ${toToken?.symbol || ""},
         Price: ${getExchangeRateDisplay(order.triggerRatio, fromToken, toToken)}`;
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [getTokenInfo, infoTokens, nativeTokenAddress, chainId, liquidationsDataMap]
   );
 

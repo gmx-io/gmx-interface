@@ -9,10 +9,10 @@ export const locales = {
   es: "Spanish",
   zh: "Chinese",
   ko: "Korean",
-  // ru: "Russian",
+  ru: "Russian",
   ja: "Japanese",
-  // fr: "French",
-  // de: "German",
+  fr: "French",
+  de: "German",
   ...(isDevelopment() && { pseudo: "Test" }),
 };
 

@@ -4,7 +4,8 @@
 }
 
 .Actions-section {
-  padding-bottom: 4.65rem;
+  padding-bottom: 4.5rem;
+  overflow-wrap: break-word;
 }
 
 .Actions-title {

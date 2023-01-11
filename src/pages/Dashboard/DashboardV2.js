@@ -367,7 +367,7 @@ export default function DashboardV2() {
                     <Link to="/buy_glp" target="_blank" rel="noopener noreferrer">
                       buy GLP
                     </Link>{" "}
-                    with {tokenInfo.symbol},&nbsp; and to{" "}
+                    with {tokenInfo.symbol}, and to{" "}
                     <Link to="/trade" target="_blank" rel="noopener noreferrer">
                       swap
                     </Link>{" "}

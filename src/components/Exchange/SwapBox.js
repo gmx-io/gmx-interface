@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Tooltip from "../Tooltip/Tooltip";
-import { select, t, Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import Slider, { SliderTooltip } from "rc-slider";
 import "rc-slider/assets/index.css";
 import "./SwapBox.css";
@@ -79,6 +79,7 @@ import { usePrevious } from "lib/usePrevious";
 import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "config/tokens";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { ErrorCode, ErrorDisplayType } from "./constants";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -841,7 +842,7 @@ export default function SwapBox(props) {
       const nextUsdgAmount = fromTokenInfo.usdgAmount.add(usdgFromAmount);
 
       if (nextUsdgAmount.gt(fromTokenInfo.maxUsdgAmount)) {
-        return [t`${fromTokenInfo.symbol} pool exceeded`];
+        return [t`${fromTokenInfo.symbol} pool exceeded`, ErrorDisplayType.Tooltip, ErrorCode.PoolExceeded];
       }
     }
 
@@ -862,7 +863,11 @@ export default function SwapBox(props) {
 
     let toTokenInfo = getTokenInfo(infoTokens, toTokenAddress);
     if (toTokenInfo && toTokenInfo.isStable) {
-      return [t`${select(swapOption, { [LONG]: "Longing", [SHORT]: "Shorting" })} ${toTokenInfo.symbol} not supported`];
+      const SWAP_OPTION_LABEL = {
+        [LONG]: "Longing",
+        [SHORT]: "Shorting",
+      };
+      return [t`${SWAP_OPTION_LABEL[swapOption]} ${toTokenInfo.symbol} not supported`];
     }
 
     const fromTokenInfo = getTokenInfo(infoTokens, fromTokenAddress);
@@ -935,7 +940,7 @@ export default function SwapBox(props) {
           toTokenInfo.bufferAmount &&
           toTokenInfo.bufferAmount.gt(toTokenInfo.poolAmount.sub(swapAmount))
         ) {
-          return [t`Insufficient liquidity`, true, "BUFFER"];
+          return [t`Insufficient liquidity`, ErrorDisplayType.Modal, ErrorCode.Buffer];
         }
 
         if (
@@ -948,7 +953,11 @@ export default function SwapBox(props) {
           const usdgFromAmount = adjustForDecimals(fromUsdMin, USD_DECIMALS, USDG_DECIMALS);
           const nextUsdgAmount = fromTokenInfo.usdgAmount.add(usdgFromAmount);
           if (nextUsdgAmount.gt(fromTokenInfo.maxUsdgAmount)) {
-            return [t`${fromTokenInfo.symbol} pool exceeded, try different token`, true, "MAX_USDG"];
+            return [
+              t`${fromTokenInfo.symbol} pool exceeded, try different token`,
+              ErrorDisplayType.Modal,
+              ErrorCode.MaxUSDG,
+            ];
           }
         }
       }
@@ -992,7 +1001,7 @@ export default function SwapBox(props) {
           shortCollateralToken.bufferAmount.gt(shortCollateralToken.poolAmount.sub(stableTokenAmount))
         ) {
           // suggest swapping to collateralToken
-          return [t`Insufficient liquidity, change "Collateral In"`, true, "BUFFER"];
+          return [t`Insufficient liquidity, change "Collateral In"`, ErrorDisplayType.Modal, ErrorCode.Buffer];
         }
 
         if (
@@ -1004,7 +1013,11 @@ export default function SwapBox(props) {
           const usdgFromAmount = adjustForDecimals(fromUsdMin, USD_DECIMALS, USDG_DECIMALS);
           const nextUsdgAmount = fromTokenInfo.usdgAmount.add(usdgFromAmount);
           if (nextUsdgAmount.gt(fromTokenInfo.maxUsdgAmount)) {
-            return [t`${fromTokenInfo.symbol} pool exceeded, try different token`, true, "MAX_USDG"];
+            return [
+              t`${fromTokenInfo.symbol} pool exceeded, try different token`,
+              ErrorDisplayType.Modal,
+              ErrorCode.MaxUSDG,
+            ];
           }
         }
       }
@@ -1086,8 +1099,8 @@ export default function SwapBox(props) {
     if (!active) {
       return true;
     }
-    const [error, modal] = getError();
-    if (error && !modal) {
+    const [error, errorType] = getError();
+    if (error && errorType !== ErrorDisplayType.Modal) {
       return false;
     }
     if (needOrderBookApproval && isWaitingForPluginApproval) {
@@ -1122,8 +1135,8 @@ export default function SwapBox(props) {
     if (!isSupportedChain(chainId)) {
       return t`Incorrect Network`;
     }
-    const [error, modal] = getError();
-    if (error && !modal) {
+    const [error, errorType] = getError();
+    if (error && errorType !== ErrorDisplayType.Modal) {
       return error;
     }
 
@@ -1677,9 +1690,9 @@ export default function SwapBox(props) {
       return;
     }
 
-    const [, modal, errorCode] = getError();
+    const [, errorType, errorCode] = getError();
 
-    if (modal) {
+    if (errorType === ErrorDisplayType.Modal) {
       setModalError(errorCode);
       return;
     }
@@ -1806,11 +1819,40 @@ export default function SwapBox(props) {
     return fromValue !== formatAmountFree(maxAvailableAmount, fromToken.decimals, fromToken.decimals);
   }
 
+  const ERROR_TOOLTIP_MSG = {
+    [ErrorCode.PoolExceeded]: t`GLP doesn't accept this amount of ${fromTokenInfo.symbol}.`,
+  };
+
   const SWAP_LABELS = {
     [LONG]: t`Long`,
     [SHORT]: t`Short`,
     [SWAP]: t`Swap`,
   };
+
+  function renderPrimaryButton() {
+    const [errorMessage, errorType, errorCode] = getError();
+    const primaryTextMessage = getPrimaryText();
+    if (errorType === ErrorDisplayType.Tooltip && errorMessage === primaryTextMessage && ERROR_TOOLTIP_MSG[errorCode]) {
+      return (
+        <Tooltip
+          isHandlerDisabled
+          handle={
+            <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+              {primaryTextMessage}
+            </button>
+          }
+          position="center-bottom"
+          className="Tooltip-flex"
+          renderContent={() => ERROR_TOOLTIP_MSG[errorCode]}
+        />
+      );
+    }
+    return (
+      <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+        {primaryTextMessage}
+      </button>
+    );
+  }
 
   return (
     <div className="Exchange-swap-box">
@@ -2202,11 +2244,7 @@ export default function SwapBox(props) {
             </Trans>
           </div>
         )}
-        <div className="Exchange-swap-button-container">
-          <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
-            {getPrimaryText()}
-          </button>
-        </div>
+        <div className="Exchange-swap-button-container">{renderPrimaryButton()}</div>
       </div>
       {isSwap && (
         <div className="Exchange-swap-market-box App-box App-box-border">

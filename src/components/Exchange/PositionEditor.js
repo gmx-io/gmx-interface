@@ -30,6 +30,7 @@ import { approveTokens, shouldRaiseGasError } from "domain/tokens";
 import { usePrevious } from "lib/usePrevious";
 import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { ErrorCode, ErrorDisplayType } from "./constants";
 
 const DEPOSIT = "Deposit";
 const WITHDRAW = "Withdraw";
@@ -195,39 +196,40 @@ export default function PositionEditor(props) {
     }
 
     if (!fromAmount) {
-      return t`Enter an amount`;
+      return [t`Enter an amount`];
     }
 
     if (fromAmount.lte(0)) {
-      return t`Amount should be greater than zero`;
+      return [t`Amount should be greater than zero`];
     }
 
     if (!isDeposit && fromAmount) {
       if (position.collateralAfterFee.sub(fromAmount).lt(MIN_ORDER_USD)) {
-        return t`Min residual collateral: 10 USD`;
+        return [t`Min residual collateral: 10 USD`];
       }
     }
 
     if (!isDeposit && fromAmount && nextLiquidationPrice) {
       if (position.isLong && position.markPrice.lt(nextLiquidationPrice)) {
-        return t`Invalid liq. price`;
+        return [t`Invalid liq. price`, ErrorDisplayType.Tooltip, ErrorCode.InvalidLiqPrice];
       }
       if (!position.isLong && position.markPrice.gt(nextLiquidationPrice)) {
-        return t`Invalid liq. price`;
+        return [t`Invalid liq. price`, ErrorDisplayType.Tooltip, ErrorCode.InvalidLiqPrice];
       }
     }
 
     if (nextLeverageExcludingPnl && nextLeverageExcludingPnl.lt(1.1 * BASIS_POINTS_DIVISOR)) {
-      return t`Min leverage: 1.1x`;
+      return [t`Min leverage: 1.1x`];
     }
 
     if (nextLeverage && nextLeverage.gt(MAX_ALLOWED_LEVERAGE)) {
-      return t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`;
+      return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
     }
+    return [false];
   };
 
   const isPrimaryEnabled = () => {
-    const error = getError();
+    const [error] = getError();
     if (error) {
       return false;
     }
@@ -245,7 +247,7 @@ export default function PositionEditor(props) {
   };
 
   const getPrimaryText = () => {
-    const error = getError();
+    const [error] = getError();
     if (error) {
       return error;
     }
@@ -461,6 +463,35 @@ export default function PositionEditor(props) {
     [DEPOSIT]: t`Deposit`,
     [WITHDRAW]: t`Withdraw`,
   };
+  const ERROR_TOOLTIP_MSG = {
+    [ErrorCode.InvalidLiqPrice]: t`Liquidation price would cross mark price.`,
+  };
+
+  function renderPrimaryButton() {
+    const [errorMessage, errorType, errorCode] = getError();
+    const primaryTextMessage = getPrimaryText();
+    if (errorType === ErrorDisplayType.Tooltip && errorMessage === primaryTextMessage && ERROR_TOOLTIP_MSG[errorCode]) {
+      return (
+        <Tooltip
+          isHandlerDisabled
+          handle={
+            <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+              {primaryTextMessage}
+            </button>
+          }
+          className="Tooltip-flex"
+          position="center-top"
+          renderContent={() => ERROR_TOOLTIP_MSG[errorCode]}
+        />
+      );
+    }
+    return (
+      <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+        {primaryTextMessage}
+      </button>
+    );
+  }
+
   return (
     <div className="PositionEditor">
       {position && (
@@ -629,7 +660,7 @@ export default function PositionEditor(props) {
                           return (
                             <>
                               <StatsTooltipRow
-                                label={t`Network fee`}
+                                label={t`Network Fee`}
                                 showDollar={false}
                                 value={`${formatAmountFree(
                                   minExecutionFee,
@@ -654,15 +685,7 @@ export default function PositionEditor(props) {
                   </div>
                 </div>
 
-                <div className="Exchange-swap-button-container">
-                  <button
-                    className="App-cta Exchange-swap-button"
-                    onClick={onClickPrimary}
-                    disabled={!isPrimaryEnabled()}
-                  >
-                    {getPrimaryText()}
-                  </button>
-                </div>
+                <div className="Exchange-swap-button-container">{renderPrimaryButton()}</div>
               </div>
             )}
           </div>
