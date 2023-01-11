@@ -54,7 +54,7 @@ import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, formatKey
 import { getNativeToken, getToken, getTokens, getWhitelistedTokens, getWrappedToken } from "config/tokens";
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { getIcons } from "config/icons";
+import { getIcon } from "config/icons";
 
 const { AddressZero } = ethers.constants;
 
@@ -140,7 +140,7 @@ export default function GlpSwap(props) {
   const glpRewardRouterAddress = getContract(chainId, "GlpRewardRouter");
 
   const tokensForBalanceAndSupplyQuery = [stakedGlpTrackerAddress, usdgAddress];
-  const glpIcon = getIcons(chainId, "glp");
+  const glpIcon = getIcon(chainId, "glp");
 
   const tokenAddresses = tokens.map((token) => token.address);
   const { data: tokenBalances } = useSWR(

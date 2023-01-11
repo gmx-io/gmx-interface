@@ -12,10 +12,10 @@ import { ARBITRUM, AVALANCHE } from "config/chains";
 import { switchNetwork } from "lib/wallets";
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { getIcons } from "config/icons";
+import { getIcon } from "config/icons";
 
-const glpIcon = getIcons(null, "glp");
-const gmxIcon = getIcons(null, "gmx");
+const glpIcon = getIcon("common", "glp");
+const gmxIcon = getIcon("common", "gmx");
 
 export default function TokenCard({ showRedirectModal, redirectPopupTimestamp }) {
   const isHome = isHomeSite();

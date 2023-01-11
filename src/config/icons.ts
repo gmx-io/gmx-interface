@@ -1,6 +1,8 @@
-import { ARBITRUM, AVALANCHE } from "config/chains";
+import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
 import arbitrum from "img/ic_arbitrum_24.svg";
 import avalanche from "img/ic_avalanche_24.svg";
+import avalancheTestnet from "img/ic_avalanche_testnet_24.svg";
+
 import gmxIcon from "img/ic_gmx_40.svg";
 import glpIcon from "img/ic_glp_40.svg";
 import gmxArbitrum from "img/ic_gmx_arbitrum.svg";
@@ -8,22 +10,7 @@ import gmxAvax from "img/ic_gmx_avax.svg";
 import glpArbitrum from "img/ic_glp_arbitrum.svg";
 import glpAvax from "img/ic_glp_avax.svg";
 
-type Icons = {
-  [ARBITRUM]: {
-    network: string;
-    gmx: string;
-    glp: string;
-  };
-  [AVALANCHE]: {
-    network: string;
-    gmx: string;
-    glp: string;
-  };
-  gmx: string;
-  glp: string;
-};
-
-const ICONS: Icons = {
+const ICONS = {
   [ARBITRUM]: {
     network: arbitrum,
     gmx: gmxArbitrum,
@@ -34,14 +21,31 @@ const ICONS: Icons = {
     gmx: gmxAvax,
     glp: glpAvax,
   },
-  gmx: gmxIcon,
-  glp: glpIcon,
+  [ARBITRUM_TESTNET]: {
+    network: arbitrum,
+  },
+  [AVALANCHE_FUJI]: {
+    network: avalancheTestnet,
+  },
+  common: {
+    gmx: gmxIcon,
+    glp: glpIcon,
+  },
 };
 
-export function getIcons(network, label) {
-  if (!network) {
-    return ICONS[label];
+type Icons = typeof ICONS;
+
+export function getIcon(chainId, label) {
+  if (!chainId || !label) return;
+  if (chainId in ICONS) {
+    if (label in ICONS[chainId]) {
+      return ICONS[chainId][label];
+    }
   }
-  if (![ARBITRUM, AVALANCHE].includes(network)) return;
-  return label ? ICONS[network][label] : ICONS[network];
+}
+export function getCurrentIcons<TChain extends keyof Icons>(chainId: TChain) {
+  if (!chainId) return;
+  if (chainId in ICONS) {
+    return ICONS[chainId];
+  }
 }

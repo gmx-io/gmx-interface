@@ -9,11 +9,11 @@ import "./Ecosystem.css";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { t } from "@lingui/macro";
-import { getIcons } from "config/icons";
+import { getIcon } from "config/icons";
 
 const NETWORK_ICONS = {
-  [ARBITRUM]: getIcons(ARBITRUM, "network"),
-  [AVALANCHE]: getIcons(AVALANCHE, "network"),
+  [ARBITRUM]: getIcon(ARBITRUM, "network"),
+  [AVALANCHE]: getIcon(AVALANCHE, "network"),
 };
 
 const NETWORK_ICON_ALTS = {

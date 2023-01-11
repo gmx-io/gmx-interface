@@ -26,7 +26,7 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { REFERRALS_SELECTED_TAB_KEY } from "config/localStorage";
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { getIcons } from "config/icons";
+import { getIcon } from "config/icons";
 
 const TRADERS = "Traders";
 const AFFILIATES = "Affiliates";
@@ -50,7 +50,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   const { userReferralCode, userReferralCodeString } = useUserReferralCode(library, chainId, account);
   const { codeOwner } = useCodeOwner(library, chainId, account, userReferralCode);
   const { referrerTier: traderTier } = useReferrerTier(library, chainId, codeOwner);
-  const networkIcon = getIcons(chainId, "network");
+  const networkIcon = getIcon(chainId, "network");
 
   function handleCreateReferralCode(referralCode) {
     return registerReferralCode(chainId, referralCode, library, {
