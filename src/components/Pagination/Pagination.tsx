@@ -1,4 +1,4 @@
-import TransparentButton from "components/Buttons/TransparentButton";
+import Button from "components/Common/Button";
 import "./Pagination.css";
 
 type Props = {
@@ -7,27 +7,15 @@ type Props = {
   onPageChange: any;
 };
 
-function range(start, end) {
-  let length = end - start + 1;
-  return Array.from({ length }, (_, idx) => idx + start);
-}
-
 function getPageNumbers(current, max = 1) {
-  if (max === 2) {
-    return [1, 2];
+  if (max === 1) return [];
+  if (current === 1) {
+    return max >= 3 ? [1, 2, 3] : [1, 2];
+  } else if (current === max) {
+    return max >= 3 ? [current - 2, current - 1, current] : [current - 1, current];
+  } else {
+    return [current - 1, current, current + 1];
   }
-  if (current <= 1) {
-    return range(current, current + 2);
-  }
-
-  if (current + 1 <= max) {
-    return range(current - 1, current + 1);
-  }
-
-  if (current <= max) {
-    return range(current - 2, current);
-  }
-  return [];
 }
 
 export default function Pagination({ page, pageCount, onPageChange }: Props) {
@@ -50,19 +38,19 @@ export default function Pagination({ page, pageCount, onPageChange }: Props) {
   return (
     <div className="pagination">
       <div className="pagination-buttons">
-        <TransparentButton onClick={() => onPageChange(1)} disabled={page <= 1}>
+        <Button onClick={() => onPageChange(1)} disabled={page <= 1}>
           {"|<"}
-        </TransparentButton>
-        <TransparentButton onClick={() => onPageChange(page - 1)} disabled={page <= 1}>
+        </Button>
+        <Button onClick={() => onPageChange(page - 1)} disabled={page <= 1}>
           {"<"}
-        </TransparentButton>
+        </Button>
         <div className="pagination-btn-middle">{middleButtons}</div>
-        <TransparentButton onClick={() => onPageChange(page + 1)} disabled={page >= pageCount}>
+        <Button onClick={() => onPageChange(page + 1)} disabled={page >= pageCount}>
           {">"}
-        </TransparentButton>
-        <TransparentButton onClick={() => onPageChange(pageCount)} disabled={page >= pageCount}>
+        </Button>
+        <Button onClick={() => onPageChange(pageCount)} disabled={page >= pageCount}>
           {">|"}
-        </TransparentButton>
+        </Button>
       </div>
     </div>
   );
