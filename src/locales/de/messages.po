@@ -347,7 +347,7 @@ msgstr "Verfügbar:"
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
-msgstr "Aclanche APR"
+msgstr "Avalanche APR:"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Balance"

@@ -45,7 +45,7 @@ import { getTokenBySymbol, getWhitelistedTokens, GLP_POOL_COLORS } from "config/
 import { bigNumberify, expandDecimals, formatAmount, formatKeyAmount, numberWithCommas } from "lib/numbers";
 import { useChainId } from "lib/chains";
 import { formatDate } from "lib/dates";
-import { getCurrentIcons } from "config/icons";
+import { getIcons } from "config/icons";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;
@@ -129,7 +129,7 @@ export default function DashboardV2() {
   const totalVolume = useTotalVolume();
 
   const chainName = getChainName(chainId);
-  const currentIcons = getCurrentIcons(chainId);
+  const currentIcons = getIcons(chainId);
 
   const { data: positionStats } = useSWR(
     ACTIVE_CHAIN_IDS.map((chainId) => getServerUrl(chainId, "/position_stats")),
