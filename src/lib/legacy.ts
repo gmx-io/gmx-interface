@@ -273,6 +273,11 @@ export function getSellGlpFromAmount(toAmount, swapTokenAddress, infoTokens, glp
 
   let usdgAmount = toAmount.mul(swapToken.maxPrice).div(PRECISION);
   usdgAmount = adjustForDecimals(usdgAmount, swapToken.decimals, USDG_DECIMALS);
+
+  // in the Vault contract, the USDG supply is reduced before the fee basis points
+  // is calculated
+  usdgSupply = usdgSupply.sub(usdgAmount);
+
   const feeBasisPoints = getFeeBasisPoints(
     swapToken,
     usdgAmount,
@@ -333,6 +338,11 @@ export function getSellGlpToAmount(toAmount, fromTokenAddress, infoTokens, glpPr
   fromAmount = adjustForDecimals(fromAmount, GLP_DECIMALS, fromToken.decimals);
 
   const usdgAmount = toAmount.mul(glpPrice).div(PRECISION);
+
+  // in the Vault contract, the USDG supply is reduced before the fee basis points
+  // is calculated
+  usdgSupply = usdgSupply.sub(usdgAmount);
+
   const feeBasisPoints = getFeeBasisPoints(
     fromToken,
     usdgAmount,
