@@ -697,7 +697,7 @@ export default function GlpSwap(props) {
           <div className="App-card-title">
             <div className="App-card-title-mark">
               <div className="App-card-title-mark-icon">
-                <img width="40px" src={glpIcon} alt="GLP" />
+                <img width="40" src={glpIcon} alt="GLP" />
               </div>
               <div className="App-card-title-mark-info">
                 <div className="App-card-title-mark-title">GLP</div>
@@ -1129,7 +1129,7 @@ export default function GlpSwap(props) {
                   <td>
                     <div className="App-card-title-info">
                       <div className="App-card-title-info-icon">
-                        <img src={tokenImage} alt={token.symbol} width="40px" />
+                        <img src={tokenImage} alt={token.symbol} width="40" />
                       </div>
                       <div className="App-card-title-info-text">
                         <div className="App-card-info-title">{token.name}</div>

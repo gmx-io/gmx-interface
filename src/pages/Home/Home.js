@@ -7,9 +7,6 @@ import costIcon from "img/ic_cost.svg";
 import liquidityIcon from "img/ic_liquidity.svg";
 import totaluserIcon from "img/ic_totaluser.svg";
 
-import arbitrumIcon from "img/ic_arbitrum_96.svg";
-import avaIcon from "img/ic_avalanche_96.svg";
-
 import statsIcon from "img/ic_stats.svg";
 import tradingIcon from "img/ic_trading.svg";
 
@@ -18,6 +15,9 @@ import useSWR from "swr";
 import { USD_DECIMALS, getTotalVolumeSum } from "lib/legacy";
 
 import { useUserStat } from "domain/legacy";
+
+import arbitrumIcon from "img/ic_arbitrum_96.svg";
+import avaxIcon from "img/ic_avalanche_96.svg";
 
 import TokenCard from "components/TokenCard/TokenCard";
 import { Trans } from "@lingui/macro";
@@ -246,7 +246,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
           <div className="Home-cta-options">
             <div className="Home-cta-option Home-cta-option-arbitrum">
               <div className="Home-cta-option-icon">
-                <img src={arbitrumIcon} alt="Arbitrum Icon" />
+                <img src={arbitrumIcon} width="96" alt="Arbitrum Icon" />
               </div>
               <div className="Home-cta-option-info">
                 <div className="Home-cta-option-title">Arbitrum</div>
@@ -257,7 +257,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
             </div>
             <div className="Home-cta-option Home-cta-option-ava">
               <div className="Home-cta-option-icon">
-                <img src={avaIcon} alt="Avalanche Icon" />
+                <img src={avaxIcon} width="96" alt="Avalanche Icon" />
               </div>
               <div className="Home-cta-option-info">
                 <div className="Home-cta-option-title">Avalanche</div>

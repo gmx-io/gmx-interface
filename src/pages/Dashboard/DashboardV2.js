@@ -512,7 +512,7 @@ export default function DashboardV2() {
           <div className="section-title-icon"></div>
           <div className="section-title-content">
             <div className="Page-title">
-              <Trans>Stats</Trans> <img width="24px" src={currentIcons.network} alt="Network Icon" />
+              <Trans>Stats</Trans> <img width="24" src={currentIcons.network} alt="Network Icon" />
             </div>
             <div className="Page-description">
               <Trans>
@@ -719,7 +719,7 @@ export default function DashboardV2() {
           </div>
           <div className="Tab-title-section">
             <div className="Page-title">
-              <Trans>Tokens</Trans> <img src={currentIcons.network} width="24px" alt="Network Icon" />
+              <Trans>Tokens</Trans> <img src={currentIcons.network} width="24" alt="Network Icon" />
             </div>
             <div className="Page-description">
               <Trans>Platform and GLP index tokens.</Trans>
@@ -732,7 +732,7 @@ export default function DashboardV2() {
                   <div className="App-card-title">
                     <div className="App-card-title-mark">
                       <div className="App-card-title-mark-icon">
-                        <img src={currentIcons.gmx} width="40px" alt="GMX Token Icon" />
+                        <img src={currentIcons.gmx} width="40" alt="GMX Token Icon" />
                       </div>
                       <div className="App-card-title-mark-info">
                         <div className="App-card-title-mark-title">GMX</div>
@@ -857,7 +857,7 @@ export default function DashboardV2() {
                   <div className="App-card-title">
                     <div className="App-card-title-mark">
                       <div className="App-card-title-mark-icon">
-                        <img src={currentIcons.glp} width="40px" alt="GLP Icon" />
+                        <img src={currentIcons.glp} width="40" alt="GLP Icon" />
                       </div>
                       <div className="App-card-title-mark-info">
                         <div className="App-card-title-mark-title">GLP</div>
@@ -947,7 +947,7 @@ export default function DashboardV2() {
             </div>
             <div className="token-table-wrapper App-card">
               <div className="App-card-title">
-                <Trans>GLP Index Composition</Trans> <img src={currentIcons.network} width="16px" alt="Network Icon" />
+                <Trans>GLP Index Composition</Trans> <img src={currentIcons.network} width="16" alt="Network Icon" />
               </div>
               <div className="App-card-divider"></div>
               <table className="token-table">
@@ -989,7 +989,7 @@ export default function DashboardV2() {
                           <div className="token-symbol-wrapper">
                             <div className="App-card-title-info">
                               <div className="App-card-title-info-icon">
-                                <img src={tokenImage} alt={token.symbol} width="40px" />
+                                <img src={tokenImage} alt={token.symbol} width="40" />
                               </div>
                               <div className="App-card-title-info-text">
                                 <div className="App-card-info-title">{token.name}</div>

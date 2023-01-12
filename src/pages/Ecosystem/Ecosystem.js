@@ -473,7 +473,7 @@ export default function Ecosystem() {
                     {item.title}
                     <div className="App-card-title-icon">
                       {item.chainIds.map((network) => (
-                        <img width="16px" key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
+                        <img width="16" key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
                       ))}
                     </div>
                   </div>
@@ -519,7 +519,7 @@ export default function Ecosystem() {
                     {item.title}
                     <div className="App-card-title-icon">
                       {item.chainIds.map((network) => (
-                        <img width="16px" key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
+                        <img width="16" key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
                       ))}
                     </div>
                   </div>
@@ -569,7 +569,7 @@ export default function Ecosystem() {
                     {item.title}
                     <div className="App-card-title-icon">
                       {item.chainIds.map((network) => (
-                        <img width="16px" key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
+                        <img width="16" key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
                       ))}
                     </div>
                   </div>
@@ -620,7 +620,7 @@ export default function Ecosystem() {
                     {item.title}
                     <div className="App-card-title-icon">
                       {item.chainIds.map((network) => (
-                        <img width="16px" key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
+                        <img width="16" key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
                       ))}
                     </div>
                   </div>
