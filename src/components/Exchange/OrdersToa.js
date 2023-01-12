@@ -39,7 +39,7 @@ export default function OrdersToa(props) {
       isVisible={true}
       label={t`Enable Orders`}
       className="Orders-toa Modal-scrollable"
-      zIndex="1000"
+      zIndex="1002"
     >
       <Trans>
         Note that orders are not guaranteed to be executed.

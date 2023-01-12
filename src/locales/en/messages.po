@@ -304,11 +304,6 @@ msgstr "Approving..."
 msgid "Arbitrum APR:"
 msgstr "Arbitrum APR:"
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Arbitrum Icon"
-msgstr "Arbitrum Icon"
-
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
 msgstr "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
@@ -355,11 +350,6 @@ msgstr "Available:"
 msgid "Avalanche APR:"
 msgstr "Avalanche APR:"
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Avalanche Icon"
-msgstr "Avalanche Icon"
-
 #: src/components/Exchange/SwapBox.js
 msgid "Balance"
 msgstr "Balance"
@@ -393,11 +383,13 @@ msgstr "Boost your rewards with Multiplier Points. <0>More info</0>."
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/TradeHistory.js
 msgid "Borrow Fee"
 msgstr "Borrow Fee"
 
@@ -405,11 +397,6 @@ msgstr "Borrow Fee"
 #: src/components/Exchange/PositionsList.js
 msgid "Borrow Fee / Day"
 msgstr "Borrow Fee / Day"
-
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/TradeHistory.js
-msgid "Borrow fee"
-msgstr "Borrow fee"
 
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Buy"
@@ -681,8 +668,8 @@ msgid "Close: {convertedAmountFormatted} {0}"
 msgstr "Close: {convertedAmountFormatted} {0}"
 
 #: src/components/Exchange/PositionSeller.js
-msgid "Closing fee"
-msgstr "Closing fee"
+msgid "Closing Fee"
+msgstr "Closing Fee"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Closing..."
@@ -1279,12 +1266,9 @@ msgstr "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay}
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionSeller.js
 msgid "Execution Fee"
 msgstr "Execution Fee"
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Execution fee"
-msgstr "Execution fee"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Exit Price"
@@ -1780,8 +1764,8 @@ msgstr ""
 "{2} Price: {3} USD"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Liquidation fee"
-msgstr "Liquidation fee"
+msgid "Liquidation Fee"
+msgstr "Liquidation Fee"
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Liquidation price would cross mark price."
@@ -2104,8 +2088,8 @@ msgstr "Net Value: Initial Collateral + PnL - Fees"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
-msgid "Network fee"
-msgstr "Network fee"
+msgid "Network Fee"
+msgstr "Network Fee"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -2173,8 +2157,8 @@ msgstr "Only letters, numbers and underscores are allowed."
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-msgid "Open + Close fee"
-msgstr "Open + Close fee"
+msgid "Open + Close Fees"
+msgstr "Open + Close Fees"
 
 #: src/pages/Home/Home.js
 msgid "Open Interest"
@@ -2971,6 +2955,10 @@ msgstr "Supply"
 msgid "Swap"
 msgstr "Swap"
 
+#: src/components/Exchange/PositionSeller.js
+msgid "Swap Fee"
+msgstr "Swap Fee"
+
 #: src/components/Exchange/SwapBox.js
 msgid "Swap Order created!"
 msgstr "Swap Order created!"
@@ -2992,10 +2980,6 @@ msgstr "Swap active: {0}, executed: {1}, cancelled: {2}"
 #: src/components/Exchange/SwapBox.js
 msgid "Swap failed."
 msgstr "Swap failed."
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Swap fee"
-msgstr "Swap fee"
 
 #: src/components/Glp/SwapErrorModal.tsx
 msgid "Swap on 1inch"

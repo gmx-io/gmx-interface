@@ -660,7 +660,7 @@ export default function PositionEditor(props) {
                           return (
                             <>
                               <StatsTooltipRow
-                                label={t`Network fee`}
+                                label={t`Network Fee`}
                                 showDollar={false}
                                 value={`${formatAmountFree(
                                   minExecutionFee,

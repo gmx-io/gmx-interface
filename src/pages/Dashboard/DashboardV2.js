@@ -31,8 +31,10 @@ import Footer from "components/Footer/Footer";
 
 import "./DashboardV2.css";
 
-import gmx40Icon from "img/ic_gmx_40.svg";
-import glp40Icon from "img/ic_glp_40.svg";
+import gmxArbitrum from "img/ic_gmx_arbitrum.svg";
+import gmxAvax from "img/ic_gmx_avax.svg";
+import glpArbitrum from "img/ic_glp_arbitrum.svg";
+import glpAvax from "img/ic_glp_avax.svg";
 import avalanche16Icon from "img/ic_avalanche_16.svg";
 import arbitrum16Icon from "img/ic_arbitrum_16.svg";
 import arbitrum24Icon from "img/ic_arbitrum_24.svg";
@@ -517,8 +519,8 @@ export default function DashboardV2() {
           <div className="section-title-icon"></div>
           <div className="section-title-content">
             <div className="Page-title">
-              <Trans>Stats</Trans> {chainId === AVALANCHE && <img src={avalanche24Icon} alt="avalanche24Icon" />}
-              {chainId === ARBITRUM && <img src={arbitrum24Icon} alt="arbitrum24Icon" />}
+              <Trans>Stats</Trans> {chainId === AVALANCHE && <img src={avalanche24Icon} alt="Avalanche Icon" />}
+              {chainId === ARBITRUM && <img src={arbitrum24Icon} alt="Arbitrum Icon" />}
             </div>
             <div className="Page-description">
               <Trans>
@@ -725,8 +727,8 @@ export default function DashboardV2() {
           </div>
           <div className="Tab-title-section">
             <div className="Page-title">
-              <Trans>Tokens</Trans> {chainId === AVALANCHE && <img src={avalanche24Icon} alt="avalanche24Icon" />}
-              {chainId === ARBITRUM && <img src={arbitrum24Icon} alt="arbitrum24Icon" />}
+              <Trans>Tokens</Trans> {chainId === AVALANCHE && <img src={avalanche24Icon} alt="Avalanche Icon" />}
+              {chainId === ARBITRUM && <img src={arbitrum24Icon} alt="Arbitrum Icon" />}
             </div>
             <div className="Page-description">
               <Trans>Platform and GLP index tokens.</Trans>
@@ -739,7 +741,7 @@ export default function DashboardV2() {
                   <div className="App-card-title">
                     <div className="App-card-title-mark">
                       <div className="App-card-title-mark-icon">
-                        <img src={gmx40Icon} alt="GMX Token Icon" />
+                        <img src={chainId === ARBITRUM ? gmxArbitrum : gmxAvax} alt="GMX Token Icon" />
                       </div>
                       <div className="App-card-title-mark-info">
                         <div className="App-card-title-mark-title">GMX</div>
@@ -864,12 +866,7 @@ export default function DashboardV2() {
                   <div className="App-card-title">
                     <div className="App-card-title-mark">
                       <div className="App-card-title-mark-icon">
-                        <img src={glp40Icon} alt="glp40Icon" />
-                        {chainId === ARBITRUM ? (
-                          <img src={arbitrum16Icon} alt={t`Arbitrum Icon`} className="selected-network-symbol" />
-                        ) : (
-                          <img src={avalanche16Icon} alt={t`Avalanche Icon`} className="selected-network-symbol" />
-                        )}
+                        <img src={chainId === ARBITRUM ? glpArbitrum : glpAvax} alt="GLP Token" />
                       </div>
                       <div className="App-card-title-mark-info">
                         <div className="App-card-title-mark-title">GLP</div>
@@ -960,8 +957,8 @@ export default function DashboardV2() {
             <div className="token-table-wrapper App-card">
               <div className="App-card-title">
                 <Trans>GLP Index Composition</Trans>{" "}
-                {chainId === AVALANCHE && <img src={avalanche16Icon} alt={t`Avalanche Icon`} />}
-                {chainId === ARBITRUM && <img src={arbitrum16Icon} alt={t`Arbitrum Icon`} />}
+                {chainId === AVALANCHE && <img src={avalanche16Icon} alt="Avalanche Icon" />}
+                {chainId === ARBITRUM && <img src={arbitrum16Icon} alt="Arbitrum Icon" />}
               </div>
               <div className="App-card-divider"></div>
               <table className="token-table">
