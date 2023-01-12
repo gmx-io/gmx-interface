@@ -2695,6 +2695,10 @@ msgstr "Orders ({0})"
 msgid "Orders cancelled."
 msgstr "Orders gekündigt."
 
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
+msgid "Orders{0}"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Overall protocol analytics"
 msgstr ""
@@ -2845,6 +2849,10 @@ msgstr "Positionen"
 #: src/pages/Exchange/Exchange.js
 msgid "Positions ({0})"
 msgstr "Positionen ({0})"
+
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
+msgid "Positions{0}"
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Prev"

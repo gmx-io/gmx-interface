@@ -20,6 +20,7 @@ type Props = {
   onEditOrder?: () => void;
   onCancelOrder?: () => void;
   isSelected?: boolean;
+  isCanceling?: boolean;
   hideActions?: boolean;
   error?: string;
   isLarge: boolean;
@@ -188,7 +189,7 @@ export function OrderItem(p: Props) {
             )}
             {p.onCancelOrder && (
               <td>
-                <button className="Exchange-list-action" onClick={p.onCancelOrder}>
+                <button className="Exchange-list-action" onClick={p.onCancelOrder} disabled={p.isCanceling}>
                   <Trans>Cancel</Trans>
                 </button>
               </td>

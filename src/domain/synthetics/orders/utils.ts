@@ -254,35 +254,39 @@ export function getAcceptablePriceForPositionOrder(p: {
   isLong: boolean;
   triggerPrice?: BigNumber;
   sizeDeltaUsd?: BigNumber;
-  priceImpactDelta: BigNumber;
-  indexTokenPrices: TokenPrices;
-  allowedSlippage: number;
+  priceImpactDelta?: BigNumber;
+  indexTokenPrices?: TokenPrices;
+  allowedSlippage?: number;
 }) {
   let acceptablePrice: BigNumber;
 
   if (p.triggerPrice) {
     acceptablePrice = p.triggerPrice;
-  } else {
+  } else if (p.indexTokenPrices) {
     const shouldUseMaxPrice = p.isIncrease ? p.isLong : !p.isLong;
 
-    acceptablePrice = shouldUseMaxPrice ? p.indexTokenPrices.maxPrice : p.indexTokenPrices.minPrice;
+    acceptablePrice = shouldUseMaxPrice ? p.indexTokenPrices?.maxPrice : p.indexTokenPrices?.minPrice;
+  } else {
+    throw new Error("No trigger price or index token prices provided");
   }
 
   let slippageBasisPoints: number;
 
-  if (p.isIncrease) {
-    slippageBasisPoints = p.isLong
-      ? BASIS_POINTS_DIVISOR + p.allowedSlippage
-      : BASIS_POINTS_DIVISOR - p.allowedSlippage;
-  } else {
-    slippageBasisPoints = p.isLong
-      ? BASIS_POINTS_DIVISOR - p.allowedSlippage
-      : BASIS_POINTS_DIVISOR + p.allowedSlippage;
+  if (p.allowedSlippage) {
+    if (p.isIncrease) {
+      slippageBasisPoints = p.isLong
+        ? BASIS_POINTS_DIVISOR + p.allowedSlippage
+        : BASIS_POINTS_DIVISOR - p.allowedSlippage;
+    } else {
+      slippageBasisPoints = p.isLong
+        ? BASIS_POINTS_DIVISOR - p.allowedSlippage
+        : BASIS_POINTS_DIVISOR + p.allowedSlippage;
+    }
+
+    acceptablePrice = acceptablePrice.mul(slippageBasisPoints).div(BASIS_POINTS_DIVISOR);
   }
 
-  acceptablePrice = acceptablePrice.mul(slippageBasisPoints).div(BASIS_POINTS_DIVISOR);
-
-  if (p.sizeDeltaUsd?.gt(0)) {
+  if (p.priceImpactDelta && p.sizeDeltaUsd?.gt(0)) {
     const shouldFlipPriceImpact = p.isIncrease ? p.isLong : !p.isLong;
     const priceImpactForPriceAdjustment = shouldFlipPriceImpact ? p.priceImpactDelta.mul(-1) : p.priceImpactDelta;
     acceptablePrice = acceptablePrice.mul(p.sizeDeltaUsd.add(priceImpactForPriceAdjustment)).div(p.sizeDeltaUsd);
