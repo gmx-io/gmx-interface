@@ -3,7 +3,7 @@ import Footer from "components/Footer/Footer";
 import "./BuyGMX.css";
 import { useWeb3React } from "@web3-react/core";
 import { Trans, t } from "@lingui/macro";
-import Button from "components/Common/Button";
+import Button, { ButtonType } from "components/Common/Button";
 import { ARBITRUM, AVALANCHE, getChainName, getConstant } from "config/chains";
 import { switchNetwork } from "lib/wallets";
 import { useChainId } from "lib/chains";
@@ -101,13 +101,13 @@ export default function BuyGMX() {
                 )}
               </div>
               <div className="buttons-group">
-                <Button href={externalLinks.bungee} imgSrc={Bungee}>
+                <Button type={ButtonType.Transparent} href={externalLinks.bungee} imgSrc={Bungee}>
                   Bungee
                 </Button>
-                <Button href={externalLinks.o3} imgSrc={O3}>
+                <Button type={ButtonType.Transparent} href={externalLinks.o3} imgSrc={O3}>
                   O3
                 </Button>
-                <Button href={externalLinks.banxa} imgSrc={Banxa}>
+                <Button type={ButtonType.Transparent} href={externalLinks.banxa} imgSrc={Banxa}>
                   Banxa
                 </Button>
               </div>
@@ -128,7 +128,7 @@ export default function BuyGMX() {
                 {TRANSFER_EXCHANGES.filter((e) => e.networks.includes(chainId)).map((exchange) => {
                   const icon = importImage(exchange.icon) || "";
                   return (
-                    <Button key={exchange.name} href={exchange.link} imgSrc={icon}>
+                    <Button type={ButtonType.Transparent} key={exchange.name} href={exchange.link} imgSrc={icon}>
                       {exchange.name}
                     </Button>
                   );
@@ -154,7 +154,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
               <Trans>Buy GMX from Uniswap (make sure to select Arbitrum):</Trans>
             </div>
             <div className="buttons-group col-1">
-              <Button imgSrc={Uniswap} href={externalLinks.buyGmx.uniswap}>
+              <Button type={ButtonType.Transparent} imgSrc={Uniswap} href={externalLinks.buyGmx.uniswap}>
                 Uniswap
               </Button>
             </div>
@@ -165,7 +165,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
               <Trans>Buy GMX from Traderjoe:</Trans>
             </div>
             <div className="buttons-group col-1">
-              <Button imgSrc={Traderjoe} href={externalLinks.buyGmx.traderjoe}>
+              <Button type={ButtonType.Transparent} imgSrc={Traderjoe} href={externalLinks.buyGmx.traderjoe}>
                 TraderJoe
               </Button>
             </div>
@@ -180,7 +180,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
               const icon = importImage(exchange.icon) || "";
               const link = exchange.links ? exchange.links[chainId] : exchange.link;
               return (
-                <Button key={exchange.name} imgSrc={icon} href={link}>
+                <Button type={ButtonType.Transparent} key={exchange.name} imgSrc={icon} href={link}>
                   {exchange.name}
                 </Button>
               );
@@ -192,10 +192,10 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
             <Trans>Buy GMX using any token from any network:</Trans>
           </div>
           <div className="buttons-group">
-            <Button href={externalLinks.bungee} imgSrc={Bungee}>
+            <Button type={ButtonType.Transparent} href={externalLinks.bungee} imgSrc={Bungee}>
               Bungee
             </Button>
-            <Button href={externalLinks.o3} imgSrc={O3}>
+            <Button type={ButtonType.Transparent} href={externalLinks.o3} imgSrc={O3}>
               O3
             </Button>
           </div>
@@ -206,7 +206,11 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
               <Trans>GMX bonds can be bought on Bond Protocol with a discount and a small vesting period:</Trans>
             </div>
             <div className="buttons-group col-1">
-              <Button imgSrc={ohmArbitrum} href="https://app.bondprotocol.finance/#/issuers/GMX">
+              <Button
+                type={ButtonType.Transparent}
+                imgSrc={ohmArbitrum}
+                href="https://app.bondprotocol.finance/#/issuers/GMX"
+              >
                 Bond Protocol
               </Button>
             </div>
@@ -229,7 +233,7 @@ function CentralisedExchanges({ chainId, externalLinks }) {
             {CENTRALISED_EXCHANGES.filter((e) => e.networks.includes(chainId)).map((exchange) => {
               const icon = importImage(exchange.icon) || "";
               return (
-                <Button key={exchange.name} href={exchange.link} imgSrc={icon}>
+                <Button type={ButtonType.Transparent} key={exchange.name} href={exchange.link} imgSrc={icon}>
                   {exchange.name}
                 </Button>
               );
@@ -242,10 +246,10 @@ function CentralisedExchanges({ chainId, externalLinks }) {
             <Trans>Buy GMX using FIAT gateways:</Trans>
           </div>
           <div className="buttons-group col-2">
-            <Button href="https://www.binancecnt.com/en/buy-sell-crypto" imgSrc={Binance}>
+            <Button type={ButtonType.Transparent} href="https://www.binancecnt.com/en/buy-sell-crypto" imgSrc={Binance}>
               Binance Connect
             </Button>
-            <Button href={externalLinks.buyGmx.banxa} imgSrc={Banxa}>
+            <Button type={ButtonType.Transparent} href={externalLinks.buyGmx.banxa} imgSrc={Banxa}>
               Banxa
             </Button>
           </div>

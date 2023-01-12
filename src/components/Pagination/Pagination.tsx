@@ -1,4 +1,4 @@
-import Button from "components/Common/Button";
+import Button, { ButtonType } from "components/Common/Button";
 import "./Pagination.css";
 
 type Props = {
@@ -38,17 +38,17 @@ export default function Pagination({ page, pageCount, onPageChange }: Props) {
   return (
     <div className="pagination">
       <div className="pagination-buttons">
-        <Button onClick={() => onPageChange(1)} disabled={page <= 1}>
+        <Button type={ButtonType.Transparent} onClick={() => onPageChange(1)} disabled={page <= 1}>
           {"|<"}
         </Button>
-        <Button onClick={() => onPageChange(page - 1)} disabled={page <= 1}>
+        <Button type={ButtonType.Transparent} onClick={() => onPageChange(page - 1)} disabled={page <= 1}>
           {"<"}
         </Button>
         <div className="pagination-btn-middle">{middleButtons}</div>
-        <Button onClick={() => onPageChange(page + 1)} disabled={page >= pageCount}>
+        <Button type={ButtonType.Transparent} onClick={() => onPageChange(page + 1)} disabled={page >= pageCount}>
           {">"}
         </Button>
-        <Button onClick={() => onPageChange(pageCount)} disabled={page >= pageCount}>
+        <Button type={ButtonType.Transparent} onClick={() => onPageChange(pageCount)} disabled={page >= pageCount}>
           {">|"}
         </Button>
       </div>
