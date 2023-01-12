@@ -24,6 +24,11 @@
   margin-top: 0.8rem;
 }
 
+.ClaimEsGmx-vesting-options {
+  display: flex;
+  flex-direction: column;
+}
+
 .ClaimEsGmx-vesting-options .Checkbox.btn-lg {
   font-size: 1.85rem;
   margin-bottom: 0.8rem;
@@ -45,13 +50,6 @@
   height: 1.5rem;
 }
 
-.ClaimEsGmx-option-label {
-  display: inline-block;
-  width: 27.9rem;
-  text-align: center;
-  opacity: 0.7;
-}
-
 .ClaimEsGmx-vesting-options .Checkbox.selected .ClaimEsGmx-option-label {
   opacity: 1;
 }
@@ -66,6 +64,27 @@
 
 .ClaimEsGmx button {
   max-width: 35.65rem;
+}
+
+.ClaimEsGmx .vest-option {
+  text-decoration: none;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  place-items: normal;
+  background: transparent;
+  padding: 1.25rem;
+  color: white;
+  font-size: var(--font-sm);
+  border: 1px solid var(--dark-blue-border);
+  border-radius: var(--border-radius-sm);
+  max-width: 36rem;
+  margin-bottom: 1rem;
+}
+.ClaimEsGmx .vest-option .Checkbox-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: 1rem;
 }
 
 .ClaimEsGmx-input-label {
