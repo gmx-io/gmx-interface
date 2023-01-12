@@ -34,14 +34,13 @@ const ICONS = {
 };
 
 export function getIcon(chainId: number | "common", label: string) {
-  if (!chainId || !label) return;
   if (chainId in ICONS) {
     if (label in ICONS[chainId]) {
       return ICONS[chainId][label];
     }
   }
 }
-export function getCurrentIcons(chainId: number | "common") {
+export function getIcons(chainId: number | "common") {
   if (!chainId) return;
   if (chainId in ICONS) {
     return ICONS[chainId];
