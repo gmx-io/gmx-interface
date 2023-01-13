@@ -38,17 +38,17 @@ export default function Pagination({ page, pageCount, onPageChange }: Props) {
   return (
     <div className="pagination">
       <div className="pagination-buttons">
-        <Button type="transparent" onClick={() => onPageChange(1)} disabled={page <= 1}>
+        <Button onClick={() => onPageChange(1)} disabled={page <= 1}>
           {"|<"}
         </Button>
-        <Button type="transparent" onClick={() => onPageChange(page - 1)} disabled={page <= 1}>
+        <Button onClick={() => onPageChange(page - 1)} disabled={page <= 1}>
           {"<"}
         </Button>
         <div className="pagination-btn-middle">{middleButtons}</div>
-        <Button type="transparent" onClick={() => onPageChange(page + 1)} disabled={page >= pageCount}>
+        <Button onClick={() => onPageChange(page + 1)} disabled={page >= pageCount}>
           {">"}
         </Button>
-        <Button type="transparent" onClick={() => onPageChange(pageCount)} disabled={page >= pageCount}>
+        <Button onClick={() => onPageChange(pageCount)} disabled={page >= pageCount}>
           {">|"}
         </Button>
       </div>

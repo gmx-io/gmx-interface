@@ -109,7 +109,7 @@ export default function BuyGMX() {
                   const icon = importImage(exchange.icon) || "";
                   const link = exchange.links[chainId];
                   return (
-                    <Button type="transparent" key={exchange.name} href={link} imgSrc={icon}>
+                    <Button key={exchange.name} href={link} imgSrc={icon}>
                       {exchange.name}
                     </Button>
                   );
@@ -133,7 +133,7 @@ export default function BuyGMX() {
                   const icon = importImage(exchange.icon) || "";
                   const link = exchange.links[chainId];
                   return (
-                    <Button type="transparent" key={exchange.name} href={link} imgSrc={icon}>
+                    <Button key={exchange.name} href={link} imgSrc={icon}>
                       {exchange.name}
                     </Button>
                   );
@@ -159,7 +159,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
               <Trans>Buy GMX from Uniswap (make sure to select Arbitrum):</Trans>
             </div>
             <div className="buttons-group col-1">
-              <Button type="transparent" imgSrc={uniswapArbitrumIcon} href={externalLinks.buyGmx.uniswap}>
+              <Button imgSrc={uniswapArbitrumIcon} href={externalLinks.buyGmx.uniswap}>
                 Uniswap
               </Button>
             </div>
@@ -170,7 +170,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
               <Trans>Buy GMX from Traderjoe:</Trans>
             </div>
             <div className="buttons-group col-1">
-              <Button type="transparent" imgSrc={traderjoeIcon} href={externalLinks.buyGmx.traderjoe}>
+              <Button imgSrc={traderjoeIcon} href={externalLinks.buyGmx.traderjoe}>
                 TraderJoe
               </Button>
             </div>
@@ -185,7 +185,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
               const icon = importImage(exchange.icon) || "";
               const link = exchange.links[chainId];
               return (
-                <Button type="transparent" key={exchange.name} imgSrc={icon} href={link}>
+                <Button key={exchange.name} imgSrc={icon} href={link}>
                   {exchange.name}
                 </Button>
               );
@@ -201,7 +201,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
               const icon = importImage(exchange.icon) || "";
               const link = exchange.links[chainId];
               return (
-                <Button type="transparent" key={exchange.name} href={link} imgSrc={icon}>
+                <Button key={exchange.name} href={link} imgSrc={icon}>
                   {exchange.name}
                 </Button>
               );
@@ -214,7 +214,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
               <Trans>GMX bonds can be bought on Bond Protocol with a discount and a small vesting period:</Trans>
             </div>
             <div className="buttons-group col-1">
-              <Button type="transparent" imgSrc={ohmArbitrumIcon} href="https://app.bondprotocol.finance/#/issuers/GMX">
+              <Button imgSrc={ohmArbitrumIcon} href="https://app.bondprotocol.finance/#/issuers/GMX">
                 Bond Protocol
               </Button>
             </div>
@@ -238,7 +238,7 @@ function CentralisedExchanges({ chainId }) {
               const icon = importImage(exchange.icon) || "";
               const link = exchange.links[chainId];
               return (
-                <Button type="transparent" key={exchange.name} href={link} imgSrc={icon}>
+                <Button key={exchange.name} href={link} imgSrc={icon}>
                   {exchange.name}
                 </Button>
               );
@@ -256,7 +256,7 @@ function CentralisedExchanges({ chainId }) {
               let link = exchange.links[chainId];
 
               return (
-                <Button type="transparent" key={exchange.name} href={link} imgSrc={icon}>
+                <Button key={exchange.name} href={link} imgSrc={icon}>
                   {exchange.name}
                 </Button>
               );
