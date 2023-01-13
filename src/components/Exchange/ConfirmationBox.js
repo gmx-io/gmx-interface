@@ -566,12 +566,6 @@ export default function ConfirmationBox(props) {
             </div>
           )}
           {orderOption === LIMIT && renderAvailableLiquidity()}
-          {isShort && (
-            <ExchangeInfoRow label={t`Collateral In`}>
-              {getToken(chainId, shortCollateralAddress).symbol}
-            </ExchangeInfoRow>
-          )}
-          {isLong && <ExchangeInfoRow label={t`Collateral In`} value={toTokenInfo.symbol} />}
           <ExchangeInfoRow label={t`Leverage`}>
             {hasExistingPosition && toAmount && toAmount.gt(0) && (
               <div className="inline-block muted">
@@ -583,6 +577,28 @@ export default function ConfirmationBox(props) {
             {!toAmount && leverage && leverage.gt(0) && `-`}
             {leverage && leverage.eq(0) && `-`}
           </ExchangeInfoRow>
+          <ExchangeInfoRow label={t`Allowed Slippage`}>
+            <Tooltip
+              handle={`${formatAmount(allowedSlippage, 2, 2)}%`}
+              position="right-top"
+              renderContent={() => {
+                return (
+                  <Trans>
+                    You can change this in the settings menu on the top right of the page.
+                    <br />
+                    <br />
+                    Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are
+                    volatile.
+                  </Trans>
+                );
+              }}
+            />
+          </ExchangeInfoRow>
+          {!isMarketOrder && (
+            <ExchangeInfoRow label={t`Limit Price`} isTop={true}>
+              ${formatAmount(triggerPriceUsd, USD_DECIMALS, 2, true)}
+            </ExchangeInfoRow>
+          )}
           <ExchangeInfoRow label={t`Liq. Price`}>
             {hasExistingPosition && toAmount && toAmount.gt(0) && (
               <div className="inline-block muted">
@@ -594,8 +610,7 @@ export default function ConfirmationBox(props) {
             {!toAmount && displayLiquidationPrice && `-`}
             {!displayLiquidationPrice && `-`}
           </ExchangeInfoRow>
-          <ExchangeInfoRow label={t`Fees`}>${formatAmount(feesUsd, USD_DECIMALS, 2, true)}</ExchangeInfoRow>
-          <ExchangeInfoRow label={t`Collateral`}>
+          <ExchangeInfoRow label={t`Collateral`} isTop>
             <Tooltip
               handle={`$${formatAmount(collateralAfterFees, USD_DECIMALS, 2, true)}`}
               position="right-bottom"
@@ -617,6 +632,7 @@ export default function ConfirmationBox(props) {
               }}
             />
           </ExchangeInfoRow>
+          <ExchangeInfoRow label={t`Fees`}>${formatAmount(feesUsd, USD_DECIMALS, 2, true)}</ExchangeInfoRow>
           {showSpread && (
             <ExchangeInfoRow label={t`Spread`} isWarning={spread.isHigh} isTop={true}>
               {formatAmount(spread.value.mul(100), USD_DECIMALS, 2, true)}%
@@ -634,11 +650,7 @@ export default function ConfirmationBox(props) {
               {!nextAveragePrice && `-`}
             </ExchangeInfoRow>
           )}
-          {!isMarketOrder && (
-            <ExchangeInfoRow label={t`Limit Price`} isTop={true}>
-              ${formatAmount(triggerPriceUsd, USD_DECIMALS, 2, true)}
-            </ExchangeInfoRow>
-          )}
+
           <ExchangeInfoRow label={t`Borrow Fee`}>
             {isLong && toTokenInfo && formatAmount(toTokenInfo.fundingRate, 4, 4)}
             {isShort && shortCollateralToken && formatAmount(shortCollateralToken.fundingRate, 4, 4)}
@@ -677,23 +689,7 @@ export default function ConfirmationBox(props) {
               </ExchangeInfoRow>
             </div>
           )}
-          <ExchangeInfoRow label={t`Allowed Slippage`}>
-            <Tooltip
-              handle={`${formatAmount(allowedSlippage, 2, 2)}%`}
-              position="right-top"
-              renderContent={() => {
-                return (
-                  <Trans>
-                    You can change this in the settings menu on the top right of the page.
-                    <br />
-                    <br />
-                    Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are
-                    volatile.
-                  </Trans>
-                );
-              }}
-            />
-          </ExchangeInfoRow>
+
           {isMarketOrder && (
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox isChecked={isHigherSlippageAllowed} setIsChecked={setIsHigherSlippageAllowed}>

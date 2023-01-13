@@ -50,6 +50,7 @@ import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValu
 import { getTokens, getWrappedToken } from "config/tokens";
 import { formatDateTime, getTimeRemaining } from "lib/dates";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import FeesTooltip from "./FeesTooltip";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -1129,59 +1130,23 @@ export default function PositionSeller(props) {
                 <Trans>Fees</Trans>
               </div>
               <div className="align-right">
-                <Tooltip
-                  position="right-top"
-                  className="PositionSeller-fees-tooltip"
-                  handle={
-                    <div>
-                      {totalFees ? `$${formatAmount(totalFees.add(executionFeeUsd), USD_DECIMALS, 2, true)}` : "-"}
-                    </div>
+                <FeesTooltip
+                  positionFee={positionFee && formatAmount(positionFee, USD_DECIMALS, 2, true)}
+                  fundingFee={fundingFee && formatAmount(fundingFee, USD_DECIMALS, 2, true)}
+                  totalFees={totalFees && `$${formatAmount(totalFees.add(executionFeeUsd), USD_DECIMALS, 2, true)}`}
+                  executionFee={
+                    executionFee &&
+                    `${formatAmount(executionFee, 18, 5, true)} ${nativeTokenSymbol} ($${formatAmount(
+                      executionFeeUsd,
+                      USD_DECIMALS,
+                      2
+                    )})`
                   }
-                  renderContent={() => (
-                    <div>
-                      {fundingFee && (
-                        <StatsTooltipRow
-                          label={t`Borrow Fee`}
-                          value={formatAmount(fundingFee, USD_DECIMALS, 2, true)}
-                        />
-                      )}
-
-                      {positionFee && (
-                        <StatsTooltipRow
-                          label={t`Closing Fee`}
-                          value={formatAmount(positionFee, USD_DECIMALS, 2, true)}
-                        />
-                      )}
-
-                      {swapFee && (
-                        <StatsTooltipRow
-                          label={t`Swap Fee`}
-                          showDollar={false}
-                          value={`${formatAmount(swapFeeToken, collateralToken.decimals, 5)} ${collateralToken.symbol}
-                           ($${formatAmount(swapFee, USD_DECIMALS, 2, true)})`}
-                        />
-                      )}
-
-                      <StatsTooltipRow
-                        label={t`Execution Fee`}
-                        showDollar={false}
-                        value={`${formatAmount(executionFee, 18, 5, true)} ${nativeTokenSymbol} ($${formatAmount(
-                          executionFeeUsd,
-                          USD_DECIMALS,
-                          2
-                        )})`}
-                      />
-
-                      <br />
-
-                      <div className="PositionSeller-fee-item">
-                        <Trans>
-                          <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#fees">More Info</ExternalLink> about
-                          fees.
-                        </Trans>
-                      </div>
-                    </div>
-                  )}
+                  swapFee={
+                    swapFeeToken &&
+                    `${formatAmount(swapFeeToken, collateralToken.decimals, 5)} ${collateralToken.symbol}
+                   ($${formatAmount(swapFee, USD_DECIMALS, 2, true)})`
+                  }
                 />
               </div>
             </div>
