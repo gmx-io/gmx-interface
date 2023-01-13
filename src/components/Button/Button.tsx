@@ -2,9 +2,7 @@ import { ReactNode } from "react";
 import cx from "classnames";
 import "./Button.scss";
 
-export enum ButtonType {
-  Transparent,
-}
+type ButtonType = "transparent";
 
 type Props = {
   type: ButtonType;
@@ -18,7 +16,7 @@ type Props = {
 };
 
 export default function Button({ href, imgSrc, children, className, imgName, onClick, disabled = false, type }: Props) {
-  let classNames = cx({ "transparent-btn": type === ButtonType.Transparent }, className);
+  let classNames = cx({ "transparent-btn": type === "transparent" }, className);
   if (onClick) {
     return (
       <button className={classNames} onClick={onClick} disabled={disabled}>
