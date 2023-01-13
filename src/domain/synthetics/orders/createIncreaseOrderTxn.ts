@@ -128,10 +128,10 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
       maxPrice: p.triggerPrice,
     };
   } else {
-    primaryPriceOverrides[p.indexTokenAddress] = {
-      minPrice: acceptablePrice,
-      maxPrice: acceptablePrice,
-    };
+    // primaryPriceOverrides[p.indexTokenAddress] = {
+    //   minPrice: acceptablePrice,
+    //   maxPrice: acceptablePrice,
+    // };
   }
 
   await simulateExecuteOrderTxn(chainId, library, {
