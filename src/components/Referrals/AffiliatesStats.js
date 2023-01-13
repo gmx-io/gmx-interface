@@ -27,7 +27,7 @@ import { formatDate } from "lib/dates";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Pagination from "components/Pagination/Pagination";
 import usePagination from "./usePagination";
-import TransparentButton from "components/Buttons/TransparentButton";
+import Button from "components/Button/Button";
 
 function AffiliatesStats({
   referralsData,
@@ -123,12 +123,12 @@ function AffiliatesStats({
                   {referrerTierInfo && t`Tier ${getTierIdDisplay(tierId)} (${tierRebateInfo[tierId]}% rebate)`}
                 </span>
               </p>
-              <TransparentButton onClick={open}>
+              <Button onClick={open}>
                 <FiPlus />{" "}
                 <span className="ml-small">
                   <Trans>Create</Trans>
                 </span>
-              </TransparentButton>
+              </Button>
             </div>
           }
         >

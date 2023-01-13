@@ -36,7 +36,7 @@
   background: var(--dark-blue-active);
 }
 
-.network-dropdown > button {
+.network-dropdown > button.transparent {
   height: 3.6rem;
   border-radius: 0.4rem;
   border: none;
