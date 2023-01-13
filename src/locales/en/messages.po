@@ -591,6 +591,10 @@ msgstr "Cancel submitted"
 msgid "Cancel submitted."
 msgstr "Cancel submitted."
 
+#: src/domain/synthetics/orders/cancelOrdersTxn.ts
+msgid "Canceling {ordersText}"
+msgstr "Canceling {ordersText}"
+
 #: src/pages/Exchange/Exchange.js
 msgid "Chart positions"
 msgstr "Chart positions"
@@ -693,6 +697,7 @@ msgstr "Click on a row to select the position's market, then use the swap box to
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -1248,6 +1253,10 @@ msgstr "Edit Referral Code"
 msgid "Edit order"
 msgstr "Edit order"
 
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+msgid "Edit {0}"
+msgstr "Edit {0}"
+
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Edit {0} {1}"
 msgstr "Edit {0} {1}"
@@ -1351,10 +1360,28 @@ msgstr "Enter Referral Code"
 msgid "Enter a code"
 msgstr "Enter a code"
 
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+msgid "Enter a new price"
+msgstr "Enter a new price"
+
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+msgid "Enter a new ratio"
+msgstr "Enter a new ratio"
+
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+msgid "Enter a new size"
+msgstr "Enter a new size"
+
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "Enter a price"
 msgstr "Enter a price"
+
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+msgid "Enter a ratio"
+msgstr "Enter a ratio"
 
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Enter a size"
@@ -1456,6 +1483,7 @@ msgid "Execution Fee"
 msgstr "Execution Fee"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/Trade/TradeFees/TradeFees.tsx
 msgid "Execution fee"
 msgstr "Execution fee"
@@ -1468,6 +1496,14 @@ msgstr "Exit Price"
 msgid "FEES"
 msgstr "FEES"
 
+#: src/domain/synthetics/orders/cancelOrdersTxn.ts
+msgid "Failed to cancel {ordersText}"
+msgstr "Failed to cancel {ordersText}"
+
+#: src/domain/synthetics/orders/updateOrderTxn.ts
+msgid "Failed to update order"
+msgstr "Failed to update order"
+
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
@@ -1476,6 +1512,7 @@ msgstr "FEES"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Fees"
@@ -2049,6 +2086,7 @@ msgstr "Liq Price"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
@@ -2095,6 +2133,8 @@ msgstr "Liquidity data not loaded"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/utils.ts
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
@@ -2217,6 +2257,7 @@ msgstr "Mark Price"
 msgid "Mark Price:"
 msgstr "Mark Price:"
 
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 msgid "Mark:"
 msgstr "Mark:"
@@ -2873,6 +2914,8 @@ msgstr "Prev"
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
@@ -2893,23 +2936,31 @@ msgstr "Price"
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Price above Liq. Price"
 msgstr "Price above Liq. Price"
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Price above Mark Price"
 msgstr "Price above Mark Price"
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Price below Liq. Price"
 msgstr "Price below Liq. Price"
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Price below Mark Price"
 msgstr "Price below Mark Price"
 
@@ -3376,6 +3427,7 @@ msgstr "Single"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
@@ -4176,9 +4228,17 @@ msgstr "Update"
 msgid "Update Order"
 msgstr "Update Order"
 
+#: src/domain/synthetics/orders/updateOrderTxn.ts
+msgid "Update order canceled"
+msgstr "Update order canceled"
+
 #: src/components/Exchange/OrderEditor.js
 msgid "Updating Order..."
 msgstr "Updating Order..."
+
+#: src/domain/synthetics/orders/updateOrderTxn.ts
+msgid "Updating order"
+msgstr "Updating order"
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Updating..."
@@ -4617,6 +4677,7 @@ msgid "withdrawal"
 msgstr "withdrawal"
 
 #: src/pages/Exchange/Exchange.js
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgstr "{0, plural, one {Cancel order} other {Cancel # orders}}"
 
@@ -4761,6 +4822,10 @@ msgstr ""
 msgid "{chainName} Total Stats start from {totalStatsStartDate}.<0/> For detailed stats:"
 msgstr "{chainName} Total Stats start from {totalStatsStartDate}.<0/> For detailed stats:"
 
+#: src/domain/synthetics/orders/cancelOrdersTxn.ts
+msgid "{count, plural, one {Order} other {# Orders}}"
+msgstr "{count, plural, one {Order} other {# Orders}}"
+
 #: src/components/Exchange/ConfirmationBox.js
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
 msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
@@ -4854,6 +4919,10 @@ msgstr "{orderTypeText} {0} {longText} request sent"
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
 msgid "{orderTypeText} {tokensText} request sent"
 msgstr "{orderTypeText} {tokensText} request sent"
+
+#: src/domain/synthetics/orders/cancelOrdersTxn.ts
+msgid "{ordersText} canceled"
+msgstr "{ordersText} canceled"
 
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
 msgid "{positionTypeText} {0}"
