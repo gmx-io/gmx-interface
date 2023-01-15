@@ -543,6 +543,7 @@ msgstr "Abbruch übermittelt"
 msgid "Cancel submitted."
 msgstr "Abbruch übermittelt."
 
+#: src/App/App.js
 #: src/pages/Exchange/Exchange.js
 msgid "Chart positions"
 msgstr "Chart-Positionen"

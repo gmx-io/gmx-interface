@@ -543,6 +543,7 @@ msgstr "送出取消"
 msgid "Cancel submitted."
 msgstr "送出取消"
 
+#: src/App/App.js
 #: src/pages/Exchange/Exchange.js
 msgid "Chart positions"
 msgstr "图表位置"

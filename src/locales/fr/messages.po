@@ -543,6 +543,7 @@ msgstr "Annulation soumise"
 msgid "Cancel submitted."
 msgstr "Annulation soumise"
 
+#: src/App/App.js
 #: src/pages/Exchange/Exchange.js
 msgid "Chart positions"
 msgstr "Positions sur les graphiques"

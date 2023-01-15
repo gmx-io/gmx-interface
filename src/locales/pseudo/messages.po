@@ -543,6 +543,7 @@ msgstr ""
 msgid "Cancel submitted."
 msgstr ""
 
+#: src/App/App.js
 #: src/pages/Exchange/Exchange.js
 msgid "Chart positions"
 msgstr ""

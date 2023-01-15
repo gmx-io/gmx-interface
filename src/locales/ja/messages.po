@@ -543,6 +543,7 @@ msgstr "キャンセルが提出されました"
 msgid "Cancel submitted."
 msgstr "キャンセル申し込み完了"
 
+#: src/App/App.js
 #: src/pages/Exchange/Exchange.js
 msgid "Chart positions"
 msgstr "ポジションをチャートに"

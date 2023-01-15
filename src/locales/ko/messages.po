@@ -543,6 +543,7 @@ msgstr "취소 제출 완료"
 msgid "Cancel submitted."
 msgstr "취소 제출 완료"
 
+#: src/App/App.js
 #: src/pages/Exchange/Exchange.js
 msgid "Chart positions"
 msgstr "차트 포지션"

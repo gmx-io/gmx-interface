@@ -543,6 +543,7 @@ msgstr "Отмена завершена"
 msgid "Cancel submitted."
 msgstr "Отмена завершена."
 
+#: src/App/App.js
 #: src/pages/Exchange/Exchange.js
 msgid "Chart positions"
 msgstr "Позиции в чартах"
