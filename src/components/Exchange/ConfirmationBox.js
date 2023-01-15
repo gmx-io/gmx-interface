@@ -30,7 +30,7 @@ import { SLIPPAGE_BPS_KEY } from "config/localStorage";
 import { expandDecimals, formatAmount, formatAmountFree } from "lib/numbers";
 import { getNativeToken, getToken, getWrappedToken } from "config/tokens";
 import { Plural, t, Trans } from "@lingui/macro";
-import ExternalLink from "components/ExternalLink/ExternalLink";
+import FeesTooltip from "./FeesTooltip";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 
@@ -74,7 +74,6 @@ export default function ConfirmationBox(props) {
     setIsHigherSlippageAllowed,
     onConfirmationClick,
     setIsConfirming,
-    shortCollateralAddress,
     hasExistingPosition,
     leverage,
     existingPosition,
@@ -84,7 +83,6 @@ export default function ConfirmationBox(props) {
     isPendingConfirmation,
     triggerPriceUsd,
     triggerRatio,
-    fees,
     feesUsd,
     isSubmitting,
     fromUsdMin,
@@ -473,16 +471,16 @@ export default function ConfirmationBox(props) {
   const SWAP_ORDER_EXECUTION_GAS_FEE = getConstant(chainId, "SWAP_ORDER_EXECUTION_GAS_FEE");
   const INCREASE_ORDER_EXECUTION_GAS_FEE = getConstant(chainId, "INCREASE_ORDER_EXECUTION_GAS_FEE");
   const executionFee = isSwap ? SWAP_ORDER_EXECUTION_GAS_FEE : INCREASE_ORDER_EXECUTION_GAS_FEE;
-  const renderExecutionFee = useCallback(() => {
+  const getExecutionFee = useCallback(() => {
     if (isMarketOrder) {
-      return null;
+      return `${formatAmountFree(minExecutionFee, 18, 5)} ${nativeTokenSymbol} ($${formatAmount(
+        minExecutionFeeUSD,
+        USD_DECIMALS,
+        2
+      )})`;
     }
-    return (
-      <ExchangeInfoRow label={t`Execution Fee`}>
-        {formatAmount(executionFee, 18, 4)} {getNativeToken(chainId).symbol}
-      </ExchangeInfoRow>
-    );
-  }, [isMarketOrder, executionFee, chainId]);
+    return `${formatAmount(executionFee, 18, 4)} ${getNativeToken(chainId).symbol}`;
+  }, [isMarketOrder, executionFee, chainId, minExecutionFee, minExecutionFeeUSD, nativeTokenSymbol]);
 
   const renderAvailableLiquidity = useCallback(() => {
     let availableLiquidity;
@@ -547,6 +545,18 @@ export default function ConfirmationBox(props) {
   }, [toTokenInfo, shortCollateralToken, isShort, isLong, isSwap, toAmount, toUsdMax]);
 
   const renderMarginSection = useCallback(() => {
+    const collateralToken = getToken(chainId, collateralTokenAddress);
+    function getFundingFee() {
+      return (
+        <>
+          {isLong && toTokenInfo && formatAmount(toTokenInfo.fundingRate, 4, 4)}
+          {isShort && shortCollateralToken && formatAmount(shortCollateralToken.fundingRate, 4, 4)}
+          {((isLong && toTokenInfo && toTokenInfo.fundingRate) ||
+            (isShort && shortCollateralToken && shortCollateralToken.fundingRate)) &&
+            "% / 1h"}
+        </>
+      );
+    }
     return (
       <>
         <div>
@@ -577,6 +587,15 @@ export default function ConfirmationBox(props) {
             {!toAmount && leverage && leverage.gt(0) && `-`}
             {leverage && leverage.eq(0) && `-`}
           </ExchangeInfoRow>
+          {isMarketOrder && (
+            <div className="PositionEditor-allow-higher-slippage">
+              <Checkbox isChecked={isHigherSlippageAllowed} setIsChecked={setIsHigherSlippageAllowed}>
+                <span className="muted font-sm">
+                  <Trans>Allow up to 1% slippage</Trans>
+                </span>
+              </Checkbox>
+            </div>
+          )}
           <ExchangeInfoRow label={t`Allowed Slippage`}>
             <Tooltip
               handle={`${formatAmount(allowedSlippage, 2, 2)}%`}
@@ -594,6 +613,23 @@ export default function ConfirmationBox(props) {
               }}
             />
           </ExchangeInfoRow>
+          {showSpread && (
+            <ExchangeInfoRow label={t`Spread`} isWarning={spread.isHigh} isTop={true}>
+              {formatAmount(spread.value.mul(100), USD_DECIMALS, 2, true)}%
+            </ExchangeInfoRow>
+          )}
+          {isMarketOrder && (
+            <ExchangeInfoRow label={t`Entry Price`}>
+              {hasExistingPosition && toAmount && toAmount.gt(0) && (
+                <div className="inline-block muted">
+                  ${formatAmount(existingPosition.averagePrice, USD_DECIMALS, 2, true)}
+                  <BsArrowRight className="transition-arrow" />
+                </div>
+              )}
+              {nextAveragePrice && `$${formatAmount(nextAveragePrice, USD_DECIMALS, 2, true)}`}
+              {!nextAveragePrice && `-`}
+            </ExchangeInfoRow>
+          )}
           {!isMarketOrder && (
             <ExchangeInfoRow label={t`Limit Price`} isTop={true}>
               ${formatAmount(triggerPriceUsd, USD_DECIMALS, 2, true)}
@@ -610,7 +646,7 @@ export default function ConfirmationBox(props) {
             {!toAmount && displayLiquidationPrice && `-`}
             {!displayLiquidationPrice && `-`}
           </ExchangeInfoRow>
-          <ExchangeInfoRow label={t`Collateral`} isTop>
+          <ExchangeInfoRow label={t`Collateral (${collateralToken.symbol})`} isTop>
             <Tooltip
               handle={`$${formatAmount(collateralAfterFees, USD_DECIMALS, 2, true)}`}
               position="right-bottom"
@@ -632,73 +668,14 @@ export default function ConfirmationBox(props) {
               }}
             />
           </ExchangeInfoRow>
-          <ExchangeInfoRow label={t`Fees`}>${formatAmount(feesUsd, USD_DECIMALS, 2, true)}</ExchangeInfoRow>
-          {showSpread && (
-            <ExchangeInfoRow label={t`Spread`} isWarning={spread.isHigh} isTop={true}>
-              {formatAmount(spread.value.mul(100), USD_DECIMALS, 2, true)}%
-            </ExchangeInfoRow>
-          )}
-          {isMarketOrder && (
-            <ExchangeInfoRow label={t`Entry Price`}>
-              {hasExistingPosition && toAmount && toAmount.gt(0) && (
-                <div className="inline-block muted">
-                  ${formatAmount(existingPosition.averagePrice, USD_DECIMALS, 2, true)}
-                  <BsArrowRight className="transition-arrow" />
-                </div>
-              )}
-              {nextAveragePrice && `$${formatAmount(nextAveragePrice, USD_DECIMALS, 2, true)}`}
-              {!nextAveragePrice && `-`}
-            </ExchangeInfoRow>
-          )}
-
-          <ExchangeInfoRow label={t`Borrow Fee`}>
-            {isLong && toTokenInfo && formatAmount(toTokenInfo.fundingRate, 4, 4)}
-            {isShort && shortCollateralToken && formatAmount(shortCollateralToken.fundingRate, 4, 4)}
-            {((isLong && toTokenInfo && toTokenInfo.fundingRate) ||
-              (isShort && shortCollateralToken && shortCollateralToken.fundingRate)) &&
-              "% / 1h"}
+          <ExchangeInfoRow label={t`Fees`}>
+            <FeesTooltip
+              totalFees={`$${formatAmount(feesUsd, USD_DECIMALS, 2, true)}`}
+              fundingFee={getFundingFee()}
+              executionFee={getExecutionFee()}
+            />
           </ExchangeInfoRow>
-          {isMarketOrder && (
-            <div className="PositionEditor-allow-higher-slippage">
-              <ExchangeInfoRow label={t`Execution Fee`}>
-                <Tooltip
-                  handle={`${formatAmountFree(minExecutionFee, 18, 5)} ${nativeTokenSymbol}`}
-                  position="right-top"
-                  renderContent={() => {
-                    return (
-                      <>
-                        <StatsTooltipRow
-                          label={t`Network Fee`}
-                          value={`${formatAmountFree(minExecutionFee, 18, 5)} ${nativeTokenSymbol} ($${formatAmount(
-                            minExecutionFeeUSD,
-                            USD_DECIMALS,
-                            2
-                          )})`}
-                        />
-                        <br />
-                        <Trans>
-                          This is the network cost required to execute the postion.{" "}
-                          <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#execution-fee">
-                            More Info
-                          </ExternalLink>
-                        </Trans>
-                      </>
-                    );
-                  }}
-                />
-              </ExchangeInfoRow>
-            </div>
-          )}
 
-          {isMarketOrder && (
-            <div className="PositionEditor-allow-higher-slippage">
-              <Checkbox isChecked={isHigherSlippageAllowed} setIsChecked={setIsHigherSlippageAllowed}>
-                <span className="muted font-sm">
-                  <Trans>Allow up to 1% slippage</Trans>
-                </span>
-              </Checkbox>
-            </div>
-          )}
           {decreaseOrdersThatWillBeExecuted.length > 0 && (
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox isChecked={isTriggerWarningAccepted} setIsChecked={setIsTriggerWarningAccepted}>
@@ -708,13 +685,11 @@ export default function ConfirmationBox(props) {
               </Checkbox>
             </div>
           )}
-          {renderExecutionFee()}
         </div>
       </>
     );
   }, [
     renderMain,
-    shortCollateralAddress,
     isShort,
     isLong,
     toTokenInfo,
@@ -730,7 +705,7 @@ export default function ConfirmationBox(props) {
     existingLiquidationPrice,
     feesUsd,
     leverage,
-    renderExecutionFee,
+    getExecutionFee,
     shortCollateralToken,
     chainId,
     renderFeeWarning,
@@ -748,67 +723,63 @@ export default function ConfirmationBox(props) {
     allowedSlippage,
     isTriggerWarningAccepted,
     decreaseOrdersThatWillBeExecuted,
-    minExecutionFee,
-    nativeTokenSymbol,
-    minExecutionFeeUSD,
     minExecutionFeeErrorMessage,
+    collateralTokenAddress,
   ]);
 
   const renderSwapSection = useCallback(() => {
     return (
-      <>
-        <div>
-          {renderMain()}
-          {renderFeeWarning()}
-          {renderSpreadWarning()}
-          {orderOption === LIMIT && renderAvailableLiquidity()}
-          <ExchangeInfoRow label={t`Min. Receive`}>
-            {formatAmount(minOut, toTokenInfo.decimals, 4, true)} {toTokenInfo.symbol}
+      <div>
+        {renderMain()}
+        {renderFeeWarning()}
+        {renderSpreadWarning()}
+        {showSpread && (
+          <ExchangeInfoRow label={t`Spread`} isWarning={spread.isHigh}>
+            {formatAmount(spread.value.mul(100), USD_DECIMALS, 2, true)}%
           </ExchangeInfoRow>
-          <ExchangeInfoRow label={t`Price`}>
-            {getExchangeRateDisplay(getExchangeRate(fromTokenInfo, toTokenInfo), fromTokenInfo, toTokenInfo)}
-          </ExchangeInfoRow>
-          {!isMarketOrder && (
-            <div className="Exchange-info-row">
-              <div className="Exchange-info-label">
-                <Trans>Limit Price</Trans>
-              </div>
-              <div className="align-right">{getExchangeRateDisplay(triggerRatio, fromTokenInfo, toTokenInfo)}</div>
-            </div>
-          )}
-          {showSpread && (
-            <ExchangeInfoRow label={t`Spread`} isWarning={spread.isHigh}>
-              {formatAmount(spread.value.mul(100), USD_DECIMALS, 2, true)}%
-            </ExchangeInfoRow>
-          )}
+        )}
+        {orderOption === LIMIT && renderAvailableLiquidity()}
+
+        <ExchangeInfoRow label={t`Price`} isTop>
+          {getExchangeRateDisplay(getExchangeRate(fromTokenInfo, toTokenInfo), fromTokenInfo, toTokenInfo)}
+        </ExchangeInfoRow>
+        {!isMarketOrder && (
           <div className="Exchange-info-row">
             <div className="Exchange-info-label">
-              <Trans>Fees</Trans>
+              <Trans>Limit Price</Trans>
             </div>
-            <div className="align-right">
-              {formatAmount(feeBps, 2, 2, true)}% ({formatAmount(fees, fromTokenInfo.decimals, 4, true)}{" "}
-              {fromTokenInfo.symbol}: ${formatAmount(feesUsd, USD_DECIMALS, 2, true)})
-            </div>
+            <div className="align-right">{getExchangeRateDisplay(triggerRatio, fromTokenInfo, toTokenInfo)}</div>
           </div>
-          {renderExecutionFee()}
-          {fromTokenUsd && (
-            <div className="Exchange-info-row">
-              <div className="Exchange-info-label">
-                <Trans>{fromTokenInfo.symbol} Price</Trans>
-              </div>
-              <div className="align-right">{fromTokenUsd} USD</div>
+        )}
+
+        {fromTokenUsd && (
+          <div className="Exchange-info-row">
+            <div className="Exchange-info-label">
+              <Trans>{fromTokenInfo.symbol} Price</Trans>
             </div>
-          )}
-          {toTokenUsd && (
-            <div className="Exchange-info-row">
-              <div className="Exchange-info-label">
-                <Trans>{toTokenInfo.symbol} Price</Trans>
-              </div>
-              <div className="align-right">{toTokenUsd} USD</div>
+            <div className="align-right">{fromTokenUsd} USD</div>
+          </div>
+        )}
+        {toTokenUsd && (
+          <div className="Exchange-info-row">
+            <div className="Exchange-info-label">
+              <Trans>{toTokenInfo.symbol} Price</Trans>
             </div>
-          )}
-        </div>
-      </>
+            <div className="align-right">{toTokenUsd} USD</div>
+          </div>
+        )}
+        <ExchangeInfoRow label={t`Fees`} isTop>
+          <FeesTooltip
+            totalFees={`${formatAmount(feeBps, 2, 2, true)}%  ($${formatAmount(feesUsd, USD_DECIMALS, 2, true)})`}
+            executionFee={getExecutionFee()}
+            swapFee={`$${formatAmount(feesUsd, USD_DECIMALS, 2, true)}`}
+          />
+        </ExchangeInfoRow>
+
+        <ExchangeInfoRow label={t`Min. Receive`} isTop>
+          {formatAmount(minOut, toTokenInfo.decimals, 4, true)} {toTokenInfo.symbol}
+        </ExchangeInfoRow>
+      </div>
     );
   }, [
     renderMain,
@@ -820,15 +791,14 @@ export default function ConfirmationBox(props) {
     spread,
     feesUsd,
     feeBps,
-    renderExecutionFee,
     fromTokenUsd,
     toTokenUsd,
     triggerRatio,
-    fees,
     isMarketOrder,
     minOut,
     renderFeeWarning,
     renderAvailableLiquidity,
+    getExecutionFee,
   ]);
 
   return (

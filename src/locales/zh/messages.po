@@ -61,7 +61,7 @@ msgstr ""
 msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>"
 msgstr "执行订单的流动性不足</0><1>作为交易所价格总和的标记价格未达到指定价格</1><2>已达到指定价格但时间不足以执行 </2><3>没有守门员领取执行令</3>"
 
-#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/FeesTooltip.tsx
 msgid "<0>More Info</0> about fees."
 msgstr "<0>更多资讯</0> 关于手续费用"
 
@@ -381,9 +381,8 @@ msgstr "提升百分比"
 msgid "Boost your rewards with Multiplier Points. <0>More info</0>."
 msgstr "用点数提升你的奖励。 <0>更多信息</0>"
 
-#: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -667,7 +666,7 @@ msgstr "关闭{longOrShortText} {0}"
 msgid "Close: {convertedAmountFormatted} {0}"
 msgstr "关闭: {convertedAmountFormatted} {0}"
 
-#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/FeesTooltip.tsx
 msgid "Closing Fee"
 msgstr ""
 
@@ -688,21 +687,19 @@ msgid "Coinbase Wallet not detected."
 msgstr "无法侦测Coinbase钱包"
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Collateral"
 msgstr "抵押品"
 
+#: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 msgid "Collateral ({0})"
 msgstr "抵押品({0})"
 
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -1233,6 +1230,7 @@ msgid "Enter new Price"
 msgstr "输入新价钱"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -1263,10 +1261,7 @@ msgstr "执行指令: 交换 {fromAmountDisplay} {0} 为 {toAmountDisplay} {1}"
 msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 msgstr ""
 
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/FeesTooltip.tsx
 msgid "Execution Fee"
 msgstr "执行费"
 
@@ -1281,6 +1276,7 @@ msgstr "费用"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -2087,9 +2083,8 @@ msgid "Net Value: Initial Collateral + PnL - Fees"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionEditor.js
-msgid "Network Fee"
-msgstr ""
+#~ msgid "Network Fee"
+#~ msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -2955,7 +2950,7 @@ msgstr "供应"
 msgid "Swap"
 msgstr "交易"
 
-#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/FeesTooltip.tsx
 msgid "Swap Fee"
 msgstr ""
 
@@ -3175,12 +3170,8 @@ msgid "This code is not yet registered on {0}, you will not receive rebates ther
 msgstr "此代码尚未在{0}上注册，你将不会收到回扣<0/><1/>切换你的网络，在{1}上创建此代码"
 
 #: src/components/Exchange/ConfirmationBox.js
-msgid "This is the network cost required to execute the postion. <0>More Info</0>"
-msgstr "这是执行该职位所需的网络成本。<0>更多信息</0>"
-
-#: src/components/Exchange/PositionEditor.js
-msgid "This is the network cost required to execute the {depositOrWithdrawalText}.<0/><1/><2>More Info</2>"
-msgstr "这是执行{depositOrWithdrawalText}所需的网络成本。<0/><1/><2>更多信息</2>"
+#~ msgid "This is the network cost required to execute the postion. <0>More Info</0>"
+#~ msgstr "这是执行该职位所需的网络成本。<0>更多信息</0>"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "This order will forfeit a <0>profit</0> of {deltaStr}. <1/>"
@@ -3880,10 +3871,6 @@ msgstr "帐户"
 msgid "collateral"
 msgstr "抵押品"
 
-#: src/components/Exchange/PositionEditor.js
-msgid "deposit"
-msgstr "押金"
-
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "fee"
 msgstr "费用"
@@ -3915,10 +3902,6 @@ msgstr "流动性时间将至"
 #: src/components/Exchange/ConfirmationBox.js
 msgid "view"
 msgstr "查看"
-
-#: src/components/Exchange/PositionEditor.js
-msgid "withdrawal"
-msgstr "领取"
 
 #: src/pages/Exchange/Exchange.js
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"

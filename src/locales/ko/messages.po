@@ -61,7 +61,7 @@ msgstr ""
 msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>"
 msgstr "<0>주문을 체결하기 위한 유동성이 부족합니다</0><1>시장 평균가가 지정된 가격에 도달하지 않았습니다</1><2>지정된 가격에 도달했지만 실행하기에 충분한 시간이 지나지 않았습니다</2>주문을 체결할 수 있는 키퍼가 없습니다.<3>"
 
-#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/FeesTooltip.tsx
 msgid "<0>More Info</0> about fees."
 msgstr "수수료에 대한 <0>더 많은 정보</0>."
 
@@ -381,9 +381,8 @@ msgstr "증가된 비율"
 msgid "Boost your rewards with Multiplier Points. <0>More info</0>."
 msgstr "멀티플라이어 포인트를 사용해서 보상을 증가시키세요. <0>더 자세한 정보</0>."
 
-#: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -667,7 +666,7 @@ msgstr "{longOrShortText} 종료 {0}"
 msgid "Close: {convertedAmountFormatted} {0}"
 msgstr "종료: {convertedAmountFormatted} {0}"
 
-#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/FeesTooltip.tsx
 msgid "Closing Fee"
 msgstr ""
 
@@ -688,21 +687,19 @@ msgid "Coinbase Wallet not detected."
 msgstr "Coinbase 지갑이 존재하지 않습니다."
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Collateral"
 msgstr "담보"
 
+#: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 msgid "Collateral ({0})"
 msgstr "담보 ({0})"
 
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -1233,6 +1230,7 @@ msgid "Enter new Price"
 msgstr "새로운 가격 입력"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -1263,10 +1261,7 @@ msgstr "주문 실행: {fromAmountDisplay} {0}을 {toAmountDisplay} {1}로 스�
 msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 msgstr ""
 
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/FeesTooltip.tsx
 msgid "Execution Fee"
 msgstr "실행 수수료"
 
@@ -1281,6 +1276,7 @@ msgstr "수수료"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -2087,9 +2083,8 @@ msgid "Net Value: Initial Collateral + PnL - Fees"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionEditor.js
-msgid "Network Fee"
-msgstr ""
+#~ msgid "Network Fee"
+#~ msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -2955,7 +2950,7 @@ msgstr "공급량"
 msgid "Swap"
 msgstr "스왑"
 
-#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/FeesTooltip.tsx
 msgid "Swap Fee"
 msgstr ""
 
@@ -3175,12 +3170,8 @@ msgid "This code is not yet registered on {0}, you will not receive rebates ther
 msgstr "해당 코드는 {0}에 아직 등록되지 않았기때문에, 소개 보수를 받을 수 없습니다.<0/><1/>네트워크를 변경후 해당 코드를 {1}상에서 생성하세요."
 
 #: src/components/Exchange/ConfirmationBox.js
-msgid "This is the network cost required to execute the postion. <0>More Info</0>"
-msgstr "포지션을 실행하기 위해 요구되는 네트워크 비용입니다. <0>더 자세한 정보</0>"
-
-#: src/components/Exchange/PositionEditor.js
-msgid "This is the network cost required to execute the {depositOrWithdrawalText}.<0/><1/><2>More Info</2>"
-msgstr "{depositOrWithdrawalText}를 실행하기 위해 요구되는 네트워크 비용입니다.<0/><1/><2>더 자세한 정보</2>"
+#~ msgid "This is the network cost required to execute the postion. <0>More Info</0>"
+#~ msgstr "포지션을 실행하기 위해 요구되는 네트워크 비용입니다. <0>더 자세한 정보</0>"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "This order will forfeit a <0>profit</0> of {deltaStr}. <1/>"
@@ -3880,10 +3871,6 @@ msgstr "게정"
 msgid "collateral"
 msgstr "담보"
 
-#: src/components/Exchange/PositionEditor.js
-msgid "deposit"
-msgstr "예치"
-
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "fee"
 msgstr "수수료"
@@ -3915,10 +3902,6 @@ msgstr "청산까지의 시간"
 #: src/components/Exchange/ConfirmationBox.js
 msgid "view"
 msgstr "보기"
-
-#: src/components/Exchange/PositionEditor.js
-msgid "withdrawal"
-msgstr "인출"
 
 #: src/pages/Exchange/Exchange.js
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"

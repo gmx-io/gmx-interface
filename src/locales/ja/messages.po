@@ -61,7 +61,7 @@ msgstr ""
 msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>"
 msgstr "<0>注文執行に必要な流動性が不足しています</0><1>諸取引所の価格を集約したマーク価格が指値に達しませんでした</1><2>指値には達したもののロングの度合いが不十分で執行されませんでした</2><3>どのキーパーも注文を執行しませんでした</3>"
 
-#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/FeesTooltip.tsx
 msgid "<0>More Info</0> about fees."
 msgstr "手数料についての<0>詳細情報</0>"
 
@@ -381,9 +381,8 @@ msgstr "ブースト率"
 msgid "Boost your rewards with Multiplier Points. <0>More info</0>."
 msgstr "マルチプライヤーポイントで報酬をブーストする。<0>より詳しい情報</0>"
 
-#: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -667,7 +666,7 @@ msgstr "{longOrShortText} {0}をクローズする"
 msgid "Close: {convertedAmountFormatted} {0}"
 msgstr "クローズ: {convertedAmountFormatted} {0}"
 
-#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/FeesTooltip.tsx
 msgid "Closing Fee"
 msgstr ""
 
@@ -688,21 +687,19 @@ msgid "Coinbase Wallet not detected."
 msgstr "コインベースウォレットが検出できません。"
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Collateral"
 msgstr "担保"
 
+#: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 msgid "Collateral ({0})"
 msgstr "担保  ({0})"
 
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -1233,6 +1230,7 @@ msgid "Enter new Price"
 msgstr "新しい価格を入力"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -1263,10 +1261,7 @@ msgstr "注文執行: {fromAmountDisplay} {0}を {toAmountDisplay} {1}にスワ�
 msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 msgstr ""
 
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/FeesTooltip.tsx
 msgid "Execution Fee"
 msgstr "執行手数料"
 
@@ -1281,6 +1276,7 @@ msgstr "手数料"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -2087,9 +2083,8 @@ msgid "Net Value: Initial Collateral + PnL - Fees"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionEditor.js
-msgid "Network Fee"
-msgstr ""
+#~ msgid "Network Fee"
+#~ msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -2955,7 +2950,7 @@ msgstr "供給量"
 msgid "Swap"
 msgstr "スワップ"
 
-#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/FeesTooltip.tsx
 msgid "Swap Fee"
 msgstr ""
 
@@ -3175,12 +3170,8 @@ msgid "This code is not yet registered on {0}, you will not receive rebates ther
 msgstr "このコードは{0}上ではまだ登録されていないため、紹介報酬を受け取ることはできません。<0/><1/>ネットワークを切り替えて、{1}上でこのコードを作成してください。"
 
 #: src/components/Exchange/ConfirmationBox.js
-msgid "This is the network cost required to execute the postion. <0>More Info</0>"
-msgstr "これはポジションを執行するために必要なネットワーク手数料です。<0>詳細情報</0>"
-
-#: src/components/Exchange/PositionEditor.js
-msgid "This is the network cost required to execute the {depositOrWithdrawalText}.<0/><1/><2>More Info</2>"
-msgstr "これは{depositOrWithdrawalText}を執行するために必要なネットワーク手数料です。<0/><1/><2>詳細情報</2>"
+#~ msgid "This is the network cost required to execute the postion. <0>More Info</0>"
+#~ msgstr "これはポジションを執行するために必要なネットワーク手数料です。<0>詳細情報</0>"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "This order will forfeit a <0>profit</0> of {deltaStr}. <1/>"
@@ -3880,10 +3871,6 @@ msgstr "アカウント"
 msgid "collateral"
 msgstr "担保"
 
-#: src/components/Exchange/PositionEditor.js
-msgid "deposit"
-msgstr "入金"
-
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "fee"
 msgstr "手数料"
@@ -3915,10 +3902,6 @@ msgstr "清算までの時間"
 #: src/components/Exchange/ConfirmationBox.js
 msgid "view"
 msgstr "見る"
-
-#: src/components/Exchange/PositionEditor.js
-msgid "withdrawal"
-msgstr "出金"
 
 #: src/pages/Exchange/Exchange.js
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
