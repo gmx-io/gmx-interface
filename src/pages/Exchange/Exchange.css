@@ -1061,3 +1061,8 @@ table.Exchange-list-small td {
     padding-top: 1.5rem !important;
   }
 }
+@media (max-width: 450px) {
+  .chart-positions {
+    display: none;
+  }
+}

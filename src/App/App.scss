@@ -1205,6 +1205,10 @@ button.App-button {
   align-items: center;
 }
 
+.chart-positions-settings {
+  display: none;
+}
+
 @media (max-width: 1033px) {
   .long-connect-btn {
     display: none !important;
@@ -1402,6 +1406,9 @@ button.App-button {
   }
   .App-header-trade-link.homepage-header {
     margin-right: 1.6rem;
+  }
+  .chart-positions-settings {
+    display: block;
   }
 }
 

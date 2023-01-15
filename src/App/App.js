@@ -622,6 +622,13 @@ function FullApp() {
             <Trans>Include PnL in leverage display</Trans>
           </Checkbox>
         </div>
+        <div className="Exchange-settings-row chart-positions-settings">
+          <Checkbox isChecked={savedShouldShowPositionLines} setIsChecked={setSavedShouldShowPositionLines}>
+            <span>
+              <Trans>Chart positions</Trans>
+            </span>
+          </Checkbox>
+        </div>
         {isDevelopment() && (
           <div className="Exchange-settings-row">
             <Checkbox isChecked={shouldDisableValidationForTesting} setIsChecked={setShouldDisableValidationForTesting}>
