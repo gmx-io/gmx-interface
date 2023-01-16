@@ -575,9 +575,8 @@ export default function PositionsList(props) {
                         }}
                       />
                     ) : (
-                      <>{position.indexToken.symbol}</>
+                      position.indexToken.symbol
                     )}
-
                     {position.hasPendingChanges && <ImSpinner2 className="spin position-loading-icon" />}
                   </div>
                   <div className="Exchange-list-info-label">
