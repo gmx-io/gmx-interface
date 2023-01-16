@@ -119,7 +119,6 @@ msgstr ""
 msgid "AVAILABLE"
 msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
@@ -419,10 +418,6 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Stake/StakeV2.js
 msgid "Buy GLP"
-msgstr ""
-
-#: src/pages/BuyGlp/BuyGlp.js
-msgid "Buy GLP Icon"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
@@ -1059,6 +1054,7 @@ msgstr ""
 msgid "Distribution"
 msgstr ""
 
+#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Docs"
 msgstr ""
@@ -2598,8 +2594,11 @@ msgid "Referral code updated!"
 msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
-#: src/pages/Referrals/Referrals.js
 msgid "Referrals"
+msgstr ""
+
+#: src/pages/Referrals/Referrals.js
+msgid "Referrals <0/>"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js

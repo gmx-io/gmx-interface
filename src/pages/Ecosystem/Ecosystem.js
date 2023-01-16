@@ -5,17 +5,15 @@ import SEO from "components/Common/SEO";
 import Footer from "components/Footer/Footer";
 import { getPageTitle } from "lib/legacy";
 
-import arbitrumIcon from "img/ic_arbitrum_16.svg";
-import avalancheIcon from "img/ic_avalanche_16.svg";
-
 import "./Ecosystem.css";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { t } from "@lingui/macro";
+import { getIcon } from "config/icons";
 
 const NETWORK_ICONS = {
-  [ARBITRUM]: arbitrumIcon,
-  [AVALANCHE]: avalancheIcon,
+  [ARBITRUM]: getIcon(ARBITRUM, "network"),
+  [AVALANCHE]: getIcon(AVALANCHE, "network"),
 };
 
 const NETWORK_ICON_ALTS = {
@@ -475,7 +473,7 @@ export default function Ecosystem() {
                     {item.title}
                     <div className="App-card-title-icon">
                       {item.chainIds.map((network) => (
-                        <img key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
+                        <img width="16" key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
                       ))}
                     </div>
                   </div>
@@ -521,7 +519,7 @@ export default function Ecosystem() {
                     {item.title}
                     <div className="App-card-title-icon">
                       {item.chainIds.map((network) => (
-                        <img key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
+                        <img width="16" key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
                       ))}
                     </div>
                   </div>
@@ -571,7 +569,7 @@ export default function Ecosystem() {
                     {item.title}
                     <div className="App-card-title-icon">
                       {item.chainIds.map((network) => (
-                        <img key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
+                        <img width="16" key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
                       ))}
                     </div>
                   </div>
@@ -622,7 +620,7 @@ export default function Ecosystem() {
                     {item.title}
                     <div className="App-card-title-icon">
                       {item.chainIds.map((network) => (
-                        <img key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
+                        <img width="16" key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
                       ))}
                     </div>
                   </div>
