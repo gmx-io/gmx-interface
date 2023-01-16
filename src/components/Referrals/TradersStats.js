@@ -14,10 +14,17 @@ import { formatAmount } from "lib/numbers";
 import { getNativeToken, getToken } from "config/tokens";
 import { formatDate } from "lib/dates";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import usePagination from "./usePagination";
+import Pagination from "components/Pagination/Pagination";
 
 function TradersStats({ referralsData, traderTier, chainId, userReferralCodeString, setPendingTxns, pendingTxns }) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const editModalRef = useRef(null);
+  const { getCurrentData, currentPage, setCurrentPage, pageCount } = usePagination(
+    referralsData?.discountDistributions
+  );
+
+  const currentDiscountDistributions = getCurrentData();
 
   const open = () => setIsEditModalOpen(true);
   const close = () => setIsEditModalOpen(false);
@@ -79,7 +86,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
           </div>
         </Modal>
       </div>
-      {referralsData?.discountDistributions.length > 0 ? (
+      {currentDiscountDistributions.length > 0 ? (
         <div className="reward-history">
           <Card title={t`Rebates Distribution History`} tooltipText={t`Rebates are airdropped weekly.`}>
             <div className="table-wrapper">
@@ -98,7 +105,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                   </tr>
                 </thead>
                 <tbody>
-                  {referralsData?.discountDistributions.map((rebate, index) => {
+                  {currentDiscountDistributions.map((rebate, index) => {
                     let tokenInfo;
                     try {
                       tokenInfo = getToken(chainId, rebate.token);
@@ -124,6 +131,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
               </table>
             </div>
           </Card>
+          <Pagination page={currentPage} pageCount={pageCount} onPageChange={(page) => setCurrentPage(page)} />
         </div>
       ) : (
         <EmptyMessage

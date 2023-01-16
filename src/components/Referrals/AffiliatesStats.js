@@ -25,6 +25,9 @@ import { bigNumberify, formatAmount } from "lib/numbers";
 import { getNativeToken, getToken } from "config/tokens";
 import { formatDate } from "lib/dates";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import Pagination from "components/Pagination/Pagination";
+import usePagination from "./usePagination";
+import Button from "components/Button/Button";
 
 function AffiliatesStats({
   referralsData,
@@ -41,6 +44,14 @@ function AffiliatesStats({
   const close = () => setIsAddReferralCodeModalOpen(false);
 
   const { cumulativeStats, referrerTotalStats, rebateDistributions, referrerTierInfo } = referralsData;
+  const {
+    currentPage: currentRebatePage,
+    getCurrentData: getCurrentRebateData,
+    setCurrentPage: setCurrentRebatePage,
+    pageCount: rebatePageCount,
+  } = usePagination(rebateDistributions);
+
+  const currentRebateData = getCurrentRebateData();
   const allReferralCodes = referrerTotalStats.map((c) => c.referralCode.trim());
   const finalAffiliatesTotalStats = useMemo(
     () =>
@@ -53,7 +64,16 @@ function AffiliatesStats({
     [allReferralCodes, referrerTotalStats, recentlyAddedCodes]
   );
 
+  const {
+    currentPage: currentAffiliatesPage,
+    getCurrentData: getCurrentAffiliatesData,
+    setCurrentPage: setCurrentAffiliatesPage,
+    pageCount: affiliatesPageCount,
+  } = usePagination(finalAffiliatesTotalStats);
+
+  const currentAffiliatesData = getCurrentAffiliatesData();
   const tierId = referrerTierInfo?.tierId;
+
   let referrerRebates = bigNumberify(0);
   if (cumulativeStats && cumulativeStats.totalRebateUsd && cumulativeStats.discountUsd) {
     referrerRebates = cumulativeStats.totalRebateUsd.sub(cumulativeStats.discountUsd);
@@ -103,12 +123,12 @@ function AffiliatesStats({
                   {referrerTierInfo && t`Tier ${getTierIdDisplay(tierId)} (${tierRebateInfo[tierId]}% rebate)`}
                 </span>
               </p>
-              <button className="transparent-btn" onClick={open}>
+              <Button onClick={open}>
                 <FiPlus />{" "}
                 <span className="ml-small">
                   <Trans>Create</Trans>
                 </span>
-              </button>
+              </Button>
             </div>
           }
         >
@@ -131,7 +151,7 @@ function AffiliatesStats({
                 </tr>
               </thead>
               <tbody>
-                {finalAffiliatesTotalStats.map((stat, index) => {
+                {currentAffiliatesData.map((stat, index) => {
                   const ownerOnOtherChain = stat?.ownerOnOtherChain;
                   let referrerRebate = bigNumberify(0);
                   if (stat && stat.totalRebateUsd && stat.discountUsd) {
@@ -210,8 +230,13 @@ function AffiliatesStats({
             </table>
           </div>
         </Card>
+        <Pagination
+          page={currentAffiliatesPage}
+          pageCount={affiliatesPageCount}
+          onPageChange={(page) => setCurrentAffiliatesPage(page)}
+        />
       </div>
-      {rebateDistributions?.length > 0 ? (
+      {currentRebateData.length > 0 ? (
         <div className="reward-history">
           <Card title={t`Rewards Distribution History`} tooltipText={t`Rewards are airdropped weekly.`}>
             <div className="table-wrapper">
@@ -230,7 +255,7 @@ function AffiliatesStats({
                   </tr>
                 </thead>
                 <tbody>
-                  {rebateDistributions.map((rebate, index) => {
+                  {currentRebateData.map((rebate, index) => {
                     let tokenInfo;
                     try {
                       tokenInfo = getToken(chainId, rebate.token);
@@ -258,6 +283,11 @@ function AffiliatesStats({
               </table>
             </div>
           </Card>
+          <Pagination
+            page={currentRebatePage}
+            pageCount={rebatePageCount}
+            onPageChange={(page) => setCurrentRebatePage(page)}
+          />
         </div>
       ) : (
         <EmptyMessage

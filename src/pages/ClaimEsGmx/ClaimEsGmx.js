@@ -375,43 +375,35 @@ export default function ClaimEsGmx({ setPendingTxns }) {
             <br />
             <div className="ClaimEsGmx-vesting-options">
               <Checkbox
-                className="arbitrum btn btn-primary btn-left btn-lg"
+                className="arbitrum vest-option"
                 isChecked={selectedOption === VEST_WITH_GMX_ARB}
                 setIsChecked={() => setSelectedOption(VEST_WITH_GMX_ARB)}
               >
-                <div className="ClaimEsGmx-option-label">
-                  <Trans>Vest with GMX on Arbitrum</Trans>
-                </div>
+                <Trans>Vest with GMX on Arbitrum</Trans>
                 <img src={arbitrumIcon} alt="Arbitrum" />
               </Checkbox>
               <Checkbox
-                className="arbitrum btn btn-primary btn-left btn-lg"
+                className="arbitrum vest-option"
                 isChecked={selectedOption === VEST_WITH_GLP_ARB}
                 setIsChecked={() => setSelectedOption(VEST_WITH_GLP_ARB)}
               >
-                <div className="ClaimEsGmx-option-label">
-                  <Trans>Vest with GLP on Arbitrum</Trans>
-                </div>
+                <Trans>Vest with GLP on Arbitrum</Trans>
                 <img src={arbitrumIcon} alt="Arbitrum" />
               </Checkbox>
               <Checkbox
-                className="avalanche btn btn-primary btn-left btn-lg"
+                className="avalanche vest-option"
                 isChecked={selectedOption === VEST_WITH_GMX_AVAX}
                 setIsChecked={() => setSelectedOption(VEST_WITH_GMX_AVAX)}
               >
-                <div className="ClaimEsGmx-option-label">
-                  <Trans>Vest with GMX on Avalanche</Trans>
-                </div>
+                <Trans>Vest with GMX on Avalanche</Trans>
                 <img src={avaIcon} alt="Avalanche" />
               </Checkbox>
               <Checkbox
-                className="avalanche btn btn-primary btn-left btn-lg"
+                className="avalanche vest-option"
                 isChecked={selectedOption === VEST_WITH_GLP_AVAX}
                 setIsChecked={() => setSelectedOption(VEST_WITH_GLP_AVAX)}
               >
-                <div className="ClaimEsGmx-option-label avalanche">
-                  <Trans>Vest with GLP on Avalanche</Trans>
-                </div>
+                <Trans>Vest with GLP on Avalanche</Trans>
                 <img src={avaIcon} alt="Avalanche" />
               </Checkbox>
             </div>
