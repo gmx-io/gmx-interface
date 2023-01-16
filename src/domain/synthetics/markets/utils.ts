@@ -1,7 +1,14 @@
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { TokensData } from "../tokens/types";
 import { getTokenData, getUsdFromTokenAmount } from "../tokens/utils";
-import { MarketPoolType, MarketsData, MarketsPoolsData, MarketTokensData, MarketsOpenInterestData } from "./types";
+import {
+  MarketPoolType,
+  MarketsData,
+  MarketsPoolsData,
+  MarketTokensData,
+  MarketsOpenInterestData,
+  Market,
+} from "./types";
 
 export function getMarket(marketsData: MarketsData, marketAddress?: string) {
   if (!marketAddress) return undefined;
@@ -10,7 +17,7 @@ export function getMarket(marketsData: MarketsData, marketAddress?: string) {
 }
 
 export function getMarkets(marketsData: MarketsData) {
-  return Object.keys(marketsData).map((address) => getMarket(marketsData, address)!);
+  return Object.values(marketsData);
 }
 
 export function getMarketByTokens(marketsData: MarketsData, indexToken?: string, collateralToken?: string) {
@@ -55,6 +62,18 @@ export function getMarketName(
   return `${gmText} ${indexToken.symbol}/${market.perp} [${longToken.symbol}-${shortToken.symbol}]`;
 }
 
+export function getOppositeCollateral(market: Market, collateralToken: string) {
+  if (market.longTokenAddress === collateralToken) {
+    return market.shortTokenAddress;
+  }
+
+  if (market.shortTokenAddress === collateralToken) {
+    return market.longTokenAddress;
+  }
+
+  return undefined;
+}
+
 export function getMarketPoolData(poolsData: MarketsPoolsData, marketAddress?: string) {
   if (!marketAddress) return undefined;
 
@@ -74,10 +93,9 @@ export function getTokenPoolAmount(
   tokenAddress?: string
 ) {
   const pools = getMarketPoolData(poolsData, marketAddress);
-  const market = getMarket(marketsData, marketAddress);
   const tokenPoolType = getTokenPoolType(marketsData, marketAddress, tokenAddress);
 
-  if (!market || !pools || !tokenPoolType) return undefined;
+  if (!pools || !tokenPoolType) return undefined;
 
   if (tokenPoolType === MarketPoolType.Long) {
     return pools.longPoolAmount;
