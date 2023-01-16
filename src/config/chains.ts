@@ -213,7 +213,7 @@ export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {
   },
   [AVALANCHE_FUJI]: {
     chainId: "0x" + AVALANCHE_FUJI.toString(16),
-    chainName: "Avalanche Fuji",
+    chainName: "Avalanche Fuji Testnet",
     nativeCurrency: {
       name: "AVAX",
       symbol: "AVAX",
