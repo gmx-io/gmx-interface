@@ -316,6 +316,7 @@ msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})
 msgstr "자산운용규모: 스테이킹된 GMX + GLP 풀 ({chainName})."
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "Available"
 msgstr "사용가능"
 
@@ -1280,6 +1281,7 @@ msgstr "수수료"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV1.js

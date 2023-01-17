@@ -316,6 +316,7 @@ msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})
 msgstr "管理資産: 全チェーンでステークされているGMX + GLPプール ({chainName})."
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "Available"
 msgstr "利用可能"
 
@@ -1280,6 +1281,7 @@ msgstr "手数料"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV1.js

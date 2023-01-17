@@ -316,6 +316,7 @@ msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})
 msgstr "Verwaltetes Vermögen: GMX-Staked (Alle Chains) + GLP-Pool ({chainName})."
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "Available"
 msgstr "Verfügbar"
 
@@ -1280,6 +1281,7 @@ msgstr "GEBÜHREN"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV1.js

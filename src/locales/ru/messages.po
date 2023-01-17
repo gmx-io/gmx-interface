@@ -316,6 +316,7 @@ msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})
 msgstr "Активы под управлением: Ставка GMX (все цепи) + GLP пул ({chainName})."
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "Available"
 msgstr "Доступно"
 
@@ -1280,6 +1281,7 @@ msgstr "СБОРЫ"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV1.js
