@@ -1667,7 +1667,7 @@ msgstr "Language"
 msgid "Launch App"
 msgstr "Launch App"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Leaderboard"
 msgstr "Leaderboard"
 
@@ -2833,7 +2833,7 @@ msgstr "Size"
 msgid "Slippage should be less than 5%"
 msgstr "Slippage should be less than 5%"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Speed up page loading"
 msgstr "Speed up page loading"
 
@@ -3341,7 +3341,7 @@ msgstr "Traders Referred"
 msgid "Trades"
 msgstr "Trades"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"
 msgstr "Trading guide"
 
@@ -3541,7 +3541,7 @@ msgstr "Use the \"Compound\" button to stake your Multiplier Points."
 msgid "Use the Edit Collateral icon to deposit or withdraw collateral."
 msgstr "Use the Edit Collateral icon to deposit or withdraw collateral."
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Useful Links"
 msgstr "Useful Links"
 

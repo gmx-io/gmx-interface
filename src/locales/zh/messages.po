@@ -1667,7 +1667,7 @@ msgstr "语言"
 msgid "Launch App"
 msgstr "启动应用程序"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Leaderboard"
 msgstr "排行榜"
 
@@ -2833,7 +2833,7 @@ msgstr "规模"
 msgid "Slippage should be less than 5%"
 msgstr "滑点应低于5%"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Speed up page loading"
 msgstr "加速页面加载"
 
@@ -3341,7 +3341,7 @@ msgstr "推荐的交易商"
 msgid "Trades"
 msgstr "交易"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"
 msgstr "交易指南"
 
@@ -3541,7 +3541,7 @@ msgstr "使用 \"Compound\" 按钮来质押你的积分点"
 msgid "Use the Edit Collateral icon to deposit or withdraw collateral."
 msgstr "使用编辑抵押品图示已存入或提取抵押品"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Useful Links"
 msgstr "实用链接"
 
