@@ -16,11 +16,6 @@ type Props = {
 export default function GMXAprTooltip({ processedData, nativeTokenSymbol }: Props) {
   return (
     <>
-      <StatsTooltipRow
-        label={t`Escrowed GMX APR`}
-        showDollar={false}
-        value={`${formatKeyAmount(processedData, "gmxAprForEsGmx", 2, 2, true)}%`}
-      />
       {(!processedData.gmxBoostAprForNativeToken || processedData.gmxBoostAprForNativeToken.eq(0)) && (
         <StatsTooltipRow
           label={t`${nativeTokenSymbol} APR`}
@@ -30,8 +25,6 @@ export default function GMXAprTooltip({ processedData, nativeTokenSymbol }: Prop
       )}
       {processedData.gmxBoostAprForNativeToken && processedData.gmxBoostAprForNativeToken.gt(0) && (
         <div>
-          <br />
-
           <StatsTooltipRow
             label={t`${nativeTokenSymbol} Base APR`}
             showDollar={false}
@@ -48,9 +41,13 @@ export default function GMXAprTooltip({ processedData, nativeTokenSymbol }: Prop
             showDollar={false}
             value={`${formatKeyAmount(processedData, "gmxAprForNativeTokenWithBoost", 2, 2, true)}%`}
           />
-
           <br />
-
+          <StatsTooltipRow
+            label={t`Escrowed GMX APR`}
+            showDollar={false}
+            value={`${formatKeyAmount(processedData, "gmxAprForEsGmx", 2, 2, true)}%`}
+          />
+          <br />
           <Trans>The Boosted APR is from your staked Multiplier Points.</Trans>
         </div>
       )}
