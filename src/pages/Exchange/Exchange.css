@@ -902,6 +902,10 @@ table.Exchange-list-small td {
   opacity: 1;
 }
 
+.Useful-links-exchange {
+  display: none;
+}
+
 @media (max-width: 1500px) {
   .Exchange-swap-box {
     width: 38.75rem;
@@ -1030,6 +1034,12 @@ table.Exchange-list-small td {
     padding: 0.465rem 0;
     font-size: 1.25rem;
   }
+  .Useful-links-swapbox {
+    display: none;
+  }
+  .Useful-links-exchange {
+    display: block;
+  }
 }
 
 @media (max-width: 700px) {
@@ -1061,6 +1071,7 @@ table.Exchange-list-small td {
     padding-top: 1.5rem !important;
   }
 }
+
 @media (max-width: 450px) {
   .chart-positions {
     display: none;
