@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { swapImpactExponentFactorKey, swapImpactFactorKey } from "domain/synthetics/dataStore";
+import { getSwapImpactExponentFactorKey, getSwapImpactFactorKey } from "config/dataStore";
 import DataStore from "abis/DataStore.json";
 import { PriceImpactConfigsData } from "./types";
 import { useMarketsData } from "../markets";
@@ -46,15 +46,15 @@ export function usePriceImpactConfigs(chainId: number): PriceImpactConfigsData {
           return Object.assign(calls, {
             [`${marketAddress}-impactFactor-positive`]: {
               methodName: "getUint",
-              params: [swapImpactFactorKey(marketAddress, true)],
+              params: [getSwapImpactFactorKey(marketAddress, true)],
             },
             [`${marketAddress}-impactFactor-negative`]: {
               methodName: "getUint",
-              params: [swapImpactFactorKey(marketAddress, false)],
+              params: [getSwapImpactFactorKey(marketAddress, false)],
             },
             [`${marketAddress}-exponentImpactFactor`]: {
               methodName: "getUint",
-              params: [swapImpactExponentFactorKey(marketAddress)],
+              params: [getSwapImpactExponentFactorKey(marketAddress)],
             },
           });
         }, {}),

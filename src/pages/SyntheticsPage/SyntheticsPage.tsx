@@ -12,10 +12,10 @@ import { Plural, t } from "@lingui/macro";
 import { useLocalStorageByChainId } from "lib/localStorage";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useWeb3React } from "@web3-react/core";
-
-import "./SyntheticsPage.scss";
 import { useAvailableTokensData } from "domain/synthetics/tokens";
 import { getExecutionFee } from "domain/synthetics/fees";
+
+import "./SyntheticsPage.scss";
 
 type Props = {
   onConnectWallet: () => void;

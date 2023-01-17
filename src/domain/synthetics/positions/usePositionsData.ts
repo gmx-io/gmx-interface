@@ -87,8 +87,6 @@ export function usePositionsData(chainId: number): PositionsDataResult {
             hasPendingShortTokenFundingFee,
           ] = fundingFees.map((item) => (typeof item === "boolean" ? item : bigNumberify(item)));
 
-          // if (!WHITELISTED_MARKETS.includes(marketAddress)) return positionsMap;
-
           const positionKey = getPositionKey(account, marketAddress, collateralTokenAddress, isLong)!;
 
           positionsMap[positionKey] = {
