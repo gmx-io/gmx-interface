@@ -753,8 +753,12 @@ msgid "Compounding..."
 msgstr "Componiendo..."
 
 #: src/components/Exchange/ConfirmationBox.js
-msgid "Confirm Limit Order"
-msgstr "Confirma la Órden Límite"
+msgid "Confirm Limit Long Order"
+msgstr ""
+
+#: src/components/Exchange/ConfirmationBox.js
+msgid "Confirm Limit Swap Order"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Confirm Long"
@@ -763,6 +767,10 @@ msgstr "Confirma orden a Largo"
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Confirm Short"
 msgstr "Confirma orden a Corto"
+
+#: src/components/Exchange/ConfirmationBox.js
+msgid "Confirm Short Order"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Confirm Swap"
@@ -1845,6 +1853,7 @@ msgstr "MÁX"
 msgid "MEV Optimizer"
 msgstr "Optimizador de MEV"
 
+#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -2081,10 +2090,6 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 msgid "Net Value: Initial Collateral + PnL - Fees"
 msgstr ""
-
-#: src/components/Exchange/ConfirmationBox.js
-#~ msgid "Network Fee"
-#~ msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -3168,10 +3173,6 @@ msgstr "Este código ya ha sido cogido por alguien más en {0}, no recibirás re
 #: src/components/Referrals/AffiliatesStats.js
 msgid "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
 msgstr "Este código no está registrado en {0}, por lo que no recibirás reembolsos ahí.<0/><1/>Cambia de red para crear este código en {1}."
-
-#: src/components/Exchange/ConfirmationBox.js
-#~ msgid "This is the network cost required to execute the postion. <0>More Info</0>"
-#~ msgstr "Este es el coste de red requerido para ejecutar una posición. <0>Más Info</0>"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "This order will forfeit a <0>profit</0> of {deltaStr}. <1/>"

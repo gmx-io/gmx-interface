@@ -753,8 +753,12 @@ msgid "Compounding..."
 msgstr "Compounding..."
 
 #: src/components/Exchange/ConfirmationBox.js
-msgid "Confirm Limit Order"
-msgstr "Confirm Limit Order"
+msgid "Confirm Limit Long Order"
+msgstr "Confirm Limit Long Order"
+
+#: src/components/Exchange/ConfirmationBox.js
+msgid "Confirm Limit Swap Order"
+msgstr "Confirm Limit Swap Order"
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Confirm Long"
@@ -763,6 +767,10 @@ msgstr "Confirm Long"
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Confirm Short"
 msgstr "Confirm Short"
+
+#: src/components/Exchange/ConfirmationBox.js
+msgid "Confirm Short Order"
+msgstr "Confirm Short Order"
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Confirm Swap"
@@ -1845,6 +1853,7 @@ msgstr "MAX"
 msgid "MEV Optimizer"
 msgstr "MEV Optimizer"
 
+#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -2081,10 +2090,6 @@ msgstr "Net Value: Initial Collateral + PnL - Borrow Fee"
 #: src/components/Exchange/PositionsList.js
 msgid "Net Value: Initial Collateral + PnL - Fees"
 msgstr "Net Value: Initial Collateral + PnL - Fees"
-
-#: src/components/Exchange/ConfirmationBox.js
-#~ msgid "Network Fee"
-#~ msgstr "Network Fee"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -3168,10 +3173,6 @@ msgstr "This code has been taken by someone else on {0}, you will not receive re
 #: src/components/Referrals/AffiliatesStats.js
 msgid "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
 msgstr "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
-
-#: src/components/Exchange/ConfirmationBox.js
-#~ msgid "This is the network cost required to execute the postion. <0>More Info</0>"
-#~ msgstr "This is the network cost required to execute the postion. <0>More Info</0>"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "This order will forfeit a <0>profit</0> of {deltaStr}. <1/>"

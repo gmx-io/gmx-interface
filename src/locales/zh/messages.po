@@ -753,8 +753,12 @@ msgid "Compounding..."
 msgstr "复利中"
 
 #: src/components/Exchange/ConfirmationBox.js
-msgid "Confirm Limit Order"
-msgstr "确认限制订单"
+msgid "Confirm Limit Long Order"
+msgstr ""
+
+#: src/components/Exchange/ConfirmationBox.js
+msgid "Confirm Limit Swap Order"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Confirm Long"
@@ -763,6 +767,10 @@ msgstr "确认做多"
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Confirm Short"
 msgstr "确认做空"
+
+#: src/components/Exchange/ConfirmationBox.js
+msgid "Confirm Short Order"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Confirm Swap"
@@ -1845,6 +1853,7 @@ msgstr "最大值"
 msgid "MEV Optimizer"
 msgstr "MEV优化器"
 
+#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -2081,10 +2090,6 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 msgid "Net Value: Initial Collateral + PnL - Fees"
 msgstr ""
-
-#: src/components/Exchange/ConfirmationBox.js
-#~ msgid "Network Fee"
-#~ msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -3168,10 +3173,6 @@ msgstr "这个代码在{0}上已被别人取用，你将不会获得从{1}上使
 #: src/components/Referrals/AffiliatesStats.js
 msgid "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
 msgstr "此代码尚未在{0}上注册，你将不会收到回扣<0/><1/>切换你的网络，在{1}上创建此代码"
-
-#: src/components/Exchange/ConfirmationBox.js
-#~ msgid "This is the network cost required to execute the postion. <0>More Info</0>"
-#~ msgstr "这是执行该职位所需的网络成本。<0>更多信息</0>"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "This order will forfeit a <0>profit</0> of {deltaStr}. <1/>"

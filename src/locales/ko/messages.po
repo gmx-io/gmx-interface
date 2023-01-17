@@ -753,8 +753,12 @@ msgid "Compounding..."
 msgstr "수령 및 스테이킹중..."
 
 #: src/components/Exchange/ConfirmationBox.js
-msgid "Confirm Limit Order"
-msgstr "지정가 주문 확인"
+msgid "Confirm Limit Long Order"
+msgstr ""
+
+#: src/components/Exchange/ConfirmationBox.js
+msgid "Confirm Limit Swap Order"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Confirm Long"
@@ -763,6 +767,10 @@ msgstr "롱 포지션 확인"
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Confirm Short"
 msgstr "숏 포지션 확인"
+
+#: src/components/Exchange/ConfirmationBox.js
+msgid "Confirm Short Order"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Confirm Swap"
@@ -1845,6 +1853,7 @@ msgstr "최대"
 msgid "MEV Optimizer"
 msgstr "MEV 옵티마이저"
 
+#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -2081,10 +2090,6 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 msgid "Net Value: Initial Collateral + PnL - Fees"
 msgstr ""
-
-#: src/components/Exchange/ConfirmationBox.js
-#~ msgid "Network Fee"
-#~ msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -3168,10 +3173,6 @@ msgstr "해당 코드는 {0}에서 다른 사용자에 의해 이미 사용되�
 #: src/components/Referrals/AffiliatesStats.js
 msgid "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
 msgstr "해당 코드는 {0}에 아직 등록되지 않았기때문에, 소개 보수를 받을 수 없습니다.<0/><1/>네트워크를 변경후 해당 코드를 {1}상에서 생성하세요."
-
-#: src/components/Exchange/ConfirmationBox.js
-#~ msgid "This is the network cost required to execute the postion. <0>More Info</0>"
-#~ msgstr "포지션을 실행하기 위해 요구되는 네트워크 비용입니다. <0>더 자세한 정보</0>"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "This order will forfeit a <0>profit</0> of {deltaStr}. <1/>"

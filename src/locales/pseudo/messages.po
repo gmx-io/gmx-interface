@@ -753,7 +753,11 @@ msgid "Compounding..."
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
-msgid "Confirm Limit Order"
+msgid "Confirm Limit Long Order"
+msgstr ""
+
+#: src/components/Exchange/ConfirmationBox.js
+msgid "Confirm Limit Swap Order"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -762,6 +766,10 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Confirm Short"
+msgstr ""
+
+#: src/components/Exchange/ConfirmationBox.js
+msgid "Confirm Short Order"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -1842,6 +1850,7 @@ msgstr ""
 msgid "MEV Optimizer"
 msgstr ""
 
+#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -2078,10 +2087,6 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 msgid "Net Value: Initial Collateral + PnL - Fees"
 msgstr ""
-
-#: src/components/Exchange/ConfirmationBox.js
-#~ msgid "Network Fee"
-#~ msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -3165,10 +3170,6 @@ msgstr ""
 #: src/components/Referrals/AffiliatesStats.js
 msgid "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
 msgstr ""
-
-#: src/components/Exchange/ConfirmationBox.js
-#~ msgid "This is the network cost required to execute the postion. <0>More Info</0>"
-#~ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "This order will forfeit a <0>profit</0> of {deltaStr}. <1/>"

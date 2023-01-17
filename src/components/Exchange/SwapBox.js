@@ -2523,6 +2523,7 @@ export default function SwapBox(props) {
           minExecutionFee={minExecutionFee}
           minExecutionFeeUSD={minExecutionFeeUSD}
           minExecutionFeeErrorMessage={minExecutionFeeErrorMessage}
+          entryMarkPrice={entryMarkPrice}
         />
       )}
     </div>

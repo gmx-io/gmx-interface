@@ -57,6 +57,27 @@ function getSpread(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddress) {
   }
 }
 
+function renderAllowedSlippage(allowedSlippage) {
+  return (
+    <ExchangeInfoRow label={t`Allowed Slippage`}>
+      <Tooltip
+        handle={`${formatAmount(allowedSlippage, 2, 2)}%`}
+        position="right-top"
+        renderContent={() => {
+          return (
+            <Trans>
+              You can change this in the settings menu on the top right of the page.
+              <br />
+              <br />
+              Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are volatile.
+            </Trans>
+          );
+        }}
+      />
+    </ExchangeInfoRow>
+  );
+}
+
 export default function ConfirmationBox(props) {
   const {
     fromToken,
@@ -98,6 +119,7 @@ export default function ConfirmationBox(props) {
     minExecutionFee,
     minExecutionFeeUSD,
     minExecutionFeeErrorMessage,
+    entryMarkPrice,
   } = props;
 
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
@@ -131,12 +153,17 @@ export default function ConfirmationBox(props) {
   }
 
   const getTitle = () => {
-    if (!isMarketOrder) {
-      return t`Confirm Limit Order`;
-    }
     if (isSwap) {
+      if (!isMarketOrder) {
+        return t`Confirm Limit Swap Order`;
+      }
       return t`Confirm Swap`;
     }
+
+    if (!isMarketOrder) {
+      return isLong ? t`Confirm Limit Long Order` : t`Confirm Short Order`;
+    }
+
     return isLong ? t`Confirm Long` : t`Confirm Short`;
   };
   const title = getTitle();
@@ -596,23 +623,7 @@ export default function ConfirmationBox(props) {
               </Checkbox>
             </div>
           )}
-          <ExchangeInfoRow label={t`Allowed Slippage`}>
-            <Tooltip
-              handle={`${formatAmount(allowedSlippage, 2, 2)}%`}
-              position="right-top"
-              renderContent={() => {
-                return (
-                  <Trans>
-                    You can change this in the settings menu on the top right of the page.
-                    <br />
-                    <br />
-                    Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are
-                    volatile.
-                  </Trans>
-                );
-              }}
-            />
-          </ExchangeInfoRow>
+          {renderAllowedSlippage(allowedSlippage)}
           {showSpread && (
             <ExchangeInfoRow label={t`Spread`} isWarning={spread.isHigh} isTop={true}>
               {formatAmount(spread.value.mul(100), USD_DECIMALS, 2, true)}%
@@ -631,7 +642,12 @@ export default function ConfirmationBox(props) {
             </ExchangeInfoRow>
           )}
           {!isMarketOrder && (
-            <ExchangeInfoRow label={t`Limit Price`} isTop={true}>
+            <ExchangeInfoRow label={t`Mark Price`} isTop={true}>
+              ${formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)}
+            </ExchangeInfoRow>
+          )}
+          {!isMarketOrder && (
+            <ExchangeInfoRow label={t`Limit Price`}>
               ${formatAmount(triggerPriceUsd, USD_DECIMALS, 2, true)}
             </ExchangeInfoRow>
           )}
@@ -649,7 +665,7 @@ export default function ConfirmationBox(props) {
           <ExchangeInfoRow label={t`Collateral (${collateralToken.symbol})`} isTop>
             <Tooltip
               handle={`$${formatAmount(collateralAfterFees, USD_DECIMALS, 2, true)}`}
-              position="right-bottom"
+              position="right-top"
               renderContent={() => {
                 return (
                   <>
@@ -720,11 +736,12 @@ export default function ConfirmationBox(props) {
     renderExistingTriggerErrors,
     isHigherSlippageAllowed,
     setIsHigherSlippageAllowed,
-    allowedSlippage,
     isTriggerWarningAccepted,
     decreaseOrdersThatWillBeExecuted,
     minExecutionFeeErrorMessage,
     collateralTokenAddress,
+    entryMarkPrice,
+    allowedSlippage,
   ]);
 
   const renderSwapSection = useCallback(() => {
@@ -739,7 +756,7 @@ export default function ConfirmationBox(props) {
           </ExchangeInfoRow>
         )}
         {orderOption === LIMIT && renderAvailableLiquidity()}
-
+        {renderAllowedSlippage(allowedSlippage)}
         <ExchangeInfoRow label={t`Price`} isTop>
           {getExchangeRateDisplay(getExchangeRate(fromTokenInfo, toTokenInfo), fromTokenInfo, toTokenInfo)}
         </ExchangeInfoRow>
@@ -799,6 +816,7 @@ export default function ConfirmationBox(props) {
     renderFeeWarning,
     renderAvailableLiquidity,
     getExecutionFee,
+    allowedSlippage,
   ]);
 
   return (
