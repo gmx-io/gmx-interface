@@ -120,7 +120,6 @@ msgstr "AUM"
 msgid "AVAILABLE"
 msgstr "AVAILABLE"
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
@@ -315,11 +314,6 @@ msgstr "Approving..."
 msgid "Arbitrum APR:"
 msgstr "Arbitrum APR:"
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Arbitrum Icon"
-msgstr "Arbitrum Icon"
-
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
 msgstr "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
@@ -365,11 +359,6 @@ msgstr "Available:"
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
 msgstr "Avalanche APR:"
-
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Avalanche Icon"
-msgstr "Avalanche Icon"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Balance"
@@ -458,10 +447,6 @@ msgstr "Buy ETH directly to Arbitrum or transfer it there."
 #: src/pages/Stake/StakeV2.js
 msgid "Buy GLP"
 msgstr "Buy GLP"
-
-#: src/pages/BuyGlp/BuyGlp.js
-msgid "Buy GLP Icon"
-msgstr "Buy GLP Icon"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Buy GM"
@@ -1209,6 +1194,7 @@ msgstr "Display PnL after fees"
 msgid "Distribution"
 msgstr "Distribution"
 
+#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Docs"
 msgstr "Docs"
@@ -3149,9 +3135,12 @@ msgid "Referral code updated!"
 msgstr "Referral code updated!"
 
 #: src/components/Header/AppHeaderLinks.tsx
-#: src/pages/Referrals/Referrals.js
 msgid "Referrals"
 msgstr "Referrals"
+
+#: src/pages/Referrals/Referrals.js
+msgid "Referrals <0/>"
+msgstr "Referrals <0/>"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Request decrease {0} {longOrShortText}, -{1} USD, Acceptable Price: {2} {3} USD"

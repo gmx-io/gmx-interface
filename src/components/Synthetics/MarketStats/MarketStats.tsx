@@ -1,21 +1,18 @@
 import { t } from "@lingui/macro";
-import { getChainIcon } from "config/chains";
-import { getToken } from "config/tokens";
-import gmIcon from "img/gm_icon.svg";
-import { useChainId } from "lib/chains";
-import { importImage } from "lib/legacy";
-import { useMemo } from "react";
 import { CardRow } from "components/CardRow/CardRow";
+import { getToken } from "config/tokens";
+import { useChainId } from "lib/chains";
+import { useMemo } from "react";
 
-import "./MarketStats.scss";
+import { getIcon } from "config/icons";
 import {
   getMarket,
   getMarketName,
   getMarketPoolData,
   getMarketTokenData,
+  useMarketTokensData,
   useMarketsData,
   useMarketsPoolsData,
-  useMarketTokensData,
 } from "domain/synthetics/markets";
 import {
   convertToUsdByPrice,
@@ -24,6 +21,7 @@ import {
   getUsdFromTokenAmount,
   useAvailableTokensData,
 } from "domain/synthetics/tokens";
+import "./MarketStats.scss";
 
 type Props = {
   marketKey?: string;
@@ -75,12 +73,14 @@ export function MarketStats(p: Props) {
       <div className="MarketStats-title">
         <div className="App-card-title-mark">
           <div className="App-card-title-mark-icon">
-            <img src={gmIcon} alt="glp40Icon" />
-            <img
-              src={importImage(getChainIcon(chainId, 16))}
+            <img className="MarketStats-gm-icon" src={getIcon(chainId, "gm")} alt="GM" />
+            {/* TODO: change to unified */}
+            {/* <img
+              src={getIcon(chainId, "network")}
+              width={20}
               alt="arbitrum16Icon"
               className="selected-network-symbol"
-            />
+            /> */}
           </div>
           <div className="App-card-title-mark-info">
             <div className="App-card-title-mark-title">{marketName}</div>

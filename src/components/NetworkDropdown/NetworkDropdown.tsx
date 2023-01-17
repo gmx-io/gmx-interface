@@ -7,12 +7,11 @@ import { HiDotsVertical } from "react-icons/hi";
 import "./NetworkDropdown.css";
 import language24Icon from "img/ic_language24.svg";
 import settingsIcon from "img/ic_settings_16.svg";
-import { importImage } from "lib/legacy";
 import { defaultLocale } from "lib/i18n";
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 import LanguageModalContent from "./LanguageModalContent";
 import { useChainId } from "lib/chains";
-import { getChainIcon } from "config/chains";
+import { getIcon } from "config/icons";
 
 const LANGUAGE_MODAL_KEY: string = "LANGUAGE";
 const NETWORK_MODAL_KEY: string = "NETWORK";
@@ -83,16 +82,15 @@ export default function NetworkDropdown(props) {
 }
 function NavIcons({ selectorLabel }) {
   const { chainId } = useChainId();
-
-  const icon = importImage(getChainIcon(chainId, 24));
+  const icon = getIcon(chainId, "network");
 
   return (
     <>
-      <button className={cx("btn-primary small transparent")}>
+      <button className="transparent">
         <img className="network-dropdown-icon" src={icon} alt={selectorLabel} />
       </button>
       <div className="network-dropdown-seperator" />
-      <button className={cx("btn-primary small transparent")}>
+      <button className="transparent">
         <HiDotsVertical color="white" size={20} />
       </button>
     </>
@@ -156,7 +154,6 @@ function NetworkMenuItems({ networkOptions, selectorLabel, onNetworkSelect }) {
     await onNetworkSelect(option);
   }
   return networkOptions.map((network) => {
-    const networkIcon = importImage(network.icon);
     return (
       <Menu.Item key={network.value}>
         <div
@@ -165,7 +162,7 @@ function NetworkMenuItems({ networkOptions, selectorLabel, onNetworkSelect }) {
         >
           <div className="menu-item-group">
             <div className="menu-item-icon">
-              <img className="network-dropdown-icon" src={networkIcon} alt={network.label} />
+              <img className="network-dropdown-icon" src={network.icon} alt={network.label} />
             </div>
             <span className="network-dropdown-item-label">{network.label}</span>
           </div>
@@ -190,7 +187,6 @@ function NetworkModalContent({ networkOptions, onNetworkSelect, selectorLabel, s
         </span>
 
         {networkOptions.map((network) => {
-          const networkIcon = importImage(network.icon);
           return (
             <div
               className="network-option"
@@ -198,7 +194,7 @@ function NetworkModalContent({ networkOptions, onNetworkSelect, selectorLabel, s
               key={network.value}
             >
               <div className="menu-item-group">
-                <img src={networkIcon} alt={network.label} />
+                <img src={network.icon} alt={network.label} />
                 <span>{network.label}</span>
               </div>
               <div className={cx("active-dot", { [selectorLabel]: selectorLabel === network.label })} />

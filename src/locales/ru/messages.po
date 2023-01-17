@@ -120,14 +120,13 @@ msgstr "Активы под Управлением"
 msgid "AVAILABLE"
 msgstr "ДОСТУПНО"
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "About"
-msgstr "О компании"
+msgstr "О проекте"
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "Above"
@@ -313,12 +312,7 @@ msgstr "Одобрение..."
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Arbitrum APR:"
-msgstr "Годовой Процентный Отчет Arbitrum:"
-
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Arbitrum Icon"
-msgstr "Икона Arbitrum"
+msgstr "Arbitrum APR:"
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
@@ -364,12 +358,7 @@ msgstr "Доступно:"
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
-msgstr "Годовой Процентный Отчет Avalanche:"
-
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Avalanche Icon"
-msgstr "Икона Avalanche"
+msgstr "Avalanche APR:"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Balance"
@@ -458,10 +447,6 @@ msgstr ""
 #: src/pages/Stake/StakeV2.js
 msgid "Buy GLP"
 msgstr "Купить GLP"
-
-#: src/pages/BuyGlp/BuyGlp.js
-msgid "Buy GLP Icon"
-msgstr "Купить Икону GLP"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Buy GM"
@@ -597,7 +582,7 @@ msgstr ""
 
 #: src/pages/Exchange/Exchange.js
 msgid "Chart positions"
-msgstr "Позиции в чартах"
+msgstr "Позиции на графике"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -1207,11 +1192,12 @@ msgstr "Отображение PnL после комиссии"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Distribution"
-msgstr "Рассылка"
+msgstr "Распределение"
 
+#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Docs"
-msgstr ""
+msgstr "Документация"
 
 #: src/components/ModalViews/RedirectModal.js
 msgid "Don't show this message again for 30 days."
@@ -1289,7 +1275,7 @@ msgstr "Разрешить отправку пополнения счета."
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 msgid "Enable leverage failed."
-msgstr "Не удалось активировать леверидж."
+msgstr "Не удалось активировать торговое плечо."
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -2010,7 +1996,7 @@ msgstr "Оставшаяся позиция ниже 10 USD"
 #: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 #: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 msgid "Leverage"
-msgstr "Леверидж"
+msgstr "Плечо"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Leverage disabled, pending {0} upgrade"
@@ -2219,7 +2205,7 @@ msgstr "Похоже, у вас нет реферального кода, кот
 
 #: src/pages/Actions/Actions.js
 msgid "Loss"
-msgstr "Потери"
+msgstr "Убыток"
 
 #: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/Exchange/PositionEditor.js
@@ -2228,7 +2214,7 @@ msgstr "Потери"
 #: src/components/InputSection/InputSection.js
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "MAX"
-msgstr "МАКСИМУМ"
+msgstr "МАКС"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "MEV Optimizer"
@@ -2627,7 +2613,7 @@ msgstr "Открыть позицию"
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open in Coingecko"
-msgstr "Открыть в Coingecko"
+msgstr "Открыть на Coingecko"
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 #: src/pages/Dashboard/AssetDropdown.tsx
@@ -3149,9 +3135,12 @@ msgid "Referral code updated!"
 msgstr "Реферальный код обновлен!"
 
 #: src/components/Header/AppHeaderLinks.tsx
-#: src/pages/Referrals/Referrals.js
 msgid "Referrals"
 msgstr "Рефералы"
+
+#: src/pages/Referrals/Referrals.js
+msgid "Referrals <0/>"
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Request decrease {0} {longOrShortText}, -{1} USD, Acceptable Price: {2} {3} USD"

@@ -38,12 +38,7 @@ import Vester from "abis/Vester.json";
 import RewardRouter from "abis/RewardRouter.json";
 import Token from "abis/Token.json";
 
-import glp24Icon from "img/ic_glp_24.svg";
-import glp40Icon from "img/ic_glp_40.svg";
 import arrowIcon from "img/ic_convert_down.svg";
-
-import avalanche16Icon from "img/ic_avalanche_16.svg";
-import arbitrum16Icon from "img/ic_arbitrum_16.svg";
 
 import "./GlpSwap.css";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
@@ -59,6 +54,7 @@ import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, formatKey
 import { getNativeToken, getToken, getTokens, getWhitelistedTokens, getWrappedToken } from "config/tokens";
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { getIcon } from "config/icons";
 
 const { AddressZero } = ethers.constants;
 
@@ -114,7 +110,6 @@ export default function GlpSwap(props) {
   const tabLabel = isBuying ? t`Buy GLP` : t`Sell GLP`;
   const { active, library, account } = useWeb3React();
   const { chainId } = useChainId();
-  // const chainName = getChainName(chainId)
   const tokens = getTokens(chainId);
   const whitelistedTokens = getWhitelistedTokens(chainId);
   const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
@@ -144,6 +139,7 @@ export default function GlpSwap(props) {
   const glpRewardRouterAddress = getContract(chainId, "GlpRewardRouter");
 
   const tokensForBalanceAndSupplyQuery = [stakedGlpTrackerAddress, usdgAddress];
+  const glpIcon = getIcon(chainId, "glp");
 
   const tokenAddresses = tokens.map((token) => token.address);
   const { data: tokenBalances } = useSWR(
@@ -701,12 +697,7 @@ export default function GlpSwap(props) {
           <div className="App-card-title">
             <div className="App-card-title-mark">
               <div className="App-card-title-mark-icon">
-                <img src={glp40Icon} alt="glp40Icon" />
-                {chainId === ARBITRUM ? (
-                  <img src={arbitrum16Icon} alt="arbitrum16Icon" className="selected-network-symbol" />
-                ) : (
-                  <img src={avalanche16Icon} alt="avalanche16Icon" className="selected-network-symbol" />
-                )}
+                <img width="40" src={glpIcon} alt="GLP" />
               </div>
               <div className="App-card-title-mark-info">
                 <div className="App-card-title-mark-title">GLP</div>
@@ -852,9 +843,7 @@ export default function GlpSwap(props) {
               onClickTopRightLabel={fillMaxAmount}
               onClickMax={fillMaxAmount}
             >
-              <div className="selected-token">
-                GLP <img src={glp24Icon} alt="glp24Icon" />
-              </div>
+              <div className="selected-token">GLP</div>
             </BuyInputSection>
           )}
 
@@ -880,9 +869,7 @@ export default function GlpSwap(props) {
               inputValue={glpValue}
               onInputValueChange={onGlpValueChange}
             >
-              <div className="selected-token">
-                GLP <img src={glp24Icon} alt="glp24Icon" />
-              </div>
+              <div className="selected-token">GLP</div>
             </BuyInputSection>
           )}
 
@@ -1138,7 +1125,7 @@ export default function GlpSwap(props) {
                   <td>
                     <div className="App-card-title-info">
                       <div className="App-card-title-info-icon">
-                        <img src={tokenImage} alt={token.symbol} width="40px" />
+                        <img src={tokenImage} alt={token.symbol} width="40" />
                       </div>
                       <div className="App-card-title-info-text">
                         <div className="App-card-info-title">{token.name}</div>
