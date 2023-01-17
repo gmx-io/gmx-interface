@@ -561,7 +561,7 @@ export default function PositionsList(props) {
                           return (
                             <div>
                               <Trans>
-                                Click on a row to select the position's market, then use the swap box to increase your
+                                Click on a row to select the position's market, then use the trade box to increase your
                                 position size if needed.
                               </Trans>
                               <br />

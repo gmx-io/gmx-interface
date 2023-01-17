@@ -628,8 +628,8 @@ msgid "Claiming..."
 msgstr "Beanspruchen..."
 
 #: src/components/Exchange/PositionsList.js
-msgid "Click on a row to select the position's market, then use the swap box to increase your position size if needed."
-msgstr "Klicke auf eine Zeile, um den Markt der Position auszuwählen, und verwende dann die Swap-Box, um deine Position bei Bedarf zu vergrößern."
+msgid "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
+msgstr "Klicke auf eine Zeile, um den Markt der Position auszuwählen, und verwende dann die Trade-Box, um deine Position bei Bedarf zu vergrößern."
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
