@@ -119,6 +119,69 @@ export const formatAmountFree = (amount: BigNumberish, tokenDecimals: number, di
   return trimZeroDecimals(amountStr);
 };
 
+export function formatUsd(usd?: BigNumber, opts: { fallbackToZero?: boolean } = {}) {
+  const { fallbackToZero = false } = opts;
+
+  if (!usd) {
+    if (fallbackToZero) {
+      usd = BigNumber.from(0);
+    } else {
+      return undefined;
+    }
+  }
+
+  return `$${formatAmount(usd, USD_DECIMALS, 2, true)}`;
+}
+
+export function formatTokenAmount(
+  amount?: BigNumber,
+  tokenDecimals?: number,
+  symbol?: string,
+  opts: {
+    showAllSignificant?: boolean;
+    displayDecimals?: number;
+    fallbackToZero?: boolean;
+  } = {}
+) {
+  const { displayDecimals = 4, showAllSignificant = false, fallbackToZero = false } = opts;
+
+  const symbolStr = symbol ? ` ${symbol}` : "";
+
+  if (!amount || !tokenDecimals) {
+    if (fallbackToZero) {
+      amount = BigNumber.from(0);
+      tokenDecimals = displayDecimals;
+    } else {
+      return undefined;
+    }
+  }
+
+  const formattedAmount = showAllSignificant
+    ? formatAmountFree(amount, tokenDecimals, tokenDecimals)
+    : formatAmount(amount, tokenDecimals, displayDecimals);
+
+  return `${formattedAmount}${symbolStr}`;
+}
+
+export function formatTokenAmountWithUsd(
+  tokenAmount?: BigNumber,
+  usdAmount?: BigNumber,
+  tokenSymbol?: string,
+  tokenDecimals?: number,
+  opts: {
+    fallbackToZero?: boolean;
+    displayDecimals?: number;
+  } = {}
+) {
+  if (!tokenAmount || !usdAmount || !tokenSymbol || !tokenDecimals) {
+    if (!opts.fallbackToZero) {
+      return undefined;
+    }
+  }
+
+  return `${formatTokenAmount(tokenAmount, tokenDecimals, tokenSymbol, opts)} (${formatUsd(usdAmount, opts)})`;
+}
+
 export const parseValue = (value: string, tokenDecimals: number) => {
   const pValue = parseFloat(value);
 
@@ -147,49 +210,4 @@ export function roundUpDivision(a: BigNumber, b: BigNumber) {
   }
 
   return a.add(b).sub(1).div(b);
-}
-
-export function formatTokenAmount(
-  amount?: BigNumber,
-  tokenDecimals?: number,
-  symbol?: string,
-  showAllSignificant?: boolean,
-  displayDecimals: number = 4
-) {
-  if (!amount || !tokenDecimals) return undefined;
-
-  let formattedAmount;
-
-  if (tokenDecimals && amount) {
-    if (showAllSignificant) {
-      formattedAmount = formatAmountFree(amount, tokenDecimals, tokenDecimals);
-    } else {
-      formattedAmount = formatAmount(amount, tokenDecimals, displayDecimals);
-    }
-  }
-
-  if (!formattedAmount) {
-    formattedAmount = formatAmount(BigNumber.from(0), 4, displayDecimals);
-  }
-
-  return `${formattedAmount}${symbol ? ` ${symbol}` : ""}`;
-}
-
-export function formatTokenAmountWithUsd(
-  tokenAmount?: BigNumber,
-  usdAmount?: BigNumber,
-  tokenSymbol?: string,
-  tokenDecimals?: number
-) {
-  if (!tokenAmount || !usdAmount || !tokenSymbol || !tokenDecimals) {
-    return undefined;
-  }
-
-  return `${formatTokenAmount(tokenAmount, tokenDecimals)} ${tokenSymbol} (${formatUsd(usdAmount)})`;
-}
-
-export function formatUsd(usd?: BigNumber) {
-  if (!usd) return undefined;
-
-  return `$${formatAmount(usd || BigNumber.from(0), USD_DECIMALS, 2, true)}`;
 }
