@@ -3,7 +3,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 
-export default function FeesTooltip({ totalFees, fundingFee, positionFee, swapFee, executionFee }) {
+export default function FeesTooltip({ totalFees, fundingFee, positionFee, swapFee, executionFee, positionFeeLable }) {
   return (
     <Tooltip
       position="right-top"
@@ -11,9 +11,11 @@ export default function FeesTooltip({ totalFees, fundingFee, positionFee, swapFe
       handle={<div>{totalFees ? totalFees : "-"}</div>}
       renderContent={() => (
         <div>
-          {fundingFee && <StatsTooltipRow label={t`Borrow Fee`} value={fundingFee} />}
-          {positionFee && <StatsTooltipRow label={t`Closing Fee`} value={positionFee} />}
           {swapFee && <StatsTooltipRow label={t`Swap Fee`} showDollar={false} value={swapFee} />}
+          {positionFee && positionFeeLable && (
+            <StatsTooltipRow label={positionFeeLable} showDollar={false} value={positionFee} />
+          )}
+          {fundingFee && <StatsTooltipRow label={t`Borrow Fee`} showDollar={false} value={fundingFee} />}
           {executionFee && <StatsTooltipRow label={t`Execution Fee`} showDollar={false} value={executionFee} />}
           <br />
           <div className="PositionSeller-fee-item">
