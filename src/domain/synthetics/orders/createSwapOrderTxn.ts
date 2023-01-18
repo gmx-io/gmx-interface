@@ -6,10 +6,11 @@ import { NATIVE_TOKEN_ADDRESS, getConvertedTokenAddress } from "config/tokens";
 import { encodeReferralCode } from "domain/referrals";
 import { BigNumber, ethers } from "ethers";
 import { callContract } from "lib/contracts";
-import { TokensData, formatTokenAmount, getTokenData } from "../tokens";
+import { TokensData, getTokenData } from "../tokens";
 import { OrderType } from "./types";
 import { isDevelopment } from "config/env";
 import { simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
+import { formatTokenAmount } from "lib/numbers";
 
 const { AddressZero } = ethers.constants;
 

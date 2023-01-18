@@ -5,10 +5,11 @@ import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { RequestStatus } from "components/RequestStatus/RequestStatus";
 import { useEffect, useState } from "react";
 import { useChainId } from "lib/chains";
-import { formatTokenAmount, formatUsd, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
+import { getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { OrderType, isIncreaseOrder, isSwapOrder } from "domain/synthetics/orders";
 import { BigNumber } from "ethers";
 import { getMarket, useMarketsData } from "domain/synthetics/markets";
+import { formatTokenAmount, formatUsd } from "lib/numbers";
 
 type Props = {
   orderType: OrderType;

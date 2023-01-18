@@ -14,17 +14,11 @@ import {
   getNextCollateralUsdForDecreaseOrder,
 } from "domain/synthetics/orders";
 import { AggregatedPositionData, formatLeverage, getLeverage, getLiquidationPrice } from "domain/synthetics/positions";
-import {
-  formatTokenAmount,
-  formatUsd,
-  getTokenAmountFromUsd,
-  getUsdFromTokenAmount,
-  useAvailableTokensData,
-} from "domain/synthetics/tokens";
+import { getTokenAmountFromUsd, getUsdFromTokenAmount, useAvailableTokensData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { DEFAULT_SLIPPAGE_AMOUNT, USD_DECIMALS } from "lib/legacy";
-import { formatAmountFree, parseValue } from "lib/numbers";
+import { formatAmountFree, formatTokenAmount, formatUsd, parseValue } from "lib/numbers";
 import { useEffect, useState } from "react";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";

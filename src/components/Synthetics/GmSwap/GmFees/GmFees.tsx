@@ -3,10 +3,10 @@ import { InfoRow } from "components/InfoRow/InfoRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { formatFee, PriceImpact } from "domain/synthetics/fees";
-import { formatTokenAmountWithUsd } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
 import cx from "classnames";
 import { BigNumber } from "ethers";
+import { formatTokenAmountWithUsd } from "lib/numbers";
 
 type Props = {
   priceImpact?: PriceImpact;

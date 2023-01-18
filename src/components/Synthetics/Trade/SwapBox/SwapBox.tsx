@@ -22,8 +22,6 @@ import { useTokenInputState } from "domain/synthetics/exchange";
 import { useSwapPath } from "domain/synthetics/exchange/useSwapPath";
 import {
   convertToUsd,
-  formatTokenAmount,
-  formatUsd,
   getTokenAmountFromUsd,
   getTokenData,
   getUsdFromTokenAmount,
@@ -34,7 +32,7 @@ import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { BASIS_POINTS_DIVISOR, DUST_USD, USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { bigNumberify, formatAmount, parseValue } from "lib/numbers";
+import { bigNumberify, formatAmount, formatTokenAmount, formatUsd, parseValue } from "lib/numbers";
 import { useEffect, useState } from "react";
 import { IoMdSwap } from "react-icons/io";
 import { ConfirmationBox } from "../ConfirmationBox/ConfirmationBox";

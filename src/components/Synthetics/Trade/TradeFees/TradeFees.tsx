@@ -4,9 +4,10 @@ import { InfoRow } from "components/InfoRow/InfoRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { formatFee } from "domain/synthetics/fees";
-import { formatTokenAmountWithUsd, formatUsd, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
+import { getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { Fees } from "../utils";
+import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 
 type Props = {
   fees: Fees;

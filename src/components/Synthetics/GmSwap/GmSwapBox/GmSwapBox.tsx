@@ -13,7 +13,7 @@ import { MarketDropdown } from "components/Synthetics/MarketDropdown/MarketDropd
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { getMarket, getMarketPoolData, getTokenPoolType } from "domain/synthetics/markets/utils";
-import { adaptToInfoTokens, formatTokenAmount, formatUsd, getUsdFromTokenAmount } from "domain/synthetics/tokens";
+import { adaptToInfoTokens, getUsdFromTokenAmount } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { IoMdSwap } from "react-icons/io";
 
@@ -30,6 +30,7 @@ import { useAvailableTokensData } from "domain/synthetics/tokens";
 
 import "./GmSwapBox.scss";
 import { GmOrderStatus } from "../GmOrderStatus/GmOrderStatus";
+import { formatTokenAmount, formatUsd } from "lib/numbers";
 
 type Props = {
   selectedMarketAddress?: string;
@@ -134,8 +135,8 @@ export function GmSwapBox(p: Props) {
       tokenAmount: poolTokenState.tokenAmount,
       usdAmount: poolTokenState.usdAmount,
       // prettier-ignore
-      usdDelta: operationTab === Operation.Deposit 
-        ? poolTokenState.usdAmount 
+      usdDelta: operationTab === Operation.Deposit
+        ? poolTokenState.usdAmount
         : BigNumber.from(0).sub(poolTokenState.usdAmount),
     };
   }

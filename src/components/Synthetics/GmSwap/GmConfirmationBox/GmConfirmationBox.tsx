@@ -11,14 +11,7 @@ import { createDepositTxn } from "domain/synthetics/markets/createDepositTxn";
 import { createWithdrawalTxn } from "domain/synthetics/markets/createWithdrawalTxn";
 import { TokensData } from "domain/synthetics/tokens/types";
 import { useTokenAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
-import {
-  convertToUsd,
-  formatTokenAmount,
-  formatTokenAmountWithUsd,
-  getTokenAmountFromUsd,
-  getTokenData,
-  needTokenApprove,
-} from "domain/synthetics/tokens";
+import { convertToUsd, getTokenAmountFromUsd, getTokenData, needTokenApprove } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
@@ -36,6 +29,7 @@ import {
 import { useAvailableTokensData } from "domain/synthetics/tokens";
 
 import "./GmConfirmationBox.scss";
+import { formatTokenAmount, formatTokenAmountWithUsd } from "lib/numbers";
 
 type Props = {
   onClose: () => void;

@@ -1,8 +1,8 @@
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { TokenPrices, TokensData, convertToTokenAmount, formatUsd, getTokenData } from "domain/synthetics/tokens";
+import { TokenPrices, TokensData, convertToTokenAmount, getTokenData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
-import { expandDecimals, formatAmount, parseValue, roundUpDivision } from "lib/numbers";
+import { expandDecimals, formatAmount, formatUsd, parseValue, roundUpDivision } from "lib/numbers";
 import { MarketsData, MarketsPoolsData, getPoolAmountUsd } from "../markets";
 import { ExecutionFeeParams, PriceImpactConfigsData } from "./types";
 import { getPriceImpact } from "./utils/priceImpact";

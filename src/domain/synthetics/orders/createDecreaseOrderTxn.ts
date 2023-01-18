@@ -6,13 +6,14 @@ import { NATIVE_TOKEN_ADDRESS, getConvertedTokenAddress } from "config/tokens";
 import { encodeReferralCode } from "domain/referrals";
 import { BigNumber, ethers } from "ethers";
 import { callContract } from "lib/contracts";
-import { TokensData, convertToContractPrice, formatUsd, getTokenData } from "../tokens";
+import { TokensData, convertToContractPrice, getTokenData } from "../tokens";
 import { OrderType } from "./types";
 import { isDevelopment } from "config/env";
 import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
 import { getAcceptablePriceForPositionOrder, isMarketOrder } from "./utils";
 import { getPositionKey } from "../positions";
 import { PositionUpdate } from "../contractEvents";
+import { formatUsd } from "lib/numbers";
 
 const { AddressZero } = ethers.constants;
 

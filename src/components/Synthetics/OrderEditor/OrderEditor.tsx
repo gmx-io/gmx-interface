@@ -11,10 +11,10 @@ import {
   isStopMarketOrder,
   isSwapOrder,
 } from "domain/synthetics/orders";
-import { formatTokenAmountWithUsd, formatUsd, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
+import { getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
-import { formatAmount, parseValue } from "lib/numbers";
+import { formatAmount, formatTokenAmountWithUsd, formatUsd, parseValue } from "lib/numbers";
 import { useState } from "react";
 import { getMarket, useMarketsData } from "domain/synthetics/markets";
 import { InfoRow } from "components/InfoRow/InfoRow";

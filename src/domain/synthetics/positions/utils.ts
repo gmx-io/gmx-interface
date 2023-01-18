@@ -1,8 +1,8 @@
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR, MAX_LEVERAGE, USD_DECIMALS } from "lib/legacy";
-import { expandDecimals, formatAmount } from "lib/numbers";
+import { expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 import { MarketsData, getMarket, getMarketName } from "../markets";
-import { TokenPrices, TokensData, convertToUsd, formatUsd, getTokenData } from "../tokens";
+import { TokenPrices, TokensData, convertToUsd, getTokenData } from "../tokens";
 import { AggregatedPositionData, Position, PositionsData } from "./types";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { PositionsUpdates } from "../contractEvents";

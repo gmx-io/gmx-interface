@@ -9,10 +9,11 @@ import {
   useMarketsPoolsData,
 } from "domain/synthetics/markets";
 import { useOpenInterestData } from "domain/synthetics/markets/useOpenInterestData";
-import { formatUsd, getTokenData, getUsdFromTokenAmount, useAvailableTokensData } from "domain/synthetics/tokens";
+import { getTokenData, getUsdFromTokenAmount, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 
 import "./MarketCard.scss";
+import { formatUsd } from "lib/numbers";
 
 export type Props = {
   swapPath?: string[];

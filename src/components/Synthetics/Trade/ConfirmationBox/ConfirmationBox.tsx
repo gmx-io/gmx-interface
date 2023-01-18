@@ -14,20 +14,14 @@ import {
   createIncreaseOrderTxn,
   createSwapOrderTxn,
 } from "domain/synthetics/orders";
-import { TokenData, formatUsd, useAvailableTokensData } from "domain/synthetics/tokens";
+import { TokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useTokenAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
-import {
-  convertToUsd,
-  formatTokenAmount,
-  formatTokenAmountWithUsd,
-  getTokenData,
-  needTokenApprove,
-} from "domain/synthetics/tokens";
+import { convertToUsd, getTokenData, needTokenApprove } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { DEFAULT_SLIPPAGE_AMOUNT, USD_DECIMALS } from "lib/legacy";
-import { formatAmount } from "lib/numbers";
+import { formatAmount, formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { TradeFees } from "../TradeFees/TradeFees";
 import { Fees, TradeMode, TradeType, getSubmitError, tradeTypeLabels } from "../utils";
 

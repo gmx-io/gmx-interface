@@ -1,4 +1,5 @@
 import { BigNumber, BigNumberish, ethers } from "ethers";
+import { USD_DECIMALS } from "./legacy";
 
 export function bigNumberify(n: BigNumberish) {
   try {
@@ -146,4 +147,49 @@ export function roundUpDivision(a: BigNumber, b: BigNumber) {
   }
 
   return a.add(b).sub(1).div(b);
+}
+
+export function formatTokenAmount(
+  amount?: BigNumber,
+  tokenDecimals?: number,
+  symbol?: string,
+  showAllSignificant?: boolean,
+  displayDecimals: number = 4
+) {
+  if (!amount || !tokenDecimals) return undefined;
+
+  let formattedAmount;
+
+  if (tokenDecimals && amount) {
+    if (showAllSignificant) {
+      formattedAmount = formatAmountFree(amount, tokenDecimals, tokenDecimals);
+    } else {
+      formattedAmount = formatAmount(amount, tokenDecimals, displayDecimals);
+    }
+  }
+
+  if (!formattedAmount) {
+    formattedAmount = formatAmount(BigNumber.from(0), 4, displayDecimals);
+  }
+
+  return `${formattedAmount}${symbol ? ` ${symbol}` : ""}`;
+}
+
+export function formatTokenAmountWithUsd(
+  tokenAmount?: BigNumber,
+  usdAmount?: BigNumber,
+  tokenSymbol?: string,
+  tokenDecimals?: number
+) {
+  if (!tokenAmount || !usdAmount || !tokenSymbol || !tokenDecimals) {
+    return undefined;
+  }
+
+  return `${formatTokenAmount(tokenAmount, tokenDecimals)} ${tokenSymbol} (${formatUsd(usdAmount)})`;
+}
+
+export function formatUsd(usd?: BigNumber) {
+  if (!usd) return undefined;
+
+  return `$${formatAmount(usd || BigNumber.from(0), USD_DECIMALS, 2, true)}`;
 }

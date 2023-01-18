@@ -3,14 +3,14 @@ import DataStore from "abis/DataStore.json";
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
 import { getConvertedTokenAddress } from "config/tokens";
-import { TokenPrices, TokensData, convertToContractPrice, formatUsd, getTokenData } from "domain/synthetics/tokens";
+import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
 import { BigNumber, ethers } from "ethers";
 import _ from "lodash";
 import { NONCE_KEY, orderKey } from "config/dataStore";
 import { helperToast } from "lib/helperToast";
 import { Trans } from "@lingui/macro";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
-import { expandDecimals } from "lib/numbers";
+import { expandDecimals, formatUsd } from "lib/numbers";
 import { callContract } from "lib/contracts";
 import { isDevelopment } from "config/env";
 

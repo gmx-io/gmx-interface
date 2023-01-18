@@ -14,14 +14,9 @@ import {
   useMarketsData,
   useMarketsPoolsData,
 } from "domain/synthetics/markets";
-import {
-  convertToUsd,
-  formatTokenAmountWithUsd,
-  formatUsd,
-  getUsdFromTokenAmount,
-  useAvailableTokensData,
-} from "domain/synthetics/tokens";
+import { convertToUsd, getUsdFromTokenAmount, useAvailableTokensData } from "domain/synthetics/tokens";
 import "./MarketStats.scss";
+import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 
 type Props = {
   marketKey?: string;

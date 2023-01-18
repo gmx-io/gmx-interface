@@ -25,8 +25,6 @@ import {
   getLiquidationPrice,
 } from "domain/synthetics/positions";
 import {
-  formatTokenAmountWithUsd,
-  formatUsd,
   getTokenAmountFromUsd,
   getTokenData,
   getUsdFromTokenAmount,
@@ -36,7 +34,7 @@ import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { DEFAULT_SLIPPAGE_AMOUNT, DUST_USD, USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatAmount, parseValue } from "lib/numbers";
+import { formatAmount, formatTokenAmountWithUsd, formatUsd, parseValue } from "lib/numbers";
 import { useEffect, useState } from "react";
 
 import { useContractEvents } from "domain/synthetics/contractEvents";

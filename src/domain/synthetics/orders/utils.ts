@@ -7,8 +7,6 @@ import {
   TokensData,
   convertToTokenAmount,
   convertToUsd,
-  formatTokenAmount,
-  formatUsd,
   getTokenData,
   parseContractPrice,
 } from "domain/synthetics/tokens";
@@ -16,6 +14,7 @@ import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";
 import { Position, getPriceForPnl } from "../positions";
 import { AggregatedOrderData, AggregatedOrdersData, OrderType, OrdersData } from "./types";
+import { formatTokenAmount, formatUsd } from "lib/numbers";
 
 export const SWAP_PNL_TOKEN_TO_COLLATERAL_TOKEN = "0x0000000000000000000000000000000000000002";
 export const SWAP_COLLATERAL_TOKEN_TO_PNL_TOKEN = "0x0000000000000000000000000000000000000003";

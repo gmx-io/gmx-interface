@@ -10,11 +10,11 @@ import {
   isIncreaseOrder,
 } from "domain/synthetics/orders";
 import { AggregatedPositionData, formatLeverage, formatPnl } from "domain/synthetics/positions";
-import { formatUsd } from "domain/synthetics/tokens";
 import { AiOutlineEdit } from "react-icons/ai";
 
 import "./PositionItem.scss";
 import { ImSpinner2 } from "react-icons/im";
+import { formatUsd } from "lib/numbers";
 
 export type Props = {
   position: AggregatedPositionData;

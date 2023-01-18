@@ -11,8 +11,9 @@ import {
   isIncreaseOrder,
   isSwapOrder,
 } from "domain/synthetics/orders";
-import { adaptToTokenInfo, convertToUsd, formatTokenAmount, formatUsd } from "domain/synthetics/tokens";
+import { adaptToTokenInfo, convertToUsd } from "domain/synthetics/tokens";
 import { PRECISION, getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
+import { formatTokenAmount, formatUsd } from "lib/numbers";
 
 type Props = {
   order: AggregatedOrderData;
