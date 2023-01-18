@@ -30,12 +30,12 @@ export default function TVChartContainer({
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const tvWidgetRef = useRef<IChartingLibraryWidget | null>(null);
   const [chartReady, setChartReady] = useState(false);
-  let [tvCharts, setTvCharts] = useLocalStorage(TV_SAVE_LOAD_CHARTS, []);
+  const [tvCharts, setTvCharts] = useLocalStorage(TV_SAVE_LOAD_CHARTS, []);
   const datafeed = useTVDatafeed();
   const isMobile = useMedia("(max-width: 550px)");
 
   const drawLineOnChart = useCallback(
-    (title, price) => {
+    (title: string, price: number) => {
       if (chartReady && tvWidgetRef.current?.activeChart?.().dataReady()) {
         return tvWidgetRef.current
           .activeChart()
@@ -59,9 +59,9 @@ export default function TVChartContainer({
     const lines: (IPositionLineAdapter | undefined)[] = [];
     if (savedShouldShowPositionLines) {
       currentPositions.forEach((position) => {
-        const { open, liq } = position;
+        const { open, liquidation } = position;
         lines.push(drawLineOnChart(open.title, open.price));
-        lines.push(drawLineOnChart(liq.title, liq.price));
+        lines.push(drawLineOnChart(liquidation.title, liquidation.price));
       });
       currentOrders.forEach((order) => {
         lines.push(drawLineOnChart(order.title, order.price));
@@ -79,10 +79,10 @@ export default function TVChartContainer({
   }, [symbol, chartReady, period]);
 
   useEffect(() => {
-    if (chartReady && tvWidgetRef.current) {
-      if (isMobile && tvWidgetRef.current.activeChart().getCheckableActionState("drawingToolbarAction")) {
-        tvWidgetRef.current?.activeChart().executeActionById("drawingToolbarAction");
-      }
+    if (!chartReady || !tvWidgetRef.current || !isMobile) return;
+
+    if (tvWidgetRef.current.activeChart().getCheckableActionState("drawingToolbarAction")) {
+      tvWidgetRef.current?.activeChart().executeActionById("drawingToolbarAction");
     }
   }, [isMobile, chartReady]);
 

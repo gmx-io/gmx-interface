@@ -11,6 +11,7 @@ import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
 
 export const supportedResolutions = { 5: "5m", 15: "15m", 60: "1h", 240: "4h", "1D": "1d" };
+const LAST_BAR_REFRESH_INTERVAL = 15000; // 15 seconds
 
 export function getPeriodFromResolutions(value, object = supportedResolutions) {
   return Object.keys(object).find((key) => object[key] === value);
@@ -73,7 +74,7 @@ const getLastBarAfterInterval = (function () {
 
   return async function main(ticker, period, chainId) {
     const currentTime = Date.now();
-    if (currentTime - startTime > 15000 || lastTicker !== ticker || lastPeriod !== period) {
+    if (currentTime - startTime > LAST_BAR_REFRESH_INTERVAL || lastTicker !== ticker || lastPeriod !== period) {
       lastBar = await getLastHistoryBar(ticker, period, chainId);
       startTime = currentTime;
       lastTicker = ticker;

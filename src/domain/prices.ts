@@ -182,8 +182,8 @@ function getCandlesFromPrices(prices, period) {
 }
 
 export function getChainlinkChartPricesFromGraph(tokenSymbol, period) {
-  if (["WBTC", "WETH", "WAVAX"].includes(tokenSymbol)) {
-    tokenSymbol = tokenSymbol.substr(1);
+  if (["WBTC", "WETH", "WAVAX", "BTC.b"].includes(tokenSymbol)) {
+    tokenSymbol = tokenSymbol.includes(".") ? tokenSymbol.split(".")[0] : tokenSymbol.substr(1);
   }
   const marketName = tokenSymbol + "_USD";
   const feedId = FEED_ID_MAP[marketName];

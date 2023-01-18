@@ -79,10 +79,6 @@ export default function ExchangeTVChart(props) {
     setChartToken(tmp);
   }, [swapOption, fromToken, toToken, chainId]);
 
-  // const symbol = chartToken ? (chartToken.isWrapped ? chartToken.baseSymbol : chartToken.symbol) : undefined;
-  // const marketName = chartToken ? symbol + "_USD" : undefined;
-  // const previousMarketName = usePrevious(marketName);
-
   const currentOrders = useMemo(() => {
     if (swapOption === SWAP || !chartToken) {
       return [];
@@ -124,7 +120,7 @@ export default function ExchangeTVChart(props) {
             price: parseFloat(formatAmount(position.averagePrice, USD_DECIMALS, 2)),
             title: `Open ${position.indexToken.symbol} ${position.isLong ? "Long" : "Short"}`,
           },
-          liq: {
+          liquidation: {
             price: parseFloat(formatAmount(getLiquidationPrice(position), USD_DECIMALS, 2)),
             title: `Liq. ${position.indexToken.symbol} ${position.isLong ? "Long" : "Short"}`,
           },

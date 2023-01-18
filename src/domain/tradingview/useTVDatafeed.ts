@@ -22,30 +22,25 @@ export default function useTVDatafeed() {
         setTimeout(() => callback(configurationData));
       },
       resolveSymbol: async (symbolName, onSymbolResolvedCallback) => {
-        const symbolInfo = async (symbol) => {
-          const stableTokens = getTokens(chainId)
-            .filter((t) => t.isStable)
-            .map((t) => t.symbol);
-
-          return {
-            name: symbol,
-            type: "crypto",
-            description: symbol + " / USD",
-            ticker: symbol,
-            session: "24x7",
-            minmov: 1,
-            pricescale: 100, // 	or 100
-            timezone: "Etc/UTC",
-            has_intraday: true,
-            has_daily: true,
-            currency_code: "USD",
-            visible_plots_set: true,
-            isStable: stableTokens.includes(symbol),
-          };
+        const stableTokens = getTokens(chainId)
+          .filter((t) => t.isStable)
+          .map((t) => t.symbol);
+        const symbolInfo = {
+          name: symbolName,
+          type: "crypto",
+          description: symbolName + " / USD",
+          ticker: symbolName,
+          session: "24x7",
+          minmov: 1,
+          pricescale: 100,
+          timezone: "Etc/UTC",
+          has_intraday: true,
+          has_daily: true,
+          currency_code: "USD",
+          visible_plots_set: true,
+          isStable: stableTokens.includes(symbolName),
         };
-        const symbol = onSymbolResolvedCallback(await symbolInfo(symbolName));
-
-        return symbol;
+        return onSymbolResolvedCallback(await symbolInfo);
       },
 
       getBars: async (symbolInfo, resolution, periodParams, onHistoryCallback, onErrorCallback) => {
