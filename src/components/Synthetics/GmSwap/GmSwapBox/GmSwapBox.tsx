@@ -7,12 +7,11 @@ import { Market, MarketPoolType } from "domain/synthetics/markets/types";
 import { useChainId } from "lib/chains";
 import { useEffect, useMemo, useState } from "react";
 
-import { MarketDropdown } from "components/Synthetics/MarketDropdown/MarketDropdown";
 import { getSubmitError, Mode, modeLabels, Operation, operationLabels, PoolDelta } from "../utils";
 
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import TokenSelector from "components/TokenSelector/TokenSelector";
-import { getMarket, getPoolAmountUsd, getTokenPoolType } from "domain/synthetics/markets/utils";
+import { getMarket, getMarketName, getPoolAmountUsd, getTokenPoolType } from "domain/synthetics/markets/utils";
 import { adaptToInfoTokens } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { IoMdSwap } from "react-icons/io";
@@ -30,6 +29,8 @@ import { useAvailableTokensData } from "domain/synthetics/tokens";
 
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { GmOrderStatus } from "../GmOrderStatus/GmOrderStatus";
+import { Dropdown, DropdownOption } from "components/Dropdown/Dropdown";
+
 import "./GmSwapBox.scss";
 
 type Props = {
@@ -62,6 +63,11 @@ export function GmSwapBox(p: Props) {
   const { marketTokensData } = useMarketTokensData(chainId);
   const { poolsData } = useMarketsPoolsData(chainId);
   const priceImpactConfigsData = usePriceImpactConfigs(chainId);
+
+  const marketsOptions: DropdownOption[] = Object.values(marketsData).map((market) => ({
+    label: getMarketName(marketsData, tokensData, market.marketTokenAddress, true, true)!,
+    value: market.marketTokenAddress,
+  }));
 
   const market = getMarket(marketsData, p.selectedMarketAddress);
 
@@ -273,9 +279,12 @@ export function GmSwapBox(p: Props) {
 
   return (
     <div className={`App-box GmSwapBox`}>
-      <div className="GmSwapBox-market-dropdown">
-        <MarketDropdown selectedMarketKey={p.selectedMarketAddress} markets={p.markets} onSelect={p.onSelectMarket} />
-      </div>
+      <Dropdown
+        className="GmSwapBox-market-dropdown"
+        selectedOption={marketsOptions.find((o) => o.value === p.selectedMarketAddress)}
+        options={marketsOptions}
+        onSelect={(o) => p.onSelectMarket(o.value)}
+      />
 
       <Tab
         options={Object.values(Operation)}

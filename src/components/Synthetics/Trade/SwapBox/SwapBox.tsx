@@ -23,7 +23,7 @@ import { useSwapPath } from "domain/synthetics/exchange/useSwapPath";
 import { convertToTokenAmount, convertToUsd, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 
-import { Dropdown, Option } from "components/Dropdown/Dropdown";
+import { Dropdown, DropdownOption } from "components/Dropdown/Dropdown";
 import { getMarket, getMarketByTokens, useMarketsData } from "domain/synthetics/markets";
 import {
   OrderType,
@@ -128,7 +128,7 @@ export function SwapBox(p: Props) {
   );
 
   const selectedMarket = getMarket(marketsData, p.selectedMarketAddress);
-  const marketOptions: Option[] = Object.values(marketsData).map((market) => ({
+  const marketOptions: DropdownOption[] = Object.values(marketsData).map((market) => ({
     label: `${getTokenData(tokensData, market.indexTokenAddress)?.symbol}/${market.perp}`,
     value: market.marketTokenAddress,
   }));

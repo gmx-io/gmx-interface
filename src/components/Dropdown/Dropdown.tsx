@@ -4,17 +4,17 @@ import { FaChevronDown } from "react-icons/fa";
 
 import "./Dropdown.scss";
 
-export type Option = {
+export type DropdownOption = {
   label: string;
   value: any;
 };
 
 export type Props = {
-  selectedOption?: Option;
+  selectedOption?: DropdownOption;
   placeholder?: string;
-  options: Option[];
+  options: DropdownOption[];
   className?: string;
-  onSelect: (option: Option) => void;
+  onSelect: (option: DropdownOption) => void;
 };
 
 export function Dropdown(p: Props) {
