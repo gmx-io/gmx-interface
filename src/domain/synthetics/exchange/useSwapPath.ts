@@ -64,7 +64,7 @@ export function useSwapPath(p: {
       // if there are no valid fees, return infinity
       if (!fees) return ethers.constants.MaxUint256;
 
-      const totalFee = fees.swapFee.add(fees.priceImpact.impact);
+      const totalFee = fees.swapFee.add(fees.priceImpact.impactUsd);
 
       return totalFee;
     },

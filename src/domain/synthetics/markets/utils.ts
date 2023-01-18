@@ -20,6 +20,18 @@ export function getMarkets(marketsData: MarketsData) {
   return Object.values(marketsData);
 }
 
+export function getMarketPoolData(poolsData: MarketsPoolsData, marketAddress?: string) {
+  if (!marketAddress) return undefined;
+
+  return poolsData[marketAddress];
+}
+
+export function getMarketTokenData(marketTokensData: MarketTokensData, marketAddress?: string) {
+  if (!marketAddress) return undefined;
+
+  return marketTokensData[marketAddress];
+}
+
 export function getMarketByTokens(marketsData: MarketsData, indexToken?: string, collateralToken?: string) {
   const markets = getMarkets(marketsData);
 
@@ -62,22 +74,16 @@ export function getMarketName(
   return `${gmText} ${indexToken.symbol}/${market.perp} [${longToken.symbol}-${shortToken.symbol}]`;
 }
 
-export function getOppositeCollateral(market: Market, collateralToken: string) {
-  if (market.longTokenAddress === collateralToken) {
-    return market.shortTokenAddress;
+export function getOppositeCollateral(market?: Market, collateralToken?: string) {
+  if (market?.longTokenAddress === collateralToken) {
+    return market?.shortTokenAddress;
   }
 
-  if (market.shortTokenAddress === collateralToken) {
-    return market.longTokenAddress;
+  if (market?.shortTokenAddress === collateralToken) {
+    return market?.longTokenAddress;
   }
 
   return undefined;
-}
-
-export function getMarketPoolData(poolsData: MarketsPoolsData, marketAddress?: string) {
-  if (!marketAddress) return undefined;
-
-  return poolsData[marketAddress];
 }
 
 export function getOpenInterest(openInterestData: MarketsOpenInterestData, marketAddress?: string) {
@@ -136,12 +142,6 @@ export function getTokenPoolType(marketsData: MarketsData, marketAddress?: strin
   }
 
   return undefined;
-}
-
-export function getMarketTokenData(marketTokensData: MarketTokensData, marketAddress?: string) {
-  if (!marketAddress) return undefined;
-
-  return marketTokensData[marketAddress];
 }
 
 export function getContractMarketPrices(marketsData: MarketsData, tokensData: TokensData, marketAddress?: string) {

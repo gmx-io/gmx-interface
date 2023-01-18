@@ -28,10 +28,10 @@ export function TradeFees(p: Props) {
           position="right-top"
           renderContent={() => (
             <div>
-              {positionPriceImpact?.impact && positionPriceImpact?.basisPoints && (
+              {positionPriceImpact?.impactUsd && positionPriceImpact?.basisPoints && (
                 <StatsTooltipRow
                   label={t`Price impact`}
-                  value={formatFee(positionPriceImpact?.impact, positionPriceImpact?.basisPoints)!}
+                  value={formatFee(positionPriceImpact?.impactUsd, positionPriceImpact?.basisPoints)!}
                   showDollar={false}
                 />
               )}

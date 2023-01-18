@@ -6,6 +6,11 @@ export type TokenPrices = {
   maxPrice: BigNumber;
 };
 
+export type TokenData = Token & {
+  balance?: BigNumber;
+  prices?: TokenPrices;
+};
+
 export type TokenAllowancesData = {
   [tokenAddress: string]: BigNumber;
 };
@@ -16,11 +21,6 @@ export type TokenBalancesData = {
 
 export type TokenPricesData = {
   [address: string]: TokenPrices;
-};
-
-export type TokenData = Token & {
-  balance?: BigNumber;
-  prices?: TokenPrices;
 };
 
 export type TokensData = {

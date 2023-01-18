@@ -84,15 +84,6 @@ export type Order = {
   data: string;
 };
 
-// export type OrderTypeFlags = {
-//   isSwapOrder: boolean;
-//   isPositionOrder: boolean;
-//   isIncrease: boolean;
-//   isDecrease: boolean;
-//   isLimit: boolean;
-//   isStopTrigger: boolean;
-// };
-
 export type AggregatedOrderData = Order & {
   title?: string;
   triggerPrice?: BigNumber;

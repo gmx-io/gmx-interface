@@ -10,7 +10,7 @@ import { expandDecimals } from "lib/numbers";
 import { useMemo } from "react";
 import { MarketTokensData } from "./types";
 import { useMarketsData } from "./useMarketsData";
-import { getContractMarketPrices, getMarket, getMarketName } from "./utils";
+import { getContractMarketPrices, getMarket } from "./utils";
 
 type MarketTokensDataResult = {
   marketTokensData: MarketTokensData;
@@ -103,7 +103,6 @@ export function useMarketTokensData(chainId: number): MarketTokensDataResult {
         marketTokensMap[marketAddress] = {
           ...tokenConfig,
           address: marketAddress,
-          symbol: getMarketName(marketsData, tokensData, marketAddress) || "GM",
           prices: {
             minPrice: minPrice?.gt(0) ? minPrice : expandDecimals(1, USD_DECIMALS),
             maxPrice: maxPrice?.gt(0) ? maxPrice : expandDecimals(1, USD_DECIMALS),

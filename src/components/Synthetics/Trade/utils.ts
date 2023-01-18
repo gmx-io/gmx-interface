@@ -360,10 +360,10 @@ export function useFeesState(p: {
   const totalFeeUsd = BigNumber.from(0)
     .add(p.swapFeeUsd || BigNumber.from(0))
     .sub(executionFee?.feeUsd || BigNumber.from(0))
-    .add(positionPriceImpact?.impact || BigNumber.from(0));
+    .add(positionPriceImpact?.impactUsd || BigNumber.from(0));
 
   const isHighPriceImpact =
-    positionPriceImpact?.impact.lt(0) && positionPriceImpact?.basisPoints.gte(HIGH_PRICE_IMPACT_BP);
+    positionPriceImpact?.impactUsd.lt(0) && positionPriceImpact?.basisPoints.gte(HIGH_PRICE_IMPACT_BP);
 
   return {
     executionFee,

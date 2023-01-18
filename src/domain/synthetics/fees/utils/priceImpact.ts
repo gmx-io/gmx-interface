@@ -69,7 +69,7 @@ export function getPriceImpact(
     : BigNumber.from(0);
 
   return {
-    impact,
+    impactUsd: impact,
     basisPoints,
   };
 }

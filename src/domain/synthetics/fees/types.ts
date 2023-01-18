@@ -54,7 +54,7 @@ export type PriceImpactConfigsData = {
 };
 
 export type PriceImpact = {
-  impact: BigNumber;
+  impactUsd: BigNumber;
   basisPoints: BigNumber;
 };
 
@@ -63,3 +63,55 @@ export type ExecutionFeeParams = {
   feeTokenAmount?: BigNumber;
   feeToken: Token;
 };
+
+export type ExecutionFees = {
+  feeUsd: BigNumber;
+  feeTokenAmount: BigNumber;
+  feeToken: Token;
+};
+
+export type SwapStepFees = {
+  swapFeeAmount: BigNumber;
+  swapImpact: PriceImpact;
+  totalFeeAmount: BigNumber;
+  totalFeeUsd: BigNumber;
+  amountAfterFees: BigNumber;
+};
+
+export type SwapOrderFees = {
+  swaps: SwapStepFees[];
+  swapOrderFeeAmount: BigNumber;
+  totalSwapImpact: PriceImpact;
+  totalFeeAmount: BigNumber;
+  totalFeeUsd: BigNumber;
+  totalSwapFeeAmount: BigNumber;
+  amountAfterFees: BigNumber;
+  amountBasisPoints: BigNumber;
+};
+
+export type PositionOrderFees = {
+  swaps: SwapStepFees[];
+  totalSwapImpact: PriceImpact;
+  positionFeeAmount: BigNumber;
+  totalFeeUsd: BigNumber;
+  totalFeeAmount: BigNumber;
+  positionImpact: PriceImpact;
+  deductedBorrowingFeeAmount: BigNumber;
+  deductedBorrowingFeeUsd: BigNumber;
+  deductedFundingFeeAmount: BigNumber;
+  deductedFundingFeeUsd: BigNumber;
+  deductedPnl: BigNumber;
+  collateralAmountAfterFees: BigNumber;
+  collateralAmountBasisPoints: BigNumber;
+};
+
+export type OrderCreationFee = {
+  feeAmount: BigNumber;
+  feeUsd: BigNumber;
+};
+
+/**
+ *
+ *
+ * Component Fees
+ */

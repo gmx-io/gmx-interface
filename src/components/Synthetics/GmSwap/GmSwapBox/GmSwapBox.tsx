@@ -119,13 +119,13 @@ export function GmSwapBox(p: Props) {
     shortDelta?.usdDelta
   );
 
-  const isHighPriceImpact = priceImpact?.impact.lt(0) && priceImpact?.basisPoints.gte(HIGH_PRICE_IMPACT_BP);
+  const isHighPriceImpact = priceImpact?.impactUsd.lt(0) && priceImpact?.basisPoints.gte(HIGH_PRICE_IMPACT_BP);
 
   const executionFee = getExecutionFee(tokensData);
 
   const feesUsd = BigNumber.from(0)
     .sub(executionFee?.feeUsd || BigNumber.from(0))
-    .add(priceImpact?.impact || BigNumber.from(0));
+    .add(priceImpact?.impactUsd || BigNumber.from(0));
 
   const tokenSelectorOptionsMap = useMemo(() => adaptToInfoTokens(tokensData), [tokensData]);
 

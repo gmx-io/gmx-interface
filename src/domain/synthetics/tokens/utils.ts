@@ -3,24 +3,28 @@ import { BigNumber } from "ethers";
 import { TokenAllowancesData, TokenData, TokenPrices, TokensData } from "./types";
 import { expandDecimals } from "lib/numbers";
 
-export function getTokenData(tokensData: TokensData, address?: string) {
+export function getTokenData(tokensData: TokensData, address: string | undefined) {
   if (!address) return undefined;
 
   return tokensData[address];
 }
 
-export function getTokenAllowance(allowanceData: TokenAllowancesData, address?: string) {
+export function getTokenAllowance(allowanceData: TokenAllowancesData, address: string | undefined) {
   if (!address) return undefined;
 
   return allowanceData[address];
 }
 
-export function needTokenApprove(tokenAllowanceData: TokenAllowancesData, tokenAddress?: string, amount?: BigNumber) {
+export function needTokenApprove(
+  tokenAllowanceData: TokenAllowancesData,
+  tokenAddress: string | undefined,
+  amountToSpend: BigNumber | undefined
+) {
   const allowance = getTokenAllowance(tokenAllowanceData, tokenAddress);
 
-  if (!allowance || !amount) return false;
+  if (!allowance || !amountToSpend) return false;
 
-  return amount.gt(allowance);
+  return amountToSpend.gt(allowance);
 }
 
 export function convertToTokenAmount(

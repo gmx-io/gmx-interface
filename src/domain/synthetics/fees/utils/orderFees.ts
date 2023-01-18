@@ -1,9 +1,9 @@
 import { BigNumber } from "ethers";
 import { PRECISION } from "lib/legacy";
 
-export function getIncreaseOrderFee() {}
+export function getIncreaseOrderFees() {}
 
-export function getDecreaseOrderFee() {}
+export function getDecreaseOrderFees() {}
 
 export function getSwapFees(amountIn: BigNumber, swapFeeFactor: BigNumber) {
   const feeAmount = amountIn.mul(swapFeeFactor).div(PRECISION);
