@@ -2,14 +2,30 @@ import { BigNumber } from "ethers";
 import { expandDecimals } from "lib/numbers";
 import { TokenPrices } from "./types";
 
-export function convertToTokenAmount(usd: BigNumber, tokenDecimals: number, price: BigNumber) {
-  if (price.lte(0)) return undefined;
+export function convertToTokenAmount(
+  usd: BigNumber | undefined,
+  tokenDecimals: number | undefined,
+  price: BigNumber | undefined
+) {
+  if (!usd || !tokenDecimals || !price?.gt(0)) return undefined;
 
   return usd.mul(expandDecimals(1, tokenDecimals)).div(price);
 }
 
-export function convertToUsd(tokenAmount: BigNumber, tokenDecimals: number, price: BigNumber) {
+export function convertToUsd(
+  tokenAmount: BigNumber | undefined,
+  tokenDecimals: number | undefined,
+  price: BigNumber | undefined
+) {
+  if (!tokenAmount || !tokenDecimals || !price) return undefined;
+
   return tokenAmount.mul(price).div(expandDecimals(1, tokenDecimals));
+}
+
+export function getMidPrice(prices: TokenPrices | undefined) {
+  if (!prices) return undefined;
+
+  return prices.minPrice.add(prices.maxPrice).div(2);
 }
 
 export function parseOraclePrice(price: string, tokenDecimals: number, oracleDecimals: number) {

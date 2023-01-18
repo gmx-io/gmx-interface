@@ -7,19 +7,19 @@ import { Market, MarketPoolType } from "domain/synthetics/markets/types";
 import { useChainId } from "lib/chains";
 import { useEffect, useMemo, useState } from "react";
 
-import { getSubmitError, Mode, modeLabels, Operation, operationLabels, PoolDelta } from "../utils";
 import { MarketDropdown } from "components/Synthetics/MarketDropdown/MarketDropdown";
+import { getSubmitError, Mode, modeLabels, Operation, operationLabels, PoolDelta } from "../utils";
 
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import TokenSelector from "components/TokenSelector/TokenSelector";
-import { getMarket, getMarketPoolData, getTokenPoolType } from "domain/synthetics/markets/utils";
-import { adaptToInfoTokens, getUsdFromTokenAmount } from "domain/synthetics/tokens";
+import { getMarket, getPoolAmountUsd, getTokenPoolType } from "domain/synthetics/markets/utils";
+import { adaptToInfoTokens } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { IoMdSwap } from "react-icons/io";
 
 import { useTokenInputState } from "domain/synthetics/exchange";
-import { usePriceImpactConfigs } from "domain/synthetics/fees/usePriceImpactConfigs";
 import { getExecutionFee, getPriceImpact } from "domain/synthetics/fees";
+import { usePriceImpactConfigs } from "domain/synthetics/fees/usePriceImpactConfigs";
 import { useMarketsData, useMarketsPoolsData, useMarketTokensData } from "domain/synthetics/markets";
 import { GmConfirmationBox } from "../GmConfirmationBox/GmConfirmationBox";
 
@@ -28,9 +28,9 @@ import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
 import { HIGH_PRICE_IMPACT_BP } from "config/synthetics";
 import { useAvailableTokensData } from "domain/synthetics/tokens";
 
-import "./GmSwapBox.scss";
-import { GmOrderStatus } from "../GmOrderStatus/GmOrderStatus";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
+import { GmOrderStatus } from "../GmOrderStatus/GmOrderStatus";
+import "./GmSwapBox.scss";
 
 type Props = {
   selectedMarketAddress?: string;
@@ -50,6 +50,9 @@ export function GmSwapBox(p: Props) {
 
   const [operationTab, setOperationTab] = useState(Operation.Deposit);
   const [modeTab, setModeTab] = useState(Mode.Single);
+
+  const isDeposit = operationTab === Operation.Deposit;
+
   const [isConfirming, setIsConfirming] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
@@ -76,24 +79,35 @@ export function GmSwapBox(p: Props) {
     return availableAddresses.map((address) => getToken(chainId, address));
   }, [chainId, market]);
 
-  const firstTokenState = useTokenInputState(tokensData, { useMaxPrice: operationTab === Operation.Withdrawal });
-  const secondTokenState = useTokenInputState(tokensData, { useMaxPrice: operationTab === Operation.Withdrawal });
+  const firstTokenState = useTokenInputState(tokensData, {
+    priceType: isDeposit ? "minPrice" : "maxPrice",
+  });
 
-  const marketTokenState = useTokenInputState(marketTokensData, { useMaxPrice: operationTab === Operation.Deposit });
+  const secondTokenState = useTokenInputState(tokensData, {
+    priceType: isDeposit ? "minPrice" : "maxPrice",
+  });
+
+  const marketTokenState = useTokenInputState(marketTokensData, { priceType: isDeposit ? "maxPrice" : "minPrice" });
 
   const [focusedInput, setFocusedInput] = useState<FocusedInput>();
 
   const longDelta = getDeltaByPoolType(MarketPoolType.Long);
   const shortDelta = getDeltaByPoolType(MarketPoolType.Short);
 
-  const marketPools = getMarketPoolData(poolsData, market?.marketTokenAddress);
-
-  const currentLongUsd = getUsdFromTokenAmount(tokensData, market?.longTokenAddress, marketPools?.longPoolAmount, true);
-  const currentShortUsd = getUsdFromTokenAmount(
+  const currentLongUsd = getPoolAmountUsd(
+    marketsData,
+    poolsData,
     tokensData,
-    market?.shortTokenAddress,
-    marketPools?.shortPoolAmount,
-    true
+    market?.marketTokenAddress,
+    market?.longTokenAddress
+  );
+
+  const currentShortUsd = getPoolAmountUsd(
+    marketsData,
+    poolsData,
+    tokensData,
+    market?.marketTokenAddress,
+    market?.shortTokenAddress
   );
 
   const priceImpact = getPriceImpact(
@@ -291,7 +305,7 @@ export function GmSwapBox(p: Props) {
             setFocusedInput(FocusedInput.firstToken);
             firstTokenState.setInputValue(e.target.value);
           }}
-          showMaxButton={operationTab === Operation.Deposit && firstTokenState.shouldShowMaxButton}
+          showMaxButton={operationTab === Operation.Deposit && firstTokenState.isNotMatchBalance}
           onClickMax={() => {
             setFocusedInput(FocusedInput.firstToken);
             firstTokenState.setValueByTokenAmount(firstTokenState.balance);
@@ -325,7 +339,7 @@ export function GmSwapBox(p: Props) {
               setFocusedInput(FocusedInput.secondToken);
               secondTokenState.setInputValue(e.target.value);
             }}
-            showMaxButton={operationTab === Operation.Deposit && secondTokenState.shouldShowMaxButton}
+            showMaxButton={operationTab === Operation.Deposit && secondTokenState.isNotMatchBalance}
             onClickMax={() => {
               setFocusedInput(FocusedInput.secondToken);
               secondTokenState.setValueByTokenAmount(secondTokenState.balance);
@@ -351,7 +365,7 @@ export function GmSwapBox(p: Props) {
             setFocusedInput(FocusedInput.marketToken);
             marketTokenState.setInputValue(e.target.value);
           }}
-          showMaxButton={operationTab === Operation.Withdrawal && marketTokenState.shouldShowMaxButton}
+          showMaxButton={operationTab === Operation.Withdrawal && marketTokenState.isNotMatchBalance}
           onClickMax={() => {
             setFocusedInput(FocusedInput.marketToken);
             marketTokenState.setValueByTokenAmount(marketTokenState.balance);

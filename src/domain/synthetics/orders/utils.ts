@@ -367,7 +367,7 @@ export function getPnlDeltaForDecreaseOrder(position?: Position, indexToken?: To
   if (!pnlPrice || !indexToken || !position || !sizeDeltaUsd) return undefined;
 
   const positionValue = convertToUsd(position.sizeInTokens, indexToken.decimals, pnlPrice);
-  const totalPnl = positionValue.sub(position.sizeInUsd).mul(position.isLong ? 1 : -1);
+  const totalPnl = positionValue?.sub(position.sizeInUsd).mul(position.isLong ? 1 : -1);
 
   let sizeDeltaInTokens: BigNumber;
 
@@ -382,7 +382,9 @@ export function getPnlDeltaForDecreaseOrder(position?: Position, indexToken?: To
     }
   }
 
-  const positionPnlUsd = totalPnl.mul(sizeDeltaInTokens).div(position.sizeInTokens);
+  const positionPnlUsd = totalPnl?.mul(sizeDeltaInTokens).div(position.sizeInTokens);
+
+  if (!positionPnlUsd || !totalPnl) return undefined;
 
   return { positionPnlUsd, sizeDeltaInTokens };
 }

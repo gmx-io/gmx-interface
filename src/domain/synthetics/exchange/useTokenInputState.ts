@@ -1,13 +1,7 @@
-import { useMemo, useState } from "react";
-import {
-  convertToTokenAmount,
-  getTokenData,
-  getUsdFromTokenAmount,
-  TokenData,
-  TokensData,
-} from "domain/synthetics/tokens";
+import { TokenData, TokensData, convertToTokenAmount, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { formatAmountFree, parseValue } from "lib/numbers";
+import { useMemo, useState } from "react";
 
 export type TokenInputState = {
   token?: TokenData;
@@ -17,7 +11,7 @@ export type TokenInputState = {
   usdAmount: BigNumber;
   balance?: BigNumber;
   price?: BigNumber;
-  shouldShowMaxButton?: boolean;
+  isNotMatchBalance?: boolean;
   setInputValue: (val: string) => void;
   setValueByTokenAmount: (val?: BigNumber) => void;
   setValueByUsdAmount: (usdAmount?: BigNumber) => void;
@@ -27,15 +21,15 @@ export type TokenInputState = {
 export function useTokenInputState(
   tokensData: TokensData,
   params: {
+    priceType: "minPrice" | "maxPrice";
     initialTokenAddress?: string;
-    useMaxPrice?: boolean;
-  } = {}
+  }
 ): TokenInputState {
   const [inputValue, setInputValue] = useState<string>("");
   const [tokenAddress, setTokenAddress] = useState<string | undefined>(params.initialTokenAddress);
 
   const token = getTokenData(tokensData, tokenAddress);
-  const price = params.useMaxPrice ? token?.prices?.maxPrice : token?.prices?.minPrice;
+  const price = params.priceType === "maxPrice" ? token?.prices?.maxPrice : token?.prices?.minPrice;
 
   const state = useMemo(() => {
     function setValueByTokenAmount(amount?: BigNumber) {
@@ -65,7 +59,7 @@ export function useTokenInputState(
         usdAmount: BigNumber.from(0),
         balance: undefined,
         price: undefined,
-        shouldShowMaxButton: false,
+        isNotMatchBalance: false,
         setInputValue,
         setTokenAddress,
         setValueByTokenAmount,
@@ -75,9 +69,9 @@ export function useTokenInputState(
 
     const balance = token.balance;
     const tokenAmount = parseValue(inputValue || "0", token.decimals) || BigNumber.from(0);
-    const usdAmount = getUsdFromTokenAmount(tokensData, tokenAddress, tokenAmount) || BigNumber.from(0);
+    const usdAmount = convertToUsd(tokenAmount, token.decimals, price) || BigNumber.from(0);
 
-    const shouldShowMaxButton = balance?.gt(0) && !tokenAmount.eq(balance);
+    const isNotMatchBalance = balance?.gt(0) && !tokenAmount.eq(balance);
 
     return {
       token,
@@ -87,13 +81,13 @@ export function useTokenInputState(
       usdAmount,
       balance,
       price,
-      shouldShowMaxButton,
+      isNotMatchBalance,
       setInputValue,
       setValueByTokenAmount,
       setValueByUsdAmount,
       setTokenAddress,
     };
-  }, [inputValue, price, token, tokenAddress, tokensData]);
+  }, [inputValue, price, token, tokenAddress]);
 
   return state;
 }

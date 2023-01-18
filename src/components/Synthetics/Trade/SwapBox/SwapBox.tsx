@@ -20,23 +20,36 @@ import {
 import { NATIVE_TOKEN_ADDRESS, getConvertedTokenAddress } from "config/tokens";
 import { useTokenInputState } from "domain/synthetics/exchange";
 import { useSwapPath } from "domain/synthetics/exchange/useSwapPath";
-import {
-  convertToUsd,
-  getTokenAmountFromUsd,
-  getTokenData,
-  getUsdFromTokenAmount,
-  useAvailableTokensData,
-} from "domain/synthetics/tokens";
+import { convertToTokenAmount, convertToUsd, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 
+import { Dropdown, Option } from "components/Dropdown/Dropdown";
+import { getMarket, getMarketByTokens, useMarketsData } from "domain/synthetics/markets";
+import {
+  OrderType,
+  getCollateralDeltaUsdForDecreaseOrder,
+  getCollateralOutForDecreaseOrder,
+  getNextCollateralUsdForDecreaseOrder,
+} from "domain/synthetics/orders";
+import {
+  AggregatedPositionData,
+  AggregatedPositionsData,
+  formatLeverage,
+  getLeverage,
+  getLiquidationPrice,
+  getPosition,
+  getPositionKey,
+} from "domain/synthetics/positions";
 import { useChainId } from "lib/chains";
 import { BASIS_POINTS_DIVISOR, DUST_USD, USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { bigNumberify, formatAmount, formatTokenAmount, formatUsd, parseValue } from "lib/numbers";
 import { useEffect, useState } from "react";
 import { IoMdSwap } from "react-icons/io";
-import { ConfirmationBox } from "../ConfirmationBox/ConfirmationBox";
 import { OrderStatus } from "../../OrderStatus/OrderStatus";
+import { ConfirmationBox } from "../ConfirmationBox/ConfirmationBox";
+import { MarketCard } from "../MarketCard/MarketCard";
+import { TradeFees } from "../TradeFees/TradeFees";
 import {
   TradeMode,
   TradeType,
@@ -50,29 +63,10 @@ import {
   useFeesState,
   useSwapTriggerRatioState,
 } from "../utils";
-import { MarketCard } from "../MarketCard/MarketCard";
-import { TradeFees } from "../TradeFees/TradeFees";
-import { getMarket, getMarketByTokens, useMarketsData } from "domain/synthetics/markets";
-import {
-  OrderType,
-  getCollateralDeltaUsdForDecreaseOrder,
-  getCollateralOutForDecreaseOrder,
-  getNextCollateralUsdForDecreaseOrder,
-} from "domain/synthetics/orders";
-import { Dropdown, Option } from "components/Dropdown/Dropdown";
-import {
-  AggregatedPositionData,
-  AggregatedPositionsData,
-  formatLeverage,
-  getLeverage,
-  getLiquidationPrice,
-  getPosition,
-  getPositionKey,
-} from "domain/synthetics/positions";
 
-import "./SwapBox.scss";
 import { useWeb3React } from "@web3-react/core";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
+import "./SwapBox.scss";
 
 enum FocusedInput {
   From = "From",
@@ -104,6 +98,7 @@ export function SwapBox(p: Props) {
   const [modeTab, setModeTab] = useLocalStorageSerializeKey([chainId, SYNTHETICS_SWAP_MODE_KEY], TradeMode.Market);
 
   const isLong = operationTab === TradeType.Long;
+  const isShort = operationTab === TradeType.Short;
   const isSwap = operationTab === TradeType.Swap;
   const isPosition = !isSwap;
   const isLimit = modeTab === TradeMode.Limit;
@@ -142,9 +137,17 @@ export function SwapBox(p: Props) {
     [chainId, SYNTHETICS_SWAP_COLLATERAL_KEY],
     p.selectedCollateralAddress
   );
+  const collateralToken = getTokenData(tokensData, collateralTokenAddress);
 
-  const fromTokenState = useTokenInputState(tokensData, { initialTokenAddress: savedFromToken });
-  const toTokenState = useTokenInputState(tokensData, { useMaxPrice: true, initialTokenAddress: savedToToken });
+  const fromTokenState = useTokenInputState(tokensData, {
+    initialTokenAddress: savedFromToken,
+    priceType: "minPrice",
+  });
+
+  const toTokenState = useTokenInputState(tokensData, {
+    initialTokenAddress: savedToToken,
+    priceType: isShort ? "minPrice" : "maxPrice",
+  });
 
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey([chainId, KEEP_LEVERAGE_FOR_DECREASE_KEY], true);
   const [closeSizeInput, setCloseSizeInput] = useState("");
@@ -234,10 +237,10 @@ export function SwapBox(p: Props) {
         })
       : BigNumber.from(0);
 
-  const collateralDeltaAmount = getTokenAmountFromUsd(
-    tokensData,
-    existingPosition?.collateralTokenAddress,
-    collateralDeltaUsd
+  const collateralDeltaAmount = convertToTokenAmount(
+    collateralDeltaUsd,
+    existingPosition?.collateralToken?.decimals,
+    existingPosition?.collateralToken?.prices?.maxPrice
   );
 
   const nextCollateralUsd = isStop
@@ -263,8 +266,12 @@ export function SwapBox(p: Props) {
       })
     : undefined;
 
-  const receiveUsd = getUsdFromTokenAmount(tokensData, collateralTokenAddress, collateralOutAmount);
-  const receiveTokenAmount = getTokenAmountFromUsd(tokensData, receiveTokenAddress, receiveUsd);
+  const receiveUsd = convertToUsd(collateralOutAmount, collateralToken?.decimals, collateralToken?.prices?.minPrice);
+  const receiveTokenAmount = convertToTokenAmount(
+    collateralOutAmount,
+    collateralToken?.decimals,
+    collateralToken?.prices?.minPrice
+  );
 
   const nextLiqPrice = getLiquidationPrice({
     sizeUsd: nextSizeUsd,
@@ -573,7 +580,7 @@ export function SwapBox(p: Props) {
                   setFocusedInput(FocusedInput.From);
                   fromTokenState.setInputValue(e.target.value);
                 }}
-                showMaxButton={fromTokenState.shouldShowMaxButton}
+                showMaxButton={fromTokenState.isNotMatchBalance}
                 onClickMax={() => {
                   setFocusedInput(FocusedInput.From);
                   fromTokenState.setValueByTokenAmount(fromTokenState.balance);

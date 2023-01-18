@@ -5,6 +5,8 @@ import { InfoRow } from "components/InfoRow/InfoRow";
 import Modal from "components/Modal/Modal";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import Tab from "components/Tab/Tab";
+import Tooltip from "components/Tooltip/Tooltip";
+import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { useTokenInputState } from "domain/synthetics/exchange";
 import { getExecutionFee } from "domain/synthetics/fees";
 import {
@@ -14,17 +16,15 @@ import {
   getNextCollateralUsdForDecreaseOrder,
 } from "domain/synthetics/orders";
 import { AggregatedPositionData, formatLeverage, getLeverage, getLiquidationPrice } from "domain/synthetics/positions";
-import { getTokenAmountFromUsd, getUsdFromTokenAmount, useAvailableTokensData } from "domain/synthetics/tokens";
+import { convertToTokenAmount, useAvailableTokensData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { DEFAULT_SLIPPAGE_AMOUNT, USD_DECIMALS } from "lib/legacy";
 import { formatAmountFree, formatTokenAmount, formatUsd, parseValue } from "lib/numbers";
 import { useEffect, useState } from "react";
-import Tooltip from "components/Tooltip/Tooltip";
-import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
-import "./PositionEditor.scss";
 import { useContractEvents } from "domain/synthetics/contractEvents";
+import "./PositionEditor.scss";
 
 type Props = {
   position: AggregatedPositionData;
@@ -50,21 +50,23 @@ export function PositionEditor(p: Props) {
 
   const { tokensData } = useAvailableTokensData(chainId);
 
-  const depositInput = useTokenInputState(tokensData, { useMaxPrice: false });
+  const depositInput = useTokenInputState(tokensData, {
+    priceType: "minPrice",
+  });
 
   const [withdrawUsdInputValue, setWithdrawUsdInputValue] = useState("");
   const maxWithdrawUsd = p.position.collateralUsd;
   const withdrawUsd = parseValue(withdrawUsdInputValue, USD_DECIMALS);
-  const withdrawTokenAmount = getTokenAmountFromUsd(tokensData, p.position.collateralToken?.address, withdrawUsd);
+  const withdrawTokenAmount = convertToTokenAmount(
+    withdrawUsd,
+    p.position.collateralToken?.decimals,
+    p.position.collateralToken?.prices?.maxPrice
+  );
 
   const executionFee = getExecutionFee(tokensData);
 
   const collateralDeltaAmount = isDeposit ? depositInput.tokenAmount : withdrawTokenAmount;
-  const collateralDeltaUsd = getUsdFromTokenAmount(
-    tokensData,
-    p.position.collateralToken?.address,
-    collateralDeltaAmount
-  );
+  const collateralDeltaUsd = isDeposit ? depositInput.usdAmount : withdrawUsd;
 
   const nextCollateralUsd = isDeposit
     ? p.position.collateralUsd?.add(collateralDeltaUsd || BigNumber.from(0))
@@ -225,7 +227,7 @@ export function PositionEditor(p: Props) {
             topRightValue={formatTokenAmount(depositInput.balance, depositInput.token?.decimals)}
             inputValue={depositInput.inputValue}
             onInputValueChange={(e) => depositInput.setInputValue(e.target.value)}
-            showMaxButton={depositInput.shouldShowMaxButton}
+            showMaxButton={depositInput.isNotMatchBalance}
             onClickMax={() => depositInput.setValueByTokenAmount(depositInput.balance)}
           >
             {depositInput.token?.symbol}

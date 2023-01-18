@@ -10,11 +10,12 @@ import {
   getMarketName,
   getMarketPoolData,
   getMarketTokenData,
+  getPoolAmountUsd,
   useMarketTokensData,
   useMarketsData,
   useMarketsPoolsData,
 } from "domain/synthetics/markets";
-import { convertToUsd, getUsdFromTokenAmount, useAvailableTokensData } from "domain/synthetics/tokens";
+import { convertToUsd, useAvailableTokensData } from "domain/synthetics/tokens";
 import "./MarketStats.scss";
 import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 
@@ -57,9 +58,24 @@ export function MarketStats(p: Props) {
   const pools = getMarketPoolData(poolsData, market?.marketTokenAddress);
 
   const longPoolAmount = pools?.longPoolAmount;
-  const longPoolAmountUsd = getUsdFromTokenAmount(tokensData, market?.longTokenAddress, longPoolAmount);
+  const longPoolAmountUsd = getPoolAmountUsd(
+    marketsData,
+    poolsData,
+    tokensData,
+    market?.marketTokenAddress,
+    market?.longTokenAddress,
+    false
+  );
+
   const shortPoolAmount = pools?.shortPoolAmount;
-  const shortPoolAmountUsd = getUsdFromTokenAmount(tokensData, market?.shortTokenAddress, shortPoolAmount);
+  const shortPoolAmountUsd = getPoolAmountUsd(
+    marketsData,
+    poolsData,
+    tokensData,
+    market?.marketTokenAddress,
+    market?.shortTokenAddress,
+    false
+  );
 
   return (
     <div className="App-card MarketStats-card">

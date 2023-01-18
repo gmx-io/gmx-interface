@@ -24,12 +24,7 @@ import {
   getLeverage,
   getLiquidationPrice,
 } from "domain/synthetics/positions";
-import {
-  getTokenAmountFromUsd,
-  getTokenData,
-  getUsdFromTokenAmount,
-  useAvailableTokensData,
-} from "domain/synthetics/tokens";
+import { convertToTokenAmount, convertToUsd, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { DEFAULT_SLIPPAGE_AMOUNT, DUST_USD, USD_DECIMALS } from "lib/legacy";
@@ -73,7 +68,11 @@ export function PositionSeller(p: Props) {
     sizeDeltaUsd,
   });
 
-  const collateralDeltaAmount = getTokenAmountFromUsd(tokensData, position.collateralTokenAddress, collateralDeltaUsd);
+  const collateralDeltaAmount = convertToTokenAmount(
+    collateralDeltaUsd,
+    position.collateralToken?.decimals,
+    position.collateralToken?.prices?.maxPrice
+  );
 
   const nextCollateralUsd = getNextCollateralUsdForDecreaseOrder({
     isClosing,
@@ -98,8 +97,13 @@ export function PositionSeller(p: Props) {
     priceImpactUsd: BigNumber.from(0),
   });
 
-  const receiveUsd = getUsdFromTokenAmount(tokensData, position.collateralTokenAddress, collateralOutAmount);
-  const receiveTokenAmount = getTokenAmountFromUsd(tokensData, receiveTokenAddress, receiveUsd);
+  const receiveUsd = convertToUsd(
+    collateralOutAmount,
+    position.collateralToken?.decimals,
+    position.collateralToken?.prices?.maxPrice
+  );
+
+  const receiveTokenAmount = convertToTokenAmount(receiveUsd, receiveToken?.decimals, receiveToken?.prices?.maxPrice);
 
   const nextLiqPrice =
     nextSizeUsd?.gt(0) && !keepLeverage

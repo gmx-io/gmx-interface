@@ -1,35 +1,35 @@
-import { plural, t, Trans } from "@lingui/macro";
+import { Trans, plural, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import cx from "classnames";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Modal from "components/Modal/Modal";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
+import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
 import { getContract } from "config/contracts";
 import { getToken } from "config/tokens";
 import { PriceImpact } from "domain/synthetics/fees/types";
 import { createDepositTxn } from "domain/synthetics/markets/createDepositTxn";
 import { createWithdrawalTxn } from "domain/synthetics/markets/createWithdrawalTxn";
+import { convertToTokenAmount, convertToUsd, getTokenData, needTokenApprove } from "domain/synthetics/tokens";
 import { TokensData } from "domain/synthetics/tokens/types";
 import { useTokenAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
-import { convertToUsd, getTokenAmountFromUsd, getTokenData, needTokenApprove } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { useMemo } from "react";
-import { getSubmitError, Operation, operationLabels, PoolDelta } from "../utils";
-import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
+import { Operation, PoolDelta, getSubmitError, operationLabels } from "../utils";
 
 import {
   getMarket,
   getMarketTokenData,
+  useMarketTokensData,
   useMarketsData,
   useMarketsPoolsData,
-  useMarketTokensData,
 } from "domain/synthetics/markets";
 import { useAvailableTokensData } from "domain/synthetics/tokens";
 
-import "./GmConfirmationBox.scss";
 import { formatTokenAmount, formatTokenAmountWithUsd } from "lib/numbers";
+import "./GmConfirmationBox.scss";
 
 type Props = {
   onClose: () => void;
@@ -177,14 +177,14 @@ export function GmConfirmationBox(p: Props) {
   }
 
   function onCreateWithdrawal() {
-    if (!account || !market || !p.executionFee) return;
+    if (!account || !market || !p.executionFee || !longToken?.prices || !shortToken?.prices) return;
 
     const marketLongAmount = p.longDelta
-      ? getTokenAmountFromUsd(marketTokensData, p.marketTokenAddress, p.longDelta.usdAmount)
+      ? convertToTokenAmount(p.longDelta.usdAmount, longToken.decimals, longToken.prices.maxPrice)
       : undefined;
 
     const marketShortAmount = p.shortDelta
-      ? getTokenAmountFromUsd(marketTokensData, p.marketTokenAddress, p.shortDelta.usdAmount)
+      ? convertToTokenAmount(p.shortDelta.usdAmount, shortToken.decimals, shortToken.prices.maxPrice)
       : undefined;
 
     createWithdrawalTxn(chainId, library, {

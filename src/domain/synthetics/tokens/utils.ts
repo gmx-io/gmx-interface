@@ -9,7 +9,12 @@ export function getTokenData(tokensData: TokensData, address?: string) {
   return tokensData[address];
 }
 
-export function getUsdFromTokenAmount(tokensData: TokensData, address?: string, amount?: BigNumber, max?: boolean) {
+export function getUsdFromTokenAmount(
+  tokensData: TokensData,
+  address: string | undefined,
+  amount: BigNumber | undefined,
+  priceType: "maxPrice" | "minPrice"
+) {
   const tokenData = getTokenData(tokensData, address);
 
   const prices = tokenData?.prices;
@@ -18,10 +23,15 @@ export function getUsdFromTokenAmount(tokensData: TokensData, address?: string, 
     return undefined;
   }
 
-  return convertToUsd(amount, tokenData.decimals, max ? prices.maxPrice : prices.minPrice);
+  return convertToUsd(amount, tokenData.decimals, priceType === "maxPrice" ? prices.maxPrice : prices.minPrice);
 }
 
-export function getTokenAmountFromUsd(tokensData: TokensData, address?: string, usdAmount?: BigNumber, max?: boolean) {
+export function getTokenAmountFromUsd(
+  tokensData: TokensData,
+  address: string | undefined,
+  usdAmount: BigNumber | undefined,
+  priceType: "maxPrice" | "minPrice"
+) {
   const tokenData = getTokenData(tokensData, address);
 
   const prices = tokenData?.prices;
@@ -30,7 +40,11 @@ export function getTokenAmountFromUsd(tokensData: TokensData, address?: string, 
     return undefined;
   }
 
-  return convertToTokenAmount(usdAmount, tokenData.decimals, max ? prices.maxPrice : prices.minPrice);
+  return convertToTokenAmount(
+    usdAmount,
+    tokenData.decimals,
+    priceType === "maxPrice" ? prices.maxPrice : prices.minPrice
+  );
 }
 
 export function getTokenAllowance(allowanceData: TokenAllowancesData, address?: string) {

@@ -3,17 +3,17 @@ import { InfoRow } from "components/InfoRow/InfoRow";
 import {
   getMarket,
   getMarketName,
-  getMarketPoolData,
   getOpenInterest,
+  getPoolAmountUsd,
   useMarketsData,
   useMarketsPoolsData,
 } from "domain/synthetics/markets";
 import { useOpenInterestData } from "domain/synthetics/markets/useOpenInterestData";
-import { getTokenData, getUsdFromTokenAmount, useAvailableTokensData } from "domain/synthetics/tokens";
+import { getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 
-import "./MarketCard.scss";
 import { formatUsd } from "lib/numbers";
+import "./MarketCard.scss";
 
 export type Props = {
   swapPath?: string[];
@@ -36,18 +36,24 @@ export function MarketCard(p: Props) {
   const market = getMarket(marketsData, p.marketAddress || p.swapPath?.[p.swapPath.length - 1]);
   const marketName = getMarketName(marketsData, tokensData, market?.marketTokenAddress);
 
-  const pools = getMarketPoolData(poolsData, market?.marketTokenAddress);
-
   const longToken = getTokenData(tokensData, market?.longTokenAddress);
   const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
 
-  const longPoolAmount = pools?.longPoolAmount;
+  const longPoolAmountUsd = getPoolAmountUsd(
+    marketsData,
+    poolsData,
+    tokensData,
+    market?.marketTokenAddress,
+    market?.longTokenAddress
+  );
 
-  const shortPoolAmount = pools?.shortPoolAmount;
-
-  const longPoolAmountUsd = getUsdFromTokenAmount(tokensData, market?.longTokenAddress, longPoolAmount);
-
-  const shortPoolAmountUsd = getUsdFromTokenAmount(tokensData, market?.shortTokenAddress, shortPoolAmount);
+  const shortPoolAmountUsd = getPoolAmountUsd(
+    marketsData,
+    poolsData,
+    tokensData,
+    market?.marketTokenAddress,
+    market?.shortTokenAddress
+  );
 
   const openInterest = getOpenInterest(openInterestData, market?.marketTokenAddress);
 

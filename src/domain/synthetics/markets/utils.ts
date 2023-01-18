@@ -1,13 +1,13 @@
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { convertToContractPrices, convertToUsd, getTokenData } from "../tokens";
 import { TokensData } from "../tokens/types";
-import { convertToContractPrices, getTokenData, getUsdFromTokenAmount } from "../tokens";
 import {
-  MarketPoolType,
-  MarketsData,
-  MarketsPoolsData,
-  MarketTokensData,
-  MarketsOpenInterestData,
   Market,
+  MarketPoolType,
+  MarketTokensData,
+  MarketsData,
+  MarketsOpenInterestData,
+  MarketsPoolsData,
 } from "./types";
 
 export function getMarket(marketsData: MarketsData, marketAddress?: string) {
@@ -117,8 +117,9 @@ export function getPoolAmountUsd(
   useMaxPrice?: boolean
 ) {
   const tokenAmount = getTokenPoolAmount(marketsData, poolsData, marketAddress, tokenAddress);
+  const token = getTokenData(tokensData, tokenAddress);
 
-  return getUsdFromTokenAmount(tokensData, tokenAddress, tokenAmount, useMaxPrice);
+  return convertToUsd(tokenAmount, token?.decimals, useMaxPrice ? token?.prices?.maxPrice : token?.prices?.minPrice);
 }
 
 export function getTokenPoolType(marketsData: MarketsData, marketAddress?: string, tokenAddress?: string) {
