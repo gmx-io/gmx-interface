@@ -5,8 +5,8 @@ import useSWR from "swr";
 import { useMemo } from "react";
 import { getOracleKeeperUrl } from "config/oracleKeeper";
 import { USD_DECIMALS } from "lib/legacy";
-import { parseOraclePrice } from "./amountUtils";
 import { TokenPricesData } from "./types";
+import { parseOraclePrice } from "./utils";
 
 type BackendResponse = {
   minPrice: string;
