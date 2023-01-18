@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import {
-  convertFromUsdByPrice,
+  convertToTokenAmount,
   getTokenData,
   getUsdFromTokenAmount,
   TokenData,
@@ -52,7 +52,7 @@ export function useTokenInputState(
     function setValueByUsdAmount(usdAmount?: BigNumber) {
       if (!token || !price) return;
 
-      const nextTokenAmount = convertFromUsdByPrice(usdAmount || BigNumber.from(0), token.decimals, price);
+      const nextTokenAmount = convertToTokenAmount(usdAmount || BigNumber.from(0), token.decimals, price);
 
       setValueByTokenAmount(nextTokenAmount);
     }

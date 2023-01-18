@@ -5,7 +5,7 @@ import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { RequestStatus } from "components/RequestStatus/RequestStatus";
 import { useEffect, useState } from "react";
 import { useChainId } from "lib/chains";
-import { formatTokenAmount, formatUsdAmount, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
+import { formatTokenAmount, formatUsd, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { OrderType, isIncreaseOrder, isSwapOrder } from "domain/synthetics/orders";
 import { BigNumber } from "ethers";
 import { getMarket, useMarketsData } from "domain/synthetics/markets";
@@ -54,7 +54,7 @@ export function OrderStatus(p: Props) {
 
     const orderTypeText = isIncreaseOrder(p.orderType) ? t`Increasing` : t`Decreasing`;
 
-    return t`${orderTypeText} ${indexToken?.symbol} ${longText} by ${formatUsdAmount(p.sizeDeltaUsd)}`;
+    return t`${orderTypeText} ${indexToken?.symbol} ${longText} by ${formatUsd(p.sizeDeltaUsd)}`;
   }
 
   function renderCreationStatus() {

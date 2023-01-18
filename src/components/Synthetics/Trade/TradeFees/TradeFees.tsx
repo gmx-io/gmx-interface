@@ -4,12 +4,7 @@ import { InfoRow } from "components/InfoRow/InfoRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { formatFee } from "domain/synthetics/fees";
-import {
-  formatTokenAmountWithUsd,
-  formatUsdAmount,
-  getTokenData,
-  useAvailableTokensData,
-} from "domain/synthetics/tokens";
+import { formatTokenAmountWithUsd, formatUsd, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { Fees } from "../utils";
 
@@ -35,7 +30,7 @@ export function TradeFees(p: Props) {
               {positionPriceImpact?.impact && positionPriceImpact?.basisPoints && (
                 <StatsTooltipRow
                   label={t`Price impact`}
-                  value={formatFee(positionPriceImpact?.impact, positionPriceImpact?.basisPoints)}
+                  value={formatFee(positionPriceImpact?.impact, positionPriceImpact?.basisPoints)!}
                   showDollar={false}
                 />
               )}
@@ -44,19 +39,21 @@ export function TradeFees(p: Props) {
                 <StatsTooltipRow
                   key={`${item.market}-${item.to}`}
                   label={t`Swap to ${getTokenData(tokensData, item.to)?.symbol}`}
-                  value={formatUsdAmount(item.feeUsd)}
+                  value={formatUsd(item.feeUsd)!}
                   showDollar={false}
                 />
               ))}
 
               <StatsTooltipRow
                 label={t`Execution fee`}
-                value={formatTokenAmountWithUsd(
-                  executionFee?.feeTokenAmount,
-                  executionFee?.feeUsd,
-                  executionFee?.feeToken?.symbol,
-                  executionFee?.feeToken?.decimals
-                )}
+                value={
+                  formatTokenAmountWithUsd(
+                    executionFee?.feeTokenAmount,
+                    executionFee?.feeUsd,
+                    executionFee?.feeToken?.symbol,
+                    executionFee?.feeToken?.decimals
+                  ) || "..."
+                }
                 showDollar={false}
               />
             </div>

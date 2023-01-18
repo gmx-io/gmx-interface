@@ -11,7 +11,7 @@ import {
   isIncreaseOrder,
   isSwapOrder,
 } from "domain/synthetics/orders";
-import { adaptToTokenInfo, convertToUsdByPrice, formatTokenAmount, formatUsdAmount } from "domain/synthetics/tokens";
+import { adaptToTokenInfo, convertToUsd, formatTokenAmount, formatUsd } from "domain/synthetics/tokens";
 import { PRECISION, getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
 
 type Props = {
@@ -32,10 +32,10 @@ export function OrderItem(p: Props) {
     const collateralToken = p.order.initialCollateralToken;
 
     const collateralUsd = collateralToken?.prices
-      ? convertToUsdByPrice(collateralAmount, collateralToken.decimals, collateralToken.prices.maxPrice)
+      ? convertToUsd(collateralAmount, collateralToken.decimals, collateralToken.prices.maxPrice)
       : undefined;
 
-    const usdText = formatUsdAmount(collateralUsd);
+    const usdText = formatUsd(collateralUsd);
 
     const tokenAmountText = formatTokenAmount(collateralAmount, collateralToken?.decimals, collateralToken?.symbol);
 
@@ -122,7 +122,7 @@ export function OrderItem(p: Props) {
         </>
       );
     } else {
-      return `${getTriggerPricePrefix(p.order.orderType, p.order.isLong)} ${formatUsdAmount(p.order.triggerPrice)}`;
+      return `${getTriggerPricePrefix(p.order.orderType, p.order.isLong)} ${formatUsd(p.order.triggerPrice)}`;
     }
   }
 
@@ -140,7 +140,7 @@ export function OrderItem(p: Props) {
 
       return (
         <Tooltip
-          handle={formatUsdAmount(markPrice)}
+          handle={formatUsd(markPrice)}
           position="right-bottom"
           renderContent={() => {
             return (

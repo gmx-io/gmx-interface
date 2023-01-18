@@ -30,17 +30,19 @@ export function GmFees(p: Props) {
             <div>
               <StatsTooltipRow
                 label={t`Price impact`}
-                value={formatFee(priceImpact?.impact, priceImpact?.basisPoints)}
+                value={formatFee(priceImpact?.impact, priceImpact?.basisPoints) || "..."}
                 showDollar={false}
               />
               <StatsTooltipRow
                 label={t`Execution fee`}
-                value={formatTokenAmountWithUsd(
-                  executionFee,
-                  executionFeeUsd,
-                  executionFeeToken?.symbol,
-                  executionFeeToken?.decimals
-                )}
+                value={
+                  formatTokenAmountWithUsd(
+                    executionFee,
+                    executionFeeUsd,
+                    executionFeeToken?.symbol,
+                    executionFeeToken?.decimals
+                  ) || "..."
+                }
                 showDollar={false}
               />
             </div>

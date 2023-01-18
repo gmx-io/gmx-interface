@@ -14,8 +14,8 @@ import { useOpenInterestData } from "domain/synthetics/markets/useOpenInterestDa
 import {
   TokensData,
   adaptToInfoTokens,
-  convertFromUsdByPrice,
-  convertToUsdByPrice,
+  convertToTokenAmount,
+  convertToUsd,
   getTokenData,
   useAvailableTokensData,
 } from "domain/synthetics/tokens";
@@ -160,9 +160,9 @@ export function getNextTokenAmount(p: {
   leverageMultiplier?: BigNumber;
   isInvertedLeverage?: boolean;
 }) {
-  const fromUsd = convertToUsdByPrice(p.fromTokenAmount, p.fromToken.decimals, p.fromTokenPrice);
+  const fromUsd = convertToUsd(p.fromTokenAmount, p.fromToken.decimals, p.fromTokenPrice);
 
-  let toAmount = convertFromUsdByPrice(fromUsd, p.toToken.decimals, p.toTokenPrice);
+  let toAmount = convertToTokenAmount(fromUsd, p.toToken.decimals, p.toTokenPrice);
 
   if (!toAmount || !fromUsd) return undefined;
 
@@ -176,11 +176,11 @@ export function getNextTokenAmount(p: {
     toAmount = p.fromTokenAmount.mul(adjustedDecimalsRatio).div(TRIGGER_RATIO_PRECISION);
   } else if (p.triggerPrice?.gt(0)) {
     if (p.isInvertedTriggerPrice) {
-      const toTriggerUsd = convertToUsdByPrice(p.fromTokenAmount, p.fromToken.decimals, p.triggerPrice);
+      const toTriggerUsd = convertToUsd(p.fromTokenAmount, p.fromToken.decimals, p.triggerPrice);
 
-      toAmount = convertFromUsdByPrice(toTriggerUsd, p.toToken.decimals, p.toTokenPrice);
+      toAmount = convertToTokenAmount(toTriggerUsd, p.toToken.decimals, p.toTokenPrice);
     } else {
-      toAmount = convertFromUsdByPrice(fromUsd, p.toToken.decimals, p.triggerPrice);
+      toAmount = convertToTokenAmount(fromUsd, p.toToken.decimals, p.triggerPrice);
     }
   }
 

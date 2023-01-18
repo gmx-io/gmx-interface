@@ -14,16 +14,15 @@ import {
   createIncreaseOrderTxn,
   createSwapOrderTxn,
 } from "domain/synthetics/orders";
-import { TokenData, useAvailableTokensData } from "domain/synthetics/tokens";
+import { TokenData, formatUsd, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useTokenAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 import {
-  convertToUsdByPrice,
+  convertToUsd,
   formatTokenAmount,
   formatTokenAmountWithUsd,
-  formatUsdAmount,
   getTokenData,
   needTokenApprove,
-} from "domain/synthetics/tokens/utils";
+} from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
@@ -79,7 +78,7 @@ type Props = {
 function getTokenText(token?: Token, tokenAmount?: BigNumber, price?: BigNumber) {
   if (!token || !price || !tokenAmount) return undefined;
 
-  const usdAmount = convertToUsdByPrice(tokenAmount, token.decimals, price);
+  const usdAmount = convertToUsd(tokenAmount, token.decimals, price);
 
   return formatTokenAmountWithUsd(tokenAmount, usdAmount, token.symbol, token.decimals);
 }
@@ -307,8 +306,8 @@ export function ConfirmationBox(p: Props) {
               <InfoRow label={t`Price`} value={formatAmount(p.swapTriggerRatio, USD_DECIMALS, 4)} />
             )}
 
-            <InfoRow label={t`${fromToken?.symbol} Price`} value={formatUsdAmount(p.fromTokenPrice)} />
-            <InfoRow label={t`${toToken?.symbol} Price`} value={formatUsdAmount(p.toTokenPrice)} />
+            <InfoRow label={t`${fromToken?.symbol} Price`} value={formatUsd(p.fromTokenPrice)!} />
+            <InfoRow label={t`${toToken?.symbol} Price`} value={formatUsd(p.toTokenPrice)!} />
           </>
         )}
 
@@ -330,12 +329,9 @@ export function ConfirmationBox(p: Props) {
                 label={p.existingPosition?.sizeInUsd ? t`Size` : t`Decrease size`}
                 value={
                   p.existingPosition?.sizeInUsd ? (
-                    <ValueTransition
-                      from={formatUsdAmount(p.existingPosition.sizeInUsd)}
-                      to={formatUsdAmount(p.nextSizeUsd)}
-                    />
+                    <ValueTransition from={formatUsd(p.existingPosition.sizeInUsd)!} to={formatUsd(p.nextSizeUsd)} />
                   ) : p.closeSizeUsd ? (
-                    formatUsdAmount(p.closeSizeUsd)
+                    formatUsd(p.closeSizeUsd)
                   ) : (
                     "..."
                   )
@@ -351,8 +347,8 @@ export function ConfirmationBox(p: Props) {
                 label={t`Collateral (${p.existingPosition?.collateralToken?.symbol})`}
                 value={
                   <ValueTransition
-                    from={formatUsdAmount(p.existingPosition.collateralUsd)}
-                    to={formatUsdAmount(p.nextCollateralUsd)}
+                    from={formatUsd(p.existingPosition.collateralUsd)!}
+                    to={formatUsd(p.nextCollateralUsd)}
                   />
                 }
               />
@@ -400,15 +396,13 @@ export function ConfirmationBox(p: Props) {
               </ExchangeInfoRow>
             )} */}
 
-            {p.entryPrice && !isLimit && !isStop && (
-              <InfoRow label={t`Entry price`} value={formatUsdAmount(p.entryPrice)} />
-            )}
+            {p.entryPrice && !isLimit && !isStop && <InfoRow label={t`Entry price`} value={formatUsd(p.entryPrice)} />}
 
             {isPosition && isStop && (
               <InfoRow
                 className="SwapBox-info-row"
                 label={t`Mark Price`}
-                value={p.markPrice ? formatUsdAmount(p.markPrice) : "..."}
+                value={p.markPrice ? formatUsd(p.markPrice) : "..."}
               />
             )}
 
@@ -416,7 +410,7 @@ export function ConfirmationBox(p: Props) {
               <InfoRow
                 className="SwapBox-info-row"
                 label={t`Entry Price`}
-                value={p.entryPrice ? formatUsdAmount(p.entryPrice) : "..."}
+                value={p.entryPrice ? formatUsd(p.entryPrice) : "..."}
               />
             )}
 
@@ -424,7 +418,7 @@ export function ConfirmationBox(p: Props) {
               <InfoRow
                 className="SwapBox-info-row"
                 label={t`Trigger Price`}
-                value={p.triggerPrice ? `${p.triggerPricePrefix}${formatUsdAmount(p.triggerPrice)}` : "..."}
+                value={p.triggerPrice ? `${p.triggerPricePrefix}${formatUsd(p.triggerPrice)}` : "..."}
               />
             )}
 
@@ -435,11 +429,11 @@ export function ConfirmationBox(p: Props) {
                 value={
                   p.existingPosition?.liqPrice ? (
                     <ValueTransition
-                      from={formatUsdAmount(p.existingPosition.liqPrice)}
-                      to={p.nextLiqPrice ? formatUsdAmount(p.nextLiqPrice) : undefined}
+                      from={formatUsd(p.existingPosition.liqPrice)!}
+                      to={p.nextLiqPrice ? formatUsd(p.nextLiqPrice) : undefined}
                     />
                   ) : p.nextLiqPrice ? (
-                    formatUsdAmount(p.nextLiqPrice)
+                    formatUsd(p.nextLiqPrice)
                   ) : (
                     "..."
                   )
@@ -466,8 +460,8 @@ export function ConfirmationBox(p: Props) {
                 value={
                   p.nextSizeUsd?.gt(0) ? (
                     <ValueTransition
-                      from={formatUsdAmount(p.existingPosition.liqPrice)}
-                      to={p.nextLiqPrice ? formatUsdAmount(p.nextLiqPrice) : undefined}
+                      from={formatUsd(p.existingPosition.liqPrice)!}
+                      to={p.nextLiqPrice ? formatUsd(p.nextLiqPrice) : undefined}
                     />
                   ) : (
                     "..."

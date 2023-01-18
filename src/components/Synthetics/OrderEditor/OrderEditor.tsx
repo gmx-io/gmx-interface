@@ -11,12 +11,7 @@ import {
   isStopMarketOrder,
   isSwapOrder,
 } from "domain/synthetics/orders";
-import {
-  formatTokenAmountWithUsd,
-  formatUsdAmount,
-  getTokenData,
-  useAvailableTokensData,
-} from "domain/synthetics/tokens";
+import { formatTokenAmountWithUsd, formatUsd, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
 import { formatAmount, parseValue } from "lib/numbers";
@@ -230,7 +225,7 @@ export function OrderEditor(p: Props) {
             <BuyInputSection
               topLeftLabel={t`Price`}
               topRightLabel={t`Mark:`}
-              topRightValue={formatUsdAmount(markPrice)}
+              topRightValue={formatUsd(markPrice)}
               onClickTopRightLabel={() => setTriggerPriceInputValue(formatAmount(markPrice, USD_DECIMALS, 2))}
               inputValue={triggerPirceInputValue}
               onInputValueChange={(e) => setTriggerPriceInputValue(e.target.value)}
@@ -263,9 +258,7 @@ export function OrderEditor(p: Props) {
         )}
 
         <div className="PositionEditor-info-box">
-          {existingPosition?.liqPrice && (
-            <InfoRow label={t`Liq. Price`} value={formatUsdAmount(existingPosition.liqPrice)} />
-          )}
+          {existingPosition?.liqPrice && <InfoRow label={t`Liq. Price`} value={formatUsd(existingPosition.liqPrice)} />}
           <InfoRow
             label={<Trans>Fees</Trans>}
             value={
@@ -276,12 +269,14 @@ export function OrderEditor(p: Props) {
                   <div>
                     <StatsTooltipRow
                       label={t`Execution fee`}
-                      value={formatTokenAmountWithUsd(
-                        executionFee?.feeTokenAmount,
-                        executionFee?.feeUsd,
-                        executionFee?.feeToken?.symbol,
-                        executionFee?.feeToken?.decimals
-                      )}
+                      value={
+                        formatTokenAmountWithUsd(
+                          executionFee?.feeTokenAmount,
+                          executionFee?.feeUsd,
+                          executionFee?.feeToken?.symbol,
+                          executionFee?.feeToken?.decimals
+                        ) || "..."
+                      }
                       showDollar={false}
                     />
                   </div>

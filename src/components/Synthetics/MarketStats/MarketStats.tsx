@@ -15,9 +15,9 @@ import {
   useMarketsPoolsData,
 } from "domain/synthetics/markets";
 import {
-  convertToUsdByPrice,
+  convertToUsd,
   formatTokenAmountWithUsd,
-  formatUsdAmount,
+  formatUsd,
   getUsdFromTokenAmount,
   useAvailableTokensData,
 } from "domain/synthetics/tokens";
@@ -43,14 +43,12 @@ export function MarketStats(p: Props) {
 
   const marketBalance = marketToken?.balance;
   const marketBalanceUsd =
-    marketBalance && marketPrice ? convertToUsdByPrice(marketBalance, marketToken.decimals, marketPrice) : undefined;
+    marketBalance && marketPrice ? convertToUsd(marketBalance, marketToken.decimals, marketPrice) : undefined;
 
   const marketTotalSupply = marketToken?.totalSupply;
 
   const marketTotalSupplyUsd =
-    marketTotalSupply && marketPrice
-      ? convertToUsdByPrice(marketTotalSupply, marketToken.decimals, marketPrice)
-      : undefined;
+    marketTotalSupply && marketPrice ? convertToUsd(marketTotalSupply, marketToken.decimals, marketPrice) : undefined;
 
   const { longCollateral, shortCollateral } = useMemo(() => {
     if (!market) return { longCollateral: undefined, shortCollateral: undefined };
@@ -95,7 +93,7 @@ export function MarketStats(p: Props) {
       <div className="App-card-divider" />
       <div className="App-card-content">
         {/* <CardRow label={t`Market`} value={marketName} /> */}
-        <CardRow label={t`Price`} value={marketPrice ? formatUsdAmount(marketPrice) : "..."} />
+        <CardRow label={t`Price`} value={formatUsd(marketPrice) || "..."} />
         <CardRow
           label={t`Wallet`}
           value={
@@ -106,7 +104,7 @@ export function MarketStats(p: Props) {
         />
 
         {/* TODO */}
-        {/* <CardRow label={t`Market worth`} value={formatUsdAmount(bigNumberify(0))} /> */}
+        {/* <CardRow label={t`Market worth`} value={formatUsd(bigNumberify(0))} /> */}
 
         {/* TODO */}
         {/* <CardRow label={t`APR`} value={"14.00%"} /> */}

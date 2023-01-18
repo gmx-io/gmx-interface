@@ -26,7 +26,7 @@ import {
 } from "domain/synthetics/positions";
 import {
   formatTokenAmountWithUsd,
-  formatUsdAmount,
+  formatUsd,
   getTokenAmountFromUsd,
   getTokenData,
   getUsdFromTokenAmount,
@@ -210,7 +210,7 @@ export function PositionSeller(p: Props) {
         <BuyInputSection
           topLeftLabel={t`Close`}
           topRightLabel={t`Max`}
-          topRightValue={formatUsdAmount(maxCloseSize)}
+          topRightValue={formatUsd(maxCloseSize)}
           inputValue={closeUsdInputValue}
           onInputValueChange={(e) => setCloseUsdInputValue(e.target.value)}
           showMaxButton={maxCloseSize.gt(0) && !closeUsd?.eq(maxCloseSize)}
@@ -254,15 +254,15 @@ export function PositionSeller(p: Props) {
               />
             </ExchangeInfoRow>
           </div> */}
-          <InfoRow label={t`Mark Price`} value={formatUsdAmount(position.markPrice)} />
-          <InfoRow label={t`Entry Price`} value={formatUsdAmount(position.entryPrice)} />
+          <InfoRow label={t`Mark Price`} value={formatUsd(position.markPrice)} />
+          <InfoRow label={t`Entry Price`} value={formatUsd(position.entryPrice)} />
           <InfoRow
             label={t`Liq Price`}
             value={
               nextSizeUsd?.gt(0) && position.liqPrice ? (
                 <ValueTransition
-                  from={formatUsdAmount(position.liqPrice)}
-                  to={nextLiqPrice && !nextLiqPrice.eq(position.liqPrice) ? formatUsdAmount(nextLiqPrice) : undefined}
+                  from={formatUsd(position.liqPrice)!}
+                  to={nextLiqPrice && !nextLiqPrice.eq(position.liqPrice) ? formatUsd(nextLiqPrice) : undefined}
                 />
               ) : (
                 "-"
@@ -274,8 +274,8 @@ export function PositionSeller(p: Props) {
             label={t`Size`}
             value={
               <ValueTransition
-                from={formatUsdAmount(position.sizeInUsd)}
-                to={nextSizeUsd && !nextSizeUsd.eq(position.sizeInUsd) ? formatUsdAmount(nextSizeUsd) : undefined}
+                from={formatUsd(position.sizeInUsd)!}
+                to={nextSizeUsd && !nextSizeUsd.eq(position.sizeInUsd) ? formatUsd(nextSizeUsd) : undefined}
               />
             }
           />
@@ -283,10 +283,10 @@ export function PositionSeller(p: Props) {
             label={t`Collateral (${position.collateralToken?.symbol})`}
             value={
               <ValueTransition
-                from={formatUsdAmount(position.collateralUsd)}
+                from={formatUsd(position.collateralUsd)!}
                 to={
                   nextCollateralUsd && position.collateralUsd && !nextCollateralUsd.eq(position.collateralUsd)
-                    ? formatUsdAmount(nextCollateralUsd)
+                    ? formatUsd(nextCollateralUsd)
                     : undefined
                 }
               />
@@ -358,7 +358,7 @@ export function PositionSeller(p: Props) {
             label={t`Receive`}
             className="Exchange-info-row PositionSeller-receive-row "
             value={
-              <span className="PositionSelector-selected-receive-token">
+              <span>
                 {formatTokenAmountWithUsd(receiveTokenAmount, receiveUsd, receiveToken?.symbol, receiveToken?.decimals)}
               </span>
               // TODO: add receive token selector

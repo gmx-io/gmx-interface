@@ -6,7 +6,7 @@ import { NATIVE_TOKEN_ADDRESS, getConvertedTokenAddress } from "config/tokens";
 import { encodeReferralCode } from "domain/referrals";
 import { BigNumber, ethers } from "ethers";
 import { callContract } from "lib/contracts";
-import { TokensData, convertToContractPrice, formatUsdAmount, getTokenData } from "../tokens";
+import { TokensData, convertToContractPrice, formatUsd, getTokenData } from "../tokens";
 import { OrderType } from "./types";
 import { isDevelopment } from "config/env";
 import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
@@ -132,7 +132,7 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
 
   const longText = p.isLong ? t`Long` : t`Short`;
 
-  const orderLabel = t`Decrease ${longText} ${indexToken.symbol} by ${formatUsdAmount(p.sizeDeltaUsd)}`;
+  const orderLabel = t`Decrease ${longText} ${indexToken.symbol} by ${formatUsd(p.sizeDeltaUsd)}`;
 
   const txn = await callContract(chainId, exchangeRouter, "multicall", [encodedPayload], {
     value: wntAmount,

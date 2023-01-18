@@ -9,7 +9,7 @@ import {
   useMarketsPoolsData,
 } from "domain/synthetics/markets";
 import { useOpenInterestData } from "domain/synthetics/markets/useOpenInterestData";
-import { formatUsdAmount, getTokenData, getUsdFromTokenAmount, useAvailableTokensData } from "domain/synthetics/tokens";
+import { formatUsd, getTokenData, getUsdFromTokenAmount, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 
 import "./MarketCard.scss";
@@ -78,12 +78,12 @@ export function MarketCard(p: Props) {
             <InfoRow
               className="info-row"
               label={t`${longToken?.symbol} Pool Amount`}
-              value={longPoolAmountUsd ? formatUsdAmount(longPoolAmountUsd) : "..."}
+              value={longPoolAmountUsd ? formatUsd(longPoolAmountUsd) : "..."}
             />
             <InfoRow
               className="info-row"
               label={t`${shortToken?.symbol} Pool Amount`}
-              value={shortPoolAmountUsd ? formatUsdAmount(shortPoolAmountUsd) : "..."}
+              value={shortPoolAmountUsd ? formatUsd(shortPoolAmountUsd) : "..."}
             />
           </>
         )}
@@ -93,25 +93,25 @@ export function MarketCard(p: Props) {
             <InfoRow
               className="info-row"
               label={t`Long Pool`}
-              value={longPoolAmountUsd ? formatUsdAmount(longPoolAmountUsd) : "..."}
+              value={longPoolAmountUsd ? formatUsd(longPoolAmountUsd) : "..."}
             />
 
             <InfoRow
               className="info-row"
               label={t`Short Pool`}
-              value={shortPoolAmountUsd ? formatUsdAmount(shortPoolAmountUsd) : "..."}
+              value={shortPoolAmountUsd ? formatUsd(shortPoolAmountUsd) : "..."}
             />
 
             <InfoRow
               className="info-row"
               label={t`Open Interest Long`}
-              value={openInterest?.longInterest ? formatUsdAmount(openInterest.longInterest) : "..."}
+              value={openInterest?.longInterest ? formatUsd(openInterest.longInterest) : "..."}
             />
 
             <InfoRow
               className="info-row"
               label={t`Open Interest Short`}
-              value={openInterest?.shortInterest ? formatUsdAmount(openInterest.shortInterest) : "..."}
+              value={openInterest?.shortInterest ? formatUsd(openInterest.shortInterest) : "..."}
             />
           </>
         )}

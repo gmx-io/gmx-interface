@@ -1,6 +1,6 @@
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { TokensData } from "../tokens/types";
-import { convertToContractPrices, getTokenData, getUsdFromTokenAmount } from "../tokens/utils";
+import { convertToContractPrices, getTokenData, getUsdFromTokenAmount } from "../tokens";
 import {
   MarketPoolType,
   MarketsData,

@@ -12,13 +12,13 @@ import { createWithdrawalTxn } from "domain/synthetics/markets/createWithdrawalT
 import { TokensData } from "domain/synthetics/tokens/types";
 import { useTokenAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 import {
-  convertToUsdByPrice,
+  convertToUsd,
   formatTokenAmount,
   formatTokenAmountWithUsd,
   getTokenAmountFromUsd,
   getTokenData,
   needTokenApprove,
-} from "domain/synthetics/tokens/utils";
+} from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
@@ -56,7 +56,7 @@ type Props = {
 function getTokenText(token?: Token, tokenAmount?: BigNumber, price?: BigNumber) {
   if (!token || !price || !tokenAmount) return undefined;
 
-  const usdAmount = convertToUsdByPrice(tokenAmount, token.decimals, price);
+  const usdAmount = convertToUsd(tokenAmount, token.decimals, price);
 
   return formatTokenAmountWithUsd(tokenAmount, usdAmount, token.symbol, token.decimals);
 }

@@ -5,10 +5,10 @@ import {
   TokenData,
   TokenPrices,
   TokensData,
-  convertFromUsdByPrice,
-  convertToUsdByPrice,
+  convertToTokenAmount,
+  convertToUsd,
   formatTokenAmount,
-  formatUsdAmount,
+  formatUsd,
   getTokenData,
   parseContractPrice,
 } from "domain/synthetics/tokens";
@@ -165,7 +165,7 @@ export function getOrderTitle(p: {
 
   const longShortText = p.isLong ? t`Long` : t`Short`;
   const tokenText = `${p.indexToken?.symbol} ${longShortText}`;
-  const sizeText = formatUsdAmount(p.sizeDeltaUsd);
+  const sizeText = formatUsd(p.sizeDeltaUsd);
 
   if (p.orderType === OrderType.LimitIncrease) {
     return t`Increase ${tokenText} by ${sizeText}`;
@@ -367,7 +367,7 @@ export function getPnlDeltaForDecreaseOrder(position?: Position, indexToken?: To
 
   if (!pnlPrice || !indexToken || !position || !sizeDeltaUsd) return undefined;
 
-  const positionValue = convertToUsdByPrice(position.sizeInTokens, indexToken.decimals, pnlPrice);
+  const positionValue = convertToUsd(position.sizeInTokens, indexToken.decimals, pnlPrice);
   const totalPnl = positionValue.sub(position.sizeInUsd).mul(position.isLong ? 1 : -1);
 
   let sizeDeltaInTokens: BigNumber;
@@ -408,7 +408,7 @@ export function getCollateralOutForDecreaseOrder(p: {
   if (!pnlUsd || !p.collateralToken?.prices || !p.pnlToken) return undefined;
 
   if (pnlUsd.lt(0)) {
-    const deductedPnl = convertFromUsdByPrice(
+    const deductedPnl = convertToTokenAmount(
       pnlUsd.abs(),
       p.collateralToken.decimals,
       p.collateralToken.prices.minPrice
@@ -416,7 +416,7 @@ export function getCollateralOutForDecreaseOrder(p: {
 
     receiveAmount = receiveAmount.sub(deductedPnl);
   } else {
-    const addedPnl = convertFromUsdByPrice(pnlUsd, p.collateralToken.decimals, p.collateralToken.prices.maxPrice)!;
+    const addedPnl = convertToTokenAmount(pnlUsd, p.collateralToken.decimals, p.collateralToken.prices.maxPrice)!;
 
     //   if (wasSwapped) {
     //     values.outputAmount += swapOutputAmount;
@@ -432,11 +432,11 @@ export function getCollateralOutForDecreaseOrder(p: {
     receiveAmount = receiveAmount.add(addedPnl);
   }
 
-  const feesAmount = convertFromUsdByPrice(p.feesUsd, p.collateralToken.decimals, p.collateralToken.prices.minPrice)!;
+  const feesAmount = convertToTokenAmount(p.feesUsd, p.collateralToken.decimals, p.collateralToken.prices.minPrice)!;
 
   receiveAmount = receiveAmount.sub(feesAmount);
 
-  const priceImpactAmount = convertFromUsdByPrice(
+  const priceImpactAmount = convertToTokenAmount(
     p.priceImpactUsd,
     p.collateralToken.decimals,
     p.collateralToken.prices.minPrice

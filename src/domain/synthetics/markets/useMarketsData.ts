@@ -13,13 +13,6 @@ type MarketsDataResult = {
 
 const DEFAULT_COUNT = 100;
 
-// TODO: remove this, only for dev chain
-export const WHITELISTED_MARKETS = [
-  "0x97d68AA108D1Bd6a55Ba1e5ed78D9C90DD3E36fd",
-  "0xF8DB7a1a02fB865e7C87b252c19dE51Bd3F14D4D",
-  "0xFCD251959FB63BEC22Af8565A99280Da7a8d1F30",
-];
-
 export function useMarketsData(chainId: number): MarketsDataResult {
   const [marketsData, setMarketsData] = useState<MarketsData>({});
   const [startIndex, setStartIndex] = useState(0);
@@ -57,8 +50,6 @@ export function useMarketsData(chainId: number): MarketsDataResult {
       return {
         count,
         marketsData: markets.reduce((acc: MarketsData, market) => {
-          // if (!WHITELISTED_MARKETS.includes(market[0])) return acc;
-
           const [marketTokenAddress, indexTokenAddress, longTokenAddress, shortTokenAddress, data] = market;
           try {
             acc[marketTokenAddress] = {

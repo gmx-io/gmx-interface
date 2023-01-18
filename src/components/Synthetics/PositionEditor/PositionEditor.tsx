@@ -16,7 +16,7 @@ import {
 import { AggregatedPositionData, formatLeverage, getLeverage, getLiquidationPrice } from "domain/synthetics/positions";
 import {
   formatTokenAmount,
-  formatUsdAmount,
+  formatUsd,
   getTokenAmountFromUsd,
   getUsdFromTokenAmount,
   useAvailableTokensData,
@@ -226,7 +226,7 @@ export function PositionEditor(p: Props) {
         {operation === Operation.Deposit && (
           <BuyInputSection
             topLeftLabel={t`Deposit`}
-            topLeftValue={formatUsdAmount(depositInput.usdAmount)}
+            topLeftValue={formatUsd(depositInput.usdAmount)}
             topRightLabel={t`Max`}
             topRightValue={formatTokenAmount(depositInput.balance, depositInput.token?.decimals)}
             inputValue={depositInput.inputValue}
@@ -247,7 +247,7 @@ export function PositionEditor(p: Props) {
               p.position.collateralToken?.symbol
             )}
             topRightLabel={t`Max`}
-            topRightValue={formatUsdAmount(maxWithdrawUsd)}
+            topRightValue={formatUsd(maxWithdrawUsd)}
             inputValue={withdrawUsdInputValue}
             onInputValueChange={(e) => setWithdrawUsdInputValue(e.target.value)}
             showMaxButton={maxWithdrawUsd?.gt(0) && !withdrawUsd?.eq(maxWithdrawUsd)}
@@ -261,17 +261,17 @@ export function PositionEditor(p: Props) {
 
         <div className="PositionEditor-info-box">
           {/* {minExecutionFeeErrorMessage && <div className="Confirmation-box-warning">{minExecutionFeeErrorMessage}</div>} */}
-          <InfoRow label={t`Size`} value={formatUsdAmount(p.position.sizeInUsd)} />
+          <InfoRow label={t`Size`} value={formatUsd(p.position.sizeInUsd)} />
           <InfoRow
             label={t`Collateral (${p.position.collateralToken?.symbol})`}
             value={
               <ValueTransition
-                from={formatUsdAmount(p.position.collateralUsdAfterFees)}
+                from={formatUsd(p.position.collateralUsdAfterFees) || "..."}
                 to={
                   nextCollateralUsd &&
                   p.position.collateralUsdAfterFees &&
                   !nextCollateralUsd.eq(p.position.collateralUsdAfterFees)
-                    ? formatUsdAmount(nextCollateralUsd)
+                    ? formatUsd(nextCollateralUsd)
                     : undefined
                 }
               />
@@ -290,15 +290,15 @@ export function PositionEditor(p: Props) {
               />
             }
           />
-          <InfoRow label={t`Mark Price`} value={formatUsdAmount(p.position.markPrice)} />
+          <InfoRow label={t`Mark Price`} value={formatUsd(p.position.markPrice)} />
           <InfoRow
             label={t`Liq Price`}
             value={
               <ValueTransition
-                from={formatUsdAmount(p.position.liqPrice)}
+                from={formatUsd(p.position.liqPrice) || "..."}
                 to={
                   nextLiqPrice && p.position.liqPrice && !nextLiqPrice.eq(p.position.liqPrice)
-                    ? formatUsdAmount(nextLiqPrice)
+                    ? formatUsd(nextLiqPrice)
                     : undefined
                 }
               />
@@ -312,8 +312,8 @@ export function PositionEditor(p: Props) {
                 <Tooltip
                   handle={
                     <ValueTransition
-                      from={formatUsdAmount(p.position.pendingBorrowingFees)}
-                      to={formatUsdAmount(BigNumber.from(0))}
+                      from={formatUsd(p.position.pendingBorrowingFees) || "..."}
+                      to={formatUsd(BigNumber.from(0))}
                     />
                   }
                   position="right-top"
@@ -330,8 +330,8 @@ export function PositionEditor(p: Props) {
                 <Tooltip
                   handle={
                     <ValueTransition
-                      from={formatUsdAmount(p.position.pendingFundingFeesUsd)}
-                      to={formatUsdAmount(BigNumber.from(0))}
+                      from={formatUsd(p.position.pendingFundingFeesUsd) || "..."}
+                      to={formatUsd(BigNumber.from(0))}
                     />
                   }
                   position="right-top"

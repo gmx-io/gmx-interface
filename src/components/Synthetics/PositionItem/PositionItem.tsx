@@ -10,7 +10,7 @@ import {
   isIncreaseOrder,
 } from "domain/synthetics/orders";
 import { AggregatedPositionData, formatLeverage, formatPnl } from "domain/synthetics/positions";
-import { formatUsdAmount } from "domain/synthetics/tokens";
+import { formatUsd } from "domain/synthetics/tokens";
 import { AiOutlineEdit } from "react-icons/ai";
 
 import "./PositionItem.scss";
@@ -44,7 +44,7 @@ export function PositionItem(p: Props) {
   function renderNetValue() {
     return (
       <Tooltip
-        handle={formatUsdAmount(p.position.netValue)}
+        handle={formatUsd(p.position.netValue)}
         position={p.isLarge ? "left-bottom" : "right-bottom"}
         handleClassName="plain"
         renderContent={() => (
@@ -56,18 +56,18 @@ export function PositionItem(p: Props) {
             <br />
             <StatsTooltipRow
               label={t`Initial Collateral`}
-              value={formatUsdAmount(p.position.collateralUsd)}
+              value={formatUsd(p.position.collateralUsd) || "..."}
               showDollar={false}
             />
-            <StatsTooltipRow label={t`PnL`} value={formatUsdAmount(p.position?.pnl)} showDollar={false} />
+            <StatsTooltipRow label={t`PnL`} value={formatUsd(p.position?.pnl) || "..."} showDollar={false} />
             <StatsTooltipRow
               label={t`Borrow fee:`}
-              value={formatUsdAmount(p.position.pendingBorrowingFees?.mul(-1))}
+              value={formatUsd(p.position.pendingBorrowingFees?.mul(-1)) || "..."}
               showDollar={false}
             />
             <StatsTooltipRow
               label={t`Funding fee:`}
-              value={formatUsdAmount(p.position.pendingFundingFeesUsd?.mul(-1))}
+              value={formatUsd(p.position.pendingFundingFeesUsd?.mul(-1)) || "..."}
               showDollar={false}
             />
             <StatsTooltipRow label={t`Open + Close fee`} showDollar={false} value={"-$0.00"} />
@@ -87,7 +87,7 @@ export function PositionItem(p: Props) {
     return (
       <>
         <Tooltip
-          handle={`${formatUsdAmount(p.position.collateralUsdAfterFees)}`}
+          handle={`${formatUsd(p.position.collateralUsdAfterFees)}`}
           position={p.isLarge ? "left-bottom" : "right-bottom"}
           handleClassName={cx("plain", { negative: p.position.hasLowCollateral })}
           renderContent={() => {
@@ -105,7 +105,7 @@ export function PositionItem(p: Props) {
                 )}
                 <StatsTooltipRow
                   label={t`Initial Collateral`}
-                  value={formatUsdAmount(p.position.collateralUsd)}
+                  value={formatUsd(p.position.collateralUsd) || "..."}
                   showDollar={false}
                 />
                 <StatsTooltipRow label={t`Borrow Fee`} showDollar={false} value={"..."} />
@@ -152,9 +152,9 @@ export function PositionItem(p: Props) {
                 {positionOrders.map((order) => {
                   return (
                     <div key={order.key} className="Position-list-order active-order-tooltip">
-                      {getTriggerPricePrefix(order.orderType, order.isLong)} {formatUsdAmount(order.triggerPrice)}:
+                      {getTriggerPricePrefix(order.orderType, order.isLong)} {formatUsd(order.triggerPrice)}:
                       {isIncreaseOrder(order.orderType) ? "+" : "-"}
-                      {formatUsdAmount(order.sizeDeltaUsd)}
+                      {formatUsd(order.sizeDeltaUsd)}
                       {/* TODO: */}
                       {/* {order.error && <div className="negative active-oredr-error">{order.error}</div>} */}
                     </div>
@@ -215,7 +215,7 @@ export function PositionItem(p: Props) {
           )}
         </td>
         <td>
-          {formatUsdAmount(p.position.sizeInUsd)}
+          {formatUsd(p.position.sizeInUsd)}
           {renderPositionOrders()}
         </td>
         <td>
@@ -225,7 +225,7 @@ export function PositionItem(p: Props) {
         <td className="clickable" onClick={p.onSelectPositionClick}>
           {/* markPrice */}
           <Tooltip
-            handle={formatUsdAmount(p.position.markPrice)}
+            handle={formatUsd(p.position.markPrice)}
             position="left-bottom"
             handleClassName="plain clickable"
             renderContent={() => {
@@ -245,11 +245,11 @@ export function PositionItem(p: Props) {
         </td>
         <td>
           {/* entryPrice */}
-          {p.position.isOpening ? t`Opening...` : formatUsdAmount(p.position.entryPrice)}
+          {p.position.isOpening ? t`Opening...` : formatUsd(p.position.entryPrice)}
         </td>
         <td>
           {/* liqPrice */}
-          {p.position.isOpening ? formatUsdAmount(p.position.liqPrice) : formatUsdAmount(p.position.liqPrice)}
+          {p.position.isOpening ? formatUsd(p.position.liqPrice) : formatUsd(p.position.liqPrice)}
         </td>
         <td>
           {/* Close */}
@@ -310,7 +310,7 @@ export function PositionItem(p: Props) {
             <div className="label">
               <Trans>Size</Trans>
             </div>
-            <div>{formatUsdAmount(p.position.sizeInUsd)}</div>
+            <div>{formatUsd(p.position.sizeInUsd)}</div>
           </div>
           <div className="App-card-row">
             <div className="label">
@@ -356,19 +356,19 @@ export function PositionItem(p: Props) {
             <div className="label">
               <Trans>Mark Price</Trans>
             </div>
-            <div>{formatUsdAmount(p.position.markPrice)}</div>
+            <div>{formatUsd(p.position.markPrice)}</div>
           </div>
           <div className="App-card-row">
             <div className="label">
               <Trans>Entry Price</Trans>
             </div>
-            <div>{formatUsdAmount(p.position.entryPrice)}</div>
+            <div>{formatUsd(p.position.entryPrice)}</div>
           </div>
           <div className="App-card-row">
             <div className="label">
               <Trans>Liq. Price</Trans>
             </div>
-            <div>{formatUsdAmount(p.position.liqPrice)}</div>
+            <div>{formatUsd(p.position.liqPrice)}</div>
           </div>
         </div>
         {!p.hideActions && (

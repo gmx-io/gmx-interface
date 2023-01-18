@@ -13,13 +13,13 @@ import { MarketDropdown } from "components/Synthetics/MarketDropdown/MarketDropd
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { getMarket, getMarketPoolData, getTokenPoolType } from "domain/synthetics/markets/utils";
-import { adaptToInfoTokens, formatTokenAmount, formatUsdAmount, getUsdFromTokenAmount } from "domain/synthetics/tokens";
+import { adaptToInfoTokens, formatTokenAmount, formatUsd, getUsdFromTokenAmount } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { IoMdSwap } from "react-icons/io";
 
 import { useTokenInputState } from "domain/synthetics/exchange";
 import { usePriceImpactConfigs } from "domain/synthetics/fees/usePriceImpactConfigs";
-import { getExecutionFee, getPriceImpact } from "domain/synthetics/fees/utils";
+import { getExecutionFee, getPriceImpact } from "domain/synthetics/fees";
 import { useMarketsData, useMarketsPoolsData, useMarketTokensData } from "domain/synthetics/markets";
 import { GmConfirmationBox } from "../GmConfirmationBox/GmConfirmationBox";
 
@@ -282,7 +282,7 @@ export function GmSwapBox(p: Props) {
       <div className={cx("GmSwapBox-form-layout", { reverse: operationTab === Operation.Withdrawal })}>
         <BuyInputSection
           topLeftLabel={operationTab === Operation.Deposit ? t`Pay:` : t`Receive:`}
-          topLeftValue={formatUsdAmount(firstTokenState.usdAmount)}
+          topLeftValue={formatUsd(firstTokenState.usdAmount)}
           topRightLabel={t`Balance:`}
           topRightValue={formatTokenAmount(firstTokenState.balance, firstTokenState.token?.decimals)}
           inputValue={firstTokenState.inputValue}
@@ -316,7 +316,7 @@ export function GmSwapBox(p: Props) {
         {secondTokenState.token && (
           <BuyInputSection
             topLeftLabel={operationTab === Operation.Deposit ? t`Pay:` : t`Receive:`}
-            topLeftValue={formatUsdAmount(secondTokenState.usdAmount)}
+            topLeftValue={formatUsd(secondTokenState.usdAmount)}
             topRightLabel={t`Balance:`}
             topRightValue={formatTokenAmount(secondTokenState.balance, secondTokenState.token?.decimals)}
             inputValue={secondTokenState.inputValue}
@@ -342,7 +342,7 @@ export function GmSwapBox(p: Props) {
 
         <BuyInputSection
           topLeftLabel={operationTab === Operation.Withdrawal ? t`Pay:` : t`Receive:`}
-          topLeftValue={formatUsdAmount(marketTokenState.usdAmount)}
+          topLeftValue={formatUsd(marketTokenState.usdAmount)}
           topRightLabel={t`Balance:`}
           topRightValue={formatTokenAmount(marketTokenState.balance, marketTokenState.token?.decimals)}
           inputValue={marketTokenState.inputValue}

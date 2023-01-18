@@ -2,7 +2,7 @@ import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR, MAX_LEVERAGE, USD_DECIMALS } from "lib/legacy";
 import { expandDecimals, formatAmount } from "lib/numbers";
 import { MarketsData, getMarket, getMarketName } from "../markets";
-import { TokenPrices, TokensData, convertToUsdByPrice, formatUsdAmount, getTokenData } from "../tokens";
+import { TokenPrices, TokensData, convertToUsd, formatUsd, getTokenData } from "../tokens";
 import { AggregatedPositionData, Position, PositionsData } from "./types";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { PositionsUpdates } from "../contractEvents";
@@ -113,11 +113,11 @@ export function getAggregatedPositionData(
       : undefined;
 
   const currentValueUsd =
-    indexToken && pnlPrice ? convertToUsdByPrice(position.sizeInTokens, indexToken.decimals, pnlPrice) : undefined;
+    indexToken && pnlPrice ? convertToUsd(position.sizeInTokens, indexToken.decimals, pnlPrice) : undefined;
 
   const collateralUsd =
     collateralToken && collateralPrice
-      ? convertToUsdByPrice(position.collateralAmount, collateralToken.decimals, collateralPrice)
+      ? convertToUsd(position.collateralAmount, collateralToken.decimals, collateralPrice)
       : undefined;
 
   const pnl = currentValueUsd?.sub(position.sizeInUsd).mul(position.isLong ? 1 : -1);
@@ -126,7 +126,7 @@ export function getAggregatedPositionData(
 
   const pendingFundingFeesUsd =
     collateralPrice && collateralToken && collateralUsd?.gt(0)
-      ? convertToUsdByPrice(position.pendingFundingFees.fundingFeeAmount, collateralToken.decimals, collateralPrice)
+      ? convertToUsd(position.pendingFundingFees.fundingFeeAmount, collateralToken.decimals, collateralPrice)
       : undefined;
 
   const totalPendingFeesUsd = pendingFundingFeesUsd
@@ -278,7 +278,7 @@ export function formatPnl(pnl?: BigNumber, pnlPercentage?: BigNumber) {
     sign = pnl.lt(0) ? "-" : "+";
   }
 
-  return `${sign}${formatUsdAmount(pnl?.abs())} (${sign}${formatAmount(pnlPercentage?.abs(), 2, 2)}%)`;
+  return `${sign}${formatUsd(pnl?.abs())} (${sign}${formatAmount(pnlPercentage?.abs(), 2, 2)}%)`;
 }
 
 export function formatLeverage(leverage?: BigNumber) {

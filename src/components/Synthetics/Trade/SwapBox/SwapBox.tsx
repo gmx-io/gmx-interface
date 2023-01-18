@@ -21,9 +21,9 @@ import { NATIVE_TOKEN_ADDRESS, getConvertedTokenAddress } from "config/tokens";
 import { useTokenInputState } from "domain/synthetics/exchange";
 import { useSwapPath } from "domain/synthetics/exchange/useSwapPath";
 import {
-  convertToUsdByPrice,
+  convertToUsd,
   formatTokenAmount,
-  formatUsdAmount,
+  formatUsd,
   getTokenAmountFromUsd,
   getTokenData,
   getUsdFromTokenAmount,
@@ -181,7 +181,7 @@ export function SwapBox(p: Props) {
 
   const sizeDeltaUsd =
     toTokenState.token && entryPrice
-      ? convertToUsdByPrice(toTokenState.tokenAmount, toTokenState.token?.decimals, entryPrice)
+      ? convertToUsd(toTokenState.tokenAmount, toTokenState.token?.decimals, entryPrice)
       : BigNumber.from(0);
 
   const positionKey = getPositionKey(
@@ -223,7 +223,7 @@ export function SwapBox(p: Props) {
     ? isClosing
       ? BigNumber.from(0)
       : existingPosition?.sizeInUsd.sub(closeSizeUsd)
-    : sizeDeltaUsd.add(existingPosition?.sizeInUsd || BigNumber.from(0));
+    : sizeDeltaUsd?.add(existingPosition?.sizeInUsd || BigNumber.from(0));
 
   const collateralDeltaUsd =
     isStop && existingPosition
@@ -567,7 +567,7 @@ export function SwapBox(p: Props) {
             <>
               <BuyInputSection
                 topLeftLabel={t`Pay:`}
-                topLeftValue={formatUsdAmount(fromTokenState.usdAmount)}
+                topLeftValue={formatUsd(fromTokenState.usdAmount)}
                 topRightLabel={t`Balance:`}
                 topRightValue={formatTokenAmount(fromTokenState.balance, fromTokenState.token?.decimals)}
                 inputValue={fromTokenState.inputValue}
@@ -604,7 +604,7 @@ export function SwapBox(p: Props) {
 
               <BuyInputSection
                 topLeftLabel={operationTab === TradeType.Swap ? t`Receive:` : `${tradeTypeLabels[operationTab!]}:`}
-                topLeftValue={formatUsdAmount(sizeDeltaUsd)}
+                topLeftValue={formatUsd(sizeDeltaUsd)}
                 topRightLabel={operationTab === TradeType.Swap ? t`Balance:` : t`Leverage:`}
                 topRightValue={
                   operationTab === TradeType.Swap
@@ -640,7 +640,7 @@ export function SwapBox(p: Props) {
             <BuyInputSection
               topLeftLabel={t`Close`}
               topRightLabel={existingPosition?.sizeInUsd ? `Max:` : undefined}
-              topRightValue={existingPosition?.sizeInUsd ? formatUsdAmount(existingPosition.sizeInUsd) : undefined}
+              topRightValue={existingPosition?.sizeInUsd ? formatUsd(existingPosition.sizeInUsd) : undefined}
               inputValue={closeSizeInput}
               onInputValueChange={(e) => setCloseSizeInput(e.target.value)}
               showMaxButton={existingPosition?.sizeInUsd.gt(0) && !closeSizeUsd?.eq(existingPosition.sizeInUsd)}
@@ -654,7 +654,7 @@ export function SwapBox(p: Props) {
             <BuyInputSection
               topLeftLabel={t`Price`}
               topRightLabel={t`Mark:`}
-              topRightValue={formatUsdAmount(toTokenState.price)}
+              topRightValue={formatUsd(toTokenState.price)}
               onClickTopRightLabel={() => {
                 setTriggerPriceValue(formatAmount(toTokenState.price, USD_DECIMALS, 2));
               }}
@@ -795,12 +795,9 @@ export function SwapBox(p: Props) {
               label={existingPosition?.sizeInUsd ? t`Size` : t`Decrease size`}
               value={
                 existingPosition?.sizeInUsd ? (
-                  <ValueTransition
-                    from={formatUsdAmount(existingPosition.sizeInUsd)}
-                    to={formatUsdAmount(nextSizeUsd)}
-                  />
+                  <ValueTransition from={formatUsd(existingPosition.sizeInUsd)!} to={formatUsd(nextSizeUsd)} />
                 ) : closeSizeUsd ? (
-                  formatUsdAmount(closeSizeUsd)
+                  formatUsd(closeSizeUsd)
                 ) : (
                   "..."
                 )
@@ -813,10 +810,7 @@ export function SwapBox(p: Props) {
               className="SwapBox-info-row"
               label={t`Collateral (${existingPosition?.collateralToken?.symbol})`}
               value={
-                <ValueTransition
-                  from={formatUsdAmount(existingPosition.collateralUsd)}
-                  to={formatUsdAmount(nextCollateralUsd)}
-                />
+                <ValueTransition from={formatUsd(existingPosition.collateralUsd)!} to={formatUsd(nextCollateralUsd)} />
               }
             />
           )}
@@ -825,7 +819,7 @@ export function SwapBox(p: Props) {
             <InfoRow
               className="SwapBox-info-row"
               label={t`Mark Price`}
-              value={markPrice ? formatUsdAmount(markPrice) : "..."}
+              value={markPrice ? formatUsd(markPrice) : "..."}
             />
           )}
 
@@ -833,7 +827,7 @@ export function SwapBox(p: Props) {
             <InfoRow
               className="SwapBox-info-row"
               label={t`Trigger Price`}
-              value={triggerPrice ? `${triggerPricePrefix}${formatUsdAmount(triggerPrice)}` : "..."}
+              value={triggerPrice ? `${triggerPricePrefix}${formatUsd(triggerPrice)}` : "..."}
             />
           )}
 
@@ -841,7 +835,7 @@ export function SwapBox(p: Props) {
             <InfoRow
               className="SwapBox-info-row"
               label={t`Entry Price`}
-              value={entryPrice ? formatUsdAmount(entryPrice) : "..."}
+              value={entryPrice ? formatUsd(entryPrice) : "..."}
             />
           )}
 
@@ -852,11 +846,11 @@ export function SwapBox(p: Props) {
               value={
                 existingPosition?.liqPrice ? (
                   <ValueTransition
-                    from={formatUsdAmount(existingPosition.liqPrice)}
-                    to={nextLiqPrice ? formatUsdAmount(nextLiqPrice) : undefined}
+                    from={formatUsd(existingPosition.liqPrice)!}
+                    to={nextLiqPrice ? formatUsd(nextLiqPrice) : undefined}
                   />
                 ) : nextLiqPrice ? (
-                  formatUsdAmount(nextLiqPrice)
+                  formatUsd(nextLiqPrice)
                 ) : (
                   "..."
                 )
@@ -871,8 +865,8 @@ export function SwapBox(p: Props) {
               value={
                 nextSizeUsd?.gt(0) ? (
                   <ValueTransition
-                    from={formatUsdAmount(existingPosition.liqPrice)}
-                    to={nextLiqPrice ? formatUsdAmount(nextLiqPrice) : undefined}
+                    from={formatUsd(existingPosition.liqPrice)!}
+                    to={nextLiqPrice ? formatUsd(nextLiqPrice) : undefined}
                   />
                 ) : (
                   "..."

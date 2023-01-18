@@ -8,7 +8,7 @@ import { encodeReferralCode } from "domain/referrals";
 import {
   TokensData,
   convertToContractPrice,
-  formatUsdAmount,
+  formatUsd,
   getTokenData,
   getUsdFromTokenAmount,
 } from "domain/synthetics/tokens";
@@ -110,8 +110,8 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
   if (isDevelopment()) {
     // eslint-disable-next-line no-console
     console.debug("positionIncreaseTxn multicall", multicall, {
-      acceptablePrice: formatUsdAmount(acceptablePrice),
-      triggerPrice: formatUsdAmount(p.triggerPrice),
+      acceptablePrice: formatUsd(acceptablePrice),
+      triggerPrice: formatUsd(p.triggerPrice),
     });
   }
 
@@ -143,7 +143,7 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
   });
 
   const longText = p.isLong ? t`Long` : t`Short`;
-  const orderLabel = t`Increase ${longText} ${indexToken.symbol} by ${formatUsdAmount(p.sizeDeltaUsd)}`;
+  const orderLabel = t`Increase ${longText} ${indexToken.symbol} by ${formatUsd(p.sizeDeltaUsd)}`;
 
   const txn = await callContract(chainId, exchangeRouter, "multicall", [encodedPayload], {
     value: wntAmount,

@@ -3,13 +3,7 @@ import DataStore from "abis/DataStore.json";
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
 import { getConvertedTokenAddress } from "config/tokens";
-import {
-  TokenPrices,
-  TokensData,
-  convertToContractPrice,
-  formatUsdAmount,
-  getTokenData,
-} from "domain/synthetics/tokens";
+import { TokenPrices, TokensData, convertToContractPrice, formatUsd, getTokenData } from "domain/synthetics/tokens";
 import { BigNumber, ethers } from "ethers";
 import _ from "lodash";
 import { NONCE_KEY, orderKey } from "config/dataStore";
@@ -157,20 +151,20 @@ function getSimulationPrices(
   // eslint-disable-next-line no-console
   console.log("prices", {
     primaryPricesMap: _.mapValues(primaryPricesMap, (v) => ({
-      min: formatUsdAmount(v?.minPrice),
-      max: formatUsdAmount(v?.maxPrice),
+      min: formatUsd(v?.minPrice),
+      max: formatUsd(v?.maxPrice),
     })),
     secondaryPricesMap: _.mapValues(secondaryPricesMap, (v) => ({
-      min: formatUsdAmount(v?.minPrice),
-      max: formatUsdAmount(v?.maxPrice),
+      min: formatUsd(v?.minPrice),
+      max: formatUsd(v?.maxPrice),
     })),
     primaryPrices: primaryPrices.map((v) => ({
-      min: formatUsdAmount(v.min.mul(expandDecimals(1, 18))),
-      max: formatUsdAmount(v.max.mul(expandDecimals(1, 18))),
+      min: formatUsd(v.min.mul(expandDecimals(1, 18))),
+      max: formatUsd(v.max.mul(expandDecimals(1, 18))),
     })),
     secondaryPrices: secondaryPrices.map((v) => ({
-      min: formatUsdAmount(v.min.mul(expandDecimals(1, 18))),
-      max: formatUsdAmount(v.max.mul(expandDecimals(1, 18))),
+      min: formatUsd(v.min.mul(expandDecimals(1, 18))),
+      max: formatUsd(v.max.mul(expandDecimals(1, 18))),
     })),
   });
 

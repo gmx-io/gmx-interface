@@ -1,17 +1,12 @@
 import { InfoTokens, TokenInfo } from "domain/tokens";
 import { BigNumber } from "ethers";
-import { USD_DECIMALS } from "lib/legacy";
-import { expandDecimals, formatAmount, formatAmountFree } from "lib/numbers";
-import { TokenAllowancesData, TokenData, TokenPrices, TokensData } from "./types";
+import { convertToTokenAmount, convertToUsd } from "./amountUtils";
+import { TokenAllowancesData, TokenData, TokensData } from "./types";
 
 export function getTokenData(tokensData: TokensData, address?: string) {
   if (!address) return undefined;
 
   return tokensData[address];
-}
-
-export function getTokensDataArray(tokensData: TokensData) {
-  return Object.keys(tokensData).map((address) => getTokenData(tokensData, address)!);
 }
 
 export function getUsdFromTokenAmount(tokensData: TokensData, address?: string, amount?: BigNumber, max?: boolean) {
@@ -23,7 +18,7 @@ export function getUsdFromTokenAmount(tokensData: TokensData, address?: string, 
     return undefined;
   }
 
-  return convertToUsdByPrice(amount, tokenData.decimals, max ? prices.maxPrice : prices.minPrice);
+  return convertToUsd(amount, tokenData.decimals, max ? prices.maxPrice : prices.minPrice);
 }
 
 export function getTokenAmountFromUsd(tokensData: TokensData, address?: string, usdAmount?: BigNumber, max?: boolean) {
@@ -35,7 +30,7 @@ export function getTokenAmountFromUsd(tokensData: TokensData, address?: string, 
     return undefined;
   }
 
-  return convertFromUsdByPrice(usdAmount, tokenData.decimals, max ? prices.maxPrice : prices.minPrice);
+  return convertToTokenAmount(usdAmount, tokenData.decimals, max ? prices.maxPrice : prices.minPrice);
 }
 
 export function getTokenAllowance(allowanceData: TokenAllowancesData, address?: string) {
@@ -76,73 +71,4 @@ export function adaptToTokenInfo(tokenData: TokenData): TokenInfo {
     minPrice: tokenData.prices?.minPrice,
     maxPrice: tokenData.prices?.maxPrice,
   };
-}
-
-export function convertFromUsdByPrice(usdAmount: BigNumber, tokenDecimals: number, price: BigNumber) {
-  if (price.lte(0)) return undefined;
-
-  return usdAmount.mul(expandDecimals(1, tokenDecimals)).div(price);
-}
-
-export function convertToUsdByPrice(tokenAmount: BigNumber, tokenDecimals: number, price: BigNumber) {
-  return tokenAmount.mul(price).div(expandDecimals(1, tokenDecimals));
-}
-
-export function formatTokenAmount(
-  amount?: BigNumber,
-  tokenDecimals?: number,
-  symbol?: string,
-  showAllSignificant?: boolean
-) {
-  let formattedAmount;
-
-  if (tokenDecimals && amount) {
-    if (showAllSignificant) {
-      formattedAmount = formatAmountFree(amount, tokenDecimals, tokenDecimals);
-    } else {
-      formattedAmount = formatAmount(amount, tokenDecimals, 4);
-    }
-  }
-
-  if (!formattedAmount) {
-    formattedAmount = formatAmount(BigNumber.from(0), 4, 4);
-  }
-
-  return `${formattedAmount}${symbol ? ` ${symbol}` : ""}`;
-}
-
-export function formatUsdAmount(amount?: BigNumber) {
-  return `$${formatAmount(amount || BigNumber.from(0), USD_DECIMALS, 2, true)}`;
-}
-
-export function formatTokenAmountWithUsd(
-  tokenAmount?: BigNumber,
-  usdAmount?: BigNumber,
-  tokenSymbol?: string,
-  tokenDecimals?: number
-) {
-  if (!tokenAmount || !usdAmount || !tokenSymbol || !tokenDecimals) {
-    return "";
-  }
-
-  return `${formatTokenAmount(tokenAmount, tokenDecimals)} ${tokenSymbol} (${formatUsdAmount(usdAmount)})`;
-}
-
-export function parseOraclePrice(price: string, tokenDecimals: number, oracleDecimals: number) {
-  return expandDecimals(price, tokenDecimals + oracleDecimals);
-}
-
-export function convertToContractPrice(price: BigNumber, tokenDecimals: number) {
-  return price.div(expandDecimals(1, tokenDecimals));
-}
-
-export function convertToContractPrices(prices: TokenPrices, tokenDecimals: number) {
-  return {
-    min: convertToContractPrice(prices.minPrice, tokenDecimals),
-    max: convertToContractPrice(prices.maxPrice, tokenDecimals),
-  };
-}
-
-export function parseContractPrice(price: BigNumber, tokenDecimals: number) {
-  return price.mul(expandDecimals(1, tokenDecimals));
 }
