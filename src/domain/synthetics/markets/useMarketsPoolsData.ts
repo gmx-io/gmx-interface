@@ -5,7 +5,7 @@ import { getMarket } from "./utils";
 import { useMulticall } from "lib/multicall";
 import { useMarketsData } from "./useMarketsData";
 import { MarketsPoolsData } from "./types";
-import { getPoolAmountKey, getReserveFactorKey } from "config/dataStore";
+import { poolAmountKey, reserveFactorKey } from "config/dataStore";
 
 type MarketPoolsResult = {
   isLoading: boolean;
@@ -31,19 +31,19 @@ export function useMarketsPoolsData(chainId: number): MarketPoolsResult {
           return Object.assign(calls, {
             [`${marketAddress}-longPoolAmount`]: {
               methodName: "getUint",
-              params: [getPoolAmountKey(marketAddress, market.longTokenAddress)],
+              params: [poolAmountKey(marketAddress, market.longTokenAddress)],
             },
             [`${marketAddress}-shortPoolAmount`]: {
               methodName: "getUint",
-              params: [getPoolAmountKey(marketAddress, market.shortTokenAddress)],
+              params: [poolAmountKey(marketAddress, market.shortTokenAddress)],
             },
             [`${marketAddress}-reserveFactor-long`]: {
               methodName: "getUint",
-              params: [getReserveFactorKey(marketAddress, true)],
+              params: [reserveFactorKey(marketAddress, true)],
             },
             [`${marketAddress}-reserveFactor-short`]: {
               methodName: "getUint",
-              params: [getReserveFactorKey(marketAddress, true)],
+              params: [reserveFactorKey(marketAddress, true)],
             },
           });
         }, {}),

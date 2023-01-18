@@ -1,4 +1,4 @@
-import { getOpenInterestKey } from "config/dataStore";
+import { openInterestKey } from "config/dataStore";
 import DataStore from "abis/DataStore.json";
 import { getContract } from "config/contracts";
 import { useMulticall } from "lib/multicall";
@@ -31,19 +31,19 @@ export function useOpenInterestData(chainId: number): OpenInterestDataResult {
           return Object.assign(calls, {
             [`${marketAddress}-longToken-long`]: {
               methodName: "getUint",
-              params: [getOpenInterestKey(marketAddress, market!.longTokenAddress, true)],
+              params: [openInterestKey(marketAddress, market!.longTokenAddress, true)],
             },
             [`${marketAddress}-shortToken-long`]: {
               methodName: "getUint",
-              params: [getOpenInterestKey(marketAddress, market!.shortTokenAddress, true)],
+              params: [openInterestKey(marketAddress, market!.shortTokenAddress, true)],
             },
             [`${marketAddress}-longToken-short`]: {
               methodName: "getUint",
-              params: [getOpenInterestKey(marketAddress, market!.longTokenAddress, false)],
+              params: [openInterestKey(marketAddress, market!.longTokenAddress, false)],
             },
             [`${marketAddress}-shortToken-short`]: {
               methodName: "getUint",
-              params: [getOpenInterestKey(marketAddress, market!.shortTokenAddress, false)],
+              params: [openInterestKey(marketAddress, market!.shortTokenAddress, false)],
             },
           });
         }, {}),

@@ -1,19 +1,19 @@
-import { useState } from "react";
+import { Plural, t } from "@lingui/macro";
+import { useWeb3React } from "@web3-react/core";
 import Footer from "components/Footer/Footer";
-import { SwapBox } from "components/Synthetics/Trade/SwapBox/SwapBox";
-import Tab from "components/Tab/Tab";
 import { OrderList } from "components/Synthetics/OrderList/OrderList";
 import { PositionList } from "components/Synthetics/PositionList/PositionList";
-import { useAggregatedPositionsData } from "domain/synthetics/positions/useAggregatedPositionsData";
-import { useChainId } from "lib/chains";
+import { SwapBox } from "components/Synthetics/Trade/SwapBox/SwapBox";
+import Tab from "components/Tab/Tab";
+import { getExecutionFee } from "domain/synthetics/fees";
+import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useAggregatedOrdersData } from "domain/synthetics/orders/useAggregatedOrdersData";
 import { getPosition } from "domain/synthetics/positions";
-import { Plural, t } from "@lingui/macro";
-import { useLocalStorageByChainId } from "lib/localStorage";
-import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
-import { useWeb3React } from "@web3-react/core";
+import { useAggregatedPositionsData } from "domain/synthetics/positions/useAggregatedPositionsData";
 import { useAvailableTokensData } from "domain/synthetics/tokens";
-import { getExecutionFee } from "domain/synthetics/fees";
+import { useChainId } from "lib/chains";
+import { useLocalStorageByChainId } from "lib/localStorage";
+import { useState } from "react";
 
 import "./SyntheticsPage.scss";
 

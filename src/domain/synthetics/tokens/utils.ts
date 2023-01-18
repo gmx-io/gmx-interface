@@ -2,7 +2,7 @@ import { InfoTokens, TokenInfo } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import { expandDecimals, formatAmount, formatAmountFree } from "lib/numbers";
-import { TokenAllowancesData, TokenData, TokensData } from "./types";
+import { TokenAllowancesData, TokenData, TokenPrices, TokensData } from "./types";
 
 export function getTokenData(tokensData: TokensData, address?: string) {
   if (!address) return undefined;
@@ -134,6 +134,13 @@ export function parseOraclePrice(price: string, tokenDecimals: number, oracleDec
 
 export function convertToContractPrice(price: BigNumber, tokenDecimals: number) {
   return price.div(expandDecimals(1, tokenDecimals));
+}
+
+export function convertToContractPrices(prices: TokenPrices, tokenDecimals: number) {
+  return {
+    min: convertToContractPrice(prices.minPrice, tokenDecimals),
+    max: convertToContractPrice(prices.maxPrice, tokenDecimals),
+  };
 }
 
 export function parseContractPrice(price: BigNumber, tokenDecimals: number) {

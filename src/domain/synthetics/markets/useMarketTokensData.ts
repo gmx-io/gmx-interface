@@ -3,14 +3,14 @@ import SyntheticsReader from "abis/SyntheticsReader.json";
 import TokenAbi from "abis/Token.json";
 import { getContract } from "config/contracts";
 import { getTokenBySymbol } from "config/tokens";
-import { TokenData, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
+import { useAvailableTokensData } from "domain/synthetics/tokens";
 import { USD_DECIMALS } from "lib/legacy";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
 import { useMemo } from "react";
 import { MarketTokensData } from "./types";
 import { useMarketsData } from "./useMarketsData";
-import { getMarket, getMarketName } from "./utils";
+import { getContractMarketPrices, getMarket, getMarketName } from "./utils";
 
 type MarketTokensDataResult = {
   marketTokensData: MarketTokensData;
@@ -19,117 +19,78 @@ type MarketTokensDataResult = {
 
 export function useMarketTokensData(chainId: number): MarketTokensDataResult {
   const { account } = useWeb3React();
-
-  const dataStoreAddress = getContract(chainId, "DataStore");
-
-  const { tokensData } = useAvailableTokensData(chainId);
-  const { marketsData } = useMarketsData(chainId);
-
-  // useEffect(() => {
-  //   const marketAddresses = Object.keys(marketsData);
-  //   const market = getMarket(marketsData, marketAddresses[0])!;
-
-  //   const longToken = getTokenData(tokensData, market?.longTokenAddress);
-  //   const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
-  //   const indexToken = getTokenData(tokensData, market?.indexTokenAddress);
-
-  //   const longPrices = formatPrices(longToken);
-  //   const shortPrices = formatPrices(shortToken);
-  //   const indexPrices = formatPrices(indexToken);
-
-  //   if (longPrices && shortPrices && indexPrices) {
-  //     const prices = {
-  //       longTokenPrice: longPrices,
-  //       shortTokenPrice: shortPrices,
-  //       indexTokenPrice: indexPrices,
-  //     };
-
-  //     const ex = new ethers.Contract(
-  //       getContract(chainId, "SyntheticsReader"),
-  //       SyntheticsReader.abi,
-  //       getProvider(undefined, chainId)
-  //     );
-
-  //     const params = [dataStoreAddress, getContract(chainId, "MarketStore"), prices, marketAddresses[0]];
-
-  //     console.log(params);
-
-  //     ex.getMarketInfo(...params)
-  //       .then((res) => {
-  //         console.log(res);
-  //       })
-  //       .catch((e) => {
-  //         console.log(e);
-  //       });
-  //   }
-  // }, [chainId, dataStoreAddress, marketsData, tokensData]);
+  const { tokensData, isLoading: isTokensLoading } = useAvailableTokensData(chainId);
+  const { marketsData, isLoading: isMarketsLoading } = useMarketsData(chainId);
 
   const marketAddresses = Object.keys(marketsData);
 
-  const requests = useMemo(() => {
-    return marketAddresses.reduce((requests: MulticallRequestConfig<any>, marketAddress: string) => {
-      const market = getMarket(marketsData, marketAddress)!;
-
-      const longToken = getTokenData(tokensData, market.longTokenAddress);
-      const shortToken = getTokenData(tokensData, market.shortTokenAddress);
-      const indexToken = getTokenData(tokensData, market.indexTokenAddress);
-
-      const longPrices = formatPrices(longToken);
-      const shortPrices = formatPrices(shortToken);
-      const indexPrices = formatPrices(indexToken);
-
-      if (longPrices && shortPrices && indexPrices) {
-        const marketProps = {
-          marketToken: market.marketTokenAddress,
-          longToken: market.longTokenAddress,
-          shortToken: market.shortTokenAddress,
-          indexToken: market.indexTokenAddress,
-          data: market.data,
-        };
-
-        requests[`${marketAddress}-prices`] = {
-          contractAddress: getContract(chainId, "SyntheticsReader"),
-          abi: SyntheticsReader.abi,
-          calls: {
-            minPrice: {
-              methodName: "getMarketTokenPrice",
-              params: [dataStoreAddress, marketProps, longPrices, shortPrices, indexPrices, false],
-            },
-            maxPrice: {
-              methodName: "getMarketTokenPrice",
-              params: [dataStoreAddress, marketProps, longPrices, shortPrices, indexPrices, true],
-            },
-          },
-        };
-      }
-
-      requests[`${marketAddress}-tokenData`] = {
-        contractAddress: marketAddress,
-        abi: TokenAbi.abi,
-        calls: {
-          totalSupply: {
-            methodName: "totalSupply",
-            params: [],
-          },
-          balance: account
-            ? {
-                methodName: "balanceOf",
-                params: [account],
-              }
-            : undefined,
-        },
-      };
-
-      return requests;
-    }, {});
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [account, chainId, dataStoreAddress, marketAddresses.join("-"), marketsData, tokensData]);
-
-  const reqKeys = Object.keys(requests).join("-");
+  const isDataLoaded = !isTokensLoading && !isMarketsLoading && marketAddresses.length > 0;
 
   const { data: marketTokensData, isLoading } = useMulticall(chainId, "useMarketTokensData", {
-    key: reqKeys.length > 0 ? [account, reqKeys] : null,
-    request: requests,
+    key: isDataLoaded ? [account, marketAddresses.join("-")] : undefined,
+    request: () =>
+      marketAddresses.reduce((requests: MulticallRequestConfig<any>, marketAddress: string) => {
+        const market = getMarket(marketsData, marketAddress)!;
+        const marketPrices = getContractMarketPrices(marketsData, tokensData, marketAddress);
+
+        if (marketPrices) {
+          const marketProps = {
+            marketToken: market.marketTokenAddress,
+            longToken: market.longTokenAddress,
+            shortToken: market.shortTokenAddress,
+            indexToken: market.indexTokenAddress,
+            data: market.data,
+          };
+
+          requests[`${marketAddress}-prices`] = {
+            contractAddress: getContract(chainId, "SyntheticsReader"),
+            abi: SyntheticsReader.abi,
+            calls: {
+              minPrice: {
+                methodName: "getMarketTokenPrice",
+                params: [
+                  getContract(chainId, "DataStore"),
+                  marketProps,
+                  marketPrices.longTokenPrice,
+                  marketPrices.shortTokenPrice,
+                  marketPrices.indexTokenPrice,
+                  false,
+                ],
+              },
+              maxPrice: {
+                methodName: "getMarketTokenPrice",
+                params: [
+                  getContract(chainId, "DataStore"),
+                  marketProps,
+                  marketPrices.longTokenPrice,
+                  marketPrices.shortTokenPrice,
+                  marketPrices.indexTokenPrice,
+                  true,
+                ],
+              },
+            },
+          };
+        }
+
+        requests[`${marketAddress}-tokenData`] = {
+          contractAddress: marketAddress,
+          abi: TokenAbi.abi,
+          calls: {
+            totalSupply: {
+              methodName: "totalSupply",
+              params: [],
+            },
+            balance: account
+              ? {
+                  methodName: "balanceOf",
+                  params: [account],
+                }
+              : undefined,
+          },
+        };
+
+        return requests;
+      }, {}),
     parseResponse: (res) =>
       marketAddresses.reduce((marketTokensMap: MarketTokensData, marketAddress: string) => {
         const pricesData = res[`${marketAddress}-prices`];
@@ -161,13 +122,4 @@ export function useMarketTokensData(chainId: number): MarketTokensDataResult {
       isLoading,
     };
   }, [isLoading, marketTokensData]);
-}
-
-function formatPrices(token?: TokenData) {
-  if (!token?.prices) return undefined;
-
-  return {
-    min: token.prices.minPrice.div(expandDecimals(1, token.decimals)),
-    max: token.prices.maxPrice.div(expandDecimals(1, token.decimals)),
-  };
 }

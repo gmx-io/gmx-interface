@@ -12,7 +12,7 @@ import {
 } from "domain/synthetics/tokens";
 import { BigNumber, ethers } from "ethers";
 import _ from "lodash";
-import { NONCE_KEY, getOrderKey } from "config/dataStore";
+import { NONCE_KEY, orderKey } from "config/dataStore";
 import { helperToast } from "lib/helperToast";
 import { Trans } from "@lingui/macro";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
@@ -51,7 +51,7 @@ export async function simulateExecuteOrderTxn(chainId: number, library: Web3Prov
   const blockNumber = await library.getBlockNumber();
   const nonce = await dataStore.getUint(NONCE_KEY, { blockTag: blockNumber });
   const nextNonce = nonce.add(1);
-  const nextKey = getOrderKey(nextNonce);
+  const nextKey = orderKey(nextNonce);
 
   const { primaryTokens, primaryPrices, secondaryTokens, secondaryPrices } = getSimulationPrices(
     chainId,

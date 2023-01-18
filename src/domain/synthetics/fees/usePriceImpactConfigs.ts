@@ -1,10 +1,10 @@
 import { useMemo } from "react";
-import { getSwapImpactExponentFactorKey, getSwapImpactFactorKey } from "config/dataStore";
 import DataStore from "abis/DataStore.json";
 import { PriceImpactConfigsData } from "./types";
 import { useMarketsData } from "../markets";
 import { useMulticall } from "lib/multicall";
 import { getContract } from "config/contracts";
+import { swapImpactExponentFactorKey, swapImpactFactorKey } from "config/dataStore";
 
 // TODO
 /**
@@ -46,15 +46,15 @@ export function usePriceImpactConfigs(chainId: number): PriceImpactConfigsData {
           return Object.assign(calls, {
             [`${marketAddress}-impactFactor-positive`]: {
               methodName: "getUint",
-              params: [getSwapImpactFactorKey(marketAddress, true)],
+              params: [swapImpactFactorKey(marketAddress, true)],
             },
             [`${marketAddress}-impactFactor-negative`]: {
               methodName: "getUint",
-              params: [getSwapImpactFactorKey(marketAddress, false)],
+              params: [swapImpactFactorKey(marketAddress, false)],
             },
             [`${marketAddress}-exponentImpactFactor`]: {
               methodName: "getUint",
-              params: [getSwapImpactExponentFactorKey(marketAddress)],
+              params: [swapImpactExponentFactorKey(marketAddress)],
             },
           });
         }, {}),

@@ -5,12 +5,12 @@ import { SyntheticsConfig } from "./types";
 import {
   MAX_LEVERAGE_KEY,
   MIN_COLLATERAL_USD_KEY,
-  getDecreaseOrderGasLimitKey,
-  getDepositGasLimitKey,
-  getIncreaseOrderGasLimitKey,
-  getSingleSwapGasLimitKey,
-  getSwapOrderGasLimitKey,
-  getWithdrawalGasLimitKey,
+  decreaseOrderGasLimitKey,
+  depositGasLimitKey,
+  increaseOrderGasLimitKey,
+  singleSwapGasLimitKey,
+  swapOrderGasLimitKey,
+  withdrawalGasLimitKey,
 } from "config/dataStore";
 import { BigNumber } from "ethers";
 import { useMemo } from "react";
@@ -38,35 +38,35 @@ export function useSyntheticsConfig(chainId: number): SyntheticsConfigResult {
           },
           depositGasLimitForSingleToken: {
             methodName: "getUint",
-            params: [getDepositGasLimitKey(true)],
+            params: [depositGasLimitKey(true)],
           },
           depositGasLimitForMultiToken: {
             methodName: "getUint",
-            params: [getDepositGasLimitKey(false)],
+            params: [depositGasLimitKey(false)],
           },
           withdrawalGasLimitForSingleToken: {
             methodName: "getUint",
-            params: [getWithdrawalGasLimitKey(true)],
+            params: [withdrawalGasLimitKey(true)],
           },
           withdrawalGasLimitForMultiToken: {
             methodName: "getUint",
-            params: [getWithdrawalGasLimitKey(false)],
+            params: [withdrawalGasLimitKey(false)],
           },
           singleSwapGasLimit: {
             methodName: "getUint",
-            params: [getSingleSwapGasLimitKey()],
+            params: [singleSwapGasLimitKey()],
           },
           swapOrderGasLimit: {
             methodName: "getUint",
-            params: [getSwapOrderGasLimitKey()],
+            params: [swapOrderGasLimitKey()],
           },
           increaseOrderGasLimit: {
             methodName: "getUint",
-            params: [getIncreaseOrderGasLimitKey()],
+            params: [increaseOrderGasLimitKey()],
           },
           decreaseOrderGasLimit: {
             methodName: "getUint",
-            params: [getDecreaseOrderGasLimitKey()],
+            params: [decreaseOrderGasLimitKey()],
           },
         },
       },
