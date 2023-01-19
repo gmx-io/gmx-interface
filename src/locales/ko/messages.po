@@ -994,6 +994,10 @@ msgid "Deposit"
 msgstr "예치"
 
 #: src/components/Exchange/PositionEditor.js
+msgid "Deposit at least"
+msgstr ""
+
+#: src/components/Exchange/PositionEditor.js
 msgid "Deposit disabled, pending {0} upgrade"
 msgstr "{0} 업그레이드를 위해 예치가 비활성화되었습니다"
 
@@ -1575,6 +1579,10 @@ msgstr "{0}으로 스왑하기 위한 유동성이 충분하지 않습니다:"
 msgid "Insufficient GLP balance"
 msgstr "GLP 잔고 부족"
 
+#: src/components/Exchange/PositionEditor.js
+msgid "Insufficient collateral deposit"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -2033,6 +2041,10 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Min. Receive"
 msgstr "최소 수취량"
+
+#: src/components/Exchange/PositionEditor.js
+msgid "Min. collateral needed is"
+msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
 msgid "Minimum received"

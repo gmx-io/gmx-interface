@@ -994,6 +994,10 @@ msgid "Deposit"
 msgstr "Deposit"
 
 #: src/components/Exchange/PositionEditor.js
+msgid "Deposit at least"
+msgstr "Deposit at least"
+
+#: src/components/Exchange/PositionEditor.js
 msgid "Deposit disabled, pending {0} upgrade"
 msgstr "Deposit disabled, pending {0} upgrade"
 
@@ -1575,6 +1579,10 @@ msgstr "Insufficient Available Liquidity to swap to {0}:"
 msgid "Insufficient GLP balance"
 msgstr "Insufficient GLP balance"
 
+#: src/components/Exchange/PositionEditor.js
+msgid "Insufficient collateral deposit"
+msgstr "Insufficient collateral deposit"
+
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -2033,6 +2041,10 @@ msgstr "Min residual collateral: 10 USD"
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Min. Receive"
 msgstr "Min. Receive"
+
+#: src/components/Exchange/PositionEditor.js
+msgid "Min. collateral needed is"
+msgstr "Min. collateral needed is"
 
 #: src/components/Exchange/OrderEditor.js
 msgid "Minimum received"

@@ -12,6 +12,7 @@ import {
   getLiquidationPrice,
   MAX_ALLOWED_LEVERAGE,
   getFundingFee,
+  MAX_LEVERAGE,
 } from "lib/legacy";
 import { getContract } from "config/contracts";
 import Tab from "../Tab/Tab";
@@ -31,6 +32,7 @@ import { usePrevious } from "lib/usePrevious";
 import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ErrorCode, ErrorDisplayType } from "./constants";
+import { getTokenAmountFromUsd } from "domain/tokens/utils";
 
 const DEPOSIT = "Deposit";
 const WITHDRAW = "Withdraw";
@@ -109,7 +111,10 @@ export default function PositionEditor(props) {
   let title;
   let collateralDelta;
   let fundingFee;
-
+  let minimumCollateralRequired;
+  let collateralLeftAfterAllFees;
+  let minimumCollateralToAdd;
+  let minimumCollateralToAddInToken;
   if (position) {
     title = t`Edit ${longOrShortText} ${position.indexToken.symbol}`;
     collateralToken = position.collateralToken;
@@ -187,12 +192,27 @@ export default function PositionEditor(props) {
         ? position.collateralAfterFee.add(collateralDelta)
         : position.collateralAfterFee.sub(collateralDelta);
     }
+    minimumCollateralRequired = position.size.div(MAX_LEVERAGE / BASIS_POINTS_DIVISOR);
+    // collateral - funding fee - closing fee +- PnL
+    collateralLeftAfterAllFees = position.hasProfit
+      ? position.collateral.sub(position.fundingFee).sub(position.closingFee).add(position.delta)
+      : position.collateral.sub(position.fundingFee).sub(position.closingFee).sub(position.delta);
+    minimumCollateralToAdd = convertedAmount
+      ? minimumCollateralRequired.sub(collateralLeftAfterAllFees).add(convertedAmount)
+      : minimumCollateralRequired.sub(collateralLeftAfterAllFees);
+    minimumCollateralToAddInToken =
+      minimumCollateralToAdd &&
+      getTokenAmountFromUsd(infoTokens, position.collateralToken.address, minimumCollateralToAdd);
   }
 
   const getError = () => {
     if (IS_NETWORK_DISABLED[chainId]) {
       if (isDeposit) return [t`Deposit disabled, pending ${getChainName(chainId)} upgrade`];
       return [t`Withdraw disabled, pending ${getChainName(chainId)} upgrade`];
+    }
+
+    if (isDeposit && fromAmount && minimumCollateralToAdd && minimumCollateralToAdd.gt(0)) {
+      return [t`Insufficient collateral deposit`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientCollateral];
     }
 
     if (!fromAmount) {
@@ -465,6 +485,29 @@ export default function PositionEditor(props) {
   };
   const ERROR_TOOLTIP_MSG = {
     [ErrorCode.InvalidLiqPrice]: t`Liquidation price would cross mark price.`,
+    [ErrorCode.InsufficientCollateral]: (
+      <>
+        <p>Not enough collateral deposit to bring position leverage below 100x.</p>
+        <br />
+        <StatsTooltipRow
+          label={t`Min. collateral needed is`}
+          value={position && `${formatAmount(minimumCollateralRequired, USD_DECIMALS, 2, true)}`}
+          showDollar={true}
+        />
+        <StatsTooltipRow
+          label={t`Deposit at least`}
+          value={
+            minimumCollateralToAdd &&
+            `${formatAmount(minimumCollateralToAdd, USD_DECIMALS, 2, true)} (${formatAmount(
+              minimumCollateralToAddInToken,
+              position.collateralToken.decimals,
+              4
+            )} ${position.collateralToken.symbol} )`
+          }
+          showDollar={false}
+        />
+      </>
+    ),
   };
 
   function renderPrimaryButton() {
