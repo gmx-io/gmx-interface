@@ -115,7 +115,6 @@ export const defaultChartProps = {
   userId: "public_user_id",
   fullscreen: false,
   autosize: true,
-  studiesOverrides: {},
   header_widget_dom_node: false,
   overrides: chartOverrides,
   enabled_features: enabledFeatures,

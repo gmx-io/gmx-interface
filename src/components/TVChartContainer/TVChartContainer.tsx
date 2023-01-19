@@ -105,7 +105,6 @@ export default function TVChartContainer({
       fullscreen: defaultChartProps.fullscreen,
       autosize: defaultChartProps.autosize,
       custom_css_url: defaultChartProps.custom_css_url,
-      studies_overrides: defaultChartProps.studiesOverrides,
       overrides: defaultChartProps.overrides,
       interval: getPeriodFromResolutions(period),
       save_load_adapter: new SaveLoadAdapter(chainId, tvCharts, setTvCharts, onSelectToken),
@@ -133,6 +132,7 @@ export default function TVChartContainer({
       if (tvWidgetRef.current) {
         tvWidgetRef.current.remove();
         tvWidgetRef.current = null;
+        setChartReady(false);
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

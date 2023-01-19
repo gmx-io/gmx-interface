@@ -45,7 +45,11 @@ async function getTokenChartPrice(chainId, symbol, period) {
 async function getCurrentPriceOfToken(chainId, symbol) {
   try {
     const indexPricesUrl = getServerUrl(chainId, "/prices");
-    const indexPrices = await fetch(indexPricesUrl).then((res) => res.json());
+    const response = await fetch(indexPricesUrl);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const indexPrices = await response.json();
     let symbolInfo = getTokenBySymbol(chainId, symbol);
     if (symbolInfo.isNative) {
       symbolInfo = getWrappedToken(chainId);
@@ -63,11 +67,6 @@ export async function getHistoryBars({ ticker, resolution, chainId, isStable, co
   return bars.map(formatTimeInBar);
 }
 
-async function getLastHistoryBar(ticker, resolution, chainId) {
-  const prices = await getLimitChartPricesFromStats(chainId, ticker, resolution);
-  return formatTimeInBar({ ...prices[prices.length - 1], ticker });
-}
-
 const getLastBarAfterInterval = (function () {
   let startTime = 0;
   let lastBar, lastTicker, lastPeriod;
@@ -75,7 +74,8 @@ const getLastBarAfterInterval = (function () {
   return async function main(ticker, period, chainId) {
     const currentTime = Date.now();
     if (currentTime - startTime > LAST_BAR_REFRESH_INTERVAL || lastTicker !== ticker || lastPeriod !== period) {
-      lastBar = await getLastHistoryBar(ticker, period, chainId);
+      const prices = await getLimitChartPricesFromStats(chainId, ticker, period, 1);
+      lastBar = formatTimeInBar({ ...prices[prices.length - 1], ticker });
       startTime = currentTime;
       lastTicker = ticker;
       lastPeriod = period;

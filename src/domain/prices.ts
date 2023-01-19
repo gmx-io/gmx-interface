@@ -11,6 +11,13 @@ import { formatAmount } from "lib/numbers";
 
 const BigNumber = ethers.BigNumber;
 
+function getNormalizedSymbol(tokenSymbol) {
+  if (["WBTC", "WETH", "WAVAX", "BTC.b"].includes(tokenSymbol)) {
+    return tokenSymbol.includes(".") ? tokenSymbol.split(".")[0] : tokenSymbol.substr(1);
+  }
+  return tokenSymbol;
+}
+
 // Ethereum network, Chainlink Aggregator contracts
 const FEED_ID_MAP = {
   BTC_USD: "0xae74faa92cb67a95ebcab07358bc222e33a34da7",
@@ -68,29 +75,25 @@ export function fillGaps(prices, periodSeconds) {
 }
 
 export async function getLimitChartPricesFromStats(chainId, symbol, period, limit = 1) {
-  if (["WBTC", "WETH", "WAVAX"].includes(symbol)) {
-    symbol = symbol.substr(1);
-  } else if (symbol === "BTC.b") {
-    symbol = "BTC";
-  }
+  symbol = getNormalizedSymbol(symbol);
 
   const url = `${GMX_STATS_API_URL}/candles/${symbol}?preferableChainId=${chainId}&period=${period}&limit=${limit}`;
 
-  const response = await fetch(url);
-  if (response.status !== 200) {
-    throw new Error("cannot fetch limit price data");
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const prices = await response.json().then(({ prices }) => prices);
+    return prices.map(formatBarInfo);
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.log(`Error fetching data: ${error}`);
   }
-  const _prices = await response.json().then(({ prices }) => prices);
-  const prices = _prices.map(formatBarInfo);
-  return prices;
 }
 
 export async function getChartPricesFromStats(chainId, symbol, period) {
-  if (["WBTC", "WETH", "WAVAX"].includes(symbol)) {
-    symbol = symbol.substr(1);
-  } else if (symbol === "BTC.b") {
-    symbol = "BTC";
-  }
+  symbol = getNormalizedSymbol(symbol);
 
   const timeDiff = CHART_PERIODS[period] * 3000;
   const from = Math.floor(Date.now() / 1000 - timeDiff);
@@ -182,9 +185,7 @@ function getCandlesFromPrices(prices, period) {
 }
 
 export function getChainlinkChartPricesFromGraph(tokenSymbol, period) {
-  if (["WBTC", "WETH", "WAVAX", "BTC.b"].includes(tokenSymbol)) {
-    tokenSymbol = tokenSymbol.includes(".") ? tokenSymbol.split(".")[0] : tokenSymbol.substr(1);
-  }
+  tokenSymbol = getNormalizedSymbol(tokenSymbol);
   const marketName = tokenSymbol + "_USD";
   const feedId = FEED_ID_MAP[marketName];
   if (!feedId) {
