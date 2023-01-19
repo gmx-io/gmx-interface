@@ -1,5 +1,4 @@
-import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { convertToContractPrices, convertToUsd, getTokenData } from "../tokens";
+import { convertToContractPrices, convertToUsd, getMidPrice, getTokenData } from "../tokens";
 import { TokensData } from "../tokens/types";
 import {
   Market,
@@ -9,6 +8,7 @@ import {
   MarketsOpenInterestData,
   MarketsPoolsData,
 } from "./types";
+import { BigNumber } from "ethers";
 
 export function getMarket(marketsData: MarketsData, marketAddress?: string) {
   if (!marketAddress) return undefined;
@@ -55,9 +55,7 @@ export function getMarketName(
 ) {
   const market = getMarket(marketsData, marketAddress);
 
-  const indexAddress = market?.isIndexWrapped ? NATIVE_TOKEN_ADDRESS : market?.indexTokenAddress;
-
-  const indexToken = getTokenData(tokensData, indexAddress);
+  const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
   const longToken = getTokenData(tokensData, market?.longTokenAddress);
   const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
 
@@ -92,14 +90,15 @@ export function getOpenInterest(openInterestData: MarketsOpenInterestData, marke
   return openInterestData[marketAddress];
 }
 
-export function getTokenPoolAmount(
+export function getPoolAmount(
   marketsData: MarketsData,
   poolsData: MarketsPoolsData,
-  marketAddress?: string,
-  tokenAddress?: string
+  tokensData: TokensData,
+  marketAddress: string | undefined,
+  tokenAddress: string | undefined
 ) {
   const pools = getMarketPoolData(poolsData, marketAddress);
-  const tokenPoolType = getTokenPoolType(marketsData, marketAddress, tokenAddress);
+  const tokenPoolType = getTokenPoolType(marketsData, tokensData, marketAddress, tokenAddress);
 
   if (!pools || !tokenPoolType) return undefined;
 
@@ -118,33 +117,57 @@ export function getPoolAmountUsd(
   marketsData: MarketsData,
   poolsData: MarketsPoolsData,
   tokensData: TokensData,
-  marketAddress?: string,
-  tokenAddress?: string,
-  useMaxPrice?: boolean
+  marketAddress: string | undefined,
+  tokenAddress: string | undefined,
+  priceType: "minPrice" | "maxPrice" | "midPrice"
 ) {
-  const tokenAmount = getTokenPoolAmount(marketsData, poolsData, marketAddress, tokenAddress);
+  const tokenAmount = getPoolAmount(marketsData, poolsData, tokensData, marketAddress, tokenAddress);
   const token = getTokenData(tokensData, tokenAddress);
 
-  return convertToUsd(tokenAmount, token?.decimals, useMaxPrice ? token?.prices?.maxPrice : token?.prices?.minPrice);
+  let price: BigNumber | undefined;
+
+  if (priceType === "minPrice") {
+    price = token?.prices?.minPrice;
+  }
+
+  if (priceType === "maxPrice") {
+    price = token?.prices?.maxPrice;
+  }
+
+  if (priceType === "midPrice") {
+    price = getMidPrice(token?.prices);
+  }
+
+  return convertToUsd(tokenAmount, token?.decimals, price);
 }
 
-export function getTokenPoolType(marketsData: MarketsData, marketAddress?: string, tokenAddress?: string) {
+export function getTokenPoolType(
+  marketsData: MarketsData,
+  tokensData: TokensData,
+  marketAddress: string | undefined,
+  tokenAddress: string | undefined
+) {
   const market = getMarket(marketsData, marketAddress);
+  const token = getTokenData(tokensData, tokenAddress, "wrapped");
 
-  if (!market) return undefined;
+  if (!market || !token) return undefined;
 
-  if (market.longTokenAddress === tokenAddress || (market.isLongWrapped && tokenAddress === NATIVE_TOKEN_ADDRESS)) {
+  if (market.longTokenAddress === token.address) {
     return MarketPoolType.Long;
   }
 
-  if (market.shortTokenAddress === tokenAddress || (market.isShortWrapped && tokenAddress === NATIVE_TOKEN_ADDRESS)) {
+  if (market.shortTokenAddress === token.address) {
     return MarketPoolType.Short;
   }
 
   return undefined;
 }
 
-export function getContractMarketPrices(marketsData: MarketsData, tokensData: TokensData, marketAddress?: string) {
+export function getContractMarketPrices(
+  marketsData: MarketsData,
+  tokensData: TokensData,
+  marketAddress: string | undefined
+) {
   const market = getMarket(marketsData, marketAddress)!;
 
   const longToken = getTokenData(tokensData, market.longTokenAddress);

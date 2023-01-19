@@ -4,7 +4,6 @@ import { expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 import { MarketsData, getMarket, getMarketName } from "../markets";
 import { TokenPrices, TokensData, convertToUsd, getTokenData } from "../tokens";
 import { AggregatedPositionData, Position, PositionsData } from "./types";
-import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { PositionsUpdates } from "../contractEvents";
 import { getPositionUpdate } from "../contractEvents/utils";
 
@@ -94,10 +93,7 @@ export function getAggregatedPositionData(
 
   const collateralToken = getTokenData(tokensData, position?.collateralTokenAddress);
   const pnlToken = getTokenData(tokensData, position.isLong ? market?.longTokenAddress : market?.shortTokenAddress);
-  const indexToken = getTokenData(
-    tokensData,
-    market?.isIndexWrapped ? NATIVE_TOKEN_ADDRESS : market?.indexTokenAddress
-  );
+  const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
 
   const marketName = getMarketName(marketsData, tokensData, position?.marketAddress, false, false);
 

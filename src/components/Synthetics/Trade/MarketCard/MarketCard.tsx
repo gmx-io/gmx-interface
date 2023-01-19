@@ -44,7 +44,8 @@ export function MarketCard(p: Props) {
     poolsData,
     tokensData,
     market?.marketTokenAddress,
-    market?.longTokenAddress
+    market?.longTokenAddress,
+    "midPrice"
   );
 
   const shortPoolAmountUsd = getPoolAmountUsd(
@@ -52,7 +53,8 @@ export function MarketCard(p: Props) {
     poolsData,
     tokensData,
     market?.marketTokenAddress,
-    market?.shortTokenAddress
+    market?.shortTokenAddress,
+    "midPrice"
   );
 
   const openInterest = getOpenInterest(openInterestData, market?.marketTokenAddress);

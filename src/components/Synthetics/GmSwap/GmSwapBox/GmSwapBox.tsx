@@ -105,7 +105,8 @@ export function GmSwapBox(p: Props) {
     poolsData,
     tokensData,
     market?.marketTokenAddress,
-    market?.longTokenAddress
+    market?.longTokenAddress,
+    "midPrice"
   );
 
   const currentShortUsd = getPoolAmountUsd(
@@ -113,7 +114,8 @@ export function GmSwapBox(p: Props) {
     poolsData,
     tokensData,
     market?.marketTokenAddress,
-    market?.shortTokenAddress
+    market?.shortTokenAddress,
+    "midPrice"
   );
 
   const priceImpact = getPriceImpact(
@@ -141,7 +143,7 @@ export function GmSwapBox(p: Props) {
     if (!market) return undefined;
 
     const poolTokenState = [firstTokenState, secondTokenState].find((tokenState) => {
-      const tokenPool = getTokenPoolType(marketsData, market.marketTokenAddress, tokenState.tokenAddress);
+      const tokenPool = getTokenPoolType(marketsData, tokensData, market.marketTokenAddress, tokenState.tokenAddress);
 
       return tokenPool === poolType;
     });

@@ -10,7 +10,10 @@ type TokensDataResult = {
 };
 
 export function useAvailableTokensData(chainId: number): TokensDataResult {
-  const tokenAddresses = getAvailableTradeTokens(chainId, { includeSynthetic: true }).map((token) => token.address);
+  const tokenAddresses = useMemo(
+    () => getAvailableTradeTokens(chainId, { includeSynthetic: true }).map((token) => token.address),
+    [chainId]
+  );
 
   return useTokensData(chainId, { tokenAddresses });
 }

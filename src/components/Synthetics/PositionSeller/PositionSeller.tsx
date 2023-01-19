@@ -8,7 +8,7 @@ import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { KEEP_LEVERAGE_FOR_DECREASE_KEY } from "config/localStorage";
-import { getConvertedTokenAddress } from "config/tokens";
+import { convertTokenAddress } from "config/tokens";
 import { getExecutionFee } from "domain/synthetics/fees";
 import {
   OrderType,
@@ -126,7 +126,7 @@ export function PositionSeller(p: Props) {
 
   useEffect(() => {
     if (!receiveTokenAddress && position.collateralToken?.address) {
-      const convertedAddress = getConvertedTokenAddress(chainId, position.collateralToken.address, "native");
+      const convertedAddress = convertTokenAddress(chainId, position.collateralToken.address, "native");
       setReceiveTokenAddress(convertedAddress);
     }
   }, [chainId, position.collateralToken, receiveTokenAddress]);

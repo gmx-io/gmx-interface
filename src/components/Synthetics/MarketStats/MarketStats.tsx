@@ -64,7 +64,7 @@ export function MarketStats(p: Props) {
     tokensData,
     market?.marketTokenAddress,
     market?.longTokenAddress,
-    false
+    "midPrice"
   );
 
   const shortPoolAmount = pools?.shortPoolAmount;
@@ -74,7 +74,7 @@ export function MarketStats(p: Props) {
     tokensData,
     market?.marketTokenAddress,
     market?.shortTokenAddress,
-    false
+    "midPrice"
   );
 
   return (

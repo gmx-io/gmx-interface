@@ -5,10 +5,8 @@ import {
   getMarketsGraph,
   getSwapPathForPosition,
 } from "domain/synthetics/exchange";
-import { MarketsData, MarketsPoolsData, getTokenPoolAmount } from "domain/synthetics/markets";
+import { MarketsData, MarketsPoolsData } from "domain/synthetics/markets";
 import { BigNumber, ethers } from "ethers";
-
-const NATIVE_TOKEN = "AVAX";
 
 // indexToken-longToken-shortToken
 const marketsKeys = [
@@ -32,9 +30,6 @@ const marketsData: MarketsData = marketsCombinations.reduce((acc, comb) => {
     shortTokenAddress: shortToken,
     longTokenAddress: longToken,
     indexTokenAddress: indexToken,
-    isLongWrapped: longToken === NATIVE_TOKEN,
-    isShortWrapped: shortToken === NATIVE_TOKEN,
-    isIndexWrapped: indexToken === NATIVE_TOKEN,
     perp: "USD",
     data: "",
   };
@@ -56,8 +51,11 @@ const poolsData: MarketsPoolsData = marketsKeys.reduce((acc, market) => {
 // mocked estimator, only checks for pool amounts
 const feeEstimatorFactory =
   (poolsData): FeeEstimator =>
-  (market, from, to, amountUsd) => {
-    const toPool = getTokenPoolAmount(marketsData, poolsData, market, to);
+  (marketAddress, from, to, amountUsd) => {
+    const market = marketsData[marketAddress];
+    const pools = poolsData[marketAddress];
+
+    const toPool = to === market.longTokenAddress ? pools.longPoolAmount : pools.shortPoolAmount;
 
     if (!toPool || toPool.lt(amountUsd)) return ethers.constants.MaxUint256;
 

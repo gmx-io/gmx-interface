@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { SwapParams, SwapPathItem, findSwapPath, getMarketsGraph, getSwapPathForPosition } from "./swapPath";
 import { getSwapFee, usePriceImpactConfigs } from "domain/synthetics/fees";
 import { useAvailableTokensData } from "domain/synthetics/tokens";
-import { getConvertedTokenAddress } from "config/tokens";
+import { convertTokenAddress } from "config/tokens";
 
 export type SwapRoute = {
   market?: string;
@@ -45,7 +45,7 @@ export function useSwapPath(p: {
 
   const feeEstimator = useCallback(
     (market: string, fromToken: string, toToken: string, amountUsd: BigNumber) => {
-      const toPool = getPoolAmountUsd(marketsData, poolsData, tokensData, market, toToken);
+      const toPool = getPoolAmountUsd(marketsData, poolsData, tokensData, market, toToken, "midPrice");
 
       // TODO: check for reserves
       if (!toPool?.gt(amountUsd)) return ethers.constants.MaxUint256;
@@ -104,8 +104,8 @@ export function useSwapPath(p: {
     if (p.isSwap) {
       if (!p.fromToken || !p.toToken) return;
 
-      const fromToken = getConvertedTokenAddress(chainId, p.fromToken, "wrapped");
-      const toToken = getConvertedTokenAddress(chainId, p.toToken, "wrapped");
+      const fromToken = convertTokenAddress(chainId, p.fromToken, "wrapped");
+      const toToken = convertTokenAddress(chainId, p.toToken, "wrapped");
 
       debouncedUpdateSwapPath({
         fromToken: fromToken,
@@ -118,9 +118,9 @@ export function useSwapPath(p: {
       if (!p.fromToken || !p.collateralToken || !p.indexToken) return;
 
       // Todo: to swapPath
-      const fromToken = getConvertedTokenAddress(chainId, p.fromToken, "wrapped");
-      const toToken = getConvertedTokenAddress(chainId, p.collateralToken, "wrapped");
-      const indexToken = getConvertedTokenAddress(chainId, p.indexToken, "wrapped");
+      const fromToken = convertTokenAddress(chainId, p.fromToken, "wrapped");
+      const toToken = convertTokenAddress(chainId, p.collateralToken, "wrapped");
+      const indexToken = convertTokenAddress(chainId, p.indexToken, "wrapped");
 
       debouncedUpdateSwapPathForPosition({
         fromToken: fromToken,

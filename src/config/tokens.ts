@@ -692,6 +692,10 @@ for (const chainId of CHAIN_IDS) {
   }
 }
 
+for (const chainId of CHAIN_IDS) {
+  NATIVE_TOKENS_MAP[chainId].wrappedAddress = WRAPPED_TOKENS_MAP[chainId].address;
+}
+
 export function getWrappedToken(chainId: number) {
   return WRAPPED_TOKENS_MAP[chainId];
 }
@@ -734,7 +738,7 @@ export function getTokenBySymbol(chainId: number, symbol: string) {
   return token;
 }
 
-export function getConvertedTokenAddress(chainId: number, address: string, convertTo?: "wrapped" | "native") {
+export function convertTokenAddress(chainId: number, address: string, convertTo?: "wrapped" | "native") {
   const wrappedToken = getWrappedToken(chainId);
 
   if (convertTo === "wrapped" && address === NATIVE_TOKEN_ADDRESS) {

@@ -2,7 +2,7 @@ import { Web3Provider } from "@ethersproject/providers";
 import { t } from "@lingui/macro";
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
-import { NATIVE_TOKEN_ADDRESS, getConvertedTokenAddress } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
 import { encodeReferralCode } from "domain/referrals";
 import { BigNumber, ethers } from "ethers";
 import { callContract } from "lib/contracts";
@@ -65,7 +65,7 @@ export async function createSwapOrderTxn(chainId: number, library: Web3Provider,
         {
           addresses: {
             receiver: p.account,
-            initialCollateralToken: getConvertedTokenAddress(chainId, p.fromTokenAddress, "wrapped"),
+            initialCollateralToken: convertTokenAddress(chainId, p.fromTokenAddress, "wrapped"),
             callbackContract: AddressZero,
             market: AddressZero,
             swapPath: p.swapPath,

@@ -17,7 +17,7 @@ import {
   SYNTHETICS_SWAP_OPERATION_KEY,
   SYNTHETICS_SWAP_TO_TOKEN_KEY,
 } from "config/localStorage";
-import { NATIVE_TOKEN_ADDRESS, getConvertedTokenAddress } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
 import { useTokenInputState } from "domain/synthetics/exchange";
 import { useSwapPath } from "domain/synthetics/exchange/useSwapPath";
 import { convertToTokenAmount, convertToUsd, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
@@ -361,7 +361,7 @@ export function SwapBox(p: Props) {
     toTokenState.setTokenAddress(tokenAddress);
 
     if (isPosition && collateralTokenAddress) {
-      const indexAddress = getConvertedTokenAddress(chainId, tokenAddress, "wrapped");
+      const indexAddress = convertTokenAddress(chainId, tokenAddress, "wrapped");
 
       const shouldUpdateMarket = !selectedMarket || selectedMarket.indexTokenAddress !== indexAddress;
 
@@ -443,10 +443,10 @@ export function SwapBox(p: Props) {
   useEffect(
     function updateTokenInputs() {
       if (isPosition && selectedMarket && toTokenState.tokenAddress) {
-        const convetedIndexAddress = getConvertedTokenAddress(chainId, toTokenState.tokenAddress, "wrapped");
+        const convetedIndexAddress = convertTokenAddress(chainId, toTokenState.tokenAddress, "wrapped");
 
         if (selectedMarket.indexTokenAddress !== convetedIndexAddress) {
-          toTokenState.setTokenAddress(getConvertedTokenAddress(chainId, selectedMarket.indexTokenAddress, "native"));
+          toTokenState.setTokenAddress(convertTokenAddress(chainId, selectedMarket.indexTokenAddress, "native"));
         }
       }
 
@@ -494,8 +494,8 @@ export function SwapBox(p: Props) {
       if (!p.selectedMarketAddress && toTokenState.tokenAddress) {
         const market = getMarketByTokens(
           marketsData,
-          getConvertedTokenAddress(chainId, toTokenState.tokenAddress, "wrapped"),
-          collateralTokenAddress ? getConvertedTokenAddress(chainId, collateralTokenAddress, "wrapped") : undefined
+          convertTokenAddress(chainId, toTokenState.tokenAddress, "wrapped"),
+          collateralTokenAddress ? convertTokenAddress(chainId, collateralTokenAddress, "wrapped") : undefined
         );
 
         if (market) {

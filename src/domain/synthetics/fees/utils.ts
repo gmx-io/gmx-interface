@@ -41,8 +41,8 @@ export function getSwapFee(
   toToken: string,
   usdAmount: BigNumber
 ) {
-  const fromPoolUsd = getPoolAmountUsd(marketsData, poolsData, tokensData, market, fromToken);
-  const toPoolUsd = getPoolAmountUsd(marketsData, poolsData, tokensData, market, toToken);
+  const fromPoolUsd = getPoolAmountUsd(marketsData, poolsData, tokensData, market, fromToken, "midPrice");
+  const toPoolUsd = getPoolAmountUsd(marketsData, poolsData, tokensData, market, toToken, "midPrice");
 
   const fromDelta = usdAmount;
   const toDelta = BigNumber.from(0).sub(usdAmount);

@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import { HIGH_PRICE_IMPACT_BP } from "config/synthetics";
-import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS, getWrappedToken } from "config/tokens";
 import { SwapPathItem } from "domain/synthetics/exchange";
 import {
   ExecutionFeeParams,
@@ -242,6 +242,7 @@ export function useAvailableSwapTokens(p: { indexTokenAddress?: string; isSwap: 
 
   const { longCollaterals, shortCollaterals, indexTokens, indexCollateralsMap } = useMemo(() => {
     const nativeToken = getTokenData(tokensData, NATIVE_TOKEN_ADDRESS)!;
+    const wrappedToken = getWrappedToken(chainId);
 
     const longMap: { [address: string]: Token } = {};
     const shortMap: { [address: string]: Token } = {};
@@ -250,11 +251,11 @@ export function useAvailableSwapTokens(p: { indexTokenAddress?: string; isSwap: 
     const indexCollateralsMap: { [indexAddress: string]: { [collateral: string]: Token } } = {};
 
     for (const market of markets) {
-      if (market.isLongWrapped) {
+      if (market.longTokenAddress === wrappedToken.address) {
         longMap[nativeToken.address] = nativeToken;
       }
 
-      if (market.isShortWrapped) {
+      if (market.shortTokenAddress === wrappedToken.address) {
         shortMap[nativeToken.address] = nativeToken;
       }
 
@@ -264,7 +265,10 @@ export function useAvailableSwapTokens(p: { indexTokenAddress?: string; isSwap: 
       longMap[longToken.address] = longToken;
       shortMap[shortToken.address] = shortToken;
 
-      const indexToken = market.isIndexWrapped ? nativeToken : getTokenData(tokensData, market.indexTokenAddress)!;
+      const indexToken =
+        market.indexTokenAddress === wrappedToken.address
+          ? nativeToken
+          : getTokenData(tokensData, market.indexTokenAddress)!;
 
       indexMap[indexToken.address] = indexToken;
 
@@ -279,7 +283,7 @@ export function useAvailableSwapTokens(p: { indexTokenAddress?: string; isSwap: 
       indexTokens: Object.values(indexMap) as Token[],
       indexCollateralsMap,
     };
-  }, [markets, tokensData]);
+  }, [chainId, markets, tokensData]);
 
   const availableFromTokens: Token[] = longCollaterals.concat(shortCollaterals);
   const availableToTokens: Token[] = p.isSwap ? availableFromTokens : indexTokens;

@@ -2,7 +2,7 @@ import { Web3Provider } from "@ethersproject/providers";
 import DataStore from "abis/DataStore.json";
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
-import { getConvertedTokenAddress } from "config/tokens";
+import { convertTokenAddress } from "config/tokens";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
 import { BigNumber, ethers } from "ethers";
 import _ from "lodash";
@@ -116,7 +116,7 @@ function getSimulationPrices(
       continue;
     }
 
-    const convertedAddress = getConvertedTokenAddress(chainId, address, "wrapped");
+    const convertedAddress = convertTokenAddress(chainId, address, "wrapped");
 
     primaryTokens.push(convertedAddress);
 

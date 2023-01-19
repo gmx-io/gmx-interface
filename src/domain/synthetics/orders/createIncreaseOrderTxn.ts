@@ -3,7 +3,7 @@ import { t } from "@lingui/macro";
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
-import { NATIVE_TOKEN_ADDRESS, getConvertedTokenAddress } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
 import { encodeReferralCode } from "domain/referrals";
 import { TokensData, convertToContractPrice, convertToTokenAmount, getTokenData } from "domain/synthetics/tokens";
 import { BigNumber, ethers } from "ethers";
@@ -79,7 +79,7 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
         {
           addresses: {
             receiver: p.account,
-            initialCollateralToken: getConvertedTokenAddress(chainId, p.initialCollateralAddress, "wrapped"),
+            initialCollateralToken: convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped"),
             callbackContract: AddressZero,
             market: p.market,
             swapPath: p.swapPath,

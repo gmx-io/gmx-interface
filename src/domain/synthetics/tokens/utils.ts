@@ -2,9 +2,20 @@ import { InfoTokens, TokenInfo } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { TokenAllowancesData, TokenData, TokenPrices, TokensData } from "./types";
 import { expandDecimals } from "lib/numbers";
+import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 
-export function getTokenData(tokensData: TokensData, address: string | undefined) {
+export function getTokenData(tokensData: TokensData, address: string | undefined, convertTo?: "wrapped" | "native") {
   if (!address) return undefined;
+
+  const token = tokensData[address];
+
+  if (convertTo === "wrapped" && token.isNative && token.wrappedAddress) {
+    return tokensData[token.wrappedAddress];
+  }
+
+  if (convertTo === "native" && token.isWrapped) {
+    return tokensData[NATIVE_TOKEN_ADDRESS];
+  }
 
   return tokensData[address];
 }
