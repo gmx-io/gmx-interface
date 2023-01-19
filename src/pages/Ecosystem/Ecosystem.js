@@ -5,17 +5,15 @@ import SEO from "components/Common/SEO";
 import Footer from "components/Footer/Footer";
 import { getPageTitle } from "lib/legacy";
 
-import arbitrumIcon from "img/ic_arbitrum_16.svg";
-import avalancheIcon from "img/ic_avalanche_16.svg";
-
 import "./Ecosystem.css";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { t } from "@lingui/macro";
+import { getIcon } from "config/icons";
 
 const NETWORK_ICONS = {
-  [ARBITRUM]: arbitrumIcon,
-  [AVALANCHE]: avalancheIcon,
+  [ARBITRUM]: getIcon(ARBITRUM, "network"),
+  [AVALANCHE]: getIcon(AVALANCHE, "network"),
 };
 
 const NETWORK_ICON_ALTS = {
@@ -146,6 +144,33 @@ export default function Ecosystem() {
       creatorLink: "https://t.me/n1njawtf",
       chainIds: [ARBITRUM, AVALANCHE],
     },
+    {
+      title: "GMX Hedging Simulator",
+      link: "https://www.gmxhedge.com/",
+      linkLabel: "gmxhedge.com",
+      about: t`Simulate your hedge strategy`,
+      creatorLabel: "@kyzoeth",
+      creatorLink: "https://twitter.com/kyzoeth",
+      chainIds: [ARBITRUM],
+    },
+    {
+      title: "GMX Swaps",
+      link: "https://t.me/GMXSwaps",
+      linkLabel: "t.me",
+      about: t`Telegram bot for GMX Swaps monitoring`,
+      creatorLabel: "@snipermonke01",
+      creatorLink: "https://twitter.com/snipermonke01",
+      chainIds: [ARBITRUM, AVALANCHE],
+    },
+    {
+      title: "GMX Position Calculator",
+      link: "https://docs.google.com/spreadsheets/d/1OKCeRGU7l-xGx33-siBw_l8x7vP97y4KKKjA2x5LqhQ/edit#gid=0",
+      linkLabel: "docs.google.com",
+      about: t`Spreadsheet for position calculations`,
+      creatorLabel: "@barryfried1",
+      creatorLink: "https://twitter.com/barryfried1",
+      chainIds: [ARBITRUM, AVALANCHE],
+    },
   ];
 
   const dashboardProjects = [
@@ -229,6 +254,24 @@ export default function Ecosystem() {
       creatorLabel: "@kyzoeth",
       creatorLink: "https://twitter.com/kyzoeth",
       chainIds: [ARBITRUM],
+    },
+    {
+      title: "GMX Open Trades Ranking and Stats",
+      link: "https://dune.com/HanSolar/gmx-open-trade-ranking-and-stats",
+      linkLabel: "dune.com",
+      about: t`Open trades ranking and stats`,
+      creatorLabel: "@hansolar21",
+      creatorLink: "https://twitter.com/hansolar21",
+      chainIds: [ARBITRUM, AVALANCHE],
+    },
+    {
+      title: "GMX Everything Dashboard",
+      link: "https://dune.com/gmxtrader/gmx-dashboard-insights",
+      linkLabel: "dune.com",
+      about: t`Overall protocol analytics`,
+      creatorLabel: "@gmxtrader",
+      creatorLink: "https://twitter.com/gmxtrader",
+      chainIds: [ARBITRUM, AVALANCHE],
     },
   ];
 
@@ -359,6 +402,24 @@ export default function Ecosystem() {
       announcementLink: "https://twitter.com/yieldyak_/status/1484458884827947008",
       chainIds: [AVALANCHE],
     },
+    {
+      title: "Plutus",
+      link: "https://plutusdao.io/vaults",
+      linkLabel: "plutusdao.io",
+      about: t`GLP autocompounding vaults`,
+      announcementLabel: "medium.com",
+      announcementLink: "https://medium.com/@plutusdao.io/product-release-plutus-vaults-d0b0252cdf03",
+      chainIds: [ARBITRUM],
+    },
+    {
+      title: "Beefy.com",
+      link: "https://app.beefy.com/",
+      linkLabel: "beefy.com",
+      about: t`GLP and GMX autocompounding vaults`,
+      announcementLabel: "beefy.com",
+      announcementLink: "https://beefy.com/articles/earn-glp-with-beefy-s-new-glp-strategy-and-vaults/",
+      chainIds: [ARBITRUM, AVALANCHE],
+    },
   ];
 
   const telegramGroups = [
@@ -412,7 +473,7 @@ export default function Ecosystem() {
                     {item.title}
                     <div className="App-card-title-icon">
                       {item.chainIds.map((network) => (
-                        <img key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
+                        <img width="16" key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
                       ))}
                     </div>
                   </div>
@@ -458,7 +519,7 @@ export default function Ecosystem() {
                     {item.title}
                     <div className="App-card-title-icon">
                       {item.chainIds.map((network) => (
-                        <img key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
+                        <img width="16" key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
                       ))}
                     </div>
                   </div>
@@ -508,7 +569,7 @@ export default function Ecosystem() {
                     {item.title}
                     <div className="App-card-title-icon">
                       {item.chainIds.map((network) => (
-                        <img key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
+                        <img width="16" key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
                       ))}
                     </div>
                   </div>
@@ -559,7 +620,7 @@ export default function Ecosystem() {
                     {item.title}
                     <div className="App-card-title-icon">
                       {item.chainIds.map((network) => (
-                        <img key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
+                        <img width="16" key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
                       ))}
                     </div>
                   </div>

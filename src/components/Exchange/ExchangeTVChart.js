@@ -80,7 +80,7 @@ export default function ExchangeTVChart(props) {
   }, [swapOption, fromToken, toToken, chainId]);
 
   const currentOrders = useMemo(() => {
-    if (swapOption === SWAP || !chartToken) {
+    if (!chartToken) {
       return [];
     }
 
@@ -106,7 +106,7 @@ export default function ExchangeTVChart(props) {
         }`;
         return { title, price: parseFloat(formatAmount(order.triggerPrice, USD_DECIMALS, 2)) };
       });
-  }, [orders, chartToken, swapOption, chainId]);
+  }, [orders, chartToken, chainId]);
 
   const currentPositions = useMemo(() => {
     if (!positions || !chartToken) {
@@ -170,7 +170,7 @@ export default function ExchangeTVChart(props) {
           );
         });
       }
-      if (positions && positions.length > 0) {
+      if (currentPositions && currentPositions.length > 0) {
         const color = "#3a3e5e";
 
         positions.forEach((position) => {
@@ -202,7 +202,7 @@ export default function ExchangeTVChart(props) {
     return () => {
       lines.forEach((line) => currentSeries.removePriceLine(line));
     };
-  }, [currentOrders, positions, currentSeries, chainId, savedShouldShowPositionLines]);
+  }, [currentOrders, currentSeries, chainId, savedShouldShowPositionLines, currentPositions, positions]);
 
   let high;
   let low;
