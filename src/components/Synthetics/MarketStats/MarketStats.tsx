@@ -8,9 +8,9 @@ import { getIcon } from "config/icons";
 import {
   getMarket,
   getMarketName,
-  getMarketPoolData,
+  getMarketPools,
   getMarketTokenData,
-  getPoolAmountUsd,
+  getPoolUsd,
   useMarketTokensData,
   useMarketsData,
   useMarketsPoolsData,
@@ -55,10 +55,10 @@ export function MarketStats(p: Props) {
     };
   }, [chainId, market]);
 
-  const pools = getMarketPoolData(poolsData, market?.marketTokenAddress);
+  const pools = getMarketPools(poolsData, market?.marketTokenAddress);
 
   const longPoolAmount = pools?.longPoolAmount;
-  const longPoolAmountUsd = getPoolAmountUsd(
+  const longPoolAmountUsd = getPoolUsd(
     marketsData,
     poolsData,
     tokensData,
@@ -68,7 +68,7 @@ export function MarketStats(p: Props) {
   );
 
   const shortPoolAmount = pools?.shortPoolAmount;
-  const shortPoolAmountUsd = getPoolAmountUsd(
+  const shortPoolAmountUsd = getPoolUsd(
     marketsData,
     poolsData,
     tokensData,

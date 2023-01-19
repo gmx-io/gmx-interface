@@ -1,4 +1,4 @@
-import { getPoolAmountUsd, useMarketsData, useMarketsPoolsData } from "domain/synthetics/markets";
+import { getPoolUsd, useMarketsData, useMarketsPoolsData } from "domain/synthetics/markets";
 import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { debounce } from "lodash";
@@ -45,7 +45,7 @@ export function useSwapPath(p: {
 
   const feeEstimator = useCallback(
     (market: string, fromToken: string, toToken: string, amountUsd: BigNumber) => {
-      const toPool = getPoolAmountUsd(marketsData, poolsData, tokensData, market, toToken, "midPrice");
+      const toPool = getPoolUsd(marketsData, poolsData, tokensData, market, toToken, "midPrice");
 
       // TODO: check for reserves
       if (!toPool?.gt(amountUsd)) return ethers.constants.MaxUint256;

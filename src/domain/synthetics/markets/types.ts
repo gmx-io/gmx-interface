@@ -30,8 +30,25 @@ export type MarketTokensData = {
 export type PoolData = {
   longPoolAmount: BigNumber;
   shortPoolAmount: BigNumber;
+
   reserveFactorLong: BigNumber;
   reserveFactorShort: BigNumber;
+
+  totalBorrowingLong: BigNumber;
+  totalBorrowingShort: BigNumber;
+
+  cummulativeBorrowingFactorLong: BigNumber;
+  cummulativeBorrowingFactorShort: BigNumber;
+
+  positionImpactPoolAmount: BigNumber;
+
+  netPnlMax: BigNumber;
+  netPnlMin: BigNumber;
+
+  pnlLongMax: BigNumber;
+  pnlLongMin: BigNumber;
+  pnlShortMax: BigNumber;
+  pnlShortMin: BigNumber;
 };
 
 export type RawContractDeposit = {
@@ -81,8 +98,10 @@ export type MarketsPoolsData = {
 };
 
 export type OpenInterestData = {
-  longInterest: BigNumber;
-  shortInterest: BigNumber;
+  longInterestUsd: BigNumber;
+  shortInterestUsd: BigNumber;
+  longInterestInTokens: BigNumber;
+  shortInterestInTokens: BigNumber;
 };
 
 export type MarketsOpenInterestData = {

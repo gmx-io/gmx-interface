@@ -4,7 +4,7 @@ import {
   getMarket,
   getMarketName,
   getOpenInterest,
-  getPoolAmountUsd,
+  getPoolUsd,
   useMarketsData,
   useMarketsPoolsData,
 } from "domain/synthetics/markets";
@@ -39,7 +39,7 @@ export function MarketCard(p: Props) {
   const longToken = getTokenData(tokensData, market?.longTokenAddress);
   const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
 
-  const longPoolAmountUsd = getPoolAmountUsd(
+  const longPoolAmountUsd = getPoolUsd(
     marketsData,
     poolsData,
     tokensData,
@@ -48,7 +48,7 @@ export function MarketCard(p: Props) {
     "midPrice"
   );
 
-  const shortPoolAmountUsd = getPoolAmountUsd(
+  const shortPoolAmountUsd = getPoolUsd(
     marketsData,
     poolsData,
     tokensData,
@@ -114,13 +114,13 @@ export function MarketCard(p: Props) {
             <InfoRow
               className="info-row"
               label={t`Open Interest Long`}
-              value={openInterest?.longInterest ? formatUsd(openInterest.longInterest) : "..."}
+              value={openInterest?.longInterestUsd ? formatUsd(openInterest.longInterestUsd) : "..."}
             />
 
             <InfoRow
               className="info-row"
               label={t`Open Interest Short`}
-              value={openInterest?.shortInterest ? formatUsd(openInterest.shortInterest) : "..."}
+              value={openInterest?.shortInterestUsd ? formatUsd(openInterest.shortInterestUsd) : "..."}
             />
           </>
         )}

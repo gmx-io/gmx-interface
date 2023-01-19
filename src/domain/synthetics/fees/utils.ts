@@ -3,7 +3,7 @@ import { TokenPrices, TokensData, convertToTokenAmount, getTokenData } from "dom
 import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import { expandDecimals, formatAmount, formatUsd, parseValue, roundUpDivision } from "lib/numbers";
-import { MarketsData, MarketsPoolsData, getPoolAmountUsd } from "../markets";
+import { MarketsData, MarketsPoolsData, getPoolUsd } from "../markets";
 import { ExecutionFeeParams, PriceImpactConfigsData } from "./types";
 import { getPriceImpact } from "./utils/priceImpact";
 
@@ -41,8 +41,8 @@ export function getSwapFee(
   toToken: string,
   usdAmount: BigNumber
 ) {
-  const fromPoolUsd = getPoolAmountUsd(marketsData, poolsData, tokensData, market, fromToken, "midPrice");
-  const toPoolUsd = getPoolAmountUsd(marketsData, poolsData, tokensData, market, toToken, "midPrice");
+  const fromPoolUsd = getPoolUsd(marketsData, poolsData, tokensData, market, fromToken, "midPrice");
+  const toPoolUsd = getPoolUsd(marketsData, poolsData, tokensData, market, toToken, "midPrice");
 
   const fromDelta = usdAmount;
   const toDelta = BigNumber.from(0).sub(usdAmount);

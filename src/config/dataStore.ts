@@ -25,11 +25,21 @@ export const FEE_RECEIVER_POSITION_FACTOR_KEY = hashString("FEE_RECEIVER_POSITIO
 
 export const OPEN_INTEREST_KEY = hashString("OPEN_INTEREST");
 
+export const OPEN_INTEREST_IN_TOKENS_KEY = hashString("OPEN_INTEREST_IN_TOKENS");
+
 export const POOL_AMOUNT_KEY = hashString("POOL_AMOUNT");
 
 export const RESERVE_FACTOR_KEY = hashString("RESERVE_FACTOR");
 
 export const NONCE_KEY = hashString("NONCE");
+
+export const BORROWING_FACTOR_KEY = hashString("BORROWING_FACTOR");
+
+export const TOTAL_BORROWING_KEY = hashString("TOTAL_BORROWING");
+
+export const POSITION_IMPACT_POOL_AMOUNT_KEY = hashString("POSITION_IMPACT_POOL_AMOUNT");
+
+export const CUMULATIVE_BORROWING_FACTOR_KEY = hashString("CUMULATIVE_BORROWING_FACTOR");
 
 export const MIN_COLLATERAL_USD_KEY = hashString("MIN_COLLATERAL_USD");
 
@@ -87,12 +97,35 @@ export function openInterestKey(market: string, collateralToken: string, isLong:
   return hashData(["bytes32", "address", "address", "bool"], [OPEN_INTEREST_KEY, market, collateralToken, isLong]);
 }
 
+export function openInterestInTokensKey(market: string, collateralToken: string, isLong: boolean) {
+  return hashData(
+    ["bytes32", "address", "address", "bool"],
+    [OPEN_INTEREST_IN_TOKENS_KEY, market, collateralToken, isLong]
+  );
+}
+
 export function poolAmountKey(market: string, token: string) {
   return hashData(["bytes32", "address", "address"], [POOL_AMOUNT_KEY, market, token]);
 }
 
 export function reserveFactorKey(market: string, isLong: boolean) {
   return hashData(["bytes32", "address", "bool"], [RESERVE_FACTOR_KEY, market, isLong]);
+}
+
+export function borrowingFactorKey(market: string, isLong: boolean) {
+  return hashData(["bytes32", "address", "bool"], [BORROWING_FACTOR_KEY, market, isLong]);
+}
+
+export function cumulativeBorrowingFactorKey(market: string, isLong: boolean) {
+  return hashData(["bytes32", "address", "bool"], [CUMULATIVE_BORROWING_FACTOR_KEY, market, isLong]);
+}
+
+export function totalBorrowingKey(market: string, isLong: boolean) {
+  return hashData(["bytes32", "address", "bool"], [TOTAL_BORROWING_KEY, market, isLong]);
+}
+
+export function positionImpactPoolAmountKey(market: string) {
+  return hashData(["bytes32", "address"], [POSITION_IMPACT_POOL_AMOUNT_KEY, market]);
 }
 
 export function orderKey(nonce: BigNumber) {

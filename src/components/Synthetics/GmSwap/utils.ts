@@ -1,5 +1,5 @@
 import {
-  getMarketPoolData,
+  getMarketPools,
   getMarketTokenData,
   Market,
   MarketPoolType,
@@ -52,7 +52,7 @@ export function getSubmitError(p: {
   isHighPriceImpactAccepted?: boolean;
 }) {
   const marketToken = getMarketTokenData(p.marketTokensData, p.market?.marketTokenAddress);
-  const pools = getMarketPoolData(p.poolsData, p.market?.marketTokenAddress);
+  const pools = getMarketPools(p.poolsData, p.market?.marketTokenAddress);
 
   if (!p.market || !marketToken || !pools) {
     return t`Loading...`;

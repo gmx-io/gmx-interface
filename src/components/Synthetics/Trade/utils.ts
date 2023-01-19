@@ -346,8 +346,8 @@ export function useFeesState(p: {
 
   const openInterest = getOpenInterest(openInterestData, p.marketAddress);
 
-  const currentLong = openInterest?.longInterest;
-  const currentShort = openInterest?.shortInterest;
+  const currentLong = openInterest?.longInterestUsd;
+  const currentShort = openInterest?.shortInterestUsd;
 
   const longDeltaUsd = p.isLong ? p.sizeDeltaUsd : BigNumber.from(0);
   const shortDeltaUsd = p.isLong ? BigNumber.from(0) : p.sizeDeltaUsd;

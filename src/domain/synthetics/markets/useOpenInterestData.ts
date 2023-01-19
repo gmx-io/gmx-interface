@@ -1,4 +1,4 @@
-import { openInterestKey } from "config/dataStore";
+import { openInterestInTokensKey, openInterestKey } from "config/dataStore";
 import DataStore from "abis/DataStore.json";
 import { getContract } from "config/contracts";
 import { useMulticall } from "lib/multicall";
@@ -21,57 +21,85 @@ export function useOpenInterestData(chainId: number): OpenInterestDataResult {
 
   const { data, isLoading } = useMulticall(chainId, "useOpenInterestData", {
     key: cacheKey,
-    request: () => ({
-      dataStore: {
-        contractAddress: getContract(chainId, "DataStore"),
-        abi: DataStore.abi,
-        calls: marketAddresses.reduce((calls, marketAddress) => {
-          const market = getMarket(marketsData, marketAddress);
+    request: () =>
+      marketAddresses.reduce((request, marketAddress) => {
+        const market = getMarket(marketsData, marketAddress);
 
-          return Object.assign(calls, {
-            [`${marketAddress}-longToken-long`]: {
-              methodName: "getUint",
-              params: [openInterestKey(marketAddress, market!.longTokenAddress, true)],
+        if (!market) return request;
+
+        return Object.assign(request, {
+          [`${marketAddress}-dataStore`]: {
+            contractAddress: getContract(chainId, "DataStore"),
+            abi: DataStore.abi,
+            calls: {
+              longInterestUsingLongToken: {
+                methodName: "getUint",
+                params: [openInterestKey(marketAddress, market.longTokenAddress, true)],
+              },
+              longInterestUsingShortToken: {
+                methodName: "getUint",
+                params: [openInterestKey(marketAddress, market.shortTokenAddress, true)],
+              },
+              shortInterestUsingLongToken: {
+                methodName: "getUint",
+                params: [openInterestKey(marketAddress, market.longTokenAddress, false)],
+              },
+              shortInterestUsingShortToken: {
+                methodName: "getUint",
+                params: [openInterestKey(marketAddress, market.shortTokenAddress, false)],
+              },
+              longInterestInTokensUsingLongToken: {
+                methodName: "getUint",
+                params: [openInterestInTokensKey(marketAddress, market.longTokenAddress, true)],
+              },
+              longInterestInTokensUsingShortToken: {
+                methodName: "getUint",
+                params: [openInterestInTokensKey(marketAddress, market.shortTokenAddress, true)],
+              },
+              shortInterestInTokensUsingLongToken: {
+                methodName: "getUint",
+                params: [openInterestInTokensKey(marketAddress, market.longTokenAddress, false)],
+              },
+              shortInterestInTokensUsingShortToken: {
+                methodName: "getUint",
+                params: [openInterestInTokensKey(marketAddress, market.shortTokenAddress, false)],
+              },
             },
-            [`${marketAddress}-shortToken-long`]: {
-              methodName: "getUint",
-              params: [openInterestKey(marketAddress, market!.shortTokenAddress, true)],
-            },
-            [`${marketAddress}-longToken-short`]: {
-              methodName: "getUint",
-              params: [openInterestKey(marketAddress, market!.longTokenAddress, false)],
-            },
-            [`${marketAddress}-shortToken-short`]: {
-              methodName: "getUint",
-              params: [openInterestKey(marketAddress, market!.shortTokenAddress, false)],
-            },
-          });
-        }, {}),
-      },
-    }),
+          },
+        });
+      }, {}),
     parseResponse: (res) =>
-      marketAddresses.reduce((result: MarketsOpenInterestData, address) => {
-        const longInterestUsingLongToken = res.dataStore[`${address}-longToken-long`].returnValues[0];
-        const longInterestUsingShortToken = res.dataStore[`${address}-shortToken-long`].returnValues[0];
+      marketAddresses.reduce((acc: MarketsOpenInterestData, address) => {
+        const dataStore = res[`${address}-dataStore`];
 
-        const shortInterestUsingLongToken = res.dataStore[`${address}-longToken-short`].returnValues[0];
-        const shortInterestUsingShortToken = res.dataStore[`${address}-shortToken-short`].returnValues[0];
+        const longInterestUsingLongToken = dataStore.longInterestUsingLongToken.returnValues[0];
+        const longInterestUsingShortToken = dataStore.longInterestUsingShortToken.returnValues[0];
 
-        if (
-          !longInterestUsingLongToken ||
-          !longInterestUsingShortToken ||
-          !shortInterestUsingLongToken ||
-          !shortInterestUsingShortToken
-        ) {
-          return result;
-        }
+        const longInterestUsd = longInterestUsingLongToken.add(longInterestUsingShortToken);
 
-        result[address] = {
-          longInterest: longInterestUsingLongToken.add(longInterestUsingShortToken),
-          shortInterest: shortInterestUsingLongToken.add(shortInterestUsingShortToken),
+        const shortInterestUsingLongToken = dataStore.shortInterestUsingLongToken.returnValues[0];
+        const shortInterestUsingShortToken = dataStore.shortInterestUsingShortToken.returnValues[0];
+
+        const shortInterestUsd = shortInterestUsingLongToken.add(shortInterestUsingShortToken);
+
+        const longInterestInTokensUsingLongToken = dataStore.longInterestInTokensUsingLongToken.returnValues[0];
+        const longInterestInTokensUsingShortToken = dataStore.longInterestInTokensUsingShortToken.returnValues[0];
+
+        const longInterestInTokens = longInterestInTokensUsingLongToken.add(longInterestInTokensUsingShortToken);
+
+        const shortInterestInTokensUsingLongToken = dataStore.shortInterestInTokensUsingLongToken.returnValues[0];
+        const shortInterestInTokensUsingShortToken = dataStore.shortInterestInTokensUsingShortToken.returnValues[0];
+
+        const shortInterestInTokens = shortInterestInTokensUsingLongToken.add(shortInterestInTokensUsingShortToken);
+
+        acc[address] = {
+          longInterestUsd,
+          shortInterestUsd,
+          longInterestInTokens,
+          shortInterestInTokens,
         };
 
-        return result;
+        return acc;
       }, {} as MarketsOpenInterestData),
   });
 

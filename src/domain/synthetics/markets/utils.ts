@@ -1,3 +1,4 @@
+import { PRECISION } from "lib/legacy";
 import { convertToContractPrices, convertToUsd, getMidPrice, getTokenData } from "../tokens";
 import { TokensData } from "../tokens/types";
 import {
@@ -20,7 +21,7 @@ export function getMarkets(marketsData: MarketsData) {
   return Object.values(marketsData);
 }
 
-export function getMarketPoolData(poolsData: MarketsPoolsData, marketAddress?: string) {
+export function getMarketPools(poolsData: MarketsPoolsData, marketAddress?: string) {
   if (!marketAddress) return undefined;
 
   return poolsData[marketAddress];
@@ -84,6 +85,10 @@ export function getOppositeCollateral(market?: Market, collateralToken?: string)
   return undefined;
 }
 
+export function isMarketCollateral(market: Market, tokenAddress: string) {
+  return [market.longTokenAddress, market.shortTokenAddress].includes(tokenAddress);
+}
+
 export function getOpenInterest(openInterestData: MarketsOpenInterestData, marketAddress?: string) {
   if (!marketAddress) return undefined;
 
@@ -97,7 +102,7 @@ export function getPoolAmount(
   marketAddress: string | undefined,
   tokenAddress: string | undefined
 ) {
-  const pools = getMarketPoolData(poolsData, marketAddress);
+  const pools = getMarketPools(poolsData, marketAddress);
   const tokenPoolType = getTokenPoolType(marketsData, tokensData, marketAddress, tokenAddress);
 
   if (!pools || !tokenPoolType) return undefined;
@@ -113,7 +118,8 @@ export function getPoolAmount(
   return undefined;
 }
 
-export function getPoolAmountUsd(
+// getPoolUsdWithoutPnl
+export function getPoolUsd(
   marketsData: MarketsData,
   poolsData: MarketsPoolsData,
   tokensData: TokensData,
@@ -139,6 +145,148 @@ export function getPoolAmountUsd(
   }
 
   return convertToUsd(tokenAmount, token?.decimals, price);
+}
+
+export function getReservedUsd(
+  marketsData: MarketsData,
+  openInterestData: MarketsOpenInterestData,
+  tokensData: TokensData,
+  marketAddress: string | undefined,
+  isLong: boolean
+) {
+  const market = getMarket(marketsData, marketAddress);
+  const openInterest = getOpenInterest(openInterestData, marketAddress);
+  const indexToken = getTokenData(tokensData, market?.indexTokenAddress);
+
+  const openInterestValue = isLong ? openInterest?.longInterestInTokens : openInterest?.shortInterestInTokens;
+
+  const price = isLong ? indexToken?.prices?.maxPrice : indexToken?.prices?.minPrice;
+
+  return convertToUsd(openInterestValue, indexToken?.decimals, price);
+}
+
+export function getMaxReservedUsd(
+  marketsData: MarketsData,
+  poolsData: MarketsPoolsData,
+  tokensData: TokensData,
+  marketAddress: string | undefined,
+  isLong: boolean
+) {
+  const market = getMarket(marketsData, marketAddress);
+  const pool = getMarketPools(poolsData, marketAddress);
+  const tokenAddress = isLong ? market?.longTokenAddress : market?.shortTokenAddress;
+
+  const poolUsd = getPoolUsd(marketsData, poolsData, tokensData, marketAddress, tokenAddress, "minPrice");
+  const reserveFactor = isLong ? pool?.reserveFactorLong : pool?.reserveFactorShort;
+
+  if (!poolUsd || !reserveFactor) return undefined;
+
+  return poolUsd.mul(reserveFactor).div(PRECISION);
+}
+
+export function getAvailableUsdLiquidityForPosition(
+  marketsData: MarketsData,
+  poolsData: MarketsPoolsData,
+  openInterestData: MarketsOpenInterestData,
+  tokensData: TokensData,
+  marketAddress: string | undefined,
+  isLong: boolean
+) {
+  const maxReservedUsd = getMaxReservedUsd(marketsData, poolsData, tokensData, marketAddress, isLong);
+  const reservedUsd = getReservedUsd(marketsData, openInterestData, tokensData, marketAddress, isLong);
+
+  if (!maxReservedUsd || !reservedUsd) return undefined;
+
+  return maxReservedUsd.sub(reservedUsd);
+}
+
+export function getAvailableUsdLiquidityForCollateral(
+  marketsData: MarketsData,
+  poolsData: MarketsPoolsData,
+  openInterestData: MarketsOpenInterestData,
+  tokensData: TokensData,
+  marketAddress: string | undefined,
+  tokenAddress: string | undefined
+) {
+  const market = getMarket(marketsData, marketAddress);
+
+  if (!market || !tokenAddress || !isMarketCollateral(market, tokenAddress)) return undefined;
+
+  const isLong = market?.longTokenAddress === tokenAddress;
+
+  const reservedUsd = getReservedUsd(marketsData, openInterestData, tokensData, marketAddress, isLong);
+
+  const poolUsd = getPoolUsd(marketsData, poolsData, tokensData, marketAddress, tokenAddress, "minPrice");
+
+  if (!reservedUsd || !poolUsd) return undefined;
+
+  return poolUsd.sub(reservedUsd);
+}
+
+// TODO: for deposits / withdrawals in minTokenAmount
+export function getPoolValue(
+  marketsData: MarketsData,
+  openInterestData: MarketsOpenInterestData,
+  poolsData: MarketsPoolsData,
+  tokensData: TokensData,
+  marketAddress: string | undefined,
+  maximize: boolean
+) {
+  const market = getMarket(marketsData, marketAddress);
+  const pool = getMarketPools(poolsData, marketAddress);
+
+  const longPoolUsd = getPoolUsd(
+    marketsData,
+    poolsData,
+    tokensData,
+    marketAddress,
+    market?.longTokenAddress,
+    maximize ? "maxPrice" : "minPrice"
+  );
+
+  const shortPoolUsd = getPoolUsd(
+    marketsData,
+    poolsData,
+    tokensData,
+    marketAddress,
+    market?.shortTokenAddress,
+    maximize ? "maxPrice" : "minPrice"
+  );
+
+  const longBorrowingFees = getTotalBorrowingFees(openInterestData, poolsData, marketAddress, true);
+  const shortBorrowingFees = getTotalBorrowingFees(openInterestData, poolsData, marketAddress, false);
+
+  const impactPoolAmount = pool?.positionImpactPoolAmount;
+  const netPnl = maximize ? pool?.netPnlMin : pool?.netPnlMax;
+
+  if (!longPoolUsd || !shortPoolUsd || !longBorrowingFees || !shortBorrowingFees || !impactPoolAmount || !netPnl)
+    return undefined;
+
+  const value = longPoolUsd.add(shortPoolUsd).add(longBorrowingFees).add(shortBorrowingFees).add(impactPoolAmount);
+
+  return value.sub(netPnl);
+}
+
+export function getTotalBorrowingFees(
+  openInterestData: MarketsOpenInterestData,
+  poolsData: MarketsPoolsData,
+  marketAddress: string | undefined,
+  isLong: boolean
+): BigNumber | undefined {
+  const pools = getMarketPools(poolsData, marketAddress);
+  const openInterest = getOpenInterest(openInterestData, marketAddress);
+
+  const openInterestValue = isLong ? openInterest?.longInterestUsd : openInterest?.shortInterestUsd;
+
+  const cumulativeBorrowingFactor = isLong
+    ? pools?.cummulativeBorrowingFactorLong
+    : pools?.cummulativeBorrowingFactorShort;
+
+  const totalBorrowing = isLong ? pools?.totalBorrowingLong : pools?.totalBorrowingShort;
+
+  if (!openInterestValue || !cumulativeBorrowingFactor || !totalBorrowing) return undefined;
+
+  return openInterestValue.mul(cumulativeBorrowingFactor).sub(totalBorrowing);
 }
 
 export function getTokenPoolType(

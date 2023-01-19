@@ -11,7 +11,7 @@ import { getSubmitError, Mode, modeLabels, Operation, operationLabels, PoolDelta
 
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import TokenSelector from "components/TokenSelector/TokenSelector";
-import { getMarket, getMarketName, getPoolAmountUsd, getTokenPoolType } from "domain/synthetics/markets/utils";
+import { getMarket, getMarketName, getPoolUsd, getTokenPoolType } from "domain/synthetics/markets/utils";
 import { adaptToInfoTokens } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { IoMdSwap } from "react-icons/io";
@@ -100,7 +100,7 @@ export function GmSwapBox(p: Props) {
   const longDelta = getDeltaByPoolType(MarketPoolType.Long);
   const shortDelta = getDeltaByPoolType(MarketPoolType.Short);
 
-  const currentLongUsd = getPoolAmountUsd(
+  const currentLongUsd = getPoolUsd(
     marketsData,
     poolsData,
     tokensData,
@@ -109,7 +109,7 @@ export function GmSwapBox(p: Props) {
     "midPrice"
   );
 
-  const currentShortUsd = getPoolAmountUsd(
+  const currentShortUsd = getPoolUsd(
     marketsData,
     poolsData,
     tokensData,
