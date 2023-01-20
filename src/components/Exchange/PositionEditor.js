@@ -502,7 +502,7 @@ export default function PositionEditor(props) {
               minimumCollateralToAddInToken,
               position.collateralToken.decimals,
               4
-            )} ${position.collateralToken.symbol} )`
+            )} ${position.collateralToken.symbol})`
           }
           showDollar={false}
         />
