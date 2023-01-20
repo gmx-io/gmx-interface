@@ -487,9 +487,9 @@ export function SwapBox(p: Props) {
 
   useEffect(
     function updateMarket() {
-      if (swapRoute?.market && swapRoute.market !== p.selectedMarketAddress) {
-        onSelectMarketAddress(swapRoute.market);
-      }
+      // if (swapRoute?.market && swapRoute.market !== p.selectedMarketAddress) {
+      //   onSelectMarketAddress(swapRoute.market);
+      // }
 
       if (!p.selectedMarketAddress && toTokenState.tokenAddress) {
         const market = getMarketByTokens(

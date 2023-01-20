@@ -110,10 +110,6 @@ export function getSubmitError(p: {
     return t`Enter an amount`;
   }
 
-  if (!p.swapPath) {
-    return t`Couldn't find a swap path`;
-  }
-
   if (p.isHighPriceImpact && !p.isHighPriceImpactAccepted) {
     return t`Need to accept price impact`;
   }
@@ -144,6 +140,10 @@ export function getSubmitError(p: {
         return t`Trigger price must be higher than mark price`;
       }
     }
+  }
+
+  if (!p.swapPath) {
+    return t`Couldn't find a swap path`;
   }
 }
 

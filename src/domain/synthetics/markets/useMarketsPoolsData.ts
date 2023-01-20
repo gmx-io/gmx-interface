@@ -67,22 +67,22 @@ export function useMarketsPoolsData(chainId: number): MarketPoolsResult {
                   false,
                 ],
               },
-              pnlLongMax: {
-                methodName: "getPnl",
-                params: [dataStoreAddress, marketAddress, market.longTokenAddress, indexTokenPrices, true, true],
-              },
-              pnlLongMin: {
-                methodName: "getPnl",
-                params: [dataStoreAddress, marketAddress, market.longTokenAddress, indexTokenPrices, true, false],
-              },
-              pnlShortMax: {
-                methodName: "getPnl",
-                params: [dataStoreAddress, marketAddress, market.longTokenAddress, indexTokenPrices, false, true],
-              },
-              pnlShortMin: {
-                methodName: "getPnl",
-                params: [dataStoreAddress, marketAddress, market.longTokenAddress, indexTokenPrices, false, false],
-              },
+              // pnlLongMax: {
+              //   methodName: "getPnl",
+              //   params: [dataStoreAddress, marketAddress, market.longTokenAddress, indexTokenPrices, true, true],
+              // },
+              // pnlLongMin: {
+              //   methodName: "getPnl",
+              //   params: [dataStoreAddress, marketAddress, market.longTokenAddress, indexTokenPrices, true, false],
+              // },
+              // pnlShortMax: {
+              //   methodName: "getPnl",
+              //   params: [dataStoreAddress, marketAddress, market.longTokenAddress, indexTokenPrices, false, true],
+              // },
+              // pnlShortMin: {
+              //   methodName: "getPnl",
+              //   params: [dataStoreAddress, marketAddress, market.longTokenAddress, indexTokenPrices, false, false],
+              // },
             },
           },
           [`${marketAddress}-dataStore`]: {
@@ -146,10 +146,10 @@ export function useMarketsPoolsData(chainId: number): MarketPoolsResult {
           positionImpactPoolAmount: dataStore.positionImpactPoolAmount.returnValues[0],
           netPnlMax: reader.netPnlMax.returnValues[0],
           netPnlMin: reader.netPnlMin.returnValues[0],
-          pnlLongMax: reader.pnlLongMax.returnValues[0],
-          pnlLongMin: reader.pnlLongMin.returnValues[0],
-          pnlShortMax: reader.pnlShortMax.returnValues[0],
-          pnlShortMin: reader.pnlShortMin.returnValues[0],
+          // pnlLongMax: reader.pnlLongMax.returnValues[0],
+          // pnlLongMin: reader.pnlLongMin.returnValues[0],
+          // pnlShortMax: reader.pnlShortMax.returnValues[0],
+          // pnlShortMin: reader.pnlShortMin.returnValues[0],
         };
 
         return acc;
