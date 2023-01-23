@@ -744,6 +744,15 @@ export function getLeverage({
   return nextSize.mul(BASIS_POINTS_DIVISOR).div(remainingCollateral);
 }
 
+export function getLeverageStr(leverage) {
+  if (leverage && ethers.BigNumber.isBigNumber(leverage)) {
+    if (leverage.lt(0)) {
+      return "> 100x";
+    }
+    return `${formatAmount(leverage, 4, 2, true)}x`;
+  }
+}
+
 export function getFundingFee(data: {
   size: BigNumber;
   entryFundingRate?: BigNumber;

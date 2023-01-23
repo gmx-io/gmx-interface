@@ -260,7 +260,7 @@ export default function PositionsList(props) {
                         <Trans>Leverage</Trans>
                       </div>
                       <div>
-                        {formatAmount(position.leverage, 4, 2, true)}x&nbsp;
+                        <span className="Position-leverage">{position.leverageStr}</span>
                         <span
                           className={cx("Exchange-list-side", {
                             positive: position.isLong,
@@ -556,9 +556,7 @@ export default function PositionsList(props) {
                     {position.hasPendingChanges && <ImSpinner2 className="spin position-loading-icon" />}
                   </div>
                   <div className="Exchange-list-info-label">
-                    {position.leverage && (
-                      <span className="muted">{formatAmount(position.leverage, 4, 2, true)}x&nbsp;</span>
-                    )}
+                    {position.leverageStr && <span className="muted Position-leverage">{position.leverageStr}</span>}
                     <span className={cx({ positive: position.isLong, negative: !position.isLong })}>
                       {position.isLong ? t`Long` : t`Short`}
                     </span>
