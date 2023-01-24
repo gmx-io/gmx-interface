@@ -55,11 +55,11 @@ export default function BeginAccountTransfer(props) {
 
   const rewardRouterAddress = getContract(chainId, "RewardRouter");
 
-  const { data: gmxVesterBalance } = useSWR([active, chainId, gmxVesterAddress, "balanceOf", account], {
+  const { data: gmxVesterBalance } = useSWR(active && [active, chainId, gmxVesterAddress, "balanceOf", account], {
     fetcher: contractFetcher(library, Token),
   });
 
-  const { data: glpVesterBalance } = useSWR([active, chainId, glpVesterAddress, "balanceOf", account], {
+  const { data: glpVesterBalance } = useSWR(active && [active, chainId, glpVesterAddress, "balanceOf", account], {
     fetcher: contractFetcher(library, Token),
   });
 
@@ -93,16 +93,22 @@ export default function BeginAccountTransfer(props) {
     }
   );
 
-  const { data: pendingReceiver } = useSWR([active, chainId, rewardRouterAddress, "pendingReceivers", account], {
-    fetcher: contractFetcher(library, RewardRouter),
-  });
+  const { data: pendingReceiver } = useSWR(
+    active && [active, chainId, rewardRouterAddress, "pendingReceivers", account],
+    {
+      fetcher: contractFetcher(library, RewardRouter),
+    }
+  );
 
-  const { data: gmxAllowance } = useSWR([active, chainId, gmxAddress, "allowance", account, stakedGmxTrackerAddress], {
-    fetcher: contractFetcher(library, Token),
-  });
+  const { data: gmxAllowance } = useSWR(
+    active && [active, chainId, gmxAddress, "allowance", account, stakedGmxTrackerAddress],
+    {
+      fetcher: contractFetcher(library, Token),
+    }
+  );
 
   const { data: gmxStaked } = useSWR(
-    [active, chainId, stakedGmxTrackerAddress, "depositBalances", account, gmxAddress],
+    active && [active, chainId, stakedGmxTrackerAddress, "depositBalances", account, gmxAddress],
     {
       fetcher: contractFetcher(library, RewardTracker),
     }
