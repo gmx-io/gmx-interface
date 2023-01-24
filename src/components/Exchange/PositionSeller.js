@@ -1131,7 +1131,8 @@ export default function PositionSeller(props) {
               </div>
               <div className="align-right">
                 <FeesTooltip
-                  positionFee={`$${formatAmount(positionFee, USD_DECIMALS, 2, true)}`}
+                  isOpening={false}
+                  positionFee={positionFee?.gt(0) && `$${formatAmount(positionFee, USD_DECIMALS, 2, true)}`}
                   positionFeeLable={t`Closing Fee`}
                   fundingFee={`$${formatAmount(fundingFee, USD_DECIMALS, 2, true)}`}
                   totalFees={totalFees && `$${formatAmount(totalFees, USD_DECIMALS, 2, true)}`}

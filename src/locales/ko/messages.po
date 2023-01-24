@@ -382,6 +382,7 @@ msgid "Boost your rewards with Multiplier Points. <0>More info</0>."
 msgstr "멀티플라이어 포인트를 사용해서 보상을 증가시키세요. <0>더 자세한 정보</0>."
 
 #: src/components/Exchange/FeesTooltip.tsx
+#: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -753,12 +754,16 @@ msgid "Compounding..."
 msgstr "수령 및 스테이킹중..."
 
 #: src/components/Exchange/ConfirmationBox.js
-msgid "Confirm Limit Long Order"
+#~ msgid "Confirm Limit Long Order"
+#~ msgstr ""
+
+#: src/components/Exchange/ConfirmationBox.js
+msgid "Confirm Limit Order"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
-msgid "Confirm Limit Swap Order"
-msgstr ""
+#~ msgid "Confirm Limit Swap Order"
+#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Confirm Long"
@@ -769,8 +774,8 @@ msgid "Confirm Short"
 msgstr "숏 포지션 확인"
 
 #: src/components/Exchange/ConfirmationBox.js
-msgid "Confirm Short Order"
-msgstr ""
+#~ msgid "Confirm Short Order"
+#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Confirm Swap"
@@ -1854,6 +1859,7 @@ msgid "MEV Optimizer"
 msgstr "MEV 옵티마이저"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -2197,6 +2203,10 @@ msgstr "{0} {longOrShortText} 열기"
 msgid "Opening Fee"
 msgstr ""
 
+#: src/components/Exchange/SwapBox.js
+msgid "Opening Fee (0.1% of position size)"
+msgstr ""
+
 #: src/components/Exchange/PositionsList.js
 msgid "Opening..."
 msgstr "여는 중..."
@@ -2378,8 +2388,8 @@ msgid "Position"
 msgstr "포지션"
 
 #: src/components/Exchange/SwapBox.js
-msgid "Position Fee (0.1% of position size)"
-msgstr "포지션 수수료 (포지션 사이지의 0.1%)"
+#~ msgid "Position Fee (0.1% of position size)"
+#~ msgstr "포지션 수수료 (포지션 사이지의 0.1%)"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Position close disabled, pending {0} upgrade"
@@ -2398,7 +2408,6 @@ msgstr "포지션 ({0})"
 msgid "Prev"
 msgstr "이전"
 
-#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrderEditor.js
@@ -2959,6 +2968,7 @@ msgstr "공급량"
 msgid "Swap"
 msgstr "스왑"
 
+#: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/FeesTooltip.tsx
 msgid "Swap Fee"
 msgstr ""

@@ -2217,7 +2217,7 @@ export default function SwapBox(props) {
                           )}
                           <div>
                             <StatsTooltipRow
-                              label={t`Position Fee (0.1% of position size)`}
+                              label={t`Opening Fee (0.1% of position size)`}
                               value={formatAmount(positionFee, USD_DECIMALS, 2, true)}
                             />
                           </div>

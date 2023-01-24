@@ -157,19 +157,15 @@ export default function ConfirmationBox(props) {
   }
 
   const getTitle = () => {
+    if (!isMarketOrder) {
+      return t`Confirm Limit Order`;
+    }
     if (isSwap) {
-      if (!isMarketOrder) {
-        return t`Confirm Limit Swap Order`;
-      }
       return t`Confirm Swap`;
     }
-
-    if (!isMarketOrder) {
-      return isLong ? t`Confirm Limit Long Order` : t`Confirm Short Order`;
-    }
-
     return isLong ? t`Confirm Long` : t`Confirm Short`;
   };
+
   const title = getTitle();
 
   const existingOrder = useMemo(() => {
@@ -701,7 +697,7 @@ export default function ConfirmationBox(props) {
               executionFee={getExecutionFee()}
               positionFee={`$${formatAmount(positionFee, USD_DECIMALS, 2, true)}`}
               positionFeeLable={t`Opening Fee`}
-              swapFee={`$${formatAmount(swapFees, USD_DECIMALS, 2, true)}`}
+              swapFee={swapFees?.gt(0) && `$${formatAmount(swapFees, USD_DECIMALS, 2, true)}`}
             />
           </ExchangeInfoRow>
 
@@ -772,7 +768,7 @@ export default function ConfirmationBox(props) {
         )}
         {orderOption === LIMIT && renderAvailableLiquidity()}
         {renderAllowedSlippage(allowedSlippage)}
-        <ExchangeInfoRow label={t`Price`} isTop>
+        <ExchangeInfoRow label={t`Mark Price`} isTop>
           {getExchangeRateDisplay(getExchangeRate(fromTokenInfo, toTokenInfo), fromTokenInfo, toTokenInfo)}
         </ExchangeInfoRow>
         {!isMarketOrder && (

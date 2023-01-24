@@ -382,6 +382,7 @@ msgid "Boost your rewards with Multiplier Points. <0>More info</0>."
 msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
+#: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -753,12 +754,16 @@ msgid "Compounding..."
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
-msgid "Confirm Limit Long Order"
+#~ msgid "Confirm Limit Long Order"
+#~ msgstr ""
+
+#: src/components/Exchange/ConfirmationBox.js
+msgid "Confirm Limit Order"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
-msgid "Confirm Limit Swap Order"
-msgstr ""
+#~ msgid "Confirm Limit Swap Order"
+#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Confirm Long"
@@ -769,8 +774,8 @@ msgid "Confirm Short"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
-msgid "Confirm Short Order"
-msgstr ""
+#~ msgid "Confirm Short Order"
+#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Confirm Swap"
@@ -1851,6 +1856,7 @@ msgid "MEV Optimizer"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -2194,6 +2200,10 @@ msgstr ""
 msgid "Opening Fee"
 msgstr ""
 
+#: src/components/Exchange/SwapBox.js
+msgid "Opening Fee (0.1% of position size)"
+msgstr ""
+
 #: src/components/Exchange/PositionsList.js
 msgid "Opening..."
 msgstr ""
@@ -2375,8 +2385,8 @@ msgid "Position"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
-msgid "Position Fee (0.1% of position size)"
-msgstr ""
+#~ msgid "Position Fee (0.1% of position size)"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Position close disabled, pending {0} upgrade"
@@ -2395,7 +2405,6 @@ msgstr ""
 msgid "Prev"
 msgstr ""
 
-#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrderEditor.js
@@ -2956,6 +2965,7 @@ msgstr ""
 msgid "Swap"
 msgstr ""
 
+#: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/FeesTooltip.tsx
 msgid "Swap Fee"
 msgstr ""
