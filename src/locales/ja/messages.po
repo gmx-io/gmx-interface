@@ -1245,7 +1245,6 @@ msgstr "esGMX (エスクローされたGMX)"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Stake/GMXAprTooltip.tsx
-#: src/components/Stake/GMXAprTooltip.tsx
 msgid "Escrowed GMX APR"
 msgstr "esGMXのAPR(実質年利)"
 
