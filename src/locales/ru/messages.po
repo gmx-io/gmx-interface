@@ -1245,6 +1245,7 @@ msgstr "Эскроуированный GMX"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Stake/GMXAprTooltip.tsx
+#: src/components/Stake/GMXAprTooltip.tsx
 msgid "Escrowed GMX APR"
 msgstr "Эскроуированный GMX APR"
 
