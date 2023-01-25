@@ -76,8 +76,8 @@ export default function Actions() {
     positionQuery,
     positionData,
     infoTokens,
-    false,
-    false,
+    true,
+    true,
     checkSummedAccount,
     undefined,
     undefined
@@ -136,10 +136,10 @@ export default function Actions() {
             account={checkSummedAccount}
             library={library}
             flagOrdersEnabled={false}
-            savedIsPnlInLeverage={false}
             chainId={chainId}
             nativeTokenAddress={nativeTokenAddress}
-            showPnlAfterFees={false}
+            savedIsPnlInLeverage={true}
+            showPnlAfterFees={true}
             hideActions
           />
         </div>
