@@ -167,7 +167,7 @@ export function getPositions(
       size: positionData[i * propsLength],
       collateral: positionData[i * propsLength + 1],
       averagePrice: positionData[i * propsLength + 2],
-      entryFundingRate: positionData[i * propsLength + 3],
+      entryFundingRate: positionData[i * propsLength + 3].mul(120).div(100),
       cumulativeFundingRate: collateralToken.cumulativeFundingRate,
       hasRealisedProfit: positionData[i * propsLength + 4].eq(1),
       realisedPnl: positionData[i * propsLength + 5],

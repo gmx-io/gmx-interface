@@ -199,13 +199,10 @@ export default function PositionEditor(props) {
 
     if (netValueAfterClosingFee?.lt(minimumCollateralRequired)) {
       minimumCollateralToDeposit = minimumCollateralRequired?.sub(netValueAfterClosingFee);
-      const minimumCollateralToDepositInToken =
-        minimumCollateralToDeposit &&
-        getTokenAmountFromUsd(infoTokens, position.collateralToken.address, minimumCollateralToDeposit);
       minimumCollateralToDepositStr =
-        minimumCollateralToDepositInToken &&
+        minimumCollateralToDeposit &&
         `(${formatAmount(
-          minimumCollateralToDepositInToken,
+          getTokenAmountFromUsd(infoTokens, position.collateralToken.address, minimumCollateralToDeposit),
           position.collateralToken.decimals,
           position.collateralToken.isStable ? 2 : 4
         )} ${position.collateralToken.symbol})`;
