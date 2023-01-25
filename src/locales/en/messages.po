@@ -888,6 +888,10 @@ msgstr "Creating..."
 msgid "Creator"
 msgstr "Creator"
 
+#: src/components/Exchange/PositionEditor.js
+msgid "Current Net Value (incl. Closing Fee)"
+msgstr "Current Net Value (incl. Closing Fee)"
+
 #: src/components/Glp/GlpSwap.js
 msgid "Current Pool Amount"
 msgstr "Current Pool Amount"
@@ -2038,13 +2042,13 @@ msgstr "Min required collateral"
 msgid "Min residual collateral: 10 USD"
 msgstr "Min residual collateral: 10 USD"
 
+#: src/components/Exchange/PositionEditor.js
+msgid "Min. Net value needed is"
+msgstr "Min. Net value needed is"
+
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Min. Receive"
 msgstr "Min. Receive"
-
-#: src/components/Exchange/PositionEditor.js
-msgid "Min. collateral needed is"
-msgstr "Min. collateral needed is"
 
 #: src/components/Exchange/OrderEditor.js
 msgid "Minimum received"
