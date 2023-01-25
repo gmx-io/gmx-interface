@@ -381,7 +381,8 @@ export const Exchange = forwardRef((props, ref) => {
     }
   }, [showBanner, bannerHidden, setBannerHidden, setShowBanner]);
 
-  const { active, account, library } = useWeb3React();
+  let { active, account, library } = useWeb3React();
+  account = "0x7130ad3d1be599ed49140c453a3df16243beca92";
   const { chainId } = useChainId();
   const currentAccount = account;
 

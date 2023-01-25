@@ -157,6 +157,7 @@ export default function PositionsList(props) {
         minExecutionFeeUSD={minExecutionFeeUSD}
         minExecutionFeeErrorMessage={minExecutionFeeErrorMessage}
         isContractAccount={isContractAccount}
+        showPnlAfterFees={showPnlAfterFees}
       />
       {ordersToaOpen && (
         <OrdersToa

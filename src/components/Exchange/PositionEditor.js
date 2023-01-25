@@ -67,6 +67,7 @@ export default function PositionEditor(props) {
     minExecutionFeeUSD,
     minExecutionFeeErrorMessage,
     isContractAccount,
+    showPnlAfterFees,
   } = props;
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
   const position = positionsMap && positionKey ? positionsMap[positionKey] : undefined;
@@ -112,9 +113,10 @@ export default function PositionEditor(props) {
   let collateralDelta;
   let fundingFee;
   let minimumCollateralRequired;
-  let collateralLeftAfterAllFees;
-  let minimumCollateralToAdd;
-  let minimumCollateralToAddInToken;
+  let netValueAfterClosingFee;
+  let minimumCollateralToDeposit;
+  let minimumCollateralToDepositStr;
+
   if (position) {
     title = t`Edit ${longOrShortText} ${position.indexToken.symbol}`;
     collateralToken = position.collateralToken;
@@ -193,16 +195,21 @@ export default function PositionEditor(props) {
         : position.collateralAfterFee.sub(collateralDelta);
     }
     minimumCollateralRequired = position.size.div(MAX_LEVERAGE / BASIS_POINTS_DIVISOR);
-    // collateral - funding fee - closing fee +- PnL
-    collateralLeftAfterAllFees = position.hasProfit
-      ? position.collateral.sub(position.fundingFee).sub(position.closingFee).add(position.delta)
-      : position.collateral.sub(position.fundingFee).sub(position.closingFee).sub(position.delta);
-    minimumCollateralToAdd = convertedAmount
-      ? minimumCollateralRequired.sub(collateralLeftAfterAllFees).add(convertedAmount)
-      : minimumCollateralRequired.sub(collateralLeftAfterAllFees);
-    minimumCollateralToAddInToken =
-      minimumCollateralToAdd &&
-      getTokenAmountFromUsd(infoTokens, position.collateralToken.address, minimumCollateralToAdd);
+    netValueAfterClosingFee = showPnlAfterFees ? position.netValue : position.netValue.sub(position.closingFee);
+
+    if (netValueAfterClosingFee?.lt(minimumCollateralRequired)) {
+      minimumCollateralToDeposit = minimumCollateralRequired?.sub(netValueAfterClosingFee);
+      const minimumCollateralToDepositInToken =
+        minimumCollateralToDeposit &&
+        getTokenAmountFromUsd(infoTokens, position.collateralToken.address, minimumCollateralToDeposit);
+      minimumCollateralToDepositStr =
+        minimumCollateralToDepositInToken &&
+        `(${formatAmount(
+          minimumCollateralToDepositInToken,
+          position.collateralToken.decimals,
+          position.collateralToken.isStable ? 2 : 4
+        )} ${position.collateralToken.symbol})`;
+    }
   }
 
   const getError = () => {
@@ -211,7 +218,7 @@ export default function PositionEditor(props) {
       return [t`Withdraw disabled, pending ${getChainName(chainId)} upgrade`];
     }
 
-    if (isDeposit && fromAmount && minimumCollateralToAdd && minimumCollateralToAdd.gt(0)) {
+    if (isDeposit && minimumCollateralToDeposit?.gt(0)) {
       return [t`Insufficient collateral deposit`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientCollateral];
     }
 
@@ -487,25 +494,29 @@ export default function PositionEditor(props) {
     [ErrorCode.InvalidLiqPrice]: t`Liquidation price would cross mark price.`,
     [ErrorCode.InsufficientCollateral]: (
       <>
-        <p>Not enough collateral deposit to bring position leverage below 100x.</p>
+        <p>The Deposit amount is insufficient to bring Net Value below max allowed leverage of 100x.</p>
         <br />
         <StatsTooltipRow
-          label={t`Min. collateral needed is`}
-          value={position && `${formatAmount(minimumCollateralRequired, USD_DECIMALS, 2, true)}`}
-          showDollar={true}
-        />
-        <StatsTooltipRow
-          label={t`Deposit at least`}
-          value={
-            minimumCollateralToAdd &&
-            `${formatAmount(minimumCollateralToAdd, USD_DECIMALS, 2, true)} (${formatAmount(
-              minimumCollateralToAddInToken,
-              position.collateralToken.decimals,
-              4
-            )} ${position.collateralToken.symbol})`
-          }
+          label={t`Current Net Value (incl. Closing Fee)`}
+          value={netValueAfterClosingFee && `$${formatAmount(netValueAfterClosingFee, USD_DECIMALS, 2, true)}`}
           showDollar={false}
         />
+        <StatsTooltipRow
+          label={t`Min. Net value needed is`}
+          value={minimumCollateralRequired && `${formatAmount(minimumCollateralRequired, USD_DECIMALS, 2, true)}`}
+          showDollar={true}
+        />
+        {minimumCollateralToDeposit && (
+          <StatsTooltipRow
+            label={t`Deposit at least`}
+            value={`${formatAmount(
+              minimumCollateralToDeposit,
+              USD_DECIMALS,
+              2,
+              true
+            )} ${minimumCollateralToDepositStr}`}
+          />
+        )}
       </>
     ),
   };
