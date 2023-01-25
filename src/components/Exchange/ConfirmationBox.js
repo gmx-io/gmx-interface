@@ -696,7 +696,6 @@ export default function ConfirmationBox(props) {
               fundingFee={getFundingFee()}
               executionFee={getExecutionFee()}
               positionFee={`$${formatAmount(positionFee, USD_DECIMALS, 2, true)}`}
-              positionFeeLable={t`Opening Fee`}
               swapFee={swapFees?.gt(0) && `$${formatAmount(swapFees, USD_DECIMALS, 2, true)}`}
             />
           </ExchangeInfoRow>

@@ -667,7 +667,7 @@ msgstr "关闭{longOrShortText} {0}"
 msgid "Close: {convertedAmountFormatted} {0}"
 msgstr "关闭: {convertedAmountFormatted} {0}"
 
-#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/FeesTooltip.tsx
 msgid "Closing Fee"
 msgstr ""
 
@@ -754,16 +754,8 @@ msgid "Compounding..."
 msgstr "复利中"
 
 #: src/components/Exchange/ConfirmationBox.js
-#~ msgid "Confirm Limit Long Order"
-#~ msgstr ""
-
-#: src/components/Exchange/ConfirmationBox.js
 msgid "Confirm Limit Order"
 msgstr ""
-
-#: src/components/Exchange/ConfirmationBox.js
-#~ msgid "Confirm Limit Swap Order"
-#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Confirm Long"
@@ -772,10 +764,6 @@ msgstr "确认做多"
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Confirm Short"
 msgstr "确认做空"
-
-#: src/components/Exchange/ConfirmationBox.js
-#~ msgid "Confirm Short Order"
-#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Confirm Swap"
@@ -2199,7 +2187,7 @@ msgstr ""
 msgid "Open {0} {longOrShortText}"
 msgstr "开仓 {0} {longOrShortText}"
 
-#: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/FeesTooltip.tsx
 msgid "Opening Fee"
 msgstr ""
 
@@ -2386,10 +2374,6 @@ msgstr "池子数量"
 #: src/components/Exchange/PositionsList.js
 msgid "Position"
 msgstr "仓位"
-
-#: src/components/Exchange/SwapBox.js
-#~ msgid "Position Fee (0.1% of position size)"
-#~ msgstr "仓位费(0.1% of position size)"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Position close disabled, pending {0} upgrade"

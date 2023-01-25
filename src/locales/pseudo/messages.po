@@ -667,7 +667,7 @@ msgstr ""
 msgid "Close: {convertedAmountFormatted} {0}"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/FeesTooltip.tsx
 msgid "Closing Fee"
 msgstr ""
 
@@ -754,16 +754,8 @@ msgid "Compounding..."
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
-#~ msgid "Confirm Limit Long Order"
-#~ msgstr ""
-
-#: src/components/Exchange/ConfirmationBox.js
 msgid "Confirm Limit Order"
 msgstr ""
-
-#: src/components/Exchange/ConfirmationBox.js
-#~ msgid "Confirm Limit Swap Order"
-#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Confirm Long"
@@ -772,10 +764,6 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Confirm Short"
 msgstr ""
-
-#: src/components/Exchange/ConfirmationBox.js
-#~ msgid "Confirm Short Order"
-#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Confirm Swap"
@@ -2196,7 +2184,7 @@ msgstr ""
 msgid "Open {0} {longOrShortText}"
 msgstr ""
 
-#: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/FeesTooltip.tsx
 msgid "Opening Fee"
 msgstr ""
 
@@ -2383,10 +2371,6 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 msgid "Position"
 msgstr ""
-
-#: src/components/Exchange/SwapBox.js
-#~ msgid "Position Fee (0.1% of position size)"
-#~ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Position close disabled, pending {0} upgrade"

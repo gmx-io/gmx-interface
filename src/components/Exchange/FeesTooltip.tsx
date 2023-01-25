@@ -3,15 +3,50 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 
-export default function FeesTooltip({
-  totalFees,
-  fundingFee,
-  positionFee,
-  swapFee,
-  executionFee,
-  positionFeeLable,
-  isOpening = true,
-}) {
+type Row = {
+  label: string;
+  value: string;
+};
+
+function FeesTooltip({ totalFees, fundingFee, positionFee, swapFee, executionFee, isOpening = true }) {
+  const feeRows: Row[] = [];
+  if (!isOpening && fundingFee) {
+    feeRows.push({
+      label: t`Borrow Fee`,
+      value: fundingFee,
+    });
+  }
+  if (isOpening && swapFee) {
+    feeRows.push({
+      label: t`Swap Fee`,
+      value: swapFee,
+    });
+  }
+  if (positionFee) {
+    feeRows.push({
+      label: isOpening ? t`Opening Fee` : t`Closing Fee`,
+      value: positionFee,
+    });
+  }
+  if (isOpening && fundingFee) {
+    feeRows.push({
+      label: t`Borrow Fee`,
+      value: fundingFee,
+    });
+  }
+  if (!isOpening && swapFee) {
+    feeRows.push({
+      label: t`Swap Fee`,
+      value: swapFee,
+    });
+  }
+  if (executionFee) {
+    feeRows.push({
+      label: t`Execution Fee`,
+      value: executionFee,
+    });
+  }
+
   return (
     <Tooltip
       position="right-top"
@@ -19,14 +54,9 @@ export default function FeesTooltip({
       handle={<div>{totalFees ? totalFees : "-"}</div>}
       renderContent={() => (
         <div>
-          {!isOpening && fundingFee && <StatsTooltipRow label={t`Borrow Fee`} showDollar={false} value={fundingFee} />}
-          {isOpening && swapFee && <StatsTooltipRow label={t`Swap Fee`} showDollar={false} value={swapFee} />}
-          {positionFee && positionFeeLable && (
-            <StatsTooltipRow label={positionFeeLable} showDollar={false} value={positionFee} />
-          )}
-          {isOpening && fundingFee && <StatsTooltipRow label={t`Borrow Fee`} showDollar={false} value={fundingFee} />}
-          {!isOpening && swapFee && <StatsTooltipRow label={t`Swap Fee`} showDollar={false} value={swapFee} />}
-          {executionFee && <StatsTooltipRow label={t`Execution Fee`} showDollar={false} value={executionFee} />}
+          {feeRows.map(({ label, value }) => (
+            <StatsTooltipRow key={label} label={label} showDollar={false} value={value} />
+          ))}
           <br />
           <div className="PositionSeller-fee-item">
             <Trans>
@@ -38,3 +68,5 @@ export default function FeesTooltip({
     />
   );
 }
+
+export default FeesTooltip;

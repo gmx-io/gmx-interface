@@ -1133,7 +1133,6 @@ export default function PositionSeller(props) {
                 <FeesTooltip
                   isOpening={false}
                   positionFee={positionFee?.gt(0) && `$${formatAmount(positionFee, USD_DECIMALS, 2, true)}`}
-                  positionFeeLable={t`Closing Fee`}
                   fundingFee={`$${formatAmount(fundingFee, USD_DECIMALS, 2, true)}`}
                   totalFees={totalFees && `$${formatAmount(totalFees, USD_DECIMALS, 2, true)}`}
                   executionFee={
