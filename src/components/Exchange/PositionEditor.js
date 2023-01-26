@@ -197,7 +197,7 @@ export default function PositionEditor(props) {
     minimumCollateralRequired = position.size.div(MAX_LEVERAGE / BASIS_POINTS_DIVISOR);
     netValueAfterClosingFee = showPnlAfterFees ? position.netValue : position.netValue.sub(position.closingFee);
 
-    if (netValueAfterClosingFee?.lt(minimumCollateralRequired)) {
+    if (isDeposit && netValueAfterClosingFee?.lt(minimumCollateralRequired)) {
       minimumCollateralToDeposit = minimumCollateralRequired?.sub(netValueAfterClosingFee);
       minimumCollateralToDepositStr =
         minimumCollateralToDeposit &&
@@ -215,11 +215,10 @@ export default function PositionEditor(props) {
       return [t`Withdraw disabled, pending ${getChainName(chainId)} upgrade`];
     }
 
-    if (
-      (isDeposit && minimumCollateralToDeposit?.gt(0) && !convertedAmount) ||
-      convertedAmount?.lt(minimumCollateralToDeposit)
-    ) {
-      return [t`Insufficient collateral deposit`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientCollateral];
+    if (isDeposit) {
+      if ((!convertedAmount && minimumCollateralToDeposit?.gt(0)) || convertedAmount?.lt(minimumCollateralToDeposit)) {
+        return [t`Insufficient collateral deposit`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientCollateral];
+      }
     }
 
     if (!fromAmount) {
