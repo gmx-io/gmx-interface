@@ -80,7 +80,6 @@ export default function PositionEditor(props) {
 
   const routerAddress = getContract(chainId, "Router");
   const positionRouterAddress = getContract(chainId, "PositionRouter");
-
   const { data: tokenAllowance } = useSWR(
     [active, chainId, collateralTokenAddress, "allowance", account, routerAddress],
     {
@@ -114,7 +113,7 @@ export default function PositionEditor(props) {
   let fundingFee;
   let minimumCollateralRequired;
   let netValueAfterClosingFee;
-  let minimumCollateralToDeposit;
+  let minimumCollateralToDeposit = bigNumberify(0);
   let minimumCollateralToDepositStr;
 
   if (position) {
