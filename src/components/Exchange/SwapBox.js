@@ -1820,7 +1820,7 @@ export default function SwapBox(props) {
   }
 
   const ERROR_TOOLTIP_MSG = {
-    [ErrorCode.InsufficientLiquidity]: t`Swap amount exceeds available liquidity`,
+    [ErrorCode.InsufficientLiquidity]: t`Swap amount exceeds available liquidity.`,
   };
 
   const SWAP_LABELS = {

@@ -2988,8 +2988,8 @@ msgid "Swap active: {0}, executed: {1}, cancelled: {2}"
 msgstr "Swap active: {0}, executed: {1}, cancelled: {2}"
 
 #: src/components/Exchange/SwapBox.js
-msgid "Swap amount exceeds available liquidity"
-msgstr "Swap amount exceeds available liquidity"
+msgid "Swap amount exceeds available liquidity."
+msgstr "Swap amount exceeds available liquidity."
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
