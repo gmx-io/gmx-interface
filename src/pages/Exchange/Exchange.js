@@ -167,7 +167,7 @@ export function getPositions(
       size: positionData[i * propsLength],
       collateral: positionData[i * propsLength + 1],
       averagePrice: positionData[i * propsLength + 2],
-      entryFundingRate: positionData[i * propsLength + 3].mul(120).div(100),
+      entryFundingRate: positionData[i * propsLength + 3],
       cumulativeFundingRate: collateralToken.cumulativeFundingRate,
       hasRealisedProfit: positionData[i * propsLength + 4].eq(1),
       realisedPnl: positionData[i * propsLength + 5],
@@ -381,8 +381,7 @@ export const Exchange = forwardRef((props, ref) => {
     }
   }, [showBanner, bannerHidden, setBannerHidden, setShowBanner]);
 
-  let { active, account, library } = useWeb3React();
-  account = "0x7130ad3d1be599ed49140c453a3df16243beca92";
+  const { active, account, library } = useWeb3React();
   const { chainId } = useChainId();
   const currentAccount = account;
 

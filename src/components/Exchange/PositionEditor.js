@@ -215,7 +215,10 @@ export default function PositionEditor(props) {
       return [t`Withdraw disabled, pending ${getChainName(chainId)} upgrade`];
     }
 
-    if (isDeposit && minimumCollateralToDeposit?.gt(0)) {
+    if (
+      (isDeposit && minimumCollateralToDeposit?.gt(0) && !convertedAmount) ||
+      convertedAmount?.lt(minimumCollateralToDeposit)
+    ) {
       return [t`Insufficient collateral deposit`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientCollateral];
     }
 
