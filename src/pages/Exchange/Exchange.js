@@ -868,6 +868,7 @@ export const Exchange = forwardRef((props, ref) => {
             minExecutionFeeErrorMessage={minExecutionFeeErrorMessage}
             usdgSupply={usdgSupply}
             totalTokenWeights={totalTokenWeights}
+            savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
           />
         )}
         {listSection === ORDERS && (

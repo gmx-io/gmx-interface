@@ -68,6 +68,7 @@ export default function PositionEditor(props) {
     minExecutionFeeErrorMessage,
     isContractAccount,
     showPnlAfterFees,
+    savedShouldDisableValidationForTesting,
   } = props;
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
   const position = positionsMap && positionKey ? positionsMap[positionKey] : undefined;
@@ -244,11 +245,15 @@ export default function PositionEditor(props) {
       }
     }
 
-    if (nextLeverageExcludingPnl && nextLeverageExcludingPnl.lt(1.1 * BASIS_POINTS_DIVISOR)) {
+    if (
+      !savedShouldDisableValidationForTesting &&
+      nextLeverageExcludingPnl &&
+      nextLeverageExcludingPnl.lt(1.1 * BASIS_POINTS_DIVISOR)
+    ) {
       return [t`Min leverage: 1.1x`];
     }
 
-    if (nextLeverage && nextLeverage.gt(MAX_ALLOWED_LEVERAGE)) {
+    if (!savedShouldDisableValidationForTesting && nextLeverage && nextLeverage.gt(MAX_ALLOWED_LEVERAGE)) {
       return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
     }
     return [false];

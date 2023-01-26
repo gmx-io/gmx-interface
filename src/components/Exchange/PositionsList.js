@@ -96,6 +96,7 @@ export default function PositionsList(props) {
     usdgSupply,
     totalTokenWeights,
     hideActions,
+    savedShouldDisableValidationForTesting,
   } = props;
 
   const [positionToEditKey, setPositionToEditKey] = useState(undefined);
@@ -158,6 +159,7 @@ export default function PositionsList(props) {
         minExecutionFeeErrorMessage={minExecutionFeeErrorMessage}
         isContractAccount={isContractAccount}
         showPnlAfterFees={showPnlAfterFees}
+        savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
       />
       {ordersToaOpen && (
         <OrdersToa
