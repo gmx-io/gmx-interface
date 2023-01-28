@@ -505,7 +505,7 @@ export default function PositionEditor(props) {
           showDollar={false}
         />
         <StatsTooltipRow
-          label={t`Min. Net value needed is`}
+          label={t`Min. Net Value needed is`}
           value={minimumCollateralRequired && `${formatAmount(minimumCollateralRequired, USD_DECIMALS, 2, true)}`}
           showDollar={true}
         />

@@ -2040,8 +2040,8 @@ msgid "Min residual collateral: 10 USD"
 msgstr "Min residual collateral: 10 USD"
 
 #: src/components/Exchange/PositionEditor.js
-msgid "Min. Net value needed is"
-msgstr "Min. Net value needed is"
+msgid "Min. Net Value needed is"
+msgstr "Min. Net Value needed is"
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Min. Receive"
