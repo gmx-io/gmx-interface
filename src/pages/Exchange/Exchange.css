@@ -629,7 +629,7 @@ table.Exchange-list th {
 
 .Exchange-swap-box .TokenSelector .Modal-content,
 .Selector .Modal-content {
-  width: 41.85rem;
+  width: 42rem;
   position: absolute;
   max-height: 100vh;
   top: 0;
@@ -996,7 +996,7 @@ table.Exchange-list-small td {
 
   .Exchange-swap-box .TokenSelector .Modal-content,
   .Selector .Modal-content {
-    width: 41.85rem;
+    width: 42rem;
     position: absolute;
     max-height: 80vh;
     overflow: hidden;
@@ -1007,7 +1007,7 @@ table.Exchange-list-small td {
 
   .Exchange-swap-box .TokenSelector .Modal-content .Modal-body {
     overflow-y: auto;
-    max-height: calc(70vh - 8.525rem);
+    max-height: calc(80vh - 8.525rem);
     scroll-margin-right: 38.75rem;
     overscroll-behavior: smooth;
     scrollbar-width: thin;
@@ -1030,9 +1030,17 @@ table.Exchange-list-small td {
     padding: 0.465rem 0;
     font-size: 1.25rem;
   }
+  .Exchange-swap-box .TokenSelector .Modal {
+    margin: 0 0.5rem;
+  }
 }
 
 @media (max-width: 700px) {
+  .Exchange-swap-box .TokenSelector .Modal-content,
+  .Selector .Modal-content {
+    bottom: 0;
+  }
+
   .PositionEditor .Modal-content {
     width: 90vw;
   }
@@ -1054,9 +1062,7 @@ table.Exchange-list-small td {
     padding: 1.5rem;
     padding-top: 1.5rem;
   }
-  .Exchange-swap-box .TokenSelector .Modal {
-    margin: 0 1.5rem;
-  }
+
   .Exchange {
     padding-top: 1.5rem !important;
   }
