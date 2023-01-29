@@ -61,7 +61,7 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
     - `constants.ts`
   - `request.js` - example base function for http requests
   - `useLockBodyScroll.ts` - common ui hook
-  - `legacy.js` - Unstrcutured legacy code (moved from Helpers.js)
+  - `legacy.js` - Unstructured legacy code (moved from Helpers.js)
 
 - `domain/` - Project specific domain logic separated by entities and features, may contain
   data fetching, formatting, types and constants
@@ -73,7 +73,7 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
     - `contracts.ts` - Contracts calls
     - `backend.ts` - Http requests
     - `graph.ts` - Subgraph queries
-    - `useActiveOrders.ts` - some complex hook with aggreation logic
+    - `useActiveOrders.ts` - some complex hook with aggregation logic
     - `constants.ts`
     - `hooks.ts`
 
