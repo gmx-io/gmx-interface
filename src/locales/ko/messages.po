@@ -670,13 +670,13 @@ msgstr "수령가능"
 msgid "Claiming..."
 msgstr "수령중..."
 
-#: src/components/Exchange/PositionsList.js
-msgid "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
-msgstr "시장에서 위치를 선택하세요. 그런 다음, 필요한 경우 거래 상자를 통해 크기를 조정하세요."
-
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Click on a row to select the position's market, then use the swap box to increase your position size, or to set stop-loss / take-profit orders. if needed."
 msgstr ""
+
+#: src/components/Exchange/PositionsList.js
+msgid "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
+msgstr "시장에서 위치를 선택하세요. 그런 다음, 필요한 경우 거래 상자를 통해 크기를 조정하세요."
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
@@ -1503,8 +1503,8 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Fees"

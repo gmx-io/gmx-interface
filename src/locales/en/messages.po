@@ -670,13 +670,13 @@ msgstr "Claimable"
 msgid "Claiming..."
 msgstr "Claiming..."
 
-#: src/components/Exchange/PositionsList.js
-msgid "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
-msgstr "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
-
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Click on a row to select the position's market, then use the swap box to increase your position size, or to set stop-loss / take-profit orders. if needed."
 msgstr "Click on a row to select the position's market, then use the swap box to increase your position size, or to set stop-loss / take-profit orders. if needed."
+
+#: src/components/Exchange/PositionsList.js
+msgid "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
+msgstr "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
@@ -1503,8 +1503,8 @@ msgstr "Failed to update order"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Fees"
