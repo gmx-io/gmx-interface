@@ -316,6 +316,7 @@ msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})
 msgstr "Verwaltetes Vermögen: GMX-Staked (Alle Chains) + GLP-Pool ({chainName})."
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "Available"
 msgstr "Verfügbar"
 
@@ -628,8 +629,8 @@ msgid "Claiming..."
 msgstr "Beanspruchen..."
 
 #: src/components/Exchange/PositionsList.js
-msgid "Click on a row to select the position's market, then use the swap box to increase your position size if needed."
-msgstr "Klicke auf eine Zeile, um den Markt der Position auszuwählen, und verwende dann die Swap-Box, um deine Position bei Bedarf zu vergrößern."
+msgid "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
+msgstr "Klicke auf eine Zeile, um den Markt der Position auszuwählen, und verwende dann die Trade-Box, um deine Position bei Bedarf zu vergrößern."
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
@@ -1280,6 +1281,7 @@ msgstr "GEBÜHREN"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV1.js

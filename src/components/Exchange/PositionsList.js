@@ -431,15 +431,15 @@ export default function PositionsList(props) {
                   <div className="App-card-content">
                     <div className="App-card-row">
                       <div className="label">
-                        <Trans>Mark Price</Trans>
-                      </div>
-                      <div>${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}</div>
-                    </div>
-                    <div className="App-card-row">
-                      <div className="label">
                         <Trans>Entry Price</Trans>
                       </div>
                       <div>${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}</div>
+                    </div>
+                    <div className="App-card-row">
+                      <div className="label">
+                        <Trans>Mark Price</Trans>
+                      </div>
+                      <div>${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}</div>
                     </div>
                     <div className="App-card-row">
                       <div className="label">
@@ -501,10 +501,10 @@ export default function PositionsList(props) {
               <Trans>Collateral</Trans>
             </th>
             <th>
-              <Trans>Mark Price</Trans>
+              <Trans>Entry Price</Trans>
             </th>
             <th>
-              <Trans>Entry Price</Trans>
+              <Trans>Mark Price</Trans>
             </th>
             <th>
               <Trans>Liq. Price</Trans>
@@ -552,7 +552,31 @@ export default function PositionsList(props) {
               <tr key={position.key}>
                 <td className="clickable" onClick={() => onPositionClick(position)}>
                   <div className="Exchange-list-title">
-                    {position.indexToken.symbol}
+                    {!hideActions ? (
+                      <Tooltip
+                        handle={position.indexToken.symbol}
+                        position="left-bottom"
+                        handleClassName="plain clickable"
+                        renderContent={() => {
+                          return (
+                            <div>
+                              <Trans>
+                                Click on a row to select the position's market, then use the trade box to increase your
+                                position size if needed.
+                              </Trans>
+                              <br />
+                              <br />
+                              <Trans>
+                                Use the "Close" button to reduce your position size, or to set stop-loss / take-profit
+                                orders.
+                              </Trans>
+                            </div>
+                          );
+                        }}
+                      />
+                    ) : (
+                      position.indexToken.symbol
+                    )}
                     {position.hasPendingChanges && <ImSpinner2 className="spin position-loading-icon" />}
                   </div>
                   <div className="Exchange-list-info-label">
@@ -706,34 +730,10 @@ export default function PositionsList(props) {
                   </div>
                 </td>
                 <td className="clickable" onClick={() => onPositionClick(position)}>
-                  {!hideActions ? (
-                    <Tooltip
-                      handle={`$${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}`}
-                      position="left-bottom"
-                      handleClassName="plain clickable"
-                      renderContent={() => {
-                        return (
-                          <div>
-                            <Trans>
-                              Click on a row to select the position's market, then use the swap box to increase your
-                              position size if needed.
-                            </Trans>
-                            <br />
-                            <br />
-                            <Trans>
-                              Use the "Close" button to reduce your position size, or to set stop-loss / take-profit
-                              orders.
-                            </Trans>
-                          </div>
-                        );
-                      }}
-                    />
-                  ) : (
-                    <> ${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}</>
-                  )}
+                  ${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}
                 </td>
                 <td className="clickable" onClick={() => onPositionClick(position)}>
-                  ${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}
+                  ${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}
                 </td>
                 <td className="clickable" onClick={() => onPositionClick(position)}>
                   ${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}
