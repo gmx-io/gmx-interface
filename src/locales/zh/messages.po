@@ -1134,6 +1134,10 @@ msgid "Deposit failed."
 msgstr "存取失败"
 
 #: src/domain/synthetics/markets/createDepositTxn.ts
+msgid "Deposit order failed"
+msgstr ""
+
+#: src/domain/synthetics/markets/createDepositTxn.ts
 msgid "Deposit order sent"
 msgstr ""
 
@@ -1171,8 +1175,8 @@ msgid "Depositing..."
 msgstr "存款中..."
 
 #: src/domain/synthetics/markets/createDepositTxn.ts
-msgid "Despoit order failed"
-msgstr ""
+#~ msgid "Despoit order failed"
+#~ msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Diff"
