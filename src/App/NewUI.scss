@@ -59,7 +59,6 @@
     vertical-align: middle;
     margin-right: 0.8rem;
     transform: scale(1);
-    // box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.25);
     width: 20px;
     height: 20px;
     border-radius: 50%;
@@ -74,6 +73,14 @@
   .Tab-option.active:nth-child(3) > .Tab-option-icon {
     background: #2e42f3;
   }
+}
+
+table.Exchange-list tr:hover td:first-child {
+  border-bottom-left-radius: 1rem;
+}
+
+table.Exchange-list tr:hover td:last-child {
+  border-bottom-right-radius: 1rem;
 }
 
 .Exchange-swap-ball {
@@ -91,14 +98,6 @@
 
 .Exchange-swap-box-inner {
   border-radius: var(--border-radius-l) !important;
-}
-
-.Exchange-swap-box .Tab {
-  margin-bottom: 1rem;
-}
-
-.Exchange-swap-order-type-tabs {
-  padding-left: 1.4rem;
 }
 
 .Exchange-swap-box-inner {
@@ -126,11 +125,8 @@
   right: 0;
 }
 
-.Exchange-list-tab-container {
-  padding-left: 1.4rem;
-  margin-bottom: 1rem;
-  position: relative;
-  z-index: 1;
+table.Exchange-list tr:last-child:hover {
+  border-radius: 1rem;
 }
 
 .Exchange-leverage-box,
@@ -141,9 +137,9 @@
 .App-slider .rc-slider-handle {
   background: #16182e;
   border: solid 2px #fff;
-  width: 20px;
-  height: 20px;
-  margin-top: -7px;
+  width: 16px;
+  height: 16px;
+  margin-top: -4px;
 }
 
 .App-slider .rc-slider-dot.rc-slider-dot-active {
@@ -179,38 +175,29 @@
 }
 
 .Exchange-leverage-slider-settings {
-  .Checkbox-icon.inactive {
-    visibility: hidden;
-  }
+  display: flex;
+  justify-content: space-between;
 
-  .Checkbox:not(.selected) .Checkbox-icon-wrapper {
-    background: hsla(0, 0%, 100%, 0.5);
-  }
-
-  .Checkbox-icon-wrapper {
-    display: inline-flex;
-    align-items: center;
+  .SwapBox-leverage-toggle {
+    width: 29.5px;
+    height: 18px;
+    background-color: rgba(255, 255, 255, 0.4);
+    display: flex;
+    justify-content: flex-start;
+    border-radius: 50px;
+    padding: 2px;
     cursor: pointer;
-    text-indent: -9999px;
-    width: 27px;
-    height: 16px;
-    background: #3d51ff;
-    border-radius: 100px;
-    position: relative;
+
+    .handle {
+      width: 14.4px;
+      height: 14.4px;
+      background-color: white;
+      border-radius: 40px;
+    }
   }
 
-  .Checkbox-icon-wrapper:after {
-    content: "";
-    position: absolute;
-    top: 1px;
-    left: 1px;
-    width: 14px;
-    height: 14px;
-    background: #fff;
-    border-radius: 90px;
-    transition: 0.3s;
-  }
-  .Checkbox.selected .Checkbox-icon-wrapper:after {
-    left: 12px;
+  .SwapBox-leverage-toggle[data-isOn="true"] {
+    justify-content: flex-end;
+    background-color: #3d51ff;
   }
 }
