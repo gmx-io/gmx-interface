@@ -139,9 +139,9 @@ export function OrderStatus(p: Props) {
     const matchedPendingOrderStatus = Object.values(orderStatuses).find((orderStatus) => {
       if (
         !orderStatus.isTouched &&
-        orderStatus.data.flags.orderType === p.orderType &&
-        (!p.marketAddress || orderStatus.data.addresses.market === p.marketAddress) &&
-        (typeof p.isLong === "undefined" || orderStatus.data.flags.isLong === p.isLong)
+        orderStatus.data.orderType === p.orderType &&
+        (!p.marketAddress || orderStatus.data.market === p.marketAddress) &&
+        (typeof p.isLong === "undefined" || orderStatus.data.isLong === p.isLong)
       ) {
         return true;
       }

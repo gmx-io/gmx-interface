@@ -39,6 +39,8 @@ export const TOTAL_BORROWING_KEY = hashString("TOTAL_BORROWING");
 
 export const POSITION_IMPACT_POOL_AMOUNT_KEY = hashString("POSITION_IMPACT_POOL_AMOUNT");
 
+export const SWAP_IMPACT_POOL_AMOUNT_KEY = hashString("SWAP_IMPACT_POOL_AMOUNT");
+
 export const CUMULATIVE_BORROWING_FACTOR_KEY = hashString("CUMULATIVE_BORROWING_FACTOR");
 
 export const MIN_COLLATERAL_USD_KEY = hashString("MIN_COLLATERAL_USD");
@@ -64,6 +66,16 @@ export const NATIVE_TOKEN_TRANSFER_GAS_LIMIT_KEY = hashString("NATIVE_TOKEN_TRAN
 export const ESTIMATED_FEE_BASE_GAS_LIMIT_KEY = hashString("ESTIMATED_FEE_BASE_GAS_LIMIT");
 
 export const ESTIMATED_FEE_MULTIPLIER_FACTOR_KEY = hashString("ESTIMATED_FEE_MULTIPLIER_FACTOR");
+
+export const MARKET_LIST_KEY = hashString("MARKET_LIST");
+
+export const POSITION_LIST_KEY = hashString("POSITION_LIST");
+
+export const ACCOUNT_POSITION_LIST_KEY = hashString("ACCOUNT_POSITION_LIST");
+
+export const ORDER_LIST_KEY = hashString("ORDER_LIST");
+
+export const ACCOUNT_ORDER_LIST_KEY = hashString("ACCOUNT_ORDER_LIST");
 
 export function positionImpactFactorKey(market: string, isPositive: boolean) {
   return hashData(["bytes32", "address", "bool"], [POSITION_IMPACT_FACTOR_KEY, market, isPositive]);
@@ -128,6 +140,10 @@ export function positionImpactPoolAmountKey(market: string) {
   return hashData(["bytes32", "address"], [POSITION_IMPACT_POOL_AMOUNT_KEY, market]);
 }
 
+export function swapImpactPoolAmountKey(market: string, token: string) {
+  return hashData(["bytes32", "address", "address"], [SWAP_IMPACT_POOL_AMOUNT_KEY, market, token]);
+}
+
 export function orderKey(nonce: BigNumber) {
   return hashData(["uint256"], [nonce]);
 }
@@ -154,4 +170,12 @@ export function decreaseOrderGasLimitKey() {
 
 export function swapOrderGasLimitKey() {
   return hashData(["bytes32"], [SWAP_ORDER_GAS_LIMIT_KEY]);
+}
+
+export function accountOrderListKey(account: string) {
+  return hashData(["bytes32", "address"], [ACCOUNT_ORDER_LIST_KEY, account]);
+}
+
+export function accountPositionListKey(account: string) {
+  return hashData(["bytes32", "address"], [ACCOUNT_POSITION_LIST_KEY, account]);
 }

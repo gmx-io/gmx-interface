@@ -6,7 +6,7 @@ import Modal from "components/Modal/Modal";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
 import { getContract } from "config/contracts";
-import { getToken } from "config/tokens";
+import { convertTokenAddress, getToken } from "config/tokens";
 import { PriceImpact } from "domain/synthetics/fees/types";
 import { createDepositTxn } from "domain/synthetics/markets/createDepositTxn";
 import { createWithdrawalTxn } from "domain/synthetics/markets/createWithdrawalTxn";
@@ -60,9 +60,9 @@ export function GmConfirmationBox(p: Props) {
   const { chainId } = useChainId();
   const routerAddress = getContract(chainId, "SyntheticsRouter");
 
-  const tokenAddresses = [p.longDelta?.tokenAddress, p.shortDelta?.tokenAddress, p.marketTokenAddress].filter(
-    Boolean
-  ) as string[];
+  const tokenAddresses = [p.longDelta?.tokenAddress, p.shortDelta?.tokenAddress, p.marketTokenAddress]
+    .filter(Boolean)
+    .map((addr) => convertTokenAddress(chainId, addr!, "wrapped")) as string[];
 
   const { marketsData } = useMarketsData(chainId);
   const { marketTokensData } = useMarketTokensData(chainId);
@@ -162,12 +162,12 @@ export function GmConfirmationBox(p: Props) {
   }
 
   function onCreateDeposit() {
-    if (!account || !p.executionFee) return;
+    if (!account || !p.executionFee || !market) return;
 
     createDepositTxn(chainId, library, {
       account,
-      longTokenAddress: p.longDelta?.tokenAddress,
-      shortTokenAddress: p.shortDelta?.tokenAddress,
+      initialLongTokenAddress: p.longDelta?.tokenAddress || market.longTokenAddress,
+      initialShortTokenAddress: p.shortDelta?.tokenAddress || market.shortTokenAddress,
       longTokenAmount: p.longDelta?.tokenAmount,
       shortTokenAmount: p.shortDelta?.tokenAmount,
       marketTokenAddress: p.marketTokenAddress,
@@ -189,7 +189,8 @@ export function GmConfirmationBox(p: Props) {
 
     createWithdrawalTxn(chainId, library, {
       account,
-      longTokenAddress: market?.longTokenAddress!,
+      longTokenAddress: market.longTokenAddress,
+      shortTokenAddress: market.shortTokenAddress,
       marketLongAmount,
       marketShortAmount,
       minLongTokenAmount: p.longDelta?.tokenAmount,

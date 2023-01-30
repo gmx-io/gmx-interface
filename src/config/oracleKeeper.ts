@@ -2,13 +2,13 @@ import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 import queryString from "query-string";
 
 const ORACLE_KEEPER_URLS = {
-  [ARBITRUM]: "https://oracle-keeper-testing-arbitrum-8raup.ondigitalocean.app",
+  [ARBITRUM]: "https://seashell-app-zdvwo.ondigitalocean.app",
 
-  [AVALANCHE]: "https://oracle-keeper-testing-arbitrum-8raup.ondigitalocean.app",
+  [AVALANCHE]: "https://seashell-app-zdvwo.ondigitalocean.app",
 
-  [AVALANCHE_FUJI]: "https://oracle-keeper-testing-arbitrum-8raup.ondigitalocean.app",
+  [AVALANCHE_FUJI]: "https://seashell-app-zdvwo.ondigitalocean.app",
 
-  default: "https://oracle-keeper-testing-arbitrum-8raup.ondigitalocean.app",
+  default: "https://seashell-app-zdvwo.ondigitalocean.app",
 };
 
 export function getOracleKeeperBaseUrl(chainId: number) {

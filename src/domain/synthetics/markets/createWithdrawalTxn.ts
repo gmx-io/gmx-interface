@@ -9,6 +9,7 @@ import { isAddressZero } from "lib/legacy";
 type Params = {
   account: string;
   longTokenAddress: string;
+  shortTokenAddress: string;
   marketTokenAddress: string;
   marketLongAmount?: BigNumber;
   marketShortAmount?: BigNumber;
@@ -19,21 +20,26 @@ type Params = {
 
 export function createWithdrawalTxn(chainId: number, library: Web3Provider, p: Params) {
   const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, library.getSigner());
-  const withdrawalStoreAddress = getContract(chainId, "WithdrawalStore");
+  const withdrawalVaultAddress = getContract(chainId, "WithdrawalVault");
 
   const isNativeWithdrawal = Boolean(isAddressZero(p.longTokenAddress) && p.marketLongAmount?.gt(0));
 
   const wntAmount = p.executionFee;
 
   const multicall = [
-    contract.interface.encodeFunctionData("sendWnt", [withdrawalStoreAddress, wntAmount]),
+    contract.interface.encodeFunctionData("sendWnt", [withdrawalVaultAddress, wntAmount]),
     contract.interface.encodeFunctionData("createWithdrawal", [
       {
         receiver: p.account,
         callbackContract: ethers.constants.AddressZero,
         market: p.marketTokenAddress,
-        marketTokensLongAmount: p.marketLongAmount || BigNumber.from(0),
-        marketTokensShortAmount: p.marketShortAmount || BigNumber.from(0),
+        initialLongToken: p.longTokenAddress,
+        initialShortToken: p.shortTokenAddress,
+        longTokenSwapPath: [],
+        shortTokenSwapPath: [],
+        marketTokenAmount: BigNumber.from(0)
+          .add(p.marketLongAmount || 0)
+          .add(p.marketShortAmount || 0),
         // TODO: correct slippage
         minLongTokenAmount: p.minLongTokenAmount?.div(2) || BigNumber.from(0),
         minShortTokenAmount: p.minShortTokenAmount?.div(2) || BigNumber.from(0),

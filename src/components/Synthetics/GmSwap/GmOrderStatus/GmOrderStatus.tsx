@@ -81,7 +81,7 @@ export function GmOrderStatus(p: Props) {
 
     if (p.isDeposit) {
       const pendingOrder = Object.values(depositStatuses).find(
-        (depositStatus) => !depositStatus.isTouched && depositStatus.data.addresses.market === p.market
+        (depositStatus) => !depositStatus.isTouched && depositStatus.data.market === p.market
       );
 
       if (pendingOrder) {
@@ -90,7 +90,7 @@ export function GmOrderStatus(p: Props) {
       }
     } else {
       const pendingOrder = Object.values(withdrawalStatuses).find(
-        (withdrawalStatus) => !withdrawalStatus.isTouched && withdrawalStatus.data.addresses.market === p.market
+        (withdrawalStatus) => !withdrawalStatus.isTouched && withdrawalStatus.data.market === p.market
       );
 
       if (pendingOrder) {

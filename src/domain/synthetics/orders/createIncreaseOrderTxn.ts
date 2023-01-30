@@ -12,7 +12,7 @@ import { formatUsd } from "lib/numbers";
 import { ContractEventsContextType } from "../contractEvents";
 import { getPositionKey } from "../positions";
 import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
-import { OrderType } from "./types";
+import { DecreasePositionSwapType, OrderType } from "./types";
 import { getAcceptablePriceForPositionOrder, isMarketOrder } from "./utils";
 
 const { AddressZero } = ethers.constants;
@@ -44,7 +44,7 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
     library.getSigner()
   );
 
-  const orderStoreAddress = getContract(chainId, "OrderStore");
+  const orderVaultAddress = getContract(chainId, "OrderVault");
 
   const isNativePayment = p.initialCollateralAddress === NATIVE_TOKEN_ADDRESS;
 
@@ -67,10 +67,10 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
   });
 
   const multicall = [
-    { method: "sendWnt", params: [orderStoreAddress, wntAmount] },
+    { method: "sendWnt", params: [orderVaultAddress, wntAmount] },
 
     !isNativePayment
-      ? { method: "sendTokens", params: [p.initialCollateralAddress, orderStoreAddress, p.initialCollateralAmount] }
+      ? { method: "sendTokens", params: [p.initialCollateralAddress, orderVaultAddress, p.initialCollateralAmount] }
       : undefined,
 
     {
@@ -94,6 +94,7 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
             minOutputAmount: BigNumber.from(0),
           },
           orderType: p.orderType,
+          decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
           isLong: p.isLong,
           shouldUnwrapNativeToken: isNativePayment,
         },

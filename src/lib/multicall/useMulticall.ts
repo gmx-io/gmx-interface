@@ -44,7 +44,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
             : params.request;
 
         if (Object.keys(request).length === 0) {
-          throw new Error("Multicall request is empty");
+          throw new Error(`Multicall request is empty`);
         }
 
         const response = await executeMulticall(chainId, library, request);
@@ -57,7 +57,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
         return result as TResult;
       } catch (e) {
         // eslint-disable-next-line no-console
-        console.error(e);
+        console.error(`Multicall request failed: ${name}`, e);
 
         throw e;
       }

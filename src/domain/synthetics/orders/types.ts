@@ -4,23 +4,29 @@ import { TokenData } from "../tokens";
 
 export enum OrderType {
   // the order will be cancelled if the minOutputAmount cannot be fulfilled
-  MarketSwap,
+  MarketSwap = 0,
   // @dev LimitSwap: swap token A to token B if the minOutputAmount can be fulfilled
-  LimitSwap,
+  LimitSwap = 1,
   // @dev MarketIncrease: increase position at the current market price
   // the order will be cancelled if the position cannot be increased at the acceptablePrice
-  MarketIncrease,
+  MarketIncrease = 2,
   // @dev LimitIncrease: increase position if the triggerPrice is reached and the acceptablePrice can be fulfilled
-  LimitIncrease,
+  LimitIncrease = 3,
   // @dev MarketDecrease: decrease position at the curent market price
   // the order will be cancelled if the position cannot be decreased at the acceptablePrice
-  MarketDecrease,
+  MarketDecrease = 4,
   // @dev LimitDecrease: decrease position if the triggerPrice is reached and the acceptablePrice can be fulfilled
-  LimitDecrease,
+  LimitDecrease = 5,
   // @dev StopLossDecrease: decrease position if the triggerPrice is reached and the acceptablePrice can be fulfilled
-  StopLossDecrease,
+  StopLossDecrease = 6,
   // @dev Liquidation: allows liquidation of positions if the criteria for liquidation are met
-  Liquidation,
+  Liquidation = 7,
+}
+
+export enum DecreasePositionSwapType {
+  NoSwap = 0,
+  SwapPnlTokenToCollateralToken = 1,
+  SwapCollateralTokenToPnlToken = 2,
 }
 
 export const orderTypeLabels = {

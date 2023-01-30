@@ -1,11 +1,12 @@
 import { useWeb3React } from "@web3-react/core";
-import OrderStore from "abis/OrderStore.json";
+import DataStore from "abis/DataStore.json";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import { getContract } from "config/contracts";
 import { useMulticall } from "lib/multicall";
 import { bigNumberify } from "lib/numbers";
 import { useEffect, useMemo, useState } from "react";
 import { OrdersData } from "./types";
+import { accountOrderListKey } from "config/dataStore";
 
 type OrdersResult = {
   ordersData: OrdersData;
@@ -25,16 +26,16 @@ export function useOrdersData(chainId: number): OrdersResult {
     key: account ? [account, startIndex, endIndex] : null,
     request: () => ({
       orderStore: {
-        contractAddress: getContract(chainId, "OrderStore"),
-        abi: OrderStore.abi,
+        contractAddress: getContract(chainId, "DataStore"),
+        abi: DataStore.abi,
         calls: {
           count: {
-            methodName: "getAccountOrderCount",
-            params: [account],
+            methodName: "getBytes32Count",
+            params: [accountOrderListKey(account!)],
           },
           keys: {
-            methodName: "getAccountOrderKeys",
-            params: [account, startIndex, endIndex],
+            methodName: "getBytes32ValuesAt",
+            params: [accountOrderListKey(account!), startIndex, endIndex],
           },
         },
       },
@@ -44,7 +45,7 @@ export function useOrdersData(chainId: number): OrdersResult {
         calls: {
           orders: {
             methodName: "getAccountOrders",
-            params: [getContract(chainId, "OrderStore"), account, startIndex, endIndex],
+            params: [getContract(chainId, "DataStore"), account, startIndex, endIndex],
           },
         },
       },

@@ -42,6 +42,9 @@ export type PoolData = {
 
   positionImpactPoolAmount: BigNumber;
 
+  swapImpactPoolAmountLong: BigNumber;
+  swapImpactPoolAmountShort: BigNumber;
+
   netPnlMax: BigNumber;
   netPnlMin: BigNumber;
 

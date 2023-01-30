@@ -1,9 +1,10 @@
 import { getContract } from "config/contracts";
-import MarketStore from "abis/MarketStore.json";
+import DataStore from "abis/DataStore.json";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import { useMulticall } from "lib/multicall";
 import { useEffect, useMemo, useState } from "react";
 import { MarketsData } from "./types";
+import { MARKET_LIST_KEY } from "config/dataStore";
 
 type MarketsDataResult = {
   marketsData: MarketsData;
@@ -21,12 +22,12 @@ export function useMarketsData(chainId: number): MarketsDataResult {
     key: [startIndex, endIndex],
     request: () => ({
       marketStore: {
-        contractAddress: getContract(chainId, "MarketStore"),
-        abi: MarketStore.abi,
+        contractAddress: getContract(chainId, "DataStore"),
+        abi: DataStore.abi,
         calls: {
           count: {
-            methodName: "getMarketCount",
-            params: [],
+            methodName: "getAddressCount",
+            params: [MARKET_LIST_KEY],
           },
         },
       },
@@ -36,7 +37,7 @@ export function useMarketsData(chainId: number): MarketsDataResult {
         calls: {
           markets: {
             methodName: "getMarkets",
-            params: [getContract(chainId, "MarketStore"), startIndex, endIndex],
+            params: [getContract(chainId, "DataStore"), startIndex, endIndex],
           },
         },
       },

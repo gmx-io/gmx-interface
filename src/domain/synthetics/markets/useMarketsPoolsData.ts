@@ -11,6 +11,7 @@ import {
   poolAmountKey,
   positionImpactPoolAmountKey,
   reserveFactorKey,
+  swapImpactPoolAmountKey,
   totalBorrowingKey,
 } from "config/dataStore";
 import { convertToContractPrices, getTokenData, useAvailableTokensData } from "../tokens";
@@ -125,6 +126,14 @@ export function useMarketsPoolsData(chainId: number): MarketPoolsResult {
                 methodName: "getUint",
                 params: [positionImpactPoolAmountKey(marketAddress)],
               },
+              swapImpactPoolAmountLong: {
+                methodName: "getUint",
+                params: [swapImpactPoolAmountKey(marketAddress, market.longTokenAddress)],
+              },
+              swapImpactPoolAmountShort: {
+                methodName: "getUint",
+                params: [swapImpactPoolAmountKey(marketAddress, market.shortTokenAddress)],
+              },
             },
           },
         });
@@ -144,6 +153,8 @@ export function useMarketsPoolsData(chainId: number): MarketPoolsResult {
           cummulativeBorrowingFactorLong: dataStore.cummulativeBorrowingFactorLong.returnValues[0],
           cummulativeBorrowingFactorShort: dataStore.cummulativeBorrowingFactorShort.returnValues[0],
           positionImpactPoolAmount: dataStore.positionImpactPoolAmount.returnValues[0],
+          swapImpactPoolAmountLong: dataStore.swapImpactPoolAmountLong.returnValues[0],
+          swapImpactPoolAmountShort: dataStore.swapImpactPoolAmountShort.returnValues[0],
           netPnlMax: reader.netPnlMax.returnValues[0],
           netPnlMin: reader.netPnlMin.returnValues[0],
           // pnlLongMax: reader.pnlLongMax.returnValues[0],

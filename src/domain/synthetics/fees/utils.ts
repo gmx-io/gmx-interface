@@ -21,7 +21,7 @@ export function getExecutionFee(tokensData: TokensData): ExecutionFeeParams | un
 
   if (!nativeToken?.prices) return undefined;
 
-  const feeUsd = expandDecimals(1, 28);
+  const feeUsd = expandDecimals(2, 28);
   const feeTokenAmount = convertToTokenAmount(feeUsd, nativeToken.decimals, nativeToken.prices.maxPrice);
 
   return {

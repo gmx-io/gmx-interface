@@ -14,6 +14,37 @@ export type ContractEventsContextType = {
   setPendingPositionUpdate: (update: PositionUpdate) => void;
 };
 
+export type KeyValueEventData = {
+  addressItems: {
+    items: { [key: string]: string };
+    arrayItems: { [key: string]: string[] };
+  };
+  uintItems: {
+    items: { [key: string]: BigNumber };
+    arrayItems: { [key: string]: BigNumber[] };
+  };
+  intItems: {
+    items: { [key: string]: BigNumber };
+    arrayItems: { [key: string]: BigNumber[] };
+  };
+  boolItems: {
+    items: { [key: string]: boolean };
+    arrayItems: { [key: string]: boolean[] };
+  };
+  bytes32Items: {
+    items: { [key: string]: string };
+    arrayItems: { [key: string]: string[] };
+  };
+  bytesItems: {
+    items: { [key: string]: string };
+    arrayItems: { [key: string]: string[] };
+  };
+  stringItems: {
+    items: { [key: string]: string };
+    arrayItems: { [key: string]: string[] };
+  };
+};
+
 export type AbstractStatusEvents<TOrderType> = {
   key: string;
   data: TOrderType;
@@ -23,9 +54,9 @@ export type AbstractStatusEvents<TOrderType> = {
   isTouched?: boolean;
 };
 
-export type OrderStatusEvents = AbstractStatusEvents<RawContractOrder>;
-export type DepositStatusEvents = AbstractStatusEvents<RawContractDeposit>;
-export type WithdrawalStatusEvents = AbstractStatusEvents<RawContractWithdrawal>;
+export type OrderStatusEvents = AbstractStatusEvents<any>;
+export type DepositStatusEvents = AbstractStatusEvents<any>;
+export type WithdrawalStatusEvents = AbstractStatusEvents<any>;
 
 export type PositionUpdate = {
   isIncrease: boolean;

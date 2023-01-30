@@ -16,6 +16,7 @@ import { MarketsFeesConfigsData } from "./types";
 import { getContractMarketPrices, useMarketsData } from "../markets";
 import { useAvailableTokensData } from "../tokens";
 import { bigNumberify } from "lib/numbers";
+import { BigNumber } from "ethers";
 
 type MarketFeesConfigsResult = {
   marketsFeesConfigs: MarketsFeesConfigsData;
@@ -43,12 +44,7 @@ export function useMarketsFeesConfigs(chainId: number): MarketFeesConfigsResult 
             calls: {
               marketInfo: {
                 methodName: "getMarketInfo",
-                params: [
-                  getContract(chainId, "DataStore"),
-                  getContract(chainId, "MarketStore"),
-                  marketPrices,
-                  marketAddress,
-                ],
+                params: [getContract(chainId, "DataStore"), marketPrices, marketAddress],
               },
             },
           },
@@ -107,7 +103,6 @@ export function useMarketsFeesConfigs(chainId: number): MarketFeesConfigsResult 
         const [market, borrowingFactorPerSecondForLongs, borrowingFactorPerSecondForShorts, funding] = marketInfoValues;
 
         const [
-          fundingPerSecond,
           longsPayShorts,
           fundingAmountPerSize_LongCollateral_LongPosition,
           fundingAmountPerSize_LongCollateral_ShortPosition,
@@ -132,7 +127,7 @@ export function useMarketsFeesConfigs(chainId: number): MarketFeesConfigsResult 
           borrowingFactorPerSecondForLongs,
           borrowingFactorPerSecondForShorts,
 
-          fundingPerSecond: bigNumberify(fundingPerSecond)!,
+          fundingPerSecond: BigNumber.from(0),
           longsPayShorts,
           fundingAmountPerSize_LongCollateral_LongPosition: bigNumberify(
             fundingAmountPerSize_LongCollateral_LongPosition

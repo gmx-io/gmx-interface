@@ -1,12 +1,13 @@
 import { useWeb3React } from "@web3-react/core";
 import SyntheticsReader from "abis/SyntheticsReader.json";
-import PositionStore from "abis/PositionStore.json";
+import DataStore from "abis/DataStore.json";
 import { getContract } from "config/contracts";
 import { useMulticall } from "lib/multicall";
 import { bigNumberify } from "lib/numbers";
 import { useEffect, useMemo, useState } from "react";
 import { PositionsData } from "./types";
 import { getPositionKey } from "./utils";
+import { accountPositionListKey } from "config/dataStore";
 
 type PositionsDataResult = {
   positionsData: PositionsData;
@@ -26,12 +27,12 @@ export function usePositionsData(chainId: number): PositionsDataResult {
     key: account ? [account, startIndex, endIndex] : null,
     request: () => ({
       positionStore: {
-        contractAddress: getContract(chainId, "PositionStore"),
-        abi: PositionStore.abi,
+        contractAddress: getContract(chainId, "DataStore"),
+        abi: DataStore.abi,
         calls: {
           count: {
-            methodName: "getAccountPositionCount",
-            params: [account],
+            methodName: "getBytes32Count",
+            params: [accountPositionListKey(account!)],
           },
         },
       },
@@ -41,14 +42,7 @@ export function usePositionsData(chainId: number): PositionsDataResult {
         calls: {
           positions: {
             methodName: "getAccountPositionInfoList",
-            params: [
-              getContract(chainId, "DataStore"),
-              getContract(chainId, "MarketStore"),
-              getContract(chainId, "PositionStore"),
-              account,
-              startIndex,
-              endIndex,
-            ],
+            params: [getContract(chainId, "DataStore"), account, startIndex, endIndex],
           },
         },
       },

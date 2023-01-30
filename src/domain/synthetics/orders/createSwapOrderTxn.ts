@@ -7,7 +7,7 @@ import { encodeReferralCode } from "domain/referrals";
 import { BigNumber, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { TokensData, getTokenData } from "../tokens";
-import { OrderType } from "./types";
+import { DecreasePositionSwapType, OrderType } from "./types";
 import { isDevelopment } from "config/env";
 import { simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
 import { formatTokenAmount } from "lib/numbers";
@@ -34,7 +34,7 @@ export async function createSwapOrderTxn(chainId: number, library: Web3Provider,
     library.getSigner()
   );
 
-  const orderStoreAddress = getContract(chainId, "OrderStore");
+  const orderVaultAddress = getContract(chainId, "OrderVault");
 
   const isNativePayment = p.fromTokenAddress === NATIVE_TOKEN_ADDRESS;
   const isNativeReceive = p.toTokenAddress === NATIVE_TOKEN_ADDRESS;
@@ -53,10 +53,10 @@ export async function createSwapOrderTxn(chainId: number, library: Web3Provider,
   const amountOut = p.minOutputAmount.sub(p.minOutputAmount.div(10));
 
   const multicall = [
-    { method: "sendWnt", params: [orderStoreAddress, wntAmount] },
+    { method: "sendWnt", params: [orderVaultAddress, wntAmount] },
 
     !isNativePayment
-      ? { method: "sendTokens", params: [p.fromTokenAddress, orderStoreAddress, p.fromTokenAmount] }
+      ? { method: "sendTokens", params: [p.fromTokenAddress, orderVaultAddress, p.fromTokenAmount] }
       : undefined,
 
     {
@@ -79,6 +79,7 @@ export async function createSwapOrderTxn(chainId: number, library: Web3Provider,
             minOutputAmount: amountOut,
           },
           orderType: p.orderType,
+          decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
           isLong: false,
           shouldUnwrapNativeToken: isNativeReceive,
         },
