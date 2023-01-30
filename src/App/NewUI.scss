@@ -37,7 +37,7 @@
       background: transparent;
     }
     &.active {
-      background: rgba(180, 187, 255, 0.2);
+      background: none;
     }
   }
   .Tab-active-icon {
@@ -75,11 +75,11 @@
   }
 }
 
-table.Exchange-list tr:hover td:first-child {
+table.Exchange-list tr:last-child td:first-child {
   border-bottom-left-radius: 1rem;
 }
 
-table.Exchange-list tr:hover td:last-child {
+table.Exchange-list tr:last-child td:last-child {
   border-bottom-right-radius: 1rem;
 }
 
@@ -115,14 +115,21 @@ table.Exchange-list tr:hover td:last-child {
   position: relative;
 }
 
-.Tab.inline .Tab-option.active::after {
-  content: "";
+.Tab-inline-slide {
   position: absolute;
-  height: 2px;
-  background-color: #2c42fa;
-  bottom: -0.5rem;
+  bottom: -3px;
   left: 0;
   right: 0;
+  height: 2px;
+  background: #2c42fa;
+}
+.Tab-block-slide {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  border-radius: 0.8rem;
+  top: 0;
+  left: 0;
 }
 
 table.Exchange-list tr:last-child:hover {

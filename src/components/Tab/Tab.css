@@ -38,6 +38,10 @@
   opacity: 1;
 }
 
+.Tab.block .Tab-option {
+  position: relative;
+}
+
 .Tab.inline .Tab-option {
   cursor: pointer;
   display: inline-block;
