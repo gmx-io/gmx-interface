@@ -769,7 +769,7 @@ export function getLeverage({
 
 export function getLeverageStr(leverage) {
   if (leverage && ethers.BigNumber.isBigNumber(leverage)) {
-    if (leverage.lt(0)) {
+    if (leverage.lt(0) || leverage.gt(expandDecimals(100, 4))) {
       return "> 100x";
     }
     return `${formatAmount(leverage, 4, 2, true)}x`;
