@@ -144,8 +144,8 @@ export function swapImpactPoolAmountKey(market: string, token: string) {
   return hashData(["bytes32", "address", "address"], [SWAP_IMPACT_POOL_AMOUNT_KEY, market, token]);
 }
 
-export function orderKey(nonce: BigNumber) {
-  return hashData(["uint256"], [nonce]);
+export function orderKey(dataStoreAddress: string, nonce: BigNumber) {
+  return hashData(["address", "uint256"], [dataStoreAddress, nonce]);
 }
 
 export function depositGasLimitKey(singleToken: boolean) {

@@ -27,7 +27,7 @@ import { Fees, TradeMode, TradeType, getSubmitError, tradeTypeLabels } from "../
 
 import Checkbox from "components/Checkbox/Checkbox";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
-import { useContractEvents } from "domain/synthetics/contractEvents";
+import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { getMarket, useMarketsData } from "domain/synthetics/markets";
 import { AggregatedPositionData, formatLeverage, formatPnl } from "domain/synthetics/positions";
 import "./ConfirmationBox.scss";
@@ -81,7 +81,7 @@ export function ConfirmationBox(p: Props) {
   const { library, account } = useWeb3React();
   const { chainId } = useChainId();
   const routerAddress = getContract(chainId, "SyntheticsRouter");
-  const { setPendingPositionUpdate } = useContractEvents();
+  const { setPendingPositionUpdate } = useSyntheticsEvents();
 
   const { tokensData } = useAvailableTokensData(chainId);
   const { marketsData } = useMarketsData(chainId);

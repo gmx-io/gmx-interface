@@ -4,8 +4,8 @@ import { expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 import { MarketsData, getMarket, getMarketName } from "../markets";
 import { TokenPrices, TokensData, convertToUsd, getTokenData } from "../tokens";
 import { AggregatedPositionData, Position, PositionsData } from "./types";
-import { PositionsUpdates } from "../contractEvents";
-import { getPositionUpdate } from "../contractEvents/utils";
+import { PositionsUpdates } from "../../../context/SyntheticsEvents";
+import { getPositionUpdate } from "../../../context/SyntheticsEvents/utils";
 
 export function getPosition(positionsData: PositionsData, positionKey?: string) {
   if (!positionKey) return undefined;

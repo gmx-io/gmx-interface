@@ -1,7 +1,7 @@
 import { BigNumber } from "ethers";
 import { TokenData } from "domain/synthetics/tokens";
 import { Market } from "domain/synthetics/markets";
-import { PositionUpdate } from "../contractEvents";
+import { PositionUpdate } from "../../../context/SyntheticsEvents";
 
 export type PositionFundingFees = {
   fundingFeeAmount: BigNumber;

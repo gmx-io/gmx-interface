@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import Modal from "components/Modal/Modal";
-import { useContractEvents } from "domain/synthetics/contractEvents";
+import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { RequestStatus } from "components/RequestStatus/RequestStatus";
 import { useEffect, useState } from "react";
@@ -27,7 +27,7 @@ export function OrderStatus(p: Props) {
   const { chainId } = useChainId();
   const { tokensData } = useAvailableTokensData(chainId);
   const { marketsData } = useMarketsData(chainId);
-  const { orderStatuses, touchOrderStatus } = useContractEvents();
+  const { orderStatuses, touchOrderStatus } = useSyntheticsEvents();
 
   const orderStatus = orderKey ? orderStatuses[orderKey] : undefined;
 
@@ -140,7 +140,7 @@ export function OrderStatus(p: Props) {
       if (
         !orderStatus.isTouched &&
         orderStatus.data.orderType === p.orderType &&
-        (!p.marketAddress || orderStatus.data.market === p.marketAddress) &&
+        (!p.marketAddress || orderStatus.data.marketAddress === p.marketAddress) &&
         (typeof p.isLong === "undefined" || orderStatus.data.isLong === p.isLong)
       ) {
         return true;

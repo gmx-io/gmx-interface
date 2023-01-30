@@ -6,11 +6,11 @@ import { getTokenBySymbol } from "config/tokens";
 import { useAvailableTokensData } from "domain/synthetics/tokens";
 import { USD_DECIMALS } from "lib/legacy";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
-import { expandDecimals, formatUsd } from "lib/numbers";
+import { expandDecimals } from "lib/numbers";
 import { useMemo } from "react";
 import { MarketTokensData } from "./types";
 import { useMarketsData } from "./useMarketsData";
-import { getContractMarketPrices, getMarket, getMarketName } from "./utils";
+import { getContractMarketPrices, getMarket } from "./utils";
 
 type MarketTokensDataResult = {
   marketTokensData: MarketTokensData;
@@ -33,22 +33,6 @@ export function useMarketTokensData(chainId: number): MarketTokensDataResult {
         const market = getMarket(marketsData, marketAddress)!;
         const marketPrices = getContractMarketPrices(marketsData, tokensData, marketAddress);
 
-        console.log("marketPrices", {
-          market: getMarketName(marketsData, tokensData, marketAddress),
-          indexPrices: {
-            min: marketPrices?.indexTokenPrice.min.toString(),
-            max: marketPrices?.indexTokenPrice.max.toString(),
-          },
-          longPrices: {
-            min: marketPrices?.longTokenPrice.min.toString(),
-            max: marketPrices?.longTokenPrice.max.toString(),
-          },
-          shortPrices: {
-            min: marketPrices?.shortTokenPrice.min.toString(),
-            max: marketPrices?.shortTokenPrice.max.toString(),
-          },
-        });
-
         if (marketPrices) {
           const marketProps = {
             marketToken: market.marketTokenAddress,
@@ -67,9 +51,9 @@ export function useMarketTokensData(chainId: number): MarketTokensDataResult {
                 params: [
                   getContract(chainId, "DataStore"),
                   marketProps,
+                  marketPrices.indexTokenPrice,
                   marketPrices.longTokenPrice,
                   marketPrices.shortTokenPrice,
-                  marketPrices.indexTokenPrice,
                   false,
                 ],
               },
@@ -78,9 +62,9 @@ export function useMarketTokensData(chainId: number): MarketTokensDataResult {
                 params: [
                   getContract(chainId, "DataStore"),
                   marketProps,
+                  marketPrices.indexTokenPrice,
                   marketPrices.longTokenPrice,
                   marketPrices.shortTokenPrice,
-                  marketPrices.indexTokenPrice,
                   true,
                 ],
               },

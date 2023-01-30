@@ -12,7 +12,7 @@ import { isDevelopment } from "config/env";
 import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
 import { getAcceptablePriceForPositionOrder, isMarketOrder } from "./utils";
 import { getPositionKey } from "../positions";
-import { PositionUpdate } from "../contractEvents";
+import { PositionUpdate } from "../../../context/SyntheticsEvents";
 import { formatUsd } from "lib/numbers";
 
 const { AddressZero } = ethers.constants;

@@ -23,7 +23,7 @@ import { DEFAULT_SLIPPAGE_AMOUNT, USD_DECIMALS } from "lib/legacy";
 import { formatAmountFree, formatTokenAmount, formatUsd, parseValue } from "lib/numbers";
 import { useEffect, useState } from "react";
 
-import { useContractEvents } from "domain/synthetics/contractEvents";
+import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import "./PositionEditor.scss";
 
 type Props = {
@@ -44,7 +44,7 @@ const operationLabels = {
 export function PositionEditor(p: Props) {
   const { chainId } = useChainId();
   const { account, library } = useWeb3React();
-  const { setPendingPositionUpdate } = useContractEvents();
+  const { setPendingPositionUpdate } = useSyntheticsEvents();
   const [operation, setOperation] = useState(Operation.Deposit);
   const isDeposit = operation === Operation.Deposit;
 

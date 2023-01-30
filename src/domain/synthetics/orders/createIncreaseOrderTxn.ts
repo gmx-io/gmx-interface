@@ -9,7 +9,7 @@ import { TokensData, convertToContractPrice, convertToTokenAmount, getTokenData 
 import { BigNumber, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { formatUsd } from "lib/numbers";
-import { ContractEventsContextType } from "../contractEvents";
+import { ContractEventsContextType } from "../../../context/SyntheticsEvents";
 import { getPositionKey } from "../positions";
 import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";

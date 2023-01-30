@@ -5,7 +5,7 @@ import { useAvailableTokensData } from "../tokens";
 import { usePositionsData } from "./usePositionsData";
 import { AggregatedPositionsData } from "./types";
 import { getAggregatedPositionData } from "./utils";
-import { useContractEvents } from "../contractEvents";
+import { useSyntheticsEvents } from "context/SyntheticsEvents";
 
 type AggregatedPositionsDataResult = {
   aggregatedPositionsData: AggregatedPositionsData;
@@ -13,7 +13,7 @@ type AggregatedPositionsDataResult = {
 };
 
 export function useAggregatedPositionsData(chainId: number): AggregatedPositionsDataResult {
-  const { pendingPositionsUpdates, positionsUpdates } = useContractEvents();
+  const { pendingPositionsUpdates, positionsUpdates } = useSyntheticsEvents();
   const { tokensData, isLoading: isTokensLoading } = useAvailableTokensData(chainId);
   const { marketsData, isLoading: isMarketsLoading } = useMarketsData(chainId);
   const { positionsData, isLoading: isPositionsLoading } = usePositionsData(chainId);

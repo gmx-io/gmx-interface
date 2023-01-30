@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import Modal from "components/Modal/Modal";
 import cx from "classnames";
-import { useContractEvents } from "domain/synthetics/contractEvents";
+import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { RequestStatus } from "components/RequestStatus/RequestStatus";
 import { useEffect, useState } from "react";
@@ -19,7 +19,7 @@ type Props = {
 
 export function GmOrderStatus(p: Props) {
   const { chainId } = useChainId();
-  const { depositStatuses, withdrawalStatuses, touchDepositStatus, touchWithdrawalStatus } = useContractEvents();
+  const { depositStatuses, withdrawalStatuses, touchDepositStatus, touchWithdrawalStatus } = useSyntheticsEvents();
   const [orderKey, setOrderKey] = useState<string>();
   const { tokensData } = useAvailableTokensData(chainId);
   const { marketsData } = useMarketsData(chainId);

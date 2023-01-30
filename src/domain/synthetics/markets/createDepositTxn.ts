@@ -9,8 +9,8 @@ import { convertTokenAddress } from "config/tokens";
 
 type Params = {
   account: string;
-  initialLongTokenAddress?: string;
-  initialShortTokenAddress?: string;
+  initialLongTokenAddress: string;
+  initialShortTokenAddress: string;
   marketTokenAddress: string;
   longTokenAmount?: BigNumber;
   shortTokenAmount?: BigNumber;
@@ -54,12 +54,8 @@ export async function createDepositTxn(chainId: number, library: Web3Provider, p
         receiver: p.account,
         callbackContract: ethers.constants.AddressZero,
         market: p.marketTokenAddress,
-        initialLongToken: p.initialLongTokenAddress
-          ? convertTokenAddress(chainId, p.initialLongTokenAddress, "wrapped")
-          : ethers.constants.AddressZero,
-        initialShortToken: p.initialShortTokenAddress
-          ? convertTokenAddress(chainId, p.initialShortTokenAddress, "wrapped")
-          : ethers.constants.AddressZero,
+        initialLongToken: convertTokenAddress(chainId, p.initialLongTokenAddress, "wrapped"),
+        initialShortToken: convertTokenAddress(chainId, p.initialShortTokenAddress, "wrapped"),
         longTokenSwapPath: [],
         shortTokenSwapPath: [],
         // TODO: correct slippage

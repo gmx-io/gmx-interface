@@ -100,7 +100,7 @@ import {
 } from "lib/wallets";
 import { MarketPoolsPage } from "pages/MarketPoolsPage/MarketPoolsPage";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
-import { ContractEventsProvider } from "domain/synthetics/contractEvents";
+import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
 import { getWsProvider } from "lib/rpc";
 
 if ("ethereum" in window) {
@@ -643,7 +643,7 @@ function App() {
   return (
     <SWRConfig value={{ refreshInterval: 5000 }}>
       <Web3ReactProvider getLibrary={getLibrary}>
-        <ContractEventsProvider>
+        <SyntheticsEventsProvider>
           <SEO>
             <Router>
               <I18nProvider i18n={i18n}>
@@ -651,7 +651,7 @@ function App() {
               </I18nProvider>
             </Router>
           </SEO>
-        </ContractEventsProvider>
+        </SyntheticsEventsProvider>
       </Web3ReactProvider>
     </SWRConfig>
   );

@@ -32,7 +32,7 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatTokenAmountWithUsd, formatUsd, parseValue } from "lib/numbers";
 import { useEffect, useState } from "react";
 
-import { useContractEvents } from "domain/synthetics/contractEvents";
+import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import "./PositionSeller.scss";
 import { OrderStatus } from "../OrderStatus/OrderStatus";
 
@@ -46,7 +46,7 @@ export function PositionSeller(p: Props) {
   const { chainId } = useChainId();
   const { library, account } = useWeb3React();
   const [isProcessing, setIsProcessing] = useState(false);
-  const { setPendingPositionUpdate } = useContractEvents();
+  const { setPendingPositionUpdate } = useSyntheticsEvents();
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey([chainId, KEEP_LEVERAGE_FOR_DECREASE_KEY], true);
   const { tokensData } = useAvailableTokensData(chainId);
   // const infoTokens = adaptToInfoTokens(tokensData);

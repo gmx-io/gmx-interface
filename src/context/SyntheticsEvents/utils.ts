@@ -1,6 +1,6 @@
 import { BigNumber } from "ethers";
-import { PositionsUpdates } from "./types";
 import { bigNumberify } from "lib/numbers";
+import { PositionsUpdates } from "./types";
 
 export function getPositionUpdate(
   positionsUpdates: PositionsUpdates,

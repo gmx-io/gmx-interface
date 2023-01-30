@@ -34,7 +34,9 @@ const SUCCESS_SIMULATION_PATTERN = "End of oracle price simulation";
 const SHOULD_MINE = false;
 
 export async function simulateExecuteOrderTxn(chainId: number, library: Web3Provider, p: SimulateExecuteOrderParams) {
-  const dataStore = new ethers.Contract(getContract(chainId, "DataStore"), DataStore.abi, library.getSigner());
+  const dataStoreAddress = getContract(chainId, "DataStore");
+
+  const dataStore = new ethers.Contract(dataStoreAddress, DataStore.abi, library.getSigner());
 
   const exchangeRouter = new ethers.Contract(
     getContract(chainId, "ExchangeRouter"),
@@ -45,7 +47,7 @@ export async function simulateExecuteOrderTxn(chainId: number, library: Web3Prov
   const blockNumber = await library.getBlockNumber();
   const nonce = await dataStore.getUint(NONCE_KEY, { blockTag: blockNumber });
   const nextNonce = nonce.add(1);
-  const nextKey = orderKey(nextNonce);
+  const nextKey = orderKey(dataStoreAddress, nextNonce);
 
   const { primaryTokens, primaryPrices, secondaryTokens, secondaryPrices } = getSimulationPrices(
     chainId,
