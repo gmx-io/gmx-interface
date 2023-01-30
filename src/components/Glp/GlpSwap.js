@@ -1282,8 +1282,9 @@ export default function GlpSwap(props) {
                   {isBuying && (
                     <div className="App-card-row">
                       <Tooltip
-                        handle="Available"
+                        handle={t`Available`}
                         position="left-bottom"
+                        className="label"
                         renderContent={() => (
                           <p className="text-white">
                             <Trans>Available amount to deposit into GLP.</Trans>
@@ -1348,7 +1349,8 @@ export default function GlpSwap(props) {
                         t`Fees`
                       ) : (
                         <Tooltip
-                          handle="Fees"
+                          handle={t`Fees`}
+                          className="label"
                           renderContent={() => (
                             <p className="text-white">
                               <Trans>Fees will be shown once you have entered an amount in the order form.</Trans>

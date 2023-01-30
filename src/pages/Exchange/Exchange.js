@@ -19,6 +19,7 @@ import {
   useAccountOrders,
   getPageTitle,
   getFundingFee,
+  getLeverageStr,
 } from "lib/legacy";
 import { getConstant, getExplorerUrl } from "config/chains";
 import { approvePlugin, useMinExecutionFee, cancelMultipleOrders } from "domain/legacy";
@@ -289,6 +290,7 @@ export function getPositions(
       delta: position.delta,
       includeDelta,
     });
+    position.leverageStr = getLeverageStr(position.leverage);
 
     positionsMap[key] = position;
 

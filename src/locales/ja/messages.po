@@ -327,6 +327,7 @@ msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})
 msgstr "管理資産: 全チェーンでステークされているGMX + GLPプール ({chainName})."
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "Available"
 msgstr "利用可能"
 
@@ -670,8 +671,8 @@ msgid "Claiming..."
 msgstr "請求中..."
 
 #: src/components/Exchange/PositionsList.js
-msgid "Click on a row to select the position's market, then use the swap box to increase your position size if needed."
-msgstr "ポジションのマーケットを選択するには行をクリックします。その上で、もし必要であればスワップボックスを利用してポジションのサイズを上げてください。"
+msgid "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
+msgstr "行をクリックしてポジションのマーケットを選択し、必要に応じて取引ボックスを使用してポジションのサイズを増やします。"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Click on a row to select the position's market, then use the swap box to increase your position size, or to set stop-loss / take-profit orders. if needed."
@@ -1503,6 +1504,7 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Fees"
