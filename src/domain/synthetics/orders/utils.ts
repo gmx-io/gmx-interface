@@ -1,5 +1,4 @@
 import { t } from "@lingui/macro";
-import { applySwapImpactWithCap } from "domain/synthetics/fees";
 import { MarketsData, getMarket, getMarketName } from "domain/synthetics/markets";
 import {
   TokenData,
@@ -12,9 +11,9 @@ import {
 } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";
+import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { Position, getPriceForPnl } from "../positions";
 import { AggregatedOrderData, AggregatedOrdersData, OrderType, OrdersData } from "./types";
-import { formatTokenAmount, formatUsd } from "lib/numbers";
 
 export const SWAP_PNL_TOKEN_TO_COLLATERAL_TOKEN = "0x0000000000000000000000000000000000000002";
 export const SWAP_COLLATERAL_TOKEN_TO_PNL_TOKEN = "0x0000000000000000000000000000000000000003";
@@ -209,34 +208,32 @@ export function getMinOutputAmountForSwapOrder(p: {
   priceImpactDeltaUsd: BigNumber;
 }) {
   // priceImpact in usd?
-  let amountOut: BigNumber;
 
-  // todo on each swap step?
-  if (p.priceImpactDeltaUsd.gt(0)) {
-    // TODO: amount after fee
-    const amountIn = p.fromTokenAmount;
+  // // todo on each swap step?
+  // if (p.priceImpactDeltaUsd.gt(0)) {
+  //   // TODO: amount after fee
+  //   const amountIn = p.fromTokenAmount;
 
-    amountOut = amountIn.mul(p.toTokenPrices.minPrice).div(p.fromTokenPrices.maxPrice);
+  //   amountOut = amountIn.mul(p.toTokenPrices.minPrice).div(p.fromTokenPrices.maxPrice);
 
-    const positiveImpactAmount = applySwapImpactWithCap({
-      tokenPrices: p.toTokenPrices,
-      priceImpactUsd: p.priceImpactDeltaUsd,
-    });
+  //   const positiveImpactAmount = applySwapImpactWithCap({
+  //     tokenPrices: p.toTokenPrices,
+  //     priceImpactUsd: p.priceImpactDeltaUsd,
+  //   });
 
-    amountOut = amountOut.add(positiveImpactAmount);
-  } else {
-    const negativeImpactAmount = applySwapImpactWithCap({
-      tokenPrices: p.fromTokenPrices,
-      priceImpactUsd: p.priceImpactDeltaUsd,
-    });
+  //   amountOut = amountOut.add(positiveImpactAmount);
+  // } else {
+  //   const negativeImpactAmount = applySwapImpactWithCap({
+  //     tokenPrices: p.fromTokenPrices,
+  //     priceImpactUsd: p.priceImpactDeltaUsd,
+  //   });
 
-    // TODO: amount after fee
-    const amountIn = p.fromTokenAmount.sub(negativeImpactAmount.mul(-1));
+  //   // TODO: amount after fee
+  //   const amountIn = p.fromTokenAmount.sub(negativeImpactAmount.mul(-1));
 
-    amountOut = amountIn.mul(p.fromTokenPrices.minPrice).div(p.toTokenPrices.maxPrice);
-  }
+  // amountOut = amountIn.mul(p.fromTokenPrices.minPrice).div(p.toTokenPrices.maxPrice);
 
-  return amountOut;
+  return BigNumber.from(0);
 }
 
 export function getMinOutputAmountForDecreaseOrder(p: {

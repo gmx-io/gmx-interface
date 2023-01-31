@@ -2,14 +2,13 @@ import { t, Trans } from "@lingui/macro";
 import { InfoRow } from "components/InfoRow/InfoRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
-import { formatFee, PriceImpact } from "domain/synthetics/fees";
 import { Token } from "domain/tokens";
 import cx from "classnames";
 import { BigNumber } from "ethers";
-import { formatTokenAmountWithUsd } from "lib/numbers";
+import { formatDeltaUsd, formatTokenAmountWithUsd } from "lib/numbers";
 
 type Props = {
-  priceImpact?: PriceImpact;
+  priceImpact?: any;
   executionFee?: BigNumber;
   executionFeeUsd?: BigNumber;
   executionFeeToken?: Token;
@@ -24,13 +23,13 @@ export function GmFees(p: Props) {
       label={<Trans>Fees and price impact</Trans>}
       value={
         <Tooltip
-          handle={<span className={cx({ positive: totalFeeUsd?.gt(0) })}>{formatFee(totalFeeUsd)}</span>}
+          handle={<span className={cx({ positive: totalFeeUsd?.gt(0) })}>{formatDeltaUsd(totalFeeUsd)}</span>}
           position="right-bottom"
           renderContent={() => (
             <div>
               <StatsTooltipRow
                 label={t`Price impact`}
-                value={formatFee(priceImpact?.impactUsd, priceImpact?.basisPoints) || "..."}
+                value={formatDeltaUsd(priceImpact?.impactUsd, priceImpact?.basisPoints) || "..."}
                 showDollar={false}
               />
               <StatsTooltipRow

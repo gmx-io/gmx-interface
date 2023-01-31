@@ -7,7 +7,6 @@ import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
 import { getContract } from "config/contracts";
 import { convertTokenAddress, getToken } from "config/tokens";
-import { PriceImpact } from "domain/synthetics/fees/types";
 import { createDepositTxn } from "domain/synthetics/markets/createDepositTxn";
 import { createWithdrawalTxn } from "domain/synthetics/markets/createWithdrawalTxn";
 import { convertToTokenAmount, convertToUsd, getTokenData, needTokenApprove } from "domain/synthetics/tokens";
@@ -37,7 +36,7 @@ type Props = {
   marketTokenAmount: BigNumber;
   longDelta?: PoolDelta;
   shortDelta?: PoolDelta;
-  priceImpact?: PriceImpact;
+  priceImpact?: any;
   tokensData: TokensData;
   operationType: Operation;
   feesUsd: BigNumber;

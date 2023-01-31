@@ -1,10 +1,52 @@
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
+import { TokenData } from "../tokens";
 
-export type PriceImpactConfig = {
-  factorPositive: BigNumber;
-  factorNegative: BigNumber;
-  exponentFactor: BigNumber;
+export type ExecutionFeeParams = {
+  feeUsd?: BigNumber;
+  feeTokenAmount?: BigNumber;
+  feeToken: Token;
+};
+
+export type ExecutionFee = {
+  feeUsd: BigNumber;
+  feeAmount: BigNumber;
+  feeToken: TokenData;
+};
+
+export type SwapStepFees = {
+  marketAddress: string;
+  tokenInAddress: string;
+  tokenOutAddress: string;
+  swapFeeAmount: BigNumber;
+  swapFeeUsd: BigNumber;
+  priceImpactDeltaUsd: BigNumber;
+  totalFeeUsd: BigNumber;
+  amountInAfterFees: BigNumber;
+  amountOut: BigNumber;
+  usdOut: BigNumber;
+};
+
+export type FeeItem = {
+  deltaUsd: BigNumber;
+  bps: BigNumber;
+};
+
+export type SwapFeeItem = FeeItem & {
+  marketAddress: string;
+  tokenInAddress: string;
+  tokenOutAddress: string;
+};
+
+export type TotalSwapFees = {
+  swapSteps: SwapStepFees[];
+  swapFees: SwapFeeItem[];
+  totalPriceImpact: FeeItem;
+  totalSwapFee: FeeItem;
+  totalFee: FeeItem;
+  tokenInAddress: string;
+  tokenOutAddress: string;
+  usdOut: BigNumber;
 };
 
 export type GasLimitsConfig = {
@@ -48,70 +90,3 @@ export type MarketFeesConfig = {
 export type MarketsFeesConfigsData = {
   [marketAddress: string]: MarketFeesConfig;
 };
-
-export type PriceImpactConfigsData = {
-  [marketAddress: string]: PriceImpactConfig;
-};
-
-export type PriceImpact = {
-  impactUsd: BigNumber;
-  basisPoints: BigNumber;
-};
-
-export type ExecutionFeeParams = {
-  feeUsd?: BigNumber;
-  feeTokenAmount?: BigNumber;
-  feeToken: Token;
-};
-
-export type ExecutionFees = {
-  feeUsd: BigNumber;
-  feeTokenAmount: BigNumber;
-  feeToken: Token;
-};
-
-export type SwapStepFees = {
-  swapFeeAmount: BigNumber;
-  swapImpact: PriceImpact;
-  totalFeeAmount: BigNumber;
-  totalFeeUsd: BigNumber;
-  amountAfterFees: BigNumber;
-};
-
-export type SwapOrderFees = {
-  swaps: SwapStepFees[];
-  swapOrderFeeAmount: BigNumber;
-  totalSwapImpact: PriceImpact;
-  totalFeeAmount: BigNumber;
-  totalFeeUsd: BigNumber;
-  totalSwapFeeAmount: BigNumber;
-  amountAfterFees: BigNumber;
-  amountBasisPoints: BigNumber;
-};
-
-export type PositionOrderFees = {
-  swaps: SwapStepFees[];
-  totalSwapImpact: PriceImpact;
-  positionFeeAmount: BigNumber;
-  totalFeeUsd: BigNumber;
-  totalFeeAmount: BigNumber;
-  positionImpact: PriceImpact;
-  deductedBorrowingFeeAmount: BigNumber;
-  deductedBorrowingFeeUsd: BigNumber;
-  deductedFundingFeeAmount: BigNumber;
-  deductedFundingFeeUsd: BigNumber;
-  deductedPnl: BigNumber;
-  collateralAmountAfterFees: BigNumber;
-  collateralAmountBasisPoints: BigNumber;
-};
-
-export type OrderCreationFee = {
-  feeAmount: BigNumber;
-  feeUsd: BigNumber;
-};
-
-/**
- *
- *
- * Component Fees
- */

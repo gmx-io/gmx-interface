@@ -348,6 +348,11 @@ msgstr "Доступная сумма для пополнения GLP."
 msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
 msgstr "Доступная сумма для вывода средств из GLP. Средства, не использованные текущими открытыми позициями."
 
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/SwapCard/SwapCard.tsx
+msgid "Available liquidity"
+msgstr ""
+
 #: src/pages/Home/Home.js
 msgid "Available on your preferred network"
 msgstr "Доступно в предпочитаемой сети"
@@ -1012,6 +1017,10 @@ msgstr "Текущий {0} лонгшезам"
 msgid "Current {0} shorts"
 msgstr "Текущий {0} Шорт"
 
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Current {0} {1}"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
@@ -1424,6 +1433,7 @@ msgstr "Введите новую Цену"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
@@ -1475,11 +1485,11 @@ msgstr "Комиссия за Исполнение"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/components/Synthetics/Trade/TradeFees/TradeFees.tsx
 msgid "Execution fee"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "Exit Price"
 msgstr "Цена на выходе"
 
@@ -1513,7 +1523,7 @@ msgstr "Сборы"
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/Trade/TradeFees/TradeFees.tsx
+#: src/components/Synthetics/TradeFees/TradeFees.tsx
 msgid "Fees and price impact"
 msgstr ""
 
@@ -1772,6 +1782,10 @@ msgstr "Я осведомлён о запуске ордера"
 #: src/components/Exchange/SwapBox.js
 msgid "If you have an existing position, the position will be closed at {0} USD.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
 msgstr "Если у вас есть существующая позиция, позиция будет закрыта по цене {0} USD.<0/><1/>Цена выхода будет меняться в зависимости от цены актива.<2/><3/><4>Более подробная Информация</4>"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "If you have an existing position, the position will be closed at {0}.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
+msgstr ""
 
 #: src/components/Exchange/PositionShare.js
 msgid "Image generation error, please refresh and try again."
@@ -2157,6 +2171,7 @@ msgstr "Загрузка..."
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -2262,8 +2277,10 @@ msgstr "Отметка: {0}"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 #: src/components/Synthetics/Trade/utils.ts
@@ -2363,6 +2380,7 @@ msgstr "Максимальное {0} превышение лонга"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/SwapCard/SwapCard.tsx
 msgid "Max {0} out"
 msgstr "Максимальный {0} выход"
 
@@ -2373,6 +2391,10 @@ msgstr "Максимальная {0} вместимость шорта"
 #: src/components/Exchange/SwapBox.js
 msgid "Max {0} short exceeded"
 msgstr "Максимальное {0} превышение шорта"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Max {0} {1} capacity"
+msgstr ""
 
 #: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
@@ -2874,6 +2896,10 @@ msgstr "Комиссия за позицию (0,1% от размера пози�
 msgid "Position close disabled, pending {0} upgrade"
 msgstr "Закрытие позиции не доступно, ожидается {0} обновление"
 
+#: src/components/Synthetics/TradeFees/TradeFees.tsx
+msgid "Position fee"
+msgstr ""
+
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
 msgid "Positions"
@@ -2961,7 +2987,7 @@ msgid "Price conditions are met"
 msgstr "Ценовые условия выполнены"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
-#: src/components/Synthetics/Trade/TradeFees/TradeFees.tsx
+#: src/components/Synthetics/TradeFees/TradeFees.tsx
 msgid "Price impact"
 msgstr ""
 
@@ -3362,6 +3388,7 @@ msgstr "Позиция Акции"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -3575,6 +3602,7 @@ msgstr "Обеспечение"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/Trade/utils.ts
@@ -3616,6 +3644,10 @@ msgstr "Обмен не выполнен"
 msgid "Swap on 1inch"
 msgstr "Обмен на 1inch"
 
+#: src/components/Synthetics/TradeFees/TradeFees.tsx
+msgid "Swap price impact"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Swap submitted!"
 msgstr "Обмен подан!"
@@ -3625,7 +3657,6 @@ msgid "Swap submitted."
 msgstr "Обмен подан."
 
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/Trade/TradeFees/TradeFees.tsx
 msgid "Swap to {0}"
 msgstr ""
 
@@ -3652,6 +3683,10 @@ msgstr "Обмен {0} на 1inch"
 #: src/components/Exchange/SwapBox.js
 msgid "Swap {0} submitted!"
 msgstr "Обмен {0} подан!"
+
+#: src/components/Synthetics/TradeFees/TradeFees.tsx
+msgid "Swap {0} to {1}"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Swap {0} to {1} Fee"
@@ -3809,6 +3844,10 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 msgid "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
 msgstr "Позиция будет открыта на {0} USD с максимальным скольжением в {1}%.<0/><1/>Сумма скольжения может быть настроена в разделе Настройки, который можно найти, нажав на свой адрес в правом верхнем углу страницы после подключения кошелька.<2/><3/><4>Более подробная информация</4>"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "The position will be opened at {0} with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
+msgstr ""
 
 #: src/components/Exchange/OrdersList.js
 msgid "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
@@ -4722,6 +4761,8 @@ msgstr "{0} Достигнута Емкость Пула"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/SwapCard/SwapCard.tsx
+#: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "{0} Price"

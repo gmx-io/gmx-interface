@@ -1,5 +1,5 @@
 import { BigNumber, BigNumberish, ethers } from "ethers";
-import { USD_DECIMALS } from "./legacy";
+import { BASIS_POINTS_DIVISOR, PRECISION, USD_DECIMALS } from "./legacy";
 
 export function bigNumberify(n: BigNumberish) {
   try {
@@ -133,6 +133,22 @@ export function formatUsd(usd?: BigNumber, opts: { fallbackToZero?: boolean } = 
   return `$${formatAmount(usd, USD_DECIMALS, 2, true)}`;
 }
 
+export function formatDeltaUsd(deltaUsd?: BigNumber, percentage?: BigNumber, opts: { fallbackToZero?: boolean } = {}) {
+  if (!deltaUsd?.abs().gt(0)) {
+    if (opts.fallbackToZero) {
+      return `${formatUsd(BigNumber.from(0))} (${formatAmount(BigNumber.from(0), 2, 2)}%)`;
+    }
+
+    return undefined;
+  }
+
+  const sign = deltaUsd.gt(0) ? "+" : "-";
+
+  const percentageStr = percentage ? ` (${sign}${formatAmount(percentage.abs(), 2, 2)}%)` : "";
+
+  return `${sign}${formatUsd(deltaUsd.abs())}${percentageStr}`;
+}
+
 export function formatTokenAmount(
   amount?: BigNumber,
   tokenDecimals?: number,
@@ -210,4 +226,12 @@ export function roundUpDivision(a: BigNumber, b: BigNumber) {
   }
 
   return a.add(b).sub(1).div(b);
+}
+
+export function applyFactor(value: BigNumber, factor: BigNumber) {
+  return value.mul(factor).div(PRECISION);
+}
+
+export function getBasisPoints(numerator: BigNumber, denominator: BigNumber) {
+  return numerator.mul(BASIS_POINTS_DIVISOR).div(denominator);
 }

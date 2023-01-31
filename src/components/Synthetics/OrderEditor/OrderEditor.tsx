@@ -2,7 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Modal from "components/Modal/Modal";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
-import { formatFee, getExecutionFee } from "domain/synthetics/fees";
+import { getExecutionFee } from "domain/synthetics/fees";
 import {
   AggregatedOrderData,
   OrderType,
@@ -14,7 +14,7 @@ import {
 import { getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
-import { formatAmount, formatTokenAmountWithUsd, formatUsd, parseValue } from "lib/numbers";
+import { formatAmount, formatDeltaUsd, formatTokenAmountWithUsd, formatUsd, parseValue } from "lib/numbers";
 import { useState } from "react";
 import { getMarket, useMarketsData } from "domain/synthetics/markets";
 import { InfoRow } from "components/InfoRow/InfoRow";
@@ -263,7 +263,7 @@ export function OrderEditor(p: Props) {
             label={<Trans>Fees</Trans>}
             value={
               <Tooltip
-                handle={formatFee(executionFee?.feeUsd)}
+                handle={formatDeltaUsd(executionFee?.feeUsd)}
                 position="right-top"
                 renderContent={() => (
                   <div>

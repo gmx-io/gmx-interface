@@ -7,23 +7,26 @@ import Modal from "components/Modal/Modal";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { getContract } from "config/contracts";
 import { useUserReferralCode } from "domain/referrals";
-import { SwapRoute } from "domain/synthetics/exchange";
 import {
   OrderType,
   createDecreaseOrderTxn,
   createIncreaseOrderTxn,
   createSwapOrderTxn,
 } from "domain/synthetics/orders";
-import { TokenData, useAvailableTokensData } from "domain/synthetics/tokens";
+import {
+  TokenData,
+  convertToUsd,
+  getTokenData,
+  needTokenApprove,
+  useAvailableTokensData,
+} from "domain/synthetics/tokens";
 import { useTokenAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
-import { convertToUsd, getTokenData, needTokenApprove } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { DEFAULT_SLIPPAGE_AMOUNT, USD_DECIMALS } from "lib/legacy";
 import { formatAmount, formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
-import { TradeFees } from "../TradeFees/TradeFees";
-import { Fees, TradeMode, TradeType, getSubmitError, tradeTypeLabels } from "../utils";
+import { TradeMode, TradeType, getSubmitError, tradeTypeLabels } from "../utils";
 
 import Checkbox from "components/Checkbox/Checkbox";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
@@ -35,7 +38,7 @@ import "./ConfirmationBox.scss";
 type Props = {
   operationType: TradeType;
   mode: TradeMode;
-  fees: Fees;
+  fees: any;
   selectedMarketAddress?: string;
   closeSizeUsd?: BigNumber;
   fromTokenAddress?: string;
@@ -63,7 +66,7 @@ type Props = {
   keepLeverage?: boolean;
   swapTriggerRatio?: BigNumber;
   existingPosition?: AggregatedPositionData;
-  swapRoute?: SwapRoute;
+  swapRoute?: any;
   setKeepLeverage: (keepLeverage: boolean) => void;
   onClose: () => void;
   onSubmitted: () => void;
@@ -478,7 +481,7 @@ export function ConfirmationBox(p: Props) {
           </div>
         )} */}
 
-        <TradeFees fees={p.fees} />
+        {/* <TradeFees fees={p.fees} /> */}
 
         <div className="App-card-divider" />
 
