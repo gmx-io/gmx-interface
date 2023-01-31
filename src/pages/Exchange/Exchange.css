@@ -799,6 +799,21 @@ input.Exchange-swap-input.small {
   opacity: 1;
 }
 
+.Exchange-swap-ball-icon-wrapper .arrow-up {
+  margin-bottom: 0.75rem;
+  opacity: 0.75;
+}
+
+.Exchange-swap-ball-icon-wrapper .arrow-down {
+  transform: rotate(180deg);
+  margin-top: 0.75rem;
+  opacity: 0.75;
+}
+.Exchange-swap-ball-icon-wrapper:hover .arrow-down,
+.Exchange-swap-ball-icon-wrapper:hover .arrow-up {
+  opacity: 1;
+}
+
 table.Exchange-list-small {
   width: 100%;
   background: linear-gradient(45deg, rgba(11, 5, 55, 0.6) 0%, rgba(21, 3, 48, 0.6) 100%);

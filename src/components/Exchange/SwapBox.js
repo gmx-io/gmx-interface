@@ -10,7 +10,6 @@ import cx from "classnames";
 import useSWR from "swr";
 import { ethers } from "ethers";
 
-import { IoMdSwap } from "react-icons/io";
 import { BsArrowRight } from "react-icons/bs";
 
 import {
@@ -62,6 +61,7 @@ import longImg from "img/long.svg";
 import shortImg from "img/short.svg";
 import swapImg from "img/swap.svg";
 import swapBallBg from "img/ic_swap_ball_bg.svg";
+import arrowup from "img/arrow-up.svg";
 
 import { useUserReferralCode } from "domain/referrals";
 import NoLiquidityErrorModal from "./NoLiquidityErrorModal";
@@ -177,6 +177,7 @@ export default function SwapBox(props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [modalError, setModalError] = useState(false);
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
+  const [isSwapButtonTapped, setIsSwapButtonTapped] = useState(false);
   const { attachedOnChain, userReferralCode } = useUserReferralCode(library, chainId, account);
 
   let allowedSlippage = savedSlippageAmount;
@@ -1927,9 +1928,25 @@ export default function SwapBox(props) {
             <div className="Exchange-swap-ball-container">
               <div className="Exchange-swap-ball" onClick={switchTokens}>
                 <img src={swapBallBg} alt="Swap Ball" />
-                <div className="Exchange-swap-ball-icon-wrapper">
-                  <IoMdSwap className="Exchange-swap-ball-icon" />
-                </div>
+
+                <motion.div
+                  onTapStart={() => setIsSwapButtonTapped(true)}
+                  onTap={() => setIsSwapButtonTapped(false)}
+                  className="Exchange-swap-ball-icon-wrapper"
+                >
+                  <motion.div
+                    animate={{ y: isSwapButtonTapped ? -3 : 0 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  >
+                    <img src={arrowup} className="arrow-up" alt="" />
+                  </motion.div>
+                  <motion.div
+                    animate={{ y: isSwapButtonTapped ? 3 : 0 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  >
+                    <img src={arrowup} className="arrow-down" alt="" />
+                  </motion.div>
+                </motion.div>
               </div>
             </div>
             <div className="Exchange-swap-section swap-to">
@@ -2079,7 +2096,7 @@ export default function SwapBox(props) {
               <span className="muted">Leverage slider</span>
               <div
                 className="SwapBox-leverage-toggle"
-                data-isOn={isLeverageSliderEnabled}
+                data-is-on={isLeverageSliderEnabled}
                 onClick={() => setIsLeverageSliderEnabled(!isLeverageSliderEnabled)}
               >
                 <motion.div className="handle" layout transition={{ type: "spring", stiffness: 700, damping: 30 }} />

@@ -29,6 +29,7 @@
 
 .Tab.block {
   border-radius: var(--border-radius-m);
+  background-color: linear-gradient(270deg, rgba(38, 43, 71, 0.8) 0%, rgba(30, 34, 61, 0.8) 100%);
   padding: 2px;
   .Tab-option {
     border-radius: var(--border-radius-sm);
@@ -51,7 +52,7 @@
 }
 
 .ExchangeChart-bottom-controls .Tab .Tab-option {
-  padding: 1rem 0;
+  padding: 0.75rem 0;
 }
 
 .Exchange-swap-option-tabs {
@@ -89,10 +90,12 @@ table.Exchange-list tr:last-child td:last-child {
 
 .Exchange-swap-max {
   border-radius: var(--border-radius-xs);
-  background: rgba(180, 187, 255, 0.1);
+  background: #383d69;
   color: rgba(199, 202, 255, 0.8);
+  line-height: 1;
+  padding: 0.6rem 0.8rem;
   &:hover {
-    background: rgba(145, 159, 255, 0.3);
+    background: #383d69;
   }
 }
 
@@ -203,8 +206,12 @@ table.Exchange-list tr:last-child:hover {
     }
   }
 
-  .SwapBox-leverage-toggle[data-isOn="true"] {
+  .SwapBox-leverage-toggle[data-is-on="true"] {
     justify-content: flex-end;
     background-color: #3d51ff;
   }
+}
+
+.Exchange-swap-order-type-tabs {
+  padding-left: 0.8rem;
 }
