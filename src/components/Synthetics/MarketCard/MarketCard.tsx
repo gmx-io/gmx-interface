@@ -23,7 +23,7 @@ import { SLIPPAGE_BPS_KEY } from "config/localStorage";
 import "./MarketCard.scss";
 
 export type Props = {
-  marketAddress: string;
+  marketAddress?: string;
   isLong: boolean;
 };
 

@@ -10,18 +10,21 @@ import {
 import { useOpenInterestData } from "domain/synthetics/markets/useOpenInterestData";
 import { convertToTokenAmount, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { formatAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import Tooltip from "components/Tooltip/Tooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { convertTokenAddress } from "config/tokens";
+import { TokensRatio } from "domain/synthetics/exchange";
+import { USD_DECIMALS } from "lib/legacy";
+import { useMemo } from "react";
 
 import "./SwapCard.scss";
-import { convertTokenAddress } from "config/tokens";
 
 export type Props = {
-  swapPath: string[];
-  mostAbundantMarketAddress: string;
-  fromTokenAddress: string;
-  toTokenAddress: string;
+  marketAddress?: string;
+  fromTokenAddress?: string;
+  toTokenAddress?: string;
+  markRatio?: TokensRatio;
 };
 
 export function SwapCard(p: Props) {
@@ -32,23 +35,31 @@ export function SwapCard(p: Props) {
   const { poolsData } = useMarketsPoolsData(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
 
-  const marketAddress = p.swapPath[p.swapPath.length - 1] || p.mostAbundantMarketAddress;
-  const market = getMarket(marketsData, marketAddress);
+  const market = getMarket(marketsData, p.marketAddress);
   const marketName = getMarketName(marketsData, tokensData, market?.marketTokenAddress, true, false);
 
-  const fromToken = getTokenData(tokensData, p.fromTokenAddress);
-  const toToken = getTokenData(tokensData, p.toTokenAddress);
+  const fromToken = getTokenData(tokensData, p.fromTokenAddress)!;
+  const toToken = getTokenData(tokensData, p.toTokenAddress)!;
 
   const maxLiquidityUsd = getAvailableUsdLiquidityForCollateral(
     marketsData,
     poolsData,
     openInterestData,
     tokensData,
-    p.mostAbundantMarketAddress,
+    p.marketAddress,
     p.toTokenAddress ? convertTokenAddress(chainId, p.toTokenAddress, "wrapped") : undefined
   );
 
   const maxLiquidityAmount = convertToTokenAmount(maxLiquidityUsd, toToken?.decimals, toToken?.prices?.maxPrice);
+
+  const ratioStr = useMemo(() => {
+    if (!p.markRatio) return "...";
+
+    const smallest = getTokenData(tokensData, p.markRatio.smallestAddress);
+    const largest = getTokenData(tokensData, p.markRatio.largestAddress);
+
+    return `${formatAmount(p.markRatio.ratio, USD_DECIMALS, 4)} ${smallest?.symbol} / ${largest?.symbol}`;
+  }, [p.markRatio, tokensData]);
 
   return (
     <div className="App-card">
@@ -58,42 +69,34 @@ export function SwapCard(p: Props) {
       <div className="App-card-divider" />
 
       <div className="App-card-content">
-        {fromToken && (
-          <InfoRow
-            className="info-row"
-            label={t`${fromToken?.symbol} Price`}
-            value={formatUsd(fromToken?.prices?.minPrice) || "..."}
-          />
-        )}
-
-        {toToken && (
-          <InfoRow
-            className="info-row"
-            label={t`${toToken?.symbol} Price`}
-            value={formatUsd(toToken?.prices?.maxPrice) || "..."}
-          />
-        )}
-
         <InfoRow className="info-row" label={t`Market`} value={marketName || "..."} />
+
+        <InfoRow
+          className="info-row"
+          label={t`${fromToken.symbol} Price`}
+          value={formatUsd(fromToken.prices?.minPrice) || "..."}
+        />
+
+        <InfoRow
+          className="info-row"
+          label={t`${toToken.symbol} Price`}
+          value={formatUsd(toToken.prices?.maxPrice) || "..."}
+        />
 
         <InfoRow
           className="info-row"
           label={t`Available liquidity`}
           value={
             <Tooltip
-              handle={formatUsd(maxLiquidityUsd)}
+              handle={formatUsd(maxLiquidityUsd) || "..."}
               position="right-bottom"
               renderContent={() => (
                 <div>
                   <StatsTooltipRow
                     label={t`Max ${toToken?.symbol} out`}
                     value={
-                      formatTokenAmountWithUsd(
-                        maxLiquidityAmount,
-                        maxLiquidityUsd,
-                        toToken?.symbol,
-                        toToken?.decimals
-                      ) || "..."
+                      formatTokenAmountWithUsd(maxLiquidityAmount, maxLiquidityUsd, toToken.symbol, toToken.decimals) ||
+                      "..."
                     }
                     showDollar={false}
                   />
@@ -102,6 +105,8 @@ export function SwapCard(p: Props) {
             />
           }
         />
+
+        <InfoRow className="info-row" label={t`Price`} value={ratioStr} />
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-// import { Trans, t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 // import cx from "classnames";
 // import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 // import Checkbox from "components/Checkbox/Checkbox";

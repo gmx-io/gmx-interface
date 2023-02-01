@@ -3,92 +3,14 @@ import {
   MarketsOpenInterestData,
   MarketsPoolsData,
   getAvailableUsdLiquidityForCollateral,
-  getAvailableUsdLiquidityForPosition,
-  getMarket,
-  getMarkets,
 } from "domain/synthetics/markets";
 import { BigNumber, ethers } from "ethers";
 import { MarketsFeesConfigsData, getSwapFees } from "../fees";
 import { TokensData, convertToUsd, getTokenData } from "../tokens";
 import { Edge, MarketsGraph, SwapEstimator } from "./types";
 
-export function getMostLiquidMarketForPosition(
-  marketsData: MarketsData,
-  poolsData: MarketsPoolsData,
-  openInterestData: MarketsOpenInterestData,
-  tokensData: TokensData,
-  indexTokenAddress: string | undefined,
-  collateralTokenAddress: string | undefined,
-  isLong: boolean | undefined
-) {
-  if (!collateralTokenAddress || !indexTokenAddress || typeof isLong === "undefined") return undefined;
-
-  const markets = getMarkets(marketsData);
-
-  let bestMarketAddress: string = markets[0]?.marketTokenAddress;
-  let bestLiquidity: BigNumber | undefined;
-
-  for (const m of markets) {
-    if (
-      [m.longTokenAddress, m.shortTokenAddress].includes(collateralTokenAddress) &&
-      m.indexTokenAddress === indexTokenAddress
-    ) {
-      const liquidity = getAvailableUsdLiquidityForPosition(
-        marketsData,
-        poolsData,
-        openInterestData,
-        tokensData,
-        m.marketTokenAddress,
-        isLong
-      );
-
-      if (!bestLiquidity || liquidity?.gt(bestLiquidity)) {
-        bestMarketAddress = m.marketTokenAddress;
-        bestLiquidity = liquidity;
-      }
-    }
-  }
-
-  return getMarket(marketsData, bestMarketAddress);
-}
-
-export function getMostAbundantMarketForSwap(
-  marketsData: MarketsData,
-  poolsData: MarketsPoolsData,
-  openInterestData: MarketsOpenInterestData,
-  tokensData: TokensData,
-  toTokenAddress: string | undefined
-) {
-  if (!toTokenAddress) return undefined;
-
-  const markets = getMarkets(marketsData);
-
-  let bestMarketAddress: string | undefined;
-  let bestLiquidity: BigNumber | undefined;
-
-  for (const m of markets) {
-    if ([m.longTokenAddress, m.shortTokenAddress].includes(toTokenAddress)) {
-      const liquidity = getAvailableUsdLiquidityForCollateral(
-        marketsData,
-        poolsData,
-        openInterestData,
-        tokensData,
-        m.marketTokenAddress,
-        toTokenAddress
-      );
-
-      if (liquidity?.gt(0) && (!bestLiquidity || liquidity.gt(bestLiquidity))) {
-        bestMarketAddress = m.marketTokenAddress;
-        bestLiquidity = liquidity;
-      }
-    }
-  }
-
-  return bestMarketAddress;
-}
-
 export function getMarketsGraph(marketsData: MarketsData): MarketsGraph {
-  const markets = getMarkets(marketsData);
+  const markets = Object.values(marketsData);
 
   const graph: MarketsGraph = {
     abjacencyList: {},
@@ -356,4 +278,47 @@ export function findAllPaths(graph: MarketsGraph, from: string, to: string, maxD
   }
 
   return paths;
+}
+
+export function arrangeIntoTree(paths) {
+  // Adapted from http://brandonclapp.com/arranging-an-array-of-flat-paths-into-a-json-tree-like-structure/
+  var tree = [];
+
+  for (var i = 0; i < paths.length; i++) {
+    var path = paths[i];
+    var currentLevel = tree;
+    for (var j = 0; j < path.length; j++) {
+      var part = path[j];
+
+      var existingPath = findWhere(currentLevel, "name", part);
+
+      if (existingPath) {
+        currentLevel = existingPath.children;
+      } else {
+        var newPart = {
+          name: part,
+          children: [],
+        };
+
+        // @ts-ignore
+        currentLevel.push(newPart);
+        currentLevel = newPart.children;
+      }
+    }
+  }
+  return tree;
+
+  function findWhere(array, key, value) {
+    // Adapted from https://stackoverflow.com/questions/32932994/findwhere-from-underscorejs-to-jquery
+    let t = 0; // t is used as a counter
+    while (t < array.length && array[t][key] !== value) {
+      t++;
+    } // find the index where the id is the as the aValue
+
+    if (t < array.length) {
+      return array[t];
+    } else {
+      return false;
+    }
+  }
 }

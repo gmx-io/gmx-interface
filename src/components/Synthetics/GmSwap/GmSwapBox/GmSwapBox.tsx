@@ -2,7 +2,7 @@ import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Tab from "components/Tab/Tab";
-import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { convertTokenAddress, getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { Market, MarketPoolType } from "domain/synthetics/markets/types";
 import { useChainId } from "lib/chains";
 import { useEffect, useMemo, useState } from "react";
@@ -31,6 +31,7 @@ import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { GmOrderStatus } from "../GmOrderStatus/GmOrderStatus";
 
 import "./GmSwapBox.scss";
+import { SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY } from "config/localStorage";
 
 type Props = {
   selectedMarketAddress?: string;
@@ -84,14 +85,19 @@ export function GmSwapBox(p: Props) {
   }, [chainId, market]);
 
   const firstTokenState = useTokenInput(tokensData, {
-    priceType: isDeposit ? "minPrice" : "maxPrice",
+    priceType: isDeposit ? "min" : "max",
+    localStorageKey: [chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, isDeposit, p.selectedMarketAddress, "first"],
   });
 
   const secondTokenState = useTokenInput(tokensData, {
-    priceType: isDeposit ? "minPrice" : "maxPrice",
+    priceType: isDeposit ? "min" : "max",
+    localStorageKey: [chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, isDeposit, p.selectedMarketAddress, "second"],
   });
 
-  const marketTokenState = useTokenInput(marketTokensData, { priceType: isDeposit ? "maxPrice" : "minPrice" });
+  const marketTokenState = useTokenInput(marketTokensData, {
+    priceType: isDeposit ? "max" : "min",
+    localStorageKey: [chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, isDeposit, p.selectedMarketAddress, "market"],
+  });
 
   const [focusedInput, setFocusedInput] = useState<FocusedInput>();
 
@@ -219,8 +225,18 @@ export function GmSwapBox(p: Props) {
 
   useEffect(
     function updateInputsByMode() {
-      if (modeTab === Mode.Pair && !secondTokenState.tokenAddress) {
-        const secondToken = availableTokens.filter((token) => token.address !== firstTokenState.tokenAddress)[0];
+      const firstConvertedAddress = firstTokenState.tokenAddress
+        ? convertTokenAddress(chainId, firstTokenState.tokenAddress, "wrapped")
+        : undefined;
+
+      const secondConvertedAddress = secondTokenState.tokenAddress
+        ? convertTokenAddress(chainId, secondTokenState.tokenAddress, "wrapped")
+        : undefined;
+
+      if (modeTab === Mode.Pair && (!secondConvertedAddress || firstConvertedAddress === secondConvertedAddress)) {
+        const secondToken = availableTokens.filter(
+          (token) => convertTokenAddress(chainId, token.address, "wrapped") !== firstConvertedAddress
+        )[0];
 
         if (secondToken) {
           secondTokenState.setTokenAddress(secondToken.address);
@@ -229,7 +245,7 @@ export function GmSwapBox(p: Props) {
         secondTokenState.setTokenAddress(undefined);
       }
     },
-    [firstTokenState.tokenAddress, availableTokens, modeTab, secondTokenState]
+    [firstTokenState.tokenAddress, availableTokens, modeTab, secondTokenState, chainId]
   );
 
   useEffect(
@@ -239,14 +255,14 @@ export function GmSwapBox(p: Props) {
       if ([FocusedInput.firstToken, FocusedInput.secondToken].includes(focusedInput)) {
         const swapSumUsd = firstTokenState.usdAmount.add(secondTokenState.usdAmount);
 
-        marketTokenState.setValueByUsdAmount(swapSumUsd);
+        marketTokenState.setValueByUsd(swapSumUsd);
 
         return;
       }
 
       if (focusedInput === FocusedInput.marketToken) {
         if (modeTab === Mode.Single && firstTokenState.tokenAddress) {
-          firstTokenState.setValueByUsdAmount(marketTokenState.usdAmount);
+          firstTokenState.setValueByUsd(marketTokenState.usdAmount);
 
           return;
         }
@@ -260,8 +276,8 @@ export function GmSwapBox(p: Props) {
 
           const secondTokenUsd = marketTokenState.usdAmount.sub(firstTokenUsd);
 
-          firstTokenState.setValueByUsdAmount(firstTokenUsd);
-          secondTokenState.setValueByUsdAmount(secondTokenUsd);
+          firstTokenState.setValueByUsd(firstTokenUsd);
+          secondTokenState.setValueByUsd(secondTokenUsd);
 
           return;
         }
@@ -307,7 +323,7 @@ export function GmSwapBox(p: Props) {
             setFocusedInput(FocusedInput.firstToken);
             firstTokenState.setInputValue(e.target.value);
           }}
-          showMaxButton={operationTab === Operation.Deposit && firstTokenState.isNotMatchBalance}
+          showMaxButton={operationTab === Operation.Deposit && firstTokenState.isNotMatchAvailableBalance}
           onClickMax={() => {
             setFocusedInput(FocusedInput.firstToken);
             firstTokenState.setValueByTokenAmount(firstTokenState.balance);
@@ -330,7 +346,7 @@ export function GmSwapBox(p: Props) {
           )}
         </BuyInputSection>
 
-        {secondTokenState.token && (
+        {modeTab === Mode.Pair && secondTokenState.token && (
           <BuyInputSection
             topLeftLabel={operationTab === Operation.Deposit ? t`Pay:` : t`Receive:`}
             topLeftValue={formatUsd(secondTokenState.usdAmount)}
@@ -341,7 +357,7 @@ export function GmSwapBox(p: Props) {
               setFocusedInput(FocusedInput.secondToken);
               secondTokenState.setInputValue(e.target.value);
             }}
-            showMaxButton={operationTab === Operation.Deposit && secondTokenState.isNotMatchBalance}
+            showMaxButton={operationTab === Operation.Deposit && secondTokenState.isNotMatchAvailableBalance}
             onClickMax={() => {
               setFocusedInput(FocusedInput.secondToken);
               secondTokenState.setValueByTokenAmount(secondTokenState.balance);
@@ -367,7 +383,7 @@ export function GmSwapBox(p: Props) {
             setFocusedInput(FocusedInput.marketToken);
             marketTokenState.setInputValue(e.target.value);
           }}
-          showMaxButton={operationTab === Operation.Withdrawal && marketTokenState.isNotMatchBalance}
+          showMaxButton={operationTab === Operation.Withdrawal && marketTokenState.isNotMatchAvailableBalance}
           onClickMax={() => {
             setFocusedInput(FocusedInput.marketToken);
             marketTokenState.setValueByTokenAmount(marketTokenState.balance);

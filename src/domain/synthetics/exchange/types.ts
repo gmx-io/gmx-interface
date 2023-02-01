@@ -16,8 +16,8 @@ export enum TradeMode {
 
 export type TokensRatio = {
   ratio: BigNumber;
-  primaryAddress: string;
-  secondaryAddress: string;
+  largestAddress: string;
+  smallestAddress: string;
 };
 
 export type SwapTradeParams = {

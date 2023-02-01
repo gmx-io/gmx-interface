@@ -1,14 +1,15 @@
 import { Trans } from "@lingui/macro";
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { GmSwapBox } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";
 import { MarketStats } from "components/Synthetics/MarketStats/MarketStats";
+import { SYNTHETICS_MARKET_DEPOSIT_MARKET_KEY } from "config/localStorage";
+import { useMarketsData } from "domain/synthetics/markets";
 import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
-import { useEffect, useState } from "react";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { useEffect } from "react";
 import "./MarketPoolsPage.scss";
-import { getMarkets } from "domain/synthetics/markets/utils";
-import { useMarketsData } from "domain/synthetics/markets";
-import { GmSwapBox } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";
 
 type Props = {
   connectWallet: () => void;
@@ -18,16 +19,18 @@ export function MarketPoolsPage(p: Props) {
   const { chainId } = useChainId();
 
   const { marketsData } = useMarketsData(chainId);
-  const markets = getMarkets(marketsData);
+  const markets = Object.values(marketsData);
 
-  // TODO: localStorage?
-  const [selectedMarketKey, setSelectedMarketKey] = useState<string>();
+  const [selectedMarketKey, setSelectedMarketKey] = useLocalStorageSerializeKey<string | undefined>(
+    [chainId, SYNTHETICS_MARKET_DEPOSIT_MARKET_KEY],
+    undefined
+  );
 
   useEffect(() => {
     if (markets.length > 0 && !selectedMarketKey) {
       setSelectedMarketKey(markets[0].marketTokenAddress);
     }
-  }, [selectedMarketKey, markets]);
+  }, [selectedMarketKey, markets, setSelectedMarketKey]);
 
   return (
     <SEO title={getPageTitle("Synthetics pools")}>

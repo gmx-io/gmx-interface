@@ -5,11 +5,8 @@ import { TokensData, convertToTokenAmount, convertToUsd, getTokenData } from "do
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 
-import longImg from "img/long.svg";
-import shortImg from "img/short.svg";
-import swapImg from "img/swap.svg";
 import { BASIS_POINTS_DIVISOR, PRECISION, USD_DECIMALS, adjustForDecimals } from "lib/legacy";
-import { applyFactor, parseValue } from "lib/numbers";
+import { parseValue } from "lib/numbers";
 import { useState } from "react";
 
 export enum TradeType {

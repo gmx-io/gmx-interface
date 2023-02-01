@@ -3,15 +3,9 @@ import { useMarketsData, useMarketsPoolsData, useOpenInterestData } from "domain
 import { useAvailableTokensData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useMarketsFeesConfigs } from "../fees/useMarketsFeesConfigs";
-import {
-  createSwapEstimator,
-  findAllPaths,
-  getBestSwapPath,
-  getMarketsGraph,
-  getMostAbundantMarketForSwap as getMostLiquidMarketForSwap,
-} from "./utils";
+import { createSwapEstimator, findAllPaths, getBestSwapPath, getMarketsGraph } from "./utils";
 
 export type SwapRoute = {
   findSwapPath: (usdIn: BigNumber) => string[] | undefined;
@@ -59,7 +53,9 @@ export function useSwapRoute(p: {
       return [];
     }
 
-    return findAllPaths(graph, fromAddress, toAddress);
+    const p = findAllPaths(graph, fromAddress, toAddress);
+
+    return p;
   }, [fromAddress, graph, toAddress]);
 
   const findSwapPath = useCallback(
@@ -140,19 +136,19 @@ export function useSwapRoute(p: {
   //     setPositionMarketAddress(bestMarket);
   //   }, [indexAddress, p.isLong, p.sizeDeltaUsd, marketsData, tokensData, poolsData, openInterestData, toAddress]);
 
-  useEffect(() => {
-    const targetCollateralAddress = convertTokenAddress(chainId, p.targetCollateralAddress!, "wrapped");
+  //   useEffect(() => {
+  //     const targetCollateralAddress = convertTokenAddress(chainId, p.targetCollateralAddress!, "wrapped");
 
-    const market = getMostLiquidMarketForSwap(
-      marketsData,
-      poolsData,
-      openInterestData,
-      tokensData,
-      targetCollateralAddress
-    );
+  //     const market = getMostLiquidMarketForSwap(
+  //       marketsData,
+  //       poolsData,
+  //       openInterestData,
+  //       tokensData,
+  //       targetCollateralAddress
+  //     );
 
-    setMostAbundantSwapMarketAddress(market);
-  }, [chainId, marketsData, openInterestData, p.targetCollateralAddress, poolsData, tokensData]);
+  //     setMostAbundantSwapMarketAddress(market);
+  //   }, [chainId, marketsData, openInterestData, p.targetCollateralAddress, poolsData, tokensData]);
 
   return {
     findSwapPath,

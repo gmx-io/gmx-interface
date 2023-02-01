@@ -25,6 +25,7 @@ import { useEffect, useState } from "react";
 
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import "./PositionEditor.scss";
+import { SYNTHETICS_COLLATERAL_DEPOSIT_TOKEN_KEY } from "config/localStorage";
 
 type Props = {
   position: AggregatedPositionData;
@@ -51,7 +52,8 @@ export function PositionEditor(p: Props) {
   const { tokensData } = useAvailableTokensData(chainId);
 
   const depositInput = useTokenInput(tokensData, {
-    priceType: "minPrice",
+    priceType: "min",
+    localStorageKey: [chainId, SYNTHETICS_COLLATERAL_DEPOSIT_TOKEN_KEY, p.position.marketAddress],
   });
 
   const [withdrawUsdInputValue, setWithdrawUsdInputValue] = useState("");
@@ -227,7 +229,7 @@ export function PositionEditor(p: Props) {
             topRightValue={formatTokenAmount(depositInput.balance, depositInput.token?.decimals)}
             inputValue={depositInput.inputValue}
             onInputValueChange={(e) => depositInput.setInputValue(e.target.value)}
-            showMaxButton={depositInput.isNotMatchBalance}
+            showMaxButton={depositInput.isNotMatchAvailableBalance}
             onClickMax={() => depositInput.setValueByTokenAmount(depositInput.balance)}
           >
             {depositInput.token?.symbol}

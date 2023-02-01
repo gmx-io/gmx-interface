@@ -3,7 +3,14 @@ import { useWeb3React } from "@web3-react/core";
 import Footer from "components/Footer/Footer";
 import { OrderList } from "components/Synthetics/OrderList/OrderList";
 import { PositionList } from "components/Synthetics/PositionList/PositionList";
+import { TradeBox } from "components/Synthetics/Trade/TradeBox/TradeBox";
 import Tab from "components/Tab/Tab";
+import {
+  SYNTHETICS_TRADE_COLLATERAL_KEY,
+  SYNTHETICS_TRADE_MARKET_KEY,
+  SYNTHETICS_TRADE_TYPE_KEY,
+} from "config/localStorage";
+import { TradeType } from "domain/synthetics/exchange/types";
 import { getExecutionFee } from "domain/synthetics/fees";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useAggregatedOrdersData } from "domain/synthetics/orders/useAggregatedOrdersData";
@@ -12,14 +19,7 @@ import { useAggregatedPositionsData } from "domain/synthetics/positions/useAggre
 import { useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
-import { useEffect, useMemo, useState } from "react";
-import { TradeBox } from "components/Synthetics/Trade/TradeBox/TradeBox";
-import {
-  SYNTHETICS_SWAP_COLLATERAL_KEY,
-  SYNTHETICS_SWAP_MARKET_KEY,
-  SYNTHETICS_TRADE_TYPE_KEY,
-} from "config/localStorage";
-import { TradeType } from "domain/synthetics/exchange/types";
+import { useMemo, useState } from "react";
 
 import "./SyntheticsPage.scss";
 
@@ -38,11 +38,11 @@ export function SyntheticsPage(p: Props) {
   const [listSection, setListSection] = useLocalStorageByChainId(chainId, "List-section-v3", ListSection.Positions);
 
   const [selectedMarketAddress, setSelectedMarketAddress] = useLocalStorageSerializeKey<string | undefined>(
-    [chainId, SYNTHETICS_SWAP_MARKET_KEY],
+    [chainId, SYNTHETICS_TRADE_MARKET_KEY],
     undefined
   );
   const [selectedCollateralAddress, setSelectedCollateralAddress] = useLocalStorageSerializeKey<string | undefined>(
-    [chainId, SYNTHETICS_SWAP_COLLATERAL_KEY],
+    [chainId, SYNTHETICS_TRADE_COLLATERAL_KEY],
     undefined
   );
   const [selectedTradeType, setSelectedTradeType] = useLocalStorageSerializeKey(

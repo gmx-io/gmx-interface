@@ -42,7 +42,7 @@ export function TradeFeesRow(p: Props) {
                     />
                   )}
 
-                  {p.swapFees && (
+                  {p.swapFees?.totalPriceImpact.deltaUsd.abs().gt(0) && (
                     <StatsTooltipRow
                       label={t`Swap price impact`}
                       value={formatDeltaUsd(p.swapFees.totalPriceImpact.deltaUsd, p.swapFees.totalPriceImpact.bps)!}

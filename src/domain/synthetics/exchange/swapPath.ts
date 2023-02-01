@@ -1,4 +1,4 @@
-import { getMarkets, MarketsData } from "domain/synthetics/markets";
+import { MarketsData } from "domain/synthetics/markets";
 import { BigNumber } from "ethers";
 
 export type MarketEdge = {
@@ -39,7 +39,7 @@ export type SwapPathItem = { market: string; to: string; feeUsd: BigNumber };
 export type SwapPath = SwapPathItem[];
 
 export function getMarketsGraph(marketsData: MarketsData): MarketsGraph {
-  const markets = getMarkets(marketsData);
+  const markets = Object.values(marketsData);
 
   const graph: MarketsGraph = {};
 
@@ -70,7 +70,7 @@ export function getSwapPathForPosition(marketsData: MarketsData, swapParams: Swa
 
   // no swap needed
   if (fromToken === toToken) {
-    const markets = getMarkets(marketsData);
+    const markets = Object.values(marketsData);
 
     const market = markets.find(
       (m) => m.indexTokenAddress === indexToken && [m.longTokenAddress, m.shortTokenAddress].includes(toToken)

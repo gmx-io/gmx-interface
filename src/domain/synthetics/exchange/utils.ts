@@ -1,8 +1,7 @@
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR, PRECISION, adjustForDecimals } from "lib/legacy";
-import { Market, MarketsData, MarketsOpenInterestData, MarketsPoolsData, getMarket } from "../markets";
-import { TokenData, TokensData, convertToTokenAmount, convertToUsd } from "../tokens";
+import { getBasisPoints } from "lib/numbers";
 import {
   FeeItem,
   MarketsFeesConfigsData,
@@ -11,26 +10,9 @@ import {
   getPriceImpactForPosition,
   getTotalSwapFees,
 } from "../fees";
-import { IncreaseTradeParams, TokensRatio, TradeMode, TradeType } from "./types";
-import { getMostLiquidMarketForPosition } from "../routing";
-import { getBasisPoints } from "lib/numbers";
-import { t } from "@lingui/macro";
-
-export function getTradeTypeLabels() {
-  return {
-    [TradeType.Long]: t`Long`,
-    [TradeType.Short]: t`Short`,
-    [TradeType.Swap]: t`Swap`,
-  };
-}
-
-export function getTradeModeLabels() {
-  return {
-    [TradeMode.Market]: t`Market`,
-    [TradeMode.Limit]: t`Limit`,
-    [TradeMode.Trigger]: t`Trigger`,
-  };
-}
+import { Market, MarketsData, MarketsOpenInterestData, MarketsPoolsData } from "../markets";
+import { TokenData, TokensData, convertToTokenAmount, convertToUsd, getTokenData } from "../tokens";
+import { IncreaseTradeParams, TokensRatio } from "./types";
 
 export function getAmountByRatio(p: {
   fromToken: Token;
@@ -54,14 +36,12 @@ export function getTokensRatio(p: { fromToken?: TokenData; toToken?: TokenData }
   const fromPrice = p.fromToken.prices.minPrice;
   const toPrice = p.toToken.prices.maxPrice;
 
-  const [primaryAddress, secondaryAddress] = fromPrice.gt(toPrice)
-    ? [fromAddress, toAddress]
-    : [toAddress, fromAddress];
+  const [largestAddress, smallestAddress] = fromPrice.gt(toPrice) ? [fromAddress, toAddress] : [toAddress, fromAddress];
 
   const ratio =
-    primaryAddress === fromAddress ? fromPrice.mul(PRECISION).div(toPrice) : toPrice.mul(PRECISION).div(fromPrice);
+    largestAddress === fromAddress ? fromPrice.mul(PRECISION).div(toPrice) : toPrice.mul(PRECISION).div(fromPrice);
 
-  return { ratio, primaryAddress, secondaryAddress };
+  return { ratio, largestAddress, smallestAddress };
 }
 
 export function getSwapAmounts(p: {
@@ -92,10 +72,13 @@ export function getSwapAmounts(p: {
     return undefined;
   }
 
+  const fromToken = getTokenData(p.data.tokensData, p.fromToken.address, "wrapped")!;
+  const toToken = getTokenData(p.data.tokensData, p.toToken.address, "wrapped")!;
+
   if (!p.toAmount) {
     // calculate toAmount by fromAmount
     const fromAmount = p.fromAmount!;
-    const fromUsd = convertToUsd(fromAmount, p.fromToken.decimals, p.fromToken.prices!.minPrice)!;
+    const fromUsd = convertToUsd(fromAmount, fromToken.decimals, fromToken.prices!.minPrice)!;
     const swapPath = p.findSwapPath(fromUsd) || p.prevSwapPath;
 
     if (!swapPath) {
@@ -108,20 +91,20 @@ export function getSwapAmounts(p: {
       p.data.tokensData,
       p.data.feesConfigs,
       swapPath,
-      p.fromToken.address,
+      fromToken.address,
       fromUsd
     );
 
     if (p.triggerRatio) {
       const toAmount = getAmountByRatio({
-        fromToken: p.fromToken,
-        toToken: p.toToken,
+        fromToken: fromToken,
+        toToken: toToken,
         fromTokenAmount: fromAmount,
         ratio: p.triggerRatio.ratio,
-        invertRatio: p.triggerRatio.primaryAddress === p.toToken.address,
+        invertRatio: p.triggerRatio.largestAddress === toToken.address,
       });
 
-      const toUsd = convertToUsd(toAmount, p.toToken.decimals, p.toToken.prices!.maxPrice)!;
+      const toUsd = convertToUsd(toAmount, toToken.decimals, toToken.prices!.maxPrice)!;
 
       return {
         fromAmount,
@@ -134,7 +117,7 @@ export function getSwapAmounts(p: {
     }
 
     const toUsd = swapFees?.usdOut || BigNumber.from(0);
-    const toAmount = convertToTokenAmount(toUsd, p.toToken.decimals, p.toToken.prices.maxPrice)!;
+    const toAmount = convertToTokenAmount(toUsd, toToken.decimals, toToken.prices!.maxPrice)!;
 
     return {
       fromAmount,
@@ -147,7 +130,7 @@ export function getSwapAmounts(p: {
   } else {
     // calculate fromAmount by toAmount
     const toAmount = p.toAmount;
-    const toUsd = convertToUsd(toAmount, p.toToken.decimals, p.toToken.prices!.minPrice)!;
+    const toUsd = convertToUsd(toAmount, toToken.decimals, toToken.prices!.minPrice)!;
 
     const baseFromUsd = toUsd;
     const swapPath = p.findSwapPath(baseFromUsd) || p.prevSwapPath;
@@ -162,20 +145,20 @@ export function getSwapAmounts(p: {
       p.data.tokensData,
       p.data.feesConfigs,
       swapPath,
-      p.fromToken.address,
+      fromToken.address,
       baseFromUsd
     );
 
     if (p.triggerRatio) {
       const fromAmount = getAmountByRatio({
-        fromToken: p.toToken,
-        toToken: p.fromToken,
+        fromToken: toToken,
+        toToken: fromToken,
         fromTokenAmount: toAmount,
         ratio: p.triggerRatio.ratio,
-        invertRatio: p.triggerRatio.primaryAddress === p.fromToken.address,
+        invertRatio: p.triggerRatio.largestAddress === fromToken.address,
       });
 
-      const fromUsd = convertToUsd(toAmount, p.fromToken.decimals, p.fromToken.prices!.minPrice)!;
+      const fromUsd = convertToUsd(toAmount, fromToken.decimals, fromToken.prices!.minPrice)!;
 
       return {
         fromAmount,
@@ -189,7 +172,7 @@ export function getSwapAmounts(p: {
 
     // TODO: reverse swap?
     const fromUsd = swapFees?.usdOut.gt(0) ? baseFromUsd.mul(toUsd).div(swapFees.usdOut) : BigNumber.from(0);
-    const fromAmount = convertToTokenAmount(fromUsd, p.fromToken.decimals, p.fromToken.prices.minPrice)!;
+    const fromAmount = convertToTokenAmount(fromUsd, fromToken.decimals, fromToken.prices!.minPrice)!;
 
     return {
       fromAmount,
@@ -243,22 +226,20 @@ export function getIncreaseOrderAmounts(p: {
   let initialCollateralAmount: BigNumber;
   let collateralUsd: BigNumber;
 
+  const initialCollateral = getTokenData(p.data.tokensData, p.initialCollateral.address, "wrapped")!;
+
   if (!p.indexTokenAmount) {
     // calculate indexTokenAmount by initialCollateralAmount
     initialCollateralAmount = p.initialCollateralAmount!;
 
-    if (p.targetCollateral.address === p.initialCollateral.address) {
+    if (p.targetCollateral.address === initialCollateral.address) {
       collateralAmount = p.initialCollateralAmount!;
-      collateralUsd = convertToUsd(
-        collateralAmount,
-        p.initialCollateral.decimals,
-        p.initialCollateral.prices.minPrice
-      )!;
+      collateralUsd = convertToUsd(collateralAmount, initialCollateral.decimals, initialCollateral.prices!.minPrice)!;
       swapPath = [];
     } else {
       const swapAmounts = getSwapAmounts({
         data: p.data,
-        fromToken: p.initialCollateral,
+        fromToken: initialCollateral,
         toToken: p.targetCollateral,
         fromAmount: p.initialCollateralAmount!,
         findSwapPath: p.findSwapPath,
@@ -358,13 +339,13 @@ export function getIncreaseOrderAmounts(p: {
       p.targetCollateral.prices.minPrice
     )!;
 
-    if (p.targetCollateral.address === p.initialCollateral.address) {
+    if (p.targetCollateral.address === initialCollateral.address) {
       swapPath = [];
       initialCollateralAmount = collateralAmount;
     } else {
       const swapAmounts = getSwapAmounts({
         data: p.data,
-        fromToken: p.initialCollateral,
+        fromToken: initialCollateral,
         toToken: p.targetCollateral,
         toAmount: collateralAmount,
         findSwapPath: p.findSwapPath,

@@ -1,5 +1,6 @@
 import { TokenData, TokensData, convertToTokenAmount, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
+import { LocalStorageKey, useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmountFree, parseValue } from "lib/numbers";
 import { useMemo, useState } from "react";
 
@@ -11,27 +12,35 @@ export type TokenInputState = {
   usdAmount: BigNumber;
   balance?: BigNumber;
   price?: BigNumber;
-  isNotMatchBalance?: boolean;
+  isNotMatchAvailableBalance?: boolean;
   setInputValue: (val: string) => void;
   setValueByTokenAmount: (val?: BigNumber) => void;
-  setValueByUsdAmount: (usdAmount?: BigNumber) => void;
+  setValueByUsd: (usdAmount?: BigNumber) => void;
   setTokenAddress: (val?: string) => void;
 };
 
 export function useTokenInput(
   tokensData: TokensData,
   params: {
-    priceType: "minPrice" | "maxPrice";
+    priceType: "min" | "max";
+    localStorageKey: LocalStorageKey[];
     initialTokenAddress?: string;
   }
 ): TokenInputState {
   const [inputValue, setInputValue] = useState<string>("");
-  const [tokenAddress, setTokenAddress] = useState<string | undefined>(params.initialTokenAddress);
+  const [tokenAddress, setTokenAddress] = useLocalStorageSerializeKey<string | undefined>(
+    params.localStorageKey,
+    params.initialTokenAddress
+  );
 
-  const token = getTokenData(tokensData, tokenAddress);
-  const price = params.priceType === "maxPrice" ? token?.prices?.maxPrice : token?.prices?.minPrice;
+  return useMemo(() => {
+    const token = getTokenData(tokensData, tokenAddress);
+    const price = params.priceType === "max" ? token?.prices?.maxPrice : token?.prices?.minPrice;
+    const balance = token?.balance;
+    const tokenAmount = token ? parseValue(inputValue || "0", token.decimals)! : BigNumber.from(0);
+    const usdAmount = token ? convertToUsd(tokenAmount, token.decimals, price)! : BigNumber.from(0);
+    const isNotMatchAvailableBalance = balance?.gt(0) && !tokenAmount.eq(balance);
 
-  const state = useMemo(() => {
     function setValueByTokenAmount(amount?: BigNumber) {
       if (!token) return;
 
@@ -43,34 +52,13 @@ export function useTokenInput(
       }
     }
 
-    function setValueByUsdAmount(usdAmount?: BigNumber) {
+    function setValueByUsd(usdAmount?: BigNumber) {
       if (!token || !price) return;
 
       const nextTokenAmount = convertToTokenAmount(usdAmount || BigNumber.from(0), token.decimals, price);
 
       setValueByTokenAmount(nextTokenAmount);
     }
-
-    if (!token) {
-      return {
-        token: undefined,
-        inputValue,
-        tokenAmount: BigNumber.from(0),
-        usdAmount: BigNumber.from(0),
-        balance: undefined,
-        price: undefined,
-        isNotMatchBalance: false,
-        setInputValue,
-        setTokenAddress,
-        setValueByTokenAmount,
-        setValueByUsdAmount,
-      };
-    }
-
-    const balance = token.balance;
-    const tokenAmount = parseValue(inputValue || "0", token.decimals) || BigNumber.from(0);
-    const usdAmount = convertToUsd(tokenAmount, token.decimals, price) || BigNumber.from(0);
-    const isNotMatchBalance = balance?.gt(0) && !tokenAmount.eq(balance);
 
     return {
       token,
@@ -80,13 +68,11 @@ export function useTokenInput(
       usdAmount,
       balance,
       price,
-      isNotMatchBalance,
+      isNotMatchAvailableBalance,
       setInputValue,
       setValueByTokenAmount,
-      setValueByUsdAmount,
+      setValueByUsd,
       setTokenAddress,
     };
-  }, [inputValue, price, token, tokenAddress]);
-
-  return state;
+  }, [inputValue, params.priceType, setTokenAddress, tokenAddress, tokensData]);
 }
