@@ -7,7 +7,7 @@ import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import Tab from "components/Tab/Tab";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
-import { useTokenInputState } from "domain/synthetics/exchange";
+import { useTokenInput } from "domain/synthetics/exchange";
 import { getExecutionFee } from "domain/synthetics/fees";
 import {
   OrderType,
@@ -50,7 +50,7 @@ export function PositionEditor(p: Props) {
 
   const { tokensData } = useAvailableTokensData(chainId);
 
-  const depositInput = useTokenInputState(tokensData, {
+  const depositInput = useTokenInput(tokensData, {
     priceType: "minPrice",
   });
 

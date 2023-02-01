@@ -9,13 +9,13 @@ import { useChainId } from "lib/chains";
 import { formatDeltaUsd } from "lib/numbers";
 
 type Props = {
-  totalFee?: FeeItem;
+  totalFees?: FeeItem;
   swapFees?: TotalSwapFees;
   positionFee?: FeeItem;
   positionPriceImpact?: FeeItem;
 };
 
-export function TradeFees(p: Props) {
+export function TradeFeesRow(p: Props) {
   const { chainId } = useChainId();
 
   return (
@@ -23,12 +23,12 @@ export function TradeFees(p: Props) {
       label={<Trans>Fees and price impact</Trans>}
       value={
         <>
-          {!p.totalFee?.deltaUsd && "-"}
-          {p.totalFee?.deltaUsd && (
+          {!p.totalFees?.deltaUsd && "-"}
+          {p.totalFees?.deltaUsd && (
             <Tooltip
               handle={
-                <span className={cx({ positive: p.totalFee.deltaUsd.gt(0) })}>
-                  {formatDeltaUsd(p.totalFee.deltaUsd, p.totalFee.bps)}
+                <span className={cx({ positive: p.totalFees.deltaUsd.gt(0) })}>
+                  {formatDeltaUsd(p.totalFees.deltaUsd, p.totalFees.bps)}
                 </span>
               }
               position="right-top"

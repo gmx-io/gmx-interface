@@ -92,7 +92,7 @@ export function PositionList(p: Props) {
                 onEditCollateralClick={() => setEditingPositionKey(position.key)}
                 onClosePositionClick={() => setClosingPositionKey(position.key)}
                 onOrdersClick={p.onOrdersClick}
-                onSelectPositionClick={() => p.onSelectPositionClick(position.marketAddress)}
+                onSelectPositionClick={() => p.onSelectPositionClick(position.key)}
                 showPnlAfterFees={false}
                 isLarge={true}
               />

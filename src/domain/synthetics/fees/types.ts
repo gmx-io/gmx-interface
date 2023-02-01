@@ -49,6 +49,14 @@ export type TotalSwapFees = {
   usdOut: BigNumber;
 };
 
+export type TradeFees = {
+  totalFees?: FeeItem;
+  swapFees?: TotalSwapFees;
+  executionFee?: ExecutionFee;
+  positionFee?: FeeItem;
+  positionPriceImpact?: FeeItem;
+};
+
 export type GasLimitsConfig = {
   depositSingleToken: BigNumber;
   depositMultiToken: BigNumber;

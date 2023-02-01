@@ -30,12 +30,6 @@ export const tradeTypeLabels = {
   [TradeType.Swap]: t`Swap`,
 };
 
-export const tradeTypeIcons = {
-  [TradeType.Long]: longImg,
-  [TradeType.Short]: shortImg,
-  [TradeType.Swap]: swapImg,
-};
-
 export const tradeModeLabels = {
   [TradeMode.Market]: t`Market`,
   [TradeMode.Limit]: t`Limit`,

@@ -5,7 +5,6 @@ import { applyFactor, getBasisPoints } from "lib/numbers";
 import { getMarketFeesConfig } from ".";
 import { FeeItem, MarketsFeesConfigsData, SwapFeeItem, SwapStepFees, TotalSwapFees } from "../types";
 import { applySwapImpactWithCap, getPriceImpactForSwap } from "./priceImpact";
-import { PRECISION } from "lib/legacy";
 
 export function getTotalSwapFees(
   marketsData: MarketsData,
@@ -86,51 +85,6 @@ export function getTotalSwapFees(
     tokenInAddress,
     tokenOutAddress,
     usdOut,
-  };
-
-  return totalFees;
-}
-
-export function getTotalInvertedSwapFees(
-  marketsData: MarketsData,
-  poolsData: MarketsPoolsData,
-  tokensData: TokensData,
-  feesConfigs: MarketsFeesConfigsData,
-  swapPath: string[] | undefined,
-  tokenOutAddress: string | undefined,
-  usdOut: BigNumber | undefined
-) {
-  if (!swapPath?.length || !tokenOutAddress || !usdOut) return undefined;
-
-  const swapSteps: any[] = [];
-
-  let usdIn = usdOut;
-  let tokenInAddress = tokenOutAddress;
-
-  for (const marketAddress of swapPath.reverse()) {
-    const swapStep = getInvertedSwapFees(
-      marketsData,
-      poolsData,
-      tokensData,
-      feesConfigs,
-      marketAddress,
-      tokenInAddress,
-      usdIn
-    );
-
-    if (!swapStep) return undefined;
-
-    usdIn = swapStep?.usdIn;
-    tokenOutAddress = swapStep?.tokenInAddress;
-
-    swapSteps.push(swapStep);
-  }
-
-  const totalFees = {
-    swapSteps,
-    tokenInAddress,
-    tokenOutAddress,
-    usdIn,
   };
 
   return totalFees;
@@ -240,97 +194,5 @@ export function getSwapFees(
     amountInAfterFees,
     amountOut,
     usdOut,
-  };
-}
-
-export function getInvertedSwapFees(
-  marketsData: MarketsData,
-  poolsData: MarketsPoolsData,
-  tokensData: TokensData,
-  feesConfigs: MarketsFeesConfigsData,
-  marketAddress: string | undefined,
-  tokenOutAddress: string | undefined,
-  usdOut: BigNumber | undefined
-) {
-  const feeConfig = getMarketFeesConfig(feesConfigs, marketAddress);
-  const market = getMarket(marketsData, marketAddress);
-  const tokenInAddress = getOppositeCollateral(market, tokenOutAddress);
-
-  const tokenOut = getTokenData(tokensData, tokenOutAddress);
-  const tokenIn = getTokenData(tokensData, tokenInAddress);
-
-  if (
-    !usdOut ||
-    !feeConfig ||
-    !marketAddress ||
-    !tokenInAddress ||
-    !tokenOutAddress ||
-    !tokenIn?.prices ||
-    !tokenOut?.prices
-  ) {
-    return undefined;
-  }
-
-  const amountOut = convertToTokenAmount(usdOut, tokenOut.decimals, tokenOut.prices.minPrice)!;
-  let amountIn = convertToTokenAmount(usdOut, tokenIn.decimals, tokenIn.prices.maxPrice)!;
-
-  const priceImpactDeltaUsd = getPriceImpactForSwap(
-    marketsData,
-    poolsData,
-    tokensData,
-    feesConfigs,
-    marketAddress,
-    tokenInAddress,
-    amountIn,
-    amountOut.mul(-1)
-  );
-
-  if (!priceImpactDeltaUsd) return undefined;
-
-  let cappedImpactDeltaUsd: BigNumber;
-
-  if (priceImpactDeltaUsd.gt(0)) {
-    const positiveImpactAmount = applySwapImpactWithCap(
-      marketsData,
-      poolsData,
-      tokensData,
-      marketAddress,
-      tokenOutAddress,
-      priceImpactDeltaUsd
-    );
-
-    if (!positiveImpactAmount) return undefined;
-
-    cappedImpactDeltaUsd = convertToUsd(positiveImpactAmount, tokenOut.decimals, tokenOut.prices.maxPrice)!;
-    amountIn = amountIn.sub(convertToTokenAmount(cappedImpactDeltaUsd, tokenIn.decimals, tokenIn.prices.maxPrice)!);
-  } else {
-    const negativeImpactAmount = applySwapImpactWithCap(
-      marketsData,
-      poolsData,
-      tokensData,
-      marketAddress,
-      tokenInAddress,
-      priceImpactDeltaUsd
-    );
-
-    if (!negativeImpactAmount) return undefined;
-
-    cappedImpactDeltaUsd = convertToUsd(negativeImpactAmount, tokenIn.decimals, tokenIn.prices.minPrice)!;
-
-    amountIn = amountIn.add(negativeImpactAmount.mul(-1));
-  }
-
-  const swapFeeAmount = applyFactor(amountIn, PRECISION.mul(PRECISION).div(feeConfig.swapFeeFactor));
-  amountIn = amountIn.add(swapFeeAmount);
-
-  const usdIn = convertToUsd(amountIn, tokenIn.decimals, tokenIn.prices.minPrice)!;
-
-  return {
-    marketAddress,
-    tokenInAddress,
-    tokenOutAddress,
-    priceImpactDeltaUsd: cappedImpactDeltaUsd,
-    amountIn,
-    usdIn,
   };
 }

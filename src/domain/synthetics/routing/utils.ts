@@ -4,6 +4,7 @@ import {
   MarketsPoolsData,
   getAvailableUsdLiquidityForCollateral,
   getAvailableUsdLiquidityForPosition,
+  getMarket,
   getMarkets,
 } from "domain/synthetics/markets";
 import { BigNumber, ethers } from "ethers";
@@ -11,19 +12,16 @@ import { MarketsFeesConfigsData, getSwapFees } from "../fees";
 import { TokensData, convertToUsd, getTokenData } from "../tokens";
 import { Edge, MarketsGraph, SwapEstimator } from "./types";
 
-// todo: by price impact
-export function getBestMarketForPosition(
+export function getMostLiquidMarketForPosition(
   marketsData: MarketsData,
   poolsData: MarketsPoolsData,
   openInterestData: MarketsOpenInterestData,
   tokensData: TokensData,
   indexTokenAddress: string | undefined,
   collateralTokenAddress: string | undefined,
-  increaseSizeUsd: BigNumber | undefined,
   isLong: boolean | undefined
 ) {
-  if (!collateralTokenAddress || !increaseSizeUsd || !indexTokenAddress || typeof isLong === "undefined")
-    return undefined;
+  if (!collateralTokenAddress || !indexTokenAddress || typeof isLong === "undefined") return undefined;
 
   const markets = getMarkets(marketsData);
 
@@ -44,14 +42,14 @@ export function getBestMarketForPosition(
         isLong
       );
 
-      if (liquidity?.gte(increaseSizeUsd) && (!bestLiquidity || liquidity.lt(bestLiquidity))) {
+      if (!bestLiquidity || liquidity?.gt(bestLiquidity)) {
         bestMarketAddress = m.marketTokenAddress;
         bestLiquidity = liquidity;
       }
     }
   }
 
-  return bestMarketAddress;
+  return getMarket(marketsData, bestMarketAddress);
 }
 
 export function getMostAbundantMarketForSwap(

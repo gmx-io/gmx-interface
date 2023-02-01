@@ -4,8 +4,7 @@ import { expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 import { MarketsData, getMarket, getMarketName } from "../markets";
 import { TokenPrices, TokensData, convertToUsd, getTokenData } from "../tokens";
 import { AggregatedPositionData, Position, PositionsData } from "./types";
-import { PositionsUpdates } from "../../../context/SyntheticsEvents";
-import { getPositionUpdate } from "../../../context/SyntheticsEvents/utils";
+import { PositionsUpdates, getPositionUpdate } from "context/SyntheticsEvents";
 
 export function getPosition(positionsData: PositionsData, positionKey?: string) {
   if (!positionKey) return undefined;
@@ -13,7 +12,7 @@ export function getPosition(positionsData: PositionsData, positionKey?: string) 
   return positionsData[positionKey];
 }
 
-export function getPositionKey(account?: string, market?: string, collateralToken?: string, isLong?: boolean) {
+export function getPositionKey(account?: string | null, market?: string, collateralToken?: string, isLong?: boolean) {
   if (!account || !market || !collateralToken || isLong === undefined) return undefined;
 
   return `${account}-${market}-${collateralToken}-${isLong}`;

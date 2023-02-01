@@ -16,7 +16,7 @@ import { adaptToInfoTokens } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { IoMdSwap } from "react-icons/io";
 
-import { useTokenInputState } from "domain/synthetics/exchange";
+import { useTokenInput } from "domain/synthetics/exchange";
 import { getExecutionFee } from "domain/synthetics/fees";
 import { useMarketsData, useMarketsPoolsData, useMarketTokensData } from "domain/synthetics/markets";
 import { GmConfirmationBox } from "../GmConfirmationBox/GmConfirmationBox";
@@ -83,15 +83,15 @@ export function GmSwapBox(p: Props) {
     return availableAddresses.map((address) => getToken(chainId, address));
   }, [chainId, market]);
 
-  const firstTokenState = useTokenInputState(tokensData, {
+  const firstTokenState = useTokenInput(tokensData, {
     priceType: isDeposit ? "minPrice" : "maxPrice",
   });
 
-  const secondTokenState = useTokenInputState(tokensData, {
+  const secondTokenState = useTokenInput(tokensData, {
     priceType: isDeposit ? "minPrice" : "maxPrice",
   });
 
-  const marketTokenState = useTokenInputState(marketTokensData, { priceType: isDeposit ? "maxPrice" : "minPrice" });
+  const marketTokenState = useTokenInput(marketTokensData, { priceType: isDeposit ? "maxPrice" : "minPrice" });
 
   const [focusedInput, setFocusedInput] = useState<FocusedInput>();
 

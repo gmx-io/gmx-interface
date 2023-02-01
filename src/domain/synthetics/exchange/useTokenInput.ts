@@ -18,7 +18,7 @@ export type TokenInputState = {
   setTokenAddress: (val?: string) => void;
 };
 
-export function useTokenInputState(
+export function useTokenInput(
   tokensData: TokensData,
   params: {
     priceType: "minPrice" | "maxPrice";
@@ -70,7 +70,6 @@ export function useTokenInputState(
     const balance = token.balance;
     const tokenAmount = parseValue(inputValue || "0", token.decimals) || BigNumber.from(0);
     const usdAmount = convertToUsd(tokenAmount, token.decimals, price) || BigNumber.from(0);
-
     const isNotMatchBalance = balance?.gt(0) && !tokenAmount.eq(balance);
 
     return {
