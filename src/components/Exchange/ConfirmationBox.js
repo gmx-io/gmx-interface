@@ -13,6 +13,7 @@ import {
   DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
   calculatePositionDelta,
   DECREASE,
+  getLeverageStr,
 } from "lib/legacy";
 import { getConstant } from "config/chains";
 import { getContract } from "config/contracts";
@@ -575,11 +576,11 @@ export default function ConfirmationBox(props) {
           <ExchangeInfoRow label={t`Leverage`}>
             {hasExistingPosition && toAmount && toAmount.gt(0) && (
               <div className="inline-block muted">
-                {formatAmount(existingPosition.leverage, 4, 2)}x
+                {existingPosition.leverageStr}
                 <BsArrowRight className="transition-arrow" />
               </div>
             )}
-            {toAmount && leverage && leverage.gt(0) && `${formatAmount(leverage, 4, 2)}x`}
+            {toAmount && leverage && leverage.gt(0) && getLeverageStr(leverage)}
             {!toAmount && leverage && leverage.gt(0) && `-`}
             {leverage && leverage.eq(0) && `-`}
           </ExchangeInfoRow>

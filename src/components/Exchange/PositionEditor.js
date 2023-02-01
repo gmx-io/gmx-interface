@@ -12,6 +12,7 @@ import {
   getLiquidationPrice,
   MAX_ALLOWED_LEVERAGE,
   getFundingFee,
+  getLeverageStr,
 } from "lib/legacy";
 import { getContract } from "config/contracts";
 import Tab from "../Tab/Tab";
@@ -583,14 +584,14 @@ export default function PositionEditor(props) {
                       <Trans>Leverage</Trans>
                     </div>
                     <div className="align-right">
-                      {!nextLeverage && <div>{formatAmount(position.leverage, 4, 2, true)}x</div>}
+                      {!nextLeverage && <div>{position.leverageStr}</div>}
                       {nextLeverage && (
                         <div>
                           <div className="inline-block muted">
-                            {formatAmount(position.leverage, 4, 2, true)}x
+                            {position.leverageStr}
                             <BsArrowRight className="transition-arrow" />
                           </div>
-                          {formatAmount(nextLeverage, 4, 2, true)}x
+                          {getLeverageStr(nextLeverage)}
                         </div>
                       )}
                     </div>

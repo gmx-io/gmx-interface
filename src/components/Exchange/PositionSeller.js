@@ -26,6 +26,7 @@ import {
   adjustForDecimals,
   isAddressZero,
   MAX_ALLOWED_LEVERAGE,
+  getLeverageStr,
 } from "lib/legacy";
 import { ARBITRUM, getChainName, getConstant, IS_NETWORK_DISABLED } from "config/chains";
 import { createDecreaseOrder, useHasOutdatedUi } from "domain/legacy";
@@ -973,7 +974,7 @@ export default function PositionSeller(props) {
             <div className="PositionEditor-keep-leverage-settings">
               <Checkbox isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
                 <span className="muted font-sm">
-                  <Trans>Keep leverage at {formatAmount(position.leverage, 4, 2)}x</Trans>
+                  <Trans>Keep leverage at {position.leverageStr}</Trans>
                 </span>
               </Checkbox>
             </div>
@@ -1100,14 +1101,14 @@ export default function PositionSeller(props) {
                   {isClosing && "-"}
                   {!isClosing && (
                     <div>
-                      {!nextLeverage && <div>{formatAmount(position.leverage, 4, 2)}x</div>}
+                      {!nextLeverage && <div>{position.leverageStr}</div>}
                       {nextLeverage && (
                         <div>
                           <div className="inline-block muted">
-                            {formatAmount(position.leverage, 4, 2)}x
+                            {position.leverageStr}
                             <BsArrowRight className="transition-arrow" />
                           </div>
-                          {formatAmount(nextLeverage, 4, 2)}x
+                          {getLeverageStr(nextLeverage)}
                         </div>
                       )}
                     </div>
