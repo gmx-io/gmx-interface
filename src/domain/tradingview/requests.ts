@@ -9,22 +9,9 @@ import {
 } from "domain/prices";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
+import { formatTimeInBar, LAST_BAR_REFRESH_INTERVAL, supportedResolutions } from "./utils";
 
-export const supportedResolutions = { 5: "5m", 15: "15m", 60: "1h", 240: "4h", "1D": "1d" };
-const LAST_BAR_REFRESH_INTERVAL = 15000; // 15 seconds
-
-export function getPeriodFromResolutions(value, object = supportedResolutions) {
-  return Object.keys(object).find((key) => object[key] === value);
-}
-
-function formatTimeInBar(bar) {
-  return {
-    ...bar,
-    time: bar.time * 1000,
-  };
-}
-
-async function getTokenChartPrice(chainId, symbol, period) {
+const getTokenChartPrice = async (chainId: number, symbol: string, period: string) => {
   let prices;
   try {
     prices = await getChartPricesFromStats(chainId, symbol, period);
@@ -40,9 +27,9 @@ async function getTokenChartPrice(chainId, symbol, period) {
     }
   }
   return prices;
-}
+};
 
-async function getCurrentPriceOfToken(chainId, symbol) {
+async function getCurrentPriceOfToken(chainId: number, symbol: string) {
   try {
     const indexPricesUrl = getServerUrl(chainId, "/prices");
     const response = await fetch(indexPricesUrl);
@@ -61,7 +48,13 @@ async function getCurrentPriceOfToken(chainId, symbol) {
   }
 }
 
-export async function getHistoryBars({ ticker, resolution, chainId, isStable, countBack }) {
+export async function getHistoryBars(
+  chainId: number,
+  ticker: string,
+  resolution: string,
+  isStable: boolean,
+  countBack: number
+) {
   const period = supportedResolutions[resolution];
   const bars = isStable ? getStablePriceData(period, countBack) : await getTokenChartPrice(chainId, ticker, period);
   return bars.map(formatTimeInBar);
@@ -72,9 +65,16 @@ const getLastBarAfterInterval = (function () {
   let lastBar, lastTicker, lastPeriod;
 
   return async function main(ticker, period, chainId) {
+    if (!ticker || !period || !chainId) {
+      throw new Error("Invalid input. Ticker, period, and chainId are required parameters.");
+    }
     const currentTime = Date.now();
     if (currentTime - startTime > LAST_BAR_REFRESH_INTERVAL || lastTicker !== ticker || lastPeriod !== period) {
       const prices = await getLimitChartPricesFromStats(chainId, ticker, period, 1);
+      if (!prices || !prices.length) {
+        // we can also refresh the chart here
+        throw new Error("No prices data available.");
+      }
       lastBar = formatTimeInBar({ ...prices[prices.length - 1], ticker });
       startTime = currentTime;
       lastTicker = ticker;
@@ -84,15 +84,14 @@ const getLastBarAfterInterval = (function () {
   };
 })();
 
-export async function getLiveBar({ ticker, resolution, chainId }) {
+export async function getLiveBar(chainId: number, ticker: string, resolution: string) {
   const period = supportedResolutions[resolution];
   if (!ticker || !period || !chainId) return;
 
   const periodSeconds = CHART_PERIODS[period];
+  // Converts current time to seconds, rounds down to nearest period, adds timezone offset, and converts back to milliseconds
   const currentCandleTime = (Math.floor(Date.now() / 1000 / periodSeconds) * periodSeconds + timezoneOffset) * 1000;
-
-  let lastBar = await getLastBarAfterInterval(ticker, period, chainId);
-
+  const lastBar = await getLastBarAfterInterval(ticker, period, chainId);
   if (!lastBar) return;
 
   const currentPrice = await getCurrentPriceOfToken(chainId, ticker);
@@ -106,7 +105,7 @@ export async function getLiveBar({ ticker, resolution, chainId }) {
       ticker,
     };
   } else {
-    const newBar = {
+    return {
       time: currentCandleTime,
       open: lastBar.close,
       close: averagePriceValue,
@@ -114,7 +113,5 @@ export async function getLiveBar({ ticker, resolution, chainId }) {
       low: Math.min(lastBar.close, averagePriceValue),
       ticker,
     };
-    lastBar = newBar;
-    return newBar;
   }
 }

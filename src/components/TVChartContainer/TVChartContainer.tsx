@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { TV_SAVE_LOAD_CHARTS } from "config/localStorage";
+import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
 import { useLocalStorage, useMedia } from "react-use";
-import { defaultChartProps, disabledFeaturesOnMonile, SaveLoadAdapter } from "./constants";
+import { defaultChartProps, disabledFeaturesOnMobile } from "./constants";
 import useTVDatafeed from "domain/tradingview/useTVDatafeed";
-import { IChartingLibraryWidget, IPositionLineAdapter } from "./charting_library/charting_library";
-import { getPeriodFromResolutions, supportedResolutions } from "domain/tradingview/helper";
+import { ChartData, IChartingLibraryWidget, IPositionLineAdapter } from "../../charting_library";
+import { getPeriodFromResolutions, supportedResolutions } from "domain/tradingview/utils";
+import { SaveLoadAdapter } from "./SaveLoadAdapter";
 
 type Props = {
   symbol: string;
@@ -30,7 +31,7 @@ export default function TVChartContainer({
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const tvWidgetRef = useRef<IChartingLibraryWidget | null>(null);
   const [chartReady, setChartReady] = useState(false);
-  const [tvCharts, setTvCharts] = useLocalStorage(TV_SAVE_LOAD_CHARTS, []);
+  const [tvCharts, setTvCharts] = useLocalStorage<ChartData[] | undefined>(TV_SAVE_LOAD_CHARTS_KEY, []);
   const datafeed = useTVDatafeed();
   const isMobile = useMedia("(max-width: 550px)");
 
@@ -55,22 +56,25 @@ export default function TVChartContainer({
     [chartReady]
   );
 
-  useEffect(() => {
-    const lines: (IPositionLineAdapter | undefined)[] = [];
-    if (savedShouldShowPositionLines) {
-      currentPositions.forEach((position) => {
-        const { open, liquidation } = position;
-        lines.push(drawLineOnChart(open.title, open.price));
-        lines.push(drawLineOnChart(liquidation.title, liquidation.price));
-      });
-      currentOrders.forEach((order) => {
-        lines.push(drawLineOnChart(order.title, order.price));
-      });
-    }
-    return () => {
-      lines.forEach((line) => line?.remove());
-    };
-  }, [currentPositions, savedShouldShowPositionLines, currentOrders, drawLineOnChart]);
+  useEffect(
+    function updateLines() {
+      const lines: (IPositionLineAdapter | undefined)[] = [];
+      if (savedShouldShowPositionLines) {
+        currentPositions.forEach((position) => {
+          const { open, liquidation } = position;
+          lines.push(drawLineOnChart(open.title, open.price));
+          lines.push(drawLineOnChart(liquidation.title, liquidation.price));
+        });
+        currentOrders.forEach((order) => {
+          lines.push(drawLineOnChart(order.title, order.price));
+        });
+      }
+      return () => {
+        lines.forEach((line) => line?.remove());
+      };
+    },
+    [currentPositions, savedShouldShowPositionLines, currentOrders, drawLineOnChart]
+  );
 
   useEffect(() => {
     if (chartReady && tvWidgetRef.current && symbol !== tvWidgetRef.current?.activeChart?.().symbol()) {
@@ -98,7 +102,7 @@ export default function TVChartContainer({
       loading_screen: defaultChartProps.loading_screen,
       enabled_features: defaultChartProps.enabled_features,
       disabled_features: isMobile
-        ? defaultChartProps.disabled_features.concat(disabledFeaturesOnMonile)
+        ? defaultChartProps.disabled_features.concat(disabledFeaturesOnMobile)
         : defaultChartProps.disabled_features,
       client_id: defaultChartProps.clientId,
       user_id: defaultChartProps.userId,

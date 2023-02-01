@@ -1,6 +1,3 @@
-import { getTokenBySymbol } from "config/tokens";
-import { Token } from "domain/tokens";
-
 const chartStyleOverrides = ["candleStyle", "hollowCandleStyle", "haStyle"].reduce((acc, cv) => {
   acc[`mainSeriesProperties.${cv}.drawWick`] = true;
   acc[`mainSeriesProperties.${cv}.drawBorder`] = false;
@@ -26,7 +23,7 @@ const chartOverrides = {
   ...chartStyleOverrides,
 };
 
-export const disabledFeaturesOnMonile = ["header_saveload", "header_fullscreen_button"];
+export const disabledFeaturesOnMobile = ["header_saveload", "header_fullscreen_button"];
 
 const disabledFeatures = [
   "volume_force_overlay",
@@ -48,64 +45,6 @@ const enabledFeatures = [
   "hide_resolution_in_legend",
   "items_favoriting",
 ];
-
-export class SaveLoadAdapter {
-  charts: any[];
-  setTvCharts: (a: any[]) => void;
-  onSelectToken: (token: Token) => void;
-  chainId: number;
-
-  constructor(chainId, charts, setTvCharts, onSelectToken) {
-    this.charts = charts;
-    this.setTvCharts = setTvCharts;
-    this.chainId = chainId;
-    this.onSelectToken = onSelectToken;
-  }
-
-  getAllCharts() {
-    return Promise.resolve(this.charts);
-  }
-
-  removeChart(id: number) {
-    for (let i = 0; i < this.charts.length; ++i) {
-      if (this.charts[i].id === id) {
-        this.charts.splice(i, 1);
-        this.setTvCharts(this.charts);
-        return Promise.resolve();
-      }
-    }
-
-    return Promise.reject();
-  }
-
-  saveChart(chartData) {
-    if (!chartData.id) {
-      chartData.id = Math.random().toString();
-    } else {
-      this.removeChart(chartData.id);
-    }
-
-    chartData.timestamp = new Date().valueOf();
-
-    this.charts.push(chartData);
-
-    this.setTvCharts(this.charts);
-
-    return Promise.resolve(chartData.id);
-  }
-
-  getChartContent(id) {
-    for (let i = 0; i < this.charts.length; ++i) {
-      if (this.charts[i].id === id) {
-        const { content, symbol } = this.charts[i];
-        const tokenInfo = getTokenBySymbol(this.chainId, symbol);
-        this.onSelectToken(tokenInfo);
-        return Promise.resolve(content);
-      }
-    }
-    return Promise.reject();
-  }
-}
 
 export const defaultChartProps = {
   theme: "Dark",

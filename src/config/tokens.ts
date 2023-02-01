@@ -648,3 +648,12 @@ export function getWhitelistedTokens(chainId: number) {
 export function getVisibleTokens(chainId: number) {
   return getWhitelistedTokens(chainId).filter((token) => !token.isWrapped && !token.isTempHidden);
 }
+
+export function getNormalizedTokenSymbol(tokenSymbol) {
+  if (["WBTC", "WETH", "WAVAX"].includes(tokenSymbol)) {
+    return tokenSymbol.substr(1);
+  } else if (tokenSymbol === "BTC.b") {
+    return "BTC";
+  }
+  return tokenSymbol;
+}

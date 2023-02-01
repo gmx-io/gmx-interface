@@ -8,15 +8,9 @@ import { GMX_STATS_API_URL } from "config/backend";
 import { chainlinkClient } from "lib/subgraph/clients";
 import { sleep } from "lib/sleep";
 import { formatAmount } from "lib/numbers";
+import { getNormalizedTokenSymbol } from "config/tokens";
 
 const BigNumber = ethers.BigNumber;
-
-function getNormalizedSymbol(tokenSymbol) {
-  if (["WBTC", "WETH", "WAVAX", "BTC.b"].includes(tokenSymbol)) {
-    return tokenSymbol.includes(".") ? tokenSymbol.split(".")[0] : tokenSymbol.substr(1);
-  }
-  return tokenSymbol;
-}
 
 // Ethereum network, Chainlink Aggregator contracts
 const FEED_ID_MAP = {
@@ -75,7 +69,7 @@ export function fillGaps(prices, periodSeconds) {
 }
 
 export async function getLimitChartPricesFromStats(chainId, symbol, period, limit = 1) {
-  symbol = getNormalizedSymbol(symbol);
+  symbol = getNormalizedTokenSymbol(symbol);
 
   const url = `${GMX_STATS_API_URL}/candles/${symbol}?preferableChainId=${chainId}&period=${period}&limit=${limit}`;
 
@@ -93,7 +87,7 @@ export async function getLimitChartPricesFromStats(chainId, symbol, period, limi
 }
 
 export async function getChartPricesFromStats(chainId, symbol, period) {
-  symbol = getNormalizedSymbol(symbol);
+  symbol = getNormalizedTokenSymbol(symbol);
 
   const timeDiff = CHART_PERIODS[period] * 3000;
   const from = Math.floor(Date.now() / 1000 - timeDiff);
@@ -185,7 +179,7 @@ function getCandlesFromPrices(prices, period) {
 }
 
 export function getChainlinkChartPricesFromGraph(tokenSymbol, period) {
-  tokenSymbol = getNormalizedSymbol(tokenSymbol);
+  tokenSymbol = getNormalizedTokenSymbol(tokenSymbol);
   const marketName = tokenSymbol + "_USD";
   const feedId = FEED_ID_MAP[marketName];
   if (!feedId) {
