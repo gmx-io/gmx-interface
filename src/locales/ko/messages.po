@@ -1651,8 +1651,12 @@ msgid "Jobs"
 msgstr "구인"
 
 #: src/components/Exchange/PositionSeller.js
-msgid "Keep leverage at {0}x"
-msgstr "레버리지를 {0}x로 유지"
+msgid "Keep leverage at {0}"
+msgstr "레버리지를 {0}로 유지"
+
+#: src/components/Exchange/PositionSeller.js
+#~ msgid "Keep leverage at {0}x"
+#~ msgstr "레버리지를 {0}x로 유지"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Language"

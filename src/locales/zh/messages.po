@@ -1651,8 +1651,12 @@ msgid "Jobs"
 msgstr "工作"
 
 #: src/components/Exchange/PositionSeller.js
-msgid "Keep leverage at {0}x"
-msgstr "将杠杆率保持在{0}x"
+msgid "Keep leverage at {0}"
+msgstr "将杠杆率保持在{0}"
+
+#: src/components/Exchange/PositionSeller.js
+#~ msgid "Keep leverage at {0}x"
+#~ msgstr "将杠杆率保持在{0}x"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Language"

@@ -1651,8 +1651,12 @@ msgid "Jobs"
 msgstr "Jobs"
 
 #: src/components/Exchange/PositionSeller.js
-msgid "Keep leverage at {0}x"
-msgstr "Hebelwirkung bei {0}x behalten"
+msgid "Keep leverage at {0}"
+msgstr "Hebelwirkung bei {0} behalten"
+
+#: src/components/Exchange/PositionSeller.js
+#~ msgid "Keep leverage at {0}x"
+#~ msgstr "Hebelwirkung bei {0}x behalten"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Language"
