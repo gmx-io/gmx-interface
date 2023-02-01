@@ -58,6 +58,12 @@ export function convertToUsd(
   return tokenAmount.mul(price).div(expandDecimals(1, tokenDecimals));
 }
 
+export function getMarkPrice(prices: TokenPrices | undefined, isIncrease: boolean, isLong: boolean) {
+  const shouldUseMaxPrice = isIncrease ? isLong : !isLong;
+
+  return shouldUseMaxPrice ? prices?.maxPrice : prices?.minPrice;
+}
+
 export function getMidPrice(prices: TokenPrices | undefined) {
   if (!prices) return undefined;
 

@@ -144,9 +144,21 @@ export function formatDeltaUsd(deltaUsd?: BigNumber, percentage?: BigNumber, opt
 
   const sign = deltaUsd.gt(0) ? "+" : "-";
 
-  const percentageStr = percentage ? ` (${sign}${formatAmount(percentage.abs(), 2, 2)}%)` : "";
+  const percentageStr = percentage ? ` (${formatPercentage(percentage)})` : "";
 
   return `${sign}${formatUsd(deltaUsd.abs())}${percentageStr}`;
+}
+
+export function formatPercentage(percentage?: BigNumber, opts: { fallbackToZero?: boolean } = {}) {
+  if (!percentage) {
+    if (opts.fallbackToZero) {
+      return `${formatAmount(BigNumber.from(0), 2, 2)}%`;
+    }
+
+    return undefined;
+  }
+
+  return `${formatAmount(percentage, 2, 2)}%`;
 }
 
 export function formatTokenAmount(
