@@ -38,8 +38,8 @@ export function SwapCard(p: Props) {
   const market = getMarket(marketsData, p.marketAddress);
   const marketName = getMarketName(marketsData, tokensData, market?.marketTokenAddress, true, false);
 
-  const fromToken = getTokenData(tokensData, p.fromTokenAddress)!;
-  const toToken = getTokenData(tokensData, p.toTokenAddress)!;
+  const fromToken = getTokenData(tokensData, p.fromTokenAddress);
+  const toToken = getTokenData(tokensData, p.toTokenAddress);
 
   const maxLiquidityUsd = getAvailableUsdLiquidityForCollateral(
     marketsData,
@@ -73,14 +73,14 @@ export function SwapCard(p: Props) {
 
         <InfoRow
           className="info-row"
-          label={t`${fromToken.symbol} Price`}
-          value={formatUsd(fromToken.prices?.minPrice) || "..."}
+          label={t`${fromToken?.symbol} Price`}
+          value={formatUsd(fromToken?.prices?.minPrice) || "..."}
         />
 
         <InfoRow
           className="info-row"
-          label={t`${toToken.symbol} Price`}
-          value={formatUsd(toToken.prices?.maxPrice) || "..."}
+          label={t`${toToken?.symbol} Price`}
+          value={formatUsd(toToken?.prices?.maxPrice) || "..."}
         />
 
         <InfoRow
@@ -95,8 +95,12 @@ export function SwapCard(p: Props) {
                   <StatsTooltipRow
                     label={t`Max ${toToken?.symbol} out`}
                     value={
-                      formatTokenAmountWithUsd(maxLiquidityAmount, maxLiquidityUsd, toToken.symbol, toToken.decimals) ||
-                      "..."
+                      formatTokenAmountWithUsd(
+                        maxLiquidityAmount,
+                        maxLiquidityUsd,
+                        toToken?.symbol,
+                        toToken?.decimals
+                      ) || "..."
                     }
                     showDollar={false}
                   />

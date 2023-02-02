@@ -10,6 +10,7 @@ import {
   MarketsPoolsData,
 } from "./types";
 import { BigNumber } from "ethers";
+import { applyFactor } from "lib/numbers";
 
 export function getMarket(marketsData: MarketsData, marketAddress?: string) {
   if (!marketAddress) return undefined;
@@ -93,22 +94,25 @@ export function getMostLiquidMarketForPosition(
   let bestMarketAddress: string = markets[0]?.marketTokenAddress;
   let bestLiquidity: BigNumber | undefined;
 
-  for (const m of markets) {
+  const shouldIgnoreCollaterals = !collateralTokenAddress;
+
+  for (const market of markets) {
     if (
-      (!collateralTokenAddress || [m.longTokenAddress, m.shortTokenAddress].includes(collateralTokenAddress)) &&
-      m.indexTokenAddress === indexTokenAddress
+      (shouldIgnoreCollaterals ||
+        [market.longTokenAddress, market.shortTokenAddress].includes(collateralTokenAddress)) &&
+      market.indexTokenAddress === indexTokenAddress
     ) {
       const liquidity = getAvailableUsdLiquidityForPosition(
         marketsData,
         poolsData,
         openInterestData,
         tokensData,
-        m.marketTokenAddress,
+        market.marketTokenAddress,
         isLong
       );
 
-      if (!bestLiquidity || liquidity?.gt(bestLiquidity)) {
-        bestMarketAddress = m.marketTokenAddress;
+      if (liquidity && liquidity.gt(bestLiquidity || 0)) {
+        bestMarketAddress = market.marketTokenAddress;
         bestLiquidity = liquidity;
       }
     }
@@ -142,7 +146,7 @@ export function getMostLiquidMarketForSwap(
         toTokenAddress
       );
 
-      if (liquidity?.gt(0) && (!bestLiquidity || liquidity.gt(bestLiquidity))) {
+      if (liquidity && (!bestLiquidity || liquidity.gt(bestLiquidity))) {
         bestMarketAddress = m.marketTokenAddress;
         bestLiquidity = liquidity;
       }
@@ -322,6 +326,28 @@ export function getPoolValue(
   const value = longPoolUsd.add(shortPoolUsd).add(longBorrowingFees).add(shortBorrowingFees).add(impactPoolAmount);
 
   return value.sub(netPnl);
+}
+
+export function getCappedPoolPnl(
+  poolsData: MarketsPoolsData,
+  marketAddress?: string,
+  poolPnl?: BigNumber,
+  poolUsd?: BigNumber,
+  isLong?: boolean
+) {
+  if (poolPnl?.lt(0)) {
+    return poolPnl;
+  }
+
+  const pool = getMarketPools(poolsData, marketAddress);
+
+  const maxPnlFactor = isLong ? pool?.maxPnlFactorLong : pool?.maxPnlFactorShort;
+
+  if (!poolUsd || !maxPnlFactor) return undefined;
+
+  const maxPnl = applyFactor(poolUsd, maxPnlFactor);
+
+  return poolPnl?.gt(maxPnl) ? maxPnl : poolPnl;
 }
 
 export function getTotalBorrowingFees(

@@ -9,6 +9,8 @@ export function getTokenData(tokensData: TokensData, address: string | undefined
 
   const token = tokensData[address];
 
+  if (!token) return undefined;
+
   if (convertTo === "wrapped" && token.isNative && token.wrappedAddress) {
     return tokensData[token.wrappedAddress];
   }
@@ -56,12 +58,6 @@ export function convertToUsd(
   if (!tokenAmount || !tokenDecimals || !price) return undefined;
 
   return tokenAmount.mul(price).div(expandDecimals(1, tokenDecimals));
-}
-
-export function getMarkPrice(prices: TokenPrices | undefined, isIncrease: boolean, isLong: boolean) {
-  const shouldUseMaxPrice = isIncrease ? isLong : !isLong;
-
-  return shouldUseMaxPrice ? prices?.maxPrice : prices?.minPrice;
 }
 
 export function getMidPrice(prices: TokenPrices | undefined) {

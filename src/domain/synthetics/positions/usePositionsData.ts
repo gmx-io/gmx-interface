@@ -1,13 +1,13 @@
 import { useWeb3React } from "@web3-react/core";
-import SyntheticsReader from "abis/SyntheticsReader.json";
 import DataStore from "abis/DataStore.json";
+import SyntheticsReader from "abis/SyntheticsReader.json";
 import { getContract } from "config/contracts";
+import { accountPositionListKey } from "config/dataStore";
 import { useMulticall } from "lib/multicall";
 import { bigNumberify } from "lib/numbers";
 import { useEffect, useMemo, useState } from "react";
 import { PositionsData } from "./types";
 import { getPositionKey } from "./utils";
-import { accountPositionListKey } from "config/dataStore";
 
 type PositionsDataResult = {
   positionsData: PositionsData;

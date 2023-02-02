@@ -57,7 +57,6 @@ export function getSwapAmounts(p: {
   toAmount?: BigNumber;
   triggerRatio?: TokensRatio;
   findSwapPath: (usdIn: BigNumber) => string[] | undefined;
-  prevSwapPath?: string[];
 }):
   | {
       fromAmount: BigNumber;
@@ -79,7 +78,7 @@ export function getSwapAmounts(p: {
     // calculate toAmount by fromAmount
     const fromAmount = p.fromAmount!;
     const fromUsd = convertToUsd(fromAmount, fromToken.decimals, fromToken.prices!.minPrice)!;
-    const swapPath = p.findSwapPath(fromUsd) || p.prevSwapPath;
+    const swapPath = p.findSwapPath(fromUsd);
 
     if (!swapPath) {
       return undefined;
@@ -133,7 +132,7 @@ export function getSwapAmounts(p: {
     const toUsd = convertToUsd(toAmount, toToken.decimals, toToken.prices!.minPrice)!;
 
     const baseFromUsd = toUsd;
-    const swapPath = p.findSwapPath(baseFromUsd) || p.prevSwapPath;
+    const swapPath = p.findSwapPath(baseFromUsd);
 
     if (!swapPath) {
       return undefined;
@@ -243,7 +242,6 @@ export function getIncreaseOrderAmounts(p: {
         toToken: p.targetCollateral,
         fromAmount: p.initialCollateralAmount!,
         findSwapPath: p.findSwapPath,
-        prevSwapPath: p.prevSwapPath,
       });
 
       if (swapAmounts) {
@@ -349,7 +347,6 @@ export function getIncreaseOrderAmounts(p: {
         toToken: p.targetCollateral,
         toAmount: collateralAmount,
         findSwapPath: p.findSwapPath,
-        prevSwapPath: p.prevSwapPath,
       });
 
       if (swapAmounts) {

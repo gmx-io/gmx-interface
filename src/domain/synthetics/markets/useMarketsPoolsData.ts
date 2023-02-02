@@ -8,6 +8,8 @@ import { useMarketsData } from "./useMarketsData";
 import { MarketsPoolsData } from "./types";
 import {
   cumulativeBorrowingFactorKey,
+  maxPnlFactorForWithdrawalsKey,
+  maxPnlFactorKey,
   poolAmountKey,
   positionImpactPoolAmountKey,
   reserveFactorKey,
@@ -68,22 +70,54 @@ export function useMarketsPoolsData(chainId: number): MarketPoolsResult {
                   false,
                 ],
               },
-              // pnlLongMax: {
-              //   methodName: "getPnl",
-              //   params: [dataStoreAddress, marketAddress, market.longTokenAddress, indexTokenPrices, true, true],
-              // },
-              // pnlLongMin: {
-              //   methodName: "getPnl",
-              //   params: [dataStoreAddress, marketAddress, market.longTokenAddress, indexTokenPrices, true, false],
-              // },
-              // pnlShortMax: {
-              //   methodName: "getPnl",
-              //   params: [dataStoreAddress, marketAddress, market.longTokenAddress, indexTokenPrices, false, true],
-              // },
-              // pnlShortMin: {
-              //   methodName: "getPnl",
-              //   params: [dataStoreAddress, marketAddress, market.longTokenAddress, indexTokenPrices, false, false],
-              // },
+              pnlLongMax: {
+                methodName: "getPnl",
+                params: [
+                  dataStoreAddress,
+                  marketAddress,
+                  market.longTokenAddress,
+                  market.shortTokenAddress,
+                  indexTokenPrices,
+                  true,
+                  true,
+                ],
+              },
+              pnlLongMin: {
+                methodName: "getPnl",
+                params: [
+                  dataStoreAddress,
+                  marketAddress,
+                  market.longTokenAddress,
+                  market.shortTokenAddress,
+                  indexTokenPrices,
+                  true,
+                  false,
+                ],
+              },
+              pnlShortMax: {
+                methodName: "getPnl",
+                params: [
+                  dataStoreAddress,
+                  marketAddress,
+                  market.longTokenAddress,
+                  market.shortTokenAddress,
+                  indexTokenPrices,
+                  false,
+                  true,
+                ],
+              },
+              pnlShortMin: {
+                methodName: "getPnl",
+                params: [
+                  dataStoreAddress,
+                  marketAddress,
+                  market.longTokenAddress,
+                  market.shortTokenAddress,
+                  indexTokenPrices,
+                  false,
+                  false,
+                ],
+              },
             },
           },
           [`${marketAddress}-dataStore`]: {
@@ -134,6 +168,22 @@ export function useMarketsPoolsData(chainId: number): MarketPoolsResult {
                 methodName: "getUint",
                 params: [swapImpactPoolAmountKey(marketAddress, market.shortTokenAddress)],
               },
+              maxPnlFactorLong: {
+                methodName: "getUint",
+                params: [maxPnlFactorKey(marketAddress, true)],
+              },
+              maxPnlFactorShort: {
+                methodName: "getUint",
+                params: [maxPnlFactorKey(marketAddress, false)],
+              },
+              maxPnlFactorForWithdrawalsLong: {
+                methodName: "getUint",
+                params: [maxPnlFactorForWithdrawalsKey(marketAddress, true)],
+              },
+              maxPnlFactorForWithdrawalsShort: {
+                methodName: "getUint",
+                params: [maxPnlFactorForWithdrawalsKey(marketAddress, false)],
+              },
             },
           },
         });
@@ -157,10 +207,14 @@ export function useMarketsPoolsData(chainId: number): MarketPoolsResult {
           swapImpactPoolAmountShort: dataStore.swapImpactPoolAmountShort.returnValues[0],
           netPnlMax: reader.netPnlMax.returnValues[0],
           netPnlMin: reader.netPnlMin.returnValues[0],
-          // pnlLongMax: reader.pnlLongMax.returnValues[0],
-          // pnlLongMin: reader.pnlLongMin.returnValues[0],
-          // pnlShortMax: reader.pnlShortMax.returnValues[0],
-          // pnlShortMin: reader.pnlShortMin.returnValues[0],
+          pnlLongMax: reader.pnlLongMax.returnValues[0],
+          pnlLongMin: reader.pnlLongMin.returnValues[0],
+          pnlShortMax: reader.pnlShortMax.returnValues[0],
+          pnlShortMin: reader.pnlShortMin.returnValues[0],
+          maxPnlFactorLong: dataStore.maxPnlFactorLong.returnValues[0],
+          maxPnlFactorShort: dataStore.maxPnlFactorShort.returnValues[0],
+          maxPnlFactorForWithdrawalsLong: dataStore.maxPnlFactorForWithdrawalsLong.returnValues[0],
+          maxPnlFactorForWithdrawalsShort: dataStore.maxPnlFactorForWithdrawalsShort.returnValues[0],
         };
 
         return acc;

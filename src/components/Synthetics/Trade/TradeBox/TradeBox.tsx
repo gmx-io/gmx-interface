@@ -31,7 +31,6 @@ import {
   TokensData,
   convertToTokenAmount,
   convertToUsd,
-  getMarkPrice,
   getTokenData,
   useAvailableTokensData,
 } from "domain/synthetics/tokens";
@@ -45,6 +44,7 @@ import {
   MarketsData,
   MarketsPoolsData,
   getMarket,
+  getMarketName,
   getMostLiquidMarketForPosition,
   getMostLiquidMarketForSwap,
   isMarketCollateral,
@@ -64,6 +64,7 @@ import {
   formatLeverage,
   getLeverage,
   getLiquidationPrice,
+  getMarkPrice,
   getPosition,
   getPositionKey,
 } from "domain/synthetics/positions";
@@ -129,6 +130,7 @@ type Props = {
   onSelectCollateralAddress: (collateralAddress: string) => void;
   onSelectTradeType: (tradeType: TradeType) => void;
   onConnectWallet: () => void;
+  savedIsPnlInLeverage: boolean;
 };
 
 function getTradeTypeLabels() {
@@ -169,6 +171,7 @@ export function TradeBox(p: Props) {
     selectedMarketAddress,
     selectedTradeType,
     existingPosition,
+    savedIsPnlInLeverage,
   } = p;
   const { chainId } = useChainId();
   const { account } = useWeb3React();
@@ -186,22 +189,23 @@ export function TradeBox(p: Props) {
   const isLong = selectedTradeType === TradeType.Long;
   const isShort = selectedTradeType === TradeType.Short;
   const isSwap = selectedTradeType === TradeType.Swap;
-  const isPosition = !isSwap;
-  const isIncrease = isLong || isShort;
+  const isPosition = isLong || isShort;
+  const isMarket = tradeMode === TradeMode.Market;
   const isLimit = tradeMode === TradeMode.Limit;
   const isTrigger = tradeMode === TradeMode.Trigger;
+  const isIncrease = isPosition && (isMarket || isLimit);
 
   const [stage, setStage] = useState<"trade" | "confirmation" | "processing">("trade");
   const [focusedInput, setFocusedInput] = useState<"from" | "to">();
 
   const fromTokenInput = useTokenInput(tokensData, {
     priceType: "min",
-    localStorageKey: [chainId, SYNTHETICS_TRADE_FROM_TOKEN_KEY],
+    localStorageKey: [chainId, SYNTHETICS_TRADE_FROM_TOKEN_KEY, selectedTradeType],
   });
 
   const toTokenInput = useTokenInput(tokensData, {
     priceType: isShort ? "min" : "max",
-    localStorageKey: [chainId, SYNTHETICS_TRADE_TO_TOKEN_KEY],
+    localStorageKey: [chainId, SYNTHETICS_TRADE_TO_TOKEN_KEY, selectedTradeType],
   });
 
   const prevToTokenAddress = usePrevious(toTokenInput.tokenAddress);
@@ -216,6 +220,7 @@ export function TradeBox(p: Props) {
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useState<string>("");
   const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
   const markPrice = getMarkPrice(indexToken?.prices, isIncrease, isLong);
+  const entryPrice = isLimit ? triggerPrice : markPrice;
 
   const [triggerRatioInputValue, setTriggerRatioInputValue] = useState<string>("");
   const markRatio = getTokensRatio({ fromToken: fromTokenInput.token, toToken: toTokenInput.token });
@@ -233,6 +238,7 @@ export function TradeBox(p: Props) {
 
   const [leverageOption, setLeverageOption] = useLocalStorageSerializeKey([chainId, LEVERAGE_OPTION_KEY], 2);
   const [isLeverageEnabled, setIsLeverageEnabled] = useLocalStorageSerializeKey([chainId, LEVERAGE_ENABLED_KEY], true);
+  const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey([chainId, KEEP_LEVERAGE_FOR_DECREASE_KEY], true);
   const leverage = bigNumberify(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)));
 
   const [isAcceptablePriceImpactEditing, setIsAcceptablePriceImpactEditing] = useState(false);
@@ -247,9 +253,9 @@ export function TradeBox(p: Props) {
       selectedIndexTokenAddress: isPosition ? toTokenInput.tokenAddress : undefined,
     });
 
-  const marketIndexOptions: DropdownOption[] = availableIndexTokens.map((token) => ({
-    label: `${token.symbol}/USD`,
-    value: token.address,
+  const marketsOptions: DropdownOption[] = Object.values(marketsData).map((markets) => ({
+    label: getMarketName(marketsData, tokensData, markets.marketTokenAddress, false, false)!,
+    value: markets.marketTokenAddress,
   }));
 
   const selectedMarket = getMarket(marketsData, selectedMarketAddress);
@@ -259,171 +265,220 @@ export function TradeBox(p: Props) {
   const swapRoute = useSwapRoute({
     initialColltaralAddress: fromTokenInput.tokenAddress,
     targetCollateralAddress: isPosition ? selectedCollateralAddress : toTokenInput.tokenAddress,
-    isLong: isPosition ? isLong : undefined,
   });
 
-  const { swapParams, increaseParams, fees, acceptablePrice, priceImpactPriceBps, nextFromAmount, nextToAmount } =
-    useMemo(() => {
-      const tradeParams: {
-        swapParams?: SwapTradeParams;
-        increaseParams?: IncreaseTradeParams;
-        fees?: TradeFees;
-        nextFromAmount?: BigNumber;
-        nextToAmount?: BigNumber;
-        nextMarketAddress?: string;
-        acceptablePrice?: BigNumber;
-        priceImpactPriceBps?: BigNumber;
-      } = {};
+  const {
+    swapParams,
+    increaseParams,
+    fees,
+    acceptablePrice,
+    priceImpactPriceBps,
+    nextFromAmount,
+    nextToAmount,
+    ...tradeParams
+  } = useMemo(() => {
+    const tradeParams: {
+      swapParams?: SwapTradeParams;
+      increaseParams?: IncreaseTradeParams;
+      fees?: TradeFees;
+      nextFromAmount?: BigNumber;
+      nextToAmount?: BigNumber;
+      nextMarketAddress?: string;
+      acceptablePrice?: BigNumber;
+      priceImpactPriceBps?: BigNumber;
+      nextSizeUsd?: BigNumber;
+      nextCollateralUsd?: BigNumber;
+      nextLeverage?: BigNumber;
+      nextLiqPrice?: BigNumber;
+    } = {};
 
-      if (!fromTokenInput.token?.prices || !toTokenInput.token?.prices) return tradeParams;
+    if (!fromTokenInput.token?.prices || !toTokenInput.token?.prices) return tradeParams;
 
-      if (isSwap) {
-        const swapParams = getSwapAmounts({
-          data: {
-            marketsData,
-            poolsData,
-            tokensData,
-            feesConfigs: marketsFeesConfigs,
-          },
-          fromToken: fromTokenInput.token,
-          toToken: toTokenInput.token,
-          fromAmount: focusedInput === "from" ? fromTokenInput.tokenAmount : undefined,
-          toAmount: focusedInput === "to" ? toTokenInput.tokenAmount : undefined,
-          triggerRatio: isLimit ? triggerRatio : undefined,
-          findSwapPath: swapRoute.findSwapPath,
-        });
+    if (isSwap) {
+      const swapParams = getSwapAmounts({
+        data: {
+          marketsData,
+          poolsData,
+          tokensData,
+          feesConfigs: marketsFeesConfigs,
+        },
+        fromToken: fromTokenInput.token,
+        toToken: toTokenInput.token,
+        fromAmount: focusedInput === "from" ? fromTokenInput.tokenAmount : undefined,
+        toAmount: focusedInput === "to" ? toTokenInput.tokenAmount : undefined,
+        triggerRatio: isLimit ? triggerRatio : undefined,
+        findSwapPath: swapRoute.findSwapPath,
+      });
 
-        if (swapParams) {
-          tradeParams.swapParams = swapParams;
+      if (swapParams) {
+        tradeParams.swapParams = swapParams;
 
-          // TODO: less ifs
-          if (swapParams?.swapFees) {
-            tradeParams.fees = {
-              totalFees: swapParams.swapFees.totalFee,
-              swapFees: swapParams.swapFees,
-            };
-          }
-
-          if (focusedInput === "from") {
-            tradeParams.nextToAmount = swapParams.toAmount;
-          } else {
-            tradeParams.nextFromAmount = swapParams.fromAmount;
-          }
-
-          return tradeParams;
-        }
-      }
-
-      if (isIncrease) {
-        // todo decompose?
-        const increaseParams = getIncreaseOrderAmounts({
-          data: {
-            marketsData,
-            openInterestData,
-            poolsData,
-            tokensData,
-            feesConfigs: marketsFeesConfigs,
-          },
-          market: selectedMarket,
-          indexToken: toTokenInput.token,
-          initialCollateral: fromTokenInput.token,
-          targetCollateral: collateralToken,
-          initialCollateralAmount: focusedInput === "from" ? fromTokenInput.tokenAmount : undefined,
-          indexTokenAmount: focusedInput === "to" ? toTokenInput.tokenAmount : undefined,
-          isLong,
-          leverage: isLeverageEnabled ? leverage : undefined,
-          triggerPrice: isLimit ? triggerPrice : undefined,
-          findSwapPath: swapRoute.findSwapPath,
-        });
-
-        if (increaseParams) {
-          tradeParams.increaseParams = increaseParams;
-
-          if (
-            !isLimit &&
-            increaseParams.priceImpact?.deltaUsd &&
-            increaseParams.sizeDeltaAfterFeesUsd?.gt(0) &&
-            markPrice
-          ) {
-            const priceImpactDeltaUsd = increaseParams.priceImpact.deltaUsd;
-            const sizeDeltaUsd = increaseParams.sizeDeltaAfterFeesUsd;
-            const shouldFlipPriceImpact = isIncrease ? isLong : !isLong;
-            const priceImpactForPriceAdjustment = shouldFlipPriceImpact
-              ? priceImpactDeltaUsd.mul(-1)
-              : priceImpactDeltaUsd;
-
-            tradeParams.acceptablePrice = markPrice
-              .mul(sizeDeltaUsd.add(priceImpactForPriceAdjustment))
-              .div(sizeDeltaUsd);
-
-            let priceDelta: BigNumber;
-
-            if (shouldFlipPriceImpact) {
-              priceDelta = markPrice.sub(tradeParams.acceptablePrice);
-            } else {
-              priceDelta = tradeParams.acceptablePrice.sub(markPrice);
-            }
-
-            tradeParams.priceImpactPriceBps = getBasisPoints(priceDelta, markPrice);
-          }
-
-          if ((isLimit || isTrigger) && triggerPrice && acceptablePriceImpactBps && markPrice) {
-            const shouldFlipPriceImpact = isIncrease ? isLong : !isLong;
-
-            let priceDelta = triggerPrice.mul(acceptablePriceImpactBps).div(BASIS_POINTS_DIVISOR);
-            priceDelta = shouldFlipPriceImpact ? priceDelta?.mul(-1) : priceDelta;
-
-            tradeParams.acceptablePrice = triggerPrice?.sub(priceDelta);
-          }
-
+        // TODO: less ifs
+        if (swapParams?.swapFees) {
           tradeParams.fees = {
-            totalFees: getTotalFeeItem(
-              [increaseParams.swapFees?.totalFee, increaseParams.positionFee, increaseParams.priceImpact].filter(
-                Boolean
-              ) as FeeItem[]
-            ),
-            swapFees: increaseParams.swapFees,
-            positionFee: increaseParams.positionFee,
-            positionPriceImpact: increaseParams.priceImpact,
+            totalFees: swapParams.swapFees.totalFee,
+            swapFees: swapParams.swapFees,
           };
+        }
 
-          if (focusedInput === "from") {
-            tradeParams.nextToAmount = increaseParams.sizeDeltaAfterFeesInTokens;
+        if (focusedInput === "from") {
+          tradeParams.nextToAmount = swapParams.toAmount;
+        } else {
+          tradeParams.nextFromAmount = swapParams.fromAmount;
+        }
+
+        return tradeParams;
+      }
+    }
+
+    if (isIncrease) {
+      // todo decompose?
+      const increaseParams = getIncreaseOrderAmounts({
+        data: {
+          marketsData,
+          openInterestData,
+          poolsData,
+          tokensData,
+          feesConfigs: marketsFeesConfigs,
+        },
+        market: selectedMarket,
+        indexToken: toTokenInput.token,
+        initialCollateral: fromTokenInput.token,
+        targetCollateral: collateralToken,
+        initialCollateralAmount: focusedInput === "from" ? fromTokenInput.tokenAmount : undefined,
+        indexTokenAmount: focusedInput === "to" ? toTokenInput.tokenAmount : undefined,
+        isLong,
+        leverage: isLeverageEnabled ? leverage : undefined,
+        triggerPrice: isLimit ? triggerPrice : undefined,
+        findSwapPath: swapRoute.findSwapPath,
+      });
+
+      if (increaseParams) {
+        tradeParams.increaseParams = increaseParams;
+
+        if (
+          !isLimit &&
+          increaseParams.priceImpact?.deltaUsd &&
+          increaseParams.sizeDeltaAfterFeesUsd?.gt(0) &&
+          markPrice
+        ) {
+          const priceImpactDeltaUsd = increaseParams.priceImpact.deltaUsd;
+          const sizeDeltaUsd = increaseParams.sizeDeltaAfterFeesUsd;
+          const shouldFlipPriceImpact = isIncrease ? isLong : !isLong;
+          const priceImpactForPriceAdjustment = shouldFlipPriceImpact
+            ? priceImpactDeltaUsd.mul(-1)
+            : priceImpactDeltaUsd;
+
+          tradeParams.acceptablePrice = markPrice
+            .mul(sizeDeltaUsd.add(priceImpactForPriceAdjustment))
+            .div(sizeDeltaUsd);
+
+          let priceDelta: BigNumber;
+
+          if (shouldFlipPriceImpact) {
+            priceDelta = markPrice.sub(tradeParams.acceptablePrice);
           } else {
-            tradeParams.nextFromAmount = increaseParams.initialCollateralAmount;
+            priceDelta = tradeParams.acceptablePrice.sub(markPrice);
           }
 
-          return tradeParams;
+          tradeParams.priceImpactPriceBps = getBasisPoints(priceDelta, markPrice);
         }
-      }
 
-      return tradeParams;
-    }, [
-      acceptablePriceImpactBps,
-      collateralToken,
-      focusedInput,
-      fromTokenInput.token,
-      fromTokenInput.tokenAmount,
-      isIncrease,
-      isLeverageEnabled,
-      isLimit,
-      isLong,
-      isSwap,
-      isTrigger,
-      leverage,
-      markPrice,
-      marketsData,
-      marketsFeesConfigs,
-      openInterestData,
-      poolsData,
-      selectedMarket,
-      swapRoute.findSwapPath,
-      toTokenInput.token,
-      toTokenInput.tokenAmount,
-      tokensData,
-      triggerPrice,
-      triggerRatio,
-    ]);
+        if ((isLimit || isTrigger) && triggerPrice && acceptablePriceImpactBps && markPrice) {
+          const shouldFlipPriceImpact = isIncrease ? isLong : !isLong;
+
+          let priceDelta = triggerPrice.mul(acceptablePriceImpactBps).div(BASIS_POINTS_DIVISOR);
+          priceDelta = shouldFlipPriceImpact ? priceDelta?.mul(-1) : priceDelta;
+
+          tradeParams.acceptablePrice = triggerPrice?.sub(priceDelta);
+        }
+
+        tradeParams.nextSizeUsd = existingPosition?.sizeInUsd
+          ? existingPosition.sizeInUsd.add(increaseParams.sizeDeltaAfterFeesUsd)
+          : increaseParams.sizeDeltaAfterFeesUsd;
+
+        tradeParams.nextCollateralUsd = existingPosition?.collateralUsd
+          ? existingPosition.collateralUsd.add(increaseParams.collateralUsd)
+          : increaseParams.collateralUsd;
+
+        // after fees + pnl + include pnl
+        tradeParams.nextLeverage = getLeverage({
+          sizeUsd: tradeParams.nextSizeUsd,
+          collateralUsd: tradeParams.nextCollateralUsd,
+          pnl: savedIsPnlInLeverage ? existingPosition?.pnl : undefined,
+          pendingBorrowingFeesUsd: BigNumber.from(0), // deducted on order
+          pendingFundingFeesUsd: BigNumber.from(0), // deducted on order
+        });
+
+        // TODO: average price?
+        // getNextAveragePrice
+        const feesConfig = getMarketFeesConfig(marketsFeesConfigs, increaseParams.market.marketTokenAddress);
+
+        // TODO:
+        tradeParams.nextLiqPrice = getLiquidationPrice({
+          sizeUsd: tradeParams.nextSizeUsd,
+          collateralUsd: tradeParams.nextCollateralUsd,
+          averagePrice: isLimit ? triggerPrice : markPrice,
+          positionFeeFactor: feesConfig?.positionFeeFactor,
+          pendingBorrowingFeesUsd: BigNumber.from(0), // deducted on order
+          pendingFundingFeesUsd: BigNumber.from(0), // deducted on order
+          pnl: existingPosition?.pnl,
+          isLong,
+        });
+
+        tradeParams.fees = {
+          totalFees: getTotalFeeItem(
+            [increaseParams.swapFees?.totalFee, increaseParams.positionFee, increaseParams.priceImpact].filter(
+              Boolean
+            ) as FeeItem[]
+          ),
+          swapFees: increaseParams.swapFees,
+          positionFee: increaseParams.positionFee,
+          positionPriceImpact: increaseParams.priceImpact,
+        };
+
+        if (focusedInput === "from") {
+          tradeParams.nextToAmount = increaseParams.sizeDeltaAfterFeesInTokens;
+        } else {
+          tradeParams.nextFromAmount = increaseParams.initialCollateralAmount;
+        }
+
+        return tradeParams;
+      }
+    }
+
+    if (isTrigger) {
+    }
+
+    return tradeParams;
+  }, [
+    acceptablePriceImpactBps,
+    collateralToken,
+    existingPosition,
+    focusedInput,
+    fromTokenInput.token,
+    fromTokenInput.tokenAmount,
+    isIncrease,
+    isLeverageEnabled,
+    isLimit,
+    isLong,
+    isSwap,
+    isTrigger,
+    leverage,
+    markPrice,
+    marketsData,
+    marketsFeesConfigs,
+    openInterestData,
+    poolsData,
+    savedIsPnlInLeverage,
+    selectedMarket,
+    swapRoute.findSwapPath,
+    toTokenInput.token,
+    toTokenInput.tokenAmount,
+    tokensData,
+    triggerPrice,
+    triggerRatio,
+  ]);
 
   const swapMarket = useMemo(() => {
     if (swapParams?.swapPath.length) {
@@ -710,6 +765,22 @@ export function TradeBox(p: Props) {
     );
   }
 
+  function renderDecreaseSizeInput() {
+    return (
+      <BuyInputSection
+        topLeftLabel={t`Close`}
+        topRightLabel={existingPosition?.sizeInUsd ? `Max:` : undefined}
+        topRightValue={existingPosition?.sizeInUsd ? formatUsd(existingPosition.sizeInUsd) : undefined}
+        inputValue={closeSizeInputValue}
+        onInputValueChange={(e) => setCloseSizeInputValue(e.target.value)}
+        showMaxButton={existingPosition?.sizeInUsd.gt(0) && !closeSizeUsd?.eq(existingPosition.sizeInUsd)}
+        onClickMax={() => setCloseSizeInputValue(formatAmount(existingPosition?.sizeInUsd, USD_DECIMALS, 2))}
+      >
+        USD
+      </BuyInputSection>
+    );
+  }
+
   function renderTriggerPriceInput() {
     return (
       <BuyInputSection
@@ -769,6 +840,7 @@ export function TradeBox(p: Props) {
             )}
           </>
         )}
+
         <InfoRow
           label={t`Market`}
           className="SwapBox-info-row SwapBox-market-selector"
@@ -776,22 +848,20 @@ export function TradeBox(p: Props) {
             <>
               {isTrigger && (
                 <Dropdown
-                  selectedOption={
-                    toTokenInput.tokenAddress
-                      ? marketIndexOptions.find((o) => o.value === toTokenInput.tokenAddress)
-                      : undefined
-                  }
-                  placeholder={t`Select a market`}
-                  options={marketIndexOptions}
+                  className="SwapBox-market-selector-dropdown"
+                  selectedOption={marketsOptions.find((o) => o.value === p.selectedMarketAddress)}
+                  placeholder={"-"}
+                  options={marketsOptions}
                   onSelect={(option) => {
-                    onSelectMarketAddress(option.value);
+                    p.onSelectMarketAddress(option.value);
                   }}
                 />
               )}
-              {isIncrease && (toTokenInput.token ? `${toTokenInput.token.symbol}/USD` : "...")}
+              {isIncrease && (getMarketName(marketsData, tokensData, p.selectedMarketAddress, false, false) || "-")}
             </>
           }
         />
+
         {selectedCollateralAddress && availablePositionCollaterals && (
           <InfoRow
             label={t`Collateral In`}
@@ -812,43 +882,55 @@ export function TradeBox(p: Props) {
           />
         )}
 
+        {isTrigger && existingPosition?.leverage && (
+          <div className="Exchange-leverage-slider-settings">
+            <Checkbox isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
+              <span className="muted font-sm">
+                <Trans>Keep leverage at {formatLeverage(existingPosition.leverage)} </Trans>
+              </span>
+            </Checkbox>
+          </div>
+        )}
+
         <div className="App-card-divider" />
       </>
     );
   }
 
-  function renderPositionInfo() {
+  function renderIncreaseOrderInfo() {
     return (
       <>
-        {isIncrease && (
-          <InfoRow className="SwapBox-info-row" label={t`Leverage`} value={formatLeverage(leverage) || "..."} />
-        )}
-        {isIncrease && (
-          <InfoRow
-            className="SwapBox-info-row"
-            label={t`Entry Price`}
-            value={formatUsd(isLimit ? triggerPrice : markPrice) || "..."}
-          />
-        )}
-        {isIncrease && (
-          <InfoRow
-            className="SwapBox-info-row"
-            label={t`Acceptable Price`}
-            value={formatUsd(acceptablePrice) || "..."}
-          />
-        )}
-        {isIncrease && !isLimit && (
+        <InfoRow
+          className="SwapBox-info-row"
+          label={t`Leverage`}
+          value={
+            tradeParams.nextLeverage && toTokenInput.usdAmount.gt(0) ? (
+              <ValueTransition
+                from={formatLeverage(existingPosition?.leverage)}
+                to={formatLeverage(tradeParams.nextLeverage) || "-"}
+              />
+            ) : (
+              formatLeverage(leverage)
+            )
+          }
+        />
+
+        <InfoRow className="SwapBox-info-row" label={t`Entry Price`} value={formatUsd(entryPrice) || "-"} />
+
+        <InfoRow className="SwapBox-info-row" label={t`Acceptable Price`} value={formatUsd(acceptablePrice) || "-"} />
+
+        {isMarket && (
           <InfoRow
             className="SwapBox-info-row"
             label={t`Price Impact`}
             value={
               <span className={cx({ positive: priceImpactPriceBps?.gt(0) })}>
-                {formatPercentage(priceImpactPriceBps)}
+                {formatPercentage(priceImpactPriceBps) || "-"}
               </span>
             }
           />
         )}
-        {isIncrease && isLimit && (
+        {isLimit && (
           <InfoRow
             className="SwapBox-info-row"
             label={t`Acceptable Price Impact`}
@@ -865,25 +947,82 @@ export function TradeBox(p: Props) {
             }
           />
         )}
+        <InfoRow
+          className="SwapBox-info-row"
+          label={t`Liq. Price`}
+          value={
+            <ValueTransition
+              from={tradeParams.nextLiqPrice ? formatUsd(existingPosition?.liqPrice) : undefined}
+              to={formatUsd(tradeParams.nextLiqPrice) || "-"}
+            />
+          }
+        />
 
-        {/* {isIncrease && (
+        <div className="App-card-divider" />
+      </>
+    );
+  }
+
+  function renderTriggerOrderInfo() {
+    return (
+      <>
+        {existingPosition && (
           <InfoRow
             className="SwapBox-info-row"
-            label={t`Liq. Price`}
+            label={t`Leverage`}
             value={
-              existingPosition?.liqPrice ? (
+              tradeParams.nextLeverage && toTokenInput.usdAmount.gt(0) ? (
                 <ValueTransition
-                  from={formatUsd(existingPosition.liqPrice)!}
-                  to={nextLiqPrice ? formatUsd(nextLiqPrice) : undefined}
+                  from={formatLeverage(existingPosition?.leverage)}
+                  to={formatLeverage(tradeParams.nextLeverage) || "-"}
                 />
-              ) : nextLiqPrice ? (
-                formatUsd(nextLiqPrice)
               ) : (
-                "..."
+                formatLeverage(leverage)
               )
             }
           />
-        )} */}
+        )}
+        {existingPosition?.sizeInUsd.gt(0) && (
+          <InfoRow
+            className="SwapBox-info-row"
+            label={t`Size`}
+            value={<ValueTransition from={formatUsd(existingPosition.sizeInUsd)!} to={undefined} />}
+          />
+        )}
+
+        {existingPosition && (
+          <InfoRow
+            className="SwapBox-info-row"
+            label={t`Collateral (${existingPosition?.collateralToken?.symbol})`}
+            value={<ValueTransition from={formatUsd(existingPosition.collateralUsd)} to={undefined} />}
+          />
+        )}
+
+        <InfoRow className="SwapBox-info-row" label={t`Mark Price`} value={formatUsd(markPrice) || "-"} />
+
+        <InfoRow className="SwapBox-info-row" label={t`Trigger Price`} value={formatUsd(triggerPrice) || "-"} />
+        <InfoRow className="SwapBox-info-row" label={t`Acceptable Price`} value={formatUsd(acceptablePrice) || "-"} />
+
+        <InfoRow
+          className="SwapBox-info-row"
+          label={t`Acceptable Price Impact`}
+          value={
+            <span className="TradeBox-acceptable-price-impact" onClick={() => setIsAcceptablePriceImpactEditing(true)}>
+              {formatPercentage(acceptablePriceImpactBps?.mul(-1))}
+              <span className="edit-icon" onClick={() => null}>
+                <AiOutlineEdit fontSize={16} />
+              </span>
+            </span>
+          }
+        />
+
+        {existingPosition && (
+          <InfoRow
+            className="SwapBox-info-row"
+            label={t`Liq. Price`}
+            value={<ValueTransition from={formatUsd(existingPosition.liqPrice)!} to={undefined} />}
+          />
+        )}
 
         <div className="App-card-divider" />
       </>
@@ -912,12 +1051,15 @@ export function TradeBox(p: Props) {
         />
 
         {(isSwap || isIncrease) && renderTokenInputs()}
+        {isTrigger && renderDecreaseSizeInput()}
+
         {isSwap && isLimit && renderTriggerRatioInput()}
         {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}
 
         <div className="SwapBox-info-section">
           {isPosition && renderPositionControls()}
-          {isPosition && renderPositionInfo()}
+          {isIncrease && renderIncreaseOrderInfo()}
+          {isTrigger && renderTriggerOrderInfo()}
 
           <TradeFeesRow
             totalFees={fees?.totalFees}

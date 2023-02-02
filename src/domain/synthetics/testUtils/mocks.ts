@@ -157,10 +157,16 @@ export function mockPoolsData(
       netPnlMax: expandDecimals(10000, USD_DECIMALS),
       netPnlMin: expandDecimals(10000, USD_DECIMALS),
 
-      // pnlLongMax: expandDecimals(5000, USD_DECIMALS),
-      // pnlLongMin: expandDecimals(5000, USD_DECIMALS),
-      // pnlShortMax: expandDecimals(5000, USD_DECIMALS),
-      // pnlShortMin: expandDecimals(5000, USD_DECIMALS),
+      pnlLongMax: expandDecimals(5000, USD_DECIMALS),
+      pnlLongMin: expandDecimals(5000, USD_DECIMALS),
+      pnlShortMax: expandDecimals(5000, USD_DECIMALS),
+      pnlShortMin: expandDecimals(5000, USD_DECIMALS),
+
+      maxPnlFactorLong: expandDecimals(5, 29),
+      maxPnlFactorShort: expandDecimals(5, 29),
+
+      maxPnlFactorForWithdrawalsLong: expandDecimals(5, 29),
+      maxPnlFactorForWithdrawalsShort: expandDecimals(5, 29),
 
       ...(overrides[key] || {}),
     };

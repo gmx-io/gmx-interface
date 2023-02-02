@@ -6,6 +6,7 @@ import { usePositionsData } from "./usePositionsData";
 import { AggregatedPositionsData } from "./types";
 import { getAggregatedPositionData } from "./utils";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import { useMarketsFeesConfigs } from "../fees/useMarketsFeesConfigs";
 
 type AggregatedPositionsDataResult = {
   aggregatedPositionsData: AggregatedPositionsData;
@@ -16,6 +17,7 @@ export function useAggregatedPositionsData(chainId: number): AggregatedPositions
   const { pendingPositionsUpdates, positionsUpdates } = useSyntheticsEvents();
   const { tokensData, isLoading: isTokensLoading } = useAvailableTokensData(chainId);
   const { marketsData, isLoading: isMarketsLoading } = useMarketsData(chainId);
+  const { marketsFeesConfigs, isLoading: isFeesConfigsLoading } = useMarketsFeesConfigs(chainId);
   const { positionsData, isLoading: isPositionsLoading } = usePositionsData(chainId);
 
   return useMemo(() => {
@@ -27,6 +29,7 @@ export function useAggregatedPositionsData(chainId: number): AggregatedPositions
           positionsData,
           marketsData,
           tokensData,
+          marketsFeesConfigs,
           pendingPositionsUpdates,
           positionsUpdates,
           positionKey
@@ -38,13 +41,15 @@ export function useAggregatedPositionsData(chainId: number): AggregatedPositions
 
         return acc;
       }, {} as AggregatedPositionsData),
-      isLoading: isTokensLoading || isMarketsLoading || isPositionsLoading,
+      isLoading: isTokensLoading || isMarketsLoading || isPositionsLoading || isFeesConfigsLoading,
     };
   }, [
+    isFeesConfigsLoading,
     isMarketsLoading,
     isPositionsLoading,
     isTokensLoading,
     marketsData,
+    marketsFeesConfigs,
     pendingPositionsUpdates,
     positionsData,
     positionsUpdates,

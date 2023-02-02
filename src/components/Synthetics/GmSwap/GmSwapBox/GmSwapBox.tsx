@@ -17,7 +17,12 @@ import { BigNumber } from "ethers";
 import { IoMdSwap } from "react-icons/io";
 
 import { useTokenInput } from "domain/synthetics/exchange";
-import { getExecutionFee } from "domain/synthetics/fees";
+import {
+  estimateExecuteDepositGasLimit,
+  estimateExecuteWithdrawalGasLimit,
+  getMinExecutionFee,
+  useGasPrice,
+} from "domain/synthetics/fees";
 import { useMarketsData, useMarketsPoolsData, useMarketTokensData } from "domain/synthetics/markets";
 import { GmConfirmationBox } from "../GmConfirmationBox/GmConfirmationBox";
 
@@ -30,8 +35,10 @@ import { Dropdown, DropdownOption } from "components/Dropdown/Dropdown";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { GmOrderStatus } from "../GmOrderStatus/GmOrderStatus";
 
-import "./GmSwapBox.scss";
 import { SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY } from "config/localStorage";
+
+import { useGasLimitsConfig } from "domain/synthetics/fees/useGasLimitsConfig";
+import "./GmSwapBox.scss";
 
 type Props = {
   selectedMarketAddress?: string;
@@ -62,6 +69,8 @@ export function GmSwapBox(p: Props) {
   const { marketsData } = useMarketsData(chainId);
   const { marketTokensData } = useMarketTokensData(chainId);
   const { poolsData } = useMarketsPoolsData(chainId);
+  const { gasLimits } = useGasLimitsConfig(chainId);
+  const { gasPrice } = useGasPrice(chainId);
 
   const marketsOptions: DropdownOption[] = Object.values(marketsData).map((market) => ({
     label: getMarketName(marketsData, tokensData, market.marketTokenAddress, true, true)!,
@@ -126,7 +135,22 @@ export function GmSwapBox(p: Props) {
 
   const isHighPriceImpact = priceImpact?.impactUsd.lt(0) && priceImpact?.basisPoints.gte(HIGH_PRICE_IMPACT_BP);
 
-  const executionFee = getExecutionFee(tokensData);
+  const executionFee = useMemo(() => {
+    if (!gasLimits || !gasPrice) return undefined;
+
+    if (isDeposit) {
+      const estimatedGasLimit = estimateExecuteDepositGasLimit(gasLimits, {
+        initialLongTokenAmount: longDelta?.tokenAmount,
+        initialShortTokenAmount: shortDelta?.tokenAmount,
+      });
+
+      return getMinExecutionFee(chainId, gasLimits, tokensData, estimatedGasLimit, gasPrice);
+    } else {
+      const estimatedGasLimit = estimateExecuteWithdrawalGasLimit(gasLimits, {});
+
+      return getMinExecutionFee(chainId, gasLimits, tokensData, estimatedGasLimit, gasPrice);
+    }
+  }, [chainId, gasLimits, gasPrice, isDeposit, longDelta?.tokenAmount, shortDelta?.tokenAmount, tokensData]);
 
   const feesUsd = BigNumber.from(0)
     .sub(executionFee?.feeUsd || BigNumber.from(0))

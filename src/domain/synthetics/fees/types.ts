@@ -10,8 +10,9 @@ export type ExecutionFeeParams = {
 
 export type ExecutionFee = {
   feeUsd: BigNumber;
-  feeAmount: BigNumber;
+  feeTokenAmount: BigNumber;
   feeToken: TokenData;
+  warning?: string;
 };
 
 export type SwapStepFees = {

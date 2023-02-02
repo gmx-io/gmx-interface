@@ -2,8 +2,8 @@ import { getContract } from "config/contracts";
 import DataStore from "abis/DataStore.json";
 import { useMulticall } from "lib/multicall";
 import {
-  ESTIMATED_FEE_BASE_GAS_LIMIT_KEY,
-  ESTIMATED_FEE_MULTIPLIER_FACTOR_KEY,
+  ESTIMATED_GAS_FEE_BASE_AMOUNT,
+  ESTIMATED_GAS_FEE_MULTIPLIER_FACTOR,
   decreaseOrderGasLimitKey,
   depositGasLimitKey,
   increaseOrderGasLimitKey,
@@ -62,11 +62,11 @@ export function useGasLimitsConfig(chainId: number): GasLimitsResult {
           },
           estimatedFeeBaseGasLimit: {
             methodName: "getUint",
-            params: [ESTIMATED_FEE_BASE_GAS_LIMIT_KEY],
+            params: [ESTIMATED_GAS_FEE_BASE_AMOUNT],
           },
           estimatedFeeMultiplierFactor: {
             methodName: "getUint",
-            params: [ESTIMATED_FEE_MULTIPLIER_FACTOR_KEY],
+            params: [ESTIMATED_GAS_FEE_MULTIPLIER_FACTOR],
           },
         },
       },

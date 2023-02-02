@@ -31,8 +31,10 @@ export function useAvailableSwapOptions(p: { selectedIndexTokenAddress?: string 
     const marketsPerpsMap: { [key: string]: Market[] } = {};
 
     for (const market of markets) {
-      const longToken = getTokenData(tokensData, market.longTokenAddress)!;
-      const shortToken = getTokenData(tokensData, market.shortTokenAddress)!;
+      const longToken = getTokenData(tokensData, market.longTokenAddress);
+      const shortToken = getTokenData(tokensData, market.shortTokenAddress);
+
+      if (!longToken || !shortToken) continue;
 
       if (longToken.address === wrappedToken.address) {
         longMap[nativeToken.address] = nativeToken;

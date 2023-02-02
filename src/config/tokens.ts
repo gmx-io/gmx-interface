@@ -458,6 +458,8 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
 };
 
 export const SYNTHETIC_TOKENS = {
+  [AVALANCHE]: [],
+  [ARBITRUM]: [],
   [AVALANCHE_FUJI]: [
     {
       name: "Solana",

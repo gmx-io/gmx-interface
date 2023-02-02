@@ -45,13 +45,19 @@ export type PoolData = {
   swapImpactPoolAmountLong: BigNumber;
   swapImpactPoolAmountShort: BigNumber;
 
+  maxPnlFactorLong: BigNumber;
+  maxPnlFactorShort: BigNumber;
+
+  maxPnlFactorForWithdrawalsLong: BigNumber;
+  maxPnlFactorForWithdrawalsShort: BigNumber;
+
   netPnlMax: BigNumber;
   netPnlMin: BigNumber;
 
-  // pnlLongMax: BigNumber;
-  // pnlLongMin: BigNumber;
-  // pnlShortMax: BigNumber;
-  // pnlShortMin: BigNumber;
+  pnlLongMax: BigNumber;
+  pnlLongMin: BigNumber;
+  pnlShortMax: BigNumber;
+  pnlShortMin: BigNumber;
 };
 
 export type RawContractDeposit = {

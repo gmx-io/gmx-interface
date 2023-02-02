@@ -7,6 +7,7 @@ import { getToken } from "config/tokens";
 import { FeeItem, TotalSwapFees } from "domain/synthetics/fees";
 import { useChainId } from "lib/chains";
 import { formatDeltaUsd } from "lib/numbers";
+import "./TradeFeesRow.scss";
 
 type Props = {
   totalFees?: FeeItem;
@@ -26,6 +27,7 @@ export function TradeFeesRow(p: Props) {
           {(!p.totalFees?.deltaUsd || p.totalFees.deltaUsd.eq(0)) && "-"}
           {p.totalFees?.deltaUsd && (
             <Tooltip
+              className="TradeFeesRow-tooltip"
               handle={
                 <span className={cx({ positive: p.totalFees.deltaUsd.gt(0) })}>
                   {formatDeltaUsd(p.totalFees.deltaUsd, p.totalFees.bps)}
@@ -51,22 +53,28 @@ export function TradeFeesRow(p: Props) {
                   )}
 
                   {p.swapFees?.swapFees.map((swap) => (
-                    <StatsTooltipRow
-                      key={`${swap.tokenInAddress}-${swap.tokenOutAddress}`}
-                      label={t`Swap ${getToken(chainId, swap.tokenInAddress).symbol} to ${
-                        getToken(chainId, swap.tokenOutAddress).symbol
-                      }`}
-                      value={formatDeltaUsd(swap.deltaUsd, swap.bps)!}
-                      showDollar={false}
-                    />
+                    <>
+                      <br />
+                      <StatsTooltipRow
+                        key={`${swap.tokenInAddress}-${swap.tokenOutAddress}`}
+                        label={t`Swap ${getToken(chainId, swap.tokenInAddress).symbol} to ${
+                          getToken(chainId, swap.tokenOutAddress).symbol
+                        }`}
+                        value={formatDeltaUsd(swap.deltaUsd, swap.bps)!}
+                        showDollar={false}
+                      />
+                    </>
                   ))}
 
                   {p.positionFee && (
-                    <StatsTooltipRow
-                      label={t`Position fee`}
-                      value={formatDeltaUsd(p.positionFee.deltaUsd, p.positionFee.bps)!}
-                      showDollar={false}
-                    />
+                    <>
+                      <br />
+                      <StatsTooltipRow
+                        label={t`Position fee`}
+                        value={formatDeltaUsd(p.positionFee.deltaUsd, p.positionFee.bps)!}
+                        showDollar={false}
+                      />
+                    </>
                   )}
                 </div>
               )}
