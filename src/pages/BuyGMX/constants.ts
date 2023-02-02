@@ -285,4 +285,12 @@ export const DECENTRALISED_AGGRIGATORS: Exchange[] = [
       [AVALANCHE]: "https://app.firebird.finance/swap",
     },
   },
+  {
+    name: "Odos",
+    icon: "ic_odos.png",
+    links: {
+      [ARBITRUM]: "https://app.odos.xyz/swap/42161/GMX/ETH",
+      [AVALANCHE]: "https://app.odos.xyz/swap/43114/AVAX/GMX",
+    },
+  },
 ];
