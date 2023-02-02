@@ -889,8 +889,12 @@ msgid "Creator"
 msgstr "作成者"
 
 #: src/components/Exchange/PositionEditor.js
-msgid "Current Net Value (incl. Closing Fee)"
+msgid "Current Net Value"
 msgstr ""
+
+#: src/components/Exchange/PositionEditor.js
+#~ msgid "Current Net Value (incl. Closing Fee)"
+#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Current Pool Amount"
@@ -3108,6 +3112,10 @@ msgstr "<0>GMXの移行</0>は進行中です。GMT、xGMT、GMT-USDG、xGMT-USD
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "The Boosted APR is from your staked Multiplier Points."
 msgstr "APRブーストはステーク済マルチプライヤーポイントによるものです。"
+
+#: src/components/Exchange/PositionEditor.js
+msgid "The Deposit amount is insufficient to bring Net Value below max allowed leverage of 100x."
+msgstr ""
 
 #: src/pages/Stake/StakeV1.js
 msgid "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
