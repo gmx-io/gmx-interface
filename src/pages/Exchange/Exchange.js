@@ -196,6 +196,7 @@ export function getPositions(
     position.collateralAfterFee = position.collateral.sub(position.fundingFee);
 
     position.closingFee = position.size.mul(MARGIN_FEE_BASIS_POINTS).div(BASIS_POINTS_DIVISOR);
+    position.openingFee = position.size.mul(MARGIN_FEE_BASIS_POINTS).div(BASIS_POINTS_DIVISOR);
     position.positionFee = position.size.mul(MARGIN_FEE_BASIS_POINTS).mul(2).div(BASIS_POINTS_DIVISOR);
     position.totalFees = position.positionFee.add(position.fundingFee);
 
@@ -250,9 +251,10 @@ export function getPositions(
 
       position.hasProfitAfterFees = hasProfitAfterFees;
       position.pendingDeltaAfterFees = pendingDeltaAfterFees;
+      // while calculating delta percentage after fees, we need to add opening fee to collateral
       position.deltaPercentageAfterFees = position.pendingDeltaAfterFees
         .mul(BASIS_POINTS_DIVISOR)
-        .div(position.collateral);
+        .div(position.collateral.add(position.openingFee));
 
       const { deltaStr: deltaAfterFeesStr, deltaPercentageStr: deltaAfterFeesPercentageStr } = getDeltaStr({
         delta: position.pendingDeltaAfterFees,
@@ -272,11 +274,7 @@ export function getPositions(
         ? position.collateral.add(position.pendingDelta)
         : position.collateral.sub(position.pendingDelta);
 
-      netValue = netValue.sub(position.fundingFee);
-
-      if (showPnlAfterFees) {
-        netValue = netValue.sub(position.closingFee);
-      }
+      netValue = netValue.sub(position.fundingFee).sub(position.closingFee);
 
       position.netValue = netValue;
     }

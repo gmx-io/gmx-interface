@@ -28,6 +28,7 @@ import { getUsd } from "domain/tokens/utils";
 import { bigNumberify, formatAmount } from "lib/numbers";
 import { AiOutlineEdit } from "react-icons/ai";
 import useAccountType, { AccountType } from "lib/wallets/useAccountType";
+import NetValueTooltip from "./NetValueTooltip";
 
 const getOrdersForPosition = (account, position, orders, nativeTokenAddress) => {
   if (!orders || orders.length === 0) {
@@ -350,45 +351,7 @@ export default function PositionsList(props) {
                         <Trans>Net Value</Trans>
                       </div>
                       <div>
-                        <Tooltip
-                          handle={`$${formatAmount(position.netValue, USD_DECIMALS, 2, true)}`}
-                          position="right-bottom"
-                          handleClassName="plain"
-                          renderContent={() => {
-                            return (
-                              <>
-                                {showPnlAfterFees
-                                  ? t`Net Value: Initial Collateral + PnL - Fees`
-                                  : t`Net Value: Initial Collateral + PnL - Borrow Fee`}
-                                <br />
-                                <br />
-                                <StatsTooltipRow
-                                  label={t`Initial Collateral`}
-                                  value={formatAmount(position.collateral, USD_DECIMALS, 2, true)}
-                                />
-                                <StatsTooltipRow
-                                  label={t`PnL`}
-                                  value={position.deltaBeforeFeesStr}
-                                  showDollar={false}
-                                />
-                                <StatsTooltipRow
-                                  label={t`Borrow Fee`}
-                                  value={formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
-                                />
-                                <StatsTooltipRow
-                                  label={t`Open + Close Fees`}
-                                  value={formatAmount(position.positionFee, USD_DECIMALS, 2, true)}
-                                />
-                                <br />
-                                <StatsTooltipRow
-                                  label={t`PnL After Fees`}
-                                  value={[position.deltaAfterFeesStr, `(${position.deltaAfterFeesPercentageStr})`]}
-                                  showDollar={false}
-                                />
-                              </>
-                            );
-                          }}
-                        />
+                        <NetValueTooltip position={position} isMobile />
                       </div>
                     </div>
                     <div className="App-card-row">
@@ -587,48 +550,7 @@ export default function PositionsList(props) {
                   </div>
                 </td>
                 <td>
-                  <div>
-                    {!position.netValue && t`Opening...`}
-                    {position.netValue && (
-                      <Tooltip
-                        handle={`$${formatAmount(position.netValue, USD_DECIMALS, 2, true)}`}
-                        position="left-bottom"
-                        handleClassName="plain"
-                        renderContent={() => {
-                          return (
-                            <>
-                              {showPnlAfterFees
-                                ? t`Net Value: Initial Collateral + PnL - Fees`
-                                : t`Net Value: Initial Collateral + PnL - Borrow Fee`}
-                              <br />
-                              <br />
-                              <StatsTooltipRow
-                                label={t`Initial Collateral`}
-                                value={formatAmount(position.collateral, USD_DECIMALS, 2, true)}
-                              />
-                              <StatsTooltipRow label={t`PnL`} value={position.deltaBeforeFeesStr} showDollar={false} />
-                              <StatsTooltipRow
-                                label={t`Borrow Fee`}
-                                showDollar={false}
-                                value={`-$${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}`}
-                              />
-                              <StatsTooltipRow
-                                label={t`Open + Close Fees`}
-                                showDollar={false}
-                                value={`-$${formatAmount(position.positionFee, USD_DECIMALS, 2, true)}`}
-                              />
-                              <br />
-                              <StatsTooltipRow
-                                label={t`PnL After Fees`}
-                                value={[position.deltaAfterFeesStr, `(${position.deltaAfterFeesPercentageStr})`]}
-                                showDollar={false}
-                              />
-                            </>
-                          );
-                        }}
-                      />
-                    )}
-                  </div>
+                  <div>{position.netValue ? <NetValueTooltip position={position} /> : t`Opening...`}</div>
                   {position.deltaStr && (
                     <div
                       className={cx("Exchange-list-info-label", {
@@ -637,7 +559,7 @@ export default function PositionsList(props) {
                         muted: positionDelta.eq(0),
                       })}
                     >
-                      {position.deltaStr} ({position.deltaPercentageStr})
+                      {position.deltaAfterFeesStr} ({position.deltaAfterFeesPercentageStr})
                     </div>
                   )}
                 </td>
