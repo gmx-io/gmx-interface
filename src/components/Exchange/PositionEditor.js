@@ -521,7 +521,10 @@ export default function PositionEditor(props) {
         {minimumCollateralToDeposit && minimumCollateralToDepositStr && (
           <StatsTooltipRow
             label={t`Deposit at least`}
-            value={[formatAmount(minimumCollateralToDeposit, USD_DECIMALS, 2, true), minimumCollateralToDepositStr]}
+            value={[
+              formatAmountWithDollarSign(minimumCollateralToDeposit, USD_DECIMALS, 2, true),
+              minimumCollateralToDepositStr,
+            ]}
           />
         )}
       </>
