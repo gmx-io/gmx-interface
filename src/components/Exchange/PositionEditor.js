@@ -29,7 +29,14 @@ import { helperToast } from "lib/helperToast";
 import { getTokenInfo } from "domain/tokens/utils";
 import { approveTokens, shouldRaiseGasError } from "domain/tokens";
 import { usePrevious } from "lib/usePrevious";
-import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
+import {
+  bigNumberify,
+  expandDecimals,
+  formatAmount,
+  formatAmountFree,
+  formatAmountWithDollarSign,
+  parseValue,
+} from "lib/numbers";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import { getTokenAmountFromUsd } from "domain/tokens/utils";
@@ -497,27 +504,24 @@ export default function PositionEditor(props) {
     [ErrorCode.InvalidLiqPrice]: t`Liquidation price would cross mark price.`,
     [ErrorCode.InsufficientCollateral]: (
       <>
-        <p>The Deposit amount is insufficient to bring Net Value below max allowed leverage of 100x.</p>
+        <p>
+          <Trans>The Deposit amount is insufficient to bring Net Value below max allowed leverage of 100x.</Trans>
+        </p>
         <br />
         <StatsTooltipRow
-          label={t`Current Net Value (incl. Closing Fee)`}
-          value={netValueAfterClosingFee && `$${formatAmount(netValueAfterClosingFee, USD_DECIMALS, 2, true)}`}
+          label={t`Current Net Value`}
+          value={netValueAfterClosingFee && formatAmountWithDollarSign(netValueAfterClosingFee, USD_DECIMALS, 2, true)}
           showDollar={false}
         />
         <StatsTooltipRow
           label={t`Min. Net Value needed is`}
-          value={minimumCollateralRequired && `${formatAmount(minimumCollateralRequired, USD_DECIMALS, 2, true)}`}
+          value={minimumCollateralRequired && formatAmount(minimumCollateralRequired, USD_DECIMALS, 2, true)}
           showDollar={true}
         />
-        {minimumCollateralToDeposit && (
+        {minimumCollateralToDeposit && minimumCollateralToDepositStr && (
           <StatsTooltipRow
             label={t`Deposit at least`}
-            value={`${formatAmount(
-              minimumCollateralToDeposit,
-              USD_DECIMALS,
-              2,
-              true
-            )} ${minimumCollateralToDepositStr}`}
+            value={[formatAmount(minimumCollateralToDeposit, USD_DECIMALS, 2, true), minimumCollateralToDepositStr]}
           />
         )}
       </>
@@ -614,7 +618,9 @@ export default function PositionEditor(props) {
                     <div className="Exchange-info-label">
                       <Trans>Size</Trans>
                     </div>
-                    <div className="align-right">{formatAmount(position.size, USD_DECIMALS, 2, true)} USD</div>
+                    <div className="align-right">
+                      {formatAmountWithDollarSign(position.size, USD_DECIMALS, 2, true)}
+                    </div>
                   </div>
                   <div className="Exchange-info-row">
                     <div className="Exchange-info-label">
@@ -622,15 +628,15 @@ export default function PositionEditor(props) {
                     </div>
                     <div className="align-right">
                       {!nextCollateral && (
-                        <div>${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}</div>
+                        <div>{formatAmountWithDollarSign(position.collateralAfterFee, USD_DECIMALS, 2, true)}</div>
                       )}
                       {nextCollateral && (
                         <div>
                           <div className="inline-block muted">
-                            ${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}
+                            {formatAmountWithDollarSign(position.collateralAfterFee, USD_DECIMALS, 2, true)}
                             <BsArrowRight className="transition-arrow" />
                           </div>
-                          ${formatAmount(nextCollateral, USD_DECIMALS, 2, true)}
+                          {formatAmountWithDollarSign(nextCollateral, USD_DECIMALS, 2, true)}
                         </div>
                       )}
                     </div>

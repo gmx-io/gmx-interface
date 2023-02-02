@@ -25,7 +25,7 @@ import PositionDropdown from "./PositionDropdown";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { helperToast } from "lib/helperToast";
 import { getUsd } from "domain/tokens/utils";
-import { bigNumberify, formatAmount } from "lib/numbers";
+import { bigNumberify, formatAmount, formatAmountWithDollarSign } from "lib/numbers";
 import { AiOutlineEdit } from "react-icons/ai";
 import useAccountType, { AccountType } from "lib/wallets/useAccountType";
 
@@ -286,7 +286,7 @@ export default function PositionsList(props) {
                       </div>
                       <div className="position-list-collateral">
                         <Tooltip
-                          handle={`$${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}`}
+                          handle={formatAmountWithDollarSign(position.collateralAfterFee, USD_DECIMALS, 2, true)}
                           position="right-bottom"
                           handleClassName={cx("plain", { negative: position.hasLowCollateral })}
                           renderContent={() => {
@@ -662,7 +662,7 @@ export default function PositionsList(props) {
                 <td>
                   <div className="position-list-collateral">
                     <Tooltip
-                      handle={`$${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}`}
+                      handle={formatAmountWithDollarSign(position.collateralAfterFee, USD_DECIMALS, 2, true)}
                       position="left-bottom"
                       handleClassName={cx("plain", { negative: position.hasLowCollateral })}
                       renderContent={() => {

@@ -118,6 +118,20 @@ export const formatAmountFree = (amount: BigNumberish, tokenDecimals: number, di
   return trimZeroDecimals(amountStr);
 };
 
+export function formatAmountWithDollarSign(
+  amount: BigNumberish | undefined,
+  tokenDecimals: number,
+  displayDecimals?: number,
+  useCommas?: boolean
+) {
+  const amountStr = formatAmount(amount, tokenDecimals, displayDecimals, useCommas);
+  if (amount && bigNumberify(amount)?.gt(0)) {
+    return "$" + amountStr;
+  } else {
+    return "-$" + amountStr.slice(1);
+  }
+}
+
 export const parseValue = (value: string, tokenDecimals: number) => {
   const pValue = parseFloat(value);
 

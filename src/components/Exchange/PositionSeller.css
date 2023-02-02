@@ -35,6 +35,10 @@
   min-width: 30rem;
 }
 
+.Tooltip-popup {
+  min-width: 30rem;
+}
+
 @media (max-width: 700px) {
   .PositionSeller-token-selector .Modal .Modal-content {
     width: 90vw;
@@ -42,6 +46,9 @@
 
   .PositionSeller-fees-tooltip .Tooltip-popup {
     min-width: 30rem;
+  }
+  .Tooltip-popup {
+    min-width: 20rem;
   }
 }
 
