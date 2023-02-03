@@ -1,21 +1,20 @@
+import { getExplorerUrl } from "config/chains";
+import { getVisibleTokens, getWhitelistedTokens } from "config/tokens";
 import { BigNumber, ethers } from "ethers";
 import {
-  adjustForDecimals,
   DUST_BNB,
-  getFeeBasisPoints,
   MARKET,
   MINT_BURN_FEE_BASIS_POINTS,
   PRECISION,
   TAX_BASIS_POINTS,
-  USD_DECIMALS,
   USDG_ADDRESS,
   USDG_DECIMALS,
+  USD_DECIMALS,
+  adjustForDecimals,
+  getFeeBasisPoints,
 } from "lib/legacy";
-import { getVisibleTokens, getWhitelistedTokens } from "config/tokens";
-import { getExplorerUrl } from "config/chains";
-import { InfoTokens, Token, TokenInfo } from "./types";
 import { bigNumberify, expandDecimals } from "lib/numbers";
-import { HIGH_SPREAD_THRESHOLD } from "config/common";
+import { InfoTokens, Token, TokenInfo } from "./types";
 
 const { AddressZero } = ethers.constants;
 

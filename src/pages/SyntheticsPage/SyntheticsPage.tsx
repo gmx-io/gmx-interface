@@ -11,12 +11,10 @@ import {
   SYNTHETICS_TRADE_TYPE_KEY,
 } from "config/localStorage";
 import { TradeType } from "domain/synthetics/exchange/types";
-import { getExecutionFee } from "domain/synthetics/fees";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useAggregatedOrdersData } from "domain/synthetics/orders/useAggregatedOrdersData";
 import { getPosition, getPositionKey } from "domain/synthetics/positions";
 import { useAggregatedPositionsData } from "domain/synthetics/positions/useAggregatedPositionsData";
-import { useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
 import { useMemo, useState } from "react";
@@ -54,11 +52,8 @@ export function SyntheticsPage(p: Props) {
   const [selectedOrdersKeys, setSelectedOrdersKeys] = useState<{ [key: string]: boolean }>({});
   const [isCancelOrdersProcessig, setIsCancelOrdersProcessig] = useState(false);
 
-  const { tokensData } = useAvailableTokensData(chainId);
   const { aggregatedPositionsData, isLoading: isPositionsLoading } = useAggregatedPositionsData(chainId);
   const { aggregatedOrdersData, isLoading: isOrdersLoading } = useAggregatedOrdersData(chainId);
-
-  const executionFee = getExecutionFee(tokensData);
 
   const positionsCount = Object.keys(aggregatedPositionsData).length;
   const ordersCount = Object.keys(aggregatedOrdersData).length;

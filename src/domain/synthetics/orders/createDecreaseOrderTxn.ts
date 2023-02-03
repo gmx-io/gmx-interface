@@ -9,7 +9,7 @@ import { callContract } from "lib/contracts";
 import { TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
 import { DecreasePositionSwapType, OrderType } from "./types";
 import { isDevelopment } from "config/env";
-import { PriceOverrides } from "./simulateExecuteOrderTxn";
+import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
 import { isMarketOrder } from "./utils";
 import { getPositionKey } from "domain/synthetics/positions";
 import { PositionUpdate } from "context/SyntheticsEvents";
@@ -115,13 +115,13 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
     // };
   }
 
-  // await simulateExecuteOrderTxn(chainId, library, {
-  //   primaryPriceOverrides,
-  //   secondaryPriceOverrides,
-  //   createOrderMulticallPayload: encodedPayload,
-  //   value: wntAmount,
-  //   tokensData: p.tokensData,
-  // });
+  await simulateExecuteOrderTxn(chainId, library, {
+    primaryPriceOverrides,
+    secondaryPriceOverrides,
+    createOrderMulticallPayload: encodedPayload,
+    value: wntAmount,
+    tokensData: p.tokensData,
+  });
 
   const longText = p.isLong ? t`Long` : t`Short`;
 

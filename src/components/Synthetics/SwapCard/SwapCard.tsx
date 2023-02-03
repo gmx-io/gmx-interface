@@ -1,5 +1,9 @@
 import { Trans, t } from "@lingui/macro";
 import { InfoRow } from "components/InfoRow/InfoRow";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import Tooltip from "components/Tooltip/Tooltip";
+import { convertTokenAddress } from "config/tokens";
+import { TokensRatio } from "domain/synthetics/exchange";
 import {
   getAvailableUsdLiquidityForCollateral,
   getMarket,
@@ -8,14 +12,10 @@ import {
   useMarketsPoolsData,
 } from "domain/synthetics/markets";
 import { useOpenInterestData } from "domain/synthetics/markets/useOpenInterestData";
-import { TokensData, convertToTokenAmount, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
+import { convertToTokenAmount, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { formatAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
-import Tooltip from "components/Tooltip/Tooltip";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { convertTokenAddress } from "config/tokens";
-import { TokensRatio } from "domain/synthetics/exchange";
 import { USD_DECIMALS } from "lib/legacy";
+import { formatAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { useMemo } from "react";
 
 import "./SwapCard.scss";

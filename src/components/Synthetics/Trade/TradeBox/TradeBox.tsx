@@ -2,6 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Checkbox from "components/Checkbox/Checkbox";
+import { Dropdown, DropdownOption } from "components/Dropdown/Dropdown";
 import { InfoRow } from "components/InfoRow/InfoRow";
 import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
@@ -11,12 +12,10 @@ import {
   KEEP_LEVERAGE_FOR_DECREASE_KEY,
   LEVERAGE_ENABLED_KEY,
   LEVERAGE_OPTION_KEY,
-  SYNTHETICS_TRADE_COLLATERAL_KEY,
+  SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BPS_KEY,
   SYNTHETICS_TRADE_FROM_TOKEN_KEY,
   SYNTHETICS_TRADE_MODE_KEY,
-  SYNTHETICS_TRADE_TYPE_KEY,
   SYNTHETICS_TRADE_TO_TOKEN_KEY,
-  SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BPS_KEY,
 } from "config/localStorage";
 import { convertTokenAddress, getToken } from "config/tokens";
 import {
@@ -27,22 +26,9 @@ import {
   useTokenInput,
 } from "domain/synthetics/exchange";
 import {
-  TokenData,
-  TokensData,
-  convertToTokenAmount,
-  convertToUsd,
-  getTokenData,
-  useAvailableTokensData,
-} from "domain/synthetics/tokens";
-import { BigNumber } from "ethers";
-import longImg from "img/long.svg";
-import shortImg from "img/short.svg";
-import swapImg from "img/swap.svg";
-import { Dropdown, DropdownOption } from "components/Dropdown/Dropdown";
-import {
   Market,
-  MarketsData,
-  MarketsPoolsData,
+  getAvailableUsdLiquidityForCollateral,
+  getAvailableUsdLiquidityForPosition,
   getMarket,
   getMarketName,
   getMostLiquidMarketForPosition,
@@ -61,22 +47,23 @@ import {
 } from "domain/synthetics/orders";
 import {
   AggregatedPositionData,
-  AggregatedPositionsData,
   formatLeverage,
   getLeverage,
   getLiquidationPrice,
   getMarkPrice,
-  getPosition,
-  getPositionKey,
 } from "domain/synthetics/positions";
+import { convertToTokenAmount, convertToUsd, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
+import { BigNumber } from "ethers";
+import longImg from "img/long.svg";
+import shortImg from "img/short.svg";
+import swapImg from "img/swap.svg";
 import { useChainId } from "lib/chains";
-import { BASIS_POINTS_DIVISOR, DUST_USD, PRECISION, USD_DECIMALS } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR, DUST_USD, MAX_ALLOWED_LEVERAGE, USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
-  applyFactor,
   bigNumberify,
+  expandDecimals,
   formatAmount,
-  formatDeltaUsd,
   formatPercentage,
   formatTokenAmount,
   formatUsd,
@@ -85,34 +72,27 @@ import {
 } from "lib/numbers";
 import { useEffect, useMemo, useState } from "react";
 import { IoMdSwap } from "react-icons/io";
+import { MarketCard } from "../../MarketCard/MarketCard";
 import { OrderStatus } from "../../OrderStatus/OrderStatus";
 import { ConfirmationBox } from "../ConfirmationBox/ConfirmationBox";
-import { MarketCard } from "../../MarketCard/MarketCard";
 
-import { useWeb3React } from "@web3-react/core";
+import { TradeFeesRow } from "components/Synthetics/TradeFeesRow/TradeFeesRow";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
+import { DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS } from "config/synthetics";
 import {
   FeeItem,
-  MarketsFeesConfigsData,
-  SwapPathStats,
   TradeFees,
-  getExecutionFee,
-  getMarketFeesConfig,
-  getPriceImpactForPosition,
-  getTotalFeeItem,
-  getSwapPathStats,
-  useAcceptablePriceImpactBps,
-  useGasPrice,
-  estimateExecuteSwapOrderGasLimit,
-  getMinExecutionFee,
-  estimateExecuteIncreaseOrderGasLimit,
   estimateExecuteDecreaseOrderGasLimit,
+  estimateExecuteIncreaseOrderGasLimit,
+  estimateExecuteSwapOrderGasLimit,
+  getMarketFeesConfig,
+  getMinExecutionFee,
+  getTotalFeeItem,
+  useGasPrice,
 } from "domain/synthetics/fees";
 import { useMarketsFeesConfigs } from "domain/synthetics/fees/useMarketsFeesConfigs";
 import { useSwapRoute } from "domain/synthetics/routing/useSwapRoute";
 import { SwapCard } from "../../SwapCard/SwapCard";
-import { TradeFeesRow } from "components/Synthetics/TradeFeesRow/TradeFeesRow";
-import { DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS, HIGH_PRICE_IMPACT_BP } from "config/synthetics";
 
 import {
   DecreaseTradeParams,
@@ -123,11 +103,13 @@ import {
   TradeType,
 } from "domain/synthetics/exchange/types";
 
-import "./TradeBox.scss";
+import { IS_NETWORK_DISABLED, getChainName } from "config/chains";
+import { useGasLimitsConfig } from "domain/synthetics/fees/useGasLimitsConfig";
+import { usePositionsConstants } from "domain/synthetics/positions/usePositionsConstants";
 import { usePrevious } from "lib/usePrevious";
 import { AiOutlineEdit } from "react-icons/ai";
 import { AcceptbablePriceImpactEditor } from "../AcceptablePriceImpactEditor/AcceptablePriceImpactEditor";
-import { useGasLimitsConfig } from "domain/synthetics/fees/useGasLimitsConfig";
+import "./TradeBox.scss";
 
 type Props = {
   ordersData: AggregatedOrdersData;
@@ -190,6 +172,7 @@ export function TradeBox(p: Props) {
   const { marketsFeesConfigs } = useMarketsFeesConfigs(chainId);
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimitsConfig(chainId);
+  const { maxLeverage, minCollateralUsd } = usePositionsConstants(chainId);
 
   const [tradeMode, setTradeMode] = useLocalStorageSerializeKey([chainId, SYNTHETICS_TRADE_MODE_KEY], TradeMode.Market);
 
@@ -512,6 +495,53 @@ export function TradeBox(p: Props) {
     }
   }, [chainId, marketsData, openInterestData, poolsData, swapParams?.swapPath, toTokenInput.tokenAddress, tokensData]);
 
+  const swapOutLiquidity = getAvailableUsdLiquidityForCollateral(
+    marketsData,
+    poolsData,
+    openInterestData,
+    tokensData,
+    swapMarket?.marketTokenAddress,
+    toTokenInput.token?.wrappedAddress || toTokenInput.tokenAddress
+  );
+
+  const positionCollateralLiquidity = getAvailableUsdLiquidityForCollateral(
+    marketsData,
+    poolsData,
+    openInterestData,
+    tokensData,
+    swapMarket?.marketTokenAddress,
+    p.selectedCollateralAddress
+  );
+
+  const longLiquidity = getAvailableUsdLiquidityForPosition(
+    marketsData,
+    poolsData,
+    openInterestData,
+    tokensData,
+    p.selectedMarketAddress,
+    true
+  );
+
+  const shortLiquidity = getAvailableUsdLiquidityForPosition(
+    marketsData,
+    poolsData,
+    openInterestData,
+    tokensData,
+    p.selectedMarketAddress,
+    false
+  );
+
+  const receiveToken = collateralToken;
+
+  const receiveTokenLiquidity = getAvailableUsdLiquidityForCollateral(
+    marketsData,
+    poolsData,
+    openInterestData,
+    tokensData,
+    p.selectedMarketAddress,
+    receiveToken?.address
+  );
+
   const executionFee = useMemo(() => {
     if (!gasLimits || !gasPrice) return undefined;
 
@@ -792,32 +822,24 @@ export function TradeBox(p: Props) {
   const submitButtonState = getSubmitButtonState();
 
   function getSubmitButtonState(): { text: string; disabled?: boolean; onClick?: () => void } {
-    // const error = getSubmitError({
-    //   operationType: operationTab!,
-    //   mode: modeTab!,
-    //   tokensData,
-    //   markPrice: toTokenInput.price,
-    //   fromTokenAddress: fromTokenInput.tokenAddress,
-    //   toTokenAddress: toTokenInput.tokenAddress,
-    //   fromTokenAmount: fromTokenInput.tokenAmount,
-    //   swapPath: swapRoute?.swapPath,
-    //   isHighPriceImpact: fees?.isHighPriceImpact,
-    //   isHighPriceImpactAccepted,
-    //   triggerPrice,
-    //   swapTriggerRatio: swapRatio?.ratio,
-    //   closeSizeUsd,
-    // });
+    const [error] = getCommonError();
 
-    const error = undefined;
-
-    if (error) {
+    if (typeof error === "string") {
       return {
         text: error,
         disabled: true,
       };
     }
 
-    let text = `${tradeTypeLabels[p.selectedTradeType!]} ${toTokenInput.token?.symbol}`;
+    let text = "";
+
+    if (isSwap) {
+      text = `Swap ${fromTokenInput.token?.symbol}`;
+    }
+
+    if (isIncrease) {
+      text = `${tradeTypeLabels[p.selectedTradeType!]} ${toTokenInput.token?.symbol}`;
+    }
 
     if (isTrigger) {
       text = `Create Trigger order`;
@@ -827,6 +849,222 @@ export function TradeBox(p: Props) {
       text,
       onClick: () => setStage("confirmation"),
     };
+  }
+
+  function getCommonError() {
+    if (IS_NETWORK_DISABLED[chainId]) {
+      return [t`App disabled, pending ${getChainName(chainId)} upgrade`];
+    }
+
+    // if (hasOutdatedUi) {
+    //   return [t`Page outdated, please refresh`];
+    // }
+
+    if (isSwap) {
+      return getSwapError();
+    }
+
+    if (isIncrease) {
+      return getIncreaseOrderError();
+    }
+
+    if (isTrigger) {
+      return getTriggerOrderError();
+    }
+
+    return [false];
+  }
+
+  function getSwapError() {
+    if (!isSwap) return [false];
+
+    if (IS_NETWORK_DISABLED[chainId]) {
+      return [t`Swaps disabled, pending ${getChainName(chainId)} upgrade`];
+    }
+
+    if (fromTokenInput.tokenAddress === toTokenInput.tokenAddress) {
+      return [t`Select different tokens`];
+    }
+
+    if (!fromTokenInput.tokenAmount.gt(0)) {
+      return [t`Enter an amount`];
+    }
+
+    // if (!toTokenInput.tokenAmount.gt(0)) {
+    //   return [t`Enter an amount`];
+    // }
+
+    if (fromTokenInput.tokenAmount.gt(fromTokenInput.balance || BigNumber.from(0))) {
+      return [t`Insufficient ${fromTokenInput.token?.symbol} balance`];
+    }
+
+    if (!swapParams?.swapPath?.length) {
+      return [t`Couldn't find a swap path with enough liquidity`];
+    }
+
+    if (isMarket && swapOutLiquidity?.lt(toTokenInput.usdAmount)) {
+      return [t`Insufficient liquidity`];
+    }
+
+    if (fees?.totalFees?.deltaUsd.abs().gt(fromTokenInput.usdAmount)) {
+      return [t`Fees exceed amount`];
+    }
+
+    if (isLimit) {
+      if (!triggerRatio?.ratio.gt(0)) {
+        return [t`Enter a  price`];
+      }
+
+      const isRatioInverted = [fromTokenInput.token?.wrappedAddress, fromTokenInput.token?.address].includes(
+        triggerRatio.largestAddress
+      );
+
+      if (triggerRatio && !isRatioInverted && markRatio?.ratio.lt(triggerRatio.ratio)) {
+        return [t`Price above Mark Price`];
+      }
+
+      if (triggerRatio && isRatioInverted && markRatio?.ratio.gt(triggerRatio.ratio)) {
+        return [t`Price below Mark Price`];
+      }
+    }
+
+    return [false];
+  }
+
+  function getIncreaseOrderError() {
+    if (!isIncrease) return [false];
+
+    if (!selectedMarket) {
+      return [t`Select a market`];
+    }
+
+    if (!fromTokenInput.tokenAmount.gt(0)) {
+      return [t`Enter an amount`];
+    }
+
+    if (fromTokenInput.tokenAmount.gt(fromTokenInput.balance || BigNumber.from(0))) {
+      return [t`Insufficient ${fromTokenInput.token?.symbol} balance`];
+    }
+
+    if (
+      !existingPosition &&
+      tradeParams.collateralAfterFees?.lt(minCollateralUsd || expandDecimals(10, USD_DECIMALS))
+    ) {
+      return [t`Min order: ${formatUsd(minCollateralUsd || expandDecimals(10, USD_DECIMALS))}`];
+    }
+
+    if (nextLeverage && nextLeverage.gt(maxLeverage || MAX_ALLOWED_LEVERAGE)) {
+      const maxValue = Number(maxLeverage) || MAX_ALLOWED_LEVERAGE;
+      return [t`Max leverage: ${(maxValue / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
+    }
+
+    // if (isLong && acceptablePrice && markPrice?.lt(acceptablePrice)) {
+    //   return [t`Acceptable Price above Mark Price`];
+    // }
+
+    // if (isShort && acceptablePrice && markPrice?.lt(acceptablePrice)) {
+    //   return [t`Acceptable Price above Mark Price`];
+    // }
+
+    const fromAddress = fromTokenInput.tokenAddress
+      ? convertTokenAddress(chainId, fromTokenInput.tokenAddress, "wrapped")
+      : undefined;
+
+    const collateralAddress = p.selectedCollateralAddress
+      ? convertTokenAddress(chainId, p.selectedCollateralAddress, "wrapped")
+      : undefined;
+
+    const isNeedSwap = fromAddress && collateralAddress && fromAddress !== collateralAddress;
+
+    if (isNeedSwap) {
+      if (!increaseParams?.swapPath?.length) {
+        return [t`Couldn't find a swap route with enough liquidity`];
+      }
+
+      if (positionCollateralLiquidity?.lt(increaseParams?.collateralUsd || BigNumber.from(0))) {
+        return [t`Insufficient liquidity`];
+      }
+    }
+
+    if (fees?.totalFees?.deltaUsd.abs().gt(fromTokenInput.usdAmount)) {
+      return [t`Fees exceed amount`];
+    }
+
+    if (isLong && indexToken && longLiquidity?.lt(increaseParams?.sizeDeltaUsd || BigNumber.from(0))) {
+      return [t`Max ${indexToken.symbol} long exceeded`];
+    }
+
+    if (isShort && indexToken && shortLiquidity?.lt(increaseParams?.sizeDeltaUsd || BigNumber.from(0))) {
+      return [t`Max ${indexToken.symbol} short exceeded`];
+    }
+
+    if (isLimit) {
+      if (!triggerPrice?.gt(0)) {
+        return [t`Enter a price`];
+      }
+
+      if (isLong && markPrice?.lt(triggerPrice)) {
+        return [t`Price above Mark Price`];
+      }
+
+      if (!isLong && markPrice?.gt(triggerPrice)) {
+        return [t`Price below Mark Price`];
+      }
+    }
+
+    return [false];
+  }
+
+  function getTriggerOrderError() {
+    if (!isTrigger) return [false];
+
+    // if (isSwapAllowed && isContractAccount && isAddressZero(receiveToken?.address)) {
+    //   return t`${nativeTokenSymbol} can not be sent to smart contract addresses. Select another token.`;
+    // }
+
+    if (!closeSizeUsd?.gt(0)) {
+      return [t`Enter a size`];
+    }
+
+    if (!triggerPrice?.gt(0)) {
+      return [t`Enter a trigger price`];
+    }
+
+    if (existingPosition?.liqPrice) {
+      if (isLong && triggerPrice?.lte(existingPosition.liqPrice)) {
+        return [t`Price below Liq. Price`];
+      }
+
+      if (isShort && triggerPrice?.gte(existingPosition.liqPrice)) {
+        return [t`Price above Liq. Price`];
+      }
+    }
+
+    if (nextLeverage && nextLeverage.gt(maxLeverage || MAX_ALLOWED_LEVERAGE)) {
+      const maxValue = Number(maxLeverage) || MAX_ALLOWED_LEVERAGE;
+      return [t`Max leverage: ${(maxValue / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
+    }
+
+    const collateralAddress = p.selectedCollateralAddress
+      ? convertTokenAddress(chainId, p.selectedCollateralAddress, "wrapped")
+      : undefined;
+    const receiveAddress = receiveToken ? convertTokenAddress(chainId, receiveToken.address, "wrapped") : undefined;
+
+    const needSwap = collateralAddress && receiveAddress && collateralAddress !== receiveAddress;
+
+    if (needSwap) {
+      if (receiveTokenLiquidity?.lt(receiveUsd || 0)) {
+        return [t`Insufficient receive token liquidity`];
+      }
+    }
+
+    // const isNotEnoughReceiveTokenLiquidity = receiveUsd && receiveTokenLiquidity?.lt(receiveUsd);
+
+    // if (isNotEnoughReceiveTokenLiquidity) {
+    //   return [t`Insufficient receive token liquidity`]
+    // }
+
+    return [false];
   }
 
   function renderTokenInputs() {
@@ -1231,7 +1469,7 @@ export function TradeBox(p: Props) {
 
           <TradeFeesRow
             totalFees={fees?.totalFees}
-            swapFees={fees?.swapFees}
+            swapPathStats={fees?.swapFees}
             positionFee={fees?.positionFee}
             positionPriceImpact={fees?.positionPriceImpact}
             positionFeeFactor={feesConfig?.positionFeeFactor}
@@ -1316,6 +1554,19 @@ export function TradeBox(p: Props) {
           }}
           onClose={() => setStage("trade")}
           setKeepLeverage={setKeepLeverage}
+        />
+      )}
+
+      {stage === "processing" && (
+        <OrderStatus
+          orderType={isSwap ? OrderType.MarketSwap : OrderType.MarketIncrease}
+          marketAddress={p.selectedMarketAddress}
+          initialCollateralAddress={isSwap ? fromTokenInput.tokenAddress : undefined}
+          initialCollateralAmount={isSwap ? fromTokenInput.tokenAmount : undefined}
+          toSwapTokenAddress={isSwap ? toTokenInput.tokenAddress : undefined}
+          sizeDeltaUsd={increaseParams?.sizeDeltaUsd}
+          isLong={isSwap ? undefined : isLong}
+          onClose={() => setStage("trade")}
         />
       )}
     </>

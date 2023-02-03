@@ -33,7 +33,7 @@ import {
   getTriggerOrderType,
   getTriggerPricePrefix,
   isLimitOrder,
-  isTriggerDecreaseOrder as isTriggerDecreaseOrder,
+  isTriggerDecreaseOrder,
   isTriggerPriceAboveThreshold,
 } from "domain/synthetics/orders";
 import { AggregatedPositionData, formatLeverage, formatPnl } from "domain/synthetics/positions";
@@ -1044,7 +1044,7 @@ export function ConfirmationBox(p: Props) {
         <TradeFeesRow
           totalFees={p.fees?.totalFees}
           positionPriceImpact={p.fees?.positionPriceImpact}
-          swapFees={p.fees?.swapFees}
+          swapPathStats={p.fees?.swapFees}
           positionFee={p.fees?.positionFee}
           positionFeeFactor={feesConfig?.positionFeeFactor}
         />

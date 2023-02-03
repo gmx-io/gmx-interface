@@ -88,7 +88,7 @@ export function getAggregatedOrderData(
 
   const market = getMarket(marketsData, order.marketAddress);
   const marketName = getMarketName(marketsData, tokensData, order.marketAddress, false, false);
-  const indexToken = getTokenData(tokensData, market?.indexTokenAddress);
+  const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
   const initialCollateralToken = getTokenData(tokensData, order.initialCollateralTokenAddress);
 
   const toCollateralAddress = getToTokenFromSwapPath(marketsData, order.initialCollateralTokenAddress, order.swapPath);

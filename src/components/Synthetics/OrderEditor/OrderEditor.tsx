@@ -1,36 +1,33 @@
 import { Trans, t } from "@lingui/macro";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import { InfoRow } from "components/InfoRow/InfoRow";
 import Modal from "components/Modal/Modal";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
-import { getExecutionFee } from "domain/synthetics/fees";
+import { getMarket, useMarketsData } from "domain/synthetics/markets";
 import {
   AggregatedOrderData,
   OrderType,
   getToTokenFromSwapPath,
   isLimitOrder,
-  isTriggerDecreaseOrder,
   isSwapOrder,
+  isTriggerDecreaseOrder,
 } from "domain/synthetics/orders";
-import { getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
-import { useChainId } from "lib/chains";
-import { USD_DECIMALS } from "lib/legacy";
-import { formatAmount, formatDeltaUsd, formatTokenAmountWithUsd, formatUsd, parseValue } from "lib/numbers";
-import { useState } from "react";
-import { getMarket, useMarketsData } from "domain/synthetics/markets";
-import { InfoRow } from "components/InfoRow/InfoRow";
-import Tooltip from "components/Tooltip/Tooltip";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import {
   AggregatedPositionData,
   AggregatedPositionsData,
   getPosition,
   getPositionKey,
 } from "domain/synthetics/positions";
+import { getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
+import { useChainId } from "lib/chains";
+import { USD_DECIMALS } from "lib/legacy";
+import { formatAmount, formatUsd, parseValue } from "lib/numbers";
+import { useState } from "react";
 
-import "./OrderEditor.scss";
-import { getNextTokenAmount, useSwapTriggerRatioState } from "../Trade/utils";
-import { updateOrderTxn } from "domain/synthetics/orders/updateOrderTxn";
 import { useWeb3React } from "@web3-react/core";
+import { updateOrderTxn } from "domain/synthetics/orders/updateOrderTxn";
+import { getNextTokenAmount, useSwapTriggerRatioState } from "../Trade/utils";
+import "./OrderEditor.scss";
 
 type Props = {
   positionsData: AggregatedPositionsData;
@@ -44,8 +41,6 @@ export function OrderEditor(p: Props) {
 
   const { tokensData } = useAvailableTokensData(chainId);
   const { marketsData } = useMarketsData(chainId);
-
-  const executionFee = getExecutionFee(tokensData);
 
   const [sizeInputValue, setSizeInputValue] = useState("");
   const sizeDeltaUsd = parseValue(sizeInputValue || "0", USD_DECIMALS);
@@ -190,11 +185,10 @@ export function OrderEditor(p: Props) {
   }
 
   function onSubmit() {
-    if (!p.order.triggerPrice || !executionFee?.feeTokenAmount) return;
+    if (!p.order.triggerPrice) return;
 
     updateOrderTxn(chainId, library, {
       order: p.order,
-      executionFee: executionFee?.feeTokenAmount,
       sizeDeltaUsd,
       triggerPrice,
       minOutputAmount,
@@ -259,31 +253,6 @@ export function OrderEditor(p: Props) {
 
         <div className="PositionEditor-info-box">
           {existingPosition?.liqPrice && <InfoRow label={t`Liq. Price`} value={formatUsd(existingPosition.liqPrice)} />}
-          <InfoRow
-            label={<Trans>Fees</Trans>}
-            value={
-              <Tooltip
-                handle={formatDeltaUsd(executionFee?.feeUsd)}
-                position="right-top"
-                renderContent={() => (
-                  <div>
-                    <StatsTooltipRow
-                      label={t`Execution fee`}
-                      value={
-                        formatTokenAmountWithUsd(
-                          executionFee?.feeTokenAmount,
-                          executionFee?.feeUsd,
-                          executionFee?.feeToken?.symbol,
-                          executionFee?.feeToken?.decimals
-                        ) || "..."
-                      }
-                      showDollar={false}
-                    />
-                  </div>
-                )}
-              />
-            }
-          />
         </div>
 
         <div className="Exchange-swap-button-container">

@@ -10,7 +10,6 @@ import { convertToContractPrice } from "../tokens";
 
 export type UpdateOrderParams = {
   order: AggregatedOrderData;
-  executionFee: BigNumber;
   sizeDeltaUsd?: BigNumber;
   triggerPrice?: BigNumber;
   acceptablePrice?: BigNumber;
@@ -30,7 +29,7 @@ export function updateOrderTxn(chainId: number, library: Web3Provider, p: Update
     if (!p.minOutputAmount) {
       throw new Error("No updates provided");
     }
-    params = [p.order.key, BigNumber.from(0), BigNumber.from(0), BigNumber.from(0)];
+    params = [p.order.key, BigNumber.from(0), BigNumber.from(0), BigNumber.from(0), p.minOutputAmount];
   } else {
     if (!p.sizeDeltaUsd && !p.triggerPrice) {
       throw new Error("No updates provided");
@@ -52,11 +51,10 @@ export function updateOrderTxn(chainId: number, library: Web3Provider, p: Update
       ? convertToContractPrice(p.triggerPrice, indexToken.decimals)
       : p.order.contractTriggerPrice;
 
-    params = [p.order.key, sizeDeltaUsd, acceptablePrice, triggerPrice];
+    params = [p.order.key, sizeDeltaUsd, acceptablePrice, triggerPrice, BigNumber.from(0)];
   }
 
   return callContract(chainId, exchangeRouter, "updateOrder", params, {
-    value: p.executionFee,
     sentMsg: t`Updating order`,
     successMsg: t`Update order canceled`,
     failMsg: t`Failed to update order`,

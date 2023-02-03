@@ -350,6 +350,9 @@ export function getCappedPoolPnl(
   return poolPnl?.gt(maxPnl) ? maxPnl : poolPnl;
 }
 
+//  TODO:
+export function getMaxLiquidityForToken() {}
+
 export function getTotalBorrowingFees(
   openInterestData: MarketsOpenInterestData,
   poolsData: MarketsPoolsData,

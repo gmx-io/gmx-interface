@@ -1,12 +1,7 @@
-import {
-  MarketsData,
-  MarketsOpenInterestData,
-  MarketsPoolsData,
-  getAvailableUsdLiquidityForCollateral,
-} from "domain/synthetics/markets";
+import { MarketsData, MarketsOpenInterestData, MarketsPoolsData } from "domain/synthetics/markets";
 import { BigNumber, ethers } from "ethers";
 import { MarketsFeesConfigsData, getSwapStats } from "../fees";
-import { TokensData, convertToUsd, getTokenData } from "../tokens";
+import { TokensData } from "../tokens";
 import { Edge, MarketsGraph, SwapEstimator } from "./types";
 
 export function getMarketsGraph(marketsData: MarketsData): MarketsGraph {

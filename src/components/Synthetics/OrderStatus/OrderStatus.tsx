@@ -32,7 +32,7 @@ export function OrderStatus(p: Props) {
   const orderStatus = orderKey ? orderStatuses[orderKey] : undefined;
 
   const market = getMarket(marketsData, p.marketAddress);
-  const indexToken = getTokenData(tokensData, market?.indexTokenAddress);
+  const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
   const initialCollateralToken = getTokenData(tokensData, p.initialCollateralAddress);
   const toSwapToken = getTokenData(tokensData, p.toSwapTokenAddress);
 

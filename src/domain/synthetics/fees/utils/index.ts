@@ -1,11 +1,11 @@
 import { t } from "@lingui/macro";
-import { getExecutionFeeMultiplier, getHighExecutionFee } from "config/chains";
+import { getHighExecutionFee } from "config/chains";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { convertToTokenAmount, convertToUsd, getTokenData, TokensData } from "domain/synthetics/tokens";
+import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import { applyFactor, expandDecimals, getBasisPoints } from "lib/numbers";
-import { ExecutionFee, ExecutionFeeParams, FeeItem, GasLimitsConfig, MarketsFeesConfigsData } from "../types";
+import { ExecutionFee, FeeItem, GasLimitsConfig, MarketsFeesConfigsData } from "../types";
 
 export * from "./priceImpact";
 export * from "./swapFees";
@@ -75,21 +75,6 @@ export function getTotalFeeItem(feeItems: FeeItem[]): FeeItem {
   return totalFeeItem;
 }
 
-export function getExecutionFee(tokensData: TokensData): ExecutionFeeParams | undefined {
-  const nativeToken = getTokenData(tokensData, NATIVE_TOKEN_ADDRESS);
-
-  if (!nativeToken?.prices) return undefined;
-
-  const feeUsd = expandDecimals(2, 28);
-  const feeTokenAmount = convertToTokenAmount(feeUsd, nativeToken.decimals, nativeToken.prices.maxPrice);
-
-  return {
-    feeUsd: feeUsd,
-    feeTokenAmount,
-    feeToken: nativeToken,
-  };
-}
-
 export function getMinExecutionFee(
   chainId: number,
   gasLimts: GasLimitsConfig,
@@ -105,14 +90,7 @@ export function getMinExecutionFee(
   const multiplierFactor = gasLimts.estimatedFeeMultiplierFactor;
   const adjustedGasLimit = baseGasLimit.add(applyFactor(estimatedGasLimit, multiplierFactor));
 
-  let feeTokenAmount = adjustedGasLimit.mul(gasPrice);
-
-  const multiplier = getExecutionFeeMultiplier(chainId);
-  const baseChainExecutionFee = gasPrice.mul(multiplier);
-
-  if (baseChainExecutionFee.gt(feeTokenAmount)) {
-    feeTokenAmount = baseChainExecutionFee;
-  }
+  const feeTokenAmount = adjustedGasLimit.mul(gasPrice);
 
   const feeUsd = convertToUsd(feeTokenAmount, nativeToken.decimals, nativeToken.prices.minPrice)!;
 

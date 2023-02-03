@@ -13,7 +13,7 @@ import "./TradeFeesRow.scss";
 
 type Props = {
   totalFees?: FeeItem;
-  swapFees?: SwapPathStats;
+  swapPathStats?: SwapPathStats;
   positionFee?: FeeItem;
   positionPriceImpact?: FeeItem;
   positionFeeFactor?: BigNumber;
@@ -47,15 +47,17 @@ export function TradeFeesRow(p: Props) {
                     />
                   )}
 
-                  {p.swapFees?.totalPriceImpact.deltaUsd.abs().gt(0) && (
+                  {p.swapPathStats?.totalPriceImpact.deltaUsd.abs().gt(0) && (
                     <StatsTooltipRow
                       label={t`Swap price impact`}
-                      value={formatDeltaUsd(p.swapFees.totalPriceImpact.deltaUsd, p.swapFees.totalPriceImpact.bps)!}
+                      value={
+                        formatDeltaUsd(p.swapPathStats.totalPriceImpact.deltaUsd, p.swapPathStats.totalPriceImpact.bps)!
+                      }
                       showDollar={false}
                     />
                   )}
 
-                  {p.swapFees?.swapFees.map((swap) => (
+                  {p.swapPathStats?.swapFees.map((swap) => (
                     <>
                       <br />
                       <StatsTooltipRow
@@ -75,7 +77,7 @@ export function TradeFeesRow(p: Props) {
                       <StatsTooltipRow
                         label={t`Position Fee (${formatPercentage(
                           p.positionFeeFactor?.div(PRECISION.div(BASIS_POINTS_DIVISOR))
-                        )} of position size):`}
+                        )} of position size)`}
                         value={formatDeltaUsd(p.positionFee.deltaUsd, p.positionFee.bps)!}
                         showDollar={false}
                       />
