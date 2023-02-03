@@ -150,25 +150,27 @@ function getSimulationPrices(
     }
   }
 
-  // eslint-disable-next-line no-console
-  console.log("prices", {
-    primaryPricesMap: _.mapValues(primaryPricesMap, (v) => ({
-      min: formatUsd(v?.minPrice),
-      max: formatUsd(v?.maxPrice),
-    })),
-    secondaryPricesMap: _.mapValues(secondaryPricesMap, (v) => ({
-      min: formatUsd(v?.minPrice),
-      max: formatUsd(v?.maxPrice),
-    })),
-    primaryPrices: primaryPrices.map((v) => ({
-      min: formatUsd(v.min.mul(expandDecimals(1, 18))),
-      max: formatUsd(v.max.mul(expandDecimals(1, 18))),
-    })),
-    secondaryPrices: secondaryPrices.map((v) => ({
-      min: formatUsd(v.min.mul(expandDecimals(1, 18))),
-      max: formatUsd(v.max.mul(expandDecimals(1, 18))),
-    })),
-  });
+  if (isDevelopment()) {
+    // eslint-disable-next-line no-console
+    console.log("simulation prices", {
+      primaryPricesMap: _.mapValues(primaryPricesMap, (v) => ({
+        min: formatUsd(v?.minPrice),
+        max: formatUsd(v?.maxPrice),
+      })),
+      secondaryPricesMap: _.mapValues(secondaryPricesMap, (v) => ({
+        min: formatUsd(v?.minPrice),
+        max: formatUsd(v?.maxPrice),
+      })),
+      primaryPrices: primaryPrices.map((v) => ({
+        min: formatUsd(v.min.mul(expandDecimals(1, 18))),
+        max: formatUsd(v.max.mul(expandDecimals(1, 18))),
+      })),
+      secondaryPrices: secondaryPrices.map((v) => ({
+        min: formatUsd(v.min.mul(expandDecimals(1, 18))),
+        max: formatUsd(v.max.mul(expandDecimals(1, 18))),
+      })),
+    });
+  }
 
   return {
     primaryTokens,

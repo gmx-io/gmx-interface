@@ -28,7 +28,6 @@ import { GmConfirmationBox } from "../GmConfirmationBox/GmConfirmationBox";
 
 import Checkbox from "components/Checkbox/Checkbox";
 import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
-import { HIGH_PRICE_IMPACT_BP } from "config/synthetics";
 import { useAvailableTokensData } from "domain/synthetics/tokens";
 
 import { Dropdown, DropdownOption } from "components/Dropdown/Dropdown";
@@ -39,6 +38,7 @@ import { SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY } from "config/localStorage";
 
 import { useGasLimitsConfig } from "domain/synthetics/fees/useGasLimitsConfig";
 import "./GmSwapBox.scss";
+import { HIGH_PRICE_IMPACT_BP } from "config/synthetics";
 
 type Props = {
   selectedMarketAddress?: string;

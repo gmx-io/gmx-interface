@@ -1,13 +1,10 @@
 import { t } from "@lingui/macro";
 
-import { ExecutionFeeParams } from "domain/synthetics/fees";
 import { TokensData, convertToTokenAmount, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 
-import { BASIS_POINTS_DIVISOR, PRECISION, USD_DECIMALS, adjustForDecimals } from "lib/legacy";
-import { parseValue } from "lib/numbers";
-import { useState } from "react";
+import { BASIS_POINTS_DIVISOR, PRECISION, adjustForDecimals } from "lib/legacy";
 
 export enum TradeType {
   Long = "Long",
@@ -20,24 +17,6 @@ export enum TradeMode {
   Limit = "Limit",
   Trigger = "Trigger",
 }
-
-export const tradeTypeLabels = {
-  [TradeType.Long]: t`Long`,
-  [TradeType.Short]: t`Short`,
-  [TradeType.Swap]: t`Swap`,
-};
-
-export const tradeModeLabels = {
-  [TradeMode.Market]: t`Market`,
-  [TradeMode.Limit]: t`Limit`,
-  [TradeMode.Trigger]: t`Trigger`,
-};
-
-export const avaialbleModes = {
-  [TradeType.Long]: [TradeMode.Market, TradeMode.Limit, TradeMode.Trigger],
-  [TradeType.Short]: [TradeMode.Market, TradeMode.Limit, TradeMode.Trigger],
-  [TradeType.Swap]: [TradeMode.Market, TradeMode.Limit],
-};
 
 const LEVERAGE_PRECISION = BigNumber.from(BASIS_POINTS_DIVISOR);
 
@@ -168,49 +147,3 @@ export function getNextTokenAmount(p: {
 
   return toAmount;
 }
-
-export type SwapTriggerRatioState = {
-  inputValue: string;
-  setInputValue: (v: string) => void;
-  ratio: BigNumber;
-  biggestSide: "from" | "to";
-  markRatio: BigNumber;
-};
-
-export function useSwapTriggerRatioState(p: {
-  isAllowed: boolean;
-  fromTokenPrice?: BigNumber;
-  toTokenPrice?: BigNumber;
-}): SwapTriggerRatioState | undefined {
-  const [inputValue, setInputValue] = useState("");
-
-  if (!p.isAllowed || !p.fromTokenPrice || !p.toTokenPrice) return undefined;
-
-  const ratio = parseValue(inputValue || "0", USD_DECIMALS)!;
-
-  const biggestSide = p.fromTokenPrice.gt(p.toTokenPrice) ? "from" : "to";
-
-  let markRatio =
-    biggestSide === "from"
-      ? p.fromTokenPrice.mul(PRECISION).div(p.toTokenPrice)
-      : p.toTokenPrice.mul(PRECISION).div(p.fromTokenPrice);
-
-  return {
-    inputValue,
-    setInputValue,
-    ratio,
-    biggestSide,
-    markRatio,
-  };
-}
-
-export type Fees = {
-  executionFee?: ExecutionFeeParams;
-  totalFeeUsd: BigNumber;
-  positionPriceImpact?: any;
-  isHighPriceImpactAccepted?: boolean;
-  isHighPriceImpact?: boolean;
-  setIsHighPriceImpactAccepted?: (v: boolean) => void;
-  swapPath?: any[];
-  swapFeeUsd?: BigNumber;
-};

@@ -217,7 +217,7 @@ describe("swapPath", () => {
 
         const result = findBestSwapPath(graph, from, to, usdIn, estimator);
         const path = result?.map((p) => p.marketAddress);
-        const fees = getSwapPathStats(marketsData, poolsData, tokensData, feeConfigs, path, from, amountIn);
+        const fees = getSwapPathStats(marketsData, poolsData, tokensData, feeConfigs, path, from, usdIn);
 
         expect(path).toEqual(expected);
         expect(formatUsd(fees?.totalPriceImpact.deltaUsd)).toEqual(formatUsd(expectedImpactDeltaUsd));

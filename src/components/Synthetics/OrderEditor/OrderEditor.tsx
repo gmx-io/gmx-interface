@@ -22,11 +22,12 @@ import { getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
 import { formatAmount, formatUsd, parseValue } from "lib/numbers";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import { useWeb3React } from "@web3-react/core";
+import { TokensRatio, getTokensRatio } from "domain/synthetics/exchange";
 import { updateOrderTxn } from "domain/synthetics/orders/updateOrderTxn";
-import { getNextTokenAmount, useSwapTriggerRatioState } from "../Trade/utils";
+import { getNextTokenAmount } from "../Trade/utils";
 import "./OrderEditor.scss";
 
 type Props = {
@@ -55,12 +56,23 @@ export function OrderEditor(p: Props) {
   const toToken = getTokenData(tokensData, toTokenAddress);
   const fromTokenPrice = fromToken?.prices?.maxPrice;
   const toTokenPrice = toToken?.prices?.minPrice;
-
-  const swapRatio = useSwapTriggerRatioState({
-    isAllowed: true,
-    fromTokenPrice,
-    toTokenPrice,
+  const [triggerRatioInputValue, setTriggerRatioInputValue] = useState<string>("");
+  const markRatio = getTokensRatio({
+    fromToken,
+    toToken,
   });
+  const triggerRatio = useMemo(() => {
+    if (!markRatio) return undefined;
+
+    const ratio = parseValue(triggerRatioInputValue, USD_DECIMALS);
+
+    return {
+      ratio: ratio?.gt(0) ? ratio : markRatio.ratio,
+      largestAddress: markRatio.largestAddress,
+      smallestAddress: markRatio.smallestAddress,
+    } as TokensRatio;
+  }, [markRatio, triggerRatioInputValue]);
+
   const minOutputAmount =
     isSwap && fromTokenPrice && toTokenPrice
       ? getNextTokenAmount({
@@ -69,8 +81,8 @@ export function OrderEditor(p: Props) {
           fromTokenAmount: p.order.initialCollateralDeltaAmount,
           fromTokenPrice,
           toTokenPrice,
-          swapTriggerRatio: swapRatio?.ratio,
-          isInvertedTriggerRatio: swapRatio?.biggestSide === "to",
+          swapTriggerRatio: triggerRatio?.ratio,
+          isInvertedTriggerRatio: triggerRatio?.largestAddress === "to",
         })
       : undefined;
 
@@ -89,7 +101,7 @@ export function OrderEditor(p: Props) {
 
   function getError() {
     if (isSwapOrder(p.order.orderType)) {
-      if (!swapRatio?.ratio?.gt(0)) {
+      if (!triggerRatio?.ratio?.gt(0)) {
         return t`Enter a ratio`;
       }
 
@@ -231,19 +243,19 @@ export function OrderEditor(p: Props) {
 
         {isSwapOrder(p.order.orderType) && (
           <>
-            {swapRatio && (
+            {triggerRatio && (
               <BuyInputSection
                 topLeftLabel={t`Price`}
-                topRightValue={formatAmount(swapRatio.markRatio, USD_DECIMALS, 4)}
+                topRightValue={formatAmount(markRatio?.ratio, USD_DECIMALS, 4)}
                 onClickTopRightLabel={() => {
-                  swapRatio.setInputValue(formatAmount(swapRatio.markRatio, USD_DECIMALS, 10));
+                  setTriggerRatioInputValue(formatAmount(markRatio?.ratio, USD_DECIMALS, 10));
                 }}
-                inputValue={swapRatio.inputValue}
+                inputValue={triggerRatioInputValue}
                 onInputValueChange={(e) => {
-                  swapRatio.setInputValue(e.target.value);
+                  setTriggerRatioInputValue(e.target.value);
                 }}
               >
-                {swapRatio.biggestSide === "from"
+                {triggerRatio.largestAddress === fromToken?.address
                   ? `${toToken?.symbol} per ${fromToken?.symbol}`
                   : `${fromToken?.symbol} per ${toToken?.symbol}`}
               </BuyInputSection>

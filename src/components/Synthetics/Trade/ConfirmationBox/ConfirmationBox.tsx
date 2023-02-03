@@ -7,7 +7,6 @@ import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import Modal from "components/Modal/Modal";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
-import { HIGH_SPREAD_THRESHOLD } from "config/common";
 import { getContract } from "config/contracts";
 import { getWrappedToken } from "config/tokens";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
@@ -72,6 +71,7 @@ import { HIGH_PRICE_IMPACT_BP as HIGH_PRICE_IMPACT_BPS } from "config/synthetics
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 
 import "./ConfirmationBox.scss";
+import { getSpread } from "domain/tokens";
 
 type Props = {
   operationType: TradeType;
@@ -114,29 +114,6 @@ type Props = {
   onClose: () => void;
   onSubmitted: () => void;
 };
-
-function getSpread(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddress) {
-  if (fromTokenInfo && fromTokenInfo.maxPrice && toTokenInfo && toTokenInfo.minPrice) {
-    const fromDiff = fromTokenInfo.maxPrice.sub(fromTokenInfo.minPrice).div(2);
-    const fromSpread = fromDiff.mul(PRECISION).div(fromTokenInfo.maxPrice.add(fromTokenInfo.minPrice).div(2));
-    const toDiff = toTokenInfo.maxPrice.sub(toTokenInfo.minPrice).div(2);
-    const toSpread = toDiff.mul(PRECISION).div(toTokenInfo.maxPrice.add(toTokenInfo.minPrice).div(2));
-
-    let value = fromSpread.add(toSpread);
-
-    const fromTokenAddress = fromTokenInfo.isNative ? nativeTokenAddress : fromTokenInfo.address;
-    const toTokenAddress = toTokenInfo.isNative ? nativeTokenAddress : toTokenInfo.address;
-
-    if (isLong && fromTokenAddress === toTokenAddress) {
-      value = fromSpread;
-    }
-
-    return {
-      value,
-      isHigh: value.gt(HIGH_SPREAD_THRESHOLD),
-    };
-  }
-}
 
 function formatTokensRatio(tokensData: TokensData, ratio?: TokensRatio) {
   const smallest = getTokenData(tokensData, ratio?.smallestAddress);
