@@ -1910,7 +1910,6 @@ msgstr "最大クローズ値超過"
 msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account:"
 msgstr "最大レバレッジ100倍を超過し、損失と手数料を差し引き後に残った担保はアカウントに返送されました:"
 
-
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
