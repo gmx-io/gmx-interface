@@ -354,7 +354,7 @@ export default function PositionsList(props) {
                       </div>
                       <div>
                         <Tooltip
-                          handle={`$${formatAmount(position.netValue, USD_DECIMALS, 2, true)}`}
+                          handle={formatAmountWithDollarSign(position.netValue, USD_DECIMALS, 2, true)}
                           position="right-bottom"
                           handleClassName="plain"
                           renderContent={() => {
@@ -572,7 +572,7 @@ export default function PositionsList(props) {
                     {!position.netValue && t`Opening...`}
                     {position.netValue && (
                       <Tooltip
-                        handle={`$${formatAmount(position.netValue, USD_DECIMALS, 2, true)}`}
+                        handle={formatAmountWithDollarSign(position.netValue, USD_DECIMALS, 2, true)}
                         position="left-bottom"
                         handleClassName="plain"
                         renderContent={() => {
