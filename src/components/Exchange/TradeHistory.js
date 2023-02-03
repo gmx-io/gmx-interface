@@ -52,7 +52,7 @@ function renderLiquidationTooltip(liquidationData, label) {
   const text =
     liquidationData.type === "full"
       ? t`This position was liquidated as the max leverage of 100x was exceeded.`
-      : t`Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account`;
+      : t`Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account:`;
   return (
     <Tooltip
       position="left-top"
