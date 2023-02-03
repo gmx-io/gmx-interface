@@ -52,7 +52,9 @@ export function SyntheticsPage(p: Props) {
   const [selectedOrdersKeys, setSelectedOrdersKeys] = useState<{ [key: string]: boolean }>({});
   const [isCancelOrdersProcessig, setIsCancelOrdersProcessig] = useState(false);
 
-  const { aggregatedPositionsData, isLoading: isPositionsLoading } = useAggregatedPositionsData(chainId);
+  const { aggregatedPositionsData, isLoading: isPositionsLoading } = useAggregatedPositionsData(chainId, {
+    savedIsPnlInLeverage: p.savedIsPnlInLeverage,
+  });
   const { aggregatedOrdersData, isLoading: isOrdersLoading } = useAggregatedOrdersData(chainId);
 
   const positionsCount = Object.keys(aggregatedPositionsData).length;
@@ -150,6 +152,7 @@ export function SyntheticsPage(p: Props) {
                 positionsData={aggregatedPositionsData}
                 ordersData={aggregatedOrdersData}
                 isLoading={isPositionsLoading}
+                savedIsPnlInLeverage={p.savedIsPnlInLeverage}
                 onOrdersClick={() => setListSection(ListSection.Orders)}
                 onSelectPositionClick={onSelectPosition}
               />
@@ -198,6 +201,7 @@ export function SyntheticsPage(p: Props) {
             <PositionList
               positionsData={aggregatedPositionsData}
               ordersData={aggregatedOrdersData}
+              savedIsPnlInLeverage={p.savedIsPnlInLeverage}
               isLoading={isPositionsLoading}
               onOrdersClick={() => setListSection(ListSection.Orders)}
               onSelectPositionClick={onSelectPosition}

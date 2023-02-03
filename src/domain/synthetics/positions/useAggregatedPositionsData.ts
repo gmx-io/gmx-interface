@@ -13,7 +13,10 @@ type AggregatedPositionsDataResult = {
   isLoading: boolean;
 };
 
-export function useAggregatedPositionsData(chainId: number): AggregatedPositionsDataResult {
+export function useAggregatedPositionsData(
+  chainId: number,
+  p: { savedIsPnlInLeverage: boolean }
+): AggregatedPositionsDataResult {
   const { pendingPositionsUpdates, positionsUpdates } = useSyntheticsEvents();
   const { tokensData, isLoading: isTokensLoading } = useAvailableTokensData(chainId);
   const { marketsData, isLoading: isMarketsLoading } = useMarketsData(chainId);
@@ -32,7 +35,8 @@ export function useAggregatedPositionsData(chainId: number): AggregatedPositions
           marketsFeesConfigs,
           pendingPositionsUpdates,
           positionsUpdates,
-          positionKey
+          positionKey,
+          p.savedIsPnlInLeverage
         );
 
         if (position) {
@@ -50,6 +54,7 @@ export function useAggregatedPositionsData(chainId: number): AggregatedPositions
     isTokensLoading,
     marketsData,
     marketsFeesConfigs,
+    p.savedIsPnlInLeverage,
     pendingPositionsUpdates,
     positionsData,
     positionsUpdates,

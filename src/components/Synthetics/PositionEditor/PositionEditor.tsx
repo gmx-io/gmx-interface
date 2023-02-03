@@ -52,6 +52,7 @@ import { approveTokens } from "domain/tokens";
 
 type Props = {
   position: AggregatedPositionData;
+  savedIsPnlInLeverage: boolean;
   onClose: () => void;
 };
 
@@ -66,7 +67,7 @@ const operationLabels = {
 };
 
 export function PositionEditor(p: Props) {
-  const { position } = p;
+  const { position, savedIsPnlInLeverage } = p;
   const { chainId } = useChainId();
   const { account, library, active } = useWeb3React();
   const { setPendingPositionUpdate } = useSyntheticsEvents();
@@ -127,7 +128,7 @@ export function PositionEditor(p: Props) {
     collateralUsd: nextCollateralUsd,
     pendingBorrowingFeesUsd: position.pendingBorrowingFees,
     pendingFundingFeesUsd: position.pendingFundingFeesUsd,
-    pnl: position.pnl,
+    pnl: savedIsPnlInLeverage ? position?.pnl : undefined,
   });
 
   const nextLiqPrice = getLiquidationPrice({

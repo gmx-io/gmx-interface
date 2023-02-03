@@ -42,7 +42,8 @@ export function getAggregatedPositionData(
   marketsFeesConfigs: MarketsFeesConfigsData,
   pendingUpdates: PositionsUpdates,
   contractUpdates: PositionsUpdates,
-  positionKey?: string
+  positionKey?: string,
+  savedIsPnlInLeverage?: boolean
 ): AggregatedPositionData | undefined {
   if (!positionKey) return undefined;
 
@@ -156,7 +157,7 @@ export function getAggregatedPositionData(
   const leverage = getLeverage({
     sizeUsd: position.sizeInUsd,
     collateralUsd,
-    pnl: pnl,
+    pnl: savedIsPnlInLeverage ? pnl : undefined,
     pendingBorrowingFeesUsd: position.pendingBorrowingFees,
     pendingFundingFeesUsd: pendingFundingFeesUsd,
   });

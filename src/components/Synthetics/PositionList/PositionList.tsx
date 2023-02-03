@@ -10,6 +10,7 @@ type Props = {
   onSelectPositionClick: (key: string) => void;
   positionsData: AggregatedPositionsData;
   ordersData: AggregatedOrdersData;
+  savedIsPnlInLeverage: boolean;
   isLoading: boolean;
   onOrdersClick: () => void;
 };
@@ -101,11 +102,19 @@ export function PositionList(p: Props) {
       </table>
 
       {closingPosition && (
-        <PositionSeller position={closingPosition} onClose={() => setClosingPositionKey(undefined)} />
+        <PositionSeller
+          savedIsPnlInLeverage={p.savedIsPnlInLeverage}
+          position={closingPosition}
+          onClose={() => setClosingPositionKey(undefined)}
+        />
       )}
 
       {editingPosition && (
-        <PositionEditor position={editingPosition} onClose={() => setEditingPositionKey(undefined)} />
+        <PositionEditor
+          savedIsPnlInLeverage={p.savedIsPnlInLeverage}
+          position={editingPosition}
+          onClose={() => setEditingPositionKey(undefined)}
+        />
       )}
 
       {/* {sharingPosition && (

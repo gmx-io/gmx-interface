@@ -100,6 +100,7 @@ function isEquivalentTokens(token1: Token, token2: Token) {
 
 type Props = {
   position: AggregatedPositionData;
+  savedIsPnlInLeverage: boolean;
   onClose: () => void;
 };
 
@@ -283,11 +284,14 @@ export function PositionSeller(p: Props) {
         })
       : undefined;
 
+  const nextPnl = position.pnl;
+
   const nextLeverage =
     nextSizeUsd?.gt(0) && !keepLeverage
       ? getLeverage({
           sizeUsd: nextSizeUsd,
           collateralUsd: nextCollateralUsd,
+          pnl: p.savedIsPnlInLeverage ? nextPnl : undefined,
         })
       : undefined;
 

@@ -629,11 +629,14 @@ export function TradeBox(p: Props) {
     pendingFundingFeesUsd: existingPosition?.pendingFundingFeesUsd,
   });
 
+  const nextPnl = existingPosition?.pnl;
+
   const nextLeverage = !isTrigger
     ? leverage
     : getLeverage({
         sizeUsd: nextSizeUsd,
         collateralUsd: nextCollateralUsd,
+        pnl: savedIsPnlInLeverage ? nextPnl : undefined,
       });
 
   useEffect(
