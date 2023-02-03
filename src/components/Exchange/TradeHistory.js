@@ -251,7 +251,7 @@ export default function TradeHistory(props) {
               {params.isLong ? "<" : ">"}&nbsp;
             </Trans>
             <Tooltip
-              position="left-top"
+              position="right-top"
               handle={`${formatAmount(params.acceptablePrice, USD_DECIMALS, 2, true)} USD`}
               renderContent={() => (
                 <Trans>Try increasing the "Allowed Slippage", under the Settings menu on the top right.</Trans>
@@ -279,7 +279,7 @@ export default function TradeHistory(props) {
               {params.isLong ? ">" : "<"}&nbsp;
             </Trans>
             <Tooltip
-              position="left-top"
+              position="right-top"
               handle={`${formatAmount(params.acceptablePrice, USD_DECIMALS, 2, true)} USD`}
               renderContent={() => (
                 <Trans>Try increasing the "Allowed Slippage", under the Settings menu on the top right</Trans>
@@ -495,7 +495,7 @@ export default function TradeHistory(props) {
                     </span>
                   )}
                 </div>
-                <ExternalLink className="plain" href={txUrl}>
+                <ExternalLink className="plain TradeHistory-item-link" href={txUrl}>
                   {msg}
                 </ExternalLink>
               </div>
