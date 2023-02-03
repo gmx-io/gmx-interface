@@ -289,7 +289,7 @@ export const DECENTRALISED_AGGRIGATORS: Exchange[] = [
     name: "Odos",
     icon: "ic_odos.png",
     links: {
-      [ARBITRUM]: "https://app.odos.xyz/swap/42161/GMX/ETH",
+      [ARBITRUM]: "https://app.odos.xyz/swap/42161/ETH/GMX",
       [AVALANCHE]: "https://app.odos.xyz/swap/43114/AVAX/GMX",
     },
   },
