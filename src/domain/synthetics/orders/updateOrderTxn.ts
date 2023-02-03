@@ -4,16 +4,16 @@ import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
 import { BigNumber, ethers } from "ethers";
 import { callContract } from "lib/contracts";
-import { getAcceptablePriceForPositionOrder, isIncreaseOrder, isSwapOrder } from "./utils";
+import { isSwapOrder } from "./utils";
 import { AggregatedOrderData } from "./types";
 import { convertToContractPrice } from "../tokens";
 
 export type UpdateOrderParams = {
   order: AggregatedOrderData;
   executionFee: BigNumber;
-  // updates
   sizeDeltaUsd?: BigNumber;
   triggerPrice?: BigNumber;
+  acceptablePrice?: BigNumber;
   minOutputAmount?: BigNumber;
 };
 
@@ -42,19 +42,11 @@ export function updateOrderTxn(chainId: number, library: Web3Provider, p: Update
       throw new Error("Index token is not available");
     }
 
-    let acceptablePrice = p.order.contractAcceptablePrice;
+    let acceptablePrice = p.acceptablePrice
+      ? convertToContractPrice(p.acceptablePrice, indexToken.decimals)
+      : p.order.contractAcceptablePrice;
 
     const sizeDeltaUsd = p.sizeDeltaUsd || p.order.sizeDeltaUsd;
-
-    if (p.sizeDeltaUsd || p.triggerPrice) {
-      acceptablePrice = getAcceptablePriceForPositionOrder({
-        isIncrease: isIncreaseOrder(p.order.orderType),
-        isLong: p.order.isLong,
-        sizeDeltaUsd: p.sizeDeltaUsd,
-        triggerPrice: p.triggerPrice,
-      });
-      acceptablePrice = convertToContractPrice(acceptablePrice, indexToken.decimals);
-    }
 
     const triggerPrice = p.triggerPrice
       ? convertToContractPrice(p.triggerPrice, indexToken.decimals)

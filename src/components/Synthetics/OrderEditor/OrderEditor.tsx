@@ -8,7 +8,7 @@ import {
   OrderType,
   getToTokenFromSwapPath,
   isLimitOrder,
-  isStopMarketOrder,
+  isTriggerDecreaseOrder,
   isSwapOrder,
 } from "domain/synthetics/orders";
 import { getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
@@ -129,7 +129,7 @@ export function OrderEditor(p: Props) {
       }
     }
 
-    if (isStopMarketOrder(p.order.orderType)) {
+    if (isTriggerDecreaseOrder(p.order.orderType)) {
       if (!markPrice) {
         return t`Loading...`;
       }
@@ -215,7 +215,7 @@ export function OrderEditor(p: Props) {
         {!isSwapOrder(p.order.orderType) && (
           <>
             <BuyInputSection
-              topLeftLabel={isStopMarketOrder(p.order.orderType) ? t`Close` : t`Size`}
+              topLeftLabel={isTriggerDecreaseOrder(p.order.orderType) ? t`Close` : t`Size`}
               inputValue={sizeInputValue}
               onInputValueChange={(e) => setSizeInputValue(e.target.value)}
             >

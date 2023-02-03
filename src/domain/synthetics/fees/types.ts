@@ -15,14 +15,15 @@ export type ExecutionFee = {
   warning?: string;
 };
 
-export type SwapStepFees = {
+export type SwapStats = {
   marketAddress: string;
   tokenInAddress: string;
   tokenOutAddress: string;
   swapFeeAmount: BigNumber;
   swapFeeUsd: BigNumber;
   priceImpactDeltaUsd: BigNumber;
-  totalFeeUsd: BigNumber;
+  totalFeeDeltaUsd: BigNumber;
+  amountIn: BigNumber;
   amountInAfterFees: BigNumber;
   amountOut: BigNumber;
   usdOut: BigNumber;
@@ -39,8 +40,8 @@ export type SwapFeeItem = FeeItem & {
   tokenOutAddress: string;
 };
 
-export type TotalSwapFees = {
-  swapSteps: SwapStepFees[];
+export type SwapPathStats = {
+  swapSteps: SwapStats[];
   swapFees: SwapFeeItem[];
   totalPriceImpact: FeeItem;
   totalSwapFee: FeeItem;
@@ -52,7 +53,7 @@ export type TotalSwapFees = {
 
 export type TradeFees = {
   totalFees?: FeeItem;
-  swapFees?: TotalSwapFees;
+  swapFees?: SwapPathStats;
   executionFee?: ExecutionFee;
   positionFee?: FeeItem;
   positionPriceImpact?: FeeItem;

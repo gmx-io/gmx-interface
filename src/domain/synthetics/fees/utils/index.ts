@@ -35,6 +35,32 @@ export function getPositionFee(
   };
 }
 
+export function getBorrowingRateUsd(
+  feeConfigs: MarketsFeesConfigsData,
+  marketAddress?: string,
+  sizeInUsd?: BigNumber,
+  isLong?: boolean,
+  period: "hour" = "hour"
+) {
+  const feeConfig = getMarketFeesConfig(feeConfigs, marketAddress);
+
+  if (!feeConfig || !sizeInUsd) return undefined;
+
+  const factorPerSecond = isLong
+    ? feeConfig.borrowingFactorPerSecondForLongs
+    : feeConfig.borrowingFactorPerSecondForShorts;
+
+  let factor: BigNumber;
+
+  if (period === "hour") {
+    factor = factorPerSecond.mul(60 * 60);
+  } else {
+    return undefined;
+  }
+
+  return applyFactor(sizeInUsd, factor);
+}
+
 export function getTotalFeeItem(feeItems: FeeItem[]): FeeItem {
   const totalFeeItem: FeeItem = {
     deltaUsd: BigNumber.from(0),

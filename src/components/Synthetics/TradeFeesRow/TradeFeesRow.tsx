@@ -1,26 +1,29 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { InfoRow } from "components/InfoRow/InfoRow";
+import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getToken } from "config/tokens";
-import { FeeItem, TotalSwapFees } from "domain/synthetics/fees";
+import { FeeItem, SwapPathStats } from "domain/synthetics/fees";
+import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-import { formatDeltaUsd } from "lib/numbers";
+import { BASIS_POINTS_DIVISOR, PRECISION } from "lib/legacy";
+import { formatDeltaUsd, formatPercentage } from "lib/numbers";
 import "./TradeFeesRow.scss";
 
 type Props = {
   totalFees?: FeeItem;
-  swapFees?: TotalSwapFees;
+  swapFees?: SwapPathStats;
   positionFee?: FeeItem;
   positionPriceImpact?: FeeItem;
+  positionFeeFactor?: BigNumber;
 };
 
 export function TradeFeesRow(p: Props) {
   const { chainId } = useChainId();
 
   return (
-    <InfoRow
+    <ExchangeInfoRow
       label={<Trans>Fees and price impact</Trans>}
       value={
         <>
@@ -70,7 +73,9 @@ export function TradeFeesRow(p: Props) {
                     <>
                       <br />
                       <StatsTooltipRow
-                        label={t`Position fee`}
+                        label={t`Position Fee (${formatPercentage(
+                          p.positionFeeFactor?.div(PRECISION.div(BASIS_POINTS_DIVISOR))
+                        )} of position size):`}
                         value={formatDeltaUsd(p.positionFee.deltaUsd, p.positionFee.bps)!}
                         showDollar={false}
                       />

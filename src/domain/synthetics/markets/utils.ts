@@ -47,7 +47,7 @@ export function getMarketName(
 
   if (!market || !indexToken || !longToken || !shortToken) {
     if (fallbackToPlaceholder) {
-      return `${gmText} ---/--- [-------]`;
+      return `${gmText}---/--- [-------]`;
     }
 
     return undefined;

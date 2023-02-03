@@ -1,5 +1,5 @@
 import { BigNumber } from "ethers";
-import { FeeItem, TotalSwapFees } from "../fees";
+import { FeeItem, SwapPathStats } from "../fees";
 import { Market } from "domain/synthetics/markets";
 
 export enum TradeType {
@@ -25,14 +25,14 @@ export type SwapTradeParams = {
   fromUsd: BigNumber;
   toAmount: BigNumber;
   toUsd: BigNumber;
-  swapPath: string[];
-  swapFees?: TotalSwapFees;
+  swapPath?: string[];
+  swapFees?: SwapPathStats;
 };
 
 export type IncreaseTradeParams = {
   market: Market;
   swapPath: string[];
-  swapFees?: TotalSwapFees;
+  swapFees?: SwapPathStats;
   positionFee?: FeeItem;
   priceImpact?: FeeItem;
   sizeDeltaInTokens: BigNumber;
@@ -42,4 +42,15 @@ export type IncreaseTradeParams = {
   collateralAmount: BigNumber;
   collateralUsd: BigNumber;
   initialCollateralAmount: BigNumber;
+};
+
+export type DecreaseTradeParams = {
+  market: Market;
+  positionFee?: FeeItem;
+  priceImpact?: FeeItem;
+  sizeDeltaUsd: BigNumber;
+  collateraDeltaUsd: BigNumber;
+  initialCollateralAmount: BigNumber;
+  receiveUsd: BigNumber;
+  isClosing: boolean;
 };

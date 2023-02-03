@@ -76,12 +76,9 @@ export function SyntheticsPage(p: Props) {
   }, [account, aggregatedPositionsData, selectedCollateralAddress, selectedMarketAddress, selectedTradeType]);
 
   function onCancelOrdersClick() {
-    if (!executionFee?.feeTokenAmount) return;
-
     setIsCancelOrdersProcessig(true);
     cancelOrdersTxn(chainId, library, {
       orderKeys: selectedOrdersKeysArr,
-      executionFee: executionFee.feeTokenAmount,
     }).finally(() => setIsCancelOrdersProcessig(false));
   }
 
@@ -186,6 +183,7 @@ export function SyntheticsPage(p: Props) {
               onSelectCollateralAddress={setSelectedCollateralAddress}
               onConnectWallet={p.onConnectWallet}
               savedIsPnlInLeverage={p.savedIsPnlInLeverage}
+              ordersData={aggregatedOrdersData}
             />
           </div>
         </div>

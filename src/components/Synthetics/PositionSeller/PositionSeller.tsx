@@ -11,8 +11,10 @@ import { KEEP_LEVERAGE_FOR_DECREASE_KEY } from "config/localStorage";
 import { convertTokenAddress } from "config/tokens";
 import { getExecutionFee } from "domain/synthetics/fees";
 import {
+  DecreasePositionSwapType,
   OrderType,
   createDecreaseOrderTxn,
+  getAcceptbalePrice,
   getCollateralDeltaUsdForDecreaseOrder,
   getCollateralOutForDecreaseOrder,
   getNextCollateralUsdForDecreaseOrder,
@@ -23,6 +25,7 @@ import {
   formatPnl,
   getLeverage,
   getLiquidationPrice,
+  getMarkPrice,
 } from "domain/synthetics/positions";
 import { convertToTokenAmount, convertToUsd, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
@@ -107,6 +110,9 @@ export function PositionSeller(p: Props) {
 
   const receiveTokenAmount = convertToTokenAmount(receiveUsd, receiveToken?.decimals, receiveToken?.prices?.maxPrice);
 
+  const shouldSwapPnlToCollateralToken =
+    !p.position.market && p.position.pnlToken?.address !== p.position.collateralToken?.address;
+
   const nextLiqPrice =
     nextSizeUsd?.gt(0) && !keepLeverage
       ? getLiquidationPrice({
@@ -124,6 +130,14 @@ export function PositionSeller(p: Props) {
           collateralUsd: nextCollateralUsd,
         })
       : undefined;
+
+  const acceptablePrice = getAcceptbalePrice({
+    isIncrease: false,
+    isLong: p.position.isLong,
+    indexPrice: getMarkPrice(p.position.indexToken?.prices, false, p.position.isLong),
+    // TODO: edit slippage
+    allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
+  });
 
   useEffect(() => {
     if (!receiveTokenAddress && position.collateralToken?.address) {
@@ -167,7 +181,8 @@ export function PositionSeller(p: Props) {
       !position ||
       !executionFee?.feeTokenAmount ||
       !position.currentValueUsd ||
-      !receiveToken?.address
+      !receiveToken?.address ||
+      !acceptablePrice
     )
       return;
 
@@ -181,11 +196,14 @@ export function PositionSeller(p: Props) {
       targetCollateralAddress: receiveToken.address,
       receiveTokenAddress: position.collateralTokenAddress,
       priceImpactDelta: BigNumber.from(0),
-      allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
       sizeDeltaUsd,
       orderType: OrderType.MarketDecrease,
       isLong: position.isLong,
       executionFee: executionFee.feeTokenAmount,
+      acceptablePrice,
+      decreasePositionSwapType: shouldSwapPnlToCollateralToken
+        ? DecreasePositionSwapType.SwapPnlTokenToCollateralToken
+        : DecreasePositionSwapType.NoSwap,
       tokensData,
       setPendingPositionUpdate,
     }).then(() => setIsProcessing(true));

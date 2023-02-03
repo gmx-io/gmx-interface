@@ -5,7 +5,7 @@ import {
   getAvailableUsdLiquidityForCollateral,
 } from "domain/synthetics/markets";
 import { BigNumber, ethers } from "ethers";
-import { MarketsFeesConfigsData, getSwapFees } from "../fees";
+import { MarketsFeesConfigsData, getSwapStats } from "../fees";
 import { TokensData, convertToUsd, getTokenData } from "../tokens";
 import { Edge, MarketsGraph, SwapEstimator } from "./types";
 
@@ -56,23 +56,21 @@ export const createSwapEstimator = (
   feeConfigs: MarketsFeesConfigsData
 ): SwapEstimator => {
   return (e: Edge, usdIn: BigNumber) => {
-    const outToken = getTokenData(tokensData, e.to);
-
-    const outLiquidity = getAvailableUsdLiquidityForCollateral(
+    const swapStats = getSwapStats(
       marketsData,
       poolsData,
       openInterestData,
       tokensData,
+      feeConfigs,
       e.marketAddress,
-      e.to
+      e.from,
+      usdIn
     );
+    const usdOut = swapStats?.usdOut;
 
-    const swapFee = getSwapFees(marketsData, poolsData, tokensData, feeConfigs, e.marketAddress, e.from, usdIn);
-    const usdOut = convertToUsd(swapFee?.amountOut, outToken?.decimals, outToken?.prices?.maxPrice);
+    const fees = swapStats?.swapFeeUsd.sub(swapStats.priceImpactDeltaUsd);
 
-    const fees = swapFee?.swapFeeUsd.sub(swapFee.priceImpactDeltaUsd);
-
-    if (!usdOut || !outLiquidity?.gt(usdOut) || !fees) {
+    if (!usdOut || !fees) {
       return {
         usdOut: BigNumber.from(0),
         fees: ethers.constants.MaxUint256,

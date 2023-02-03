@@ -355,8 +355,6 @@ import { Trans, t } from "@lingui/macro";
 //   //   tokensData,
 //   // ]);
 
-//   const isClosing = existingPosition?.sizeInUsd.sub(closeSizeUsd).lt(DUST_USD);
-
 //   const nextSizeUsd = isTrigger
 //     ? isClosing
 //       ? BigNumber.from(0)

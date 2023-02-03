@@ -6,12 +6,9 @@ import { useChainId } from "lib/chains";
 import { useCallback, useMemo } from "react";
 import { useMarketsFeesConfigs } from "../fees/useMarketsFeesConfigs";
 import { createSwapEstimator, findAllPaths, getBestSwapPath, getMarketsGraph } from "./utils";
+import { getSwapPathStats } from "../fees";
 
-export type SwapRoute = {
-  findSwapPath: (usdIn: BigNumber) => string[] | undefined;
-};
-
-export function useSwapRoute(p: { initialColltaralAddress?: string; targetCollateralAddress?: string }): SwapRoute {
+export function useSwapRoute(p: { initialColltaralAddress?: string; targetCollateralAddress?: string }) {
   const { chainId } = useChainId();
 
   const { marketsData } = useMarketsData(chainId);
@@ -48,21 +45,36 @@ export function useSwapRoute(p: { initialColltaralAddress?: string; targetCollat
 
   const findSwapPath = useCallback(
     (usdIn: BigNumber) => {
-      if (!paths) {
+      if (!paths || !fromAddress || !toAddress) {
         return undefined;
-      }
-
-      if (fromAddress === toAddress) {
-        return [];
       }
 
       const estimator = createSwapEstimator(marketsData, poolsData, openInterestData, tokensData, marketsFeesConfigs);
 
-      const bestSwapPath = getBestSwapPath(paths, usdIn, estimator);
+      const bestSwapPathEdges = getBestSwapPath(paths, usdIn, estimator);
 
-      const addresses = bestSwapPath?.map((edge) => edge.marketAddress);
+      const swapPath = bestSwapPathEdges?.map((edge) => edge.marketAddress);
 
-      return addresses;
+      if (!swapPath) {
+        return undefined;
+      }
+
+      const swapPathStats = getSwapPathStats(
+        marketsData,
+        poolsData,
+        openInterestData,
+        tokensData,
+        marketsFeesConfigs,
+        swapPath,
+        fromAddress,
+        usdIn
+      );
+
+      if (!swapPathStats) {
+        return undefined;
+      }
+
+      return { swapPath, swapPathStats };
     },
     [fromAddress, marketsData, marketsFeesConfigs, openInterestData, paths, poolsData, toAddress, tokensData]
   );

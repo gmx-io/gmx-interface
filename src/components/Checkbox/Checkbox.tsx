@@ -7,7 +7,7 @@ import { ImCheckboxUnchecked, ImCheckboxChecked } from "react-icons/im";
 
 type Props = {
   isChecked?: boolean;
-  setIsChecked: (checked: boolean) => void;
+  setIsChecked?: (checked: boolean) => void;
   disabled?: boolean;
   className?: string;
   children?: ReactNode;
@@ -20,7 +20,7 @@ export default function Checkbox(props: Props) {
   return (
     <div
       className={cx("Checkbox", { disabled, selected: isChecked, fullRow: asRow }, className)}
-      onClick={() => setIsChecked(!isChecked)}
+      onClick={() => setIsChecked?.(!isChecked)}
     >
       <span className="Checkbox-icon-wrapper">
         {isChecked && <ImCheckboxChecked className="App-icon Checkbox-icon active" />}

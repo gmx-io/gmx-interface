@@ -10,12 +10,20 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { useTokenInput } from "domain/synthetics/exchange";
 import { getExecutionFee } from "domain/synthetics/fees";
 import {
+  DecreasePositionSwapType,
   OrderType,
   createDecreaseOrderTxn,
   createIncreaseOrderTxn,
+  getAcceptbalePrice,
   getNextCollateralUsdForDecreaseOrder,
 } from "domain/synthetics/orders";
-import { AggregatedPositionData, formatLeverage, getLeverage, getLiquidationPrice } from "domain/synthetics/positions";
+import {
+  AggregatedPositionData,
+  formatLeverage,
+  getLeverage,
+  getLiquidationPrice,
+  getMarkPrice,
+} from "domain/synthetics/positions";
 import { convertToTokenAmount, useAvailableTokensData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
@@ -91,6 +99,18 @@ export function PositionEditor(p: Props) {
     isLong: p.position.isLong,
   });
 
+  const acceptablePrice = getAcceptbalePrice({
+    isIncrease: isDeposit,
+    isLong: p.position.isLong,
+    sizeDeltaUsd: BigNumber.from(0),
+    indexPrice: getMarkPrice(p.position.indexToken?.prices, isDeposit, p.position.isLong),
+    allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
+  });
+
+  // TODO: calculate swap fees
+  const shouldSwapPnlToCollateralToken =
+    !isDeposit && p.position.market && p.position.pnlToken?.address !== p.position.collateralToken?.address;
+
   // needApproval = isDeposit && tokenAllowance && fromAmount && fromAmount.gt(tokenAllowance);
 
   function getError() {
@@ -144,7 +164,7 @@ export function PositionEditor(p: Props) {
   }
 
   function onSubmit() {
-    if (!account || !executionFee?.feeTokenAmount || !p.position.indexToken) return;
+    if (!account || !executionFee?.feeTokenAmount || !acceptablePrice || !p.position.indexToken) return;
 
     if (operation === Operation.Deposit) {
       createIncreaseOrderTxn(chainId, library, {
@@ -156,6 +176,7 @@ export function PositionEditor(p: Props) {
         initialCollateralAmount: depositInput.tokenAmount,
         priceImpactDelta: BigNumber.from(1),
         allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
+        acceptablePrice,
         orderType: OrderType.MarketIncrease,
         sizeDeltaUsd: BigNumber.from(0),
         isLong: p.position.isLong,
@@ -176,11 +197,14 @@ export function PositionEditor(p: Props) {
         targetCollateralAddress: p.position.collateralTokenAddress,
         receiveTokenAddress: p.position.collateralTokenAddress,
         priceImpactDelta: BigNumber.from(0),
-        allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
+        acceptablePrice,
         sizeDeltaUsd: BigNumber.from(0),
         orderType: OrderType.MarketDecrease,
         isLong: p.position.isLong,
         executionFee: executionFee.feeTokenAmount,
+        decreasePositionSwapType: shouldSwapPnlToCollateralToken
+          ? DecreasePositionSwapType.SwapPnlTokenToCollateralToken
+          : DecreasePositionSwapType.NoSwap,
         tokensData,
         setPendingPositionUpdate,
       });

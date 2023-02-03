@@ -1,5 +1,5 @@
 import { Trans, t } from "@lingui/macro";
-import { AggregatedOrdersData, isLimitOrder, isStopMarketOrder } from "domain/synthetics/orders";
+import { AggregatedOrdersData, isLimitOrder, isTriggerDecreaseOrder } from "domain/synthetics/orders";
 import { OrderItem } from "../OrderItem/OrderItem";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useChainId } from "lib/chains";
@@ -29,7 +29,7 @@ export function OrderList(p: Props) {
   const [editingOrderKey, setEditingOrderKey] = useState<string>();
 
   const orders = Object.values(p.ordersData).filter(
-    (order) => isLimitOrder(order.orderType) || isStopMarketOrder(order.orderType)
+    (order) => isLimitOrder(order.orderType) || isTriggerDecreaseOrder(order.orderType)
   );
 
   const isAllOrdersSelected = orders.length > 0 && orders.every((o) => p.selectedOrdersKeys?.[o.key]);
@@ -56,7 +56,7 @@ export function OrderList(p: Props) {
     if (!executionFee?.feeTokenAmount) return;
     setCanellingOrdersKeys((prev) => [...prev, key]);
 
-    cancelOrdersTxn(chainId, library, { orderKeys: [key], executionFee: executionFee.feeTokenAmount }).finally(() =>
+    cancelOrdersTxn(chainId, library, { orderKeys: [key] }).finally(() =>
       setCanellingOrdersKeys((prev) => prev.filter((k) => k !== key))
     );
   }

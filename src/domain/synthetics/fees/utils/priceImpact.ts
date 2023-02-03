@@ -41,7 +41,7 @@ export function applySwapImpactWithCap(
 
     const maxImpactAmount = isLongCollateral ? pools.swapImpactPoolAmountLong : pools.swapImpactPoolAmountShort;
 
-    if (impactDeltaAmount > maxImpactAmount) {
+    if (impactDeltaAmount.gt(maxImpactAmount)) {
       impactDeltaAmount = maxImpactAmount;
     }
   } else {

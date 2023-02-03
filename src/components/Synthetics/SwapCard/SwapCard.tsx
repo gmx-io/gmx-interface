@@ -8,7 +8,7 @@ import {
   useMarketsPoolsData,
 } from "domain/synthetics/markets";
 import { useOpenInterestData } from "domain/synthetics/markets/useOpenInterestData";
-import { convertToTokenAmount, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
+import { TokensData, convertToTokenAmount, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { formatAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import Tooltip from "components/Tooltip/Tooltip";

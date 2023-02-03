@@ -15,9 +15,6 @@ import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { Position, getPriceForPnl } from "../positions";
 import { AggregatedOrderData, AggregatedOrdersData, OrderType, OrdersData } from "./types";
 
-export const SWAP_PNL_TOKEN_TO_COLLATERAL_TOKEN = "0x0000000000000000000000000000000000000002";
-export const SWAP_COLLATERAL_TOKEN_TO_PNL_TOKEN = "0x0000000000000000000000000000000000000003";
-
 export function getOrder(ordersData: OrdersData, orderKey?: string) {
   if (!orderKey) return undefined;
 
@@ -26,9 +23,9 @@ export function getOrder(ordersData: OrdersData, orderKey?: string) {
 
 export function getPositionOrders(
   ordersData: AggregatedOrdersData,
-  marketAddress: string,
-  collateralToken: string,
-  isLong: boolean
+  marketAddress?: string,
+  collateralToken?: string,
+  isLong?: boolean
 ) {
   if (!marketAddress && !collateralToken && isLong === undefined) return [];
 
@@ -51,7 +48,7 @@ export function isLimitOrder(orderType: OrderType) {
   return [OrderType.LimitIncrease, OrderType.LimitSwap].includes(orderType);
 }
 
-export function isStopMarketOrder(orderType: OrderType) {
+export function isTriggerDecreaseOrder(orderType: OrderType) {
   return [OrderType.LimitDecrease, OrderType.StopLossDecrease].includes(orderType);
 }
 
@@ -67,6 +64,14 @@ export function isSwapOrder(orderType: OrderType) {
   return [OrderType.MarketSwap, OrderType.LimitSwap].includes(orderType);
 }
 
+export function getTriggerOrderType(p: { isLong: boolean; isTriggerAboveThreshold: boolean }) {
+  if (p.isLong) {
+    return p.isTriggerAboveThreshold ? OrderType.LimitDecrease : OrderType.StopLossDecrease;
+  } else {
+    return p.isTriggerAboveThreshold ? OrderType.LimitDecrease : OrderType.StopLossDecrease;
+  }
+}
+
 export function getAggregatedOrderData(
   ordersData: OrdersData,
   marketsData: MarketsData,
@@ -77,7 +82,7 @@ export function getAggregatedOrderData(
 
   if (!order) return undefined;
 
-  const isTriggerOrder = isLimitOrder(order?.orderType) || isStopMarketOrder(order?.orderType);
+  const isTriggerOrder = isLimitOrder(order?.orderType) || isTriggerDecreaseOrder(order?.orderType);
 
   if (!isTriggerOrder) return undefined;
 
@@ -186,137 +191,64 @@ export function getTriggerPricePrefix(orderType?: OrderType, isLong?: boolean, a
   const BELOW = asSign ? "<" : t`Below`;
   const ABOVE = asSign ? ">" : t`Above`;
 
+  return isTriggerPriceAboveThreshold(orderType, isLong) ? ABOVE : BELOW;
+}
+
+export function isTriggerPriceAboveThreshold(orderType: OrderType, isLong: boolean) {
   if (orderType === OrderType.LimitIncrease) {
-    return isLong ? BELOW : ABOVE;
+    return !isLong;
   }
 
   if (orderType === OrderType.StopLossDecrease) {
-    return isLong ? BELOW : ABOVE;
+    return isLong;
   }
 
   // Take-profit
   if (orderType === OrderType.LimitDecrease) {
-    return isLong ? ABOVE : BELOW;
+    return isLong;
   }
 }
 
-export function getMinOutputAmountForSwapOrder(p: {
-  fromTokenAmount: BigNumber;
-  toTokenPrices: TokenPrices;
-  fromTokenPrices: TokenPrices;
-  allowedSlippage: number;
-  priceImpactDeltaUsd: BigNumber;
-}) {
-  // priceImpact in usd?
-
-  // // todo on each swap step?
-  // if (p.priceImpactDeltaUsd.gt(0)) {
-  //   // TODO: amount after fee
-  //   const amountIn = p.fromTokenAmount;
-
-  //   amountOut = amountIn.mul(p.toTokenPrices.minPrice).div(p.fromTokenPrices.maxPrice);
-
-  //   const positiveImpactAmount = applySwapImpactWithCap({
-  //     tokenPrices: p.toTokenPrices,
-  //     priceImpactUsd: p.priceImpactDeltaUsd,
-  //   });
-
-  //   amountOut = amountOut.add(positiveImpactAmount);
-  // } else {
-  //   const negativeImpactAmount = applySwapImpactWithCap({
-  //     tokenPrices: p.fromTokenPrices,
-  //     priceImpactUsd: p.priceImpactDeltaUsd,
-  //   });
-
-  //   // TODO: amount after fee
-  //   const amountIn = p.fromTokenAmount.sub(negativeImpactAmount.mul(-1));
-
-  // amountOut = amountIn.mul(p.fromTokenPrices.minPrice).div(p.toTokenPrices.maxPrice);
-
-  return BigNumber.from(0);
-}
-
-export function getMinOutputAmountForDecreaseOrder(p: {
-  collateralToken: TokenData;
-  sizeDeltaUsd: BigNumber;
-  acceptablePrice: BigNumber;
-}) {
-  //TODO
-  return BigNumber.from(0);
-}
-
-export function getAcceptablePriceForPositionOrder(p: {
-  isIncrease: boolean;
-  isLong: boolean;
-  triggerPrice?: BigNumber;
-  sizeDeltaUsd?: BigNumber;
-  priceImpactDelta?: BigNumber;
-  indexTokenPrices?: TokenPrices;
-  allowedSlippage?: number;
-}) {
-  let acceptablePrice: BigNumber;
-
-  if (p.triggerPrice) {
-    acceptablePrice = p.triggerPrice;
-  } else if (p.indexTokenPrices) {
-    const shouldUseMaxPrice = p.isIncrease ? p.isLong : !p.isLong;
-
-    acceptablePrice = shouldUseMaxPrice ? p.indexTokenPrices?.maxPrice : p.indexTokenPrices?.minPrice;
-  } else {
-    throw new Error("No trigger price or index token prices provided");
-  }
-
+export function applySlippage(allowedSlippage: number, price: BigNumber, isIncrease: boolean, isLong: boolean) {
   let slippageBasisPoints: number;
 
-  if (p.allowedSlippage) {
-    if (p.isIncrease) {
-      slippageBasisPoints = p.isLong
-        ? BASIS_POINTS_DIVISOR + p.allowedSlippage
-        : BASIS_POINTS_DIVISOR - p.allowedSlippage;
-    } else {
-      slippageBasisPoints = p.isLong
-        ? BASIS_POINTS_DIVISOR - p.allowedSlippage
-        : BASIS_POINTS_DIVISOR + p.allowedSlippage;
-    }
-
-    acceptablePrice = acceptablePrice.mul(slippageBasisPoints).div(BASIS_POINTS_DIVISOR);
+  if (isIncrease) {
+    slippageBasisPoints = isLong ? BASIS_POINTS_DIVISOR + allowedSlippage : BASIS_POINTS_DIVISOR - allowedSlippage;
+  } else {
+    slippageBasisPoints = isLong ? BASIS_POINTS_DIVISOR - allowedSlippage : BASIS_POINTS_DIVISOR + allowedSlippage;
   }
 
-  if (p.priceImpactDelta && p.sizeDeltaUsd?.gt(0)) {
+  return price.mul(slippageBasisPoints).div(BASIS_POINTS_DIVISOR);
+}
+
+export function getAcceptbalePrice(p: {
+  isIncrease: boolean;
+  isLong?: boolean;
+  indexPrice?: BigNumber;
+  priceImpactDeltaUsd?: BigNumber;
+  sizeDeltaUsd?: BigNumber;
+  allowedSlippage?: number;
+}) {
+  if (!p.indexPrice || typeof p.isLong === "undefined") return undefined;
+
+  let acceptablePrice = p.indexPrice;
+
+  if (!p.priceImpactDeltaUsd || p.priceImpactDeltaUsd.isZero()) {
+    return acceptablePrice;
+  }
+
+  if (p.sizeDeltaUsd?.gt(0) && p.priceImpactDeltaUsd && !p.priceImpactDeltaUsd.isZero()) {
     const shouldFlipPriceImpact = p.isIncrease ? p.isLong : !p.isLong;
-    const priceImpactForPriceAdjustment = shouldFlipPriceImpact ? p.priceImpactDelta.mul(-1) : p.priceImpactDelta;
-    acceptablePrice = acceptablePrice.mul(p.sizeDeltaUsd.add(priceImpactForPriceAdjustment)).div(p.sizeDeltaUsd);
+    const priceImpactForPriceAdjustment = shouldFlipPriceImpact ? p.priceImpactDeltaUsd.mul(-1) : p.priceImpactDeltaUsd;
+    acceptablePrice = p.indexPrice.mul(p.sizeDeltaUsd.add(priceImpactForPriceAdjustment)).div(p.sizeDeltaUsd);
+  }
+
+  if (p.allowedSlippage) {
+    acceptablePrice = applySlippage(p.allowedSlippage, acceptablePrice, p.isIncrease, p.isLong);
   }
 
   return acceptablePrice;
 }
-
-// function getDecreaseOrderFees(p: {
-//   priceImpactConfigsData: PriceImpactConfigsData,
-//   openInterestData: MarketsOpenInterestData,
-//   tokensData: TokensData,
-//   position: AggregatedPositionData,
-//  }) {
-//   const executionFee = getExecutionFee(p.tokensData);
-
-//   const marketOpenInterest = getOpenInterest(p.openInterestData, p.position.marketAddress);
-
-//   const priceImpact = getPriceImpact(
-//     p.priceImpactConfigsData,
-//     p.position.marketAddress,
-//     marketOpenInterest?.longInterest,
-//     marketOpenInterest?.shortInterest,
-//   );
-
-//   const fundingFee = p.position.pendingFundingFeesUsd;
-//   const borrowingFee = p.position.pendingBorrowingFees;
-
-//   const receiveUsdDelta = BigNumber.from(0);
-
-//   return {
-
-//   };
-// }
 
 export function getCollateralDeltaUsdForDecreaseOrder(p: {
   isClosing?: boolean;

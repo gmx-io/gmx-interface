@@ -15,6 +15,7 @@ import { getVisibleTokens, getWhitelistedTokens } from "config/tokens";
 import { getExplorerUrl } from "config/chains";
 import { InfoTokens, Token, TokenInfo } from "./types";
 import { bigNumberify, expandDecimals } from "lib/numbers";
+import { HIGH_SPREAD_THRESHOLD } from "config/common";
 
 const { AddressZero } = ethers.constants;
 

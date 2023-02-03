@@ -1,4 +1,4 @@
-import { getTotalSwapFees } from "domain/synthetics/fees";
+import { getSwapPathStats } from "domain/synthetics/fees";
 import { Edge, SwapEstimator } from "domain/synthetics/routing/types";
 import { createSwapEstimator, findBestSwapPath, getMarketsGraph } from "domain/synthetics/routing/utils";
 import {
@@ -217,7 +217,7 @@ describe("swapPath", () => {
 
         const result = findBestSwapPath(graph, from, to, usdIn, estimator);
         const path = result?.map((p) => p.marketAddress);
-        const fees = getTotalSwapFees(marketsData, poolsData, tokensData, feeConfigs, path, from, amountIn);
+        const fees = getSwapPathStats(marketsData, poolsData, tokensData, feeConfigs, path, from, amountIn);
 
         expect(path).toEqual(expected);
         expect(formatUsd(fees?.totalPriceImpact.deltaUsd)).toEqual(formatUsd(expectedImpactDeltaUsd));

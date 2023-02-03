@@ -72,6 +72,7 @@ export async function createSwapOrderTxn(chainId: number, library: Web3Provider,
           },
           numbers: {
             sizeDeltaUsd: BigNumber.from(0),
+            initialCollateralDeltaAmount: BigNumber.from(0),
             triggerPrice: BigNumber.from(0),
             acceptablePrice: BigNumber.from(0),
             executionFee: p.executionFee,

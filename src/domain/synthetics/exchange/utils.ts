@@ -2,14 +2,7 @@ import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR, PRECISION, adjustForDecimals } from "lib/legacy";
 import { getBasisPoints } from "lib/numbers";
-import {
-  FeeItem,
-  MarketsFeesConfigsData,
-  TotalSwapFees,
-  getPositionFee,
-  getPriceImpactForPosition,
-  getTotalSwapFees,
-} from "../fees";
+import { FeeItem, MarketsFeesConfigsData, SwapPathStats, getPositionFee, getPriceImpactForPosition } from "../fees";
 import { Market, MarketsData, MarketsOpenInterestData, MarketsPoolsData } from "../markets";
 import { TokenData, TokensData, convertToTokenAmount, convertToUsd, getTokenData } from "../tokens";
 import { IncreaseTradeParams, TokensRatio } from "./types";
@@ -56,7 +49,7 @@ export function getSwapAmounts(p: {
   fromAmount?: BigNumber;
   toAmount?: BigNumber;
   triggerRatio?: TokensRatio;
-  findSwapPath: (usdIn: BigNumber) => string[] | undefined;
+  findSwapPath: (usdIn: BigNumber) => { swapPath: string[]; swapPathStats: SwapPathStats } | undefined;
 }):
   | {
       fromAmount: BigNumber;
@@ -64,35 +57,48 @@ export function getSwapAmounts(p: {
       toAmount: BigNumber;
       toUsd: BigNumber;
       swapPath: string[];
-      swapFees?: TotalSwapFees;
+      swapFees?: SwapPathStats;
     }
   | undefined {
   if ((!p.toAmount && !p.fromAmount) || !p.fromToken?.prices || !p.toToken?.prices) {
     return undefined;
   }
 
+  const defaultValue = {
+    fromAmount: BigNumber.from(0),
+    fromUsd: BigNumber.from(0),
+    toAmount: BigNumber.from(0),
+    toUsd: BigNumber.from(0),
+    swapPath: [],
+  };
+
   const fromToken = getTokenData(p.data.tokensData, p.fromToken.address, "wrapped")!;
   const toToken = getTokenData(p.data.tokensData, p.toToken.address, "wrapped")!;
 
   if (!p.toAmount) {
     // calculate toAmount by fromAmount
-    const fromAmount = p.fromAmount!;
+    const fromAmount = p.fromAmount;
     const fromUsd = convertToUsd(fromAmount, fromToken.decimals, fromToken.prices!.minPrice)!;
-    const swapPath = p.findSwapPath(fromUsd);
 
-    if (!swapPath) {
-      return undefined;
+    if (!fromAmount?.gt(0) || !fromUsd?.gt(0)) {
+      return defaultValue;
     }
 
-    const swapFees = getTotalSwapFees(
-      p.data.marketsData,
-      p.data.poolsData,
-      p.data.tokensData,
-      p.data.feesConfigs,
-      swapPath,
-      fromToken.address,
-      fromUsd
-    );
+    if (fromToken.address === toToken.address) {
+      return {
+        fromAmount,
+        fromUsd,
+        toAmount: fromAmount,
+        toUsd: fromUsd,
+        swapPath: [],
+      };
+    }
+
+    const { swapPath, swapPathStats: swapFees } = p.findSwapPath(fromUsd) || {};
+
+    if (!swapPath) {
+      return defaultValue;
+    }
 
     if (p.triggerRatio) {
       const toAmount = getAmountByRatio({
@@ -129,24 +135,28 @@ export function getSwapAmounts(p: {
   } else {
     // calculate fromAmount by toAmount
     const toAmount = p.toAmount;
-    const toUsd = convertToUsd(toAmount, toToken.decimals, toToken.prices!.minPrice)!;
+    const toUsd = convertToUsd(toAmount, toToken.decimals, toToken.prices!.minPrice);
+
+    if (!toAmount?.gt(0) || !toUsd?.gt(0)) {
+      return defaultValue;
+    }
+
+    if (fromToken.address === toToken.address) {
+      return {
+        fromAmount: toAmount,
+        fromUsd: toUsd,
+        toAmount,
+        toUsd,
+        swapPath: [],
+      };
+    }
 
     const baseFromUsd = toUsd;
-    const swapPath = p.findSwapPath(baseFromUsd);
+    const { swapPath, swapPathStats: swapFees } = p.findSwapPath(baseFromUsd) || {};
 
     if (!swapPath) {
       return undefined;
     }
-
-    const swapFees = getTotalSwapFees(
-      p.data.marketsData,
-      p.data.poolsData,
-      p.data.tokensData,
-      p.data.feesConfigs,
-      swapPath,
-      fromToken.address,
-      baseFromUsd
-    );
 
     if (p.triggerRatio) {
       const fromAmount = getAmountByRatio({
@@ -201,7 +211,7 @@ export function getIncreaseOrderAmounts(p: {
   isLong: boolean;
   leverage?: BigNumber;
   triggerPrice?: BigNumber;
-  findSwapPath: (usdIn: BigNumber) => string[] | undefined;
+  findSwapPath: (usdIn: BigNumber) => { swapPath: string[]; swapPathStats: SwapPathStats } | undefined;
   prevSwapPath?: string[];
 }): IncreaseTradeParams | undefined {
   if (
@@ -214,7 +224,7 @@ export function getIncreaseOrderAmounts(p: {
     return undefined;
   }
 
-  let swapFees: TotalSwapFees | undefined;
+  let swapFees: SwapPathStats | undefined;
   let swapPath: string[] | undefined;
   let sizeDeltaUsd: BigNumber;
   let sizeDeltaAfterFeesUsd: BigNumber;

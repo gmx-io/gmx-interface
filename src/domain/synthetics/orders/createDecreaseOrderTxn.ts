@@ -6,13 +6,13 @@ import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
 import { encodeReferralCode } from "domain/referrals";
 import { BigNumber, ethers } from "ethers";
 import { callContract } from "lib/contracts";
-import { TokensData, convertToContractPrice, getTokenData } from "../tokens";
+import { TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
 import { DecreasePositionSwapType, OrderType } from "./types";
 import { isDevelopment } from "config/env";
-import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
-import { getAcceptablePriceForPositionOrder, isMarketOrder } from "./utils";
-import { getPositionKey } from "../positions";
-import { PositionUpdate } from "../../../context/SyntheticsEvents";
+import { PriceOverrides } from "./simulateExecuteOrderTxn";
+import { isMarketOrder } from "./utils";
+import { getPositionKey } from "domain/synthetics/positions";
+import { PositionUpdate } from "context/SyntheticsEvents";
 import { formatUsd } from "lib/numbers";
 
 const { AddressZero } = ethers.constants;
@@ -31,9 +31,10 @@ export type DecreaseOrderParams = {
   receiveTokenAddress: string;
   triggerPrice?: BigNumber;
   priceImpactDelta: BigNumber;
-  allowedSlippage: number;
   sizeDeltaUsd?: BigNumber;
   isLong: boolean;
+  acceptablePrice: BigNumber;
+  decreasePositionSwapType: DecreasePositionSwapType;
   orderType: OrderType.MarketDecrease | OrderType.LimitDecrease | OrderType.StopLossDecrease;
   setPendingPositionUpdate: (update: PositionUpdate) => void;
 };
@@ -55,16 +56,6 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
 
   const wntAmount = p.executionFee;
 
-  const acceptablePrice = getAcceptablePriceForPositionOrder({
-    isIncrease: false,
-    isLong: p.isLong,
-    priceImpactDelta: p.priceImpactDelta,
-    triggerPrice: p.triggerPrice,
-    indexTokenPrices: indexToken.prices!,
-    sizeDeltaUsd: p.sizeDeltaUsd,
-    allowedSlippage: p.allowedSlippage,
-  });
-
   const minOutputAmount = BigNumber.from(0);
 
   const multicall = [
@@ -85,14 +76,13 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
             sizeDeltaUsd: p.sizeDeltaUsd,
             initialCollateralDeltaAmount: p.initialCollateralDeltaAmount,
             triggerPrice: convertToContractPrice(p.triggerPrice || BigNumber.from(0), indexToken.decimals),
-            acceptablePrice: convertToContractPrice(acceptablePrice, indexToken.decimals),
+            acceptablePrice: convertToContractPrice(p.acceptablePrice, indexToken.decimals),
             executionFee: p.executionFee,
             callbackGasLimit: BigNumber.from(0),
             minOutputAmount: minOutputAmount,
           },
           orderType: p.orderType,
-          // todo
-          decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
+          decreasePositionSwapType: p.decreasePositionSwapType,
           isLong: p.isLong,
           shouldUnwrapNativeToken: isNativeReceive,
         },
@@ -125,13 +115,13 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
     // };
   }
 
-  await simulateExecuteOrderTxn(chainId, library, {
-    primaryPriceOverrides,
-    secondaryPriceOverrides,
-    createOrderMulticallPayload: encodedPayload,
-    value: wntAmount,
-    tokensData: p.tokensData,
-  });
+  // await simulateExecuteOrderTxn(chainId, library, {
+  //   primaryPriceOverrides,
+  //   secondaryPriceOverrides,
+  //   createOrderMulticallPayload: encodedPayload,
+  //   value: wntAmount,
+  //   tokensData: p.tokensData,
+  // });
 
   const longText = p.isLong ? t`Long` : t`Short`;
 

@@ -1,23 +1,31 @@
-import { MarketsData, MarketsPoolsData, getMarket, getOppositeCollateral } from "domain/synthetics/markets";
+import {
+  MarketsData,
+  MarketsOpenInterestData,
+  MarketsPoolsData,
+  getAvailableUsdLiquidityForCollateral,
+  getMarket,
+  getOppositeCollateral,
+} from "domain/synthetics/markets";
 import { TokensData, convertToTokenAmount, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { applyFactor, getBasisPoints } from "lib/numbers";
 import { getMarketFeesConfig } from ".";
-import { FeeItem, MarketsFeesConfigsData, SwapFeeItem, SwapStepFees, TotalSwapFees } from "../types";
+import { FeeItem, MarketsFeesConfigsData, SwapFeeItem, SwapPathStats, SwapStats } from "../types";
 import { applySwapImpactWithCap, getPriceImpactForSwap } from "./priceImpact";
 
-export function getTotalSwapFees(
+export function getSwapPathStats(
   marketsData: MarketsData,
   poolsData: MarketsPoolsData,
+  openInterestData: MarketsOpenInterestData,
   tokensData: TokensData,
   feesConfigs: MarketsFeesConfigsData,
-  swapPath: string[] | undefined,
-  tokenInAddress: string | undefined,
-  usdIn: BigNumber | undefined
+  swapPath: string[],
+  tokenInAddress: string,
+  usdIn: BigNumber
 ) {
   if (!swapPath?.length || !tokenInAddress || !usdIn) return undefined;
 
-  const swapSteps: SwapStepFees[] = [];
+  const swapSteps: SwapStats[] = [];
   const swapFeeItems: SwapFeeItem[] = [];
 
   let usdOut = usdIn;
@@ -29,9 +37,10 @@ export function getTotalSwapFees(
   for (let i = 0; i < swapPath.length; i++) {
     const marketAddress = swapPath[i];
 
-    const swapStep = getSwapFees(
+    const swapStep = getSwapStats(
       marketsData,
       poolsData,
+      openInterestData,
       tokensData,
       feesConfigs,
       marketAddress,
@@ -76,7 +85,7 @@ export function getTotalSwapFees(
     bps: getBasisPoints(totalFeeDeltaUsd, usdIn),
   };
 
-  const totalFees: TotalSwapFees = {
+  const swapPathStats: SwapPathStats = {
     swapSteps,
     swapFees: swapFeeItems,
     totalPriceImpact,
@@ -87,46 +96,42 @@ export function getTotalSwapFees(
     usdOut,
   };
 
-  return totalFees;
+  return swapPathStats;
 }
 
-export function getSwapFees(
+export function getSwapStats(
   marketsData: MarketsData,
   poolsData: MarketsPoolsData,
+  openInterestData: MarketsOpenInterestData,
   tokensData: TokensData,
   feesConfigs: MarketsFeesConfigsData,
-  marketAddress: string | undefined,
-  tokenInAddress: string | undefined,
-  usdIn: BigNumber | undefined
-): SwapStepFees | undefined {
-  const feeConfig = getMarketFeesConfig(feesConfigs, marketAddress);
+  marketAddress: string,
+  tokenInAddress: string,
+  usdIn: BigNumber
+) {
   const market = getMarket(marketsData, marketAddress);
+  const feeConfig = getMarketFeesConfig(feesConfigs, marketAddress);
+
   const tokenOutAddress = getOppositeCollateral(market, tokenInAddress);
 
   const tokenIn = getTokenData(tokensData, tokenInAddress);
   const tokenOut = getTokenData(tokensData, tokenOutAddress);
 
-  if (
-    !usdIn ||
-    !feeConfig ||
-    !marketAddress ||
-    !tokenInAddress ||
-    !tokenOutAddress ||
-    !tokenIn?.prices ||
-    !tokenOut?.prices
-  ) {
-    return undefined;
-  }
+  const priceIn = tokenIn?.prices?.minPrice;
+  const priceOut = tokenOut?.prices?.maxPrice;
 
-  const amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, tokenIn.prices.minPrice)!;
+  if (!market || !feeConfig || !priceIn || !priceOut) return undefined;
+
+  const amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, priceIn)!;
 
   const swapFeeAmount = applyFactor(amountIn, feeConfig.swapFeeFactor);
-  const swapFeeUsd = convertToUsd(swapFeeAmount, tokenIn.decimals, tokenIn.prices.minPrice)!;
-  const usdInAfterFees = usdIn.sub(swapFeeUsd);
+  const swapFeeUsd = convertToUsd(swapFeeAmount, tokenIn.decimals, priceIn)!;
 
   const amountInAfterFees = amountIn.sub(swapFeeAmount);
+  const usdInAfterFees = usdIn.sub(swapFeeUsd);
 
-  let amountOut = convertToTokenAmount(usdInAfterFees, tokenOut.decimals, tokenOut.prices.maxPrice)!;
+  let usdOut = usdInAfterFees;
+  let amountOut = convertToTokenAmount(usdOut, tokenOut.decimals, priceOut)!;
 
   const priceImpactDeltaUsd = getPriceImpactForSwap(
     marketsData,
@@ -155,9 +160,7 @@ export function getSwapFees(
 
     if (!positiveImpactAmount) return undefined;
 
-    cappedImpactDeltaUsd = convertToUsd(positiveImpactAmount, tokenOut.decimals, tokenOut.prices.maxPrice)!;
-
-    amountOut = amountOut.add(positiveImpactAmount);
+    cappedImpactDeltaUsd = convertToUsd(positiveImpactAmount, tokenOut.decimals, priceOut)!;
   } else {
     const negativeImpactAmount = applySwapImpactWithCap(
       marketsData,
@@ -170,27 +173,36 @@ export function getSwapFees(
 
     if (!negativeImpactAmount) return undefined;
 
-    cappedImpactDeltaUsd = convertToUsd(negativeImpactAmount, tokenIn.decimals, tokenIn.prices.minPrice)!;
-    amountOut = amountOut.sub(
-      convertToTokenAmount(cappedImpactDeltaUsd.mul(-1), tokenOut.decimals, tokenOut.prices.maxPrice)!
-    );
+    cappedImpactDeltaUsd = convertToUsd(negativeImpactAmount, tokenIn.decimals, priceIn)!;
   }
 
-  if (amountOut.lt(0)) {
-    amountOut = BigNumber.from(0);
+  usdOut = usdOut.add(cappedImpactDeltaUsd);
+  amountOut = convertToTokenAmount(usdOut, tokenOut.decimals, priceOut)!;
+
+  const outLiquidity = getAvailableUsdLiquidityForCollateral(
+    marketsData,
+    poolsData,
+    openInterestData,
+    tokensData,
+    marketAddress,
+    tokenOutAddress
+  );
+
+  if (!outLiquidity || outLiquidity.lt(usdOut)) {
+    usdOut = BigNumber.from(0);
   }
 
-  const totalFeeUsd = swapFeeUsd.add(cappedImpactDeltaUsd);
-  const usdOut = convertToUsd(amountOut, tokenOut.decimals, tokenOut.prices.maxPrice)!;
+  const totalFeeDeltaUsd = swapFeeUsd.mul(-1).add(cappedImpactDeltaUsd);
 
   return {
     swapFeeUsd,
     swapFeeAmount,
-    totalFeeUsd,
-    marketAddress,
-    tokenInAddress,
-    tokenOutAddress,
+    totalFeeDeltaUsd,
+    marketAddress: market.marketTokenAddress,
+    tokenInAddress: tokenIn.address,
+    tokenOutAddress: tokenOut.address,
     priceImpactDeltaUsd: cappedImpactDeltaUsd,
+    amountIn,
     amountInAfterFees,
     amountOut,
     usdOut,

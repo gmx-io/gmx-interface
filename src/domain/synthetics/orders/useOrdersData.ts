@@ -62,6 +62,7 @@ export function useOrdersData(chainId: number): OrdersResult {
           const key = orderKeys[i];
           const [addresses, numbers, flags, data] = order;
           const [account, receiver, callbackContract, marketAddress, initialCollateralToken, swapPath] = addresses;
+          const [orderType, decreasePositionSwapType, ...restNumbers] = numbers;
           const [
             sizeDeltaUsd,
             initialCollateralDeltaAmount,
@@ -71,13 +72,14 @@ export function useOrdersData(chainId: number): OrdersResult {
             callbackGasLimit,
             minOutputAmount,
             updatedAtBlock,
-          ] = numbers.map(bigNumberify);
+          ] = restNumbers.map(bigNumberify);
 
-          const [orderType, isLong, shouldUnwrapNativeToken, isFrozen] = flags;
+          const [isLong, shouldUnwrapNativeToken, isFrozen] = flags;
 
           acc[key] = {
             key,
             account,
+            decreasePositionSwapType,
             receiver,
             callbackContract,
             marketAddress,
