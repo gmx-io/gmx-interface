@@ -138,7 +138,6 @@ export function getPositions(
   positionData,
   infoTokens,
   includeDelta,
-  showPnlAfterFees,
   account,
   pendingPositions,
   updatedPositions
@@ -265,11 +264,6 @@ export function getPositions(
       position.deltaAfterFeesStr = deltaAfterFeesStr;
       position.deltaAfterFeesPercentageStr = deltaAfterFeesPercentageStr;
 
-      if (showPnlAfterFees) {
-        position.deltaStr = position.deltaAfterFeesStr;
-        position.deltaPercentageStr = position.deltaAfterFeesPercentageStr;
-      }
-
       let netValue = position.hasProfit
         ? position.collateral.add(position.pendingDelta)
         : position.collateral.sub(position.pendingDelta);
@@ -347,7 +341,6 @@ export const Exchange = forwardRef((props, ref) => {
   const {
     savedIsPnlInLeverage,
     setSavedIsPnlInLeverage,
-    savedShowPnlAfterFees,
     savedSlippageAmount,
     pendingTxns,
     setPendingTxns,
@@ -536,7 +529,6 @@ export const Exchange = forwardRef((props, ref) => {
     positionData,
     infoTokens,
     savedIsPnlInLeverage,
-    savedShowPnlAfterFees,
     account,
     pendingPositions,
     updatedPositions
@@ -862,7 +854,6 @@ export const Exchange = forwardRef((props, ref) => {
             nativeTokenAddress={nativeTokenAddress}
             setMarket={setMarket}
             orders={orders}
-            showPnlAfterFees={savedShowPnlAfterFees}
             minExecutionFee={minExecutionFee}
             minExecutionFeeUSD={minExecutionFeeUSD}
             minExecutionFeeErrorMessage={minExecutionFeeErrorMessage}

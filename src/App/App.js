@@ -80,7 +80,6 @@ import {
   REFERRAL_CODE_KEY,
   SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
   SHOULD_SHOW_POSITION_LINES_KEY,
-  SHOW_PNL_AFTER_FEES_KEY,
   SLIPPAGE_BPS_KEY,
 } from "config/localStorage";
 import {
@@ -270,15 +269,9 @@ function FullApp() {
   const [slippageAmount, setSlippageAmount] = useState(0);
   const [isPnlInLeverage, setIsPnlInLeverage] = useState(false);
   const [shouldDisableValidationForTesting, setShouldDisableValidationForTesting] = useState(false);
-  const [showPnlAfterFees, setShowPnlAfterFees] = useState(false);
 
   const [savedIsPnlInLeverage, setSavedIsPnlInLeverage] = useLocalStorageSerializeKey(
     [chainId, IS_PNL_IN_LEVERAGE_KEY],
-    false
-  );
-
-  const [savedShowPnlAfterFees, setSavedShowPnlAfterFees] = useLocalStorageSerializeKey(
-    [chainId, SHOW_PNL_AFTER_FEES_KEY],
     false
   );
   const [savedShouldDisableValidationForTesting, setSavedShouldDisableValidationForTesting] =
@@ -293,7 +286,6 @@ function FullApp() {
     const slippage = parseInt(savedSlippageAmount);
     setSlippageAmount((slippage / BASIS_POINTS_DIVISOR) * 100);
     setIsPnlInLeverage(savedIsPnlInLeverage);
-    setShowPnlAfterFees(savedShowPnlAfterFees);
     setShouldDisableValidationForTesting(savedShouldDisableValidationForTesting);
     setIsSettingsVisible(true);
   };
@@ -316,7 +308,6 @@ function FullApp() {
     }
 
     setSavedIsPnlInLeverage(isPnlInLeverage);
-    setSavedShowPnlAfterFees(showPnlAfterFees);
     setSavedShouldDisableValidationForTesting(shouldDisableValidationForTesting);
     setSavedSlippageAmount(basisPoints);
     setIsSettingsVisible(false);
@@ -467,7 +458,6 @@ function FullApp() {
               <Route exact path="/trade">
                 <Exchange
                   ref={exchangeRef}
-                  savedShowPnlAfterFees={savedShowPnlAfterFees}
                   savedIsPnlInLeverage={savedIsPnlInLeverage}
                   setSavedIsPnlInLeverage={setSavedIsPnlInLeverage}
                   savedSlippageAmount={savedSlippageAmount}
@@ -525,7 +515,7 @@ function FullApp() {
                 <Actions />
               </Route>
               <Route exact path="/actions/:account">
-                <Actions savedIsPnlInLeverage={savedIsPnlInLeverage} savedShowPnlAfterFees={savedShowPnlAfterFees} />
+                <Actions savedIsPnlInLeverage={savedIsPnlInLeverage} />
               </Route>
               <Route exact path="/orders_overview">
                 <OrdersOverview />
@@ -611,11 +601,6 @@ function FullApp() {
             />
             <div className="App-slippage-tolerance-input-percent">%</div>
           </div>
-        </div>
-        <div className="Exchange-settings-row">
-          <Checkbox isChecked={showPnlAfterFees} setIsChecked={setShowPnlAfterFees}>
-            <Trans>Display PnL after fees</Trans>
-          </Checkbox>
         </div>
         <div className="Exchange-settings-row">
           <Checkbox isChecked={isPnlInLeverage} setIsChecked={setIsPnlInLeverage}>

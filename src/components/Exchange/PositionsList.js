@@ -342,7 +342,7 @@ export default function PositionsList(props) {
                             muted: positionDelta.eq(0),
                           })}
                         >
-                          {position.deltaStr} ({position.deltaPercentageStr})
+                          {position.deltaAfterFeesStr} ({position.deltaAfterFeesPercentageStr})
                         </span>
                       </div>
                     </div>
@@ -551,7 +551,7 @@ export default function PositionsList(props) {
                 </td>
                 <td>
                   <div>{position.netValue ? <NetValueTooltip position={position} /> : t`Opening...`}</div>
-                  {position.deltaStr && (
+                  {position.deltaAfterFeesStr && (
                     <div
                       className={cx("Exchange-list-info-label", {
                         positive: hasPositionProfit && positionDelta.gt(0),
