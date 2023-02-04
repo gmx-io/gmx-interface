@@ -77,7 +77,11 @@ function renderLiquidationTooltip(liquidationData, label) {
             showDollar
             value={formatAmount(liquidationData.borrowFee, USD_DECIMALS, 2, true)}
           />
-          <StatsTooltipRow label={t`PnL`} value={`-$${formatAmount(liquidationData.loss, USD_DECIMALS, 2, true)}`} />
+          <StatsTooltipRow
+            label={t`PnL`}
+            showDollar={false}
+            value={`-$${formatAmount(liquidationData.loss, USD_DECIMALS, 2, true)}`}
+          />
           {liquidationData.type === "full" && (
             <StatsTooltipRow label={t`Liquidation Fee`} showDollar value={formatAmount(LIQUIDATION_FEE, 30, 2, true)} />
           )}
@@ -251,7 +255,7 @@ export default function TradeHistory(props) {
               {params.isLong ? "<" : ">"}&nbsp;
             </Trans>
             <Tooltip
-              position="right-top"
+              position="center-top"
               handle={`${formatAmount(params.acceptablePrice, USD_DECIMALS, 2, true)} USD`}
               renderContent={() => (
                 <Trans>Try increasing the "Allowed Slippage", under the Settings menu on the top right.</Trans>
