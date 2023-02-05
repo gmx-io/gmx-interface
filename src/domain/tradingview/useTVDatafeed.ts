@@ -22,7 +22,7 @@ export default function useTVDatafeed() {
       onReady: (callback) => {
         setTimeout(() => callback(configurationData));
       },
-      resolveSymbol: async function (symbolName, onSymbolResolvedCallback) {
+      async resolveSymbol(symbolName, onSymbolResolvedCallback) {
         const stableTokens = getTokens(chainId)
           .filter((t) => t.isStable)
           .map((t) => t.symbol);
@@ -44,7 +44,7 @@ export default function useTVDatafeed() {
         return onSymbolResolvedCallback(await symbolInfo);
       },
 
-      getBars: async function (symbolInfo, resolution, periodParams, onHistoryCallback, onErrorCallback) {
+      async getBars(symbolInfo, resolution, periodParams, onHistoryCallback, onErrorCallback) {
         const { from, to, countBack } = periodParams;
         const toWithOffset = to + timezoneOffset;
 
@@ -65,13 +65,7 @@ export default function useTVDatafeed() {
         }
       },
 
-      subscribeBars: async function (
-        symbolInfo,
-        resolution,
-        onRealtimeCallback,
-        _subscriberUID,
-        onResetCacheNeededCallback
-      ) {
+      async subscribeBars(symbolInfo, resolution, onRealtimeCallback) {
         const { ticker, isStable } = symbolInfo;
         intervalRef.current && clearInterval(intervalRef.current);
         if (!isStable) {
