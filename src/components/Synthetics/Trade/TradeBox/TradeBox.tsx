@@ -961,14 +961,6 @@ export function TradeBox(p: Props) {
       return [t`Max leverage: ${(maxValue / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
     }
 
-    // if (isLong && acceptablePrice && markPrice?.lt(acceptablePrice)) {
-    //   return [t`Acceptable Price above Mark Price`];
-    // }
-
-    // if (isShort && acceptablePrice && markPrice?.lt(acceptablePrice)) {
-    //   return [t`Acceptable Price above Mark Price`];
-    // }
-
     const fromAddress = fromTokenInput.tokenAddress
       ? convertTokenAddress(chainId, fromTokenInput.tokenAddress, "wrapped")
       : undefined;
