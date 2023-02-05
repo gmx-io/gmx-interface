@@ -97,13 +97,13 @@ export default function ExchangeTVChart(props) {
       })
       .map((order) => {
         const indexToken = getToken(chainId, order.indexToken);
+        const longOrShortText = order.isLong ? t`Long` : t`Short`;
+        const orderTypeText = order.type === INCREASE ? t`Inc.` : t`Dec.`;
         let tokenSymbol;
         if (indexToken && indexToken.symbol) {
           tokenSymbol = indexToken.isWrapped ? indexToken.baseSymbol : indexToken.symbol;
         }
-        const title = `${order.type === INCREASE ? t`Inc.` : t`Dec.`} ${tokenSymbol} ${
-          order.isLong ? t`Long` : t`Short`
-        }`;
+        const title = `${orderTypeText} ${tokenSymbol} ${longOrShortText}`;
         return { title, price: parseFloat(formatAmount(order.triggerPrice, USD_DECIMALS, 2)) };
       });
   }, [orders, chartToken, chainId]);
@@ -115,14 +115,15 @@ export default function ExchangeTVChart(props) {
     return positions
       .filter((p) => p.indexToken.address === chartToken.address)
       .map((position) => {
+        const longOrShortText = position.isLong ? t`Long` : t`Short`;
         return {
           open: {
             price: parseFloat(formatAmount(position.averagePrice, USD_DECIMALS, 2)),
-            title: `Open ${position.indexToken.symbol} ${position.isLong ? "Long" : "Short"}`,
+            title: t`Open ${position.indexToken.symbol} ${longOrShortText}`,
           },
           liquidation: {
             price: parseFloat(formatAmount(getLiquidationPrice(position), USD_DECIMALS, 2)),
-            title: `Liq. ${position.indexToken.symbol} ${position.isLong ? "Long" : "Short"}`,
+            title: t`Liq. ${position.indexToken.symbol} ${longOrShortText}`,
           },
         };
       });

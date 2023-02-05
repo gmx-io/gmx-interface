@@ -1729,6 +1729,10 @@ msgstr "Ссылка копируется в буфер обмена."
 msgid "Liq. Price"
 msgstr "Лик. Цена"
 
+#: src/components/Exchange/ExchangeTVChart.js
+msgid "Liq. {0} {longOrShortText}"
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.js
 msgid "Liquidated"
 msgstr "Ликвидировано"
@@ -1765,6 +1769,7 @@ msgstr "Загрузка..."
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js
@@ -2166,6 +2171,10 @@ msgstr "Открытие позиций: {0}<0/>Под риском: {1}"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Open trades ranking and stats"
+msgstr ""
+
+#: src/components/Exchange/ExchangeTVChart.js
+msgid "Open {0} {longOrShortText}"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
@@ -2752,6 +2761,7 @@ msgstr "Позиция Акции"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js

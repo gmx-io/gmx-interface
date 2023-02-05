@@ -1729,6 +1729,10 @@ msgstr ""
 msgid "Liq. Price"
 msgstr ""
 
+#: src/components/Exchange/ExchangeTVChart.js
+msgid "Liq. {0} {longOrShortText}"
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.js
 msgid "Liquidated"
 msgstr ""
@@ -1762,6 +1766,7 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js
@@ -2163,6 +2168,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Open trades ranking and stats"
+msgstr ""
+
+#: src/components/Exchange/ExchangeTVChart.js
+msgid "Open {0} {longOrShortText}"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
@@ -2749,6 +2758,7 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js

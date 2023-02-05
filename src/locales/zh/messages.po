@@ -1729,6 +1729,10 @@ msgstr "链接被复制到剪贴板上"
 msgid "Liq. Price"
 msgstr "流动资金价格"
 
+#: src/components/Exchange/ExchangeTVChart.js
+msgid "Liq. {0} {longOrShortText}"
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.js
 msgid "Liquidated"
 msgstr "清偿完毕"
@@ -1765,6 +1769,7 @@ msgstr "加载中..."
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js
@@ -2166,6 +2171,10 @@ msgstr "未结头寸: {0}<0/>风险之下: {1}"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Open trades ranking and stats"
+msgstr ""
+
+#: src/components/Exchange/ExchangeTVChart.js
+msgid "Open {0} {longOrShortText}"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
@@ -2752,6 +2761,7 @@ msgstr "分享仓位"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js

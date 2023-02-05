@@ -1729,6 +1729,10 @@ msgstr "Le lien a été copié dans le presse-papiers."
 msgid "Liq. Price"
 msgstr "Prix de liquidation"
 
+#: src/components/Exchange/ExchangeTVChart.js
+msgid "Liq. {0} {longOrShortText}"
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.js
 msgid "Liquidated"
 msgstr "Liquidé"
@@ -1765,6 +1769,7 @@ msgstr "Chargement..."
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js
@@ -2166,6 +2171,10 @@ msgstr "Positions ouvertes: {0}<0/>Sous risque: {1}"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Open trades ranking and stats"
+msgstr ""
+
+#: src/components/Exchange/ExchangeTVChart.js
+msgid "Open {0} {longOrShortText}"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
@@ -2752,6 +2761,7 @@ msgstr "Partager la Position"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js

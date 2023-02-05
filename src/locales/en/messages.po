@@ -1729,6 +1729,10 @@ msgstr "Link copied to clipboard."
 msgid "Liq. Price"
 msgstr "Liq. Price"
 
+#: src/components/Exchange/ExchangeTVChart.js
+msgid "Liq. {0} {longOrShortText}"
+msgstr "Liq. {0} {longOrShortText}"
+
 #: src/components/Exchange/TradeHistory.js
 msgid "Liquidated"
 msgstr "Liquidated"
@@ -1765,6 +1769,7 @@ msgstr "Loading..."
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js
@@ -2167,6 +2172,10 @@ msgstr "Open positions: {0}<0/>Under risk: {1}"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Open trades ranking and stats"
 msgstr "Open trades ranking and stats"
+
+#: src/components/Exchange/ExchangeTVChart.js
+msgid "Open {0} {longOrShortText}"
+msgstr "Open {0} {longOrShortText}"
 
 #: src/components/Exchange/PositionsList.js
 msgid "Opening..."
@@ -2752,6 +2761,7 @@ msgstr "Share Position"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js
