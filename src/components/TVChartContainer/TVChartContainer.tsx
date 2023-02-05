@@ -7,12 +7,16 @@ import { ChartData, IChartingLibraryWidget, IPositionLineAdapter } from "../../c
 import { getPeriodFromResolutions, supportedResolutions } from "domain/tradingview/utils";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
 
+type ChartLine = {
+  price: number;
+  title: string;
+};
+
 type Props = {
   symbol: string;
   chainId: number;
   savedShouldShowPositionLines: boolean;
-  currentPositions: any[];
-  currentOrders: any[];
+  chartLines: ChartLine[];
   onSelectToken: () => void;
   period: string;
   setPeriod: (period: string) => void;
@@ -22,8 +26,7 @@ export default function TVChartContainer({
   symbol,
   chainId,
   savedShouldShowPositionLines,
-  currentPositions,
-  currentOrders,
+  chartLines,
   onSelectToken,
   period,
   setPeriod,
@@ -60,12 +63,7 @@ export default function TVChartContainer({
     function updateLines() {
       const lines: (IPositionLineAdapter | undefined)[] = [];
       if (savedShouldShowPositionLines) {
-        currentPositions.forEach((position) => {
-          const { open, liquidation } = position;
-          lines.push(drawLineOnChart(open.title, open.price));
-          lines.push(drawLineOnChart(liquidation.title, liquidation.price));
-        });
-        currentOrders.forEach((order) => {
+        chartLines.forEach((order) => {
           lines.push(drawLineOnChart(order.title, order.price));
         });
       }
@@ -73,7 +71,7 @@ export default function TVChartContainer({
         lines.forEach((line) => line?.remove());
       };
     },
-    [currentPositions, savedShouldShowPositionLines, currentOrders, drawLineOnChart]
+    [chartLines, savedShouldShowPositionLines, drawLineOnChart]
   );
 
   useEffect(() => {

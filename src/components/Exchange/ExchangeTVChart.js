@@ -128,6 +128,22 @@ export default function ExchangeTVChart(props) {
       });
   }, [chartToken, positions]);
 
+  const chartLines = useMemo(() => {
+    const lines = [];
+    if (currentOrders.length > 0) {
+      lines.push(...currentOrders);
+    }
+
+    if (currentPositions.length > 0) {
+      currentPositions.forEach((position) => {
+        lines.push(position.open);
+        lines.push(position.liquidation);
+      });
+    }
+
+    return lines;
+  }, [currentOrders, currentPositions]);
+
   const ref = useRef(null);
 
   const currentAveragePrice =
@@ -312,8 +328,7 @@ export default function ExchangeTVChart(props) {
       <div className="ExchangeChart-bottom App-box App-box-border">
         {chartToken.symbol && chainId && (
           <TVChartContainer
-            currentPositions={currentPositions}
-            currentOrders={currentOrders}
+            chartLines={chartLines}
             savedShouldShowPositionLines={savedShouldShowPositionLines}
             symbol={chartToken.symbol}
             chainId={chainId}
