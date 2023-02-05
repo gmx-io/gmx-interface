@@ -3,7 +3,7 @@ import { timezoneOffset } from "domain/prices";
 import { useChainId } from "lib/chains";
 import { useMemo, useRef } from "react";
 import { getHistoryBars, getLiveBar } from "./requests";
-import { setOrGetOnResetCacheNeededCallback, supportedResolutions } from "./utils";
+import { supportedResolutions } from "./utils";
 
 const configurationData = {
   supported_resolutions: Object.keys(supportedResolutions),
@@ -74,7 +74,6 @@ export default function useTVDatafeed() {
       ) {
         const { ticker, isStable } = symbolInfo;
         intervalRef.current && clearInterval(intervalRef.current);
-
         if (!isStable) {
           intervalRef.current = setInterval(function () {
             getLiveBar(chainId, ticker, resolution).then((bar) => {
@@ -84,8 +83,6 @@ export default function useTVDatafeed() {
             });
           }, 500);
         }
-        const { setResetCacheCb } = setOrGetOnResetCacheNeededCallback();
-        setResetCacheCb(onResetCacheNeededCallback);
       },
       unsubscribeBars: () => {
         intervalRef.current && clearInterval(intervalRef.current);

@@ -9,12 +9,7 @@ import {
 } from "domain/prices";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
-import {
-  formatTimeInBar,
-  LAST_BAR_REFRESH_INTERVAL,
-  setOrGetOnResetCacheNeededCallback,
-  supportedResolutions,
-} from "./utils";
+import { formatTimeInBar, LAST_BAR_REFRESH_INTERVAL, supportedResolutions } from "./utils";
 
 let lastBar;
 
@@ -97,12 +92,11 @@ export async function getLiveBar(chainId: number, ticker: string, resolution: st
   const periodSeconds = CHART_PERIODS[period];
   // Converts current time to seconds, rounds down to nearest period, adds timezone offset, and converts back to milliseconds
   const currentCandleTime = (Math.floor(Date.now() / 1000 / periodSeconds) * periodSeconds + timezoneOffset) * 1000;
-  const { getResetCacheCb } = setOrGetOnResetCacheNeededCallback();
   try {
     lastBar = await getLastBarAfterInterval(ticker, period, chainId);
   } catch (error) {
-    const resetCacheCb = getResetCacheCb();
-    if (resetCacheCb) resetCacheCb();
+    // eslint-disable-next-line no-console
+    console.error(error);
   }
 
   if (!lastBar) return;
