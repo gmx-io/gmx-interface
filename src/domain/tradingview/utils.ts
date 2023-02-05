@@ -11,3 +11,17 @@ export function formatTimeInBar(bar) {
     time: bar.time * 1000,
   };
 }
+
+export function setOrGetOnResetCacheNeededCallback() {
+  let onResetCacheNeededCallback;
+
+  return {
+    getResetCacheCb() {
+      return onResetCacheNeededCallback;
+    },
+
+    setResetCacheCb(callback) {
+      onResetCacheNeededCallback = callback;
+    },
+  };
+}

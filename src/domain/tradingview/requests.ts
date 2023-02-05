@@ -9,7 +9,14 @@ import {
 } from "domain/prices";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
-import { formatTimeInBar, LAST_BAR_REFRESH_INTERVAL, supportedResolutions } from "./utils";
+import {
+  formatTimeInBar,
+  LAST_BAR_REFRESH_INTERVAL,
+  setOrGetOnResetCacheNeededCallback,
+  supportedResolutions,
+} from "./utils";
+
+let lastBar;
 
 const getTokenChartPrice = async (chainId: number, symbol: string, period: string) => {
   let prices;
@@ -62,7 +69,7 @@ export async function getHistoryBars(
 
 const getLastBarAfterInterval = (function () {
   let startTime = 0;
-  let lastBar, lastTicker, lastPeriod;
+  let lastTicker, lastPeriod;
 
   return async function main(ticker, period, chainId) {
     if (!ticker || !period || !chainId) {
@@ -72,7 +79,6 @@ const getLastBarAfterInterval = (function () {
     if (currentTime - startTime > LAST_BAR_REFRESH_INTERVAL || lastTicker !== ticker || lastPeriod !== period) {
       const prices = await getLimitChartPricesFromStats(chainId, ticker, period, 1);
       if (!prices || !prices.length) {
-        // we can also refresh the chart here
         throw new Error("No prices data available.");
       }
       lastBar = formatTimeInBar({ ...prices[prices.length - 1], ticker });
@@ -91,7 +97,14 @@ export async function getLiveBar(chainId: number, ticker: string, resolution: st
   const periodSeconds = CHART_PERIODS[period];
   // Converts current time to seconds, rounds down to nearest period, adds timezone offset, and converts back to milliseconds
   const currentCandleTime = (Math.floor(Date.now() / 1000 / periodSeconds) * periodSeconds + timezoneOffset) * 1000;
-  const lastBar = await getLastBarAfterInterval(ticker, period, chainId);
+  const { getResetCacheCb } = setOrGetOnResetCacheNeededCallback();
+  try {
+    lastBar = await getLastBarAfterInterval(ticker, period, chainId);
+  } catch (error) {
+    const resetCacheCb = getResetCacheCb();
+    if (resetCacheCb) resetCacheCb();
+  }
+
   if (!lastBar) return;
 
   const currentPrice = await getCurrentPriceOfToken(chainId, ticker);
@@ -105,7 +118,7 @@ export async function getLiveBar(chainId: number, ticker: string, resolution: st
       ticker,
     };
   } else {
-    return {
+    const newBar = {
       time: currentCandleTime,
       open: lastBar.close,
       close: averagePriceValue,
@@ -113,5 +126,8 @@ export async function getLiveBar(chainId: number, ticker: string, resolution: st
       low: Math.min(lastBar.close, averagePriceValue),
       ticker,
     };
+
+    lastBar = newBar;
+    return newBar;
   }
 }

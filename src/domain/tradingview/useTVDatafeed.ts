@@ -3,7 +3,7 @@ import { timezoneOffset } from "domain/prices";
 import { useChainId } from "lib/chains";
 import { useMemo, useRef } from "react";
 import { getHistoryBars, getLiveBar } from "./requests";
-import { supportedResolutions } from "./utils";
+import { setOrGetOnResetCacheNeededCallback, supportedResolutions } from "./utils";
 
 const configurationData = {
   supported_resolutions: Object.keys(supportedResolutions),
@@ -22,7 +22,7 @@ export default function useTVDatafeed() {
       onReady: (callback) => {
         setTimeout(() => callback(configurationData));
       },
-      resolveSymbol: async (symbolName, onSymbolResolvedCallback) => {
+      resolveSymbol: async function (symbolName, onSymbolResolvedCallback) {
         const stableTokens = getTokens(chainId)
           .filter((t) => t.isStable)
           .map((t) => t.symbol);
@@ -44,7 +44,7 @@ export default function useTVDatafeed() {
         return onSymbolResolvedCallback(await symbolInfo);
       },
 
-      getBars: async (symbolInfo, resolution, periodParams, onHistoryCallback, onErrorCallback) => {
+      getBars: async function (symbolInfo, resolution, periodParams, onHistoryCallback, onErrorCallback) {
         const { from, to, countBack } = periodParams;
         const toWithOffset = to + timezoneOffset;
 
@@ -59,17 +59,19 @@ export default function useTVDatafeed() {
         try {
           const bars = await getHistoryBars(chainId, ticker, resolution, isStable, countBack);
           const filteredBars = bars.filter((bar) => bar.time >= from * 1000 && bar.time < toWithOffset * 1000);
-          if (filteredBars.length > 0) {
-            onHistoryCallback(filteredBars, { noData: false });
-          } else {
-            onHistoryCallback(filteredBars, { noData: true });
-          }
+          onHistoryCallback(filteredBars, { noData: filteredBars.length === 0 });
         } catch {
-          onErrorCallback("Something went wrong!");
+          onErrorCallback("Unable to load historical bar data");
         }
       },
 
-      subscribeBars: async (symbolInfo, resolution, onRealtimeCallback) => {
+      subscribeBars: async function (
+        symbolInfo,
+        resolution,
+        onRealtimeCallback,
+        _subscriberUID,
+        onResetCacheNeededCallback
+      ) {
         const { ticker, isStable } = symbolInfo;
         intervalRef.current && clearInterval(intervalRef.current);
 
@@ -82,6 +84,8 @@ export default function useTVDatafeed() {
             });
           }, 500);
         }
+        const { setResetCacheCb } = setOrGetOnResetCacheNeededCallback();
+        setResetCacheCb(onResetCacheNeededCallback);
       },
       unsubscribeBars: () => {
         intervalRef.current && clearInterval(intervalRef.current);
