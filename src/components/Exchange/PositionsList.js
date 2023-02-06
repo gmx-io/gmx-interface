@@ -89,7 +89,6 @@ export default function PositionsList(props) {
     isWaitingForPositionRouterApproval,
     isPositionRouterApproving,
     approvePositionRouter,
-    showPnlAfterFees,
     setMarket,
     minExecutionFee,
     minExecutionFeeUSD,
@@ -237,9 +236,8 @@ export default function PositionsList(props) {
             {positions.map((position) => {
               const positionOrders = getOrdersForPosition(account, position, orders, nativeTokenAddress);
               const liquidationPrice = getLiquidationPrice(position);
-              const hasPositionProfit = position[showPnlAfterFees ? "hasProfitAfterFees" : "hasProfit"];
-              const positionDelta =
-                position[showPnlAfterFees ? "pendingDeltaAfterFees" : "pendingDelta"] || bigNumberify(0);
+              const hasPositionProfit = position.hasProfitAfterFees;
+              const positionDelta = position.pendingDeltaAfterFees || bigNumberify(0);
               let borrowFeeUSD;
               if (position.collateralToken && position.collateralToken.fundingRate) {
                 const borrowFeeRate = position.collateralToken.fundingRate
@@ -499,9 +497,8 @@ export default function PositionsList(props) {
             const liquidationPrice = getLiquidationPrice(position) || bigNumberify(0);
             const positionOrders = getOrdersForPosition(account, position, orders, nativeTokenAddress);
             const hasOrderError = !!positionOrders.find((order) => order.error);
-            const hasPositionProfit = position[showPnlAfterFees ? "hasProfitAfterFees" : "hasProfit"];
-            const positionDelta =
-              position[showPnlAfterFees ? "pendingDeltaAfterFees" : "pendingDelta"] || bigNumberify(0);
+            const hasPositionProfit = position.hasProfitAfterFees;
+            const positionDelta = position.pendingDeltaAfterFees || bigNumberify(0);
             let borrowFeeUSD;
             if (position.collateralToken && position.collateralToken.fundingRate) {
               const borrowFeeRate = position.collateralToken.fundingRate
