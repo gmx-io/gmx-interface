@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
+import { TV_CHART_RELOAD_TIMESTAMP_KEY, TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
 import { useLocalStorage, useMedia } from "react-use";
 import { defaultChartProps, disabledFeaturesOnMobile } from "./constants";
 import useTVDatafeed from "domain/tradingview/useTVDatafeed";
 import { ChartData, IChartingLibraryWidget, IPositionLineAdapter } from "../../charting_library";
 import { getPeriodFromResolutions, supportedResolutions } from "domain/tradingview/utils";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
+
+const TV_RELOAD_INTERVAL = 15 * 60 * 1000; // 15 minutes
 
 type ChartLine = {
   price: number;
@@ -35,7 +37,7 @@ export default function TVChartContainer({
   const tvWidgetRef = useRef<IChartingLibraryWidget | null>(null);
   const [chartReady, setChartReady] = useState(false);
   const [tvCharts, setTvCharts] = useLocalStorage<ChartData[] | undefined>(TV_SAVE_LOAD_CHARTS_KEY, []);
-  const datafeed = useTVDatafeed();
+  const { datafeed, resetCache } = useTVDatafeed();
   const isMobile = useMedia("(max-width: 550px)");
 
   const drawLineOnChart = useCallback(
@@ -58,6 +60,30 @@ export default function TVChartContainer({
     },
     [chartReady]
   );
+
+  /* Tradingview charting library only fetches the historical data once so if the tab is inactive or system is in sleep mode
+  for a long time, the historical data will be outdated. */
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        localStorage.setItem(TV_CHART_RELOAD_TIMESTAMP_KEY, Date.now().toString());
+      } else {
+        const tvReloadTimestamp = Number(localStorage.getItem(TV_CHART_RELOAD_TIMESTAMP_KEY));
+        if (tvReloadTimestamp && Date.now() - tvReloadTimestamp > TV_RELOAD_INTERVAL) {
+          if (resetCache.current) {
+            resetCache.current();
+            tvWidgetRef.current?.activeChart().resetData();
+          }
+        }
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [resetCache]);
 
   useEffect(
     function updateLines() {
