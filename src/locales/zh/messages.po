@@ -996,6 +996,10 @@ msgstr "已减少{tokenSymbol} {longOrShortText}, -{0} USD"
 msgid "Deposit"
 msgstr "存取"
 
+#: src/components/Exchange/FeesTooltip.tsx
+msgid "Deposit Fee"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 msgid "Deposit disabled, pending {0} upgrade"
 msgstr "存取已失效等待 {0} 升级"

@@ -8,7 +8,7 @@ type Row = {
   value: string;
 };
 
-function FeesTooltip({ totalFees, fundingFee, positionFee, swapFee, executionFee, isOpening = true }) {
+function FeesTooltip({ totalFees, fundingFee, positionFee, swapFee, executionFee, depositFee, isOpening = true }) {
   const feeRows: Row[] = [];
   if (!isOpening && fundingFee) {
     feeRows.push({
@@ -44,6 +44,12 @@ function FeesTooltip({ totalFees, fundingFee, positionFee, swapFee, executionFee
     feeRows.push({
       label: t`Execution Fee`,
       value: executionFee,
+    });
+  }
+  if (depositFee) {
+    feeRows.push({
+      label: t`Deposit Fee`,
+      value: depositFee,
     });
   }
 

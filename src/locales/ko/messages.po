@@ -996,6 +996,10 @@ msgstr "{tokenSymbol} {longOrShortText} 감소, -{0} USD."
 msgid "Deposit"
 msgstr "예치"
 
+#: src/components/Exchange/FeesTooltip.tsx
+msgid "Deposit Fee"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 msgid "Deposit disabled, pending {0} upgrade"
 msgstr "{0} 업그레이드를 위해 예치가 비활성화되었습니다"

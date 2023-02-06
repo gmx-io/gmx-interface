@@ -108,6 +108,7 @@ export default function PositionEditor(props) {
   let title;
   let collateralDelta;
   let fundingFee;
+  let depositFeeUSD;
 
   if (position) {
     title = t`Edit ${longOrShortText} ${position.indexToken.symbol}`;
@@ -145,6 +146,7 @@ export default function PositionEditor(props) {
 
       if (position.isLong && isDeposit) {
         collateralDelta = collateralDelta.mul(BASIS_POINTS_DIVISOR - DEPOSIT_FEE).div(BASIS_POINTS_DIVISOR);
+        depositFeeUSD = convertedAmount.mul(DEPOSIT_FEE).div(BASIS_POINTS_DIVISOR);
       }
 
       nextLeverage = getLeverage({
@@ -662,6 +664,7 @@ export default function PositionEditor(props) {
                       <FeesTooltip
                         executionFee={
                           minExecutionFee &&
+                          minExecutionFeeUSD &&
                           `${formatAmountFree(minExecutionFee, 18, 5)} ${nativeTokenSymbol} ($${formatAmount(
                             minExecutionFeeUSD,
                             USD_DECIMALS,
@@ -669,8 +672,11 @@ export default function PositionEditor(props) {
                           )})`
                         }
                         totalFees={
-                          minExecutionFee && `${formatAmountFree(minExecutionFee, 18, 5)} ${nativeTokenSymbol}`
+                          minExecutionFeeUSD &&
+                          depositFeeUSD &&
+                          `$${formatAmountFree(minExecutionFeeUSD.add(depositFeeUSD), USD_DECIMALS, 2)}`
                         }
+                        depositFee={depositFeeUSD && `$${formatAmount(depositFeeUSD, USD_DECIMALS, 2)}`}
                       />
                     </div>
                   </div>
