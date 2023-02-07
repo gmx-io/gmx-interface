@@ -1,8 +1,9 @@
-import { InfoTokens, TokenInfo } from "domain/tokens";
+import { InfoTokens, Token, TokenInfo } from "domain/tokens";
 import { BigNumber } from "ethers";
-import { TokenAllowancesData, TokenData, TokenPrices, TokensData } from "./types";
-import { expandDecimals } from "lib/numbers";
+import { TokenAllowancesData, TokenData, TokenPrices, TokensData, TokensRatio } from "./types";
+import { expandDecimals, formatAmount } from "lib/numbers";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { PRECISION, USD_DECIMALS, adjustForDecimals } from "lib/legacy";
 
 export function getTokenData(tokensData: TokensData, address: string | undefined, convertTo?: "wrapped" | "native") {
   if (!address) return undefined;
@@ -58,6 +59,45 @@ export function convertToUsd(
   if (!tokenAmount || !tokenDecimals || !price) return undefined;
 
   return tokenAmount.mul(price).div(expandDecimals(1, tokenDecimals));
+}
+
+export function getTokensRatio(p: { fromToken?: TokenData; toToken?: TokenData }): TokensRatio | undefined {
+  if (!p.fromToken?.prices || !p.toToken?.prices) return undefined;
+
+  const fromAddress = p.fromToken.address;
+  const toAddress = p.toToken.address;
+  const fromPrice = p.fromToken.prices.minPrice;
+  const toPrice = p.toToken.prices.maxPrice;
+
+  const [largestAddress, smallestAddress] = fromPrice.gt(toPrice) ? [fromAddress, toAddress] : [toAddress, fromAddress];
+
+  const ratio =
+    largestAddress === fromAddress ? fromPrice.mul(PRECISION).div(toPrice) : toPrice.mul(PRECISION).div(fromPrice);
+
+  return { ratio, largestAddress, smallestAddress };
+}
+
+export function formatTokensRatio(tokensData: TokensData, ratio?: TokensRatio) {
+  const smallest = getTokenData(tokensData, ratio?.smallestAddress);
+  const largest = getTokenData(tokensData, ratio?.largestAddress);
+
+  if (!smallest || !largest || !ratio) return undefined;
+
+  return `${formatAmount(ratio.ratio, USD_DECIMALS, 4)} ${smallest.symbol} / ${largest.symbol}`;
+}
+
+export function getAmountByRatio(p: {
+  fromToken: Token;
+  toToken: Token;
+  fromTokenAmount: BigNumber;
+  ratio: BigNumber;
+  invertRatio?: boolean;
+}) {
+  const ratio = p.invertRatio ? PRECISION.mul(PRECISION).div(p.ratio) : p.ratio;
+
+  const adjustedDecimalsRatio = adjustForDecimals(ratio, p.fromToken.decimals, p.toToken.decimals);
+
+  return p.fromTokenAmount.mul(adjustedDecimalsRatio).div(PRECISION);
 }
 
 export function getMidPrice(prices: TokenPrices | undefined) {

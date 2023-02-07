@@ -1,32 +1,11 @@
-import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { TokenData } from "../tokens";
-
-export type ExecutionFeeParams = {
-  feeUsd?: BigNumber;
-  feeTokenAmount?: BigNumber;
-  feeToken: Token;
-};
 
 export type ExecutionFee = {
   feeUsd: BigNumber;
   feeTokenAmount: BigNumber;
   feeToken: TokenData;
   warning?: string;
-};
-
-export type SwapStats = {
-  marketAddress: string;
-  tokenInAddress: string;
-  tokenOutAddress: string;
-  swapFeeAmount: BigNumber;
-  swapFeeUsd: BigNumber;
-  priceImpactDeltaUsd: BigNumber;
-  totalFeeDeltaUsd: BigNumber;
-  amountIn: BigNumber;
-  amountInAfterFees: BigNumber;
-  amountOut: BigNumber;
-  usdOut: BigNumber;
 };
 
 export type FeeItem = {
@@ -40,22 +19,12 @@ export type SwapFeeItem = FeeItem & {
   tokenOutAddress: string;
 };
 
-export type SwapPathStats = {
-  swapSteps: SwapStats[];
-  swapFees: SwapFeeItem[];
-  totalPriceImpact: FeeItem;
-  totalSwapFee: FeeItem;
-  totalFee: FeeItem;
-  tokenInAddress: string;
-  tokenOutAddress: string;
-  usdOut: BigNumber;
-};
-
 export type TradeFees = {
   totalFees?: FeeItem;
-  swapFees?: SwapPathStats;
+  swapFees?: SwapFeeItem[];
   executionFee?: ExecutionFee;
   positionFee?: FeeItem;
+  swapPriceImpact?: FeeItem;
   positionPriceImpact?: FeeItem;
 };
 

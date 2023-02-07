@@ -16,7 +16,7 @@ import { adaptToInfoTokens } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { IoMdSwap } from "react-icons/io";
 
-import { useTokenInput } from "domain/synthetics/exchange";
+import { useTokenInput } from "domain/synthetics/trade";
 import {
   estimateExecuteDepositGasLimit,
   estimateExecuteWithdrawalGasLimit,

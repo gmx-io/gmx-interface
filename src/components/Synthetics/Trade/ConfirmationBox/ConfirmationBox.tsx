@@ -38,9 +38,10 @@ import {
 import { AggregatedPositionData, formatLeverage, formatPnl } from "domain/synthetics/positions";
 import {
   TokenData,
-  TokensData,
+  TokensRatio,
   adaptToTokenInfo,
   convertToUsd,
+  formatTokensRatio,
   getTokenData,
   needTokenApprove,
   useAvailableTokensData,
@@ -66,7 +67,6 @@ import { SLIPPAGE_BPS_KEY } from "config/localStorage";
 import { useMarketsFeesConfigs } from "domain/synthetics/fees/useMarketsFeesConfigs";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useMemo, useState } from "react";
-import { TokensRatio } from "domain/synthetics/exchange";
 import { HIGH_PRICE_IMPACT_BP as HIGH_PRICE_IMPACT_BPS } from "config/synthetics";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 
@@ -114,15 +114,6 @@ type Props = {
   onClose: () => void;
   onSubmitted: () => void;
 };
-
-function formatTokensRatio(tokensData: TokensData, ratio?: TokensRatio) {
-  const smallest = getTokenData(tokensData, ratio?.smallestAddress);
-  const largest = getTokenData(tokensData, ratio?.largestAddress);
-
-  if (!smallest || !largest || !ratio) return undefined;
-
-  return `${formatAmount(ratio.ratio, USD_DECIMALS, 4)} ${smallest.symbol} / ${largest.symbol}`;
-}
 
 function isHighPriceImpact(priceImpact?: FeeItem) {
   return priceImpact?.deltaUsd.lt(0) && priceImpact.bps.abs().gte(HIGH_PRICE_IMPACT_BPS);

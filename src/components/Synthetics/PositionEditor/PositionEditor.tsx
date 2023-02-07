@@ -10,7 +10,7 @@ import Token from "abis/Token.json";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { SYNTHETICS_COLLATERAL_DEPOSIT_TOKEN_KEY } from "config/localStorage";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import { useTokenInput } from "domain/synthetics/exchange";
+import { useTokenInput } from "domain/synthetics/trade";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,

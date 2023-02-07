@@ -10,7 +10,7 @@ import {
   SYNTHETICS_TRADE_MARKET_KEY,
   SYNTHETICS_TRADE_TYPE_KEY,
 } from "config/localStorage";
-import { TradeType } from "domain/synthetics/exchange/types";
+import { TradeType } from "domain/synthetics/trade/types";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useAggregatedOrdersData } from "domain/synthetics/orders/useAggregatedOrdersData";
 import { getPosition, getPositionKey } from "domain/synthetics/positions";

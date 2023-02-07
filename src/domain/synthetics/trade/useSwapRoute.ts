@@ -5,8 +5,7 @@ import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { useCallback, useMemo } from "react";
 import { useMarketsFeesConfigs } from "../fees/useMarketsFeesConfigs";
-import { createSwapEstimator, findAllPaths, getBestSwapPath, getMarketsGraph } from "./utils";
-import { getSwapPathStats } from "../fees";
+import { getMarketsGraph, getSwapPathStats, getBestSwapPath, findAllPaths, createSwapEstimator } from "./utils/index";
 
 export function useSwapRoute(p: { initialColltaralAddress?: string; targetCollateralAddress?: string }) {
   const { chainId } = useChainId();
@@ -74,7 +73,7 @@ export function useSwapRoute(p: { initialColltaralAddress?: string; targetCollat
         return undefined;
       }
 
-      return { swapPath, swapPathStats };
+      return swapPathStats;
     },
     [fromAddress, marketsData, marketsFeesConfigs, openInterestData, paths, poolsData, toAddress, tokensData]
   );

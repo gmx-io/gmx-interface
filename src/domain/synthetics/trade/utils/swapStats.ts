@@ -8,10 +8,44 @@ import {
 } from "domain/synthetics/markets";
 import { TokensData, convertToTokenAmount, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
-import { applyFactor, getBasisPoints } from "lib/numbers";
-import { getMarketFeesConfig } from ".";
-import { FeeItem, MarketsFeesConfigsData, SwapFeeItem, SwapPathStats, SwapStats } from "../types";
-import { applySwapImpactWithCap, getPriceImpactForSwap } from "./priceImpact";
+import { applyFactor } from "lib/numbers";
+import { MarketsFeesConfigsData } from "../../fees/types";
+import { getMarketFeesConfig } from "../../fees/utils";
+import { applySwapImpactWithCap, getPriceImpactForSwap } from "../../fees/utils/priceImpact";
+import { MarketEdge, SwapEstimator, SwapPathStats, SwapStats } from "../types";
+
+export const createSwapEstimator = (
+  marketsData: MarketsData,
+  poolsData: MarketsPoolsData,
+  openInterestData: MarketsOpenInterestData,
+  tokensData: TokensData,
+  feeConfigs: MarketsFeesConfigsData
+): SwapEstimator => {
+  return (e: MarketEdge, usdIn: BigNumber) => {
+    const swapStats = getSwapStats(
+      marketsData,
+      poolsData,
+      openInterestData,
+      tokensData,
+      feeConfigs,
+      e.marketAddress,
+      e.from,
+      usdIn
+    );
+
+    const usdOut = swapStats?.usdOut;
+
+    if (!usdOut) {
+      return {
+        usdOut: BigNumber.from(0),
+      };
+    }
+
+    return {
+      usdOut,
+    };
+  };
+};
 
 export function getSwapPathStats(
   marketsData: MarketsData,
@@ -22,16 +56,13 @@ export function getSwapPathStats(
   swapPath: string[],
   tokenInAddress: string,
   usdIn: BigNumber
-) {
-  if (!swapPath?.length || !tokenInAddress || !usdIn) return undefined;
-
+): SwapPathStats | undefined {
   const swapSteps: SwapStats[] = [];
-  const swapFeeItems: SwapFeeItem[] = [];
 
   let usdOut = usdIn;
   let tokenOutAddress = tokenInAddress;
 
-  let totalPriceImpactDeltaUsd = BigNumber.from(0);
+  let totalSwapPriceImpactDeltaUsd = BigNumber.from(0);
   let totalSwapFeeUsd = BigNumber.from(0);
 
   for (let i = 0; i < swapPath.length; i++) {
@@ -53,50 +84,31 @@ export function getSwapPathStats(
     usdOut = swapStep?.usdOut;
     tokenOutAddress = swapStep?.tokenOutAddress;
 
-    totalPriceImpactDeltaUsd = totalPriceImpactDeltaUsd.add(swapStep.priceImpactDeltaUsd);
+    totalSwapPriceImpactDeltaUsd = totalSwapPriceImpactDeltaUsd.add(swapStep.priceImpactDeltaUsd);
     totalSwapFeeUsd = totalSwapFeeUsd.add(swapStep.swapFeeUsd);
 
-    const swapFeeItem: SwapFeeItem = {
-      marketAddress: swapStep.marketAddress,
-      tokenInAddress: swapStep.tokenInAddress,
-      tokenOutAddress: swapStep.tokenOutAddress,
-      deltaUsd: swapStep.swapFeeUsd.mul(-1),
-      bps: getBasisPoints(swapStep.swapFeeUsd.mul(-1), usdIn),
-    };
-
     swapSteps.push(swapStep);
-    swapFeeItems.push(swapFeeItem);
   }
 
-  const totalPriceImpact: FeeItem = {
-    deltaUsd: totalPriceImpactDeltaUsd,
-    bps: getBasisPoints(totalPriceImpactDeltaUsd, usdIn),
-  };
+  const lastStep = swapSteps[swapSteps.length - 1];
 
-  const totalSwapFee: FeeItem = {
-    deltaUsd: totalSwapFeeUsd.mul(-1),
-    bps: getBasisPoints(totalSwapFeeUsd.mul(-1), usdIn),
-  };
+  const targetMarketAddress = lastStep?.marketAddress;
+  const amountOut = lastStep?.amountOut;
 
-  const totalFeeDeltaUsd = totalPriceImpact.deltaUsd.add(totalSwapFee.deltaUsd);
+  const totalFeesDeltaUsd = BigNumber.from(0).sub(totalSwapFeeUsd).add(totalSwapPriceImpactDeltaUsd);
 
-  const totalFee: FeeItem = {
-    deltaUsd: totalFeeDeltaUsd,
-    bps: getBasisPoints(totalFeeDeltaUsd, usdIn),
-  };
-
-  const swapPathStats: SwapPathStats = {
-    swapSteps,
-    swapFees: swapFeeItems,
-    totalPriceImpact,
-    totalSwapFee,
-    totalFee,
+  return {
+    swapPath,
     tokenInAddress,
     tokenOutAddress,
+    targetMarketAddress,
+    swapSteps,
     usdOut,
+    amountOut,
+    totalSwapFeeUsd,
+    totalSwapPriceImpactDeltaUsd,
+    totalFeesDeltaUsd,
   };
-
-  return swapPathStats;
 }
 
 export function getSwapStats(
@@ -179,6 +191,7 @@ export function getSwapStats(
   usdOut = usdOut.add(cappedImpactDeltaUsd);
   amountOut = convertToTokenAmount(usdOut, tokenOut.decimals, priceOut)!;
 
+  // TODO: error?
   const outLiquidity = getAvailableUsdLiquidityForCollateral(
     marketsData,
     poolsData,

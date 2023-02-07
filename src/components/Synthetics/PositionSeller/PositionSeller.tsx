@@ -81,8 +81,7 @@ import {
 } from "domain/synthetics/markets";
 import { Token } from "domain/tokens";
 import TokenSelector from "components/TokenSelector/TokenSelector";
-import { useAvailableSwapOptions } from "domain/synthetics/exchange";
-import { useSwapRoute } from "domain/synthetics/routing";
+import { useAvailableSwapOptions } from "domain/synthetics/trade";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { useMarketsFeesConfigs } from "domain/synthetics/fees/useMarketsFeesConfigs";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
@@ -326,10 +325,6 @@ export function PositionSeller(p: Props) {
 
     if (closeSizeUsd.gt(position.sizeInUsd)) {
       return [t`Max close amount exceeded`];
-    }
-
-    if (nextLeverage && nextLeverage.lt(1.1 * BASIS_POINTS_DIVISOR)) {
-      return [t`Min leverage: 1.1x`];
     }
 
     if (nextLeverage && nextLeverage.gt(maxLeverage || MAX_ALLOWED_LEVERAGE)) {

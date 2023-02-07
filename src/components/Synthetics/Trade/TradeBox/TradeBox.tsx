@@ -21,10 +21,9 @@ import { convertTokenAddress, getToken } from "config/tokens";
 import {
   getIncreaseOrderAmounts,
   getSwapAmounts,
-  getTokensRatio,
   useAvailableSwapOptions,
   useTokenInput,
-} from "domain/synthetics/exchange";
+} from "domain/synthetics/trade";
 import {
   Market,
   getAvailableUsdLiquidityForCollateral,
@@ -52,7 +51,14 @@ import {
   getLiquidationPrice,
   getMarkPrice,
 } from "domain/synthetics/positions";
-import { convertToTokenAmount, convertToUsd, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
+import {
+  TokensRatio,
+  convertToTokenAmount,
+  convertToUsd,
+  getTokenData,
+  getTokensRatio,
+  useAvailableTokensData,
+} from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import longImg from "img/long.svg";
 import shortImg from "img/short.svg";
@@ -91,17 +97,9 @@ import {
   useGasPrice,
 } from "domain/synthetics/fees";
 import { useMarketsFeesConfigs } from "domain/synthetics/fees/useMarketsFeesConfigs";
-import { useSwapRoute } from "domain/synthetics/routing/useSwapRoute";
 import { SwapCard } from "../../SwapCard/SwapCard";
 
-import {
-  DecreaseTradeParams,
-  IncreaseTradeParams,
-  SwapTradeParams,
-  TokensRatio,
-  TradeMode,
-  TradeType,
-} from "domain/synthetics/exchange/types";
+import { SwapAmounts, TradeMode, TradeType } from "domain/synthetics/trade/types";
 
 import { IS_NETWORK_DISABLED, getChainName } from "config/chains";
 import { useGasLimitsConfig } from "domain/synthetics/fees/useGasLimitsConfig";
@@ -273,7 +271,7 @@ export function TradeBox(p: Props) {
     ...tradeParams
   } = useMemo(() => {
     const tradeParams: {
-      swapParams?: SwapTradeParams;
+      swapParams?: SwapAmounts;
       increaseParams?: IncreaseTradeParams;
       decreaseParams?: DecreaseTradeParams;
       fees?: TradeFees;
@@ -299,10 +297,10 @@ export function TradeBox(p: Props) {
           tokensData,
           feesConfigs: marketsFeesConfigs,
         },
-        fromToken: fromTokenInput.token,
-        toToken: toTokenInput.token,
-        fromAmount: focusedInput === "from" ? fromTokenInput.tokenAmount : undefined,
-        toAmount: focusedInput === "to" ? toTokenInput.tokenAmount : undefined,
+        tokenIn: fromTokenInput.token,
+        tokenOut: toTokenInput.token,
+        tokenInAmount: focusedInput === "from" ? fromTokenInput.tokenAmount : undefined,
+        tokenOutAmount: focusedInput === "to" ? toTokenInput.tokenAmount : undefined,
         triggerRatio: isLimit ? triggerRatio : undefined,
         findSwapPath: swapRoute.findSwapPath,
       });
@@ -319,9 +317,9 @@ export function TradeBox(p: Props) {
         }
 
         if (focusedInput === "from") {
-          tradeParams.nextToAmount = swapParams.toAmount;
+          tradeParams.nextToAmount = swapParams.amountOut;
         } else {
-          tradeParams.nextFromAmount = swapParams.fromAmount;
+          tradeParams.nextFromAmount = swapParams.amountIn;
         }
 
         return tradeParams;

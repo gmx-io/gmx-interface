@@ -18,14 +18,13 @@ import {
   getPosition,
   getPositionKey,
 } from "domain/synthetics/positions";
-import { getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
+import { TokensRatio, getTokenData, getTokensRatio, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
 import { formatAmount, formatUsd, parseValue } from "lib/numbers";
 import { useMemo, useState } from "react";
 
 import { useWeb3React } from "@web3-react/core";
-import { TokensRatio, getTokensRatio } from "domain/synthetics/exchange";
 import { updateOrderTxn } from "domain/synthetics/orders/updateOrderTxn";
 import { getNextTokenAmount } from "../Trade/utils";
 import "./OrderEditor.scss";

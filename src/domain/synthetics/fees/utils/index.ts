@@ -4,11 +4,10 @@ import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
-import { applyFactor, expandDecimals, getBasisPoints } from "lib/numbers";
+import { applyFactor, expandDecimals } from "lib/numbers";
 import { ExecutionFee, FeeItem, GasLimitsConfig, MarketsFeesConfigsData } from "../types";
 
 export * from "./priceImpact";
-export * from "./swapFees";
 
 export function getMarketFeesConfig(feeConfigsData: MarketsFeesConfigsData, marketAddress?: string) {
   if (!marketAddress) return undefined;
@@ -16,23 +15,12 @@ export function getMarketFeesConfig(feeConfigsData: MarketsFeesConfigsData, mark
   return feeConfigsData[marketAddress];
 }
 
-export function getPositionFee(
-  feeConfigs: MarketsFeesConfigsData,
-  marketAddress?: string,
-  sizeDeltaUsd?: BigNumber,
-  collateralUsd?: BigNumber
-): FeeItem | undefined {
+export function getPositionFee(feeConfigs: MarketsFeesConfigsData, marketAddress?: string, sizeDeltaUsd?: BigNumber) {
   const feeConfig = getMarketFeesConfig(feeConfigs, marketAddress);
 
   if (!feeConfig || !sizeDeltaUsd) return undefined;
 
-  const feeUsd = applyFactor(sizeDeltaUsd, feeConfig.positionFeeFactor);
-  const bps = collateralUsd?.gt(0) ? getBasisPoints(feeUsd, collateralUsd) : BigNumber.from(0);
-
-  return {
-    deltaUsd: feeUsd.mul(-1),
-    bps,
-  };
+  return applyFactor(sizeDeltaUsd, feeConfig.positionFeeFactor);
 }
 
 export function getBorrowingRateUsd(
