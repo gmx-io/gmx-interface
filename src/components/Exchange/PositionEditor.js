@@ -493,6 +493,17 @@ export default function PositionEditor(props) {
     );
   }
 
+  function getTotalFees() {
+    if (isDeposit && position?.isLong) {
+      return (
+        minExecutionFeeUSD &&
+        depositFeeUSD &&
+        `$${formatAmountFree(minExecutionFeeUSD.add(depositFeeUSD), USD_DECIMALS, 2)}`
+      );
+    }
+    return minExecutionFee && `${formatAmountFree(minExecutionFee, 18, 5)} ${nativeTokenSymbol}`;
+  }
+
   return (
     <div className="PositionEditor">
       {position && (
@@ -671,11 +682,7 @@ export default function PositionEditor(props) {
                             2
                           )})`
                         }
-                        totalFees={
-                          minExecutionFeeUSD &&
-                          depositFeeUSD &&
-                          `$${formatAmountFree(minExecutionFeeUSD.add(depositFeeUSD), USD_DECIMALS, 2)}`
-                        }
+                        totalFees={getTotalFees()}
                         depositFee={depositFeeUSD && `$${formatAmount(depositFeeUSD, USD_DECIMALS, 2)}`}
                       />
                     </div>
