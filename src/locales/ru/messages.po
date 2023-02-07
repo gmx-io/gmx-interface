@@ -382,10 +382,9 @@ msgid "Boost your rewards with Multiplier Points. <0>More info</0>."
 msgstr "Повышайте свои вознаграждения с помощью Множительных Баллов. <0>More info</0>."
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
@@ -638,6 +637,10 @@ msgstr "Нажмите на строку, чтобы выбрать позици
 #: src/components/Exchange/PositionsList.js
 msgid "Close"
 msgstr "Закрыть"
+
+#: src/components/Exchange/NetValueTooltip.tsx
+msgid "Close Fee"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close failed."
@@ -1558,8 +1561,7 @@ msgstr "Увеличено {tokenSymbol} {longOrShortText}, +{0} USD."
 msgid "Index"
 msgstr "Индекс"
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Initial Collateral"
@@ -2074,15 +2076,18 @@ msgstr "NFT Кошелёк"
 msgid "Net Value"
 msgstr "Чистая Прибыль"
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/NetValueTooltip.tsx
 msgid "Net Value: Initial Collateral + PnL - Borrow Fee"
+msgstr ""
+
+#: src/components/Exchange/NetValueTooltip.tsx
+msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Close Fee"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-msgid "Net Value: Initial Collateral + PnL - Fees"
-msgstr ""
+#~ msgid "Net Value: Initial Collateral + PnL - Fees"
+#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
@@ -2155,7 +2160,11 @@ msgstr "Допускаются только буквы, цифры и знаки
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-msgid "Open + Close Fees"
+#~ msgid "Open + Close Fees"
+#~ msgstr ""
+
+#: src/components/Exchange/NetValueTooltip.tsx
+msgid "Open Fee"
 msgstr ""
 
 #: src/pages/Home/Home.js
@@ -2343,17 +2352,15 @@ msgstr "Пожалуйста, прочитайте <0>Средний пост</0
 msgid "Please switch your network to Arbitrum."
 msgstr "Пожалуйста, переключите свою сеть на Arbitrum."
 
+#: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/TradeHistory.js
 #: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr "PnL"
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/NetValueTooltip.tsx
 msgid "PnL After Fees"
 msgstr "PnL После уплаты Комиссии"
 
