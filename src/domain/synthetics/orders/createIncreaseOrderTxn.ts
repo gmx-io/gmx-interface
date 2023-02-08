@@ -5,15 +5,12 @@ import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
 import { encodeReferralCode } from "domain/referrals";
-import { TokensData, convertToContractPrice, convertToTokenAmount, getTokenData } from "domain/synthetics/tokens";
+import { TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
 import { BigNumber, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { formatUsd } from "lib/numbers";
-import { ContractEventsContextType } from "../../../context/SyntheticsEvents";
-import { getPositionKey } from "../positions";
 import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
-import { getAcceptablePriceForPositionOrder, isMarketOrder } from "./utils";
 
 const { AddressZero } = ethers.constants;
 
@@ -21,20 +18,18 @@ type IncreaseOrderParams = {
   account: string;
   executionFee: BigNumber;
   referralCode?: string;
-  market: string;
+  marketAddress: string;
   swapPath: string[];
   initialCollateralAddress: string;
   initialCollateralAmount: BigNumber;
   targetCollateralAddress?: string;
   indexTokenAddress: string;
   triggerPrice?: BigNumber;
-  priceImpactDelta: BigNumber;
-  allowedSlippage: number;
   sizeDeltaUsd: BigNumber;
+  acceptablePrice: BigNumber;
   isLong: boolean;
   orderType: OrderType.MarketIncrease | OrderType.LimitIncrease;
   tokensData: TokensData;
-  setPendingPositionUpdate: ContractEventsContextType["setPendingPositionUpdate"];
 };
 
 export async function createIncreaseOrderTxn(chainId: number, library: Web3Provider, p: IncreaseOrderParams) {
@@ -56,16 +51,6 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
 
   if (!indexToken?.prices) throw new Error("Index token prices are not available");
 
-  const acceptablePrice = getAcceptablePriceForPositionOrder({
-    isIncrease: true,
-    isLong: p.isLong,
-    priceImpactDelta: p.priceImpactDelta,
-    triggerPrice: p.triggerPrice,
-    indexTokenPrices: indexToken.prices,
-    sizeDeltaUsd: p.sizeDeltaUsd,
-    allowedSlippage: p.allowedSlippage,
-  });
-
   const multicall = [
     { method: "sendWnt", params: [orderVaultAddress, wntAmount] },
 
@@ -81,14 +66,14 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
             receiver: p.account,
             initialCollateralToken: convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped"),
             callbackContract: AddressZero,
-            market: p.market,
+            market: p.marketAddress,
             swapPath: p.swapPath,
           },
           numbers: {
             sizeDeltaUsd: p.sizeDeltaUsd,
             initialCollateralDeltaAmount: BigNumber.from(0),
             triggerPrice: convertToContractPrice(p.triggerPrice || BigNumber.from(0), indexToken!.decimals),
-            acceptablePrice: convertToContractPrice(acceptablePrice, indexToken!.decimals),
+            acceptablePrice: convertToContractPrice(p.acceptablePrice, indexToken!.decimals),
             executionFee: p.executionFee,
             callbackGasLimit: BigNumber.from(0),
             minOutputAmount: BigNumber.from(0),
@@ -106,7 +91,7 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
   if (isDevelopment()) {
     // eslint-disable-next-line no-console
     console.debug("positionIncreaseTxn multicall", multicall, {
-      acceptablePrice: formatUsd(acceptablePrice),
+      acceptablePrice: formatUsd(p.acceptablePrice),
       triggerPrice: formatUsd(p.triggerPrice),
     });
   }
@@ -115,7 +100,6 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
     .filter(Boolean)
     .map((call) => exchangeRouter.interface.encodeFunctionData(call!.method, call!.params));
 
-  const primaryPriceOverrides: PriceOverrides = {};
   const secondaryPriceOverrides: PriceOverrides = {};
 
   if (p.triggerPrice) {
@@ -123,19 +107,14 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
       minPrice: p.triggerPrice,
       maxPrice: p.triggerPrice,
     };
-  } else {
-    // primaryPriceOverrides[p.indexTokenAddress] = {
-    //   minPrice: acceptablePrice,
-    //   maxPrice: acceptablePrice,
-    // };
   }
 
   await simulateExecuteOrderTxn(chainId, library, {
-    primaryPriceOverrides,
+    tokensData: p.tokensData,
+    primaryPriceOverrides: {},
     secondaryPriceOverrides,
     createOrderMulticallPayload: encodedPayload,
     value: wntAmount,
-    tokensData: p.tokensData,
   });
 
   const longText = p.isLong ? t`Long` : t`Short`;
@@ -146,20 +125,6 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
     sentMsg: t`${orderLabel} order sent`,
     successMsg: t`${orderLabel} order created`,
     failMsg: t`${orderLabel} order failed`,
-  }).then(() => {
-    if (isMarketOrder(p.orderType)) {
-      p.setPendingPositionUpdate({
-        positionKey: getPositionKey(
-          p.account,
-          p.market,
-          p.targetCollateralAddress || p.initialCollateralAddress,
-          p.isLong
-        )!,
-        sizeDeltaUsd: p.sizeDeltaUsd,
-        sizeDeltaInTokens: convertToTokenAmount(p.sizeDeltaUsd, indexToken.decimals, indexToken.prices?.minPrice),
-        isIncrease: true,
-      });
-    }
   });
 
   return txn;

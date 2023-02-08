@@ -1,29 +1,22 @@
 import { Trans, t } from "@lingui/macro";
-import { PositionEditor } from "components/Synthetics/PositionEditor/PositionEditor";
 import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
-import { PositionSeller } from "components/Synthetics/PositionSeller/PositionSeller";
 import { AggregatedOrdersData } from "domain/synthetics/orders";
 import { AggregatedPositionsData } from "domain/synthetics/positions";
-import { useState } from "react";
 
 type Props = {
   onSelectPositionClick: (key: string) => void;
+  onClosePositionClick: (key: string) => void;
+  onEditCollateralClick: (key: string) => void;
   positionsData: AggregatedPositionsData;
   ordersData: AggregatedOrdersData;
+  savedIsPnlInLeverage: boolean;
   isLoading: boolean;
   onOrdersClick: () => void;
 };
 
 export function PositionList(p: Props) {
-  const [closingPositionKey, setClosingPositionKey] = useState<string>();
-  const [editingPositionKey, setEditingPositionKey] = useState<string>();
-
   const positions = Object.values(p.positionsData);
-
   const isDataLoading = p.isLoading;
-
-  const closingPosition = positions.find((position) => position.key === closingPositionKey);
-  const editingPosition = positions.find((position) => position.key === editingPositionKey);
 
   return (
     <div>
@@ -39,8 +32,8 @@ export function PositionList(p: Props) {
               key={position.key}
               ordersData={p.ordersData}
               position={position}
-              onEditCollateralClick={() => setEditingPositionKey(position.key)}
-              onClosePositionClick={() => setClosingPositionKey(position.key)}
+              onEditCollateralClick={() => p.onEditCollateralClick(position.key)}
+              onClosePositionClick={() => p.onClosePositionClick(position.key)}
               onOrdersClick={p.onOrdersClick}
               onSelectPositionClick={() => p.onSelectPositionClick(position.key)}
               showPnlAfterFees={false}
@@ -89,34 +82,16 @@ export function PositionList(p: Props) {
                 key={position.key}
                 ordersData={p.ordersData}
                 position={position}
-                onEditCollateralClick={() => setEditingPositionKey(position.key)}
-                onClosePositionClick={() => setClosingPositionKey(position.key)}
+                onEditCollateralClick={() => p.onEditCollateralClick(position.key)}
+                onClosePositionClick={() => p.onClosePositionClick(position.key)}
                 onOrdersClick={p.onOrdersClick}
-                onSelectPositionClick={() => p.onSelectPositionClick(position.marketAddress)}
+                onSelectPositionClick={() => p.onSelectPositionClick(position.key)}
                 showPnlAfterFees={false}
                 isLarge={true}
               />
             ))}
         </tbody>
       </table>
-
-      {closingPosition && (
-        <PositionSeller position={closingPosition} onClose={() => setClosingPositionKey(undefined)} />
-      )}
-
-      {editingPosition && (
-        <PositionEditor position={editingPosition} onClose={() => setEditingPositionKey(undefined)} />
-      )}
-
-      {/* {sharingPosition && (
-        <PositionShare
-          isPositionShareModalOpen={true}
-          setIsPositionShareModalOpen={() => setSharingPositionKey(undefined)}
-          positionToShare={sharingPosition}
-          chainId={chainId}
-          account={account}
-        />
-      )} */}
     </div>
   );
 }

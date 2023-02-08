@@ -1,15 +1,13 @@
 import { Trans, t } from "@lingui/macro";
-import { AggregatedOrdersData, isLimitOrder, isStopMarketOrder } from "domain/synthetics/orders";
-import { OrderItem } from "../OrderItem/OrderItem";
-import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
-import { useChainId } from "lib/chains";
 import { useWeb3React } from "@web3-react/core";
-import { getExecutionFee } from "domain/synthetics/fees";
-import { useAvailableTokensData } from "domain/synthetics/tokens";
 import Checkbox from "components/Checkbox/Checkbox";
+import { AggregatedOrdersData, isLimitOrder, isTriggerDecreaseOrder } from "domain/synthetics/orders";
+import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
+import { AggregatedPositionsData } from "domain/synthetics/positions";
+import { useChainId } from "lib/chains";
 import { Dispatch, SetStateAction, useState } from "react";
 import { OrderEditor } from "../OrderEditor/OrderEditor";
-import { AggregatedPositionsData } from "domain/synthetics/positions";
+import { OrderItem } from "../OrderItem/OrderItem";
 
 type Props = {
   hideActions?: boolean;
@@ -23,19 +21,16 @@ type Props = {
 export function OrderList(p: Props) {
   const { chainId } = useChainId();
   const { library } = useWeb3React();
-  const { tokensData } = useAvailableTokensData(chainId);
 
   const [canellingOrdersKeys, setCanellingOrdersKeys] = useState<string[]>([]);
   const [editingOrderKey, setEditingOrderKey] = useState<string>();
 
   const orders = Object.values(p.ordersData).filter(
-    (order) => isLimitOrder(order.orderType) || isStopMarketOrder(order.orderType)
+    (order) => isLimitOrder(order.orderType) || isTriggerDecreaseOrder(order.orderType)
   );
 
   const isAllOrdersSelected = orders.length > 0 && orders.every((o) => p.selectedOrdersKeys?.[o.key]);
   const editingOrder = orders.find((o) => o.key === editingOrderKey);
-
-  const executionFee = getExecutionFee(tokensData);
 
   function onSelectOrder(key: string) {
     p.setSelectedOrdersKeys?.((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -53,10 +48,9 @@ export function OrderList(p: Props) {
   }
 
   function onCancelOrder(key: string) {
-    if (!executionFee?.feeTokenAmount) return;
     setCanellingOrdersKeys((prev) => [...prev, key]);
 
-    cancelOrdersTxn(chainId, library, { orderKeys: [key], executionFee: executionFee.feeTokenAmount }).finally(() =>
+    cancelOrdersTxn(chainId, library, { orderKeys: [key] }).finally(() =>
       setCanellingOrdersKeys((prev) => prev.filter((k) => k !== key))
     );
   }

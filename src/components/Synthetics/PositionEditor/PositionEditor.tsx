@@ -1,5 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
+import Token from "abis/Token.json";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { InfoRow } from "components/InfoRow/InfoRow";
 import Modal from "components/Modal/Modal";
@@ -7,27 +8,51 @@ import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import Tab from "components/Tab/Tab";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
-import { useTokenInputState } from "domain/synthetics/exchange";
-import { getExecutionFee } from "domain/synthetics/fees";
+import { SYNTHETICS_COLLATERAL_DEPOSIT_TOKEN_KEY } from "config/localStorage";
+import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
+  estimateExecuteDecreaseOrderGasLimit,
+  estimateExecuteIncreaseOrderGasLimit,
+  getExecutionFee,
+  getMarketFeesConfig,
+  useGasPrice,
+} from "domain/synthetics/fees";
+import {
+  DecreasePositionSwapType,
   OrderType,
   createDecreaseOrderTxn,
   createIncreaseOrderTxn,
+  getAcceptablePrice,
   getNextCollateralUsdForDecreaseOrder,
 } from "domain/synthetics/orders";
-import { AggregatedPositionData, formatLeverage, getLeverage, getLiquidationPrice } from "domain/synthetics/positions";
-import { convertToTokenAmount, useAvailableTokensData } from "domain/synthetics/tokens";
+import {
+  AggregatedPositionData,
+  formatLeverage,
+  getLeverage,
+  getLiquidationPrice,
+  getMarkPrice,
+} from "domain/synthetics/positions";
+import { adaptToInfoTokens, convertToTokenAmount, useAvailableTokensData } from "domain/synthetics/tokens";
+import { useTokenInput } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-import { DEFAULT_SLIPPAGE_AMOUNT, USD_DECIMALS } from "lib/legacy";
-import { formatAmountFree, formatTokenAmount, formatUsd, parseValue } from "lib/numbers";
-import { useEffect, useState } from "react";
+import { BASIS_POINTS_DIVISOR, DEFAULT_SLIPPAGE_AMOUNT, MAX_ALLOWED_LEVERAGE, USD_DECIMALS } from "lib/legacy";
+import { formatAmount, formatAmountFree, formatTokenAmount, formatUsd, parseValue } from "lib/numbers";
+import { useEffect, useMemo, useState } from "react";
 
-import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import { ErrorCode, ErrorDisplayType } from "components/Exchange/constants";
+import { getContract } from "config/contracts";
+import { useGasLimitsConfig } from "domain/synthetics/fees/useGasLimitsConfig";
+import { useMarketsFeesConfigs } from "domain/synthetics/fees/useMarketsFeesConfigs";
+import { usePositionsConstants } from "domain/synthetics/positions/usePositionsConstants";
+import { approveTokens } from "domain/tokens";
+import { contractFetcher } from "lib/contracts";
+import useSWR from "swr";
 import "./PositionEditor.scss";
 
 type Props = {
-  position: AggregatedPositionData;
+  position?: AggregatedPositionData;
+  savedIsPnlInLeverage: boolean;
   onClose: () => void;
 };
 
@@ -42,54 +67,107 @@ const operationLabels = {
 };
 
 export function PositionEditor(p: Props) {
+  const { position, savedIsPnlInLeverage } = p;
   const { chainId } = useChainId();
-  const { account, library } = useWeb3React();
+  const { account, library, active } = useWeb3React();
   const { setPendingPositionUpdate } = useSyntheticsEvents();
   const [operation, setOperation] = useState(Operation.Deposit);
   const isDeposit = operation === Operation.Deposit;
-
+  const { minCollateralUsd } = usePositionsConstants(chainId);
+  const [isApproving, setIsApproving] = useState(false);
+  const { marketsFeesConfigs } = useMarketsFeesConfigs(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
+  const { gasPrice } = useGasPrice(chainId);
+  const { gasLimits } = useGasLimitsConfig(chainId);
 
-  const depositInput = useTokenInputState(tokensData, {
-    priceType: "minPrice",
+  const feesConfig = getMarketFeesConfig(marketsFeesConfigs, position?.marketAddress);
+
+  const depositInput = useTokenInput(tokensData, {
+    priceType: "min",
+    localStorageKey: [chainId, SYNTHETICS_COLLATERAL_DEPOSIT_TOKEN_KEY, position?.marketAddress],
   });
 
+  const routerAddress = getContract(chainId, "SyntheticsRouter");
+  const { data: tokenAllowance } = useSWR<BigNumber>(
+    [active, chainId, position?.collateralTokenAddress, "allowance", account, routerAddress],
+    {
+      fetcher: contractFetcher(library, Token),
+    }
+  );
+
   const [withdrawUsdInputValue, setWithdrawUsdInputValue] = useState("");
-  const maxWithdrawUsd = p.position.collateralUsd;
+  const maxWithdrawUsd = position?.collateralUsd;
   const withdrawUsd = parseValue(withdrawUsdInputValue, USD_DECIMALS);
   const withdrawTokenAmount = convertToTokenAmount(
     withdrawUsd,
-    p.position.collateralToken?.decimals,
-    p.position.collateralToken?.prices?.maxPrice
+    position?.collateralToken?.decimals,
+    position?.collateralToken?.prices?.maxPrice
   );
-
-  const executionFee = getExecutionFee(tokensData);
 
   const collateralDeltaAmount = isDeposit ? depositInput.tokenAmount : withdrawTokenAmount;
   const collateralDeltaUsd = isDeposit ? depositInput.usdAmount : withdrawUsd;
 
   const nextCollateralUsd = isDeposit
-    ? p.position.collateralUsd?.add(collateralDeltaUsd || BigNumber.from(0))
+    ? position?.collateralUsd?.add(collateralDeltaUsd || BigNumber.from(0))
     : getNextCollateralUsdForDecreaseOrder({
         sizeDeltaUsd: BigNumber.from(0),
-        collateralUsd: p.position.collateralUsd,
+        collateralUsd: position?.collateralUsd,
         collateralDeltaUsd,
-        pnl: p.position.pnl,
+        pnl: position?.pnl,
       });
 
-  const nextLeverage = getLeverage({
-    sizeUsd: p.position.sizeInUsd,
+  const nextLeverageExcludingPnl = getLeverage({
+    sizeUsd: position?.sizeInUsd,
     collateralUsd: nextCollateralUsd,
+    pendingBorrowingFeesUsd: position?.pendingBorrowingFees,
+    pendingFundingFeesUsd: position?.pendingFundingFeesUsd,
+  });
+
+  const nextLeverage = getLeverage({
+    sizeUsd: position?.sizeInUsd,
+    collateralUsd: nextCollateralUsd,
+    pendingBorrowingFeesUsd: position?.pendingBorrowingFees,
+    pendingFundingFeesUsd: position?.pendingFundingFeesUsd,
+    pnl: savedIsPnlInLeverage ? position?.pnl : undefined,
   });
 
   const nextLiqPrice = getLiquidationPrice({
-    sizeUsd: p.position.sizeInUsd,
+    sizeUsd: position?.sizeInUsd,
     collateralUsd: nextCollateralUsd,
-    averagePrice: p.position.averagePrice,
-    isLong: p.position.isLong,
+    indexPrice: position?.averagePrice,
+    isLong: position?.isLong,
+    positionFeeFactor: feesConfig?.positionFeeFactor,
   });
 
-  // needApproval = isDeposit && tokenAllowance && fromAmount && fromAmount.gt(tokenAllowance);
+  const { acceptablePrice = undefined } = position
+    ? getAcceptablePrice({
+        isIncrease: isDeposit,
+        isLong: position?.isLong,
+        sizeDeltaUsd: BigNumber.from(0),
+        indexPrice: getMarkPrice(position?.indexToken?.prices, isDeposit, position?.isLong),
+        allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
+      })
+    : {};
+
+  // TODO: calculate swap fees
+  const shouldSwapPnlToCollateralToken =
+    !isDeposit && position?.market && position?.pnlToken?.address !== position?.collateralToken?.address;
+
+  const needApproval =
+    isDeposit && tokenAllowance && depositInput.tokenAmount && depositInput.tokenAmount.gt(tokenAllowance);
+
+  const executionFee = useMemo(() => {
+    if (!gasLimits || !gasPrice) return undefined;
+
+    let estimatedGas: BigNumber;
+    if (isDeposit) {
+      estimatedGas = estimateExecuteIncreaseOrderGasLimit(gasLimits, {});
+    } else {
+      estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {});
+    }
+
+    return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice);
+  }, [chainId, gasLimits, gasPrice, isDeposit, tokensData]);
 
   function getError() {
     if (!collateralDeltaAmount || collateralDeltaAmount.eq(0)) {
@@ -100,37 +178,67 @@ export function PositionEditor(p: Props) {
       return [t`Amount should be greater than zero`];
     }
 
-    // if (!isDeposit && fromAmount) {
-    //   if (position.collateralAfterFee.sub(fromAmount).lt(MIN_ORDER_USD)) {
-    //     return [t`Min residual collateral: 10 USD`];
-    //   }
-    // }
+    if (!isDeposit && collateralDeltaUsd && position?.collateralUsdAfterFees && minCollateralUsd) {
+      if (position?.collateralUsdAfterFees.sub(collateralDeltaUsd).lt(minCollateralUsd)) {
+        return [t`Min residual collateral: ${formatAmount(minCollateralUsd, USD_DECIMALS, 2)} USD`];
+      }
+    }
 
-    // if (!isDeposit && fromAmount && nextLiquidationPrice) {
-    //   if (position.isLong && position.markPrice.lt(nextLiquidationPrice)) {
-    //     return [t`Invalid liq. price`, ErrorDisplayType.Tooltip, ErrorCode.InvalidLiqPrice];
-    //   }
-    //   if (!position.isLong && position.markPrice.gt(nextLiquidationPrice)) {
-    //     return [t`Invalid liq. price`, ErrorDisplayType.Tooltip, ErrorCode.InvalidLiqPrice];
-    //   }
-    // }
+    if (!isDeposit && collateralDeltaUsd && nextLiqPrice && position?.markPrice) {
+      if (position?.isLong && position?.markPrice.lt(nextLiqPrice)) {
+        return [t`Invalid liq. price`, ErrorDisplayType.Tooltip, ErrorCode.InvalidLiqPrice];
+      }
+      if (!position?.isLong && position?.markPrice.gt(nextLiqPrice)) {
+        return [t`Invalid liq. price`, ErrorDisplayType.Tooltip, ErrorCode.InvalidLiqPrice];
+      }
+    }
 
-    // if (nextLeverageExcludingPnl && nextLeverageExcludingPnl.lt(1.1 * BASIS_POINTS_DIVISOR)) {
-    //   return [t`Min leverage: 1.1x`];
-    // }
+    if (nextLeverageExcludingPnl && nextLeverageExcludingPnl.lt(1.1 * BASIS_POINTS_DIVISOR)) {
+      return [t`Min leverage: 1.1x`];
+    }
 
-    // if (nextLeverage && nextLeverage.gt(MAX_ALLOWED_LEVERAGE)) {
-    //   return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
-    // }
+    if (nextLeverage && nextLeverage.gt(MAX_ALLOWED_LEVERAGE)) {
+      return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
+    }
+
+    return [false];
   }
 
   function getSubmitButtonState(): { text: string; disabled?: boolean; onClick?: () => void } {
     const error = getError();
 
-    if (error) {
+    if (typeof error[0] === "string") {
       return {
         text: error[0],
         disabled: true,
+      };
+    }
+
+    if (isApproving) {
+      return {
+        text: t`Approving ${position?.collateralToken?.symbol}...`,
+        disabled: true,
+      };
+    }
+
+    if (needApproval) {
+      return {
+        text: t`Approve ${position?.collateralToken?.symbol}`,
+        onClick: () => {
+          if (!position) return;
+
+          approveTokens({
+            setIsApproving,
+            library,
+            tokenAddress: position?.collateralTokenAddress,
+            spender: routerAddress,
+            chainId: chainId,
+            infoTokens: adaptToInfoTokens(tokensData),
+            pendingTxns: [],
+            setPendingTxns: () => {},
+            onApproveSubmitted: () => {},
+          });
+        },
       };
     }
 
@@ -142,58 +250,76 @@ export function PositionEditor(p: Props) {
   }
 
   function onSubmit() {
-    if (!account || !executionFee?.feeTokenAmount || !p.position.indexToken) return;
+    if (!account || !executionFee?.feeTokenAmount || !acceptablePrice || !position?.indexToken) return;
 
     if (operation === Operation.Deposit) {
       createIncreaseOrderTxn(chainId, library, {
         account,
-        market: p.position.marketAddress,
-        indexTokenAddress: p.position.indexToken.address,
+        marketAddress: position?.marketAddress,
+        indexTokenAddress: position?.indexToken.address,
         swapPath: [],
-        initialCollateralAddress: p.position.collateralTokenAddress,
+        initialCollateralAddress: position?.collateralTokenAddress,
         initialCollateralAmount: depositInput.tokenAmount,
-        priceImpactDelta: BigNumber.from(1),
-        allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
+        acceptablePrice,
         orderType: OrderType.MarketIncrease,
         sizeDeltaUsd: BigNumber.from(0),
-        isLong: p.position.isLong,
+        isLong: position?.isLong,
         executionFee: executionFee.feeTokenAmount,
         tokensData,
-        setPendingPositionUpdate,
+      }).then(() => {
+        if (p.position) {
+          setPendingPositionUpdate({
+            isIncrease: true,
+            positionKey: p.position.key,
+            collateralDeltaAmount: depositInput.tokenAmount,
+          });
+        }
+
+        p.onClose();
       });
     } else {
       if (!withdrawTokenAmount) return;
 
       createDecreaseOrderTxn(chainId, library, {
         account,
-        market: p.position.marketAddress,
-        indexTokenAddress: p.position.indexToken.address,
+        marketAddress: position?.marketAddress,
+        indexTokenAddress: position?.indexToken.address,
         swapPath: [],
         initialCollateralDeltaAmount: withdrawTokenAmount,
-        initialCollateralAddress: p.position.collateralTokenAddress,
-        targetCollateralAddress: p.position.collateralTokenAddress,
-        receiveTokenAddress: p.position.collateralTokenAddress,
-        priceImpactDelta: BigNumber.from(0),
-        allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
+        initialCollateralAddress: position?.collateralTokenAddress,
+        receiveTokenAddress: position?.collateralTokenAddress,
+        acceptablePrice,
         sizeDeltaUsd: BigNumber.from(0),
         orderType: OrderType.MarketDecrease,
-        isLong: p.position.isLong,
+        isLong: position?.isLong,
         executionFee: executionFee.feeTokenAmount,
+        decreasePositionSwapType: shouldSwapPnlToCollateralToken
+          ? DecreasePositionSwapType.SwapPnlTokenToCollateralToken
+          : DecreasePositionSwapType.NoSwap,
         tokensData,
-        setPendingPositionUpdate,
+      }).then(() => {
+        if (p.position) {
+          setPendingPositionUpdate({
+            isIncrease: false,
+            positionKey: p.position.key,
+            collateralDeltaAmount: withdrawTokenAmount,
+          });
+        }
+
+        p.onClose();
       });
     }
   }
 
   useEffect(
     function updateInputsByPosition() {
-      if (p.position.collateralToken?.address) {
-        if (p.position.collateralToken.address !== depositInput.tokenAddress) {
-          depositInput.setTokenAddress(p.position.collateralToken.address);
+      if (position?.collateralToken?.address) {
+        if (position?.collateralToken.address !== depositInput.tokenAddress) {
+          depositInput.setTokenAddress(position?.collateralToken.address);
         }
       }
     },
-    [depositInput, p.position.collateralToken?.address]
+    [depositInput, position?.collateralToken?.address]
   );
 
   const submitButtonState = getSubmitButtonState();
@@ -202,11 +328,11 @@ export function PositionEditor(p: Props) {
     <div className="PositionEditor">
       <Modal
         className="PositionSeller-modal"
-        isVisible={true}
+        isVisible={Boolean(position)}
         setIsVisible={p.onClose}
         label={
           <Trans>
-            Edit {p.position?.isLong ? t`Long` : t`Short`} {p.position.indexToken?.symbol}
+            Edit {position?.isLong ? t`Long` : t`Short`} {position?.indexToken?.symbol}
           </Trans>
         }
         allowContentTouchMove
@@ -227,7 +353,7 @@ export function PositionEditor(p: Props) {
             topRightValue={formatTokenAmount(depositInput.balance, depositInput.token?.decimals)}
             inputValue={depositInput.inputValue}
             onInputValueChange={(e) => depositInput.setInputValue(e.target.value)}
-            showMaxButton={depositInput.isNotMatchBalance}
+            showMaxButton={depositInput.isNotMatchAvailableBalance}
             onClickMax={() => depositInput.setValueByTokenAmount(depositInput.balance)}
           >
             {depositInput.token?.symbol}
@@ -239,8 +365,8 @@ export function PositionEditor(p: Props) {
             topLeftLabel={t`Withdraw`}
             topLeftValue={formatTokenAmount(
               withdrawTokenAmount,
-              p.position.collateralToken?.decimals,
-              p.position.collateralToken?.symbol
+              position?.collateralToken?.decimals,
+              position?.collateralToken?.symbol
             )}
             topRightLabel={t`Max`}
             topRightValue={formatUsd(maxWithdrawUsd)}
@@ -257,16 +383,16 @@ export function PositionEditor(p: Props) {
 
         <div className="PositionEditor-info-box">
           {/* {minExecutionFeeErrorMessage && <div className="Confirmation-box-warning">{minExecutionFeeErrorMessage}</div>} */}
-          <InfoRow label={t`Size`} value={formatUsd(p.position.sizeInUsd)} />
+          <InfoRow label={t`Size`} value={formatUsd(position?.sizeInUsd)} />
           <InfoRow
-            label={t`Collateral (${p.position.collateralToken?.symbol})`}
+            label={t`Collateral (${position?.collateralToken?.symbol})`}
             value={
               <ValueTransition
-                from={formatUsd(p.position.collateralUsdAfterFees) || "..."}
+                from={formatUsd(position?.collateralUsdAfterFees) || "..."}
                 to={
                   nextCollateralUsd &&
-                  p.position.collateralUsdAfterFees &&
-                  !nextCollateralUsd.eq(p.position.collateralUsdAfterFees)
+                  position?.collateralUsdAfterFees &&
+                  !nextCollateralUsd.eq(position?.collateralUsdAfterFees)
                     ? formatUsd(nextCollateralUsd)
                     : undefined
                 }
@@ -277,23 +403,23 @@ export function PositionEditor(p: Props) {
             label={t`Leverage`}
             value={
               <ValueTransition
-                from={formatLeverage(p.position.leverage)}
+                from={formatLeverage(position?.leverage)}
                 to={
-                  p.position.leverage && nextLeverage && !nextLeverage.eq(p.position.leverage)
+                  position?.leverage && nextLeverage && !nextLeverage.eq(position?.leverage)
                     ? formatLeverage(nextLeverage)
                     : undefined
                 }
               />
             }
           />
-          <InfoRow label={t`Mark Price`} value={formatUsd(p.position.markPrice)} />
+          <InfoRow label={t`Mark Price`} value={formatUsd(position?.markPrice)} />
           <InfoRow
             label={t`Liq Price`}
             value={
               <ValueTransition
-                from={formatUsd(p.position.liqPrice) || "..."}
+                from={formatUsd(position?.liqPrice) || "..."}
                 to={
-                  nextLiqPrice && p.position.liqPrice && !nextLiqPrice.eq(p.position.liqPrice)
+                  nextLiqPrice && position?.liqPrice && !nextLiqPrice.eq(position?.liqPrice)
                     ? formatUsd(nextLiqPrice)
                     : undefined
                 }
@@ -301,14 +427,14 @@ export function PositionEditor(p: Props) {
             }
           />
 
-          {p.position.pendingBorrowingFees?.gt(0) && withdrawUsd?.gt(0) && (
+          {position?.pendingBorrowingFees?.gt(0) && withdrawUsd?.gt(0) && (
             <InfoRow
               label={t`Borrow Fee`}
               value={
                 <Tooltip
                   handle={
                     <ValueTransition
-                      from={formatUsd(p.position.pendingBorrowingFees) || "..."}
+                      from={formatUsd(position?.pendingBorrowingFees) || "..."}
                       to={formatUsd(BigNumber.from(0))}
                     />
                   }
@@ -319,14 +445,14 @@ export function PositionEditor(p: Props) {
             />
           )}
 
-          {p.position.pendingFundingFeesUsd?.gt(0) && withdrawUsd?.gt(0) && (
+          {position?.pendingFundingFeesUsd?.gt(0) && withdrawUsd?.gt(0) && (
             <InfoRow
               label={t`Funding Fee`}
               value={
                 <Tooltip
                   handle={
                     <ValueTransition
-                      from={formatUsd(p.position.pendingFundingFeesUsd) || "..."}
+                      from={formatUsd(position?.pendingFundingFeesUsd) || "..."}
                       to={formatUsd(BigNumber.from(0))}
                     />
                   }

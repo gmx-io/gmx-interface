@@ -1,20 +1,21 @@
+import { getExplorerUrl } from "config/chains";
+import { getVisibleTokens, getWhitelistedTokens } from "config/tokens";
 import { BigNumber, ethers } from "ethers";
 import {
-  adjustForDecimals,
   DUST_BNB,
-  getFeeBasisPoints,
   MARKET,
   MINT_BURN_FEE_BASIS_POINTS,
   PRECISION,
   TAX_BASIS_POINTS,
-  USD_DECIMALS,
   USDG_ADDRESS,
   USDG_DECIMALS,
+  USD_DECIMALS,
+  adjustForDecimals,
+  getFeeBasisPoints,
 } from "lib/legacy";
-import { getVisibleTokens, getWhitelistedTokens } from "config/tokens";
-import { getExplorerUrl } from "config/chains";
-import { InfoTokens, Token, TokenInfo } from "./types";
 import { bigNumberify, expandDecimals } from "lib/numbers";
+import { InfoTokens, Token, TokenInfo } from "./types";
+import { HIGH_SPREAD_THRESHOLD } from "config/factors";
 
 const { AddressZero } = ethers.constants;
 
@@ -237,3 +238,26 @@ export const replaceNativeTokenAddress = (path: string[], nativeTokenAddress: st
 
   return updatedPath;
 };
+
+export function getSpread(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddress) {
+  if (fromTokenInfo && fromTokenInfo.maxPrice && toTokenInfo && toTokenInfo.minPrice) {
+    const fromDiff = fromTokenInfo.maxPrice.sub(fromTokenInfo.minPrice).div(2);
+    const fromSpread = fromDiff.mul(PRECISION).div(fromTokenInfo.maxPrice.add(fromTokenInfo.minPrice).div(2));
+    const toDiff = toTokenInfo.maxPrice.sub(toTokenInfo.minPrice).div(2);
+    const toSpread = toDiff.mul(PRECISION).div(toTokenInfo.maxPrice.add(toTokenInfo.minPrice).div(2));
+
+    let value = fromSpread.add(toSpread);
+
+    const fromTokenAddress = fromTokenInfo.isNative ? nativeTokenAddress : fromTokenInfo.address;
+    const toTokenAddress = toTokenInfo.isNative ? nativeTokenAddress : toTokenInfo.address;
+
+    if (isLong && fromTokenAddress === toTokenAddress) {
+      value = fromSpread;
+    }
+
+    return {
+      value,
+      isHigh: value.gt(HIGH_SPREAD_THRESHOLD),
+    };
+  }
+}

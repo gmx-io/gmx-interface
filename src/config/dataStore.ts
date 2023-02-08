@@ -37,6 +37,14 @@ export const BORROWING_FACTOR_KEY = hashString("BORROWING_FACTOR");
 
 export const TOTAL_BORROWING_KEY = hashString("TOTAL_BORROWING");
 
+export const MAX_PNL_FACTOR_KEY = hashString("MAX_PNL_FACTOR");
+
+export const MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY = hashString("MAX_PNL_FACTOR_FOR_WITHDRAWALS");
+
+export const MAX_POSITION_IMPACT_FACTOR_FOR_LIQUIDATIONS_KEY = hashString(
+  "MAX_POSITION_IMPACT_FACTOR_FOR_LIQUIDATIONS"
+);
+
 export const POSITION_IMPACT_POOL_AMOUNT_KEY = hashString("POSITION_IMPACT_POOL_AMOUNT");
 
 export const SWAP_IMPACT_POOL_AMOUNT_KEY = hashString("SWAP_IMPACT_POOL_AMOUNT");
@@ -63,9 +71,9 @@ export const TOKEN_TRANSFER_GAS_LIMIT_KEY = hashString("TOKEN_TRANSFER_GAS_LIMIT
 
 export const NATIVE_TOKEN_TRANSFER_GAS_LIMIT_KEY = hashString("NATIVE_TOKEN_TRANSFER_GAS_LIMIT");
 
-export const ESTIMATED_FEE_BASE_GAS_LIMIT_KEY = hashString("ESTIMATED_FEE_BASE_GAS_LIMIT");
+export const ESTIMATED_GAS_FEE_BASE_AMOUNT = hashString("ESTIMATED_GAS_FEE_BASE_AMOUNT");
 
-export const ESTIMATED_FEE_MULTIPLIER_FACTOR_KEY = hashString("ESTIMATED_FEE_MULTIPLIER_FACTOR");
+export const ESTIMATED_GAS_FEE_MULTIPLIER_FACTOR = hashString("ESTIMATED_GAS_FEE_MULTIPLIER_FACTOR");
 
 export const MARKET_LIST_KEY = hashString("MARKET_LIST");
 
@@ -136,8 +144,20 @@ export function totalBorrowingKey(market: string, isLong: boolean) {
   return hashData(["bytes32", "address", "bool"], [TOTAL_BORROWING_KEY, market, isLong]);
 }
 
+export function maxPnlFactorKey(market: string, isLong: boolean) {
+  return hashData(["bytes32", "address", "bool"], [MAX_PNL_FACTOR_KEY, market, isLong]);
+}
+
+export function maxPnlFactorForWithdrawalsKey(market: string, isLong: boolean) {
+  return hashData(["bytes32", "address", "bool"], [MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY, market, isLong]);
+}
+
 export function positionImpactPoolAmountKey(market: string) {
   return hashData(["bytes32", "address"], [POSITION_IMPACT_POOL_AMOUNT_KEY, market]);
+}
+
+export function maxPositionImpactFactorForLiquidationsKey(market: string) {
+  return hashData(["bytes32", "address"], [MAX_POSITION_IMPACT_FACTOR_FOR_LIQUIDATIONS_KEY, market]);
 }
 
 export function swapImpactPoolAmountKey(market: string, token: string) {

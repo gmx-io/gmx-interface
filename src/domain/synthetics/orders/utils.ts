@@ -1,23 +1,10 @@
 import { t } from "@lingui/macro";
-import { applySwapImpactWithCap } from "domain/synthetics/fees";
 import { MarketsData, getMarket, getMarketName } from "domain/synthetics/markets";
-import {
-  TokenData,
-  TokenPrices,
-  TokensData,
-  convertToTokenAmount,
-  convertToUsd,
-  getTokenData,
-  parseContractPrice,
-} from "domain/synthetics/tokens";
+import { TokenData, TokenPrices, TokensData, getTokenData, parseContractPrice } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";
-import { Position, getPriceForPnl } from "../positions";
+import { formatTokenAmount, formatUsd, getBasisPoints } from "lib/numbers";
 import { AggregatedOrderData, AggregatedOrdersData, OrderType, OrdersData } from "./types";
-import { formatTokenAmount, formatUsd } from "lib/numbers";
-
-export const SWAP_PNL_TOKEN_TO_COLLATERAL_TOKEN = "0x0000000000000000000000000000000000000002";
-export const SWAP_COLLATERAL_TOKEN_TO_PNL_TOKEN = "0x0000000000000000000000000000000000000003";
 
 export function getOrder(ordersData: OrdersData, orderKey?: string) {
   if (!orderKey) return undefined;
@@ -27,9 +14,9 @@ export function getOrder(ordersData: OrdersData, orderKey?: string) {
 
 export function getPositionOrders(
   ordersData: AggregatedOrdersData,
-  marketAddress: string,
-  collateralToken: string,
-  isLong: boolean
+  marketAddress?: string,
+  collateralToken?: string,
+  isLong?: boolean
 ) {
   if (!marketAddress && !collateralToken && isLong === undefined) return [];
 
@@ -52,7 +39,7 @@ export function isLimitOrder(orderType: OrderType) {
   return [OrderType.LimitIncrease, OrderType.LimitSwap].includes(orderType);
 }
 
-export function isStopMarketOrder(orderType: OrderType) {
+export function isTriggerDecreaseOrder(orderType: OrderType) {
   return [OrderType.LimitDecrease, OrderType.StopLossDecrease].includes(orderType);
 }
 
@@ -68,6 +55,14 @@ export function isSwapOrder(orderType: OrderType) {
   return [OrderType.MarketSwap, OrderType.LimitSwap].includes(orderType);
 }
 
+export function getTriggerOrderType(p: { isLong: boolean; isTriggerAboveThreshold: boolean }) {
+  if (p.isLong) {
+    return p.isTriggerAboveThreshold ? OrderType.LimitDecrease : OrderType.StopLossDecrease;
+  } else {
+    return p.isTriggerAboveThreshold ? OrderType.LimitDecrease : OrderType.StopLossDecrease;
+  }
+}
+
 export function getAggregatedOrderData(
   ordersData: OrdersData,
   marketsData: MarketsData,
@@ -78,13 +73,13 @@ export function getAggregatedOrderData(
 
   if (!order) return undefined;
 
-  const isTriggerOrder = isLimitOrder(order?.orderType) || isStopMarketOrder(order?.orderType);
+  const isTriggerOrder = isLimitOrder(order?.orderType) || isTriggerDecreaseOrder(order?.orderType);
 
   if (!isTriggerOrder) return undefined;
 
   const market = getMarket(marketsData, order.marketAddress);
   const marketName = getMarketName(marketsData, tokensData, order.marketAddress, false, false);
-  const indexToken = getTokenData(tokensData, market?.indexTokenAddress);
+  const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
   const initialCollateralToken = getTokenData(tokensData, order.initialCollateralTokenAddress);
 
   const toCollateralAddress = getToTokenFromSwapPath(marketsData, order.initialCollateralTokenAddress, order.swapPath);
@@ -187,156 +182,77 @@ export function getTriggerPricePrefix(orderType?: OrderType, isLong?: boolean, a
   const BELOW = asSign ? "<" : t`Below`;
   const ABOVE = asSign ? ">" : t`Above`;
 
+  return isTriggerPriceAboveThreshold(orderType, isLong) ? ABOVE : BELOW;
+}
+
+export function isTriggerPriceAboveThreshold(orderType: OrderType, isLong: boolean) {
   if (orderType === OrderType.LimitIncrease) {
-    return isLong ? BELOW : ABOVE;
+    return !isLong;
   }
 
   if (orderType === OrderType.StopLossDecrease) {
-    return isLong ? BELOW : ABOVE;
+    return isLong;
   }
 
   // Take-profit
   if (orderType === OrderType.LimitDecrease) {
-    return isLong ? ABOVE : BELOW;
+    return isLong;
   }
 }
 
-export function getMinOutputAmountForSwapOrder(p: {
-  fromTokenAmount: BigNumber;
-  toTokenPrices: TokenPrices;
-  fromTokenPrices: TokenPrices;
-  allowedSlippage: number;
-  priceImpactDeltaUsd: BigNumber;
-}) {
-  // priceImpact in usd?
-  let amountOut: BigNumber;
-
-  // todo on each swap step?
-  if (p.priceImpactDeltaUsd.gt(0)) {
-    // TODO: amount after fee
-    const amountIn = p.fromTokenAmount;
-
-    amountOut = amountIn.mul(p.toTokenPrices.minPrice).div(p.fromTokenPrices.maxPrice);
-
-    const positiveImpactAmount = applySwapImpactWithCap({
-      tokenPrices: p.toTokenPrices,
-      priceImpactUsd: p.priceImpactDeltaUsd,
-    });
-
-    amountOut = amountOut.add(positiveImpactAmount);
-  } else {
-    const negativeImpactAmount = applySwapImpactWithCap({
-      tokenPrices: p.fromTokenPrices,
-      priceImpactUsd: p.priceImpactDeltaUsd,
-    });
-
-    // TODO: amount after fee
-    const amountIn = p.fromTokenAmount.sub(negativeImpactAmount.mul(-1));
-
-    amountOut = amountIn.mul(p.fromTokenPrices.minPrice).div(p.toTokenPrices.maxPrice);
-  }
-
-  return amountOut;
-}
-
-export function getMinOutputAmountForDecreaseOrder(p: {
-  collateralToken: TokenData;
-  sizeDeltaUsd: BigNumber;
-  acceptablePrice: BigNumber;
-}) {
-  //TODO
-  return BigNumber.from(0);
-}
-
-export function getAcceptablePriceForPositionOrder(p: {
-  isIncrease: boolean;
-  isLong: boolean;
-  triggerPrice?: BigNumber;
-  sizeDeltaUsd?: BigNumber;
-  priceImpactDelta?: BigNumber;
-  indexTokenPrices?: TokenPrices;
-  allowedSlippage?: number;
-}) {
-  let acceptablePrice: BigNumber;
-
-  if (p.triggerPrice) {
-    acceptablePrice = p.triggerPrice;
-  } else if (p.indexTokenPrices) {
-    const shouldUseMaxPrice = p.isIncrease ? p.isLong : !p.isLong;
-
-    acceptablePrice = shouldUseMaxPrice ? p.indexTokenPrices?.maxPrice : p.indexTokenPrices?.minPrice;
-  } else {
-    throw new Error("No trigger price or index token prices provided");
-  }
-
+export function applySlippage(allowedSlippage: number, price: BigNumber, isIncrease: boolean, isLong: boolean) {
   let slippageBasisPoints: number;
 
-  if (p.allowedSlippage) {
-    if (p.isIncrease) {
-      slippageBasisPoints = p.isLong
-        ? BASIS_POINTS_DIVISOR + p.allowedSlippage
-        : BASIS_POINTS_DIVISOR - p.allowedSlippage;
-    } else {
-      slippageBasisPoints = p.isLong
-        ? BASIS_POINTS_DIVISOR - p.allowedSlippage
-        : BASIS_POINTS_DIVISOR + p.allowedSlippage;
-    }
-
-    acceptablePrice = acceptablePrice.mul(slippageBasisPoints).div(BASIS_POINTS_DIVISOR);
+  if (isIncrease) {
+    slippageBasisPoints = isLong ? BASIS_POINTS_DIVISOR + allowedSlippage : BASIS_POINTS_DIVISOR - allowedSlippage;
+  } else {
+    slippageBasisPoints = isLong ? BASIS_POINTS_DIVISOR - allowedSlippage : BASIS_POINTS_DIVISOR + allowedSlippage;
   }
 
-  if (p.priceImpactDelta && p.sizeDeltaUsd?.gt(0)) {
-    const shouldFlipPriceImpact = p.isIncrease ? p.isLong : !p.isLong;
-    const priceImpactForPriceAdjustment = shouldFlipPriceImpact ? p.priceImpactDelta.mul(-1) : p.priceImpactDelta;
-    acceptablePrice = acceptablePrice.mul(p.sizeDeltaUsd.add(priceImpactForPriceAdjustment)).div(p.sizeDeltaUsd);
-  }
-
-  return acceptablePrice;
+  return price.mul(slippageBasisPoints).div(BASIS_POINTS_DIVISOR);
 }
 
-// function getDecreaseOrderFees(p: {
-//   priceImpactConfigsData: PriceImpactConfigsData,
-//   openInterestData: MarketsOpenInterestData,
-//   tokensData: TokensData,
-//   position: AggregatedPositionData,
-//  }) {
-//   const executionFee = getExecutionFee(p.tokensData);
-
-//   const marketOpenInterest = getOpenInterest(p.openInterestData, p.position.marketAddress);
-
-//   const priceImpact = getPriceImpact(
-//     p.priceImpactConfigsData,
-//     p.position.marketAddress,
-//     marketOpenInterest?.longInterest,
-//     marketOpenInterest?.shortInterest,
-//   );
-
-//   const fundingFee = p.position.pendingFundingFeesUsd;
-//   const borrowingFee = p.position.pendingBorrowingFees;
-
-//   const receiveUsdDelta = BigNumber.from(0);
-
-//   return {
-
-//   };
-// }
-
-export function getCollateralDeltaUsdForDecreaseOrder(p: {
-  isClosing?: boolean;
-  keepLeverage?: boolean;
+export function getAcceptablePrice(p: {
+  isIncrease: boolean;
+  isLong?: boolean;
+  indexPrice?: BigNumber;
+  priceImpactDeltaUsd?: BigNumber;
   sizeDeltaUsd?: BigNumber;
-  positionSizeInUsd?: BigNumber;
-  positionCollateralUsd?: BigNumber;
+  allowedSlippage?: number;
+  acceptablePriceImpactBps?: BigNumber;
 }) {
-  if (!p.positionCollateralUsd || !p.positionSizeInUsd) return undefined;
+  if (!p.indexPrice || typeof p.isLong === "undefined") return {};
 
-  if (p.isClosing) return p.positionCollateralUsd;
+  let acceptablePrice = p.indexPrice;
+  let acceptablePriceImpactBps = p.acceptablePriceImpactBps || BigNumber.from(0);
 
-  if (!p.keepLeverage || !p.sizeDeltaUsd) return BigNumber.from(0);
+  const shouldFlipPriceImpact = p.isIncrease ? p.isLong : !p.isLong;
 
-  const collateralDeltaUsd = p.sizeDeltaUsd.mul(p.positionCollateralUsd).div(p.positionSizeInUsd);
+  if (acceptablePriceImpactBps.abs().gt(0)) {
+    let priceDelta = p.indexPrice.mul(acceptablePriceImpactBps).div(BASIS_POINTS_DIVISOR);
+    priceDelta = shouldFlipPriceImpact ? priceDelta?.mul(-1) : priceDelta;
 
-  return collateralDeltaUsd;
+    acceptablePrice = p.indexPrice.sub(priceDelta);
+  } else if (p.sizeDeltaUsd?.gt(0) && p.priceImpactDeltaUsd?.abs().gt(0)) {
+    const priceImpactForPriceAdjustment = shouldFlipPriceImpact ? p.priceImpactDeltaUsd.mul(-1) : p.priceImpactDeltaUsd;
+    acceptablePrice = p.indexPrice.mul(p.sizeDeltaUsd.add(priceImpactForPriceAdjustment)).div(p.sizeDeltaUsd);
+
+    const priceDelta = p.indexPrice
+      .sub(acceptablePrice)
+      .abs()
+      .mul(p.priceImpactDeltaUsd.isNegative() ? -1 : 1);
+
+    acceptablePriceImpactBps = getBasisPoints(priceDelta, p.indexPrice);
+  }
+
+  if (p.allowedSlippage) {
+    acceptablePrice = applySlippage(p.allowedSlippage, acceptablePrice, p.isIncrease, p.isLong);
+  }
+
+  return {
+    acceptablePrice,
+    acceptablePriceImpactBps,
+  };
 }
 
 export function getNextCollateralUsdForDecreaseOrder(p: {
@@ -359,95 +275,4 @@ export function getNextCollateralUsdForDecreaseOrder(p: {
   if (nextCollateralUsd.lt(0)) return BigNumber.from(0);
 
   return nextCollateralUsd;
-}
-
-export function getPnlDeltaForDecreaseOrder(position?: Position, indexToken?: TokenData, sizeDeltaUsd?: BigNumber) {
-  const pnlPrice = getPriceForPnl(indexToken?.prices, position?.isLong);
-
-  if (!pnlPrice || !indexToken || !position || !sizeDeltaUsd) return undefined;
-
-  const positionValue = convertToUsd(position.sizeInTokens, indexToken.decimals, pnlPrice);
-  const totalPnl = positionValue?.sub(position.sizeInUsd).mul(position.isLong ? 1 : -1);
-
-  let sizeDeltaInTokens: BigNumber;
-
-  if (position.sizeInUsd.eq(sizeDeltaUsd)) {
-    sizeDeltaInTokens = position.sizeInTokens;
-  } else {
-    if (position.isLong) {
-      // roudUpDivision
-      sizeDeltaInTokens = sizeDeltaUsd.mul(position.sizeInTokens).div(position.sizeInUsd);
-    } else {
-      sizeDeltaInTokens = sizeDeltaUsd.mul(position.sizeInTokens).div(position.sizeInUsd);
-    }
-  }
-
-  const positionPnlUsd = totalPnl?.mul(sizeDeltaInTokens).div(position.sizeInTokens);
-
-  if (!positionPnlUsd || !totalPnl) return undefined;
-
-  return { positionPnlUsd, sizeDeltaInTokens };
-}
-
-export function getCollateralOutForDecreaseOrder(p: {
-  position?: Position;
-  indexToken?: TokenData;
-  collateralToken?: TokenData;
-  sizeDeltaUsd: BigNumber;
-  pnlToken?: TokenData;
-  collateralDeltaAmount: BigNumber;
-  feesUsd: BigNumber;
-  priceImpactUsd: BigNumber;
-  allowWithoutPosition?: boolean;
-}) {
-  let receiveAmount = p.collateralDeltaAmount;
-
-  const pnlData = getPnlDeltaForDecreaseOrder(p.position, p.indexToken, p.sizeDeltaUsd);
-
-  const pnlUsd = pnlData?.positionPnlUsd;
-
-  if (!pnlUsd || !p.collateralToken?.prices || !p.pnlToken) return undefined;
-
-  if (pnlUsd.lt(0)) {
-    const deductedPnl = convertToTokenAmount(
-      pnlUsd.abs(),
-      p.collateralToken.decimals,
-      p.collateralToken.prices.minPrice
-    )!;
-
-    receiveAmount = receiveAmount.sub(deductedPnl);
-  } else {
-    const addedPnl = convertToTokenAmount(pnlUsd, p.collateralToken.decimals, p.collateralToken.prices.maxPrice)!;
-
-    //   if (wasSwapped) {
-    //     values.outputAmount += swapOutputAmount;
-    // } else {
-    //     if (params.position.collateralToken() == cache.pnlToken) {
-    //         values.outputAmount += pnlAmountForUser;
-    //     } else {
-    //         // store the pnlAmountForUser separately as it differs from the collateralToken
-    //         values.pnlAmountForUser = pnlAmountForUser;
-    //     }
-    // }
-
-    receiveAmount = receiveAmount.add(addedPnl);
-  }
-
-  const feesAmount = convertToTokenAmount(p.feesUsd, p.collateralToken.decimals, p.collateralToken.prices.minPrice)!;
-
-  receiveAmount = receiveAmount.sub(feesAmount);
-
-  const priceImpactAmount = convertToTokenAmount(
-    p.priceImpactUsd,
-    p.collateralToken.decimals,
-    p.collateralToken.prices.minPrice
-  )!;
-
-  receiveAmount = receiveAmount.sub(priceImpactAmount);
-
-  if (receiveAmount.lte(0)) {
-    return BigNumber.from(0);
-  }
-
-  return receiveAmount;
 }

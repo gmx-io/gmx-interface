@@ -348,6 +348,11 @@ msgstr "GLPに入金可能な金額"
 msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
 msgstr "GLPから引き出し可能な金額。現在オープンなポジションで利用されていない資金。"
 
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/SwapCard/SwapCard.tsx
+msgid "Available liquidity"
+msgstr ""
+
 #: src/pages/Home/Home.js
 msgid "Available on your preferred network"
 msgstr "選択されたネットワークにて利用可能"
@@ -1012,6 +1017,10 @@ msgstr "現在の{0}のロング"
 msgid "Current {0} shorts"
 msgstr "現在の{0}のショート"
 
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Current {0} {1}"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
@@ -1424,6 +1433,7 @@ msgstr "新しい価格を入力"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
@@ -1475,11 +1485,11 @@ msgstr "執行手数料"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/components/Synthetics/Trade/TradeFees/TradeFees.tsx
 msgid "Execution fee"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "Exit Price"
 msgstr "手仕舞い価格"
 
@@ -1513,7 +1523,7 @@ msgstr "手数料"
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/Trade/TradeFees/TradeFees.tsx
+#: src/components/Synthetics/TradeFees/TradeFees.tsx
 msgid "Fees and price impact"
 msgstr ""
 
@@ -1772,6 +1782,10 @@ msgstr "トリガー注文について承知しています"
 #: src/components/Exchange/SwapBox.js
 msgid "If you have an existing position, the position will be closed at {0} USD.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
 msgstr "もし現在ポジションがある場合、そのポジションは{0} USDでクローズされます。<0/><1/>この手仕舞い価格はアセットの価格変動に従い変化します。<2/><3/><4>さらなる詳細</4>"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "If you have an existing position, the position will be closed at {0}.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
+msgstr ""
 
 #: src/components/Exchange/PositionShare.js
 msgid "Image generation error, please refresh and try again."
@@ -2157,6 +2171,7 @@ msgstr "ロード中"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -2262,8 +2277,10 @@ msgstr "マーク: {0}"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 #: src/components/Synthetics/Trade/utils.ts
@@ -2363,6 +2380,7 @@ msgstr "{0}の最大ロング値を超過しています"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/SwapCard/SwapCard.tsx
 msgid "Max {0} out"
 msgstr "最大 {0} out"
 
@@ -2373,6 +2391,10 @@ msgstr "{0}の最大ショートキャパシティ"
 #: src/components/Exchange/SwapBox.js
 msgid "Max {0} short exceeded"
 msgstr "{0}の最大ショート値を超過しています"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Max {0} {1} capacity"
+msgstr ""
 
 #: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
@@ -2874,6 +2896,10 @@ msgstr "ポジション手数料 (ポジションサイズの0.1%)"
 msgid "Position close disabled, pending {0} upgrade"
 msgstr "{0}の更新が未完了のためポジションのクローズは無効化されています"
 
+#: src/components/Synthetics/TradeFees/TradeFees.tsx
+msgid "Position fee"
+msgstr ""
+
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
 msgid "Positions"
@@ -2961,7 +2987,7 @@ msgid "Price conditions are met"
 msgstr "価格の条件が満たされていません"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
-#: src/components/Synthetics/Trade/TradeFees/TradeFees.tsx
+#: src/components/Synthetics/TradeFees/TradeFees.tsx
 msgid "Price impact"
 msgstr ""
 
@@ -3362,6 +3388,7 @@ msgstr "ポジションをシェアする"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -3575,6 +3602,7 @@ msgstr "供給量"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/Trade/utils.ts
@@ -3616,6 +3644,10 @@ msgstr "スワップできませんでした。"
 msgid "Swap on 1inch"
 msgstr "1inchでスワップする"
 
+#: src/components/Synthetics/TradeFees/TradeFees.tsx
+msgid "Swap price impact"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Swap submitted!"
 msgstr "スワップ申し込み完了!"
@@ -3625,7 +3657,6 @@ msgid "Swap submitted."
 msgstr "スワップ申し込み完了。"
 
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/Trade/TradeFees/TradeFees.tsx
 msgid "Swap to {0}"
 msgstr ""
 
@@ -3652,6 +3683,10 @@ msgstr "{0}を1inchでスワップする"
 #: src/components/Exchange/SwapBox.js
 msgid "Swap {0} submitted!"
 msgstr "{0}のスワップの申し込み完了!"
+
+#: src/components/Synthetics/TradeFees/TradeFees.tsx
+msgid "Swap {0} to {1}"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Swap {0} to {1} Fee"
@@ -3809,6 +3844,10 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 msgid "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
 msgstr "ポジションは最大スリッページ {1}%で{0} USDでオープンされます。<0/><1/>スリッページを変更するには、ウォレット接続後にページの右上に表示されるアドレスをクリックしたときに表れる設定メニューで設定してください。<2/><3/><4>詳細情報</4>"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "The position will be opened at {0} with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
+msgstr ""
 
 #: src/components/Exchange/OrdersList.js
 msgid "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
@@ -4722,6 +4761,8 @@ msgstr "{0}のプールキャパシティに到達しました"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/SwapCard/SwapCard.tsx
+#: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "{0} Price"

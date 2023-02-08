@@ -1,5 +1,5 @@
-import { useLocalStorage } from "react-use";
 import { useCallback } from "react";
+import { useLocalStorage } from "react-use";
 
 export function useLocalStorageByChainId<T>(
   chainId: number,
@@ -36,7 +36,7 @@ export function useLocalStorageByChainId<T>(
   return [value, setValue];
 }
 
-type LocalStorageKey = string | number | boolean | null | undefined;
+export type LocalStorageKey = string | number | boolean | null | undefined;
 
 export function useLocalStorageSerializeKey<T>(
   key: LocalStorageKey | LocalStorageKey[],

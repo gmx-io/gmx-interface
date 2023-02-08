@@ -1,8 +1,8 @@
-import { getContract } from "config/contracts";
 import DataStore from "abis/DataStore.json";
 import SyntheticsReader from "abis/SyntheticsReader.json";
-import { useMulticall } from "lib/multicall";
+import { getContract } from "config/contracts";
 import {
+  maxPositionImpactFactorForLiquidationsKey,
   maxPositionImpactFactorKey,
   positionFeeFactorKey,
   positionImpactExponentFactorKey,
@@ -11,17 +11,19 @@ import {
   swapImpactExponentFactorKey,
   swapImpactFactorKey,
 } from "config/dataStore";
-import { useMemo } from "react";
-import { MarketsFeesConfigsData } from "./types";
+import { BigNumber } from "ethers";
+import { useMulticall } from "lib/multicall";
+import { bigNumberify } from "lib/numbers";
 import { getContractMarketPrices, useMarketsData } from "../markets";
 import { useAvailableTokensData } from "../tokens";
-import { bigNumberify } from "lib/numbers";
-import { BigNumber } from "ethers";
+import { MarketsFeesConfigsData } from "./types";
 
 type MarketFeesConfigsResult = {
   marketsFeesConfigs: MarketsFeesConfigsData;
   isLoading: boolean;
 };
+
+const defaultValue = {};
 
 export function useMarketsFeesConfigs(chainId: number): MarketFeesConfigsResult {
   const { marketsData, isLoading: isMarketsLoading } = useMarketsData(chainId);
@@ -31,7 +33,7 @@ export function useMarketsFeesConfigs(chainId: number): MarketFeesConfigsResult 
 
   const isDataLoaded = !isTokensLoading && !isMarketsLoading && marketsAddresses.length > 0;
 
-  const { data, isLoading } = useMulticall(chainId, "useMarketsFeesConfigs", {
+  const { data = defaultValue, isLoading } = useMulticall(chainId, "useMarketsFeesConfigs", {
     key: isDataLoaded ? [marketsAddresses.join("-")] : undefined,
     request: () =>
       marketsAddresses.reduce((requests, marketAddress) => {
@@ -71,6 +73,10 @@ export function useMarketsFeesConfigs(chainId: number): MarketFeesConfigsResult 
               maxPositionImpactFactorNegative: {
                 methodName: "getUint",
                 params: [maxPositionImpactFactorKey(marketAddress, false)],
+              },
+              maxPositionImpactFactorForLiquidations: {
+                methodName: "getUint",
+                params: [maxPositionImpactFactorForLiquidationsKey(marketAddress)],
               },
               positionImpactExponentFactor: {
                 methodName: "getUint",
@@ -118,6 +124,8 @@ export function useMarketsFeesConfigs(chainId: number): MarketFeesConfigsResult 
           positionImpactFactorNegative: dataStoreValues.positionImpactFactorNegative.returnValues[0],
           maxPositionImpactFactorPositive: dataStoreValues.maxPositionImpactFactorPositive.returnValues[0],
           maxPositionImpactFactorNegative: dataStoreValues.maxPositionImpactFactorNegative.returnValues[0],
+          maxPositionImpactFactorForLiquidations:
+            dataStoreValues.maxPositionImpactFactorForLiquidations.returnValues[0],
           positionImpactExponentFactor: dataStoreValues.positionImpactExponentFactor.returnValues[0],
           swapFeeFactor: dataStoreValues.swapFeeFactor.returnValues[0],
           swapImpactFactorPositive: dataStoreValues.swapImpactFactorPositive.returnValues[0],
@@ -147,10 +155,8 @@ export function useMarketsFeesConfigs(chainId: number): MarketFeesConfigsResult 
       }, {} as MarketsFeesConfigsData),
   });
 
-  return useMemo(() => {
-    return {
-      marketsFeesConfigs: data || {},
-      isLoading,
-    };
-  }, [data, isLoading]);
+  return {
+    marketsFeesConfigs: data,
+    isLoading,
+  };
 }

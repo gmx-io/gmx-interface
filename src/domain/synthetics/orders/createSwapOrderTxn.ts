@@ -50,8 +50,6 @@ export async function createSwapOrderTxn(chainId: number, library: Web3Provider,
     throw new Error("Token prices not available");
   }
 
-  const amountOut = p.minOutputAmount.sub(p.minOutputAmount.div(10));
-
   const multicall = [
     { method: "sendWnt", params: [orderVaultAddress, wntAmount] },
 
@@ -72,11 +70,12 @@ export async function createSwapOrderTxn(chainId: number, library: Web3Provider,
           },
           numbers: {
             sizeDeltaUsd: BigNumber.from(0),
+            initialCollateralDeltaAmount: BigNumber.from(0),
             triggerPrice: BigNumber.from(0),
             acceptablePrice: BigNumber.from(0),
             executionFee: p.executionFee,
             callbackGasLimit: BigNumber.from(0),
-            minOutputAmount: amountOut,
+            minOutputAmount: p.minOutputAmount,
           },
           orderType: p.orderType,
           decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
@@ -90,8 +89,29 @@ export async function createSwapOrderTxn(chainId: number, library: Web3Provider,
 
   if (isDevelopment()) {
     // eslint-disable-next-line no-console
-    console.debug("swapTxn multicall", multicall, {
-      minOutputAmount: formatTokenAmount(amountOut, toToken.decimals, toToken.symbol),
+    console.debug("swapTxn multicall", {
+      sendWnt: formatTokenAmount(wntAmount, 18, "WNT"),
+      sendTokens: !isNativePayment
+        ? formatTokenAmount(p.fromTokenAmount, fromToken.decimals, fromToken.symbol)
+        : undefined,
+      createOrder: {
+        addresses: {
+          receiver: p.account,
+          initialCollateralToken: convertTokenAddress(chainId, p.fromTokenAddress, "wrapped"),
+          callbackContract: AddressZero,
+          market: AddressZero,
+          swapPath: p.swapPath,
+        },
+        numbers: {
+          sizeDeltaUsd: BigNumber.from(0),
+          initialCollateralDeltaAmount: BigNumber.from(0),
+          triggerPrice: BigNumber.from(0),
+          acceptablePrice: BigNumber.from(0),
+          executionFee: p.executionFee,
+          callbackGasLimit: BigNumber.from(0),
+          minOutputAmount: formatTokenAmount(p.minOutputAmount, toToken.decimals, toToken.symbol),
+        },
+      },
     });
   }
 
@@ -113,7 +133,7 @@ export async function createSwapOrderTxn(chainId: number, library: Web3Provider,
   const fromText = formatTokenAmount(p.fromTokenAmount, fromToken.decimals, fromToken.symbol);
   const toText = formatTokenAmount(p.minOutputAmount, toToken.decimals, toToken.symbol);
 
-  const orderLabel = t`Swap ${fromText} to ${toText}`;
+  const orderLabel = t`Swap ${fromText} for ${toText}`;
 
   return callContract(chainId, exchangeRouter, "multicall", [encodedPayload], {
     value: wntAmount,

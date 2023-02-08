@@ -1,12 +1,13 @@
 import { BsArrowRight } from "react-icons/bs";
 
 type Props = {
-  from: string;
+  from?: string;
   to?: string;
 };
 
 export function ValueTransition(p: Props) {
   if (!p.to || p.to === p.from) return <>{p.from}</>;
+  if (!p.from) return <>{p.to}</>;
 
   return (
     <>

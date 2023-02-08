@@ -4,22 +4,13 @@ import { getContract } from "config/contracts";
 import { useMulticall } from "lib/multicall";
 import { BigNumber } from "ethers";
 import { useMemo } from "react";
+import { MAX_ALLOWED_LEVERAGE } from "lib/legacy";
 
 export type PositionsConstantsResult = {
   minCollateralUsd?: BigNumber;
   maxLeverage?: BigNumber;
   isLoading: boolean;
 };
-
-export function useMinCollateralUsd(chainId: number) {
-  const { minCollateralUsd } = usePositionsConstants(chainId);
-  return minCollateralUsd;
-}
-
-export function useMaxLeverage(chainId: number) {
-  const { maxLeverage } = usePositionsConstants(chainId);
-  return maxLeverage;
-}
 
 export function usePositionsConstants(chainId: number): PositionsConstantsResult {
   const { data, isLoading } = useMulticall(chainId, "usePositionsConstants", {
@@ -49,7 +40,7 @@ export function usePositionsConstants(chainId: number): PositionsConstantsResult
   return useMemo(() => {
     return {
       minCollateralUsd: data?.minCollateralUsd,
-      maxLeverage: data?.maxLeverage,
+      maxLeverage: data?.maxLeverage?.gt(0) ? data.maxLeverage : BigNumber.from(MAX_ALLOWED_LEVERAGE),
       isLoading,
     };
   }, [data, isLoading]);

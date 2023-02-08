@@ -1,16 +1,17 @@
-import { openInterestInTokensKey, openInterestKey } from "config/dataStore";
 import DataStore from "abis/DataStore.json";
 import { getContract } from "config/contracts";
+import { openInterestInTokensKey, openInterestKey } from "config/dataStore";
 import { useMulticall } from "lib/multicall";
-import { useMemo } from "react";
-import { getMarket } from "./utils";
-import { useMarketsData } from "./useMarketsData";
 import { MarketsOpenInterestData } from "./types";
+import { useMarketsData } from "./useMarketsData";
+import { getMarket } from "./utils";
 
 type OpenInterestDataResult = {
   openInterestData: MarketsOpenInterestData;
   isLoading: boolean;
 };
+
+const defaultValue = {};
 
 export function useOpenInterestData(chainId: number): OpenInterestDataResult {
   const { marketsData } = useMarketsData(chainId);
@@ -19,7 +20,7 @@ export function useOpenInterestData(chainId: number): OpenInterestDataResult {
 
   const cacheKey = marketAddresses.length > 0 ? [marketAddresses.join("-")] : null;
 
-  const { data, isLoading } = useMulticall(chainId, "useOpenInterestData", {
+  const { data = defaultValue, isLoading } = useMulticall(chainId, "useOpenInterestData", {
     key: cacheKey,
     request: () =>
       marketAddresses.reduce((request, marketAddress) => {
@@ -103,10 +104,8 @@ export function useOpenInterestData(chainId: number): OpenInterestDataResult {
       }, {} as MarketsOpenInterestData),
   });
 
-  return useMemo(() => {
-    return {
-      openInterestData: data || {},
-      isLoading,
-    };
-  }, [data, isLoading]);
+  return {
+    openInterestData: data || {},
+    isLoading,
+  };
 }

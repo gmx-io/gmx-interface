@@ -1,11 +1,21 @@
+import { PositionsUpdates, getPositionUpdate } from "context/SyntheticsEvents";
+import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
-import { BASIS_POINTS_DIVISOR, MAX_LEVERAGE, USD_DECIMALS } from "lib/legacy";
-import { expandDecimals, formatAmount, formatUsd } from "lib/numbers";
-import { MarketsData, getMarket, getMarketName } from "../markets";
+import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "lib/legacy";
+import { applyFactor, expandDecimals, formatAmount, formatUsd, roundUpDivision } from "lib/numbers";
+import { MarketsFeesConfigsData, getMarketFeesConfig } from "../fees";
+import {
+  Market,
+  MarketsData,
+  MarketsPoolsData,
+  getCappedPoolPnl,
+  getMarket,
+  getMarketName,
+  getMarketPools,
+  getPoolUsd,
+} from "../markets";
 import { TokenPrices, TokensData, convertToUsd, getTokenData } from "../tokens";
 import { AggregatedPositionData, Position, PositionsData } from "./types";
-import { PositionsUpdates } from "../../../context/SyntheticsEvents";
-import { getPositionUpdate } from "../../../context/SyntheticsEvents/utils";
 
 export function getPosition(positionsData: PositionsData, positionKey?: string) {
   if (!positionKey) return undefined;
@@ -13,7 +23,7 @@ export function getPosition(positionsData: PositionsData, positionKey?: string) 
   return positionsData[positionKey];
 }
 
-export function getPositionKey(account?: string, market?: string, collateralToken?: string, isLong?: boolean) {
+export function getPositionKey(account?: string | null, market?: string, collateralToken?: string, isLong?: boolean) {
   if (!account || !market || !collateralToken || isLong === undefined) return undefined;
 
   return `${account}-${market}-${collateralToken}-${isLong}`;
@@ -29,9 +39,12 @@ export function getAggregatedPositionData(
   positionsData: PositionsData,
   marketsData: MarketsData,
   tokensData: TokensData,
+  marketsFeesConfigs: MarketsFeesConfigsData,
   pendingUpdates: PositionsUpdates,
   contractUpdates: PositionsUpdates,
-  positionKey?: string
+  positionKey?: string,
+  savedIsPnlInLeverage?: boolean,
+  maxLeverage?: BigNumber
 ): AggregatedPositionData | undefined {
   if (!positionKey) return undefined;
 
@@ -90,6 +103,7 @@ export function getAggregatedPositionData(
   }
 
   const market = getMarket(marketsData, position?.marketAddress);
+  const feesConfig = getMarketFeesConfig(marketsFeesConfigs, market?.marketTokenAddress);
 
   const collateralToken = getTokenData(tokensData, position?.collateralTokenAddress);
   const pnlToken = getTokenData(tokensData, position.isLong ? market?.longTokenAddress : market?.shortTokenAddress);
@@ -144,20 +158,28 @@ export function getAggregatedPositionData(
   const leverage = getLeverage({
     sizeUsd: position.sizeInUsd,
     collateralUsd,
+    pnl: savedIsPnlInLeverage ? pnl : undefined,
+    pendingBorrowingFeesUsd: position.pendingBorrowingFees,
+    pendingFundingFeesUsd: pendingFundingFeesUsd,
   });
 
   const liqPrice = getLiquidationPrice({
     sizeUsd: position.sizeInUsd,
     collateralUsd,
-    averagePrice,
+    indexPrice: averagePrice,
+    positionFeeFactor: feesConfig?.positionFeeFactor,
+    maxPriceImpactFactor: feesConfig?.maxPositionImpactFactorForLiquidations,
+    pendingBorrowingFeesUsd: position.pendingBorrowingFees,
+    pendingFundingFeesUsd: pendingFundingFeesUsd,
+    pnl: pnl,
     isLong: position.isLong,
-    // TODO: liquidationFee?
-    feesUsd: totalPendingFeesUsd,
+    maxLeverage,
   });
 
   return {
     ...position,
     marketName,
+    market,
     indexToken,
     collateralToken,
     pnlToken,
@@ -183,28 +205,152 @@ export function getAggregatedPositionData(
   };
 }
 
+// TODO: should remove?
+export function getPriceForPnl(tokenPrices?: TokenPrices, isLong?: boolean, maximize?: boolean) {
+  if (!tokenPrices) return undefined;
+
+  if (isLong) {
+    return maximize ? tokenPrices.maxPrice : tokenPrices.minPrice;
+  }
+
+  return maximize ? tokenPrices.minPrice : tokenPrices.maxPrice;
+}
+
+export function getMarkPrice(prices?: TokenPrices, isIncrease?: boolean, isLong?: boolean) {
+  const shouldUseMaxPrice = isIncrease ? isLong : !isLong;
+
+  return shouldUseMaxPrice ? prices?.maxPrice : prices?.minPrice;
+}
+
+export function getNextPositionPnl(p: {
+  pnl?: BigNumber;
+  sizeInUsd?: BigNumber;
+  sizeInTokens?: BigNumber;
+  sizeDeltaUsd?: BigNumber;
+  isLong?: boolean;
+}) {
+  if (!p.sizeInUsd || !p.sizeInTokens || !p.sizeDeltaUsd || !p.pnl) return undefined;
+
+  let sizeDeltaInTokens: BigNumber;
+
+  if (p.sizeInUsd.eq(p.sizeDeltaUsd)) {
+    sizeDeltaInTokens = p.sizeInTokens;
+  } else {
+    if (p.isLong) {
+      sizeDeltaInTokens = roundUpDivision(p.sizeInTokens.mul(p.sizeDeltaUsd), p.sizeInUsd);
+    } else {
+      sizeDeltaInTokens = p.sizeInTokens.mul(p.sizeDeltaUsd).div(p.sizeInUsd);
+    }
+  }
+
+  const nextPnl = p.pnl.mul(sizeDeltaInTokens).div(p.sizeInTokens);
+
+  return nextPnl;
+}
+
+export function getPositionPnl(p: {
+  tokensData: TokensData;
+  poolsData: MarketsPoolsData;
+  marketsData: MarketsData;
+  market?: Market;
+  indexToken?: Token;
+  indexPrice?: BigNumber;
+  sizeInUsd?: BigNumber;
+  sizeInTokens?: BigNumber;
+  isLong?: boolean;
+}) {
+  const positionValueUsd = getPositionValueUsd(p);
+  const pools = getMarketPools(p.poolsData, p.market?.marketTokenAddress);
+
+  if (!p.sizeInUsd || !positionValueUsd || !pools) return undefined;
+
+  let totalPnl = p.isLong ? positionValueUsd.sub(p.sizeInUsd) : p.sizeInUsd.sub(positionValueUsd);
+
+  if (totalPnl.gt(0)) {
+    const poolPnl = p.isLong ? pools.pnlLongMax : pools.pnlShortMax;
+    const poolTokenAddress = p.isLong ? p.market?.longTokenAddress : p.market?.shortTokenAddress;
+    const poolUsd = getPoolUsd(
+      p.marketsData,
+      p.poolsData,
+      p.tokensData,
+      p.market?.marketTokenAddress,
+      poolTokenAddress,
+      "minPrice"
+    );
+
+    const cappedPnl = getCappedPoolPnl(p.poolsData, p.market?.marketTokenAddress, poolPnl, poolUsd, p.isLong);
+
+    if (!cappedPnl) return undefined;
+
+    const WEI_PRECISION = expandDecimals(1, 18);
+
+    if (!cappedPnl.eq(poolPnl) && cappedPnl.gt(0) && poolPnl.gt(0)) {
+      totalPnl = totalPnl.mul(cappedPnl.div(WEI_PRECISION)).div(poolPnl.div(WEI_PRECISION));
+    }
+  }
+}
+
+export function getPositionValueUsd(p: { indexToken?: Token; indexPrice?: BigNumber; sizeInTokens?: BigNumber }) {
+  return convertToUsd(p.sizeInTokens, p.indexToken?.decimals, p.indexPrice);
+}
+
 export function getLiquidationPrice(p: {
   sizeUsd?: BigNumber;
   collateralUsd?: BigNumber;
-  feesUsd?: BigNumber;
-  averagePrice?: BigNumber;
+  pnl?: BigNumber;
+  indexPrice?: BigNumber;
+  positionFeeFactor?: BigNumber;
+  maxPriceImpactFactor?: BigNumber;
+  pendingFundingFeesUsd?: BigNumber;
+  pendingBorrowingFeesUsd?: BigNumber;
+  maxLeverage?: BigNumber;
   isLong?: boolean;
 }) {
-  if (!p.sizeUsd?.gt(0) || !p.collateralUsd?.gt(0) || !p.averagePrice) return undefined;
+  if (
+    !p.sizeUsd?.gt(0) ||
+    !p.collateralUsd?.gt(0) ||
+    !p.indexPrice?.gt(0) ||
+    !p.positionFeeFactor?.gt(0) ||
+    !p.maxLeverage?.gt(0)
+  ) {
+    return undefined;
+  }
+
+  let remainingCollateralUsd = p.collateralUsd;
+
+  if (p.pnl?.lt(0)) {
+    remainingCollateralUsd = remainingCollateralUsd.sub(p.pnl.abs());
+  }
+
+  let feesUsd: BigNumber = applyFactor(p.sizeUsd, p.positionFeeFactor);
+
+  if (p.maxPriceImpactFactor) {
+    const maxNegativePriceImpact = applyFactor(p.sizeUsd, p.maxPriceImpactFactor);
+    feesUsd = feesUsd.add(maxNegativePriceImpact);
+  }
+
+  if (p.pendingFundingFeesUsd) {
+    feesUsd = feesUsd.add(p.pendingFundingFeesUsd);
+  }
+
+  if (p.pendingBorrowingFeesUsd) {
+    feesUsd = feesUsd.add(p.pendingBorrowingFeesUsd);
+  }
 
   const liqPriceForFees = getLiquidationPriceFromDelta({
-    liquidationAmountUsd: p.feesUsd,
+    liquidationAmountUsd: feesUsd,
     sizeUsd: p.sizeUsd,
-    collateralUsd: p.collateralUsd,
-    averagePrice: p.averagePrice,
+    collateralUsd: remainingCollateralUsd,
+    averagePrice: p.indexPrice,
     isLong: p.isLong,
   });
 
   const liqPriceForMaxLeverage = getLiquidationPriceFromDelta({
-    liquidationAmountUsd: p.sizeUsd.mul(BASIS_POINTS_DIVISOR).div(MAX_LEVERAGE),
+    liquidationAmountUsd: p.sizeUsd.mul(BASIS_POINTS_DIVISOR).div(p.maxLeverage),
     sizeUsd: p.sizeUsd,
-    collateralUsd: p.collateralUsd,
-    averagePrice: p.averagePrice,
+    collateralUsd: remainingCollateralUsd,
+    // nah
+    averagePrice: p.indexPrice,
     isLong: p.isLong,
   });
 
@@ -249,22 +395,36 @@ export function getLiquidationPriceFromDelta(p: {
   return p.isLong ? p.averagePrice.sub(priceDelta) : p.averagePrice.add(priceDelta);
 }
 
-export function getLeverage(p: { sizeUsd?: BigNumber; collateralUsd?: BigNumber }) {
+export function getLeverage(p: {
+  sizeUsd?: BigNumber;
+  collateralUsd?: BigNumber;
+  pnl?: BigNumber;
+  pendingFundingFeesUsd?: BigNumber;
+  pendingBorrowingFeesUsd?: BigNumber;
+}) {
   if (!p.sizeUsd?.gt(0) || !p.collateralUsd?.gt(0)) {
     return undefined;
   }
 
-  return p.sizeUsd.mul(BASIS_POINTS_DIVISOR).div(p.collateralUsd);
-}
+  let remainingCollateralUsd = p.collateralUsd;
 
-export function getPriceForPnl(tokenPrices?: TokenPrices, isLong?: boolean, maximize?: boolean) {
-  if (!tokenPrices) return undefined;
-
-  if (isLong) {
-    return maximize ? tokenPrices.maxPrice : tokenPrices.minPrice;
+  if (p.pnl) {
+    remainingCollateralUsd = remainingCollateralUsd.add(p.pnl);
   }
 
-  return maximize ? tokenPrices.minPrice : tokenPrices.maxPrice;
+  if (p.pendingFundingFeesUsd) {
+    remainingCollateralUsd = remainingCollateralUsd.sub(p.pendingFundingFeesUsd);
+  }
+
+  if (p.pendingBorrowingFeesUsd) {
+    remainingCollateralUsd = remainingCollateralUsd.sub(p.pendingBorrowingFeesUsd);
+  }
+
+  if (remainingCollateralUsd.lte(0)) {
+    return undefined;
+  }
+
+  return p.sizeUsd.mul(BASIS_POINTS_DIVISOR).div(remainingCollateralUsd);
 }
 
 export function formatPnl(pnl?: BigNumber, pnlPercentage?: BigNumber) {
@@ -278,7 +438,7 @@ export function formatPnl(pnl?: BigNumber, pnlPercentage?: BigNumber) {
 }
 
 export function formatLeverage(leverage?: BigNumber) {
-  if (!leverage) return "...";
+  if (!leverage) return undefined;
 
   return `${formatAmount(leverage, 4, 2)}x`;
 }

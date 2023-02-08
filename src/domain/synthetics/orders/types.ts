@@ -73,6 +73,7 @@ export type Order = {
   callbackContract: string;
   initialCollateralTokenAddress: string;
   marketAddress: string;
+  decreasePositionSwapType: DecreasePositionSwapType;
   receiver: string;
   swapPath: string[];
   contractAcceptablePrice: BigNumber;

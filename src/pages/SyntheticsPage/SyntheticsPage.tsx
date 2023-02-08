@@ -3,22 +3,30 @@ import { useWeb3React } from "@web3-react/core";
 import Footer from "components/Footer/Footer";
 import { OrderList } from "components/Synthetics/OrderList/OrderList";
 import { PositionList } from "components/Synthetics/PositionList/PositionList";
-import { SwapBox } from "components/Synthetics/Trade/SwapBox/SwapBox";
+import { TradeBox } from "components/Synthetics/Trade/TradeBox/TradeBox";
 import Tab from "components/Tab/Tab";
-import { getExecutionFee } from "domain/synthetics/fees";
+import {
+  SYNTHETICS_TRADE_COLLATERAL_KEY,
+  SYNTHETICS_TRADE_MARKET_KEY,
+  SYNTHETICS_TRADE_TYPE_KEY,
+} from "config/localStorage";
+import { TradeType } from "domain/synthetics/trade/types";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useAggregatedOrdersData } from "domain/synthetics/orders/useAggregatedOrdersData";
-import { getPosition } from "domain/synthetics/positions";
+import { getPosition, getPositionKey } from "domain/synthetics/positions";
 import { useAggregatedPositionsData } from "domain/synthetics/positions/useAggregatedPositionsData";
-import { useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { useLocalStorageByChainId } from "lib/localStorage";
-import { useState } from "react";
+import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
+import { useMemo, useState } from "react";
 
 import "./SyntheticsPage.scss";
+import { PositionSeller } from "components/Synthetics/PositionSeller/PositionSeller";
+import { PositionEditor } from "components/Synthetics/PositionEditor/PositionEditor";
 
 type Props = {
   onConnectWallet: () => void;
+  savedIsPnlInLeverage: boolean;
+  shouldDisableValidation: boolean;
 };
 
 enum ListSection {
@@ -28,32 +36,68 @@ enum ListSection {
 
 export function SyntheticsPage(p: Props) {
   const { chainId } = useChainId();
-  const { library } = useWeb3React();
+  const { library, account } = useWeb3React();
   const [listSection, setListSection] = useLocalStorageByChainId(chainId, "List-section-v3", ListSection.Positions);
 
-  const [selectedMarketAddress, setSelectedMarketAddress] = useState<string>();
-  const [selectedCollateralAddress, setSelectedCollateralAddress] = useState<string>();
+  const [selectedMarketAddress, setSelectedMarketAddress] = useLocalStorageSerializeKey<string | undefined>(
+    [chainId, SYNTHETICS_TRADE_MARKET_KEY],
+    undefined
+  );
+  const [selectedCollateralAddress, setSelectedCollateralAddress] = useLocalStorageSerializeKey<string | undefined>(
+    [chainId, SYNTHETICS_TRADE_COLLATERAL_KEY],
+    undefined
+  );
+  const [selectedTradeType, setSelectedTradeType] = useLocalStorageSerializeKey(
+    [chainId, SYNTHETICS_TRADE_TYPE_KEY],
+    TradeType.Long
+  );
+
+  const [closingPositionKey, setClosingPositionKey] = useState<string>();
+  const [editingPositionKey, setEditingPositionKey] = useState<string>();
+
   const [selectedOrdersKeys, setSelectedOrdersKeys] = useState<{ [key: string]: boolean }>({});
   const [isCancelOrdersProcessig, setIsCancelOrdersProcessig] = useState(false);
 
-  const { tokensData } = useAvailableTokensData(chainId);
-  const { aggregatedPositionsData, isLoading: isPositionsLoading } = useAggregatedPositionsData(chainId);
+  const { aggregatedPositionsData, isLoading: isPositionsLoading } = useAggregatedPositionsData(chainId, {
+    savedIsPnlInLeverage: p.savedIsPnlInLeverage,
+  });
   const { aggregatedOrdersData, isLoading: isOrdersLoading } = useAggregatedOrdersData(chainId);
-
-  const executionFee = getExecutionFee(tokensData);
 
   const positionsCount = Object.keys(aggregatedPositionsData).length;
   const ordersCount = Object.keys(aggregatedOrdersData).length;
   const selectedOrdersKeysArr = Object.keys(selectedOrdersKeys).filter((key) => selectedOrdersKeys[key]);
 
-  function onCancelOrdersClick() {
-    if (!executionFee?.feeTokenAmount) return;
+  // TODO: request
+  const selectedPosition = useMemo(() => {
+    const positionKey = getPositionKey(
+      account,
+      selectedMarketAddress,
+      selectedCollateralAddress,
+      selectedTradeType === TradeType.Long
+    );
+    return getPosition(aggregatedPositionsData, positionKey);
+  }, [account, aggregatedPositionsData, selectedCollateralAddress, selectedMarketAddress, selectedTradeType]);
 
+  const closingPosition = getPosition(aggregatedPositionsData, closingPositionKey);
+  const editingPosition = getPosition(aggregatedPositionsData, editingPositionKey);
+
+  function onCancelOrdersClick() {
     setIsCancelOrdersProcessig(true);
     cancelOrdersTxn(chainId, library, {
       orderKeys: selectedOrdersKeysArr,
-      executionFee: executionFee.feeTokenAmount,
     }).finally(() => setIsCancelOrdersProcessig(false));
+  }
+
+  function onSelectPosition(positionKey: string) {
+    const position = getPosition(aggregatedPositionsData, positionKey);
+
+    if (!position) return;
+
+    const { marketAddress, collateralTokenAddress, isLong } = position;
+
+    setSelectedMarketAddress(marketAddress);
+    setSelectedCollateralAddress(collateralTokenAddress);
+    setSelectedTradeType(isLong ? TradeType.Long : TradeType.Short);
   }
 
   return (
@@ -117,8 +161,11 @@ export function SyntheticsPage(p: Props) {
                 positionsData={aggregatedPositionsData}
                 ordersData={aggregatedOrdersData}
                 isLoading={isPositionsLoading}
+                savedIsPnlInLeverage={p.savedIsPnlInLeverage}
                 onOrdersClick={() => setListSection(ListSection.Orders)}
-                onSelectPositionClick={setSelectedMarketAddress}
+                onSelectPositionClick={onSelectPosition}
+                onClosePositionClick={setClosingPositionKey}
+                onEditCollateralClick={setEditingPositionKey}
               />
             )}
             {listSection === ListSection.Orders && (
@@ -135,13 +182,18 @@ export function SyntheticsPage(p: Props) {
 
         <div className="SyntheticsTrade-right">
           <div className="SyntheticsTrade-swap-box">
-            <SwapBox
-              positionsData={aggregatedPositionsData}
-              onSelectMarketAddress={setSelectedMarketAddress}
-              onSelectCollateralAddress={setSelectedCollateralAddress}
+            <TradeBox
+              selectedTradeType={selectedTradeType}
               selectedMarketAddress={selectedMarketAddress}
               selectedCollateralAddress={selectedCollateralAddress}
+              existingPosition={selectedPosition}
+              onSelectTradeType={setSelectedTradeType}
+              onSelectMarketAddress={setSelectedMarketAddress}
+              onSelectCollateralAddress={setSelectedCollateralAddress}
               onConnectWallet={p.onConnectWallet}
+              savedIsPnlInLeverage={p.savedIsPnlInLeverage}
+              shouldDisableValidation={p.shouldDisableValidation}
+              ordersData={aggregatedOrdersData}
             />
           </div>
         </div>
@@ -161,13 +213,12 @@ export function SyntheticsPage(p: Props) {
             <PositionList
               positionsData={aggregatedPositionsData}
               ordersData={aggregatedOrdersData}
+              savedIsPnlInLeverage={p.savedIsPnlInLeverage}
               isLoading={isPositionsLoading}
               onOrdersClick={() => setListSection(ListSection.Orders)}
-              onSelectPositionClick={(key) => {
-                const position = getPosition(aggregatedPositionsData, key)!;
-                setSelectedMarketAddress(position.marketAddress);
-                setSelectedCollateralAddress(position.collateralTokenAddress);
-              }}
+              onSelectPositionClick={onSelectPosition}
+              onClosePositionClick={setClosingPositionKey}
+              onEditCollateralClick={setEditingPositionKey}
             />
           )}
           {listSection === ListSection.Orders && (
@@ -181,6 +232,28 @@ export function SyntheticsPage(p: Props) {
           )}
         </div>
       </div>
+
+      <PositionSeller
+        savedIsPnlInLeverage={p.savedIsPnlInLeverage}
+        position={closingPosition}
+        onClose={() => setClosingPositionKey(undefined)}
+      />
+
+      <PositionEditor
+        savedIsPnlInLeverage={p.savedIsPnlInLeverage}
+        position={editingPosition}
+        onClose={() => setEditingPositionKey(undefined)}
+      />
+
+      {/* {sharingPosition && (
+        <PositionShare
+          isPositionShareModalOpen={true}
+          setIsPositionShareModalOpen={() => setSharingPositionKey(undefined)}
+          positionToShare={sharingPosition}
+          chainId={chainId}
+          account={account}
+        />
+      )} */}
       <Footer />
     </div>
   );

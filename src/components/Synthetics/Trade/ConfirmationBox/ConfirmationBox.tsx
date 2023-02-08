@@ -1,157 +1,248 @@
-import { Trans, t } from "@lingui/macro";
+import { Plural, Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import cx from "classnames";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
-import { InfoRow } from "components/InfoRow/InfoRow";
+import Checkbox from "components/Checkbox/Checkbox";
+import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import Modal from "components/Modal/Modal";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
+import { TradeFeesRow } from "components/Synthetics/TradeFeesRow/TradeFeesRow";
+import Tooltip from "components/Tooltip/Tooltip";
+import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { getContract } from "config/contracts";
+import { getWrappedToken } from "config/tokens";
+import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useUserReferralCode } from "domain/referrals";
-import { SwapRoute } from "domain/synthetics/exchange";
+import { ExecutionFee, isHighPriceImpact as getIsHighPriceImpact } from "domain/synthetics/fees";
 import {
+  getAvailableUsdLiquidityForCollateral,
+  getAvailableUsdLiquidityForPosition,
+  useMarketsData,
+  useMarketsPoolsData,
+  useOpenInterestData,
+} from "domain/synthetics/markets";
+import {
+  AggregatedOrderData,
+  AggregatedOrdersData,
+  DecreasePositionSwapType,
   OrderType,
   createDecreaseOrderTxn,
   createIncreaseOrderTxn,
   createSwapOrderTxn,
+  getPositionOrders,
+  getTriggerOrderType,
+  getTriggerPricePrefix,
+  isLimitOrder,
+  isTriggerDecreaseOrder,
+  isTriggerPriceAboveThreshold,
 } from "domain/synthetics/orders";
-import { TokenData, useAvailableTokensData } from "domain/synthetics/tokens";
+import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
+import { AggregatedPositionData, formatLeverage, formatPnl, getPositionKey } from "domain/synthetics/positions";
+import {
+  TokensRatio,
+  adaptToTokenInfo,
+  formatTokensRatio,
+  getTokenData,
+  needTokenApprove,
+  useAvailableTokensData,
+} from "domain/synthetics/tokens";
 import { useTokenAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
-import { convertToUsd, getTokenData, needTokenApprove } from "domain/synthetics/tokens";
-import { Token } from "domain/tokens";
+import {
+  DecreasePositionTradeParams,
+  IncreasePositionTradeParams,
+  SwapTradeParams,
+  getShouldSwapPnlToCollateralToken,
+} from "domain/synthetics/trade";
+import { getTradeFlags } from "domain/synthetics/trade/utils/common";
+import { TokenInfo, getSpread } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-import { DEFAULT_SLIPPAGE_AMOUNT, USD_DECIMALS } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR, PRECISION, USD_DECIMALS } from "lib/legacy";
 import { formatAmount, formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
-import { TradeFees } from "../TradeFees/TradeFees";
-import { Fees, TradeMode, TradeType, getSubmitError, tradeTypeLabels } from "../utils";
+import { useMemo, useState } from "react";
+import { TradeMode, TradeType } from "../utils";
 
-import Checkbox from "components/Checkbox/Checkbox";
-import { ValueTransition } from "components/ValueTransition/ValueTransition";
-import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import { getMarket, useMarketsData } from "domain/synthetics/markets";
-import { AggregatedPositionData, formatLeverage, formatPnl } from "domain/synthetics/positions";
 import "./ConfirmationBox.scss";
 
 type Props = {
-  operationType: TradeType;
-  mode: TradeMode;
-  fees: Fees;
-  selectedMarketAddress?: string;
-  closeSizeUsd?: BigNumber;
-  fromTokenAddress?: string;
-  fromTokenAmount?: BigNumber;
-  toTokenAddress?: string;
-  toTokenAmount?: BigNumber;
-  fromTokenPrice?: BigNumber;
-  toTokenPrice?: BigNumber;
-  collateralTokenAddress?: string;
-  sizeDeltaUsd?: BigNumber;
-  collateralDeltaUsd?: BigNumber;
-  collateralDeltaAmount?: BigNumber;
-  entryPrice?: BigNumber;
+  tradeType: TradeType;
+  tradeMode: TradeMode;
+  swapParams?: SwapTradeParams;
+  increasePositionParams?: IncreasePositionTradeParams;
+  decreasePositionParams?: DecreasePositionTradeParams;
   markPrice?: BigNumber;
-  nextLiqPrice?: BigNumber;
-  nextSizeUsd?: BigNumber;
-  nextCollateralUsd?: BigNumber;
-  nextLeverage?: BigNumber;
-  acceptablePrice?: BigNumber;
-  triggerPricePrefix?: string;
-  triggerPrice?: BigNumber;
-  receiveTokenAmount?: BigNumber;
-  receiveUsd?: BigNumber;
-  receiveToken?: TokenData;
   keepLeverage?: boolean;
-  swapTriggerRatio?: BigNumber;
+  markRatio?: TokensRatio;
+  ordersData: AggregatedOrdersData;
   existingPosition?: AggregatedPositionData;
-  swapRoute?: SwapRoute;
+  executionFee?: ExecutionFee;
+  isVisible: boolean;
+  error?: string;
+  shouldDisableValidation?: boolean;
+  allowedSlippage?: number;
+  isHigherSlippageAllowed?: boolean;
+  setIsHigherSlippageAllowed: (isHigherSlippageAllowed: boolean) => void;
   setKeepLeverage: (keepLeverage: boolean) => void;
   onClose: () => void;
   onSubmitted: () => void;
 };
 
-function getTokenText(token?: Token, tokenAmount?: BigNumber, price?: BigNumber) {
-  if (!token || !price || !tokenAmount) return undefined;
-
-  const usdAmount = convertToUsd(tokenAmount, token.decimals, price);
-
-  return formatTokenAmountWithUsd(tokenAmount, usdAmount, token.symbol, token.decimals);
-}
-
 export function ConfirmationBox(p: Props) {
+  const { allowedSlippage, isHigherSlippageAllowed, setIsHigherSlippageAllowed } = p;
   const { library, account } = useWeb3React();
   const { chainId } = useChainId();
-  const routerAddress = getContract(chainId, "SyntheticsRouter");
   const { setPendingPositionUpdate } = useSyntheticsEvents();
+
+  const { isLong, isSwap, isMarket, isLimit, isTrigger, isIncrease } = getTradeFlags(p.tradeType, p.tradeMode);
 
   const { tokensData } = useAvailableTokensData(chainId);
   const { marketsData } = useMarketsData(chainId);
+  const { poolsData } = useMarketsPoolsData(chainId);
+  const { openInterestData } = useOpenInterestData(chainId);
   const referralCodeData = useUserReferralCode(library, chainId, account);
 
-  const { tokenAllowanceData } = useTokenAllowanceData(chainId, {
-    spenderAddress: routerAddress,
-    tokenAddresses: p.fromTokenAddress ? [p.fromTokenAddress] : [],
-  });
+  const [isTriggerWarningAccepted, setIsTriggerWarningAccepted] = useState(false);
+  const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
+  const [isLimitOrdersVisible, setIsLimitOrdersVisible] = useState(false);
 
-  const fromToken = getTokenData(tokensData, p.fromTokenAddress);
-  const toToken = getTokenData(tokensData, p.toTokenAddress);
+  const tokenIn = p.swapParams?.tokenIn;
+  const tokenOut = p.swapParams?.tokenOut;
 
-  const market = getMarket(marketsData, p.selectedMarketAddress);
+  const amountIn = p.swapParams?.amountIn;
+  const usdIn = p.swapParams?.usdIn;
+
+  const amountOut = p.swapParams?.amountOut;
+  const usdOut = p.swapParams?.usdOut;
+
+  const initialCollateralToken = p.increasePositionParams?.initialCollateralToken;
+  const collateralToken = p.increasePositionParams?.collateralToken;
+  const intitialCollateralAmount = p.increasePositionParams?.initialCollateralAmount;
+  const initialCollateralUsd = p.increasePositionParams?.initialCollateralUsd;
+
+  const market = p.increasePositionParams?.market || p.decreasePositionParams?.market;
   const indexToken = getTokenData(tokensData, market?.indexTokenAddress);
 
-  const fromTokenText = getTokenText(fromToken, p.fromTokenAmount, fromToken?.prices?.minPrice);
-  const toTokenText = getTokenText(toToken, p.toTokenAmount, toToken?.prices?.maxPrice);
+  const sizeDeltaUsdAfterFees = p.increasePositionParams?.sizeDeltaAfterFeesUsd;
+  const sizeDeltaAfterFeesInTokens = p.increasePositionParams?.sizeDeltaAfterFeesInTokens;
 
+  const receiveToken = p.decreasePositionParams?.receiveToken;
+  const receiveAmount = p.decreasePositionParams?.receiveTokenAmount;
+  const receiveUsd = p.decreasePositionParams?.receiveUsd;
+
+  const fees = p.swapParams?.fees || p.increasePositionParams?.fees || p.decreasePositionParams?.fees;
+
+  const shouldCheckPayTokenApproval = isSwap || isIncrease;
+  const payToken = tokenIn || initialCollateralToken;
+  const payAmount = p.swapParams?.amountIn || p.increasePositionParams?.initialCollateralAmount;
+  const routerAddress = getContract(chainId, "SyntheticsRouter");
+  const { tokenAllowanceData } = useTokenAllowanceData(chainId, {
+    spenderAddress: routerAddress,
+    tokenAddresses: payToken ? [payToken.address] : [],
+  });
   const isAllowanceLoaded = Object.keys(tokenAllowanceData).length > 0;
+  const needPayTokenApproval = needTokenApprove(tokenAllowanceData, payToken?.address, payAmount);
 
-  const needFromTokenApproval = needTokenApprove(tokenAllowanceData, p.fromTokenAddress, p.fromTokenAmount);
+  const isHighPriceImpact =
+    getIsHighPriceImpact(fees?.swapPriceImpact) || getIsHighPriceImpact(fees?.positionPriceImpact);
 
-  const isSwap = p.operationType === TradeType.Swap;
-  const isPosition = [TradeType.Long, TradeType.Short].includes(p.operationType);
-  const isLimit = p.mode === TradeMode.Limit;
-  const isLong = p.operationType === TradeType.Long;
-  const isStop = p.mode === TradeMode.Trigger;
+  const positionOrders = useMemo(
+    () => getPositionOrders(p.ordersData, market?.marketTokenAddress, collateralToken?.address, isLong),
+    [isLong, collateralToken?.address, p.ordersData, market?.marketTokenAddress]
+  );
 
-  function getReceiveText() {
-    if (p.operationType === TradeType.Swap) {
-      return t`Receive`;
+  const existingLimitOrders = useMemo(
+    () => positionOrders.filter((order) => isLimitOrder(order.orderType)),
+    [positionOrders]
+  );
+
+  const existingTriggerOrders = useMemo(
+    () => positionOrders.filter((order) => isTriggerDecreaseOrder(order.orderType)),
+    [positionOrders]
+  );
+
+  const decreaseOrdersThatWillBeExecuted = useMemo(() => {
+    return existingTriggerOrders.filter((order) => {
+      if (!order.triggerPrice) return false;
+
+      const isTriggerAbove = isTriggerPriceAboveThreshold(order.orderType, order.isLong);
+
+      return isTriggerAbove
+        ? p.existingPosition?.markPrice?.gt(order.triggerPrice)
+        : p.existingPosition?.markPrice?.lt(order.triggerPrice);
+    });
+  }, [existingTriggerOrders, p.existingPosition?.markPrice]);
+
+  const { spread, showSpread } = useMemo(() => {
+    let fromTokenInfo: TokenInfo | undefined;
+    let toTokenInfo: TokenInfo | undefined;
+
+    if (isSwap && tokenIn && tokenOut) {
+      fromTokenInfo = adaptToTokenInfo(tokenIn);
+      toTokenInfo = adaptToTokenInfo(tokenOut);
+    } else if (isIncrease && initialCollateralToken && indexToken) {
+      fromTokenInfo = adaptToTokenInfo(indexToken);
+      toTokenInfo = adaptToTokenInfo(initialCollateralToken);
     }
 
-    return p.operationType === TradeType.Long ? t`Long` : t`Short`;
-  }
+    const spread = getSpread(fromTokenInfo, toTokenInfo, isLong, getWrappedToken(chainId).address);
+    const showSpread = isMarket && Boolean(spread);
+
+    return { spread, showSpread };
+  }, [chainId, indexToken, initialCollateralToken, isIncrease, isLong, isMarket, isSwap, tokenIn, tokenOut]);
+
+  const shouldSwapPnlToCollateralToken = getShouldSwapPnlToCollateralToken({
+    market,
+    collateralTokenAddress: collateralToken?.address,
+    isLong,
+  });
+
+  const longShortText = isLong ? t`Long` : t`Short`;
+
+  const getTitle = () => {
+    if (isSwap) {
+      return t`Confirm Swap`;
+    }
+
+    if (isIncrease && isMarket) {
+      return isLong ? t`Confirm Long` : t`Confirm Short`;
+    }
+
+    if (isLimit) {
+      return t`Confirm Limit Order`;
+    }
+
+    return t`Confirm Trigger Order`;
+  };
 
   function getSubmitButtonState(): { text: string; disabled?: boolean; onClick?: () => void } {
-    const error = getSubmitError({
-      markPrice: p.toTokenPrice,
-      operationType: p.operationType,
-      mode: p.mode,
-      tokensData,
-      fromTokenAddress: p.fromTokenAddress,
-      fromTokenAmount: p.fromTokenAmount,
-      toTokenAddress: p.toTokenAddress,
-      swapPath: p.swapRoute?.swapPath,
-      triggerPrice: p.triggerPrice,
-      swapTriggerRatio: p.swapTriggerRatio,
-      closeSizeUsd: p.closeSizeUsd,
-    });
-
-    if (error) {
-      return {
-        text: error,
-        disabled: true,
-      };
-    }
-
-    if (!isAllowanceLoaded || !fromToken || !toToken) {
+    if (shouldCheckPayTokenApproval && (!isAllowanceLoaded || !payToken)) {
       return {
         text: t`Loading...`,
         disabled: true,
       };
     }
 
-    if (needFromTokenApproval) {
+    if (needPayTokenApproval) {
       return {
-        text: t`Pending ${fromToken?.symbol} approval`,
+        text: t`Pending ${tokenIn?.symbol} approval`,
         disabled: true,
+      };
+    }
+
+    if (isHighPriceImpact && !isHighPriceImpactAccepted) {
+      return {
+        text: t`Confirm high price impact`,
+        disabled: true,
+        onClick: () => setIsHighPriceImpactAccepted(true),
+      };
+    }
+
+    if (p.error) {
+      return {
+        text: p.error,
+        disabled: p.shouldDisableValidation ? false : true,
+        onClick: onSubmit,
       };
     }
 
@@ -161,7 +252,7 @@ export function ConfirmationBox(p: Props) {
       text = t`Swap`;
     } else if (isLimit) {
       text = t`Create Limit Order`;
-    } else if (isStop) {
+    } else if (isTrigger) {
       text = t`Create Trigger Order`;
     } else {
       text = isLong ? t`Long` : t`Short`;
@@ -173,354 +264,790 @@ export function ConfirmationBox(p: Props) {
     };
   }
 
-  function onSubmit() {
-    if (!account || !p.fees.executionFee?.feeTokenAmount) return;
+  function onCancelOrderClick(key: string): void {
+    cancelOrdersTxn(chainId, library, { orderKeys: [key] });
+  }
 
-    if ([TradeType.Long, TradeType.Short].includes(p.operationType)) {
-      if ([TradeMode.Market, TradeMode.Limit].includes(p.mode)) {
-        if (!p.fromTokenAddress || !p.swapRoute || !p.fromTokenAmount || !p.toTokenAddress) return;
-
-        const { market, swapPath } = p.swapRoute;
-
-        if (!market || !p.sizeDeltaUsd || !toToken?.prices) return;
-
-        createIncreaseOrderTxn(chainId, library, {
-          account,
-          market,
-          initialCollateralAddress: p.fromTokenAddress,
-          initialCollateralAmount: p.fromTokenAmount,
-          targetCollateralAddress: p.collateralTokenAddress,
-          swapPath: swapPath,
-          indexTokenAddress: p.toTokenAddress,
-          sizeDeltaUsd: p.sizeDeltaUsd,
-          triggerPrice: p.triggerPrice,
-          priceImpactDelta: p.fees.positionPriceImpact?.impactUsd || BigNumber.from(0),
-          allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
-          executionFee: p.fees.executionFee.feeTokenAmount,
-          isLong: p.operationType === TradeType.Long,
-          orderType: p.mode === TradeMode.Limit ? OrderType.LimitIncrease : OrderType.MarketIncrease,
-          referralCode: referralCodeData?.userReferralCodeString,
-          tokensData,
-          setPendingPositionUpdate,
-        }).then(p.onSubmitted);
-      }
-
-      if (p.mode === TradeMode.Trigger) {
-        if (!p.selectedMarketAddress || !indexToken || !p.collateralTokenAddress || !p.triggerPrice || !p.markPrice)
-          return;
-
-        let orderType: OrderType;
-
-        if (p.operationType === TradeType.Long) {
-          orderType = p.triggerPrice.gt(p.markPrice) ? OrderType.LimitDecrease : OrderType.StopLossDecrease;
-        } else {
-          orderType = p.triggerPrice.lt(p.markPrice) ? OrderType.LimitDecrease : OrderType.StopLossDecrease;
-        }
-
-        createDecreaseOrderTxn(chainId, library, {
-          account,
-          market: p.selectedMarketAddress,
-          indexTokenAddress: indexToken.address,
-          swapPath: [],
-          initialCollateralDeltaAmount: p.collateralDeltaAmount || BigNumber.from(0),
-          initialCollateralAddress: p.collateralTokenAddress,
-          targetCollateralAddress: p.collateralTokenAddress,
-          receiveTokenAddress: p.collateralTokenAddress,
-          triggerPrice: p.triggerPrice,
-          priceImpactDelta: p.fees.positionPriceImpact?.impactUsd || BigNumber.from(0),
-          allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
-          sizeDeltaUsd: p.closeSizeUsd,
-          orderType: orderType,
-          isLong: p.operationType === TradeType.Long,
-          executionFee: p.fees.executionFee.feeTokenAmount,
-          tokensData,
-          setPendingPositionUpdate,
-        });
-      }
+  function onSubmitSwap() {
+    if (!account || !p.swapParams || !p.swapParams.swapPathStats || !p.executionFee) {
+      return;
     }
 
-    if (p.operationType === TradeType.Swap) {
-      if (!p.toTokenAmount || !p.swapRoute || !p.fromTokenAddress || !p.fromTokenAmount || !p.toTokenAddress) return;
+    createSwapOrderTxn(chainId, library, {
+      account,
+      fromTokenAddress: p.swapParams.tokenIn.address,
+      fromTokenAmount: p.swapParams.amountIn,
+      swapPath: p.swapParams.swapPathStats?.swapPath,
+      toTokenAddress: p.swapParams.tokenOut.address,
+      executionFee: p.executionFee.feeTokenAmount,
+      orderType: isLimit ? OrderType.LimitSwap : OrderType.MarketSwap,
+      minOutputAmount: p.swapParams.minOutputAmount,
+      referralCode: referralCodeData?.userReferralCodeString,
+      tokensData,
+    }).then(p.onSubmitted);
+  }
 
-      const orderType = p.mode === TradeMode.Limit ? OrderType.LimitSwap : OrderType.MarketSwap;
+  function onSubmitIncreaseOrder() {
+    if (
+      !account ||
+      !p.increasePositionParams ||
+      !p.executionFee ||
+      !market ||
+      !p.increasePositionParams.acceptablePriceAfterSlippage
+    ) {
+      return;
+    }
 
-      const { swapPath } = p.swapRoute;
+    createIncreaseOrderTxn(chainId, library, {
+      account,
+      marketAddress: p.increasePositionParams.market.marketTokenAddress,
+      initialCollateralAddress: p.increasePositionParams.initialCollateralToken.address,
+      initialCollateralAmount: p.increasePositionParams.initialCollateralAmount,
+      targetCollateralAddress: p.increasePositionParams.collateralToken.address,
+      swapPath: p.increasePositionParams.swapPathStats?.swapPath || [],
+      indexTokenAddress: p.increasePositionParams.market.indexTokenAddress,
+      sizeDeltaUsd: p.increasePositionParams.sizeDeltaUsd,
+      triggerPrice: isLimit ? p.increasePositionParams.triggerPrice : undefined,
+      acceptablePrice: isMarket
+        ? p.increasePositionParams.acceptablePriceAfterSlippage
+        : p.increasePositionParams.acceptablePrice,
+      executionFee: p.executionFee.feeTokenAmount,
+      isLong,
+      orderType: isLimit ? OrderType.LimitIncrease : OrderType.MarketIncrease,
+      referralCode: referralCodeData?.userReferralCodeString,
+      tokensData,
+    }).then(() => {
+      if (isMarket && p.increasePositionParams) {
+        setPendingPositionUpdate({
+          isIncrease: true,
+          positionKey: getPositionKey(
+            account,
+            p.increasePositionParams.market.marketTokenAddress,
+            p.increasePositionParams.collateralToken.address,
+            isLong
+          )!,
+          collateralDeltaAmount: p.increasePositionParams.collateralAmount,
+          sizeDeltaUsd: p.increasePositionParams.sizeDeltaUsd,
+          sizeDeltaInTokens: p.increasePositionParams.sizeDeltaInTokens,
+        });
+      }
 
-      createSwapOrderTxn(chainId, library, {
-        account,
-        fromTokenAddress: p.fromTokenAddress,
-        fromTokenAmount: p.fromTokenAmount,
-        swapPath: swapPath,
-        toTokenAddress: p.toTokenAddress,
-        executionFee: p.fees.executionFee.feeTokenAmount,
-        orderType,
-        minOutputAmount: p.toTokenAmount,
-        referralCode: referralCodeData?.userReferralCodeString,
-        tokensData,
-      }).then(p.onSubmitted);
+      p.onSubmitted();
+    });
+  }
+
+  function onSubmitDecreaseOrder() {
+    if (
+      !account ||
+      !p.decreasePositionParams ||
+      !p.executionFee ||
+      !p.decreasePositionParams.acceptablePrice ||
+      !p.decreasePositionParams.triggerPrice ||
+      !p.markPrice
+    ) {
+      return;
+    }
+
+    const orderType = getTriggerOrderType({
+      isLong,
+      isTriggerAboveThreshold: p.decreasePositionParams.triggerPrice.gt(p.markPrice),
+    });
+
+    createDecreaseOrderTxn(chainId, library, {
+      account,
+      marketAddress: p.decreasePositionParams.market.marketTokenAddress,
+      indexTokenAddress: p.decreasePositionParams.market.indexTokenAddress,
+      swapPath: [],
+      initialCollateralDeltaAmount: p.decreasePositionParams.collateralDeltaAmount || BigNumber.from(0),
+      initialCollateralAddress: p.decreasePositionParams.collateralToken.address,
+      receiveTokenAddress: p.decreasePositionParams.receiveToken.address,
+      triggerPrice: p.decreasePositionParams.triggerPrice,
+      acceptablePrice: p.decreasePositionParams.acceptablePrice,
+      sizeDeltaUsd: p.decreasePositionParams.sizeDeltaUsd,
+      orderType: orderType,
+      isLong,
+      executionFee: p.executionFee.feeTokenAmount,
+      decreasePositionSwapType: shouldSwapPnlToCollateralToken
+        ? DecreasePositionSwapType.SwapPnlTokenToCollateralToken
+        : DecreasePositionSwapType.NoSwap,
+      tokensData,
+    }).then(p.onSubmitted);
+  }
+
+  function onSubmit() {
+    if (isSwap) {
+      onSubmitSwap();
+    }
+    if (isIncrease) {
+      onSubmitIncreaseOrder();
+    }
+    if (isTrigger) {
+      onSubmitDecreaseOrder();
     }
   }
 
   const submitButtonState = getSubmitButtonState();
 
+  function renderMain() {
+    if (isSwap) {
+      return (
+        <div className="Confirmation-box-main">
+          <div>
+            <Trans>Pay</Trans>&nbsp;
+            {formatTokenAmountWithUsd(amountIn, usdIn, tokenIn?.symbol, tokenIn?.decimals)}
+          </div>
+          <div className="Confirmation-box-main-icon"></div>
+          <div>
+            <Trans>Receive</Trans>&nbsp;
+            {formatTokenAmountWithUsd(amountOut, usdOut, tokenOut?.symbol, tokenOut?.decimals)}
+          </div>
+        </div>
+      );
+    }
+
+    if (isIncrease) {
+      return (
+        <div className="Confirmation-box-main">
+          <span>
+            <Trans>Pay</Trans>&nbsp;
+            {formatTokenAmountWithUsd(
+              intitialCollateralAmount,
+              initialCollateralUsd,
+              initialCollateralToken?.symbol,
+              initialCollateralToken?.decimals
+            )}
+          </span>
+          <div className="Confirmation-box-main-icon"></div>
+          <div>
+            {isLong ? t`Long` : t`Short`}&nbsp;
+            {formatTokenAmountWithUsd(
+              sizeDeltaAfterFeesInTokens,
+              sizeDeltaUsdAfterFees,
+              indexToken?.symbol,
+              indexToken?.decimals
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className={cx("Confirmation-box-main ConfirmationBox-main")}>
+        <Trans>Decrease</Trans>&nbsp;{indexToken?.symbol} {isLong ? t`Long` : t`Short`}
+      </div>
+    );
+  }
+
+  function renderFeeWarning() {
+    if (!fees?.totalFees) {
+      return null;
+    }
+
+    const shouldShowWarning = fees.totalFees.deltaUsd.lt(0) && fees.totalFees.bps.abs().gt(600);
+
+    if (!shouldShowWarning) {
+      return null;
+    }
+
+    return (
+      <div className="Confirmation-box-warning">
+        <Trans>Fees are high</Trans>
+      </div>
+    );
+  }
+
+  function renderExecutionFee() {
+    return (
+      <ExchangeInfoRow label={t`Execution Fee`}>
+        {formatTokenAmount(
+          p.executionFee?.feeTokenAmount,
+          p.executionFee?.feeToken.decimals,
+          p.executionFee?.feeToken.symbol,
+          { displayDecimals: 5 }
+        )}
+      </ExchangeInfoRow>
+    );
+  }
+
+  function renderOrderItem(order: AggregatedOrderData) {
+    return (
+      <li key={order.key} className="font-sm">
+        <p>
+          {isLimitOrder(order.orderType) ? t`Increase` : t`Decrease`} {order.indexToken?.symbol}{" "}
+          {order.isLong ? t`Long` : t`Short`} &nbsp;{getTriggerPricePrefix(order.orderType, order.isLong, true)}
+          {formatUsd(order.triggerPrice)}{" "}
+        </p>
+        <button onClick={() => onCancelOrderClick(order.key)}>
+          <Trans>Cancel</Trans>
+        </button>
+      </li>
+    );
+  }
+
+  function renderExistingLimitOrdersWarning() {
+    if (!existingLimitOrders?.length || !indexToken) {
+      return;
+    }
+
+    if (existingLimitOrders.length === 1) {
+      const order = existingLimitOrders[0];
+
+      const sizeInTokens = order.sizeDeltaUsd.mul(PRECISION).div(order.triggerPrice!);
+      const sizeText = formatTokenAmountWithUsd(
+        sizeInTokens,
+        order.sizeDeltaUsd,
+        indexToken?.symbol,
+        indexToken?.decimals
+      );
+
+      return (
+        <div className="Confirmation-box-info">
+          <Trans>
+            You have an active Limit Order to Increase {longShortText} {sizeText} at price{" "}
+            {formatUsd(order.triggerPrice)}.
+          </Trans>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <div className="Confirmation-box-info">
+            <span>
+              <Trans>
+                You have multiple existing Increase {longShortText} {indexToken.symbol} limit orders{" "}
+              </Trans>
+            </span>
+            <span onClick={() => setIsLimitOrdersVisible((p) => !p)} className="view-orders">
+              ({isLimitOrdersVisible ? t`hide` : t`view`})
+            </span>
+          </div>
+          <ul className="order-list">{existingLimitOrders.map(renderOrderItem)}</ul>
+        </div>
+      );
+    }
+  }
+
+  function renderExistingTriggerErrors() {
+    if (!decreaseOrdersThatWillBeExecuted?.length) {
+      return;
+    }
+
+    const existingTriggerOrderLength = decreaseOrdersThatWillBeExecuted.length;
+    return (
+      <>
+        <div className="Confirmation-box-warning">
+          <Plural
+            value={existingTriggerOrderLength}
+            one="You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue."
+            other="You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue."
+          />
+        </div>
+        <ul className="order-list">{decreaseOrdersThatWillBeExecuted.map(renderOrderItem)}</ul>
+      </>
+    );
+  }
+
+  function renderExistingTriggerWarning() {
+    if (
+      !existingTriggerOrders?.length ||
+      decreaseOrdersThatWillBeExecuted.length > 0 ||
+      renderExistingLimitOrdersWarning()
+    ) {
+      return;
+    }
+
+    const existingTriggerOrderLength = existingTriggerOrders.length;
+
+    return (
+      <div className="Confirmation-box-info">
+        <Plural
+          value={existingTriggerOrderLength}
+          one="You have an active trigger order that could impact this position."
+          other="You have # active trigger orders that could impact this position."
+        />
+      </div>
+    );
+  }
+
+  function renderAvailableLiquidity() {
+    const riskThresholdBps = 5000;
+    let availableLiquidity;
+    let isLiquidityRisk;
+
+    if (isSwap) {
+      availableLiquidity = getAvailableUsdLiquidityForCollateral(
+        marketsData,
+        poolsData,
+        openInterestData,
+        tokensData,
+        p.swapParams?.swapPathStats?.targetMarketAddress,
+        tokenOut?.address
+      );
+
+      if (availableLiquidity && usdOut) {
+        isLiquidityRisk = availableLiquidity.mul(riskThresholdBps).div(BASIS_POINTS_DIVISOR).lt(usdOut);
+      }
+    }
+
+    if (isIncrease) {
+      availableLiquidity = getAvailableUsdLiquidityForPosition(
+        marketsData,
+        poolsData,
+        openInterestData,
+        tokensData,
+        p.increasePositionParams?.market.marketTokenAddress,
+        isLong
+      );
+
+      if (availableLiquidity && p.increasePositionParams?.sizeDeltaUsd) {
+        isLiquidityRisk = availableLiquidity
+          .mul(riskThresholdBps)
+          .div(BASIS_POINTS_DIVISOR)
+          .lt(p.increasePositionParams.sizeDeltaUsd);
+      }
+    }
+
+    const token = isSwap ? tokenOut : indexToken;
+
+    if (!availableLiquidity || !token) {
+      return null;
+    }
+
+    return (
+      <ExchangeInfoRow label={t`Available Liquidity`}>
+        <Tooltip
+          position="right-bottom"
+          handleClassName={isLiquidityRisk ? "negative" : ""}
+          handle={formatUsd(availableLiquidity)}
+          renderContent={() =>
+            isLiquidityRisk
+              ? t`There may not be sufficient liquidity to execute your order when the price conditions are met`
+              : t`The order will only execute if the price conditions are met and there is sufficient liquidity`
+          }
+        />
+      </ExchangeInfoRow>
+    );
+  }
+
+  function renderSpreadWarning() {
+    if (!isMarket) {
+      return null;
+    }
+
+    if (spread && spread.isHigh) {
+      return (
+        <div className="Confirmation-box-warning">
+          <Trans>The spread is {`>`} 1%, please ensure the trade details are acceptable before comfirming</Trans>
+        </div>
+      );
+    }
+  }
+
+  function renderIncreaseOrderSection() {
+    const { nextPositionValues } = p.increasePositionParams || {};
+
+    return (
+      <>
+        <div>
+          {renderMain()}
+          {isMarket && renderFeeWarning()}
+          {renderExistingLimitOrdersWarning()}
+          {renderExistingTriggerErrors()}
+          {renderExistingTriggerWarning()}
+          {p.executionFee?.warning && <div className="Confirmation-box-warning">{p.executionFee.warning}</div>}
+          {isLimit && renderAvailableLiquidity()}
+          <ExchangeInfoRow label={t`Collateral In`}>{collateralToken?.symbol}</ExchangeInfoRow>
+
+          <ExchangeInfoRow
+            className="SwapBox-info-row"
+            label={t`Leverage`}
+            value={
+              <ValueTransition
+                from={formatLeverage(p.existingPosition?.leverage)}
+                to={formatLeverage(nextPositionValues?.nextLeverage) || "-"}
+              />
+            }
+          />
+
+          {nextPositionValues?.nextLiqPrice && (
+            <ExchangeInfoRow
+              className="SwapBox-info-row"
+              label={t`Liq. Price`}
+              value={
+                <ValueTransition
+                  from={formatUsd(p.existingPosition?.liqPrice)}
+                  to={formatUsd(nextPositionValues.nextLiqPrice)}
+                />
+              }
+            />
+          )}
+
+          <ExchangeInfoRow label={t`Collateral`}>
+            <Tooltip
+              handle={formatUsd(p.increasePositionParams?.collateralUsdAfterFees)}
+              position="right-bottom"
+              renderContent={() => {
+                return (
+                  <>
+                    <Trans>Your position's collateral after deducting fees.</Trans>
+                    <br />
+                    <br />
+                    <StatsTooltipRow
+                      label={t`Pay Amount`}
+                      value={formatUsd(p.increasePositionParams?.initialCollateralUsd) || "-"}
+                      showDollar={false}
+                    />
+                    <StatsTooltipRow
+                      label={t`Fees`}
+                      value={formatUsd(fees?.totalFees?.deltaUsd) || "-"}
+                      showDollar={false}
+                    />
+                    <div className="Tooltip-divider" />
+                    <StatsTooltipRow
+                      label={t`Collateral`}
+                      value={formatUsd(p.increasePositionParams?.collateralUsdAfterFees) || "-"}
+                      showDollar={false}
+                    />
+                  </>
+                );
+              }}
+            />
+          </ExchangeInfoRow>
+
+          {showSpread && spread && (
+            <ExchangeInfoRow label={t`Spread`} isWarning={spread.isHigh} isTop={true}>
+              {formatAmount(spread.value.mul(100), USD_DECIMALS, 2, true)}%
+            </ExchangeInfoRow>
+          )}
+
+          {/* {isMarket && (
+            <ExchangeInfoRow
+              className="SwapBox-info-row"
+              label={t`Entry Price`}
+              value={formatUsd(p.increasePositionParams?.entryPrice) || "-"}
+            />
+          )} */}
+
+          <ExchangeInfoRow
+            className="SwapBox-info-row"
+            label={t`Acceptable Price`}
+            value={formatUsd(p.increasePositionParams?.acceptablePrice) || "-"}
+          />
+
+          {/* {isLimit && (
+            <ExchangeInfoRow
+              className="SwapBox-info-row"
+              label={t`Limit Price`}
+              value={formatUsd(p.increasePositionParams?.triggerPrice) || "-"}
+            />
+          )} */}
+
+          {/* <ExchangeInfoRow label={t`Borrow Fee`}>
+            {isLong && toTokenInfo && formatAmount(toTokenInfo.fundingRate, 4, 4)}
+            {isShort && shortCollateralToken && formatAmount(shortCollateralToken.fundingRate, 4, 4)}
+            {((isLong && toTokenInfo && toTokenInfo.fundingRate) ||
+              (isShort && shortCollateralToken && shortCollateralToken.fundingRate)) &&
+              "% / 1h"}
+          </ExchangeInfoRow> */}
+
+          {/* <ExchangeInfoRow label={t`Funding Fee`}>
+            {isLong && toTokenInfo && formatAmount(toTokenInfo.fundingRate, 4, 4)}
+            {isShort && shortCollateralToken && formatAmount(shortCollateralToken.fundingRate, 4, 4)}
+            {((isLong && toTokenInfo && toTokenInfo.fundingRate) ||
+              (isShort && shortCollateralToken && shortCollateralToken.fundingRate)) &&
+              "% / 1h"}
+          </ExchangeInfoRow> */}
+
+          {/* {isMarket && (
+            <div className="PositionEditor-allow-higher-slippage">
+              <ExchangeInfoRow label={t`Execution Fee`}>
+                <Tooltip
+                  handle={formatTokenAmount(
+                    p.executionFee?.feeTokenAmount,
+                    p.executionFee?.feeToken.decimals,
+                    p.executionFee?.feeToken.symbol,
+                    { displayDecimals: 5 }
+                  )}
+                  position="right-top"
+                  renderContent={() => {
+                    return (
+                      <>
+                        <StatsTooltipRow
+                          label={t`Network Fee`}
+                          value={
+                            formatTokenAmountWithUsd(
+                              p.executionFee?.feeTokenAmount,
+                              p.executionFee?.feeUsd,
+                              p.executionFee?.feeToken.symbol,
+                              p.executionFee?.feeToken.decimals,
+                              { displayDecimals: 5 }
+                            ) || "-"
+                          }
+                        />
+                        <br />
+                        <Trans>
+                          This is the network cost required to execute the postion.{" "}
+                          <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#execution-fee">
+                            More Info
+                          </ExternalLink>
+                        </Trans>
+                      </>
+                    );
+                  }}
+                />
+              </ExchangeInfoRow>
+            </div>
+          )} */}
+
+          <ExchangeInfoRow label={t`Allowed Slippage`}>
+            <Tooltip
+              handle={`${formatAmount(allowedSlippage, 2, 2)}%`}
+              position="right-top"
+              renderContent={() => {
+                return (
+                  <Trans>
+                    You can change this in the settings menu on the top right of the page.
+                    <br />
+                    <br />
+                    Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are
+                    volatile.
+                  </Trans>
+                );
+              }}
+            />
+          </ExchangeInfoRow>
+
+          {isMarket && (
+            <div className="PositionEditor-allow-higher-slippage">
+              <Checkbox isChecked={isHigherSlippageAllowed} setIsChecked={setIsHigherSlippageAllowed}>
+                <span className="muted font-sm">
+                  <Trans>Allow up to 1% slippage</Trans>
+                </span>
+              </Checkbox>
+            </div>
+          )}
+
+          {decreaseOrdersThatWillBeExecuted?.length > 0 && (
+            <div className="PositionEditor-allow-higher-slippage">
+              <Checkbox isChecked={isTriggerWarningAccepted} setIsChecked={setIsTriggerWarningAccepted}>
+                <span className="muted font-sm">
+                  <Trans>I am aware of the trigger orders</Trans>
+                </span>
+              </Checkbox>
+            </div>
+          )}
+        </div>
+      </>
+    );
+  }
+
+  function renderSwapSection() {
+    return (
+      <>
+        <div>
+          {renderMain()}
+          {renderFeeWarning()}
+          {renderSpreadWarning()}
+          {isLimit && renderAvailableLiquidity()}
+          <ExchangeInfoRow label={t`Min. Receive`}>
+            {formatTokenAmount(p.swapParams?.amountOut, tokenOut?.decimals, tokenOut?.symbol)}
+          </ExchangeInfoRow>
+          <ExchangeInfoRow label={t`Price`}>{formatTokensRatio(tokensData, p.markRatio)}</ExchangeInfoRow>
+          {isLimit && (
+            <div className="Exchange-info-row">
+              <div className="Exchange-info-label">
+                <Trans>Limit Price</Trans>
+              </div>
+              <div className="align-right">{formatTokensRatio(tokensData, p.swapParams?.triggerRatio)}</div>
+            </div>
+          )}
+          {showSpread && spread && (
+            <ExchangeInfoRow label={t`Spread`} isWarning={spread.isHigh}>
+              {formatAmount(spread.value.mul(100), USD_DECIMALS, 2, true)}%
+            </ExchangeInfoRow>
+          )}
+
+          {tokenIn?.prices && (
+            <ExchangeInfoRow label={t`${tokenIn.symbol} Price`}>{formatUsd(tokenIn.prices.minPrice)}</ExchangeInfoRow>
+          )}
+          {tokenOut?.prices && (
+            <ExchangeInfoRow label={t`${tokenOut.symbol} Price`}>{formatUsd(tokenOut.prices.maxPrice)}</ExchangeInfoRow>
+          )}
+        </div>
+      </>
+    );
+  }
+
+  function renderTriggerDecreaseSection() {
+    const { nextPositionValues, sizeDeltaUsd, triggerPrice, triggerPricePrefix } = p.decreasePositionParams || {};
+
+    return (
+      <>
+        <div>
+          {renderMain()}
+
+          {isTrigger && p.existingPosition?.leverage && (
+            <div className="Exchange-leverage-slider-settings">
+              <Checkbox isChecked={p.keepLeverage} setIsChecked={p.setKeepLeverage}>
+                <span className="muted font-sm">
+                  <Trans>Keep leverage at {formatLeverage(p.existingPosition.leverage)} </Trans>
+                </span>
+              </Checkbox>
+            </div>
+          )}
+
+          <ExchangeInfoRow
+            label={p.existingPosition?.sizeInUsd ? t`Size` : t`Decrease size`}
+            value={
+              p.existingPosition?.sizeInUsd ? (
+                <ValueTransition
+                  from={formatUsd(p.existingPosition.sizeInUsd)!}
+                  to={formatUsd(nextPositionValues?.nextSizeUsd)}
+                />
+              ) : sizeDeltaUsd ? (
+                formatUsd(sizeDeltaUsd)
+              ) : (
+                "-"
+              )
+            }
+          />
+
+          {p.existingPosition && (
+            <ExchangeInfoRow
+              label={t`Collateral (${p.existingPosition?.collateralToken?.symbol})`}
+              value={
+                <ValueTransition
+                  from={formatUsd(p.existingPosition.collateralUsd)!}
+                  to={formatUsd(nextPositionValues?.nextCollateralUsd)}
+                />
+              }
+            />
+          )}
+
+          {!p.keepLeverage && p.existingPosition?.leverage && (
+            <ExchangeInfoRow
+              label={t`Leverage`}
+              value={
+                nextPositionValues?.nextSizeUsd?.gt(0) ? (
+                  <ValueTransition
+                    from={formatLeverage(p.existingPosition?.leverage)}
+                    to={formatLeverage(nextPositionValues.nextLeverage) || "-"}
+                  />
+                ) : (
+                  "-"
+                )
+              }
+            />
+          )}
+
+          <ExchangeInfoRow label={t`Mark Price`} value={p.markPrice ? formatUsd(p.markPrice) : "..."} />
+
+          <ExchangeInfoRow
+            label={t`Trigger Price`}
+            value={triggerPrice ? `${triggerPricePrefix}${formatUsd(triggerPrice)}` : "..."}
+          />
+
+          {p.existingPosition && (
+            <ExchangeInfoRow
+              label={t`PnL`}
+              value={
+                <ValueTransition
+                  from={formatPnl(p.existingPosition.pnl, p.existingPosition.pnlPercentage)}
+                  to={formatPnl(BigNumber.from(0), BigNumber.from(0))}
+                />
+              }
+            />
+          )}
+
+          {p.existingPosition && (
+            <ExchangeInfoRow
+              label={t`Liq. Price`}
+              value={
+                nextPositionValues?.nextSizeUsd?.gt(0) ? (
+                  <ValueTransition
+                    from={formatUsd(p.existingPosition.liqPrice)!}
+                    to={formatUsd(nextPositionValues.nextLiqPrice)}
+                  />
+                ) : (
+                  "-"
+                )
+              }
+            />
+          )}
+
+          {receiveToken && receiveAmount && receiveUsd && (
+            <ExchangeInfoRow
+              label={t`Receive`}
+              value={
+                <span>
+                  {formatTokenAmountWithUsd(receiveAmount, receiveUsd, receiveToken?.symbol, receiveToken?.decimals)}
+                </span>
+              }
+            />
+          )}
+        </div>
+      </>
+    );
+  }
+
   return (
     <div className="Confirmation-box">
-      <Modal
-        isVisible={true}
-        setIsVisible={p.onClose}
-        label={isStop ? t`Confirm Trigger Order` : <Trans>Confirm {tradeTypeLabels[p.operationType]}</Trans>}
-        allowContentTouchMove
-      >
-        {!isStop && (
-          <div className={cx("Confirmation-box-main ConfirmationBox-main")}>
-            <div>
-              <Trans>Pay</Trans>&nbsp;{fromTokenText}
-            </div>
-            <div className="Confirmation-box-main-icon"></div>
-            <div>
-              {getReceiveText()}&nbsp;{toTokenText}
-            </div>
-          </div>
-        )}
-
-        {isStop && (
-          <div className={cx("Confirmation-box-main ConfirmationBox-main")}>
-            <Trans>Decrease</Trans>&nbsp;{indexToken?.symbol} {isLong ? t`Long` : t`Short`}
-          </div>
-        )}
-
-        {isSwap && (
+      <Modal isVisible={p.isVisible} setIsVisible={p.onClose} label={getTitle()} allowContentTouchMove>
+        {p.isVisible && (
           <>
-            <InfoRow
-              label={t`Min Receive`}
-              value={formatTokenAmount(p.toTokenAmount, toToken?.decimals, toToken?.symbol)}
-            />
+            {isSwap && renderSwapSection()}
+            {isIncrease && renderIncreaseOrderSection()}
+            {isTrigger && renderTriggerDecreaseSection()}
 
-            {p.swapTriggerRatio?.gt(0) && (
-              <InfoRow label={t`Price`} value={formatAmount(p.swapTriggerRatio, USD_DECIMALS, 4)} />
-            )}
-
-            <InfoRow label={t`${fromToken?.symbol} Price`} value={formatUsd(p.fromTokenPrice)!} />
-            <InfoRow label={t`${toToken?.symbol} Price`} value={formatUsd(p.toTokenPrice)!} />
-          </>
-        )}
-
-        {isPosition && (
-          <>
-            {isStop && p.existingPosition?.leverage && (
-              <div className="Exchange-leverage-slider-settings">
-                <Checkbox isChecked={p.keepLeverage} setIsChecked={p.setKeepLeverage}>
+            {isHighPriceImpact && (
+              <div className="PositionEditor-allow-higher-slippage">
+                <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
                   <span className="muted font-sm">
-                    <Trans>Keep leverage at {formatLeverage(p.existingPosition.leverage)} </Trans>
+                    <Trans>I am aware of the high price impact</Trans>
                   </span>
                 </Checkbox>
               </div>
             )}
 
-            {isPosition && isStop && (
-              <InfoRow
-                className="SwapBox-info-row"
-                label={p.existingPosition?.sizeInUsd ? t`Size` : t`Decrease size`}
-                value={
-                  p.existingPosition?.sizeInUsd ? (
-                    <ValueTransition from={formatUsd(p.existingPosition.sizeInUsd)!} to={formatUsd(p.nextSizeUsd)} />
-                  ) : p.closeSizeUsd ? (
-                    formatUsd(p.closeSizeUsd)
-                  ) : (
-                    "..."
-                  )
-                }
-              />
-            )}
+            <div className="App-card-divider" />
 
-            <InfoRow label={t`Collateral In`} value={getTokenData(tokensData, p.collateralTokenAddress)?.symbol} />
+            <TradeFeesRow
+              totalFees={fees?.totalFees}
+              swapFees={fees?.swapFees}
+              positionFee={fees?.positionFee}
+              positionFeeFactor={fees?.positionFeeFactor}
+              positionPriceImpact={fees?.positionPriceImpact}
+              swapPriceImpact={fees?.swapPriceImpact}
+            />
 
-            {p.existingPosition && (
-              <InfoRow
-                className="SwapBox-info-row"
-                label={t`Collateral (${p.existingPosition?.collateralToken?.symbol})`}
-                value={
-                  <ValueTransition
-                    from={formatUsd(p.existingPosition.collateralUsd)!}
-                    to={formatUsd(p.nextCollateralUsd)}
-                  />
-                }
-              />
-            )}
-
-            {isPosition && !isStop && (
-              <InfoRow
-                className="SwapBox-info-row"
-                label={t`Leverage`}
-                value={
-                  p.existingPosition?.leverage ? (
-                    <ValueTransition
-                      from={formatLeverage(p.existingPosition?.leverage)}
-                      to={p.nextLeverage ? formatLeverage(p.nextLeverage) : "..."}
-                    />
-                  ) : (
-                    formatLeverage(p.nextLeverage)
-                  )
-                }
-              />
-            )}
-
-            {isPosition && isStop && !p.keepLeverage && p.existingPosition?.leverage && (
-              <InfoRow
-                className="SwapBox-info-row"
-                label={t`Leverage`}
-                value={
-                  p.nextSizeUsd?.gt(0) ? (
-                    <ValueTransition
-                      from={formatLeverage(p.existingPosition?.leverage)}
-                      to={p.nextLeverage ? formatLeverage(p.nextLeverage) : "..."}
-                    />
-                  ) : (
-                    "..."
-                  )
-                }
-              />
-            )}
+            {renderExecutionFee()}
 
             <div className="App-card-divider" />
 
-            {/* {showSpread && (
-              <ExchangeInfoRow label={t`Spread`} isWarning={spread.isHigh} isTop={true}>
-                {formatAmount(spread.value.mul(100), USD_DECIMALS, 2, true)}%
-              </ExchangeInfoRow>
-            )} */}
+            {needPayTokenApproval && tokenIn && (
+              <>
+                <div className="App-card-divider" />
 
-            {p.entryPrice && !isLimit && !isStop && <InfoRow label={t`Entry price`} value={formatUsd(p.entryPrice)} />}
-
-            {isPosition && isStop && (
-              <InfoRow
-                className="SwapBox-info-row"
-                label={t`Mark Price`}
-                value={p.markPrice ? formatUsd(p.markPrice) : "..."}
-              />
-            )}
-
-            {isPosition && !isStop && (
-              <InfoRow
-                className="SwapBox-info-row"
-                label={t`Entry Price`}
-                value={p.entryPrice ? formatUsd(p.entryPrice) : "..."}
-              />
-            )}
-
-            {isPosition && isStop && (
-              <InfoRow
-                className="SwapBox-info-row"
-                label={t`Trigger Price`}
-                value={p.triggerPrice ? `${p.triggerPricePrefix}${formatUsd(p.triggerPrice)}` : "..."}
-              />
-            )}
-
-            {isPosition && !isStop && (
-              <InfoRow
-                className="SwapBox-info-row"
-                label={t`Liq. Price`}
-                value={
-                  p.existingPosition?.liqPrice ? (
-                    <ValueTransition
-                      from={formatUsd(p.existingPosition.liqPrice)!}
-                      to={p.nextLiqPrice ? formatUsd(p.nextLiqPrice) : undefined}
+                <div className="ConfirmationBox-approve-tokens">
+                  <div className="ConfirmationBox-approve-token">
+                    <ApproveTokenButton
+                      tokenAddress={tokenIn.address}
+                      tokenSymbol={tokenIn.symbol}
+                      spenderAddress={routerAddress}
                     />
-                  ) : p.nextLiqPrice ? (
-                    formatUsd(p.nextLiqPrice)
-                  ) : (
-                    "..."
-                  )
-                }
-              />
+                  </div>
+                </div>
+
+                <div className="App-card-divider" />
+              </>
             )}
-
-            {isStop && p.existingPosition && (
-              <InfoRow
-                label={t`PnL`}
-                value={
-                  <ValueTransition
-                    from={formatPnl(p.existingPosition.pnl, p.existingPosition.pnlPercentage)}
-                    to={formatPnl(BigNumber.from(0), BigNumber.from(0))}
-                  />
-                }
-              />
-            )}
-
-            {isPosition && isStop && p.existingPosition && (
-              <InfoRow
-                className="SwapBox-info-row"
-                label={t`Liq. Price`}
-                value={
-                  p.nextSizeUsd?.gt(0) ? (
-                    <ValueTransition
-                      from={formatUsd(p.existingPosition.liqPrice)!}
-                      to={p.nextLiqPrice ? formatUsd(p.nextLiqPrice) : undefined}
-                    />
-                  ) : (
-                    "..."
-                  )
-                }
-              />
-            )}
-          </>
-        )}
-
-        <div className="App-card-divider" />
-
-        {/* {decreaseOrdersThatWillBeExecuted.length > 0 && (
-          <div className="PositionEditor-allow-higher-slippage">
-            <Checkbox isChecked={isTriggerWarningAccepted} setIsChecked={setIsTriggerWarningAccepted}>
-              <span className="muted font-sm">
-                <Trans>I am aware of the trigger orders</Trans>
-              </span>
-            </Checkbox>
-          </div>
-        )} */}
-
-        <TradeFees fees={p.fees} />
-
-        <div className="App-card-divider" />
-
-        {isStop && p.receiveToken && p.receiveTokenAmount && p.receiveUsd && (
-          <InfoRow
-            label={t`Receive`}
-            className="Exchange-info-row "
-            value={
-              <span>
-                {formatTokenAmountWithUsd(
-                  p.receiveTokenAmount,
-                  p.receiveUsd,
-                  p.receiveToken?.symbol,
-                  p.receiveToken?.decimals
-                )}
-              </span>
-            }
-          />
-        )}
-
-        {needFromTokenApproval && fromToken && (
-          <>
-            <div className="App-card-divider" />
-
-            <div className="ConfirmationBox-approve-tokens">
-              <div className="ConfirmationBox-approve-token">
-                <ApproveTokenButton
-                  tokenAddress={fromToken.address}
-                  tokenSymbol={fromToken.symbol}
-                  spenderAddress={routerAddress}
-                />
-              </div>
+            <div className="Confirmation-box-row">
+              <SubmitButton onClick={submitButtonState.onClick} disabled={submitButtonState.disabled}>
+                {submitButtonState.text}
+              </SubmitButton>
             </div>
-
-            <div className="App-card-divider" />
           </>
         )}
-        <div className="Confirmation-box-row">
-          <SubmitButton onClick={submitButtonState.onClick} disabled={submitButtonState.disabled}>
-            {submitButtonState.text}
-          </SubmitButton>
-        </div>
       </Modal>
     </div>
   );

@@ -4,16 +4,15 @@ import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
 import { BigNumber, ethers } from "ethers";
 import { callContract } from "lib/contracts";
-import { getAcceptablePriceForPositionOrder, isIncreaseOrder, isSwapOrder } from "./utils";
+import { isSwapOrder } from "./utils";
 import { AggregatedOrderData } from "./types";
 import { convertToContractPrice } from "../tokens";
 
 export type UpdateOrderParams = {
   order: AggregatedOrderData;
-  executionFee: BigNumber;
-  // updates
   sizeDeltaUsd?: BigNumber;
   triggerPrice?: BigNumber;
+  acceptablePrice?: BigNumber;
   minOutputAmount?: BigNumber;
 };
 
@@ -30,7 +29,7 @@ export function updateOrderTxn(chainId: number, library: Web3Provider, p: Update
     if (!p.minOutputAmount) {
       throw new Error("No updates provided");
     }
-    params = [p.order.key, BigNumber.from(0), BigNumber.from(0), BigNumber.from(0)];
+    params = [p.order.key, BigNumber.from(0), BigNumber.from(0), BigNumber.from(0), p.minOutputAmount];
   } else {
     if (!p.sizeDeltaUsd && !p.triggerPrice) {
       throw new Error("No updates provided");
@@ -42,29 +41,20 @@ export function updateOrderTxn(chainId: number, library: Web3Provider, p: Update
       throw new Error("Index token is not available");
     }
 
-    let acceptablePrice = p.order.contractAcceptablePrice;
+    let acceptablePrice = p.acceptablePrice
+      ? convertToContractPrice(p.acceptablePrice, indexToken.decimals)
+      : p.order.contractAcceptablePrice;
 
     const sizeDeltaUsd = p.sizeDeltaUsd || p.order.sizeDeltaUsd;
-
-    if (p.sizeDeltaUsd || p.triggerPrice) {
-      acceptablePrice = getAcceptablePriceForPositionOrder({
-        isIncrease: isIncreaseOrder(p.order.orderType),
-        isLong: p.order.isLong,
-        sizeDeltaUsd: p.sizeDeltaUsd,
-        triggerPrice: p.triggerPrice,
-      });
-      acceptablePrice = convertToContractPrice(acceptablePrice, indexToken.decimals);
-    }
 
     const triggerPrice = p.triggerPrice
       ? convertToContractPrice(p.triggerPrice, indexToken.decimals)
       : p.order.contractTriggerPrice;
 
-    params = [p.order.key, sizeDeltaUsd, acceptablePrice, triggerPrice];
+    params = [p.order.key, sizeDeltaUsd, acceptablePrice, triggerPrice, BigNumber.from(0)];
   }
 
   return callContract(chainId, exchangeRouter, "updateOrder", params, {
-    value: p.executionFee,
     sentMsg: t`Updating order`,
     successMsg: t`Update order canceled`,
     failMsg: t`Failed to update order`,

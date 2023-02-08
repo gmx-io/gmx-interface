@@ -1,36 +1,33 @@
 import { Trans, t } from "@lingui/macro";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import { InfoRow } from "components/InfoRow/InfoRow";
 import Modal from "components/Modal/Modal";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
-import { formatFee, getExecutionFee } from "domain/synthetics/fees";
+import { getMarket, useMarketsData } from "domain/synthetics/markets";
 import {
   AggregatedOrderData,
   OrderType,
   getToTokenFromSwapPath,
   isLimitOrder,
-  isStopMarketOrder,
   isSwapOrder,
+  isTriggerDecreaseOrder,
 } from "domain/synthetics/orders";
-import { getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
-import { useChainId } from "lib/chains";
-import { USD_DECIMALS } from "lib/legacy";
-import { formatAmount, formatTokenAmountWithUsd, formatUsd, parseValue } from "lib/numbers";
-import { useState } from "react";
-import { getMarket, useMarketsData } from "domain/synthetics/markets";
-import { InfoRow } from "components/InfoRow/InfoRow";
-import Tooltip from "components/Tooltip/Tooltip";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import {
   AggregatedPositionData,
   AggregatedPositionsData,
   getPosition,
   getPositionKey,
 } from "domain/synthetics/positions";
+import { TokensRatio, getTokenData, getTokensRatio, useAvailableTokensData } from "domain/synthetics/tokens";
+import { useChainId } from "lib/chains";
+import { USD_DECIMALS } from "lib/legacy";
+import { formatAmount, formatUsd, parseValue } from "lib/numbers";
+import { useMemo, useState } from "react";
 
-import "./OrderEditor.scss";
-import { getNextTokenAmount, useSwapTriggerRatioState } from "../Trade/utils";
-import { updateOrderTxn } from "domain/synthetics/orders/updateOrderTxn";
 import { useWeb3React } from "@web3-react/core";
+import { updateOrderTxn } from "domain/synthetics/orders/updateOrderTxn";
+import { getNextTokenAmount } from "../Trade/utils";
+import "./OrderEditor.scss";
 
 type Props = {
   positionsData: AggregatedPositionsData;
@@ -45,8 +42,6 @@ export function OrderEditor(p: Props) {
   const { tokensData } = useAvailableTokensData(chainId);
   const { marketsData } = useMarketsData(chainId);
 
-  const executionFee = getExecutionFee(tokensData);
-
   const [sizeInputValue, setSizeInputValue] = useState("");
   const sizeDeltaUsd = parseValue(sizeInputValue || "0", USD_DECIMALS);
 
@@ -60,12 +55,23 @@ export function OrderEditor(p: Props) {
   const toToken = getTokenData(tokensData, toTokenAddress);
   const fromTokenPrice = fromToken?.prices?.maxPrice;
   const toTokenPrice = toToken?.prices?.minPrice;
-
-  const swapRatio = useSwapTriggerRatioState({
-    isAllowed: true,
-    fromTokenPrice,
-    toTokenPrice,
+  const [triggerRatioInputValue, setTriggerRatioInputValue] = useState<string>("");
+  const markRatio = getTokensRatio({
+    fromToken,
+    toToken,
   });
+  const triggerRatio = useMemo(() => {
+    if (!markRatio) return undefined;
+
+    const ratio = parseValue(triggerRatioInputValue, USD_DECIMALS);
+
+    return {
+      ratio: ratio?.gt(0) ? ratio : markRatio.ratio,
+      largestAddress: markRatio.largestAddress,
+      smallestAddress: markRatio.smallestAddress,
+    } as TokensRatio;
+  }, [markRatio, triggerRatioInputValue]);
+
   const minOutputAmount =
     isSwap && fromTokenPrice && toTokenPrice
       ? getNextTokenAmount({
@@ -74,8 +80,8 @@ export function OrderEditor(p: Props) {
           fromTokenAmount: p.order.initialCollateralDeltaAmount,
           fromTokenPrice,
           toTokenPrice,
-          swapTriggerRatio: swapRatio?.ratio,
-          isInvertedTriggerRatio: swapRatio?.biggestSide === "to",
+          swapTriggerRatio: triggerRatio?.ratio,
+          isInvertedTriggerRatio: triggerRatio?.largestAddress === "to",
         })
       : undefined;
 
@@ -94,7 +100,7 @@ export function OrderEditor(p: Props) {
 
   function getError() {
     if (isSwapOrder(p.order.orderType)) {
-      if (!swapRatio?.ratio?.gt(0)) {
+      if (!triggerRatio?.ratio?.gt(0)) {
         return t`Enter a ratio`;
       }
 
@@ -129,7 +135,7 @@ export function OrderEditor(p: Props) {
       }
     }
 
-    if (isStopMarketOrder(p.order.orderType)) {
+    if (isTriggerDecreaseOrder(p.order.orderType)) {
       if (!markPrice) {
         return t`Loading...`;
       }
@@ -190,11 +196,10 @@ export function OrderEditor(p: Props) {
   }
 
   function onSubmit() {
-    if (!p.order.triggerPrice || !executionFee?.feeTokenAmount) return;
+    if (!p.order.triggerPrice) return;
 
     updateOrderTxn(chainId, library, {
       order: p.order,
-      executionFee: executionFee?.feeTokenAmount,
       sizeDeltaUsd,
       triggerPrice,
       minOutputAmount,
@@ -215,7 +220,7 @@ export function OrderEditor(p: Props) {
         {!isSwapOrder(p.order.orderType) && (
           <>
             <BuyInputSection
-              topLeftLabel={isStopMarketOrder(p.order.orderType) ? t`Close` : t`Size`}
+              topLeftLabel={isTriggerDecreaseOrder(p.order.orderType) ? t`Close` : t`Size`}
               inputValue={sizeInputValue}
               onInputValueChange={(e) => setSizeInputValue(e.target.value)}
             >
@@ -237,19 +242,19 @@ export function OrderEditor(p: Props) {
 
         {isSwapOrder(p.order.orderType) && (
           <>
-            {swapRatio && (
+            {triggerRatio && (
               <BuyInputSection
                 topLeftLabel={t`Price`}
-                topRightValue={formatAmount(swapRatio.markRatio, USD_DECIMALS, 4)}
+                topRightValue={formatAmount(markRatio?.ratio, USD_DECIMALS, 4)}
                 onClickTopRightLabel={() => {
-                  swapRatio.setInputValue(formatAmount(swapRatio.markRatio, USD_DECIMALS, 10));
+                  setTriggerRatioInputValue(formatAmount(markRatio?.ratio, USD_DECIMALS, 10));
                 }}
-                inputValue={swapRatio.inputValue}
+                inputValue={triggerRatioInputValue}
                 onInputValueChange={(e) => {
-                  swapRatio.setInputValue(e.target.value);
+                  setTriggerRatioInputValue(e.target.value);
                 }}
               >
-                {swapRatio.biggestSide === "from"
+                {triggerRatio.largestAddress === fromToken?.address
                   ? `${toToken?.symbol} per ${fromToken?.symbol}`
                   : `${fromToken?.symbol} per ${toToken?.symbol}`}
               </BuyInputSection>
@@ -259,31 +264,6 @@ export function OrderEditor(p: Props) {
 
         <div className="PositionEditor-info-box">
           {existingPosition?.liqPrice && <InfoRow label={t`Liq. Price`} value={formatUsd(existingPosition.liqPrice)} />}
-          <InfoRow
-            label={<Trans>Fees</Trans>}
-            value={
-              <Tooltip
-                handle={formatFee(executionFee?.feeUsd)}
-                position="right-top"
-                renderContent={() => (
-                  <div>
-                    <StatsTooltipRow
-                      label={t`Execution fee`}
-                      value={
-                        formatTokenAmountWithUsd(
-                          executionFee?.feeTokenAmount,
-                          executionFee?.feeUsd,
-                          executionFee?.feeToken?.symbol,
-                          executionFee?.feeToken?.decimals
-                        ) || "..."
-                      }
-                      showDollar={false}
-                    />
-                  </div>
-                )}
-              />
-            }
-          />
         </div>
 
         <div className="Exchange-swap-button-container">

@@ -69,6 +69,23 @@
   margin-bottom: 0.8rem;
 }
 
+.SwapBox-market-selector-dropdown {
+  .Dropdown-options {
+    min-width: 22rem;
+  }
+}
+
+.TradeBox-acceptable-price-impact {
+  display: flex;
+  cursor: pointer;
+
+  .edit-icon {
+    opacity: 0.7;
+    margin-left: 0.4rem;
+    margin-bottom: -0.3rem;
+  }
+}
+
 @media (max-width: 900px) {
   .SwapBox-content {
     flex-wrap: wrap;

@@ -9,6 +9,7 @@ import {
 import { BigNumber } from "ethers";
 import { t } from "@lingui/macro";
 import { getTokenData, TokenData, TokensData } from "domain/synthetics/tokens";
+import { FeeItem } from "domain/synthetics/fees";
 
 export enum Operation {
   Deposit = "Deposit",
@@ -37,6 +38,12 @@ export type PoolDelta = {
   usdAmount: BigNumber;
   usdDelta: BigNumber;
   poolType: MarketPoolType;
+};
+
+export type GmSwapFees = {
+  totalFees?: FeeItem;
+  swapFee?: FeeItem;
+  swapPriceImpact?: FeeItem;
 };
 
 export function getSubmitError(p: {
