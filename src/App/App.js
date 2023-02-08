@@ -525,7 +525,7 @@ function FullApp() {
                 <Actions />
               </Route>
               <Route exact path="/actions/:account">
-                <Actions />
+                <Actions savedIsPnlInLeverage={savedIsPnlInLeverage} savedShowPnlAfterFees={savedShowPnlAfterFees} />
               </Route>
               <Route exact path="/orders_overview">
                 <OrdersOverview />
