@@ -38,7 +38,7 @@ export function useTokenInput(
     const price = params.priceType === "max" ? token?.prices?.maxPrice : token?.prices?.minPrice;
     const balance = token?.balance;
     const tokenAmount = token ? parseValue(inputValue || "0", token.decimals)! : BigNumber.from(0);
-    const usdAmount = token ? convertToUsd(tokenAmount, token.decimals, price)! : BigNumber.from(0);
+    const usdAmount = convertToUsd(tokenAmount, token?.decimals, price) || BigNumber.from(0);
     const isNotMatchAvailableBalance = balance?.gt(0) && !tokenAmount.eq(balance);
 
     function setValueByTokenAmount(amount?: BigNumber) {

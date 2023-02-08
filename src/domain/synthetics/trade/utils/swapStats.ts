@@ -13,6 +13,7 @@ import { MarketsFeesConfigsData } from "../../fees/types";
 import { getMarketFeesConfig } from "../../fees/utils";
 import { applySwapImpactWithCap, getPriceImpactForSwap } from "../../fees/utils/priceImpact";
 import { MarketEdge, SwapEstimator, SwapPathStats, SwapStats } from "../types";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
 
 export const createSwapEstimator = (
   marketsData: MarketsData,
@@ -30,12 +31,14 @@ export const createSwapEstimator = (
       feeConfigs,
       e.marketAddress,
       e.from,
+      e.to,
       usdIn
     );
 
+    const isOutLiquidity = swapStats?.isOutLiquidity;
     const usdOut = swapStats?.usdOut;
 
-    if (!usdOut) {
+    if (!usdOut || isOutLiquidity) {
       return {
         usdOut: BigNumber.from(0),
       };
@@ -48,6 +51,7 @@ export const createSwapEstimator = (
 };
 
 export function getSwapPathStats(
+  chainId: number,
   marketsData: MarketsData,
   poolsData: MarketsPoolsData,
   openInterestData: MarketsOpenInterestData,
@@ -55,18 +59,28 @@ export function getSwapPathStats(
   feesConfigs: MarketsFeesConfigsData,
   swapPath: string[],
   tokenInAddress: string,
-  usdIn: BigNumber
+  tokenOutAddress: string,
+  usdIn: BigNumber,
+  opts: { disablePriceImpact?: boolean } = {}
 ): SwapPathStats | undefined {
   const swapSteps: SwapStats[] = [];
 
   let usdOut = usdIn;
-  let tokenOutAddress = tokenInAddress;
+  let _tokenInAddress = tokenInAddress;
+  let _tokenOutAddress: string;
 
   let totalSwapPriceImpactDeltaUsd = BigNumber.from(0);
   let totalSwapFeeUsd = BigNumber.from(0);
 
   for (let i = 0; i < swapPath.length; i++) {
     const marketAddress = swapPath[i];
+    const market = getMarket(marketsData, marketAddress);
+
+    if (i < swapPath.length - 1) {
+      _tokenOutAddress = getOppositeCollateral(market, convertTokenAddress(chainId, _tokenInAddress, "wrapped"))!;
+    } else {
+      _tokenOutAddress = tokenOutAddress;
+    }
 
     const swapStep = getSwapStats(
       marketsData,
@@ -75,14 +89,16 @@ export function getSwapPathStats(
       tokensData,
       feesConfigs,
       marketAddress,
-      tokenOutAddress,
-      usdOut
+      _tokenInAddress,
+      _tokenOutAddress,
+      usdOut,
+      opts
     );
 
     if (!swapStep) return undefined;
 
+    _tokenInAddress = swapStep?.tokenOutAddress;
     usdOut = swapStep?.usdOut;
-    tokenOutAddress = swapStep?.tokenOutAddress;
 
     totalSwapPriceImpactDeltaUsd = totalSwapPriceImpactDeltaUsd.add(swapStep.priceImpactDeltaUsd);
     totalSwapFeeUsd = totalSwapFeeUsd.add(swapStep.swapFeeUsd);
@@ -119,15 +135,21 @@ export function getSwapStats(
   feesConfigs: MarketsFeesConfigsData,
   marketAddress: string,
   tokenInAddress: string,
-  usdIn: BigNumber
-) {
+  tokenOutAddress: string,
+  usdIn: BigNumber,
+  opts: {
+    disablePriceImpact?: boolean;
+  } = {}
+): SwapStats | undefined {
+  const { disablePriceImpact = false } = opts;
   const market = getMarket(marketsData, marketAddress);
   const feeConfig = getMarketFeesConfig(feesConfigs, marketAddress);
 
-  const tokenOutAddress = getOppositeCollateral(market, tokenInAddress);
+  const isWrap = tokenInAddress === NATIVE_TOKEN_ADDRESS;
+  const isUnwrap = tokenOutAddress === NATIVE_TOKEN_ADDRESS;
 
-  const tokenIn = getTokenData(tokensData, tokenInAddress);
-  const tokenOut = getTokenData(tokensData, tokenOutAddress);
+  const tokenIn = getTokenData(tokensData, tokenInAddress, "wrapped");
+  const tokenOut = getTokenData(tokensData, tokenOutAddress, "wrapped");
 
   const priceIn = tokenIn?.prices?.minPrice;
   const priceOut = tokenOut?.prices?.maxPrice;
@@ -151,7 +173,7 @@ export function getSwapStats(
     tokensData,
     feesConfigs,
     marketAddress,
-    tokenInAddress,
+    tokenIn.address,
     amountInAfterFees,
     amountOut.mul(-1)
   );
@@ -166,7 +188,7 @@ export function getSwapStats(
       poolsData,
       tokensData,
       marketAddress,
-      tokenOutAddress,
+      tokenOut.address,
       priceImpactDeltaUsd
     );
 
@@ -179,7 +201,7 @@ export function getSwapStats(
       poolsData,
       tokensData,
       marketAddress,
-      tokenInAddress,
+      tokenIn.address,
       priceImpactDeltaUsd
     );
 
@@ -188,22 +210,22 @@ export function getSwapStats(
     cappedImpactDeltaUsd = convertToUsd(negativeImpactAmount, tokenIn.decimals, priceIn)!;
   }
 
-  usdOut = usdOut.add(cappedImpactDeltaUsd);
+  if (!disablePriceImpact) {
+    usdOut = usdOut.add(cappedImpactDeltaUsd);
+  }
+
   amountOut = convertToTokenAmount(usdOut, tokenOut.decimals, priceOut)!;
 
-  // TODO: error?
-  const outLiquidity = getAvailableUsdLiquidityForCollateral(
+  const liquidity = getAvailableUsdLiquidityForCollateral(
     marketsData,
     poolsData,
     openInterestData,
     tokensData,
     marketAddress,
-    tokenOutAddress
+    tokenOut.address
   );
 
-  if (!outLiquidity || outLiquidity.lt(usdOut)) {
-    usdOut = BigNumber.from(0);
-  }
+  const isOutLiquidity = !liquidity || liquidity.lt(usdOut);
 
   const totalFeeDeltaUsd = swapFeeUsd.mul(-1).add(cappedImpactDeltaUsd);
 
@@ -211,13 +233,16 @@ export function getSwapStats(
     swapFeeUsd,
     swapFeeAmount,
     totalFeeDeltaUsd,
+    isWrap,
+    isUnwrap,
     marketAddress: market.marketTokenAddress,
-    tokenInAddress: tokenIn.address,
-    tokenOutAddress: tokenOut.address,
+    tokenInAddress,
+    tokenOutAddress,
     priceImpactDeltaUsd: cappedImpactDeltaUsd,
     amountIn,
     amountInAfterFees,
     amountOut,
     usdOut,
+    isOutLiquidity,
   };
 }

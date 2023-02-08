@@ -19,6 +19,7 @@ type Props = {
   initialCollateralAmount?: BigNumber;
   toSwapTokenAddress?: string;
   sizeDeltaUsd?: BigNumber;
+  isVisible: boolean;
   onClose: () => void;
 };
 
@@ -134,7 +135,7 @@ export function OrderStatus(p: Props) {
   }
 
   useEffect(() => {
-    if (orderKey) return;
+    if (!p.isVisible || orderKey) return;
 
     const matchedPendingOrderStatus = Object.values(orderStatuses).find((orderStatus) => {
       if (
@@ -159,6 +160,7 @@ export function OrderStatus(p: Props) {
     p.initialCollateralAddress,
     p.initialCollateralAmount,
     p.isLong,
+    p.isVisible,
     p.marketAddress,
     p.orderType,
     p.sizeDeltaUsd,
@@ -167,16 +169,19 @@ export function OrderStatus(p: Props) {
 
   return (
     <div className="Confirmation-box">
-      <Modal isVisible={true} setIsVisible={p.onClose} label={t`Order status`} allowContentTouchMove>
-        <div className="Confirmation-box-main">{renderTitle()}</div>
+      <Modal isVisible={p.isVisible} setIsVisible={p.onClose} label={t`Order status`} allowContentTouchMove>
+        {p.isVisible && (
+          <>
+            <div className="Confirmation-box-main">{renderTitle()}</div>
+            {renderCreationStatus()}
+            {renderExecutionStatus()}
 
-        {renderCreationStatus()}
-        {renderExecutionStatus()}
-
-        <div className="App-card-divider" />
-        <SubmitButton onClick={p.onClose} disabled={isProcessing}>
-          {isProcessing ? t`Processing...` : t`Close`}
-        </SubmitButton>
+            <div className="App-card-divider" />
+            <SubmitButton onClick={p.onClose} disabled={isProcessing}>
+              {isProcessing ? t`Processing...` : t`Close`}
+            </SubmitButton>
+          </>
+        )}
       </Modal>
     </div>
   );

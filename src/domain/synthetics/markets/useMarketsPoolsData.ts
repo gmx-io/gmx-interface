@@ -1,11 +1,6 @@
 import DataStore from "abis/DataStore.json";
 import SyntheticsReader from "abis/SyntheticsReader.json";
-import { useMemo } from "react";
 import { getContract } from "config/contracts";
-import { getMarket } from "./utils";
-import { useMulticall } from "lib/multicall";
-import { useMarketsData } from "./useMarketsData";
-import { MarketsPoolsData } from "./types";
 import {
   cumulativeBorrowingFactorKey,
   maxPnlFactorForWithdrawalsKey,
@@ -16,12 +11,18 @@ import {
   swapImpactPoolAmountKey,
   totalBorrowingKey,
 } from "config/dataStore";
+import { useMulticall } from "lib/multicall";
 import { convertToContractPrices, getTokenData, useAvailableTokensData } from "../tokens";
+import { MarketsPoolsData } from "./types";
+import { useMarketsData } from "./useMarketsData";
+import { getMarket } from "./utils";
 
 type MarketPoolsResult = {
   isLoading: boolean;
   poolsData: MarketsPoolsData;
 };
+
+const defaultValue = {};
 
 export function useMarketsPoolsData(chainId: number): MarketPoolsResult {
   const { marketsData } = useMarketsData(chainId);
@@ -29,7 +30,7 @@ export function useMarketsPoolsData(chainId: number): MarketPoolsResult {
 
   const marketAddresses = Object.keys(marketsData);
 
-  const { data, isLoading } = useMulticall(chainId, "useMarketsPools", {
+  const { data = defaultValue, isLoading } = useMulticall(chainId, "useMarketsPools", {
     key: !isTokensLoading && marketAddresses.length > 0 && [marketAddresses.join("-")],
     request: () =>
       marketAddresses.reduce((request, marketAddress) => {
@@ -221,10 +222,8 @@ export function useMarketsPoolsData(chainId: number): MarketPoolsResult {
       }, {} as MarketsPoolsData),
   });
 
-  return useMemo(() => {
-    return {
-      poolsData: data || {},
-      isLoading,
-    };
-  }, [data, isLoading]);
+  return {
+    poolsData: data,
+    isLoading,
+  };
 }

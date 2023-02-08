@@ -15,7 +15,7 @@ import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
   getMarketFeesConfig,
-  getMinExecutionFee,
+  getExecutionFee,
   useGasPrice,
 } from "domain/synthetics/fees";
 import {
@@ -23,7 +23,7 @@ import {
   OrderType,
   createDecreaseOrderTxn,
   createIncreaseOrderTxn,
-  getAcceptbalePrice,
+  getAcceptablePrice,
   getNextCollateralUsdForDecreaseOrder,
 } from "domain/synthetics/orders";
 import {
@@ -51,7 +51,7 @@ import { contractFetcher } from "lib/contracts";
 import { approveTokens } from "domain/tokens";
 
 type Props = {
-  position: AggregatedPositionData;
+  position?: AggregatedPositionData;
   savedIsPnlInLeverage: boolean;
   onClose: () => void;
 };
@@ -80,76 +80,78 @@ export function PositionEditor(p: Props) {
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimitsConfig(chainId);
 
-  const feesConfig = getMarketFeesConfig(marketsFeesConfigs, position.marketAddress);
+  const feesConfig = getMarketFeesConfig(marketsFeesConfigs, position?.marketAddress);
 
   const depositInput = useTokenInput(tokensData, {
     priceType: "min",
-    localStorageKey: [chainId, SYNTHETICS_COLLATERAL_DEPOSIT_TOKEN_KEY, position.marketAddress],
+    localStorageKey: [chainId, SYNTHETICS_COLLATERAL_DEPOSIT_TOKEN_KEY, position?.marketAddress],
   });
 
   const routerAddress = getContract(chainId, "SyntheticsRouter");
   const { data: tokenAllowance } = useSWR<BigNumber>(
-    [active, chainId, position.collateralTokenAddress, "allowance", account, routerAddress],
+    [active, chainId, position?.collateralTokenAddress, "allowance", account, routerAddress],
     {
       fetcher: contractFetcher(library, Token),
     }
   );
 
   const [withdrawUsdInputValue, setWithdrawUsdInputValue] = useState("");
-  const maxWithdrawUsd = position.collateralUsd;
+  const maxWithdrawUsd = position?.collateralUsd;
   const withdrawUsd = parseValue(withdrawUsdInputValue, USD_DECIMALS);
   const withdrawTokenAmount = convertToTokenAmount(
     withdrawUsd,
-    position.collateralToken?.decimals,
-    position.collateralToken?.prices?.maxPrice
+    position?.collateralToken?.decimals,
+    position?.collateralToken?.prices?.maxPrice
   );
 
   const collateralDeltaAmount = isDeposit ? depositInput.tokenAmount : withdrawTokenAmount;
   const collateralDeltaUsd = isDeposit ? depositInput.usdAmount : withdrawUsd;
 
   const nextCollateralUsd = isDeposit
-    ? position.collateralUsd?.add(collateralDeltaUsd || BigNumber.from(0))
+    ? position?.collateralUsd?.add(collateralDeltaUsd || BigNumber.from(0))
     : getNextCollateralUsdForDecreaseOrder({
         sizeDeltaUsd: BigNumber.from(0),
-        collateralUsd: position.collateralUsd,
+        collateralUsd: position?.collateralUsd,
         collateralDeltaUsd,
-        pnl: position.pnl,
+        pnl: position?.pnl,
       });
 
   const nextLeverageExcludingPnl = getLeverage({
-    sizeUsd: position.sizeInUsd,
+    sizeUsd: position?.sizeInUsd,
     collateralUsd: nextCollateralUsd,
-    pendingBorrowingFeesUsd: position.pendingBorrowingFees,
-    pendingFundingFeesUsd: position.pendingFundingFeesUsd,
+    pendingBorrowingFeesUsd: position?.pendingBorrowingFees,
+    pendingFundingFeesUsd: position?.pendingFundingFeesUsd,
   });
 
   const nextLeverage = getLeverage({
-    sizeUsd: position.sizeInUsd,
+    sizeUsd: position?.sizeInUsd,
     collateralUsd: nextCollateralUsd,
-    pendingBorrowingFeesUsd: position.pendingBorrowingFees,
-    pendingFundingFeesUsd: position.pendingFundingFeesUsd,
+    pendingBorrowingFeesUsd: position?.pendingBorrowingFees,
+    pendingFundingFeesUsd: position?.pendingFundingFeesUsd,
     pnl: savedIsPnlInLeverage ? position?.pnl : undefined,
   });
 
   const nextLiqPrice = getLiquidationPrice({
-    sizeUsd: position.sizeInUsd,
+    sizeUsd: position?.sizeInUsd,
     collateralUsd: nextCollateralUsd,
-    averagePrice: position.averagePrice,
-    isLong: position.isLong,
+    averagePrice: position?.averagePrice,
+    isLong: position?.isLong,
     positionFeeFactor: feesConfig?.positionFeeFactor,
   });
 
-  const acceptablePrice = getAcceptbalePrice({
-    isIncrease: isDeposit,
-    isLong: position.isLong,
-    sizeDeltaUsd: BigNumber.from(0),
-    indexPrice: getMarkPrice(position.indexToken?.prices, isDeposit, position.isLong),
-    allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
-  });
+  const { acceptablePrice = undefined } = position
+    ? getAcceptablePrice({
+        isIncrease: isDeposit,
+        isLong: position?.isLong,
+        sizeDeltaUsd: BigNumber.from(0),
+        indexPrice: getMarkPrice(position?.indexToken?.prices, isDeposit, position?.isLong),
+        allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
+      })
+    : {};
 
   // TODO: calculate swap fees
   const shouldSwapPnlToCollateralToken =
-    !isDeposit && position.market && position.pnlToken?.address !== position.collateralToken?.address;
+    !isDeposit && position?.market && position?.pnlToken?.address !== position?.collateralToken?.address;
 
   const needApproval =
     isDeposit && tokenAllowance && depositInput.tokenAmount && depositInput.tokenAmount.gt(tokenAllowance);
@@ -164,7 +166,7 @@ export function PositionEditor(p: Props) {
       estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {});
     }
 
-    return getMinExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice);
+    return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice);
   }, [chainId, gasLimits, gasPrice, isDeposit, tokensData]);
 
   function getError() {
@@ -176,17 +178,17 @@ export function PositionEditor(p: Props) {
       return [t`Amount should be greater than zero`];
     }
 
-    if (!isDeposit && collateralDeltaUsd && position.collateralUsdAfterFees && minCollateralUsd) {
-      if (position.collateralUsdAfterFees.sub(collateralDeltaUsd).lt(minCollateralUsd)) {
+    if (!isDeposit && collateralDeltaUsd && position?.collateralUsdAfterFees && minCollateralUsd) {
+      if (position?.collateralUsdAfterFees.sub(collateralDeltaUsd).lt(minCollateralUsd)) {
         return [t`Min residual collateral: ${formatAmount(minCollateralUsd, USD_DECIMALS, 2)} USD`];
       }
     }
 
-    if (!isDeposit && collateralDeltaUsd && nextLiqPrice && position.markPrice) {
-      if (position.isLong && position.markPrice.lt(nextLiqPrice)) {
+    if (!isDeposit && collateralDeltaUsd && nextLiqPrice && position?.markPrice) {
+      if (position?.isLong && position?.markPrice.lt(nextLiqPrice)) {
         return [t`Invalid liq. price`, ErrorDisplayType.Tooltip, ErrorCode.InvalidLiqPrice];
       }
-      if (!position.isLong && position.markPrice.gt(nextLiqPrice)) {
+      if (!position?.isLong && position?.markPrice.gt(nextLiqPrice)) {
         return [t`Invalid liq. price`, ErrorDisplayType.Tooltip, ErrorCode.InvalidLiqPrice];
       }
     }
@@ -214,19 +216,21 @@ export function PositionEditor(p: Props) {
 
     if (isApproving) {
       return {
-        text: t`Approving ${position.collateralToken?.symbol}...`,
+        text: t`Approving ${position?.collateralToken?.symbol}...`,
         disabled: true,
       };
     }
 
     if (needApproval) {
       return {
-        text: t`Approve ${position.collateralToken?.symbol}`,
+        text: t`Approve ${position?.collateralToken?.symbol}`,
         onClick: () => {
+          if (!position) return;
+
           approveTokens({
             setIsApproving,
             library,
-            tokenAddress: position.collateralTokenAddress,
+            tokenAddress: position?.collateralTokenAddress,
             spender: routerAddress,
             chainId: chainId,
             infoTokens: adaptToInfoTokens(tokensData),
@@ -246,22 +250,20 @@ export function PositionEditor(p: Props) {
   }
 
   function onSubmit() {
-    if (!account || !executionFee?.feeTokenAmount || !acceptablePrice || !position.indexToken) return;
+    if (!account || !executionFee?.feeTokenAmount || !acceptablePrice || !position?.indexToken) return;
 
     if (operation === Operation.Deposit) {
       createIncreaseOrderTxn(chainId, library, {
         account,
-        market: position.marketAddress,
-        indexTokenAddress: position.indexToken.address,
+        marketAddress: position?.marketAddress,
+        indexTokenAddress: position?.indexToken.address,
         swapPath: [],
-        initialCollateralAddress: position.collateralTokenAddress,
+        initialCollateralAddress: position?.collateralTokenAddress,
         initialCollateralAmount: depositInput.tokenAmount,
-        priceImpactDelta: BigNumber.from(1),
-        allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
         acceptablePrice,
         orderType: OrderType.MarketIncrease,
         sizeDeltaUsd: BigNumber.from(0),
-        isLong: position.isLong,
+        isLong: position?.isLong,
         executionFee: executionFee.feeTokenAmount,
         tokensData,
         setPendingPositionUpdate,
@@ -271,18 +273,16 @@ export function PositionEditor(p: Props) {
 
       createDecreaseOrderTxn(chainId, library, {
         account,
-        market: position.marketAddress,
-        indexTokenAddress: position.indexToken.address,
+        marketAddress: position?.marketAddress,
+        indexTokenAddress: position?.indexToken.address,
         swapPath: [],
         initialCollateralDeltaAmount: withdrawTokenAmount,
-        initialCollateralAddress: position.collateralTokenAddress,
-        targetCollateralAddress: position.collateralTokenAddress,
-        receiveTokenAddress: position.collateralTokenAddress,
-        priceImpactDelta: BigNumber.from(0),
+        initialCollateralAddress: position?.collateralTokenAddress,
+        receiveTokenAddress: position?.collateralTokenAddress,
         acceptablePrice,
         sizeDeltaUsd: BigNumber.from(0),
         orderType: OrderType.MarketDecrease,
-        isLong: position.isLong,
+        isLong: position?.isLong,
         executionFee: executionFee.feeTokenAmount,
         decreasePositionSwapType: shouldSwapPnlToCollateralToken
           ? DecreasePositionSwapType.SwapPnlTokenToCollateralToken
@@ -295,13 +295,13 @@ export function PositionEditor(p: Props) {
 
   useEffect(
     function updateInputsByPosition() {
-      if (position.collateralToken?.address) {
-        if (position.collateralToken.address !== depositInput.tokenAddress) {
-          depositInput.setTokenAddress(position.collateralToken.address);
+      if (position?.collateralToken?.address) {
+        if (position?.collateralToken.address !== depositInput.tokenAddress) {
+          depositInput.setTokenAddress(position?.collateralToken.address);
         }
       }
     },
-    [depositInput, position.collateralToken?.address]
+    [depositInput, position?.collateralToken?.address]
   );
 
   const submitButtonState = getSubmitButtonState();
@@ -310,11 +310,11 @@ export function PositionEditor(p: Props) {
     <div className="PositionEditor">
       <Modal
         className="PositionSeller-modal"
-        isVisible={true}
+        isVisible={Boolean(position)}
         setIsVisible={p.onClose}
         label={
           <Trans>
-            Edit {position?.isLong ? t`Long` : t`Short`} {position.indexToken?.symbol}
+            Edit {position?.isLong ? t`Long` : t`Short`} {position?.indexToken?.symbol}
           </Trans>
         }
         allowContentTouchMove
@@ -347,8 +347,8 @@ export function PositionEditor(p: Props) {
             topLeftLabel={t`Withdraw`}
             topLeftValue={formatTokenAmount(
               withdrawTokenAmount,
-              position.collateralToken?.decimals,
-              position.collateralToken?.symbol
+              position?.collateralToken?.decimals,
+              position?.collateralToken?.symbol
             )}
             topRightLabel={t`Max`}
             topRightValue={formatUsd(maxWithdrawUsd)}
@@ -365,16 +365,16 @@ export function PositionEditor(p: Props) {
 
         <div className="PositionEditor-info-box">
           {/* {minExecutionFeeErrorMessage && <div className="Confirmation-box-warning">{minExecutionFeeErrorMessage}</div>} */}
-          <InfoRow label={t`Size`} value={formatUsd(position.sizeInUsd)} />
+          <InfoRow label={t`Size`} value={formatUsd(position?.sizeInUsd)} />
           <InfoRow
-            label={t`Collateral (${position.collateralToken?.symbol})`}
+            label={t`Collateral (${position?.collateralToken?.symbol})`}
             value={
               <ValueTransition
-                from={formatUsd(position.collateralUsdAfterFees) || "..."}
+                from={formatUsd(position?.collateralUsdAfterFees) || "..."}
                 to={
                   nextCollateralUsd &&
-                  position.collateralUsdAfterFees &&
-                  !nextCollateralUsd.eq(position.collateralUsdAfterFees)
+                  position?.collateralUsdAfterFees &&
+                  !nextCollateralUsd.eq(position?.collateralUsdAfterFees)
                     ? formatUsd(nextCollateralUsd)
                     : undefined
                 }
@@ -385,23 +385,23 @@ export function PositionEditor(p: Props) {
             label={t`Leverage`}
             value={
               <ValueTransition
-                from={formatLeverage(position.leverage)}
+                from={formatLeverage(position?.leverage)}
                 to={
-                  position.leverage && nextLeverage && !nextLeverage.eq(position.leverage)
+                  position?.leverage && nextLeverage && !nextLeverage.eq(position?.leverage)
                     ? formatLeverage(nextLeverage)
                     : undefined
                 }
               />
             }
           />
-          <InfoRow label={t`Mark Price`} value={formatUsd(position.markPrice)} />
+          <InfoRow label={t`Mark Price`} value={formatUsd(position?.markPrice)} />
           <InfoRow
             label={t`Liq Price`}
             value={
               <ValueTransition
-                from={formatUsd(position.liqPrice) || "..."}
+                from={formatUsd(position?.liqPrice) || "..."}
                 to={
-                  nextLiqPrice && position.liqPrice && !nextLiqPrice.eq(position.liqPrice)
+                  nextLiqPrice && position?.liqPrice && !nextLiqPrice.eq(position?.liqPrice)
                     ? formatUsd(nextLiqPrice)
                     : undefined
                 }
@@ -409,14 +409,14 @@ export function PositionEditor(p: Props) {
             }
           />
 
-          {position.pendingBorrowingFees?.gt(0) && withdrawUsd?.gt(0) && (
+          {position?.pendingBorrowingFees?.gt(0) && withdrawUsd?.gt(0) && (
             <InfoRow
               label={t`Borrow Fee`}
               value={
                 <Tooltip
                   handle={
                     <ValueTransition
-                      from={formatUsd(position.pendingBorrowingFees) || "..."}
+                      from={formatUsd(position?.pendingBorrowingFees) || "..."}
                       to={formatUsd(BigNumber.from(0))}
                     />
                   }
@@ -427,14 +427,14 @@ export function PositionEditor(p: Props) {
             />
           )}
 
-          {position.pendingFundingFeesUsd?.gt(0) && withdrawUsd?.gt(0) && (
+          {position?.pendingFundingFeesUsd?.gt(0) && withdrawUsd?.gt(0) && (
             <InfoRow
               label={t`Funding Fee`}
               value={
                 <Tooltip
                   handle={
                     <ValueTransition
-                      from={formatUsd(position.pendingFundingFeesUsd) || "..."}
+                      from={formatUsd(position?.pendingFundingFeesUsd) || "..."}
                       to={formatUsd(BigNumber.from(0))}
                     />
                   }

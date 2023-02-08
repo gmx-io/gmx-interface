@@ -21,15 +21,13 @@ type IncreaseOrderParams = {
   account: string;
   executionFee: BigNumber;
   referralCode?: string;
-  market: string;
+  marketAddress: string;
   swapPath: string[];
   initialCollateralAddress: string;
   initialCollateralAmount: BigNumber;
   targetCollateralAddress?: string;
   indexTokenAddress: string;
   triggerPrice?: BigNumber;
-  priceImpactDelta: BigNumber;
-  allowedSlippage: number;
   sizeDeltaUsd: BigNumber;
   acceptablePrice: BigNumber;
   isLong: boolean;
@@ -72,7 +70,7 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
             receiver: p.account,
             initialCollateralToken: convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped"),
             callbackContract: AddressZero,
-            market: p.market,
+            market: p.marketAddress,
             swapPath: p.swapPath,
           },
           numbers: {
@@ -136,7 +134,7 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
       p.setPendingPositionUpdate({
         positionKey: getPositionKey(
           p.account,
-          p.market,
+          p.marketAddress,
           p.targetCollateralAddress || p.initialCollateralAddress,
           p.isLong
         )!,

@@ -101,21 +101,17 @@ export function PositionList(p: Props) {
         </tbody>
       </table>
 
-      {closingPosition && (
-        <PositionSeller
-          savedIsPnlInLeverage={p.savedIsPnlInLeverage}
-          position={closingPosition}
-          onClose={() => setClosingPositionKey(undefined)}
-        />
-      )}
+      <PositionSeller
+        savedIsPnlInLeverage={p.savedIsPnlInLeverage}
+        position={closingPosition}
+        onClose={() => setClosingPositionKey(undefined)}
+      />
 
-      {editingPosition && (
-        <PositionEditor
-          savedIsPnlInLeverage={p.savedIsPnlInLeverage}
-          position={editingPosition}
-          onClose={() => setEditingPositionKey(undefined)}
-        />
-      )}
+      <PositionEditor
+        savedIsPnlInLeverage={p.savedIsPnlInLeverage}
+        position={editingPosition}
+        onClose={() => setEditingPositionKey(undefined)}
+      />
 
       {/* {sharingPosition && (
         <PositionShare

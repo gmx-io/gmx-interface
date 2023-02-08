@@ -20,7 +20,7 @@ import { useTokenInput } from "domain/synthetics/trade";
 import {
   estimateExecuteDepositGasLimit,
   estimateExecuteWithdrawalGasLimit,
-  getMinExecutionFee,
+  getExecutionFee,
   useGasPrice,
 } from "domain/synthetics/fees";
 import { useMarketsData, useMarketsPoolsData, useMarketTokensData } from "domain/synthetics/markets";
@@ -38,7 +38,7 @@ import { SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY } from "config/localStorage";
 
 import { useGasLimitsConfig } from "domain/synthetics/fees/useGasLimitsConfig";
 import "./GmSwapBox.scss";
-import { HIGH_PRICE_IMPACT_BP } from "config/synthetics";
+import { HIGH_PRICE_IMPACT_BPS } from "config/synthetics";
 
 type Props = {
   selectedMarketAddress?: string;
@@ -133,7 +133,7 @@ export function GmSwapBox(p: Props) {
 
   const priceImpact = undefined as any;
 
-  const isHighPriceImpact = priceImpact?.impactUsd.lt(0) && priceImpact?.basisPoints.gte(HIGH_PRICE_IMPACT_BP);
+  const isHighPriceImpact = priceImpact?.impactUsd.lt(0) && priceImpact?.basisPoints.gte(HIGH_PRICE_IMPACT_BPS);
 
   const executionFee = useMemo(() => {
     if (!gasLimits || !gasPrice) return undefined;
@@ -144,11 +144,11 @@ export function GmSwapBox(p: Props) {
         initialShortTokenAmount: shortDelta?.tokenAmount,
       });
 
-      return getMinExecutionFee(chainId, gasLimits, tokensData, estimatedGasLimit, gasPrice);
+      return getExecutionFee(chainId, gasLimits, tokensData, estimatedGasLimit, gasPrice);
     } else {
       const estimatedGasLimit = estimateExecuteWithdrawalGasLimit(gasLimits, {});
 
-      return getMinExecutionFee(chainId, gasLimits, tokensData, estimatedGasLimit, gasPrice);
+      return getExecutionFee(chainId, gasLimits, tokensData, estimatedGasLimit, gasPrice);
     }
   }, [chainId, gasLimits, gasPrice, isDeposit, longDelta?.tokenAmount, shortDelta?.tokenAmount, tokensData]);
 

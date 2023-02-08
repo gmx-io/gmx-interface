@@ -144,7 +144,7 @@ export function formatDeltaUsd(deltaUsd?: BigNumber, percentage?: BigNumber, opt
 
   const sign = deltaUsd.gt(0) ? "+" : "-";
 
-  const percentageStr = percentage ? ` (${formatPercentage(percentage)})` : "";
+  const percentageStr = percentage ? ` (${sign}${formatPercentage(percentage.abs())})` : "";
 
   return `${sign}${formatUsd(deltaUsd.abs())}${percentageStr}`;
 }

@@ -11,7 +11,6 @@ import {
   swapImpactExponentFactorKey,
   swapImpactFactorKey,
 } from "config/dataStore";
-import { useMemo } from "react";
 import { MarketsFeesConfigsData } from "./types";
 import { getContractMarketPrices, useMarketsData } from "../markets";
 import { useAvailableTokensData } from "../tokens";
@@ -23,6 +22,8 @@ type MarketFeesConfigsResult = {
   isLoading: boolean;
 };
 
+const defaultValue = {};
+
 export function useMarketsFeesConfigs(chainId: number): MarketFeesConfigsResult {
   const { marketsData, isLoading: isMarketsLoading } = useMarketsData(chainId);
   const { tokensData, isLoading: isTokensLoading } = useAvailableTokensData(chainId);
@@ -31,7 +32,7 @@ export function useMarketsFeesConfigs(chainId: number): MarketFeesConfigsResult 
 
   const isDataLoaded = !isTokensLoading && !isMarketsLoading && marketsAddresses.length > 0;
 
-  const { data, isLoading } = useMulticall(chainId, "useMarketsFeesConfigs", {
+  const { data = defaultValue, isLoading } = useMulticall(chainId, "useMarketsFeesConfigs", {
     key: isDataLoaded ? [marketsAddresses.join("-")] : undefined,
     request: () =>
       marketsAddresses.reduce((requests, marketAddress) => {
@@ -147,10 +148,8 @@ export function useMarketsFeesConfigs(chainId: number): MarketFeesConfigsResult 
       }, {} as MarketsFeesConfigsData),
   });
 
-  return useMemo(() => {
-    return {
-      marketsFeesConfigs: data || {},
-      isLoading,
-    };
-  }, [data, isLoading]);
+  return {
+    marketsFeesConfigs: data,
+    isLoading,
+  };
 }

@@ -1,4 +1,7 @@
 import { BigNumber } from "ethers";
+import { FeeItem, SwapFeeItem } from "../fees";
+import { TokenData, TokensRatio } from "../tokens";
+import { Market } from "../markets";
 
 export enum TradeType {
   Long = "Long",
@@ -18,9 +21,10 @@ export type SwapAmounts = {
   amountOut: BigNumber;
   usdOut: BigNumber;
   swapPathStats?: SwapPathStats;
+  minOutputAmount: BigNumber;
 };
 
-export type PositionAmounts = {
+export type IncreasePositionAmounts = {
   initialCollateralAmount: BigNumber;
   initialCollateralUsd: BigNumber;
   collateralAmount: BigNumber;
@@ -32,14 +36,68 @@ export type PositionAmounts = {
   swapPathStats?: SwapPathStats;
   positionFeeUsd?: BigNumber;
   positionPriceImpactDeltaUsd?: BigNumber;
+  acceptablePrice: BigNumber;
+  acceptablePriceImpactBps: BigNumber;
+  acceptablePriceAfterSlippage: BigNumber;
+  entryMarkPrice: BigNumber;
+};
+
+export type DecreasePositionAmounts = {
+  sizeDeltaUsd: BigNumber;
+  sizeDeltaInTokens: BigNumber;
+  collateralDeltaUsd: BigNumber;
+  collateralDeltaAmount: BigNumber;
+  receiveTokenAmount?: BigNumber;
+  receiveUsd?: BigNumber;
+  acceptablePrice?: BigNumber;
+};
+
+export type SwapTradeParams = SwapAmounts & {
+  tokenIn: TokenData;
+  tokenOut: TokenData;
+  tokenInPrice: BigNumber;
+  tokenOutPrice: BigNumber;
+  triggerRatio?: TokensRatio;
+  minOutputAmount: BigNumber;
+  fees?: TradeFees;
+};
+
+export type IncreasePositionTradeParams = IncreasePositionAmounts & {
+  initialCollateralToken: TokenData;
+  collateralToken: TokenData;
+  market: Market;
+  entryPrice: BigNumber;
+  isLong: boolean;
+  nextPositionValues?: NextPositionValues;
+  triggerPrice?: BigNumber;
+  fees?: TradeFees;
+};
+
+export type DecreasePositionTradeParams = DecreasePositionAmounts & {
+  market: Market;
+  collateralToken: TokenData;
+  receiveToken: TokenData;
+  nextPositionValues?: NextPositionValues;
+  triggerPricePrefix?: string;
+  triggerPrice?: BigNumber;
+  fees?: TradeFees;
+};
+
+export type NextPositionValues = {
+  nextLeverage?: BigNumber;
+  nextLiqPrice?: BigNumber;
+  nextCollateralUsd?: BigNumber;
+  nextSizeUsd?: BigNumber;
+  nextPnl?: BigNumber;
 };
 
 export type SwapStats = {
   marketAddress: string;
-  // isWrap?: boolean;
-  // isUnwrap?: boolean;
   tokenInAddress: string;
   tokenOutAddress: string;
+  isWrap: boolean;
+  isUnwrap: boolean;
+  isOutLiquidity?: boolean;
   swapFeeAmount: BigNumber;
   swapFeeUsd: BigNumber;
   priceImpactDeltaUsd: BigNumber;
@@ -85,28 +143,11 @@ export type SwapEstimator = (
   usdOut: BigNumber;
 };
 
-// export type IncreaseTradeParams = {
-//   market: Market;
-//   swapPath: string[];
-//   swapFees?: SwapPathStats;
-//   positionFee?: FeeItem;
-//   priceImpact?: FeeItem;
-//   sizeDeltaInTokens: BigNumber;
-//   sizeDeltaUsd: BigNumber;
-//   sizeDeltaAfterFeesInTokens: BigNumber;
-//   sizeDeltaAfterFeesUsd: BigNumber;
-//   collateralAmount: BigNumber;
-//   collateralUsd: BigNumber;
-//   initialCollateralAmount: BigNumber;
-// };
-
-// export type DecreaseTradeParams = {
-//   market: Market;
-//   positionFee?: FeeItem;
-//   priceImpact?: FeeItem;
-//   sizeDeltaUsd: BigNumber;
-//   collateraDeltaUsd: BigNumber;
-//   initialCollateralAmount: BigNumber;
-//   receiveUsd: BigNumber;
-//   isClosing: boolean;
-// };
+export type TradeFees = {
+  totalFees?: FeeItem;
+  swapFees?: SwapFeeItem[];
+  positionFee?: FeeItem;
+  swapPriceImpact?: FeeItem;
+  positionPriceImpact?: FeeItem;
+  positionFeeFactor?: BigNumber;
+};

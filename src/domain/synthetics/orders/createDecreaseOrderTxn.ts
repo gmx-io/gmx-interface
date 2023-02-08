@@ -22,15 +22,13 @@ export type DecreaseOrderParams = {
   executionFee: BigNumber;
   referralCode?: string;
   tokensData: TokensData;
-  market: string;
+  marketAddress: string;
   swapPath: string[];
   initialCollateralAddress: string;
   initialCollateralDeltaAmount: BigNumber;
-  targetCollateralAddress: string;
   indexTokenAddress: string;
   receiveTokenAddress: string;
   triggerPrice?: BigNumber;
-  priceImpactDelta: BigNumber;
   sizeDeltaUsd?: BigNumber;
   isLong: boolean;
   acceptablePrice: BigNumber;
@@ -69,7 +67,7 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
             receiver: p.account,
             initialCollateralToken: convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped"),
             callbackContract: AddressZero,
-            market: p.market,
+            market: p.marketAddress,
             swapPath: p.swapPath,
           },
           numbers: {
@@ -135,12 +133,7 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
   }).then(() => {
     if (isMarketOrder(p.orderType)) {
       p.setPendingPositionUpdate({
-        positionKey: getPositionKey(
-          p.account,
-          p.market,
-          p.targetCollateralAddress || p.initialCollateralAddress,
-          p.isLong
-        )!,
+        positionKey: getPositionKey(p.account, p.marketAddress, p.initialCollateralAddress, p.isLong)!,
         isIncrease: false,
       });
     }

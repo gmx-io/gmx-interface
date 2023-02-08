@@ -19,15 +19,6 @@ export type SwapFeeItem = FeeItem & {
   tokenOutAddress: string;
 };
 
-export type TradeFees = {
-  totalFees?: FeeItem;
-  swapFees?: SwapFeeItem[];
-  executionFee?: ExecutionFee;
-  positionFee?: FeeItem;
-  swapPriceImpact?: FeeItem;
-  positionPriceImpact?: FeeItem;
-};
-
 export type GasLimitsConfig = {
   depositSingleToken: BigNumber;
   depositMultiToken: BigNumber;

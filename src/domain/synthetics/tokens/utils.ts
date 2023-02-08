@@ -93,6 +93,14 @@ export function getAmountByRatio(p: {
   ratio: BigNumber;
   invertRatio?: boolean;
 }) {
+  const isWrap = p.fromToken.isNative && p.toToken.isWrapped;
+  const isUnwrap = p.fromToken.isWrapped && p.toToken.isNative;
+  const isSameToken = p.fromToken.address === p.toToken.address;
+
+  if (isWrap || isUnwrap || isSameToken) {
+    return p.fromTokenAmount;
+  }
+
   const ratio = p.invertRatio ? PRECISION.mul(PRECISION).div(p.ratio) : p.ratio;
 
   const adjustedDecimalsRatio = adjustForDecimals(ratio, p.fromToken.decimals, p.toToken.decimals);

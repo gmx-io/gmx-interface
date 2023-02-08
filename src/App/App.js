@@ -485,7 +485,11 @@ function FullApp() {
               )}
               {isDevelopment() && (
                 <Route exact path="/synthetics">
-                  <SyntheticsPage onConnectWallet={connectWallet} savedIsPnlInLeverage={savedIsPnlInLeverage} />
+                  <SyntheticsPage
+                    onConnectWallet={connectWallet}
+                    savedIsPnlInLeverage={savedIsPnlInLeverage}
+                    shouldDisableValidation={shouldDisableValidationForTesting}
+                  />
                 </Route>
               )}
               <Route exact path="/buy_glp">

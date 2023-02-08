@@ -4,7 +4,7 @@ import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getToken } from "config/tokens";
-import { FeeItem, SwapPathStats } from "domain/synthetics/fees";
+import { FeeItem, SwapFeeItem } from "domain/synthetics/fees";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { BASIS_POINTS_DIVISOR, PRECISION } from "lib/legacy";
@@ -13,7 +13,8 @@ import "./TradeFeesRow.scss";
 
 type Props = {
   totalFees?: FeeItem;
-  swapPathStats?: SwapPathStats;
+  swapFees?: SwapFeeItem[];
+  swapPriceImpact?: FeeItem;
   positionFee?: FeeItem;
   positionPriceImpact?: FeeItem;
   positionFeeFactor?: BigNumber;
@@ -21,6 +22,10 @@ type Props = {
 
 export function TradeFeesRow(p: Props) {
   const { chainId } = useChainId();
+
+  const hasPriceImpactSection = p.swapPriceImpact?.deltaUsd.abs().gt(0) || p.positionPriceImpact?.deltaUsd.abs().gt(0);
+  const shouldBreakSwapSection = Boolean(p.swapFees?.length && hasPriceImpactSection);
+  const shouldBreakPositionFeeSection = Boolean(p.positionFee && (hasPriceImpactSection || p.swapFees?.length));
 
   return (
     <ExchangeInfoRow
@@ -39,7 +44,7 @@ export function TradeFeesRow(p: Props) {
               position="right-top"
               renderContent={() => (
                 <div>
-                  {p.positionPriceImpact && (
+                  {p.positionPriceImpact?.deltaUsd.abs().gt(0) && (
                     <StatsTooltipRow
                       label={t`Price impact`}
                       value={formatDeltaUsd(p.positionPriceImpact.deltaUsd, p.positionPriceImpact.bps)!}
@@ -47,19 +52,19 @@ export function TradeFeesRow(p: Props) {
                     />
                   )}
 
-                  {p.swapPathStats?.totalPriceImpact.deltaUsd.abs().gt(0) && (
+                  {p.swapPriceImpact?.deltaUsd.abs().gt(0) && (
                     <StatsTooltipRow
                       label={t`Swap price impact`}
-                      value={
-                        formatDeltaUsd(p.swapPathStats.totalPriceImpact.deltaUsd, p.swapPathStats.totalPriceImpact.bps)!
-                      }
+                      value={formatDeltaUsd(p.swapPriceImpact.deltaUsd, p.swapPriceImpact.bps)!}
                       showDollar={false}
                     />
                   )}
 
-                  {p.swapPathStats?.swapFees.map((swap) => (
+                  {shouldBreakSwapSection && <br />}
+
+                  {p.swapFees?.map((swap, i) => (
                     <>
-                      <br />
+                      {i > 0 && <br />}
                       <StatsTooltipRow
                         key={`${swap.tokenInAddress}-${swap.tokenOutAddress}`}
                         label={t`Swap ${getToken(chainId, swap.tokenInAddress).symbol} to ${
@@ -71,9 +76,10 @@ export function TradeFeesRow(p: Props) {
                     </>
                   ))}
 
+                  {shouldBreakPositionFeeSection && <br />}
+
                   {p.positionFee && (
                     <>
-                      <br />
                       <StatsTooltipRow
                         label={t`Position Fee (${formatPercentage(
                           p.positionFeeFactor?.div(PRECISION.div(BASIS_POINTS_DIVISOR))

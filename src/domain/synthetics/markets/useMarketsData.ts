@@ -1,7 +1,6 @@
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import { getContract } from "config/contracts";
 import { useMulticall } from "lib/multicall";
-import { useMemo } from "react";
 import { MarketsData } from "./types";
 
 type MarketsDataResult = {
@@ -11,11 +10,13 @@ type MarketsDataResult = {
 
 const DEFAULT_COUNT = 100;
 
+const defaultValue = {};
+
 export function useMarketsData(chainId: number): MarketsDataResult {
   const startIndex = 0;
   const endIndex = DEFAULT_COUNT;
 
-  const { data, isLoading } = useMulticall(chainId, "useMarketsData", {
+  const { data = defaultValue, isLoading } = useMulticall(chainId, "useMarketsData", {
     key: [startIndex, endIndex],
     request: () => ({
       reader: {
@@ -34,6 +35,7 @@ export function useMarketsData(chainId: number): MarketsDataResult {
 
       return markets.reduce((acc: MarketsData, market) => {
         const [marketTokenAddress, indexTokenAddress, longTokenAddress, shortTokenAddress, data] = market;
+
         try {
           acc[marketTokenAddress] = {
             marketTokenAddress,
@@ -53,10 +55,8 @@ export function useMarketsData(chainId: number): MarketsDataResult {
     },
   });
 
-  return useMemo(() => {
-    return {
-      marketsData: data || {},
-      isLoading,
-    };
-  }, [data, isLoading]);
+  return {
+    marketsData: data,
+    isLoading,
+  };
 }

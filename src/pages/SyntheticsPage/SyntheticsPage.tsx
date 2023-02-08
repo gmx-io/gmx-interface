@@ -24,6 +24,7 @@ import "./SyntheticsPage.scss";
 type Props = {
   onConnectWallet: () => void;
   savedIsPnlInLeverage: boolean;
+  shouldDisableValidation: boolean;
 };
 
 enum ListSection {
@@ -181,6 +182,7 @@ export function SyntheticsPage(p: Props) {
               onSelectCollateralAddress={setSelectedCollateralAddress}
               onConnectWallet={p.onConnectWallet}
               savedIsPnlInLeverage={p.savedIsPnlInLeverage}
+              shouldDisableValidation={p.shouldDisableValidation}
               ordersData={aggregatedOrdersData}
             />
           </div>
