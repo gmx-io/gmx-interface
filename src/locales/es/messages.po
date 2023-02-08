@@ -2077,17 +2077,8 @@ msgid "Net Value"
 msgstr "Valor Neto"
 
 #: src/components/Exchange/NetValueTooltip.tsx
-msgid "Net Value: Initial Collateral + PnL - Borrow Fee"
-msgstr ""
-
-#: src/components/Exchange/NetValueTooltip.tsx
 msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Close Fee"
 msgstr ""
-
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-#~ msgid "Net Value: Initial Collateral + PnL - Fees"
-#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
@@ -2157,11 +2148,6 @@ msgstr "Tenga en cuenta que no se garantiza la ejecución de las órdenes.<0/><1
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
 msgstr "Solo letras, números y guiones bajos están permitidos"
-
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-#~ msgid "Open + Close Fees"
-#~ msgstr ""
 
 #: src/components/Exchange/NetValueTooltip.tsx
 msgid "Open Fee"

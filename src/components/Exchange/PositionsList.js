@@ -350,7 +350,7 @@ export default function PositionsList(props) {
                         <Trans>Net Value</Trans>
                       </div>
                       <div>
-                        <NetValueTooltip isMobile position={position} showPnlAfterFees={showPnlAfterFees} />
+                        <NetValueTooltip isMobile position={position} />
                       </div>
                     </div>
                     <div className="App-card-row">
@@ -549,13 +549,7 @@ export default function PositionsList(props) {
                   </div>
                 </td>
                 <td>
-                  <div>
-                    {position.netValue ? (
-                      <NetValueTooltip showPnlAfterFees={showPnlAfterFees} position={position} />
-                    ) : (
-                      t`Opening...`
-                    )}
-                  </div>
+                  <div>{position.netValue ? <NetValueTooltip position={position} /> : t`Opening...`}</div>
 
                   {position.deltaStr && (
                     <div

@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { BigNumberish } from "ethers";
@@ -15,11 +15,10 @@ type Props = {
     closingFee: BigNumberish;
     netValue: BigNumberish;
   };
-  showPnlAfterFees: boolean;
   isMobile?: boolean;
 };
 
-export default function NetValueTooltip({ position, isMobile, showPnlAfterFees }: Props) {
+export default function NetValueTooltip({ position, isMobile }: Props) {
   return (
     <Tooltip
       handle={`$${formatAmount(position.netValue, USD_DECIMALS, 2, true)}`}
@@ -28,9 +27,7 @@ export default function NetValueTooltip({ position, isMobile, showPnlAfterFees }
       renderContent={() => {
         return (
           <>
-            {showPnlAfterFees
-              ? t`Net Value: Initial Collateral + PnL - Borrow Fee - Close Fee`
-              : t`Net Value: Initial Collateral + PnL - Borrow Fee`}
+            <Trans>Net Value: Initial Collateral + PnL - Borrow Fee - Close Fee</Trans>
             <br />
             <br />
             <StatsTooltipRow
