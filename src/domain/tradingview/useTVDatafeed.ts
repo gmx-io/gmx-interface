@@ -2,7 +2,7 @@ import { getTokens } from "config/tokens";
 import { timezoneOffset } from "domain/prices";
 import { useChainId } from "lib/chains";
 import { useMemo, useRef } from "react";
-import { getHistoryBars, getLiveBar } from "./requests";
+import { TVRequests } from "./TVRequests";
 import { supportedResolutions } from "./utils";
 
 const configurationData = {
@@ -18,6 +18,7 @@ export default function useTVDatafeed() {
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>();
   const resetCacheRef = useRef<() => void | undefined>();
   const activeTicker = useRef<string | null>();
+  const tvRequests = useRef(new TVRequests());
 
   return useMemo(() => {
     return {
@@ -61,7 +62,7 @@ export default function useTVDatafeed() {
           }
 
           try {
-            const bars = await getHistoryBars(chainId, ticker, resolution, isStable, countBack);
+            const bars = await tvRequests.current.getHistoryBars(chainId, ticker, resolution, isStable, countBack);
             const filteredBars = bars.filter((bar) => bar.time >= from * 1000 && bar.time < toWithOffset * 1000);
             onHistoryCallback(filteredBars, { noData: filteredBars.length === 0 });
           } catch {
@@ -75,7 +76,7 @@ export default function useTVDatafeed() {
           resetCacheRef.current = onResetCacheNeededCallback;
           if (!isStable) {
             intervalRef.current = setInterval(function () {
-              getLiveBar(chainId, ticker, resolution).then((bar) => {
+              tvRequests.current.getLiveBar(chainId, ticker, resolution).then((bar) => {
                 if (ticker === activeTicker.current) {
                   onRealtimeCallback(bar);
                 }
@@ -88,5 +89,5 @@ export default function useTVDatafeed() {
         },
       },
     };
-  }, [chainId, activeTicker]);
+  }, [chainId]);
 }
