@@ -40,7 +40,7 @@ export function usePositionsConstants(chainId: number): PositionsConstantsResult
   return useMemo(() => {
     return {
       minCollateralUsd: data?.minCollateralUsd,
-      maxLeverage: data?.maxLeverage.gt(0) ? data.maxLeverage : BigNumber.from(MAX_ALLOWED_LEVERAGE),
+      maxLeverage: data?.maxLeverage?.gt(0) ? data.maxLeverage : BigNumber.from(MAX_ALLOWED_LEVERAGE),
       isLoading,
     };
   }, [data, isLoading]);

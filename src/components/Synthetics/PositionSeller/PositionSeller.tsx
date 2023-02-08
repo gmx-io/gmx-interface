@@ -59,6 +59,7 @@ import {
   expandDecimals,
   formatAmount,
   formatDeltaUsd,
+  formatPercentage,
   formatTokenAmountWithUsd,
   formatUsd,
   getBasisPoints,
@@ -80,10 +81,19 @@ import {
 } from "domain/synthetics/markets";
 import { Token } from "domain/tokens";
 import TokenSelector from "components/TokenSelector/TokenSelector";
-import { TradeFees, useAvailableSwapOptions, useSwapRoute } from "domain/synthetics/trade";
+import {
+  DecreasePositionAmounts,
+  TradeFees,
+  getDecreasePositionAmounts,
+  getDisplayedTradeFees,
+  getNextPositionValuesForDecreaseTrade,
+  useAvailableSwapOptions,
+  useSwapRoute,
+} from "domain/synthetics/trade";
 import { useMarketsFeesConfigs } from "domain/synthetics/fees/useMarketsFeesConfigs";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { useGasLimitsConfig } from "domain/synthetics/fees/useGasLimitsConfig";
+import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 
 function isEquivalentTokens(token1: Token, token2: Token) {
   if (token1.address === token2.address) {
@@ -127,38 +137,10 @@ export function PositionSeller(p: Props) {
   }
 
   const { availableSwapTokens } = useAvailableSwapOptions({});
-  const feesConfig = getMarketFeesConfig(marketsFeesConfigs, position?.marketAddress);
 
   const [closeUsdInputValue, setCloseUsdInputValue] = useState("");
   const maxCloseSize = position?.sizeInUsd || BigNumber.from(0);
   const closeSizeUsd = parseValue(closeUsdInputValue || "0", USD_DECIMALS)!;
-
-  const isClosing = closeSizeUsd.gt(0) && maxCloseSize?.sub(closeSizeUsd).lt(DUST_USD);
-
-  const sizeDeltaUsd = isClosing ? maxCloseSize : closeSizeUsd;
-  const nextSizeUsd = position?.sizeInUsd.sub(sizeDeltaUsd || 0);
-
-  const collateralDeltaUsd = getCollateralDeltaUsdForDecreaseOrder({
-    isClosing,
-    keepLeverage,
-    positionCollateralUsd: position?.collateralUsd,
-    positionSizeInUsd: position?.sizeInUsd,
-    sizeDeltaUsd,
-  });
-
-  const collateralDeltaAmount = convertToTokenAmount(
-    collateralDeltaUsd,
-    position?.collateralToken?.decimals,
-    position?.collateralToken?.prices?.maxPrice
-  );
-
-  const nextCollateralUsd = getNextCollateralUsdForDecreaseOrder({
-    isClosing,
-    collateralUsd: position?.collateralUsd,
-    collateralDeltaUsd,
-    sizeDeltaUsd,
-    pnl: position?.pnl,
-  });
 
   const [receiveTokenAddress, setReceiveTokenAddress] = useState<string>();
   const receiveToken = getTokenData(tokensData, receiveTokenAddress);
@@ -168,134 +150,179 @@ export function PositionSeller(p: Props) {
     toTokenAddress: receiveTokenAddress,
   });
 
-  const { swapPath, swapPathStats, receiveTokenMarket } = useMemo(() => {
-    if (!collateralDeltaUsd?.gt(0)) {
-      return {};
-    }
+  const feesConfig = getMarketFeesConfig(marketsFeesConfigs, position?.marketAddress);
 
-    const swapPathStats = findSwapPath(collateralDeltaUsd);
+  const markPrice = getMarkPrice(position?.indexToken?.prices, false, position?.isLong);
 
-    return {
-      swapPathStats,
-      swapPath: swapPathStats?.swapPath,
-      receiveTokenMarket: swapPath ? getMarket(marketsData, swapPath[swapPath.length - 1]) : position?.market,
-    };
-  }, [collateralDeltaUsd, findSwapPath, marketsData, position?.market]);
-
-  const fees = useMemo(() => {
-    if (!collateralDeltaUsd?.gt(0) || !feesConfig || !position) return undefined;
-
-    const priceImpactDeltaUsd = getPriceImpactForPosition(
-      openInterestData,
-      marketsFeesConfigs,
-      position?.marketAddress,
-      sizeDeltaUsd,
-      position?.isLong
-    );
-
-    const positionPriceImpact = priceImpactDeltaUsd
-      ? {
-          deltaUsd: priceImpactDeltaUsd,
-          bps: getBasisPoints(priceImpactDeltaUsd, collateralDeltaUsd),
-        }
-      : undefined;
-
-    const positionFeeUsd = applyFactor(sizeDeltaUsd, feesConfig.positionFeeFactor);
-
-    const positionFee = positionFeeUsd
-      ? { deltaUsd: positionFeeUsd.mul(-1), bps: getBasisPoints(positionFeeUsd, collateralDeltaUsd) }
-      : undefined;
-
-    return {
-      totalFees: getTotalFeeItem(
-        [swapPathStats?.totalFees, positionFee, positionPriceImpact].filter(Boolean) as FeeItem[]
-      ),
-      positionFee,
-      positionPriceImpact,
-      swapFees: swapPathStats,
-    } as TradeFees;
-  }, [collateralDeltaUsd, feesConfig, marketsFeesConfigs, openInterestData, position, sizeDeltaUsd, swapPathStats]);
-
-  const { acceptablePrice = undefined } = position
-    ? getAcceptablePrice({
-        isIncrease: false,
-        isLong: p.position?.isLong,
-        indexPrice: getMarkPrice(p.position?.indexToken?.prices, false, position.isLong),
-        sizeDeltaUsd,
-        priceImpactDeltaUsd: fees?.positionPriceImpact?.deltaUsd,
-        allowedSlippage,
-      })
-    : {};
-
-  const collateralOutAmount = getCollateralOutForDecreaseOrder({
-    position,
-    indexToken: position?.indexToken,
-    collateralToken: position?.collateralToken,
-    sizeDeltaUsd,
-    collateralDeltaAmount: collateralDeltaAmount || BigNumber.from(0),
-    pnlToken: position?.pnlToken,
-    feesUsd:
-      position?.pendingBorrowingFees
-        .add(position?.pendingFundingFeesUsd || 0)
-        .add(fees?.positionFee?.deltaUsd.abs() || 0) || BigNumber.from(0),
-    priceImpactUsd: fees?.positionPriceImpact?.deltaUsd || BigNumber.from(0),
-  });
-
-  const receiveUsd = convertToUsd(
-    collateralOutAmount,
-    position?.collateralToken?.decimals,
-    position?.collateralToken?.prices?.maxPrice
-  );
-
-  const receiveTokenAmount = convertToTokenAmount(receiveUsd, receiveToken?.decimals, receiveToken?.prices?.maxPrice);
-
-  const receiveTokenLiquidity = getAvailableUsdLiquidityForCollateral(
+  const decreaseAmounts = getDecreasePositionAmounts({
     marketsData,
     poolsData,
-    openInterestData,
     tokensData,
-    receiveTokenMarket?.marketTokenAddress,
-    receiveToken?.address ? convertTokenAddress(chainId, receiveToken.address, "wrapped") : undefined
-  );
+    openInterestData,
+    feesConfigs: marketsFeesConfigs,
+    market: position?.market,
+    collateralToken: position?.collateralToken,
+    receiveToken: receiveToken,
+    existingPosition: position,
+    sizeDeltaUsd: closeSizeUsd,
+    keepLeverage,
+    showPnlInLeverage: true,
+    allowedSlippage,
+    isLong: position?.isLong,
+  });
 
-  const isSwapReceiveToken =
-    receiveToken && position?.collateralToken && !isEquivalentTokens(receiveToken, position?.collateralToken);
-
-  const isNotEnoughReceiveTokenLiquidity = isSwapReceiveToken ? receiveTokenLiquidity?.lt(receiveUsd || 0) : false;
+  console.log("d", {
+    decreaseAmounts,
+    receiveToken,
+    position,
+  });
 
   const shouldSwapPnlToCollateralToken =
     !p.position?.market && p.position?.pnlToken?.address !== p.position?.collateralToken?.address;
 
-  const nextLiqPrice =
-    nextSizeUsd?.gt(0) && !keepLeverage
-      ? getLiquidationPrice({
-          sizeUsd: nextSizeUsd,
-          collateralUsd: nextCollateralUsd,
-          indexPrice: position?.averagePrice,
-          isLong: position?.isLong,
-        })
-      : undefined;
+  const nextPositionValues = getNextPositionValuesForDecreaseTrade({
+    feesConfig,
+    existingPosition: position,
+    sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
+    pnlDelta: decreaseAmounts?.pnlDelta,
+    collateralDeltaUsd: decreaseAmounts?.collateralDeltaUsd,
+    exitMarkPrice: decreaseAmounts?.exitMarkPrice,
+    showPnlInLeverage: true,
+    isLong: position?.isLong,
+    maxLeverage,
+  });
 
-  const nextPnl = position?.pnl;
+  const fees = getDisplayedTradeFees({
+    feesConfig,
+    initialCollateralUsd: decreaseAmounts?.receiveUsd,
+    positionFeeUsd: decreaseAmounts?.positionFeeUsd,
+  });
 
-  const nextLeverage =
-    nextSizeUsd?.gt(0) && !keepLeverage
-      ? getLeverage({
-          sizeUsd: nextSizeUsd,
-          collateralUsd: nextCollateralUsd,
-          pnl: p.savedIsPnlInLeverage ? nextPnl : undefined,
-        })
-      : undefined;
+  // const { swapPath, swapPathStats, receiveTokenMarket } = useMemo(() => {
+  //   if (!collateralDeltaUsd?.gt(0)) {
+  //     return {};
+  //   }
+
+  //   const swapPathStats = findSwapPath(collateralDeltaUsd);
+
+  //   return {
+  //     swapPathStats,
+  //     swapPath: swapPathStats?.swapPath,
+  //     receiveTokenMarket: swapPath ? getMarket(marketsData, swapPath[swapPath.length - 1]) : position?.market,
+  //   };
+  // }, [collateralDeltaUsd, findSwapPath, marketsData, position?.market]);
+
+  // const fees = useMemo(() => {
+  //   if (!collateralDeltaUsd?.gt(0) || !feesConfig || !position) return undefined;
+
+  //   const priceImpactDeltaUsd = getPriceImpactForPosition(
+  //     openInterestData,
+  //     marketsFeesConfigs,
+  //     position?.marketAddress,
+  //     sizeDeltaUsd,
+  //     position?.isLong
+  //   );
+
+  //   const positionPriceImpact = priceImpactDeltaUsd
+  //     ? {
+  //         deltaUsd: priceImpactDeltaUsd,
+  //         bps: getBasisPoints(priceImpactDeltaUsd, collateralDeltaUsd),
+  //       }
+  //     : undefined;
+
+  //   const positionFeeUsd = applyFactor(sizeDeltaUsd, feesConfig.positionFeeFactor);
+
+  //   const positionFee = positionFeeUsd
+  //     ? { deltaUsd: positionFeeUsd.mul(-1), bps: getBasisPoints(positionFeeUsd, collateralDeltaUsd) }
+  //     : undefined;
+
+  //   return {
+  //     totalFees: getTotalFeeItem(
+  //       [swapPathStats?.totalFees, positionFee, positionPriceImpact].filter(Boolean) as FeeItem[]
+  //     ),
+  //     positionFee,
+  //     positionPriceImpact,
+  //     swapFees: swapPathStats,
+  //   } as TradeFees;
+  // }, [collateralDeltaUsd, feesConfig, marketsFeesConfigs, openInterestData, position, sizeDeltaUsd, swapPathStats]);
+
+  // const { acceptablePrice = undefined } = position
+  //   ? getAcceptablePrice({
+  //       isIncrease: false,
+  //       isLong: p.position?.isLong,
+  //       indexPrice: getMarkPrice(p.position?.indexToken?.prices, false, position.isLong),
+  //       sizeDeltaUsd,
+  //       priceImpactDeltaUsd: fees?.positionPriceImpact?.deltaUsd,
+  //       allowedSlippage,
+  //     })
+  //   : {};
+
+  // const collateralOutAmount = getCollateralOutForDecreaseOrder({
+  //   position,
+  //   indexToken: position?.indexToken,
+  //   collateralToken: position?.collateralToken,
+  //   sizeDeltaUsd,
+  //   collateralDeltaAmount: collateralDeltaAmount || BigNumber.from(0),
+  //   pnlToken: position?.pnlToken,
+  //   feesUsd:
+  //     position?.pendingBorrowingFees
+  //       .add(position?.pendingFundingFeesUsd || 0)
+  //       .add(fees?.positionFee?.deltaUsd.abs() || 0) || BigNumber.from(0),
+  //   priceImpactUsd: fees?.positionPriceImpact?.deltaUsd || BigNumber.from(0),
+  // });
+
+  // const receiveUsd = convertToUsd(
+  //   collateralOutAmount,
+  //   position?.collateralToken?.decimals,
+  //   position?.collateralToken?.prices?.maxPrice
+  // );
+
+  // const receiveTokenAmount = convertToTokenAmount(receiveUsd, receiveToken?.decimals, receiveToken?.prices?.maxPrice);
+
+  // const receiveTokenLiquidity = getAvailableUsdLiquidityForCollateral(
+  //   marketsData,
+  //   poolsData,
+  //   openInterestData,
+  //   tokensData,
+  //   receiveTokenMarket?.marketTokenAddress,
+  //   receiveToken?.address ? convertTokenAddress(chainId, receiveToken.address, "wrapped") : undefined
+  // );
+
+  // const isSwapReceiveToken =
+  //   receiveToken && position?.collateralToken && !isEquivalentTokens(receiveToken, position?.collateralToken);
+
+  // const isNotEnoughReceiveTokenLiquidity = isSwapReceiveToken ? receiveTokenLiquidity?.lt(receiveUsd || 0) : false;
+
+  // const nextLiqPrice =
+  //   nextSizeUsd?.gt(0) && !keepLeverage
+  //     ? getLiquidationPrice({
+  //         sizeUsd: nextSizeUsd,
+  //         collateralUsd: nextCollateralUsd,
+  //         indexPrice: position?.averagePrice,
+  //         isLong: position?.isLong,
+  //       })
+  //     : undefined;
+
+  // const nextPnl = position?.pnl;
+
+  // const nextLeverage =
+  //   nextSizeUsd?.gt(0) && !keepLeverage
+  //     ? getLeverage({
+  //         sizeUsd: nextSizeUsd,
+  //         collateralUsd: nextCollateralUsd,
+  //         pnl: p.savedIsPnlInLeverage ? nextPnl : undefined,
+  //       })
+  //     : undefined;
 
   const executionFee = useMemo(() => {
     if (!gasLimits || !gasPrice) return undefined;
 
     const estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {
-      swapPath,
+      swapPath: [],
     });
 
     return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice);
-  }, [chainId, gasLimits, gasPrice, swapPath, tokensData]);
+  }, [chainId, gasLimits, gasPrice, tokensData]);
 
   useEffect(() => {
     if (!receiveTokenAddress && position?.collateralToken?.address) {
@@ -319,19 +346,19 @@ export function PositionSeller(p: Props) {
       return [t`Max close amount exceeded`];
     }
 
-    if (nextLeverage && nextLeverage.gt(maxLeverage || MAX_ALLOWED_LEVERAGE)) {
+    if (nextPositionValues?.nextLeverage && nextPositionValues.nextLeverage.gt(maxLeverage || MAX_ALLOWED_LEVERAGE)) {
       const maxValue = Number(maxLeverage) || MAX_ALLOWED_LEVERAGE;
       return [t`Max leverage: ${(maxValue / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
     }
 
-    if (!isClosing && position?.sizeInUsd && closeSizeUsd) {
+    if (!decreaseAmounts?.isClosing && position?.sizeInUsd && closeSizeUsd) {
       if (position?.sizeInUsd.sub(closeSizeUsd).lt(expandDecimals(10, USD_DECIMALS))) {
         return [t`Leftover position below 10 USD`];
       }
 
       const minCollateral = minCollateralUsd || expandDecimals(5, USD_DECIMALS);
 
-      if (nextCollateralUsd && nextCollateralUsd.lt(minCollateral)) {
+      if (nextPositionValues?.nextCollateralUsd && nextPositionValues.nextCollateralUsd.lt(minCollateral)) {
         return [t`Leftover collateral below ${formatAmount(minCollateral, USD_DECIMALS, 2)} USD`];
       }
     }
@@ -344,11 +371,11 @@ export function PositionSeller(p: Props) {
 
     const needSwap = collateralAddress && receiveAddress && collateralAddress !== receiveAddress;
 
-    if (needSwap) {
-      if (isNotEnoughReceiveTokenLiquidity) {
-        return [t`Insufficient receive token liquidity`];
-      }
-    }
+    // if (needSwap) {
+    //   if (isNotEnoughReceiveTokenLiquidity) {
+    //     return [t`Insufficient receive token liquidity`];
+    //   }
+    // }
 
     return [false];
   }
@@ -377,23 +404,25 @@ export function PositionSeller(p: Props) {
       !executionFee?.feeTokenAmount ||
       !position?.currentValueUsd ||
       !receiveToken?.address ||
-      !acceptablePrice
-    )
+      !decreaseAmounts
+    ) {
       return;
+    }
 
     createDecreaseOrderTxn(chainId, library, {
       account,
       marketAddress: position?.marketAddress,
       indexTokenAddress: position?.indexToken.address,
-      swapPath: swapPath || [],
-      initialCollateralDeltaAmount: collateralDeltaAmount || BigNumber.from(0),
+      // swapPath: swapPath || [],
+      swapPath: [],
+      initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount || BigNumber.from(0),
       initialCollateralAddress: position?.collateralTokenAddress,
       receiveTokenAddress: position?.collateralTokenAddress,
-      sizeDeltaUsd,
+      sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
       orderType: OrderType.MarketDecrease,
       isLong: position?.isLong,
       executionFee: executionFee.feeTokenAmount,
-      acceptablePrice,
+      acceptablePrice: decreaseAmounts.acceptablePrice,
       decreasePositionSwapType: shouldSwapPnlToCollateralToken
         ? DecreasePositionSwapType.SwapPnlTokenToCollateralToken
         : DecreasePositionSwapType.NoSwap,
@@ -402,13 +431,19 @@ export function PositionSeller(p: Props) {
     }).then(() => setIsProcessing(true));
   }
 
-  if (!position) {
-    return null;
-  }
-
   const submitButtonState = getSubmitButtonState();
 
   const isVisible = Boolean(position);
+
+  useEffect(
+    function initReceiveToken() {
+      if (!receiveTokenAddress && position?.collateralToken?.address) {
+        const convertedAddress = convertTokenAddress(chainId, position?.collateralToken.address, "native");
+        setReceiveTokenAddress(convertedAddress);
+      }
+    },
+    [chainId, position?.collateralToken?.address, receiveTokenAddress]
+  );
 
   return (
     <>
@@ -476,35 +511,35 @@ export function PositionSeller(p: Props) {
                       />
                     </ExchangeInfoRow>
                   </div>
-                  <InfoRow label={t`Mark Price`} value={formatUsd(position?.markPrice)} />
+                  <InfoRow label={t`Mark Price`} value={formatUsd(markPrice)} />
                   <InfoRow label={t`Entry Price`} value={formatUsd(position?.entryPrice)} />
-                  <InfoRow label={t`Acceptable Price`} value={formatUsd(acceptablePrice)} />
+                  <InfoRow label={t`Acceptable Price`} value={formatUsd(decreaseAmounts?.acceptablePrice)} />
                   <InfoRow
                     label={t`Price impact`}
-                    value={formatDeltaUsd(fees?.positionPriceImpact?.deltaUsd, fees?.positionPriceImpact?.bps) || "-"}
+                    value={formatPercentage(decreaseAmounts?.acceptablePriceImpactBps) || "-"}
                   />
                   <InfoRow
-                    label={t`Liq Price`}
+                    className="SwapBox-info-row"
+                    label={t`Liq. Price`}
                     value={
-                      nextSizeUsd?.gt(0) && position?.liqPrice ? (
-                        <ValueTransition
-                          from={formatUsd(position?.liqPrice)!}
-                          to={
-                            nextLiqPrice && !nextLiqPrice.eq(position?.liqPrice) ? formatUsd(nextLiqPrice) : undefined
-                          }
-                        />
-                      ) : (
+                      decreaseAmounts?.isClosing ? (
                         "-"
+                      ) : (
+                        <ValueTransition
+                          from={formatUsd(position.liqPrice)!}
+                          to={formatUsd(nextPositionValues?.nextLiqPrice)}
+                        />
                       )
                     }
                   />
+
                   <div className="App-card-divider" />
                   <InfoRow
                     label={t`Size`}
                     value={
                       <ValueTransition
                         from={formatUsd(position?.sizeInUsd)!}
-                        to={nextSizeUsd && !nextSizeUsd.eq(position?.sizeInUsd) ? formatUsd(nextSizeUsd) : undefined}
+                        to={formatUsd(nextPositionValues?.nextSizeUsd)}
                       />
                     }
                   />
@@ -513,11 +548,7 @@ export function PositionSeller(p: Props) {
                     value={
                       <ValueTransition
                         from={formatUsd(position?.collateralUsd)!}
-                        to={
-                          nextCollateralUsd && position?.collateralUsd && !nextCollateralUsd.eq(position?.collateralUsd)
-                            ? formatUsd(nextCollateralUsd)
-                            : undefined
-                        }
+                        to={formatUsd(nextPositionValues?.nextCollateralUsd)}
                       />
                     }
                   />
@@ -525,17 +556,13 @@ export function PositionSeller(p: Props) {
                     <InfoRow
                       label={t`Leverage`}
                       value={
-                        nextSizeUsd?.gt(0) && position?.leverage ? (
-                          <ValueTransition
-                            from={formatLeverage(position?.leverage)}
-                            to={
-                              nextLeverage && !nextLeverage.eq(position?.leverage)
-                                ? formatLeverage(nextLeverage)
-                                : undefined
-                            }
-                          />
-                        ) : (
+                        decreaseAmounts?.isClosing ? (
                           "-"
+                        ) : (
+                          <ValueTransition
+                            from={formatLeverage(position.leverage)}
+                            to={formatLeverage(nextPositionValues?.nextLeverage)}
+                          />
                         )
                       }
                     />
@@ -546,13 +573,13 @@ export function PositionSeller(p: Props) {
                     value={position?.pnl ? formatPnl(position?.pnl, position?.pnlPercentage) : "..."}
                   />
 
-                  {/* <TradeFeesRow
-                swapPathStats={swapPathStats}
-                totalFees={fees?.totalFees}
-                positionFee={fees?.positionFee}
-                positionPriceImpact={fees?.positionPriceImpact}
-                positionFeeFactor={feesConfig?.positionFeeFactor}
-              /> */}
+                  <TradeFeesRow
+                    // swapPathStats={swapPathStats}
+                    totalFees={fees?.totalFees}
+                    positionFee={fees?.positionFee}
+                    positionPriceImpact={fees?.positionPriceImpact}
+                    positionFeeFactor={feesConfig?.positionFeeFactor}
+                  />
 
                   <InfoRow
                     label={t`Execution Fee`}
@@ -573,7 +600,7 @@ export function PositionSeller(p: Props) {
                         <TokenSelector
                           label={t`Receive`}
                           className={cx("PositionSeller-token-selector", {
-                            warning: isNotEnoughReceiveTokenLiquidity,
+                            // warning: isNotEnoughReceiveTokenLiquidity,
                           })}
                           chainId={chainId}
                           showBalances={false}
@@ -586,8 +613,8 @@ export function PositionSeller(p: Props) {
                           selectedTokenLabel={
                             <span className="PositionSelector-selected-receive-token">
                               {formatTokenAmountWithUsd(
-                                receiveTokenAmount,
-                                receiveUsd,
+                                decreaseAmounts?.receiveTokenAmount,
+                                decreaseAmounts?.receiveUsd,
                                 receiveToken?.symbol,
                                 receiveToken?.decimals
                               )}
@@ -614,8 +641,8 @@ export function PositionSeller(p: Props) {
         orderType={OrderType.MarketDecrease}
         marketAddress={position?.marketAddress}
         initialCollateralAddress={position?.collateralTokenAddress}
-        initialCollateralAmount={collateralDeltaAmount}
-        sizeDeltaUsd={sizeDeltaUsd}
+        initialCollateralAmount={decreaseAmounts?.collateralDeltaAmount}
+        sizeDeltaUsd={decreaseAmounts?.sizeDeltaUsd}
         isLong={position?.isLong}
         onClose={p.onClose}
       />

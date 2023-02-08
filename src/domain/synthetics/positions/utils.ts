@@ -215,7 +215,7 @@ export function getPriceForPnl(tokenPrices?: TokenPrices, isLong?: boolean, maxi
   return maximize ? tokenPrices.minPrice : tokenPrices.maxPrice;
 }
 
-export function getMarkPrice(prices: TokenPrices | undefined, isIncrease: boolean, isLong: boolean) {
+export function getMarkPrice(prices?: TokenPrices, isIncrease?: boolean, isLong?: boolean) {
   const shouldUseMaxPrice = isIncrease ? isLong : !isLong;
 
   return shouldUseMaxPrice ? prices?.maxPrice : prices?.minPrice;

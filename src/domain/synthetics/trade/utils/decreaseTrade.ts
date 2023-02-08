@@ -77,9 +77,9 @@ export function getDecreasePositionAmounts(p: {
   tokensData: TokensData;
   openInterestData: MarketsOpenInterestData;
   feesConfigs: MarketsFeesConfigsData;
-  market: Market;
-  collateralToken: TokenData;
-  receiveToken: TokenData;
+  market?: Market;
+  collateralToken?: TokenData;
+  receiveToken?: TokenData;
   existingPosition?: AggregatedPositionData;
   sizeDeltaUsd?: BigNumber;
   triggerPrice?: BigNumber;
@@ -90,7 +90,7 @@ export function getDecreasePositionAmounts(p: {
   acceptablePriceImpactBps?: BigNumber;
   isLong?: boolean;
 }): DecreasePositionAmounts | undefined {
-  const indexToken = getTokenData(p.tokensData, p.market.indexTokenAddress);
+  const indexToken = getTokenData(p.tokensData, p.market?.indexTokenAddress);
   const markPrice = getMarkPrice(indexToken?.prices, false, p.isLong);
   const exitMarkPrice = p.isTrigger && p.triggerPrice ? p.triggerPrice : markPrice;
 
@@ -107,8 +107,8 @@ export function getDecreasePositionAmounts(p: {
     !p.sizeDeltaUsd ||
     !exitMarkPrice ||
     !indexToken ||
-    !p.collateralToken.prices ||
-    !p.receiveToken.prices ||
+    !p.collateralToken?.prices ||
+    !p.receiveToken?.prices ||
     !p.sizeDeltaUsd.gt(0) ||
     typeof p.isLong === "undefined"
   ) {
@@ -123,11 +123,11 @@ export function getDecreasePositionAmounts(p: {
   }
   const sizeDeltaInTokens = convertToTokenAmount(sizeDeltaUsd, indexToken.decimals, exitMarkPrice)!;
 
-  const positionFeeUsd = getPositionFee(p.feesConfigs, p.market.marketTokenAddress, sizeDeltaUsd);
+  const positionFeeUsd = getPositionFee(p.feesConfigs, p.market?.marketTokenAddress, sizeDeltaUsd);
   const positionPriceImpactDeltaUsd = getPriceImpactForPosition(
     p.openInterestData,
     p.feesConfigs,
-    p.market.marketTokenAddress,
+    p.market?.marketTokenAddress,
     p.sizeDeltaUsd,
     p.isLong
   );

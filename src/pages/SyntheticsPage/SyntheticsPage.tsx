@@ -20,6 +20,8 @@ import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/local
 import { useMemo, useState } from "react";
 
 import "./SyntheticsPage.scss";
+import PositionSeller from "components/Exchange/PositionSeller";
+import PositionEditor from "components/Exchange/PositionEditor";
 
 type Props = {
   onConnectWallet: () => void;
@@ -50,6 +52,9 @@ export function SyntheticsPage(p: Props) {
     TradeType.Long
   );
 
+  const [closingPositionKey, setClosingPositionKey] = useState<string>();
+  const [editingPositionKey, setEditingPositionKey] = useState<string>();
+
   const [selectedOrdersKeys, setSelectedOrdersKeys] = useState<{ [key: string]: boolean }>({});
   const [isCancelOrdersProcessig, setIsCancelOrdersProcessig] = useState(false);
 
@@ -72,6 +77,9 @@ export function SyntheticsPage(p: Props) {
     );
     return getPosition(aggregatedPositionsData, positionKey);
   }, [account, aggregatedPositionsData, selectedCollateralAddress, selectedMarketAddress, selectedTradeType]);
+
+  const closingPosition = getPosition(aggregatedPositionsData, closingPositionKey);
+  const editingPosition = getPosition(aggregatedPositionsData, editingPositionKey);
 
   function onCancelOrdersClick() {
     setIsCancelOrdersProcessig(true);
@@ -156,6 +164,8 @@ export function SyntheticsPage(p: Props) {
                 savedIsPnlInLeverage={p.savedIsPnlInLeverage}
                 onOrdersClick={() => setListSection(ListSection.Orders)}
                 onSelectPositionClick={onSelectPosition}
+                onClosePositionClick={setClosingPositionKey}
+                onEditCollateralClick={setEditingPositionKey}
               />
             )}
             {listSection === ListSection.Orders && (
@@ -207,6 +217,8 @@ export function SyntheticsPage(p: Props) {
               isLoading={isPositionsLoading}
               onOrdersClick={() => setListSection(ListSection.Orders)}
               onSelectPositionClick={onSelectPosition}
+              onClosePositionClick={setClosingPositionKey}
+              onEditCollateralClick={setEditingPositionKey}
             />
           )}
           {listSection === ListSection.Orders && (
@@ -220,6 +232,28 @@ export function SyntheticsPage(p: Props) {
           )}
         </div>
       </div>
+
+      {/* <PositionSeller
+            savedIsPnlInLeverage={p.savedIsPnlInLeverage}
+            position={closingPosition}
+            onClose={() => setClosingPositionKey(undefined)}
+          />
+
+          <PositionEditor
+            savedIsPnlInLeverage={p.savedIsPnlInLeverage}
+            position={editingPosition}
+            onClose={() => setEditingPositionKey(undefined)}
+          /> */}
+
+      {/* {sharingPosition && (
+        <PositionShare
+          isPositionShareModalOpen={true}
+          setIsPositionShareModalOpen={() => setSharingPositionKey(undefined)}
+          positionToShare={sharingPosition}
+          chainId={chainId}
+          account={account}
+        />
+      )} */}
       <Footer />
     </div>
   );
