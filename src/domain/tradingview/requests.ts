@@ -58,8 +58,12 @@ export async function getHistoryBars(
   countBack: number
 ) {
   const period = supportedResolutions[resolution];
-  const bars = isStable ? getStablePriceData(period, countBack) : await getTokenChartPrice(chainId, ticker, period);
-  return bars.map(formatTimeInBar);
+  try {
+    const bars = isStable ? getStablePriceData(period, countBack) : await getTokenChartPrice(chainId, ticker, period);
+    return bars.map(formatTimeInBar);
+  } catch {
+    throw new Error("Failed to get history bars");
+  }
 }
 
 const getLastBarAfterInterval = (function () {
@@ -73,13 +77,12 @@ const getLastBarAfterInterval = (function () {
     const currentTime = Date.now();
     if (currentTime - startTime > LAST_BAR_REFRESH_INTERVAL || lastTicker !== ticker || lastPeriod !== period) {
       const prices = await getLimitChartPricesFromStats(chainId, ticker, period, 1);
-      if (!prices || !prices.length) {
-        throw new Error("No prices data available.");
+      if (prices?.length) {
+        lastBar = formatTimeInBar({ ...prices[prices.length - 1], ticker });
+        startTime = currentTime;
+        lastTicker = ticker;
+        lastPeriod = period;
       }
-      lastBar = formatTimeInBar({ ...prices[prices.length - 1], ticker });
-      startTime = currentTime;
-      lastTicker = ticker;
-      lastPeriod = period;
     }
     return lastBar;
   };

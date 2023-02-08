@@ -1,3 +1,5 @@
+import { ARBITRUM, AVALANCHE } from "config/chains";
+
 const chartStyleOverrides = ["candleStyle", "hollowCandleStyle", "haStyle"].reduce((acc, cv) => {
   acc[`mainSeriesProperties.${cv}.drawWick`] = true;
   acc[`mainSeriesProperties.${cv}.drawBorder`] = false;
@@ -61,3 +63,5 @@ export const defaultChartProps = {
   custom_css_url: "/tradingview-chart.css",
   loading_screen: { backgroundColor: "#16182e", foregroundColor: "#2962ff" },
 };
+
+export const availableNetworksForChart = [ARBITRUM, AVALANCHE];

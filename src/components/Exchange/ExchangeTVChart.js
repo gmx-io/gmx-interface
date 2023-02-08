@@ -11,6 +11,7 @@ import { getToken, getTokens } from "config/tokens";
 import TVChartContainer from "components/TVChartContainer/TVChartContainer";
 import { t } from "@lingui/macro";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { availableNetworksForChart } from "components/TVChartContainer/constants";
 
 const PRICE_LINE_TEXT_WIDTH = 15;
 
@@ -327,7 +328,7 @@ export default function ExchangeTVChart(props) {
         </div>
       </div>
       <div className="ExchangeChart-bottom App-box App-box-border">
-        {chartToken.symbol && chainId && (
+        {availableNetworksForChart.includes(chainId) && chartToken.symbol && chainId ? (
           <TVChartContainer
             chartLines={chartLines}
             savedShouldShowPositionLines={savedShouldShowPositionLines}
@@ -337,6 +338,8 @@ export default function ExchangeTVChart(props) {
             period={period}
             setPeriod={setPeriod}
           />
+        ) : (
+          <p className="ExchangeChart-error">Sorry, chart is not supported on this network yet.</p>
         )}
       </div>
     </div>

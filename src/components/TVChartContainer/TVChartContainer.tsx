@@ -39,6 +39,7 @@ export default function TVChartContainer({
   const [tvCharts, setTvCharts] = useLocalStorage<ChartData[] | undefined>(TV_SAVE_LOAD_CHARTS_KEY, []);
   const { datafeed, resetCache } = useTVDatafeed();
   const isMobile = useMedia("(max-width: 550px)");
+  const symbolRef = useRef(symbol);
 
   const drawLineOnChart = useCallback(
     (title: string, price: number) => {
@@ -117,7 +118,7 @@ export default function TVChartContainer({
   useEffect(() => {
     const widgetOptions = {
       debug: false,
-      symbol: symbol,
+      symbol: symbolRef.current, // Using ref to avoid unnecessary re-renders on symbol change and still have access to the latest symbol
       datafeed: datafeed,
       theme: defaultChartProps.theme,
       container: chartContainerRef.current,
@@ -138,7 +139,6 @@ export default function TVChartContainer({
       save_load_adapter: new SaveLoadAdapter(chainId, tvCharts, setTvCharts, onSelectToken),
     };
     tvWidgetRef.current = new window.TradingView.widget(widgetOptions);
-
     tvWidgetRef.current?.onChartReady(function () {
       setChartReady(true);
       tvWidgetRef.current?.applyOverrides({
@@ -163,8 +163,9 @@ export default function TVChartContainer({
         setChartReady(false);
       }
     };
+    // We don't want to re-initialize the chart when the symbol changes. This will make the chart flicker.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [chainId]);
 
   return <div ref={chartContainerRef} className="TVChartContainer ExchangeChart-bottom-content" />;
 }
