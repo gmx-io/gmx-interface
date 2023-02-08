@@ -40,16 +40,16 @@ function FeesTooltip({ totalFees, fundingFee, positionFee, swapFee, executionFee
       value: swapFee,
     });
   }
-  if (executionFee) {
-    feeRows.push({
-      label: t`Execution Fee`,
-      value: executionFee,
-    });
-  }
   if (depositFee) {
     feeRows.push({
       label: t`Deposit Fee`,
       value: depositFee,
+    });
+  }
+  if (executionFee) {
+    feeRows.push({
+      label: t`Execution Fee`,
+      value: executionFee,
     });
   }
 

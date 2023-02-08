@@ -671,10 +671,6 @@ msgstr "Close {longOrShortText} {0}"
 msgid "Close: {convertedAmountFormatted} {0}"
 msgstr "Close: {convertedAmountFormatted} {0}"
 
-#: src/components/Exchange/FeesTooltip.tsx
-#~ msgid "Closing Fee"
-#~ msgstr "Closing Fee"
-
 #: src/components/Exchange/PositionSeller.js
 msgid "Closing..."
 msgstr "Closing..."
@@ -2202,14 +2198,6 @@ msgstr "Open trades ranking and stats"
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Open {0} {longOrShortText}"
 msgstr "Open {0} {longOrShortText}"
-
-#: src/components/Exchange/FeesTooltip.tsx
-#~ msgid "Opening Fee"
-#~ msgstr "Opening Fee"
-
-#: src/components/Exchange/SwapBox.js
-#~ msgid "Opening Fee (0.1% of position size)"
-#~ msgstr "Opening Fee (0.1% of position size)"
 
 #: src/components/Exchange/PositionsList.js
 msgid "Opening..."
