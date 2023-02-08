@@ -122,7 +122,7 @@ export function PositionItem(p: Props) {
             );
           }}
         />
-        {!p.hideActions && p.onEditCollateralClick && (
+        {!p.position.isOpening && !p.hideActions && p.onEditCollateralClick && (
           <span className="edit-icon" onClick={p.onEditCollateralClick}>
             <AiOutlineEdit fontSize={16} />
           </span>

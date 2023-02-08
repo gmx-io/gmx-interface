@@ -2,18 +2,15 @@ import { Web3Provider } from "@ethersproject/providers";
 import { t } from "@lingui/macro";
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
+import { isDevelopment } from "config/env";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
 import { encodeReferralCode } from "domain/referrals";
+import { TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
 import { BigNumber, ethers } from "ethers";
 import { callContract } from "lib/contracts";
-import { TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
-import { DecreasePositionSwapType, OrderType } from "./types";
-import { isDevelopment } from "config/env";
-import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
-import { isMarketOrder } from "./utils";
-import { getPositionKey } from "domain/synthetics/positions";
-import { PositionUpdate } from "context/SyntheticsEvents";
 import { formatUsd } from "lib/numbers";
+import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
+import { DecreasePositionSwapType, OrderType } from "./types";
 
 const { AddressZero } = ethers.constants;
 
@@ -34,7 +31,6 @@ export type DecreaseOrderParams = {
   acceptablePrice: BigNumber;
   decreasePositionSwapType: DecreasePositionSwapType;
   orderType: OrderType.MarketDecrease | OrderType.LimitDecrease | OrderType.StopLossDecrease;
-  setPendingPositionUpdate: (update: PositionUpdate) => void;
 };
 
 export async function createDecreaseOrderTxn(chainId: number, library: Web3Provider, p: DecreaseOrderParams) {
@@ -122,13 +118,6 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
     sentMsg: t`${orderLabel} order sent`,
     successMsg: t`${orderLabel} order created`,
     failMsg: t`${orderLabel} order failed`,
-  }).then(() => {
-    if (isMarketOrder(p.orderType)) {
-      p.setPendingPositionUpdate({
-        positionKey: getPositionKey(p.account, p.marketAddress, p.initialCollateralAddress, p.isLong)!,
-        isIncrease: false,
-      });
-    }
   });
 
   return txn;

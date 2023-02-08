@@ -1,21 +1,20 @@
 import { Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
+import Token from "abis/Token.json";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { InfoRow } from "components/InfoRow/InfoRow";
 import Modal from "components/Modal/Modal";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import Tab from "components/Tab/Tab";
 import Tooltip from "components/Tooltip/Tooltip";
-import Token from "abis/Token.json";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { SYNTHETICS_COLLATERAL_DEPOSIT_TOKEN_KEY } from "config/localStorage";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import { useTokenInput } from "domain/synthetics/trade";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
-  getMarketFeesConfig,
   getExecutionFee,
+  getMarketFeesConfig,
   useGasPrice,
 } from "domain/synthetics/fees";
 import {
@@ -34,6 +33,7 @@ import {
   getMarkPrice,
 } from "domain/synthetics/positions";
 import { adaptToInfoTokens, convertToTokenAmount, useAvailableTokensData } from "domain/synthetics/tokens";
+import { useTokenInput } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { BASIS_POINTS_DIVISOR, DEFAULT_SLIPPAGE_AMOUNT, MAX_ALLOWED_LEVERAGE, USD_DECIMALS } from "lib/legacy";
@@ -41,14 +41,14 @@ import { formatAmount, formatAmountFree, formatTokenAmount, formatUsd, parseValu
 import { useEffect, useMemo, useState } from "react";
 
 import { ErrorCode, ErrorDisplayType } from "components/Exchange/constants";
+import { getContract } from "config/contracts";
 import { useGasLimitsConfig } from "domain/synthetics/fees/useGasLimitsConfig";
 import { useMarketsFeesConfigs } from "domain/synthetics/fees/useMarketsFeesConfigs";
 import { usePositionsConstants } from "domain/synthetics/positions/usePositionsConstants";
-import "./PositionEditor.scss";
-import useSWR from "swr";
-import { getContract } from "config/contracts";
-import { contractFetcher } from "lib/contracts";
 import { approveTokens } from "domain/tokens";
+import { contractFetcher } from "lib/contracts";
+import useSWR from "swr";
+import "./PositionEditor.scss";
 
 type Props = {
   position?: AggregatedPositionData;
@@ -266,7 +266,16 @@ export function PositionEditor(p: Props) {
         isLong: position?.isLong,
         executionFee: executionFee.feeTokenAmount,
         tokensData,
-        setPendingPositionUpdate,
+      }).then(() => {
+        if (p.position) {
+          setPendingPositionUpdate({
+            isIncrease: true,
+            positionKey: p.position.key,
+            collateralDeltaAmount: depositInput.tokenAmount,
+          });
+        }
+
+        p.onClose();
       });
     } else {
       if (!withdrawTokenAmount) return;
@@ -288,7 +297,16 @@ export function PositionEditor(p: Props) {
           ? DecreasePositionSwapType.SwapPnlTokenToCollateralToken
           : DecreasePositionSwapType.NoSwap,
         tokensData,
-        setPendingPositionUpdate,
+      }).then(() => {
+        if (p.position) {
+          setPendingPositionUpdate({
+            isIncrease: false,
+            positionKey: p.position.key,
+            collateralDeltaAmount: withdrawTokenAmount,
+          });
+        }
+
+        p.onClose();
       });
     }
   }

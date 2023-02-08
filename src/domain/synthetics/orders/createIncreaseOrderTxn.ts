@@ -5,15 +5,12 @@ import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
 import { encodeReferralCode } from "domain/referrals";
-import { TokensData, convertToContractPrice, convertToTokenAmount, getTokenData } from "domain/synthetics/tokens";
+import { TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
 import { BigNumber, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { formatUsd } from "lib/numbers";
-import { ContractEventsContextType } from "../../../context/SyntheticsEvents";
-import { getPositionKey } from "../positions";
 import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
-import { isMarketOrder } from "./utils";
 
 const { AddressZero } = ethers.constants;
 
@@ -33,7 +30,6 @@ type IncreaseOrderParams = {
   isLong: boolean;
   orderType: OrderType.MarketIncrease | OrderType.LimitIncrease;
   tokensData: TokensData;
-  setPendingPositionUpdate: ContractEventsContextType["setPendingPositionUpdate"];
 };
 
 export async function createIncreaseOrderTxn(chainId: number, library: Web3Provider, p: IncreaseOrderParams) {
@@ -129,20 +125,6 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
     sentMsg: t`${orderLabel} order sent`,
     successMsg: t`${orderLabel} order created`,
     failMsg: t`${orderLabel} order failed`,
-  }).then(() => {
-    if (isMarketOrder(p.orderType)) {
-      p.setPendingPositionUpdate({
-        positionKey: getPositionKey(
-          p.account,
-          p.marketAddress,
-          p.targetCollateralAddress || p.initialCollateralAddress,
-          p.isLong
-        )!,
-        sizeDeltaUsd: p.sizeDeltaUsd,
-        sizeDeltaInTokens: convertToTokenAmount(p.sizeDeltaUsd, indexToken.decimals, indexToken.prices?.minPrice),
-        isIncrease: true,
-      });
-    }
   });
 
   return txn;

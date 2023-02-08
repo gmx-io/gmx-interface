@@ -51,7 +51,7 @@ export function isHighPriceImpact(priceImpact?: FeeItem) {
 }
 
 export function getFeeItem(feeDeltaUsd?: BigNumber, basis?: BigNumber): FeeItem | undefined {
-  if (!feeDeltaUsd || !basis) return undefined;
+  if (!feeDeltaUsd || !basis?.gt(0)) return undefined;
 
   return {
     deltaUsd: feeDeltaUsd,

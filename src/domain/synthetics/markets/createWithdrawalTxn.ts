@@ -40,7 +40,6 @@ export function createWithdrawalTxn(chainId: number, library: Web3Provider, p: P
         marketTokenAmount: BigNumber.from(0)
           .add(p.marketLongAmount || 0)
           .add(p.marketShortAmount || 0),
-        // TODO: correct slippage
         minLongTokenAmount: p.minLongTokenAmount?.div(2) || BigNumber.from(0),
         minShortTokenAmount: p.minShortTokenAmount?.div(2) || BigNumber.from(0),
         shouldUnwrapNativeToken: isNativeWithdrawal,

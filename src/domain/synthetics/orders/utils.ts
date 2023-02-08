@@ -1,18 +1,9 @@
 import { t } from "@lingui/macro";
 import { MarketsData, getMarket, getMarketName } from "domain/synthetics/markets";
-import {
-  TokenData,
-  TokenPrices,
-  TokensData,
-  convertToTokenAmount,
-  convertToUsd,
-  getTokenData,
-  parseContractPrice,
-} from "domain/synthetics/tokens";
+import { TokenData, TokenPrices, TokensData, getTokenData, parseContractPrice } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";
 import { formatTokenAmount, formatUsd, getBasisPoints } from "lib/numbers";
-import { Position, getPriceForPnl } from "../positions";
 import { AggregatedOrderData, AggregatedOrdersData, OrderType, OrdersData } from "./types";
 
 export function getOrder(ordersData: OrdersData, orderKey?: string) {
@@ -264,24 +255,6 @@ export function getAcceptablePrice(p: {
   };
 }
 
-export function getCollateralDeltaUsdForDecreaseOrder(p: {
-  isClosing?: boolean;
-  keepLeverage?: boolean;
-  sizeDeltaUsd?: BigNumber;
-  positionSizeInUsd?: BigNumber;
-  positionCollateralUsd?: BigNumber;
-}) {
-  if (!p.positionCollateralUsd || !p.positionSizeInUsd) return undefined;
-
-  if (p.isClosing) return p.positionCollateralUsd;
-
-  if (!p.keepLeverage || !p.sizeDeltaUsd) return BigNumber.from(0);
-
-  const collateralDeltaUsd = p.sizeDeltaUsd.mul(p.positionCollateralUsd).div(p.positionSizeInUsd);
-
-  return collateralDeltaUsd;
-}
-
 export function getNextCollateralUsdForDecreaseOrder(p: {
   isClosing?: boolean;
   sizeDeltaUsd?: BigNumber;
@@ -302,95 +275,4 @@ export function getNextCollateralUsdForDecreaseOrder(p: {
   if (nextCollateralUsd.lt(0)) return BigNumber.from(0);
 
   return nextCollateralUsd;
-}
-
-export function getPnlDeltaForDecreaseOrder(position?: Position, indexToken?: TokenData, sizeDeltaUsd?: BigNumber) {
-  const pnlPrice = getPriceForPnl(indexToken?.prices, position?.isLong);
-
-  if (!pnlPrice || !indexToken || !position || !sizeDeltaUsd) return undefined;
-
-  const positionValue = convertToUsd(position.sizeInTokens, indexToken.decimals, pnlPrice);
-  const totalPnl = positionValue?.sub(position.sizeInUsd).mul(position.isLong ? 1 : -1);
-
-  let sizeDeltaInTokens: BigNumber;
-
-  if (position.sizeInUsd.eq(sizeDeltaUsd)) {
-    sizeDeltaInTokens = position.sizeInTokens;
-  } else {
-    if (position.isLong) {
-      // roudUpDivision
-      sizeDeltaInTokens = sizeDeltaUsd.mul(position.sizeInTokens).div(position.sizeInUsd);
-    } else {
-      sizeDeltaInTokens = sizeDeltaUsd.mul(position.sizeInTokens).div(position.sizeInUsd);
-    }
-  }
-
-  const positionPnlUsd = totalPnl?.mul(sizeDeltaInTokens).div(position.sizeInTokens);
-
-  if (!positionPnlUsd || !totalPnl) return undefined;
-
-  return { positionPnlUsd, sizeDeltaInTokens };
-}
-
-export function getCollateralOutForDecreaseOrder(p: {
-  position?: Position;
-  indexToken?: TokenData;
-  collateralToken?: TokenData;
-  sizeDeltaUsd: BigNumber;
-  pnlToken?: TokenData;
-  collateralDeltaAmount: BigNumber;
-  feesUsd: BigNumber;
-  priceImpactUsd: BigNumber;
-  allowWithoutPosition?: boolean;
-}) {
-  let receiveAmount = p.collateralDeltaAmount;
-
-  const pnlData = getPnlDeltaForDecreaseOrder(p.position, p.indexToken, p.sizeDeltaUsd);
-
-  const pnlUsd = pnlData?.positionPnlUsd;
-
-  if (!pnlUsd || !p.collateralToken?.prices || !p.pnlToken) return undefined;
-
-  if (pnlUsd.lt(0)) {
-    const deductedPnl = convertToTokenAmount(
-      pnlUsd.abs(),
-      p.collateralToken.decimals,
-      p.collateralToken.prices.minPrice
-    )!;
-
-    receiveAmount = receiveAmount.sub(deductedPnl);
-  } else {
-    const addedPnl = convertToTokenAmount(pnlUsd, p.collateralToken.decimals, p.collateralToken.prices.maxPrice)!;
-
-    //   if (wasSwapped) {
-    //     values.outputAmount += swapOutputAmount;
-    // } else {
-    //     if (params.position.collateralToken() == cache.pnlToken) {
-    //         values.outputAmount += pnlAmountForUser;
-    //     } else {
-    //         // store the pnlAmountForUser separately as it differs from the collateralToken
-    //         values.pnlAmountForUser = pnlAmountForUser;
-    //     }
-    // }
-
-    receiveAmount = receiveAmount.add(addedPnl);
-  }
-
-  const feesAmount = convertToTokenAmount(p.feesUsd, p.collateralToken.decimals, p.collateralToken.prices.minPrice)!;
-
-  receiveAmount = receiveAmount.sub(feesAmount);
-
-  const priceImpactAmount = convertToTokenAmount(
-    p.priceImpactUsd,
-    p.collateralToken.decimals,
-    p.collateralToken.prices.minPrice
-  )!;
-
-  receiveAmount = receiveAmount.sub(priceImpactAmount);
-
-  if (receiveAmount.lte(0)) {
-    return BigNumber.from(0);
-  }
-
-  return receiveAmount;
 }

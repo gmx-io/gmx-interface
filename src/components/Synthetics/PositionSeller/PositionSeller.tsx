@@ -296,8 +296,19 @@ export function PositionSeller(p: Props) {
         ? DecreasePositionSwapType.SwapPnlTokenToCollateralToken
         : DecreasePositionSwapType.NoSwap,
       tokensData,
-      setPendingPositionUpdate,
-    }).then(() => setIsProcessing(true));
+    }).then(() => {
+      if (p.position) {
+        setPendingPositionUpdate({
+          isIncrease: false,
+          positionKey: p.position.key,
+          collateralDeltaAmount: decreaseAmounts.collateralDeltaAmount,
+          sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
+          sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
+        });
+      }
+
+      setIsProcessing(true);
+    });
   }
 
   const submitButtonState = getSubmitButtonState();

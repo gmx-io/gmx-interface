@@ -4,7 +4,6 @@ import cx from "classnames";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Modal from "components/Modal/Modal";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
-import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
 import { getContract } from "config/contracts";
 import { convertTokenAddress, getToken } from "config/tokens";
 import { createDepositTxn } from "domain/synthetics/markets/createDepositTxn";
@@ -16,7 +15,7 @@ import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { useMemo } from "react";
-import { Operation, PoolDelta, getSubmitError, operationLabels } from "../utils";
+import { GmSwapFees, Operation, PoolDelta, getSubmitError, operationLabels } from "../utils";
 
 import {
   getMarket,
@@ -29,6 +28,9 @@ import { useAvailableTokensData } from "domain/synthetics/tokens";
 
 import { formatTokenAmount, formatTokenAmountWithUsd } from "lib/numbers";
 import "./GmConfirmationBox.scss";
+import { GmFees } from "../GmFees/GmFees";
+import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import { ExecutionFee } from "domain/synthetics/fees";
 
 type Props = {
   onClose: () => void;
@@ -36,18 +38,15 @@ type Props = {
   marketTokenAmount: BigNumber;
   longDelta?: PoolDelta;
   shortDelta?: PoolDelta;
-  priceImpact?: any;
+  fees?: GmSwapFees;
   tokensData: TokensData;
   operationType: Operation;
-  feesUsd: BigNumber;
-  executionFee?: BigNumber;
-  executionFeeUsd?: BigNumber;
-  executionFeeToken?: Token;
+  executionFee?: ExecutionFee;
   onSubmitted: () => void;
 };
 
 function getTokenText(token?: Token, tokenAmount?: BigNumber, price?: BigNumber) {
-  if (!token || !price || !tokenAmount) return undefined;
+  if (!token || !price || !tokenAmount?.gt(0)) return undefined;
 
   const usdAmount = convertToUsd(tokenAmount, token.decimals, price);
 
@@ -171,7 +170,7 @@ export function GmConfirmationBox(p: Props) {
       shortTokenAmount: p.shortDelta?.tokenAmount,
       marketTokenAddress: p.marketTokenAddress,
       minMarketTokens: p.marketTokenAmount!,
-      executionFee: p.executionFee,
+      executionFee: p.executionFee.feeTokenAmount,
     }).then(p.onSubmitted);
   }
 
@@ -195,7 +194,7 @@ export function GmConfirmationBox(p: Props) {
       minLongTokenAmount: p.longDelta?.tokenAmount,
       minShortTokenAmount: p.shortDelta?.tokenAmount,
       marketTokenAddress: p.marketTokenAddress,
-      executionFee: p.executionFee,
+      executionFee: p.executionFee.feeTokenAmount,
     }).then(p.onSubmitted);
   }
 
@@ -238,12 +237,16 @@ export function GmConfirmationBox(p: Props) {
           )}
         </div>
 
-        <GmFees
-          priceImpact={p.priceImpact}
-          executionFeeToken={p.executionFeeToken}
-          totalFeeUsd={p.feesUsd}
-          executionFee={p.executionFee}
-          executionFeeUsd={p.executionFeeUsd}
+        <GmFees totalFees={p.fees?.totalFees} swapFee={p.fees?.swapFee} swapPriceImpact={p.fees?.swapPriceImpact} />
+
+        <ExchangeInfoRow
+          label={t`Execution Fee`}
+          value={formatTokenAmountWithUsd(
+            p.executionFee?.feeTokenAmount,
+            p.executionFee?.feeUsd,
+            p.executionFee?.feeToken.symbol,
+            p.executionFee?.feeToken.decimals
+          )}
         />
 
         {tokensToApprove && tokensToApprove.length > 0 && (

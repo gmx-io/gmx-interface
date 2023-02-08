@@ -38,7 +38,7 @@ import {
   isTriggerPriceAboveThreshold,
 } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
-import { AggregatedPositionData, formatLeverage, formatPnl } from "domain/synthetics/positions";
+import { AggregatedPositionData, formatLeverage, formatPnl, getPositionKey } from "domain/synthetics/positions";
 import {
   TokensRatio,
   adaptToTokenInfo,
@@ -316,8 +316,24 @@ export function ConfirmationBox(p: Props) {
       orderType: isLimit ? OrderType.LimitIncrease : OrderType.MarketIncrease,
       referralCode: referralCodeData?.userReferralCodeString,
       tokensData,
-      setPendingPositionUpdate,
-    }).then(p.onSubmitted);
+    }).then(() => {
+      if (isMarket && p.increasePositionParams) {
+        setPendingPositionUpdate({
+          isIncrease: true,
+          positionKey: getPositionKey(
+            account,
+            p.increasePositionParams.market.marketTokenAddress,
+            p.increasePositionParams.collateralToken.address,
+            isLong
+          )!,
+          collateralDeltaAmount: p.increasePositionParams.collateralAmount,
+          sizeDeltaUsd: p.increasePositionParams.sizeDeltaUsd,
+          sizeDeltaInTokens: p.increasePositionParams.sizeDeltaInTokens,
+        });
+      }
+
+      p.onSubmitted();
+    });
   }
 
   function onSubmitDecreaseOrder() {
@@ -355,7 +371,6 @@ export function ConfirmationBox(p: Props) {
         ? DecreasePositionSwapType.SwapPnlTokenToCollateralToken
         : DecreasePositionSwapType.NoSwap,
       tokensData,
-      setPendingPositionUpdate,
     }).then(p.onSubmitted);
   }
 

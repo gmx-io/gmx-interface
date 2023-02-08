@@ -11,9 +11,9 @@ import { AggregatedPositionData, getLeverage, getLiquidationPrice } from "domain
 import { TokenData, TokensData, convertToTokenAmount, getTokenData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { DUST_USD } from "lib/legacy";
-import { DecreasePositionAmounts, DecreasePositionTradeParams, NextPositionValues, SwapPathStats } from "../types";
-import { applySlippage, getMarkPrice, getTriggerPricePrefix } from "./prices";
+import { DecreasePositionAmounts, DecreasePositionTradeParams, NextPositionValues } from "../types";
 import { getDisplayedTradeFees } from "./common";
+import { applySlippage, getMarkPrice, getTriggerPricePrefix } from "./prices";
 
 export function getDecreasePositionTradeParams(p: {
   marketsData: MarketsData;
@@ -319,30 +319,6 @@ export function getPnlDeltaForDecreaseOrder(p: {
   const pnlDelta = p.position.pnl.mul(sizeDeltaInTokens).div(p.position.sizeInTokens);
 
   return pnlDelta;
-}
-
-export function getCollateralOutForDecreaseOrder(p: {
-  collateralDeltaUsd?: BigNumber;
-  pnlDelta?: BigNumber;
-  positionFeeUsd?: BigNumber;
-  priceImpactDeltaUsd?: BigNumber;
-  pendingBorrowingFeesUsd?: BigNumber;
-  pendingFundingFeesUsd?: BigNumber;
-}) {
-  // let receiveUsd = p.collateralDeltaUsd || BigNumber.from(0);
-
-  // if (p.pnlDelta?.lt(0)) {
-  //   receiveUsd = receiveUsd.sub(p.pnlDelta.abs());
-  // } else if (p.pnlDelta?.gt(0)) {
-  //   receiveUsd = receiveUsd.add(p.pnlDelta);
-  // }
-
-  // const feesUsd = p.positionFeeUsd.add(p.pendingBorrowingFeesUsd).add(p.pendingFundingFeesUsd);
-
-  // // Price impact
-  // receiveUsd = receiveUsd.sub(feesUsd);
-
-  return undefined;
 }
 
 export function getShouldSwapPnlToCollateralToken(p: {
