@@ -11,7 +11,7 @@ import { AggregatedPositionData, getLeverage, getLiquidationPrice } from "domain
 import { TokenData, TokensData, convertToTokenAmount, getTokenData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { DUST_USD } from "lib/legacy";
-import { DecreasePositionAmounts, DecreasePositionTradeParams, NextPositionValues } from "../types";
+import { DecreasePositionAmounts, DecreasePositionTradeParams, NextPositionValues, SwapPathStats } from "../types";
 import { applySlippage, getMarkPrice, getTriggerPricePrefix } from "./prices";
 import { getDisplayedTradeFees } from "./common";
 
@@ -109,7 +109,7 @@ export function getDecreasePositionAmounts(p: {
     !indexToken ||
     !p.collateralToken?.prices ||
     !p.receiveToken?.prices ||
-    !p.sizeDeltaUsd.gt(0) ||
+    !p.sizeDeltaUsd?.gt(0) ||
     typeof p.isLong === "undefined"
   ) {
     return undefined;
@@ -121,6 +121,7 @@ export function getDecreasePositionAmounts(p: {
   if (isClosing && p.existingPosition) {
     sizeDeltaUsd = p.existingPosition?.sizeInUsd;
   }
+
   const sizeDeltaInTokens = convertToTokenAmount(sizeDeltaUsd, indexToken.decimals, exitMarkPrice)!;
 
   const positionFeeUsd = getPositionFee(p.feesConfigs, p.market?.marketTokenAddress, sizeDeltaUsd);
@@ -157,6 +158,8 @@ export function getDecreasePositionAmounts(p: {
   if (p.existingPosition) {
     const { pendingBorrowingFees, pendingFundingFeesUsd } = p.existingPosition || {};
 
+    collateralDeltaUsd = BigNumber.from(0);
+
     if (p.existingPosition?.sizeInUsd?.gt(0) && p.existingPosition?.collateralUsd?.gt(0)) {
       if (isClosing) {
         collateralDeltaUsd = p.existingPosition.collateralUsd;
@@ -174,7 +177,7 @@ export function getDecreasePositionAmounts(p: {
     pnlDelta =
       getPnlDeltaForDecreaseOrder({ position: p.existingPosition, sizeDeltaUsd, isClosing }) || BigNumber.from(0);
 
-    receiveUsd = collateralDeltaUsd as BigNumber;
+    receiveUsd = collateralDeltaUsd;
 
     if (pnlDelta) {
       receiveUsd = receiveUsd.add(pnlDelta);

@@ -179,6 +179,7 @@ export function getAggregatedPositionData(
   return {
     ...position,
     marketName,
+    market,
     indexToken,
     collateralToken,
     pnlToken,

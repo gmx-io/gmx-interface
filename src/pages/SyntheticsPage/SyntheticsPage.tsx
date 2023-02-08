@@ -20,8 +20,8 @@ import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/local
 import { useMemo, useState } from "react";
 
 import "./SyntheticsPage.scss";
-import PositionSeller from "components/Exchange/PositionSeller";
-import PositionEditor from "components/Exchange/PositionEditor";
+import { PositionSeller } from "components/Synthetics/PositionSeller/PositionSeller";
+import { PositionEditor } from "components/Synthetics/PositionEditor/PositionEditor";
 
 type Props = {
   onConnectWallet: () => void;
@@ -233,17 +233,17 @@ export function SyntheticsPage(p: Props) {
         </div>
       </div>
 
-      {/* <PositionSeller
-            savedIsPnlInLeverage={p.savedIsPnlInLeverage}
-            position={closingPosition}
-            onClose={() => setClosingPositionKey(undefined)}
-          />
+      <PositionSeller
+        savedIsPnlInLeverage={p.savedIsPnlInLeverage}
+        position={closingPosition}
+        onClose={() => setClosingPositionKey(undefined)}
+      />
 
-          <PositionEditor
-            savedIsPnlInLeverage={p.savedIsPnlInLeverage}
-            position={editingPosition}
-            onClose={() => setEditingPositionKey(undefined)}
-          /> */}
+      <PositionEditor
+        savedIsPnlInLeverage={p.savedIsPnlInLeverage}
+        position={editingPosition}
+        onClose={() => setEditingPositionKey(undefined)}
+      />
 
       {/* {sharingPosition && (
         <PositionShare

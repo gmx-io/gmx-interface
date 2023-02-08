@@ -60,8 +60,8 @@ export function getSwapAmounts(p: {
   poolsData: MarketsPoolsData;
   tokensData: TokensData;
   feesConfigs: MarketsFeesConfigsData;
-  tokenIn: TokenData;
-  tokenOut: TokenData;
+  tokenIn?: TokenData;
+  tokenOut?: TokenData;
   tokenInAmount?: BigNumber;
   tokenOutAmount?: BigNumber;
   triggerRatio?: TokensRatio;
