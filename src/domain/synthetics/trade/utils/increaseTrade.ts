@@ -6,7 +6,7 @@ import {
 } from "domain/synthetics/fees";
 import { Market, MarketsData, MarketsOpenInterestData, MarketsPoolsData } from "domain/synthetics/markets";
 import { getAcceptablePrice } from "domain/synthetics/orders";
-import { AggregatedPositionData, getMarkPrice } from "domain/synthetics/positions";
+import { AggregatedPositionData, getLiquidationPrice, getMarkPrice } from "domain/synthetics/positions";
 import { TokenData, TokensData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";
@@ -43,14 +43,18 @@ export function getIncreasePositionTradeParams(p: {
     return undefined;
   }
 
+  const feesConfig = getMarketFeesConfig(p.feesConfigs, p.market.marketTokenAddress);
+
   const nextPositionValues = getNextPositionValuesForIncreaseTrade({
     existingPosition: p.existingPosition,
     sizeDeltaUsd: increasePositionAmounts.sizeDeltaUsd,
     collateralDeltaUsd: increasePositionAmounts.collateralUsd,
     showPnlInLeverage: p.showPnlInLeverage,
+    leverage: p.leverage,
+    entryMarkPrice: increasePositionAmounts.entryMarkPrice,
+    positionFeeFactor: feesConfig?.positionFeeFactor,
+    isLong: p.isLong,
   });
-
-  const feesConfig = getMarketFeesConfig(p.feesConfigs, p.market.marketTokenAddress);
 
   const fees = getDisplayedTradeFees({
     feesConfig,
@@ -68,7 +72,6 @@ export function getIncreasePositionTradeParams(p: {
     market: p.market,
     initialCollateralToken: p.initialCollateralToken,
     collateralToken: p.collateralToken,
-    entryPrice: increasePositionAmounts.acceptablePrice,
     isLong: p.isLong,
     nextPositionValues,
     fees,
@@ -81,6 +84,9 @@ export function getNextPositionValuesForIncreaseTrade(p: {
   collateralDeltaUsd: BigNumber;
   showPnlInLeverage?: boolean;
   leverage?: BigNumber;
+  entryMarkPrice?: BigNumber;
+  positionFeeFactor?: BigNumber;
+  isLong?: boolean;
 }): NextPositionValues {
   const nextSizeUsd = p.existingPosition ? p.existingPosition?.sizeInUsd.add(p.sizeDeltaUsd) : p.sizeDeltaUsd;
 
@@ -88,7 +94,16 @@ export function getNextPositionValuesForIncreaseTrade(p: {
     ? p.existingPosition?.collateralUsd.add(p.collateralDeltaUsd)
     : p.collateralDeltaUsd;
 
-  const nextLiqPrice = BigNumber.from(0);
+  const nextLiqPrice = getLiquidationPrice({
+    sizeUsd: nextSizeUsd,
+    collateralUsd: nextCollateralUsd,
+    averagePrice: p.entryMarkPrice,
+    positionFeeFactor: p.positionFeeFactor,
+    pendingBorrowingFeesUsd: BigNumber.from(0), // deducted on order
+    pendingFundingFeesUsd: BigNumber.from(0), // deducted on order
+    pnl: p.existingPosition?.pnl,
+    isLong: p.isLong,
+  });
 
   const nextLeverage = p.leverage;
 
@@ -124,7 +139,8 @@ export function getIncreasePositionAmounts(p: {
   findSwapPath: (usdIn: BigNumber, opts?: { disablePriceImpact?: boolean }) => SwapPathStats | undefined;
 }): IncreasePositionAmounts | undefined {
   const markPrice = getMarkPrice(p.indexToken.prices, true, p.isLong)!;
-  const entryMarkPrice = p.isLimit && p.triggerPrice ? p.triggerPrice : markPrice;
+  const triggerPrice = p.isLimit ? p.triggerPrice : undefined;
+  const entryMarkPrice = triggerPrice || markPrice;
 
   if (!markPrice) return undefined;
 
@@ -141,6 +157,7 @@ export function getIncreasePositionAmounts(p: {
     acceptablePriceImpactBps: p.isLimit && p.acceptablePriceImpactBps ? p.acceptablePriceImpactBps : BigNumber.from(0),
     acceptablePriceAfterSlippage: entryMarkPrice,
     entryMarkPrice,
+    triggerPrice,
   };
 
   if (!p.indexTokenAmount) {
@@ -215,13 +232,14 @@ export function getIncreasePositionAmounts(p: {
       sizeDeltaInTokens,
       sizeDeltaAfterFeesUsd,
       sizeDeltaAfterFeesInTokens,
-      swapPathStats: swapAmounts.swapPathStats,
       positionFeeUsd,
       positionPriceImpactDeltaUsd,
       acceptablePrice,
       acceptablePriceImpactBps,
       acceptablePriceAfterSlippage,
       entryMarkPrice,
+      triggerPrice,
+      swapPathStats: swapAmounts.swapPathStats,
     };
   } else {
     // calculate initialCollateralAmount by indexTokenAmount
@@ -306,6 +324,7 @@ export function getIncreasePositionAmounts(p: {
       acceptablePriceImpactBps,
       acceptablePriceAfterSlippage,
       entryMarkPrice,
+      triggerPrice,
       swapPathStats: swapAmounts?.swapPathStats,
     };
   }

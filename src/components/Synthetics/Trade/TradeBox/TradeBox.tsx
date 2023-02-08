@@ -190,7 +190,6 @@ export function TradeBox(p: Props) {
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useState<string>("");
   const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
   const markPrice = getMarkPrice(indexToken?.prices, isIncrease, isLong);
-  const entryPrice = isLimit ? triggerPrice : markPrice;
 
   const [triggerRatioInputValue, setTriggerRatioInputValue] = useState<string>("");
   const markRatio = getTokensRatio({ fromToken: fromTokenInput.token, toToken: toTokenInput.token });
@@ -339,6 +338,8 @@ export function TradeBox(p: Props) {
       return {};
     },
     [
+      acceptablePriceImpactBps,
+      allowedSlippage,
       closeSizeUsd,
       collateralToken,
       existingPosition,

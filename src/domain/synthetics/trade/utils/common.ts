@@ -32,7 +32,6 @@ export function getDisplayedTradeFees(p: {
   positionFeeUsd?: BigNumber;
   swapPriceImpactDeltaUsd?: BigNumber;
   positionPriceImpactDeltaUsd?: BigNumber;
-  isLimit?: boolean;
 }): TradeFees | undefined {
   if (!p.initialCollateralUsd) return undefined;
 

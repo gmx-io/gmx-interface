@@ -36,6 +36,7 @@ export type IncreasePositionAmounts = {
   swapPathStats?: SwapPathStats;
   positionFeeUsd?: BigNumber;
   positionPriceImpactDeltaUsd?: BigNumber;
+  triggerPrice?: BigNumber;
   acceptablePrice: BigNumber;
   acceptablePriceImpactBps: BigNumber;
   acceptablePriceAfterSlippage: BigNumber;
@@ -66,10 +67,8 @@ export type IncreasePositionTradeParams = IncreasePositionAmounts & {
   initialCollateralToken: TokenData;
   collateralToken: TokenData;
   market: Market;
-  entryPrice: BigNumber;
   isLong: boolean;
   nextPositionValues?: NextPositionValues;
-  triggerPrice?: BigNumber;
   fees?: TradeFees;
 };
 
