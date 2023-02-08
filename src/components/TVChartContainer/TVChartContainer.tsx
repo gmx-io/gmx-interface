@@ -4,8 +4,9 @@ import { useLocalStorage, useMedia } from "react-use";
 import { defaultChartProps, disabledFeaturesOnMobile } from "./constants";
 import useTVDatafeed from "domain/tradingview/useTVDatafeed";
 import { ChartData, IChartingLibraryWidget, IPositionLineAdapter } from "../../charting_library";
-import { getPeriodFromResolutions, supportedResolutions } from "domain/tradingview/utils";
+import { getObjectKeyFromValue } from "domain/tradingview/utils";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
+import { SUPPORTED_RESOLUTIONS } from "config/tradingview";
 
 const TV_RELOAD_INTERVAL = 15 * 60 * 1000; // 15 minutes
 
@@ -135,7 +136,7 @@ export default function TVChartContainer({
       autosize: defaultChartProps.autosize,
       custom_css_url: defaultChartProps.custom_css_url,
       overrides: defaultChartProps.overrides,
-      interval: getPeriodFromResolutions(period),
+      interval: getObjectKeyFromValue(period, SUPPORTED_RESOLUTIONS),
       save_load_adapter: new SaveLoadAdapter(chainId, tvCharts, setTvCharts, onSelectToken),
     };
     tvWidgetRef.current = new window.TradingView.widget(widgetOptions);
@@ -149,8 +150,8 @@ export default function TVChartContainer({
         ?.activeChart()
         .onIntervalChanged()
         .subscribe(null, (interval) => {
-          if (supportedResolutions[interval]) {
-            const period = supportedResolutions[interval];
+          if (SUPPORTED_RESOLUTIONS[interval]) {
+            const period = SUPPORTED_RESOLUTIONS[interval];
             setPeriod(period);
           }
         });

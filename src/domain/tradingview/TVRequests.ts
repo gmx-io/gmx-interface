@@ -1,8 +1,9 @@
+import { LAST_BAR_REFRESH_INTERVAL, SUPPORTED_RESOLUTIONS } from "config/tradingview";
 import { getLimitChartPricesFromStats, getStablePriceData, timezoneOffset } from "domain/prices";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
 import { getCurrentPriceOfToken, getTokenChartPrice } from "./requests";
-import { formatTimeInBar, LAST_BAR_REFRESH_INTERVAL, supportedResolutions } from "./utils";
+import { formatTimeInBar } from "./utils";
 
 type Bar = {
   time: number;
@@ -49,7 +50,7 @@ export class TVRequests {
   }
 
   async getHistoryBars(chainId: number, ticker: string, resolution: string, isStable: boolean, countBack: number) {
-    const period = supportedResolutions[resolution];
+    const period = SUPPORTED_RESOLUTIONS[resolution];
     try {
       const bars = isStable ? getStablePriceData(period, countBack) : await getTokenChartPrice(chainId, ticker, period);
       return bars.map(formatTimeInBar);
@@ -59,7 +60,7 @@ export class TVRequests {
   }
 
   async getLiveBar(chainId: number, ticker: string, resolution: string) {
-    const period = supportedResolutions[resolution];
+    const period = SUPPORTED_RESOLUTIONS[resolution];
     if (!ticker || !period || !chainId) return;
     const periodSeconds = CHART_PERIODS[period];
     // Converts current time to seconds, rounds down to nearest period, adds timezone offset, and converts back to milliseconds

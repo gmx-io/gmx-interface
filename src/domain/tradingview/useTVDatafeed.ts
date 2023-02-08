@@ -1,12 +1,12 @@
 import { getTokens } from "config/tokens";
+import { SUPPORTED_RESOLUTIONS } from "config/tradingview";
 import { timezoneOffset } from "domain/prices";
 import { useChainId } from "lib/chains";
 import { useMemo, useRef } from "react";
 import { TVRequests } from "./TVRequests";
-import { supportedResolutions } from "./utils";
 
 const configurationData = {
-  supported_resolutions: Object.keys(supportedResolutions),
+  supported_resolutions: Object.keys(SUPPORTED_RESOLUTIONS),
   supports_marks: false,
   supports_timescale_marks: false,
   supports_time: true,
@@ -53,7 +53,7 @@ export default function useTVDatafeed() {
           const { from, to, countBack } = periodParams;
           const toWithOffset = to + timezoneOffset;
 
-          if (!supportedResolutions[resolution]) {
+          if (!SUPPORTED_RESOLUTIONS[resolution]) {
             return onErrorCallback("[getBars] Invalid resolution");
           }
           const { ticker, isStable } = symbolInfo;
