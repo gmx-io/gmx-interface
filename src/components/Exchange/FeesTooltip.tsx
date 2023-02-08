@@ -24,7 +24,7 @@ function FeesTooltip({ totalFees, fundingFee, positionFee, swapFee, executionFee
   }
   if (positionFee) {
     feeRows.push({
-      label: isOpening ? t`Opening Fee` : t`Closing Fee`,
+      label: isOpening ? t`Open Fee` : t`Close Fee`,
       value: positionFee,
     });
   }

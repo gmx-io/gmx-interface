@@ -643,6 +643,10 @@ msgstr "Hacer clic en una fila para seleccionar el mercado de la posición, lueg
 msgid "Close"
 msgstr "Cerrar"
 
+#: src/components/Exchange/FeesTooltip.tsx
+msgid "Close Fee"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Close failed."
 msgstr "Cierre fallido."
@@ -668,8 +672,8 @@ msgid "Close: {convertedAmountFormatted} {0}"
 msgstr "Cerrar: {convertedAmountFormatted} {0}"
 
 #: src/components/Exchange/FeesTooltip.tsx
-msgid "Closing Fee"
-msgstr ""
+#~ msgid "Closing Fee"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Closing..."
@@ -2158,6 +2162,14 @@ msgstr "Solo letras, números y guiones bajos están permitidos"
 msgid "Open + Close Fees"
 msgstr ""
 
+#: src/components/Exchange/FeesTooltip.tsx
+msgid "Open Fee"
+msgstr ""
+
+#: src/components/Exchange/SwapBox.js
+msgid "Open Fee (0.1% of position size)"
+msgstr ""
+
 #: src/pages/Home/Home.js
 msgid "Open Interest"
 msgstr "Interés Abierto"
@@ -2192,12 +2204,12 @@ msgid "Open {0} {longOrShortText}"
 msgstr "Abrir {0} {longOrShortText}"
 
 #: src/components/Exchange/FeesTooltip.tsx
-msgid "Opening Fee"
-msgstr ""
+#~ msgid "Opening Fee"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
-msgid "Opening Fee (0.1% of position size)"
-msgstr ""
+#~ msgid "Opening Fee (0.1% of position size)"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 msgid "Opening..."

@@ -643,6 +643,10 @@ msgstr "点取一排以选择仓位市场,若需要可接着点选交换栏来�
 msgid "Close"
 msgstr "收盘"
 
+#: src/components/Exchange/FeesTooltip.tsx
+msgid "Close Fee"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Close failed."
 msgstr "收盘失败"
@@ -668,8 +672,8 @@ msgid "Close: {convertedAmountFormatted} {0}"
 msgstr "关闭: {convertedAmountFormatted} {0}"
 
 #: src/components/Exchange/FeesTooltip.tsx
-msgid "Closing Fee"
-msgstr ""
+#~ msgid "Closing Fee"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Closing..."
@@ -2158,6 +2162,14 @@ msgstr "只允许使用字母、数字和下底线"
 msgid "Open + Close Fees"
 msgstr ""
 
+#: src/components/Exchange/FeesTooltip.tsx
+msgid "Open Fee"
+msgstr ""
+
+#: src/components/Exchange/SwapBox.js
+msgid "Open Fee (0.1% of position size)"
+msgstr ""
+
 #: src/pages/Home/Home.js
 msgid "Open Interest"
 msgstr "开启利息"
@@ -2192,12 +2204,12 @@ msgid "Open {0} {longOrShortText}"
 msgstr "开仓 {0} {longOrShortText}"
 
 #: src/components/Exchange/FeesTooltip.tsx
-msgid "Opening Fee"
-msgstr ""
+#~ msgid "Opening Fee"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
-msgid "Opening Fee (0.1% of position size)"
-msgstr ""
+#~ msgid "Opening Fee (0.1% of position size)"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 msgid "Opening..."

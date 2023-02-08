@@ -643,6 +643,10 @@ msgstr "포지션 마켓을 선택하세요. 그 후 스왑 박스를 통해 필
 msgid "Close"
 msgstr "포지션 종료"
 
+#: src/components/Exchange/FeesTooltip.tsx
+msgid "Close Fee"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Close failed."
 msgstr "포지션 종료 실패"
@@ -668,8 +672,8 @@ msgid "Close: {convertedAmountFormatted} {0}"
 msgstr "종료: {convertedAmountFormatted} {0}"
 
 #: src/components/Exchange/FeesTooltip.tsx
-msgid "Closing Fee"
-msgstr ""
+#~ msgid "Closing Fee"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Closing..."
@@ -2158,6 +2162,14 @@ msgstr "문자, 숫자 및 언더스코어만 가능합니다"
 msgid "Open + Close Fees"
 msgstr ""
 
+#: src/components/Exchange/FeesTooltip.tsx
+msgid "Open Fee"
+msgstr ""
+
+#: src/components/Exchange/SwapBox.js
+msgid "Open Fee (0.1% of position size)"
+msgstr ""
+
 #: src/pages/Home/Home.js
 msgid "Open Interest"
 msgstr "미결제 약정"
@@ -2192,12 +2204,12 @@ msgid "Open {0} {longOrShortText}"
 msgstr "{0} {longOrShortText} 열기"
 
 #: src/components/Exchange/FeesTooltip.tsx
-msgid "Opening Fee"
-msgstr ""
+#~ msgid "Opening Fee"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
-msgid "Opening Fee (0.1% of position size)"
-msgstr ""
+#~ msgid "Opening Fee (0.1% of position size)"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 msgid "Opening..."

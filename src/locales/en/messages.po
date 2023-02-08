@@ -643,6 +643,10 @@ msgstr "Click on a row to select the position's market, then use the swap box to
 msgid "Close"
 msgstr "Close"
 
+#: src/components/Exchange/FeesTooltip.tsx
+msgid "Close Fee"
+msgstr "Close Fee"
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Close failed."
 msgstr "Close failed."
@@ -668,8 +672,8 @@ msgid "Close: {convertedAmountFormatted} {0}"
 msgstr "Close: {convertedAmountFormatted} {0}"
 
 #: src/components/Exchange/FeesTooltip.tsx
-msgid "Closing Fee"
-msgstr "Closing Fee"
+#~ msgid "Closing Fee"
+#~ msgstr "Closing Fee"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Closing..."
@@ -2158,6 +2162,14 @@ msgstr "Only letters, numbers and underscores are allowed."
 msgid "Open + Close Fees"
 msgstr "Open + Close Fees"
 
+#: src/components/Exchange/FeesTooltip.tsx
+msgid "Open Fee"
+msgstr "Open Fee"
+
+#: src/components/Exchange/SwapBox.js
+msgid "Open Fee (0.1% of position size)"
+msgstr "Open Fee (0.1% of position size)"
+
 #: src/pages/Home/Home.js
 msgid "Open Interest"
 msgstr "Open Interest"
@@ -2192,12 +2204,12 @@ msgid "Open {0} {longOrShortText}"
 msgstr "Open {0} {longOrShortText}"
 
 #: src/components/Exchange/FeesTooltip.tsx
-msgid "Opening Fee"
-msgstr "Opening Fee"
+#~ msgid "Opening Fee"
+#~ msgstr "Opening Fee"
 
 #: src/components/Exchange/SwapBox.js
-msgid "Opening Fee (0.1% of position size)"
-msgstr "Opening Fee (0.1% of position size)"
+#~ msgid "Opening Fee (0.1% of position size)"
+#~ msgstr "Opening Fee (0.1% of position size)"
 
 #: src/components/Exchange/PositionsList.js
 msgid "Opening..."
