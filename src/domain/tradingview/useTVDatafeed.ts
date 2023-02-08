@@ -2,7 +2,7 @@ import { getTokens } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS } from "config/tradingview";
 import { timezoneOffset } from "domain/prices";
 import { useChainId } from "lib/chains";
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { TVRequests } from "./TVRequests";
 
 const configurationData = {
@@ -18,7 +18,11 @@ export default function useTVDatafeed() {
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>();
   const resetCacheRef = useRef<() => void | undefined>();
   const activeTicker = useRef<string | null>();
-  const tvRequests = useRef(new TVRequests());
+  const tvRequests = useRef<TVRequests>();
+
+  useEffect(() => {
+    tvRequests.current = new TVRequests();
+  }, []);
 
   return useMemo(() => {
     return {
@@ -27,7 +31,7 @@ export default function useTVDatafeed() {
         onReady: (callback) => {
           setTimeout(() => callback(configurationData));
         },
-        async resolveSymbol(symbolName, onSymbolResolvedCallback) {
+        resolveSymbol(symbolName, onSymbolResolvedCallback) {
           const stableTokens = getTokens(chainId)
             .filter((t) => t.isStable)
             .map((t) => t.symbol);
@@ -46,7 +50,7 @@ export default function useTVDatafeed() {
             visible_plots_set: true,
             isStable: stableTokens.includes(symbolName),
           };
-          return onSymbolResolvedCallback(await symbolInfo);
+          setTimeout(() => onSymbolResolvedCallback(symbolInfo));
         },
 
         async getBars(symbolInfo, resolution, periodParams, onHistoryCallback, onErrorCallback) {
@@ -62,7 +66,7 @@ export default function useTVDatafeed() {
           }
 
           try {
-            const bars = await tvRequests.current.getHistoryBars(chainId, ticker, resolution, isStable, countBack);
+            const bars = await tvRequests.current?.getHistoryBars(chainId, ticker, resolution, isStable, countBack);
             const filteredBars = bars.filter((bar) => bar.time >= from * 1000 && bar.time < toWithOffset * 1000);
             onHistoryCallback(filteredBars, { noData: filteredBars.length === 0 });
           } catch {
@@ -76,7 +80,7 @@ export default function useTVDatafeed() {
           resetCacheRef.current = onResetCacheNeededCallback;
           if (!isStable) {
             intervalRef.current = setInterval(function () {
-              tvRequests.current.getLiveBar(chainId, ticker, resolution).then((bar) => {
+              tvRequests.current?.getLiveBar(chainId, ticker, resolution).then((bar) => {
                 if (ticker === activeTicker.current) {
                   onRealtimeCallback(bar);
                 }
