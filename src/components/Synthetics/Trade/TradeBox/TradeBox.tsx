@@ -303,6 +303,8 @@ export function TradeBox(p: Props) {
           allowedSlippage,
           acceptablePriceImpactBps,
           isLimit,
+          existingPosition,
+          maxLeverage,
           findSwapPath: swapRoute.findSwapPath,
         });
 
@@ -321,12 +323,17 @@ export function TradeBox(p: Props) {
           openInterestData: openInterestData,
           feesConfigs: marketsFeesConfigs,
           market: selectedMarket,
-          sizeDeltaUsd: closeSizeUsd,
           collateralToken: collateralToken,
+          receiveToken: collateralToken,
           existingPosition,
+          sizeDeltaUsd: closeSizeUsd,
           triggerPrice,
           keepLeverage,
           showPnlInLeverage: savedIsPnlInLeverage,
+          allowedSlippage,
+          acceptablePriceImpactBps,
+          maxLeverage,
+          isTrigger,
           isLong,
         });
 
@@ -356,6 +363,7 @@ export function TradeBox(p: Props) {
       leverage,
       marketsData,
       marketsFeesConfigs,
+      maxLeverage,
       openInterestData,
       poolsData,
       savedIsPnlInLeverage,
@@ -1079,6 +1087,7 @@ export function TradeBox(p: Props) {
   function renderIncreaseOrderInfo() {
     const { nextPositionValues, acceptablePrice, acceptablePriceImpactBps, entryMarkPrice } =
       increasePositionParams || {};
+
     return (
       <>
         <InfoRow
@@ -1146,7 +1155,7 @@ export function TradeBox(p: Props) {
   }
 
   function renderTriggerOrderInfo() {
-    const { nextPositionValues } = decreasePositionParams || {};
+    const { nextPositionValues, isClosing } = decreasePositionParams || {};
 
     return (
       <>
@@ -1155,13 +1164,13 @@ export function TradeBox(p: Props) {
             className="SwapBox-info-row"
             label={t`Leverage`}
             value={
-              nextPositionValues?.nextLeverage && toTokenInput.usdAmount.gt(0) ? (
-                <ValueTransition
-                  from={formatLeverage(existingPosition?.leverage)}
-                  to={formatLeverage(nextPositionValues.nextLeverage) || "-"}
-                />
+              isClosing ? (
+                "-"
               ) : (
-                formatLeverage(leverage)
+                <ValueTransition
+                  from={formatLeverage(existingPosition.leverage)}
+                  to={formatLeverage(nextPositionValues?.nextLeverage)}
+                />
               )
             }
           />
@@ -1171,7 +1180,12 @@ export function TradeBox(p: Props) {
           <InfoRow
             className="SwapBox-info-row"
             label={t`Size`}
-            value={<ValueTransition from={formatUsd(existingPosition.sizeInUsd)!} to={undefined} />}
+            value={
+              <ValueTransition
+                from={formatUsd(existingPosition.sizeInUsd)!}
+                to={formatUsd(nextPositionValues?.nextSizeUsd)}
+              />
+            }
           />
         )}
 
@@ -1179,14 +1193,32 @@ export function TradeBox(p: Props) {
           <InfoRow
             className="SwapBox-info-row"
             label={t`Collateral (${existingPosition?.collateralToken?.symbol})`}
-            value={<ValueTransition from={formatUsd(existingPosition.collateralUsd)} to={undefined} />}
+            value={
+              <ValueTransition
+                from={formatUsd(existingPosition.collateralUsd)}
+                to={formatUsd(nextPositionValues?.nextCollateralUsd)}
+              />
+            }
           />
         )}
 
-        <InfoRow className="SwapBox-info-row" label={t`Mark Price`} value={formatUsd(markPrice) || "-"} />
+        <InfoRow
+          className="SwapBox-info-row"
+          label={t`Mark Price`}
+          value={formatUsd(decreasePositionParams?.exitMarkPrice) || "-"}
+        />
 
-        <InfoRow className="SwapBox-info-row" label={t`Trigger Price`} value={formatUsd(triggerPrice) || "-"} />
-        {/* <InfoRow className="SwapBox-info-row" label={t`Acceptable Price`} value={formatUsd(acceptablePrice) || "-"} /> */}
+        <InfoRow
+          className="SwapBox-info-row"
+          label={t`Trigger Price`}
+          value={formatUsd(decreasePositionParams?.triggerPrice) || "-"}
+        />
+
+        <InfoRow
+          className="SwapBox-info-row"
+          label={t`Acceptable Price`}
+          value={formatUsd(decreasePositionParams?.acceptablePrice) || "-"}
+        />
 
         <InfoRow
           className="SwapBox-info-row"
@@ -1205,7 +1237,16 @@ export function TradeBox(p: Props) {
           <InfoRow
             className="SwapBox-info-row"
             label={t`Liq. Price`}
-            value={<ValueTransition from={formatUsd(existingPosition.liqPrice)!} to={undefined} />}
+            value={
+              isClosing ? (
+                "-"
+              ) : (
+                <ValueTransition
+                  from={formatUsd(existingPosition.liqPrice)!}
+                  to={formatUsd(nextPositionValues?.nextLiqPrice)}
+                />
+              )
+            }
           />
         )}
 
@@ -1300,6 +1341,7 @@ export function TradeBox(p: Props) {
         ordersData={ordersData}
         executionFee={executionFee}
         existingPosition={existingPosition}
+        keepLeverage={keepLeverage}
         setKeepLeverage={setKeepLeverage}
         error={error}
         shouldDisableValidation={shouldDisableValidation}

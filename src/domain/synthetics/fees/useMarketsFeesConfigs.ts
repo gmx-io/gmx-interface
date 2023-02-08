@@ -1,8 +1,8 @@
-import { getContract } from "config/contracts";
 import DataStore from "abis/DataStore.json";
 import SyntheticsReader from "abis/SyntheticsReader.json";
-import { useMulticall } from "lib/multicall";
+import { getContract } from "config/contracts";
 import {
+  maxPositionImpactFactorForLiquidationsKey,
   maxPositionImpactFactorKey,
   positionFeeFactorKey,
   positionImpactExponentFactorKey,
@@ -11,11 +11,12 @@ import {
   swapImpactExponentFactorKey,
   swapImpactFactorKey,
 } from "config/dataStore";
-import { MarketsFeesConfigsData } from "./types";
+import { BigNumber } from "ethers";
+import { useMulticall } from "lib/multicall";
+import { bigNumberify } from "lib/numbers";
 import { getContractMarketPrices, useMarketsData } from "../markets";
 import { useAvailableTokensData } from "../tokens";
-import { bigNumberify } from "lib/numbers";
-import { BigNumber } from "ethers";
+import { MarketsFeesConfigsData } from "./types";
 
 type MarketFeesConfigsResult = {
   marketsFeesConfigs: MarketsFeesConfigsData;
@@ -73,6 +74,10 @@ export function useMarketsFeesConfigs(chainId: number): MarketFeesConfigsResult 
                 methodName: "getUint",
                 params: [maxPositionImpactFactorKey(marketAddress, false)],
               },
+              maxPositionImpactFactorForLiquidations: {
+                methodName: "getUint",
+                params: [maxPositionImpactFactorForLiquidationsKey(marketAddress)],
+              },
               positionImpactExponentFactor: {
                 methodName: "getUint",
                 params: [positionImpactExponentFactorKey(marketAddress)],
@@ -119,6 +124,8 @@ export function useMarketsFeesConfigs(chainId: number): MarketFeesConfigsResult 
           positionImpactFactorNegative: dataStoreValues.positionImpactFactorNegative.returnValues[0],
           maxPositionImpactFactorPositive: dataStoreValues.maxPositionImpactFactorPositive.returnValues[0],
           maxPositionImpactFactorNegative: dataStoreValues.maxPositionImpactFactorNegative.returnValues[0],
+          maxPositionImpactFactorForLiquidations:
+            dataStoreValues.maxPositionImpactFactorForLiquidations.returnValues[0],
           positionImpactExponentFactor: dataStoreValues.positionImpactExponentFactor.returnValues[0],
           swapFeeFactor: dataStoreValues.swapFeeFactor.returnValues[0],
           swapImpactFactorPositive: dataStoreValues.swapImpactFactorPositive.returnValues[0],

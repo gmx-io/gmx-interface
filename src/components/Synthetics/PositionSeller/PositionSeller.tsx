@@ -271,7 +271,7 @@ export function PositionSeller(p: Props) {
       ? getLiquidationPrice({
           sizeUsd: nextSizeUsd,
           collateralUsd: nextCollateralUsd,
-          averagePrice: position?.averagePrice,
+          indexPrice: position?.averagePrice,
           isLong: position?.isLong,
         })
       : undefined;

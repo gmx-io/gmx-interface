@@ -111,7 +111,7 @@ export function getPriceImpactForPosition(
   feesConfigs: MarketsFeesConfigsData,
   marketAddress: string | undefined,
   sizeDeltaUsd: BigNumber | undefined,
-  isLong: boolean
+  isLong?: boolean
 ) {
   const openInterest = getOpenInterest(openInterestData, marketAddress);
   const feesConfig = getMarketFeesConfig(feesConfigs, marketAddress);

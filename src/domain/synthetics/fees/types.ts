@@ -38,6 +38,7 @@ export type MarketFeesConfig = {
   positionImpactFactorNegative: BigNumber;
   maxPositionImpactFactorPositive: BigNumber;
   maxPositionImpactFactorNegative: BigNumber;
+  maxPositionImpactFactorForLiquidations: BigNumber;
   positionImpactExponentFactor: BigNumber;
 
   swapFeeFactor: BigNumber;

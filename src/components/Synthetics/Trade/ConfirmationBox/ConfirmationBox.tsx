@@ -132,6 +132,7 @@ export function ConfirmationBox(p: Props) {
 
   const fees = p.swapParams?.fees || p.increasePositionParams?.fees || p.decreasePositionParams?.fees;
 
+  const shouldCheckPayTokenApproval = isSwap || isIncrease;
   const payToken = tokenIn || initialCollateralToken;
   const payAmount = p.swapParams?.amountIn || p.increasePositionParams?.initialCollateralAmount;
   const routerAddress = getContract(chainId, "SyntheticsRouter");
@@ -215,7 +216,7 @@ export function ConfirmationBox(p: Props) {
   };
 
   function getSubmitButtonState(): { text: string; disabled?: boolean; onClick?: () => void } {
-    if (!isAllowanceLoaded || !payToken) {
+    if (shouldCheckPayTokenApproval && (!isAllowanceLoaded || !payToken)) {
       return {
         text: t`Loading...`,
         disabled: true,
@@ -355,7 +356,7 @@ export function ConfirmationBox(p: Props) {
         : DecreasePositionSwapType.NoSwap,
       tokensData,
       setPendingPositionUpdate,
-    });
+    }).then(p.onSubmitted);
   }
 
   function onSubmit() {
@@ -668,7 +669,7 @@ export function ConfirmationBox(p: Props) {
 
           <ExchangeInfoRow label={t`Collateral`}>
             <Tooltip
-              handle={formatUsd(p.increasePositionParams?.collateralUsd)}
+              handle={formatUsd(p.increasePositionParams?.collateralUsdAfterFees)}
               position="right-bottom"
               renderContent={() => {
                 return (
@@ -689,7 +690,7 @@ export function ConfirmationBox(p: Props) {
                     <div className="Tooltip-divider" />
                     <StatsTooltipRow
                       label={t`Collateral`}
-                      value={formatUsd(p.increasePositionParams?.collateralUsd) || "-"}
+                      value={formatUsd(p.increasePositionParams?.collateralUsdAfterFees) || "-"}
                       showDollar={false}
                     />
                   </>

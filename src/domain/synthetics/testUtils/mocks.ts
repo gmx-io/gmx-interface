@@ -186,6 +186,7 @@ export function mockFeeConfigsData(
       positionImpactFactorNegative: expandDecimals(1, 23),
       maxPositionImpactFactorPositive: expandDecimals(2, 23),
       maxPositionImpactFactorNegative: expandDecimals(1, 23),
+      maxPositionImpactFactorForLiquidations: expandDecimals(1, 23),
       positionImpactExponentFactor: expandDecimals(2, 30),
 
       swapFeeFactor: expandDecimals(2, 27),

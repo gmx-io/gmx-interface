@@ -41,6 +41,10 @@ export const MAX_PNL_FACTOR_KEY = hashString("MAX_PNL_FACTOR");
 
 export const MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY = hashString("MAX_PNL_FACTOR_FOR_WITHDRAWALS");
 
+export const MAX_POSITION_IMPACT_FACTOR_FOR_LIQUIDATIONS_KEY = hashString(
+  "MAX_POSITION_IMPACT_FACTOR_FOR_LIQUIDATIONS"
+);
+
 export const POSITION_IMPACT_POOL_AMOUNT_KEY = hashString("POSITION_IMPACT_POOL_AMOUNT");
 
 export const SWAP_IMPACT_POOL_AMOUNT_KEY = hashString("SWAP_IMPACT_POOL_AMOUNT");
@@ -150,6 +154,10 @@ export function maxPnlFactorForWithdrawalsKey(market: string, isLong: boolean) {
 
 export function positionImpactPoolAmountKey(market: string) {
   return hashData(["bytes32", "address"], [POSITION_IMPACT_POOL_AMOUNT_KEY, market]);
+}
+
+export function maxPositionImpactFactorForLiquidationsKey(market: string) {
+  return hashData(["bytes32", "address"], [MAX_POSITION_IMPACT_FACTOR_FOR_LIQUIDATIONS_KEY, market]);
 }
 
 export function swapImpactPoolAmountKey(market: string, token: string) {

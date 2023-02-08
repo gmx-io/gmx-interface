@@ -1,6 +1,9 @@
+import { PositionsUpdates, getPositionUpdate } from "context/SyntheticsEvents";
+import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
-import { BASIS_POINTS_DIVISOR, MAX_LEVERAGE, USD_DECIMALS } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "lib/legacy";
 import { applyFactor, expandDecimals, formatAmount, formatUsd, roundUpDivision } from "lib/numbers";
+import { MarketsFeesConfigsData, getMarketFeesConfig } from "../fees";
 import {
   Market,
   MarketsData,
@@ -13,9 +16,6 @@ import {
 } from "../markets";
 import { TokenPrices, TokensData, convertToUsd, getTokenData } from "../tokens";
 import { AggregatedPositionData, Position, PositionsData } from "./types";
-import { PositionsUpdates, getPositionUpdate } from "context/SyntheticsEvents";
-import { Token } from "domain/tokens";
-import { MarketsFeesConfigsData, getMarketFeesConfig } from "../fees";
 
 export function getPosition(positionsData: PositionsData, positionKey?: string) {
   if (!positionKey) return undefined;
@@ -43,7 +43,8 @@ export function getAggregatedPositionData(
   pendingUpdates: PositionsUpdates,
   contractUpdates: PositionsUpdates,
   positionKey?: string,
-  savedIsPnlInLeverage?: boolean
+  savedIsPnlInLeverage?: boolean,
+  maxLeverage?: BigNumber
 ): AggregatedPositionData | undefined {
   if (!positionKey) return undefined;
 
@@ -165,12 +166,14 @@ export function getAggregatedPositionData(
   const liqPrice = getLiquidationPrice({
     sizeUsd: position.sizeInUsd,
     collateralUsd,
-    averagePrice,
+    indexPrice: averagePrice,
     positionFeeFactor: feesConfig?.positionFeeFactor,
+    maxPriceImpactFactor: feesConfig?.maxPositionImpactFactorForLiquidations,
     pendingBorrowingFeesUsd: position.pendingBorrowingFees,
     pendingFundingFeesUsd: pendingFundingFeesUsd,
     pnl: pnl,
     isLong: position.isLong,
+    maxLeverage,
   });
 
   return {
@@ -217,8 +220,6 @@ export function getMarkPrice(prices: TokenPrices | undefined, isIncrease: boolea
 
   return shouldUseMaxPrice ? prices?.maxPrice : prices?.minPrice;
 }
-
-// Todo: remove?
 
 export function getNextPositionPnl(p: {
   pnl?: BigNumber;
@@ -292,20 +293,27 @@ export function getPositionValueUsd(p: { indexToken?: Token; indexPrice?: BigNum
   return convertToUsd(p.sizeInTokens, p.indexToken?.decimals, p.indexPrice);
 }
 
-// add liquidation price impact
 export function getLiquidationPrice(p: {
   sizeUsd?: BigNumber;
   collateralUsd?: BigNumber;
-  // get Pnl after decrease order
   pnl?: BigNumber;
-  averagePrice?: BigNumber;
+  indexPrice?: BigNumber;
   positionFeeFactor?: BigNumber;
+  maxPriceImpactFactor?: BigNumber;
   pendingFundingFeesUsd?: BigNumber;
   pendingBorrowingFeesUsd?: BigNumber;
+  maxLeverage?: BigNumber;
   isLong?: boolean;
 }) {
-  if (!p.sizeUsd?.gt(0) || !p.collateralUsd?.gt(0) || !p.averagePrice?.gt(0) || !p.positionFeeFactor?.gt(0))
+  if (
+    !p.sizeUsd?.gt(0) ||
+    !p.collateralUsd?.gt(0) ||
+    !p.indexPrice?.gt(0) ||
+    !p.positionFeeFactor?.gt(0) ||
+    !p.maxLeverage?.gt(0)
+  ) {
     return undefined;
+  }
 
   let remainingCollateralUsd = p.collateralUsd;
 
@@ -313,8 +321,12 @@ export function getLiquidationPrice(p: {
     remainingCollateralUsd = remainingCollateralUsd.sub(p.pnl.abs());
   }
 
-  // TODO: Add liquidation fee?
   let feesUsd: BigNumber = applyFactor(p.sizeUsd, p.positionFeeFactor);
+
+  if (p.maxPriceImpactFactor) {
+    const maxNegativePriceImpact = applyFactor(p.sizeUsd, p.maxPriceImpactFactor);
+    feesUsd = feesUsd.add(maxNegativePriceImpact);
+  }
 
   if (p.pendingFundingFeesUsd) {
     feesUsd = feesUsd.add(p.pendingFundingFeesUsd);
@@ -328,16 +340,16 @@ export function getLiquidationPrice(p: {
     liquidationAmountUsd: feesUsd,
     sizeUsd: p.sizeUsd,
     collateralUsd: remainingCollateralUsd,
-    averagePrice: p.averagePrice,
+    averagePrice: p.indexPrice,
     isLong: p.isLong,
   });
 
   const liqPriceForMaxLeverage = getLiquidationPriceFromDelta({
-    liquidationAmountUsd: p.sizeUsd.mul(BASIS_POINTS_DIVISOR).div(MAX_LEVERAGE),
+    liquidationAmountUsd: p.sizeUsd.mul(BASIS_POINTS_DIVISOR).div(p.maxLeverage),
     sizeUsd: p.sizeUsd,
     collateralUsd: remainingCollateralUsd,
     // nah
-    averagePrice: p.averagePrice,
+    averagePrice: p.indexPrice,
     isLong: p.isLong,
   });
 
@@ -385,7 +397,6 @@ export function getLiquidationPriceFromDelta(p: {
 export function getLeverage(p: {
   sizeUsd?: BigNumber;
   collateralUsd?: BigNumber;
-  // get Pnl after decrease order
   pnl?: BigNumber;
   pendingFundingFeesUsd?: BigNumber;
   pendingBorrowingFeesUsd?: BigNumber;

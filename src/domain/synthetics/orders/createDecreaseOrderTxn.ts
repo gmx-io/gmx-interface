@@ -101,25 +101,17 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
   const primaryPriceOverrides: PriceOverrides = {};
   const secondaryPriceOverrides: PriceOverrides = {};
 
-  if (p.triggerPrice) {
-    secondaryPriceOverrides[p.indexTokenAddress] = {
-      minPrice: p.triggerPrice,
-      maxPrice: p.triggerPrice,
-    };
-  } else {
-    // primaryPriceOverrides[p.indexTokenAddress] = {
-    //   minPrice: acceptablePrice,
-    //   maxPrice: acceptablePrice,
-    // };
-  }
+  const isTrigger = p.orderType === OrderType.StopLossDecrease || p.orderType === OrderType.LimitDecrease;
 
-  await simulateExecuteOrderTxn(chainId, library, {
-    primaryPriceOverrides,
-    secondaryPriceOverrides,
-    createOrderMulticallPayload: encodedPayload,
-    value: wntAmount,
-    tokensData: p.tokensData,
-  });
+  if (!isTrigger) {
+    await simulateExecuteOrderTxn(chainId, library, {
+      primaryPriceOverrides,
+      secondaryPriceOverrides,
+      createOrderMulticallPayload: encodedPayload,
+      value: wntAmount,
+      tokensData: p.tokensData,
+    });
+  }
 
   const longText = p.isLong ? t`Long` : t`Short`;
 

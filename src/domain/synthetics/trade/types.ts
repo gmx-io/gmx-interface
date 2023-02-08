@@ -29,6 +29,7 @@ export type IncreasePositionAmounts = {
   initialCollateralUsd: BigNumber;
   collateralAmount: BigNumber;
   collateralUsd: BigNumber;
+  collateralUsdAfterFees: BigNumber;
   sizeDeltaUsd: BigNumber;
   sizeDeltaInTokens: BigNumber;
   sizeDeltaAfterFeesUsd: BigNumber;
@@ -46,11 +47,20 @@ export type IncreasePositionAmounts = {
 export type DecreasePositionAmounts = {
   sizeDeltaUsd: BigNumber;
   sizeDeltaInTokens: BigNumber;
-  collateralDeltaUsd: BigNumber;
-  collateralDeltaAmount: BigNumber;
+  collateralDeltaUsd?: BigNumber;
+  collateralDeltaAmount?: BigNumber;
+  pnlDelta?: BigNumber;
+  isClosing: boolean;
   receiveTokenAmount?: BigNumber;
   receiveUsd?: BigNumber;
-  acceptablePrice?: BigNumber;
+  positionFeeUsd?: BigNumber;
+  positionPriceImpactDeltaUsd?: BigNumber;
+  exitMarkPrice: BigNumber;
+  triggerPrice?: BigNumber;
+  triggerPricePrefix?: string;
+  acceptablePrice: BigNumber;
+  acceptablePriceImpactBps: BigNumber;
+  acceptablePriceAfterSlippage: BigNumber;
 };
 
 export type SwapTradeParams = SwapAmounts & {
@@ -77,8 +87,6 @@ export type DecreasePositionTradeParams = DecreasePositionAmounts & {
   collateralToken: TokenData;
   receiveToken: TokenData;
   nextPositionValues?: NextPositionValues;
-  triggerPricePrefix?: string;
-  triggerPrice?: BigNumber;
   fees?: TradeFees;
 };
 
@@ -88,6 +96,7 @@ export type NextPositionValues = {
   nextCollateralUsd?: BigNumber;
   nextSizeUsd?: BigNumber;
   nextPnl?: BigNumber;
+  nextEntryPrice?: BigNumber;
 };
 
 export type SwapStats = {

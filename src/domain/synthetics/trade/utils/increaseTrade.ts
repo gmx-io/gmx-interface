@@ -1,4 +1,5 @@
 import {
+  MarketFeesConfig,
   MarketsFeesConfigsData,
   getMarketFeesConfig,
   getPositionFee,
@@ -6,7 +7,7 @@ import {
 } from "domain/synthetics/fees";
 import { Market, MarketsData, MarketsOpenInterestData, MarketsPoolsData } from "domain/synthetics/markets";
 import { getAcceptablePrice } from "domain/synthetics/orders";
-import { AggregatedPositionData, getLiquidationPrice, getMarkPrice } from "domain/synthetics/positions";
+import { AggregatedPositionData, getLeverage, getLiquidationPrice, getMarkPrice } from "domain/synthetics/positions";
 import { TokenData, TokensData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";
@@ -35,6 +36,7 @@ export function getIncreasePositionTradeParams(p: {
   isLimit?: boolean;
   allowedSlippage?: number;
   acceptablePriceImpactBps?: BigNumber;
+  maxLeverage?: BigNumber;
   findSwapPath: (usdIn: BigNumber, opts?: { disablePriceImpact?: boolean }) => SwapPathStats | undefined;
 }): IncreasePositionTradeParams | undefined {
   const increasePositionAmounts = getIncreasePositionAmounts(p);
@@ -46,14 +48,15 @@ export function getIncreasePositionTradeParams(p: {
   const feesConfig = getMarketFeesConfig(p.feesConfigs, p.market.marketTokenAddress);
 
   const nextPositionValues = getNextPositionValuesForIncreaseTrade({
+    feesConfig,
     existingPosition: p.existingPosition,
     sizeDeltaUsd: increasePositionAmounts.sizeDeltaUsd,
     collateralDeltaUsd: increasePositionAmounts.collateralUsd,
     showPnlInLeverage: p.showPnlInLeverage,
     leverage: p.leverage,
     entryMarkPrice: increasePositionAmounts.entryMarkPrice,
-    positionFeeFactor: feesConfig?.positionFeeFactor,
     isLong: p.isLong,
+    maxLeverage: p.maxLeverage,
   });
 
   const fees = getDisplayedTradeFees({
@@ -79,14 +82,15 @@ export function getIncreasePositionTradeParams(p: {
 }
 
 export function getNextPositionValuesForIncreaseTrade(p: {
+  feesConfig?: MarketFeesConfig;
   existingPosition?: AggregatedPositionData;
   sizeDeltaUsd: BigNumber;
   collateralDeltaUsd: BigNumber;
   showPnlInLeverage?: boolean;
   leverage?: BigNumber;
   entryMarkPrice?: BigNumber;
-  positionFeeFactor?: BigNumber;
   isLong?: boolean;
+  maxLeverage?: BigNumber;
 }): NextPositionValues {
   const nextSizeUsd = p.existingPosition ? p.existingPosition?.sizeInUsd.add(p.sizeDeltaUsd) : p.sizeDeltaUsd;
 
@@ -94,24 +98,33 @@ export function getNextPositionValuesForIncreaseTrade(p: {
     ? p.existingPosition?.collateralUsd.add(p.collateralDeltaUsd)
     : p.collateralDeltaUsd;
 
+  const nextLeverage = getLeverage({
+    sizeUsd: nextSizeUsd,
+    collateralUsd: nextCollateralUsd,
+    pnl: p.showPnlInLeverage ? p.existingPosition?.pnl : undefined,
+    pendingBorrowingFeesUsd: BigNumber.from(0), // deducted on order ?
+    pendingFundingFeesUsd: BigNumber.from(0), // deducted on order ?
+  });
+
   const nextLiqPrice = getLiquidationPrice({
     sizeUsd: nextSizeUsd,
     collateralUsd: nextCollateralUsd,
-    averagePrice: p.entryMarkPrice,
-    positionFeeFactor: p.positionFeeFactor,
-    pendingBorrowingFeesUsd: BigNumber.from(0), // deducted on order
-    pendingFundingFeesUsd: BigNumber.from(0), // deducted on order
+    indexPrice: p.entryMarkPrice,
+    positionFeeFactor: p.feesConfig?.positionFeeFactor,
+    maxPriceImpactFactor: p.feesConfig?.maxPositionImpactFactorForLiquidations,
+    pendingBorrowingFeesUsd: BigNumber.from(0), // deducted on order ?
+    pendingFundingFeesUsd: BigNumber.from(0), // deducted on order ?
     pnl: p.existingPosition?.pnl,
     isLong: p.isLong,
+    maxLeverage: p.maxLeverage,
   });
-
-  const nextLeverage = p.leverage;
 
   return {
     nextSizeUsd,
     nextCollateralUsd,
     nextLeverage,
     nextLiqPrice,
+    nextEntryPrice: p.entryMarkPrice,
   };
 }
 
@@ -149,6 +162,7 @@ export function getIncreasePositionAmounts(p: {
     initialCollateralUsd: BigNumber.from(0),
     collateralAmount: BigNumber.from(0),
     collateralUsd: BigNumber.from(0),
+    collateralUsdAfterFees: BigNumber.from(0),
     sizeDeltaUsd: BigNumber.from(0),
     sizeDeltaInTokens: BigNumber.from(0),
     sizeDeltaAfterFeesUsd: BigNumber.from(0),
@@ -180,8 +194,9 @@ export function getIncreasePositionAmounts(p: {
 
     const initialCollateralAmount = swapAmounts.amountIn;
     const initialCollateralUsd = swapAmounts.usdIn;
-    const collateralUsd = swapAmounts.usdOut;
-    const collateralAmount = swapAmounts.amountOut;
+
+    let collateralUsd = swapAmounts.usdOut;
+    let collateralAmount = swapAmounts.amountOut;
 
     let sizeDeltaUsd = collateralUsd;
 
@@ -202,6 +217,7 @@ export function getIncreasePositionAmounts(p: {
       ) || BigNumber.from(0);
 
     const sizeDeltaAfterFeesUsd = sizeDeltaUsd.sub(positionFeeUsd);
+    const collateralUsdAfterFees = collateralUsd.sub(positionFeeUsd);
 
     const {
       acceptablePrice = entryMarkPrice,
@@ -226,8 +242,9 @@ export function getIncreasePositionAmounts(p: {
     return {
       initialCollateralAmount,
       initialCollateralUsd,
-      collateralAmount,
-      collateralUsd,
+      collateralAmount: collateralAmount,
+      collateralUsd: collateralUsd,
+      collateralUsdAfterFees,
       sizeDeltaUsd,
       sizeDeltaInTokens,
       sizeDeltaAfterFeesUsd,
@@ -312,8 +329,9 @@ export function getIncreasePositionAmounts(p: {
     return {
       initialCollateralAmount,
       initialCollateralUsd,
-      collateralAmount,
-      collateralUsd,
+      collateralAmount: collateralAmount,
+      collateralUsd: collateralUsd,
+      collateralUsdAfterFees: collateralUsd,
       sizeDeltaUsd,
       sizeDeltaInTokens,
       sizeDeltaAfterFeesUsd,

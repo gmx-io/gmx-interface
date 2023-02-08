@@ -12,7 +12,6 @@ import {
   withdrawalGasLimitKey,
 } from "config/dataStore";
 import { BigNumber } from "ethers";
-import { useMemo } from "react";
 import { GasLimitsConfig } from "./types";
 
 type GasLimitsResult = {
@@ -23,7 +22,7 @@ type GasLimitsResult = {
 export function useGasLimitsConfig(chainId: number): GasLimitsResult {
   const { data, isLoading } = useMulticall(chainId, "useGasLimitsConfig", {
     key: [],
-    request: {
+    request: () => ({
       dataStore: {
         contractAddress: getContract(chainId, "DataStore"),
         abi: DataStore.abi,
@@ -70,7 +69,7 @@ export function useGasLimitsConfig(chainId: number): GasLimitsResult {
           },
         },
       },
-    },
+    }),
     parseResponse: (res) => {
       const results = res.dataStore;
 
@@ -89,10 +88,8 @@ export function useGasLimitsConfig(chainId: number): GasLimitsResult {
     },
   });
 
-  return useMemo(() => {
-    return {
-      gasLimits: data,
-      isLoading,
-    };
-  }, [data, isLoading]);
+  return {
+    gasLimits: data,
+    isLoading,
+  };
 }

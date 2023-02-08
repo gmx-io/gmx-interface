@@ -2,15 +2,15 @@ import { TokenPrices } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";
 
-export function getMarkPrice(prices: TokenPrices | undefined, isIncrease: boolean, isLong: boolean) {
+export function getMarkPrice(prices: TokenPrices | undefined, isIncrease?: boolean, isLong?: boolean) {
   const shouldUseMaxPrice = isIncrease ? isLong : !isLong;
 
   return shouldUseMaxPrice ? prices?.maxPrice : prices?.minPrice;
 }
 
 export function getTriggerPricePrefix(p: {
-  isLong: boolean;
-  isIncrease: boolean;
+  isLong?: boolean;
+  isIncrease?: boolean;
   triggerPrice?: BigNumber;
   markPrice?: BigNumber;
 }) {

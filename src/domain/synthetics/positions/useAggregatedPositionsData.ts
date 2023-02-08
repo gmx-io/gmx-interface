@@ -7,6 +7,7 @@ import { AggregatedPositionsData } from "./types";
 import { getAggregatedPositionData } from "./utils";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useMarketsFeesConfigs } from "../fees/useMarketsFeesConfigs";
+import { usePositionsConstants } from "./usePositionsConstants";
 
 type AggregatedPositionsDataResult = {
   aggregatedPositionsData: AggregatedPositionsData;
@@ -22,6 +23,7 @@ export function useAggregatedPositionsData(
   const { marketsData, isLoading: isMarketsLoading } = useMarketsData(chainId);
   const { marketsFeesConfigs, isLoading: isFeesConfigsLoading } = useMarketsFeesConfigs(chainId);
   const { positionsData, isLoading: isPositionsLoading } = usePositionsData(chainId);
+  const { maxLeverage } = usePositionsConstants(chainId);
 
   return useMemo(() => {
     const positionKeys = uniq(Object.keys(positionsData).concat(Object.keys(pendingPositionsUpdates)));
@@ -36,7 +38,8 @@ export function useAggregatedPositionsData(
           pendingPositionsUpdates,
           positionsUpdates,
           positionKey,
-          p.savedIsPnlInLeverage
+          p.savedIsPnlInLeverage,
+          maxLeverage
         );
 
         if (position) {
@@ -54,6 +57,7 @@ export function useAggregatedPositionsData(
     isTokensLoading,
     marketsData,
     marketsFeesConfigs,
+    maxLeverage,
     p.savedIsPnlInLeverage,
     pendingPositionsUpdates,
     positionsData,
