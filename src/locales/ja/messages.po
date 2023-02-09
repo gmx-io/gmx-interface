@@ -148,6 +148,19 @@ msgstr "注文を有効にするため規約に同意する"
 msgid "Accept that orders are not guaranteed to execute and trigger orders may not settle at the trigger price"
 msgstr "注文が執行される保証がないこと、トリガー注文がトリガー価格で決済されない可能性があることを承諾する"
 
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+msgid "Acceptable Price"
+msgstr ""
+
+#: src/components/Synthetics/Trade/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+msgid "Acceptable Price Impact"
+msgstr ""
+
 #: src/pages/Actions/Actions.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Account"
@@ -209,6 +222,8 @@ msgstr "同意する"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Allow up to 1% slippage"
 msgstr "最大1%のスリッページを許容する"
 
@@ -219,6 +234,8 @@ msgstr ""
 #: src/App/App.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Allowed Slippage"
 msgstr "最大スリッページ"
 
@@ -260,6 +277,10 @@ msgstr "告知"
 msgid "App"
 msgstr ""
 
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+msgid "App disabled, pending {0} upgrade"
+msgstr ""
+
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval failed"
 msgstr "承認が失敗しました"
@@ -281,6 +302,7 @@ msgstr "GMXを承認する"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Approve {0}"
 msgstr "{0}を承認する"
 
@@ -296,6 +318,7 @@ msgstr "GMXを承認中"
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Approving {0}..."
 msgstr "{0}を承認中"
 
@@ -335,6 +358,7 @@ msgstr "利用可能"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Available Liquidity"
 msgstr "利用可能な流動性"
 
@@ -376,8 +400,8 @@ msgstr "残高"
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Balance:"
 msgstr "残高"
 
@@ -561,6 +585,7 @@ msgstr "エラーにより執行できません"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Cancel"
 msgstr "キャンセル"
 
@@ -694,7 +719,7 @@ msgstr "行をクリックしてポジションのマーケットを選択し、
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Close"
 msgstr "クローズ"
 
@@ -703,8 +728,8 @@ msgid "Close failed."
 msgstr "クローズできませんでした"
 
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-msgid "Close size is greater than position size"
-msgstr ""
+#~ msgid "Close size is greater than position size"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close submitted!"
@@ -761,6 +786,8 @@ msgstr "コインベースウォレットが検出できません。"
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Collateral"
 msgstr "担保"
 
@@ -768,7 +795,7 @@ msgstr "担保"
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Collateral ({0})"
 msgstr "担保  ({0})"
 
@@ -779,8 +806,8 @@ msgstr "担保  ({0})"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Collateral In"
 msgstr "担保の種類"
 
@@ -831,18 +858,22 @@ msgid "Compounding..."
 msgstr "請求およびステーク中..."
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Confirm Limit Order"
 msgstr "リミット注文を確認する"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Confirm Long"
 msgstr "ロングを確認する"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Confirm Short"
 msgstr "ショートを確認する"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Confirm Swap"
 msgstr "スワップを確認する"
 
@@ -850,8 +881,11 @@ msgstr "スワップを確認する"
 msgid "Confirm Trigger Order"
 msgstr ""
 
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+msgid "Confirm high price impact"
+msgstr ""
+
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "Confirm {0}"
 msgstr ""
 
@@ -943,6 +977,14 @@ msgstr "{tokenSymbol} {longOrShortText}を増やせませんでした。最大�
 
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Couldn't find a swap path"
+msgstr ""
+
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+msgid "Couldn't find a swap path with enough liquidity"
+msgstr ""
+
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+msgid "Couldn't find a swap route with enough liquidity"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -1082,6 +1124,7 @@ msgstr "分散型<0/>パーペチュアル取引所"
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
 msgstr "減額"
@@ -1091,7 +1134,6 @@ msgid "Decrease active: {0}, executed: {1}, cancelled: {2}"
 msgstr "減額 アクティブ: {0} 執行済: {1} キャンセル済] {2}"
 
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 msgid "Decrease size"
 msgstr ""
 
@@ -1235,6 +1277,7 @@ msgstr "エコシステム"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/Trade/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
 msgid "Edit"
 msgstr "編集"
 
@@ -1355,6 +1398,10 @@ msgstr "受け取りアドレスを入力"
 msgid "Enter Referral Code"
 msgstr "紹介コードを入力"
 
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+msgid "Enter a  price"
+msgstr ""
+
 #: src/components/Referrals/AddAffiliateCode.js
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Enter a code"
@@ -1376,6 +1423,7 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Enter a price"
 msgstr "価格を入力"
 
@@ -1383,6 +1431,8 @@ msgstr "価格を入力"
 msgid "Enter a ratio"
 msgstr ""
 
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Enter a size"
 msgstr ""
@@ -1391,6 +1441,7 @@ msgstr ""
 msgid "Enter a swap trigger ratio"
 msgstr ""
 
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Enter a trigger price"
 msgstr ""
@@ -1407,7 +1458,8 @@ msgstr ""
 #: src/components/Migration/Migration.js
 #: src/components/Synthetics/GmSwap/utils.ts
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/Trade/utils.ts
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV1.js
@@ -1437,14 +1489,13 @@ msgstr "新しい価格を入力"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Entry Price"
 msgstr "エントリー価格"
 
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-msgid "Entry price"
-msgstr ""
+#~ msgid "Entry price"
+#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1480,13 +1531,16 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Execution Fee"
 msgstr "執行手数料"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-msgid "Execution fee"
-msgstr ""
+#~ msgid "Execution fee"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
@@ -1514,7 +1568,7 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Fees"
@@ -1522,9 +1576,12 @@ msgstr "手数料"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/TradeFees/TradeFees.tsx
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Fees and price impact"
+msgstr ""
+
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+msgid "Fees are high"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -1534,6 +1591,11 @@ msgstr "{0} を {1}にスワップするには手数料が高額です"
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Fees are high to swap from {0} to {1}. <0/>{2} is needed for collateral."
 msgstr "{0} を {1}にスワップするには手数料が高額です。<0/>{2}が担保に必要です。"
+
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+msgid "Fees exceed amount"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Fees generated by GMX"
@@ -1771,11 +1833,12 @@ msgid "High USDG Slippage, Long Anyway"
 msgstr "USDGスリッページが大きいです。ともかくロングする"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "I am aware of the high price impact"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "I am aware of the trigger orders"
 msgstr "トリガー注文について承知しています"
 
@@ -1819,6 +1882,7 @@ msgstr "誤ったネットワーク"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase"
 msgstr "増加"
@@ -1882,6 +1946,8 @@ msgstr "GLP残高不足"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Insufficient liquidity"
 msgstr "流動性不足"
 
@@ -1892,6 +1958,7 @@ msgid "Insufficient liquidity, change \"Collateral In\""
 msgstr "流動性不足、\"担保資産\"を変更してください"
 
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Insufficient receive token liquidity"
 msgstr "受け取るトークンの流動性が不足しています"
 
@@ -1904,6 +1971,8 @@ msgstr "ステークされたトークンが不足しています"
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/GmSwap/utils.ts
 #: src/components/Synthetics/GmSwap/utils.ts
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Insufficient {0} balance"
 msgstr "{0} 残高の不足"
@@ -1926,8 +1995,14 @@ msgstr "無効な受け取り人"
 msgid "Invalid Receiver Address"
 msgstr "無効な受け取りアドレス"
 
+#: src/components/Synthetics/Trade/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
+msgid "Invalid acceptable price impact value"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Invalid liq. price"
 msgstr "無効な清算価格"
 
@@ -1959,7 +2034,7 @@ msgstr "求人"
 
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Keep leverage at {0}"
 msgstr ""
 
@@ -1998,6 +2073,10 @@ msgstr "ガスのため最低 {0} {1} を残しておいてください"
 msgid "Leftover collateral below 5 USD"
 msgstr "残りの担保が5 USD以下"
 
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+msgid "Leftover collateral below {0} USD"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Leftover position below 10 USD"
 msgstr "残りのポジションが10 USD以下"
@@ -2013,8 +2092,8 @@ msgstr "残りのポジションが10 USD以下"
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Leverage"
 msgstr "レバレッジ"
 
@@ -2022,11 +2101,11 @@ msgstr "レバレッジ"
 msgid "Leverage disabled, pending {0} upgrade"
 msgstr "{0}の更新が未完了のためレバレッジが無効化されています"
 
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Leverage slider"
 msgstr ""
 
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Leverage:"
 msgstr ""
 
@@ -2034,7 +2113,7 @@ msgstr ""
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/components/Synthetics/Trade/utils.ts
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Limit"
 msgstr "指値"
 
@@ -2048,6 +2127,7 @@ msgstr "指値"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Limit Price"
 msgstr "指値"
 
@@ -2077,7 +2157,6 @@ msgstr "リンクがクリップボードにコピーされました"
 
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Liq Price"
 msgstr ""
 
@@ -2094,10 +2173,11 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Liq. Price"
 msgstr "清算価格"
 
@@ -2180,8 +2260,9 @@ msgstr "ロード中"
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/Trade/utils.ts
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
 #: src/domain/synthetics/orders/utils.ts
@@ -2200,8 +2281,8 @@ msgid "Long Collateral"
 msgstr ""
 
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
-msgid "Long Pool"
-msgstr ""
+#~ msgid "Long Pool"
+#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -2255,7 +2336,7 @@ msgstr "MEVオプティマイザー"
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Mark Price"
 msgstr "マーク価格"
@@ -2265,7 +2346,7 @@ msgid "Mark Price:"
 msgstr "マーク価格"
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Mark:"
 msgstr ""
 
@@ -2281,9 +2362,8 @@ msgstr "マーク: {0}"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
-#: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
-#: src/components/Synthetics/Trade/utils.ts
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Market"
 msgstr "マーケット"
 
@@ -2325,6 +2405,10 @@ msgstr "{0}の最大キャパシティに到達しています"
 msgid "Max Pool Capacity"
 msgstr "最大プールキャパシティ"
 
+#: src/components/Synthetics/Trade/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
+msgid "Max acceptable price impact precision is 0.01%"
+msgstr ""
+
 #: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -2335,6 +2419,7 @@ msgid "Max amount exceeded"
 msgstr "最大値超過"
 
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Max close amount exceeded"
 msgstr "最大クローズ値超過"
 
@@ -2345,6 +2430,10 @@ msgstr "最大レバレッジ100倍を超過し、損失と手数料を差し引
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Max leverage: {0}x"
 msgstr ""
 
@@ -2375,6 +2464,7 @@ msgid "Max {0} long capacity"
 msgstr "{0}の最大ロングキャパシティ"
 
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Max {0} long exceeded"
 msgstr "{0}の最大ロング値を超過しています"
 
@@ -2389,6 +2479,7 @@ msgid "Max {0} short capacity"
 msgstr "{0}の最大ショートキャパシティ"
 
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Max {0} short exceeded"
 msgstr "{0}の最大ショート値を超過しています"
 
@@ -2452,18 +2543,23 @@ msgid "Migration submitted! <0>View status.</0>"
 msgstr "移行申し込み済! <0>状況を確認する</0>"
 
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-msgid "Min Receive"
-msgstr ""
+#~ msgid "Min Receive"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Min leverage: 1.1x"
 msgstr "最小レバレッジ: 1.1倍"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Min order: 10 USD"
 msgstr "最小注文金額: 10 USD"
+
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+msgid "Min order: {0}"
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Min required collateral"
@@ -2473,7 +2569,12 @@ msgstr "最低必要担保額"
 msgid "Min residual collateral: 10 USD"
 msgstr ""
 
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+msgid "Min residual collateral: {0} USD"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Min. Receive"
 msgstr "最低受け取り額"
 
@@ -2628,12 +2729,12 @@ msgid "Open Interest"
 msgstr "建玉"
 
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
-msgid "Open Interest Long"
-msgstr ""
+#~ msgid "Open Interest Long"
+#~ msgstr ""
 
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
-msgid "Open Interest Short"
-msgstr ""
+#~ msgid "Open Interest Short"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Open a position"
@@ -2805,11 +2906,13 @@ msgstr "パートナーシップと統合"
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Pay"
 msgstr "支払い"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Pay Amount"
 msgstr "支払い額"
 
@@ -2817,7 +2920,7 @@ msgstr "支払い額"
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Pay:"
 msgstr ""
 
@@ -2892,13 +2995,17 @@ msgstr "ポジション"
 msgid "Position Fee (0.1% of position size)"
 msgstr "ポジション手数料 (ポジションサイズの0.1%)"
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Position Fee ({0} of position size)"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Position close disabled, pending {0} upgrade"
 msgstr "{0}の更新が未完了のためポジションのクローズは無効化されています"
 
 #: src/components/Synthetics/TradeFees/TradeFees.tsx
-msgid "Position fee"
-msgstr ""
+#~ msgid "Position fee"
+#~ msgstr ""
 
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
@@ -2936,9 +3043,10 @@ msgstr "前へ"
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
+#: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV1.js
@@ -2952,9 +3060,14 @@ msgstr "前へ"
 msgid "Price"
 msgstr "価格"
 
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+msgid "Price Impact"
+msgstr ""
+
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Price above Liq. Price"
 msgstr "清算価格を上回る価格"
 
@@ -2964,12 +3077,15 @@ msgstr "清算価格を上回る価格"
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Price above Mark Price"
 msgstr "マーク価格を上回る価格"
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Price below Liq. Price"
 msgstr "清算価格を下回る価格"
 
@@ -2979,6 +3095,8 @@ msgstr "清算価格を下回る価格"
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Price below Mark Price"
 msgstr "マーク価格を下回る価格"
 
@@ -2986,8 +3104,8 @@ msgstr "マーク価格を下回る価格"
 msgid "Price conditions are met"
 msgstr "価格の条件が満たされていません"
 
-#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
-#: src/components/Synthetics/TradeFees/TradeFees.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price impact"
 msgstr ""
 
@@ -3087,6 +3205,7 @@ msgstr "アフィリエイトとしてこのアカウントが獲得した紹介
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Receive"
@@ -3096,8 +3215,8 @@ msgstr "受け取る"
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Receive:"
 msgstr ""
 
@@ -3246,6 +3365,7 @@ msgid "Same as current active code"
 msgstr "現在アクティブなコードと同じです"
 
 #: src/App/App.js
+#: src/components/Synthetics/Trade/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
 msgid "Save"
 msgstr "保存"
 
@@ -3270,7 +3390,7 @@ msgstr "言語選択"
 msgid "Select Market"
 msgstr "マーケット選択"
 
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Select a market"
 msgstr ""
 
@@ -3282,6 +3402,7 @@ msgstr "選択肢を選ぶ"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Select different tokens"
 msgstr "別のトークンを選択"
@@ -3397,8 +3518,9 @@ msgstr "ポジションをシェアする"
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/Trade/utils.ts
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
 #: src/domain/synthetics/orders/utils.ts
@@ -3417,8 +3539,8 @@ msgid "Short Collateral"
 msgstr ""
 
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
-msgid "Short Pool"
-msgstr ""
+#~ msgid "Short Pool"
+#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -3455,7 +3577,7 @@ msgstr ""
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Size"
 msgstr "サイズ"
 
@@ -3469,6 +3591,8 @@ msgstr "ページの読み込みを速くする"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Spread"
 msgstr "スプレッド"
 
@@ -3604,13 +3728,13 @@ msgstr "供給量"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/Trade/utils.ts
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Swap"
 msgstr "スワップ"
 
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 msgid "Swap Fee"
 msgstr ""
 
@@ -3644,7 +3768,8 @@ msgstr "スワップできませんでした。"
 msgid "Swap on 1inch"
 msgstr "1inchでスワップする"
 
-#: src/components/Synthetics/TradeFees/TradeFees.tsx
+#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap price impact"
 msgstr ""
 
@@ -3657,8 +3782,8 @@ msgid "Swap submitted."
 msgstr "スワップ申し込み完了。"
 
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
-msgid "Swap to {0}"
-msgstr ""
+#~ msgid "Swap to {0}"
+#~ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Swap {0} USDG for {1} {2}"
@@ -3684,7 +3809,7 @@ msgstr "{0}を1inchでスワップする"
 msgid "Swap {0} submitted!"
 msgstr "{0}のスワップの申し込み完了!"
 
-#: src/components/Synthetics/TradeFees/TradeFees.tsx
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap {0} to {1}"
 msgstr ""
 
@@ -3709,8 +3834,12 @@ msgid "Swap {0} {1} for {2} {3}"
 msgstr "{0} {1}を{2} {3}にスワップする"
 
 #: src/domain/synthetics/orders/createSwapOrderTxn.ts
-msgid "Swap {fromText} to {toText}"
+msgid "Swap {fromText} for {toText}"
 msgstr ""
+
+#: src/domain/synthetics/orders/createSwapOrderTxn.ts
+#~ msgid "Swap {fromText} to {toText}"
+#~ msgstr ""
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "Swap {fromTokenText} for {toTokenText}"
@@ -3735,6 +3864,7 @@ msgid "Swapping..."
 msgstr "スワップ中..."
 
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Swaps disabled, pending {0} upgrade"
 msgstr "{0}の更新が未完了のためスワップが停止中です"
 
@@ -3828,7 +3958,12 @@ msgstr "esGMXトークンはいつでもステークまたはべスティング�
 msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 msgstr "マーク価格が変化したため、アドレスの横に表示されている\"...\"アイコンをクリックして最大許容スリッページを増やすことを検討してください。"
 
+#: src/domain/synthetics/fees/utils/executionFee.ts
+msgid "The network cost to send transactions is high at the moment, please check the \"Execution Fee\" value before proceeding."
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "The order will only execute if the price conditions are met and there is sufficient liquidity"
 msgstr "価格の条件が満たされ、さらに十分な流動性が存在している場合にのみ注文は執行されます。"
 
@@ -3858,6 +3993,7 @@ msgid "The referral code can't be more than {MAX_REFERRAL_CODE_LENGTH} character
 msgstr "紹介コードは{MAX_REFERRAL_CODE_LENGTH}文字を超えることはできません。"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "The spread is > 1%, please ensure the trade details are acceptable before comfirming"
 msgstr "スプレッドが1%を超えています。このトレードの詳細が許容できるものであることを確かめてから、先に進んでください。"
 
@@ -3883,6 +4019,7 @@ msgid "There is not enough liquidity in a single token for your size. Please che
 msgstr "1種類のトークンでその額のスワップを実現するための十分な流動性がありません。「手数料を節約」セクションを読み、注文を複数に分割することを検討してください。"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met"
 msgstr "価格の条件が満たされたとしても、あなたの注文を執行するための十分な流動性が存在しない可能性があります。"
 
@@ -4135,13 +4272,13 @@ msgstr "移転中..."
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/components/Synthetics/Trade/utils.ts
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Trigger"
 msgstr "トリガー"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Trigger Price"
 msgstr "トリガー価格"
 
@@ -4562,6 +4699,8 @@ msgstr "より低い手数料を見つけるために上の\"担保資産\"ト�
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "You can change this in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are volatile."
 msgstr "ページ右上にある設定メニューでこれを変更することができます。<0/><1/>価格変動が激しい場合、最大スリッページを0.5%未満等に低く設定していると、注文が通らないことがあります。"
 
@@ -4593,6 +4732,10 @@ msgstr "{sender}からの未完了の移転があります。"
 msgid "You have an active Limit Order to Increase {longOrShortText} {sizeInToken} {0} (${1}) at price ${2}"
 msgstr "{longOrShortText} {sizeInToken} {0} (${1})を${2}の価格で増額するアクティブなリミット注文があります"
 
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+msgid "You have an active Limit Order to Increase {longShortText} {sizeText} at price {0}."
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.js
 msgid "You have an active order to decrease {longOrShortText} {sizeInToken} {0} (${1}) at {prefix} {2}"
 msgstr "{longOrShortText} {sizeInToken} {0} (${1})を{prefix} {2}で減額するアクティブな注文があります"
@@ -4600,6 +4743,10 @@ msgstr "{longOrShortText} {sizeInToken} {0} (${1})を{prefix} {2}で減額する
 #: src/components/Exchange/ConfirmationBox.js
 msgid "You have multiple existing Increase {longOrShortText} {0} limit orders"
 msgstr "{longOrShortText} {0}のリミット注文を増額する複数の注文があります"
+
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+msgid "You have multiple existing Increase {longShortText} {0} limit orders"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -4643,6 +4790,7 @@ msgid "Your esGMX (IOU) balance will decrease by your claim amount after claimin
 msgstr "あなたのesGMX (IOU)残高は請求後に請求額分だけ減少しますが、これは想定通りの挙動です。"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Your position's collateral after deducting fees."
 msgstr "手数料差引後のあなたのポジションの担保"
 
@@ -4679,6 +4827,7 @@ msgid "fee"
 msgstr "手数料"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "hide"
 msgstr "隠す"
 
@@ -4703,6 +4852,7 @@ msgid "time to liq"
 msgstr "清算までの時間"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "view"
 msgstr "見る"
 
@@ -4750,8 +4900,8 @@ msgstr "{0} GMXトークンを請求可能です。総報酬セクションの�
 
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
-msgid "{0} Pool Amount"
-msgstr ""
+#~ msgid "{0} Pool Amount"
+#~ msgstr ""
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "{0} Pool Capacity Reached"
@@ -4857,10 +5007,12 @@ msgid "{count, plural, one {Order} other {# Orders}}"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
 msgstr "{existingTriggerOrderLength, plural, one {このポジションに影響する可能性のあるアクティブなトリガー注文があります。} other {このポジションに影響する可能性のあるアクティブなトリガー注文が#あります。}}"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr "{existingTriggerOrderLength, plural, one {このポジションをオープンした後ただちに執行される可能性があるアクティブなトリガー注文があります。注文をキャンセルするか、または確認を押して続けてください。} other {このポジションをオープンした後ただちに執行される可能性があるアクティブなトリガー注文が#あります。注文をキャンセルするか、または確認を押して続けてください。}}"
 
@@ -4955,8 +5107,8 @@ msgid "{ordersText} canceled"
 msgstr ""
 
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
-msgid "{positionTypeText} {0}"
-msgstr ""
+#~ msgid "{positionTypeText} {0}"
+#~ msgstr ""
 
 #: src/components/StatsTooltip/StatsTooltip.tsx
 msgid "{title} on Arbitrum:"

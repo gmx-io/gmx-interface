@@ -148,6 +148,19 @@ msgstr ""
 msgid "Accept that orders are not guaranteed to execute and trigger orders may not settle at the trigger price"
 msgstr ""
 
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+msgid "Acceptable Price"
+msgstr ""
+
+#: src/components/Synthetics/Trade/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+msgid "Acceptable Price Impact"
+msgstr ""
+
 #: src/pages/Actions/Actions.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Account"
@@ -209,6 +222,8 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Allow up to 1% slippage"
 msgstr ""
 
@@ -219,6 +234,8 @@ msgstr ""
 #: src/App/App.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Allowed Slippage"
 msgstr ""
 
@@ -260,6 +277,10 @@ msgstr ""
 msgid "App"
 msgstr ""
 
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+msgid "App disabled, pending {0} upgrade"
+msgstr ""
+
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval failed"
 msgstr ""
@@ -281,6 +302,7 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Approve {0}"
 msgstr ""
 
@@ -296,6 +318,7 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Approving {0}..."
 msgstr ""
 
@@ -335,6 +358,7 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Available Liquidity"
 msgstr ""
 
@@ -376,8 +400,8 @@ msgstr ""
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Balance:"
 msgstr ""
 
@@ -561,6 +585,7 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Cancel"
 msgstr ""
 
@@ -694,7 +719,7 @@ msgstr ""
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Close"
 msgstr ""
 
@@ -703,8 +728,8 @@ msgid "Close failed."
 msgstr ""
 
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-msgid "Close size is greater than position size"
-msgstr ""
+#~ msgid "Close size is greater than position size"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close submitted!"
@@ -761,6 +786,8 @@ msgstr ""
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Collateral"
 msgstr ""
 
@@ -768,7 +795,7 @@ msgstr ""
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Collateral ({0})"
 msgstr ""
 
@@ -779,8 +806,8 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Collateral In"
 msgstr ""
 
@@ -831,18 +858,22 @@ msgid "Compounding..."
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Confirm Limit Order"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Confirm Long"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Confirm Short"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Confirm Swap"
 msgstr ""
 
@@ -850,8 +881,11 @@ msgstr ""
 msgid "Confirm Trigger Order"
 msgstr ""
 
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+msgid "Confirm high price impact"
+msgstr ""
+
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "Confirm {0}"
 msgstr ""
 
@@ -943,6 +977,14 @@ msgstr ""
 
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Couldn't find a swap path"
+msgstr ""
+
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+msgid "Couldn't find a swap path with enough liquidity"
+msgstr ""
+
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+msgid "Couldn't find a swap route with enough liquidity"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -1082,6 +1124,7 @@ msgstr ""
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
 msgstr ""
@@ -1091,7 +1134,6 @@ msgid "Decrease active: {0}, executed: {1}, cancelled: {2}"
 msgstr ""
 
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
 msgid "Decrease size"
 msgstr ""
 
@@ -1235,6 +1277,7 @@ msgstr ""
 #: src/components/Exchange/OrdersList.js
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/Trade/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
 msgid "Edit"
 msgstr ""
 
@@ -1355,6 +1398,10 @@ msgstr ""
 msgid "Enter Referral Code"
 msgstr ""
 
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+msgid "Enter a  price"
+msgstr ""
+
 #: src/components/Referrals/AddAffiliateCode.js
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Enter a code"
@@ -1376,6 +1423,7 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Enter a price"
 msgstr ""
 
@@ -1383,6 +1431,8 @@ msgstr ""
 msgid "Enter a ratio"
 msgstr ""
 
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Enter a size"
 msgstr ""
@@ -1391,6 +1441,7 @@ msgstr ""
 msgid "Enter a swap trigger ratio"
 msgstr ""
 
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Enter a trigger price"
 msgstr ""
@@ -1407,7 +1458,8 @@ msgstr ""
 #: src/components/Migration/Migration.js
 #: src/components/Synthetics/GmSwap/utils.ts
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/Trade/utils.ts
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV1.js
@@ -1437,14 +1489,13 @@ msgstr ""
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Entry Price"
 msgstr ""
 
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-msgid "Entry price"
-msgstr ""
+#~ msgid "Entry price"
+#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1480,13 +1531,16 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Execution Fee"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-msgid "Execution fee"
-msgstr ""
+#~ msgid "Execution fee"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
@@ -1514,7 +1568,7 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Fees"
@@ -1522,9 +1576,12 @@ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/TradeFees/TradeFees.tsx
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Fees and price impact"
+msgstr ""
+
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+msgid "Fees are high"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -1533,6 +1590,11 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Fees are high to swap from {0} to {1}. <0/>{2} is needed for collateral."
+msgstr ""
+
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+msgid "Fees exceed amount"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -1771,11 +1833,12 @@ msgid "High USDG Slippage, Long Anyway"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "I am aware of the high price impact"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "I am aware of the trigger orders"
 msgstr ""
 
@@ -1819,6 +1882,7 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase"
 msgstr ""
@@ -1882,6 +1946,8 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Insufficient liquidity"
 msgstr ""
 
@@ -1892,6 +1958,7 @@ msgid "Insufficient liquidity, change \"Collateral In\""
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Insufficient receive token liquidity"
 msgstr ""
 
@@ -1904,6 +1971,8 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/GmSwap/utils.ts
 #: src/components/Synthetics/GmSwap/utils.ts
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Insufficient {0} balance"
 msgstr ""
@@ -1926,8 +1995,14 @@ msgstr ""
 msgid "Invalid Receiver Address"
 msgstr ""
 
+#: src/components/Synthetics/Trade/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
+msgid "Invalid acceptable price impact value"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Invalid liq. price"
 msgstr ""
 
@@ -1959,7 +2034,7 @@ msgstr ""
 
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Keep leverage at {0}"
 msgstr ""
 
@@ -1998,6 +2073,10 @@ msgstr ""
 msgid "Leftover collateral below 5 USD"
 msgstr ""
 
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+msgid "Leftover collateral below {0} USD"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Leftover position below 10 USD"
 msgstr ""
@@ -2013,8 +2092,8 @@ msgstr ""
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Leverage"
 msgstr ""
 
@@ -2022,11 +2101,11 @@ msgstr ""
 msgid "Leverage disabled, pending {0} upgrade"
 msgstr ""
 
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Leverage slider"
 msgstr ""
 
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Leverage:"
 msgstr ""
 
@@ -2034,7 +2113,7 @@ msgstr ""
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/components/Synthetics/Trade/utils.ts
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Limit"
 msgstr ""
 
@@ -2048,6 +2127,7 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Limit Price"
 msgstr ""
 
@@ -2077,7 +2157,6 @@ msgstr ""
 
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Liq Price"
 msgstr ""
 
@@ -2094,10 +2173,11 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Liq. Price"
 msgstr ""
 
@@ -2177,8 +2257,9 @@ msgstr ""
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/Trade/utils.ts
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
 #: src/domain/synthetics/orders/utils.ts
@@ -2197,8 +2278,8 @@ msgid "Long Collateral"
 msgstr ""
 
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
-msgid "Long Pool"
-msgstr ""
+#~ msgid "Long Pool"
+#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -2252,7 +2333,7 @@ msgstr ""
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Mark Price"
 msgstr ""
@@ -2262,7 +2343,7 @@ msgid "Mark Price:"
 msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Mark:"
 msgstr ""
 
@@ -2278,9 +2359,8 @@ msgstr ""
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
-#: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
-#: src/components/Synthetics/Trade/utils.ts
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Market"
 msgstr ""
 
@@ -2322,6 +2402,10 @@ msgstr ""
 msgid "Max Pool Capacity"
 msgstr ""
 
+#: src/components/Synthetics/Trade/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
+msgid "Max acceptable price impact precision is 0.01%"
+msgstr ""
+
 #: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -2332,6 +2416,7 @@ msgid "Max amount exceeded"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Max close amount exceeded"
 msgstr ""
 
@@ -2342,6 +2427,10 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Max leverage: {0}x"
 msgstr ""
 
@@ -2372,6 +2461,7 @@ msgid "Max {0} long capacity"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Max {0} long exceeded"
 msgstr ""
 
@@ -2386,6 +2476,7 @@ msgid "Max {0} short capacity"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Max {0} short exceeded"
 msgstr ""
 
@@ -2449,17 +2540,22 @@ msgid "Migration submitted! <0>View status.</0>"
 msgstr ""
 
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-msgid "Min Receive"
-msgstr ""
+#~ msgid "Min Receive"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Min leverage: 1.1x"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Min order: 10 USD"
+msgstr ""
+
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+msgid "Min order: {0}"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -2470,7 +2566,12 @@ msgstr ""
 msgid "Min residual collateral: 10 USD"
 msgstr ""
 
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+msgid "Min residual collateral: {0} USD"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Min. Receive"
 msgstr ""
 
@@ -2625,12 +2726,12 @@ msgid "Open Interest"
 msgstr ""
 
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
-msgid "Open Interest Long"
-msgstr ""
+#~ msgid "Open Interest Long"
+#~ msgstr ""
 
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
-msgid "Open Interest Short"
-msgstr ""
+#~ msgid "Open Interest Short"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Open a position"
@@ -2802,11 +2903,13 @@ msgstr ""
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Pay"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Pay Amount"
 msgstr ""
 
@@ -2814,7 +2917,7 @@ msgstr ""
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Pay:"
 msgstr ""
 
@@ -2889,13 +2992,17 @@ msgstr ""
 msgid "Position Fee (0.1% of position size)"
 msgstr ""
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Position Fee ({0} of position size)"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Position close disabled, pending {0} upgrade"
 msgstr ""
 
 #: src/components/Synthetics/TradeFees/TradeFees.tsx
-msgid "Position fee"
-msgstr ""
+#~ msgid "Position fee"
+#~ msgstr ""
 
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
@@ -2933,9 +3040,10 @@ msgstr ""
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
+#: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV1.js
@@ -2949,9 +3057,14 @@ msgstr ""
 msgid "Price"
 msgstr ""
 
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+msgid "Price Impact"
+msgstr ""
+
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Price above Liq. Price"
 msgstr ""
 
@@ -2961,12 +3074,15 @@ msgstr ""
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Price above Mark Price"
 msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Price below Liq. Price"
 msgstr ""
 
@@ -2976,6 +3092,8 @@ msgstr ""
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Price below Mark Price"
 msgstr ""
 
@@ -2983,8 +3101,8 @@ msgstr ""
 msgid "Price conditions are met"
 msgstr ""
 
-#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
-#: src/components/Synthetics/TradeFees/TradeFees.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price impact"
 msgstr ""
 
@@ -3084,6 +3202,7 @@ msgstr ""
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Receive"
@@ -3093,8 +3212,8 @@ msgstr ""
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Receive:"
 msgstr ""
 
@@ -3243,6 +3362,7 @@ msgid "Same as current active code"
 msgstr ""
 
 #: src/App/App.js
+#: src/components/Synthetics/Trade/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
 msgid "Save"
 msgstr ""
 
@@ -3267,7 +3387,7 @@ msgstr ""
 msgid "Select Market"
 msgstr ""
 
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Select a market"
 msgstr ""
 
@@ -3279,6 +3399,7 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Select different tokens"
 msgstr ""
@@ -3394,8 +3515,9 @@ msgstr ""
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/Trade/utils.ts
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
 #: src/domain/synthetics/orders/utils.ts
@@ -3414,8 +3536,8 @@ msgid "Short Collateral"
 msgstr ""
 
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
-msgid "Short Pool"
-msgstr ""
+#~ msgid "Short Pool"
+#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -3452,7 +3574,7 @@ msgstr ""
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Size"
 msgstr ""
 
@@ -3466,6 +3588,8 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Spread"
 msgstr ""
 
@@ -3601,13 +3725,13 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/Trade/utils.ts
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Swap"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 msgid "Swap Fee"
 msgstr ""
 
@@ -3641,7 +3765,8 @@ msgstr ""
 msgid "Swap on 1inch"
 msgstr ""
 
-#: src/components/Synthetics/TradeFees/TradeFees.tsx
+#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap price impact"
 msgstr ""
 
@@ -3654,8 +3779,8 @@ msgid "Swap submitted."
 msgstr ""
 
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
-msgid "Swap to {0}"
-msgstr ""
+#~ msgid "Swap to {0}"
+#~ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Swap {0} USDG for {1} {2}"
@@ -3681,7 +3806,7 @@ msgstr ""
 msgid "Swap {0} submitted!"
 msgstr ""
 
-#: src/components/Synthetics/TradeFees/TradeFees.tsx
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap {0} to {1}"
 msgstr ""
 
@@ -3706,8 +3831,12 @@ msgid "Swap {0} {1} for {2} {3}"
 msgstr ""
 
 #: src/domain/synthetics/orders/createSwapOrderTxn.ts
-msgid "Swap {fromText} to {toText}"
+msgid "Swap {fromText} for {toText}"
 msgstr ""
+
+#: src/domain/synthetics/orders/createSwapOrderTxn.ts
+#~ msgid "Swap {fromText} to {toText}"
+#~ msgstr ""
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "Swap {fromTokenText} for {toTokenText}"
@@ -3732,6 +3861,7 @@ msgid "Swapping..."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Swaps disabled, pending {0} upgrade"
 msgstr ""
 
@@ -3825,7 +3955,12 @@ msgstr ""
 msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 msgstr ""
 
+#: src/domain/synthetics/fees/utils/executionFee.ts
+msgid "The network cost to send transactions is high at the moment, please check the \"Execution Fee\" value before proceeding."
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "The order will only execute if the price conditions are met and there is sufficient liquidity"
 msgstr ""
 
@@ -3855,6 +3990,7 @@ msgid "The referral code can't be more than {MAX_REFERRAL_CODE_LENGTH} character
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "The spread is > 1%, please ensure the trade details are acceptable before comfirming"
 msgstr ""
 
@@ -3880,6 +4016,7 @@ msgid "There is not enough liquidity in a single token for your size. Please che
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met"
 msgstr ""
 
@@ -4132,13 +4269,13 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/components/Synthetics/Trade/utils.ts
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Trigger"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/SwapBox/SwapBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Trigger Price"
 msgstr ""
 
@@ -4559,6 +4696,8 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "You can change this in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are volatile."
 msgstr ""
 
@@ -4590,12 +4729,20 @@ msgstr ""
 msgid "You have an active Limit Order to Increase {longOrShortText} {sizeInToken} {0} (${1}) at price ${2}"
 msgstr ""
 
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+msgid "You have an active Limit Order to Increase {longShortText} {sizeText} at price {0}."
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.js
 msgid "You have an active order to decrease {longOrShortText} {sizeInToken} {0} (${1}) at {prefix} {2}"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "You have multiple existing Increase {longOrShortText} {0} limit orders"
+msgstr ""
+
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+msgid "You have multiple existing Increase {longShortText} {0} limit orders"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
@@ -4640,6 +4787,7 @@ msgid "Your esGMX (IOU) balance will decrease by your claim amount after claimin
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Your position's collateral after deducting fees."
 msgstr ""
 
@@ -4676,6 +4824,7 @@ msgid "fee"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "hide"
 msgstr ""
 
@@ -4700,6 +4849,7 @@ msgid "time to liq"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "view"
 msgstr ""
 
@@ -4747,8 +4897,8 @@ msgstr ""
 
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
-msgid "{0} Pool Amount"
-msgstr ""
+#~ msgid "{0} Pool Amount"
+#~ msgstr ""
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "{0} Pool Capacity Reached"
@@ -4851,10 +5001,12 @@ msgid "{count, plural, one {Order} other {# Orders}}"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr ""
 
@@ -4949,8 +5101,8 @@ msgid "{ordersText} canceled"
 msgstr ""
 
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
-msgid "{positionTypeText} {0}"
-msgstr ""
+#~ msgid "{positionTypeText} {0}"
+#~ msgstr ""
 
 #: src/components/StatsTooltip/StatsTooltip.tsx
 msgid "{title} on Arbitrum:"
