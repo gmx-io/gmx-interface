@@ -21,18 +21,6 @@ msgstr "01 Sep 2021"
 msgid "06 Jan 2022"
 msgstr "06 Jan 2022"
 
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "24h Change"
-msgstr "Variation sur 24h"
-
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "24h High"
-msgstr "Le plus haut sur 24h"
-
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "24h Low"
-msgstr "Le plus bas sur 24h"
-
 #: src/pages/Dashboard/DashboardV2.js
 msgid "24h Volume"
 msgstr "Volume sur 24h"
@@ -1745,7 +1733,7 @@ msgstr "Prix de liquidation"
 
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Liq. {0} {longOrShortText}"
-msgstr "Liq. {0} {longOrShortText}"
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Liquidated"
@@ -2189,7 +2177,7 @@ msgstr ""
 
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Open {0} {longOrShortText}"
-msgstr "Ouvert {0} {longOrShortText}"
+msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 msgid "Opening..."
