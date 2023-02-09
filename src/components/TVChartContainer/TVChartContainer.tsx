@@ -43,9 +43,10 @@ export default function TVChartContainer({
   const drawLineOnChart = useCallback(
     (title: string, price: number) => {
       if (chartReady && tvWidgetRef.current?.activeChart?.().dataReady()) {
-        return tvWidgetRef.current
-          .activeChart()
-          .createPositionLine({ disableUndo: true })
+        const chart = tvWidgetRef.current.activeChart();
+        const positionLine = chart.createPositionLine({ disableUndo: true });
+
+        return positionLine
           .setText(title)
           .setPrice(price)
           .setQuantity("")
