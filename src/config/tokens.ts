@@ -658,11 +658,11 @@ export function getNormalizedTokenSymbol(tokenSymbol) {
   return tokenSymbol;
 }
 
-const CHARTS_AVAILABLE_TOKENS = {
+const AVAILABLE_CHART_TOKENS = {
   [ARBITRUM]: ["ETH", "BTC", "LINK", "UNI"],
   [AVALANCHE]: ["AVAX", "ETH", "BTC"],
 };
 
 export function isChartAvailabeForToken(chainId: number, tokenSymbol: string) {
-  return CHARTS_AVAILABLE_TOKENS[chainId]?.includes(getNormalizedTokenSymbol(tokenSymbol)) ?? false;
+  return AVAILABLE_CHART_TOKENS[chainId]?.includes(getNormalizedTokenSymbol(tokenSymbol)) ?? false;
 }

@@ -47,6 +47,7 @@ const disabledFeatures = [
   "popup_hints",
   "header_in_fullscreen_mode",
   "use_localstorage_for_settings",
+  "right_bar_stays_on_scroll",
 ];
 const enabledFeatures = [
   "side_toolbar_in_fullscreen_mode",

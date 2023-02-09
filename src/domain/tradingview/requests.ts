@@ -1,11 +1,8 @@
 import { getServerUrl } from "config/backend";
-import { getNativeToken, getTokenBySymbol, getWrappedToken, isChartAvailabeForToken } from "config/tokens";
+import { getTokenBySymbol, getWrappedToken } from "config/tokens";
 import { getChainlinkChartPricesFromGraph, getChartPricesFromStats } from "domain/prices";
 
 export const getTokenChartPrice = async (chainId: number, symbol: string, period: string) => {
-  if (!isChartAvailabeForToken(chainId, symbol)) {
-    symbol = getNativeToken(chainId).symbol;
-  }
   let prices;
   try {
     prices = await getChartPricesFromStats(chainId, symbol, period);
@@ -24,9 +21,6 @@ export const getTokenChartPrice = async (chainId: number, symbol: string, period
 };
 
 export async function getCurrentPriceOfToken(chainId: number, symbol: string) {
-  if (!isChartAvailabeForToken(chainId, symbol)) {
-    symbol = getNativeToken(chainId).symbol;
-  }
   try {
     const indexPricesUrl = getServerUrl(chainId, "/prices");
     const response = await fetch(indexPricesUrl);

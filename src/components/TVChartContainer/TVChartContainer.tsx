@@ -7,6 +7,7 @@ import { ChartData, IChartingLibraryWidget, IPositionLineAdapter } from "../../c
 import { getObjectKeyFromValue } from "domain/tradingview/utils";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
 import { SUPPORTED_RESOLUTIONS, TV_CHART_RELOAD_INTERVAL } from "config/tradingview";
+import { isChartAvailabeForToken } from "config/tokens";
 
 type ChartLine = {
   price: number;
@@ -103,9 +104,11 @@ export default function TVChartContainer({
 
   useEffect(() => {
     if (chartReady && tvWidgetRef.current && symbol !== tvWidgetRef.current?.activeChart?.().symbol()) {
-      tvWidgetRef.current.setSymbol(symbol, tvWidgetRef.current.activeChart().resolution(), () => {});
+      if (isChartAvailabeForToken(chainId, symbol)) {
+        tvWidgetRef.current.setSymbol(symbol, tvWidgetRef.current.activeChart().resolution(), () => {});
+      }
     }
-  }, [symbol, chartReady, period]);
+  }, [symbol, chartReady, period, chainId]);
 
   useEffect(() => {
     const widgetOptions = {

@@ -1,4 +1,4 @@
-import { getTokens } from "config/tokens";
+import { getNativeToken, getTokens, isChartAvailabeForToken } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS } from "config/tradingview";
 import { timezoneOffset } from "domain/prices";
 import { useChainId } from "lib/chains";
@@ -32,6 +32,10 @@ export default function useTVDatafeed() {
           setTimeout(() => callback(configurationData));
         },
         resolveSymbol(symbolName, onSymbolResolvedCallback) {
+          if (!isChartAvailabeForToken(chainId, symbolName)) {
+            symbolName = getNativeToken(chainId).symbol;
+          }
+
           const stableTokens = getTokens(chainId)
             .filter((t) => t.isStable)
             .map((t) => t.symbol);
@@ -55,7 +59,8 @@ export default function useTVDatafeed() {
 
         async getBars(symbolInfo, resolution, periodParams, onHistoryCallback, onErrorCallback) {
           const { from, to, countBack } = periodParams;
-          const toWithOffset = to + timezoneOffset;
+          const toWithOffset = (to + timezoneOffset) * 1000;
+          const fromWithOffset = (from + timezoneOffset) * 1000;
 
           if (!SUPPORTED_RESOLUTIONS[resolution]) {
             return onErrorCallback("[getBars] Invalid resolution");
@@ -67,7 +72,7 @@ export default function useTVDatafeed() {
 
           try {
             const bars = await tvRequests.current?.getHistoryBars(chainId, ticker, resolution, isStable, countBack);
-            const filteredBars = bars.filter((bar) => bar.time >= from * 1000 && bar.time < toWithOffset * 1000);
+            const filteredBars = bars.filter((bar) => bar.time >= fromWithOffset && bar.time < toWithOffset);
             onHistoryCallback(filteredBars, { noData: filteredBars.length === 0 });
           } catch {
             onErrorCallback("Unable to load historical bar data");
