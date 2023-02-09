@@ -21,18 +21,6 @@ msgstr "2021년 9월 1일"
 msgid "06 Jan 2022"
 msgstr "2022년 1월 6일"
 
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "24h Change"
-msgstr "24시간 변화"
-
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "24h High"
-msgstr "24시간 최고가"
-
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "24h Low"
-msgstr "24시간 최저가"
-
 #: src/pages/Dashboard/DashboardV2.js
 msgid "24h Volume"
 msgstr "24시간 거래량"
@@ -1745,7 +1733,7 @@ msgstr "청산가"
 
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Liq. {0} {longOrShortText}"
-msgstr "청산 {0} {longOrShortText}"
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Liquidated"
@@ -2189,7 +2177,7 @@ msgstr ""
 
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Open {0} {longOrShortText}"
-msgstr "{0} {longOrShortText} 열기"
+msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 msgid "Opening..."
