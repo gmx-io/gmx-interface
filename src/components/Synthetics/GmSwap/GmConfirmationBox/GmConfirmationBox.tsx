@@ -8,7 +8,7 @@ import { getContract } from "config/contracts";
 import { convertTokenAddress, getToken } from "config/tokens";
 import { createDepositTxn } from "domain/synthetics/markets/createDepositTxn";
 import { createWithdrawalTxn } from "domain/synthetics/markets/createWithdrawalTxn";
-import { convertToTokenAmount, convertToUsd, getTokenData, needTokenApprove } from "domain/synthetics/tokens";
+import { convertToUsd, getTokenData, needTokenApprove } from "domain/synthetics/tokens";
 import { TokensData } from "domain/synthetics/tokens/types";
 import { useTokenAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 import { Token } from "domain/tokens";
@@ -26,11 +26,11 @@ import {
 } from "domain/synthetics/markets";
 import { useAvailableTokensData } from "domain/synthetics/tokens";
 
-import { formatTokenAmount, formatTokenAmountWithUsd } from "lib/numbers";
-import "./GmConfirmationBox.scss";
-import { GmFees } from "../GmFees/GmFees";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { ExecutionFee } from "domain/synthetics/fees";
+import { formatTokenAmount, formatTokenAmountWithUsd } from "lib/numbers";
+import { GmFees } from "../GmFees/GmFees";
+import "./GmConfirmationBox.scss";
 
 type Props = {
   onClose: () => void;
@@ -74,15 +74,15 @@ export function GmConfirmationBox(p: Props) {
 
   const isDeposit = p.operationType === Operation.Deposit;
 
+  const market = getMarket(marketsData, p.marketTokenAddress);
+
   const marketToken = getMarketTokenData(marketTokensData, p.marketTokenAddress);
-  const longToken = getTokenData(tokensData, p.longDelta?.tokenAddress);
-  const shortToken = getTokenData(tokensData, p.shortDelta?.tokenAddress);
+  const longToken = getTokenData(tokensData, market?.longTokenAddress);
+  const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
 
   const longTokenText = getTokenText(longToken, p.longDelta?.tokenAmount, longToken?.prices?.maxPrice);
   const shortTokenText = getTokenText(shortToken, p.shortDelta?.tokenAmount, shortToken?.prices?.maxPrice);
   const marketTokenText = getTokenText(marketToken, p.marketTokenAmount, marketToken?.prices?.maxPrice);
-
-  const market = getMarket(marketsData, p.marketTokenAddress);
 
   const isAllowanceLoaded = Object.keys(tokenAllowanceData).length > 0;
 
@@ -177,22 +177,13 @@ export function GmConfirmationBox(p: Props) {
   function onCreateWithdrawal() {
     if (!account || !market || !p.executionFee || !longToken?.prices || !shortToken?.prices) return;
 
-    const marketLongAmount = p.longDelta
-      ? convertToTokenAmount(p.longDelta.usdAmount, longToken.decimals, longToken.prices.maxPrice)
-      : undefined;
-
-    const marketShortAmount = p.shortDelta
-      ? convertToTokenAmount(p.shortDelta.usdAmount, shortToken.decimals, shortToken.prices.maxPrice)
-      : undefined;
-
     createWithdrawalTxn(chainId, library, {
       account,
       longTokenAddress: market.longTokenAddress,
       shortTokenAddress: market.shortTokenAddress,
-      marketLongAmount,
-      marketShortAmount,
-      minLongTokenAmount: p.longDelta?.tokenAmount,
-      minShortTokenAmount: p.shortDelta?.tokenAmount,
+      marketTokenAmount: p.marketTokenAmount,
+      minLongTokenAmount: BigNumber.from(0),
+      minShortTokenAmount: BigNumber.from(0),
       marketTokenAddress: p.marketTokenAddress,
       executionFee: p.executionFee.feeTokenAmount,
     }).then(p.onSubmitted);

@@ -15,6 +15,27 @@ export enum TradeMode {
   Trigger = "Trigger",
 }
 
+export type DepositAmounts = {
+  marketTokenAmount: BigNumber;
+  marketTokenUsd: BigNumber;
+  longTokenAmount?: BigNumber;
+  longTokenUsd?: BigNumber;
+  shortTokenAmount?: BigNumber;
+  shortTokenUsd?: BigNumber;
+  swapFeeUsd: BigNumber;
+  swapPriceImpactDeltaUsd: BigNumber;
+};
+
+export type WithdrawalAmounts = {
+  marketTokenAmount: BigNumber;
+  marketTokenUsd: BigNumber;
+  longTokenAmount: BigNumber;
+  shortTokenAmount: BigNumber;
+  longTokenUsd: BigNumber;
+  shortTokenUsd: BigNumber;
+  swapFeeUsd: BigNumber;
+};
+
 export type SwapAmounts = {
   amountIn: BigNumber;
   usdIn: BigNumber;

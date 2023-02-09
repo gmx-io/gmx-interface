@@ -11,10 +11,9 @@ type Params = {
   longTokenAddress: string;
   shortTokenAddress: string;
   marketTokenAddress: string;
-  marketLongAmount?: BigNumber;
-  marketShortAmount?: BigNumber;
-  minLongTokenAmount?: BigNumber;
-  minShortTokenAmount?: BigNumber;
+  marketTokenAmount: BigNumber;
+  minLongTokenAmount: BigNumber;
+  minShortTokenAmount: BigNumber;
   executionFee: BigNumber;
 };
 
@@ -22,7 +21,7 @@ export function createWithdrawalTxn(chainId: number, library: Web3Provider, p: P
   const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, library.getSigner());
   const withdrawalVaultAddress = getContract(chainId, "WithdrawalVault");
 
-  const isNativeWithdrawal = Boolean(isAddressZero(p.longTokenAddress) && p.marketLongAmount?.gt(0));
+  const isNativeWithdrawal = isAddressZero(p.longTokenAddress) || isAddressZero(p.shortTokenAddress);
 
   const wntAmount = p.executionFee;
 
@@ -37,9 +36,7 @@ export function createWithdrawalTxn(chainId: number, library: Web3Provider, p: P
         initialShortToken: p.shortTokenAddress,
         longTokenSwapPath: [],
         shortTokenSwapPath: [],
-        marketTokenAmount: BigNumber.from(0)
-          .add(p.marketLongAmount || 0)
-          .add(p.marketShortAmount || 0),
+        marketTokenAmount: p.marketTokenAmount,
         minLongTokenAmount: p.minLongTokenAmount?.div(2) || BigNumber.from(0),
         minShortTokenAmount: p.minShortTokenAmount?.div(2) || BigNumber.from(0),
         shouldUnwrapNativeToken: isNativeWithdrawal,
@@ -50,7 +47,7 @@ export function createWithdrawalTxn(chainId: number, library: Web3Provider, p: P
   ];
 
   return callContract(chainId, contract, "multicall", [multicall], {
-    value: wntAmount,
+    value: wntAmount.mul(2),
     sentMsg: t`Withdrawal order sent`,
     successMsg: t`Success withdrawal order`,
     failMsg: t`Withdrawal order failed`,
