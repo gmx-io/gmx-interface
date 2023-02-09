@@ -15,9 +15,9 @@ const configurationData = {
 
 export default function useTVDatafeed() {
   const { chainId } = useChainId();
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>();
+  const intervalRef = useRef<ReturnType<typeof setInterval> | undefined>();
   const resetCacheRef = useRef<() => void | undefined>();
-  const activeTicker = useRef<string | null>();
+  const activeTicker = useRef<string | undefined>();
   const tvRequests = useRef<TVRequests>();
 
   useEffect(() => {

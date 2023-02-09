@@ -1,4 +1,5 @@
 import { ARBITRUM, AVALANCHE } from "config/chains";
+import { formatTVDate, formatTVTime } from "lib/dates";
 
 const chartStyleOverrides = ["candleStyle", "hollowCandleStyle", "haStyle"].reduce((acc, cv) => {
   acc[`mainSeriesProperties.${cv}.drawWick`] = true;
@@ -40,12 +41,14 @@ const disabledFeatures = [
   "header_symbol_search",
   "popup_hints",
   "header_in_fullscreen_mode",
+  "use_localstorage_for_settings",
 ];
 const enabledFeatures = [
   "side_toolbar_in_fullscreen_mode",
   "header_in_fullscreen_mode",
   "hide_resolution_in_legend",
   "items_favoriting",
+  "hide_left_toolbar_by_default",
 ];
 
 export const defaultChartProps = {
@@ -62,6 +65,17 @@ export const defaultChartProps = {
   disabled_features: disabledFeatures,
   custom_css_url: "/tradingview-chart.css",
   loading_screen: { backgroundColor: "#16182e", foregroundColor: "#2962ff" },
+  favorites: {
+    intervals: ["5", "15", "60", "240"],
+  },
+  custom_formatters: {
+    timeFormatter: {
+      format: (date) => formatTVTime(date),
+    },
+    dateFormatter: {
+      format: (date) => formatTVDate(date),
+    },
+  },
 };
 
 export const availableNetworksForChart = [ARBITRUM, AVALANCHE];

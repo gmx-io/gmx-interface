@@ -8,7 +8,7 @@ import { GMX_STATS_API_URL } from "config/backend";
 import { chainlinkClient } from "lib/subgraph/clients";
 import { sleep } from "lib/sleep";
 import { formatAmount } from "lib/numbers";
-import { getNormalizedTokenSymbol } from "config/tokens";
+import { getNativeToken, getNormalizedTokenSymbol, isChartAvailabeForToken } from "config/tokens";
 
 const BigNumber = ethers.BigNumber;
 
@@ -70,6 +70,10 @@ export function fillGaps(prices, periodSeconds) {
 
 export async function getLimitChartPricesFromStats(chainId, symbol, period, limit = 1) {
   symbol = getNormalizedTokenSymbol(symbol);
+
+  if (!isChartAvailabeForToken(chainId, symbol)) {
+    symbol = getNativeToken(chainId).symbol;
+  }
 
   const url = `${GMX_STATS_API_URL}/candles/${symbol}?preferableChainId=${chainId}&period=${period}&limit=${limit}`;
 

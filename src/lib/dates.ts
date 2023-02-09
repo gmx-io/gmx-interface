@@ -8,6 +8,14 @@ export function formatDate(time: number) {
   return formatDateFn(time * 1000, "dd MMM yyyy");
 }
 
+export function formatTVDate(date: Date) {
+  return formatDateFn(date, "dd MMM yyyy,");
+}
+
+export function formatTVTime(date: Date) {
+  return formatDateFn(date, "h:mm a");
+}
+
 export function getTimeRemaining(time: number) {
   const now = parseInt(String(Date.now() / 1000));
   if (time < now) {

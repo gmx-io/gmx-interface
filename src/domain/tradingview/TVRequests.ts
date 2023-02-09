@@ -28,7 +28,7 @@ export class TVRequests {
     this.lastPeriod = "";
   }
 
-  async getLastBar(chainId, ticker, period) {
+  async getLastBar(chainId: number, ticker: string, period: string) {
     if (!ticker || !period || !chainId) {
       throw new Error("Invalid input. Ticker, period, and chainId are required parameters.");
     }

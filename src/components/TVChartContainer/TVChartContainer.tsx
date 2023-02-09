@@ -6,9 +6,7 @@ import useTVDatafeed from "domain/tradingview/useTVDatafeed";
 import { ChartData, IChartingLibraryWidget, IPositionLineAdapter } from "../../charting_library";
 import { getObjectKeyFromValue } from "domain/tradingview/utils";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
-import { SUPPORTED_RESOLUTIONS } from "config/tradingview";
-
-const TV_RELOAD_INTERVAL = 15 * 60 * 1000; // 15 minutes
+import { SUPPORTED_RESOLUTIONS, TV_CHART_RELOAD_INTERVAL } from "config/tradingview";
 
 type ChartLine = {
   price: number;
@@ -71,7 +69,7 @@ export default function TVChartContainer({
         localStorage.setItem(TV_CHART_RELOAD_TIMESTAMP_KEY, Date.now().toString());
       } else {
         const tvReloadTimestamp = Number(localStorage.getItem(TV_CHART_RELOAD_TIMESTAMP_KEY));
-        if (tvReloadTimestamp && Date.now() - tvReloadTimestamp > TV_RELOAD_INTERVAL) {
+        if (tvReloadTimestamp && Date.now() - tvReloadTimestamp > TV_CHART_RELOAD_INTERVAL) {
           if (resetCache.current) {
             resetCache.current();
             tvWidgetRef.current?.activeChart().resetData();
@@ -109,14 +107,6 @@ export default function TVChartContainer({
   }, [symbol, chartReady, period]);
 
   useEffect(() => {
-    if (!chartReady || !tvWidgetRef.current || !isMobile) return;
-
-    if (tvWidgetRef.current.activeChart().getCheckableActionState("drawingToolbarAction")) {
-      tvWidgetRef.current?.activeChart().executeActionById("drawingToolbarAction");
-    }
-  }, [isMobile, chartReady]);
-
-  useEffect(() => {
     const widgetOptions = {
       debug: false,
       symbol: symbolRef.current, // Using ref to avoid unnecessary re-renders on symbol change and still have access to the latest symbol
@@ -137,12 +127,14 @@ export default function TVChartContainer({
       custom_css_url: defaultChartProps.custom_css_url,
       overrides: defaultChartProps.overrides,
       interval: getObjectKeyFromValue(period, SUPPORTED_RESOLUTIONS),
+      favorites: defaultChartProps.favorites,
+      custom_formatters: defaultChartProps.custom_formatters,
       save_load_adapter: new SaveLoadAdapter(chainId, tvCharts, setTvCharts, onSelectToken),
     };
     tvWidgetRef.current = new window.TradingView.widget(widgetOptions);
-    tvWidgetRef.current?.onChartReady(function () {
+    tvWidgetRef.current!.onChartReady(function () {
       setChartReady(true);
-      tvWidgetRef.current?.applyOverrides({
+      tvWidgetRef.current!.applyOverrides({
         "paneProperties.background": "#16182e",
         "paneProperties.backgroundType": "solid",
       });
