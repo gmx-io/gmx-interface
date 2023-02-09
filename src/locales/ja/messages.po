@@ -21,6 +21,18 @@ msgstr "2021年9月1日"
 msgid "06 Jan 2022"
 msgstr "2022年1月6日"
 
+#: src/components/Exchange/ExchangeTVChart.js
+msgid "24h Change"
+msgstr "24時間の変動"
+
+#: src/components/Exchange/ExchangeTVChart.js
+msgid "24h High"
+msgstr "24時間最高値"
+
+#: src/components/Exchange/ExchangeTVChart.js
+msgid "24h Low"
+msgstr "24時間最安値"
+
 #: src/pages/Dashboard/DashboardV2.js
 msgid "24h Volume"
 msgstr "24時間取引高"
@@ -1733,7 +1745,7 @@ msgstr "清算価格"
 
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Liq. {0} {longOrShortText}"
-msgstr ""
+msgstr "清算 {0} {longOrShortText} "
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Liquidated"
@@ -2177,7 +2189,7 @@ msgstr ""
 
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Open {0} {longOrShortText}"
-msgstr ""
+msgstr "{0} {longOrShortText}をオープンする"
 
 #: src/components/Exchange/PositionsList.js
 msgid "Opening..."

@@ -8,7 +8,6 @@ import { GMX_STATS_API_URL } from "config/backend";
 import { chainlinkClient } from "lib/subgraph/clients";
 import { sleep } from "lib/sleep";
 import { formatAmount } from "lib/numbers";
-import { getNativeToken, getNormalizedTokenSymbol, isChartAvailabeForToken } from "config/tokens";
 
 const BigNumber = ethers.BigNumber;
 
@@ -25,20 +24,9 @@ const FEED_ID_MAP = {
   YFI_USD: "0x8a4d74003870064d41d4f84940550911fbfccf04",
   SPELL_USD: "0x8640b23468815902e011948f3ab173e1e83f9879",
 };
-export const timezoneOffset = -new Date().getTimezoneOffset() * 60;
+const timezoneOffset = -new Date().getTimezoneOffset() * 60;
 
-function formatBarInfo(bar) {
-  const { t, o: open, c: close, h: high, l: low } = bar;
-  return {
-    time: t + timezoneOffset,
-    open,
-    close,
-    high,
-    low,
-  };
-}
-
-export function fillGaps(prices, periodSeconds) {
+function fillGaps(prices, periodSeconds) {
   if (prices.length < 2) {
     return prices;
   }
@@ -68,30 +56,12 @@ export function fillGaps(prices, periodSeconds) {
   return newPrices;
 }
 
-export async function getLimitChartPricesFromStats(chainId, symbol, period, limit = 1) {
-  symbol = getNormalizedTokenSymbol(symbol);
-
-  if (!isChartAvailabeForToken(chainId, symbol)) {
-    symbol = getNativeToken(chainId).symbol;
+async function getChartPricesFromStats(chainId, symbol, period) {
+  if (["WBTC", "WETH", "WAVAX"].includes(symbol)) {
+    symbol = symbol.substr(1);
+  } else if (symbol === "BTC.b") {
+    symbol = "BTC";
   }
-
-  const url = `${GMX_STATS_API_URL}/candles/${symbol}?preferableChainId=${chainId}&period=${period}&limit=${limit}`;
-
-  try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const prices = await response.json().then(({ prices }) => prices);
-    return prices.map(formatBarInfo);
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.log(`Error fetching data: ${error}`);
-  }
-}
-
-export async function getChartPricesFromStats(chainId, symbol, period) {
-  symbol = getNormalizedTokenSymbol(symbol);
 
   const timeDiff = CHART_PERIODS[period] * 3000;
   const from = Math.floor(Date.now() / 1000 - timeDiff);
@@ -124,7 +94,7 @@ export async function getChartPricesFromStats(chainId, symbol, period) {
   }
   const json = await res.json();
   let prices = json?.prices;
-  if (!prices || prices.length < 1) {
+  if (!prices || prices.length < 10) {
     throw new Error(`not enough prices data: ${prices?.length}`);
   }
 
@@ -139,7 +109,13 @@ export async function getChartPricesFromStats(chainId, symbol, period) {
     );
   }
 
-  prices = prices.map(formatBarInfo);
+  prices = prices.map(({ t, o: open, c: close, h: high, l: low }) => ({
+    time: t + timezoneOffset,
+    open,
+    close,
+    high,
+    low,
+  }));
   return prices;
 }
 
@@ -182,8 +158,10 @@ function getCandlesFromPrices(prices, period) {
   }));
 }
 
-export function getChainlinkChartPricesFromGraph(tokenSymbol, period) {
-  tokenSymbol = getNormalizedTokenSymbol(tokenSymbol);
+function getChainlinkChartPricesFromGraph(tokenSymbol, period) {
+  if (["WBTC", "WETH", "WAVAX"].includes(tokenSymbol)) {
+    tokenSymbol = tokenSymbol.substr(1);
+  }
   const marketName = tokenSymbol + "_USD";
   const feedId = FEED_ID_MAP[marketName];
   if (!feedId) {
@@ -303,11 +281,11 @@ function appendCurrentAveragePrice(prices, currentAveragePrice, period) {
   }
 }
 
-export function getStablePriceData(period, countBack = 100) {
+function getStablePriceData(period) {
   const periodSeconds = CHART_PERIODS[period];
   const now = Math.floor(Date.now() / 1000 / periodSeconds) * periodSeconds;
   let priceData: any = [];
-  for (let i = countBack; i > 0; i--) {
+  for (let i = 100; i > 0; i--) {
     priceData.push({
       time: now - i * periodSeconds,
       open: 1,
