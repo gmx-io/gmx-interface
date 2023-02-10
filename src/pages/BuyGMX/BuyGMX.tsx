@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import Footer from "components/Footer/Footer";
 import "./BuyGMX.css";
 import { useWeb3React } from "@web3-react/core";

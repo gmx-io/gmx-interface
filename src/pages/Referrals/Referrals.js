@@ -1,5 +1,4 @@
 import "./Referrals.css";
-import React from "react";
 import { useLocalStorage } from "react-use";
 import { Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";

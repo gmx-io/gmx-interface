@@ -1,4 +1,3 @@
-import React from "react";
 import { Menu } from "@headlessui/react";
 import { FaChevronDown } from "react-icons/fa";
 import cx from "classnames";

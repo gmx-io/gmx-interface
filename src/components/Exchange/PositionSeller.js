@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useMemo } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { ethers } from "ethers";
 import cx from "classnames";
 import { Trans, t } from "@lingui/macro";

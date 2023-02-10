@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
 import { Trans, t } from "@lingui/macro";
 import { ethers } from "ethers";

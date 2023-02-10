@@ -1,5 +1,3 @@
-import React from "react";
-
 import "./ExchangeWalletTokens.css";
 import { bigNumberify, expandDecimals, formatAmount } from "lib/numbers";
 

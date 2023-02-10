@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import cx from "classnames";
 import { motion, AnimatePresence } from "framer-motion";
 

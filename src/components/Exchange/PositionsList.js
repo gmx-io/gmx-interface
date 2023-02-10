@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import cx from "classnames";
 import { Trans, t } from "@lingui/macro";
 import Tooltip from "../Tooltip/Tooltip";

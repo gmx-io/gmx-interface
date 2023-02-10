@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import useSWR from "swr";
 import { useWeb3React } from "@web3-react/core";
 

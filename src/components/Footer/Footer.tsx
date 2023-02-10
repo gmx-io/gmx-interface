@@ -1,4 +1,3 @@
-import React from "react";
 import cx from "classnames";
 import "./Footer.css";
 import logoImg from "img/ic_gmx_footer.svg";

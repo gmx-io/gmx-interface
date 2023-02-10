@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo } from "react";
+import { useCallback, useState, useMemo } from "react";
 import "./ConfirmationBox.css";
 import {
   USD_DECIMALS,

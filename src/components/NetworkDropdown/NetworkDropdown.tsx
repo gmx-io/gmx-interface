@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Menu } from "@headlessui/react";
 import ModalWithPortal from "../Modal/ModalWithPortal";
 import { t, Trans } from "@lingui/macro";

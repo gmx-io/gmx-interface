@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";

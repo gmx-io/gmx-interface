@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import cx from "classnames";
 import useSWR from "swr";

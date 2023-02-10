@@ -1,4 +1,3 @@
-import React from "react";
 import "./Jobs.css";
 import SEO from "components/Common/SEO";
 import Footer from "components/Footer/Footer";

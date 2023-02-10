@@ -1,5 +1,3 @@
-import React from "react";
-
 import { AVALANCHE, getConstant } from "config/chains";
 
 import StakeV1 from "./StakeV1";

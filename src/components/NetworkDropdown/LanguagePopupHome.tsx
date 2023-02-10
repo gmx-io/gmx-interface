@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import ModalWithPortal from "../Modal/ModalWithPortal";
 import { t } from "@lingui/macro";
 import cx from "classnames";
