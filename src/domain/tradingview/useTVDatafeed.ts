@@ -51,7 +51,8 @@ export default function useTVDatafeed() {
             has_intraday: true,
             has_daily: true,
             currency_code: "USD",
-            visible_plots_set: true,
+            visible_plots_set: "ohlc",
+            data_status: "streaming",
             isStable: stableTokens.includes(symbolName),
           };
           setTimeout(() => onSymbolResolvedCallback(symbolInfo));
@@ -72,7 +73,7 @@ export default function useTVDatafeed() {
 
           try {
             const bars = await tvRequests.current?.getHistoryBars(chainId, ticker, resolution, isStable, countBack);
-            const filteredBars = bars.filter((bar) => bar.time >= fromWithOffset && bar.time < toWithOffset);
+            const filteredBars = bars.filter((bar) => bar.time >= fromWithOffset && bar.time <= toWithOffset);
             onHistoryCallback(filteredBars, { noData: filteredBars.length === 0 });
           } catch {
             onErrorCallback("Unable to load historical bar data");

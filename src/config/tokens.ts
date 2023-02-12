@@ -664,5 +664,7 @@ const AVAILABLE_CHART_TOKENS = {
 };
 
 export function isChartAvailabeForToken(chainId: number, tokenSymbol: string) {
-  return AVAILABLE_CHART_TOKENS[chainId]?.includes(getNormalizedTokenSymbol(tokenSymbol)) ?? false;
+  const token = getTokenBySymbol(chainId, tokenSymbol);
+  if (!token) return false;
+  return (token.isStable || AVAILABLE_CHART_TOKENS[chainId]?.includes(getNormalizedTokenSymbol(tokenSymbol))) ?? false;
 }
