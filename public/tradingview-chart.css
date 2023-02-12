@@ -28,6 +28,10 @@ html.theme-dark .chart-controls-bar {
 html.theme-dark .toggleButton-3zv4iS2j {
   cursor: pointer;
 }
+html.theme-dark .toggleButton-3zv4iS2j .background-3zv4iS2j:hover {
+  fill: #464a6e;
+  stroke: #464a6e;
+}
 
 html.theme-dark .menuWrap-g78rwseC {
   background-color: #20243f !important;
