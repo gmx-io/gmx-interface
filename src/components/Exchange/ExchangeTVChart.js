@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, useMemo } from "react";
 import cx from "classnames";
 
 import { USD_DECIMALS, SWAP, INCREASE, CHART_PERIODS, getLiquidationPrice } from "lib/legacy";
-import { useChartPrices } from "domain/legacy";
+import { getLimitChartPricesFromStats, useChartPrices } from "domain/legacy";
 
 import ChartTokenSelector from "./ChartTokenSelector";
 import { getTokenInfo } from "domain/tokens/utils";
@@ -12,6 +12,8 @@ import TVChartContainer from "components/TVChartContainer/TVChartContainer";
 import { t } from "@lingui/macro";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { availableNetworksForChart } from "components/TVChartContainer/constants";
+import { getCurrentPriceOfToken, getTokenChartPrice } from "domain/tradingview/requests";
+import { TVRequests } from "domain/tradingview/TVRequests";
 
 const PRICE_LINE_TEXT_WIDTH = 15;
 
@@ -62,6 +64,7 @@ export default function ExchangeTVChart(props) {
     setToTokenAddress,
   } = props;
   const [currentSeries] = useState();
+  const dataProvider = useRef();
 
   let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
   if (!(period in CHART_PERIODS)) {
@@ -270,6 +273,14 @@ export default function ExchangeTVChart(props) {
     }
   }
 
+  useEffect(() => {
+    dataProvider.current = new TVRequests({
+      getCurrentPriceOfToken: getCurrentPriceOfToken,
+      getTokenChartPrice: getTokenChartPrice,
+      getTokenLastChartPrices: getLimitChartPricesFromStats,
+    });
+  }, []);
+
   if (!chartToken) {
     return null;
   }
@@ -337,6 +348,7 @@ export default function ExchangeTVChart(props) {
             onSelectToken={onSelectToken}
             period={period}
             setPeriod={setPeriod}
+            dataProvider={dataProvider.current}
           />
         ) : (
           <p className="ExchangeChart-error">Sorry, chart is not supported on this network yet.</p>

@@ -4,6 +4,7 @@ import { TokenAllowancesData, TokenData, TokenPrices, TokensData, TokensRatio } 
 import { expandDecimals, formatAmount } from "lib/numbers";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { PRECISION, USD_DECIMALS, adjustForDecimals } from "lib/legacy";
+import { Bar } from "domain/tradingview/types";
 
 export function getTokenData(tokensData: TokensData, address: string | undefined, convertTo?: "wrapped" | "native") {
   if (!address) return undefined;
@@ -75,6 +76,65 @@ export function getTokensRatio(p: { fromToken?: TokenData; toToken?: TokenData }
     largestAddress === fromAddress ? fromPrice.mul(PRECISION).div(toPrice) : toPrice.mul(PRECISION).div(fromPrice);
 
   return { ratio, largestAddress, smallestAddress };
+}
+
+export function getCandlesDelta(candles?: Bar[], currentAveragePrice?: number, periodInSeconds?: number) {
+  if (!candles?.length || !periodInSeconds || !currentAveragePrice) {
+    return undefined;
+  }
+
+  let high: number | undefined;
+  let low: number | undefined;
+  let deltaPrice: number | undefined;
+  let delta: number | undefined;
+  let deltaPercentage: number | undefined;
+  let deltaPercentageStr: string | undefined;
+
+  const now = Math.round(Date.now() / 1000);
+  const timeThreshold = now - periodInSeconds;
+
+  for (const candle of candles) {
+    if (candle.time < timeThreshold) {
+      break;
+    }
+
+    if (!high || candle.high > high) {
+      high = candle.high;
+    }
+
+    if (!low || candle.low < low) {
+      low = candle.low;
+    }
+
+    deltaPrice = candle.open;
+  }
+
+  if (deltaPrice && currentAveragePrice) {
+    delta = currentAveragePrice - deltaPrice;
+    deltaPercentage = (delta * 100) / currentAveragePrice;
+
+    if (deltaPercentage > 0) {
+      deltaPercentageStr = `+${deltaPercentage.toFixed(2)}%`;
+    } else {
+      deltaPercentageStr = `${deltaPercentage.toFixed(2)}%`;
+    }
+    if (deltaPercentage === 0) {
+      deltaPercentageStr = "0.00";
+    }
+  }
+
+  if (!high || !low || !deltaPrice || !delta || !deltaPercentage || !deltaPercentageStr) {
+    return undefined;
+  }
+
+  return {
+    high,
+    low,
+    deltaPrice,
+    delta,
+    deltaPercentage,
+    deltaPercentageStr,
+  };
 }
 
 export function formatTokensRatio(tokensData: TokensData, ratio?: TokensRatio) {

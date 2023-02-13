@@ -32,6 +32,7 @@ export async function getCurrentPriceOfToken(chainId: number, symbol: string) {
     if (symbolInfo.isNative) {
       symbolInfo = getWrappedToken(chainId);
     }
+
     return indexPrices[symbolInfo.address];
   } catch (err) {
     // eslint-disable-next-line no-console

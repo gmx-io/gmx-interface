@@ -8,6 +8,8 @@ import { getObjectKeyFromValue } from "domain/tradingview/utils";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
 import { SUPPORTED_RESOLUTIONS, TV_CHART_RELOAD_INTERVAL } from "config/tradingview";
 import { isChartAvailabeForToken } from "config/tokens";
+import { TVRequests } from "domain/tradingview/TVRequests";
+import { Token } from "domain/tokens";
 
 type ChartLine = {
   price: number;
@@ -19,9 +21,10 @@ type Props = {
   chainId: number;
   savedShouldShowPositionLines: boolean;
   chartLines: ChartLine[];
-  onSelectToken: () => void;
+  onSelectToken: (token: Token) => void;
   period: string;
   setPeriod: (period: string) => void;
+  dataProvider?: TVRequests;
 };
 
 export default function TVChartContainer({
@@ -32,12 +35,13 @@ export default function TVChartContainer({
   onSelectToken,
   period,
   setPeriod,
+  dataProvider,
 }: Props) {
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const tvWidgetRef = useRef<IChartingLibraryWidget | null>(null);
   const [chartReady, setChartReady] = useState(false);
   const [tvCharts, setTvCharts] = useLocalStorage<ChartData[] | undefined>(TV_SAVE_LOAD_CHARTS_KEY, []);
-  const { datafeed, resetCache } = useTVDatafeed();
+  const { datafeed, resetCache } = useTVDatafeed({ dataProvider });
   const isMobile = useMedia("(max-width: 550px)");
   const symbolRef = useRef(symbol);
 

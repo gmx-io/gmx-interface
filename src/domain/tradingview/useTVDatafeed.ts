@@ -13,7 +13,11 @@ const configurationData = {
   reset_cache_timeout: 100,
 };
 
-export default function useTVDatafeed() {
+type Params = {
+  dataProvider?: TVRequests;
+};
+
+export default function useTVDatafeed(p: Params) {
   const { chainId } = useChainId();
   const intervalRef = useRef<ReturnType<typeof setInterval> | undefined>();
   const resetCacheRef = useRef<() => void | undefined>();
@@ -21,8 +25,10 @@ export default function useTVDatafeed() {
   const tvRequests = useRef<TVRequests>();
 
   useEffect(() => {
-    tvRequests.current = new TVRequests();
-  }, []);
+    if (p.dataProvider && tvRequests.current !== p.dataProvider) {
+      tvRequests.current = p.dataProvider;
+    }
+  }, [p.dataProvider]);
 
   return useMemo(() => {
     return {

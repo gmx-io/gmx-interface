@@ -22,6 +22,7 @@ import { useMemo, useState } from "react";
 import "./SyntheticsPage.scss";
 import { PositionSeller } from "components/Synthetics/PositionSeller/PositionSeller";
 import { PositionEditor } from "components/Synthetics/PositionEditor/PositionEditor";
+import { TVChart } from "components/Synthetics/TVChart/TVChart";
 
 type Props = {
   onConnectWallet: () => void;
@@ -43,10 +44,12 @@ export function SyntheticsPage(p: Props) {
     [chainId, SYNTHETICS_TRADE_MARKET_KEY],
     undefined
   );
+
   const [selectedCollateralAddress, setSelectedCollateralAddress] = useLocalStorageSerializeKey<string | undefined>(
     [chainId, SYNTHETICS_TRADE_COLLATERAL_KEY],
     undefined
   );
+
   const [selectedTradeType, setSelectedTradeType] = useLocalStorageSerializeKey(
     [chainId, SYNTHETICS_TRADE_TYPE_KEY],
     TradeType.Long
@@ -61,6 +64,7 @@ export function SyntheticsPage(p: Props) {
   const { aggregatedPositionsData, isLoading: isPositionsLoading } = useAggregatedPositionsData(chainId, {
     savedIsPnlInLeverage: p.savedIsPnlInLeverage,
   });
+
   const { aggregatedOrdersData, isLoading: isOrdersLoading } = useAggregatedOrdersData(chainId);
 
   const positionsCount = Object.keys(aggregatedPositionsData).length;
@@ -105,7 +109,7 @@ export function SyntheticsPage(p: Props) {
       {/* {showBanner && <ExchangeBanner hideBanner={hideBanner} />} */}
       <div className="SyntheticsTrade-content">
         <div className="SyntheticsTrade-left">
-          <div
+          {/* <div
             style={{
               height: "49.6rem",
               display: "flex",
@@ -115,19 +119,9 @@ export function SyntheticsPage(p: Props) {
             }}
           >
             The chart
-          </div>
+          </div> */}
 
-          {/* <ExchangeTVChart
-            fromTokenAddress={fromTokenAddress}
-            toTokenAddress={toTokenAddress}
-            infoTokens={infoTokens}
-            swapOption={swapOption}
-            chainId={chainId}
-            positions={positions}
-            savedShouldShowPositionLines={savedShouldShowPositionLines}
-            orders={orders}
-            setToTokenAddress={setToTokenAddress}
-          /> */}
+          <TVChart />
 
           <div className="SyntheticsTrade-lists large">
             <div className="SyntheticsTrade-list-tab-container">
