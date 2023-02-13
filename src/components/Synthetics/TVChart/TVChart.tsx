@@ -143,10 +143,6 @@ export function TVChart({
     [period, setPeriod]
   );
 
-  if (!chartToken) {
-    return null;
-  }
-
   return (
     <div className="ExchangeChart tv">
       <div className="ExchangeChart-top App-box App-box-border">
@@ -193,16 +189,18 @@ export function TVChart({
         </div>
       </div>
       <div className="ExchangeChart-bottom App-box App-box-border">
-        <TVChartContainer
-          chartLines={chartLines}
-          savedShouldShowPositionLines={savedShouldShowPositionLines}
-          symbol={chartToken.symbol}
-          chainId={chainId}
-          onSelectToken={onSelectChartToken}
-          period={period!}
-          setPeriod={setPeriod}
-          dataProvider={dataProvider.current}
-        />
+        {chartToken && (
+          <TVChartContainer
+            chartLines={chartLines}
+            savedShouldShowPositionLines={savedShouldShowPositionLines}
+            symbol={chartToken.symbol}
+            chainId={chainId}
+            onSelectToken={onSelectChartToken}
+            period={period!}
+            setPeriod={setPeriod}
+            dataProvider={dataProvider.current}
+          />
+        )}
       </div>
     </div>
   );
