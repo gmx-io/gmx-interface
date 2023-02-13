@@ -21,18 +21,6 @@ msgstr "01 Sep 2021"
 msgid "06 Jan 2022"
 msgstr "06 Jan 2022"
 
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "24h Change"
-msgstr "24小时更换"
-
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "24h High"
-msgstr "24小时高"
-
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "24h Low"
-msgstr "24小时低"
-
 #: src/pages/Dashboard/DashboardV2.js
 msgid "24h Volume"
 msgstr "24小时数量"
@@ -1745,7 +1733,7 @@ msgstr "流动资金价格"
 
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Liq. {0} {longOrShortText}"
-msgstr "流动资金{0} {longOrShortText}"
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Liquidated"
@@ -2189,7 +2177,7 @@ msgstr ""
 
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Open {0} {longOrShortText}"
-msgstr "开仓 {0} {longOrShortText}"
+msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 msgid "Opening..."
