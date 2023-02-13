@@ -141,8 +141,6 @@ export async function getChartPricesFromStats(chainId, symbol, period) {
 
   prices = prices.map(formatBarInfo);
 
-  console.log("stats", prices);
-
   return prices;
 }
 
