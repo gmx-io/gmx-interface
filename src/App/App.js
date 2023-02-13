@@ -489,6 +489,8 @@ function FullApp() {
                     onConnectWallet={connectWallet}
                     savedIsPnlInLeverage={savedIsPnlInLeverage}
                     shouldDisableValidation={shouldDisableValidationForTesting}
+                    savedShouldShowPositionLines={savedShouldShowPositionLines}
+                    setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
                   />
                 </Route>
               )}

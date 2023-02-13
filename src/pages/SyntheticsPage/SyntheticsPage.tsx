@@ -1,8 +1,13 @@
-import { Plural, t } from "@lingui/macro";
+import { Plural, Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
+import cx from "classnames";
+import Checkbox from "components/Checkbox/Checkbox";
 import Footer from "components/Footer/Footer";
 import { OrderList } from "components/Synthetics/OrderList/OrderList";
+import { PositionEditor } from "components/Synthetics/PositionEditor/PositionEditor";
 import { PositionList } from "components/Synthetics/PositionList/PositionList";
+import { PositionSeller } from "components/Synthetics/PositionSeller/PositionSeller";
+import { TVChart } from "components/Synthetics/TVChart/TVChart";
 import { TradeBox } from "components/Synthetics/Trade/TradeBox/TradeBox";
 import Tab from "components/Tab/Tab";
 import {
@@ -10,23 +15,27 @@ import {
   SYNTHETICS_TRADE_MARKET_KEY,
   SYNTHETICS_TRADE_TYPE_KEY,
 } from "config/localStorage";
-import { TradeType } from "domain/synthetics/trade/types";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useAggregatedOrdersData } from "domain/synthetics/orders/useAggregatedOrdersData";
 import { getPosition, getPositionKey } from "domain/synthetics/positions";
 import { useAggregatedPositionsData } from "domain/synthetics/positions/useAggregatedPositionsData";
+import { TradeType } from "domain/synthetics/trade/types";
 import { useChainId } from "lib/chains";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
 import { useMemo, useState } from "react";
+import { convertTokenAddress, getToken } from "config/tokens";
+import { getMarket, useMarketsData } from "domain/synthetics/markets";
+import { getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
+import { useAvailableSwapOptions } from "domain/synthetics/trade";
 
 import "./SyntheticsPage.scss";
-import { PositionSeller } from "components/Synthetics/PositionSeller/PositionSeller";
-import { PositionEditor } from "components/Synthetics/PositionEditor/PositionEditor";
 
 type Props = {
   onConnectWallet: () => void;
   savedIsPnlInLeverage: boolean;
   shouldDisableValidation: boolean;
+  savedShouldShowPositionLines: boolean;
+  setSavedShouldShowPositionLines: (value: boolean) => void;
 };
 
 enum ListSection {
@@ -38,15 +47,26 @@ export function SyntheticsPage(p: Props) {
   const { chainId } = useChainId();
   const { library, account } = useWeb3React();
   const [listSection, setListSection] = useLocalStorageByChainId(chainId, "List-section-v3", ListSection.Positions);
+  const { marketsData } = useMarketsData(chainId);
+  const { tokensData } = useAvailableTokensData(chainId);
 
   const [selectedMarketAddress, setSelectedMarketAddress] = useLocalStorageSerializeKey<string | undefined>(
     [chainId, SYNTHETICS_TRADE_MARKET_KEY],
     undefined
   );
+
+  const selectedMarket = getMarket(marketsData, selectedMarketAddress);
+  const selectedIndexToken = getTokenData(tokensData, selectedMarket?.indexTokenAddress, "native");
+
+  const [selectedToTokenAddress, setSelectedToTokenAddress] = useState<string>();
+
+  const { availableIndexTokens } = useAvailableSwapOptions({});
+
   const [selectedCollateralAddress, setSelectedCollateralAddress] = useLocalStorageSerializeKey<string | undefined>(
     [chainId, SYNTHETICS_TRADE_COLLATERAL_KEY],
     undefined
   );
+
   const [selectedTradeType, setSelectedTradeType] = useLocalStorageSerializeKey(
     [chainId, SYNTHETICS_TRADE_TYPE_KEY],
     TradeType.Long
@@ -61,6 +81,7 @@ export function SyntheticsPage(p: Props) {
   const { aggregatedPositionsData, isLoading: isPositionsLoading } = useAggregatedPositionsData(chainId, {
     savedIsPnlInLeverage: p.savedIsPnlInLeverage,
   });
+
   const { aggregatedOrdersData, isLoading: isOrdersLoading } = useAggregatedOrdersData(chainId);
 
   const positionsCount = Object.keys(aggregatedPositionsData).length;
@@ -100,34 +121,37 @@ export function SyntheticsPage(p: Props) {
     setSelectedTradeType(isLong ? TradeType.Long : TradeType.Short);
   }
 
+  function onSelectIndexToken(tokenAddress: string) {
+    const market = Object.values(marketsData).find(
+      (market) =>
+        convertTokenAddress(chainId, market.indexTokenAddress, "native") ===
+        convertTokenAddress(chainId, tokenAddress, "native")
+    );
+
+    if (market) {
+      setSelectedMarketAddress(market.marketTokenAddress);
+    }
+  }
+
   return (
     <div className="SyntheticsTrade page-layout">
-      {/* {showBanner && <ExchangeBanner hideBanner={hideBanner} />} */}
       <div className="SyntheticsTrade-content">
         <div className="SyntheticsTrade-left">
-          <div
-            style={{
-              height: "49.6rem",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              background: "#16182e",
-            }}
-          >
-            The chart
-          </div>
-
-          {/* <ExchangeTVChart
-            fromTokenAddress={fromTokenAddress}
-            toTokenAddress={toTokenAddress}
-            infoTokens={infoTokens}
-            swapOption={swapOption}
-            chainId={chainId}
-            positions={positions}
-            savedShouldShowPositionLines={savedShouldShowPositionLines}
-            orders={orders}
-            setToTokenAddress={setToTokenAddress}
-          /> */}
+          <TVChart
+            savedShouldShowPositionLines={p.savedShouldShowPositionLines}
+            ordersData={aggregatedOrdersData}
+            positionsData={aggregatedPositionsData}
+            chartTokenAddress={
+              selectedTradeType === TradeType.Swap ? selectedToTokenAddress : selectedIndexToken?.address
+            }
+            availableTokens={
+              selectedTradeType === TradeType.Swap && selectedToTokenAddress
+                ? [getToken(chainId, selectedToTokenAddress)]
+                : availableIndexTokens
+            }
+            onSelectChartTokenAddress={onSelectIndexToken}
+            disableSelectToken={selectedTradeType === TradeType.Swap}
+          />
 
           <div className="SyntheticsTrade-lists large">
             <div className="SyntheticsTrade-list-tab-container">
@@ -153,6 +177,15 @@ export function SyntheticsPage(p: Props) {
                     <Plural value={selectedOrdersKeysArr.length} one="Cancel order" other="Cancel # orders" />
                   </button>
                 )}
+                <Checkbox
+                  isChecked={p.savedShouldShowPositionLines}
+                  setIsChecked={p.setSavedShouldShowPositionLines}
+                  className={cx("muted chart-positions", { active: p.savedShouldShowPositionLines })}
+                >
+                  <span>
+                    <Trans>Chart positions</Trans>
+                  </span>
+                </Checkbox>
               </div>
             </div>
 
@@ -168,6 +201,7 @@ export function SyntheticsPage(p: Props) {
                 onEditCollateralClick={setEditingPositionKey}
               />
             )}
+
             {listSection === ListSection.Orders && (
               <OrderList
                 positionsData={aggregatedPositionsData}
@@ -185,6 +219,8 @@ export function SyntheticsPage(p: Props) {
             <TradeBox
               selectedTradeType={selectedTradeType}
               selectedMarketAddress={selectedMarketAddress}
+              selectedToTokenAddress={selectedToTokenAddress}
+              setSelectedToTokenAddress={setSelectedToTokenAddress}
               selectedCollateralAddress={selectedCollateralAddress}
               existingPosition={selectedPosition}
               onSelectTradeType={setSelectedTradeType}

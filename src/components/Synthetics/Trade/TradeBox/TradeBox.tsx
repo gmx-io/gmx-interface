@@ -107,6 +107,8 @@ type Props = {
   onSelectTradeType: (tradeType: TradeType) => void;
   onConnectWallet: () => void;
   savedIsPnlInLeverage: boolean;
+  setSelectedToTokenAddress: (toTokenAddress: string) => void;
+  selectedToTokenAddress?: string;
   shouldDisableValidation?: boolean;
 };
 
@@ -135,6 +137,8 @@ export function TradeBox(p: Props) {
     ordersData,
     savedIsPnlInLeverage,
     shouldDisableValidation,
+    setSelectedToTokenAddress,
+    selectedToTokenAddress,
   } = p;
   const { chainId } = useChainId();
   const { tokensData } = useAvailableTokensData(chainId);
@@ -496,8 +500,12 @@ export function TradeBox(p: Props) {
       if (needToUpdate && availableSwapTokens.length) {
         toTokenInput.setTokenAddress(availableSwapTokens[0].address);
       }
+
+      if (toTokenInput.tokenAddress && selectedToTokenAddress !== toTokenInput.tokenAddress) {
+        setSelectedToTokenAddress(toTokenInput.tokenAddress);
+      }
     },
-    [availableSwapTokens, fromTokenInput, isSwap, toTokenInput]
+    [availableSwapTokens, fromTokenInput, isSwap, selectedToTokenAddress, setSelectedToTokenAddress, toTokenInput]
   );
 
   useEffect(
