@@ -21,18 +21,6 @@ msgstr "01 Сен 2021"
 msgid "06 Jan 2022"
 msgstr "6 Янв 2022"
 
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "24h Change"
-msgstr "24ч Изменение"
-
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "24h High"
-msgstr "24ч Рост"
-
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "24h Low"
-msgstr "24ч Падение"
-
 #: src/pages/Dashboard/DashboardV2.js
 msgid "24h Volume"
 msgstr "24ч Объём"
@@ -2183,7 +2171,7 @@ msgstr "Лик. Цена"
 
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Liq. {0} {longOrShortText}"
-msgstr "Лик. {0} {longOrShortText}"
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Liquidated"
@@ -2763,7 +2751,7 @@ msgstr ""
 
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Open {0} {longOrShortText}"
-msgstr "Открыть {0} {longOrShortText}"
+msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx

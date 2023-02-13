@@ -775,3 +775,23 @@ export function getAvailableTradeTokens(chainId: number, p: { includeSynthetic?:
 export function getVisibleTokens(chainId: number) {
   return getWhitelistedTokens(chainId).filter((token) => !token.isWrapped && !token.isTempHidden);
 }
+
+export function getNormalizedTokenSymbol(tokenSymbol) {
+  if (["WBTC", "WETH", "WAVAX"].includes(tokenSymbol)) {
+    return tokenSymbol.substr(1);
+  } else if (tokenSymbol === "BTC.b") {
+    return "BTC";
+  }
+  return tokenSymbol;
+}
+
+const AVAILABLE_CHART_TOKENS = {
+  [ARBITRUM]: ["ETH", "BTC", "LINK", "UNI"],
+  [AVALANCHE]: ["AVAX", "ETH", "BTC"],
+};
+
+export function isChartAvailabeForToken(chainId: number, tokenSymbol: string) {
+  const token = getTokenBySymbol(chainId, tokenSymbol);
+  if (!token) return false;
+  return (token.isStable || AVAILABLE_CHART_TOKENS[chainId]?.includes(getNormalizedTokenSymbol(tokenSymbol))) ?? false;
+}
