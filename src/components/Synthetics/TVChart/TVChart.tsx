@@ -1,7 +1,10 @@
+import { t } from "@lingui/macro";
 import cx from "classnames";
 import { Dropdown, DropdownOption } from "components/Dropdown/Dropdown";
-import TVChartContainer from "components/TVChartContainer/TVChartContainer";
-import { NATIVE_TOKEN_ADDRESS, isChartAvailabeForToken } from "config/tokens";
+import TVChartContainer, { ChartLine } from "components/TVChartContainer/TVChartContainer";
+import { convertTokenAddress, isChartAvailabeForToken } from "config/tokens";
+import { AggregatedOrdersData, isIncreaseOrder, isSwapOrder } from "domain/synthetics/orders";
+import { AggregatedPositionsData } from "domain/synthetics/positions";
 import { getCandlesDelta, getMidPrice, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { fetchLastOracleCandles, fetchOracleCandles, fetchOracleRecentPrice } from "domain/synthetics/tokens/prices";
 import { useLastCandles } from "domain/synthetics/tokens/useLastCandles";
@@ -11,30 +14,46 @@ import { useChainId } from "lib/chains";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatUsd, numberWithCommas } from "lib/numbers";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 import "./TVChart.scss";
 
-export type Props = {};
+export type Props = {
+  ordersData: AggregatedOrdersData;
+  positionsData: AggregatedPositionsData;
+  savedShouldShowPositionLines: boolean;
+  chartTokenAddress?: string;
+  onSelectChartTokenAddress: (tokenAddress: string) => void;
+  availableTokens?: Token[];
+  disableSelectToken?: boolean;
+};
 
 const DEFAULT_PERIOD = "5m";
 
-export function TVChart() {
+export function TVChart({
+  ordersData,
+  positionsData,
+  savedShouldShowPositionLines,
+  chartTokenAddress,
+  onSelectChartTokenAddress,
+  availableTokens,
+  disableSelectToken,
+}: Props) {
   const { chainId } = useChainId();
   const { tokensData } = useAvailableTokensData(chainId);
 
   const dataProvider = useRef<TVRequests>();
   const [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
-  const [chartTokenAddress, setChartTokenAddress] = useState<string>(NATIVE_TOKEN_ADDRESS);
   const chartToken = getTokenData(tokensData, chartTokenAddress);
 
-  const tokens = Object.values(tokensData);
-  const tokenOptions: DropdownOption[] = tokens
-    .filter((token) => isChartAvailabeForToken(chainId, token.symbol))
-    .map((token) => ({
-      label: `${token.symbol} / USD`,
-      value: token.address,
-    }));
+  const tokenOptions: DropdownOption[] =
+    availableTokens
+      ?.filter((token) => isChartAvailabeForToken(chainId, token.symbol))
+      .map((token) => ({
+        label: `${token.symbol} / USD`,
+        value: token.address,
+      })) || [];
+
   const selectedTokenOption = tokenOptions.find((option) => option.value === chartTokenAddress);
   const currentAveragePrice = getMidPrice(chartToken?.prices);
 
@@ -45,27 +64,66 @@ export function TVChart() {
     getCandlesDelta(candles, parseFloat(formatAmount(currentAveragePrice, USD_DECIMALS, 2)), period24Hours) || {};
 
   const chartLines = useMemo(() => {
-    const lines = [];
-    // if (currentOrders.length > 0) {
-    //   lines.push(...currentOrders);
-    // }
+    if (!chartTokenAddress) {
+      return [];
+    }
 
-    // if (currentPositions.length > 0) {
-    //   currentPositions.forEach((position) => {
-    //     lines.push(position.open);
-    //     lines.push(position.liquidation);
-    //   });
-    // }
+    const orderLines: ChartLine[] = Object.values(ordersData)
+      .filter((order) => {
+        if (isSwapOrder(order.orderType)) {
+          return false;
+        }
 
-    return lines;
-  }, []);
+        return (
+          order.market &&
+          order.triggerPrice &&
+          convertTokenAddress(chainId, order.market.indexTokenAddress, "wrapped") ===
+            convertTokenAddress(chainId, chartTokenAddress, "wrapped")
+        );
+      })
+      .map((order) => {
+        const longOrShortText = order.isLong ? t`Long` : t`Short`;
+        const orderTypeText = isIncreaseOrder(order.orderType) ? t`Inc.` : t`Dec.`;
+        const tokenSymbol = getTokenData(tokensData, order.market?.indexTokenAddress, "native")?.symbol;
+
+        return {
+          title: `${longOrShortText} ${orderTypeText} ${tokenSymbol}`,
+          price: parseFloat(formatAmount(order.triggerPrice, USD_DECIMALS, 2)),
+        };
+      });
+
+    const positionLines = Object.values(positionsData).reduce((acc, position) => {
+      if (
+        position.market &&
+        convertTokenAddress(chainId, position.market.indexTokenAddress, "wrapped") ===
+          convertTokenAddress(chainId, chartTokenAddress, "wrapped")
+      ) {
+        const longOrShortText = position.isLong ? t`Long` : t`Short`;
+        const tokenSymbol = getTokenData(tokensData, position.market?.indexTokenAddress, "native")?.symbol;
+
+        acc.push({
+          title: t`Open ${longOrShortText} ${tokenSymbol}`,
+          price: parseFloat(formatAmount(position.entryPrice, USD_DECIMALS, 2)),
+        });
+
+        acc.push({
+          title: t`Liq. ${longOrShortText} ${tokenSymbol}`,
+          price: parseFloat(formatAmount(position.liqPrice, USD_DECIMALS, 2)),
+        });
+      }
+
+      return acc;
+    }, [] as ChartLine[]);
+
+    return orderLines.concat(positionLines);
+  }, [chainId, chartTokenAddress, ordersData, positionsData, tokensData]);
 
   function onSelectTokenOption(option: DropdownOption) {
-    setChartTokenAddress(option.value);
+    onSelectChartTokenAddress(option.value);
   }
 
   function onSelectChartToken(token: Token) {
-    setChartTokenAddress(token.address);
+    onSelectChartTokenAddress(token.address);
   }
 
   useEffect(() => {
@@ -99,6 +157,7 @@ export function TVChart() {
               options={tokenOptions}
               selectedOption={selectedTokenOption}
               onSelect={onSelectTokenOption}
+              disabled={disableSelectToken}
             />
           </div>
           <div>
@@ -136,7 +195,7 @@ export function TVChart() {
       <div className="ExchangeChart-bottom App-box App-box-border">
         <TVChartContainer
           chartLines={chartLines}
-          savedShouldShowPositionLines={false}
+          savedShouldShowPositionLines={savedShouldShowPositionLines}
           symbol={chartToken.symbol}
           chainId={chainId}
           onSelectToken={onSelectChartToken}

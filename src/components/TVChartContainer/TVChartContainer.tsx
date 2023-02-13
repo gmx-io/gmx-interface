@@ -11,7 +11,7 @@ import { isChartAvailabeForToken } from "config/tokens";
 import { TVRequests } from "domain/tradingview/TVRequests";
 import { Token } from "domain/tokens";
 
-type ChartLine = {
+export type ChartLine = {
   price: number;
   title: string;
 };

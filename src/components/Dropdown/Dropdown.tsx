@@ -15,13 +15,14 @@ export type Props = {
   options: DropdownOption[];
   className?: string;
   onSelect: (option: DropdownOption) => void;
+  disabled?: boolean;
 };
 
 export function Dropdown(p: Props) {
   return (
-    <div className={cx("Dropdown-root", p.className)}>
+    <div className={cx("Dropdown-root", { disabled: p.disabled }, p.className)}>
       <Menu>
-        <Menu.Button as="div">
+        <Menu.Button as="div" aria-disabled={p.disabled}>
           <button className="Dropdown-current">
             <span className="Dropdown-current-label">{p.selectedOption?.label || p.placeholder}</span>
             <FaChevronDown className="Dropdown-current-arrow" />

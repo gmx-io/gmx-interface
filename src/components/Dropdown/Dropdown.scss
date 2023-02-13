@@ -2,6 +2,16 @@
   display: flex;
   position: relative;
   cursor: pointer;
+
+  &.disabled {
+    .Dropdown-current {
+      cursor: default;
+    }
+
+    .Dropdown-current-arrow {
+      visibility: hidden;
+    }
+  }
 }
 
 .Dropdown-options {
