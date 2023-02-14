@@ -21,18 +21,6 @@ msgstr ""
 msgid "06 Jan 2022"
 msgstr ""
 
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "24h Change"
-msgstr ""
-
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "24h High"
-msgstr ""
-
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "24h Low"
-msgstr ""
-
 #: src/pages/Dashboard/DashboardV2.js
 msgid "24h Volume"
 msgstr ""
