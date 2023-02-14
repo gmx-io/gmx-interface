@@ -370,10 +370,9 @@ msgid "Boost your rewards with Multiplier Points. <0>More info</0>."
 msgstr "Aumenta tus recompensas con los Puntos Multiplicadores. <0>Más información</0>."
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
@@ -626,6 +625,10 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 msgid "Close"
 msgstr "Cerrar"
+
+#: src/components/Exchange/NetValueTooltip.tsx
+msgid "Close Fee"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close failed."
@@ -1546,8 +1549,7 @@ msgstr "Incrementado {tokenSymbol} {longOrShortText}, +{0} USD."
 msgid "Index"
 msgstr "Índice"
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Initial Collateral"
@@ -2062,14 +2064,8 @@ msgstr "Monedero NFT"
 msgid "Net Value"
 msgstr "Valor Neto"
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-msgid "Net Value: Initial Collateral + PnL - Borrow Fee"
-msgstr ""
-
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-msgid "Net Value: Initial Collateral + PnL - Fees"
+#: src/components/Exchange/NetValueTooltip.tsx
+msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Close Fee"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -2141,9 +2137,8 @@ msgstr "Tenga en cuenta que no se garantiza la ejecución de las órdenes.<0/><1
 msgid "Only letters, numbers and underscores are allowed."
 msgstr "Solo letras, números y guiones bajos están permitidos"
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-msgid "Open + Close Fees"
+#: src/components/Exchange/NetValueTooltip.tsx
+msgid "Open Fee"
 msgstr ""
 
 #: src/pages/Home/Home.js
@@ -2331,17 +2326,15 @@ msgstr "Por favor lea el <0>artículo de Medium</0> antes de migrar."
 msgid "Please switch your network to Arbitrum."
 msgstr "Por favor, cambie su red a Arbitrum."
 
+#: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/TradeHistory.js
 #: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr "GyP"
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/NetValueTooltip.tsx
 msgid "PnL After Fees"
 msgstr "GyP Después de Comisiones"
 

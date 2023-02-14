@@ -370,10 +370,9 @@ msgid "Boost your rewards with Multiplier Points. <0>More info</0>."
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
@@ -625,6 +624,10 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Close"
+msgstr ""
+
+#: src/components/Exchange/NetValueTooltip.tsx
+msgid "Close Fee"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
@@ -1546,8 +1549,7 @@ msgstr ""
 msgid "Index"
 msgstr ""
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Initial Collateral"
@@ -2059,14 +2061,8 @@ msgstr ""
 msgid "Net Value"
 msgstr ""
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-msgid "Net Value: Initial Collateral + PnL - Borrow Fee"
-msgstr ""
-
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-msgid "Net Value: Initial Collateral + PnL - Fees"
+#: src/components/Exchange/NetValueTooltip.tsx
+msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Close Fee"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -2138,9 +2134,8 @@ msgstr ""
 msgid "Only letters, numbers and underscores are allowed."
 msgstr ""
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-msgid "Open + Close Fees"
+#: src/components/Exchange/NetValueTooltip.tsx
+msgid "Open Fee"
 msgstr ""
 
 #: src/pages/Home/Home.js
@@ -2328,17 +2323,15 @@ msgstr ""
 msgid "Please switch your network to Arbitrum."
 msgstr ""
 
+#: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/TradeHistory.js
 #: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr ""
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/NetValueTooltip.tsx
 msgid "PnL After Fees"
 msgstr ""
 
