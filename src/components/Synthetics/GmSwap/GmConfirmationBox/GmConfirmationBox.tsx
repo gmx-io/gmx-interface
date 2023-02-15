@@ -182,12 +182,12 @@ export function GmConfirmationBox({
   })();
 
   function onCreateDeposit() {
-    if (!account || !executionFee || !marketToken || !market || !marketTokenAmount) return;
+    if (!account || !executionFee || !marketToken || !market || !marketTokenAmount || !longToken || !shortToken) return;
 
     createDepositTxn(chainId, library, {
       account,
-      initialLongTokenAddress: market.longTokenAddress,
-      initialShortTokenAddress: market.shortTokenAddress,
+      initialLongTokenAddress: longToken.address,
+      initialShortTokenAddress: shortToken.address,
       longTokenAmount: longTokenAmount || BigNumber.from(0),
       shortTokenAmount: shortTokenAmount || BigNumber.from(0),
       marketTokenAddress: marketToken.address,

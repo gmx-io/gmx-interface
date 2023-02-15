@@ -471,6 +471,10 @@ export function GmSwapBox(p: Props) {
             return;
           }
 
+          if (!longPoolUsd.gt(0) || !shortPoolUsd.gt(0)) {
+            return;
+          }
+
           const amounts = getNextWithdrawalAmountsByMarketToken({
             marketsData,
             poolsData,
@@ -497,6 +501,10 @@ export function GmSwapBox(p: Props) {
         if (["longCollateral", "shortCollateral"].includes(focusedInput)) {
           if (!longTokenAmount?.gt(0) && !shortTokenAmount?.gt(0)) {
             setMarketTokenInputValue("");
+            return;
+          }
+
+          if (!longPoolUsd.gt(0) || !shortPoolUsd.gt(0)) {
             return;
           }
 

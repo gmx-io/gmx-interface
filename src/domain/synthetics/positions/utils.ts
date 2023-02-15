@@ -47,13 +47,13 @@ export function getAggregatedPositionData(
 
   const rawPosition = getPosition(positionsData, positionKey);
 
-  let position: Position | undefined;
+  let position: Position;
 
   if (rawPosition) {
     position = { ...rawPosition };
+  } else {
+    return undefined;
   }
-
-  if (!position) return undefined;
 
   const market = getMarket(marketsData, position?.marketAddress);
   const marketName = getMarketName(marketsData, tokensData, position?.marketAddress, false, false);
@@ -64,7 +64,6 @@ export function getAggregatedPositionData(
   const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
 
   const markPrice = position.isLong ? indexToken?.prices?.minPrice : indexToken?.prices?.maxPrice;
-  const pnlPrice = getPriceForPnl(indexToken?.prices, position.isLong, false);
 
   const collateralPrice = getPriceForPnl(collateralToken?.prices, position.isLong, false);
 
@@ -74,7 +73,7 @@ export function getAggregatedPositionData(
       : undefined;
 
   const currentValueUsd =
-    indexToken && pnlPrice ? convertToUsd(position.sizeInTokens, indexToken.decimals, pnlPrice) : undefined;
+    indexToken && markPrice ? convertToUsd(position.sizeInTokens, indexToken.decimals, markPrice) : undefined;
 
   const collateralUsd =
     collateralToken && collateralPrice
