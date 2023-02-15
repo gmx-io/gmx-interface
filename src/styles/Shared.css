@@ -176,6 +176,10 @@ td {
   display: inline-block;
 }
 
+.display-inline {
+  display: inline;
+}
+
 .text-white {
   color: white;
 }
@@ -381,6 +385,10 @@ button.btn-link:hover .logout-icon {
   margin-top: 0 !important;
 }
 
+.mt-md {
+  margin-top: 1.5rem;
+}
+
 .page-layout {
   min-height: calc(100vh - 62px);
   display: flex;
@@ -423,4 +431,8 @@ button.btn-link:hover .logout-icon {
 }
 .nowrap {
   white-space: nowrap;
+}
+
+.gap-right > *:not(:last-child) {
+  margin-right: 1rem;
 }

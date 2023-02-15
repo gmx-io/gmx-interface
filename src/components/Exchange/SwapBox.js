@@ -80,6 +80,7 @@ import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValu
 import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "config/tokens";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ErrorCode, ErrorDisplayType } from "./constants";
+import Button from "components/Button/Button";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -1837,9 +1838,9 @@ export default function SwapBox(props) {
         <Tooltip
           isHandlerDisabled
           handle={
-            <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+            <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
               {primaryTextMessage}
-            </button>
+            </Button>
           }
           position="center-bottom"
           className="Tooltip-flex"
@@ -1848,9 +1849,9 @@ export default function SwapBox(props) {
       );
     }
     return (
-      <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+      <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
         {primaryTextMessage}
-      </button>
+      </Button>
     );
   }
 

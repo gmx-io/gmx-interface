@@ -50,6 +50,7 @@ import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValu
 import { getTokens, getWrappedToken } from "config/tokens";
 import { formatDateTime, getTimeRemaining } from "lib/dates";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import Button from "components/Button/Button";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -1283,9 +1284,9 @@ export default function PositionSeller(props) {
             </div>
           </div>
           <div className="Exchange-swap-button-container">
-            <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+            <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
               {getPrimaryText()}
-            </button>
+            </Button>
           </div>
         </Modal>
       )}

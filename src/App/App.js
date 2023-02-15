@@ -98,6 +98,7 @@ import {
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { isDevelopment } from "config/env";
+import Button from "components/Button/Button";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -630,9 +631,9 @@ function FullApp() {
           </div>
         )}
 
-        <button className="App-cta Exchange-swap-button" onClick={saveAndCloseSettings}>
+        <Button variant="primary-action" className="w-100 mt-md" onClick={saveAndCloseSettings}>
           <Trans>Save</Trans>
-        </button>
+        </Button>
       </Modal>
     </>
   );

@@ -552,7 +552,6 @@ msgstr "Choose to buy from decentralized or centralized exchanges."
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "Claim"
 msgstr "Claim"
 
@@ -716,7 +715,6 @@ msgstr "Complete Account Transfer"
 msgid "Complete Transfer"
 msgstr "Complete Transfer"
 
-#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Compound"

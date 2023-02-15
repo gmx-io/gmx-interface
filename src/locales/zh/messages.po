@@ -552,7 +552,6 @@ msgstr ""
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "Claim"
 msgstr "领取"
 
@@ -716,7 +715,6 @@ msgstr "完成账户转移"
 msgid "Complete Transfer"
 msgstr "完成转移"
 
-#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Compound"

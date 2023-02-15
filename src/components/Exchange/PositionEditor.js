@@ -31,6 +31,7 @@ import { usePrevious } from "lib/usePrevious";
 import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ErrorCode, ErrorDisplayType } from "./constants";
+import Button from "components/Button/Button";
 
 const DEPOSIT = "Deposit";
 const WITHDRAW = "Withdraw";
@@ -475,9 +476,9 @@ export default function PositionEditor(props) {
         <Tooltip
           isHandlerDisabled
           handle={
-            <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+            <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
               {primaryTextMessage}
-            </button>
+            </Button>
           }
           className="Tooltip-flex"
           position="center-top"
@@ -486,9 +487,9 @@ export default function PositionEditor(props) {
       );
     }
     return (
-      <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+      <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
         {primaryTextMessage}
-      </button>
+      </Button>
     );
   }
 

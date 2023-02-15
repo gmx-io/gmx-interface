@@ -552,7 +552,6 @@ msgstr ""
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "Claim"
 msgstr "請求"
 
@@ -716,7 +715,6 @@ msgstr "アカウント移転を完了させる"
 msgid "Complete Transfer"
 msgstr "移転を完了させる"
 
-#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Compound"

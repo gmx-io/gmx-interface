@@ -6,6 +6,7 @@ import { useWeb3React } from "@web3-react/core";
 import { ARBITRUM } from "config/chains";
 import { helperToast } from "lib/helperToast";
 import { useDebounce } from "lib/useDebounce";
+import Button from "components/Button/Button";
 
 function AddAffiliateCode({
   handleCreateReferralCode,
@@ -32,9 +33,9 @@ function AddAffiliateCode({
             setRecentlyAddedCodes={setRecentlyAddedCodes}
           />
         ) : (
-          <button className="App-cta Exchange-swap-button" type="submit" onClick={connectWallet}>
+          <Button variant="primary-action" className="w-100" onClick={connectWallet}>
             <Trans>Connect Wallet</Trans>
-          </button>
+          </Button>
         )}
       </div>
     </div>
@@ -168,9 +169,9 @@ export function AffiliateCodeForm({
         }}
       />
       {error && <p className="error">{error}</p>}
-      <button className="App-cta Exchange-swap-button" type="submit" disabled={!isPrimaryEnabled()}>
+      <Button variant="primary-action" className="w-100" type="submit" disabled={!isPrimaryEnabled()}>
         {getPrimaryText()}
-      </button>
+      </Button>
     </form>
   );
 }

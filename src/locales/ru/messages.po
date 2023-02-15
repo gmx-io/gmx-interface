@@ -552,7 +552,6 @@ msgstr ""
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "Claim"
 msgstr "Запрос"
 
@@ -716,7 +715,6 @@ msgstr "Завершить Перевод по Счету"
 msgid "Complete Transfer"
 msgstr "Завершить Перевод"
 
-#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Compound"

@@ -552,7 +552,6 @@ msgstr ""
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "Claim"
 msgstr "Beanspruchen"
 
@@ -716,7 +715,6 @@ msgstr "Vollständige Kontoübertragung"
 msgid "Complete Transfer"
 msgstr "Vollständige Übertragung"
 
-#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Compound"

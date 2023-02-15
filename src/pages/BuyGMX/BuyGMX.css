@@ -129,6 +129,11 @@
   margin-top: 1rem;
 }
 
+.buttons-group > button {
+  line-height: 2.325rem;
+  font-size: 2rem;
+}
+
 .col-2 {
   grid-template-columns: repeat(2, 1fr);
 }

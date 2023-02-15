@@ -31,6 +31,7 @@ import { expandDecimals, formatAmount, formatAmountFree } from "lib/numbers";
 import { getNativeToken, getToken, getWrappedToken } from "config/tokens";
 import { Plural, t, Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import Button from "components/Button/Button";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 
@@ -841,13 +842,14 @@ export default function ConfirmationBox(props) {
         {isSwap && renderSwapSection()}
         {!isSwap && renderMarginSection()}
         <div className="Confirmation-box-row">
-          <button
+          <Button
+            variant="primary-action"
             onClick={onConfirmationClick}
-            className="App-cta Confirmation-box-button"
+            className="w-100"
             disabled={!isPrimaryEnabled()}
           >
             {getPrimaryText()}
-          </button>
+          </Button>
         </div>
       </Modal>
     </div>
