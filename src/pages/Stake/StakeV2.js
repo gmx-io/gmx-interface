@@ -1808,11 +1808,15 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                             value={`${formatKeyAmount(processedData, "glpAprForNativeToken", 2, 2, true)}%`}
                             showDollar={false}
                           />
-                          <StatsTooltipRow
-                            label="Escrowed GMX APR"
-                            value={`${formatKeyAmount(processedData, "glpAprForEsGmx", 2, 2, true)}%`}
-                            showDollar={false}
-                          />
+
+                          {processedData?.glpAprForEsGmx.gt(0) && (
+                            <StatsTooltipRow
+                              label="Escrowed GMX APR"
+                              value={`${formatKeyAmount(processedData, "glpAprForEsGmx", 2, 2, true)}%`}
+                              showDollar={false}
+                            />
+                          )}
+
                           <br />
 
                           <Trans>
