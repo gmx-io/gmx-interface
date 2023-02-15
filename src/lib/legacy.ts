@@ -183,6 +183,7 @@ export function getTargetUsdgAmount(token, usdgSupply, totalTokenWeights) {
 
 export function getFeeBasisPoints(
   token,
+  tokenUsdgAmount,
   usdgDelta,
   feeBasisPoints,
   taxBasisPoints,
@@ -190,14 +191,14 @@ export function getFeeBasisPoints(
   usdgSupply,
   totalTokenWeights
 ) {
-  if (!token || !token.usdgAmount || !usdgSupply || !totalTokenWeights) {
+  if (!token || !tokenUsdgAmount || !usdgSupply || !totalTokenWeights) {
     return 0;
   }
 
   feeBasisPoints = bigNumberify(feeBasisPoints);
   taxBasisPoints = bigNumberify(taxBasisPoints);
 
-  const initialAmount = token.usdgAmount;
+  const initialAmount = tokenUsdgAmount;
   let nextAmount = initialAmount.add(usdgDelta);
   if (!increment) {
     nextAmount = usdgDelta.gt(initialAmount) ? bigNumberify(0) : initialAmount.sub(usdgDelta);
@@ -244,6 +245,7 @@ export function getBuyGlpToAmount(fromAmount, swapTokenAddress, infoTokens, glpP
   usdgAmount = adjustForDecimals(usdgAmount, swapToken.decimals, USDG_DECIMALS);
   const feeBasisPoints = getFeeBasisPoints(
     swapToken,
+    swapToken.usdgAmount,
     usdgAmount,
     MINT_BURN_FEE_BASIS_POINTS,
     TAX_BASIS_POINTS,
@@ -273,8 +275,16 @@ export function getSellGlpFromAmount(toAmount, swapTokenAddress, infoTokens, glp
 
   let usdgAmount = toAmount.mul(swapToken.maxPrice).div(PRECISION);
   usdgAmount = adjustForDecimals(usdgAmount, swapToken.decimals, USDG_DECIMALS);
+
+  // in the Vault contract, the USDG supply is reduced before the fee basis points
+  // is calculated
+  usdgSupply = usdgSupply.sub(usdgAmount);
+
+  // in the Vault contract, the token.usdgAmount is reduced before the fee basis points
+  // is calculated
   const feeBasisPoints = getFeeBasisPoints(
     swapToken,
+    swapToken?.usdgAmount?.sub(usdgAmount),
     usdgAmount,
     MINT_BURN_FEE_BASIS_POINTS,
     TAX_BASIS_POINTS,
@@ -305,6 +315,7 @@ export function getBuyGlpFromAmount(toAmount, fromTokenAddress, infoTokens, glpP
   const usdgAmount = toAmount.mul(glpPrice).div(PRECISION);
   const feeBasisPoints = getFeeBasisPoints(
     fromToken,
+    fromToken.usdgAmount,
     usdgAmount,
     MINT_BURN_FEE_BASIS_POINTS,
     TAX_BASIS_POINTS,
@@ -333,8 +344,16 @@ export function getSellGlpToAmount(toAmount, fromTokenAddress, infoTokens, glpPr
   fromAmount = adjustForDecimals(fromAmount, GLP_DECIMALS, fromToken.decimals);
 
   const usdgAmount = toAmount.mul(glpPrice).div(PRECISION);
+
+  // in the Vault contract, the USDG supply is reduced before the fee basis points
+  // is calculated
+  usdgSupply = usdgSupply.sub(usdgAmount);
+
+  // in the Vault contract, the token.usdgAmount is reduced before the fee basis points
+  // is calculated
   const feeBasisPoints = getFeeBasisPoints(
     fromToken,
+    fromToken?.usdgAmount?.sub(usdgAmount),
     usdgAmount,
     MINT_BURN_FEE_BASIS_POINTS,
     TAX_BASIS_POINTS,
@@ -416,6 +435,7 @@ export function getNextFromAmount(
   const taxBasisPoints = fromToken.isStable && toToken.isStable ? STABLE_TAX_BASIS_POINTS : TAX_BASIS_POINTS;
   const feeBasisPoints0 = getFeeBasisPoints(
     fromToken,
+    fromToken.usdgAmount,
     usdgAmount,
     swapFeeBasisPoints,
     taxBasisPoints,
@@ -425,6 +445,7 @@ export function getNextFromAmount(
   );
   const feeBasisPoints1 = getFeeBasisPoints(
     toToken,
+    toToken.usdgAmount,
     usdgAmount,
     swapFeeBasisPoints,
     taxBasisPoints,
@@ -592,6 +613,7 @@ export function getNextToAmount(
   const taxBasisPoints = fromToken.isStable && toToken.isStable ? STABLE_TAX_BASIS_POINTS : TAX_BASIS_POINTS;
   const feeBasisPoints0 = getFeeBasisPoints(
     fromToken,
+    fromToken.usdgAmount,
     usdgAmount,
     swapFeeBasisPoints,
     taxBasisPoints,
@@ -601,6 +623,7 @@ export function getNextToAmount(
   );
   const feeBasisPoints1 = getFeeBasisPoints(
     toToken,
+    toToken.usdgAmount,
     usdgAmount,
     swapFeeBasisPoints,
     taxBasisPoints,
@@ -742,6 +765,15 @@ export function getLeverage({
   }
 
   return nextSize.mul(BASIS_POINTS_DIVISOR).div(remainingCollateral);
+}
+
+export function getLeverageStr(leverage) {
+  if (leverage && ethers.BigNumber.isBigNumber(leverage)) {
+    if (leverage.lt(0)) {
+      return "> 100x";
+    }
+    return `${formatAmount(leverage, 4, 2, true)}x`;
+  }
 }
 
 export function getFundingFee(data: {

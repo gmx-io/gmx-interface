@@ -361,10 +361,10 @@
 
 .ExchangeChart.tv .ExchangeChart-bottom-content {
   position: absolute;
-  bottom: 0.8rem;
+  bottom: 0;
   left: 0;
   right: 0;
-  top: 0.8rem;
+  top: 0;
 }
 
 .Exchange-price-tooltip {
@@ -906,6 +906,18 @@ table.Exchange-list-small td {
   display: none;
 }
 
+.ExchangeChart-error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.Position-leverage {
+  margin-right: 0.25rem;
+}
+
 @media (max-width: 1500px) {
   .Exchange-swap-box {
     width: 38.75rem;
@@ -937,10 +949,10 @@ table.Exchange-list-small td {
 
   .ExchangeChart.tv .ExchangeChart-bottom-content {
     position: absolute;
-    bottom: 0.8rem;
+    bottom: 0;
     left: 0;
     right: 0;
-    top: 3.875rem;
+    top: 0;
   }
 
   .Exchange-list-tabs {

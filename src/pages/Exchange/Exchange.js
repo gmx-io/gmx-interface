@@ -19,6 +19,7 @@ import {
   useAccountOrders,
   getPageTitle,
   getFundingFee,
+  getLeverageStr,
 } from "lib/legacy";
 import { getConstant, getExplorerUrl } from "config/chains";
 import { approvePlugin, useMinExecutionFee, cancelMultipleOrders } from "domain/legacy";
@@ -250,9 +251,10 @@ export function getPositions(
 
       position.hasProfitAfterFees = hasProfitAfterFees;
       position.pendingDeltaAfterFees = pendingDeltaAfterFees;
+      // while calculating delta percentage after fees, we need to add opening fee (which is equal to closing fee) to collateral
       position.deltaPercentageAfterFees = position.pendingDeltaAfterFees
         .mul(BASIS_POINTS_DIVISOR)
-        .div(position.collateral);
+        .div(position.collateral.add(position.closingFee));
 
       const { deltaStr: deltaAfterFeesStr, deltaPercentageStr: deltaAfterFeesPercentageStr } = getDeltaStr({
         delta: position.pendingDeltaAfterFees,
@@ -272,12 +274,7 @@ export function getPositions(
         ? position.collateral.add(position.pendingDelta)
         : position.collateral.sub(position.pendingDelta);
 
-      netValue = netValue.sub(position.fundingFee);
-
-      if (showPnlAfterFees) {
-        netValue = netValue.sub(position.closingFee);
-      }
-
+      netValue = netValue.sub(position.fundingFee).sub(position.closingFee);
       position.netValue = netValue;
     }
 
@@ -290,6 +287,7 @@ export function getPositions(
       delta: position.delta,
       includeDelta,
     });
+    position.leverageStr = getLeverageStr(position.leverage);
 
     positionsMap[key] = position;
 

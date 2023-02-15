@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 
 import GlpSwap from "components/Glp/GlpSwap";
-import buyGLPIcon from "img/ic_buy_glp.svg";
 import Footer from "components/Footer/Footer";
 import "./BuyGlp.css";
 
@@ -10,7 +9,6 @@ import { Trans } from "@lingui/macro";
 import { getNativeToken } from "config/tokens";
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { t } from "@lingui/macro";
 
 export default function BuyGlp(props) {
   const { chainId } = useChainId();
@@ -27,9 +25,6 @@ export default function BuyGlp(props) {
   return (
     <div className="default-container page-layout">
       <div className="section-title-block">
-        <div className="section-title-icon">
-          <img src={buyGLPIcon} alt={t`Buy GLP Icon`} />
-        </div>
         <div className="section-title-content">
           <div className="Page-title">
             <Trans>Buy / Sell GLP</Trans>

@@ -3,7 +3,7 @@ import Footer from "components/Footer/Footer";
 import "./BuyGMX.css";
 import { useWeb3React } from "@web3-react/core";
 import { Trans, t } from "@lingui/macro";
-import Button from "components/Common/Button";
+import Button from "components/Button/Button";
 import { ARBITRUM, AVALANCHE, getChainName, getConstant } from "config/chains";
 import { switchNetwork } from "lib/wallets";
 import { useChainId } from "lib/chains";
@@ -11,9 +11,9 @@ import Card from "components/Common/Card";
 import { importImage } from "lib/legacy";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
+import bondProtocolIcon from "img/ic_bondprotocol_arbitrum.svg";
 import uniswapArbitrumIcon from "img/ic_uni_arbitrum.svg";
 import traderjoeIcon from "img/ic_traderjoe_avax.png";
-import ohmArbitrumIcon from "img/ic_olympus_arbitrum.svg";
 import {
   BUY_NATIVE_TOKENS,
   CENTRALISED_EXCHANGES,
@@ -214,7 +214,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
               <Trans>GMX bonds can be bought on Bond Protocol with a discount and a small vesting period:</Trans>
             </div>
             <div className="buttons-group col-1">
-              <Button imgSrc={ohmArbitrumIcon} href="https://app.bondprotocol.finance/#/issuers/GMX">
+              <Button imgSrc={bondProtocolIcon} href="https://app.bondprotocol.finance/#/issuers/GMX">
                 Bond Protocol
               </Button>
             </div>
