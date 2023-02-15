@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { BigNumber } from "ethers";
 import { ethers } from "ethers";
 import Modal from "../Modal/Modal";
-import { get1InchSwapUrl } from "domain/common";
+import { get1InchSwapUrl } from "config/links";
 import { getLowestFeeTokenForBuyGlp, InfoTokens, Token } from "domain/tokens";
 import { getNativeToken } from "config/tokens";
 import { t, Trans } from "@lingui/macro";

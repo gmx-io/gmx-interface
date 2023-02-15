@@ -526,6 +526,7 @@ msgstr "Cancelación enviada"
 msgid "Cancel submitted."
 msgstr "Cancelación enviada."
 
+#: src/App/App.js
 #: src/pages/Exchange/Exchange.js
 msgid "Chart positions"
 msgstr "Posiciones en gráfca"
@@ -1654,7 +1655,7 @@ msgstr "Idioma"
 msgid "Launch App"
 msgstr "Abrir App"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Leaderboard"
 msgstr "Tabla de clasificación"
 
@@ -2814,7 +2815,7 @@ msgstr "Tamaño"
 msgid "Slippage should be less than 5%"
 msgstr "El deslizamiento debe ser inferior al 5%"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Speed up page loading"
 msgstr "Acelerar la carga de la página"
 
@@ -3322,7 +3323,7 @@ msgstr "Traders Referidos"
 msgid "Trades"
 msgstr "Operaciones"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"
 msgstr "Guía de Trading"
 
@@ -3522,7 +3523,7 @@ msgstr "Usa el botón de \"Componer\" para stakear tus Puntos Multiplicadores"
 msgid "Use the Edit Collateral icon to deposit or withdraw collateral."
 msgstr "Usa el icono de Editar Garantía para depositar o retirar garantía"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Useful Links"
 msgstr "Enlaces Útiles"
 

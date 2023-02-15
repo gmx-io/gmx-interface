@@ -1205,6 +1205,15 @@ button.App-button {
   align-items: center;
 }
 
+.chart-positions-settings {
+  display: none;
+}
+
+@media (max-width: 1100px) {
+  .chart-positions-settings {
+    display: block;
+  }
+}
 @media (max-width: 1033px) {
   .long-connect-btn {
     display: none !important;

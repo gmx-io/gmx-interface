@@ -526,6 +526,7 @@ msgstr "취소 제출 완료"
 msgid "Cancel submitted."
 msgstr "취소 제출 완료"
 
+#: src/App/App.js
 #: src/pages/Exchange/Exchange.js
 msgid "Chart positions"
 msgstr "차트 포지션"
@@ -1654,7 +1655,7 @@ msgstr "언어"
 msgid "Launch App"
 msgstr "앱 실행하기"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Leaderboard"
 msgstr "리더보드"
 
@@ -2814,7 +2815,7 @@ msgstr "사이즈"
 msgid "Slippage should be less than 5%"
 msgstr "슬리피지는 5%미만이어야 합니다."
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Speed up page loading"
 msgstr "페이지 로드 속도 향상"
 
@@ -3322,7 +3323,7 @@ msgstr "추천한 트레이더"
 msgid "Trades"
 msgstr "트레이드"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"
 msgstr "트레이딩 가이드"
 
@@ -3522,7 +3523,7 @@ msgstr "멀티플라이어 포인트를 스테이킹하기 위해 \"수령 후 �
 msgid "Use the Edit Collateral icon to deposit or withdraw collateral."
 msgstr "담보 예치 혹은 인출을 위해 담보 수정하기 아이콘을 사용하세요."
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Useful Links"
 msgstr "유용한 링크"
 

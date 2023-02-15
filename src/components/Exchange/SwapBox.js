@@ -42,7 +42,7 @@ import {
   USDG_DECIMALS,
   MAX_ALLOWED_LEVERAGE,
 } from "lib/legacy";
-import { ARBITRUM, AVALANCHE, getChainName, getConstant, IS_NETWORK_DISABLED, isSupportedChain } from "config/chains";
+import { ARBITRUM, getChainName, getConstant, IS_NETWORK_DISABLED, isSupportedChain } from "config/chains";
 import * as Api from "domain/legacy";
 import { getContract } from "config/contracts";
 
@@ -80,6 +80,7 @@ import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValu
 import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "config/tokens";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ErrorCode, ErrorDisplayType } from "./constants";
+import UsefulLinks from "./UsefulLinks";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -194,16 +195,6 @@ export default function SwapBox(props) {
   const isLong = swapOption === LONG;
   const isShort = swapOption === SHORT;
   const isSwap = swapOption === SWAP;
-
-  const getLeaderboardLink = () => {
-    if (chainId === ARBITRUM) {
-      return "https://www.gmx.house/arbitrum/leaderboard";
-    }
-    if (chainId === AVALANCHE) {
-      return "https://www.gmx.house/avalanche/leaderboard";
-    }
-    return "https://www.gmx.house";
-  };
 
   function getTokenLabel() {
     switch (true) {
@@ -2441,33 +2432,7 @@ export default function SwapBox(props) {
           )}
         </div>
       )}
-      <div className="Exchange-swap-market-box App-box App-box-border">
-        <div className="Exchange-swap-market-box-title">
-          <Trans>Useful Links</Trans>
-        </div>
-        <div className="App-card-divider"></div>
-        <div className="Exchange-info-row">
-          <div className="Exchange-info-label-button">
-            <ExternalLink href="https://gmxio.gitbook.io/gmx/trading">
-              <Trans>Trading guide</Trans>
-            </ExternalLink>
-          </div>
-        </div>
-        <div className="Exchange-info-row">
-          <div className="Exchange-info-label-button">
-            <ExternalLink href={getLeaderboardLink()}>
-              <Trans>Leaderboard</Trans>
-            </ExternalLink>
-          </div>
-        </div>
-        <div className="Exchange-info-row">
-          <div className="Exchange-info-label-button">
-            <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#backup-rpc-urls">
-              <Trans>Speed up page loading</Trans>
-            </ExternalLink>
-          </div>
-        </div>
-      </div>
+      <UsefulLinks className="Useful-links-swapbox" />
       <NoLiquidityErrorModal
         chainId={chainId}
         fromToken={fromToken}
