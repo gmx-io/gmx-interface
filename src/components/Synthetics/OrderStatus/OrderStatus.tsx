@@ -134,38 +134,50 @@ export function OrderStatus(p: Props) {
     return <RequestStatus isLoading={isLoading} txnHash={txnHash} text={text} />;
   }
 
-  useEffect(() => {
-    if (!p.isVisible || orderKey) return;
+  useEffect(
+    function resetOrderKey() {
+      if (!p.isVisible && orderKey) setOrderKey(undefined);
+    },
+    [orderKey, p.isVisible]
+  );
 
-    const matchedPendingOrderStatus = Object.values(orderStatuses).find((orderStatus) => {
-      if (
-        !orderStatus.isTouched &&
-        orderStatus.data.orderType === p.orderType &&
-        (!p.marketAddress || orderStatus.data.marketAddress === p.marketAddress) &&
-        (typeof p.isLong === "undefined" || orderStatus.data.isLong === p.isLong)
-      ) {
-        return true;
+  useEffect(
+    function initOrderKey() {
+      if (!p.isVisible || orderKey) return;
+
+      const matchedPendingOrderStatus = Object.values(orderStatuses).find((orderStatus) => {
+        if (
+          !orderStatus.isTouched &&
+          !orderStatus.cancelledTxnHash &&
+          !orderStatus.executedTxnHash &&
+          orderStatus.data.orderType === p.orderType &&
+          (!p.marketAddress || orderStatus.data.marketAddress === p.marketAddress) &&
+          (typeof p.isLong === "undefined" || orderStatus.data.isLong === p.isLong)
+        ) {
+          return true;
+        }
+
+        return false;
+      });
+
+      if (matchedPendingOrderStatus) {
+        touchOrderStatus(matchedPendingOrderStatus.key);
+        setOrderKey(matchedPendingOrderStatus.key);
       }
-
-      return false;
-    });
-
-    if (matchedPendingOrderStatus) {
-      touchOrderStatus(matchedPendingOrderStatus.key);
-      setOrderKey(matchedPendingOrderStatus.key);
-    }
-  }, [
-    orderKey,
-    orderStatuses,
-    p.initialCollateralAddress,
-    p.initialCollateralAmount,
-    p.isLong,
-    p.isVisible,
-    p.marketAddress,
-    p.orderType,
-    p.sizeDeltaUsd,
-    touchOrderStatus,
-  ]);
+    },
+    [
+      orderKey,
+      orderStatuses,
+      p.initialCollateralAddress,
+      p.initialCollateralAmount,
+      p.isLong,
+      p.isVisible,
+      p.marketAddress,
+      p.orderType,
+      p.sizeDeltaUsd,
+      touchOrderStatus,
+    ]
+  );
 
   return (
     <div className="Confirmation-box">

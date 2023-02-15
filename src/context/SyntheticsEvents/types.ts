@@ -5,12 +5,13 @@ export type ContractEventsContextType = {
   orderStatuses: OrderStatuses;
   depositStatuses: DepositStatuses;
   withdrawalStatuses: WithdrawalStatuses;
-  pendingPositionsUpdates: PositionsUpdates;
-  positionsUpdates: PositionsUpdates;
+  pendingPositionsUpdates: PendingPositionsUpdates;
+  positionIncreaseEvents: PositionIncreaseEvent[];
+  positionDecreaseEvents: PositionDecreaseEvent[];
   touchOrderStatus: (key: string) => void;
   touchDepositStatus: (key: string) => void;
   touchWithdrawalStatus: (key: string) => void;
-  setPendingPositionUpdate: (update: PositionUpdate) => void;
+  setPendingPositionUpdate: (update: Omit<PendingPositionUpdate, "updatedAt" | "updatedAtBlock">) => void;
 };
 
 export type EventLogItems<T> = {
@@ -59,6 +60,7 @@ export type PositionIncreaseEvent = {
   shortTokenFundingAmountPerSize: BigNumber;
   collateralDeltaAmount: BigNumber;
   isLong: boolean;
+  increasedAtBlock: BigNumber;
 };
 
 export type PositionDecreaseEvent = {
@@ -75,6 +77,17 @@ export type PositionDecreaseEvent = {
   shortTokenFundingAmountPerSize: BigNumber;
   pnlUsd: BigNumber;
   isLong: boolean;
+  decreasedAtBlock: BigNumber;
+};
+
+export type PendingPositionUpdate = {
+  isIncrease: boolean;
+  positionKey: string;
+  sizeDeltaUsd?: BigNumber;
+  sizeDeltaInTokens?: BigNumber;
+  collateralDeltaAmount?: BigNumber;
+  updatedAt: number;
+  updatedAtBlock: BigNumber;
 };
 
 export type OrderCreatedEvent = {
@@ -146,16 +159,6 @@ export type OrderStatus = MultiTxnStatus<OrderCreatedEvent>;
 export type DepositStatus = MultiTxnStatus<DepositCreatedEvent>;
 export type WithdrawalStatus = MultiTxnStatus<WithdrawalCreatedEvent>;
 
-export type PositionUpdate = {
-  isIncrease: boolean;
-  positionKey: string;
-  updatedAt?: number;
-  updatedAtBlock?: number;
-  sizeDeltaUsd?: BigNumber;
-  sizeDeltaInTokens?: BigNumber;
-  collateralDeltaAmount?: BigNumber;
-};
-
 export type OrderStatuses = {
   [key: string]: OrderStatus;
 };
@@ -168,6 +171,6 @@ export type WithdrawalStatuses = {
   [key: string]: WithdrawalStatus;
 };
 
-export type PositionsUpdates = {
-  [key: string]: PositionUpdate | undefined;
+export type PendingPositionsUpdates = {
+  [key: string]: PendingPositionUpdate | undefined;
 };

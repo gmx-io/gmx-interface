@@ -29,16 +29,6 @@ export enum DecreasePositionSwapType {
   SwapCollateralTokenToPnlToken = 2,
 }
 
-export const orderTypeLabels = {
-  [OrderType.MarketSwap]: "Market Swap",
-  [OrderType.LimitSwap]: "Limit Swap",
-  [OrderType.MarketIncrease]: "Market Increase",
-  [OrderType.LimitIncrease]: "Limit Increase",
-  [OrderType.MarketDecrease]: "Market Decrease",
-  [OrderType.LimitDecrease]: "Limit Decrease",
-  [OrderType.StopLossDecrease]: "Stop Loss Decrease",
-};
-
 export type RawContractOrder = {
   addresses: {
     account: string;

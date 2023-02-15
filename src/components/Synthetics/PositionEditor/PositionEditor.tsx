@@ -134,7 +134,7 @@ export function PositionEditor(p: Props) {
   const nextLiqPrice = getLiquidationPrice({
     sizeUsd: position?.sizeInUsd,
     collateralUsd: nextCollateralUsd,
-    indexPrice: position?.averagePrice,
+    indexPrice: position?.markPrice,
     isLong: position?.isLong,
     positionFeeFactor: feesConfig?.positionFeeFactor,
   });

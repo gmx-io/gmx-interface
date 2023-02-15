@@ -5,7 +5,7 @@ import { getContract } from "config/contracts";
 import { accountPositionListKey } from "config/dataStore";
 import { useMulticall } from "lib/multicall";
 import { bigNumberify } from "lib/numbers";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { PositionsData } from "./types";
 import { getPositionKey } from "./utils";
 
@@ -18,7 +18,6 @@ const DEFAULT_COUNT = 100;
 
 export function usePositionsData(chainId: number): PositionsDataResult {
   const { account } = useWeb3React();
-
   const [positionsData, setPositionsData] = useState<PositionsData>({});
   const [startIndex, setStartIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(DEFAULT_COUNT);
@@ -137,10 +136,8 @@ export function usePositionsData(chainId: number): PositionsDataResult {
     }
   }, [account, data?.positionsData, data?.count, endIndex]);
 
-  return useMemo(() => {
-    return {
-      positionsData,
-      isLoading: isLoading,
-    };
-  }, [isLoading, positionsData]);
+  return {
+    positionsData,
+    isLoading: isLoading,
+  };
 }

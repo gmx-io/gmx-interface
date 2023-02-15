@@ -1,13 +1,17 @@
+import { StaticJsonRpcProvider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 import EventEmitter from "abis/EventEmitter.json";
 import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
-import { getWsProvider } from "lib/rpc";
+import { setByKey, updateByKey } from "lib/objects";
+import { getProvider, getWsProvider } from "lib/rpc";
 import { ReactNode, createContext, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
-import { useMarketsData } from "../../domain/synthetics/markets";
+import { useMarketsData } from "domain/synthetics/markets";
+import { getOrderTypeLabel, getToTokenFromSwapPath } from "domain/synthetics/orders";
+import { getPositionKey } from "domain/synthetics/positions";
 import {
   ContractEventsContextType,
   DepositCreatedEvent,
@@ -16,16 +20,14 @@ import {
   EventTxnParams,
   OrderCreatedEvent,
   OrderStatuses,
+  PendingPositionUpdate,
+  PendingPositionsUpdates,
   PositionDecreaseEvent,
   PositionIncreaseEvent,
-  PositionUpdate,
-  PositionsUpdates,
   WithdrawalCreatedEvent,
   WithdrawalStatuses,
 } from "./types";
-import { getToTokenFromSwapPath, orderTypeLabels } from "../../domain/synthetics/orders";
-import { getPositionKey } from "../../domain/synthetics/positions";
-import { setByKey, updateByKey } from "lib/objects";
+import { parseEventLogData } from "./utils";
 
 export const SyntheticsEventsContext = createContext({});
 
@@ -38,16 +40,21 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const [orderStatuses, setOrderStatuses] = useState<OrderStatuses>({});
   const [depositStatuses, setDepositStatuses] = useState<DepositStatuses>({});
   const [withdrawalStatuses, setWithdrawalStatuses] = useState<WithdrawalStatuses>({});
-
-  const [pendingPositionsUpdates, setPendingPositionsUpdates] = useState<PositionsUpdates>({});
-  const [positionsUpdates, setPositionsUpdates] = useState<PositionsUpdates>({});
+  const [pendingPositionsUpdates, setPendingPositionsUpdates] = useState<PendingPositionsUpdates>({});
+  const [positionIncreaseEvents, setPositionIncreaseEvents] = useState<PositionIncreaseEvent[]>([]);
+  const [positionDecreaseEvents, setPositionDecreaseEvents] = useState<PositionDecreaseEvent[]>([]);
 
   const eventLogHandlers = useRef({});
 
   useImperativeHandle(eventLogHandlers, () => ({
     PositionIncrease: (eventData: EventLogData, txnParams: EventTxnParams) => {
       const data: PositionIncreaseEvent = {
-        positionKey: "",
+        positionKey: getPositionKey(
+          eventData.addressItems.items.account,
+          eventData.addressItems.items.market,
+          eventData.addressItems.items.collateralToken,
+          eventData.boolItems.items.isLong
+        )!,
         contractPositionKey: eventData.bytes32Items.items.positionKey,
         account: eventData.addressItems.items.account,
         marketAddress: eventData.addressItems.items.market,
@@ -64,26 +71,22 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         shortTokenFundingAmountPerSize: eventData.intItems.items.shortTokenFundingAmountPerSize,
         collateralDeltaAmount: eventData.intItems.items.collateralDeltaAmount,
         isLong: eventData.boolItems.items.isLong,
+        increasedAtBlock: BigNumber.from(txnParams.blockNumber),
       };
 
-      data.positionKey = getPositionKey(data.account, data.marketAddress, data.collateralTokenAddress, data.isLong)!;
+      if (data.account !== currentAccount) return;
 
-      setPositionsUpdates((old) =>
-        setByKey(old, data.positionKey, {
-          isIncrease: true,
-          positionKey: data.positionKey,
-          sizeDeltaInTokens: data.sizeInTokens,
-          sizeDeltaUsd: data.sizeInUsd,
-          collateralDeltaAmount: data.collateralDeltaAmount,
-          updatedAtBlock: txnParams.blockNumber,
-          updatedAt: Date.now(),
-        })
-      );
+      setPositionIncreaseEvents((old) => [...old, data]);
     },
 
     PositionDecrease: (eventData: EventLogData, txnParams: EventTxnParams) => {
       const data: PositionDecreaseEvent = {
-        positionKey: "",
+        positionKey: getPositionKey(
+          eventData.addressItems.items.account,
+          eventData.addressItems.items.market,
+          eventData.addressItems.items.collateralToken,
+          eventData.boolItems.items.isLong
+        )!,
         account: eventData.addressItems.items.account,
         marketAddress: eventData.addressItems.items.market,
         collateralTokenAddress: eventData.addressItems.items.collateralToken,
@@ -96,23 +99,12 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         pnlUsd: eventData.intItems.items.pnlUsd,
         isLong: eventData.boolItems.items.isLong,
         contractPositionKey: eventData.bytes32Items.items.positionKey,
+        decreasedAtBlock: BigNumber.from(txnParams.blockNumber),
       };
-
-      data.positionKey = getPositionKey(data.account, data.marketAddress, data.collateralTokenAddress, data.isLong)!;
 
       if (data.account !== currentAccount) return;
 
-      setPositionsUpdates((old) =>
-        setByKey(old, data.positionKey, {
-          isIncrease: false,
-          positionKey: data.positionKey,
-          sizeDeltaUsd: data.sizeInUsd,
-          sizeDeltaInTokens: data.sizeInTokens,
-          collateralDeltaAmount: data.collateralAmount,
-          updatedAt: Date.now(),
-          updatedAtBlock: txnParams.blockNumber,
-        })
-      );
+      setPositionDecreaseEvents((old) => [...old, data]);
     },
 
     OrderCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
@@ -152,40 +144,32 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
       const order = orderStatuses[key]?.data;
       if (order) {
-        const orderLabel = orderTypeLabels[order.orderType];
-        const targetCollateral = getToTokenFromSwapPath(
-          marketsData,
-          order.initialCollateralTokenAddress,
-          order.swapPath
-        );
+        const orderLabel = getOrderTypeLabel(order.orderType);
 
-        const positionKey = getPositionKey(order.account, order.marketAddress, targetCollateral, order.isLong);
-
-        if (positionKey) {
-          setPendingPositionsUpdates((pendingPositions) => setByKey(pendingPositions, positionKey, undefined));
-        }
         pushSuccessNotification(chainId, `${orderLabel} order executed`, txnParams);
       }
     },
 
     OrderCancelled: (eventData: EventLogData, txnParams: EventTxnParams) => {
       const key = eventData.bytes32Items.items.key;
-
       setOrderStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
+
       const order = orderStatuses[key]?.data;
 
       if (order) {
-        const orderLabel = orderTypeLabels[order.orderType];
+        const orderLabel = getOrderTypeLabel(order.orderType);
         const targetCollateral = getToTokenFromSwapPath(
           marketsData,
           order.initialCollateralTokenAddress,
           order.swapPath
         );
-        const positionKey = getPositionKey(order.account, order.marketAddress, targetCollateral, order.isLong);
-        if (positionKey) {
-          setPendingPositionsUpdates((pendingPositions) => setByKey(pendingPositions, positionKey, undefined));
-        }
         pushErrorNotification(chainId, `${orderLabel} order cancelled`, txnParams);
+
+        const positionKey = getPositionKey(order.account, order.marketAddress, targetCollateral, order.isLong);
+
+        if (positionKey) {
+          setPendingPositionsUpdates((old) => setByKey(old, positionKey, undefined));
+        }
       }
     },
 
@@ -286,31 +270,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         // ...ignore on unsupported chains
       }
 
-      function parseEventLogData(eventData): EventLogData {
-        const ret: any = {};
-        for (const typeKey of [
-          "addressItems",
-          "uintItems",
-          "intItems",
-          "boolItems",
-          "bytes32Items",
-          "bytesItems",
-          "stringItems",
-        ]) {
-          ret[typeKey] = {};
-
-          for (const listKey of ["items", "arrayItems"]) {
-            ret[typeKey][listKey] = {};
-
-            for (const item of eventData[typeKey][listKey]) {
-              ret[typeKey][listKey][item.key] = item.value;
-            }
-          }
-        }
-
-        return ret as EventLogData;
-      }
-
       function handleEventLog(sender, eventNameHash, eventName, eventData, txnOpts) {
         if (isDevelopment()) {
           // eslint-disable-next-line no-console
@@ -356,7 +315,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         orderStatuses,
         depositStatuses,
         withdrawalStatuses,
-        positionsUpdates,
+        increasePositionEvents: positionIncreaseEvents,
+        decreasePositionEvents: positionDecreaseEvents,
         pendingPositionsUpdates,
       });
     }
@@ -366,7 +326,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       depositStatuses,
       withdrawalStatuses,
       pendingPositionsUpdates,
-      positionsUpdates,
+      positionIncreaseEvents,
+      positionDecreaseEvents,
       touchOrderStatus: (key: string) => {
         setOrderStatuses((old) => updateByKey(old, key, { isTouched: true }));
       },
@@ -376,12 +337,29 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       touchWithdrawalStatus: (key: string) => {
         setWithdrawalStatuses((old) => updateByKey(old, key, { isTouched: true }));
       },
-      setPendingPositionUpdate(update: PositionUpdate) {
-        const updatedAt = update.updatedAt || Date.now();
-        setPendingPositionsUpdates((old) => setByKey(old, update.positionKey, { ...update, updatedAt }));
+      async setPendingPositionUpdate(update: Omit<PendingPositionUpdate, "updatedAt" | "updatedAtBlock">) {
+        const provider = getProvider(undefined, chainId) as StaticJsonRpcProvider;
+
+        const currentBlock = await provider.getBlockNumber();
+
+        setPendingPositionsUpdates((old) =>
+          setByKey(old, update.positionKey, {
+            ...update,
+            updatedAt: Date.now(),
+            updatedAtBlock: BigNumber.from(currentBlock),
+          })
+        );
       },
     };
-  }, [depositStatuses, orderStatuses, pendingPositionsUpdates, positionsUpdates, withdrawalStatuses]);
+  }, [
+    chainId,
+    depositStatuses,
+    orderStatuses,
+    pendingPositionsUpdates,
+    positionDecreaseEvents,
+    positionIncreaseEvents,
+    withdrawalStatuses,
+  ]);
 
   return <SyntheticsEventsContext.Provider value={contextState}>{children}</SyntheticsEventsContext.Provider>;
 }

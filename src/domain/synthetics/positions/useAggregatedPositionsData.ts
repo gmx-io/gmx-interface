@@ -1,13 +1,11 @@
 import { useMemo } from "react";
-import { uniq } from "lodash";
+import { useMarketsFeesConfigs } from "../fees/useMarketsFeesConfigs";
 import { useMarketsData } from "../markets";
 import { useAvailableTokensData } from "../tokens";
-import { usePositionsData } from "./usePositionsData";
 import { AggregatedPositionsData } from "./types";
-import { getAggregatedPositionData } from "./utils";
-import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import { useMarketsFeesConfigs } from "../fees/useMarketsFeesConfigs";
 import { usePositionsConstants } from "./usePositionsConstants";
+import { getAggregatedPositionData } from "./utils";
+import { useOptimisticPositionsData } from "./useOptimisticPositionsData";
 
 type AggregatedPositionsDataResult = {
   aggregatedPositionsData: AggregatedPositionsData;
@@ -18,25 +16,22 @@ export function useAggregatedPositionsData(
   chainId: number,
   p: { savedIsPnlInLeverage: boolean }
 ): AggregatedPositionsDataResult {
-  const { pendingPositionsUpdates, positionsUpdates } = useSyntheticsEvents();
   const { tokensData, isLoading: isTokensLoading } = useAvailableTokensData(chainId);
   const { marketsData, isLoading: isMarketsLoading } = useMarketsData(chainId);
   const { marketsFeesConfigs, isLoading: isFeesConfigsLoading } = useMarketsFeesConfigs(chainId);
-  const { positionsData, isLoading: isPositionsLoading } = usePositionsData(chainId);
+  const { optimisticPositionsData, isLoading: isPositionsLoading } = useOptimisticPositionsData(chainId);
   const { maxLeverage } = usePositionsConstants(chainId);
 
   return useMemo(() => {
-    const positionKeys = uniq(Object.keys(positionsData).concat(Object.keys(pendingPositionsUpdates)));
+    const positionKeys = Object.keys(optimisticPositionsData);
 
     return {
       aggregatedPositionsData: positionKeys.reduce((acc: AggregatedPositionsData, positionKey: string) => {
         const position = getAggregatedPositionData(
-          positionsData,
+          optimisticPositionsData,
           marketsData,
           tokensData,
           marketsFeesConfigs,
-          pendingPositionsUpdates,
-          positionsUpdates,
           positionKey,
           p.savedIsPnlInLeverage,
           maxLeverage
@@ -58,10 +53,8 @@ export function useAggregatedPositionsData(
     marketsData,
     marketsFeesConfigs,
     maxLeverage,
+    optimisticPositionsData,
     p.savedIsPnlInLeverage,
-    pendingPositionsUpdates,
-    positionsData,
-    positionsUpdates,
     tokensData,
   ]);
 }

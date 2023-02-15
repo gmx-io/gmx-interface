@@ -1,43 +1,26 @@
-import { BigNumber } from "ethers";
-import { bigNumberify } from "lib/numbers";
-import { PositionsUpdates } from "./types";
+import { EventLogData } from "./types";
 
-export function getPositionUpdate(
-  positionsUpdates: PositionsUpdates,
-  positionKey?: string,
-  conditions: {
-    maxAge?: number;
-    minIncreasedAtBlock?: BigNumber;
-    minDecreasedAtBlock?: BigNumber;
-  } = {}
-) {
-  if (!positionKey) return undefined;
+export function parseEventLogData(eventData): EventLogData {
+  const ret: any = {};
+  for (const typeKey of [
+    "addressItems",
+    "uintItems",
+    "intItems",
+    "boolItems",
+    "bytes32Items",
+    "bytesItems",
+    "stringItems",
+  ]) {
+    ret[typeKey] = {};
 
-  const update = positionsUpdates[positionKey];
+    for (const listKey of ["items", "arrayItems"]) {
+      ret[typeKey][listKey] = {};
 
-  if (!update) {
-    return undefined;
-  }
-
-  if (conditions.maxAge && (!update.updatedAt || Date.now() - update.updatedAt > conditions.maxAge)) {
-    return undefined;
-  }
-
-  if (conditions.minIncreasedAtBlock && update.isIncrease) {
-    const updatedAtBlock = bigNumberify(update.updatedAtBlock!);
-
-    if (!updatedAtBlock || updatedAtBlock.lte(conditions.minIncreasedAtBlock)) {
-      return undefined;
+      for (const item of eventData[typeKey][listKey]) {
+        ret[typeKey][listKey][item.key] = item.value;
+      }
     }
   }
 
-  if (conditions.minDecreasedAtBlock && !update.isIncrease) {
-    const updatedAtBlock = bigNumberify(update.updatedAtBlock!);
-
-    if (!updatedAtBlock || updatedAtBlock.lte(conditions.minDecreasedAtBlock)) {
-      return undefined;
-    }
-  }
-
-  return update;
+  return ret as EventLogData;
 }

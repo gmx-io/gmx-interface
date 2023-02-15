@@ -1,7 +1,7 @@
 import { BigNumber } from "ethers";
 import { TokenData } from "domain/synthetics/tokens";
 import { Market } from "domain/synthetics/markets";
-import { PositionUpdate } from "../../../context/SyntheticsEvents";
+import { PendingPositionUpdate } from "context/SyntheticsEvents";
 
 export type PositionFundingFees = {
   fundingFeeAmount: BigNumber;
@@ -30,6 +30,8 @@ export type Position = {
   data: string;
   pendingBorrowingFees: BigNumber;
   pendingFundingFees: PositionFundingFees;
+  isOpening?: boolean;
+  pendingUpdate?: PendingPositionUpdate;
 };
 
 export type AggregatedPositionData = Position & {
@@ -40,7 +42,6 @@ export type AggregatedPositionData = Position & {
   pnlToken?: TokenData;
   currentValueUsd?: BigNumber;
   collateralUsd?: BigNumber;
-  averagePrice?: BigNumber;
   markPrice?: BigNumber;
   pnl?: BigNumber;
   pnlPercentage?: BigNumber;
@@ -54,9 +55,6 @@ export type AggregatedPositionData = Position & {
   leverage?: BigNumber;
   pendingFundingFeesUsd?: BigNumber;
   totalPendingFeesUsd?: BigNumber;
-  pendingUpdate?: PositionUpdate;
-  hasPendingChanges?: boolean;
-  isOpening?: boolean;
 };
 
 export type PositionsData = {

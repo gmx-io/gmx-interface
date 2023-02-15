@@ -1,9 +1,3 @@
-import { PositionsUpdates, getPositionUpdate } from "context/SyntheticsEvents";
-import { Token } from "domain/tokens";
-import { BigNumber } from "ethers";
-import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "lib/legacy";
-import { applyFactor, expandDecimals, formatAmount, formatUsd, roundUpDivision } from "lib/numbers";
-import { MarketsFeesConfigsData, getMarketFeesConfig } from "../fees";
 import {
   Market,
   MarketsData,
@@ -13,7 +7,12 @@ import {
   getMarketName,
   getMarketPools,
   getPoolUsd,
-} from "../markets";
+} from "domain/synthetics/markets";
+import { Token } from "domain/tokens";
+import { BigNumber } from "ethers";
+import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "lib/legacy";
+import { applyFactor, expandDecimals, formatAmount, formatUsd, roundUpDivision } from "lib/numbers";
+import { MarketsFeesConfigsData, getMarketFeesConfig } from "../fees";
 import { TokenPrices, TokensData, convertToUsd, getTokenData } from "../tokens";
 import { AggregatedPositionData, Position, PositionsData } from "./types";
 
@@ -40,8 +39,6 @@ export function getAggregatedPositionData(
   marketsData: MarketsData,
   tokensData: TokensData,
   marketsFeesConfigs: MarketsFeesConfigsData,
-  pendingUpdates: PositionsUpdates,
-  contractUpdates: PositionsUpdates,
   positionKey?: string,
   savedIsPnlInLeverage?: boolean,
   maxLeverage?: BigNumber
@@ -49,71 +46,25 @@ export function getAggregatedPositionData(
   if (!positionKey) return undefined;
 
   const rawPosition = getPosition(positionsData, positionKey);
-  const pendingUpdate = getPositionUpdate(pendingUpdates, positionKey, { maxAge: 600 * 1000 });
 
   let position: Position | undefined;
-  let isOpening = false;
 
   if (rawPosition) {
     position = { ...rawPosition };
-  } else if (pendingUpdate && pendingUpdate.isIncrease) {
-    isOpening = true;
-    const { account, market, collateralToken, isLong } = parsePositionKey(positionKey);
-
-    position = {
-      key: positionKey,
-      account,
-      marketAddress: market,
-      collateralTokenAddress: collateralToken,
-      isLong,
-      sizeInUsd: pendingUpdate.sizeDeltaUsd || BigNumber.from(0),
-      collateralAmount: pendingUpdate.collateralDeltaAmount || BigNumber.from(0),
-      sizeInTokens: pendingUpdate.sizeDeltaInTokens || BigNumber.from(0),
-      increasedAtBlock: BigNumber.from(0),
-      decreasedAtBlock: BigNumber.from(0),
-      borrowingFactor: BigNumber.from(0),
-      pendingBorrowingFees: BigNumber.from(0),
-      longTokenFundingAmountPerSize: BigNumber.from(0),
-      shortTokenFundingAmountPerSize: BigNumber.from(0),
-      data: "0x",
-      pendingFundingFees: {
-        fundingFeeAmount: BigNumber.from(0),
-        claimableLongTokenAmount: BigNumber.from(0),
-        claimableShortTokenAmount: BigNumber.from(0),
-        latestLongTokenFundingAmountPerSize: BigNumber.from(0),
-        latestShortTokenFundingAmountPerSize: BigNumber.from(0),
-        hasPendingLongTokenFundingFee: false,
-        hasPendingShortTokenFundingFee: false,
-      },
-    };
   }
 
   if (!position) return undefined;
 
-  const contractUpdate = getPositionUpdate(contractUpdates, positionKey, {
-    minIncreasedAtBlock: position.increasedAtBlock,
-    minDecreasedAtBlock: position.decreasedAtBlock,
-  });
-
-  if (contractUpdate) {
-    const sign = contractUpdate.isIncrease ? 1 : -1;
-    position.sizeInUsd = position.sizeInUsd.add(contractUpdate.sizeDeltaUsd?.mul(sign) || 0);
-    position.collateralAmount = position.collateralAmount.add(contractUpdate.collateralDeltaAmount?.mul(sign) || 0);
-    position.sizeInTokens = position.sizeInTokens.add(contractUpdate.sizeDeltaInTokens?.mul(sign) || 0);
-  }
-
   const market = getMarket(marketsData, position?.marketAddress);
+  const marketName = getMarketName(marketsData, tokensData, position?.marketAddress, false, false);
   const feesConfig = getMarketFeesConfig(marketsFeesConfigs, market?.marketTokenAddress);
 
   const collateralToken = getTokenData(tokensData, position?.collateralTokenAddress);
   const pnlToken = getTokenData(tokensData, position.isLong ? market?.longTokenAddress : market?.shortTokenAddress);
   const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
 
-  const marketName = getMarketName(marketsData, tokensData, position?.marketAddress, false, false);
-
   const markPrice = position.isLong ? indexToken?.prices?.minPrice : indexToken?.prices?.maxPrice;
   const pnlPrice = getPriceForPnl(indexToken?.prices, position.isLong, false);
-  const averagePrice = indexToken?.prices?.minPrice.add(indexToken?.prices?.maxPrice).div(2);
 
   const collateralPrice = getPriceForPnl(collateralToken?.prices, position.isLong, false);
 
@@ -166,7 +117,7 @@ export function getAggregatedPositionData(
   const liqPrice = getLiquidationPrice({
     sizeUsd: position.sizeInUsd,
     collateralUsd,
-    indexPrice: averagePrice,
+    indexPrice: markPrice,
     positionFeeFactor: feesConfig?.positionFeeFactor,
     maxPriceImpactFactor: feesConfig?.maxPositionImpactFactorForLiquidations,
     pendingBorrowingFeesUsd: position.pendingBorrowingFees,
@@ -187,7 +138,6 @@ export function getAggregatedPositionData(
     collateralUsd,
     collateralUsdAfterFees,
     hasLowCollateral,
-    averagePrice,
     markPrice,
     pnl,
     pnlPercentage,
@@ -199,9 +149,6 @@ export function getAggregatedPositionData(
     entryPrice,
     pendingFundingFeesUsd,
     totalPendingFeesUsd,
-    pendingUpdate,
-    hasPendingChanges: Boolean(pendingUpdate),
-    isOpening,
   };
 }
 

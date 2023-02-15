@@ -170,6 +170,20 @@ export function getOrderTitle(p: {
   }
 }
 
+export function getOrderTypeLabel(orderType: OrderType) {
+  const orderTypeLabels = {
+    [OrderType.MarketSwap]: t`Market Swap`,
+    [OrderType.LimitSwap]: t`Limit Swap`,
+    [OrderType.MarketIncrease]: t`Market Increase`,
+    [OrderType.LimitIncrease]: t`Limit Increase`,
+    [OrderType.MarketDecrease]: t`Market Decrease`,
+    [OrderType.LimitDecrease]: t`Limit Decrease`,
+    [OrderType.StopLossDecrease]: t`Stop Loss Decrease`,
+  };
+
+  return orderTypeLabels[orderType];
+}
+
 export function getMarkPriceForOrder(isIncrease?: boolean, isLong?: boolean, tokenPrices?: TokenPrices) {
   const maximisePrice = (isIncrease && isLong) || (!isIncrease && !isLong);
 
