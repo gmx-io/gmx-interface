@@ -1,6 +1,6 @@
 import { Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { getLeaderboardLink } from "domain/common";
+import { getLeaderboardLink } from "config/links";
 import cx from "classnames";
 import { useChainId } from "lib/chains";
 

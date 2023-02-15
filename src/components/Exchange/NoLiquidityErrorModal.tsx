@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import Modal from "../Modal/Modal";
-import { get1InchSwapUrl } from "domain/common";
+import { get1InchSwapUrl } from "config/links";
 import { Token, TokenInfo } from "domain/tokens";
 import { getNativeToken } from "config/tokens";
 import { t, Trans } from "@lingui/macro";
