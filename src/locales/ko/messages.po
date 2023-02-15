@@ -1898,8 +1898,8 @@ msgid "Max close amount exceeded"
 msgstr "닫을 수 있는 최댜 수량을 초과했습니다"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account"
-msgstr "최대 레버리지 100x를 초과하였습니다. 손실과 수수료를 제외한 나머지 담보 자산은 귀하의 계정으로 반환되었습니다."
+msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account:"
+msgstr "최대 레버리지 100x를 초과하였습니다. 손실과 수수료를 제외한 나머지 담보 자산은 귀하의 계정으로 반환되었습니다:"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js

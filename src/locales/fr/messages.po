@@ -1898,8 +1898,8 @@ msgid "Max close amount exceeded"
 msgstr "Le montant max. de fermeture a été excéder"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account"
-msgstr "Le levier maximum de 100x a été dépassé, le collatéral restant, après déduction des pertes et des frais, a été renvoyé sur votre compte"
+msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account:"
+msgstr "Le levier maximum de 100x a été dépassé, le collatéral restant, après déduction des pertes et des frais, a été renvoyé sur votre compte:"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js

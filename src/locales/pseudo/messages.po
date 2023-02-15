@@ -1895,7 +1895,7 @@ msgid "Max close amount exceeded"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account"
+msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account:"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js

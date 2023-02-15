@@ -1898,8 +1898,8 @@ msgid "Max close amount exceeded"
 msgstr "Superado importe máximo de cierre"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account"
-msgstr "El apalancamiento máximo de 100x ha sido superado, la garantía restante después de restar las pérdidas y comisiones ha sido enviada de vuelta a tu cuenta"
+msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account:"
+msgstr "El apalancamiento máximo de 100x ha sido superado, la garantía restante después de restar las pérdidas y comisiones ha sido enviada de vuelta a tu cuenta:"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js

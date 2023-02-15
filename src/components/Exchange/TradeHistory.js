@@ -52,7 +52,7 @@ function renderLiquidationTooltip(liquidationData, label) {
   const text =
     liquidationData.type === "full"
       ? t`This position was liquidated as the max leverage of 100x was exceeded.`
-      : t`Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account`;
+      : t`Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account:`;
   return (
     <Tooltip
       position="left-top"
@@ -77,7 +77,11 @@ function renderLiquidationTooltip(liquidationData, label) {
             showDollar
             value={formatAmount(liquidationData.borrowFee, USD_DECIMALS, 2, true)}
           />
-          <StatsTooltipRow label={t`PnL`} value={`-$${formatAmount(liquidationData.loss, USD_DECIMALS, 2, true)}`} />
+          <StatsTooltipRow
+            label={t`PnL`}
+            showDollar={false}
+            value={`-$${formatAmount(liquidationData.loss, USD_DECIMALS, 2, true)}`}
+          />
           {liquidationData.type === "full" && (
             <StatsTooltipRow label={t`Liquidation Fee`} showDollar value={formatAmount(LIQUIDATION_FEE, 30, 2, true)} />
           )}
@@ -251,7 +255,7 @@ export default function TradeHistory(props) {
               {params.isLong ? "<" : ">"}&nbsp;
             </Trans>
             <Tooltip
-              position="left-top"
+              position="center-top"
               handle={`${formatAmount(params.acceptablePrice, USD_DECIMALS, 2, true)} USD`}
               renderContent={() => (
                 <Trans>Try increasing the "Allowed Slippage", under the Settings menu on the top right.</Trans>
@@ -279,7 +283,7 @@ export default function TradeHistory(props) {
               {params.isLong ? ">" : "<"}&nbsp;
             </Trans>
             <Tooltip
-              position="left-top"
+              position="right-top"
               handle={`${formatAmount(params.acceptablePrice, USD_DECIMALS, 2, true)} USD`}
               renderContent={() => (
                 <Trans>Try increasing the "Allowed Slippage", under the Settings menu on the top right</Trans>
@@ -495,7 +499,7 @@ export default function TradeHistory(props) {
                     </span>
                   )}
                 </div>
-                <ExternalLink className="plain" href={txUrl}>
+                <ExternalLink className="plain TradeHistory-item-link" href={txUrl}>
                   {msg}
                 </ExternalLink>
               </div>
