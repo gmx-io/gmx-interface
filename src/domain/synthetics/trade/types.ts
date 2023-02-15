@@ -180,3 +180,9 @@ export type TradeFees = {
   positionPriceImpact?: FeeItem;
   positionFeeFactor?: BigNumber;
 };
+
+export type GmSwapFees = {
+  totalFees?: FeeItem;
+  swapFee?: FeeItem;
+  swapPriceImpact?: FeeItem;
+};

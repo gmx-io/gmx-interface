@@ -1,74 +1,155 @@
-import { Market, MarketTokenData, MarketsData, MarketsPoolsData, getPoolUsd } from "domain/synthetics/markets";
+import { MarketsData, MarketsPoolsData, getPoolUsd } from "domain/synthetics/markets";
 import { WithdrawalAmounts } from "../types";
-import { TokensData, convertToTokenAmount, convertToUsd, getTokenData } from "domain/synthetics/tokens";
+import { TokenData, TokensData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { MarketsFeesConfigsData, getMarketFeesConfig } from "domain/synthetics/fees";
 import { applyFactor } from "lib/numbers";
 
-export function getWithdawalAmounts(p: {
+export function getNextWithdrawalAmountsByMarketToken(p: {
   marketsData: MarketsData;
   tokensData: TokensData;
   poolsData: MarketsPoolsData;
   feesConfigs: MarketsFeesConfigsData;
-  market?: Market;
-  marketToken?: MarketTokenData;
-  marketTokenAmount?: BigNumber;
+  marketToken: TokenData;
+  longToken: TokenData;
+  shortToken: TokenData;
+  marketTokenAmount: BigNumber;
 }): WithdrawalAmounts | undefined {
-  const feesConfig = getMarketFeesConfig(p.feesConfigs, p.market?.marketTokenAddress);
+  const feesConfig = getMarketFeesConfig(p.feesConfigs, p.marketToken.address);
 
   const longPoolUsd = getPoolUsd(
     p.marketsData,
     p.poolsData,
     p.tokensData,
-    p.market?.marketTokenAddress,
-    p.market?.longTokenAddress,
-    "midPrice"
+    p.marketToken.address,
+    p.longToken.address,
+    "maxPrice"
   );
 
   const shortPoolUsd = getPoolUsd(
     p.marketsData,
     p.poolsData,
     p.tokensData,
-    p.market?.marketTokenAddress,
-    p.market?.shortTokenAddress,
-    "midPrice"
+    p.marketToken.address,
+    p.shortToken.address,
+    "maxPrice"
   );
-
-  const totalPoolsUsd = longPoolUsd?.add(shortPoolUsd!);
-
-  const marketTokenAmount = p.marketTokenAmount;
-  const marketTokenUsd = convertToUsd(marketTokenAmount, p.marketToken?.decimals, p.marketToken?.prices?.minPrice!);
-
-  const longToken = getTokenData(p.tokensData, p.market?.longTokenAddress);
-  const shortToken = getTokenData(p.tokensData, p.market?.shortTokenAddress);
 
   if (
     !longPoolUsd ||
     !shortPoolUsd ||
-    !marketTokenUsd ||
     !feesConfig ||
-    !totalPoolsUsd ||
-    !longToken?.prices ||
-    !shortToken?.prices ||
-    !marketTokenUsd ||
-    !marketTokenAmount
+    !p.marketToken.prices ||
+    !p.longToken.prices ||
+    !p.shortToken.prices
   ) {
     return undefined;
   }
 
+  const totalPoolsUsd = longPoolUsd.add(shortPoolUsd);
+
+  if (!totalPoolsUsd.gt(0)) {
+    return undefined;
+  }
+
+  const marketTokenAmount = p.marketTokenAmount;
+  const marketTokenUsd = convertToUsd(marketTokenAmount, p.marketToken.decimals, p.marketToken.prices.minPrice)!;
+
   let longTokenUsd = marketTokenUsd.mul(longPoolUsd).div(totalPoolsUsd);
   let shortTokenUsd = marketTokenUsd.mul(shortPoolUsd).div(totalPoolsUsd);
 
-  const longSwapFee = applyFactor(longTokenUsd, feesConfig.swapFeeFactor);
-  const shortSwapFee = applyFactor(shortTokenUsd, feesConfig.swapFeeFactor);
+  const longSwapFeeUsd = applyFactor(longTokenUsd, feesConfig.swapFeeFactor);
+  const shortSwapFeeUsd = applyFactor(shortTokenUsd, feesConfig.swapFeeFactor);
+  const swapFeeUsd = longSwapFeeUsd.add(shortSwapFeeUsd);
 
-  const swapFeeUsd = longSwapFee.add(shortSwapFee);
+  longTokenUsd = longTokenUsd.sub(longSwapFeeUsd);
+  shortTokenUsd = shortTokenUsd.sub(shortSwapFeeUsd);
 
-  longTokenUsd = longTokenUsd.sub(longSwapFee);
-  shortTokenUsd = shortTokenUsd.sub(shortSwapFee);
+  const longTokenAmount = convertToTokenAmount(longTokenUsd, p.longToken.decimals, p.longToken.prices.maxPrice)!;
+  const shortTokenAmount = convertToTokenAmount(shortTokenUsd, p.shortToken.decimals, p.shortToken.prices.maxPrice)!;
 
-  const longTokenAmount = convertToTokenAmount(longTokenUsd, longToken.decimals, longToken.prices.maxPrice)!;
-  const shortTokenAmount = convertToTokenAmount(shortTokenUsd, shortToken.decimals, shortToken.prices.maxPrice)!;
+  return {
+    marketTokenAmount,
+    marketTokenUsd,
+    longTokenAmount,
+    longTokenUsd,
+    shortTokenAmount,
+    shortTokenUsd,
+    swapFeeUsd,
+  };
+}
+
+export function getNextWithdrawalAmountsByCollaterals(p: {
+  marketsData: MarketsData;
+  tokensData: TokensData;
+  poolsData: MarketsPoolsData;
+  feesConfigs: MarketsFeesConfigsData;
+  marketToken: TokenData;
+  longToken: TokenData;
+  shortToken: TokenData;
+  longTokenAmount?: BigNumber;
+  shortTokenAmount?: BigNumber;
+}): WithdrawalAmounts | undefined {
+  const feesConfig = getMarketFeesConfig(p.feesConfigs, p.marketToken.address);
+
+  const longPoolUsd = getPoolUsd(
+    p.marketsData,
+    p.poolsData,
+    p.tokensData,
+    p.marketToken.address,
+    p.longToken.address,
+    "maxPrice"
+  );
+
+  const shortPoolUsd = getPoolUsd(
+    p.marketsData,
+    p.poolsData,
+    p.tokensData,
+    p.marketToken.address,
+    p.shortToken.address,
+    "maxPrice"
+  );
+
+  if (
+    !longPoolUsd ||
+    !shortPoolUsd ||
+    !feesConfig ||
+    !p.marketToken.prices ||
+    !p.longToken.prices ||
+    !p.shortToken.prices ||
+    (!p.longTokenAmount && !p.shortTokenAmount)
+  ) {
+    return undefined;
+  }
+
+  let longTokenAmount: BigNumber;
+  let shortTokenAmount: BigNumber;
+  let longTokenUsd: BigNumber;
+  let shortTokenUsd: BigNumber;
+
+  if (p.longTokenAmount) {
+    longTokenAmount = p.longTokenAmount;
+    longTokenUsd = convertToUsd(longTokenAmount, p.longToken.decimals, p.longToken.prices.maxPrice)!;
+    shortTokenUsd = longTokenUsd.mul(shortPoolUsd).div(longPoolUsd);
+    shortTokenAmount = convertToTokenAmount(shortTokenUsd, p.shortToken.decimals, p.shortToken.prices.maxPrice)!;
+  } else {
+    shortTokenAmount = p.shortTokenAmount!;
+    shortTokenUsd = convertToUsd(p.shortTokenAmount, p.shortToken.decimals, p.shortToken.prices.maxPrice)!;
+    longTokenUsd = shortTokenUsd.mul(longPoolUsd).div(shortPoolUsd);
+    longTokenAmount = convertToTokenAmount(longTokenUsd, p.longToken.decimals, p.longToken.prices.maxPrice)!;
+  }
+
+  let marketTokenUsd = longTokenUsd.add(shortTokenUsd);
+
+  const swapFeeUsd = applyFactor(marketTokenUsd, feesConfig.swapFeeFactor);
+
+  marketTokenUsd = marketTokenUsd.sub(swapFeeUsd);
+
+  const marketTokenAmount = convertToTokenAmount(
+    marketTokenUsd,
+    p.marketToken.decimals,
+    p.marketToken.prices.minPrice
+  )!;
 
   return {
     marketTokenAmount,

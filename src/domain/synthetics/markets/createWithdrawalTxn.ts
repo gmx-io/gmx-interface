@@ -37,8 +37,8 @@ export function createWithdrawalTxn(chainId: number, library: Web3Provider, p: P
         longTokenSwapPath: [],
         shortTokenSwapPath: [],
         marketTokenAmount: p.marketTokenAmount,
-        minLongTokenAmount: p.minLongTokenAmount?.div(2) || BigNumber.from(0),
-        minShortTokenAmount: p.minShortTokenAmount?.div(2) || BigNumber.from(0),
+        minLongTokenAmount: p.minLongTokenAmount.div(2) || BigNumber.from(0),
+        minShortTokenAmount: p.minShortTokenAmount.div(2) || BigNumber.from(0),
         shouldUnwrapNativeToken: isNativeWithdrawal,
         executionFee: p.executionFee,
         callbackGasLimit: BigNumber.from(0),
@@ -47,7 +47,7 @@ export function createWithdrawalTxn(chainId: number, library: Web3Provider, p: P
   ];
 
   return callContract(chainId, contract, "multicall", [multicall], {
-    value: wntAmount.mul(2),
+    value: wntAmount,
     sentMsg: t`Withdrawal order sent`,
     successMsg: t`Success withdrawal order`,
     failMsg: t`Withdrawal order failed`,

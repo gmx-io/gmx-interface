@@ -3,9 +3,8 @@ import { t } from "@lingui/macro";
 import { getContract } from "config/contracts";
 import { BigNumber, ethers } from "ethers";
 import { callContract } from "lib/contracts";
-import { isAddressZero } from "lib/legacy";
 import ExchangeRouter from "abis/ExchangeRouter.json";
-import { convertTokenAddress } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
 
 type Params = {
   account: string;
@@ -22,14 +21,23 @@ export async function createDepositTxn(chainId: number, library: Web3Provider, p
   const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, library.getSigner());
   const depositVaultAddress = getContract(chainId, "DepositVault");
 
-  const isNativeDeposit = Boolean(isAddressZero(p.initialLongTokenAddress) && p.longTokenAmount?.gt(0));
+  const isNativeLongDeposit = p.initialLongTokenAddress === NATIVE_TOKEN_ADDRESS && p.longTokenAmount?.gt(0);
+  const isNativeShortDeposit = p.initialShortTokenAddress === NATIVE_TOKEN_ADDRESS && p.shortTokenAmount?.gt(0);
 
-  const wntDeposit = isNativeDeposit ? p.longTokenAmount! : BigNumber.from(0);
+  let wntDeposit = BigNumber.from(0);
+
+  if (isNativeLongDeposit) {
+    wntDeposit = wntDeposit.add(p.longTokenAmount!);
+  }
+
+  if (isNativeShortDeposit) {
+    wntDeposit = wntDeposit.add(p.shortTokenAmount!);
+  }
 
   const wntAmount = p.executionFee.add(wntDeposit);
 
   const sendLongTokenCall =
-    !isNativeDeposit && p.longTokenAmount?.gt(0)
+    !isNativeLongDeposit && p.longTokenAmount?.gt(0)
       ? contract.interface.encodeFunctionData("sendTokens", [
           p.initialLongTokenAddress,
           depositVaultAddress,
@@ -37,13 +45,14 @@ export async function createDepositTxn(chainId: number, library: Web3Provider, p
         ])
       : undefined;
 
-  const sendShortTokenCall = p.shortTokenAmount?.gt(0)
-    ? contract.interface.encodeFunctionData("sendTokens", [
-        p.initialShortTokenAddress,
-        depositVaultAddress,
-        p.shortTokenAmount,
-      ])
-    : undefined;
+  const sendShortTokenCall =
+    !isNativeShortDeposit && p.shortTokenAmount?.gt(0)
+      ? contract.interface.encodeFunctionData("sendTokens", [
+          p.initialShortTokenAddress,
+          depositVaultAddress,
+          p.shortTokenAmount,
+        ])
+      : undefined;
 
   const multicall = [
     contract.interface.encodeFunctionData("sendWnt", [depositVaultAddress, wntAmount]),
@@ -58,8 +67,7 @@ export async function createDepositTxn(chainId: number, library: Web3Provider, p
         initialShortToken: convertTokenAddress(chainId, p.initialShortTokenAddress, "wrapped"),
         longTokenSwapPath: [],
         shortTokenSwapPath: [],
-        // TODO: correct slippage
-        minMarketTokens: BigNumber.from(0),
+        minMarketTokens: p.minMarketTokens.sub(p.minMarketTokens.div(10)) || BigNumber.from(0),
         shouldUnwrapNativeToken: false,
         executionFee: p.executionFee,
         callbackGasLimit: BigNumber.from(0),

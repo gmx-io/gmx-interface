@@ -269,28 +269,6 @@ export function getNextPositionValuesForDecreaseTrade(p: {
   };
 }
 
-export function getNextCollateralUsdForDecreaseOrder(p: {
-  isClosing?: boolean;
-  sizeDeltaUsd?: BigNumber;
-  collateralUsd?: BigNumber;
-  collateralDeltaUsd?: BigNumber;
-  pnl?: BigNumber;
-}) {
-  // if (!p.collateralUsd) return undefined;
-
-  // if (p.isClosing) return BigNumber.from(0);
-
-  // let nextCollateralUsd = p.collateralUsd.sub(p.collateralDeltaUsd || BigNumber.from(0));
-
-  // if (p.pnl?.lt(0) && p.sizeDeltaUsd?.gt(0)) {
-  //   nextCollateralUsd = nextCollateralUsd.sub(p.pnl.abs());
-  // }
-
-  // if (nextCollateralUsd.lt(0)) return BigNumber.from(0);
-
-  return undefined;
-}
-
 export function getPnlDeltaForDecreaseOrder(p: {
   position?: {
     pnl?: BigNumber;
