@@ -2,118 +2,140 @@ import { Trans, plural, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import cx from "classnames";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
+import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import Modal from "components/Modal/Modal";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { getContract } from "config/contracts";
-import { convertTokenAddress, getToken } from "config/tokens";
+import { getToken } from "config/tokens";
+import { ExecutionFee } from "domain/synthetics/fees";
+import { getMarket, useMarketsData } from "domain/synthetics/markets";
 import { createDepositTxn } from "domain/synthetics/markets/createDepositTxn";
 import { createWithdrawalTxn } from "domain/synthetics/markets/createWithdrawalTxn";
-import { convertToUsd, getTokenData, needTokenApprove } from "domain/synthetics/tokens";
-import { TokensData } from "domain/synthetics/tokens/types";
+import { getTokenData, needTokenApprove, useAvailableTokensData } from "domain/synthetics/tokens";
+import { TokenData } from "domain/synthetics/tokens/types";
 import { useTokenAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
-import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-import { useMemo } from "react";
-import { GmSwapFees, Operation, PoolDelta, getSubmitError, operationLabels } from "../utils";
-
-import {
-  getMarket,
-  getMarketTokenData,
-  useMarketTokensData,
-  useMarketsData,
-  useMarketsPoolsData,
-} from "domain/synthetics/markets";
-import { useAvailableTokensData } from "domain/synthetics/tokens";
-
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
-import { ExecutionFee } from "domain/synthetics/fees";
 import { formatTokenAmount, formatTokenAmountWithUsd } from "lib/numbers";
 import { GmFees } from "../GmFees/GmFees";
+import { GmSwapFees } from "domain/synthetics/trade";
+
 import "./GmConfirmationBox.scss";
 
 type Props = {
-  onClose: () => void;
-  marketTokenAddress: string;
+  marketToken: TokenData;
+  longToken?: TokenData;
+  shortToken?: TokenData;
   marketTokenAmount: BigNumber;
-  longDelta?: PoolDelta;
-  shortDelta?: PoolDelta;
-  fees?: GmSwapFees;
-  tokensData: TokensData;
-  operationType: Operation;
+  marketTokenUsd: BigNumber;
+  longTokenAmount?: BigNumber;
+  longTokenUsd?: BigNumber;
+  shortTokenAmount?: BigNumber;
+  shortTokenUsd?: BigNumber;
+  fees: GmSwapFees;
+  error?: string;
+  isDeposit: boolean;
   executionFee?: ExecutionFee;
   onSubmitted: () => void;
+  onClose: () => void;
 };
 
-function getTokenText(token?: Token, tokenAmount?: BigNumber, price?: BigNumber) {
-  if (!token || !price || !tokenAmount?.gt(0)) return undefined;
-
-  const usdAmount = convertToUsd(tokenAmount, token.decimals, price);
-
-  return formatTokenAmountWithUsd(tokenAmount, usdAmount, token.symbol, token.decimals);
-}
-
-export function GmConfirmationBox(p: Props) {
+export function GmConfirmationBox({
+  marketToken,
+  longToken,
+  shortToken,
+  marketTokenAmount,
+  marketTokenUsd,
+  longTokenAmount,
+  longTokenUsd,
+  shortTokenAmount,
+  shortTokenUsd,
+  fees,
+  error,
+  isDeposit,
+  executionFee,
+  onSubmitted,
+  onClose,
+}: Props) {
   const { library, account } = useWeb3React();
   const { chainId } = useChainId();
+  const { marketsData } = useMarketsData(chainId);
+  const { tokensData } = useAvailableTokensData(chainId);
+
+  const market = getMarket(marketsData, marketToken?.address);
+
   const routerAddress = getContract(chainId, "SyntheticsRouter");
 
-  const tokenAddresses = [p.longDelta?.tokenAddress, p.shortDelta?.tokenAddress, p.marketTokenAddress]
-    .filter(Boolean)
-    .map((addr) => convertTokenAddress(chainId, addr!, "wrapped")) as string[];
+  const payTokenAddresses = (function getPayTokenAddresses() {
+    const addresses: string[] = [];
 
-  const { marketsData } = useMarketsData(chainId);
-  const { marketTokensData } = useMarketTokensData(chainId);
-  const { poolsData } = useMarketsPoolsData(chainId);
-  const { tokensData } = useAvailableTokensData(chainId);
+    if (isDeposit) {
+      if (longTokenAmount?.gt(0) && longToken) {
+        addresses.push(longToken.address);
+      }
+      if (shortTokenAmount?.gt(0) && shortToken) {
+        addresses.push(shortToken.address);
+      }
+    } else {
+      addresses.push(marketToken.address);
+    }
+
+    return addresses;
+  })();
 
   const { tokenAllowanceData } = useTokenAllowanceData(chainId, {
     spenderAddress: routerAddress,
-    tokenAddresses,
+    tokenAddresses: payTokenAddresses,
   });
 
-  const isDeposit = p.operationType === Operation.Deposit;
+  const tokensToApprove = (function getTokensToApprove() {
+    const addresses: string[] = [];
 
-  const market = getMarket(marketsData, p.marketTokenAddress);
+    if (isDeposit) {
+      if (
+        longTokenAmount?.gt(0) &&
+        longToken &&
+        needTokenApprove(tokenAllowanceData, longToken?.address, longTokenAmount)
+      ) {
+        addresses.push(longToken.address);
+      }
 
-  const marketToken = getMarketTokenData(marketTokensData, p.marketTokenAddress);
-  const longToken = getTokenData(tokensData, market?.longTokenAddress);
-  const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
+      if (
+        shortTokenAmount?.gt(0) &&
+        shortToken &&
+        needTokenApprove(tokenAllowanceData, shortToken?.address, shortTokenAmount)
+      ) {
+        addresses.push(shortToken.address);
+      }
+    } else {
+      if (needTokenApprove(tokenAllowanceData, marketToken.address, marketTokenAmount)) {
+        addresses.push(marketToken.address);
+      }
+    }
 
-  const longTokenText = getTokenText(longToken, p.longDelta?.tokenAmount, longToken?.prices?.maxPrice);
-  const shortTokenText = getTokenText(shortToken, p.shortDelta?.tokenAmount, shortToken?.prices?.maxPrice);
-  const marketTokenText = getTokenText(marketToken, p.marketTokenAmount, marketToken?.prices?.maxPrice);
+    return addresses;
+  })();
+
+  const longTokenText = longTokenAmount?.gt(0)
+    ? formatTokenAmountWithUsd(longTokenAmount, longTokenUsd, longToken?.symbol, longToken?.decimals)
+    : undefined;
+
+  const shortTokenText = shortTokenAmount?.gt(0)
+    ? formatTokenAmountWithUsd(shortTokenAmount, shortTokenUsd, shortToken?.symbol, shortToken?.decimals)
+    : undefined;
+
+  const marketTokenText = formatTokenAmountWithUsd(
+    marketTokenAmount,
+    marketTokenUsd,
+    marketToken.symbol,
+    marketToken.decimals
+  );
+
+  const operationText = isDeposit ? t`Deposit` : t`Withdrawal`;
 
   const isAllowanceLoaded = Object.keys(tokenAllowanceData).length > 0;
 
-  const tokensToApprove = useMemo(() => {
-    if (isDeposit) {
-      return [p.longDelta, p.shortDelta]
-        .filter(
-          (delta) => delta?.tokenAddress && needTokenApprove(tokenAllowanceData, delta.tokenAddress, delta.tokenAmount)
-        )
-        .map((delta) => delta!.tokenAddress);
-    } else {
-      if (needTokenApprove(tokenAllowanceData, p.marketTokenAddress, p.marketTokenAmount)) {
-        return [p.marketTokenAddress];
-      }
-
-      return [];
-    }
-  }, [isDeposit, p.longDelta, p.marketTokenAddress, p.marketTokenAmount, p.shortDelta, tokenAllowanceData]);
-
-  function getSubmitButtonState(): { text: string; disabled?: boolean; onClick?: () => void } {
-    const error = getSubmitError({
-      operation: p.operationType,
-      tokensData,
-      marketTokensData,
-      poolsData,
-      market,
-      marketTokenAmount: p.marketTokenAmount,
-      longDelta: p.longDelta,
-      shortDelta: p.shortDelta,
-    });
-
+  const submitButtonState = (function getSubmitButtonState() {
     if (error) {
       return {
         text: error,
@@ -121,7 +143,7 @@ export function GmConfirmationBox(p: Props) {
       };
     }
 
-    if (!isAllowanceLoaded || !marketToken) {
+    if (!isAllowanceLoaded) {
       return {
         text: t`Loading...`,
         disabled: true,
@@ -130,7 +152,7 @@ export function GmConfirmationBox(p: Props) {
 
     if (tokensToApprove.length > 0) {
       const symbols = tokensToApprove.map((address) => {
-        return address === p.marketTokenAddress ? "GM" : getTokenData(tokensData, address)!.symbol;
+        return address === marketToken.address ? "GM" : getTokenData(tokensData, address)!.symbol;
       });
 
       const symbolsText = symbols.join(", ");
@@ -144,8 +166,8 @@ export function GmConfirmationBox(p: Props) {
       };
     }
 
-    const operationText = p.operationType === Operation.Deposit ? t`Buy` : `Sell`;
-    const text = t`Confirm ${operationText} ${formatTokenAmount(p.marketTokenAmount, marketToken.decimals)} GM`;
+    const operationText = isDeposit ? t`Buy` : `Sell`;
+    const text = t`Confirm ${operationText} ${formatTokenAmount(marketTokenAmount, marketToken.decimals)} GM`;
 
     return {
       text,
@@ -157,50 +179,43 @@ export function GmConfirmationBox(p: Props) {
         }
       },
     };
-  }
+  })();
 
   function onCreateDeposit() {
-    if (!account || !p.executionFee || !market) return;
+    if (!account || !executionFee || !marketToken || !market || !marketTokenAmount) return;
 
     createDepositTxn(chainId, library, {
       account,
-      initialLongTokenAddress: p.longDelta?.tokenAddress || market.longTokenAddress,
-      initialShortTokenAddress: p.shortDelta?.tokenAddress || market.shortTokenAddress,
-      longTokenAmount: p.longDelta?.tokenAmount,
-      shortTokenAmount: p.shortDelta?.tokenAmount,
-      marketTokenAddress: p.marketTokenAddress,
-      minMarketTokens: p.marketTokenAmount!,
-      executionFee: p.executionFee.feeTokenAmount,
-    }).then(p.onSubmitted);
+      initialLongTokenAddress: market.longTokenAddress,
+      initialShortTokenAddress: market.shortTokenAddress,
+      longTokenAmount: longTokenAmount || BigNumber.from(0),
+      shortTokenAmount: shortTokenAmount || BigNumber.from(0),
+      marketTokenAddress: marketToken.address,
+      minMarketTokens: marketTokenAmount,
+      executionFee: executionFee.feeTokenAmount,
+    }).then(onSubmitted);
   }
 
   function onCreateWithdrawal() {
-    if (!account || !market || !p.executionFee || !longToken?.prices || !shortToken?.prices) return;
+    if (!account || !market || !executionFee || !longTokenAmount || !shortTokenAmount) return;
 
     createWithdrawalTxn(chainId, library, {
       account,
       longTokenAddress: market.longTokenAddress,
       shortTokenAddress: market.shortTokenAddress,
-      marketTokenAmount: p.marketTokenAmount,
-      minLongTokenAmount: BigNumber.from(0),
-      minShortTokenAmount: BigNumber.from(0),
-      marketTokenAddress: p.marketTokenAddress,
-      executionFee: p.executionFee.feeTokenAmount,
-    }).then(p.onSubmitted);
+      marketTokenAmount: marketTokenAmount,
+      minLongTokenAmount: longTokenAmount,
+      minShortTokenAmount: shortTokenAmount,
+      marketTokenAddress: marketToken.address,
+      executionFee: executionFee.feeTokenAmount,
+    }).then(onSubmitted);
   }
-
-  const submitButtonState = getSubmitButtonState();
 
   return (
     <div className="Confirmation-box">
-      <Modal
-        isVisible={true}
-        setIsVisible={p.onClose}
-        label={t`Confirm ${operationLabels[p.operationType]}`}
-        allowContentTouchMove
-      >
+      <Modal isVisible={true} setIsVisible={onClose} label={t`Confirm ${operationText}`} allowContentTouchMove>
         <div className={cx("Confirmation-box-main GmConfirmationBox-main")}>
-          {p.operationType === Operation.Deposit && (
+          {isDeposit && (
             <>
               {[longTokenText, shortTokenText].filter(Boolean).map((text) => (
                 <div key={text}>
@@ -213,7 +228,7 @@ export function GmConfirmationBox(p: Props) {
               </div>
             </>
           )}
-          {p.operationType === Operation.Withdrawal && (
+          {!isDeposit && (
             <>
               <div>
                 <Trans>Pay</Trans>&nbsp;{marketTokenText}
@@ -228,15 +243,15 @@ export function GmConfirmationBox(p: Props) {
           )}
         </div>
 
-        <GmFees totalFees={p.fees?.totalFees} swapFee={p.fees?.swapFee} swapPriceImpact={p.fees?.swapPriceImpact} />
+        <GmFees totalFees={fees?.totalFees} swapFee={fees?.swapFee} swapPriceImpact={fees?.swapPriceImpact} />
 
         <ExchangeInfoRow
           label={t`Execution Fee`}
           value={formatTokenAmountWithUsd(
-            p.executionFee?.feeTokenAmount,
-            p.executionFee?.feeUsd,
-            p.executionFee?.feeToken.symbol,
-            p.executionFee?.feeToken.decimals
+            executionFee?.feeTokenAmount,
+            executionFee?.feeUsd,
+            executionFee?.feeToken.symbol,
+            executionFee?.feeToken.decimals
           )}
         />
 
@@ -250,7 +265,7 @@ export function GmConfirmationBox(p: Props) {
                   <ApproveTokenButton
                     key={address}
                     tokenAddress={address}
-                    tokenSymbol={address === p.marketTokenAddress ? "GM" : getToken(chainId, address).symbol}
+                    tokenSymbol={address === marketToken.address ? "GM" : getToken(chainId, address).symbol}
                     spenderAddress={routerAddress}
                   />
                 </div>

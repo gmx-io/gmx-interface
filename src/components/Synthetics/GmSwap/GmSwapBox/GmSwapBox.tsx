@@ -1,10 +1,15 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import Checkbox from "components/Checkbox/Checkbox";
+import { Dropdown, DropdownOption } from "components/Dropdown/Dropdown";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
+import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
 import Tab from "components/Tab/Tab";
 import TokenSelector from "components/TokenSelector/TokenSelector";
-import { convertTokenAddress, getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY } from "config/localStorage";
+import { HIGH_PRICE_IMPACT_BPS } from "config/synthetics";
+import { convertTokenAddress, NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import {
   estimateExecuteDepositGasLimit,
   estimateExecuteWithdrawalGasLimit,
@@ -12,37 +17,45 @@ import {
   getExecutionFee,
   getFeeItem,
   getMarketFeesConfig,
-  getPriceImpactUsd,
   getTotalFeeItem,
   useGasPrice,
 } from "domain/synthetics/fees";
-import { useMarketsData, useMarketsPoolsData, useMarketTokensData } from "domain/synthetics/markets";
-import { Market, MarketPoolType } from "domain/synthetics/markets/types";
-import { getMarket, getMarketName, getPoolUsd, getTokenPoolType } from "domain/synthetics/markets/utils";
-import { adaptToInfoTokens } from "domain/synthetics/tokens";
-import { useTokenInput } from "domain/synthetics/trade";
-import { BigNumber } from "ethers";
-import { useChainId } from "lib/chains";
-import { useEffect, useMemo, useState } from "react";
-import { IoMdSwap } from "react-icons/io";
-import { GmConfirmationBox } from "../GmConfirmationBox/GmConfirmationBox";
-import { getSubmitError, GmSwapFees, Mode, modeLabels, Operation, operationLabels, PoolDelta } from "../utils";
-
-import Checkbox from "components/Checkbox/Checkbox";
-import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
-import { useAvailableTokensData } from "domain/synthetics/tokens";
-
-import { Dropdown, DropdownOption } from "components/Dropdown/Dropdown";
-import { applyFactor, formatTokenAmount, formatUsd } from "lib/numbers";
-import { GmOrderStatus } from "../GmOrderStatus/GmOrderStatus";
-
-import { SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY } from "config/localStorage";
-
-import { HIGH_PRICE_IMPACT_BPS } from "config/synthetics";
 import { useGasLimitsConfig } from "domain/synthetics/fees/useGasLimitsConfig";
 import { useMarketsFeesConfigs } from "domain/synthetics/fees/useMarketsFeesConfigs";
-
-import { getWithdawalAmounts } from "domain/synthetics/trade/utils/withdrawal";
+import {
+  useMarketsData,
+  useMarketsPoolsData,
+  useMarketTokensData,
+  useOpenInterestData,
+} from "domain/synthetics/markets";
+import { Market } from "domain/synthetics/markets/types";
+import {
+  getAvailableUsdLiquidityForCollateral,
+  getMarket,
+  getMarketName,
+  getMarketPools,
+  getPoolUsd,
+} from "domain/synthetics/markets/utils";
+import { adaptToInfoTokens, convertToUsd, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
+import { GmSwapFees } from "domain/synthetics/trade";
+import {
+  getNextDepositAmountsByCollaterals,
+  getNextDepositAmountsByMarketToken,
+} from "domain/synthetics/trade/utils/deposit";
+import {
+  getNextWithdrawalAmountsByCollaterals,
+  getNextWithdrawalAmountsByMarketToken,
+} from "domain/synthetics/trade/utils/withdrawal";
+import { Token } from "domain/tokens";
+import { BigNumber } from "ethers";
+import { useChainId } from "lib/chains";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { formatAmountFree, formatTokenAmount, formatUsd, parseValue } from "lib/numbers";
+import { usePrevious } from "lib/usePrevious";
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
+import { IoMdSwap } from "react-icons/io";
+import { GmConfirmationBox } from "../GmConfirmationBox/GmConfirmationBox";
+import { GmOrderStatus } from "../GmOrderStatus/GmOrderStatus";
 import "./GmSwapBox.scss";
 
 type Props = {
@@ -52,10 +65,14 @@ type Props = {
   onConnectWallet: () => void;
 };
 
-enum FocusedInput {
-  firstToken = "firstToken",
-  secondToken = "secondToken",
-  marketToken = "marketToken",
+enum Operation {
+  Deposit = "Deposit",
+  Withdrawal = "Withdrawal",
+}
+
+enum Mode {
+  Single = "Single",
+  Pair = "Pair",
 }
 
 const availableModes = {
@@ -63,81 +80,155 @@ const availableModes = {
   [Operation.Withdrawal]: [Mode.Pair],
 };
 
+function useSafeState<S>(
+  inititalValue?: S | (() => S),
+  shouldUpdateFn: (prev: S, next: S) => boolean = (a, b) => a !== b
+): [S, Dispatch<SetStateAction<S>>] {
+  const [state, _setState] = useState<any>(inititalValue);
+
+  const setState = useCallback(
+    (value: S | ((prevState: S) => S)) => {
+      if (typeof value === "function") {
+        _setState(value);
+      } else if (shouldUpdateFn(state, value)) {
+        _setState(value);
+      }
+    },
+    [shouldUpdateFn, state]
+  );
+
+  return [state, setState];
+}
+
 export function GmSwapBox(p: Props) {
+  const marketAddress = p.selectedMarketAddress;
+
   const { chainId } = useChainId();
-
-  const [operationTab, setOperationTab] = useState(Operation.Deposit);
-  const [modeTab, setModeTab] = useState(Mode.Single);
-
-  const isDeposit = operationTab === Operation.Deposit;
-  const isWithdrawal = operationTab === Operation.Withdrawal;
-
-  const [focusedInput, setFocusedInput] = useState<FocusedInput>();
-  const [isConfirming, setIsConfirming] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
-
-  const { tokensData } = useAvailableTokensData(chainId);
-  const infoTokens = useMemo(() => adaptToInfoTokens(tokensData), [tokensData]);
   const { marketsData } = useMarketsData(chainId);
   const { marketTokensData } = useMarketTokensData(chainId);
   const { poolsData } = useMarketsPoolsData(chainId);
-  const { marketsFeesConfigs } = useMarketsFeesConfigs(chainId);
+  const { openInterestData } = useOpenInterestData(chainId);
+  const { tokensData } = useAvailableTokensData(chainId);
+  const infoTokens = adaptToInfoTokens(tokensData);
+  const { marketsFeesConfigs: feesConfigs } = useMarketsFeesConfigs(chainId);
   const { gasLimits } = useGasLimitsConfig(chainId);
   const { gasPrice } = useGasPrice(chainId);
 
+  const [operation, setOperation] = useState<Operation>(Operation.Deposit);
+  const [mode, setMode] = useState<Mode>(Mode.Single);
+  const [focusedInput, setFocusedInput] = useState<"longCollateral" | "shortCollateral" | "market">();
+  const [stage, setStage] = useState<"swap" | "confirmation" | "processing">();
+  const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
+
+  const operationLabels = {
+    [Operation.Deposit]: t`Deposit`,
+    [Operation.Withdrawal]: t`Withdraw`,
+  };
+
+  const modeLabels = {
+    [Mode.Single]: t`Single`,
+    [Mode.Pair]: t`Pair`,
+  };
+
+  const isDeposit = operation === Operation.Deposit;
+  const isWithdrawal = operation === Operation.Withdrawal;
+  const isSingle = mode === Mode.Single;
+  const isPair = mode === Mode.Pair;
+
+  const market = getMarket(marketsData, marketAddress);
   const marketsOptions: DropdownOption[] = Object.values(marketsData).map((market) => ({
     label: getMarketName(marketsData, tokensData, market.marketTokenAddress, true, true)!,
     value: market.marketTokenAddress,
   }));
 
-  const market = getMarket(marketsData, p.selectedMarketAddress);
+  const pools = getMarketPools(poolsData, marketAddress);
 
-  const availableTokens = useMemo(() => {
-    if (!market) return [];
+  const [firstTokenAddress, setFirstTokenAddress] = useLocalStorageSerializeKey<string | undefined>(
+    [chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, isDeposit, marketAddress, "first"],
+    undefined
+  );
+  const firstToken = getTokenData(tokensData, firstTokenAddress);
+  const [firstTokenInputValue, setFirstTokenInputValue] = useSafeState<string>("");
+  const firstTokenAmount = parseValue(firstTokenInputValue, firstToken?.decimals || 0);
+  const firstTokenUsd = convertToUsd(
+    firstTokenAmount,
+    firstToken?.decimals,
+    isDeposit ? firstToken?.prices?.minPrice : firstToken?.prices?.maxPrice
+  );
 
-    const wrappedToken = getWrappedToken(chainId);
+  const [secondTokenAddress, setSecondTokenAddress] = useLocalStorageSerializeKey<string | undefined>(
+    [chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, isDeposit, marketAddress, "second"],
+    undefined
+  );
+  const secondToken = getTokenData(tokensData, secondTokenAddress);
+  const [secondTokenInputValue, setSecondTokenInputValue] = useSafeState<string>("");
+  const secondTokenAmount = parseValue(secondTokenInputValue, secondToken?.decimals || 0);
+  const secondTokenUsd = convertToUsd(
+    secondTokenAmount,
+    secondToken?.decimals,
+    isDeposit ? secondToken?.prices?.minPrice : secondToken?.prices?.maxPrice
+  );
 
-    const availableAddresses = [market.longTokenAddress, market.shortTokenAddress];
+  const longTokenInputState = getInputStateByCollateralType("long");
+  const longTokenAmount = longTokenInputState?.amount;
+  const longTokenUsd = longTokenInputState?.usd;
 
-    if (availableAddresses.includes(wrappedToken.address)) {
-      availableAddresses.unshift(NATIVE_TOKEN_ADDRESS);
+  const shortTokenInputState = getInputStateByCollateralType("short");
+  const shortTokenAmount = shortTokenInputState?.amount;
+  const shortTokenUsd = shortTokenInputState?.usd;
+
+  const tokenOptions: Token[] = (function getTokenOptions() {
+    const longToken = getTokenData(tokensData, market?.longTokenAddress);
+    const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
+
+    if (!longToken || !shortToken) return [];
+
+    const result = [longToken, shortToken];
+
+    if (result.some((token) => token.isWrapped)) {
+      result.unshift(getTokenData(tokensData, NATIVE_TOKEN_ADDRESS)!);
     }
 
-    return availableAddresses.map((address) => getToken(chainId, address));
-  }, [chainId, market]);
+    return result;
+  })();
 
-  const firstTokenInput = useTokenInput(tokensData, {
-    priceType: isDeposit ? "min" : "max",
-    localStorageKey: [chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, isDeposit, p.selectedMarketAddress, "first"],
-  });
+  const [marketTokenInputValue, setMarketTokenInputValue] = useSafeState<string>();
+  const marketToken = getTokenData(marketTokensData, market?.marketTokenAddress);
+  const marketTokenAmount = parseValue(marketTokenInputValue || "0", marketToken?.decimals || 0);
+  const prevMarketTokenAmount = usePrevious(marketTokenAmount);
+  const marketTokenUsd = convertToUsd(
+    marketTokenAmount,
+    marketToken?.decimals,
+    isDeposit ? marketToken?.prices?.maxPrice : marketToken?.prices?.minPrice
+  );
 
-  const secondTokenInput = useTokenInput(tokensData, {
-    priceType: isDeposit ? "min" : "max",
-    localStorageKey: [chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, isDeposit, p.selectedMarketAddress, "second"],
-  });
+  const [swapFeeUsd, setSwapFeeUsd] = useSafeState<BigNumber | undefined>(
+    undefined,
+    (a, b) => Boolean(a) !== Boolean(b) || a?.toString() !== b?.toString()
+  );
 
-  const marketTokenInput = useTokenInput(marketTokensData, {
-    priceType: isDeposit ? "max" : "min",
-    localStorageKey: [chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, isDeposit, p.selectedMarketAddress, "market"],
-  });
+  const [swapPriceImpactDeltaUsd, setSwapPriceImpactDeltaUsd] = useSafeState<BigNumber | undefined>(
+    undefined,
+    (a, b) => Boolean(a) !== Boolean(b) || a?.toString() !== b?.toString()
+  );
 
-  const longDelta = getDeltaByPoolType(MarketPoolType.Long);
-  const shortDelta = getDeltaByPoolType(MarketPoolType.Short);
+  const longCollateralLiquidityUsd = getAvailableUsdLiquidityForCollateral(
+    marketsData,
+    poolsData,
+    openInterestData,
+    tokensData,
+    market?.marketTokenAddress,
+    market?.longTokenAddress
+  );
 
-  const feesConfig = getMarketFeesConfig(marketsFeesConfigs, market?.marketTokenAddress);
-
-  const withdrawalAmounts = isWithdrawal
-    ? getWithdawalAmounts({
-        marketsData,
-        tokensData,
-        poolsData,
-        feesConfigs: marketsFeesConfigs,
-        market,
-        marketToken: marketTokenInput.token,
-        marketTokenAmount: marketTokenInput.tokenAmount,
-      })
-    : undefined;
+  const shortCollateralLiquidityUsd = getAvailableUsdLiquidityForCollateral(
+    marketsData,
+    poolsData,
+    openInterestData,
+    tokensData,
+    market?.marketTokenAddress,
+    market?.shortTokenAddress
+  );
 
   const longPoolUsd = getPoolUsd(
     marketsData,
@@ -157,44 +248,37 @@ export function GmSwapBox(p: Props) {
     "midPrice"
   );
 
-  const priceImpactDeltaUsd = isDeposit
-    ? getPriceImpactUsd({
-        currentLongUsd: longPoolUsd,
-        currentShortUsd: shortPoolUsd,
-        longDeltaUsd: longDelta?.usdDelta || BigNumber.from(0),
-        shortDeltaUsd: shortDelta?.usdDelta || BigNumber.from(0),
-        factorPositive: feesConfig?.swapImpactFactorPositive,
-        factorNegative: feesConfig?.swapImpactFactorNegative,
-        exponentFactor: feesConfig?.swapImpactExponentFactor,
-      })
-    : undefined;
+  const feesConfig = getMarketFeesConfig(feesConfigs, market?.marketTokenAddress);
+  const fees: GmSwapFees | undefined = useMemo(() => {
+    if (!marketTokenUsd?.gt(0)) return undefined;
 
-  const priceImpactFee = getFeeItem(priceImpactDeltaUsd, marketTokenInput.usdAmount);
+    const basisUsd = isDeposit
+      ? BigNumber.from(0)
+          .add(longTokenUsd || 0)
+          .add(shortTokenUsd || 0)
+      : marketTokenUsd;
 
-  const isHighPriceImpact = priceImpactFee?.deltaUsd.lt(0) && priceImpactFee.bps.abs().gte(HIGH_PRICE_IMPACT_BPS);
+    const swapFee = getFeeItem(swapFeeUsd?.mul(-1), basisUsd);
+    const swapPriceImpact = getFeeItem(swapPriceImpactDeltaUsd, basisUsd);
+    const totalFees = getTotalFeeItem([swapPriceImpact, swapFee].filter(Boolean) as FeeItem[]);
 
-  const swapFeeUsd =
-    feesConfig && marketTokenInput.usdAmount.gt(0)
-      ? applyFactor(marketTokenInput.usdAmount, feesConfig?.swapFeeFactor)
-      : undefined;
+    return {
+      totalFees,
+      swapFee,
+      swapPriceImpact,
+    };
+  }, [isDeposit, longTokenUsd, marketTokenUsd, shortTokenUsd, swapFeeUsd, swapPriceImpactDeltaUsd]);
 
-  const swapFee = getFeeItem(swapFeeUsd?.mul(-1), marketTokenInput.usdAmount);
-
-  const totalFees = getTotalFeeItem([priceImpactFee, swapFee].filter(Boolean) as FeeItem[]);
-
-  const fees: GmSwapFees = {
-    totalFees,
-    swapFee,
-    swapPriceImpact: priceImpactFee,
-  };
+  const isHighPriceImpact =
+    fees?.swapPriceImpact?.deltaUsd.lt(0) && fees.swapPriceImpact.bps.abs().gte(HIGH_PRICE_IMPACT_BPS);
 
   const executionFee = useMemo(() => {
     if (!gasLimits || !gasPrice) return undefined;
 
     if (isDeposit) {
       const estimatedGasLimit = estimateExecuteDepositGasLimit(gasLimits, {
-        initialLongTokenAmount: longDelta?.tokenAmount,
-        initialShortTokenAmount: shortDelta?.tokenAmount,
+        initialLongTokenAmount: longTokenAmount,
+        initialShortTokenAmount: shortTokenAmount,
       });
 
       return getExecutionFee(chainId, gasLimits, tokensData, estimatedGasLimit, gasPrice);
@@ -203,48 +287,45 @@ export function GmSwapBox(p: Props) {
 
       return getExecutionFee(chainId, gasLimits, tokensData, estimatedGasLimit, gasPrice);
     }
-  }, [chainId, gasLimits, gasPrice, isDeposit, longDelta?.tokenAmount, shortDelta?.tokenAmount, tokensData]);
+  }, [chainId, gasLimits, gasPrice, isDeposit, longTokenAmount, shortTokenAmount, tokensData]);
 
-  const submitButtonState = getSubmitButtonState();
+  const error = (function getError() {
+    if (!market || !marketToken || !pools) {
+      return t`Loading...`;
+    }
 
-  function getDeltaByPoolType(poolType: MarketPoolType): PoolDelta | undefined {
-    if (!market) return undefined;
+    if (!marketTokenAmount?.gt(0)) {
+      return t`Enter an amount`;
+    }
 
-    const poolTokenState = [firstTokenInput, secondTokenInput].find((tokenState) => {
-      const tokenPool = getTokenPoolType(marketsData, tokensData, market.marketTokenAddress, tokenState.tokenAddress);
+    if (isHighPriceImpact && !isHighPriceImpactAccepted) {
+      return t`Need to accept price impact`;
+    }
 
-      return tokenPool === poolType;
-    });
+    if (isDeposit) {
+      if (longTokenInputState?.amount?.gt(longTokenInputState.token?.balance || 0)) {
+        return t`Insufficient ${longTokenInputState.token?.symbol} balance`;
+      }
 
-    if (!poolTokenState?.tokenAddress || !poolTokenState?.token) return undefined;
+      if (shortTokenInputState?.amount?.gt(shortTokenInputState.token?.balance || 0)) {
+        return t`Insufficient ${shortTokenInputState.token?.symbol} balance`;
+      }
+    } else {
+      if (marketTokenAmount.gt(marketToken?.balance || BigNumber.from(0))) {
+        return t`Insufficient ${marketToken?.symbol} balance`;
+      }
 
-    return {
-      tokenAddress: poolTokenState.tokenAddress,
-      poolType,
-      token: poolTokenState.token,
-      tokenAmount: poolTokenState.tokenAmount,
-      usdAmount: poolTokenState.usdAmount,
-      // prettier-ignore
-      usdDelta: operationTab === Operation.Deposit
-        ? poolTokenState.usdAmount
-        : poolTokenState.usdAmount.mul(-1),
-    };
-  }
+      if (longTokenUsd?.gt(longCollateralLiquidityUsd || BigNumber.from(0))) {
+        return t`Insufficient ${longTokenInputState?.token?.symbol} liquidity`;
+      }
 
-  function getSubmitButtonState(): { text: string; disabled?: boolean; onClick?: () => void } {
-    const error = getSubmitError({
-      operation: operationTab,
-      tokensData,
-      marketTokensData,
-      poolsData,
-      market,
-      marketTokenAmount: marketTokenInput.tokenAmount,
-      longDelta,
-      shortDelta,
-      isHighPriceImpact,
-      isHighPriceImpactAccepted,
-    });
+      if (shortTokenUsd?.gt(shortCollateralLiquidityUsd || BigNumber.from(0))) {
+        return t`Insufficient ${shortTokenInputState?.token?.symbol} liquidity`;
+      }
+    }
+  })();
 
+  const submitButtonState = (function getSubmitButtonState() {
     if (error) {
       return {
         text: error,
@@ -253,158 +334,281 @@ export function GmSwapBox(p: Props) {
     }
 
     return {
-      text: operationTab === Operation.Deposit ? t`Buy GM` : t`Sell GM`,
-      onClick: onSubmit,
+      text: isDeposit ? t`Buy GM` : t`Sell GM`,
+      disabled: false,
+      onClick: () => {
+        setStage("confirmation");
+      },
     };
+  })();
+
+  function getInputStateByCollateralType(type: "long" | "short") {
+    if (!market) return undefined;
+
+    const inputs = [
+      {
+        address: firstTokenAddress,
+        value: firstTokenInputValue,
+        setValue: setFirstTokenInputValue,
+        amount: firstTokenAmount,
+        usd: firstTokenUsd,
+        token: firstToken,
+      },
+      {
+        address: secondTokenAddress,
+        value: secondTokenInputValue,
+        setValue: setSecondTokenInputValue,
+        amount: secondTokenAmount,
+        usd: secondTokenUsd,
+        token: secondToken,
+      },
+    ];
+
+    return inputs.find((input) => {
+      return (
+        input.address &&
+        convertTokenAddress(chainId, input.address, "wrapped") ===
+          (type === "long" ? market.longTokenAddress : market.shortTokenAddress)
+      );
+    });
   }
 
-  function onSwitchOperation() {
-    setOperationTab((prev) => (prev === Operation.Deposit ? Operation.Withdrawal : Operation.Deposit));
-  }
-
-  function onSubmit() {
-    setIsConfirming(true);
+  function onFocusedCollateralInputChange(tokenAddress: string) {
+    if (convertTokenAddress(chainId, tokenAddress, "wrapped") === market?.longTokenAddress) {
+      setFocusedInput("longCollateral");
+    } else if (convertTokenAddress(chainId, tokenAddress, "wrapped") === market?.shortTokenAddress) {
+      setFocusedInput("shortCollateral");
+    }
   }
 
   useEffect(
-    function updateMode() {
-      if (!availableModes[operationTab].includes(modeTab)) {
-        setModeTab(availableModes[operationTab][0]);
-      }
-    },
-    [modeTab, operationTab]
-  );
-
-  useEffect(
-    function updateInputsByMarket() {
-      if (p.selectedMarketAddress !== marketTokenInput.tokenAddress) {
-        marketTokenInput.setTokenAddress(p.selectedMarketAddress);
-      }
-
-      if (!availableTokens.length) return;
+    function updateAmounts() {
+      const longToken = getTokenData(tokensData, market?.longTokenAddress);
+      const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
 
       if (
-        !firstTokenInput.tokenAddress ||
-        !availableTokens.find((token) => token.address === firstTokenInput.tokenAddress)
+        !market ||
+        !longToken?.prices ||
+        !shortToken?.prices ||
+        !marketToken?.prices ||
+        !longPoolUsd ||
+        !shortPoolUsd ||
+        !feesConfig ||
+        !focusedInput
       ) {
-        firstTokenInput.setTokenAddress(availableTokens[0].address);
+        return;
       }
 
-      if (
-        secondTokenInput.tokenAddress &&
-        !availableTokens.find((token) => token.address === secondTokenInput.tokenAddress)
-      ) {
-        const secondToken = availableTokens.find((token) => token.address !== firstTokenInput.tokenAddress);
-        if (secondToken) {
-          secondTokenInput.setTokenAddress(secondToken.address);
-        }
-      }
-    },
-    [availableTokens, firstTokenInput, marketTokenInput, p.selectedMarketAddress, secondTokenInput]
-  );
-
-  useEffect(
-    function updateInputsByMode() {
-      const firstConvertedAddress = firstTokenInput.tokenAddress
-        ? convertTokenAddress(chainId, firstTokenInput.tokenAddress, "wrapped")
-        : undefined;
-
-      const secondConvertedAddress = secondTokenInput.tokenAddress
-        ? convertTokenAddress(chainId, secondTokenInput.tokenAddress, "wrapped")
-        : undefined;
-
-      if (modeTab === Mode.Pair && (!secondConvertedAddress || firstConvertedAddress === secondConvertedAddress)) {
-        const secondToken = availableTokens.filter(
-          (token) => convertTokenAddress(chainId, token.address, "wrapped") !== firstConvertedAddress
-        )[0];
-
-        if (secondToken) {
-          secondTokenInput.setTokenAddress(secondToken.address);
-        }
-      } else if (modeTab === Mode.Single && secondTokenInput.tokenAddress) {
-        secondTokenInput.setTokenAddress(undefined);
-        secondTokenInput.setInputValue("");
-      }
-    },
-    [firstTokenInput.tokenAddress, availableTokens, modeTab, secondTokenInput, chainId]
-  );
-
-  useEffect(
-    function updateInputValues() {
-      if (isWithdrawal && withdrawalAmounts) {
-        updateInputByPoolType(withdrawalAmounts.longTokenAmount, MarketPoolType.Long);
-        updateInputByPoolType(withdrawalAmounts.shortTokenAmount, MarketPoolType.Short);
-      }
-
-      if (isDeposit && focusedInput) {
-        if ([FocusedInput.firstToken, FocusedInput.secondToken].includes(focusedInput)) {
-          const swapSumUsd = firstTokenInput.usdAmount.add(secondTokenInput.usdAmount);
-
-          marketTokenInput.setValueByUsd(swapSumUsd);
-
-          return;
-        }
-
-        if (focusedInput === FocusedInput.marketToken) {
-          if (modeTab === Mode.Single && firstTokenInput.tokenAddress) {
-            firstTokenInput.setValueByUsd(marketTokenInput.usdAmount);
-
+      if (isDeposit) {
+        if (["longCollateral", "shortCollateral"].includes(focusedInput)) {
+          if (!longTokenUsd?.gt(0) && !shortTokenUsd?.gt(0)) {
+            setMarketTokenInputValue("");
             return;
           }
 
-          if (modeTab === Mode.Pair && firstTokenInput.tokenAddress && secondTokenInput.tokenAddress) {
-            const previousSum = firstTokenInput.usdAmount.add(secondTokenInput.usdAmount);
+          const amounts = getNextDepositAmountsByCollaterals({
+            marketsData,
+            poolsData,
+            tokensData,
+            feesConfigs,
+            marketToken,
+            longToken,
+            shortToken,
+            longTokenAmount,
+            shortTokenAmount,
+          });
 
-            const firstTokenUsd = firstTokenInput.usdAmount
-              .mul(marketTokenInput.usdAmount)
-              .div(previousSum.gt(0) ? previousSum : 1);
+          if (amounts) {
+            setMarketTokenInputValue(
+              amounts.marketTokenAmount.gt(0) ? formatAmountFree(amounts.marketTokenAmount, marketToken.decimals) : ""
+            );
+            setSwapFeeUsd(amounts.swapFeeUsd);
+            setSwapPriceImpactDeltaUsd(amounts.swapPriceImpactDeltaUsd);
+          }
+        }
 
-            const secondTokenUsd = marketTokenInput.usdAmount.sub(firstTokenUsd);
-
-            firstTokenInput.setValueByUsd(firstTokenUsd);
-            secondTokenInput.setValueByUsd(secondTokenUsd);
-
+        if (focusedInput === "market" && !marketTokenAmount?.eq(prevMarketTokenAmount || 0)) {
+          if (!marketTokenAmount?.gt(0)) {
+            longTokenInputState?.setValue("");
+            shortTokenInputState?.setValue("");
             return;
+          }
+
+          const amounts = getNextDepositAmountsByMarketToken({
+            marketsData,
+            poolsData,
+            tokensData,
+            feesConfigs,
+            marketToken,
+            longToken,
+            shortToken,
+            marketTokenAmount,
+            // TODO: replace with ratio?
+            includeLongToken: Boolean(longTokenInputState?.address),
+            includeShortToken: Boolean(shortTokenInputState?.address),
+            previousLongTokenAmount: longTokenAmount,
+            previousShortTokenAmount: shortTokenAmount,
+          });
+
+          if (amounts) {
+            longTokenInputState?.setValue(
+              amounts.longTokenAmount?.gt(0) ? formatAmountFree(amounts.longTokenAmount, longToken.decimals) : ""
+            );
+            shortTokenInputState?.setValue(
+              amounts.shortTokenAmount?.gt(0) ? formatAmountFree(amounts.shortTokenAmount, shortToken.decimals) : ""
+            );
+            setSwapFeeUsd(amounts.swapFeeUsd);
+            setSwapPriceImpactDeltaUsd(amounts.swapPriceImpactDeltaUsd);
           }
         }
       }
 
-      function updateInputByPoolType(amount: BigNumber, poolType: MarketPoolType) {
-        const firstInputPoolType = getTokenPoolType(
-          marketsData,
-          tokensData,
-          market?.marketTokenAddress,
-          firstTokenInput.tokenAddress
-        );
+      if (isWithdrawal) {
+        if (focusedInput === "market") {
+          if (!marketTokenAmount?.gt(0)) {
+            longTokenInputState?.setValue("");
+            shortTokenInputState?.setValue("");
+            return;
+          }
 
-        const secondInputPoolType = getTokenPoolType(
-          marketsData,
-          tokensData,
-          market?.marketTokenAddress,
-          secondTokenInput.tokenAddress
-        );
+          const amounts = getNextWithdrawalAmountsByMarketToken({
+            marketsData,
+            poolsData,
+            tokensData,
+            feesConfigs,
+            marketToken,
+            longToken,
+            shortToken,
+            marketTokenAmount,
+          });
 
-        if (poolType === firstInputPoolType) {
-          firstTokenInput.setValueByTokenAmount(amount);
+          if (amounts) {
+            longTokenInputState?.setValue(
+              amounts.longTokenAmount?.gt(0) ? formatAmountFree(amounts.longTokenAmount, longToken.decimals) : ""
+            );
+            shortTokenInputState?.setValue(
+              amounts.shortTokenAmount?.gt(0) ? formatAmountFree(amounts.shortTokenAmount, shortToken.decimals) : ""
+            );
+            setSwapFeeUsd(amounts.swapFeeUsd);
+            setSwapPriceImpactDeltaUsd(undefined);
+          }
         }
 
-        if (poolType === secondInputPoolType) {
-          secondTokenInput.setValueByTokenAmount(amount);
+        if (["longCollateral", "shortCollateral"].includes(focusedInput)) {
+          if (!longTokenAmount?.gt(0) && !shortTokenAmount?.gt(0)) {
+            setMarketTokenInputValue("");
+            return;
+          }
+
+          const amounts = getNextWithdrawalAmountsByCollaterals({
+            marketsData,
+            poolsData,
+            tokensData,
+            feesConfigs,
+            marketToken,
+            longToken,
+            shortToken,
+            longTokenAmount: focusedInput === "longCollateral" ? longTokenAmount : undefined,
+            shortTokenAmount: focusedInput === "shortCollateral" ? shortTokenAmount : undefined,
+          });
+
+          if (amounts) {
+            setMarketTokenInputValue(
+              amounts.marketTokenAmount.gt(0) ? formatAmountFree(amounts.marketTokenAmount, marketToken.decimals) : ""
+            );
+            if (amounts.longTokenAmount) {
+              longTokenInputState?.setValue(
+                amounts.longTokenAmount.gt(0) ? formatAmountFree(amounts.longTokenAmount, longToken.decimals) : ""
+              );
+            }
+            if (amounts.shortTokenAmount) {
+              shortTokenInputState?.setValue(
+                amounts.shortTokenAmount.gt(0) ? formatAmountFree(amounts.shortTokenAmount, shortToken.decimals) : ""
+              );
+            }
+            setSwapFeeUsd(amounts.swapFeeUsd);
+            setSwapPriceImpactDeltaUsd(undefined);
+          }
         }
       }
     },
     [
-      firstTokenInput,
+      feesConfig,
+      feesConfigs,
       focusedInput,
       isDeposit,
       isWithdrawal,
-      market?.marketTokenAddress,
-      marketTokenInput,
+      longPoolUsd,
+      longTokenAmount,
+      longTokenInputState,
+      longTokenUsd,
+      market,
+      marketToken,
+      marketTokenAmount,
+      marketTokenUsd,
       marketsData,
-      modeTab,
-      secondTokenInput,
+      poolsData,
+      prevMarketTokenAmount,
+      setMarketTokenInputValue,
+      setSwapFeeUsd,
+      setSwapPriceImpactDeltaUsd,
+      shortPoolUsd,
+      shortTokenAmount,
+      shortTokenInputState,
+      shortTokenUsd,
       tokensData,
-      withdrawalAmounts,
+    ]
+  );
+
+  useEffect(
+    function updateMode() {
+      if (!availableModes[operation].includes(mode)) {
+        setMode(availableModes[operation][0]);
+      }
+    },
+    [mode, operation]
+  );
+
+  useEffect(
+    function updateTokens() {
+      if (!tokenOptions.length) return;
+
+      if (!tokenOptions.find((token) => token.address === firstTokenAddress)) {
+        setFirstTokenAddress(tokenOptions[0].address);
+      }
+
+      if (isSingle && secondTokenAddress) {
+        setSecondTokenAddress(undefined);
+        setSecondTokenInputValue("");
+      }
+
+      if (isPair && firstTokenAddress) {
+        if (
+          !secondTokenAddress ||
+          !tokenOptions.find((token) => token.address === secondTokenAddress) ||
+          convertTokenAddress(chainId, firstTokenAddress, "wrapped") ===
+            convertTokenAddress(chainId, secondTokenAddress, "wrapped")
+        ) {
+          const secondToken = tokenOptions.find((token) => {
+            return (
+              convertTokenAddress(chainId, token.address, "wrapped") !==
+              convertTokenAddress(chainId, firstTokenAddress, "wrapped")
+            );
+          });
+          setSecondTokenAddress(secondToken?.address);
+        }
+      }
+    },
+    [
+      chainId,
+      firstTokenAddress,
+      isPair,
+      isSingle,
+      secondTokenAddress,
+      setFirstTokenAddress,
+      setSecondTokenAddress,
+      setSecondTokenInputValue,
+      tokenOptions,
     ]
   );
 
@@ -420,97 +624,110 @@ export function GmSwapBox(p: Props) {
       <Tab
         options={Object.values(Operation)}
         optionLabels={operationLabels}
-        option={operationTab}
-        onChange={setOperationTab}
+        option={operation}
+        onChange={setOperation}
         className="Exchange-swap-option-tabs"
       />
 
       <Tab
-        options={availableModes[operationTab]}
+        options={availableModes[operation]}
         optionLabels={modeLabels}
         className="GmSwapBox-asset-options-tabs"
         type="inline"
-        option={modeTab}
-        onChange={setModeTab}
+        option={mode}
+        onChange={setMode}
       />
 
-      <div className={cx("GmSwapBox-form-layout", { reverse: operationTab === Operation.Withdrawal })}>
+      <div className={cx("GmSwapBox-form-layout", { reverse: isWithdrawal })}>
         <BuyInputSection
-          topLeftLabel={operationTab === Operation.Deposit ? t`Pay:` : t`Receive:`}
-          topLeftValue={formatUsd(firstTokenInput.usdAmount)}
+          topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
+          topLeftValue={formatUsd(firstTokenUsd)}
           topRightLabel={t`Balance:`}
-          topRightValue={formatTokenAmount(firstTokenInput.balance, firstTokenInput.token?.decimals)}
-          inputValue={firstTokenInput.inputValue}
+          topRightValue={formatTokenAmount(firstToken?.balance, firstToken?.decimals)}
+          showMaxButton={isDeposit && firstToken?.balance?.gt(0) && !firstTokenAmount?.eq(firstToken.balance)}
+          inputValue={firstTokenInputValue}
           onInputValueChange={(e) => {
-            setFocusedInput(FocusedInput.firstToken);
-            firstTokenInput.setInputValue(e.target.value);
+            if (firstToken) {
+              setFirstTokenInputValue(e.target.value);
+              onFocusedCollateralInputChange(firstToken.address);
+            }
           }}
-          staticInput={isWithdrawal}
-          showMaxButton={operationTab === Operation.Deposit && firstTokenInput.isNotMatchAvailableBalance}
           onClickMax={() => {
-            setFocusedInput(FocusedInput.firstToken);
-            firstTokenInput.setValueByTokenAmount(firstTokenInput.balance);
+            if (firstToken?.balance) {
+              setFirstTokenInputValue(formatAmountFree(firstToken.balance, firstToken.decimals));
+              onFocusedCollateralInputChange(firstToken.address);
+            }
           }}
         >
-          {firstTokenInput.tokenAddress && modeTab === Mode.Single ? (
+          {firstTokenAddress && isSingle ? (
             <TokenSelector
               label={t`Pay`}
               chainId={chainId}
-              tokenAddress={firstTokenInput.tokenAddress}
-              onSelectToken={(token) => firstTokenInput.setTokenAddress(token.address)}
-              tokens={availableTokens}
+              tokenAddress={firstTokenAddress}
+              onSelectToken={(token) => setFirstTokenAddress(token.address)}
+              tokens={tokenOptions}
               infoTokens={infoTokens}
               className="GlpSwap-from-token"
               showSymbolImage={true}
               showTokenImgInDropdown={true}
             />
           ) : (
-            <div className="selected-token">{firstTokenInput.token?.symbol}</div>
+            <div className="selected-token">{firstToken?.symbol}</div>
           )}
         </BuyInputSection>
 
-        {modeTab === Mode.Pair && secondTokenInput.token && (
+        {isPair && secondTokenAddress && (
           <BuyInputSection
-            topLeftLabel={operationTab === Operation.Deposit ? t`Pay:` : t`Receive:`}
-            topLeftValue={formatUsd(secondTokenInput.usdAmount)}
+            topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
+            topLeftValue={formatUsd(secondTokenUsd)}
             topRightLabel={t`Balance:`}
-            topRightValue={formatTokenAmount(secondTokenInput.balance, secondTokenInput.token?.decimals)}
-            inputValue={secondTokenInput.inputValue}
+            topRightValue={formatTokenAmount(secondToken?.balance, secondToken?.decimals)}
+            inputValue={secondTokenInputValue}
+            showMaxButton={isDeposit && secondToken?.balance?.gt(0) && !secondTokenAmount?.eq(secondToken.balance)}
             onInputValueChange={(e) => {
-              setFocusedInput(FocusedInput.secondToken);
-              secondTokenInput.setInputValue(e.target.value);
+              if (secondToken) {
+                setSecondTokenInputValue(e.target.value);
+                onFocusedCollateralInputChange(secondToken.address);
+              }
             }}
-            staticInput={isWithdrawal}
-            showMaxButton={operationTab === Operation.Deposit && secondTokenInput.isNotMatchAvailableBalance}
             onClickMax={() => {
-              setFocusedInput(FocusedInput.secondToken);
-              secondTokenInput.setValueByTokenAmount(secondTokenInput.balance);
+              if (secondToken?.balance) {
+                setSecondTokenInputValue(formatAmountFree(secondToken.balance, secondToken.decimals));
+                onFocusedCollateralInputChange(secondToken.address);
+              }
             }}
           >
-            <div className="selected-token">{secondTokenInput.token.symbol}</div>
+            <div className="selected-token">{secondToken?.symbol}</div>
           </BuyInputSection>
         )}
 
-        <div className="AppOrder-ball-container" onClick={onSwitchOperation}>
+        <div
+          className="AppOrder-ball-container"
+          onClick={() => {
+            setOperation((prev) => (prev === Operation.Deposit ? Operation.Withdrawal : Operation.Deposit));
+          }}
+        >
           <div className="AppOrder-ball">
             <IoMdSwap className="Exchange-swap-ball-icon" />
           </div>
         </div>
 
         <BuyInputSection
-          topLeftLabel={operationTab === Operation.Withdrawal ? t`Pay:` : t`Receive:`}
-          topLeftValue={formatUsd(marketTokenInput.usdAmount)}
+          topLeftLabel={isWithdrawal ? t`Pay` : t`Receive`}
+          topLeftValue={formatUsd(marketTokenUsd)}
           topRightLabel={t`Balance:`}
-          topRightValue={formatTokenAmount(marketTokenInput.balance, marketTokenInput.token?.decimals)}
-          inputValue={marketTokenInput.inputValue}
+          topRightValue={formatTokenAmount(marketToken?.balance, marketToken?.decimals)}
+          showMaxButton={isWithdrawal && marketToken?.balance?.gt(0) && !marketTokenAmount?.eq(marketToken.balance)}
+          inputValue={marketTokenInputValue}
           onInputValueChange={(e) => {
-            setFocusedInput(FocusedInput.marketToken);
-            marketTokenInput.setInputValue(e.target.value);
+            setMarketTokenInputValue(e.target.value);
+            setFocusedInput("market");
           }}
-          showMaxButton={operationTab === Operation.Withdrawal && marketTokenInput.isNotMatchAvailableBalance}
           onClickMax={() => {
-            setFocusedInput(FocusedInput.marketToken);
-            marketTokenInput.setValueByTokenAmount(marketTokenInput.balance);
+            if (marketToken?.balance) {
+              setMarketTokenInputValue(formatAmountFree(marketToken.balance, marketToken.decimals));
+              setFocusedInput("market");
+            }
           }}
         >
           <div className="selected-token">GM</div>
@@ -518,7 +735,7 @@ export function GmSwapBox(p: Props) {
       </div>
 
       <div className="GmSwapBox-info-section">
-        <GmFees totalFees={fees.totalFees} swapFee={fees.swapFee} swapPriceImpact={fees.swapPriceImpact} />
+        <GmFees totalFees={fees?.totalFees} swapFee={fees?.swapFee} swapPriceImpact={fees?.swapPriceImpact} />
       </div>
 
       {isHighPriceImpact && (
@@ -542,31 +759,39 @@ export function GmSwapBox(p: Props) {
         </SubmitButton>
       </div>
 
-      {isConfirming && (
+      {stage === "confirmation" && (
         <GmConfirmationBox
-          longDelta={longDelta}
-          shortDelta={shortDelta}
-          marketTokenAmount={marketTokenInput.tokenAmount}
-          marketTokenAddress={p.selectedMarketAddress!}
-          tokensData={tokensData}
-          fees={fees}
+          marketToken={marketToken!}
+          longToken={longTokenInputState?.token}
+          shortToken={shortTokenInputState?.token}
+          marketTokenAmount={marketTokenAmount!}
+          marketTokenUsd={marketTokenUsd!}
+          longTokenAmount={longTokenAmount}
+          longTokenUsd={longTokenUsd}
+          shortTokenAmount={shortTokenAmount}
+          shortTokenUsd={shortTokenUsd}
+          fees={fees!}
+          error={error}
+          isDeposit={isDeposit}
           executionFee={executionFee}
-          operationType={operationTab}
           onSubmitted={() => {
-            setIsConfirming(false);
-            setIsProcessing(true);
+            setStage("processing");
           }}
-          onClose={() => setIsConfirming(false)}
+          onClose={() => {
+            setStage("swap");
+          }}
         />
       )}
 
-      {isProcessing && (
+      {stage === "processing" && (
         <GmOrderStatus
-          firstToken={firstTokenInput.tokenAddress!}
-          secondToken={secondTokenInput.tokenAddress}
+          firstToken={firstTokenAddress!}
+          secondToken={secondTokenAddress}
           market={market?.marketTokenAddress!}
-          isDeposit={operationTab === Operation.Deposit}
-          onClose={() => setIsProcessing(false)}
+          isDeposit={isDeposit}
+          onClose={() => {
+            setStage("swap");
+          }}
         />
       )}
     </div>
