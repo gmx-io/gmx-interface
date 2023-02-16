@@ -67,10 +67,14 @@ export function PositionItem(p: Props) {
             />
             <StatsTooltipRow
               label={t`Funding fee:`}
-              value={formatUsd(p.position.pendingFundingFeesUsd?.mul(-1)) || "..."}
+              value={formatUsd(p.position.pendingFundingFeesUsd) || "..."}
               showDollar={false}
             />
-            <StatsTooltipRow label={t`Open + Close fee`} showDollar={false} value={"-$0.00"} />
+            <StatsTooltipRow
+              label={t`Close fee`}
+              showDollar={false}
+              value={formatUsd(p.position.closingFeeUsd?.mul(-1)) || "..."}
+            />
             <br />
             <StatsTooltipRow
               label={t`PnL After Fees`}

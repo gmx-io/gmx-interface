@@ -12,7 +12,7 @@ import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "lib/legacy";
 import { applyFactor, expandDecimals, formatAmount, formatUsd, roundUpDivision } from "lib/numbers";
-import { MarketsFeesConfigsData, getBorrowingFeeRateUsd, getMarketFeesConfig } from "../fees";
+import { MarketsFeesConfigsData, getBorrowingFeeRateUsd, getMarketFeesConfig, getPositionFee } from "../fees";
 import { TokenPrices, TokensData, convertToUsd, getTokenData } from "../tokens";
 import { AggregatedPositionData, Position, PositionsData } from "./types";
 
@@ -101,7 +101,12 @@ export function getAggregatedPositionData(
     ? position.pendingBorrowingFees.add(pendingFundingFeesUsd)
     : undefined;
 
-  const netValue = pnl && collateralUsd ? collateralUsd.add(pnl).sub(position.pendingBorrowingFees) : undefined;
+  const closingFeeUsd = getPositionFee(marketsFeesConfigs, market?.marketTokenAddress, position.sizeInUsd);
+
+  const netValue =
+    pnl && collateralUsd && totalPendingFeesUsd && closingFeeUsd
+      ? collateralUsd.add(pnl).sub(totalPendingFeesUsd).sub(closingFeeUsd)
+      : undefined;
 
   const collateralUsdAfterFees = totalPendingFeesUsd ? collateralUsd?.sub(totalPendingFeesUsd) : undefined;
   const pnlAfterFees = totalPendingFeesUsd ? pnl?.sub(totalPendingFeesUsd) : undefined;
@@ -154,6 +159,7 @@ export function getAggregatedPositionData(
     leverage,
     liqPrice,
     entryPrice,
+    closingFeeUsd,
     pendingFundingFeesUsd,
     borrowingFeeRateUsdPerDay,
   };
