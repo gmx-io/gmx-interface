@@ -526,6 +526,7 @@ msgstr "Отмена завершена"
 msgid "Cancel submitted."
 msgstr "Отмена завершена."
 
+#: src/App/App.js
 #: src/pages/Exchange/Exchange.js
 msgid "Chart positions"
 msgstr "Позиции на графике"
@@ -1652,7 +1653,7 @@ msgstr "Язык"
 msgid "Launch App"
 msgstr "Запустить Приложение"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Leaderboard"
 msgstr "Таблица лидеров"
 
@@ -1895,8 +1896,8 @@ msgid "Max close amount exceeded"
 msgstr "Превышена максимальная сумма закрытия"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account"
-msgstr "Максимальное кредитное плечо 100x было превышено, оставшийся залог после вычета убытков и комиссий был отправлен обратно на ваш счет"
+msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account:"
+msgstr "Максимальное кредитное плечо 100x было превышено, оставшийся залог после вычета убытков и комиссий был отправлен обратно на ваш счет:"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2812,7 +2813,7 @@ msgstr "Размер"
 msgid "Slippage should be less than 5%"
 msgstr "Скольжение должно составлять менее 5%"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Speed up page loading"
 msgstr "Ускорить загрузку страницы"
 
@@ -3320,7 +3321,7 @@ msgstr "Привлеченные Трейдеров"
 msgid "Trades"
 msgstr "Торги"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"
 msgstr "Руководство по трейдингу"
 
@@ -3520,7 +3521,7 @@ msgstr "Используйте кнопку \"Сложить\", чтобы пр�
 msgid "Use the Edit Collateral icon to deposit or withdraw collateral."
 msgstr "Используйте значок Редактировать Залог, чтобы внести или вывести залог."
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Useful Links"
 msgstr "Полезные Ссылки"
 

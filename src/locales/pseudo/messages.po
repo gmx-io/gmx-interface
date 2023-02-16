@@ -526,6 +526,7 @@ msgstr ""
 msgid "Cancel submitted."
 msgstr ""
 
+#: src/App/App.js
 #: src/pages/Exchange/Exchange.js
 msgid "Chart positions"
 msgstr ""
@@ -1652,7 +1653,7 @@ msgstr ""
 msgid "Launch App"
 msgstr ""
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Leaderboard"
 msgstr ""
 
@@ -1892,7 +1893,7 @@ msgid "Max close amount exceeded"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account"
+msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account:"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
@@ -2809,7 +2810,7 @@ msgstr ""
 msgid "Slippage should be less than 5%"
 msgstr ""
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Speed up page loading"
 msgstr ""
 
@@ -3317,7 +3318,7 @@ msgstr ""
 msgid "Trades"
 msgstr ""
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"
 msgstr ""
 
@@ -3517,7 +3518,7 @@ msgstr ""
 msgid "Use the Edit Collateral icon to deposit or withdraw collateral."
 msgstr ""
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Useful Links"
 msgstr ""
 

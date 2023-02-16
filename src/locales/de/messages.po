@@ -526,6 +526,7 @@ msgstr "Abbruch übermittelt"
 msgid "Cancel submitted."
 msgstr "Abbruch übermittelt."
 
+#: src/App/App.js
 #: src/pages/Exchange/Exchange.js
 msgid "Chart positions"
 msgstr "Chart-Positionen"
@@ -1652,7 +1653,7 @@ msgstr "Sprache"
 msgid "Launch App"
 msgstr "App starten"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Leaderboard"
 msgstr "Bestenliste"
 
@@ -1895,8 +1896,8 @@ msgid "Max close amount exceeded"
 msgstr "Maximaler Abschlussbetrag überschritten"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account"
-msgstr "Die max. Hebelwirkung von 100x wurde überschritten, das verbleibende Kollateral wird nach Abzug von Verlusten und Gebühren wurde auf dein Konto zurücküberwiesen"
+msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account:"
+msgstr "Die max. Hebelwirkung von 100x wurde überschritten, das verbleibende Kollateral wird nach Abzug von Verlusten und Gebühren wurde auf dein Konto zurücküberwiesen:"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2812,7 +2813,7 @@ msgstr "Größe"
 msgid "Slippage should be less than 5%"
 msgstr "Der Slippage sollte weniger als 5% betragen"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Speed up page loading"
 msgstr "Beschleunige das Laden von Seiten"
 
@@ -3320,7 +3321,7 @@ msgstr "Vermittelte Trader"
 msgid "Trades"
 msgstr "Trades"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"
 msgstr "Handelsleitfaden"
 
@@ -3520,7 +3521,7 @@ msgstr "Verwende den Button \"Zusammensetzen\", um deine Multiplikatorpunkte zu 
 msgid "Use the Edit Collateral icon to deposit or withdraw collateral."
 msgstr "Verwende das Symbol Kollateral bearbeiten, um Kollateral zu hinterlegen oder zurückzuziehen."
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Useful Links"
 msgstr "Nützliche Links"
 

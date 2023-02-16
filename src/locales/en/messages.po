@@ -526,6 +526,7 @@ msgstr "Cancel submitted"
 msgid "Cancel submitted."
 msgstr "Cancel submitted."
 
+#: src/App/App.js
 #: src/pages/Exchange/Exchange.js
 msgid "Chart positions"
 msgstr "Chart positions"
@@ -1652,7 +1653,7 @@ msgstr "Language"
 msgid "Launch App"
 msgstr "Launch App"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Leaderboard"
 msgstr "Leaderboard"
 
@@ -1895,8 +1896,8 @@ msgid "Max close amount exceeded"
 msgstr "Max close amount exceeded"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account"
-msgstr "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account"
+msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account:"
+msgstr "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account:"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2812,7 +2813,7 @@ msgstr "Size"
 msgid "Slippage should be less than 5%"
 msgstr "Slippage should be less than 5%"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Speed up page loading"
 msgstr "Speed up page loading"
 
@@ -3320,7 +3321,7 @@ msgstr "Traders Referred"
 msgid "Trades"
 msgstr "Trades"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"
 msgstr "Trading guide"
 
@@ -3520,7 +3521,7 @@ msgstr "Use the \"Compound\" button to stake your Multiplier Points."
 msgid "Use the Edit Collateral icon to deposit or withdraw collateral."
 msgstr "Use the Edit Collateral icon to deposit or withdraw collateral."
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Useful Links"
 msgstr "Useful Links"
 

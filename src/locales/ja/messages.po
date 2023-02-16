@@ -526,6 +526,7 @@ msgstr "キャンセルが提出されました"
 msgid "Cancel submitted."
 msgstr "キャンセル申し込み完了"
 
+#: src/App/App.js
 #: src/pages/Exchange/Exchange.js
 msgid "Chart positions"
 msgstr "ポジションをチャートに"
@@ -1652,7 +1653,7 @@ msgstr "言語"
 msgid "Launch App"
 msgstr "アプリ起動"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Leaderboard"
 msgstr "順位表"
 
@@ -1895,8 +1896,8 @@ msgid "Max close amount exceeded"
 msgstr "最大クローズ値超過"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account"
-msgstr "最大レバレッジ100倍を超過し、損失と手数料を差し引き後に残った担保はアカウントに返送されました"
+msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account:"
+msgstr "最大レバレッジ100倍を超過し、損失と手数料を差し引き後に残った担保はアカウントに返送されました:"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2812,7 +2813,7 @@ msgstr "サイズ"
 msgid "Slippage should be less than 5%"
 msgstr "スリッページは5%未満であること"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Speed up page loading"
 msgstr "ページの読み込みを速くする"
 
@@ -3320,7 +3321,7 @@ msgstr "紹介したトレーダー"
 msgid "Trades"
 msgstr "トレード"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"
 msgstr "トレード案内"
 
@@ -3520,7 +3521,7 @@ msgstr "マルチプレイヤーポイントをステークするには\"請求�
 msgid "Use the Edit Collateral icon to deposit or withdraw collateral."
 msgstr "担保を入金または出金するときは「担保を編集」のアイコンを使用してください。"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Useful Links"
 msgstr "有用なリンク"
 

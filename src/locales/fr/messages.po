@@ -526,6 +526,7 @@ msgstr "Annulation soumise"
 msgid "Cancel submitted."
 msgstr "Annulation soumise"
 
+#: src/App/App.js
 #: src/pages/Exchange/Exchange.js
 msgid "Chart positions"
 msgstr "Positions sur les graphiques"
@@ -1652,7 +1653,7 @@ msgstr "Langue"
 msgid "Launch App"
 msgstr "Lancer l'application"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Leaderboard"
 msgstr "Tableau des leaders"
 
@@ -1895,8 +1896,8 @@ msgid "Max close amount exceeded"
 msgstr "Le montant max. de fermeture a été excéder"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account"
-msgstr "Le levier maximum de 100x a été dépassé, le collatéral restant, après déduction des pertes et des frais, a été renvoyé sur votre compte"
+msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account:"
+msgstr "Le levier maximum de 100x a été dépassé, le collatéral restant, après déduction des pertes et des frais, a été renvoyé sur votre compte:"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2812,7 +2813,7 @@ msgstr "Montant"
 msgid "Slippage should be less than 5%"
 msgstr "Le glissement doit être de moins de 5%."
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Speed up page loading"
 msgstr "Accélérer le chargement de la page"
 
@@ -3320,7 +3321,7 @@ msgstr "Traders parrainés"
 msgid "Trades"
 msgstr "Opérations"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"
 msgstr "Guide d'opérations"
 
@@ -3520,7 +3521,7 @@ msgstr "Utiliser le bouton \"Composé\" pour staker vos points multiplicateurs."
 msgid "Use the Edit Collateral icon to deposit or withdraw collateral."
 msgstr "Utilisez l'icône Modifier Collatéral pour déposer ou retirer le collatéral."
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Useful Links"
 msgstr "Liens utiles"
 
