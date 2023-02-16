@@ -41,7 +41,7 @@ export default function Button({
 }: ButtonProps) {
   const classNames = cx(getClassName(variant), className);
   function handleClick() {
-    if (disabled) {
+    if (disabled || !onClick) {
       return;
     }
     if (onClick) {
