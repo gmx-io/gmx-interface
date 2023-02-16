@@ -56,14 +56,15 @@ import {
   getDecreasePositionAmounts,
   getDisplayedTradeFees,
   getNextPositionValuesForDecreaseTrade,
+  getShouldSwapPnlToCollateralToken,
   getSwapAmounts,
   useAvailableSwapOptions,
   useSwapRoute,
 } from "domain/synthetics/trade";
 import { Token } from "domain/tokens";
-import { OrderStatus } from "../OrderStatus/OrderStatus";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionSeller.scss";
+import { OrderStatus } from "../OrderStatus/OrderStatus";
 
 function isEquivalentTokens(token1: Token, token2: Token) {
   if (token1.address === token2.address) {
@@ -100,8 +101,11 @@ export function PositionSeller(p: Props) {
 
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
-  const shouldSwapPnlToCollateralToken =
-    !p.position?.market && p.position?.pnlToken?.address !== p.position?.collateralToken?.address;
+  const shouldSwapPnlToCollateralToken = getShouldSwapPnlToCollateralToken({
+    market: position?.market,
+    collateralTokenAddress: position?.collateralToken?.address,
+    isLong: position?.isLong,
+  });
 
   let allowedSlippage = savedSlippageAmount;
   if (isHigherSlippageAllowed) {

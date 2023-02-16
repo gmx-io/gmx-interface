@@ -11,6 +11,7 @@ import { useMemo } from "react";
 import { MarketTokensData } from "./types";
 import { useMarketsData } from "./useMarketsData";
 import { getContractMarketPrices, getMarket } from "./utils";
+import { hashString } from "lib/hash";
 
 type MarketTokensDataResult = {
   marketTokensData: MarketTokensData;
@@ -54,6 +55,8 @@ export function useMarketTokensData(chainId: number): MarketTokensDataResult {
                   marketPrices.indexTokenPrice,
                   marketPrices.longTokenPrice,
                   marketPrices.shortTokenPrice,
+                  // TODO
+                  hashString("MAX_PNL_FACTOR_FOR_DEPOSITS"),
                   false,
                 ],
               },
@@ -65,6 +68,8 @@ export function useMarketTokensData(chainId: number): MarketTokensDataResult {
                   marketPrices.indexTokenPrice,
                   marketPrices.longTokenPrice,
                   marketPrices.shortTokenPrice,
+                  // TODO
+                  hashString("MAX_PNL_FACTOR_FOR_DEPOSITS"),
                   true,
                 ],
               },

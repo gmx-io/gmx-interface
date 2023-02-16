@@ -2,6 +2,7 @@ import { PRECISION } from "lib/legacy";
 import { convertToContractPrices, convertToUsd, getMidPrice, getTokenData } from "../tokens";
 import { TokensData } from "../tokens/types";
 import {
+  ContractMarketPrices,
   Market,
   MarketPoolType,
   MarketTokensData,
@@ -398,7 +399,7 @@ export function getContractMarketPrices(
   marketsData: MarketsData,
   tokensData: TokensData,
   marketAddress: string | undefined
-) {
+): ContractMarketPrices | undefined {
   const market = getMarket(marketsData, marketAddress)!;
 
   const longToken = getTokenData(tokensData, market.longTokenAddress);

@@ -116,7 +116,7 @@ export function ConfirmationBox(p: Props) {
   const usdOut = p.swapParams?.usdOut;
 
   const initialCollateralToken = p.increasePositionParams?.initialCollateralToken;
-  const collateralToken = p.increasePositionParams?.collateralToken;
+  const collateralToken = p.increasePositionParams?.collateralToken || p.decreasePositionParams?.collateralToken;
   const intitialCollateralAmount = p.increasePositionParams?.initialCollateralAmount;
   const initialCollateralUsd = p.increasePositionParams?.initialCollateralUsd;
 

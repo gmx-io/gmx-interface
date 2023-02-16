@@ -199,3 +199,7 @@ export function accountOrderListKey(account: string) {
 export function accountPositionListKey(account: string) {
   return hashData(["bytes32", "address"], [ACCOUNT_POSITION_LIST_KEY, account]);
 }
+
+export function hashedPositionKey(account: string, market: string, collateralToken: string, isLong: boolean) {
+  return hashData(["address", "address", "address", "bool"], [account, market, collateralToken, isLong]);
+}

@@ -2,15 +2,14 @@ import { Web3Provider } from "@ethersproject/providers";
 import { t } from "@lingui/macro";
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
+import { isDevelopment } from "config/env";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
 import { encodeReferralCode } from "domain/referrals";
 import { BigNumber, ethers } from "ethers";
 import { callContract } from "lib/contracts";
+import { formatTokenAmount } from "lib/numbers";
 import { TokensData, getTokenData } from "../tokens";
 import { DecreasePositionSwapType, OrderType } from "./types";
-import { isDevelopment } from "config/env";
-import { simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
-import { formatTokenAmount } from "lib/numbers";
 
 const { AddressZero } = ethers.constants;
 
@@ -81,8 +80,8 @@ export async function createSwapOrderTxn(chainId: number, library: Web3Provider,
           decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
           isLong: false,
           shouldUnwrapNativeToken: isNativeReceive,
+          referralCode: encodeReferralCode(p.referralCode || ""),
         },
-        encodeReferralCode(p.referralCode || ""),
       ],
     },
   ];
@@ -121,13 +120,13 @@ export async function createSwapOrderTxn(chainId: number, library: Web3Provider,
 
   // TODO: simulation for limit swaps
   if (p.orderType !== OrderType.LimitSwap) {
-    await simulateExecuteOrderTxn(chainId, library, {
-      primaryPriceOverrides: {},
-      secondaryPriceOverrides: {},
-      createOrderMulticallPayload: encodedPayload,
-      value: wntAmount,
-      tokensData: p.tokensData,
-    });
+    // await simulateExecuteOrderTxn(chainId, library, {
+    //   primaryPriceOverrides: {},
+    //   secondaryPriceOverrides: {},
+    //   createOrderMulticallPayload: encodedPayload,
+    //   value: wntAmount,
+    //   tokensData: p.tokensData,
+    // });
   }
 
   const fromText = formatTokenAmount(p.fromTokenAmount, fromToken.decimals, fromToken.symbol);

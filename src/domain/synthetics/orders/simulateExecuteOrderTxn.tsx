@@ -73,7 +73,7 @@ export async function simulateExecuteOrderTxn(chainId: number, library: Web3Prov
     if (SHOULD_MINE && isDevelopment()) {
       const txn = await callContract(chainId, exchangeRouter, "multicall", [simulationPayload], {
         value: p.value,
-        gasLimit: 12 ** 6,
+        gasLimit: 13 ** 6,
       });
 
       throw new Error(`debug simulation ended ${txn.hash}`);
