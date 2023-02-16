@@ -9,6 +9,7 @@ import { formatTokenAmount } from "lib/numbers";
 type WrapOrUnwrapParams = {
   amount: BigNumber;
   isWrap: boolean;
+  setPendingTxns: (txns: any) => void;
 };
 
 export function createWrapOrUnwrapTxn(chainId: number, library: Web3Provider, p: WrapOrUnwrapParams) {
@@ -27,6 +28,7 @@ export function createWrapOrUnwrapTxn(chainId: number, library: Web3Provider, p:
         nativeToken.symbol
       )} for ${formatTokenAmount(p.amount, wrappedToken.decimals, wrappedToken.symbol)}`,
       failMsg: t`Swap failed.`,
+      setPendingTxns: p.setPendingTxns,
     });
   } else {
     return callContract(chainId, contract, "withdraw", [p.amount], {
@@ -37,6 +39,7 @@ export function createWrapOrUnwrapTxn(chainId: number, library: Web3Provider, p:
         wrappedToken.symbol
       )} for ${formatTokenAmount(p.amount, nativeToken.decimals, nativeToken.symbol)}`,
       failMsg: t`Swap failed.`,
+      setPendingTxns: p.setPendingTxns,
     });
   }
 }

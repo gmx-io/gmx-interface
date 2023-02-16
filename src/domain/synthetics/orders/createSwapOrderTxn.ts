@@ -24,6 +24,7 @@ export type SwapOrderParams = {
   swapPath: string[];
   minOutputAmount: BigNumber;
   orderType: OrderType.MarketSwap | OrderType.LimitSwap;
+  setPendingTxns: (txns: any) => void;
 };
 
 export async function createSwapOrderTxn(chainId: number, library: Web3Provider, p: SwapOrderParams) {
@@ -139,5 +140,7 @@ export async function createSwapOrderTxn(chainId: number, library: Web3Provider,
     sentMsg: t`${orderLabel} order sent`,
     successMsg: t`${orderLabel} order created`,
     failMsg: t`${orderLabel} order failed`,
+    hideSuccessMsg: true,
+    setPendingTxns: p.setPendingTxns,
   });
 }

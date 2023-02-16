@@ -88,6 +88,7 @@ type Props = {
   setKeepLeverage: (keepLeverage: boolean) => void;
   onClose: () => void;
   onSubmitted: () => void;
+  setPendingTxns: (txns: any) => void;
 };
 
 export function ConfirmationBox(p: Props) {
@@ -279,7 +280,7 @@ export function ConfirmationBox(p: Props) {
   }
 
   function onCancelOrderClick(key: string): void {
-    cancelOrdersTxn(chainId, library, { orderKeys: [key] });
+    cancelOrdersTxn(chainId, library, { orderKeys: [key], setPendingTxns: p.setPendingTxns });
   }
 
   function onSubmitWrapOrUnwrap() {
@@ -290,6 +291,7 @@ export function ConfirmationBox(p: Props) {
     createWrapOrUnwrapTxn(chainId, library, {
       amount: p.swapParams.amountIn,
       isWrap: Boolean(tokenIn.isNative),
+      setPendingTxns: p.setPendingTxns,
     }).then(p.onSubmitted);
   }
 
@@ -309,6 +311,7 @@ export function ConfirmationBox(p: Props) {
       minOutputAmount: p.swapParams.minOutputAmount,
       referralCode: referralCodeData?.userReferralCodeString,
       tokensData,
+      setPendingTxns: p.setPendingTxns,
     }).then(p.onSubmitted);
   }
 
@@ -341,6 +344,7 @@ export function ConfirmationBox(p: Props) {
       orderType: isLimit ? OrderType.LimitIncrease : OrderType.MarketIncrease,
       referralCode: referralCodeData?.userReferralCodeString,
       tokensData,
+      setPendingTxns: p.setPendingTxns,
     }).then(() => {
       if (isMarket && p.increasePositionParams) {
         setPendingPositionUpdate({
@@ -396,6 +400,7 @@ export function ConfirmationBox(p: Props) {
         ? DecreasePositionSwapType.SwapPnlTokenToCollateralToken
         : DecreasePositionSwapType.NoSwap,
       tokensData,
+      setPendingTxns: p.setPendingTxns,
     }).then(p.onSubmitted);
   }
 

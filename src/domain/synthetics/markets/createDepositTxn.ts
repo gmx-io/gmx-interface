@@ -15,6 +15,7 @@ type Params = {
   shortTokenAmount?: BigNumber;
   minMarketTokens: BigNumber;
   executionFee: BigNumber;
+  setPendingTxns: (txns: any) => void;
 };
 
 export async function createDepositTxn(chainId: number, library: Web3Provider, p: Params) {
@@ -80,5 +81,7 @@ export async function createDepositTxn(chainId: number, library: Web3Provider, p
     sentMsg: t`Deposit order sent`,
     successMsg: t`Success deposit order`,
     failMsg: t`Deposit order failed`,
+    hideSuccessMsg: true,
+    setPendingTxns: p.setPendingTxns,
   });
 }

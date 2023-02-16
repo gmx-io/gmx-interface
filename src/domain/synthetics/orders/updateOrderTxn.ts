@@ -14,6 +14,7 @@ export type UpdateOrderParams = {
   triggerPrice?: BigNumber;
   acceptablePrice?: BigNumber;
   minOutputAmount?: BigNumber;
+  setPendingTxns: (txns: any) => void;
 };
 
 export function updateOrderTxn(chainId: number, library: Web3Provider, p: UpdateOrderParams) {
@@ -58,5 +59,6 @@ export function updateOrderTxn(chainId: number, library: Web3Provider, p: Update
     sentMsg: t`Updating order`,
     successMsg: t`Update order canceled`,
     failMsg: t`Failed to update order`,
+    setPendingTxns: p.setPendingTxns,
   });
 }

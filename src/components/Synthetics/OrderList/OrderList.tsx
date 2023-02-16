@@ -16,6 +16,7 @@ type Props = {
   selectedOrdersKeys?: { [key: string]: boolean };
   positionsData: AggregatedPositionsData;
   isLoading: boolean;
+  setPendingTxns: (txns: any) => void;
 };
 
 export function OrderList(p: Props) {
@@ -50,7 +51,7 @@ export function OrderList(p: Props) {
   function onCancelOrder(key: string) {
     setCanellingOrdersKeys((prev) => [...prev, key]);
 
-    cancelOrdersTxn(chainId, library, { orderKeys: [key] }).finally(() =>
+    cancelOrdersTxn(chainId, library, { orderKeys: [key], setPendingTxns: p.setPendingTxns }).finally(() =>
       setCanellingOrdersKeys((prev) => prev.filter((k) => k !== key))
     );
   }
@@ -124,6 +125,7 @@ export function OrderList(p: Props) {
           positionsData={p.positionsData}
           order={editingOrder}
           onClose={() => setEditingOrderKey(undefined)}
+          setPendingTxns={p.setPendingTxns}
         />
       )}
     </>

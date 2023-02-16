@@ -1,8 +1,9 @@
 import { useWeb3React } from "@web3-react/core";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import { getContract } from "config/contracts";
-import { hashedPositionKey } from "config/dataStore";
+import { accountPositionListKey, hashedPositionKey } from "config/dataStore";
 import { useMulticall } from "lib/multicall";
+import DataStore from "abis/DataStore.json";
 import { bigNumberify } from "lib/numbers";
 import { useMemo } from "react";
 import { ContractMarketPrices, getContractMarketPrices, useMarketsData } from "../markets";
@@ -22,12 +23,30 @@ export function usePositionsData(chainId: number): PositionsDataResult {
   const { marketsData, isLoading: isMarketsLoading } = useMarketsData(chainId);
   const { tokensData, isLoading: isTokensLoading } = useAvailableTokensData(chainId);
 
+  const { data: positionsKeys } = useMulticall(chainId, "usePositionsData-keys", {
+    key: account ? [account] : null,
+    request: () => ({
+      dataStore: {
+        contractAddress: getContract(chainId, "DataStore"),
+        abi: DataStore.abi,
+        calls: {
+          keys: {
+            methodName: "getBytes32ValuesAt",
+            params: [accountPositionListKey(account!), 0, 300],
+          },
+        },
+      },
+    }),
+    parseResponse: (res) => {
+      return res.dataStore.keys.returnValues;
+    },
+  });
+
   const queryParams = useMemo(() => {
-    if (!account || isMarketsLoading || isTokensLoading) return undefined;
+    if (!account || isMarketsLoading || isTokensLoading || !positionsKeys?.length) return undefined;
 
     const markets = Object.values(marketsData);
-    const positionKeys: string[] = [];
-    const marketPricesArray: ContractMarketPrices[] = [];
+    const marketPricesByPositionsKeys: { [key: string]: ContractMarketPrices } = {};
 
     for (const market of markets) {
       const marketPrices = getContractMarketPrices(marketsData, tokensData, market.marketTokenAddress);
@@ -38,20 +57,25 @@ export function usePositionsData(chainId: number): PositionsDataResult {
         for (const isLong of [true, false]) {
           const key = hashedPositionKey(account, market.marketTokenAddress, collateralAddress, isLong);
 
-          positionKeys.push(key);
-          marketPricesArray.push(marketPrices);
+          marketPricesByPositionsKeys[key] = marketPrices;
         }
       }
     }
 
+    const marketPricesArray = positionsKeys.map((key) => marketPricesByPositionsKeys[key]);
+
+    if (marketPricesArray.length !== positionsKeys.length) {
+      return undefined;
+    }
+
     return {
-      positionKeys,
+      positionsKeys,
       marketPricesArray,
     };
-  }, [account, isMarketsLoading, isTokensLoading, marketsData, tokensData]);
+  }, [account, isMarketsLoading, isTokensLoading, marketsData, positionsKeys, tokensData]);
 
   const { data: positionsData = defaultValue, isLoading } = useMulticall(chainId, "usePositionsData", {
-    key: queryParams?.positionKeys.length ? [queryParams.positionKeys.join("-")] : null,
+    key: queryParams?.positionsKeys.length ? [queryParams.positionsKeys.join("-")] : null,
     request: () => ({
       reader: {
         contractAddress: getContract(chainId, "SyntheticsReader"),
@@ -59,7 +83,7 @@ export function usePositionsData(chainId: number): PositionsDataResult {
         calls: {
           positions: {
             methodName: "getAccountPositionInfoList",
-            params: [getContract(chainId, "DataStore"), queryParams!.positionKeys, queryParams!.marketPricesArray],
+            params: [getContract(chainId, "DataStore"), queryParams!.positionsKeys, queryParams!.marketPricesArray],
           },
         },
       },

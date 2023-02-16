@@ -7,6 +7,7 @@ import { callContract } from "lib/contracts";
 
 export type CancelOrderParams = {
   orderKeys: string[];
+  setPendingTxns: (txns: any) => void;
 };
 
 export async function cancelOrdersTxn(chainId: number, library: Web3Provider, p: CancelOrderParams) {
@@ -29,5 +30,6 @@ export async function cancelOrdersTxn(chainId: number, library: Web3Provider, p:
     sentMsg: t`Canceling ${ordersText}`,
     successMsg: t`${ordersText} canceled`,
     failMsg: t`Failed to cancel ${ordersText}`,
+    setPendingTxns: p.setPendingTxns,
   });
 }

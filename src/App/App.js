@@ -482,7 +482,7 @@ function FullApp() {
               </Route>
               {isDevelopment() && (
                 <Route exact path="/pools">
-                  <MarketPoolsPage connectWallet={connectWallet} />
+                  <MarketPoolsPage connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
                 </Route>
               )}
               {isDevelopment() && (
@@ -493,6 +493,7 @@ function FullApp() {
                     shouldDisableValidation={shouldDisableValidationForTesting}
                     savedShouldShowPositionLines={savedShouldShowPositionLines}
                     setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
+                    setPendingTxns={setPendingTxns}
                   />
                 </Route>
               )}

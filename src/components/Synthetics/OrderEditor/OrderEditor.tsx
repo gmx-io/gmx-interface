@@ -33,6 +33,7 @@ type Props = {
   positionsData: AggregatedPositionsData;
   order: AggregatedOrderData;
   onClose: () => void;
+  setPendingTxns: (txns: any) => void;
 };
 
 export function OrderEditor(p: Props) {
@@ -203,6 +204,7 @@ export function OrderEditor(p: Props) {
       sizeDeltaUsd,
       triggerPrice,
       minOutputAmount,
+      setPendingTxns: p.setPendingTxns,
     }).then(() => p.onClose());
   }
 

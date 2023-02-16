@@ -38,6 +38,7 @@ type Props = {
   executionFee?: ExecutionFee;
   onSubmitted: () => void;
   onClose: () => void;
+  setPendingTxns: (txns: any) => void;
 };
 
 export function GmConfirmationBox({
@@ -56,6 +57,7 @@ export function GmConfirmationBox({
   executionFee,
   onSubmitted,
   onClose,
+  setPendingTxns,
 }: Props) {
   const { library, account } = useWeb3React();
   const { chainId } = useChainId();
@@ -193,6 +195,7 @@ export function GmConfirmationBox({
       marketTokenAddress: marketToken.address,
       minMarketTokens: marketTokenAmount,
       executionFee: executionFee.feeTokenAmount,
+      setPendingTxns,
     }).then(onSubmitted);
   }
 
@@ -208,6 +211,7 @@ export function GmConfirmationBox({
       minShortTokenAmount: shortTokenAmount,
       marketTokenAddress: marketToken.address,
       executionFee: executionFee.feeTokenAmount,
+      setPendingTxns,
     }).then(onSubmitted);
   }
 

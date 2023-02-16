@@ -36,6 +36,7 @@ type Props = {
   shouldDisableValidation: boolean;
   savedShouldShowPositionLines: boolean;
   setSavedShouldShowPositionLines: (value: boolean) => void;
+  setPendingTxns: (txns: any) => void;
 };
 
 enum ListSection {
@@ -88,7 +89,6 @@ export function SyntheticsPage(p: Props) {
   const ordersCount = Object.keys(aggregatedOrdersData).length;
   const selectedOrdersKeysArr = Object.keys(selectedOrdersKeys).filter((key) => selectedOrdersKeys[key]);
 
-  // TODO: request
   const selectedPosition = useMemo(() => {
     const positionKey = getPositionKey(
       account,
@@ -106,6 +106,7 @@ export function SyntheticsPage(p: Props) {
     setIsCancelOrdersProcessig(true);
     cancelOrdersTxn(chainId, library, {
       orderKeys: selectedOrdersKeysArr,
+      setPendingTxns: p.setPendingTxns,
     }).finally(() => setIsCancelOrdersProcessig(false));
   }
 
@@ -209,6 +210,7 @@ export function SyntheticsPage(p: Props) {
                 setSelectedOrdersKeys={setSelectedOrdersKeys}
                 ordersData={aggregatedOrdersData}
                 isLoading={isOrdersLoading}
+                setPendingTxns={p.setPendingTxns}
               />
             )}
           </div>
@@ -230,6 +232,7 @@ export function SyntheticsPage(p: Props) {
               savedIsPnlInLeverage={p.savedIsPnlInLeverage}
               shouldDisableValidation={p.shouldDisableValidation}
               ordersData={aggregatedOrdersData}
+              setPendingTxns={p.setPendingTxns}
             />
           </div>
         </div>
@@ -264,6 +267,7 @@ export function SyntheticsPage(p: Props) {
               isLoading={isOrdersLoading}
               selectedOrdersKeys={selectedOrdersKeys}
               setSelectedOrdersKeys={setSelectedOrdersKeys}
+              setPendingTxns={p.setPendingTxns}
             />
           )}
         </div>
@@ -273,12 +277,14 @@ export function SyntheticsPage(p: Props) {
         savedIsPnlInLeverage={p.savedIsPnlInLeverage}
         position={closingPosition}
         onClose={() => setClosingPositionKey(undefined)}
+        setPendingTxns={p.setPendingTxns}
       />
 
       <PositionEditor
         savedIsPnlInLeverage={p.savedIsPnlInLeverage}
         position={editingPosition}
         onClose={() => setEditingPositionKey(undefined)}
+        setPendingTxns={p.setPendingTxns}
       />
 
       {/* {sharingPosition && (

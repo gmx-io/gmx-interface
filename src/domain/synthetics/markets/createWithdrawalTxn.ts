@@ -15,6 +15,7 @@ type Params = {
   minLongTokenAmount: BigNumber;
   minShortTokenAmount: BigNumber;
   executionFee: BigNumber;
+  setPendingTxns: (txns: any) => void;
 };
 
 export function createWithdrawalTxn(chainId: number, library: Web3Provider, p: Params) {
@@ -51,5 +52,7 @@ export function createWithdrawalTxn(chainId: number, library: Web3Provider, p: P
     sentMsg: t`Withdrawal order sent`,
     successMsg: t`Success withdrawal order`,
     failMsg: t`Withdrawal order failed`,
+    hideSuccessMsg: true,
+    setPendingTxns: p.setPendingTxns,
   });
 }

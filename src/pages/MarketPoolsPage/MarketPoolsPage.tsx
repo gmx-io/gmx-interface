@@ -13,6 +13,7 @@ import "./MarketPoolsPage.scss";
 
 type Props = {
   connectWallet: () => void;
+  setPendingTxns: (txns: any) => void;
 };
 
 export function MarketPoolsPage(p: Props) {
@@ -57,6 +58,7 @@ export function MarketPoolsPage(p: Props) {
               selectedMarketAddress={selectedMarketKey}
               markets={markets}
               onSelectMarket={setSelectedMarketKey}
+              setPendingTxns={p.setPendingTxns}
             />
           </div>
         </div>

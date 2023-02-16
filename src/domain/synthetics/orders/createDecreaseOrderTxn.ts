@@ -30,6 +30,7 @@ export type DecreaseOrderParams = {
   acceptablePrice: BigNumber;
   decreasePositionSwapType: DecreasePositionSwapType;
   orderType: OrderType.MarketDecrease | OrderType.LimitDecrease | OrderType.StopLossDecrease;
+  setPendingTxns: (txns: any) => void;
 };
 
 export async function createDecreaseOrderTxn(chainId: number, library: Web3Provider, p: DecreaseOrderParams) {
@@ -117,6 +118,8 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
     sentMsg: t`${orderLabel} order sent`,
     successMsg: t`${orderLabel} order created`,
     failMsg: t`${orderLabel} order failed`,
+    hideSuccessMsg: true,
+    setPendingTxns: p.setPendingTxns,
   });
 
   return txn;

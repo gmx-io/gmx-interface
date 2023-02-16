@@ -53,6 +53,7 @@ import "./PositionEditor.scss";
 type Props = {
   position?: AggregatedPositionData;
   savedIsPnlInLeverage: boolean;
+  setPendingTxns: (txns: any) => void;
   onClose: () => void;
 };
 
@@ -266,6 +267,7 @@ export function PositionEditor(p: Props) {
         isLong: position?.isLong,
         executionFee: executionFee.feeTokenAmount,
         tokensData,
+        setPendingTxns: p.setPendingTxns,
       }).then(() => {
         if (p.position) {
           setPendingPositionUpdate({
@@ -297,6 +299,7 @@ export function PositionEditor(p: Props) {
           ? DecreasePositionSwapType.SwapPnlTokenToCollateralToken
           : DecreasePositionSwapType.NoSwap,
         tokensData,
+        setPendingTxns: p.setPendingTxns,
       }).then(() => {
         if (p.position) {
           setPendingPositionUpdate({

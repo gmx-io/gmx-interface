@@ -63,6 +63,7 @@ type Props = {
   markets: Market[];
   onSelectMarket: (marketAddress: string) => void;
   onConnectWallet: () => void;
+  setPendingTxns: (txns: any) => void;
 };
 
 enum Operation {
@@ -499,7 +500,14 @@ export function GmSwapBox(p: Props) {
         }
 
         if (["longCollateral", "shortCollateral"].includes(focusedInput)) {
-          if (!longTokenAmount?.gt(0) && !shortTokenAmount?.gt(0)) {
+          if (focusedInput === "longCollateral" && !longTokenAmount?.gt(0)) {
+            shortTokenInputState?.setValue("");
+            setMarketTokenInputValue("");
+            return;
+          }
+
+          if (focusedInput === "shortCollateral" && !shortTokenAmount?.gt(0)) {
+            longTokenInputState?.setValue("");
             setMarketTokenInputValue("");
             return;
           }
@@ -782,6 +790,7 @@ export function GmSwapBox(p: Props) {
           error={error}
           isDeposit={isDeposit}
           executionFee={executionFee}
+          setPendingTxns={p.setPendingTxns}
           onSubmitted={() => {
             setStage("processing");
           }}

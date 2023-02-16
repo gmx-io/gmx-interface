@@ -110,6 +110,7 @@ type Props = {
   setSelectedToTokenAddress: (toTokenAddress: string) => void;
   selectedToTokenAddress?: string;
   shouldDisableValidation?: boolean;
+  setPendingTxns: (txns: any) => void;
 };
 
 const tradeTypeIcons = {
@@ -139,6 +140,7 @@ export function TradeBox(p: Props) {
     shouldDisableValidation,
     setSelectedToTokenAddress,
     selectedToTokenAddress,
+    setPendingTxns,
   } = p;
   const { chainId } = useChainId();
   const { tokensData } = useAvailableTokensData(chainId);
@@ -420,6 +422,7 @@ export function TradeBox(p: Props) {
       swapRoute.findSwapPath,
       toTokenInput.token,
       toTokenInput.tokenAmount,
+      toTokenInput.usdAmount,
       tokensData,
       triggerPrice,
       triggerRatio,
@@ -1406,6 +1409,7 @@ export function TradeBox(p: Props) {
         allowedSlippage={allowedSlippage}
         isHigherSlippageAllowed={isHigherSlippageAllowed}
         setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
+        setPendingTxns={setPendingTxns}
         onSubmitted={() => {
           if (isMarket && !isWrapOrUnwrap) {
             setStage("processing");

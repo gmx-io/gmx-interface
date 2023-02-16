@@ -30,6 +30,7 @@ type IncreaseOrderParams = {
   isLong: boolean;
   orderType: OrderType.MarketIncrease | OrderType.LimitIncrease;
   tokensData: TokensData;
+  setPendingTxns: (txns: any) => void;
 };
 
 export async function createIncreaseOrderTxn(chainId: number, library: Web3Provider, p: IncreaseOrderParams) {
@@ -125,6 +126,8 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
     sentMsg: t`${orderLabel} order sent`,
     successMsg: t`${orderLabel} order created`,
     failMsg: t`${orderLabel} order failed`,
+    hideSuccessMsg: true,
+    setPendingTxns: p.setPendingTxns,
   });
 
   return txn;

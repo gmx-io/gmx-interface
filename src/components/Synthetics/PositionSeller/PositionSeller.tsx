@@ -80,6 +80,7 @@ type Props = {
   position?: AggregatedPositionData;
   savedIsPnlInLeverage: boolean;
   onClose: () => void;
+  setPendingTxns: (txns: any) => void;
 };
 
 export function PositionSeller(p: Props) {
@@ -300,6 +301,7 @@ export function PositionSeller(p: Props) {
         ? DecreasePositionSwapType.SwapPnlTokenToCollateralToken
         : DecreasePositionSwapType.NoSwap,
       tokensData,
+      setPendingTxns: p.setPendingTxns,
     }).then(() => {
       if (p.position) {
         setPendingPositionUpdate({
