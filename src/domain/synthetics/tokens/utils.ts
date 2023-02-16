@@ -35,6 +35,8 @@ export function needTokenApprove(
   tokenAddress: string | undefined,
   amountToSpend: BigNumber | undefined
 ) {
+  if (tokenAddress === NATIVE_TOKEN_ADDRESS) return false;
+
   const allowance = getTokenAllowance(tokenAllowanceData, tokenAddress);
 
   if (!allowance || !amountToSpend) return false;
