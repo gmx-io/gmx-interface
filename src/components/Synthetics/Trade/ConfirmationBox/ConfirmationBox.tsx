@@ -62,9 +62,9 @@ import { BASIS_POINTS_DIVISOR, PRECISION, USD_DECIMALS } from "lib/legacy";
 import { formatAmount, formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { useMemo, useState } from "react";
 import { TradeMode, TradeType } from "../utils";
-
-import "./ConfirmationBox.scss";
 import { useMarketsFeesConfigs } from "domain/synthetics/fees/useMarketsFeesConfigs";
+import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
+import "./ConfirmationBox.scss";
 
 type Props = {
   tradeType: TradeType;
@@ -83,6 +83,7 @@ type Props = {
   shouldDisableValidation?: boolean;
   allowedSlippage?: number;
   isHigherSlippageAllowed?: boolean;
+  isWrapOrUnwrap?: boolean;
   setIsHigherSlippageAllowed: (isHigherSlippageAllowed: boolean) => void;
   setKeepLeverage: (keepLeverage: boolean) => void;
   onClose: () => void;
@@ -143,7 +144,7 @@ export function ConfirmationBox(p: Props) {
     tokenAddresses: payToken ? [payToken.address] : [],
   });
   const isAllowanceLoaded = Object.keys(tokenAllowanceData).length > 0;
-  const needPayTokenApproval = needTokenApprove(tokenAllowanceData, payToken?.address, payAmount);
+  const needPayTokenApproval = !p.isWrapOrUnwrap && needTokenApprove(tokenAllowanceData, payToken?.address, payAmount);
 
   const isHighPriceImpact =
     getIsHighPriceImpact(fees?.swapPriceImpact) || getIsHighPriceImpact(fees?.positionPriceImpact);
@@ -179,7 +180,7 @@ export function ConfirmationBox(p: Props) {
     let fromTokenInfo: TokenInfo | undefined;
     let toTokenInfo: TokenInfo | undefined;
 
-    if (isSwap && tokenIn && tokenOut) {
+    if (isSwap && !p.isWrapOrUnwrap && tokenIn && tokenOut) {
       fromTokenInfo = adaptToTokenInfo(tokenIn);
       toTokenInfo = adaptToTokenInfo(tokenOut);
     } else if (isIncrease && initialCollateralToken && indexToken) {
@@ -191,7 +192,18 @@ export function ConfirmationBox(p: Props) {
     const showSpread = isMarket && Boolean(spread);
 
     return { spread, showSpread };
-  }, [chainId, indexToken, initialCollateralToken, isIncrease, isLong, isMarket, isSwap, tokenIn, tokenOut]);
+  }, [
+    chainId,
+    indexToken,
+    initialCollateralToken,
+    isIncrease,
+    isLong,
+    isMarket,
+    isSwap,
+    p.isWrapOrUnwrap,
+    tokenIn,
+    tokenOut,
+  ]);
 
   const shouldSwapPnlToCollateralToken = getShouldSwapPnlToCollateralToken({
     market,
@@ -268,6 +280,17 @@ export function ConfirmationBox(p: Props) {
 
   function onCancelOrderClick(key: string): void {
     cancelOrdersTxn(chainId, library, { orderKeys: [key] });
+  }
+
+  function onSubmitWrapOrUnwrap() {
+    if (!account || !p.swapParams || !tokenIn) {
+      return;
+    }
+
+    createWrapOrUnwrapTxn(chainId, library, {
+      amount: p.swapParams.amountIn,
+      isWrap: Boolean(tokenIn.isNative),
+    }).then(p.onSubmitted);
   }
 
   function onSubmitSwap() {
@@ -377,14 +400,21 @@ export function ConfirmationBox(p: Props) {
   }
 
   function onSubmit() {
+    if (p.isWrapOrUnwrap) {
+      onSubmitWrapOrUnwrap();
+      return;
+    }
     if (isSwap) {
       onSubmitSwap();
+      return;
     }
     if (isIncrease) {
       onSubmitIncreaseOrder();
+      return;
     }
     if (isTrigger) {
       onSubmitDecreaseOrder();
+      return;
     }
   }
 
@@ -875,7 +905,6 @@ export function ConfirmationBox(p: Props) {
               {formatAmount(spread.value.mul(100), USD_DECIMALS, 2, true)}%
             </ExchangeInfoRow>
           )}
-
           {tokenIn?.prices && (
             <ExchangeInfoRow label={t`${tokenIn.symbol} Price`}>{formatUsd(tokenIn.prices.minPrice)}</ExchangeInfoRow>
           )}
@@ -1018,18 +1047,22 @@ export function ConfirmationBox(p: Props) {
               </div>
             )}
 
-            <div className="App-card-divider" />
+            {!p.isWrapOrUnwrap && (
+              <>
+                <div className="App-card-divider" />
 
-            <TradeFeesRow
-              totalFees={fees?.totalFees}
-              swapFees={fees?.swapFees}
-              positionFee={fees?.positionFee}
-              positionFeeFactor={fees?.positionFeeFactor}
-              positionPriceImpact={fees?.positionPriceImpact}
-              swapPriceImpact={fees?.swapPriceImpact}
-            />
+                <TradeFeesRow
+                  totalFees={fees?.totalFees}
+                  swapFees={fees?.swapFees}
+                  positionFee={fees?.positionFee}
+                  positionFeeFactor={fees?.positionFeeFactor}
+                  positionPriceImpact={fees?.positionPriceImpact}
+                  swapPriceImpact={fees?.swapPriceImpact}
+                />
 
-            {renderExecutionFee()}
+                {renderExecutionFee()}
+              </>
+            )}
 
             <div className="App-card-divider" />
 

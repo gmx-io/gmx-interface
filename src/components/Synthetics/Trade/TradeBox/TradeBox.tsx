@@ -83,7 +83,7 @@ import {
 import { useMarketsFeesConfigs } from "domain/synthetics/fees/useMarketsFeesConfigs";
 import { SwapCard } from "../../SwapCard/SwapCard";
 
-import { TradeMode, TradeType } from "domain/synthetics/trade/types";
+import { SwapTradeParams, TradeMode, TradeType } from "domain/synthetics/trade/types";
 
 import { IS_NETWORK_DISABLED, getChainName } from "config/chains";
 import { useGasLimitsConfig } from "domain/synthetics/fees/useGasLimitsConfig";
@@ -92,9 +92,9 @@ import { usePrevious } from "lib/usePrevious";
 import { AiOutlineEdit } from "react-icons/ai";
 import { AcceptbablePriceImpactEditor } from "../AcceptablePriceImpactEditor/AcceptablePriceImpactEditor";
 import { ConfirmationBox } from "../ConfirmationBox/ConfirmationBox";
+import { OrderStatus } from "components/Synthetics/OrderStatus/OrderStatus";
 
 import "./TradeBox.scss";
-import { OrderStatus } from "components/Synthetics/OrderStatus/OrderStatus";
 
 type Props = {
   ordersData: AggregatedOrdersData;
@@ -261,8 +261,51 @@ export function TradeBox(p: Props) {
     toTokenAddress: isPosition ? selectedCollateralAddress : toTokenInput.tokenAddress,
   });
 
+  const isWrapOrUnwrap = useMemo(() => {
+    if (!isSwap) {
+      return false;
+    }
+
+    return (
+      (fromTokenInput.token?.isNative && toTokenInput.token?.isWrapped) ||
+      (fromTokenInput.token?.isWrapped && toTokenInput.token?.isNative)
+    );
+  }, [
+    fromTokenInput.token?.isNative,
+    fromTokenInput.token?.isWrapped,
+    isSwap,
+    toTokenInput.token?.isNative,
+    toTokenInput.token?.isWrapped,
+  ]);
+
   const { swapParams, increasePositionParams, decreasePositionParams } = useMemo(
     function getTradeParams() {
+      if (isWrapOrUnwrap) {
+        if (!fromTokenInput.token?.prices || !toTokenInput.token?.prices) {
+          return {};
+        }
+
+        const tokenAmount = focusedInput === "from" ? fromTokenInput.tokenAmount : toTokenInput.tokenAmount;
+        const usdAmount = focusedInput === "from" ? fromTokenInput.usdAmount : toTokenInput.usdAmount;
+
+        const swapParams: SwapTradeParams = {
+          amountIn: tokenAmount,
+          usdIn: usdAmount,
+          amountOut: tokenAmount,
+          usdOut: usdAmount,
+          swapPathStats: undefined,
+          tokenIn: fromTokenInput.token,
+          tokenOut: toTokenInput.token,
+          tokenInPrice: fromTokenInput.token.prices?.minPrice,
+          tokenOutPrice: toTokenInput.token.prices?.minPrice,
+          minOutputAmount: tokenAmount,
+        };
+
+        return {
+          swapParams,
+        };
+      }
+
       if (isSwap) {
         if (!fromTokenInput.token || !toTokenInput.token) return {};
 
@@ -357,12 +400,14 @@ export function TradeBox(p: Props) {
       focusedInput,
       fromTokenInput.token,
       fromTokenInput.tokenAmount,
+      fromTokenInput.usdAmount,
       isIncrease,
       isLeverageEnabled,
       isLimit,
       isLong,
       isSwap,
       isTrigger,
+      isWrapOrUnwrap,
       keepLeverage,
       leverage,
       marketsData,
@@ -694,7 +739,7 @@ export function TradeBox(p: Props) {
       return [t`Swaps disabled, pending ${getChainName(chainId)} upgrade`];
     }
 
-    if (fromTokenInput.tokenAddress === toTokenInput.tokenAddress) {
+    if (fromTokenInput.tokenAddress === toTokenInput.tokenAddress || (isWrapOrUnwrap && isLimit)) {
       return [t`Select different tokens`];
     }
 
@@ -704,6 +749,10 @@ export function TradeBox(p: Props) {
 
     if (fromTokenInput.tokenAmount.gt(fromTokenInput.balance || BigNumber.from(0))) {
       return [t`Insufficient ${fromTokenInput.token?.symbol} balance`];
+    }
+
+    if (isWrapOrUnwrap) {
+      return [undefined];
     }
 
     if (isMarket && swapOutLiquidity?.lt(toTokenInput.usdAmount)) {
@@ -1352,12 +1401,13 @@ export function TradeBox(p: Props) {
         keepLeverage={keepLeverage}
         setKeepLeverage={setKeepLeverage}
         error={error}
+        isWrapOrUnwrap={isWrapOrUnwrap}
         shouldDisableValidation={shouldDisableValidation}
         allowedSlippage={allowedSlippage}
         isHigherSlippageAllowed={isHigherSlippageAllowed}
         setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
         onSubmitted={() => {
-          if (isMarket) {
+          if (isMarket && !isWrapOrUnwrap) {
             setStage("processing");
           } else {
             setStage("trade");
