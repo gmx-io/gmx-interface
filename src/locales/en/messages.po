@@ -600,6 +600,7 @@ msgid "Canceling {ordersText}"
 msgstr "Canceling {ordersText}"
 
 #: src/pages/Exchange/Exchange.js
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Chart positions"
 msgstr "Chart positions"
 
@@ -874,8 +875,12 @@ msgid "Confirm high price impact"
 msgstr "Confirm high price impact"
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-msgid "Confirm {0}"
-msgstr "Confirm {0}"
+#~ msgid "Confirm {0}"
+#~ msgstr "Confirm {0}"
+
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+msgid "Confirm {operationText}"
+msgstr "Confirm {operationText}"
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "Confirm {operationText} {0} GM"
@@ -1081,6 +1086,7 @@ msgid "DeFi Portfolio Tracker"
 msgstr "DeFi Portfolio Tracker"
 
 #: src/components/Exchange/ExchangeTVChart.js
+#: src/components/Synthetics/TVChart/TVChart.tsx
 msgid "Dec."
 msgstr "Dec."
 
@@ -1150,8 +1156,9 @@ msgstr "Decreasing"
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
-#: src/components/Synthetics/GmSwap/utils.ts
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/pages/Stake/StakeV2.js
@@ -1444,7 +1451,7 @@ msgstr "Enter a trigger price"
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
-#: src/components/Synthetics/GmSwap/utils.ts
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
@@ -1843,6 +1850,7 @@ msgid "Image generation error, please refresh and try again."
 msgstr "Image generation error, please refresh and try again."
 
 #: src/components/Exchange/ExchangeTVChart.js
+#: src/components/Synthetics/TVChart/TVChart.tsx
 msgid "Inc."
 msgstr "Inc."
 
@@ -1957,16 +1965,17 @@ msgstr "Insufficient staked tokens"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/GmSwap/utils.ts
-#: src/components/Synthetics/GmSwap/utils.ts
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Insufficient {0} balance"
 msgstr "Insufficient {0} balance"
 
-#: src/components/Synthetics/GmSwap/utils.ts
-#: src/components/Synthetics/GmSwap/utils.ts
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Insufficient {0} liquidity"
 msgstr "Insufficient {0} liquidity"
 
@@ -2105,13 +2114,13 @@ msgstr "Leverage:"
 msgid "Limit"
 msgstr "Limit"
 
-#: src/domain/synthetics/orders/constants.ts
-#~ msgid "Limit Decrease"
-#~ msgstr "Limit Decrease"
+#: src/domain/synthetics/orders/utils.ts
+msgid "Limit Decrease"
+msgstr "Limit Decrease"
 
-#: src/domain/synthetics/orders/constants.ts
-#~ msgid "Limit Increase"
-#~ msgstr "Limit Increase"
+#: src/domain/synthetics/orders/utils.ts
+msgid "Limit Increase"
+msgstr "Limit Increase"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
@@ -2119,9 +2128,9 @@ msgstr "Limit"
 msgid "Limit Price"
 msgstr "Limit Price"
 
-#: src/domain/synthetics/orders/constants.ts
-#~ msgid "Limit Swap"
-#~ msgstr "Limit Swap"
+#: src/domain/synthetics/orders/utils.ts
+msgid "Limit Swap"
+msgstr "Limit Swap"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Limit order creation failed."
@@ -2173,6 +2182,10 @@ msgstr "Liq. Price"
 msgid "Liq. {0} {longOrShortText}"
 msgstr "Liq. {0} {longOrShortText}"
 
+#: src/components/Synthetics/TVChart/TVChart.tsx
+msgid "Liq. {longOrShortText} {tokenSymbol}"
+msgstr "Liq. {longOrShortText} {tokenSymbol}"
+
 #: src/components/Exchange/TradeHistory.js
 msgid "Liquidated"
 msgstr "Liquidated"
@@ -2206,7 +2219,7 @@ msgstr "Liquidity data not loaded"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-#: src/components/Synthetics/GmSwap/utils.ts
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
@@ -2245,6 +2258,8 @@ msgstr "Loading..."
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/TVChart/TVChart.tsx
+#: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
@@ -2363,17 +2378,17 @@ msgstr "Market"
 msgid "Market Cap"
 msgstr "Market Cap"
 
-#: src/domain/synthetics/orders/constants.ts
-#~ msgid "Market Decrease"
-#~ msgstr "Market Decrease"
+#: src/domain/synthetics/orders/utils.ts
+msgid "Market Decrease"
+msgstr "Market Decrease"
 
-#: src/domain/synthetics/orders/constants.ts
-#~ msgid "Market Increase"
-#~ msgstr "Market Increase"
+#: src/domain/synthetics/orders/utils.ts
+msgid "Market Increase"
+msgstr "Market Increase"
 
-#: src/domain/synthetics/orders/constants.ts
-#~ msgid "Market Swap"
-#~ msgstr "Market Swap"
+#: src/domain/synthetics/orders/utils.ts
+msgid "Market Swap"
+msgstr "Market Swap"
 
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
@@ -2599,7 +2614,7 @@ msgstr "NFT ID"
 msgid "NFT Wallet"
 msgstr "NFT Wallet"
 
-#: src/components/Synthetics/GmSwap/utils.ts
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Need to accept price impact"
 msgstr "Need to accept price impact"
@@ -2753,6 +2768,10 @@ msgstr "Open trades ranking and stats"
 msgid "Open {0} {longOrShortText}"
 msgstr "Open {0} {longOrShortText}"
 
+#: src/components/Synthetics/TVChart/TVChart.tsx
+msgid "Open {longOrShortText} {tokenSymbol}"
+msgstr "Open {longOrShortText} {tokenSymbol}"
+
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -2869,7 +2888,7 @@ msgstr "Page not found"
 msgid "Page outdated, please refresh"
 msgstr "Page outdated, please refresh"
 
-#: src/components/Synthetics/GmSwap/utils.ts
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Pair"
 msgstr "Pair"
 
@@ -2893,6 +2912,9 @@ msgstr "Partnerships and Integrations"
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
@@ -2905,9 +2927,6 @@ msgid "Pay Amount"
 msgstr "Pay Amount"
 
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Pay:"
 msgstr "Pay:"
@@ -3192,6 +3211,9 @@ msgstr "Rebates earned by this account as an affiliate."
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
@@ -3200,9 +3222,6 @@ msgid "Receive"
 msgstr "Receive"
 
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Receive:"
@@ -3503,6 +3522,8 @@ msgstr "Share Position"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/TVChart/TVChart.tsx
+#: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
@@ -3551,7 +3572,7 @@ msgstr "Simple Swaps"
 msgid "Simulate your hedge strategy"
 msgstr "Simulate your hedge strategy"
 
-#: src/components/Synthetics/GmSwap/utils.ts
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Single"
 msgstr "Single"
 
@@ -3678,9 +3699,9 @@ msgstr "Stats"
 #~ msgid "Stop Loss"
 #~ msgstr "Stop Loss"
 
-#: src/domain/synthetics/orders/constants.ts
-#~ msgid "Stop Loss Decrease"
-#~ msgstr "Stop Loss Decrease"
+#: src/domain/synthetics/orders/utils.ts
+msgid "Stop Loss Decrease"
+msgstr "Stop Loss Decrease"
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #~ msgid "Stop Market"
@@ -4581,7 +4602,7 @@ msgstr "When closing the position, you can select which token you would like to 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
-#: src/components/Synthetics/GmSwap/utils.ts
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/pages/Stake/StakeV2.js
@@ -4613,6 +4634,7 @@ msgstr "Withdraw submitted."
 msgid "Withdraw {0} USD from {1} {longOrShortText}"
 msgstr "Withdraw {0} USD from {1} {longOrShortText}"
 
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
 msgid "Withdrawal"
 msgstr "Withdrawal"

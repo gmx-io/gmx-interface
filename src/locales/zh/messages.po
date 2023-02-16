@@ -600,6 +600,7 @@ msgid "Canceling {ordersText}"
 msgstr ""
 
 #: src/pages/Exchange/Exchange.js
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Chart positions"
 msgstr "图表位置"
 
@@ -874,7 +875,11 @@ msgid "Confirm high price impact"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-msgid "Confirm {0}"
+#~ msgid "Confirm {0}"
+#~ msgstr ""
+
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+msgid "Confirm {operationText}"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
@@ -1081,6 +1086,7 @@ msgid "DeFi Portfolio Tracker"
 msgstr "Defi投资组合追踪器"
 
 #: src/components/Exchange/ExchangeTVChart.js
+#: src/components/Synthetics/TVChart/TVChart.tsx
 msgid "Dec."
 msgstr "Dec"
 
@@ -1150,8 +1156,9 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
-#: src/components/Synthetics/GmSwap/utils.ts
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/pages/Stake/StakeV2.js
@@ -1444,7 +1451,7 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
-#: src/components/Synthetics/GmSwap/utils.ts
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
@@ -1843,6 +1850,7 @@ msgid "Image generation error, please refresh and try again."
 msgstr "图片生成错误，请刷新并重试"
 
 #: src/components/Exchange/ExchangeTVChart.js
+#: src/components/Synthetics/TVChart/TVChart.tsx
 msgid "Inc."
 msgstr "公司"
 
@@ -1957,16 +1965,17 @@ msgstr "质押代币不足"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/GmSwap/utils.ts
-#: src/components/Synthetics/GmSwap/utils.ts
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Insufficient {0} balance"
 msgstr " {0}余额不足"
 
-#: src/components/Synthetics/GmSwap/utils.ts
-#: src/components/Synthetics/GmSwap/utils.ts
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Insufficient {0} liquidity"
 msgstr ""
 
@@ -2105,13 +2114,13 @@ msgstr ""
 msgid "Limit"
 msgstr "限制"
 
-#: src/domain/synthetics/orders/constants.ts
-#~ msgid "Limit Decrease"
-#~ msgstr ""
+#: src/domain/synthetics/orders/utils.ts
+msgid "Limit Decrease"
+msgstr ""
 
-#: src/domain/synthetics/orders/constants.ts
-#~ msgid "Limit Increase"
-#~ msgstr ""
+#: src/domain/synthetics/orders/utils.ts
+msgid "Limit Increase"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
@@ -2119,9 +2128,9 @@ msgstr "限制"
 msgid "Limit Price"
 msgstr "限制价格"
 
-#: src/domain/synthetics/orders/constants.ts
-#~ msgid "Limit Swap"
-#~ msgstr ""
+#: src/domain/synthetics/orders/utils.ts
+msgid "Limit Swap"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Limit order creation failed."
@@ -2173,6 +2182,10 @@ msgstr "流动资金价格"
 msgid "Liq. {0} {longOrShortText}"
 msgstr ""
 
+#: src/components/Synthetics/TVChart/TVChart.tsx
+msgid "Liq. {longOrShortText} {tokenSymbol}"
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.js
 msgid "Liquidated"
 msgstr "清偿完毕"
@@ -2206,7 +2219,7 @@ msgstr "未加载流动资金数据"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-#: src/components/Synthetics/GmSwap/utils.ts
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
@@ -2245,6 +2258,8 @@ msgstr "加载中..."
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/TVChart/TVChart.tsx
+#: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
@@ -2363,17 +2378,17 @@ msgstr "市场"
 msgid "Market Cap"
 msgstr "标记上限"
 
-#: src/domain/synthetics/orders/constants.ts
-#~ msgid "Market Decrease"
-#~ msgstr ""
+#: src/domain/synthetics/orders/utils.ts
+msgid "Market Decrease"
+msgstr ""
 
-#: src/domain/synthetics/orders/constants.ts
-#~ msgid "Market Increase"
-#~ msgstr ""
+#: src/domain/synthetics/orders/utils.ts
+msgid "Market Increase"
+msgstr ""
 
-#: src/domain/synthetics/orders/constants.ts
-#~ msgid "Market Swap"
-#~ msgstr ""
+#: src/domain/synthetics/orders/utils.ts
+msgid "Market Swap"
+msgstr ""
 
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
@@ -2599,7 +2614,7 @@ msgstr "NFT ID"
 msgid "NFT Wallet"
 msgstr "NFT钱包"
 
-#: src/components/Synthetics/GmSwap/utils.ts
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/Trade/utils.ts
 msgid "Need to accept price impact"
 msgstr ""
@@ -2753,6 +2768,10 @@ msgstr ""
 msgid "Open {0} {longOrShortText}"
 msgstr ""
 
+#: src/components/Synthetics/TVChart/TVChart.tsx
+msgid "Open {longOrShortText} {tokenSymbol}"
+msgstr ""
+
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -2869,7 +2888,7 @@ msgstr "没有找到页面"
 msgid "Page outdated, please refresh"
 msgstr "页面已过期，请刷新"
 
-#: src/components/Synthetics/GmSwap/utils.ts
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Pair"
 msgstr ""
 
@@ -2893,6 +2912,9 @@ msgstr "合作伙伴与整合"
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
@@ -2905,9 +2927,6 @@ msgid "Pay Amount"
 msgstr "支付金额"
 
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Pay:"
 msgstr ""
@@ -3192,6 +3211,9 @@ msgstr "该账户作为合作公司赚取的回扣"
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
@@ -3200,9 +3222,6 @@ msgid "Receive"
 msgstr "收取"
 
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Receive:"
@@ -3503,6 +3522,8 @@ msgstr "分享仓位"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/TVChart/TVChart.tsx
+#: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
@@ -3551,7 +3572,7 @@ msgstr "简易交易"
 msgid "Simulate your hedge strategy"
 msgstr ""
 
-#: src/components/Synthetics/GmSwap/utils.ts
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Single"
 msgstr ""
 
@@ -3678,9 +3699,9 @@ msgstr "统计数据"
 #~ msgid "Stop Loss"
 #~ msgstr ""
 
-#: src/domain/synthetics/orders/constants.ts
-#~ msgid "Stop Loss Decrease"
-#~ msgstr ""
+#: src/domain/synthetics/orders/utils.ts
+msgid "Stop Loss Decrease"
+msgstr ""
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #~ msgid "Stop Market"
@@ -4581,7 +4602,7 @@ msgstr "在平仓时，你可以选择你想用哪种代币来接收利润"
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
-#: src/components/Synthetics/GmSwap/utils.ts
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/pages/Stake/StakeV2.js
@@ -4613,6 +4634,7 @@ msgstr "提领送出"
 msgid "Withdraw {0} USD from {1} {longOrShortText}"
 msgstr "由{1} {longOrShortText}提领{0} USD"
 
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
 msgid "Withdrawal"
 msgstr ""
