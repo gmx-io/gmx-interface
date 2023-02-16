@@ -80,23 +80,23 @@ export function getAggregatedPositionData(
       ? convertToUsd(position.collateralAmount, collateralToken.decimals, collateralPrice)
       : undefined;
 
-  if (feesConfig) {
-    console.log("borrowing", {
-      a: feesConfig?.borrowingFactorPerSecondForLongs.toString(),
-      b: feesConfig?.borrowingFactorPerSecondForShorts.toString(),
+  // if (feesConfig) {
+  //   console.log("borrowing", {
+  //     a: feesConfig?.borrowingFactorPerSecondForLongs.toString(),
+  //     b: feesConfig?.borrowingFactorPerSecondForShorts.toString(),
 
-      factorHour: feesConfig?.borrowingFactorPerSecondForLongs.mul(60 * 60).toString(),
-      usdDay: feesConfig?.borrowingFactorPerSecondForLongs
-        .mul(60 * 60 * 24)
-        .mul(position.sizeInUsd)
-        .toString(),
+  //     factorHour: feesConfig?.borrowingFactorPerSecondForLongs.mul(60 * 60).toString(),
+  //     usdDay: feesConfig?.borrowingFactorPerSecondForLongs
+  //       .mul(60 * 60 * 24)
+  //       .mul(position.sizeInUsd)
+  //       .toString(),
 
-      factorHourFormatted: `${formatAmount(feesConfig?.borrowingFactorPerSecondForLongs.mul(60 * 60), 30, 6)}`,
-      usdDayFormatted: `${formatUsd(
-        applyFactor(position.sizeInUsd, feesConfig?.borrowingFactorPerSecondForLongs.mul(60 * 60 * 24))
-      )}`,
-    });
-  }
+  //     factorHourFormatted: `${formatAmount(feesConfig?.borrowingFactorPerSecondForLongs.mul(60 * 60), 30, 6)}`,
+  //     usdDayFormatted: `${formatUsd(
+  //       applyFactor(position.sizeInUsd, feesConfig?.borrowingFactorPerSecondForLongs.mul(60 * 60 * 24))
+  //     )}`,
+  //   });
+  // }
 
   const pnl = currentValueUsd?.sub(position.sizeInUsd).mul(position.isLong ? 1 : -1);
 
