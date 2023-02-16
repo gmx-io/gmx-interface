@@ -199,6 +199,10 @@ export function getDecreasePositionAmounts(p: {
       receiveUsd = receiveUsd.sub(pendingFundingFeesUsd);
     }
 
+    if (receiveUsd.lt(0)) {
+      receiveUsd = BigNumber.from(0);
+    }
+
     receiveTokenAmount = convertToTokenAmount(receiveUsd, p.receiveToken.decimals, p.receiveToken.prices!.minPrice)!;
   }
 

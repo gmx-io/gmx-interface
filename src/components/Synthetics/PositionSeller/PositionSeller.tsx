@@ -32,6 +32,7 @@ import {
   expandDecimals,
   formatAmount,
   formatPercentage,
+  formatTokenAmount,
   formatTokenAmountWithUsd,
   formatUsd,
   parseValue,
@@ -472,11 +473,10 @@ export function PositionSeller(p: Props) {
 
                   <ExchangeInfoRow
                     label={t`Execution Fee`}
-                    value={formatTokenAmountWithUsd(
+                    value={formatTokenAmount(
                       executionFee?.feeTokenAmount,
-                      executionFee?.feeUsd,
-                      executionFee?.feeToken.symbol,
-                      executionFee?.feeToken.decimals
+                      executionFee?.feeToken.decimals,
+                      executionFee?.feeToken.symbol
                     )}
                   />
 
