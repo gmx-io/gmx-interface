@@ -3,7 +3,7 @@ import { SUPPORTED_RESOLUTIONS } from "config/tradingview";
 import { timezoneOffset } from "domain/prices";
 import { useChainId } from "lib/chains";
 import { useEffect, useMemo, useRef } from "react";
-import { TVRequests } from "./TVRequests";
+import { TVDataProvider } from "./TVDataProvider";
 
 const configurationData = {
   supported_resolutions: Object.keys(SUPPORTED_RESOLUTIONS),
@@ -14,7 +14,7 @@ const configurationData = {
 };
 
 type Params = {
-  dataProvider?: TVRequests;
+  dataProvider?: TVDataProvider;
 };
 
 export default function useTVDatafeed(p: Params) {
@@ -22,7 +22,7 @@ export default function useTVDatafeed(p: Params) {
   const intervalRef = useRef<ReturnType<typeof setInterval> | undefined>();
   const resetCacheRef = useRef<() => void | undefined>();
   const activeTicker = useRef<string | undefined>();
-  const tvRequests = useRef<TVRequests>();
+  const tvRequests = useRef<TVDataProvider>();
 
   useEffect(() => {
     if (p.dataProvider && tvRequests.current !== p.dataProvider) {

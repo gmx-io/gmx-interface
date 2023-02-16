@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { fetchLastOracleCandles } from "./prices";
+import { fetchLastOracleCandles } from "./requests";
 
 export function useLastCandles(chainId: number, tokenSymbol?: string, period?: string, limit = 1000) {
   const { data } = useSWR(tokenSymbol && period ? [chainId, "useLastCandles", tokenSymbol, period, limit] : null, {

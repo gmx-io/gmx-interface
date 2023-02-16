@@ -2,8 +2,7 @@ import React, { useEffect, useState, useRef, useMemo } from "react";
 import cx from "classnames";
 
 import { USD_DECIMALS, SWAP, INCREASE, CHART_PERIODS, getLiquidationPrice } from "lib/legacy";
-import { getLimitChartPricesFromStats, useChartPrices } from "domain/legacy";
-
+import { useChartPrices } from "domain/legacy";
 import ChartTokenSelector from "./ChartTokenSelector";
 import { getTokenInfo } from "domain/tokens/utils";
 import { formatAmount, numberWithCommas } from "lib/numbers";
@@ -12,8 +11,7 @@ import TVChartContainer from "components/TVChartContainer/TVChartContainer";
 import { t } from "@lingui/macro";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { availableNetworksForChart } from "components/TVChartContainer/constants";
-import { getCurrentPriceOfToken, getTokenChartPrice } from "domain/tradingview/requests";
-import { TVRequests } from "domain/tradingview/TVRequests";
+import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 
 const PRICE_LINE_TEXT_WIDTH = 15;
 
@@ -274,11 +272,7 @@ export default function ExchangeTVChart(props) {
   }
 
   useEffect(() => {
-    dataProvider.current = new TVRequests({
-      getCurrentPriceOfToken: getCurrentPriceOfToken,
-      getTokenChartPrice: getTokenChartPrice,
-      getTokenLastChartPrices: getLimitChartPricesFromStats,
-    });
+    dataProvider.current = new TVDataProvider();
   }, []);
 
   if (!chartToken) {

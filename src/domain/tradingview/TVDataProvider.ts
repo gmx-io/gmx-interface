@@ -1,37 +1,35 @@
 import { LAST_BAR_REFRESH_INTERVAL, SUPPORTED_RESOLUTIONS } from "config/tradingview";
-import { getStablePriceData, timezoneOffset } from "domain/prices";
+import { getLimitChartPricesFromStats, getStablePriceData, timezoneOffset } from "domain/prices";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
 import { Bar } from "./types";
 import { formatTimeInBar } from "./utils";
+import { getCurrentPriceOfToken, getTokenChartPrice } from "./requests";
+import { BigNumberish } from "ethers";
 
-type GetCurrentPriceOfToken = (chainId: number, symbol: string) => Promise<string>;
-type GetTokenChartPrice = (chainId: number, symbol: string, period: string) => Promise<Bar[]>;
-type GetTokenLastChartPrices = (chainId: number, symbol: string, period: string, limit: number) => Promise<Bar[]>;
-
-export class TVRequests {
+export class TVDataProvider {
   lastBar: Bar | null;
   startTime: number;
   lastTicker: string;
   lastPeriod: string;
 
-  getCurrentPriceOfToken: GetCurrentPriceOfToken;
-  getTokenChartPrice: GetTokenChartPrice;
-  getTokenLastChartPrices: GetTokenLastChartPrices;
-
-  constructor(params: {
-    getCurrentPriceOfToken: GetCurrentPriceOfToken;
-    getTokenChartPrice: GetTokenChartPrice;
-    getTokenLastChartPrices: GetTokenLastChartPrices;
-  }) {
-    this.getCurrentPriceOfToken = params.getCurrentPriceOfToken;
-    this.getTokenChartPrice = params.getTokenChartPrice;
-    this.getTokenLastChartPrices = params.getTokenLastChartPrices;
-
+  constructor() {
     this.lastBar = null;
     this.startTime = 0;
     this.lastTicker = "";
     this.lastPeriod = "";
+  }
+
+  async getCurrentPriceOfToken(chainId: number, ticker: string): Promise<BigNumberish> {
+    return getCurrentPriceOfToken(chainId, ticker);
+  }
+
+  async getTokenHistoryBars(chainId: number, ticker: string, period: string): Promise<Bar[]> {
+    return getTokenChartPrice(chainId, ticker, period);
+  }
+
+  async getTokenLastBars(chainId: number, ticker: string, period: string, limit: number): Promise<Bar[]> {
+    return getLimitChartPricesFromStats(chainId, ticker, period, limit);
   }
 
   async getLastBar(chainId: number, ticker: string, period: string) {
@@ -44,7 +42,7 @@ export class TVRequests {
       this.lastTicker !== ticker ||
       this.lastPeriod !== period
     ) {
-      const prices = await this.getTokenLastChartPrices(chainId, ticker, period, 1);
+      const prices = await this.getTokenLastBars(chainId, ticker, period, 1);
 
       if (prices) {
         // @ts-ignore
@@ -62,7 +60,7 @@ export class TVRequests {
     try {
       const bars = isStable
         ? getStablePriceData(period, countBack)
-        : await this.getTokenChartPrice(chainId, ticker, period);
+        : await this.getTokenHistoryBars(chainId, ticker, period);
 
       return bars.map(formatTimeInBar);
     } catch {

@@ -8,7 +8,7 @@ import { getObjectKeyFromValue } from "domain/tradingview/utils";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
 import { SUPPORTED_RESOLUTIONS, TV_CHART_RELOAD_INTERVAL } from "config/tradingview";
 import { isChartAvailabeForToken } from "config/tokens";
-import { TVRequests } from "domain/tradingview/TVRequests";
+import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 import { Token } from "domain/tokens";
 
 export type ChartLine = {
@@ -24,7 +24,7 @@ type Props = {
   onSelectToken: (token: Token) => void;
   period: string;
   setPeriod: (period: string) => void;
-  dataProvider?: TVRequests;
+  dataProvider?: TVDataProvider;
 };
 
 export default function TVChartContainer({

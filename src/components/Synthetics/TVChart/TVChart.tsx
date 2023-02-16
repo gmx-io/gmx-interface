@@ -6,15 +6,15 @@ import { convertTokenAddress, isChartAvailabeForToken } from "config/tokens";
 import { AggregatedOrdersData, isIncreaseOrder, isSwapOrder } from "domain/synthetics/orders";
 import { AggregatedPositionsData } from "domain/synthetics/positions";
 import { getCandlesDelta, getMidPrice, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
-import { fetchLastOracleCandles, fetchOracleCandles, fetchOracleRecentPrice } from "domain/synthetics/tokens/prices";
 import { useLastCandles } from "domain/synthetics/tokens/useLastCandles";
 import { Token } from "domain/tokens";
-import { TVRequests } from "domain/tradingview/TVRequests";
+import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatUsd, numberWithCommas } from "lib/numbers";
 import { useEffect, useMemo, useRef } from "react";
+import { SyntheticsTVDataProvider } from "domain/synthetics/tradingview/SyntheticsTVDataProvider";
 
 import "./TVChart.scss";
 
@@ -42,7 +42,7 @@ export function TVChart({
   const { chainId } = useChainId();
   const { tokensData } = useAvailableTokensData(chainId);
 
-  const dataProvider = useRef<TVRequests>();
+  const dataProvider = useRef<TVDataProvider>();
   const [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
   const chartToken = getTokenData(tokensData, chartTokenAddress);
 
@@ -127,11 +127,7 @@ export function TVChart({
   }
 
   useEffect(() => {
-    dataProvider.current = new TVRequests({
-      getCurrentPriceOfToken: fetchOracleRecentPrice,
-      getTokenChartPrice: fetchOracleCandles,
-      getTokenLastChartPrices: fetchLastOracleCandles,
-    });
+    dataProvider.current = new SyntheticsTVDataProvider();
   }, []);
 
   useEffect(

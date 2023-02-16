@@ -23,7 +23,7 @@ export async function fetchOracleRecentPrice(chainId: number, tokenSymbol: strin
   const minPrice = parseOraclePrice(priceItem.minPrice, token.decimals, priceItem.oracleDecimals);
   const maxPrice = parseOraclePrice(priceItem.maxPrice, token.decimals, priceItem.oracleDecimals);
 
-  return getMidPrice({ minPrice, maxPrice })!.toString();
+  return getMidPrice({ minPrice, maxPrice })!;
 }
 
 export async function fetchLastOracleCandles(
