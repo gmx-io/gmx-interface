@@ -225,7 +225,7 @@ export function ConfirmationBox(p: Props) {
 
     if (needPayTokenApproval) {
       return {
-        text: t`Pending ${tokenIn?.symbol} approval`,
+        text: t`Pending ${payToken?.symbol} approval`,
         disabled: true,
       };
     }
@@ -1024,15 +1024,15 @@ export function ConfirmationBox(p: Props) {
 
             <div className="App-card-divider" />
 
-            {needPayTokenApproval && tokenIn && (
+            {needPayTokenApproval && payToken && (
               <>
                 <div className="App-card-divider" />
 
                 <div className="ConfirmationBox-approve-tokens">
                   <div className="ConfirmationBox-approve-token">
                     <ApproveTokenButton
-                      tokenAddress={tokenIn.address}
-                      tokenSymbol={tokenIn.symbol}
+                      tokenAddress={payToken.address}
+                      tokenSymbol={payToken.symbol}
                       spenderAddress={routerAddress}
                     />
                   </div>

@@ -795,7 +795,7 @@ export function TradeBox(p: Props) {
       return [t`Fees exceed amount`];
     }
 
-    const indexToken = getTokenData(tokensData, increasePositionParams?.market.indexTokenAddress);
+    const indexToken = getTokenData(tokensData, increasePositionParams?.market.indexTokenAddress, "native");
 
     if (isLong && indexToken && longLiquidity?.lt(increasePositionParams?.sizeDeltaUsd || BigNumber.from(0))) {
       return [t`Max ${indexToken.symbol} long exceeded`];
