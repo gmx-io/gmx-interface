@@ -18,6 +18,10 @@ export function useOptimisticPositionsData(chainId: number) {
   const { positionDecreaseEvents, positionIncreaseEvents, pendingPositionsUpdates } = useSyntheticsEvents();
 
   const optimisticPositionsData: PositionsData = useMemo(() => {
+    if (!positionDecreaseEvents || !positionIncreaseEvents || !pendingPositionsUpdates) {
+      return {};
+    }
+
     const positionsKeys = uniq(
       Object.keys(positionsData)
         .concat(Object.keys(pendingPositionsUpdates))

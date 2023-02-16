@@ -100,7 +100,7 @@ import {
 } from "lib/wallets";
 import { MarketPoolsPage } from "pages/MarketPoolsPage/MarketPoolsPage";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
-import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
+import { SyntheticsEventsProvider as _SyntheticsEventsProvider } from "context/SyntheticsEvents";
 import { getWsProvider } from "lib/rpc";
 
 if ("ethereum" in window) {
@@ -120,6 +120,8 @@ const Zoom = cssTransition({
   collapseDuration: 200,
   duration: 200,
 });
+
+const SyntheticsEventsProvider = isDevelopment ? _SyntheticsEventsProvider : ({ children }) => <>{children}</>;
 
 function FullApp() {
   const isHome = isHomeSite();
