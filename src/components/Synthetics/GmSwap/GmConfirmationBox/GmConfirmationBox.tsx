@@ -21,7 +21,6 @@ import { GmFees } from "../GmFees/GmFees";
 import { GmSwapFees } from "domain/synthetics/trade";
 
 import "./GmConfirmationBox.scss";
-import { RiXboxFill } from "react-icons/ri";
 
 type Props = {
   marketToken: TokenData;
