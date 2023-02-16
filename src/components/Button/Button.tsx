@@ -1,7 +1,7 @@
-import cx from "classnames";
-import { ReactNode } from "react";
-import ButtonLink from "./ButtonLink";
 import "./Button.scss";
+import { ReactNode } from "react";
+import cx from "classnames";
+import ButtonLink from "./ButtonLink";
 
 type ButtonVariant = "primary" | "primary-action" | "semi-clear" | "clear";
 
