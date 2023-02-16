@@ -14,7 +14,7 @@ import { getContract } from "config/contracts";
 import { getWrappedToken } from "config/tokens";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useUserReferralCode } from "domain/referrals";
-import { ExecutionFee, isHighPriceImpact as getIsHighPriceImpact } from "domain/synthetics/fees";
+import { ExecutionFee, getBorrowingFeeFactor, isHighPriceImpact as getIsHighPriceImpact } from "domain/synthetics/fees";
 import {
   getAvailableUsdLiquidityForCollateral,
   getAvailableUsdLiquidityForPosition,
@@ -64,6 +64,7 @@ import { useMemo, useState } from "react";
 import { TradeMode, TradeType } from "../utils";
 
 import "./ConfirmationBox.scss";
+import { useMarketsFeesConfigs } from "domain/synthetics/fees/useMarketsFeesConfigs";
 
 type Props = {
   tradeType: TradeType;
@@ -99,6 +100,7 @@ export function ConfirmationBox(p: Props) {
   const { tokensData } = useAvailableTokensData(chainId);
   const { marketsData } = useMarketsData(chainId);
   const { poolsData } = useMarketsPoolsData(chainId);
+  const { marketsFeesConfigs } = useMarketsFeesConfigs(chainId);
   const { openInterestData } = useOpenInterestData(chainId);
   const referralCodeData = useUserReferralCode(library, chainId, account);
 
@@ -646,6 +648,13 @@ export function ConfirmationBox(p: Props) {
   function renderIncreaseOrderSection() {
     const { nextPositionValues } = p.increasePositionParams || {};
 
+    const borrowingFeeFactorPerHour = getBorrowingFeeFactor(
+      marketsFeesConfigs,
+      p.increasePositionParams?.market.marketTokenAddress,
+      isLong,
+      60 * 60
+    )?.mul(100);
+
     return (
       <>
         <div>
@@ -738,21 +747,17 @@ export function ConfirmationBox(p: Props) {
             value={formatUsd(p.increasePositionParams?.acceptablePrice) || "-"}
           />
 
-          {/* {isLimit && (
+          {isLimit && (
             <ExchangeInfoRow
               className="SwapBox-info-row"
               label={t`Limit Price`}
               value={formatUsd(p.increasePositionParams?.triggerPrice) || "-"}
             />
-          )} */}
+          )}
 
-          {/* <ExchangeInfoRow label={t`Borrow Fee`}>
-            {isLong && toTokenInfo && formatAmount(toTokenInfo.fundingRate, 4, 4)}
-            {isShort && shortCollateralToken && formatAmount(shortCollateralToken.fundingRate, 4, 4)}
-            {((isLong && toTokenInfo && toTokenInfo.fundingRate) ||
-              (isShort && shortCollateralToken && shortCollateralToken.fundingRate)) &&
-              "% / 1h"}
-          </ExchangeInfoRow> */}
+          <ExchangeInfoRow label={t`Borrow Fee`}>
+            {borrowingFeeFactorPerHour ? `${formatAmount(borrowingFeeFactorPerHour, 30, 4)}% / 1h` : "-"}
+          </ExchangeInfoRow>
 
           {/* <ExchangeInfoRow label={t`Funding Fee`}>
             {isLong && toTokenInfo && formatAmount(toTokenInfo.fundingRate, 4, 4)}

@@ -53,8 +53,8 @@ export type AggregatedPositionData = Position & {
   netValue?: BigNumber;
   liqPrice?: BigNumber;
   leverage?: BigNumber;
+  borrowingFeeRateUsdPerDay?: BigNumber;
   pendingFundingFeesUsd?: BigNumber;
-  totalPendingFeesUsd?: BigNumber;
 };
 
 export type PositionsData = {

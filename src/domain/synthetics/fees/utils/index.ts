@@ -20,6 +20,37 @@ export function getPositionFee(feeConfigs: MarketsFeesConfigsData, marketAddress
   return applyFactor(sizeDeltaUsd, feeConfig.positionFeeFactor);
 }
 
+export function getBorrowingFeeFactor(
+  feeConfigs: MarketsFeesConfigsData,
+  marketAddress?: string,
+  isLong?: boolean,
+  periodInSeconds?: number
+) {
+  const feeConfig = getMarketFeesConfig(feeConfigs, marketAddress);
+
+  if (!feeConfig) return undefined;
+
+  const factorPerSecond = isLong
+    ? feeConfig.borrowingFactorPerSecondForLongs
+    : feeConfig.borrowingFactorPerSecondForShorts;
+
+  return factorPerSecond.mul(periodInSeconds || 1);
+}
+
+export function getBorrowingFeeRateUsd(
+  feesConfigs: MarketsFeesConfigsData,
+  marketAddress?: string,
+  isLong?: boolean,
+  sizeInUsd?: BigNumber,
+  periodInSeconds?: number
+) {
+  const factor = getBorrowingFeeFactor(feesConfigs, marketAddress, isLong, periodInSeconds);
+
+  if (!factor || !sizeInUsd) return undefined;
+
+  return applyFactor(sizeInUsd, factor);
+}
+
 export function getBorrowingRateUsd(
   feeConfigs: MarketsFeesConfigsData,
   marketAddress?: string,

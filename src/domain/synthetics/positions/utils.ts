@@ -12,7 +12,7 @@ import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "lib/legacy";
 import { applyFactor, expandDecimals, formatAmount, formatUsd, roundUpDivision } from "lib/numbers";
-import { MarketsFeesConfigsData, getMarketFeesConfig } from "../fees";
+import { MarketsFeesConfigsData, getBorrowingFeeRateUsd, getMarketFeesConfig } from "../fees";
 import { TokenPrices, TokensData, convertToUsd, getTokenData } from "../tokens";
 import { AggregatedPositionData, Position, PositionsData } from "./types";
 
@@ -80,27 +80,17 @@ export function getAggregatedPositionData(
       ? convertToUsd(position.collateralAmount, collateralToken.decimals, collateralPrice)
       : undefined;
 
-  // if (feesConfig) {
-  //   console.log("borrowing", {
-  //     a: feesConfig?.borrowingFactorPerSecondForLongs.toString(),
-  //     b: feesConfig?.borrowingFactorPerSecondForShorts.toString(),
-
-  //     factorHour: feesConfig?.borrowingFactorPerSecondForLongs.mul(60 * 60).toString(),
-  //     usdDay: feesConfig?.borrowingFactorPerSecondForLongs
-  //       .mul(60 * 60 * 24)
-  //       .mul(position.sizeInUsd)
-  //       .toString(),
-
-  //     factorHourFormatted: `${formatAmount(feesConfig?.borrowingFactorPerSecondForLongs.mul(60 * 60), 30, 6)}`,
-  //     usdDayFormatted: `${formatUsd(
-  //       applyFactor(position.sizeInUsd, feesConfig?.borrowingFactorPerSecondForLongs.mul(60 * 60 * 24))
-  //     )}`,
-  //   });
-  // }
-
   const pnl = currentValueUsd?.sub(position.sizeInUsd).mul(position.isLong ? 1 : -1);
 
   const pnlPercentage = collateralUsd?.gt(0) && pnl ? pnl.mul(BASIS_POINTS_DIVISOR).div(collateralUsd) : undefined;
+
+  const borrowingFeeRateUsdPerDay = getBorrowingFeeRateUsd(
+    marketsFeesConfigs,
+    market?.marketTokenAddress,
+    position.isLong,
+    position.sizeInUsd,
+    60 * 60 * 24
+  );
 
   const pendingFundingFeesUsd =
     collateralPrice && collateralToken && collateralUsd?.gt(0)
@@ -165,7 +155,7 @@ export function getAggregatedPositionData(
     liqPrice,
     entryPrice,
     pendingFundingFeesUsd,
-    totalPendingFeesUsd,
+    borrowingFeeRateUsdPerDay,
   };
 }
 

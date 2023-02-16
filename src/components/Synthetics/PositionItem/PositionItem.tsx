@@ -10,11 +10,11 @@ import {
   isIncreaseOrder,
 } from "domain/synthetics/orders";
 import { AggregatedPositionData, formatLeverage, formatPnl } from "domain/synthetics/positions";
+import { formatUsd } from "lib/numbers";
 import { AiOutlineEdit } from "react-icons/ai";
+import { ImSpinner2 } from "react-icons/im";
 
 import "./PositionItem.scss";
-import { ImSpinner2 } from "react-icons/im";
-import { formatUsd } from "lib/numbers";
 
 export type Props = {
   position: AggregatedPositionData;
@@ -108,8 +108,22 @@ export function PositionItem(p: Props) {
                   value={formatUsd(p.position.collateralUsd) || "..."}
                   showDollar={false}
                 />
-                <StatsTooltipRow label={t`Borrow Fee`} showDollar={false} value={"..."} />
-                <StatsTooltipRow showDollar={false} label={t`Borrow Fee / Day`} value={"..."} />
+                <StatsTooltipRow
+                  label={t`Borrow Fee`}
+                  showDollar={false}
+                  value={formatUsd(p.position.pendingBorrowingFees) || "..."}
+                />
+                <StatsTooltipRow
+                  showDollar={false}
+                  label={t`Borrow Fee / Day`}
+                  value={formatUsd(p.position.borrowingFeeRateUsdPerDay) || "..."}
+                />
+                <br />
+                <StatsTooltipRow
+                  label={t`Funding Fee`}
+                  showDollar={false}
+                  value={formatUsd(p.position.pendingFundingFeesUsd) || "..."}
+                />
                 <br />
                 <StatsTooltipRow
                   label={t`Collateral In`}
