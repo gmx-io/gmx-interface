@@ -137,6 +137,8 @@ export function PositionEditor(p: Props) {
     collateralUsd: nextCollateralUsd,
     indexPrice: position?.markPrice,
     isLong: position?.isLong,
+    pendingBorrowingFeesUsd: position?.pendingBorrowingFees,
+    pendingFundingFeesUsd: position?.pendingFundingFeesUsd,
     positionFeeFactor: feesConfig?.positionFeeFactor,
   });
 

@@ -247,8 +247,8 @@ export function getNextPositionValuesForDecreaseTrade(p: {
     sizeUsd: nextSizeUsd,
     collateralUsd: nextCollateralUsd,
     pnl: p.showPnlInLeverage ? nextPnl : undefined,
-    pendingBorrowingFeesUsd: BigNumber.from(0), // deducted on order ?
-    pendingFundingFeesUsd: BigNumber.from(0), // deducted on order ?
+    pendingBorrowingFeesUsd: p.existingPosition?.pendingBorrowingFees, // deducted on order
+    pendingFundingFeesUsd: p.existingPosition?.pendingFundingFeesUsd, // deducted on order
   });
 
   const nextLiqPrice = getLiquidationPrice({
@@ -257,8 +257,8 @@ export function getNextPositionValuesForDecreaseTrade(p: {
     indexPrice: p.exitMarkPrice,
     positionFeeFactor: p.feesConfig?.positionFeeFactor,
     maxPriceImpactFactor: p.feesConfig?.maxPositionImpactFactorForLiquidations,
-    pendingBorrowingFeesUsd: BigNumber.from(0), // deducted on order ?
-    pendingFundingFeesUsd: BigNumber.from(0), // deducted on order ?
+    pendingBorrowingFeesUsd: p.existingPosition?.pendingBorrowingFees, // deducted on order
+    pendingFundingFeesUsd: p.existingPosition?.pendingFundingFeesUsd, // deducted on order
     pnl: nextPnl,
     isLong: p.isLong,
     maxLeverage: p.maxLeverage,

@@ -67,7 +67,6 @@ export function getIncreasePositionTradeParams(p: {
       ? increasePositionAmounts.swapPathStats?.totalSwapPriceImpactDeltaUsd
       : undefined,
     positionFeeUsd: increasePositionAmounts.positionFeeUsd,
-    // positionPriceImpactDeltaUsd: increasePositionAmounts.positionPriceImpactDeltaUsd,
   });
 
   return {
@@ -102,8 +101,8 @@ export function getNextPositionValuesForIncreaseTrade(p: {
     sizeUsd: nextSizeUsd,
     collateralUsd: nextCollateralUsd,
     pnl: p.showPnlInLeverage ? p.existingPosition?.pnl : undefined,
-    pendingBorrowingFeesUsd: BigNumber.from(0), // deducted on order ?
-    pendingFundingFeesUsd: BigNumber.from(0), // deducted on order ?
+    pendingBorrowingFeesUsd: p.existingPosition?.pendingBorrowingFees, // deducted on order
+    pendingFundingFeesUsd: p.existingPosition?.pendingFundingFeesUsd, // deducted on order
   });
 
   const nextLiqPrice = getLiquidationPrice({
@@ -112,8 +111,8 @@ export function getNextPositionValuesForIncreaseTrade(p: {
     indexPrice: p.entryMarkPrice,
     positionFeeFactor: p.feesConfig?.positionFeeFactor,
     maxPriceImpactFactor: p.feesConfig?.maxPositionImpactFactorForLiquidations,
-    pendingBorrowingFeesUsd: BigNumber.from(0), // deducted on order ?
-    pendingFundingFeesUsd: BigNumber.from(0), // deducted on order ?
+    pendingBorrowingFeesUsd: p.existingPosition?.pendingBorrowingFees, // deducted on order
+    pendingFundingFeesUsd: p.existingPosition?.pendingFundingFeesUsd, // deducted on order
     pnl: p.existingPosition?.pnl,
     isLong: p.isLong,
     maxLeverage: p.maxLeverage,
