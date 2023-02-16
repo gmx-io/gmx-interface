@@ -21,6 +21,7 @@ import { GmFees } from "../GmFees/GmFees";
 import { GmSwapFees } from "domain/synthetics/trade";
 
 import "./GmConfirmationBox.scss";
+import { RiXboxFill } from "react-icons/ri";
 
 type Props = {
   marketToken: TokenData;
@@ -184,12 +185,12 @@ export function GmConfirmationBox({
   })();
 
   function onCreateDeposit() {
-    if (!account || !executionFee || !marketToken || !market || !marketTokenAmount || !longToken || !shortToken) return;
+    if (!account || !executionFee || !marketToken || !market || !marketTokenAmount) return;
 
     createDepositTxn(chainId, library, {
       account,
-      initialLongTokenAddress: longToken.address,
-      initialShortTokenAddress: shortToken.address,
+      initialLongTokenAddress: longToken?.address || market.longTokenAddress,
+      initialShortTokenAddress: shortToken?.address || market.shortTokenAddress,
       longTokenAmount: longTokenAmount || BigNumber.from(0),
       shortTokenAmount: shortTokenAmount || BigNumber.from(0),
       marketTokenAddress: marketToken.address,

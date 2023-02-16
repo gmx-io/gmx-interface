@@ -11,9 +11,9 @@ import { HeaderLink } from "../Header/HeaderLink";
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
 import { switchNetwork } from "lib/wallets";
 import { useChainId } from "lib/chains";
-import { isDevelopment } from "config/env";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getIcon } from "config/icons";
+import { getIsSyntheticsSupported } from "config/features";
 
 const glpIcon = getIcon("common", "glp");
 const gmxIcon = getIcon("common", "gmx");
@@ -123,7 +123,7 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
         </div>
       </div>
 
-      {isDevelopment() && (
+      {getIsSyntheticsSupported(chainId) && (
         <div className="Home-token-card-option" style={{ marginTop: "18px" }}>
           <div className="Home-token-card-option-icon">
             <img src={gmIcon} alt="gmxBigIcon" /> GM

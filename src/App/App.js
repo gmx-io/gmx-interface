@@ -5,7 +5,7 @@ import useScrollToTop from "lib/useScrollToTop";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { SWRConfig } from "swr";
 
-import { HashRouter as Router, Redirect, Route, Switch, useHistory, useLocation } from "react-router-dom";
+import { Redirect, Route, HashRouter as Router, Switch, useHistory, useLocation } from "react-router-dom";
 
 import {
   BASIS_POINTS_DIVISOR,
@@ -71,6 +71,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { Header } from "components/Header/Header";
 import { ARBITRUM, getExplorerUrl } from "config/chains";
 import { isDevelopment } from "config/env";
+import { getIsSyntheticsSupported } from "config/features";
 import {
   CURRENT_PROVIDER_LOCALSTORAGE_KEY,
   DISABLE_ORDER_VALIDATION_KEY,
@@ -82,10 +83,12 @@ import {
   SHOW_PNL_AFTER_FEES_KEY,
   SLIPPAGE_BPS_KEY,
 } from "config/localStorage";
+import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { getWsProvider } from "lib/rpc";
 import {
   activateInjectedProvider,
   clearWalletConnectData,
@@ -100,8 +103,6 @@ import {
 } from "lib/wallets";
 import { MarketPoolsPage } from "pages/MarketPoolsPage/MarketPoolsPage";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
-import { SyntheticsEventsProvider as _SyntheticsEventsProvider } from "context/SyntheticsEvents";
-import { getWsProvider } from "lib/rpc";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -121,7 +122,15 @@ const Zoom = cssTransition({
   duration: 200,
 });
 
-const SyntheticsEventsProvider = isDevelopment ? _SyntheticsEventsProvider : ({ children }) => <>{children}</>;
+const SyntheticsEventsProviderWrapper = ({ children }) => {
+  const { chainId } = useChainId();
+
+  if (getIsSyntheticsSupported(chainId)) {
+    return <SyntheticsEventsProvider>{children}</SyntheticsEventsProvider>;
+  }
+
+  return <>{children}</>;
+};
 
 function FullApp() {
   const isHome = isHomeSite();
@@ -480,12 +489,12 @@ function FullApp() {
                   connectWallet={connectWallet}
                 />
               </Route>
-              {isDevelopment() && (
+              {getIsSyntheticsSupported(chainId) && (
                 <Route exact path="/pools">
                   <MarketPoolsPage connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
                 </Route>
               )}
-              {isDevelopment() && (
+              {getIsSyntheticsSupported(chainId) && (
                 <Route exact path="/synthetics">
                   <SyntheticsPage
                     onConnectWallet={connectWallet}
@@ -652,7 +661,7 @@ function App() {
   return (
     <SWRConfig value={{ refreshInterval: 5000 }}>
       <Web3ReactProvider getLibrary={getLibrary}>
-        <SyntheticsEventsProvider>
+        <SyntheticsEventsProviderWrapper>
           <SEO>
             <Router>
               <I18nProvider i18n={i18n}>
@@ -660,7 +669,7 @@ function App() {
               </I18nProvider>
             </Router>
           </SEO>
-        </SyntheticsEventsProvider>
+        </SyntheticsEventsProviderWrapper>
       </Web3ReactProvider>
     </SWRConfig>
   );
