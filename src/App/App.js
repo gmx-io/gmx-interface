@@ -489,13 +489,14 @@ function FullApp() {
                   connectWallet={connectWallet}
                 />
               </Route>
-              {getIsSyntheticsSupported(chainId) && (
-                <Route exact path="/pools">
+              <Route exact path="/pools">
+                {getIsSyntheticsSupported(chainId) && (
                   <MarketPoolsPage connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
-                </Route>
-              )}
-              {getIsSyntheticsSupported(chainId) && (
-                <Route exact path="/synthetics">
+                )}
+              </Route>
+
+              <Route exact path="/synthetics">
+                {getIsSyntheticsSupported(chainId) && (
                   <SyntheticsPage
                     onConnectWallet={connectWallet}
                     savedIsPnlInLeverage={savedIsPnlInLeverage}
@@ -504,8 +505,8 @@ function FullApp() {
                     setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
                     setPendingTxns={setPendingTxns}
                   />
-                </Route>
-              )}
+                )}
+              </Route>
               <Route exact path="/buy_glp">
                 <BuyGlp
                   savedSlippageAmount={savedSlippageAmount}
