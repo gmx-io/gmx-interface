@@ -44,7 +44,7 @@ export class TVDataProvider {
     ) {
       const prices = await this.getTokenLastBars(chainId, ticker, period, 1);
 
-      if (prices) {
+      if (prices?.length) {
         // @ts-ignore
         this.lastBar = formatTimeInBar({ ...prices[prices.length - 1], ticker });
         this.startTime = currentTime;
