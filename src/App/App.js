@@ -103,6 +103,7 @@ import {
 } from "lib/wallets";
 import { MarketPoolsPage } from "pages/MarketPoolsPage/MarketPoolsPage";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
+import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsFallbackPage";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -490,13 +491,15 @@ function FullApp() {
                 />
               </Route>
               <Route exact path="/pools">
-                {getIsSyntheticsSupported(chainId) && (
+                {getIsSyntheticsSupported(chainId) ? (
                   <MarketPoolsPage connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
+                ) : (
+                  <SyntheticsFallbackPage />
                 )}
               </Route>
 
               <Route exact path="/synthetics">
-                {getIsSyntheticsSupported(chainId) && (
+                {getIsSyntheticsSupported(chainId) ? (
                   <SyntheticsPage
                     onConnectWallet={connectWallet}
                     savedIsPnlInLeverage={savedIsPnlInLeverage}
@@ -505,6 +508,8 @@ function FullApp() {
                     setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
                     setPendingTxns={setPendingTxns}
                   />
+                ) : (
+                  <SyntheticsFallbackPage />
                 )}
               </Route>
               <Route exact path="/buy_glp">
