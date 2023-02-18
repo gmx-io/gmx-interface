@@ -8,6 +8,8 @@ import { getObjectKeyFromValue } from "domain/tradingview/utils";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
 import { SUPPORTED_RESOLUTIONS, TV_CHART_RELOAD_INTERVAL } from "config/tradingview";
 import { isChartAvailabeForToken } from "config/tokens";
+import { TVDataProvider } from "domain/tradingview/TVDataProvider";
+import SpinningLoader from "../Common/SpinningLoader";
 
 type ChartLine = {
   price: number;
@@ -22,6 +24,7 @@ type Props = {
   onSelectToken: () => void;
   period: string;
   setPeriod: (period: string) => void;
+  dataProvider?: TVDataProvider;
 };
 
 export default function TVChartContainer({
@@ -32,12 +35,14 @@ export default function TVChartContainer({
   onSelectToken,
   period,
   setPeriod,
+  dataProvider,
 }: Props) {
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const tvWidgetRef = useRef<IChartingLibraryWidget | null>(null);
   const [chartReady, setChartReady] = useState(false);
+  const [chartDataLoading, setChartDataLoading] = useState(true);
   const [tvCharts, setTvCharts] = useLocalStorage<ChartData[] | undefined>(TV_SAVE_LOAD_CHARTS_KEY, []);
-  const { datafeed, resetCache } = useTVDatafeed();
+  const { datafeed, resetCache } = useTVDatafeed({ dataProvider });
   const isMobile = useMedia("(max-width: 550px)");
   const symbolRef = useRef(symbol);
 
@@ -151,6 +156,10 @@ export default function TVChartContainer({
             setPeriod(period);
           }
         });
+
+      tvWidgetRef.current?.activeChart().dataReady(() => {
+        setChartDataLoading(false);
+      });
     });
 
     return () => {
@@ -158,11 +167,21 @@ export default function TVChartContainer({
         tvWidgetRef.current.remove();
         tvWidgetRef.current = null;
         setChartReady(false);
+        setChartDataLoading(true);
       }
     };
     // We don't want to re-initialize the chart when the symbol changes. This will make the chart flicker.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId]);
 
-  return <div ref={chartContainerRef} className="TVChartContainer ExchangeChart-bottom-content" />;
+  return (
+    <div className="ExchangeChart-error">
+      {chartDataLoading && <SpinningLoader size="3.5rem" />}
+      <div
+        style={{ visibility: !chartDataLoading ? "visible" : "hidden" }}
+        ref={chartContainerRef}
+        className="TVChartContainer ExchangeChart-bottom-content"
+      />
+    </div>
+  );
 }

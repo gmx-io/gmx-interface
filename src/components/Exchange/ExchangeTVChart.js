@@ -12,6 +12,7 @@ import TVChartContainer from "components/TVChartContainer/TVChartContainer";
 import { t } from "@lingui/macro";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { availableNetworksForChart } from "components/TVChartContainer/constants";
+import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 
 const PRICE_LINE_TEXT_WIDTH = 15;
 
@@ -63,6 +64,7 @@ export default function ExchangeTVChart(props) {
   } = props;
   const [currentSeries] = useState();
 
+  const dataProvider = useRef();
   let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
   if (!(period in CHART_PERIODS)) {
     period = DEFAULT_PERIOD;
@@ -75,6 +77,11 @@ export default function ExchangeTVChart(props) {
     maxPrice: null,
     minPrice: null,
   });
+
+  useEffect(() => {
+    dataProvider.current = new TVDataProvider();
+  }, []);
+
   useEffect(() => {
     const tmp = getChartToken(swapOption, fromToken, toToken, chainId);
     setChartToken(tmp);
@@ -337,6 +344,7 @@ export default function ExchangeTVChart(props) {
             onSelectToken={onSelectToken}
             period={period}
             setPeriod={setPeriod}
+            dataProvider={dataProvider.current}
           />
         ) : (
           <p className="ExchangeChart-error">Sorry, chart is not supported on this network yet.</p>
