@@ -681,7 +681,6 @@ export default function ConfirmationBox(props) {
                 fee: isMarketOrder ? minExecutionFee : executionFee,
                 feeUSD: isMarketOrder ? minExecutionFeeUSD : executionFeeUsd,
               }}
-              isMarketOrder={isMarketOrder}
               positionFee={`$${formatAmount(positionFee, USD_DECIMALS, 2, true)}`}
               swapFee={swapFees?.gt(0) && `$${formatAmount(swapFees, USD_DECIMALS, 2, true)}`}
             />
@@ -786,6 +785,7 @@ export default function ConfirmationBox(props) {
           </div>
         )}
         <ExchangeInfoRow label={t`Fees`} isTop>
+          {console.log({ isMarketOrder, minExecutionFee, executionFee })}
           <FeesTooltip
             totalFees={`${formatAmount(feeBps, 2, 2, true)}%  ($${formatAmount(feesUsd, USD_DECIMALS, 2, true)})`}
             executionFees={{

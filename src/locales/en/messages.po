@@ -383,7 +383,6 @@ msgid "Boost your rewards with Multiplier Points. <0>More info</0>."
 msgstr "Boost your rewards with Multiplier Points. <0>More info</0>."
 
 #: src/components/Exchange/FeesTooltip.tsx
-#: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -2954,7 +2953,6 @@ msgstr "Supply"
 msgid "Swap"
 msgstr "Swap"
 
-#: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/SwapBox.js
 msgid "Swap Fee"

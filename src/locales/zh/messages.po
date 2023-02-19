@@ -383,7 +383,6 @@ msgid "Boost your rewards with Multiplier Points. <0>More info</0>."
 msgstr "用点数提升你的奖励。 <0>更多信息</0>"
 
 #: src/components/Exchange/FeesTooltip.tsx
-#: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -2954,7 +2953,6 @@ msgstr "供应"
 msgid "Swap"
 msgstr "交易"
 
-#: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/SwapBox.js
 msgid "Swap Fee"
