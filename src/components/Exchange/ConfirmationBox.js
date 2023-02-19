@@ -785,7 +785,6 @@ export default function ConfirmationBox(props) {
           </div>
         )}
         <ExchangeInfoRow label={t`Fees`} isTop>
-          {console.log({ isMarketOrder, minExecutionFee, executionFee })}
           <FeesTooltip
             totalFees={`${formatAmount(feeBps, 2, 2, true)}%  ($${formatAmount(feesUsd, USD_DECIMALS, 2, true)})`}
             executionFees={{
