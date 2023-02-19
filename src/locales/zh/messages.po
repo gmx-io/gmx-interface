@@ -62,6 +62,7 @@ msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which
 msgstr "执行订单的流动性不足</0><1>作为交易所价格总和的标记价格未达到指定价格</1><2>已达到指定价格但时间不足以执行 </2><3>没有守门员领取执行令</3>"
 
 #: src/components/Exchange/FeesTooltip.tsx
+#: src/components/Exchange/SwapBox.js
 msgid "<0>More Info</0> about fees."
 msgstr "<0>更多资讯</0> 关于手续费用"
 
@@ -2159,11 +2160,8 @@ msgid "Open + Close Fees"
 msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
-msgid "Open Fee"
-msgstr ""
-
 #: src/components/Exchange/SwapBox.js
-msgid "Open Fee (0.1% of position size)"
+msgid "Open Fee"
 msgstr ""
 
 #: src/pages/Home/Home.js
@@ -2958,6 +2956,7 @@ msgstr "交易"
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/FeesTooltip.tsx
+#: src/components/Exchange/SwapBox.js
 msgid "Swap Fee"
 msgstr ""
 
@@ -3006,10 +3005,6 @@ msgstr "在1inch上交易{0}"
 #: src/components/Exchange/SwapBox.js
 msgid "Swap {0} submitted!"
 msgstr "交易{0}送出!"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Swap {0} to {1} Fee"
-msgstr "交易{0}成{1}费用"
 
 #: src/components/Glp/SwapErrorModal.tsx
 msgid "Swap {0} to {1} on 1inch"

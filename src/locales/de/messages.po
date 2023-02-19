@@ -62,6 +62,7 @@ msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which
 msgstr "<0>Unzureichende Liquidität für die Ausführung des Auftrags</0><1>Der Markpreis, der ein Aggregat der Börsenkurse ist, hat den angegebenen Preis nicht erreicht</1><2>Der angegebene Preis wurde erreicht, aber nicht lange genug, um ihn auszuführen</2><3>Kein Keeper hat den Auftrag zur Ausführung angenommen</3>"
 
 #: src/components/Exchange/FeesTooltip.tsx
+#: src/components/Exchange/SwapBox.js
 msgid "<0>More Info</0> about fees."
 msgstr "<0>Mehr Infos</0> über Gebühren."
 
@@ -2159,11 +2160,8 @@ msgid "Open + Close Fees"
 msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
-msgid "Open Fee"
-msgstr ""
-
 #: src/components/Exchange/SwapBox.js
-msgid "Open Fee (0.1% of position size)"
+msgid "Open Fee"
 msgstr ""
 
 #: src/pages/Home/Home.js
@@ -2958,6 +2956,7 @@ msgstr "Swap"
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/FeesTooltip.tsx
+#: src/components/Exchange/SwapBox.js
 msgid "Swap Fee"
 msgstr ""
 
@@ -3006,10 +3005,6 @@ msgstr "Swappe auf 1inch"
 #: src/components/Exchange/SwapBox.js
 msgid "Swap {0} submitted!"
 msgstr "Swap{0} übermittelt!"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Swap {0} to {1} Fee"
-msgstr "Swappe{0} gegen {1} Gebühr"
 
 #: src/components/Glp/SwapErrorModal.tsx
 msgid "Swap {0} to {1} on 1inch"

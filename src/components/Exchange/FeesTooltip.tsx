@@ -9,49 +9,18 @@ type Row = {
 };
 
 function FeesTooltip({ totalFees, fundingFee, positionFee, swapFee, executionFee, depositFee, isOpening = true }) {
-  const feeRows: Row[] = [];
-  if (!isOpening && fundingFee) {
-    feeRows.push({
-      label: t`Borrow Fee`,
-      value: fundingFee,
-    });
-  }
-  if (isOpening && swapFee) {
-    feeRows.push({
-      label: t`Swap Fee`,
-      value: swapFee,
-    });
-  }
-  if (positionFee) {
-    feeRows.push({
-      label: isOpening ? t`Open Fee` : t`Close Fee`,
-      value: positionFee,
-    });
-  }
-  if (isOpening && fundingFee) {
-    feeRows.push({
-      label: t`Borrow Fee`,
-      value: fundingFee,
-    });
-  }
-  if (!isOpening && swapFee) {
-    feeRows.push({
-      label: t`Swap Fee`,
-      value: swapFee,
-    });
-  }
-  if (depositFee) {
-    feeRows.push({
-      label: t`Deposit Fee`,
-      value: depositFee,
-    });
-  }
-  if (executionFee) {
-    feeRows.push({
-      label: t`Execution Fee`,
-      value: executionFee,
-    });
-  }
+  const SWAP_FEE_LABEL = t`Swap Fee`;
+  const BORROW_FEE_LABEL = t`Borrow Fee`;
+
+  const feeRows: Row[] = [
+    { label: isOpening ? SWAP_FEE_LABEL : BORROW_FEE_LABEL, value: isOpening ? swapFee : fundingFee },
+    { label: isOpening ? t`Open Fee` : t`Close Fee`, value: positionFee },
+    { label: isOpening ? BORROW_FEE_LABEL : SWAP_FEE_LABEL, value: isOpening ? fundingFee : swapFee },
+    { label: t`Deposit Fee`, value: depositFee },
+    { label: t`Execution Fee`, value: executionFee },
+  ]
+    .filter((row) => row.value)
+    .map(({ label, value }) => ({ label, value }));
 
   return (
     <Tooltip
