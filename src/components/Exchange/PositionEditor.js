@@ -673,15 +673,10 @@ export default function PositionEditor(props) {
                     </div>
                     <div className="align-right">
                       <FeesTooltip
-                        executionFee={
-                          minExecutionFee &&
-                          minExecutionFeeUSD &&
-                          `${formatAmountFree(minExecutionFee, 18, 5)} ${nativeTokenSymbol} ($${formatAmount(
-                            minExecutionFeeUSD,
-                            USD_DECIMALS,
-                            2
-                          )})`
-                        }
+                        executionFees={{
+                          fee: minExecutionFee?.gt(0) && minExecutionFee,
+                          feeUSD: minExecutionFeeUSD?.gt(0) && minExecutionFeeUSD,
+                        }}
                         totalFees={getTotalFees()}
                         depositFee={depositFeeUSD && `$${formatAmount(depositFeeUSD, USD_DECIMALS, 2)}`}
                       />

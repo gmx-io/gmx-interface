@@ -27,8 +27,8 @@ import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { SLIPPAGE_BPS_KEY } from "config/localStorage";
-import { expandDecimals, formatAmount, formatAmountFree } from "lib/numbers";
-import { getNativeToken, getToken, getWrappedToken } from "config/tokens";
+import { expandDecimals, formatAmount } from "lib/numbers";
+import { getToken, getWrappedToken } from "config/tokens";
 import { Plural, t, Trans } from "@lingui/macro";
 import FeesTooltip from "./FeesTooltip";
 import { getUsd } from "domain/tokens";
@@ -125,8 +125,6 @@ export default function ConfirmationBox(props) {
     swapFees,
     infoTokens,
   } = props;
-
-  const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
 
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
   const [isProfitWarningAccepted, setIsProfitWarningAccepted] = useState(false);
@@ -500,21 +498,6 @@ export default function ConfirmationBox(props) {
   const executionFee = isSwap ? SWAP_ORDER_EXECUTION_GAS_FEE : INCREASE_ORDER_EXECUTION_GAS_FEE;
   const executionFeeUsd = getUsd(executionFee, nativeTokenAddress, false, infoTokens);
 
-  const getExecutionFee = useCallback(() => {
-    if (isMarketOrder) {
-      return `${formatAmountFree(minExecutionFee, 18, 5)} ${nativeTokenSymbol} ($${formatAmount(
-        minExecutionFeeUSD,
-        USD_DECIMALS,
-        2
-      )})`;
-    }
-    return `${formatAmount(executionFee, 18, 4)} ${getNativeToken(chainId).symbol} ($${formatAmount(
-      executionFeeUsd,
-      USD_DECIMALS,
-      2
-    )})`;
-  }, [isMarketOrder, executionFee, chainId, minExecutionFee, minExecutionFeeUSD, nativeTokenSymbol, executionFeeUsd]);
-
   const renderAvailableLiquidity = useCallback(() => {
     let availableLiquidity;
     const riskThresholdBps = 5000;
@@ -694,7 +677,11 @@ export default function ConfirmationBox(props) {
             <FeesTooltip
               totalFees={`$${formatAmount(feesUsd, USD_DECIMALS, 2, true)}`}
               fundingFee={getFundingFee()}
-              executionFee={getExecutionFee()}
+              executionFees={{
+                fee: isMarketOrder ? minExecutionFee : executionFee,
+                feeUSD: isMarketOrder ? minExecutionFeeUSD : executionFeeUsd,
+              }}
+              isMarketOrder={isMarketOrder}
               positionFee={`$${formatAmount(positionFee, USD_DECIMALS, 2, true)}`}
               swapFee={swapFees?.gt(0) && `$${formatAmount(swapFees, USD_DECIMALS, 2, true)}`}
             />
@@ -729,7 +716,6 @@ export default function ConfirmationBox(props) {
     existingLiquidationPrice,
     feesUsd,
     leverage,
-    getExecutionFee,
     shortCollateralToken,
     chainId,
     renderFeeWarning,
@@ -752,6 +738,10 @@ export default function ConfirmationBox(props) {
     allowedSlippage,
     positionFee,
     swapFees,
+    minExecutionFee,
+    minExecutionFeeUSD,
+    executionFee,
+    executionFeeUsd,
   ]);
 
   const renderSwapSection = useCallback(() => {
@@ -798,7 +788,10 @@ export default function ConfirmationBox(props) {
         <ExchangeInfoRow label={t`Fees`} isTop>
           <FeesTooltip
             totalFees={`${formatAmount(feeBps, 2, 2, true)}%  ($${formatAmount(feesUsd, USD_DECIMALS, 2, true)})`}
-            executionFee={getExecutionFee()}
+            executionFees={{
+              fee: isMarketOrder ? minExecutionFee : executionFee,
+              feeUSD: isMarketOrder ? minExecutionFeeUSD : executionFeeUsd,
+            }}
             swapFee={`$${formatAmount(feesUsd, USD_DECIMALS, 2, true)}`}
           />
         </ExchangeInfoRow>
@@ -825,7 +818,10 @@ export default function ConfirmationBox(props) {
     minOut,
     renderFeeWarning,
     renderAvailableLiquidity,
-    getExecutionFee,
+    executionFee,
+    executionFeeUsd,
+    minExecutionFee,
+    minExecutionFeeUSD,
     allowedSlippage,
   ]);
 

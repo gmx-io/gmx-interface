@@ -297,7 +297,6 @@ export default function PositionSeller(props) {
   ]);
 
   let executionFee = orderOption === STOP ? getConstant(chainId, "DECREASE_ORDER_EXECUTION_GAS_FEE") : minExecutionFee;
-
   let executionFeeUsd = getUsd(executionFee, nativeTokenAddress, false, infoTokens) || bigNumberify(0);
 
   if (position) {
@@ -1135,14 +1134,10 @@ export default function PositionSeller(props) {
                   positionFee={positionFee?.gt(0) && `$${formatAmount(positionFee, USD_DECIMALS, 2, true)}`}
                   fundingFee={`$${formatAmount(fundingFee, USD_DECIMALS, 2, true)}`}
                   totalFees={totalFees && `$${formatAmount(totalFees, USD_DECIMALS, 2, true)}`}
-                  executionFee={
-                    executionFee &&
-                    `${formatAmount(executionFee, 18, 5, true)} ${nativeTokenSymbol} ($${formatAmount(
-                      executionFeeUsd,
-                      USD_DECIMALS,
-                      2
-                    )})`
-                  }
+                  executionFees={{
+                    fee: executionFee?.gt(0) && executionFee,
+                    feeUSD: executionFeeUsd?.gt(0) && executionFeeUsd,
+                  }}
                   swapFee={
                     swapFeeToken &&
                     `${formatAmount(swapFeeToken, collateralToken.decimals, 5)} ${collateralToken.symbol}
