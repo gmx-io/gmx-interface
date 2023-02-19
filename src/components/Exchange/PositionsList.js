@@ -5,7 +5,6 @@ import Tooltip from "../Tooltip/Tooltip";
 import PositionSeller from "./PositionSeller";
 import PositionEditor from "./PositionEditor";
 import OrdersToa from "./OrdersToa";
-
 import { ImSpinner2 } from "react-icons/im";
 
 import {
@@ -23,6 +22,7 @@ import {
 import PositionShare from "./PositionShare";
 import PositionDropdown from "./PositionDropdown";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
+import NetValueTooltip from "./NetValueTooltip";
 import { helperToast } from "lib/helperToast";
 import { getUsd } from "domain/tokens/utils";
 import { bigNumberify, formatAmount } from "lib/numbers";
@@ -260,7 +260,7 @@ export default function PositionsList(props) {
                         <Trans>Leverage</Trans>
                       </div>
                       <div>
-                        {formatAmount(position.leverage, 4, 2, true)}x&nbsp;
+                        <span className="Position-leverage">{position.leverageStr}</span>
                         <span
                           className={cx("Exchange-list-side", {
                             positive: position.isLong,
@@ -350,45 +350,7 @@ export default function PositionsList(props) {
                         <Trans>Net Value</Trans>
                       </div>
                       <div>
-                        <Tooltip
-                          handle={`$${formatAmount(position.netValue, USD_DECIMALS, 2, true)}`}
-                          position="right-bottom"
-                          handleClassName="plain"
-                          renderContent={() => {
-                            return (
-                              <>
-                                {showPnlAfterFees
-                                  ? t`Net Value: Initial Collateral + PnL - Fees`
-                                  : t`Net Value: Initial Collateral + PnL - Borrow Fee`}
-                                <br />
-                                <br />
-                                <StatsTooltipRow
-                                  label={t`Initial Collateral`}
-                                  value={formatAmount(position.collateral, USD_DECIMALS, 2, true)}
-                                />
-                                <StatsTooltipRow
-                                  label={t`PnL`}
-                                  value={position.deltaBeforeFeesStr}
-                                  showDollar={false}
-                                />
-                                <StatsTooltipRow
-                                  label={t`Borrow Fee`}
-                                  value={formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
-                                />
-                                <StatsTooltipRow
-                                  label={t`Open + Close Fees`}
-                                  value={formatAmount(position.positionFee, USD_DECIMALS, 2, true)}
-                                />
-                                <br />
-                                <StatsTooltipRow
-                                  label={t`PnL After Fees`}
-                                  value={[position.deltaAfterFeesStr, `(${position.deltaAfterFeesPercentageStr})`]}
-                                  showDollar={false}
-                                />
-                              </>
-                            );
-                          }}
-                        />
+                        <NetValueTooltip isMobile position={position} />
                       </div>
                     </div>
                     <div className="App-card-row">
@@ -431,15 +393,15 @@ export default function PositionsList(props) {
                   <div className="App-card-content">
                     <div className="App-card-row">
                       <div className="label">
-                        <Trans>Mark Price</Trans>
-                      </div>
-                      <div>${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}</div>
-                    </div>
-                    <div className="App-card-row">
-                      <div className="label">
                         <Trans>Entry Price</Trans>
                       </div>
                       <div>${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}</div>
+                    </div>
+                    <div className="App-card-row">
+                      <div className="label">
+                        <Trans>Mark Price</Trans>
+                      </div>
+                      <div>${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}</div>
                     </div>
                     <div className="App-card-row">
                       <div className="label">
@@ -501,10 +463,10 @@ export default function PositionsList(props) {
               <Trans>Collateral</Trans>
             </th>
             <th>
-              <Trans>Mark Price</Trans>
+              <Trans>Entry Price</Trans>
             </th>
             <th>
-              <Trans>Entry Price</Trans>
+              <Trans>Mark Price</Trans>
             </th>
             <th>
               <Trans>Liq. Price</Trans>
@@ -552,61 +514,43 @@ export default function PositionsList(props) {
               <tr key={position.key}>
                 <td className="clickable" onClick={() => onPositionClick(position)}>
                   <div className="Exchange-list-title">
-                    {position.indexToken.symbol}
+                    {!hideActions ? (
+                      <Tooltip
+                        handle={position.indexToken.symbol}
+                        position="left-bottom"
+                        handleClassName="plain clickable"
+                        renderContent={() => {
+                          return (
+                            <div>
+                              <Trans>
+                                Click on a row to select the position's market, then use the trade box to increase your
+                                position size if needed.
+                              </Trans>
+                              <br />
+                              <br />
+                              <Trans>
+                                Use the "Close" button to reduce your position size, or to set stop-loss / take-profit
+                                orders.
+                              </Trans>
+                            </div>
+                          );
+                        }}
+                      />
+                    ) : (
+                      position.indexToken.symbol
+                    )}
                     {position.hasPendingChanges && <ImSpinner2 className="spin position-loading-icon" />}
                   </div>
                   <div className="Exchange-list-info-label">
-                    {position.leverage && (
-                      <span className="muted">{formatAmount(position.leverage, 4, 2, true)}x&nbsp;</span>
-                    )}
+                    {position.leverageStr && <span className="muted Position-leverage">{position.leverageStr}</span>}
                     <span className={cx({ positive: position.isLong, negative: !position.isLong })}>
                       {position.isLong ? t`Long` : t`Short`}
                     </span>
                   </div>
                 </td>
                 <td>
-                  <div>
-                    {!position.netValue && t`Opening...`}
-                    {position.netValue && (
-                      <Tooltip
-                        handle={`$${formatAmount(position.netValue, USD_DECIMALS, 2, true)}`}
-                        position="left-bottom"
-                        handleClassName="plain"
-                        renderContent={() => {
-                          return (
-                            <>
-                              {showPnlAfterFees
-                                ? t`Net Value: Initial Collateral + PnL - Fees`
-                                : t`Net Value: Initial Collateral + PnL - Borrow Fee`}
-                              <br />
-                              <br />
-                              <StatsTooltipRow
-                                label={t`Initial Collateral`}
-                                value={formatAmount(position.collateral, USD_DECIMALS, 2, true)}
-                              />
-                              <StatsTooltipRow label={t`PnL`} value={position.deltaBeforeFeesStr} showDollar={false} />
-                              <StatsTooltipRow
-                                label={t`Borrow Fee`}
-                                showDollar={false}
-                                value={`-$${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}`}
-                              />
-                              <StatsTooltipRow
-                                label={t`Open + Close Fees`}
-                                showDollar={false}
-                                value={`-$${formatAmount(position.positionFee, USD_DECIMALS, 2, true)}`}
-                              />
-                              <br />
-                              <StatsTooltipRow
-                                label={t`PnL After Fees`}
-                                value={[position.deltaAfterFeesStr, `(${position.deltaAfterFeesPercentageStr})`]}
-                                showDollar={false}
-                              />
-                            </>
-                          );
-                        }}
-                      />
-                    )}
-                  </div>
+                  <div>{position.netValue ? <NetValueTooltip position={position} /> : t`Opening...`}</div>
+
                   {position.deltaStr && (
                     <div
                       className={cx("Exchange-list-info-label", {
@@ -708,34 +652,10 @@ export default function PositionsList(props) {
                   </div>
                 </td>
                 <td className="clickable" onClick={() => onPositionClick(position)}>
-                  {!hideActions ? (
-                    <Tooltip
-                      handle={`$${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}`}
-                      position="left-bottom"
-                      handleClassName="plain clickable"
-                      renderContent={() => {
-                        return (
-                          <div>
-                            <Trans>
-                              Click on a row to select the position's market, then use the swap box to increase your
-                              position size if needed.
-                            </Trans>
-                            <br />
-                            <br />
-                            <Trans>
-                              Use the "Close" button to reduce your position size, or to set stop-loss / take-profit
-                              orders.
-                            </Trans>
-                          </div>
-                        );
-                      }}
-                    />
-                  ) : (
-                    <> ${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}</>
-                  )}
+                  ${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}
                 </td>
                 <td className="clickable" onClick={() => onPositionClick(position)}>
-                  ${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}
+                  ${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}
                 </td>
                 <td className="clickable" onClick={() => onPositionClick(position)}>
                   ${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}

@@ -21,18 +21,6 @@ msgstr "2021年9月1日"
 msgid "06 Jan 2022"
 msgstr "2022年1月6日"
 
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "24h Change"
-msgstr "24時間の変動"
-
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "24h High"
-msgstr "24時間最高値"
-
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "24h Low"
-msgstr "24時間最安値"
-
 #: src/pages/Dashboard/DashboardV2.js
 msgid "24h Volume"
 msgstr "24時間取引高"
@@ -120,7 +108,6 @@ msgstr "管理下の資産額"
 msgid "AVAILABLE"
 msgstr "利用可能"
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
@@ -318,6 +305,7 @@ msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})
 msgstr "管理資産: 全チェーンでステークされているGMX + GLPプール ({chainName})."
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "Available"
 msgstr "利用可能"
 
@@ -349,7 +337,7 @@ msgstr "利用可能"
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
-msgstr "Avalanche APR"
+msgstr "AvalancheでのAPR(実質年利)"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Balance"
@@ -386,8 +374,6 @@ msgstr "マルチプライヤーポイントで報酬をブーストする。<0>
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/TradeHistory.js
 msgid "Borrow Fee"
@@ -420,10 +406,6 @@ msgstr ""
 #: src/pages/Stake/StakeV2.js
 msgid "Buy GLP"
 msgstr "GLPを購入"
-
-#: src/pages/BuyGlp/BuyGlp.js
-msgid "Buy GLP Icon"
-msgstr "GLP購入アイコン"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Buy GMX"
@@ -543,6 +525,7 @@ msgstr "キャンセルが提出されました"
 msgid "Cancel submitted."
 msgstr "キャンセル申し込み完了"
 
+#: src/App/App.js
 #: src/pages/Exchange/Exchange.js
 msgid "Chart positions"
 msgstr "ポジションをチャートに"
@@ -633,8 +616,8 @@ msgid "Claiming..."
 msgstr "請求中..."
 
 #: src/components/Exchange/PositionsList.js
-msgid "Click on a row to select the position's market, then use the swap box to increase your position size if needed."
-msgstr "ポジションのマーケットを選択するには行をクリックします。その上で、もし必要であればスワップボックスを利用してポジションのサイズを上げてください。"
+msgid "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
+msgstr "行をクリックしてポジションのマーケットを選択し、必要に応じて取引ボックスを使用してポジションのサイズを増やします。"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
@@ -1061,6 +1044,7 @@ msgstr "手数料込損益の表示"
 msgid "Distribution"
 msgstr "分配"
 
+#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Docs"
 msgstr ""
@@ -1285,6 +1269,7 @@ msgstr "手数料"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV1.js
@@ -1561,8 +1546,7 @@ msgstr "{tokenSymbol} {longOrShortText}を増やしました +{0} USD"
 msgid "Index"
 msgstr "インデックス"
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Initial Collateral"
@@ -1667,7 +1651,7 @@ msgstr "言語"
 msgid "Launch App"
 msgstr "アプリ起動"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Leaderboard"
 msgstr "順位表"
 
@@ -1748,7 +1732,7 @@ msgstr "清算価格"
 
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Liq. {0} {longOrShortText}"
-msgstr "清算 {0} {longOrShortText} "
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Liquidated"
@@ -1912,8 +1896,8 @@ msgid "Max close amount exceeded"
 msgstr "最大クローズ値超過"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account"
-msgstr "最大レバレッジ100倍を超過し、損失と手数料を差し引き後に残った担保はアカウントに返送されました"
+msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account:"
+msgstr "最大レバレッジ100倍を超過し、損失と手数料を差し引き後に残った担保はアカウントに返送されました:"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2079,14 +2063,8 @@ msgstr "NFTウォレット"
 msgid "Net Value"
 msgstr "ネット価値"
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-msgid "Net Value: Initial Collateral + PnL - Borrow Fee"
-msgstr ""
-
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-msgid "Net Value: Initial Collateral + PnL - Fees"
+#: src/components/Exchange/NetValueTooltip.tsx
+msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Close Fee"
 msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -2153,9 +2131,8 @@ msgstr "注文が必ず執行される保証がないことに注意してくだ
 msgid "Only letters, numbers and underscores are allowed."
 msgstr "英数字とアンダースコア記号のみ使用できます。"
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-msgid "Open + Close Fees"
+#: src/components/Exchange/NetValueTooltip.tsx
+msgid "Open Fee"
 msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
@@ -2194,7 +2171,7 @@ msgstr ""
 
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Open {0} {longOrShortText}"
-msgstr "{0} {longOrShortText}をオープンする"
+msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 msgid "Opening..."
@@ -2348,17 +2325,15 @@ msgstr "移行の前に<0>Mediumの記事</0>を読んでください。"
 msgid "Please switch your network to Arbitrum."
 msgstr "ネットワークをArbitrumに切り替えてください。"
 
+#: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/TradeHistory.js
 #: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr "損益"
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/NetValueTooltip.tsx
 msgid "PnL After Fees"
 msgstr "手数料差し引き後の損益"
 
@@ -2599,9 +2574,12 @@ msgid "Referral code updated!"
 msgstr "紹介コードの更新完了!"
 
 #: src/components/Header/AppHeaderLinks.tsx
-#: src/pages/Referrals/Referrals.js
 msgid "Referrals"
 msgstr "紹介アカウント"
+
+#: src/pages/Referrals/Referrals.js
+msgid "Referrals <0/>"
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Request decrease {0} {longOrShortText}, -{1} USD, Acceptable Price: {2} {3} USD"
@@ -2830,7 +2808,7 @@ msgstr "サイズ"
 msgid "Slippage should be less than 5%"
 msgstr "スリッページは5%未満であること"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Speed up page loading"
 msgstr "ページの読み込みを速くする"
 
@@ -3327,7 +3305,7 @@ msgstr "紹介したトレーダー"
 msgid "Trades"
 msgstr "トレード"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"
 msgstr "トレード案内"
 
@@ -3527,7 +3505,7 @@ msgstr "マルチプレイヤーポイントをステークするには\"請求�
 msgid "Use the Edit Collateral icon to deposit or withdraw collateral."
 msgstr "担保を入金または出金するときは「担保を編集」のアイコンを使用してください。"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Useful Links"
 msgstr "有用なリンク"
 

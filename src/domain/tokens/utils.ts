@@ -141,6 +141,7 @@ export function getLowestFeeTokenForBuyGlp(
 
     const fees = getFeeBasisPoints(
       fromToken,
+      fromToken.usdgAmount,
       usdgAmount,
       MINT_BURN_FEE_BASIS_POINTS,
       TAX_BASIS_POINTS,

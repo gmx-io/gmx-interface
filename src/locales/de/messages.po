@@ -21,18 +21,6 @@ msgstr "06 Sep 2021"
 msgid "06 Jan 2022"
 msgstr "06 Jan 2022"
 
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "24h Change"
-msgstr "24h Änderung"
-
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "24h High"
-msgstr "24h Hoch"
-
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "24h Low"
-msgstr "24h Tief"
-
 #: src/pages/Dashboard/DashboardV2.js
 msgid "24h Volume"
 msgstr "24h Volumen"
@@ -120,7 +108,6 @@ msgstr "AUM"
 msgid "AVAILABLE"
 msgstr "VERFÜGBAR"
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
@@ -318,6 +305,7 @@ msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})
 msgstr "Verwaltetes Vermögen: GMX-Staked (Alle Chains) + GLP-Pool ({chainName})."
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "Available"
 msgstr "Verfügbar"
 
@@ -349,7 +337,7 @@ msgstr "Verfügbar:"
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
-msgstr "Available APR:"
+msgstr "Avalanche APR:"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Balance"
@@ -386,8 +374,6 @@ msgstr "Steigere deine Belohnungen mit Multiplikatorpunkten. <0>Mehr Infos</0>.
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/TradeHistory.js
 msgid "Borrow Fee"
@@ -420,10 +406,6 @@ msgstr ""
 #: src/pages/Stake/StakeV2.js
 msgid "Buy GLP"
 msgstr "GLP Kaufen"
-
-#: src/pages/BuyGlp/BuyGlp.js
-msgid "Buy GLP Icon"
-msgstr "GLP Kaufen Icon"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Buy GMX"
@@ -543,6 +525,7 @@ msgstr "Abbruch übermittelt"
 msgid "Cancel submitted."
 msgstr "Abbruch übermittelt."
 
+#: src/App/App.js
 #: src/pages/Exchange/Exchange.js
 msgid "Chart positions"
 msgstr "Chart-Positionen"
@@ -633,8 +616,8 @@ msgid "Claiming..."
 msgstr "Beanspruchen..."
 
 #: src/components/Exchange/PositionsList.js
-msgid "Click on a row to select the position's market, then use the swap box to increase your position size if needed."
-msgstr "Klicke auf eine Zeile, um den Markt der Position auszuwählen, und verwende dann die Swap-Box, um deine Position bei Bedarf zu vergrößern."
+msgid "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
+msgstr "Klicke auf eine Zeile, um den Markt der Position auszuwählen, und verwende dann die Trade-Box, um deine Position bei Bedarf zu vergrößern."
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
@@ -1061,6 +1044,7 @@ msgstr "PnL nach Gebühren anzeigen"
 msgid "Distribution"
 msgstr "Verteilung"
 
+#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Docs"
 msgstr ""
@@ -1285,6 +1269,7 @@ msgstr "GEBÜHREN"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV1.js
@@ -1561,8 +1546,7 @@ msgstr "Erhöht {tokenSymbol} {longOrShortText}, +{0} USD."
 msgid "Index"
 msgstr "Index"
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Initial Collateral"
@@ -1667,7 +1651,7 @@ msgstr "Sprache"
 msgid "Launch App"
 msgstr "App starten"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Leaderboard"
 msgstr "Bestenliste"
 
@@ -1748,7 +1732,7 @@ msgstr "Liq. Preis"
 
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Liq. {0} {longOrShortText}"
-msgstr "Liq. {0} {longOrShortText}"
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Liquidated"
@@ -1912,8 +1896,8 @@ msgid "Max close amount exceeded"
 msgstr "Maximaler Abschlussbetrag überschritten"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account"
-msgstr "Die max. Hebelwirkung von 100x wurde überschritten, das verbleibende Kollateral wird nach Abzug von Verlusten und Gebühren wurde auf dein Konto zurücküberwiesen"
+msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account:"
+msgstr "Die max. Hebelwirkung von 100x wurde überschritten, das verbleibende Kollateral wird nach Abzug von Verlusten und Gebühren wurde auf dein Konto zurücküberwiesen:"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2079,14 +2063,8 @@ msgstr "NFT Wallet"
 msgid "Net Value"
 msgstr "Nettowert"
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-msgid "Net Value: Initial Collateral + PnL - Borrow Fee"
-msgstr ""
-
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-msgid "Net Value: Initial Collateral + PnL - Fees"
+#: src/components/Exchange/NetValueTooltip.tsx
+msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Close Fee"
 msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -2153,9 +2131,8 @@ msgstr "Beachte, dass die Ausführung von Aufträgen nicht garantiert ist.<0/><1
 msgid "Only letters, numbers and underscores are allowed."
 msgstr "Es sind nur Buchstaben, Zahlen und Unterstriche erlaubt."
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-msgid "Open + Close Fees"
+#: src/components/Exchange/NetValueTooltip.tsx
+msgid "Open Fee"
 msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
@@ -2194,7 +2171,7 @@ msgstr ""
 
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Open {0} {longOrShortText}"
-msgstr "Offen {0} {longOrShortText}"
+msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 msgid "Opening..."
@@ -2348,17 +2325,15 @@ msgstr "Bitte lese vor der Migration den <0>Medium Beitrag</0>."
 msgid "Please switch your network to Arbitrum."
 msgstr "Bitte wechsle dein Netzwerk zu Arbitrum."
 
+#: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/TradeHistory.js
 #: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr "PnL"
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/NetValueTooltip.tsx
 msgid "PnL After Fees"
 msgstr "PnL nach Gebühren"
 
@@ -2599,9 +2574,12 @@ msgid "Referral code updated!"
 msgstr "Referral Code aktualisiert!"
 
 #: src/components/Header/AppHeaderLinks.tsx
-#: src/pages/Referrals/Referrals.js
 msgid "Referrals"
 msgstr "Referrals"
+
+#: src/pages/Referrals/Referrals.js
+msgid "Referrals <0/>"
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Request decrease {0} {longOrShortText}, -{1} USD, Acceptable Price: {2} {3} USD"
@@ -2830,7 +2808,7 @@ msgstr "Größe"
 msgid "Slippage should be less than 5%"
 msgstr "Der Slippage sollte weniger als 5% betragen"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Speed up page loading"
 msgstr "Beschleunige das Laden von Seiten"
 
@@ -3327,7 +3305,7 @@ msgstr "Vermittelte Trader"
 msgid "Trades"
 msgstr "Trades"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"
 msgstr "Handelsleitfaden"
 
@@ -3527,7 +3505,7 @@ msgstr "Verwende den Button \"Zusammensetzen\", um deine Multiplikatorpunkte zu 
 msgid "Use the Edit Collateral icon to deposit or withdraw collateral."
 msgstr "Verwende das Symbol Kollateral bearbeiten, um Kollateral zu hinterlegen oder zurückzuziehen."
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Useful Links"
 msgstr "Nützliche Links"
 

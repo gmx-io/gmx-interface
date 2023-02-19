@@ -28,7 +28,7 @@ import { useChainId } from "lib/chains";
 
 const USD_DECIMALS = 30;
 
-export default function Actions() {
+export default function Actions({ savedIsPnlInLeverage, savedShowPnlAfterFees }) {
   const { account } = useParams();
   const { active, library } = useWeb3React();
 
@@ -76,8 +76,8 @@ export default function Actions() {
     positionQuery,
     positionData,
     infoTokens,
-    false,
-    false,
+    savedIsPnlInLeverage,
+    savedShowPnlAfterFees,
     checkSummedAccount,
     undefined,
     undefined
@@ -136,10 +136,10 @@ export default function Actions() {
             account={checkSummedAccount}
             library={library}
             flagOrdersEnabled={false}
-            savedIsPnlInLeverage={false}
             chainId={chainId}
             nativeTokenAddress={nativeTokenAddress}
-            showPnlAfterFees={false}
+            savedIsPnlInLeverage={savedIsPnlInLeverage}
+            showPnlAfterFees={savedShowPnlAfterFees}
             hideActions
           />
         </div>
