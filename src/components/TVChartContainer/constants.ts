@@ -49,6 +49,7 @@ const disabledFeatures = [
   "use_localstorage_for_settings",
   "right_bar_stays_on_scroll",
   "symbol_info",
+  "main_series_scale_menu",
 ];
 const enabledFeatures = [
   "side_toolbar_in_fullscreen_mode",
@@ -73,7 +74,7 @@ export const defaultChartProps = {
   custom_css_url: "/tradingview-chart.css",
   loading_screen: { backgroundColor: "#16182e", foregroundColor: "#2962ff" },
   favorites: {
-    intervals: ["5", "15", "60", "240"],
+    intervals: ["5", "15", "60", "240", "1D"],
   },
   custom_formatters: {
     timeFormatter: {
