@@ -6,6 +6,7 @@ import { Bar } from "./types";
 import { formatTimeInBar } from "./utils";
 import { getCurrentPriceOfToken, getTokenChartPrice } from "./requests";
 import { BigNumberish } from "ethers";
+import { PeriodParams } from "charting_library";
 
 export class TVDataProvider {
   lastBar: Bar | null;
@@ -55,14 +56,23 @@ export class TVDataProvider {
     return this.lastBar;
   }
 
-  async getHistoryBars(chainId: number, ticker: string, resolution: string, isStable: boolean, countBack: number) {
+  async getHistoryBars(
+    chainId: number,
+    ticker: string,
+    resolution: string,
+    isStable: boolean,
+    periodParams: PeriodParams
+  ) {
     const period = SUPPORTED_RESOLUTIONS[resolution];
+    const { from, to, countBack } = periodParams;
+    const toWithOffset = to + timezoneOffset;
+    const fromWithOffset = from + timezoneOffset;
     try {
       const bars = isStable
         ? getStablePriceData(period, countBack)
         : await this.getTokenHistoryBars(chainId, ticker, period);
 
-      return bars.map(formatTimeInBar);
+      return bars.filter((bar) => bar.time >= fromWithOffset && bar.time <= toWithOffset).map(formatTimeInBar);
     } catch {
       throw new Error("Failed to get history bars");
     }

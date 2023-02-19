@@ -65,10 +65,6 @@ export default function useTVDatafeed({ dataProvider }: Props) {
         },
 
         async getBars(symbolInfo, resolution, periodParams, onHistoryCallback, onErrorCallback) {
-          const { from, to, countBack } = periodParams;
-          const toWithOffset = (to + timezoneOffset) * 1000;
-          const fromWithOffset = (from + timezoneOffset) * 1000;
-
           if (!SUPPORTED_RESOLUTIONS[resolution]) {
             return onErrorCallback("[getBars] Invalid resolution");
           }
@@ -78,9 +74,15 @@ export default function useTVDatafeed({ dataProvider }: Props) {
           }
 
           try {
-            const bars = await tvDataProvider.current?.getHistoryBars(chainId, ticker, resolution, isStable, countBack);
-            const filteredBars = bars.filter((bar) => bar.time >= fromWithOffset && bar.time <= toWithOffset);
-            onHistoryCallback(filteredBars, { noData: filteredBars.length === 0 });
+            const bars = await tvDataProvider.current?.getHistoryBars(
+              chainId,
+              ticker,
+              resolution,
+              isStable,
+              periodParams
+            );
+            const noData = !bars || bars.length === 0;
+            onHistoryCallback(bars, { noData });
           } catch {
             onErrorCallback("Unable to load historical data!");
           }
