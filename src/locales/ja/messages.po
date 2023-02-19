@@ -371,6 +371,7 @@ msgid "Boost your rewards with Multiplier Points. <0>More info</0>."
 msgstr "マルチプライヤーポイントで報酬をブーストする。<0>より詳しい情報</0>"
 
 #: src/components/Exchange/FeesTooltip.tsx
+#: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -627,6 +628,7 @@ msgid "Close"
 msgstr "クローズ"
 
 #: src/components/Exchange/FeesTooltip.tsx
+#: src/components/Exchange/NetValueTooltip.tsx
 msgid "Close Fee"
 msgstr ""
 
@@ -2131,11 +2133,8 @@ msgstr "注文が必ず執行される保証がないことに注意してくだ
 msgid "Only letters, numbers and underscores are allowed."
 msgstr "英数字とアンダースコア記号のみ使用できます。"
 
-#: src/components/Exchange/NetValueTooltip.tsx
-msgid "Open Fee"
-msgstr ""
-
 #: src/components/Exchange/FeesTooltip.tsx
+#: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/SwapBox.js
 msgid "Open Fee"
 msgstr ""

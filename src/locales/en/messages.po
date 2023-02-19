@@ -371,6 +371,7 @@ msgid "Boost your rewards with Multiplier Points. <0>More info</0>."
 msgstr "Boost your rewards with Multiplier Points. <0>More info</0>."
 
 #: src/components/Exchange/FeesTooltip.tsx
+#: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -627,6 +628,7 @@ msgid "Close"
 msgstr "Close"
 
 #: src/components/Exchange/FeesTooltip.tsx
+#: src/components/Exchange/NetValueTooltip.tsx
 msgid "Close Fee"
 msgstr "Close Fee"
 
@@ -2131,11 +2133,8 @@ msgstr "Note that orders are not guaranteed to be executed.<0/><1/>This can occu
 msgid "Only letters, numbers and underscores are allowed."
 msgstr "Only letters, numbers and underscores are allowed."
 
-#: src/components/Exchange/NetValueTooltip.tsx
-msgid "Open Fee"
-msgstr "Open Fee"
-
 #: src/components/Exchange/FeesTooltip.tsx
+#: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/SwapBox.js
 msgid "Open Fee"
 msgstr "Open Fee"

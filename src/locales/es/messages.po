@@ -371,6 +371,7 @@ msgid "Boost your rewards with Multiplier Points. <0>More info</0>."
 msgstr "Aumenta tus recompensas con los Puntos Multiplicadores. <0>Más información</0>."
 
 #: src/components/Exchange/FeesTooltip.tsx
+#: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -627,6 +628,7 @@ msgid "Close"
 msgstr "Cerrar"
 
 #: src/components/Exchange/FeesTooltip.tsx
+#: src/components/Exchange/NetValueTooltip.tsx
 msgid "Close Fee"
 msgstr ""
 
@@ -2131,11 +2133,8 @@ msgstr "Tenga en cuenta que no se garantiza la ejecución de las órdenes.<0/><1
 msgid "Only letters, numbers and underscores are allowed."
 msgstr "Solo letras, números y guiones bajos están permitidos"
 
-#: src/components/Exchange/NetValueTooltip.tsx
-msgid "Open Fee"
-msgstr ""
-
 #: src/components/Exchange/FeesTooltip.tsx
+#: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/SwapBox.js
 msgid "Open Fee"
 msgstr ""
