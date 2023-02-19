@@ -1,6 +1,5 @@
 import { getNativeToken, getTokens, isChartAvailabeForToken } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS } from "config/tradingview";
-import { timezoneOffset } from "domain/prices";
 import { useChainId } from "lib/chains";
 import { useEffect, useMemo, useRef } from "react";
 import { TVDataProvider } from "./TVDataProvider";
