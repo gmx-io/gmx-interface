@@ -1,8 +1,10 @@
+import { HistoryCallback, PeriodParams, ResolutionString, SubscribeBarsCallback } from "charting_library";
 import { getNativeToken, getTokens, isChartAvailabeForToken } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS } from "config/tradingview";
 import { useChainId } from "lib/chains";
 import { useEffect, useMemo, useRef } from "react";
 import { TVDataProvider } from "./TVDataProvider";
+import { SymbolInfo } from "./types";
 
 const configurationData = {
   supported_resolutions: Object.keys(SUPPORTED_RESOLUTIONS),
@@ -63,7 +65,13 @@ export default function useTVDatafeed({ dataProvider }: Props) {
           setTimeout(() => onSymbolResolvedCallback(symbolInfo));
         },
 
-        async getBars(symbolInfo, resolution, periodParams, onHistoryCallback, onErrorCallback) {
+        async getBars(
+          symbolInfo: SymbolInfo,
+          resolution: ResolutionString,
+          periodParams: PeriodParams,
+          onHistoryCallback: HistoryCallback,
+          onErrorCallback: (error: string) => void
+        ) {
           if (!SUPPORTED_RESOLUTIONS[resolution]) {
             return onErrorCallback("[getBars] Invalid resolution");
           }
@@ -73,6 +81,10 @@ export default function useTVDatafeed({ dataProvider }: Props) {
           }
 
           try {
+            if (!ticker) {
+              onErrorCallback("Invalid ticker!");
+              return;
+            }
             const bars = await tvDataProvider.current?.getHistoryBars(
               chainId,
               ticker,
@@ -87,14 +99,23 @@ export default function useTVDatafeed({ dataProvider }: Props) {
           }
         },
 
-        async subscribeBars(symbolInfo, resolution, onRealtimeCallback, _subscribeUID, onResetCacheNeededCallback) {
+        async subscribeBars(
+          symbolInfo: SymbolInfo,
+          resolution: ResolutionString,
+          onRealtimeCallback: SubscribeBarsCallback,
+          _subscribeUID,
+          onResetCacheNeededCallback: () => void
+        ) {
           const { ticker, isStable } = symbolInfo;
+          if (!ticker) {
+            return;
+          }
           intervalRef.current && clearInterval(intervalRef.current);
           resetCacheRef.current = onResetCacheNeededCallback;
           if (!isStable) {
             intervalRef.current = setInterval(function () {
               tvDataProvider.current?.getLiveBar(chainId, ticker, resolution).then((bar) => {
-                if (ticker === activeTicker.current) {
+                if (bar && ticker === activeTicker.current) {
                   onRealtimeCallback(bar);
                 }
               });

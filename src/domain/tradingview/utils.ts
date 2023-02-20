@@ -1,4 +1,4 @@
-import { Bar } from "charting_library";
+import { Bar } from "./types";
 
 export function getObjectKeyFromValue(value, object) {
   return Object.keys(object).find((key) => object[key] === value);

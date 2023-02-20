@@ -4,7 +4,7 @@ import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
 import { Bar } from "./types";
 import { formatTimeInBar } from "./utils";
-import { getCurrentPriceOfToken, getTokenChartPrice } from "./requests";
+import { fillBarGaps, getCurrentPriceOfToken, getTokenChartPrice } from "./requests";
 import { BigNumberish } from "ethers";
 import { PeriodParams } from "charting_library";
 
@@ -44,7 +44,6 @@ export class TVDataProvider {
       this.lastPeriod !== period
     ) {
       const prices = await this.getTokenLastBars(chainId, ticker, period, 1);
-
       if (prices?.length) {
         // @ts-ignore
         this.lastBar = formatTimeInBar({ ...prices[prices.length - 1], ticker });
@@ -72,7 +71,8 @@ export class TVDataProvider {
         ? getStablePriceData(period, countBack)
         : await this.getTokenHistoryBars(chainId, ticker, period);
 
-      return bars.filter((bar) => bar.time >= fromWithOffset && bar.time <= toWithOffset).map(formatTimeInBar);
+      const filledBars = fillBarGaps(bars, CHART_PERIODS[period]);
+      return filledBars.filter((bar) => bar.time >= fromWithOffset && bar.time <= toWithOffset).map(formatTimeInBar);
     } catch {
       throw new Error("Failed to get history bars");
     }
