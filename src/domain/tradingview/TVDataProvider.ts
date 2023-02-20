@@ -13,20 +13,40 @@ export class TVDataProvider {
   startTime: number;
   lastTicker: string;
   lastPeriod: string;
+  bars: Bar[] | null;
 
   constructor() {
     this.lastBar = null;
     this.startTime = 0;
     this.lastTicker = "";
     this.lastPeriod = "";
+    this.bars = null;
   }
 
   async getCurrentPriceOfToken(chainId: number, ticker: string): Promise<BigNumberish> {
     return getCurrentPriceOfToken(chainId, ticker);
   }
 
-  async getTokenHistoryBars(chainId: number, ticker: string, period: string): Promise<Bar[]> {
-    return getTokenChartPrice(chainId, ticker, period);
+  async getTokenHistoryBars(
+    chainId: number,
+    ticker: string,
+    period: string,
+    periodParams: PeriodParams
+  ): Promise<Bar[]> {
+    const { from, to, firstDataRequest } = periodParams;
+    let bars: Bar[];
+    if (firstDataRequest) {
+      bars = await getLimitChartPricesFromStats(chainId, ticker, period, 500);
+    } else {
+      bars = this.bars ? this.bars : await getTokenChartPrice(chainId, ticker, period);
+    }
+    const filledBars = fillBarGaps(bars, CHART_PERIODS[period]);
+    if (!this.bars && !firstDataRequest) {
+      this.bars = filledBars;
+    }
+    const toWithOffset = to + timezoneOffset;
+    const fromWithOffset = from + timezoneOffset;
+    return filledBars.filter((bar) => bar.time > fromWithOffset && bar.time <= toWithOffset).map(formatTimeInBar);
   }
 
   async getTokenLastBars(chainId: number, ticker: string, period: string, limit: number): Promise<Bar[]> {
@@ -63,16 +83,12 @@ export class TVDataProvider {
     periodParams: PeriodParams
   ) {
     const period = SUPPORTED_RESOLUTIONS[resolution];
-    const { from, to, countBack } = periodParams;
-    const toWithOffset = to + timezoneOffset;
-    const fromWithOffset = from + timezoneOffset;
-    try {
-      const bars = isStable
-        ? getStablePriceData(period, countBack)
-        : await this.getTokenHistoryBars(chainId, ticker, period);
+    const { countBack } = periodParams;
 
-      const filledBars = fillBarGaps(bars, CHART_PERIODS[period]);
-      return filledBars.filter((bar) => bar.time >= fromWithOffset && bar.time <= toWithOffset).map(formatTimeInBar);
+    try {
+      return isStable
+        ? getStablePriceData(period, countBack)
+        : await this.getTokenHistoryBars(chainId, ticker, period, periodParams);
     } catch {
       throw new Error("Failed to get history bars");
     }
