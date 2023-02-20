@@ -59,6 +59,7 @@ export function getDecreasePositionTradeParams(p: {
     feesConfig,
     initialCollateralUsd: decreasePositionAmounts.receiveUsd,
     positionFeeUsd: decreasePositionAmounts.positionFeeUsd,
+    positionPriceImpactDeltaUsd: !p.isTrigger ? decreasePositionAmounts.positionPriceImpactDeltaUsd : undefined,
   });
 
   return {

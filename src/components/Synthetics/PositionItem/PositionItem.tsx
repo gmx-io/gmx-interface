@@ -10,7 +10,7 @@ import {
   isIncreaseOrder,
 } from "domain/synthetics/orders";
 import { AggregatedPositionData, formatLeverage, formatPnl } from "domain/synthetics/positions";
-import { formatUsd } from "lib/numbers";
+import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { AiOutlineEdit } from "react-icons/ai";
 import { ImSpinner2 } from "react-icons/im";
 
@@ -90,60 +90,81 @@ export function PositionItem(p: Props) {
   function renderCollateral() {
     return (
       <>
-        <Tooltip
-          handle={`${formatUsd(p.position.collateralUsdAfterFees)}`}
-          position={p.isLarge ? "left-bottom" : "right-bottom"}
-          handleClassName={cx("plain", { negative: p.position.hasLowCollateral })}
-          renderContent={() => {
-            return (
-              <>
-                {p.position.hasLowCollateral && (
-                  <div>
-                    <Trans>
-                      WARNING: This position has a low amount of collateral after deducting fees, deposit more
-                      collateral to reduce the position's liquidation risk.
-                    </Trans>
-                    <br />
-                    <br />
-                  </div>
-                )}
-                <StatsTooltipRow
-                  label={t`Initial Collateral`}
-                  value={formatUsd(p.position.collateralUsd) || "..."}
-                  showDollar={false}
-                />
-                <StatsTooltipRow
-                  label={t`Borrow Fee`}
-                  showDollar={false}
-                  value={formatUsd(p.position.pendingBorrowingFees) || "..."}
-                />
-                <StatsTooltipRow
-                  showDollar={false}
-                  label={t`Borrow Fee / Day`}
-                  value={formatUsd(p.position.borrowingFeeRateUsdPerDay) || "..."}
-                />
-                <br />
-                <StatsTooltipRow
-                  label={t`Funding Fee`}
-                  showDollar={false}
-                  value={formatUsd(p.position.pendingFundingFeesUsd) || "..."}
-                />
-                <br />
-                <StatsTooltipRow
-                  label={t`Collateral In`}
-                  value={p.position.collateralToken?.symbol || "..."}
-                  showDollar={false}
-                />
-                <br />
-                <Trans>Use the Edit Collateral icon to deposit or withdraw collateral.</Trans>
-              </>
-            );
-          }}
-        />
-        {!p.position.isOpening && !p.hideActions && p.onEditCollateralClick && (
-          <span className="edit-icon" onClick={p.onEditCollateralClick}>
-            <AiOutlineEdit fontSize={16} />
-          </span>
+        <div className="position-list-collateral">
+          <Tooltip
+            handle={`${formatUsd(p.position.collateralUsdAfterFees)}`}
+            position={p.isLarge ? "left-bottom" : "right-bottom"}
+            handleClassName={cx("plain", { negative: p.position.hasLowCollateral })}
+            renderContent={() => {
+              return (
+                <>
+                  {p.position.hasLowCollateral && (
+                    <div>
+                      <Trans>
+                        WARNING: This position has a low amount of collateral after deducting fees, deposit more
+                        collateral to reduce the position's liquidation risk.
+                      </Trans>
+                      <br />
+                      <br />
+                    </div>
+                  )}
+                  <StatsTooltipRow
+                    label={t`Initial Collateral`}
+                    value={formatUsd(p.position.collateralUsd) || "..."}
+                    showDollar={false}
+                  />
+                  <StatsTooltipRow
+                    label={t`Borrow Fee`}
+                    showDollar={false}
+                    value={formatUsd(p.position.pendingBorrowingFees) || "..."}
+                  />
+                  <StatsTooltipRow
+                    showDollar={false}
+                    label={t`Borrow Fee / Day`}
+                    value={formatUsd(p.position.borrowingFeeRateUsdPerDay) || "..."}
+                  />
+                  <br />
+                  <StatsTooltipRow
+                    label={t`Funding Fee`}
+                    showDollar={false}
+                    value={formatUsd(p.position.pendingFundingFeesUsd) || "..."}
+                  />
+                  <br />
+                  <StatsTooltipRow
+                    label={t`Collateral In`}
+                    value={p.position.collateralToken?.symbol || "..."}
+                    showDollar={false}
+                  />
+                  <br />
+                  <Trans>Use the Edit Collateral icon to deposit or withdraw collateral.</Trans>
+                </>
+              );
+            }}
+          />
+          {p.isLarge && (
+            <>
+              {!p.position.isOpening && !p.hideActions && p.onEditCollateralClick && (
+                <span className="edit-icon" onClick={p.onEditCollateralClick}>
+                  <AiOutlineEdit fontSize={16} />
+                </span>
+              )}
+            </>
+          )}
+        </div>
+
+        <div className="Exchange-list-info-label Position-collateral-amount  muted">
+          {formatTokenAmount(p.position.collateralAmount, p.position.collateralToken?.decimals)}
+          {" "}({p.position.collateralToken?.symbol})
+        </div>
+
+        {!p.isLarge && (
+          <>
+            {!p.position.isOpening && !p.hideActions && p.onEditCollateralClick && (
+              <span className="edit-icon" onClick={p.onEditCollateralClick}>
+                <AiOutlineEdit fontSize={16} />
+              </span>
+            )}
+          </>
         )}
       </>
     );
@@ -238,7 +259,7 @@ export function PositionItem(p: Props) {
         </td>
         <td>
           {/* collateral */}
-          <div className="position-list-collateral">{renderCollateral()}</div>
+          <div>{renderCollateral()}</div>
         </td>
         <td className="clickable" onClick={p.onSelectPositionClick}>
           {/* markPrice */}

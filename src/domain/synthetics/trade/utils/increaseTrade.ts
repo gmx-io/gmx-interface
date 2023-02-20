@@ -67,6 +67,7 @@ export function getIncreasePositionTradeParams(p: {
       ? increasePositionAmounts.swapPathStats?.totalSwapPriceImpactDeltaUsd
       : undefined,
     positionFeeUsd: increasePositionAmounts.positionFeeUsd,
+    positionPriceImpactDeltaUsd: !p.isLimit ? increasePositionAmounts.positionPriceImpactDeltaUsd : undefined,
   });
 
   return {
