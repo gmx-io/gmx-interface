@@ -13,7 +13,6 @@
   letter-spacing: 0px;
   padding: 1.1rem 1.6rem;
   border: none;
-  transition: all 0.2s ease-in-out;
 
   &.primary {
     background: var(--primary-btn-bg);
@@ -44,7 +43,8 @@
     }
 
     &:active {
-      background-color: #1e7e34;
+      background: linear-gradient(90deg, #2d42fc, #2e3dcd);
+      box-shadow: 0 0 0.4rem 0.6rem rgb(45 66 252 / 20%);
     }
   }
 
