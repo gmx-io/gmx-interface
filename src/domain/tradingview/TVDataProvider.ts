@@ -14,6 +14,7 @@ export class TVDataProvider {
   lastTicker: string;
   lastPeriod: string;
   bars: Bar[] | null;
+  barCount: number;
 
   constructor() {
     this.lastBar = null;
@@ -21,6 +22,7 @@ export class TVDataProvider {
     this.lastTicker = "";
     this.lastPeriod = "";
     this.bars = null;
+    this.barCount = 0;
   }
 
   async getCurrentPriceOfToken(chainId: number, ticker: string): Promise<BigNumberish> {
@@ -33,15 +35,11 @@ export class TVDataProvider {
     period: string,
     periodParams: PeriodParams
   ): Promise<Bar[]> {
-    const { from, to, firstDataRequest } = periodParams;
-    let bars: Bar[];
-    if (firstDataRequest) {
-      bars = await getLimitChartPricesFromStats(chainId, ticker, period, 500);
-    } else {
-      bars = this.bars ? this.bars : await getTokenChartPrice(chainId, ticker, period);
-    }
+    const { from, to, countBack } = periodParams;
+    this.barCount = this.barCount + countBack;
+    const bars = this.bars ? this.bars : await getTokenChartPrice(chainId, ticker, period);
     const filledBars = fillBarGaps(bars, CHART_PERIODS[period]);
-    if (!this.bars && !firstDataRequest) {
+    if (!this.bars) {
       this.bars = filledBars;
     }
     const toWithOffset = to + timezoneOffset;
