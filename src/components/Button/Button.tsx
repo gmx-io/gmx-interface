@@ -19,15 +19,6 @@ type ButtonProps = {
   };
 };
 
-export function getClassName(variant: ButtonVariant) {
-  return cx("button", {
-    primary: variant === "primary",
-    "primary-action": variant === "primary-action",
-    "semi-clear": variant === "semi-clear",
-    clear: variant === "clear",
-  });
-}
-
 export default function Button({
   variant,
   disabled,
@@ -39,7 +30,7 @@ export default function Button({
   type,
   ...rest
 }: ButtonProps) {
-  const classNames = cx(getClassName(variant), className);
+  const classNames = cx("button", variant, className);
   function handleClick() {
     if (disabled || !onClick) {
       return;
