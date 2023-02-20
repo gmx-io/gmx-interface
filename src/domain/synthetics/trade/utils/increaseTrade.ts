@@ -61,7 +61,7 @@ export function getIncreasePositionTradeParams(p: {
 
   const fees = getDisplayedTradeFees({
     feesConfig,
-    initialCollateralUsd: increasePositionAmounts.initialCollateralUsd,
+    sizeDeltaUsd: increasePositionAmounts.sizeDeltaUsd,
     swapSteps: increasePositionAmounts.swapPathStats?.swapSteps,
     swapPriceImpactDeltaUsd: !p.isLimit
       ? increasePositionAmounts.swapPathStats?.totalSwapPriceImpactDeltaUsd

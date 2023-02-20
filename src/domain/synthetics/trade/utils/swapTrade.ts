@@ -36,7 +36,7 @@ export function getSwapTradeParams(p: {
 
   const fees = getDisplayedTradeFees({
     feesConfig,
-    initialCollateralUsd: swapAmounts.usdIn,
+    sizeDeltaUsd: swapAmounts.usdIn,
     swapSteps: swapAmounts.swapPathStats?.swapSteps,
     swapPriceImpactDeltaUsd: !p.isLimit ? swapAmounts.swapPathStats?.totalSwapPriceImpactDeltaUsd : undefined,
   });

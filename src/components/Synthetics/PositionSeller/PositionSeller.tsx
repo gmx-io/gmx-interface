@@ -183,7 +183,7 @@ export function PositionSeller(p: Props) {
     feesConfig,
     swapSteps: swapAmounts?.swapPathStats?.swapSteps,
     swapPriceImpactDeltaUsd: swapAmounts?.swapPathStats?.totalSwapPriceImpactDeltaUsd,
-    initialCollateralUsd: decreaseAmounts?.receiveUsd,
+    sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
     positionFeeUsd: decreaseAmounts?.positionFeeUsd,
   });
 

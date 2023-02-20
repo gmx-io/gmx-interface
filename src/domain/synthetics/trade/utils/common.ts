@@ -27,15 +27,15 @@ export function getTradeFlags(tradeType: TradeType, tradeMode: TradeMode) {
 
 export function getDisplayedTradeFees(p: {
   feesConfig?: MarketFeesConfig;
-  initialCollateralUsd?: BigNumber;
+  sizeDeltaUsd?: BigNumber;
   swapSteps?: SwapStats[];
   positionFeeUsd?: BigNumber;
   swapPriceImpactDeltaUsd?: BigNumber;
   positionPriceImpactDeltaUsd?: BigNumber;
 }): TradeFees | undefined {
-  if (!p.initialCollateralUsd) return undefined;
+  if (!p.sizeDeltaUsd) return undefined;
 
-  const basis = p.initialCollateralUsd;
+  const basis = p.sizeDeltaUsd;
 
   const swapFees: SwapFeeItem[] | undefined = p.swapSteps?.map((step) => ({
     tokenInAddress: step.tokenInAddress,
