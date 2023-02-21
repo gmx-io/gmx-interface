@@ -36,14 +36,17 @@ export class TVDataProvider {
     periodParams: PeriodParams
   ): Promise<Bar[]> {
     const { from, to, countBack } = periodParams;
+    const toWithOffset = to + timezoneOffset;
+    const fromWithOffset = from + timezoneOffset;
+
     this.barCount = this.barCount + countBack;
+
     const bars = this.bars ? this.bars : await getTokenChartPrice(chainId, ticker, period);
     const filledBars = fillBarGaps(bars, CHART_PERIODS[period]);
     if (!this.bars) {
       this.bars = filledBars;
     }
-    const toWithOffset = to + timezoneOffset;
-    const fromWithOffset = from + timezoneOffset;
+
     return filledBars.filter((bar) => bar.time > fromWithOffset && bar.time <= toWithOffset).map(formatTimeInBar);
   }
 

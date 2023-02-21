@@ -135,3 +135,13 @@ html.theme-dark .itemRow-1SBAfF8E:hover {
 html.theme-dark .tv-floating-toolbar {
   background-color: var(--dark-blue-bg) !important;
 }
+
+html.theme-dark .summary-3UYGeClB {
+  color: #b2b5be !important;
+  padding-top: 4px;
+  margin-top: 0;
+}
+html.theme-dark .summary-3UYGeClB:hover {
+  background-color: var(--dark-blue-bg) !important;
+  cursor: pointer;
+}

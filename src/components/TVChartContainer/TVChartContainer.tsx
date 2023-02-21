@@ -9,7 +9,7 @@ import { SaveLoadAdapter } from "./SaveLoadAdapter";
 import { SUPPORTED_RESOLUTIONS } from "config/tradingview";
 import { isChartAvailabeForToken } from "config/tokens";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
-import SpinningLoader from "../Common/SpinningLoader";
+import Loader from "components/Common/Loader";
 
 type ChartLine = {
   price: number;
@@ -176,7 +176,7 @@ export default function TVChartContainer({
 
   return (
     <div className="ExchangeChart-error">
-      {chartDataLoading && <SpinningLoader size="3.5rem" />}
+      {chartDataLoading && <Loader />}
       <div
         style={{ visibility: !chartDataLoading ? "visible" : "hidden" }}
         ref={chartContainerRef}
