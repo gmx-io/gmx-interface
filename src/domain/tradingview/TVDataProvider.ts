@@ -8,21 +8,29 @@ import { fillBarGaps, getCurrentPriceOfToken, getTokenChartPrice } from "./reque
 import { BigNumberish } from "ethers";
 import { PeriodParams } from "charting_library";
 
+const initialHistoryBarsInfo = {
+  period: "",
+  data: [],
+  ticker: "",
+};
+
 export class TVDataProvider {
   lastBar: Bar | null;
   startTime: number;
   lastTicker: string;
   lastPeriod: string;
-  bars: Bar[] | null;
-  barCount: number;
+  barsInfo: {
+    period: string;
+    data: Bar[];
+    ticker: string;
+  };
 
   constructor() {
     this.lastBar = null;
     this.startTime = 0;
     this.lastTicker = "";
     this.lastPeriod = "";
-    this.bars = null;
-    this.barCount = 0;
+    this.barsInfo = initialHistoryBarsInfo;
   }
 
   async getCurrentPriceOfToken(chainId: number, ticker: string): Promise<BigNumberish> {
@@ -35,19 +43,40 @@ export class TVDataProvider {
     period: string,
     periodParams: PeriodParams
   ): Promise<Bar[]> {
+    const barsInfo = this.barsInfo;
+    if (!barsInfo.data.length || barsInfo.ticker !== ticker || barsInfo.period !== period) {
+      try {
+        const bars = await getTokenChartPrice(chainId, ticker, period);
+        const filledBars = fillBarGaps(bars, CHART_PERIODS[period]);
+        this.barsInfo.data = filledBars;
+        this.barsInfo.ticker = ticker;
+        this.barsInfo.period = period;
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(error);
+        this.barsInfo = initialHistoryBarsInfo;
+      }
+    }
+
     const { from, to, countBack } = periodParams;
     const toWithOffset = to + timezoneOffset;
     const fromWithOffset = from + timezoneOffset;
+    const bars = barsInfo.data
+      .filter((bar) => bar.time > fromWithOffset && bar.time <= toWithOffset)
+      .map(formatTimeInBar);
 
-    this.barCount = this.barCount + countBack;
-
-    const bars = this.bars ? this.bars : await getTokenChartPrice(chainId, ticker, period);
-    const filledBars = fillBarGaps(bars, CHART_PERIODS[period]);
-    if (!this.bars) {
-      this.bars = filledBars;
+    // if no bars returned, return empty array
+    if (!bars.length) {
+      return [];
     }
 
-    return filledBars.filter((bar) => bar.time > fromWithOffset && bar.time <= toWithOffset).map(formatTimeInBar);
+    // if bars are fewer than countBack, return all of them
+    if (bars.length < countBack) {
+      return bars;
+    }
+
+    // if bars are more than countBack, return latest bars
+    return bars.slice(bars.length - countBack, bars.length);
   }
 
   async getTokenLastBars(chainId: number, ticker: string, period: string, limit: number): Promise<Bar[]> {
