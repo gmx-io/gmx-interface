@@ -37,7 +37,6 @@ export default function useTVDatafeed({ dataProvider }: Props) {
     const handleVisibilityChange = () => {
       if (document.visibilityState === "hidden") {
         feedData.current = false;
-        console.log(feedData.current, lastTimestamp.current);
       } else {
         feedData.current = true;
       }
