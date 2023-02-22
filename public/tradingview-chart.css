@@ -117,10 +117,6 @@ html.theme-dark .color-gray-xRobF0EE.variant-secondary-xRobF0EE:hover {
   border-color: var(--dark-blue-bg);
 }
 
-html.theme-dark .drawer-164vy-kj {
-  background: var(--dark-blue-bg);
-}
-
 html.theme-dark .drawer-164vy-kj .smallTabletSectionTitle-2R6OKuTS {
   color: #b2b5be !important;
 }
@@ -128,11 +124,8 @@ html.theme-dark .drawer-164vy-kj .normal-eqcGT_ow {
   display: none;
 }
 
-html.theme-dark .itemRow-1SBAfF8E:hover {
-  background-color: var(--dark-blue-bg) !important;
-}
-
-html.theme-dark .tv-floating-toolbar {
+html.theme-dark .tv-floating-toolbar,
+html.theme-dark .drawer-164vy-kj {
   background-color: var(--dark-blue-bg) !important;
 }
 
@@ -141,7 +134,9 @@ html.theme-dark .summary-3UYGeClB {
   padding-top: 4px;
   margin-top: 0;
 }
-html.theme-dark .summary-3UYGeClB:hover {
+html.theme-dark .summary-3UYGeClB:hover,
+html.theme-dark .itemRow-1SBAfF8E:not(.active-1SBAfF8E):hover,
+html.theme-dark .container-3Ywm3-oo:not(.disabled-3Ywm3-oo):hover {
   background-color: var(--dark-blue-bg) !important;
   cursor: pointer;
 }
