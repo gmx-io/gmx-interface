@@ -43,8 +43,13 @@ html.theme-dark .item-2IihgTnv:not(.isActive-2IihgTnv) {
   color: #b2b5be !important;
 }
 
-html.theme-dark .item-2IihgTnv:hover {
+html.theme-dark .item-2IihgTnv:not(.isActive-2IihgTnv):hover,
+html.theme-dark .container-3Ywm3-oo.selected-3Ywm3-oo {
   background-color: var(--dark-blue-bg) !important;
+}
+
+html.theme-dark .container-3Ywm3-oo.selected-3Ywm3-oo {
+  background-color: #2962ff !important;
 }
 
 html.theme-dark .dialog-2AogBbC7 {
@@ -136,7 +141,7 @@ html.theme-dark .summary-3UYGeClB {
 }
 html.theme-dark .summary-3UYGeClB:hover,
 html.theme-dark .itemRow-1SBAfF8E:not(.active-1SBAfF8E):hover,
-html.theme-dark .container-3Ywm3-oo:not(.disabled-3Ywm3-oo):hover {
+html.theme-dark .container-3Ywm3-oo:not(.disabled-3Ywm3-oo):not(.selected-3Ywm3-oo):hover {
   background-color: var(--dark-blue-bg) !important;
   cursor: pointer;
 }
