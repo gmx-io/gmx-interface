@@ -5,6 +5,7 @@ import { useChainId } from "lib/chains";
 import { useEffect, useMemo, useRef } from "react";
 import { TVDataProvider } from "./TVDataProvider";
 import { SymbolInfo } from "./types";
+import { formatTimeInBarToMs } from "./utils";
 
 const configurationData = {
   supported_resolutions: Object.keys(SUPPORTED_RESOLUTIONS),
@@ -103,13 +104,7 @@ export default function useTVDatafeed({ dataProvider }: Props) {
               onErrorCallback("Invalid ticker!");
               return;
             }
-            const bars = await tvDataProvider.current?.getHistoryBars(
-              chainId,
-              ticker,
-              resolution,
-              isStable,
-              periodParams
-            );
+            const bars = await tvDataProvider.current?.getBars(chainId, ticker, resolution, isStable, periodParams);
             const noData = !bars || bars.length === 0;
             onHistoryCallback(bars, { noData });
           } catch {
@@ -146,7 +141,7 @@ export default function useTVDatafeed({ dataProvider }: Props) {
                   tvDataProvider.current?.getLiveBar(chainId, ticker, resolution).then((bar) => {
                     if (bar && ticker === activeTicker.current) {
                       lastTimestamp.current = bar.time;
-                      onRealtimeCallback(bar);
+                      onRealtimeCallback(formatTimeInBarToMs(bar));
                     }
                   });
                 });
