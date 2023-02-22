@@ -22,7 +22,9 @@ export default function useTVDatafeed({ dataProvider }: Props) {
   const { chainId } = useChainId();
   const intervalRef = useRef<ReturnType<typeof setInterval> | undefined>();
   const resetCacheRef = useRef<() => void | undefined>();
+  const feedData = useRef<boolean>(true);
   const activeTicker = useRef<string | undefined>();
+  const lastTimestamp = useRef<number>(0);
   const tvDataProvider = useRef<TVDataProvider>();
 
   useEffect(() => {
@@ -30,6 +32,23 @@ export default function useTVDatafeed({ dataProvider }: Props) {
       tvDataProvider.current = dataProvider;
     }
   }, [dataProvider]);
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        feedData.current = false;
+        console.log(feedData.current, lastTimestamp.current);
+      } else {
+        feedData.current = true;
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
 
   return useMemo(() => {
     return {
@@ -113,12 +132,25 @@ export default function useTVDatafeed({ dataProvider }: Props) {
           intervalRef.current && clearInterval(intervalRef.current);
           resetCacheRef.current = onResetCacheNeededCallback;
           if (!isStable) {
-            intervalRef.current = setInterval(function () {
-              tvDataProvider.current?.getLiveBar(chainId, ticker, resolution).then((bar) => {
-                if (bar && ticker === activeTicker.current) {
-                  onRealtimeCallback(bar);
-                }
-              });
+            intervalRef.current = setInterval(async function () {
+              if (!feedData.current) return;
+              tvDataProvider.current
+                ?.syncPastBars(chainId, ticker, resolution, lastTimestamp.current)
+                .then((bars) => {
+                  if (bars?.length > 0 && ticker === activeTicker.current) {
+                    bars.forEach((bar) => {
+                      onRealtimeCallback(bar);
+                    });
+                  }
+                })
+                .then(() => {
+                  tvDataProvider.current?.getLiveBar(chainId, ticker, resolution).then((bar) => {
+                    if (bar && ticker === activeTicker.current) {
+                      lastTimestamp.current = bar.time;
+                      onRealtimeCallback(bar);
+                    }
+                  });
+                });
             }, 500);
           }
         },
