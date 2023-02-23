@@ -78,8 +78,6 @@ export function GmConfirmationBox({
       if (shortTokenAmount?.gt(0) && shortToken) {
         addresses.push(shortToken.address);
       }
-    } else {
-      addresses.push(marketToken.address);
     }
 
     return addresses;
@@ -108,10 +106,6 @@ export function GmConfirmationBox({
         needTokenApprove(tokenAllowanceData, shortToken?.address, shortTokenAmount)
       ) {
         addresses.push(shortToken.address);
-      }
-    } else {
-      if (needTokenApprove(tokenAllowanceData, marketToken.address, marketTokenAmount)) {
-        addresses.push(marketToken.address);
       }
     }
 
