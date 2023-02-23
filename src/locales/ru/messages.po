@@ -57,6 +57,10 @@ msgstr "<0>Больше информации</0> о комиссии."
 msgid "<0>Return to </0><1>Homepage</1> <2>or </2> <3>Trade</3>"
 msgstr "<0>Вернуться к </0><1>Домашняя страница</1> <2>или </2> <3> Торговля</3>"
 
+#: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
+msgid "<0>Switch to:</0>"
+msgstr ""
+
 #: src/components/Glp/SwapErrorModal.tsx
 msgid "<0>The pool's capacity has been reached for {0}. Please use another token to buy GLP.</0><1>Check the \"Save on Fees\" section for tokens with the lowest fees.</1>"
 msgstr "<0>Вместимость пула достигла {0}. Пожалуйста, используйте другой токен для покупки GLP.</0><1>Проверьте раздел \"Сэкономьте на комиссии\" для токенов с самыми низкими комиссиями.</1>"
@@ -429,6 +433,7 @@ msgstr "Повышайте свои вознаграждения с помощь
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Borrow Fee"
 msgstr "Комиссия за Пользование Кредитом"
 
@@ -715,6 +720,10 @@ msgstr "Закрыть"
 #: src/components/Exchange/PositionSeller.js
 msgid "Close failed."
 msgstr "Закрыть не удалось."
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Close fee"
+msgstr ""
 
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #~ msgid "Close size is greater than position size"
@@ -1665,6 +1674,7 @@ msgstr ""
 #~ msgstr ""
 
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Funding Fee"
 msgstr ""
 
@@ -2124,6 +2134,7 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Limit Price"
 msgstr "Предельная Цена"
@@ -2724,8 +2735,8 @@ msgid "Open + Close Fees"
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Open + Close fee"
-msgstr ""
+#~ msgid "Open + Close fee"
+#~ msgstr ""
 
 #: src/pages/Home/Home.js
 msgid "Open Interest"
@@ -3770,6 +3781,8 @@ msgstr "Обмен активен: {0}, выполнен: {1}, отменен: {
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
+#: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap failed."
 msgstr "Обмен не выполнен"
 
@@ -3787,6 +3800,8 @@ msgid "Swap submitted!"
 msgstr "Обмен подан!"
 
 #: src/components/Exchange/SwapBox.js
+#: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
+#: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap submitted."
 msgstr "Обмен подан."
 
@@ -3855,6 +3870,8 @@ msgid "Swap {fromTokenText} for {toTokenText}"
 msgstr ""
 
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+#: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
+#: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swapped {0} for {1}"
 msgstr ""
 
@@ -3879,6 +3896,10 @@ msgstr "Обмен неактивен, ожидается {0} обновлени
 
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
 msgid "Synthetics Pools"
+msgstr ""
+
+#: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
+msgid "Synthetics doesn't support this network"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js

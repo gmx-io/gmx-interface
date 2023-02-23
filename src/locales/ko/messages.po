@@ -57,6 +57,10 @@ msgstr "수수료에 대한 <0>더 많은 정보</0>."
 msgid "<0>Return to </0><1>Homepage</1> <2>or </2> <3>Trade</3>"
 msgstr "<1>홈페이지</1> <2>혹은</2> <3>트레이드 페이지</3><0>로 돌아가기</0>"
 
+#: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
+msgid "<0>Switch to:</0>"
+msgstr ""
+
 #: src/components/Glp/SwapErrorModal.tsx
 msgid "<0>The pool's capacity has been reached for {0}. Please use another token to buy GLP.</0><1>Check the \"Save on Fees\" section for tokens with the lowest fees.</1>"
 msgstr "<0>풀의 최대허용량이 {0}에 도달했습니다. 다른 토큰을 이용해 GLP를 구매해주세요.</0><1>\"수수료 절약\" 섹션을 통해 가장 저렴한 수수료를 확인하세요.</1>"
@@ -429,6 +433,7 @@ msgstr "멀티플라이어 포인트를 사용해서 보상을 증가시키세�
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Borrow Fee"
 msgstr "차용 수수료"
 
@@ -715,6 +720,10 @@ msgstr "포지션 종료"
 #: src/components/Exchange/PositionSeller.js
 msgid "Close failed."
 msgstr "포지션 종료 실패"
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Close fee"
+msgstr ""
 
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #~ msgid "Close size is greater than position size"
@@ -1665,6 +1674,7 @@ msgstr ""
 #~ msgstr ""
 
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Funding Fee"
 msgstr ""
 
@@ -2124,6 +2134,7 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Limit Price"
 msgstr "지정가"
@@ -2724,8 +2735,8 @@ msgid "Open + Close Fees"
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Open + Close fee"
-msgstr ""
+#~ msgid "Open + Close fee"
+#~ msgstr ""
 
 #: src/pages/Home/Home.js
 msgid "Open Interest"
@@ -3770,6 +3781,8 @@ msgstr "스왑 액티브: {0}, 실행 완료: {1}, 취소 완료: {2}"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
+#: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap failed."
 msgstr "스왑 실패."
 
@@ -3787,6 +3800,8 @@ msgid "Swap submitted!"
 msgstr "스왑 제출완료"
 
 #: src/components/Exchange/SwapBox.js
+#: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
+#: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap submitted."
 msgstr "스왑 제출 완료."
 
@@ -3855,6 +3870,8 @@ msgid "Swap {fromTokenText} for {toTokenText}"
 msgstr ""
 
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+#: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
+#: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swapped {0} for {1}"
 msgstr ""
 
@@ -3879,6 +3896,10 @@ msgstr "{0} 업그레이드를 위해 스왑이 비활성화되었습니다"
 
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
 msgid "Synthetics Pools"
+msgstr ""
+
+#: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
+msgid "Synthetics doesn't support this network"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js

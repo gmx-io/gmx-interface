@@ -57,6 +57,10 @@ msgstr "<0>More Info</0> about fees."
 msgid "<0>Return to </0><1>Homepage</1> <2>or </2> <3>Trade</3>"
 msgstr "<0>Return to </0><1>Homepage</1> <2>or </2> <3>Trade</3>"
 
+#: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
+msgid "<0>Switch to:</0>"
+msgstr "<0>Switch to:</0>"
+
 #: src/components/Glp/SwapErrorModal.tsx
 msgid "<0>The pool's capacity has been reached for {0}. Please use another token to buy GLP.</0><1>Check the \"Save on Fees\" section for tokens with the lowest fees.</1>"
 msgstr "<0>The pool's capacity has been reached for {0}. Please use another token to buy GLP.</0><1>Check the \"Save on Fees\" section for tokens with the lowest fees.</1>"
@@ -429,6 +433,7 @@ msgstr "Boost your rewards with Multiplier Points. <0>More info</0>."
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Borrow Fee"
 msgstr "Borrow Fee"
 
@@ -715,6 +720,10 @@ msgstr "Close"
 #: src/components/Exchange/PositionSeller.js
 msgid "Close failed."
 msgstr "Close failed."
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Close fee"
+msgstr "Close fee"
 
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #~ msgid "Close size is greater than position size"
@@ -1665,6 +1674,7 @@ msgstr "Fulfilling {0} {tokensText} request"
 #~ msgstr "Fulfilling {longText} {0} request"
 
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Funding Fee"
 msgstr "Funding Fee"
 
@@ -2124,6 +2134,7 @@ msgstr "Limit Increase"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Limit Price"
 msgstr "Limit Price"
@@ -2724,8 +2735,8 @@ msgid "Open + Close Fees"
 msgstr "Open + Close Fees"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Open + Close fee"
-msgstr "Open + Close fee"
+#~ msgid "Open + Close fee"
+#~ msgstr "Open + Close fee"
 
 #: src/pages/Home/Home.js
 msgid "Open Interest"
@@ -3770,6 +3781,8 @@ msgstr "Swap active: {0}, executed: {1}, cancelled: {2}"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
+#: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap failed."
 msgstr "Swap failed."
 
@@ -3787,6 +3800,8 @@ msgid "Swap submitted!"
 msgstr "Swap submitted!"
 
 #: src/components/Exchange/SwapBox.js
+#: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
+#: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap submitted."
 msgstr "Swap submitted."
 
@@ -3855,6 +3870,8 @@ msgid "Swap {fromTokenText} for {toTokenText}"
 msgstr "Swap {fromTokenText} for {toTokenText}"
 
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+#: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
+#: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swapped {0} for {1}"
 msgstr "Swapped {0} for {1}"
 
@@ -3880,6 +3897,10 @@ msgstr "Swaps disabled, pending {0} upgrade"
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
 msgid "Synthetics Pools"
 msgstr "Synthetics Pools"
+
+#: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
+msgid "Synthetics doesn't support this network"
+msgstr "Synthetics doesn't support this network"
 
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js

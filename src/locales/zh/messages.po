@@ -57,6 +57,10 @@ msgstr "<0>更多资讯</0> 关于手续费用"
 msgid "<0>Return to </0><1>Homepage</1> <2>or </2> <3>Trade</3>"
 msgstr "<0>返回 </0><1>主页</1> <2>or </2> <3>交易</3>"
 
+#: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
+msgid "<0>Switch to:</0>"
+msgstr ""
+
 #: src/components/Glp/SwapErrorModal.tsx
 msgid "<0>The pool's capacity has been reached for {0}. Please use another token to buy GLP.</0><1>Check the \"Save on Fees\" section for tokens with the lowest fees.</1>"
 msgstr "<0>池子容量已到达 {0}.请使用其他代币购买GLP.</0><1>查询 \"节省手续费\" 栏位一查询最低手续费之代币</1>"
@@ -429,6 +433,7 @@ msgstr "用点数提升你的奖励。 <0>更多信息</0>"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Borrow Fee"
 msgstr "借款费用"
 
@@ -715,6 +720,10 @@ msgstr "收盘"
 #: src/components/Exchange/PositionSeller.js
 msgid "Close failed."
 msgstr "收盘失败"
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Close fee"
+msgstr ""
 
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #~ msgid "Close size is greater than position size"
@@ -1665,6 +1674,7 @@ msgstr ""
 #~ msgstr ""
 
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Funding Fee"
 msgstr ""
 
@@ -2124,6 +2134,7 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Limit Price"
 msgstr "限制价格"
@@ -2724,8 +2735,8 @@ msgid "Open + Close Fees"
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Open + Close fee"
-msgstr ""
+#~ msgid "Open + Close fee"
+#~ msgstr ""
 
 #: src/pages/Home/Home.js
 msgid "Open Interest"
@@ -3770,6 +3781,8 @@ msgstr "交易启动：{0}执行{1}已取消{2}"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
+#: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap failed."
 msgstr "交易失败"
 
@@ -3787,6 +3800,8 @@ msgid "Swap submitted!"
 msgstr "交易送出!"
 
 #: src/components/Exchange/SwapBox.js
+#: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
+#: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap submitted."
 msgstr "交易送出"
 
@@ -3855,6 +3870,8 @@ msgid "Swap {fromTokenText} for {toTokenText}"
 msgstr ""
 
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+#: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
+#: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swapped {0} for {1}"
 msgstr ""
 
@@ -3879,6 +3896,10 @@ msgstr "交易取消，等待 {0} 升级"
 
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
 msgid "Synthetics Pools"
+msgstr ""
+
+#: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
+msgid "Synthetics doesn't support this network"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
