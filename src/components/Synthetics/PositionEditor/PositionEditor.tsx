@@ -23,7 +23,6 @@ import {
   createDecreaseOrderTxn,
   createIncreaseOrderTxn,
   getAcceptablePrice,
-  getNextCollateralUsdForDecreaseOrder,
 } from "domain/synthetics/orders";
 import {
   AggregatedPositionData,
@@ -32,7 +31,12 @@ import {
   getLiquidationPrice,
   getMarkPrice,
 } from "domain/synthetics/positions";
-import { adaptToInfoTokens, convertToTokenAmount, useAvailableTokensData } from "domain/synthetics/tokens";
+import {
+  adaptToInfoTokens,
+  convertToTokenAmount,
+  convertToUsd,
+  useAvailableTokensData,
+} from "domain/synthetics/tokens";
 import { useTokenInput } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
@@ -75,6 +79,11 @@ export function PositionEditor(p: Props) {
   const [operation, setOperation] = useState(Operation.Deposit);
   const isDeposit = operation === Operation.Deposit;
   const { minCollateralUsd } = usePositionsConstants(chainId);
+  const minCollateralAmount = convertToTokenAmount(
+    minCollateralUsd,
+    position?.collateralToken?.decimals,
+    position?.collateralToken?.prices?.maxPrice
+  );
   const [isApproving, setIsApproving] = useState(false);
   const { marketsFeesConfigs } = useMarketsFeesConfigs(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
@@ -96,26 +105,26 @@ export function PositionEditor(p: Props) {
     }
   );
 
-  const [withdrawUsdInputValue, setWithdrawUsdInputValue] = useState("");
-  const maxWithdrawUsd = position?.collateralUsd;
-  const withdrawUsd = parseValue(withdrawUsdInputValue, USD_DECIMALS);
-  const withdrawTokenAmount = convertToTokenAmount(
-    withdrawUsd,
+  const [withdrawInputValue, setWithdrawInputValue] = useState("");
+  const withdrawTokenAmount = parseValue(withdrawInputValue || "0", position?.collateralToken?.decimals || 0)!;
+  const withdrawUsd = convertToUsd(
+    withdrawTokenAmount,
     position?.collateralToken?.decimals,
     position?.collateralToken?.prices?.maxPrice
   );
+  // TODO: fees + pnl amount
+  const maxWithdrawAmount = position?.collateralAmount.sub(minCollateralAmount || 0);
 
   const collateralDeltaAmount = isDeposit ? depositInput.tokenAmount : withdrawTokenAmount;
   const collateralDeltaUsd = isDeposit ? depositInput.usdAmount : withdrawUsd;
 
-  const nextCollateralUsd = isDeposit
+  let nextCollateralUsd = isDeposit
     ? position?.collateralUsd?.add(collateralDeltaUsd || BigNumber.from(0))
-    : getNextCollateralUsdForDecreaseOrder({
-        sizeDeltaUsd: BigNumber.from(0),
-        collateralUsd: position?.collateralUsd,
-        collateralDeltaUsd,
-        pnl: position?.pnl,
-      });
+    : position?.collateralUsdAfterFees?.sub(collateralDeltaUsd || BigNumber.from(0));
+
+  if (nextCollateralUsd?.lt(0)) {
+    nextCollateralUsd = BigNumber.from(0);
+  }
 
   const nextLeverageExcludingPnl = getLeverage({
     sizeUsd: position?.sizeInUsd,
@@ -368,21 +377,18 @@ export function PositionEditor(p: Props) {
         {operation === Operation.Withdraw && (
           <BuyInputSection
             topLeftLabel={t`Withdraw`}
-            topLeftValue={formatTokenAmount(
-              withdrawTokenAmount,
-              position?.collateralToken?.decimals,
-              position?.collateralToken?.symbol
-            )}
+            topLeftValue={formatUsd(withdrawUsd)}
             topRightLabel={t`Max`}
-            topRightValue={formatUsd(maxWithdrawUsd)}
-            inputValue={withdrawUsdInputValue}
-            onInputValueChange={(e) => setWithdrawUsdInputValue(e.target.value)}
-            showMaxButton={maxWithdrawUsd?.gt(0) && !withdrawUsd?.eq(maxWithdrawUsd)}
+            topRightValue={formatTokenAmount(maxWithdrawAmount, position?.collateralToken?.decimals)}
+            inputValue={withdrawInputValue}
+            onInputValueChange={(e) => setWithdrawInputValue(e.target.value)}
+            showMaxButton={maxWithdrawAmount?.gt(0) && !withdrawTokenAmount?.eq(maxWithdrawAmount)}
             onClickMax={() =>
-              maxWithdrawUsd && setWithdrawUsdInputValue(formatAmountFree(maxWithdrawUsd, USD_DECIMALS, 2))
+              maxWithdrawAmount &&
+              setWithdrawInputValue(formatAmountFree(maxWithdrawAmount, position?.collateralToken?.decimals || 0, 4))
             }
           >
-            USD
+            {position?.collateralToken?.symbol}
           </BuyInputSection>
         )}
 
@@ -468,10 +474,10 @@ export function PositionEditor(p: Props) {
             />
           )}
 
-          <InfoRow
+          {/* <InfoRow
             label={t`Fees and price impact`}
             value={<Tooltip handle={"$0.00"} position="right-top" renderContent={() => "TODO"} />}
-          />
+          /> */}
         </div>
 
         <div className="Exchange-swap-button-container">
