@@ -805,6 +805,7 @@ export function getLiquidationPrice(data) {
     delta,
     hasProfit,
     includeDelta,
+    reduceBorrowFee,
   } = data;
   if (!size || !collateral || !averagePrice) {
     return;
@@ -844,10 +845,15 @@ export function getLiquidationPrice(data) {
   }
 
   let positionFee = getMarginFee(size).add(LIQUIDATION_FEE);
+  let remainingCollateralForMaxLeverage = remainingCollateral;
 
   if (entryFundingRate && cumulativeFundingRate) {
     const fundingFee = size.mul(cumulativeFundingRate.sub(entryFundingRate)).div(FUNDING_RATE_PRECISION);
     positionFee = positionFee.add(fundingFee);
+    if (reduceBorrowFee) {
+      // Depositiong or withdrawing collateral will lead to the borrow fee being reduced
+      remainingCollateralForMaxLeverage = remainingCollateral.sub(fundingFee);
+    }
   }
 
   const liquidationPriceForFees = getLiquidationPriceFromDelta({
@@ -861,7 +867,7 @@ export function getLiquidationPrice(data) {
   const liquidationPriceForMaxLeverage = getLiquidationPriceFromDelta({
     liquidationAmount: nextSize.mul(BASIS_POINTS_DIVISOR).div(MAX_LEVERAGE),
     size: nextSize,
-    collateral: remainingCollateral,
+    collateral: remainingCollateralForMaxLeverage,
     averagePrice,
     isLong,
   });
