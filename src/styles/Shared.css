@@ -385,6 +385,10 @@ button.btn-link:hover .logout-icon {
   margin-top: 0 !important;
 }
 
+.m-0 {
+  margin: 0 !important;
+}
+
 .mt-md {
   margin-top: 1.5rem;
 }
