@@ -852,7 +852,12 @@ export function getLiquidationPrice(data) {
     positionFee = positionFee.add(fundingFee);
     if (reduceBorrowFee) {
       // Depositiong or withdrawing collateral will lead to the borrow fee being reduced
-      remainingCollateralForMaxLeverage = remainingCollateral.sub(fundingFee);
+      // We should also take care of a situation when the borrow fee is greater than the remaining collateral
+      if (fundingFee.gt(remainingCollateral)) {
+        remainingCollateralForMaxLeverage = bigNumberify(0);
+      } else {
+        remainingCollateralForMaxLeverage = remainingCollateral.sub(fundingFee);
+      }
     }
   }
 
