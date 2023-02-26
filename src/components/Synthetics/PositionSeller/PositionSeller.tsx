@@ -179,20 +179,21 @@ export function PositionSeller(p: Props) {
       })
     : undefined;
 
-  const fees = getDisplayedTradeFees({
-    feesConfig,
-    swapSteps: swapAmounts?.swapPathStats?.swapSteps,
-    swapPriceImpactDeltaUsd: swapAmounts?.swapPathStats?.totalSwapPriceImpactDeltaUsd,
-    sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
-    positionFeeUsd: decreaseAmounts?.positionFeeUsd,
-  });
-
   const receiveTokenMarket = swapAmounts?.swapPathStats?.targetMarketAddress
     ? getMarket(marketsData, swapAmounts?.swapPathStats?.targetMarketAddress)
     : position?.market;
 
   const receiveUsd = swapAmounts?.usdOut || decreaseAmounts?.receiveUsd;
   const receiveTokenAmount = swapAmounts?.amountOut || decreaseAmounts?.receiveTokenAmount;
+
+  const fees = getDisplayedTradeFees({
+    feesConfig,
+    swapSteps: swapAmounts?.swapPathStats?.swapSteps,
+    swapPriceImpactDeltaUsd: swapAmounts?.swapPathStats?.totalSwapPriceImpactDeltaUsd,
+    sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
+    initialCollateralUsd: receiveUsd,
+    positionFeeUsd: decreaseAmounts?.positionFeeUsd,
+  });
 
   const receiveTokenLiquidity = getAvailableUsdLiquidityForCollateral(
     marketsData,

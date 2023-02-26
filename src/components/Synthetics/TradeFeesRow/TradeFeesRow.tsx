@@ -7,7 +7,6 @@ import { getToken } from "config/tokens";
 import { FeeItem, SwapFeeItem } from "domain/synthetics/fees";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-import { BASIS_POINTS_DIVISOR, PRECISION } from "lib/legacy";
 import { formatDeltaUsd, formatPercentage } from "lib/numbers";
 import "./TradeFeesRow.scss";
 
@@ -23,10 +22,6 @@ type Props = {
 export function TradeFeesRow(p: Props) {
   const { chainId } = useChainId();
 
-  const hasPriceImpactSection = p.swapPriceImpact?.deltaUsd.abs().gt(0) || p.positionPriceImpact?.deltaUsd.abs().gt(0);
-  const shouldBreakSwapSection = Boolean(p.swapFees?.length && hasPriceImpactSection);
-  const shouldBreakPositionFeeSection = Boolean(p.positionFee && (hasPriceImpactSection || p.swapFees?.length));
-
   return (
     <ExchangeInfoRow
       label={<Trans>Fees and price impact</Trans>}
@@ -38,7 +33,7 @@ export function TradeFeesRow(p: Props) {
               className="TradeFeesRow-tooltip"
               handle={
                 <span className={cx({ positive: p.totalFees.deltaUsd.gt(0) })}>
-                  {formatDeltaUsd(p.totalFees.deltaUsd, p.totalFees.bps)}
+                  {formatDeltaUsd(p.totalFees.deltaUsd)}
                 </span>
               }
               position="right-top"
@@ -46,45 +41,65 @@ export function TradeFeesRow(p: Props) {
                 <div>
                   {p.positionPriceImpact?.deltaUsd.abs().gt(0) && (
                     <StatsTooltipRow
-                      label={t`Price impact`}
-                      value={formatDeltaUsd(p.positionPriceImpact.deltaUsd, p.positionPriceImpact.bps)!}
+                      className="TradeFeesRow-fee-row"
+                      label={
+                        <>
+                          <div>{t`Price impact`}:</div>
+                          <div>({formatPercentage(p.positionPriceImpact.bps.abs())} of position size)</div>
+                        </>
+                      }
+                      value={formatDeltaUsd(p.positionPriceImpact.deltaUsd)!}
                       showDollar={false}
                     />
                   )}
 
                   {p.swapPriceImpact?.deltaUsd.abs().gt(0) && (
                     <StatsTooltipRow
-                      label={t`Swap price impact`}
-                      value={formatDeltaUsd(p.swapPriceImpact.deltaUsd, p.swapPriceImpact.bps)!}
+                      className="TradeFeesRow-fee-row"
+                      label={
+                        <>
+                          <div>{t`Swap price impact`}:</div>
+                          <div>({formatPercentage(p.swapPriceImpact.bps.abs())} of swap amount)</div>
+                        </>
+                      }
+                      value={formatDeltaUsd(p.swapPriceImpact.deltaUsd)!}
                       showDollar={false}
                     />
                   )}
 
-                  {shouldBreakSwapSection && <br />}
-
                   {p.swapFees?.map((swap, i) => (
                     <>
-                      {i > 0 && <br />}
                       <StatsTooltipRow
+                        className="TradeFeesRow-fee-row"
                         key={`${swap.tokenInAddress}-${swap.tokenOutAddress}`}
-                        label={t`Swap ${getToken(chainId, swap.tokenInAddress).symbol} to ${
-                          getToken(chainId, swap.tokenOutAddress).symbol
-                        }`}
-                        value={formatDeltaUsd(swap.deltaUsd, swap.bps)!}
+                        label={
+                          <>
+                            <div>
+                              {t`Swap ${getToken(chainId, swap.tokenInAddress).symbol} to ${
+                                getToken(chainId, swap.tokenOutAddress).symbol
+                              }`}
+                              :
+                            </div>
+                            <div>({formatPercentage(swap.bps.abs())} of swap amount)</div>
+                          </>
+                        }
+                        value={formatDeltaUsd(swap.deltaUsd)!}
                         showDollar={false}
                       />
                     </>
                   ))}
 
-                  {shouldBreakPositionFeeSection && <br />}
-
                   {p.positionFee && (
                     <>
                       <StatsTooltipRow
-                        label={t`Position Fee (${formatPercentage(
-                          p.positionFeeFactor?.div(PRECISION.div(BASIS_POINTS_DIVISOR))
-                        )} of position size)`}
-                        value={formatDeltaUsd(p.positionFee.deltaUsd, p.positionFee.bps)!}
+                        className="TradeFeesRow-fee-row"
+                        label={
+                          <>
+                            <div>{t`Position Fee`}:</div>
+                            <div>({formatPercentage(p.positionFee.bps.abs())} of position size)</div>
+                          </>
+                        }
+                        value={formatDeltaUsd(p.positionFee.deltaUsd)!}
                         showDollar={false}
                       />
                     </>
