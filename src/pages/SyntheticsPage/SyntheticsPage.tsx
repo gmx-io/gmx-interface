@@ -12,21 +12,23 @@ import { TradeBox } from "components/Synthetics/Trade/TradeBox/TradeBox";
 import Tab from "components/Tab/Tab";
 import {
   SYNTHETICS_TRADE_COLLATERAL_KEY,
+  SYNTHETICS_TRADE_FROM_TOKEN_KEY,
   SYNTHETICS_TRADE_MARKET_KEY,
+  SYNTHETICS_TRADE_MODE_KEY,
+  SYNTHETICS_TRADE_TO_TOKEN_KEY,
   SYNTHETICS_TRADE_TYPE_KEY,
 } from "config/localStorage";
+import { convertTokenAddress, getToken } from "config/tokens";
+import { getMarket, useMarketsData } from "domain/synthetics/markets";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useAggregatedOrdersData } from "domain/synthetics/orders/useAggregatedOrdersData";
-import { getPosition, getPositionKey } from "domain/synthetics/positions";
+import { AggregatedPositionData, getPosition, getPositionKey } from "domain/synthetics/positions";
 import { useAggregatedPositionsData } from "domain/synthetics/positions/useAggregatedPositionsData";
-import { TradeType } from "domain/synthetics/trade/types";
+import { useAvailableSwapOptions } from "domain/synthetics/trade";
+import { TradeMode, TradeType } from "domain/synthetics/trade/types";
 import { useChainId } from "lib/chains";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
 import { useMemo, useState } from "react";
-import { convertTokenAddress, getToken } from "config/tokens";
-import { getMarket, useMarketsData } from "domain/synthetics/markets";
-import { getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
-import { useAvailableSwapOptions } from "domain/synthetics/trade";
 
 import "./SyntheticsPage.scss";
 
@@ -49,30 +51,31 @@ export function SyntheticsPage(p: Props) {
   const { library, account } = useWeb3React();
   const [listSection, setListSection] = useLocalStorageByChainId(chainId, "List-section-v3", ListSection.Positions);
   const { marketsData } = useMarketsData(chainId);
-  const { tokensData } = useAvailableTokensData(chainId);
 
-  const [selectedMarketAddress, setSelectedMarketAddress] = useLocalStorageSerializeKey<string | undefined>(
-    [chainId, SYNTHETICS_TRADE_MARKET_KEY],
+  const [tradeType, setTradeType] = useLocalStorageSerializeKey([chainId, SYNTHETICS_TRADE_TYPE_KEY], TradeType.Long);
+  const [tradeMode, setTradeMode] = useLocalStorageSerializeKey([chainId, SYNTHETICS_TRADE_MODE_KEY], TradeMode.Market);
+
+  const [fromTokenAddress, setFromTokenAddress] = useLocalStorageSerializeKey<string | undefined>(
+    [chainId, SYNTHETICS_TRADE_FROM_TOKEN_KEY, tradeType],
     undefined
   );
 
-  const selectedMarket = getMarket(marketsData, selectedMarketAddress);
-  const selectedIndexToken = getTokenData(tokensData, selectedMarket?.indexTokenAddress, "native");
+  const [toTokenAddress, setToTokenAddress] = useLocalStorageSerializeKey<string | undefined>(
+    [chainId, SYNTHETICS_TRADE_TO_TOKEN_KEY, tradeType],
+    undefined
+  );
 
-  const [selectedToTokenAddress, setSelectedToTokenAddress] = useState<string>();
+  const [marketAddress, setMarketAddress] = useLocalStorageSerializeKey<string | undefined>(
+    [chainId, SYNTHETICS_TRADE_MARKET_KEY, tradeType, toTokenAddress],
+    undefined
+  );
+
+  const [collateralAddress, setCollateralAddress] = useLocalStorageSerializeKey<string | undefined>(
+    [chainId, SYNTHETICS_TRADE_COLLATERAL_KEY, tradeType, marketAddress],
+    undefined
+  );
 
   const { availableIndexTokens } = useAvailableSwapOptions({});
-
-  const [selectedCollateralAddress, setSelectedCollateralAddress] = useLocalStorageSerializeKey<string | undefined>(
-    [chainId, SYNTHETICS_TRADE_COLLATERAL_KEY],
-    undefined
-  );
-
-  const [selectedTradeType, setSelectedTradeType] = useLocalStorageSerializeKey(
-    [chainId, SYNTHETICS_TRADE_TYPE_KEY],
-    TradeType.Long
-  );
-
   const [closingPositionKey, setClosingPositionKey] = useState<string>();
   const [editingPositionKey, setEditingPositionKey] = useState<string>();
 
@@ -90,14 +93,9 @@ export function SyntheticsPage(p: Props) {
   const selectedOrdersKeysArr = Object.keys(selectedOrdersKeys).filter((key) => selectedOrdersKeys[key]);
 
   const selectedPosition = useMemo(() => {
-    const positionKey = getPositionKey(
-      account,
-      selectedMarketAddress,
-      selectedCollateralAddress,
-      selectedTradeType === TradeType.Long
-    );
+    const positionKey = getPositionKey(account, marketAddress, collateralAddress, tradeType === TradeType.Long);
     return getPosition(aggregatedPositionsData, positionKey);
-  }, [account, aggregatedPositionsData, selectedCollateralAddress, selectedMarketAddress, selectedTradeType]);
+  }, [account, aggregatedPositionsData, collateralAddress, marketAddress, tradeType]);
 
   const closingPosition = getPosition(aggregatedPositionsData, closingPositionKey);
   const editingPosition = getPosition(aggregatedPositionsData, editingPositionKey);
@@ -111,27 +109,35 @@ export function SyntheticsPage(p: Props) {
   }
 
   function onSelectPosition(positionKey: string) {
-    const position = getPosition(aggregatedPositionsData, positionKey);
+    const position = getPosition(aggregatedPositionsData, positionKey) as AggregatedPositionData;
 
     if (!position) return;
 
-    const { marketAddress, collateralTokenAddress, isLong } = position;
+    const { marketAddress, collateralTokenAddress, isLong, indexToken } = position;
 
-    setSelectedMarketAddress(marketAddress);
-    setSelectedCollateralAddress(collateralTokenAddress);
-    setSelectedTradeType(isLong ? TradeType.Long : TradeType.Short);
+    // disable merge state updates to correctly save values to local storage
+    setTimeout(() => {
+      setTradeType(isLong ? TradeType.Long : TradeType.Short);
+      setToTokenAddress(indexToken?.address);
+      setMarketAddress(marketAddress);
+      setCollateralAddress(collateralTokenAddress);
+    });
   }
 
   function onSelectIndexToken(tokenAddress: string) {
-    const market = Object.values(marketsData).find(
-      (market) =>
-        convertTokenAddress(chainId, market.indexTokenAddress, "native") ===
-        convertTokenAddress(chainId, tokenAddress, "native")
-    );
+    setToTokenAddress(tokenAddress);
+  }
 
-    if (market) {
-      setSelectedMarketAddress(market.marketTokenAddress);
-    }
+  function onSelectMarketAddress(marketAddress?: string) {
+    const market = getMarket(marketsData, marketAddress);
+
+    if (!market) return;
+
+    // disable merge state updates to correctly save values to local storage
+    setTimeout(() => {
+      setToTokenAddress(convertTokenAddress(chainId, market?.indexTokenAddress, "native"));
+      setMarketAddress(marketAddress);
+    });
   }
 
   return (
@@ -142,16 +148,14 @@ export function SyntheticsPage(p: Props) {
             savedShouldShowPositionLines={p.savedShouldShowPositionLines}
             ordersData={aggregatedOrdersData}
             positionsData={aggregatedPositionsData}
-            chartTokenAddress={
-              selectedTradeType === TradeType.Swap ? selectedToTokenAddress : selectedIndexToken?.address
-            }
+            chartTokenAddress={toTokenAddress}
             availableTokens={
-              selectedTradeType === TradeType.Swap && selectedToTokenAddress
-                ? [getToken(chainId, selectedToTokenAddress)]
+              tradeType === TradeType.Swap && toTokenAddress
+                ? [getToken(chainId, toTokenAddress)]
                 : availableIndexTokens
             }
             onSelectChartTokenAddress={onSelectIndexToken}
-            disableSelectToken={selectedTradeType === TradeType.Swap}
+            disableSelectToken={tradeType === TradeType.Swap}
           />
 
           <div className="SyntheticsTrade-lists large">
@@ -219,19 +223,24 @@ export function SyntheticsPage(p: Props) {
         <div className="SyntheticsTrade-right">
           <div className="SyntheticsTrade-swap-box">
             <TradeBox
-              selectedTradeType={selectedTradeType}
-              selectedMarketAddress={selectedMarketAddress}
-              selectedToTokenAddress={selectedToTokenAddress}
-              setSelectedToTokenAddress={setSelectedToTokenAddress}
-              selectedCollateralAddress={selectedCollateralAddress}
-              existingPosition={selectedPosition}
-              onSelectTradeType={setSelectedTradeType}
-              onSelectMarketAddress={setSelectedMarketAddress}
-              onSelectCollateralAddress={setSelectedCollateralAddress}
-              onConnectWallet={p.onConnectWallet}
+              tradeMode={tradeMode}
+              tradeType={tradeType}
+              fromTokenAddress={fromTokenAddress}
+              toTokenAddress={toTokenAddress}
+              marketAddress={marketAddress}
+              collateralAddress={collateralAddress}
               savedIsPnlInLeverage={p.savedIsPnlInLeverage}
               shouldDisableValidation={p.shouldDisableValidation}
+              existingPosition={selectedPosition}
               ordersData={aggregatedOrdersData}
+              positionsData={aggregatedPositionsData}
+              onSelectTradeType={setTradeType}
+              onSelectTradeMode={setTradeMode}
+              onSelectFromTokenAddress={setFromTokenAddress}
+              onSelectToTokenAddress={setToTokenAddress}
+              onSelectMarketAddress={onSelectMarketAddress}
+              onSelectCollateralAddress={setCollateralAddress}
+              onConnectWallet={p.onConnectWallet}
               setPendingTxns={p.setPendingTxns}
             />
           </div>

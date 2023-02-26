@@ -49,11 +49,11 @@ export function getBestSwapPath(paths: MarketEdge[][], usdIn: BigNumber, estimat
   let bestUsdOut = BigNumber.from(0);
 
   for (const path of paths) {
-    let pathUsdOut = BigNumber.from(0);
+    let pathUsdOut = usdIn;
 
     for (const edge of path) {
-      const { usdOut } = estimator(edge, usdIn);
-      pathUsdOut = pathUsdOut.add(usdOut);
+      const { usdOut } = estimator(edge, pathUsdOut);
+      pathUsdOut = usdOut;
     }
 
     if (pathUsdOut.gt(bestUsdOut)) {

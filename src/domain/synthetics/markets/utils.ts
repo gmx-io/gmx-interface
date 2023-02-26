@@ -57,6 +57,29 @@ export function getMarketName(
   return `${gmText} ${indexToken.symbol}/${market.perp} [${longToken.symbol}-${shortToken.symbol}]`;
 }
 
+export function getMarketPoolName(marketsData: MarketsData, tokensData: TokensData, marketAddress?: string) {
+  const market = getMarket(marketsData, marketAddress);
+  const longToken = getTokenData(tokensData, market?.longTokenAddress);
+  const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
+
+  if (!market || !longToken || !shortToken) {
+    return undefined;
+  }
+
+  return `${longToken.symbol}-${shortToken.symbol}`;
+}
+
+export function getMarketIndexName(marketsData: MarketsData, tokensData: TokensData, marketAddress?: string) {
+  const market = getMarket(marketsData, marketAddress);
+  const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
+
+  if (!market || !indexToken) {
+    return undefined;
+  }
+
+  return `${indexToken.symbol}/${market.perp}`;
+}
+
 export function getOppositeCollateral(market?: Market, collateralToken?: string) {
   if (market?.longTokenAddress === collateralToken) {
     return market?.shortTokenAddress;
@@ -84,9 +107,9 @@ export function getMostLiquidMarketForPosition(
   poolsData: MarketsPoolsData,
   openInterestData: MarketsOpenInterestData,
   tokensData: TokensData,
-  indexTokenAddress: string,
-  collateralTokenAddress: string | undefined,
-  isLong: boolean | undefined
+  indexTokenAddress?: string,
+  collateralTokenAddress?: string,
+  isLong?: boolean
 ) {
   if (!indexTokenAddress || typeof isLong === "undefined") return undefined;
 

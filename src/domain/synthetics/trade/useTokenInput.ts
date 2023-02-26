@@ -1,6 +1,5 @@
 import { TokenData, TokensData, convertToTokenAmount, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
-import { LocalStorageKey, useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmountFree, parseValue } from "lib/numbers";
 import { useMemo, useState } from "react";
 
@@ -16,22 +15,17 @@ export type TokenInputState = {
   setInputValue: (val: string) => void;
   setValueByTokenAmount: (val?: BigNumber) => void;
   setValueByUsd: (usdAmount?: BigNumber) => void;
-  setTokenAddress: (val?: string) => void;
 };
 
 export function useTokenInput(
   tokensData: TokensData,
   params: {
+    tokenAddress?: string;
     priceType: "min" | "max";
-    localStorageKey: LocalStorageKey[];
-    initialTokenAddress?: string;
   }
 ): TokenInputState {
   const [inputValue, setInputValue] = useState<string>("");
-  const [tokenAddress, setTokenAddress] = useLocalStorageSerializeKey<string | undefined>(
-    params.localStorageKey,
-    params.initialTokenAddress
-  );
+  const { tokenAddress } = params;
 
   return useMemo(() => {
     const token = getTokenData(tokensData, tokenAddress);
@@ -72,7 +66,6 @@ export function useTokenInput(
       setInputValue,
       setValueByTokenAmount,
       setValueByUsd,
-      setTokenAddress,
     };
-  }, [inputValue, params.priceType, setTokenAddress, tokenAddress, tokensData]);
+  }, [inputValue, params.priceType, tokenAddress, tokensData]);
 }

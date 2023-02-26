@@ -8,7 +8,6 @@ import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import Tab from "components/Tab/Tab";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
-import { SYNTHETICS_COLLATERAL_DEPOSIT_TOKEN_KEY } from "config/localStorage";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
   estimateExecuteDecreaseOrderGasLimit,
@@ -42,7 +41,7 @@ import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { BASIS_POINTS_DIVISOR, DEFAULT_SLIPPAGE_AMOUNT, MAX_ALLOWED_LEVERAGE, USD_DECIMALS } from "lib/legacy";
 import { formatAmount, formatAmountFree, formatTokenAmount, formatUsd, parseValue } from "lib/numbers";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { ErrorCode, ErrorDisplayType } from "components/Exchange/constants";
 import { getContract } from "config/contracts";
@@ -94,7 +93,7 @@ export function PositionEditor(p: Props) {
 
   const depositInput = useTokenInput(tokensData, {
     priceType: "min",
-    localStorageKey: [chainId, SYNTHETICS_COLLATERAL_DEPOSIT_TOKEN_KEY, position?.marketAddress],
+    tokenAddress: position?.collateralTokenAddress,
   });
 
   const routerAddress = getContract(chainId, "SyntheticsRouter");
@@ -324,17 +323,6 @@ export function PositionEditor(p: Props) {
       });
     }
   }
-
-  useEffect(
-    function updateInputsByPosition() {
-      if (position?.collateralToken?.address) {
-        if (position?.collateralToken.address !== depositInput.tokenAddress) {
-          depositInput.setTokenAddress(position?.collateralToken.address);
-        }
-      }
-    },
-    [depositInput, position?.collateralToken?.address]
-  );
 
   const submitButtonState = getSubmitButtonState();
 

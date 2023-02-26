@@ -1,4 +1,5 @@
 import { Trans, t } from "@lingui/macro";
+import cx from "classnames";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Checkbox from "components/Checkbox/Checkbox";
 import { Dropdown, DropdownOption } from "components/Dropdown/Dropdown";
@@ -13,9 +14,6 @@ import {
   LEVERAGE_OPTION_KEY,
   SLIPPAGE_BPS_KEY,
   SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BPS_KEY,
-  SYNTHETICS_TRADE_FROM_TOKEN_KEY,
-  SYNTHETICS_TRADE_MODE_KEY,
-  SYNTHETICS_TRADE_TO_TOKEN_KEY,
 } from "config/localStorage";
 import { convertTokenAddress, getToken } from "config/tokens";
 import {
@@ -24,15 +22,20 @@ import {
   getAvailableUsdLiquidityForPosition,
   getMarket,
   getMarketName,
+  getMarketPoolName,
   getMostLiquidMarketForPosition,
   getMostLiquidMarketForSwap,
-  isMarketCollateral,
   useMarketsData,
   useMarketsPoolsData,
   useOpenInterestData,
 } from "domain/synthetics/markets";
-import { AggregatedOrdersData, OrderType } from "domain/synthetics/orders";
-import { AggregatedPositionData, formatLeverage, getMarkPrice } from "domain/synthetics/positions";
+import { AggregatedOrdersData, OrderType, getAcceptablePrice } from "domain/synthetics/orders";
+import {
+  AggregatedPositionData,
+  AggregatedPositionsData,
+  formatLeverage,
+  getMarkPrice,
+} from "domain/synthetics/positions";
 import { TokensRatio, getTokenData, getTokensRatio, useAvailableTokensData } from "domain/synthetics/tokens";
 import {
   getDecreasePositionTradeParams,
@@ -66,7 +69,6 @@ import {
   parseValue,
 } from "lib/numbers";
 import { useEffect, useMemo, useState } from "react";
-import cx from "classnames";
 import { IoMdSwap } from "react-icons/io";
 import { MarketCard } from "../../MarketCard/MarketCard";
 
@@ -77,7 +79,9 @@ import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
   estimateExecuteSwapOrderGasLimit,
+  getCappedPositionImpactUsd,
   getExecutionFee,
+  getPriceImpactForPosition,
   useGasPrice,
 } from "domain/synthetics/fees";
 import { useMarketsFeesConfigs } from "domain/synthetics/fees/useMarketsFeesConfigs";
@@ -85,6 +89,7 @@ import { SwapCard } from "../../SwapCard/SwapCard";
 
 import { SwapTradeParams, TradeMode, TradeType } from "domain/synthetics/trade/types";
 
+import { OrderStatus } from "components/Synthetics/OrderStatus/OrderStatus";
 import { IS_NETWORK_DISABLED, getChainName } from "config/chains";
 import { useGasLimitsConfig } from "domain/synthetics/fees/useGasLimitsConfig";
 import { usePositionsConstants } from "domain/synthetics/positions/usePositionsConstants";
@@ -92,25 +97,30 @@ import { usePrevious } from "lib/usePrevious";
 import { AiOutlineEdit } from "react-icons/ai";
 import { AcceptbablePriceImpactEditor } from "../AcceptablePriceImpactEditor/AcceptablePriceImpactEditor";
 import { ConfirmationBox } from "../ConfirmationBox/ConfirmationBox";
-import { OrderStatus } from "components/Synthetics/OrderStatus/OrderStatus";
+import Tooltip from "components/Tooltip/Tooltip";
 
 import "./TradeBox.scss";
 
 type Props = {
-  ordersData: AggregatedOrdersData;
-  selectedMarketAddress?: string;
-  selectedCollateralAddress?: string;
-  selectedTradeType?: TradeType;
-  existingPosition?: AggregatedPositionData;
-  onSelectMarketAddress: (marketAddress: string) => void;
-  onSelectCollateralAddress: (collateralAddress: string) => void;
-  onSelectTradeType: (tradeType: TradeType) => void;
-  onConnectWallet: () => void;
+  tradeType?: TradeType;
+  tradeMode?: TradeMode;
+  fromTokenAddress?: string;
+  toTokenAddress?: string;
+  marketAddress?: string;
+  collateralAddress?: string;
   savedIsPnlInLeverage: boolean;
-  setSelectedToTokenAddress: (toTokenAddress: string) => void;
-  selectedToTokenAddress?: string;
+  ordersData: AggregatedOrdersData;
+  positionsData: AggregatedPositionsData;
+  existingPosition?: AggregatedPositionData;
   shouldDisableValidation?: boolean;
+  onSelectFromTokenAddress: (fromTokenAddress?: string) => void;
+  onSelectToTokenAddress: (toTokenAddress?: string) => void;
+  onSelectTradeType: (tradeType: TradeType) => void;
+  onSelectTradeMode: (tradeMode: TradeMode) => void;
   setPendingTxns: (txns: any) => void;
+  onSelectMarketAddress: (marketAddress?: string) => void;
+  onSelectCollateralAddress: (collateralAddress?: string) => void;
+  onConnectWallet: () => void;
 };
 
 const tradeTypeIcons = {
@@ -127,32 +137,39 @@ const avaialbleModes = {
 
 export function TradeBox(p: Props) {
   const {
-    onSelectMarketAddress,
-    onSelectTradeType,
-    onSelectCollateralAddress,
-    onConnectWallet,
-    selectedCollateralAddress,
-    selectedMarketAddress,
-    selectedTradeType,
+    tradeType,
+    tradeMode,
+    fromTokenAddress,
+    toTokenAddress,
+    marketAddress,
+    collateralAddress,
     existingPosition,
     ordersData,
+    positionsData,
     savedIsPnlInLeverage,
     shouldDisableValidation,
-    setSelectedToTokenAddress,
-    selectedToTokenAddress,
+    onSelectTradeType,
+    onSelectTradeMode,
+    onSelectFromTokenAddress,
+    onSelectToTokenAddress,
+    onSelectMarketAddress,
+    onSelectCollateralAddress,
+    onConnectWallet,
     setPendingTxns,
   } = p;
+
   const { chainId } = useChainId();
-  const { tokensData } = useAvailableTokensData(chainId);
-  const { marketsData } = useMarketsData(chainId);
-  const { poolsData } = useMarketsPoolsData(chainId);
-  const { openInterestData } = useOpenInterestData(chainId);
-  const { marketsFeesConfigs } = useMarketsFeesConfigs(chainId);
+  const { tokensData, isLoading: isTokensLoading } = useAvailableTokensData(chainId);
+  const { marketsData, isLoading: isMarketsLoading } = useMarketsData(chainId);
+  const { poolsData, isLoading: isMarketPoolsLoading } = useMarketsPoolsData(chainId);
+  const { openInterestData, isLoading: isOpenInterestLoading } = useOpenInterestData(chainId);
+  const { marketsFeesConfigs, isLoading: isFeesConfigsLoading } = useMarketsFeesConfigs(chainId);
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimitsConfig(chainId);
   const { maxLeverage, minCollateralUsd } = usePositionsConstants(chainId);
 
-  const [tradeMode, setTradeMode] = useLocalStorageSerializeKey([chainId, SYNTHETICS_TRADE_MODE_KEY], TradeMode.Market);
+  const isDataLoading =
+    isTokensLoading || isMarketsLoading || isMarketPoolsLoading || isOpenInterestLoading || isFeesConfigsLoading;
 
   const tradeTypeLabels = {
     [TradeType.Long]: t`Long`,
@@ -167,7 +184,7 @@ export function TradeBox(p: Props) {
   };
 
   const { isLong, isSwap, isShort, isPosition, isIncrease, isTrigger, isMarket, isLimit } = getTradeFlags(
-    selectedTradeType!,
+    tradeType!,
     tradeMode!
   );
 
@@ -176,18 +193,18 @@ export function TradeBox(p: Props) {
 
   const fromTokenInput = useTokenInput(tokensData, {
     priceType: "min",
-    localStorageKey: [chainId, SYNTHETICS_TRADE_FROM_TOKEN_KEY, selectedTradeType],
+    tokenAddress: fromTokenAddress,
   });
 
   const toTokenInput = useTokenInput(tokensData, {
     priceType: isShort ? "min" : "max",
-    localStorageKey: [chainId, SYNTHETICS_TRADE_TO_TOKEN_KEY, selectedTradeType],
+    tokenAddress: toTokenAddress,
   });
 
   const prevToTokenAddress = usePrevious(toTokenInput.tokenAddress);
   const isToTokenChanged = prevToTokenAddress !== toTokenInput.tokenAddress;
 
-  const collateralToken = getTokenData(tokensData, selectedCollateralAddress);
+  const collateralToken = getTokenData(tokensData, collateralAddress);
   const indexToken = getTokenData(tokensData, toTokenInput.token?.address);
 
   const [closeSizeInputValue, setCloseSizeInputValue] = useState("");
@@ -235,32 +252,32 @@ export function TradeBox(p: Props) {
       selectedIndexTokenAddress: isPosition ? toTokenInput.tokenAddress : undefined,
     });
 
-  const marketsOptions: DropdownOption[] = Object.values(marketsData).map((markets) => ({
-    label: getMarketName(marketsData, tokensData, markets.marketTokenAddress, false, false)!,
-    value: markets.marketTokenAddress,
-  }));
+  const availableMarkets: Market[] = useMemo(() => {
+    let markets = Object.values(marketsData);
 
-  const selectedMarket = getMarket(marketsData, selectedMarketAddress);
-  const prevSelectedMarketAddress = usePrevious(selectedMarketAddress);
-  const isMarketChanged = prevSelectedMarketAddress !== selectedMarketAddress;
+    if (isIncrease) {
+      if (!toTokenAddress) return [];
 
-  const mostLiquidSwapMarket = useMemo(() => {
-    if (!isSwap || !toTokenInput.tokenAddress) {
-      return undefined;
+      markets = markets.filter(
+        (market) => market.indexTokenAddress === convertTokenAddress(chainId, toTokenAddress, "wrapped")
+      );
     }
 
-    return getMostLiquidMarketForSwap(
-      marketsData,
-      poolsData,
-      openInterestData,
-      tokensData,
-      convertTokenAddress(chainId, toTokenInput.tokenAddress, "wrapped")
-    );
-  }, [chainId, isSwap, marketsData, openInterestData, poolsData, toTokenInput.tokenAddress, tokensData]);
+    return markets;
+  }, [chainId, isIncrease, marketsData, toTokenAddress]);
+
+  const marketsOptions: DropdownOption[] = availableMarkets.map((market) => ({
+    label: getMarketName(marketsData, tokensData, market.marketTokenAddress, false, false)!,
+    value: market.marketTokenAddress,
+  }));
+
+  const selectedMarket = getMarket(marketsData, marketAddress);
+  const prevmarketAddress = usePrevious(marketAddress);
+  const isMarketChanged = prevmarketAddress !== marketAddress;
 
   const swapRoute = useSwapRoute({
     fromTokenAddress: fromTokenInput.tokenAddress,
-    toTokenAddress: isPosition ? selectedCollateralAddress : toTokenInput.tokenAddress,
+    toTokenAddress: isPosition ? collateralAddress : toTokenInput.tokenAddress,
   });
 
   const isWrapOrUnwrap = useMemo(() => {
@@ -429,8 +446,6 @@ export function TradeBox(p: Props) {
     ]
   );
 
-  const fees = swapParams?.fees || increasePositionParams?.fees || decreasePositionParams?.fees;
-
   const swapOutLiquidity = getAvailableUsdLiquidityForCollateral(
     marketsData,
     poolsData,
@@ -446,7 +461,7 @@ export function TradeBox(p: Props) {
     openInterestData,
     tokensData,
     increasePositionParams?.swapPathStats?.targetMarketAddress,
-    p.selectedCollateralAddress
+    p.collateralAddress
   );
 
   const longLiquidity = getAvailableUsdLiquidityForPosition(
@@ -454,7 +469,7 @@ export function TradeBox(p: Props) {
     poolsData,
     openInterestData,
     tokensData,
-    p.selectedMarketAddress,
+    p.marketAddress,
     true
   );
 
@@ -463,9 +478,192 @@ export function TradeBox(p: Props) {
     poolsData,
     openInterestData,
     tokensData,
-    p.selectedMarketAddress,
+    p.marketAddress,
     false
   );
+
+  const mostLiquidSwapMarket = useMemo(() => {
+    if (!isSwap || !toTokenInput.tokenAddress) {
+      return undefined;
+    }
+
+    return getMostLiquidMarketForSwap(
+      marketsData,
+      poolsData,
+      openInterestData,
+      tokensData,
+      convertTokenAddress(chainId, toTokenInput.tokenAddress, "wrapped")
+    );
+  }, [chainId, isSwap, marketsData, openInterestData, poolsData, toTokenInput.tokenAddress, tokensData]);
+
+  const isOutPositionLiquidity = isIncrease
+    ? isLong
+      ? longLiquidity?.lt(increasePositionParams?.sizeDeltaUsd || 0)
+      : shortLiquidity?.lt(increasePositionParams?.sizeDeltaUsd || 0)
+    : false;
+
+  const optimalPositionMarkets = useMemo(() => {
+    const result: {
+      marketWithPosition?: Market;
+      collateralWithPosition?: string;
+      maxLiquidityMarket?: Market;
+      minPriceImpactMarket?: Market;
+      minAcceptablePriceImpactBps?: BigNumber;
+      noSufficientLiquidityInAnyMarket?: boolean;
+      shouldShowMarketTooltip?: boolean;
+    } = {};
+
+    if (!isPosition || isDataLoading) {
+      return result;
+    }
+
+    if (isTrigger) {
+      if (!existingPosition) {
+        const positions = Object.values(positionsData);
+        const availablePosition = positions.find((pos) =>
+          availableMarkets.some((market) => market.marketTokenAddress === pos.marketAddress)
+        );
+
+        if (availablePosition) {
+          result.marketWithPosition = availablePosition.market;
+          result.collateralWithPosition = availablePosition.collateralTokenAddress;
+        }
+      }
+
+      result.shouldShowMarketTooltip = Boolean(result.marketWithPosition);
+
+      return result;
+    }
+
+    result.maxLiquidityMarket = getMostLiquidMarketForPosition(
+      marketsData,
+      poolsData,
+      openInterestData,
+      tokensData,
+      toTokenAddress,
+      undefined,
+      isLong
+    );
+
+    // initialize with default value;
+    const sizeDeltaUsd = increasePositionParams?.sizeDeltaUsd || expandDecimals(1000, USD_DECIMALS)!;
+
+    let liquidMarkets = availableMarkets.filter((market) => {
+      const liquidity = getAvailableUsdLiquidityForPosition(
+        marketsData,
+        poolsData,
+        openInterestData,
+        tokensData,
+        market.marketTokenAddress,
+        isLong
+      );
+
+      return liquidity?.gt(sizeDeltaUsd);
+    });
+
+    if (!liquidMarkets.length) {
+      result.noSufficientLiquidityInAnyMarket = true;
+      result.shouldShowMarketTooltip = true;
+
+      return result;
+    }
+
+    if (!existingPosition) {
+      const positions = Object.values(positionsData);
+      const availablePosition = positions.find((pos) =>
+        liquidMarkets.some((market) => market.marketTokenAddress === pos.marketAddress)
+      );
+
+      if (availablePosition) {
+        result.marketWithPosition = availablePosition.market;
+        result.collateralWithPosition = availablePosition.collateralTokenAddress;
+      }
+    }
+
+    let minPriceImpactMarket: Market | undefined = undefined;
+    let minNegativePriceImpactDeltaUsd: BigNumber | undefined = undefined;
+
+    for (const market of liquidMarkets) {
+      let priceImpactDeltaUsd = getPriceImpactForPosition(
+        openInterestData,
+        marketsFeesConfigs,
+        market.marketTokenAddress,
+        sizeDeltaUsd,
+        isLong
+      );
+
+      priceImpactDeltaUsd = getCappedPositionImpactUsd(
+        marketsData,
+        poolsData,
+        marketsFeesConfigs,
+        tokensData,
+        market.marketTokenAddress,
+        priceImpactDeltaUsd
+      );
+
+      if (!priceImpactDeltaUsd) {
+        continue;
+      }
+
+      if (
+        !minNegativePriceImpactDeltaUsd ||
+        !minPriceImpactMarket ||
+        priceImpactDeltaUsd.gt(minNegativePriceImpactDeltaUsd)
+      ) {
+        minNegativePriceImpactDeltaUsd = priceImpactDeltaUsd;
+        minPriceImpactMarket = market;
+      }
+    }
+
+    if (
+      minPriceImpactMarket &&
+      minNegativePriceImpactDeltaUsd &&
+      minNegativePriceImpactDeltaUsd.gt(increasePositionParams?.positionPriceImpactDeltaUsd || 0) &&
+      minPriceImpactMarket.marketTokenAddress !== selectedMarket?.marketTokenAddress
+    ) {
+      result.minPriceImpactMarket = minPriceImpactMarket;
+
+      const acceptablePriceData = getAcceptablePrice({
+        isIncrease: true,
+        isLong,
+        sizeDeltaUsd,
+        indexPrice: markPrice,
+        acceptablePriceImpactBps: isLimit ? acceptablePriceImpactBps : undefined,
+        priceImpactDeltaUsd: minNegativePriceImpactDeltaUsd,
+        allowedSlippage: isMarket ? allowedSlippage : 0,
+      })!;
+
+      result.minAcceptablePriceImpactBps = acceptablePriceData.acceptablePriceImpactBps;
+    }
+
+    result.shouldShowMarketTooltip = Boolean(result.marketWithPosition) || Boolean(result.minPriceImpactMarket);
+
+    return result;
+  }, [
+    acceptablePriceImpactBps,
+    allowedSlippage,
+    availableMarkets,
+    existingPosition,
+    increasePositionParams?.positionPriceImpactDeltaUsd,
+    increasePositionParams?.sizeDeltaUsd,
+    isDataLoading,
+    isLimit,
+    isLong,
+    isMarket,
+    isPosition,
+    isTrigger,
+    markPrice,
+    marketsData,
+    marketsFeesConfigs,
+    openInterestData,
+    poolsData,
+    positionsData,
+    selectedMarket?.marketTokenAddress,
+    toTokenAddress,
+    tokensData,
+  ]);
+
+  const fees = swapParams?.fees || increasePositionParams?.fees || decreasePositionParams?.fees;
 
   const executionFee = useMemo(() => {
     if (!gasLimits || !gasPrice) return undefined;
@@ -526,11 +724,11 @@ export function TradeBox(p: Props) {
 
   useEffect(
     function updateMode() {
-      if (selectedTradeType && tradeMode && !avaialbleModes[selectedTradeType].includes(tradeMode)) {
-        setTradeMode(avaialbleModes[selectedTradeType][0]);
+      if (tradeType && tradeMode && !avaialbleModes[tradeType].includes(tradeMode)) {
+        onSelectTradeMode(avaialbleModes[tradeType][0]);
       }
     },
-    [selectedTradeType, setTradeMode, tradeMode]
+    [tradeType, onSelectTradeMode, tradeMode]
   );
 
   useEffect(
@@ -540,20 +738,16 @@ export function TradeBox(p: Props) {
       const needFromUpdate = !availableSwapTokens.find((t) => t.address === fromTokenInput.tokenAddress);
 
       if (needFromUpdate && availableSwapTokens.length) {
-        fromTokenInput.setTokenAddress(availableSwapTokens[0].address);
+        onSelectFromTokenAddress(availableSwapTokens[0].address);
       }
 
       const needToUpdate = !availableSwapTokens.find((t) => t.address === toTokenInput.tokenAddress);
 
       if (needToUpdate && availableSwapTokens.length) {
-        toTokenInput.setTokenAddress(availableSwapTokens[0].address);
-      }
-
-      if (toTokenInput.tokenAddress && selectedToTokenAddress !== toTokenInput.tokenAddress) {
-        setSelectedToTokenAddress(toTokenInput.tokenAddress);
+        onSelectToTokenAddress(availableSwapTokens[0].address);
       }
     },
-    [availableSwapTokens, fromTokenInput, isSwap, selectedToTokenAddress, setSelectedToTokenAddress, toTokenInput]
+    [availableSwapTokens, fromTokenInput, isSwap, onSelectFromTokenAddress, onSelectToTokenAddress, toTokenInput]
   );
 
   useEffect(
@@ -563,34 +757,24 @@ export function TradeBox(p: Props) {
       const needFromUpdate = !availableSwapTokens.find((t) => t.address === fromTokenInput.tokenAddress);
 
       if (needFromUpdate && availableSwapTokens.length) {
-        fromTokenInput.setTokenAddress(availableSwapTokens[0].address);
+        onSelectFromTokenAddress(availableSwapTokens[0].address);
       }
 
       const needIndexUpdateByAvailableTokens = !availableIndexTokens.find(
         (t) => t.address === toTokenInput.tokenAddress
       );
 
-      const needIndexUpdateByMarket =
-        isMarketChanged &&
-        !isToTokenChanged &&
-        selectedMarket &&
-        toTokenInput.tokenAddress &&
-        convertTokenAddress(chainId, selectedMarket.indexTokenAddress, "native") !== toTokenInput.tokenAddress;
-
-      if (needIndexUpdateByAvailableTokens) {
-        if (selectedMarket) {
-          toTokenInput.setTokenAddress(convertTokenAddress(chainId, selectedMarket.indexTokenAddress, "native"));
-        } else if (availableIndexTokens.length) {
-          toTokenInput.setTokenAddress(availableIndexTokens[0].address);
-        }
-      } else if (needIndexUpdateByMarket) {
-        toTokenInput.setTokenAddress(convertTokenAddress(chainId, selectedMarket.indexTokenAddress, "native"));
+      if (needIndexUpdateByAvailableTokens && availableIndexTokens.length) {
+        onSelectToTokenAddress(availableIndexTokens[0].address);
       }
 
-      const needCollateralUpdate = !availablePositionCollaterals.find((t) => t.address === selectedCollateralAddress);
+      const needCollateralUpdate =
+        !collateralAddress ||
+        (selectedMarket &&
+          ![selectedMarket.longTokenAddress, selectedMarket.shortTokenAddress].includes(collateralAddress));
 
-      if (needCollateralUpdate && availablePositionCollaterals.length) {
-        onSelectCollateralAddress(availablePositionCollaterals[0].address);
+      if (needCollateralUpdate && selectedMarket) {
+        onSelectCollateralAddress(isLong ? selectedMarket.longTokenAddress : selectedMarket.shortTokenAddress);
       }
     },
     [
@@ -604,9 +788,12 @@ export function TradeBox(p: Props) {
       isPosition,
       isToTokenChanged,
       onSelectCollateralAddress,
-      selectedCollateralAddress,
+      onSelectFromTokenAddress,
+      onSelectToTokenAddress,
+      collateralAddress,
       selectedMarket,
       toTokenInput,
+      isLong,
     ]
   );
 
@@ -614,39 +801,12 @@ export function TradeBox(p: Props) {
     function updatePositionMarket() {
       if (!isPosition) return;
 
-      const needInitMarket = !selectedMarketAddress;
+      const needUpdateMarket = !marketAddress || !availableMarkets.some((m) => m.marketTokenAddress === marketAddress);
 
-      const needUpdateMarketByIndexToken =
-        selectedMarket &&
-        toTokenInput.tokenAddress &&
-        convertTokenAddress(chainId, selectedMarket.indexTokenAddress, "native") !== toTokenInput.tokenAddress;
+      const optimalMarket = optimalPositionMarkets.minPriceImpactMarket || optimalPositionMarkets.maxLiquidityMarket;
 
-      const needUpdateMarketByCollateral =
-        selectedCollateralAddress && selectedMarket && !isMarketCollateral(selectedMarket, selectedCollateralAddress);
-
-      if (needInitMarket || needUpdateMarketByIndexToken || needUpdateMarketByCollateral) {
-        let market: Market | undefined;
-
-        if (toTokenInput.tokenAddress) {
-          market = getMostLiquidMarketForPosition(
-            marketsData,
-            poolsData,
-            openInterestData,
-            tokensData,
-            convertTokenAddress(chainId, toTokenInput.tokenAddress, "wrapped"),
-            selectedCollateralAddress,
-            isLong
-          );
-        }
-
-        if (!market) {
-          const markets = Object.values(marketsData);
-          market = markets[0];
-        }
-
-        if (market) {
-          onSelectMarketAddress(market.marketTokenAddress);
-        }
+      if (needUpdateMarket) {
+        onSelectMarketAddress(optimalMarket?.marketTokenAddress);
       }
     },
     [
@@ -656,12 +816,15 @@ export function TradeBox(p: Props) {
       marketsData,
       onSelectMarketAddress,
       openInterestData,
-      selectedCollateralAddress,
-      selectedMarketAddress,
+      collateralAddress,
+      marketAddress,
       poolsData,
       selectedMarket,
       toTokenInput.tokenAddress,
       tokensData,
+      availableMarkets,
+      optimalPositionMarkets.minPriceImpactMarket,
+      optimalPositionMarkets.maxLiquidityMarket,
     ]
   );
 
@@ -669,10 +832,10 @@ export function TradeBox(p: Props) {
     const fromToken = fromTokenInput.tokenAddress;
     const toToken = toTokenInput.tokenAddress;
 
-    fromTokenInput.setTokenAddress(toToken);
+    onSelectFromTokenAddress(toToken);
     fromTokenInput.setInputValue(toTokenInput.inputValue || "");
 
-    toTokenInput.setTokenAddress(fromToken);
+    onSelectToTokenAddress(fromToken);
     toTokenInput.setInputValue(fromTokenInput.inputValue || "");
 
     setFocusedInput((old) => (old === "from" ? "to" : "from"));
@@ -698,7 +861,7 @@ export function TradeBox(p: Props) {
     }
 
     if (isIncrease) {
-      text = `${tradeTypeLabels[p.selectedTradeType!]} ${toTokenInput.token?.symbol}`;
+      text = `${tradeTypeLabels[tradeType!]} ${toTokenInput.token?.symbol}`;
     }
 
     if (isTrigger) {
@@ -827,8 +990,8 @@ export function TradeBox(p: Props) {
       ? convertTokenAddress(chainId, fromTokenInput.tokenAddress, "wrapped")
       : undefined;
 
-    const collateralAddress = p.selectedCollateralAddress
-      ? convertTokenAddress(chainId, p.selectedCollateralAddress, "wrapped")
+    const collateralAddress = p.collateralAddress
+      ? convertTokenAddress(chainId, p.collateralAddress, "wrapped")
       : undefined;
 
     const isNeedSwap = fromAddress && collateralAddress && fromAddress !== collateralAddress;
@@ -933,7 +1096,7 @@ export function TradeBox(p: Props) {
               label={t`Pay`}
               chainId={chainId}
               tokenAddress={fromTokenInput.tokenAddress}
-              onSelectToken={(token) => fromTokenInput.setTokenAddress(token.address)}
+              onSelectToken={(token) => onSelectFromTokenAddress(token.address)}
               tokens={availableSwapTokens}
               infoTokens={infoTokens}
               className="GlpSwap-from-token"
@@ -967,7 +1130,7 @@ export function TradeBox(p: Props) {
                 label={t`Receive:`}
                 chainId={chainId}
                 tokenAddress={toTokenInput.tokenAddress}
-                onSelectToken={(token) => toTokenInput.setTokenAddress(token.address)}
+                onSelectToken={(token) => onSelectToTokenAddress(token.address)}
                 tokens={availableSwapTokens}
                 infoTokens={infoTokens}
                 className="GlpSwap-from-token"
@@ -981,7 +1144,7 @@ export function TradeBox(p: Props) {
 
         {isIncrease && (
           <BuyInputSection
-            topLeftLabel={`${tradeTypeLabels[p.selectedTradeType!]}:`}
+            topLeftLabel={`${tradeTypeLabels[tradeType!]}:`}
             topLeftValue={formatUsd(increasePositionParams?.sizeDeltaAfterFeesUsd)}
             topRightLabel={t`Leverage:`}
             topRightValue={formatLeverage(leverage)}
@@ -994,10 +1157,10 @@ export function TradeBox(p: Props) {
           >
             {toTokenInput.tokenAddress && (
               <TokenSelector
-                label={tradeTypeLabels[p.selectedTradeType!]}
+                label={tradeTypeLabels[tradeType!]}
                 chainId={chainId}
                 tokenAddress={toTokenInput.tokenAddress}
-                onSelectToken={(token) => toTokenInput.setTokenAddress(token.address)}
+                onSelectToken={(token) => onSelectToTokenAddress(token.address)}
                 tokens={availableIndexTokens}
                 infoTokens={infoTokens}
                 className="GlpSwap-from-token"
@@ -1089,27 +1252,134 @@ export function TradeBox(p: Props) {
         )}
 
         <InfoRow
-          label={t`Market`}
-          className="SwapBox-info-row SwapBox-market-selector"
+          className="SwapBox-info-row"
+          label={
+            optimalPositionMarkets.shouldShowMarketTooltip ? (
+              <Tooltip
+                handle={t`Market`}
+                position="left-bottom"
+                className="MarketSelector-tooltip"
+                renderContent={() => (
+                  <div className="MarketSelector-tooltip-content">
+                    {selectedMarket &&
+                      isOutPositionLiquidity &&
+                      optimalPositionMarkets.maxLiquidityMarket &&
+                      optimalPositionMarkets.maxLiquidityMarket.marketTokenAddress !==
+                        selectedMarket.marketTokenAddress && (
+                        <div className="MarketSelector-tooltip-row">
+                          <Trans>
+                            Insufficient liquidity in{" "}
+                            {getMarketPoolName(marketsData, tokensData, selectedMarket.marketTokenAddress)} market.{" "}
+                            <br />
+                            <div
+                              className="MarketSelector-tooltip-row-action clickable underline muted "
+                              onClick={() =>
+                                onSelectMarketAddress(optimalPositionMarkets.maxLiquidityMarket!.marketTokenAddress)
+                              }
+                            >
+                              Switch to{" "}
+                              {getMarketPoolName(
+                                marketsData,
+                                tokensData,
+                                optimalPositionMarkets.maxLiquidityMarket.marketTokenAddress
+                              )}{" "}
+                              market.
+                            </div>
+                          </Trans>
+                        </div>
+                      )}
+
+                    {optimalPositionMarkets.minPriceImpactMarket && (
+                      <div className="MarketSelector-tooltip-row">
+                        <Trans>
+                          You can get a{" "}
+                          {formatPercentage(
+                            increasePositionParams?.acceptablePriceImpactBps?.sub(
+                              optimalPositionMarkets.minAcceptablePriceImpactBps!
+                            )
+                          )}{" "}
+                          better execution price in the{" "}
+                          {getMarketPoolName(
+                            marketsData,
+                            tokensData,
+                            optimalPositionMarkets.minPriceImpactMarket.marketTokenAddress
+                          )}{" "}
+                          market.
+                          <div
+                            className="MarketSelector-tooltip-row-action clickable underline muted"
+                            onClick={() =>
+                              onSelectMarketAddress(optimalPositionMarkets.minPriceImpactMarket!.marketTokenAddress)
+                            }
+                          >
+                            Switch to{" "}
+                            {getMarketPoolName(
+                              marketsData,
+                              tokensData,
+                              optimalPositionMarkets.minPriceImpactMarket.marketTokenAddress
+                            )}{" "}
+                            market.
+                          </div>
+                        </Trans>
+                      </div>
+                    )}
+
+                    {!existingPosition && optimalPositionMarkets.marketWithPosition && (
+                      <div className="MarketSelector-tooltip-row">
+                        <Trans>
+                          You have an existing position in the{" "}
+                          {getMarketPoolName(
+                            marketsData,
+                            tokensData,
+                            optimalPositionMarkets.marketWithPosition.marketTokenAddress
+                          )}{" "}
+                          market.{" "}
+                          <div
+                            className="MarketSelector-tooltip-row-action clickable underline muted"
+                            onClick={() => {
+                              onSelectMarketAddress(optimalPositionMarkets.marketWithPosition!.marketTokenAddress);
+                              onSelectCollateralAddress(optimalPositionMarkets.collateralWithPosition);
+                            }}
+                          >
+                            Switch to{" "}
+                            {getMarketPoolName(
+                              marketsData,
+                              tokensData,
+                              optimalPositionMarkets.marketWithPosition.marketTokenAddress
+                            )}{" "}
+                            market.
+                          </div>{" "}
+                        </Trans>
+                      </div>
+                    )}
+
+                    {optimalPositionMarkets.noSufficientLiquidityInAnyMarket && (
+                      <div className="MarketSelector-tooltip-row">
+                        <Trans>Insufficient liquidity in any {indexToken?.symbol}/USD markets for your order.</Trans>
+                      </div>
+                    )}
+                  </div>
+                )}
+              />
+            ) : (
+              t`Market`
+            )
+          }
           value={
             <>
-              {isTrigger && (
-                <Dropdown
-                  className="SwapBox-market-selector-dropdown"
-                  selectedOption={marketsOptions.find((o) => o.value === p.selectedMarketAddress)}
-                  placeholder={"-"}
-                  options={marketsOptions}
-                  onSelect={(option) => {
-                    p.onSelectMarketAddress(option.value);
-                  }}
-                />
-              )}
-              {isIncrease && (getMarketName(marketsData, tokensData, p.selectedMarketAddress, false, false) || "-")}
+              <Dropdown
+                className="SwapBox-market-selector-dropdown"
+                selectedOption={marketsOptions.find((o) => o.value === p.marketAddress)}
+                placeholder={"-"}
+                options={marketsOptions}
+                onSelect={(option) => {
+                  p.onSelectMarketAddress(option.value);
+                }}
+              />
             </>
           }
         />
 
-        {selectedCollateralAddress && availablePositionCollaterals && (
+        {collateralAddress && availablePositionCollaterals && (
           <InfoRow
             label={t`Collateral In`}
             className="SwapBox-info-row"
@@ -1118,7 +1388,7 @@ export function TradeBox(p: Props) {
                 label={t`Collateral In`}
                 className="GlpSwap-from-token"
                 chainId={chainId}
-                tokenAddress={selectedCollateralAddress}
+                tokenAddress={collateralAddress}
                 onSelectToken={(token) => {
                   onSelectCollateralAddress(token.address);
                 }}
@@ -1322,18 +1592,18 @@ export function TradeBox(p: Props) {
           icons={tradeTypeIcons}
           options={Object.values(TradeType)}
           optionLabels={tradeTypeLabels}
-          option={p.selectedTradeType}
+          option={tradeType}
           onChange={onSelectTradeType}
           className="SwapBox-option-tabs"
         />
 
         <Tab
-          options={avaialbleModes[p.selectedTradeType!]}
+          options={avaialbleModes[tradeType!]}
           optionLabels={tradeModeLabels}
           className="SwapBox-asset-options-tabs"
           type="inline"
           option={tradeMode}
-          onChange={setTradeMode}
+          onChange={onSelectTradeMode}
         />
 
         {(isSwap || isIncrease) && renderTokenInputs()}
@@ -1378,7 +1648,7 @@ export function TradeBox(p: Props) {
             markRatio={markRatio}
           />
         )}
-        {isPosition && <MarketCard isLong={isLong} marketAddress={selectedMarketAddress} />}
+        {isPosition && <MarketCard isLong={isLong} marketAddress={marketAddress} />}
       </div>
 
       {isAcceptablePriceImpactEditing && (
@@ -1391,7 +1661,7 @@ export function TradeBox(p: Props) {
 
       <ConfirmationBox
         isVisible={stage === "confirmation"}
-        tradeType={selectedTradeType!}
+        tradeType={tradeType!}
         tradeMode={tradeMode!}
         swapParams={swapParams}
         increasePositionParams={increasePositionParams}
@@ -1423,7 +1693,7 @@ export function TradeBox(p: Props) {
       <OrderStatus
         isVisible={stage === "processing"}
         orderType={isSwap ? OrderType.MarketSwap : OrderType.MarketIncrease}
-        marketAddress={isPosition ? p.selectedMarketAddress : undefined}
+        marketAddress={isPosition ? p.marketAddress : undefined}
         initialCollateralAddress={isSwap ? fromTokenInput.tokenAddress : undefined}
         initialCollateralAmount={isSwap ? fromTokenInput.tokenAmount : undefined}
         toSwapTokenAddress={isSwap ? toTokenInput.tokenAddress : undefined}
