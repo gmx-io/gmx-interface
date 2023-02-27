@@ -5,7 +5,7 @@ import ButtonLink from "./ButtonLink";
 
 type ButtonVariant = "primary" | "primary-action" | "semi-clear" | "clear";
 
-type ButtonProps = {
+type ButtonProps = React.HTMLProps<HTMLButtonElement> & {
   children: ReactNode;
   variant: ButtonVariant;
   className?: string;
@@ -17,6 +17,7 @@ type ButtonProps = {
     src: string;
     alt?: string;
   };
+  key?: React.Key;
 };
 
 export default function Button({
@@ -28,7 +29,7 @@ export default function Button({
   className,
   imgInfo,
   type,
-  ...rest
+  key,
 }: ButtonProps) {
   const classNames = cx("button", variant, className);
   function handleClick() {
@@ -42,7 +43,7 @@ export default function Button({
 
   if (onClick) {
     return (
-      <button className={classNames} onClick={handleClick} disabled={disabled} {...rest}>
+      <button className={classNames} onClick={handleClick} disabled={disabled} key={key}>
         {imgInfo && <img className="btn-image" src={imgInfo.src} alt={imgInfo.alt || ""} />}
         {children}
       </button>
@@ -50,14 +51,14 @@ export default function Button({
   }
   if (to) {
     return (
-      <ButtonLink className={classNames} to={to} {...rest}>
+      <ButtonLink className={classNames} to={to} key={key}>
         {imgInfo && <img className="btn-image" src={imgInfo.src} alt={imgInfo.alt || ""} />}
         {children}
       </ButtonLink>
     );
   }
   return (
-    <button type={type} className={classNames} disabled={disabled} {...rest}>
+    <button type={type} className={classNames} disabled={disabled} key={key}>
       {imgInfo && <img className="btn-image" src={imgInfo.src} alt={imgInfo.alt || ""} />}
       {children}
     </button>
