@@ -1579,7 +1579,6 @@ msgid "Fees"
 msgstr "Fees"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Fees and price impact"
 msgstr "Fees and price impact"
@@ -1956,6 +1955,14 @@ msgstr "Insufficient GLP balance"
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Insufficient liquidity"
 msgstr "Insufficient liquidity"
+
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+msgid "Insufficient liquidity in any {0}/USD markets for your order."
+msgstr "Insufficient liquidity in any {0}/USD markets for your order."
+
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+msgid "Insufficient liquidity in {0} market. <0/><1>Switch to {1} market.</1>"
+msgstr "Insufficient liquidity in {0} market. <0/><1>Switch to {1} market.</1>"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -2376,6 +2383,7 @@ msgstr "Mark: {0}"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Market"
@@ -3009,13 +3017,17 @@ msgstr "Pool amount"
 msgid "Position"
 msgstr "Position"
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Position Fee"
+msgstr "Position Fee"
+
 #: src/components/Exchange/SwapBox.js
 msgid "Position Fee (0.1% of position size)"
 msgstr "Position Fee (0.1% of position size)"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Position Fee ({0} of position size)"
-msgstr "Position Fee ({0} of position size)"
+#~ msgid "Position Fee ({0} of position size)"
+#~ msgstr "Position Fee ({0} of position size)"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Position close disabled, pending {0} upgrade"
@@ -4743,6 +4755,10 @@ msgstr "You can check your claim history <0>here</0>."
 msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
 msgstr "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
 
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+msgid "You can get a {0} better execution price in the {1} market.<0>Switch to {2} market.</0>"
+msgstr "You can get a {0} better execution price in the {1} market.<0>Switch to {2} market.</0>"
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer AVAX from other networks to Avalanche using any of the below options:"
 msgstr "You can transfer AVAX from other networks to Avalanche using any of the below options:"
@@ -4770,6 +4786,10 @@ msgstr "You have an active Limit Order to Increase {longShortText} {sizeText} at
 #: src/components/Exchange/PositionSeller.js
 msgid "You have an active order to decrease {longOrShortText} {sizeInToken} {0} (${1}) at {prefix} {2}"
 msgstr "You have an active order to decrease {longOrShortText} {sizeInToken} {0} (${1}) at {prefix} {2}"
+
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+msgid "You have an existing position in the {0} market. <0>Switch to {1} market.</0>"
+msgstr "You have an existing position in the {0} market. <0>Switch to {1} market.</0>"
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "You have multiple existing Increase {longOrShortText} {0} limit orders"
