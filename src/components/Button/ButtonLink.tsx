@@ -5,19 +5,27 @@ type ButtonProps = {
   children: ReactNode;
   className: string;
   to: string;
-  key?: React.Key;
+  onClick?: () => void;
+  newTab?: boolean;
 };
 
-export default function ButtonLink({ className, to, children, key }: ButtonProps) {
+export default function ButtonLink({ className, to, children, onClick, newTab = false }: ButtonProps) {
   if (to.startsWith("http") || to.startsWith("https")) {
-    return (
-      <a href={to} className={className} target="_blank" rel="noopener noreferrer" key={key}>
-        {children}
-      </a>
-    );
+    const anchorProps = {
+      href: to,
+      className,
+      onClick,
+      ...(newTab
+        ? {
+            target: "_blank",
+            rel: "noopener",
+          }
+        : {}),
+    };
+    return <a {...anchorProps}>{children}</a>;
   }
   return (
-    <Link className={className} to={to} key={key}>
+    <Link className={className} to={to}>
       {children}
     </Link>
   );

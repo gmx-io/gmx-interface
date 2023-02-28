@@ -17,7 +17,7 @@ type ButtonProps = React.HTMLProps<HTMLButtonElement> & {
     src: string;
     alt?: string;
   };
-  key?: React.Key;
+  newTab?: boolean;
 };
 
 export default function Button({
@@ -29,7 +29,7 @@ export default function Button({
   className,
   imgInfo,
   type,
-  key,
+  newTab,
 }: ButtonProps) {
   const classNames = cx("button", variant, className);
   function handleClick() {
@@ -41,24 +41,26 @@ export default function Button({
     }
   }
 
-  if (onClick) {
-    return (
-      <button className={classNames} onClick={handleClick} disabled={disabled} key={key}>
-        {imgInfo && <img className="btn-image" src={imgInfo.src} alt={imgInfo.alt || ""} />}
-        {children}
-      </button>
-    );
-  }
   if (to) {
     return (
-      <ButtonLink className={classNames} to={to} key={key}>
+      <ButtonLink className={classNames} to={to} onClick={onClick} newTab={newTab}>
         {imgInfo && <img className="btn-image" src={imgInfo.src} alt={imgInfo.alt || ""} />}
         {children}
       </ButtonLink>
     );
   }
+
+  if (onClick) {
+    return (
+      <button className={classNames} onClick={handleClick} disabled={disabled}>
+        {imgInfo && <img className="btn-image" src={imgInfo.src} alt={imgInfo.alt || ""} />}
+        {children}
+      </button>
+    );
+  }
+
   return (
-    <button type={type} className={classNames} disabled={disabled} key={key}>
+    <button type={type} className={classNames} disabled={disabled}>
       {imgInfo && <img className="btn-image" src={imgInfo.src} alt={imgInfo.alt || ""} />}
       {children}
     </button>
