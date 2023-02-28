@@ -21,7 +21,7 @@ import PositionRouter from "abis/PositionRouter.json";
 import Token from "abis/Token.json";
 import Tooltip from "../Tooltip/Tooltip";
 
-import { getChainName, getConstant, IS_NETWORK_DISABLED } from "config/chains";
+import { getChainName, IS_NETWORK_DISABLED } from "config/chains";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { getTokenInfo } from "domain/tokens/utils";
@@ -459,7 +459,7 @@ export default function PositionEditor(props) {
 
     withdrawCollateral();
   };
-  const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
+
   const EDIT_OPTIONS_LABELS = {
     [DEPOSIT]: t`Deposit`,
     [WITHDRAW]: t`Withdraw`,
@@ -494,14 +494,10 @@ export default function PositionEditor(props) {
   }
 
   function getTotalFees() {
-    if (isDeposit && position?.isLong) {
-      return (
-        minExecutionFeeUSD &&
-        depositFeeUSD &&
-        `$${formatAmountFree(minExecutionFeeUSD.add(depositFeeUSD), USD_DECIMALS, 2)}`
-      );
+    if (isDeposit && position?.isLong && minExecutionFeeUSD.gt(0)) {
+      return depositFeeUSD && minExecutionFeeUSD.add(depositFeeUSD);
     }
-    return minExecutionFee && `${formatAmountFree(minExecutionFee, 18, 5)} ${nativeTokenSymbol}`;
+    return minExecutionFeeUSD;
   }
 
   return (
@@ -678,7 +674,7 @@ export default function PositionEditor(props) {
                           feeUSD: minExecutionFeeUSD?.gt(0) && minExecutionFeeUSD,
                         }}
                         totalFees={getTotalFees()}
-                        depositFee={depositFeeUSD && `$${formatAmount(depositFeeUSD, USD_DECIMALS, 2)}`}
+                        depositFee={depositFeeUSD}
                       />
                     </div>
                   </div>

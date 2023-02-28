@@ -675,14 +675,14 @@ export default function ConfirmationBox(props) {
           </ExchangeInfoRow>
           <ExchangeInfoRow label={t`Fees`}>
             <FeesTooltip
-              totalFees={`$${formatAmount(feesUsd, USD_DECIMALS, 2, true)}`}
+              totalFees={feesUsd}
               fundingFee={getFundingFee()}
               executionFees={{
                 fee: isMarketOrder ? minExecutionFee : executionFee,
                 feeUSD: isMarketOrder ? minExecutionFeeUSD : executionFeeUsd,
               }}
-              positionFee={`$${formatAmount(positionFee, USD_DECIMALS, 2, true)}`}
-              swapFee={swapFees?.gt(0) && `$${formatAmount(swapFees, USD_DECIMALS, 2, true)}`}
+              positionFee={positionFee}
+              swapFee={swapFees}
             />
           </ExchangeInfoRow>
 
@@ -786,12 +786,12 @@ export default function ConfirmationBox(props) {
         )}
         <ExchangeInfoRow label={t`Fees`} isTop>
           <FeesTooltip
-            totalFees={`${formatAmount(feeBps, 2, 2, true)}%  ($${formatAmount(feesUsd, USD_DECIMALS, 2, true)})`}
+            totalFees={feesUsd}
             executionFees={{
               fee: isMarketOrder ? minExecutionFee : executionFee,
               feeUSD: isMarketOrder ? minExecutionFeeUSD : executionFeeUsd,
             }}
-            swapFee={`$${formatAmount(feesUsd, USD_DECIMALS, 2, true)}`}
+            swapFee={feesUsd}
           />
         </ExchangeInfoRow>
 
@@ -809,7 +809,6 @@ export default function ConfirmationBox(props) {
     showSpread,
     spread,
     feesUsd,
-    feeBps,
     fromTokenUsd,
     toTokenUsd,
     triggerRatio,

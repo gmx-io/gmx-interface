@@ -1,16 +1,25 @@
-import { t, Trans } from "@lingui/macro";
+import { i18n, MessageDescriptor } from "@lingui/core";
+import { defineMessage, Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getConstant } from "config/chains";
-import { BigNumberish } from "ethers";
+import { BigNumber, BigNumberish } from "ethers";
 import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
 import { formatAmount, formatAmountFree } from "lib/numbers";
 
-type Row = {
-  label: string;
-  value: string;
+type Fee = { label: string; value: string };
+type ExecutionFee = { fee?: BigNumberish; feeUSD?: BigNumberish };
+type FeeType = "open" | "close" | "swap" | "borrow" | "deposit" | "execution";
+
+const FEE_LABELS: Record<FeeType, MessageDescriptor> = {
+  open: defineMessage({ message: "Open Fee" }),
+  close: defineMessage({ message: "Close Fee" }),
+  swap: defineMessage({ message: "Swap Fee" }),
+  borrow: defineMessage({ message: "Borrow Fee" }),
+  deposit: defineMessage({ message: "Deposit Fee" }),
+  execution: defineMessage({ message: "Execution Fee" }),
 };
 
 function getExecutionFeeStr(chainId, executionFee, executionFeeUsd) {
@@ -25,13 +34,36 @@ function getExecutionFeeStr(chainId, executionFee, executionFeeUsd) {
   return `${formattedExecutionFee} ${nativeTokenSymbol} ($${formattedExecutionFeeUsd})`;
 }
 
+function getFeesRows(isOpening: boolean, formattedFees: Record<string, string>) {
+  const rows: Fee[] = [];
+
+  function addFeeRow(label: FeeType, value: string) {
+    rows.push({ label: i18n._(FEE_LABELS[label]), value });
+  }
+
+  if (isOpening) {
+    addFeeRow("swap", formattedFees?.swap);
+    addFeeRow("open", formattedFees?.position);
+    addFeeRow("borrow", formattedFees?.funding);
+  } else {
+    addFeeRow("borrow", formattedFees?.funding);
+    addFeeRow("close", formattedFees?.position);
+    addFeeRow("swap", formattedFees?.swap);
+  }
+
+  addFeeRow("deposit", formattedFees?.deposit);
+  addFeeRow("execution", formattedFees?.execution);
+
+  return rows.filter((row) => row.value);
+}
+
 type Props = {
-  totalFees: string;
+  totalFees: BigNumber;
+  executionFees: ExecutionFee;
+  positionFee?: BigNumber;
+  depositFee?: BigNumber;
+  swapFee?: BigNumber;
   fundingFee: string;
-  positionFee: string;
-  depositFee: string;
-  swapFee: string;
-  executionFees: { fee: BigNumberish; feeUSD: BigNumberish };
   isOpening?: boolean;
 };
 
@@ -45,29 +77,27 @@ function FeesTooltip({
   isOpening = true,
 }: Props) {
   const { chainId } = useChainId();
-  const SWAP_FEE_LABEL = t`Swap Fee`;
-  const BORROW_FEE_LABEL = t`Borrow Fee`;
   const executionFee = executionFees?.fee;
   const executionFeeUSD = executionFees?.feeUSD;
 
-  const feeRows: Row[] = [
-    { label: isOpening ? SWAP_FEE_LABEL : BORROW_FEE_LABEL, value: isOpening ? swapFee : fundingFee },
-    { label: isOpening ? t`Open Fee` : t`Close Fee`, value: positionFee },
-    { label: isOpening ? BORROW_FEE_LABEL : SWAP_FEE_LABEL, value: isOpening ? fundingFee : swapFee },
-    { label: t`Deposit Fee`, value: depositFee },
-    { label: t`Execution Fee`, value: getExecutionFeeStr(chainId, executionFee, executionFeeUSD) },
-  ]
-    .filter((row) => row.value)
-    .map(({ label, value }) => ({ label, value }));
+  const formattedFees = {
+    swap: swapFee?.gt(0) ? `$${formatAmount(swapFee, USD_DECIMALS, 2, true)}` : "",
+    position: positionFee?.gt(0) ? `$${formatAmount(positionFee, USD_DECIMALS, 2, true)}` : "",
+    deposit: depositFee?.gt(0) ? `$${formatAmount(depositFee, USD_DECIMALS, 2)}` : "",
+    execution: executionFee && executionFeeUSD ? getExecutionFeeStr(chainId, executionFee, executionFeeUSD) : "",
+    funding: fundingFee || "",
+  };
+
+  let feesRows = getFeesRows(isOpening, formattedFees);
 
   return (
     <Tooltip
       position="right-top"
       className="PositionSeller-fees-tooltip"
-      handle={<div>{totalFees ? totalFees : "-"}</div>}
+      handle={<div>{totalFees?.gt(0) ? `$${formatAmount(totalFees, USD_DECIMALS, 2, true)}` : "-"}</div>}
       renderContent={() => (
         <div>
-          {feeRows.map(({ label, value }) => (
+          {feesRows.map(({ label, value }) => (
             <StatsTooltipRow key={label} label={label} showDollar={false} value={value} />
           ))}
           <br />

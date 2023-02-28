@@ -1254,7 +1254,7 @@ msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
 msgid "Execution Fee"
-msgstr "执行费"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Exit Price"

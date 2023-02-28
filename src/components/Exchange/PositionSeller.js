@@ -278,7 +278,6 @@ export default function PositionSeller(props) {
   let title;
   let fundingFee;
   let positionFee;
-  let swapFeeToken;
   let swapFee;
   let totalFees = bigNumberify(0);
 
@@ -397,7 +396,6 @@ export default function PositionSeller(props) {
 
       if (feeBasisPoints) {
         swapFee = receiveAmount.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR);
-        swapFeeToken = getTokenAmountFromUsd(infoTokens, collateralToken.address, swapFee);
         totalFees = totalFees.add(swapFee || bigNumberify(0));
         receiveAmount = receiveAmount.sub(swapFee);
       }
@@ -1131,18 +1129,14 @@ export default function PositionSeller(props) {
               <div className="align-right">
                 <FeesTooltip
                   isOpening={false}
-                  positionFee={positionFee?.gt(0) && `$${formatAmount(positionFee, USD_DECIMALS, 2, true)}`}
+                  positionFee={positionFee}
                   fundingFee={`$${formatAmount(fundingFee, USD_DECIMALS, 2, true)}`}
-                  totalFees={totalFees && `$${formatAmount(totalFees, USD_DECIMALS, 2, true)}`}
+                  totalFees={totalFees}
                   executionFees={{
                     fee: executionFee?.gt(0) && executionFee,
                     feeUSD: executionFeeUsd?.gt(0) && executionFeeUsd,
                   }}
-                  swapFee={
-                    swapFeeToken &&
-                    `${formatAmount(swapFeeToken, collateralToken.decimals, 5)} ${collateralToken.symbol}
-                   ($${formatAmount(swapFee, USD_DECIMALS, 2, true)})`
-                  }
+                  swapFee={swapFee?.gt(0) && swapFee}
                 />
               </div>
             </div>
