@@ -390,6 +390,9 @@ button.btn-link:hover .logout-icon {
   margin: 0 !important;
 }
 
+.mt-sm {
+  margin-top: 1rem;
+}
 .mt-md {
   margin-top: 1.5rem;
 }
