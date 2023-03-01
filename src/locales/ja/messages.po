@@ -1370,10 +1370,6 @@ msgstr ""
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "{0}アップグレード未完了のためGLP購入は停止中です"
 
-#: src/components/Exchange/SwapBox.js
-msgid "GLP doesn't accept this amount of {0}."
-msgstr ""
-
 #: src/components/TokenCard/TokenCard.js
 msgid "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
 msgstr "GLPは流動性提供者のトークンです。プラットフォームが得た手数料の70%を獲得します。"
@@ -1568,6 +1564,7 @@ msgstr "{0}にスワップするには流動性が不足しています:"
 msgid "Insufficient GLP balance"
 msgstr "GLP残高不足"
 
+#: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -2959,6 +2956,10 @@ msgid "Swap active: {0}, executed: {1}, cancelled: {2}"
 msgstr "スワップ アクティブ: {0} 執行済: {1}  キャンセル済: {2}"
 
 #: src/components/Exchange/SwapBox.js
+msgid "Swap amount exceeds available liquidity."
+msgstr ""
+
+#: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "Swap failed."
@@ -3962,10 +3963,6 @@ msgstr "{0}はターゲットウェイトより低くなっています。<0/><1
 #: src/components/Exchange/SwapBox.js
 msgid "{0} is required for collateral."
 msgstr "担保に{0}が必要です。"
-
-#: src/components/Exchange/SwapBox.js
-msgid "{0} pool exceeded"
-msgstr "{0}のプールを超過しています"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "{0} pool exceeded, can only Receive {1}"

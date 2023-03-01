@@ -810,7 +810,7 @@ export default function SwapBox(props) {
       toTokenInfo.availableAmount &&
       toAmount.gt(toTokenInfo.availableAmount)
     ) {
-      return [t`Insufficient liquidity`];
+      return [t`Insufficient liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientLiquidity];
     }
     if (
       !isWrapOrUnwrap &&
@@ -819,7 +819,7 @@ export default function SwapBox(props) {
       toTokenInfo.poolAmount &&
       toTokenInfo.bufferAmount.gt(toTokenInfo.poolAmount.sub(toAmount))
     ) {
-      return [t`Insufficient liquidity`];
+      return [t`Insufficient liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientLiquidity];
     }
 
     if (
@@ -833,7 +833,7 @@ export default function SwapBox(props) {
       const nextUsdgAmount = fromTokenInfo.usdgAmount.add(usdgFromAmount);
 
       if (nextUsdgAmount.gt(fromTokenInfo.maxUsdgAmount)) {
-        return [t`${fromTokenInfo.symbol} pool exceeded`, ErrorDisplayType.Tooltip, ErrorCode.PoolExceeded];
+        return [t`Insufficient liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientLiquidity];
       }
     }
 
@@ -1811,7 +1811,7 @@ export default function SwapBox(props) {
   }
 
   const ERROR_TOOLTIP_MSG = {
-    [ErrorCode.PoolExceeded]: t`GLP doesn't accept this amount of ${fromTokenInfo.symbol}.`,
+    [ErrorCode.InsufficientLiquidity]: t`Swap amount exceeds available liquidity.`,
   };
 
   const SWAP_LABELS = {

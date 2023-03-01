@@ -1,5 +1,5 @@
 export enum ErrorCode {
-  PoolExceeded = "POOL_EXCEEDED",
+  InsufficientLiquidity = "INSUFFICIENT_LIQUIDITY",
   Buffer = "BUFFER",
   MaxUSDG = "MAX_USDG",
   InvalidLiqPrice = "INVALID_LIQ_PRICE",

@@ -1370,10 +1370,6 @@ msgstr ""
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "Achat GLP désactivé, en attente de {0} actualisations"
 
-#: src/components/Exchange/SwapBox.js
-msgid "GLP doesn't accept this amount of {0}."
-msgstr ""
-
 #: src/components/TokenCard/TokenCard.js
 msgid "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
 msgstr "GLP est le token qui fournit la liquidité. Accumule 70% des frais générés par la plateforme."
@@ -1568,6 +1564,7 @@ msgstr "Liquidité disponible insuffisante pour effectuer l'échange à {0}:"
 msgid "Insufficient GLP balance"
 msgstr "Équilibre insuffisant de GLP"
 
+#: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -2959,6 +2956,10 @@ msgid "Swap active: {0}, executed: {1}, cancelled: {2}"
 msgstr "Échange actif: {0}, exécuté: {1}, annulé: {2}"
 
 #: src/components/Exchange/SwapBox.js
+msgid "Swap amount exceeds available liquidity."
+msgstr ""
+
+#: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "Swap failed."
@@ -3962,10 +3963,6 @@ msgstr "{0} est en dessous de son poids cible.<0/><1/>Obtenez une réduction des
 #: src/components/Exchange/SwapBox.js
 msgid "{0} is required for collateral."
 msgstr "{0} est requis comme collatéral."
-
-#: src/components/Exchange/SwapBox.js
-msgid "{0} pool exceeded"
-msgstr "{0} pool dépassé"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "{0} pool exceeded, can only Receive {1}"
