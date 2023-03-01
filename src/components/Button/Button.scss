@@ -26,7 +26,7 @@
   }
 
   &.primary-action {
-    background: var(--primary-btn-bg);
+    background: linear-gradient(90deg, #2d42fc, #2e3dcd);
     color: #fff;
     border-radius: 0.3rem;
     padding: 1.65rem 1.6rem;
@@ -48,6 +48,7 @@
     color: #fff;
     border-radius: var(--border-radius-sm);
     line-height: 1;
+    letter-spacing: 0;
 
     &:not([disabled]):hover {
       background: rgb(54, 69, 117);
