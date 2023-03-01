@@ -157,8 +157,8 @@ export const TRANSFER_EXCHANGES: Exchange[] = [
     },
   },
   {
-    name: "Multiswap",
-    icon: "ic_multiswap.svg",
+    name: "Multichain",
+    icon: "ic_multichain.svg",
     links: {
       [ARBITRUM]: "https://app.multichain.org/#/router",
       [AVALANCHE]: "https://app.multichain.org/#/router",
