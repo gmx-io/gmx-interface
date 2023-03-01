@@ -670,8 +670,8 @@ export default function PositionEditor(props) {
                     <div className="align-right">
                       <FeesTooltip
                         executionFees={{
-                          fee: minExecutionFee?.gt(0) && minExecutionFee,
-                          feeUSD: minExecutionFeeUSD?.gt(0) && minExecutionFeeUSD,
+                          fee: minExecutionFee,
+                          feeUSD: minExecutionFeeUSD,
                         }}
                         totalFees={getTotalFees()}
                         depositFee={depositFeeUSD}

@@ -63,7 +63,7 @@ type Props = {
   positionFee?: BigNumber;
   depositFee?: BigNumber;
   swapFee?: BigNumber;
-  fundingFee: string;
+  fundingFee?: string;
   isOpening?: boolean;
 };
 

@@ -497,6 +497,8 @@ export default function ConfirmationBox(props) {
   const INCREASE_ORDER_EXECUTION_GAS_FEE = getConstant(chainId, "INCREASE_ORDER_EXECUTION_GAS_FEE");
   const executionFee = isSwap ? SWAP_ORDER_EXECUTION_GAS_FEE : INCREASE_ORDER_EXECUTION_GAS_FEE;
   const executionFeeUsd = getUsd(executionFee, nativeTokenAddress, false, infoTokens);
+  const currentExecutionFee = isMarketOrder ? minExecutionFee : executionFee;
+  const currentExecutionFeeUsd = isMarketOrder ? minExecutionFeeUSD : executionFeeUsd;
 
   const renderAvailableLiquidity = useCallback(() => {
     let availableLiquidity;
@@ -675,11 +677,11 @@ export default function ConfirmationBox(props) {
           </ExchangeInfoRow>
           <ExchangeInfoRow label={t`Fees`}>
             <FeesTooltip
-              totalFees={feesUsd}
+              totalFees={currentExecutionFeeUsd.add(feesUsd)}
               fundingFee={getFundingFee()}
               executionFees={{
-                fee: isMarketOrder ? minExecutionFee : executionFee,
-                feeUSD: isMarketOrder ? minExecutionFeeUSD : executionFeeUsd,
+                fee: currentExecutionFee,
+                feeUSD: currentExecutionFeeUsd,
               }}
               positionFee={positionFee}
               swapFee={swapFees}
@@ -737,10 +739,8 @@ export default function ConfirmationBox(props) {
     allowedSlippage,
     positionFee,
     swapFees,
-    minExecutionFee,
-    minExecutionFeeUSD,
-    executionFee,
-    executionFeeUsd,
+    currentExecutionFee,
+    currentExecutionFeeUsd,
   ]);
 
   const renderSwapSection = useCallback(() => {
@@ -786,10 +786,10 @@ export default function ConfirmationBox(props) {
         )}
         <ExchangeInfoRow label={t`Fees`} isTop>
           <FeesTooltip
-            totalFees={feesUsd}
+            totalFees={currentExecutionFeeUsd.add(feesUsd)}
             executionFees={{
-              fee: isMarketOrder ? minExecutionFee : executionFee,
-              feeUSD: isMarketOrder ? minExecutionFeeUSD : executionFeeUsd,
+              fee: currentExecutionFee,
+              feeUSD: currentExecutionFeeUsd,
             }}
             swapFee={feesUsd}
           />
@@ -816,11 +816,9 @@ export default function ConfirmationBox(props) {
     minOut,
     renderFeeWarning,
     renderAvailableLiquidity,
-    executionFee,
-    executionFeeUsd,
-    minExecutionFee,
-    minExecutionFeeUSD,
     allowedSlippage,
+    currentExecutionFee,
+    currentExecutionFeeUsd,
   ]);
 
   return (
