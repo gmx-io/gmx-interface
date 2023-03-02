@@ -45,10 +45,16 @@ export class TVDataProvider {
     chainId: number,
     ticker: string,
     period: string,
-    periodParams: PeriodParams
+    periodParams: PeriodParams,
+    shouldRefetchBars: { current: boolean }
   ): Promise<Bar[]> {
     const barsInfo = this.barsInfo;
-    if (!barsInfo.data.length || barsInfo.ticker !== ticker || barsInfo.period !== period) {
+    if (
+      !barsInfo.data.length ||
+      barsInfo.ticker !== ticker ||
+      barsInfo.period !== period ||
+      shouldRefetchBars.current
+    ) {
       try {
         const bars = await getTokenChartPrice(chainId, ticker, period);
         const filledBars = fillBarGaps(bars, CHART_PERIODS[period]);
@@ -61,6 +67,7 @@ export class TVDataProvider {
         this.barsInfo.data = filledBars;
         this.barsInfo.ticker = ticker;
         this.barsInfo.period = period;
+        shouldRefetchBars.current = false;
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error(error);
@@ -87,14 +94,21 @@ export class TVDataProvider {
     return bars.slice(bars.length - countBack, bars.length);
   }
 
-  async getBars(chainId: number, ticker: string, resolution: string, isStable: boolean, periodParams: PeriodParams) {
+  async getBars(
+    chainId: number,
+    ticker: string,
+    resolution: string,
+    isStable: boolean,
+    periodParams: PeriodParams,
+    shouldRefetchBars: { current: boolean }
+  ) {
     const period = SUPPORTED_RESOLUTIONS[resolution];
     const { countBack } = periodParams;
 
     try {
       const bars = isStable
         ? getStablePriceData(period, countBack)
-        : await this.getTokenHistoryBars(chainId, ticker, period, periodParams);
+        : await this.getTokenHistoryBars(chainId, ticker, period, periodParams, shouldRefetchBars);
 
       return bars.map(formatTimeInBarToMs);
     } catch {

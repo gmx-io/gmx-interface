@@ -35,7 +35,7 @@ export default function TVChartContainer({
   onSelectToken,
   dataProvider,
 }: Props) {
-  let [period, setPeriod] = useLocalStorageSerializeKey(JSON.stringify([chainId, "Chart-period"]), DEFAULT_PERIOD);
+  let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
 
   if (!period || !(period in CHART_PERIODS)) {
     period = DEFAULT_PERIOD;
@@ -81,8 +81,8 @@ export default function TVChartContainer({
       } else {
         const tvReloadTimestamp = Number(localStorage.getItem(TV_CHART_RELOAD_TIMESTAMP_KEY));
         if (tvReloadTimestamp && Date.now() - tvReloadTimestamp > TV_CHART_RELOAD_INTERVAL) {
-          if (resetCache.current) {
-            resetCache.current();
+          if (resetCache) {
+            resetCache();
             tvWidgetRef.current?.activeChart().resetData();
           }
         }

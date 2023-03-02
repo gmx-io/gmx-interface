@@ -25,6 +25,7 @@ export default function useTVDatafeed({ dataProvider }: Props) {
   const resetCacheRef = useRef<() => void | undefined>();
   const activeTicker = useRef<string | undefined>();
   const tvDataProvider = useRef<TVDataProvider>();
+  const shouldRefetchBars = useRef<boolean>(false);
 
   useEffect(() => {
     if (dataProvider && tvDataProvider.current !== dataProvider) {
@@ -34,7 +35,10 @@ export default function useTVDatafeed({ dataProvider }: Props) {
 
   return useMemo(() => {
     return {
-      resetCache: resetCacheRef,
+      resetCache: function () {
+        shouldRefetchBars.current = true;
+        resetCacheRef.current?.();
+      },
       datafeed: {
         onReady: (callback) => {
           setTimeout(() => callback(configurationData));
@@ -86,7 +90,14 @@ export default function useTVDatafeed({ dataProvider }: Props) {
               onErrorCallback("Invalid ticker!");
               return;
             }
-            const bars = await tvDataProvider.current?.getBars(chainId, ticker, resolution, isStable, periodParams);
+            const bars = await tvDataProvider.current?.getBars(
+              chainId,
+              ticker,
+              resolution,
+              isStable,
+              periodParams,
+              shouldRefetchBars
+            );
             const noData = !bars || bars.length === 0;
             onHistoryCallback(bars, { noData });
           } catch {
