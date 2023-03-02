@@ -1144,7 +1144,7 @@ export default function PositionSeller(props) {
                     fee: executionFee,
                     feeUSD: executionFeeUsd,
                   }}
-                  swapFee={swapFee?.gt(0) && swapFee}
+                  swapFee={swapFee}
                 />
               </div>
             </div>

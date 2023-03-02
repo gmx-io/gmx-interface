@@ -26,12 +26,19 @@ function getExecutionFeeStr(chainId, executionFee, executionFeeUsd) {
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
 
   if (!nativeTokenSymbol || !executionFee || !executionFeeUsd) {
-    return "...";
+    return "";
   }
 
   const formattedExecutionFee = formatAmountFree(executionFee, 18, 4);
   const formattedExecutionFeeUsd = formatAmount(executionFeeUsd, USD_DECIMALS, 2);
   return `${formattedExecutionFee} ${nativeTokenSymbol} ($${formattedExecutionFeeUsd})`;
+}
+
+function getFeesInStr(fees: BigNumber | undefined): string {
+  if (!fees || !BigNumber.from(fees).gt(0)) {
+    return "";
+  }
+  return `$${formatAmount(fees, USD_DECIMALS, 2, true)}`;
 }
 
 function getFeesRows(isOpening: boolean, formattedFees: Record<string, string>) {
@@ -81,10 +88,10 @@ function FeesTooltip({
   const executionFeeUSD = executionFees?.feeUSD;
 
   const formattedFees = {
-    swap: swapFee?.gt(0) ? `$${formatAmount(swapFee, USD_DECIMALS, 2, true)}` : "",
-    position: positionFee?.gt(0) ? `$${formatAmount(positionFee, USD_DECIMALS, 2, true)}` : "",
-    deposit: depositFee?.gt(0) ? `$${formatAmount(depositFee, USD_DECIMALS, 2)}` : "",
-    execution: executionFee && executionFeeUSD ? getExecutionFeeStr(chainId, executionFee, executionFeeUSD) : "",
+    swap: getFeesInStr(swapFee),
+    position: getFeesInStr(positionFee),
+    deposit: getFeesInStr(depositFee),
+    execution: getExecutionFeeStr(chainId, executionFee, executionFeeUSD),
     funding: fundingFee || "",
   };
 
