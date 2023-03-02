@@ -3,6 +3,7 @@ import { formatTVDate, formatTVTime } from "lib/dates";
 
 const RED = "#fa3c58";
 const GREEN = "#0ecc83";
+export const DEFAULT_PERIOD = "4h";
 
 const chartStyleOverrides = ["candleStyle", "hollowCandleStyle", "haStyle"].reduce((acc, cv) => {
   acc[`mainSeriesProperties.${cv}.drawWick`] = true;

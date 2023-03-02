@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { TV_CHART_RELOAD_TIMESTAMP_KEY, TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
 import { useLocalStorage, useMedia } from "react-use";
-import { defaultChartProps, disabledFeaturesOnMobile } from "./constants";
+import { defaultChartProps, DEFAULT_PERIOD, disabledFeaturesOnMobile } from "./constants";
 import useTVDatafeed from "domain/tradingview/useTVDatafeed";
 import { ChartData, IChartingLibraryWidget, IPositionLineAdapter } from "../../charting_library";
 import { getObjectKeyFromValue } from "domain/tradingview/utils";
@@ -10,6 +10,8 @@ import { SUPPORTED_RESOLUTIONS, TV_CHART_RELOAD_INTERVAL } from "config/tradingv
 import { isChartAvailabeForToken } from "config/tokens";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 import Loader from "components/Common/Loader";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { CHART_PERIODS } from "lib/legacy";
 
 type ChartLine = {
   price: number;
@@ -22,8 +24,6 @@ type Props = {
   savedShouldShowPositionLines: boolean;
   chartLines: ChartLine[];
   onSelectToken: () => void;
-  period: string;
-  setPeriod: (period: string) => void;
   dataProvider?: TVDataProvider;
 };
 
@@ -33,10 +33,14 @@ export default function TVChartContainer({
   savedShouldShowPositionLines,
   chartLines,
   onSelectToken,
-  period,
-  setPeriod,
   dataProvider,
 }: Props) {
+  let [period, setPeriod] = useLocalStorageSerializeKey(JSON.stringify([chainId, "Chart-period"]), DEFAULT_PERIOD);
+
+  if (!period || !(period in CHART_PERIODS)) {
+    period = DEFAULT_PERIOD;
+  }
+
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const tvWidgetRef = useRef<IChartingLibraryWidget | null>(null);
   const [chartReady, setChartReady] = useState(false);
