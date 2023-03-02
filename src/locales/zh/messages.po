@@ -1554,6 +1554,10 @@ msgstr "索引"
 msgid "Initial Collateral"
 msgstr "初始抵押品"
 
+#: src/components/Exchange/PositionSeller.js
+msgid "Initial Collateral (Collateral excluding Borrow Fees)."
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.js
 msgid "Initial collateral"
 msgstr "初始抵押品"

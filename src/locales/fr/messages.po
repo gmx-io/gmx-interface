@@ -1554,6 +1554,10 @@ msgstr "Indice"
 msgid "Initial Collateral"
 msgstr "Collatéral initial"
 
+#: src/components/Exchange/PositionSeller.js
+msgid "Initial Collateral (Collateral excluding Borrow Fees)."
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.js
 msgid "Initial collateral"
 msgstr "Collatéral initial"

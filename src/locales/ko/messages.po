@@ -1554,6 +1554,10 @@ msgstr "인덱스"
 msgid "Initial Collateral"
 msgstr "최초 담보"
 
+#: src/components/Exchange/PositionSeller.js
+msgid "Initial Collateral (Collateral excluding Borrow Fees)."
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.js
 msgid "Initial collateral"
 msgstr "최초 담보"

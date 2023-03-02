@@ -1554,6 +1554,10 @@ msgstr "インデックス"
 msgid "Initial Collateral"
 msgstr "最初の担保"
 
+#: src/components/Exchange/PositionSeller.js
+msgid "Initial Collateral (Collateral excluding Borrow Fees)."
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.js
 msgid "Initial collateral"
 msgstr "最初の担保"
