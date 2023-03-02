@@ -129,22 +129,6 @@ export class TVDataProvider {
     return this.lastBar;
   }
 
-  async syncPastBars(chainId: number, ticker: string, resolution: string, lastStoredTimestamp: number) {
-    const period = SUPPORTED_RESOLUTIONS[resolution];
-    if (!ticker || !period || !chainId || !lastStoredTimestamp) return;
-    const periodSeconds = CHART_PERIODS[period];
-    const lastStoredPeriod = lastStoredTimestamp - timezoneOffset;
-    const currentPeriod = Math.floor(Date.now() / 1000 / periodSeconds) * periodSeconds;
-    if (lastStoredPeriod === currentPeriod) return;
-    const periods = Math.floor((currentPeriod - lastStoredPeriod) / periodSeconds) + 1;
-    if (periods > 0) {
-      const bars = await getLimitChartPricesFromStats(chainId, ticker, period, periods);
-      return fillBarGaps(bars, periodSeconds)
-        .filter((bar) => bar.time >= lastStoredPeriod)
-        .map(formatTimeInBarToMs);
-    }
-  }
-
   async getLiveBar(chainId: number, ticker: string, resolution: string) {
     const period = SUPPORTED_RESOLUTIONS[resolution];
     if (!ticker || !period || !chainId) return;
