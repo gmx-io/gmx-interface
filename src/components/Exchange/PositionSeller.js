@@ -1072,17 +1072,20 @@ export default function PositionSeller(props) {
               </div>
             </div>
             <div className="Exchange-info-row">
-              <Tooltip
-                handle={
-                  <div className="Exchange-info-label">
-                    <Trans>Collateral ({collateralToken.symbol})</Trans>
-                  </div>
-                }
-                position="left-top"
-                renderContent={() => {
-                  return <Trans>Initial Collateral (Collateral excluding Borrow Fees).</Trans>;
-                }}
-              />
+              <div>
+                <Tooltip
+                  handle={
+                    <span className="Exchange-info-label">
+                      <Trans>Collateral ({collateralToken.symbol})</Trans>
+                    </span>
+                  }
+                  position="left-top"
+                  renderContent={() => {
+                    return <Trans>Initial Collateral (Collateral excluding Borrow Fees).</Trans>;
+                  }}
+                />
+              </div>
+
               <div className="align-right">
                 {nextCollateral && !nextCollateral.eq(position.collateral) ? (
                   <div>
