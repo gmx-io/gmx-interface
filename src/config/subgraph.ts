@@ -1,4 +1,4 @@
-import { ARBITRUM, AVALANCHE } from "./chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 
 export const SUBGRAPH_URLS = {
   [ARBITRUM]: {
@@ -10,6 +10,12 @@ export const SUBGRAPH_URLS = {
   [AVALANCHE]: {
     stats: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-stats",
     referrals: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-referrals",
+  },
+
+  [AVALANCHE_FUJI]: {
+    stats: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-stats",
+    referrals: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-referrals",
+    syntheticsStats: "https://api.thegraph.com/subgraphs/name/divhead/synts",
   },
 
   common: {

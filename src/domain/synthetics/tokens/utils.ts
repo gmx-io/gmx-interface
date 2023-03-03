@@ -80,6 +80,61 @@ export function getTokensRatio(p: { fromToken?: TokenData; toToken?: TokenData }
   return { ratio, largestAddress, smallestAddress };
 }
 
+export function getTokensRatioByAmounts(p: {
+  fromToken?: Token;
+  toToken?: Token;
+  fromTokenAmount?: BigNumber;
+  toTokenAmount?: BigNumber;
+}): TokensRatio | undefined {
+  if (!p.fromToken || !p.toToken || !p.fromTokenAmount?.gt(0) || !p.toTokenAmount?.gt(0)) return undefined;
+
+  const fromAddress = p.fromToken.address;
+  const toAddress = p.toToken.address;
+  const fromAmount = p.fromTokenAmount.mul(PRECISION).div(expandDecimals(1, p.fromToken.decimals));
+  const toAmount = p.toTokenAmount.mul(PRECISION).div(expandDecimals(1, p.toToken.decimals));
+
+  if (!fromAmount.gt(0) || !toAmount.gt(0)) return undefined;
+
+  const [largestAddress, smallestAddress] = fromAmount.gt(toAmount)
+    ? [fromAddress, toAddress]
+    : [toAddress, fromAddress];
+
+  const ratio =
+    largestAddress === fromAddress ? fromAmount.mul(PRECISION).div(toAmount) : toAmount.mul(PRECISION).div(fromAmount);
+
+  return { ratio, largestAddress, smallestAddress };
+}
+
+export function formatTokensRatio(fromToken?: Token, toToken?: Token, ratio?: TokensRatio) {
+  if (!fromToken || !toToken || !ratio) return undefined;
+
+  const [largest, smallest] = ratio.largestAddress === fromToken.address ? [fromToken, toToken] : [toToken, fromToken];
+
+  return `${formatAmount(ratio.ratio, USD_DECIMALS, 4)} ${smallest.symbol} / ${largest.symbol}`;
+}
+
+export function getAmountByRatio(p: {
+  fromToken: Token;
+  toToken: Token;
+  fromTokenAmount: BigNumber;
+  ratio: BigNumber;
+  invertRatio?: boolean;
+}) {
+  const isWrap = p.fromToken.isNative && p.toToken.isWrapped;
+  const isUnwrap = p.fromToken.isWrapped && p.toToken.isNative;
+  const isSameToken = p.fromToken.address === p.toToken.address;
+
+  if (isWrap || isUnwrap || isSameToken) {
+    return p.fromTokenAmount;
+  }
+
+  const ratio = p.invertRatio ? PRECISION.mul(PRECISION).div(p.ratio) : p.ratio;
+
+  const adjustedDecimalsRatio = adjustForDecimals(ratio, p.fromToken.decimals, p.toToken.decimals);
+
+  return p.fromTokenAmount.mul(adjustedDecimalsRatio).div(PRECISION);
+}
+
 export function getCandlesDelta(candles?: Bar[], currentAveragePrice?: number, periodInSeconds?: number) {
   if (!candles?.length || !periodInSeconds || !currentAveragePrice) {
     return undefined;
@@ -137,37 +192,6 @@ export function getCandlesDelta(candles?: Bar[], currentAveragePrice?: number, p
     deltaPercentage,
     deltaPercentageStr,
   };
-}
-
-export function formatTokensRatio(tokensData: TokensData, ratio?: TokensRatio) {
-  const smallest = getTokenData(tokensData, ratio?.smallestAddress);
-  const largest = getTokenData(tokensData, ratio?.largestAddress);
-
-  if (!smallest || !largest || !ratio) return undefined;
-
-  return `${formatAmount(ratio.ratio, USD_DECIMALS, 4)} ${smallest.symbol} / ${largest.symbol}`;
-}
-
-export function getAmountByRatio(p: {
-  fromToken: Token;
-  toToken: Token;
-  fromTokenAmount: BigNumber;
-  ratio: BigNumber;
-  invertRatio?: boolean;
-}) {
-  const isWrap = p.fromToken.isNative && p.toToken.isWrapped;
-  const isUnwrap = p.fromToken.isWrapped && p.toToken.isNative;
-  const isSameToken = p.fromToken.address === p.toToken.address;
-
-  if (isWrap || isUnwrap || isSameToken) {
-    return p.fromTokenAmount;
-  }
-
-  const ratio = p.invertRatio ? PRECISION.mul(PRECISION).div(p.ratio) : p.ratio;
-
-  const adjustedDecimalsRatio = adjustForDecimals(ratio, p.fromToken.decimals, p.toToken.decimals);
-
-  return p.fromTokenAmount.mul(adjustedDecimalsRatio).div(PRECISION);
 }
 
 export function getMidPrice(prices: TokenPrices | undefined) {

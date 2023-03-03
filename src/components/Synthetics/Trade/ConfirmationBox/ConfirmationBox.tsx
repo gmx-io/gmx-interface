@@ -896,13 +896,13 @@ export function ConfirmationBox(p: Props) {
           <ExchangeInfoRow label={t`Min. Receive`}>
             {formatTokenAmount(p.swapParams?.amountOut, tokenOut?.decimals, tokenOut?.symbol)}
           </ExchangeInfoRow>
-          <ExchangeInfoRow label={t`Price`}>{formatTokensRatio(tokensData, p.markRatio)}</ExchangeInfoRow>
+          <ExchangeInfoRow label={t`Price`}>{formatTokensRatio(tokenIn, tokenOut, p.markRatio)}</ExchangeInfoRow>
           {isLimit && (
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">
                 <Trans>Limit Price</Trans>
               </div>
-              <div className="align-right">{formatTokensRatio(tokensData, p.swapParams?.triggerRatio)}</div>
+              <div className="align-right">{formatTokensRatio(tokenIn, tokenOut, p.swapParams?.triggerRatio)}</div>
             </div>
           )}
           {showSpread && spread && (

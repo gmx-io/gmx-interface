@@ -30,6 +30,7 @@ import { useChainId } from "lib/chains";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
 import { useMemo, useState } from "react";
 
+import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import "./SyntheticsPage.scss";
 
 type Props = {
@@ -44,6 +45,7 @@ type Props = {
 enum ListSection {
   Positions = "Positions",
   Orders = "Orders",
+  Trades = "Trades",
 }
 
 export function SyntheticsPage(p: Props) {
@@ -165,6 +167,7 @@ export function SyntheticsPage(p: Props) {
                 optionLabels={{
                   [ListSection.Positions]: t`Positions${positionsCount ? ` (${positionsCount})` : ""}`,
                   [ListSection.Orders]: t`Orders${ordersCount ? ` (${ordersCount})` : ""}`,
+                  [ListSection.Trades]: t`Trades`,
                 }}
                 option={listSection}
                 onChange={(section) => setListSection(section)}
@@ -206,7 +209,6 @@ export function SyntheticsPage(p: Props) {
                 onEditCollateralClick={setEditingPositionKey}
               />
             )}
-
             {listSection === ListSection.Orders && (
               <OrderList
                 positionsData={aggregatedPositionsData}
@@ -217,6 +219,7 @@ export function SyntheticsPage(p: Props) {
                 setPendingTxns={p.setPendingTxns}
               />
             )}
+            {listSection === ListSection.Trades && <TradeHistory />}
           </div>
         </div>
 
@@ -279,6 +282,7 @@ export function SyntheticsPage(p: Props) {
               setPendingTxns={p.setPendingTxns}
             />
           )}
+          {listSection === ListSection.Trades && <TradeHistory />}
         </div>
       </div>
 

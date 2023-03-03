@@ -55,6 +55,10 @@ export function isSwapOrder(orderType: OrderType) {
   return [OrderType.MarketSwap, OrderType.LimitSwap].includes(orderType);
 }
 
+export function isLiquidationOrder(orderType: OrderType) {
+  return orderType === OrderType.Liquidation;
+}
+
 export function getTriggerOrderType(p: { isLong: boolean; isTriggerAboveThreshold: boolean }) {
   if (p.isLong) {
     return p.isTriggerAboveThreshold ? OrderType.LimitDecrease : OrderType.StopLossDecrease;

@@ -57,7 +57,7 @@ export function updateOrderTxn(chainId: number, library: Web3Provider, p: Update
 
   return callContract(chainId, exchangeRouter, "updateOrder", params, {
     sentMsg: t`Updating order`,
-    successMsg: t`Update order canceled`,
+    successMsg: t`Update order executed`,
     failMsg: t`Failed to update order`,
     setPendingTxns: p.setPendingTxns,
   });

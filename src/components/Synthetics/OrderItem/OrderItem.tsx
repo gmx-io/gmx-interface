@@ -11,8 +11,8 @@ import {
   isIncreaseOrder,
   isSwapOrder,
 } from "domain/synthetics/orders";
-import { adaptToTokenInfo, convertToUsd } from "domain/synthetics/tokens";
-import { PRECISION, getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
+import { adaptToTokenInfo, convertToUsd, getTokensRatioByAmounts } from "domain/synthetics/tokens";
+import { getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 
 type Props = {
@@ -54,15 +54,20 @@ export function OrderItem(p: Props) {
     const fromTokenInfo = fromToken ? adaptToTokenInfo(fromToken) : undefined;
     const toTokenInfo = toToken ? adaptToTokenInfo(toToken) : undefined;
 
-    const isFromGreater = fromAmount > toAmount;
-    const ratio = isFromGreater ? fromAmount.mul(PRECISION).div(toAmount) : toAmount.mul(PRECISION).div(fromAmount);
+    const tokensRatio = getTokensRatioByAmounts({
+      fromToken,
+      toToken,
+      fromTokenAmount: fromAmount,
+      toTokenAmount: toAmount,
+    });
 
     const markExchangeRate =
-      fromToken && toToken
-        ? getExchangeRate(adaptToTokenInfo(fromToken), adaptToTokenInfo(toToken), isFromGreater)
-        : undefined;
+      fromToken && toToken ? getExchangeRate(adaptToTokenInfo(fromToken), adaptToTokenInfo(toToken), false) : undefined;
 
-    const swapRatioText = getExchangeRateDisplay(ratio, fromTokenInfo, toTokenInfo);
+    const [largest, smallest] =
+      tokensRatio?.largestAddress === fromToken?.address ? [fromTokenInfo, toTokenInfo] : [toTokenInfo, fromTokenInfo];
+
+    const swapRatioText = getExchangeRateDisplay(tokensRatio?.ratio, largest, smallest);
     const markSwapRatioText = getExchangeRateDisplay(markExchangeRate, fromTokenInfo, toTokenInfo);
 
     return { swapRatioText, markSwapRatioText };

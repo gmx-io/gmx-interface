@@ -1,7 +1,7 @@
 import { BigNumber, BigNumberish, ethers } from "ethers";
 import { BASIS_POINTS_DIVISOR, PRECISION, USD_DECIMALS } from "./legacy";
 
-export function bigNumberify(n: BigNumberish) {
+export function bigNumberify(n?: BigNumberish) {
   try {
     return BigNumber.from(n);
   } catch (e) {
