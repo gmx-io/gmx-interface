@@ -579,6 +579,7 @@ msgstr "错误，无法执行"
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "Cancel"
 msgstr "取消"
 
@@ -992,6 +993,7 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/AddAffiliateCode.js
 #: src/components/Referrals/AffiliatesStats.js
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -1128,6 +1130,8 @@ msgstr "去中心化<0/>永续交易所"
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
 msgstr "减少"
@@ -1208,6 +1212,10 @@ msgstr "送出存取"
 #: src/components/Exchange/TradeHistory.js
 msgid "Deposit {0} USD into {1} {longOrShortText}"
 msgstr "存取{0} USD 至 {1} {longOrShortText}"
+
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "Deposit {collateralText} into {positionText}"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Deposited"
@@ -1511,6 +1519,7 @@ msgstr "托管的GMX"
 msgid "Escrowed GMX APR"
 msgstr "托管的GMX年利率"
 
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Execute"
 msgstr "执行"
@@ -1651,6 +1660,10 @@ msgstr "没收收益并 {action}"
 #: src/components/Exchange/PositionSeller.js
 msgid "Forfeit profit not checked"
 msgstr "未检查没收利润"
+
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "Freeze"
+msgstr ""
 
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 msgid "Fulfilling swap {0} for {1} request"
@@ -1888,6 +1901,8 @@ msgstr "网络错误"
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase"
 msgstr "增加"
@@ -2218,6 +2233,10 @@ msgstr ""
 "-{1} USD,\n"
 "{2} 价格Price: {3} USD"
 
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "Liquidated {positionText} {sizeDeltaText}, Price: {0}"
+msgstr ""
+
 #: src/domain/synthetics/orders/constants.ts
 #~ msgid "Liquidation"
 #~ msgstr ""
@@ -2284,6 +2303,8 @@ msgstr "加载中..."
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
 #: src/domain/synthetics/orders/utils.ts
@@ -2675,6 +2696,7 @@ msgid "Networks and Settings"
 msgstr "网络和设定"
 
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Next"
 msgstr "下一步"
 
@@ -2726,6 +2748,7 @@ msgid "No rewards to claim yet"
 msgstr "暂时没有奖励可领"
 
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "No trades yet"
 msgstr "暂时没有交易"
 
@@ -3051,6 +3074,7 @@ msgid "Positions{0}"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Prev"
 msgstr "上一页"
 
@@ -3323,6 +3347,11 @@ msgstr "推荐人"
 msgid "Referrals <0/>"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "Request"
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.js
 msgid "Request decrease {0} {longOrShortText}, -{1} USD, Acceptable Price: {2} {3} USD"
 msgstr "要求减少 {0} {longOrShortText}, -{1} USD, 可接受的价格: {2} {3} USD"
@@ -3553,6 +3582,8 @@ msgstr "分享仓位"
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
 #: src/domain/synthetics/orders/utils.ts
@@ -4237,6 +4268,7 @@ msgid "Traders Referred"
 msgstr "推荐的交易商"
 
 #: src/pages/Exchange/Exchange.js
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trades"
 msgstr "交易"
 
@@ -4434,6 +4466,7 @@ msgstr "不支持的链。在你的钱包上切换到Arbitrum网络并重试"
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/JoinReferralCode.js
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "Update"
 msgstr "更新"
 
@@ -4442,7 +4475,11 @@ msgid "Update Order"
 msgstr "更新指令"
 
 #: src/domain/synthetics/orders/updateOrderTxn.ts
-msgid "Update order canceled"
+#~ msgid "Update order canceled"
+#~ msgstr ""
+
+#: src/domain/synthetics/orders/updateOrderTxn.ts
+msgid "Update order executed"
 msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
@@ -4666,6 +4703,10 @@ msgstr "提领送出"
 #: src/components/Exchange/TradeHistory.js
 msgid "Withdraw {0} USD from {1} {longOrShortText}"
 msgstr "由{1} {longOrShortText}提领{0} USD"
+
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "Withdraw {collateralText} from {positionText}"
+msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
@@ -5051,6 +5092,22 @@ msgstr ""
 "{actionDisplay} {0} {longOrShortText},\n"
 "-{1} USD,\n"
 "{2} 价格: {3} USD"
+
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "{actionText} Order: Swap {fromText} for {toText}, Price: {ratioText}"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "{actionText} Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price: {pricePrefix} {1}"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "{actionText} Swap {fromText} for {toText}"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "{actionText} {increaseText} {positionText} {sizeDeltaText}, Acceptable Price: {0}"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{chainName} Total Stats start from {totalStatsStartDate}.<0/> For detailed stats:"

@@ -16,6 +16,7 @@ import { useChainId } from "lib/chains";
 import { formatDateTime } from "lib/dates";
 import { getExchangeRateDisplay } from "lib/legacy";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
+
 import "./TradeHistoryRow.scss";
 
 type Props = {

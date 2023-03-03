@@ -579,6 +579,7 @@ msgstr ""
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "Cancel"
 msgstr ""
 
@@ -992,6 +993,7 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/AddAffiliateCode.js
 #: src/components/Referrals/AffiliatesStats.js
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -1128,6 +1130,8 @@ msgstr ""
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
 msgstr ""
@@ -1207,6 +1211,10 @@ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Deposit {0} USD into {1} {longOrShortText}"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "Deposit {collateralText} into {positionText}"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
@@ -1511,6 +1519,7 @@ msgstr ""
 msgid "Escrowed GMX APR"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Execute"
 msgstr ""
@@ -1650,6 +1659,10 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
 msgid "Forfeit profit not checked"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "Freeze"
 msgstr ""
 
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
@@ -1888,6 +1901,8 @@ msgstr ""
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase"
 msgstr ""
@@ -2215,6 +2230,10 @@ msgid ""
 "{2} Price: {3} USD"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "Liquidated {positionText} {sizeDeltaText}, Price: {0}"
+msgstr ""
+
 #: src/domain/synthetics/orders/constants.ts
 #~ msgid "Liquidation"
 #~ msgstr ""
@@ -2281,6 +2300,8 @@ msgstr ""
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
 #: src/domain/synthetics/orders/utils.ts
@@ -2672,6 +2693,7 @@ msgid "Networks and Settings"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Next"
 msgstr ""
 
@@ -2723,6 +2745,7 @@ msgid "No rewards to claim yet"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "No trades yet"
 msgstr ""
 
@@ -3048,6 +3071,7 @@ msgid "Positions{0}"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Prev"
 msgstr ""
 
@@ -3320,6 +3344,11 @@ msgstr ""
 msgid "Referrals <0/>"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "Request"
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.js
 msgid "Request decrease {0} {longOrShortText}, -{1} USD, Acceptable Price: {2} {3} USD"
 msgstr ""
@@ -3550,6 +3579,8 @@ msgstr ""
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
 #: src/domain/synthetics/orders/utils.ts
@@ -4234,6 +4265,7 @@ msgid "Traders Referred"
 msgstr ""
 
 #: src/pages/Exchange/Exchange.js
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trades"
 msgstr ""
 
@@ -4431,6 +4463,7 @@ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/JoinReferralCode.js
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "Update"
 msgstr ""
 
@@ -4439,7 +4472,11 @@ msgid "Update Order"
 msgstr ""
 
 #: src/domain/synthetics/orders/updateOrderTxn.ts
-msgid "Update order canceled"
+#~ msgid "Update order canceled"
+#~ msgstr ""
+
+#: src/domain/synthetics/orders/updateOrderTxn.ts
+msgid "Update order executed"
 msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
@@ -4662,6 +4699,10 @@ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Withdraw {0} USD from {1} {longOrShortText}"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "Withdraw {collateralText} from {positionText}"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
@@ -5041,6 +5082,22 @@ msgid ""
 "{actionDisplay} {0} {longOrShortText},\n"
 "-{1} USD,\n"
 "{2} Price: {3} USD"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "{actionText} Order: Swap {fromText} for {toText}, Price: {ratioText}"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "{actionText} Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price: {pricePrefix} {1}"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "{actionText} Swap {fromText} for {toText}"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "{actionText} {increaseText} {positionText} {sizeDeltaText}, Acceptable Price: {0}"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js

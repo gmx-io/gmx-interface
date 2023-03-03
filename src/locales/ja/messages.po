@@ -579,6 +579,7 @@ msgstr "エラーにより執行できません"
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "Cancel"
 msgstr "キャンセル"
 
@@ -992,6 +993,7 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/AddAffiliateCode.js
 #: src/components/Referrals/AffiliatesStats.js
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -1128,6 +1130,8 @@ msgstr "分散型<0/>パーペチュアル取引所"
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
 msgstr "減額"
@@ -1208,6 +1212,10 @@ msgstr "入金申し込み完了。"
 #: src/components/Exchange/TradeHistory.js
 msgid "Deposit {0} USD into {1} {longOrShortText}"
 msgstr "{0} USDを {1} {longOrShortText}に入金"
+
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "Deposit {collateralText} into {positionText}"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Deposited"
@@ -1511,6 +1519,7 @@ msgstr "esGMX (エスクローされたGMX)"
 msgid "Escrowed GMX APR"
 msgstr "esGMXのAPR(実質年利)"
 
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Execute"
 msgstr "執行"
@@ -1651,6 +1660,10 @@ msgstr "利益喪失および{action}"
 #: src/components/Exchange/PositionSeller.js
 msgid "Forfeit profit not checked"
 msgstr "利益喪失がチェックされていません"
+
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "Freeze"
+msgstr ""
 
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 msgid "Fulfilling swap {0} for {1} request"
@@ -1888,6 +1901,8 @@ msgstr "誤ったネットワーク"
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase"
 msgstr "増加"
@@ -2218,6 +2233,10 @@ msgstr ""
 "-{1} USD,\n"
 "{2} 価格: {3} USD"
 
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "Liquidated {positionText} {sizeDeltaText}, Price: {0}"
+msgstr ""
+
 #: src/domain/synthetics/orders/constants.ts
 #~ msgid "Liquidation"
 #~ msgstr ""
@@ -2284,6 +2303,8 @@ msgstr "ロード中"
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
 #: src/domain/synthetics/orders/utils.ts
@@ -2675,6 +2696,7 @@ msgid "Networks and Settings"
 msgstr "ネットワークと設定"
 
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Next"
 msgstr "次へ"
 
@@ -2726,6 +2748,7 @@ msgid "No rewards to claim yet"
 msgstr "請求できる報酬はありません"
 
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "No trades yet"
 msgstr "トレード履歴はありません"
 
@@ -3051,6 +3074,7 @@ msgid "Positions{0}"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Prev"
 msgstr "前へ"
 
@@ -3323,6 +3347,11 @@ msgstr "紹介アカウント"
 msgid "Referrals <0/>"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "Request"
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.js
 msgid "Request decrease {0} {longOrShortText}, -{1} USD, Acceptable Price: {2} {3} USD"
 msgstr "{0} {longOrShortText} の減額をリクエスト -{1} USD 可能な価格: {2} {3} USD"
@@ -3553,6 +3582,8 @@ msgstr "ポジションをシェアする"
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
 #: src/domain/synthetics/orders/utils.ts
@@ -4237,6 +4268,7 @@ msgid "Traders Referred"
 msgstr "紹介したトレーダー"
 
 #: src/pages/Exchange/Exchange.js
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trades"
 msgstr "トレード"
 
@@ -4434,6 +4466,7 @@ msgstr "サポートされていないチェーンです。ウォレットをArb
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/JoinReferralCode.js
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "Update"
 msgstr "更新"
 
@@ -4442,7 +4475,11 @@ msgid "Update Order"
 msgstr "注文の更新"
 
 #: src/domain/synthetics/orders/updateOrderTxn.ts
-msgid "Update order canceled"
+#~ msgid "Update order canceled"
+#~ msgstr ""
+
+#: src/domain/synthetics/orders/updateOrderTxn.ts
+msgid "Update order executed"
 msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
@@ -4666,6 +4703,10 @@ msgstr "出金申し込み完了。"
 #: src/components/Exchange/TradeHistory.js
 msgid "Withdraw {0} USD from {1} {longOrShortText}"
 msgstr "{1} {longOrShortText}から{0} USDを出金"
+
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "Withdraw {collateralText} from {positionText}"
+msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
@@ -5047,6 +5088,22 @@ msgid ""
 "{actionDisplay} {0} {longOrShortText},\n"
 "-{1} USD,\n"
 "{2} Price: {3} USD"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "{actionText} Order: Swap {fromText} for {toText}, Price: {ratioText}"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "{actionText} Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price: {pricePrefix} {1}"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "{actionText} Swap {fromText} for {toText}"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "{actionText} {increaseText} {positionText} {sizeDeltaText}, Acceptable Price: {0}"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
