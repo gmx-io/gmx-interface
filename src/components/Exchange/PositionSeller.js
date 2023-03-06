@@ -50,6 +50,7 @@ import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValu
 import { getTokens, getWrappedToken } from "config/tokens";
 import { formatDateTime, getTimeRemaining } from "lib/dates";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { ErrorCode, ErrorDisplayType } from "./constants";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -516,73 +517,74 @@ export default function PositionSeller(props) {
 
   const getError = () => {
     if (isSwapAllowed && isContractAccount && isAddressZero(receiveToken?.address)) {
-      return t`${nativeTokenSymbol} can not be sent to smart contract addresses. Select another token.`;
+      return [t`${nativeTokenSymbol} can not be sent to smart contract addresses. Select another token.`];
     }
     if (IS_NETWORK_DISABLED[chainId]) {
       if (orderOption === STOP) return [t`Trigger order disabled, pending ${getChainName(chainId)} upgrade`];
       return [t`Position close disabled, pending ${getChainName(chainId)} upgrade`];
     }
     if (hasOutdatedUi) {
-      return t`Page outdated, please refresh`;
+      return [t`Page outdated, please refresh`];
     }
     if (!fromAmount) {
-      return t`Enter an amount`;
+      return [t`Enter an amount`];
     }
     if (nextLeverage && nextLeverage.eq(0)) {
-      return t`Enter an amount`;
+      return [t`Enter an amount`];
     }
     if (orderOption === STOP) {
       if (!triggerPriceUsd || triggerPriceUsd.eq(0)) {
-        return t`Enter Price`;
+        return [t`Enter Price`];
       }
       if (position.isLong && triggerPriceUsd.lte(liquidationPrice)) {
-        return t`Price below Liq. Price`;
+        return [t`Price below Liq. Price`];
       }
       if (!position.isLong && triggerPriceUsd.gte(liquidationPrice)) {
-        return t`Price above Liq. Price`;
+        return [t`Price above Liq. Price`];
       }
 
       if (profitPrice && nextDelta.eq(0) && nextHasProfit) {
-        return t`Invalid price, see warning`;
+        return [t`Invalid price, see warning`];
       }
     }
 
     if (isNotEnoughReceiveTokenLiquidity) {
-      return t`Insufficient receive token liquidity`;
+      return [t`Insufficient receive token liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientReceiveToken];
     }
 
     if (isCollateralPoolCapacityExceeded) {
-      return t`${collateralToken.symbol} pool exceeded, can only Receive ${collateralToken.symbol}`;
+      return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.ReceiveCollateralTokenOnly];
     }
 
     if (!isClosing && position && position.size && fromAmount) {
       if (position.size.sub(fromAmount).lt(expandDecimals(10, USD_DECIMALS))) {
-        return t`Leftover position below 10 USD`;
+        return [t`Leftover position below 10 USD`];
       }
       if (nextCollateral && nextCollateral.lt(expandDecimals(5, USD_DECIMALS))) {
-        return t`Leftover collateral below 5 USD`;
+        return [t`Leftover collateral below 5 USD`];
       }
     }
 
     if (position && position.size && position.size.lt(fromAmount)) {
-      return t`Max close amount exceeded`;
+      return [t`Max close amount exceeded`];
     }
 
     if (nextLeverage && nextLeverage.lt(1.1 * BASIS_POINTS_DIVISOR)) {
-      return t`Min leverage: 1.1x`;
+      return [t`Min leverage: 1.1x`];
     }
 
     if (nextLeverage && nextLeverage.gt(MAX_ALLOWED_LEVERAGE)) {
-      return t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`;
+      return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
     }
 
     if (hasPendingProfit && orderOption !== STOP && !isProfitWarningAccepted) {
-      return t`Forfeit profit not checked`;
+      return [t`Forfeit profit not checked`];
     }
+    return [false];
   };
 
   const isPrimaryEnabled = () => {
-    const error = getError();
+    const [error] = getError();
     if (error) {
       return false;
     }
@@ -608,7 +610,7 @@ export default function PositionSeller(props) {
   const hasPendingProfit = MIN_PROFIT_TIME > 0 && position.delta.eq(0) && position.pendingDelta.gt(0);
 
   const getPrimaryText = () => {
-    const error = getError();
+    const [error] = getError();
     if (error) {
       return error;
     }
@@ -865,6 +867,47 @@ export default function PositionSeller(props) {
   if (orderOption === STOP && !triggerPriceUsd) {
     receiveAmount = bigNumberify(0);
     convertedReceiveAmount = bigNumberify(0);
+  }
+
+  const ERROR_TOOLTIP_MSG = {
+    [ErrorCode.InsufficientReceiveToken]: (
+      <Trans>
+        Swap amount from {position.collateralToken.symbol} to {receiveToken.symbol} exceeds {receiveToken.symbol}{" "}
+        available liquidity. Choose a different "Receive" token.
+      </Trans>
+    ),
+    [ErrorCode.ReceiveCollateralTokenOnly]: (
+      <Trans>
+        Swap amount from {position.collateralToken.symbol} to {receiveToken.symbol} exceeds {receiveToken.symbol}{" "}
+        acceptable amount. Can only receive {position.collateralToken.symbol}.
+      </Trans>
+    ),
+  };
+
+  function renderPrimaryButton() {
+    const [errorMessage, errorType, errorCode] = getError();
+    const primaryTextMessage = getPrimaryText();
+    if (errorType === ErrorDisplayType.Tooltip && errorMessage === primaryTextMessage && ERROR_TOOLTIP_MSG[errorCode]) {
+      return (
+        <Tooltip
+          isHandlerDisabled
+          handle={
+            <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+              {primaryTextMessage}
+            </button>
+          }
+          position="center-top"
+          className="Tooltip-flex"
+          renderContent={() => ERROR_TOOLTIP_MSG[errorCode]}
+        />
+      );
+    }
+
+    return (
+      <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+        {primaryTextMessage}
+      </button>
+    );
   }
 
   return (
@@ -1282,11 +1325,7 @@ export default function PositionSeller(props) {
               )}
             </div>
           </div>
-          <div className="Exchange-swap-button-container">
-            <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
-              {getPrimaryText()}
-            </button>
-          </div>
+          <div className="Exchange-swap-button-container">{renderPrimaryButton()}</div>
         </Modal>
       )}
     </div>
