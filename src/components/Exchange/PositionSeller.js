@@ -1081,7 +1081,7 @@ export default function PositionSeller(props) {
                   }
                   position="left-top"
                   renderContent={() => {
-                    return <Trans>Initial Collateral (Collateral excluding Borrow Fees).</Trans>;
+                    return <Trans>Initial Collateral (Collateral excluding Borrow Fee).</Trans>;
                   }}
                 />
               </div>

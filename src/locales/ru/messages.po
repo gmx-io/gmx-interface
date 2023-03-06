@@ -1555,8 +1555,12 @@ msgid "Initial Collateral"
 msgstr "Первоначальный Залог"
 
 #: src/components/Exchange/PositionSeller.js
-msgid "Initial Collateral (Collateral excluding Borrow Fees)."
+msgid "Initial Collateral (Collateral excluding Borrow Fee)."
 msgstr ""
+
+#: src/components/Exchange/PositionSeller.js
+#~ msgid "Initial Collateral (Collateral excluding Borrow Fees)."
+#~ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Initial collateral"
