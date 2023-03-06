@@ -52,6 +52,8 @@ import {
   DecreasePositionTradeParams,
   IncreasePositionTradeParams,
   SwapTradeParams,
+  TradeMode,
+  TradeType,
   getShouldSwapPnlToCollateralToken,
 } from "domain/synthetics/trade";
 import { getTradeFlags } from "domain/synthetics/trade/utils/common";
@@ -61,7 +63,6 @@ import { useChainId } from "lib/chains";
 import { BASIS_POINTS_DIVISOR, PRECISION, USD_DECIMALS } from "lib/legacy";
 import { formatAmount, formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { useMemo, useState } from "react";
-import { TradeMode, TradeType } from "../utils";
 import { useMarketsFeesConfigs } from "domain/synthetics/fees/useMarketsFeesConfigs";
 import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
 import "./ConfirmationBox.scss";
