@@ -40,7 +40,6 @@
 
 .divider {
   border-bottom: 1px solid #ffffff29;
-  margin-bottom: 1.5rem;
 }
 
 .Modal.non-scrollable .Modal-content {
@@ -53,9 +52,12 @@
   align-items: center;
   margin: 1.5rem;
 }
+
 .Modal-body {
-  margin: 1.5rem;
+  padding: 1.5rem 1rem 1.5rem 1.5rem;
+  margin-right: 0.5rem; /* to add gap for scrollbar */
 }
+
 .Modal-body::-webkit-scrollbar {
   width: 0.6rem;
 }
