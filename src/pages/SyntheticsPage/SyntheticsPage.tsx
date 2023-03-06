@@ -219,7 +219,7 @@ export function SyntheticsPage(p: Props) {
                 setPendingTxns={p.setPendingTxns}
               />
             )}
-            {listSection === ListSection.Trades && <TradeHistory />}
+            {listSection === ListSection.Trades && <TradeHistory shouldShowPaginationButtons />}
           </div>
         </div>
 
@@ -282,7 +282,7 @@ export function SyntheticsPage(p: Props) {
               setPendingTxns={p.setPendingTxns}
             />
           )}
-          {listSection === ListSection.Trades && <TradeHistory />}
+          {listSection === ListSection.Trades && <TradeHistory shouldShowPaginationButtons />}
         </div>
       </div>
 

@@ -6,11 +6,14 @@ import { useState } from "react";
 
 const PAGE_SIZE = 100;
 
-export function TradeHistory() {
+type Props = {
+  shouldShowPaginationButtons: boolean;
+};
+
+export function TradeHistory(p: Props) {
+  const { shouldShowPaginationButtons } = p;
   const { chainId } = useChainId();
   const [pageIndex, setPageIndex] = useState(0);
-
-  const shouldShowPaginationButtons = true;
 
   const { tradeActions, isLoading } = useTradeHistory(chainId, { pageIndex, pageSize: PAGE_SIZE });
 

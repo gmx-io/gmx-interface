@@ -99,27 +99,31 @@ export function useTradeHistory(chainId: number, p: { pageIndex: number; pageSiz
 
       tradeAction.targetCollateralToken = getTokenData(tokensData, targetCollateralAddress);
 
-      tradeAction.initialCollateralDeltaAmount = tradeAction.initialCollateralDeltaAmount
-        ? bigNumberify(tradeAction.initialCollateralDeltaAmount)
-        : undefined;
+      tradeAction.initialCollateralDeltaAmount = bigNumberify(tradeAction.initialCollateralDeltaAmount);
 
-      tradeAction.sizeDeltaUsd = tradeAction.sizeDeltaUsd ? bigNumberify(tradeAction.sizeDeltaUsd) : undefined;
-      tradeAction.minOutputAmount = tradeAction.minOutputAmount ? bigNumberify(tradeAction.minOutputAmount) : undefined;
+      tradeAction.sizeDeltaUsd = bigNumberify(tradeAction.sizeDeltaUsd);
+      tradeAction.minOutputAmount = bigNumberify(tradeAction.minOutputAmount);
 
-      tradeAction.triggerPrice =
-        rawAction.triggerPrice && bigNumberify(rawAction.triggerPrice) && tradeAction.indexToken
-          ? parseContractPrice(bigNumberify(rawAction.triggerPrice)!, tradeAction.indexToken?.decimals)
-          : undefined;
+      if (rawAction.triggerPrice && tradeAction.indexToken?.decimals) {
+        tradeAction.triggerPrice = parseContractPrice(
+          bigNumberify(rawAction.triggerPrice)!,
+          tradeAction.indexToken?.decimals
+        );
+      }
 
-      tradeAction.executionPrice =
-        rawAction.executionPrice && bigNumberify(rawAction.executionPrice) && tradeAction.indexToken
-          ? parseContractPrice(bigNumberify(rawAction.executionPrice)!, tradeAction.indexToken?.decimals)
-          : undefined;
+      if (tradeAction.executionPrice && tradeAction.indexToken?.decimals) {
+        tradeAction.executionPrice = parseContractPrice(
+          bigNumberify(rawAction.executionPrice)!,
+          tradeAction.indexToken?.decimals
+        );
+      }
 
-      tradeAction.acceptablePrice =
-        rawAction.acceptablePrice && bigNumberify(rawAction.acceptablePrice) && tradeAction.indexToken
-          ? parseContractPrice(bigNumberify(rawAction.acceptablePrice)!, tradeAction.indexToken?.decimals)
-          : undefined;
+      if (tradeAction.acceptablePrice && tradeAction.indexToken?.decimals) {
+        tradeAction.acceptablePrice = parseContractPrice(
+          bigNumberify(rawAction.acceptablePrice)!,
+          tradeAction.indexToken?.decimals
+        );
+      }
 
       tradeAction.orderType = Number(tradeAction.orderType);
 
