@@ -1568,10 +1568,19 @@ msgstr "Недостаточно Доступной Ликвидности дл�
 msgid "Insufficient GLP balance"
 msgstr "Недостаточный баланс GLP"
 
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+msgid "Insufficient Liquidity"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 msgid "Insufficient liquidity"
@@ -1580,8 +1589,8 @@ msgstr "Недостаточная ликвидность"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-msgid "Insufficient liquidity, change \"Collateral In\""
-msgstr "Недостаточная ликвидность, смена \" Залог В\""
+#~ msgid "Insufficient liquidity, change \"Collateral In\""
+#~ msgstr "Недостаточная ликвидность, смена \" Залог В\""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Insufficient receive token liquidity"
@@ -2958,6 +2967,14 @@ msgstr "Обменный Ордер подан!"
 msgid "Swap active: {0}, executed: {1}, cancelled: {2}"
 msgstr "Обмен активен: {0}, выполнен: {1}, отменен: {2}"
 
+#: src/components/Exchange/PositionSeller.js
+msgid "Swap amount from {0} to {1} exceeds {2} acceptable amount. Can only receive {3}."
+msgstr ""
+
+#: src/components/Exchange/PositionSeller.js
+msgid "Swap amount from {0} to {1} exceeds {2} available liquidity. Choose a different \"Receive\" token."
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -3968,11 +3985,9 @@ msgid "{0} pool exceeded"
 msgstr "{0} пул превышен"
 
 #: src/components/Exchange/PositionSeller.js
-msgid "{0} pool exceeded, can only Receive {1}"
-msgstr "{0} пул превышен, можно Получить только {1}"
+#~ msgid "{0} pool exceeded, can only Receive {1}"
+#~ msgstr "{0} пул превышен, можно Получить только {1}"
 
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 msgid "{0} pool exceeded, try different token"
 msgstr "{0} пул превышен, попробуйте другой токен"

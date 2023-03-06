@@ -1568,10 +1568,19 @@ msgstr "{0}으로 스왑하기 위한 유동성이 충분하지 않습니다:"
 msgid "Insufficient GLP balance"
 msgstr "GLP 잔고 부족"
 
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+msgid "Insufficient Liquidity"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 msgid "Insufficient liquidity"
@@ -1580,8 +1589,8 @@ msgstr "유동성 부족"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-msgid "Insufficient liquidity, change \"Collateral In\""
-msgstr "유동성 부족, \"담보자산\"을 변경하세요"
+#~ msgid "Insufficient liquidity, change \"Collateral In\""
+#~ msgstr "유동성 부족, \"담보자산\"을 변경하세요"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Insufficient receive token liquidity"
@@ -2958,6 +2967,14 @@ msgstr "스왑 주문 제출 완료!"
 msgid "Swap active: {0}, executed: {1}, cancelled: {2}"
 msgstr "스왑 액티브: {0}, 실행 완료: {1}, 취소 완료: {2}"
 
+#: src/components/Exchange/PositionSeller.js
+msgid "Swap amount from {0} to {1} exceeds {2} acceptable amount. Can only receive {3}."
+msgstr ""
+
+#: src/components/Exchange/PositionSeller.js
+msgid "Swap amount from {0} to {1} exceeds {2} available liquidity. Choose a different \"Receive\" token."
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -3968,11 +3985,9 @@ msgid "{0} pool exceeded"
 msgstr "{0} 풀 초과됨"
 
 #: src/components/Exchange/PositionSeller.js
-msgid "{0} pool exceeded, can only Receive {1}"
-msgstr "{0} 풀 초과되었습니다. {1}만으로 수령할 수 있습니다"
+#~ msgid "{0} pool exceeded, can only Receive {1}"
+#~ msgstr "{0} 풀 초과되었습니다. {1}만으로 수령할 수 있습니다"
 
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 msgid "{0} pool exceeded, try different token"
 msgstr "{0} 풀이 초과되었습니다. 다른 자산으로 시도해보세요"

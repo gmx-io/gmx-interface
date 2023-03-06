@@ -1568,10 +1568,19 @@ msgstr "可用流动资金不足，无法换成{0}。"
 msgid "Insufficient GLP balance"
 msgstr "GLP余额不足"
 
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+msgid "Insufficient Liquidity"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 msgid "Insufficient liquidity"
@@ -1580,8 +1589,8 @@ msgstr "流动资金不足"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-msgid "Insufficient liquidity, change \"Collateral In\""
-msgstr "流动资金不足, 更换 \"Collateral In\\"
+#~ msgid "Insufficient liquidity, change \"Collateral In\""
+#~ msgstr "流动资金不足, 更换 \"Collateral In\\"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Insufficient receive token liquidity"
@@ -2958,6 +2967,14 @@ msgstr "交易订单送出"
 msgid "Swap active: {0}, executed: {1}, cancelled: {2}"
 msgstr "交易启动：{0}执行{1}已取消{2}"
 
+#: src/components/Exchange/PositionSeller.js
+msgid "Swap amount from {0} to {1} exceeds {2} acceptable amount. Can only receive {3}."
+msgstr ""
+
+#: src/components/Exchange/PositionSeller.js
+msgid "Swap amount from {0} to {1} exceeds {2} available liquidity. Choose a different \"Receive\" token."
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -3968,11 +3985,9 @@ msgid "{0} pool exceeded"
 msgstr "超出{0}池的范围"
 
 #: src/components/Exchange/PositionSeller.js
-msgid "{0} pool exceeded, can only Receive {1}"
-msgstr "超出{0}池的范围, 只能接收{1}"
+#~ msgid "{0} pool exceeded, can only Receive {1}"
+#~ msgstr "超出{0}池的范围, 只能接收{1}"
 
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 msgid "{0} pool exceeded, try different token"
 msgstr "{0}池超量，请尝试不同的代币"
