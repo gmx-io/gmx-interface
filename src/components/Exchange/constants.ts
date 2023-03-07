@@ -1,5 +1,5 @@
 export enum ErrorCode {
-  InsufficientLiquidity = "INSUFFICIENT_LIQUIDITY",
+  InsufficientLiquidityLeverage = "INSUFFICIENT_LIQUIDITY_LEVERAGE",
   InsufficientCollateralIn = "INSUFFICIENT_COLLATERAL_IN",
   InsufficientReceiveToken = "INSUFFICIENT_RECEIVE_TOKEN",
   ReceiveCollateralTokenOnly = "RECEIVE_COLLATERAL_TOKEN_ONLY",

@@ -923,7 +923,7 @@ export default function SwapBox(props) {
             return [t`Liquidity data not loaded`];
           }
           if (toTokenInfo.availableAmount && requiredAmount.gt(toTokenInfo.availableAmount)) {
-            return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientLiquidity];
+            return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientLiquidityLeverage];
           }
         }
 
@@ -932,7 +932,7 @@ export default function SwapBox(props) {
           toTokenInfo.bufferAmount &&
           toTokenInfo.bufferAmount.gt(toTokenInfo.poolAmount.sub(swapAmount))
         ) {
-          return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientLiquidity];
+          return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientLiquidityLeverage];
         }
 
         if (
@@ -1805,7 +1805,7 @@ export default function SwapBox(props) {
 
   const ERROR_TOOLTIP_MSG = {
     [ErrorCode.PoolExceeded]: t`GLP doesn't accept this amount of ${fromTokenInfo.symbol}.`,
-    [ErrorCode.InsufficientLiquidity]: (
+    [ErrorCode.InsufficientLiquidityLeverage]: (
       <Trans>
         <p>{toToken.symbol} is required for collateral.</p>
         <p>
