@@ -8,3 +8,7 @@
   font-size: 1.25rem;
   margin-bottom: 0.155rem;
 }
+
+.TradeHistory-item-link {
+  display: inline-block;
+}

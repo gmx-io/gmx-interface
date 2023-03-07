@@ -21,18 +21,6 @@ msgstr "01 Sep 2021"
 msgid "06 Jan 2022"
 msgstr "06 Jan 2022"
 
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "24h Change"
-msgstr "24小时更换"
-
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "24h High"
-msgstr "24小时高"
-
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "24h Low"
-msgstr "24小时低"
-
 #: src/pages/Dashboard/DashboardV2.js
 msgid "24h Volume"
 msgstr "24小时数量"
@@ -316,6 +304,7 @@ msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})
 msgstr "管理中资产。 GMX质押（所有链）+GLP池（{链名}）."
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "Available"
 msgstr "可用的"
 
@@ -381,10 +370,9 @@ msgid "Boost your rewards with Multiplier Points. <0>More info</0>."
 msgstr "用点数提升你的奖励。 <0>更多信息</0>"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
@@ -538,6 +526,7 @@ msgstr "送出取消"
 msgid "Cancel submitted."
 msgstr "送出取消"
 
+#: src/App/App.js
 #: src/pages/Exchange/Exchange.js
 msgid "Chart positions"
 msgstr "图表位置"
@@ -628,7 +617,7 @@ msgid "Claiming..."
 msgstr "领取中"
 
 #: src/components/Exchange/PositionsList.js
-msgid "Click on a row to select the position's market, then use the swap box to increase your position size if needed."
+msgid "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
 msgstr "点取一排以选择仓位市场,若需要可接着点选交换栏来增加幅度"
 
 #: src/components/Exchange/PositionSeller.js
@@ -637,6 +626,10 @@ msgstr "点取一排以选择仓位市场,若需要可接着点选交换栏来�
 #: src/components/Exchange/PositionsList.js
 msgid "Close"
 msgstr "收盘"
+
+#: src/components/Exchange/NetValueTooltip.tsx
+msgid "Close Fee"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close failed."
@@ -1282,6 +1275,7 @@ msgstr "费用"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Fees"
@@ -1556,8 +1550,7 @@ msgstr "已增加 {tokenSymbol} {longOrShortText}, +{0} USD"
 msgid "Index"
 msgstr "索引"
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Initial Collateral"
@@ -1662,7 +1655,7 @@ msgstr "语言"
 msgid "Launch App"
 msgstr "启动应用程序"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Leaderboard"
 msgstr "排行榜"
 
@@ -1743,7 +1736,7 @@ msgstr "流动资金价格"
 
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Liq. {0} {longOrShortText}"
-msgstr "流动资金{0} {longOrShortText}"
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Liquidated"
@@ -1905,8 +1898,8 @@ msgid "Max close amount exceeded"
 msgstr "超出最大成交金额"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account"
-msgstr "超过100倍的最大杠杆率，扣除损失和费用后的剩余抵押物已发回你的账户"
+msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account:"
+msgstr "超过100倍的最大杠杆率，扣除损失和费用后的剩余抵押物已发回你的账户:"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2072,14 +2065,8 @@ msgstr "NFT钱包"
 msgid "Net Value"
 msgstr "净值"
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-msgid "Net Value: Initial Collateral + PnL - Borrow Fee"
-msgstr ""
-
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-msgid "Net Value: Initial Collateral + PnL - Fees"
+#: src/components/Exchange/NetValueTooltip.tsx
+msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Close Fee"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -2151,9 +2138,8 @@ msgstr "请注意，订单不保证被执行。<0/><1/>可能发生在几种情�
 msgid "Only letters, numbers and underscores are allowed."
 msgstr "只允许使用字母、数字和下底线"
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-msgid "Open + Close Fees"
+#: src/components/Exchange/NetValueTooltip.tsx
+msgid "Open Fee"
 msgstr ""
 
 #: src/pages/Home/Home.js
@@ -2187,7 +2173,7 @@ msgstr ""
 
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Open {0} {longOrShortText}"
-msgstr "开仓 {0} {longOrShortText}"
+msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 msgid "Opening..."
@@ -2341,17 +2327,15 @@ msgstr "在转移之前，请阅读<0>Medium中的帖子</0>"
 msgid "Please switch your network to Arbitrum."
 msgstr "请将您的网络切换到Arbitrum"
 
+#: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/TradeHistory.js
 #: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr "PnL"
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/NetValueTooltip.tsx
 msgid "PnL After Fees"
 msgstr "扣除费用后的PnL"
 
@@ -2831,7 +2815,7 @@ msgstr "规模"
 msgid "Slippage should be less than 5%"
 msgstr "滑点应低于5%"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Speed up page loading"
 msgstr "加速页面加载"
 
@@ -3339,7 +3323,7 @@ msgstr "推荐的交易商"
 msgid "Trades"
 msgstr "交易"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"
 msgstr "交易指南"
 
@@ -3539,7 +3523,7 @@ msgstr "使用 \"Compound\" 按钮来质押你的积分点"
 msgid "Use the Edit Collateral icon to deposit or withdraw collateral."
 msgstr "使用编辑抵押品图示已存入或提取抵押品"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Useful Links"
 msgstr "实用链接"
 

@@ -21,18 +21,6 @@ msgstr "01 Сен 2021"
 msgid "06 Jan 2022"
 msgstr "6 Янв 2022"
 
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "24h Change"
-msgstr "24ч Изменение"
-
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "24h High"
-msgstr "24ч Рост"
-
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "24h Low"
-msgstr "24ч Падение"
-
 #: src/pages/Dashboard/DashboardV2.js
 msgid "24h Volume"
 msgstr "24ч Объём"
@@ -316,6 +304,7 @@ msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})
 msgstr "Активы под управлением: Ставка GMX (все цепи) + GLP пул ({chainName})."
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "Available"
 msgstr "Доступно"
 
@@ -381,10 +370,9 @@ msgid "Boost your rewards with Multiplier Points. <0>More info</0>."
 msgstr "Повышайте свои вознаграждения с помощью Множительных Баллов. <0>More info</0>."
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
@@ -538,6 +526,7 @@ msgstr "Отмена завершена"
 msgid "Cancel submitted."
 msgstr "Отмена завершена."
 
+#: src/App/App.js
 #: src/pages/Exchange/Exchange.js
 msgid "Chart positions"
 msgstr "Позиции на графике"
@@ -628,8 +617,8 @@ msgid "Claiming..."
 msgstr "Утверждение..."
 
 #: src/components/Exchange/PositionsList.js
-msgid "Click on a row to select the position's market, then use the swap box to increase your position size if needed."
-msgstr "Нажмите на строку, чтобы выбрать позицию на рынке, а затем используйте окно swap, чтобы увеличить размер позиции, если это необходимо."
+msgid "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
+msgstr "Нажмите на строку, чтобы выбрать позицию на рынке, а затем используйте окно trade, чтобы увеличить размер позиции, если это необходимо."
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
@@ -637,6 +626,10 @@ msgstr "Нажмите на строку, чтобы выбрать позици
 #: src/components/Exchange/PositionsList.js
 msgid "Close"
 msgstr "Закрыть"
+
+#: src/components/Exchange/NetValueTooltip.tsx
+msgid "Close Fee"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close failed."
@@ -1282,6 +1275,7 @@ msgstr "СБОРЫ"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Fees"
@@ -1556,8 +1550,7 @@ msgstr "Увеличено {tokenSymbol} {longOrShortText}, +{0} USD."
 msgid "Index"
 msgstr "Индекс"
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Initial Collateral"
@@ -1662,7 +1655,7 @@ msgstr "Язык"
 msgid "Launch App"
 msgstr "Запустить Приложение"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Leaderboard"
 msgstr "Таблица лидеров"
 
@@ -1743,7 +1736,7 @@ msgstr "Лик. Цена"
 
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Liq. {0} {longOrShortText}"
-msgstr "Лик. {0} {longOrShortText}"
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Liquidated"
@@ -1905,8 +1898,8 @@ msgid "Max close amount exceeded"
 msgstr "Превышена максимальная сумма закрытия"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account"
-msgstr "Максимальное кредитное плечо 100x было превышено, оставшийся залог после вычета убытков и комиссий был отправлен обратно на ваш счет"
+msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account:"
+msgstr "Максимальное кредитное плечо 100x было превышено, оставшийся залог после вычета убытков и комиссий был отправлен обратно на ваш счет:"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2072,14 +2065,8 @@ msgstr "NFT Кошелёк"
 msgid "Net Value"
 msgstr "Чистая Прибыль"
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-msgid "Net Value: Initial Collateral + PnL - Borrow Fee"
-msgstr ""
-
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-msgid "Net Value: Initial Collateral + PnL - Fees"
+#: src/components/Exchange/NetValueTooltip.tsx
+msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Close Fee"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -2151,9 +2138,8 @@ msgstr ""
 msgid "Only letters, numbers and underscores are allowed."
 msgstr "Допускаются только буквы, цифры и знаки подчеркивания."
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-msgid "Open + Close Fees"
+#: src/components/Exchange/NetValueTooltip.tsx
+msgid "Open Fee"
 msgstr ""
 
 #: src/pages/Home/Home.js
@@ -2187,7 +2173,7 @@ msgstr ""
 
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Open {0} {longOrShortText}"
-msgstr "Открыть {0} {longOrShortText}"
+msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 msgid "Opening..."
@@ -2341,17 +2327,15 @@ msgstr "Пожалуйста, прочитайте <0>Средний пост</0
 msgid "Please switch your network to Arbitrum."
 msgstr "Пожалуйста, переключите свою сеть на Arbitrum."
 
+#: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/TradeHistory.js
 #: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr "PnL"
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/NetValueTooltip.tsx
 msgid "PnL After Fees"
 msgstr "PnL После уплаты Комиссии"
 
@@ -2831,7 +2815,7 @@ msgstr "Размер"
 msgid "Slippage should be less than 5%"
 msgstr "Скольжение должно составлять менее 5%"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Speed up page loading"
 msgstr "Ускорить загрузку страницы"
 
@@ -3339,7 +3323,7 @@ msgstr "Привлеченные Трейдеров"
 msgid "Trades"
 msgstr "Торги"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"
 msgstr "Руководство по трейдингу"
 
@@ -3539,7 +3523,7 @@ msgstr "Используйте кнопку \"Сложить\", чтобы пр�
 msgid "Use the Edit Collateral icon to deposit or withdraw collateral."
 msgstr "Используйте значок Редактировать Залог, чтобы внести или вывести залог."
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Useful Links"
 msgstr "Полезные Ссылки"
 
