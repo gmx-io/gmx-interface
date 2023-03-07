@@ -22,7 +22,6 @@ import {
   getAvailableUsdLiquidityForPosition,
   getMarket,
   getMarketName,
-  getMarketPoolName,
   getMostLiquidMarketForPosition,
   getMostLiquidMarketForSwap,
   useMarketsData,
@@ -90,6 +89,7 @@ import { SwapCard } from "../../SwapCard/SwapCard";
 import { SwapTradeParams, TradeMode, TradeType } from "domain/synthetics/trade/types";
 
 import { OrderStatus } from "components/Synthetics/OrderStatus/OrderStatus";
+import Tooltip from "components/Tooltip/Tooltip";
 import { IS_NETWORK_DISABLED, getChainName } from "config/chains";
 import { useGasLimitsConfig } from "domain/synthetics/fees/useGasLimitsConfig";
 import { usePositionsConstants } from "domain/synthetics/positions/usePositionsConstants";
@@ -97,7 +97,6 @@ import { usePrevious } from "lib/usePrevious";
 import { AiOutlineEdit } from "react-icons/ai";
 import { AcceptbablePriceImpactEditor } from "../AcceptablePriceImpactEditor/AcceptablePriceImpactEditor";
 import { ConfirmationBox } from "../ConfirmationBox/ConfirmationBox";
-import Tooltip from "components/Tooltip/Tooltip";
 
 import "./TradeBox.scss";
 
@@ -253,18 +252,14 @@ export function TradeBox(p: Props) {
     });
 
   const availableMarkets: Market[] = useMemo(() => {
-    let markets = Object.values(marketsData);
+    if (!toTokenAddress) return [];
 
-    if (isIncrease) {
-      if (!toTokenAddress) return [];
-
-      markets = markets.filter(
-        (market) => market.indexTokenAddress === convertTokenAddress(chainId, toTokenAddress, "wrapped")
-      );
-    }
+    let markets = Object.values(marketsData).filter(
+      (market) => market.indexTokenAddress === convertTokenAddress(chainId, toTokenAddress, "wrapped")
+    );
 
     return markets;
-  }, [chainId, isIncrease, marketsData, toTokenAddress]);
+  }, [chainId, marketsData, toTokenAddress]);
 
   const marketsOptions: DropdownOption[] = availableMarkets.map((market) => ({
     label: getMarketName(marketsData, tokensData, market.marketTokenAddress, false, false)!,
@@ -511,6 +506,7 @@ export function TradeBox(p: Props) {
       minAcceptablePriceImpactBps?: BigNumber;
       noSufficientLiquidityInAnyMarket?: boolean;
       shouldShowMarketTooltip?: boolean;
+      shouldShowCollateralTooltip?: boolean;
     } = {};
 
     if (!isPosition || isDataLoading) {
@@ -530,7 +526,13 @@ export function TradeBox(p: Props) {
         }
       }
 
-      result.shouldShowMarketTooltip = Boolean(result.marketWithPosition);
+      result.shouldShowMarketTooltip =
+        Boolean(result.marketWithPosition) && marketAddress !== result.marketWithPosition?.marketTokenAddress;
+
+      result.shouldShowCollateralTooltip =
+        Boolean(result.collateralWithPosition) &&
+        marketAddress === result.marketWithPosition?.marketTokenAddress &&
+        collateralAddress !== result.collateralWithPosition;
 
       return result;
     }
@@ -636,13 +638,21 @@ export function TradeBox(p: Props) {
       result.minAcceptablePriceImpactBps = acceptablePriceData.acceptablePriceImpactBps;
     }
 
-    result.shouldShowMarketTooltip = Boolean(result.marketWithPosition) || Boolean(result.minPriceImpactMarket);
+    result.shouldShowMarketTooltip =
+      (Boolean(result.marketWithPosition) && marketAddress !== result.marketWithPosition?.marketTokenAddress) ||
+      Boolean(result.minPriceImpactMarket);
+
+    result.shouldShowCollateralTooltip =
+      Boolean(result.collateralWithPosition) &&
+      marketAddress === result.marketWithPosition?.marketTokenAddress &&
+      collateralAddress !== result.collateralWithPosition;
 
     return result;
   }, [
     acceptablePriceImpactBps,
     allowedSlippage,
     availableMarkets,
+    collateralAddress,
     existingPosition,
     increasePositionParams?.positionPriceImpactDeltaUsd,
     increasePositionParams?.sizeDeltaUsd,
@@ -653,6 +663,7 @@ export function TradeBox(p: Props) {
     isPosition,
     isTrigger,
     markPrice,
+    marketAddress,
     marketsData,
     marketsFeesConfigs,
     openInterestData,
@@ -1253,10 +1264,30 @@ export function TradeBox(p: Props) {
 
         <InfoRow
           className="SwapBox-info-row"
+          label={t`Market`}
+          value={
+            isIncrease ? (
+              `${indexToken?.symbol}/USD`
+            ) : (
+              <Dropdown
+                className="SwapBox-market-selector-dropdown"
+                selectedOption={{ label: `${indexToken?.symbol}/USD`, value: indexToken?.address }}
+                placeholder={"-"}
+                options={availableIndexTokens.map((token) => ({ label: `${token.symbol}/USD`, value: token.address }))}
+                onSelect={(option) => {
+                  onSelectToTokenAddress(option.value);
+                }}
+              />
+            )
+          }
+        />
+
+        <InfoRow
+          className="SwapBox-info-row"
           label={
             optimalPositionMarkets.shouldShowMarketTooltip ? (
               <Tooltip
-                handle={t`Market`}
+                handle={t`Pool`}
                 position="left-bottom"
                 className="MarketSelector-tooltip"
                 renderContent={() => (
@@ -1269,8 +1300,8 @@ export function TradeBox(p: Props) {
                         <div className="MarketSelector-tooltip-row">
                           <Trans>
                             Insufficient liquidity in{" "}
-                            {getMarketPoolName(marketsData, tokensData, selectedMarket.marketTokenAddress)} market.{" "}
-                            <br />
+                            {getMarketName(marketsData, tokensData, selectedMarket.marketTokenAddress, false, false)}{" "}
+                            market. <br />
                             <div
                               className="MarketSelector-tooltip-row-action clickable underline muted "
                               onClick={() =>
@@ -1278,10 +1309,12 @@ export function TradeBox(p: Props) {
                               }
                             >
                               Switch to{" "}
-                              {getMarketPoolName(
+                              {getMarketName(
                                 marketsData,
                                 tokensData,
-                                optimalPositionMarkets.maxLiquidityMarket.marketTokenAddress
+                                optimalPositionMarkets.maxLiquidityMarket.marketTokenAddress,
+                                false,
+                                false
                               )}{" "}
                               market.
                             </div>
@@ -1299,10 +1332,12 @@ export function TradeBox(p: Props) {
                             )
                           )}{" "}
                           better execution price in the{" "}
-                          {getMarketPoolName(
+                          {getMarketName(
                             marketsData,
                             tokensData,
-                            optimalPositionMarkets.minPriceImpactMarket.marketTokenAddress
+                            optimalPositionMarkets.minPriceImpactMarket.marketTokenAddress,
+                            false,
+                            false
                           )}{" "}
                           market.
                           <div
@@ -1312,10 +1347,12 @@ export function TradeBox(p: Props) {
                             }
                           >
                             Switch to{" "}
-                            {getMarketPoolName(
+                            {getMarketName(
                               marketsData,
                               tokensData,
-                              optimalPositionMarkets.minPriceImpactMarket.marketTokenAddress
+                              optimalPositionMarkets.minPriceImpactMarket.marketTokenAddress,
+                              false,
+                              false
                             )}{" "}
                             market.
                           </div>
@@ -1327,24 +1364,27 @@ export function TradeBox(p: Props) {
                       <div className="MarketSelector-tooltip-row">
                         <Trans>
                           You have an existing position in the{" "}
-                          {getMarketPoolName(
+                          {getMarketName(
                             marketsData,
                             tokensData,
-                            optimalPositionMarkets.marketWithPosition.marketTokenAddress
+                            optimalPositionMarkets.marketWithPosition.marketTokenAddress,
+                            false,
+                            false
                           )}{" "}
                           market.{" "}
                           <div
                             className="MarketSelector-tooltip-row-action clickable underline muted"
                             onClick={() => {
                               onSelectMarketAddress(optimalPositionMarkets.marketWithPosition!.marketTokenAddress);
-                              onSelectCollateralAddress(optimalPositionMarkets.collateralWithPosition);
                             }}
                           >
                             Switch to{" "}
-                            {getMarketPoolName(
+                            {getMarketName(
                               marketsData,
                               tokensData,
-                              optimalPositionMarkets.marketWithPosition.marketTokenAddress
+                              optimalPositionMarkets.marketWithPosition.marketTokenAddress,
+                              false,
+                              false
                             )}{" "}
                             market.
                           </div>{" "}
@@ -1361,7 +1401,7 @@ export function TradeBox(p: Props) {
                 )}
               />
             ) : (
-              t`Market`
+              t`Pool`
             )
           }
           value={
@@ -1381,7 +1421,38 @@ export function TradeBox(p: Props) {
 
         {collateralAddress && availablePositionCollaterals && (
           <InfoRow
-            label={t`Collateral In`}
+            label={
+              optimalPositionMarkets.shouldShowCollateralTooltip ? (
+                <Tooltip
+                  handle={t`Collateral In`}
+                  position="left-bottom"
+                  className="MarketSelector-tooltip"
+                  renderContent={() => (
+                    <div className="MarketSelector-tooltip-content">
+                      {optimalPositionMarkets.collateralWithPosition && (
+                        <div className="MarketSelector-tooltip-row">
+                          <Trans>
+                            You have an existing position with{" "}
+                            {getToken(chainId, optimalPositionMarkets.collateralWithPosition).symbol} as collateral.{" "}
+                            <div
+                              className="MarketSelector-tooltip-row-action clickable underline muted"
+                              onClick={() => {
+                                onSelectCollateralAddress(optimalPositionMarkets.collateralWithPosition);
+                              }}
+                            >
+                              Switch to {getToken(chainId, optimalPositionMarkets.collateralWithPosition).symbol}{" "}
+                              collateral.
+                            </div>{" "}
+                          </Trans>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                />
+              ) : (
+                t`Collateral In`
+              )
+            }
             className="SwapBox-info-row"
             value={
               <TokenSelector
