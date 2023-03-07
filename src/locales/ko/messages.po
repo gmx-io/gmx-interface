@@ -79,6 +79,18 @@ msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
+msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} acceptable amount. Reduce the \"Pay\" size, or use {4} as the \"Pay\" token to use it for collateral.</1><2>You can buy {5} on 1inch.</2>{6}"
+msgstr ""
+
+#: src/components/Exchange/SwapBox.js
+msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} available liquidity. Reduce the \"Pay\" size, or use {4} as the \"Pay\" token to use it for collateral.</1>"
+msgstr ""
+
+#: src/components/Exchange/SwapBox.js
+msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} available liquidity. Reduce the \"Pay\" size, or use {4} as the \"Pay\" token to use it for collateral.</1><2>You can buy {5} on 1inch.</2>"
+msgstr ""
+
+#: src/components/Exchange/SwapBox.js
 msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
 msgstr "{0}담보의 USD가치 스냅샷은 해당 포지션이 열려있을 때 결정됩니다."
 
@@ -1578,19 +1590,13 @@ msgstr "GLP 잔고 부족"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Insufficient Liquidity"
 msgstr ""
 
-#: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 msgid "Insufficient liquidity"
 msgstr "유동성 부족"
-
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#~ msgid "Insufficient liquidity, change \"Collateral In\""
-#~ msgstr "유동성 부족, \"담보자산\"을 변경하세요"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Insufficient receive token liquidity"
@@ -3983,10 +3989,6 @@ msgstr "담보를 위해 {0}이 필요합니다."
 #: src/components/Exchange/SwapBox.js
 msgid "{0} pool exceeded"
 msgstr "{0} 풀 초과됨"
-
-#: src/components/Exchange/PositionSeller.js
-#~ msgid "{0} pool exceeded, can only Receive {1}"
-#~ msgstr "{0} 풀 초과되었습니다. {1}만으로 수령할 수 있습니다"
 
 #: src/components/Glp/GlpSwap.js
 msgid "{0} pool exceeded, try different token"

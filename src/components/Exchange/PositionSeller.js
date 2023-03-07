@@ -878,8 +878,8 @@ export default function PositionSeller(props) {
     ),
     [ErrorCode.ReceiveCollateralTokenOnly]: (
       <Trans>
-        Swap amount from {position.collateralToken.symbol} to {receiveToken.symbol} exceeds {receiveToken.symbol}{" "}
-        acceptable amount. Can only receive {position.collateralToken.symbol}.
+        Swap amount from {position.collateralToken.symbol} to {receiveToken.symbol} exceeds{" "}
+        {position.collateralToken.symbol} acceptable amount. Can only receive {position.collateralToken.symbol}.
       </Trans>
     ),
   };

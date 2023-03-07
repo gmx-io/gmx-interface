@@ -945,7 +945,7 @@ export default function SwapBox(props) {
           const usdgFromAmount = adjustForDecimals(fromUsdMin, USD_DECIMALS, USDG_DECIMALS);
           const nextUsdgAmount = fromTokenInfo.usdgAmount.add(usdgFromAmount);
           if (nextUsdgAmount.gt(fromTokenInfo.maxUsdgAmount)) {
-            return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientLiquidity];
+            return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.TokenPoolExceeded];
           }
         }
       }
@@ -1001,7 +1001,7 @@ export default function SwapBox(props) {
           const usdgFromAmount = adjustForDecimals(fromUsdMin, USD_DECIMALS, USDG_DECIMALS);
           const nextUsdgAmount = fromTokenInfo.usdgAmount.add(usdgFromAmount);
           if (nextUsdgAmount.gt(fromTokenInfo.maxUsdgAmount)) {
-            return [t`Insufficient liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientLiquidityShorts];
+            return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.TokenPoolExceeded];
           }
         }
       }
@@ -1806,7 +1806,7 @@ export default function SwapBox(props) {
   const ERROR_TOOLTIP_MSG = {
     [ErrorCode.PoolExceeded]: t`GLP doesn't accept this amount of ${fromTokenInfo.symbol}.`,
     [ErrorCode.InsufficientLiquidity]: (
-      <>
+      <Trans>
         <p>{toToken.symbol} is required for collateral.</p>
         <p>
           Swap amount from {fromToken.symbol} to {toToken.symbol} exceeds {fromToken.symbol} available liquidity. Reduce
@@ -1815,29 +1815,29 @@ export default function SwapBox(props) {
         <ExternalLink href={get1InchSwapUrl(chainId, fromToken.symbol, toToken.symbol)}>
           You can buy {toToken.symbol} on 1inch.
         </ExternalLink>
-      </>
+      </Trans>
     ),
-    [ErrorCode.InsufficientLiquidityShorts]: (
-      <>
+    [ErrorCode.TokenPoolExceeded]: (
+      <Trans>
         <p>{toToken.symbol} is required for collateral.</p>
         <p>
-          Swap amount from {fromToken.symbol} to {toToken.symbol} exceeds {fromToken.symbol} available liquidity. Reduce
+          Swap amount from {fromToken.symbol} to {toToken.symbol} exceeds {fromToken.symbol} acceptable amount. Reduce
           the "Pay" size, or use {toToken.symbol} as the "Pay" token to use it for collateral.
         </p>
         <ExternalLink href={get1InchSwapUrl(chainId, fromToken.symbol, toToken.symbol)}>
           You can buy {toToken.symbol} on 1inch.
         </ExternalLink>
-        <p>Alternatively, you can select a different "Collateral In" token.</p>
-      </>
+        {isShort && <p>Alternatively, you can select a different "Collateral In" token.</p>}
+      </Trans>
     ),
     [ErrorCode.InsufficientCollateralIn]: (
-      <>
+      <Trans>
         <p>{toToken.symbol} is required for collateral.</p>
         <p>
           Swap amount from {fromToken.symbol} to {toToken.symbol} exceeds {fromToken.symbol} available liquidity. Reduce
           the "Pay" size, or use {toToken.symbol} as the "Pay" token to use it for collateral.
         </p>
-      </>
+      </Trans>
     ),
   };
 
