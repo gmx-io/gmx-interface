@@ -47,11 +47,14 @@
   overflow: visible;
 }
 
+.Modal-header-wrapper {
+  margin: 1.5rem;
+}
+
 .Modal-title-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 1.5rem;
 }
 .Modal-body {
   margin: 1.5rem;

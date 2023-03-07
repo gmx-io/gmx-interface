@@ -78,8 +78,7 @@ export default function TokenSelector(props) {
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={props.label}
-      >
-        <div className="TokenSelector-tokens">
+        headerContent={() => (
           <div className="TokenSelector-token-row TokenSelector-token-input-row">
             <input
               type="text"
@@ -94,6 +93,9 @@ export default function TokenSelector(props) {
               }}
             />
           </div>
+        )}
+      >
+        <div className="TokenSelector-tokens">
           {filteredTokens.map((token, tokenIndex) => {
             const tokenPopupImage = importImage(`ic_${token.symbol.toLowerCase()}_40.svg`);
             let info = infoTokens ? infoTokens[token.address] : {};

@@ -102,6 +102,7 @@
 
 .TokenSelector-token-row.TokenSelector-token-input-row {
   padding: 0;
+  margin-top: 1.5rem;
 }
 
 .TokenSelector-token-row input {
@@ -144,6 +145,9 @@
   border: none;
 }
 
+.Tokenselector-search-input {
+  font-size: 1.5rem;
+}
 .Tokenselector-search-input::placeholder {
   color: var(--dark-blue-accent);
 }

@@ -58,11 +58,14 @@ export default function Modal(props) {
             onClick={() => setIsVisible(false)}
           ></div>
           <div className="Modal-content">
-            <div className="Modal-title-bar">
-              <div className="Modal-title">{props.label}</div>
-              <div className="Modal-close-button" onClick={() => setIsVisible(false)}>
-                <MdClose fontSize={20} className="Modal-close-icon" />
+            <div className="Modal-header-wrapper">
+              <div className="Modal-title-bar">
+                <div className="Modal-title">{props.label}</div>
+                <div className="Modal-close-button" onClick={() => setIsVisible(false)}>
+                  <MdClose fontSize={20} className="Modal-close-icon" />
+                </div>
               </div>
+              {props.headerContent && props.headerContent()}
             </div>
             <div className="divider" />
             <div className={cx("Modal-body", TOUCH_MOVE_CONTAINER_CLASS_NAME)} ref={modalRef}>

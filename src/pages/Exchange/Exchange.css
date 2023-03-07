@@ -999,6 +999,7 @@ table.Exchange-list-small td {
     width: 42rem;
     position: absolute;
     max-height: 80vh;
+    min-height: 80vh;
     overflow: hidden;
     border: none;
     top: auto;
