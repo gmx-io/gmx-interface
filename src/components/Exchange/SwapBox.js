@@ -1809,7 +1809,7 @@ export default function SwapBox(props) {
       <Trans>
         <p>{toToken.symbol} is required for collateral.</p>
         <p>
-          Swap amount from {fromToken.symbol} to {toToken.symbol} exceeds {fromToken.symbol} available liquidity. Reduce
+          Swap amount from {fromToken.symbol} to {toToken.symbol} exceeds {toToken.symbol} available liquidity. Reduce
           the "Pay" size, or use {toToken.symbol} as the "Pay" token to use it for collateral.
         </p>
         <ExternalLink href={get1InchSwapUrl(chainId, fromToken.symbol, toToken.symbol)}>
@@ -1847,7 +1847,7 @@ export default function SwapBox(props) {
       <Trans>
         <p>{toToken.symbol} is required for collateral.</p>
         <p>
-          Swap amount from {fromToken.symbol} to {toToken.symbol} exceeds {fromToken.symbol} available liquidity. Reduce
+          Swap amount from {fromToken.symbol} to {toToken.symbol} exceeds {toToken.symbol} available liquidity. Reduce
           the "Pay" size, or use {toToken.symbol} as the "Pay" token to use it for collateral.
         </p>
       </Trans>

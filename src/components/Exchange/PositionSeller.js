@@ -549,7 +549,7 @@ export default function PositionSeller(props) {
     }
 
     if (isNotEnoughReceiveTokenLiquidity) {
-      return [t`Insufficient receive token liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientReceiveToken];
+      return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientReceiveToken];
     }
 
     if (isCollateralPoolCapacityExceeded) {
