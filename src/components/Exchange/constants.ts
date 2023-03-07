@@ -1,5 +1,5 @@
 export enum ErrorCode {
-  InsufficientLiquidity = "INSUFFICIENT_LIQUIDITY",
+  InsufficientLiquiditySwap = "INSUFFICIENT_LIQUIDITY_SWAP",
   Buffer = "BUFFER",
   MaxUSDG = "MAX_USDG",
   InvalidLiqPrice = "INVALID_LIQ_PRICE",
