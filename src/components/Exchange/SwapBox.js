@@ -1001,7 +1001,7 @@ export default function SwapBox(props) {
           const usdgFromAmount = adjustForDecimals(fromUsdMin, USD_DECIMALS, USDG_DECIMALS);
           const nextUsdgAmount = fromTokenInfo.usdgAmount.add(usdgFromAmount);
           if (nextUsdgAmount.gt(fromTokenInfo.maxUsdgAmount)) {
-            return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.TokenPoolExceeded];
+            return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.TokenPoolExceededShorts];
           }
         }
       }
@@ -1827,7 +1827,20 @@ export default function SwapBox(props) {
         <ExternalLink href={get1InchSwapUrl(chainId, fromToken.symbol, toToken.symbol)}>
           You can buy {toToken.symbol} on 1inch.
         </ExternalLink>
-        {isShort && <p>Alternatively, you can select a different "Collateral In" token.</p>}
+      </Trans>
+    ),
+    [ErrorCode.TokenPoolExceededShorts]: (
+      <Trans>
+        <p>{shortCollateralToken.symbol} is required for collateral.</p>
+        <p>
+          Swap amount from {fromToken.symbol} to {shortCollateralToken.symbol} exceeds {fromToken.symbol} acceptable
+          amount. Reduce the "Pay" size, or use {shortCollateralToken.symbol} as the "Pay" token to use it for
+          collateral.
+        </p>
+        <ExternalLink href={get1InchSwapUrl(chainId, fromToken.symbol, shortCollateralToken.symbol)}>
+          You can buy {shortCollateralToken.symbol} on 1inch.
+        </ExternalLink>
+        <p>Alternatively, you can select a different "Collateral In" token.</p>
       </Trans>
     ),
     [ErrorCode.InsufficientCollateralIn]: (

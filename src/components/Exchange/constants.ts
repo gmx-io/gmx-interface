@@ -4,6 +4,7 @@ export enum ErrorCode {
   InsufficientReceiveToken = "INSUFFICIENT_RECEIVE_TOKEN",
   ReceiveCollateralTokenOnly = "RECEIVE_COLLATERAL_TOKEN_ONLY",
   TokenPoolExceeded = "TOKEN_POOL_EXCEEDED",
+  TokenPoolExceededShorts = "TOKEN_POOL_EXCEEDED_SHORTS",
   PoolExceeded = "POOL_EXCEEDED",
   Buffer = "BUFFER",
   MaxUSDG = "MAX_USDG",
