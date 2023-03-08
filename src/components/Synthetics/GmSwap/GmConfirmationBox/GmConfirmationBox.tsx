@@ -139,7 +139,7 @@ export function GmConfirmationBox({
       };
     }
 
-    if (!isAllowanceLoaded) {
+    if (payTokenAddresses.length > 0 && !isAllowanceLoaded) {
       return {
         text: t`Loading...`,
         disabled: true,
