@@ -1,5 +1,5 @@
-import { i18n, MessageDescriptor } from "@lingui/core";
-import { defineMessage, Trans } from "@lingui/macro";
+import { i18n } from "@lingui/core";
+import { t, Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
@@ -13,14 +13,18 @@ type Fee = { label: string; value: string };
 type ExecutionFee = { fee?: BigNumberish; feeUSD?: BigNumberish };
 type FeeType = "open" | "close" | "swap" | "borrow" | "deposit" | "execution";
 
-const FEE_LABELS: Record<FeeType, MessageDescriptor> = {
-  open: defineMessage({ message: "Open Fee" }),
-  close: defineMessage({ message: "Close Fee" }),
-  swap: defineMessage({ message: "Swap Fee" }),
-  borrow: defineMessage({ message: "Borrow Fee" }),
-  deposit: defineMessage({ message: "Deposit Fee" }),
-  execution: defineMessage({ message: "Execution Fee" }),
-};
+function getFeeLabel(type: FeeType) {
+  const labels = {
+    close: t`Close Fee`,
+    open: t`Open Fee`,
+    swap: t`Swap Fee`,
+    borrow: t`Borrow Fee`,
+    deposit: t`Deposit Fee`,
+    execution: t`Execution Fee`,
+  };
+
+  return i18n._(labels[type]);
+}
 
 function getExecutionFeeStr(chainId, executionFee, executionFeeUsd) {
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
@@ -34,7 +38,7 @@ function getExecutionFeeStr(chainId, executionFee, executionFeeUsd) {
   return `${formattedExecutionFee} ${nativeTokenSymbol} ($${formattedExecutionFeeUsd})`;
 }
 
-function getFeesInStr(fees: BigNumber | undefined): string {
+function getFeesStr(fees: BigNumber | undefined): string {
   if (!fees || !BigNumber.from(fees).gt(0)) {
     return "";
   }
@@ -45,7 +49,7 @@ function getFeesRows(isOpening: boolean, formattedFees: Record<string, string>) 
   const rows: Fee[] = [];
 
   function addFeeRow(label: FeeType, value: string) {
-    rows.push({ label: i18n._(FEE_LABELS[label]), value });
+    rows.push({ label: getFeeLabel(label), value });
   }
 
   if (isOpening) {
@@ -88,9 +92,9 @@ function FeesTooltip({
   const executionFeeUSD = executionFees?.feeUSD;
 
   const formattedFees = {
-    swap: getFeesInStr(swapFee),
-    position: getFeesInStr(positionFee),
-    deposit: getFeesInStr(depositFee),
+    swap: getFeesStr(swapFee),
+    position: getFeesStr(positionFee),
+    deposit: getFeesStr(depositFee),
     execution: getExecutionFeeStr(chainId, executionFee, executionFeeUSD),
     funding: fundingFee || "",
   };
