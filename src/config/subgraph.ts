@@ -15,7 +15,7 @@ export const SUBGRAPH_URLS = {
   [AVALANCHE_FUJI]: {
     stats: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-stats",
     referrals: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-referrals",
-    syntheticsStats: "https://api.thegraph.com/subgraphs/name/divhead/synts",
+    syntheticsStats: "https://api.thegraph.com/subgraphs/name/divhead/synthetics-fuji-stats",
   },
 
   common: {
