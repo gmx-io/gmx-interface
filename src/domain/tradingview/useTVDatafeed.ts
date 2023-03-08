@@ -38,6 +38,7 @@ export default function useTVDatafeed({ dataProvider }: Props) {
       resetCache: function () {
         shouldRefetchBars.current = true;
         resetCacheRef.current?.();
+        shouldRefetchBars.current = false;
       },
       datafeed: {
         onReady: (callback) => {
@@ -96,7 +97,7 @@ export default function useTVDatafeed({ dataProvider }: Props) {
               resolution,
               isStable,
               periodParams,
-              shouldRefetchBars
+              shouldRefetchBars.current
             );
             const noData = !bars || bars.length === 0;
             onHistoryCallback(bars, { noData });

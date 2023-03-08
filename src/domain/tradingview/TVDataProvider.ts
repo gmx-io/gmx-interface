@@ -40,23 +40,21 @@ export class TVDataProvider {
   async getTokenLastBars(chainId: number, ticker: string, period: string, limit: number): Promise<Bar[]> {
     return getLimitChartPricesFromStats(chainId, ticker, period, limit);
   }
+  async getTokenChartPrice(chainId: number, ticker: string, period: string): Promise<Bar[]> {
+    return getTokenChartPrice(chainId, ticker, period);
+  }
 
   async getTokenHistoryBars(
     chainId: number,
     ticker: string,
     period: string,
     periodParams: PeriodParams,
-    shouldRefetchBars: { current: boolean }
+    shouldRefetchBars: boolean
   ): Promise<Bar[]> {
     const barsInfo = this.barsInfo;
-    if (
-      !barsInfo.data.length ||
-      barsInfo.ticker !== ticker ||
-      barsInfo.period !== period ||
-      shouldRefetchBars.current
-    ) {
+    if (!barsInfo.data.length || barsInfo.ticker !== ticker || barsInfo.period !== period || shouldRefetchBars) {
       try {
-        const bars = await getTokenChartPrice(chainId, ticker, period);
+        const bars = await this.getTokenChartPrice(chainId, ticker, period);
         const filledBars = fillBarGaps(bars, CHART_PERIODS[period]);
         const currentCandleTime = getCurrentCandleTime(period);
         const lastCandleTime = currentCandleTime - CHART_PERIODS[period];
@@ -67,7 +65,6 @@ export class TVDataProvider {
         this.barsInfo.data = filledBars;
         this.barsInfo.ticker = ticker;
         this.barsInfo.period = period;
-        shouldRefetchBars.current = false;
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error(error);
@@ -100,7 +97,7 @@ export class TVDataProvider {
     resolution: string,
     isStable: boolean,
     periodParams: PeriodParams,
-    shouldRefetchBars: { current: boolean }
+    shouldRefetchBars: boolean
   ) {
     const period = SUPPORTED_RESOLUTIONS[resolution];
     const { countBack } = periodParams;
