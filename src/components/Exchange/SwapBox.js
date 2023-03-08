@@ -1845,10 +1845,11 @@ export default function SwapBox(props) {
     ),
     [ErrorCode.InsufficientCollateralIn]: (
       <Trans>
-        <p>{toToken.symbol} is required for collateral.</p>
+        <p>{shortCollateralToken.symbol} is required for collateral.</p>
         <p>
-          Swap amount from {fromToken.symbol} to {toToken.symbol} exceeds {toToken.symbol} available liquidity. Reduce
-          the "Pay" size, or use {toToken.symbol} as the "Pay" token to use it for collateral.
+          Swap amount from {fromToken.symbol} to {shortCollateralToken.symbol} exceeds {shortCollateralToken.symbol}{" "}
+          available liquidity. Reduce the "Pay" size, or use {shortCollateralToken.symbol} as the "Pay" token to use it
+          for collateral.
         </p>
       </Trans>
     ),
