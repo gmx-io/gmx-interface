@@ -807,6 +807,7 @@ msgstr "抵押品({0})"
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Collateral In"
 msgstr "抵押品进入"
 
@@ -979,8 +980,8 @@ msgid "Could not increase {tokenSymbol} {longOrShortText} within the allowed sli
 msgstr "无法增加 {tokenSymbol} {longOrShortText} 在可接受的滑点内, 您可在页面右上方的设定中调整可接受滑点"
 
 #: src/components/Synthetics/Trade/utils.ts
-msgid "Couldn't find a swap path"
-msgstr ""
+#~ msgid "Couldn't find a swap path"
+#~ msgstr ""
 
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Couldn't find a swap path with enough liquidity"
@@ -1445,16 +1446,14 @@ msgstr ""
 
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/Trade/utils.ts
 msgid "Enter a size"
 msgstr ""
 
 #: src/components/Synthetics/Trade/utils.ts
-msgid "Enter a swap trigger ratio"
-msgstr ""
+#~ msgid "Enter a swap trigger ratio"
+#~ msgstr ""
 
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/Trade/utils.ts
 msgid "Enter a trigger price"
 msgstr ""
 
@@ -1472,7 +1471,6 @@ msgstr ""
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/Trade/utils.ts
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -2002,7 +2000,6 @@ msgstr "质押代币不足"
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/Trade/utils.ts
 msgid "Insufficient {0} balance"
 msgstr " {0}余额不足"
 
@@ -2264,7 +2261,6 @@ msgstr "未加载流动资金数据"
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/utils.ts
 msgid "Loading..."
 msgstr "加载中..."
 
@@ -2404,7 +2400,6 @@ msgstr "标识: {0}"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
-#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Market"
@@ -2655,7 +2650,6 @@ msgid "NFT Wallet"
 msgstr "NFT钱包"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/Trade/utils.ts
 msgid "Need to accept price impact"
 msgstr ""
 
@@ -3020,6 +3014,8 @@ msgstr "PnL"
 msgid "PnL After Fees"
 msgstr "扣除费用后的PnL"
 
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Pool"
@@ -3462,7 +3458,6 @@ msgstr "选择一个方案"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/Trade/utils.ts
 msgid "Select different tokens"
 msgstr "选择不同的币种"
 
@@ -4365,12 +4360,12 @@ msgstr "触发指令被禁用，等待{0}升级"
 #~ msgstr ""
 
 #: src/components/Synthetics/Trade/utils.ts
-msgid "Trigger price must be higher than mark price"
-msgstr ""
+#~ msgid "Trigger price must be higher than mark price"
+#~ msgstr ""
 
 #: src/components/Synthetics/Trade/utils.ts
-msgid "Trigger price must be lower than mark price"
-msgstr ""
+#~ msgid "Trigger price must be lower than mark price"
+#~ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right"
@@ -4830,6 +4825,10 @@ msgstr "您有一个有效的限价订单，{longOrShortText} {sizeInToken} {0} 
 
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "You have an existing position in the {0} market. <0>Switch to {1} market.</0>"
+msgstr ""
+
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+msgid "You have an existing position with {0} as collateral. <0>Switch to {1} collateral.</0>"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
