@@ -1848,8 +1848,7 @@ export default function SwapBox(props) {
         <p>{shortCollateralToken.symbol} is required for collateral.</p>
         <p>
           Swap amount from {fromToken.symbol} to {shortCollateralToken.symbol} exceeds {shortCollateralToken.symbol}{" "}
-          available liquidity. Reduce the "Pay" size, or use {shortCollateralToken.symbol} as the "Pay" token to use it
-          for collateral.
+          available liquidity. Reduce the "Pay" size, or change the "Collateral In" token.
         </p>
       </Trans>
     ),
