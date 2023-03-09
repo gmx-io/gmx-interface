@@ -88,7 +88,6 @@ export function useTradeHistory(chainId: number, p: { pageIndex: number; pageSiz
 
       tradeAction.market = getMarket(marketsData, tradeAction.marketAddress!);
       tradeAction.indexToken = getTokenData(tokensData, tradeAction.market?.indexTokenAddress, "native");
-
       tradeAction.initialCollateralToken = getTokenData(tokensData, tradeAction.initialCollateralTokenAddress);
 
       const targetCollateralAddress = getToTokenFromSwapPath(
@@ -99,10 +98,17 @@ export function useTradeHistory(chainId: number, p: { pageIndex: number; pageSiz
 
       tradeAction.targetCollateralToken = getTokenData(tokensData, targetCollateralAddress);
 
-      tradeAction.initialCollateralDeltaAmount = bigNumberify(tradeAction.initialCollateralDeltaAmount);
+      if (tradeAction.initialCollateralDeltaAmount) {
+        tradeAction.initialCollateralDeltaAmount = bigNumberify(tradeAction.initialCollateralDeltaAmount);
+      }
 
-      tradeAction.sizeDeltaUsd = bigNumberify(tradeAction.sizeDeltaUsd);
-      tradeAction.minOutputAmount = bigNumberify(tradeAction.minOutputAmount);
+      if (tradeAction.sizeDeltaUsd) {
+        tradeAction.sizeDeltaUsd = bigNumberify(tradeAction.sizeDeltaUsd);
+      }
+
+      if (tradeAction.minOutputAmount) {
+        tradeAction.minOutputAmount = bigNumberify(tradeAction.minOutputAmount);
+      }
 
       if (rawAction.triggerPrice && tradeAction.indexToken?.decimals) {
         tradeAction.triggerPrice = parseContractPrice(
