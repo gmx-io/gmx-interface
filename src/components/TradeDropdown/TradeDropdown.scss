@@ -1,0 +1,50 @@
+.TradeDropdown-root {
+  position: relative;
+}
+
+.TradeDropdown-button {
+  padding-right: 0.9rem;
+  padding-left: 1.2rem;
+  min-width: 8.8rem;
+  display: flex;
+  justify-content: space-between;
+
+  &:active {
+    padding-right: 0.9rem;
+    padding-left: 1.2rem;
+  }
+}
+
+.TradeDropdown-arrow {
+  margin-bottom: -0.2rem;
+}
+
+.TradeDropdown-options {
+  left: 0;
+  top: 4.4rem;
+}
+
+.TradeDropdown-option {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0.8rem 0.8rem;
+
+  color: #a0a3c4;
+  font-size: var(--font-sm);
+
+  &:hover {
+    background: var(--dark-blue-hover);
+    color: #eee;
+  }
+}
+
+.TradeDropdown-option-label {
+  margin-bottom: 0.4rem;
+  font-weight: bold;
+  font-size: 1.3rem;
+}
+
+.TradeDropdown-option-description {
+  font-size: var(--font-sm);
+}
