@@ -99,6 +99,9 @@ import { AcceptbablePriceImpactEditor } from "../AcceptablePriceImpactEditor/Acc
 import { ConfirmationBox } from "../ConfirmationBox/ConfirmationBox";
 
 import "./TradeBox.scss";
+import { ClaimableCard } from "components/Synthetics/ClaimableCard/ClaimableCard";
+import { useWeb3React } from "@web3-react/core";
+import { ClaimModal } from "components/Synthetics/ClaimModal/ClaimModal";
 
 type Props = {
   tradeType?: TradeType;
@@ -158,6 +161,7 @@ export function TradeBox(p: Props) {
   } = p;
 
   const { chainId } = useChainId();
+  const { account } = useWeb3React();
   const { tokensData, isLoading: isTokensLoading } = useAvailableTokensData(chainId);
   const { marketsData, isLoading: isMarketsLoading } = useMarketsData(chainId);
   const { poolsData, isLoading: isMarketPoolsLoading } = useMarketsPoolsData(chainId);
@@ -186,6 +190,8 @@ export function TradeBox(p: Props) {
     tradeType!,
     tradeMode!
   );
+
+  const [isClaiming, setIsClaiming] = useState(false);
 
   const [stage, setStage] = useState<"trade" | "confirmation" | "processing">("trade");
   const [focusedInput, setFocusedInput] = useState<"from" | "to">();
@@ -1721,6 +1727,14 @@ export function TradeBox(p: Props) {
         )}
         {isPosition && <MarketCard isLong={isLong} marketAddress={marketAddress} />}
       </div>
+
+      {account && (
+        <div className="SwapBox-section">
+          <ClaimableCard onClaimClick={() => setIsClaiming(true)} />
+        </div>
+      )}
+
+      {isClaiming && <ClaimModal onClose={() => setIsClaiming(false)} />}
 
       {isAcceptablePriceImpactEditing && (
         <AcceptbablePriceImpactEditor
