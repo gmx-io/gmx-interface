@@ -1024,7 +1024,7 @@ table.Exchange-list-small td {
 
   .Exchange-swap-box .TokenSelector .Modal-content .Modal-body {
     overflow-y: auto;
-    max-height: calc(80vh - 8.525rem);
+    max-height: calc(80vh - 13rem);
     scroll-margin-right: 38.75rem;
     overscroll-behavior: smooth;
     scrollbar-width: thin;
