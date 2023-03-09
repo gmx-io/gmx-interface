@@ -1716,25 +1716,20 @@ export function TradeBox(p: Props) {
         </div>
       </div>
 
-      <div className="SwapBox-section">
-        {isSwap && (
-          <SwapCard
-            marketAddress={swapParams?.swapPathStats?.targetMarketAddress || mostLiquidSwapMarket?.marketTokenAddress}
-            fromTokenAddress={fromTokenInput.tokenAddress}
-            toTokenAddress={toTokenInput.tokenAddress}
-            markRatio={markRatio}
-          />
-        )}
-        {isPosition && <MarketCard isLong={isLong} marketAddress={marketAddress} />}
-      </div>
-
-      {account && (
-        <div className="SwapBox-section">
-          <ClaimableCard onClaimClick={() => setIsClaiming(true)} />
-        </div>
+      {isSwap && (
+        <SwapCard
+          marketAddress={swapParams?.swapPathStats?.targetMarketAddress || mostLiquidSwapMarket?.marketTokenAddress}
+          fromTokenAddress={fromTokenInput.tokenAddress}
+          toTokenAddress={toTokenInput.tokenAddress}
+          markRatio={markRatio}
+        />
       )}
 
-      {isClaiming && <ClaimModal onClose={() => setIsClaiming(false)} />}
+      {isPosition && <MarketCard isLong={isLong} marketAddress={marketAddress} />}
+
+      {account && <ClaimableCard onClaimClick={() => setIsClaiming(true)} />}
+
+      {isClaiming && <ClaimModal onClose={() => setIsClaiming(false)} setPendingTxns={setPendingTxns} />}
 
       {isAcceptablePriceImpactEditing && (
         <AcceptbablePriceImpactEditor

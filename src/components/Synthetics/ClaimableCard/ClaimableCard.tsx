@@ -4,8 +4,10 @@ import { getTotalClaimableFundingUsd, useMarketsData, useMarketsPoolsData } from
 import { useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { formatUsd } from "lib/numbers";
-import "./ClaimableCard.scss";
 import { useWeb3React } from "@web3-react/core";
+import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+
+import "./ClaimableCard.scss";
 
 type Props = {
   onClaimClick: () => void;
@@ -22,17 +24,17 @@ export function ClaimableCard(p: Props) {
   const totalClaimableFundingUsd = getTotalClaimableFundingUsd(marketsData, poolsData, tokensData);
 
   return (
-    <div className="App-card">
+    <div className="Exchange-swap-market-box App-box App-box-border">
       <div className="App-card-title">
-        <Trans>Claimable Assets</Trans>
+        <Trans>Claimable funding and collateral</Trans>
       </div>
       <div className="App-card-divider" />
-      <div className="App-card-content">
-        <InfoRow className="info-row" label={t`Total Claimable`} value={formatUsd(totalClaimableFundingUsd)} />
-        <InfoRow className="info-row" label={t`Funding Fees`} value={formatUsd(totalClaimableFundingUsd)} />
-      </div>
+
+      <ExchangeInfoRow label={t`Funding Fees`} value={formatUsd(totalClaimableFundingUsd)} />
+      <ExchangeInfoRow label={t`Total Claimable`} value={formatUsd(totalClaimableFundingUsd)} />
+
       <div className="App-card-options ClaimableCard-actions">
-        {account && (
+        {account && totalClaimableFundingUsd.gt(0) && (
           <button className="App-button-option App-card-option" onClick={onClaimClick}>
             <Trans>Claim</Trans>
           </button>
