@@ -19,7 +19,7 @@ export function SyntheticsFallbackPage() {
       <div className="page-not-found-container">
         <div className="page-not-found">
           <h2>
-            <Trans>Synthetics doesn't support this network</Trans>
+            <Trans>V2 doesn't currently support this network</Trans>
           </h2>
 
           <p className="go-back">

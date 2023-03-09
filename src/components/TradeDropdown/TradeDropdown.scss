@@ -8,11 +8,6 @@
   min-width: 8.8rem;
   display: flex;
   justify-content: space-between;
-
-  &:active {
-    padding-right: 0.9rem;
-    padding-left: 1.2rem;
-  }
 }
 
 .TradeDropdown-arrow {
@@ -26,16 +21,18 @@
 
 .TradeDropdown-option {
   display: flex;
+  pointer-events: all !important;
+  width: 100%;
   flex-direction: column;
   align-items: flex-start;
   padding: 0.8rem 0.8rem;
 
-  color: #a0a3c4;
+  color: #a0a3c4 !important;
   font-size: var(--font-sm);
 
   &:hover {
-    background: var(--dark-blue-hover);
-    color: #eee;
+    background: var(--dark-blue-hover) !important;
+    color: #eee !important;
   }
 }
 

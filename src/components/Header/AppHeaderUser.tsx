@@ -2,7 +2,6 @@ import { useWeb3React } from "@web3-react/core";
 import AddressDropdown from "../AddressDropdown/AddressDropdown";
 import ConnectWalletButton from "../Common/ConnectWalletButton";
 import React, { useCallback, useEffect } from "react";
-import { HeaderLink } from "./HeaderLink";
 import connectWalletImg from "img/ic_wallet_24.svg";
 
 import "./Header.css";
@@ -90,19 +89,12 @@ export function AppHeaderUser({
   if (!active || !account) {
     return (
       <div className="App-header-user">
-        {/* <div className={cx("App-header-trade-link", { "homepage-header": isHomeSite() })}>
-          <HeaderLink
-            className="default-btn"
-            to="/trade"
+        <div className={cx("App-header-trade-link", { "homepage-header": isHomeSite() })}>
+          <TradeDropdown
             redirectPopupTimestamp={redirectPopupTimestamp}
             showRedirectModal={showRedirectModal}
-          >
-            {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
-          </HeaderLink>
-        </div> */}
-
-        <div className={cx("App-header-trade-link")}>
-          <TradeDropdown />
+            buttonLabel={isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
+          />
         </div>
 
         {showConnectionOptions ? (
@@ -129,19 +121,12 @@ export function AppHeaderUser({
 
   return (
     <div className="App-header-user">
-      {/* <div className="App-header-trade-link">
-        <HeaderLink
-          className="default-btn"
-          to="/trade"
+      <div className={cx("App-header-trade-link")}>
+        <TradeDropdown
           redirectPopupTimestamp={redirectPopupTimestamp}
           showRedirectModal={showRedirectModal}
-        >
-          <Trans>Trade</Trans>
-        </HeaderLink>
-      </div> */}
-
-      <div className={cx("App-header-trade-link")}>
-        <TradeDropdown />
+          buttonLabel={isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
+        />
       </div>
 
       {showConnectionOptions ? (

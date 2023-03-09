@@ -240,9 +240,6 @@ a.plain {
 .default-btn:active {
   background: var(--primary-btn-active);
   border: none;
-  padding-left: 1.6rem;
-  padding-right: 1.6rem;
-  box-sizing: border-box;
   overflow: hidden;
 }
 
