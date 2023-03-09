@@ -47,7 +47,6 @@ import { ARBITRUM, getChainName, getConstant, IS_NETWORK_DISABLED, isSupportedCh
 import * as Api from "domain/legacy";
 import { getContract } from "config/contracts";
 
-import Checkbox from "../Checkbox/Checkbox";
 import Tab from "../Tab/Tab";
 import TokenSelector from "./TokenSelector";
 import ExchangeInfoRow from "./ExchangeInfoRow";
