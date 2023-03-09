@@ -2,8 +2,9 @@ import React, { useEffect, useMemo, useState } from "react";
 import Tooltip from "../Tooltip/Tooltip";
 import { t, Trans } from "@lingui/macro";
 import Slider, { SliderTooltip } from "rc-slider";
+import { motion } from "framer-motion";
 import "rc-slider/assets/index.css";
-import "./SwapBox.css";
+import "./SwapBox.scss";
 
 import cx from "classnames";
 import useSWR from "swr";
@@ -2069,9 +2070,18 @@ export default function SwapBox(props) {
         {(isLong || isShort) && !isStopOrder && (
           <div className="Exchange-leverage-box">
             <div className="Exchange-leverage-slider-settings">
-              <Checkbox isChecked={isLeverageSliderEnabled} setIsChecked={setIsLeverageSliderEnabled}>
+              {/* <Checkbox isChecked={isLeverageSliderEnabled} setIsChecked={setIsLeverageSliderEnabled}>
                 <span className="muted">Leverage slider</span>
-              </Checkbox>
+              </Checkbox> */}
+
+              <span className="muted">Leverage slider</span>
+              <div
+                className="SwapBox-leverage-toggle"
+                data-is-on={isLeverageSliderEnabled}
+                onClick={() => setIsLeverageSliderEnabled(!isLeverageSliderEnabled)}
+              >
+                <motion.div className="handle" layout transition={{ type: "spring", stiffness: 700, damping: 30 }} />
+              </div>
             </div>
             {isLeverageSliderEnabled && (
               <div

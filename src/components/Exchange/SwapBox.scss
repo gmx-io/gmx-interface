@@ -1,0 +1,32 @@
+.SwapBox-collateral-tooltip-text {
+  font-weight: normal;
+}
+
+.Exchange-leverage-slider-settings {
+  display: flex;
+  justify-content: space-between;
+
+  .SwapBox-leverage-toggle {
+    width: 29.5px;
+    height: 18px;
+    background-color: rgba(255, 255, 255, 0.4);
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    border-radius: 50px;
+    padding: 2px;
+    cursor: pointer;
+
+    .handle {
+      width: 14.4px;
+      height: 14.4px;
+      background-color: white;
+      border-radius: 40px;
+    }
+  }
+
+  .SwapBox-leverage-toggle[data-is-on="true"] {
+    justify-content: flex-end;
+    background-color: #3d51ff;
+  }
+}
