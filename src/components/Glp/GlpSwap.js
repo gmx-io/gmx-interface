@@ -828,6 +828,7 @@ export default function GlpSwap(props) {
                 className="GlpSwap-from-token"
                 showSymbolImage={true}
                 showTokenImgInDropdown={true}
+                disableBodyScrollLock={true}
               />
             </BuyInputSection>
           )}
@@ -896,6 +897,7 @@ export default function GlpSwap(props) {
                 className="GlpSwap-from-token"
                 showSymbolImage={true}
                 showTokenImgInDropdown={true}
+                disableBodyScrollLock={true}
               />
             </BuyInputSection>
           )}
