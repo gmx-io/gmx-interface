@@ -51,6 +51,7 @@ import { getTokens, getWrappedToken } from "config/tokens";
 import { formatDateTime, getTimeRemaining } from "lib/dates";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Button from "components/Button/Button";
+import FeesTooltip from "./FeesTooltip";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -278,7 +279,6 @@ export default function PositionSeller(props) {
   let title;
   let fundingFee;
   let positionFee;
-  let swapFeeToken;
   let swapFee;
   let totalFees = bigNumberify(0);
 
@@ -297,7 +297,6 @@ export default function PositionSeller(props) {
   ]);
 
   let executionFee = orderOption === STOP ? getConstant(chainId, "DECREASE_ORDER_EXECUTION_GAS_FEE") : minExecutionFee;
-
   let executionFeeUsd = getUsd(executionFee, nativeTokenAddress, false, infoTokens) || bigNumberify(0);
 
   if (position) {
@@ -398,7 +397,6 @@ export default function PositionSeller(props) {
 
       if (feeBasisPoints) {
         swapFee = receiveAmount.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR);
-        swapFeeToken = getTokenAmountFromUsd(infoTokens, collateralToken.address, swapFee);
         totalFees = totalFees.add(swapFee || bigNumberify(0));
         receiveAmount = receiveAmount.sub(swapFee);
       }
@@ -1075,9 +1073,20 @@ export default function PositionSeller(props) {
               </div>
             </div>
             <div className="Exchange-info-row">
-              <div className="Exchange-info-label">
-                <Trans>Collateral ({collateralToken.symbol})</Trans>
+              <div>
+                <Tooltip
+                  handle={
+                    <span className="Exchange-info-label">
+                      <Trans>Collateral ({collateralToken.symbol})</Trans>
+                    </span>
+                  }
+                  position="left-top"
+                  renderContent={() => {
+                    return <Trans>Initial Collateral (Collateral excluding Borrow Fee).</Trans>;
+                  }}
+                />
               </div>
+
               <div className="align-right">
                 {nextCollateral && !nextCollateral.eq(position.collateral) ? (
                   <div>
@@ -1130,59 +1139,16 @@ export default function PositionSeller(props) {
                 <Trans>Fees</Trans>
               </div>
               <div className="align-right">
-                <Tooltip
-                  position="right-top"
-                  className="PositionSeller-fees-tooltip"
-                  handle={
-                    <div>
-                      {totalFees ? `$${formatAmount(totalFees.add(executionFeeUsd), USD_DECIMALS, 2, true)}` : "-"}
-                    </div>
-                  }
-                  renderContent={() => (
-                    <div>
-                      {fundingFee && (
-                        <StatsTooltipRow
-                          label={t`Borrow Fee`}
-                          value={formatAmount(fundingFee, USD_DECIMALS, 2, true)}
-                        />
-                      )}
-
-                      {positionFee && (
-                        <StatsTooltipRow
-                          label={t`Closing Fee`}
-                          value={formatAmount(positionFee, USD_DECIMALS, 2, true)}
-                        />
-                      )}
-
-                      {swapFee && (
-                        <StatsTooltipRow
-                          label={t`Swap Fee`}
-                          showDollar={false}
-                          value={`${formatAmount(swapFeeToken, collateralToken.decimals, 5)} ${collateralToken.symbol}
-                           ($${formatAmount(swapFee, USD_DECIMALS, 2, true)})`}
-                        />
-                      )}
-
-                      <StatsTooltipRow
-                        label={t`Execution Fee`}
-                        showDollar={false}
-                        value={`${formatAmount(executionFee, 18, 5, true)} ${nativeTokenSymbol} ($${formatAmount(
-                          executionFeeUsd,
-                          USD_DECIMALS,
-                          2
-                        )})`}
-                      />
-
-                      <br />
-
-                      <div className="PositionSeller-fee-item">
-                        <Trans>
-                          <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#fees">More Info</ExternalLink> about
-                          fees.
-                        </Trans>
-                      </div>
-                    </div>
-                  )}
+                <FeesTooltip
+                  isOpening={false}
+                  positionFee={positionFee}
+                  fundingFee={`$${formatAmount(fundingFee, USD_DECIMALS, 2, true)}`}
+                  totalFees={executionFeeUsd.add(totalFees)}
+                  executionFees={{
+                    fee: executionFee,
+                    feeUSD: executionFeeUsd,
+                  }}
+                  swapFee={swapFee}
                 />
               </div>
             </div>

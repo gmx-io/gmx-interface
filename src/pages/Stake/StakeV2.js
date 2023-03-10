@@ -1797,7 +1797,14 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                           <br />
 
                           <Trans>
-                            APRs are updated weekly on Wednesday and will depend on the fees collected for the week.
+                            APRs are updated weekly on Wednesday and will depend on the fees collected for the week.{" "}
+                            <br />
+                            <br />
+                            Historical GLP APRs can be checked in this{" "}
+                            <ExternalLink href="https://dune.com/saulius/gmx-analytics">
+                              community dashboard
+                            </ExternalLink>
+                            .
                           </Trans>
                         </>
                       );

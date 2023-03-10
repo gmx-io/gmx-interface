@@ -1,6 +1,7 @@
 import { ReactNode, HTMLProps } from "react";
 import cx from "classnames";
 import ButtonLink from "./ButtonLink";
+import "./Button.scss";
 
 type ButtonVariant = "primary" | "primary-action" | "semi-clear" | "clear";
 
