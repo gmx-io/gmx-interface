@@ -396,6 +396,37 @@ export function getTotalBorrowingFees(
   return openInterestValue.mul(cumulativeBorrowingFactor).sub(totalBorrowing);
 }
 
+export function getClaimableFundingAmount(
+  poolsData: MarketsPoolsData,
+  marketAddress: string | undefined,
+  isLong: boolean
+) {
+  const pool = getMarketPools(poolsData, marketAddress);
+
+  return isLong ? pool?.claimableFundingAmountLong : pool?.claimableFundingAmountShort;
+}
+
+export function getTotalClaimableFundingUsd(
+  marketsData: MarketsData,
+  poolsData: MarketsPoolsData,
+  tokensData: TokensData
+) {
+  const markets = Object.values(marketsData);
+
+  return markets.reduce((acc, market) => {
+    const longToken = getTokenData(tokensData, market.longTokenAddress);
+    const shortToken = getTokenData(tokensData, market.shortTokenAddress);
+
+    const amountLong = getClaimableFundingAmount(poolsData, market.marketTokenAddress, true);
+    const amountShort = getClaimableFundingAmount(poolsData, market.marketTokenAddress, false);
+
+    const usdLong = convertToUsd(amountLong, longToken?.decimals, longToken?.prices?.minPrice);
+    const usdShort = convertToUsd(amountShort, shortToken?.decimals, shortToken?.prices?.minPrice);
+
+    return acc.add(usdLong || 0).add(usdShort || 0);
+  }, BigNumber.from(0));
+}
+
 export function getTokenPoolType(
   marketsData: MarketsData,
   tokensData: TokensData,

@@ -85,6 +85,8 @@ export const ORDER_LIST_KEY = hashString("ORDER_LIST");
 
 export const ACCOUNT_ORDER_LIST_KEY = hashString("ACCOUNT_ORDER_LIST");
 
+export const CLAIMABLE_FUNDING_AMOUNT = hashString("CLAIMABLE_FUNDING_AMOUNT");
+
 export function positionImpactFactorKey(market: string, isPositive: boolean) {
   return hashData(["bytes32", "address", "bool"], [POSITION_IMPACT_FACTOR_KEY, market, isPositive]);
 }
@@ -202,4 +204,8 @@ export function accountPositionListKey(account: string) {
 
 export function hashedPositionKey(account: string, market: string, collateralToken: string, isLong: boolean) {
   return hashData(["address", "address", "address", "bool"], [account, market, collateralToken, isLong]);
+}
+
+export function claimableFundingAmountKey(market: string, token: string, account: string) {
+  return hashData(["bytes32", "address", "address", "address"], [CLAIMABLE_FUNDING_AMOUNT, market, token, account]);
 }

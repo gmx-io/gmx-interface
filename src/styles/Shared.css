@@ -147,6 +147,10 @@ td {
   font-weight: bold;
 }
 
+.text-center {
+  text-align: center;
+}
+
 .clickable {
   cursor: pointer;
 }

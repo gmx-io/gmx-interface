@@ -58,6 +58,9 @@ export type PoolData = {
   pnlLongMin: BigNumber;
   pnlShortMax: BigNumber;
   pnlShortMin: BigNumber;
+
+  claimableFundingAmountLong?: BigNumber;
+  claimableFundingAmountShort?: BigNumber;
 };
 
 export type RawContractDeposit = {

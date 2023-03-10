@@ -1,5 +1,8 @@
 import { Trans, t } from "@lingui/macro";
-import { InfoRow } from "components/InfoRow/InfoRow";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import Tooltip from "components/Tooltip/Tooltip";
+import { SLIPPAGE_BPS_KEY } from "config/localStorage";
 import {
   getAvailableUsdLiquidityForPosition,
   getMarket,
@@ -12,14 +15,11 @@ import {
 import { useOpenInterestData } from "domain/synthetics/markets/useOpenInterestData";
 import { getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { formatUsd } from "lib/numbers";
-import Tooltip from "components/Tooltip/Tooltip";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "lib/legacy";
-import { SLIPPAGE_BPS_KEY } from "config/localStorage";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { formatUsd } from "lib/numbers";
 
+import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import "./MarketCard.scss";
 
 export type Props = {
@@ -60,15 +60,14 @@ export function MarketCard(p: Props) {
   const reservedUsd = getReservedUsd(marketsData, openInterestData, tokensData, p.marketAddress, p.isLong);
 
   return (
-    <div className="App-card">
+    <div className="Exchange-swap-market-box App-box App-box-border">
       <div className="App-card-title">
         {longShortText}&nbsp;{indexToken?.symbol}
       </div>
       <div className="App-card-divider" />
-      <div className="App-card-content">
-        <InfoRow className="info-row" label={t`Market`} value={marketName || "..."} />
-        <InfoRow
-          className="info-row"
+      <div>
+        <ExchangeInfoRow label={t`Market`} value={marketName || "..."} />
+        <ExchangeInfoRow
           label={t`Entry Price`}
           value={
             <Tooltip
@@ -91,8 +90,7 @@ export function MarketCard(p: Props) {
           }
         />
 
-        <InfoRow
-          className="info-row"
+        <ExchangeInfoRow
           label={t`Exit Price`}
           value={
             <Tooltip
@@ -113,8 +111,7 @@ export function MarketCard(p: Props) {
           }
         />
 
-        <InfoRow
-          className="info-row"
+        <ExchangeInfoRow
           label={t`Available liquidity`}
           value={
             <Tooltip
