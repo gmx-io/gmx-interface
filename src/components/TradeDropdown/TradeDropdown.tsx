@@ -20,7 +20,6 @@ export function TradeDropdown(p: Props) {
         <Menu.Button as="div">
           <div className="TradeDropdown-button default-btn">
             <span>{buttonLabel}</span>
-            <FaChevronDown className="TradeDropdown-arrow" />
           </div>
         </Menu.Button>
 
@@ -32,8 +31,7 @@ export function TradeDropdown(p: Props) {
               redirectPopupTimestamp={redirectPopupTimestamp}
               showRedirectModal={showRedirectModal}
             >
-              <div className="TradeDropdown-option-label">V1</div>
-              <div className="TradeDropdown-option-description">GLP Contracts</div>
+              <div className="TradeDropdown-option-label">GMX V1</div>
             </HeaderLink>
           </Menu.Item>
 
@@ -44,8 +42,7 @@ export function TradeDropdown(p: Props) {
               redirectPopupTimestamp={redirectPopupTimestamp}
               showRedirectModal={showRedirectModal}
             >
-              <div className="TradeDropdown-option-label">V2</div>
-              <div className="TradeDropdown-option-description">GM Contracts</div>
+              <div className="TradeDropdown-option-label">GMX V2</div>
             </HeaderLink>
           </Menu.Item>
         </Menu.Items>

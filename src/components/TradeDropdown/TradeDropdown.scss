@@ -3,9 +3,6 @@
 }
 
 .TradeDropdown-button {
-  padding-right: 0.9rem;
-  padding-left: 1.2rem;
-  min-width: 8.8rem;
   display: flex;
   justify-content: space-between;
 }
@@ -25,7 +22,7 @@
   width: 100%;
   flex-direction: column;
   align-items: flex-start;
-  padding: 0.8rem 0.8rem;
+  padding: 0.83rem 0.83rem !important;
 
   color: #a0a3c4 !important;
   font-size: var(--font-sm);
@@ -34,14 +31,4 @@
     background: var(--dark-blue-hover) !important;
     color: #eee !important;
   }
-}
-
-.TradeDropdown-option-label {
-  margin-bottom: 0.4rem;
-  font-weight: bold;
-  font-size: 1.3rem;
-}
-
-.TradeDropdown-option-description {
-  font-size: var(--font-sm);
 }
