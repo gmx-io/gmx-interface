@@ -9,12 +9,13 @@ type ButtonProps = {
   newTab?: boolean;
 };
 
-export default function ButtonLink({ className, to, children, onClick, newTab = false }: ButtonProps) {
+export default function ButtonLink({ className, to, children, onClick, newTab = false, ...rest }: ButtonProps) {
   if (to.startsWith("http") || to.startsWith("https")) {
     const anchorProps = {
       href: to,
       className,
       onClick,
+      ...rest,
       ...(newTab
         ? {
             target: "_blank",
