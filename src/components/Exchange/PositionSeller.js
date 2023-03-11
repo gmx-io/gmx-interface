@@ -55,6 +55,13 @@ import FeesTooltip from "./FeesTooltip";
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
 
+const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
+
+function getSpread(tokenInfo) {
+  const diff = tokenInfo.maxPrice.sub(tokenInfo.minPrice);
+  return diff.mul(PRECISION).div(tokenInfo.maxPrice.add(tokenInfo.minPrice).div(2));
+}
+
 function shouldSwap(collateralToken, receiveToken) {
   // If position collateral is WETH in contract, then position.collateralToken is { symbol: “ETH”, isNative: true, … }
   // @see https://github.com/gmx-io/gmx-interface/blob/master/src/pages/Exchange/Exchange.js#L162
@@ -407,7 +414,9 @@ export default function PositionSeller(props) {
         overridePrice: triggerPriceUsd,
       });
     } else {
-      convertedReceiveAmount = getTokenAmountFromUsd(infoTokens, receiveToken.address, receiveAmount);
+      convertedReceiveAmount = getTokenAmountFromUsd(infoTokens, receiveToken.address, receiveAmount, {
+        max: true,
+      });
     }
 
     // Check swap limits (max in / max out)
@@ -655,6 +664,46 @@ export default function PositionSeller(props) {
       resetForm();
     }
   }, [prevIsVisible, isVisible]);
+
+  const receiveSpread = useMemo(() => {
+    if (!collateralToken || !infoTokens) {
+      return null;
+    }
+
+    const collateralTokenInfo = infoTokens[collateralToken.address];
+    const collateralSpread = getSpread(collateralTokenInfo);
+
+    let token = collateralToken;
+    let spread = collateralSpread;
+
+    if (swapToToken) {
+      const swapToTokenInfo = infoTokens[swapToToken.address];
+      const swapToSpread = getSpread(swapToTokenInfo);
+      if (swapToSpread.gt(spread)) {
+        token = swapToToken;
+        spread = swapToSpread;
+      }
+    }
+
+    return {
+      value: spread,
+      token,
+      isHigh: spread.gt(HIGH_SPREAD_THRESHOLD),
+    };
+  }, [swapToToken, infoTokens, collateralToken]);
+
+  const renderReceiveSpreadWarning = useCallback(() => {
+    if (receiveSpread && receiveSpread.isHigh) {
+      return (
+        <div className="Confirmation-box-warning">
+          <Trans>
+            Transacting with a depegged stable coin is subject to spreads reflecting the worse of current market price
+            or $1.00, with transactions involving multiple stablecoins may have multiple spreads.
+          </Trans>
+        </div>
+      );
+    }
+  }, [receiveSpread]);
 
   const onClickPrimary = async () => {
     if (needOrderBookApproval) {
@@ -956,6 +1005,7 @@ export default function PositionSeller(props) {
             </div>
           )}
           {renderMinProfitWarning()}
+          {renderReceiveSpreadWarning()}
           {shouldShowExistingOrderWarning && renderExistingOrderWarning()}
           <div className="PositionEditor-info-box">
             {minExecutionFeeErrorMessage && (

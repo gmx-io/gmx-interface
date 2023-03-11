@@ -2831,7 +2831,6 @@ msgid "Speed up page loading"
 msgstr "ページの読み込みを速くする"
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/ConfirmationBox.js
 msgid "Spread"
 msgstr "スプレッド"
 
@@ -3129,8 +3128,24 @@ msgid "The referral code can't be more than {MAX_REFERRAL_CODE_LENGTH} character
 msgstr "紹介コードは{MAX_REFERRAL_CODE_LENGTH}文字を超えることはできません。"
 
 #: src/components/Exchange/ConfirmationBox.js
-msgid "The spread is > 1%, please ensure the trade details are acceptable before comfirming"
-msgstr "スプレッドが1%を超えています。このトレードの詳細が許容できるものであることを確かめてから、先に進んでください。"
+#~ msgid "The spread for {0} is > 1%, please ensure the trade details are acceptable before comfirming"
+#~ msgstr ""
+
+#: src/components/Exchange/ConfirmationBox.js
+#~ msgid "The spread for {0} is {1}% please ensure the trade details are acceptable before confirming"
+#~ msgstr ""
+
+#: src/components/Exchange/PositionSeller.js
+#~ msgid "The spread for {0} is {1}%, please ensure the trade details are acceptable before confirming"
+#~ msgstr ""
+
+#: src/components/Exchange/ConfirmationBox.js
+#~ msgid "The spread is > 1%, please ensure the trade details are acceptable before comfirming"
+#~ msgstr "スプレッドが1%を超えています。このトレードの詳細が許容できるものであることを確かめてから、先に進んでください。"
+
+#: src/components/Exchange/ConfirmationBox.js
+msgid "The spread is > 1%, please ensure the trade details are acceptable before confirming"
+msgstr ""
 
 #: src/components/ModalViews/RedirectModal.js
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
@@ -3330,6 +3345,11 @@ msgstr "トレード案内"
 #: src/pages/NftWallet/NftWallet.js
 msgid "Tranferring..."
 msgstr "移転中..."
+
+#: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionSeller.js
+msgid "Transacting with a depegged stable coin is subject to spreads reflecting the worse of current market price or $1.00, with transactions involving multiple stablecoins may have multiple spreads."
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
@@ -3942,6 +3962,10 @@ msgstr "{0} 価格"
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "{0} Required"
 msgstr "{0}が必要です"
+
+#: src/components/Exchange/ConfirmationBox.js
+msgid "{0} Spread"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."

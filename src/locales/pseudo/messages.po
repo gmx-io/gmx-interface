@@ -2828,7 +2828,6 @@ msgid "Speed up page loading"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/ConfirmationBox.js
 msgid "Spread"
 msgstr ""
 
@@ -3126,7 +3125,23 @@ msgid "The referral code can't be more than {MAX_REFERRAL_CODE_LENGTH} character
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
-msgid "The spread is > 1%, please ensure the trade details are acceptable before comfirming"
+#~ msgid "The spread for {0} is > 1%, please ensure the trade details are acceptable before comfirming"
+#~ msgstr ""
+
+#: src/components/Exchange/ConfirmationBox.js
+#~ msgid "The spread for {0} is {1}% please ensure the trade details are acceptable before confirming"
+#~ msgstr ""
+
+#: src/components/Exchange/PositionSeller.js
+#~ msgid "The spread for {0} is {1}%, please ensure the trade details are acceptable before confirming"
+#~ msgstr ""
+
+#: src/components/Exchange/ConfirmationBox.js
+#~ msgid "The spread is > 1%, please ensure the trade details are acceptable before comfirming"
+#~ msgstr ""
+
+#: src/components/Exchange/ConfirmationBox.js
+msgid "The spread is > 1%, please ensure the trade details are acceptable before confirming"
 msgstr ""
 
 #: src/components/ModalViews/RedirectModal.js
@@ -3326,6 +3341,11 @@ msgstr ""
 
 #: src/pages/NftWallet/NftWallet.js
 msgid "Tranferring..."
+msgstr ""
+
+#: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionSeller.js
+msgid "Transacting with a depegged stable coin is subject to spreads reflecting the worse of current market price or $1.00, with transactions involving multiple stablecoins may have multiple spreads."
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.js
@@ -3938,6 +3958,10 @@ msgstr ""
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "{0} Required"
+msgstr ""
+
+#: src/components/Exchange/ConfirmationBox.js
+msgid "{0} Spread"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js

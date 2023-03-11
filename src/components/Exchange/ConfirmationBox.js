@@ -35,12 +35,15 @@ import { getUsd } from "domain/tokens";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 
-function getSpread(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddress) {
+function getSpread(tokenInfo) {
+  const diff = tokenInfo.maxPrice.sub(tokenInfo.minPrice);
+  return diff.mul(PRECISION).div(tokenInfo.maxPrice.add(tokenInfo.minPrice).div(2));
+}
+
+function getSwapSpreadInfo(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddress) {
   if (fromTokenInfo && fromTokenInfo.maxPrice && toTokenInfo && toTokenInfo.minPrice) {
-    const fromDiff = fromTokenInfo.maxPrice.sub(fromTokenInfo.minPrice).div(2);
-    const fromSpread = fromDiff.mul(PRECISION).div(fromTokenInfo.maxPrice.add(fromTokenInfo.minPrice).div(2));
-    const toDiff = toTokenInfo.maxPrice.sub(toTokenInfo.minPrice).div(2);
-    const toSpread = toDiff.mul(PRECISION).div(toTokenInfo.maxPrice.add(toTokenInfo.minPrice).div(2));
+    const fromSpread = getSpread(fromTokenInfo);
+    const toSpread = getSpread(toTokenInfo);
 
     let value = fromSpread.add(toSpread);
 
@@ -274,16 +277,17 @@ export default function ConfirmationBox(props) {
   };
 
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
-  const spread = getSpread(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddress);
+  const spread = getSwapSpreadInfo(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddress);
+
   // it's meaningless for limit/stop orders to show spread based on current prices
-  const showSpread = isMarketOrder && !!spread;
+  const showSwapSpread = isSwap && isMarketOrder && !!spread;
 
   let allowedSlippage = savedSlippageAmount;
   if (isHigherSlippageAllowed) {
     allowedSlippage = DEFAULT_HIGHER_SLIPPAGE_AMOUNT;
   }
 
-  const renderSpreadWarning = useCallback(() => {
+  const renderSwapSpreadWarning = useCallback(() => {
     if (!isMarketOrder) {
       return null;
     }
@@ -291,11 +295,48 @@ export default function ConfirmationBox(props) {
     if (spread && spread.isHigh) {
       return (
         <div className="Confirmation-box-warning">
-          <Trans>The spread is {`>`} 1%, please ensure the trade details are acceptable before comfirming</Trans>
+          <Trans>The spread is {`>`} 1%, please ensure the trade details are acceptable before confirming</Trans>
         </div>
       );
     }
   }, [isMarketOrder, spread]);
+
+  const marginSpread = useMemo(() => {
+    const toSpread = getSpread(toTokenInfo);
+    const fromSpread = getSpread(fromTokenInfo);
+
+    if (!toSpread && !fromSpread) {
+      return null;
+    }
+
+    if (toSpread?.gt(fromSpread)) {
+      return {
+        value: toSpread,
+        token: toTokenInfo,
+        isHigh: toSpread.gt(HIGH_SPREAD_THRESHOLD),
+      };
+    }
+    return {
+      value: fromSpread,
+      token: fromTokenInfo,
+      isHigh: fromSpread.gt(HIGH_SPREAD_THRESHOLD),
+    };
+  }, [toTokenInfo, fromTokenInfo]);
+
+  const renderMarginSpreadWarning = useCallback(() => {
+    if (marginSpread && marginSpread.isHigh) {
+      return (
+        <div className="Confirmation-box-warning">
+          <Trans>
+            Transacting with a depegged stable coin is subject to spreads reflecting the worse of current market price
+            or $1.00, with transactions involving multiple stablecoins may have multiple spreads.
+          </Trans>
+        </div>
+      );
+    }
+  }, [marginSpread]);
+
+  const showMarginSpread = !isSwap && isMarketOrder && !!marginSpread;
 
   const renderFeeWarning = useCallback(() => {
     if (orderOption === LIMIT || !feeBps || feeBps <= 60) {
@@ -579,6 +620,7 @@ export default function ConfirmationBox(props) {
       <>
         <div>
           {renderMain()}
+          {renderMarginSpreadWarning()}
           {renderFeeWarning()}
           {renderExistingOrderWarning()}
           {renderExistingTriggerErrors()}
@@ -615,9 +657,9 @@ export default function ConfirmationBox(props) {
             </div>
           )}
           {renderAllowedSlippage(allowedSlippage)}
-          {showSpread && (
-            <ExchangeInfoRow label={t`Spread`} isWarning={spread.isHigh} isTop={true}>
-              {formatAmount(spread.value.mul(100), USD_DECIMALS, 2, true)}%
+          {showMarginSpread && (
+            <ExchangeInfoRow label={t`${marginSpread.token.symbol} Spread`} isWarning={marginSpread.isHigh} isTop>
+              {formatAmount(marginSpread.value.mul(100), USD_DECIMALS, 2, true)}%
             </ExchangeInfoRow>
           )}
           {isMarketOrder && (
@@ -711,8 +753,6 @@ export default function ConfirmationBox(props) {
     existingPosition,
     isMarketOrder,
     triggerPriceUsd,
-    showSpread,
-    spread,
     displayLiquidationPrice,
     existingLiquidationPrice,
     feesUsd,
@@ -741,6 +781,9 @@ export default function ConfirmationBox(props) {
     swapFees,
     currentExecutionFee,
     currentExecutionFeeUsd,
+    renderMarginSpreadWarning,
+    marginSpread,
+    showMarginSpread,
   ]);
 
   const renderSwapSection = useCallback(() => {
@@ -748,8 +791,8 @@ export default function ConfirmationBox(props) {
       <div>
         {renderMain()}
         {renderFeeWarning()}
-        {renderSpreadWarning()}
-        {showSpread && (
+        {renderSwapSpreadWarning()}
+        {showSwapSpread && (
           <ExchangeInfoRow label={t`Spread`} isWarning={spread.isHigh}>
             {formatAmount(spread.value.mul(100), USD_DECIMALS, 2, true)}%
           </ExchangeInfoRow>
@@ -802,11 +845,11 @@ export default function ConfirmationBox(props) {
     );
   }, [
     renderMain,
-    renderSpreadWarning,
+    renderSwapSpreadWarning,
     fromTokenInfo,
     toTokenInfo,
     orderOption,
-    showSpread,
+    showSwapSpread,
     spread,
     feesUsd,
     fromTokenUsd,
