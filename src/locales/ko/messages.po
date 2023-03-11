@@ -703,6 +703,10 @@ msgstr "담보 ({0})"
 msgid "Collateral In"
 msgstr "담보 자산"
 
+#: src/components/Exchange/ConfirmationBox.js
+msgid "Collateral Spread"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Community Projects"
 msgstr "커뮤니티 프로젝트"
@@ -2831,6 +2835,7 @@ msgid "Speed up page loading"
 msgstr "페이지 로드 속도 향상"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionSeller.js
 msgid "Spread"
 msgstr "스프레드"
 
@@ -3964,8 +3969,8 @@ msgid "{0} Required"
 msgstr "{0} 요구됨"
 
 #: src/components/Exchange/ConfirmationBox.js
-msgid "{0} Spread"
-msgstr ""
+#~ msgid "{0} Spread"
+#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."

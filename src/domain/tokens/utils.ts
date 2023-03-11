@@ -237,3 +237,8 @@ export const replaceNativeTokenAddress = (path: string[], nativeTokenAddress: st
 
   return updatedPath;
 };
+
+export function getSpread(p: { minPrice: BigNumber; maxPrice: BigNumber }): BigNumber {
+  const diff = p.maxPrice.sub(p.minPrice);
+  return diff.mul(PRECISION).div(p.maxPrice.add(p.minPrice).div(2));
+}

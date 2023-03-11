@@ -57,9 +57,11 @@ const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 
-function getSpread(tokenInfo) {
-  const diff = tokenInfo.maxPrice.sub(tokenInfo.minPrice);
-  return diff.mul(PRECISION).div(tokenInfo.maxPrice.add(tokenInfo.minPrice).div(2));
+function applySpread(amount, spread) {
+  if (!amount || !spread) {
+    return amount;
+  }
+  return amount.sub(amount.mul(spread).div(PRECISION));
 }
 
 function shouldSwap(collateralToken, receiveToken) {
@@ -257,7 +259,6 @@ export default function PositionSeller(props) {
 
   const { data: hasOutdatedUi } = useHasOutdatedUi();
 
-  let collateralToken;
   let receiveToken;
   let maxAmount;
   let maxAmountFormatted;
@@ -275,8 +276,8 @@ export default function PositionSeller(props) {
 
   let nextCollateral;
   let collateralDelta = bigNumberify(0);
+  let receiveUsd = bigNumberify(0);
   let receiveAmount = bigNumberify(0);
-  let convertedReceiveAmount = bigNumberify(0);
   let adjustedDelta = bigNumberify(0);
 
   let isNotEnoughReceiveTokenLiquidity;
@@ -305,13 +306,15 @@ export default function PositionSeller(props) {
   let executionFee = orderOption === STOP ? getConstant(chainId, "DECREASE_ORDER_EXECUTION_GAS_FEE") : minExecutionFee;
   let executionFeeUsd = getUsd(executionFee, nativeTokenAddress, false, infoTokens) || bigNumberify(0);
 
+  const collateralToken = position.collateralToken;
+  const collateralTokenInfo = getTokenInfo(infoTokens, collateralToken.address);
+
   if (position) {
     fundingFee = position.fundingFee;
     fromAmount = parseValue(fromValue, USD_DECIMALS);
     sizeDelta = fromAmount;
 
     title = t`Close ${longOrShortText} ${position.indexToken.symbol}`;
-    collateralToken = position.collateralToken;
     liquidationPrice = getLiquidationPrice(position);
 
     if (fromAmount) {
@@ -321,7 +324,7 @@ export default function PositionSeller(props) {
 
     if (isClosing) {
       sizeDelta = position.size;
-      receiveAmount = position.collateral;
+      receiveUsd = position.collateral;
     } else if (orderOption === STOP && sizeDelta && existingOrders.length > 0) {
       let residualSize = position.size;
       for (const order of existingOrders) {
@@ -337,12 +340,12 @@ export default function PositionSeller(props) {
     }
 
     if (nextHasProfit) {
-      receiveAmount = receiveAmount.add(adjustedDelta);
+      receiveUsd = receiveUsd.add(adjustedDelta);
     } else {
-      if (receiveAmount.gt(adjustedDelta)) {
-        receiveAmount = receiveAmount.sub(adjustedDelta);
+      if (receiveUsd.gt(adjustedDelta)) {
+        receiveUsd = receiveUsd.sub(adjustedDelta);
       } else {
-        receiveAmount = bigNumberify(0);
+        receiveUsd = bigNumberify(0);
       }
     }
 
@@ -370,15 +373,17 @@ export default function PositionSeller(props) {
 
     totalFees = totalFees.add(positionFee || bigNumberify(0)).add(fundingFee || bigNumberify(0));
 
-    receiveAmount = receiveAmount.add(collateralDelta);
+    receiveUsd = receiveUsd.add(collateralDelta);
 
     if (sizeDelta) {
-      if (receiveAmount.gt(totalFees)) {
-        receiveAmount = receiveAmount.sub(totalFees);
+      if (receiveUsd.gt(totalFees)) {
+        receiveUsd = receiveUsd.sub(totalFees);
       } else {
-        receiveAmount = bigNumberify(0);
+        receiveUsd = bigNumberify(0);
       }
     }
+
+    receiveUsd = applySpread(receiveUsd, collateralTokenInfo?.spread);
 
     receiveToken = isSwapAllowed && swapToToken ? swapToToken : collateralToken;
 
@@ -402,21 +407,22 @@ export default function PositionSeller(props) {
       );
 
       if (feeBasisPoints) {
-        swapFee = receiveAmount.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR);
+        swapFee = receiveUsd.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR);
         totalFees = totalFees.add(swapFee || bigNumberify(0));
-        receiveAmount = receiveAmount.sub(swapFee);
+        receiveUsd = receiveUsd.sub(swapFee);
+
+        const swapToTokenInfo = getTokenInfo(infoTokens, swapToToken.address);
+        receiveUsd = applySpread(receiveUsd, swapToTokenInfo?.spread);
       }
     }
 
     // For Shorts trigger orders the collateral is a stable coin, it should not depend on the triggerPrice
     if (orderOption === STOP && position.isLong) {
-      convertedReceiveAmount = getTokenAmountFromUsd(infoTokens, receiveToken.address, receiveAmount, {
+      receiveAmount = getTokenAmountFromUsd(infoTokens, receiveToken.address, receiveUsd, {
         overridePrice: triggerPriceUsd,
       });
     } else {
-      convertedReceiveAmount = getTokenAmountFromUsd(infoTokens, receiveToken.address, receiveAmount, {
-        max: true,
-      });
+      receiveAmount = getTokenAmountFromUsd(infoTokens, receiveToken.address, receiveUsd);
     }
 
     // Check swap limits (max in / max out)
@@ -425,8 +431,8 @@ export default function PositionSeller(props) {
       const receiveTokenInfo = getTokenInfo(infoTokens, receiveToken.address);
 
       isNotEnoughReceiveTokenLiquidity =
-        receiveTokenInfo.availableAmount.lt(convertedReceiveAmount) ||
-        receiveTokenInfo.bufferAmount.gt(receiveTokenInfo.poolAmount.sub(convertedReceiveAmount));
+        receiveTokenInfo.availableAmount.lt(receiveAmount) ||
+        receiveTokenInfo.bufferAmount.gt(receiveTokenInfo.poolAmount.sub(receiveAmount));
 
       if (
         collateralInfo.maxUsdgAmount &&
@@ -434,7 +440,7 @@ export default function PositionSeller(props) {
         collateralInfo.usdgAmount &&
         collateralInfo.maxPrice
       ) {
-        const usdgFromAmount = adjustForDecimals(receiveAmount, USD_DECIMALS, USDG_DECIMALS);
+        const usdgFromAmount = adjustForDecimals(receiveUsd, USD_DECIMALS, USDG_DECIMALS);
         const nextUsdgAmount = collateralInfo.usdgAmount.add(usdgFromAmount);
 
         if (nextUsdgAmount.gt(collateralInfo.maxUsdgAmount)) {
@@ -665,35 +671,29 @@ export default function PositionSeller(props) {
     }
   }, [prevIsVisible, isVisible]);
 
-  const receiveSpread = useMemo(() => {
-    if (!collateralToken || !infoTokens) {
+  const receiveSpreadInfo = useMemo(() => {
+    if (!collateralTokenInfo || !infoTokens) {
       return null;
     }
 
-    const collateralTokenInfo = infoTokens[collateralToken.address];
-    const collateralSpread = getSpread(collateralTokenInfo);
-
-    let token = collateralToken;
-    let spread = collateralSpread;
-
-    if (swapToToken) {
-      const swapToTokenInfo = infoTokens[swapToToken.address];
-      const swapToSpread = getSpread(swapToTokenInfo);
-      if (swapToSpread.gt(spread)) {
-        token = swapToToken;
-        spread = swapToSpread;
-      }
+    if (!swapToToken || swapToToken.address === collateralTokenInfo.address) {
+      return {
+        value: collateralTokenInfo.spread,
+        isHigh: collateralTokenInfo.spread.gt(HIGH_SPREAD_THRESHOLD),
+      };
     }
 
+    const swapToTokenInfo = getTokenInfo(infoTokens, swapToToken.address);
+    const spread = collateralTokenInfo.spread.add(swapToTokenInfo.spread);
     return {
       value: spread,
-      token,
       isHigh: spread.gt(HIGH_SPREAD_THRESHOLD),
     };
-  }, [swapToToken, infoTokens, collateralToken]);
+  }, [swapToToken, infoTokens, collateralTokenInfo]);
+  const showReceiveSpread = receiveSpreadInfo && receiveSpreadInfo.value.gt(0);
 
   const renderReceiveSpreadWarning = useCallback(() => {
-    if (receiveSpread && receiveSpread.isHigh) {
+    if (receiveSpreadInfo && receiveSpreadInfo.isHigh) {
       return (
         <div className="Confirmation-box-warning">
           <Trans>
@@ -703,7 +703,7 @@ export default function PositionSeller(props) {
         </div>
       );
     }
-  }, [receiveSpread]);
+  }, [receiveSpreadInfo]);
 
   const onClickPrimary = async () => {
     if (needOrderBookApproval) {
@@ -910,8 +910,8 @@ export default function PositionSeller(props) {
   const shouldShowExistingOrderWarning = false;
 
   if (orderOption === STOP && !triggerPriceUsd) {
+    receiveUsd = bigNumberify(0);
     receiveAmount = bigNumberify(0);
-    convertedReceiveAmount = bigNumberify(0);
   }
 
   return (
@@ -1201,16 +1201,21 @@ export default function PositionSeller(props) {
                 />
               </div>
             </div>
-            <div className="Exchange-info-row PositionSeller-receive-row top-line">
+            {showReceiveSpread && (
+              <ExchangeInfoRow label={t`Spread`} isWarning={receiveSpreadInfo.isHigh} isTop>
+                {formatAmount(receiveSpreadInfo.value.mul(100), USD_DECIMALS, 2, true)}%
+              </ExchangeInfoRow>
+            )}
+            <div className={["Exchange-info-row PositionSeller-receive-row", !showReceiveSpread ? "top-line" : ""]}>
               <div className="Exchange-info-label">
                 <Trans>Receive</Trans>
               </div>
 
               {!isSwapAllowed && receiveToken && (
                 <div className="align-right PositionSelector-selected-receive-token">
-                  {formatAmount(convertedReceiveAmount, receiveToken.decimals, 4, true)}
+                  {formatAmount(receiveAmount, receiveToken.decimals, 4, true)}
                   &nbsp;{receiveToken.symbol} ($
-                  {formatAmount(receiveAmount, USD_DECIMALS, 2, true)})
+                  {formatAmount(receiveUsd, USD_DECIMALS, 2, true)})
                 </div>
               )}
 
@@ -1240,7 +1245,7 @@ export default function PositionSeller(props) {
                       const convertedTokenAmount = getTokenAmountFromUsd(
                         infoTokens,
                         tokenOptionInfo.address,
-                        receiveAmount
+                        receiveUsd
                       );
 
                       const isNotEnoughLiquidity =
@@ -1289,8 +1294,8 @@ export default function PositionSeller(props) {
                     showTokenImgInDropdown={true}
                     selectedTokenLabel={
                       <span className="PositionSelector-selected-receive-token">
-                        {formatAmount(convertedReceiveAmount, receiveToken.decimals, 4, true)}&nbsp;
-                        {receiveToken.symbol} (${formatAmount(receiveAmount, USD_DECIMALS, 2, true)})
+                        {formatAmount(receiveAmount, receiveToken.decimals, 4, true)}&nbsp;
+                        {receiveToken.symbol} (${formatAmount(receiveUsd, USD_DECIMALS, 2, true)})
                       </span>
                     }
                   />
