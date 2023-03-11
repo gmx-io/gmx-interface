@@ -31,7 +31,7 @@ import { expandDecimals, formatAmount } from "lib/numbers";
 import { getToken, getWrappedToken } from "config/tokens";
 import { Plural, t, Trans } from "@lingui/macro";
 import FeesTooltip from "./FeesTooltip";
-import { getUsd } from "domain/tokens";
+import { getTokenInfo, getUsd } from "domain/tokens";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 
@@ -298,15 +298,18 @@ export default function ConfirmationBox(props) {
       return null;
     }
 
+    let totalSpread = toTokenInfo.spread;
     if (toTokenInfo.address === collateralTokenAddress) {
       return {
-        value: toTokenInfo.spread,
+        value: totalSpread,
         isHigh: toTokenInfo.spread.gt(HIGH_SPREAD_THRESHOLD),
       };
     }
 
-    const collateralToken = infoTokens[collateralTokenAddress];
-    const totalSpread = toTokenInfo.spread.add(collateralToken.spread);
+    const collateralTokenInfo = getTokenInfo(infoTokens, collateralTokenAddress);
+    if (collateralTokenInfo?.spread) {
+      totalSpread = totalSpread.add(collateralTokenInfo.spread);
+    }
 
     return {
       value: totalSpread,
