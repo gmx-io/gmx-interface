@@ -3128,7 +3128,11 @@ msgid "The referral code can't be more than {MAX_REFERRAL_CODE_LENGTH} character
 msgstr "추천인 코드의 길이는 {MAX_REFERRAL_CODE_LENGTH}글자를 넘을 수 없습니다."
 
 #: src/components/Exchange/ConfirmationBox.js
-msgid "The spread for {0} is > 1%, please ensure the trade details are acceptable before comfirming"
+#~ msgid "The spread for {0} is > 1%, please ensure the trade details are acceptable before comfirming"
+#~ msgstr ""
+
+#: src/components/Exchange/ConfirmationBox.js
+msgid "The spread for {0} is {1}% please ensure the trade details are acceptable before confirming"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js

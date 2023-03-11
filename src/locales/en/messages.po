@@ -3128,8 +3128,12 @@ msgid "The referral code can't be more than {MAX_REFERRAL_CODE_LENGTH} character
 msgstr "The referral code can't be more than {MAX_REFERRAL_CODE_LENGTH} characters."
 
 #: src/components/Exchange/ConfirmationBox.js
-msgid "The spread for {0} is > 1%, please ensure the trade details are acceptable before comfirming"
-msgstr "The spread for {0} is > 1%, please ensure the trade details are acceptable before comfirming"
+#~ msgid "The spread for {0} is > 1%, please ensure the trade details are acceptable before comfirming"
+#~ msgstr "The spread for {0} is > 1%, please ensure the trade details are acceptable before comfirming"
+
+#: src/components/Exchange/ConfirmationBox.js
+msgid "The spread for {0} is {1}% please ensure the trade details are acceptable before confirming"
+msgstr "The spread for {0} is {1}% please ensure the trade details are acceptable before confirming"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "The spread for {0} is {1}%, please ensure the trade details are acceptable before confirming"
