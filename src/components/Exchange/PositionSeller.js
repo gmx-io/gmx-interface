@@ -410,10 +410,9 @@ export default function PositionSeller(props) {
         swapFee = receiveUsd.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR);
         totalFees = totalFees.add(swapFee || bigNumberify(0));
         receiveUsd = receiveUsd.sub(swapFee);
-
-        const swapToTokenInfo = getTokenInfo(infoTokens, swapToToken.address);
-        receiveUsd = applySpread(receiveUsd, swapToTokenInfo?.spread);
       }
+      const swapToTokenInfo = getTokenInfo(infoTokens, swapToToken.address);
+      receiveUsd = applySpread(receiveUsd, swapToTokenInfo?.spread);
     }
 
     // For Shorts trigger orders the collateral is a stable coin, it should not depend on the triggerPrice
