@@ -60,6 +60,15 @@ export const homeEventsData: EventData[] = [
   //     },
   //   ],
   // },
+  {
+    id: "usdc-depeg",
+    title: "USDC has currently lost its peg to USD",
+    isActive: true,
+    validTill: "18 Dec 2023, 12:00",
+    bodyText:
+      "There is a high spread for USDC on GMX, reflecting its current market-wide trading price. These spreads may impact your leverage short positions using USDC as collateral, swaps into and out of USDC, and any other transactions involving USDC, including minting/burning GLP.",
+    buttons: [],
+  },
 ];
 
 export const appEventsData: EventData[] = [
@@ -292,5 +301,14 @@ export const appEventsData: EventData[] = [
         newTab: true,
       },
     ],
+  },
+  {
+    id: "usdc-depeg",
+    title: "USDC has currently lost its peg to USD",
+    isActive: true,
+    validTill: "18 Dec 2023, 12:00",
+    bodyText:
+      "There is a high spread for USDC on GMX, reflecting its current market-wide trading price. These spreads may impact your leverage short positions using USDC as collateral, swaps into and out of USDC, and any other transactions involving USDC, including minting/burning GLP.",
+    buttons: [],
   },
 ];
