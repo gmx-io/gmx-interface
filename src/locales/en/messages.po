@@ -703,6 +703,10 @@ msgstr "Collateral ({0})"
 msgid "Collateral In"
 msgstr "Collateral In"
 
+#: src/components/Exchange/ConfirmationBox.js
+msgid "Collateral Spread"
+msgstr "Collateral Spread"
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Community Projects"
 msgstr "Community Projects"
@@ -2831,6 +2835,7 @@ msgid "Speed up page loading"
 msgstr "Speed up page loading"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionSeller.js
 msgid "Spread"
 msgstr "Spread"
 
@@ -3964,8 +3969,8 @@ msgid "{0} Required"
 msgstr "{0} Required"
 
 #: src/components/Exchange/ConfirmationBox.js
-msgid "{0} Spread"
-msgstr "{0} Spread"
+#~ msgid "{0} Spread"
+#~ msgstr "{0} Spread"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."

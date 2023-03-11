@@ -703,6 +703,10 @@ msgstr "抵押品({0})"
 msgid "Collateral In"
 msgstr "抵押品进入"
 
+#: src/components/Exchange/ConfirmationBox.js
+msgid "Collateral Spread"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Community Projects"
 msgstr "社区项目"
@@ -2831,6 +2835,7 @@ msgid "Speed up page loading"
 msgstr "加速页面加载"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionSeller.js
 msgid "Spread"
 msgstr "分散"
 
@@ -3964,8 +3969,8 @@ msgid "{0} Required"
 msgstr "{0} 需要的"
 
 #: src/components/Exchange/ConfirmationBox.js
-msgid "{0} Spread"
-msgstr ""
+#~ msgid "{0} Spread"
+#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."

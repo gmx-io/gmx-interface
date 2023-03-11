@@ -8,6 +8,7 @@ import {
   MAX_PRICE_DEVIATION_BASIS_POINTS,
   USD_DECIMALS,
   USDG_ADDRESS,
+  PRECISION,
 } from "lib/legacy";
 import { getServerUrl } from "config/backend";
 import { InfoTokens, Token, TokenInfo } from "./types";
@@ -69,6 +70,11 @@ export function useInfoTokens(
   };
 }
 
+function getSpread(tokenInfo) {
+  const diff = tokenInfo.maxPrice.sub(tokenInfo.minPrice);
+  return diff.mul(PRECISION).div(tokenInfo.maxPrice.add(tokenInfo.minPrice).div(2));
+}
+
 function getInfoTokens(
   tokens: Token[],
   tokenBalances: BigNumber[] | undefined,
@@ -117,6 +123,7 @@ function getInfoTokens(
       token.maxGlobalLongSize = vaultTokenInfo[i * vaultPropsLength + 9];
       token.minPrice = vaultTokenInfo[i * vaultPropsLength + 10];
       token.maxPrice = vaultTokenInfo[i * vaultPropsLength + 11];
+      token.spread = getSpread(token);
       token.guaranteedUsd = vaultTokenInfo[i * vaultPropsLength + 12];
       token.maxPrimaryPrice = vaultTokenInfo[i * vaultPropsLength + 13];
       token.minPrimaryPrice = vaultTokenInfo[i * vaultPropsLength + 14];

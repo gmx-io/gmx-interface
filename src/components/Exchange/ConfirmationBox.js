@@ -35,23 +35,15 @@ import { getUsd } from "domain/tokens";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 
-function getSpread(tokenInfo) {
-  const diff = tokenInfo.maxPrice.sub(tokenInfo.minPrice);
-  return diff.mul(PRECISION).div(tokenInfo.maxPrice.add(tokenInfo.minPrice).div(2));
-}
-
 function getSwapSpreadInfo(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddress) {
-  if (fromTokenInfo && fromTokenInfo.maxPrice && toTokenInfo && toTokenInfo.minPrice) {
-    const fromSpread = getSpread(fromTokenInfo);
-    const toSpread = getSpread(toTokenInfo);
-
-    let value = fromSpread.add(toSpread);
+  if (fromTokenInfo?.spread && toTokenInfo?.spread) {
+    let value = fromTokenInfo.spread.add(toTokenInfo.spread);
 
     const fromTokenAddress = fromTokenInfo.isNative ? nativeTokenAddress : fromTokenInfo.address;
     const toTokenAddress = toTokenInfo.isNative ? nativeTokenAddress : toTokenInfo.address;
 
     if (isLong && fromTokenAddress === toTokenAddress) {
-      value = fromSpread;
+      value = fromTokenInfo.spread;
     }
 
     return {
@@ -277,10 +269,10 @@ export default function ConfirmationBox(props) {
   };
 
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
-  const spread = getSwapSpreadInfo(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddress);
+  const spreadInfo = getSwapSpreadInfo(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddress);
 
   // it's meaningless for limit/stop orders to show spread based on current prices
-  const showSwapSpread = isSwap && isMarketOrder && !!spread;
+  const showSwapSpread = isSwap && isMarketOrder && !!spreadInfo;
 
   let allowedSlippage = savedSlippageAmount;
   if (isHigherSlippageAllowed) {
@@ -292,39 +284,38 @@ export default function ConfirmationBox(props) {
       return null;
     }
 
-    if (spread && spread.isHigh) {
+    if (spreadInfo && spreadInfo.isHigh) {
       return (
         <div className="Confirmation-box-warning">
           <Trans>The spread is {`>`} 1%, please ensure the trade details are acceptable before confirming</Trans>
         </div>
       );
     }
-  }, [isMarketOrder, spread]);
+  }, [isMarketOrder, spreadInfo]);
 
-  const marginSpread = useMemo(() => {
-    const toSpread = getSpread(toTokenInfo);
-    const fromSpread = getSpread(fromTokenInfo);
-
-    if (!toSpread && !fromSpread) {
+  const collateralSpreadInfo = useMemo(() => {
+    if (!toTokenInfo?.spread || !collateralTokenAddress) {
       return null;
     }
 
-    if (toSpread?.gt(fromSpread)) {
+    if (toTokenInfo.address === collateralTokenAddress) {
       return {
-        value: toSpread,
-        token: toTokenInfo,
-        isHigh: toSpread.gt(HIGH_SPREAD_THRESHOLD),
+        value: toTokenInfo.spread,
+        isHigh: toTokenInfo.spread.gt(HIGH_SPREAD_THRESHOLD),
       };
     }
-    return {
-      value: fromSpread,
-      token: fromTokenInfo,
-      isHigh: fromSpread.gt(HIGH_SPREAD_THRESHOLD),
-    };
-  }, [toTokenInfo, fromTokenInfo]);
 
-  const renderMarginSpreadWarning = useCallback(() => {
-    if (marginSpread && marginSpread.isHigh) {
+    const collateralToken = infoTokens[collateralTokenAddress];
+    const totalSpread = toTokenInfo.spread.add(collateralToken.spread);
+
+    return {
+      value: totalSpread,
+      isHigh: totalSpread.gt(HIGH_SPREAD_THRESHOLD),
+    };
+  }, [toTokenInfo, collateralTokenAddress, infoTokens]);
+
+  const renderCollateralSpreadWarning = useCallback(() => {
+    if (collateralSpreadInfo && collateralSpreadInfo.isHigh) {
       return (
         <div className="Confirmation-box-warning">
           <Trans>
@@ -334,9 +325,9 @@ export default function ConfirmationBox(props) {
         </div>
       );
     }
-  }, [marginSpread]);
+  }, [collateralSpreadInfo]);
 
-  const showMarginSpread = !isSwap && isMarketOrder && !!marginSpread;
+  const showCollateralSpread = !isSwap && isMarketOrder && !!collateralSpreadInfo;
 
   const renderFeeWarning = useCallback(() => {
     if (orderOption === LIMIT || !feeBps || feeBps <= 60) {
@@ -620,7 +611,7 @@ export default function ConfirmationBox(props) {
       <>
         <div>
           {renderMain()}
-          {renderMarginSpreadWarning()}
+          {renderCollateralSpreadWarning()}
           {renderFeeWarning()}
           {renderExistingOrderWarning()}
           {renderExistingTriggerErrors()}
@@ -657,9 +648,9 @@ export default function ConfirmationBox(props) {
             </div>
           )}
           {renderAllowedSlippage(allowedSlippage)}
-          {showMarginSpread && (
-            <ExchangeInfoRow label={t`${marginSpread.token.symbol} Spread`} isWarning={marginSpread.isHigh} isTop>
-              {formatAmount(marginSpread.value.mul(100), USD_DECIMALS, 2, true)}%
+          {showCollateralSpread && (
+            <ExchangeInfoRow label={t`Collateral Spread`} isWarning={collateralSpreadInfo.isHigh} isTop>
+              {formatAmount(collateralSpreadInfo.value.mul(100), USD_DECIMALS, 2, true)}%
             </ExchangeInfoRow>
           )}
           {isMarketOrder && (
@@ -781,9 +772,9 @@ export default function ConfirmationBox(props) {
     swapFees,
     currentExecutionFee,
     currentExecutionFeeUsd,
-    renderMarginSpreadWarning,
-    marginSpread,
-    showMarginSpread,
+    renderCollateralSpreadWarning,
+    collateralSpreadInfo,
+    showCollateralSpread,
   ]);
 
   const renderSwapSection = useCallback(() => {
@@ -793,8 +784,8 @@ export default function ConfirmationBox(props) {
         {renderFeeWarning()}
         {renderSwapSpreadWarning()}
         {showSwapSpread && (
-          <ExchangeInfoRow label={t`Spread`} isWarning={spread.isHigh}>
-            {formatAmount(spread.value.mul(100), USD_DECIMALS, 2, true)}%
+          <ExchangeInfoRow label={t`Spread`} isWarning={spreadInfo.isHigh}>
+            {formatAmount(spreadInfo.value.mul(100), USD_DECIMALS, 2, true)}%
           </ExchangeInfoRow>
         )}
         {orderOption === LIMIT && renderAvailableLiquidity()}
@@ -850,7 +841,7 @@ export default function ConfirmationBox(props) {
     toTokenInfo,
     orderOption,
     showSwapSpread,
-    spread,
+    spreadInfo,
     feesUsd,
     fromTokenUsd,
     toTokenUsd,

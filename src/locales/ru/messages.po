@@ -703,6 +703,10 @@ msgstr "Залог ({0})"
 msgid "Collateral In"
 msgstr "Залог Внесён"
 
+#: src/components/Exchange/ConfirmationBox.js
+msgid "Collateral Spread"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Community Projects"
 msgstr "Общественные Проекты"
@@ -2831,6 +2835,7 @@ msgid "Speed up page loading"
 msgstr "Ускорить загрузку страницы"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionSeller.js
 msgid "Spread"
 msgstr "Спред"
 
@@ -3964,8 +3969,8 @@ msgid "{0} Required"
 msgstr "{0} Требуется"
 
 #: src/components/Exchange/ConfirmationBox.js
-msgid "{0} Spread"
-msgstr ""
+#~ msgid "{0} Spread"
+#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
