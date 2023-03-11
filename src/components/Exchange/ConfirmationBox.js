@@ -328,8 +328,8 @@ export default function ConfirmationBox(props) {
       return (
         <div className="Confirmation-box-warning">
           <Trans>
-            The spread for {marginSpread.token.symbol} is {`>`} 1%, please ensure the trade details are acceptable
-            before comfirming
+            The spread for {marginSpread.token.symbol} is {formatAmount(marginSpread.value.mul(100), USD_DECIMALS, 2)}{" "}
+            1%, please ensure the trade details are acceptable before comfirming
           </Trans>
         </div>
       );
