@@ -328,8 +328,8 @@ export default function ConfirmationBox(props) {
       return (
         <div className="Confirmation-box-warning">
           <Trans>
-            The spread for {marginSpread.token.symbol} is {formatAmount(marginSpread.value.mul(100), USD_DECIMALS, 2)}%{" "}
-            please ensure the trade details are acceptable before confirming
+            Transacting with a depegged stable coin is subject to spreads reflecting the worse of current market price
+            or $1.00, with transactions involving multiple stablecoins may have multiple spreads.
           </Trans>
         </div>
       );

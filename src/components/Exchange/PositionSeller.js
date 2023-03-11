@@ -666,31 +666,44 @@ export default function PositionSeller(props) {
   }, [prevIsVisible, isVisible]);
 
   const receiveSpread = useMemo(() => {
-    if (!receiveToken || !infoTokens) {
+    if (!collateralToken || !infoTokens) {
       return null;
     }
 
-    const receiveTokenInfo = infoTokens[receiveToken?.address];
-    const value = getSpread(receiveTokenInfo);
+    const collateralTokenInfo = infoTokens[collateralToken.address];
+    const collateralSpread = getSpread(collateralTokenInfo);
+
+    let token = collateralToken;
+    let spread = collateralSpread;
+
+    if (swapToToken) {
+      const swapToTokenInfo = infoTokens[swapToToken.address];
+      const swapToSpread = getSpread(swapToTokenInfo);
+      if (swapToSpread.gt(spread)) {
+        token = swapToToken;
+        spread = swapToSpread;
+      }
+    }
 
     return {
-      value,
-      isHigh: value.gt(HIGH_SPREAD_THRESHOLD),
+      value: spread,
+      token,
+      isHigh: spread.gt(HIGH_SPREAD_THRESHOLD),
     };
-  }, [receiveToken, infoTokens]);
+  }, [swapToToken, infoTokens, collateralToken]);
 
   const renderReceiveSpreadWarning = useCallback(() => {
     if (receiveSpread && receiveSpread.isHigh) {
       return (
         <div className="Confirmation-box-warning">
           <Trans>
-            The spread for {receiveToken.symbol} is {formatAmount(receiveSpread.value.mul(100), USD_DECIMALS, 2)}%,
-            please ensure the trade details are acceptable before confirming
+            Transacting with a depegged stable coin is subject to spreads reflecting the worse of current market price
+            or $1.00, with transactions involving multiple stablecoins may have multiple spreads.
           </Trans>
         </div>
       );
     }
-  }, [receiveSpread, receiveToken]);
+  }, [receiveSpread]);
 
   const onClickPrimary = async () => {
     if (needOrderBookApproval) {
