@@ -3129,12 +3129,12 @@ msgstr ""
 #~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
-msgid "The spread for {0} is {1}% please ensure the trade details are acceptable before confirming"
-msgstr ""
+#~ msgid "The spread for {0} is {1}% please ensure the trade details are acceptable before confirming"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
-msgid "The spread for {0} is {1}%, please ensure the trade details are acceptable before confirming"
-msgstr ""
+#~ msgid "The spread for {0} is {1}%, please ensure the trade details are acceptable before confirming"
+#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #~ msgid "The spread is > 1%, please ensure the trade details are acceptable before comfirming"
@@ -3341,6 +3341,11 @@ msgstr ""
 
 #: src/pages/NftWallet/NftWallet.js
 msgid "Tranferring..."
+msgstr ""
+
+#: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionSeller.js
+msgid "Transacting with a depegged stable coin is subject to spreads reflecting the worse of current market price or $1.00, with transactions involving multiple stablecoins may have multiple spreads."
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.js
