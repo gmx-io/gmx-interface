@@ -2,6 +2,7 @@ import DataStore from "abis/DataStore.json";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import { getContract } from "config/contracts";
 import {
+  claimableFundingAmountKey,
   cumulativeBorrowingFactorKey,
   maxPnlFactorForWithdrawalsKey,
   maxPnlFactorKey,
@@ -16,6 +17,7 @@ import { convertToContractPrices, getTokenData, useAvailableTokensData } from ".
 import { MarketsPoolsData } from "./types";
 import { useMarketsData } from "./useMarketsData";
 import { getMarket } from "./utils";
+import { useWeb3React } from "@web3-react/core";
 
 type MarketPoolsResult = {
   isLoading: boolean;
@@ -25,13 +27,14 @@ type MarketPoolsResult = {
 const defaultValue = {};
 
 export function useMarketsPoolsData(chainId: number): MarketPoolsResult {
+  const { account } = useWeb3React();
   const { marketsData } = useMarketsData(chainId);
   const { tokensData, isLoading: isTokensLoading } = useAvailableTokensData(chainId);
 
   const marketAddresses = Object.keys(marketsData);
 
   const { data = defaultValue, isLoading } = useMulticall(chainId, "useMarketsPools", {
-    key: !isTokensLoading && marketAddresses.length > 0 && [marketAddresses.join("-")],
+    key: !isTokensLoading && marketAddresses.length > 0 && [marketAddresses.join("-"), account],
     request: () =>
       marketAddresses.reduce((request, marketAddress) => {
         const market = getMarket(marketsData, marketAddress);
@@ -185,6 +188,18 @@ export function useMarketsPoolsData(chainId: number): MarketPoolsResult {
                 methodName: "getUint",
                 params: [maxPnlFactorForWithdrawalsKey(marketAddress, false)],
               },
+              claimableFundingAmountLong: account
+                ? {
+                    methodName: "getUint",
+                    params: [claimableFundingAmountKey(marketAddress, market.longTokenAddress, account)],
+                  }
+                : undefined,
+              claimableFundingAmountShort: account
+                ? {
+                    methodName: "getUint",
+                    params: [claimableFundingAmountKey(marketAddress, market.shortTokenAddress, account)],
+                  }
+                : undefined,
             },
           },
         });
@@ -216,6 +231,8 @@ export function useMarketsPoolsData(chainId: number): MarketPoolsResult {
           maxPnlFactorShort: dataStore.maxPnlFactorShort.returnValues[0],
           maxPnlFactorForWithdrawalsLong: dataStore.maxPnlFactorForWithdrawalsLong.returnValues[0],
           maxPnlFactorForWithdrawalsShort: dataStore.maxPnlFactorForWithdrawalsShort.returnValues[0],
+          claimableFundingAmountLong: dataStore.claimableFundingAmountLong?.returnValues[0],
+          claimableFundingAmountShort: dataStore.claimableFundingAmountShort?.returnValues[0],
         };
 
         return acc;

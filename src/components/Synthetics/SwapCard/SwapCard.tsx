@@ -1,5 +1,5 @@
 import { Trans, t } from "@lingui/macro";
-import { InfoRow } from "components/InfoRow/InfoRow";
+
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { convertTokenAddress } from "config/tokens";
@@ -17,7 +17,7 @@ import { USD_DECIMALS } from "lib/legacy";
 import { formatAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { useMemo } from "react";
 
-import "./SwapCard.scss";
+import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 
 export type Props = {
   marketAddress?: string;
@@ -61,29 +61,23 @@ export function SwapCard(p: Props) {
   }, [p.markRatio, tokensData]);
 
   return (
-    <div className="App-card">
+    <div className="Exchange-swap-market-box App-box App-box-border">
       <div className="App-card-title">
         <Trans>Swap</Trans>
       </div>
       <div className="App-card-divider" />
 
-      <div className="App-card-content">
-        <InfoRow className="info-row" label={t`Market`} value={marketName || "..."} />
+      <div>
+        <ExchangeInfoRow label={t`Market`} value={marketName || "..."} />
 
-        <InfoRow
-          className="info-row"
+        <ExchangeInfoRow
           label={t`${fromToken?.symbol} Price`}
           value={formatUsd(fromToken?.prices?.minPrice) || "..."}
         />
 
-        <InfoRow
-          className="info-row"
-          label={t`${toToken?.symbol} Price`}
-          value={formatUsd(toToken?.prices?.maxPrice) || "..."}
-        />
+        <ExchangeInfoRow label={t`${toToken?.symbol} Price`} value={formatUsd(toToken?.prices?.maxPrice) || "..."} />
 
-        <InfoRow
-          className="info-row"
+        <ExchangeInfoRow
           label={t`Available liquidity`}
           value={
             <Tooltip
@@ -109,7 +103,7 @@ export function SwapCard(p: Props) {
           }
         />
 
-        <InfoRow className="info-row" label={t`Price`} value={ratioStr} />
+        <ExchangeInfoRow label={t`Price`} value={ratioStr} />
       </div>
     </div>
   );
