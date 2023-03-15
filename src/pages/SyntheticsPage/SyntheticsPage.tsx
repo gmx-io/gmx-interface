@@ -18,13 +18,13 @@ import {
   SYNTHETICS_TRADE_TO_TOKEN_KEY,
   SYNTHETICS_TRADE_TYPE_KEY,
 } from "config/localStorage";
-import { convertTokenAddress, getToken } from "config/tokens";
+import { getToken } from "config/tokens";
 import { getMarket, useMarketsData } from "domain/synthetics/markets";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useAggregatedOrdersData } from "domain/synthetics/orders/useAggregatedOrdersData";
 import { AggregatedPositionData, getPosition, getPositionKey } from "domain/synthetics/positions";
 import { useAggregatedPositionsData } from "domain/synthetics/positions/useAggregatedPositionsData";
-import { useAvailableSwapOptions } from "domain/synthetics/trade";
+import { getTradeFlags, useAvailableSwapOptions } from "domain/synthetics/trade";
 import { TradeMode, TradeType } from "domain/synthetics/trade/types";
 import { useChainId } from "lib/chains";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
@@ -57,13 +57,15 @@ export function SyntheticsPage(p: Props) {
   const [tradeType, setTradeType] = useLocalStorageSerializeKey([chainId, SYNTHETICS_TRADE_TYPE_KEY], TradeType.Long);
   const [tradeMode, setTradeMode] = useLocalStorageSerializeKey([chainId, SYNTHETICS_TRADE_MODE_KEY], TradeMode.Market);
 
+  const { isSwap } = getTradeFlags(tradeType!, tradeMode!);
+
   const [fromTokenAddress, setFromTokenAddress] = useLocalStorageSerializeKey<string | undefined>(
-    [chainId, SYNTHETICS_TRADE_FROM_TOKEN_KEY, tradeType],
+    [chainId, SYNTHETICS_TRADE_FROM_TOKEN_KEY, isSwap],
     undefined
   );
 
   const [toTokenAddress, setToTokenAddress] = useLocalStorageSerializeKey<string | undefined>(
-    [chainId, SYNTHETICS_TRADE_TO_TOKEN_KEY, tradeType, tradeType === TradeType.Swap],
+    [chainId, SYNTHETICS_TRADE_TO_TOKEN_KEY, isSwap],
     undefined
   );
 
@@ -135,11 +137,7 @@ export function SyntheticsPage(p: Props) {
 
     if (!market) return;
 
-    // disable merge state updates to correctly save values to local storage
-    setTimeout(() => {
-      setToTokenAddress(convertTokenAddress(chainId, market?.indexTokenAddress, "native"));
-      setMarketAddress(marketAddress);
-    });
+    setMarketAddress(marketAddress);
   }
 
   return (

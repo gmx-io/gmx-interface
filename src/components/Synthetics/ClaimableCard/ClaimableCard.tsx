@@ -1,11 +1,10 @@
 import { Trans, t } from "@lingui/macro";
-import { InfoRow } from "components/InfoRow/InfoRow";
+import { useWeb3React } from "@web3-react/core";
+import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { getTotalClaimableFundingUsd, useMarketsData, useMarketsPoolsData } from "domain/synthetics/markets";
 import { useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { formatUsd } from "lib/numbers";
-import { useWeb3React } from "@web3-react/core";
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 
 import "./ClaimableCard.scss";
 

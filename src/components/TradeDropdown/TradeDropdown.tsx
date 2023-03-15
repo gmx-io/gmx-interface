@@ -1,10 +1,9 @@
-import { ReactNode } from "react";
 import { Menu } from "@headlessui/react";
 import { HeaderLink } from "components/Header/HeaderLink";
-import { FaChevronDown } from "react-icons/fa";
+import { ReactNode } from "react";
 
-import "./TradeDropdown.scss";
 import { getIcon } from "config/icons";
+import "./TradeDropdown.scss";
 
 type Props = {
   redirectPopupTimestamp: number;

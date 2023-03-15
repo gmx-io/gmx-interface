@@ -153,8 +153,11 @@ export function PositionItem(p: Props) {
         </div>
 
         <div className="Exchange-list-info-label Position-collateral-amount  muted">
-          {formatTokenAmount(p.position.collateralAmount, p.position.collateralToken?.decimals)}
-          {" "}({p.position.collateralToken?.symbol})
+          {formatTokenAmount(
+            p.position.collateralAmount,
+            p.position.collateralToken?.decimals,
+            p.position.collateralToken?.symbol
+          )}
         </div>
 
         {!p.isLarge && (
