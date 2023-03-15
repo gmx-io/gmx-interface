@@ -54,6 +54,7 @@ input {
   --dark-blue: #17182c;
   --dark-blue-bg: #16182e;
   --dark-blue-accent: #a0a3c4;
+  --primary-btn-bg: #2d42fc;
   --primary-btn-hover: #4f60fc;
   --primary-btn-active: #5f6ffd;
   --dark-blue-hover: #808aff14;
@@ -178,6 +179,10 @@ td {
 
 .inline-block {
   display: inline-block;
+}
+
+.display-inline {
+  display: inline;
 }
 
 .text-white {
@@ -382,6 +387,17 @@ button.btn-link:hover .logout-icon {
   margin-top: 0 !important;
 }
 
+.m-0 {
+  margin: 0 !important;
+}
+
+.mt-sm {
+  margin-top: 1rem;
+}
+.mt-md {
+  margin-top: 1.5rem;
+}
+
 .page-layout {
   min-height: calc(100vh - 62px);
   display: flex;
@@ -424,4 +440,8 @@ button.btn-link:hover .logout-icon {
 }
 .nowrap {
   white-space: nowrap;
+}
+
+.gap-right > *:not(:last-child) {
+  margin-right: 1rem;
 }

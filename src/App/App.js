@@ -104,8 +104,9 @@ import {
 import { MarketPoolsPage } from "pages/MarketPoolsPage/MarketPoolsPage";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsFallbackPage";
+import Button from "components/Button/Button";
 
-if ("ethereum" in window) {
+if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
 }
 
@@ -657,9 +658,9 @@ function FullApp() {
           </div>
         )}
 
-        <button className="App-cta Exchange-swap-button" onClick={saveAndCloseSettings}>
+        <Button variant="primary-action" className="w-100 mt-md" onClick={saveAndCloseSettings}>
           <Trans>Save</Trans>
-        </button>
+        </Button>
       </Modal>
     </>
   );

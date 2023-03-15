@@ -147,7 +147,7 @@ describe("executeMulticall", () => {
     });
 
     // wait extra time to make sure the library is ready
-    await act(() => sleep(300));
+    await act(() => sleep(500));
 
     expect(MulticallSpy).toBeCalled();
     expect(usedProvider).toEqual(libraryProvider);
@@ -193,7 +193,7 @@ describe("executeMulticall", () => {
     });
 
     // wait extra time to make sure the library is ready
-    await act(() => sleep(300));
+    await act(() => sleep(500));
 
     expect(MulticallSpy).toBeCalled();
     expect(result).toMatchObject(testResult);

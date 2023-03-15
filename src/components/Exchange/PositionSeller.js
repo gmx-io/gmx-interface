@@ -50,6 +50,7 @@ import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValu
 import { getTokens, getWrappedToken } from "config/tokens";
 import { formatDateTime, getTimeRemaining } from "lib/dates";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import Button from "components/Button/Button";
 import FeesTooltip from "./FeesTooltip";
 
 const { AddressZero } = ethers.constants;
@@ -1303,9 +1304,9 @@ export default function PositionSeller(props) {
             </div>
           </div>
           <div className="Exchange-swap-button-container">
-            <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+            <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
               {getPrimaryText()}
-            </button>
+            </Button>
           </div>
         </Modal>
       )}

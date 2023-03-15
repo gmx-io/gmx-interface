@@ -17,6 +17,7 @@ import { Trans, t } from "@lingui/macro";
 import { callContract } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { useChainId } from "lib/chains";
+import Button from "components/Button/Button";
 
 export default function CompleteAccountTransfer(props) {
   const [, copyToClipboard] = useCopyToClipboard();
@@ -128,9 +129,14 @@ export default function CompleteAccountTransfer(props) {
         <div className="Page-content">
           <div className="input-form">
             <div className="input-row">
-              <button className="App-cta Exchange-swap-button" disabled={!isPrimaryEnabled()} onClick={onClickPrimary}>
+              <Button
+                variant="primary-action"
+                className="w-100"
+                disabled={!isPrimaryEnabled()}
+                onClick={onClickPrimary}
+              >
                 {getPrimaryText()}
-              </button>
+              </Button>
             </div>
           </div>
         </div>

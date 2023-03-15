@@ -398,9 +398,6 @@
   overscroll-behavior: smooth;
   max-height: calc(80vh - 8.525rem);
   overflow-y: auto;
-  padding-right: 0.5rem;
-  margin: 1.5rem;
-  margin-right: 1rem;
 }
 
 .PositionEditor .Tab {
@@ -641,7 +638,6 @@ table.Exchange-list th {
   scroll-margin-right: 38.75rem;
   overscroll-behavior: smooth;
   scrollbar-width: thin;
-  padding-right: 0.5rem;
   max-height: calc(100vh - 7.75rem);
   overflow-y: auto;
 }
@@ -1027,8 +1023,6 @@ table.Exchange-list-small td {
     scroll-margin-right: 38.75rem;
     overscroll-behavior: smooth;
     scrollbar-width: thin;
-    padding-right: 0.5rem;
-    margin: 1.5rem 0.8rem 1.5rem 1.5rem;
   }
 
   .Exchange-swap-box .TokenSelector .Modal,
