@@ -63,7 +63,7 @@ export function SyntheticsPage(p: Props) {
   );
 
   const [toTokenAddress, setToTokenAddress] = useLocalStorageSerializeKey<string | undefined>(
-    [chainId, SYNTHETICS_TRADE_TO_TOKEN_KEY, tradeType],
+    [chainId, SYNTHETICS_TRADE_TO_TOKEN_KEY, tradeType === TradeType.Swap],
     undefined
   );
 
