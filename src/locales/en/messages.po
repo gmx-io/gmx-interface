@@ -611,6 +611,10 @@ msgstr "Cancel submitted"
 msgid "Cancel submitted."
 msgstr "Cancel submitted."
 
+#: src/domain/synthetics/orders/cancelOrdersTxn.ts
+msgid "Canceling {ordersText}"
+msgstr "Canceling {ordersText}"
+
 #: src/App/App.js
 #: src/pages/Exchange/Exchange.js
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -1563,7 +1567,18 @@ msgstr "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 msgstr "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 
+#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
+msgid "Execute order simulation failed."
+msgstr "Execute order simulation failed."
+
+#: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
+msgid "Executed {0} {tokensText}"
+msgstr "Executed {0} {tokensText}"
+
 #: src/components/Exchange/FeesTooltip.tsx
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Execution Fee"
 msgstr "Execution Fee"
 
@@ -2703,6 +2718,14 @@ msgstr "Net Value"
 msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Close Fee"
 msgstr "Net Value: Initial Collateral + PnL - Borrow Fee - Close Fee"
 
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Funding Fee"
+msgstr "Net Value: Initial Collateral + PnL - Borrow Fee - Funding Fee"
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Net Value: Initial Collateral + PnL - Fees"
+msgstr "Net Value: Initial Collateral + PnL - Fees"
+
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks"
@@ -2777,15 +2800,15 @@ msgstr "Note that orders are not guaranteed to be executed.<0/><1/>This can occu
 msgid "Only letters, numbers and underscores are allowed."
 msgstr "Only letters, numbers and underscores are allowed."
 
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#~ msgid "Open + Close fee"
+#~ msgstr "Open + Close fee"
+
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/SwapBox.js
 msgid "Open Fee"
 msgstr "Open Fee"
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Open + Close fee"
-#~ msgstr "Open + Close fee"
 
 #: src/pages/Home/Home.js
 msgid "Open Interest"
@@ -3032,6 +3055,7 @@ msgid "PnL"
 msgstr "PnL"
 
 #: src/components/Exchange/NetValueTooltip.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "PnL After Fees"
 msgstr "PnL After Fees"
 
@@ -3056,6 +3080,10 @@ msgstr "Pool amount"
 #: src/components/Synthetics/PositionList/PositionList.tsx
 msgid "Position"
 msgstr "Position"
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Position Fee"
+msgstr "Position Fee"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Position close disabled, pending {0} upgrade"
@@ -3657,6 +3685,8 @@ msgstr "Speed up page loading"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Spread"
 msgstr "Spread"
 
@@ -3803,6 +3833,7 @@ msgstr "Swap"
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 msgid "Swap Fee"
 msgstr "Swap Fee"
 
@@ -3880,6 +3911,10 @@ msgstr "Swap {0} on 1inch"
 #: src/components/Exchange/SwapBox.js
 msgid "Swap {0} submitted!"
 msgstr "Swap {0} submitted!"
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Swap {0} to {1}"
+msgstr "Swap {0} to {1}"
 
 #: src/components/Glp/SwapErrorModal.tsx
 msgid "Swap {0} to {1} on 1inch"
@@ -4074,9 +4109,9 @@ msgstr "The referral code can't be more than {MAX_REFERRAL_CODE_LENGTH} characte
 #~ msgid "The spread for {0} is {1}%, please ensure the trade details are acceptable before confirming"
 #~ msgstr "The spread for {0} is {1}%, please ensure the trade details are acceptable before confirming"
 
-#: src/components/Exchange/ConfirmationBox.js
-#~ msgid "The spread is > 1%, please ensure the trade details are acceptable before comfirming"
-#~ msgstr "The spread is > 1%, please ensure the trade details are acceptable before comfirming"
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+msgid "The spread is > 1%, please ensure the trade details are acceptable before comfirming"
+msgstr "The spread is > 1%, please ensure the trade details are acceptable before comfirming"
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "The spread is > 1%, please ensure the trade details are acceptable before confirming"
