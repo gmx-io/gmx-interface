@@ -192,8 +192,6 @@ export function TVChart({
             symbol={chartToken.symbol}
             chainId={chainId}
             onSelectToken={onSelectChartToken}
-            period={period!}
-            setPeriod={setPeriod}
             dataProvider={dataProvider.current}
           />
         )}

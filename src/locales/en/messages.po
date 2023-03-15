@@ -49,7 +49,8 @@ msgstr "<0>Install MetaMask</0>, and use GMX with its built-in browser."
 msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>"
 msgstr "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>"
 
-#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/FeesTooltip.tsx
+#: src/components/Exchange/SwapBox.js
 msgid "<0>More Info</0> about fees."
 msgstr "<0>More Info</0> about fees."
 
@@ -99,9 +100,20 @@ msgid "APR"
 msgstr "APR"
 
 #: src/components/Stake/GMXAprTooltip.tsx
-#: src/pages/Stake/StakeV2.js
 msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week."
 msgstr "APRs are updated weekly on Wednesday and will depend on the fees collected for the week."
+
+#: src/pages/Stake/StakeV2.js
+#~ msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week. <0/><1/>Historical GLP APRs can be checked <2>here</2>."
+#~ msgstr "APRs are updated weekly on Wednesday and will depend on the fees collected for the week. <0/><1/>Historical GLP APRs can be checked <2>here</2>."
+
+#: src/pages/Stake/StakeV2.js
+msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week. <0/><1/>Historical GLP APRs can be checked in this <2>community dashboard</2>."
+msgstr "APRs are updated weekly on Wednesday and will depend on the fees collected for the week. <0/><1/>Historical GLP APRs can be checked in this <2>community dashboard</2>."
+
+#: src/pages/Stake/StakeV2.js
+#~ msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week. For historical APRs check <0>here</0>."
+#~ msgstr "APRs are updated weekly on Wednesday and will depend on the fees collected for the week. For historical APRs check <0>here</0>."
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "AUM"
@@ -422,11 +434,9 @@ msgstr "Boost Percentage"
 msgid "Boost your rewards with Multiplier Points. <0>More info</0>."
 msgstr "Boost your rewards with Multiplier Points. <0>More info</0>."
 
-#: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/FeesTooltip.tsx
+#: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
@@ -601,10 +611,7 @@ msgstr "Cancel submitted"
 msgid "Cancel submitted."
 msgstr "Cancel submitted."
 
-#: src/domain/synthetics/orders/cancelOrdersTxn.ts
-msgid "Canceling {ordersText}"
-msgstr "Canceling {ordersText}"
-
+#: src/App/App.js
 #: src/pages/Exchange/Exchange.js
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Chart positions"
@@ -732,6 +739,11 @@ msgstr "Click on a row to select the position's market, then use the trade box t
 msgid "Close"
 msgstr "Close"
 
+#: src/components/Exchange/FeesTooltip.tsx
+#: src/components/Exchange/NetValueTooltip.tsx
+msgid "Close Fee"
+msgstr "Close Fee"
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Close failed."
 msgstr "Close failed."
@@ -769,10 +781,6 @@ msgid "Close: {convertedAmountFormatted} {0}"
 msgstr "Close: {convertedAmountFormatted} {0}"
 
 #: src/components/Exchange/PositionSeller.js
-msgid "Closing Fee"
-msgstr "Closing Fee"
-
-#: src/components/Exchange/PositionSeller.js
 msgid "Closing..."
 msgstr "Closing..."
 
@@ -789,10 +797,8 @@ msgid "Coinbase Wallet not detected."
 msgstr "Coinbase Wallet not detected."
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
@@ -804,6 +810,8 @@ msgstr "Coinbase Wallet not detected."
 msgid "Collateral"
 msgstr "Collateral"
 
+#: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
@@ -812,8 +820,6 @@ msgstr "Collateral"
 msgid "Collateral ({0})"
 msgstr "Collateral ({0})"
 
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -824,6 +830,10 @@ msgstr "Collateral ({0})"
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Collateral In"
 msgstr "Collateral In"
+
+#: src/components/Exchange/ConfirmationBox.js
+msgid "Collateral Spread"
+msgstr "Collateral Spread"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Community Projects"
@@ -1200,6 +1210,10 @@ msgstr "Decreasing"
 msgid "Deposit"
 msgstr "Deposit"
 
+#: src/components/Exchange/FeesTooltip.tsx
+msgid "Deposit Fee"
+msgstr "Deposit Fee"
+
 #: src/components/Exchange/PositionEditor.js
 msgid "Deposit disabled, pending {0} upgrade"
 msgstr "Deposit disabled, pending {0} upgrade"
@@ -1508,6 +1522,7 @@ msgid "Enter new Price"
 msgstr "Enter new Price"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -1548,21 +1563,7 @@ msgstr "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 msgstr "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 
-#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
-msgid "Execute order simulation failed."
-msgstr "Execute order simulation failed."
-
-#: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
-msgid "Executed {0} {tokensText}"
-msgstr "Executed {0} {tokensText}"
-
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Exchange/FeesTooltip.tsx
 msgid "Execution Fee"
 msgstr "Execution Fee"
 
@@ -1591,6 +1592,7 @@ msgstr "Failed to update order"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -1963,14 +1965,21 @@ msgstr "Increasing"
 msgid "Index"
 msgstr "Index"
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Initial Collateral"
 msgstr "Initial Collateral"
+
+#: src/components/Exchange/PositionSeller.js
+msgid "Initial Collateral (Collateral excluding Borrow Fee)."
+msgstr "Initial Collateral (Collateral excluding Borrow Fee)."
+
+#: src/components/Exchange/PositionSeller.js
+#~ msgid "Initial Collateral (Collateral excluding Borrow Fees)."
+#~ msgstr "Initial Collateral (Collateral excluding Borrow Fees)."
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Initial collateral"
@@ -2105,7 +2114,7 @@ msgstr "Language"
 msgid "Launch App"
 msgstr "Launch App"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Leaderboard"
 msgstr "Leaderboard"
 
@@ -2387,6 +2396,8 @@ msgstr "MAX"
 msgid "MEV Optimizer"
 msgstr "MEV Optimizer"
 
+#: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -2490,8 +2501,8 @@ msgid "Max close amount exceeded"
 msgstr "Max close amount exceeded"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account"
-msgstr "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account"
+msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account:"
+msgstr "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account:"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2688,25 +2699,9 @@ msgstr "Need to accept price impact"
 msgid "Net Value"
 msgstr "Net Value"
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-msgid "Net Value: Initial Collateral + PnL - Borrow Fee"
-msgstr "Net Value: Initial Collateral + PnL - Borrow Fee"
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Funding Fee"
-msgstr "Net Value: Initial Collateral + PnL - Borrow Fee - Funding Fee"
-
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Net Value: Initial Collateral + PnL - Fees"
-msgstr "Net Value: Initial Collateral + PnL - Fees"
-
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionEditor.js
-msgid "Network Fee"
-msgstr "Network Fee"
+#: src/components/Exchange/NetValueTooltip.tsx
+msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Close Fee"
+msgstr "Net Value: Initial Collateral + PnL - Borrow Fee - Close Fee"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -2782,10 +2777,11 @@ msgstr "Note that orders are not guaranteed to be executed.<0/><1/>This can occu
 msgid "Only letters, numbers and underscores are allowed."
 msgstr "Only letters, numbers and underscores are allowed."
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-msgid "Open + Close Fees"
-msgstr "Open + Close Fees"
+#: src/components/Exchange/FeesTooltip.tsx
+#: src/components/Exchange/NetValueTooltip.tsx
+#: src/components/Exchange/SwapBox.js
+msgid "Open Fee"
+msgstr "Open Fee"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #~ msgid "Open + Close fee"
@@ -3023,9 +3019,8 @@ msgstr "Please read the <0>Medium post</0> before migrating."
 msgid "Please switch your network to Arbitrum."
 msgstr "Please switch your network to Arbitrum."
 
+#: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -3036,9 +3031,7 @@ msgstr "Please switch your network to Arbitrum."
 msgid "PnL"
 msgstr "PnL"
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Exchange/NetValueTooltip.tsx
 msgid "PnL After Fees"
 msgstr "PnL After Fees"
 
@@ -3063,18 +3056,6 @@ msgstr "Pool amount"
 #: src/components/Synthetics/PositionList/PositionList.tsx
 msgid "Position"
 msgstr "Position"
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Position Fee"
-msgstr "Position Fee"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Position Fee (0.1% of position size)"
-msgstr "Position Fee (0.1% of position size)"
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "Position Fee ({0} of position size)"
-#~ msgstr "Position Fee ({0} of position size)"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Position close disabled, pending {0} upgrade"
@@ -3102,7 +3083,6 @@ msgstr "Positions{0}"
 msgid "Prev"
 msgstr "Prev"
 
-#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrderEditor.js
@@ -3671,14 +3651,12 @@ msgstr "Size"
 msgid "Slippage should be less than 5%"
 msgstr "Slippage should be less than 5%"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Speed up page loading"
 msgstr "Speed up page loading"
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Exchange/PositionSeller.js
 msgid "Spread"
 msgstr "Spread"
 
@@ -3823,8 +3801,8 @@ msgstr "Supply"
 msgid "Swap"
 msgstr "Swap"
 
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+#: src/components/Exchange/FeesTooltip.tsx
+#: src/components/Exchange/SwapBox.js
 msgid "Swap Fee"
 msgstr "Swap Fee"
 
@@ -3902,14 +3880,6 @@ msgstr "Swap {0} on 1inch"
 #: src/components/Exchange/SwapBox.js
 msgid "Swap {0} submitted!"
 msgstr "Swap {0} submitted!"
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Swap {0} to {1}"
-msgstr "Swap {0} to {1}"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Swap {0} to {1} Fee"
-msgstr "Swap {0} to {1} Fee"
 
 #: src/components/Glp/SwapErrorModal.tsx
 msgid "Swap {0} to {1} on 1inch"
@@ -4093,9 +4063,24 @@ msgid "The referral code can't be more than {MAX_REFERRAL_CODE_LENGTH} character
 msgstr "The referral code can't be more than {MAX_REFERRAL_CODE_LENGTH} characters."
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-msgid "The spread is > 1%, please ensure the trade details are acceptable before comfirming"
-msgstr "The spread is > 1%, please ensure the trade details are acceptable before comfirming"
+#~ msgid "The spread for {0} is > 1%, please ensure the trade details are acceptable before comfirming"
+#~ msgstr "The spread for {0} is > 1%, please ensure the trade details are acceptable before comfirming"
+
+#: src/components/Exchange/ConfirmationBox.js
+#~ msgid "The spread for {0} is {1}% please ensure the trade details are acceptable before confirming"
+#~ msgstr "The spread for {0} is {1}% please ensure the trade details are acceptable before confirming"
+
+#: src/components/Exchange/PositionSeller.js
+#~ msgid "The spread for {0} is {1}%, please ensure the trade details are acceptable before confirming"
+#~ msgstr "The spread for {0} is {1}%, please ensure the trade details are acceptable before confirming"
+
+#: src/components/Exchange/ConfirmationBox.js
+#~ msgid "The spread is > 1%, please ensure the trade details are acceptable before comfirming"
+#~ msgstr "The spread is > 1%, please ensure the trade details are acceptable before comfirming"
+
+#: src/components/Exchange/ConfirmationBox.js
+msgid "The spread is > 1%, please ensure the trade details are acceptable before confirming"
+msgstr "The spread is > 1%, please ensure the trade details are acceptable before confirming"
 
 #: src/components/ModalViews/RedirectModal.js
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
@@ -4130,14 +4115,6 @@ msgstr "This code has been taken by someone else on {0}, you will not receive re
 #: src/components/Referrals/AffiliatesStats.js
 msgid "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
 msgstr "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
-
-#: src/components/Exchange/ConfirmationBox.js
-msgid "This is the network cost required to execute the postion. <0>More Info</0>"
-msgstr "This is the network cost required to execute the postion. <0>More Info</0>"
-
-#: src/components/Exchange/PositionEditor.js
-msgid "This is the network cost required to execute the {depositOrWithdrawalText}.<0/><1/><2>More Info</2>"
-msgstr "This is the network cost required to execute the {depositOrWithdrawalText}.<0/><1/><2>More Info</2>"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "This order will forfeit a <0>profit</0> of {deltaStr}. <1/>"
@@ -4303,13 +4280,18 @@ msgstr "Traders Referred"
 msgid "Trades"
 msgstr "Trades"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"
 msgstr "Trading guide"
 
 #: src/pages/NftWallet/NftWallet.js
 msgid "Tranferring..."
 msgstr "Tranferring..."
+
+#: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionSeller.js
+msgid "Transacting with a depegged stable coin is subject to spreads reflecting the worse of current market price or $1.00, with transactions involving multiple stablecoins may have multiple spreads."
+msgstr "Transacting with a depegged stable coin is subject to spreads reflecting the worse of current market price or $1.00, with transactions involving multiple stablecoins may have multiple spreads."
 
 #: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
@@ -4543,7 +4525,7 @@ msgstr "Use the \"Compound\" button to stake your Multiplier Points."
 msgid "Use the Edit Collateral icon to deposit or withdraw collateral."
 msgstr "Use the Edit Collateral icon to deposit or withdraw collateral."
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Useful Links"
 msgstr "Useful Links"
 
@@ -4949,10 +4931,6 @@ msgstr "account"
 msgid "collateral"
 msgstr "collateral"
 
-#: src/components/Exchange/PositionEditor.js
-msgid "deposit"
-msgstr "deposit"
-
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "fee"
 msgstr "fee"
@@ -4986,10 +4964,6 @@ msgstr "time to liq"
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "view"
 msgstr "view"
-
-#: src/components/Exchange/PositionEditor.js
-msgid "withdrawal"
-msgstr "withdrawal"
 
 #: src/pages/Exchange/Exchange.js
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -5052,6 +5026,10 @@ msgstr "{0} Price"
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "{0} Required"
 msgstr "{0} Required"
+
+#: src/components/Exchange/ConfirmationBox.js
+#~ msgid "{0} Spread"
+#~ msgstr "{0} Spread"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."

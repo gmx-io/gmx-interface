@@ -1,9 +1,9 @@
-export type Bar = {
-  time: number;
-  open: number;
-  high: number;
-  low: number;
-  close: number;
+import { LibrarySymbolInfo, Bar as BarType } from "charting_library";
+
+export type Bar = BarType & {
   ticker?: string;
-  volume?: number;
+};
+
+export type SymbolInfo = LibrarySymbolInfo & {
+  isStable: boolean;
 };

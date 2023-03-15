@@ -186,8 +186,8 @@ export const CENTRALISED_EXCHANGES: Exchange[] = [
     name: "Binance",
     icon: "ic_binance.svg",
     links: {
-      [ARBITRUM]: "https://www.binance.com/en/trade/GMX_USDT?_from=markets",
-      [ARBITRUM]: "https://www.binance.com/en/trade/GMX_USDT?_from=markets",
+      [ARBITRUM]: "https://www.binance.com/en/trade/GMX_USDT",
+      [AVALANCHE]: "https://www.binance.com/en/trade/GMX_USDT",
     },
   },
   {
@@ -195,7 +195,7 @@ export const CENTRALISED_EXCHANGES: Exchange[] = [
     icon: "ic_bybit.svg",
     links: {
       [ARBITRUM]: "https://www.bybit.com/en-US/trade/spot/GMX/USDT",
-      [ARBITRUM]: "https://www.bybit.com/en-US/trade/spot/GMX/USDT",
+      [AVALANCHE]: "https://www.bybit.com/en-US/trade/spot/GMX/USDT",
     },
   },
   {
@@ -203,7 +203,7 @@ export const CENTRALISED_EXCHANGES: Exchange[] = [
     icon: "ic_kucoin.svg",
     links: {
       [ARBITRUM]: "https://www.kucoin.com/trade/GMX-USDT",
-      [ARBITRUM]: "https://www.kucoin.com/trade/GMX-USDT",
+      [AVALANCHE]: "https://www.kucoin.com/trade/GMX-USDT",
     },
   },
   {
@@ -211,7 +211,7 @@ export const CENTRALISED_EXCHANGES: Exchange[] = [
     icon: "ic_huobi.svg",
     links: {
       [ARBITRUM]: "https://www.huobi.com/en-us/exchange/gmx_usdt/",
-      [ARBITRUM]: "https://www.huobi.com/en-us/exchange/gmx_usdt/",
+      [AVALANCHE]: "https://www.huobi.com/en-us/exchange/gmx_usdt/",
     },
   },
 ];
@@ -283,6 +283,14 @@ export const DECENTRALISED_AGGRIGATORS: Exchange[] = [
     links: {
       [ARBITRUM]: "https://app.firebird.finance/swap",
       [AVALANCHE]: "https://app.firebird.finance/swap",
+    },
+  },
+  {
+    name: "Odos",
+    icon: "ic_odos.png",
+    links: {
+      [ARBITRUM]: "https://app.odos.xyz/swap/42161/ETH/GMX",
+      [AVALANCHE]: "https://app.odos.xyz/swap/43114/AVAX/GMX",
     },
   },
 ];

@@ -49,7 +49,8 @@ msgstr ""
 msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>"
 msgstr "<0>注文執行に必要な流動性が不足しています</0><1>諸取引所の価格を集約したマーク価格が指値に達しませんでした</1><2>指値には達したもののロングの度合いが不十分で執行されませんでした</2><3>どのキーパーも注文を執行しませんでした</3>"
 
-#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/FeesTooltip.tsx
+#: src/components/Exchange/SwapBox.js
 msgid "<0>More Info</0> about fees."
 msgstr "手数料についての<0>詳細情報</0>"
 
@@ -99,9 +100,20 @@ msgid "APR"
 msgstr "APR(実質年利)"
 
 #: src/components/Stake/GMXAprTooltip.tsx
-#: src/pages/Stake/StakeV2.js
 msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week."
 msgstr "APR(実質年利)は毎週水曜日に更新され、その前一週間に得られた手数料によって決まります。"
+
+#: src/pages/Stake/StakeV2.js
+#~ msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week. <0/><1/>Historical GLP APRs can be checked <2>here</2>."
+#~ msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week. <0/><1/>Historical GLP APRs can be checked in this <2>community dashboard</2>."
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+#~ msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week. For historical APRs check <0>here</0>."
+#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "AUM"
@@ -422,11 +434,9 @@ msgstr "ブースト率"
 msgid "Boost your rewards with Multiplier Points. <0>More info</0>."
 msgstr "マルチプライヤーポイントで報酬をブーストする。<0>より詳しい情報</0>"
 
-#: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/FeesTooltip.tsx
+#: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
@@ -601,10 +611,7 @@ msgstr "キャンセルが提出されました"
 msgid "Cancel submitted."
 msgstr "キャンセル申し込み完了"
 
-#: src/domain/synthetics/orders/cancelOrdersTxn.ts
-msgid "Canceling {ordersText}"
-msgstr ""
-
+#: src/App/App.js
 #: src/pages/Exchange/Exchange.js
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Chart positions"
@@ -732,6 +739,11 @@ msgstr "行をクリックしてポジションのマーケットを選択し、
 msgid "Close"
 msgstr "クローズ"
 
+#: src/components/Exchange/FeesTooltip.tsx
+#: src/components/Exchange/NetValueTooltip.tsx
+msgid "Close Fee"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Close failed."
 msgstr "クローズできませんでした"
@@ -769,10 +781,6 @@ msgid "Close: {convertedAmountFormatted} {0}"
 msgstr "クローズ: {convertedAmountFormatted} {0}"
 
 #: src/components/Exchange/PositionSeller.js
-msgid "Closing Fee"
-msgstr ""
-
-#: src/components/Exchange/PositionSeller.js
 msgid "Closing..."
 msgstr "クローズ中..."
 
@@ -789,10 +797,8 @@ msgid "Coinbase Wallet not detected."
 msgstr "コインベースウォレットが検出できません。"
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
@@ -804,6 +810,8 @@ msgstr "コインベースウォレットが検出できません。"
 msgid "Collateral"
 msgstr "担保"
 
+#: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
@@ -812,8 +820,6 @@ msgstr "担保"
 msgid "Collateral ({0})"
 msgstr "担保  ({0})"
 
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -824,6 +830,10 @@ msgstr "担保  ({0})"
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Collateral In"
 msgstr "担保の種類"
+
+#: src/components/Exchange/ConfirmationBox.js
+msgid "Collateral Spread"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Community Projects"
@@ -878,7 +888,7 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Confirm Limit Order"
-msgstr "リミット注文を確認する"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
@@ -1200,6 +1210,10 @@ msgstr ""
 msgid "Deposit"
 msgstr "入金"
 
+#: src/components/Exchange/FeesTooltip.tsx
+msgid "Deposit Fee"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 msgid "Deposit disabled, pending {0} upgrade"
 msgstr "{0}のアップグレードのため入金停止中"
@@ -1508,6 +1522,7 @@ msgid "Enter new Price"
 msgstr "新しい価格を入力"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -1548,23 +1563,9 @@ msgstr "注文執行: {fromAmountDisplay} {0}を {toAmountDisplay} {1}にスワ�
 msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 msgstr ""
 
-#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
-msgid "Execute order simulation failed."
-msgstr ""
-
-#: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
-msgid "Executed {0} {tokensText}"
-msgstr ""
-
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Exchange/FeesTooltip.tsx
 msgid "Execution Fee"
-msgstr "執行手数料"
+msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -1591,6 +1592,7 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -1963,14 +1965,21 @@ msgstr ""
 msgid "Index"
 msgstr "インデックス"
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Initial Collateral"
 msgstr "最初の担保"
+
+#: src/components/Exchange/PositionSeller.js
+msgid "Initial Collateral (Collateral excluding Borrow Fee)."
+msgstr ""
+
+#: src/components/Exchange/PositionSeller.js
+#~ msgid "Initial Collateral (Collateral excluding Borrow Fees)."
+#~ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Initial collateral"
@@ -2105,7 +2114,7 @@ msgstr "言語"
 msgid "Launch App"
 msgstr "アプリ起動"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Leaderboard"
 msgstr "順位表"
 
@@ -2387,6 +2396,8 @@ msgstr "最大"
 msgid "MEV Optimizer"
 msgstr "MEVオプティマイザー"
 
+#: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -2490,8 +2501,8 @@ msgid "Max close amount exceeded"
 msgstr "最大クローズ値超過"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account"
-msgstr "最大レバレッジ100倍を超過し、損失と手数料を差し引き後に残った担保はアカウントに返送されました"
+msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account:"
+msgstr "最大レバレッジ100倍を超過し、損失と手数料を差し引き後に残った担保はアカウントに返送されました:"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2688,24 +2699,8 @@ msgstr ""
 msgid "Net Value"
 msgstr "ネット価値"
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-msgid "Net Value: Initial Collateral + PnL - Borrow Fee"
-msgstr ""
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Funding Fee"
-msgstr ""
-
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Net Value: Initial Collateral + PnL - Fees"
-msgstr ""
-
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionEditor.js
-msgid "Network Fee"
+#: src/components/Exchange/NetValueTooltip.tsx
+msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Close Fee"
 msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -2782,9 +2777,10 @@ msgstr "注文が必ず執行される保証がないことに注意してくだ
 msgid "Only letters, numbers and underscores are allowed."
 msgstr "英数字とアンダースコア記号のみ使用できます。"
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-msgid "Open + Close Fees"
+#: src/components/Exchange/FeesTooltip.tsx
+#: src/components/Exchange/NetValueTooltip.tsx
+#: src/components/Exchange/SwapBox.js
+msgid "Open Fee"
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -3023,9 +3019,8 @@ msgstr "移行の前に<0>Mediumの記事</0>を読んでください。"
 msgid "Please switch your network to Arbitrum."
 msgstr "ネットワークをArbitrumに切り替えてください。"
 
+#: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -3036,9 +3031,7 @@ msgstr "ネットワークをArbitrumに切り替えてください。"
 msgid "PnL"
 msgstr "損益"
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Exchange/NetValueTooltip.tsx
 msgid "PnL After Fees"
 msgstr "手数料差し引き後の損益"
 
@@ -3063,18 +3056,6 @@ msgstr ""
 #: src/components/Synthetics/PositionList/PositionList.tsx
 msgid "Position"
 msgstr "ポジション"
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Position Fee"
-msgstr ""
-
-#: src/components/Exchange/SwapBox.js
-msgid "Position Fee (0.1% of position size)"
-msgstr "ポジション手数料 (ポジションサイズの0.1%)"
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "Position Fee ({0} of position size)"
-#~ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Position close disabled, pending {0} upgrade"
@@ -3102,7 +3083,6 @@ msgstr ""
 msgid "Prev"
 msgstr "前へ"
 
-#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrderEditor.js
@@ -3671,14 +3651,12 @@ msgstr "サイズ"
 msgid "Slippage should be less than 5%"
 msgstr "スリッページは5%未満であること"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Speed up page loading"
 msgstr "ページの読み込みを速くする"
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Exchange/PositionSeller.js
 msgid "Spread"
 msgstr "スプレッド"
 
@@ -3823,8 +3801,8 @@ msgstr "供給量"
 msgid "Swap"
 msgstr "スワップ"
 
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+#: src/components/Exchange/FeesTooltip.tsx
+#: src/components/Exchange/SwapBox.js
 msgid "Swap Fee"
 msgstr ""
 
@@ -3902,14 +3880,6 @@ msgstr "{0}を1inchでスワップする"
 #: src/components/Exchange/SwapBox.js
 msgid "Swap {0} submitted!"
 msgstr "{0}のスワップの申し込み完了!"
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Swap {0} to {1}"
-msgstr ""
-
-#: src/components/Exchange/SwapBox.js
-msgid "Swap {0} to {1} Fee"
-msgstr "{0} から {1}へのスワップ手数料"
 
 #: src/components/Glp/SwapErrorModal.tsx
 msgid "Swap {0} to {1} on 1inch"
@@ -4093,9 +4063,24 @@ msgid "The referral code can't be more than {MAX_REFERRAL_CODE_LENGTH} character
 msgstr "紹介コードは{MAX_REFERRAL_CODE_LENGTH}文字を超えることはできません。"
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-msgid "The spread is > 1%, please ensure the trade details are acceptable before comfirming"
-msgstr "スプレッドが1%を超えています。このトレードの詳細が許容できるものであることを確かめてから、先に進んでください。"
+#~ msgid "The spread for {0} is > 1%, please ensure the trade details are acceptable before comfirming"
+#~ msgstr ""
+
+#: src/components/Exchange/ConfirmationBox.js
+#~ msgid "The spread for {0} is {1}% please ensure the trade details are acceptable before confirming"
+#~ msgstr ""
+
+#: src/components/Exchange/PositionSeller.js
+#~ msgid "The spread for {0} is {1}%, please ensure the trade details are acceptable before confirming"
+#~ msgstr ""
+
+#: src/components/Exchange/ConfirmationBox.js
+#~ msgid "The spread is > 1%, please ensure the trade details are acceptable before comfirming"
+#~ msgstr "スプレッドが1%を超えています。このトレードの詳細が許容できるものであることを確かめてから、先に進んでください。"
+
+#: src/components/Exchange/ConfirmationBox.js
+msgid "The spread is > 1%, please ensure the trade details are acceptable before confirming"
+msgstr ""
 
 #: src/components/ModalViews/RedirectModal.js
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
@@ -4130,14 +4115,6 @@ msgstr "このコードは{0}上で他の人がすでに取得済です。この
 #: src/components/Referrals/AffiliatesStats.js
 msgid "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
 msgstr "このコードは{0}上ではまだ登録されていないため、紹介報酬を受け取ることはできません。<0/><1/>ネットワークを切り替えて、{1}上でこのコードを作成してください。"
-
-#: src/components/Exchange/ConfirmationBox.js
-msgid "This is the network cost required to execute the postion. <0>More Info</0>"
-msgstr "これはポジションを執行するために必要なネットワーク手数料です。<0>詳細情報</0>"
-
-#: src/components/Exchange/PositionEditor.js
-msgid "This is the network cost required to execute the {depositOrWithdrawalText}.<0/><1/><2>More Info</2>"
-msgstr "これは{depositOrWithdrawalText}を執行するために必要なネットワーク手数料です。<0/><1/><2>詳細情報</2>"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "This order will forfeit a <0>profit</0> of {deltaStr}. <1/>"
@@ -4303,13 +4280,18 @@ msgstr "紹介したトレーダー"
 msgid "Trades"
 msgstr "トレード"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"
 msgstr "トレード案内"
 
 #: src/pages/NftWallet/NftWallet.js
 msgid "Tranferring..."
 msgstr "移転中..."
+
+#: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionSeller.js
+msgid "Transacting with a depegged stable coin is subject to spreads reflecting the worse of current market price or $1.00, with transactions involving multiple stablecoins may have multiple spreads."
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
@@ -4543,7 +4525,7 @@ msgstr "マルチプレイヤーポイントをステークするには\"請求�
 msgid "Use the Edit Collateral icon to deposit or withdraw collateral."
 msgstr "担保を入金または出金するときは「担保を編集」のアイコンを使用してください。"
 
-#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/UsefulLinks.tsx
 msgid "Useful Links"
 msgstr "有用なリンク"
 
@@ -4949,10 +4931,6 @@ msgstr "アカウント"
 msgid "collateral"
 msgstr "担保"
 
-#: src/components/Exchange/PositionEditor.js
-msgid "deposit"
-msgstr "入金"
-
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "fee"
 msgstr "手数料"
@@ -4986,10 +4964,6 @@ msgstr "清算までの時間"
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "view"
 msgstr "見る"
-
-#: src/components/Exchange/PositionEditor.js
-msgid "withdrawal"
-msgstr "出金"
 
 #: src/pages/Exchange/Exchange.js
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -5052,6 +5026,10 @@ msgstr "{0} 価格"
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "{0} Required"
 msgstr "{0}が必要です"
+
+#: src/components/Exchange/ConfirmationBox.js
+#~ msgid "{0} Spread"
+#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."

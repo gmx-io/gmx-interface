@@ -15,6 +15,7 @@ import { BigNumber } from "ethers";
 import { bigNumberify, expandDecimals } from "lib/numbers";
 import { getTokens, getWhitelistedTokens } from "config/tokens";
 import { Web3Provider } from "@ethersproject/providers";
+import { getSpread } from "./utils";
 
 export function useInfoTokens(
   library: Web3Provider,
@@ -117,6 +118,10 @@ function getInfoTokens(
       token.maxGlobalLongSize = vaultTokenInfo[i * vaultPropsLength + 9];
       token.minPrice = vaultTokenInfo[i * vaultPropsLength + 10];
       token.maxPrice = vaultTokenInfo[i * vaultPropsLength + 11];
+      token.spread = getSpread({
+        minPrice: token.minPrice,
+        maxPrice: token.maxPrice,
+      });
       token.guaranteedUsd = vaultTokenInfo[i * vaultPropsLength + 12];
       token.maxPrimaryPrice = vaultTokenInfo[i * vaultPropsLength + 13];
       token.minPrimaryPrice = vaultTokenInfo[i * vaultPropsLength + 14];

@@ -11,8 +11,8 @@ export class SyntheticsTVDataProvider extends TVDataProvider {
     return fetchOracleRecentPrice(chainId, ticker);
   }
 
-  override async getTokenHistoryBars(chainId: number, ticker: string, period: string) {
-    const candles: Bar[] = await Promise.race([
+  override async getTokenChartPrice(chainId: number, ticker: string, period: string): Promise<Bar[]> {
+    return Promise.race([
       fetchOracleCandles(chainId, ticker, period),
       sleep(this.candlesTimeout).then(() => Promise.reject(`Oracle candles timeout`)),
     ])
@@ -29,8 +29,6 @@ export class SyntheticsTVDataProvider extends TVDataProvider {
         console.warn("Load history candles failed", ex);
         return [] as Bar[];
       });
-
-    return candles;
   }
 
   override getTokenLastBars(chainId: number, ticker: string, period: string, limit: number) {

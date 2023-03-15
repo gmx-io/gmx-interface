@@ -11,10 +11,11 @@ import { TradeFeesRow } from "components/Synthetics/TradeFeesRow/TradeFeesRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { getContract } from "config/contracts";
-import { getWrappedToken } from "config/tokens";
+import { HIGH_SPREAD_THRESHOLD } from "config/factors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useUserReferralCode } from "domain/referrals";
 import { ExecutionFee, getBorrowingFeeFactor, isHighPriceImpact as getIsHighPriceImpact } from "domain/synthetics/fees";
+import { useMarketsFeesConfigs } from "domain/synthetics/fees/useMarketsFeesConfigs";
 import {
   getAvailableUsdLiquidityForCollateral,
   getAvailableUsdLiquidityForPosition,
@@ -38,10 +39,10 @@ import {
   isTriggerPriceAboveThreshold,
 } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
+import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
 import { AggregatedPositionData, formatLeverage, formatPnl, getPositionKey } from "domain/synthetics/positions";
 import {
   TokensRatio,
-  adaptToTokenInfo,
   formatTokensRatio,
   getTokenData,
   needTokenApprove,
@@ -57,14 +58,12 @@ import {
   getShouldSwapPnlToCollateralToken,
 } from "domain/synthetics/trade";
 import { getTradeFlags } from "domain/synthetics/trade/utils/common";
-import { TokenInfo, getSpread } from "domain/tokens";
+import { getSpread } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { BASIS_POINTS_DIVISOR, PRECISION, USD_DECIMALS } from "lib/legacy";
 import { formatAmount, formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { useMemo, useState } from "react";
-import { useMarketsFeesConfigs } from "domain/synthetics/fees/useMarketsFeesConfigs";
-import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
 import "./ConfirmationBox.scss";
 
 type Props = {
@@ -178,34 +177,31 @@ export function ConfirmationBox(p: Props) {
     });
   }, [existingTriggerOrders, p.existingPosition?.markPrice]);
 
-  const { spread, showSpread } = useMemo(() => {
-    let fromTokenInfo: TokenInfo | undefined;
-    let toTokenInfo: TokenInfo | undefined;
+  const spreadInfo = useMemo(() => {
+    let spread = BigNumber.from(0);
 
-    if (isSwap && !p.isWrapOrUnwrap && tokenIn && tokenOut) {
-      fromTokenInfo = adaptToTokenInfo(tokenIn);
-      toTokenInfo = adaptToTokenInfo(tokenOut);
-    } else if (isIncrease && initialCollateralToken && indexToken) {
-      fromTokenInfo = adaptToTokenInfo(indexToken);
-      toTokenInfo = adaptToTokenInfo(initialCollateralToken);
+    if (isSwap && tokenIn?.prices && tokenOut?.prices) {
+      const fromSpread = getSpread(tokenIn.prices);
+      const toSpread = getSpread(tokenOut.prices);
+
+      spread = fromSpread.add(toSpread);
+    } else if (isIncrease && initialCollateralToken?.prices && indexToken?.prices) {
+      const fromSpread = getSpread(initialCollateralToken.prices);
+      const toSpread = getSpread(indexToken.prices);
+
+      spread = fromSpread.add(toSpread);
+
+      if (isLong) {
+        spread = fromSpread;
+      }
     }
 
-    const spread = getSpread(fromTokenInfo, toTokenInfo, isLong, getWrappedToken(chainId).address);
-    const showSpread = isMarket && Boolean(spread);
+    const isHigh = spread.gt(HIGH_SPREAD_THRESHOLD);
 
-    return { spread, showSpread };
-  }, [
-    chainId,
-    indexToken,
-    initialCollateralToken,
-    isIncrease,
-    isLong,
-    isMarket,
-    isSwap,
-    p.isWrapOrUnwrap,
-    tokenIn,
-    tokenOut,
-  ]);
+    const showSpread = isMarket && isHigh;
+
+    return { spread, showSpread, isHigh };
+  }, [indexToken, initialCollateralToken, isIncrease, isLong, isMarket, isSwap, tokenIn, tokenOut]);
 
   const shouldSwapPnlToCollateralToken = getShouldSwapPnlToCollateralToken({
     market,
@@ -672,7 +668,7 @@ export function ConfirmationBox(p: Props) {
       return null;
     }
 
-    if (spread && spread.isHigh) {
+    if (spreadInfo.spread && spreadInfo.isHigh) {
       return (
         <div className="Confirmation-box-warning">
           <Trans>The spread is {`>`} 1%, please ensure the trade details are acceptable before comfirming</Trans>
@@ -763,9 +759,9 @@ export function ConfirmationBox(p: Props) {
             />
           </ExchangeInfoRow>
 
-          {showSpread && spread && (
-            <ExchangeInfoRow label={t`Spread`} isWarning={spread.isHigh} isTop={true}>
-              {formatAmount(spread.value.mul(100), USD_DECIMALS, 2, true)}%
+          {spreadInfo.showSpread && spreadInfo.spread && (
+            <ExchangeInfoRow label={t`Spread`} isWarning={spreadInfo.isHigh} isTop={true}>
+              {formatAmount(spreadInfo.spread.mul(100), USD_DECIMALS, 2, true)}%
             </ExchangeInfoRow>
           )}
 
@@ -906,9 +902,9 @@ export function ConfirmationBox(p: Props) {
               <div className="align-right">{formatTokensRatio(tokenIn, tokenOut, p.swapParams?.triggerRatio)}</div>
             </div>
           )}
-          {showSpread && spread && (
-            <ExchangeInfoRow label={t`Spread`} isWarning={spread.isHigh}>
-              {formatAmount(spread.value.mul(100), USD_DECIMALS, 2, true)}%
+          {spreadInfo.showSpread && spreadInfo.spread && (
+            <ExchangeInfoRow label={t`Spread`} isWarning={spreadInfo.isHigh}>
+              {formatAmount(spreadInfo.spread.mul(100), USD_DECIMALS, 2, true)}%
             </ExchangeInfoRow>
           )}
           {tokenIn?.prices && (

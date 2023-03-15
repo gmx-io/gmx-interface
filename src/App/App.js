@@ -268,7 +268,7 @@ function FullApp() {
   const [slippageAmount, setSlippageAmount] = useState(0);
   const [isPnlInLeverage, setIsPnlInLeverage] = useState(false);
   const [shouldDisableValidationForTesting, setShouldDisableValidationForTesting] = useState(false);
-  const [showPnlAfterFees, setShowPnlAfterFees] = useState(false);
+  const [showPnlAfterFees, setShowPnlAfterFees] = useState(true);
 
   const [savedIsPnlInLeverage, setSavedIsPnlInLeverage] = useLocalStorageSerializeKey(
     [chainId, IS_PNL_IN_LEVERAGE_KEY],
@@ -277,7 +277,7 @@ function FullApp() {
 
   const [savedShowPnlAfterFees, setSavedShowPnlAfterFees] = useLocalStorageSerializeKey(
     [chainId, SHOW_PNL_AFTER_FEES_KEY],
-    false
+    true
   );
   const [savedShouldDisableValidationForTesting, setSavedShouldDisableValidationForTesting] =
     useLocalStorageSerializeKey([chainId, DISABLE_ORDER_VALIDATION_KEY], false);
@@ -640,6 +640,13 @@ function FullApp() {
         <div className="Exchange-settings-row">
           <Checkbox isChecked={isPnlInLeverage} setIsChecked={setIsPnlInLeverage}>
             <Trans>Include PnL in leverage display</Trans>
+          </Checkbox>
+        </div>
+        <div className="Exchange-settings-row chart-positions-settings">
+          <Checkbox isChecked={savedShouldShowPositionLines} setIsChecked={setSavedShouldShowPositionLines}>
+            <span>
+              <Trans>Chart positions</Trans>
+            </span>
           </Checkbox>
         </div>
         {isDevelopment() && (
