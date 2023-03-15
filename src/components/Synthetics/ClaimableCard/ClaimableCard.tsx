@@ -25,7 +25,7 @@ export function ClaimableCard(p: Props) {
   return (
     <div className="Exchange-swap-market-box App-box App-box-border">
       <div className="App-card-title">
-        <Trans>Claimable funding and collateral</Trans>
+        <Trans>Claimable funding</Trans>
       </div>
       <div className="App-card-divider" />
 
