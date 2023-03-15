@@ -803,7 +803,7 @@ export function GmSwapBox(p: Props) {
       {stage === "processing" && (
         <GmOrderStatus
           firstToken={firstTokenAddress!}
-          secondToken={secondTokenAddress}
+          secondToken={secondTokenAmount?.gt(0) ? secondTokenAddress : undefined}
           market={market?.marketTokenAddress!}
           isDeposit={isDeposit}
           onClose={() => {

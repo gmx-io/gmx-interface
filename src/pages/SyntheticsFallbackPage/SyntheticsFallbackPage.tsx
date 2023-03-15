@@ -4,11 +4,14 @@ import { useEffect, useState } from "react";
 import { sleep } from "lib/sleep";
 import { AVALANCHE_FUJI, getChainName } from "config/chains";
 import { switchNetwork } from "lib/wallets";
+import { useWeb3React } from "@web3-react/core";
 
 export function SyntheticsFallbackPage() {
+  const { active } = useWeb3React();
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
+    // Wait for chainId to be loaded before rendering
     sleep(100).then(() => setIsLoaded(true));
   }, []);
 
@@ -30,7 +33,7 @@ export function SyntheticsFallbackPage() {
             </div>
 
             <br />
-            <div className="clickable underline" onClick={() => switchNetwork(AVALANCHE_FUJI, true)}>
+            <div className="clickable underline" onClick={() => switchNetwork(AVALANCHE_FUJI, active)}>
               {getChainName(AVALANCHE_FUJI)}
             </div>
           </p>
