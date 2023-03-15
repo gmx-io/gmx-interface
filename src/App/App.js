@@ -99,7 +99,7 @@ import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { isDevelopment } from "config/env";
 
-if ("ethereum" in window) {
+if ("ethereum" in window && typeof window.ethereum.autoRefreshOnNetworkChange !== "undefined") {
   window.ethereum.autoRefreshOnNetworkChange = false;
 }
 
