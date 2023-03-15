@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { MouseEventHandler, ReactNode } from "react";
 import { NavLink } from "react-router-dom";
 import cx from "classnames";
 import { getAppBaseUrl, getHomeUrl } from "lib/legacy";
@@ -15,7 +15,7 @@ type Props = {
   shouldShowRedirectModal?: boolean;
   showRedirectModal: (to: string) => void;
   redirectPopupTimestamp: number;
-  onClick?: () => void;
+  onClick?: MouseEventHandler<HTMLDivElement | HTMLAnchorElement>;
   children?: ReactNode;
 };
 
@@ -37,9 +37,9 @@ export function HeaderLink({
       return (
         <div
           className={cx("a", className, { active: isHomeLink })}
-          onClick={() => {
+          onClick={(e) => {
             if (onClick) {
-              onClick();
+              onClick(e);
             }
             showRedirectModal(to);
           }}
