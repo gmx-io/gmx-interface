@@ -22,6 +22,7 @@ import { callContract, contractFetcher } from "lib/contracts";
 import { bigNumberify, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import Button from "components/Button/Button";
 
 const VEST_WITH_GMX_ARB = "VEST_WITH_GMX_ARB";
 const VEST_WITH_GLP_ARB = "VEST_WITH_GLP_ARB";
@@ -443,9 +444,9 @@ export default function ClaimEsGmx({ setPendingTxns }) {
             </div>
             <br />
             <div>
-              <button className="App-cta Exchange-swap-button" disabled={!isPrimaryEnabled()} onClick={() => claim()}>
+              <Button variant="primary-action" className="w-100" disabled={!isPrimaryEnabled()} onClick={() => claim()}>
                 {getPrimaryText()}
-              </button>
+              </Button>
             </div>
           </div>
         )}

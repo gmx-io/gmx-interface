@@ -4,6 +4,7 @@ import { useWeb3React } from "@web3-react/core";
 import { setTraderReferralCodeByUser, validateReferralCodeExists } from "domain/referrals";
 import { REFERRAL_CODE_REGEX } from "./referralsHelper";
 import { useDebounce } from "lib/useDebounce";
+import Button from "components/Button/Button";
 
 function JoinReferralCode({ setPendingTxns, pendingTxns, active, connectWallet }) {
   return (
@@ -18,9 +19,9 @@ function JoinReferralCode({ setPendingTxns, pendingTxns, active, connectWallet }
         {active ? (
           <ReferralCodeForm setPendingTxns={setPendingTxns} pendingTxns={pendingTxns} />
         ) : (
-          <button className="App-cta Exchange-swap-button" type="submit" onClick={connectWallet}>
+          <Button variant="primary-action" className="w-100" type="submit" onClick={connectWallet}>
             <Trans>Connect Wallet</Trans>
-          </button>
+          </Button>
         )}
       </div>
     </div>
@@ -148,9 +149,14 @@ export function ReferralCodeForm({
           setReferralCode(value);
         }}
       />
-      <button type="submit" className="App-cta Exchange-swap-button" disabled={!isPrimaryEnabled()}>
+      <Button
+        variant="primary-action"
+        type="submit"
+        className="App-cta Exchange-swap-button"
+        disabled={!isPrimaryEnabled()}
+      >
         {getPrimaryText()}
-      </button>
+      </Button>
     </form>
   );
 }

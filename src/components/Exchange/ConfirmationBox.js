@@ -30,6 +30,7 @@ import { SLIPPAGE_BPS_KEY } from "config/localStorage";
 import { expandDecimals, formatAmount } from "lib/numbers";
 import { getToken, getWrappedToken } from "config/tokens";
 import { Plural, t, Trans } from "@lingui/macro";
+import Button from "components/Button/Button";
 import FeesTooltip from "./FeesTooltip";
 import { getTokenInfo, getUsd } from "domain/tokens";
 
@@ -864,13 +865,14 @@ export default function ConfirmationBox(props) {
         {isSwap && renderSwapSection()}
         {!isSwap && renderMarginSection()}
         <div className="Confirmation-box-row">
-          <button
+          <Button
+            variant="primary-action"
             onClick={onConfirmationClick}
-            className="App-cta Confirmation-box-button"
+            className="w-100 mt-sm"
             disabled={!isPrimaryEnabled()}
           >
             {getPrimaryText()}
-          </button>
+          </Button>
         </div>
       </Modal>
     </div>
