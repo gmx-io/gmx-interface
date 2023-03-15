@@ -624,6 +624,8 @@ msgstr "코드 확인중..."
 msgid "Choose to buy from decentralized or centralized exchanges."
 msgstr ""
 
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -668,6 +670,10 @@ msgstr "수령 실패"
 msgid "Claim failed."
 msgstr "수령 실패"
 
+#: src/domain/synthetics/markets/claimCollateralTxn.ts
+msgid "Claim request sent"
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Claim submitted!"
 msgstr "수령 제출 완료!"
@@ -689,6 +695,14 @@ msgstr "{wrappedTokenSymbol} 보상 수령하기"
 #: src/pages/Stake/StakeV2.js
 msgid "Claimable"
 msgstr "수령가능"
+
+#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
+msgid "Claimable funding"
+msgstr ""
+
+#: src/domain/synthetics/markets/claimCollateralTxn.ts
+msgid "Claiming failed"
+msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
@@ -856,6 +870,10 @@ msgstr "수령 후 스테이킹 제출 완료!"
 #: src/pages/Stake/StakeV2.js
 msgid "Compounding..."
 msgstr "수령 및 스테이킹중..."
+
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+msgid "Confirm Claim"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
@@ -1688,6 +1706,14 @@ msgstr ""
 msgid "Funding Fee"
 msgstr ""
 
+#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
+msgid "Funding Fees"
+msgstr ""
+
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+msgid "Funding fee"
+msgstr ""
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Funding fee:"
 msgstr ""
@@ -2073,6 +2099,7 @@ msgid "Language"
 msgstr "언어"
 
 #: src/components/Header/AppHeaderUser.tsx
+#: src/components/Header/AppHeaderUser.tsx
 #: src/components/ModalViews/RedirectModal.js
 #: src/pages/Home/Home.js
 msgid "Launch App"
@@ -2396,6 +2423,7 @@ msgstr "시장 평균가: {0}"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -3764,6 +3792,10 @@ msgstr "구조화금융 프로덕트"
 msgid "Submit"
 msgstr "제출"
 
+#: src/domain/synthetics/markets/claimCollateralTxn.ts
+msgid "Success claimings"
+msgstr ""
+
 #: src/domain/synthetics/markets/createDepositTxn.ts
 msgid "Success deposit order"
 msgstr ""
@@ -3937,8 +3969,8 @@ msgid "Synthetics Pools"
 msgstr ""
 
 #: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
-msgid "Synthetics doesn't support this network"
-msgstr ""
+#~ msgid "Synthetics doesn't support this network"
+#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -4158,6 +4190,10 @@ msgstr "총 이전된 자산"
 #: src/pages/Stake/StakeV1.js
 msgid "Total Assets Staked"
 msgstr "총 스테이킹된 자산"
+
+#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
+msgid "Total Claimable"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -4515,6 +4551,10 @@ msgstr "유용한 링크"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Utilization"
 msgstr "이용률"
+
+#: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
+msgid "V2 doesn't currently support this network"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Vault Capacity"

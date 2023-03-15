@@ -624,6 +624,8 @@ msgstr "检查代码..."
 msgid "Choose to buy from decentralized or centralized exchanges."
 msgstr ""
 
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -668,6 +670,10 @@ msgstr "领取失败"
 msgid "Claim failed."
 msgstr "领取失败"
 
+#: src/domain/synthetics/markets/claimCollateralTxn.ts
+msgid "Claim request sent"
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Claim submitted!"
 msgstr "送出领取"
@@ -689,6 +695,14 @@ msgstr "领取{wrappedTokenSymbol}奖励"
 #: src/pages/Stake/StakeV2.js
 msgid "Claimable"
 msgstr "可领取"
+
+#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
+msgid "Claimable funding"
+msgstr ""
+
+#: src/domain/synthetics/markets/claimCollateralTxn.ts
+msgid "Claiming failed"
+msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
@@ -856,6 +870,10 @@ msgstr "复利送出"
 #: src/pages/Stake/StakeV2.js
 msgid "Compounding..."
 msgstr "复利中"
+
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+msgid "Confirm Claim"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
@@ -1688,6 +1706,14 @@ msgstr ""
 msgid "Funding Fee"
 msgstr ""
 
+#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
+msgid "Funding Fees"
+msgstr ""
+
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+msgid "Funding fee"
+msgstr ""
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Funding fee:"
 msgstr ""
@@ -2073,6 +2099,7 @@ msgid "Language"
 msgstr "语言"
 
 #: src/components/Header/AppHeaderUser.tsx
+#: src/components/Header/AppHeaderUser.tsx
 #: src/components/ModalViews/RedirectModal.js
 #: src/pages/Home/Home.js
 msgid "Launch App"
@@ -2396,6 +2423,7 @@ msgstr "标识: {0}"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -3764,6 +3792,10 @@ msgstr "结构化产品"
 msgid "Submit"
 msgstr "送出"
 
+#: src/domain/synthetics/markets/claimCollateralTxn.ts
+msgid "Success claimings"
+msgstr ""
+
 #: src/domain/synthetics/markets/createDepositTxn.ts
 msgid "Success deposit order"
 msgstr ""
@@ -3937,8 +3969,8 @@ msgid "Synthetics Pools"
 msgstr ""
 
 #: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
-msgid "Synthetics doesn't support this network"
-msgstr ""
+#~ msgid "Synthetics doesn't support this network"
+#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -4158,6 +4190,10 @@ msgstr "迁移的资产总额"
 #: src/pages/Stake/StakeV1.js
 msgid "Total Assets Staked"
 msgstr "质押的资产总额"
+
+#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
+msgid "Total Claimable"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -4515,6 +4551,10 @@ msgstr "实用链接"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Utilization"
 msgstr "使用情况"
+
+#: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
+msgid "V2 doesn't currently support this network"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Vault Capacity"

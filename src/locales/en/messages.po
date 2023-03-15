@@ -624,6 +624,8 @@ msgstr "Checking code..."
 msgid "Choose to buy from decentralized or centralized exchanges."
 msgstr "Choose to buy from decentralized or centralized exchanges."
 
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -668,6 +670,10 @@ msgstr "Claim failed"
 msgid "Claim failed."
 msgstr "Claim failed."
 
+#: src/domain/synthetics/markets/claimCollateralTxn.ts
+msgid "Claim request sent"
+msgstr "Claim request sent"
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Claim submitted!"
 msgstr "Claim submitted!"
@@ -689,6 +695,14 @@ msgstr "Claim {wrappedTokenSymbol} Rewards"
 #: src/pages/Stake/StakeV2.js
 msgid "Claimable"
 msgstr "Claimable"
+
+#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
+msgid "Claimable funding"
+msgstr "Claimable funding"
+
+#: src/domain/synthetics/markets/claimCollateralTxn.ts
+msgid "Claiming failed"
+msgstr "Claiming failed"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
@@ -856,6 +870,10 @@ msgstr "Compound submitted!"
 #: src/pages/Stake/StakeV2.js
 msgid "Compounding..."
 msgstr "Compounding..."
+
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+msgid "Confirm Claim"
+msgstr "Confirm Claim"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
@@ -1688,6 +1706,14 @@ msgstr "Fulfilling {0} {tokensText} request"
 msgid "Funding Fee"
 msgstr "Funding Fee"
 
+#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
+msgid "Funding Fees"
+msgstr "Funding Fees"
+
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+msgid "Funding fee"
+msgstr "Funding fee"
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Funding fee:"
 msgstr "Funding fee:"
@@ -2073,6 +2099,7 @@ msgid "Language"
 msgstr "Language"
 
 #: src/components/Header/AppHeaderUser.tsx
+#: src/components/Header/AppHeaderUser.tsx
 #: src/components/ModalViews/RedirectModal.js
 #: src/pages/Home/Home.js
 msgid "Launch App"
@@ -2396,6 +2423,7 @@ msgstr "Mark: {0}"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -3764,6 +3792,10 @@ msgstr "Structured Products"
 msgid "Submit"
 msgstr "Submit"
 
+#: src/domain/synthetics/markets/claimCollateralTxn.ts
+msgid "Success claimings"
+msgstr "Success claimings"
+
 #: src/domain/synthetics/markets/createDepositTxn.ts
 msgid "Success deposit order"
 msgstr "Success deposit order"
@@ -3937,8 +3969,8 @@ msgid "Synthetics Pools"
 msgstr "Synthetics Pools"
 
 #: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
-msgid "Synthetics doesn't support this network"
-msgstr "Synthetics doesn't support this network"
+#~ msgid "Synthetics doesn't support this network"
+#~ msgstr "Synthetics doesn't support this network"
 
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -4158,6 +4190,10 @@ msgstr "Total Assets Migrated"
 #: src/pages/Stake/StakeV1.js
 msgid "Total Assets Staked"
 msgstr "Total Assets Staked"
+
+#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
+msgid "Total Claimable"
+msgstr "Total Claimable"
 
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -4515,6 +4551,10 @@ msgstr "Useful Links"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Utilization"
 msgstr "Utilization"
+
+#: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
+msgid "V2 doesn't currently support this network"
+msgstr "V2 doesn't currently support this network"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Vault Capacity"
