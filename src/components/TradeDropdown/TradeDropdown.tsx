@@ -4,6 +4,7 @@ import { HeaderLink } from "components/Header/HeaderLink";
 import { FaChevronDown } from "react-icons/fa";
 
 import "./TradeDropdown.scss";
+import { getIcon } from "config/icons";
 
 type Props = {
   redirectPopupTimestamp: number;
@@ -31,6 +32,7 @@ export function TradeDropdown(p: Props) {
               redirectPopupTimestamp={redirectPopupTimestamp}
               showRedirectModal={showRedirectModal}
             >
+              <img src={getIcon("common", "gmxOutline")} alt="GMX V1" className="TradeDropdown-option-icon" />
               <div className="TradeDropdown-option-label">GMX V1</div>
             </HeaderLink>
           </Menu.Item>
@@ -42,6 +44,7 @@ export function TradeDropdown(p: Props) {
               redirectPopupTimestamp={redirectPopupTimestamp}
               showRedirectModal={showRedirectModal}
             >
+              <img src={getIcon("common", "gmxOutline")} alt="GMX V2" className="TradeDropdown-option-icon" />
               <div className="TradeDropdown-option-label">GMX V2</div>
             </HeaderLink>
           </Menu.Item>

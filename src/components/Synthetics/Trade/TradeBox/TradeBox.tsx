@@ -522,8 +522,9 @@ export function TradeBox(p: Props) {
     if (isTrigger) {
       if (!existingPosition) {
         const positions = Object.values(positionsData);
-        const availablePosition = positions.find((pos) =>
-          availableMarkets.some((market) => market.marketTokenAddress === pos.marketAddress)
+        const availablePosition = positions.find(
+          (pos) =>
+            pos.isLong === isLong && availableMarkets.some((market) => market.marketTokenAddress === pos.marketAddress)
         );
 
         if (availablePosition) {
@@ -578,8 +579,9 @@ export function TradeBox(p: Props) {
 
     if (!existingPosition) {
       const positions = Object.values(positionsData);
-      const availablePosition = positions.find((pos) =>
-        liquidMarkets.some((market) => market.marketTokenAddress === pos.marketAddress)
+      const availablePosition = positions.find(
+        (pos) =>
+          pos.isLong === isLong && liquidMarkets.some((market) => market.marketTokenAddress === pos.marketAddress)
       );
 
       if (availablePosition) {

@@ -17,11 +17,12 @@
 }
 
 .TradeDropdown-option {
-  display: flex;
+  display: flex !important;
   pointer-events: all !important;
   width: 100%;
-  flex-direction: column;
+  flex-direction: row;
   align-items: flex-start;
+
   padding: 0.83rem 0.83rem !important;
 
   color: #a0a3c4 !important;
@@ -31,4 +32,10 @@
     background: var(--dark-blue-hover) !important;
     color: #eee !important;
   }
+}
+
+.TradeDropdown-option-icon {
+  height: 16px;
+  margin-right: 0.8rem;
+  margin-bottom: -2px;
 }
