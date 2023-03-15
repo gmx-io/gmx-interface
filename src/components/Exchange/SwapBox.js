@@ -1916,7 +1916,6 @@ export default function SwapBox(props) {
                     infoTokens={infoTokens}
                     showMintingCap={false}
                     showTokenImgInDropdown={true}
-                    disableBodyScrollLock={true}
                   />
                 </div>
               </div>
@@ -1967,7 +1966,6 @@ export default function SwapBox(props) {
                     tokens={toTokens}
                     infoTokens={infoTokens}
                     showTokenImgInDropdown={true}
-                    disableBodyScrollLock={true}
                   />
                 </div>
               </div>
@@ -2107,7 +2105,6 @@ export default function SwapBox(props) {
                     onSelectToken={onSelectShortCollateralAddress}
                     tokens={stableTokens}
                     showTokenImgInDropdown={true}
-                    disableBodyScrollLock={true}
                   />
                 </div>
               </div>
