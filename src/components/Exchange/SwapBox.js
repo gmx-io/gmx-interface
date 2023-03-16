@@ -1035,7 +1035,7 @@ export default function SwapBox(props) {
 
       stableTokenAmount = stableTokenAmount.add(sizeTokens);
       if (stableTokenAmount.gt(shortCollateralToken.availableAmount)) {
-        return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientCollateralIn];
+        return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientProfitLiquidity];
       }
     }
 
@@ -1847,9 +1847,17 @@ export default function SwapBox(props) {
       <Trans>
         <p>{shortCollateralToken.symbol} is required for collateral.</p>
         <p>
-          Swap amount from {fromToken.symbol} to {shortCollateralToken.symbol} or maximum potential profit exceeds{" "}
-          {shortCollateralToken.symbol} available liquidity. Reduce the "Pay" or "Short Position" size, or change the
-          "Collateral In" token.
+          Swap amount from {fromToken.symbol} to {shortCollateralToken.symbol} exceeds {shortCollateralToken.symbol}{" "}
+          available liquidity. Reduce the "Pay" or change the "Collateral In" token.
+        </p>
+      </Trans>
+    ),
+    [ErrorCode.InsufficientProfitLiquidity]: (
+      <Trans>
+        <p>{shortCollateralToken.symbol} is required for collateral.</p>
+        <p>
+          Short amount for {toToken.symbol} with {shortCollateralToken.symbol} exceeds potential profits liquidity.
+          Reduce the "Short Position" size, or change the "Collateral In" token.
         </p>
       </Trans>
     ),
