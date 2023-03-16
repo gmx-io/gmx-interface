@@ -1840,7 +1840,6 @@ export default function SwapBox(props) {
         <ExternalLink href={get1InchSwapUrl(chainId, fromToken.symbol, shortCollateralToken.symbol)}>
           You can buy {shortCollateralToken.symbol} on 1inch.
         </ExternalLink>
-        <p>Alternatively, you can select a different "Collateral In" token.</p>
       </Trans>
     ),
     [ErrorCode.InsufficientCollateralIn]: (
