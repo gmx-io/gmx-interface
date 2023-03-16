@@ -642,7 +642,7 @@ table.Exchange-list th {
   overscroll-behavior: smooth;
   scrollbar-width: thin;
   padding-right: 0.5rem;
-  max-height: calc(100vh - 7.75rem);
+  max-height: calc(100vh - 13rem);
   overflow-y: auto;
 }
 
