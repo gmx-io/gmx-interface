@@ -3119,22 +3119,6 @@ msgid "The referral code can't be more than {MAX_REFERRAL_CODE_LENGTH} character
 msgstr "紹介コードは{MAX_REFERRAL_CODE_LENGTH}文字を超えることはできません。"
 
 #: src/components/Exchange/ConfirmationBox.js
-#~ msgid "The spread for {0} is > 1%, please ensure the trade details are acceptable before comfirming"
-#~ msgstr ""
-
-#: src/components/Exchange/ConfirmationBox.js
-#~ msgid "The spread for {0} is {1}% please ensure the trade details are acceptable before confirming"
-#~ msgstr ""
-
-#: src/components/Exchange/PositionSeller.js
-#~ msgid "The spread for {0} is {1}%, please ensure the trade details are acceptable before confirming"
-#~ msgstr ""
-
-#: src/components/Exchange/ConfirmationBox.js
-#~ msgid "The spread is > 1%, please ensure the trade details are acceptable before comfirming"
-#~ msgstr "スプレッドが1%を超えています。このトレードの詳細が許容できるものであることを確かめてから、先に進んでください。"
-
-#: src/components/Exchange/ConfirmationBox.js
 msgid "The spread is > 1%, please ensure the trade details are acceptable before confirming"
 msgstr ""
 
@@ -3953,10 +3937,6 @@ msgstr "{0} 価格"
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "{0} Required"
 msgstr "{0}が必要です"
-
-#: src/components/Exchange/ConfirmationBox.js
-#~ msgid "{0} Spread"
-#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
