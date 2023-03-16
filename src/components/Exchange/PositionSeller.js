@@ -870,13 +870,7 @@ export default function PositionSeller(props) {
   return (
     <div className="PositionEditor">
       {position && (
-        <Modal
-          className="PositionSeller-modal"
-          isVisible={isVisible}
-          setIsVisible={setIsVisible}
-          label={title}
-          allowContentTouchMove
-        >
+        <Modal className="PositionSeller-modal" isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
           {flagOrdersEnabled && (
             <Tab
               options={ORDER_OPTIONS}
@@ -1201,9 +1195,6 @@ export default function PositionSeller(props) {
               {isSwapAllowed && receiveToken && (
                 <div className="align-right">
                   <TokenSelector
-                    // Scroll lock lead to side effects
-                    // if it applied on modal inside another modal
-                    disableBodyScrollLock={true}
                     className={cx("PositionSeller-token-selector", {
                       warning: isNotEnoughReceiveTokenLiquidity || isCollateralPoolCapacityExceeded,
                     })}

@@ -1,22 +1,14 @@
+import "./Modal.css";
 import React, { useRef, useEffect } from "react";
 import cx from "classnames";
 import { motion, AnimatePresence } from "framer-motion";
-
+import { RemoveScroll } from "react-remove-scroll";
 import { MdClose } from "react-icons/md";
 
-import "./Modal.css";
-import useLockBodyScroll, { TOUCH_MOVE_CONTAINER_CLASS_NAME } from "lib/useLockBodyScroll";
-
 export default function Modal(props) {
-  const { isVisible, setIsVisible, className, zIndex, onAfterOpen, disableBodyScrollLock, allowContentTouchMove } =
-    props;
+  const { isVisible, setIsVisible, className, zIndex, onAfterOpen } = props;
 
   const modalRef = useRef(null);
-
-  useLockBodyScroll(modalRef, isVisible, {
-    disableLock: disableBodyScrollLock,
-    allowTouchMove: allowContentTouchMove,
-  });
 
   useEffect(() => {
     function close(e) {
@@ -68,9 +60,11 @@ export default function Modal(props) {
               {props.headerContent && props.headerContent()}
             </div>
             <div className="divider" />
-            <div className={cx("Modal-body", TOUCH_MOVE_CONTAINER_CLASS_NAME)} ref={modalRef}>
-              {props.children}
-            </div>
+            <RemoveScroll>
+              <div className={cx("Modal-body")} ref={modalRef}>
+                {props.children}
+              </div>
+            </RemoveScroll>
           </div>
         </motion.div>
       )}

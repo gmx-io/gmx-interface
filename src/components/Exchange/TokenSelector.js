@@ -32,7 +32,6 @@ export default function TokenSelector(props) {
     showSymbolImage = false,
     showNewCaret = false,
     getTokenState = () => ({ disabled: false, message: null }),
-    disableBodyScrollLock,
   } = props;
 
   const visibleTokens = tokens.filter((t) => !t.isTempHidden);
@@ -74,7 +73,6 @@ export default function TokenSelector(props) {
   return (
     <div className={cx("TokenSelector", { disabled }, props.className)}>
       <Modal
-        disableBodyScrollLock={disableBodyScrollLock}
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={props.label}
