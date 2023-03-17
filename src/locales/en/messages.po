@@ -640,10 +640,18 @@ msgstr "Choose to buy from decentralized or centralized exchanges."
 msgid "Claim"
 msgstr "Claim"
 
+#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
+msgid "Claim Funding Fees"
+msgstr "Claim Funding Fees"
+
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claim GMX Rewards"
 msgstr "Claim GMX Rewards"
+
+#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
+msgid "Claim Price Impact"
+msgstr "Claim Price Impact"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Claim Rewards"
@@ -710,6 +718,10 @@ msgstr "Claiming failed"
 #: src/pages/Stake/StakeV2.js
 msgid "Claiming..."
 msgstr "Claiming..."
+
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
+msgid "Claims"
+msgstr "Claims"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Click on a row to select the position's market, then use the swap box to increase your position size, or to set stop-loss / take-profit orders. if needed."
@@ -2289,6 +2301,7 @@ msgid "Liquidity data not loaded"
 msgstr "Liquidity data not loaded"
 
 #: src/components/Exchange/PositionsList.js
+#: src/components/Synthetics/ClaimHistory/ClaimHistory.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -2298,6 +2311,7 @@ msgstr "Liquidity data not loaded"
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Loading..."
 msgstr "Loading..."
 
@@ -2722,6 +2736,7 @@ msgid "Networks and Settings"
 msgstr "Networks and Settings"
 
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/ClaimHistory/ClaimHistory.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Next"
 msgstr "Next"
@@ -2729,6 +2744,10 @@ msgstr "Next"
 #: src/pages/Actions/Actions.js
 msgid "No PnLs found"
 msgstr "No PnLs found"
+
+#: src/components/Synthetics/ClaimHistory/ClaimHistory.tsx
+msgid "No claims yet"
+msgstr "No claims yet"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "No esGMX to claim"
@@ -3093,6 +3112,7 @@ msgid "Positions{0}"
 msgstr "Positions{0}"
 
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/ClaimHistory/ClaimHistory.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Prev"
 msgstr "Prev"
@@ -5183,6 +5203,10 @@ msgstr "{longOrShortText} {0} market selected"
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
 #~ msgid "{longText} {0} request sent"
 #~ msgstr "{longText} {0} request sent"
+
+#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
+msgid "{marketsCount, plural, one {# Market} other {# Markets}}"
+msgstr "{marketsCount, plural, one {# Market} other {# Markets}}"
 
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
