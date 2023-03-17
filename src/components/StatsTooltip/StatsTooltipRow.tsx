@@ -5,7 +5,7 @@ import "./StatsTooltip.css";
 type Props = {
   className?: string;
   label: string | ReactNode;
-  value: number | string | string[] | number[];
+  value: number | string | string[] | number[] | ReactNode;
   showDollar?: boolean;
 };
 

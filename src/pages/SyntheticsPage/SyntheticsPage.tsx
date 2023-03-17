@@ -32,6 +32,7 @@ import { useMemo, useState } from "react";
 
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import "./SyntheticsPage.scss";
+import { ClaimHistory } from "components/Synthetics/ClaimHistory/ClaimHistory";
 
 type Props = {
   onConnectWallet: () => void;
@@ -46,6 +47,7 @@ enum ListSection {
   Positions = "Positions",
   Orders = "Orders",
   Trades = "Trades",
+  Claims = "Claims",
 }
 
 export function SyntheticsPage(p: Props) {
@@ -166,6 +168,7 @@ export function SyntheticsPage(p: Props) {
                   [ListSection.Positions]: t`Positions${positionsCount ? ` (${positionsCount})` : ""}`,
                   [ListSection.Orders]: t`Orders${ordersCount ? ` (${ordersCount})` : ""}`,
                   [ListSection.Trades]: t`Trades`,
+                  [ListSection.Claims]: t`Claims`,
                 }}
                 option={listSection}
                 onChange={(section) => setListSection(section)}
@@ -218,6 +221,7 @@ export function SyntheticsPage(p: Props) {
               />
             )}
             {listSection === ListSection.Trades && <TradeHistory shouldShowPaginationButtons />}
+            {listSection === ListSection.Claims && <ClaimHistory shouldShowPaginationButtons />}
           </div>
         </div>
 
@@ -281,6 +285,7 @@ export function SyntheticsPage(p: Props) {
             />
           )}
           {listSection === ListSection.Trades && <TradeHistory shouldShowPaginationButtons />}
+          {listSection === ListSection.Claims && <ClaimHistory shouldShowPaginationButtons />}
         </div>
       </div>
 

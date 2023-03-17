@@ -11,7 +11,6 @@ import {
   swapImpactExponentFactorKey,
   swapImpactFactorKey,
 } from "config/dataStore";
-import { BigNumber } from "ethers";
 import { useMulticall } from "lib/multicall";
 import { bigNumberify } from "lib/numbers";
 import { getContractMarketPrices, useMarketsData } from "../markets";
