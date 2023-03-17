@@ -20,7 +20,6 @@ import {
   arrayURLFetcher,
 } from "lib/legacy";
 import { useTotalGmxInLiquidity, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
-import useFeesSummary from "domain/useFeesSummary";
 
 import { getContract } from "config/contracts";
 
@@ -34,7 +33,7 @@ import "./DashboardV2.css";
 import AssetDropdown from "./AssetDropdown";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import SEO from "components/Common/SEO";
-import useTotalVolume from "domain/useTotalVolume";
+import { useTotalVolume, useVolumeInfo, useFeesSummary } from "domain/stats";
 import StatsTooltip from "components/StatsTooltip/StatsTooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
@@ -49,41 +48,6 @@ import { getIcons } from "config/icons";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;
-
-function getVolumeInfo(hourlyVolumes) {
-  if (!hourlyVolumes || hourlyVolumes.length === 0) {
-    return {};
-  }
-  const dailyVolumes = hourlyVolumes.map((hourlyVolume) => {
-    const secondsPerHour = 60 * 60;
-    const minTime = parseInt(Date.now() / 1000 / secondsPerHour) * secondsPerHour - 24 * secondsPerHour;
-    const info = {};
-    let totalVolume = bigNumberify(0);
-    for (let i = 0; i < hourlyVolume.length; i++) {
-      const item = hourlyVolume[i].data;
-      if (parseInt(item.timestamp) < minTime) {
-        break;
-      }
-
-      if (!info[item.token]) {
-        info[item.token] = bigNumberify(0);
-      }
-
-      info[item.token] = info[item.token].add(item.volume);
-      totalVolume = totalVolume.add(item.volume);
-    }
-    info.totalVolume = totalVolume;
-    return info;
-  });
-  return dailyVolumes.reduce(
-    (acc, cv, index) => {
-      acc.totalVolume = acc.totalVolume.add(cv.totalVolume);
-      acc[ACTIVE_CHAIN_IDS[index]] = cv;
-      return acc;
-    },
-    { totalVolume: bigNumberify(0) }
-  );
-}
 
 function getPositionStats(positionStats) {
   if (!positionStats || positionStats.length === 0) {
@@ -138,16 +102,9 @@ export default function DashboardV2() {
     }
   );
 
-  const { data: hourlyVolumes } = useSWR(
-    ACTIVE_CHAIN_IDS.map((chainId) => getServerUrl(chainId, "/hourly_volume")),
-    {
-      fetcher: arrayURLFetcher,
-    }
-  );
-
   let { total: totalGmxSupply } = useTotalGmxSupply();
 
-  const currentVolumeInfo = getVolumeInfo(hourlyVolumes);
+  const currentVolumeInfo = useVolumeInfo();
 
   const positionStatsInfo = getPositionStats(positionStats);
 
@@ -232,12 +189,12 @@ export default function DashboardV2() {
 
   const eth = infoTokens[getTokenBySymbol(chainId, "ETH").address];
   const shouldIncludeCurrrentFees =
-    feesSummaryByChain[chainId].lastUpdatedAt &&
-    parseInt(Date.now() / 1000) - feesSummaryByChain[chainId].lastUpdatedAt > 60 * 60;
+    feesSummaryByChain[chainId]?.lastUpdatedAt &&
+    parseInt(Date.now() / 1000) - feesSummaryByChain[chainId]?.lastUpdatedAt > 60 * 60;
 
   const totalFees = ACTIVE_CHAIN_IDS.map((chainId) => {
     if (shouldIncludeCurrrentFees && currentFees && currentFees[chainId]) {
-      return currentFees[chainId].div(expandDecimals(1, USD_DECIMALS)).add(feesSummaryByChain[chainId].totalFees || 0);
+      return currentFees[chainId].div(expandDecimals(1, USD_DECIMALS)).add(feesSummaryByChain[chainId]?.totalFees || 0);
     }
 
     return feesSummaryByChain[chainId].totalFees || 0;
@@ -637,7 +594,7 @@ export default function DashboardV2() {
                     />
                   </div>
                 </div>
-                {feesSummary.lastUpdatedAt ? (
+                {feesSummary?.lastUpdatedAt ? (
                   <div className="App-card-row">
                     <div className="label">
                       <Trans>Fees since</Trans> {formatDate(feesSummary.lastUpdatedAt)}
