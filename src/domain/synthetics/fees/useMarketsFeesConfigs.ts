@@ -110,6 +110,7 @@ export function useMarketsFeesConfigs(chainId: number): MarketFeesConfigsResult 
 
         const [
           longsPayShorts,
+          fundingPerSecond,
           fundingAmountPerSize_LongCollateral_LongPosition,
           fundingAmountPerSize_LongCollateral_ShortPosition,
           fundingAmountPerSize_ShortCollateral_LongPosition,
@@ -135,7 +136,7 @@ export function useMarketsFeesConfigs(chainId: number): MarketFeesConfigsResult 
           borrowingFactorPerSecondForLongs,
           borrowingFactorPerSecondForShorts,
 
-          fundingPerSecond: BigNumber.from(0),
+          fundingPerSecond: bigNumberify(fundingPerSecond)!,
           longsPayShorts,
           fundingAmountPerSize_LongCollateral_LongPosition: bigNumberify(
             fundingAmountPerSize_LongCollateral_LongPosition
