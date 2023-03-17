@@ -9,6 +9,7 @@ import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useEffect } from "react";
+
 import "./MarketPoolsPage.scss";
 
 type Props = {
@@ -27,11 +28,19 @@ export function MarketPoolsPage(p: Props) {
     undefined
   );
 
-  useEffect(() => {
-    if (markets.length > 0 && !selectedMarketKey) {
-      setSelectedMarketKey(markets[0].marketTokenAddress);
-    }
-  }, [selectedMarketKey, markets, setSelectedMarketKey]);
+  useEffect(
+    function updateMarket() {
+      if (!markets.length) return;
+
+      if (
+        (markets.length > 0 && !selectedMarketKey) ||
+        !markets.find((m) => m.marketTokenAddress === selectedMarketKey)
+      ) {
+        setSelectedMarketKey(markets[0].marketTokenAddress);
+      }
+    },
+    [selectedMarketKey, markets, setSelectedMarketKey]
+  );
 
   return (
     <SEO title={getPageTitle("Synthetics pools")}>
