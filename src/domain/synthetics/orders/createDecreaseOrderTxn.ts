@@ -10,6 +10,7 @@ import { BigNumber, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { formatUsd } from "lib/numbers";
 import { DecreasePositionSwapType, OrderType } from "./types";
+import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
 
 const { AddressZero } = ethers.constants;
 
@@ -94,19 +95,19 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
     .filter(Boolean)
     .map((call) => exchangeRouter.interface.encodeFunctionData(call!.method, call!.params));
 
-  // const primaryPriceOverrides: PriceOverrides = {};
-  // const secondaryPriceOverrides: PriceOverrides = {};
+  const primaryPriceOverrides: PriceOverrides = {};
+  const secondaryPriceOverrides: PriceOverrides = {};
 
   const isTrigger = p.orderType === OrderType.StopLossDecrease || p.orderType === OrderType.LimitDecrease;
 
   if (!isTrigger) {
-    // await simulateExecuteOrderTxn(chainId, library, {
-    //   primaryPriceOverrides,
-    //   secondaryPriceOverrides,
-    //   createOrderMulticallPayload: encodedPayload,
-    //   value: wntAmount,
-    //   tokensData: p.tokensData,
-    // });
+    await simulateExecuteOrderTxn(chainId, library, {
+      primaryPriceOverrides,
+      secondaryPriceOverrides,
+      createOrderMulticallPayload: encodedPayload,
+      value: wntAmount,
+      tokensData: p.tokensData,
+    });
   }
 
   const longText = p.isLong ? t`Long` : t`Short`;

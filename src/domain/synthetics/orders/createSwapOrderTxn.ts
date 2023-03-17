@@ -10,6 +10,7 @@ import { callContract } from "lib/contracts";
 import { formatTokenAmount } from "lib/numbers";
 import { TokensData, getTokenData } from "../tokens";
 import { DecreasePositionSwapType, OrderType } from "./types";
+import { simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
 
 const { AddressZero } = ethers.constants;
 
@@ -121,13 +122,13 @@ export async function createSwapOrderTxn(chainId: number, library: Web3Provider,
 
   // TODO: simulation for limit swaps
   if (p.orderType !== OrderType.LimitSwap) {
-    // await simulateExecuteOrderTxn(chainId, library, {
-    //   primaryPriceOverrides: {},
-    //   secondaryPriceOverrides: {},
-    //   createOrderMulticallPayload: encodedPayload,
-    //   value: wntAmount,
-    //   tokensData: p.tokensData,
-    // });
+    await simulateExecuteOrderTxn(chainId, library, {
+      primaryPriceOverrides: {},
+      secondaryPriceOverrides: {},
+      createOrderMulticallPayload: encodedPayload,
+      value: wntAmount,
+      tokensData: p.tokensData,
+    });
   }
 
   const fromText = formatTokenAmount(p.fromTokenAmount, fromToken.decimals, fromToken.symbol);

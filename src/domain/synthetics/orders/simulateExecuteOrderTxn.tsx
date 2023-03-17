@@ -1,18 +1,19 @@
 import { Web3Provider } from "@ethersproject/providers";
+import { Trans } from "@lingui/macro";
+import CustomErrors from "abis/CustomErrors.json";
 import DataStore from "abis/DataStore.json";
 import ExchangeRouter from "abis/ExchangeRouter.json";
+import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import { getContract } from "config/contracts";
+import { NONCE_KEY, orderKey } from "config/dataStore";
+import { isDevelopment } from "config/env";
 import { convertTokenAddress } from "config/tokens";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
 import { BigNumber, ethers } from "ethers";
-import _ from "lodash";
-import { NONCE_KEY, orderKey } from "config/dataStore";
-import { helperToast } from "lib/helperToast";
-import { Trans } from "@lingui/macro";
-import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
-import { expandDecimals, formatUsd } from "lib/numbers";
 import { callContract } from "lib/contracts";
-import { isDevelopment } from "config/env";
+import { helperToast } from "lib/helperToast";
+import { expandDecimals, formatUsd } from "lib/numbers";
+import _ from "lodash";
 
 export type MulticallRequest = { method: string; params: any[] }[];
 
@@ -27,8 +28,6 @@ type SimulateExecuteOrderParams = {
   tokensData: TokensData;
   value: BigNumber;
 };
-
-const SUCCESS_SIMULATION_PATTERN = "End of oracle price simulation";
 
 // only for debugging empty reverts
 const SHOULD_MINE = false;
@@ -81,16 +80,17 @@ export async function simulateExecuteOrderTxn(chainId: number, library: Web3Prov
       await exchangeRouter.callStatic.multicall(simulationPayload, { value: p.value, blockTag: blockNumber });
     }
   } catch (e) {
-    if (e.data?.message.includes(SUCCESS_SIMULATION_PATTERN)) {
+    const customErrors = new ethers.Contract(ethers.constants.AddressZero, CustomErrors.abi);
+    const parsedError = customErrors.interface.parseError(e.data?.data);
+
+    if (parsedError.name === "EndOfOracleSimulation") {
       return undefined;
     } else {
-      const originalError = e.data?.error?.message || e.data?.message || e.message;
-
       helperToast.error(
         <div>
           <Trans>Execute order simulation failed.</Trans>
           <br />
-          {originalError && <ToastifyDebug>{originalError}</ToastifyDebug>}
+          <ToastifyDebug>{parsedError.name}</ToastifyDebug>
         </div>
       );
     }

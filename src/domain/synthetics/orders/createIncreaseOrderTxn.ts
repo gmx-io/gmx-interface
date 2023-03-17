@@ -9,7 +9,7 @@ import { TokensData, convertToContractPrice, getTokenData } from "domain/synthet
 import { BigNumber, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { formatUsd } from "lib/numbers";
-import { PriceOverrides } from "./simulateExecuteOrderTxn";
+import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
 
 const { AddressZero } = ethers.constants;
@@ -110,13 +110,13 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
     };
   }
 
-  // await simulateExecuteOrderTxn(chainId, library, {
-  //   tokensData: p.tokensData,
-  //   primaryPriceOverrides: {},
-  //   secondaryPriceOverrides,
-  //   createOrderMulticallPayload: encodedPayload,
-  //   value: wntAmount,
-  // });
+  await simulateExecuteOrderTxn(chainId, library, {
+    tokensData: p.tokensData,
+    primaryPriceOverrides: {},
+    secondaryPriceOverrides,
+    createOrderMulticallPayload: encodedPayload,
+    value: wntAmount,
+  });
 
   const longText = p.isLong ? t`Long` : t`Short`;
   const orderLabel = t`Increase ${longText} ${indexToken.symbol} by ${formatUsd(p.sizeDeltaUsd)}`;
