@@ -3119,22 +3119,6 @@ msgid "The referral code can't be more than {MAX_REFERRAL_CODE_LENGTH} character
 msgstr "추천인 코드의 길이는 {MAX_REFERRAL_CODE_LENGTH}글자를 넘을 수 없습니다."
 
 #: src/components/Exchange/ConfirmationBox.js
-#~ msgid "The spread for {0} is > 1%, please ensure the trade details are acceptable before comfirming"
-#~ msgstr ""
-
-#: src/components/Exchange/ConfirmationBox.js
-#~ msgid "The spread for {0} is {1}% please ensure the trade details are acceptable before confirming"
-#~ msgstr ""
-
-#: src/components/Exchange/PositionSeller.js
-#~ msgid "The spread for {0} is {1}%, please ensure the trade details are acceptable before confirming"
-#~ msgstr ""
-
-#: src/components/Exchange/ConfirmationBox.js
-#~ msgid "The spread is > 1%, please ensure the trade details are acceptable before comfirming"
-#~ msgstr "스프레드가 1%를 초과합니다. 해당 트레이드의 상세 정보를 확인 후 진행해주세요."
-
-#: src/components/Exchange/ConfirmationBox.js
 msgid "The spread is > 1%, please ensure the trade details are acceptable before confirming"
 msgstr ""
 
@@ -3953,10 +3937,6 @@ msgstr "{0} 가격"
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "{0} Required"
 msgstr "{0} 요구됨"
-
-#: src/components/Exchange/ConfirmationBox.js
-#~ msgid "{0} Spread"
-#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
