@@ -18,6 +18,7 @@ import {
 
 import Home from "pages/Home/Home";
 import Dashboard from "pages/Dashboard/Dashboard";
+import Stats from "pages/Stats/Stats";
 import Ecosystem from "pages/Ecosystem/Ecosystem";
 import Stake from "pages/Stake/Stake";
 import { Exchange } from "pages/Exchange/Exchange";
@@ -482,6 +483,9 @@ function FullApp() {
               </Route>
               <Route exact path="/dashboard">
                 <Dashboard />
+              </Route>
+              <Route exact path="/stats">
+                <Stats />
               </Route>
               <Route exact path="/earn">
                 <Stake setPendingTxns={setPendingTxns} connectWallet={connectWallet} />

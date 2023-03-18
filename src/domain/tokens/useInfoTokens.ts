@@ -18,7 +18,7 @@ import { Web3Provider } from "@ethersproject/providers";
 import { getSpread } from "./utils";
 
 export function useInfoTokens(
-  library: Web3Provider,
+  library: Web3Provider | undefined,
   chainId: number,
   active: boolean,
   tokenBalances?: BigNumber[],
