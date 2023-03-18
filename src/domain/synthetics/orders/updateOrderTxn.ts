@@ -4,61 +4,65 @@ import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
 import { BigNumber, ethers } from "ethers";
 import { callContract } from "lib/contracts";
-import { isSwapOrder } from "./utils";
-import { AggregatedOrderData } from "./types";
 import { convertToContractPrice } from "../tokens";
+import { Token } from "domain/tokens";
 
 export type UpdateOrderParams = {
-  order: AggregatedOrderData;
-  sizeDeltaUsd?: BigNumber;
-  triggerPrice?: BigNumber;
-  acceptablePrice?: BigNumber;
-  minOutputAmount?: BigNumber;
+  orderKey: string;
+  indexToken: Token;
+  sizeDeltaUsd: BigNumber;
+  triggerPrice: BigNumber;
+  acceptablePrice: BigNumber;
+  minOutputAmount: BigNumber;
+  // used to top up execution fee for frozen orders
+  executionFee?: BigNumber;
   setPendingTxns: (txns: any) => void;
 };
 
 export function updateOrderTxn(chainId: number, library: Web3Provider, p: UpdateOrderParams) {
+  const {
+    orderKey,
+    sizeDeltaUsd,
+    triggerPrice,
+    acceptablePrice,
+    minOutputAmount,
+    executionFee,
+    setPendingTxns,
+    indexToken,
+  } = p;
+
   const exchangeRouter = new ethers.Contract(
     getContract(chainId, "ExchangeRouter"),
     ExchangeRouter.abi,
     library.getSigner()
   );
 
-  let params: any[] = [];
+  const orderVaultAddress = getContract(chainId, "OrderVault");
 
-  if (isSwapOrder(p.order.orderType)) {
-    if (!p.minOutputAmount) {
-      throw new Error("No updates provided");
-    }
-    params = [p.order.key, BigNumber.from(0), BigNumber.from(0), BigNumber.from(0), p.minOutputAmount];
-  } else {
-    if (!p.sizeDeltaUsd && !p.triggerPrice) {
-      throw new Error("No updates provided");
-    }
-
-    const indexToken = p.order.indexToken;
-
-    if (!indexToken) {
-      throw new Error("Index token is not available");
-    }
-
-    let acceptablePrice = p.acceptablePrice
-      ? convertToContractPrice(p.acceptablePrice, indexToken.decimals)
-      : p.order.contractAcceptablePrice;
-
-    const sizeDeltaUsd = p.sizeDeltaUsd || p.order.sizeDeltaUsd;
-
-    const triggerPrice = p.triggerPrice
-      ? convertToContractPrice(p.triggerPrice, indexToken.decimals)
-      : p.order.contractTriggerPrice;
-
-    params = [p.order.key, sizeDeltaUsd, acceptablePrice, triggerPrice, BigNumber.from(0)];
+  const multicall: { method: string; params: any[] }[] = [];
+  if (p.executionFee?.gt(0)) {
+    multicall.push({ method: "sendWnt", params: [orderVaultAddress, executionFee] });
   }
+  multicall.push({
+    method: "updateOrder",
+    params: [
+      orderKey,
+      sizeDeltaUsd,
+      convertToContractPrice(triggerPrice, indexToken.decimals),
+      convertToContractPrice(acceptablePrice, indexToken.decimals),
+      minOutputAmount,
+    ],
+  });
 
-  return callContract(chainId, exchangeRouter, "updateOrder", params, {
+  const encodedPayload = multicall
+    .filter(Boolean)
+    .map((call) => exchangeRouter.interface.encodeFunctionData(call!.method, call!.params));
+
+  return callContract(chainId, exchangeRouter, "multicall", [encodedPayload], {
+    value: p.executionFee?.gt(0) ? p.executionFee : undefined,
     sentMsg: t`Updating order`,
     successMsg: t`Update order executed`,
     failMsg: t`Failed to update order`,
-    setPendingTxns: p.setPendingTxns,
+    setPendingTxns,
   });
 }
