@@ -6,7 +6,10 @@ import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";
 import useSWR from "swr";
+import { getServerUrl } from "config/backend";
+import { formatDistance } from "date-fns";
 
+import Reader from "abis/Reader.json";
 import VaultV2 from "abis/VaultV2.json";
 import { BigNumber, BigNumberish } from "ethers";
 import { bigNumberify, expandDecimals, formatAmount } from "lib/numbers";
@@ -29,12 +32,28 @@ function shareBar(share?: BigNumberish, total?: BigNumberish) {
   );
 }
 
+function formatAmountHuman(amount: BigNumberish | undefined, tokenDecimals: number) {
+  const n = Number(formatAmount(amount, tokenDecimals));
+
+  if (n > 1000000) {
+    return `${(n / 1000000).toFixed(1)}M`;
+  }
+  if (n > 1000) {
+    return `${(n / 1000).toFixed(1)}K`;
+  }
+  return n.toFixed(1);
+}
+
 export default function Stats() {
   const { active, library } = useWeb3React();
   const { chainId } = useChainId();
 
+  const readerAddress = getContract(chainId, "Reader");
+  const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
+
   const whitelistedTokens = getWhitelistedTokens(chainId);
   const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
+  const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
 
   const vaultAddress = getContract(chainId, "Vault");
 
@@ -45,7 +64,10 @@ export default function Stats() {
     }
   );
 
-  const { infoTokens } = useInfoTokens(library, chainId, active, undefined, undefined);
+  const { data: fundingRateInfo } = useSWR([active, chainId, readerAddress, "getFundingRates"], {
+    fetcher: contractFetcher(library, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
+  });
+  const { infoTokens } = useInfoTokens(library, chainId, active, undefined, fundingRateInfo as any);
 
   let adjustedUsdgSupply = bigNumberify(0);
 
@@ -55,6 +77,80 @@ export default function Stats() {
     if (tokenInfo && tokenInfo.usdgAmount) {
       adjustedUsdgSupply = adjustedUsdgSupply!.add(tokenInfo.usdgAmount);
     }
+  }
+
+  const { data: capsSettingsByToken } = useSWR(getServerUrl(chainId, "/caps"), {
+    fetcher: (url) =>
+      fetch(url)
+        .then((res) => res.json())
+        .then((res) =>
+          res.reduce((acc, cur) => {
+            acc[cur.id] = cur.data;
+            return acc;
+          }, {})
+        ),
+  });
+
+  function renderOiCell(tokenInfo: TokenInfo, isLong: boolean) {
+    if (tokenInfo.isStable) {
+      return "n/a";
+    }
+
+    let className = "";
+    if (
+      isLong &&
+      tokenInfo.maxGlobalLongSize &&
+      tokenInfo.guaranteedUsd?.mul(11).div(10).gt(tokenInfo.maxGlobalLongSize)
+    ) {
+      className = "warn";
+    }
+    if (
+      !isLong &&
+      tokenInfo.maxGlobalShortSize &&
+      tokenInfo.guaranteedUsd?.mul(11).div(10).gt(tokenInfo.maxGlobalShortSize)
+    ) {
+      className = "warn";
+    }
+
+    const caps = capsSettingsByToken?.[tokenInfo.address];
+    const oi = isLong ? tokenInfo.guaranteedUsd : tokenInfo.globalShortSize;
+    const maxGlobalSize = isLong ? tokenInfo.maxGlobalLongSize : tokenInfo.maxGlobalShortSize;
+    const openInterestIncrement = isLong ? caps?.openInterestIncrementLong : caps?.openInterestIncrementShort;
+    const globalSizeLastIncreasedAt = isLong
+      ? caps?.globalSizeLastIncreasedAtLong
+      : caps?.globalSizeLastIncreasedAtShort;
+    const maxOpenInterest = isLong ? caps?.maxOpenInterestLong : caps?.maxOpenInterestShort;
+
+    return (
+      <>
+        <Tooltip
+          handle={
+            <div className={className}>
+              ${formatAmountHuman(oi, 30)} / ${formatAmountHuman(maxGlobalSize, 30)}
+            </div>
+          }
+          renderContent={() => {
+            return (
+              <div>
+                <>
+                  Increase rate: ${formatAmountHuman(openInterestIncrement, 0)} / 30 minutes
+                  <br />
+                  Last increased at:{" "}
+                  {caps?.globalSizeLastIncreasedAtLong
+                    ? formatDistance(new Date(globalSizeLastIncreasedAt * 1000), new Date(), {
+                        addSuffix: true,
+                      })
+                    : null}
+                  <br />
+                  Max possible cap: ${formatAmountHuman(maxOpenInterest, 0)}
+                </>
+              </div>
+            );
+          }}
+        />
+        <div className={className}>{shareBar(oi, maxGlobalSize)}</div>
+      </>
+    );
   }
 
   return (
@@ -87,6 +183,7 @@ export default function Stats() {
           <th>
             <Tooltip handle="Target" renderContent={() => "= token target weight * AUM"} />
           </th>
+          <th>Borrow rate</th>
         </tr>
       </thead>
       <tbody>
@@ -128,50 +225,26 @@ export default function Stats() {
               targetUsdg = adjustedUsdgSupply.mul(targetWeightBps).div(BASIS_POINTS_DIVISOR);
             }
 
-            let longOiClassName = "";
-            if (
-              tokenInfo.maxGlobalLongSize &&
-              tokenInfo.guaranteedUsd?.mul(11).div(10).gt(tokenInfo.maxGlobalLongSize)
-            ) {
-              longOiClassName = "warn";
-            }
-
-            let shortOiClassName = "";
-            if (
-              tokenInfo.maxGlobalShortSize &&
-              tokenInfo.guaranteedUsd?.mul(11).div(10).gt(tokenInfo.maxGlobalShortSize)
-            ) {
-              shortOiClassName = "warn";
-            }
-
             return (
               <tr>
                 <td>{tokenInfo.symbol}</td>
                 <td>
-                  <>${formatAmount(tokenInfo.managedUsd, 30, 0, true)}</>
+                  <>${formatAmountHuman(tokenInfo.managedUsd, 30)}</>
                 </td>
                 <td className={maxPoolClassName}>
-                  ${formatAmount(tokenInfo.usdgAmount, 18, 0, true)} / $
-                  {formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)}
+                  ${formatAmountHuman(tokenInfo.usdgAmount, 18)} / ${formatAmountHuman(tokenInfo.maxUsdgAmount, 18)}
                   {shareBar(tokenInfo.usdgAmount, tokenInfo.maxUsdgAmount)}
                 </td>
-                <td className={longOiClassName}>
-                  ${formatAmount(tokenInfo.guaranteedUsd, 30, 0, true)} / $
-                  {formatAmount(tokenInfo.maxGlobalLongSize, 30, 0, true)}
-                  {shareBar(tokenInfo.guaranteedUsd, tokenInfo.maxGlobalLongSize)}
-                </td>
-                <td className={shortOiClassName}>
-                  ${formatAmount(tokenInfo.globalShortSize, 30, 0, true)} / $
-                  {formatAmount(tokenInfo.maxGlobalShortSize, 30, 0, true)}
-                  {shareBar(tokenInfo.globalShortSize, tokenInfo.maxGlobalShortSize)}
-                </td>
+                <td>{renderOiCell(tokenInfo, true)}</td>
+                <td>{renderOiCell(tokenInfo, false)}</td>
                 <td className={weightClassName}>
-                  {formatAmount(currentWeightBps, 2, 2)} / {formatAmount(targetWeightBps, 2, 0)}%
+                  {formatAmountHuman(currentWeightBps, 2)} / {formatAmountHuman(targetWeightBps, 2)}%
                   {shareBar(weightDiffBps, targetWeightBps)}
                 </td>
                 <td>
-                  ${formatAmount(tokenInfo.usdgAmount, 18, 0, true)} / ${formatAmount(targetUsdg, 18, 0, true)}
+                  ${formatAmountHuman(tokenInfo.usdgAmount, 18)} / ${formatAmountHuman(targetUsdg, 18)}
                 </td>
+                <td>{formatAmount(tokenInfo.fundingRate?.mul(24 * 365), 4, 2) + "%"}</td>
               </tr>
             );
           })}
