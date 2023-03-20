@@ -188,7 +188,7 @@ export default function Stats() {
       </thead>
       <tbody>
         {Object.values(infoTokens)
-          .filter((t: TokenInfo) => t.symbol !== "ETH")
+          .filter((t: TokenInfo) => !t.isNative)
           .map((tokenInfo: TokenInfo) => {
             let maxPoolUsd;
             if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
