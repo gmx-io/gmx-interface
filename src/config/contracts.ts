@@ -297,13 +297,13 @@ const CONTRACTS = {
     ReferralReader: AddressZero,
 
     // Synthetics
-    DataStore: "0x80b4c0B6FBFf2E1bec12aCaa5413e701e302b410",
-    EventEmitter: "0x5fB6F3F35cB6A790694d8D4092d050e0d1117319",
-    ExchangeRouter: "0x26d7B7474f1eaB86d40d667E18D6e6443AFE5487",
-    DepositVault: "0x0894bCd9Ec7e4739FA3c071b84b7e9bbEf2B4326",
-    WithdrawalVault: "0x1F2c1fc8B08c7ECBD3C601C9cdF34e61FEC75A66",
-    OrderVault: "0x9B7e2c4aD28C950ccb6aD51dd2550EeE761d95B3",
-    SyntheticsReader: "0x6F18933425448a7Ea1cb341a2d7030f7F790d636",
+    DataStore: "0x4Fc0e9900E4ebD6f4bA29c22193307ee7388915A",
+    EventEmitter: "0x7Ddd3011d8A53d24A646AF576fbbe06344906cB3",
+    ExchangeRouter: "0x8d0294943df892A2e44b85F8300D2973d81EcdC4",
+    DepositVault: "0xCAA560d62C9E6ee90649CE5ACE0c08Bd12adEECa",
+    WithdrawalVault: "0xed7Ba5E33f3a8b810bDa7b488C1070c9a5625102",
+    OrderVault: "0x4765Bd578Ac3aBb99F77a7845b2a557881C9BC25",
+    SyntheticsReader: "0xF9244118cfaDB61eA5a98F34567178AA5488220E",
     SyntheticsReferralStorage: "0x51997AA0d8d1E85cC42fba40bEbD25f25AA54A1f",
     SyntheticsRouter: "0x321d8BDDf87b9059F539Ae0f1cef5b7d711A4A83",
 
