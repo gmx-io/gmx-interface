@@ -33,6 +33,7 @@ import { useMemo, useState } from "react";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import "./SyntheticsPage.scss";
 import { ClaimHistory } from "components/Synthetics/ClaimHistory/ClaimHistory";
+import { getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 
 type Props = {
   onConnectWallet: () => void;
@@ -55,6 +56,7 @@ export function SyntheticsPage(p: Props) {
   const { library, account } = useWeb3React();
   const [listSection, setListSection] = useLocalStorageByChainId(chainId, "List-section-v3", ListSection.Positions);
   const { marketsData } = useMarketsData(chainId);
+  const { tokensData } = useAvailableTokensData(chainId);
 
   const [tradeType, setTradeType] = useLocalStorageSerializeKey([chainId, SYNTHETICS_TRADE_TYPE_KEY], TradeType.Long);
   const [tradeMode, setTradeMode] = useLocalStorageSerializeKey([chainId, SYNTHETICS_TRADE_MODE_KEY], TradeMode.Market);
@@ -65,11 +67,13 @@ export function SyntheticsPage(p: Props) {
     [chainId, SYNTHETICS_TRADE_FROM_TOKEN_KEY, isSwap],
     undefined
   );
+  const fromToken = getTokenData(tokensData, fromTokenAddress);
 
   const [toTokenAddress, setToTokenAddress] = useLocalStorageSerializeKey<string | undefined>(
     [chainId, SYNTHETICS_TRADE_TO_TOKEN_KEY, isSwap],
     undefined
   );
+  const toToken = getTokenData(tokensData, toTokenAddress);
 
   const [marketAddress, setMarketAddress] = useLocalStorageSerializeKey<string | undefined>(
     [chainId, SYNTHETICS_TRADE_MARKET_KEY, tradeType, toTokenAddress],
@@ -82,6 +86,19 @@ export function SyntheticsPage(p: Props) {
   );
 
   const { availableIndexTokens } = useAvailableSwapOptions({});
+
+  const chatTokenAddress = useMemo(() => {
+    if (isSwap) {
+      if (toToken?.isStable && !fromToken?.isStable) {
+        return fromTokenAddress;
+      }
+
+      return toTokenAddress;
+    } else {
+      return toTokenAddress;
+    }
+  }, [fromToken?.isStable, fromTokenAddress, isSwap, toToken?.isStable, toTokenAddress]);
+
   const [closingPositionKey, setClosingPositionKey] = useState<string>();
   const [editingPositionKey, setEditingPositionKey] = useState<string>();
 
@@ -150,10 +167,10 @@ export function SyntheticsPage(p: Props) {
             savedShouldShowPositionLines={p.savedShouldShowPositionLines}
             ordersData={aggregatedOrdersData}
             positionsData={aggregatedPositionsData}
-            chartTokenAddress={toTokenAddress}
+            chartTokenAddress={chatTokenAddress}
             availableTokens={
-              tradeType === TradeType.Swap && toTokenAddress
-                ? [getToken(chainId, toTokenAddress)]
+              tradeType === TradeType.Swap && chatTokenAddress
+                ? [getToken(chainId, chatTokenAddress)]
                 : availableIndexTokens
             }
             onSelectChartTokenAddress={onSelectIndexToken}
