@@ -8,6 +8,7 @@ import { useMemo } from "react";
 import { RawTradeAction, TradeAction } from "./types";
 import { getToTokenFromSwapPath } from "../orders";
 import { bigNumberify } from "lib/numbers";
+import { NATIVE_TOKEN_ADDRESS, getWrappedToken } from "config/tokens";
 
 export function useTradeHistory(chainId: number, p: { pageIndex: number; pageSize: number }) {
   const { pageIndex, pageSize } = p;
@@ -46,6 +47,16 @@ export function useTradeHistory(chainId: number, p: { pageIndex: number; pageSiz
             acceptablePrice
             executionPrice
             minOutputAmount
+            executionAmountOut
+
+            priceImpactDiffUsd
+            positionFeeAmount
+            borrowingFeeAmount
+            fundingFeeAmount
+            pnlUsd
+
+            collateralTokenPriceMax
+            collateralTokenPriceMin
             
             orderType
             isLong
@@ -79,6 +90,8 @@ export function useTradeHistory(chainId: number, p: { pageIndex: number; pageSiz
         return acc;
       }, {});
 
+    const wrappedToken = getWrappedToken(chainId);
+
     return data
       .map((rawAction) => {
         const tradeAction: TradeAction = { ...(rawAction as any) };
@@ -91,15 +104,15 @@ export function useTradeHistory(chainId: number, p: { pageIndex: number; pageSiz
         tradeAction.indexToken = getTokenData(tokensData, tradeAction.market?.indexTokenAddress, "native");
         tradeAction.initialCollateralToken = getTokenData(tokensData, tradeAction.initialCollateralTokenAddress);
 
-        if (!tradeAction.market || !tradeAction.indexToken || !tradeAction.initialCollateralToken) {
-          return undefined;
-        }
-
-        const targetCollateralAddress = getToTokenFromSwapPath(
+        let targetCollateralAddress = getToTokenFromSwapPath(
           marketsData,
           tradeAction.initialCollateralTokenAddress,
           tradeAction.swapPath
         );
+
+        if (targetCollateralAddress === wrappedToken.address && tradeAction.shouldUnwrapNativeToken) {
+          targetCollateralAddress = NATIVE_TOKEN_ADDRESS;
+        }
 
         tradeAction.targetCollateralToken = getTokenData(tokensData, targetCollateralAddress);
 
@@ -113,6 +126,44 @@ export function useTradeHistory(chainId: number, p: { pageIndex: number; pageSiz
 
         if (tradeAction.minOutputAmount) {
           tradeAction.minOutputAmount = bigNumberify(tradeAction.minOutputAmount);
+        }
+
+        if (tradeAction.executionAmountOut) {
+          tradeAction.executionAmountOut = bigNumberify(tradeAction.executionAmountOut);
+        }
+
+        if (tradeAction.fundingFeeAmount) {
+          tradeAction.fundingFeeAmount = bigNumberify(tradeAction.fundingFeeAmount);
+        }
+
+        if (tradeAction.borrowingFeeAmount) {
+          tradeAction.borrowingFeeAmount = bigNumberify(tradeAction.borrowingFeeAmount);
+        }
+
+        if (tradeAction.positionFeeAmount) {
+          tradeAction.positionFeeAmount = bigNumberify(tradeAction.positionFeeAmount);
+        }
+
+        if (tradeAction.priceImpactDiffUsd) {
+          tradeAction.priceImpactDiffUsd = bigNumberify(tradeAction.priceImpactDiffUsd);
+        }
+
+        if (tradeAction.pnlUsd) {
+          tradeAction.pnlUsd = bigNumberify(tradeAction.pnlUsd);
+        }
+
+        if (tradeAction.collateralTokenPriceMax && tradeAction.initialCollateralToken?.decimals) {
+          tradeAction.collateralTokenPriceMax = parseContractPrice(
+            bigNumberify(tradeAction.collateralTokenPriceMax)!,
+            tradeAction.initialCollateralToken?.decimals
+          );
+        }
+
+        if (tradeAction.collateralTokenPriceMin && tradeAction.initialCollateralToken?.decimals) {
+          tradeAction.collateralTokenPriceMin = parseContractPrice(
+            bigNumberify(tradeAction.collateralTokenPriceMin)!,
+            tradeAction.initialCollateralToken?.decimals
+          );
         }
 
         if (rawAction.triggerPrice && tradeAction.indexToken?.decimals) {
@@ -141,7 +192,7 @@ export function useTradeHistory(chainId: number, p: { pageIndex: number; pageSiz
         return tradeAction;
       })
       .filter(Boolean) as TradeAction[];
-  }, [data, marketsData, tokensData]);
+  }, [chainId, data, marketsData, tokensData]);
 
   return {
     tradeActions,

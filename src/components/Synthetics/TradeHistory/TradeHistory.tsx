@@ -3,6 +3,7 @@ import { useTradeHistory } from "domain/synthetics/tradeHistory";
 import { useChainId } from "lib/chains";
 import { TradeHistoryRow } from "../TradeHistoryRow/TradeHistoryRow";
 import { useState } from "react";
+import { usePositionsConstants } from "domain/synthetics/positions/usePositionsConstants";
 
 const PAGE_SIZE = 100;
 
@@ -15,7 +16,10 @@ export function TradeHistory(p: Props) {
   const { chainId } = useChainId();
   const [pageIndex, setPageIndex] = useState(0);
 
-  const { tradeActions, isLoading } = useTradeHistory(chainId, { pageIndex, pageSize: PAGE_SIZE });
+  const { minCollateralUsd, maxLeverage, isLoading: isConstantsLoading } = usePositionsConstants(chainId);
+  const { tradeActions, isLoading: isHistoryLoading } = useTradeHistory(chainId, { pageIndex, pageSize: PAGE_SIZE });
+
+  const isLoading = isConstantsLoading || isHistoryLoading;
 
   const isEmpty = !isLoading && !tradeActions?.length;
 
@@ -32,7 +36,12 @@ export function TradeHistory(p: Props) {
         </div>
       )}
       {tradeActions?.map((tradeAction) => (
-        <TradeHistoryRow key={tradeAction.id} tradeAction={tradeAction} />
+        <TradeHistoryRow
+          key={tradeAction.id}
+          tradeAction={tradeAction}
+          minCollateralUsd={minCollateralUsd!}
+          maxLeverage={maxLeverage!}
+        />
       ))}
       {shouldShowPaginationButtons && (
         <div>

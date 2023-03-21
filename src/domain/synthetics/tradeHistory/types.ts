@@ -9,8 +9,6 @@ export enum TradeActionType {
   OrderCancelled = "OrderCancelled",
   OrderUpdated = "OrderUpdated",
   OrderFrozen = "OrderFrozen",
-  PositionIncrease = "PositionIncrease",
-  PositionDecrease = "PositionDecrease",
 }
 
 export type RawTradeAction = {
@@ -28,6 +26,16 @@ export type RawTradeAction = {
   acceptablePrice?: string;
   executionPrice?: string;
   minOutputAmount?: string;
+  executionAmountOut?: string;
+
+  priceImpactDiffUsd?: string;
+  positionFeeAmount?: string;
+  borrowingFeeAmount?: string;
+  fundingFeeAmount?: string;
+  pnlUsd?: string;
+
+  collateralTokenPriceMax?: string;
+  collateralTokenPriceMin?: string;
 
   orderType?: OrderType;
   isLong?: boolean;
@@ -61,6 +69,16 @@ export type TradeAction = {
   acceptablePrice?: BigNumber;
   executionPrice?: BigNumber;
   minOutputAmount?: BigNumber;
+  executionAmountOut?: BigNumber;
+
+  priceImpactDiffUsd?: BigNumber;
+  positionFeeAmount?: BigNumber;
+  borrowingFeeAmount?: BigNumber;
+  fundingFeeAmount?: BigNumber;
+  pnlUsd?: BigNumber;
+
+  collateralTokenPriceMin?: BigNumber;
+  collateralTokenPriceMax?: BigNumber;
 
   orderType?: OrderType;
   isLong?: boolean;
