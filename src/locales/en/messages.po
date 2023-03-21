@@ -144,6 +144,7 @@ msgstr "Accept terms to enable orders"
 msgid "Accept that orders are not guaranteed to execute and trigger orders may not settle at the trigger price"
 msgstr "Accept that orders are not guaranteed to execute and trigger orders may not settle at the trigger price"
 
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
@@ -1460,8 +1461,8 @@ msgstr "Enter a code"
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-msgid "Enter a new price"
-msgstr "Enter a new price"
+#~ msgid "Enter a new price"
+#~ msgstr "Enter a new price"
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Enter a new ratio"
@@ -1469,11 +1470,17 @@ msgstr "Enter a new ratio"
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-msgid "Enter a new size"
-msgstr "Enter a new size"
+#~ msgid "Enter a new size"
+#~ msgstr "Enter a new size"
+
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+msgid "Enter a new size or price"
+msgstr "Enter a new size or price"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Enter a price"
 msgstr "Enter a price"
@@ -1482,6 +1489,7 @@ msgstr "Enter a price"
 msgid "Enter a ratio"
 msgstr "Enter a ratio"
 
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Enter a size"
@@ -1579,6 +1587,7 @@ msgstr "Executed {0} {tokensText}"
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Execution Fee"

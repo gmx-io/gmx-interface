@@ -79,62 +79,68 @@ export function useTradeHistory(chainId: number, p: { pageIndex: number; pageSiz
         return acc;
       }, {});
 
-    return data.map((rawAction) => {
-      const tradeAction: TradeAction = { ...(rawAction as any) };
+    return data
+      .map((rawAction) => {
+        const tradeAction: TradeAction = { ...(rawAction as any) };
 
-      tradeAction.marketAddress = fixedAddresses[tradeAction.marketAddress!];
-      tradeAction.initialCollateralTokenAddress = fixedAddresses[tradeAction.initialCollateralTokenAddress!];
-      tradeAction.swapPath = tradeAction.swapPath?.map((address) => fixedAddresses[address]);
+        tradeAction.marketAddress = fixedAddresses[tradeAction.marketAddress!];
+        tradeAction.initialCollateralTokenAddress = fixedAddresses[tradeAction.initialCollateralTokenAddress!];
+        tradeAction.swapPath = tradeAction.swapPath?.map((address) => fixedAddresses[address]);
 
-      tradeAction.market = getMarket(marketsData, tradeAction.marketAddress!);
-      tradeAction.indexToken = getTokenData(tokensData, tradeAction.market?.indexTokenAddress, "native");
-      tradeAction.initialCollateralToken = getTokenData(tokensData, tradeAction.initialCollateralTokenAddress);
+        tradeAction.market = getMarket(marketsData, tradeAction.marketAddress!);
+        tradeAction.indexToken = getTokenData(tokensData, tradeAction.market?.indexTokenAddress, "native");
+        tradeAction.initialCollateralToken = getTokenData(tokensData, tradeAction.initialCollateralTokenAddress);
 
-      const targetCollateralAddress = getToTokenFromSwapPath(
-        marketsData,
-        tradeAction.initialCollateralTokenAddress,
-        tradeAction.swapPath
-      );
+        if (!tradeAction.market || !tradeAction.indexToken || !tradeAction.initialCollateralToken) {
+          return undefined;
+        }
 
-      tradeAction.targetCollateralToken = getTokenData(tokensData, targetCollateralAddress);
-
-      if (tradeAction.initialCollateralDeltaAmount) {
-        tradeAction.initialCollateralDeltaAmount = bigNumberify(tradeAction.initialCollateralDeltaAmount);
-      }
-
-      if (tradeAction.sizeDeltaUsd) {
-        tradeAction.sizeDeltaUsd = bigNumberify(tradeAction.sizeDeltaUsd);
-      }
-
-      if (tradeAction.minOutputAmount) {
-        tradeAction.minOutputAmount = bigNumberify(tradeAction.minOutputAmount);
-      }
-
-      if (rawAction.triggerPrice && tradeAction.indexToken?.decimals) {
-        tradeAction.triggerPrice = parseContractPrice(
-          bigNumberify(rawAction.triggerPrice)!,
-          tradeAction.indexToken?.decimals
+        const targetCollateralAddress = getToTokenFromSwapPath(
+          marketsData,
+          tradeAction.initialCollateralTokenAddress,
+          tradeAction.swapPath
         );
-      }
 
-      if (tradeAction.executionPrice && tradeAction.indexToken?.decimals) {
-        tradeAction.executionPrice = parseContractPrice(
-          bigNumberify(rawAction.executionPrice)!,
-          tradeAction.indexToken?.decimals
-        );
-      }
+        tradeAction.targetCollateralToken = getTokenData(tokensData, targetCollateralAddress);
 
-      if (tradeAction.acceptablePrice && tradeAction.indexToken?.decimals) {
-        tradeAction.acceptablePrice = parseContractPrice(
-          bigNumberify(rawAction.acceptablePrice)!,
-          tradeAction.indexToken?.decimals
-        );
-      }
+        if (tradeAction.initialCollateralDeltaAmount) {
+          tradeAction.initialCollateralDeltaAmount = bigNumberify(tradeAction.initialCollateralDeltaAmount);
+        }
 
-      tradeAction.orderType = Number(tradeAction.orderType);
+        if (tradeAction.sizeDeltaUsd) {
+          tradeAction.sizeDeltaUsd = bigNumberify(tradeAction.sizeDeltaUsd);
+        }
 
-      return tradeAction;
-    });
+        if (tradeAction.minOutputAmount) {
+          tradeAction.minOutputAmount = bigNumberify(tradeAction.minOutputAmount);
+        }
+
+        if (rawAction.triggerPrice && tradeAction.indexToken?.decimals) {
+          tradeAction.triggerPrice = parseContractPrice(
+            bigNumberify(rawAction.triggerPrice)!,
+            tradeAction.indexToken?.decimals
+          );
+        }
+
+        if (tradeAction.executionPrice && tradeAction.indexToken?.decimals) {
+          tradeAction.executionPrice = parseContractPrice(
+            bigNumberify(rawAction.executionPrice)!,
+            tradeAction.indexToken?.decimals
+          );
+        }
+
+        if (tradeAction.acceptablePrice && tradeAction.indexToken?.decimals) {
+          tradeAction.acceptablePrice = parseContractPrice(
+            bigNumberify(rawAction.acceptablePrice)!,
+            tradeAction.indexToken?.decimals
+          );
+        }
+
+        tradeAction.orderType = Number(tradeAction.orderType);
+
+        return tradeAction;
+      })
+      .filter(Boolean) as TradeAction[];
   }, [data, marketsData, tokensData]);
 
   return {

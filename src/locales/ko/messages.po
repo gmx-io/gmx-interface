@@ -144,6 +144,7 @@ msgstr "주문을 활성화하기 위해 약관에 동의해주세요"
 msgid "Accept that orders are not guaranteed to execute and trigger orders may not settle at the trigger price"
 msgstr "주문의 실행이 보장되지 않으며 트리거 주문이 트리거 가격으로 실행되지 않을 수 있음을 확인합니다."
 
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
@@ -1460,8 +1461,8 @@ msgstr "코드 입력"
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-msgid "Enter a new price"
-msgstr ""
+#~ msgid "Enter a new price"
+#~ msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Enter a new ratio"
@@ -1469,11 +1470,17 @@ msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-msgid "Enter a new size"
+#~ msgid "Enter a new size"
+#~ msgstr ""
+
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+msgid "Enter a new size or price"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Enter a price"
 msgstr "가격 입력"
@@ -1482,6 +1489,7 @@ msgstr "가격 입력"
 msgid "Enter a ratio"
 msgstr ""
 
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Enter a size"
@@ -1579,6 +1587,7 @@ msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Execution Fee"
