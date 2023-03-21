@@ -22,6 +22,7 @@ import "./BeginAccountTransfer.css";
 import { callContract, contractFetcher } from "lib/contracts";
 import { approveTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
+import Button from "components/Button/Button";
 
 function ValidationRow({ isValid, children }) {
   return (
@@ -287,13 +288,14 @@ export default function BeginAccountTransfer(props) {
             </ValidationRow>
           </div>
           <div className="input-row">
-            <button
-              className="App-cta Exchange-swap-button"
+            <Button
+              variant="primary-action"
+              className="w-100"
               disabled={!isPrimaryEnabled()}
               onClick={() => onClickPrimary()}
             >
               {getPrimaryText()}
-            </button>
+            </Button>
           </div>
         </div>
       </div>

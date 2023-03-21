@@ -1,5 +1,4 @@
 import React, { useState, useCallback } from "react";
-import { Link } from "react-router-dom";
 import { Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 
@@ -49,6 +48,7 @@ import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, formatKey
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import GMXAprTooltip from "components/Stake/GMXAprTooltip";
+import Button from "components/Button/Button";
 
 const { AddressZero } = ethers.constants;
 
@@ -180,9 +180,9 @@ function StakeModal(props) {
           </div>
         </div>
         <div className="Exchange-swap-button-container">
-          <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+          <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
             {getPrimaryText()}
-          </button>
+          </Button>
         </div>
       </Modal>
     </div>
@@ -313,7 +313,7 @@ function UnstakeModal(props) {
           <div className="Modal-note">
             <Trans>
               Unstaking will burn&nbsp;
-              <ExternalLink href="https://gmxio.gitbook.io/gmx/rewards">
+              <ExternalLink className="display-inline" href="https://gmxio.gitbook.io/gmx/rewards">
                 {formatAmount(burnAmount, 18, 4, true)} Multiplier Points
               </ExternalLink>
               .&nbsp;
@@ -324,9 +324,9 @@ function UnstakeModal(props) {
           </div>
         )}
         <div className="Exchange-swap-button-container">
-          <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+          <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
             {getPrimaryText()}
-          </button>
+          </Button>
         </div>
       </Modal>
     </div>
@@ -542,9 +542,9 @@ function VesterDepositModal(props) {
             </div>
           </div>
           <div className="Exchange-swap-button-container">
-            <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+            <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
               {getPrimaryText()}
-            </button>
+            </Button>
           </div>
         </Modal>
       </div>
@@ -591,10 +591,10 @@ function VesterWithdrawModal(props) {
           </div>
         </Trans>
         <div className="Exchange-swap-button-container">
-          <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={isWithdrawing}>
+          <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={isWithdrawing}>
             {!isWithdrawing && "Confirm Withdraw"}
             {isWithdrawing && "Confirming..."}
-          </button>
+          </Button>
         </div>
       </Modal>
     </div>
@@ -784,9 +784,9 @@ function CompoundModal(props) {
           </div>
         </div>
         <div className="Exchange-swap-button-container">
-          <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+          <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
             {getPrimaryText()}
-          </button>
+          </Button>
         </div>
       </Modal>
     </div>
@@ -900,9 +900,9 @@ function ClaimModal(props) {
           </div>
         </div>
         <div className="Exchange-swap-button-container">
-          <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+          <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
             {getPrimaryText()}
-          </button>
+          </Button>
         </div>
       </Modal>
     </div>
@@ -1647,24 +1647,24 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 )}
               </div>
               <div className="App-card-divider" />
-              <div className="App-card-options">
-                <Link className="App-button-option App-card-option" to="/buy_gmx">
+              <div className="App-card-buttons m-0">
+                <Button variant="semi-clear" to="/buy_gmx">
                   <Trans>Buy GMX</Trans>
-                </Link>
+                </Button>
                 {active && (
-                  <button className="App-button-option App-card-option" onClick={() => showStakeGmxModal()}>
+                  <Button variant="semi-clear" onClick={() => showStakeGmxModal()}>
                     <Trans>Stake</Trans>
-                  </button>
+                  </Button>
                 )}
                 {active && (
-                  <button className="App-button-option App-card-option" onClick={() => showUnstakeGmxModal()}>
+                  <Button variant="semi-clear" onClick={() => showUnstakeGmxModal()}>
                     <Trans>Unstake</Trans>
-                  </button>
+                  </Button>
                 )}
                 {active && (
-                  <Link className="App-button-option App-card-option" to="/begin_account_transfer">
+                  <Button variant="semi-clear" to="/begin_account_transfer">
                     <Trans>Transfer Account</Trans>
-                  </Link>
+                  </Button>
                 )}
               </div>
             </div>
@@ -1718,46 +1718,23 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 </div>
                 <div>${formatKeyAmount(processedData, "totalRewardsUsd", USD_DECIMALS, 2, true)}</div>
               </div>
-              <div className="App-card-bottom-placeholder">
+              <div className="App-card-footer">
                 <div className="App-card-divider"></div>
-                <div className="App-card-options">
+                <div className="App-card-buttons m-0">
                   {active && (
-                    <button className="App-button-option App-card-option">
+                    <Button variant="semi-clear" onClick={() => setIsCompoundModalVisible(true)}>
                       <Trans>Compound</Trans>
-                    </button>
+                    </Button>
                   )}
                   {active && (
-                    <button className="App-button-option App-card-option">
+                    <Button variant="semi-clear" onClick={() => setIsClaimModalVisible(true)}>
                       <Trans>Claim</Trans>
-                    </button>
+                    </Button>
                   )}
                   {!active && (
-                    <button className="App-button-option App-card-option" onClick={() => connectWallet()}>
-                      Connect Wallet
-                    </button>
-                  )}
-                </div>
-              </div>
-              <div className="App-card-bottom">
-                <div className="App-card-divider"></div>
-                <div className="App-card-options">
-                  {active && (
-                    <button
-                      className="App-button-option App-card-option"
-                      onClick={() => setIsCompoundModalVisible(true)}
-                    >
-                      <Trans>Compound</Trans>
-                    </button>
-                  )}
-                  {active && (
-                    <button className="App-button-option App-card-option" onClick={() => setIsClaimModalVisible(true)}>
-                      <Trans>Claim</Trans>
-                    </button>
-                  )}
-                  {!active && (
-                    <button className="App-button-option App-card-option" onClick={() => connectWallet()}>
+                    <Button variant="semi-clear" onClick={() => connectWallet()}>
                       <Trans>Connect Wallet</Trans>
-                    </button>
+                    </Button>
                   )}
                 </div>
               </div>
@@ -1820,7 +1797,14 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                           <br />
 
                           <Trans>
-                            APRs are updated weekly on Wednesday and will depend on the fees collected for the week.
+                            APRs are updated weekly on Wednesday and will depend on the fees collected for the week.{" "}
+                            <br />
+                            <br />
+                            Historical GLP APRs can be checked in this{" "}
+                            <ExternalLink href="https://dune.com/saulius/gmx-analytics">
+                              community dashboard
+                            </ExternalLink>
+                            .
                           </Trans>
                         </>
                       );
@@ -1891,22 +1875,20 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 </div>
               </div>
               <div className="App-card-divider"></div>
-              <div className="App-card-options">
-                <Link className="App-button-option App-card-option" to="/buy_glp">
+              <div className="App-card-buttons m-0">
+                <Button variant="semi-clear" to="/buy_glp">
                   <Trans>Buy GLP</Trans>
-                </Link>
-                <Link className="App-button-option App-card-option" to="/buy_glp#redeem">
+                </Button>
+                <Button variant="semi-clear" to="/buy_glp#redeem">
                   <Trans>Sell GLP</Trans>
-                </Link>
+                </Button>
                 {hasInsurance && (
-                  <a
-                    className="App-button-option App-card-option"
-                    href="https://app.insurace.io/Insurance/Cart?id=124&referrer=545066382753150189457177837072918687520318754040"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <Button
+                    variant="semi-clear"
+                    to="https://app.insurace.io/Insurance/Cart?id=124&referrer=545066382753150189457177837072918687520318754040"
                   >
                     <Trans>Purchase Insurance</Trans>
-                  </a>
+                  </Button>
                 )}
               </div>
             </div>
@@ -1980,21 +1962,21 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 </div>
               </div>
               <div className="App-card-divider"></div>
-              <div className="App-card-options">
+              <div className="App-card-buttons m-0">
                 {active && (
-                  <button className="App-button-option App-card-option" onClick={() => showStakeEsGmxModal()}>
+                  <Button variant="semi-clear" onClick={() => showStakeEsGmxModal()}>
                     <Trans>Stake</Trans>
-                  </button>
+                  </Button>
                 )}
                 {active && (
-                  <button className="App-button-option App-card-option" onClick={() => showUnstakeEsGmxModal()}>
+                  <Button variant="semi-clear" onClick={() => showUnstakeEsGmxModal()}>
                     <Trans>Unstake</Trans>
-                  </button>
+                  </Button>
                 )}
                 {!active && (
-                  <button className="App-button-option App-card-option" onClick={() => connectWallet()}>
+                  <Button variant="semi-clear" onClick={() => connectWallet()}>
                     <Trans> Connect Wallet</Trans>
-                  </button>
+                  </Button>
                 )}
               </div>
             </div>
@@ -2114,21 +2096,21 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                   </div>
                 </div>
                 <div className="App-card-divider"></div>
-                <div className="App-card-options">
+                <div className="App-card-buttons m-0">
                   {!active && (
-                    <button className="App-button-option App-card-option" onClick={() => connectWallet()}>
+                    <Button variant="semi-clear" onClick={() => connectWallet()}>
                       <Trans>Connect Wallet</Trans>
-                    </button>
+                    </Button>
                   )}
                   {active && (
-                    <button className="App-button-option App-card-option" onClick={() => showGmxVesterDepositModal()}>
+                    <Button variant="semi-clear" onClick={() => showGmxVesterDepositModal()}>
                       <Trans>Deposit</Trans>
-                    </button>
+                    </Button>
                   )}
                   {active && (
-                    <button className="App-button-option App-card-option" onClick={() => showGmxVesterWithdrawModal()}>
+                    <Button variant="semi-clear" onClick={() => showGmxVesterWithdrawModal()}>
                       <Trans>Withdraw</Trans>
-                    </button>
+                    </Button>
                   )}
                 </div>
               </div>
@@ -2201,21 +2183,21 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                   </div>
                 </div>
                 <div className="App-card-divider"></div>
-                <div className="App-card-options">
+                <div className="App-card-buttons m-0">
                   {!active && (
-                    <button className="App-button-option App-card-option" onClick={() => connectWallet()}>
+                    <Button variant="semi-clear" onClick={() => connectWallet()}>
                       <Trans>Connect Wallet</Trans>
-                    </button>
+                    </Button>
                   )}
                   {active && (
-                    <button className="App-button-option App-card-option" onClick={() => showGlpVesterDepositModal()}>
+                    <Button variant="semi-clear" onClick={() => showGlpVesterDepositModal()}>
                       <Trans>Deposit</Trans>
-                    </button>
+                    </Button>
                   )}
                   {active && (
-                    <button className="App-button-option App-card-option" onClick={() => showGlpVesterWithdrawModal()}>
+                    <Button variant="semi-clear" onClick={() => showGlpVesterWithdrawModal()}>
                       <Trans>Withdraw</Trans>
-                    </button>
+                    </Button>
                   )}
                 </div>
               </div>

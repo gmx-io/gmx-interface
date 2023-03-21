@@ -1,0 +1,29 @@
+.Stats {
+  margin: 20px;
+  text-align: left;
+}
+
+.Stats td,
+.Stats th {
+  padding: 10px 7px;
+  position: relative;
+  vertical-align: top;
+}
+
+.Stats td .Stats-share-bar {
+  background: rgba(255, 255, 255, 0.25);
+  position: relative;
+  margin-top: 5px;
+  height: 2px;
+}
+.Stats td .Stats-share-bar-fill {
+  height: 100%;
+  background: #fff;
+}
+.Stats .warn .Stats-share-bar-fill {
+  background: orange;
+}
+
+.Stats .warn {
+  color: orange;
+}

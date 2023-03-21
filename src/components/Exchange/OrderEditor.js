@@ -23,6 +23,7 @@ import { getTokenInfo } from "domain/tokens/utils";
 import { bigNumberify, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 import { useChainId } from "lib/chains";
 import { t, Trans } from "@lingui/macro";
+import Button from "components/Button/Button";
 
 export default function OrderEditor(props) {
   const {
@@ -288,13 +289,9 @@ export default function OrderEditor(props) {
           </div>
         )}
         <div className="Exchange-swap-button-container">
-          <button
-            className="App-cta Exchange-swap-button Exchange-list-modal-button"
-            onClick={onClickPrimary}
-            disabled={!isPrimaryEnabled()}
-          >
+          <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
             {getPrimaryText()}
-          </button>
+          </Button>
         </div>
       </Modal>
     );
@@ -399,13 +396,9 @@ export default function OrderEditor(props) {
         </div>
       )}
       <div className="Exchange-swap-button-container">
-        <button
-          className="App-cta Exchange-swap-button Exchange-list-modal-button"
-          onClick={onClickPrimary}
-          disabled={!isPrimaryEnabled()}
-        >
+        <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
           {getPrimaryText()}
-        </button>
+        </Button>
       </div>
     </Modal>
   );

@@ -27,27 +27,24 @@ import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { SLIPPAGE_BPS_KEY } from "config/localStorage";
-import { expandDecimals, formatAmount, formatAmountFree } from "lib/numbers";
-import { getNativeToken, getToken, getWrappedToken } from "config/tokens";
+import { expandDecimals, formatAmount } from "lib/numbers";
+import { getToken, getWrappedToken } from "config/tokens";
 import { Plural, t, Trans } from "@lingui/macro";
-import ExternalLink from "components/ExternalLink/ExternalLink";
+import Button from "components/Button/Button";
+import FeesTooltip from "./FeesTooltip";
+import { getTokenInfo, getUsd } from "domain/tokens";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 
-function getSpread(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddress) {
-  if (fromTokenInfo && fromTokenInfo.maxPrice && toTokenInfo && toTokenInfo.minPrice) {
-    const fromDiff = fromTokenInfo.maxPrice.sub(fromTokenInfo.minPrice).div(2);
-    const fromSpread = fromDiff.mul(PRECISION).div(fromTokenInfo.maxPrice.add(fromTokenInfo.minPrice).div(2));
-    const toDiff = toTokenInfo.maxPrice.sub(toTokenInfo.minPrice).div(2);
-    const toSpread = toDiff.mul(PRECISION).div(toTokenInfo.maxPrice.add(toTokenInfo.minPrice).div(2));
-
-    let value = fromSpread.add(toSpread);
+function getSwapSpreadInfo(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddress) {
+  if (fromTokenInfo?.spread && toTokenInfo?.spread) {
+    let value = fromTokenInfo.spread.add(toTokenInfo.spread);
 
     const fromTokenAddress = fromTokenInfo.isNative ? nativeTokenAddress : fromTokenInfo.address;
     const toTokenAddress = toTokenInfo.isNative ? nativeTokenAddress : toTokenInfo.address;
 
     if (isLong && fromTokenAddress === toTokenAddress) {
-      value = fromSpread;
+      value = fromTokenInfo.spread;
     }
 
     return {
@@ -55,6 +52,27 @@ function getSpread(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddress) {
       isHigh: value.gt(HIGH_SPREAD_THRESHOLD),
     };
   }
+}
+
+function renderAllowedSlippage(allowedSlippage) {
+  return (
+    <ExchangeInfoRow label={t`Allowed Slippage`}>
+      <Tooltip
+        handle={`${formatAmount(allowedSlippage, 2, 2)}%`}
+        position="right-bottom"
+        renderContent={() => {
+          return (
+            <Trans>
+              You can change this in the settings menu on the top right of the page.
+              <br />
+              <br />
+              Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are volatile.
+            </Trans>
+          );
+        }}
+      />
+    </ExchangeInfoRow>
+  );
 }
 
 export default function ConfirmationBox(props) {
@@ -74,7 +92,6 @@ export default function ConfirmationBox(props) {
     setIsHigherSlippageAllowed,
     onConfirmationClick,
     setIsConfirming,
-    shortCollateralAddress,
     hasExistingPosition,
     leverage,
     existingPosition,
@@ -84,7 +101,6 @@ export default function ConfirmationBox(props) {
     isPendingConfirmation,
     triggerPriceUsd,
     triggerRatio,
-    fees,
     feesUsd,
     isSubmitting,
     fromUsdMin,
@@ -100,9 +116,11 @@ export default function ConfirmationBox(props) {
     minExecutionFee,
     minExecutionFeeUSD,
     minExecutionFeeErrorMessage,
+    entryMarkPrice,
+    positionFee,
+    swapFees,
+    infoTokens,
   } = props;
-
-  const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
 
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
   const [isProfitWarningAccepted, setIsProfitWarningAccepted] = useState(false);
@@ -141,6 +159,7 @@ export default function ConfirmationBox(props) {
     }
     return isLong ? t`Confirm Long` : t`Confirm Short`;
   };
+
   const title = getTitle();
 
   const existingOrder = useMemo(() => {
@@ -251,28 +270,68 @@ export default function ConfirmationBox(props) {
   };
 
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
-  const spread = getSpread(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddress);
+  const spreadInfo = getSwapSpreadInfo(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddress);
+
   // it's meaningless for limit/stop orders to show spread based on current prices
-  const showSpread = isMarketOrder && !!spread;
+  const showSwapSpread = isSwap && isMarketOrder && !!spreadInfo;
 
   let allowedSlippage = savedSlippageAmount;
   if (isHigherSlippageAllowed) {
     allowedSlippage = DEFAULT_HIGHER_SLIPPAGE_AMOUNT;
   }
 
-  const renderSpreadWarning = useCallback(() => {
+  const renderSwapSpreadWarning = useCallback(() => {
     if (!isMarketOrder) {
       return null;
     }
 
-    if (spread && spread.isHigh) {
+    if (spreadInfo && spreadInfo.isHigh) {
       return (
         <div className="Confirmation-box-warning">
-          <Trans>The spread is {`>`} 1%, please ensure the trade details are acceptable before comfirming</Trans>
+          <Trans>The spread is {`>`} 1%, please ensure the trade details are acceptable before confirming</Trans>
         </div>
       );
     }
-  }, [isMarketOrder, spread]);
+  }, [isMarketOrder, spreadInfo]);
+
+  const collateralSpreadInfo = useMemo(() => {
+    if (!toTokenInfo?.spread || !collateralTokenAddress) {
+      return null;
+    }
+
+    let totalSpread = toTokenInfo.spread;
+    if (toTokenInfo.address === collateralTokenAddress) {
+      return {
+        value: totalSpread,
+        isHigh: toTokenInfo.spread.gt(HIGH_SPREAD_THRESHOLD),
+      };
+    }
+
+    const collateralTokenInfo = getTokenInfo(infoTokens, collateralTokenAddress);
+    if (collateralTokenInfo?.spread) {
+      totalSpread = totalSpread.add(collateralTokenInfo.spread);
+    }
+
+    return {
+      value: totalSpread,
+      isHigh: totalSpread.gt(HIGH_SPREAD_THRESHOLD),
+    };
+  }, [toTokenInfo, collateralTokenAddress, infoTokens]);
+
+  const renderCollateralSpreadWarning = useCallback(() => {
+    if (collateralSpreadInfo && collateralSpreadInfo.isHigh) {
+      return (
+        <div className="Confirmation-box-warning">
+          <Trans>
+            Transacting with a depegged stable coin is subject to spreads reflecting the worse of current market price
+            or $1.00, with transactions involving multiple stablecoins may have multiple spreads.
+          </Trans>
+        </div>
+      );
+    }
+  }, [collateralSpreadInfo]);
+
+  const showCollateralSpread = !isSwap && isMarketOrder && !!collateralSpreadInfo;
 
   const renderFeeWarning = useCallback(() => {
     if (orderOption === LIMIT || !feeBps || feeBps <= 60) {
@@ -473,16 +532,9 @@ export default function ConfirmationBox(props) {
   const SWAP_ORDER_EXECUTION_GAS_FEE = getConstant(chainId, "SWAP_ORDER_EXECUTION_GAS_FEE");
   const INCREASE_ORDER_EXECUTION_GAS_FEE = getConstant(chainId, "INCREASE_ORDER_EXECUTION_GAS_FEE");
   const executionFee = isSwap ? SWAP_ORDER_EXECUTION_GAS_FEE : INCREASE_ORDER_EXECUTION_GAS_FEE;
-  const renderExecutionFee = useCallback(() => {
-    if (isMarketOrder) {
-      return null;
-    }
-    return (
-      <ExchangeInfoRow label={t`Execution Fee`}>
-        {formatAmount(executionFee, 18, 4)} {getNativeToken(chainId).symbol}
-      </ExchangeInfoRow>
-    );
-  }, [isMarketOrder, executionFee, chainId]);
+  const executionFeeUsd = getUsd(executionFee, nativeTokenAddress, false, infoTokens);
+  const currentExecutionFee = isMarketOrder ? minExecutionFee : executionFee;
+  const currentExecutionFeeUsd = isMarketOrder ? minExecutionFeeUSD : executionFeeUsd;
 
   const renderAvailableLiquidity = useCallback(() => {
     let availableLiquidity;
@@ -547,10 +599,23 @@ export default function ConfirmationBox(props) {
   }, [toTokenInfo, shortCollateralToken, isShort, isLong, isSwap, toAmount, toUsdMax]);
 
   const renderMarginSection = useCallback(() => {
+    const collateralToken = getToken(chainId, collateralTokenAddress);
+    function getFundingFee() {
+      return (
+        <>
+          {isLong && toTokenInfo && formatAmount(toTokenInfo.fundingRate, 4, 4)}
+          {isShort && shortCollateralToken && formatAmount(shortCollateralToken.fundingRate, 4, 4)}
+          {((isLong && toTokenInfo && toTokenInfo.fundingRate) ||
+            (isShort && shortCollateralToken && shortCollateralToken.fundingRate)) &&
+            "% / 1h"}
+        </>
+      );
+    }
     return (
       <>
         <div>
           {renderMain()}
+          {renderCollateralSpreadWarning()}
           {renderFeeWarning()}
           {renderExistingOrderWarning()}
           {renderExistingTriggerErrors()}
@@ -566,12 +631,6 @@ export default function ConfirmationBox(props) {
             </div>
           )}
           {orderOption === LIMIT && renderAvailableLiquidity()}
-          {isShort && (
-            <ExchangeInfoRow label={t`Collateral In`}>
-              {getToken(chainId, shortCollateralAddress).symbol}
-            </ExchangeInfoRow>
-          )}
-          {isLong && <ExchangeInfoRow label={t`Collateral In`} value={toTokenInfo.symbol} />}
           <ExchangeInfoRow label={t`Leverage`}>
             {hasExistingPosition && toAmount && toAmount.gt(0) && (
               <div className="inline-block muted">
@@ -583,6 +642,43 @@ export default function ConfirmationBox(props) {
             {!toAmount && leverage && leverage.gt(0) && `-`}
             {leverage && leverage.eq(0) && `-`}
           </ExchangeInfoRow>
+          {isMarketOrder && (
+            <div className="PositionEditor-allow-higher-slippage">
+              <Checkbox isChecked={isHigherSlippageAllowed} setIsChecked={setIsHigherSlippageAllowed}>
+                <span className="muted font-sm">
+                  <Trans>Allow up to 1% slippage</Trans>
+                </span>
+              </Checkbox>
+            </div>
+          )}
+          {renderAllowedSlippage(allowedSlippage)}
+          {showCollateralSpread && (
+            <ExchangeInfoRow label={t`Collateral Spread`} isWarning={collateralSpreadInfo.isHigh} isTop>
+              {formatAmount(collateralSpreadInfo.value.mul(100), USD_DECIMALS, 2, true)}%
+            </ExchangeInfoRow>
+          )}
+          {isMarketOrder && (
+            <ExchangeInfoRow label={t`Entry Price`}>
+              {hasExistingPosition && toAmount && toAmount.gt(0) && (
+                <div className="inline-block muted">
+                  ${formatAmount(existingPosition.averagePrice, USD_DECIMALS, 2, true)}
+                  <BsArrowRight className="transition-arrow" />
+                </div>
+              )}
+              {nextAveragePrice && `$${formatAmount(nextAveragePrice, USD_DECIMALS, 2, true)}`}
+              {!nextAveragePrice && `-`}
+            </ExchangeInfoRow>
+          )}
+          {!isMarketOrder && (
+            <ExchangeInfoRow label={t`Mark Price`} isTop={true}>
+              ${formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)}
+            </ExchangeInfoRow>
+          )}
+          {!isMarketOrder && (
+            <ExchangeInfoRow label={t`Limit Price`}>
+              ${formatAmount(triggerPriceUsd, USD_DECIMALS, 2, true)}
+            </ExchangeInfoRow>
+          )}
           <ExchangeInfoRow label={t`Liq. Price`}>
             {hasExistingPosition && toAmount && toAmount.gt(0) && (
               <div className="inline-block muted">
@@ -594,11 +690,10 @@ export default function ConfirmationBox(props) {
             {!toAmount && displayLiquidationPrice && `-`}
             {!displayLiquidationPrice && `-`}
           </ExchangeInfoRow>
-          <ExchangeInfoRow label={t`Fees`}>${formatAmount(feesUsd, USD_DECIMALS, 2, true)}</ExchangeInfoRow>
-          <ExchangeInfoRow label={t`Collateral`}>
+          <ExchangeInfoRow label={t`Collateral (${collateralToken.symbol})`} isTop>
             <Tooltip
               handle={`$${formatAmount(collateralAfterFees, USD_DECIMALS, 2, true)}`}
-              position="right-bottom"
+              position="right-top"
               renderContent={() => {
                 return (
                   <>
@@ -617,92 +712,19 @@ export default function ConfirmationBox(props) {
               }}
             />
           </ExchangeInfoRow>
-          {showSpread && (
-            <ExchangeInfoRow label={t`Spread`} isWarning={spread.isHigh} isTop={true}>
-              {formatAmount(spread.value.mul(100), USD_DECIMALS, 2, true)}%
-            </ExchangeInfoRow>
-          )}
-          {isMarketOrder && (
-            <ExchangeInfoRow label={t`Entry Price`}>
-              {hasExistingPosition && toAmount && toAmount.gt(0) && (
-                <div className="inline-block muted">
-                  ${formatAmount(existingPosition.averagePrice, USD_DECIMALS, 2, true)}
-                  <BsArrowRight className="transition-arrow" />
-                </div>
-              )}
-              {nextAveragePrice && `$${formatAmount(nextAveragePrice, USD_DECIMALS, 2, true)}`}
-              {!nextAveragePrice && `-`}
-            </ExchangeInfoRow>
-          )}
-          {!isMarketOrder && (
-            <ExchangeInfoRow label={t`Limit Price`} isTop={true}>
-              ${formatAmount(triggerPriceUsd, USD_DECIMALS, 2, true)}
-            </ExchangeInfoRow>
-          )}
-          <ExchangeInfoRow label={t`Borrow Fee`}>
-            {isLong && toTokenInfo && formatAmount(toTokenInfo.fundingRate, 4, 4)}
-            {isShort && shortCollateralToken && formatAmount(shortCollateralToken.fundingRate, 4, 4)}
-            {((isLong && toTokenInfo && toTokenInfo.fundingRate) ||
-              (isShort && shortCollateralToken && shortCollateralToken.fundingRate)) &&
-              "% / 1h"}
-          </ExchangeInfoRow>
-          {isMarketOrder && (
-            <div className="PositionEditor-allow-higher-slippage">
-              <ExchangeInfoRow label={t`Execution Fee`}>
-                <Tooltip
-                  handle={`${formatAmountFree(minExecutionFee, 18, 5)} ${nativeTokenSymbol}`}
-                  position="right-top"
-                  renderContent={() => {
-                    return (
-                      <>
-                        <StatsTooltipRow
-                          label={t`Network Fee`}
-                          value={`${formatAmountFree(minExecutionFee, 18, 5)} ${nativeTokenSymbol} ($${formatAmount(
-                            minExecutionFeeUSD,
-                            USD_DECIMALS,
-                            2
-                          )})`}
-                        />
-                        <br />
-                        <Trans>
-                          This is the network cost required to execute the postion.{" "}
-                          <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#execution-fee">
-                            More Info
-                          </ExternalLink>
-                        </Trans>
-                      </>
-                    );
-                  }}
-                />
-              </ExchangeInfoRow>
-            </div>
-          )}
-          <ExchangeInfoRow label={t`Allowed Slippage`}>
-            <Tooltip
-              handle={`${formatAmount(allowedSlippage, 2, 2)}%`}
-              position="right-top"
-              renderContent={() => {
-                return (
-                  <Trans>
-                    You can change this in the settings menu on the top right of the page.
-                    <br />
-                    <br />
-                    Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are
-                    volatile.
-                  </Trans>
-                );
+          <ExchangeInfoRow label={t`Fees`}>
+            <FeesTooltip
+              totalFees={currentExecutionFeeUsd.add(feesUsd)}
+              fundingFee={getFundingFee()}
+              executionFees={{
+                fee: currentExecutionFee,
+                feeUSD: currentExecutionFeeUsd,
               }}
+              positionFee={positionFee}
+              swapFee={swapFees}
             />
           </ExchangeInfoRow>
-          {isMarketOrder && (
-            <div className="PositionEditor-allow-higher-slippage">
-              <Checkbox isChecked={isHigherSlippageAllowed} setIsChecked={setIsHigherSlippageAllowed}>
-                <span className="muted font-sm">
-                  <Trans>Allow up to 1% slippage</Trans>
-                </span>
-              </Checkbox>
-            </div>
-          )}
+
           {decreaseOrdersThatWillBeExecuted.length > 0 && (
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox isChecked={isTriggerWarningAccepted} setIsChecked={setIsTriggerWarningAccepted}>
@@ -712,13 +734,11 @@ export default function ConfirmationBox(props) {
               </Checkbox>
             </div>
           )}
-          {renderExecutionFee()}
         </div>
       </>
     );
   }, [
     renderMain,
-    shortCollateralAddress,
     isShort,
     isLong,
     toTokenInfo,
@@ -728,13 +748,10 @@ export default function ConfirmationBox(props) {
     existingPosition,
     isMarketOrder,
     triggerPriceUsd,
-    showSpread,
-    spread,
     displayLiquidationPrice,
     existingLiquidationPrice,
     feesUsd,
     leverage,
-    renderExecutionFee,
     shortCollateralToken,
     chainId,
     renderFeeWarning,
@@ -749,90 +766,97 @@ export default function ConfirmationBox(props) {
     renderExistingTriggerErrors,
     isHigherSlippageAllowed,
     setIsHigherSlippageAllowed,
-    allowedSlippage,
     isTriggerWarningAccepted,
     decreaseOrdersThatWillBeExecuted,
-    minExecutionFee,
-    nativeTokenSymbol,
-    minExecutionFeeUSD,
     minExecutionFeeErrorMessage,
+    collateralTokenAddress,
+    entryMarkPrice,
+    allowedSlippage,
+    positionFee,
+    swapFees,
+    currentExecutionFee,
+    currentExecutionFeeUsd,
+    renderCollateralSpreadWarning,
+    collateralSpreadInfo,
+    showCollateralSpread,
   ]);
 
   const renderSwapSection = useCallback(() => {
     return (
-      <>
-        <div>
-          {renderMain()}
-          {renderFeeWarning()}
-          {renderSpreadWarning()}
-          {orderOption === LIMIT && renderAvailableLiquidity()}
-          <ExchangeInfoRow label={t`Min. Receive`}>
-            {formatAmount(minOut, toTokenInfo.decimals, 4, true)} {toTokenInfo.symbol}
+      <div>
+        {renderMain()}
+        {renderFeeWarning()}
+        {renderSwapSpreadWarning()}
+        {showSwapSpread && (
+          <ExchangeInfoRow label={t`Spread`} isWarning={spreadInfo.isHigh}>
+            {formatAmount(spreadInfo.value.mul(100), USD_DECIMALS, 2, true)}%
           </ExchangeInfoRow>
-          <ExchangeInfoRow label={t`Price`}>
-            {getExchangeRateDisplay(getExchangeRate(fromTokenInfo, toTokenInfo), fromTokenInfo, toTokenInfo)}
-          </ExchangeInfoRow>
-          {!isMarketOrder && (
-            <div className="Exchange-info-row">
-              <div className="Exchange-info-label">
-                <Trans>Limit Price</Trans>
-              </div>
-              <div className="align-right">{getExchangeRateDisplay(triggerRatio, fromTokenInfo, toTokenInfo)}</div>
-            </div>
-          )}
-          {showSpread && (
-            <ExchangeInfoRow label={t`Spread`} isWarning={spread.isHigh}>
-              {formatAmount(spread.value.mul(100), USD_DECIMALS, 2, true)}%
-            </ExchangeInfoRow>
-          )}
+        )}
+        {orderOption === LIMIT && renderAvailableLiquidity()}
+        {renderAllowedSlippage(allowedSlippage)}
+        <ExchangeInfoRow label={t`Mark Price`} isTop>
+          {getExchangeRateDisplay(getExchangeRate(fromTokenInfo, toTokenInfo), fromTokenInfo, toTokenInfo)}
+        </ExchangeInfoRow>
+        {!isMarketOrder && (
           <div className="Exchange-info-row">
             <div className="Exchange-info-label">
-              <Trans>Fees</Trans>
+              <Trans>Limit Price</Trans>
             </div>
-            <div className="align-right">
-              {formatAmount(feeBps, 2, 2, true)}% ({formatAmount(fees, fromTokenInfo.decimals, 4, true)}{" "}
-              {fromTokenInfo.symbol}: ${formatAmount(feesUsd, USD_DECIMALS, 2, true)})
-            </div>
+            <div className="align-right">{getExchangeRateDisplay(triggerRatio, fromTokenInfo, toTokenInfo)}</div>
           </div>
-          {renderExecutionFee()}
-          {fromTokenUsd && (
-            <div className="Exchange-info-row">
-              <div className="Exchange-info-label">
-                <Trans>{fromTokenInfo.symbol} Price</Trans>
-              </div>
-              <div className="align-right">{fromTokenUsd} USD</div>
+        )}
+
+        {fromTokenUsd && (
+          <div className="Exchange-info-row">
+            <div className="Exchange-info-label">
+              <Trans>{fromTokenInfo.symbol} Price</Trans>
             </div>
-          )}
-          {toTokenUsd && (
-            <div className="Exchange-info-row">
-              <div className="Exchange-info-label">
-                <Trans>{toTokenInfo.symbol} Price</Trans>
-              </div>
-              <div className="align-right">{toTokenUsd} USD</div>
+            <div className="align-right">{fromTokenUsd} USD</div>
+          </div>
+        )}
+        {toTokenUsd && (
+          <div className="Exchange-info-row">
+            <div className="Exchange-info-label">
+              <Trans>{toTokenInfo.symbol} Price</Trans>
             </div>
-          )}
-        </div>
-      </>
+            <div className="align-right">{toTokenUsd} USD</div>
+          </div>
+        )}
+        <ExchangeInfoRow label={t`Fees`} isTop>
+          <FeesTooltip
+            totalFees={currentExecutionFeeUsd.add(feesUsd)}
+            executionFees={{
+              fee: currentExecutionFee,
+              feeUSD: currentExecutionFeeUsd,
+            }}
+            swapFee={feesUsd}
+          />
+        </ExchangeInfoRow>
+
+        <ExchangeInfoRow label={t`Min. Receive`} isTop>
+          {formatAmount(minOut, toTokenInfo.decimals, 4, true)} {toTokenInfo.symbol}
+        </ExchangeInfoRow>
+      </div>
     );
   }, [
     renderMain,
-    renderSpreadWarning,
+    renderSwapSpreadWarning,
     fromTokenInfo,
     toTokenInfo,
     orderOption,
-    showSpread,
-    spread,
+    showSwapSpread,
+    spreadInfo,
     feesUsd,
-    feeBps,
-    renderExecutionFee,
     fromTokenUsd,
     toTokenUsd,
     triggerRatio,
-    fees,
     isMarketOrder,
     minOut,
     renderFeeWarning,
     renderAvailableLiquidity,
+    allowedSlippage,
+    currentExecutionFee,
+    currentExecutionFeeUsd,
   ]);
 
   return (
@@ -841,13 +865,14 @@ export default function ConfirmationBox(props) {
         {isSwap && renderSwapSection()}
         {!isSwap && renderMarginSection()}
         <div className="Confirmation-box-row">
-          <button
+          <Button
+            variant="primary-action"
             onClick={onConfirmationClick}
-            className="App-cta Confirmation-box-button"
+            className="w-100 mt-sm"
             disabled={!isPrimaryEnabled()}
           >
             {getPrimaryText()}
-          </button>
+          </Button>
         </div>
       </Modal>
     </div>

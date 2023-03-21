@@ -80,6 +80,7 @@ import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValu
 import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "config/tokens";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ErrorCode, ErrorDisplayType } from "./constants";
+import Button from "components/Button/Button";
 import UsefulLinks from "./UsefulLinks";
 import { get1InchSwapUrl } from "config/links";
 
@@ -1876,9 +1877,9 @@ export default function SwapBox(props) {
         <Tooltip
           isHandlerDisabled
           handle={
-            <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+            <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
               {primaryTextMessage}
-            </button>
+            </Button>
           }
           position="center-bottom"
           className="Tooltip-flex"
@@ -1887,9 +1888,9 @@ export default function SwapBox(props) {
       );
     }
     return (
-      <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+      <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
         {primaryTextMessage}
-      </button>
+      </Button>
     );
   }
 
@@ -2248,17 +2249,23 @@ export default function SwapBox(props) {
                               <Trans>{collateralToken.symbol} is required for collateral.</Trans> <br />
                               <br />
                               <StatsTooltipRow
-                                label={t`Swap ${fromToken.symbol} to ${collateralToken.symbol} Fee`}
+                                label={t`Swap Fee`}
                                 value={formatAmount(swapFees, USD_DECIMALS, 2, true)}
                               />
-                              <br />
                             </div>
                           )}
                           <div>
                             <StatsTooltipRow
-                              label={t`Position Fee (0.1% of position size)`}
+                              label={t`Open Fee`}
                               value={formatAmount(positionFee, USD_DECIMALS, 2, true)}
                             />
+                          </div>
+                          <br />
+                          <div className="PositionSeller-fee-item">
+                            <Trans>
+                              <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#fees">More Info</ExternalLink>{" "}
+                              about fees.
+                            </Trans>
                           </div>
                         </div>
                       );
@@ -2536,6 +2543,9 @@ export default function SwapBox(props) {
           minExecutionFee={minExecutionFee}
           minExecutionFeeUSD={minExecutionFeeUSD}
           minExecutionFeeErrorMessage={minExecutionFeeErrorMessage}
+          entryMarkPrice={entryMarkPrice}
+          swapFees={swapFees}
+          positionFee={positionFee}
         />
       )}
     </div>

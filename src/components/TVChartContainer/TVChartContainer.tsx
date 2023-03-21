@@ -1,13 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { TV_CHART_RELOAD_TIMESTAMP_KEY, TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
 import { useLocalStorage, useMedia } from "react-use";
-import { defaultChartProps, disabledFeaturesOnMobile } from "./constants";
+import { defaultChartProps, DEFAULT_PERIOD, disabledFeaturesOnMobile } from "./constants";
 import useTVDatafeed from "domain/tradingview/useTVDatafeed";
 import { ChartData, IChartingLibraryWidget, IPositionLineAdapter } from "../../charting_library";
 import { getObjectKeyFromValue } from "domain/tradingview/utils";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
 import { SUPPORTED_RESOLUTIONS, TV_CHART_RELOAD_INTERVAL } from "config/tradingview";
 import { isChartAvailabeForToken } from "config/tokens";
+import { TVDataProvider } from "domain/tradingview/TVDataProvider";
+import Loader from "components/Common/Loader";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { CHART_PERIODS } from "lib/legacy";
 
 type ChartLine = {
   price: number;
@@ -20,8 +24,7 @@ type Props = {
   savedShouldShowPositionLines: boolean;
   chartLines: ChartLine[];
   onSelectToken: () => void;
-  period: string;
-  setPeriod: (period: string) => void;
+  dataProvider?: TVDataProvider;
 };
 
 export default function TVChartContainer({
@@ -30,14 +33,20 @@ export default function TVChartContainer({
   savedShouldShowPositionLines,
   chartLines,
   onSelectToken,
-  period,
-  setPeriod,
+  dataProvider,
 }: Props) {
+  let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
+
+  if (!period || !(period in CHART_PERIODS)) {
+    period = DEFAULT_PERIOD;
+  }
+
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const tvWidgetRef = useRef<IChartingLibraryWidget | null>(null);
   const [chartReady, setChartReady] = useState(false);
+  const [chartDataLoading, setChartDataLoading] = useState(true);
   const [tvCharts, setTvCharts] = useLocalStorage<ChartData[] | undefined>(TV_SAVE_LOAD_CHARTS_KEY, []);
-  const { datafeed, resetCache } = useTVDatafeed();
+  const { datafeed, resetCache } = useTVDatafeed({ dataProvider });
   const isMobile = useMedia("(max-width: 550px)");
   const symbolRef = useRef(symbol);
 
@@ -72,8 +81,8 @@ export default function TVChartContainer({
       } else {
         const tvReloadTimestamp = Number(localStorage.getItem(TV_CHART_RELOAD_TIMESTAMP_KEY));
         if (tvReloadTimestamp && Date.now() - tvReloadTimestamp > TV_CHART_RELOAD_INTERVAL) {
-          if (resetCache.current) {
-            resetCache.current();
+          if (resetCache) {
+            resetCache();
             tvWidgetRef.current?.activeChart().resetData();
           }
         }
@@ -151,6 +160,10 @@ export default function TVChartContainer({
             setPeriod(period);
           }
         });
+
+      tvWidgetRef.current?.activeChart().dataReady(() => {
+        setChartDataLoading(false);
+      });
     });
 
     return () => {
@@ -158,11 +171,21 @@ export default function TVChartContainer({
         tvWidgetRef.current.remove();
         tvWidgetRef.current = null;
         setChartReady(false);
+        setChartDataLoading(true);
       }
     };
     // We don't want to re-initialize the chart when the symbol changes. This will make the chart flicker.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId]);
 
-  return <div ref={chartContainerRef} className="TVChartContainer ExchangeChart-bottom-content" />;
+  return (
+    <div className="ExchangeChart-error">
+      {chartDataLoading && <Loader />}
+      <div
+        style={{ visibility: !chartDataLoading ? "visible" : "hidden" }}
+        ref={chartContainerRef}
+        className="TVChartContainer ExchangeChart-bottom-content"
+      />
+    </div>
+  );
 }

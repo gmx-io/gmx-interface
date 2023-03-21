@@ -18,6 +18,7 @@ import {
 
 import Home from "pages/Home/Home";
 import Dashboard from "pages/Dashboard/Dashboard";
+import Stats from "pages/Stats/Stats";
 import Ecosystem from "pages/Ecosystem/Ecosystem";
 import Stake from "pages/Stake/Stake";
 import { Exchange } from "pages/Exchange/Exchange";
@@ -98,8 +99,9 @@ import {
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { isDevelopment } from "config/env";
+import Button from "components/Button/Button";
 
-if ("ethereum" in window) {
+if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
 }
 
@@ -482,6 +484,9 @@ function FullApp() {
               <Route exact path="/dashboard">
                 <Dashboard />
               </Route>
+              <Route exact path="/stats">
+                <Stats />
+              </Route>
               <Route exact path="/earn">
                 <Stake setPendingTxns={setPendingTxns} connectWallet={connectWallet} />
               </Route>
@@ -637,9 +642,9 @@ function FullApp() {
           </div>
         )}
 
-        <button className="App-cta Exchange-swap-button" onClick={saveAndCloseSettings}>
+        <Button variant="primary-action" className="w-100 mt-md" onClick={saveAndCloseSettings}>
           <Trans>Save</Trans>
-        </button>
+        </Button>
       </Modal>
     </>
   );
