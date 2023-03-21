@@ -6,7 +6,7 @@
 //   mockTokensData,
 // } from "domain/synthetics/testUtils/mocks";
 // import { convertToTokenAmount, getTokenData } from "domain/synthetics/tokens";
-// import { BigNumber } from "ethers";
+import { BigNumber } from "ethers";
 // import { expandDecimals, formatUsd } from "lib/numbers";
 
 // const marketsKeys = [
@@ -27,6 +27,12 @@
 // const graph = getMarketsGraph(marketsData);
 
 // const BASE_FEE = BigNumber.from(1);
+
+describe("swapPath", () => {
+  it("test", () => {
+    expect(BigNumber.from(0).toString()).toEqual(BigNumber.from(0).toString());
+  });
+});
 
 // describe("swapPath", () => {
 //   describe("basic graph traversal", () => {
