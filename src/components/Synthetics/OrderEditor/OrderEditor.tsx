@@ -1,6 +1,5 @@
 import { Trans, t } from "@lingui/macro";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import { InfoRow } from "components/InfoRow/InfoRow";
 import Modal from "components/Modal/Modal";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { getMarket, useMarketsData } from "domain/synthetics/markets";
@@ -34,9 +33,9 @@ import { bigNumberify, formatAmount, formatAmountFree, formatTokenAmount, format
 import { useEffect, useMemo, useState } from "react";
 
 import { useWeb3React } from "@web3-react/core";
-import { updateOrderTxn } from "domain/synthetics/orders/updateOrderTxn";
-import { getNextTokenAmount } from "../Trade/utils";
-import "./OrderEditor.scss";
+import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import { SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BPS_KEY } from "config/localStorage";
+import { DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS } from "config/synthetics";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
@@ -45,11 +44,11 @@ import {
   useGasPrice,
 } from "domain/synthetics/fees";
 import { useGasLimitsConfig } from "domain/synthetics/fees/useGasLimitsConfig";
+import { updateOrderTxn } from "domain/synthetics/orders/updateOrderTxn";
 import { BigNumber } from "ethers";
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
-import { SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BPS_KEY } from "config/localStorage";
-import { DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS } from "config/synthetics";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { getNextTokenAmount } from "../Trade/utils";
+import "./OrderEditor.scss";
 
 type Props = {
   positionsData: AggregatedPositionsData;
