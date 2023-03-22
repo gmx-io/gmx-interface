@@ -217,6 +217,14 @@ export const CENTRALISED_EXCHANGES: Exchange[] = [
 ];
 
 export const DECENTRALISED_AGGRIGATORS: Exchange[] = [
+    {
+    name: "UniDex",
+    icon: "ic_unidex.png",
+    links: {
+      [ARBITRUM]: `https://app.unidex.exchange/#/42161/0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee/${ARBITRUM_GMX}`,
+      [AVALANCHE]: `https://app.unidex.exchange/#/43114/0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee/${AVALANCHE_GMX}`,
+    },
+  },
   {
     name: "1inch",
     icon: "ic_1inch.svg",
