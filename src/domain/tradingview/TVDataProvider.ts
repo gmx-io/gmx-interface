@@ -105,7 +105,7 @@ export class TVDataProvider {
 
     try {
       const bars = isStable
-        ? getStablePriceData(period, countBack)
+        ? getStablePriceData(period, countBack * 300)
         : await this.getTokenHistoryBars(chainId, ticker, period, periodParams, shouldRefetchBars);
 
       return bars.map(formatTimeInBarToMs);
