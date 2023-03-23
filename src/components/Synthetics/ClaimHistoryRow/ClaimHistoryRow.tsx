@@ -65,7 +65,7 @@ export function ClaimHistoryRow(p: Props) {
           renderContent={() => (
             <>
               {claimAction.claimItems.map(({ market, longTokenAmount, shortTokenAmount }, index) => {
-                const marketName = getMarketName(marketsData, tokensData, market.marketTokenAddress, false, false);
+                const marketName = getMarketName(market);
                 const longToken = getToken(chainId, market.longTokenAddress);
                 const shortToken = getToken(chainId, market.shortTokenAddress);
 

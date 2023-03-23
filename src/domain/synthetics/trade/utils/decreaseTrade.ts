@@ -1,14 +1,8 @@
-import {
-  MarketFeesConfig,
-  MarketsFeesConfigsData,
-  getMarketFeesConfig,
-  getPositionFee,
-  getPriceImpactForPosition,
-} from "domain/synthetics/fees";
-import { Market, MarketsData, MarketsOpenInterestData, MarketsPoolsData } from "domain/synthetics/markets";
+import { getPositionFee, getPriceImpactForPosition } from "domain/synthetics/fees";
+import { Market, MarketInfo } from "domain/synthetics/markets";
 import { getAcceptablePrice } from "domain/synthetics/orders";
 import { AggregatedPositionData, getLeverage, getLiquidationPrice } from "domain/synthetics/positions";
-import { TokenData, TokensData, convertToTokenAmount, getTokenData } from "domain/synthetics/tokens";
+import { TokenData, convertToTokenAmount } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { DUST_USD } from "lib/legacy";
 import { DecreasePositionAmounts, DecreasePositionTradeParams, NextPositionValues } from "../types";
@@ -16,12 +10,7 @@ import { getDisplayedTradeFees } from "./common";
 import { applySlippage, getMarkPrice, getTriggerPricePrefix } from "./prices";
 
 export function getDecreasePositionTradeParams(p: {
-  marketsData: MarketsData;
-  poolsData: MarketsPoolsData;
-  tokensData: TokensData;
-  openInterestData: MarketsOpenInterestData;
-  feesConfigs: MarketsFeesConfigsData;
-  market: Market;
+  marketInfo: MarketInfo;
   collateralToken: TokenData;
   receiveToken: TokenData;
   existingPosition?: AggregatedPositionData;
@@ -41,10 +30,8 @@ export function getDecreasePositionTradeParams(p: {
     return undefined;
   }
 
-  const feesConfig = getMarketFeesConfig(p.feesConfigs, p.market.marketTokenAddress);
-
   const nextPositionValues = getNextPositionValuesForDecreaseTrade({
-    feesConfig,
+    marketInfo: p.marketInfo,
     existingPosition: p.existingPosition,
     sizeDeltaUsd: decreasePositionAmounts?.sizeDeltaUsd,
     pnlDelta: decreasePositionAmounts?.pnlDelta,
@@ -56,7 +43,7 @@ export function getDecreasePositionTradeParams(p: {
   });
 
   const fees = getDisplayedTradeFees({
-    feesConfig,
+    marketInfo: p.marketInfo,
     sizeDeltaUsd: decreasePositionAmounts.sizeDeltaUsd,
     positionFeeUsd: decreasePositionAmounts.positionFeeUsd,
     positionPriceImpactDeltaUsd: !p.isTrigger ? decreasePositionAmounts.positionPriceImpactDeltaUsd : undefined,
@@ -64,7 +51,7 @@ export function getDecreasePositionTradeParams(p: {
 
   return {
     ...decreasePositionAmounts,
-    market: p.market,
+    market: p.marketInfo,
     collateralToken: p.collateralToken,
     receiveToken: p.receiveToken,
     nextPositionValues,
@@ -73,12 +60,7 @@ export function getDecreasePositionTradeParams(p: {
 }
 
 export function getDecreasePositionAmounts(p: {
-  marketsData: MarketsData;
-  poolsData: MarketsPoolsData;
-  tokensData: TokensData;
-  openInterestData: MarketsOpenInterestData;
-  feesConfigs: MarketsFeesConfigsData;
-  market?: Market;
+  marketInfo: MarketInfo;
   collateralToken?: TokenData;
   receiveToken?: TokenData;
   existingPosition?: AggregatedPositionData;
@@ -91,7 +73,7 @@ export function getDecreasePositionAmounts(p: {
   acceptablePriceImpactBps?: BigNumber;
   isLong?: boolean;
 }): DecreasePositionAmounts | undefined {
-  const indexToken = getTokenData(p.tokensData, p.market?.indexTokenAddress);
+  const { indexToken } = p.marketInfo;
   const markPrice = getMarkPrice(indexToken?.prices, false, p.isLong);
   const exitMarkPrice = p.isTrigger && p.triggerPrice ? p.triggerPrice : markPrice;
 
@@ -125,14 +107,8 @@ export function getDecreasePositionAmounts(p: {
 
   const sizeDeltaInTokens = convertToTokenAmount(sizeDeltaUsd, indexToken.decimals, exitMarkPrice)!;
 
-  const positionFeeUsd = getPositionFee(p.feesConfigs, p.market?.marketTokenAddress, sizeDeltaUsd);
-  const positionPriceImpactDeltaUsd = getPriceImpactForPosition(
-    p.openInterestData,
-    p.feesConfigs,
-    p.market?.marketTokenAddress,
-    p.sizeDeltaUsd,
-    p.isLong
-  );
+  const positionFeeUsd = getPositionFee(p.marketInfo, sizeDeltaUsd);
+  const positionPriceImpactDeltaUsd = getPriceImpactForPosition(p.marketInfo, p.sizeDeltaUsd, p.isLong);
 
   const {
     acceptablePrice = exitMarkPrice,
@@ -228,7 +204,7 @@ export function getDecreasePositionAmounts(p: {
 }
 
 export function getNextPositionValuesForDecreaseTrade(p: {
-  feesConfig?: MarketFeesConfig;
+  marketInfo?: MarketInfo;
   existingPosition?: AggregatedPositionData;
   sizeDeltaUsd?: BigNumber;
   pnlDelta?: BigNumber;
@@ -256,8 +232,8 @@ export function getNextPositionValuesForDecreaseTrade(p: {
     sizeUsd: nextSizeUsd,
     collateralUsd: nextCollateralUsd,
     indexPrice: p.exitMarkPrice,
-    positionFeeFactor: p.feesConfig?.positionFeeFactor,
-    maxPriceImpactFactor: p.feesConfig?.maxPositionImpactFactorForLiquidations,
+    positionFeeFactor: p.marketInfo?.positionFeeFactor,
+    maxPriceImpactFactor: p.marketInfo?.maxPositionImpactFactorForLiquidations,
     pendingBorrowingFeesUsd: p.existingPosition?.pendingBorrowingFees, // deducted on order
     pendingFundingFeesUsd: p.existingPosition?.pendingFundingFeesUsd, // deducted on order
     pnl: nextPnl,

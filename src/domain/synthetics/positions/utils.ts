@@ -1,19 +1,16 @@
 import {
-  Market,
-  MarketsData,
-  MarketsPoolsData,
+  MarketInfo,
   getCappedPoolPnl,
-  getMarket,
+  getMarketCollateralByAddress,
   getMarketName,
-  getMarketPools,
   getPoolUsd,
 } from "domain/synthetics/markets";
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "lib/legacy";
 import { applyFactor, expandDecimals, formatAmount, formatUsd, roundUpDivision } from "lib/numbers";
-import { MarketsFeesConfigsData, getBorrowingFeeRateUsd, getMarketFeesConfig, getPositionFee } from "../fees";
-import { TokenPrices, TokensData, convertToUsd, getTokenData } from "../tokens";
+import { getBorrowingFeeRateUsd, getPositionFee } from "../fees";
+import { TokenPrices, convertToUsd } from "../tokens";
 import { AggregatedPositionData, Position, PositionsData } from "./types";
 
 export function getPosition(positionsData: PositionsData, positionKey?: string) {
@@ -36,9 +33,7 @@ export function parsePositionKey(positionKey: string) {
 
 export function getAggregatedPositionData(
   positionsData: PositionsData,
-  marketsData: MarketsData,
-  tokensData: TokensData,
-  marketsFeesConfigs: MarketsFeesConfigsData,
+  marketsInfoData: { [marketAddress: string]: MarketInfo },
   positionKey?: string,
   savedIsPnlInLeverage?: boolean,
   maxLeverage?: BigNumber
@@ -55,13 +50,16 @@ export function getAggregatedPositionData(
     return undefined;
   }
 
-  const market = getMarket(marketsData, position?.marketAddress);
-  const marketName = getMarketName(marketsData, tokensData, position?.marketAddress, false, false);
-  const feesConfig = getMarketFeesConfig(marketsFeesConfigs, market?.marketTokenAddress);
+  const market = marketsInfoData[position.marketAddress];
+  const marketName = getMarketName(market);
 
-  const collateralToken = getTokenData(tokensData, position?.collateralTokenAddress);
-  const pnlToken = getTokenData(tokensData, position.isLong ? market?.longTokenAddress : market?.shortTokenAddress);
-  const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
+  const collateralToken = getMarketCollateralByAddress(market, position.collateralTokenAddress);
+  const pnlToken = getMarketCollateralByAddress(
+    market,
+    position.isLong ? market?.longTokenAddress : market?.shortTokenAddress
+  );
+
+  const indexToken = market.indexToken;
 
   const markPrice = position.isLong ? indexToken?.prices?.minPrice : indexToken?.prices?.maxPrice;
 
@@ -84,13 +82,7 @@ export function getAggregatedPositionData(
 
   const pnlPercentage = collateralUsd?.gt(0) && pnl ? pnl.mul(BASIS_POINTS_DIVISOR).div(collateralUsd) : undefined;
 
-  const borrowingFeeRateUsdPerDay = getBorrowingFeeRateUsd(
-    marketsFeesConfigs,
-    market?.marketTokenAddress,
-    position.isLong,
-    position.sizeInUsd,
-    60 * 60 * 24
-  );
+  const borrowingFeeRateUsdPerDay = getBorrowingFeeRateUsd(market, position.isLong, position.sizeInUsd, 60 * 60 * 24);
 
   const pendingFundingFeesUsd =
     collateralPrice && collateralToken && collateralUsd?.gt(0)
@@ -101,7 +93,7 @@ export function getAggregatedPositionData(
     ? position.pendingBorrowingFees.add(pendingFundingFeesUsd)
     : undefined;
 
-  const closingFeeUsd = getPositionFee(marketsFeesConfigs, market?.marketTokenAddress, position.sizeInUsd);
+  const closingFeeUsd = getPositionFee(market, position.sizeInUsd);
 
   const netValue =
     pnl && collateralUsd && totalPendingFeesUsd && closingFeeUsd
@@ -130,8 +122,8 @@ export function getAggregatedPositionData(
     sizeUsd: position.sizeInUsd,
     collateralUsd,
     indexPrice: markPrice,
-    positionFeeFactor: feesConfig?.positionFeeFactor,
-    maxPriceImpactFactor: feesConfig?.maxPositionImpactFactorForLiquidations,
+    positionFeeFactor: market.positionFeeFactor,
+    maxPriceImpactFactor: market.maxPositionImpactFactorForLiquidations,
     pendingBorrowingFeesUsd: position.pendingBorrowingFees,
     pendingFundingFeesUsd: pendingFundingFeesUsd,
     pnl: pnl,
@@ -209,10 +201,7 @@ export function getNextPositionPnl(p: {
 }
 
 export function getPositionPnl(p: {
-  tokensData: TokensData;
-  poolsData: MarketsPoolsData;
-  marketsData: MarketsData;
-  market?: Market;
+  marketInfo?: MarketInfo;
   indexToken?: Token;
   indexPrice?: BigNumber;
   sizeInUsd?: BigNumber;
@@ -220,25 +209,18 @@ export function getPositionPnl(p: {
   isLong?: boolean;
 }) {
   const positionValueUsd = getPositionValueUsd(p);
-  const pools = getMarketPools(p.poolsData, p.market?.marketTokenAddress);
 
-  if (!p.sizeInUsd || !positionValueUsd || !pools) return undefined;
+  if (!p.sizeInUsd || !positionValueUsd || !p.marketInfo) return undefined;
 
   let totalPnl = p.isLong ? positionValueUsd.sub(p.sizeInUsd) : p.sizeInUsd.sub(positionValueUsd);
 
   if (totalPnl.gt(0)) {
-    const poolPnl = p.isLong ? pools.pnlLongMax : pools.pnlShortMax;
-    const poolTokenAddress = p.isLong ? p.market?.longTokenAddress : p.market?.shortTokenAddress;
-    const poolUsd = getPoolUsd(
-      p.marketsData,
-      p.poolsData,
-      p.tokensData,
-      p.market?.marketTokenAddress,
-      poolTokenAddress,
-      "minPrice"
-    );
+    const poolPnl = p.isLong ? p.marketInfo.pnlLongMax : p.marketInfo.pnlShortMax;
 
-    const cappedPnl = getCappedPoolPnl(p.poolsData, p.market?.marketTokenAddress, poolPnl, poolUsd, p.isLong);
+    const poolTokenAddress = p.isLong ? p.marketInfo.longTokenAddress : p.marketInfo.shortTokenAddress;
+    const poolUsd = getPoolUsd(p.marketInfo, poolTokenAddress, "minPrice");
+
+    const cappedPnl = getCappedPoolPnl(p.marketInfo, poolPnl, poolUsd, p.isLong);
 
     if (!cappedPnl) return undefined;
 

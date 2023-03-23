@@ -4,6 +4,7 @@ import Modal from "components/Modal/Modal";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import {
   Market,
+  MarketInfo,
   getClaimableFundingAmount,
   getMarketName,
   getTotalClaimableFundingUsd,
@@ -36,8 +37,8 @@ export function ClaimModal(p: Props) {
 
   const totalClaimableFundingUsd = getTotalClaimableFundingUsd(marketsData, poolsData, tokensData);
 
-  function renderMarketSection(market: Market) {
-    const marketName = getMarketName(marketsData, tokensData, market.marketTokenAddress, false, false);
+  function renderMarketSection(market: MarketInfo) {
+    const marketName = getMarketName(marketsData);
     const longToken = getTokenData(tokensData, market.longTokenAddress);
     const shortToken = getTokenData(tokensData, market.shortTokenAddress);
 

@@ -1,7 +1,8 @@
-import { SwapStats, TradeFees, TradeMode, TradeType } from "../types";
-import { FeeItem, MarketFeesConfig, SwapFeeItem, getFeeItem, getTotalFeeItem } from "domain/synthetics/fees";
+import { FeeItem, SwapFeeItem, getFeeItem, getTotalFeeItem } from "domain/synthetics/fees";
+import { MarketInfo } from "domain/synthetics/markets";
 import { BigNumber } from "ethers";
 import { getBasisPoints } from "lib/numbers";
+import { SwapStats, TradeFees, TradeMode, TradeType } from "../types";
 
 export function getTradeFlags(tradeType: TradeType, tradeMode: TradeMode) {
   const isLong = tradeType === TradeType.Long;
@@ -26,7 +27,7 @@ export function getTradeFlags(tradeType: TradeType, tradeMode: TradeMode) {
 }
 
 export function getDisplayedTradeFees(p: {
-  feesConfig?: MarketFeesConfig;
+  marketInfo?: MarketInfo;
   initialCollateralUsd?: BigNumber;
   sizeDeltaUsd?: BigNumber;
   swapSteps?: SwapStats[];
@@ -63,6 +64,6 @@ export function getDisplayedTradeFees(p: {
     swapPriceImpact: swapPriceImpactFee,
     positionFee,
     positionPriceImpact: positionPriceImpactFee,
-    positionFeeFactor: p.feesConfig?.positionFeeFactor,
+    positionFeeFactor: p.marketInfo?.positionFeeFactor,
   };
 }

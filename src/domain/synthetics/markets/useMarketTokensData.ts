@@ -3,36 +3,34 @@ import SyntheticsReader from "abis/SyntheticsReader.json";
 import TokenAbi from "abis/Token.json";
 import { getContract } from "config/contracts";
 import { getTokenBySymbol } from "config/tokens";
-import { useAvailableTokensData } from "domain/synthetics/tokens";
+import { TokensData, useAvailableTokensData } from "domain/synthetics/tokens";
+import { hashString } from "lib/hash";
 import { USD_DECIMALS } from "lib/legacy";
-import { MulticallRequestConfig, useMulticall } from "lib/multicall";
+import { useMulticall } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
 import { useMemo } from "react";
 import { MarketTokensData } from "./types";
 import { useMarketsData } from "./useMarketsData";
 import { getContractMarketPrices, getMarket } from "./utils";
-import { hashString } from "lib/hash";
 
 type MarketTokensDataResult = {
-  marketTokensData: MarketTokensData;
+  marketTokensData: TokensData;
   isLoading: boolean;
 };
 
 export function useMarketTokensData(chainId: number): MarketTokensDataResult {
   const { account } = useWeb3React();
   const { tokensData, isLoading: isTokensLoading } = useAvailableTokensData(chainId);
-  const { marketsData, isLoading: isMarketsLoading } = useMarketsData(chainId);
+  const { marketsData, marketsAddresses, isLoading: isMarketsLoading } = useMarketsData(chainId);
 
-  const marketAddresses = Object.keys(marketsData);
-
-  const isDataLoaded = !isTokensLoading && !isMarketsLoading && marketAddresses.length > 0;
+  const isDataLoaded = !isTokensLoading && !isMarketsLoading && marketsAddresses.length > 0;
 
   const { data: marketTokensData, isLoading } = useMulticall(chainId, "useMarketTokensData", {
-    key: isDataLoaded ? [account, marketAddresses.join("-")] : undefined,
+    key: isDataLoaded ? [account, marketsAddresses.join("-")] : undefined,
     request: () =>
-      marketAddresses.reduce((requests: MulticallRequestConfig<any>, marketAddress: string) => {
+      marketsAddresses.reduce((requests, marketAddress) => {
         const market = getMarket(marketsData, marketAddress)!;
-        const marketPrices = getContractMarketPrices(marketsData, tokensData, marketAddress);
+        const marketPrices = getContractMarketPrices(tokensData, market);
 
         if (marketPrices) {
           const marketProps = {
@@ -97,7 +95,7 @@ export function useMarketTokensData(chainId: number): MarketTokensDataResult {
         return requests;
       }, {}),
     parseResponse: (res) =>
-      marketAddresses.reduce((marketTokensMap: MarketTokensData, marketAddress: string) => {
+      marketsAddresses.reduce((marketTokensMap: MarketTokensData, marketAddress: string) => {
         const pricesData = res[`${marketAddress}-prices`];
         const tokenData = res[`${marketAddress}-tokenData`];
         const tokenConfig = getTokenBySymbol(chainId, "GM");

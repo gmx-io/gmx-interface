@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { MarketsData, getMarket, getMarketName } from "domain/synthetics/markets";
+import { MarketInfo, getMarketCollateralByAddress, getMarketName } from "domain/synthetics/markets";
 import { TokenData, TokenPrices, TokensData, getTokenData, parseContractPrice } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";
@@ -69,7 +69,7 @@ export function getTriggerOrderType(p: { isLong: boolean; isTriggerAboveThreshol
 
 export function getAggregatedOrderData(
   ordersData: OrdersData,
-  marketsData: MarketsData,
+  marketsInfoData: { [marketAddress: string]: MarketInfo },
   tokensData: TokensData,
   orderKey?: string
 ): AggregatedOrderData | undefined {
@@ -81,12 +81,17 @@ export function getAggregatedOrderData(
 
   if (!isTriggerOrder) return undefined;
 
-  const market = getMarket(marketsData, order.marketAddress);
-  const marketName = getMarketName(marketsData, tokensData, order.marketAddress, false, false);
-  const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
-  const initialCollateralToken = getTokenData(tokensData, order.initialCollateralTokenAddress);
+  const market = marketsInfoData[order.marketAddress];
+  const marketName = getMarketName(market);
+  const indexToken = market.indexToken;
+  const initialCollateralToken = getMarketCollateralByAddress(market, order.initialCollateralTokenAddress);
 
-  const toCollateralAddress = getToTokenFromSwapPath(marketsData, order.initialCollateralTokenAddress, order.swapPath);
+  const toCollateralAddress = getToTokenFromSwapPath(
+    marketsInfoData,
+    order.initialCollateralTokenAddress,
+    order.swapPath
+  );
+
   const toCollateralToken = getTokenData(tokensData, toCollateralAddress);
 
   const triggerPrice = indexToken ? parseContractPrice(order.contractTriggerPrice, indexToken.decimals) : undefined;
@@ -109,30 +114,33 @@ export function getAggregatedOrderData(
   };
 }
 
-export function getToTokenFromSwapPath(marketsData: MarketsData, initialCollateral?: string, swapPath?: string[]) {
+export function getToTokenFromSwapPath(
+  marketsInfoData: { [marketAddress: string]: MarketInfo },
+  initialCollateral?: string,
+  swapPath?: string[]
+) {
   if (!initialCollateral || !swapPath) return undefined;
 
   if (swapPath.length === 0) return initialCollateral;
 
   const [firstMarketAddress, ...marketAddresses] = swapPath;
 
-  const initialMarket = getMarket(marketsData, firstMarketAddress);
+  const initialMarket = marketsInfoData[firstMarketAddress];
 
   if (!initialMarket) return undefined;
 
   let outTokenType: "long" | "short" = initialMarket.longTokenAddress === initialCollateral ? "short" : "long";
-  let outTokenAddress = outTokenType === "long" ? initialMarket.longTokenAddress : initialMarket.shortTokenAddress;
+  let outToken = outTokenType === "long" ? initialMarket.longToken : initialMarket.shortToken;
+  let outMarket = initialMarket;
 
   for (const marketAddress of marketAddresses) {
-    const market = getMarket(marketsData, marketAddress);
+    outMarket = marketsInfoData[marketAddress];
 
-    if (!market) return undefined;
-
-    outTokenType = market.longTokenAddress === outTokenAddress ? "short" : "long";
-    outTokenAddress = outTokenType === "long" ? market.longTokenAddress : market.shortTokenAddress;
+    outTokenType = outMarket.longTokenAddress === outToken.address ? "short" : "long";
+    outToken = outTokenType === "long" ? outMarket.longToken : outMarket.shortToken;
   }
 
-  return outTokenAddress;
+  return outToken.address;
 }
 
 export function getOrderTitle(p: {

@@ -194,9 +194,7 @@ export function getCandlesDelta(candles?: Bar[], currentAveragePrice?: number, p
   };
 }
 
-export function getMidPrice(prices: TokenPrices | undefined) {
-  if (!prices) return undefined;
-
+export function getMidPrice(prices: TokenPrices) {
   return prices.minPrice.add(prices.maxPrice).div(2);
 }
 

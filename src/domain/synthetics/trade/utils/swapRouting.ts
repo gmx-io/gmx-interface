@@ -1,10 +1,8 @@
-import { MarketsData } from "domain/synthetics/markets";
+import { Market } from "domain/synthetics/markets";
 import { MarketEdge, MarketsGraph, SwapEstimator } from "../types";
 import { BigNumber } from "ethers";
 
-export function getMarketsGraph(marketsData: MarketsData): MarketsGraph {
-  const markets = Object.values(marketsData);
-
+export function getMarketsGraph(markets: Market[]): MarketsGraph {
   const graph: MarketsGraph = {
     abjacencyList: {},
     edges: [],

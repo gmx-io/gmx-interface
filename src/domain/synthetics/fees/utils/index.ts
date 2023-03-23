@@ -2,6 +2,7 @@ import { BigNumber } from "ethers";
 import { applyFactor, getBasisPoints } from "lib/numbers";
 import { FeeItem, MarketsFeesConfigsData } from "../types";
 import { HIGH_PRICE_IMPACT_BPS } from "config/synthetics";
+import { MarketInfo } from "domain/synthetics/markets";
 
 export * from "./executionFee";
 export * from "./priceImpact";
@@ -12,39 +13,27 @@ export function getMarketFeesConfig(feeConfigsData: MarketsFeesConfigsData, mark
   return feeConfigsData[marketAddress];
 }
 
-export function getPositionFee(feeConfigs: MarketsFeesConfigsData, marketAddress?: string, sizeDeltaUsd?: BigNumber) {
-  const feeConfig = getMarketFeesConfig(feeConfigs, marketAddress);
+export function getPositionFee(marketInfo: MarketInfo, sizeDeltaUsd?: BigNumber) {
+  if (!sizeDeltaUsd) return undefined;
 
-  if (!feeConfig || !sizeDeltaUsd) return undefined;
-
-  return applyFactor(sizeDeltaUsd, feeConfig.positionFeeFactor);
+  return applyFactor(sizeDeltaUsd, marketInfo.positionFeeFactor);
 }
 
-export function getBorrowingFeeFactor(
-  feeConfigs: MarketsFeesConfigsData,
-  marketAddress?: string,
-  isLong?: boolean,
-  periodInSeconds?: number
-) {
-  const feeConfig = getMarketFeesConfig(feeConfigs, marketAddress);
-
-  if (!feeConfig) return undefined;
-
+export function getBorrowingFeeFactor(marketInfo: MarketInfo, isLong?: boolean, periodInSeconds?: number) {
   const factorPerSecond = isLong
-    ? feeConfig.borrowingFactorPerSecondForLongs
-    : feeConfig.borrowingFactorPerSecondForShorts;
+    ? marketInfo.borrowingFactorPerSecondForLongs
+    : marketInfo.borrowingFactorPerSecondForShorts;
 
   return factorPerSecond.mul(periodInSeconds || 1);
 }
 
 export function getBorrowingFeeRateUsd(
-  feesConfigs: MarketsFeesConfigsData,
-  marketAddress?: string,
+  marketInfo: MarketInfo,
   isLong?: boolean,
   sizeInUsd?: BigNumber,
   periodInSeconds?: number
 ) {
-  const factor = getBorrowingFeeFactor(feesConfigs, marketAddress, isLong, periodInSeconds);
+  const factor = getBorrowingFeeFactor(marketInfo, isLong, periodInSeconds);
 
   if (!factor || !sizeInUsd) return undefined;
 

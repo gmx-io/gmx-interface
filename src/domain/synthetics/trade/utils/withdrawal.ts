@@ -1,48 +1,20 @@
-import { MarketsData, MarketsPoolsData, getPoolUsd } from "domain/synthetics/markets";
-import { WithdrawalAmounts } from "../types";
-import { TokenData, TokensData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
+import { MarketInfo, getPoolUsd } from "domain/synthetics/markets";
+import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
-import { MarketsFeesConfigsData, getMarketFeesConfig } from "domain/synthetics/fees";
 import { applyFactor } from "lib/numbers";
+import { WithdrawalAmounts } from "../types";
 
 export function getNextWithdrawalAmountsByMarketToken(p: {
-  marketsData: MarketsData;
-  tokensData: TokensData;
-  poolsData: MarketsPoolsData;
-  feesConfigs: MarketsFeesConfigsData;
+  marketInfo: MarketInfo;
   marketToken: TokenData;
   longToken: TokenData;
   shortToken: TokenData;
   marketTokenAmount: BigNumber;
 }): WithdrawalAmounts | undefined {
-  const feesConfig = getMarketFeesConfig(p.feesConfigs, p.marketToken.address);
+  const longPoolUsd = getPoolUsd(p.marketInfo, p.marketInfo.longTokenAddress, "maxPrice");
+  const shortPoolUsd = getPoolUsd(p.marketInfo, p.marketInfo.shortTokenAddress, "maxPrice");
 
-  const longPoolUsd = getPoolUsd(
-    p.marketsData,
-    p.poolsData,
-    p.tokensData,
-    p.marketToken.address,
-    p.longToken.address,
-    "maxPrice"
-  );
-
-  const shortPoolUsd = getPoolUsd(
-    p.marketsData,
-    p.poolsData,
-    p.tokensData,
-    p.marketToken.address,
-    p.shortToken.address,
-    "maxPrice"
-  );
-
-  if (
-    !longPoolUsd ||
-    !shortPoolUsd ||
-    !feesConfig ||
-    !p.marketToken.prices ||
-    !p.longToken.prices ||
-    !p.shortToken.prices
-  ) {
+  if (!longPoolUsd || !shortPoolUsd || !p.marketToken.prices || !p.longToken.prices || !p.shortToken.prices) {
     return undefined;
   }
 
@@ -58,8 +30,8 @@ export function getNextWithdrawalAmountsByMarketToken(p: {
   let longTokenUsd = marketTokenUsd.mul(longPoolUsd).div(totalPoolsUsd);
   let shortTokenUsd = marketTokenUsd.mul(shortPoolUsd).div(totalPoolsUsd);
 
-  const longSwapFeeUsd = applyFactor(longTokenUsd, feesConfig.swapFeeFactor);
-  const shortSwapFeeUsd = applyFactor(shortTokenUsd, feesConfig.swapFeeFactor);
+  const longSwapFeeUsd = applyFactor(longTokenUsd, p.marketInfo.swapFeeFactor);
+  const shortSwapFeeUsd = applyFactor(shortTokenUsd, p.marketInfo.swapFeeFactor);
   const swapFeeUsd = longSwapFeeUsd.add(shortSwapFeeUsd);
 
   longTokenUsd = longTokenUsd.sub(longSwapFeeUsd);
@@ -80,40 +52,20 @@ export function getNextWithdrawalAmountsByMarketToken(p: {
 }
 
 export function getNextWithdrawalAmountsByCollaterals(p: {
-  marketsData: MarketsData;
-  tokensData: TokensData;
-  poolsData: MarketsPoolsData;
-  feesConfigs: MarketsFeesConfigsData;
+  marketInfo: MarketInfo;
   marketToken: TokenData;
   longToken: TokenData;
   shortToken: TokenData;
   longTokenAmount?: BigNumber;
   shortTokenAmount?: BigNumber;
 }): WithdrawalAmounts | undefined {
-  const feesConfig = getMarketFeesConfig(p.feesConfigs, p.marketToken.address);
+  const longPoolUsd = getPoolUsd(p.marketInfo, p.marketInfo.longTokenAddress, "maxPrice");
 
-  const longPoolUsd = getPoolUsd(
-    p.marketsData,
-    p.poolsData,
-    p.tokensData,
-    p.marketToken.address,
-    p.longToken.address,
-    "maxPrice"
-  );
-
-  const shortPoolUsd = getPoolUsd(
-    p.marketsData,
-    p.poolsData,
-    p.tokensData,
-    p.marketToken.address,
-    p.shortToken.address,
-    "maxPrice"
-  );
+  const shortPoolUsd = getPoolUsd(p.marketInfo, p.marketInfo.shortTokenAddress, "maxPrice");
 
   if (
     !longPoolUsd ||
     !shortPoolUsd ||
-    !feesConfig ||
     !p.marketToken.prices ||
     !p.longToken.prices ||
     !p.shortToken.prices ||
@@ -141,7 +93,7 @@ export function getNextWithdrawalAmountsByCollaterals(p: {
 
   let marketTokenUsd = longTokenUsd.add(shortTokenUsd);
 
-  const swapFeeUsd = applyFactor(marketTokenUsd, feesConfig.swapFeeFactor);
+  const swapFeeUsd = applyFactor(marketTokenUsd, p.marketInfo.swapFeeFactor);
 
   marketTokenUsd = marketTokenUsd.sub(swapFeeUsd);
 

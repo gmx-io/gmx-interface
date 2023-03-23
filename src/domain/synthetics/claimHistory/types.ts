@@ -1,5 +1,5 @@
 import { BigNumber } from "ethers";
-import { Market } from "../markets";
+import { MarketInfo } from "../markets";
 
 export enum ClaimType {
   ClaimPriceImpact = "ClaimPriceImpact",
@@ -21,7 +21,7 @@ export type RawClaimCollateralAction = {
 };
 
 export type ClaimItem = {
-  market: Market;
+  market: MarketInfo;
   longTokenAmount: BigNumber;
   shortTokenAmount: BigNumber;
 };

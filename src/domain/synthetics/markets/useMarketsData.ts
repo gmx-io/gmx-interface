@@ -5,19 +5,20 @@ import { MarketsData } from "./types";
 
 type MarketsDataResult = {
   marketsData: MarketsData;
+  marketsAddresses: string[];
   isLoading: boolean;
 };
 
-const DEFAULT_COUNT = 100;
+const MARKETS_COUNT = 100;
 
-const defaultValue = {};
+const defaultValue = {
+  marketsData: {},
+  marketsAddresses: [],
+};
 
 export function useMarketsData(chainId: number): MarketsDataResult {
-  const startIndex = 0;
-  const endIndex = DEFAULT_COUNT;
-
   const { data = defaultValue, isLoading } = useMulticall(chainId, "useMarketsData", {
-    key: [startIndex, endIndex],
+    key: [],
     request: () => ({
       reader: {
         contractAddress: getContract(chainId, "SyntheticsReader"),
@@ -25,38 +26,40 @@ export function useMarketsData(chainId: number): MarketsDataResult {
         calls: {
           markets: {
             methodName: "getMarkets",
-            params: [getContract(chainId, "DataStore"), startIndex, endIndex],
+            params: [getContract(chainId, "DataStore"), 0, MARKETS_COUNT],
           },
         },
       },
     }),
     parseResponse: (res) => {
-      const markets = res.reader.markets.returnValues;
+      return res.reader.markets.returnValues.reduce(
+        (acc: { marketsData: MarketsData; marketsAddresses: string[] }, marketValues) => {
+          const [marketTokenAddress, indexTokenAddress, longTokenAddress, shortTokenAddress, data] = marketValues;
 
-      return markets.reduce((acc: MarketsData, market) => {
-        const [marketTokenAddress, indexTokenAddress, longTokenAddress, shortTokenAddress, data] = market;
+          try {
+            acc.marketsData[marketTokenAddress] = {
+              marketTokenAddress,
+              indexTokenAddress,
+              longTokenAddress,
+              shortTokenAddress,
+              data,
+              perp: "USD",
+            };
+            acc.marketsAddresses.push(marketTokenAddress);
+          } catch (e) {
+            // ignore parsing errors on unknown tokens
+          }
 
-        try {
-          acc[marketTokenAddress] = {
-            marketTokenAddress,
-            indexTokenAddress,
-            longTokenAddress,
-            shortTokenAddress,
-            data,
-            // TODO: store in configs?
-            perp: "USD",
-          };
-        } catch (e) {
-          // ignore parsing errors on unknown tokens
-        }
-
-        return acc;
-      }, {} as MarketsData);
+          return acc;
+        },
+        defaultValue
+      );
     },
   });
 
   return {
-    marketsData: data,
+    marketsData: data.marketsData,
+    marketsAddresses: data.marketsAddresses,
     isLoading,
   };
 }

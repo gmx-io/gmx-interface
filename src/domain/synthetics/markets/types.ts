@@ -1,11 +1,6 @@
 import { BigNumber } from "ethers";
 import { TokenData } from "domain/synthetics/tokens";
 
-export enum MarketPoolType {
-  Long = "Long",
-  Short = "Short",
-}
-
 export type Market = {
   marketTokenAddress: string;
   indexTokenAddress: string;
@@ -13,18 +8,6 @@ export type Market = {
   shortTokenAddress: string;
   data: string;
   perp: string;
-};
-
-export type MarketsData = {
-  [marketTokenAddress: string]: Market;
-};
-
-export type MarketTokenData = TokenData & {
-  totalSupply?: BigNumber;
-};
-
-export type MarketTokensData = {
-  [marketAddress: string]: MarketTokenData;
 };
 
 export type PoolData = {
@@ -63,46 +46,60 @@ export type PoolData = {
   claimableFundingAmountShort?: BigNumber;
 };
 
-export type RawContractDeposit = {
-  addresses: {
-    account: string;
-    receiver: string;
-    callbackContract: string;
-    market: string;
-  };
-  numbers: {
-    longTokenAmount: BigNumber;
-    shortTokenAmount: BigNumber;
-    minMarketTokens: BigNumber;
-    updatedAtBlock: BigNumber;
-    executionFee: BigNumber;
-    callbackGasLimit: BigNumber;
-  };
-  flags: {
-    shouldUnwrapNativeToken: boolean;
-  };
-  data: string;
+export type MarketFeesConfig = {
+  positionFeeFactor: BigNumber;
+  positionImpactFactorPositive: BigNumber;
+  positionImpactFactorNegative: BigNumber;
+  maxPositionImpactFactorPositive: BigNumber;
+  maxPositionImpactFactorNegative: BigNumber;
+  maxPositionImpactFactorForLiquidations: BigNumber;
+  positionImpactExponentFactor: BigNumber;
+
+  swapFeeFactor: BigNumber;
+  swapImpactFactorPositive: BigNumber;
+  swapImpactFactorNegative: BigNumber;
+  swapImpactExponentFactor: BigNumber;
+
+  borrowingFactorPerSecondForLongs: BigNumber;
+  borrowingFactorPerSecondForShorts: BigNumber;
+
+  fundingPerSecond: BigNumber;
+  longsPayShorts: boolean;
+  fundingAmountPerSize_LongCollateral_LongPosition: BigNumber;
+  fundingAmountPerSize_LongCollateral_ShortPosition: BigNumber;
+  fundingAmountPerSize_ShortCollateral_LongPosition: BigNumber;
+  fundingAmountPerSize_ShortCollateral_ShortPosition: BigNumber;
 };
 
-export type RawContractWithdrawal = {
-  addresses: {
-    account: string;
-    receiver: string;
-    callbackContract: string;
-    market: string;
-  };
-  numbers: {
-    marketTokenAmount: BigNumber;
-    minLongTokenAmount: BigNumber;
-    minShortTokenAmount: BigNumber;
-    updatedAtBlock: BigNumber;
-    executionFee: BigNumber;
-    callbackGasLimit: BigNumber;
-  };
-  flags: {
-    shouldUnwrapNativeToken: boolean;
-  };
-  data: string;
+export type OpenInterestData = {
+  longInterestUsd: BigNumber;
+  shortInterestUsd: BigNumber;
+  longInterestInTokens: BigNumber;
+  shortInterestInTokens: BigNumber;
+};
+
+export type MarketTokens = {
+  longToken: TokenData;
+  shortToken: TokenData;
+  indexToken: TokenData;
+};
+
+export type MarketInfo = Market & MarketTokens & MarketFeesConfig & PoolData & OpenInterestData;
+
+export type MarketsInfoData = {
+  [marketAddress: string]: MarketInfo;
+};
+
+export type MarketsData = {
+  [marketTokenAddress: string]: Market;
+};
+
+export type MarketTokenData = TokenData & {
+  totalSupply?: BigNumber;
+};
+
+export type MarketTokensData = {
+  [marketAddress: string]: MarketTokenData;
 };
 
 export type ContractMarketPrices = {
@@ -122,13 +119,6 @@ export type ContractMarketPrices = {
 
 export type MarketsPoolsData = {
   [marketAddress: string]: PoolData;
-};
-
-export type OpenInterestData = {
-  longInterestUsd: BigNumber;
-  shortInterestUsd: BigNumber;
-  longInterestInTokens: BigNumber;
-  shortInterestInTokens: BigNumber;
 };
 
 export type MarketsOpenInterestData = {

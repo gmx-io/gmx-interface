@@ -1,59 +1,23 @@
-import {
-  MarketsFeesConfigsData,
-  applySwapImpactWithCap,
-  getMarketFeesConfig,
-  getPriceImpactUsd,
-} from "domain/synthetics/fees";
-import { MarketsData, MarketsPoolsData, getPoolUsd } from "domain/synthetics/markets";
-import { TokenData, TokensData, convertToTokenAmount, convertToUsd, getMidPrice } from "domain/synthetics/tokens";
+import { applySwapImpactWithCap, getPriceImpactUsd } from "domain/synthetics/fees";
+import { MarketInfo, getPoolUsd } from "domain/synthetics/markets";
+import { TokenData, convertToTokenAmount, convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { applyFactor } from "lib/numbers";
 import { DepositAmounts } from "../types";
 
 export function getNextDepositAmountsByCollaterals(p: {
-  marketsData: MarketsData;
-  poolsData: MarketsPoolsData;
-  tokensData: TokensData;
-  feesConfigs: MarketsFeesConfigsData;
+  marketInfo: MarketInfo;
   marketToken: TokenData;
-  longToken: TokenData;
-  shortToken: TokenData;
   longTokenAmount?: BigNumber;
   shortTokenAmount?: BigNumber;
 }): DepositAmounts | undefined {
-  const {
-    marketToken,
-    longToken,
-    shortToken,
-    longTokenAmount,
-    shortTokenAmount,
-    feesConfigs,
-    marketsData,
-    poolsData,
-    tokensData,
-  } = p;
+  const { marketToken, longTokenAmount, shortTokenAmount, marketInfo } = p;
+  const { longToken, shortToken } = marketInfo;
 
-  const feesConfig = getMarketFeesConfig(feesConfigs, marketToken.address);
+  const longPoolUsd = getPoolUsd(marketInfo, marketInfo.longTokenAddress, "midPrice");
+  const shortPoolUsd = getPoolUsd(marketInfo, marketInfo.shortTokenAddress, "midPrice");
 
-  const longPoolUsd = getPoolUsd(
-    marketsData,
-    poolsData,
-    tokensData,
-    marketToken.address,
-    longToken.address,
-    "midPrice"
-  );
-
-  const shortPoolUsd = getPoolUsd(
-    marketsData,
-    poolsData,
-    tokensData,
-    marketToken.address,
-    shortToken.address,
-    "midPrice"
-  );
-
-  if (!longToken.prices || !shortToken.prices || !marketToken.prices || !feesConfig) {
+  if (!longToken.prices || !shortToken.prices || !marketToken.prices) {
     return undefined;
   }
 
@@ -67,9 +31,9 @@ export function getNextDepositAmountsByCollaterals(p: {
     currentShortUsd: shortPoolUsd,
     longDeltaUsd: longTokenUsd,
     shortDeltaUsd: shortTokenUsd,
-    factorPositive: feesConfig.swapImpactFactorPositive,
-    factorNegative: feesConfig.swapImpactFactorNegative,
-    exponentFactor: feesConfig.swapImpactExponentFactor,
+    factorPositive: marketInfo.swapImpactFactorPositive,
+    factorNegative: marketInfo.swapImpactFactorNegative,
+    exponentFactor: marketInfo.swapImpactExponentFactor,
   });
 
   if (!totalPriceImpactDeltaUsd) {
@@ -83,10 +47,7 @@ export function getNextDepositAmountsByCollaterals(p: {
 
   if (longTokenAmount?.gt(0)) {
     const amounts = getMarketTokenAmountByCollateralDeposit({
-      marketsData,
-      poolsData,
-      tokensData,
-      feesConfigs,
+      marketInfo,
       marketToken,
       tokenIn: longToken,
       tokenOut: shortToken,
@@ -106,10 +67,7 @@ export function getNextDepositAmountsByCollaterals(p: {
 
   if (shortTokenAmount?.gt(0)) {
     const amounts = getMarketTokenAmountByCollateralDeposit({
-      marketsData,
-      poolsData,
-      tokensData,
-      feesConfigs,
+      marketInfo,
       marketToken,
       tokenIn: shortToken,
       tokenOut: longToken,
@@ -145,13 +103,8 @@ export function getNextDepositAmountsByCollaterals(p: {
 }
 
 export function getNextDepositAmountsByMarketToken(p: {
-  marketsData: MarketsData;
-  poolsData: MarketsPoolsData;
-  tokensData: TokensData;
-  feesConfigs: MarketsFeesConfigsData;
+  marketInfo: MarketInfo;
   marketToken: TokenData;
-  longToken: TokenData;
-  shortToken: TokenData;
   marketTokenAmount: BigNumber;
   includeLongToken?: boolean;
   includeShortToken?: boolean;
@@ -159,19 +112,16 @@ export function getNextDepositAmountsByMarketToken(p: {
   previousShortTokenAmount?: BigNumber;
 }): DepositAmounts | undefined {
   const {
+    marketInfo,
     marketToken,
-    longToken,
-    shortToken,
     marketTokenAmount,
     previousLongTokenAmount,
     previousShortTokenAmount,
-    feesConfigs,
-    marketsData,
     includeLongToken,
     includeShortToken,
-    poolsData,
-    tokensData,
   } = p;
+
+  const { longToken, shortToken } = marketInfo;
 
   if (!longToken.prices || !shortToken.prices || !marketToken.prices) {
     return undefined;
@@ -206,13 +156,8 @@ export function getNextDepositAmountsByMarketToken(p: {
   let shortTokenAmount = convertToTokenAmount(shortTokenUsd, shortToken.decimals, getMidPrice(shortToken.prices));
 
   const baseAmounts = getNextDepositAmountsByCollaterals({
-    marketsData,
-    poolsData,
-    tokensData,
-    feesConfigs,
+    marketInfo,
     marketToken,
-    longToken,
-    shortToken,
     longTokenAmount,
     shortTokenAmount,
   })!;
@@ -235,25 +180,22 @@ export function getNextDepositAmountsByMarketToken(p: {
 }
 
 export function getMarketTokenAmountByCollateralDeposit(p: {
-  marketsData: MarketsData;
-  poolsData: MarketsPoolsData;
-  tokensData: TokensData;
-  feesConfigs: MarketsFeesConfigsData;
+  marketInfo: MarketInfo;
   marketToken: TokenData;
   tokenIn: TokenData;
   tokenOut: TokenData;
   tokenInAmount: BigNumber;
   priceImpactDeltaUsd: BigNumber;
 }) {
-  const feesConfig = getMarketFeesConfig(p.feesConfigs, p.marketToken.address);
+  const { marketInfo } = p;
 
-  if (!feesConfig || !p.tokenIn.prices || !p.tokenOut.prices || !p.marketToken.prices) {
+  if (!p.tokenIn.prices || !p.tokenOut.prices || !p.marketToken.prices) {
     return undefined;
   }
 
   let mintAmount = BigNumber.from(0);
 
-  const swapFeeAmount = applyFactor(p.tokenInAmount, feesConfig.swapFeeFactor);
+  const swapFeeAmount = applyFactor(p.tokenInAmount, marketInfo.swapFeeFactor);
   const swapFeeUsd = convertToUsd(swapFeeAmount, p.tokenIn.decimals, p.tokenIn.prices.minPrice)!;
 
   let amountInAfterFees = p.tokenInAmount.sub(swapFeeAmount);
@@ -262,28 +204,14 @@ export function getMarketTokenAmountByCollateralDeposit(p: {
   let cappedPriceImpactDeltaUsd: BigNumber | undefined;
 
   if (p.priceImpactDeltaUsd.gt(0)) {
-    const positiveImpactAmount = applySwapImpactWithCap(
-      p.marketsData,
-      p.poolsData,
-      p.tokensData,
-      p.marketToken.address,
-      p.tokenOut.address,
-      p.priceImpactDeltaUsd
-    )!;
+    const positiveImpactAmount = applySwapImpactWithCap(p.marketInfo, p.tokenOut.address, p.priceImpactDeltaUsd)!;
 
     cappedPriceImpactDeltaUsd = convertToUsd(positiveImpactAmount, p.tokenOut.decimals, p.tokenOut.prices.minPrice)!;
     mintAmount = mintAmount.add(
       convertToTokenAmount(cappedPriceImpactDeltaUsd, p.marketToken.decimals, p.marketToken.prices.minPrice)!
     );
   } else {
-    const negativeImpactAmount = applySwapImpactWithCap(
-      p.marketsData,
-      p.poolsData,
-      p.tokensData,
-      p.marketToken.address,
-      p.tokenIn.address,
-      p.priceImpactDeltaUsd
-    )!;
+    const negativeImpactAmount = applySwapImpactWithCap(p.marketInfo, p.tokenIn.address, p.priceImpactDeltaUsd)!;
 
     cappedPriceImpactDeltaUsd = convertToUsd(negativeImpactAmount, p.tokenIn.decimals, p.tokenIn.prices?.minPrice);
     amountInAfterFees = amountInAfterFees.sub(negativeImpactAmount.mul(-1));

@@ -1,23 +1,9 @@
-import { MarketsFeesConfigsData, getMarketFeesConfig } from "domain/synthetics/fees";
-import { MarketsData, MarketsPoolsData } from "domain/synthetics/markets";
-import {
-  TokenData,
-  TokensData,
-  TokensRatio,
-  convertToTokenAmount,
-  convertToUsd,
-  getAmountByRatio,
-  getTokenData,
-} from "domain/synthetics/tokens";
+import { TokenData, TokensRatio, convertToTokenAmount, convertToUsd, getAmountByRatio } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { SwapAmounts, SwapPathStats, SwapTradeParams } from "../types";
 import { getDisplayedTradeFees } from "./common";
 
 export function getSwapTradeParams(p: {
-  marketsData: MarketsData;
-  poolsData: MarketsPoolsData;
-  tokensData: TokensData;
-  feesConfigs: MarketsFeesConfigsData;
   tokenIn: TokenData;
   tokenOut: TokenData;
   tokenInAmount?: BigNumber;
@@ -32,10 +18,7 @@ export function getSwapTradeParams(p: {
     return undefined;
   }
 
-  const feesConfig = getMarketFeesConfig(p.feesConfigs, swapAmounts.swapPathStats?.targetMarketAddress);
-
   const fees = getDisplayedTradeFees({
-    feesConfig,
     initialCollateralUsd: swapAmounts.usdIn,
     swapSteps: swapAmounts.swapPathStats?.swapSteps,
     swapPriceImpactDeltaUsd: !p.isLimit ? swapAmounts.swapPathStats?.totalSwapPriceImpactDeltaUsd : undefined,
@@ -56,10 +39,6 @@ export function getSwapTradeParams(p: {
  * Calculates swap amounts (amountOut by amountIn or amountIn by amountOut)
  */
 export function getSwapAmounts(p: {
-  marketsData: MarketsData;
-  poolsData: MarketsPoolsData;
-  tokensData: TokensData;
-  feesConfigs: MarketsFeesConfigsData;
   tokenIn?: TokenData;
   tokenOut?: TokenData;
   tokenInAmount?: BigNumber;
@@ -68,8 +47,7 @@ export function getSwapAmounts(p: {
   isLimit?: boolean;
   findSwapPath: (usdIn: BigNumber, opts?: { disablePriceImpact?: boolean }) => SwapPathStats | undefined;
 }): SwapAmounts | undefined {
-  const tokenIn = getTokenData(p.tokensData, p.tokenIn?.address, "wrapped")!;
-  const tokenOut = getTokenData(p.tokensData, p.tokenOut?.address, "wrapped")!;
+  const { tokenIn, tokenOut } = p;
 
   const defaultAmounts: SwapAmounts = {
     amountIn: BigNumber.from(0),
@@ -79,7 +57,7 @@ export function getSwapAmounts(p: {
     minOutputAmount: BigNumber.from(0),
   };
 
-  if (!tokenIn.prices || !tokenOut.prices) {
+  if (!tokenIn?.prices || !tokenOut?.prices) {
     return undefined;
   }
 
