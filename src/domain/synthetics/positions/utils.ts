@@ -1,5 +1,6 @@
 import {
   MarketInfo,
+  MarketsInfoData,
   getCappedPoolPnl,
   getMarketCollateralByAddress,
   getMarketName,
@@ -33,7 +34,7 @@ export function parsePositionKey(positionKey: string) {
 
 export function getAggregatedPositionData(
   positionsData: PositionsData,
-  marketsInfoData: { [marketAddress: string]: MarketInfo },
+  marketsInfoData: MarketsInfoData,
   positionKey?: string,
   savedIsPnlInLeverage?: boolean,
   maxLeverage?: BigNumber

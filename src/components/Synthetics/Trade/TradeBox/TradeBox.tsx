@@ -25,6 +25,7 @@ import {
   getMostLiquidMarketForPosition,
   getMostLiquidMarketForSwap,
   useMarketsData,
+  useMarketsInfo,
   useMarketsPoolsData,
   useOpenInterestData,
 } from "domain/synthetics/markets";
@@ -163,16 +164,14 @@ export function TradeBox(p: Props) {
   const { chainId } = useChainId();
   const { account } = useWeb3React();
   const { tokensData, isLoading: isTokensLoading } = useAvailableTokensData(chainId);
-  const { marketsData, isLoading: isMarketsLoading } = useMarketsData(chainId);
-  const { poolsData, isLoading: isMarketPoolsLoading } = useMarketsPoolsData(chainId);
-  const { openInterestData, isLoading: isOpenInterestLoading } = useOpenInterestData(chainId);
-  const { marketsFeesConfigs, isLoading: isFeesConfigsLoading } = useMarketsFeesConfigs(chainId);
+
+  const { marketsInfoData, isLoading: isMarketsInfoLoading } = useMarketsInfo(chainId);
+
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimitsConfig(chainId);
   const { maxLeverage, minCollateralUsd } = usePositionsConstants(chainId);
 
-  const isDataLoading =
-    isTokensLoading || isMarketsLoading || isMarketPoolsLoading || isOpenInterestLoading || isFeesConfigsLoading;
+  const isDataLoading = isTokensLoading || isMarketsInfoLoading;
 
   const tradeTypeLabels = {
     [TradeType.Long]: t`Long`,

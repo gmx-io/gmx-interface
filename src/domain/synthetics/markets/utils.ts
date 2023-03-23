@@ -8,7 +8,7 @@ import {
   ContractMarketPrices,
   Market,
   MarketInfo,
-  MarketTokens,
+  MarketPoolTokens,
   MarketsData,
   MarketsOpenInterestData,
   MarketsPoolsData,
@@ -58,10 +58,16 @@ export function getMarketInfo(
   };
 }
 
-export function getMarketName(marketInfo: Market & MarketTokens) {
+export function getMarketName(marketInfo: MarketInfo, opts: { includeGM?: boolean } = {}) {
   const { indexToken, longToken, shortToken, perp } = marketInfo;
 
-  return `${indexToken.symbol}/${perp} [${longToken.symbol}-${shortToken.symbol}]`;
+  let name = `${indexToken.symbol}/${perp} [${longToken.symbol}-${shortToken.symbol}]`;
+
+  if (opts.includeGM) {
+    name = `GM: ${name}`;
+  }
+
+  return name;
 }
 
 export function getTokenPoolType(marketInfo: MarketInfo, tokenAddress?: string) {

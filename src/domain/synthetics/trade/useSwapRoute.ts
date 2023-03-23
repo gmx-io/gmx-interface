@@ -1,25 +1,19 @@
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getWrappedToken } from "config/tokens";
-import { useMarketsData, useMarketsPoolsData, useOpenInterestData } from "domain/synthetics/markets";
-import { useAvailableTokensData } from "domain/synthetics/tokens";
+import { useMarketsInfo } from "domain/synthetics/markets";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { useCallback, useMemo } from "react";
-import { useMarketsFeesConfigs } from "../fees/useMarketsFeesConfigs";
 import { createSwapEstimator, findAllPaths, getBestSwapPath, getMarketsGraph, getSwapPathStats } from "./utils/index";
 
 export function useSwapRoute(p: { fromTokenAddress?: string; toTokenAddress?: string }) {
   const { chainId } = useChainId();
-  const { marketsData } = useMarketsData(chainId);
-  const { poolsData } = useMarketsPoolsData(chainId);
-  const { openInterestData } = useOpenInterestData(chainId);
-  const { marketsFeesConfigs } = useMarketsFeesConfigs(chainId);
-  const { tokensData } = useAvailableTokensData(chainId);
+  const { marketsInfoData } = useMarketsInfo(chainId);
 
   const wrappedToken = getWrappedToken(chainId);
 
   const graph = useMemo(() => {
-    return getMarketsGraph(marketsData);
-  }, [marketsData]);
+    return getMarketsGraph(Object.values(marketsInfoData));
+  }, [marketsInfoData]);
 
   const paths = useMemo(() => {
     const fromAddress = p.fromTokenAddress ? convertTokenAddress(chainId, p.fromTokenAddress, "wrapped") : undefined;
@@ -53,7 +47,7 @@ export function useSwapRoute(p: { fromTokenAddress?: string; toTokenAddress?: st
       if (isWrap || isUnwrap || isSameToken) {
         swapPath = [];
       } else {
-        const estimator = createSwapEstimator(marketsData, poolsData, openInterestData, tokensData, marketsFeesConfigs);
+        const estimator = createSwapEstimator(marketsInfoData);
 
         const bestSwapPathEdges = getBestSwapPath(paths, usdIn, estimator);
 
@@ -66,11 +60,7 @@ export function useSwapRoute(p: { fromTokenAddress?: string; toTokenAddress?: st
 
       const swapPathStats = getSwapPathStats(
         chainId,
-        marketsData,
-        poolsData,
-        openInterestData,
-        tokensData,
-        marketsFeesConfigs,
+        marketsInfoData,
         swapPath,
         p.fromTokenAddress,
         p.toTokenAddress,
@@ -84,18 +74,7 @@ export function useSwapRoute(p: { fromTokenAddress?: string; toTokenAddress?: st
 
       return swapPathStats;
     },
-    [
-      chainId,
-      marketsData,
-      marketsFeesConfigs,
-      openInterestData,
-      p.fromTokenAddress,
-      p.toTokenAddress,
-      paths,
-      poolsData,
-      tokensData,
-      wrappedToken.address,
-    ]
+    [chainId, marketsInfoData, p.fromTokenAddress, p.toTokenAddress, paths, wrappedToken.address]
   );
 
   return {

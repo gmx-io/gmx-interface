@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { MarketInfo, getMarketCollateralByAddress, getMarketName } from "domain/synthetics/markets";
+import { MarketInfo, MarketsInfoData, getMarketCollateralByAddress, getMarketName } from "domain/synthetics/markets";
 import { TokenData, TokenPrices, TokensData, getTokenData, parseContractPrice } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";
@@ -69,7 +69,7 @@ export function getTriggerOrderType(p: { isLong: boolean; isTriggerAboveThreshol
 
 export function getAggregatedOrderData(
   ordersData: OrdersData,
-  marketsInfoData: { [marketAddress: string]: MarketInfo },
+  marketsInfoData: MarketsInfoData,
   tokensData: TokensData,
   orderKey?: string
 ): AggregatedOrderData | undefined {
@@ -115,7 +115,7 @@ export function getAggregatedOrderData(
 }
 
 export function getToTokenFromSwapPath(
-  marketsInfoData: { [marketAddress: string]: MarketInfo },
+  marketsInfoData: MarketsInfoData,
   initialCollateral?: string,
   swapPath?: string[]
 ) {

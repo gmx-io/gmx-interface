@@ -78,13 +78,13 @@ export type OpenInterestData = {
   shortInterestInTokens: BigNumber;
 };
 
-export type MarketTokens = {
+export type MarketPoolTokens = {
   longToken: TokenData;
   shortToken: TokenData;
   indexToken: TokenData;
 };
 
-export type MarketInfo = Market & MarketTokens & MarketFeesConfig & PoolData & OpenInterestData;
+export type MarketInfo = Market & MarketPoolTokens & MarketFeesConfig & PoolData & OpenInterestData;
 
 export type MarketsInfoData = {
   [marketAddress: string]: MarketInfo;

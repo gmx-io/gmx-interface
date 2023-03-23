@@ -1,81 +1,38 @@
 import { t } from "@lingui/macro";
 import { CardRow } from "components/CardRow/CardRow";
-import { getToken } from "config/tokens";
-import { useChainId } from "lib/chains";
-import { useMemo } from "react";
-
 import { getIcon } from "config/icons";
-import {
-  getMarket,
-  getMarketName,
-  getMarketPools,
-  getMarketTokenData,
-  getPoolUsd,
-  useMarketTokensData,
-  useMarketsData,
-  useMarketsPoolsData,
-} from "domain/synthetics/markets";
-import { convertToUsd, useAvailableTokensData } from "domain/synthetics/tokens";
-import "./MarketStats.scss";
+import { MarketInfo, getMarketName, getPoolUsd } from "domain/synthetics/markets";
+import { TokenData, convertToUsd } from "domain/synthetics/tokens";
+import { useChainId } from "lib/chains";
 import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { MARKET_NAME_PLACEHOLDER } from "config/synthetics";
+
+import "./MarketStats.scss";
 
 type Props = {
-  marketKey?: string;
+  marketInfo?: MarketInfo;
+  marketToken?: TokenData;
 };
 
 export function MarketStats(p: Props) {
+  const { marketInfo, marketToken } = p;
   const { chainId } = useChainId();
 
-  const { marketsData } = useMarketsData(chainId);
-  const { poolsData } = useMarketsPoolsData(chainId);
-  const { tokensData } = useAvailableTokensData(chainId);
-  const { marketTokensData } = useMarketTokensData(chainId);
+  const marketName = marketInfo ? getMarketName(marketInfo) : `GM: ${MARKET_NAME_PLACEHOLDER}`;
 
-  const market = getMarket(marketsData, p.marketKey);
-  const marketName = getMarketName(marketsData, tokensData, market?.marketTokenAddress, true);
-
-  const marketToken = getMarketTokenData(marketTokensData, p.marketKey);
   const marketPrice = marketToken?.prices?.maxPrice;
-
   const marketBalance = marketToken?.balance;
   const marketBalanceUsd =
     marketBalance && marketPrice ? convertToUsd(marketBalance, marketToken.decimals, marketPrice) : undefined;
 
   const marketTotalSupply = marketToken?.totalSupply;
-
   const marketTotalSupplyUsd =
     marketTotalSupply && marketPrice ? convertToUsd(marketTotalSupply, marketToken.decimals, marketPrice) : undefined;
 
-  const { longCollateral, shortCollateral } = useMemo(() => {
-    if (!market) return { longCollateral: undefined, shortCollateral: undefined };
+  const { longToken, shortToken, longPoolAmount, shortPoolAmount } = marketInfo || {};
 
-    return {
-      longCollateral: getToken(chainId, market.longTokenAddress),
-      shortCollateral: getToken(chainId, market.shortTokenAddress),
-    };
-  }, [chainId, market]);
-
-  const pools = getMarketPools(poolsData, market?.marketTokenAddress);
-
-  const longPoolAmount = pools?.longPoolAmount;
-  const longPoolAmountUsd = getPoolUsd(
-    marketsData,
-    poolsData,
-    tokensData,
-    market?.marketTokenAddress,
-    market?.longTokenAddress,
-    "midPrice"
-  );
-
-  const shortPoolAmount = pools?.shortPoolAmount;
-  const shortPoolAmountUsd = getPoolUsd(
-    marketsData,
-    poolsData,
-    tokensData,
-    market?.marketTokenAddress,
-    market?.shortTokenAddress,
-    "midPrice"
-  );
+  const longPoolAmountUsd = marketInfo ? getPoolUsd(marketInfo, marketInfo.longTokenAddress, "midPrice") : undefined;
+  const shortPoolAmountUsd = marketInfo ? getPoolUsd(marketInfo, marketInfo.shortTokenAddress, "midPrice") : undefined;
 
   return (
     <div className="App-card MarketStats-card">
@@ -131,27 +88,22 @@ export function MarketStats(p: Props) {
 
         <div className="App-card-divider" />
 
-        <CardRow label={t`Long Collateral`} value={longCollateral?.symbol || "..."} />
+        <CardRow label={t`Long Collateral`} value={longToken?.symbol || "..."} />
         <CardRow
           label={t`Pool amount`}
-          value={formatTokenAmountWithUsd(
-            longPoolAmount,
-            longPoolAmountUsd,
-            longCollateral?.symbol,
-            longCollateral?.decimals
-          )}
+          value={formatTokenAmountWithUsd(longPoolAmount, longPoolAmountUsd, longToken?.symbol, longToken?.decimals)}
         />
 
         <div className="App-card-divider" />
 
-        <CardRow label={t`Short Collateral`} value={shortCollateral?.symbol || "..."} />
+        <CardRow label={t`Short Collateral`} value={shortToken?.symbol || "..."} />
         <CardRow
           label={t`Pool amount`}
           value={formatTokenAmountWithUsd(
             shortPoolAmount,
             shortPoolAmountUsd,
-            shortCollateral?.symbol,
-            shortCollateral?.decimals
+            shortToken?.symbol,
+            shortToken?.decimals
           )}
         />
       </div>

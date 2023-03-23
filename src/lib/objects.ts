@@ -8,6 +8,8 @@ export function updateByKey<T>(obj: { [key: string]: T }, key: string, data: Par
   return { ...obj, [key]: { ...obj[key], ...data } };
 }
 
-export function getByKey<T>(obj: { [key: string]: T }, key: string): T | undefined {
+export function getByKey<T>(obj: { [key: string]: T }, key?: string): T | undefined {
+  if (!key) return undefined;
+
   return obj[key];
 }

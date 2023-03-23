@@ -49,7 +49,7 @@ export function usePositionsData(chainId: number): PositionsDataResult {
     const marketPricesByPositionsKeys: { [key: string]: ContractMarketPrices } = {};
 
     for (const market of markets) {
-      const marketPrices = getContractMarketPrices(marketsData, tokensData, market.marketTokenAddress);
+      const marketPrices = getContractMarketPrices(tokensData, market);
 
       if (!marketPrices) continue;
 

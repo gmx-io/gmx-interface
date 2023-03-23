@@ -9,12 +9,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { KEEP_LEVERAGE_FOR_DECREASE_KEY, SLIPPAGE_BPS_KEY } from "config/localStorage";
 import { convertTokenAddress } from "config/tokens";
-import {
-  estimateExecuteDecreaseOrderGasLimit,
-  getExecutionFee,
-  getMarketFeesConfig,
-  useGasPrice,
-} from "domain/synthetics/fees";
+import { estimateExecuteDecreaseOrderGasLimit, getExecutionFee, useGasPrice } from "domain/synthetics/fees";
 import { DecreasePositionSwapType, OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
 import { AggregatedPositionData, formatLeverage, formatPnl, getMarkPrice } from "domain/synthetics/positions";
 import { adaptToInfoTokens, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
@@ -44,14 +39,7 @@ import "components/Exchange/PositionSeller.css";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useGasLimitsConfig } from "domain/synthetics/fees/useGasLimitsConfig";
-import { useMarketsFeesConfigs } from "domain/synthetics/fees/useMarketsFeesConfigs";
-import {
-  getAvailableUsdLiquidityForCollateral,
-  getMarket,
-  useMarketsData,
-  useMarketsPoolsData,
-  useOpenInterestData,
-} from "domain/synthetics/markets";
+import { getAvailableUsdLiquidityForCollateral, useMarketsInfo } from "domain/synthetics/markets";
 import { usePositionsConstants } from "domain/synthetics/positions/usePositionsConstants";
 import {
   getDecreasePositionAmounts,
@@ -63,9 +51,10 @@ import {
   useSwapRoute,
 } from "domain/synthetics/trade";
 import { Token } from "domain/tokens";
+import { getByKey } from "lib/objects";
+import { OrderStatus } from "../OrderStatus/OrderStatus";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionSeller.scss";
-import { OrderStatus } from "../OrderStatus/OrderStatus";
 
 function isEquivalentTokens(token1: Token, token2: Token) {
   if (token1.address === token2.address) {
@@ -91,13 +80,11 @@ export function PositionSeller(p: Props) {
   const [isProcessing, setIsProcessing] = useState(false);
   const { setPendingPositionUpdate } = useSyntheticsEvents();
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey([chainId, KEEP_LEVERAGE_FOR_DECREASE_KEY], true);
-  const { poolsData } = useMarketsPoolsData(chainId);
-  const { openInterestData } = useOpenInterestData(chainId);
-  const { marketsData } = useMarketsData(chainId);
+
+  const { marketsInfoData } = useMarketsInfo(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimitsConfig(chainId);
-  const { marketsFeesConfigs } = useMarketsFeesConfigs(chainId);
   const { maxLeverage, minCollateralUsd } = usePositionsConstants(chainId);
   const infoTokens = adaptToInfoTokens(tokensData);
 
@@ -131,63 +118,62 @@ export function PositionSeller(p: Props) {
     toTokenAddress: receiveTokenAddress,
   });
 
-  const feesConfig = getMarketFeesConfig(marketsFeesConfigs, position?.marketAddress);
-
   const markPrice = getMarkPrice(position?.indexToken?.prices, false, position?.isLong);
 
-  const decreaseAmounts = getDecreasePositionAmounts({
-    marketsData,
-    poolsData,
-    tokensData,
-    openInterestData,
-    feesConfigs: marketsFeesConfigs,
-    market: position?.market,
-    collateralToken: position?.collateralToken,
-    receiveToken: position?.collateralToken,
-    existingPosition: position,
-    sizeDeltaUsd: closeSizeUsd,
-    keepLeverage,
-    showPnlInLeverage: p.savedIsPnlInLeverage,
-    allowedSlippage,
-    isLong: position?.isLong,
-  });
+  const marketInfo = getByKey(marketsInfoData, position?.marketAddress);
 
-  const swapAmounts = shouldSwap
-    ? getSwapAmounts({
-        marketsData,
-        poolsData,
-        tokensData,
-        feesConfigs: marketsFeesConfigs,
-        tokenIn: position?.collateralToken,
-        tokenOut: receiveToken,
-        tokenInAmount: decreaseAmounts?.receiveTokenAmount,
-        findSwapPath,
-      })
-    : undefined;
+  const decreaseAmounts = useMemo(() => {
+    if (!marketInfo) return undefined;
 
-  const nextPositionValues = decreaseAmounts
-    ? getNextPositionValuesForDecreaseTrade({
-        feesConfig,
-        existingPosition: position,
-        sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
-        pnlDelta: decreaseAmounts?.pnlDelta,
-        collateralDeltaUsd: decreaseAmounts?.collateralDeltaUsd,
-        exitMarkPrice: decreaseAmounts?.exitMarkPrice,
-        showPnlInLeverage: true,
-        isLong: position?.isLong,
-        maxLeverage,
-      })
-    : undefined;
+    return getDecreasePositionAmounts({
+      marketInfo,
+      collateralToken: position?.collateralToken,
+      receiveToken: position?.collateralToken,
+      existingPosition: position,
+      sizeDeltaUsd: closeSizeUsd,
+      keepLeverage,
+      showPnlInLeverage: p.savedIsPnlInLeverage,
+      allowedSlippage,
+      isLong: position?.isLong,
+    });
+  }, [allowedSlippage, closeSizeUsd, keepLeverage, marketInfo, p.savedIsPnlInLeverage, position]);
 
-  const receiveTokenMarket = swapAmounts?.swapPathStats?.targetMarketAddress
-    ? getMarket(marketsData, swapAmounts?.swapPathStats?.targetMarketAddress)
-    : position?.market;
+  const swapAmounts = useMemo(() => {
+    if (!shouldSwap || !decreaseAmounts) return undefined;
+
+    return getSwapAmounts({
+      tokenIn: position?.collateralToken,
+      tokenOut: receiveToken,
+      tokenInAmount: decreaseAmounts?.receiveTokenAmount,
+      findSwapPath,
+    });
+  }, [decreaseAmounts, findSwapPath, position?.collateralToken, receiveToken, shouldSwap]);
+
+  const nextPositionValues = useMemo(() => {
+    if (!decreaseAmounts) return undefined;
+
+    return getNextPositionValuesForDecreaseTrade({
+      marketInfo,
+      existingPosition: position,
+      sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
+      pnlDelta: decreaseAmounts?.pnlDelta,
+      collateralDeltaUsd: decreaseAmounts?.collateralDeltaUsd,
+      exitMarkPrice: decreaseAmounts?.exitMarkPrice,
+      showPnlInLeverage: true,
+      isLong: position?.isLong,
+      maxLeverage,
+    });
+  }, [decreaseAmounts, marketInfo, maxLeverage, position]);
+
+  const receiveTokenMarketInfo = swapAmounts?.swapPathStats?.targetMarketAddress
+    ? getByKey(marketsInfoData, swapAmounts?.swapPathStats?.targetMarketAddress)
+    : marketInfo;
 
   const receiveUsd = swapAmounts?.usdOut || decreaseAmounts?.receiveUsd;
   const receiveTokenAmount = swapAmounts?.amountOut || decreaseAmounts?.receiveTokenAmount;
 
   const fees = getDisplayedTradeFees({
-    feesConfig,
+    marketInfo,
     swapSteps: swapAmounts?.swapPathStats?.swapSteps,
     swapPriceImpactDeltaUsd: swapAmounts?.swapPathStats?.totalSwapPriceImpactDeltaUsd,
     sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
@@ -195,14 +181,12 @@ export function PositionSeller(p: Props) {
     positionFeeUsd: decreaseAmounts?.positionFeeUsd,
   });
 
-  const receiveTokenLiquidity = getAvailableUsdLiquidityForCollateral(
-    marketsData,
-    poolsData,
-    openInterestData,
-    tokensData,
-    receiveTokenMarket?.marketTokenAddress,
-    receiveToken?.address ? convertTokenAddress(chainId, receiveToken.address, "wrapped") : undefined
-  );
+  const receiveTokenLiquidity = receiveTokenMarketInfo
+    ? getAvailableUsdLiquidityForCollateral(
+        receiveTokenMarketInfo,
+        receiveToken?.address ? convertTokenAddress(chainId, receiveToken.address, "wrapped") : undefined
+      )
+    : undefined;
 
   const isNotEnoughReceiveTokenLiquidity = shouldSwap ? receiveTokenLiquidity?.lt(receiveUsd || 0) : false;
 
@@ -467,7 +451,7 @@ export function PositionSeller(p: Props) {
                     totalFees={fees?.totalFees}
                     positionFee={fees?.positionFee}
                     positionPriceImpact={fees?.positionPriceImpact}
-                    positionFeeFactor={feesConfig?.positionFeeFactor}
+                    positionFeeFactor={fees?.positionFeeFactor}
                     swapFees={fees?.swapFees}
                     swapPriceImpact={fees?.swapPriceImpact}
                   />

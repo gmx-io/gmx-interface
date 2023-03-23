@@ -16,26 +16,13 @@ import {
   FeeItem,
   getExecutionFee,
   getFeeItem,
-  getMarketFeesConfig,
   getTotalFeeItem,
   useGasPrice,
 } from "domain/synthetics/fees";
 import { useGasLimitsConfig } from "domain/synthetics/fees/useGasLimitsConfig";
-import { useMarketsFeesConfigs } from "domain/synthetics/fees/useMarketsFeesConfigs";
-import {
-  useMarketsData,
-  useMarketsPoolsData,
-  useMarketTokensData,
-  useOpenInterestData,
-} from "domain/synthetics/markets";
+import { useMarketsInfo, useMarketTokensData } from "domain/synthetics/markets";
 import { Market } from "domain/synthetics/markets/types";
-import {
-  getAvailableUsdLiquidityForCollateral,
-  getMarket,
-  getMarketName,
-  getMarketPools,
-  getPoolUsd,
-} from "domain/synthetics/markets/utils";
+import { getAvailableUsdLiquidityForCollateral, getMarketName, getPoolUsd } from "domain/synthetics/markets/utils";
 import { adaptToInfoTokens, convertToUsd, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { GmSwapFees } from "domain/synthetics/trade";
 import {
@@ -51,6 +38,7 @@ import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmountFree, formatTokenAmount, formatUsd, parseValue } from "lib/numbers";
+import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 import { IoMdSwap } from "react-icons/io";
@@ -105,13 +93,12 @@ export function GmSwapBox(p: Props) {
   const marketAddress = p.selectedMarketAddress;
 
   const { chainId } = useChainId();
-  const { marketsData } = useMarketsData(chainId);
+  const { marketsInfoData } = useMarketsInfo(chainId);
   const { marketTokensData } = useMarketTokensData(chainId);
-  const { poolsData } = useMarketsPoolsData(chainId);
-  const { openInterestData } = useOpenInterestData(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
+
   const infoTokens = adaptToInfoTokens(tokensData);
-  const { marketsFeesConfigs: feesConfigs } = useMarketsFeesConfigs(chainId);
+
   const { gasLimits } = useGasLimitsConfig(chainId);
   const { gasPrice } = useGasPrice(chainId);
 
@@ -136,13 +123,12 @@ export function GmSwapBox(p: Props) {
   const isSingle = mode === Mode.Single;
   const isPair = mode === Mode.Pair;
 
-  const market = getMarket(marketsData, marketAddress);
-  const marketsOptions: DropdownOption[] = Object.values(marketsData).map((market) => ({
-    label: getMarketName(marketsData, tokensData, market.marketTokenAddress, true, true)!,
-    value: market.marketTokenAddress,
-  }));
+  const marketInfo = getByKey(marketsInfoData, marketAddress);
 
-  const pools = getMarketPools(poolsData, marketAddress);
+  const marketsOptions: DropdownOption[] = Object.values(marketsInfoData).map((marketInfo) => ({
+    label: getMarketName(marketInfo)!,
+    value: marketInfo.marketTokenAddress,
+  }));
 
   const [firstTokenAddress, setFirstTokenAddress] = useLocalStorageSerializeKey<string | undefined>(
     [chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, isDeposit, marketAddress, "first"],
@@ -179,8 +165,8 @@ export function GmSwapBox(p: Props) {
   const shortTokenUsd = shortTokenInputState?.usd;
 
   const tokenOptions: Token[] = (function getTokenOptions() {
-    const longToken = getTokenData(tokensData, market?.longTokenAddress);
-    const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
+    const longToken = getTokenData(tokensData, marketInfo?.longTokenAddress);
+    const shortToken = getTokenData(tokensData, marketInfo?.shortTokenAddress);
 
     if (!longToken || !shortToken) return [];
 
@@ -194,7 +180,7 @@ export function GmSwapBox(p: Props) {
   })();
 
   const [marketTokenInputValue, setMarketTokenInputValue] = useSafeState<string>();
-  const marketToken = getTokenData(marketTokensData, market?.marketTokenAddress);
+  const marketToken = getTokenData(marketTokensData, marketInfo?.marketTokenAddress);
   const marketTokenAmount = parseValue(marketTokenInputValue || "0", marketToken?.decimals || 0);
   const prevMarketTokenAmount = usePrevious(marketTokenAmount);
   const marketTokenUsd = convertToUsd(
@@ -213,43 +199,17 @@ export function GmSwapBox(p: Props) {
     (a, b) => Boolean(a) !== Boolean(b) || a?.toString() !== b?.toString()
   );
 
-  const longCollateralLiquidityUsd = getAvailableUsdLiquidityForCollateral(
-    marketsData,
-    poolsData,
-    openInterestData,
-    tokensData,
-    market?.marketTokenAddress,
-    market?.longTokenAddress
-  );
+  const { longCollateralLiquidityUsd, shortCollateralLiquidityUsd, longPoolUsd, shortPoolUsd } = useMemo(() => {
+    if (!marketInfo) return {};
 
-  const shortCollateralLiquidityUsd = getAvailableUsdLiquidityForCollateral(
-    marketsData,
-    poolsData,
-    openInterestData,
-    tokensData,
-    market?.marketTokenAddress,
-    market?.shortTokenAddress
-  );
+    return {
+      longCollateralLiquidityUsd: getAvailableUsdLiquidityForCollateral(marketInfo, marketInfo?.longTokenAddress),
+      shortCollateralLiquidityUsd: getAvailableUsdLiquidityForCollateral(marketInfo, marketInfo?.shortTokenAddress),
+      longPoolUsd: getPoolUsd(marketInfo, marketInfo.longTokenAddress, "midPrice"),
+      shortPoolUsd: getPoolUsd(marketInfo, marketInfo.shortTokenAddress, "midPrice"),
+    };
+  }, [marketInfo]);
 
-  const longPoolUsd = getPoolUsd(
-    marketsData,
-    poolsData,
-    tokensData,
-    market?.marketTokenAddress,
-    market?.longTokenAddress,
-    "midPrice"
-  );
-
-  const shortPoolUsd = getPoolUsd(
-    marketsData,
-    poolsData,
-    tokensData,
-    market?.marketTokenAddress,
-    market?.shortTokenAddress,
-    "midPrice"
-  );
-
-  const feesConfig = getMarketFeesConfig(feesConfigs, market?.marketTokenAddress);
   const fees: GmSwapFees | undefined = useMemo(() => {
     if (!marketTokenUsd?.gt(0)) return undefined;
 
@@ -291,7 +251,7 @@ export function GmSwapBox(p: Props) {
   }, [chainId, gasLimits, gasPrice, isDeposit, longTokenAmount, shortTokenAmount, tokensData]);
 
   const error = (function getError() {
-    if (!market || !marketToken || !pools) {
+    if (!marketInfo) {
       return t`Loading...`;
     }
 
@@ -344,7 +304,7 @@ export function GmSwapBox(p: Props) {
   })();
 
   function getInputStateByCollateralType(type: "long" | "short") {
-    if (!market) return undefined;
+    if (!marketInfo) return undefined;
 
     const inputs = [
       {
@@ -369,32 +329,31 @@ export function GmSwapBox(p: Props) {
       return (
         input.address &&
         convertTokenAddress(chainId, input.address, "wrapped") ===
-          (type === "long" ? market.longTokenAddress : market.shortTokenAddress)
+          (type === "long" ? marketInfo.longTokenAddress : marketInfo.shortTokenAddress)
       );
     });
   }
 
   function onFocusedCollateralInputChange(tokenAddress: string) {
-    if (convertTokenAddress(chainId, tokenAddress, "wrapped") === market?.longTokenAddress) {
+    if (convertTokenAddress(chainId, tokenAddress, "wrapped") === marketInfo?.longTokenAddress) {
       setFocusedInput("longCollateral");
-    } else if (convertTokenAddress(chainId, tokenAddress, "wrapped") === market?.shortTokenAddress) {
+    } else if (convertTokenAddress(chainId, tokenAddress, "wrapped") === marketInfo?.shortTokenAddress) {
       setFocusedInput("shortCollateral");
     }
   }
 
   useEffect(
     function updateAmounts() {
-      const longToken = getTokenData(tokensData, market?.longTokenAddress);
-      const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
+      const longToken = getTokenData(tokensData, marketInfo?.longTokenAddress);
+      const shortToken = getTokenData(tokensData, marketInfo?.shortTokenAddress);
 
       if (
-        !market ||
+        !marketInfo ||
         !longToken?.prices ||
         !shortToken?.prices ||
         !marketToken?.prices ||
         !longPoolUsd ||
         !shortPoolUsd ||
-        !feesConfig ||
         !focusedInput
       ) {
         return;
@@ -408,13 +367,8 @@ export function GmSwapBox(p: Props) {
           }
 
           const amounts = getNextDepositAmountsByCollaterals({
-            marketsData,
-            poolsData,
-            tokensData,
-            feesConfigs,
+            marketInfo,
             marketToken,
-            longToken,
-            shortToken,
             longTokenAmount,
             shortTokenAmount,
           });
@@ -436,15 +390,9 @@ export function GmSwapBox(p: Props) {
           }
 
           const amounts = getNextDepositAmountsByMarketToken({
-            marketsData,
-            poolsData,
-            tokensData,
-            feesConfigs,
+            marketInfo,
             marketToken,
-            longToken,
-            shortToken,
             marketTokenAmount,
-            // TODO: replace with ratio?
             includeLongToken: Boolean(longTokenInputState?.address),
             includeShortToken: Boolean(shortTokenInputState?.address),
             previousLongTokenAmount: longTokenAmount,
@@ -477,13 +425,8 @@ export function GmSwapBox(p: Props) {
           }
 
           const amounts = getNextWithdrawalAmountsByMarketToken({
-            marketsData,
-            poolsData,
-            tokensData,
-            feesConfigs,
+            marketInfo,
             marketToken,
-            longToken,
-            shortToken,
             marketTokenAmount,
           });
 
@@ -517,13 +460,8 @@ export function GmSwapBox(p: Props) {
           }
 
           const amounts = getNextWithdrawalAmountsByCollaterals({
-            marketsData,
-            poolsData,
-            tokensData,
-            feesConfigs,
+            marketInfo,
             marketToken,
-            longToken,
-            shortToken,
             longTokenAmount: focusedInput === "longCollateral" ? longTokenAmount : undefined,
             shortTokenAmount: focusedInput === "shortCollateral" ? shortTokenAmount : undefined,
           });
@@ -549,8 +487,6 @@ export function GmSwapBox(p: Props) {
       }
     },
     [
-      feesConfig,
-      feesConfigs,
       focusedInput,
       isDeposit,
       isWithdrawal,
@@ -558,12 +494,9 @@ export function GmSwapBox(p: Props) {
       longTokenAmount,
       longTokenInputState,
       longTokenUsd,
-      market,
+      marketInfo,
       marketToken,
       marketTokenAmount,
-      marketTokenUsd,
-      marketsData,
-      poolsData,
       prevMarketTokenAmount,
       setMarketTokenInputValue,
       setSwapFeeUsd,
@@ -804,7 +737,7 @@ export function GmSwapBox(p: Props) {
         <GmOrderStatus
           firstToken={firstTokenAddress!}
           secondToken={secondTokenAmount?.gt(0) ? secondTokenAddress : undefined}
-          market={market?.marketTokenAddress!}
+          market={marketInfo?.marketTokenAddress!}
           isDeposit={isDeposit}
           onClose={() => {
             setStage("swap");

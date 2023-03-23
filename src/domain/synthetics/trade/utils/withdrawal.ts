@@ -7,14 +7,13 @@ import { WithdrawalAmounts } from "../types";
 export function getNextWithdrawalAmountsByMarketToken(p: {
   marketInfo: MarketInfo;
   marketToken: TokenData;
-  longToken: TokenData;
-  shortToken: TokenData;
   marketTokenAmount: BigNumber;
 }): WithdrawalAmounts | undefined {
   const longPoolUsd = getPoolUsd(p.marketInfo, p.marketInfo.longTokenAddress, "maxPrice");
   const shortPoolUsd = getPoolUsd(p.marketInfo, p.marketInfo.shortTokenAddress, "maxPrice");
+  const { longToken, shortToken } = p.marketInfo;
 
-  if (!longPoolUsd || !shortPoolUsd || !p.marketToken.prices || !p.longToken.prices || !p.shortToken.prices) {
+  if (!longPoolUsd || !shortPoolUsd || !p.marketToken.prices || !longToken.prices || !shortToken.prices) {
     return undefined;
   }
 
@@ -37,8 +36,8 @@ export function getNextWithdrawalAmountsByMarketToken(p: {
   longTokenUsd = longTokenUsd.sub(longSwapFeeUsd);
   shortTokenUsd = shortTokenUsd.sub(shortSwapFeeUsd);
 
-  const longTokenAmount = convertToTokenAmount(longTokenUsd, p.longToken.decimals, p.longToken.prices.maxPrice)!;
-  const shortTokenAmount = convertToTokenAmount(shortTokenUsd, p.shortToken.decimals, p.shortToken.prices.maxPrice)!;
+  const longTokenAmount = convertToTokenAmount(longTokenUsd, longToken.decimals, longToken.prices.maxPrice)!;
+  const shortTokenAmount = convertToTokenAmount(shortTokenUsd, shortToken.decimals, shortToken.prices.maxPrice)!;
 
   return {
     marketTokenAmount,
@@ -54,8 +53,6 @@ export function getNextWithdrawalAmountsByMarketToken(p: {
 export function getNextWithdrawalAmountsByCollaterals(p: {
   marketInfo: MarketInfo;
   marketToken: TokenData;
-  longToken: TokenData;
-  shortToken: TokenData;
   longTokenAmount?: BigNumber;
   shortTokenAmount?: BigNumber;
 }): WithdrawalAmounts | undefined {
@@ -63,12 +60,14 @@ export function getNextWithdrawalAmountsByCollaterals(p: {
 
   const shortPoolUsd = getPoolUsd(p.marketInfo, p.marketInfo.shortTokenAddress, "maxPrice");
 
+  const { longToken, shortToken } = p.marketInfo;
+
   if (
     !longPoolUsd ||
     !shortPoolUsd ||
     !p.marketToken.prices ||
-    !p.longToken.prices ||
-    !p.shortToken.prices ||
+    !longToken.prices ||
+    !shortToken.prices ||
     (!p.longTokenAmount && !p.shortTokenAmount)
   ) {
     return undefined;
@@ -81,14 +80,14 @@ export function getNextWithdrawalAmountsByCollaterals(p: {
 
   if (p.longTokenAmount) {
     longTokenAmount = p.longTokenAmount;
-    longTokenUsd = convertToUsd(longTokenAmount, p.longToken.decimals, p.longToken.prices.maxPrice)!;
+    longTokenUsd = convertToUsd(longTokenAmount, longToken.decimals, longToken.prices.maxPrice)!;
     shortTokenUsd = longTokenUsd.mul(shortPoolUsd).div(longPoolUsd);
-    shortTokenAmount = convertToTokenAmount(shortTokenUsd, p.shortToken.decimals, p.shortToken.prices.maxPrice)!;
+    shortTokenAmount = convertToTokenAmount(shortTokenUsd, shortToken.decimals, shortToken.prices.maxPrice)!;
   } else {
     shortTokenAmount = p.shortTokenAmount!;
-    shortTokenUsd = convertToUsd(p.shortTokenAmount, p.shortToken.decimals, p.shortToken.prices.maxPrice)!;
+    shortTokenUsd = convertToUsd(p.shortTokenAmount, shortToken.decimals, shortToken.prices.maxPrice)!;
     longTokenUsd = shortTokenUsd.mul(longPoolUsd).div(shortPoolUsd);
-    longTokenAmount = convertToTokenAmount(longTokenUsd, p.longToken.decimals, p.longToken.prices.maxPrice)!;
+    longTokenAmount = convertToTokenAmount(longTokenUsd, longToken.decimals, longToken.prices.maxPrice)!;
   }
 
   let marketTokenUsd = longTokenUsd.add(shortTokenUsd);

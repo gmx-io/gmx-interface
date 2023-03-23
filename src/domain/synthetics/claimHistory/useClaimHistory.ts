@@ -1,9 +1,10 @@
 import { gql } from "@apollo/client";
 import { useWeb3React } from "@web3-react/core";
-import { getMarket, useMarketsData } from "domain/synthetics/markets";
+import { useMarketsInfo } from "domain/synthetics/markets";
 import { useAvailableTokensData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { bigNumberify } from "lib/numbers";
+import { getByKey } from "lib/objects";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import { useMemo } from "react";
 import useSWR from "swr";
@@ -11,9 +12,8 @@ import { ClaimCollateralAction, ClaimItem, RawClaimCollateralAction } from "./ty
 
 export function useClaimCollateralHistory(chainId: number, p: { pageIndex: number; pageSize: number }) {
   const { pageIndex, pageSize } = p;
-
   const { account } = useWeb3React();
-  const { marketsData, isLoading: isMarketsLoading } = useMarketsData(chainId);
+  const { marketsInfoData, isLoading: isMarketsInfoLoading } = useMarketsInfo(chainId);
   const { tokensData, isLoading: isTokensLoading } = useAvailableTokensData(chainId);
 
   const client = getSyntheticsGraphClient(chainId);
@@ -52,12 +52,12 @@ export function useClaimCollateralHistory(chainId: number, p: { pageIndex: numbe
   });
 
   const isClaimsLoading = key && !error && !data;
-  const isLoading = isClaimsLoading || isMarketsLoading || isTokensLoading;
+  const isLoading = isClaimsLoading || isMarketsInfoLoading || isTokensLoading;
 
   const claimActions = useMemo(() => {
     if (isLoading || !data) return undefined;
 
-    const fixedAddresses = Object.keys(marketsData)
+    const fixedAddresses = Object.keys(marketsInfoData)
       .concat(Object.keys(tokensData))
       .reduce((acc, address) => {
         acc[address.toLowerCase()] = address;
@@ -74,7 +74,7 @@ export function useClaimCollateralHistory(chainId: number, p: { pageIndex: numbe
           const tokenAddress = fixedAddresses[rawAction.tokenAddresses[i]];
           const amount = bigNumberify(rawAction.amounts[i])!;
 
-          const market = getMarket(marketsData, marketAddress);
+          const market = getByKey(marketsInfoData, marketAddress);
 
           if (!market) {
             return undefined;
@@ -107,7 +107,7 @@ export function useClaimCollateralHistory(chainId: number, p: { pageIndex: numbe
         return claimAction;
       })
       .filter(Boolean) as ClaimCollateralAction[];
-  }, [data, isLoading, marketsData, tokensData]);
+  }, [data, isLoading, marketsInfoData, tokensData]);
 
   return {
     claimActions,

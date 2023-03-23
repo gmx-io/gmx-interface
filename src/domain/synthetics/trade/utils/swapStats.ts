@@ -1,6 +1,7 @@
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
 import {
   MarketInfo,
+  MarketsInfoData,
   getAvailableUsdLiquidityForCollateral,
   getMarketCollateralByAddress,
   getOppositeCollateral,
@@ -11,7 +12,7 @@ import { applyFactor } from "lib/numbers";
 import { applySwapImpactWithCap, getPriceImpactForSwap } from "../../fees/utils/priceImpact";
 import { MarketEdge, SwapEstimator, SwapPathStats, SwapStats } from "../types";
 
-export const createSwapEstimator = (marketsInfoData: { [marketAddress: string]: MarketInfo }): SwapEstimator => {
+export const createSwapEstimator = (marketsInfoData: MarketsInfoData): SwapEstimator => {
   return (e: MarketEdge, usdIn: BigNumber) => {
     const marketInfo = marketsInfoData[e.marketAddress];
 
@@ -34,7 +35,7 @@ export const createSwapEstimator = (marketsInfoData: { [marketAddress: string]: 
 
 export function getSwapPathStats(
   chainId: number,
-  marketsInfoData: { [marketAddress: string]: MarketInfo },
+  marketsInfoData: MarketsInfoData,
   swapPath: string[],
   tokenInAddress: string,
   tokenOutAddress: string,

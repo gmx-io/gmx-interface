@@ -1,11 +1,9 @@
 import { useMemo } from "react";
-import { useMarketsFeesConfigs } from "../fees/useMarketsFeesConfigs";
-import { useMarketsData } from "../markets";
-import { useAvailableTokensData } from "../tokens";
 import { AggregatedPositionsData } from "./types";
 import { usePositionsConstants } from "./usePositionsConstants";
 import { getAggregatedPositionData } from "./utils";
 import { useOptimisticPositionsData } from "./useOptimisticPositionsData";
+import { useMarketsInfo } from "../markets";
 
 type AggregatedPositionsDataResult = {
   aggregatedPositionsData: AggregatedPositionsData;
@@ -16,9 +14,7 @@ export function useAggregatedPositionsData(
   chainId: number,
   p: { savedIsPnlInLeverage: boolean }
 ): AggregatedPositionsDataResult {
-  const { tokensData, isLoading: isTokensLoading } = useAvailableTokensData(chainId);
-  const { marketsData, isLoading: isMarketsLoading } = useMarketsData(chainId);
-  const { marketsFeesConfigs, isLoading: isFeesConfigsLoading } = useMarketsFeesConfigs(chainId);
+  const { marketsInfoData, isLoading: isMarketsInfoLoading } = useMarketsInfo(chainId);
   const { optimisticPositionsData, isLoading: isPositionsLoading } = useOptimisticPositionsData(chainId);
   const { maxLeverage } = usePositionsConstants(chainId);
 
@@ -29,9 +25,7 @@ export function useAggregatedPositionsData(
       aggregatedPositionsData: positionKeys.reduce((acc: AggregatedPositionsData, positionKey: string) => {
         const position = getAggregatedPositionData(
           optimisticPositionsData,
-          marketsData,
-          tokensData,
-          marketsFeesConfigs,
+          marketsInfoData,
           positionKey,
           p.savedIsPnlInLeverage,
           maxLeverage
@@ -43,18 +37,14 @@ export function useAggregatedPositionsData(
 
         return acc;
       }, {} as AggregatedPositionsData),
-      isLoading: isTokensLoading || isMarketsLoading || isPositionsLoading || isFeesConfigsLoading,
+      isLoading: isMarketsInfoLoading || isPositionsLoading,
     };
   }, [
-    isFeesConfigsLoading,
-    isMarketsLoading,
+    isMarketsInfoLoading,
     isPositionsLoading,
-    isTokensLoading,
-    marketsData,
-    marketsFeesConfigs,
+    marketsInfoData,
     maxLeverage,
     optimisticPositionsData,
     p.savedIsPnlInLeverage,
-    tokensData,
   ]);
 }
