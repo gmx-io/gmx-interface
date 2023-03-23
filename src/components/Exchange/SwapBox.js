@@ -82,6 +82,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import Button from "components/Button/Button";
 import UsefulLinks from "./UsefulLinks";
+import { useSigner } from "wagmi";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -180,6 +181,7 @@ export default function SwapBox(props) {
   const [modalError, setModalError] = useState(false);
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
   const { attachedOnChain, userReferralCode } = useUserReferralCode(library, chainId, account);
+  const { data: signer } = useSigner();
 
   let allowedSlippage = savedSlippageAmount;
   if (isHigherSlippageAllowed) {
@@ -1248,7 +1250,7 @@ export default function SwapBox(props) {
   const wrap = async () => {
     setIsSubmitting(true);
 
-    const contract = new ethers.Contract(nativeTokenAddress, WETH.abi, library.getSigner());
+    const contract = new ethers.Contract(nativeTokenAddress, WETH.abi, signer);
     callContract(chainId, contract, "deposit", {
       value: fromAmount,
       sentMsg: t`Swap submitted.`,
@@ -1267,7 +1269,7 @@ export default function SwapBox(props) {
   const unwrap = async () => {
     setIsSubmitting(true);
 
-    const contract = new ethers.Contract(nativeTokenAddress, WETH.abi, library.getSigner());
+    const contract = new ethers.Contract(nativeTokenAddress, WETH.abi, signer);
     callContract(chainId, contract, "withdraw", [fromAmount], {
       sentMsg: t`Swap submitted!`,
       failMsg: t`Swap failed.`,
@@ -1376,7 +1378,7 @@ export default function SwapBox(props) {
       value = fromAmount;
       params = [path, minOut, account];
     }
-    contract = new ethers.Contract(routerAddress, Router.abi, library.getSigner());
+    contract = new ethers.Contract(routerAddress, Router.abi, signer);
 
     callContract(chainId, contract, method, params, {
       value,
@@ -1544,7 +1546,7 @@ export default function SwapBox(props) {
     }
 
     const contractAddress = getContract(chainId, "PositionRouter");
-    const contract = new ethers.Contract(contractAddress, PositionRouter.abi, library.getSigner());
+    const contract = new ethers.Contract(contractAddress, PositionRouter.abi, signer);
     const indexToken = getTokenInfo(infoTokens, indexTokenAddress);
     const tokenSymbol = indexToken.isWrapped ? getConstant(chainId, "nativeTokenSymbol") : indexToken.symbol;
     const longOrShortText = isLong ? t`Long` : t`Short`;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { SWRConfig } from "swr";
 import { ethers } from "ethers";
-import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
+import { Web3ReactProvider } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 import useScrollToTop from "lib/useScrollToTop";
 
@@ -100,6 +100,7 @@ import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { isDevelopment } from "config/env";
 import Button from "components/Button/Button";
+import { useAccount, useConnect, useDisconnect, useProvider } from "wagmi";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -140,7 +141,9 @@ function getWsProvider(active, chainId) {
 function FullApp() {
   const isHome = isHomeSite();
   const exchangeRef = useRef();
-  const { connector, library, deactivate, activate, active } = useWeb3React();
+  const { connector, isConnected: active } = useAccount();
+  const provider = useProvider();
+  const { disconnect } = useDisconnect();
   const { chainId } = useChainId();
   const location = useLocation();
   const history = useHistory();
@@ -151,6 +154,7 @@ function FullApp() {
       setActivatingConnector(undefined);
     }
   }, [activatingConnector, connector, chainId]);
+
   const triedEager = useEagerConnect(setActivatingConnector);
   useInactiveListener(!triedEager || !!activatingConnector);
 
@@ -185,8 +189,8 @@ function FullApp() {
     clearWalletConnectData();
     // force clear localStorage connection for MM/CB Wallet (Brave legacy)
     clearWalletLinkData();
-    deactivate();
-  }, [deactivate]);
+    disconnect();
+  }, [disconnect]);
 
   const disconnectAccountAndCloseSettings = () => {
     disconnectAccount();
@@ -195,9 +199,9 @@ function FullApp() {
     setIsSettingsVisible(false);
   };
 
-  const connectInjectedWallet = getInjectedHandler(activate, deactivate);
+  const connectInjectedWallet = getInjectedHandler(() => {}, disconnect);
   const activateWalletConnect = () => {
-    getWalletConnectHandler(activate, deactivate, setActivatingConnector)();
+    getWalletConnectHandler(() => {}, disconnect, setActivatingConnector)();
   };
 
   const userOnMobileDevice = "navigator" in window && isMobileDevice(window.navigator);
@@ -346,7 +350,7 @@ function FullApp() {
       const updatedPendingTxns = [];
       for (let i = 0; i < pendingTxns.length; i++) {
         const pendingTxn = pendingTxns[i];
-        const receipt = await library.getTransactionReceipt(pendingTxn.hash);
+        const receipt = await provider.getTransactionReceipt(pendingTxn.hash);
         if (receipt) {
           if (receipt.status === 0) {
             const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
@@ -385,7 +389,7 @@ function FullApp() {
       checkPendingTxns();
     }, 2 * 1000);
     return () => clearInterval(interval);
-  }, [library, pendingTxns, chainId]);
+  }, [provider, pendingTxns, chainId]);
 
   const vaultAddress = getContract(chainId, "Vault");
   const positionRouterAddress = getContract(chainId, "PositionRouter");

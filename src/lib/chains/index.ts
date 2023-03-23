@@ -1,9 +1,9 @@
-import { useWeb3React } from "@web3-react/core";
 import { SELECTED_NETWORK_LOCAL_STORAGE_KEY } from "config/localStorage";
 import { DEFAULT_CHAIN_ID, SUPPORTED_CHAIN_IDS } from "config/chains";
+import { useChainId as useChainIdAccount } from "wagmi";
 
 export function useChainId() {
-  let { chainId } = useWeb3React();
+  let chainId = useChainIdAccount();
 
   if (!chainId) {
     const chainIdFromLocalStorage = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);

@@ -1,4 +1,3 @@
-import { useWeb3React } from "@web3-react/core";
 import AddressDropdown from "../AddressDropdown/AddressDropdown";
 import ConnectWalletButton from "../Common/ConnectWalletButton";
 import React, { useCallback, useEffect } from "react";
@@ -17,6 +16,7 @@ import { useChainId } from "lib/chains";
 import { isDevelopment } from "config/env";
 import { getIcon } from "config/icons";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useAccount } from "wagmi";
 
 type Props = {
   openSettings: () => void;
@@ -66,7 +66,7 @@ export function AppHeaderUser({
   showRedirectModal,
 }: Props) {
   const { chainId } = useChainId();
-  const { active, account } = useWeb3React();
+  const { isConnected: active, address: account } = useAccount();
   const showConnectionOptions = !isHomeSite();
   const { openConnectModal } = useConnectModal();
 
@@ -106,7 +106,9 @@ export function AppHeaderUser({
           <>
             <ConnectWalletButton
               onClick={() => {
-                openConnectModal?.();
+                if (openConnectModal) {
+                  openConnectModal();
+                }
               }}
               imgSrc={connectWalletImg}
             >
