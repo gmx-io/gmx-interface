@@ -21,7 +21,7 @@ export type Props = {
   ordersData: AggregatedOrdersData;
   positionOrders?: any[];
   hideActions?: boolean;
-  showPnlAfterFees?: boolean;
+  showPnlAfterFees: boolean;
   onClosePositionClick?: () => void;
   onEditCollateralClick?: () => void;
   onShareClick?: () => void;
@@ -37,6 +37,9 @@ export function PositionItem(p: Props) {
     p.position.collateralTokenAddress,
     p.position.isLong
   );
+
+  const displayedPnl = p.showPnlAfterFees ? p.position.pnlAfterFees : p.position.pnl;
+  const displayedPnlPercentage = p.showPnlAfterFees ? p.position.pnlAfterFeesPercentage : p.position.pnlPercentage;
 
   // TODO:
   const hasOrderError = false;
@@ -59,11 +62,7 @@ export function PositionItem(p: Props) {
               value={formatUsd(p.position.collateralUsd) || "..."}
               showDollar={false}
             />
-            <StatsTooltipRow
-              label={t`PnL`}
-              value={formatUsd(p.showPnlAfterFees ? p.position.pnlAfterFees : p.position?.pnl) || "..."}
-              showDollar={false}
-            />
+            <StatsTooltipRow label={t`PnL`} value={formatUsd(p.position?.pnl) || "..."} showDollar={false} />
             <StatsTooltipRow
               label={t`Borrow fee`}
               value={formatUsd(p.position.pendingBorrowingFees?.mul(-1)) || "..."}
@@ -246,15 +245,15 @@ export function PositionItem(p: Props) {
           ) : (
             <>
               {renderNetValue()}
-              {p.position.pnl && (
+              {displayedPnl && (
                 <div
                   className={cx("Exchange-list-info-label", {
-                    positive: p.position.pnl.gt(0),
-                    negative: p.position.pnl.lt(0),
-                    muted: p.position.pnl.eq(0),
+                    positive: displayedPnl.gt(0),
+                    negative: displayedPnl.lt(0),
+                    muted: displayedPnl.eq(0),
                   })}
                 >
-                  {formatPnl(p.position.pnl, p.position.pnlPercentage)}
+                  {formatPnl(displayedPnl, displayedPnlPercentage)}
                 </div>
               )}
             </>
@@ -371,12 +370,12 @@ export function PositionItem(p: Props) {
             <div>
               <span
                 className={cx("Exchange-list-info-label", {
-                  positive: p.position.pnl?.gt(0),
-                  negative: p.position.pnl && p.position.pnl.lt(0),
-                  muted: p.position.pnl?.eq(0),
+                  positive: displayedPnl?.gt(0),
+                  negative: displayedPnl?.lt(0),
+                  muted: displayedPnl?.eq(0),
                 })}
               >
-                {formatPnl(p.position.pnl, p.position.pnlPercentage)}
+                {formatPnl(displayedPnl, displayedPnlPercentage)}
               </span>
             </div>
           </div>

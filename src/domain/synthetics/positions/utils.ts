@@ -112,8 +112,8 @@ export function getAggregatedPositionData(
   const pnlAfterFees = totalPendingFeesUsd ? pnl?.sub(totalPendingFeesUsd) : undefined;
 
   const pnlAfterFeesPercentage =
-    collateralUsdAfterFees && !collateralUsdAfterFees.eq(0) && pnlAfterFees
-      ? pnlAfterFees.mul(BASIS_POINTS_DIVISOR).div(collateralUsdAfterFees)
+    collateralUsd && !collateralUsd.eq(0) && closingFeeUsd && pnlAfterFees
+      ? pnlAfterFees.mul(BASIS_POINTS_DIVISOR).div(collateralUsd.add(closingFeeUsd))
       : BigNumber.from(0);
 
   const hasLowCollateral = collateralUsdAfterFees?.lt(expandDecimals(1, USD_DECIMALS));

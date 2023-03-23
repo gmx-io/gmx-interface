@@ -746,7 +746,7 @@ export function TradeBox(p: Props) {
         }
       }
     },
-    [focusedInput, fromTokenInput, increasePositionParams, isIncrease, isSwap, swapParams, toTokenInput]
+    [focusedInput, fromTokenInput, increasePositionParams, isIncrease, isSwap, prevIsISwap, swapParams, toTokenInput]
   );
 
   useEffect(

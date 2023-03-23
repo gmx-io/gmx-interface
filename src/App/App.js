@@ -512,6 +512,7 @@ function FullApp() {
                     savedShouldShowPositionLines={savedShouldShowPositionLines}
                     setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
                     setPendingTxns={setPendingTxns}
+                    showPnlAfterFees={showPnlAfterFees}
                   />
                 ) : (
                   <SyntheticsFallbackPage />

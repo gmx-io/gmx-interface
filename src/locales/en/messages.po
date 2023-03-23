@@ -449,8 +449,12 @@ msgid "Borrow Fee / Day"
 msgstr "Borrow Fee / Day"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Borrow fee:"
-msgstr "Borrow fee:"
+msgid "Borrow fee"
+msgstr "Borrow fee"
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#~ msgid "Borrow fee:"
+#~ msgstr "Borrow fee:"
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
@@ -1747,12 +1751,13 @@ msgid "Funding Fees"
 msgstr "Funding Fees"
 
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Funding fee"
 msgstr "Funding fee"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Funding fee:"
-msgstr "Funding fee:"
+#~ msgid "Funding fee:"
+#~ msgstr "Funding fee:"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GBC NFTs APR tracker and rewards"
