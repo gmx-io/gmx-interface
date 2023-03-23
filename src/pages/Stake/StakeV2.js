@@ -1647,7 +1647,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 )}
               </div>
               <div className="App-card-divider" />
-              <div className="App-card-options gap-right m-0">
+              <div className="App-card-buttons m-0">
                 <Button variant="semi-clear" to="/buy_gmx">
                   <Trans>Buy GMX</Trans>
                 </Button>
@@ -1718,9 +1718,9 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 </div>
                 <div>${formatKeyAmount(processedData, "totalRewardsUsd", USD_DECIMALS, 2, true)}</div>
               </div>
-              <div className="App-card-bottom">
+              <div className="App-card-footer">
                 <div className="App-card-divider"></div>
-                <div className="App-card-options gap-right m-0">
+                <div className="App-card-buttons m-0">
                   {active && (
                     <Button variant="semi-clear" onClick={() => setIsCompoundModalVisible(true)}>
                       <Trans>Compound</Trans>
@@ -1875,7 +1875,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 </div>
               </div>
               <div className="App-card-divider"></div>
-              <div className="App-card-options gap-right m-0">
+              <div className="App-card-buttons m-0">
                 <Button variant="semi-clear" to="/buy_glp">
                   <Trans>Buy GLP</Trans>
                 </Button>
@@ -1962,7 +1962,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 </div>
               </div>
               <div className="App-card-divider"></div>
-              <div className="App-card-options gap-right m-0">
+              <div className="App-card-buttons m-0">
                 {active && (
                   <Button variant="semi-clear" onClick={() => showStakeEsGmxModal()}>
                     <Trans>Stake</Trans>
@@ -2096,7 +2096,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                   </div>
                 </div>
                 <div className="App-card-divider"></div>
-                <div className="App-card-options gap-right m-0">
+                <div className="App-card-buttons m-0">
                   {!active && (
                     <Button variant="semi-clear" onClick={() => connectWallet()}>
                       <Trans>Connect Wallet</Trans>
@@ -2183,7 +2183,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                   </div>
                 </div>
                 <div className="App-card-divider"></div>
-                <div className="App-card-options gap-right m-0">
+                <div className="App-card-buttons m-0">
                   {!active && (
                     <Button variant="semi-clear" onClick={() => connectWallet()}>
                       <Trans>Connect Wallet</Trans>

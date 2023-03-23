@@ -4125,10 +4125,6 @@ msgstr "Der Preis, zu dem der Auftrag ausgeführt werden kann, kann geringfügig
 msgid "The referral code can't be more than {MAX_REFERRAL_CODE_LENGTH} characters."
 msgstr "Der Empfehlungscode darf nicht länger als {MAX_REFERRAL_CODE_LENGTH} Zeichen sein."
 
-#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-msgid "The spread is > 1%, please ensure the trade details are acceptable before comfirming"
-msgstr "Der Spread ist > 1%, bitte stelle sicher, dass die Handelsdetails akzeptabel sind, bevor du den Handel bestätigst."
-
 #: src/components/Exchange/ConfirmationBox.js
 msgid "The spread is > 1%, please ensure the trade details are acceptable before confirming"
 msgstr ""
@@ -5077,10 +5073,6 @@ msgstr "{0} Preis"
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "{0} Required"
 msgstr "{0} Erforderlich"
-
-#: src/components/Exchange/ConfirmationBox.js
-#~ msgid "{0} Spread"
-#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."

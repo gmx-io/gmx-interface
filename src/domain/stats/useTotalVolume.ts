@@ -6,7 +6,7 @@ import { bigNumberify } from "lib/numbers";
 import { arrayURLFetcher } from "lib/fetcher";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
-export default function useTotalVolume() {
+export function useTotalVolume() {
   const { data: totalVolume } = useSWR<any>(
     ACTIVE_CHAIN_IDS.map((chain) => getServerUrl(chain, "/total_volume")),
     {
