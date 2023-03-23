@@ -59,14 +59,18 @@ export function PositionItem(p: Props) {
               value={formatUsd(p.position.collateralUsd) || "..."}
               showDollar={false}
             />
-            <StatsTooltipRow label={t`PnL`} value={formatUsd(p.position?.pnl) || "..."} showDollar={false} />
             <StatsTooltipRow
-              label={t`Borrow fee:`}
+              label={t`PnL`}
+              value={formatUsd(p.showPnlAfterFees ? p.position.pnlAfterFees : p.position?.pnl) || "..."}
+              showDollar={false}
+            />
+            <StatsTooltipRow
+              label={t`Borrow fee`}
               value={formatUsd(p.position.pendingBorrowingFees?.mul(-1)) || "..."}
               showDollar={false}
             />
             <StatsTooltipRow
-              label={t`Funding fee:`}
+              label={t`Funding fee`}
               value={formatUsd(p.position.pendingFundingFeesUsd) || "..."}
               showDollar={false}
             />
@@ -241,7 +245,7 @@ export function PositionItem(p: Props) {
             t`Opening...`
           ) : (
             <>
-              {p.position.netValue?.gt(0) && renderNetValue()}
+              {renderNetValue()}
               {p.position.pnl && (
                 <div
                   className={cx("Exchange-list-info-label", {

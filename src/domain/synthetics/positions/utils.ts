@@ -79,10 +79,10 @@ export function getAggregatedPositionData(
     collateralToken && collateralPrice
       ? convertToUsd(position.collateralAmount, collateralToken.decimals, collateralPrice)
       : undefined;
-
   const pnl = currentValueUsd?.sub(position.sizeInUsd).mul(position.isLong ? 1 : -1);
 
-  const pnlPercentage = collateralUsd?.gt(0) && pnl ? pnl.mul(BASIS_POINTS_DIVISOR).div(collateralUsd) : undefined;
+  const pnlPercentage =
+    collateralUsd && !collateralUsd.eq(0) && pnl ? pnl.mul(BASIS_POINTS_DIVISOR).div(collateralUsd) : BigNumber.from(0);
 
   const borrowingFeeRateUsdPerDay = getBorrowingFeeRateUsd(
     marketsFeesConfigs,
@@ -93,7 +93,7 @@ export function getAggregatedPositionData(
   );
 
   const pendingFundingFeesUsd =
-    collateralPrice && collateralToken && collateralUsd?.gt(0)
+    collateralPrice && collateralToken
       ? convertToUsd(position.pendingFundingFees.fundingFeeAmount, collateralToken.decimals, collateralPrice)
       : undefined;
 
@@ -112,9 +112,9 @@ export function getAggregatedPositionData(
   const pnlAfterFees = totalPendingFeesUsd ? pnl?.sub(totalPendingFeesUsd) : undefined;
 
   const pnlAfterFeesPercentage =
-    collateralUsdAfterFees?.gt(0) && pnlAfterFees
+    collateralUsdAfterFees && !collateralUsdAfterFees.eq(0) && pnlAfterFees
       ? pnlAfterFees.mul(BASIS_POINTS_DIVISOR).div(collateralUsdAfterFees)
-      : undefined;
+      : BigNumber.from(0);
 
   const hasLowCollateral = collateralUsdAfterFees?.lt(expandDecimals(1, USD_DECIMALS));
 
