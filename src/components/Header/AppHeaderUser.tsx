@@ -16,6 +16,7 @@ import { switchNetwork } from "lib/wallets";
 import { useChainId } from "lib/chains";
 import { isDevelopment } from "config/env";
 import { getIcon } from "config/icons";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 
 type Props = {
   openSettings: () => void;
@@ -67,6 +68,7 @@ export function AppHeaderUser({
   const { chainId } = useChainId();
   const { active, account } = useWeb3React();
   const showConnectionOptions = !isHomeSite();
+  const { openConnectModal } = useConnectModal();
 
   useEffect(() => {
     if (active) {
@@ -102,7 +104,12 @@ export function AppHeaderUser({
 
         {showConnectionOptions ? (
           <>
-            <ConnectWalletButton onClick={() => setWalletModalVisible(true)} imgSrc={connectWalletImg}>
+            <ConnectWalletButton
+              onClick={() => {
+                openConnectModal?.();
+              }}
+              imgSrc={connectWalletImg}
+            >
               {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans>}
             </ConnectWalletButton>
             <NetworkDropdown
