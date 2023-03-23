@@ -532,13 +532,13 @@ export default function DashboardV2() {
                     <TooltipComponent
                       position="right-bottom"
                       className="nowrap"
-                      handle={`$${formatAmount(currentVolumeInfo?.[chainId]?.totalVolume, USD_DECIMALS, 0, true)}`}
+                      handle={`$${formatAmount(currentVolumeInfo?.[chainId], USD_DECIMALS, 0, true)}`}
                       renderContent={() => (
                         <StatsTooltip
                           title={t`Volume`}
-                          arbitrumValue={currentVolumeInfo?.[ARBITRUM].totalVolume}
-                          avaxValue={currentVolumeInfo?.[AVALANCHE].totalVolume}
-                          total={currentVolumeInfo?.totalVolume}
+                          arbitrumValue={currentVolumeInfo?.[ARBITRUM]}
+                          avaxValue={currentVolumeInfo?.[AVALANCHE]}
+                          total={currentVolumeInfo?.total}
                         />
                       )}
                     />

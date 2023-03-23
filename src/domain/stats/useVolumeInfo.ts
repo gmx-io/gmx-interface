@@ -1,52 +1,26 @@
-import { useState, useEffect } from "react";
-import { gql } from "@apollo/client";
-import { getGmxGraphClient } from "lib/subgraph/clients";
-import { bigNumberify } from "lib/numbers";
+import { GMX_STATS_API_URL } from "config/backend";
 import { ARBITRUM, AVALANCHE } from "config/chains";
-import { BigNumber } from "ethers";
-import { VolumeInfo, VolumeStat } from "./types";
+import { bigNumberify } from "lib/numbers";
+import useSWR from "swr";
 
 export function useVolumeInfo() {
-  const [volumeInfo, setVolumeInfo] = useState<null | VolumeInfo>(null);
-  useEffect(() => {
-    const _volumeInfo: VolumeInfo = {
-      totalVolume: bigNumberify(0) as BigNumber,
-      [AVALANCHE]: { totalVolume: bigNumberify(0) as BigNumber },
-      [ARBITRUM]: { totalVolume: bigNumberify(0) as BigNumber },
-    };
+  const url = `${GMX_STATS_API_URL}/volume/24h`;
 
-    Promise.all(
-      [ARBITRUM, AVALANCHE].map(async (chainId) => {
-        const client = getGmxGraphClient(chainId);
-        const query = gql`
-          {
-            volumeStats(
-              orderBy: ${chainId === ARBITRUM ? "id" : "timestamp"},
-              orderDirection: desc,
-              first: 24
-              where: { period: hourly }
-            ) {
-              swap
-              margin
-              liquidation
-              mint
-              burn
-            }
-          }
-        `;
-        const res = await client!.query({ query });
+  const { data } = useSWR(
+    url,
+    async (url) => {
+      const res = await fetch(url);
+      const json = await res.json();
+      return {
+        [ARBITRUM]: bigNumberify(json[ARBITRUM]),
+        [AVALANCHE]: bigNumberify(json[AVALANCHE]),
+        total: bigNumberify(json.total),
+      };
+    },
+    {
+      refreshInterval: 60000,
+    }
+  );
 
-        const volume = res.data.volumeStats.reduce((acc: BigNumber, item: VolumeStat) => {
-          return acc.add(item.swap).add(item.margin).add(item.liquidation).add(item.mint).add(item.burn);
-        }, bigNumberify(0));
-
-        _volumeInfo[chainId] = { totalVolume: volume };
-        _volumeInfo.totalVolume = _volumeInfo.totalVolume.add(volume);
-      })
-    ).then(() => {
-      setVolumeInfo(_volumeInfo);
-    });
-  }, []);
-
-  return volumeInfo;
+  return data;
 }
