@@ -88,12 +88,8 @@ export function SyntheticsPage(p: Props) {
   const { availableIndexTokens } = useAvailableSwapOptions({});
 
   const chatTokenAddress = useMemo(() => {
-    if (isSwap) {
-      if (toToken?.isStable && !fromToken?.isStable) {
-        return fromTokenAddress;
-      }
-
-      return toTokenAddress;
+    if (isSwap && toToken?.isStable && !fromToken?.isStable) {
+      return fromTokenAddress;
     } else {
       return toTokenAddress;
     }
