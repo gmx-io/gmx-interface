@@ -1,10 +1,10 @@
 import { LAST_BAR_REFRESH_INTERVAL, SUPPORTED_RESOLUTIONS } from "config/tradingview";
-import { getLimitChartPricesFromStats, getStablePriceData, timezoneOffset } from "domain/prices";
+import { getLimitChartPricesFromStats, timezoneOffset } from "domain/prices";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
 import { Bar } from "./types";
 import { formatTimeInBarToMs, getCurrentCandleTime } from "./utils";
-import { fillBarGaps, getCurrentPriceOfToken, getTokenChartPrice } from "./requests";
+import { fillBarGaps, getCurrentPriceOfToken, getStableCoinPrice, getTokenChartPrice } from "./requests";
 import { BigNumberish } from "ethers";
 import { PeriodParams } from "charting_library";
 
@@ -100,11 +100,11 @@ export class TVDataProvider {
     shouldRefetchBars: boolean
   ) {
     const period = SUPPORTED_RESOLUTIONS[resolution];
-    const { countBack } = periodParams;
+    const { from, to } = periodParams;
 
     try {
       const bars = isStable
-        ? getStablePriceData(period, countBack)
+        ? getStableCoinPrice(period, from, to)
         : await this.getTokenHistoryBars(chainId, ticker, period, periodParams, shouldRefetchBars);
 
       return bars.map(formatTimeInBarToMs);

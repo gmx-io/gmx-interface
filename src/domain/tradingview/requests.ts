@@ -1,6 +1,7 @@
 import { getServerUrl } from "config/backend";
 import { getTokenBySymbol, getWrappedToken } from "config/tokens";
 import { getChainlinkChartPricesFromGraph, getChartPricesFromStats, timezoneOffset } from "domain/prices";
+import { CHART_PERIODS } from "lib/legacy";
 
 function getCurrentBarTimestamp(periodSeconds) {
   return Math.floor(Date.now() / (periodSeconds * 1000)) * (periodSeconds * 1000);
@@ -79,4 +80,21 @@ export function fillBarGaps(prices, periodSeconds) {
   }
 
   return newPrices;
+}
+
+export function getStableCoinPrice(period: string, from: number, to: number) {
+  const periodSeconds = CHART_PERIODS[period];
+  const fromCandle = Math.floor(from / periodSeconds) * periodSeconds;
+  const toCandle = Math.floor(to / periodSeconds) * periodSeconds;
+  let priceData: any = [];
+  for (let candleTime = fromCandle; candleTime <= toCandle; candleTime += periodSeconds) {
+    priceData.push({
+      time: candleTime,
+      open: 1,
+      close: 1,
+      high: 1,
+      low: 1,
+    });
+  }
+  return priceData.filter((candle) => candle.time >= from && candle.time <= to);
 }
