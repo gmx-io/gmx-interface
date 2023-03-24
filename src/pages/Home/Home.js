@@ -273,7 +273,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
         <div className="Home-token-card-container default-container">
           <div className="Home-token-card-info">
             <div className="Home-token-card-info__title">
-              <Trans>Two tokens create our ecosystem</Trans>
+              <Trans>Three tokens create our ecosystem</Trans>
             </div>
           </div>
           <TokenCard showRedirectModal={showRedirectModal} redirectPopupTimestamp={redirectPopupTimestamp} />

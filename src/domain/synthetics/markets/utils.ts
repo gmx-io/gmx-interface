@@ -318,6 +318,7 @@ export function getPoolValue(
   maximize: boolean
 ) {
   const market = getMarket(marketsData, marketAddress);
+  const indexToken = getTokenData(tokensData, market?.indexTokenAddress);
   const pool = getMarketPools(poolsData, marketAddress);
 
   const longPoolUsd = getPoolUsd(
@@ -338,16 +339,30 @@ export function getPoolValue(
     maximize ? "maxPrice" : "minPrice"
   );
 
+  const totalPoolUsd = longPoolUsd?.add(shortPoolUsd || 0);
+
   const longBorrowingFees = getTotalBorrowingFees(openInterestData, poolsData, marketAddress, true);
   const shortBorrowingFees = getTotalBorrowingFees(openInterestData, poolsData, marketAddress, false);
 
+  let totalBorrowingFees = longBorrowingFees?.add(shortBorrowingFees || 0);
+  totalBorrowingFees =
+    totalBorrowingFees && pool ? applyFactor(totalBorrowingFees, pool.borrowingFeeReceiverFactor) : undefined;
+
   const impactPoolAmount = pool?.positionImpactPoolAmount;
+
+  const impactPoolUsd = convertToUsd(
+    impactPoolAmount,
+    indexToken?.decimals,
+    maximize ? indexToken?.prices?.maxPrice : indexToken?.prices?.minPrice
+  );
+
   const netPnl = maximize ? pool?.netPnlMin : pool?.netPnlMax;
 
-  if (!longPoolUsd || !shortPoolUsd || !longBorrowingFees || !shortBorrowingFees || !impactPoolAmount || !netPnl)
+  if (!totalPoolUsd || !totalBorrowingFees || !impactPoolUsd || !netPnl) {
     return undefined;
+  }
 
-  const value = longPoolUsd.add(shortPoolUsd).add(longBorrowingFees).add(shortBorrowingFees).add(impactPoolAmount);
+  const value = totalPoolUsd.add(totalBorrowingFees).add(impactPoolUsd);
 
   return value.sub(netPnl);
 }
@@ -374,6 +389,7 @@ export function getCappedPoolPnl(
   return poolPnl?.gt(maxPnl) ? maxPnl : poolPnl;
 }
 
+// TODO: fix?
 export function getTotalBorrowingFees(
   openInterestData: MarketsOpenInterestData,
   poolsData: MarketsPoolsData,
@@ -391,7 +407,9 @@ export function getTotalBorrowingFees(
 
   const totalBorrowing = isLong ? pools?.totalBorrowingLong : pools?.totalBorrowingShort;
 
-  if (!openInterestValue || !cumulativeBorrowingFactor || !totalBorrowing) return undefined;
+  if (!openInterestValue || !cumulativeBorrowingFactor || !totalBorrowing) {
+    return undefined;
+  }
 
   return openInterestValue.mul(cumulativeBorrowingFactor).sub(totalBorrowing);
 }
