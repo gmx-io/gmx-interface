@@ -17,10 +17,12 @@ import { getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatUsd } from "lib/numbers";
+import { formatAmount, formatUsd } from "lib/numbers";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import "./MarketCard.scss";
+import { useMarketsFeesConfigs } from "domain/synthetics/fees/useMarketsFeesConfigs";
+import { getBorrowingFeeFactor, getFundingFeeFactor } from "domain/synthetics/fees";
 
 export type Props = {
   marketAddress?: string;
@@ -36,6 +38,7 @@ export function MarketCard(p: Props) {
   const { openInterestData } = useOpenInterestData(chainId);
   const { poolsData } = useMarketsPoolsData(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
+  const { marketsFeesConfigs } = useMarketsFeesConfigs(chainId);
 
   const market = getMarket(marketsData, p.marketAddress);
   const marketName = getMarketName(marketsData, tokensData, market?.marketTokenAddress, true, false);
@@ -58,6 +61,9 @@ export function MarketCard(p: Props) {
 
   const maxReservedUsd = getMaxReservedUsd(marketsData, poolsData, tokensData, p.marketAddress, p.isLong);
   const reservedUsd = getReservedUsd(marketsData, openInterestData, tokensData, p.marketAddress, p.isLong);
+
+  const borrowingRate = getBorrowingFeeFactor(marketsFeesConfigs, p.marketAddress, p.isLong, 60 * 60)?.mul(100);
+  const fundigRate = getFundingFeeFactor(marketsFeesConfigs, p.marketAddress, p.isLong, 60 * 60)?.mul(100);
 
   return (
     <div className="Exchange-swap-market-box App-box App-box-border">
@@ -108,6 +114,60 @@ export function MarketCard(p: Props) {
                 </Trans>
               )}
             />
+          }
+        />
+
+        <ExchangeInfoRow
+          label={t`Borrow Fee`}
+          value={
+            borrowingRate ? `${formatAmount(borrowingRate, 30, 4)}% / 1h` : "..."
+            // <Tooltip
+            //   handle={borrowingRate ? `${formatAmount(borrowingRate, 30, 4)}% / 1h` : "..."}
+            //   position="right-bottom"
+            //   renderContent={() => (
+            //     <Trans>
+            //       The borrow fee is calculated as:
+            //       <br />
+            //       <br />
+            //       {p.isLong
+            //         ? "a * (open interest in usd + pending pnl) ^ exp / (pool usd)"
+            //         : "a * (open interest in usd) ^ exp / (pool usd)"}
+            //       <br />
+            //       <br />
+            //       a - borrowing fee factor
+            //       <br />
+            //       exp - exponent factor
+            //       {/* <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#opening-a-position">More Info</ExternalLink> */}
+            //     </Trans>
+            //   )}
+            // />
+          }
+        />
+
+        <ExchangeInfoRow
+          label={t`Funding Fee`}
+          value={
+            fundigRate ? `${fundigRate.gt(0) ? "+" : "-"}${formatAmount(fundigRate.abs(), 30, 4)}% / 1h` : "..."
+            // <Tooltip
+            //   handle={borrowingRate ? `${formatAmount(borrowingRate, 30, 4)}% / 1h` : "..."}
+            //   position="right-bottom"
+            //   renderContent={() => (
+            //     <Trans>
+            //       The borrow fee is calculated as:
+            //       <br />
+            //       <br />
+            //       {p.isLong
+            //         ? "a * (open interest in usd + pending pnl) ^ exp / (pool usd)"
+            //         : "a * (open interest in usd) ^ exp / (pool usd)"}
+            //       <br />
+            //       <br />
+            //       a - borrowing fee factor
+            //       <br />
+            //       exp - exponent factor
+            //       {/* <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#opening-a-position">More Info</ExternalLink> */}
+            //     </Trans>
+            //   )}
+            // />
           }
         />
 

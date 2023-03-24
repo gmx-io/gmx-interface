@@ -37,6 +37,20 @@ export function getFundingFeeFactor(
   return fundingPerSecond.mul(isPositive ? 1 : -1).mul(periodInSeconds || 1);
 }
 
+export function getFundingFeeRateUsd(
+  feesConfigs: MarketsFeesConfigsData,
+  marketAddress?: string,
+  isLong?: boolean,
+  sizeInUsd?: BigNumber,
+  periodInSeconds?: number
+) {
+  const factor = getFundingFeeFactor(feesConfigs, marketAddress, isLong, periodInSeconds);
+
+  if (!factor || !sizeInUsd) return undefined;
+
+  return applyFactor(sizeInUsd, factor);
+}
+
 export function getBorrowingFeeFactor(
   feeConfigs: MarketsFeesConfigsData,
   marketAddress?: string,
@@ -64,32 +78,6 @@ export function getBorrowingFeeRateUsd(
   const factor = getBorrowingFeeFactor(feesConfigs, marketAddress, isLong, periodInSeconds);
 
   if (!factor || !sizeInUsd) return undefined;
-
-  return applyFactor(sizeInUsd, factor);
-}
-
-export function getBorrowingRateUsd(
-  feeConfigs: MarketsFeesConfigsData,
-  marketAddress?: string,
-  sizeInUsd?: BigNumber,
-  isLong?: boolean,
-  period: "hour" = "hour"
-) {
-  const feeConfig = getMarketFeesConfig(feeConfigs, marketAddress);
-
-  if (!feeConfig || !sizeInUsd) return undefined;
-
-  const factorPerSecond = isLong
-    ? feeConfig.borrowingFactorPerSecondForLongs
-    : feeConfig.borrowingFactorPerSecondForShorts;
-
-  let factor: BigNumber;
-
-  if (period === "hour") {
-    factor = factorPerSecond.mul(60 * 60);
-  } else {
-    return undefined;
-  }
 
   return applyFactor(sizeInUsd, factor);
 }

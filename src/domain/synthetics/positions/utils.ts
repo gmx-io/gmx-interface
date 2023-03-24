@@ -12,7 +12,13 @@ import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "lib/legacy";
 import { applyFactor, expandDecimals, formatAmount, formatUsd, roundUpDivision } from "lib/numbers";
-import { MarketsFeesConfigsData, getBorrowingFeeRateUsd, getMarketFeesConfig, getPositionFee } from "../fees";
+import {
+  MarketsFeesConfigsData,
+  getBorrowingFeeRateUsd,
+  getFundingFeeRateUsd,
+  getMarketFeesConfig,
+  getPositionFee,
+} from "../fees";
 import { TokenPrices, TokensData, convertToUsd, getTokenData } from "../tokens";
 import { AggregatedPositionData, Position, PositionsData } from "./types";
 
@@ -92,6 +98,14 @@ export function getAggregatedPositionData(
     60 * 60 * 24
   );
 
+  const fundingFeeRateUsdPerDay = getFundingFeeRateUsd(
+    marketsFeesConfigs,
+    market?.marketTokenAddress,
+    position.isLong,
+    position.sizeInUsd,
+    60 * 60 * 24
+  );
+
   const pendingFundingFeesUsd =
     collateralPrice && collateralToken
       ? convertToUsd(position.pendingFundingFees.fundingFeeAmount, collateralToken.decimals, collateralPrice)
@@ -162,6 +176,7 @@ export function getAggregatedPositionData(
     closingFeeUsd,
     pendingFundingFeesUsd,
     borrowingFeeRateUsdPerDay,
+    fundingFeeRateUsdPerDay,
   };
 }
 

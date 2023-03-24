@@ -10,7 +10,7 @@ import {
   isIncreaseOrder,
 } from "domain/synthetics/orders";
 import { AggregatedPositionData, formatLeverage, formatPnl } from "domain/synthetics/positions";
-import { formatTokenAmount, formatUsd } from "lib/numbers";
+import { formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
 import { AiOutlineEdit } from "react-icons/ai";
 import { ImSpinner2 } from "react-icons/im";
 
@@ -126,11 +126,16 @@ export function PositionItem(p: Props) {
                     label={t`Borrow Fee / Day`}
                     value={formatUsd(p.position.borrowingFeeRateUsdPerDay) || "..."}
                   />
+                  <StatsTooltipRow
+                    showDollar={false}
+                    label={t`Funding Fee / Day`}
+                    value={formatDeltaUsd(p.position.fundingFeeRateUsdPerDay) || "..."}
+                  />
                   <br />
                   <StatsTooltipRow
                     label={t`Funding Fee`}
                     showDollar={false}
-                    value={formatUsd(p.position.pendingFundingFeesUsd) || "..."}
+                    value={formatDeltaUsd(p.position.pendingFundingFeesUsd) || "..."}
                   />
                   <br />
                   <StatsTooltipRow
