@@ -160,6 +160,10 @@
 
 .Tokenselector-search-input {
   font-size: 1.6rem;
+  background-position: 12px center;
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
 }
 .Tokenselector-search-input::placeholder {
   color: var(--dark-blue-accent);

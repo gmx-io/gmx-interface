@@ -87,7 +87,7 @@ export default function TokenSelector(props) {
               autoFocus={!isSmallerScreen}
               className="Tokenselector-search-input"
               style={{
-                background: `url(${searchIcon}) 12px center / 20px 20px no-repeat scroll`,
+                backgroundImage: `url(${searchIcon})`,
               }}
             />
           </div>
