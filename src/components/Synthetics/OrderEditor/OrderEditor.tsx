@@ -262,8 +262,6 @@ export function OrderEditor(p: Props) {
   }
 
   function onSubmit() {
-    if (!indexToken) return;
-
     updateOrderTxn(chainId, library, {
       orderKey: p.order.key,
       sizeDeltaUsd: sizeDeltaUsd || p.order.sizeDeltaUsd,

@@ -112,7 +112,7 @@ export function getAggregatedPositionData(
       : undefined;
 
   const totalPendingFeesUsd = pendingFundingFeesUsd
-    ? position.pendingBorrowingFees.add(pendingFundingFeesUsd)
+    ? position.pendingBorrowingFees.sub(pendingFundingFeesUsd)
     : undefined;
 
   const closingFeeUsd = getPositionFee(marketsFeesConfigs, market?.marketTokenAddress, position.sizeInUsd);

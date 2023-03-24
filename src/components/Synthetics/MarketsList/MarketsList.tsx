@@ -14,13 +14,23 @@ import {
   useOpenInterestData,
 } from "domain/synthetics/markets";
 import { TokenData, getMidPrice, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { BASIS_POINTS_DIVISOR, importImage } from "lib/legacy";
 import { formatAmount, formatUsd } from "lib/numbers";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import { useMemo } from "react";
 import { useMedia } from "react-use";
+
+function formatFundingRate(fundingRate?: BigNumber) {
+  if (!fundingRate) {
+    return "-";
+  }
+
+  const sign = fundingRate.isZero() ? "" : fundingRate.isNegative() ? "-" : "+";
+
+  return `${sign}${formatAmount(fundingRate.mul(100), 30, 4)}%`;
+}
 
 export function MarketsList() {
   const { chainId } = useChainId();
@@ -40,7 +50,8 @@ export function MarketsList() {
         token: TokenData;
         price: BigNumber;
         totalPoolValue: BigNumber;
-        totalFundingRate: BigNumber;
+        minFundingRate: BigNumber;
+        maxFundingRate: BigNumber;
         totalUtilization: BigNumber;
         totalReservedUsd: BigNumber;
         marketsStats: {
@@ -56,7 +67,9 @@ export function MarketsList() {
       if (!indexMap[market.indexTokenAddress]) {
         const token = getTokenData(tokensData, market.indexTokenAddress)!;
 
-        if (!token.prices) continue;
+        if (!token.prices) {
+          continue;
+        }
 
         const price = getMidPrice(token?.prices)!;
 
@@ -64,7 +77,8 @@ export function MarketsList() {
           token,
           price,
           totalPoolValue: BigNumber.from(0),
-          totalFundingRate: BigNumber.from(0),
+          minFundingRate: ethers.constants.MaxInt256,
+          maxFundingRate: BigNumber.from(0),
           totalUtilization: BigNumber.from(0),
           totalReservedUsd: BigNumber.from(0),
           marketsStats: [],
@@ -96,7 +110,15 @@ export function MarketsList() {
       const totalReservedUsd = longReservedUsd?.add(shortReservedUsd || 0);
 
       const fundingRate =
-        getFundingFeeFactor(marketsFeesConfigs, market.marketTokenAddress, true, 60 * 60)?.abs() || BigNumber.from(0);
+        getFundingFeeFactor(marketsFeesConfigs, market.marketTokenAddress, true, 60 * 60) || BigNumber.from(0);
+
+      if (fundingRate.gt(indexTokenStats.maxFundingRate)) {
+        indexTokenStats.maxFundingRate = fundingRate;
+      }
+
+      if (fundingRate.lt(indexTokenStats.minFundingRate)) {
+        indexTokenStats.minFundingRate = fundingRate;
+      }
 
       const utilization =
         poolValueUsd?.gt(0) && totalReservedUsd
@@ -104,7 +126,7 @@ export function MarketsList() {
           : BigNumber.from(0);
 
       indexTokenStats.totalPoolValue = indexTokenStats.totalPoolValue.add(poolValueUsd || 0);
-      indexTokenStats.totalFundingRate = indexTokenStats.totalFundingRate.add(fundingRate || 0);
+
       indexTokenStats.totalReservedUsd = indexTokenStats.totalReservedUsd.add(totalReservedUsd || 0);
       indexTokenStats.marketsStats.push({
         market,
@@ -194,7 +216,25 @@ export function MarketsList() {
                       )}
                     />
                   </td>
-                  <td>{formatAmount(stats.totalFundingRate.mul(100), 30, 4)}%</td>
+                  <td>
+                    <Tooltip
+                      handle={`${formatFundingRate(stats.minFundingRate)} / ${formatFundingRate(stats.maxFundingRate)}`}
+                      renderContent={() => (
+                        <>
+                          {stats.marketsStats.map(({ market, fundingRate }) => (
+                            <StatsTooltipRow
+                              key={market.marketTokenAddress}
+                              showDollar={false}
+                              label={`[${getToken(chainId, market.longTokenAddress)?.symbol}-${
+                                getToken(chainId, market.shortTokenAddress)?.symbol
+                              }]`}
+                              value={`${formatFundingRate(fundingRate)}`}
+                            />
+                          ))}
+                        </>
+                      )}
+                    />
+                  </td>
                   <td>{formatAmount(stats.totalUtilization, 2, 2)}%</td>
                 </tr>
               ))}
@@ -242,18 +282,19 @@ export function MarketsList() {
                     </div>
                     <div>
                       <Tooltip
-                        handle={formatUsd(stats.totalPoolValue)}
-                        position="right-bottom"
+                        handle={`${formatFundingRate(stats.minFundingRate)} / ${formatFundingRate(
+                          stats.maxFundingRate
+                        )}`}
                         renderContent={() => (
                           <>
-                            {stats.marketsStats.map(({ market, poolValueUsd }) => (
+                            {stats.marketsStats.map(({ market, fundingRate }) => (
                               <StatsTooltipRow
                                 key={market.marketTokenAddress}
                                 showDollar={false}
                                 label={`[${getToken(chainId, market.longTokenAddress)?.symbol}-${
                                   getToken(chainId, market.shortTokenAddress)?.symbol
                                 }]`}
-                                value={formatUsd(poolValueUsd)}
+                                value={`${formatFundingRate(fundingRate)}`}
                               />
                             ))}
                           </>
@@ -265,7 +306,29 @@ export function MarketsList() {
                     <div className="label">
                       <Trans>Funding Rate / 1h</Trans>
                     </div>
-                    <div>{formatAmount(stats.totalFundingRate.mul(100), 30, 4)}%</div>
+                    <div>
+                      <Tooltip
+                        handle={`${formatAmount(stats.minFundingRate.mul(100), 30, 4)}% / ${formatAmount(
+                          stats.maxFundingRate.mul(100),
+                          30,
+                          4
+                        )}`}
+                        renderContent={() => (
+                          <>
+                            {stats.marketsStats.map(({ market, poolValueUsd }) => (
+                              <StatsTooltipRow
+                                key={market.marketTokenAddress}
+                                showDollar={false}
+                                label={`[${getToken(chainId, market.longTokenAddress)?.symbol}-${
+                                  getToken(chainId, market.shortTokenAddress)?.symbol
+                                }]`}
+                                value={`${formatAmount(stats.minFundingRate.mul(100), 30, 4)}%`}
+                              />
+                            ))}
+                          </>
+                        )}
+                      />
+                    </div>
                   </div>
                   <div className="App-card-row">
                     <div className="label">

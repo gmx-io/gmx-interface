@@ -70,7 +70,7 @@ export function PositionItem(p: Props) {
             />
             <StatsTooltipRow
               label={t`Funding fee`}
-              value={formatUsd(p.position.pendingFundingFeesUsd) || "..."}
+              value={formatDeltaUsd(p.position.pendingFundingFeesUsd) || "..."}
               showDollar={false}
             />
             <StatsTooltipRow
@@ -119,23 +119,23 @@ export function PositionItem(p: Props) {
                   <StatsTooltipRow
                     label={t`Borrow Fee`}
                     showDollar={false}
-                    value={formatUsd(p.position.pendingBorrowingFees) || "..."}
+                    value={formatUsd(p.position.pendingBorrowingFees.mul(-1)) || "..."}
                   />
+                  <StatsTooltipRow
+                    label={t`Funding Fee`}
+                    showDollar={false}
+                    value={formatDeltaUsd(p.position.pendingFundingFeesUsd) || "..."}
+                  />
+                  <br />
                   <StatsTooltipRow
                     showDollar={false}
                     label={t`Borrow Fee / Day`}
-                    value={formatUsd(p.position.borrowingFeeRateUsdPerDay) || "..."}
+                    value={formatUsd(p.position.borrowingFeeRateUsdPerDay?.mul(-1)) || "..."}
                   />
                   <StatsTooltipRow
                     showDollar={false}
                     label={t`Funding Fee / Day`}
                     value={formatDeltaUsd(p.position.fundingFeeRateUsdPerDay) || "..."}
-                  />
-                  <br />
-                  <StatsTooltipRow
-                    label={t`Funding Fee`}
-                    showDollar={false}
-                    value={formatDeltaUsd(p.position.pendingFundingFeesUsd) || "..."}
                   />
                   <br />
                   <StatsTooltipRow
