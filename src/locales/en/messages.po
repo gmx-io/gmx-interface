@@ -512,8 +512,8 @@ msgid "Buy GMX on {0}"
 msgstr "Buy GMX on {0}"
 
 #: src/pages/Buy/Buy.js
-msgid "Buy GMX or GLP"
-msgstr "Buy GMX or GLP"
+#~ msgid "Buy GMX or GLP"
+#~ msgstr "Buy GMX or GLP"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using Decentralized Exchange Aggregators:"
@@ -526,6 +526,10 @@ msgstr "Buy GMX using FIAT gateways:"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using any token from any network:"
 msgstr "Buy GMX using any token from any network:"
+
+#: src/pages/Buy/Buy.js
+msgid "Buy Protocol Tokens"
+msgstr "Buy Protocol Tokens"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Buy failed."
