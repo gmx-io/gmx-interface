@@ -800,7 +800,7 @@ export function ConfirmationBox(p: Props) {
           )}
 
           <ExchangeInfoRow label={t`Borrow Fee`}>
-            {borrowingRate ? `${formatAmount(borrowingRate, 30, 4)}% / 1h` : "-"}
+            {borrowingRate ? `-${formatAmount(borrowingRate, 30, 4)}% / 1h` : "-"}
           </ExchangeInfoRow>
 
           <ExchangeInfoRow label={t`Funding Fee`}>

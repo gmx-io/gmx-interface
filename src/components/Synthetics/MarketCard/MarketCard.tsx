@@ -120,7 +120,7 @@ export function MarketCard(p: Props) {
         <ExchangeInfoRow
           label={t`Borrow Fee`}
           value={
-            borrowingRate ? `${formatAmount(borrowingRate, 30, 4)}% / 1h` : "..."
+            borrowingRate ? `-${formatAmount(borrowingRate, 30, 4)}% / 1h` : "..."
             // <Tooltip
             //   handle={borrowingRate ? `${formatAmount(borrowingRate, 30, 4)}% / 1h` : "..."}
             //   position="right-bottom"
