@@ -21,16 +21,16 @@ import PositionRouter from "abis/PositionRouter.json";
 import Token from "abis/Token.json";
 import Tooltip from "../Tooltip/Tooltip";
 
-import { getChainName, getConstant, IS_NETWORK_DISABLED } from "config/chains";
-import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
+import { getChainName, IS_NETWORK_DISABLED } from "config/chains";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { getTokenInfo } from "domain/tokens/utils";
 import { approveTokens, shouldRaiseGasError } from "domain/tokens";
 import { usePrevious } from "lib/usePrevious";
 import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ErrorCode, ErrorDisplayType } from "./constants";
+import Button from "components/Button/Button";
+import FeesTooltip from "./FeesTooltip";
 
 const DEPOSIT = "Deposit";
 const WITHDRAW = "Withdraw";
@@ -109,6 +109,7 @@ export default function PositionEditor(props) {
   let title;
   let collateralDelta;
   let fundingFee;
+  let depositFeeUSD;
 
   if (position) {
     title = t`Edit ${longOrShortText} ${position.indexToken.symbol}`;
@@ -146,6 +147,7 @@ export default function PositionEditor(props) {
 
       if (position.isLong && isDeposit) {
         collateralDelta = collateralDelta.mul(BASIS_POINTS_DIVISOR - DEPOSIT_FEE).div(BASIS_POINTS_DIVISOR);
+        depositFeeUSD = convertedAmount.mul(DEPOSIT_FEE).div(BASIS_POINTS_DIVISOR);
       }
 
       nextLeverage = getLeverage({
@@ -458,7 +460,7 @@ export default function PositionEditor(props) {
 
     withdrawCollateral();
   };
-  const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
+
   const EDIT_OPTIONS_LABELS = {
     [DEPOSIT]: t`Deposit`,
     [WITHDRAW]: t`Withdraw`,
@@ -475,9 +477,9 @@ export default function PositionEditor(props) {
         <Tooltip
           isHandlerDisabled
           handle={
-            <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+            <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
               {primaryTextMessage}
-            </button>
+            </Button>
           }
           className="Tooltip-flex"
           position="center-top"
@@ -486,10 +488,17 @@ export default function PositionEditor(props) {
       );
     }
     return (
-      <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+      <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
         {primaryTextMessage}
-      </button>
+      </Button>
     );
+  }
+
+  function getTotalFees() {
+    if (isDeposit && position?.isLong && minExecutionFeeUSD.gt(0)) {
+      return depositFeeUSD && minExecutionFeeUSD.add(depositFeeUSD);
+    }
+    return minExecutionFeeUSD;
   }
 
   return (
@@ -555,31 +564,6 @@ export default function PositionEditor(props) {
                   )}
                   <div className="Exchange-info-row">
                     <div className="Exchange-info-label">
-                      <Trans>Size</Trans>
-                    </div>
-                    <div className="align-right">{formatAmount(position.size, USD_DECIMALS, 2, true)} USD</div>
-                  </div>
-                  <div className="Exchange-info-row">
-                    <div className="Exchange-info-label">
-                      <Trans>Collateral</Trans>
-                    </div>
-                    <div className="align-right">
-                      {!nextCollateral && (
-                        <div>${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}</div>
-                      )}
-                      {nextCollateral && (
-                        <div>
-                          <div className="inline-block muted">
-                            ${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}
-                            <BsArrowRight className="transition-arrow" />
-                          </div>
-                          ${formatAmount(nextCollateral, USD_DECIMALS, 2, true)}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  <div className="Exchange-info-row">
-                    <div className="Exchange-info-label">
                       <Trans>Leverage</Trans>
                     </div>
                     <div className="align-right">
@@ -594,6 +578,12 @@ export default function PositionEditor(props) {
                         </div>
                       )}
                     </div>
+                  </div>
+                  <div className="Exchange-info-row top-line">
+                    <div className="Exchange-info-label">
+                      <Trans>Entry Price</Trans>
+                    </div>
+                    <div className="align-right">${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}</div>
                   </div>
                   <div className="Exchange-info-row">
                     <div className="Exchange-info-label">
@@ -623,6 +613,32 @@ export default function PositionEditor(props) {
                       )}
                     </div>
                   </div>
+                  <div className="Exchange-info-row top-line">
+                    <div className="Exchange-info-label">
+                      <Trans>Size</Trans>
+                    </div>
+                    <div className="align-right">{formatAmount(position.size, USD_DECIMALS, 2, true)} USD</div>
+                  </div>
+                  <div className="Exchange-info-row">
+                    <div className="Exchange-info-label">
+                      <Trans>Collateral ({collateralToken.symbol})</Trans>
+                    </div>
+                    <div className="align-right">
+                      {!nextCollateral && (
+                        <div>${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}</div>
+                      )}
+                      {nextCollateral && (
+                        <div>
+                          <div className="inline-block muted">
+                            ${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}
+                            <BsArrowRight className="transition-arrow" />
+                          </div>
+                          ${formatAmount(nextCollateral, USD_DECIMALS, 2, true)}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
                   {fromAmount?.gt(0) && fundingFee?.gt(0) && (
                     <div className="Exchange-info-row">
                       <div className="Exchange-info-label">
@@ -647,39 +663,19 @@ export default function PositionEditor(props) {
                       </div>
                     </div>
                   )}
+
                   <div className="Exchange-info-row">
                     <div className="Exchange-info-label">
-                      <Trans>Execution Fee</Trans>
+                      <Trans>Fees</Trans>
                     </div>
                     <div className="align-right">
-                      <Tooltip
-                        handle={`${formatAmountFree(minExecutionFee, 18, 5)} ${nativeTokenSymbol}`}
-                        position="right-top"
-                        renderContent={() => {
-                          const depositOrWithdrawalText = isDeposit ? t`deposit` : t`withdrawal`;
-                          return (
-                            <>
-                              <StatsTooltipRow
-                                label={t`Network Fee`}
-                                showDollar={false}
-                                value={`${formatAmountFree(
-                                  minExecutionFee,
-                                  18,
-                                  5
-                                )} ${nativeTokenSymbol} ($${formatAmount(minExecutionFeeUSD, USD_DECIMALS, 2)})`}
-                              />
-                              <br />
-                              <Trans>
-                                This is the network cost required to execute the {depositOrWithdrawalText}.
-                                <br />
-                                <br />
-                                <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#execution-fee">
-                                  More Info
-                                </ExternalLink>
-                              </Trans>
-                            </>
-                          );
+                      <FeesTooltip
+                        executionFees={{
+                          fee: minExecutionFee,
+                          feeUSD: minExecutionFeeUSD,
                         }}
+                        totalFees={getTotalFees()}
+                        depositFee={depositFeeUSD}
                       />
                     </div>
                   </div>

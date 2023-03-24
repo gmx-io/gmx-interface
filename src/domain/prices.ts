@@ -288,8 +288,8 @@ function appendCurrentAveragePrice(prices, currentAveragePrice, period) {
   const averagePriceValue = parseFloat(formatAmount(currentAveragePrice, USD_DECIMALS, 2));
   if (currentCandleTime === last.time) {
     last.close = averagePriceValue;
-    last.high = Math.max(last.high, averagePriceValue);
-    last.low = Math.max(last.low, averagePriceValue);
+    last.high = Math.max(last.open, last.high, averagePriceValue);
+    last.low = Math.min(last.open, last.low, averagePriceValue);
     return prices;
   } else {
     const newCandle = {

@@ -47,6 +47,8 @@ export type TokenInfo = Token & {
   contractMaxPrice?: BigNumber;
   contractMinPrice?: BigNumber;
 
+  spread?: BigNumber;
+
   cumulativeFundingRate?: BigNumber;
   fundingRate?: BigNumber;
 
