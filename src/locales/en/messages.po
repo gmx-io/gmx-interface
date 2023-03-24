@@ -300,7 +300,6 @@ msgstr "Approve GMX"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Approve {0}"
 msgstr "Approve {0}"
 
@@ -316,7 +315,6 @@ msgstr "Approving GMX..."
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Approving {0}..."
 msgstr "Approving {0}..."
 
@@ -3070,6 +3068,7 @@ msgstr "Pay:"
 msgid "Pay: {0} USD"
 msgstr "Pay: {0} USD"
 
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Pending {0} approval"
 msgstr "Pending {0} approval"
