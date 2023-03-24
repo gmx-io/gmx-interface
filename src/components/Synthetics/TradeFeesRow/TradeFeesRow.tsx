@@ -27,8 +27,9 @@ export function TradeFeesRow(p: Props) {
       label={<Trans>Fees and price impact</Trans>}
       value={
         <>
-          {(!p.totalFees?.deltaUsd || p.totalFees.deltaUsd.eq(0)) && "-"}
-          {p.totalFees?.deltaUsd && (
+          {!p.totalFees?.deltaUsd || p.totalFees.deltaUsd.eq(0) ? (
+            "-"
+          ) : (
             <Tooltip
               className="TradeFeesRow-tooltip"
               handle={

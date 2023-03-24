@@ -145,7 +145,7 @@ export function formatDeltaUsd(deltaUsd?: BigNumber, percentage?: BigNumber, opt
   }
 
   let sign = "";
-  if (!deltaUsd?.eq(0)) {
+  if (!deltaUsd.eq(0)) {
     sign = deltaUsd?.gt(0) ? "+" : "-";
   }
 
