@@ -130,7 +130,9 @@ export function formatUsd(usd?: BigNumber, opts: { fallbackToZero?: boolean } = 
     }
   }
 
-  return `$${formatAmount(usd, USD_DECIMALS, 2, true)}`;
+  const sign = usd.lt(0) ? "-" : "";
+
+  return `${sign}$${formatAmount(usd.abs(), USD_DECIMALS, 2, true)}`;
 }
 
 export function formatDeltaUsd(deltaUsd?: BigNumber, percentage?: BigNumber, opts: { fallbackToZero?: boolean } = {}) {
