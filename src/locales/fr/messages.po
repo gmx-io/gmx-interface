@@ -89,18 +89,6 @@ msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exce
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
-#~ msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} acceptable amount. Reduce the \"Pay\" size, or use {4} as the \"Pay\" token to use it for collateral.</1><2>You can buy {5} on 1inch.</2><3>Alternatively, you can select a different \"Collateral In\" token.</3>"
-#~ msgstr ""
-
-#: src/components/Exchange/SwapBox.js
-#~ msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} available liquidity. Reduce the \"Pay\" or change the \"Collateral In\" token.</1>"
-#~ msgstr ""
-
-#: src/components/Exchange/SwapBox.js
-#~ msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} available liquidity. Reduce the \"Pay\" size or change the \"Collateral In\" token.</1>"
-#~ msgstr ""
-
-#: src/components/Exchange/SwapBox.js
 msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} available liquidity. Reduce the \"Pay\" size, or change the \"Collateral In\" token.</1>"
 msgstr ""
 
@@ -1402,10 +1390,6 @@ msgstr ""
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "Achat GLP désactivé, en attente de {0} actualisations"
 
-#: src/components/Exchange/SwapBox.js
-msgid "GLP doesn't accept this amount of {0}."
-msgstr ""
-
 #: src/components/TokenCard/TokenCard.js
 msgid "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
 msgstr "GLP est le token qui fournit la liquidité. Accumule 70% des frais générés par la plateforme."
@@ -1620,9 +1604,6 @@ msgid "Insufficient Liquidity"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
-#~ msgid "Insufficient Liquidity c"
-#~ msgstr ""
-
 #: src/components/Glp/GlpSwap.js
 msgid "Insufficient liquidity"
 msgstr "Liquidité insuffisante"
@@ -2993,6 +2974,10 @@ msgstr "Ordre d'échange soumis !"
 msgid "Swap active: {0}, executed: {1}, cancelled: {2}"
 msgstr "Échange actif: {0}, exécuté: {1}, annulé: {2}"
 
+#: src/components/Exchange/SwapBox.js
+msgid "Swap amount exceeds available liquidity."
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Swap amount from {0} to {1} exceeds {2} acceptable amount. Can only receive {3}."
 msgstr ""
@@ -3989,11 +3974,7 @@ msgstr "{0} est en dessous de son poids cible.<0/><1/>Obtenez une réduction des
 
 #: src/components/Exchange/SwapBox.js
 msgid "{0} is required for collateral."
-msgstr "{0} est requis comme collatéral."
-
-#: src/components/Exchange/SwapBox.js
-msgid "{0} pool exceeded"
-msgstr "{0} pool dépassé"
+msgstr "{0} est requis comme collatéral.<<<<<<< HEAD"
 
 #: src/components/Glp/GlpSwap.js
 msgid "{0} pool exceeded, try different token"
