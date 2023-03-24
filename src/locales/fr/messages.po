@@ -1802,8 +1802,12 @@ msgid "GLP doesn't accept this amount of {0}."
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
-msgid "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
-msgstr "GLP est le token qui fournit la liquidité. Accumule 70% des frais générés par la plateforme."
+msgid "GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of the V1 markets generated fees."
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.js
+#~ msgid "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
+#~ msgstr "GLP est le token qui fournit la liquidité. Accumule 70% des frais générés par la plateforme."
 
 #: src/components/Glp/GlpSwap.js
 msgid "GLP sell disabled, pending {0} upgrade"
@@ -1815,7 +1819,11 @@ msgid "GM Index Composition"
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
-msgid "GM is the GMX Market Token"
+#~ msgid "GM is the GMX Market Token"
+#~ msgstr ""
+
+#: src/components/TokenCard/TokenCard.js
+msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 70% of the V2 markets generated fees and 100% of the borrow fees."
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -4206,6 +4214,10 @@ msgstr "Cette position a été liquidée car le levier maximal de 100x a été d
 msgid "This position was liquidated as the max leverage of {maxLeverageText} was exceeded.`"
 msgstr ""
 
+#: src/pages/Home/Home.js
+msgid "Three tokens create our ecosystem"
+msgstr ""
+
 #: src/components/Referrals/TradersStats.js
 msgid "Tier {0} ({1}% discount)"
 msgstr "Niveau {0} (réduction {1}%)"
@@ -4480,8 +4492,8 @@ msgid "Tweet"
 msgstr "Tweet"
 
 #: src/pages/Home/Home.js
-msgid "Two tokens create our ecosystem"
-msgstr "Deux tokens créent notre écosystème"
+#~ msgid "Two tokens create our ecosystem"
+#~ msgstr "Deux tokens créent notre écosystème"
 
 #: src/App/App.js
 msgid "Txn failed. <0>View</0>"

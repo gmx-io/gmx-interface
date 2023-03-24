@@ -1802,8 +1802,12 @@ msgid "GLP doesn't accept this amount of {0}."
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
-msgid "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
-msgstr "GLP是流动性提供者代币。累积了70%平台产生的费用"
+msgid "GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of the V1 markets generated fees."
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.js
+#~ msgid "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
+#~ msgstr "GLP是流动性提供者代币。累积了70%平台产生的费用"
 
 #: src/components/Glp/GlpSwap.js
 msgid "GLP sell disabled, pending {0} upgrade"
@@ -1815,7 +1819,11 @@ msgid "GM Index Composition"
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
-msgid "GM is the GMX Market Token"
+#~ msgid "GM is the GMX Market Token"
+#~ msgstr ""
+
+#: src/components/TokenCard/TokenCard.js
+msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 70% of the V2 markets generated fees and 100% of the borrow fees."
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -4206,6 +4214,10 @@ msgstr "这个头寸因超过100倍的最大杠杆而被清算了"
 msgid "This position was liquidated as the max leverage of {maxLeverageText} was exceeded.`"
 msgstr ""
 
+#: src/pages/Home/Home.js
+msgid "Three tokens create our ecosystem"
+msgstr ""
+
 #: src/components/Referrals/TradersStats.js
 msgid "Tier {0} ({1}% discount)"
 msgstr "第{0}级 ({1}% discount)"
@@ -4480,8 +4492,8 @@ msgid "Tweet"
 msgstr "推特"
 
 #: src/pages/Home/Home.js
-msgid "Two tokens create our ecosystem"
-msgstr "两种代币创造了我们的生态系统"
+#~ msgid "Two tokens create our ecosystem"
+#~ msgstr "两种代币创造了我们的生态系统"
 
 #: src/App/App.js
 msgid "Txn failed. <0>View</0>"

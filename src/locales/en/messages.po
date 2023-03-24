@@ -1802,8 +1802,12 @@ msgid "GLP doesn't accept this amount of {0}."
 msgstr "GLP doesn't accept this amount of {0}."
 
 #: src/components/TokenCard/TokenCard.js
-msgid "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
-msgstr "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
+msgid "GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of the V1 markets generated fees."
+msgstr "GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of the V1 markets generated fees."
+
+#: src/components/TokenCard/TokenCard.js
+#~ msgid "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
+#~ msgstr "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
 
 #: src/components/Glp/GlpSwap.js
 msgid "GLP sell disabled, pending {0} upgrade"
@@ -1815,8 +1819,12 @@ msgid "GM Index Composition"
 msgstr "GM Index Composition"
 
 #: src/components/TokenCard/TokenCard.js
-msgid "GM is the GMX Market Token"
-msgstr "GM is the GMX Market Token"
+#~ msgid "GM is the GMX Market Token"
+#~ msgstr "GM is the GMX Market Token"
+
+#: src/components/TokenCard/TokenCard.js
+msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 70% of the V2 markets generated fees and 100% of the borrow fees."
+msgstr "GM is the liquidity provider token for GMX V2 markets. Accrues 70% of the V2 markets generated fees and 100% of the borrow fees."
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX Announcements and Updates"
@@ -4206,6 +4214,10 @@ msgstr "This position was liquidated as the max leverage of 100x was exceeded."
 msgid "This position was liquidated as the max leverage of {maxLeverageText} was exceeded.`"
 msgstr "This position was liquidated as the max leverage of {maxLeverageText} was exceeded.`"
 
+#: src/pages/Home/Home.js
+msgid "Three tokens create our ecosystem"
+msgstr "Three tokens create our ecosystem"
+
 #: src/components/Referrals/TradersStats.js
 msgid "Tier {0} ({1}% discount)"
 msgstr "Tier {0} ({1}% discount)"
@@ -4480,8 +4492,8 @@ msgid "Tweet"
 msgstr "Tweet"
 
 #: src/pages/Home/Home.js
-msgid "Two tokens create our ecosystem"
-msgstr "Two tokens create our ecosystem"
+#~ msgid "Two tokens create our ecosystem"
+#~ msgstr "Two tokens create our ecosystem"
 
 #: src/App/App.js
 msgid "Txn failed. <0>View</0>"
