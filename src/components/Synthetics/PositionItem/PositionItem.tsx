@@ -62,7 +62,7 @@ export function PositionItem(p: Props) {
               value={formatUsd(p.position.collateralUsd) || "..."}
               showDollar={false}
             />
-            <StatsTooltipRow label={t`PnL`} value={formatUsd(p.position?.pnl) || "..."} showDollar={false} />
+            <StatsTooltipRow label={t`PnL`} value={formatDeltaUsd(p.position?.pnl) || "..."} showDollar={false} />
             <StatsTooltipRow
               label={t`Borrow fee`}
               value={formatUsd(p.position.pendingBorrowingFees?.mul(-1)) || "..."}
