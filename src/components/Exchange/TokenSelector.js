@@ -6,14 +6,17 @@ import { BiChevronDown } from "react-icons/bi";
 import Modal from "../Modal/Modal";
 
 import dropDownIcon from "img/DROP_DOWN.svg";
+import searchIcon from "img/search.svg";
 import "./TokenSelector.css";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 import { bigNumberify, expandDecimals, formatAmount } from "lib/numbers";
 import { getToken } from "config/tokens";
 import { importImage } from "lib/legacy";
 import { t } from "@lingui/macro";
+import { useMedia } from "react-use";
 
 export default function TokenSelector(props) {
+  const isSmallerScreen = useMedia("(max-width: 700px)");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
   const tokenInfo = getToken(props.chainId, props.tokenAddress);
@@ -29,7 +32,6 @@ export default function TokenSelector(props) {
     showSymbolImage = false,
     showNewCaret = false,
     getTokenState = () => ({ disabled: false, message: null }),
-    disableBodyScrollLock,
   } = props;
 
   const visibleTokens = tokens.filter((t) => !t.isTempHidden);
@@ -71,12 +73,10 @@ export default function TokenSelector(props) {
   return (
     <div className={cx("TokenSelector", { disabled }, props.className)}>
       <Modal
-        disableBodyScrollLock={disableBodyScrollLock}
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={props.label}
-      >
-        <div className="TokenSelector-tokens">
+        headerContent={() => (
           <div className="TokenSelector-token-row TokenSelector-token-input-row">
             <input
               type="text"
@@ -84,9 +84,16 @@ export default function TokenSelector(props) {
               value={searchKeyword}
               onChange={(e) => onSearchKeywordChange(e)}
               onKeyDown={_handleKeyDown}
-              autoFocus
+              autoFocus={!isSmallerScreen}
+              className="Tokenselector-search-input"
+              style={{
+                backgroundImage: `url(${searchIcon})`,
+              }}
             />
           </div>
+        )}
+      >
+        <div className="TokenSelector-tokens">
           {filteredTokens.map((token, tokenIndex) => {
             const tokenPopupImage = importImage(`ic_${token.symbol.toLowerCase()}_40.svg`);
             let info = infoTokens ? infoTokens[token.address] : {};
