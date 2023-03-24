@@ -3,6 +3,7 @@ import Modal from "../Modal/Modal";
 import Checkbox from "../Checkbox/Checkbox";
 import { t, Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import Button from "components/Button/Button";
 
 export function RedirectPopupModal({
   redirectModalVisible,
@@ -52,9 +53,9 @@ export function RedirectPopupModal({
           <Trans>Don't show this message again for 30 days.</Trans>
         </Checkbox>
       </div>
-      <a href={appRedirectUrl} className="App-cta Exchange-swap-button" onClick={onClickAgree}>
+      <Button variant="primary-action" className="w-100" to={appRedirectUrl} onClick={onClickAgree}>
         <Trans>Agree</Trans>
-      </a>
+      </Button>
     </Modal>
   );
 }

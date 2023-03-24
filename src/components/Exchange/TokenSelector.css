@@ -1,7 +1,20 @@
 .TokenSelector .Modal .Modal-content {
-  width: 31rem;
-  margin: 0;
+  width: 42rem;
+  position: absolute;
   max-height: 100vh;
+  top: 0;
+  bottom: 0;
+  overflow: hidden;
+  border: none;
+}
+
+.TokenSelector .Modal .Modal-content .Modal-body {
+  scroll-margin-right: 38.75rem;
+  overscroll-behavior: smooth;
+  scrollbar-width: thin;
+  padding-right: 0.5rem;
+  max-height: calc(100vh - 13rem);
+  overflow-y: auto;
 }
 
 .TokenSelector-token-name {
@@ -102,10 +115,11 @@
 
 .TokenSelector-token-row.TokenSelector-token-input-row {
   padding: 0;
+  margin-top: 1.5rem;
 }
 
 .TokenSelector-token-row input {
-  padding: 0.8rem;
+  padding: 1rem 1rem 1rem 4rem;
   width: 100%;
 }
 
@@ -144,7 +158,38 @@
   border: none;
 }
 
+.Tokenselector-search-input {
+  font-size: 1.6rem;
+  background-position: 12px center;
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+}
+.Tokenselector-search-input::placeholder {
+  color: var(--dark-blue-accent);
+}
+
+@media (max-width: 1100px) {
+  .TokenSelector .Modal .Modal-content {
+    max-height: 80vh;
+    min-height: 80vh;
+    top: auto;
+    bottom: auto;
+  }
+
+  .TokenSelector .Modal .Modal-content .Modal-body {
+    overflow-y: auto;
+    max-height: calc(80vh - 13rem);
+    padding-right: 0.5rem;
+    margin: 1.5rem 0.8rem 1.5rem 1.5rem;
+  }
+}
+
 @media (max-width: 700px) {
+  .TokenSelector .Modal .Modal-content {
+    bottom: 0;
+  }
+
   .TokenSelector.right .Modal {
     align-items: center;
     justify-content: center;

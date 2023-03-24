@@ -27,27 +27,6 @@
   justify-content: flex-end;
 }
 
-.GlpSwap-from-token .Modal .Modal-content {
-  width: 41.85rem;
-}
-
-.GlpSwap-from-token .Modal-content {
-  position: absolute;
-  width: 38.75rem;
-  max-height: 100vh;
-  overflow: hidden;
-  border: none;
-  top: 0;
-  bottom: 0;
-}
-.GlpSwap-from-token .Modal-content .Modal-body {
-  padding-right: 0.5rem;
-  max-height: calc(100vh - 7.75rem);
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  -webkit-overflow-scrolling: auto;
-}
-
 .GlpSwap-content .GlpSwap-stats-card,
 .GlpSwap-content .GlpSwap-box {
   width: 100%;
@@ -277,21 +256,6 @@
   .GlpSwap-from-token .Modal {
     align-items: center;
     justify-content: center;
-  }
-  .GlpSwap-from-token .Modal .Modal-content {
-    width: 41.85rem;
-    position: absolute;
-    max-height: 80vh;
-    overflow: hidden;
-    border: none;
-    top: auto;
-    bottom: auto;
-  }
-  .GlpSwap-from-token .Modal .Modal-content .Modal-body {
-    overflow-y: auto;
-    max-height: calc(80vh - 8.525rem);
-    padding-right: 5px;
-    margin: 1.5rem calc(1rem - 0.5rem) 1.5rem 1.5rem;
   }
 
   .GlpSwap-token-list {

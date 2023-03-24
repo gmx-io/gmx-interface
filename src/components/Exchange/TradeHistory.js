@@ -23,6 +23,7 @@ import { formatDateTime } from "lib/dates";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { t, Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import Button from "components/Button/Button";
 
 const { AddressZero } = ethers.constants;
 
@@ -507,16 +508,16 @@ export default function TradeHistory(props) {
           );
         })}
       {shouldShowPaginationButtons && (
-        <div>
+        <div className="gap-right">
           {pageIndex > 0 && (
-            <button className="App-button-option App-card-option" onClick={loadPrevPage}>
+            <Button variant="semi-clear" onClick={loadPrevPage}>
               <Trans>Prev</Trans>
-            </button>
+            </Button>
           )}
           {trades && trades.length >= TRADES_PAGE_SIZE && (
-            <button className="App-button-option App-card-option" onClick={loadNextPage}>
+            <Button variant="semi-clear" onClick={loadNextPage}>
               <Trans>Next</Trans>
-            </button>
+            </Button>
           )}
         </div>
       )}

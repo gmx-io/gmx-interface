@@ -4,6 +4,7 @@ import Modal from "../Modal/Modal";
 import Checkbox from "../Checkbox/Checkbox";
 
 import "./OrdersToa.css";
+import Button from "components/Button/Button";
 
 export default function OrdersToa(props) {
   const { setIsVisible, isPluginApproving, approveOrderBook } = props;
@@ -71,9 +72,14 @@ export default function OrdersToa(props) {
           </span>
         </Checkbox>
       </div>
-      <button disabled={!isPrimaryEnabled()} className="App-cta Confirmation-box-button" onClick={onConfirmationClick}>
+      <Button
+        variant="primary-action"
+        disabled={!isPrimaryEnabled()}
+        className="w-100 mt-md"
+        onClick={onConfirmationClick}
+      >
         {getPrimaryText()}
-      </button>
+      </Button>
     </Modal>
   );
 }
