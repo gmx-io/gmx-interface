@@ -133,8 +133,7 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
           <div className="Home-token-card-option-info">
             <div className="Home-token-card-option-title">
               <Trans>
-                GM is the liquidity provider token for GMX V2 markets. Accrues 70% of the V2 markets generated fees and
-                100% of the borrow fees.
+                GM is the liquidity provider token for GMX V2 markets. Accrues 70% of the V2 markets generated fees.
               </Trans>
             </div>
             {/* <div className="Home-token-card-option-apr">
