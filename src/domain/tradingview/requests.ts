@@ -87,14 +87,14 @@ export function getStableCoinPrice(period: string, from: number, to: number) {
   const fromCandle = Math.floor(from / periodSeconds) * periodSeconds;
   const toCandle = Math.floor(to / periodSeconds) * periodSeconds;
   let priceData: any = [];
-  for (let i = fromCandle; i <= toCandle; i += periodSeconds) {
+  for (let candleTime = fromCandle; candleTime <= toCandle; candleTime += periodSeconds) {
     priceData.push({
-      time: i,
+      time: candleTime,
       open: 1,
       close: 1,
       high: 1,
       low: 1,
     });
   }
-  return priceData.filter((bar) => bar.time >= from && bar.time <= to);
+  return priceData.filter((candle) => candle.time >= from && candle.time <= to);
 }
