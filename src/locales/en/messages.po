@@ -1832,8 +1832,12 @@ msgstr "GM Index Composition"
 #~ msgstr "GM is the GMX Market Token"
 
 #: src/components/TokenCard/TokenCard.js
-msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 70% of the V2 markets generated fees and 100% of the borrow fees."
-msgstr "GM is the liquidity provider token for GMX V2 markets. Accrues 70% of the V2 markets generated fees and 100% of the borrow fees."
+#~ msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 70% of the V2 markets generated fees and 100% of the borrow fees."
+#~ msgstr "GM is the liquidity provider token for GMX V2 markets. Accrues 70% of the V2 markets generated fees and 100% of the borrow fees."
+
+#: src/components/TokenCard/TokenCard.js
+msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 70% of the V2 markets generated fees."
+msgstr "GM is the liquidity provider token for GMX V2 markets. Accrues 70% of the V2 markets generated fees."
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX Announcements and Updates"
