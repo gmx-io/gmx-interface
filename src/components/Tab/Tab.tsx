@@ -1,10 +1,21 @@
 import React from "react";
-
 import cx from "classnames";
+import "./Tab.scss";
 
-import "./Tab.css";
+type Option = string;
 
-export default function Tab(props) {
+type Props = {
+  options: Option[];
+  option: Option;
+  setOption?: (option: Option) => void;
+  onChange?: (option: Option) => void;
+  type?: "block" | "inline";
+  className?: string;
+  optionLabels?: Record<Option, string>;
+  icons?: Record<Option, string>;
+};
+
+export default function Tab(props: Props) {
   const { options, option, setOption, onChange, type = "block", className, optionLabels, icons } = props;
   const onClick = (opt) => {
     if (setOption) {
@@ -15,18 +26,19 @@ export default function Tab(props) {
     }
   };
 
+  const isBlockTab = type === "block";
   return (
     <div className={cx("Tab", type, className)}>
       {options.map((opt) => {
-        const label = optionLabels && optionLabels[opt] ? optionLabels[opt] : opt;
+        const label = optionLabels?.[opt] ?? opt;
         return (
           <div
-            className={cx("Tab-option", { active: opt === option, muted: type === "block" })}
+            className={cx("Tab-option", { active: opt === option, muted: isBlockTab })}
             onClick={() => onClick(opt)}
             key={opt}
           >
             {icons && icons[opt] && <img className="Tab-option-icon" src={icons[opt]} alt={option} />}
-            {type === "inline" ? <span className="muted">{label}</span> : label}
+            {isBlockTab ? label : <span className="muted">{label}</span>}
           </div>
         );
       })}
