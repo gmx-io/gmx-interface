@@ -52,15 +52,22 @@
 .Tab.inline .Tab-option {
   cursor: pointer;
   display: inline-block;
-  margin-right: 1.5rem;
   font-size: var(--font-base);
+  position: relative;
 }
 
-.Tab.inline .Tab-option:hover {
+.Tab.inline .Tab-option:not(:last-child)::after {
+  content: "|";
+  color: white;
+  padding: 0 1.75rem;
+  opacity: 0.7;
+}
+
+.Tab.inline .Tab-option span:hover {
   opacity: 0.8;
 }
 
-.Tab.inline .Tab-option.active {
+.Tab.inline .Tab-option.active span {
   opacity: 1;
   pointer-events: none;
 }
