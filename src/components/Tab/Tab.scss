@@ -54,10 +54,17 @@
     font-size: var(--font-base);
     position: relative;
 
+    span {
+      margin: 0 1.5rem;
+    }
+
+    &:first-child span {
+      margin-left: 0;
+    }
+
     &:not(:last-child)::after {
       content: "|";
       color: white;
-      padding: 0 1.75rem;
       opacity: 0.7;
     }
 
