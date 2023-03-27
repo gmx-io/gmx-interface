@@ -55,11 +55,11 @@
     position: relative;
 
     span {
-      margin: 0 1.5rem;
+      padding: 0 1.5rem;
     }
 
     &:first-child span {
-      margin-left: 0;
+      padding-left: 0;
     }
 
     &:not(:last-child)::after {
