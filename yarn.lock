@@ -3519,7 +3519,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rainbow-me/rainbowkit@npm:^0.12.4":
+"@rainbow-me/rainbowkit@npm:0.12.4":
   version: 0.12.4
   resolution: "@rainbow-me/rainbowkit@npm:0.12.4"
   dependencies:
@@ -11301,7 +11301,7 @@ __metadata:
     "@lingui/loader": 3.14.0
     "@lingui/macro": 3.13.3
     "@lingui/react": 3.13.3
-    "@rainbow-me/rainbowkit": ^0.12.4
+    "@rainbow-me/rainbowkit": 0.12.4
     "@testing-library/jest-dom": 5.16.1
     "@testing-library/react": 11.2.7
     "@testing-library/user-event": 12.8.3
@@ -11351,7 +11351,7 @@ __metadata:
     sass: ^1.55.0
     swr: 0.4.2
     typescript: 4.7.4
-    wagmi: ^0.12.6
+    wagmi: 0.12.6
     web-vitals: 1.1.2
   languageName: unknown
   linkType: soft
@@ -21391,7 +21391,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"wagmi@npm:^0.12.6":
+"wagmi@npm:0.12.6":
   version: 0.12.6
   resolution: "wagmi@npm:0.12.6"
   dependencies:
