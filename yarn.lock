@@ -3519,9 +3519,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rainbow-me/rainbowkit@npm:0.12.2":
-  version: 0.12.2
-  resolution: "@rainbow-me/rainbowkit@npm:0.12.2"
+"@rainbow-me/rainbowkit@npm:^0.12.4":
+  version: 0.12.4
+  resolution: "@rainbow-me/rainbowkit@npm:0.12.4"
   dependencies:
     "@vanilla-extract/css": 1.9.1
     "@vanilla-extract/dynamic": 2.0.2
@@ -3534,7 +3534,7 @@ __metadata:
     react: ">=17"
     react-dom: ">=17"
     wagmi: 0.12.x
-  checksum: ac03bc6d20c69c0f334559c7f49b9206ab3299c1f888340f41aebde35f55a64cc6af771964de4d439e44808ac6b09423aee04e1a7fe8ea3c194cf577d4c4dc89
+  checksum: d856905203f455cafd0c2013a7063bb0b3ae3b7fbe8bcb564efb2a78deb76b5b367ebab74e6e216c7a3510cb6d4f704618f31d27d15ac8c71c43d01024ca2ef9
   languageName: node
   linkType: hard
 
@@ -11301,7 +11301,7 @@ __metadata:
     "@lingui/loader": 3.14.0
     "@lingui/macro": 3.13.3
     "@lingui/react": 3.13.3
-    "@rainbow-me/rainbowkit": 0.12.2
+    "@rainbow-me/rainbowkit": ^0.12.4
     "@testing-library/jest-dom": 5.16.1
     "@testing-library/react": 11.2.7
     "@testing-library/user-event": 12.8.3

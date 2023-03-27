@@ -39,7 +39,7 @@ type Props = {
 };
 
 export function Header({
-  disconnectAccountAndCloseSettings,
+  // disconnectAccountAndCloseSettings,
   openSettings,
   setWalletModalVisible,
   redirectPopupTimestamp,
@@ -107,7 +107,6 @@ export function Header({
           </div>
           <div className="App-header-container-right">
             <AppHeaderUser
-              disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
               openSettings={openSettings}
               setWalletModalVisible={setWalletModalVisible}
               redirectPopupTimestamp={redirectPopupTimestamp}
@@ -133,7 +132,6 @@ export function Header({
             </div>
             <div className="App-header-container-right">
               <AppHeaderUser
-                disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
                 openSettings={openSettings}
                 small
                 setWalletModalVisible={setWalletModalVisible}

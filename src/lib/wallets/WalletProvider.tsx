@@ -1,10 +1,12 @@
-import { ReactNode } from "react";
+import React from "react";
 import "@rainbow-me/rainbowkit/styles.css";
-import merge from "lodash/merge";
-import { getDefaultWallets, RainbowKitProvider, darkTheme, Theme } from "@rainbow-me/rainbowkit";
+import { connectorsForWallets, darkTheme, getDefaultWallets, RainbowKitProvider, Theme } from "@rainbow-me/rainbowkit";
+import { ledgerWallet, trustWallet } from "@rainbow-me/rainbowkit/wallets";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
-import { arbitrum, avalanche, arbitrumGoerli, avalancheFuji } from "wagmi/chains";
+import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "wagmi/chains";
+import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
+import merge from "lodash/merge";
 import { isDevelopment } from "config/env";
 
 const walletTheme = merge(darkTheme(), {
@@ -13,24 +15,31 @@ const walletTheme = merge(darkTheme(), {
   },
 } as Theme);
 
-const { chains, provider, webSocketProvider } = configureChains(
+const { chains, provider } = configureChains(
   [arbitrum, avalanche, ...(isDevelopment() ? [arbitrumGoerli, avalancheFuji] : [])],
-  [publicProvider()]
+  [alchemyProvider({ apiKey: "ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ" }), publicProvider()]
 );
 
-const { connectors } = getDefaultWallets({
-  appName: "GMX",
+const { wallets } = getDefaultWallets({
+  appName: "rainbowkit.com",
   chains,
 });
+
+const connectors = connectorsForWallets([
+  ...wallets,
+  {
+    groupName: "More",
+    wallets: [trustWallet({ chains }), ledgerWallet({ chains })],
+  },
+]);
 
 const wagmiClient = createClient({
   autoConnect: true,
   connectors,
   provider,
-  webSocketProvider,
 });
 
-export default function WalletProvider({ children }: { children: ReactNode }) {
+export default function WalletProvider({ children }) {
   return (
     <WagmiConfig client={wagmiClient}>
       <RainbowKitProvider theme={walletTheme} chains={chains} modalSize="compact">

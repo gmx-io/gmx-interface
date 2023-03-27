@@ -12,19 +12,20 @@ import { FaChevronDown } from "react-icons/fa";
 import { createBreakpoint, useCopyToClipboard } from "react-use";
 import "./AddressDropdown.css";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { useDisconnect } from "wagmi";
 
 type Props = {
   account: string;
   accountUrl: string;
-  disconnectAccountAndCloseSettings: () => void;
 };
 
-function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSettings }: Props) {
+function AddressDropdown({ account, accountUrl }: Props) {
   const useBreakpoint = createBreakpoint({ L: 600, M: 550, S: 400 });
   const breakpoint = useBreakpoint();
   const [, copyToClipboard] = useCopyToClipboard();
   const { ensName } = useENS(account);
   const { provider: ethereumProvider } = useJsonRpcProvider(ETH_MAINNET);
+  const { disconnectAsync } = useDisconnect();
 
   return (
     <Menu>
@@ -62,7 +63,12 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
             </ExternalLink>
           </Menu.Item>
           <Menu.Item>
-            <div className="menu-item" onClick={disconnectAccountAndCloseSettings}>
+            <div
+              className="menu-item"
+              onClick={async () => {
+                await disconnectAsync();
+              }}
+            >
               <img src={disconnect} alt="Disconnect the wallet" />
               <p>
                 <Trans>Disconnect</Trans>

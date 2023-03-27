@@ -1,6 +1,6 @@
+import React, { useCallback, useEffect } from "react";
 import AddressDropdown from "../AddressDropdown/AddressDropdown";
 import ConnectWalletButton from "../Common/ConnectWalletButton";
-import React, { useCallback, useEffect } from "react";
 import { HeaderLink } from "./HeaderLink";
 import connectWalletImg from "img/ic_wallet_24.svg";
 
@@ -22,7 +22,6 @@ type Props = {
   openSettings: () => void;
   small?: boolean;
   setWalletModalVisible: (visible: boolean) => void;
-  disconnectAccountAndCloseSettings: () => void;
   redirectPopupTimestamp: number;
   showRedirectModal: (to: string) => void;
 };
@@ -61,7 +60,6 @@ export function AppHeaderUser({
   openSettings,
   small,
   setWalletModalVisible,
-  disconnectAccountAndCloseSettings,
   redirectPopupTimestamp,
   showRedirectModal,
 }: Props) {
@@ -147,11 +145,7 @@ export function AppHeaderUser({
       {showConnectionOptions ? (
         <>
           <div className="App-header-user-address">
-            <AddressDropdown
-              account={account}
-              accountUrl={accountUrl}
-              disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
-            />
+            <AddressDropdown account={account} accountUrl={accountUrl} />
           </div>
           <NetworkDropdown
             small={small}
