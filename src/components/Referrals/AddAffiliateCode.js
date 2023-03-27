@@ -2,11 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { getCodeError, getReferralCodeTakenStatus, getSampleReferrarStat } from "./referralsHelper";
-import { useWeb3React } from "@web3-react/core";
 import { ARBITRUM } from "config/chains";
 import { helperToast } from "lib/helperToast";
 import { useDebounce } from "lib/useDebounce";
 import Button from "components/Button/Button";
+import { useAccount, useChainId as useChainIdWagmi } from "wagmi";
 
 function AddAffiliateCode({
   handleCreateReferralCode,
@@ -54,7 +54,8 @@ export function AffiliateCodeForm({
   const inputRef = useRef("");
   const [referralCodeCheckStatus, setReferralCodeCheckStatus] = useState("ok");
   const debouncedReferralCode = useDebounce(referralCode, 300);
-  const { account, chainId } = useWeb3React();
+  const { address: account } = useAccount();
+  const chainId = useChainIdWagmi();
   useEffect(() => {
     inputRef.current.focus();
   }, []);

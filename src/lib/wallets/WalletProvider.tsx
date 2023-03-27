@@ -17,7 +17,7 @@ const walletTheme = merge(darkTheme(), {
 
 const { chains, provider } = configureChains(
   [arbitrum, avalanche, ...(isDevelopment() ? [arbitrumGoerli, avalancheFuji] : [])],
-  [alchemyProvider({ apiKey: "ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ" }), publicProvider()]
+  [alchemyProvider({ apiKey: "EmVYwUw0N2tXOuG0SZfe5Z04rzBsCbr2" }), publicProvider()]
 );
 
 const { wallets } = getDefaultWallets({
