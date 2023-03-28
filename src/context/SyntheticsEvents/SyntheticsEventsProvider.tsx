@@ -3,15 +3,15 @@ import { useWeb3React } from "@web3-react/core";
 import EventEmitter from "abis/EventEmitter.json";
 import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
+import { useMarketsInfo } from "domain/synthetics/markets";
+import { getOrderTypeLabel, getToTokenFromSwapPath } from "domain/synthetics/orders";
+import { getPositionKey } from "domain/synthetics/positions";
 import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
 import { setByKey, updateByKey } from "lib/objects";
 import { getProvider, getWsProvider } from "lib/rpc";
 import { ReactNode, createContext, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
-import { useMarketsData } from "domain/synthetics/markets";
-import { getOrderTypeLabel, getToTokenFromSwapPath } from "domain/synthetics/orders";
-import { getPositionKey } from "domain/synthetics/positions";
 import {
   ContractEventsContextType,
   DepositCreatedEvent,
@@ -35,7 +35,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const { chainId } = useChainId();
   const { active, account: currentAccount } = useWeb3React();
 
-  const { marketsData } = useMarketsData(chainId);
+  const { marketsInfoData } = useMarketsInfo(chainId);
 
   const [orderStatuses, setOrderStatuses] = useState<OrderStatuses>({});
   const [depositStatuses, setDepositStatuses] = useState<DepositStatuses>({});
@@ -159,7 +159,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       if (order) {
         const orderLabel = getOrderTypeLabel(order.orderType);
         const targetCollateral = getToTokenFromSwapPath(
-          marketsData,
+          marketsInfoData,
           order.initialCollateralTokenAddress,
           order.swapPath
         );

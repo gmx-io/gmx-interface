@@ -1,7 +1,7 @@
 import { BigNumber } from "ethers";
 import { FeeItem, SwapFeeItem } from "../fees";
 import { TokenData, TokensRatio } from "../tokens";
-import { Market } from "../markets";
+import { MarketInfo } from "../markets";
 
 export enum TradeType {
   Long = "Long",
@@ -97,14 +97,14 @@ export type SwapTradeParams = SwapAmounts & {
 export type IncreasePositionTradeParams = IncreasePositionAmounts & {
   initialCollateralToken: TokenData;
   collateralToken: TokenData;
-  market: Market;
+  market: MarketInfo;
   isLong: boolean;
   nextPositionValues?: NextPositionValues;
   fees?: TradeFees;
 };
 
 export type DecreasePositionTradeParams = DecreasePositionAmounts & {
-  market: Market;
+  market: MarketInfo;
   collateralToken: TokenData;
   receiveToken: TokenData;
   nextPositionValues?: NextPositionValues;

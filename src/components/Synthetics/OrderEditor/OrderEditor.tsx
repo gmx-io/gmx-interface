@@ -2,7 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Modal from "components/Modal/Modal";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
-import { getMarket, useMarketsData } from "domain/synthetics/markets";
+import { useMarketsInfo } from "domain/synthetics/markets";
 import {
   AggregatedOrderData,
   OrderType,
@@ -47,6 +47,7 @@ import { useGasLimitsConfig } from "domain/synthetics/fees/useGasLimitsConfig";
 import { updateOrderTxn } from "domain/synthetics/orders/updateOrderTxn";
 import { BigNumber } from "ethers";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { getByKey } from "lib/objects";
 import { getNextTokenAmount } from "../Trade/utils";
 import "./OrderEditor.scss";
 
@@ -64,7 +65,7 @@ export function OrderEditor(p: Props) {
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimitsConfig(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
-  const { marketsData } = useMarketsData(chainId);
+  const { marketsInfoData } = useMarketsInfo(chainId);
   const [savedAcceptablePriceImpactBps] = useLocalStorageSerializeKey(
     [chainId, SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BPS_KEY],
     DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS
@@ -89,7 +90,11 @@ export function OrderEditor(p: Props) {
   // Swaps
   const isSwap = isSwapOrder(p.order.orderType);
   const fromToken = getTokenData(tokensData, p.order.initialCollateralTokenAddress);
-  const toTokenAddress = getToTokenFromSwapPath(marketsData, p.order.initialCollateralTokenAddress, p.order.swapPath);
+  const toTokenAddress = getToTokenFromSwapPath(
+    marketsInfoData,
+    p.order.initialCollateralTokenAddress,
+    p.order.swapPath
+  );
   const toToken = getTokenData(tokensData, toTokenAddress);
   const fromTokenPrice = fromToken?.prices?.maxPrice;
   const toTokenPrice = toToken?.prices?.minPrice;
@@ -123,7 +128,7 @@ export function OrderEditor(p: Props) {
         })
       : undefined;
 
-  const market = getMarket(marketsData, p.order.marketAddress);
+  const market = getByKey(marketsInfoData, p.order.marketAddress);
   const indexToken = getTokenData(tokensData, market?.indexTokenAddress);
   const markPrice = p.order.isLong ? indexToken?.prices?.minPrice : indexToken?.prices?.maxPrice;
 

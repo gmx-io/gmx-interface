@@ -1,13 +1,14 @@
 import { Trans, t } from "@lingui/macro";
-import Modal from "components/Modal/Modal";
 import cx from "classnames";
-import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import { SubmitButton } from "components/SubmitButton/SubmitButton";
+import Modal from "components/Modal/Modal";
 import { RequestStatus } from "components/RequestStatus/RequestStatus";
-import { useEffect, useState } from "react";
-import { useChainId } from "lib/chains";
+import { SubmitButton } from "components/SubmitButton/SubmitButton";
+import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import { getMarketName, useMarketsInfo } from "domain/synthetics/markets";
 import { getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
-import { getMarketName, useMarketsData } from "domain/synthetics/markets";
+import { useChainId } from "lib/chains";
+import { getByKey } from "lib/objects";
+import { useEffect, useState } from "react";
 
 type Props = {
   isDeposit: boolean;
@@ -22,12 +23,14 @@ export function GmOrderStatus(p: Props) {
   const { depositStatuses, withdrawalStatuses, touchDepositStatus, touchWithdrawalStatus } = useSyntheticsEvents();
   const [orderKey, setOrderKey] = useState<string>();
   const { tokensData } = useAvailableTokensData(chainId);
-  const { marketsData } = useMarketsData(chainId);
+  const { marketsInfoData } = useMarketsInfo(chainId);
 
   const ordersEvents = p.isDeposit ? depositStatuses : withdrawalStatuses;
   const orderStatus = orderKey ? ordersEvents[orderKey] : undefined;
 
-  const marketName = getMarketName(marketsData, tokensData, p.market);
+  const marketInfo = getByKey(marketsInfoData, p.market);
+
+  const marketName = marketInfo ? getMarketName(marketInfo) : "...";
   const firstToken = getTokenData(tokensData, p.firstToken);
   const secondToken = getTokenData(tokensData, p.secondToken);
 

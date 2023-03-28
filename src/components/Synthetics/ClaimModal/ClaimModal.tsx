@@ -2,15 +2,7 @@ import { t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import Modal from "components/Modal/Modal";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
-import {
-  Market,
-  MarketInfo,
-  getClaimableFundingAmount,
-  getMarketName,
-  getTotalClaimableFundingUsd,
-  useMarketsData,
-  useMarketsPoolsData,
-} from "domain/synthetics/markets";
+import { MarketInfo, getMarketName, getTotalClaimableFundingUsd, useMarketsInfo } from "domain/synthetics/markets";
 import { convertToUsd, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
@@ -31,19 +23,20 @@ export function ClaimModal(p: Props) {
   const { onClose, setPendingTxns } = p;
   const { account, library } = useWeb3React();
   const { chainId } = useChainId();
-  const { marketsData } = useMarketsData(chainId);
-  const { poolsData } = useMarketsPoolsData(chainId);
+  const { marketsInfoData } = useMarketsInfo(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
 
-  const totalClaimableFundingUsd = getTotalClaimableFundingUsd(marketsData, poolsData, tokensData);
+  const markets = Object.values(marketsInfoData);
+
+  const totalClaimableFundingUsd = getTotalClaimableFundingUsd(markets);
 
   function renderMarketSection(market: MarketInfo) {
-    const marketName = getMarketName(marketsData);
+    const marketName = getMarketName(market);
     const longToken = getTokenData(tokensData, market.longTokenAddress);
     const shortToken = getTokenData(tokensData, market.shortTokenAddress);
 
-    const fundingLongAmount = getClaimableFundingAmount(poolsData, market.marketTokenAddress, true);
-    const fundingShortAmount = getClaimableFundingAmount(poolsData, market.marketTokenAddress, false);
+    const fundingLongAmount = market.claimableFundingAmountLong;
+    const fundingShortAmount = market.claimableFundingAmountShort;
 
     const fundingLongUsd = convertToUsd(fundingLongAmount, longToken?.decimals, longToken?.prices?.minPrice);
     const fundingShortUsd = convertToUsd(fundingShortAmount, shortToken?.decimals, shortToken?.prices?.minPrice);
@@ -85,18 +78,16 @@ export function ClaimModal(p: Props) {
   function onSubmit() {
     if (!account || !library) return;
 
-    const markets = Object.values(marketsData);
-
     const fundingMarketAddresses: string[] = [];
     const fundingTokenAddresses: string[] = [];
 
     for (const market of markets) {
-      if (getClaimableFundingAmount(poolsData, market.marketTokenAddress, true)?.gt(0)) {
+      if (market.claimableFundingAmountLong?.gt(0)) {
         fundingMarketAddresses.push(market.marketTokenAddress);
         fundingTokenAddresses.push(market.longTokenAddress);
       }
 
-      if (getClaimableFundingAmount(poolsData, market.marketTokenAddress, false)?.gt(0)) {
+      if (market.claimableFundingAmountShort?.gt(0)) {
         fundingMarketAddresses.push(market.marketTokenAddress);
         fundingTokenAddresses.push(market.shortTokenAddress);
       }
@@ -115,7 +106,7 @@ export function ClaimModal(p: Props) {
   return (
     <Modal className="Confirmation-box" isVisible={true} setIsVisible={onClose} label={t`Confirm Claim`}>
       <div className="ConfirmationBox-main text-center">Claim {formatUsd(totalClaimableFundingUsd)}</div>
-      <div className="ClaimModal-content">{Object.values(marketsData).map(renderMarketSection)}</div>
+      <div className="ClaimModal-content">{markets.map(renderMarketSection)}</div>
       <SubmitButton onClick={onSubmit}>{t`Claim`}</SubmitButton>
     </Modal>
   );

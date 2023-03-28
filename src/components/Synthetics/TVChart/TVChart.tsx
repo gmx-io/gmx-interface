@@ -55,7 +55,7 @@ export function TVChart({
       })) || [];
 
   const selectedTokenOption = tokenOptions.find((option) => option.value === chartTokenAddress);
-  const currentAveragePrice = getMidPrice(chartToken?.prices);
+  const currentAveragePrice = chartToken?.prices ? getMidPrice(chartToken.prices) : undefined;
 
   const { candles } = useLastCandles(chainId, chartToken?.symbol, period);
 

@@ -42,15 +42,17 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
   const { account } = useWeb3React();
   const { marketsData, marketsAddresses, isLoading: isMarketsLoading } = useMarketsData(chainId);
   const { tokensData, isLoading: isTokensLoading } = useAvailableTokensData(chainId);
+  const dataStoreAddress = getContract(chainId, "DataStore");
 
-  const { data = defaultValue, isLoading: isMarketsInfoLoading } = useMulticall(chainId, "useMarketsInfo", {
-    key: !isTokensLoading && !isMarketsLoading && marketsAddresses.length > 0 && [marketsAddresses.join("-"), account],
+  const isDepencenciesLoading = isMarketsLoading || isTokensLoading;
+
+  const { data = defaultValue, isLoading } = useMulticall(chainId, "useMarketsInfo", {
+    key: !isDepencenciesLoading &&
+      marketsAddresses.length > 0 && [marketsAddresses.join("-"), dataStoreAddress, account],
     request: () =>
       marketsAddresses.reduce((request, marketAddress) => {
         const market = getByKey(marketsData, marketAddress)!;
-        const dataStoreAddress = getContract(chainId, "DataStore");
-
-        const marketPrices = getContractMarketPrices(tokensData, market);
+        const marketPrices = getContractMarketPrices(tokensData, market)!;
 
         // skip market request if there is no prices for tokens
         if (!marketPrices) {
@@ -214,82 +216,82 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
                     params: [claimableFundingAmountKey(marketAddress, market.shortTokenAddress, account)],
                   }
                 : undefined,
-            },
-            positionFeeFactor: {
-              methodName: "getUint",
-              params: [positionFeeFactorKey(marketAddress)],
-            },
-            positionImpactFactorPositive: {
-              methodName: "getUint",
-              params: [positionImpactFactorKey(marketAddress, true)],
-            },
-            positionImpactFactorNegative: {
-              methodName: "getUint",
-              params: [positionImpactFactorKey(marketAddress, false)],
-            },
-            maxPositionImpactFactorPositive: {
-              methodName: "getUint",
-              params: [maxPositionImpactFactorKey(marketAddress, true)],
-            },
-            maxPositionImpactFactorNegative: {
-              methodName: "getUint",
-              params: [maxPositionImpactFactorKey(marketAddress, false)],
-            },
-            maxPositionImpactFactorForLiquidations: {
-              methodName: "getUint",
-              params: [maxPositionImpactFactorForLiquidationsKey(marketAddress)],
-            },
-            positionImpactExponentFactor: {
-              methodName: "getUint",
-              params: [positionImpactExponentFactorKey(marketAddress)],
-            },
-            swapFeeFactor: {
-              methodName: "getUint",
-              params: [swapFeeFactorKey(marketAddress)],
-            },
-            swapImpactFactorPositive: {
-              methodName: "getUint",
-              params: [swapImpactFactorKey(marketAddress, true)],
-            },
-            swapImpactFactorNegative: {
-              methodName: "getUint",
-              params: [swapImpactFactorKey(marketAddress, false)],
-            },
-            swapImpactExponentFactor: {
-              methodName: "getUint",
-              params: [swapImpactExponentFactorKey(marketAddress)],
-            },
-            longInterestUsingLongToken: {
-              methodName: "getUint",
-              params: [openInterestKey(marketAddress, market.longTokenAddress, true)],
-            },
-            longInterestUsingShortToken: {
-              methodName: "getUint",
-              params: [openInterestKey(marketAddress, market.shortTokenAddress, true)],
-            },
-            shortInterestUsingLongToken: {
-              methodName: "getUint",
-              params: [openInterestKey(marketAddress, market.longTokenAddress, false)],
-            },
-            shortInterestUsingShortToken: {
-              methodName: "getUint",
-              params: [openInterestKey(marketAddress, market.shortTokenAddress, false)],
-            },
-            longInterestInTokensUsingLongToken: {
-              methodName: "getUint",
-              params: [openInterestInTokensKey(marketAddress, market.longTokenAddress, true)],
-            },
-            longInterestInTokensUsingShortToken: {
-              methodName: "getUint",
-              params: [openInterestInTokensKey(marketAddress, market.shortTokenAddress, true)],
-            },
-            shortInterestInTokensUsingLongToken: {
-              methodName: "getUint",
-              params: [openInterestInTokensKey(marketAddress, market.longTokenAddress, false)],
-            },
-            shortInterestInTokensUsingShortToken: {
-              methodName: "getUint",
-              params: [openInterestInTokensKey(marketAddress, market.shortTokenAddress, false)],
+              positionFeeFactor: {
+                methodName: "getUint",
+                params: [positionFeeFactorKey(marketAddress)],
+              },
+              positionImpactFactorPositive: {
+                methodName: "getUint",
+                params: [positionImpactFactorKey(marketAddress, true)],
+              },
+              positionImpactFactorNegative: {
+                methodName: "getUint",
+                params: [positionImpactFactorKey(marketAddress, false)],
+              },
+              maxPositionImpactFactorPositive: {
+                methodName: "getUint",
+                params: [maxPositionImpactFactorKey(marketAddress, true)],
+              },
+              maxPositionImpactFactorNegative: {
+                methodName: "getUint",
+                params: [maxPositionImpactFactorKey(marketAddress, false)],
+              },
+              maxPositionImpactFactorForLiquidations: {
+                methodName: "getUint",
+                params: [maxPositionImpactFactorForLiquidationsKey(marketAddress)],
+              },
+              positionImpactExponentFactor: {
+                methodName: "getUint",
+                params: [positionImpactExponentFactorKey(marketAddress)],
+              },
+              swapFeeFactor: {
+                methodName: "getUint",
+                params: [swapFeeFactorKey(marketAddress)],
+              },
+              swapImpactFactorPositive: {
+                methodName: "getUint",
+                params: [swapImpactFactorKey(marketAddress, true)],
+              },
+              swapImpactFactorNegative: {
+                methodName: "getUint",
+                params: [swapImpactFactorKey(marketAddress, false)],
+              },
+              swapImpactExponentFactor: {
+                methodName: "getUint",
+                params: [swapImpactExponentFactorKey(marketAddress)],
+              },
+              longInterestUsingLongToken: {
+                methodName: "getUint",
+                params: [openInterestKey(marketAddress, market.longTokenAddress, true)],
+              },
+              longInterestUsingShortToken: {
+                methodName: "getUint",
+                params: [openInterestKey(marketAddress, market.shortTokenAddress, true)],
+              },
+              shortInterestUsingLongToken: {
+                methodName: "getUint",
+                params: [openInterestKey(marketAddress, market.longTokenAddress, false)],
+              },
+              shortInterestUsingShortToken: {
+                methodName: "getUint",
+                params: [openInterestKey(marketAddress, market.shortTokenAddress, false)],
+              },
+              longInterestInTokensUsingLongToken: {
+                methodName: "getUint",
+                params: [openInterestInTokensKey(marketAddress, market.longTokenAddress, true)],
+              },
+              longInterestInTokensUsingShortToken: {
+                methodName: "getUint",
+                params: [openInterestInTokensKey(marketAddress, market.shortTokenAddress, true)],
+              },
+              shortInterestInTokensUsingLongToken: {
+                methodName: "getUint",
+                params: [openInterestInTokensKey(marketAddress, market.longTokenAddress, false)],
+              },
+              shortInterestInTokensUsingShortToken: {
+                methodName: "getUint",
+                params: [openInterestInTokensKey(marketAddress, market.shortTokenAddress, false)],
+              },
             },
           },
         });
@@ -404,6 +406,6 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
 
   return {
     marketsInfoData: data,
-    isLoading: isTokensLoading || isMarketsLoading || isMarketsInfoLoading,
+    isLoading: isDepencenciesLoading || isLoading,
   };
 }

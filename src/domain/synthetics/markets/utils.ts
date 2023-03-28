@@ -3,12 +3,11 @@ import { PRECISION } from "lib/legacy";
 import { applyFactor } from "lib/numbers";
 import { MarketsFeesConfigsData } from "../fees";
 import { convertToContractPrices, convertToUsd, getMidPrice, getTokenData } from "../tokens";
-import { TokenData, TokensData } from "../tokens/types";
+import { TokensData } from "../tokens/types";
 import {
   ContractMarketPrices,
   Market,
   MarketInfo,
-  MarketPoolTokens,
   MarketsData,
   MarketsOpenInterestData,
   MarketsPoolsData,
@@ -304,10 +303,9 @@ export function getClaimableFundingAmount(marketInfo: MarketInfo, isLong: boolea
   return isLong ? marketInfo.claimableFundingAmountLong : marketInfo.claimableFundingAmountShort;
 }
 
-export function getTotalClaimableFundingUsd(markets: MarketInfo[], tokensData: TokensData) {
+export function getTotalClaimableFundingUsd(markets: MarketInfo[]) {
   return markets.reduce((acc, market) => {
-    const longToken = getTokenData(tokensData, market.longTokenAddress);
-    const shortToken = getTokenData(tokensData, market.shortTokenAddress);
+    const { longToken, shortToken } = market;
 
     const amountLong = getClaimableFundingAmount(market, true);
     const amountShort = getClaimableFundingAmount(market, false);

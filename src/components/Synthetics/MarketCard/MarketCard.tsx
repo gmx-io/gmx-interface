@@ -5,14 +5,11 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { SLIPPAGE_BPS_KEY } from "config/localStorage";
 import {
   getAvailableUsdLiquidityForPosition,
-  getMarket,
   getMarketName,
   getMaxReservedUsd,
   getReservedUsd,
-  useMarketsData,
-  useMarketsPoolsData,
+  useMarketsInfo,
 } from "domain/synthetics/markets";
-import { useOpenInterestData } from "domain/synthetics/markets/useOpenInterestData";
 import { getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "lib/legacy";
@@ -21,6 +18,8 @@ import { formatUsd } from "lib/numbers";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import "./MarketCard.scss";
+import { getByKey } from "lib/objects";
+import { useMemo } from "react";
 
 export type Props = {
   marketAddress?: string;
@@ -32,13 +31,11 @@ export function MarketCard(p: Props) {
 
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
 
-  const { marketsData } = useMarketsData(chainId);
-  const { openInterestData } = useOpenInterestData(chainId);
-  const { poolsData } = useMarketsPoolsData(chainId);
+  const { marketsInfoData } = useMarketsInfo(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
 
-  const market = getMarket(marketsData, p.marketAddress);
-  const marketName = getMarketName(marketsData, tokensData, market?.marketTokenAddress, true, false);
+  const market = getByKey(marketsInfoData, p.marketAddress);
+  const marketName = market ? getMarketName(market) : "...";
 
   const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
 
@@ -47,17 +44,15 @@ export function MarketCard(p: Props) {
 
   const longShortText = p.isLong ? t`Long` : t`Short`;
 
-  const liquidity = getAvailableUsdLiquidityForPosition(
-    marketsData,
-    poolsData,
-    openInterestData,
-    tokensData,
-    p.marketAddress,
-    p.isLong
-  );
+  const { liquidity, maxReservedUsd, reservedUsd } = useMemo(() => {
+    if (!market) return {};
 
-  const maxReservedUsd = getMaxReservedUsd(marketsData, poolsData, tokensData, p.marketAddress, p.isLong);
-  const reservedUsd = getReservedUsd(marketsData, openInterestData, tokensData, p.marketAddress, p.isLong);
+    return {
+      liquidity: getAvailableUsdLiquidityForPosition(market, p.isLong),
+      maxReservedUsd: getMaxReservedUsd(market, p.isLong),
+      reservedUsd: getReservedUsd(market, p.isLong),
+    };
+  }, [market, p.isLong]);
 
   return (
     <div className="Exchange-swap-market-box App-box App-box-border">

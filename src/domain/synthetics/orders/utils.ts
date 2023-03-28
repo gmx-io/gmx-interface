@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { MarketInfo, MarketsInfoData, getMarketCollateralByAddress, getMarketName } from "domain/synthetics/markets";
+import { MarketsInfoData, getMarketCollateralByAddress, getMarketName } from "domain/synthetics/markets";
 import { TokenData, TokenPrices, TokensData, getTokenData, parseContractPrice } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";

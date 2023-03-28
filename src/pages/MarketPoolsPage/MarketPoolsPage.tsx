@@ -4,12 +4,13 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { GmSwapBox } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";
 import { MarketStats } from "components/Synthetics/MarketStats/MarketStats";
 import { SYNTHETICS_MARKET_DEPOSIT_MARKET_KEY } from "config/localStorage";
-import { useMarketsData } from "domain/synthetics/markets";
+import { useMarketsInfo } from "domain/synthetics/markets";
 import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useEffect } from "react";
 
+import { getByKey } from "lib/objects";
 import "./MarketPoolsPage.scss";
 
 type Props = {
@@ -20,13 +21,14 @@ type Props = {
 export function MarketPoolsPage(p: Props) {
   const { chainId } = useChainId();
 
-  const { marketsData } = useMarketsData(chainId);
-  const markets = Object.values(marketsData);
+  const { marketsInfoData } = useMarketsInfo(chainId);
+  const markets = Object.values(marketsInfoData);
 
   const [selectedMarketKey, setSelectedMarketKey] = useLocalStorageSerializeKey<string | undefined>(
     [chainId, SYNTHETICS_MARKET_DEPOSIT_MARKET_KEY],
     undefined
   );
+  const marketInfo = getByKey(marketsInfoData, selectedMarketKey);
 
   useEffect(
     function updateMarket() {
@@ -60,7 +62,7 @@ export function MarketPoolsPage(p: Props) {
         </div>
 
         <div className="MarketPoolsPage-content">
-          <MarketStats marketKey={selectedMarketKey} />
+          <MarketStats marketInfo={marketInfo} />
           <div className="MarketPoolsPage-swap-box">
             <GmSwapBox
               onConnectWallet={p.connectWallet}

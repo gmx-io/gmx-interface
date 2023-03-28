@@ -21,7 +21,7 @@ type Props = {
 
 export function ClaimHistoryRow(p: Props) {
   const { chainId } = useChainId();
-  const { claimAction, marketsData, tokensData } = p;
+  const { claimAction } = p;
 
   const marketsCount = claimAction.claimItems.length;
 

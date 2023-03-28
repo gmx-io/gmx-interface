@@ -52,6 +52,7 @@ export function getAggregatedPositionData(
   }
 
   const market = marketsInfoData[position.marketAddress];
+  if (!market) return undefined;
   const marketName = getMarketName(market);
 
   const collateralToken = getMarketCollateralByAddress(market, position.collateralTokenAddress);

@@ -24,7 +24,6 @@ export function useTokensData(chainId: number, p: { tokenAddresses: string[] }):
   const { balancesData, isLoading: isBalancesLoading } = useTokenBalancesData(chainId, {
     tokenAddresses: p.tokenAddresses,
   });
-
   const { pricesData, isLoading: isPricesLoading } = useTokenRecentPricesData(chainId);
 
   const tokenKeys = p.tokenAddresses.join("-");

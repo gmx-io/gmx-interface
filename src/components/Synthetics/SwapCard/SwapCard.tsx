@@ -2,15 +2,7 @@ import { Trans, t } from "@lingui/macro";
 
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
-import { convertTokenAddress } from "config/tokens";
-import {
-  getAvailableUsdLiquidityForCollateral,
-  getMarket,
-  getMarketName,
-  useMarketsData,
-  useMarketsPoolsData,
-} from "domain/synthetics/markets";
-import { useOpenInterestData } from "domain/synthetics/markets/useOpenInterestData";
+import { getAvailableUsdLiquidityForCollateral, getMarketName, useMarketsInfo } from "domain/synthetics/markets";
 import { TokensRatio, convertToTokenAmount, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
@@ -18,6 +10,7 @@ import { formatAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { useMemo } from "react";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import { getByKey } from "lib/objects";
 
 export type Props = {
   marketAddress?: string;
@@ -29,27 +22,27 @@ export type Props = {
 export function SwapCard(p: Props) {
   const { chainId } = useChainId();
 
-  const { marketsData } = useMarketsData(chainId);
-  const { openInterestData } = useOpenInterestData(chainId);
-  const { poolsData } = useMarketsPoolsData(chainId);
+  const { marketsInfoData } = useMarketsInfo(chainId);
+
   const { tokensData } = useAvailableTokensData(chainId);
 
-  const market = getMarket(marketsData, p.marketAddress);
-  const marketName = getMarketName(marketsData, tokensData, market?.marketTokenAddress, true, false);
+  const market = getByKey(marketsInfoData, p.marketAddress);
+  const marketName = market ? getMarketName(market) : "...";
 
   const fromToken = getTokenData(tokensData, p.fromTokenAddress);
   const toToken = getTokenData(tokensData, p.toTokenAddress);
 
-  const maxLiquidityUsd = getAvailableUsdLiquidityForCollateral(
-    marketsData,
-    poolsData,
-    openInterestData,
-    tokensData,
-    p.marketAddress,
-    p.toTokenAddress ? convertTokenAddress(chainId, p.toTokenAddress, "wrapped") : undefined
-  );
+  const { maxLiquidityAmount, maxLiquidityUsd } = useMemo(() => {
+    if (!market) return {};
 
-  const maxLiquidityAmount = convertToTokenAmount(maxLiquidityUsd, toToken?.decimals, toToken?.prices?.maxPrice);
+    const maxLiquidityUsd = getAvailableUsdLiquidityForCollateral(market, p.toTokenAddress);
+    const maxLiquidityAmount = convertToTokenAmount(maxLiquidityUsd, toToken?.decimals, toToken?.prices?.maxPrice);
+
+    return {
+      maxLiquidityUsd,
+      maxLiquidityAmount,
+    };
+  }, [market, p.toTokenAddress, toToken?.decimals, toToken?.prices?.maxPrice]);
 
   const ratioStr = useMemo(() => {
     if (!p.markRatio) return "...";

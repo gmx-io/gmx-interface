@@ -13,7 +13,6 @@ import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
   getExecutionFee,
-  getMarketFeesConfig,
   useGasPrice,
 } from "domain/synthetics/fees";
 import {
@@ -46,7 +45,7 @@ import { useMemo, useState } from "react";
 import { ErrorCode, ErrorDisplayType } from "components/Exchange/constants";
 import { getContract } from "config/contracts";
 import { useGasLimitsConfig } from "domain/synthetics/fees/useGasLimitsConfig";
-import { useMarketsFeesConfigs } from "domain/synthetics/fees/useMarketsFeesConfigs";
+
 import { usePositionsConstants } from "domain/synthetics/positions/usePositionsConstants";
 import { approveTokens } from "domain/tokens";
 import { contractFetcher } from "lib/contracts";
@@ -84,12 +83,9 @@ export function PositionEditor(p: Props) {
     position?.collateralToken?.prices?.maxPrice
   );
   const [isApproving, setIsApproving] = useState(false);
-  const { marketsFeesConfigs } = useMarketsFeesConfigs(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimitsConfig(chainId);
-
-  const feesConfig = getMarketFeesConfig(marketsFeesConfigs, position?.marketAddress);
 
   const depositInput = useTokenInput(tokensData, {
     priceType: "min",
@@ -147,7 +143,7 @@ export function PositionEditor(p: Props) {
     isLong: position?.isLong,
     pendingBorrowingFeesUsd: position?.pendingBorrowingFees,
     pendingFundingFeesUsd: position?.pendingFundingFeesUsd,
-    positionFeeFactor: feesConfig?.positionFeeFactor,
+    positionFeeFactor: position?.market?.positionFeeFactor,
   });
 
   const { acceptablePrice = undefined } = position

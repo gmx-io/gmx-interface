@@ -52,7 +52,7 @@ export function useMarketsData(chainId: number): MarketsDataResult {
 
           return acc;
         },
-        defaultValue
+        { marketsData: {}, marketsAddresses: [] }
       );
     },
   });

@@ -1,8 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
-import { getTotalClaimableFundingUsd, useMarketsData, useMarketsPoolsData } from "domain/synthetics/markets";
-import { useAvailableTokensData } from "domain/synthetics/tokens";
+import { getTotalClaimableFundingUsd, useMarketsInfo } from "domain/synthetics/markets";
 import { useChainId } from "lib/chains";
 import { formatUsd } from "lib/numbers";
 
@@ -16,11 +15,11 @@ export function ClaimableCard(p: Props) {
   const { onClaimClick } = p;
   const { account } = useWeb3React();
   const { chainId } = useChainId();
-  const { marketsData } = useMarketsData(chainId);
-  const { poolsData } = useMarketsPoolsData(chainId);
-  const { tokensData } = useAvailableTokensData(chainId);
+  const { marketsInfoData } = useMarketsInfo(chainId);
 
-  const totalClaimableFundingUsd = getTotalClaimableFundingUsd(marketsData, poolsData, tokensData);
+  const markets = Object.values(marketsInfoData);
+
+  const totalClaimableFundingUsd = getTotalClaimableFundingUsd(markets);
 
   return (
     <div className="Exchange-swap-market-box App-box App-box-border">

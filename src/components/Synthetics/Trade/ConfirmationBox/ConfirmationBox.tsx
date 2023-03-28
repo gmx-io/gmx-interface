@@ -15,13 +15,10 @@ import { HIGH_SPREAD_THRESHOLD } from "config/factors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useUserReferralCode } from "domain/referrals";
 import { ExecutionFee, getBorrowingFeeFactor, isHighPriceImpact as getIsHighPriceImpact } from "domain/synthetics/fees";
-import { useMarketsFeesConfigs } from "domain/synthetics/fees/useMarketsFeesConfigs";
 import {
   getAvailableUsdLiquidityForCollateral,
   getAvailableUsdLiquidityForPosition,
-  useMarketsData,
-  useMarketsPoolsData,
-  useOpenInterestData,
+  useMarketsInfo,
 } from "domain/synthetics/markets";
 import {
   AggregatedOrderData,
@@ -63,6 +60,7 @@ import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { BASIS_POINTS_DIVISOR, PRECISION, USD_DECIMALS } from "lib/legacy";
 import { formatAmount, formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { getByKey } from "lib/objects";
 import { useMemo, useState } from "react";
 import "./ConfirmationBox.scss";
 
@@ -100,10 +98,7 @@ export function ConfirmationBox(p: Props) {
   const { isLong, isSwap, isMarket, isLimit, isTrigger, isIncrease } = getTradeFlags(p.tradeType, p.tradeMode);
 
   const { tokensData } = useAvailableTokensData(chainId);
-  const { marketsData } = useMarketsData(chainId);
-  const { poolsData } = useMarketsPoolsData(chainId);
-  const { marketsFeesConfigs } = useMarketsFeesConfigs(chainId);
-  const { openInterestData } = useOpenInterestData(chainId);
+  const { marketsInfoData } = useMarketsInfo(chainId);
   const referralCodeData = useUserReferralCode(library, chainId, account);
 
   const [isTriggerWarningAccepted, setIsTriggerWarningAccepted] = useState(false);
@@ -609,14 +604,9 @@ export function ConfirmationBox(p: Props) {
     let isLiquidityRisk;
 
     if (isSwap) {
-      availableLiquidity = getAvailableUsdLiquidityForCollateral(
-        marketsData,
-        poolsData,
-        openInterestData,
-        tokensData,
-        p.swapParams?.swapPathStats?.targetMarketAddress,
-        tokenOut?.address
-      );
+      const marketInfo = getByKey(marketsInfoData, p.swapParams?.swapPathStats?.targetMarketAddress)!;
+
+      availableLiquidity = getAvailableUsdLiquidityForCollateral(marketInfo, tokenOut?.address);
 
       if (availableLiquidity && usdOut) {
         isLiquidityRisk = availableLiquidity.mul(riskThresholdBps).div(BASIS_POINTS_DIVISOR).lt(usdOut);
@@ -624,14 +614,7 @@ export function ConfirmationBox(p: Props) {
     }
 
     if (isIncrease) {
-      availableLiquidity = getAvailableUsdLiquidityForPosition(
-        marketsData,
-        poolsData,
-        openInterestData,
-        tokensData,
-        p.increasePositionParams?.market.marketTokenAddress,
-        isLong
-      );
+      availableLiquidity = getAvailableUsdLiquidityForPosition(p.increasePositionParams!.market, isLong);
 
       if (availableLiquidity && p.increasePositionParams?.sizeDeltaUsd) {
         isLiquidityRisk = availableLiquidity
@@ -680,12 +663,9 @@ export function ConfirmationBox(p: Props) {
   function renderIncreaseOrderSection() {
     const { nextPositionValues } = p.increasePositionParams || {};
 
-    const borrowingFeeFactorPerHour = getBorrowingFeeFactor(
-      marketsFeesConfigs,
-      p.increasePositionParams?.market.marketTokenAddress,
-      isLong,
-      60 * 60
-    )?.mul(100);
+    const borrowingFeeFactorPerHour = getBorrowingFeeFactor(p.increasePositionParams!.market, isLong, 60 * 60)?.mul(
+      100
+    );
 
     return (
       <>
