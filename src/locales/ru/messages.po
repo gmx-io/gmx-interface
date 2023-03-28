@@ -13,22 +13,6 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "01 Sep 2021"
-msgstr "01 Сен 2021"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "06 Jan 2022"
-msgstr "6 Янв 2022"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "24h Volume"
-msgstr "24ч Объём"
-
-#: src/components/Exchange/PositionSeller.js
-msgid "<0/>Profit price: {0} ${1}. This rule applies for the next {2}, until {3}."
-msgstr "<0/>Прибыль: {0} ${1}. Это правило применяется для {2}, до {3}."
-
 #: src/App/App.js
 msgid "<0>Install Coinbase Wallet</0> to start using GMX."
 msgstr ""
@@ -50,7 +34,6 @@ msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which
 msgstr "<0>Недостаточная ликвидность для выполнения заказа</0><1>Цена маркировки, которая представляет собой средневзвешенную биржевую стоимость, не достигла указанной цены</1><2>Указанная цена была достигнута, но недостаточно долго для ее выполнения</2><3>Ни один держатель не взял заказ для исполнения</3>"
 
 #: src/components/Exchange/FeesTooltip.tsx
-#: src/components/Exchange/SwapBox.js
 msgid "<0>More Info</0> about fees."
 msgstr "<0>Больше информации</0> о комиссии."
 
@@ -58,20 +41,8 @@ msgstr "<0>Больше информации</0> о комиссии."
 msgid "<0>Return to </0><1>Homepage</1> <2>or </2> <3>Trade</3>"
 msgstr "<0>Вернуться к </0><1>Домашняя страница</1> <2>или </2> <3> Торговля</3>"
 
-#: src/components/Glp/SwapErrorModal.tsx
-msgid "<0>The pool's capacity has been reached for {0}. Please use another token to buy GLP.</0><1>Check the \"Save on Fees\" section for tokens with the lowest fees.</1>"
-msgstr "<0>Вместимость пула достигла {0}. Пожалуйста, используйте другой токен для покупки GLP.</0><1>Проверьте раздел \"Сэкономьте на комиссии\" для токенов с самыми низкими комиссиями.</1>"
-
 #: src/components/Exchange/OrdersList.js
 msgid "<0>The price that orders can be executed at may differ slightly from the chart price, as market orders update oracle prices, while limit/trigger orders do not.</0><1>This can also cause limit/triggers to not be executed if the price is not reached for long enough. <2>Read more</2>.</1>"
-msgstr ""
-
-#: src/pages/Stake/StakeV2.js
-msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
-msgstr "<0>Это приведет к выводу и снятию с резерва всех токенов, а также приостановит вестниг.<1/><2/>токены esGMX, которые были конвертированы в GMX, останутся токенами GMX.<3/><4/>Чтобы получить токены GMX без вывода средств, используйте кнопку \"Заявка\" под разделом Общие Вознаграждения.<5/><6/></0>\""
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>Other websites may show a higher value as they add positions' collaterals to the GLP pool.</1>"
 msgstr ""
 
 #: src/lib/contracts/callContract.tsx
@@ -79,37 +50,9 @@ msgstr ""
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr "<0>Ваш кошелек не подключен к {0}.</0><1/><2>Перейти на {1}</2>"
 
-#: src/components/Exchange/SwapBox.js
-msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
-msgstr "Снимок долларовой стоимости вашего залога {0} делается в момент открытия позиции."
-
-#: src/components/Glp/GlpSwap.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-msgid "APR"
-msgstr "Годовая Процентная Ставка"
-
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week."
 msgstr "Годовая Процентная Ставка обновляется еженедельно в среду и зависит от сборов, собранных за неделю."
-
-#: src/pages/Stake/StakeV2.js
-msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week. <0/><1/>Historical GLP APRs can be checked in this <2>community dashboard</2>."
-msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "AUM"
-msgstr "Активы под Управлением"
-
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-msgid "AVAILABLE"
-msgstr "ДОСТУПНО"
 
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
@@ -158,16 +101,13 @@ msgid "Add to Metamask"
 msgstr "Добавить в MetaMask"
 
 #: src/components/Referrals/JoinReferralCode.js
+#: src/components/Referrals/JoinReferralCode.js
 msgid "Adding referral code failed."
 msgstr "Добавить реферальный код не удалось."
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Adding..."
 msgstr "Добавление..."
-
-#: src/pages/Stake/StakeV2.js
-msgid "Additional reserve required"
-msgstr "Требуется дополнительный резерв"
 
 #: src/components/Exchange/OrdersToa.js
 msgid "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
@@ -194,23 +134,17 @@ msgid "Agree"
 msgstr "Согласен"
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionSeller.js
 msgid "Allow up to 1% slippage"
 msgstr "Допускается скольжение до 1%"
 
 #: src/App/App.js
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionSeller.js
 msgid "Allowed Slippage"
 msgstr "Допустимое Скольжение"
 
 #: src/components/ModalViews/RedirectModal.js
 msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
 msgstr "Альтернативные ссылки можно найти в <0>документах</0>.<1/><2/>Нажав кнопку Согласен, вы принимаете <3>T&Cs</3> и <4>Referral T&Cs</4>.<5/><6/>"
-
-#: src/components/Exchange/NoLiquidityErrorModal.tsx
-msgid "Alternatively, you can select a different \"Collateral In\" token."
-msgstr "В качестве альтернативы вы можете выбрать другой токен \"Collateral In\"."
 
 #: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
@@ -219,10 +153,6 @@ msgstr "Сумма"
 
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Amount of traders you referred."
-msgstr ""
-
-#: src/components/Exchange/PositionEditor.js
-msgid "Amount should be greater than zero"
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
@@ -254,38 +184,9 @@ msgid "Approval was cancelled"
 msgstr "Одобрение было отменено"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-#: src/pages/Stake/StakeV2.js
 msgid "Approve GMX"
 msgstr "Одобрить GMX"
 
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Migration/Migration.js
-msgid "Approve {0}"
-msgstr "Одобрить {0}"
-
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV2.js
-msgid "Approve {stakingTokenSymbol}"
-msgstr "Одобрить {stakingTokenSymbol}"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Approving GMX..."
-msgstr "Одобрение GMX..."
-
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Glp/GlpSwap.js
-msgid "Approving {0}..."
-msgstr "Одобрение {0}..."
-
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV2.js
-msgid "Approving {stakingTokenSymbol}..."
-msgstr "Одобрение {stakingTokenSymbol}..."
-
-#: src/components/Migration/Migration.js
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Approving..."
 msgstr "Одобрение..."
@@ -295,91 +196,31 @@ msgstr "Одобрение..."
 msgid "Arbitrum APR:"
 msgstr "Arbitrum APR:"
 
-#: src/components/Exchange/NoLiquidityErrorModal.tsx
-msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
-msgstr "Поскольку в GLP недостаточно ликвидности для обмена {0} на {swapTokenSymbol}, вы можете воспользоваться приведенной ниже опцией, чтобы сделать это:"
-
 #: src/pages/Dashboard/DashboardV1.js
 msgid "Assets Under Management"
 msgstr "Активы под управлением"
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})."
-msgstr "Активы под управлением: Ставка GMX (все цепи) + GLP пул ({chainName})."
-
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-msgid "Available"
-msgstr "Доступно"
-
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
 msgid "Available Liquidity"
 msgstr "Доступная ликвидность"
-
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-msgid "Available amount to deposit into GLP."
-msgstr "Доступная сумма для пополнения GLP."
-
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
-msgstr "Доступная сумма для вывода средств из GLP. Средства, не использованные текущими открытыми позициями."
 
 #: src/pages/Home/Home.js
 msgid "Available on your preferred network"
 msgstr "Доступно в предпочитаемой сети"
-
-#: src/components/Glp/GlpSwap.js
-msgid "Available:"
-msgstr "Доступно:"
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
 msgstr "Avalanche APR:"
 
-#: src/components/Exchange/SwapBox.js
-msgid "Balance"
-msgstr "Баланс"
-
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-msgid "Balance:"
-msgstr "Баланс:"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Balance: {0}"
-msgstr "Баланс: {0}"
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"
 msgstr "Начать перевод"
 
-#: src/components/Migration/Migration.js
-#: src/components/Migration/Migration.js
-msgid "Bonus Tokens"
-msgstr "Бонусные токены"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Boost Percentage"
-msgstr "Процент повышения"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Boost your rewards with Multiplier Points. <0>More info</0>."
-msgstr "Повышайте свои вознаграждения с помощью Множительных Баллов. <0>More info</0>."
-
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/NetValueTooltip.tsx
-#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/TradeHistory.js
 msgid "Borrow Fee"
 msgstr "Комиссия за Пользование Кредитом"
 
@@ -403,17 +244,6 @@ msgstr ""
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy ETH directly to Arbitrum or transfer it there."
 msgstr ""
-
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#: src/pages/Stake/StakeV2.js
-msgid "Buy GLP"
-msgstr "Купить GLP"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Buy GMX"
-msgstr "Купить GMX"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from Traderjoe:"
@@ -455,10 +285,6 @@ msgstr ""
 msgid "Buy GMX using any token from any network:"
 msgstr ""
 
-#: src/components/Glp/GlpSwap.js
-msgid "Buy failed."
-msgstr "Покупка не удалась."
-
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Buy on Arbitrum"
@@ -477,26 +303,9 @@ msgstr ""
 msgid "Buy or Transfer ETH to Arbitrum"
 msgstr ""
 
-#: src/components/Glp/GlpSwap.js
-msgid "Buy submitted."
-msgstr "Покупка подано."
-
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-msgid "Buy with {0}"
-msgstr "Купить с {0}"
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy {nativeTokenSymbol}"
 msgstr ""
-
-#: src/components/Exchange/NoLiquidityErrorModal.tsx
-msgid "Buy {swapTokenSymbol} on 1inch"
-msgstr "Купить {swapTokenSymbol} на 1 дюйм"
-
-#: src/components/Glp/GlpSwap.js
-msgid "Buying..."
-msgstr "Покупает..."
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Can't execute because of an error"
@@ -507,7 +316,6 @@ msgstr "Невозможно выполнить из-за ошибки"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/TradeHistory.js
 msgid "Cancel"
 msgstr "Отменить"
 
@@ -516,7 +324,6 @@ msgid "Cancel failed"
 msgstr "Отменить не удалось"
 
 #: src/domain/legacy.ts
-#: src/pages/Exchange/Exchange.js
 msgid "Cancel failed."
 msgstr "Отменить не удалось."
 
@@ -525,19 +332,12 @@ msgid "Cancel submitted"
 msgstr "Отмена завершена"
 
 #: src/domain/legacy.ts
-#: src/pages/Exchange/Exchange.js
 msgid "Cancel submitted."
 msgstr "Отмена завершена."
 
 #: src/App/App.js
-#: src/pages/Exchange/Exchange.js
 msgid "Chart positions"
 msgstr "Позиции на графике"
-
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-msgid "Check the \"Save on Fees\" section below to get the lowest fee percentages."
-msgstr "Проверьте раздел \"Экономия на Комиссиях\" ниже, чтобы получить самые низкие проценты комиссионных."
 
 #: src/components/Referrals/AddAffiliateCode.js
 #: src/components/Referrals/JoinReferralCode.js
@@ -549,27 +349,10 @@ msgid "Choose to buy from decentralized or centralized exchanges."
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "Claim"
 msgstr "Запрос"
 
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-msgid "Claim GMX Rewards"
-msgstr "Запрос на получение Вознаграждения GMX"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Claim Rewards"
-msgstr "Запрос на получение Вознаграждения"
-
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-#: src/pages/Stake/StakeV2.js
 msgid "Claim completed!"
 msgstr "Запрос выполнен!"
 
@@ -577,17 +360,7 @@ msgstr "Запрос выполнен!"
 msgid "Claim esGMX"
 msgstr "Запрос esGMX"
 
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-msgid "Claim esGMX Rewards"
-msgstr "Запрос на получение Вознаграждения esGMX"
-
-#: src/pages/Stake/StakeV1.js
-msgid "Claim failed"
-msgstr "Запрос не прошел"
-
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-#: src/pages/Stake/StakeV2.js
 msgid "Claim failed."
 msgstr "Запрос не прошел."
 
@@ -595,26 +368,7 @@ msgstr "Запрос не прошел."
 msgid "Claim submitted!"
 msgstr "Запрос завершен!"
 
-#: src/pages/Stake/StakeV1.js
-msgid "Claim submitted! <0>View status.</0>"
-msgstr "Запрос завершен! <0>Увидеть статус.</0>"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Claim submitted."
-msgstr "Запрос завершен."
-
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-msgid "Claim {wrappedTokenSymbol} Rewards"
-msgstr "Запрос на получение {wrappedTokenSymbol} Вознаграждения"
-
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-msgid "Claimable"
-msgstr "Заявленный"
-
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-#: src/pages/Stake/StakeV2.js
 msgid "Claiming..."
 msgstr "Утверждение..."
 
@@ -622,8 +376,6 @@ msgstr "Утверждение..."
 msgid "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
 msgstr "Нажмите на строку, чтобы выбрать позицию на рынке, а затем используйте окно trade, чтобы увеличить размер позиции, если это необходимо."
 
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Close"
@@ -634,33 +386,9 @@ msgstr "Закрыть"
 msgid "Close Fee"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js
-msgid "Close failed."
-msgstr "Закрыть не удалось."
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Close submitted!"
-msgstr "Закрытие завершено!"
-
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Close to execution price"
 msgstr "Близко к цене исполнения"
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Close without profit"
-msgstr "Закрыть без прибыли"
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Close {longOrShortText} {0}"
-msgstr "Закрыть {longOrShortText} {0}"
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Close: {convertedAmountFormatted} {0}"
-msgstr "Закрыть: {convertedAmountFormatted} {0}"
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Closing..."
-msgstr "Закрытие..."
 
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Code already taken"
@@ -683,16 +411,8 @@ msgid "Collateral"
 msgstr "Залог"
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
 msgid "Collateral ({0})"
 msgstr "Залог ({0})"
-
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-msgid "Collateral In"
-msgstr "Залог Внесён"
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Collateral Spread"
@@ -718,31 +438,6 @@ msgstr "Завершить Перевод по Счету"
 msgid "Complete Transfer"
 msgstr "Завершить Перевод"
 
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-msgid "Compound"
-msgstr "Компаунд"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Compound Rewards"
-msgstr "Компаунд вознаграждения"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Compound completed!"
-msgstr "Компаунд завершено!"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Compound failed."
-msgstr "Компаунд не удалось."
-
-#: src/pages/Stake/StakeV2.js
-msgid "Compound submitted!"
-msgstr "Компаунд представлено!"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Compounding..."
-msgstr "Компаунд..."
-
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Confirm Limit Order"
 msgstr ""
@@ -764,21 +459,9 @@ msgid "Connect"
 msgstr "Подключение"
 
 #: src/App/App.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Glp/GlpSwap.js
 #: src/components/Header/AppHeaderUser.tsx
-#: src/components/Migration/Migration.js
 #: src/components/Referrals/AddAffiliateCode.js
 #: src/components/Referrals/JoinReferralCode.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "Connect Wallet"
 msgstr "Подключить Кошелек"
 
@@ -790,15 +473,6 @@ msgstr "Подключение к {0}"
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Continue"
 msgstr "Продолжить"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Convert esGMX tokens to GMX tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
-msgstr "Конвертируйте токены esGMX в токены GMX.<0/>Пожалуйста, ознакомьтесь с <1>деталями инвестирования</1> перед использованием хранилищ."
-
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-msgid "Convert {wrappedTokenSymbol} to {nativeTokenSymbol}"
-msgstr "Конвертировать {wrappedTokenSymbol} в {nativeTokenSymbol}"
 
 #: src/components/Exchange/PositionShare.js
 msgid "Copy"
@@ -813,41 +487,12 @@ msgstr "Копировать Адрес"
 msgid "Could not add token to MetaMask"
 msgstr "Невозможно добавить Токен в MetaMask"
 
-#: src/components/Exchange/TradeHistory.js
-msgid "Could not decrease {0} {longOrShortText}, +{1} USD, Acceptable Price: {2}"
-msgstr "Не удалось уменьшить {0} {longOrShortText}, +{1} USD, Приемлемая Цена: {2}"
-
-#: src/pages/Exchange/Exchange.js
-msgid "Could not decrease {tokenSymbol} {longOrShortText} within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page."
-msgstr "Не удалось уменьшить {tokenSymbol} {longOrShortText} в пределах допустимого уровня скольжения, вы можете настроить допустимое скольжение в настройках в правом верхнем углу страницы."
-
-#: src/components/Exchange/TradeHistory.js
-msgid "Could not execute deposit into {0} {longOrShortText}"
-msgstr "Не удалось выполнить пополнение счета в {0} {longOrShortText}"
-
-#: src/components/Exchange/TradeHistory.js
-msgid "Could not execute withdrawal from {0} {longOrShortText}"
-msgstr "Не удалось выполнить вывод из {0} {longOrShortText}"
-
-#: src/components/Exchange/TradeHistory.js
-msgid "Could not increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2}"
-msgstr "Не удалось увеличить {0} {longOrShortText}, +{1} USD, Приемлемая Цена: {2}"
-
-#: src/pages/Exchange/Exchange.js
-msgid "Could not increase {tokenSymbol} {longOrShortText} within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page."
-msgstr "Не удалось увеличить  {tokenSymbol} {longOrShortText} в пределах допустимого уровня скольжения, вы можете настроить допустимое скольжение в настройках в правом верхнем углу страницы."
-
-#: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/AddAffiliateCode.js
 #: src/components/Referrals/AffiliatesStats.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
 msgid "Create"
 msgstr "Создать"
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionSeller.js
 msgid "Create Order"
 msgstr "Создать Ордер"
 
@@ -855,20 +500,11 @@ msgstr "Создать Ордер"
 msgid "Create Referral Code"
 msgstr "Создать Реферальный Код"
 
-#: src/components/Exchange/SwapBox.js
-msgid "Create {0} Order"
-msgstr "Создать {0} Ордер"
-
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Created At"
 msgstr ""
 
-#: src/components/Exchange/SwapBox.js
-msgid "Created limit order for {0} {1}: {2} USD!"
-msgstr "Создан лимитный ордер на {0} {1}: {2} USD!"
-
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionSeller.js
 msgid "Creating Order..."
 msgstr "Создание Ордера..."
 
@@ -880,26 +516,6 @@ msgstr "Создание..."
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Creator"
 msgstr "Создатель"
-
-#: src/components/Glp/GlpSwap.js
-msgid "Current Pool Amount"
-msgstr "Текущая Сумма Пула"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Current Reserved"
-msgstr "Текущее Резервирование"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Current Weight"
-msgstr "Текущая Масса"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Current {0} long"
-msgstr "Текущий {0} лонгшезам"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Current {0} shorts"
-msgstr "Текущий {0} Шорт"
 
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
@@ -957,8 +573,6 @@ msgstr "Децентрализованная<0/>Бессрочная Биржа"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/TradeHistory.js
-#: src/components/Exchange/TradeHistory.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
 msgstr "Уменьшить"
@@ -967,69 +581,9 @@ msgstr "Уменьшить"
 msgid "Decrease active: {0}, executed: {1}, cancelled: {2}"
 msgstr "Снижение актива: {0}, выполнено: {1}, отменено: {2}"
 
-#: src/components/Exchange/TradeHistory.js
-msgid "Decreased"
-msgstr "Уменьшено"
-
-#: src/pages/Exchange/Exchange.js
-msgid "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
-msgstr "Уменьшено {tokenSymbol} {longOrShortText}, -{0} USD."
-
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-msgid "Deposit"
-msgstr "Пополнение"
-
 #: src/components/Exchange/FeesTooltip.tsx
 msgid "Deposit Fee"
 msgstr ""
-
-#: src/components/Exchange/PositionEditor.js
-msgid "Deposit disabled, pending {0} upgrade"
-msgstr "Пополнение невозможно, ожидается {0} обновление"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Deposit failed!"
-msgstr "Пополнение не состоялось!"
-
-#: src/components/Exchange/PositionEditor.js
-msgid "Deposit failed."
-msgstr "Пополнение не состоялось."
-
-#: src/pages/Stake/StakeV2.js
-msgid "Deposit submitted!"
-msgstr "Пополнение внесено!"
-
-#: src/components/Exchange/PositionEditor.js
-msgid "Deposit submitted."
-msgstr "Пополнение внесено."
-
-#: src/components/Exchange/TradeHistory.js
-msgid "Deposit {0} USD into {1} {longOrShortText}"
-msgstr "Внести {0} USD на {1} {longOrShortText}"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Deposited"
-msgstr "Внесено"
-
-#: src/pages/Exchange/Exchange.js
-msgid "Deposited {0} USD into {tokenSymbol} {longOrShortText}"
-msgstr "Внесено {0} USD на {tokenSymbol} {longOrShortText}"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Deposited!"
-msgstr "Внесено!"
-
-#: src/components/Exchange/PositionEditor.js
-#: src/pages/Stake/StakeV2.js
-msgid "Depositing..."
-msgstr "Пополнение..."
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Diff"
@@ -1047,10 +601,6 @@ msgstr "Разъединить"
 msgid "Display PnL after fees"
 msgstr "Отображение PnL после комиссии"
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Distribution"
-msgstr "Распределение"
-
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Docs"
@@ -1065,7 +615,6 @@ msgid "Download"
 msgstr "Загрузить"
 
 #: src/components/Header/AppHeaderLinks.tsx
-#: src/pages/Stake/StakeV2.js
 msgid "Earn"
 msgstr "Зарабатывать"
 
@@ -1093,74 +642,12 @@ msgstr "Редактирование Реферального Кода"
 msgid "Edit order"
 msgstr "Редактирование ордера"
 
-#: src/components/Exchange/PositionEditor.js
-msgid "Edit {longOrShortText} {0}"
-msgstr "Редактирование {longOrShortText} {0}"
-
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
-msgid "Enable Leverage"
-msgstr "Активировать Леверидж"
-
 #: src/components/Exchange/OrdersToa.js
 #: src/components/Exchange/OrdersToa.js
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
 msgid "Enable Orders"
 msgstr "Активировать ордера"
 
-#: src/components/Exchange/PositionEditor.js
-msgid "Enable deposit failed."
-msgstr "Не удалось осуществить пополнение счета."
-
-#: src/components/Exchange/PositionEditor.js
-msgid "Enable deposit sent."
-msgstr "Разрешить отправку пополнения счета."
-
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
-msgid "Enable leverage failed."
-msgstr "Не удалось активировать торговое плечо."
-
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
-msgid "Enable leverage sent."
-msgstr "Активировать отправку рычага."
-
-#: src/pages/Exchange/Exchange.js
-msgid "Enable orders failed."
-msgstr "Не удалось активировать ордер"
-
-#: src/pages/Exchange/Exchange.js
-msgid "Enable orders sent."
-msgstr "Активировать отправку ордера."
-
-#: src/components/Exchange/PositionEditor.js
-msgid "Enable withdraw failed."
-msgstr "Не удалось активировать вывод."
-
-#: src/components/Exchange/PositionEditor.js
-msgid "Enable withdraw sent."
-msgstr "Активировать отправку вывода."
-
-#: src/components/Exchange/PositionEditor.js
-msgid "Enabling Leverage"
-msgstr "Создание Рычага"
-
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-msgid "Enabling Leverage..."
-msgstr "Создание Леверидж..."
-
 #: src/components/Exchange/OrdersToa.js
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
 msgid "Enabling Orders..."
 msgstr "Создание Ордеров..."
 
@@ -1173,7 +660,6 @@ msgid "Enter NFT ID"
 msgstr "Введите NFT ID"
 
 #: src/components/Exchange/OrderEditor.js
-#: src/components/Exchange/PositionSeller.js
 msgid "Enter Price"
 msgstr "Введите Цену"
 
@@ -1192,27 +678,7 @@ msgstr "Введите Реферальный Код"
 msgid "Enter a code"
 msgstr "Введите код"
 
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-msgid "Enter a price"
-msgstr "Введите цену"
-
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Migration/Migration.js
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "Enter an amount"
 msgstr "Введите сумму"
 
@@ -1226,21 +692,11 @@ msgid "Enter new Price"
 msgstr "Введите новую Цену"
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
 msgid "Entry Price"
 msgstr "Входная Цена"
 
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-msgid "Escrowed GMX"
-msgstr "Эскроуированный GMX"
-
-#: src/components/Glp/GlpSwap.js
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "Escrowed GMX APR"
 msgstr "Эскроуированный GMX APR"
@@ -1249,38 +705,14 @@ msgstr "Эскроуированный GMX APR"
 msgid "Execute"
 msgstr "Выполнить"
 
-#: src/components/Exchange/TradeHistory.js
-msgid "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
-msgstr "Выполнить Ордер: Поменять {fromAmountDisplay} {0} на {toAmountDisplay} {1}"
-
-#: src/components/Exchange/TradeHistory.js
-msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
-msgstr ""
-
 #: src/components/Exchange/FeesTooltip.tsx
 msgid "Execution Fee"
 msgstr ""
 
-#: src/components/Exchange/SwapBox.js
-msgid "Exit Price"
-msgstr "Цена на выходе"
-
-#: src/components/Glp/GlpSwap.js
-msgid "FEES"
-msgstr "СБОРЫ"
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV1.js
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Fees"
 msgstr "Сборы"
 
@@ -1296,36 +728,9 @@ msgstr "При обмене с {0} на {1} взимается высокая к
 msgid "Fees generated by GMX"
 msgstr "Комиссионные, сгенерированные GMX"
 
-#: src/components/Glp/GlpSwap.js
-msgid "Fees may vary depending on which asset you sell GLP for. <0/>Enter the amount of GLP you want to redeem in the order form, then check here to compare fees."
-msgstr "Комиссионные могут отличаться в зависимости от того, за какой актив вы продаете GLP. <0/>Укажите сумму GLP, которую вы хотите обменять, в форме ордера, а затем проверьте здесь, чтобы узнать размер комиссионных."
-
-#: src/components/Glp/GlpSwap.js
-msgid "Fees may vary depending on which asset you use to buy GLP. <0/>Enter the amount of GLP you want to purchase in the order form, then check here to compare fees."
-msgstr "Комиссионные могут отличаться в зависимости от того, какой актив вы используете для покупки GLP. <0/>Укажите сумму GLP, которую вы хотите приобрести, в форме ордера, а затем проверьте здесь, чтобы узнать размер комиссионных."
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Fees since"
-msgstr "Комиссионные с момента"
-
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-msgid "Fees will be shown once you have entered an amount in the order form."
-msgstr "Комиссионные будут показаны после того, как вы введете сумму в форму ордера."
-
-#: src/components/Exchange/SwapBox.js
-msgid "Fetching token info..."
-msgstr "Получение информации о токенах..."
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Financial reports and protocol analytics"
 msgstr "Финансовые отчеты и аналитика протоколов"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Floor Price Fund"
-msgstr "Фонд Минимальной Цены"
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Forfeit profit"
@@ -1340,26 +745,12 @@ msgid "Forfeit profit and {action}"
 msgstr "Утрата прибыли и {action}"
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionSeller.js
 msgid "Forfeit profit not checked"
 msgstr "Неустойка за непроверенную прибыль"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GBC NFTs APR tracker and rewards"
 msgstr "GBC NFTs APR отслеживание и вознаграждения"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "GLP Index Composition"
-msgstr "Состав Индекса GLP"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "GLP Pool"
-msgstr "GLP Пул"
-
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-msgid "GLP Vault"
-msgstr "Хранилище GLP"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GLP and GMX autocompounding vaults"
@@ -1369,21 +760,9 @@ msgstr ""
 msgid "GLP autocompounding vaults"
 msgstr ""
 
-#: src/components/Glp/GlpSwap.js
-msgid "GLP buy disabled, pending {0} upgrade"
-msgstr "Покупка GLP приостановлена, ожидается {0} обновление"
-
-#: src/components/Exchange/SwapBox.js
-msgid "GLP doesn't accept this amount of {0}."
-msgstr ""
-
 #: src/components/TokenCard/TokenCard.js
 msgid "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
 msgstr "GLP это токен предоставляющий ликвидность. Обеспечивает 70% генерируемых платформой комиссий."
-
-#: src/components/Glp/GlpSwap.js
-msgid "GLP sell disabled, pending {0} upgrade"
-msgstr "Продажа GLP приостановлена, ожидается {0} обновление"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX Announcements and Updates"
@@ -1412,11 +791,6 @@ msgstr "Страница Голосования по предложениям GM
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX Stats Page"
 msgstr "Страница Статистики GMX"
-
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-msgid "GMX Vault"
-msgstr "Хранилище GMX"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX Weekly Updates"
@@ -1466,11 +840,6 @@ msgstr "Калькулятор ставки GMX"
 msgid "GMX staking rewards updates and insights"
 msgstr "Обновления и информация о вознаграждениях за ставку GMX"
 
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-msgid "GMX transfers not yet enabled"
-msgstr "Перевод GMX еще не активирован"
-
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Generate Referral Code"
 msgstr "Сгенерировать Реферальный Код"
@@ -1487,21 +856,9 @@ msgstr "Получайте скидки на оплату и получайте 
 msgid "Governance"
 msgstr ""
 
-#: src/components/Exchange/SwapBox.js
-msgid "High Slippage, Swap Anyway"
-msgstr "Высокий уровень Скольжения, Обмен в Любом случае"
-
-#: src/components/Exchange/SwapBox.js
-msgid "High USDG Slippage, Long Anyway"
-msgstr "Высокое Скольжение USDG, Лонг в Любом случае"
-
 #: src/components/Exchange/ConfirmationBox.js
 msgid "I am aware of the trigger orders"
 msgstr "Я осведомлён о запуске ордера"
-
-#: src/components/Exchange/SwapBox.js
-msgid "If you have an existing position, the position will be closed at {0} USD.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
-msgstr "Если у вас есть существующая позиция, позиция будет закрыта по цене {0} USD.<0/><1/>Цена выхода будет меняться в зависимости от цены актива.<2/><3/><4>Более подробная Информация</4>"
 
 #: src/components/Exchange/PositionShare.js
 msgid "Image generation error, please refresh and try again."
@@ -1519,20 +876,9 @@ msgstr "Включить PnL в индикатор рычага"
 msgid "Incorrect Account"
 msgstr "Неверный Счет"
 
-#: src/components/Exchange/SwapBox.js
-#: src/pages/Stake/StakeV1.js
-msgid "Incorrect Network"
-msgstr "Неправильная Сеть"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Incorrect network"
-msgstr "Неправильная сеть"
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/TradeHistory.js
-#: src/components/Exchange/TradeHistory.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase"
 msgstr "Увеличить"
@@ -1540,14 +886,6 @@ msgstr "Увеличить"
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase active: {0}, executed: {1}, cancelled: {2}"
 msgstr "Увеличение активно: {0}, выполнено: {1}, отменено: {2}"
-
-#: src/components/Exchange/TradeHistory.js
-msgid "Increase {0} {longOrShortText}, +{1} USD, {2} Price: {3} USD"
-msgstr "Увеличить {0} {longOrShortText}, +{1} USD, {2} Цена: {3} USD"
-
-#: src/pages/Exchange/Exchange.js
-msgid "Increased {tokenSymbol} {longOrShortText}, +{0} USD."
-msgstr "Увеличено {tokenSymbol} {longOrShortText}, +{0} USD."
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Index"
@@ -1558,51 +896,6 @@ msgstr "Индекс"
 #: src/components/Exchange/PositionsList.js
 msgid "Initial Collateral"
 msgstr "Первоначальный Залог"
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Initial Collateral (Collateral excluding Borrow Fee)."
-msgstr ""
-
-#: src/components/Exchange/TradeHistory.js
-msgid "Initial collateral"
-msgstr "Первоначальный залог"
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Insufficient Available Liquidity to swap to {0}:"
-msgstr "Недостаточно Доступной Ликвидности для обмена на {0}:"
-
-#: src/components/Glp/GlpSwap.js
-msgid "Insufficient GLP balance"
-msgstr "Недостаточный баланс GLP"
-
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Glp/GlpSwap.js
-msgid "Insufficient liquidity"
-msgstr "Недостаточная ликвидность"
-
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-msgid "Insufficient liquidity, change \"Collateral In\""
-msgstr "Недостаточная ликвидность, смена \" Залог В\""
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Insufficient receive token liquidity"
-msgstr "Недостаточная ликвидность токенов для приема"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Insufficient staked tokens"
-msgstr "Недостаточное количество поставленных токенов"
-
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Glp/GlpSwap.js
-msgid "Insufficient {0} balance"
-msgstr "Недостаточный {0} баланс"
 
 #: src/pages/NftWallet/NftWallet.js
 msgid "Invalid NFT Address"
@@ -1617,14 +910,8 @@ msgstr "Неверный получатель"
 msgid "Invalid Receiver Address"
 msgstr "Неверный адрес получателя"
 
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
-msgid "Invalid liq. price"
-msgstr "Неверная цена лик."
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrderEditor.js
-#: src/components/Exchange/PositionSeller.js
 msgid "Invalid price, see warning"
 msgstr "Недопустимая цена, смотрите предупреждение"
 
@@ -1648,10 +935,6 @@ msgstr "Вакансии в GMX."
 msgid "Jobs"
 msgstr "Вакансии"
 
-#: src/components/Exchange/PositionSeller.js
-msgid "Keep leverage at {0}x"
-msgstr "Поддерживайте рычаг на уровне {0}x"
-
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Language"
 msgstr "Язык"
@@ -1670,39 +953,13 @@ msgstr "Таблица лидеров"
 msgid "Leaderboard for GMX traders"
 msgstr "Таблица лидеров для трейдеров GMX"
 
-#: src/components/Exchange/PositionEditor.js
-msgid "Leave at least {0} ETH for gas"
-msgstr "Оставьте не менее {0} ETH для заправки "
-
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-msgid "Leave at least {0} {1} for gas"
-msgstr "Оставьте не менее {0} {1} для заправки"
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Leftover collateral below 5 USD"
-msgstr "Остатки залога ниже 5 USD"
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Leftover position below 10 USD"
-msgstr "Оставшаяся позиция ниже 10 USD"
-
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
 msgid "Leverage"
 msgstr "Плечо"
 
-#: src/components/Exchange/SwapBox.js
-msgid "Leverage disabled, pending {0} upgrade"
-msgstr "Леверидж отключен, ожидается {0} обновление"
-
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/SwapBox.js
 msgid "Limit"
 msgstr "Ограничение"
 
@@ -1710,14 +967,6 @@ msgstr "Ограничение"
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Limit Price"
 msgstr "Предельная Цена"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Limit order creation failed."
-msgstr "Не удалось создать лимитный ордер."
-
-#: src/components/Exchange/SwapBox.js
-msgid "Limit order submitted!"
-msgstr "Лимитный ордер представлен!"
 
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
@@ -1733,44 +982,14 @@ msgstr "Ссылка копируется в буфер обмена."
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrderEditor.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/SwapBox.js
 msgid "Liq. Price"
 msgstr "Лик. Цена"
 
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Liq. {0} {longOrShortText}"
 msgstr ""
-
-#: src/components/Exchange/TradeHistory.js
-msgid "Liquidated"
-msgstr "Ликвидировано"
-
-#: src/components/Exchange/TradeHistory.js
-msgid ""
-"Liquidated {0} {longOrShortText},\n"
-"-{1} USD,\n"
-"{2} Price: {3} USD"
-msgstr ""
-"Ликвидировано {0} {longOrShortText},\n"
-"-{1} USD,\n"
-"{2} Цена: {3} USD"
-
-#: src/components/Exchange/TradeHistory.js
-msgid "Liquidation Fee"
-msgstr ""
-
-#: src/components/Exchange/PositionEditor.js
-msgid "Liquidation price would cross mark price."
-msgstr ""
-
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-msgid "Liquidity data not loaded"
-msgstr "Данные о ликвидности не загружены"
 
 #: src/components/Exchange/PositionsList.js
 msgid "Loading..."
@@ -1784,41 +1003,18 @@ msgstr "Загрузка..."
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/TradeHistory.js
-#: src/components/Exchange/TradeHistory.js
-#: src/components/Exchange/TradeHistory.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
-#: src/pages/Exchange/Exchange.js
-#: src/pages/Exchange/Exchange.js
-#: src/pages/Exchange/Exchange.js
-#: src/pages/Exchange/Exchange.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Long"
 msgstr "Лонг"
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Long Positions"
-msgstr "Лонг позиции"
-
 #: src/pages/Dashboard/DashboardV1.js
 msgid "Long positions: {0} USD, Short positions: {1} USD, {volumeLabel} volume: {2} USD"
 msgstr "Лонг позиции: {0} USD, Шорт позиции: {1} USD, {volumeLabel} объем: {2} USD"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Long {0}"
-msgstr "Лонг {0}"
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Longing..."
@@ -1833,9 +1029,6 @@ msgid "Loss"
 msgstr "Убыток"
 
 #: src/components/BuyInputSection/BuyInputSection.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
 #: src/components/InputSection/InputSection.js
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "MAX"
@@ -1850,8 +1043,6 @@ msgstr "Оптимизатор MEV"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/pages/OrdersOverview/OrdersOverview.js
@@ -1863,115 +1054,18 @@ msgid "Mark Price:"
 msgstr "Отмеченная Цена:"
 
 #: src/components/Exchange/OrderEditor.js
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
 msgid "Mark: {0}"
 msgstr "Отметка: {0}"
 
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
-msgid "Market"
-msgstr "Рынок"
-
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV1.js
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Market Cap"
 msgstr "Рыночная капитализация"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Max Capacity"
-msgstr "Максимальная Вместимость"
-
-#: src/components/Glp/GlpSwap.js
-msgid "Max Capacity for {0} Reached"
-msgstr "Максимальная Вместимость для {0} Достигнута"
-
-#: src/components/Glp/GlpSwap.js
-msgid "Max Pool Capacity"
-msgstr "Максимальная Вместимость Пула"
-
-#: src/components/Migration/Migration.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-msgid "Max amount exceeded"
-msgstr "Максимальная сумма превышена"
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Max close amount exceeded"
-msgstr "Превышена максимальная сумма закрытия"
-
-#: src/components/Exchange/TradeHistory.js
-msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account:"
-msgstr "Максимальное кредитное плечо 100x было превышено, оставшийся залог после вычета убытков и комиссий был отправлен обратно на ваш счет:"
-
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
-msgid "Max leverage: {0}x"
-msgstr ""
-
-#: src/components/Glp/GlpSwap.js
-msgid "Max pool capacity reached for {0}. Please mint GLP using another token"
-msgstr "Достигнута максимальная вместимость пула для {0}. Пожалуйста, монетизируйте GLP, используя другой токен"
-
-#: src/components/Glp/GlpSwap.js
-msgid "Max pool capacity reached for {0}<0/><1/>Please mint GLP using another token"
-msgstr "Достигнута максимальная вместимость пула для {0}<0/><1/>Пожалуйста, монетизируйте GLP, используя другой токен"
 
 #: src/App/App.js
 msgid "Max slippage precision is 0.01%"
 msgstr "Максимальная точность скольжения составляет 0,01%"
-
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Max {0} Capacity"
-msgstr "Максимальная {0} вместимость"
-
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
-msgid "Max {0} in"
-msgstr "Максимум {0} в"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Max {0} long capacity"
-msgstr "Максимальная {0} вместимость лонга"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Max {0} long exceeded"
-msgstr "Максимальное {0} превышение лонга"
-
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
-msgid "Max {0} out"
-msgstr "Максимальный {0} выход"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Max {0} short capacity"
-msgstr "Максимальная {0} вместимость шорта"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Max {0} short exceeded"
-msgstr "Максимальное {0} превышение шорта"
-
-#: src/components/Migration/Migration.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-msgid "Max: {0}"
-msgstr "Максимально: {0}"
-
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
-msgid "Max: {maxAmountFormatted}"
-msgstr "Максимально: {maxAmountFormatted}"
 
 #: src/components/Footer/constants.ts
 #: src/components/Footer/constants.ts
@@ -1986,52 +1080,6 @@ msgstr "MetaMask"
 msgid "MetaMask not detected."
 msgstr "MetaMask не обнаружена."
 
-#: src/components/Migration/Migration.js
-#: src/components/Migration/Migration.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-msgid "Migrate"
-msgstr "Перенести"
-
-#: src/components/Migration/Migration.js
-msgid "Migrated"
-msgstr "Перенесено"
-
-#: src/components/Migration/Migration.js
-msgid "Migrating..."
-msgstr "Перенесение..."
-
-#: src/components/Migration/Migration.js
-msgid "Migration Price"
-msgstr "Цена Переноса"
-
-#: src/components/Migration/Migration.js
-msgid "Migration failed"
-msgstr "Перенос не удался"
-
-#: src/components/Migration/Migration.js
-msgid "Migration submitted! <0>View status.</0>"
-msgstr "Перенос завершен! <0> Просмотр статуса.</0>"
-
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
-msgid "Min leverage: 1.1x"
-msgstr "Минимальное кредитное плечо: 1.1x"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Min order: 10 USD"
-msgstr "Минимальный ордер: 10 USD"
-
-#: src/components/Exchange/TradeHistory.js
-msgid "Min required collateral"
-msgstr ""
-
-#: src/components/Exchange/PositionEditor.js
-msgid "Min residual collateral: 10 USD"
-msgstr ""
-
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Min. Receive"
 msgstr "Мин. Приём"
@@ -2040,22 +1088,9 @@ msgstr "Мин. Приём"
 msgid "Minimum received"
 msgstr "Минимум получен"
 
-#: src/components/Exchange/SwapBox.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "More Info"
-msgstr "Больше Информации"
-
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "More Options"
 msgstr "Больше вариантов"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Multiplier Points"
-msgstr "Множители баллов"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Multiplier Points APR"
-msgstr "Множитель баллов APR"
 
 #: src/pages/NftWallet/NftWallet.js
 msgid "NFT Address"
@@ -2086,10 +1121,6 @@ msgstr "Сети"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks and Settings"
 msgstr "Сети и Настройки"
-
-#: src/components/Exchange/TradeHistory.js
-msgid "Next"
-msgstr "Далее"
 
 #: src/pages/Actions/Actions.js
 msgid "No PnLs found"
@@ -2126,14 +1157,6 @@ msgstr "Нет позиции"
 msgid "No rebates distribution history yet."
 msgstr "История распределения возвратов пока отсутствует."
 
-#: src/pages/Stake/StakeV1.js
-msgid "No rewards to claim yet"
-msgstr "Вознаграждений пока нет"
-
-#: src/components/Exchange/TradeHistory.js
-msgid "No trades yet"
-msgstr "Пока нет сделок"
-
 #: src/components/Exchange/OrdersToa.js
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 msgstr ""
@@ -2144,17 +1167,12 @@ msgstr "Допускаются только буквы, цифры и знаки
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/NetValueTooltip.tsx
-#: src/components/Exchange/SwapBox.js
 msgid "Open Fee"
 msgstr ""
 
 #: src/pages/Home/Home.js
 msgid "Open Interest"
 msgstr "Открытый Интерес"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Open a position"
-msgstr "Открыть позицию"
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open in Coingecko"
@@ -2206,14 +1224,6 @@ msgstr "Ордер не может быть выполнен, так как эт
 msgid "Order cannot be executed as the remaining position would be smaller than $5.00"
 msgstr "Ордер не может быть выполнен, так как оставшаяся позиция будет меньше $5.00"
 
-#: src/components/Exchange/PositionSeller.js
-msgid "Order created!"
-msgstr "Ордер создан!"
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Order creation failed."
-msgstr "Не удалось создать ордер."
-
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Order size exceeds position"
 msgstr "Размер ордера превышает позицию"
@@ -2226,10 +1236,6 @@ msgstr "Размер ордера равен 0"
 #: src/lib/legacy.ts
 msgid "Order size is bigger than position, will only be executable if position increases"
 msgstr "Размер ордера больше позиции, будет исполнен только при увеличении позиции."
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Order submitted!"
-msgstr "Ордер принят!"
 
 #: src/components/Exchange/OrderEditor.js
 msgid "Order update failed."
@@ -2245,52 +1251,20 @@ msgstr "Ордер обновлён!"
 
 #: src/components/Exchange/PositionsList.js
 #: src/pages/Actions/Actions.js
-#: src/pages/Exchange/Exchange.js
 msgid "Orders"
 msgstr "Ордера"
 
 #: src/components/Exchange/PositionsList.js
-#: src/pages/Exchange/Exchange.js
 msgid "Orders ({0})"
 msgstr "Ордера ({0})"
-
-#: src/pages/Exchange/Exchange.js
-msgid "Orders cancelled."
-msgstr "Ордера отменены"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Overall protocol analytics"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Overview"
-msgstr "Аннотация"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "POOL"
-msgstr "ПУЛ"
-
-#: src/components/Glp/GlpSwap.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "PRICE"
-msgstr "ЦЕНА"
-
 #: src/pages/PageNotFound/PageNotFound.js
 msgid "Page not found"
 msgstr "Страница не найдена"
-
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
-msgid "Page outdated, please refresh"
-msgstr "Страница устарела, пожалуйста, обновите"
-
-#: src/components/Exchange/TradeHistory.js
-msgid "Partial Liquidation"
-msgstr "Частичная Ликвидация"
-
-#: src/components/Exchange/TradeHistory.js
-msgid "Partially Liquidated"
-msgstr "Частично Ликвидировано"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Partnerships and Integrations"
@@ -2298,24 +1272,12 @@ msgstr "Партнерство и Объединения"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
 msgid "Pay"
 msgstr "Оплатит"
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Pay Amount"
 msgstr "Оплата Суммы"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Pay: {0} USD"
-msgstr "Оплата: {0} USD"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Platform and GLP index tokens."
-msgstr "Платформа и индексные токены GLP."
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Please input a referral code to benefit from fee discounts."
@@ -2325,18 +1287,12 @@ msgstr "Пожалуйста, введите реферальный код, чт
 msgid "Please only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP and Multiplier Points to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
 msgstr "Пожалуйста, используйте это только для полного перевода аккаунта.<0/>Это переведет все ваши GMX, esGMX, GLP и Множительные Баллы на новый аккаунт.<1/>Переводы поддерживаются только в том случае, если принимающий аккаунт не размещал токены GMX или GLP ранее.<2/>Переводы являются односторонними, вы не сможете перевести размещенные токены обратно на отправляющий аккаунт."
 
-#: src/components/Migration/Migration.js
-msgid "Please read the <0>Medium post</0> before migrating."
-msgstr "Пожалуйста, прочитайте <0>Средний пост</0> перед переносом."
-
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Please switch your network to Arbitrum."
 msgstr "Пожалуйста, переключите свою сеть на Arbitrum."
 
 #: src/components/Exchange/NetValueTooltip.tsx
-#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/TradeHistory.js
 #: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr "PnL"
@@ -2346,36 +1302,17 @@ msgid "PnL After Fees"
 msgstr "PnL После уплаты Комиссии"
 
 #: src/pages/Dashboard/DashboardV1.js
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Pool"
 msgstr "Пул"
-
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Pool Amount"
-msgstr "Сумма Пула"
 
 #: src/components/Exchange/PositionsList.js
 msgid "Position"
 msgstr "Позиция"
 
-#: src/components/Exchange/PositionSeller.js
-msgid "Position close disabled, pending {0} upgrade"
-msgstr "Закрытие позиции не доступно, ожидается {0} обновление"
-
 #: src/pages/Actions/Actions.js
-#: src/pages/Exchange/Exchange.js
 msgid "Positions"
 msgstr "Позиции"
 
-#: src/pages/Exchange/Exchange.js
-msgid "Positions ({0})"
-msgstr "Позиции ({0})"
-
-#: src/components/Exchange/TradeHistory.js
-msgid "Prev"
-msgstr "Предыдущий"
-
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrderEditor.js
@@ -2383,44 +1320,26 @@ msgstr "Предыдущий"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV1.js
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/OrdersOverview/OrdersOverview.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "Price"
 msgstr "Цена"
 
 #: src/components/Exchange/OrderEditor.js
-#: src/components/Exchange/PositionSeller.js
 msgid "Price above Liq. Price"
 msgstr "Цена выше Ликв. Цены"
 
 #: src/components/Exchange/OrderEditor.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
 msgid "Price above Mark Price"
 msgstr "Цена выше Маркированной Цены"
 
 #: src/components/Exchange/OrderEditor.js
-#: src/components/Exchange/PositionSeller.js
 msgid "Price below Liq. Price"
 msgstr "Цена ниже Ликв. Цены"
 
 #: src/components/Exchange/OrderEditor.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
 msgid "Price below Mark Price"
 msgstr "Цена ниже Маркированной Цены"
 
@@ -2436,23 +1355,9 @@ msgstr "Цена выше Маркированной Цены"
 msgid "Price is below Mark Price"
 msgstr "Цена ниже Маркированной Цены"
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Stake/StakeV2.js
-msgid "Price on Arbitrum"
-msgstr "Цена на Arbitrum"
-
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Stake/StakeV2.js
-msgid "Price on Avalanche"
-msgstr "Цена на Avalanche"
-
 #: src/pages/Actions/Actions.js
 msgid "Profit"
 msgstr "Прибыль"
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Profit price: {0} ${1}. This rule applies for the next {2}, until {3}."
-msgstr "Цена прибыли: {0} ${1}. Это правило действует для следующих {2}, до {3}."
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
@@ -2479,10 +1384,6 @@ msgstr "Аналитика протоколов"
 msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
 msgstr "Покупайте <0>токенов GLP</0>, чтобы получить {nativeTokenSymbol} комиссионные от торговли с применением свопов и кредитного плеча."
 
-#: src/pages/Stake/StakeV2.js
-msgid "Purchase Insurance"
-msgstr "Приобрести Страховку"
-
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Read more"
@@ -2507,12 +1408,6 @@ msgid "Rebates earned by this account as an affiliate."
 msgstr "Рибейты, заработанные этим аккаунтом в качестве аффилированного лица."
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
 msgid "Receive"
 msgstr "Получить"
 
@@ -2529,17 +1424,9 @@ msgstr "Получатель не размещал токены GLP ранее"
 msgid "Receiver has not staked GMX tokens before"
 msgstr "Получатель не размещал токены GLP ранее"
 
-#: src/components/Glp/GlpSwap.js
-msgid "Redemption time not yet reached"
-msgstr "Срок выкупа еще не наступил"
-
 #: src/pages/Home/Home.js
 msgid "Reduce Liquidation Risks"
 msgstr "Снизить Риски Ликвидации"
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Reducing the position at the current price will forfeit a <0>pending profit</0> of {deltaStr}. <1/>"
-msgstr "Сокращение позиции по текущей цене приведет к потере <0>отложенной прибыли</0> в размере {deltaStr}. <1/>"
 
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Referral Code"
@@ -2558,6 +1445,7 @@ msgid "Referral Terms"
 msgstr "Реферальные Условия"
 
 #: src/components/Referrals/JoinReferralCode.js
+#: src/components/Referrals/JoinReferralCode.js
 msgid "Referral code added!"
 msgstr "Реферальный код добавлен!"
 
@@ -2574,9 +1462,11 @@ msgid "Referral code submitted!"
 msgstr "Реферальный код предоставлен!"
 
 #: src/components/Referrals/JoinReferralCode.js
+#: src/components/Referrals/JoinReferralCode.js
 msgid "Referral code updated failed."
 msgstr "Обновление реферального кода не прошло"
 
+#: src/components/Referrals/JoinReferralCode.js
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Referral code updated!"
 msgstr "Реферальный код обновлен!"
@@ -2589,64 +1479,9 @@ msgstr "Рефералы"
 msgid "Referrals <0/>"
 msgstr ""
 
-#: src/components/Exchange/TradeHistory.js
-msgid "Request decrease {0} {longOrShortText}, -{1} USD, Acceptable Price: {2} {3} USD"
-msgstr "Уменьшение запроса {0} {longOrShortText}, -{1} USD, Приемлемая Цена: {2} {3} USD"
-
-#: src/components/Exchange/TradeHistory.js
-msgid "Request deposit into {0} {longOrShortText}"
-msgstr "Запросить пополнение счета на {0} {longOrShortText}\""
-
-#: src/components/Exchange/TradeHistory.js
-msgid "Request increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2} {3} USD"
-msgstr "Увеличение запроса {0} {longOrShortText}, +{1} USD, Приемлемая Цена: {2} {3} USD"
-
-#: src/components/Exchange/TradeHistory.js
-msgid "Request withdrawal from {0} {longOrShortText}"
-msgstr "Запрос на вывод из {0} {longOrShortText}"
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
-msgstr "Запрошенное снижение {0} {longOrShortText} на {sizeDeltaUsd} USD."
-
-#: src/components/Exchange/PositionEditor.js
-msgid "Requested deposit of {0} {1} into {2} {longOrShortText}."
-msgstr "Запрошено пополнение счета на {0} {1} в {2} {longOrShortText}."
-
-#: src/components/Exchange/SwapBox.js
-msgid "Requested increase of {tokenSymbol} {longOrShortText} by {0} USD."
-msgstr "Запрошено увеличение {tokenSymbol} {longOrShortText} на {0} USD."
-
-#: src/components/Exchange/PositionEditor.js
-msgid "Requested withdrawal of {0} USD from {1} {longOrShortText}."
-msgstr "Запрошен вывод {0} USD с {1} {longOrShortText}."
-
-#: src/pages/Stake/StakeV2.js
-msgid "Reserve Amount"
-msgstr "Сумма Резерва"
-
-#: src/components/Glp/GlpSwap.js
-msgid "Reserved"
-msgstr "Зарезервировано"
-
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-msgid "Reserved for Vesting"
-msgstr "Зарезервировано для Вестинга"
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Returns calculator for GMX and GLP"
 msgstr "Калькулятор возвратов для GMX и GLP"
-
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-msgid "Rewards"
-msgstr "Вознаграждения"
 
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Rewards Distribution History"
@@ -2668,10 +1503,6 @@ msgstr "Сохранить"
 msgid "Save on Costs"
 msgstr "Сэкономь на Расходах"
 
-#: src/components/Glp/GlpSwap.js
-msgid "Save on Fees"
-msgstr "Сэкономь на Комиссиях"
-
 #: src/components/Exchange/TokenSelector.js
 msgid "Search Token"
 msgstr "Искать Токен"
@@ -2689,13 +1520,6 @@ msgstr "Выбрать Рынок"
 msgid "Select an option"
 msgstr "Выбрать опцию"
 
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-msgid "Select different tokens"
-msgstr "Выбрать разные токены"
-
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Select your vesting option below then click \"Claim\"."
 msgstr "Выберите свой вариант вестинга ниже и нажмите \"Утвердить\"."
@@ -2703,31 +1527,6 @@ msgstr "Выберите свой вариант вестинга ниже и н
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Self-transfer not supported"
 msgstr "Самостоятельный перевод не поддерживается"
-
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#: src/pages/Stake/StakeV2.js
-msgid "Sell GLP"
-msgstr "Продать GLP"
-
-#: src/components/Glp/GlpSwap.js
-msgid "Sell failed."
-msgstr "Не удалось продать."
-
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-msgid "Sell for {0}"
-msgstr "Продать за {0}"
-
-#: src/components/Glp/GlpSwap.js
-msgid "Sell submitted!"
-msgstr "Продажа подтверждена!"
-
-#: src/components/Glp/GlpSwap.js
-msgid "Selling..."
-msgstr "Продажа..."
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Sender has withdrawn all tokens from GLP Vesting Vault"
@@ -2761,37 +1560,14 @@ msgstr "Позиция Акции"
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/TradeHistory.js
-#: src/components/Exchange/TradeHistory.js
-#: src/components/Exchange/TradeHistory.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
-#: src/pages/Exchange/Exchange.js
-#: src/pages/Exchange/Exchange.js
-#: src/pages/Exchange/Exchange.js
-#: src/pages/Exchange/Exchange.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Short"
 msgstr "Шорт"
-
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Short Positions"
-msgstr "Позиция Шорта"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Short {0}"
-msgstr "Шорт {0}"
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Shorting..."
@@ -2805,8 +1581,6 @@ msgstr "Простые Обмены"
 msgid "Simulate your hedge strategy"
 msgstr ""
 
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Size"
@@ -2821,99 +1595,12 @@ msgid "Speed up page loading"
 msgstr "Ускорить загрузку страницы"
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionSeller.js
 msgid "Spread"
 msgstr "Спред"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Spreadsheet for position calculations"
 msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Stablecoin Percentage"
-msgstr "Процент Стабильной монеты"
-
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-msgid "Stake"
-msgstr "Стакинг"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Stake <0>GMX</0> and <1>GLP</1> to earn rewards."
-msgstr "Стакинг <0>GMX</0> и <1>GLP</1>, чтобы получить вознаграждения."
-
-#: src/pages/Stake/StakeV2.js
-msgid "Stake GMX"
-msgstr "Стакинг GMX"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Stake GMX Rewards"
-msgstr "Вознаграждения Стакинг GMX"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Stake Multiplier Points"
-msgstr "Стакинг Множителя Баллов"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Stake esGMX"
-msgstr "Стакинг esGMX"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Stake esGMX Rewards"
-msgstr "Вознаграждения Стакинг esGMX"
-
-#: src/pages/Stake/StakeV1.js
-msgid "Stake failed"
-msgstr "Стакинг не прошла"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Stake failed."
-msgstr "Стакинг не прошла."
-
-#: src/pages/Stake/StakeV2.js
-msgid "Stake submitted!"
-msgstr "Стакинг принята!"
-
-#: src/pages/Stake/StakeV1.js
-msgid "Stake submitted! <0>View status.</0>"
-msgstr "Стакинг принята! <0>Смотреть статус.</0>"
-
-#: src/components/Glp/GlpSwap.js
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-msgid "Staked"
-msgstr "Стакинг"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Staked Multiplier Points"
-msgstr "Стакинг Множителя Баллов"
-
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-msgid "Staked Tokens"
-msgstr "Стакинг Токенов"
-
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV2.js
-msgid "Staking..."
-msgstr "Размещение стакинга..."
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Stats"
-msgstr "Статистика"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Structured Products"
@@ -2926,113 +1613,25 @@ msgstr "Подать"
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV1.js
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Supply"
 msgstr "Обеспечение"
 
 #: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Swap"
 msgstr "Обмен"
 
 #: src/components/Exchange/FeesTooltip.tsx
-#: src/components/Exchange/SwapBox.js
 msgid "Swap Fee"
 msgstr ""
-
-#: src/components/Exchange/SwapBox.js
-msgid "Swap Order created!"
-msgstr "Создан Обменный Ордер"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Swap Order creation failed."
-msgstr "Обменный Ордер не создан"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Swap Order submitted!"
-msgstr "Обменный Ордер подан!"
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Swap active: {0}, executed: {1}, cancelled: {2}"
 msgstr "Обмен активен: {0}, выполнен: {1}, отменен: {2}"
 
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-msgid "Swap failed."
-msgstr "Обмен не выполнен"
-
-#: src/components/Glp/SwapErrorModal.tsx
-msgid "Swap on 1inch"
-msgstr "Обмен на 1inch"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Swap submitted!"
-msgstr "Обмен подан!"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Swap submitted."
-msgstr "Обмен подан."
-
-#: src/components/Exchange/TradeHistory.js
-msgid "Swap {0} USDG for {1} {2}"
-msgstr "Обмен {0} USDG на {1} {2}"
-
-#: src/components/Glp/GlpSwap.js
-msgid "Swap {0} on 1inch"
-msgstr "Обмен {0} на 1inch"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Swap {0} submitted!"
-msgstr "Обмен {0} подан!"
-
-#: src/components/Glp/SwapErrorModal.tsx
-msgid "Swap {0} to {1} on 1inch"
-msgstr "Обмен {0} на {1} на 1 дюйм"
-
-#: src/components/Exchange/TradeHistory.js
-msgid "Swap {0} {1} for {2} USDG"
-msgstr "Обмен {0} {1} на {2} USDG"
-
-#: src/components/Exchange/TradeHistory.js
-msgid "Swap {0} {1} for {2} {3}"
-msgstr "Обмен {0} {1} на {2} {3}"
-
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-msgid "Swapped {0} {1} for {2} {3}!"
-msgstr "Обмененно {0} {1} на {2} {3}!"
-
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Swapping..."
 msgstr "Обмен идет..."
-
-#: src/components/Exchange/SwapBox.js
-msgid "Swaps disabled, pending {0} upgrade"
-msgstr "Обмен неактивен, ожидается {0} обновление"
-
-#: src/components/Glp/GlpSwap.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "TOKEN"
-msgstr "ТОКЕН"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Take-profit and stop-loss orders can be set after opening a position. <0/><1/>There will be a \"Close\" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>."
-msgstr "Ордера тейк-профит и стоп-лосс могут быть установлены после открытия позиции. <0/><1/>В каждой строке позиции будет кнопка \"Закрыть\", нажав на которую, можно установить триггерные ордера. <2/><3/> Для получения скриншотов и дополнительной информации, пожалуйста, смотрите <4>документы</4>."
-
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Target Min Amount"
-msgstr "Целевой показатель Мин Суммы"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Target Weight"
-msgstr "Целевой Вес"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram Group"
@@ -3066,25 +1665,13 @@ msgstr "Telegram бот для Открытого Процента на GMX"
 msgid "Terms and Conditions"
 msgstr "Правила и Условия"
 
-#: src/pages/Stake/StakeV1.js
-msgid "The <0>GMX migration</0> is in progress, please migrate your GMT, xGMT, GMT-USDG and xGMT-USDG tokens.<1/>USDG tokens will continue to function as before and do not need to be migrated."
-msgstr "Идет <0>GMX перенос</0>, пожалуйста, перенесите ваши токены GMT, xGMT, GMT-USDG и xGMT-USDG.<1/>Токены USDG будут продолжать функционировать как прежде и не нуждаются в переносе."
-
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "The Boosted APR is from your staked Multiplier Points."
 msgstr "Повышенный APR рассчитывается из поставленных вами Баллов Множителя."
 
-#: src/pages/Stake/StakeV1.js
-msgid "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
-msgstr "Протокол Gambit находится в стадии бета-тестирования, пожалуйста, прочитайте <0>детали стакинга</0>перед участием."
-
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
 msgstr "Адрес токена esGMX называется {esGmxIouAddress}."
-
-#: src/components/Exchange/SwapBox.js
-msgid "The borrow fee is calculated as (assets borrowed) / (total assets in pool) * 0.01% per hour."
-msgstr "Комиссия за заем рассчитывается как (заемные активы) / (общая сумма активов в пуле) * 0,01% в час."
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "The esGMX (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."
@@ -3102,14 +1689,6 @@ msgstr "Цена отметки изменилась, подумайте об у
 msgid "The order will only execute if the price conditions are met and there is sufficient liquidity"
 msgstr ""
 
-#: src/components/Exchange/PositionEditor.js
-msgid "The pending borrow fee will be charged on this transaction."
-msgstr ""
-
-#: src/components/Exchange/SwapBox.js
-msgid "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
-msgstr "Позиция будет открыта на {0} USD с максимальным скольжением в {1}%.<0/><1/>Сумма скольжения может быть настроена в разделе Настройки, который можно найти, нажав на свой адрес в правом верхнем углу страницы после подключения кошелька.<2/><3/><4>Более подробная информация</4>"
-
 #: src/components/Exchange/OrdersList.js
 msgid "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
 msgstr "Цена, по которой может быть исполнен ордер, может немного отличаться от цены на графике, поскольку рыночные ордера могут изменять цену, а лимитные/триггерные ордера - нет."
@@ -3126,22 +1705,10 @@ msgstr ""
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
 msgstr "Сайт представляет собой развернутый и поддерживаемый сообществом экземпляр открытого источника <0>GMX фронт-энда</0>, размещенный и обслуживаемый в распределенной, peer-to-peer <1>IPFS сети</1>."
 
-#: src/components/Exchange/SwapBox.js
-msgid "There are more longs than shorts, borrow fees for shorting is currently zero"
-msgstr "Лонгов больше, чем шортов, комиссия за шорт в настоящее время равна нулю."
-
-#: src/components/Exchange/SwapBox.js
-msgid "There are more shorts than longs, borrow fees for longing is currently zero"
-msgstr "Шортов больше, чем лонгов, комиссия за лонг в настоящее время равна нулю."
-
 #: src/domain/tokens/approveTokens.tsx
 #: src/lib/contracts/callContract.tsx
 msgid "There is not enough ETH in your account on Arbitrum to send this transaction.<0/><1/><2>Bridge ETH to Arbitrum</2>"
 msgstr "На вашем счету на Arbitrum недостаточно ETH для отправки этой транзакции.<0/><1/><2>Перевести ETH на Arbitrum</2>"
-
-#: src/components/Glp/SwapErrorModal.tsx
-msgid "There is not enough liquidity in a single token for your size. Please check the Save on Fees section and consider splitting your order into several different ones"
-msgstr "В одном токене недостаточно ликвидности для вашего размера. Пожалуйста, проверьте раздел Экономия на Комиссиях и рассмотрите возможность разделения вашего ордера на несколько разных ордеров"
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met"
@@ -3155,14 +1722,6 @@ msgstr "Этот код был взят кем-то другим на {0}, вы 
 msgid "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
 msgstr "Этот код еще не зарегистрирован на {0}, вы не будете получать рибейты там.<0/><1/>Переключите свою сеть, чтобы создать этот код на {1}."
 
-#: src/components/Exchange/PositionSeller.js
-msgid "This order will forfeit a <0>profit</0> of {deltaStr}. <1/>"
-msgstr "Этот ордер принесет <0>прибыль</0> в размере {deltaStr}. <1/>"
-
-#: src/components/Exchange/TradeHistory.js
-msgid "This position was liquidated as the max leverage of 100x was exceeded."
-msgstr "Эта позиция была ликвидирована, так как было превышено максимальное кредитное плечо 100x."
-
 #: src/components/Referrals/TradersStats.js
 msgid "Tier {0} ({1}% discount)"
 msgstr "Уровень {0} (скидка {1}%)"
@@ -3171,10 +1730,6 @@ msgstr "Уровень {0} (скидка {1}%)"
 msgid "Tier {0} ({1}% rebate)"
 msgstr "Уровень {0} (рибейт {1}%)"
 
-#: src/components/Migration/Migration.js
-msgid "To Receive"
-msgstr "Получить"
-
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "To complete the transfer, you must switch your connected account to {receiver}."
 msgstr "Для завершения перевода необходимо переключить подключенный аккаунт на {receiver}."
@@ -3182,35 +1737,6 @@ msgstr "Для завершения перевода необходимо пер
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "To purchase GMX on the {0} blockchain, please <0>change your network</0>."
 msgstr "msgstr"
-
-#: src/components/Glp/GlpSwap.js
-msgid "To reduce fees, select a different asset to pay with."
-msgstr "Чтобы уменьшить комиссию, выберите другой способ оплаты."
-
-#: src/components/Glp/GlpSwap.js
-msgid "To reduce fees, select a different asset to receive."
-msgstr "Чтобы уменьшить комиссию, выберите другой способ получения."
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Tokens"
-msgstr "Токены"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Total"
-msgstr "Итого"
-
-#: src/components/Migration/Migration.js
-msgid "Total Assets Migrated"
-msgstr "Общая сумма Перенесенных Активов"
-
-#: src/pages/Stake/StakeV1.js
-msgid "Total Assets Staked"
-msgstr "Общая сумма Размещенных Активов"
-
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Total Fees"
-msgstr "Общая сумма Комиссии"
 
 #: src/pages/Dashboard/DashboardV1.js
 msgid "Total Fees Distributed"
@@ -3221,36 +1747,6 @@ msgstr "Итого Распределено Комиссионных"
 #: src/components/Referrals/TradersStats.js
 msgid "Total Rebates"
 msgstr "Всего Ребайтов"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Total Rewards"
-msgstr "Общее Вознаграждение"
-
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-msgid "Total Staked"
-msgstr "Всего Ставок"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Total Stats"
-msgstr "Общая Статистика"
-
-#: src/components/Glp/GlpSwap.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-msgid "Total Supply"
-msgstr "Общее количество снабжения"
 
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Total Traders Referred"
@@ -3267,8 +1763,6 @@ msgid "Total Users"
 msgstr "Всего Пользователей"
 
 #: src/components/Referrals/AffiliatesStats.js
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Total Volume"
 msgstr "Общий Объем"
 
@@ -3309,10 +1803,6 @@ msgstr "Трейдеры"
 msgid "Traders Referred"
 msgstr "Привлеченные Трейдеров"
 
-#: src/pages/Exchange/Exchange.js
-msgid "Trades"
-msgstr "Торги"
-
 #: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"
 msgstr "Руководство по трейдингу"
@@ -3322,7 +1812,6 @@ msgid "Tranferring..."
 msgstr "Переводим..."
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionSeller.js
 msgid "Transacting with a depegged stable coin is subject to spreads reflecting the worse of current market price or $1.00, with transactions involving multiple stablecoins may have multiple spreads."
 msgstr ""
 
@@ -3352,7 +1841,6 @@ msgid "Transaction was cancelled."
 msgstr "Транзакция отменена."
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-#: src/pages/Stake/StakeV2.js
 msgid "Transfer Account"
 msgstr "Счет для Перевода"
 
@@ -3389,26 +1877,8 @@ msgid "Transferring"
 msgstr "Передим"
 
 #: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
 msgid "Trigger"
 msgstr "Триггер"
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Trigger Price"
-msgstr "Триггерная Цена"
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Trigger order disabled, pending {0} upgrade"
-msgstr "Триггерный ордер недействителен, ожидается {0} обновление"
-
-#: src/components/Exchange/TradeHistory.js
-msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right"
-msgstr "Попробуйте увеличить \" Допустимое Скольжение\", под меню Настройки в правом верхнем углу"
-
-#: src/components/Exchange/TradeHistory.js
-msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right."
-msgstr "Попробуйте увеличить \" Допустимое Скольжение\", под меню Настройки в правом верхнем углу"
 
 #: src/components/Exchange/PositionShare.js
 msgid "Tweet"
@@ -3431,64 +1901,10 @@ msgstr "Вид"
 msgid "USDG Debt"
 msgstr "USDG Долг"
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "UTILIZATION"
-msgstr "УТИЛИЗАЦИЯ"
-
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-msgid "Unstake"
-msgstr "Снять стакинг"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Unstake GMX"
-msgstr "Снять стакинга с GMX"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Unstake completed!"
-msgstr "Снятие стакинга завершено!"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Unstake esGMX"
-msgstr "Снять стакинга с esGMX"
-
-#: src/pages/Stake/StakeV1.js
-msgid "Unstake failed"
-msgstr "Снятие стакинга не прошло"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Unstake failed."
-msgstr "Снятие стакинга не прошло."
-
-#: src/pages/Stake/StakeV2.js
-msgid "Unstake submitted!"
-msgstr "Снятие стакинга подтверждено!"
-
-#: src/pages/Stake/StakeV1.js
-msgid "Unstake submitted! <0>View status.</0>"
-msgstr "Снятие стакинга подтверждено! <0>Посмотреть статус.</0>"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Unstaking will burn <0>{0} Multiplier Points</0>. {1}"
-msgstr ""
-
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV2.js
-msgid "Unstaking..."
-msgstr "Снятие стакинга..."
-
 #: src/lib/wallets/index.tsx
 msgid "Unsupported chain. Switch to Arbitrum network on your wallet and try again"
 msgstr "Неподдерживаемая цепочка. Переключитесь на сеть Arbitrum на вашем кошельке и повторите попытку"
 
-#: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Update"
 msgstr "Обновление"
@@ -3509,10 +1925,6 @@ msgstr "Обновление..."
 msgid "Use the \"Close\" button to reduce your position size, or to set stop-loss / take-profit orders."
 msgstr "Используйте кнопку \"Закрыть\", чтобы уменьшить размер позиции или установить ордера стоп-лосс / тейк-профит."
 
-#: src/pages/Stake/StakeV2.js
-msgid "Use the \"Compound\" button to stake your Multiplier Points."
-msgstr "Используйте кнопку \"Сложить\", чтобы проставить Баллы Множителя."
-
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Use the Edit Collateral icon to deposit or withdraw collateral."
@@ -3523,21 +1935,8 @@ msgid "Useful Links"
 msgstr "Полезные Ссылки"
 
 #: src/pages/Dashboard/DashboardV1.js
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Utilization"
 msgstr "Утилизация"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Vault Capacity"
-msgstr "Вместимость Хранилища"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Vault Capacity for your Account:"
-msgstr "Вместимость Хранилища для вашего Счета:"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Vest"
-msgstr "Вестинг"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Vest with GLP on Arbitrum"
@@ -3563,14 +1962,7 @@ msgstr "Вестинг GLP не выведен"
 msgid "Vested GMX not withdrawn"
 msgstr "Вестинг GMX не выведен"
 
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-msgid "Vesting Status"
-msgstr "Вестинг Статус"
-
 #: src/App/App.js
-#: src/pages/Exchange/Exchange.js
-#: src/pages/Exchange/Exchange.js
 msgid "View"
 msgstr ""
 
@@ -3587,7 +1979,6 @@ msgid "View status."
 msgstr "Посмотреть статус"
 
 #: src/pages/Dashboard/DashboardV1.js
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Volume"
 msgstr "Объём"
 
@@ -3603,43 +1994,10 @@ msgstr "Объем сделок, совершенных привлеченным
 msgid "Voting"
 msgstr ""
 
-#: src/components/Glp/GlpSwap.js
-msgid "WALLET"
-msgstr "КОШЕЛЁК"
-
-#: src/components/Glp/GlpSwap.js
-msgid "WARNING: High Fees"
-msgstr "ВНИМАНИЕ: высокие тарифы"
-
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "WARNING: This position has a low amount of collateral after deducting borrowing fees, deposit more collateral to reduce the position's liquidation risk."
 msgstr "ВНИМАНИЕ: Данная позиция имеет низкую сумму залога после вычета комиссий за заимствование, внесите больше залога, чтобы снизить риск ликвидации позиции."
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "WEIGHT"
-msgstr "ВЕС"
-
-#: src/components/Exchange/SwapBox.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Migration/Migration.js
-msgid "Waiting for Approval"
-msgstr "Ожидайте одобрения"
-
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Migration/Migration.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-msgid "Wallet"
-msgstr "Кошелёк"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
@@ -3651,74 +2009,9 @@ msgstr "Кошелёк не подключен"
 msgid "Wallet not connected"
 msgstr "Кошелёк не подключен"
 
-#: src/pages/Stake/StakeV1.js
-msgid "Wallet not yet connected"
-msgstr "Кошелёк ещё не подключен"
-
 #: src/App/App.js
 msgid "WalletConnect"
 msgstr "WalletConnect"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Weight"
-msgstr "Вес"
-
-#: src/components/Exchange/SwapBox.js
-msgid "When closing the position, you can select which token you would like to receive the profits in."
-msgstr "При закрытии позиции вы можете выбрать, в каком токене вы хотели бы получить прибыль."
-
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-msgid "Withdraw"
-msgstr "Вывод"
-
-#: src/components/Exchange/PositionEditor.js
-msgid "Withdraw disabled, pending {0} upgrade"
-msgstr "Вывод приостановлен, ожидается {0} обновление"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Withdraw failed."
-msgstr "Вывод не прошёл."
-
-#: src/pages/Stake/StakeV2.js
-msgid "Withdraw from GLP Vault"
-msgstr "Вывод из хранилища GLP"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Withdraw from GMX Vault"
-msgstr "Вывод из хранилища GMX"
-
-#: src/pages/Stake/StakeV2.js
-msgid "Withdraw submitted."
-msgstr "Вывод подтверждён"
-
-#: src/components/Exchange/TradeHistory.js
-msgid "Withdraw {0} USD from {1} {longOrShortText}"
-msgstr "Вывести {0} USD с {1} {longOrShortText}"
-
-#: src/components/Exchange/PositionEditor.js
-msgid "Withdrawal failed."
-msgstr "Вывод не состоялся."
-
-#: src/components/Exchange/PositionEditor.js
-msgid "Withdrawal submitted."
-msgstr "Вывод подано"
-
-#: src/components/Exchange/PositionEditor.js
-msgid "Withdrawing..."
-msgstr "Выводим..."
-
-#: src/pages/Stake/StakeV2.js
-msgid "Withdrawn!"
-msgstr "Выведено!"
-
-#: src/pages/Exchange/Exchange.js
-msgid "Withdrew {0} USD from {tokenSymbol} {longOrShortText}."
-msgstr "Снял {0} USD с {tokenSymbol} {longOrShortText}."
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Yield Optimizer on Avalanche"
@@ -3732,14 +2025,6 @@ msgstr "Доходные Хранилища"
 msgid "Yield simulator for GMX"
 msgstr "Симулятор доходности для GMX"
 
-#: src/pages/Stake/StakeV2.js
-msgid "You are earning {0}% more {nativeTokenSymbol} rewards using {1} Staked Multiplier Points."
-msgstr "Вы зарабатываете {0}% больше {nativeTokenSymbol} вознаграждений, используя {1} Ставку Множителя Бонусов."
-
-#: src/pages/Stake/StakeV2.js
-msgid "You are earning {nativeTokenSymbol} rewards with {0} tokens.<0/>Tokens: {amountStr}."
-msgstr "Вы зарабатываете {nativeTokenSymbol} вознаграждения с {0} токенами.<0/> Токены: {amountStr}."
-
 #: src/components/ModalViews/RedirectModal.js
 msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
 msgstr "Вы покидаете сайт GMX.io и будете перенаправлены на сторонний, независимый сайт."
@@ -3752,12 +2037,7 @@ msgstr ""
 msgid "You can buy ETH directly on <0>Arbitrum</0> using these options:"
 msgstr ""
 
-#: src/components/Exchange/SwapBox.js
-msgid "You can change the \"Collateral In\" token above to find lower fees"
-msgstr "Вы можете изменить \"Залоговый вход\", указанный выше, чтобы найти более низкие комиссии"
-
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionSeller.js
 msgid "You can change this in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are volatile."
 msgstr "Вы можете изменить это в настройках в правом верхнем углу страницы.<0/><1/>Обратите внимание, что низкое допустимое скольжение, например, менее 0,5%, может привести к неудачным ордерам, если цены нестабильны."
 
@@ -3789,30 +2069,13 @@ msgstr "У вас есть незавершенный перевод от {от�
 msgid "You have an active Limit Order to Increase {longOrShortText} {sizeInToken} {0} (${1}) at price ${2}"
 msgstr "У вас есть активный Лимитный Ордер на увеличение {longOrShortText} {sizeInToken} {0} (${1}) по цене ${2}"
 
-#: src/components/Exchange/PositionSeller.js
-msgid "You have an active order to decrease {longOrShortText} {sizeInToken} {0} (${1}) at {prefix} {2}"
-msgstr "У вас есть активный заказ на уменьшение  {longOrShortText} {sizeInToken} {0} (${1}) по {prefix} {2}"
-
 #: src/components/Exchange/ConfirmationBox.js
 msgid "You have multiple existing Increase {longOrShortText} {0} limit orders"
 msgstr "У вас есть несколько существующих на увеличение {longOrShortText} {0} лимитных ордеров"
 
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-msgid "You have not deposited any tokens for vesting."
-msgstr "Вы не внесли ни одного токена для вестнига."
-
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "You have {0} esGMX (IOU) tokens."
 msgstr "У вас есть {0} токенов esGMX."
-
-#: src/pages/Stake/StakeV2.js
-msgid "You need a total of at least {0} {stakeTokenLabel} to vest {1} esGMX."
-msgstr "Чтобы вестить {1} esGMX, вам нужно в общей сложности не менее {0} {stakeTokenLabel}."
-
-#: src/components/Exchange/NoLiquidityErrorModal.tsx
-msgid "You need to select {swapTokenSymbol} as the \"Pay\" token to use it for collateral to initiate this trade."
-msgstr "Вам необходимо выбрать {swapTokenSymbol} в качестве \"Оплата\" токена, чтобы использовать его в качестве залога для инициирования этой сделки."
 
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed."
@@ -3846,10 +2109,6 @@ msgstr "Ваш перевод был завершен."
 msgid "Your transfer has been initiated."
 msgstr "Ваш перевод был начат."
 
-#: src/components/Migration/Migration.js
-msgid "Your wallet: {0}"
-msgstr "Ваш кошелёк: {0}"
-
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "account"
 msgstr "счёт"
@@ -3866,21 +2125,9 @@ msgstr "комиссия"
 msgid "hide"
 msgstr "скрыть"
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "in liquidity"
-msgstr "используется для обеспечения ликвидности"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "not staked"
-msgstr "без стейкинга"
-
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "size"
 msgstr "размер"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "staked"
-msgstr "в стейкинги"
 
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "time to liq"
@@ -3890,133 +2137,19 @@ msgstr "время ликвидировать"
 msgid "view"
 msgstr "смотреть"
 
-#: src/pages/Exchange/Exchange.js
-msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
-msgstr ""
-
 #: src/domain/tokens/approveTokens.tsx
 msgid "{0} Approved!"
 msgstr "{0} Одобрено!"
 
-#: src/components/Glp/SwapErrorModal.tsx
-msgid "{0} Capacity Reached"
-msgstr "{0} Мощность достигнута"
-
-#: src/components/Glp/GlpSwap.js
-msgid "{0} GLP (${1})"
-msgstr "{0} GLP (${1})"
-
-#: src/components/Glp/GlpSwap.js
-msgid "{0} GLP bought with {1} {2}!"
-msgstr "{0} GLP куплен с {1} {2}!"
-
-#: src/components/Glp/GlpSwap.js
-msgid "{0} GLP have been reserved for vesting."
-msgstr "{0} GLP были зарезервированы для вестинга."
-
-#: src/components/Glp/GlpSwap.js
-msgid "{0} GLP sold for {1} {2}!"
-msgstr "{0} GLP проданы для {1} {2}!"
-
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-msgid "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
-msgstr "{0} токены GMX можно получить, используя опции в разделе Общие Вознаграждения, чтобы получить их."
-
-#: src/components/Exchange/NoLiquidityErrorModal.tsx
-msgid "{0} Pool Capacity Reached"
-msgstr "{0} Достигнута Емкость Пула"
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
 msgid "{0} Price"
 msgstr "{0} Цена"
-
-#: src/components/Exchange/NoLiquidityErrorModal.tsx
-msgid "{0} Required"
-msgstr "{0} Требуется"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
-msgstr "{0} превышает целевой вес.<0/><1/>Получите меньшую комиссию, чтобы <2>обменять</2> токены на {1}."
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
-msgstr "{0} liegt unter der Zielgewichtung.<0/><1/>Erhalte niedrigere Gebühren, um <2>GLP</2> mit {1} zu kaufen und <3>zu tauschen</3> {2} für andere Token."
-
-#: src/components/Exchange/SwapBox.js
-msgid "{0} is required for collateral."
-msgstr "{0} требуется для обеспечения залога."
-
-#: src/components/Exchange/SwapBox.js
-msgid "{0} pool exceeded"
-msgstr "{0} пул превышен"
-
-#: src/components/Exchange/PositionSeller.js
-msgid "{0} pool exceeded, can only Receive {1}"
-msgstr "{0} пул превышен, можно Получить только {1}"
-
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Glp/GlpSwap.js
-msgid "{0} pool exceeded, try different token"
-msgstr "{0} пул превышен, попробуйте другой токен"
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrderEditor.js
 msgid "{0} price"
 msgstr "{0} цена"
-
-#: src/components/Glp/GlpSwap.js
-msgid "{0} selected in order form"
-msgstr "{0} выбран в форме ордера"
-
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
-msgstr "{0} токены были конвертированы в GMX из {1} esGMX внесенные для вестинга."
-
-#: src/components/Exchange/SwapBox.js
-msgid "{0} {1} not supported"
-msgstr ""
-
-#: src/components/Exchange/TradeHistory.js
-msgid ""
-"{0}:\n"
-"{1},\n"
-"Price: {priceDisplay}"
-msgstr ""
-"{0}:\n"
-"{1},\n"
-"Цена: {priceDisplay}"
-
-#: src/components/Exchange/TradeHistory.js
-msgid ""
-"{0}: Swap {amountInDisplay}\n"
-"{1} for {minOutDisplay} {2},\n"
-"Price: {3}"
-msgstr ""
-
-#: src/components/Exchange/TradeHistory.js
-msgid "{0}  {1} {longOrShortText}, -{2} USD, {3} Price: ${4} USD"
-msgstr ""
-
-#: src/components/Exchange/TradeHistory.js
-msgid "{actionDisplay} Order"
-msgstr "{actionDisplay} Ордер"
-
-#: src/components/Exchange/TradeHistory.js
-msgid ""
-"{actionDisplay} {0} {longOrShortText},\n"
-"-{1} USD,\n"
-"{2} Price: {3} USD"
-msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "{chainName} Total Stats start from {totalStatsStartDate}.<0/> For detailed stats:"
-msgstr "{chainName} Общая Статистика начинается с {totalStatsStartDate}.<0/> Для получения подробной статистики:"
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
@@ -4029,10 +2162,6 @@ msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger ord
 #: src/components/Exchange/PositionsList.js
 msgid "{longOrShortText} {0} market selected"
 msgstr ""
-
-#: src/components/Glp/GlpSwap.js
-msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
-msgstr "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
 
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "{nativeTokenSymbol} APR"
@@ -4048,10 +2177,6 @@ msgstr ""
 
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "{nativeTokenSymbol} Total APR"
-msgstr ""
-
-#: src/components/Exchange/PositionSeller.js
-msgid "{nativeTokenSymbol} can not be sent to smart contract addresses. Select another token."
 msgstr ""
 
 #: src/components/StatsTooltip/StatsTooltip.tsx

@@ -26,7 +26,6 @@
     "bigdecimal": "0.6.1",
     "body-scroll-lock": "4.0.0-beta.0",
     "classnames": "2.3.1",
-    "customize-cra": "0.2.11",
     "date-fns": "2.27.0",
     "env-cmd": "^10.1.0",
     "eth-testing": "1.9.1",
@@ -102,8 +101,7 @@
     "eslint": "7.32.0",
     "husky": "7.0.4",
     "lint-staged": "12.3.4",
-    "prettier": "2.5.1",
-    "react-app-rewired": "2.2.1"
+    "prettier": "2.5.1"
   },
   "lint-staged": {
     "src/**/*.{js,ts,jsx,tsx}": [
