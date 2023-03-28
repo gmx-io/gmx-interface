@@ -8491,17 +8491,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-spawn@npm:^5.1.0":
-  version: 5.1.0
-  resolution: "cross-spawn@npm:5.1.0"
-  dependencies:
-    lru-cache: ^4.0.1
-    shebang-command: ^1.2.0
-    which: ^1.2.9
-  checksum: 726939c9954fc70c20e538923feaaa33bebc253247d13021737c3c7f68cdc3e0a57f720c0fe75057c0387995349f3f12e20e9bfdbf12274db28019c7ea4ec166
-  languageName: node
-  linkType: hard
-
 "cross-spawn@npm:^6.0.0":
   version: 6.0.5
   resolution: "cross-spawn@npm:6.0.5"
@@ -8882,6 +8871,15 @@ __metadata:
   version: 3.1.1
   resolution: "csstype@npm:3.1.1"
   checksum: 1f7b4f5fdd955b7444b18ebdddf3f5c699159f13e9cf8ac9027ae4a60ae226aef9bbb14a6e12ca7dba3358b007cee6354b116e720262867c398de6c955ea451d
+  languageName: node
+  linkType: hard
+
+"customize-cra@npm:1.0.0":
+  version: 1.0.0
+  resolution: "customize-cra@npm:1.0.0"
+  dependencies:
+    lodash.flow: ^3.5.0
+  checksum: b38c48a607efc2321e6f2f12a3b53f3497b2f9b0008b48242524a92a1f26f8ae50bd73c97526e7d89c32b51f53711948e0da8f7e3618c9875087227a11a5feeb
   languageName: node
   linkType: hard
 
@@ -9560,13 +9558,6 @@ __metadata:
   version: 8.2.0
   resolution: "dotenv@npm:8.2.0"
   checksum: ad4c8e0df3e24b4811c8e93377d048a10a9b213dcd9f062483b4a2d3168f08f10ec9c618c23f5639060d230ccdb174c08761479e9baa29610aa978e1ee66df76
-  languageName: node
-  linkType: hard
-
-"dotenv@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "dotenv@npm:4.0.0"
-  checksum: 558b099798d73504eb354f9d71435d102744cf5e04d400dee5afc62179997abaeb3e30198cffa3a9c5c757bb3d863d6fd0ae9924c5f55c8b99326e1a7874796b
   languageName: node
   linkType: hard
 
@@ -11317,6 +11308,7 @@ __metadata:
     bigdecimal: 0.6.1
     body-scroll-lock: 4.0.0-beta.0
     classnames: 2.3.1
+    customize-cra: 1.0.0
     date-fns: 2.27.0
     env-cmd: ^10.1.0
     eslint: 7.32.0
@@ -11335,7 +11327,6 @@ __metadata:
     qrcode.react: ^3.1.0
     rc-slider: 9.7.5
     react: 17.0.2
-    react-app-rewire-babel-loader: 0.1.1
     react-app-rewired: 2.2.1
     react-dom: 17.0.2
     react-helmet: 6.1.0
@@ -14277,6 +14268,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash.flow@npm:^3.5.0":
+  version: 3.5.0
+  resolution: "lodash.flow@npm:3.5.0"
+  checksum: a9a62ad344e3c5a1f42bc121da20f64dd855aaafecee24b1db640f29b88bd165d81c37ff7e380a7191de6f70b26f5918abcebbee8396624f78f3618a0b18634c
+  languageName: node
+  linkType: hard
+
 "lodash.get@npm:^4, lodash.get@npm:^4.4.2":
   version: 4.4.2
   resolution: "lodash.get@npm:4.4.2"
@@ -14400,16 +14398,6 @@ __metadata:
   dependencies:
     tslib: ^2.0.3
   checksum: 83a0a5f159ad7614bee8bf976b96275f3954335a84fad2696927f609ddae902802c4f3312d86668722e668bef41400254807e1d3a7f2e8c3eede79691aa1f010
-  languageName: node
-  linkType: hard
-
-"lru-cache@npm:^4.0.1":
-  version: 4.1.5
-  resolution: "lru-cache@npm:4.1.5"
-  dependencies:
-    pseudomap: ^1.0.2
-    yallist: ^2.1.2
-  checksum: 4bb4b58a36cd7dc4dcec74cbe6a8f766a38b7426f1ff59d4cf7d82a2aa9b9565cd1cb98f6ff60ce5cd174524868d7bc9b7b1c294371851356066ca9ac4cf135a
   languageName: node
   linkType: hard
 
@@ -17323,13 +17311,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pseudomap@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "pseudomap@npm:1.0.2"
-  checksum: 856c0aae0ff2ad60881168334448e898ad7a0e45fe7386d114b150084254c01e200c957cf378378025df4e052c7890c5bd933939b0e0d2ecfcc1dc2f0b2991f5
-  languageName: node
-  linkType: hard
-
 "psl@npm:^1.1.33":
   version: 1.9.0
   resolution: "psl@npm:1.9.0"
@@ -17728,15 +17709,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-app-rewire-babel-loader@npm:0.1.1":
-  version: 0.1.1
-  resolution: "react-app-rewire-babel-loader@npm:0.1.1"
-  dependencies:
-    react-app-rewired: ^1.4.0
-  checksum: a7f759018ee704d8fe47947f9044fe3d2fdb8bf4a957c625b40d0725c623c18dae1a2ecc9bceb2b53343ac51d92a6d8e272b180e0005a66998c1d118e369afac
-  languageName: node
-  linkType: hard
-
 "react-app-rewired@npm:2.2.1":
   version: 2.2.1
   resolution: "react-app-rewired@npm:2.2.1"
@@ -17747,20 +17719,6 @@ __metadata:
   bin:
     react-app-rewired: bin/index.js
   checksum: 0b330c2b46413dc5fbb68e68c07704830397b1cfc8335f65d8f856bfbb6c4d8259fad049fc2a117c18794f321e726b844649266f42ff4c3fa044f00be48c1850
-  languageName: node
-  linkType: hard
-
-"react-app-rewired@npm:^1.4.0":
-  version: 1.6.2
-  resolution: "react-app-rewired@npm:1.6.2"
-  dependencies:
-    cross-spawn: ^5.1.0
-    dotenv: ^4.0.0
-  peerDependencies:
-    react-scripts: ^1.0.14
-  bin:
-    react-app-rewired: ./bin/index.js
-  checksum: 89071e25d788a97ed819c7e3656dfcba8e9097119e94fb824fcc87cf0fbbc3cb8926b48fc47171aa6099e5bdabab47120f3535e30c88780bf4414e0b32a7929e
   languageName: node
   linkType: hard
 
@@ -22127,13 +22085,6 @@ __metadata:
   version: 5.0.8
   resolution: "y18n@npm:5.0.8"
   checksum: 54f0fb95621ee60898a38c572c515659e51cc9d9f787fb109cef6fde4befbe1c4602dc999d30110feee37456ad0f1660fa2edcfde6a9a740f86a290999550d30
-  languageName: node
-  linkType: hard
-
-"yallist@npm:^2.1.2":
-  version: 2.1.2
-  resolution: "yallist@npm:2.1.2"
-  checksum: 9ba99409209f485b6fcb970330908a6d41fa1c933f75e08250316cce19383179a6b70a7e0721b89672ebb6199cc377bf3e432f55100da6a7d6e11902b0a642cb
   languageName: node
   linkType: hard
 

@@ -1,12 +1,7 @@
 const path = require("path");
-const fs = require("fs");
+const { override } = require("customize-cra");
+const { babelInclude } = require("customize-cra");
 
-const rewireBabelLoader = require("react-app-rewire-babel-loader");
-const appDirectory = fs.realpathSync(process.cwd());
-const resolveApp = (relativePath) => path.resolve(appDirectory, relativePath);
-
-module.exports = function override(config) {
-  config = rewireBabelLoader.include(config, resolveApp("node_modules/wagmi"), resolveApp("node_modules/@wagmi"));
-
-  return config;
-};
+module.exports = override(
+  babelInclude([path.resolve("src"), path.resolve("node_modules/wagmi"), path.resolve("node_modules/@wagmi")])
+);
