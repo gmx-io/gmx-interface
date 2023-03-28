@@ -556,11 +556,18 @@ button.App-connect-wallet:hover {
 .App-card-title-small {
   font-size: var(--font-md);
   margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
 }
 
 .App-card-content {
   display: grid;
   grid-row-gap: 0.8rem;
+}
+
+.title-icon {
+  margin-left: 1rem;
+  align-self: flex-end;
 }
 
 .App-card-row {

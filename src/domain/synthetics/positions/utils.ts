@@ -10,8 +10,8 @@ import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "lib/legacy";
 import { applyFactor, expandDecimals, formatAmount, formatUsd, roundUpDivision } from "lib/numbers";
-import { getBorrowingFeeRateUsd, getPositionFee } from "../fees";
-import { TokenPrices, convertToUsd } from "../tokens";
+import { MarketsFeesConfigsData, getBorrowingFeeRateUsd, getMarketFeesConfig, getPositionFee } from "../fees";
+import { TokenPrices, TokensData, convertToUsd, getTokenData } from "../tokens";
 import { AggregatedPositionData, Position, PositionsData } from "./types";
 
 export function getPosition(positionsData: PositionsData, positionKey?: string) {
@@ -79,20 +79,20 @@ export function getAggregatedPositionData(
     collateralToken && collateralPrice
       ? convertToUsd(position.collateralAmount, collateralToken.decimals, collateralPrice)
       : undefined;
-
   const pnl = currentValueUsd?.sub(position.sizeInUsd).mul(position.isLong ? 1 : -1);
 
-  const pnlPercentage = collateralUsd?.gt(0) && pnl ? pnl.mul(BASIS_POINTS_DIVISOR).div(collateralUsd) : undefined;
+  const pnlPercentage =
+    collateralUsd && !collateralUsd.eq(0) && pnl ? pnl.mul(BASIS_POINTS_DIVISOR).div(collateralUsd) : BigNumber.from(0);
 
   const borrowingFeeRateUsdPerDay = getBorrowingFeeRateUsd(market, position.isLong, position.sizeInUsd, 60 * 60 * 24);
 
   const pendingFundingFeesUsd =
-    collateralPrice && collateralToken && collateralUsd?.gt(0)
+    collateralPrice && collateralToken
       ? convertToUsd(position.pendingFundingFees.fundingFeeAmount, collateralToken.decimals, collateralPrice)
       : undefined;
 
   const totalPendingFeesUsd = pendingFundingFeesUsd
-    ? position.pendingBorrowingFees.add(pendingFundingFeesUsd)
+    ? position.pendingBorrowingFees.sub(pendingFundingFeesUsd)
     : undefined;
 
   const closingFeeUsd = getPositionFee(market, position.sizeInUsd);
@@ -106,9 +106,9 @@ export function getAggregatedPositionData(
   const pnlAfterFees = totalPendingFeesUsd ? pnl?.sub(totalPendingFeesUsd) : undefined;
 
   const pnlAfterFeesPercentage =
-    collateralUsdAfterFees?.gt(0) && pnlAfterFees
-      ? pnlAfterFees.mul(BASIS_POINTS_DIVISOR).div(collateralUsdAfterFees)
-      : undefined;
+    collateralUsd && !collateralUsd.eq(0) && closingFeeUsd && pnlAfterFees
+      ? pnlAfterFees.mul(BASIS_POINTS_DIVISOR).div(collateralUsd.add(closingFeeUsd))
+      : BigNumber.from(0);
 
   const hasLowCollateral = collateralUsdAfterFees?.lt(expandDecimals(1, USD_DECIMALS));
 
@@ -156,6 +156,7 @@ export function getAggregatedPositionData(
     closingFeeUsd,
     pendingFundingFeesUsd,
     borrowingFeeRateUsdPerDay,
+    fundingFeeRateUsdPerDay,
   };
 }
 

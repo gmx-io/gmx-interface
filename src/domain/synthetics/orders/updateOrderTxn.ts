@@ -9,7 +9,7 @@ import { Token } from "domain/tokens";
 
 export type UpdateOrderParams = {
   orderKey: string;
-  indexToken: Token;
+  indexToken?: Token;
   sizeDeltaUsd: BigNumber;
   triggerPrice: BigNumber;
   acceptablePrice: BigNumber;
@@ -48,8 +48,8 @@ export function updateOrderTxn(chainId: number, library: Web3Provider, p: Update
     params: [
       orderKey,
       sizeDeltaUsd,
-      convertToContractPrice(triggerPrice, indexToken.decimals),
-      convertToContractPrice(acceptablePrice, indexToken.decimals),
+      convertToContractPrice(triggerPrice, indexToken?.decimals || 0),
+      convertToContractPrice(acceptablePrice, indexToken?.decimals || 0),
       minOutputAmount,
     ],
   });

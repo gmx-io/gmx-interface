@@ -47,7 +47,7 @@ export default function BuyInputSection(props: Props) {
           <span className="Exchange-swap-balance">{topRightValue}</span>
         </div>
       </div>
-      <label className="Exchange-swap-section-bottom">
+      <div className="Exchange-swap-section-bottom">
         <div className="Exchange-swap-input-container">
           {!staticInput && (
             <input
@@ -69,7 +69,7 @@ export default function BuyInputSection(props: Props) {
           )}
         </div>
         <div className="PositionEditor-token-symbol">{children}</div>
-      </label>
+      </div>
     </div>
   );
 }

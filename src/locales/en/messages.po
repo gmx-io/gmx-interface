@@ -149,6 +149,7 @@ msgstr "Accept that orders are not guaranteed to execute and trigger orders may 
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "Acceptable Price"
 msgstr "Acceptable Price"
 
@@ -299,7 +300,6 @@ msgstr "Approve GMX"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Approve {0}"
 msgstr "Approve {0}"
 
@@ -315,7 +315,6 @@ msgstr "Approving GMX..."
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Approving {0}..."
 msgstr "Approving {0}..."
 
@@ -434,9 +433,11 @@ msgstr "Boost your rewards with Multiplier Points. <0>More info</0>."
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 msgid "Borrow Fee"
 msgstr "Borrow Fee"
 
@@ -447,8 +448,12 @@ msgid "Borrow Fee / Day"
 msgstr "Borrow Fee / Day"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Borrow fee:"
-msgstr "Borrow fee:"
+msgid "Borrow fee"
+msgstr "Borrow fee"
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#~ msgid "Borrow fee:"
+#~ msgstr "Borrow fee:"
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
@@ -507,8 +512,8 @@ msgid "Buy GMX on {0}"
 msgstr "Buy GMX on {0}"
 
 #: src/pages/Buy/Buy.js
-msgid "Buy GMX or GLP"
-msgstr "Buy GMX or GLP"
+#~ msgid "Buy GMX or GLP"
+#~ msgstr "Buy GMX or GLP"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using Decentralized Exchange Aggregators:"
@@ -521,6 +526,10 @@ msgstr "Buy GMX using FIAT gateways:"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using any token from any network:"
 msgstr "Buy GMX using any token from any network:"
+
+#: src/pages/Buy/Buy.js
+msgid "Buy Protocol Tokens"
+msgstr "Buy Protocol Tokens"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Buy failed."
@@ -582,6 +591,7 @@ msgstr "Can't execute because of an error"
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "Cancel"
 msgstr "Cancel"
@@ -1167,7 +1177,6 @@ msgstr "Decentralized<0/>Perpetual Exchange"
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
 msgstr "Decrease"
@@ -1254,8 +1263,8 @@ msgid "Deposit {0} USD into {1} {longOrShortText}"
 msgstr "Deposit {0} USD into {1} {longOrShortText}"
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "Deposit {collateralText} into {positionText}"
-msgstr "Deposit {collateralText} into {positionText}"
+#~ msgid "Deposit {collateralText} into {positionText}"
+#~ msgstr "Deposit {collateralText} into {positionText}"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Deposited"
@@ -1573,6 +1582,10 @@ msgstr "Execute"
 msgid "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 msgstr "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "Execute Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price: {1}"
+msgstr "Execute Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price: {1}"
+
 #: src/components/Exchange/TradeHistory.js
 msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 msgstr "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
@@ -1606,6 +1619,10 @@ msgstr "Exit Price"
 #: src/components/Glp/GlpSwap.js
 msgid "FEES"
 msgstr "FEES"
+
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "FUNDING RATE / 1h"
+msgstr "FUNDING RATE / 1h"
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "Failed to cancel {ordersText}"
@@ -1706,6 +1723,7 @@ msgid "Forfeit profit not checked"
 msgstr "Forfeit profit not checked"
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "Freeze"
 msgstr "Freeze"
 
@@ -1729,27 +1747,40 @@ msgstr "Fulfilling {0} {tokensText} request"
 #~ msgid "Fulfilling {longText} {0} request"
 #~ msgstr "Fulfilling {longText} {0} request"
 
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 msgid "Funding Fee"
 msgstr "Funding Fee"
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Funding Fee / Day"
+msgstr "Funding Fee / Day"
 
 #: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
 msgid "Funding Fees"
 msgstr "Funding Fees"
 
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "Funding Rate / 1h"
+msgstr "Funding Rate / 1h"
+
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Funding fee"
 msgstr "Funding fee"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Funding fee:"
-msgstr "Funding fee:"
+#~ msgid "Funding fee:"
+#~ msgstr "Funding fee:"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GBC NFTs APR tracker and rewards"
 msgstr "GBC NFTs APR tracker and rewards"
 
+#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "GLP Index Composition"
 msgstr "GLP Index Composition"
@@ -1780,16 +1811,33 @@ msgid "GLP doesn't accept this amount of {0}."
 msgstr "GLP doesn't accept this amount of {0}."
 
 #: src/components/TokenCard/TokenCard.js
-msgid "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
-msgstr "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
+msgid "GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of the V1 markets generated fees."
+msgstr "GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of the V1 markets generated fees."
+
+#: src/components/TokenCard/TokenCard.js
+#~ msgid "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
+#~ msgstr "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
 
 #: src/components/Glp/GlpSwap.js
 msgid "GLP sell disabled, pending {0} upgrade"
 msgstr "GLP sell disabled, pending {0} upgrade"
 
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "GM Index Composition"
+msgstr "GM Index Composition"
+
 #: src/components/TokenCard/TokenCard.js
-msgid "GM is the GMX Market Token"
-msgstr "GM is the GMX Market Token"
+#~ msgid "GM is the GMX Market Token"
+#~ msgstr "GM is the GMX Market Token"
+
+#: src/components/TokenCard/TokenCard.js
+#~ msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 70% of the V2 markets generated fees and 100% of the borrow fees."
+#~ msgstr "GM is the liquidity provider token for GMX V2 markets. Accrues 70% of the V2 markets generated fees and 100% of the borrow fees."
+
+#: src/components/TokenCard/TokenCard.js
+msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 70% of the V2 markets generated fees."
+msgstr "GM is the liquidity provider token for GMX V2 markets. Accrues 70% of the V2 markets generated fees."
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX Announcements and Updates"
@@ -1954,7 +2002,6 @@ msgstr "Incorrect network"
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase"
 msgstr "Increase"
@@ -2004,6 +2051,7 @@ msgid "Initial Collateral (Collateral excluding Borrow Fee)."
 msgstr "Initial Collateral (Collateral excluding Borrow Fee)."
 
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 msgid "Initial collateral"
 msgstr "Initial collateral"
 
@@ -2275,6 +2323,7 @@ msgid "Liq. {longOrShortText} {tokenSymbol}"
 msgstr "Liq. {longOrShortText} {tokenSymbol}"
 
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 msgid "Liquidated"
 msgstr "Liquidated"
 
@@ -2289,8 +2338,8 @@ msgstr ""
 "{2} Price: {3} USD"
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "Liquidated {positionText} {sizeDeltaText}, Price: {0}"
-msgstr "Liquidated {positionText} {sizeDeltaText}, Price: {0}"
+#~ msgid "Liquidated {positionText} {sizeDeltaText}, Price: {0}"
+#~ msgstr "Liquidated {positionText} {sizeDeltaText}, Price: {0}"
 
 #: src/domain/synthetics/orders/constants.ts
 #~ msgid "Liquidation"
@@ -2359,7 +2408,6 @@ msgstr "Loading..."
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
@@ -2663,6 +2711,7 @@ msgid "Min order: {0}"
 msgstr "Min order: {0}"
 
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 msgid "Min required collateral"
 msgstr "Min required collateral"
 
@@ -2967,11 +3016,13 @@ msgstr "Overall protocol analytics"
 msgid "Overview"
 msgstr "Overview"
 
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/DashboardV2.js
 msgid "POOL"
 msgstr "POOL"
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/DashboardV2.js
 msgid "PRICE"
 msgstr "PRICE"
@@ -3032,13 +3083,18 @@ msgstr "Pay:"
 msgid "Pay: {0} USD"
 msgstr "Pay: {0} USD"
 
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Pending {0} approval"
 msgstr "Pending {0} approval"
 
 #: src/pages/Dashboard/DashboardV2.js
-msgid "Platform and GLP index tokens."
-msgstr "Platform and GLP index tokens."
+#~ msgid "Platform and GLP index tokens."
+#~ msgstr "Platform and GLP index tokens."
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "Platform, GLP and GM index tokens."
+msgstr "Platform, GLP and GM index tokens."
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Please input a referral code to benefit from fee discounts."
@@ -3064,6 +3120,7 @@ msgstr "Please switch your network to Arbitrum."
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 #: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr "PnL"
@@ -3073,6 +3130,7 @@ msgstr "PnL"
 msgid "PnL After Fees"
 msgstr "PnL After Fees"
 
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/pages/Dashboard/DashboardV1.js
@@ -3096,6 +3154,7 @@ msgid "Position"
 msgstr "Position"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 msgid "Position Fee"
 msgstr "Position Fee"
 
@@ -3140,6 +3199,7 @@ msgstr "Prev"
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
@@ -3148,6 +3208,7 @@ msgstr "Prev"
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV1.js
@@ -3162,6 +3223,7 @@ msgid "Price"
 msgstr "Price"
 
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 msgid "Price Impact"
 msgstr "Price Impact"
 
@@ -3629,7 +3691,6 @@ msgstr "Share Position"
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
 #: src/domain/synthetics/orders/utils.ts
@@ -3993,6 +4054,7 @@ msgstr "Synthetics Pools"
 #~ msgstr "Synthetics doesn't support this network"
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/DashboardV2.js
 msgid "TOKEN"
 msgstr "TOKEN"
@@ -4112,18 +4174,6 @@ msgstr "The price that the order can be executed at may differ slightly from the
 msgid "The referral code can't be more than {MAX_REFERRAL_CODE_LENGTH} characters."
 msgstr "The referral code can't be more than {MAX_REFERRAL_CODE_LENGTH} characters."
 
-#: src/components/Exchange/ConfirmationBox.js
-#~ msgid "The spread for {0} is > 1%, please ensure the trade details are acceptable before comfirming"
-#~ msgstr "The spread for {0} is > 1%, please ensure the trade details are acceptable before comfirming"
-
-#: src/components/Exchange/ConfirmationBox.js
-#~ msgid "The spread for {0} is {1}% please ensure the trade details are acceptable before confirming"
-#~ msgstr "The spread for {0} is {1}% please ensure the trade details are acceptable before confirming"
-
-#: src/components/Exchange/PositionSeller.js
-#~ msgid "The spread for {0} is {1}%, please ensure the trade details are acceptable before confirming"
-#~ msgstr "The spread for {0} is {1}%, please ensure the trade details are acceptable before confirming"
-
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "The spread is > 1%, please ensure the trade details are acceptable before comfirming"
 msgstr "The spread is > 1%, please ensure the trade details are acceptable before comfirming"
@@ -4173,6 +4223,14 @@ msgstr "This order will forfeit a <0>profit</0> of {deltaStr}. <1/>"
 #: src/components/Exchange/TradeHistory.js
 msgid "This position was liquidated as the max leverage of 100x was exceeded."
 msgstr "This position was liquidated as the max leverage of 100x was exceeded."
+
+#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+msgid "This position was liquidated as the max leverage of {maxLeverageText} was exceeded.`"
+msgstr "This position was liquidated as the max leverage of {maxLeverageText} was exceeded.`"
+
+#: src/pages/Home/Home.js
+msgid "Three tokens create our ecosystem"
+msgstr "Three tokens create our ecosystem"
 
 #: src/components/Referrals/TradersStats.js
 msgid "Tier {0} ({1}% discount)"
@@ -4448,8 +4506,8 @@ msgid "Tweet"
 msgstr "Tweet"
 
 #: src/pages/Home/Home.js
-msgid "Two tokens create our ecosystem"
-msgstr "Two tokens create our ecosystem"
+#~ msgid "Two tokens create our ecosystem"
+#~ msgstr "Two tokens create our ecosystem"
 
 #: src/App/App.js
 msgid "Txn failed. <0>View</0>"
@@ -4465,6 +4523,7 @@ msgstr "Type"
 msgid "USDG Debt"
 msgstr "USDG Debt"
 
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/DashboardV2.js
 msgid "UTILIZATION"
 msgstr "UTILIZATION"
@@ -4530,6 +4589,7 @@ msgstr "Unsupported chain. Switch to Arbitrum network on your wallet and try aga
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/JoinReferralCode.js
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "Update"
 msgstr "Update"
 
@@ -4579,6 +4639,7 @@ msgstr "Use the Edit Collateral icon to deposit or withdraw collateral."
 msgid "Useful Links"
 msgstr "Useful Links"
 
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Utilization"
@@ -4772,8 +4833,8 @@ msgid "Withdraw {0} USD from {1} {longOrShortText}"
 msgstr "Withdraw {0} USD from {1} {longOrShortText}"
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "Withdraw {collateralText} from {positionText}"
-msgstr "Withdraw {collateralText} from {positionText}"
+#~ msgid "Withdraw {collateralText} from {positionText}"
+#~ msgstr "Withdraw {collateralText} from {positionText}"
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
@@ -5077,10 +5138,6 @@ msgstr "{0} Price"
 msgid "{0} Required"
 msgstr "{0} Required"
 
-#: src/components/Exchange/ConfirmationBox.js
-#~ msgid "{0} Spread"
-#~ msgstr "{0} Spread"
-
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
 msgstr "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
@@ -5164,6 +5221,10 @@ msgstr ""
 "{2} Price: {3} USD"
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "{actionText} Deposit {collateralText} into {positionText}"
+msgstr "{actionText} Deposit {collateralText} into {positionText}"
+
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "{actionText} Order: Swap {fromText} for {toText}, Price: {ratioText}"
 msgstr "{actionText} Order: Swap {fromText} for {toText}, Price: {ratioText}"
 
@@ -5176,8 +5237,16 @@ msgid "{actionText} Swap {fromText} for {toText}"
 msgstr "{actionText} Swap {fromText} for {toText}"
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "{actionText} {increaseText} {positionText} {sizeDeltaText}, Acceptable Price: {0}"
-msgstr "{actionText} {increaseText} {positionText} {sizeDeltaText}, Acceptable Price: {0}"
+msgid "{actionText} Withdraw {collateralText} from {positionText}"
+msgstr "{actionText} Withdraw {collateralText} from {positionText}"
+
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#~ msgid "{actionText} {increaseText} {positionText} {sizeDeltaText}, Acceptable Price: {0}"
+#~ msgstr "{actionText} {increaseText} {positionText} {sizeDeltaText}, Acceptable Price: {0}"
+
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "{actionText} {increaseText} {positionText} {sizeDeltaText}, {pricePrefix}: {0}"
+msgstr "{actionText} {increaseText} {positionText} {sizeDeltaText}, {pricePrefix}: {0}"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{chainName} Total Stats start from {totalStatsStartDate}.<0/> For detailed stats:"
@@ -5290,6 +5359,10 @@ msgstr "{orderTypeText} {tokensText} request sent"
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} canceled"
 msgstr "{ordersText} canceled"
+
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "{positionText} {sizeDeltaText}, Price: {0}"
+msgstr "{positionText} {sizeDeltaText}, Price: {0}"
 
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
 #~ msgid "{positionTypeText} {0}"

@@ -24,6 +24,7 @@ import BuyGMX from "pages/BuyGMX/BuyGMX";
 import ClaimEsGmx from "pages/ClaimEsGmx/ClaimEsGmx";
 import CompleteAccountTransfer from "pages/CompleteAccountTransfer/CompleteAccountTransfer";
 import Dashboard from "pages/Dashboard/Dashboard";
+import Stats from "pages/Stats/Stats";
 import Ecosystem from "pages/Ecosystem/Ecosystem";
 import { Exchange } from "pages/Exchange/Exchange";
 import Home from "pages/Home/Home";
@@ -481,6 +482,9 @@ function FullApp() {
               <Route exact path="/dashboard">
                 <Dashboard />
               </Route>
+              <Route exact path="/stats">
+                <Stats />
+              </Route>
               <Route exact path="/earn">
                 <Stake setPendingTxns={setPendingTxns} connectWallet={connectWallet} />
               </Route>
@@ -508,6 +512,7 @@ function FullApp() {
                     savedShouldShowPositionLines={savedShouldShowPositionLines}
                     setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
                     setPendingTxns={setPendingTxns}
+                    showPnlAfterFees={showPnlAfterFees}
                   />
                 ) : (
                   <SyntheticsFallbackPage />

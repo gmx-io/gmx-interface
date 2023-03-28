@@ -14,12 +14,13 @@ import { getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatUsd } from "lib/numbers";
+import { formatAmount, formatUsd } from "lib/numbers";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import "./MarketCard.scss";
 import { getByKey } from "lib/objects";
 import { useMemo } from "react";
+import { getBorrowingFeeFactor, getFundingFeeFactor } from "domain/synthetics/fees";
 
 export type Props = {
   marketAddress?: string;
@@ -44,13 +45,15 @@ export function MarketCard(p: Props) {
 
   const longShortText = p.isLong ? t`Long` : t`Short`;
 
-  const { liquidity, maxReservedUsd, reservedUsd } = useMemo(() => {
+  const { liquidity, maxReservedUsd, reservedUsd, borrowingRate, fundingRate } = useMemo(() => {
     if (!market) return {};
 
     return {
       liquidity: getAvailableUsdLiquidityForPosition(market, p.isLong),
       maxReservedUsd: getMaxReservedUsd(market, p.isLong),
       reservedUsd: getReservedUsd(market, p.isLong),
+      borrowingRate: getBorrowingFeeFactor(market, p.isLong, 60 * 60),
+      fundingRate: getFundingFeeFactor(market, p.isLong, 60 * 60),
     };
   }, [market, p.isLong]);
 
@@ -103,6 +106,60 @@ export function MarketCard(p: Props) {
                 </Trans>
               )}
             />
+          }
+        />
+
+        <ExchangeInfoRow
+          label={t`Borrow Fee`}
+          value={
+            borrowingRate ? `-${formatAmount(borrowingRate, 30, 4)}% / 1h` : "..."
+            // <Tooltip
+            //   handle={borrowingRate ? `${formatAmount(borrowingRate, 30, 4)}% / 1h` : "..."}
+            //   position="right-bottom"
+            //   renderContent={() => (
+            //     <Trans>
+            //       The borrow fee is calculated as:
+            //       <br />
+            //       <br />
+            //       {p.isLong
+            //         ? "a * (open interest in usd + pending pnl) ^ exp / (pool usd)"
+            //         : "a * (open interest in usd) ^ exp / (pool usd)"}
+            //       <br />
+            //       <br />
+            //       a - borrowing fee factor
+            //       <br />
+            //       exp - exponent factor
+            //       {/* <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#opening-a-position">More Info</ExternalLink> */}
+            //     </Trans>
+            //   )}
+            // />
+          }
+        />
+
+        <ExchangeInfoRow
+          label={t`Funding Fee`}
+          value={
+            fundingRate ? `${fundingRate.gt(0) ? "+" : "-"}${formatAmount(fundingRate.abs(), 30, 4)}% / 1h` : "..."
+            // <Tooltip
+            //   handle={borrowingRate ? `${formatAmount(borrowingRate, 30, 4)}% / 1h` : "..."}
+            //   position="right-bottom"
+            //   renderContent={() => (
+            //     <Trans>
+            //       The borrow fee is calculated as:
+            //       <br />
+            //       <br />
+            //       {p.isLong
+            //         ? "a * (open interest in usd + pending pnl) ^ exp / (pool usd)"
+            //         : "a * (open interest in usd) ^ exp / (pool usd)"}
+            //       <br />
+            //       <br />
+            //       a - borrowing fee factor
+            //       <br />
+            //       exp - exponent factor
+            //       {/* <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#opening-a-position">More Info</ExternalLink> */}
+            //     </Trans>
+            //   )}
+            // />
           }
         />
 

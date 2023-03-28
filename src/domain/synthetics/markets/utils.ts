@@ -199,6 +199,41 @@ export function getAvailableUsdLiquidityForCollateral(marketInfo: MarketInfo, to
   return poolUsd.sub(reservedUsd);
 }
 
+// TODO: for deposits / withdrawals in minTokenAmount
+export function getPoolValue(marketInfo: MarketInfo, marketAddress: string | undefined, maximize: boolean) {
+  const longPoolUsd = getPoolUsd(marketInfo, marketInfo.longTokenAddress, maximize ? "maxPrice" : "minPrice");
+
+  const shortPoolUsd = getPoolUsd(marketInfo, marketInfo.shortTokenAddress, maximize ? "maxPrice" : "minPrice");
+
+  const totalPoolUsd = longPoolUsd?.add(shortPoolUsd || 0);
+
+  const longBorrowingFees = getTotalBorrowingFees(marketInfo, true);
+  const shortBorrowingFees = getTotalBorrowingFees(marketInfo, false);
+
+  let totalBorrowingFees = longBorrowingFees?.add(shortBorrowingFees || 0);
+  totalBorrowingFees = totalBorrowingFees
+    ? applyFactor(totalBorrowingFees, marketInfo.borrowingFeeReceiverFactor)
+    : undefined;
+
+  const impactPoolAmount = marketInfo?.positionImpactPoolAmount;
+
+  const impactPoolUsd = convertToUsd(
+    impactPoolAmount,
+    marketInfo.indexToken.decimals,
+    maximize ? marketInfo.indexToken?.prices?.maxPrice : marketInfo.indexToken?.prices?.minPrice
+  );
+
+  const netPnl = maximize ? marketInfo.netPnlMin : marketInfo.netPnlMax;
+
+  if (!totalPoolUsd || !totalBorrowingFees || !impactPoolUsd || !netPnl) {
+    return undefined;
+  }
+
+  const value = totalPoolUsd.add(totalBorrowingFees).add(impactPoolUsd);
+
+  return value.sub(netPnl);
+}
+
 export function getCappedPoolPnl(marketInfo: MarketInfo, poolPnl?: BigNumber, poolUsd?: BigNumber, isLong?: boolean) {
   if (poolPnl?.lt(0)) {
     return poolPnl;
@@ -214,7 +249,7 @@ export function getCappedPoolPnl(marketInfo: MarketInfo, poolPnl?: BigNumber, po
 }
 
 export function getTotalBorrowingFees(marketInfo: MarketInfo, isLong: boolean): BigNumber | undefined {
-  const openInterestValue = isLong ? marketInfo.longInterestUsd : marketInfo.shortInterestUsd;
+  const openInterestValue = isLong ? marketInfo?.longInterestUsd : marketInfo?.shortInterestUsd;
 
   const cumulativeBorrowingFactor = isLong
     ? marketInfo.cummulativeBorrowingFactorLong
@@ -222,30 +257,11 @@ export function getTotalBorrowingFees(marketInfo: MarketInfo, isLong: boolean): 
 
   const totalBorrowing = isLong ? marketInfo.totalBorrowingLong : marketInfo.totalBorrowingShort;
 
-  if (!openInterestValue || !cumulativeBorrowingFactor || !totalBorrowing) return undefined;
-
-  return openInterestValue.mul(cumulativeBorrowingFactor).sub(totalBorrowing);
-}
-
-// TODO: for deposits / withdrawals in minTokenAmount
-export function getPoolValue(marketInfo: MarketInfo, maximize: boolean) {
-  const longPoolUsd = getPoolUsd(marketInfo, marketInfo.longTokenAddress, maximize ? "maxPrice" : "minPrice");
-  const shortPoolUsd = getPoolUsd(marketInfo, marketInfo?.shortTokenAddress, maximize ? "maxPrice" : "minPrice");
-
-  const longBorrowingFees = getTotalBorrowingFees(marketInfo, true);
-  const shortBorrowingFees = getTotalBorrowingFees(marketInfo, false);
-
-  const impactPoolAmount = marketInfo.positionImpactPoolAmount;
-
-  const netPnl = maximize ? marketInfo.netPnlMin : marketInfo.netPnlMax;
-
-  if (!longPoolUsd || !shortPoolUsd || !longBorrowingFees || !shortBorrowingFees || !impactPoolAmount || !netPnl) {
+  if (!openInterestValue || !cumulativeBorrowingFactor || !totalBorrowing) {
     return undefined;
   }
 
-  const value = longPoolUsd.add(shortPoolUsd).add(longBorrowingFees).add(shortBorrowingFees).add(impactPoolAmount);
-
-  return value.sub(netPnl);
+  return openInterestValue.mul(cumulativeBorrowingFactor).sub(totalBorrowing);
 }
 
 export function getMostLiquidMarketForPosition(

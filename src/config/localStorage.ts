@@ -29,3 +29,5 @@ export const SYNTHETICS_TRADE_FROM_TOKEN_KEY = "synthetics-trade-from-token";
 export const SYNTHETICS_TRADE_TO_TOKEN_KEY = "synthetics-swap-to-token";
 export const SYNTHETICS_TRADE_COLLATERAL_KEY = "synthetics-swap-collateral-token";
 export const PRODUCTION_PREVIEW_KEY = "production-preview";
+
+export const getSubgraphUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;

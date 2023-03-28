@@ -17,9 +17,9 @@ import { useChainId } from "lib/chains";
 import { formatDateTime } from "lib/dates";
 import { getExchangeRateDisplay } from "lib/legacy";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
-import "./TradeHistoryRow.scss";
 import { BigNumber } from "ethers";
 import { LiquidationTooltip } from "./LiquidationTooltip";
+import "./TradeHistoryRow.scss";
 
 type Props = {
   tradeAction: TradeAction;

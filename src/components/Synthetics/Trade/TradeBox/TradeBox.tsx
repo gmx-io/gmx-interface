@@ -186,6 +186,8 @@ export function TradeBox(p: Props) {
     tradeMode!
   );
 
+  const prevIsISwap = usePrevious(isSwap);
+
   const [isClaiming, setIsClaiming] = useState(false);
 
   const [stage, setStage] = useState<"trade" | "confirmation" | "processing">("trade");
@@ -631,6 +633,12 @@ export function TradeBox(p: Props) {
 
   useEffect(
     function updateInputAmounts() {
+      if (isSwap !== prevIsISwap) {
+        setFocusedInput("from");
+        fromTokenInput.setInputValue("");
+        return;
+      }
+
       if (isSwap && swapParams) {
         if (focusedInput === "from") {
           toTokenInput.setValueByTokenAmount(swapParams.amountOut);
@@ -647,7 +655,7 @@ export function TradeBox(p: Props) {
         }
       }
     },
-    [focusedInput, fromTokenInput, increasePositionParams, isIncrease, isSwap, swapParams, toTokenInput]
+    [focusedInput, fromTokenInput, increasePositionParams, isIncrease, isSwap, prevIsISwap, swapParams, toTokenInput]
   );
 
   useEffect(

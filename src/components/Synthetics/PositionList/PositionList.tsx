@@ -12,6 +12,7 @@ type Props = {
   savedIsPnlInLeverage: boolean;
   isLoading: boolean;
   onOrdersClick: () => void;
+  showPnlAfterFees: boolean;
 };
 
 export function PositionList(p: Props) {
@@ -36,7 +37,7 @@ export function PositionList(p: Props) {
               onClosePositionClick={() => p.onClosePositionClick(position.key)}
               onOrdersClick={p.onOrdersClick}
               onSelectPositionClick={() => p.onSelectPositionClick(position.key)}
-              showPnlAfterFees={false}
+              showPnlAfterFees={p.showPnlAfterFees}
               isLarge={false}
             />
           ))}
@@ -86,7 +87,7 @@ export function PositionList(p: Props) {
                 onClosePositionClick={() => p.onClosePositionClick(position.key)}
                 onOrdersClick={p.onOrdersClick}
                 onSelectPositionClick={() => p.onSelectPositionClick(position.key)}
-                showPnlAfterFees={false}
+                showPnlAfterFees={p.showPnlAfterFees}
                 isLarge={true}
               />
             ))}

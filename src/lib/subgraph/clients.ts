@@ -1,17 +1,16 @@
 import { createClient } from "./utils";
-import { SUBGRAPH_URLS } from "config/subgraph";
-import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
+import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, AVALANCHE_FUJI, ETH_MAINNET } from "config/chains";
 
-export const chainlinkClient = createClient(SUBGRAPH_URLS.common.chainLink);
+export const chainlinkClient = createClient(ETH_MAINNET, "chainLink");
 
-export const arbitrumGraphClient = createClient(SUBGRAPH_URLS[ARBITRUM].stats);
-export const arbitrumReferralsGraphClient = createClient(SUBGRAPH_URLS[ARBITRUM].referrals);
-export const nissohGraphClient = createClient(SUBGRAPH_URLS[ARBITRUM].nissohVault);
+export const arbitrumGraphClient = createClient(ARBITRUM, "stats");
+export const arbitrumReferralsGraphClient = createClient(ARBITRUM, "referrals");
+export const nissohGraphClient = createClient(ARBITRUM, "nissohVault");
 
-export const avalancheGraphClient = createClient(SUBGRAPH_URLS[AVALANCHE].stats);
-export const avalancheReferralsGraphClient = createClient(SUBGRAPH_URLS[AVALANCHE].referrals);
+export const avalancheGraphClient = createClient(AVALANCHE, "stats");
+export const avalancheReferralsGraphClient = createClient(AVALANCHE, "referrals");
 
-export const avalancheFujiSyntheticsStatsClient = createClient(SUBGRAPH_URLS[AVALANCHE_FUJI].syntheticsStats);
+export const avalancheFujiSyntheticsStatsClient = createClient(AVALANCHE_FUJI, "syntheticsStats");
 
 export function getSyntheticsGraphClient(chainId: number) {
   if (chainId === AVALANCHE_FUJI) {

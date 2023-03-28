@@ -19,7 +19,6 @@ import {
   importImage,
 } from "lib/legacy";
 import { useTotalGmxInLiquidity, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
-import useFeesSummary from "domain/useFeesSummary";
 
 import { getContract } from "config/contracts";
 
@@ -33,7 +32,7 @@ import "./DashboardV2.css";
 import AssetDropdown from "./AssetDropdown";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import SEO from "components/Common/SEO";
-import useTotalVolume from "domain/useTotalVolume";
+import { useTotalVolume, useVolumeInfo, useFeesSummary } from "domain/stats";
 import StatsTooltip from "components/StatsTooltip/StatsTooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
@@ -46,44 +45,12 @@ import { useChainId } from "lib/chains";
 import { formatDate } from "lib/dates";
 import { getIcons } from "config/icons";
 import { arrayURLFetcher } from "lib/fetcher";
+import { getIsSyntheticsSupported } from "config/features";
+import { MarketsList } from "components/Synthetics/MarketsList/MarketsList";
+import { useMedia } from "react-use";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;
-
-function getVolumeInfo(hourlyVolumes) {
-  if (!hourlyVolumes || hourlyVolumes.length === 0) {
-    return {};
-  }
-  const dailyVolumes = hourlyVolumes.map((hourlyVolume) => {
-    const secondsPerHour = 60 * 60;
-    const minTime = parseInt(Date.now() / 1000 / secondsPerHour) * secondsPerHour - 24 * secondsPerHour;
-    const info = {};
-    let totalVolume = bigNumberify(0);
-    for (let i = 0; i < hourlyVolume.length; i++) {
-      const item = hourlyVolume[i].data;
-      if (parseInt(item.timestamp) < minTime) {
-        break;
-      }
-
-      if (!info[item.token]) {
-        info[item.token] = bigNumberify(0);
-      }
-
-      info[item.token] = info[item.token].add(item.volume);
-      totalVolume = totalVolume.add(item.volume);
-    }
-    info.totalVolume = totalVolume;
-    return info;
-  });
-  return dailyVolumes.reduce(
-    (acc, cv, index) => {
-      acc.totalVolume = acc.totalVolume.add(cv.totalVolume);
-      acc[ACTIVE_CHAIN_IDS[index]] = cv;
-      return acc;
-    },
-    { totalVolume: bigNumberify(0) }
-  );
-}
 
 function getPositionStats(positionStats) {
   if (!positionStats || positionStats.length === 0) {
@@ -128,6 +95,8 @@ export default function DashboardV2() {
   const { chainId } = useChainId();
   const totalVolume = useTotalVolume();
 
+  const isMobile = useMedia("(max-width: 1200px)");
+
   const chainName = getChainName(chainId);
   const currentIcons = getIcons(chainId);
 
@@ -138,16 +107,9 @@ export default function DashboardV2() {
     }
   );
 
-  const { data: hourlyVolumes } = useSWR(
-    ACTIVE_CHAIN_IDS.map((chainId) => getServerUrl(chainId, "/hourly_volume")),
-    {
-      fetcher: arrayURLFetcher,
-    }
-  );
-
   let { total: totalGmxSupply } = useTotalGmxSupply();
 
-  const currentVolumeInfo = getVolumeInfo(hourlyVolumes);
+  const currentVolumeInfo = useVolumeInfo();
 
   const positionStatsInfo = getPositionStats(positionStats);
 
@@ -232,12 +194,12 @@ export default function DashboardV2() {
 
   const eth = infoTokens[getTokenBySymbol(chainId, "ETH").address];
   const shouldIncludeCurrrentFees =
-    feesSummaryByChain[chainId].lastUpdatedAt &&
-    parseInt(Date.now() / 1000) - feesSummaryByChain[chainId].lastUpdatedAt > 60 * 60;
+    feesSummaryByChain[chainId]?.lastUpdatedAt &&
+    parseInt(Date.now() / 1000) - feesSummaryByChain[chainId]?.lastUpdatedAt > 60 * 60;
 
   const totalFees = ACTIVE_CHAIN_IDS.map((chainId) => {
     if (shouldIncludeCurrrentFees && currentFees && currentFees[chainId]) {
-      return currentFees[chainId].div(expandDecimals(1, USD_DECIMALS)).add(feesSummaryByChain[chainId].totalFees || 0);
+      return currentFees[chainId].div(expandDecimals(1, USD_DECIMALS)).add(feesSummaryByChain[chainId]?.totalFees || 0);
     }
 
     return feesSummaryByChain[chainId].totalFees || 0;
@@ -575,13 +537,13 @@ export default function DashboardV2() {
                     <TooltipComponent
                       position="right-bottom"
                       className="nowrap"
-                      handle={`$${formatAmount(currentVolumeInfo?.[chainId]?.totalVolume, USD_DECIMALS, 0, true)}`}
+                      handle={`$${formatAmount(currentVolumeInfo?.[chainId], USD_DECIMALS, 0, true)}`}
                       renderContent={() => (
                         <StatsTooltip
                           title={t`Volume`}
-                          arbitrumValue={currentVolumeInfo?.[ARBITRUM].totalVolume}
-                          avaxValue={currentVolumeInfo?.[AVALANCHE].totalVolume}
-                          total={currentVolumeInfo?.totalVolume}
+                          arbitrumValue={currentVolumeInfo?.[ARBITRUM]}
+                          avaxValue={currentVolumeInfo?.[AVALANCHE]}
+                          total={currentVolumeInfo?.total}
                         />
                       )}
                     />
@@ -637,7 +599,7 @@ export default function DashboardV2() {
                     />
                   </div>
                 </div>
-                {feesSummary.lastUpdatedAt ? (
+                {feesSummary?.lastUpdatedAt ? (
                   <div className="App-card-row">
                     <div className="label">
                       <Trans>Fees since</Trans> {formatDate(feesSummary.lastUpdatedAt)}
@@ -722,7 +684,7 @@ export default function DashboardV2() {
               <Trans>Tokens</Trans> <img src={currentIcons.network} width="24" alt="Network Icon" />
             </div>
             <div className="Page-description">
-              <Trans>Platform and GLP index tokens.</Trans>
+              <Trans>Platform, GLP and GM index tokens.</Trans>
             </div>
           </div>
           <div className="DashboardV2-token-cards">
@@ -1042,90 +1004,108 @@ export default function DashboardV2() {
                 </tbody>
               </table>
             </div>
-            <div className="token-grid">
-              {visibleTokens.map((token) => {
-                const tokenInfo = infoTokens[token.address];
-                let utilization = bigNumberify(0);
-                if (tokenInfo && tokenInfo.reservedAmount && tokenInfo.poolAmount && tokenInfo.poolAmount.gt(0)) {
-                  utilization = tokenInfo.reservedAmount.mul(BASIS_POINTS_DIVISOR).div(tokenInfo.poolAmount);
-                }
-                let maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT;
-                if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
-                  maxUsdgAmount = tokenInfo.maxUsdgAmount;
-                }
 
-                const tokenImage = importImage("ic_" + token.symbol.toLowerCase() + "_24.svg");
-                return (
-                  <div className="App-card" key={token.symbol}>
-                    <div className="App-card-title">
-                      <div className="mobile-token-card">
-                        <img src={tokenImage} alt={token.symbol} width="20px" />
-                        <div className="token-symbol-text">{token.symbol}</div>
-                        <div>
-                          <AssetDropdown assetSymbol={token.symbol} assetInfo={token} />
+            {isMobile && (
+              <>
+                <div className="App-card-title-small">
+                  <Trans>GLP Index Composition</Trans> <img src={currentIcons.network} width="16" alt="Network Icon" />
+                </div>
+
+                <div className="token-grid">
+                  {visibleTokens.map((token) => {
+                    const tokenInfo = infoTokens[token.address];
+                    let utilization = bigNumberify(0);
+                    if (tokenInfo && tokenInfo.reservedAmount && tokenInfo.poolAmount && tokenInfo.poolAmount.gt(0)) {
+                      utilization = tokenInfo.reservedAmount.mul(BASIS_POINTS_DIVISOR).div(tokenInfo.poolAmount);
+                    }
+                    let maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT;
+                    if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
+                      maxUsdgAmount = tokenInfo.maxUsdgAmount;
+                    }
+
+                    const tokenImage = importImage("ic_" + token.symbol.toLowerCase() + "_24.svg");
+                    return (
+                      <div className="App-card" key={token.symbol}>
+                        <div className="App-card-title">
+                          <div className="mobile-token-card">
+                            <img src={tokenImage} alt={token.symbol} width="20px" />
+                            <div className="token-symbol-text">{token.symbol}</div>
+                            <div>
+                              <AssetDropdown assetSymbol={token.symbol} assetInfo={token} />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="App-card-divider"></div>
+                        <div className="App-card-content">
+                          <div className="App-card-row">
+                            <div className="label">
+                              <Trans>Price</Trans>
+                            </div>
+                            <div>${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}</div>
+                          </div>
+                          <div className="App-card-row">
+                            <div className="label">
+                              <Trans>Pool</Trans>
+                            </div>
+                            <div>
+                              <TooltipComponent
+                                handle={`$${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`}
+                                position="right-bottom"
+                                renderContent={() => {
+                                  return (
+                                    <>
+                                      <StatsTooltipRow
+                                        label={t`Pool Amount`}
+                                        value={`${formatKeyAmount(
+                                          tokenInfo,
+                                          "managedAmount",
+                                          token.decimals,
+                                          0,
+                                          true
+                                        )} ${token.symbol}`}
+                                        showDollar={false}
+                                      />
+                                      <StatsTooltipRow
+                                        label={t`Target Min Amount`}
+                                        value={`${formatKeyAmount(
+                                          tokenInfo,
+                                          "bufferAmount",
+                                          token.decimals,
+                                          0,
+                                          true
+                                        )} ${token.symbol}`}
+                                        showDollar={false}
+                                      />
+                                      <StatsTooltipRow
+                                        label={t`Max ${tokenInfo.symbol} Capacity`}
+                                        value={formatAmount(maxUsdgAmount, 18, 0, true)}
+                                      />
+                                    </>
+                                  );
+                                }}
+                              />
+                            </div>
+                          </div>
+                          <div className="App-card-row">
+                            <div className="label">
+                              <Trans>Weight</Trans>
+                            </div>
+                            <div>{getWeightText(tokenInfo)}</div>
+                          </div>
+                          <div className="App-card-row">
+                            <div className="label">
+                              <Trans>Utilization</Trans>
+                            </div>
+                            <div>{formatAmount(utilization, 2, 2, false)}%</div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="App-card-divider"></div>
-                    <div className="App-card-content">
-                      <div className="App-card-row">
-                        <div className="label">
-                          <Trans>Price</Trans>
-                        </div>
-                        <div>${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}</div>
-                      </div>
-                      <div className="App-card-row">
-                        <div className="label">
-                          <Trans>Pool</Trans>
-                        </div>
-                        <div>
-                          <TooltipComponent
-                            handle={`$${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`}
-                            position="right-bottom"
-                            renderContent={() => {
-                              return (
-                                <>
-                                  <StatsTooltipRow
-                                    label={t`Pool Amount`}
-                                    value={`${formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 0, true)} ${
-                                      token.symbol
-                                    }`}
-                                    showDollar={false}
-                                  />
-                                  <StatsTooltipRow
-                                    label={t`Target Min Amount`}
-                                    value={`${formatKeyAmount(tokenInfo, "bufferAmount", token.decimals, 0, true)} ${
-                                      token.symbol
-                                    }`}
-                                    showDollar={false}
-                                  />
-                                  <StatsTooltipRow
-                                    label={t`Max ${tokenInfo.symbol} Capacity`}
-                                    value={formatAmount(maxUsdgAmount, 18, 0, true)}
-                                  />
-                                </>
-                              );
-                            }}
-                          />
-                        </div>
-                      </div>
-                      <div className="App-card-row">
-                        <div className="label">
-                          <Trans>Weight</Trans>
-                        </div>
-                        <div>{getWeightText(tokenInfo)}</div>
-                      </div>
-                      <div className="App-card-row">
-                        <div className="label">
-                          <Trans>Utilization</Trans>
-                        </div>
-                        <div>{formatAmount(utilization, 2, 2, false)}%</div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+            {getIsSyntheticsSupported(chainId) && <MarketsList />}
           </div>
         </div>
         <Footer />

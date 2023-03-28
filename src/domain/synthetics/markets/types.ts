@@ -23,6 +23,8 @@ export type PoolData = {
   cummulativeBorrowingFactorLong: BigNumber;
   cummulativeBorrowingFactorShort: BigNumber;
 
+  borrowingFeeReceiverFactor: BigNumber;
+
   positionImpactPoolAmount: BigNumber;
 
   swapImpactPoolAmountLong: BigNumber;

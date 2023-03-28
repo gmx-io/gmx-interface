@@ -14,7 +14,12 @@ import { getContract } from "config/contracts";
 import { HIGH_SPREAD_THRESHOLD } from "config/factors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useUserReferralCode } from "domain/referrals";
-import { ExecutionFee, getBorrowingFeeFactor, isHighPriceImpact as getIsHighPriceImpact } from "domain/synthetics/fees";
+import {
+  ExecutionFee,
+  getBorrowingFeeFactor,
+  getFundingFeeFactor,
+  isHighPriceImpact as getIsHighPriceImpact,
+} from "domain/synthetics/fees";
 import {
   getAvailableUsdLiquidityForCollateral,
   getAvailableUsdLiquidityForPosition,
@@ -663,9 +668,9 @@ export function ConfirmationBox(p: Props) {
   function renderIncreaseOrderSection() {
     const { nextPositionValues } = p.increasePositionParams || {};
 
-    const borrowingFeeFactorPerHour = getBorrowingFeeFactor(p.increasePositionParams!.market, isLong, 60 * 60)?.mul(
-      100
-    );
+    const borrowingRate = getBorrowingFeeFactor(p.increasePositionParams!.market, isLong, 60 * 60)?.mul(100);
+
+    const fundigRate = getFundingFeeFactor(p.increasePositionParams!.market, isLong, 60 * 60)?.mul(100);
 
     return (
       <>
@@ -768,7 +773,11 @@ export function ConfirmationBox(p: Props) {
           )}
 
           <ExchangeInfoRow label={t`Borrow Fee`}>
-            {borrowingFeeFactorPerHour ? `${formatAmount(borrowingFeeFactorPerHour, 30, 4)}% / 1h` : "-"}
+            {borrowingRate ? `-${formatAmount(borrowingRate, 30, 4)}% / 1h` : "-"}
+          </ExchangeInfoRow>
+
+          <ExchangeInfoRow label={t`Funding Fee`}>
+            {fundigRate ? `${fundigRate.gt(0) ? "+" : "-"}${formatAmount(fundigRate.abs(), 30, 4)}% / 1h` : "-"}
           </ExchangeInfoRow>
 
           {/* <ExchangeInfoRow label={t`Funding Fee`}>

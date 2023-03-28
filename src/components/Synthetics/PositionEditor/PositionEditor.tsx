@@ -29,12 +29,7 @@ import {
   getLiquidationPrice,
   getMarkPrice,
 } from "domain/synthetics/positions";
-import {
-  adaptToInfoTokens,
-  convertToTokenAmount,
-  convertToUsd,
-  useAvailableTokensData,
-} from "domain/synthetics/tokens";
+import { convertToTokenAmount, convertToUsd, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useTokenInput } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
@@ -47,9 +42,9 @@ import { getContract } from "config/contracts";
 import { useGasLimitsConfig } from "domain/synthetics/fees/useGasLimitsConfig";
 
 import { usePositionsConstants } from "domain/synthetics/positions/usePositionsConstants";
-import { approveTokens } from "domain/tokens";
 import { contractFetcher } from "lib/contracts";
 import useSWR from "swr";
+import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import "./PositionEditor.scss";
 
 type Props = {
@@ -82,10 +77,15 @@ export function PositionEditor(p: Props) {
     position?.collateralToken?.decimals,
     position?.collateralToken?.prices?.maxPrice
   );
-  const [isApproving, setIsApproving] = useState(false);
+
+  const { marketsFeesConfigs } = useMarketsFeesConfigs(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimitsConfig(chainId);
+
+  const feesConfig = getMarketFeesConfig(marketsFeesConfigs, position?.marketAddress);
+
+  const collateralToken = position?.collateralToken;
 
   const depositInput = useTokenInput(tokensData, {
     priceType: "min",
@@ -221,31 +221,10 @@ export function PositionEditor(p: Props) {
       };
     }
 
-    if (isApproving) {
-      return {
-        text: t`Approving ${position?.collateralToken?.symbol}...`,
-        disabled: true,
-      };
-    }
-
     if (needApproval) {
       return {
-        text: t`Approve ${position?.collateralToken?.symbol}`,
-        onClick: () => {
-          if (!position) return;
-
-          approveTokens({
-            setIsApproving,
-            library,
-            tokenAddress: position?.collateralTokenAddress,
-            spender: routerAddress,
-            chainId: chainId,
-            infoTokens: adaptToInfoTokens(tokensData),
-            pendingTxns: [],
-            setPendingTxns: () => {},
-            onApproveSubmitted: () => {},
-          });
-        },
+        text: t`Pending ${collateralToken?.symbol} approval`,
+        disabled: true,
       };
     }
 
@@ -325,7 +304,7 @@ export function PositionEditor(p: Props) {
   return (
     <div className="PositionEditor">
       <Modal
-        className="PositionSeller-modal"
+        className="PositionEditor-modal"
         isVisible={Boolean(position)}
         setIsVisible={p.onClose}
         label={
@@ -340,7 +319,7 @@ export function PositionEditor(p: Props) {
           option={operation}
           options={Object.values(Operation)}
           optionLabels={operationLabels}
-          className="SwapBox-option-tabs PositionEditor-tabs"
+          className="PositionEditor-tabs SwapBox-option-tabs"
         />
 
         {operation === Operation.Deposit && (
@@ -463,6 +442,24 @@ export function PositionEditor(p: Props) {
             value={<Tooltip handle={"$0.00"} position="right-top" renderContent={() => "TODO"} />}
           /> */}
         </div>
+
+        {needApproval && collateralToken && (
+          <>
+            <div className="App-card-divider" />
+
+            <div className="ConfirmationBox-approve-tokens">
+              <div className="ConfirmationBox-approve-token">
+                <ApproveTokenButton
+                  tokenAddress={collateralToken.address}
+                  tokenSymbol={collateralToken.symbol}
+                  spenderAddress={routerAddress}
+                />
+              </div>
+            </div>
+
+            <div className="App-card-divider" />
+          </>
+        )}
 
         <div className="Exchange-swap-button-container">
           <SubmitButton onClick={submitButtonState.onClick} disabled={submitButtonState.disabled} authRequired>

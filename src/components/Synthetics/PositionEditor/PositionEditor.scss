@@ -1,3 +1,9 @@
 .PositionEditor-tabs {
-  margin-top: 0;
+  margin-top: 0 !important;
+}
+
+.PositionEditor-modal {
+  .Modal-body {
+    overflow-x: hidden;
+  }
 }

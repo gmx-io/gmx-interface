@@ -130,11 +130,13 @@ export function formatUsd(usd?: BigNumber, opts: { fallbackToZero?: boolean } = 
     }
   }
 
-  return `$${formatAmount(usd, USD_DECIMALS, 2, true)}`;
+  const sign = usd.lt(0) ? "-" : "";
+
+  return `${sign}$${formatAmount(usd.abs(), USD_DECIMALS, 2, true)}`;
 }
 
 export function formatDeltaUsd(deltaUsd?: BigNumber, percentage?: BigNumber, opts: { fallbackToZero?: boolean } = {}) {
-  if (!deltaUsd?.abs().gt(0)) {
+  if (!deltaUsd) {
     if (opts.fallbackToZero) {
       return `${formatUsd(BigNumber.from(0))} (${formatAmount(BigNumber.from(0), 2, 2)}%)`;
     }
@@ -142,7 +144,10 @@ export function formatDeltaUsd(deltaUsd?: BigNumber, percentage?: BigNumber, opt
     return undefined;
   }
 
-  const sign = deltaUsd.gt(0) ? "+" : "-";
+  let sign = "";
+  if (!deltaUsd.eq(0)) {
+    sign = deltaUsd?.gt(0) ? "+" : "-";
+  }
 
   const percentageStr = percentage ? ` (${sign}${formatPercentage(percentage.abs())})` : "";
 

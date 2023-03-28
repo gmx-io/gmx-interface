@@ -149,6 +149,8 @@ export function mockPoolsData(
       cummulativeBorrowingFactorLong: BigNumber.from(0),
       cummulativeBorrowingFactorShort: BigNumber.from(0),
 
+      borrowingFeeReceiverFactor: BigNumber.from(0),
+
       positionImpactPoolAmount: usdToToken(1000, indexToken),
 
       swapImpactPoolAmountLong: usdToToken(1000, longToken),
