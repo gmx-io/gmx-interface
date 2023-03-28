@@ -21,7 +21,7 @@ function formatFundingRate(fundingRate?: BigNumber) {
 
   const sign = fundingRate.isZero() ? "" : fundingRate.isNegative() ? "-" : "+";
 
-  return `${sign}${formatAmount(fundingRate.mul(100), 30, 4)}%`;
+  return `${sign}${formatAmount(fundingRate.mul(100).abs(), 30, 4)}%`;
 }
 
 export function MarketsList() {

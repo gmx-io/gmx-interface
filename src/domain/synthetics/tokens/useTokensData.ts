@@ -29,6 +29,13 @@ export function useTokensData(chainId: number, p: { tokenAddresses: string[] }):
   const tokenKeys = p.tokenAddresses.join("-");
 
   return useMemo(() => {
+    if (isPricesLoading) {
+      return {
+        tokensData: {},
+        isLoading: true,
+      };
+    }
+
     return {
       tokensData: tokenKeys.split("-").reduce((tokensData: TokensData, tokenAddress) => {
         tokensData[tokenAddress] = {

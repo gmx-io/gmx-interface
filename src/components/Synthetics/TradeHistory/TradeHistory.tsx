@@ -35,14 +35,15 @@ export function TradeHistory(p: Props) {
           <Trans>No trades yet</Trans>
         </div>
       )}
-      {tradeActions?.map((tradeAction) => (
-        <TradeHistoryRow
-          key={tradeAction.id}
-          tradeAction={tradeAction}
-          minCollateralUsd={minCollateralUsd!}
-          maxLeverage={maxLeverage!}
-        />
-      ))}
+      {!isLoading &&
+        tradeActions?.map((tradeAction) => (
+          <TradeHistoryRow
+            key={tradeAction.id}
+            tradeAction={tradeAction}
+            minCollateralUsd={minCollateralUsd!}
+            maxLeverage={maxLeverage!}
+          />
+        ))}
       {shouldShowPaginationButtons && (
         <div>
           {pageIndex > 0 && (
