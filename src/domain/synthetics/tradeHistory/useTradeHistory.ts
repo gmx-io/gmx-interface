@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 import { useWeb3React } from "@web3-react/core";
 import { NATIVE_TOKEN_ADDRESS, getWrappedToken } from "config/tokens";
-import { getMarket, useMarketsInfo } from "domain/synthetics/markets";
+import { getByKey, useMarketsInfo } from "domain/synthetics/markets";
 import { getTokenData, parseContractPrice, useAvailableTokensData } from "domain/synthetics/tokens";
 import { bigNumberify } from "lib/numbers";
 import { getSyntheticsGraphClient } from "lib/subgraph";
@@ -100,7 +100,7 @@ export function useTradeHistory(chainId: number, p: { pageIndex: number; pageSiz
         tradeAction.initialCollateralTokenAddress = fixedAddresses[tradeAction.initialCollateralTokenAddress!];
         tradeAction.swapPath = tradeAction.swapPath?.map((address) => fixedAddresses[address]);
 
-        tradeAction.market = getMarket(marketsInfoData, tradeAction.marketAddress!);
+        tradeAction.market = getByKey(marketsInfoData, tradeAction.marketAddress!);
         tradeAction.indexToken = getTokenData(tokensData, tradeAction.market?.indexTokenAddress, "native");
         tradeAction.initialCollateralToken = getTokenData(tokensData, tradeAction.initialCollateralTokenAddress);
 

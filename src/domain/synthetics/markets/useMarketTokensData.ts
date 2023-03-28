@@ -11,7 +11,7 @@ import { expandDecimals } from "lib/numbers";
 import { useMemo } from "react";
 import { MarketTokensData } from "./types";
 import { useMarketsData } from "./useMarketsData";
-import { getContractMarketPrices, getMarket } from "./utils";
+import { getByKey, getContractMarketPrices } from "./utils";
 
 type MarketTokensDataResult = {
   marketTokensData: TokensData;
@@ -29,7 +29,7 @@ export function useMarketTokensData(chainId: number): MarketTokensDataResult {
     key: isDataLoaded ? [account, marketsAddresses.join("-")] : undefined,
     request: () =>
       marketsAddresses.reduce((requests, marketAddress) => {
-        const market = getMarket(marketsData, marketAddress)!;
+        const market = getByKey(marketsData, marketAddress)!;
         const marketPrices = getContractMarketPrices(tokensData, market);
 
         if (marketPrices) {

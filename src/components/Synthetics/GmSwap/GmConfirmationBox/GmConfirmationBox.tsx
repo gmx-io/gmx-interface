@@ -8,17 +8,17 @@ import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { getContract } from "config/contracts";
 import { getToken } from "config/tokens";
 import { ExecutionFee } from "domain/synthetics/fees";
-import { getMarket, useMarketsData } from "domain/synthetics/markets";
+import { getByKey, useMarketsData } from "domain/synthetics/markets";
 import { createDepositTxn } from "domain/synthetics/markets/createDepositTxn";
 import { createWithdrawalTxn } from "domain/synthetics/markets/createWithdrawalTxn";
 import { getTokenData, needTokenApprove, useAvailableTokensData } from "domain/synthetics/tokens";
 import { TokenData } from "domain/synthetics/tokens/types";
 import { useTokenAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
+import { GmSwapFees } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { formatTokenAmount, formatTokenAmountWithUsd } from "lib/numbers";
 import { GmFees } from "../GmFees/GmFees";
-import { GmSwapFees } from "domain/synthetics/trade";
 
 import "./GmConfirmationBox.scss";
 
@@ -64,7 +64,7 @@ export function GmConfirmationBox({
   const { marketsData } = useMarketsData(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
 
-  const market = getMarket(marketsData, marketToken?.address);
+  const market = getByKey(marketsData, marketToken?.address);
 
   const routerAddress = getContract(chainId, "SyntheticsRouter");
 

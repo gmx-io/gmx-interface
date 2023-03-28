@@ -5,7 +5,7 @@ import {
   MarketsPoolsData,
   OpenInterestData,
   PoolData,
-  getMarket,
+  getByKey,
 } from "domain/synthetics/markets";
 import { TokenData, TokensData, convertToTokenAmount, getTokenData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
@@ -219,7 +219,7 @@ export function mockOpenInterestData(
   overrides: { [marketKey: string]: Partial<OpenInterestData> } = {}
 ): MarketsOpenInterestData {
   return Object.keys(marketsData).reduce((acc, key) => {
-    const market = getMarket(marketsData, key)!;
+    const market = getByKey(marketsData, key)!;
     const indexToken = getTokenData(tokensData, market.indexTokenAddress)!;
 
     acc[key] = {

@@ -19,7 +19,7 @@ import {
   SYNTHETICS_TRADE_TYPE_KEY,
 } from "config/localStorage";
 import { getToken } from "config/tokens";
-import { getMarket, useMarketsData } from "domain/synthetics/markets";
+import { getByKey, useMarketsData } from "domain/synthetics/markets";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useAggregatedOrdersData } from "domain/synthetics/orders/useAggregatedOrdersData";
 import { AggregatedPositionData, getPosition, getPositionKey } from "domain/synthetics/positions";
@@ -30,10 +30,10 @@ import { useChainId } from "lib/chains";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
 import { useMemo, useState } from "react";
 
-import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
-import "./SyntheticsPage.scss";
 import { ClaimHistory } from "components/Synthetics/ClaimHistory/ClaimHistory";
+import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import { getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
+import "./SyntheticsPage.scss";
 
 type Props = {
   onConnectWallet: () => void;
@@ -149,7 +149,7 @@ export function SyntheticsPage(p: Props) {
   }
 
   function onSelectMarketAddress(marketAddress?: string) {
-    const market = getMarket(marketsData, marketAddress);
+    const market = getByKey(marketsData, marketAddress);
 
     if (!market) return;
 

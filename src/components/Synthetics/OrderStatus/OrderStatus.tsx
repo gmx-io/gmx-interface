@@ -1,15 +1,15 @@
 import { t } from "@lingui/macro";
 import Modal from "components/Modal/Modal";
-import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { RequestStatus } from "components/RequestStatus/RequestStatus";
-import { useEffect, useState } from "react";
-import { useChainId } from "lib/chains";
-import { getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
+import { SubmitButton } from "components/SubmitButton/SubmitButton";
+import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import { getByKey, useMarketsData } from "domain/synthetics/markets";
 import { OrderType, isIncreaseOrder, isSwapOrder } from "domain/synthetics/orders";
+import { getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
-import { getMarket, useMarketsData } from "domain/synthetics/markets";
+import { useChainId } from "lib/chains";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
+import { useEffect, useState } from "react";
 
 type Props = {
   orderType: OrderType;
@@ -32,7 +32,7 @@ export function OrderStatus(p: Props) {
 
   const orderStatus = orderKey ? orderStatuses[orderKey] : undefined;
 
-  const market = getMarket(marketsData, p.marketAddress);
+  const market = getByKey(marketsData, p.marketAddress);
   const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
   const initialCollateralToken = getTokenData(tokensData, p.initialCollateralAddress);
   const toSwapToken = getTokenData(tokensData, p.toSwapTokenAddress);

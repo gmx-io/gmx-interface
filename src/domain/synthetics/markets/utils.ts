@@ -13,7 +13,7 @@ import {
   MarketsPoolsData,
 } from "./types";
 
-export function getMarket(marketsData: MarketsData, marketAddress?: string) {
+export function getByKey(marketsData: MarketsData, marketAddress?: string) {
   if (!marketAddress) return undefined;
 
   return marketsData[marketAddress];
@@ -33,7 +33,7 @@ export function getMarketInfo(
 
   if (!marketAddress) return undefined;
 
-  const market = getMarket(marketsData, marketAddress);
+  const market = getByKey(marketsData, marketAddress);
   const pool = poolsData[marketAddress];
   const openInterest = openInterestData[marketAddress];
   const feesConfig = feesConfigs[marketAddress];
