@@ -9,6 +9,7 @@ type ButtonProps = HTMLProps<HTMLButtonElement> & {
   children: ReactNode;
   variant: ButtonVariant;
   className?: string;
+  textAlign?: "center" | "left" | "right";
   disabled?: boolean;
   onClick?: () => void;
   to?: string;
@@ -25,6 +26,7 @@ export default function Button({
   disabled,
   onClick,
   children,
+  textAlign = "center",
   to,
   className,
   imgInfo,
@@ -32,7 +34,7 @@ export default function Button({
   newTab,
   ...rest
 }: ButtonProps) {
-  const classNames = cx("button", variant, className);
+  const classNames = cx("button", variant, className, textAlign);
 
   function handleClick() {
     if (disabled || !onClick) {

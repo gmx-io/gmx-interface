@@ -234,11 +234,6 @@
   opacity: 1;
 }
 
-.buying,
-.selling {
-  justify-content: center !important;
-}
-
 @media (max-width: 900px) {
   .GlpSwap-content {
     flex-wrap: wrap;

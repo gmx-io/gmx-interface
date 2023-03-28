@@ -111,6 +111,7 @@ export default function BuyGMX() {
                   return (
                     <Button
                       variant="secondary"
+                      textAlign="left"
                       key={exchange.name}
                       to={link}
                       imgInfo={{ src: icon, alt: exchange.name }}
@@ -141,6 +142,7 @@ export default function BuyGMX() {
                   return (
                     <Button
                       variant="secondary"
+                      textAlign="left"
                       key={exchange.name}
                       to={link}
                       imgInfo={{ src: icon, alt: exchange.name }}
@@ -173,6 +175,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
             <div className="buttons-group col-1">
               <Button
                 variant="secondary"
+                textAlign="left"
                 imgInfo={{ src: uniswapArbitrumIcon, alt: "Uniswap" }}
                 to={externalLinks.buyGmx.uniswap}
                 newTab
@@ -189,6 +192,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
             <div className="buttons-group col-1">
               <Button
                 variant="secondary"
+                textAlign="left"
                 to={externalLinks.buyGmx.traderjoe}
                 imgInfo={{ src: traderjoeIcon, alt: "Traderjoe" }}
                 newTab
@@ -209,6 +213,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
               return (
                 <Button
                   variant="secondary"
+                  textAlign="left"
                   key={exchange.name}
                   to={link}
                   imgInfo={{ src: icon, alt: exchange.name }}
@@ -231,6 +236,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
               return (
                 <Button
                   variant="secondary"
+                  textAlign="left"
                   key={exchange.name}
                   to={link}
                   imgInfo={{ src: icon, alt: exchange.name }}
@@ -250,6 +256,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
             <div className="buttons-group col-1">
               <Button
                 variant="secondary"
+                textAlign="left"
                 to={"https://app.bondprotocol.finance/#/issuers/GMX"}
                 imgInfo={{ src: bondProtocolIcon, alt: "Bond Protocol" }}
                 newTab
@@ -279,6 +286,7 @@ function CentralisedExchanges({ chainId }) {
               return (
                 <Button
                   variant="secondary"
+                  textAlign="left"
                   key={exchange.name}
                   to={link}
                   imgInfo={{ src: icon, alt: exchange.name }}
@@ -303,6 +311,7 @@ function CentralisedExchanges({ chainId }) {
               return (
                 <Button
                   variant="secondary"
+                  textAlign="left"
                   key={exchange.name}
                   to={link}
                   imgInfo={{ src: icon, alt: exchange.name }}
