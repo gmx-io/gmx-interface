@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react";
 import { Link } from "react-router-dom";
+import openInNewTab from "img/open-new-tab.svg";
 
 type ButtonProps = {
   children: ReactNode;
@@ -23,7 +24,12 @@ export default function ButtonLink({ className, to, children, onClick, newTab = 
           }
         : {}),
     };
-    return <a {...anchorProps}>{children}</a>;
+    return (
+      <a {...anchorProps}>
+        <img className="arrow-icon" src={openInNewTab} width="100%" alt="open in new" />
+        {children}
+      </a>
+    );
   }
   return (
     <Link className={className} to={to}>

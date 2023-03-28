@@ -441,16 +441,16 @@ msgid "Buy GMX from Uniswap (make sure to select Arbitrum):"
 msgstr "Buy GMX from Uniswap (make sure to select Arbitrum):"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX from a Decentralized Exchange"
-msgstr "Buy GMX from a Decentralized Exchange"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from centralized exchanges:"
 msgstr "Buy GMX from centralized exchanges:"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from centralized services"
 msgstr "Buy GMX from centralized services"
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "Buy GMX from decentralized exchanges"
+msgstr "Buy GMX from decentralized exchanges"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX on {0}"

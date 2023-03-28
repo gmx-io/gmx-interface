@@ -163,7 +163,7 @@ export default function BuyGMX() {
 function DecentralisedExchanges({ chainId, externalLinks }) {
   const isArbitrum = chainId === ARBITRUM;
   return (
-    <Card title={t`Buy GMX from a Decentralized Exchange`}>
+    <Card title={t`Buy GMX from decentralized exchanges`}>
       <div className="App-card-content">
         {isArbitrum ? (
           <div className="exchange-info-group">

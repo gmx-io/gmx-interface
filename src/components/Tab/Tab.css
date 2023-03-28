@@ -30,7 +30,7 @@
 .Tab.block .Tab-option.active {
   opacity: 1;
   pointer-events: none;
-  background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, rgba(46, 61, 205, 1) 100%);
+  background: var(--primary-btn-bg);
   color: rgba(255, 255, 255, 1);
 }
 
