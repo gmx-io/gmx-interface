@@ -16,6 +16,7 @@ const initialHistoryBarsInfo = {
 
 export class TVDataProvider {
   lastBar: Bar | null;
+  currentBar: Bar | null;
   startTime: number;
   lastTicker: string;
   lastPeriod: string;
@@ -27,6 +28,7 @@ export class TVDataProvider {
 
   constructor() {
     this.lastBar = null;
+    this.currentBar = null;
     this.startTime = 0;
     this.lastTicker = "";
     this.lastPeriod = "";
@@ -128,8 +130,7 @@ export class TVDataProvider {
         // @ts-ignore
         const lastBar = prices[0];
         const currentCandleTime = getCurrentCandleTime(period);
-        const lastCandleTime = currentCandleTime - CHART_PERIODS[period];
-        if (lastBar.time === currentCandleTime || lastBar.time === lastCandleTime) {
+        if (lastBar.time === currentCandleTime) {
           this.lastBar = { ...lastBar, ticker };
           this.startTime = currentTime;
           this.lastTicker = ticker;
@@ -143,7 +144,6 @@ export class TVDataProvider {
   async getLiveBar(chainId: number, ticker: string, resolution: string) {
     const period = SUPPORTED_RESOLUTIONS[resolution];
     if (!ticker || !period || !chainId) return;
-
     const currentCandleTime = getCurrentCandleTime(period);
     try {
       this.lastBar = await this.getLastBar(chainId, ticker, period);
@@ -156,8 +156,9 @@ export class TVDataProvider {
 
     const currentPrice = await this.getCurrentPriceOfToken(chainId, ticker);
     const averagePriceValue = parseFloat(formatAmount(currentPrice, USD_DECIMALS, 4));
+
     if (this.lastBar.time && currentCandleTime === this.lastBar.time && ticker === this.lastBar.ticker) {
-      return {
+      this.currentBar = {
         ...this.lastBar,
         close: averagePriceValue,
         high: Math.max(this.lastBar.open, this.lastBar.high, averagePriceValue),
@@ -165,16 +166,18 @@ export class TVDataProvider {
         ticker,
       };
     } else {
+      if (!this.currentBar) return this.lastBar;
       const newBar = {
         time: currentCandleTime,
-        open: this.lastBar.close,
+        open: this.currentBar.close,
         close: averagePriceValue,
-        high: Math.max(this.lastBar.close, averagePriceValue),
-        low: Math.min(this.lastBar.close, averagePriceValue),
+        high: Math.max(this.currentBar.close, averagePriceValue),
+        low: Math.min(this.currentBar.close, averagePriceValue),
         ticker,
       };
       this.lastBar = newBar;
-      return this.lastBar;
+      this.currentBar = newBar;
     }
+    return this.currentBar;
   }
 }
