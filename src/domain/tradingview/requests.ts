@@ -96,5 +96,7 @@ export function getStableCoinPrice(period: string, from: number, to: number) {
       low: 1,
     });
   }
-  return priceData.filter((candle) => candle.time >= from && candle.time <= to);
+  return priceData
+    .filter((candle) => candle.time >= from && candle.time <= to)
+    .map((bar) => ({ ...bar, time: bar.time + timezoneOffset }));
 }
