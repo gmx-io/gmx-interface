@@ -34,6 +34,8 @@ const ICONS = {
   [AVALANCHE_FUJI]: {
     network: avalancheTestnet,
     gm: gmAvax,
+    gmx: gmxAvax,
+    glp: glpAvax,
   },
   common: {
     gmx: gmxIcon,

@@ -1,8 +1,8 @@
 import { BigNumber } from "ethers";
 import { applyFactor, getBasisPoints } from "lib/numbers";
 import { FeeItem, MarketsFeesConfigsData } from "../types";
-import { HIGH_PRICE_IMPACT_BPS } from "config/synthetics";
 import { MarketInfo } from "domain/synthetics/markets";
+import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
 
 export * from "./executionFee";
 export * from "./priceImpact";

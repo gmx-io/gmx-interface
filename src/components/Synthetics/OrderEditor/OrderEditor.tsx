@@ -35,7 +35,6 @@ import { useEffect, useMemo, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BPS_KEY } from "config/localStorage";
-import { DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS } from "config/synthetics";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
@@ -50,6 +49,7 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
 import { getNextTokenAmount } from "../Trade/utils";
 import "./OrderEditor.scss";
+import { DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS } from "config/factors";
 
 type Props = {
   positionsData: AggregatedPositionsData;

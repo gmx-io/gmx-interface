@@ -69,7 +69,7 @@ import { MarketCard } from "../../MarketCard/MarketCard";
 
 import { TradeFeesRow } from "components/Synthetics/TradeFeesRow/TradeFeesRow";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
-import { DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS } from "config/synthetics";
+
 import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
@@ -99,6 +99,7 @@ import { ClaimModal } from "components/Synthetics/ClaimModal/ClaimModal";
 import { ClaimableCard } from "components/Synthetics/ClaimableCard/ClaimableCard";
 import { getByKey } from "lib/objects";
 import "./TradeBox.scss";
+import { DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS } from "config/factors";
 
 type Props = {
   tradeType?: TradeType;

@@ -5,7 +5,6 @@ import { MarketInfo, getMarketName, getPoolUsd } from "domain/synthetics/markets
 import { TokenData, convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
-import { MARKET_NAME_PLACEHOLDER } from "config/synthetics";
 
 import "./MarketStats.scss";
 
@@ -18,7 +17,7 @@ export function MarketStats(p: Props) {
   const { marketInfo, marketToken } = p;
   const { chainId } = useChainId();
 
-  const marketName = marketInfo ? getMarketName(marketInfo) : `GM: ${MARKET_NAME_PLACEHOLDER}`;
+  const marketName = marketInfo ? getMarketName(marketInfo) : `GM: ---/--- [-------]`;
 
   const marketPrice = marketToken?.prices?.maxPrice;
   const marketBalance = marketToken?.balance;

@@ -8,7 +8,6 @@ import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
 import Tab from "components/Tab/Tab";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY } from "config/localStorage";
-import { HIGH_PRICE_IMPACT_BPS } from "config/synthetics";
 import { convertTokenAddress, NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import {
   estimateExecuteDepositGasLimit,
@@ -45,6 +44,7 @@ import { IoMdSwap } from "react-icons/io";
 import { GmConfirmationBox } from "../GmConfirmationBox/GmConfirmationBox";
 import { GmOrderStatus } from "../GmOrderStatus/GmOrderStatus";
 import "./GmSwapBox.scss";
+import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
 
 type Props = {
   selectedMarketAddress?: string;
