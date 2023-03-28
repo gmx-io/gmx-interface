@@ -5,6 +5,7 @@ import { REFERRAL_CODE_REGEX } from "./referralsHelper";
 import { useDebounce } from "lib/useDebounce";
 import Button from "components/Button/Button";
 import { useAccount, useChainId as useChainIdWagmi } from "wagmi";
+import useIsMounted from "lib/useIsMounted";
 
 function JoinReferralCode({ setPendingTxns, pendingTxns, active, connectWallet }) {
   return (
@@ -44,6 +45,7 @@ export function ReferralCodeForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [referralCodeExists, setReferralCodeExists] = useState(true);
   const debouncedReferralCode = useDebounce(referralCode, 300);
+  const isMounted = useIsMounted();
 
   function getPrimaryText() {
     const isEdit = type === "edit";
@@ -113,7 +115,6 @@ export function ReferralCodeForm({
   }
 
   useEffect(() => {
-    let cancelled = false;
     async function checkReferralCode() {
       if (debouncedReferralCode === "" || !REFERRAL_CODE_REGEX.test(debouncedReferralCode)) {
         setIsValidating(false);
@@ -123,16 +124,13 @@ export function ReferralCodeForm({
 
       setIsValidating(true);
       const codeExists = await validateReferralCodeExists(debouncedReferralCode, chainId);
-      if (!cancelled) {
+      if (isMounted) {
         setReferralCodeExists(codeExists);
         setIsValidating(false);
       }
     }
     checkReferralCode();
-    return () => {
-      cancelled = true;
-    };
-  }, [debouncedReferralCode, chainId]);
+  }, [debouncedReferralCode, chainId, isMounted]);
 
   useEffect(() => {
     inputRef.current.focus();

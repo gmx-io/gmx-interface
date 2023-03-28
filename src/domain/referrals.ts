@@ -291,7 +291,7 @@ export function useReferralsData(chainId, account) {
   };
 }
 
-export async function registerReferralCode(chainId, referralCode, library, opts) {
+export async function registerReferralCode(chainId, referralCode, opts) {
   const signer = await fetchSigner();
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const referralCodeHex = encodeReferralCode(referralCode);
@@ -326,22 +326,27 @@ export function useUserReferralCode(account) {
   const localStorageCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
 
-  const { data, refetch } = useContractReads({
-    contracts: compact([
-      account && {
-        address: referralStorageAddress as any,
-        abi: ReferralStorage.abi,
-        functionName: "traderReferralCodes",
-        args: [account],
+  const referralStorageContract = {
+    address: referralStorageAddress as string,
+    abi: ReferralStorage.abi,
+  };
+
+  const contracts = compact([
+    account && {
+      ...referralStorageContract,
+      functionName: "traderReferralCodes",
+      args: [account],
+    },
+    localStorageCode &&
+      REGEX_VERIFY_BYTES32.test(localStorageCode) && {
+        ...referralStorageContract,
+        functionName: "codeOwners",
+        args: [localStorageCode],
       },
-      localStorageCode &&
-        REGEX_VERIFY_BYTES32.test(localStorageCode) && {
-          address: referralStorageAddress as any,
-          abi: ReferralStorage.abi,
-          functionName: "codeOwners",
-          args: [localStorageCode],
-        },
-    ]),
+  ]);
+
+  const { data, refetch } = useContractReads({
+    contracts,
   });
 
   const [onChainCode, localStorageCodeOwner] = data?.slice() ?? [];

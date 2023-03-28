@@ -180,7 +180,7 @@ export default function SwapBox(props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [modalError, setModalError] = useState(false);
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
-  const { attachedOnChain, userReferralCode } = useUserReferralCode(library, chainId, account);
+  const { attachedOnChain, userReferralCode } = useUserReferralCode(account);
   const { data: signer } = useSigner();
 
   let allowedSlippage = savedSlippageAmount;
