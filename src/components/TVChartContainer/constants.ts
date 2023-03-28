@@ -3,6 +3,7 @@ import { formatTVDate, formatTVTime } from "lib/dates";
 
 const RED = "#fa3c58";
 const GREEN = "#0ecc83";
+export const DEFAULT_PERIOD = "4h";
 
 const chartStyleOverrides = ["candleStyle", "hollowCandleStyle", "haStyle"].reduce((acc, cv) => {
   acc[`mainSeriesProperties.${cv}.drawWick`] = true;
@@ -73,7 +74,7 @@ export const defaultChartProps = {
   custom_css_url: "/tradingview-chart.css",
   loading_screen: { backgroundColor: "#16182e", foregroundColor: "#2962ff" },
   favorites: {
-    intervals: ["5", "15", "60", "240"],
+    intervals: ["5", "15", "60", "240", "1D"],
   },
   custom_formatters: {
     timeFormatter: {

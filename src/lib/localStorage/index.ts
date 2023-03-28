@@ -37,7 +37,7 @@ export function useLocalStorageByChainId<T>(
 }
 
 export function useLocalStorageSerializeKey<T>(
-  key: string,
+  key: string | any[],
   value: T,
   opts?: {
     raw: boolean;

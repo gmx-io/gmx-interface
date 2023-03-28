@@ -55,6 +55,7 @@ import { getNativeToken, getToken, getTokens, getWhitelistedTokens, getWrappedTo
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getIcon } from "config/icons";
+import Button from "components/Button/Button";
 
 const { AddressZero } = ethers.constants;
 
@@ -950,9 +951,9 @@ export default function GlpSwap(props) {
             </div>
           </div>
           <div className="GlpSwap-cta Exchange-swap-button-container">
-            <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+            <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
               {getPrimaryText()}
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -1179,12 +1180,13 @@ export default function GlpSwap(props) {
                   </td>
                   <td>{renderFees()}</td>
                   <td>
-                    <button
-                      className={cx("App-button-option action-btn", isBuying ? "buying" : "selling")}
+                    <Button
+                      variant="semi-clear"
+                      className={cx("w-100", isBuying ? "buying" : "selling")}
                       onClick={() => selectToken(token)}
                     >
                       {isBuying ? t`Buy with ${token.symbol}` : t`Sell for ${token.symbol}`}
-                    </button>
+                    </Button>
                   </td>
                 </tr>
               );
@@ -1368,14 +1370,14 @@ export default function GlpSwap(props) {
                   <div className="App-card-divider"></div>
                   <div className="App-card-options">
                     {isBuying && (
-                      <button className="App-button-option App-card-option" onClick={() => selectToken(token)}>
+                      <Button variant="semi-clear" onClick={() => selectToken(token)}>
                         <Trans>Buy with {token.symbol}</Trans>
-                      </button>
+                      </Button>
                     )}
                     {!isBuying && (
-                      <button className="App-button-option App-card-option" onClick={() => selectToken(token)}>
+                      <Button variant="semi-clear" onClick={() => selectToken(token)}>
                         <Trans>Sell for {token.symbol}</Trans>
-                      </button>
+                      </Button>
                     )}
                   </div>
                 </div>
