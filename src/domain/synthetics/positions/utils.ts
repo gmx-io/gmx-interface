@@ -10,8 +10,8 @@ import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "lib/legacy";
 import { applyFactor, expandDecimals, formatAmount, formatUsd, roundUpDivision } from "lib/numbers";
-import { MarketsFeesConfigsData, getBorrowingFeeRateUsd, getMarketFeesConfig, getPositionFee } from "../fees";
-import { TokenPrices, TokensData, convertToUsd, getTokenData } from "../tokens";
+import { getBorrowingFeeRateUsd, getFundingFeeRateUsd, getPositionFee } from "../fees";
+import { TokenPrices, convertToUsd } from "../tokens";
 import { AggregatedPositionData, Position, PositionsData } from "./types";
 
 export function getPosition(positionsData: PositionsData, positionKey?: string) {
@@ -85,6 +85,8 @@ export function getAggregatedPositionData(
     collateralUsd && !collateralUsd.eq(0) && pnl ? pnl.mul(BASIS_POINTS_DIVISOR).div(collateralUsd) : BigNumber.from(0);
 
   const borrowingFeeRateUsdPerDay = getBorrowingFeeRateUsd(market, position.isLong, position.sizeInUsd, 60 * 60 * 24);
+
+  const fundingFeeRateUsdPerDay = getFundingFeeRateUsd(market, position.isLong, position.sizeInUsd, 60 * 60 * 24);
 
   const pendingFundingFeesUsd =
     collateralPrice && collateralToken

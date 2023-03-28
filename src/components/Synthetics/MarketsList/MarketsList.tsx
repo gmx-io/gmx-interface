@@ -4,16 +4,8 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { getIcon } from "config/icons";
 import { getToken } from "config/tokens";
 import { getFundingFeeFactor } from "domain/synthetics/fees";
-import { useMarketsFeesConfigs } from "domain/synthetics/fees/useMarketsFeesConfigs";
-import {
-  Market,
-  getPoolValue,
-  getReservedUsd,
-  useMarketsData,
-  useMarketsPoolsData,
-  useOpenInterestData,
-} from "domain/synthetics/markets";
-import { TokenData, getMidPrice, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
+import { Market, getPoolValue, getReservedUsd, useMarketsInfo } from "domain/synthetics/markets";
+import { TokenData, getMidPrice } from "domain/synthetics/tokens";
 import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { BASIS_POINTS_DIVISOR, importImage } from "lib/legacy";
@@ -35,16 +27,12 @@ function formatFundingRate(fundingRate?: BigNumber) {
 export function MarketsList() {
   const { chainId } = useChainId();
 
-  const { marketsData } = useMarketsData(chainId);
-  const { tokensData } = useAvailableTokensData(chainId);
-  const { poolsData } = useMarketsPoolsData(chainId);
-  const { openInterestData } = useOpenInterestData(chainId);
-  const { marketsFeesConfigs } = useMarketsFeesConfigs(chainId);
+  const { marketsInfoData } = useMarketsInfo(chainId);
 
   const isMobile = useMedia("(max-width: 1200px)");
 
   const indexTokensStats = useMemo(() => {
-    const markets = Object.values(marketsData);
+    const markets = Object.values(marketsInfoData);
     const indexMap: {
       [address: string]: {
         token: TokenData;
@@ -65,7 +53,7 @@ export function MarketsList() {
 
     for (const market of markets) {
       if (!indexMap[market.indexTokenAddress]) {
-        const token = getTokenData(tokensData, market.indexTokenAddress)!;
+        const token = market.indexToken;
 
         if (!token.prices) {
           continue;
@@ -87,30 +75,15 @@ export function MarketsList() {
 
       const indexTokenStats = indexMap[market.indexTokenAddress];
 
-      const poolValueUsd =
-        getPoolValue(marketsData, openInterestData, poolsData, tokensData, market.marketTokenAddress, true) ||
-        BigNumber.from(0);
+      const poolValueUsd = getPoolValue(market, true) || BigNumber.from(0);
 
-      const longReservedUsd = getReservedUsd(
-        marketsData,
-        openInterestData,
-        tokensData,
-        market.marketTokenAddress,
-        true
-      );
+      const longReservedUsd = getReservedUsd(market, true);
 
-      const shortReservedUsd = getReservedUsd(
-        marketsData,
-        openInterestData,
-        tokensData,
-        market.marketTokenAddress,
-        false
-      );
+      const shortReservedUsd = getReservedUsd(market, false);
 
       const totalReservedUsd = longReservedUsd?.add(shortReservedUsd || 0);
 
-      const fundingRate =
-        getFundingFeeFactor(marketsFeesConfigs, market.marketTokenAddress, true, 60 * 60) || BigNumber.from(0);
+      const fundingRate = getFundingFeeFactor(market, true, 60 * 60) || BigNumber.from(0);
 
       if (fundingRate.gt(indexTokenStats.maxFundingRate)) {
         indexTokenStats.maxFundingRate = fundingRate;
@@ -143,7 +116,7 @@ export function MarketsList() {
     }
 
     return Object.values(indexMap);
-  }, [marketsData, marketsFeesConfigs, openInterestData, poolsData, tokensData]);
+  }, [marketsInfoData]);
 
   return (
     <>

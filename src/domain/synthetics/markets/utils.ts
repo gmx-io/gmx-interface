@@ -200,7 +200,7 @@ export function getAvailableUsdLiquidityForCollateral(marketInfo: MarketInfo, to
 }
 
 // TODO: for deposits / withdrawals in minTokenAmount
-export function getPoolValue(marketInfo: MarketInfo, marketAddress: string | undefined, maximize: boolean) {
+export function getPoolValue(marketInfo: MarketInfo, maximize: boolean) {
   const longPoolUsd = getPoolUsd(marketInfo, marketInfo.longTokenAddress, maximize ? "maxPrice" : "minPrice");
 
   const shortPoolUsd = getPoolUsd(marketInfo, marketInfo.shortTokenAddress, maximize ? "maxPrice" : "minPrice");

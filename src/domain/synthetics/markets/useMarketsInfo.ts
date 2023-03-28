@@ -3,6 +3,7 @@ import DataStore from "abis/DataStore.json";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import { getContract } from "config/contracts";
 import {
+  BORROWING_FEE_RECEIVER_FACTOR_KEY,
   claimableFundingAmountKey,
   cumulativeBorrowingFactorKey,
   maxPnlFactorForWithdrawalsKey,
@@ -175,6 +176,10 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
               cummulativeBorrowingFactorShort: {
                 methodName: "getUint",
                 params: [cumulativeBorrowingFactorKey(marketAddress, false)],
+              },
+              borrowingFeeReceiverFactor: {
+                methodName: "getUint",
+                params: [BORROWING_FEE_RECEIVER_FACTOR_KEY],
               },
               positionImpactPoolAmount: {
                 methodName: "getUint",
@@ -353,6 +358,7 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
           totalBorrowingShort: dataStoreValues.totalBorrowingShort.returnValues[0],
           cummulativeBorrowingFactorLong: dataStoreValues.cummulativeBorrowingFactorLong.returnValues[0],
           cummulativeBorrowingFactorShort: dataStoreValues.cummulativeBorrowingFactorShort.returnValues[0],
+          borrowingFeeReceiverFactor: dataStoreValues.borrowingFeeReceiverFactor.returnValues[0],
           positionImpactPoolAmount: dataStoreValues.positionImpactPoolAmount.returnValues[0],
           swapImpactPoolAmountLong: dataStoreValues.swapImpactPoolAmountLong.returnValues[0],
           swapImpactPoolAmountShort: dataStoreValues.swapImpactPoolAmountShort.returnValues[0],

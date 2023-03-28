@@ -78,12 +78,9 @@ export function PositionEditor(p: Props) {
     position?.collateralToken?.prices?.maxPrice
   );
 
-  const { marketsFeesConfigs } = useMarketsFeesConfigs(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimitsConfig(chainId);
-
-  const feesConfig = getMarketFeesConfig(marketsFeesConfigs, position?.marketAddress);
 
   const collateralToken = position?.collateralToken;
 
