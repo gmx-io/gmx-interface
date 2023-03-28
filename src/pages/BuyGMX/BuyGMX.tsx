@@ -110,7 +110,7 @@ export default function BuyGMX() {
                   const link = exchange.links[chainId];
                   return (
                     <Button
-                      variant="clear"
+                      variant="secondary"
                       key={exchange.name}
                       to={link}
                       imgInfo={{ src: icon, alt: exchange.name }}
@@ -140,7 +140,7 @@ export default function BuyGMX() {
                   const link = exchange.links[chainId];
                   return (
                     <Button
-                      variant="clear"
+                      variant="secondary"
                       key={exchange.name}
                       to={link}
                       imgInfo={{ src: icon, alt: exchange.name }}
@@ -172,7 +172,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
             </div>
             <div className="buttons-group col-1">
               <Button
-                variant="clear"
+                variant="secondary"
                 imgInfo={{ src: uniswapArbitrumIcon, alt: "Uniswap" }}
                 to={externalLinks.buyGmx.uniswap}
                 newTab
@@ -188,7 +188,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
             </div>
             <div className="buttons-group col-1">
               <Button
-                variant="clear"
+                variant="secondary"
                 to={externalLinks.buyGmx.traderjoe}
                 imgInfo={{ src: traderjoeIcon, alt: "Traderjoe" }}
                 newTab
@@ -208,7 +208,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
               const link = exchange.links[chainId];
               return (
                 <Button
-                  variant="clear"
+                  variant="secondary"
                   key={exchange.name}
                   to={link}
                   imgInfo={{ src: icon, alt: exchange.name }}
@@ -230,7 +230,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
               const link = exchange.links[chainId];
               return (
                 <Button
-                  variant="clear"
+                  variant="secondary"
                   key={exchange.name}
                   to={link}
                   imgInfo={{ src: icon, alt: exchange.name }}
@@ -249,7 +249,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
             </div>
             <div className="buttons-group col-1">
               <Button
-                variant="clear"
+                variant="secondary"
                 to={"https://app.bondprotocol.finance/#/issuers/GMX"}
                 imgInfo={{ src: bondProtocolIcon, alt: "Bond Protocol" }}
                 newTab
@@ -278,7 +278,7 @@ function CentralisedExchanges({ chainId }) {
               const link = exchange.links[chainId];
               return (
                 <Button
-                  variant="clear"
+                  variant="secondary"
                   key={exchange.name}
                   to={link}
                   imgInfo={{ src: icon, alt: exchange.name }}
@@ -302,7 +302,7 @@ function CentralisedExchanges({ chainId }) {
 
               return (
                 <Button
-                  variant="clear"
+                  variant="secondary"
                   key={exchange.name}
                   to={link}
                   imgInfo={{ src: icon, alt: exchange.name }}

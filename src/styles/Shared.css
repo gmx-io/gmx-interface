@@ -440,7 +440,6 @@ button.btn-link:hover .logout-icon {
 .nowrap {
   white-space: nowrap;
 }
-
 .gap-right > *:not(:last-child) {
   margin-right: 1rem;
 }

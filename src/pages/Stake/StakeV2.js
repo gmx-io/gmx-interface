@@ -1648,21 +1648,21 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               </div>
               <div className="App-card-divider" />
               <div className="App-card-buttons m-0">
-                <Button variant="clear" to="/buy_gmx">
+                <Button variant="secondary" to="/buy_gmx">
                   <Trans>Buy GMX</Trans>
                 </Button>
                 {active && (
-                  <Button variant="clear" onClick={() => showStakeGmxModal()}>
+                  <Button variant="secondary" onClick={() => showStakeGmxModal()}>
                     <Trans>Stake</Trans>
                   </Button>
                 )}
                 {active && (
-                  <Button variant="clear" onClick={() => showUnstakeGmxModal()}>
+                  <Button variant="secondary" onClick={() => showUnstakeGmxModal()}>
                     <Trans>Unstake</Trans>
                   </Button>
                 )}
                 {active && (
-                  <Button variant="clear" to="/begin_account_transfer">
+                  <Button variant="secondary" to="/begin_account_transfer">
                     <Trans>Transfer Account</Trans>
                   </Button>
                 )}
@@ -1722,17 +1722,17 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 <div className="App-card-divider"></div>
                 <div className="App-card-buttons m-0">
                   {active && (
-                    <Button variant="clear" onClick={() => setIsCompoundModalVisible(true)}>
+                    <Button variant="secondary" onClick={() => setIsCompoundModalVisible(true)}>
                       <Trans>Compound</Trans>
                     </Button>
                   )}
                   {active && (
-                    <Button variant="clear" onClick={() => setIsClaimModalVisible(true)}>
+                    <Button variant="secondary" onClick={() => setIsClaimModalVisible(true)}>
                       <Trans>Claim</Trans>
                     </Button>
                   )}
                   {!active && (
-                    <Button variant="clear" onClick={() => connectWallet()}>
+                    <Button variant="secondary" onClick={() => connectWallet()}>
                       <Trans>Connect Wallet</Trans>
                     </Button>
                   )}
@@ -1876,15 +1876,15 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               </div>
               <div className="App-card-divider"></div>
               <div className="App-card-buttons m-0">
-                <Button variant="clear" to="/buy_glp">
+                <Button variant="secondary" to="/buy_glp">
                   <Trans>Buy GLP</Trans>
                 </Button>
-                <Button variant="clear" to="/buy_glp#redeem">
+                <Button variant="secondary" to="/buy_glp#redeem">
                   <Trans>Sell GLP</Trans>
                 </Button>
                 {hasInsurance && (
                   <Button
-                    variant="clear"
+                    variant="secondary"
                     to="https://app.insurace.io/Insurance/Cart?id=124&referrer=545066382753150189457177837072918687520318754040"
                   >
                     <Trans>Purchase Insurance</Trans>
@@ -1964,17 +1964,17 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               <div className="App-card-divider"></div>
               <div className="App-card-buttons m-0">
                 {active && (
-                  <Button variant="clear" onClick={() => showStakeEsGmxModal()}>
+                  <Button variant="secondary" onClick={() => showStakeEsGmxModal()}>
                     <Trans>Stake</Trans>
                   </Button>
                 )}
                 {active && (
-                  <Button variant="clear" onClick={() => showUnstakeEsGmxModal()}>
+                  <Button variant="secondary" onClick={() => showUnstakeEsGmxModal()}>
                     <Trans>Unstake</Trans>
                   </Button>
                 )}
                 {!active && (
-                  <Button variant="clear" onClick={() => connectWallet()}>
+                  <Button variant="secondary" onClick={() => connectWallet()}>
                     <Trans> Connect Wallet</Trans>
                   </Button>
                 )}
@@ -2098,17 +2098,17 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 <div className="App-card-divider"></div>
                 <div className="App-card-buttons m-0">
                   {!active && (
-                    <Button variant="clear" onClick={() => connectWallet()}>
+                    <Button variant="secondary" onClick={() => connectWallet()}>
                       <Trans>Connect Wallet</Trans>
                     </Button>
                   )}
                   {active && (
-                    <Button variant="clear" onClick={() => showGmxVesterDepositModal()}>
+                    <Button variant="secondary" onClick={() => showGmxVesterDepositModal()}>
                       <Trans>Deposit</Trans>
                     </Button>
                   )}
                   {active && (
-                    <Button variant="clear" onClick={() => showGmxVesterWithdrawModal()}>
+                    <Button variant="secondary" onClick={() => showGmxVesterWithdrawModal()}>
                       <Trans>Withdraw</Trans>
                     </Button>
                   )}
@@ -2185,17 +2185,17 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 <div className="App-card-divider"></div>
                 <div className="App-card-buttons m-0">
                   {!active && (
-                    <Button variant="clear" onClick={() => connectWallet()}>
+                    <Button variant="secondary" onClick={() => connectWallet()}>
                       <Trans>Connect Wallet</Trans>
                     </Button>
                   )}
                   {active && (
-                    <Button variant="clear" onClick={() => showGlpVesterDepositModal()}>
+                    <Button variant="secondary" onClick={() => showGlpVesterDepositModal()}>
                       <Trans>Deposit</Trans>
                     </Button>
                   )}
                   {active && (
-                    <Button variant="clear" onClick={() => showGlpVesterWithdrawModal()}>
+                    <Button variant="secondary" onClick={() => showGlpVesterWithdrawModal()}>
                       <Trans>Withdraw</Trans>
                     </Button>
                   )}

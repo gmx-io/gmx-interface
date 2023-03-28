@@ -43,30 +43,7 @@
     }
   }
 
-  &.semi-clear {
-    background: rgb(43, 55, 94);
-    color: #fff;
-    border-radius: var(--border-radius-sm);
-    line-height: 1;
-    letter-spacing: 0;
-    position: relative;
-
-    &:not([disabled]):hover {
-      background: rgb(54, 69, 117);
-    }
-
-    &:not([disabled]):active {
-      background: rgb(64, 82, 141);
-    }
-    > .arrow-icon {
-      position: absolute;
-      right: 0.5rem;
-      top: 0.5rem;
-      max-width: 0.8rem;
-    }
-  }
-
-  &.clear {
+  &.secondary {
     background-color: rgba(180, 187, 255, 0.1);
     border-radius: var(--border-radius-sm);
     color: #fff;

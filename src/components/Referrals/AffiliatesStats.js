@@ -123,7 +123,7 @@ function AffiliatesStats({
                   {referrerTierInfo && t`Tier ${getTierIdDisplay(tierId)} (${tierRebateInfo[tierId]}% rebate)`}
                 </span>
               </p>
-              <Button variant="clear" onClick={open}>
+              <Button variant="secondary" onClick={open}>
                 <FiPlus />{" "}
                 <span className="ml-small">
                   <Trans>Create</Trans>

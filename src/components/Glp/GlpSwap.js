@@ -1181,7 +1181,7 @@ export default function GlpSwap(props) {
                   <td>{renderFees()}</td>
                   <td>
                     <Button
-                      variant="semi-clear"
+                      variant="secondary"
                       className={cx("w-100", isBuying ? "buying" : "selling")}
                       onClick={() => selectToken(token)}
                     >
@@ -1370,12 +1370,12 @@ export default function GlpSwap(props) {
                   <div className="App-card-divider"></div>
                   <div className="App-card-options">
                     {isBuying && (
-                      <Button variant="semi-clear" onClick={() => selectToken(token)}>
+                      <Button variant="secondary" onClick={() => selectToken(token)}>
                         <Trans>Buy with {token.symbol}</Trans>
                       </Button>
                     )}
                     {!isBuying && (
-                      <Button variant="semi-clear" onClick={() => selectToken(token)}>
+                      <Button variant="secondary" onClick={() => selectToken(token)}>
                         <Trans>Sell for {token.symbol}</Trans>
                       </Button>
                     )}

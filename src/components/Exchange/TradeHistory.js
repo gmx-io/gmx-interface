@@ -510,12 +510,12 @@ export default function TradeHistory(props) {
       {shouldShowPaginationButtons && (
         <div className="gap-right">
           {pageIndex > 0 && (
-            <Button variant="semi-clear" onClick={loadPrevPage}>
+            <Button variant="secondary" onClick={loadPrevPage}>
               <Trans>Prev</Trans>
             </Button>
           )}
           {trades && trades.length >= TRADES_PAGE_SIZE && (
-            <Button variant="semi-clear" onClick={loadNextPage}>
+            <Button variant="secondary" onClick={loadNextPage}>
               <Trans>Next</Trans>
             </Button>
           )}
