@@ -3,7 +3,6 @@ import cx from "classnames";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Checkbox from "components/Checkbox/Checkbox";
 import { Dropdown, DropdownOption } from "components/Dropdown/Dropdown";
-import { InfoRow } from "components/InfoRow/InfoRow";
 import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import Tab from "components/Tab/Tab";
@@ -95,6 +94,7 @@ import { AcceptbablePriceImpactEditor } from "../AcceptablePriceImpactEditor/Acc
 import { ConfirmationBox } from "../ConfirmationBox/ConfirmationBox";
 
 import { useWeb3React } from "@web3-react/core";
+import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { ClaimModal } from "components/Synthetics/ClaimModal/ClaimModal";
 import { ClaimableCard } from "components/Synthetics/ClaimableCard/ClaimableCard";
 import { getByKey } from "lib/objects";
@@ -1180,7 +1180,7 @@ export function TradeBox(p: Props) {
           </>
         )}
 
-        <InfoRow
+        <ExchangeInfoRow
           className="SwapBox-info-row"
           label={t`Market`}
           value={
@@ -1200,7 +1200,7 @@ export function TradeBox(p: Props) {
           }
         />
 
-        <InfoRow
+        <ExchangeInfoRow
           className="SwapBox-info-row"
           label={
             optimalPositionMarkets.shouldShowMarketTooltip ? (
@@ -1298,7 +1298,7 @@ export function TradeBox(p: Props) {
         />
 
         {collateralAddress && availablePositionCollaterals && (
-          <InfoRow
+          <ExchangeInfoRow
             label={
               optimalPositionMarkets.shouldShowCollateralTooltip ? (
                 <Tooltip
@@ -1369,7 +1369,7 @@ export function TradeBox(p: Props) {
 
     return (
       <>
-        <InfoRow
+        <ExchangeInfoRow
           className="SwapBox-info-row"
           label={t`Leverage`}
           value={
@@ -1384,12 +1384,16 @@ export function TradeBox(p: Props) {
           }
         />
 
-        <InfoRow className="SwapBox-info-row" label={t`Entry Price`} value={formatUsd(entryMarkPrice) || "-"} />
+        <ExchangeInfoRow className="SwapBox-info-row" label={t`Entry Price`} value={formatUsd(entryMarkPrice) || "-"} />
 
-        <InfoRow className="SwapBox-info-row" label={t`Acceptable Price`} value={formatUsd(acceptablePrice) || "-"} />
+        <ExchangeInfoRow
+          className="SwapBox-info-row"
+          label={t`Acceptable Price`}
+          value={formatUsd(acceptablePrice) || "-"}
+        />
 
         {isMarket && (
-          <InfoRow
+          <ExchangeInfoRow
             className="SwapBox-info-row"
             label={t`Price Impact`}
             value={
@@ -1401,7 +1405,7 @@ export function TradeBox(p: Props) {
         )}
 
         {isLimit && (
-          <InfoRow
+          <ExchangeInfoRow
             className="SwapBox-info-row"
             label={t`Acceptable Price Impact`}
             value={
@@ -1417,7 +1421,7 @@ export function TradeBox(p: Props) {
             }
           />
         )}
-        <InfoRow
+        <ExchangeInfoRow
           className="SwapBox-info-row"
           label={t`Liq. Price`}
           value={
@@ -1439,7 +1443,7 @@ export function TradeBox(p: Props) {
     return (
       <>
         {existingPosition && (
-          <InfoRow
+          <ExchangeInfoRow
             className="SwapBox-info-row"
             label={t`Leverage`}
             value={
@@ -1456,7 +1460,7 @@ export function TradeBox(p: Props) {
         )}
 
         {existingPosition?.sizeInUsd.gt(0) && (
-          <InfoRow
+          <ExchangeInfoRow
             className="SwapBox-info-row"
             label={t`Size`}
             value={
@@ -1469,7 +1473,7 @@ export function TradeBox(p: Props) {
         )}
 
         {existingPosition && (
-          <InfoRow
+          <ExchangeInfoRow
             className="SwapBox-info-row"
             label={t`Collateral (${existingPosition?.collateralToken?.symbol})`}
             value={
@@ -1481,25 +1485,25 @@ export function TradeBox(p: Props) {
           />
         )}
 
-        <InfoRow
+        <ExchangeInfoRow
           className="SwapBox-info-row"
           label={t`Mark Price`}
           value={formatUsd(decreasePositionParams?.exitMarkPrice) || "-"}
         />
 
-        <InfoRow
+        <ExchangeInfoRow
           className="SwapBox-info-row"
           label={t`Trigger Price`}
           value={formatUsd(decreasePositionParams?.triggerPrice) || "-"}
         />
 
-        <InfoRow
+        <ExchangeInfoRow
           className="SwapBox-info-row"
           label={t`Acceptable Price`}
           value={formatUsd(decreasePositionParams?.acceptablePrice) || "-"}
         />
 
-        <InfoRow
+        <ExchangeInfoRow
           className="SwapBox-info-row"
           label={t`Acceptable Price Impact`}
           value={
@@ -1513,7 +1517,7 @@ export function TradeBox(p: Props) {
         />
 
         {existingPosition && (
-          <InfoRow
+          <ExchangeInfoRow
             className="SwapBox-info-row"
             label={t`Liq. Price`}
             value={

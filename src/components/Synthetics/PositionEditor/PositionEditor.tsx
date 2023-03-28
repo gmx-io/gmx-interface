@@ -2,7 +2,6 @@ import { Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import Token from "abis/Token.json";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import { InfoRow } from "components/InfoRow/InfoRow";
 import Modal from "components/Modal/Modal";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import Tab from "components/Tab/Tab";
@@ -41,10 +40,11 @@ import { ErrorCode, ErrorDisplayType } from "components/Exchange/constants";
 import { getContract } from "config/contracts";
 import { useGasLimitsConfig } from "domain/synthetics/fees/useGasLimitsConfig";
 
+import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
+import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { usePositionsConstants } from "domain/synthetics/positions/usePositionsConstants";
 import { contractFetcher } from "lib/contracts";
 import useSWR from "swr";
-import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import "./PositionEditor.scss";
 
 type Props = {
@@ -354,8 +354,8 @@ export function PositionEditor(p: Props) {
 
         <div className="PositionEditor-info-box">
           {/* {minExecutionFeeErrorMessage && <div className="Confirmation-box-warning">{minExecutionFeeErrorMessage}</div>} */}
-          <InfoRow label={t`Size`} value={formatUsd(position?.sizeInUsd)} />
-          <InfoRow
+          <ExchangeInfoRow label={t`Size`} value={formatUsd(position?.sizeInUsd)} />
+          <ExchangeInfoRow
             label={t`Collateral (${position?.collateralToken?.symbol})`}
             value={
               <ValueTransition
@@ -370,7 +370,7 @@ export function PositionEditor(p: Props) {
               />
             }
           />
-          <InfoRow
+          <ExchangeInfoRow
             label={t`Leverage`}
             value={
               <ValueTransition
@@ -383,8 +383,8 @@ export function PositionEditor(p: Props) {
               />
             }
           />
-          <InfoRow label={t`Mark Price`} value={formatUsd(position?.markPrice)} />
-          <InfoRow
+          <ExchangeInfoRow label={t`Mark Price`} value={formatUsd(position?.markPrice)} />
+          <ExchangeInfoRow
             label={t`Liq Price`}
             value={
               <ValueTransition
@@ -399,7 +399,7 @@ export function PositionEditor(p: Props) {
           />
 
           {position?.pendingBorrowingFees?.gt(0) && withdrawUsd?.gt(0) && (
-            <InfoRow
+            <ExchangeInfoRow
               label={t`Borrow Fee`}
               value={
                 <Tooltip
@@ -417,7 +417,7 @@ export function PositionEditor(p: Props) {
           )}
 
           {position?.pendingFundingFeesUsd?.gt(0) && withdrawUsd?.gt(0) && (
-            <InfoRow
+            <ExchangeInfoRow
               label={t`Funding Fee`}
               value={
                 <Tooltip
@@ -434,7 +434,7 @@ export function PositionEditor(p: Props) {
             />
           )}
 
-          {/* <InfoRow
+          {/* <ExchangeInfoRow
             label={t`Fees and price impact`}
             value={<Tooltip handle={"$0.00"} position="right-top" renderContent={() => "TODO"} />}
           /> */}
