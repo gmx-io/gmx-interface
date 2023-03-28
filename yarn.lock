@@ -8874,12 +8874,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"customize-cra@npm:1.0.0":
-  version: 1.0.0
-  resolution: "customize-cra@npm:1.0.0"
+"customize-cra@npm:0.2.11":
+  version: 0.2.11
+  resolution: "customize-cra@npm:0.2.11"
   dependencies:
     lodash.flow: ^3.5.0
-  checksum: b38c48a607efc2321e6f2f12a3b53f3497b2f9b0008b48242524a92a1f26f8ae50bd73c97526e7d89c32b51f53711948e0da8f7e3618c9875087227a11a5feeb
+  checksum: 54719dfbfc38d203ba079c6c95a408b4bf3d7037febb1899b2c16d4aaa9b40fdb1d6e1cec4cca97422e2a20e20df1de84b5a70d29a524f76932348de6c24a466
   languageName: node
   linkType: hard
 
@@ -11308,7 +11308,7 @@ __metadata:
     bigdecimal: 0.6.1
     body-scroll-lock: 4.0.0-beta.0
     classnames: 2.3.1
-    customize-cra: 1.0.0
+    customize-cra: 0.2.11
     date-fns: 2.27.0
     env-cmd: ^10.1.0
     eslint: 7.32.0
