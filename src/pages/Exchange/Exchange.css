@@ -656,6 +656,7 @@ table.Exchange-list th {
   grid-template-columns: auto auto;
   font-size: var(--font-sm);
   padding-bottom: 1.25rem;
+  line-height: 1;
 }
 
 .Exchange-swap-section-bottom {

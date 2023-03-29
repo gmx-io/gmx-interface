@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import Tooltip from "../Tooltip/Tooltip";
 import { t, Trans } from "@lingui/macro";
 import Slider, { SliderTooltip } from "rc-slider";
-import { motion } from "framer-motion";
 import "rc-slider/assets/index.css";
 import "./SwapBox.scss";
 
@@ -1896,10 +1895,6 @@ export default function SwapBox(props) {
 
   return (
     <div className="Exchange-swap-box">
-      {/* <div className="Exchange-swap-wallet-box App-box">
-        {active && <div className="Exchange-swap-account" >
-        </div>}
-      </div> */}
       <div className="Exchange-swap-box-inner App-box-highlight">
         <div>
           <Tab
@@ -2128,7 +2123,7 @@ export default function SwapBox(props) {
                 data-is-on={isLeverageSliderEnabled}
                 onClick={() => setIsLeverageSliderEnabled(!isLeverageSliderEnabled)}
               >
-                <motion.div className="handle" layout transition={{ type: "spring", stiffness: 700, damping: 30 }} />
+                <div className="handle" />
               </div>
             </div>
             {isLeverageSliderEnabled && (

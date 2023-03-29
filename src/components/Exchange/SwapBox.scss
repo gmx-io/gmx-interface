@@ -7,7 +7,7 @@
   justify-content: space-between;
 
   .SwapBox-leverage-toggle {
-    width: 29.5px;
+    width: 30px;
     height: 18px;
     background-color: rgba(255, 255, 255, 0.4);
     display: flex;
@@ -16,17 +16,23 @@
     border-radius: 50px;
     padding: 2px;
     cursor: pointer;
+    position: relative;
 
     .handle {
       width: 14.4px;
       height: 14.4px;
       background-color: white;
       border-radius: 40px;
+      transition: all 200ms ease-in-out;
+      position: absolute;
+      left: 2px;
     }
   }
 
   .SwapBox-leverage-toggle[data-is-on="true"] {
-    justify-content: flex-end;
     background-color: #3d51ff;
+  }
+  .SwapBox-leverage-toggle[data-is-on="true"] .handle {
+    left: calc(15px - 2px);
   }
 }

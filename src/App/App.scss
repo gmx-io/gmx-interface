@@ -1110,8 +1110,8 @@ button.App-button {
 }
 
 .App-slider .rc-slider-track {
-  background: linear-gradient(90deg, rgba(46, 61, 205, 1) 0%, rgba(45, 66, 252, 1) 100%);
   background: linear-gradient(270.01deg, #3d51ff 34.97%, #202239 99.99%);
+  border-radius: 2rem;
 }
 
 .App-slider .rc-slider-dot {
