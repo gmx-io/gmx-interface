@@ -2,6 +2,8 @@ import SyntheticsReader from "abis/SyntheticsReader.json";
 import { getContract } from "config/contracts";
 import { useMulticall } from "lib/multicall";
 import { MarketsData } from "./types";
+import { convertTokenAddress, getToken } from "config/tokens";
+import { getMarketFullName } from "./utils";
 
 type MarketsDataResult = {
   marketsData: MarketsData;
@@ -37,14 +39,19 @@ export function useMarketsData(chainId: number): MarketsDataResult {
           const [marketTokenAddress, indexTokenAddress, longTokenAddress, shortTokenAddress, data] = marketValues;
 
           try {
+            const indexToken = getToken(chainId, convertTokenAddress(chainId, indexTokenAddress, "native"));
+            const longToken = getToken(chainId, longTokenAddress);
+            const shortToken = getToken(chainId, shortTokenAddress);
+
             acc.marketsData[marketTokenAddress] = {
               marketTokenAddress,
               indexTokenAddress,
               longTokenAddress,
               shortTokenAddress,
               data,
-              perp: "USD",
+              name: getMarketFullName({ indexToken, longToken, shortToken }),
             };
+
             acc.marketsAddresses.push(marketTokenAddress);
           } catch (e) {
             // ignore parsing errors on unknown tokens

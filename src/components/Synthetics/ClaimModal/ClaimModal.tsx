@@ -2,7 +2,7 @@ import { t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import Modal from "components/Modal/Modal";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
-import { MarketInfo, getMarketName, getTotalClaimableFundingUsd, useMarketsInfo } from "domain/synthetics/markets";
+import { MarketInfo, getTotalClaimableFundingUsd, useMarketsInfo } from "domain/synthetics/markets";
 import { convertToUsd, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
@@ -31,7 +31,7 @@ export function ClaimModal(p: Props) {
   const totalClaimableFundingUsd = getTotalClaimableFundingUsd(markets);
 
   function renderMarketSection(market: MarketInfo) {
-    const marketName = getMarketName(market);
+    const marketName = market.name;
     const longToken = getTokenData(tokensData, market.longTokenAddress);
     const shortToken = getTokenData(tokensData, market.shortTokenAddress);
 

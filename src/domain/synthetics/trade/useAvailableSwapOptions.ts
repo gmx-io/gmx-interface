@@ -58,7 +58,7 @@ export function useAvailableSwapOptions(p: { selectedIndexTokenAddress?: string 
       collateralsByIndexMap[indexToken.address][longToken.address] = longToken;
       collateralsByIndexMap[indexToken.address][shortToken.address] = shortToken;
 
-      const marketPerpKey = `${market.indexTokenAddress}-${market.perp}`;
+      const marketPerpKey = `${market.indexTokenAddress}-USD`;
       marketsPerpsMap[marketPerpKey] = marketsPerpsMap[marketPerpKey] || [];
       marketsPerpsMap[marketPerpKey].push(market);
     }

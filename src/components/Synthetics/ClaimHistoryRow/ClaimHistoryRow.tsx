@@ -5,7 +5,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { getExplorerUrl } from "config/chains";
 import { getToken } from "config/tokens";
 import { ClaimCollateralAction, ClaimType } from "domain/synthetics/claimHistory";
-import { MarketsData, getMarketName } from "domain/synthetics/markets";
+import { MarketsData } from "domain/synthetics/markets";
 import { TokensData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
@@ -65,7 +65,7 @@ export function ClaimHistoryRow(p: Props) {
           renderContent={() => (
             <>
               {claimAction.claimItems.map(({ market, longTokenAmount, shortTokenAmount }, index) => {
-                const marketName = getMarketName(market);
+                const marketName = market.name;
                 const longToken = getToken(chainId, market.longTokenAddress);
                 const shortToken = getToken(chainId, market.shortTokenAddress);
 

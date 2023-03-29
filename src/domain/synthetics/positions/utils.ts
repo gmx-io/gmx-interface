@@ -2,9 +2,9 @@ import {
   MarketInfo,
   MarketsInfoData,
   getCappedPoolPnl,
-  getMarketCollateralByAddress,
-  getMarketName,
+  getMarketCollateral,
   getPoolUsd,
+  getTokenPoolType,
 } from "domain/synthetics/markets";
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
@@ -53,13 +53,14 @@ export function getAggregatedPositionData(
 
   const market = marketsInfoData[position.marketAddress];
   if (!market) return undefined;
-  const marketName = getMarketName(market);
+  const marketName = market.name;
 
-  const collateralToken = getMarketCollateralByAddress(market, position.collateralTokenAddress);
-  const pnlToken = getMarketCollateralByAddress(
+  const collateralToken = getMarketCollateral(
     market,
-    position.isLong ? market?.longTokenAddress : market?.shortTokenAddress
+    getTokenPoolType(market, position.collateralTokenAddress) === "long"
   );
+
+  const pnlToken = getMarketCollateral(market, position.isLong);
 
   const indexToken = market.indexToken;
 
@@ -222,8 +223,7 @@ export function getPositionPnl(p: {
   if (totalPnl.gt(0)) {
     const poolPnl = p.isLong ? p.marketInfo.pnlLongMax : p.marketInfo.pnlShortMax;
 
-    const poolTokenAddress = p.isLong ? p.marketInfo.longTokenAddress : p.marketInfo.shortTokenAddress;
-    const poolUsd = getPoolUsd(p.marketInfo, poolTokenAddress, "minPrice");
+    const poolUsd = getPoolUsd(p.marketInfo, p.isLong!, "minPrice");
 
     const cappedPnl = getCappedPoolPnl(p.marketInfo, poolPnl, poolUsd, p.isLong);
 

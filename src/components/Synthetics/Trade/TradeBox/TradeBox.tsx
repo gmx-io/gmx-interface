@@ -19,9 +19,9 @@ import {
   MarketInfo,
   getAvailableUsdLiquidityForCollateral,
   getAvailableUsdLiquidityForPosition,
-  getMarketName,
   getMostLiquidMarketForPosition,
   getMostLiquidMarketForSwap,
+  getTokenPoolType,
   useMarketsInfo,
 } from "domain/synthetics/markets";
 import { AggregatedOrdersData, OrderType, getAcceptablePrice } from "domain/synthetics/orders";
@@ -97,9 +97,9 @@ import { useWeb3React } from "@web3-react/core";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { ClaimModal } from "components/Synthetics/ClaimModal/ClaimModal";
 import { ClaimableCard } from "components/Synthetics/ClaimableCard/ClaimableCard";
+import { DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS } from "config/factors";
 import { getByKey } from "lib/objects";
 import "./TradeBox.scss";
-import { DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS } from "config/factors";
 
 type Props = {
   tradeType?: TradeType;
@@ -276,7 +276,7 @@ export function TradeBox(p: Props) {
   }, [chainId, marketsInfoData, toTokenAddress]);
 
   const marketsOptions: DropdownOption[] = availableMarkets.map((marketInfo) => ({
-    label: getMarketName(marketInfo)!,
+    label: marketInfo.name,
     value: marketInfo.marketTokenAddress,
   }));
 
@@ -440,8 +440,18 @@ export function TradeBox(p: Props) {
     if (!selectedMarket) return {};
 
     return {
-      swapOutLiquidity: getAvailableUsdLiquidityForCollateral(selectedMarket, toTokenInput.tokenAddress),
-      positionCollateralLiquidity: getAvailableUsdLiquidityForCollateral(selectedMarket, collateralAddress),
+      swapOutLiquidity: toTokenInput.tokenAddress
+        ? getAvailableUsdLiquidityForCollateral(
+            selectedMarket,
+            getTokenPoolType(selectedMarket, toTokenInput.tokenAddress) === "long"
+          )
+        : undefined,
+      positionCollateralLiquidity: collateralAddress
+        ? getAvailableUsdLiquidityForCollateral(
+            selectedMarket,
+            getTokenPoolType(selectedMarket, collateralAddress) === "long"
+          )
+        : undefined,
       longLiquidity: getAvailableUsdLiquidityForPosition(selectedMarket, true),
       shortLiquidity: getAvailableUsdLiquidityForPosition(selectedMarket, false),
     };
@@ -1228,14 +1238,14 @@ export function TradeBox(p: Props) {
                         selectedMarket.marketTokenAddress && (
                         <div className="MarketSelector-tooltip-row">
                           <Trans>
-                            Insufficient liquidity in {getMarketName(selectedMarket)} market. <br />
+                            Insufficient liquidity in {selectedMarket.name} market. <br />
                             <div
                               className="MarketSelector-tooltip-row-action clickable underline muted "
                               onClick={() =>
                                 onSelectMarketAddress(optimalPositionMarkets.maxLiquidityMarket!.marketTokenAddress)
                               }
                             >
-                              Switch to {getMarketName(optimalPositionMarkets.maxLiquidityMarket)} market.
+                              Switch to {optimalPositionMarkets.maxLiquidityMarket.name} market.
                             </div>
                           </Trans>
                         </div>
@@ -1250,15 +1260,14 @@ export function TradeBox(p: Props) {
                               optimalPositionMarkets.minAcceptablePriceImpactBps!
                             )
                           )}{" "}
-                          better execution price in the {getMarketName(optimalPositionMarkets.minPriceImpactMarket)}{" "}
-                          market.
+                          better execution price in the {optimalPositionMarkets.minPriceImpactMarket.name} market.
                           <div
                             className="MarketSelector-tooltip-row-action clickable underline muted"
                             onClick={() =>
                               onSelectMarketAddress(optimalPositionMarkets.minPriceImpactMarket!.marketTokenAddress)
                             }
                           >
-                            Switch to {getMarketName(optimalPositionMarkets.minPriceImpactMarket)} market.
+                            Switch to {optimalPositionMarkets.minPriceImpactMarket.name} market.
                           </div>
                         </Trans>
                       </div>
@@ -1267,15 +1276,14 @@ export function TradeBox(p: Props) {
                     {!existingPosition && optimalPositionMarkets.marketWithPosition && (
                       <div className="MarketSelector-tooltip-row">
                         <Trans>
-                          You have an existing position in the{" "}
-                          {getMarketName(optimalPositionMarkets.marketWithPosition)} market.{" "}
+                          You have an existing position in the {optimalPositionMarkets.marketWithPosition.name} market.{" "}
                           <div
                             className="MarketSelector-tooltip-row-action clickable underline muted"
                             onClick={() => {
                               onSelectMarketAddress(optimalPositionMarkets.marketWithPosition!.marketTokenAddress);
                             }}
                           >
-                            Switch to {getMarketName(optimalPositionMarkets.marketWithPosition)} market.
+                            Switch to {optimalPositionMarkets.marketWithPosition.name} market.
                           </div>{" "}
                         </Trans>
                       </div>

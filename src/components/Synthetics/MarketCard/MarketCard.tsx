@@ -5,7 +5,6 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { SLIPPAGE_BPS_KEY } from "config/localStorage";
 import {
   getAvailableUsdLiquidityForPosition,
-  getMarketName,
   getMaxReservedUsd,
   getReservedUsd,
   useMarketsInfo,
@@ -17,10 +16,10 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatUsd } from "lib/numbers";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
-import "./MarketCard.scss";
+import { getBorrowingFeeFactor, getFundingFeeFactor } from "domain/synthetics/fees";
 import { getByKey } from "lib/objects";
 import { useMemo } from "react";
-import { getBorrowingFeeFactor, getFundingFeeFactor } from "domain/synthetics/fees";
+import "./MarketCard.scss";
 
 export type Props = {
   marketAddress?: string;
@@ -36,7 +35,7 @@ export function MarketCard(p: Props) {
   const { tokensData } = useAvailableTokensData(chainId);
 
   const market = getByKey(marketsInfoData, p.marketAddress);
-  const marketName = market ? getMarketName(market) : "...";
+  const marketName = market?.name || "...";
 
   const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
 

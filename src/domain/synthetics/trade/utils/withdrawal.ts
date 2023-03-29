@@ -9,8 +9,8 @@ export function getNextWithdrawalAmountsByMarketToken(p: {
   marketToken: TokenData;
   marketTokenAmount: BigNumber;
 }): WithdrawalAmounts | undefined {
-  const longPoolUsd = getPoolUsd(p.marketInfo, p.marketInfo.longTokenAddress, "maxPrice");
-  const shortPoolUsd = getPoolUsd(p.marketInfo, p.marketInfo.shortTokenAddress, "maxPrice");
+  const longPoolUsd = getPoolUsd(p.marketInfo, true, "maxPrice");
+  const shortPoolUsd = getPoolUsd(p.marketInfo, false, "maxPrice");
   const { longToken, shortToken } = p.marketInfo;
 
   if (!longPoolUsd || !shortPoolUsd || !p.marketToken.prices || !longToken.prices || !shortToken.prices) {
@@ -56,9 +56,9 @@ export function getNextWithdrawalAmountsByCollaterals(p: {
   longTokenAmount?: BigNumber;
   shortTokenAmount?: BigNumber;
 }): WithdrawalAmounts | undefined {
-  const longPoolUsd = getPoolUsd(p.marketInfo, p.marketInfo.longTokenAddress, "maxPrice");
+  const longPoolUsd = getPoolUsd(p.marketInfo, true, "maxPrice");
 
-  const shortPoolUsd = getPoolUsd(p.marketInfo, p.marketInfo.shortTokenAddress, "maxPrice");
+  const shortPoolUsd = getPoolUsd(p.marketInfo, false, "maxPrice");
 
   const { longToken, shortToken } = p.marketInfo;
 

@@ -2,13 +2,12 @@ import { Trans, t } from "@lingui/macro";
 
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
-import { getAvailableUsdLiquidityForCollateral, getMarketName, useMarketsInfo } from "domain/synthetics/markets";
+import { getAvailableUsdLiquidityForCollateral, getTokenPoolType, useMarketsInfo } from "domain/synthetics/markets";
 import { TokensRatio, convertToTokenAmount, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
 import { formatAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { useMemo } from "react";
-
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { getByKey } from "lib/objects";
 
@@ -27,15 +26,19 @@ export function SwapCard(p: Props) {
   const { tokensData } = useAvailableTokensData(chainId);
 
   const market = getByKey(marketsInfoData, p.marketAddress);
-  const marketName = market ? getMarketName(market) : "...";
+  const marketName = market?.name || "...";
 
   const fromToken = getTokenData(tokensData, p.fromTokenAddress);
   const toToken = getTokenData(tokensData, p.toTokenAddress);
 
   const { maxLiquidityAmount, maxLiquidityUsd } = useMemo(() => {
-    if (!market) return {};
+    if (!market || !p.toTokenAddress) return {};
 
-    const maxLiquidityUsd = getAvailableUsdLiquidityForCollateral(market, p.toTokenAddress);
+    const maxLiquidityUsd = getAvailableUsdLiquidityForCollateral(
+      market,
+      getTokenPoolType(market, p.toTokenAddress) === "long"
+    );
+
     const maxLiquidityAmount = convertToTokenAmount(maxLiquidityUsd, toToken?.decimals, toToken?.prices?.maxPrice);
 
     return {

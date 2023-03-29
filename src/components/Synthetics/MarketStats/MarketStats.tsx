@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 import { CardRow } from "components/CardRow/CardRow";
 import { getIcon } from "config/icons";
-import { MarketInfo, getMarketName, getPoolUsd } from "domain/synthetics/markets";
+import { MarketInfo, getPoolUsd } from "domain/synthetics/markets";
 import { TokenData, convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
@@ -17,7 +17,7 @@ export function MarketStats(p: Props) {
   const { marketInfo, marketToken } = p;
   const { chainId } = useChainId();
 
-  const marketName = marketInfo ? getMarketName(marketInfo) : `GM: ---/--- [-------]`;
+  const marketName = `GM: ${marketInfo?.name || "---/--- [-------]"}`;
 
   const marketPrice = marketToken?.prices?.maxPrice;
   const marketBalance = marketToken?.balance;
@@ -30,8 +30,8 @@ export function MarketStats(p: Props) {
 
   const { longToken, shortToken, longPoolAmount, shortPoolAmount } = marketInfo || {};
 
-  const longPoolAmountUsd = marketInfo ? getPoolUsd(marketInfo, marketInfo.longTokenAddress, "midPrice") : undefined;
-  const shortPoolAmountUsd = marketInfo ? getPoolUsd(marketInfo, marketInfo.shortTokenAddress, "midPrice") : undefined;
+  const longPoolAmountUsd = marketInfo ? getPoolUsd(marketInfo, true, "midPrice") : undefined;
+  const shortPoolAmountUsd = marketInfo ? getPoolUsd(marketInfo, false, "midPrice") : undefined;
 
   return (
     <div className="App-card MarketStats-card">

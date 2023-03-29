@@ -5,6 +5,7 @@ import {
   getAvailableUsdLiquidityForCollateral,
   getMarketCollateralByAddress,
   getOppositeCollateral,
+  getTokenPoolType,
 } from "domain/synthetics/markets";
 import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
@@ -155,7 +156,10 @@ export function getSwapStats(
 
   amountOut = convertToTokenAmount(usdOut, tokenOut.decimals, priceOut)!;
 
-  const liquidity = getAvailableUsdLiquidityForCollateral(marketInfo, tokenOut.address);
+  const liquidity = getAvailableUsdLiquidityForCollateral(
+    marketInfo,
+    getTokenPoolType(marketInfo, tokenOutAddress) === "long"
+  );
 
   const isOutLiquidity = !liquidity || liquidity.lt(usdOut);
 

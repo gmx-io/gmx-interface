@@ -7,7 +7,7 @@ export type Market = {
   longTokenAddress: string;
   shortTokenAddress: string;
   data: string;
-  perp: string;
+  name: string;
 };
 
 export type MarketPoolTokens = {

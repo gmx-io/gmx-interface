@@ -7,6 +7,7 @@ import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
 import Tab from "components/Tab/Tab";
 import TokenSelector from "components/TokenSelector/TokenSelector";
+import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
 import { SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY } from "config/localStorage";
 import { convertTokenAddress, NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import {
@@ -21,7 +22,7 @@ import {
 import { useGasLimitsConfig } from "domain/synthetics/fees/useGasLimitsConfig";
 import { useMarketsInfo, useMarketTokensData } from "domain/synthetics/markets";
 import { Market } from "domain/synthetics/markets/types";
-import { getAvailableUsdLiquidityForCollateral, getMarketName, getPoolUsd } from "domain/synthetics/markets/utils";
+import { getAvailableUsdLiquidityForCollateral, getPoolUsd } from "domain/synthetics/markets/utils";
 import { adaptToV1InfoTokens, convertToUsd, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { GmSwapFees } from "domain/synthetics/trade";
 import {
@@ -44,7 +45,6 @@ import { IoMdSwap } from "react-icons/io";
 import { GmConfirmationBox } from "../GmConfirmationBox/GmConfirmationBox";
 import { GmOrderStatus } from "../GmOrderStatus/GmOrderStatus";
 import "./GmSwapBox.scss";
-import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
 
 type Props = {
   selectedMarketAddress?: string;
@@ -126,7 +126,7 @@ export function GmSwapBox(p: Props) {
   const marketInfo = getByKey(marketsInfoData, marketAddress);
 
   const marketsOptions: DropdownOption[] = Object.values(marketsInfoData).map((marketInfo) => ({
-    label: getMarketName(marketInfo)!,
+    label: marketInfo.name,
     value: marketInfo.marketTokenAddress,
   }));
 
@@ -203,10 +203,10 @@ export function GmSwapBox(p: Props) {
     if (!marketInfo) return {};
 
     return {
-      longCollateralLiquidityUsd: getAvailableUsdLiquidityForCollateral(marketInfo, marketInfo?.longTokenAddress),
-      shortCollateralLiquidityUsd: getAvailableUsdLiquidityForCollateral(marketInfo, marketInfo?.shortTokenAddress),
-      longPoolUsd: getPoolUsd(marketInfo, marketInfo.longTokenAddress, "midPrice"),
-      shortPoolUsd: getPoolUsd(marketInfo, marketInfo.shortTokenAddress, "midPrice"),
+      longCollateralLiquidityUsd: getAvailableUsdLiquidityForCollateral(marketInfo, true),
+      shortCollateralLiquidityUsd: getAvailableUsdLiquidityForCollateral(marketInfo, false),
+      longPoolUsd: getPoolUsd(marketInfo, true, "midPrice"),
+      shortPoolUsd: getPoolUsd(marketInfo, false, "midPrice"),
     };
   }, [marketInfo]);
 

@@ -23,6 +23,7 @@ import {
 import {
   getAvailableUsdLiquidityForCollateral,
   getAvailableUsdLiquidityForPosition,
+  getTokenPoolType,
   useMarketsInfo,
 } from "domain/synthetics/markets";
 import {
@@ -617,7 +618,10 @@ export function ConfirmationBox(p: Props) {
     if (isSwap) {
       const marketInfo = getByKey(marketsInfoData, p.swapParams?.swapPathStats?.targetMarketAddress)!;
 
-      availableLiquidity = getAvailableUsdLiquidityForCollateral(marketInfo, tokenOut?.address);
+      availableLiquidity = getAvailableUsdLiquidityForCollateral(
+        marketInfo,
+        getTokenPoolType(marketInfo, tokenOut!.address) === "long"
+      );
 
       if (availableLiquidity && usdOut) {
         isLiquidityRisk = availableLiquidity.mul(riskThresholdBps).div(BASIS_POINTS_DIVISOR).lt(usdOut);

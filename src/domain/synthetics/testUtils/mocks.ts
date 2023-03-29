@@ -108,7 +108,7 @@ export function mockMarketsData(marketKeys: string[]): MarketsData {
       longTokenAddress,
       shortTokenAddress,
       data: "",
-      perp: "USD",
+      name: "Test Market",
     };
 
     return acc;

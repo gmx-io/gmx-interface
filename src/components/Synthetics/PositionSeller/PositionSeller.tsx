@@ -39,7 +39,7 @@ import "components/Exchange/PositionSeller.css";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useGasLimitsConfig } from "domain/synthetics/fees/useGasLimitsConfig";
-import { getAvailableUsdLiquidityForCollateral, useMarketsInfo } from "domain/synthetics/markets";
+import { getAvailableUsdLiquidityForCollateral, getTokenPoolType, useMarketsInfo } from "domain/synthetics/markets";
 import { usePositionsConstants } from "domain/synthetics/positions/usePositionsConstants";
 import {
   getDecreasePositionAmounts,
@@ -179,12 +179,13 @@ export function PositionSeller(p: Props) {
     positionFeeUsd: decreaseAmounts?.positionFeeUsd,
   });
 
-  const receiveTokenLiquidity = receiveTokenMarketInfo
-    ? getAvailableUsdLiquidityForCollateral(
-        receiveTokenMarketInfo,
-        receiveToken?.address ? convertTokenAddress(chainId, receiveToken.address, "wrapped") : undefined
-      )
-    : undefined;
+  const receiveTokenLiquidity =
+    receiveTokenMarketInfo && receiveToken
+      ? getAvailableUsdLiquidityForCollateral(
+          receiveTokenMarketInfo,
+          getTokenPoolType(receiveTokenMarketInfo, receiveToken.address) === "long"
+        )
+      : undefined;
 
   const isNotEnoughReceiveTokenLiquidity = shouldSwap ? receiveTokenLiquidity?.lt(receiveUsd || 0) : false;
 

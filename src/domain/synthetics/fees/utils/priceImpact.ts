@@ -3,7 +3,7 @@ import { convertToTokenAmount, convertToUsd, getMidPrice } from "domain/syntheti
 import { BigNumber } from "ethers";
 import { applyFactor, bigNumberify, expandDecimals, roundUpDivision } from "lib/numbers";
 
-export function applySwapImpactWithCap(marketInfo: MarketInfo, tokenAddress?: string, priceImpactDeltaUsd?: BigNumber) {
+export function applySwapImpactWithCap(marketInfo: MarketInfo, tokenAddress: string, priceImpactDeltaUsd?: BigNumber) {
   const tokenPoolType = getTokenPoolType(marketInfo, tokenAddress);
 
   if (!tokenPoolType) return undefined;
@@ -110,13 +110,13 @@ export function getPriceImpactForPosition(
 
 export function getPriceImpactForSwap(
   marketInfo: MarketInfo,
-  fromTokenAddress: string | undefined,
+  fromTokenAddress: string,
   fromDeltaAmount: BigNumber | undefined,
   toDeltaAmount: BigNumber | undefined
 ) {
   const { longToken, shortToken } = marketInfo;
-  const longPoolUsd = getPoolUsd(marketInfo, marketInfo.longTokenAddress, "midPrice");
-  const shortPoolUsd = getPoolUsd(marketInfo, marketInfo.shortTokenAddress, "midPrice");
+  const longPoolUsd = getPoolUsd(marketInfo, true, "midPrice");
+  const shortPoolUsd = getPoolUsd(marketInfo, false, "midPrice");
 
   const fromTokenPoolType = getTokenPoolType(marketInfo, fromTokenAddress);
 

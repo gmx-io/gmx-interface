@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { MarketsInfoData, getMarketCollateralByAddress, getMarketName } from "domain/synthetics/markets";
+import { MarketsInfoData, getMarketCollateralByAddress } from "domain/synthetics/markets";
 import { TokenData, TokenPrices, TokensData, getTokenData, parseContractPrice } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";
@@ -82,7 +82,7 @@ export function getAggregatedOrderData(
   if (!isTriggerOrder) return undefined;
 
   const market = marketsInfoData[order.marketAddress];
-  const marketName = getMarketName(market);
+  const marketName = market.name;
   const indexToken = market.indexToken;
   const initialCollateralToken = getMarketCollateralByAddress(market, order.initialCollateralTokenAddress);
 

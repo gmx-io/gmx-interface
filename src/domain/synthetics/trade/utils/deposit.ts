@@ -14,8 +14,8 @@ export function getNextDepositAmountsByCollaterals(p: {
   const { marketToken, longTokenAmount, shortTokenAmount, marketInfo } = p;
   const { longToken, shortToken } = marketInfo;
 
-  const longPoolUsd = getPoolUsd(marketInfo, marketInfo.longTokenAddress, "midPrice");
-  const shortPoolUsd = getPoolUsd(marketInfo, marketInfo.shortTokenAddress, "midPrice");
+  const longPoolUsd = getPoolUsd(marketInfo, true, "midPrice");
+  const shortPoolUsd = getPoolUsd(marketInfo, false, "midPrice");
 
   if (!longToken.prices || !shortToken.prices || !marketToken.prices) {
     return undefined;

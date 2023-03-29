@@ -4,7 +4,7 @@ import Modal from "components/Modal/Modal";
 import { RequestStatus } from "components/RequestStatus/RequestStatus";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import { getMarketName, useMarketsInfo } from "domain/synthetics/markets";
+import { useMarketsInfo } from "domain/synthetics/markets";
 import { getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
@@ -30,7 +30,7 @@ export function GmOrderStatus(p: Props) {
 
   const marketInfo = getByKey(marketsInfoData, p.market);
 
-  const marketName = marketInfo ? getMarketName(marketInfo) : "...";
+  const marketName = marketInfo?.name || "...";
   const firstToken = getTokenData(tokensData, p.firstToken);
   const secondToken = getTokenData(tokensData, p.secondToken);
 
