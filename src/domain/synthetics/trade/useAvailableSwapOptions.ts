@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { NATIVE_TOKEN_ADDRESS, getWrappedToken } from "config/tokens";
 import { Market, useMarketsData } from "domain/synthetics/markets";
-import { adaptToInfoTokens, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
+import { adaptToV1InfoTokens, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { InfoTokens, Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
 
@@ -17,7 +17,7 @@ export function useAvailableSwapOptions(p: { selectedIndexTokenAddress?: string 
   const { marketsData } = useMarketsData(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
 
-  const infoTokens = useMemo(() => adaptToInfoTokens(tokensData), [tokensData]);
+  const infoTokens = useMemo(() => adaptToV1InfoTokens(tokensData), [tokensData]);
 
   const { longCollaterals, shortCollaterals, indexTokens, collateralsByIndexMap } = useMemo(() => {
     const markets = Object.values(marketsData);

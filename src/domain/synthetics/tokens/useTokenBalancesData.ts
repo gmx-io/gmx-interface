@@ -4,13 +4,14 @@ import Token from "abis/Token.json";
 import { getContract } from "config/contracts";
 import { getToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { useMulticall } from "lib/multicall";
-import { useMemo } from "react";
 import { TokenBalancesData } from "./types";
 
 type BalancesDataResult = {
   balancesData: TokenBalancesData;
   isLoading: boolean;
 };
+
+const defaultValue = {};
 
 export function useTokenBalancesData(chainId: number, p: { tokenAddresses: string[] }): BalancesDataResult {
   const { account } = useWeb3React();
@@ -57,10 +58,8 @@ export function useTokenBalancesData(chainId: number, p: { tokenAddresses: strin
       }, {} as TokenBalancesData),
   });
 
-  return useMemo(() => {
-    return {
-      balancesData: data || {},
-      isLoading,
-    };
-  }, [data, isLoading]);
+  return {
+    balancesData: data || defaultValue,
+    isLoading,
+  };
 }

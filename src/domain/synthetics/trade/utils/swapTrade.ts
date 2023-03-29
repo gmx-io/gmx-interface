@@ -85,7 +85,7 @@ export function getSwapAmounts(p: {
         toToken: tokenOut,
         fromTokenAmount: amountIn,
         ratio: p.triggerRatio.ratio,
-        invertRatio: p.triggerRatio.largestAddress === tokenOut.address,
+        shouldInvertRatio: p.triggerRatio.largestAddress === tokenOut.address,
       });
 
       usdOut = convertToUsd(amountOut, tokenOut.decimals, tokenOut.prices!.maxPrice)!;
@@ -132,7 +132,7 @@ export function getSwapAmounts(p: {
         toToken: tokenIn,
         fromTokenAmount: amountOut,
         ratio: p.triggerRatio.ratio,
-        invertRatio: p.triggerRatio.largestAddress === tokenIn.address,
+        shouldInvertRatio: p.triggerRatio.largestAddress === tokenIn.address,
       });
 
       usdIn = convertToUsd(amountOut, tokenIn.decimals, tokenIn.prices!.minPrice)!;

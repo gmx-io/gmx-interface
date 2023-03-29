@@ -7,8 +7,8 @@ export type TokenPrices = {
 };
 
 export type TokenData = Token & {
+  prices: TokenPrices;
   balance?: BigNumber;
-  prices?: TokenPrices;
   totalSupply?: BigNumber;
 };
 
@@ -18,7 +18,7 @@ export type TokensRatio = {
   smallestAddress: string;
 };
 
-export type TokenAllowancesData = {
+export type TokensAllowanceData = {
   [tokenAddress: string]: BigNumber;
 };
 

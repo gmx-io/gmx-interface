@@ -11,7 +11,7 @@ import {
   isIncreaseOrder,
   isSwapOrder,
 } from "domain/synthetics/orders";
-import { adaptToTokenInfo, convertToUsd, getTokensRatioByAmounts } from "domain/synthetics/tokens";
+import { adaptToV1TokenInfo, convertToUsd, getTokensRatioByAmounts } from "domain/synthetics/tokens";
 import { getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 
@@ -51,18 +51,23 @@ export function OrderItem(p: Props) {
     const toAmount = p.order.minOutputAmount;
     const toToken = p.order.toCollateralToken;
 
-    const fromTokenInfo = fromToken ? adaptToTokenInfo(fromToken) : undefined;
-    const toTokenInfo = toToken ? adaptToTokenInfo(toToken) : undefined;
+    const fromTokenInfo = fromToken ? adaptToV1TokenInfo(fromToken) : undefined;
+    const toTokenInfo = toToken ? adaptToV1TokenInfo(toToken) : undefined;
 
-    const tokensRatio = getTokensRatioByAmounts({
-      fromToken,
-      toToken,
-      fromTokenAmount: fromAmount,
-      toTokenAmount: toAmount,
-    });
+    const tokensRatio =
+      fromToken &&
+      toToken &&
+      getTokensRatioByAmounts({
+        fromToken,
+        toToken,
+        fromTokenAmount: fromAmount,
+        toTokenAmount: toAmount,
+      });
 
     const markExchangeRate =
-      fromToken && toToken ? getExchangeRate(adaptToTokenInfo(fromToken), adaptToTokenInfo(toToken), false) : undefined;
+      fromToken && toToken
+        ? getExchangeRate(adaptToV1TokenInfo(fromToken), adaptToV1TokenInfo(toToken), false)
+        : undefined;
 
     const [largest, smallest] =
       tokensRatio?.largestAddress === fromToken?.address ? [fromTokenInfo, toTokenInfo] : [toTokenInfo, fromTokenInfo];

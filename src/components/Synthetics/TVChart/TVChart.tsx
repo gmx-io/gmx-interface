@@ -60,8 +60,14 @@ export function TVChart({
   const { candles } = useLastCandles(chainId, chartToken?.symbol, period);
 
   const period24Hours = 24 * 60 * 60;
-  const { high, low, deltaPercentage, deltaPercentageStr } =
-    getCandlesDelta(candles, parseFloat(formatAmount(currentAveragePrice, USD_DECIMALS, 2)), period24Hours) || {};
+
+  const candlesDelta = useMemo(() => {
+    if (!candles || !currentAveragePrice) {
+      return undefined;
+    }
+
+    return getCandlesDelta(candles, currentAveragePrice, period24Hours);
+  }, [candles, currentAveragePrice, period24Hours]);
 
   const chartLines = useMemo(() => {
     if (!chartTokenAddress) {
@@ -160,27 +166,20 @@ export function TVChart({
             <div className="ExchangeChart-info-label">24h Change</div>
             <div
               className={cx({
-                positive: deltaPercentage && deltaPercentage > 0,
-                negative: deltaPercentage && deltaPercentage < 0,
+                positive: candlesDelta?.deltaPercentage && candlesDelta?.deltaPercentage > 0,
+                negative: candlesDelta?.deltaPercentage && candlesDelta?.deltaPercentage < 0,
               })}
             >
-              {!deltaPercentageStr && "-"}
-              {deltaPercentageStr && deltaPercentageStr}
+              {candlesDelta?.deltaPercentageStr || "-"}
             </div>
           </div>
           <div className="ExchangeChart-additional-info">
             <div className="ExchangeChart-info-label">24h High</div>
-            <div>
-              {!high && "-"}
-              {high && numberWithCommas(high.toFixed(2))}
-            </div>
+            <div>{candlesDelta?.high ? numberWithCommas(candlesDelta.high.toFixed(2)) : "-"}</div>
           </div>
           <div className="ExchangeChart-additional-info">
             <div className="ExchangeChart-info-label">24h Low</div>
-            <div>
-              {!low && "-"}
-              {low && numberWithCommas(low.toFixed(2))}
-            </div>
+            <div>{candlesDelta?.low ? numberWithCommas(candlesDelta?.low.toFixed(2)) : "-"}</div>
           </div>
         </div>
       </div>

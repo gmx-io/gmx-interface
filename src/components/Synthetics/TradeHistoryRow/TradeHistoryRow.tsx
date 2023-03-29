@@ -11,7 +11,7 @@ import {
   isSwapOrder,
   isTriggerDecreaseOrder,
 } from "domain/synthetics/orders";
-import { adaptToTokenInfo, getTokensRatioByAmounts } from "domain/synthetics/tokens";
+import { adaptToV1TokenInfo, getTokensRatioByAmounts } from "domain/synthetics/tokens";
 import { TradeAction, TradeActionType } from "domain/synthetics/tradeHistory";
 import { useChainId } from "lib/chains";
 import { formatDateTime } from "lib/dates";
@@ -76,8 +76,8 @@ function getSwapOrderMessage(tradeAction: TradeAction) {
       toTokenAmount: amountOut,
     });
 
-    const fromTokenInfo = tokenIn ? adaptToTokenInfo(tokenIn) : undefined;
-    const toTokenInfo = tokenOut ? adaptToTokenInfo(tokenOut) : undefined;
+    const fromTokenInfo = tokenIn ? adaptToV1TokenInfo(tokenIn) : undefined;
+    const toTokenInfo = tokenOut ? adaptToV1TokenInfo(tokenOut) : undefined;
 
     const [largest, smallest] =
       tokensRatio?.largestAddress === tokenIn?.address ? [fromTokenInfo, toTokenInfo] : [toTokenInfo, fromTokenInfo];

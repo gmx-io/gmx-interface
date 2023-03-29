@@ -23,7 +23,7 @@ import {
 import {
   TokensRatio,
   getTokenData,
-  getTokensRatio,
+  getTokensRatioByPrice,
   getTokensRatioByAmounts,
   useAvailableTokensData,
 } from "domain/synthetics/tokens";
@@ -99,10 +99,19 @@ export function OrderEditor(p: Props) {
   const fromTokenPrice = fromToken?.prices?.maxPrice;
   const toTokenPrice = toToken?.prices?.minPrice;
   const [triggerRatioInputValue, setTriggerRatioInputValue] = useState<string>("");
-  const markRatio = getTokensRatio({
-    fromToken,
-    toToken,
-  });
+
+  const markRatio =
+    fromToken &&
+    toToken &&
+    fromTokenPrice &&
+    toTokenPrice &&
+    getTokensRatioByPrice({
+      fromToken,
+      toToken,
+      fromPrice: fromTokenPrice,
+      toPrice: toTokenPrice,
+    });
+
   const triggerRatio = useMemo(() => {
     if (!markRatio) return undefined;
 
@@ -286,12 +295,15 @@ export function OrderEditor(p: Props) {
       if (isInited) return;
 
       if (isSwapOrder(p.order.orderType)) {
-        const ratio = getTokensRatioByAmounts({
-          fromToken,
-          toToken,
-          fromTokenAmount: p.order.initialCollateralDeltaAmount,
-          toTokenAmount: p.order.minOutputAmount,
-        });
+        const ratio =
+          fromToken &&
+          toToken &&
+          getTokensRatioByAmounts({
+            fromToken,
+            toToken,
+            fromTokenAmount: p.order.initialCollateralDeltaAmount,
+            toTokenAmount: p.order.minOutputAmount,
+          });
 
         if (ratio) {
           setTriggerRatioInputValue(formatAmount(ratio.ratio, USD_DECIMALS, 2));

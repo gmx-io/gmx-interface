@@ -20,7 +20,6 @@ export function useAvailableTokensData(chainId: number): TokensDataResult {
 
 export function useTokensData(chainId: number, p: { tokenAddresses: string[] }): TokensDataResult {
   const tokenConfigs = getTokensMap(chainId);
-
   const { balancesData, isLoading: isBalancesLoading } = useTokenBalancesData(chainId, {
     tokenAddresses: p.tokenAddresses,
   });
@@ -29,7 +28,7 @@ export function useTokensData(chainId: number, p: { tokenAddresses: string[] }):
   const tokenKeys = p.tokenAddresses.join("-");
 
   return useMemo(() => {
-    if (isPricesLoading) {
+    if (!pricesData) {
       return {
         tokensData: {},
         isLoading: true,
@@ -37,13 +36,19 @@ export function useTokensData(chainId: number, p: { tokenAddresses: string[] }):
     }
 
     return {
-      tokensData: tokenKeys.split("-").reduce((tokensData: TokensData, tokenAddress) => {
-        tokensData[tokenAddress] = {
+      tokensData: tokenKeys.split("-").reduce((acc: TokensData, tokenAddress) => {
+        const prices = pricesData[tokenAddress];
+
+        if (!prices) {
+          return acc;
+        }
+
+        acc[tokenAddress] = {
           ...tokenConfigs[tokenAddress],
-          prices: pricesData[tokenAddress],
-          balance: balancesData[tokenAddress],
+          prices: prices,
+          balance: balancesData?.[tokenAddress],
         };
-        return tokensData;
+        return acc;
       }, {} as TokensData),
       isLoading: isBalancesLoading || isPricesLoading,
     };

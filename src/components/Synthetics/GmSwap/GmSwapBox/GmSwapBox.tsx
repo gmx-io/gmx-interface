@@ -22,7 +22,7 @@ import { useGasLimitsConfig } from "domain/synthetics/fees/useGasLimitsConfig";
 import { useMarketsInfo, useMarketTokensData } from "domain/synthetics/markets";
 import { Market } from "domain/synthetics/markets/types";
 import { getAvailableUsdLiquidityForCollateral, getMarketName, getPoolUsd } from "domain/synthetics/markets/utils";
-import { adaptToInfoTokens, convertToUsd, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
+import { adaptToV1InfoTokens, convertToUsd, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { GmSwapFees } from "domain/synthetics/trade";
 import {
   getNextDepositAmountsByCollaterals,
@@ -97,7 +97,7 @@ export function GmSwapBox(p: Props) {
   const { marketTokensData } = useMarketTokensData(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
 
-  const infoTokens = adaptToInfoTokens(tokensData);
+  const infoTokens = adaptToV1InfoTokens(tokensData);
 
   const { gasLimits } = useGasLimitsConfig(chainId);
   const { gasPrice } = useGasPrice(chainId);

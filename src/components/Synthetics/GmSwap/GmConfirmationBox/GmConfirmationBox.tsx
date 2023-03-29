@@ -11,9 +11,9 @@ import { ExecutionFee } from "domain/synthetics/fees";
 import { useMarketsData } from "domain/synthetics/markets";
 import { createDepositTxn } from "domain/synthetics/markets/createDepositTxn";
 import { createWithdrawalTxn } from "domain/synthetics/markets/createWithdrawalTxn";
-import { getTokenData, needTokenApprove, useAvailableTokensData } from "domain/synthetics/tokens";
+import { getTokenData, getNeedTokenApprove, useAvailableTokensData } from "domain/synthetics/tokens";
 import { TokenData } from "domain/synthetics/tokens/types";
-import { useTokenAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
+import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 import { GmSwapFees } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
@@ -84,7 +84,7 @@ export function GmConfirmationBox({
     return addresses;
   })();
 
-  const { tokenAllowanceData } = useTokenAllowanceData(chainId, {
+  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: routerAddress,
     tokenAddresses: payTokenAddresses,
   });
@@ -96,7 +96,7 @@ export function GmConfirmationBox({
       if (
         longTokenAmount?.gt(0) &&
         longToken &&
-        needTokenApprove(tokenAllowanceData, longToken?.address, longTokenAmount)
+        getNeedTokenApprove(tokensAllowanceData, longToken?.address, longTokenAmount)
       ) {
         addresses.push(longToken.address);
       }
@@ -104,7 +104,7 @@ export function GmConfirmationBox({
       if (
         shortTokenAmount?.gt(0) &&
         shortToken &&
-        needTokenApprove(tokenAllowanceData, shortToken?.address, shortTokenAmount)
+        getNeedTokenApprove(tokensAllowanceData, shortToken?.address, shortTokenAmount)
       ) {
         addresses.push(shortToken.address);
       }
@@ -130,7 +130,7 @@ export function GmConfirmationBox({
 
   const operationText = isDeposit ? t`Deposit` : t`Withdrawal`;
 
-  const isAllowanceLoaded = Object.keys(tokenAllowanceData).length > 0;
+  const isAllowanceLoaded = Object.keys(tokensAllowanceData).length > 0;
 
   const submitButtonState = (function getSubmitButtonState() {
     if (error) {

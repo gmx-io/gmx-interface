@@ -3,12 +3,13 @@ import { fetchLastOracleCandles, fetchOracleCandles, fetchOracleRecentPrice } fr
 import { getChainlinkChartPricesFromGraph } from "domain/prices";
 import { sleep } from "lib/sleep";
 import { Bar } from "domain/tradingview/types";
+import { getMidPrice } from "../tokens";
 
 export class SyntheticsTVDataProvider extends TVDataProvider {
   candlesTimeout = 5000;
 
   override async getCurrentPriceOfToken(chainId: number, ticker: string) {
-    return fetchOracleRecentPrice(chainId, ticker);
+    return fetchOracleRecentPrice(chainId, ticker).then((prices) => getMidPrice(prices));
   }
 
   override async getTokenChartPrice(chainId: number, ticker: string, period: string): Promise<Bar[]> {

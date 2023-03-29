@@ -1,58 +1,57 @@
 import { useWeb3React } from "@web3-react/core";
 import Token from "abis/Token.json";
-import { getWrappedToken } from "config/tokens";
-import { isAddressZero } from "lib/legacy";
+import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { useMulticall } from "lib/multicall";
-import { useMemo } from "react";
-import { TokenAllowancesData } from "./types";
+import { TokensAllowanceData } from "./types";
 
 type TokenAllowanceResult = {
-  tokenAllowanceData: TokenAllowancesData;
+  tokensAllowanceData: TokensAllowanceData;
   isLoading: boolean;
 };
 
-export function useTokenAllowanceData(
+const defaultValue = {};
+
+export function useTokensAllowanceData(
   chainId: number,
   p: { spenderAddress?: string; tokenAddresses: string[] }
 ): TokenAllowanceResult {
+  const { spenderAddress, tokenAddresses } = p;
   const { account } = useWeb3React();
 
-  const wrappedToken = getWrappedToken(chainId);
-
-  const { data: tokenAllowance, isLoading } = useMulticall(chainId, "useTokenAllowance", {
+  const { data, isLoading } = useMulticall(chainId, "useTokenAllowance", {
     key:
-      account && p.spenderAddress && p.tokenAddresses.length > 0
-        ? [account, p.spenderAddress, p.tokenAddresses.join("-")]
+      account && spenderAddress && tokenAddresses.length > 0
+        ? [account, spenderAddress, tokenAddresses.join("-")]
         : null,
 
     request: () =>
-      p.tokenAddresses.reduce((contracts, address) => {
-        contracts[address] = {
-          contractAddress: isAddressZero(address) ? wrappedToken.address : address,
-          abi: Token.abi,
-          calls: {
-            allowance: {
-              methodName: "allowance",
-              params: [account, p.spenderAddress],
+      tokenAddresses
+        .filter((address) => address !== NATIVE_TOKEN_ADDRESS)
+        .reduce((contracts, address) => {
+          contracts[address] = {
+            contractAddress: address,
+            abi: Token.abi,
+            calls: {
+              allowance: {
+                methodName: "allowance",
+                params: [account, spenderAddress],
+              },
             },
-          },
-        };
+          };
 
-        return contracts;
-      }, {}),
+          return contracts;
+        }, {}),
 
     parseResponse: (res) =>
-      Object.keys(res).reduce((tokenAllowance: TokenAllowancesData, address) => {
+      Object.keys(res).reduce((tokenAllowance: TokensAllowanceData, address) => {
         tokenAllowance[address] = res[address].allowance.returnValues[0];
 
         return tokenAllowance;
-      }, {} as TokenAllowancesData),
+      }, {} as TokensAllowanceData),
   });
 
-  return useMemo(() => {
-    return {
-      tokenAllowanceData: tokenAllowance || {},
-      isLoading,
-    };
-  }, [isLoading, tokenAllowance]);
+  return {
+    tokensAllowanceData: data || defaultValue,
+    isLoading,
+  };
 }

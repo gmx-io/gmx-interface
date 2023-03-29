@@ -47,10 +47,10 @@ import {
   TokensRatio,
   formatTokensRatio,
   getTokenData,
-  needTokenApprove,
+  getNeedTokenApprove,
   useAvailableTokensData,
 } from "domain/synthetics/tokens";
-import { useTokenAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
+import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 import {
   DecreasePositionTradeParams,
   IncreasePositionTradeParams,
@@ -140,12 +140,18 @@ export function ConfirmationBox(p: Props) {
   const payToken = tokenIn || initialCollateralToken;
   const payAmount = p.swapParams?.amountIn || p.increasePositionParams?.initialCollateralAmount;
   const routerAddress = getContract(chainId, "SyntheticsRouter");
-  const { tokenAllowanceData } = useTokenAllowanceData(chainId, {
+  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: routerAddress,
     tokenAddresses: payToken ? [payToken.address] : [],
   });
-  const isAllowanceLoaded = Object.keys(tokenAllowanceData).length > 0;
-  const needPayTokenApproval = !p.isWrapOrUnwrap && needTokenApprove(tokenAllowanceData, payToken?.address, payAmount);
+
+  const isAllowanceLoaded = Object.keys(tokensAllowanceData).length > 0;
+  const needPayTokenApproval =
+    isAllowanceLoaded &&
+    !p.isWrapOrUnwrap &&
+    payToken &&
+    payAmount &&
+    getNeedTokenApprove(tokensAllowanceData, payToken.address, payAmount);
 
   const isHighPriceImpact =
     getIsHighPriceImpact(fees?.swapPriceImpact) || getIsHighPriceImpact(fees?.positionPriceImpact);

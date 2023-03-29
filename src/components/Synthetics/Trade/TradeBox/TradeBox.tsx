@@ -31,7 +31,7 @@ import {
   formatLeverage,
   getMarkPrice,
 } from "domain/synthetics/positions";
-import { TokensRatio, getTokenData, getTokensRatio, useAvailableTokensData } from "domain/synthetics/tokens";
+import { TokensRatio, getTokenData, getTokensRatioByPrice, useAvailableTokensData } from "domain/synthetics/tokens";
 import {
   getDecreasePositionTradeParams,
   getIncreasePositionTradeParams,
@@ -218,7 +218,17 @@ export function TradeBox(p: Props) {
   const markPrice = getMarkPrice(indexToken?.prices, isIncrease, isLong);
 
   const [triggerRatioInputValue, setTriggerRatioInputValue] = useState<string>("");
-  const markRatio = getTokensRatio({ fromToken: fromTokenInput.token, toToken: toTokenInput.token });
+
+  const markRatio =
+    fromTokenInput.token &&
+    toTokenInput.token &&
+    getTokensRatioByPrice({
+      fromToken: fromTokenInput.token,
+      toToken: toTokenInput.token,
+      fromPrice: fromTokenInput.token.prices.minPrice,
+      toPrice: toTokenInput.token.prices.maxPrice,
+    });
+
   const triggerRatio = useMemo(() => {
     if (!markRatio) return undefined;
 

@@ -1,7 +1,7 @@
 import { BigNumber } from "ethers";
 import { PRECISION } from "lib/legacy";
 import { applyFactor } from "lib/numbers";
-import { convertToContractPrices, convertToUsd, getMidPrice, getTokenData } from "../tokens";
+import { convertToContractTokenPrices, convertToUsd, getMidPrice, getTokenData } from "../tokens";
 import { TokensData } from "../tokens/types";
 import { ContractMarketPrices, Market, MarketInfo } from "./types";
 
@@ -289,8 +289,8 @@ export function getContractMarketPrices(tokensData: TokensData, market: Market):
   if (!longToken?.prices || !shortToken?.prices || !indexToken?.prices) return undefined;
 
   return {
-    indexTokenPrice: convertToContractPrices(indexToken.prices, indexToken.decimals),
-    longTokenPrice: convertToContractPrices(longToken.prices, longToken.decimals),
-    shortTokenPrice: convertToContractPrices(shortToken.prices, shortToken.decimals),
+    indexTokenPrice: convertToContractTokenPrices(indexToken.prices, indexToken.decimals),
+    longTokenPrice: convertToContractTokenPrices(longToken.prices, longToken.decimals),
+    shortTokenPrice: convertToContractTokenPrices(shortToken.prices, shortToken.decimals),
   };
 }

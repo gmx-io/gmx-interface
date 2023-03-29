@@ -12,7 +12,7 @@ import { convertTokenAddress } from "config/tokens";
 import { estimateExecuteDecreaseOrderGasLimit, getExecutionFee, useGasPrice } from "domain/synthetics/fees";
 import { DecreasePositionSwapType, OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
 import { AggregatedPositionData, formatLeverage, formatPnl, getMarkPrice } from "domain/synthetics/positions";
-import { adaptToInfoTokens, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
+import { adaptToV1InfoTokens, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import {
@@ -57,13 +57,11 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionSeller.scss";
 
 function isEquivalentTokens(token1: Token, token2: Token) {
-  if (token1.address === token2.address) {
-    return true;
-  }
+  const isWrap = token1.isNative && token2.isWrapped;
+  const isUnwrap = token1.isWrapped && token2.isNative;
+  const isSameToken = token1.address === token2.address;
 
-  if (token1.wrappedAddress === token2.address || token2.wrappedAddress === token1.address) {
-    return true;
-  }
+  return isWrap || isUnwrap || isSameToken;
 }
 
 type Props = {
@@ -86,7 +84,7 @@ export function PositionSeller(p: Props) {
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimitsConfig(chainId);
   const { maxLeverage, minCollateralUsd } = usePositionsConstants(chainId);
-  const infoTokens = adaptToInfoTokens(tokensData);
+  const infoTokens = adaptToV1InfoTokens(tokensData);
 
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);

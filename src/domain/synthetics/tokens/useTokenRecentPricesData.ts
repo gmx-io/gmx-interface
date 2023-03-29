@@ -1,8 +1,7 @@
+import useSWR from "swr";
 import { getTokenBySymbol, getTokens, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { jsonFetcher } from "lib/fetcher";
 import { expandDecimals } from "lib/numbers";
-import useSWR from "swr";
-import { useMemo } from "react";
 import { getOracleKeeperUrl } from "config/oracleKeeper";
 import { USD_DECIMALS } from "lib/legacy";
 import { TokenPricesData } from "./types";
@@ -22,17 +21,19 @@ type TokenPricesDataResult = {
   isLoading: boolean;
 };
 
+const defaultValue = {};
+
 export function useTokenRecentPricesData(chainId: number): TokenPricesDataResult {
   const url = getOracleKeeperUrl(chainId, "/prices/tickers");
 
-  const { data, error } = useSWR<BackendResponse>(url, { fetcher: jsonFetcher });
+  const { data, error } = useSWR<TokenPricesData>(url, {
+    fetcher: (...args) => jsonFetcher(...args).then((res) => formatResponse(chainId, res)),
+  });
 
-  return useMemo(() => {
-    return {
-      pricesData: data ? formatResponse(chainId, data) : {},
-      isLoading: !data && !error,
-    };
-  }, [chainId, data, error]);
+  return {
+    pricesData: data || defaultValue,
+    isLoading: !error && !data,
+  };
 }
 
 function formatResponse(chainId: number, response: BackendResponse = []): TokenPricesData {

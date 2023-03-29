@@ -1,17 +1,17 @@
-import { InfoTokens, Token, TokenInfo } from "domain/tokens";
+import { InfoTokens, Token, TokenInfo, getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber } from "ethers";
-import { TokenAllowancesData, TokenData, TokenPrices, TokensData, TokensRatio } from "./types";
+import { TokensAllowanceData, TokenData, TokenPrices, TokensData, TokensRatio } from "./types";
 import { expandDecimals, formatAmount } from "lib/numbers";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { PRECISION, USD_DECIMALS, adjustForDecimals } from "lib/legacy";
 import { Bar } from "domain/tradingview/types";
 
 export function getTokenData(tokensData: TokensData, address: string | undefined, convertTo?: "wrapped" | "native") {
-  if (!address) return undefined;
+  if (!address || !tokensData[address]) {
+    return undefined;
+  }
 
   const token = tokensData[address];
-
-  if (!token) return undefined;
 
   if (convertTo === "wrapped" && token.isNative && token.wrappedAddress) {
     return tokensData[token.wrappedAddress];
@@ -21,27 +21,19 @@ export function getTokenData(tokensData: TokensData, address: string | undefined
     return tokensData[NATIVE_TOKEN_ADDRESS];
   }
 
-  return tokensData[address];
+  return token;
 }
 
-export function getTokenAllowance(allowanceData: TokenAllowancesData, address: string | undefined) {
-  if (!address) return undefined;
+export function getNeedTokenApprove(
+  tokenAllowanceData: TokensAllowanceData,
+  tokenAddress: string,
+  amountToSpend: BigNumber
+): boolean {
+  if (tokenAddress === NATIVE_TOKEN_ADDRESS || !tokenAllowanceData[tokenAddress]) {
+    return false;
+  }
 
-  return allowanceData[address];
-}
-
-export function needTokenApprove(
-  tokenAllowanceData: TokenAllowancesData,
-  tokenAddress: string | undefined,
-  amountToSpend: BigNumber | undefined
-) {
-  if (tokenAddress === NATIVE_TOKEN_ADDRESS) return false;
-
-  const allowance = getTokenAllowance(tokenAllowanceData, tokenAddress);
-
-  if (!allowance || !amountToSpend) return false;
-
-  return amountToSpend.gt(allowance);
+  return amountToSpend.gt(tokenAllowanceData[tokenAddress]);
 }
 
 export function convertToTokenAmount(
@@ -49,7 +41,9 @@ export function convertToTokenAmount(
   tokenDecimals: number | undefined,
   price: BigNumber | undefined
 ) {
-  if (!usd || !tokenDecimals || !price?.gt(0)) return undefined;
+  if (!usd || typeof tokenDecimals !== "number" || !price?.gt(0)) {
+    return undefined;
+  }
 
   return usd.mul(expandDecimals(1, tokenDecimals)).div(price);
 }
@@ -59,54 +53,54 @@ export function convertToUsd(
   tokenDecimals: number | undefined,
   price: BigNumber | undefined
 ) {
-  if (!tokenAmount || !tokenDecimals || !price) return undefined;
+  if (!tokenAmount || typeof tokenDecimals !== "number" || !price) {
+    return undefined;
+  }
 
   return tokenAmount.mul(price).div(expandDecimals(1, tokenDecimals));
 }
 
-export function getTokensRatio(p: { fromToken?: TokenData; toToken?: TokenData }): TokensRatio | undefined {
-  if (!p.fromToken?.prices || !p.toToken?.prices) return undefined;
+export function getTokensRatioByPrice(p: {
+  fromToken: TokenData;
+  toToken: TokenData;
+  fromPrice: BigNumber;
+  toPrice: BigNumber;
+}): TokensRatio {
+  const { fromToken, toToken, fromPrice, toPrice } = p;
 
-  const fromAddress = p.fromToken.address;
-  const toAddress = p.toToken.address;
-  const fromPrice = p.fromToken.prices.minPrice;
-  const toPrice = p.toToken.prices.maxPrice;
+  const [largestAddress, smallestAddress, largestPrice, smallestPrice] = fromPrice.gt(toPrice)
+    ? [fromToken.address, toToken.address, fromPrice, toPrice]
+    : [toToken.address, fromToken.address, toPrice, fromPrice];
 
-  const [largestAddress, smallestAddress] = fromPrice.gt(toPrice) ? [fromAddress, toAddress] : [toAddress, fromAddress];
-
-  const ratio =
-    largestAddress === fromAddress ? fromPrice.mul(PRECISION).div(toPrice) : toPrice.mul(PRECISION).div(fromPrice);
+  const ratio = largestPrice.mul(PRECISION).div(smallestPrice);
 
   return { ratio, largestAddress, smallestAddress };
 }
 
 export function getTokensRatioByAmounts(p: {
-  fromToken?: Token;
-  toToken?: Token;
-  fromTokenAmount?: BigNumber;
-  toTokenAmount?: BigNumber;
-}): TokensRatio | undefined {
-  if (!p.fromToken || !p.toToken || !p.fromTokenAmount?.gt(0) || !p.toTokenAmount?.gt(0)) return undefined;
+  fromToken: Token;
+  toToken: Token;
+  fromTokenAmount: BigNumber;
+  toTokenAmount: BigNumber;
+}): TokensRatio {
+  const { fromToken, toToken, fromTokenAmount, toTokenAmount } = p;
 
-  const fromAddress = p.fromToken.address;
-  const toAddress = p.toToken.address;
-  const fromAmount = p.fromTokenAmount.mul(PRECISION).div(expandDecimals(1, p.fromToken.decimals));
-  const toAmount = p.toTokenAmount.mul(PRECISION).div(expandDecimals(1, p.toToken.decimals));
+  const adjustedFromAmount = fromTokenAmount.mul(PRECISION).div(expandDecimals(1, fromToken.decimals));
+  const adjustedToAmount = toTokenAmount.mul(PRECISION).div(expandDecimals(1, toToken.decimals));
 
-  if (!fromAmount.gt(0) || !toAmount.gt(0)) return undefined;
+  const [largestAddress, smallestAddress, largestAmount, smallestAmount] = adjustedFromAmount.gt(adjustedToAmount)
+    ? [fromToken.address, toToken.address, adjustedFromAmount, adjustedToAmount]
+    : [toToken.address, fromToken.address, adjustedToAmount, adjustedFromAmount];
 
-  const [largestAddress, smallestAddress] = fromAmount.gt(toAmount)
-    ? [fromAddress, toAddress]
-    : [toAddress, fromAddress];
-
-  const ratio =
-    largestAddress === fromAddress ? fromAmount.mul(PRECISION).div(toAmount) : toAmount.mul(PRECISION).div(fromAmount);
+  const ratio = largestAmount.mul(PRECISION).div(smallestAmount);
 
   return { ratio, largestAddress, smallestAddress };
 }
 
 export function formatTokensRatio(fromToken?: Token, toToken?: Token, ratio?: TokensRatio) {
-  if (!fromToken || !toToken || !ratio) return undefined;
+  if (!fromToken || !toToken || !ratio) {
+    return undefined;
+  }
 
   const [largest, smallest] = ratio.largestAddress === fromToken.address ? [fromToken, toToken] : [toToken, fromToken];
 
@@ -118,34 +112,36 @@ export function getAmountByRatio(p: {
   toToken: Token;
   fromTokenAmount: BigNumber;
   ratio: BigNumber;
-  invertRatio?: boolean;
+  shouldInvertRatio?: boolean;
 }) {
-  const isWrap = p.fromToken.isNative && p.toToken.isWrapped;
-  const isUnwrap = p.fromToken.isWrapped && p.toToken.isNative;
-  const isSameToken = p.fromToken.address === p.toToken.address;
+  const { fromToken, toToken, fromTokenAmount, ratio, shouldInvertRatio } = p;
 
-  if (isWrap || isUnwrap || isSameToken) {
+  if (getIsEquivalentTokens(fromToken, toToken) || fromTokenAmount.eq(0)) {
     return p.fromTokenAmount;
   }
 
-  const ratio = p.invertRatio ? PRECISION.mul(PRECISION).div(p.ratio) : p.ratio;
+  const _ratio = shouldInvertRatio ? PRECISION.mul(PRECISION).div(ratio) : ratio;
 
-  const adjustedDecimalsRatio = adjustForDecimals(ratio, p.fromToken.decimals, p.toToken.decimals);
+  const adjustedDecimalsRatio = adjustForDecimals(_ratio, fromToken.decimals, toToken.decimals);
 
   return p.fromTokenAmount.mul(adjustedDecimalsRatio).div(PRECISION);
 }
 
-export function getCandlesDelta(candles?: Bar[], currentAveragePrice?: number, periodInSeconds?: number) {
-  if (!candles?.length || !periodInSeconds || !currentAveragePrice) {
+export function getCandlesDelta(candles: Bar[], currentAveragePrice: BigNumber, periodInSeconds: number) {
+  const currentPrice = parseFloat(formatAmount(currentAveragePrice, USD_DECIMALS, 2));
+
+  if (!candles.length) {
     return undefined;
   }
 
-  let high: number | undefined;
-  let low: number | undefined;
-  let deltaPrice: number | undefined;
-  let delta: number | undefined;
-  let deltaPercentage: number | undefined;
-  let deltaPercentageStr: string | undefined;
+  const result: Partial<{
+    high: number;
+    low: number;
+    delta: number;
+    deltaPrice: number;
+    deltaPercentage: number;
+    deltaPercentageStr: string;
+  }> = {};
 
   const now = Math.round(Date.now() / 1000);
   const timeThreshold = now - periodInSeconds;
@@ -155,43 +151,30 @@ export function getCandlesDelta(candles?: Bar[], currentAveragePrice?: number, p
       break;
     }
 
-    if (!high || candle.high > high) {
-      high = candle.high;
+    if (!result.high || candle.high > result.high) {
+      result.high = candle.high;
     }
 
-    if (!low || candle.low < low) {
-      low = candle.low;
+    if (!result.low || candle.low < result.low) {
+      result.low = candle.low;
     }
 
-    deltaPrice = candle.open;
+    result.deltaPrice = candle.open;
   }
 
-  if (deltaPrice && currentAveragePrice) {
-    delta = currentAveragePrice - deltaPrice;
-    deltaPercentage = (delta * 100) / currentAveragePrice;
+  result.delta = currentPrice - result.deltaPrice!;
+  result.deltaPercentage = (result.delta * 100) / currentPrice;
 
-    if (deltaPercentage > 0) {
-      deltaPercentageStr = `+${deltaPercentage.toFixed(2)}%`;
-    } else {
-      deltaPercentageStr = `${deltaPercentage.toFixed(2)}%`;
-    }
-    if (deltaPercentage === 0) {
-      deltaPercentageStr = "0.00";
-    }
+  if (result.deltaPercentage > 0) {
+    result.deltaPercentageStr = `+${result.deltaPercentage.toFixed(2)}%`;
+  } else {
+    result.deltaPercentageStr = `${result.deltaPercentage.toFixed(2)}%`;
+  }
+  if (result.deltaPercentage === 0) {
+    result.deltaPercentageStr = "0.00";
   }
 
-  if (!high || !low || !deltaPrice || !delta || !deltaPercentage || !deltaPercentageStr) {
-    return undefined;
-  }
-
-  return {
-    high,
-    low,
-    deltaPrice,
-    delta,
-    deltaPercentage,
-    deltaPercentageStr,
-  };
+  return result as Required<typeof result>;
 }
 
 export function getMidPrice(prices: TokenPrices) {
@@ -206,7 +189,7 @@ export function convertToContractPrice(price: BigNumber, tokenDecimals: number) 
   return price.div(expandDecimals(1, tokenDecimals));
 }
 
-export function convertToContractPrices(prices: TokenPrices, tokenDecimals: number) {
+export function convertToContractTokenPrices(prices: TokenPrices, tokenDecimals: number) {
   return {
     min: convertToContractPrice(prices.minPrice, tokenDecimals),
     max: convertToContractPrice(prices.maxPrice, tokenDecimals),
@@ -220,11 +203,11 @@ export function parseContractPrice(price: BigNumber, tokenDecimals: number) {
 /**
  * Used to adapt Synthetics tokens to InfoTokens where it's possible
  */
-export function adaptToInfoTokens(tokensData: TokensData): InfoTokens {
+export function adaptToV1InfoTokens(tokensData: TokensData): InfoTokens {
   const infoTokens = Object.keys(tokensData).reduce((acc, address) => {
     const tokenData = getTokenData(tokensData, address)!;
 
-    acc[address] = adaptToTokenInfo(tokenData);
+    acc[address] = adaptToV1TokenInfo(tokenData);
 
     return acc;
   }, {} as InfoTokens);
@@ -235,7 +218,7 @@ export function adaptToInfoTokens(tokensData: TokensData): InfoTokens {
 /**
  * Used to adapt Synthetics tokens to InfoTokens where it's possible
  */
-export function adaptToTokenInfo(tokenData: TokenData): TokenInfo {
+export function adaptToV1TokenInfo(tokenData: TokenData): TokenInfo {
   return {
     ...tokenData,
     minPrice: tokenData.prices?.minPrice,

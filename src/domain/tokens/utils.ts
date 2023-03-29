@@ -15,7 +15,6 @@ import {
 } from "lib/legacy";
 import { bigNumberify, expandDecimals } from "lib/numbers";
 import { InfoTokens, Token, TokenInfo } from "./types";
-
 const { AddressZero } = ethers.constants;
 
 export function getTokenUrl(chainId: number, address: string) {
@@ -23,6 +22,16 @@ export function getTokenUrl(chainId: number, address: string) {
     return getExplorerUrl(chainId);
   }
   return getExplorerUrl(chainId) + "token/" + address;
+}
+
+export function getIsEquivalentTokens(token1: Token, token2: Token) {
+  if (token1.address === token2.address) {
+    return true;
+  }
+
+  if (token1.wrappedAddress === token2.address || token2.wrappedAddress === token1.address) {
+    return true;
+  }
 }
 
 export function getUsd(

@@ -2,10 +2,11 @@ import { getOracleKeeperUrl } from "config/oracleKeeper";
 import { getNormalizedTokenSymbol, getTokenBySymbol } from "config/tokens";
 import { Bar } from "domain/tradingview/types";
 import { CHART_PERIODS } from "lib/legacy";
-import { getMidPrice, parseOraclePrice } from "./utils";
+import { parseOraclePrice } from "./utils";
 import { timezoneOffset } from "domain/prices";
+import { TokenPrices } from "./types";
 
-export async function fetchOracleRecentPrice(chainId: number, tokenSymbol: string) {
+export async function fetchOracleRecentPrice(chainId: number, tokenSymbol: string): Promise<TokenPrices> {
   const url = getOracleKeeperUrl(chainId, "/prices/tickers");
 
   tokenSymbol = getNormalizedTokenSymbol(tokenSymbol);
@@ -23,7 +24,7 @@ export async function fetchOracleRecentPrice(chainId: number, tokenSymbol: strin
   const minPrice = parseOraclePrice(priceItem.minPrice, token.decimals, priceItem.oracleDecimals);
   const maxPrice = parseOraclePrice(priceItem.maxPrice, token.decimals, priceItem.oracleDecimals);
 
-  return getMidPrice({ minPrice, maxPrice })!;
+  return { minPrice, maxPrice };
 }
 
 export async function fetchLastOracleCandles(
