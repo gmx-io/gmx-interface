@@ -3,7 +3,7 @@ import Modal from "components/Modal/Modal";
 import { RequestStatus } from "components/RequestStatus/RequestStatus";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import { useMarketsData } from "domain/synthetics/markets";
+import { useMarkets } from "domain/synthetics/markets";
 import { OrderType, isIncreaseOrder, isSwapOrder } from "domain/synthetics/orders";
 import { getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
@@ -28,7 +28,7 @@ export function OrderStatus(p: Props) {
   const [orderKey, setOrderKey] = useState<string>();
   const { chainId } = useChainId();
   const { tokensData } = useAvailableTokensData(chainId);
-  const { marketsData } = useMarketsData(chainId);
+  const { marketsData } = useMarkets(chainId);
   const { orderStatuses, touchOrderStatus } = useSyntheticsEvents();
 
   const orderStatus = orderKey ? orderStatuses[orderKey] : undefined;

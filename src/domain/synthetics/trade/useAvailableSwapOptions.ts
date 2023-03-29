@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { NATIVE_TOKEN_ADDRESS, getWrappedToken } from "config/tokens";
-import { Market, useMarketsData } from "domain/synthetics/markets";
+import { Market, useMarkets } from "domain/synthetics/markets";
 import { adaptToV1InfoTokens, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { InfoTokens, Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
@@ -14,7 +14,7 @@ type AvailableSwapOptions = {
 
 export function useAvailableSwapOptions(p: { selectedIndexTokenAddress?: string }): AvailableSwapOptions {
   const { chainId } = useChainId();
-  const { marketsData } = useMarketsData(chainId);
+  const { marketsData } = useMarkets(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
 
   const infoTokens = useMemo(() => adaptToV1InfoTokens(tokensData), [tokensData]);

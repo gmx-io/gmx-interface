@@ -268,12 +268,18 @@ export function TradeBox(p: Props) {
   const availableMarkets: MarketInfo[] = useMemo(() => {
     if (!toTokenAddress) return [];
 
-    let markets = Object.values(marketsInfoData).filter(
+    let markets = Object.values(marketsInfoData);
+
+    if (isSwap) {
+      return markets;
+    }
+
+    markets = Object.values(marketsInfoData).filter(
       (market) => market.indexTokenAddress === convertTokenAddress(chainId, toTokenAddress, "wrapped")
     );
 
     return markets;
-  }, [chainId, marketsInfoData, toTokenAddress]);
+  }, [chainId, isSwap, marketsInfoData, toTokenAddress]);
 
   const marketsOptions: DropdownOption[] = availableMarkets.map((marketInfo) => ({
     label: marketInfo.name,
@@ -458,8 +464,12 @@ export function TradeBox(p: Props) {
   }, [collateralAddress, selectedMarket, toTokenInput.tokenAddress]);
 
   const mostLiquidSwapMarket = useMemo(() => {
-    return getMostLiquidMarketForSwap(availableMarkets, fromTokenInput.tokenAddress);
-  }, [availableMarkets, fromTokenInput.tokenAddress]);
+    if (!toTokenInput.tokenAddress) {
+      return undefined;
+    }
+
+    return getMostLiquidMarketForSwap(availableMarkets, toTokenInput.tokenAddress);
+  }, [availableMarkets, toTokenInput.tokenAddress]);
 
   const isOutPositionLiquidity = isIncrease
     ? isLong
@@ -479,7 +489,7 @@ export function TradeBox(p: Props) {
       shouldShowCollateralTooltip?: boolean;
     } = {};
 
-    if (!isPosition || isDataLoading) {
+    if (!isPosition || isDataLoading || !toTokenAddress) {
       return result;
     }
 

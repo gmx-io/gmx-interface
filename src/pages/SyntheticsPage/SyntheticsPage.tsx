@@ -19,7 +19,7 @@ import {
   SYNTHETICS_TRADE_TYPE_KEY,
 } from "config/localStorage";
 import { getToken } from "config/tokens";
-import { useMarketsData } from "domain/synthetics/markets";
+import { useMarkets } from "domain/synthetics/markets";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useAggregatedOrdersData } from "domain/synthetics/orders/useAggregatedOrdersData";
 import { AggregatedPositionData, getPosition, getPositionKey } from "domain/synthetics/positions";
@@ -57,7 +57,7 @@ export function SyntheticsPage(p: Props) {
   const { chainId } = useChainId();
   const { library, account } = useWeb3React();
   const [listSection, setListSection] = useLocalStorageByChainId(chainId, "List-section-v3", ListSection.Positions);
-  const { marketsData } = useMarketsData(chainId);
+  const { marketsData } = useMarkets(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
 
   const [tradeType, setTradeType] = useLocalStorageSerializeKey([chainId, SYNTHETICS_TRADE_TYPE_KEY], TradeType.Long);

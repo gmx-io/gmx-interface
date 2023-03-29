@@ -5,7 +5,7 @@ import { MarketsData } from "./types";
 import { convertTokenAddress, getToken } from "config/tokens";
 import { getMarketFullName } from "./utils";
 
-type MarketsDataResult = {
+type MarketsResult = {
   marketsData: MarketsData;
   marketsAddresses: string[];
   isLoading: boolean;
@@ -18,7 +18,7 @@ const defaultValue = {
   marketsAddresses: [],
 };
 
-export function useMarketsData(chainId: number): MarketsDataResult {
+export function useMarkets(chainId: number): MarketsResult {
   const { data = defaultValue, isLoading } = useMulticall(chainId, "useMarketsData", {
     key: [],
     request: () => ({

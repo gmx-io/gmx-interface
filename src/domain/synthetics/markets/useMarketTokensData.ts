@@ -9,7 +9,7 @@ import { USD_DECIMALS } from "lib/legacy";
 import { useMulticall } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
 import { useMemo } from "react";
-import { useMarketsData } from "./useMarketsData";
+import { useMarkets } from "./useMarkets";
 import { getContractMarketPrices } from "./utils";
 import { getByKey } from "lib/objects";
 
@@ -21,7 +21,7 @@ type MarketTokensDataResult = {
 export function useMarketTokensData(chainId: number): MarketTokensDataResult {
   const { account } = useWeb3React();
   const { tokensData, isLoading: isTokensLoading } = useAvailableTokensData(chainId);
-  const { marketsData, marketsAddresses, isLoading: isMarketsLoading } = useMarketsData(chainId);
+  const { marketsData, marketsAddresses, isLoading: isMarketsLoading } = useMarkets(chainId);
 
   const isDataLoaded = !isTokensLoading && !isMarketsLoading && marketsAddresses.length > 0;
 

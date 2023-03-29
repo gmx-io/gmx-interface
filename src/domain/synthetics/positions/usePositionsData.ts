@@ -6,7 +6,7 @@ import { useMulticall } from "lib/multicall";
 import DataStore from "abis/DataStore.json";
 import { bigNumberify } from "lib/numbers";
 import { useMemo } from "react";
-import { ContractMarketPrices, getContractMarketPrices, useMarketsData } from "../markets";
+import { ContractMarketPrices, getContractMarketPrices, useMarkets } from "../markets";
 import { useAvailableTokensData } from "../tokens";
 import { PositionsData } from "./types";
 import { getPositionKey } from "./utils";
@@ -20,7 +20,7 @@ const defaultValue = {};
 
 export function usePositionsData(chainId: number): PositionsDataResult {
   const { account } = useWeb3React();
-  const { marketsData, isLoading: isMarketsLoading } = useMarketsData(chainId);
+  const { marketsData, isLoading: isMarketsLoading } = useMarkets(chainId);
   const { tokensData, isLoading: isTokensLoading } = useAvailableTokensData(chainId);
 
   const { data: positionsKeys } = useMulticall(chainId, "usePositionsData-keys", {
@@ -50,8 +50,6 @@ export function usePositionsData(chainId: number): PositionsDataResult {
 
     for (const market of markets) {
       const marketPrices = getContractMarketPrices(tokensData, market);
-
-      if (!marketPrices) continue;
 
       for (const collateralAddress of [market.longTokenAddress, market.shortTokenAddress]) {
         for (const isLong of [true, false]) {

@@ -8,7 +8,7 @@ import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { getContract } from "config/contracts";
 import { getToken } from "config/tokens";
 import { ExecutionFee } from "domain/synthetics/fees";
-import { useMarketsData } from "domain/synthetics/markets";
+import { useMarkets } from "domain/synthetics/markets";
 import { createDepositTxn } from "domain/synthetics/markets/createDepositTxn";
 import { createWithdrawalTxn } from "domain/synthetics/markets/createWithdrawalTxn";
 import { getTokenData, getNeedTokenApprove, useAvailableTokensData } from "domain/synthetics/tokens";
@@ -62,7 +62,7 @@ export function GmConfirmationBox({
 }: Props) {
   const { library, account } = useWeb3React();
   const { chainId } = useChainId();
-  const { marketsData } = useMarketsData(chainId);
+  const { marketsData } = useMarkets(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
 
   const market = getByKey(marketsData, marketToken?.address);

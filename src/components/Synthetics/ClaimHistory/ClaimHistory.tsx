@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useClaimCollateralHistory } from "domain/synthetics/claimHistory";
 import { ClaimHistoryRow } from "../ClaimHistoryRow/ClaimHistoryRow";
 import { useAvailableTokensData } from "domain/synthetics/tokens";
-import { useMarketsData } from "domain/synthetics/markets";
+import { useMarkets } from "domain/synthetics/markets";
 
 const PAGE_SIZE = 100;
 
@@ -17,7 +17,7 @@ export function ClaimHistory(p: Props) {
   const { chainId } = useChainId();
   const [pageIndex, setPageIndex] = useState(0);
 
-  const { marketsData } = useMarketsData(chainId);
+  const { marketsData } = useMarkets(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
 
   const { claimActions, isLoading } = useClaimCollateralHistory(chainId, { pageIndex, pageSize: PAGE_SIZE });

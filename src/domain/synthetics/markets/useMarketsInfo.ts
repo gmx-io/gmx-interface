@@ -28,7 +28,7 @@ import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { useAvailableTokensData } from "../tokens";
 import { MarketsInfoData } from "./types";
-import { useMarketsData } from "./useMarketsData";
+import { useMarkets } from "./useMarkets";
 import { getContractMarketPrices } from "./utils";
 import { bigNumberify } from "lib/numbers";
 
@@ -41,7 +41,7 @@ const defaultValue = {};
 
 export function useMarketsInfo(chainId: number): MarketsInfoResult {
   const { account } = useWeb3React();
-  const { marketsData, marketsAddresses, isLoading: isMarketsLoading } = useMarketsData(chainId);
+  const { marketsData, marketsAddresses, isLoading: isMarketsLoading } = useMarkets(chainId);
   const { tokensData, isLoading: isTokensLoading } = useAvailableTokensData(chainId);
   const dataStoreAddress = getContract(chainId, "DataStore");
 
@@ -50,15 +50,11 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
   const { data = defaultValue, isLoading } = useMulticall(chainId, "useMarketsInfo", {
     key: !isDepencenciesLoading &&
       marketsAddresses.length > 0 && [marketsAddresses.join("-"), dataStoreAddress, account],
+
     request: () =>
       marketsAddresses.reduce((request, marketAddress) => {
         const market = getByKey(marketsData, marketAddress)!;
         const marketPrices = getContractMarketPrices(tokensData, market)!;
-
-        // skip market request if there is no prices for tokens
-        if (!marketPrices) {
-          return request;
-        }
 
         return Object.assign(request, {
           [`${marketAddress}-reader`]: {
@@ -324,7 +320,7 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
         const shortInterestInTokens = shortInterestInTokensUsingLongToken.add(shortInterestInTokensUsingShortToken);
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const [_market, borrowingFactorPerSecondForLongs, borrowingFactorPerSecondForShorts, funding] =
+        const [_, borrowingFactorPerSecondForLongs, borrowingFactorPerSecondForShorts, funding] =
           readerValues.marketInfo.returnValues;
 
         const [

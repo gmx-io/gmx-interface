@@ -3,7 +3,6 @@ import {
   MarketsInfoData,
   getCappedPoolPnl,
   getMarketCollateral,
-  getPoolUsd,
   getTokenPoolType,
 } from "domain/synthetics/markets";
 import { Token } from "domain/tokens";
@@ -223,11 +222,7 @@ export function getPositionPnl(p: {
   if (totalPnl.gt(0)) {
     const poolPnl = p.isLong ? p.marketInfo.pnlLongMax : p.marketInfo.pnlShortMax;
 
-    const poolUsd = getPoolUsd(p.marketInfo, p.isLong!, "minPrice");
-
-    const cappedPnl = getCappedPoolPnl(p.marketInfo, poolPnl, poolUsd, p.isLong);
-
-    if (!cappedPnl) return undefined;
+    const cappedPnl = getCappedPoolPnl(p.marketInfo, p.isLong!, true);
 
     const WEI_PRECISION = expandDecimals(1, 18);
 
