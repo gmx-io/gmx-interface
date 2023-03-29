@@ -86,7 +86,7 @@ import { SwapTradeParams, TradeMode, TradeType } from "domain/synthetics/trade/t
 import { OrderStatus } from "components/Synthetics/OrderStatus/OrderStatus";
 import Tooltip from "components/Tooltip/Tooltip";
 import { IS_NETWORK_DISABLED, getChainName } from "config/chains";
-import { useGasLimitsConfig } from "domain/synthetics/fees/useGasLimitsConfig";
+import { useGasLimits } from "domain/synthetics/fees";
 import { usePositionsConstants } from "domain/synthetics/positions/usePositionsConstants";
 import { usePrevious } from "lib/usePrevious";
 import { AiOutlineEdit } from "react-icons/ai";
@@ -165,7 +165,7 @@ export function TradeBox(p: Props) {
   const { marketsInfoData, isLoading: isMarketsInfoLoading } = useMarketsInfo(chainId);
 
   const { gasPrice } = useGasPrice(chainId);
-  const { gasLimits } = useGasLimitsConfig(chainId);
+  const { gasLimits } = useGasLimits(chainId);
   const { maxLeverage, minCollateralUsd } = usePositionsConstants(chainId);
 
   const isDataLoading = isTokensLoading || isMarketsInfoLoading;
@@ -555,11 +555,11 @@ export function TradeBox(p: Props) {
     for (const market of liquidMarkets) {
       let priceImpactDeltaUsd = getPriceImpactForPosition(market, sizeDeltaUsd, isLong);
 
-      priceImpactDeltaUsd = getCappedPositionImpactUsd(market, priceImpactDeltaUsd);
-
       if (!priceImpactDeltaUsd) {
         continue;
       }
+
+      priceImpactDeltaUsd = getCappedPositionImpactUsd(market, priceImpactDeltaUsd, sizeDeltaUsd);
 
       if (
         !minNegativePriceImpactDeltaUsd ||

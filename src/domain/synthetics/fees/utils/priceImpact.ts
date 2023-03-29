@@ -3,26 +3,22 @@ import { convertToTokenAmount, convertToUsd, getMidPrice } from "domain/syntheti
 import { BigNumber } from "ethers";
 import { applyFactor, bigNumberify, expandDecimals, roundUpDivision } from "lib/numbers";
 
-export function applySwapImpactWithCap(marketInfo: MarketInfo, tokenAddress: string, priceImpactDeltaUsd?: BigNumber) {
+export function applySwapImpactWithCap(marketInfo: MarketInfo, tokenAddress: string, priceImpactDeltaUsd: BigNumber) {
   const tokenPoolType = getTokenPoolType(marketInfo, tokenAddress);
 
-  if (!tokenPoolType) return undefined;
+  if (!tokenPoolType) {
+    throw new Error(`Token ${tokenAddress} is not a collateral of market ${marketInfo.marketTokenAddress}`);
+  }
 
   const token = tokenPoolType === "long" ? marketInfo.longToken : marketInfo.shortToken;
-
-  if (!priceImpactDeltaUsd || !token?.prices) return undefined;
-
-  let price = priceImpactDeltaUsd.gt(0) ? token.prices.maxPrice : token.prices.minPrice;
-
-  if (!price.gt(0)) return undefined;
+  const isLongCollateral = tokenPoolType === "long";
+  const price = priceImpactDeltaUsd.gt(0) ? token.prices.maxPrice : token.prices.minPrice;
 
   let impactDeltaAmount: BigNumber;
 
   if (priceImpactDeltaUsd.gt(0)) {
     // round positive impactAmount down, this will be deducted from the swap impact pool for the user
     impactDeltaAmount = convertToTokenAmount(priceImpactDeltaUsd, token.decimals, price)!;
-
-    const isLongCollateral = tokenPoolType === "long";
 
     const maxImpactAmount = isLongCollateral
       ? marketInfo.swapImpactPoolAmountLong
@@ -41,10 +37,10 @@ export function applySwapImpactWithCap(marketInfo: MarketInfo, tokenAddress: str
 
 export function getCappedPositionImpactUsd(
   marketInfo: MarketInfo,
-  priceImpactDeltaUsd?: BigNumber,
-  sizeDeltaUsd?: BigNumber
+  priceImpactDeltaUsd: BigNumber,
+  sizeDeltaUsd: BigNumber
 ) {
-  if (priceImpactDeltaUsd && priceImpactDeltaUsd.lt(0)) {
+  if (priceImpactDeltaUsd.lt(0)) {
     return priceImpactDeltaUsd;
   }
 
@@ -54,13 +50,9 @@ export function getCappedPositionImpactUsd(
 
   const maxPriceImpactUsdBasedOnImpactPool = convertToUsd(
     impactPoolAmount,
-    indexToken?.decimals,
-    indexToken?.prices?.minPrice
-  );
-
-  if (!indexToken?.prices || !priceImpactDeltaUsd || !maxPriceImpactUsdBasedOnImpactPool || !sizeDeltaUsd) {
-    return undefined;
-  }
+    indexToken.decimals,
+    indexToken.prices.minPrice
+  )!;
 
   let cappedImpactUsd = priceImpactDeltaUsd;
 
@@ -78,23 +70,11 @@ export function getCappedPositionImpactUsd(
   return cappedImpactUsd;
 }
 
-export function getPriceImpactForPosition(
-  marketInfo: MarketInfo,
-  sizeDeltaUsd: BigNumber | undefined,
-  isLong?: boolean
-) {
+export function getPriceImpactForPosition(marketInfo: MarketInfo, sizeDeltaUsd: BigNumber, isLong: boolean) {
   const { longInterestUsd, shortInterestUsd } = marketInfo;
 
   const longDeltaUsd = isLong ? sizeDeltaUsd : BigNumber.from(0);
   const shortDeltaUsd = !isLong ? sizeDeltaUsd : BigNumber.from(0);
-
-  if (isLong && sizeDeltaUsd?.lt(0) && longInterestUsd?.add(sizeDeltaUsd).lt(0)) {
-    return undefined;
-  }
-
-  if (!isLong && sizeDeltaUsd?.lt(0) && shortInterestUsd?.add(sizeDeltaUsd).lt(0)) {
-    return undefined;
-  }
 
   return getPriceImpactUsd({
     currentLongUsd: longInterestUsd,
@@ -110,22 +90,21 @@ export function getPriceImpactForPosition(
 export function getPriceImpactForSwap(
   marketInfo: MarketInfo,
   fromTokenAddress: string,
-  fromDeltaAmount: BigNumber | undefined,
-  toDeltaAmount: BigNumber | undefined
+  fromDeltaAmount: BigNumber,
+  toDeltaAmount: BigNumber
 ) {
   const { longToken, shortToken } = marketInfo;
+
   const longPoolUsd = getPoolUsd(marketInfo, true, "midPrice");
   const shortPoolUsd = getPoolUsd(marketInfo, false, "midPrice");
 
   const fromTokenPoolType = getTokenPoolType(marketInfo, fromTokenAddress);
 
-  if (!longToken?.prices || !shortToken?.prices || !fromTokenPoolType) return undefined;
-
   const longDeltaAmount = fromTokenPoolType === "long" ? fromDeltaAmount : toDeltaAmount;
   const shortDeltaAmount = fromTokenAddress === "short" ? fromDeltaAmount : toDeltaAmount;
 
-  const longDeltaUsd = convertToUsd(longDeltaAmount, longToken.decimals, getMidPrice(longToken.prices));
-  const shortDeltaUsd = convertToUsd(shortDeltaAmount, shortToken.decimals, getMidPrice(shortToken.prices));
+  const longDeltaUsd = convertToUsd(longDeltaAmount, longToken.decimals, getMidPrice(longToken.prices))!;
+  const shortDeltaUsd = convertToUsd(shortDeltaAmount, shortToken.decimals, getMidPrice(shortToken.prices))!;
 
   return getPriceImpactUsd({
     currentLongUsd: longPoolUsd,
@@ -140,39 +119,29 @@ export function getPriceImpactForSwap(
 
 /**
  * @see https://github.com/gmx-io/gmx-synthetics/blob/updates/contracts/pricing/SwapPricingUtils.sol
- *
  */
 export function getPriceImpactUsd(p: {
-  currentLongUsd: BigNumber | undefined;
-  currentShortUsd: BigNumber | undefined;
-  longDeltaUsd: BigNumber | undefined;
-  shortDeltaUsd: BigNumber | undefined;
-  factorPositive: BigNumber | undefined;
-  factorNegative: BigNumber | undefined;
-  exponentFactor: BigNumber | undefined;
-}): BigNumber | undefined {
-  if (
-    !p.currentLongUsd ||
-    !p.currentShortUsd ||
-    !p.longDeltaUsd ||
-    !p.shortDeltaUsd ||
-    (p.longDeltaUsd.eq(0) && p.shortDeltaUsd.eq(0)) ||
-    !p.factorPositive ||
-    !p.factorNegative ||
-    !p.exponentFactor
-  ) {
-    return undefined;
-  }
-
+  currentLongUsd: BigNumber;
+  currentShortUsd: BigNumber;
+  longDeltaUsd: BigNumber;
+  shortDeltaUsd: BigNumber;
+  factorPositive: BigNumber;
+  factorNegative: BigNumber;
+  exponentFactor: BigNumber;
+}) {
   const nextLong = p.currentLongUsd.add(p.longDeltaUsd);
   const nextShort = p.currentShortUsd.add(p.shortDeltaUsd);
+
+  if (nextLong.lt(0) || nextShort.lt(0)) {
+    return undefined;
+  }
 
   const currentDiff = p.currentLongUsd.sub(p.currentShortUsd).abs();
   const nextDiff = nextLong.sub(nextShort).abs();
 
   const isSameSideRebalance = p.currentLongUsd.lt(p.currentShortUsd) === nextLong.lt(nextShort);
 
-  let impactUsd: BigNumber | undefined;
+  let impactUsd: BigNumber;
 
   if (isSameSideRebalance) {
     const hasPositiveImpact = nextDiff.lt(currentDiff);
@@ -195,8 +164,6 @@ export function getPriceImpactUsd(p: {
     });
   }
 
-  if (!impactUsd) return undefined;
-
   return impactUsd;
 }
 
@@ -214,8 +181,6 @@ export function calculateImpactForSameSideRebalance(p: {
 
   const currentImpact = applyImpactFactor(currentDiff, factor, exponentFactor);
   const nextImpact = applyImpactFactor(nextDiff, factor, exponentFactor);
-
-  if (!currentImpact || !nextImpact) return undefined;
 
   const deltaDiff = currentImpact.sub(nextImpact).abs();
 
@@ -237,10 +202,6 @@ export function calculateImpactForCrossoverRebalance(p: {
   const positiveImpact = applyImpactFactor(currentDiff, factorPositive, exponentFactor);
   const negativeImpactUsd = applyImpactFactor(nextDiff, factorNegative, exponentFactor);
 
-  if (!positiveImpact || !negativeImpactUsd) {
-    return undefined;
-  }
-
   const deltaDiffUsd = positiveImpact.sub(negativeImpactUsd).abs();
 
   return positiveImpact.gt(negativeImpactUsd) ? deltaDiffUsd : BigNumber.from(0).sub(deltaDiffUsd);
@@ -252,9 +213,9 @@ export function applyImpactFactor(diff: BigNumber, factor: BigNumber, exponent: 
   const _exponent = Number(exponent) / 10 ** 30;
 
   // Pow and convert back to BigNumber with 30 decimals
-  let result = bigNumberify(BigInt(Math.round(_diff ** _exponent * 10 ** 30)));
+  let result = bigNumberify(BigInt(Math.round(_diff ** _exponent * 10 ** 30)))!;
 
-  result = result?.mul(factor).div(expandDecimals(1, 30)).div(2);
+  result = result.mul(factor).div(expandDecimals(1, 30)).div(2);
 
   return result;
 }

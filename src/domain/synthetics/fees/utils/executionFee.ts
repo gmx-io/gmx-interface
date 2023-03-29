@@ -16,7 +16,7 @@ export function getExecutionFee(
 ): ExecutionFee | undefined {
   const nativeToken = getTokenData(tokensData, NATIVE_TOKEN_ADDRESS);
 
-  if (!nativeToken?.prices) return undefined;
+  if (!nativeToken) return undefined;
 
   const baseGasLimit = gasLimts.estimatedFeeBaseGasLimit;
   const multiplierFactor = gasLimts.estimatedFeeMultiplierFactor;

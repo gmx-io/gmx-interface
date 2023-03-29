@@ -1,25 +1,17 @@
+import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
+import { MarketInfo } from "domain/synthetics/markets";
 import { BigNumber } from "ethers";
 import { applyFactor, getBasisPoints } from "lib/numbers";
-import { FeeItem, MarketsFeesConfigsData } from "../types";
-import { MarketInfo } from "domain/synthetics/markets";
-import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
+import { FeeItem } from "../types";
 
 export * from "./executionFee";
 export * from "./priceImpact";
 
-export function getMarketFeesConfig(feeConfigsData: MarketsFeesConfigsData, marketAddress?: string) {
-  if (!marketAddress) return undefined;
-
-  return feeConfigsData[marketAddress];
-}
-
-export function getPositionFee(marketInfo: MarketInfo, sizeDeltaUsd?: BigNumber) {
-  if (!sizeDeltaUsd) return undefined;
-
+export function getPositionFee(marketInfo: MarketInfo, sizeDeltaUsd: BigNumber) {
   return applyFactor(sizeDeltaUsd, marketInfo.positionFeeFactor);
 }
 
-export function getFundingFeeFactor(marketInfo: MarketInfo, isLong?: boolean, periodInSeconds?: number) {
+export function getFundingFeeFactor(marketInfo: MarketInfo, isLong: boolean, periodInSeconds: number) {
   const { fundingPerSecond, longsPayShorts } = marketInfo;
 
   const isPositive = isLong ? longsPayShorts : !longsPayShorts;
@@ -29,18 +21,16 @@ export function getFundingFeeFactor(marketInfo: MarketInfo, isLong?: boolean, pe
 
 export function getFundingFeeRateUsd(
   marketInfo: MarketInfo,
-  isLong?: boolean,
-  sizeInUsd?: BigNumber,
-  periodInSeconds?: number
+  isLong: boolean,
+  sizeInUsd: BigNumber,
+  periodInSeconds: number
 ) {
   const factor = getFundingFeeFactor(marketInfo, isLong, periodInSeconds);
-
-  if (!factor || !sizeInUsd) return undefined;
 
   return applyFactor(sizeInUsd, factor);
 }
 
-export function getBorrowingFeeFactor(marketInfo: MarketInfo, isLong?: boolean, periodInSeconds?: number) {
+export function getBorrowingFeeFactor(marketInfo: MarketInfo, isLong: boolean, periodInSeconds: number) {
   const factorPerSecond = isLong
     ? marketInfo.borrowingFactorPerSecondForLongs
     : marketInfo.borrowingFactorPerSecondForShorts;
@@ -50,18 +40,16 @@ export function getBorrowingFeeFactor(marketInfo: MarketInfo, isLong?: boolean, 
 
 export function getBorrowingFeeRateUsd(
   marketInfo: MarketInfo,
-  isLong?: boolean,
-  sizeInUsd?: BigNumber,
-  periodInSeconds?: number
+  isLong: boolean,
+  sizeInUsd: BigNumber,
+  periodInSeconds: number
 ) {
   const factor = getBorrowingFeeFactor(marketInfo, isLong, periodInSeconds);
-
-  if (!factor || !sizeInUsd) return undefined;
 
   return applyFactor(sizeInUsd, factor);
 }
 
-export function isHighPriceImpact(priceImpact?: FeeItem) {
+export function getIsHighPriceImpact(priceImpact?: FeeItem) {
   return priceImpact?.deltaUsd.lt(0) && priceImpact.bps.abs().gte(HIGH_PRICE_IMPACT_BPS);
 }
 

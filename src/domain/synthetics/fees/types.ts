@@ -1,10 +1,10 @@
+import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
-import { TokenData } from "../tokens";
 
 export type ExecutionFee = {
   feeUsd: BigNumber;
   feeTokenAmount: BigNumber;
-  feeToken: TokenData;
+  feeToken: Token;
   warning?: string;
 };
 
@@ -30,34 +30,4 @@ export type GasLimitsConfig = {
   decreaseOrder: BigNumber;
   estimatedFeeBaseGasLimit: BigNumber;
   estimatedFeeMultiplierFactor: BigNumber;
-};
-
-export type MarketFeesConfig = {
-  positionFeeFactor: BigNumber;
-  positionImpactFactorPositive: BigNumber;
-  positionImpactFactorNegative: BigNumber;
-  maxPositionImpactFactorPositive: BigNumber;
-  maxPositionImpactFactorNegative: BigNumber;
-  maxPositionImpactFactorForLiquidations: BigNumber;
-  positionImpactExponentFactor: BigNumber;
-
-  swapFeeFactor: BigNumber;
-  swapImpactFactorPositive: BigNumber;
-  swapImpactFactorNegative: BigNumber;
-  swapImpactExponentFactor: BigNumber;
-
-  // MarketInfo
-  borrowingFactorPerSecondForLongs: BigNumber;
-  borrowingFactorPerSecondForShorts: BigNumber;
-
-  fundingPerSecond: BigNumber;
-  longsPayShorts: boolean;
-  fundingAmountPerSize_LongCollateral_LongPosition: BigNumber;
-  fundingAmountPerSize_LongCollateral_ShortPosition: BigNumber;
-  fundingAmountPerSize_ShortCollateral_LongPosition: BigNumber;
-  fundingAmountPerSize_ShortCollateral_ShortPosition: BigNumber;
-};
-
-export type MarketsFeesConfigsData = {
-  [marketAddress: string]: MarketFeesConfig;
 };

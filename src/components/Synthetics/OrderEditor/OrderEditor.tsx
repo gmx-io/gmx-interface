@@ -42,7 +42,7 @@ import {
   getExecutionFee,
   useGasPrice,
 } from "domain/synthetics/fees";
-import { useGasLimitsConfig } from "domain/synthetics/fees/useGasLimitsConfig";
+import { useGasLimits } from "domain/synthetics/fees";
 import { updateOrderTxn } from "domain/synthetics/orders/updateOrderTxn";
 import { BigNumber } from "ethers";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -63,7 +63,7 @@ export function OrderEditor(p: Props) {
   const { library } = useWeb3React();
 
   const { gasPrice } = useGasPrice(chainId);
-  const { gasLimits } = useGasLimitsConfig(chainId);
+  const { gasLimits } = useGasLimits(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
   const { marketsInfoData } = useMarketsInfo(chainId);
   const [savedAcceptablePriceImpactBps] = useLocalStorageSerializeKey(

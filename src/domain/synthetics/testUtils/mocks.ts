@@ -1,4 +1,3 @@
-import { MarketFeesConfig, MarketsFeesConfigsData } from "domain/synthetics/fees";
 import { MarketsData } from "domain/synthetics/markets";
 import { TokenData, TokensData, convertToTokenAmount, getTokenData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
@@ -171,10 +170,7 @@ export function mockPoolsData(
   }, {} as any);
 }
 
-export function mockFeeConfigsData(
-  marketsKeys: string[],
-  overrides: { [marketKey: string]: Partial<MarketFeesConfig> } = {}
-): MarketsFeesConfigsData {
+export function mockFeeConfigsData(marketsKeys: string[], overrides: { [marketKey: string]: Partial<any> } = {}): any {
   return marketsKeys.reduce((acc, key) => {
     acc[key] = {
       positionFeeFactor: expandDecimals(5, 26),
@@ -204,7 +200,7 @@ export function mockFeeConfigsData(
       ...(overrides[key] || {}),
     };
     return acc;
-  }, {} as MarketsFeesConfigsData);
+  }, {} as any);
 }
 
 export function mockOpenInterestData(

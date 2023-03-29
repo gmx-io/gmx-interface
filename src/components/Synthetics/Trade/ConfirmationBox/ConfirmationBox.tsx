@@ -14,12 +14,7 @@ import { getContract } from "config/contracts";
 import { HIGH_SPREAD_THRESHOLD } from "config/factors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useUserReferralCode } from "domain/referrals";
-import {
-  ExecutionFee,
-  getBorrowingFeeFactor,
-  getFundingFeeFactor,
-  isHighPriceImpact as getIsHighPriceImpact,
-} from "domain/synthetics/fees";
+import { ExecutionFee, getBorrowingFeeFactor, getFundingFeeFactor, getIsHighPriceImpact } from "domain/synthetics/fees";
 import {
   getAvailableUsdLiquidityForCollateral,
   getAvailableUsdLiquidityForPosition,

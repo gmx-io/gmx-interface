@@ -38,7 +38,7 @@ import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import "components/Exchange/PositionSeller.css";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import { useGasLimitsConfig } from "domain/synthetics/fees/useGasLimitsConfig";
+import { useGasLimits } from "domain/synthetics/fees/useGasLimits";
 import { getAvailableUsdLiquidityForCollateral, getTokenPoolType, useMarketsInfo } from "domain/synthetics/markets";
 import { usePositionsConstants } from "domain/synthetics/positions/usePositionsConstants";
 import {
@@ -82,7 +82,7 @@ export function PositionSeller(p: Props) {
   const { marketsInfoData } = useMarketsInfo(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
   const { gasPrice } = useGasPrice(chainId);
-  const { gasLimits } = useGasLimitsConfig(chainId);
+  const { gasLimits } = useGasLimits(chainId);
   const { maxLeverage, minCollateralUsd } = usePositionsConstants(chainId);
   const infoTokens = adaptToV1InfoTokens(tokensData);
 

@@ -38,7 +38,7 @@ import { useMemo, useState } from "react";
 
 import { ErrorCode, ErrorDisplayType } from "components/Exchange/constants";
 import { getContract } from "config/contracts";
-import { useGasLimitsConfig } from "domain/synthetics/fees/useGasLimitsConfig";
+import { useGasLimits } from "domain/synthetics/fees/useGasLimits";
 
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
@@ -80,7 +80,7 @@ export function PositionEditor(p: Props) {
 
   const { tokensData } = useAvailableTokensData(chainId);
   const { gasPrice } = useGasPrice(chainId);
-  const { gasLimits } = useGasLimitsConfig(chainId);
+  const { gasLimits } = useGasLimits(chainId);
 
   const collateralToken = position?.collateralToken;
 

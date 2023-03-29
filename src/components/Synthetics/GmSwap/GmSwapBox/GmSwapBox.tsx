@@ -19,7 +19,7 @@ import {
   getTotalFeeItem,
   useGasPrice,
 } from "domain/synthetics/fees";
-import { useGasLimitsConfig } from "domain/synthetics/fees/useGasLimitsConfig";
+import { useGasLimits } from "domain/synthetics/fees";
 import { useMarketsInfo, useMarketTokensData } from "domain/synthetics/markets";
 import { Market } from "domain/synthetics/markets/types";
 import { getAvailableUsdLiquidityForCollateral, getPoolUsd } from "domain/synthetics/markets/utils";
@@ -99,7 +99,7 @@ export function GmSwapBox(p: Props) {
 
   const infoTokens = adaptToV1InfoTokens(tokensData);
 
-  const { gasLimits } = useGasLimitsConfig(chainId);
+  const { gasLimits } = useGasLimits(chainId);
   const { gasPrice } = useGasPrice(chainId);
 
   const [operation, setOperation] = useState<Operation>(Operation.Deposit);

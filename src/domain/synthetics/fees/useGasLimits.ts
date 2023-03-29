@@ -18,7 +18,7 @@ type GasLimitsResult = {
   isLoading: boolean;
 };
 
-export function useGasLimitsConfig(chainId: number): GasLimitsResult {
+export function useGasLimits(chainId: number): GasLimitsResult {
   const { data, isLoading } = useMulticall(chainId, "useGasLimitsConfig", {
     key: [],
     request: () => ({
