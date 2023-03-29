@@ -88,7 +88,6 @@ export function getPriceImpactForPosition(
   const longDeltaUsd = isLong ? sizeDeltaUsd : BigNumber.from(0);
   const shortDeltaUsd = !isLong ? sizeDeltaUsd : BigNumber.from(0);
 
-  // todo: separate validation
   if (isLong && sizeDeltaUsd?.lt(0) && longInterestUsd?.add(sizeDeltaUsd).lt(0)) {
     return undefined;
   }
@@ -247,7 +246,6 @@ export function calculateImpactForCrossoverRebalance(p: {
   return positiveImpact.gt(negativeImpactUsd) ? deltaDiffUsd : BigNumber.from(0).sub(deltaDiffUsd);
 }
 
-// TODO: big numbers?
 export function applyImpactFactor(diff: BigNumber, factor: BigNumber, exponent: BigNumber) {
   // Convert diff and exponent to float js numbers
   const _diff = Number(diff) / 10 ** 30;

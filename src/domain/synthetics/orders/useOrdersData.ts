@@ -58,7 +58,6 @@ export function useOrdersData(chainId: number): OrdersResult {
       return {
         count,
         ordersData: orders.reduce((acc: OrdersData, order, i) => {
-          // TODO: parsing from abi?
           const key = orderKeys[i];
           const [addresses, numbers, flags, data] = order;
           const [account, receiver, callbackContract, marketAddress, initialCollateralToken, swapPath] = addresses;

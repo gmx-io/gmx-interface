@@ -90,7 +90,6 @@ export function usePositionsData(chainId: number): PositionsDataResult {
       const positions = res.reader.positions.returnValues;
 
       return positions.reduce((positionsMap: PositionsData, positionInfo) => {
-        // TODO: parsing from abi?
         const [positionProps, pendingBorrowingFees, fundingFees] = positionInfo;
         const [addresses, numbers, flags, data] = positionProps;
         const [account, marketAddress, collateralTokenAddress] = addresses;

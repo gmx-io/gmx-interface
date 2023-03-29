@@ -3,7 +3,7 @@ import {
   MarketInfo,
   MarketsInfoData,
   getAvailableUsdLiquidityForCollateral,
-  getMarketCollateralByAddress,
+  getMarketCollateral,
   getOppositeCollateral,
   getTokenPoolType,
 } from "domain/synthetics/markets";
@@ -111,8 +111,11 @@ export function getSwapStats(
   const isWrap = tokenInAddress === NATIVE_TOKEN_ADDRESS;
   const isUnwrap = tokenOutAddress === NATIVE_TOKEN_ADDRESS;
 
-  const tokenIn = getMarketCollateralByAddress(marketInfo, tokenInAddress);
-  const tokenOut = getMarketCollateralByAddress(marketInfo, tokenOutAddress);
+  const isTokenInLong = getTokenPoolType(marketInfo, tokenInAddress) === "long";
+  const isTokenOutLong = getTokenPoolType(marketInfo, tokenOutAddress) === "long";
+
+  const tokenIn = getMarketCollateral(marketInfo, isTokenInLong);
+  const tokenOut = getMarketCollateral(marketInfo, isTokenOutLong);
 
   const priceIn = tokenIn?.prices?.minPrice;
   const priceOut = tokenOut?.prices?.maxPrice;

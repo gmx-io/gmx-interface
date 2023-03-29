@@ -62,15 +62,6 @@ export function getMarketCollateral(marketInfo: MarketInfo, isLong: boolean) {
   return isLong ? marketInfo.longToken : marketInfo.shortToken;
 }
 
-// TODO: remove
-export function getMarketCollateralByAddress(marketInfo: MarketInfo, tokenAddress: string) {
-  const poolType = getTokenPoolType(marketInfo, tokenAddress);
-
-  if (!poolType) return undefined;
-
-  return getMarketCollateral(marketInfo, poolType === "long");
-}
-
 export function getPoolUsd(marketInfo: MarketInfo, isLong: boolean, priceType: "minPrice" | "maxPrice" | "midPrice") {
   const poolAmount = isLong ? marketInfo.longPoolAmount : marketInfo.shortPoolAmount;
   const token = isLong ? marketInfo.longToken : marketInfo.shortToken;

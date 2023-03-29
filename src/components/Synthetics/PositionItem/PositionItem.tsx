@@ -41,9 +41,6 @@ export function PositionItem(p: Props) {
   const displayedPnl = p.showPnlAfterFees ? p.position.pnlAfterFees : p.position.pnl;
   const displayedPnlPercentage = p.showPnlAfterFees ? p.position.pnlAfterFeesPercentage : p.position.pnlPercentage;
 
-  // TODO:
-  const hasOrderError = false;
-
   function renderNetValue() {
     return (
       <Tooltip
@@ -189,10 +186,13 @@ export function PositionItem(p: Props) {
         <Tooltip
           handle={t`Orders (${positionOrders.length})`}
           position="left-bottom"
-          handleClassName={cx(["Exchange-list-info-label", "Exchange-position-list-orders", "plain", "clickable"], {
-            muted: !hasOrderError,
-            negative: hasOrderError,
-          })}
+          handleClassName={cx([
+            "Exchange-list-info-label",
+            "Exchange-position-list-orders",
+            "plain",
+            "clickable",
+            "muted",
+          ])}
           renderContent={() => {
             return (
               <>
@@ -205,8 +205,6 @@ export function PositionItem(p: Props) {
                       {getTriggerPricePrefix(order.orderType, order.isLong)} {formatUsd(order.triggerPrice)}:
                       {isIncreaseOrder(order.orderType) ? "+" : "-"}
                       {formatUsd(order.sizeDeltaUsd)}
-                      {/* TODO: */}
-                      {/* {order.error && <div className="negative active-oredr-error">{order.error}</div>} */}
                     </div>
                   );
                 })}
