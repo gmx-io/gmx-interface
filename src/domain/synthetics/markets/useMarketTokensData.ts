@@ -9,9 +9,9 @@ import { USD_DECIMALS } from "lib/legacy";
 import { useMulticall } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
 import { useMemo } from "react";
-import { MarketTokensData } from "./types";
 import { useMarketsData } from "./useMarketsData";
-import { getByKey, getContractMarketPrices } from "./utils";
+import { getContractMarketPrices } from "./utils";
+import { getByKey } from "lib/objects";
 
 type MarketTokensDataResult = {
   marketTokensData: TokensData;
@@ -95,7 +95,7 @@ export function useMarketTokensData(chainId: number): MarketTokensDataResult {
         return requests;
       }, {}),
     parseResponse: (res) =>
-      marketsAddresses.reduce((marketTokensMap: MarketTokensData, marketAddress: string) => {
+      marketsAddresses.reduce((marketTokensMap: TokensData, marketAddress: string) => {
         const pricesData = res[`${marketAddress}-prices`];
         const tokenData = res[`${marketAddress}-tokenData`];
         const tokenConfig = getTokenBySymbol(chainId, "GM");
@@ -115,7 +115,7 @@ export function useMarketTokensData(chainId: number): MarketTokensDataResult {
         };
 
         return marketTokensMap;
-      }, {} as MarketTokensData),
+      }, {} as TokensData),
   });
 
   return useMemo(() => {

@@ -85,6 +85,23 @@ msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
+msgid "<0>{0} is required for collateral.</0><1>Short amount for {1} with {2} exceeds potential profits liquidity. Reduce the \"Short Position\" size, or change the \"Collateral In\" token.</1>"
+msgstr ""
+
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} acceptable amount. Reduce the \"Pay\" size, or use {4} as the \"Pay\" token to use it for collateral.</1><2>You can buy {5} on 1inch.</2>"
+msgstr ""
+
+#: src/components/Exchange/SwapBox.js
+msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} available liquidity. Reduce the \"Pay\" size, or change the \"Collateral In\" token.</1>"
+msgstr ""
+
+#: src/components/Exchange/SwapBox.js
+msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} available liquidity. Reduce the \"Pay\" size, or use {4} as the \"Pay\" token to use it for collateral.</1><2>You can buy {5} on 1inch.</2>"
+msgstr ""
+
+#: src/components/Exchange/SwapBox.js
 msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
 msgstr "Se registra el valor en USD de tu {0} garantía en el momento que la posición se abre."
 
@@ -1806,10 +1823,6 @@ msgstr ""
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "Compra de GLP desactivada, actualización {0} pendiente"
 
-#: src/components/Exchange/SwapBox.js
-msgid "GLP doesn't accept this amount of {0}."
-msgstr ""
-
 #: src/components/TokenCard/TokenCard.js
 msgid "GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of the V1 markets generated fees."
 msgstr ""
@@ -2063,35 +2076,27 @@ msgstr "Insuficiente liquidez disponible para intercambiar a {0}:"
 msgid "Insufficient GLP balance"
 msgstr "Balance GLP insuficiente"
 
+#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+msgid "Insufficient Liquidity"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Insufficient liquidity"
 msgstr "Insuficiente liquidez"
-
-#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
-msgid "Insufficient liquidity in any {0}/USD markets for your order."
-msgstr ""
-
-#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
-msgid "Insufficient liquidity in {0} market. <0/><1>Switch to {1} market.</1>"
-msgstr ""
-
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-msgid "Insufficient liquidity, change \"Collateral In\""
-msgstr "Liquidez insuficiente, cambiar \"Garantía En\""
-
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-msgid "Insufficient receive token liquidity"
-msgstr "Insuficiente liquidez del token a recibir"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Insufficient staked tokens"
@@ -3934,6 +3939,18 @@ msgstr "Intercambio activo: {0}, ejecutado: {1}, cancelado: {2}"
 #~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
+msgid "Swap amount exceeds available liquidity."
+msgstr ""
+
+#: src/components/Exchange/PositionSeller.js
+msgid "Swap amount from {0} to {1} exceeds {2} acceptable amount. Can only receive {3}."
+msgstr ""
+
+#: src/components/Exchange/PositionSeller.js
+msgid "Swap amount from {0} to {1} exceeds {2} available liquidity. Choose a different \"Receive\" token."
+msgstr ""
+
+#: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
@@ -5150,16 +5167,6 @@ msgstr "{0} está por debajo de su peso objetivo.<0/><1/>Consigue menores comisi
 msgid "{0} is required for collateral."
 msgstr "{0} es requerido como garantía."
 
-#: src/components/Exchange/SwapBox.js
-msgid "{0} pool exceeded"
-msgstr "{0} reserva superada"
-
-#: src/components/Exchange/PositionSeller.js
-msgid "{0} pool exceeded, can only Receive {1}"
-msgstr "{0} reserva superada, puedes sólo Recibir {1}"
-
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 msgid "{0} pool exceeded, try different token"
 msgstr "{0} reserva superada, intente otro token"

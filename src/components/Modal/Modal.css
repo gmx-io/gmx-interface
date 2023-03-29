@@ -46,16 +46,22 @@
   overflow: visible;
 }
 
+.Modal-header-wrapper {
+  margin: 1.5rem;
+}
+
 .Modal-title-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 1.5rem;
 }
 
 .Modal-body {
-  padding: 1.5rem 1rem 1.5rem 1.5rem;
-  margin-right: 0.5rem; /* to add gap for scrollbar */
+  max-height: calc(80vh - 8.5rem);
+  overflow-y: auto;
+  /* for scrollbar to have a space on left and right */
+  padding-right: 0.5rem;
+  margin: 1.5rem 0.8rem 1.5rem 1.5rem;
 }
 
 .Modal-body::-webkit-scrollbar {

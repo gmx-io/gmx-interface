@@ -1,61 +1,9 @@
 import { BigNumber } from "ethers";
 import { PRECISION } from "lib/legacy";
 import { applyFactor } from "lib/numbers";
-import { MarketsFeesConfigsData } from "../fees";
 import { convertToContractPrices, convertToUsd, getMidPrice, getTokenData } from "../tokens";
 import { TokensData } from "../tokens/types";
-import {
-  ContractMarketPrices,
-  Market,
-  MarketInfo,
-  MarketsData,
-  MarketsOpenInterestData,
-  MarketsPoolsData,
-} from "./types";
-
-export function getByKey(marketsData: MarketsData, marketAddress?: string) {
-  if (!marketAddress) return undefined;
-
-  return marketsData[marketAddress];
-}
-
-export function getMarketInfo(
-  data: {
-    marketsData: MarketsData;
-    poolsData: MarketsPoolsData;
-    openInterestData: MarketsOpenInterestData;
-    feesConfigs: MarketsFeesConfigsData;
-    tokensData: TokensData;
-  },
-  marketAddress?: string
-): MarketInfo | undefined {
-  const { marketsData, poolsData, openInterestData, feesConfigs, tokensData } = data;
-
-  if (!marketAddress) return undefined;
-
-  const market = getByKey(marketsData, marketAddress);
-  const pool = poolsData[marketAddress];
-  const openInterest = openInterestData[marketAddress];
-  const feesConfig = feesConfigs[marketAddress];
-
-  const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
-  const longToken = getTokenData(tokensData, market?.longTokenAddress);
-  const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
-
-  if (!market || !pool || !openInterest || !feesConfig || !indexToken || !longToken || !shortToken) {
-    return undefined;
-  }
-
-  return {
-    ...market,
-    ...pool,
-    ...openInterest,
-    ...feesConfig,
-    longToken,
-    shortToken,
-    indexToken,
-  };
-}
+import { ContractMarketPrices, Market, MarketInfo } from "./types";
 
 export function getMarketName(marketInfo: MarketInfo, opts: { includeGM?: boolean } = {}) {
   const { indexToken, longToken, shortToken, perp } = marketInfo;

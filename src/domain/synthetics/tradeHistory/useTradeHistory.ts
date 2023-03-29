@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 import { useWeb3React } from "@web3-react/core";
 import { NATIVE_TOKEN_ADDRESS, getWrappedToken } from "config/tokens";
-import { getByKey, useMarketsInfo } from "domain/synthetics/markets";
+import { useMarketsInfo } from "domain/synthetics/markets";
 import { getTokenData, parseContractPrice, useAvailableTokensData } from "domain/synthetics/tokens";
 import { bigNumberify } from "lib/numbers";
 import { getSyntheticsGraphClient } from "lib/subgraph";
@@ -9,6 +9,7 @@ import { useMemo } from "react";
 import useSWR from "swr";
 import { getToTokenFromSwapPath } from "../orders";
 import { RawTradeAction, TradeAction } from "./types";
+import { getByKey } from "lib/objects";
 
 export function useTradeHistory(chainId: number, p: { pageIndex: number; pageSize: number }) {
   const { pageIndex, pageSize } = p;

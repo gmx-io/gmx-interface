@@ -1,16 +1,10 @@
 import { MarketFeesConfig, MarketsFeesConfigsData } from "domain/synthetics/fees";
-import {
-  MarketsData,
-  MarketsOpenInterestData,
-  MarketsPoolsData,
-  OpenInterestData,
-  PoolData,
-  getByKey,
-} from "domain/synthetics/markets";
+import { MarketsData } from "domain/synthetics/markets";
 import { TokenData, TokensData, convertToTokenAmount, getTokenData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
+import { getByKey } from "lib/objects";
 
 export function mockTokensData(overrides: { [symbol: string]: TokenData } = {}): TokensData {
   const tokens: TokensData = {
@@ -127,8 +121,8 @@ export function mockMarketsData(marketKeys: string[]): MarketsData {
 export function mockPoolsData(
   tokensData: TokensData,
   marketKeys: string[],
-  overrides: { [marketKey: string]: Partial<PoolData> } = {}
-): MarketsPoolsData {
+  overrides: { [marketKey: string]: Partial<any> } = {}
+): any {
   return marketKeys.reduce((acc, key) => {
     const [indexTokenAddress, longTokenAddress, shortTokenAddress] = key.split("-");
 
@@ -174,7 +168,7 @@ export function mockPoolsData(
     };
 
     return acc;
-  }, {} as MarketsPoolsData);
+  }, {} as any);
 }
 
 export function mockFeeConfigsData(
@@ -216,8 +210,8 @@ export function mockFeeConfigsData(
 export function mockOpenInterestData(
   marketsData: MarketsData,
   tokensData: TokensData,
-  overrides: { [marketKey: string]: Partial<OpenInterestData> } = {}
-): MarketsOpenInterestData {
+  overrides: { [marketKey: string]: Partial<any> } = {}
+): any {
   return Object.keys(marketsData).reduce((acc, key) => {
     const market = getByKey(marketsData, key)!;
     const indexToken = getTokenData(tokensData, market.indexTokenAddress)!;
@@ -231,7 +225,7 @@ export function mockOpenInterestData(
     };
 
     return acc;
-  }, {} as MarketsOpenInterestData);
+  }, {} as any);
 }
 
 export function usdToToken(usd: number, token: TokenData) {

@@ -3,12 +3,13 @@ import Modal from "components/Modal/Modal";
 import { RequestStatus } from "components/RequestStatus/RequestStatus";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import { getByKey, useMarketsData } from "domain/synthetics/markets";
+import { useMarketsData } from "domain/synthetics/markets";
 import { OrderType, isIncreaseOrder, isSwapOrder } from "domain/synthetics/orders";
 import { getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
+import { getByKey } from "lib/objects";
 import { useEffect, useState } from "react";
 
 type Props = {

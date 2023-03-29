@@ -8,7 +8,7 @@ import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { getContract } from "config/contracts";
 import { getToken } from "config/tokens";
 import { ExecutionFee } from "domain/synthetics/fees";
-import { getByKey, useMarketsData } from "domain/synthetics/markets";
+import { useMarketsData } from "domain/synthetics/markets";
 import { createDepositTxn } from "domain/synthetics/markets/createDepositTxn";
 import { createWithdrawalTxn } from "domain/synthetics/markets/createWithdrawalTxn";
 import { getTokenData, needTokenApprove, useAvailableTokensData } from "domain/synthetics/tokens";
@@ -21,6 +21,7 @@ import { formatTokenAmount, formatTokenAmountWithUsd } from "lib/numbers";
 import { GmFees } from "../GmFees/GmFees";
 
 import "./GmConfirmationBox.scss";
+import { getByKey } from "lib/objects";
 
 type Props = {
   marketToken: TokenData;

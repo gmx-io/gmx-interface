@@ -19,7 +19,7 @@ import {
   SYNTHETICS_TRADE_TYPE_KEY,
 } from "config/localStorage";
 import { getToken } from "config/tokens";
-import { getByKey, useMarketsData } from "domain/synthetics/markets";
+import { useMarketsData } from "domain/synthetics/markets";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useAggregatedOrdersData } from "domain/synthetics/orders/useAggregatedOrdersData";
 import { AggregatedPositionData, getPosition, getPositionKey } from "domain/synthetics/positions";
@@ -34,6 +34,7 @@ import { ClaimHistory } from "components/Synthetics/ClaimHistory/ClaimHistory";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import { getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import "./SyntheticsPage.scss";
+import { getByKey } from "lib/objects";
 
 type Props = {
   onConnectWallet: () => void;
