@@ -418,8 +418,12 @@ msgid "Buy AVAX directly to Avalanche or transfer it there."
 msgstr "Buy AVAX directly to Avalanche or transfer it there."
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy ETH directly to Arbitrum or transfer it there."
-msgstr "Buy ETH directly to Arbitrum or transfer it there."
+msgid "Buy ETH directly on Arbitrum or transfer it there."
+msgstr "Buy ETH directly on Arbitrum or transfer it there."
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+#~ msgid "Buy ETH directly to Arbitrum or transfer it there."
+#~ msgstr "Buy ETH directly to Arbitrum or transfer it there."
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js

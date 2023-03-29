@@ -71,7 +71,7 @@ export default function BuyGMX() {
                 <Trans>Buy or Transfer ETH to Arbitrum</Trans>
               </div>
               <div className="Page-description">
-                <Trans>Buy ETH directly to Arbitrum or transfer it there.</Trans>
+                <Trans>Buy ETH directly on Arbitrum or transfer it there.</Trans>
               </div>
             </div>
           </div>
