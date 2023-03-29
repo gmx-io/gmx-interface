@@ -83,7 +83,7 @@
     }
 
     &:not([disabled]):active {
-      background: var(--dark-blue-active);
+      background: rgba(80, 87, 126, 0.7);
     }
   }
 
