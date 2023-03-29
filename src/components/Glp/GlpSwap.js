@@ -951,7 +951,7 @@ export default function GlpSwap(props) {
             </div>
           </div>
           <div className="GlpSwap-cta Exchange-swap-button-container">
-            <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+            <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
               {getPrimaryText()}
             </Button>
           </div>
@@ -1182,7 +1182,7 @@ export default function GlpSwap(props) {
                   <td>
                     <Button
                       variant="secondary"
-                      className={cx("w-100", isBuying ? "buying" : "selling")}
+                      className={cx("w-full", isBuying ? "buying" : "selling")}
                       onClick={() => selectToken(token)}
                     >
                       {isBuying ? t`Buy with ${token.symbol}` : t`Sell for ${token.symbol}`}

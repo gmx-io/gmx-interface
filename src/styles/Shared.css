@@ -421,7 +421,7 @@ button.btn-link:hover .logout-icon {
   flex-direction: column;
 }
 
-.w-100 {
+.w-full {
   width: 100%;
 }
 

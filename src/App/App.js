@@ -642,7 +642,7 @@ function FullApp() {
           </div>
         )}
 
-        <Button variant="primary-action" className="w-100 mt-md" onClick={saveAndCloseSettings}>
+        <Button variant="primary-action" className="w-full mt-md" onClick={saveAndCloseSettings}>
           <Trans>Save</Trans>
         </Button>
       </Modal>

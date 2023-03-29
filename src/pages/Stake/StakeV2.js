@@ -180,7 +180,7 @@ function StakeModal(props) {
           </div>
         </div>
         <div className="Exchange-swap-button-container">
-          <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+          <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
             {getPrimaryText()}
           </Button>
         </div>
@@ -324,7 +324,7 @@ function UnstakeModal(props) {
           </div>
         )}
         <div className="Exchange-swap-button-container">
-          <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+          <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
             {getPrimaryText()}
           </Button>
         </div>
@@ -542,7 +542,7 @@ function VesterDepositModal(props) {
             </div>
           </div>
           <div className="Exchange-swap-button-container">
-            <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+            <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
               {getPrimaryText()}
             </Button>
           </div>
@@ -591,7 +591,7 @@ function VesterWithdrawModal(props) {
           </div>
         </Trans>
         <div className="Exchange-swap-button-container">
-          <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={isWithdrawing}>
+          <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={isWithdrawing}>
             {!isWithdrawing && "Confirm Withdraw"}
             {isWithdrawing && "Confirming..."}
           </Button>
@@ -784,7 +784,7 @@ function CompoundModal(props) {
           </div>
         </div>
         <div className="Exchange-swap-button-container">
-          <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+          <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
             {getPrimaryText()}
           </Button>
         </div>
@@ -900,7 +900,7 @@ function ClaimModal(props) {
           </div>
         </div>
         <div className="Exchange-swap-button-container">
-          <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+          <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
             {getPrimaryText()}
           </Button>
         </div>
