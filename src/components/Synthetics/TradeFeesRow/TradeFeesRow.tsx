@@ -17,6 +17,7 @@ type Props = {
   positionFee?: FeeItem;
   positionPriceImpact?: FeeItem;
   positionFeeFactor?: BigNumber;
+  isTop?: boolean;
 };
 
 export function TradeFeesRow(p: Props) {
@@ -24,6 +25,7 @@ export function TradeFeesRow(p: Props) {
 
   return (
     <ExchangeInfoRow
+      isTop={p.isTop}
       label={<Trans>Fees and price impact</Trans>}
       value={
         <>

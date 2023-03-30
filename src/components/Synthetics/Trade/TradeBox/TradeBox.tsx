@@ -1524,8 +1524,6 @@ export function TradeBox(p: Props) {
 
         <InfoRow className="SwapBox-info-row" label={t`Entry Price`} value={formatUsd(entryMarkPrice) || "-"} />
 
-        <InfoRow className="SwapBox-info-row" label={t`Acceptable Price`} value={formatUsd(acceptablePrice) || "-"} />
-
         {isMarket && (
           <InfoRow
             className="SwapBox-info-row"
@@ -1555,6 +1553,9 @@ export function TradeBox(p: Props) {
             }
           />
         )}
+
+        <InfoRow className="SwapBox-info-row" label={t`Acceptable Price`} value={formatUsd(acceptablePrice) || "-"} />
+
         <InfoRow
           className="SwapBox-info-row"
           label={t`Liq. Price`}
@@ -1633,12 +1634,6 @@ export function TradeBox(p: Props) {
 
         <InfoRow
           className="SwapBox-info-row"
-          label={t`Acceptable Price`}
-          value={formatUsd(decreasePositionParams?.acceptablePrice) || "-"}
-        />
-
-        <InfoRow
-          className="SwapBox-info-row"
           label={t`Acceptable Price Impact`}
           value={
             <span className="TradeBox-acceptable-price-impact" onClick={() => setIsAcceptablePriceImpactEditing(true)}>
@@ -1648,6 +1643,12 @@ export function TradeBox(p: Props) {
               </span>
             </span>
           }
+        />
+
+        <InfoRow
+          className="SwapBox-info-row"
+          label={t`Acceptable Price`}
+          value={formatUsd(decreasePositionParams?.acceptablePrice) || "-"}
         />
 
         {existingPosition && (
