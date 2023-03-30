@@ -711,22 +711,6 @@ export default function SwapBox(props) {
     });
   }
 
-  const liquidationPrice = getLiquidationPrice({
-    isLong,
-    size: hasExistingPosition ? existingPosition.size : bigNumberify(0),
-    collateral: hasExistingPosition ? existingPosition.collateral : bigNumberify(0),
-    averagePrice: nextAveragePrice,
-    entryFundingRate: hasExistingPosition ? existingPosition.entryFundingRate : bigNumberify(0),
-    cumulativeFundingRate: hasExistingPosition ? existingPosition.cumulativeFundingRate : bigNumberify(0),
-    sizeDelta: toUsdMax,
-    collateralDelta: fromUsdMin,
-    increaseCollateral: true,
-    increaseSize: true,
-  });
-
-  const existingLiquidationPrice = existingPosition ? getLiquidationPrice(existingPosition) : undefined;
-  let displayLiquidationPrice = liquidationPrice ? liquidationPrice : existingLiquidationPrice;
-
   if (hasExistingPosition) {
     const collateralDelta = fromUsdMin ? fromUsdMin : bigNumberify(0);
     const sizeDelta = toUsdMax ? toUsdMax : bigNumberify(0);
@@ -1785,6 +1769,22 @@ export default function SwapBox(props) {
       // hasZeroBorrowFee = true
     }
   }
+
+  const liquidationPrice = getLiquidationPrice({
+    isLong,
+    size: hasExistingPosition ? existingPosition.size : bigNumberify(0),
+    collateral: hasExistingPosition ? existingPosition.collateral : bigNumberify(0),
+    averagePrice: nextAveragePrice,
+    entryFundingRate: hasExistingPosition ? existingPosition.entryFundingRate : bigNumberify(0),
+    cumulativeFundingRate: hasExistingPosition ? existingPosition.cumulativeFundingRate : bigNumberify(0),
+    sizeDelta: toUsdMax,
+    collateralDelta: swapFees ? fromUsdMin.sub(swapFees) : fromUsdMin,
+    increaseCollateral: true,
+    increaseSize: true,
+  });
+
+  const existingLiquidationPrice = existingPosition ? getLiquidationPrice(existingPosition) : undefined;
+  let displayLiquidationPrice = liquidationPrice ? liquidationPrice : existingLiquidationPrice;
 
   function setFromValueToMaximumAvailable() {
     if (!fromToken || !fromBalance) {

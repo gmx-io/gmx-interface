@@ -183,6 +183,7 @@ export default function PositionEditor(props) {
         cumulativeFundingRate: position.cumulativeFundingRate,
         collateralDelta,
         increaseCollateral: isDeposit,
+        reduceBorrowFee: true,
       });
 
       nextCollateral = isDeposit
