@@ -7,10 +7,18 @@ import { formatTimeInBarToMs, getCurrentCandleTime, getMax, getMin } from "./uti
 import { fillBarGaps, getCurrentPriceOfToken, getStableCoinPrice, getTokenChartPrice } from "./requests";
 import { PeriodParams } from "charting_library";
 
-const initialHistoryBarsInfo = {
-  period: "",
-  data: [],
-  ticker: "",
+const initialState = {
+  lastBar: null,
+  currentBar: null,
+  startTime: 0,
+  lastTicker: "",
+  lastPeriod: "",
+
+  barsInfo: {
+    period: "",
+    data: [],
+    ticker: "",
+  },
 };
 
 export class TVDataProvider {
@@ -26,11 +34,12 @@ export class TVDataProvider {
   };
 
   constructor() {
-    this.lastBar = null;
-    this.currentBar = null;
-    this.startTime = 0;
-    this.lastTicker = "";
-    this.lastPeriod = "";
+    const { lastBar, currentBar, startTime, lastTicker, lastPeriod, barsInfo: initialHistoryBarsInfo } = initialState;
+    this.lastBar = lastBar;
+    this.currentBar = currentBar;
+    this.startTime = startTime;
+    this.lastTicker = lastTicker;
+    this.lastPeriod = lastPeriod;
     this.barsInfo = initialHistoryBarsInfo;
   }
 
@@ -70,7 +79,7 @@ export class TVDataProvider {
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error(error);
-        this.barsInfo = initialHistoryBarsInfo;
+        this.barsInfo = initialState.barsInfo;
       }
     }
 
@@ -103,6 +112,8 @@ export class TVDataProvider {
   ) {
     const period = SUPPORTED_RESOLUTIONS[resolution];
     const { from, to } = periodParams;
+    // getBars is called on period and token change so it's better to rest the values
+    this.resetState();
 
     try {
       const bars = isStable
@@ -189,5 +200,13 @@ export class TVDataProvider {
       this.currentBar = newBar;
     }
     return this.currentBar;
+  }
+  resetState() {
+    this.barsInfo = initialState.barsInfo;
+    this.lastBar = initialState.lastBar;
+    this.currentBar = initialState.currentBar;
+    this.lastTicker = initialState.lastTicker;
+    this.lastPeriod = initialState.lastPeriod;
+    this.startTime = initialState.startTime;
   }
 }
