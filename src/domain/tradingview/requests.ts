@@ -47,13 +47,14 @@ export async function getCurrentPriceOfToken(chainId: number, symbol: string) {
 export function fillBarGaps(prices, periodSeconds) {
   if (prices.length < 2) return prices;
 
-  const currentBarTimestamp = getCurrentBarTimestamp(periodSeconds) / 1000 + timezoneOffset;
+  const lastChartPeriod = getCurrentBarTimestamp(periodSeconds) / 1000 + timezoneOffset;
   let lastBar = prices[prices.length - 1];
 
-  if (lastBar.time !== currentBarTimestamp) {
+  if (lastBar.time !== lastChartPeriod) {
     prices.push({
       ...lastBar,
-      time: currentBarTimestamp,
+      open: lastBar.close,
+      time: lastChartPeriod,
     });
   }
 

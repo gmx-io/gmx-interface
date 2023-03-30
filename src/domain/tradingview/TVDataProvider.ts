@@ -3,9 +3,8 @@ import { getLimitChartPricesFromStats, timezoneOffset } from "domain/prices";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
 import { Bar } from "./types";
-import { formatTimeInBarToMs, getCurrentCandleTime } from "./utils";
+import { formatTimeInBarToMs, getCurrentCandleTime, getMax, getMin } from "./utils";
 import { fillBarGaps, getCurrentPriceOfToken, getStableCoinPrice, getTokenChartPrice } from "./requests";
-import { BigNumberish } from "ethers";
 import { PeriodParams } from "charting_library";
 
 const initialHistoryBarsInfo = {
@@ -35,8 +34,10 @@ export class TVDataProvider {
     this.barsInfo = initialHistoryBarsInfo;
   }
 
-  async getCurrentPriceOfToken(chainId: number, ticker: string): Promise<BigNumberish> {
-    return getCurrentPriceOfToken(chainId, ticker);
+  async getCurrentPriceOfToken(chainId: number, ticker: string): Promise<number | undefined> {
+    const currentPrice = await getCurrentPriceOfToken(chainId, ticker);
+    if (!currentPrice) return;
+    return parseFloat(formatAmount(currentPrice, USD_DECIMALS, 4));
   }
 
   async getTokenLastBars(chainId: number, ticker: string, period: string, limit: number): Promise<Bar[]> {
@@ -59,9 +60,8 @@ export class TVDataProvider {
         const bars = await this.getTokenChartPrice(chainId, ticker, period);
         const filledBars = fillBarGaps(bars, CHART_PERIODS[period]);
         const currentCandleTime = getCurrentCandleTime(period);
-        const lastCandleTime = currentCandleTime - CHART_PERIODS[period];
-        const lastBar = filledBars[filledBars.length - 1];
-        if (lastBar.time === currentCandleTime || lastBar.time === lastCandleTime) {
+        const lastBar = bars[bars.length - 1];
+        if (lastBar.time === currentCandleTime) {
           this.lastBar = { ...lastBar, ticker };
         }
         this.barsInfo.data = filledBars;
@@ -126,15 +126,27 @@ export class TVDataProvider {
       this.lastPeriod !== period
     ) {
       const prices = await this.getTokenLastBars(chainId, ticker, period, 1);
-      if (prices?.length) {
+      const currentPrice = await this.getCurrentPriceOfToken(chainId, ticker);
+      if (prices?.length && currentPrice) {
         // @ts-ignore
         const lastBar = prices[0];
         const currentCandleTime = getCurrentCandleTime(period);
+        const lastCandleTime = currentCandleTime - CHART_PERIODS[period];
         if (lastBar.time === currentCandleTime) {
-          this.lastBar = { ...lastBar, ticker };
+          this.lastBar = { ...lastBar, close: currentPrice, ticker };
           this.startTime = currentTime;
           this.lastTicker = ticker;
           this.lastPeriod = period;
+        }
+        if (this.lastBar && lastBar.time === lastCandleTime) {
+          this.lastBar = {
+            open: this.lastBar.close,
+            high: this.lastBar.close,
+            low: this.lastBar.close,
+            time: currentCandleTime,
+            close: currentPrice,
+            ticker,
+          };
         }
       }
     }
@@ -151,28 +163,26 @@ export class TVDataProvider {
       // eslint-disable-next-line no-console
       console.error(error);
     }
-
-    if (!this.lastBar) return;
-
     const currentPrice = await this.getCurrentPriceOfToken(chainId, ticker);
-    const averagePriceValue = parseFloat(formatAmount(currentPrice, USD_DECIMALS, 4));
+
+    if (!this.lastBar || !currentPrice) return;
 
     if (this.lastBar.time && currentCandleTime === this.lastBar.time && ticker === this.lastBar.ticker) {
       this.currentBar = {
         ...this.lastBar,
-        close: averagePriceValue,
-        high: Math.max(this.lastBar.open, this.lastBar.high, averagePriceValue),
-        low: Math.min(this.lastBar.open, this.lastBar.low, averagePriceValue),
+        close: currentPrice,
+        high: getMax(this.lastBar.open, this.lastBar.high, currentPrice, this.currentBar?.high),
+        low: getMin(this.lastBar.open, this.lastBar.low, currentPrice, this.currentBar?.low),
         ticker,
       };
     } else {
-      if (!this.currentBar) return this.lastBar;
+      const { close } = this.currentBar ? this.currentBar : this.lastBar;
       const newBar = {
         time: currentCandleTime,
-        open: this.currentBar.close,
-        close: averagePriceValue,
-        high: Math.max(this.currentBar.close, averagePriceValue),
-        low: Math.min(this.currentBar.close, averagePriceValue),
+        open: close,
+        close: currentPrice,
+        high: getMax(close, currentPrice),
+        low: getMin(close, currentPrice),
         ticker,
       };
       this.lastBar = newBar;
