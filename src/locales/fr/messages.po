@@ -421,10 +421,6 @@ msgstr ""
 msgid "Buy ETH directly on Arbitrum or transfer it there."
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-#~ msgid "Buy ETH directly to Arbitrum or transfer it there."
-#~ msgstr ""
-
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
