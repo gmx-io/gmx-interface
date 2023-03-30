@@ -72,15 +72,18 @@ export default function ChartTokenSelector(props) {
             onKeyDown={_handleKeyDown}
           />
           <div className="divider" />
+          {filteredTokens.length === 0 && <p class="no-tokens-found">No token found</p>}
           <div className="chart-token-list">
             <table>
-              <thead>
-                <tr>
-                  <th>Market</th>
-                  <th>Long Liquidity</th>
-                  <th>Short Liquidity</th>
-                </tr>
-              </thead>
+              {filteredTokens.length > 0 && (
+                <thead>
+                  <tr>
+                    <th>Market</th>
+                    <th>Long Liquidity</th>
+                    <th>Short Liquidity</th>
+                  </tr>
+                </thead>
+              )}
               <tbody>
                 {filteredTokens.map((option, index) => {
                   return (
