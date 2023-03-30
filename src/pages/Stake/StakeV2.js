@@ -49,6 +49,7 @@ import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import GMXAprTooltip from "components/Stake/GMXAprTooltip";
 import Button from "components/Button/Button";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 const { AddressZero } = ethers.constants;
 
@@ -467,14 +468,14 @@ function VesterDepositModal(props) {
                 <Trans>Vault Capacity</Trans>
               </div>
               <div className="align-right">
-                <Tooltip
+                <TooltipWithPortal
                   handle={`${formatAmount(nextDepositAmount, 18, 2, true)} / ${formatAmount(
                     maxVestableAmount,
                     18,
                     2,
                     true
                   )}`}
-                  position="right-bottom"
+                  position="right-top"
                   renderContent={() => {
                     return (
                       <div>
@@ -502,7 +503,7 @@ function VesterDepositModal(props) {
                 <Trans>Reserve Amount</Trans>
               </div>
               <div className="align-right">
-                <Tooltip
+                <TooltipWithPortal
                   handle={`${formatAmount(
                     reserveAmount && reserveAmount.gte(additionalReserveAmount)
                       ? reserveAmount
@@ -511,7 +512,7 @@ function VesterDepositModal(props) {
                     2,
                     true
                   )} / ${formatAmount(maxReserveAmount, 18, 2, true)}`}
-                  position="right-bottom"
+                  position="right-top"
                   renderContent={() => {
                     return (
                       <>

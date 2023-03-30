@@ -5,7 +5,7 @@ import "./Tooltip.css";
 import { IS_TOUCH } from "config/env";
 import Portal from "../Common/Portal";
 
-const OPEN_DELAY = 0;
+const OPEN_DELAY = 500;
 const CLOSE_DELAY = 100;
 
 type Props = {
