@@ -536,7 +536,8 @@ export function ConfirmationBox(p: Props) {
       <li key={order.key} className="font-sm">
         <p>
           {isLimitOrder(order.orderType) ? t`Increase` : t`Decrease`} {order.indexToken?.symbol}{" "}
-          {order.isLong ? t`Long` : t`Short`} &nbsp;{getTriggerPricePrefix(order.orderType, order.isLong, true)}
+          {formatUsd(order.sizeDeltaUsd)} {order.isLong ? t`Long` : t`Short`} &nbsp;
+          {getTriggerPricePrefix(order.orderType, order.isLong, true)}
           {formatUsd(order.triggerPrice)}{" "}
         </p>
         <button onClick={() => onCancelOrderClick(order.key)}>
@@ -554,18 +555,12 @@ export function ConfirmationBox(p: Props) {
     if (existingLimitOrders.length === 1) {
       const order = existingLimitOrders[0];
 
-      const sizeInTokens = order.sizeDeltaUsd.mul(PRECISION).div(order.triggerPrice!);
-      const sizeText = formatTokenAmountWithUsd(
-        sizeInTokens,
-        order.sizeDeltaUsd,
-        indexToken?.symbol,
-        indexToken?.decimals
-      );
+      const sizeText = formatUsd(order.sizeDeltaUsd);
 
       return (
         <div className="Confirmation-box-info">
           <Trans>
-            You have an active Limit Order to Increase {longShortText} {sizeText} at price{" "}
+            You have an active Limit Order to Increase {longShortText} {order.indexToken?.symbol} {sizeText} at price{" "}
             {formatUsd(order.triggerPrice)}.
           </Trans>
         </div>

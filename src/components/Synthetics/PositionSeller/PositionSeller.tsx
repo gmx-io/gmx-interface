@@ -372,7 +372,7 @@ export function PositionSeller(p: Props) {
                       </span>
                     </Checkbox>
                   </div>
-                  <div className="App-card-divider" />
+
                   <div className="PositionEditor-allow-higher-slippage">
                     <Checkbox isChecked={isHigherSlippageAllowed} setIsChecked={setIsHigherSlippageAllowed}>
                       <span className="muted font-sm">
@@ -380,6 +380,7 @@ export function PositionSeller(p: Props) {
                       </span>
                     </Checkbox>
                   </div>
+
                   <div>
                     <ExchangeInfoRow label={t`Allowed Slippage`}>
                       <Tooltip
@@ -399,12 +400,16 @@ export function PositionSeller(p: Props) {
                       />
                     </ExchangeInfoRow>
                   </div>
-                  <ExchangeInfoRow label={t`Mark Price`} value={formatUsd(markPrice)} />
-                  <ExchangeInfoRow label={t`Entry Price`} value={formatUsd(position?.entryPrice)} />
-                  <ExchangeInfoRow label={t`Acceptable Price`} value={formatUsd(decreaseAmounts?.acceptablePrice)} />
+
+                  <ExchangeInfoRow isTop label={t`Mark Price`} value={formatUsd(markPrice) || "-"} />
+                  <ExchangeInfoRow label={t`Entry Price`} value={formatUsd(position?.entryPrice) || "-"} />
                   <ExchangeInfoRow
                     label={t`Price impact`}
                     value={formatPercentage(decreaseAmounts?.acceptablePriceImpactBps) || "-"}
+                  />
+                  <ExchangeInfoRow
+                    label={t`Acceptable Price`}
+                    value={formatUsd(decreaseAmounts?.acceptablePrice) || "-"}
                   />
                   <ExchangeInfoRow
                     className="SwapBox-info-row"
@@ -421,8 +426,8 @@ export function PositionSeller(p: Props) {
                     }
                   />
 
-                  <div className="App-card-divider" />
                   <ExchangeInfoRow
+                    isTop
                     label={t`Size`}
                     value={
                       <ValueTransition
@@ -431,15 +436,29 @@ export function PositionSeller(p: Props) {
                       />
                     }
                   />
-                  <ExchangeInfoRow
-                    label={t`Collateral (${position?.collateralToken?.symbol})`}
-                    value={
+
+                  <div className="Exchange-info-row">
+                    <div>
+                      <Tooltip
+                        handle={
+                          <span className="Exchange-info-label">
+                            <Trans>Collateral ({position.collateralToken?.symbol})</Trans>
+                          </span>
+                        }
+                        position="left-top"
+                        renderContent={() => {
+                          return <Trans>Initial Collateral (Collateral excluding Borrow and Funding Fee).</Trans>;
+                        }}
+                      />
+                    </div>
+                    <div className="align-right">
                       <ValueTransition
                         from={formatUsd(position?.collateralUsd)!}
                         to={formatUsd(nextPositionValues?.nextCollateralUsd)}
                       />
-                    }
-                  />
+                    </div>
+                  </div>
+
                   {!keepLeverage && (
                     <ExchangeInfoRow
                       label={t`Leverage`}
@@ -461,9 +480,8 @@ export function PositionSeller(p: Props) {
                     value={position?.pnl ? formatPnl(position?.pnl, position?.pnlPercentage) : "..."}
                   />
 
-                  <div className="App-card-divider" />
-
                   <TradeFeesRow
+                    isTop
                     totalFees={fees?.totalFees}
                     positionFee={fees?.positionFee}
                     positionPriceImpact={fees?.positionPriceImpact}
