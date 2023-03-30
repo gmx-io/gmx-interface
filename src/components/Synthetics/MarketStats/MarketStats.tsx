@@ -6,12 +6,11 @@ import { useMemo } from "react";
 
 import { getIcon } from "config/icons";
 import {
+  MarketTokenData,
   getMarket,
   getMarketName,
   getMarketPools,
-  getMarketTokenData,
   getPoolUsd,
-  useMarketTokensData,
   useMarketsData,
   useMarketsPoolsData,
 } from "domain/synthetics/markets";
@@ -21,20 +20,20 @@ import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 
 type Props = {
   marketKey?: string;
+  marketToken?: MarketTokenData;
 };
 
 export function MarketStats(p: Props) {
+  const { marketToken } = p;
   const { chainId } = useChainId();
 
   const { marketsData } = useMarketsData(chainId);
   const { poolsData } = useMarketsPoolsData(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
-  const { marketTokensData } = useMarketTokensData(chainId);
 
   const market = getMarket(marketsData, p.marketKey);
   const marketName = getMarketName(marketsData, tokensData, market?.marketTokenAddress, true);
 
-  const marketToken = getMarketTokenData(marketTokensData, p.marketKey);
   const marketPrice = marketToken?.prices?.maxPrice;
 
   const marketBalance = marketToken?.balance;

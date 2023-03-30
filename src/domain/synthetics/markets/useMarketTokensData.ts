@@ -11,14 +11,15 @@ import { useMemo } from "react";
 import { MarketTokensData } from "./types";
 import { useMarketsData } from "./useMarketsData";
 import { getContractMarketPrices, getMarket } from "./utils";
-import { hashString } from "lib/hash";
+import { MAX_PNL_FACTOR_FOR_DEPOSITS_KEY, MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY } from "config/dataStore";
 
 type MarketTokensDataResult = {
   marketTokensData: MarketTokensData;
   isLoading: boolean;
 };
 
-export function useMarketTokensData(chainId: number): MarketTokensDataResult {
+export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }): MarketTokensDataResult {
+  const { isDeposit } = p;
   const { account } = useWeb3React();
   const { tokensData, isLoading: isTokensLoading } = useAvailableTokensData(chainId);
   const { marketsData, isLoading: isMarketsLoading } = useMarketsData(chainId);
@@ -43,6 +44,8 @@ export function useMarketTokensData(chainId: number): MarketTokensDataResult {
             data: market.data,
           };
 
+          const pnlFactorType = isDeposit ? MAX_PNL_FACTOR_FOR_DEPOSITS_KEY : MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY;
+
           requests[`${marketAddress}-prices`] = {
             contractAddress: getContract(chainId, "SyntheticsReader"),
             abi: SyntheticsReader.abi,
@@ -55,8 +58,7 @@ export function useMarketTokensData(chainId: number): MarketTokensDataResult {
                   marketPrices.indexTokenPrice,
                   marketPrices.longTokenPrice,
                   marketPrices.shortTokenPrice,
-                  // TODO
-                  hashString("MAX_PNL_FACTOR_FOR_DEPOSITS"),
+                  pnlFactorType,
                   false,
                 ],
               },
@@ -68,8 +70,7 @@ export function useMarketTokensData(chainId: number): MarketTokensDataResult {
                   marketPrices.indexTokenPrice,
                   marketPrices.longTokenPrice,
                   marketPrices.shortTokenPrice,
-                  // TODO
-                  hashString("MAX_PNL_FACTOR_FOR_DEPOSITS"),
+                  pnlFactorType,
                   true,
                 ],
               },
