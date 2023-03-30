@@ -2686,7 +2686,7 @@ msgstr "节省成本"
 msgid "Save on Fees"
 msgstr "节省费用"
 
-#: src/components/Exchange/TokenSelector.js
+#: src/components/Exchange/SearchInput.tsx
 msgid "Search Token"
 msgstr "搜索代币"
 

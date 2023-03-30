@@ -2683,7 +2683,7 @@ msgstr ""
 msgid "Save on Fees"
 msgstr ""
 
-#: src/components/Exchange/TokenSelector.js
+#: src/components/Exchange/SearchInput.tsx
 msgid "Search Token"
 msgstr ""
 
