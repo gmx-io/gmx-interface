@@ -64,10 +64,10 @@ export function getIncreasePositionTradeParams(p: {
     initialCollateralUsd: increasePositionAmounts.initialCollateralUsd,
     sizeDeltaUsd: increasePositionAmounts.sizeDeltaUsd,
     swapSteps: increasePositionAmounts.swapPathStats?.swapSteps,
+    positionFeeUsd: increasePositionAmounts.positionFeeUsd,
     swapPriceImpactDeltaUsd: !p.isLimit
       ? increasePositionAmounts.swapPathStats?.totalSwapPriceImpactDeltaUsd
       : undefined,
-    positionFeeUsd: increasePositionAmounts.positionFeeUsd,
     positionPriceImpactDeltaUsd: !p.isLimit ? increasePositionAmounts.positionPriceImpactDeltaUsd : undefined,
   });
 

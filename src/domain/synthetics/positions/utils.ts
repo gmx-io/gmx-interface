@@ -111,9 +111,9 @@ export function getAggregatedPositionData(
       ? convertToUsd(position.pendingFundingFees.fundingFeeAmount, collateralToken.decimals, collateralPrice)
       : undefined;
 
-  const totalPendingFeesUsd = pendingFundingFeesUsd
-    ? position.pendingBorrowingFees.sub(pendingFundingFeesUsd)
-    : undefined;
+  const totalPendingFeesUsd = position.pendingBorrowingFees.sub(
+    pendingFundingFeesUsd?.lt(0) ? pendingFundingFeesUsd : 0
+  );
 
   const closingFeeUsd = getPositionFee(marketsFeesConfigs, market?.marketTokenAddress, position.sizeInUsd);
 

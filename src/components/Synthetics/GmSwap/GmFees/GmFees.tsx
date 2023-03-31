@@ -3,17 +3,19 @@ import cx from "classnames";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
-import { FeeItem } from "domain/synthetics/fees";
-import { formatDeltaUsd } from "lib/numbers";
+import { ExecutionFee, FeeItem } from "domain/synthetics/fees";
+import { formatDeltaUsd, formatTokenAmountWithUsd } from "lib/numbers";
+import "./GmFees.scss";
 
 type Props = {
   totalFees?: FeeItem;
   swapFee?: FeeItem;
   swapPriceImpact?: FeeItem;
+  executionFee?: ExecutionFee;
 };
 
 export function GmFees(p: Props) {
-  const shoudlBreakSwapFeeSection = p.swapFee?.deltaUsd.abs().gt(0) && p.swapPriceImpact?.deltaUsd.abs().gt(0);
+  const totalFeesUsd = p.totalFees?.deltaUsd.sub(p.executionFee?.feeUsd || 0);
 
   return (
     <ExchangeInfoRow
@@ -23,32 +25,43 @@ export function GmFees(p: Props) {
           {(!p.totalFees?.deltaUsd || p.totalFees.deltaUsd.eq(0)) && "-"}
           {p.totalFees?.deltaUsd && (
             <Tooltip
-              handle={
-                <span className={cx({ positive: p.totalFees.deltaUsd.gt(0) })}>
-                  {formatDeltaUsd(p.totalFees.deltaUsd, p.totalFees.bps)}
-                </span>
-              }
+              className="GmFees-tooltip"
+              handle={<span className={cx({ positive: totalFeesUsd?.gt(0) })}>{formatDeltaUsd(totalFeesUsd)}</span>}
               position="right-top"
               renderContent={() => (
                 <div>
                   {p.swapPriceImpact?.deltaUsd.abs().gt(0) && (
                     <StatsTooltipRow
+                      className="GmFees-fee-row"
                       label={t`Swap price impact`}
                       value={formatDeltaUsd(p.swapPriceImpact.deltaUsd, p.swapPriceImpact.bps)!}
                       showDollar={false}
                     />
                   )}
 
-                  {shoudlBreakSwapFeeSection && <br />}
-
                   {p.swapFee && (
                     <>
                       <StatsTooltipRow
+                        className="GmFees-fee-row"
                         label={t`Swap Fee`}
                         value={formatDeltaUsd(p.swapFee.deltaUsd, p.swapFee.bps)!}
                         showDollar={false}
                       />
                     </>
+                  )}
+
+                  {p.executionFee && (
+                    <StatsTooltipRow
+                      className="GmFees-fee-row"
+                      label={t`Execution Fee`}
+                      value={formatTokenAmountWithUsd(
+                        p.executionFee.feeTokenAmount,
+                        p.executionFee.feeUsd,
+                        p.executionFee.feeToken.symbol,
+                        p.executionFee.feeToken.decimals
+                      )}
+                      showDollar={false}
+                    />
                   )}
                 </div>
               )}

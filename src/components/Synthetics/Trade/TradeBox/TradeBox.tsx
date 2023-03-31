@@ -685,6 +685,11 @@ export function TradeBox(p: Props) {
   ]);
 
   const fees = swapParams?.fees || increasePositionParams?.fees || decreasePositionParams?.fees;
+  const feesType = (() => {
+    if (isSwap) return "swap";
+    if (isIncrease) return "open";
+    return "close";
+  })();
 
   const executionFee = useMemo(() => {
     if (!gasLimits || !gasPrice) return undefined;
@@ -1706,12 +1711,15 @@ export function TradeBox(p: Props) {
           {isTrigger && renderTriggerOrderInfo()}
 
           <TradeFeesRow
-            totalFees={fees?.totalFees}
+            totalTradeFees={fees?.totalFees}
             swapFees={fees?.swapFees}
             positionFee={fees?.positionFee}
             swapPriceImpact={fees?.swapPriceImpact}
             positionPriceImpact={fees?.positionPriceImpact}
-            positionFeeFactor={fees?.positionFeeFactor}
+            borrowFee={fees?.borrowFee}
+            fundingFee={fees?.fundingFee}
+            executionFee={executionFee}
+            feesType={feesType}
           />
         </div>
 

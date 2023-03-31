@@ -66,7 +66,7 @@ import { getTradeFlags } from "domain/synthetics/trade/utils/common";
 import { getSpread } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-import { BASIS_POINTS_DIVISOR, PRECISION, USD_DECIMALS } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "lib/legacy";
 import { formatAmount, formatPercentage, formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { useCallback, useMemo, useState } from "react";
 import "./ConfirmationBox.scss";
@@ -518,19 +518,6 @@ export function ConfirmationBox(p: Props) {
     );
   }
 
-  function renderExecutionFee() {
-    return (
-      <ExchangeInfoRow label={t`Execution Fee`}>
-        {formatTokenAmount(
-          p.executionFee?.feeTokenAmount,
-          p.executionFee?.feeToken.decimals,
-          p.executionFee?.feeToken.symbol,
-          { displayDecimals: 5 }
-        )}
-      </ExchangeInfoRow>
-    );
-  }
-
   function renderOrderItem(order: AggregatedOrderData) {
     return (
       <li key={order.key} className="font-sm">
@@ -885,33 +872,35 @@ export function ConfirmationBox(p: Props) {
             />
           </ExchangeInfoRow>
 
-          {/* In tooltip? */}
-          {/* <ExchangeInfoRow label={t`Borrow Fee`}>
-            {borrowingRate ? `-${formatAmount(borrowingRate, 30, 4)}% / 1h` : "-"}
-          </ExchangeInfoRow>
-
-          <ExchangeInfoRow label={t`Funding Fee`}>
-            {fundigRate ? `${fundigRate.gt(0) ? "+" : "-"}${formatAmount(fundigRate.abs(), 30, 4)}% / 1h` : "-"}
-          </ExchangeInfoRow> */}
-
-          {/* TODO: to info row? */}
-
           <TradeFeesRow
-            totalFees={fees?.totalFees}
+            totalTradeFees={fees?.totalFees}
             swapFees={fees?.swapFees}
             positionFee={fees?.positionFee}
-            positionFeeFactor={fees?.positionFeeFactor}
             positionPriceImpact={fees?.positionPriceImpact}
             swapPriceImpact={fees?.swapPriceImpact}
+            fundingFeeRateStr={
+              fundigRate && `${fundigRate.gt(0) ? "+" : "-"}${formatAmount(fundigRate.abs(), 30, 4)}% / 1h`
+            }
+            borrowFeeRateStr={borrowingRate && `-${formatAmount(borrowingRate, 30, 4)}% / 1h`}
+            executionFee={p.executionFee}
+            feesType="open"
           />
-
-          {renderExecutionFee()}
 
           {decreaseOrdersThatWillBeExecuted?.length > 0 && (
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox isChecked={isTriggerWarningAccepted} setIsChecked={setIsTriggerWarningAccepted}>
                 <span className="muted font-sm">
                   <Trans>I am aware of the trigger orders</Trans>
+                </span>
+              </Checkbox>
+            </div>
+          )}
+
+          {isHighPriceImpact && (
+            <div className="PositionEditor-allow-higher-slippage">
+              <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
+                <span className="muted font-sm">
+                  <Trans>I am aware of the high price impact</Trans>
                 </span>
               </Checkbox>
             </div>
@@ -950,25 +939,28 @@ export function ConfirmationBox(p: Props) {
             <ExchangeInfoRow label={t`${tokenOut.symbol} Price`}>{formatUsd(tokenOut.prices.maxPrice)}</ExchangeInfoRow>
           )}
           {!p.isWrapOrUnwrap && (
-            <>
-              {/* TODO: to info row? */}
-
-              <TradeFeesRow
-                isTop
-                totalFees={fees?.totalFees}
-                swapFees={fees?.swapFees}
-                positionFee={fees?.positionFee}
-                positionFeeFactor={fees?.positionFeeFactor}
-                positionPriceImpact={fees?.positionPriceImpact}
-                swapPriceImpact={fees?.swapPriceImpact}
-              />
-
-              {renderExecutionFee()}
-            </>
+            <TradeFeesRow
+              isTop
+              totalTradeFees={fees?.totalFees}
+              swapFees={fees?.swapFees}
+              swapPriceImpact={fees?.swapPriceImpact}
+              executionFee={p.executionFee}
+              feesType="swap"
+            />
           )}
           <ExchangeInfoRow label={t`Min. Receive`} isTop>
             {formatTokenAmount(p.swapParams?.amountOut, tokenOut?.decimals, tokenOut?.symbol)}
           </ExchangeInfoRow>
+
+          {isHighPriceImpact && (
+            <div className="PositionEditor-allow-higher-slippage">
+              <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
+                <span className="muted font-sm">
+                  <Trans>I am aware of the high price impact</Trans>
+                </span>
+              </Checkbox>
+            </div>
+          )}
         </div>
       </>
     );
@@ -1083,25 +1075,34 @@ export function ConfirmationBox(p: Props) {
             />
           )}
 
-          {/* TODO: to info row? */}
-
           <TradeFeesRow
             isTop
-            totalFees={fees?.totalFees}
-            swapFees={fees?.swapFees}
-            positionFee={fees?.positionFee}
-            positionFeeFactor={fees?.positionFeeFactor}
+            totalTradeFees={fees?.totalFees}
             positionPriceImpact={fees?.positionPriceImpact}
             swapPriceImpact={fees?.swapPriceImpact}
+            swapFees={fees?.swapFees}
+            positionFee={fees?.positionFee}
+            borrowFee={fees?.borrowFee}
+            fundingFee={fees?.fundingFee}
+            executionFee={p.executionFee}
+            feesType="close"
           />
-
-          {renderExecutionFee()}
 
           {receiveToken && receiveAmount && receiveUsd && (
             <ExchangeInfoRow
               label={t`Receive`}
               value={formatTokenAmountWithUsd(receiveAmount, receiveUsd, receiveToken?.symbol, receiveToken?.decimals)}
             />
+          )}
+
+          {isHighPriceImpact && (
+            <div className="PositionEditor-allow-higher-slippage">
+              <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
+                <span className="muted font-sm">
+                  <Trans>I am aware of the high price impact</Trans>
+                </span>
+              </Checkbox>
+            </div>
           )}
         </div>
       </>
@@ -1116,17 +1117,6 @@ export function ConfirmationBox(p: Props) {
             {isSwap && renderSwapSection()}
             {isIncrease && renderIncreaseOrderSection()}
             {isTrigger && renderTriggerDecreaseSection()}
-
-            {/* TODO to trades fees row? */}
-            {/* {isHighPriceImpact && (
-              <div className="PositionEditor-allow-higher-slippage">
-                <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
-                  <span className="muted font-sm">
-                    <Trans>I am aware of the high price impact</Trans>
-                  </span>
-                </Checkbox>
-              </div>
-            )} */}
 
             {needPayTokenApproval && payToken && (
               <>

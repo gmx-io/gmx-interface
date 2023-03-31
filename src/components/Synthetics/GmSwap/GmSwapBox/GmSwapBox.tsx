@@ -1,7 +1,6 @@
-import { t, Trans } from "@lingui/macro";
+import { t } from "@lingui/macro";
 import cx from "classnames";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import Checkbox from "components/Checkbox/Checkbox";
 import { Dropdown, DropdownOption } from "components/Dropdown/Dropdown";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
@@ -307,10 +306,6 @@ export function GmSwapBox(p: Props) {
 
     if (!marketTokenAmount?.gt(0)) {
       return t`Enter an amount`;
-    }
-
-    if (isHighPriceImpact && !isHighPriceImpactAccepted) {
-      return t`Need to accept price impact`;
     }
 
     if (isDeposit) {
@@ -761,18 +756,13 @@ export function GmSwapBox(p: Props) {
       </div>
 
       <div className="GmSwapBox-info-section">
-        <GmFees totalFees={fees?.totalFees} swapFee={fees?.swapFee} swapPriceImpact={fees?.swapPriceImpact} />
+        <GmFees
+          totalFees={fees?.totalFees}
+          swapFee={fees?.swapFee}
+          swapPriceImpact={fees?.swapPriceImpact}
+          executionFee={executionFee}
+        />
       </div>
-
-      {isHighPriceImpact && (
-        <div className="GmSwapBox-warnings">
-          <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
-            <span className="muted font-sm">
-              <Trans>I am aware of the high price impact</Trans>
-            </span>
-          </Checkbox>
-        </div>
-      )}
 
       <div className="Exchange-swap-button-container">
         <SubmitButton
@@ -807,6 +797,9 @@ export function GmSwapBox(p: Props) {
           onClose={() => {
             setStage("swap");
           }}
+          isHighPriceImpact={isHighPriceImpact!}
+          isHighPriceImpactAccepted={isHighPriceImpactAccepted}
+          setIsHighPriceImpactAccepted={setIsHighPriceImpactAccepted}
         />
       )}
 
