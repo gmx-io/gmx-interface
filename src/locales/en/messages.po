@@ -2103,8 +2103,12 @@ msgstr "Insufficient liquidity in any {0}/USD market pools for your order."
 #~ msgstr "Insufficient liquidity in any {0}/USD markets for your order."
 
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
-msgid "Insufficient liquidity in {0} market. <0/><1>Switch to {1} market.</1>"
-msgstr "Insufficient liquidity in {0} market. <0/><1>Switch to {1} market.</1>"
+msgid "Insufficient liquidity in {0} market pool. <0/><1>Switch to {1} market pool.</1>"
+msgstr "Insufficient liquidity in {0} market pool. <0/><1>Switch to {1} market pool.</1>"
+
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#~ msgid "Insufficient liquidity in {0} market. <0/><1>Switch to {1} market.</1>"
+#~ msgstr "Insufficient liquidity in {0} market. <0/><1>Switch to {1} market.</1>"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js

@@ -2098,8 +2098,12 @@ msgstr ""
 #~ msgstr ""
 
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
-msgid "Insufficient liquidity in {0} market. <0/><1>Switch to {1} market.</1>"
+msgid "Insufficient liquidity in {0} market pool. <0/><1>Switch to {1} market pool.</1>"
 msgstr ""
+
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#~ msgid "Insufficient liquidity in {0} market. <0/><1>Switch to {1} market.</1>"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
