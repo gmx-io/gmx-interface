@@ -1322,7 +1322,7 @@ export function TradeBox(p: Props) {
                           <Trans>
                             Insufficient liquidity in{" "}
                             {getMarketName(marketsData, tokensData, selectedMarket.marketTokenAddress, false, false)}{" "}
-                            market. <br />
+                            market pool. <br />
                             <div
                               className="MarketSelector-tooltip-row-action clickable underline muted "
                               onClick={() =>
@@ -1337,7 +1337,7 @@ export function TradeBox(p: Props) {
                                 false,
                                 false
                               )}{" "}
-                              market.
+                              market pool.
                             </div>
                           </Trans>
                         </div>
