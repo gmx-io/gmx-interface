@@ -24,6 +24,7 @@ export default function useTVDatafeed({ dataProvider }: Props) {
   const intervalRef = useRef<ReturnType<typeof setInterval> | undefined>();
   const resetCacheRef = useRef<() => void | undefined>();
   const activeTicker = useRef<string | undefined>();
+  const activePeriod = useRef<string | undefined>();
   const tvDataProvider = useRef<TVDataProvider>();
   const shouldRefetchBars = useRef<boolean>(false);
 
@@ -78,12 +79,16 @@ export default function useTVDatafeed({ dataProvider }: Props) {
           onHistoryCallback: HistoryCallback,
           onErrorCallback: (error: string) => void
         ) {
-          if (!SUPPORTED_RESOLUTIONS[resolution]) {
-            return onErrorCallback("[getBars] Invalid resolution");
+          const period = SUPPORTED_RESOLUTIONS[resolution];
+          if (!period) {
+            return onErrorCallback("Invalid period!");
           }
           const { ticker, isStable } = symbolInfo;
           if (activeTicker.current !== ticker) {
             activeTicker.current = ticker;
+          }
+          if (activePeriod.current !== period) {
+            activePeriod.current = period;
           }
 
           try {
@@ -94,7 +99,7 @@ export default function useTVDatafeed({ dataProvider }: Props) {
             const bars = await tvDataProvider.current?.getBars(
               chainId,
               ticker,
-              resolution,
+              period,
               isStable,
               periodParams,
               shouldRefetchBars.current
@@ -112,16 +117,17 @@ export default function useTVDatafeed({ dataProvider }: Props) {
           _subscribeUID,
           onResetCacheNeededCallback: () => void
         ) {
+          const period = SUPPORTED_RESOLUTIONS[resolution];
           const { ticker, isStable } = symbolInfo;
-          if (!ticker) {
+          if (!ticker || !period) {
             return;
           }
           intervalRef.current && clearInterval(intervalRef.current);
           resetCacheRef.current = onResetCacheNeededCallback;
           if (!isStable) {
             intervalRef.current = setInterval(function () {
-              tvDataProvider.current?.getLiveBar(chainId, ticker, resolution).then((bar) => {
-                if (bar && ticker === activeTicker.current) {
+              tvDataProvider.current?.getLiveBar(chainId, ticker, period).then((bar) => {
+                if (bar && ticker === activeTicker.current && period === activePeriod.current) {
                   onRealtimeCallback(formatTimeInBarToMs(bar));
                 }
               });

@@ -1,4 +1,4 @@
-import { LAST_BAR_REFRESH_INTERVAL, SUPPORTED_RESOLUTIONS } from "config/tradingview";
+import { LAST_BAR_REFRESH_INTERVAL } from "config/tradingview";
 import { getLimitChartPricesFromStats, timezoneOffset } from "domain/prices";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
@@ -71,7 +71,7 @@ export class TVDataProvider {
         const currentCandleTime = getCurrentCandleTime(period);
         const lastBar = bars[bars.length - 1];
         if (lastBar.time === currentCandleTime) {
-          this.lastBar = { ...lastBar, ticker };
+          this.lastBar = { ...lastBar, ticker, period };
         }
         this.barsInfo.data = filledBars;
         this.barsInfo.ticker = ticker;
@@ -105,12 +105,11 @@ export class TVDataProvider {
   async getBars(
     chainId: number,
     ticker: string,
-    resolution: string,
+    period: string,
     isStable: boolean,
     periodParams: PeriodParams,
     shouldRefetchBars: boolean
   ) {
-    const period = SUPPORTED_RESOLUTIONS[resolution];
     const { from, to } = periodParams;
     // getBars is called on period and token change so it's better to rest the values
     this.resetState();
@@ -144,7 +143,7 @@ export class TVDataProvider {
         const currentCandleTime = getCurrentCandleTime(period);
         const lastCandleTime = currentCandleTime - CHART_PERIODS[period];
         if (lastBar.time === currentCandleTime) {
-          this.lastBar = { ...lastBar, close: currentPrice, ticker };
+          this.lastBar = { ...lastBar, close: currentPrice, ticker, period };
           this.startTime = currentTime;
           this.lastTicker = ticker;
           this.lastPeriod = period;
@@ -157,6 +156,7 @@ export class TVDataProvider {
             time: currentCandleTime,
             close: currentPrice,
             ticker,
+            period,
           };
         }
       }
@@ -164,8 +164,7 @@ export class TVDataProvider {
     return this.lastBar;
   }
 
-  async getLiveBar(chainId: number, ticker: string, resolution: string) {
-    const period = SUPPORTED_RESOLUTIONS[resolution];
+  async getLiveBar(chainId: number, ticker: string, period: string) {
     if (!ticker || !period || !chainId) return;
     const currentCandleTime = getCurrentCandleTime(period);
     try {
@@ -185,6 +184,7 @@ export class TVDataProvider {
         high: getMax(this.lastBar.open, this.lastBar.high, currentPrice, this.currentBar?.high),
         low: getMin(this.lastBar.open, this.lastBar.low, currentPrice, this.currentBar?.low),
         ticker,
+        period,
       };
     } else {
       const { close } = this.currentBar ? this.currentBar : this.lastBar;
@@ -195,6 +195,7 @@ export class TVDataProvider {
         high: getMax(close, currentPrice),
         low: getMin(close, currentPrice),
         ticker,
+        period,
       };
       this.lastBar = newBar;
       this.currentBar = newBar;
