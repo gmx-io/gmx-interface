@@ -4958,8 +4958,12 @@ msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {s
 msgstr "Actualmente puede adquirir un máximo de {0} tokens esGMX a razón de {1} {stakingToken} por 1 esGMX\"."
 
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
-msgid "You can get a {0} better execution price in the {1} market.<0>Switch to {2} market.</0>"
+msgid "You can get a {0} better execution price in the {1} market pool.<0>Switch to {2} market pool.</0>"
 msgstr ""
+
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#~ msgid "You can get a {0} better execution price in the {1} market.<0>Switch to {2} market.</0>"
+#~ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer AVAX from other networks to Avalanche using any of the below options:"
@@ -4994,8 +4998,12 @@ msgid "You have an active order to decrease {longOrShortText} {sizeInToken} {0} 
 msgstr "Tienes activa una orden para reducir {longOrShortText} {sizeInToken} {0} (${1}) a {prefix} {2}"
 
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
-msgid "You have an existing position in the {0} market. <0>Switch to {1} market.</0>"
+msgid "You have an existing position in the {0} market pool. <0>Switch to {1} market pool.</0>"
 msgstr ""
+
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#~ msgid "You have an existing position in the {0} market. <0>Switch to {1} market.</0>"
+#~ msgstr ""
 
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "You have an existing position with {0} as collateral. <0>Switch to {1} collateral.</0>"
