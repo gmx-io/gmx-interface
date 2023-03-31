@@ -83,6 +83,7 @@ import { ErrorCode, ErrorDisplayType } from "./constants";
 import Button from "components/Button/Button";
 import UsefulLinks from "./UsefulLinks";
 import { get1InchSwapUrl } from "config/links";
+import getLiquidation from "lib/getLiquidation";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -377,6 +378,7 @@ export default function SwapBox(props) {
 
   const fromUsdMin = getUsd(fromAmount, fromTokenAddress, false, infoTokens);
   const toUsdMax = getUsd(toAmount, toTokenAddress, true, infoTokens, orderOption, triggerPriceUsd);
+  let fromUsdMinAfterFee = fromUsdMin;
 
   const indexTokenAddress = toTokenAddress === AddressZero ? nativeTokenAddress : toTokenAddress;
   const collateralTokenAddress = isLong ? indexTokenAddress : shortCollateralAddress;
@@ -578,7 +580,6 @@ export default function SwapBox(props) {
             isSwap
           );
 
-          let fromUsdMinAfterFee = fromUsdMin;
           if (feeBasisPoints) {
             fromUsdMinAfterFee = fromUsdMin.mul(BASIS_POINTS_DIVISOR - feeBasisPoints).div(BASIS_POINTS_DIVISOR);
           }
@@ -1075,9 +1076,9 @@ export default function SwapBox(props) {
     if (needOrderBookApproval && isWaitingForPluginApproval) {
       return false;
     }
-    if ((needApproval && isWaitingForApproval) || isApproving) {
-      return false;
-    }
+    // if ((needApproval && isWaitingForApproval) || isApproving) {
+    //   return false;
+    // }
     if (needPositionRouterApproval && isWaitingForPositionRouterApproval) {
       return false;
     }
@@ -1119,15 +1120,15 @@ export default function SwapBox(props) {
       return t`Enable Leverage`;
     }
 
-    if (needApproval && isWaitingForApproval) {
-      return t`Waiting for Approval`;
-    }
+    // if (needApproval && isWaitingForApproval) {
+    //   return t`Waiting for Approval`;
+    // }
     if (isApproving) {
       return t`Approving ${fromToken.symbol}...`;
     }
-    if (needApproval) {
-      return t`Approve ${fromToken.symbol}`;
-    }
+    // if (needApproval) {
+    //   return t`Approve ${fromToken.symbol}`;
+    // }
 
     if (needOrderBookApproval && isWaitingForPluginApproval) {
       return t`Enabling Orders...`;
@@ -1649,10 +1650,10 @@ export default function SwapBox(props) {
       return;
     }
 
-    if (needApproval) {
-      approveFromToken();
-      return;
-    }
+    // if (needApproval) {
+    //   approveFromToken();
+    //   return;
+    // }
 
     if (needOrderBookApproval) {
       setOrdersToaOpen(true);
@@ -1783,9 +1784,30 @@ export default function SwapBox(props) {
     increaseSize: true,
   });
 
-  const existingLiquidationPrice = existingPosition ? getLiquidationPrice(existingPosition) : undefined;
-  let displayLiquidationPrice = liquidationPrice ? liquidationPrice : existingLiquidationPrice;
+  const liquidationPriceTest = getLiquidation({});
 
+  const existingLiquidationPrice = existingPosition ? getLiquidationPrice(existingPosition) : undefined;
+  const existingLiquidationPriceTest = existingPosition
+    ? getLiquidation({
+        isLong: existingPosition.isLong,
+        size: existingPosition.size,
+        collateral: existingPosition.collateral,
+        averagePrice: existingPosition.averagePrice,
+      })
+    : undefined;
+  let displayLiquidationPrice = liquidationPrice ? liquidationPrice : existingLiquidationPrice;
+  console.log(
+    {
+      liquidationPrice: liquidationPrice ? liquidationPrice.toString() / 1e30 : undefined,
+      liquidationPriceTest: liquidationPriceTest ? liquidationPriceTest.toString() / 1e30 : undefined,
+      existingLiquidationPrice: existingLiquidationPrice ? existingLiquidationPrice.toString() / 1e30 : undefined,
+      existingLiquidationPriceTest: existingLiquidationPriceTest
+        ? existingLiquidationPriceTest.toString() / 1e30
+        : undefined,
+      swapFees: swapFees && swapFees / 1e30,
+    },
+    "add"
+  );
   function setFromValueToMaximumAvailable() {
     if (!fromToken || !fromBalance) {
       return;

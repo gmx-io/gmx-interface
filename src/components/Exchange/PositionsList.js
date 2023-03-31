@@ -8,7 +8,6 @@ import OrdersToa from "./OrdersToa";
 import { ImSpinner2 } from "react-icons/im";
 
 import {
-  getLiquidationPrice,
   getLeverage,
   getOrderError,
   USD_DECIMALS,
@@ -28,6 +27,7 @@ import { getUsd } from "domain/tokens/utils";
 import { bigNumberify, formatAmount } from "lib/numbers";
 import { AiOutlineEdit } from "react-icons/ai";
 import useAccountType, { AccountType } from "lib/wallets/useAccountType";
+import getLiquidation from "lib/getLiquidation";
 
 const getOrdersForPosition = (account, position, orders, nativeTokenAddress) => {
   if (!orders || orders.length === 0) {
@@ -235,7 +235,14 @@ export default function PositionsList(props) {
             )}
             {positions.map((position) => {
               const positionOrders = getOrdersForPosition(account, position, orders, nativeTokenAddress);
-              const liquidationPrice = getLiquidationPrice(position);
+              const liquidationPrice = getLiquidation({
+                size: position.size,
+                collateral: position.collateral,
+                averagePrice: position.averagePrice,
+                isLong: position.isLong,
+                fees: [position.fundingFee],
+              });
+
               const hasPositionProfit = position[showPnlAfterFees ? "hasProfitAfterFees" : "hasProfit"];
               const positionDelta =
                 position[showPnlAfterFees ? "pendingDeltaAfterFees" : "pendingDelta"] || bigNumberify(0);
@@ -495,7 +502,15 @@ export default function PositionsList(props) {
             </tr>
           )}
           {positions.map((position) => {
-            const liquidationPrice = getLiquidationPrice(position) || bigNumberify(0);
+            const liquidationPrice =
+              getLiquidation({
+                size: position.size,
+                collateral: position.collateral,
+                averagePrice: position.averagePrice,
+                isLong: position.isLong,
+                fees: [position.fundingFee],
+              }) || bigNumberify(0);
+
             const positionOrders = getOrdersForPosition(account, position, orders, nativeTokenAddress);
             const hasOrderError = !!positionOrders.find((order) => order.error);
             const hasPositionProfit = position[showPnlAfterFees ? "hasProfitAfterFees" : "hasProfit"];

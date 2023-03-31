@@ -9,7 +9,6 @@ import {
   BASIS_POINTS_DIVISOR,
   DEPOSIT_FEE,
   DUST_BNB,
-  getLiquidationPrice,
   MAX_ALLOWED_LEVERAGE,
   getFundingFee,
 } from "lib/legacy";
@@ -31,6 +30,7 @@ import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValu
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import Button from "components/Button/Button";
 import FeesTooltip from "./FeesTooltip";
+import getLiquidation from "lib/getLiquidation";
 
 const DEPOSIT = "Deposit";
 const WITHDRAW = "Withdraw";
@@ -114,7 +114,12 @@ export default function PositionEditor(props) {
   if (position) {
     title = t`Edit ${longOrShortText} ${position.indexToken.symbol}`;
     collateralToken = position.collateralToken;
-    liquidationPrice = getLiquidationPrice(position);
+    liquidationPrice = getLiquidation({
+      size: position.size,
+      collateral: position.collateral,
+      averagePrice: position.averagePrice,
+      isLong: position.isLong,
+    });
     fundingFee = getFundingFee(position);
 
     if (isDeposit) {
@@ -150,6 +155,10 @@ export default function PositionEditor(props) {
         depositFeeUSD = convertedAmount.mul(DEPOSIT_FEE).div(BASIS_POINTS_DIVISOR);
       }
 
+      nextCollateral = isDeposit
+        ? position.collateralAfterFee.add(collateralDelta)
+        : position.collateralAfterFee.sub(collateralDelta);
+
       nextLeverage = getLeverage({
         size: position.size,
         collateral: position.collateral,
@@ -174,21 +183,12 @@ export default function PositionEditor(props) {
         includeDelta: false,
       });
 
-      nextLiquidationPrice = getLiquidationPrice({
+      nextLiquidationPrice = getLiquidation({
         isLong: position.isLong,
         size: position.size,
-        collateral: position.collateral,
+        collateral: nextCollateral,
         averagePrice: position.averagePrice,
-        entryFundingRate: position.entryFundingRate,
-        cumulativeFundingRate: position.cumulativeFundingRate,
-        collateralDelta,
-        increaseCollateral: isDeposit,
-        reduceBorrowFee: true,
       });
-
-      nextCollateral = isDeposit
-        ? position.collateralAfterFee.add(collateralDelta)
-        : position.collateralAfterFee.sub(collateralDelta);
     }
   }
 

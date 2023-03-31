@@ -877,6 +877,15 @@ export function getLiquidationPrice(data) {
     isLong,
   });
 
+  console.log(
+    {
+      positionFee: positionFee / 1e30,
+      liquidationPriceForFees: liquidationPriceForFees / 1e30,
+      liquidationPriceForMaxLeverage: liquidationPriceForMaxLeverage / 1e30,
+    },
+    "❌"
+  );
+
   if (!liquidationPriceForFees) {
     return liquidationPriceForMaxLeverage;
   }
