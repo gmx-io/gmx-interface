@@ -1,15 +1,16 @@
 import { Trans } from "@lingui/macro";
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { GmSwapBox } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";
+import { GmSwapBox, Mode, Operation } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";
 import { MarketStats } from "components/Synthetics/MarketStats/MarketStats";
 import { SYNTHETICS_MARKET_DEPOSIT_MARKET_KEY } from "config/localStorage";
-import { useMarketsInfo } from "domain/synthetics/markets";
+import { useMarketTokensData, useMarketsInfo } from "domain/synthetics/markets";
 import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
+import { getTokenData } from "domain/synthetics/tokens";
 import { getByKey } from "lib/objects";
 import "./MarketPoolsPage.scss";
 
@@ -24,11 +25,22 @@ export function MarketPoolsPage(p: Props) {
   const { marketsInfoData } = useMarketsInfo(chainId);
   const markets = Object.values(marketsInfoData);
 
+  const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
+  const { marketTokensData: withdrawalMarketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
+
+  const [operation, setOperation] = useState<Operation>(Operation.Deposit);
+  const [mode, setMode] = useState<Mode>(Mode.Single);
+
   const [selectedMarketKey, setSelectedMarketKey] = useLocalStorageSerializeKey<string | undefined>(
     [chainId, SYNTHETICS_MARKET_DEPOSIT_MARKET_KEY],
     undefined
   );
   const marketInfo = getByKey(marketsInfoData, selectedMarketKey);
+
+  const marketToken = getTokenData(
+    operation === Operation.Deposit ? depositMarketTokensData : withdrawalMarketTokensData,
+    selectedMarketKey
+  );
 
   useEffect(
     function updateMarket() {
@@ -62,7 +74,8 @@ export function MarketPoolsPage(p: Props) {
         </div>
 
         <div className="MarketPoolsPage-content">
-          <MarketStats marketInfo={marketInfo} />
+          <MarketStats marketInfo={marketInfo} marketToken={marketToken} />
+
           <div className="MarketPoolsPage-swap-box">
             <GmSwapBox
               onConnectWallet={p.connectWallet}
@@ -70,6 +83,10 @@ export function MarketPoolsPage(p: Props) {
               markets={markets}
               onSelectMarket={setSelectedMarketKey}
               setPendingTxns={p.setPendingTxns}
+              operation={operation}
+              mode={mode}
+              setMode={setMode}
+              setOperation={setOperation}
             />
           </div>
         </div>

@@ -10,6 +10,11 @@
   overflow-x: hidden;
 }
 
+.PositionSeller-price-impact-warning {
+  margin-bottom: 1rem;
+  margin-top: -0.7rem;
+}
+
 @media (max-width: 350px) {
   .PositionSeller-receive-row.Exchange-info-row {
     display: flex;

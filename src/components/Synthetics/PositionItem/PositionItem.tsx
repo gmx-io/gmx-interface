@@ -229,6 +229,18 @@ export function PositionItem(p: Props) {
               renderContent={() => (
                 <div>
                   <StatsTooltipRow label={t`Market`} value={p.position.marketName || ""} showDollar={false} />
+
+                  <br />
+
+                  <div>
+                    <Trans>
+                      Click on a row to select the position's market, then use the swap box to increase your position
+                      size, or to set stop-loss / take-profit orders. if needed.
+                    </Trans>
+                    <br />
+                    <br />
+                    <Trans>Use the "Close" button to reduce your position size</Trans>
+                  </div>
                 </div>
               )}
             />
@@ -270,30 +282,13 @@ export function PositionItem(p: Props) {
           {/* collateral */}
           <div>{renderCollateral()}</div>
         </td>
-        <td className="clickable" onClick={p.onSelectPositionClick}>
-          {/* markPrice */}
-          <Tooltip
-            handle={formatUsd(p.position.markPrice)}
-            position="left-bottom"
-            handleClassName="plain clickable"
-            renderContent={() => {
-              return (
-                <div>
-                  <Trans>
-                    Click on a row to select the position's market, then use the swap box to increase your position
-                    size, or to set stop-loss / take-profit orders. if needed.
-                  </Trans>
-                  <br />
-                  <br />
-                  <Trans>Use the "Close" button to reduce your position size</Trans>
-                </div>
-              );
-            }}
-          />
-        </td>
         <td>
           {/* entryPrice */}
           {p.position.isOpening ? t`Opening...` : formatUsd(p.position.entryPrice)}
+        </td>
+        <td className="clickable" onClick={p.onSelectPositionClick}>
+          {/* markPrice */}
+          {formatUsd(p.position.markPrice)}
         </td>
         <td>
           {/* liqPrice */}
@@ -402,15 +397,15 @@ export function PositionItem(p: Props) {
         <div className="App-card-content">
           <div className="App-card-row">
             <div className="label">
-              <Trans>Mark Price</Trans>
-            </div>
-            <div>{formatUsd(p.position.markPrice)}</div>
-          </div>
-          <div className="App-card-row">
-            <div className="label">
               <Trans>Entry Price</Trans>
             </div>
             <div>{formatUsd(p.position.entryPrice)}</div>
+          </div>
+          <div className="App-card-row">
+            <div className="label">
+              <Trans>Mark Price</Trans>
+            </div>
+            <div>{formatUsd(p.position.markPrice)}</div>
           </div>
           <div className="App-card-row">
             <div className="label">

@@ -166,6 +166,7 @@ export function MarketCard(p: Props) {
           label={t`Available liquidity`}
           value={
             <Tooltip
+              className="al-swap"
               handle={formatUsd(liquidity) || "..."}
               position="right-bottom"
               renderContent={() => (

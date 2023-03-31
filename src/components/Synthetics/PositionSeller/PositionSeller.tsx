@@ -27,7 +27,6 @@ import {
   expandDecimals,
   formatAmount,
   formatPercentage,
-  formatTokenAmount,
   formatTokenAmountWithUsd,
   formatUsd,
   parseValue,
@@ -54,6 +53,7 @@ import { Token } from "domain/tokens";
 import { getByKey } from "lib/objects";
 import { OrderStatus } from "../OrderStatus/OrderStatus";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
+import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
 import "./PositionSeller.scss";
 
 function isEquivalentTokens(token1: Token, token2: Token) {
@@ -76,6 +76,7 @@ export function PositionSeller(p: Props) {
   const { chainId } = useChainId();
   const { library, account } = useWeb3React();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
   const { setPendingPositionUpdate } = useSyntheticsEvents();
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey([chainId, KEEP_LEVERAGE_FOR_DECREASE_KEY], true);
 
@@ -177,6 +178,8 @@ export function PositionSeller(p: Props) {
     sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
     initialCollateralUsd: receiveUsd,
     positionFeeUsd: decreaseAmounts?.positionFeeUsd,
+    borrowingFeeUsd: position?.pendingBorrowingFees,
+    fundingFeeDeltaUsd: position?.pendingFundingFeesUsd,
   });
 
   const receiveTokenLiquidity =
@@ -186,6 +189,10 @@ export function PositionSeller(p: Props) {
           getTokenPoolType(receiveTokenMarketInfo, receiveToken.address) === "long"
         )
       : undefined;
+
+  const isHighPriceImpact =
+    (fees?.swapPriceImpact?.deltaUsd.lt(0) && fees.swapPriceImpact.bps.abs().gte(HIGH_PRICE_IMPACT_BPS)) ||
+    (fees?.positionPriceImpact?.deltaUsd.lt(0) && fees.positionPriceImpact.bps.abs().gte(HIGH_PRICE_IMPACT_BPS));
 
   const isNotEnoughReceiveTokenLiquidity = shouldSwap ? receiveTokenLiquidity?.lt(receiveUsd || 0) : false;
 
@@ -218,6 +225,10 @@ export function PositionSeller(p: Props) {
 
     if (closeSizeUsd.gt(position?.sizeInUsd || 0)) {
       return [t`Max close amount exceeded`];
+    }
+
+    if (isHighPriceImpact && !isHighPriceImpactAccepted) {
+      return [t`Need to accept price impact`];
     }
 
     if (nextPositionValues?.nextLeverage && nextPositionValues.nextLeverage.gt(maxLeverage || MAX_ALLOWED_LEVERAGE)) {
@@ -355,7 +366,7 @@ export function PositionSeller(p: Props) {
                       </span>
                     </Checkbox>
                   </div>
-                  <div className="App-card-divider" />
+
                   <div className="PositionEditor-allow-higher-slippage">
                     <Checkbox isChecked={isHigherSlippageAllowed} setIsChecked={setIsHigherSlippageAllowed}>
                       <span className="muted font-sm">
@@ -363,6 +374,7 @@ export function PositionSeller(p: Props) {
                       </span>
                     </Checkbox>
                   </div>
+
                   <div>
                     <ExchangeInfoRow label={t`Allowed Slippage`}>
                       <Tooltip
@@ -382,12 +394,16 @@ export function PositionSeller(p: Props) {
                       />
                     </ExchangeInfoRow>
                   </div>
-                  <ExchangeInfoRow label={t`Mark Price`} value={formatUsd(markPrice)} />
-                  <ExchangeInfoRow label={t`Entry Price`} value={formatUsd(position?.entryPrice)} />
-                  <ExchangeInfoRow label={t`Acceptable Price`} value={formatUsd(decreaseAmounts?.acceptablePrice)} />
+
+                  <ExchangeInfoRow isTop label={t`Mark Price`} value={formatUsd(markPrice) || "-"} />
+                  <ExchangeInfoRow label={t`Entry Price`} value={formatUsd(position?.entryPrice) || "-"} />
                   <ExchangeInfoRow
                     label={t`Price impact`}
                     value={formatPercentage(decreaseAmounts?.acceptablePriceImpactBps) || "-"}
+                  />
+                  <ExchangeInfoRow
+                    label={t`Acceptable Price`}
+                    value={formatUsd(decreaseAmounts?.acceptablePrice) || "-"}
                   />
                   <ExchangeInfoRow
                     className="SwapBox-info-row"
@@ -404,8 +420,8 @@ export function PositionSeller(p: Props) {
                     }
                   />
 
-                  <div className="App-card-divider" />
                   <ExchangeInfoRow
+                    isTop
                     label={t`Size`}
                     value={
                       <ValueTransition
@@ -414,15 +430,29 @@ export function PositionSeller(p: Props) {
                       />
                     }
                   />
-                  <ExchangeInfoRow
-                    label={t`Collateral (${position?.collateralToken?.symbol})`}
-                    value={
+
+                  <div className="Exchange-info-row">
+                    <div>
+                      <Tooltip
+                        handle={
+                          <span className="Exchange-info-label">
+                            <Trans>Collateral ({position.collateralToken?.symbol})</Trans>
+                          </span>
+                        }
+                        position="left-top"
+                        renderContent={() => {
+                          return <Trans>Initial Collateral (Collateral excluding Borrow and Funding Fee).</Trans>;
+                        }}
+                      />
+                    </div>
+                    <div className="align-right">
                       <ValueTransition
                         from={formatUsd(position?.collateralUsd)!}
                         to={formatUsd(nextPositionValues?.nextCollateralUsd)}
                       />
-                    }
-                  />
+                    </div>
+                  </div>
+
                   {!keepLeverage && (
                     <ExchangeInfoRow
                       label={t`Leverage`}
@@ -444,29 +474,21 @@ export function PositionSeller(p: Props) {
                     value={position?.pnl ? formatPnl(position?.pnl, position?.pnlPercentage) : "..."}
                   />
 
-                  <div className="App-card-divider" />
-
                   <TradeFeesRow
-                    totalFees={fees?.totalFees}
+                    isTop
+                    totalTradeFees={fees?.totalFees}
                     positionFee={fees?.positionFee}
                     positionPriceImpact={fees?.positionPriceImpact}
-                    positionFeeFactor={fees?.positionFeeFactor}
                     swapFees={fees?.swapFees}
                     swapPriceImpact={fees?.swapPriceImpact}
+                    executionFee={executionFee}
+                    borrowFee={fees?.borrowFee}
+                    fundingFee={fees?.fundingFee}
+                    feesType="close"
                   />
 
                   <ExchangeInfoRow
-                    label={t`Execution Fee`}
-                    value={formatTokenAmount(
-                      executionFee?.feeTokenAmount,
-                      executionFee?.feeToken.decimals,
-                      executionFee?.feeToken.symbol
-                    )}
-                  />
-
-                  <div className="App-card-divider" />
-
-                  <ExchangeInfoRow
+                    isTop
                     label={t`Receive`}
                     className="Exchange-info-row PositionSeller-receive-row "
                     value={
@@ -502,6 +524,17 @@ export function PositionSeller(p: Props) {
                     }
                   />
                 </div>
+
+                {isHighPriceImpact && (
+                  <div className="PositionSeller-price-impact-warning">
+                    <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
+                      <span className="muted font-sm">
+                        <Trans>I am aware of the high price impact</Trans>
+                      </span>
+                    </Checkbox>
+                  </div>
+                )}
+
                 <div className="Exchange-swap-button-container">
                   <SubmitButton onClick={submitButtonState.onClick} disabled={submitButtonState.disabled} authRequired>
                     {submitButtonState.text}

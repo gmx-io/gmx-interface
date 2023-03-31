@@ -2,7 +2,6 @@ import { Trans, plural, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import cx from "classnames";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import Modal from "components/Modal/Modal";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { getContract } from "config/contracts";
@@ -20,6 +19,7 @@ import { useChainId } from "lib/chains";
 import { formatTokenAmount, formatTokenAmountWithUsd } from "lib/numbers";
 import { GmFees } from "../GmFees/GmFees";
 
+import Checkbox from "components/Checkbox/Checkbox";
 import "./GmConfirmationBox.scss";
 import { getByKey } from "lib/objects";
 
@@ -37,6 +37,9 @@ type Props = {
   error?: string;
   isDeposit: boolean;
   executionFee?: ExecutionFee;
+  isHighPriceImpact: boolean;
+  isHighPriceImpactAccepted: boolean;
+  setIsHighPriceImpactAccepted: (value: boolean) => void;
   onSubmitted: () => void;
   onClose: () => void;
   setPendingTxns: (txns: any) => void;
@@ -59,6 +62,9 @@ export function GmConfirmationBox({
   onSubmitted,
   onClose,
   setPendingTxns,
+  isHighPriceImpact,
+  isHighPriceImpactAccepted,
+  setIsHighPriceImpactAccepted,
 }: Props) {
   const { library, account } = useWeb3React();
   const { chainId } = useChainId();
@@ -133,6 +139,13 @@ export function GmConfirmationBox({
   const isAllowanceLoaded = Object.keys(tokensAllowanceData).length > 0;
 
   const submitButtonState = (function getSubmitButtonState() {
+    if (payTokenAddresses.length > 0 && !isAllowanceLoaded) {
+      return {
+        text: t`Loading...`,
+        disabled: true,
+      };
+    }
+
     if (error) {
       return {
         text: error,
@@ -140,9 +153,9 @@ export function GmConfirmationBox({
       };
     }
 
-    if (payTokenAddresses.length > 0 && !isAllowanceLoaded) {
+    if (isHighPriceImpact && !isHighPriceImpactAccepted) {
       return {
-        text: t`Loading...`,
+        text: t`Need to accept price impact`,
         disabled: true,
       };
     }
@@ -242,17 +255,22 @@ export function GmConfirmationBox({
           )}
         </div>
 
-        <GmFees totalFees={fees?.totalFees} swapFee={fees?.swapFee} swapPriceImpact={fees?.swapPriceImpact} />
-
-        <ExchangeInfoRow
-          label={t`Execution Fee`}
-          value={formatTokenAmountWithUsd(
-            executionFee?.feeTokenAmount,
-            executionFee?.feeUsd,
-            executionFee?.feeToken.symbol,
-            executionFee?.feeToken.decimals
-          )}
+        <GmFees
+          totalFees={fees?.totalFees}
+          swapFee={fees?.swapFee}
+          swapPriceImpact={fees?.swapPriceImpact}
+          executionFee={executionFee}
         />
+
+        {isHighPriceImpact && (
+          <div className="GmSwapBox-warnings">
+            <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
+              <span className="muted font-sm">
+                <Trans>I am aware of the high price impact</Trans>
+              </span>
+            </Checkbox>
+          </div>
+        )}
 
         {tokensToApprove && tokensToApprove.length > 0 && (
           <>

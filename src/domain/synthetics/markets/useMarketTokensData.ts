@@ -2,23 +2,24 @@ import { useWeb3React } from "@web3-react/core";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import TokenAbi from "abis/Token.json";
 import { getContract } from "config/contracts";
+import { MAX_PNL_FACTOR_FOR_DEPOSITS_KEY, MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY } from "config/dataStore";
 import { getTokenBySymbol } from "config/tokens";
 import { TokensData, useAvailableTokensData } from "domain/synthetics/tokens";
-import { hashString } from "lib/hash";
 import { USD_DECIMALS } from "lib/legacy";
 import { useMulticall } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
+import { getByKey } from "lib/objects";
 import { useMemo } from "react";
 import { useMarkets } from "./useMarkets";
 import { getContractMarketPrices } from "./utils";
-import { getByKey } from "lib/objects";
 
 type MarketTokensDataResult = {
   marketTokensData: TokensData;
   isLoading: boolean;
 };
 
-export function useMarketTokensData(chainId: number): MarketTokensDataResult {
+export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }): MarketTokensDataResult {
+  const { isDeposit } = p;
   const { account } = useWeb3React();
   const { tokensData, isLoading: isTokensLoading } = useAvailableTokensData(chainId);
   const { marketsData, marketsAddresses, isLoading: isMarketsLoading } = useMarkets(chainId);
@@ -41,6 +42,8 @@ export function useMarketTokensData(chainId: number): MarketTokensDataResult {
             data: market.data,
           };
 
+          const pnlFactorType = isDeposit ? MAX_PNL_FACTOR_FOR_DEPOSITS_KEY : MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY;
+
           requests[`${marketAddress}-prices`] = {
             contractAddress: getContract(chainId, "SyntheticsReader"),
             abi: SyntheticsReader.abi,
@@ -53,8 +56,7 @@ export function useMarketTokensData(chainId: number): MarketTokensDataResult {
                   marketPrices.indexTokenPrice,
                   marketPrices.longTokenPrice,
                   marketPrices.shortTokenPrice,
-                  // TODO
-                  hashString("MAX_PNL_FACTOR_FOR_DEPOSITS"),
+                  pnlFactorType,
                   false,
                 ],
               },
@@ -66,8 +68,7 @@ export function useMarketTokensData(chainId: number): MarketTokensDataResult {
                   marketPrices.indexTokenPrice,
                   marketPrices.longTokenPrice,
                   marketPrices.shortTokenPrice,
-                  // TODO
-                  hashString("MAX_PNL_FACTOR_FOR_DEPOSITS"),
+                  pnlFactorType,
                   true,
                 ],
               },

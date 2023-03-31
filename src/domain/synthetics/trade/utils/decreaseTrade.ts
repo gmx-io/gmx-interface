@@ -47,6 +47,8 @@ export function getDecreasePositionTradeParams(p: {
     sizeDeltaUsd: decreasePositionAmounts.sizeDeltaUsd,
     positionFeeUsd: decreasePositionAmounts.positionFeeUsd,
     positionPriceImpactDeltaUsd: !p.isTrigger ? decreasePositionAmounts.positionPriceImpactDeltaUsd : undefined,
+    borrowingFeeUsd: p.existingPosition?.pendingBorrowingFees,
+    fundingFeeDeltaUsd: p.existingPosition?.pendingFundingFeesUsd,
   });
 
   return {

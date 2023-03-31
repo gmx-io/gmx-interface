@@ -34,6 +34,8 @@ export function getDisplayedTradeFees(p: {
   positionFeeUsd?: BigNumber;
   swapPriceImpactDeltaUsd?: BigNumber;
   positionPriceImpactDeltaUsd?: BigNumber;
+  borrowingFeeUsd?: BigNumber;
+  fundingFeeDeltaUsd?: BigNumber;
 }): TradeFees | undefined {
   const swapBasis = p.initialCollateralUsd;
   const positionBasis = p.sizeDeltaUsd;
@@ -52,10 +54,16 @@ export function getDisplayedTradeFees(p: {
 
   const positionFee = getFeeItem(p.positionFeeUsd?.mul(-1), positionBasis);
 
+  const borrowFee = getFeeItem(p.borrowingFeeUsd?.mul(-1), p.initialCollateralUsd);
+
+  const fundingFee = p.fundingFeeDeltaUsd?.lt(0) ? getFeeItem(p.fundingFeeDeltaUsd, p.initialCollateralUsd) : undefined;
+
   const positionPriceImpactFee = getFeeItem(p.positionPriceImpactDeltaUsd, positionBasis);
 
   const totalFees = getTotalFeeItem(
-    [...(swapFees || []), swapPriceImpactFee, positionFee, positionPriceImpactFee].filter(Boolean) as FeeItem[]
+    [...(swapFees || []), swapPriceImpactFee, positionFee, positionPriceImpactFee, borrowFee, fundingFee].filter(
+      Boolean
+    ) as FeeItem[]
   );
 
   return {
@@ -64,6 +72,7 @@ export function getDisplayedTradeFees(p: {
     swapPriceImpact: swapPriceImpactFee,
     positionFee,
     positionPriceImpact: positionPriceImpactFee,
-    positionFeeFactor: p.marketInfo?.positionFeeFactor,
+    borrowFee,
+    fundingFee,
   };
 }

@@ -625,6 +625,11 @@ export function TradeBox(p: Props) {
   ]);
 
   const fees = swapParams?.fees || increasePositionParams?.fees || decreasePositionParams?.fees;
+  const feesType = (() => {
+    if (isSwap) return "swap";
+    if (isIncrease) return "open";
+    return "close";
+  })();
 
   const executionFee = useMemo(() => {
     if (!gasLimits || !gasPrice) return undefined;
@@ -1248,14 +1253,14 @@ export function TradeBox(p: Props) {
                         selectedMarket.marketTokenAddress && (
                         <div className="MarketSelector-tooltip-row">
                           <Trans>
-                            Insufficient liquidity in {selectedMarket.name} market. <br />
+                            Insufficient liquidity in {selectedMarket.name} market pool. <br />
                             <div
                               className="MarketSelector-tooltip-row-action clickable underline muted "
                               onClick={() =>
                                 onSelectMarketAddress(optimalPositionMarkets.maxLiquidityMarket!.marketTokenAddress)
                               }
                             >
-                              Switch to {optimalPositionMarkets.maxLiquidityMarket.name} market.
+                              Switch to {optimalPositionMarkets.maxLiquidityMarket.name} market pool.
                             </div>
                           </Trans>
                         </div>
@@ -1270,14 +1275,14 @@ export function TradeBox(p: Props) {
                               optimalPositionMarkets.minAcceptablePriceImpactBps!
                             )
                           )}{" "}
-                          better execution price in the {optimalPositionMarkets.minPriceImpactMarket.name} market.
+                          better execution price in the {optimalPositionMarkets.minPriceImpactMarket.name} market pool.
                           <div
                             className="MarketSelector-tooltip-row-action clickable underline muted"
                             onClick={() =>
                               onSelectMarketAddress(optimalPositionMarkets.minPriceImpactMarket!.marketTokenAddress)
                             }
                           >
-                            Switch to {optimalPositionMarkets.minPriceImpactMarket.name} market.
+                            Switch to {optimalPositionMarkets.minPriceImpactMarket.name} market pool.
                           </div>
                         </Trans>
                       </div>
@@ -1286,14 +1291,15 @@ export function TradeBox(p: Props) {
                     {!existingPosition && optimalPositionMarkets.marketWithPosition && (
                       <div className="MarketSelector-tooltip-row">
                         <Trans>
-                          You have an existing position in the {optimalPositionMarkets.marketWithPosition.name} market.{" "}
+                          You have an existing position in the {optimalPositionMarkets.marketWithPosition.name} market
+                          pool.{" "}
                           <div
                             className="MarketSelector-tooltip-row-action clickable underline muted"
                             onClick={() => {
                               onSelectMarketAddress(optimalPositionMarkets.marketWithPosition!.marketTokenAddress);
                             }}
                           >
-                            Switch to {optimalPositionMarkets.marketWithPosition.name} market.
+                            Switch to {optimalPositionMarkets.marketWithPosition.name} market pool.
                           </div>{" "}
                         </Trans>
                       </div>
@@ -1301,7 +1307,9 @@ export function TradeBox(p: Props) {
 
                     {optimalPositionMarkets.noSufficientLiquidityInAnyMarket && (
                       <div className="MarketSelector-tooltip-row">
-                        <Trans>Insufficient liquidity in any {indexToken?.symbol}/USD markets for your order.</Trans>
+                        <Trans>
+                          Insufficient liquidity in any {indexToken?.symbol}/USD market pools for your order.
+                        </Trans>
                       </div>
                     )}
                   </div>
@@ -1415,12 +1423,6 @@ export function TradeBox(p: Props) {
 
         <ExchangeInfoRow className="SwapBox-info-row" label={t`Entry Price`} value={formatUsd(entryMarkPrice) || "-"} />
 
-        <ExchangeInfoRow
-          className="SwapBox-info-row"
-          label={t`Acceptable Price`}
-          value={formatUsd(acceptablePrice) || "-"}
-        />
-
         {isMarket && (
           <ExchangeInfoRow
             className="SwapBox-info-row"
@@ -1450,6 +1452,13 @@ export function TradeBox(p: Props) {
             }
           />
         )}
+
+        <ExchangeInfoRow
+          className="SwapBox-info-row"
+          label={t`Acceptable Price`}
+          value={formatUsd(acceptablePrice) || "-"}
+        />
+
         <ExchangeInfoRow
           className="SwapBox-info-row"
           label={t`Liq. Price`}
@@ -1528,12 +1537,6 @@ export function TradeBox(p: Props) {
 
         <ExchangeInfoRow
           className="SwapBox-info-row"
-          label={t`Acceptable Price`}
-          value={formatUsd(decreasePositionParams?.acceptablePrice) || "-"}
-        />
-
-        <ExchangeInfoRow
-          className="SwapBox-info-row"
           label={t`Acceptable Price Impact`}
           value={
             <span className="TradeBox-acceptable-price-impact" onClick={() => setIsAcceptablePriceImpactEditing(true)}>
@@ -1543,6 +1546,12 @@ export function TradeBox(p: Props) {
               </span>
             </span>
           }
+        />
+
+        <ExchangeInfoRow
+          className="SwapBox-info-row"
+          label={t`Acceptable Price`}
+          value={formatUsd(decreasePositionParams?.acceptablePrice) || "-"}
         />
 
         {existingPosition && (
@@ -1600,12 +1609,15 @@ export function TradeBox(p: Props) {
           {isTrigger && renderTriggerOrderInfo()}
 
           <TradeFeesRow
-            totalFees={fees?.totalFees}
+            totalTradeFees={fees?.totalFees}
             swapFees={fees?.swapFees}
             positionFee={fees?.positionFee}
             swapPriceImpact={fees?.swapPriceImpact}
             positionPriceImpact={fees?.positionPriceImpact}
-            positionFeeFactor={fees?.positionFeeFactor}
+            borrowFee={fees?.borrowFee}
+            fundingFee={fees?.fundingFee}
+            executionFee={executionFee}
+            feesType={feesType}
           />
         </div>
 

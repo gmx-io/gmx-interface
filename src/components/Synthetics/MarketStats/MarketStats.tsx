@@ -5,7 +5,6 @@ import { MarketInfo, getPoolUsd } from "domain/synthetics/markets";
 import { TokenData, convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
-
 import "./MarketStats.scss";
 
 type Props = {

@@ -46,6 +46,7 @@ import { usePositionsConstants } from "domain/synthetics/positions/usePositionsC
 import { contractFetcher } from "lib/contracts";
 import useSWR from "swr";
 import "./PositionEditor.scss";
+import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 
 type Props = {
   position?: AggregatedPositionData;
@@ -434,10 +435,7 @@ export function PositionEditor(p: Props) {
             />
           )}
 
-          {/* <ExchangeInfoRow
-            label={t`Fees and price impact`}
-            value={<Tooltip handle={"$0.00"} position="right-top" renderContent={() => "TODO"} />}
-          /> */}
+          <TradeFeesRow executionFee={executionFee} feesType={"edit"} />
         </div>
 
         {needApproval && collateralToken && (

@@ -164,6 +164,7 @@ msgstr "接受订单不保证执行，触发订单可能不按触发价格结算
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
@@ -171,6 +172,8 @@ msgid "Acceptable Price"
 msgstr ""
 
 #: src/components/Synthetics/Trade/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Acceptable Price Impact"
@@ -453,7 +456,7 @@ msgstr "用点数提升你的奖励。 <0>更多信息</0>"
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 msgid "Borrow Fee"
 msgstr "借款费用"
@@ -463,6 +466,10 @@ msgstr "借款费用"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Borrow Fee / Day"
 msgstr "借款费用/天"
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Borrow Fee Rate"
+msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Borrow fee"
@@ -776,6 +783,7 @@ msgstr "收盘"
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/NetValueTooltip.tsx
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close Fee"
 msgstr ""
 
@@ -841,7 +849,6 @@ msgstr "无法侦测Coinbase钱包"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Collateral"
 msgstr "抵押品"
 
@@ -851,6 +858,7 @@ msgstr "抵押品"
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Collateral ({0})"
 msgstr "抵押品({0})"
@@ -859,7 +867,6 @@ msgstr "抵押品({0})"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
@@ -867,6 +874,7 @@ msgid "Collateral In"
 msgstr "抵押品进入"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Collateral Spread"
 msgstr ""
 
@@ -1572,6 +1580,7 @@ msgstr "输入新价钱"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Entry Price"
 msgstr "入场价格"
@@ -1616,10 +1625,9 @@ msgid "Executed {0} {tokensText}"
 msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Execution Fee"
 msgstr ""
 
@@ -1660,6 +1668,7 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Fees"
@@ -1767,13 +1776,17 @@ msgstr ""
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 msgid "Funding Fee"
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Funding Fee / Day"
+msgstr ""
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Funding Fee Rate"
 msgstr ""
 
 #: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
@@ -1962,7 +1975,10 @@ msgstr "高滑点，继续交易"
 msgid "High USDG Slippage, Long Anyway"
 msgstr "高 USDG 滑点，继续做多"
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "I am aware of the high price impact"
 msgstr ""
@@ -2063,6 +2079,10 @@ msgstr "初始抵押品"
 msgid "Initial Collateral (Collateral excluding Borrow Fee)."
 msgstr ""
 
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+msgid "Initial Collateral (Collateral excluding Borrow and Funding Fee)."
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 msgid "Initial collateral"
@@ -2097,6 +2117,33 @@ msgstr ""
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "Insufficient liquidity"
 msgstr "流动资金不足"
+
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+msgid "Insufficient liquidity in any {0}/USD market pools for your order."
+msgstr ""
+
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#~ msgid "Insufficient liquidity in any {0}/USD markets for your order."
+#~ msgstr ""
+
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+msgid "Insufficient liquidity in {0} market pool. <0/><1>Switch to {1} market pool.</1>"
+msgstr ""
+
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#~ msgid "Insufficient liquidity in {0} market. <0/><1>Switch to {1} market.</1>"
+#~ msgstr ""
+
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+msgid "Insufficient liquidity, change \"Collateral In\""
+msgstr "流动资金不足, 更换 \"Collateral In\\"
+
+#: src/components/Exchange/PositionSeller.js
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+msgid "Insufficient receive token liquidity"
+msgstr "接收代币的流动性不足"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Insufficient staked tokens"
@@ -2489,6 +2536,8 @@ msgstr "MEV优化器"
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Mark Price"
@@ -2766,7 +2815,8 @@ msgstr "NFT ID"
 msgid "NFT Wallet"
 msgstr "NFT钱包"
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Need to accept price impact"
 msgstr ""
 
@@ -2875,6 +2925,7 @@ msgstr "只允许使用字母、数字和下底线"
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Open Fee"
 msgstr ""
 
@@ -3158,9 +3209,12 @@ msgstr ""
 msgid "Position"
 msgstr "仓位"
 
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 msgid "Position Fee"
+msgstr ""
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Position Price impact"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
@@ -3210,7 +3264,6 @@ msgstr "上一页"
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
-#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
@@ -3227,6 +3280,7 @@ msgstr "上一页"
 msgid "Price"
 msgstr "价钱"
 
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 msgid "Price Impact"
@@ -3273,7 +3327,6 @@ msgid "Price conditions are met"
 msgstr "符合价格条件"
 
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price impact"
 msgstr ""
 
@@ -3767,7 +3820,6 @@ msgstr "加速页面加载"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Spread"
 msgstr "分散"
 
@@ -3930,6 +3982,10 @@ msgstr "创建交易订单失败"
 msgid "Swap Order submitted!"
 msgstr "交易订单送出"
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Swap Price impact"
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Swap active: {0}, executed: {1}, cancelled: {2}"
 msgstr "交易启动：{0}执行{1}已取消{2}"
@@ -3963,7 +4019,6 @@ msgid "Swap on 1inch"
 msgstr "在1inch上交易"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap price impact"
 msgstr ""
 
@@ -4415,6 +4470,7 @@ msgstr "转移中..."
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Transacting with a depegged stable coin is subject to spreads reflecting the worse of current market price or $1.00, with transactions involving multiple stablecoins may have multiple spreads."
 msgstr ""
 
@@ -4942,8 +4998,12 @@ msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {s
 msgstr "目前，您最多可以授权{0}个esGMX代币，比例为{1}个esGMX。 {stakingToken}对1esGMX"
 
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
-msgid "You can get a {0} better execution price in the {1} market.<0>Switch to {2} market.</0>"
+msgid "You can get a {0} better execution price in the {1} market pool.<0>Switch to {2} market pool.</0>"
 msgstr ""
+
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#~ msgid "You can get a {0} better execution price in the {1} market.<0>Switch to {2} market.</0>"
+#~ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer AVAX from other networks to Avalanche using any of the below options:"
@@ -4966,16 +5026,24 @@ msgid "You have an active Limit Order to Increase {longOrShortText} {sizeInToken
 msgstr "您有一个有效的限价订单，{longOrShortText} {sizeInToken} {0} (${1}) 以{2}美元的价格增加"
 
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-msgid "You have an active Limit Order to Increase {longShortText} {sizeText} at price {0}."
+msgid "You have an active Limit Order to Increase {longShortText} {0} {sizeText} at price {1}."
 msgstr ""
+
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#~ msgid "You have an active Limit Order to Increase {longShortText} {sizeText} at price {0}."
+#~ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "You have an active order to decrease {longOrShortText} {sizeInToken} {0} (${1}) at {prefix} {2}"
 msgstr "您有一个有效的限价订单，{longOrShortText} {sizeInToken} {0} (${1}) 以{2}美元的价格减少"
 
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
-msgid "You have an existing position in the {0} market. <0>Switch to {1} market.</0>"
+msgid "You have an existing position in the {0} market pool. <0>Switch to {1} market pool.</0>"
 msgstr ""
+
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+#~ msgid "You have an existing position in the {0} market. <0>Switch to {1} market.</0>"
+#~ msgstr ""
 
 #: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 msgid "You have an existing position with {0} as collateral. <0>Switch to {1} collateral.</0>"

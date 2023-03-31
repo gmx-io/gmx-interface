@@ -1,7 +1,6 @@
-import { t, Trans } from "@lingui/macro";
+import { t } from "@lingui/macro";
 import cx from "classnames";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import Checkbox from "components/Checkbox/Checkbox";
 import { Dropdown, DropdownOption } from "components/Dropdown/Dropdown";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
@@ -44,7 +43,18 @@ import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } f
 import { IoMdSwap } from "react-icons/io";
 import { GmConfirmationBox } from "../GmConfirmationBox/GmConfirmationBox";
 import { GmOrderStatus } from "../GmOrderStatus/GmOrderStatus";
+
 import "./GmSwapBox.scss";
+
+export enum Operation {
+  Deposit = "Deposit",
+  Withdrawal = "Withdrawal",
+}
+
+export enum Mode {
+  Single = "Single",
+  Pair = "Pair",
+}
 
 type Props = {
   selectedMarketAddress?: string;
@@ -52,17 +62,11 @@ type Props = {
   onSelectMarket: (marketAddress: string) => void;
   onConnectWallet: () => void;
   setPendingTxns: (txns: any) => void;
+  operation: Operation;
+  mode: Mode;
+  setMode: Dispatch<SetStateAction<Mode>>;
+  setOperation: Dispatch<SetStateAction<Operation>>;
 };
-
-enum Operation {
-  Deposit = "Deposit",
-  Withdrawal = "Withdrawal",
-}
-
-enum Mode {
-  Single = "Single",
-  Pair = "Pair",
-}
 
 const availableModes = {
   [Operation.Deposit]: [Mode.Single, Mode.Pair],
@@ -90,11 +94,12 @@ function useSafeState<S>(
 }
 
 export function GmSwapBox(p: Props) {
+  const { operation, mode, setMode, setOperation } = p;
+
   const marketAddress = p.selectedMarketAddress;
 
   const { chainId } = useChainId();
   const { marketsInfoData } = useMarketsInfo(chainId);
-  const { marketTokensData } = useMarketTokensData(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
 
   const infoTokens = adaptToV1InfoTokens(tokensData);
@@ -102,8 +107,9 @@ export function GmSwapBox(p: Props) {
   const { gasLimits } = useGasLimits(chainId);
   const { gasPrice } = useGasPrice(chainId);
 
-  const [operation, setOperation] = useState<Operation>(Operation.Deposit);
-  const [mode, setMode] = useState<Mode>(Mode.Single);
+  const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
+  const { marketTokensData: withdrawalMarketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
+
   const [focusedInput, setFocusedInput] = useState<"longCollateral" | "shortCollateral" | "market">();
   const [stage, setStage] = useState<"swap" | "confirmation" | "processing">();
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
@@ -180,7 +186,10 @@ export function GmSwapBox(p: Props) {
   })();
 
   const [marketTokenInputValue, setMarketTokenInputValue] = useSafeState<string>();
-  const marketToken = getTokenData(marketTokensData, marketInfo?.marketTokenAddress);
+  const marketToken = getTokenData(
+    isDeposit ? depositMarketTokensData : withdrawalMarketTokensData,
+    marketInfo?.marketTokenAddress
+  );
   const marketTokenAmount = parseValue(marketTokenInputValue || "0", marketToken?.decimals || 0);
   const prevMarketTokenAmount = usePrevious(marketTokenAmount);
   const marketTokenUsd = convertToUsd(
@@ -257,10 +266,6 @@ export function GmSwapBox(p: Props) {
 
     if (!marketTokenAmount?.gt(0)) {
       return t`Enter an amount`;
-    }
-
-    if (isHighPriceImpact && !isHighPriceImpactAccepted) {
-      return t`Need to accept price impact`;
     }
 
     if (isDeposit) {
@@ -515,7 +520,7 @@ export function GmSwapBox(p: Props) {
         setMode(availableModes[operation][0]);
       }
     },
-    [mode, operation]
+    [mode, operation, setMode]
   );
 
   useEffect(
@@ -684,18 +689,13 @@ export function GmSwapBox(p: Props) {
       </div>
 
       <div className="GmSwapBox-info-section">
-        <GmFees totalFees={fees?.totalFees} swapFee={fees?.swapFee} swapPriceImpact={fees?.swapPriceImpact} />
+        <GmFees
+          totalFees={fees?.totalFees}
+          swapFee={fees?.swapFee}
+          swapPriceImpact={fees?.swapPriceImpact}
+          executionFee={executionFee}
+        />
       </div>
-
-      {isHighPriceImpact && (
-        <div className="GmSwapBox-warnings">
-          <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
-            <span className="muted font-sm">
-              <Trans>I am aware of the high price impact</Trans>
-            </span>
-          </Checkbox>
-        </div>
-      )}
 
       <div className="Exchange-swap-button-container">
         <SubmitButton
@@ -730,6 +730,9 @@ export function GmSwapBox(p: Props) {
           onClose={() => {
             setStage("swap");
           }}
+          isHighPriceImpact={isHighPriceImpact!}
+          isHighPriceImpactAccepted={isHighPriceImpactAccepted}
+          setIsHighPriceImpactAccepted={setIsHighPriceImpactAccepted}
         />
       )}
 
