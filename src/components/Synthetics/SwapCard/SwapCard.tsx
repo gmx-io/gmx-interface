@@ -14,7 +14,7 @@ import { useOpenInterestData } from "domain/synthetics/markets/useOpenInterestDa
 import { TokensRatio, convertToTokenAmount, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
-import { formatAmount, formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
 import { useMemo } from "react";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";

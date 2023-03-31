@@ -1360,7 +1360,7 @@ export function TradeBox(p: Props) {
                             false,
                             false
                           )}{" "}
-                          market.
+                          market pool.
                           <div
                             className="MarketSelector-tooltip-row-action clickable underline muted"
                             onClick={() =>
@@ -1375,7 +1375,7 @@ export function TradeBox(p: Props) {
                               false,
                               false
                             )}{" "}
-                            market.
+                            market pool.
                           </div>
                         </Trans>
                       </div>
@@ -1392,7 +1392,7 @@ export function TradeBox(p: Props) {
                             false,
                             false
                           )}{" "}
-                          market.{" "}
+                          market pool.{" "}
                           <div
                             className="MarketSelector-tooltip-row-action clickable underline muted"
                             onClick={() => {
@@ -1407,7 +1407,7 @@ export function TradeBox(p: Props) {
                               false,
                               false
                             )}{" "}
-                            market.
+                            market pool.
                           </div>{" "}
                         </Trans>
                       </div>
@@ -1415,7 +1415,9 @@ export function TradeBox(p: Props) {
 
                     {optimalPositionMarkets.noSufficientLiquidityInAnyMarket && (
                       <div className="MarketSelector-tooltip-row">
-                        <Trans>Insufficient liquidity in any {indexToken?.symbol}/USD markets for your order.</Trans>
+                        <Trans>
+                          Insufficient liquidity in any {indexToken?.symbol}/USD market pools for your order.
+                        </Trans>
                       </div>
                     )}
                   </div>
