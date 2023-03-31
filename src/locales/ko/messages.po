@@ -2137,10 +2137,9 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-msgid "Insufficient liquidity, change \"Collateral In\""
-msgstr "유동성 부족, \"담보자산\"을 변경하세요"
+#~ msgid "Insufficient liquidity, change \"Collateral In\""
+#~ msgstr "유동성 부족, \"담보자산\"을 변경하세요"
 
-#: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Insufficient receive token liquidity"
 msgstr "수령할 자산의 토큰 유동성이 부족합니다"
@@ -3990,10 +3989,6 @@ msgstr ""
 msgid "Swap active: {0}, executed: {1}, cancelled: {2}"
 msgstr "스왑 액티브: {0}, 실행 완료: {1}, 취소 완료: {2}"
 
-#: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
-#~ msgid "Swap cancelled"
-#~ msgstr ""
-
 #: src/components/Exchange/SwapBox.js
 msgid "Swap amount exceeds available liquidity."
 msgstr ""
@@ -4005,6 +4000,10 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 msgid "Swap amount from {0} to {1} exceeds {2} available liquidity. Choose a different \"Receive\" token."
 msgstr ""
+
+#: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
+#~ msgid "Swap cancelled"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js

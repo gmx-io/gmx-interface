@@ -2132,10 +2132,9 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-msgid "Insufficient liquidity, change \"Collateral In\""
-msgstr "Unzureichende Liquidität, Veränderung \"Kollateral in\""
+#~ msgid "Insufficient liquidity, change \"Collateral In\""
+#~ msgstr "Unzureichende Liquidität, Veränderung \"Kollateral in\""
 
-#: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Insufficient receive token liquidity"
 msgstr "Unzureichende Liquidität der erhaltenen Token"
@@ -3999,10 +3998,6 @@ msgstr ""
 msgid "Swap active: {0}, executed: {1}, cancelled: {2}"
 msgstr ""
 
-#: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
-#~ msgid "Swap cancelled"
-#~ msgstr ""
-
 #: src/components/Exchange/SwapBox.js
 msgid "Swap amount exceeds available liquidity."
 msgstr ""
@@ -4014,6 +4009,10 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 msgid "Swap amount from {0} to {1} exceeds {2} available liquidity. Choose a different \"Receive\" token."
 msgstr ""
+
+#: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
+#~ msgid "Swap cancelled"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
