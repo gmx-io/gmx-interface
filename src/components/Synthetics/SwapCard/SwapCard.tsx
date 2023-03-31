@@ -14,7 +14,7 @@ import { useOpenInterestData } from "domain/synthetics/markets/useOpenInterestDa
 import { TokensRatio, convertToTokenAmount, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
-import { formatAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { formatAmount, formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { useMemo } from "react";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
@@ -86,15 +86,12 @@ export function SwapCard(p: Props) {
               renderContent={() => (
                 <div>
                   <StatsTooltipRow
+                    className="al-swap"
                     label={t`Max ${toToken?.symbol} out`}
-                    value={
-                      formatTokenAmountWithUsd(
-                        maxLiquidityAmount,
-                        maxLiquidityUsd,
-                        toToken?.symbol,
-                        toToken?.decimals
-                      ) || "..."
-                    }
+                    value={[
+                      formatTokenAmount(maxLiquidityAmount, toToken?.decimals, toToken?.symbol),
+                      formatUsd(maxLiquidityUsd),
+                    ]}
                     showDollar={false}
                   />
                 </div>
