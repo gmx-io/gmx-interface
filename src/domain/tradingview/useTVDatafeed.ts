@@ -127,7 +127,7 @@ export default function useTVDatafeed({ dataProvider }: Props) {
           if (!isStable) {
             intervalRef.current = setInterval(function () {
               tvDataProvider.current?.getLiveBar(chainId, ticker, period).then((bar) => {
-                if (bar && ticker === activeTicker.current && period === activePeriod.current) {
+                if (bar && bar.ticker === activeTicker.current && bar.period === activePeriod.current) {
                   onRealtimeCallback(formatTimeInBarToMs(bar));
                 }
               });
