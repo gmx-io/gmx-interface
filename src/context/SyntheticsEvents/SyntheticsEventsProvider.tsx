@@ -159,7 +159,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       if (order) {
         const orderLabel = getOrderTypeLabel(order.orderType);
         const targetCollateral = getToTokenFromSwapPath(
-          marketsInfoData,
+          marketsInfoData || {},
           order.initialCollateralTokenAddress,
           order.swapPath
         );

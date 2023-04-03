@@ -102,7 +102,7 @@ export function GmSwapBox(p: Props) {
   const { marketsInfoData } = useMarketsInfo(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
 
-  const infoTokens = adaptToV1InfoTokens(tokensData);
+  const infoTokens = adaptToV1InfoTokens(tokensData || {});
 
   const { gasLimits } = useGasLimits(chainId);
   const { gasPrice } = useGasPrice(chainId);
@@ -131,7 +131,7 @@ export function GmSwapBox(p: Props) {
 
   const marketInfo = getByKey(marketsInfoData, marketAddress);
 
-  const marketsOptions: DropdownOption[] = Object.values(marketsInfoData).map((marketInfo) => ({
+  const marketsOptions: DropdownOption[] = Object.values(marketsInfoData || {}).map((marketInfo) => ({
     label: marketInfo.name,
     value: marketInfo.marketTokenAddress,
   }));
@@ -243,7 +243,7 @@ export function GmSwapBox(p: Props) {
     fees?.swapPriceImpact?.deltaUsd.lt(0) && fees.swapPriceImpact.bps.abs().gte(HIGH_PRICE_IMPACT_BPS);
 
   const executionFee = useMemo(() => {
-    if (!gasLimits || !gasPrice) return undefined;
+    if (!gasLimits || !gasPrice || !tokensData) return undefined;
 
     if (isDeposit) {
       const estimatedGasLimit = estimateExecuteDepositGasLimit(gasLimits, {

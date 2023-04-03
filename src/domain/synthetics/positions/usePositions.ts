@@ -13,15 +13,14 @@ import { getPositionKey } from "./utils";
 
 type PositionsResult = {
   positionsData: PositionsData;
-  isLoading: boolean;
 };
 
 const defaultValue = {};
 
 export function usePositions(chainId: number): PositionsResult {
   const { account } = useWeb3React();
-  const { marketsData, isLoading: isMarketsLoading } = useMarkets(chainId);
-  const { tokensData, isLoading: isTokensLoading } = useAvailableTokensData(chainId);
+  const { marketsData } = useMarkets(chainId);
+  const { tokensData } = useAvailableTokensData(chainId);
 
   const { data: positionsKeys } = useMulticall(chainId, "usePositionsData-keys", {
     key: account ? [account] : null,
@@ -43,13 +42,13 @@ export function usePositions(chainId: number): PositionsResult {
   });
 
   const queryParams = useMemo(() => {
-    if (!account || isMarketsLoading || isTokensLoading || !positionsKeys?.length) return undefined;
+    if (!account || !marketsData || !tokensData || !positionsKeys?.length) return undefined;
 
     const markets = Object.values(marketsData);
     const marketPricesByPositionsKeys: { [key: string]: ContractMarketPrices } = {};
 
     for (const market of markets) {
-      const marketPrices = getContractMarketPrices(tokensData, market);
+      const marketPrices = getContractMarketPrices(tokensData!, market);
 
       for (const collateralAddress of [market.longTokenAddress, market.shortTokenAddress]) {
         for (const isLong of [true, false]) {
@@ -70,7 +69,7 @@ export function usePositions(chainId: number): PositionsResult {
       positionsKeys,
       marketPricesArray,
     };
-  }, [account, isMarketsLoading, isTokensLoading, marketsData, positionsKeys, tokensData]);
+  }, [account, marketsData, positionsKeys, tokensData]);
 
   const { data: positionsData = defaultValue, isLoading } = useMulticall(chainId, "usePositionsData", {
     key: queryParams?.positionsKeys.length ? [queryParams.positionsKeys.join("-")] : null,
@@ -153,6 +152,5 @@ export function usePositions(chainId: number): PositionsResult {
 
   return {
     positionsData,
-    isLoading,
   };
 }

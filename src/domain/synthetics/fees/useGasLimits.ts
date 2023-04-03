@@ -14,12 +14,11 @@ import {
 import { GasLimitsConfig } from "./types";
 
 type GasLimitsResult = {
-  gasLimits: GasLimitsConfig | undefined;
-  isLoading: boolean;
+  gasLimits?: GasLimitsConfig;
 };
 
 export function useGasLimits(chainId: number): GasLimitsResult {
-  const { data, isLoading } = useMulticall(chainId, "useGasLimitsConfig", {
+  const { data } = useMulticall(chainId, "useGasLimitsConfig", {
     key: [],
     request: () => ({
       dataStore: {
@@ -89,6 +88,5 @@ export function useGasLimits(chainId: number): GasLimitsResult {
 
   return {
     gasLimits: data,
-    isLoading,
   };
 }

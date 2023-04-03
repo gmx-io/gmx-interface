@@ -17,10 +17,10 @@ export function useAvailableSwapOptions(p: { selectedIndexTokenAddress?: string 
   const { marketsData } = useMarkets(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
 
-  const infoTokens = useMemo(() => adaptToV1InfoTokens(tokensData), [tokensData]);
+  const infoTokens = useMemo(() => adaptToV1InfoTokens(tokensData || {}), [tokensData]);
 
   const { longCollaterals, shortCollaterals, indexTokens, collateralsByIndexMap } = useMemo(() => {
-    const markets = Object.values(marketsData);
+    const markets = Object.values(marketsData || {});
     const nativeToken = getTokenData(tokensData, NATIVE_TOKEN_ADDRESS)!;
     const wrappedToken = getWrappedToken(chainId);
 

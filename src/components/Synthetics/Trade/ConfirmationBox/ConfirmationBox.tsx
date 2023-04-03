@@ -141,8 +141,10 @@ export function ConfirmationBox(p: Props) {
     tokenAddresses: payToken ? [payToken.address] : [],
   });
 
-  const isAllowanceLoaded = Object.keys(tokensAllowanceData).length > 0;
+  const isAllowanceLoaded = Boolean(tokensAllowanceData);
+
   const needPayTokenApproval =
+    tokensAllowanceData &&
     isAllowanceLoaded &&
     !p.isWrapOrUnwrap &&
     payToken &&
@@ -318,7 +320,7 @@ export function ConfirmationBox(p: Props) {
   }
 
   function onSubmitSwap() {
-    if (!account || !p.swapParams || !p.swapParams.swapPathStats || !p.executionFee) {
+    if (!tokensData || !account || !p.swapParams || !p.swapParams.swapPathStats || !p.executionFee) {
       return;
     }
 
@@ -339,6 +341,7 @@ export function ConfirmationBox(p: Props) {
 
   function onSubmitIncreaseOrder() {
     if (
+      !tokensData ||
       !account ||
       !p.increasePositionParams ||
       !p.executionFee ||
@@ -389,6 +392,7 @@ export function ConfirmationBox(p: Props) {
 
   function onSubmitDecreaseOrder() {
     if (
+      !tokensData ||
       !account ||
       !p.decreasePositionParams ||
       !p.executionFee ||

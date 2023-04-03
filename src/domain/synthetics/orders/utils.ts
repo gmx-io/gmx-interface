@@ -70,7 +70,7 @@ export function getTriggerOrderType(p: { isLong: boolean; isTriggerAboveThreshol
 export function getAggregatedOrderData(
   ordersData: OrdersData,
   marketsInfoData: MarketsInfoData,
-  tokensData: TokensData,
+  tokensData?: TokensData,
   orderKey?: string
 ): AggregatedOrderData | undefined {
   const order = getOrder(ordersData, orderKey);

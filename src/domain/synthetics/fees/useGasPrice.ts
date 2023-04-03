@@ -6,7 +6,7 @@ import { getProvider } from "lib/rpc";
 export function useGasPrice(chainId: number) {
   const { library } = useWeb3React();
 
-  const { data: gasPrice, error } = useSWR<BigNumber | undefined>(["gasPrice", chainId], {
+  const { data: gasPrice } = useSWR<BigNumber | undefined>(["gasPrice", chainId], {
     fetcher: () => {
       return new Promise(async (resolve, reject) => {
         const provider = getProvider(library, chainId);
@@ -28,5 +28,5 @@ export function useGasPrice(chainId: number) {
     },
   });
 
-  return { gasPrice, isLoading: !gasPrice && !error, error };
+  return { gasPrice };
 }

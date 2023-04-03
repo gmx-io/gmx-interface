@@ -86,7 +86,7 @@ export function OrderEditor(p: Props) {
   const isSwap = isSwapOrder(p.order.orderType);
   const fromToken = getTokenData(tokensData, p.order.initialCollateralTokenAddress);
   const toTokenAddress = getToTokenFromSwapPath(
-    marketsInfoData,
+    marketsInfoData || {},
     p.order.initialCollateralTokenAddress,
     p.order.swapPath
   );
@@ -146,7 +146,7 @@ export function OrderEditor(p: Props) {
   const existingPosition = getPosition(p.positionsData, positionKey) as PositionInfo | undefined;
 
   const executionFee = useMemo(() => {
-    if (!p.order.isFrozen || !gasLimits || !gasPrice) return undefined;
+    if (!p.order.isFrozen || !gasLimits || !gasPrice || !tokensData) return undefined;
 
     let estimatedGas: BigNumber | undefined;
 

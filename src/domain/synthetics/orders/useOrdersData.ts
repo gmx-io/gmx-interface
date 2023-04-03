@@ -4,13 +4,12 @@ import SyntheticsReader from "abis/SyntheticsReader.json";
 import { getContract } from "config/contracts";
 import { useMulticall } from "lib/multicall";
 import { bigNumberify } from "lib/numbers";
-import { useEffect, useMemo, useState } from "react";
-import { OrdersData } from "./types";
+import { useEffect, useState } from "react";
 import { accountOrderListKey } from "config/dataStore";
+import { OrdersData } from "./types";
 
 type OrdersResult = {
-  ordersData: OrdersData;
-  isLoading: boolean;
+  ordersData?: OrdersData;
 };
 
 const DEFAULT_COUNT = 100;
@@ -22,7 +21,7 @@ export function useOrdersData(chainId: number): OrdersResult {
   const [startIndex, setStartIndex] = useState(0);
   const [endIndex, setEndIndex] = useState(DEFAULT_COUNT);
 
-  const { data, isLoading } = useMulticall(chainId, "useOrdersData", {
+  const { data } = useMulticall(chainId, "useOrdersData", {
     key: account ? [account, startIndex, endIndex] : null,
     request: () => ({
       orderStore: {
@@ -126,10 +125,7 @@ export function useOrdersData(chainId: number): OrdersResult {
     }
   }, [account, data?.count, data?.ordersData, endIndex]);
 
-  return useMemo(() => {
-    return {
-      ordersData,
-      isLoading,
-    };
-  }, [isLoading, ordersData]);
+  return {
+    ordersData,
+  };
 }

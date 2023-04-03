@@ -5,8 +5,7 @@ import { useTokenBalances } from "./useTokenBalances";
 import { useTokenRecentPrices } from "./useTokenRecentPricesData";
 
 type TokensDataResult = {
-  tokensData: TokensData;
-  isLoading: boolean;
+  tokensData?: TokensData;
 };
 
 export function useAvailableTokensData(chainId: number): TokensDataResult {
@@ -20,7 +19,6 @@ export function useAvailableTokensData(chainId: number): TokensDataResult {
 
 export function useTokensData(chainId: number, { tokenAddresses }: { tokenAddresses: string[] }): TokensDataResult {
   const tokenConfigs = getTokensMap(chainId);
-
   const { balancesData } = useTokenBalances(chainId, { tokenAddresses });
   const { pricesData } = useTokenRecentPrices(chainId);
 
@@ -29,8 +27,7 @@ export function useTokensData(chainId: number, { tokenAddresses }: { tokenAddres
   return useMemo(() => {
     if (!pricesData) {
       return {
-        tokensData: {},
-        isLoading: true,
+        tokensData: undefined,
       };
     }
 
@@ -51,7 +48,6 @@ export function useTokensData(chainId: number, { tokenAddresses }: { tokenAddres
         };
         return acc;
       }, {} as TokensData),
-      isLoading: false,
     };
   }, [tokenKeys, tokenConfigs, pricesData, balancesData]);
 }

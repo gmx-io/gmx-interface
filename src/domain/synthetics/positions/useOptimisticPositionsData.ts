@@ -15,7 +15,7 @@ import { hashedPositionKey } from "config/dataStore";
 const MAX_PENDING_UPDATE_AGE = 600 * 1000;
 
 export function useOptimisticPositionsData(chainId: number) {
-  const { positionsData, isLoading } = usePositions(chainId);
+  const { positionsData } = usePositions(chainId);
   const { positionDecreaseEvents, positionIncreaseEvents, pendingPositionsUpdates } = useSyntheticsEvents();
 
   const optimisticPositionsData: PositionsData = useMemo(() => {
@@ -85,7 +85,6 @@ export function useOptimisticPositionsData(chainId: number) {
 
   return {
     optimisticPositionsData,
-    isLoading,
   };
 }
 

@@ -32,7 +32,8 @@ export function MarketsList() {
   const isMobile = useMedia("(max-width: 1200px)");
 
   const indexTokensStats = useMemo(() => {
-    const markets = Object.values(marketsInfoData);
+    const markets = Object.values(marketsInfoData || {});
+
     const indexMap: {
       [address: string]: {
         token: TokenData;

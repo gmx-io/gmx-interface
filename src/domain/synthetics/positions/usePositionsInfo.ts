@@ -1,30 +1,35 @@
 import { useMemo } from "react";
+import { useMarketsInfo } from "../markets";
 import { PositionsInfoData } from "./types";
+import { useOptimisticPositionsData } from "./useOptimisticPositionsData";
 import { usePositionsConstants } from "./usePositionsConstants";
 import { getAggregatedPositionData } from "./utils";
-import { useOptimisticPositionsData } from "./useOptimisticPositionsData";
-import { useMarketsInfo } from "../markets";
 
 type PositionsInfoResult = {
-  positionsInfoData: PositionsInfoData;
+  positionsInfoData?: PositionsInfoData;
   isLoading: boolean;
 };
 
 export function usePositionsInfo(chainId: number, p: { showPnlInLeverage: boolean }): PositionsInfoResult {
   const { showPnlInLeverage } = p;
-
-  const { marketsInfoData, isLoading: isMarketsInfoLoading } = useMarketsInfo(chainId);
-  const { optimisticPositionsData, isLoading: isPositionsLoading } = useOptimisticPositionsData(chainId);
+  const { marketsInfoData } = useMarketsInfo(chainId);
+  const { optimisticPositionsData } = useOptimisticPositionsData(chainId);
   const { maxLeverage, minCollateralUsd } = usePositionsConstants(chainId);
 
   return useMemo(() => {
+    if (!marketsInfoData || !optimisticPositionsData) {
+      return {
+        isLoading: true,
+      };
+    }
+
     const positionKeys = Object.keys(optimisticPositionsData);
 
     return {
       positionsInfoData: positionKeys.reduce((acc: PositionsInfoData, positionKey: string) => {
         const position = getAggregatedPositionData(
           optimisticPositionsData,
-          marketsInfoData,
+          marketsInfoData || {},
           positionKey,
           p.showPnlInLeverage,
           maxLeverage
@@ -36,14 +41,7 @@ export function usePositionsInfo(chainId: number, p: { showPnlInLeverage: boolea
 
         return acc;
       }, {} as PositionsInfoData),
-      isLoading: isMarketsInfoLoading || isPositionsLoading,
+      isLoading: false,
     };
-  }, [
-    isMarketsInfoLoading,
-    isPositionsLoading,
-    marketsInfoData,
-    maxLeverage,
-    optimisticPositionsData,
-    p.showPnlInLeverage,
-  ]);
+  }, [marketsInfoData, maxLeverage, optimisticPositionsData, p.showPnlInLeverage]);
 }

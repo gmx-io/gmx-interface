@@ -18,10 +18,10 @@ import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { formatTokenAmount, formatTokenAmountWithUsd } from "lib/numbers";
 import { GmFees } from "../GmFees/GmFees";
-
 import Checkbox from "components/Checkbox/Checkbox";
-import "./GmConfirmationBox.scss";
 import { getByKey } from "lib/objects";
+
+import "./GmConfirmationBox.scss";
 
 type Props = {
   marketToken: TokenData;
@@ -98,6 +98,10 @@ export function GmConfirmationBox({
   const tokensToApprove = (function getTokensToApprove() {
     const addresses: string[] = [];
 
+    if (!tokensAllowanceData) {
+      return addresses;
+    }
+
     if (isDeposit) {
       if (
         longTokenAmount?.gt(0) &&
@@ -136,7 +140,7 @@ export function GmConfirmationBox({
 
   const operationText = isDeposit ? t`Deposit` : t`Withdrawal`;
 
-  const isAllowanceLoaded = Object.keys(tokensAllowanceData).length > 0;
+  const isAllowanceLoaded = Boolean(tokensAllowanceData);
 
   const submitButtonState = (function getSubmitButtonState() {
     if (payTokenAddresses.length > 0 && !isAllowanceLoaded) {

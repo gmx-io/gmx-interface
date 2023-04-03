@@ -22,7 +22,7 @@ type Props = {
 export function MarketPoolsPage(p: Props) {
   const { chainId } = useChainId();
 
-  const { marketsInfoData } = useMarketsInfo(chainId);
+  const { marketsInfoData = {} } = useMarketsInfo(chainId);
   const markets = Object.values(marketsInfoData);
 
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });

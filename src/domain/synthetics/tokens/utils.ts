@@ -6,8 +6,8 @@ import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { PRECISION, USD_DECIMALS, adjustForDecimals } from "lib/legacy";
 import { Bar } from "domain/tradingview/types";
 
-export function getTokenData(tokensData: TokensData, address: string | undefined, convertTo?: "wrapped" | "native") {
-  if (!address || !tokensData[address]) {
+export function getTokenData(tokensData?: TokensData, address?: string, convertTo?: "wrapped" | "native") {
+  if (!address || !tokensData?.[address]) {
     return undefined;
   }
 

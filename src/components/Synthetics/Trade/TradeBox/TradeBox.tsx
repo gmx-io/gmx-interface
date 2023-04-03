@@ -155,15 +155,15 @@ export function TradeBox(p: Props) {
 
   const { chainId } = useChainId();
   const { account } = useWeb3React();
-  const { tokensData, isLoading: isTokensLoading } = useAvailableTokensData(chainId);
+  const { tokensData } = useAvailableTokensData(chainId);
 
-  const { marketsInfoData, isLoading: isMarketsInfoLoading } = useMarketsInfo(chainId);
+  const { marketsInfoData } = useMarketsInfo(chainId);
 
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
   const { maxLeverage, minCollateralUsd } = usePositionsConstants(chainId);
 
-  const isDataLoading = isTokensLoading || isMarketsInfoLoading;
+  const isDataLoading = !tokensData || !marketsInfoData;
 
   const tradeTypeLabels = {
     [TradeType.Long]: t`Long`,
@@ -261,7 +261,7 @@ export function TradeBox(p: Props) {
     });
 
   const availableMarkets: MarketInfo[] = useMemo(() => {
-    if (!toTokenAddress) return [];
+    if (!toTokenAddress || !marketsInfoData) return [];
 
     let markets = Object.values(marketsInfoData);
 
@@ -627,7 +627,7 @@ export function TradeBox(p: Props) {
   })();
 
   const executionFee = useMemo(() => {
-    if (!gasLimits || !gasPrice) return undefined;
+    if (!tokensData || !gasLimits || !gasPrice) return undefined;
 
     let estimatedGas: BigNumber | undefined;
 

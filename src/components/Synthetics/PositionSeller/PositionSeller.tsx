@@ -36,6 +36,7 @@ import { useEffect, useMemo, useState } from "react";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import "components/Exchange/PositionSeller.css";
 import TokenSelector from "components/TokenSelector/TokenSelector";
+import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useGasLimits } from "domain/synthetics/fees/useGasLimits";
 import { getAvailableUsdLiquidityForCollateral, getTokenPoolType, useMarketsInfo } from "domain/synthetics/markets";
@@ -53,7 +54,6 @@ import { Token } from "domain/tokens";
 import { getByKey } from "lib/objects";
 import { OrderStatus } from "../OrderStatus/OrderStatus";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
-import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
 import "./PositionSeller.scss";
 
 function isEquivalentTokens(token1: Token, token2: Token) {
@@ -85,7 +85,7 @@ export function PositionSeller(p: Props) {
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
   const { maxLeverage, minCollateralUsd } = usePositionsConstants(chainId);
-  const infoTokens = adaptToV1InfoTokens(tokensData);
+  const infoTokens = adaptToV1InfoTokens(tokensData || {});
 
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
@@ -197,7 +197,7 @@ export function PositionSeller(p: Props) {
   const isNotEnoughReceiveTokenLiquidity = shouldSwap ? receiveTokenLiquidity?.lt(receiveUsd || 0) : false;
 
   const executionFee = useMemo(() => {
-    if (!gasLimits || !gasPrice) return undefined;
+    if (!gasLimits || !gasPrice || !tokensData) return undefined;
 
     const estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {
       swapPath: swapAmounts?.swapPathStats?.swapPath || [],
@@ -269,6 +269,7 @@ export function PositionSeller(p: Props) {
 
   function onSubmit() {
     if (
+      !tokensData ||
       !position?.indexToken ||
       !account ||
       !position ||

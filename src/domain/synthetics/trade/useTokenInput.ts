@@ -18,7 +18,7 @@ export type TokenInputState = {
 };
 
 export function useTokenInput(
-  tokensData: TokensData,
+  tokensData: TokensData | undefined,
   params: {
     tokenAddress?: string;
     priceType: "min" | "max";

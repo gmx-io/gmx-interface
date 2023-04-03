@@ -162,7 +162,7 @@ export function PositionEditor(p: Props) {
     isDeposit && tokenAllowance && depositInput.tokenAmount && depositInput.tokenAmount.gt(tokenAllowance);
 
   const executionFee = useMemo(() => {
-    if (!gasLimits || !gasPrice) return undefined;
+    if (!gasLimits || !gasPrice || !tokensData) return undefined;
 
     let estimatedGas: BigNumber;
     if (isDeposit) {
@@ -234,7 +234,7 @@ export function PositionEditor(p: Props) {
   }
 
   function onSubmit() {
-    if (!account || !executionFee?.feeTokenAmount || !acceptablePrice || !position?.indexToken) return;
+    if (!account || !tokensData || !executionFee?.feeTokenAmount || !acceptablePrice || !position?.indexToken) return;
 
     if (operation === Operation.Deposit) {
       createIncreaseOrderTxn(chainId, library, {

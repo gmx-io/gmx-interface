@@ -17,7 +17,7 @@ export function ClaimableCard(p: Props) {
   const { chainId } = useChainId();
   const { marketsInfoData } = useMarketsInfo(chainId);
 
-  const markets = Object.values(marketsInfoData);
+  const markets = Object.values(marketsInfoData || {});
 
   const totalClaimableFundingUsd = getTotalClaimableFundingUsd(markets);
 

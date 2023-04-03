@@ -6,20 +6,14 @@ import { convertTokenAddress, getToken } from "config/tokens";
 import { getMarketFullName } from "./utils";
 
 type MarketsResult = {
-  marketsData: MarketsData;
-  marketsAddresses: string[];
-  isLoading: boolean;
+  marketsData?: MarketsData;
+  marketsAddresses?: string[];
 };
 
 const MARKETS_COUNT = 100;
 
-const defaultValue = {
-  marketsData: {},
-  marketsAddresses: [],
-};
-
 export function useMarkets(chainId: number): MarketsResult {
-  const { data = defaultValue, isLoading } = useMulticall(chainId, "useMarketsData", {
+  const { data } = useMulticall(chainId, "useMarketsData", {
     key: [],
     request: () => ({
       reader: {
@@ -65,8 +59,7 @@ export function useMarkets(chainId: number): MarketsResult {
   });
 
   return {
-    marketsData: data.marketsData,
-    marketsAddresses: data.marketsAddresses,
-    isLoading,
+    marketsData: data?.marketsData,
+    marketsAddresses: data?.marketsAddresses,
   };
 }

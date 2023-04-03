@@ -103,11 +103,11 @@ export function SyntheticsPage(p: Props) {
   const [selectedOrdersKeys, setSelectedOrdersKeys] = useState<{ [key: string]: boolean }>({});
   const [isCancelOrdersProcessig, setIsCancelOrdersProcessig] = useState(false);
 
-  const { positionsInfoData, isLoading: isPositionsLoading } = usePositionsInfo(chainId, {
+  const { positionsInfoData = {}, isLoading: isPositionsLoading } = usePositionsInfo(chainId, {
     showPnlInLeverage: p.savedIsPnlInLeverage,
   });
 
-  const { aggregatedOrdersData, isLoading: isOrdersLoading } = useAggregatedOrdersData(chainId);
+  const { aggregatedOrdersData = {}, isLoading: isOrdersLoading } = useAggregatedOrdersData(chainId);
 
   const positionsCount = Object.keys(positionsInfoData).length;
   const ordersCount = Object.keys(aggregatedOrdersData).length;

@@ -26,7 +26,7 @@ export function ClaimModal(p: Props) {
   const { marketsInfoData } = useMarketsInfo(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
 
-  const markets = Object.values(marketsInfoData);
+  const markets = Object.values(marketsInfoData || {});
 
   const totalClaimableFundingUsd = getTotalClaimableFundingUsd(markets);
 

@@ -5,11 +5,8 @@ import { useMulticall } from "lib/multicall";
 import { TokensAllowanceData } from "./types";
 
 type TokenAllowanceResult = {
-  tokensAllowanceData: TokensAllowanceData;
-  isLoading: boolean;
+  tokensAllowanceData?: TokensAllowanceData;
 };
-
-const defaultValue = {};
 
 export function useTokensAllowanceData(
   chainId: number,
@@ -18,7 +15,7 @@ export function useTokensAllowanceData(
   const { spenderAddress, tokenAddresses } = p;
   const { account } = useWeb3React();
 
-  const { data, isLoading } = useMulticall(chainId, "useTokenAllowance", {
+  const { data } = useMulticall(chainId, "useTokenAllowance", {
     key:
       account && spenderAddress && tokenAddresses.length > 0
         ? [account, spenderAddress, tokenAddresses.join("-")]
@@ -51,7 +48,6 @@ export function useTokensAllowanceData(
   });
 
   return {
-    tokensAllowanceData: data || defaultValue,
-    isLoading,
+    tokensAllowanceData: data,
   };
 }

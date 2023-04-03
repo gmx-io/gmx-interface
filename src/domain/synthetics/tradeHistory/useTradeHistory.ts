@@ -12,11 +12,16 @@ import { RawTradeAction, TradeAction } from "./types";
 import { getByKey } from "lib/objects";
 import { useFixedAddreseses } from "../common/useFixedAddresses";
 
+export type TradeHistoryResult = {
+  tradeActions?: TradeAction[];
+  isLoading: boolean;
+};
+
 export function useTradeHistory(chainId: number, p: { pageIndex: number; pageSize: number }) {
   const { pageIndex, pageSize } = p;
   const { account } = useWeb3React();
-  const { marketsInfoData, isLoading: isMarketsLoading } = useMarketsInfo(chainId);
-  const { tokensData, isLoading: isTokensLoading } = useAvailableTokensData(chainId);
+  const { marketsInfoData } = useMarketsInfo(chainId);
+  const { tokensData } = useAvailableTokensData(chainId);
   const fixedAddresses = useFixedAddreseses(marketsInfoData, tokensData);
 
   const client = getSyntheticsGraphClient(chainId);
@@ -80,10 +85,8 @@ export function useTradeHistory(chainId: number, p: { pageIndex: number; pageSiz
     },
   });
 
-  const isTradesLoading = key && !error && !data;
-
   const tradeActions = useMemo(() => {
-    if (!data) return undefined;
+    if (!data || !marketsInfoData) return undefined;
 
     const wrappedToken = getWrappedToken(chainId);
 
@@ -191,6 +194,6 @@ export function useTradeHistory(chainId: number, p: { pageIndex: number; pageSiz
 
   return {
     tradeActions,
-    isLoading: isMarketsLoading || isTokensLoading || isTradesLoading,
+    isLoading: key && !error && !data,
   };
 }

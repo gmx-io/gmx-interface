@@ -12,7 +12,7 @@ export function useSwapRoute(p: { fromTokenAddress?: string; toTokenAddress?: st
   const wrappedToken = getWrappedToken(chainId);
 
   const graph = useMemo(() => {
-    return getMarketsGraph(Object.values(marketsInfoData));
+    return getMarketsGraph(Object.values(marketsInfoData || {}));
   }, [marketsInfoData]);
 
   const paths = useMemo(() => {
@@ -34,7 +34,7 @@ export function useSwapRoute(p: { fromTokenAddress?: string; toTokenAddress?: st
 
   const findSwapPath = useCallback(
     (usdIn: BigNumber, opts: { disablePriceImpact?: boolean } = {}) => {
-      if (!paths || !p.fromTokenAddress || !p.toTokenAddress) {
+      if (!paths || !p.fromTokenAddress || !p.toTokenAddress || !marketsInfoData) {
         return undefined;
       }
 

@@ -9,29 +9,27 @@ import { USD_DECIMALS } from "lib/legacy";
 import { useMulticall } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { useMemo } from "react";
 import { useMarkets } from "./useMarkets";
 import { getContractMarketPrices } from "./utils";
 
 type MarketTokensDataResult = {
-  marketTokensData: TokensData;
-  isLoading: boolean;
+  marketTokensData?: TokensData;
 };
 
 export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }): MarketTokensDataResult {
   const { isDeposit } = p;
   const { account } = useWeb3React();
-  const { tokensData, isLoading: isTokensLoading } = useAvailableTokensData(chainId);
-  const { marketsData, marketsAddresses, isLoading: isMarketsLoading } = useMarkets(chainId);
+  const { tokensData } = useAvailableTokensData(chainId);
+  const { marketsData, marketsAddresses } = useMarkets(chainId);
 
-  const isDataLoaded = !isTokensLoading && !isMarketsLoading && marketsAddresses.length > 0;
+  const isDataLoaded = tokensData && marketsAddresses?.length;
 
-  const { data: marketTokensData, isLoading } = useMulticall(chainId, "useMarketTokensData", {
+  const { data } = useMulticall(chainId, "useMarketTokensData", {
     key: isDataLoaded ? [account, marketsAddresses.join("-")] : undefined,
     request: () =>
-      marketsAddresses.reduce((requests, marketAddress) => {
+      marketsAddresses!.reduce((requests, marketAddress) => {
         const market = getByKey(marketsData, marketAddress)!;
-        const marketPrices = getContractMarketPrices(tokensData, market);
+        const marketPrices = getContractMarketPrices(tokensData!, market);
 
         if (marketPrices) {
           const marketProps = {
@@ -96,7 +94,7 @@ export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }):
         return requests;
       }, {}),
     parseResponse: (res) =>
-      marketsAddresses.reduce((marketTokensMap: TokensData, marketAddress: string) => {
+      marketsAddresses!.reduce((marketTokensMap: TokensData, marketAddress: string) => {
         const pricesData = res[`${marketAddress}-prices`];
         const tokenData = res[`${marketAddress}-tokenData`];
         const tokenConfig = getTokenBySymbol(chainId, "GM");
@@ -119,10 +117,7 @@ export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }):
       }, {} as TokensData),
   });
 
-  return useMemo(() => {
-    return {
-      marketTokensData: marketTokensData || {},
-      isLoading,
-    };
-  }, [isLoading, marketTokensData]);
+  return {
+    marketTokensData: data,
+  };
 }

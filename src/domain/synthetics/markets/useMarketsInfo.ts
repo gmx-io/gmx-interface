@@ -33,28 +33,25 @@ import { getContractMarketPrices } from "./utils";
 import { bigNumberify } from "lib/numbers";
 
 export type MarketsInfoResult = {
-  marketsInfoData: MarketsInfoData;
-  isLoading: boolean;
+  marketsInfoData?: MarketsInfoData;
 };
-
-const defaultValue = {};
 
 export function useMarketsInfo(chainId: number): MarketsInfoResult {
   const { account } = useWeb3React();
-  const { marketsData, marketsAddresses, isLoading: isMarketsLoading } = useMarkets(chainId);
-  const { tokensData, isLoading: isTokensLoading } = useAvailableTokensData(chainId);
+  const { marketsData, marketsAddresses } = useMarkets(chainId);
+  const { tokensData } = useAvailableTokensData(chainId);
   const dataStoreAddress = getContract(chainId, "DataStore");
 
-  const isDepencenciesLoading = isMarketsLoading || isTokensLoading;
+  const isDepencenciesLoading = !marketsAddresses || !tokensData;
 
-  const { data = defaultValue, isLoading } = useMulticall(chainId, "useMarketsInfo", {
+  const { data } = useMulticall(chainId, "useMarketsInfo", {
     key: !isDepencenciesLoading &&
       marketsAddresses.length > 0 && [marketsAddresses.join("-"), dataStoreAddress, account],
 
     request: () =>
-      marketsAddresses.reduce((request, marketAddress) => {
+      marketsAddresses!.reduce((request, marketAddress) => {
         const market = getByKey(marketsData, marketAddress)!;
-        const marketPrices = getContractMarketPrices(tokensData, market)!;
+        const marketPrices = getContractMarketPrices(tokensData!, market)!;
 
         return Object.assign(request, {
           [`${marketAddress}-reader`]: {
@@ -298,7 +295,7 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
         });
       }, {}),
     parseResponse: (res) => {
-      return marketsAddresses.reduce((acc: MarketsInfoData, marketAddress) => {
+      return marketsAddresses!.reduce((acc: MarketsInfoData, marketAddress) => {
         const readerValues = res[`${marketAddress}-reader`];
         const dataStoreValues = res[`${marketAddress}-dataStore`];
 
@@ -333,9 +330,9 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
         ] = funding;
 
         const market = getByKey(marketsData, marketAddress)!;
-        const longToken = getByKey(tokensData, market.longTokenAddress)!;
-        const shortToken = getByKey(tokensData, market.shortTokenAddress)!;
-        const indexToken = getByKey(tokensData, market.indexTokenAddress)!;
+        const longToken = getByKey(tokensData!, market.longTokenAddress)!;
+        const shortToken = getByKey(tokensData!, market.shortTokenAddress)!;
+        const indexToken = getByKey(tokensData!, market.indexTokenAddress)!;
 
         acc[marketAddress] = {
           ...market,
@@ -408,6 +405,5 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
 
   return {
     marketsInfoData: data,
-    isLoading: isDepencenciesLoading || isLoading,
   };
 }

@@ -6,21 +6,27 @@ import { useOrdersData } from "./useOrdersData";
 import { getAggregatedOrderData } from "./utils";
 
 type AggregatedOrdersDataResult = {
-  aggregatedOrdersData: AggregatedOrdersData;
+  aggregatedOrdersData?: AggregatedOrdersData;
   isLoading: boolean;
 };
 
 export function useAggregatedOrdersData(chainId: number): AggregatedOrdersDataResult {
-  const { tokensData, isLoading: isTokensLoading } = useAvailableTokensData(chainId);
-  const { marketsInfoData, isLoading: isMarketsInfoLoading } = useMarketsInfo(chainId);
-  const { ordersData, isLoading: isOrdersLoading } = useOrdersData(chainId);
+  const { tokensData } = useAvailableTokensData(chainId);
+  const { marketsInfoData } = useMarketsInfo(chainId);
+  const { ordersData } = useOrdersData(chainId);
 
   return useMemo(() => {
+    if (!marketsInfoData || !ordersData || !tokensData) {
+      return {
+        isLoading: true,
+      };
+    }
+
     const orderKeys = Object.keys(ordersData);
 
     return {
       aggregatedOrdersData: orderKeys.reduce((acc: AggregatedOrdersData, key) => {
-        const aggregatedOrder = getAggregatedOrderData(ordersData, marketsInfoData, tokensData, key);
+        const aggregatedOrder = getAggregatedOrderData(ordersData, marketsInfoData || {}, tokensData, key);
 
         if (aggregatedOrder) {
           acc[key] = aggregatedOrder;
@@ -28,7 +34,7 @@ export function useAggregatedOrdersData(chainId: number): AggregatedOrdersDataRe
 
         return acc;
       }, {} as AggregatedOrdersData),
-      isLoading: isTokensLoading || isMarketsInfoLoading || isOrdersLoading,
+      isLoading: false,
     };
-  }, [isMarketsInfoLoading, isOrdersLoading, isTokensLoading, marketsInfoData, ordersData, tokensData]);
+  }, [marketsInfoData, ordersData, tokensData]);
 }
