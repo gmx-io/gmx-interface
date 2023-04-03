@@ -11,7 +11,7 @@ import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "lib/legacy";
 import { applyFactor, expandDecimals, formatAmount, formatUsd, roundUpDivision } from "lib/numbers";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd, getPositionFee } from "../fees";
 import { TokenPrices, convertToUsd } from "../tokens";
-import { AggregatedPositionData, Position, PositionsData } from "./types";
+import { PositionInfo, Position, PositionsData } from "./types";
 
 export function getPosition(positionsData: PositionsData, positionKey?: string) {
   if (!positionKey) return undefined;
@@ -37,7 +37,7 @@ export function getAggregatedPositionData(
   positionKey?: string,
   savedIsPnlInLeverage?: boolean,
   maxLeverage?: BigNumber
-): AggregatedPositionData | undefined {
+): PositionInfo | undefined {
   if (!positionKey) return undefined;
 
   const rawPosition = getPosition(positionsData, positionKey);
@@ -90,10 +90,10 @@ export function getAggregatedPositionData(
 
   const pendingFundingFeesUsd =
     collateralPrice && collateralToken
-      ? convertToUsd(position.pendingFundingFees.fundingFeeAmount, collateralToken.decimals, collateralPrice)
+      ? convertToUsd(position.fundingFeeAmount, collateralToken.decimals, collateralPrice)
       : undefined;
 
-  const totalPendingFeesUsd = position.pendingBorrowingFees.sub(
+  const totalPendingFeesUsd = position.pendingBorrowingFeesUsd.sub(
     pendingFundingFeesUsd?.lt(0) ? pendingFundingFeesUsd : 0
   );
 
@@ -118,7 +118,7 @@ export function getAggregatedPositionData(
     sizeUsd: position.sizeInUsd,
     collateralUsd,
     pnl: savedIsPnlInLeverage ? pnl : undefined,
-    pendingBorrowingFeesUsd: position.pendingBorrowingFees,
+    pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
     pendingFundingFeesUsd: pendingFundingFeesUsd,
   });
 
@@ -128,13 +128,14 @@ export function getAggregatedPositionData(
     indexPrice: markPrice,
     positionFeeFactor: market.positionFeeFactor,
     maxPriceImpactFactor: market.maxPositionImpactFactorForLiquidations,
-    pendingBorrowingFeesUsd: position.pendingBorrowingFees,
+    pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
     pendingFundingFeesUsd: pendingFundingFeesUsd,
     pnl: pnl,
     isLong: position.isLong,
     maxLeverage,
   });
 
+  // @ts-ignore
   return {
     ...position,
     marketName,
@@ -142,21 +143,35 @@ export function getAggregatedPositionData(
     indexToken,
     collateralToken,
     pnlToken,
+    // @ts-ignore
     currentValueUsd,
+    // @ts-ignore
     collateralUsd,
+    // @ts-ignore
     collateralUsdAfterFees,
+    // @ts-ignore
     hasLowCollateral,
+    // @ts-ignore
     markPrice,
+    // @ts-ignore
     pnl,
+    // @ts-ignore
     pnlPercentage,
+    // @ts-ignore
     pnlAfterFees,
     pnlAfterFeesPercentage,
     netValue,
+    // @ts-ignore
     leverage,
+    // @ts-ignore
     liqPrice,
+    // @ts-ignore
     entryPrice,
+    // @ts-ignore
     closingFeeUsd,
+    // @ts-ignore
     pendingFundingFeesUsd,
+    // @ts-ignore
     borrowingFeeRateUsdPerDay,
     fundingFeeRateUsdPerDay,
   };

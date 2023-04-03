@@ -22,7 +22,7 @@ import {
   getAcceptablePrice,
 } from "domain/synthetics/orders";
 import {
-  AggregatedPositionData,
+  PositionInfo,
   formatLeverage,
   getLeverage,
   getLiquidationPrice,
@@ -49,7 +49,7 @@ import "./PositionEditor.scss";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 
 type Props = {
-  position?: AggregatedPositionData;
+  position?: PositionInfo;
   savedIsPnlInLeverage: boolean;
   setPendingTxns: (txns: any) => void;
   onClose: () => void;
@@ -122,14 +122,14 @@ export function PositionEditor(p: Props) {
   const nextLeverageExcludingPnl = getLeverage({
     sizeUsd: position?.sizeInUsd,
     collateralUsd: nextCollateralUsd,
-    pendingBorrowingFeesUsd: position?.pendingBorrowingFees,
+    pendingBorrowingFeesUsd: position?.pendingBorrowingFeesUsd,
     pendingFundingFeesUsd: position?.pendingFundingFeesUsd,
   });
 
   const nextLeverage = getLeverage({
     sizeUsd: position?.sizeInUsd,
     collateralUsd: nextCollateralUsd,
-    pendingBorrowingFeesUsd: position?.pendingBorrowingFees,
+    pendingBorrowingFeesUsd: position?.pendingBorrowingFeesUsd,
     pendingFundingFeesUsd: position?.pendingFundingFeesUsd,
     pnl: savedIsPnlInLeverage ? position?.pnl : undefined,
   });
@@ -139,7 +139,7 @@ export function PositionEditor(p: Props) {
     collateralUsd: nextCollateralUsd,
     indexPrice: position?.markPrice,
     isLong: position?.isLong,
-    pendingBorrowingFeesUsd: position?.pendingBorrowingFees,
+    pendingBorrowingFeesUsd: position?.pendingBorrowingFeesUsd,
     pendingFundingFeesUsd: position?.pendingFundingFeesUsd,
     positionFeeFactor: position?.market?.positionFeeFactor,
   });
@@ -399,14 +399,14 @@ export function PositionEditor(p: Props) {
             }
           />
 
-          {position?.pendingBorrowingFees?.gt(0) && withdrawUsd?.gt(0) && (
+          {position?.pendingBorrowingFeesUsd?.gt(0) && withdrawUsd?.gt(0) && (
             <ExchangeInfoRow
               label={t`Borrow Fee`}
               value={
                 <Tooltip
                   handle={
                     <ValueTransition
-                      from={formatUsd(position?.pendingBorrowingFees) || "..."}
+                      from={formatUsd(position?.pendingBorrowingFeesUsd) || "..."}
                       to={formatUsd(BigNumber.from(0))}
                     />
                   }

@@ -1,13 +1,13 @@
 import { Trans, t } from "@lingui/macro";
 import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
 import { AggregatedOrdersData } from "domain/synthetics/orders";
-import { AggregatedPositionsData } from "domain/synthetics/positions";
+import { PositionsInfoData } from "domain/synthetics/positions";
 
 type Props = {
   onSelectPositionClick: (key: string) => void;
   onClosePositionClick: (key: string) => void;
   onEditCollateralClick: (key: string) => void;
-  positionsData: AggregatedPositionsData;
+  positionsData: PositionsInfoData;
   ordersData: AggregatedOrdersData;
   savedIsPnlInLeverage: boolean;
   isLoading: boolean;

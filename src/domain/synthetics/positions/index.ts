@@ -1,3 +1,3 @@
 export * from "./types";
-export * from "./usePositionsData";
+export * from "./usePositions";
 export * from "./utils";

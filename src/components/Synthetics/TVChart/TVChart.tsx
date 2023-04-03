@@ -4,7 +4,7 @@ import { Dropdown, DropdownOption } from "components/Dropdown/Dropdown";
 import TVChartContainer, { ChartLine } from "components/TVChartContainer/TVChartContainer";
 import { convertTokenAddress, isChartAvailabeForToken } from "config/tokens";
 import { AggregatedOrdersData, isIncreaseOrder, isSwapOrder } from "domain/synthetics/orders";
-import { AggregatedPositionsData } from "domain/synthetics/positions";
+import { PositionsInfoData } from "domain/synthetics/positions";
 import { getCandlesDelta, getMidPrice, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useLastCandles } from "domain/synthetics/tokens/useLastCandles";
 import { Token } from "domain/tokens";
@@ -20,7 +20,7 @@ import "./TVChart.scss";
 
 export type Props = {
   ordersData: AggregatedOrdersData;
-  positionsData: AggregatedPositionsData;
+  positionsData: PositionsInfoData;
   savedShouldShowPositionLines: boolean;
   chartTokenAddress?: string;
   onSelectChartTokenAddress: (tokenAddress: string) => void;

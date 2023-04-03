@@ -11,7 +11,7 @@ import { KEEP_LEVERAGE_FOR_DECREASE_KEY, SLIPPAGE_BPS_KEY } from "config/localSt
 import { convertTokenAddress } from "config/tokens";
 import { estimateExecuteDecreaseOrderGasLimit, getExecutionFee, useGasPrice } from "domain/synthetics/fees";
 import { DecreasePositionSwapType, OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
-import { AggregatedPositionData, formatLeverage, formatPnl, getMarkPrice } from "domain/synthetics/positions";
+import { PositionInfo, formatLeverage, formatPnl, getMarkPrice } from "domain/synthetics/positions";
 import { adaptToV1InfoTokens, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
@@ -65,7 +65,7 @@ function isEquivalentTokens(token1: Token, token2: Token) {
 }
 
 type Props = {
-  position?: AggregatedPositionData;
+  position?: PositionInfo;
   savedIsPnlInLeverage: boolean;
   onClose: () => void;
   setPendingTxns: (txns: any) => void;
@@ -178,7 +178,7 @@ export function PositionSeller(p: Props) {
     sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
     initialCollateralUsd: receiveUsd,
     positionFeeUsd: decreaseAmounts?.positionFeeUsd,
-    borrowingFeeUsd: position?.pendingBorrowingFees,
+    borrowingFeeUsd: position?.pendingBorrowingFeesUsd,
     fundingFeeDeltaUsd: position?.pendingFundingFeesUsd,
   });
 

@@ -1,7 +1,7 @@
 import { getPositionFee, getPriceImpactForPosition } from "domain/synthetics/fees";
 import { MarketInfo } from "domain/synthetics/markets";
 import { getAcceptablePrice } from "domain/synthetics/orders";
-import { AggregatedPositionData, getLeverage, getLiquidationPrice, getMarkPrice } from "domain/synthetics/positions";
+import { PositionInfo, getLeverage, getLiquidationPrice, getMarkPrice } from "domain/synthetics/positions";
 import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";
@@ -20,7 +20,7 @@ export function getIncreasePositionTradeParams(p: {
   isLong: boolean;
   leverage?: BigNumber;
   triggerPrice?: BigNumber;
-  existingPosition?: AggregatedPositionData;
+  existingPosition?: PositionInfo;
   showPnlInLeverage?: boolean;
   isLimit?: boolean;
   allowedSlippage?: number;
@@ -71,7 +71,7 @@ export function getIncreasePositionTradeParams(p: {
 
 export function getNextPositionValuesForIncreaseTrade(p: {
   marketInfo: MarketInfo;
-  existingPosition?: AggregatedPositionData;
+  existingPosition?: PositionInfo;
   sizeDeltaUsd: BigNumber;
   collateralDeltaUsd: BigNumber;
   showPnlInLeverage?: boolean;
@@ -90,7 +90,7 @@ export function getNextPositionValuesForIncreaseTrade(p: {
     sizeUsd: nextSizeUsd,
     collateralUsd: nextCollateralUsd,
     pnl: p.showPnlInLeverage ? p.existingPosition?.pnl : undefined,
-    pendingBorrowingFeesUsd: p.existingPosition?.pendingBorrowingFees, // deducted on order
+    pendingBorrowingFeesUsd: p.existingPosition?.pendingBorrowingFeesUsd, // deducted on order
     pendingFundingFeesUsd: p.existingPosition?.pendingFundingFeesUsd, // deducted on order
   });
 
@@ -100,7 +100,7 @@ export function getNextPositionValuesForIncreaseTrade(p: {
     indexPrice: p.entryMarkPrice,
     positionFeeFactor: p.marketInfo.positionFeeFactor,
     maxPriceImpactFactor: p.marketInfo?.maxPositionImpactFactorForLiquidations,
-    pendingBorrowingFeesUsd: p.existingPosition?.pendingBorrowingFees, // deducted on order
+    pendingBorrowingFeesUsd: p.existingPosition?.pendingBorrowingFeesUsd, // deducted on order
     pendingFundingFeesUsd: p.existingPosition?.pendingFundingFeesUsd, // deducted on order
     pnl: p.existingPosition?.pnl,
     isLong: p.isLong,

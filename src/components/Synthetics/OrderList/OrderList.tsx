@@ -3,7 +3,7 @@ import { useWeb3React } from "@web3-react/core";
 import Checkbox from "components/Checkbox/Checkbox";
 import { AggregatedOrdersData, isLimitOrder, isTriggerDecreaseOrder } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
-import { AggregatedPositionsData } from "domain/synthetics/positions";
+import { PositionsInfoData } from "domain/synthetics/positions";
 import { useChainId } from "lib/chains";
 import { Dispatch, SetStateAction, useState } from "react";
 import { OrderEditor } from "../OrderEditor/OrderEditor";
@@ -14,7 +14,7 @@ type Props = {
   ordersData: AggregatedOrdersData;
   setSelectedOrdersKeys?: Dispatch<SetStateAction<{ [key: string]: boolean }>>;
   selectedOrdersKeys?: { [key: string]: boolean };
-  positionsData: AggregatedPositionsData;
+  positionsData: PositionsInfoData;
   isLoading: boolean;
   setPendingTxns: (txns: any) => void;
 };

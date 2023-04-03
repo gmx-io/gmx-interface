@@ -5,16 +5,17 @@ import {
   useSyntheticsEvents,
 } from "context/SyntheticsEvents";
 import { uniq } from "lodash";
-import { usePositionsData } from "./usePositionsData";
+import { usePositions } from "./usePositions";
 import { Position, PositionsData } from "./types";
 import { BigNumber } from "ethers";
 import { parsePositionKey } from "./utils";
 import { useMemo } from "react";
+import { hashedPositionKey } from "config/dataStore";
 
 const MAX_PENDING_UPDATE_AGE = 600 * 1000;
 
 export function useOptimisticPositionsData(chainId: number) {
-  const { positionsData, isLoading } = usePositionsData(chainId);
+  const { positionsData, isLoading } = usePositions(chainId);
   const { positionDecreaseEvents, positionIncreaseEvents, pendingPositionsUpdates } = useSyntheticsEvents();
 
   const optimisticPositionsData: PositionsData = useMemo(() => {
@@ -116,6 +117,7 @@ function getPendingPosition(pendingUpdate: PendingPositionUpdate): Position {
 
   return {
     key: pendingUpdate.positionKey,
+    contractKey: hashedPositionKey(account, market, collateralToken, isLong),
     account,
     marketAddress: market,
     collateralTokenAddress: collateralToken,
@@ -126,19 +128,18 @@ function getPendingPosition(pendingUpdate: PendingPositionUpdate): Position {
     increasedAtBlock: pendingUpdate.updatedAtBlock,
     decreasedAtBlock: BigNumber.from(0),
     borrowingFactor: BigNumber.from(0),
-    pendingBorrowingFees: BigNumber.from(0),
+    pendingBorrowingFeesUsd: BigNumber.from(0),
     longTokenFundingAmountPerSize: BigNumber.from(0),
     shortTokenFundingAmountPerSize: BigNumber.from(0),
     data: "0x",
-    pendingFundingFees: {
-      fundingFeeAmount: BigNumber.from(0),
-      claimableLongTokenAmount: BigNumber.from(0),
-      claimableShortTokenAmount: BigNumber.from(0),
-      latestLongTokenFundingAmountPerSize: BigNumber.from(0),
-      latestShortTokenFundingAmountPerSize: BigNumber.from(0),
-      hasPendingLongTokenFundingFee: false,
-      hasPendingShortTokenFundingFee: false,
-    },
+    fundingFeeAmount: BigNumber.from(0),
+    claimableLongTokenAmount: BigNumber.from(0),
+    claimableShortTokenAmount: BigNumber.from(0),
+    latestLongTokenFundingAmountPerSize: BigNumber.from(0),
+    latestShortTokenFundingAmountPerSize: BigNumber.from(0),
+    hasPendingLongTokenFundingFee: false,
+    hasPendingShortTokenFundingFee: false,
+
     isOpening: true,
     pendingUpdate: pendingUpdate,
   };

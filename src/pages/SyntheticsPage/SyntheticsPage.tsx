@@ -22,8 +22,8 @@ import { getToken } from "config/tokens";
 import { useMarkets } from "domain/synthetics/markets";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useAggregatedOrdersData } from "domain/synthetics/orders/useAggregatedOrdersData";
-import { AggregatedPositionData, getPosition, getPositionKey } from "domain/synthetics/positions";
-import { useAggregatedPositionsData } from "domain/synthetics/positions/useAggregatedPositionsData";
+import { PositionInfo, getPosition, getPositionKey } from "domain/synthetics/positions";
+import { usePositionsInfo } from "domain/synthetics/positions/usePositionsInfo";
 import { getTradeFlags, useAvailableSwapOptions } from "domain/synthetics/trade";
 import { TradeMode, TradeType } from "domain/synthetics/trade/types";
 import { useChainId } from "lib/chains";
@@ -103,23 +103,23 @@ export function SyntheticsPage(p: Props) {
   const [selectedOrdersKeys, setSelectedOrdersKeys] = useState<{ [key: string]: boolean }>({});
   const [isCancelOrdersProcessig, setIsCancelOrdersProcessig] = useState(false);
 
-  const { aggregatedPositionsData, isLoading: isPositionsLoading } = useAggregatedPositionsData(chainId, {
-    savedIsPnlInLeverage: p.savedIsPnlInLeverage,
+  const { positionsInfoData, isLoading: isPositionsLoading } = usePositionsInfo(chainId, {
+    showPnlInLeverage: p.savedIsPnlInLeverage,
   });
 
   const { aggregatedOrdersData, isLoading: isOrdersLoading } = useAggregatedOrdersData(chainId);
 
-  const positionsCount = Object.keys(aggregatedPositionsData).length;
+  const positionsCount = Object.keys(positionsInfoData).length;
   const ordersCount = Object.keys(aggregatedOrdersData).length;
   const selectedOrdersKeysArr = Object.keys(selectedOrdersKeys).filter((key) => selectedOrdersKeys[key]);
 
   const selectedPosition = useMemo(() => {
     const positionKey = getPositionKey(account, marketAddress, collateralAddress, tradeType === TradeType.Long);
-    return getPosition(aggregatedPositionsData, positionKey);
-  }, [account, aggregatedPositionsData, collateralAddress, marketAddress, tradeType]);
+    return getByKey(positionsInfoData, positionKey);
+  }, [account, positionsInfoData, collateralAddress, marketAddress, tradeType]);
 
-  const closingPosition = getPosition(aggregatedPositionsData, closingPositionKey);
-  const editingPosition = getPosition(aggregatedPositionsData, editingPositionKey);
+  const closingPosition = getByKey(positionsInfoData, closingPositionKey);
+  const editingPosition = getByKey(positionsInfoData, editingPositionKey);
 
   function onCancelOrdersClick() {
     setIsCancelOrdersProcessig(true);
@@ -130,7 +130,7 @@ export function SyntheticsPage(p: Props) {
   }
 
   function onSelectPosition(positionKey: string) {
-    const position = getPosition(aggregatedPositionsData, positionKey) as AggregatedPositionData;
+    const position = getPosition(positionsInfoData, positionKey) as PositionInfo;
 
     if (!position) return;
 
@@ -164,7 +164,7 @@ export function SyntheticsPage(p: Props) {
           <TVChart
             savedShouldShowPositionLines={p.savedShouldShowPositionLines}
             ordersData={aggregatedOrdersData}
-            positionsData={aggregatedPositionsData}
+            positionsData={positionsInfoData}
             chartTokenAddress={chatTokenAddress}
             availableTokens={
               tradeType === TradeType.Swap && chatTokenAddress
@@ -215,7 +215,7 @@ export function SyntheticsPage(p: Props) {
 
             {listSection === ListSection.Positions && (
               <PositionList
-                positionsData={aggregatedPositionsData}
+                positionsData={positionsInfoData}
                 ordersData={aggregatedOrdersData}
                 isLoading={isPositionsLoading}
                 savedIsPnlInLeverage={p.savedIsPnlInLeverage}
@@ -228,7 +228,7 @@ export function SyntheticsPage(p: Props) {
             )}
             {listSection === ListSection.Orders && (
               <OrderList
-                positionsData={aggregatedPositionsData}
+                positionsData={positionsInfoData}
                 selectedOrdersKeys={selectedOrdersKeys}
                 setSelectedOrdersKeys={setSelectedOrdersKeys}
                 ordersData={aggregatedOrdersData}
@@ -254,7 +254,7 @@ export function SyntheticsPage(p: Props) {
               shouldDisableValidation={p.shouldDisableValidation}
               existingPosition={selectedPosition}
               ordersData={aggregatedOrdersData}
-              positionsData={aggregatedPositionsData}
+              positionsData={positionsInfoData}
               onSelectTradeType={setTradeType}
               onSelectTradeMode={setTradeMode}
               onSelectFromTokenAddress={setFromTokenAddress}
@@ -280,7 +280,7 @@ export function SyntheticsPage(p: Props) {
           </div>
           {listSection === ListSection.Positions && (
             <PositionList
-              positionsData={aggregatedPositionsData}
+              positionsData={positionsInfoData}
               ordersData={aggregatedOrdersData}
               savedIsPnlInLeverage={p.savedIsPnlInLeverage}
               isLoading={isPositionsLoading}
@@ -293,7 +293,7 @@ export function SyntheticsPage(p: Props) {
           )}
           {listSection === ListSection.Orders && (
             <OrderList
-              positionsData={aggregatedPositionsData}
+              positionsData={positionsInfoData}
               ordersData={aggregatedOrdersData}
               isLoading={isOrdersLoading}
               selectedOrdersKeys={selectedOrdersKeys}

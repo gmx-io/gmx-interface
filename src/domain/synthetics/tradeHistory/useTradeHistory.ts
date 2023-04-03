@@ -10,12 +10,14 @@ import useSWR from "swr";
 import { getToTokenFromSwapPath } from "../orders";
 import { RawTradeAction, TradeAction } from "./types";
 import { getByKey } from "lib/objects";
+import { useFixedAddreseses } from "../common/useFixedAddresses";
 
 export function useTradeHistory(chainId: number, p: { pageIndex: number; pageSize: number }) {
   const { pageIndex, pageSize } = p;
   const { account } = useWeb3React();
   const { marketsInfoData, isLoading: isMarketsLoading } = useMarketsInfo(chainId);
   const { tokensData, isLoading: isTokensLoading } = useAvailableTokensData(chainId);
+  const fixedAddresses = useFixedAddreseses(marketsInfoData, tokensData);
 
   const client = getSyntheticsGraphClient(chainId);
 
@@ -82,14 +84,6 @@ export function useTradeHistory(chainId: number, p: { pageIndex: number; pageSiz
 
   const tradeActions = useMemo(() => {
     if (!data) return undefined;
-
-    const fixedAddresses = Object.keys(marketsInfoData)
-      .concat(Object.keys(tokensData))
-      .reduce((acc, address) => {
-        acc[address.toLowerCase()] = address;
-
-        return acc;
-      }, {});
 
     const wrappedToken = getWrappedToken(chainId);
 
@@ -193,7 +187,7 @@ export function useTradeHistory(chainId: number, p: { pageIndex: number; pageSiz
         return tradeAction;
       })
       .filter(Boolean) as TradeAction[];
-  }, [chainId, data, marketsInfoData, tokensData]);
+  }, [chainId, data, fixedAddresses, marketsInfoData, tokensData]);
 
   return {
     tradeActions,

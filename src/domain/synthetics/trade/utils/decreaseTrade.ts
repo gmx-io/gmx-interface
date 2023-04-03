@@ -1,7 +1,7 @@
 import { getPositionFee, getPriceImpactForPosition } from "domain/synthetics/fees";
 import { Market, MarketInfo } from "domain/synthetics/markets";
 import { getAcceptablePrice } from "domain/synthetics/orders";
-import { AggregatedPositionData, getLeverage, getLiquidationPrice } from "domain/synthetics/positions";
+import { PositionInfo, getLeverage, getLiquidationPrice } from "domain/synthetics/positions";
 import { TokenData, convertToTokenAmount } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { DUST_USD } from "lib/legacy";
@@ -13,7 +13,7 @@ export function getDecreasePositionTradeParams(p: {
   marketInfo: MarketInfo;
   collateralToken: TokenData;
   receiveToken: TokenData;
-  existingPosition?: AggregatedPositionData;
+  existingPosition?: PositionInfo;
   sizeDeltaUsd?: BigNumber;
   triggerPrice?: BigNumber;
   keepLeverage?: boolean;
@@ -47,7 +47,7 @@ export function getDecreasePositionTradeParams(p: {
     sizeDeltaUsd: decreasePositionAmounts.sizeDeltaUsd,
     positionFeeUsd: decreasePositionAmounts.positionFeeUsd,
     positionPriceImpactDeltaUsd: !p.isTrigger ? decreasePositionAmounts.positionPriceImpactDeltaUsd : undefined,
-    borrowingFeeUsd: p.existingPosition?.pendingBorrowingFees,
+    borrowingFeeUsd: p.existingPosition?.pendingBorrowingFeesUsd,
     fundingFeeDeltaUsd: p.existingPosition?.pendingFundingFeesUsd,
   });
 
@@ -65,7 +65,7 @@ export function getDecreasePositionAmounts(p: {
   marketInfo: MarketInfo;
   collateralToken?: TokenData;
   receiveToken?: TokenData;
-  existingPosition?: AggregatedPositionData;
+  existingPosition?: PositionInfo;
   sizeDeltaUsd?: BigNumber;
   triggerPrice?: BigNumber;
   keepLeverage?: boolean;
@@ -135,7 +135,7 @@ export function getDecreasePositionAmounts(p: {
   let pnlDelta: BigNumber | undefined = undefined;
 
   if (p.existingPosition) {
-    const { pendingBorrowingFees, pendingFundingFeesUsd } = p.existingPosition || {};
+    const { pendingBorrowingFeesUsd: pendingBorrowingFees, pendingFundingFeesUsd } = p.existingPosition || {};
 
     collateralDeltaUsd = BigNumber.from(0);
 
@@ -207,7 +207,7 @@ export function getDecreasePositionAmounts(p: {
 
 export function getNextPositionValuesForDecreaseTrade(p: {
   marketInfo?: MarketInfo;
-  existingPosition?: AggregatedPositionData;
+  existingPosition?: PositionInfo;
   sizeDeltaUsd?: BigNumber;
   pnlDelta?: BigNumber;
   collateralDeltaUsd?: BigNumber;
@@ -226,7 +226,7 @@ export function getNextPositionValuesForDecreaseTrade(p: {
     sizeUsd: nextSizeUsd,
     collateralUsd: nextCollateralUsd,
     pnl: p.showPnlInLeverage ? nextPnl : undefined,
-    pendingBorrowingFeesUsd: p.existingPosition?.pendingBorrowingFees, // deducted on order
+    pendingBorrowingFeesUsd: p.existingPosition?.pendingBorrowingFeesUsd, // deducted on order
     pendingFundingFeesUsd: p.existingPosition?.pendingFundingFeesUsd, // deducted on order
   });
 
@@ -236,7 +236,7 @@ export function getNextPositionValuesForDecreaseTrade(p: {
     indexPrice: p.exitMarkPrice,
     positionFeeFactor: p.marketInfo?.positionFeeFactor,
     maxPriceImpactFactor: p.marketInfo?.maxPositionImpactFactorForLiquidations,
-    pendingBorrowingFeesUsd: p.existingPosition?.pendingBorrowingFees, // deducted on order
+    pendingBorrowingFeesUsd: p.existingPosition?.pendingBorrowingFeesUsd, // deducted on order
     pendingFundingFeesUsd: p.existingPosition?.pendingFundingFeesUsd, // deducted on order
     pnl: nextPnl,
     isLong: p.isLong,

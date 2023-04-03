@@ -1,33 +1,32 @@
 import { useMemo } from "react";
-import { AggregatedPositionsData } from "./types";
+import { PositionsInfoData } from "./types";
 import { usePositionsConstants } from "./usePositionsConstants";
 import { getAggregatedPositionData } from "./utils";
 import { useOptimisticPositionsData } from "./useOptimisticPositionsData";
 import { useMarketsInfo } from "../markets";
 
-type AggregatedPositionsDataResult = {
-  aggregatedPositionsData: AggregatedPositionsData;
+type PositionsInfoResult = {
+  positionsInfoData: PositionsInfoData;
   isLoading: boolean;
 };
 
-export function useAggregatedPositionsData(
-  chainId: number,
-  p: { savedIsPnlInLeverage: boolean }
-): AggregatedPositionsDataResult {
+export function usePositionsInfo(chainId: number, p: { showPnlInLeverage: boolean }): PositionsInfoResult {
+  const { showPnlInLeverage } = p;
+
   const { marketsInfoData, isLoading: isMarketsInfoLoading } = useMarketsInfo(chainId);
   const { optimisticPositionsData, isLoading: isPositionsLoading } = useOptimisticPositionsData(chainId);
-  const { maxLeverage } = usePositionsConstants(chainId);
+  const { maxLeverage, minCollateralUsd } = usePositionsConstants(chainId);
 
   return useMemo(() => {
     const positionKeys = Object.keys(optimisticPositionsData);
 
     return {
-      aggregatedPositionsData: positionKeys.reduce((acc: AggregatedPositionsData, positionKey: string) => {
+      positionsInfoData: positionKeys.reduce((acc: PositionsInfoData, positionKey: string) => {
         const position = getAggregatedPositionData(
           optimisticPositionsData,
           marketsInfoData,
           positionKey,
-          p.savedIsPnlInLeverage,
+          p.showPnlInLeverage,
           maxLeverage
         );
 
@@ -36,7 +35,7 @@ export function useAggregatedPositionsData(
         }
 
         return acc;
-      }, {} as AggregatedPositionsData),
+      }, {} as PositionsInfoData),
       isLoading: isMarketsInfoLoading || isPositionsLoading,
     };
   }, [
@@ -45,6 +44,6 @@ export function useAggregatedPositionsData(
     marketsInfoData,
     maxLeverage,
     optimisticPositionsData,
-    p.savedIsPnlInLeverage,
+    p.showPnlInLeverage,
   ]);
 }

@@ -14,12 +14,7 @@ import {
   isSwapOrder,
   isTriggerDecreaseOrder,
 } from "domain/synthetics/orders";
-import {
-  AggregatedPositionData,
-  AggregatedPositionsData,
-  getPosition,
-  getPositionKey,
-} from "domain/synthetics/positions";
+import { PositionInfo, PositionsInfoData, getPosition, getPositionKey } from "domain/synthetics/positions";
 import {
   TokensRatio,
   getTokenData,
@@ -52,7 +47,7 @@ import "./OrderEditor.scss";
 import { DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS } from "config/factors";
 
 type Props = {
-  positionsData: AggregatedPositionsData;
+  positionsData: PositionsInfoData;
   order: AggregatedOrderData;
   onClose: () => void;
   setPendingTxns: (txns: any) => void;
@@ -148,7 +143,7 @@ export function OrderEditor(p: Props) {
     p.order.isLong
   );
 
-  const existingPosition = getPosition(p.positionsData, positionKey) as AggregatedPositionData | undefined;
+  const existingPosition = getPosition(p.positionsData, positionKey) as PositionInfo | undefined;
 
   const executionFee = useMemo(() => {
     if (!p.order.isFrozen || !gasLimits || !gasPrice) return undefined;

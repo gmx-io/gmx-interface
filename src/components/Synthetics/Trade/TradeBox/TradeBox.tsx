@@ -25,12 +25,7 @@ import {
   useMarketsInfo,
 } from "domain/synthetics/markets";
 import { AggregatedOrdersData, OrderType, getAcceptablePrice } from "domain/synthetics/orders";
-import {
-  AggregatedPositionData,
-  AggregatedPositionsData,
-  formatLeverage,
-  getMarkPrice,
-} from "domain/synthetics/positions";
+import { PositionInfo, PositionsInfoData, formatLeverage, getMarkPrice } from "domain/synthetics/positions";
 import { TokensRatio, getTokenData, getTokensRatioByPrice, useAvailableTokensData } from "domain/synthetics/tokens";
 import {
   getDecreasePositionTradeParams,
@@ -110,8 +105,8 @@ type Props = {
   collateralAddress?: string;
   savedIsPnlInLeverage: boolean;
   ordersData: AggregatedOrdersData;
-  positionsData: AggregatedPositionsData;
-  existingPosition?: AggregatedPositionData;
+  positionsData: PositionsInfoData;
+  existingPosition?: PositionInfo;
   shouldDisableValidation?: boolean;
   onSelectFromTokenAddress: (fromTokenAddress?: string) => void;
   onSelectToTokenAddress: (toTokenAddress?: string) => void;

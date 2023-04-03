@@ -38,7 +38,7 @@ import {
 } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
-import { AggregatedPositionData, formatLeverage, formatPnl, getPositionKey } from "domain/synthetics/positions";
+import { PositionInfo, formatLeverage, formatPnl, getPositionKey } from "domain/synthetics/positions";
 import {
   TokensRatio,
   formatTokensRatio,
@@ -75,7 +75,7 @@ type Props = {
   keepLeverage?: boolean;
   markRatio?: TokensRatio;
   ordersData: AggregatedOrdersData;
-  existingPosition?: AggregatedPositionData;
+  existingPosition?: PositionInfo;
   executionFee?: ExecutionFee;
   isVisible: boolean;
   error?: string;

@@ -11,14 +11,14 @@ import { useAvailableTokensData } from "../tokens";
 import { PositionsData } from "./types";
 import { getPositionKey } from "./utils";
 
-type PositionsDataResult = {
+type PositionsResult = {
   positionsData: PositionsData;
   isLoading: boolean;
 };
 
 const defaultValue = {};
 
-export function usePositionsData(chainId: number): PositionsDataResult {
+export function usePositions(chainId: number): PositionsResult {
   const { account } = useWeb3React();
   const { marketsData, isLoading: isMarketsLoading } = useMarkets(chainId);
   const { tokensData, isLoading: isTokensLoading } = useAvailableTokensData(chainId);
@@ -89,8 +89,8 @@ export function usePositionsData(chainId: number): PositionsDataResult {
     parseResponse: (res) => {
       const positions = res.reader.positions.returnValues;
 
-      return positions.reduce((positionsMap: PositionsData, positionInfo) => {
-        const [positionProps, pendingBorrowingFees, fundingFees] = positionInfo;
+      return positions.reduce((positionsMap: PositionsData, positionValues, i) => {
+        const [positionProps, pendingBorrowingFees, fundingFees] = positionValues;
         const [addresses, numbers, flags, data] = positionProps;
         const [account, marketAddress, collateralTokenAddress] = addresses;
         const [
@@ -117,9 +117,11 @@ export function usePositionsData(chainId: number): PositionsDataResult {
         ] = fundingFees.map((item) => (typeof item === "boolean" ? item : bigNumberify(item)));
 
         const positionKey = getPositionKey(account, marketAddress, collateralTokenAddress, isLong)!;
+        const contractPositionKey = queryParams!.positionsKeys[i];
 
         positionsMap[positionKey] = {
           key: positionKey,
+          contractKey: contractPositionKey,
           account,
           marketAddress,
           collateralTokenAddress,
@@ -132,16 +134,15 @@ export function usePositionsData(chainId: number): PositionsDataResult {
           increasedAtBlock,
           decreasedAtBlock,
           isLong,
-          pendingBorrowingFees: bigNumberify(pendingBorrowingFees)!,
-          pendingFundingFees: {
-            fundingFeeAmount,
-            claimableLongTokenAmount,
-            claimableShortTokenAmount,
-            latestLongTokenFundingAmountPerSize,
-            latestShortTokenFundingAmountPerSize,
-            hasPendingLongTokenFundingFee,
-            hasPendingShortTokenFundingFee,
-          },
+          pendingBorrowingFeesUsd: bigNumberify(pendingBorrowingFees)!,
+          fundingFeeAmount,
+          claimableLongTokenAmount,
+          claimableShortTokenAmount,
+          latestLongTokenFundingAmountPerSize,
+          latestShortTokenFundingAmountPerSize,
+          hasPendingLongTokenFundingFee,
+          hasPendingShortTokenFundingFee,
+          isOpening: false,
           data,
         };
 

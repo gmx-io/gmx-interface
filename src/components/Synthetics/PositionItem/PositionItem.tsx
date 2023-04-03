@@ -9,15 +9,16 @@ import {
   getTriggerPricePrefix,
   isIncreaseOrder,
 } from "domain/synthetics/orders";
-import { AggregatedPositionData, formatLeverage, formatPnl } from "domain/synthetics/positions";
+import { PositionInfo, formatLeverage, formatPnl } from "domain/synthetics/positions";
 import { formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
 import { AiOutlineEdit } from "react-icons/ai";
 import { ImSpinner2 } from "react-icons/im";
 
 import "./PositionItem.scss";
+import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/fees";
 
 export type Props = {
-  position: AggregatedPositionData;
+  position: PositionInfo;
   ordersData: AggregatedOrdersData;
   positionOrders?: any[];
   hideActions?: boolean;
@@ -62,7 +63,7 @@ export function PositionItem(p: Props) {
             <StatsTooltipRow label={t`PnL`} value={formatDeltaUsd(p.position?.pnl) || "..."} showDollar={false} />
             <StatsTooltipRow
               label={t`Borrow fee`}
-              value={formatUsd(p.position.pendingBorrowingFees?.mul(-1)) || "..."}
+              value={formatUsd(p.position.pendingBorrowingFeesUsd?.mul(-1)) || "..."}
               showDollar={false}
             />
             <StatsTooltipRow
@@ -116,7 +117,7 @@ export function PositionItem(p: Props) {
                   <StatsTooltipRow
                     label={t`Borrow Fee`}
                     showDollar={false}
-                    value={formatUsd(p.position.pendingBorrowingFees.mul(-1)) || "..."}
+                    value={formatUsd(p.position.pendingBorrowingFeesUsd.mul(-1)) || "..."}
                   />
                   <StatsTooltipRow
                     label={t`Funding Fee`}
@@ -127,12 +128,21 @@ export function PositionItem(p: Props) {
                   <StatsTooltipRow
                     showDollar={false}
                     label={t`Borrow Fee / Day`}
-                    value={formatUsd(p.position.borrowingFeeRateUsdPerDay?.mul(-1)) || "..."}
+                    value={formatUsd(
+                      getBorrowingFeeRateUsd(
+                        p.position.market,
+                        p.position.isLong,
+                        p.position.sizeInUsd,
+                        60 * 60 * 24
+                      ).mul(-1)
+                    )}
                   />
                   <StatsTooltipRow
                     showDollar={false}
                     label={t`Funding Fee / Day`}
-                    value={formatDeltaUsd(p.position.fundingFeeRateUsdPerDay) || "..."}
+                    value={formatDeltaUsd(
+                      getFundingFeeRateUsd(p.position.market, p.position.isLong, p.position.sizeInUsd, 60 * 60 * 24)
+                    )}
                   />
                   <br />
                   <StatsTooltipRow
@@ -228,7 +238,7 @@ export function PositionItem(p: Props) {
               handleClassName="plain"
               renderContent={() => (
                 <div>
-                  <StatsTooltipRow label={t`Market`} value={p.position.marketName || ""} showDollar={false} />
+                  <StatsTooltipRow label={t`Market`} value={p.position.market.name} showDollar={false} />
 
                   <br />
 
@@ -331,7 +341,7 @@ export function PositionItem(p: Props) {
             <div className="label">
               <Trans>Market</Trans>
             </div>
-            <div>{p.position.marketName}</div>
+            <div>{p.position.market.name}</div>
           </div>
           <div className="App-card-row">
             <div className="label">

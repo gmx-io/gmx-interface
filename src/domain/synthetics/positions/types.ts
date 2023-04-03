@@ -1,20 +1,11 @@
 import { BigNumber } from "ethers";
 import { TokenData } from "domain/synthetics/tokens";
-import { MarketInfo } from "domain/synthetics/markets";
 import { PendingPositionUpdate } from "context/SyntheticsEvents";
-
-export type PositionFundingFees = {
-  fundingFeeAmount: BigNumber;
-  claimableLongTokenAmount: BigNumber;
-  claimableShortTokenAmount: BigNumber;
-  latestLongTokenFundingAmountPerSize: BigNumber;
-  latestShortTokenFundingAmountPerSize: BigNumber;
-  hasPendingLongTokenFundingFee: boolean;
-  hasPendingShortTokenFundingFee: boolean;
-};
+import { MarketInfo } from "../markets";
 
 export type Position = {
   key: string;
+  contractKey: string;
   account: string;
   marketAddress: string;
   collateralTokenAddress: string;
@@ -22,47 +13,50 @@ export type Position = {
   sizeInTokens: BigNumber;
   collateralAmount: BigNumber;
   borrowingFactor: BigNumber;
-  longTokenFundingAmountPerSize: BigNumber;
-  shortTokenFundingAmountPerSize: BigNumber;
+  pendingBorrowingFeesUsd: BigNumber;
   increasedAtBlock: BigNumber;
   decreasedAtBlock: BigNumber;
   isLong: boolean;
-  data: string;
-  pendingBorrowingFees: BigNumber;
-  pendingFundingFees: PositionFundingFees;
-  isOpening?: boolean;
+  fundingFeeAmount: BigNumber;
+  claimableLongTokenAmount: BigNumber;
+  claimableShortTokenAmount: BigNumber;
+  longTokenFundingAmountPerSize: BigNumber;
+  shortTokenFundingAmountPerSize: BigNumber;
+  latestLongTokenFundingAmountPerSize: BigNumber;
+  latestShortTokenFundingAmountPerSize: BigNumber;
+  hasPendingLongTokenFundingFee: boolean;
+  hasPendingShortTokenFundingFee: boolean;
+  isOpening: boolean;
   pendingUpdate?: PendingPositionUpdate;
+  data: string;
 };
 
-export type AggregatedPositionData = Position & {
-  marketName?: string;
-  market?: MarketInfo;
-  indexToken?: TokenData;
-  collateralToken?: TokenData;
-  pnlToken?: TokenData;
-  currentValueUsd?: BigNumber;
-  collateralUsd?: BigNumber;
-  markPrice?: BigNumber;
-  pnl?: BigNumber;
-  pnlPercentage?: BigNumber;
-  pnlAfterFees?: BigNumber;
-  pnlAfterFeesPercentage?: BigNumber;
-  collateralUsdAfterFees?: BigNumber;
-  hasLowCollateral?: boolean;
-  entryPrice?: BigNumber;
+export type PositionInfo = Position & {
+  market: MarketInfo;
+  indexToken: TokenData;
+  collateralToken: TokenData;
+  pnlToken: TokenData;
+  currentValueUsd: BigNumber;
+  collateralUsd: BigNumber;
+  collateralUsdAfterFees: BigNumber;
+  hasLowCollateral: boolean;
+  pnl: BigNumber;
+  pnlPercentage: BigNumber;
+  pnlAfterFees: BigNumber;
+  pnlAfterFeesPercentage: BigNumber;
+  leverage: BigNumber;
   netValue?: BigNumber;
-  liqPrice?: BigNumber;
-  leverage?: BigNumber;
-  closingFeeUsd?: BigNumber;
-  borrowingFeeRateUsdPerDay?: BigNumber;
-  fundingFeeRateUsdPerDay?: BigNumber;
-  pendingFundingFeesUsd?: BigNumber;
+  entryPrice: BigNumber;
+  markPrice: BigNumber;
+  liqPrice: BigNumber;
+  closingFeeUsd: BigNumber;
+  pendingFundingFeesUsd: BigNumber;
 };
 
 export type PositionsData = {
   [positionKey: string]: Position;
 };
 
-export type AggregatedPositionsData = {
-  [positionKey: string]: AggregatedPositionData;
+export type PositionsInfoData = {
+  [positionKey: string]: PositionInfo;
 };
