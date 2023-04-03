@@ -6,22 +6,8 @@ export enum ClaimType {
   ClaimFunding = "ClaimFunding",
 }
 
-export type RawClaimCollateralAction = {
-  id: string;
-  eventName: ClaimType;
-  account: string;
-  marketAddresses: string[];
-  tokenAddresses: string[];
-  amounts: string[];
-
-  transaction: {
-    timestamp: number;
-    hash: string;
-  };
-};
-
-export type ClaimItem = {
-  market: MarketInfo;
+export type ClaimMarketItem = {
+  marketInfo: MarketInfo;
   longTokenAmount: BigNumber;
   shortTokenAmount: BigNumber;
 };
@@ -30,7 +16,7 @@ export type ClaimCollateralAction = {
   id: string;
   eventName: ClaimType;
   account: string;
-  claimItems: ClaimItem[];
+  claimItems: ClaimMarketItem[];
   timestamp: number;
   transactionHash: string;
 };

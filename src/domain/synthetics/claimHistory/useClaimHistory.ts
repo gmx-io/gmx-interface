@@ -8,14 +8,38 @@ import { getByKey } from "lib/objects";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import { useMemo } from "react";
 import useSWR from "swr";
-import { ClaimCollateralAction, ClaimItem, RawClaimCollateralAction } from "./types";
+import { ClaimCollateralAction, ClaimMarketItem, ClaimType } from "./types";
+import { useFixedAddreseses } from "../common/useFixedAddresses";
 
-export function useClaimCollateralHistory(chainId: number, p: { pageIndex: number; pageSize: number }) {
+export type ClaimCollateralHistoryResult = {
+  claimActions?: ClaimCollateralAction[];
+  error?: string;
+};
+
+type RawClaimCollateralAction = {
+  id: string;
+  eventName: ClaimType;
+  account: string;
+  marketAddresses: string[];
+  tokenAddresses: string[];
+  amounts: string[];
+
+  transaction: {
+    timestamp: number;
+    hash: string;
+  };
+};
+
+export function useClaimCollateralHistory(
+  chainId: number,
+  p: { pageIndex: number; pageSize: number }
+): ClaimCollateralHistoryResult {
   const { pageIndex, pageSize } = p;
-  const { account } = useWeb3React();
-  const { marketsInfoData, isLoading: isMarketsInfoLoading } = useMarketsInfo(chainId);
-  const { tokensData, isLoading: isTokensLoading } = useAvailableTokensData(chainId);
 
+  const { account } = useWeb3React();
+  const { marketsInfoData } = useMarketsInfo(chainId);
+  const { tokensData } = useAvailableTokensData(chainId);
+  const fixedAddresses = useFixedAddreseses(marketsInfoData, tokensData);
   const client = getSyntheticsGraphClient(chainId);
 
   const key = chainId && client && account ? [chainId, "useClaimHistory", account, pageIndex, pageSize] : null;
@@ -51,66 +75,60 @@ export function useClaimCollateralHistory(chainId: number, p: { pageIndex: numbe
     },
   });
 
-  const isClaimsLoading = key && !error && !data;
-  const isLoading = isClaimsLoading || isMarketsInfoLoading || isTokensLoading;
-
   const claimActions = useMemo(() => {
-    if (isLoading || !data) return undefined;
-
-    const fixedAddresses = Object.keys(marketsInfoData)
-      .concat(Object.keys(tokensData))
-      .reduce((acc, address) => {
-        acc[address.toLowerCase()] = address;
-
-        return acc;
-      }, {});
+    if (!data || !tokensData || !marketsInfoData) {
+      return undefined;
+    }
 
     return data
       .map((rawAction) => {
-        const claimItemsMap: { [marketAddress: string]: ClaimItem } = {};
+        try {
+          const claimItemsMap: { [marketAddress: string]: ClaimMarketItem } = {};
 
-        for (let i = 0; i < rawAction.marketAddresses.length; i++) {
-          const marketAddress = fixedAddresses[rawAction.marketAddresses[i]];
-          const tokenAddress = fixedAddresses[rawAction.tokenAddresses[i]];
-          const amount = bigNumberify(rawAction.amounts[i])!;
+          const claimAction: ClaimCollateralAction = {
+            id: rawAction.id,
+            eventName: rawAction.eventName,
+            account: rawAction.account,
+            claimItems: [],
+            timestamp: rawAction.transaction.timestamp,
+            transactionHash: rawAction.transaction.hash,
+          };
 
-          const market = getByKey(marketsInfoData, marketAddress);
+          for (let i = 0; i < rawAction.marketAddresses.length; i++) {
+            const marketAddress = fixedAddresses[rawAction.marketAddresses[i]];
+            const tokenAddress = fixedAddresses[rawAction.tokenAddresses[i]];
+            const amount = bigNumberify(rawAction.amounts[i])!;
+            const market = getByKey(marketsInfoData, marketAddress)!;
 
-          if (!market) {
-            return undefined;
+            if (!claimItemsMap[market.marketTokenAddress]) {
+              claimItemsMap[market.marketTokenAddress] = {
+                marketInfo: market,
+                longTokenAmount: BigNumber.from(0),
+                shortTokenAmount: BigNumber.from(0),
+              };
+            }
+
+            if (tokenAddress === market.longTokenAddress) {
+              claimItemsMap[marketAddress].longTokenAmount = claimItemsMap[marketAddress].longTokenAmount.add(amount);
+            } else {
+              claimItemsMap[marketAddress].shortTokenAmount = claimItemsMap[marketAddress].shortTokenAmount.add(amount);
+            }
           }
 
-          if (!claimItemsMap[market.marketTokenAddress]) {
-            claimItemsMap[market.marketTokenAddress] = {
-              market,
-              longTokenAmount: BigNumber.from(0),
-              shortTokenAmount: BigNumber.from(0),
-            };
-          }
+          claimAction.claimItems = Object.values(claimItemsMap);
 
-          if (tokenAddress === market.longTokenAddress) {
-            claimItemsMap[marketAddress].longTokenAmount = claimItemsMap[marketAddress].longTokenAmount.add(amount);
-          } else {
-            claimItemsMap[marketAddress].shortTokenAmount = claimItemsMap[marketAddress].shortTokenAmount.add(amount);
-          }
+          return claimAction;
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.error(e);
+          return undefined;
         }
-
-        const claimAction: ClaimCollateralAction = {
-          id: rawAction.id,
-          eventName: rawAction.eventName,
-          account: rawAction.account,
-          claimItems: Object.values(claimItemsMap),
-          timestamp: rawAction.transaction.timestamp,
-          transactionHash: rawAction.transaction.hash,
-        };
-
-        return claimAction;
       })
       .filter(Boolean) as ClaimCollateralAction[];
-  }, [data, isLoading, marketsInfoData, tokensData]);
+  }, [data, fixedAddresses, marketsInfoData, tokensData]);
 
   return {
     claimActions,
-    isLoading,
+    error,
   };
 }

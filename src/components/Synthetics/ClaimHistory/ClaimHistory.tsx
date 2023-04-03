@@ -3,8 +3,6 @@ import { useChainId } from "lib/chains";
 import { useState } from "react";
 import { useClaimCollateralHistory } from "domain/synthetics/claimHistory";
 import { ClaimHistoryRow } from "../ClaimHistoryRow/ClaimHistoryRow";
-import { useAvailableTokensData } from "domain/synthetics/tokens";
-import { useMarkets } from "domain/synthetics/markets";
 
 const PAGE_SIZE = 100;
 
@@ -17,16 +15,13 @@ export function ClaimHistory(p: Props) {
   const { chainId } = useChainId();
   const [pageIndex, setPageIndex] = useState(0);
 
-  const { marketsData } = useMarkets(chainId);
-  const { tokensData } = useAvailableTokensData(chainId);
+  const { claimActions, error } = useClaimCollateralHistory(chainId, { pageIndex, pageSize: PAGE_SIZE });
 
-  const { claimActions, isLoading } = useClaimCollateralHistory(chainId, { pageIndex, pageSize: PAGE_SIZE });
-
-  const isEmpty = !isLoading && !claimActions?.length;
+  const isEmpty = claimActions?.length === 0;
 
   return (
     <div className="TradeHistory">
-      {isLoading && (
+      {!claimActions && !error && (
         <div className="TradeHistoryRow App-box">
           <Trans>Loading...</Trans>
         </div>
@@ -37,12 +32,7 @@ export function ClaimHistory(p: Props) {
         </div>
       )}
       {claimActions?.map((claimAction) => (
-        <ClaimHistoryRow
-          key={claimAction.id}
-          claimAction={claimAction}
-          marketsData={marketsData}
-          tokensData={tokensData}
-        />
+        <ClaimHistoryRow key={claimAction.id} claimAction={claimAction} />
       ))}
       {shouldShowPaginationButtons && (
         <div>

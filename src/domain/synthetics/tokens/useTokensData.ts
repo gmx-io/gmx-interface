@@ -1,8 +1,8 @@
 import { getAvailableTradeTokens, getTokensMap } from "config/tokens";
 import { useMemo } from "react";
 import { TokensData } from "./types";
-import { useTokenBalancesData } from "./useTokenBalancesData";
-import { useTokenRecentPricesData } from "./useTokenRecentPricesData";
+import { useTokenBalances } from "./useTokenBalances";
+import { useTokenRecentPrices } from "./useTokenRecentPricesData";
 
 type TokensDataResult = {
   tokensData: TokensData;
@@ -18,14 +18,13 @@ export function useAvailableTokensData(chainId: number): TokensDataResult {
   return useTokensData(chainId, { tokenAddresses });
 }
 
-export function useTokensData(chainId: number, p: { tokenAddresses: string[] }): TokensDataResult {
+export function useTokensData(chainId: number, { tokenAddresses }: { tokenAddresses: string[] }): TokensDataResult {
   const tokenConfigs = getTokensMap(chainId);
-  const { balancesData, isLoading: isBalancesLoading } = useTokenBalancesData(chainId, {
-    tokenAddresses: p.tokenAddresses,
-  });
-  const { pricesData, isLoading: isPricesLoading } = useTokenRecentPricesData(chainId);
 
-  const tokenKeys = p.tokenAddresses.join("-");
+  const { balancesData } = useTokenBalances(chainId, { tokenAddresses });
+  const { pricesData } = useTokenRecentPrices(chainId);
+
+  const tokenKeys = tokenAddresses.join("-");
 
   return useMemo(() => {
     if (!pricesData) {
@@ -38,19 +37,21 @@ export function useTokensData(chainId: number, p: { tokenAddresses: string[] }):
     return {
       tokensData: tokenKeys.split("-").reduce((acc: TokensData, tokenAddress) => {
         const prices = pricesData[tokenAddress];
+        const balance = balancesData?.[tokenAddress];
+        const tokenConfig = tokenConfigs[tokenAddress];
 
         if (!prices) {
           return acc;
         }
 
         acc[tokenAddress] = {
-          ...tokenConfigs[tokenAddress],
-          prices: prices,
-          balance: balancesData?.[tokenAddress],
+          ...tokenConfig,
+          prices,
+          balance,
         };
         return acc;
       }, {} as TokensData),
-      isLoading: isBalancesLoading || isPricesLoading,
+      isLoading: false,
     };
-  }, [tokenKeys, isBalancesLoading, isPricesLoading, tokenConfigs, pricesData, balancesData]);
+  }, [tokenKeys, tokenConfigs, pricesData, balancesData]);
 }

@@ -7,16 +7,13 @@ import { useMulticall } from "lib/multicall";
 import { TokenBalancesData } from "./types";
 
 type BalancesDataResult = {
-  balancesData: TokenBalancesData;
-  isLoading: boolean;
+  balancesData?: TokenBalancesData;
 };
 
-const defaultValue = {};
-
-export function useTokenBalancesData(chainId: number, p: { tokenAddresses: string[] }): BalancesDataResult {
+export function useTokenBalances(chainId: number, p: { tokenAddresses: string[] }): BalancesDataResult {
   const { account } = useWeb3React();
 
-  const { data, isLoading } = useMulticall(chainId, "useTokenBalances", {
+  const { data } = useMulticall(chainId, "useTokenBalances", {
     key: account && p.tokenAddresses.length > 0 ? [account, p.tokenAddresses.join("-")] : null,
     request: () =>
       p.tokenAddresses.reduce((acc, address) => {
@@ -59,7 +56,6 @@ export function useTokenBalancesData(chainId: number, p: { tokenAddresses: strin
   });
 
   return {
-    balancesData: data || defaultValue,
-    isLoading,
+    balancesData: data,
   };
 }

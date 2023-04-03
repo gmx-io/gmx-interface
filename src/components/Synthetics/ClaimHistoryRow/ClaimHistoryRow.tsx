@@ -5,8 +5,6 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { getExplorerUrl } from "config/chains";
 import { getToken } from "config/tokens";
 import { ClaimCollateralAction, ClaimType } from "domain/synthetics/claimHistory";
-import { MarketsData } from "domain/synthetics/markets";
-import { TokensData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { formatDateTime } from "lib/dates";
@@ -15,8 +13,6 @@ import { useMemo } from "react";
 
 type Props = {
   claimAction: ClaimCollateralAction;
-  marketsData: MarketsData;
-  tokensData: TokensData;
 };
 
 export function ClaimHistoryRow(p: Props) {
@@ -31,14 +27,14 @@ export function ClaimHistoryRow(p: Props) {
   }[claimAction.eventName];
 
   const tokensMsg = useMemo(() => {
-    const amountByToken = claimAction.claimItems.reduce((acc, { market, longTokenAmount, shortTokenAmount }) => {
+    const amountByToken = claimAction.claimItems.reduce((acc, { marketInfo, longTokenAmount, shortTokenAmount }) => {
       if (longTokenAmount.gt(0)) {
-        acc[market.longTokenAddress] = BigNumber.from(acc[market.longTokenAddress] || 0);
-        acc[market.longTokenAddress] = acc[market.longTokenAddress].add(longTokenAmount);
+        acc[marketInfo.longTokenAddress] = acc[marketInfo.longTokenAddress] || BigNumber.from(0);
+        acc[marketInfo.longTokenAddress] = acc[marketInfo.longTokenAddress].add(longTokenAmount);
       }
       if (shortTokenAmount.gt(0)) {
-        acc[market.shortTokenAddress] = BigNumber.from(acc[market.shortTokenAddress] || 0);
-        acc[market.shortTokenAddress] = acc[market.shortTokenAddress].add(shortTokenAmount);
+        acc[marketInfo.shortTokenAddress] = acc[marketInfo.shortTokenAddress] || BigNumber.from(0);
+        acc[marketInfo.shortTokenAddress] = acc[marketInfo.shortTokenAddress].add(shortTokenAmount);
       }
 
       return acc;
@@ -64,26 +60,30 @@ export function ClaimHistoryRow(p: Props) {
           handle={plural(marketsCount, { one: "# Market", other: "# Markets" })}
           renderContent={() => (
             <>
-              {claimAction.claimItems.map(({ market, longTokenAmount, shortTokenAmount }, index) => {
-                const marketName = market.name;
-                const longToken = getToken(chainId, market.longTokenAddress);
-                const shortToken = getToken(chainId, market.shortTokenAddress);
-
+              {claimAction.claimItems.map(({ marketInfo: market, longTokenAmount, shortTokenAmount }, index) => {
                 return (
                   <>
                     <StatsTooltipRow
                       className="ClaimHistoryRow-tooltip-row"
                       key={market.marketTokenAddress}
-                      label={marketName}
+                      label={market.name}
                       showDollar={false}
                       value={
                         <>
                           {longTokenAmount.gt(0) && (
-                            <div>{formatTokenAmount(longTokenAmount, longToken.decimals, longToken.symbol)}</div>
+                            <div>
+                              {formatTokenAmount(longTokenAmount, market.longToken.decimals, market.longToken.symbol)}
+                            </div>
                           )}
 
                           {shortTokenAmount.gt(0) && (
-                            <div>{formatTokenAmount(shortTokenAmount, shortToken.decimals, shortToken.symbol)}</div>
+                            <div>
+                              {formatTokenAmount(
+                                shortTokenAmount,
+                                market.shortToken.decimals,
+                                market.shortToken.symbol
+                              )}
+                            </div>
                           )}
                         </>
                       }

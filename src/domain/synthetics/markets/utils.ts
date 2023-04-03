@@ -4,13 +4,13 @@ import { applyFactor } from "lib/numbers";
 import { convertToContractTokenPrices, convertToUsd, getMidPrice, getTokenData } from "../tokens";
 import { TokensData } from "../tokens/types";
 import { ContractMarketPrices, Market, MarketInfo } from "./types";
-import { Token } from "domain/tokens";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { Token } from "domain/tokens";
 
 export function getMarketFullName(p: { longToken: Token; shortToken: Token; indexToken: Token }) {
-  const { indexToken } = p;
+  const { indexToken, longToken, shortToken } = p;
 
-  return `${indexToken.symbol}/USD ${getMarketPoolName(p)}`;
+  return `${indexToken.symbol}/USD [${longToken.symbol}-${shortToken.symbol}]`;
 }
 
 export function getMarketPoolName(p: { longToken: Token; shortToken: Token }) {
