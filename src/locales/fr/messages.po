@@ -2340,8 +2340,8 @@ msgid "Please only use this for full account transfers.<0/>This will transfer al
 msgstr "Veuillez utiliser ceci uniquement pour les transferts de comptes complets.<0/>Cela permettra de transférer tous vos GMX, esGMX, GLP et points multiplicateurs vers votre nouveau compte.<1/>Les transferts ne sont pris en charge que si le compte destinataire n'a pas encore staké de tokens GMX ou GLP.<2/>Les transferts sont à sens unique, vous ne pourrez pas retransférer les tokens mis en jeu vers le compte émetteur."
 
 #: src/components/Migration/Migration.js
-msgid "Please read the <0>Medium post</0> before migrating."
-msgstr "Veuillez lire l'<0>Article sur Medium</0> avant d'effectuer la migration."
+#~ msgid "Please read the <0>Medium post</0> before migrating."
+#~ msgstr "Veuillez lire l'<0>Article sur Medium</0> avant d'effectuer la migration."
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Please switch your network to Arbitrum."

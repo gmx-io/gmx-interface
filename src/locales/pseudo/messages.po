@@ -2337,8 +2337,8 @@ msgid "Please only use this for full account transfers.<0/>This will transfer al
 msgstr ""
 
 #: src/components/Migration/Migration.js
-msgid "Please read the <0>Medium post</0> before migrating."
-msgstr ""
+#~ msgid "Please read the <0>Medium post</0> before migrating."
+#~ msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Please switch your network to Arbitrum."

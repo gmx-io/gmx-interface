@@ -2340,8 +2340,8 @@ msgid "Please only use this for full account transfers.<0/>This will transfer al
 msgstr "<0/>这将把你所有的GMX、esGMX、GLP和乘数点转移到你的新账户<1/>只有在接收账户前没有抵押过GMX或GLP代币的情况下才支持转移<2/>转移是单向的，你将不能把抵押的代币转回发送账户"
 
 #: src/components/Migration/Migration.js
-msgid "Please read the <0>Medium post</0> before migrating."
-msgstr "在转移之前，请阅读<0>Medium中的帖子</0>"
+#~ msgid "Please read the <0>Medium post</0> before migrating."
+#~ msgstr "在转移之前，请阅读<0>Medium中的帖子</0>"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Please switch your network to Arbitrum."
