@@ -25,52 +25,37 @@
 }
 
 .chart-token-list {
+  overflow: auto;
+  max-height: 20rem;
   table {
-    border-spacing: 0;
-    white-space: nowrap;
-    font-size: var(--font-base);
-    padding: 1.5rem;
     width: 100%;
-    display: table-cell;
-
+    text-align: left;
+    font-size: var(--font-sm);
+  }
+  thead {
     tr {
-      &:not(.table-head) {
-        cursor: pointer;
-        border-radius: 0.4rem;
-      }
-      &:not(.table-head):hover {
-        background: #808aff14 !important;
-        border-radius: 0.4rem;
-        opacity: 1;
-        color: #eee;
-        padding: 0.85rem 0.8rem;
-      }
       th {
-        font-weight: 400;
+        padding: 0.75rem 1.5rem;
+        font-weight: normal;
         letter-spacing: 0.25px;
-        color: #a0a3c4;
+        color: #a9a9b0;
         text-transform: uppercase;
-        font-size: 1.5rem;
-        text-align: left;
-      }
-
-      td {
-        padding-left: 1.5rem;
-        width: 26.35rem;
-      }
-      .token-item {
-        padding: 0.75rem 0;
-        color: #a0a3c4;
-      }
-      .token-items {
-        margin-top: 1rem;
       }
     }
   }
-}
 
-.no-tokens-found {
-  display: inline-flex;
-  justify-content: center;
-  width: 100%;
+  tbody {
+    tr {
+      background-color: var(--dark-blue-bg);
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      &:hover {
+        background-color: var(--dark-blue-hover);
+        border-radius: var(--border-radius-sm);
+      }
+      td {
+        padding: 0.75rem 1.5rem;
+      }
+    }
+  }
 }

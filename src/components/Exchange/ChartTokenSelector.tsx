@@ -3,26 +3,67 @@ import { Menu } from "@headlessui/react";
 import { FaChevronDown } from "react-icons/fa";
 import cx from "classnames";
 import "./ChartTokenSelector.scss";
-import { LONG, SHORT, SWAP, USD_DECIMALS } from "lib/legacy";
+import { LONG, SHORT, SWAP, USDG_DECIMALS, USD_DECIMALS } from "lib/legacy";
 import { getTokens, getWhitelistedTokens } from "config/tokens";
 import SearchInput from "./SearchInput";
-import { formatAmount } from "lib/numbers";
+import { bigNumberify, expandDecimals, formatAmount } from "lib/numbers";
+import { InfoTokens, Token } from "domain/tokens/types";
+import { getUsd } from "domain/tokens";
+import { BigNumberish } from "ethers";
 
-function addLiquidityToTokens(tokens, infoTokens) {
-  if (!infoTokens) return tokens;
+type ChartToken = Token & {
+  maxInUsd?: BigNumberish;
+  maxOutUsd?: BigNumberish;
+  maxAvailableLong?: BigNumberish;
+  maxAvailableShort?: BigNumberish;
+};
+
+type Props = {
+  chainId: number;
+  selectedToken: Token;
+  onSelectToken: (token: Token) => void;
+  swapOption: string;
+  infoTokens?: InfoTokens;
+};
+
+function addLiquidityToTokens(tokens: Token[], infoTokens: InfoTokens): ChartToken[] {
   return tokens.map((token) => {
+    const { maxAvailableLong, maxAvailableShort } = infoTokens[token.address] || {};
     return {
       ...token,
-      maxAvailableLong: infoTokens[token.address]?.maxAvailableLong,
-      maxAvailableShort: infoTokens[token.address]?.maxAvailableShort,
+      maxAvailableLong,
+      maxAvailableShort,
     };
   });
 }
 
-export default function ChartTokenSelector(props) {
+function addMaxInAndOut(tokens: Token[], infoTokens: InfoTokens): ChartToken[] {
+  return tokens.map((token) => {
+    const { availableAmount, poolAmount, bufferAmount, maxUsdgAmount, usdgAmount } = infoTokens[token.address] || {};
+    if (!availableAmount || !poolAmount || !bufferAmount || !maxUsdgAmount || !usdgAmount)
+      return {
+        ...token,
+        maxInUsd: bigNumberify(0),
+        maxOutUsd: bigNumberify(0),
+      };
+    const maxOut = availableAmount.gt(poolAmount.sub(bufferAmount)) ? poolAmount.sub(bufferAmount) : availableAmount;
+    const maxOutUsd = getUsd(maxOut, token.address, false, infoTokens);
+    const maxInUsd = maxUsdgAmount
+      .sub(usdgAmount)
+      .mul(expandDecimals(1, USD_DECIMALS))
+      .div(expandDecimals(1, USDG_DECIMALS));
+
+    return {
+      ...token,
+      maxOutUsd,
+      maxInUsd,
+    };
+  });
+}
+
+export default function ChartTokenSelector(props: Props) {
   const { chainId, selectedToken, onSelectToken, swapOption, infoTokens } = props;
   const [searchKeyword, setSearchKeyword] = useState("");
-
   const isLong = swapOption === LONG;
   const isShort = swapOption === SHORT;
   const isSwap = swapOption === SWAP;
@@ -31,25 +72,32 @@ export default function ChartTokenSelector(props) {
   const whitelistedTokens = getWhitelistedTokens(chainId);
   const indexTokens = whitelistedTokens.filter((token) => !token.isStable && !token.isWrapped);
   const shortableTokens = indexTokens.filter((token) => token.isShortable);
-  if (isLong) {
-    options = addLiquidityToTokens(indexTokens, infoTokens);
-  }
-  if (isShort) {
-    options = addLiquidityToTokens(shortableTokens, infoTokens);
+  const swapTokens = whitelistedTokens.filter((token) => !token.isWrapped && !token.isTempHidden);
+
+  if (infoTokens) {
+    if (isLong) {
+      options = addLiquidityToTokens(indexTokens, infoTokens);
+    }
+    if (isShort) {
+      options = addLiquidityToTokens(shortableTokens, infoTokens);
+    }
+    if (isSwap) {
+      options = addMaxInAndOut(swapTokens, infoTokens);
+    }
   }
 
-  const onSelect = async (token) => {
+  const onSelect = async (token: Token) => {
     onSelectToken(token);
   };
 
-  const filteredTokens = options.filter((item) => {
+  const filteredTokens: ChartToken[] = options.filter((item) => {
     return (
       item.name.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 ||
       item.symbol.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1
     );
   });
 
-  const _handleKeyDown = (e) => {
+  const _handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && filteredTokens.length > 0) {
       onSelectToken(filteredTokens[0]);
     }
@@ -57,10 +105,10 @@ export default function ChartTokenSelector(props) {
 
   return (
     <Menu>
-      <Menu.Button as="div" disabled={isSwap}>
+      <Menu.Button as="div">
         <button className={cx("App-cta small transparent chart-token-selector", { "default-cursor": isSwap })}>
           <span className="chart-token-selector--current">{selectedToken.symbol} / USD</span>
-          {!isSwap && <FaChevronDown />}
+          <FaChevronDown />
         </button>
       </Menu.Button>
       <div className="chart-token-menu">
@@ -72,15 +120,14 @@ export default function ChartTokenSelector(props) {
             onKeyDown={_handleKeyDown}
           />
           <div className="divider" />
-          {filteredTokens.length === 0 && <p class="no-tokens-found">No token found</p>}
           <div className="chart-token-list">
             <table>
               {filteredTokens.length > 0 && (
-                <thead>
+                <thead className="table-head">
                   <tr>
                     <th>Market</th>
-                    <th>Long Liquidity</th>
-                    <th>Short Liquidity</th>
+                    <th>{isSwap ? "Max In" : "Long Liquidity"}</th>
+                    <th>{isSwap ? "Max Out" : "Short Liquidity"}</th>
                   </tr>
                 </thead>
               )}
@@ -95,13 +142,13 @@ export default function ChartTokenSelector(props) {
                             onSelect(option);
                           }}
                         >
-                          <span> {option.symbol} / USD</span>
+                          {option.symbol} {!isSwap && "/ USD"}
                         </td>
                         <td>
-                          <span>${formatAmount(option.maxAvailableLong, USD_DECIMALS, 2, true)}</span>
+                          ${formatAmount(isSwap ? option.maxInUsd : option.maxAvailableLong, USD_DECIMALS, 0, true)}
                         </td>
                         <td>
-                          <span>${formatAmount(option.maxAvailableShort, USD_DECIMALS, 2, true)}</span>
+                          ${formatAmount(isSwap ? option.maxOutUsd : option.maxAvailableShort, USD_DECIMALS, 0, true)}
                         </td>
                       </tr>
                     </Menu.Item>
