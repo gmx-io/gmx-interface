@@ -49,15 +49,6 @@ export function getLiquidation({ size, collateral, averagePrice, fees, isLong }:
     isLong,
   });
 
-  console.log(
-    {
-      liquidationPriceForFees: liquidationPriceForFees?.toString() / 1e30,
-      liquidationPriceForMaxLeverage: liquidationPriceForMaxLeverage?.toString() / 1e30,
-      totalFees: Number(totalFees?.toString()) / 1e30,
-    },
-    "✅"
-  );
-
   if (!liquidationPriceForFees) {
     return liquidationPriceForMaxLeverage;
   }

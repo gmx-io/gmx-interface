@@ -276,7 +276,6 @@ msgid "Approve GMX"
 msgstr "核准GMX"
 
 #: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
 msgid "Approve {0}"
@@ -3646,7 +3645,6 @@ msgstr "警告：该仓位在扣除借款费用后，抵押品数量较少，请
 msgid "WEIGHT"
 msgstr "重量"
 
-#: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
 msgid "Waiting for Approval"

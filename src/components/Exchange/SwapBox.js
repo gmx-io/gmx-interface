@@ -21,7 +21,6 @@ import {
   getExchangeRate,
   getExchangeRateDisplay,
   getLeverage,
-  getLiquidationPrice,
   getNextFromAmount,
   getNextToAmount,
   getPositionKey,
@@ -378,7 +377,6 @@ export default function SwapBox(props) {
 
   const fromUsdMin = getUsd(fromAmount, fromTokenAddress, false, infoTokens);
   const toUsdMax = getUsd(toAmount, toTokenAddress, true, infoTokens, orderOption, triggerPriceUsd);
-  let fromUsdMinAfterFee = fromUsdMin;
 
   const indexTokenAddress = toTokenAddress === AddressZero ? nativeTokenAddress : toTokenAddress;
   const collateralTokenAddress = isLong ? indexTokenAddress : shortCollateralAddress;
@@ -579,7 +577,7 @@ export default function SwapBox(props) {
             totalTokenWeights,
             isSwap
           );
-
+          let fromUsdMinAfterFee = fromUsdMin;
           if (feeBasisPoints) {
             fromUsdMinAfterFee = fromUsdMin.mul(BASIS_POINTS_DIVISOR - feeBasisPoints).div(BASIS_POINTS_DIVISOR);
           }
@@ -1650,10 +1648,10 @@ export default function SwapBox(props) {
       return;
     }
 
-    // if (needApproval) {
-    //   approveFromToken();
-    //   return;
-    // }
+    if (needApproval) {
+      approveFromToken();
+      return;
+    }
 
     if (needOrderBookApproval) {
       setOrdersToaOpen(true);
@@ -1771,43 +1769,25 @@ export default function SwapBox(props) {
     }
   }
 
-  const liquidationPrice = getLiquidationPrice({
+  const liquidationPrice = getLiquidation({
     isLong,
-    size: hasExistingPosition ? existingPosition.size : bigNumberify(0),
-    collateral: hasExistingPosition ? existingPosition.collateral : bigNumberify(0),
-    averagePrice: nextAveragePrice,
-    entryFundingRate: hasExistingPosition ? existingPosition.entryFundingRate : bigNumberify(0),
-    cumulativeFundingRate: hasExistingPosition ? existingPosition.cumulativeFundingRate : bigNumberify(0),
-    sizeDelta: toUsdMax,
-    collateralDelta: swapFees ? fromUsdMin.sub(swapFees) : fromUsdMin,
-    increaseCollateral: true,
-    increaseSize: true,
+    size: hasExistingPosition ? existingPosition.size.add(toUsdMax || 0) : toUsdMax ?? bigNumberify(0),
+    collateral: hasExistingPosition
+      ? existingPosition.collateralAfterFee.add(fromUsdMin ? fromUsdMin.sub(swapFees ?? 0).sub(positionFee ?? 0) : 0)
+      : fromUsdMin ?? bigNumberify(0),
+    averagePrice: nextAveragePrice ?? bigNumberify(0),
   });
 
-  const liquidationPriceTest = getLiquidation({});
-
-  const existingLiquidationPrice = existingPosition ? getLiquidationPrice(existingPosition) : undefined;
-  const existingLiquidationPriceTest = existingPosition
+  const existingLiquidationPrice = existingPosition
     ? getLiquidation({
         isLong: existingPosition.isLong,
         size: existingPosition.size,
         collateral: existingPosition.collateral,
         averagePrice: existingPosition.averagePrice,
+        fees: [existingPosition.fundingFee],
       })
     : undefined;
   let displayLiquidationPrice = liquidationPrice ? liquidationPrice : existingLiquidationPrice;
-  console.log(
-    {
-      liquidationPrice: liquidationPrice ? liquidationPrice.toString() / 1e30 : undefined,
-      liquidationPriceTest: liquidationPriceTest ? liquidationPriceTest.toString() / 1e30 : undefined,
-      existingLiquidationPrice: existingLiquidationPrice ? existingLiquidationPrice.toString() / 1e30 : undefined,
-      existingLiquidationPriceTest: existingLiquidationPriceTest
-        ? existingLiquidationPriceTest.toString() / 1e30
-        : undefined,
-      swapFees: swapFees && swapFees / 1e30,
-    },
-    "add"
-  );
   function setFromValueToMaximumAvailable() {
     if (!fromToken || !fromBalance) {
       return;

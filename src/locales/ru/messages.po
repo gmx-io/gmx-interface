@@ -276,7 +276,6 @@ msgid "Approve GMX"
 msgstr "Одобрить GMX"
 
 #: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
 msgid "Approve {0}"
@@ -3646,7 +3645,6 @@ msgstr "ВНИМАНИЕ: Данная позиция имеет низкую с
 msgid "WEIGHT"
 msgstr "ВЕС"
 
-#: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
 msgid "Waiting for Approval"

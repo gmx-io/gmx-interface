@@ -276,7 +276,6 @@ msgid "Approve GMX"
 msgstr "GMXを承認する"
 
 #: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
 msgid "Approve {0}"
@@ -3646,7 +3645,6 @@ msgstr "警告: このポジションは借入手数料差引後の担保額が�
 msgid "WEIGHT"
 msgstr "ウェイト"
 
-#: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
 msgid "Waiting for Approval"

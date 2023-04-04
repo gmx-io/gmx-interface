@@ -276,7 +276,6 @@ msgid "Approve GMX"
 msgstr "Approuver GMX"
 
 #: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
 msgid "Approve {0}"
@@ -3646,7 +3645,6 @@ msgstr "AVERTISSEMENT: Cette position a un montant de collatéral bas après dé
 msgid "WEIGHT"
 msgstr "POIDS"
 
-#: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
 msgid "Waiting for Approval"

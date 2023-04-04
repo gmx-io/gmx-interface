@@ -183,6 +183,8 @@ export default function PositionEditor(props) {
         includeDelta: false,
       });
 
+      // nextCollateral is prev collateral + deposit amount - borrow fee - deposit fee
+      // in case of withdrawal nextCollateral is prev collateral - withdraw amount - borrow fee
       nextLiquidationPrice = getLiquidation({
         isLong: position.isLong,
         size: position.size,

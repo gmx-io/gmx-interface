@@ -276,7 +276,6 @@ msgid "Approve GMX"
 msgstr "GMX 승인"
 
 #: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
 msgid "Approve {0}"
@@ -3646,7 +3645,6 @@ msgstr "경고: 이 포지션은 차용수수료를 차감하면 담보액이 �
 msgid "WEIGHT"
 msgstr "비중"
 
-#: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
 msgid "Waiting for Approval"
