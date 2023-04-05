@@ -76,7 +76,7 @@ export function MarketsList() {
 
       const indexTokenStats = indexMap[market.indexTokenAddress];
 
-      const poolValueUsd = getPoolValue(market, true) || BigNumber.from(0);
+      const poolValueUsd = getPoolValue(market, true, "FOR_TRADERS") || BigNumber.from(0);
 
       const longReservedUsd = getReservedUsd(market, true);
 

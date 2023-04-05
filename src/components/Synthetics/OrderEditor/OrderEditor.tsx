@@ -4,22 +4,21 @@ import Modal from "components/Modal/Modal";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { useMarketsInfo } from "domain/synthetics/markets";
 import {
-  AggregatedOrderData,
+  OrderInfo,
   OrderType,
-  getAcceptablePrice,
-  getToTokenFromSwapPath,
-  isDecreaseOrder,
-  isIncreaseOrder,
-  isLimitOrder,
-  isSwapOrder,
-  isTriggerDecreaseOrder,
+  PositionOrderInfo,
+  isDecreaseOrderType,
+  isIncreaseOrderType,
+  isLimitOrderType,
+  isSwapOrderType,
+  isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
-import { PositionInfo, PositionsInfoData, getPosition, getPositionKey } from "domain/synthetics/positions";
+import { PositionsInfoData, getPositionKey } from "domain/synthetics/positions";
 import {
   TokensRatio,
   getTokenData,
-  getTokensRatioByPrice,
   getTokensRatioByAmounts,
+  getTokensRatioByPrice,
   useAvailableTokensData,
 } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
@@ -29,26 +28,28 @@ import { useEffect, useMemo, useState } from "react";
 
 import { useWeb3React } from "@web3-react/core";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import { DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS } from "config/factors";
 import { SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BPS_KEY } from "config/localStorage";
+import { getWrappedToken } from "config/tokens";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
   estimateExecuteSwapOrderGasLimit,
   getExecutionFee,
+  useGasLimits,
   useGasPrice,
 } from "domain/synthetics/fees";
-import { useGasLimits } from "domain/synthetics/fees";
 import { updateOrderTxn } from "domain/synthetics/orders/updateOrderTxn";
+import { getAcceptablePrice, getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
 import { getNextTokenAmount } from "../Trade/utils";
 import "./OrderEditor.scss";
-import { DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS } from "config/factors";
 
 type Props = {
   positionsData: PositionsInfoData;
-  order: AggregatedOrderData;
+  order: OrderInfo;
   onClose: () => void;
   setPendingTxns: (txns: any) => void;
 };
@@ -76,20 +77,23 @@ export function OrderEditor(p: Props) {
   const triggerPrice = parseValue(triggerPirceInputValue || "0", USD_DECIMALS);
 
   const { acceptablePrice } = getAcceptablePrice({
-    isIncrease: isIncreaseOrder(p.order.orderType),
+    isIncrease: isIncreaseOrderType(p.order.orderType),
     isLong: p.order.isLong,
     indexPrice: triggerPrice,
     acceptablePriceImpactBps: acceptablePriceImpactBps,
   });
 
   // Swaps
-  const isSwap = isSwapOrder(p.order.orderType);
+  const isSwap = isSwapOrderType(p.order.orderType);
   const fromToken = getTokenData(tokensData, p.order.initialCollateralTokenAddress);
-  const toTokenAddress = getToTokenFromSwapPath(
-    marketsInfoData || {},
-    p.order.initialCollateralTokenAddress,
-    p.order.swapPath
-  );
+  const { outTokenAddress: toTokenAddress } = getSwapPathOutputAddresses({
+    marketsInfoData: marketsInfoData!,
+    initialCollateralAddress: p.order.initialCollateralTokenAddress,
+    swapPath: p.order.swapPath,
+    wrappedNativeTokenAddress: getWrappedToken(chainId).address,
+    shouldUnwrapNativeToken: p.order.shouldUnwrapNativeToken,
+  });
+
   const toToken = getTokenData(tokensData, toTokenAddress);
   const fromTokenPrice = fromToken?.prices?.maxPrice;
   const toTokenPrice = toToken?.prices?.minPrice;
@@ -143,26 +147,26 @@ export function OrderEditor(p: Props) {
     p.order.isLong
   );
 
-  const existingPosition = getPosition(p.positionsData, positionKey) as PositionInfo | undefined;
+  const existingPosition = getByKey(p.positionsData, positionKey);
 
   const executionFee = useMemo(() => {
     if (!p.order.isFrozen || !gasLimits || !gasPrice || !tokensData) return undefined;
 
     let estimatedGas: BigNumber | undefined;
 
-    if (isSwapOrder(p.order.orderType)) {
+    if (isSwapOrderType(p.order.orderType)) {
       estimatedGas = estimateExecuteSwapOrderGasLimit(gasLimits, {
         swapPath: p.order.swapPath,
       });
     }
 
-    if (isIncreaseOrder(p.order.orderType)) {
+    if (isIncreaseOrderType(p.order.orderType)) {
       estimatedGas = estimateExecuteIncreaseOrderGasLimit(gasLimits, {
         swapPath: p.order.swapPath,
       });
     }
 
-    if (isDecreaseOrder(p.order.orderType)) {
+    if (isDecreaseOrderType(p.order.orderType)) {
       estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {
         swapPath: p.order.swapPath,
       });
@@ -174,7 +178,7 @@ export function OrderEditor(p: Props) {
   }, [chainId, gasLimits, gasPrice, p.order.isFrozen, p.order.orderType, p.order.swapPath, tokensData]);
 
   function getError() {
-    if (isSwapOrder(p.order.orderType)) {
+    if (isSwapOrderType(p.order.orderType)) {
       if (!triggerRatio?.ratio?.gt(0)) {
         return t`Enter a ratio`;
       }
@@ -185,6 +189,8 @@ export function OrderEditor(p: Props) {
 
       return;
     }
+
+    const positionOrder = p.order as PositionOrderInfo;
 
     if (!markPrice) {
       return t`Loading...`;
@@ -198,11 +204,11 @@ export function OrderEditor(p: Props) {
       return t`Enter a price`;
     }
 
-    if (sizeDeltaUsd?.eq(p.order.sizeDeltaUsd) && triggerPrice?.eq(p.order.triggerPrice!)) {
+    if (sizeDeltaUsd?.eq(positionOrder.sizeDeltaUsd) && triggerPrice?.eq(positionOrder.triggerPrice!)) {
       return t`Enter a new size or price`;
     }
 
-    if (isLimitOrder(p.order.orderType)) {
+    if (isLimitOrderType(p.order.orderType)) {
       if (p.order.isLong) {
         if (triggerPrice?.gte(markPrice)) {
           return t`Price above Mark Price`;
@@ -214,21 +220,21 @@ export function OrderEditor(p: Props) {
       }
     }
 
-    if (isTriggerDecreaseOrder(p.order.orderType)) {
+    if (isTriggerDecreaseOrderType(p.order.orderType)) {
       if (!markPrice) {
         return t`Loading...`;
       }
 
-      if (sizeDeltaUsd?.eq(p.order.sizeDeltaUsd || 0) && triggerPrice?.eq(p.order.triggerPrice || 0)) {
+      if (sizeDeltaUsd?.eq(p.order.sizeDeltaUsd || 0) && triggerPrice?.eq(positionOrder.triggerPrice || 0)) {
         return t`Enter a new size or price`;
       }
 
-      if (existingPosition?.liqPrice) {
-        if (existingPosition.isLong && triggerPrice?.lte(existingPosition?.liqPrice)) {
+      if (existingPosition?.liquidationPrice) {
+        if (existingPosition.isLong && triggerPrice?.lte(existingPosition?.liquidationPrice)) {
           return t`Price below Liq. Price`;
         }
 
-        if (!existingPosition.isLong && triggerPrice?.gte(existingPosition?.liqPrice)) {
+        if (!existingPosition.isLong && triggerPrice?.gte(existingPosition?.liquidationPrice)) {
           return t`Price above Liq. Price`;
         }
       }
@@ -271,11 +277,13 @@ export function OrderEditor(p: Props) {
   }
 
   function onSubmit() {
+    const positionOrder = p.order as PositionOrderInfo;
+
     updateOrderTxn(chainId, library, {
       orderKey: p.order.key,
-      sizeDeltaUsd: sizeDeltaUsd || p.order.sizeDeltaUsd,
-      triggerPrice: triggerPrice || p.order.triggerPrice!,
-      acceptablePrice: acceptablePrice || p.order.acceptablePrice!,
+      sizeDeltaUsd: sizeDeltaUsd || positionOrder.sizeDeltaUsd,
+      triggerPrice: triggerPrice || positionOrder.triggerPrice!,
+      acceptablePrice: acceptablePrice || positionOrder.acceptablePrice!,
       minOutputAmount: minOutputAmount || p.order.minOutputAmount,
       executionFee: executionFee?.feeTokenAmount,
       indexToken: indexToken,
@@ -289,7 +297,7 @@ export function OrderEditor(p: Props) {
     function initValues() {
       if (isInited) return;
 
-      if (isSwapOrder(p.order.orderType)) {
+      if (isSwapOrderType(p.order.orderType)) {
         const ratio =
           fromToken &&
           toToken &&
@@ -304,8 +312,10 @@ export function OrderEditor(p: Props) {
           setTriggerRatioInputValue(formatAmount(ratio.ratio, USD_DECIMALS, 2));
         }
       } else {
-        setSizeInputValue(formatAmountFree(p.order.sizeDeltaUsd || 0, USD_DECIMALS));
-        setTriggerPriceInputValue(formatAmount(p.order.triggerPrice || 0, USD_DECIMALS, 2));
+        const positionOrder = p.order as PositionOrderInfo;
+
+        setSizeInputValue(formatAmountFree(positionOrder.sizeDeltaUsd || 0, USD_DECIMALS));
+        setTriggerPriceInputValue(formatAmount(positionOrder.triggerPrice || 0, USD_DECIMALS, 2));
       }
 
       setIsInited(true);
@@ -322,10 +332,10 @@ export function OrderEditor(p: Props) {
         label={<Trans>Edit {p.order.title}</Trans>}
         allowContentTouchMove
       >
-        {!isSwapOrder(p.order.orderType) && (
+        {!isSwapOrderType(p.order.orderType) && (
           <>
             <BuyInputSection
-              topLeftLabel={isTriggerDecreaseOrder(p.order.orderType) ? t`Close` : t`Size`}
+              topLeftLabel={isTriggerDecreaseOrderType(p.order.orderType) ? t`Close` : t`Size`}
               inputValue={sizeInputValue}
               onInputValueChange={(e) => setSizeInputValue(e.target.value)}
             >
@@ -345,7 +355,7 @@ export function OrderEditor(p: Props) {
           </>
         )}
 
-        {isSwapOrder(p.order.orderType) && (
+        {isSwapOrderType(p.order.orderType) && (
           <>
             {triggerRatio && (
               <BuyInputSection
@@ -368,11 +378,11 @@ export function OrderEditor(p: Props) {
         )}
 
         <div className="PositionEditor-info-box">
-          {!isSwapOrder(p.order.orderType) && (
+          {!isSwapOrderType(p.order.orderType) && (
             <>
               <ExchangeInfoRow label={t`Acceptable Price`} value={formatUsd(acceptablePrice)} />
-              {existingPosition?.liqPrice && (
-                <ExchangeInfoRow label={t`Liq. Price`} value={formatUsd(existingPosition.liqPrice)} />
+              {existingPosition?.liquidationPrice && (
+                <ExchangeInfoRow label={t`Liq. Price`} value={formatUsd(existingPosition.liquidationPrice)} />
               )}
             </>
           )}

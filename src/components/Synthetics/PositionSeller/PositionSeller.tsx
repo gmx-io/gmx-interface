@@ -11,7 +11,7 @@ import { KEEP_LEVERAGE_FOR_DECREASE_KEY, SLIPPAGE_BPS_KEY } from "config/localSt
 import { convertTokenAddress } from "config/tokens";
 import { estimateExecuteDecreaseOrderGasLimit, getExecutionFee, useGasPrice } from "domain/synthetics/fees";
 import { DecreasePositionSwapType, OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
-import { PositionInfo, formatLeverage, formatPnl, getMarkPrice } from "domain/synthetics/positions";
+import { PositionInfo, formatLeverage } from "domain/synthetics/positions";
 import { adaptToV1InfoTokens, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
@@ -26,6 +26,7 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   expandDecimals,
   formatAmount,
+  formatDeltaUsd,
   formatPercentage,
   formatTokenAmountWithUsd,
   formatUsd,
@@ -90,7 +91,7 @@ export function PositionSeller(p: Props) {
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
   const shouldSwapPnlToCollateralToken = getShouldSwapPnlToCollateralToken({
-    market: position?.market,
+    market: position?.marketInfo,
     collateralTokenAddress: position?.collateralToken?.address,
     isLong: position?.isLong,
   });
@@ -117,7 +118,7 @@ export function PositionSeller(p: Props) {
     toTokenAddress: receiveTokenAddress,
   });
 
-  const markPrice = getMarkPrice(position?.indexToken?.prices, false, position?.isLong);
+  const markPrice = position?.markPrice;
 
   const marketInfo = getByKey(marketsInfoData, position?.marketAddress);
 
@@ -274,7 +275,6 @@ export function PositionSeller(p: Props) {
       !account ||
       !position ||
       !executionFee?.feeTokenAmount ||
-      !position?.currentValueUsd ||
       !receiveToken?.address ||
       !decreaseAmounts
     ) {
@@ -414,7 +414,7 @@ export function PositionSeller(p: Props) {
                         "-"
                       ) : (
                         <ValueTransition
-                          from={formatUsd(position.liqPrice)!}
+                          from={formatUsd(position.liquidationPrice)!}
                           to={formatUsd(nextPositionValues?.nextLiqPrice)}
                         />
                       )
@@ -448,7 +448,7 @@ export function PositionSeller(p: Props) {
                     </div>
                     <div className="align-right">
                       <ValueTransition
-                        from={formatUsd(position?.collateralUsd)!}
+                        from={formatUsd(position?.initialCollateralUsd)!}
                         to={formatUsd(nextPositionValues?.nextCollateralUsd)}
                       />
                     </div>
@@ -472,7 +472,7 @@ export function PositionSeller(p: Props) {
 
                   <ExchangeInfoRow
                     label={t`PnL`}
-                    value={position?.pnl ? formatPnl(position?.pnl, position?.pnlPercentage) : "..."}
+                    value={position?.pnl ? formatDeltaUsd(position?.pnl, position?.pnlPercentage) : "..."}
                   />
 
                   <TradeFeesRow

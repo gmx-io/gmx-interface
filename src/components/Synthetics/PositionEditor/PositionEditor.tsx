@@ -19,17 +19,10 @@ import {
   OrderType,
   createDecreaseOrderTxn,
   createIncreaseOrderTxn,
-  getAcceptablePrice,
 } from "domain/synthetics/orders";
-import {
-  PositionInfo,
-  formatLeverage,
-  getLeverage,
-  getLiquidationPrice,
-  getMarkPrice,
-} from "domain/synthetics/positions";
+import { PositionInfo, formatLeverage, getLeverage, getLiquidationPrice } from "domain/synthetics/positions";
 import { convertToTokenAmount, convertToUsd, useAvailableTokensData } from "domain/synthetics/tokens";
-import { useTokenInput } from "domain/synthetics/trade";
+import { getAcceptablePrice, useTokenInput } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { BASIS_POINTS_DIVISOR, DEFAULT_SLIPPAGE_AMOUNT, MAX_ALLOWED_LEVERAGE, USD_DECIMALS } from "lib/legacy";
@@ -45,8 +38,8 @@ import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { usePositionsConstants } from "domain/synthetics/positions/usePositionsConstants";
 import { contractFetcher } from "lib/contracts";
 import useSWR from "swr";
-import "./PositionEditor.scss";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
+import "./PositionEditor.scss";
 
 type Props = {
   position?: PositionInfo;
@@ -112,51 +105,62 @@ export function PositionEditor(p: Props) {
   const collateralDeltaUsd = isDeposit ? depositInput.usdAmount : withdrawUsd;
 
   let nextCollateralUsd = isDeposit
-    ? position?.collateralUsd?.add(collateralDeltaUsd || BigNumber.from(0))
-    : position?.collateralUsdAfterFees?.sub(collateralDeltaUsd || BigNumber.from(0));
+    ? position?.initialCollateralUsd?.add(collateralDeltaUsd || BigNumber.from(0))
+    : position?.remainingCollateralUsd?.sub(collateralDeltaUsd || BigNumber.from(0));
 
   if (nextCollateralUsd?.lt(0)) {
     nextCollateralUsd = BigNumber.from(0);
   }
 
-  const nextLeverageExcludingPnl = getLeverage({
-    sizeUsd: position?.sizeInUsd,
-    collateralUsd: nextCollateralUsd,
-    pendingBorrowingFeesUsd: position?.pendingBorrowingFeesUsd,
-    pendingFundingFeesUsd: position?.pendingFundingFeesUsd,
-  });
+  const { nextLeverageExcludingPnl, nextLeverage, nextLiqPrice } = useMemo(() => {
+    if (!position || !nextCollateralUsd || !minCollateralUsd) {
+      return {};
+    }
 
-  const nextLeverage = getLeverage({
-    sizeUsd: position?.sizeInUsd,
-    collateralUsd: nextCollateralUsd,
-    pendingBorrowingFeesUsd: position?.pendingBorrowingFeesUsd,
-    pendingFundingFeesUsd: position?.pendingFundingFeesUsd,
-    pnl: savedIsPnlInLeverage ? position?.pnl : undefined,
-  });
-
-  const nextLiqPrice = getLiquidationPrice({
-    sizeUsd: position?.sizeInUsd,
-    collateralUsd: nextCollateralUsd,
-    indexPrice: position?.markPrice,
-    isLong: position?.isLong,
-    pendingBorrowingFeesUsd: position?.pendingBorrowingFeesUsd,
-    pendingFundingFeesUsd: position?.pendingFundingFeesUsd,
-    positionFeeFactor: position?.market?.positionFeeFactor,
-  });
+    return {
+      nextLeverageExcludingPnl: getLeverage({
+        sizeInUsd: position.sizeInUsd,
+        collateralUsd: nextCollateralUsd,
+        pnl: undefined,
+        pendingBorrowingFeesUsd: position?.pendingBorrowingFeesUsd,
+        pendingFundingFeesUsd: position?.pendingFundingFeesUsd,
+      }),
+      nextLeverage: getLeverage({
+        sizeInUsd: position.sizeInUsd,
+        collateralUsd: nextCollateralUsd,
+        pnl: savedIsPnlInLeverage ? position?.pnl : undefined,
+        pendingBorrowingFeesUsd: position?.pendingBorrowingFeesUsd,
+        pendingFundingFeesUsd: position?.pendingFundingFeesUsd,
+      }),
+      nextLiqPrice: getLiquidationPrice({
+        sizeInUsd: position.sizeInUsd,
+        collateralUsd: nextCollateralUsd,
+        pnl: position.pnl,
+        pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
+        pendingFundingFeesUsd: position.pendingFundingFeesUsd,
+        isLong: position.isLong,
+        markPrice: position.markPrice,
+        maxPriceImpactFactor: position.marketInfo.maxPositionImpactFactorForLiquidations,
+        minCollateralFactor: position.marketInfo.minCollateralFactor,
+        minCollateralUsd,
+        closingFeeUsd: position.closingFeeUsd,
+      }),
+    };
+  }, [minCollateralUsd, nextCollateralUsd, position, savedIsPnlInLeverage]);
 
   const { acceptablePrice = undefined } = position
     ? getAcceptablePrice({
         isIncrease: isDeposit,
         isLong: position?.isLong,
         sizeDeltaUsd: BigNumber.from(0),
-        indexPrice: getMarkPrice(position?.indexToken?.prices, isDeposit, position?.isLong),
+        indexPrice: position?.markPrice,
         allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
       })
     : {};
 
   // TODO: calculate swap fees
   const shouldSwapPnlToCollateralToken =
-    !isDeposit && position?.market && position?.pnlToken?.address !== position?.collateralToken?.address;
+    !isDeposit && position?.marketInfo && position?.pnlToken?.address !== position?.collateralToken?.address;
 
   const needApproval =
     isDeposit && tokenAllowance && depositInput.tokenAmount && depositInput.tokenAmount.gt(tokenAllowance);
@@ -183,8 +187,8 @@ export function PositionEditor(p: Props) {
       return [t`Amount should be greater than zero`];
     }
 
-    if (!isDeposit && collateralDeltaUsd && position?.collateralUsdAfterFees && minCollateralUsd) {
-      if (position?.collateralUsdAfterFees.sub(collateralDeltaUsd).lt(minCollateralUsd)) {
+    if (!isDeposit && collateralDeltaUsd && position?.remainingCollateralUsd && minCollateralUsd) {
+      if (position?.remainingCollateralUsd.sub(collateralDeltaUsd).lt(minCollateralUsd)) {
         return [t`Min residual collateral: ${formatAmount(minCollateralUsd, USD_DECIMALS, 2)} USD`];
       }
     }
@@ -360,11 +364,11 @@ export function PositionEditor(p: Props) {
             label={t`Collateral (${position?.collateralToken?.symbol})`}
             value={
               <ValueTransition
-                from={formatUsd(position?.collateralUsdAfterFees) || "..."}
+                from={formatUsd(position?.remainingCollateralUsd) || "..."}
                 to={
                   nextCollateralUsd &&
-                  position?.collateralUsdAfterFees &&
-                  !nextCollateralUsd.eq(position?.collateralUsdAfterFees)
+                  position?.remainingCollateralUsd &&
+                  !nextCollateralUsd.eq(position?.remainingCollateralUsd)
                     ? formatUsd(nextCollateralUsd)
                     : undefined
                 }
@@ -389,9 +393,9 @@ export function PositionEditor(p: Props) {
             label={t`Liq Price`}
             value={
               <ValueTransition
-                from={formatUsd(position?.liqPrice) || "..."}
+                from={formatUsd(position?.liquidationPrice) || "..."}
                 to={
-                  nextLiqPrice && position?.liqPrice && !nextLiqPrice.eq(position?.liqPrice)
+                  nextLiqPrice && position?.liquidationPrice && !nextLiqPrice.eq(position?.liquidationPrice)
                     ? formatUsd(nextLiqPrice)
                     : undefined
                 }

@@ -32,23 +32,23 @@ export type Position = {
 };
 
 export type PositionInfo = Position & {
-  market: MarketInfo;
+  marketInfo: MarketInfo;
   indexToken: TokenData;
   collateralToken: TokenData;
   pnlToken: TokenData;
-  currentValueUsd: BigNumber;
-  collateralUsd: BigNumber;
-  collateralUsdAfterFees: BigNumber;
+  markPrice: BigNumber;
+  entryPrice: BigNumber | undefined;
+  collateralMarkPrice: BigNumber;
+  liquidationPrice: BigNumber | undefined;
+  initialCollateralUsd: BigNumber;
+  remainingCollateralUsd: BigNumber;
   hasLowCollateral: boolean;
   pnl: BigNumber;
   pnlPercentage: BigNumber;
   pnlAfterFees: BigNumber;
   pnlAfterFeesPercentage: BigNumber;
-  leverage: BigNumber;
-  netValue?: BigNumber;
-  entryPrice: BigNumber;
-  markPrice: BigNumber;
-  liqPrice: BigNumber;
+  leverage: BigNumber | undefined;
+  netValue: BigNumber;
   closingFeeUsd: BigNumber;
   pendingFundingFeesUsd: BigNumber;
 };

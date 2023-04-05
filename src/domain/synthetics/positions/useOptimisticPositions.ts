@@ -14,7 +14,7 @@ import { hashedPositionKey } from "config/dataStore";
 
 const MAX_PENDING_UPDATE_AGE = 600 * 1000;
 
-export function useOptimisticPositionsData(chainId: number) {
+export function useOptimisticPositions(chainId: number) {
   const { positionsData } = usePositions(chainId);
   const { positionDecreaseEvents, positionIncreaseEvents, pendingPositionsUpdates } = useSyntheticsEvents();
 
@@ -112,14 +112,14 @@ function applyEventChanges(position: Position, event: PositionIncreaseEvent | Po
 }
 
 function getPendingPosition(pendingUpdate: PendingPositionUpdate): Position {
-  const { account, market, collateralToken, isLong } = parsePositionKey(pendingUpdate.positionKey);
+  const { account, marketAddress, collateralAddress, isLong } = parsePositionKey(pendingUpdate.positionKey);
 
   return {
     key: pendingUpdate.positionKey,
-    contractKey: hashedPositionKey(account, market, collateralToken, isLong),
+    contractKey: hashedPositionKey(account, marketAddress, collateralAddress, isLong),
     account,
-    marketAddress: market,
-    collateralTokenAddress: collateralToken,
+    marketAddress,
+    collateralTokenAddress: collateralAddress,
     isLong,
     sizeInUsd: pendingUpdate.sizeDeltaUsd || BigNumber.from(0),
     collateralAmount: pendingUpdate.collateralDeltaAmount || BigNumber.from(0),

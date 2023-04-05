@@ -1,5 +1,5 @@
+import { MarketInfo } from "domain/synthetics/markets";
 import { BigNumber } from "ethers";
-import { Market } from "domain/synthetics/markets";
 import { TokenData } from "../tokens";
 
 export enum OrderType {
@@ -29,33 +29,10 @@ export enum DecreasePositionSwapType {
   SwapCollateralTokenToPnlToken = 2,
 }
 
-export type RawContractOrder = {
-  addresses: {
-    account: string;
-    receiver: string;
-    callbackContract: string;
-    market: string;
-    initialCollateralToken: string;
-    swapPath: string[];
-  };
-  numbers: {
-    sizeDeltaUsd: BigNumber;
-    initialCollateralDeltaAmount: BigNumber;
-    triggerPrice: BigNumber;
-    acceptablePrice: BigNumber;
-    executionFee: BigNumber;
-    callbackGasLimit: BigNumber;
-    minOutputAmount: BigNumber;
-    updatedAtBlock: BigNumber;
-  };
-  flags: {
-    orderType: OrderType;
-    isLong: boolean;
-    shouldUnwrapNativeToken: boolean;
-    isFrozen: boolean;
-  };
-  data: string;
-};
+export enum TriggerThresholdType {
+  Above = ">",
+  Below = "<",
+}
 
 export type Order = {
   key: string;
@@ -81,21 +58,29 @@ export type Order = {
   data: string;
 };
 
-export type AggregatedOrderData = Order & {
-  title?: string;
-  triggerPrice?: BigNumber;
-  acceptablePrice?: BigNumber;
-  market?: Market;
-  marketName?: string;
-  indexToken?: TokenData;
-  initialCollateralToken?: TokenData;
-  toCollateralToken?: TokenData;
+export type SwapOrderInfo = Order & {
+  title: string;
+  initialCollateralToken: TokenData;
+  targetCollateralToken: TokenData;
 };
+
+export type PositionOrderInfo = Order & {
+  title: string;
+  marketInfo: MarketInfo;
+  indexToken: TokenData;
+  initialCollateralToken: TokenData;
+  targetCollateralToken: TokenData;
+  triggerPrice: BigNumber;
+  triggerThresholdType: TriggerThresholdType;
+  acceptablePrice: BigNumber;
+};
+
+export type OrderInfo = SwapOrderInfo | PositionOrderInfo;
 
 export type OrdersData = {
   [orderKey: string]: Order;
 };
 
-export type AggregatedOrdersData = {
-  [orderKey: string]: AggregatedOrderData;
+export type OrdersInfoData = {
+  [orderKey: string]: OrderInfo;
 };

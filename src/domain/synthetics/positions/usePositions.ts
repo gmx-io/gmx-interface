@@ -71,7 +71,7 @@ export function usePositions(chainId: number): PositionsResult {
     };
   }, [account, marketsData, positionsKeys, tokensData]);
 
-  const { data: positionsData = defaultValue, isLoading } = useMulticall(chainId, "usePositionsData", {
+  const { data: positionsData = defaultValue } = useMulticall(chainId, "usePositionsData", {
     key: queryParams?.positionsKeys.length ? [queryParams.positionsKeys.join("-")] : null,
     request: () => ({
       reader: {

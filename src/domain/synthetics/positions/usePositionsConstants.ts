@@ -1,19 +1,17 @@
-import { MAX_LEVERAGE_KEY, MIN_COLLATERAL_USD_KEY } from "config/dataStore";
 import DataStore from "abis/DataStore.json";
 import { getContract } from "config/contracts";
-import { useMulticall } from "lib/multicall";
+import { MAX_LEVERAGE_KEY, MIN_COLLATERAL_USD_KEY } from "config/dataStore";
 import { BigNumber } from "ethers";
-import { useMemo } from "react";
 import { MAX_ALLOWED_LEVERAGE } from "lib/legacy";
+import { useMulticall } from "lib/multicall";
 
 export type PositionsConstantsResult = {
   minCollateralUsd?: BigNumber;
   maxLeverage?: BigNumber;
-  isLoading: boolean;
 };
 
 export function usePositionsConstants(chainId: number): PositionsConstantsResult {
-  const { data, isLoading } = useMulticall(chainId, "usePositionsConstants", {
+  const { data } = useMulticall(chainId, "usePositionsConstants", {
     key: [],
     request: {
       dataStore: {
@@ -37,11 +35,8 @@ export function usePositionsConstants(chainId: number): PositionsConstantsResult
     }),
   });
 
-  return useMemo(() => {
-    return {
-      minCollateralUsd: data?.minCollateralUsd,
-      maxLeverage: data?.maxLeverage?.gt(0) ? data.maxLeverage : BigNumber.from(MAX_ALLOWED_LEVERAGE),
-      isLoading,
-    };
-  }, [data, isLoading]);
+  return {
+    minCollateralUsd: data?.minCollateralUsd,
+    maxLeverage: data?.maxLeverage?.gt(0) ? data.maxLeverage : BigNumber.from(MAX_ALLOWED_LEVERAGE),
+  };
 }

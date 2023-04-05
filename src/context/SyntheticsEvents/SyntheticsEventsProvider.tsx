@@ -4,7 +4,7 @@ import EventEmitter from "abis/EventEmitter.json";
 import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
 import { useMarketsInfo } from "domain/synthetics/markets";
-import { getOrderTypeLabel, getToTokenFromSwapPath } from "domain/synthetics/orders";
+import { getOrderTypeLabel } from "domain/synthetics/orders";
 import { getPositionKey } from "domain/synthetics/positions";
 import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
@@ -28,6 +28,8 @@ import {
   WithdrawalStatuses,
 } from "./types";
 import { parseEventLogData } from "./utils";
+import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
+import { getWrappedToken } from "config/tokens";
 
 export const SyntheticsEventsContext = createContext({});
 
@@ -156,16 +158,20 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
       const order = orderStatuses[key]?.data;
 
-      if (order) {
+      if (order && marketsInfoData) {
+        const wrappedToken = getWrappedToken(chainId);
         const orderLabel = getOrderTypeLabel(order.orderType);
-        const targetCollateral = getToTokenFromSwapPath(
-          marketsInfoData || {},
-          order.initialCollateralTokenAddress,
-          order.swapPath
-        );
+        const { outTokenAddress } = getSwapPathOutputAddresses({
+          marketsInfoData: marketsInfoData,
+          initialCollateralAddress: order.initialCollateralTokenAddress,
+          swapPath: order.swapPath,
+          wrappedNativeTokenAddress: wrappedToken.address,
+          shouldUnwrapNativeToken: order.shouldUnwrapNativeToken,
+        });
+
         pushErrorNotification(chainId, `${orderLabel} order cancelled`, txnParams);
 
-        const positionKey = getPositionKey(order.account, order.marketAddress, targetCollateral, order.isLong);
+        const positionKey = getPositionKey(order.account, order.marketAddress, outTokenAddress, order.isLong);
 
         if (positionKey) {
           setPendingPositionsUpdates((old) => setByKey(old, positionKey, undefined));

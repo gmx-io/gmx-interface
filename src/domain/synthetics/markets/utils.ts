@@ -3,7 +3,7 @@ import { PRECISION } from "lib/legacy";
 import { applyFactor } from "lib/numbers";
 import { convertToContractTokenPrices, convertToUsd, getMidPrice, getTokenData } from "../tokens";
 import { TokensData } from "../tokens/types";
-import { ContractMarketPrices, Market, MarketInfo } from "./types";
+import { ContractMarketPrices, Market, MarketInfo, PnlFactorType } from "./types";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { Token } from "domain/tokens";
 
@@ -112,7 +112,7 @@ export function getAvailableUsdLiquidityForCollateral(marketInfo: MarketInfo, is
 }
 
 // TODO: for deposits / withdrawals in minTokenAmount
-export function getPoolValue(marketInfo: MarketInfo, maximize: boolean) {
+export function getPoolValue(marketInfo: MarketInfo, maximize: boolean, pnlFactorType: PnlFactorType) {
   const longPoolUsd = getPoolUsd(marketInfo, true, maximize ? "maxPrice" : "minPrice");
   const shortPoolUsd = getPoolUsd(marketInfo, false, maximize ? "maxPrice" : "minPrice");
 
@@ -132,14 +132,38 @@ export function getPoolValue(marketInfo: MarketInfo, maximize: boolean) {
     maximize ? marketInfo.indexToken.prices.maxPrice : marketInfo.indexToken.prices.minPrice
   )!;
 
-  const netPnl = maximize ? marketInfo.netPnlMin : marketInfo.netPnlMax;
+  const pnlLong = getCappedPoolPnl({
+    marketInfo,
+    poolUsd: longPoolUsd,
+    isLong: true,
+    pnlFactorType,
+    maximize: !maximize,
+  });
+
+  const pnlShort = getCappedPoolPnl({
+    marketInfo,
+    poolUsd: shortPoolUsd,
+    pnlFactorType,
+    isLong: false,
+    maximize: !maximize,
+  });
+
+  const netPnl = pnlLong.add(pnlShort);
 
   const value = totalPoolUsd.add(totalBorrowingFees).add(impactPoolUsd);
 
   return value.sub(netPnl);
 }
 
-export function getCappedPoolPnl(marketInfo: MarketInfo, isLong: boolean, maximize: boolean) {
+export function getCappedPoolPnl(p: {
+  marketInfo: MarketInfo;
+  poolUsd: BigNumber;
+  isLong: boolean;
+  maximize: boolean;
+  pnlFactorType: PnlFactorType;
+}) {
+  const { marketInfo, poolUsd, isLong, pnlFactorType, maximize } = p;
+
   let poolPnl: BigNumber;
 
   if (isLong) {
@@ -148,13 +172,19 @@ export function getCappedPoolPnl(marketInfo: MarketInfo, isLong: boolean, maximi
     poolPnl = maximize ? marketInfo.pnlShortMax : marketInfo.pnlShortMin;
   }
 
-  const poolUsd = getPoolUsd(marketInfo, isLong, maximize ? "maxPrice" : "minPrice");
-
   if (poolPnl.lt(0)) {
     return poolPnl;
   }
 
-  const maxPnlFactor = isLong ? marketInfo.maxPnlFactorLong : marketInfo.maxPnlFactorShort;
+  let maxPnlFactor: BigNumber;
+
+  if (pnlFactorType === "FOR_TRADERS") {
+    maxPnlFactor = isLong ? marketInfo.maxPnlFactorForTradersLong : marketInfo.maxPnlFactorForTradersShort;
+  } else if (pnlFactorType === "FOR_DEPOSITS") {
+    maxPnlFactor = isLong ? marketInfo.maxPnlFactorForDepositsLong : marketInfo.maxPnlFactorForDepositsShort;
+  } else {
+    maxPnlFactor = isLong ? marketInfo.maxPnlFactorForWithdrawalsLong : marketInfo.maxPnlFactorForWithdrawalsShort;
+  }
 
   const maxPnl = applyFactor(poolUsd, maxPnlFactor);
 

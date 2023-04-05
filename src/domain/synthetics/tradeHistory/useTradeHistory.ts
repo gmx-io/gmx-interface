@@ -1,16 +1,16 @@
 import { gql } from "@apollo/client";
 import { useWeb3React } from "@web3-react/core";
-import { NATIVE_TOKEN_ADDRESS, getWrappedToken } from "config/tokens";
+import { getWrappedToken } from "config/tokens";
 import { useMarketsInfo } from "domain/synthetics/markets";
 import { getTokenData, parseContractPrice, useAvailableTokensData } from "domain/synthetics/tokens";
 import { bigNumberify } from "lib/numbers";
+import { getByKey } from "lib/objects";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import { useMemo } from "react";
 import useSWR from "swr";
-import { getToTokenFromSwapPath } from "../orders";
-import { RawTradeAction, TradeAction } from "./types";
-import { getByKey } from "lib/objects";
 import { useFixedAddreseses } from "../common/useFixedAddresses";
+import { getSwapPathOutputAddresses } from "../trade/utils";
+import { RawTradeAction, TradeAction } from "./types";
 
 export type TradeHistoryResult = {
   tradeActions?: TradeAction[];
@@ -102,17 +102,17 @@ export function useTradeHistory(chainId: number, p: { pageIndex: number; pageSiz
         tradeAction.indexToken = getTokenData(tokensData, tradeAction.market?.indexTokenAddress, "native");
         tradeAction.initialCollateralToken = getTokenData(tokensData, tradeAction.initialCollateralTokenAddress);
 
-        let targetCollateralAddress = getToTokenFromSwapPath(
-          marketsInfoData,
-          tradeAction.initialCollateralTokenAddress,
-          tradeAction.swapPath
-        );
+        let swapOutput = tradeAction.swapPath
+          ? getSwapPathOutputAddresses({
+              marketsInfoData: marketsInfoData,
+              initialCollateralAddress: tradeAction.initialCollateralTokenAddress,
+              swapPath: tradeAction.swapPath,
+              wrappedNativeTokenAddress: wrappedToken.address,
+              shouldUnwrapNativeToken: tradeAction.shouldUnwrapNativeToken!,
+            })
+          : undefined;
 
-        if (targetCollateralAddress === wrappedToken.address && tradeAction.shouldUnwrapNativeToken) {
-          targetCollateralAddress = NATIVE_TOKEN_ADDRESS;
-        }
-
-        tradeAction.targetCollateralToken = getTokenData(tokensData, targetCollateralAddress);
+        tradeAction.targetCollateralToken = getTokenData(tokensData, swapOutput?.outTokenAddress);
 
         if (tradeAction.initialCollateralDeltaAmount) {
           tradeAction.initialCollateralDeltaAmount = bigNumberify(tradeAction.initialCollateralDeltaAmount);

@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import Checkbox from "components/Checkbox/Checkbox";
-import { AggregatedOrdersData, isLimitOrder, isTriggerDecreaseOrder } from "domain/synthetics/orders";
+import { OrdersInfoData, isLimitOrderType, isTriggerDecreaseOrderType } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { PositionsInfoData } from "domain/synthetics/positions";
 import { useChainId } from "lib/chains";
@@ -11,7 +11,7 @@ import { OrderItem } from "../OrderItem/OrderItem";
 
 type Props = {
   hideActions?: boolean;
-  ordersData: AggregatedOrdersData;
+  ordersData: OrdersInfoData;
   setSelectedOrdersKeys?: Dispatch<SetStateAction<{ [key: string]: boolean }>>;
   selectedOrdersKeys?: { [key: string]: boolean };
   positionsData: PositionsInfoData;
@@ -27,7 +27,7 @@ export function OrderList(p: Props) {
   const [editingOrderKey, setEditingOrderKey] = useState<string>();
 
   const orders = Object.values(p.ordersData).filter(
-    (order) => isLimitOrder(order.orderType) || isTriggerDecreaseOrder(order.orderType)
+    (order) => isLimitOrderType(order.orderType) || isTriggerDecreaseOrderType(order.orderType)
   );
 
   const isAllOrdersSelected = orders.length > 0 && orders.every((o) => p.selectedOrdersKeys?.[o.key]);

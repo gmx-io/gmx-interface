@@ -14,7 +14,7 @@ type OrdersResult = {
 
 const DEFAULT_COUNT = 100;
 
-export function useOrdersData(chainId: number): OrdersResult {
+export function useOrders(chainId: number): OrdersResult {
   const { account } = useWeb3React();
 
   const [ordersData, setOrdersData] = useState<OrdersData>({});

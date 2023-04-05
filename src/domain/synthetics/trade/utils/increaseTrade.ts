@@ -1,13 +1,12 @@
 import { getPositionFee, getPriceImpactForPosition } from "domain/synthetics/fees";
 import { MarketInfo } from "domain/synthetics/markets";
-import { getAcceptablePrice } from "domain/synthetics/orders";
-import { PositionInfo, getLeverage, getLiquidationPrice, getMarkPrice } from "domain/synthetics/positions";
+import { PositionInfo } from "domain/synthetics/positions";
 import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";
 import { IncreasePositionAmounts, IncreasePositionTradeParams, NextPositionValues, SwapPathStats } from "../types";
 import { getDisplayedTradeFees } from "./common";
-import { applySlippage } from "./prices";
+import { applySlippage, getAcceptablePrice, getMarkPrice } from "./prices";
 import { getSwapAmounts } from "./swapTrade";
 
 export function getIncreasePositionTradeParams(p: {
@@ -82,36 +81,36 @@ export function getNextPositionValuesForIncreaseTrade(p: {
 }): NextPositionValues {
   const nextSizeUsd = p.existingPosition ? p.existingPosition?.sizeInUsd.add(p.sizeDeltaUsd) : p.sizeDeltaUsd;
 
-  const nextCollateralUsd = p.existingPosition?.collateralUsd
-    ? p.existingPosition?.collateralUsd.add(p.collateralDeltaUsd)
+  const nextCollateralUsd = p.existingPosition?.initialCollateralUsd
+    ? p.existingPosition?.initialCollateralUsd.add(p.collateralDeltaUsd)
     : p.collateralDeltaUsd;
 
-  const nextLeverage = getLeverage({
-    sizeUsd: nextSizeUsd,
-    collateralUsd: nextCollateralUsd,
-    pnl: p.showPnlInLeverage ? p.existingPosition?.pnl : undefined,
-    pendingBorrowingFeesUsd: p.existingPosition?.pendingBorrowingFeesUsd, // deducted on order
-    pendingFundingFeesUsd: p.existingPosition?.pendingFundingFeesUsd, // deducted on order
-  });
+  // const nextLeverage = getLeverage({
+  //   sizeInUsd: nextSizeUsd,
+  //   collateralUsd: nextCollateralUsd,
+  //   pnl: p.showPnlInLeverage ? p.existingPosition?.pnl : undefined,
+  //   pendingBorrowingFeesUsd: p.existingPosition?.pendingBorrowingFeesUsd, // deducted on order
+  //   pendingFundingFeesUsd: p.existingPosition?.pendingFundingFeesUsd, // deducted on order
+  // });
 
-  const nextLiqPrice = getLiquidationPrice({
-    sizeUsd: nextSizeUsd,
-    collateralUsd: nextCollateralUsd,
-    indexPrice: p.entryMarkPrice,
-    positionFeeFactor: p.marketInfo.positionFeeFactor,
-    maxPriceImpactFactor: p.marketInfo?.maxPositionImpactFactorForLiquidations,
-    pendingBorrowingFeesUsd: p.existingPosition?.pendingBorrowingFeesUsd, // deducted on order
-    pendingFundingFeesUsd: p.existingPosition?.pendingFundingFeesUsd, // deducted on order
-    pnl: p.existingPosition?.pnl,
-    isLong: p.isLong,
-    maxLeverage: p.maxLeverage,
-  });
+  // const nextLiqPrice = getLiquidationPrice({
+  //   sizeUsd: nextSizeUsd,
+  //   collateralUsd: nextCollateralUsd,
+  //   indexPrice: p.entryMarkPrice,
+  //   positionFeeFactor: p.marketInfo.positionFeeFactor,
+  //   maxPriceImpactFactor: p.marketInfo?.maxPositionImpactFactorForLiquidations,
+  //   pendingBorrowingFeesUsd: p.existingPosition?.pendingBorrowingFeesUsd, // deducted on order
+  //   pendingFundingFeesUsd: p.existingPosition?.pendingFundingFeesUsd, // deducted on order
+  //   pnl: p.existingPosition?.pnl,
+  //   isLong: p.isLong,
+  //   maxLeverage: p.maxLeverage,
+  // });
 
   return {
     nextSizeUsd,
     nextCollateralUsd,
-    nextLeverage,
-    nextLiqPrice,
+    nextLeverage: undefined,
+    nextLiqPrice: undefined,
     nextEntryPrice: p.entryMarkPrice,
   };
 }
@@ -134,7 +133,7 @@ export function getIncreasePositionAmounts(p: {
   acceptablePriceImpactBps?: BigNumber;
   findSwapPath: (usdIn: BigNumber, opts?: { disablePriceImpact?: boolean }) => SwapPathStats | undefined;
 }): IncreasePositionAmounts | undefined {
-  const markPrice = getMarkPrice(p.indexToken.prices, true, p.isLong)!;
+  const markPrice = getMarkPrice({ prices: p.indexToken.prices, isIncrease: true, isLong: p.isLong })!;
   const triggerPrice = p.isLimit ? p.triggerPrice : undefined;
   const entryMarkPrice = triggerPrice || markPrice;
 

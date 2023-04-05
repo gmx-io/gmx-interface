@@ -16,10 +16,10 @@ export function TradeHistory(p: Props) {
   const { chainId } = useChainId();
   const [pageIndex, setPageIndex] = useState(0);
 
-  const { minCollateralUsd, maxLeverage, isLoading: isConstantsLoading } = usePositionsConstants(chainId);
+  const { minCollateralUsd, maxLeverage } = usePositionsConstants(chainId);
   const { tradeActions, isLoading: isHistoryLoading } = useTradeHistory(chainId, { pageIndex, pageSize: PAGE_SIZE });
 
-  const isLoading = isConstantsLoading || isHistoryLoading;
+  const isLoading = !minCollateralUsd || !maxLeverage || isHistoryLoading;
 
   const isEmpty = !isLoading && !tradeActions?.length;
 

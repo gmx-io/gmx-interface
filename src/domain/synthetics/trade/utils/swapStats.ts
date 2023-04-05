@@ -34,6 +34,47 @@ export const createSwapEstimator = (marketsInfoData: MarketsInfoData): SwapEstim
   };
 };
 
+export function getSwapPathOutputAddresses(p: {
+  marketsInfoData: MarketsInfoData;
+  initialCollateralAddress: string;
+  swapPath: string[];
+  wrappedNativeTokenAddress: string;
+  shouldUnwrapNativeToken: boolean;
+}) {
+  const { marketsInfoData, initialCollateralAddress, swapPath, wrappedNativeTokenAddress, shouldUnwrapNativeToken } = p;
+
+  if (swapPath.length === 0) {
+    return {
+      outTokenAddress:
+        shouldUnwrapNativeToken && initialCollateralAddress === wrappedNativeTokenAddress
+          ? NATIVE_TOKEN_ADDRESS
+          : initialCollateralAddress,
+
+      outMarketAddress: undefined,
+    };
+  }
+
+  const [firstMarketAddress, ...marketAddresses] = swapPath;
+
+  let outMarket = marketsInfoData[firstMarketAddress];
+  let outTokenType = getTokenPoolType(outMarket, initialCollateralAddress);
+  let outToken = outTokenType === "long" ? outMarket.shortToken : outMarket.longToken;
+
+  for (const marketAddress of marketAddresses) {
+    outMarket = marketsInfoData[marketAddress];
+    outTokenType = outMarket.longTokenAddress === outToken.address ? "short" : "long";
+    outToken = outTokenType === "long" ? outMarket.longToken : outMarket.shortToken;
+  }
+
+  const outTokenAddress =
+    shouldUnwrapNativeToken && outToken.address === wrappedNativeTokenAddress ? NATIVE_TOKEN_ADDRESS : outToken.address;
+
+  return {
+    outTokenAddress,
+    outMarketAddress: outMarket.marketTokenAddress,
+  };
+}
+
 export function getSwapPathStats(
   chainId: number,
   marketsInfoData: MarketsInfoData,

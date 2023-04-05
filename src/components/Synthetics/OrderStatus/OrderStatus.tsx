@@ -4,7 +4,7 @@ import { RequestStatus } from "components/RequestStatus/RequestStatus";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useMarkets } from "domain/synthetics/markets";
-import { OrderType, isIncreaseOrder, isSwapOrder } from "domain/synthetics/orders";
+import { OrderType, isIncreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import { getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
@@ -43,7 +43,7 @@ export function OrderStatus(p: Props) {
   const isProcessing = !orderStatus?.cancelledTxnHash && !orderStatus?.executedTxnHash;
 
   function renderTitle() {
-    if (isSwapOrder(p.orderType)) {
+    if (isSwapOrderType(p.orderType)) {
       if (!initialCollateralToken || !toSwapToken || !p.initialCollateralAmount) return t`Unknown order`;
 
       return t`Swap ${formatTokenAmount(
@@ -55,7 +55,7 @@ export function OrderStatus(p: Props) {
 
     if (!indexToken) return t`Unknown order`;
 
-    const orderTypeText = isIncreaseOrder(p.orderType) ? t`Increasing` : t`Decreasing`;
+    const orderTypeText = isIncreaseOrderType(p.orderType) ? t`Increasing` : t`Decreasing`;
 
     return t`${orderTypeText} ${indexToken?.symbol} ${longText} by ${formatUsd(p.sizeDeltaUsd)}`;
   }
@@ -64,7 +64,7 @@ export function OrderStatus(p: Props) {
     let text = "";
     let isLoading = true;
 
-    if (isSwapOrder(p.orderType)) {
+    if (isSwapOrderType(p.orderType)) {
       if (!initialCollateralToken || !toSwapToken) return null;
 
       text = t`Sending swap ${initialCollateralToken.symbol} for ${toSwapToken.symbol} request`;
@@ -76,7 +76,7 @@ export function OrderStatus(p: Props) {
     } else {
       if (!indexToken) return null;
 
-      const orderTypeText = isIncreaseOrder(p.orderType) ? t`Increase` : t`Decrease`;
+      const orderTypeText = isIncreaseOrderType(p.orderType) ? t`Increase` : t`Decrease`;
 
       text = t`Sending ${orderTypeText.toLowerCase()} ${indexToken.symbol} ${longText} request`;
 
@@ -103,7 +103,7 @@ export function OrderStatus(p: Props) {
       txnHash = orderStatus?.executedTxnHash || orderStatus?.cancelledTxnHash;
     }
 
-    if (isSwapOrder(p.orderType)) {
+    if (isSwapOrderType(p.orderType)) {
       if (!initialCollateralToken || !toSwapToken) return null;
 
       text = t`Fulfilling swap ${initialCollateralToken.symbol} for ${toSwapToken.symbol} request`;
@@ -118,7 +118,7 @@ export function OrderStatus(p: Props) {
     } else {
       if (!indexToken) return null;
 
-      const orderTypeText = isIncreaseOrder(p.orderType) ? t`Increase` : t`Decrease`;
+      const orderTypeText = isIncreaseOrderType(p.orderType) ? t`Increase` : t`Decrease`;
 
       text = t`Fulfilling ${orderTypeText.toLowerCase()} ${indexToken.symbol} ${longText} request`;
 
@@ -127,7 +127,7 @@ export function OrderStatus(p: Props) {
       }
 
       if (orderStatus?.executedTxnHash) {
-        const orderTypeText = isIncreaseOrder(p.orderType) ? t`Increased` : t`Decreased`;
+        const orderTypeText = isIncreaseOrderType(p.orderType) ? t`Increased` : t`Decreased`;
         text = t`${orderTypeText} ${indexToken.symbol} ${longText}`;
       }
     }

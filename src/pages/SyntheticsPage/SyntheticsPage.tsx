@@ -21,8 +21,8 @@ import {
 import { getToken } from "config/tokens";
 import { useMarkets } from "domain/synthetics/markets";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
-import { useAggregatedOrdersData } from "domain/synthetics/orders/useAggregatedOrdersData";
-import { PositionInfo, getPosition, getPositionKey } from "domain/synthetics/positions";
+import { useOrdersInfo } from "domain/synthetics/orders/useOrdersInfo";
+import { getPositionKey } from "domain/synthetics/positions";
 import { usePositionsInfo } from "domain/synthetics/positions/usePositionsInfo";
 import { getTradeFlags, useAvailableSwapOptions } from "domain/synthetics/trade";
 import { TradeMode, TradeType } from "domain/synthetics/trade/types";
@@ -33,8 +33,8 @@ import { useMemo, useState } from "react";
 import { ClaimHistory } from "components/Synthetics/ClaimHistory/ClaimHistory";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import { getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
-import "./SyntheticsPage.scss";
 import { getByKey } from "lib/objects";
+import "./SyntheticsPage.scss";
 
 type Props = {
   onConnectWallet: () => void;
@@ -107,13 +107,17 @@ export function SyntheticsPage(p: Props) {
     showPnlInLeverage: p.savedIsPnlInLeverage,
   });
 
-  const { aggregatedOrdersData = {}, isLoading: isOrdersLoading } = useAggregatedOrdersData(chainId);
+  const { ordersInfoData: aggregatedOrdersData = {}, isLoading: isOrdersLoading } = useOrdersInfo(chainId);
 
   const positionsCount = Object.keys(positionsInfoData).length;
   const ordersCount = Object.keys(aggregatedOrdersData).length;
   const selectedOrdersKeysArr = Object.keys(selectedOrdersKeys).filter((key) => selectedOrdersKeys[key]);
 
   const selectedPosition = useMemo(() => {
+    if (!account || !collateralAddress || !marketAddress || !tradeType) {
+      return undefined;
+    }
+
     const positionKey = getPositionKey(account, marketAddress, collateralAddress, tradeType === TradeType.Long);
     return getByKey(positionsInfoData, positionKey);
   }, [account, positionsInfoData, collateralAddress, marketAddress, tradeType]);
@@ -130,7 +134,7 @@ export function SyntheticsPage(p: Props) {
   }
 
   function onSelectPosition(positionKey: string) {
-    const position = getPosition(positionsInfoData, positionKey) as PositionInfo;
+    const position = getByKey(positionsInfoData, positionKey);
 
     if (!position) return;
 

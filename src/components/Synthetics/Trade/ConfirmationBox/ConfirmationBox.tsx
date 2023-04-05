@@ -22,23 +22,23 @@ import {
   useMarketsInfo,
 } from "domain/synthetics/markets";
 import {
-  AggregatedOrderData,
-  AggregatedOrdersData,
   DecreasePositionSwapType,
   OrderType,
+  OrdersInfoData,
+  PositionOrderInfo,
+  TriggerThresholdType,
   createDecreaseOrderTxn,
   createIncreaseOrderTxn,
   createSwapOrderTxn,
-  getPositionOrders,
-  getTriggerOrderType,
-  getTriggerPricePrefix,
-  isLimitOrder,
-  isTriggerDecreaseOrder,
-  isTriggerPriceAboveThreshold,
+  isOrderForPosition,
+  getTriggerDecreaseOrderType,
+  getTriggerPricePrefixForOrder,
+  isLimitOrderType,
+  isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
-import { PositionInfo, formatLeverage, formatPnl, getPositionKey } from "domain/synthetics/positions";
+import { PositionInfo, formatLeverage, getPositionKey } from "domain/synthetics/positions";
 import {
   TokensRatio,
   formatTokensRatio,
@@ -60,7 +60,14 @@ import { getSpread } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "lib/legacy";
-import { formatAmount, formatPercentage, formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import {
+  formatAmount,
+  formatDeltaUsd,
+  formatPercentage,
+  formatTokenAmount,
+  formatTokenAmountWithUsd,
+  formatUsd,
+} from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useCallback, useMemo, useState } from "react";
 import "./ConfirmationBox.scss";
@@ -74,7 +81,7 @@ type Props = {
   markPrice?: BigNumber;
   keepLeverage?: boolean;
   markRatio?: TokensRatio;
-  ordersData: AggregatedOrdersData;
+  ordersData: OrdersInfoData;
   existingPosition?: PositionInfo;
   executionFee?: ExecutionFee;
   isVisible: boolean;
@@ -154,18 +161,20 @@ export function ConfirmationBox(p: Props) {
   const isHighPriceImpact =
     getIsHighPriceImpact(fees?.swapPriceImpact) || getIsHighPriceImpact(fees?.positionPriceImpact);
 
-  const positionOrders = useMemo(
-    () => getPositionOrders(p.ordersData, market?.marketTokenAddress, collateralToken?.address, isLong),
-    [isLong, collateralToken?.address, p.ordersData, market?.marketTokenAddress]
-  );
+  const positionOrders = useMemo(() => {
+    if (!account || !market || !collateralToken) return [];
+    return Object.values(p.ordersData).filter((order) =>
+      isOrderForPosition(order, getPositionKey(account, market.marketTokenAddress, collateralToken.address, isLong))
+    ) as PositionOrderInfo[];
+  }, [p.ordersData, account, market, collateralToken, isLong]);
 
   const existingLimitOrders = useMemo(
-    () => positionOrders.filter((order) => isLimitOrder(order.orderType)),
+    () => positionOrders.filter((order) => isLimitOrderType(order.orderType)),
     [positionOrders]
   );
 
   const existingTriggerOrders = useMemo(
-    () => positionOrders.filter((order) => isTriggerDecreaseOrder(order.orderType)),
+    () => positionOrders.filter((order) => isTriggerDecreaseOrderType(order.orderType)),
     [positionOrders]
   );
 
@@ -173,7 +182,7 @@ export function ConfirmationBox(p: Props) {
     return existingTriggerOrders.filter((order) => {
       if (!order.triggerPrice) return false;
 
-      const isTriggerAbove = isTriggerPriceAboveThreshold(order.orderType, order.isLong);
+      const isTriggerAbove = order.triggerThresholdType === TriggerThresholdType.Above;
 
       return isTriggerAbove
         ? p.existingPosition?.markPrice?.gt(order.triggerPrice)
@@ -403,9 +412,9 @@ export function ConfirmationBox(p: Props) {
       return;
     }
 
-    const orderType = getTriggerOrderType({
+    const orderType = getTriggerDecreaseOrderType({
       isLong,
-      isTriggerAboveThreshold: p.decreasePositionParams.triggerPrice.gt(p.markPrice),
+      isTriggerAboveMarkPrice: p.decreasePositionParams.triggerPrice.gt(p.markPrice),
     });
 
     createDecreaseOrderTxn(chainId, library, {
@@ -519,13 +528,13 @@ export function ConfirmationBox(p: Props) {
     );
   }
 
-  function renderOrderItem(order: AggregatedOrderData) {
+  function renderOrderItem(order: PositionOrderInfo) {
     return (
       <li key={order.key} className="font-sm">
         <p>
-          {isLimitOrder(order.orderType) ? t`Increase` : t`Decrease`} {order.indexToken?.symbol}{" "}
+          {isLimitOrderType(order.orderType) ? t`Increase` : t`Decrease`} {order.indexToken?.symbol}{" "}
           {formatUsd(order.sizeDeltaUsd)} {order.isLong ? t`Long` : t`Short`} &nbsp;
-          {getTriggerPricePrefix(order.orderType, order.isLong, true)}
+          {getTriggerPricePrefixForOrder(order.orderType, order.isLong)}
           {formatUsd(order.triggerPrice)}{" "}
         </p>
         <button onClick={() => onCancelOrderClick(order.key)}>
@@ -812,7 +821,7 @@ export function ConfirmationBox(p: Props) {
             label={t`Liq. Price`}
             value={
               <ValueTransition
-                from={formatUsd(p.existingPosition?.liqPrice)}
+                from={formatUsd(p.existingPosition?.liquidationPrice)}
                 to={formatUsd(nextPositionValues?.nextLiqPrice) || "-"}
               />
             }
@@ -987,7 +996,7 @@ export function ConfirmationBox(p: Props) {
               label={t`Collateral (${p.existingPosition?.collateralToken?.symbol})`}
               value={
                 <ValueTransition
-                  from={formatUsd(p.existingPosition.collateralUsd)!}
+                  from={formatUsd(p.existingPosition.initialCollateralUsd)!}
                   to={formatUsd(nextPositionValues?.nextCollateralUsd)}
                 />
               }
@@ -1035,7 +1044,7 @@ export function ConfirmationBox(p: Props) {
               value={
                 nextPositionValues?.nextSizeUsd?.gt(0) ? (
                   <ValueTransition
-                    from={formatUsd(p.existingPosition.liqPrice)!}
+                    from={formatUsd(p.existingPosition.liquidationPrice)!}
                     to={formatUsd(nextPositionValues.nextLiqPrice)}
                   />
                 ) : (
@@ -1050,8 +1059,8 @@ export function ConfirmationBox(p: Props) {
               label={t`PnL`}
               value={
                 <ValueTransition
-                  from={formatPnl(p.existingPosition.pnl, p.existingPosition.pnlPercentage)}
-                  to={formatPnl(BigNumber.from(0), BigNumber.from(0))}
+                  from={formatDeltaUsd(p.existingPosition.pnl, p.existingPosition.pnlPercentage)}
+                  to={formatDeltaUsd(BigNumber.from(0), BigNumber.from(0))}
                 />
               }
             />

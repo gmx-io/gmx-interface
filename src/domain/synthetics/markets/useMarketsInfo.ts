@@ -4,12 +4,15 @@ import SyntheticsReader from "abis/SyntheticsReader.json";
 import { getContract } from "config/contracts";
 import {
   BORROWING_FEE_RECEIVER_FACTOR_KEY,
+  MAX_PNL_FACTOR_FOR_DEPOSITS_KEY,
+  MAX_PNL_FACTOR_FOR_TRADERS_KEY,
+  MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY,
   claimableFundingAmountKey,
   cumulativeBorrowingFactorKey,
-  maxPnlFactorForWithdrawalsKey,
   maxPnlFactorKey,
   maxPositionImpactFactorForLiquidationsKey,
   maxPositionImpactFactorKey,
+  minCollateralFactorKey,
   openInterestInTokensKey,
   openInterestKey,
   poolAmountKey,
@@ -25,12 +28,12 @@ import {
   totalBorrowingKey,
 } from "config/dataStore";
 import { useMulticall } from "lib/multicall";
+import { bigNumberify } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useAvailableTokensData } from "../tokens";
 import { MarketsInfoData } from "./types";
 import { useMarkets } from "./useMarkets";
 import { getContractMarketPrices } from "./utils";
-import { bigNumberify } from "lib/numbers";
 
 export type MarketsInfoResult = {
   marketsInfoData?: MarketsInfoData;
@@ -186,21 +189,29 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
                 methodName: "getUint",
                 params: [swapImpactPoolAmountKey(marketAddress, market.shortTokenAddress)],
               },
-              maxPnlFactorLong: {
+              maxPnlFactorForTradersLong: {
                 methodName: "getUint",
-                params: [maxPnlFactorKey(marketAddress, true)],
+                params: [maxPnlFactorKey(MAX_PNL_FACTOR_FOR_TRADERS_KEY, marketAddress, true)],
               },
-              maxPnlFactorShort: {
+              maxPnlFactorForTradersShort: {
                 methodName: "getUint",
-                params: [maxPnlFactorKey(marketAddress, false)],
+                params: [maxPnlFactorKey(MAX_PNL_FACTOR_FOR_TRADERS_KEY, marketAddress, false)],
+              },
+              maxPnlFactorForDepositsLong: {
+                methodName: "getUint",
+                params: [maxPnlFactorKey(MAX_PNL_FACTOR_FOR_DEPOSITS_KEY, marketAddress, true)],
+              },
+              maxPnlFactorForDepositsShort: {
+                methodName: "getUint",
+                params: [maxPnlFactorKey(MAX_PNL_FACTOR_FOR_DEPOSITS_KEY, marketAddress, false)],
               },
               maxPnlFactorForWithdrawalsLong: {
                 methodName: "getUint",
-                params: [maxPnlFactorForWithdrawalsKey(marketAddress, true)],
+                params: [maxPnlFactorKey(MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY, marketAddress, true)],
               },
               maxPnlFactorForWithdrawalsShort: {
                 methodName: "getUint",
-                params: [maxPnlFactorForWithdrawalsKey(marketAddress, false)],
+                params: [maxPnlFactorKey(MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY, marketAddress, false)],
               },
               claimableFundingAmountLong: account
                 ? {
@@ -237,6 +248,10 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
               maxPositionImpactFactorForLiquidations: {
                 methodName: "getUint",
                 params: [maxPositionImpactFactorForLiquidationsKey(marketAddress)],
+              },
+              minCollateralFactor: {
+                methodName: "getUint",
+                params: [minCollateralFactorKey(marketAddress)],
               },
               positionImpactExponentFactor: {
                 methodName: "getUint",
@@ -355,16 +370,17 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
           positionImpactPoolAmount: dataStoreValues.positionImpactPoolAmount.returnValues[0],
           swapImpactPoolAmountLong: dataStoreValues.swapImpactPoolAmountLong.returnValues[0],
           swapImpactPoolAmountShort: dataStoreValues.swapImpactPoolAmountShort.returnValues[0],
-          netPnlMax: readerValues.netPnlMax.returnValues[0],
-          netPnlMin: readerValues.netPnlMin.returnValues[0],
           pnlLongMax: readerValues.pnlLongMax.returnValues[0],
           pnlLongMin: readerValues.pnlLongMin.returnValues[0],
           pnlShortMax: readerValues.pnlShortMax.returnValues[0],
           pnlShortMin: readerValues.pnlShortMin.returnValues[0],
-          maxPnlFactorLong: dataStoreValues.maxPnlFactorLong.returnValues[0],
-          maxPnlFactorShort: dataStoreValues.maxPnlFactorShort.returnValues[0],
+          maxPnlFactorForTradersLong: dataStoreValues.maxPnlFactorForTradersLong.returnValues[0],
+          maxPnlFactorForTradersShort: dataStoreValues.maxPnlFactorForTradersShort.returnValues[0],
+          maxPnlFactorForDepositsLong: dataStoreValues.maxPnlFactorForDepositsLong.returnValues[0],
+          maxPnlFactorForDepositsShort: dataStoreValues.maxPnlFactorForDepositsShort.returnValues[0],
           maxPnlFactorForWithdrawalsLong: dataStoreValues.maxPnlFactorForWithdrawalsLong.returnValues[0],
           maxPnlFactorForWithdrawalsShort: dataStoreValues.maxPnlFactorForWithdrawalsShort.returnValues[0],
+          minCollateralFactor: dataStoreValues.minCollateralFactor.returnValues[0],
           claimableFundingAmountLong: dataStoreValues.claimableFundingAmountLong?.returnValues[0],
           claimableFundingAmountShort: dataStoreValues.claimableFundingAmountShort?.returnValues[0],
           positionFeeFactor: dataStoreValues.positionFeeFactor.returnValues[0],

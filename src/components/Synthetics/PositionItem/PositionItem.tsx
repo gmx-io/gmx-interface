@@ -3,24 +3,18 @@ import cx from "classnames";
 import PositionDropdown from "components/Exchange/PositionDropdown";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
-import {
-  AggregatedOrdersData,
-  getPositionOrders,
-  getTriggerPricePrefix,
-  isIncreaseOrder,
-} from "domain/synthetics/orders";
-import { PositionInfo, formatLeverage, formatPnl } from "domain/synthetics/positions";
+import { PositionOrderInfo, getTriggerPricePrefixForOrder, isIncreaseOrderType } from "domain/synthetics/orders";
+import { PositionInfo, formatLeverage } from "domain/synthetics/positions";
 import { formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
 import { AiOutlineEdit } from "react-icons/ai";
 import { ImSpinner2 } from "react-icons/im";
 
-import "./PositionItem.scss";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/fees";
+import "./PositionItem.scss";
 
 export type Props = {
   position: PositionInfo;
-  ordersData: AggregatedOrdersData;
-  positionOrders?: any[];
+  positionOrders: PositionOrderInfo[];
   hideActions?: boolean;
   showPnlAfterFees: boolean;
   onClosePositionClick?: () => void;
@@ -32,13 +26,7 @@ export type Props = {
 };
 
 export function PositionItem(p: Props) {
-  const positionOrders = getPositionOrders(
-    p.ordersData,
-    p.position.marketAddress,
-    p.position.collateralTokenAddress,
-    p.position.isLong
-  );
-
+  const { positionOrders } = p;
   const displayedPnl = p.showPnlAfterFees ? p.position.pnlAfterFees : p.position.pnl;
   const displayedPnlPercentage = p.showPnlAfterFees ? p.position.pnlAfterFeesPercentage : p.position.pnlPercentage;
 
@@ -50,14 +38,12 @@ export function PositionItem(p: Props) {
         handleClassName="plain"
         renderContent={() => (
           <div>
-            {p.showPnlAfterFees
-              ? t`Net Value: Initial Collateral + PnL - Fees`
-              : t`Net Value: Initial Collateral + PnL - Borrow Fee - Funding Fee`}
+            {t`Net Value: Initial Collateral + PnL - Borrow Fee - Funding Fee - Close Fee`}
             <br />
             <br />
             <StatsTooltipRow
               label={t`Initial Collateral`}
-              value={formatUsd(p.position.collateralUsd) || "..."}
+              value={formatUsd(p.position.initialCollateralUsd) || "..."}
               showDollar={false}
             />
             <StatsTooltipRow label={t`PnL`} value={formatDeltaUsd(p.position?.pnl) || "..."} showDollar={false} />
@@ -79,7 +65,7 @@ export function PositionItem(p: Props) {
             <br />
             <StatsTooltipRow
               label={t`PnL After Fees`}
-              value={formatPnl(p.position.pnlAfterFees, p.position.pnlAfterFeesPercentage)}
+              value={formatDeltaUsd(p.position.pnlAfterFees, p.position.pnlAfterFeesPercentage)}
               showDollar={false}
             />
           </div>
@@ -93,7 +79,7 @@ export function PositionItem(p: Props) {
       <>
         <div className="position-list-collateral">
           <Tooltip
-            handle={`${formatUsd(p.position.collateralUsdAfterFees)}`}
+            handle={`${formatUsd(p.position.remainingCollateralUsd)}`}
             position={p.isLarge ? "left-bottom" : "right-bottom"}
             handleClassName={cx("plain", { negative: p.position.hasLowCollateral })}
             renderContent={() => {
@@ -111,7 +97,7 @@ export function PositionItem(p: Props) {
                   )}
                   <StatsTooltipRow
                     label={t`Initial Collateral`}
-                    value={formatUsd(p.position.collateralUsd) || "..."}
+                    value={formatUsd(p.position.initialCollateralUsd) || "..."}
                     showDollar={false}
                   />
                   <StatsTooltipRow
@@ -130,7 +116,7 @@ export function PositionItem(p: Props) {
                     label={t`Borrow Fee / Day`}
                     value={formatUsd(
                       getBorrowingFeeRateUsd(
-                        p.position.market,
+                        p.position.marketInfo,
                         p.position.isLong,
                         p.position.sizeInUsd,
                         60 * 60 * 24
@@ -141,7 +127,7 @@ export function PositionItem(p: Props) {
                     showDollar={false}
                     label={t`Funding Fee / Day`}
                     value={formatDeltaUsd(
-                      getFundingFeeRateUsd(p.position.market, p.position.isLong, p.position.sizeInUsd, 60 * 60 * 24)
+                      getFundingFeeRateUsd(p.position.marketInfo, p.position.isLong, p.position.sizeInUsd, 60 * 60 * 24)
                     )}
                   />
                   <br />
@@ -212,8 +198,8 @@ export function PositionItem(p: Props) {
                 {positionOrders.map((order) => {
                   return (
                     <div key={order.key} className="Position-list-order active-order-tooltip">
-                      {getTriggerPricePrefix(order.orderType, order.isLong)} {formatUsd(order.triggerPrice)}:
-                      {isIncreaseOrder(order.orderType) ? "+" : "-"}
+                      {getTriggerPricePrefixForOrder(order.orderType, order.isLong)} {formatUsd(order.triggerPrice)}:
+                      {isIncreaseOrderType(order.orderType) ? "+" : "-"}
                       {formatUsd(order.sizeDeltaUsd)}
                     </div>
                   );
@@ -238,7 +224,7 @@ export function PositionItem(p: Props) {
               handleClassName="plain"
               renderContent={() => (
                 <div>
-                  <StatsTooltipRow label={t`Market`} value={p.position.market.name} showDollar={false} />
+                  <StatsTooltipRow label={t`Market`} value={p.position.marketInfo.name} showDollar={false} />
 
                   <br />
 
@@ -278,7 +264,7 @@ export function PositionItem(p: Props) {
                     muted: displayedPnl.eq(0),
                   })}
                 >
-                  {formatPnl(displayedPnl, displayedPnlPercentage)}
+                  {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
                 </div>
               )}
             </>
@@ -302,7 +288,7 @@ export function PositionItem(p: Props) {
         </td>
         <td>
           {/* liqPrice */}
-          {p.position.isOpening ? formatUsd(p.position.liqPrice) : formatUsd(p.position.liqPrice)}
+          {p.position.isOpening ? formatUsd(p.position.liquidationPrice) : formatUsd(p.position.liquidationPrice)}
         </td>
         <td>
           {/* Close */}
@@ -341,7 +327,7 @@ export function PositionItem(p: Props) {
             <div className="label">
               <Trans>Market</Trans>
             </div>
-            <div>{p.position.market.name}</div>
+            <div>{p.position.marketInfo.name}</div>
           </div>
           <div className="App-card-row">
             <div className="label">
@@ -383,7 +369,7 @@ export function PositionItem(p: Props) {
                   muted: displayedPnl?.eq(0),
                 })}
               >
-                {formatPnl(displayedPnl, displayedPnlPercentage)}
+                {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
               </span>
             </div>
           </div>
@@ -421,7 +407,7 @@ export function PositionItem(p: Props) {
             <div className="label">
               <Trans>Liq. Price</Trans>
             </div>
-            <div>{formatUsd(p.position.liqPrice)}</div>
+            <div>{formatUsd(p.position.liquidationPrice)}</div>
           </div>
         </div>
         {!p.hideActions && (

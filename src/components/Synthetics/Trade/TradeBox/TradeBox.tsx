@@ -24,12 +24,14 @@ import {
   getTokenPoolType,
   useMarketsInfo,
 } from "domain/synthetics/markets";
-import { AggregatedOrdersData, OrderType, getAcceptablePrice } from "domain/synthetics/orders";
-import { PositionInfo, PositionsInfoData, formatLeverage, getMarkPrice } from "domain/synthetics/positions";
+import { OrdersInfoData, OrderType } from "domain/synthetics/orders";
+import { PositionInfo, PositionsInfoData, formatLeverage } from "domain/synthetics/positions";
 import { TokensRatio, getTokenData, getTokensRatioByPrice, useAvailableTokensData } from "domain/synthetics/tokens";
 import {
+  getAcceptablePrice,
   getDecreasePositionTradeParams,
   getIncreasePositionTradeParams,
+  getMarkPrice,
   getSwapTradeParams,
   getTradeFlags,
   useAvailableSwapOptions,
@@ -104,7 +106,7 @@ type Props = {
   marketAddress?: string;
   collateralAddress?: string;
   savedIsPnlInLeverage: boolean;
-  ordersData: AggregatedOrdersData;
+  ordersData: OrdersInfoData;
   positionsData: PositionsInfoData;
   existingPosition?: PositionInfo;
   shouldDisableValidation?: boolean;
@@ -210,7 +212,8 @@ export function TradeBox(p: Props) {
 
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useState<string>("");
   const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
-  const markPrice = getMarkPrice(indexToken?.prices, isIncrease, isLong);
+
+  const markPrice = indexToken?.prices ? getMarkPrice({ prices: indexToken.prices, isIncrease, isLong }) : undefined;
 
   const [triggerRatioInputValue, setTriggerRatioInputValue] = useState<string>("");
 
@@ -981,15 +984,19 @@ export function TradeBox(p: Props) {
     }
 
     if (isLimit) {
+      if (!markPrice) {
+        return [t`Loading...`];
+      }
+
       if (!triggerPrice?.gt(0)) {
         return [t`Enter a price`];
       }
 
-      if (isLong && markPrice?.lt(triggerPrice)) {
+      if (isLong && markPrice.lt(triggerPrice)) {
         return [t`Price above Mark Price`];
       }
 
-      if (!isLong && markPrice?.gt(triggerPrice)) {
+      if (!isLong && markPrice.gt(triggerPrice)) {
         return [t`Price below Mark Price`];
       }
     }
@@ -1012,12 +1019,12 @@ export function TradeBox(p: Props) {
       return [t`Enter a trigger price`];
     }
 
-    if (existingPosition?.liqPrice) {
-      if (isLong && triggerPrice?.lte(existingPosition.liqPrice)) {
+    if (existingPosition?.liquidationPrice) {
+      if (isLong && triggerPrice?.lte(existingPosition.liquidationPrice)) {
         return [t`Price below Liq. Price`];
       }
 
-      if (isShort && triggerPrice?.gte(existingPosition.liqPrice)) {
+      if (isShort && triggerPrice?.gte(existingPosition.liquidationPrice)) {
         return [t`Price above Liq. Price`];
       }
     }
@@ -1459,7 +1466,7 @@ export function TradeBox(p: Props) {
           label={t`Liq. Price`}
           value={
             <ValueTransition
-              from={nextPositionValues?.nextLiqPrice ? formatUsd(existingPosition?.liqPrice) : undefined}
+              from={nextPositionValues?.nextLiqPrice ? formatUsd(existingPosition?.liquidationPrice) : undefined}
               to={formatUsd(nextPositionValues?.nextLiqPrice) || "-"}
             />
           }
@@ -1511,7 +1518,7 @@ export function TradeBox(p: Props) {
             label={t`Collateral (${existingPosition?.collateralToken?.symbol})`}
             value={
               <ValueTransition
-                from={formatUsd(existingPosition.collateralUsd)}
+                from={formatUsd(existingPosition.initialCollateralUsd)}
                 to={formatUsd(nextPositionValues?.nextCollateralUsd)}
               />
             }
@@ -1558,7 +1565,7 @@ export function TradeBox(p: Props) {
                 "-"
               ) : (
                 <ValueTransition
-                  from={formatUsd(existingPosition.liqPrice)!}
+                  from={formatUsd(existingPosition.liquidationPrice)!}
                   to={formatUsd(nextPositionValues?.nextLiqPrice)}
                 />
               )

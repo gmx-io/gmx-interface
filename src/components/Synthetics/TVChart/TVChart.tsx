@@ -3,7 +3,7 @@ import cx from "classnames";
 import { Dropdown, DropdownOption } from "components/Dropdown/Dropdown";
 import TVChartContainer, { ChartLine } from "components/TVChartContainer/TVChartContainer";
 import { convertTokenAddress, isChartAvailabeForToken } from "config/tokens";
-import { AggregatedOrdersData, isIncreaseOrder, isSwapOrder } from "domain/synthetics/orders";
+import { OrdersInfoData, PositionOrderInfo, isIncreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import { PositionsInfoData } from "domain/synthetics/positions";
 import { getCandlesDelta, getMidPrice, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useLastCandles } from "domain/synthetics/tokens/useLastCandles";
@@ -19,7 +19,7 @@ import { SyntheticsTVDataProvider } from "domain/synthetics/tradingview/Syntheti
 import "./TVChart.scss";
 
 export type Props = {
-  ordersData: AggregatedOrdersData;
+  ordersData: OrdersInfoData;
   positionsData: PositionsInfoData;
   savedShouldShowPositionLines: boolean;
   chartTokenAddress?: string;
@@ -76,36 +76,40 @@ export function TVChart({
 
     const orderLines: ChartLine[] = Object.values(ordersData)
       .filter((order) => {
-        if (isSwapOrder(order.orderType)) {
+        if (isSwapOrderType(order.orderType)) {
           return false;
         }
 
+        const positionOrder = order as PositionOrderInfo;
+
         return (
-          order.market &&
-          order.triggerPrice &&
-          convertTokenAddress(chainId, order.market.indexTokenAddress, "wrapped") ===
+          positionOrder.marketInfo &&
+          positionOrder.triggerPrice &&
+          convertTokenAddress(chainId, positionOrder.marketInfo.indexTokenAddress, "wrapped") ===
             convertTokenAddress(chainId, chartTokenAddress, "wrapped")
         );
       })
       .map((order) => {
+        const positionOrder = order as PositionOrderInfo;
+
         const longOrShortText = order.isLong ? t`Long` : t`Short`;
-        const orderTypeText = isIncreaseOrder(order.orderType) ? t`Inc.` : t`Dec.`;
-        const tokenSymbol = getTokenData(tokensData, order.market?.indexTokenAddress, "native")?.symbol;
+        const orderTypeText = isIncreaseOrderType(order.orderType) ? t`Inc.` : t`Dec.`;
+        const tokenSymbol = getTokenData(tokensData, positionOrder.marketInfo.indexTokenAddress, "native")?.symbol;
 
         return {
           title: `${longOrShortText} ${orderTypeText} ${tokenSymbol}`,
-          price: parseFloat(formatAmount(order.triggerPrice, USD_DECIMALS, 2)),
+          price: parseFloat(formatAmount(positionOrder.triggerPrice, USD_DECIMALS, 2)),
         };
       });
 
     const positionLines = Object.values(positionsData).reduce((acc, position) => {
       if (
-        position.market &&
-        convertTokenAddress(chainId, position.market.indexTokenAddress, "wrapped") ===
+        position.marketInfo &&
+        convertTokenAddress(chainId, position.marketInfo.indexTokenAddress, "wrapped") ===
           convertTokenAddress(chainId, chartTokenAddress, "wrapped")
       ) {
         const longOrShortText = position.isLong ? t`Long` : t`Short`;
-        const tokenSymbol = getTokenData(tokensData, position.market?.indexTokenAddress, "native")?.symbol;
+        const tokenSymbol = getTokenData(tokensData, position.marketInfo?.indexTokenAddress, "native")?.symbol;
 
         acc.push({
           title: t`Open ${longOrShortText} ${tokenSymbol}`,
@@ -114,7 +118,7 @@ export function TVChart({
 
         acc.push({
           title: t`Liq. ${longOrShortText} ${tokenSymbol}`,
-          price: parseFloat(formatAmount(position.liqPrice, USD_DECIMALS, 2)),
+          price: parseFloat(formatAmount(position.liquidationPrice, USD_DECIMALS, 2)),
         });
       }
 

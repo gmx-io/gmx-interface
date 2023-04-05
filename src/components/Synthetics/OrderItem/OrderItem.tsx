@@ -4,19 +4,19 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import {
-  AggregatedOrderData,
-  getMarkPriceForOrder,
-  getTriggerPricePrefix,
-  isDecreaseOrder,
-  isIncreaseOrder,
-  isSwapOrder,
+  OrderInfo,
+  PositionOrderInfo,
+  isDecreaseOrderType,
+  isIncreaseOrderType,
+  isSwapOrderType,
 } from "domain/synthetics/orders";
 import { adaptToV1TokenInfo, convertToUsd, getTokensRatioByAmounts } from "domain/synthetics/tokens";
+import { getMarkPrice } from "domain/synthetics/trade";
 import { getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 
 type Props = {
-  order: AggregatedOrderData;
+  order: OrderInfo;
   onSelectOrder?: () => void;
   onEditOrder?: () => void;
   onCancelOrder?: () => void;
@@ -44,12 +44,12 @@ export function OrderItem(p: Props) {
   }
 
   function getSwapRatioText() {
-    if (!isSwapOrder(p.order.orderType)) return {};
+    if (!isSwapOrderType(p.order.orderType)) return {};
 
     const fromToken = p.order.initialCollateralToken;
     const fromAmount = p.order.initialCollateralDeltaAmount;
     const toAmount = p.order.minOutputAmount;
-    const toToken = p.order.toCollateralToken;
+    const toToken = p.order.targetCollateralToken;
 
     const fromTokenInfo = fromToken ? adaptToV1TokenInfo(fromToken) : undefined;
     const toTokenInfo = toToken ? adaptToV1TokenInfo(toToken) : undefined;
@@ -92,7 +92,7 @@ export function OrderItem(p: Props) {
     }
 
     if (p.isLarge) {
-      if (isDecreaseOrder(p.order.orderType) || isSwapOrder(p.order.orderType)) {
+      if (isDecreaseOrderType(p.order.orderType) || isSwapOrderType(p.order.orderType)) {
         return p.order.title;
       }
 
@@ -111,9 +111,9 @@ export function OrderItem(p: Props) {
   }
 
   function renderTriggerPrice() {
-    if (isSwapOrder(p.order.orderType)) {
+    if (isSwapOrderType(p.order.orderType)) {
       const toAmount = p.order.minOutputAmount;
-      const toToken = p.order.toCollateralToken;
+      const toToken = p.order.targetCollateralToken;
       const toAmountText = formatTokenAmount(toAmount, toToken?.decimals, toToken?.symbol);
 
       const { swapRatioText } = getSwapRatioText();
@@ -133,21 +133,24 @@ export function OrderItem(p: Props) {
         </>
       );
     } else {
-      return `${getTriggerPricePrefix(p.order.orderType, p.order.isLong)} ${formatUsd(p.order.triggerPrice)}`;
+      const positionOrder = p.order as PositionOrderInfo;
+      return `${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.triggerPrice)}`;
     }
   }
 
   function renderMarkPrice() {
-    if (isSwapOrder(p.order.orderType)) {
+    if (isSwapOrderType(p.order.orderType)) {
       const { markSwapRatioText } = getSwapRatioText();
 
       return markSwapRatioText;
     } else {
-      const markPrice = getMarkPriceForOrder(
-        isIncreaseOrder(p.order.orderType),
-        p.order.isLong,
-        p.order.indexToken?.prices
-      );
+      const positionOrder = p.order as PositionOrderInfo;
+
+      const markPrice = getMarkPrice({
+        prices: positionOrder.indexToken.prices,
+        isIncrease: isIncreaseOrderType(positionOrder.orderType),
+        isLong: positionOrder.isLong,
+      });
 
       return (
         <Tooltip
@@ -185,7 +188,7 @@ export function OrderItem(p: Props) {
             </div>
           </td>
         )}
-        <td className="Exchange-list-item-type">{isDecreaseOrder(p.order.orderType) ? t`Trigger` : t`Limit`}</td>
+        <td className="Exchange-list-item-type">{isDecreaseOrderType(p.order.orderType) ? t`Trigger` : t`Limit`}</td>
         <td>{renderTitle()}</td>
         <td>{renderTriggerPrice()}</td>
         <td>{renderMarkPrice()}</td>
@@ -231,7 +234,7 @@ export function OrderItem(p: Props) {
             <div>{renderMarkPrice()}</div>
           </div>
 
-          {isIncreaseOrder(p.order.orderType) && (
+          {isIncreaseOrderType(p.order.orderType) && (
             <div className="App-card-row">
               <div className="label">
                 <Trans>Collateral</Trans>

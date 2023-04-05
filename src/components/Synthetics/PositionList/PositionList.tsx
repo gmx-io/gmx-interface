@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
-import { AggregatedOrdersData } from "domain/synthetics/orders";
+import { OrdersInfoData, PositionOrderInfo, isOrderForPosition } from "domain/synthetics/orders";
 import { PositionsInfoData } from "domain/synthetics/positions";
 
 type Props = {
@@ -8,7 +8,7 @@ type Props = {
   onClosePositionClick: (key: string) => void;
   onEditCollateralClick: (key: string) => void;
   positionsData: PositionsInfoData;
-  ordersData: AggregatedOrdersData;
+  ordersData: OrdersInfoData;
   savedIsPnlInLeverage: boolean;
   isLoading: boolean;
   onOrdersClick: () => void;
@@ -17,6 +17,7 @@ type Props = {
 
 export function PositionList(p: Props) {
   const positions = Object.values(p.positionsData);
+  const orders = Object.values(p.ordersData);
   const isDataLoading = p.isLoading;
 
   return (
@@ -31,7 +32,7 @@ export function PositionList(p: Props) {
           positions.map((position) => (
             <PositionItem
               key={position.key}
-              ordersData={p.ordersData}
+              positionOrders={orders.filter((order) => isOrderForPosition(order, position.key)) as PositionOrderInfo[]}
               position={position}
               onEditCollateralClick={() => p.onEditCollateralClick(position.key)}
               onClosePositionClick={() => p.onClosePositionClick(position.key)}
@@ -81,7 +82,9 @@ export function PositionList(p: Props) {
             positions.map((position) => (
               <PositionItem
                 key={position.key}
-                ordersData={p.ordersData}
+                positionOrders={
+                  orders.filter((order) => isOrderForPosition(order, position.key)) as PositionOrderInfo[]
+                }
                 position={position}
                 onEditCollateralClick={() => p.onEditCollateralClick(position.key)}
                 onClosePositionClick={() => p.onClosePositionClick(position.key)}

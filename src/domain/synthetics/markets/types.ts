@@ -1,6 +1,8 @@
 import { BigNumber } from "ethers";
 import { TokenData } from "domain/synthetics/tokens";
 
+export type PnlFactorType = "FOR_DEPOSITS" | "FOR_WITHDRAWALS" | "FOR_TRADERS";
+
 export type Market = {
   marketTokenAddress: string;
   indexTokenAddress: string;
@@ -34,17 +36,17 @@ export type MarketInfo = Market &
 
     positionImpactPoolAmount: BigNumber;
 
+    minCollateralFactor: BigNumber;
+
     swapImpactPoolAmountLong: BigNumber;
     swapImpactPoolAmountShort: BigNumber;
 
-    maxPnlFactorLong: BigNumber;
-    maxPnlFactorShort: BigNumber;
-
+    maxPnlFactorForTradersLong: BigNumber;
+    maxPnlFactorForTradersShort: BigNumber;
     maxPnlFactorForWithdrawalsLong: BigNumber;
     maxPnlFactorForWithdrawalsShort: BigNumber;
-
-    netPnlMax: BigNumber;
-    netPnlMin: BigNumber;
+    maxPnlFactorForDepositsLong: BigNumber;
+    maxPnlFactorForDepositsShort: BigNumber;
 
     pnlLongMax: BigNumber;
     pnlLongMin: BigNumber;
