@@ -2,13 +2,13 @@ import { Trans, t } from "@lingui/macro";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { convertToUsd } from "domain/synthetics/tokens";
-import { TradeAction } from "domain/synthetics/tradeHistory";
+import { PositionTradeAction } from "domain/synthetics/tradeHistory";
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";
 import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 
 type Props = {
-  tradeAction: TradeAction;
+  tradeAction: PositionTradeAction;
   minCollateralUsd: BigNumber;
   maxLeverage: BigNumber;
 };

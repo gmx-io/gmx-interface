@@ -1,6 +1,6 @@
-import { BigNumber } from "ethers";
+import { MarketInfo } from "domain/synthetics/markets";
 import { OrderType } from "domain/synthetics/orders";
-import { Market } from "domain/synthetics/markets";
+import { BigNumber } from "ethers";
 import { TokenData } from "../tokens";
 
 export enum TradeActionType {
@@ -37,7 +37,7 @@ export type RawTradeAction = {
   collateralTokenPriceMax?: string;
   collateralTokenPriceMin?: string;
 
-  orderType?: OrderType;
+  orderType: OrderType;
   isLong?: boolean;
   shouldUnwrapNativeToken?: boolean;
 
@@ -49,40 +49,53 @@ export type RawTradeAction = {
   };
 };
 
-export type TradeAction = {
-  market?: Market;
-  initialCollateralToken?: TokenData;
-  targetCollateralToken?: TokenData;
-  indexToken?: TokenData;
-
+export type PositionTradeAction = {
   id: string;
   eventName: TradeActionType;
-
+  marketInfo: MarketInfo;
+  marketAddress: string;
   account: string;
-  marketAddress?: string;
-  swapPath?: string[];
-  initialCollateralTokenAddress?: string;
-
-  initialCollateralDeltaAmount?: BigNumber;
-  sizeDeltaUsd?: BigNumber;
+  initialCollateralTokenAddress: string;
+  initialCollateralToken: TokenData;
+  targetCollateralToken: TokenData;
+  indexToken: TokenData;
+  swapPath: string[];
+  initialCollateralDeltaAmount: BigNumber;
+  sizeDeltaUsd: BigNumber;
   triggerPrice?: BigNumber;
-  acceptablePrice?: BigNumber;
+  acceptablePrice: BigNumber;
   executionPrice?: BigNumber;
-  minOutputAmount?: BigNumber;
-  executionAmountOut?: BigNumber;
-
+  collateralTokenPriceMin?: BigNumber;
+  collateralTokenPriceMax?: BigNumber;
+  minOutputAmount: BigNumber;
   priceImpactDiffUsd?: BigNumber;
   positionFeeAmount?: BigNumber;
   borrowingFeeAmount?: BigNumber;
   fundingFeeAmount?: BigNumber;
   pnlUsd?: BigNumber;
+  orderType: OrderType;
+  isLong: boolean;
+  reason?: string;
 
-  collateralTokenPriceMin?: BigNumber;
-  collateralTokenPriceMax?: BigNumber;
+  transaction: {
+    timestamp: number;
+    hash: string;
+  };
+};
 
-  orderType?: OrderType;
-  isLong?: boolean;
-  shouldUnwrapNativeToken?: boolean;
+export type SwapTradeAction = {
+  id: string;
+  account: string;
+  eventName: TradeActionType;
+  initialCollateralTokenAddress: string;
+  initialCollateralToken: TokenData;
+  targetCollateralToken: TokenData;
+  shouldUnwrapNativeToken: boolean;
+  swapPath: string[];
+  initialCollateralDeltaAmount: BigNumber;
+  minOutputAmount: BigNumber;
+  executionAmountOut?: BigNumber;
+  orderType: OrderType;
 
   reason?: string;
 
@@ -91,3 +104,5 @@ export type TradeAction = {
     hash: string;
   };
 };
+
+export type TradeAction = PositionTradeAction | SwapTradeAction;

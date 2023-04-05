@@ -13,7 +13,7 @@ import { useFixedAddreseses } from "../common/useFixedAddresses";
 
 export type ClaimCollateralHistoryResult = {
   claimActions?: ClaimCollateralAction[];
-  error?: string;
+  isLoading: boolean;
 };
 
 type RawClaimCollateralAction = {
@@ -75,6 +75,8 @@ export function useClaimCollateralHistory(
     },
   });
 
+  const isLoading = (!error && !data) || !marketsInfoData || !tokensData;
+
   const claimActions = useMemo(() => {
     if (!data || !tokensData || !marketsInfoData) {
       return undefined;
@@ -97,21 +99,21 @@ export function useClaimCollateralHistory(
           const marketAddress = fixedAddresses[rawAction.marketAddresses[i]];
           const tokenAddress = fixedAddresses[rawAction.tokenAddresses[i]];
           const amount = bigNumberify(rawAction.amounts[i])!;
-          const market = getByKey(marketsInfoData, marketAddress);
+          const marketInfo = getByKey(marketsInfoData, marketAddress);
 
-          if (!market) {
+          if (!marketInfo) {
             return undefined;
           }
 
-          if (!claimItemsMap[market.marketTokenAddress]) {
-            claimItemsMap[market.marketTokenAddress] = {
-              marketInfo: market,
+          if (!claimItemsMap[marketInfo.marketTokenAddress]) {
+            claimItemsMap[marketInfo.marketTokenAddress] = {
+              marketInfo: marketInfo,
               longTokenAmount: BigNumber.from(0),
               shortTokenAmount: BigNumber.from(0),
             };
           }
 
-          if (tokenAddress === market.longTokenAddress) {
+          if (tokenAddress === marketInfo.longTokenAddress) {
             claimItemsMap[marketAddress].longTokenAmount = claimItemsMap[marketAddress].longTokenAmount.add(amount);
           } else {
             claimItemsMap[marketAddress].shortTokenAmount = claimItemsMap[marketAddress].shortTokenAmount.add(amount);
@@ -127,6 +129,6 @@ export function useClaimCollateralHistory(
 
   return {
     claimActions,
-    error,
+    isLoading,
   };
 }

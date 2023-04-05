@@ -15,13 +15,13 @@ export function ClaimHistory(p: Props) {
   const { chainId } = useChainId();
   const [pageIndex, setPageIndex] = useState(0);
 
-  const { claimActions, error } = useClaimCollateralHistory(chainId, { pageIndex, pageSize: PAGE_SIZE });
+  const { claimActions, isLoading } = useClaimCollateralHistory(chainId, { pageIndex, pageSize: PAGE_SIZE });
 
   const isEmpty = claimActions?.length === 0;
 
   return (
     <div className="TradeHistory">
-      {!claimActions && !error && (
+      {isLoading && (
         <div className="TradeHistoryRow App-box">
           <Trans>Loading...</Trans>
         </div>

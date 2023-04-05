@@ -12,7 +12,7 @@ import {
   isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
 import { adaptToV1TokenInfo, getTokensRatioByAmounts } from "domain/synthetics/tokens";
-import { TradeAction, TradeActionType } from "domain/synthetics/tradeHistory";
+import { PositionTradeAction, SwapTradeAction, TradeAction, TradeActionType } from "domain/synthetics/tradeHistory";
 import { useChainId } from "lib/chains";
 import { formatDateTime } from "lib/dates";
 import { getExchangeRateDisplay } from "lib/legacy";
@@ -53,7 +53,7 @@ function getOrderActionText(tradeAction: TradeAction) {
   return actionText;
 }
 
-function getSwapOrderMessage(tradeAction: TradeAction) {
+function getSwapOrderMessage(tradeAction: SwapTradeAction) {
   const tokenIn = tradeAction.initialCollateralToken!;
   const tokenOut = tradeAction.targetCollateralToken!;
   const amountIn = tradeAction.initialCollateralDeltaAmount!;
@@ -93,7 +93,11 @@ function getSwapOrderMessage(tradeAction: TradeAction) {
   return t`${actionText} Swap ${fromText} for ${toText}`;
 }
 
-function getPositionOrderMessage(tradeAction: TradeAction, minCollateralUsd: BigNumber, maxLeverage: BigNumber) {
+function getPositionOrderMessage(
+  tradeAction: PositionTradeAction,
+  minCollateralUsd: BigNumber,
+  maxLeverage: BigNumber
+) {
   const indexToken = tradeAction.indexToken;
   const collateralToken = tradeAction.initialCollateralToken;
   const sizeDeltaUsd = tradeAction.sizeDeltaUsd;
@@ -176,9 +180,9 @@ export function TradeHistoryRow(p: Props) {
 
   const msg = useMemo(() => {
     if (isSwapOrderType(tradeAction.orderType!)) {
-      return getSwapOrderMessage(tradeAction);
+      return getSwapOrderMessage(tradeAction as SwapTradeAction);
     } else {
-      return getPositionOrderMessage(tradeAction, minCollateralUsd, maxLeverage);
+      return getPositionOrderMessage(tradeAction as PositionTradeAction, minCollateralUsd, maxLeverage);
     }
   }, [maxLeverage, minCollateralUsd, tradeAction]);
 

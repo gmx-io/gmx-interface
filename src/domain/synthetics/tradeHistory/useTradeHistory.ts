@@ -2,15 +2,16 @@ import { gql } from "@apollo/client";
 import { useWeb3React } from "@web3-react/core";
 import { getWrappedToken } from "config/tokens";
 import { useMarketsInfo } from "domain/synthetics/markets";
-import { getTokenData, parseContractPrice, useAvailableTokensData } from "domain/synthetics/tokens";
+import { parseContractPrice, useAvailableTokensData } from "domain/synthetics/tokens";
 import { bigNumberify } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import { useMemo } from "react";
 import useSWR from "swr";
 import { useFixedAddreseses } from "../common/useFixedAddresses";
+import { isSwapOrderType } from "../orders";
 import { getSwapPathOutputAddresses } from "../trade/utils";
-import { RawTradeAction, TradeAction } from "./types";
+import { PositionTradeAction, RawTradeAction, SwapTradeAction, TradeAction } from "./types";
 
 export type TradeHistoryResult = {
   tradeActions?: TradeAction[];
@@ -85,115 +86,124 @@ export function useTradeHistory(chainId: number, p: { pageIndex: number; pageSiz
     },
   });
 
+  const isLoading = (!error && !data) || !marketsInfoData || !tokensData || !fixedAddresses;
+
   const tradeActions = useMemo(() => {
-    if (!data || !marketsInfoData) return undefined;
+    if (!data || !marketsInfoData || !tokensData || !fixedAddresses) {
+      return undefined;
+    }
 
     const wrappedToken = getWrappedToken(chainId);
 
     return data
       .map((rawAction) => {
-        const tradeAction: TradeAction = { ...(rawAction as any) };
+        const orderType = Number(rawAction.orderType);
 
-        tradeAction.marketAddress = fixedAddresses[tradeAction.marketAddress!];
-        tradeAction.initialCollateralTokenAddress = fixedAddresses[tradeAction.initialCollateralTokenAddress!];
-        tradeAction.swapPath = tradeAction.swapPath?.map((address) => fixedAddresses[address]);
+        if (isSwapOrderType(orderType)) {
+          const initialCollateralTokenAddress = fixedAddresses[rawAction.initialCollateralTokenAddress!];
+          const swapPath = rawAction.swapPath!.map((address) => fixedAddresses[address]);
+          const swapPathOutputAddresses = getSwapPathOutputAddresses({
+            marketsInfoData,
+            swapPath,
+            initialCollateralAddress: initialCollateralTokenAddress,
+            wrappedNativeTokenAddress: wrappedToken.address,
+            shouldUnwrapNativeToken: rawAction.shouldUnwrapNativeToken!,
+          });
 
-        tradeAction.market = getByKey(marketsInfoData, tradeAction.marketAddress!);
-        tradeAction.indexToken = getTokenData(tokensData, tradeAction.market?.indexTokenAddress, "native");
-        tradeAction.initialCollateralToken = getTokenData(tokensData, tradeAction.initialCollateralTokenAddress);
+          const initialCollateralToken = getByKey(tokensData, initialCollateralTokenAddress)!;
+          const targetCollateralToken = getByKey(tokensData, swapPathOutputAddresses.outTokenAddress)!;
 
-        let swapOutput = tradeAction.swapPath
-          ? getSwapPathOutputAddresses({
-              marketsInfoData: marketsInfoData,
-              initialCollateralAddress: tradeAction.initialCollateralTokenAddress,
-              swapPath: tradeAction.swapPath,
-              wrappedNativeTokenAddress: wrappedToken.address,
-              shouldUnwrapNativeToken: tradeAction.shouldUnwrapNativeToken!,
-            })
-          : undefined;
+          if (!initialCollateralToken || !targetCollateralToken) {
+            return undefined;
+          }
 
-        tradeAction.targetCollateralToken = getTokenData(tokensData, swapOutput?.outTokenAddress);
+          const tradeAction: SwapTradeAction = {
+            id: rawAction.id,
+            eventName: rawAction.eventName,
+            account: rawAction.account,
+            swapPath,
+            orderType,
+            initialCollateralTokenAddress: rawAction.initialCollateralTokenAddress!,
+            initialCollateralDeltaAmount: bigNumberify(rawAction.initialCollateralDeltaAmount)!,
+            minOutputAmount: bigNumberify(rawAction.minOutputAmount)!,
+            executionAmountOut: rawAction.executionAmountOut ? bigNumberify(rawAction.executionAmountOut) : undefined,
+            shouldUnwrapNativeToken: rawAction.shouldUnwrapNativeToken!,
+            targetCollateralToken,
+            initialCollateralToken,
+            transaction: rawAction.transaction,
+          };
 
-        if (tradeAction.initialCollateralDeltaAmount) {
-          tradeAction.initialCollateralDeltaAmount = bigNumberify(tradeAction.initialCollateralDeltaAmount);
+          return tradeAction;
+        } else {
+          const marketAddress = fixedAddresses[rawAction.marketAddress!];
+          const marketInfo = getByKey(marketsInfoData, marketAddress);
+          const indexToken = marketInfo?.indexToken;
+          const initialCollateralTokenAddress = fixedAddresses[rawAction.initialCollateralTokenAddress!];
+          const swapPath = rawAction.swapPath!.map((address) => fixedAddresses[address]);
+          const swapPathOutputAddresses = getSwapPathOutputAddresses({
+            marketsInfoData,
+            swapPath,
+            initialCollateralAddress: initialCollateralTokenAddress,
+            wrappedNativeTokenAddress: wrappedToken.address,
+            shouldUnwrapNativeToken: rawAction.shouldUnwrapNativeToken!,
+          });
+          const initialCollateralToken = getByKey(tokensData, initialCollateralTokenAddress);
+          const targetCollateralToken = getByKey(tokensData, swapPathOutputAddresses.outTokenAddress);
+
+          if (!marketInfo || !indexToken || !initialCollateralToken || !targetCollateralToken) {
+            return undefined;
+          }
+
+          const tradeAction: PositionTradeAction = {
+            id: rawAction.id,
+            eventName: rawAction.eventName,
+            account: rawAction.account,
+            marketAddress,
+            marketInfo,
+            indexToken,
+            swapPath,
+            initialCollateralTokenAddress,
+            initialCollateralToken,
+            targetCollateralToken,
+            initialCollateralDeltaAmount: bigNumberify(rawAction.initialCollateralDeltaAmount)!,
+            sizeDeltaUsd: bigNumberify(rawAction.sizeDeltaUsd)!,
+            triggerPrice: rawAction.triggerPrice
+              ? parseContractPrice(bigNumberify(rawAction.triggerPrice)!, indexToken.decimals)
+              : undefined,
+            acceptablePrice: parseContractPrice(bigNumberify(rawAction.acceptablePrice)!, indexToken.decimals),
+            executionPrice: rawAction.executionPrice
+              ? parseContractPrice(bigNumberify(rawAction.executionPrice)!, indexToken.decimals)
+              : undefined,
+            minOutputAmount: bigNumberify(rawAction.minOutputAmount)!,
+
+            collateralTokenPriceMax: rawAction.collateralTokenPriceMax
+              ? parseContractPrice(bigNumberify(rawAction.collateralTokenPriceMax)!, initialCollateralToken.decimals)
+              : undefined,
+
+            collateralTokenPriceMin: rawAction.collateralTokenPriceMin
+              ? parseContractPrice(bigNumberify(rawAction.collateralTokenPriceMin)!, initialCollateralToken.decimals)
+              : undefined,
+
+            orderType,
+            isLong: rawAction.isLong!,
+
+            priceImpactDiffUsd: rawAction.priceImpactDiffUsd ? bigNumberify(rawAction.priceImpactDiffUsd) : undefined,
+            positionFeeAmount: rawAction.positionFeeAmount ? bigNumberify(rawAction.positionFeeAmount) : undefined,
+            borrowingFeeAmount: rawAction.borrowingFeeAmount ? bigNumberify(rawAction.borrowingFeeAmount) : undefined,
+            fundingFeeAmount: rawAction.fundingFeeAmount ? bigNumberify(rawAction.fundingFeeAmount) : undefined,
+
+            reason: rawAction.reason,
+            transaction: rawAction.transaction,
+          };
+
+          return tradeAction;
         }
-
-        if (tradeAction.sizeDeltaUsd) {
-          tradeAction.sizeDeltaUsd = bigNumberify(tradeAction.sizeDeltaUsd);
-        }
-
-        if (tradeAction.minOutputAmount) {
-          tradeAction.minOutputAmount = bigNumberify(tradeAction.minOutputAmount);
-        }
-
-        if (tradeAction.executionAmountOut) {
-          tradeAction.executionAmountOut = bigNumberify(tradeAction.executionAmountOut);
-        }
-
-        if (tradeAction.fundingFeeAmount) {
-          tradeAction.fundingFeeAmount = bigNumberify(tradeAction.fundingFeeAmount);
-        }
-
-        if (tradeAction.borrowingFeeAmount) {
-          tradeAction.borrowingFeeAmount = bigNumberify(tradeAction.borrowingFeeAmount);
-        }
-
-        if (tradeAction.positionFeeAmount) {
-          tradeAction.positionFeeAmount = bigNumberify(tradeAction.positionFeeAmount);
-        }
-
-        if (tradeAction.priceImpactDiffUsd) {
-          tradeAction.priceImpactDiffUsd = bigNumberify(tradeAction.priceImpactDiffUsd);
-        }
-
-        if (tradeAction.pnlUsd) {
-          tradeAction.pnlUsd = bigNumberify(tradeAction.pnlUsd);
-        }
-
-        if (tradeAction.collateralTokenPriceMax && tradeAction.initialCollateralToken?.decimals) {
-          tradeAction.collateralTokenPriceMax = parseContractPrice(
-            bigNumberify(tradeAction.collateralTokenPriceMax)!,
-            tradeAction.initialCollateralToken?.decimals
-          );
-        }
-
-        if (tradeAction.collateralTokenPriceMin && tradeAction.initialCollateralToken?.decimals) {
-          tradeAction.collateralTokenPriceMin = parseContractPrice(
-            bigNumberify(tradeAction.collateralTokenPriceMin)!,
-            tradeAction.initialCollateralToken?.decimals
-          );
-        }
-
-        if (rawAction.triggerPrice && tradeAction.indexToken?.decimals) {
-          tradeAction.triggerPrice = parseContractPrice(
-            bigNumberify(rawAction.triggerPrice)!,
-            tradeAction.indexToken?.decimals
-          );
-        }
-
-        if (tradeAction.executionPrice && tradeAction.indexToken?.decimals) {
-          tradeAction.executionPrice = parseContractPrice(
-            bigNumberify(rawAction.executionPrice)!,
-            tradeAction.indexToken?.decimals
-          );
-        }
-
-        if (tradeAction.acceptablePrice && tradeAction.indexToken?.decimals) {
-          tradeAction.acceptablePrice = parseContractPrice(
-            bigNumberify(rawAction.acceptablePrice)!,
-            tradeAction.indexToken?.decimals
-          );
-        }
-
-        tradeAction.orderType = Number(tradeAction.orderType);
-
-        return tradeAction;
       })
       .filter(Boolean) as TradeAction[];
   }, [chainId, data, fixedAddresses, marketsInfoData, tokensData]);
 
   return {
     tradeActions,
-    isLoading: key && !error && !data,
+    isLoading,
   };
 }
