@@ -89,6 +89,7 @@ msgid "A snapshot of the USD value of your {0} collateral is taken when the posi
 msgstr "您的{0}抵押品快照在您开启头寸时已以USD价值被存取"
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -388,6 +389,10 @@ msgstr "可用的"
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
 msgstr "Avalanche年利率"
+
+#: src/components/TokenCard/TokenCard.js
+msgid "Avalanche FUJI Avg. APR:"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Balance"

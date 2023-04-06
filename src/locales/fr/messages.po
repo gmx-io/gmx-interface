@@ -89,6 +89,7 @@ msgid "A snapshot of the USD value of your {0} collateral is taken when the posi
 msgstr "Une image instantanée de la valeur en USD de votre {0} collatéral initial est prise à l'ouverture de la position."
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -388,6 +389,10 @@ msgstr "Disponible:"
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
 msgstr "Taux de Rendement Annuels Avalanche:"
+
+#: src/components/TokenCard/TokenCard.js
+msgid "Avalanche FUJI Avg. APR:"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Balance"
