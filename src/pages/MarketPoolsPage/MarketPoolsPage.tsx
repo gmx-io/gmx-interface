@@ -5,11 +5,12 @@ import { GmSwapBox, Mode, Operation } from "components/Synthetics/GmSwap/GmSwapB
 import { MarketStats } from "components/Synthetics/MarketStats/MarketStats";
 import { SYNTHETICS_MARKET_DEPOSIT_MARKET_KEY } from "config/localStorage";
 import { useMarketTokensData, useMarketsData } from "domain/synthetics/markets";
+import { getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { useEffect, useState } from "react";
-import { getTokenData } from "domain/synthetics/tokens";
+import { useEffect, useMemo, useState } from "react";
+import { useHistory, useLocation } from "react-router-dom";
 import "./MarketPoolsPage.scss";
 
 type Props = {
@@ -19,6 +20,10 @@ type Props = {
 
 export function MarketPoolsPage(p: Props) {
   const { chainId } = useChainId();
+  const { search } = useLocation();
+  const history = useHistory();
+
+  const queryParams = useMemo(() => new URLSearchParams(search), [search]);
 
   const { marketsData } = useMarketsData(chainId);
 
@@ -38,6 +43,23 @@ export function MarketPoolsPage(p: Props) {
   const marketToken = getTokenData(
     operation === Operation.Deposit ? depositMarketTokensData : withdrawalMarketTokensData,
     selectedMarketKey
+  );
+
+  useEffect(
+    function updateByQueryParams() {
+      if (queryParams.get("operation") === Operation.Withdrawal) {
+        setOperation(Operation.Withdrawal);
+      } else if (queryParams.get("operation") === Operation.Deposit) {
+        setOperation(Operation.Deposit);
+      }
+
+      if (queryParams.get("market")) {
+        setSelectedMarketKey(queryParams.get("market")!);
+      }
+
+      history.replace({ search: "" });
+    },
+    [history, queryParams, setSelectedMarketKey]
   );
 
   useEffect(

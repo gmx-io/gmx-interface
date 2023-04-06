@@ -89,6 +89,8 @@ msgid "A snapshot of the USD value of your {0} collateral is taken when the posi
 msgstr "Снимок долларовой стоимости вашего залога {0} делается в момент открытия позиции."
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -491,6 +493,7 @@ msgstr ""
 msgid "Buy GLP"
 msgstr "Купить GLP"
 
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Buy GM"
 msgstr ""
@@ -1840,6 +1843,11 @@ msgstr ""
 msgid "GLP sell disabled, pending {0} upgrade"
 msgstr "Продажа GLP приостановлена, ожидается {0} обновление"
 
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "GM ({0})"
+msgstr ""
+
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "GM Index Composition"
@@ -2488,6 +2496,10 @@ msgstr "Похоже, у вас нет реферального кода, кот
 msgid "Loss"
 msgstr "Убыток"
 
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "MARKET"
+msgstr ""
+
 #: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -3059,6 +3071,7 @@ msgid "POOL"
 msgstr "ПУЛ"
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/DashboardV2.js
 msgid "PRICE"
@@ -3238,6 +3251,7 @@ msgstr "Предыдущий"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -3629,6 +3643,7 @@ msgstr "Самостоятельный перевод не поддержива�
 msgid "Sell GLP"
 msgstr "Продать GLP"
 
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Sell GM"
 msgstr ""
@@ -4100,6 +4115,10 @@ msgstr ""
 msgid "TOKEN"
 msgstr "ТОКЕН"
 
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "TOTAL SUPPLY"
+msgstr ""
+
 #: src/components/Synthetics/Trade/utils.ts
 #~ msgid "Take Profit"
 #~ msgstr ""
@@ -4358,6 +4377,7 @@ msgid "Total Stats"
 msgstr "Общая Статистика"
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -4770,6 +4790,7 @@ msgid "Voting"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/GmList/GmList.tsx
 msgid "WALLET"
 msgstr "КОШЕЛЁК"
 
@@ -4799,6 +4820,7 @@ msgstr "Ожидайте одобрения"
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js

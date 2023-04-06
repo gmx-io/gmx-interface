@@ -19,6 +19,7 @@ import { useChainId } from "lib/chains";
 import { BASIS_POINTS_DIVISOR, importImage } from "lib/legacy";
 import { formatAmount, formatUsd } from "lib/numbers";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
+
 import { useMemo } from "react";
 import { useMedia } from "react-use";
 
@@ -41,7 +42,7 @@ export function MarketsList() {
   const { openInterestData } = useOpenInterestData(chainId);
   const { marketsFeesConfigs } = useMarketsFeesConfigs(chainId);
 
-  const isMobile = useMedia("(max-width: 1200px)");
+  const isMobile = useMedia("(max-width: 1100px)");
 
   const indexTokensStats = useMemo(() => {
     const markets = Object.values(marketsData);

@@ -49,6 +49,7 @@ import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import GMXAprTooltip from "components/Stake/GMXAprTooltip";
 import Button from "components/Button/Button";
+import { GmList } from "components/Synthetics/GmList/GmList";
 
 const { AddressZero } = ethers.constants;
 
@@ -1982,6 +1983,10 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="StakeV2-section">
+        <GmList />
       </div>
 
       <div>

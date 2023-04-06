@@ -89,6 +89,8 @@ msgid "A snapshot of the USD value of your {0} collateral is taken when the posi
 msgstr "{0}담보의 USD가치 스냅샷은 해당 포지션이 열려있을 때 결정됩니다."
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -491,6 +493,7 @@ msgstr ""
 msgid "Buy GLP"
 msgstr "GLP 구매"
 
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Buy GM"
 msgstr ""
@@ -1840,6 +1843,11 @@ msgstr ""
 msgid "GLP sell disabled, pending {0} upgrade"
 msgstr "{0} 업그레이드를 위해 GLP 판매가 비활성화되었습니다"
 
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "GM ({0})"
+msgstr ""
+
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "GM Index Composition"
@@ -2488,6 +2496,10 @@ msgstr "공유할 수 있는 추천인 코드가 없는 것 같습니다. <0/> �
 msgid "Loss"
 msgstr "손실"
 
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "MARKET"
+msgstr ""
+
 #: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -3059,6 +3071,7 @@ msgid "POOL"
 msgstr "풀"
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/DashboardV2.js
 msgid "PRICE"
@@ -3238,6 +3251,7 @@ msgstr "이전"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -3629,6 +3643,7 @@ msgstr "자신에게 전송하는 것은 지원되지 않습니다"
 msgid "Sell GLP"
 msgstr "GLP 판매"
 
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Sell GM"
 msgstr ""
@@ -4100,6 +4115,10 @@ msgstr ""
 msgid "TOKEN"
 msgstr "토큰"
 
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "TOTAL SUPPLY"
+msgstr ""
+
 #: src/components/Synthetics/Trade/utils.ts
 #~ msgid "Take Profit"
 #~ msgstr ""
@@ -4358,6 +4377,7 @@ msgid "Total Stats"
 msgstr "전체 통계"
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -4770,6 +4790,7 @@ msgid "Voting"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/GmList/GmList.tsx
 msgid "WALLET"
 msgstr "지갑이"
 
@@ -4799,6 +4820,7 @@ msgstr "승인 대기중"
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js

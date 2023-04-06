@@ -89,6 +89,8 @@ msgid "A snapshot of the USD value of your {0} collateral is taken when the posi
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -491,6 +493,7 @@ msgstr ""
 msgid "Buy GLP"
 msgstr ""
 
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Buy GM"
 msgstr ""
@@ -1840,6 +1843,11 @@ msgstr ""
 msgid "GLP sell disabled, pending {0} upgrade"
 msgstr ""
 
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "GM ({0})"
+msgstr ""
+
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "GM Index Composition"
@@ -2485,6 +2493,10 @@ msgstr ""
 msgid "Loss"
 msgstr ""
 
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "MARKET"
+msgstr ""
+
 #: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -3056,6 +3068,7 @@ msgid "POOL"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/DashboardV2.js
 msgid "PRICE"
@@ -3235,6 +3248,7 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -3626,6 +3640,7 @@ msgstr ""
 msgid "Sell GLP"
 msgstr ""
 
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Sell GM"
 msgstr ""
@@ -4097,6 +4112,10 @@ msgstr ""
 msgid "TOKEN"
 msgstr ""
 
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "TOTAL SUPPLY"
+msgstr ""
+
 #: src/components/Synthetics/Trade/utils.ts
 #~ msgid "Take Profit"
 #~ msgstr ""
@@ -4355,6 +4374,7 @@ msgid "Total Stats"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -4767,6 +4787,7 @@ msgid "Voting"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/GmList/GmList.tsx
 msgid "WALLET"
 msgstr ""
 
@@ -4796,6 +4817,7 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js

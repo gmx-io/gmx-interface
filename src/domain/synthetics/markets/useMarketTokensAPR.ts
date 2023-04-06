@@ -77,9 +77,9 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
           return acc.add(bigNumberify(rawCollectedFee.feeUsdForPool));
         }, BigNumber.from(0));
 
-        const feesPrice = feesUsdForPeriod.mul(expandDecimals(1, 18)).div(marketToken.totalSupply);
+        const feesPerMarketToken = feesUsdForPeriod.mul(expandDecimals(1, 18)).div(marketToken.totalSupply);
         const weeksInYear = 52;
-        const apr = feesPrice.mul(BASIS_POINTS_DIVISOR).div(marketToken.prices!.maxPrice).mul(weeksInYear);
+        const apr = feesPerMarketToken.mul(BASIS_POINTS_DIVISOR).div(marketToken.prices!.maxPrice).mul(weeksInYear);
 
         acc[marketAddress] = apr;
 

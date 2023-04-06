@@ -89,6 +89,8 @@ msgid "A snapshot of the USD value of your {0} collateral is taken when the posi
 msgstr "Bei der Eröffnung der Position wird eine Momentaufnahme des USD-Wertes deines {0} Kollaterals erstellt."
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -491,6 +493,7 @@ msgstr ""
 msgid "Buy GLP"
 msgstr "GLP Kaufen"
 
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Buy GM"
 msgstr ""
@@ -1835,6 +1838,11 @@ msgstr ""
 msgid "GLP sell disabled, pending {0} upgrade"
 msgstr ""
 
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "GM ({0})"
+msgstr ""
+
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "GM Index Composition"
@@ -2483,6 +2491,10 @@ msgstr "Sieht so aus, als hättest du keinen Empfehlungscode, den du weitergeben
 msgid "Loss"
 msgstr "Verlust"
 
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "MARKET"
+msgstr ""
+
 #: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -3064,6 +3076,7 @@ msgid "POOL"
 msgstr "POOL"
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/DashboardV2.js
 msgid "PRICE"
@@ -3247,6 +3260,7 @@ msgstr "Prev"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -3638,6 +3652,7 @@ msgstr "Selbstübertragungen werden nicht unterstützt"
 msgid "Sell GLP"
 msgstr ""
 
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Sell GM"
 msgstr ""
@@ -4113,6 +4128,10 @@ msgstr ""
 msgid "TOKEN"
 msgstr ""
 
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "TOTAL SUPPLY"
+msgstr ""
+
 #: src/components/Synthetics/Trade/utils.ts
 #~ msgid "Take Profit"
 #~ msgstr ""
@@ -4371,6 +4390,7 @@ msgid "Total Stats"
 msgstr "Gesamtstatistik"
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -4783,6 +4803,7 @@ msgid "Voting"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/GmList/GmList.tsx
 msgid "WALLET"
 msgstr "WALLET"
 
@@ -4812,6 +4833,7 @@ msgstr "Warten auf die Genehmigung"
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
