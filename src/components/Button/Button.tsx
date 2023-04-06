@@ -35,6 +35,7 @@ export default function Button({
   ...rest
 }: ButtonProps) {
   const classNames = cx("button", variant, className, textAlign);
+  const showExternalLinkArrow = variant === "secondary";
 
   function handleClick() {
     if (disabled || !onClick) {
@@ -48,7 +49,14 @@ export default function Button({
 
   if (to) {
     return (
-      <ButtonLink className={classNames} to={to} onClick={onClick} newTab={newTab} {...rest}>
+      <ButtonLink
+        className={classNames}
+        to={to}
+        onClick={onClick}
+        newTab={newTab}
+        showExternalLinkArrow={showExternalLinkArrow}
+        {...rest}
+      >
         {imgInfo && <img className="btn-image" src={imgInfo.src} alt={imgInfo.alt || ""} />}
         {children}
       </ButtonLink>
