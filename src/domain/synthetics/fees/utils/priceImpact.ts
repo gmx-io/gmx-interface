@@ -133,7 +133,7 @@ export function getPriceImpactUsd(p: {
   const nextShort = p.currentShortUsd.add(p.shortDeltaUsd);
 
   if (nextLong.lt(0) || nextShort.lt(0)) {
-    return undefined;
+    throw new Error("Negative pool amount");
   }
 
   const currentDiff = p.currentLongUsd.sub(p.currentShortUsd).abs();

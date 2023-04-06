@@ -41,28 +41,27 @@ export type SwapAmounts = {
   usdIn: BigNumber;
   amountOut: BigNumber;
   usdOut: BigNumber;
-  swapPathStats?: SwapPathStats;
+  priceIn: BigNumber;
+  priceOut: BigNumber;
+  swapPathStats: SwapPathStats | undefined;
   minOutputAmount: BigNumber;
 };
 
 export type IncreasePositionAmounts = {
   initialCollateralAmount: BigNumber;
   initialCollateralUsd: BigNumber;
-  collateralAmount: BigNumber;
-  collateralUsd: BigNumber;
+  collateralAmountAfterFees: BigNumber;
   collateralUsdAfterFees: BigNumber;
   sizeDeltaUsd: BigNumber;
   sizeDeltaInTokens: BigNumber;
-  sizeDeltaAfterFeesUsd: BigNumber;
-  sizeDeltaAfterFeesInTokens: BigNumber;
-  swapPathStats?: SwapPathStats;
-  positionFeeUsd?: BigNumber;
-  positionPriceImpactDeltaUsd?: BigNumber;
-  triggerPrice?: BigNumber;
-  acceptablePrice: BigNumber;
-  acceptablePriceImpactBps: BigNumber;
-  acceptablePriceAfterSlippage: BigNumber;
+  swapPathStats: SwapPathStats | undefined;
+  positionFeeUsd: BigNumber;
+  positionPriceImpactDeltaUsd: BigNumber;
   entryMarkPrice: BigNumber;
+  initialCollateralPrice: BigNumber;
+  collateralPrice: BigNumber;
+  acceptablePrice: BigNumber | undefined;
+  acceptablePriceImpactBps: BigNumber | undefined;
 };
 
 export type DecreasePositionAmounts = {
@@ -130,7 +129,6 @@ export type SwapStats = {
   swapFeeAmount: BigNumber;
   swapFeeUsd: BigNumber;
   priceImpactDeltaUsd: BigNumber;
-  totalFeeDeltaUsd: BigNumber;
   amountIn: BigNumber;
   amountInAfterFees: BigNumber;
   amountOut: BigNumber;
@@ -171,6 +169,8 @@ export type SwapEstimator = (
 ) => {
   usdOut: BigNumber;
 };
+
+export type FindSwapPath = (usdIn: BigNumber, opts: { shouldApplyPriceImpact: boolean }) => SwapPathStats | undefined;
 
 export type TradeFees = {
   totalFees?: FeeItem;

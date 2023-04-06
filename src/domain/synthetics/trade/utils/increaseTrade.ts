@@ -4,10 +4,16 @@ import { PositionInfo } from "domain/synthetics/positions";
 import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";
-import { IncreasePositionAmounts, IncreasePositionTradeParams, NextPositionValues, SwapPathStats } from "../types";
+import {
+  FindSwapPath,
+  IncreasePositionAmounts,
+  IncreasePositionTradeParams,
+  NextPositionValues,
+  SwapPathStats,
+} from "../types";
 import { getDisplayedTradeFees } from "./common";
 import { applySlippage, getAcceptablePrice, getMarkPrice } from "./prices";
-import { getSwapAmounts } from "./swapTrade";
+import { getSwapAmountsByFromValue } from "./swapTrade";
 
 export function getIncreasePositionTradeParams(p: {
   marketInfo: MarketInfo;
@@ -59,7 +65,7 @@ export function getIncreasePositionTradeParams(p: {
 
   return {
     ...increasePositionAmounts,
-    market: p.marketInfo,
+    marketInfo: p.marketInfo,
     initialCollateralToken: p.initialCollateralToken,
     collateralToken: p.collateralToken,
     isLong: p.isLong,
@@ -113,6 +119,94 @@ export function getNextPositionValuesForIncreaseTrade(p: {
     nextLiqPrice: undefined,
     nextEntryPrice: p.entryMarkPrice,
   };
+}
+
+export function getIncreasePositionAmountsByCollateral(p: {
+  marketInfo: MarketInfo;
+  initialCollateralToken: TokenData;
+  collateralToken: TokenData;
+  initialCollateralAmount: BigNumber;
+  isLong: boolean;
+  leverage?: BigNumber;
+  triggerPrice?: BigNumber;
+  isLimit?: boolean;
+  savedAcceptablePriceImpactBps?: BigNumber;
+  findSwapPath: FindSwapPath;
+}) {
+  const {
+    marketInfo,
+    initialCollateralToken,
+    collateralToken,
+    initialCollateralAmount,
+    isLong,
+    leverage,
+    triggerPrice,
+    isLimit,
+    savedAcceptablePriceImpactBps,
+    findSwapPath,
+  } = p;
+  const { indexToken } = marketInfo;
+
+  const entryMarkPrice = getMarkPrice({ prices: indexToken.prices, isIncrease: true, isLong })!;
+  const initialCollateralPrice = initialCollateralToken.prices.minPrice;
+  let collateralPrice = collateralToken.prices.minPrice;
+
+  const initialCollateralUsd = convertToUsd(
+    initialCollateralAmount,
+    initialCollateralToken.decimals,
+    initialCollateralPrice
+  )!;
+
+  let collateralUsdAfterFees = BigNumber.from(0);
+  let collateralAmountAfterFees = BigNumber.from(0);
+
+  let sizeDeltaUsd = BigNumber.from(0);
+  let sizeDeltaInTokens = BigNumber.from(0);
+
+  let positionFeeUsd = BigNumber.from(0);
+  let positionPriceImpactDeltaUsd = BigNumber.from(0);
+
+  let acceptablePrice = undefined;
+  let acceptablePriceImpactBps = undefined;
+
+  const defaultAmounts: IncreasePositionAmounts = {
+    initialCollateralAmount,
+    initialCollateralUsd,
+    collateralUsdAfterFees,
+    collateralAmountAfterFees,
+    sizeDeltaUsd,
+    sizeDeltaInTokens,
+    positionFeeUsd,
+    positionPriceImpactDeltaUsd,
+    swapPathStats: undefined,
+    entryMarkPrice,
+    initialCollateralPrice,
+    collateralPrice,
+    acceptablePrice,
+    acceptablePriceImpactBps,
+  };
+
+  if (initialCollateralAmount.lte(0)) {
+    return defaultAmounts;
+  }
+
+  const swapAmounts = getSwapAmountsByFromValue({
+    tokenIn: initialCollateralToken,
+    tokenOut: collateralToken,
+    amountIn: initialCollateralAmount,
+    isLimit: false,
+    findSwapPath,
+  });
+
+  if (!swapAmounts) {
+    return defaultAmounts;
+  }
+
+  collateralAmountAfterFees = swapAmounts.amountOut;
+  collateralUsdAfterFees = swapAmounts.usdOut;
+  collateralPrice = swapAmounts.priceOut;
+
+  sizeDeltaUsd = collateralUsdAfterFees;
 }
 
 /**

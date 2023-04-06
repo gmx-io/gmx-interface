@@ -127,7 +127,7 @@ export function ConfirmationBox(p: Props) {
   const intitialCollateralAmount = p.increasePositionParams?.initialCollateralAmount;
   const initialCollateralUsd = p.increasePositionParams?.initialCollateralUsd;
 
-  const market = p.increasePositionParams?.market || p.decreasePositionParams?.market;
+  const market = p.increasePositionParams?.marketInfo || p.decreasePositionParams?.market;
   const indexToken = getTokenData(tokensData, market?.indexTokenAddress);
 
   const sizeDeltaUsdAfterFees = p.increasePositionParams?.sizeDeltaAfterFeesUsd;
@@ -362,12 +362,12 @@ export function ConfirmationBox(p: Props) {
 
     createIncreaseOrderTxn(chainId, library, {
       account,
-      marketAddress: p.increasePositionParams.market.marketTokenAddress,
+      marketAddress: p.increasePositionParams.marketInfo.marketTokenAddress,
       initialCollateralAddress: p.increasePositionParams.initialCollateralToken.address,
       initialCollateralAmount: p.increasePositionParams.initialCollateralAmount,
       targetCollateralAddress: p.increasePositionParams.collateralToken.address,
       swapPath: p.increasePositionParams.swapPathStats?.swapPath || [],
-      indexTokenAddress: p.increasePositionParams.market.indexTokenAddress,
+      indexTokenAddress: p.increasePositionParams.marketInfo.indexTokenAddress,
       sizeDeltaUsd: p.increasePositionParams.sizeDeltaUsd,
       triggerPrice: isLimit ? p.increasePositionParams.triggerPrice : undefined,
       acceptablePrice: isMarket
@@ -385,7 +385,7 @@ export function ConfirmationBox(p: Props) {
           isIncrease: true,
           positionKey: getPositionKey(
             account,
-            p.increasePositionParams.market.marketTokenAddress,
+            p.increasePositionParams.marketInfo.marketTokenAddress,
             p.increasePositionParams.collateralToken.address,
             isLong
           )!,
@@ -642,7 +642,7 @@ export function ConfirmationBox(p: Props) {
     }
 
     if (isIncrease) {
-      availableLiquidity = getAvailableUsdLiquidityForPosition(p.increasePositionParams!.market, isLong);
+      availableLiquidity = getAvailableUsdLiquidityForPosition(p.increasePositionParams!.marketInfo, isLong);
 
       if (availableLiquidity && p.increasePositionParams?.sizeDeltaUsd) {
         isLiquidityRisk = availableLiquidity
@@ -726,9 +726,9 @@ export function ConfirmationBox(p: Props) {
   function renderIncreaseOrderSection() {
     const { nextPositionValues } = p.increasePositionParams || {};
 
-    const borrowingRate = getBorrowingFeeFactor(p.increasePositionParams!.market, isLong, 60 * 60)?.mul(100);
+    const borrowingRate = getBorrowingFeeFactor(p.increasePositionParams!.marketInfo, isLong, 60 * 60)?.mul(100);
 
-    const fundigRate = getFundingFeeFactor(p.increasePositionParams!.market, isLong, 60 * 60)?.mul(100);
+    const fundigRate = getFundingFeeFactor(p.increasePositionParams!.marketInfo, isLong, 60 * 60)?.mul(100);
 
     return (
       <>

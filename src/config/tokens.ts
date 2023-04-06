@@ -760,10 +760,6 @@ export function convertTokenAddress(chainId: number, address: string, convertTo?
   return address;
 }
 
-export function isNativeTokenAddress(address: string) {
-  return address === NATIVE_TOKEN_ADDRESS;
-}
-
 export function getWhitelistedTokens(chainId: number) {
   return TOKENS[chainId].filter((token) => token.symbol !== "USDG");
 }

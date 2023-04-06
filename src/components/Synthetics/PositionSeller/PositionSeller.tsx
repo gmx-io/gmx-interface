@@ -48,8 +48,8 @@ import {
   getNextPositionValuesForDecreaseTrade,
   getShouldSwapPnlToCollateralToken,
   getSwapAmounts,
-  useAvailableSwapOptions,
-  useSwapRoute,
+  useAvailableTokenOptions,
+  useSwapRoutes,
 } from "domain/synthetics/trade";
 import { Token } from "domain/tokens";
 import { getByKey } from "lib/objects";
@@ -101,7 +101,7 @@ export function PositionSeller(p: Props) {
     allowedSlippage = DEFAULT_HIGHER_SLIPPAGE_AMOUNT;
   }
 
-  const { availableSwapTokens } = useAvailableSwapOptions({});
+  const { availableSwapTokens } = useAvailableTokenOptions(chainId);
 
   const [closeUsdInputValue, setCloseUsdInputValue] = useState("");
   const maxCloseSize = position?.sizeInUsd || BigNumber.from(0);
@@ -113,7 +113,7 @@ export function PositionSeller(p: Props) {
   const shouldSwap =
     receiveToken && position?.collateralToken ? !isEquivalentTokens(receiveToken, position?.collateralToken) : false;
 
-  const { findSwapPath } = useSwapRoute({
+  const { findSwapPath } = useSwapRoutes({
     fromTokenAddress: position?.collateralTokenAddress,
     toTokenAddress: receiveTokenAddress,
   });

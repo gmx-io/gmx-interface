@@ -1,6 +1,7 @@
-import { Market } from "domain/synthetics/markets";
+import { Market, MarketsInfoData } from "domain/synthetics/markets";
 import { MarketEdge, MarketsGraph, SwapEstimator } from "../types";
 import { BigNumber } from "ethers";
+import { getSwapStats } from "./swapStats";
 
 export function getMarketsGraph(markets: Market[]): MarketsGraph {
   const graph: MarketsGraph = {
@@ -38,8 +39,35 @@ export function getMarketsGraph(markets: Market[]): MarketsGraph {
   return graph;
 }
 
+export const createSwapEstimator = (marketsInfoData: MarketsInfoData): SwapEstimator => {
+  return (e: MarketEdge, usdIn: BigNumber) => {
+    const marketInfo = marketsInfoData[e.marketAddress];
+
+    const swapStats = getSwapStats({
+      marketInfo,
+      usdIn,
+      tokenInAddress: e.from,
+      tokenOutAddress: e.to,
+      shouldApplyPriceImpact: true,
+    });
+
+    const isOutLiquidity = swapStats?.isOutLiquidity;
+    const usdOut = swapStats?.usdOut;
+
+    if (!usdOut || isOutLiquidity) {
+      return {
+        usdOut: BigNumber.from(0),
+      };
+    }
+
+    return {
+      usdOut,
+    };
+  };
+};
+
 export function getBestSwapPath(paths: MarketEdge[][], usdIn: BigNumber, estimator: SwapEstimator) {
-  if (!paths.length) {
+  if (paths.length === 0) {
     return undefined;
   }
 
@@ -47,12 +75,10 @@ export function getBestSwapPath(paths: MarketEdge[][], usdIn: BigNumber, estimat
   let bestUsdOut = BigNumber.from(0);
 
   for (const path of paths) {
-    let pathUsdOut = usdIn;
-
-    for (const edge of path) {
-      const { usdOut } = estimator(edge, pathUsdOut);
-      pathUsdOut = usdOut;
-    }
+    const pathUsdOut = path.reduce((prevUsdOut, edge) => {
+      const { usdOut } = estimator(edge, prevUsdOut);
+      return usdOut;
+    }, usdIn);
 
     if (pathUsdOut.gt(bestUsdOut)) {
       bestPath = path;

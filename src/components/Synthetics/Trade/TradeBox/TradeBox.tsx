@@ -32,10 +32,12 @@ import {
   getDecreasePositionTradeParams,
   getIncreasePositionTradeParams,
   getMarkPrice,
+  getSwapAmountsByFromValue,
+  getSwapAmountsByToValue,
   getSwapTradeParams,
   getTradeFlags,
-  useAvailableSwapOptions,
-  useSwapRoute,
+  useAvailableTokenOptions,
+  useSwapRoutes,
   useTokenInput,
 } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
@@ -78,7 +80,7 @@ import {
 } from "domain/synthetics/fees";
 import { SwapCard } from "../../SwapCard/SwapCard";
 
-import { SwapTradeParams, TradeMode, TradeType } from "domain/synthetics/trade/types";
+import { SwapAmounts, SwapTradeParams, TradeMode, TradeType } from "domain/synthetics/trade/types";
 
 import { OrderStatus } from "components/Synthetics/OrderStatus/OrderStatus";
 import Tooltip from "components/Tooltip/Tooltip";
@@ -258,10 +260,10 @@ export function TradeBox(p: Props) {
   );
   const acceptablePriceImpactBps = bigNumberify(savedAcceptablePriceImpactBps!);
 
-  const { availableSwapTokens, availableIndexTokens, availablePositionCollaterals, infoTokens } =
-    useAvailableSwapOptions({
-      selectedIndexTokenAddress: isPosition ? toTokenInput.tokenAddress : undefined,
-    });
+  const { availableSwapTokens, availableIndexTokens, availablePositionCollateralsByIndexMap, infoTokens } =
+    useAvailableTokenOptions(chainId);
+
+  const availablePositionCollaterals = availablePositionCollateralsByIndexMap[indexToken?.address!];
 
   const availableMarkets: MarketInfo[] = useMemo(() => {
     if (!toTokenAddress || !marketsInfoData) return [];
@@ -288,7 +290,7 @@ export function TradeBox(p: Props) {
   const prevMarketAddress = usePrevious(marketAddress);
   const isMarketChanged = prevMarketAddress !== marketAddress;
 
-  const swapRoute = useSwapRoute({
+  const swapRoute = useSwapRoutes({
     fromTokenAddress: fromTokenInput.tokenAddress,
     toTokenAddress: isPosition ? collateralAddress : toTokenInput.tokenAddress,
   });
@@ -310,7 +312,7 @@ export function TradeBox(p: Props) {
     toTokenInput.token?.isWrapped,
   ]);
 
-  const { swapParams, increasePositionParams, decreasePositionParams } = useMemo(
+  const { swapAmounts, increasePositionParams, decreasePositionParams } = useMemo(
     function getTradeParams() {
       if (isWrapOrUnwrap) {
         if (!fromTokenInput.token?.prices || !toTokenInput.token?.prices) {
@@ -319,8 +321,9 @@ export function TradeBox(p: Props) {
 
         const tokenAmount = focusedInput === "from" ? fromTokenInput.tokenAmount : toTokenInput.tokenAmount;
         const usdAmount = focusedInput === "from" ? fromTokenInput.usdAmount : toTokenInput.usdAmount;
+        const price = fromTokenInput.token.prices.minPrice;
 
-        const swapParams: SwapTradeParams = {
+        const swapAmounts: SwapAmounts = {
           amountIn: tokenAmount,
           usdIn: usdAmount,
           amountOut: tokenAmount,
@@ -328,32 +331,42 @@ export function TradeBox(p: Props) {
           swapPathStats: undefined,
           tokenIn: fromTokenInput.token,
           tokenOut: toTokenInput.token,
-          tokenInPrice: fromTokenInput.token.prices?.minPrice,
-          tokenOutPrice: toTokenInput.token.prices?.minPrice,
+          priceIn: price,
+          priceOut: price,
           minOutputAmount: tokenAmount,
         };
 
         return {
-          swapParams,
+          swapAmounts,
         };
       }
 
       if (isSwap) {
-        if (!fromTokenInput.token || !toTokenInput.token) return {};
+        if (!fromTokenInput.token?.prices || !toTokenInput.token?.prices) return {};
 
-        const swapParams = getSwapTradeParams({
-          tokenIn: fromTokenInput.token,
-          tokenOut: toTokenInput.token,
-          tokenInAmount: focusedInput === "from" ? fromTokenInput.tokenAmount : undefined,
-          tokenOutAmount: focusedInput === "to" ? toTokenInput.tokenAmount : undefined,
-          triggerRatio: triggerRatio,
-          isLimit,
-          findSwapPath: swapRoute.findSwapPath,
-        });
-
-        return {
-          swapParams,
-        };
+        if (focusedInput === "from") {
+          return {
+            swapAmounts: getSwapAmountsByFromValue({
+              tokenIn: fromTokenInput.token,
+              tokenOut: toTokenInput.token,
+              amountIn: fromTokenInput.tokenAmount,
+              triggerRatio,
+              isLimit,
+              findSwapPath: swapRoute.findSwapPath,
+            }),
+          };
+        } else {
+          return {
+            swapAmounts: getSwapAmountsByToValue({
+              tokenIn: fromTokenInput.token,
+              tokenOut: toTokenInput.token,
+              amountOut: toTokenInput.tokenAmount,
+              triggerRatio,
+              isLimit,
+              findSwapPath: swapRoute.findSwapPath,
+            }),
+          };
+        }
       }
 
       if (isIncrease) {
@@ -622,7 +635,7 @@ export function TradeBox(p: Props) {
     toTokenAddress,
   ]);
 
-  const fees = swapParams?.fees || increasePositionParams?.fees || decreasePositionParams?.fees;
+  const fees = swapAmounts?.fees || increasePositionParams?.fees || decreasePositionParams?.fees;
   const feesType = (() => {
     if (isSwap) return "swap";
     if (isIncrease) return "open";
@@ -636,7 +649,7 @@ export function TradeBox(p: Props) {
 
     if (isSwap) {
       estimatedGas = estimateExecuteSwapOrderGasLimit(gasLimits, {
-        swapPath: swapParams?.swapPathStats?.swapPath,
+        swapPath: swapAmounts?.swapPathStats?.swapPath,
       });
     }
 
@@ -661,7 +674,7 @@ export function TradeBox(p: Props) {
     isIncrease,
     isSwap,
     isTrigger,
-    swapParams?.swapPathStats?.swapPath,
+    swapAmounts?.swapPathStats?.swapPath,
     tokensData,
   ]);
 
@@ -673,11 +686,11 @@ export function TradeBox(p: Props) {
         return;
       }
 
-      if (isSwap && swapParams) {
+      if (isSwap && swapAmounts) {
         if (focusedInput === "from") {
-          toTokenInput.setValueByTokenAmount(swapParams.amountOut);
+          toTokenInput.setValueByTokenAmount(swapAmounts.amountOut);
         } else {
-          fromTokenInput.setValueByTokenAmount(swapParams.amountIn);
+          fromTokenInput.setValueByTokenAmount(swapAmounts.amountIn);
         }
       }
 
@@ -689,7 +702,7 @@ export function TradeBox(p: Props) {
         }
       }
     },
-    [focusedInput, fromTokenInput, increasePositionParams, isIncrease, isSwap, prevIsISwap, swapParams, toTokenInput]
+    [focusedInput, fromTokenInput, increasePositionParams, isIncrease, isSwap, prevIsISwap, swapAmounts, toTokenInput]
   );
 
   useEffect(
@@ -889,8 +902,8 @@ export function TradeBox(p: Props) {
     }
 
     if (
-      !swapParams?.swapPathStats?.swapPath ||
-      (isMarket && swapParams.swapPathStats.swapSteps.some((step) => step.isOutLiquidity))
+      !swapAmounts?.swapPathStats?.swapPath ||
+      (isMarket && swapAmounts.swapPathStats.swapSteps.some((step) => step.isOutLiquidity))
     ) {
       return [t`Couldn't find a swap path with enough liquidity`];
     }
@@ -973,7 +986,7 @@ export function TradeBox(p: Props) {
       return [t`Fees exceed amount`];
     }
 
-    const indexToken = getTokenData(tokensData, increasePositionParams?.market.indexTokenAddress, "native");
+    const indexToken = getTokenData(tokensData, increasePositionParams?.marketInfo.indexTokenAddress, "native");
 
     if (isLong && indexToken && longLiquidity?.lt(increasePositionParams?.sizeDeltaUsd || BigNumber.from(0))) {
       return [t`Max ${indexToken.symbol} long exceeded`];
@@ -1637,7 +1650,7 @@ export function TradeBox(p: Props) {
 
       {isSwap && (
         <SwapCard
-          marketAddress={swapParams?.swapPathStats?.targetMarketAddress || mostLiquidSwapMarket?.marketTokenAddress}
+          marketAddress={swapAmounts?.swapPathStats?.targetMarketAddress || mostLiquidSwapMarket?.marketTokenAddress}
           fromTokenAddress={fromTokenInput.tokenAddress}
           toTokenAddress={toTokenInput.tokenAddress}
           markRatio={markRatio}
@@ -1662,7 +1675,7 @@ export function TradeBox(p: Props) {
         isVisible={stage === "confirmation"}
         tradeType={tradeType!}
         tradeMode={tradeMode!}
-        swapParams={swapParams}
+        swapParams={swapAmounts}
         increasePositionParams={increasePositionParams}
         decreasePositionParams={decreasePositionParams}
         markPrice={markPrice}

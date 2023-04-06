@@ -24,7 +24,7 @@ import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useOrdersInfo } from "domain/synthetics/orders/useOrdersInfo";
 import { getPositionKey } from "domain/synthetics/positions";
 import { usePositionsInfo } from "domain/synthetics/positions/usePositionsInfo";
-import { getTradeFlags, useAvailableSwapOptions } from "domain/synthetics/trade";
+import { getTradeFlags, useAvailableTokenOptions } from "domain/synthetics/trade";
 import { TradeMode, TradeType } from "domain/synthetics/trade/types";
 import { useChainId } from "lib/chains";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
@@ -87,7 +87,7 @@ export function SyntheticsPage(p: Props) {
     undefined
   );
 
-  const { availableIndexTokens } = useAvailableSwapOptions({});
+  const { availableIndexTokens } = useAvailableTokenOptions(chainId);
 
   const chatTokenAddress = useMemo(() => {
     if (isSwap && toToken?.isStable && !fromToken?.isStable) {
