@@ -16,7 +16,8 @@ import {
 } from "domain/synthetics/markets";
 import { convertToUsd, useAvailableTokensData } from "domain/synthetics/tokens";
 import "./MarketStats.scss";
-import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { formatAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
 
 type Props = {
   marketKey?: string;
@@ -30,6 +31,7 @@ export function MarketStats(p: Props) {
   const { marketsData } = useMarketsData(chainId);
   const { poolsData } = useMarketsPoolsData(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
+  const { marketsTokensAPRData } = useMarketTokensAPR(chainId);
 
   const market = getMarket(marketsData, p.marketKey);
   const marketName = getMarketName(marketsData, tokensData, market?.marketTokenAddress, true);
@@ -76,6 +78,8 @@ export function MarketStats(p: Props) {
     "midPrice"
   );
 
+  const apr = market ? marketsTokensAPRData?.[market?.marketTokenAddress] : undefined;
+
   return (
     <div className="App-card MarketStats-card">
       <div className="MarketStats-title">
@@ -116,8 +120,7 @@ export function MarketStats(p: Props) {
         {/* TODO */}
         {/* <CardRow label={t`Market worth`} value={formatUsd(bigNumberify(0))} /> */}
 
-        {/* TODO */}
-        {/* <CardRow label={t`APR`} value={"14.00%"} /> */}
+        <CardRow label={t`APR`} value={apr ? `${formatAmount(apr, 2, 2)}%` : "..."} />
 
         <CardRow
           label={t`Total Supply`}

@@ -1,4 +1,6 @@
+import { BigNumber } from "ethers";
 import { PRECISION } from "lib/legacy";
+import { applyFactor } from "lib/numbers";
 import { convertToContractPrices, convertToUsd, getMidPrice, getTokenData } from "../tokens";
 import { TokensData } from "../tokens/types";
 import {
@@ -10,8 +12,6 @@ import {
   MarketsOpenInterestData,
   MarketsPoolsData,
 } from "./types";
-import { BigNumber } from "ethers";
-import { applyFactor } from "lib/numbers";
 
 export function getMarket(marketsData: MarketsData, marketAddress?: string) {
   if (!marketAddress) return undefined;

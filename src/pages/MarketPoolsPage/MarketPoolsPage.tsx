@@ -9,9 +9,8 @@ import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useEffect, useState } from "react";
-
-import "./MarketPoolsPage.scss";
 import { getTokenData } from "domain/synthetics/tokens";
+import "./MarketPoolsPage.scss";
 
 type Props = {
   connectWallet: () => void;
@@ -22,6 +21,7 @@ export function MarketPoolsPage(p: Props) {
   const { chainId } = useChainId();
 
   const { marketsData } = useMarketsData(chainId);
+
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
   const { marketTokensData: withdrawalMarketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
 
