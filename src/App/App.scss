@@ -1110,19 +1110,17 @@ button.App-button {
 }
 
 .App-slider .rc-slider-track {
-  background: linear-gradient(270.01deg, #3d51ff 34.97%, #202239 99.99%);
-  background-size: 410px 100%;
-  border-radius: 2rem;
+  background: linear-gradient(90deg, #2e3dcd, #2d42fc);
 }
 
 .App-slider .rc-slider-dot {
   border: none;
   background: rgba(40, 45, 74, 1);
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 1.5px;
   border: none;
-  top: -3px;
+  top: -2px;
 }
 
 .App-slider .rc-slider-dot-active {
@@ -1132,8 +1130,10 @@ button.App-button {
 .App-slider .rc-slider-handle {
   background: #fff;
   border: solid 1px #fff;
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  margin-top: -3.5px;
 }
 
 .App-slider .rc-slider-handle:active {
@@ -1216,9 +1216,6 @@ button.App-button {
 @media (max-width: 1100px) {
   .chart-positions-settings {
     display: block;
-  }
-  .App-slider .rc-slider-track {
-    background-size: 95vw 100%;
   }
 }
 @media (max-width: 1033px) {
