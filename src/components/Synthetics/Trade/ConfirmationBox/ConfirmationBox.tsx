@@ -48,6 +48,7 @@ import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwr
 import { AggregatedPositionData, formatLeverage, formatPnl, getPositionKey } from "domain/synthetics/positions";
 import {
   TokensRatio,
+  convertToTokenAmount,
   formatTokensRatio,
   getTokenData,
   needTokenApprove,
@@ -240,11 +241,11 @@ export function ConfirmationBox(p: Props) {
   const longShortText = isLong ? t`Long` : t`Short`;
 
   const getTitle = () => {
-    if (isSwap) {
-      return t`Confirm Swap`;
-    }
+    if (isMarket) {
+      if (isSwap) {
+        return t`Confirm Swap`;
+      }
 
-    if (isIncrease && isMarket) {
       return isLong ? t`Confirm Long` : t`Confirm Short`;
     }
 
@@ -288,14 +289,16 @@ export function ConfirmationBox(p: Props) {
 
     let text = "";
 
-    if (isSwap) {
-      text = t`Swap`;
+    if (isMarket) {
+      if (isSwap) {
+        text = t`Swap`;
+      } else {
+        text = isLong ? t`Long` : t`Short`;
+      }
     } else if (isLimit) {
-      text = t`Create Limit Order`;
-    } else if (isTrigger) {
-      text = t`Create Trigger Order`;
+      text = t`Confirm Limit Order`;
     } else {
-      text = isLong ? t`Long` : t`Short`;
+      text = t`Confirm Trigger Order`;
     }
 
     return {
@@ -615,11 +618,12 @@ export function ConfirmationBox(p: Props) {
 
   function renderAvailableLiquidity() {
     const riskThresholdBps = 5000;
-    let availableLiquidity;
-    let isLiquidityRisk;
+    let availableLiquidityUsd: BigNumber | undefined = undefined;
+    let availableLiquidityAmount: BigNumber | undefined = undefined;
+    let isLiquidityRisk = false;
 
     if (isSwap) {
-      availableLiquidity = getAvailableUsdLiquidityForCollateral(
+      availableLiquidityUsd = getAvailableUsdLiquidityForCollateral(
         marketsData,
         poolsData,
         openInterestData,
@@ -628,13 +632,19 @@ export function ConfirmationBox(p: Props) {
         tokenOut?.address
       );
 
-      if (availableLiquidity && usdOut) {
-        isLiquidityRisk = availableLiquidity.mul(riskThresholdBps).div(BASIS_POINTS_DIVISOR).lt(usdOut);
+      availableLiquidityAmount = convertToTokenAmount(
+        availableLiquidityUsd,
+        tokenOut?.decimals,
+        tokenOut?.prices?.maxPrice
+      );
+
+      if (availableLiquidityUsd && usdOut) {
+        isLiquidityRisk = availableLiquidityUsd.mul(riskThresholdBps).div(BASIS_POINTS_DIVISOR).lt(usdOut);
       }
     }
 
     if (isIncrease) {
-      availableLiquidity = getAvailableUsdLiquidityForPosition(
+      availableLiquidityUsd = getAvailableUsdLiquidityForPosition(
         marketsData,
         poolsData,
         openInterestData,
@@ -643,8 +653,8 @@ export function ConfirmationBox(p: Props) {
         isLong
       );
 
-      if (availableLiquidity && p.increasePositionParams?.sizeDeltaUsd) {
-        isLiquidityRisk = availableLiquidity
+      if (availableLiquidityUsd && p.increasePositionParams?.sizeDeltaUsd) {
+        isLiquidityRisk = availableLiquidityUsd
           .mul(riskThresholdBps)
           .div(BASIS_POINTS_DIVISOR)
           .lt(p.increasePositionParams.sizeDeltaUsd);
@@ -653,7 +663,7 @@ export function ConfirmationBox(p: Props) {
 
     const token = isSwap ? tokenOut : indexToken;
 
-    if (!availableLiquidity || !token) {
+    if (!availableLiquidityUsd || !token) {
       return null;
     }
 
@@ -662,7 +672,11 @@ export function ConfirmationBox(p: Props) {
         <Tooltip
           position="right-bottom"
           handleClassName={isLiquidityRisk ? "negative" : ""}
-          handle={formatUsd(availableLiquidity)}
+          handle={
+            isSwap
+              ? formatTokenAmount(availableLiquidityAmount, tokenOut?.decimals, tokenOut?.symbol)
+              : formatUsd(availableLiquidityUsd)
+          }
           renderContent={() =>
             isLiquidityRisk
               ? t`There may not be sufficient liquidity to execute your order when the price conditions are met`

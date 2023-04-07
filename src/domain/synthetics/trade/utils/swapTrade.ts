@@ -157,7 +157,7 @@ export function getSwapAmounts(p: {
         invertRatio: p.triggerRatio.largestAddress === tokenIn.address,
       });
 
-      usdIn = convertToUsd(amountOut, tokenIn.decimals, tokenIn.prices!.minPrice)!;
+      usdIn = convertToUsd(amountIn, tokenIn.decimals, tokenIn.prices!.minPrice)!;
     }
 
     // TODO: correction in case of unexact fees calculation

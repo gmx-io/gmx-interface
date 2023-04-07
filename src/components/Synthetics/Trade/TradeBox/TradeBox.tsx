@@ -224,7 +224,7 @@ export function TradeBox(p: Props) {
   const [triggerRatioInputValue, setTriggerRatioInputValue] = useState<string>("");
   const markRatio = getTokensRatio({ fromToken: fromTokenInput.token, toToken: toTokenInput.token });
   const triggerRatio = useMemo(() => {
-    if (!markRatio) return undefined;
+    if (!markRatio || !triggerRatioInputValue) return undefined;
 
     const ratio = parseValue(triggerRatioInputValue, USD_DECIMALS);
 
@@ -888,15 +888,15 @@ export function TradeBox(p: Props) {
 
     let text = "";
 
-    if (isSwap) {
-      text = `Swap ${fromTokenInput.token?.symbol}`;
-    }
-
-    if (isIncrease) {
-      text = `${tradeTypeLabels[tradeType!]} ${toTokenInput.token?.symbol}`;
-    }
-
-    if (isTrigger) {
+    if (isMarket) {
+      if (isSwap) {
+        text = `Swap ${fromTokenInput.token?.symbol}`;
+      } else {
+        text = `${tradeTypeLabels[tradeType!]} ${toTokenInput.token?.symbol}`;
+      }
+    } else if (isLimit) {
+      text = t`Create Limit order`;
+    } else {
       text = `Create Trigger order`;
     }
 
@@ -1004,19 +1004,7 @@ export function TradeBox(p: Props) {
       return [t`Insufficient ${fromTokenInput.token?.symbol} balance`];
     }
 
-    if (
-      !existingPosition &&
-      increasePositionParams?.collateralUsd?.lt(minCollateralUsd || expandDecimals(10, USD_DECIMALS))
-    ) {
-      return [t`Min order: ${formatUsd(minCollateralUsd || expandDecimals(10, USD_DECIMALS))}`];
-    }
-
     const { nextPositionValues } = increasePositionParams || {};
-
-    if (nextPositionValues?.nextLeverage && nextPositionValues?.nextLeverage.gt(maxLeverage || MAX_ALLOWED_LEVERAGE)) {
-      const maxValue = Number(maxLeverage) || MAX_ALLOWED_LEVERAGE;
-      return [t`Max leverage: ${(maxValue / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
-    }
 
     const fromAddress = fromTokenInput.tokenAddress
       ? convertTokenAddress(chainId, fromTokenInput.tokenAddress, "wrapped")
@@ -1042,6 +1030,13 @@ export function TradeBox(p: Props) {
       return [t`Fees exceed amount`];
     }
 
+    if (
+      !existingPosition &&
+      increasePositionParams?.collateralUsdAfterFees?.lt(minCollateralUsd || expandDecimals(10, USD_DECIMALS))
+    ) {
+      return [t`Min order: ${formatUsd(minCollateralUsd || expandDecimals(10, USD_DECIMALS))}`];
+    }
+
     const indexToken = getTokenData(tokensData, increasePositionParams?.market.indexTokenAddress, "native");
 
     if (isLong && indexToken && longLiquidity?.lt(increasePositionParams?.sizeDeltaUsd || BigNumber.from(0))) {
@@ -1064,6 +1059,11 @@ export function TradeBox(p: Props) {
       if (!isLong && markPrice?.gt(triggerPrice)) {
         return [t`Price below Mark Price`];
       }
+    }
+
+    if (nextPositionValues?.nextLeverage && nextPositionValues?.nextLeverage.gt(maxLeverage || MAX_ALLOWED_LEVERAGE)) {
+      const maxValue = Number(maxLeverage) || MAX_ALLOWED_LEVERAGE;
+      return [t`Max leverage: ${(maxValue / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
     }
 
     return [undefined];

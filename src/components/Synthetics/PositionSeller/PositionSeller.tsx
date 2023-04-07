@@ -173,7 +173,7 @@ export function PositionSeller(p: Props) {
         sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
         pnlDelta: decreaseAmounts?.pnlDelta,
         collateralDeltaUsd: decreaseAmounts?.collateralDeltaUsd,
-        exitMarkPrice: decreaseAmounts?.exitMarkPrice,
+        executionPrice: decreaseAmounts?.exitMarkPrice,
         showPnlInLeverage: true,
         isLong: position?.isLong,
         maxLeverage,
