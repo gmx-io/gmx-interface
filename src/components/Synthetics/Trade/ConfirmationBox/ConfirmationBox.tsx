@@ -674,7 +674,7 @@ export function ConfirmationBox(p: Props) {
           handleClassName={isLiquidityRisk ? "negative" : ""}
           handle={
             isSwap
-              ? formatTokenAmount(availableLiquidityAmount, tokenOut?.decimals, tokenOut?.symbol)
+              ? formatTokenAmount(availableLiquidityAmount, token?.decimals, token?.symbol)
               : formatUsd(availableLiquidityUsd)
           }
           renderContent={() =>

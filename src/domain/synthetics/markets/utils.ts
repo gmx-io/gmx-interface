@@ -294,6 +294,9 @@ export function getAvailableUsdLiquidityForCollateral(
   tokenAddress: string | undefined
 ) {
   const market = getMarket(marketsData, marketAddress);
+  const wrappedToken = getTokenData(tokensData, tokenAddress, "wrapped");
+
+  tokenAddress = wrappedToken?.address;
 
   if (!market || !tokenAddress || !isMarketCollateral(market, tokenAddress)) return undefined;
 
