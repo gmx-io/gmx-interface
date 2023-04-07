@@ -102,8 +102,13 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
     .map((call) => exchangeRouter.interface.encodeFunctionData(call!.method, call!.params));
 
   const secondaryPriceOverrides: PriceOverrides = {};
+  const primaryPriceOverrides: PriceOverrides = {};
 
   if (p.triggerPrice) {
+    primaryPriceOverrides[p.indexTokenAddress] = {
+      minPrice: p.triggerPrice,
+      maxPrice: p.triggerPrice,
+    };
     secondaryPriceOverrides[p.indexTokenAddress] = {
       minPrice: p.triggerPrice,
       maxPrice: p.triggerPrice,
@@ -112,7 +117,7 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
 
   await simulateExecuteOrderTxn(chainId, library, {
     tokensData: p.tokensData,
-    primaryPriceOverrides: {},
+    primaryPriceOverrides,
     secondaryPriceOverrides,
     createOrderMulticallPayload: encodedPayload,
     value: wntAmount,

@@ -83,7 +83,12 @@ export function usePositionsData(chainId: number): PositionsDataResult {
         calls: {
           positions: {
             methodName: "getAccountPositionInfoList",
-            params: [getContract(chainId, "DataStore"), queryParams!.positionsKeys, queryParams!.marketPricesArray],
+            params: [
+              getContract(chainId, "DataStore"),
+              getContract(chainId, "SyntheticsReferralStorage"),
+              queryParams!.positionsKeys,
+              queryParams!.marketPricesArray,
+            ],
           },
         },
       },

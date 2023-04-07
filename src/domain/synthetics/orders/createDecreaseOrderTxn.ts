@@ -51,7 +51,8 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
 
   const wntAmount = p.executionFee;
 
-  const minOutputAmount = BigNumber.from(0);
+  // TODO min outputUsd
+  const minOutputUsd = BigNumber.from(0);
 
   const multicall = [
     { method: "sendWnt", params: [orderVaultAddress, wntAmount] },
@@ -74,7 +75,7 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
             acceptablePrice: convertToContractPrice(p.acceptablePrice, indexToken.decimals),
             executionFee: p.executionFee,
             callbackGasLimit: BigNumber.from(0),
-            minOutputAmount: minOutputAmount,
+            minOutputAmount: minOutputUsd,
           },
           orderType: p.orderType,
           decreasePositionSwapType: p.decreasePositionSwapType,
@@ -98,17 +99,24 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
   const primaryPriceOverrides: PriceOverrides = {};
   const secondaryPriceOverrides: PriceOverrides = {};
 
-  const isTrigger = p.orderType === OrderType.StopLossDecrease || p.orderType === OrderType.LimitDecrease;
-
-  if (!isTrigger) {
-    await simulateExecuteOrderTxn(chainId, library, {
-      primaryPriceOverrides,
-      secondaryPriceOverrides,
-      createOrderMulticallPayload: encodedPayload,
-      value: wntAmount,
-      tokensData: p.tokensData,
-    });
+  if (p.triggerPrice) {
+    primaryPriceOverrides[p.indexTokenAddress] = {
+      minPrice: p.triggerPrice,
+      maxPrice: p.triggerPrice,
+    };
+    secondaryPriceOverrides[p.indexTokenAddress] = {
+      minPrice: p.triggerPrice,
+      maxPrice: p.triggerPrice,
+    };
   }
+
+  await simulateExecuteOrderTxn(chainId, library, {
+    primaryPriceOverrides,
+    secondaryPriceOverrides,
+    createOrderMulticallPayload: encodedPayload,
+    value: wntAmount,
+    tokensData: p.tokensData,
+  });
 
   const longText = p.isLong ? t`Long` : t`Short`;
 
