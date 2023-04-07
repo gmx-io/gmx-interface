@@ -3,6 +3,7 @@ import { NATIVE_TOKEN_ADDRESS, getWrappedToken } from "config/tokens";
 import { Market, useMarketsData } from "domain/synthetics/markets";
 import { adaptToInfoTokens, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { InfoTokens, Token } from "domain/tokens";
+import { uniq } from "lodash";
 import { useChainId } from "lib/chains";
 
 type AvailableSwapOptions = {
@@ -48,19 +49,21 @@ export function useAvailableSwapOptions(p: { selectedIndexTokenAddress?: string 
 
       shortMap[shortToken.address] = shortToken;
 
-      const indexToken =
-        market.indexTokenAddress === wrappedToken.address
-          ? nativeToken
-          : getTokenData(tokensData, market.indexTokenAddress)!;
+      if (!market.isSpotOnly) {
+        const indexToken =
+          market.indexTokenAddress === wrappedToken.address
+            ? nativeToken
+            : getTokenData(tokensData, market.indexTokenAddress)!;
 
-      indexMap[indexToken.address] = indexToken;
-      collateralsByIndexMap[indexToken.address] = collateralsByIndexMap[indexToken.address] || {};
-      collateralsByIndexMap[indexToken.address][longToken.address] = longToken;
-      collateralsByIndexMap[indexToken.address][shortToken.address] = shortToken;
+        indexMap[indexToken.address] = indexToken;
+        collateralsByIndexMap[indexToken.address] = collateralsByIndexMap[indexToken.address] || {};
+        collateralsByIndexMap[indexToken.address][longToken.address] = longToken;
+        collateralsByIndexMap[indexToken.address][shortToken.address] = shortToken;
 
-      const marketPerpKey = `${market.indexTokenAddress}-${market.perp}`;
-      marketsPerpsMap[marketPerpKey] = marketsPerpsMap[marketPerpKey] || [];
-      marketsPerpsMap[marketPerpKey].push(market);
+        const marketPerpKey = `${market.indexTokenAddress}-${market.perp}`;
+        marketsPerpsMap[marketPerpKey] = marketsPerpsMap[marketPerpKey] || [];
+        marketsPerpsMap[marketPerpKey].push(market);
+      }
     }
 
     return {
@@ -71,7 +74,7 @@ export function useAvailableSwapOptions(p: { selectedIndexTokenAddress?: string 
     };
   }, [chainId, marketsData, tokensData]);
 
-  const availableSwapTokens: Token[] = longCollaterals.concat(shortCollaterals);
+  const availableSwapTokens: Token[] = uniq(longCollaterals.concat(shortCollaterals));
   const availableIndexTokens: Token[] = indexTokens;
   const availablePositionCollaterals = p.selectedIndexTokenAddress
     ? (Object.values(collateralsByIndexMap[p.selectedIndexTokenAddress] || {}) as Token[])

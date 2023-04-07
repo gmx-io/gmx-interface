@@ -2,6 +2,7 @@ import SyntheticsReader from "abis/SyntheticsReader.json";
 import { getContract } from "config/contracts";
 import { useMulticall } from "lib/multicall";
 import { MarketsData } from "./types";
+import { ethers } from "ethers";
 
 type MarketsDataResult = {
   marketsData: MarketsData;
@@ -36,12 +37,17 @@ export function useMarketsData(chainId: number): MarketsDataResult {
       return markets.reduce((acc: MarketsData, market) => {
         const [marketTokenAddress, indexTokenAddress, longTokenAddress, shortTokenAddress, data] = market;
 
+        const isSameCollaterals = longTokenAddress === shortTokenAddress;
+        const isSpotOnly = indexTokenAddress === ethers.constants.AddressZero;
+
         try {
           acc[marketTokenAddress] = {
             marketTokenAddress,
             indexTokenAddress,
             longTokenAddress,
             shortTokenAddress,
+            isSameCollaterals,
+            isSpotOnly,
             data,
             // TODO: store in configs?
             perp: "USD",

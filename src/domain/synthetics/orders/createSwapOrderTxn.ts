@@ -14,6 +14,7 @@ import { simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
 
 const { AddressZero } = ethers.constants;
 
+// TODO: validate same collaterals markets
 export type SwapOrderParams = {
   account: string;
   executionFee: BigNumber;
