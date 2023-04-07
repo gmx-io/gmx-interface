@@ -192,7 +192,7 @@ export function PositionSeller(p: Props) {
     swapSteps: swapAmounts?.swapPathStats?.swapSteps,
     swapPriceImpactDeltaUsd: swapAmounts?.swapPathStats?.totalSwapPriceImpactDeltaUsd,
     sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
-    initialCollateralUsd: receiveUsd,
+    initialCollateralUsd: decreaseAmounts?.collateralDeltaUsd,
     positionFeeUsd: decreaseAmounts?.positionFeeUsd,
     borrowingFeeUsd: position?.pendingBorrowingFees,
     fundingFeeDeltaUsd: position?.pendingFundingFeesUsd,
