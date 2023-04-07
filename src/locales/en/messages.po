@@ -920,6 +920,7 @@ msgstr "Confirm Claim"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Confirm Limit Order"
 msgstr "Confirm Limit Order"
 
@@ -938,6 +939,7 @@ msgstr "Confirm Short"
 msgid "Confirm Swap"
 msgstr "Confirm Swap"
 
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Confirm Trigger Order"
 msgstr "Confirm Trigger Order"
@@ -1063,8 +1065,12 @@ msgid "Create"
 msgstr "Create"
 
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-msgid "Create Limit Order"
-msgstr "Create Limit Order"
+#~ msgid "Create Limit Order"
+#~ msgstr "Create Limit Order"
+
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+msgid "Create Limit order"
+msgstr "Create Limit order"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
@@ -1076,8 +1082,8 @@ msgid "Create Referral Code"
 msgstr "Create Referral Code"
 
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-msgid "Create Trigger Order"
-msgstr "Create Trigger Order"
+#~ msgid "Create Trigger Order"
+#~ msgstr "Create Trigger Order"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Create {0} Order"
@@ -1568,6 +1574,7 @@ msgstr "Enter new Price"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
@@ -2583,7 +2590,6 @@ msgstr "Market Increase"
 msgid "Market Swap"
 msgstr "Market Swap"
 
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Max"

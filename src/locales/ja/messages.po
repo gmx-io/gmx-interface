@@ -920,6 +920,7 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Confirm Limit Order"
 msgstr ""
 
@@ -938,6 +939,7 @@ msgstr "ショートを確認する"
 msgid "Confirm Swap"
 msgstr "スワップを確認する"
 
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Confirm Trigger Order"
 msgstr ""
@@ -1063,7 +1065,11 @@ msgid "Create"
 msgstr "作成"
 
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-msgid "Create Limit Order"
+#~ msgid "Create Limit Order"
+#~ msgstr ""
+
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+msgid "Create Limit order"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -1076,8 +1082,8 @@ msgid "Create Referral Code"
 msgstr "紹介コード作成"
 
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-msgid "Create Trigger Order"
-msgstr ""
+#~ msgid "Create Trigger Order"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Create {0} Order"
@@ -1568,6 +1574,7 @@ msgstr "新しい価格を入力"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
@@ -2583,7 +2590,6 @@ msgstr ""
 msgid "Market Swap"
 msgstr ""
 
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Max"
