@@ -59,10 +59,10 @@ export function PositionList(p: Props) {
               <Trans>Collateral</Trans>
             </th>
             <th>
-              <Trans>Mark Price</Trans>
+              <Trans>Entry Price</Trans>
             </th>
             <th>
-              <Trans>Entry Price</Trans>
+              <Trans>Mark Price</Trans>
             </th>
             <th>
               <Trans>Liq Price</Trans>
