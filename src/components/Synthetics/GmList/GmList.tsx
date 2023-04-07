@@ -90,14 +90,16 @@ export function GmList() {
 
                     <td>
                       {formatTokenAmount(token.balance, token.decimals, "GM")}
-                      <br />({formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice))})
+                      <br />
+                      {formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice))}
                     </td>
 
                     <td>{apr ? `${formatAmount(apr, 2, 2)}%` : "..."}</td>
 
                     <td>
                       {formatTokenAmount(totalSupply, token.decimals, "GM")}
-                      <br />({formatUsd(totalSupplyUsd)})
+                      <br />
+                      {formatUsd(totalSupplyUsd)}
                     </td>
 
                     <td>

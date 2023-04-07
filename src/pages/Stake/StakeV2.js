@@ -50,6 +50,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import GMXAprTooltip from "components/Stake/GMXAprTooltip";
 import Button from "components/Button/Button";
 import { GmList } from "components/Synthetics/GmList/GmList";
+import { getIsSyntheticsSupported } from "config/features";
 
 const { AddressZero } = ethers.constants;
 
@@ -1985,9 +1986,11 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         </div>
       </div>
 
-      <div className="StakeV2-section">
-        <GmList />
-      </div>
+      {getIsSyntheticsSupported(chainId) && (
+        <div className="StakeV2-section">
+          <GmList />
+        </div>
+      )}
 
       <div>
         <div className="Tab-title-section">
