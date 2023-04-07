@@ -121,6 +121,10 @@ export function getMostLiquidMarketForPosition(
   const shouldIgnoreCollaterals = !collateralTokenAddress;
 
   for (const market of markets) {
+    if (market.isSpotOnly) {
+      continue;
+    }
+
     if (
       (shouldIgnoreCollaterals ||
         [market.longTokenAddress, market.shortTokenAddress].includes(collateralTokenAddress)) &&

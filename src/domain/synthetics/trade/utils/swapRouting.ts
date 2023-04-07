@@ -11,9 +11,9 @@ export function getMarketsGraph(marketsData: MarketsData): MarketsGraph {
   };
 
   for (const market of markets) {
-    const { longTokenAddress, shortTokenAddress, marketTokenAddress } = market;
+    const { longTokenAddress, shortTokenAddress, marketTokenAddress, isSameCollaterals } = market;
 
-    if (longTokenAddress === shortTokenAddress) {
+    if (isSameCollaterals) {
       continue;
     }
 

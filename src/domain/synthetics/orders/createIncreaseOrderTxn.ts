@@ -14,6 +14,7 @@ import { DecreasePositionSwapType, OrderType } from "./types";
 
 const { AddressZero } = ethers.constants;
 
+// TODO: validate spot only
 type IncreaseOrderParams = {
   account: string;
   executionFee: BigNumber;

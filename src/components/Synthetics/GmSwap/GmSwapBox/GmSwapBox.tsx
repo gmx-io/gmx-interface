@@ -80,9 +80,12 @@ type Props = {
   setOperation: Dispatch<SetStateAction<Operation>>;
 };
 
-const availableModes = {
-  [Operation.Deposit]: [Mode.Single, Mode.Pair],
-  [Operation.Withdrawal]: [Mode.Pair],
+const getAvailableModes = (operation: Operation, market?: Market) => {
+  if (!market?.isSameCollaterals && operation === Operation.Deposit) {
+    return [Mode.Single, Mode.Pair];
+  }
+
+  return [Mode.Single];
 };
 
 function useSafeState<S>(
@@ -147,6 +150,7 @@ export function GmSwapBox(p: Props) {
     label: getMarketName(marketsData, tokensData, market.marketTokenAddress, true, true)!,
     value: market.marketTokenAddress,
   }));
+  const availableModes = getAvailableModes(operation, market);
 
   const pools = getMarketPools(poolsData, marketAddress);
 
@@ -177,12 +181,35 @@ export function GmSwapBox(p: Props) {
   );
 
   const longTokenInputState = getInputStateByCollateralType("long");
-  const longTokenAmount = longTokenInputState?.amount;
-  const longTokenUsd = longTokenInputState?.usd;
-
   const shortTokenInputState = getInputStateByCollateralType("short");
-  const shortTokenAmount = shortTokenInputState?.amount;
-  const shortTokenUsd = shortTokenInputState?.usd;
+
+  const { longTokenAmount, longTokenUsd, shortTokenAmount, shortTokenUsd } = useMemo(() => {
+    let longTokenAmount = longTokenInputState?.amount;
+    let longTokenUsd = longTokenInputState?.usd;
+    let shortTokenAmount = shortTokenInputState?.amount;
+    let shortTokenUsd = shortTokenInputState?.usd;
+
+    if (isDeposit && market?.isSameCollaterals) {
+      longTokenAmount = longTokenAmount?.div(2);
+      longTokenUsd = longTokenUsd?.div(2);
+      shortTokenAmount = shortTokenAmount?.div(2);
+      shortTokenUsd = shortTokenUsd?.div(2);
+    }
+
+    return {
+      longTokenAmount,
+      longTokenUsd,
+      shortTokenAmount,
+      shortTokenUsd,
+    };
+  }, [
+    isDeposit,
+    longTokenInputState?.amount,
+    longTokenInputState?.usd,
+    market?.isSameCollaterals,
+    shortTokenInputState?.amount,
+    shortTokenInputState?.usd,
+  ]);
 
   const tokenOptions: Token[] = (function getTokenOptions() {
     const longToken = getTokenData(tokensData, market?.longTokenAddress);
@@ -190,7 +217,11 @@ export function GmSwapBox(p: Props) {
 
     if (!longToken || !shortToken) return [];
 
-    const result = [longToken, shortToken];
+    const result = [longToken];
+
+    if (longToken.address !== shortToken.address) {
+      result.push(shortToken);
+    }
 
     if (result.some((token) => token.isWrapped)) {
       result.unshift(getTokenData(tokensData, NATIVE_TOKEN_ADDRESS)!);
@@ -583,11 +614,11 @@ export function GmSwapBox(p: Props) {
 
   useEffect(
     function updateMode() {
-      if (!availableModes[operation].includes(mode)) {
-        setMode(availableModes[operation][0]);
+      if (!availableModes.includes(mode)) {
+        setMode(availableModes[0]);
       }
     },
-    [mode, operation, setMode]
+    [availableModes, mode, operation, setMode]
   );
 
   useEffect(
@@ -651,7 +682,7 @@ export function GmSwapBox(p: Props) {
       />
 
       <Tab
-        options={availableModes[operation]}
+        options={availableModes}
         optionLabels={modeLabels}
         className="GmSwapBox-asset-options-tabs"
         type="inline"

@@ -98,9 +98,10 @@ export function usePositionsData(chainId: number): PositionsDataResult {
 
       return positions.reduce((positionsMap: PositionsData, positionInfo) => {
         // TODO: parsing from abi?
-        const [positionProps, pendingBorrowingFees, fundingFees] = positionInfo;
+        const [positionProps, positionFees] = positionInfo;
         const [addresses, numbers, flags, data] = positionProps;
         const [account, marketAddress, collateralTokenAddress] = addresses;
+
         const [
           sizeInUsd,
           sizeInTokens,
@@ -115,14 +116,44 @@ export function usePositionsData(chainId: number): PositionsDataResult {
         const [isLong] = flags;
 
         const [
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          referral,
+          funding,
+          borrowing,
+          // collateralPrice,
+          // positionFeeFactor,
+          // protocolFeeAmount,
+          // positionFeeReceiverFactor,
+          // feeReceiverAmount,
+          // feeAmountForPool,
+          // positionFeeAmountForPool,
+          // positionFeeAmount,
+          // totalNetCostAmount,
+          // totalNetCostUsd,
+        ] = positionFees;
+
+        // const [
+        //   referralCode,
+        //   affiliate,
+        //   trader,
+        //   totalRebateFactor,
+        //   traderDiscountFactor,
+        //   totalRebateAmount,
+        //   traderDiscountAmount,
+        //   affiliateRewardAmount,
+        // ] = referral;
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const [borrowingFeeUsd, borrowingFeeAmount, borrowingFeeReceiverFactor, borrowingFeeAmountForFeeReceiver] =
+          borrowing.map(bigNumberify);
+
+        const [
           fundingFeeAmount,
           claimableLongTokenAmount,
           claimableShortTokenAmount,
           latestLongTokenFundingAmountPerSize,
           latestShortTokenFundingAmountPerSize,
-          hasPendingLongTokenFundingFee,
-          hasPendingShortTokenFundingFee,
-        ] = fundingFees.map((item) => (typeof item === "boolean" ? item : bigNumberify(item)));
+        ] = funding.map(bigNumberify);
 
         const positionKey = getPositionKey(account, marketAddress, collateralTokenAddress, isLong)!;
 
@@ -140,15 +171,13 @@ export function usePositionsData(chainId: number): PositionsDataResult {
           increasedAtBlock,
           decreasedAtBlock,
           isLong,
-          pendingBorrowingFees: bigNumberify(pendingBorrowingFees)!,
+          pendingBorrowingFees: borrowingFeeUsd,
           pendingFundingFees: {
             fundingFeeAmount,
             claimableLongTokenAmount,
             claimableShortTokenAmount,
             latestLongTokenFundingAmountPerSize,
             latestShortTokenFundingAmountPerSize,
-            hasPendingLongTokenFundingFee,
-            hasPendingShortTokenFundingFee,
           },
           data,
         };

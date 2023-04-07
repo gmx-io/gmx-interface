@@ -9,8 +9,6 @@ export type PositionFundingFees = {
   claimableShortTokenAmount: BigNumber;
   latestLongTokenFundingAmountPerSize: BigNumber;
   latestShortTokenFundingAmountPerSize: BigNumber;
-  hasPendingLongTokenFundingFee: boolean;
-  hasPendingShortTokenFundingFee: boolean;
 };
 
 export type Position = {
