@@ -266,6 +266,11 @@
   font-weight: bold;
 }
 
+.ExchangeChart-title:hover .chart-token-selector,
+.ExchangeChart-title:hover .chart-token-selector span {
+  color: #7885ff !important;
+}
+
 .ExchangeChart-info-label {
   font-size: 1.25rem;
   opacity: 0.7;

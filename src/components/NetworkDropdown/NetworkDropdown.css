@@ -28,7 +28,7 @@
   margin-bottom: 0.8rem;
   border-bottom: 1px solid #ffffff29;
 }
-.network-dropdown:hover {
+.App-header-network:hover {
   background: var(--dark-blue-hover);
   cursor: pointer;
 }
