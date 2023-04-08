@@ -27,10 +27,24 @@
 .chart-token-list {
   overflow: auto;
   max-height: 20rem;
+  &::-webkit-scrollbar {
+    width: 0.6rem;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: #1c1c1c;
+    border-radius: 155rem;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #949393;
+    border-radius: 155rem;
+  }
   table {
     width: 100%;
     text-align: left;
     font-size: var(--font-sm);
+    border-collapse: collapse;
   }
   thead {
     tr {
@@ -55,6 +69,10 @@
       }
       td {
         padding: 0.75rem 1.5rem;
+
+        &.token-item {
+          color: #a0a3c4;
+        }
       }
     }
   }

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { Menu } from "@headlessui/react";
+import { Popover } from "@headlessui/react";
 import { FaChevronDown } from "react-icons/fa";
-import cx from "classnames";
 import "./ChartTokenSelector.scss";
 import { LONG, SHORT, SWAP, USDG_DECIMALS, USD_DECIMALS } from "lib/legacy";
 import { getTokens, getWhitelistedTokens } from "config/tokens";
@@ -104,15 +103,15 @@ export default function ChartTokenSelector(props: Props) {
   };
 
   return (
-    <Menu>
-      <Menu.Button as="div">
-        <button className={cx("App-cta small transparent chart-token-selector", { "default-cursor": isSwap })}>
+    <Popover>
+      <Popover.Button as="div">
+        <button className="App-cta small transparent chart-token-selector">
           <span className="chart-token-selector--current">{selectedToken.symbol} / USD</span>
           <FaChevronDown />
         </button>
-      </Menu.Button>
+      </Popover.Button>
       <div className="chart-token-menu">
-        <Menu.Items as="div" className="menu-items chart-token-menu-items">
+        <Popover.Panel as="div" className="menu-items chart-token-menu-items">
           <SearchInput
             className="m-md"
             value={searchKeyword}
@@ -132,33 +131,31 @@ export default function ChartTokenSelector(props: Props) {
                 </thead>
               )}
               <tbody>
-                {filteredTokens.map((option, index) => {
+                {filteredTokens.map((option) => {
                   return (
-                    <Menu.Item key={index}>
-                      <tr className="">
-                        <td
-                          className="token-item"
-                          onClick={() => {
-                            onSelect(option);
-                          }}
-                        >
-                          {option.symbol} {!isSwap && "/ USD"}
-                        </td>
-                        <td>
-                          ${formatAmount(isSwap ? option.maxInUsd : option.maxAvailableLong, USD_DECIMALS, 0, true)}
-                        </td>
-                        <td>
-                          ${formatAmount(isSwap ? option.maxOutUsd : option.maxAvailableShort, USD_DECIMALS, 0, true)}
-                        </td>
-                      </tr>
-                    </Menu.Item>
+                    <tr key={option.symbol}>
+                      <td
+                        className="token-item"
+                        onClick={() => {
+                          onSelect(option);
+                        }}
+                      >
+                        {option.symbol} {!isSwap && "/ USD"}
+                      </td>
+                      <td>
+                        ${formatAmount(isSwap ? option.maxInUsd : option.maxAvailableLong, USD_DECIMALS, 0, true)}
+                      </td>
+                      <td>
+                        ${formatAmount(isSwap ? option.maxOutUsd : option.maxAvailableShort, USD_DECIMALS, 0, true)}
+                      </td>
+                    </tr>
                   );
                 })}
               </tbody>
             </table>
           </div>
-        </Menu.Items>
+        </Popover.Panel>
       </div>
-    </Menu>
+    </Popover>
   );
 }
