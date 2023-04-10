@@ -519,14 +519,12 @@ export default function OrdersList(props) {
           {renderLargeList()}
         </tbody>
       </table>
-      <div className="Exchange-list Orders small">
-        {(!orders || orders.length === 0) && (
-          <div className="Exchange-empty-positions-list-note App-card">
-            <Trans>No open orders</Trans>
-          </div>
-        )}
-        {renderSmallList()}
-      </div>
+      {(!orders || orders.length === 0) && (
+        <div className="Exchange-empty-positions-list-note small App-card">
+          <Trans>No open orders</Trans>
+        </div>
+      )}
+      <div className="Exchange-list Orders small">{renderSmallList()}</div>
       {editingOrder && (
         <OrderEditor
           account={account}

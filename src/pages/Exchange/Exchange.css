@@ -27,7 +27,11 @@
 }
 
 .Exchange-empty-positions-list-note {
-  padding-bottom: 0.465rem;
+  padding-bottom: 0.5rem;
+}
+
+.Exchange-empty-positions-list-note.small {
+  display: none;
 }
 
 .position-loading-icon {
@@ -451,6 +455,9 @@
 
 .Exchange-list .App-card {
   margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .Exchange-list-item-error {
@@ -907,15 +914,15 @@ table.Exchange-list-small td {
     display: none;
   }
   .Exchange-list.small {
-    display: table;
-  }
-  .Exchange-list-items {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: 1rem;
   }
   .Exchange-list-title {
     margin-right: 1rem;
+  }
+  .Exchange-empty-positions-list-note.small {
+    display: block;
   }
 }
 
@@ -1011,7 +1018,7 @@ table.Exchange-list-small td {
 }
 
 @media (max-width: 750px) {
-  .Exchange-list-items {
+  .Exchange-list.small {
     grid-template-columns: 1fr;
   }
 }

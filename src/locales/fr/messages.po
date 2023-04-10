@@ -1786,6 +1786,7 @@ msgid "Liquidity data not loaded"
 msgstr "Les données de liquidité ne sont pas chargées"
 
 #: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/PositionsList.js
 msgid "Loading..."
 msgstr "Chargement..."
 

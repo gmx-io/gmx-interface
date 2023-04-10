@@ -1786,6 +1786,7 @@ msgid "Liquidity data not loaded"
 msgstr "유동성 데이터를 불러오지 못하였습니다."
 
 #: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/PositionsList.js
 msgid "Loading..."
 msgstr "로딩중..."
 
