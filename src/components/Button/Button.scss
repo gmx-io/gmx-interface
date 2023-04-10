@@ -43,10 +43,6 @@
     padding: 1.65rem 1.6rem;
     line-height: 1;
 
-    &:disabled {
-      background: #2232c0;
-    }
-
     &:not([disabled]):hover {
       background: var(--primary-btn-hover);
       box-shadow: 0 0 0.4rem 0.5rem rgb(45 66 252 / 10%);
@@ -94,6 +90,6 @@
   &:disabled {
     box-shadow: none;
     cursor: not-allowed;
-    opacity: 0.9;
+    opacity: 0.5;
   }
 }
