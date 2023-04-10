@@ -222,7 +222,7 @@ export default function PositionsList(props) {
       )}
       {positions && (
         <div className="Exchange-list small">
-          <div>
+          <div className="Exchange-list-items">
             {positions.length === 0 && positionsDataIsLoading && (
               <div className="Exchange-empty-positions-list-note App-card">
                 <Trans>Loading...</Trans>
@@ -250,24 +250,44 @@ export default function PositionsList(props) {
 
               return (
                 <div key={position.key} className="App-card">
-                  <div className="App-card-title">
+                  <div className="App-card-title Position-card-title">
                     <span className="Exchange-list-title">{position.indexToken.symbol}</span>
+
+                    <div>
+                      <span className="Position-leverage">{position.leverageStr}</span>
+                      <span
+                        className={cx("Exchange-list-side", {
+                          positive: position.isLong,
+                          negative: !position.isLong,
+                        })}
+                      >
+                        {position.isLong ? t`Long` : t`Short`}
+                      </span>
+                    </div>
                   </div>
                   <div className="App-card-divider" />
                   <div className="App-card-content">
                     <div className="App-card-row">
                       <div className="label">
-                        <Trans>Leverage</Trans>
+                        <Trans>Net Value</Trans>
                       </div>
                       <div>
-                        <span className="Position-leverage">{position.leverageStr}</span>
+                        <NetValueTooltip isMobile position={position} />
+                      </div>
+                    </div>
+                    <div className="App-card-row">
+                      <div className="label">
+                        <Trans>PnL</Trans>
+                      </div>
+                      <div>
                         <span
-                          className={cx("Exchange-list-side", {
-                            positive: position.isLong,
-                            negative: !position.isLong,
+                          className={cx("Exchange-list-info-label", {
+                            positive: hasPositionProfit && positionDelta.gt(0),
+                            negative: !hasPositionProfit && positionDelta.gt(0),
+                            muted: positionDelta.eq(0),
                           })}
                         >
-                          {position.isLong ? t`Long` : t`Short`}
+                          {position.deltaStr} ({position.deltaPercentageStr})
                         </span>
                       </div>
                     </div>
@@ -329,30 +349,7 @@ export default function PositionsList(props) {
                         )}
                       </div>
                     </div>
-                    <div className="App-card-row">
-                      <div className="label">
-                        <Trans>PnL</Trans>
-                      </div>
-                      <div>
-                        <span
-                          className={cx("Exchange-list-info-label", {
-                            positive: hasPositionProfit && positionDelta.gt(0),
-                            negative: !hasPositionProfit && positionDelta.gt(0),
-                            muted: positionDelta.eq(0),
-                          })}
-                        >
-                          {position.deltaStr} ({position.deltaPercentageStr})
-                        </span>
-                      </div>
-                    </div>
-                    <div className="App-card-row">
-                      <div className="label">
-                        <Trans>Net Value</Trans>
-                      </div>
-                      <div>
-                        <NetValueTooltip isMobile position={position} />
-                      </div>
-                    </div>
+
                     <div className="App-card-row">
                       <div className="label">
                         <Trans>Orders</Trans>

@@ -425,7 +425,7 @@
   width: 100%;
 }
 
-.Position-list-order {
+.Position-list-order:not(:first-child) {
   white-space: nowrap;
   margin-top: 8px;
 }
@@ -906,9 +906,16 @@ table.Exchange-list-small td {
   .Exchange-list.large {
     display: none;
   }
-
   .Exchange-list.small {
     display: table;
+  }
+  .Exchange-list-items {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 1rem;
+  }
+  .Exchange-list-title {
+    margin-right: 1rem;
   }
 }
 
@@ -1000,6 +1007,12 @@ table.Exchange-list-small td {
   }
   .Useful-links-exchange {
     display: block;
+  }
+}
+
+@media (max-width: 750px) {
+  .Exchange-list-items {
+    grid-template-columns: 1fr;
   }
 }
 
