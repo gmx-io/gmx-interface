@@ -1801,6 +1801,7 @@ msgstr "ロード中"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -2771,6 +2772,7 @@ msgstr "ポジションをシェアする"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
