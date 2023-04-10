@@ -1769,12 +1769,13 @@ export default function SwapBox(props) {
     }
   }
 
+  const fromUsdMinAfterFees = fromUsdMin?.sub(swapFees ?? 0).sub(positionFee ?? 0);
   const liquidationPrice = getLiquidation({
     isLong,
     size: hasExistingPosition ? existingPosition.size.add(toUsdMax || 0) : toUsdMax ?? bigNumberify(0),
     collateral: hasExistingPosition
-      ? existingPosition.collateralAfterFee.add(fromUsdMin ? fromUsdMin.sub(swapFees ?? 0).sub(positionFee ?? 0) : 0)
-      : fromUsdMin ?? bigNumberify(0),
+      ? existingPosition.collateralAfterFee.add(fromUsdMinAfterFees)
+      : fromUsdMinAfterFees ?? bigNumberify(0),
     averagePrice: nextAveragePrice ?? bigNumberify(0),
   });
 
