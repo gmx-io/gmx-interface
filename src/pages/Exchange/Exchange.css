@@ -918,7 +918,8 @@ table.Exchange-list-small td {
     grid-template-columns: 1fr 1fr;
     grid-gap: 1rem;
   }
-  .Exchange-list-title {
+  .Exchange-list-title,
+  .Position-leverage {
     margin-right: 1rem;
   }
   .Exchange-empty-positions-list-note.small {
