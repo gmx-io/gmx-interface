@@ -37,7 +37,6 @@ export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }):
             longToken: market.longTokenAddress,
             shortToken: market.shortTokenAddress,
             indexToken: market.indexTokenAddress,
-            data: market.data,
           };
 
           const pnlFactorType = isDeposit ? MAX_PNL_FACTOR_FOR_DEPOSITS_KEY : MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY;
@@ -97,6 +96,7 @@ export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }):
       marketsAddresses!.reduce((marketTokensMap: TokensData, marketAddress: string) => {
         const pricesData = res[`${marketAddress}-prices`];
         const tokenData = res[`${marketAddress}-tokenData`];
+
         const tokenConfig = getTokenBySymbol(chainId, "GM");
 
         const minPrice = pricesData?.minPrice.returnValues[0];

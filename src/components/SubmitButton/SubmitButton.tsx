@@ -2,16 +2,18 @@ import React, { ReactNode } from "react";
 import cx from "classnames";
 import { useWeb3React } from "@web3-react/core";
 import { t } from "@lingui/macro";
+import Button from "components/Button/Button";
 
 type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   authRequired?: boolean;
+  onClick?: () => void;
   onConnectWallet?: () => void;
 };
 
 type ButtonState = {
   children: ReactNode;
   disabled?: boolean;
-  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  onClick?: () => void;
 };
 
 export const SubmitButton = React.forwardRef<HTMLButtonElement, Props>(function SubmitButton(p, ref) {
@@ -37,14 +39,15 @@ export const SubmitButton = React.forwardRef<HTMLButtonElement, Props>(function 
   }
 
   return (
-    <button
+    <Button
       ref={ref}
-      className={cx("App-cta", "Exchange-swap-button", { muted: buttonState.disabled }, className)}
+      variant="primary-action"
+      className={cx("w-100", className)}
       onClick={buttonState.onClick}
       disabled={buttonState.disabled}
       {...htmlButtonProps}
     >
       {buttonState.children}
-    </button>
+    </Button>
   );
 });

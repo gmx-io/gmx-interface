@@ -155,13 +155,20 @@ export function getLiquidationPrice(p: {
     isLong,
   });
 
+  let liquidationPrice: BigNumber;
+
   if (isLong) {
     // return the higher price
-    return liqPriceForFees.gt(liqPriceForMaxLeverage) ? liqPriceForFees : liqPriceForMaxLeverage;
+    liquidationPrice = liqPriceForFees.gt(liqPriceForMaxLeverage) ? liqPriceForFees : liqPriceForMaxLeverage;
+  } else {
+    liquidationPrice = liqPriceForFees.lt(liqPriceForMaxLeverage) ? liqPriceForFees : liqPriceForMaxLeverage;
   }
 
-  // return the lower price
-  return liqPriceForFees.lt(liqPriceForMaxLeverage) ? liqPriceForFees : liqPriceForMaxLeverage;
+  if (liquidationPrice.lt(0)) {
+    return BigNumber.from(0);
+  }
+
+  return liquidationPrice;
 }
 
 export function getLiquidationPriceFromDelta(p: {

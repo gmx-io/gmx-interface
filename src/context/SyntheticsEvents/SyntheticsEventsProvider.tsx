@@ -276,24 +276,24 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         // ...ignore on unsupported chains
       }
 
-      function handleEventLog(sender, eventNameHash, eventName, eventData, txnOpts) {
+      function handleEventLog(sender, eventName, eventNameHash, eventData, txnOpts) {
         if (isDevelopment()) {
           // eslint-disable-next-line no-console
-          console.log("handleEventLog", sender, eventNameHash, eventName, eventData, txnOpts);
+          console.log("handleEventLog", sender, eventName, eventNameHash, eventData, txnOpts);
         }
         eventLogHandlers.current[eventName]?.(parseEventLogData(eventData), txnOpts);
       }
 
-      function handleEventLog1(sender, eventNameHash, eventName, topic1, eventData, txnOpts) {
+      function handleEventLog1(sender, eventName, eventNameHash, topic1, eventData, txnOpts) {
         if (isDevelopment()) {
           // eslint-disable-next-line no-console
-          console.log("handleEventLog1", sender, eventNameHash, eventName, topic1, eventData, txnOpts);
+          console.log("handleEventLog1", sender, eventName, eventNameHash, topic1, eventData, txnOpts);
         }
 
         eventLogHandlers.current[eventName]?.(parseEventLogData(eventData), txnOpts);
       }
 
-      function handleEventLog2(msgSender, eventNameHash, eventName, topic1, topic2, eventData, txnOpts) {
+      function handleEventLog2(msgSender, eventName, eventNameHash, topic1, topic2, eventData, txnOpts) {
         if (isDevelopment()) {
           // eslint-disable-next-line no-console
           console.log("handleEventLog2", msgSender, eventNameHash, eventName, topic1, topic2, eventData, txnOpts);

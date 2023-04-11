@@ -92,7 +92,7 @@ export function TradeFeesRow(p: Props) {
         }
       : undefined;
 
-    const borrowFeeRow = p.borrowFee?.deltaUsd.gt(0)
+    const borrowFeeRow = p.borrowFee?.deltaUsd?.abs().gt(0)
       ? {
           id: "borrowFee",
           label: (
@@ -105,7 +105,7 @@ export function TradeFeesRow(p: Props) {
         }
       : undefined;
 
-    const fundingFeeRow = p.fundingFee?.deltaUsd.gt(0)
+    const fundingFeeRow = p.fundingFee?.deltaUsd?.lt(0)
       ? {
           id: "fundingFee",
           label: (

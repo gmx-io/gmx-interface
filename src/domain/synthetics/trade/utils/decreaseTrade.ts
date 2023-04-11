@@ -36,7 +36,7 @@ export function getDecreasePositionTradeParams(p: {
     sizeDeltaUsd: decreasePositionAmounts?.sizeDeltaUsd,
     pnlDelta: decreasePositionAmounts?.pnlDelta,
     collateralDeltaUsd: decreasePositionAmounts?.collateralDeltaUsd,
-    exitMarkPrice: decreasePositionAmounts?.exitMarkPrice,
+    executionPrice: decreasePositionAmounts?.exitMarkPrice,
     showPnlInLeverage: p.showPnlInLeverage,
     isLong: p.isLong,
     maxLeverage: p.maxLeverage,
@@ -89,6 +89,7 @@ export function getDecreasePositionAmounts(p: {
   if (
     !p.sizeDeltaUsd ||
     !exitMarkPrice ||
+    !executionPrice ||
     !indexToken ||
     !p.collateralToken?.prices ||
     !p.receiveToken?.prices ||
@@ -105,18 +106,18 @@ export function getDecreasePositionAmounts(p: {
     sizeDeltaUsd = p.existingPosition?.sizeInUsd;
   }
 
-  const sizeDeltaInTokens = convertToTokenAmount(sizeDeltaUsd, indexToken.decimals, exitMarkPrice)!;
+  const sizeDeltaInTokens = convertToTokenAmount(sizeDeltaUsd, indexToken.decimals, executionPrice)!;
 
   const positionFeeUsd = getPositionFee(p.marketInfo, sizeDeltaUsd);
   const positionPriceImpactDeltaUsd = getPriceImpactForPosition(p.marketInfo, p.sizeDeltaUsd, p.isLong);
 
   const {
-    acceptablePrice = exitMarkPrice,
+    acceptablePrice = executionPrice,
     acceptablePriceImpactBps = p.acceptablePriceImpactBps || BigNumber.from(0),
   } = getAcceptablePrice({
     isIncrease: false,
     isLong: p.isLong,
-    indexPrice: exitMarkPrice,
+    indexPrice: executionPrice,
     sizeDeltaUsd,
     priceImpactDeltaUsd: !p.isTrigger ? positionPriceImpactDeltaUsd : undefined,
     acceptablePriceImpactBps: p.isTrigger ? p.acceptablePriceImpactBps : undefined,
@@ -211,7 +212,7 @@ export function getNextPositionValuesForDecreaseTrade(p: {
   sizeDeltaUsd?: BigNumber;
   pnlDelta?: BigNumber;
   collateralDeltaUsd?: BigNumber;
-  exitMarkPrice?: BigNumber;
+  executionPrice?: BigNumber;
   showPnlInLeverage?: boolean;
   isLong?: boolean;
   maxLeverage?: BigNumber;

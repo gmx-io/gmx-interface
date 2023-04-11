@@ -106,6 +106,9 @@ msgid "A snapshot of the USD value of your {0} collateral is taken when the posi
 msgstr "您的{0}抵押品快照在您开启头寸时已以USD价值被存取"
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -406,6 +409,10 @@ msgstr "可用的"
 msgid "Avalanche APR:"
 msgstr "Avalanche年利率"
 
+#: src/components/TokenCard/TokenCard.js
+msgid "Avalanche FUJI Avg. APR:"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Balance"
 msgstr "余额"
@@ -503,6 +510,7 @@ msgstr ""
 msgid "Buy GLP"
 msgstr "购买GLP"
 
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Buy GM"
 msgstr ""
@@ -929,6 +937,7 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Confirm Limit Order"
 msgstr ""
 
@@ -947,6 +956,7 @@ msgstr "确认做空"
 msgid "Confirm Swap"
 msgstr "确认交换"
 
+#: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "Confirm Trigger Order"
 msgstr ""
@@ -1072,7 +1082,11 @@ msgid "Create"
 msgstr "创建"
 
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-msgid "Create Limit Order"
+#~ msgid "Create Limit Order"
+#~ msgstr ""
+
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
+msgid "Create Limit order"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -1085,8 +1099,8 @@ msgid "Create Referral Code"
 msgstr "创建推荐代码"
 
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
-msgid "Create Trigger Order"
-msgstr ""
+#~ msgid "Create Trigger Order"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Create {0} Order"
@@ -1577,6 +1591,7 @@ msgstr "输入新价钱"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
@@ -1847,6 +1862,11 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 msgid "GLP sell disabled, pending {0} upgrade"
 msgstr "GLP售卖已禁止，等待{0}升级"
+
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "GM ({0})"
+msgstr ""
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
@@ -2506,6 +2526,10 @@ msgstr "看来你没有推荐代码可以分享。<0/> 创建一个，开始赚�
 msgid "Loss"
 msgstr "亏损"
 
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "MARKET"
+msgstr ""
+
 #: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2589,7 +2613,6 @@ msgstr ""
 msgid "Market Swap"
 msgstr ""
 
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Max"
@@ -3077,6 +3100,7 @@ msgid "POOL"
 msgstr "池子"
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/DashboardV2.js
 msgid "PRICE"
@@ -3256,6 +3280,7 @@ msgstr "上一页"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -3647,6 +3672,7 @@ msgstr "不支持自行转让"
 msgid "Sell GLP"
 msgstr "出售GLP"
 
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Sell GM"
 msgstr ""
@@ -4130,6 +4156,10 @@ msgstr ""
 msgid "TOKEN"
 msgstr "代币"
 
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "TOTAL SUPPLY"
+msgstr ""
+
 #: src/components/Synthetics/Trade/utils.ts
 #~ msgid "Take Profit"
 #~ msgstr ""
@@ -4388,6 +4418,7 @@ msgid "Total Stats"
 msgstr "总统计表"
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -4800,6 +4831,7 @@ msgid "Voting"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/GmList/GmList.tsx
 msgid "WALLET"
 msgstr "钱包"
 
@@ -4829,6 +4861,7 @@ msgstr "等待核准"
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js

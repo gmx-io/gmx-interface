@@ -80,7 +80,12 @@ export function usePositions(chainId: number): PositionsResult {
         calls: {
           positions: {
             methodName: "getAccountPositionInfoList",
-            params: [getContract(chainId, "DataStore"), queryParams!.positionsKeys, queryParams!.marketPricesArray],
+            params: [
+              getContract(chainId, "DataStore"),
+              getContract(chainId, "SyntheticsReferralStorage"),
+              queryParams!.positionsKeys,
+              queryParams!.marketPricesArray,
+            ],
           },
         },
       },
@@ -88,10 +93,12 @@ export function usePositions(chainId: number): PositionsResult {
     parseResponse: (res) => {
       const positions = res.reader.positions.returnValues;
 
-      return positions.reduce((positionsMap: PositionsData, positionValues, i) => {
-        const [positionProps, pendingBorrowingFees, fundingFees] = positionValues;
+      return positions.reduce((positionsMap: PositionsData, positionInfo, i) => {
+        // TODO: parsing from abi?
+        const [positionProps, positionFees] = positionInfo;
         const [addresses, numbers, flags, data] = positionProps;
         const [account, marketAddress, collateralTokenAddress] = addresses;
+
         const [
           sizeInUsd,
           sizeInTokens,
@@ -106,14 +113,44 @@ export function usePositions(chainId: number): PositionsResult {
         const [isLong] = flags;
 
         const [
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          referral,
+          funding,
+          borrowing,
+          // collateralPrice,
+          // positionFeeFactor,
+          // protocolFeeAmount,
+          // positionFeeReceiverFactor,
+          // feeReceiverAmount,
+          // feeAmountForPool,
+          // positionFeeAmountForPool,
+          // positionFeeAmount,
+          // totalNetCostAmount,
+          // totalNetCostUsd,
+        ] = positionFees;
+
+        // const [
+        //   referralCode,
+        //   affiliate,
+        //   trader,
+        //   totalRebateFactor,
+        //   traderDiscountFactor,
+        //   totalRebateAmount,
+        //   traderDiscountAmount,
+        //   affiliateRewardAmount,
+        // ] = referral;
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const [borrowingFeeUsd, borrowingFeeAmount, borrowingFeeReceiverFactor, borrowingFeeAmountForFeeReceiver] =
+          borrowing.map(bigNumberify);
+
+        const [
           fundingFeeAmount,
           claimableLongTokenAmount,
           claimableShortTokenAmount,
           latestLongTokenFundingAmountPerSize,
           latestShortTokenFundingAmountPerSize,
-          hasPendingLongTokenFundingFee,
-          hasPendingShortTokenFundingFee,
-        ] = fundingFees.map((item) => (typeof item === "boolean" ? item : bigNumberify(item)));
+        ] = funding.map(bigNumberify);
 
         const positionKey = getPositionKey(account, marketAddress, collateralTokenAddress, isLong)!;
         const contractPositionKey = queryParams!.positionsKeys[i];
@@ -133,14 +170,14 @@ export function usePositions(chainId: number): PositionsResult {
           increasedAtBlock,
           decreasedAtBlock,
           isLong,
-          pendingBorrowingFeesUsd: bigNumberify(pendingBorrowingFees)!,
+          pendingBorrowingFeesUsd: borrowingFeeUsd,
           fundingFeeAmount,
           claimableLongTokenAmount,
           claimableShortTokenAmount,
           latestLongTokenFundingAmountPerSize,
           latestShortTokenFundingAmountPerSize,
-          hasPendingLongTokenFundingFee,
-          hasPendingShortTokenFundingFee,
+          hasPendingLongTokenFundingFee: false,
+          hasPendingShortTokenFundingFee: false,
           isOpening: false,
           data,
         };

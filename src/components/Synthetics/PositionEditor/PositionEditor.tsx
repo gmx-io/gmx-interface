@@ -22,20 +22,20 @@ import {
 } from "domain/synthetics/orders";
 import { PositionInfo, formatLeverage, getLeverage, getLiquidationPrice } from "domain/synthetics/positions";
 import { convertToTokenAmount, convertToUsd, useAvailableTokensData } from "domain/synthetics/tokens";
-import { getAcceptablePrice, useTokenInput } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { BASIS_POINTS_DIVISOR, DEFAULT_SLIPPAGE_AMOUNT, MAX_ALLOWED_LEVERAGE, USD_DECIMALS } from "lib/legacy";
-import { formatAmount, formatAmountFree, formatTokenAmount, formatUsd, parseValue } from "lib/numbers";
+import { formatAmount, formatAmountFree, formatDeltaUsd, formatTokenAmount, formatUsd, parseValue } from "lib/numbers";
 import { useMemo, useState } from "react";
 
+import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
+import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { ErrorCode, ErrorDisplayType } from "components/Exchange/constants";
 import { getContract } from "config/contracts";
 import { useGasLimits } from "domain/synthetics/fees/useGasLimits";
 
-import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { usePositionsConstants } from "domain/synthetics/positions/usePositionsConstants";
+import { getAcceptablePrice } from "domain/synthetics/trade";
 import { contractFetcher } from "lib/contracts";
 import useSWR from "swr";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
@@ -66,22 +66,12 @@ export function PositionEditor(p: Props) {
   const [operation, setOperation] = useState(Operation.Deposit);
   const isDeposit = operation === Operation.Deposit;
   const { minCollateralUsd } = usePositionsConstants(chainId);
-  const minCollateralAmount = convertToTokenAmount(
-    minCollateralUsd,
-    position?.collateralToken?.decimals,
-    position?.collateralToken?.prices?.maxPrice
-  );
 
   const { tokensData } = useAvailableTokensData(chainId);
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
 
   const collateralToken = position?.collateralToken;
-
-  const depositInput = useTokenInput(tokensData, {
-    priceType: "min",
-    tokenAddress: position?.collateralTokenAddress,
-  });
 
   const routerAddress = getContract(chainId, "SyntheticsRouter");
   const { data: tokenAllowance } = useSWR<BigNumber>(
@@ -91,79 +81,89 @@ export function PositionEditor(p: Props) {
     }
   );
 
-  const [withdrawInputValue, setWithdrawInputValue] = useState("");
-  const withdrawTokenAmount = parseValue(withdrawInputValue || "0", position?.collateralToken?.decimals || 0)!;
-  const withdrawUsd = convertToUsd(
-    withdrawTokenAmount,
-    position?.collateralToken?.decimals,
-    position?.collateralToken?.prices?.maxPrice
-  );
-  // TODO: fees + pnl amount
-  const maxWithdrawAmount = position?.collateralAmount.sub(minCollateralAmount || 0);
+  const collateralPrice = isDeposit
+    ? position?.collateralToken?.prices?.minPrice
+    : position?.collateralToken?.prices?.maxPrice;
 
-  const collateralDeltaAmount = isDeposit ? depositInput.tokenAmount : withdrawTokenAmount;
-  const collateralDeltaUsd = isDeposit ? depositInput.usdAmount : withdrawUsd;
+  const maxWithdrawUsd = position?.remainingCollateralUsd?.sub(minCollateralUsd || 0) || BigNumber.from(0);
+  const maxWithdrawAmount = convertToTokenAmount(maxWithdrawUsd, position?.collateralToken?.decimals, collateralPrice);
+
+  const [collateralInputValue, setCollateralInputValue] = useState("");
+  const collateralDeltaAmount = parseValue(collateralInputValue || "0", position?.collateralToken?.decimals || 0)!;
+  const collateralDeltaUsd = convertToUsd(collateralDeltaAmount, position?.collateralToken?.decimals, collateralPrice);
 
   let nextCollateralUsd = isDeposit
-    ? position?.initialCollateralUsd?.add(collateralDeltaUsd || BigNumber.from(0))
+    ? position?.remainingCollateralUsd?.add(collateralDeltaUsd || BigNumber.from(0))
     : position?.remainingCollateralUsd?.sub(collateralDeltaUsd || BigNumber.from(0));
 
   if (nextCollateralUsd?.lt(0)) {
     nextCollateralUsd = BigNumber.from(0);
   }
 
-  const { nextLeverageExcludingPnl, nextLeverage, nextLiqPrice } = useMemo(() => {
+  const { nextLeverageExcludingPnl, nextLeverage, nextLiqPrice, acceptablePrice } = useMemo(() => {
     if (!position || !nextCollateralUsd || !minCollateralUsd) {
       return {};
     }
 
-    return {
-      nextLeverageExcludingPnl: getLeverage({
-        sizeInUsd: position.sizeInUsd,
-        collateralUsd: nextCollateralUsd,
-        pnl: undefined,
-        pendingBorrowingFeesUsd: position?.pendingBorrowingFeesUsd,
-        pendingFundingFeesUsd: position?.pendingFundingFeesUsd,
-      }),
-      nextLeverage: getLeverage({
-        sizeInUsd: position.sizeInUsd,
-        collateralUsd: nextCollateralUsd,
-        pnl: savedIsPnlInLeverage ? position?.pnl : undefined,
-        pendingBorrowingFeesUsd: position?.pendingBorrowingFeesUsd,
-        pendingFundingFeesUsd: position?.pendingFundingFeesUsd,
-      }),
-      nextLiqPrice: getLiquidationPrice({
-        sizeInUsd: position.sizeInUsd,
-        collateralUsd: nextCollateralUsd,
-        pnl: position.pnl,
-        pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
-        pendingFundingFeesUsd: position.pendingFundingFeesUsd,
-        isLong: position.isLong,
-        markPrice: position.markPrice,
-        maxPriceImpactFactor: position.marketInfo.maxPositionImpactFactorForLiquidations,
-        minCollateralFactor: position.marketInfo.minCollateralFactor,
-        minCollateralUsd,
-        closingFeeUsd: position.closingFeeUsd,
-      }),
-    };
-  }, [minCollateralUsd, nextCollateralUsd, position, savedIsPnlInLeverage]);
+    const nextLeverageExcludingPnl = collateralDeltaUsd?.gt(0)
+      ? getLeverage({
+          sizeInUsd: position?.sizeInUsd,
+          collateralUsd: nextCollateralUsd,
+          pendingBorrowingFeesUsd: position?.pendingBorrowingFeesUsd,
+          pendingFundingFeesUsd: position?.pendingFundingFeesUsd,
+          pnl: undefined,
+        })
+      : undefined;
 
-  const { acceptablePrice = undefined } = position
-    ? getAcceptablePrice({
-        isIncrease: isDeposit,
-        isLong: position?.isLong,
-        sizeDeltaUsd: BigNumber.from(0),
-        indexPrice: position?.markPrice,
-        allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
-      })
-    : {};
+    const nextLeverage = collateralDeltaUsd?.gt(0)
+      ? getLeverage({
+          sizeInUsd: position?.sizeInUsd,
+          collateralUsd: nextCollateralUsd,
+          pendingBorrowingFeesUsd: position?.pendingBorrowingFeesUsd,
+          pendingFundingFeesUsd: position?.pendingFundingFeesUsd,
+          pnl: savedIsPnlInLeverage ? position?.pnl : undefined,
+        })
+      : undefined;
+
+    const nextLiqPrice = collateralDeltaUsd?.gt(0)
+      ? getLiquidationPrice({
+          sizeInUsd: position?.sizeInUsd,
+          collateralUsd: nextCollateralUsd,
+          markPrice: position?.markPrice,
+          pnl: position.pnl,
+          isLong: position?.isLong,
+          pendingBorrowingFeesUsd: BigNumber.from(0),
+          pendingFundingFeesUsd: BigNumber.from(0),
+          closingFeeUsd: position.closingFeeUsd,
+          minCollateralFactor: position.marketInfo.minCollateralFactor,
+          maxPriceImpactFactor: position.marketInfo.maxPositionImpactFactorForLiquidations,
+          minCollateralUsd,
+        })
+      : undefined;
+
+    const { acceptablePrice = undefined } = position
+      ? getAcceptablePrice({
+          isIncrease: isDeposit,
+          isLong: position?.isLong,
+          sizeDeltaUsd: BigNumber.from(0),
+          indexPrice: position?.markPrice,
+          allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
+        })
+      : {};
+
+    return {
+      nextLeverageExcludingPnl,
+      nextLeverage,
+      nextLiqPrice,
+      acceptablePrice,
+    };
+  }, [collateralDeltaUsd, isDeposit, minCollateralUsd, nextCollateralUsd, position, savedIsPnlInLeverage]);
 
   // TODO: calculate swap fees
   const shouldSwapPnlToCollateralToken =
     !isDeposit && position?.marketInfo && position?.pnlToken?.address !== position?.collateralToken?.address;
 
-  const needApproval =
-    isDeposit && tokenAllowance && depositInput.tokenAmount && depositInput.tokenAmount.gt(tokenAllowance);
+  const needApproval = isDeposit && tokenAllowance && collateralDeltaAmount && collateralDeltaAmount.gt(tokenAllowance);
 
   const executionFee = useMemo(() => {
     if (!gasLimits || !gasPrice || !tokensData) return undefined;
@@ -247,7 +247,7 @@ export function PositionEditor(p: Props) {
         indexTokenAddress: position?.indexToken.address,
         swapPath: [],
         initialCollateralAddress: position?.collateralTokenAddress,
-        initialCollateralAmount: depositInput.tokenAmount,
+        initialCollateralAmount: collateralDeltaAmount,
         acceptablePrice,
         orderType: OrderType.MarketIncrease,
         sizeDeltaUsd: BigNumber.from(0),
@@ -260,21 +260,21 @@ export function PositionEditor(p: Props) {
           setPendingPositionUpdate({
             isIncrease: true,
             positionKey: p.position.key,
-            collateralDeltaAmount: depositInput.tokenAmount,
+            collateralDeltaAmount,
           });
         }
 
         p.onClose();
       });
     } else {
-      if (!withdrawTokenAmount) return;
+      if (!collateralDeltaAmount) return;
 
       createDecreaseOrderTxn(chainId, library, {
         account,
         marketAddress: position?.marketAddress,
         indexTokenAddress: position?.indexToken.address,
         swapPath: [],
-        initialCollateralDeltaAmount: withdrawTokenAmount,
+        initialCollateralDeltaAmount: collateralDeltaAmount,
         initialCollateralAddress: position?.collateralTokenAddress,
         receiveTokenAddress: position?.collateralTokenAddress,
         acceptablePrice,
@@ -292,7 +292,7 @@ export function PositionEditor(p: Props) {
           setPendingPositionUpdate({
             isIncrease: false,
             positionKey: p.position.key,
-            collateralDeltaAmount: withdrawTokenAmount,
+            collateralDeltaAmount: collateralDeltaAmount,
           });
         }
 
@@ -324,120 +324,91 @@ export function PositionEditor(p: Props) {
           className="PositionEditor-tabs SwapBox-option-tabs"
         />
 
-        {operation === Operation.Deposit && (
-          <BuyInputSection
-            topLeftLabel={t`Deposit`}
-            topLeftValue={formatUsd(depositInput.usdAmount)}
-            topRightLabel={t`Max`}
-            topRightValue={formatTokenAmount(depositInput.balance, depositInput.token?.decimals)}
-            inputValue={depositInput.inputValue}
-            onInputValueChange={(e) => depositInput.setInputValue(e.target.value)}
-            showMaxButton={depositInput.isNotMatchAvailableBalance}
-            onClickMax={() => depositInput.setValueByTokenAmount(depositInput.balance)}
-          >
-            {depositInput.token?.symbol}
-          </BuyInputSection>
-        )}
-
-        {operation === Operation.Withdraw && (
-          <BuyInputSection
-            topLeftLabel={t`Withdraw`}
-            topLeftValue={formatUsd(withdrawUsd)}
-            topRightLabel={t`Max`}
-            topRightValue={formatTokenAmount(maxWithdrawAmount, position?.collateralToken?.decimals)}
-            inputValue={withdrawInputValue}
-            onInputValueChange={(e) => setWithdrawInputValue(e.target.value)}
-            showMaxButton={maxWithdrawAmount?.gt(0) && !withdrawTokenAmount?.eq(maxWithdrawAmount)}
-            onClickMax={() =>
-              maxWithdrawAmount &&
-              setWithdrawInputValue(formatAmountFree(maxWithdrawAmount, position?.collateralToken?.decimals || 0, 4))
-            }
-          >
-            {position?.collateralToken?.symbol}
-          </BuyInputSection>
-        )}
+        <BuyInputSection
+          topLeftLabel={(isDeposit ? t`Deposit` : t`Withdraw`) + `:`}
+          topLeftValue={formatUsd(collateralDeltaUsd)}
+          topRightLabel={t`Max` + `:`}
+          topRightValue={
+            isDeposit
+              ? formatTokenAmount(collateralToken?.balance, collateralToken?.decimals)
+              : formatTokenAmount(maxWithdrawAmount, position?.collateralToken?.decimals)
+          }
+          inputValue={collateralInputValue}
+          onInputValueChange={(e) => setCollateralInputValue(e.target.value)}
+          showMaxButton={
+            isDeposit
+              ? collateralToken?.balance && !collateralDeltaAmount?.eq(collateralToken?.balance)
+              : maxWithdrawAmount && !collateralDeltaAmount?.eq(maxWithdrawAmount)
+          }
+          onClickMax={() =>
+            isDeposit
+              ? setCollateralInputValue(formatAmountFree(collateralToken!.balance!, collateralToken!.decimals, 4))
+              : setCollateralInputValue(
+                  formatAmountFree(maxWithdrawAmount!, position?.collateralToken?.decimals || 0, 6)
+                )
+          }
+        >
+          {collateralToken?.symbol}
+        </BuyInputSection>
 
         <div className="PositionEditor-info-box">
-          {/* {minExecutionFeeErrorMessage && <div className="Confirmation-box-warning">{minExecutionFeeErrorMessage}</div>} */}
-          <ExchangeInfoRow label={t`Size`} value={formatUsd(position?.sizeInUsd)} />
+          {executionFee?.warning && <div className="Confirmation-box-warning">{executionFee.warning}</div>}
+
+          <ExchangeInfoRow
+            label={t`Leverage`}
+            value={<ValueTransition from={formatLeverage(position?.leverage)} to={formatLeverage(nextLeverage)} />}
+          />
+
+          <ExchangeInfoRow isTop label={t`Entry Price`} value={formatUsd(position?.markPrice)} />
+          <ExchangeInfoRow label={t`Mark Price`} value={formatUsd(position?.markPrice)} />
+          <ExchangeInfoRow
+            label={t`Liq Price`}
+            value={<ValueTransition from={formatUsd(position?.liquidationPrice)} to={formatUsd(nextLiqPrice)} />}
+          />
+
+          <ExchangeInfoRow isTop label={t`Size`} value={formatUsd(position?.sizeInUsd)} />
+
           <ExchangeInfoRow
             label={t`Collateral (${position?.collateralToken?.symbol})`}
             value={
               <ValueTransition
                 from={formatUsd(position?.remainingCollateralUsd) || "..."}
-                to={
-                  nextCollateralUsd &&
-                  position?.remainingCollateralUsd &&
-                  !nextCollateralUsd.eq(position?.remainingCollateralUsd)
-                    ? formatUsd(nextCollateralUsd)
-                    : undefined
-                }
-              />
-            }
-          />
-          <ExchangeInfoRow
-            label={t`Leverage`}
-            value={
-              <ValueTransition
-                from={formatLeverage(position?.leverage)}
-                to={
-                  position?.leverage && nextLeverage && !nextLeverage.eq(position?.leverage)
-                    ? formatLeverage(nextLeverage)
-                    : undefined
-                }
-              />
-            }
-          />
-          <ExchangeInfoRow label={t`Mark Price`} value={formatUsd(position?.markPrice)} />
-          <ExchangeInfoRow
-            label={t`Liq Price`}
-            value={
-              <ValueTransition
-                from={formatUsd(position?.liquidationPrice) || "..."}
-                to={
-                  nextLiqPrice && position?.liquidationPrice && !nextLiqPrice.eq(position?.liquidationPrice)
-                    ? formatUsd(nextLiqPrice)
-                    : undefined
-                }
+                to={formatUsd(nextCollateralUsd)}
               />
             }
           />
 
-          {position?.pendingBorrowingFeesUsd?.gt(0) && withdrawUsd?.gt(0) && (
-            <ExchangeInfoRow
-              label={t`Borrow Fee`}
-              value={
-                <Tooltip
-                  handle={
-                    <ValueTransition
-                      from={formatUsd(position?.pendingBorrowingFeesUsd) || "..."}
-                      to={formatUsd(BigNumber.from(0))}
-                    />
-                  }
-                  position="right-top"
-                  renderContent={() => <Trans>The pending borrow fee will be charged on this transaction.</Trans>}
-                />
-              }
-            />
-          )}
+          <ExchangeInfoRow
+            label={t`Borrow Fee`}
+            value={
+              <Tooltip
+                handle={
+                  <ValueTransition
+                    from={formatUsd(position?.pendingBorrowingFeesUsd, { fallbackToZero: true })}
+                    to={collateralDeltaUsd?.gt(0) ? formatUsd(BigNumber.from(0)) : undefined}
+                  />
+                }
+                position="right-top"
+                renderContent={() => <Trans>The pending borrow fee will be charged on this transaction.</Trans>}
+              />
+            }
+          />
 
-          {position?.pendingFundingFeesUsd?.gt(0) && withdrawUsd?.gt(0) && (
-            <ExchangeInfoRow
-              label={t`Funding Fee`}
-              value={
-                <Tooltip
-                  handle={
-                    <ValueTransition
-                      from={formatUsd(position?.pendingFundingFeesUsd) || "..."}
-                      to={formatUsd(BigNumber.from(0))}
-                    />
-                  }
-                  position="right-top"
-                  renderContent={() => <Trans>The pending funding fee will be charged on this transaction.</Trans>}
-                />
-              }
-            />
-          )}
+          <ExchangeInfoRow
+            label={t`Funding Fee`}
+            value={
+              <Tooltip
+                handle={
+                  <ValueTransition
+                    from={formatDeltaUsd(position?.pendingFundingFeesUsd, undefined, { fallbackToZero: true })}
+                    to={collateralDeltaUsd?.gt(0) ? formatUsd(BigNumber.from(0)) : undefined}
+                  />
+                }
+                position="right-top"
+                renderContent={() => <Trans>The pending funding fee will be charged on this transaction.</Trans>}
+              />
+            }
+          />
 
           <TradeFeesRow executionFee={executionFee} feesType={"edit"} />
         </div>

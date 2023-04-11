@@ -12,6 +12,8 @@ import { useEffect, useState } from "react";
 
 import { getTokenData } from "domain/synthetics/tokens";
 import { getByKey } from "lib/objects";
+import { useMemo } from "react";
+import { useHistory, useLocation } from "react-router-dom";
 import "./MarketPoolsPage.scss";
 
 type Props = {
@@ -21,6 +23,10 @@ type Props = {
 
 export function MarketPoolsPage(p: Props) {
   const { chainId } = useChainId();
+  const { search } = useLocation();
+  const history = useHistory();
+
+  const queryParams = useMemo(() => new URLSearchParams(search), [search]);
 
   const { marketsInfoData = {} } = useMarketsInfo(chainId);
   const markets = Object.values(marketsInfoData);
@@ -40,6 +46,23 @@ export function MarketPoolsPage(p: Props) {
   const marketToken = getTokenData(
     operation === Operation.Deposit ? depositMarketTokensData : withdrawalMarketTokensData,
     selectedMarketKey
+  );
+
+  useEffect(
+    function updateByQueryParams() {
+      if (queryParams.get("operation") === Operation.Withdrawal) {
+        setOperation(Operation.Withdrawal);
+      } else if (queryParams.get("operation") === Operation.Deposit) {
+        setOperation(Operation.Deposit);
+      }
+
+      if (queryParams.get("market")) {
+        setSelectedMarketKey(queryParams.get("market")!);
+      }
+
+      history.replace({ search: "" });
+    },
+    [history, queryParams, setSelectedMarketKey]
   );
 
   useEffect(

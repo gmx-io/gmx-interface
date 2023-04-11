@@ -8,8 +8,9 @@ export type Market = {
   indexTokenAddress: string;
   longTokenAddress: string;
   shortTokenAddress: string;
+  isSameCollaterals: boolean;
+  isSpotOnly: boolean;
   data: string;
-  name: string;
 };
 
 export type MarketPoolTokens = {

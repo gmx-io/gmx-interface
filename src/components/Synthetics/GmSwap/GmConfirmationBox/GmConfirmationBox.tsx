@@ -123,12 +123,15 @@ export function GmConfirmationBox({
     return addresses;
   })();
 
+  const longSymbol = market?.isSameCollaterals ? `${longToken?.symbol} Long` : longToken?.symbol;
+  const shortSymbol = market?.isSameCollaterals ? `${shortToken?.symbol} Short` : shortToken?.symbol;
+
   const longTokenText = longTokenAmount?.gt(0)
-    ? formatTokenAmountWithUsd(longTokenAmount, longTokenUsd, longToken?.symbol, longToken?.decimals)
+    ? formatTokenAmountWithUsd(longTokenAmount, longTokenUsd, longSymbol, longToken?.decimals)
     : undefined;
 
   const shortTokenText = shortTokenAmount?.gt(0)
-    ? formatTokenAmountWithUsd(shortTokenAmount, shortTokenUsd, shortToken?.symbol, shortToken?.decimals)
+    ? formatTokenAmountWithUsd(shortTokenAmount, shortTokenUsd, shortSymbol, shortToken?.decimals)
     : undefined;
 
   const marketTokenText = formatTokenAmountWithUsd(

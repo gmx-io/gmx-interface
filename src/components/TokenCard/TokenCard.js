@@ -13,6 +13,9 @@ import { useChainId } from "lib/chains";
 import { switchNetwork } from "lib/wallets";
 import APRLabel from "../APRLabel/APRLabel";
 import { HeaderLink } from "../Header/HeaderLink";
+import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
+import { isDevelopment } from "config/env";
+import { formatAmount } from "lib/numbers";
 
 const glpIcon = getIcon("common", "glp");
 const gmxIcon = getIcon("common", "gmx");
@@ -22,6 +25,8 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
   const isHome = isHomeSite();
   const { chainId } = useChainId();
   const { active } = useWeb3React();
+
+  const { avgMarketsAPR: fujiAvgMarketsAPR } = useMarketTokensAPR(AVALANCHE_FUJI);
 
   const changeNetwork = useCallback(
     (network) => {
@@ -134,9 +139,13 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
               GM is the liquidity provider token for GMX V2 markets. Accrues 70% of the V2 markets generated fees.
             </Trans>
           </div>
-          {/* <div className="Home-token-card-option-apr">
-              <Trans>Arbitrum APR:</Trans> 1.00%, <Trans>Avalanche APR:</Trans> 1.00%
-            </div> */}
+
+          {isDevelopment() && (
+            <div className="Home-token-card-option-apr">
+              <Trans>Avalanche FUJI Avg. APR:</Trans> {formatAmount(fujiAvgMarketsAPR, 2, 2)}%
+            </div>
+          )}
+
           <div className="Home-token-card-option-action">
             <div className="buy">
               <BuyLink to="/pools" className="default-btn" network={AVALANCHE_FUJI}>
