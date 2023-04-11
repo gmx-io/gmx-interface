@@ -999,7 +999,7 @@ export default function DashboardV2() {
                 </tbody>
               </table>
             </div>
-            <div className="Page-title Tab-title-section">
+            <div className="Page-title Tab-title-section glp-composition-small">
               <Trans>GLP Index Composition</Trans> <img src={currentIcons.network} width="24" alt="Network Icon" />
             </div>
             <div className="token-grid">

@@ -133,6 +133,10 @@
   margin-right: 0.8rem;
 }
 
+.glp-composition-small {
+  display: none;
+}
+
 @media (max-width: 1024px) {
   .stats-wrapper {
     display: grid;
@@ -152,6 +156,9 @@
   }
   .stats-wrapper {
     margin-bottom: 0;
+  }
+  .glp-composition-small {
+    display: block;
   }
 }
 
