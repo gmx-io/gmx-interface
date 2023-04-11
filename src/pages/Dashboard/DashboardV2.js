@@ -999,6 +999,9 @@ export default function DashboardV2() {
                 </tbody>
               </table>
             </div>
+            <div className="Page-title Tab-title-section">
+              <Trans>GLP Index Composition</Trans> <img src={currentIcons.network} width="24" alt="Network Icon" />
+            </div>
             <div className="token-grid">
               {visibleTokens.map((token) => {
                 const tokenInfo = infoTokens[token.address];

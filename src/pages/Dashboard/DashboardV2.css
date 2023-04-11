@@ -150,15 +150,14 @@
   .token-table-wrapper {
     display: none;
   }
+  .stats-wrapper {
+    margin-bottom: 0;
+  }
 }
 
 @media (max-width: 900px) {
   .DashboardV2-cards {
     grid-template-columns: 1fr;
-  }
-
-  .DashboardV2-token-cards .token-grid {
-    padding-top: 0;
   }
 }
 
