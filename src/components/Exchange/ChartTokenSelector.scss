@@ -36,6 +36,10 @@
     border-collapse: collapse;
   }
   thead {
+    display: table-header-group;
+    position: sticky;
+    top: 0;
+    background: #16182e;
     tr {
       th {
         padding: 0.75rem 1.5rem;

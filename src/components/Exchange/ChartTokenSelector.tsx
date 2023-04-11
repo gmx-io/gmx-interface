@@ -99,13 +99,16 @@ export default function ChartTokenSelector(props: Props) {
 
   const _handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && filteredTokens.length > 0) {
-      onSelectToken(filteredTokens[0]);
+      onSelect(filteredTokens[0]);
     }
   };
 
   return (
     <Popover>
-      {({ close }) => {
+      {({ open }) => {
+        if (!open) {
+          setSearchKeyword("");
+        }
         return (
           <>
             <Popover.Button as="div">
