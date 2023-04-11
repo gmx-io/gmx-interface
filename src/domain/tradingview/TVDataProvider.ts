@@ -175,7 +175,8 @@ export class TVDataProvider {
     }
     const currentPrice = await this.getCurrentPriceOfToken(chainId, ticker);
 
-    if (!this.lastBar?.time || !currentPrice || ticker !== this.lastBar.ticker) return;
+    if (!this.lastBar?.time || !currentPrice || ticker !== this.lastBar.ticker || ticker !== this.barsInfo.ticker)
+      return;
 
     if (currentCandleTime === this.lastBar.time) {
       this.currentBar = {
