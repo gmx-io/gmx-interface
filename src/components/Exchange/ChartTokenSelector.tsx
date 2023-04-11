@@ -54,8 +54,8 @@ function addMaxInAndOut(tokens: Token[], infoTokens: InfoTokens): ChartToken[] {
 
     return {
       ...token,
-      maxOutUsd,
-      maxInUsd,
+      maxOutUsd: maxOutUsd?.gt(0) ? maxOutUsd : bigNumberify(0),
+      maxInUsd: maxInUsd?.gt(0) ? maxInUsd : bigNumberify(0),
     };
   });
 }
@@ -85,8 +85,9 @@ export default function ChartTokenSelector(props: Props) {
     }
   }
 
-  const onSelect = async (token: Token) => {
+  const onSelect = (token: Token) => {
     onSelectToken(token);
+    setSearchKeyword("");
   };
 
   const filteredTokens: ChartToken[] = options.filter((item) => {
@@ -104,58 +105,72 @@ export default function ChartTokenSelector(props: Props) {
 
   return (
     <Popover>
-      <Popover.Button as="div">
-        <button className="App-cta small transparent chart-token-selector">
-          <span className="chart-token-selector--current">{selectedToken.symbol} / USD</span>
-          <FaChevronDown />
-        </button>
-      </Popover.Button>
-      <div className="chart-token-menu">
-        <Popover.Panel as="div" className="menu-items chart-token-menu-items">
-          <SearchInput
-            className="m-md"
-            value={searchKeyword}
-            setValue={({ target }) => setSearchKeyword(target.value)}
-            onKeyDown={_handleKeyDown}
-          />
-          <div className="divider" />
-          <div className="chart-token-list">
-            <table>
-              {filteredTokens.length > 0 && (
-                <thead className="table-head">
-                  <tr>
-                    <th>Market</th>
-                    <th>{isSwap ? "Max In" : "Long Liquidity"}</th>
-                    <th>{isSwap ? "Max Out" : "Short Liquidity"}</th>
-                  </tr>
-                </thead>
-              )}
-              <tbody>
-                {filteredTokens.map((option) => {
-                  return (
-                    <tr key={option.symbol}>
-                      <td
-                        className="token-item"
-                        onClick={() => {
-                          onSelect(option);
-                        }}
-                      >
-                        {option.symbol} {!isSwap && "/ USD"}
-                      </td>
-                      <td>
-                        ${formatAmount(isSwap ? option.maxInUsd : option.maxAvailableLong, USD_DECIMALS, 0, true)}
-                      </td>
-                      <td>
-                        ${formatAmount(isSwap ? option.maxOutUsd : option.maxAvailableShort, USD_DECIMALS, 0, true)}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </Popover.Panel>
-      </div>
+      {({ close }) => {
+        return (
+          <>
+            <Popover.Button as="div">
+              <button className="App-cta small transparent chart-token-selector">
+                <span className="chart-token-selector--current">{selectedToken.symbol} / USD</span>
+                <FaChevronDown />
+              </button>
+            </Popover.Button>
+            <div className="chart-token-menu">
+              <Popover.Panel as="div" className="menu-items chart-token-menu-items">
+                <SearchInput
+                  className="m-md"
+                  value={searchKeyword}
+                  setValue={({ target }) => setSearchKeyword(target.value)}
+                  onKeyDown={_handleKeyDown}
+                />
+                <div className="divider" />
+                <div className="chart-token-list">
+                  <table>
+                    {filteredTokens.length > 0 && (
+                      <thead className="table-head">
+                        <tr>
+                          <th>Market</th>
+                          <th>{isSwap ? "Max In" : "Long Liquidity"}</th>
+                          <th>{isSwap ? "Max Out" : "Short Liquidity"}</th>
+                        </tr>
+                      </thead>
+                    )}
+                    <tbody>
+                      {filteredTokens.map((option) => {
+                        return (
+                          <Popover.Button as="tr" key={option.symbol}>
+                            <td
+                              className="token-item"
+                              onClick={() => {
+                                onSelect(option);
+                              }}
+                            >
+                              <span>
+                                {option.symbol} {!isSwap && "/ USD"}
+                              </span>
+                            </td>
+                            <td>
+                              ${formatAmount(isSwap ? option.maxInUsd : option.maxAvailableLong, USD_DECIMALS, 0, true)}
+                            </td>
+                            <td>
+                              $
+                              {formatAmount(
+                                isSwap ? option.maxOutUsd : option.maxAvailableShort,
+                                USD_DECIMALS,
+                                0,
+                                true
+                              )}
+                            </td>
+                          </Popover.Button>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </Popover.Panel>
+            </div>
+          </>
+        );
+      }}
     </Popover>
   );
 }
