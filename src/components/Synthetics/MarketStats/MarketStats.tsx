@@ -17,9 +17,6 @@ export function MarketStats(p: Props) {
   const { marketInfo, marketToken } = p;
   const { chainId } = useChainId();
 
-  const { marketsData } = useMarketsData(chainId);
-  const { poolsData } = useMarketsPoolsData(chainId);
-  const { tokensData } = useAvailableTokensData(chainId);
   const { marketsTokensAPRData } = useMarketTokensAPR(chainId);
 
   const marketName = `GM: ${marketInfo?.name || "---/--- [-------]"}`;

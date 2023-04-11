@@ -97,6 +97,10 @@ export function getMaxReservedUsd(marketInfo: MarketInfo, isLong: boolean) {
 }
 
 export function getAvailableUsdLiquidityForPosition(marketInfo: MarketInfo, isLong: boolean) {
+  if (marketInfo.isSpotOnly) {
+    return BigNumber.from(0);
+  }
+
   const maxReservedUsd = getMaxReservedUsd(marketInfo, isLong);
   const reservedUsd = getReservedUsd(marketInfo, isLong);
 
@@ -213,6 +217,10 @@ export function getMostLiquidMarketForPosition(
   let bestLiquidity: BigNumber | undefined;
 
   for (const marketInfo of marketsInfo) {
+    if (marketInfo.isSpotOnly) {
+      continue;
+    }
+
     let isCandidate = isMarketIndexToken(marketInfo, indexTokenAddress);
 
     if (collateralTokenAddress) {

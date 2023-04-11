@@ -10,6 +10,7 @@ export type Market = {
   shortTokenAddress: string;
   isSameCollaterals: boolean;
   isSpotOnly: boolean;
+  name: string;
   data: string;
 };
 

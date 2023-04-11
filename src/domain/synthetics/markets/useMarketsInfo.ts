@@ -56,6 +56,13 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
         const market = getByKey(marketsData, marketAddress)!;
         const marketPrices = getContractMarketPrices(tokensData!, market)!;
 
+        const marketProps = {
+          marketToken: market.marketTokenAddress,
+          indexToken: market.indexTokenAddress,
+          longToken: market.longTokenAddress,
+          shortToken: market.shortTokenAddress,
+        };
+
         return Object.assign(request, {
           [`${marketAddress}-reader`]: {
             contractAddress: getContract(chainId, "SyntheticsReader"),
@@ -67,73 +74,27 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
               },
               netPnlMax: {
                 methodName: "getNetPnl",
-                params: [
-                  dataStoreAddress,
-                  marketAddress,
-                  market.longTokenAddress,
-                  market.shortTokenAddress,
-                  marketPrices.indexTokenPrice,
-                  true,
-                ],
+                params: [dataStoreAddress, marketProps, marketPrices.indexTokenPrice, true],
               },
               netPnlMin: {
                 methodName: "getNetPnl",
-                params: [
-                  dataStoreAddress,
-                  marketAddress,
-                  market.longTokenAddress,
-                  market.shortTokenAddress,
-                  marketPrices.indexTokenPrice,
-                  false,
-                ],
+                params: [dataStoreAddress, marketProps, marketPrices.indexTokenPrice, false],
               },
               pnlLongMax: {
                 methodName: "getPnl",
-                params: [
-                  dataStoreAddress,
-                  marketAddress,
-                  market.longTokenAddress,
-                  market.shortTokenAddress,
-                  marketPrices.indexTokenPrice,
-                  true,
-                  true,
-                ],
+                params: [dataStoreAddress, marketProps, marketPrices.indexTokenPrice, true, true],
               },
               pnlLongMin: {
                 methodName: "getPnl",
-                params: [
-                  dataStoreAddress,
-                  marketAddress,
-                  market.longTokenAddress,
-                  market.shortTokenAddress,
-                  marketPrices.indexTokenPrice,
-                  true,
-                  false,
-                ],
+                params: [dataStoreAddress, marketProps, marketPrices.indexTokenPrice, true, false],
               },
               pnlShortMax: {
                 methodName: "getPnl",
-                params: [
-                  dataStoreAddress,
-                  marketAddress,
-                  market.longTokenAddress,
-                  market.shortTokenAddress,
-                  marketPrices.indexTokenPrice,
-                  false,
-                  true,
-                ],
+                params: [dataStoreAddress, marketProps, marketPrices.indexTokenPrice, false, true],
               },
               pnlShortMin: {
                 methodName: "getPnl",
-                params: [
-                  dataStoreAddress,
-                  marketAddress,
-                  market.longTokenAddress,
-                  market.shortTokenAddress,
-                  marketPrices.indexTokenPrice,
-                  false,
-                  false,
-                ],
+                params: [dataStoreAddress, marketProps, marketPrices.indexTokenPrice, false, false],
               },
             },
           },

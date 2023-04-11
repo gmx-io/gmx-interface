@@ -145,8 +145,8 @@ msgid "About"
 msgstr "About"
 
 #: src/domain/synthetics/orders/utils.ts
-msgid "Above"
-msgstr "Above"
+#~ msgid "Above"
+#~ msgstr "Above"
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Accept confirmation of trigger orders"
@@ -437,8 +437,8 @@ msgid "Begin Transfer"
 msgstr "Begin Transfer"
 
 #: src/domain/synthetics/orders/utils.ts
-msgid "Below"
-msgstr "Below"
+#~ msgid "Below"
+#~ msgstr "Below"
 
 #: src/components/Migration/Migration.js
 #: src/components/Migration/Migration.js
@@ -1216,6 +1216,7 @@ msgstr "Decentralized<0/>Perpetual Exchange"
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/domain/synthetics/orders/utils.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
 msgstr "Decrease"
@@ -1233,8 +1234,8 @@ msgid "Decrease {longText} {0} by {1}"
 msgstr "Decrease {longText} {0} by {1}"
 
 #: src/domain/synthetics/orders/utils.ts
-msgid "Decrease {tokenText} by {sizeText}"
-msgstr "Decrease {tokenText} by {sizeText}"
+#~ msgid "Decrease {tokenText} by {sizeText}"
+#~ msgstr "Decrease {tokenText} by {sizeText}"
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
@@ -2051,6 +2052,7 @@ msgstr "Incorrect network"
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/domain/synthetics/orders/utils.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase"
 msgstr "Increase"
@@ -2068,8 +2070,8 @@ msgid "Increase {longText} {0} by {1}"
 msgstr "Increase {longText} {0} by {1}"
 
 #: src/domain/synthetics/orders/utils.ts
-msgid "Increase {tokenText} by {sizeText}"
-msgstr "Increase {tokenText} by {sizeText}"
+#~ msgid "Increase {tokenText} by {sizeText}"
+#~ msgstr "Increase {tokenText} by {sizeText}"
 
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 msgid "Increased"
@@ -2440,6 +2442,7 @@ msgstr "Liquidity data not loaded"
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Loading..."
 msgstr "Loading..."
@@ -2854,12 +2857,16 @@ msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Close Fee"
 msgstr "Net Value: Initial Collateral + PnL - Borrow Fee - Close Fee"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Funding Fee"
-msgstr "Net Value: Initial Collateral + PnL - Borrow Fee - Funding Fee"
+#~ msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Funding Fee"
+#~ msgstr "Net Value: Initial Collateral + PnL - Borrow Fee - Funding Fee"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Net Value: Initial Collateral + PnL - Fees"
-msgstr "Net Value: Initial Collateral + PnL - Fees"
+msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Funding Fee - Close Fee"
+msgstr "Net Value: Initial Collateral + PnL - Borrow Fee - Funding Fee - Close Fee"
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#~ msgid "Net Value: Initial Collateral + PnL - Fees"
+#~ msgstr "Net Value: Initial Collateral + PnL - Fees"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -5372,6 +5379,10 @@ msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger ord
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
+
+#: src/domain/synthetics/orders/utils.ts
+msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
+msgstr "{increaseOrDecreaseText} {tokenText} by {sizeText}"
 
 #: src/components/Exchange/PositionsList.js
 msgid "{longOrShortText} {0} market selected"

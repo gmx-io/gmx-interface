@@ -145,8 +145,8 @@ msgid "About"
 msgstr "À propos"
 
 #: src/domain/synthetics/orders/utils.ts
-msgid "Above"
-msgstr ""
+#~ msgid "Above"
+#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Accept confirmation of trigger orders"
@@ -437,8 +437,8 @@ msgid "Begin Transfer"
 msgstr "Commencer le transfert"
 
 #: src/domain/synthetics/orders/utils.ts
-msgid "Below"
-msgstr ""
+#~ msgid "Below"
+#~ msgstr ""
 
 #: src/components/Migration/Migration.js
 #: src/components/Migration/Migration.js
@@ -1216,6 +1216,7 @@ msgstr "Décentralisé <0/>Bourse perpétuelle"
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/domain/synthetics/orders/utils.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
 msgstr "Diminuer"
@@ -1233,8 +1234,8 @@ msgid "Decrease {longText} {0} by {1}"
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.ts
-msgid "Decrease {tokenText} by {sizeText}"
-msgstr ""
+#~ msgid "Decrease {tokenText} by {sizeText}"
+#~ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
@@ -2051,6 +2052,7 @@ msgstr "Réseau incorrect"
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/domain/synthetics/orders/utils.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase"
 msgstr "Augmenter"
@@ -2068,8 +2070,8 @@ msgid "Increase {longText} {0} by {1}"
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.ts
-msgid "Increase {tokenText} by {sizeText}"
-msgstr ""
+#~ msgid "Increase {tokenText} by {sizeText}"
+#~ msgstr ""
 
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 msgid "Increased"
@@ -2440,6 +2442,7 @@ msgstr "Les données de liquidité ne sont pas chargées"
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Loading..."
 msgstr "Chargement..."
@@ -2854,12 +2857,16 @@ msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Close Fee"
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Funding Fee"
+#~ msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Funding Fee"
+#~ msgstr ""
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Funding Fee - Close Fee"
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Net Value: Initial Collateral + PnL - Fees"
-msgstr ""
+#~ msgid "Net Value: Initial Collateral + PnL - Fees"
+#~ msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -5369,6 +5376,10 @@ msgstr "{existingTriggerOrderLength, plural, one {Vous avez une commande de déc
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr "{existingTriggerOrderLength, plural, one {Vous avez une commande de déclenchement active qui pourrait être exécutée immédiatement après l'ouverture de cette position. Veuillez annuler la commande ou accepter la confirmation pour continuer.} other {Vous avez # commandes de déclenchement actives qui pourraient être exécutées immédiatement après l'ouverture de cette position. Veuillez annuler les commandes ou accepter la confirmation pour continuer.}}"
+
+#: src/domain/synthetics/orders/utils.ts
+msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
+msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 msgid "{longOrShortText} {0} market selected"

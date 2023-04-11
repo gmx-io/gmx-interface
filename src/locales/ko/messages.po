@@ -145,8 +145,8 @@ msgid "About"
 msgstr "대하여"
 
 #: src/domain/synthetics/orders/utils.ts
-msgid "Above"
-msgstr ""
+#~ msgid "Above"
+#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Accept confirmation of trigger orders"
@@ -437,8 +437,8 @@ msgid "Begin Transfer"
 msgstr "전송시작"
 
 #: src/domain/synthetics/orders/utils.ts
-msgid "Below"
-msgstr ""
+#~ msgid "Below"
+#~ msgstr ""
 
 #: src/components/Migration/Migration.js
 #: src/components/Migration/Migration.js
@@ -1216,6 +1216,7 @@ msgstr "탈중앙화<0/>퍼페추얼 거래소"
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/domain/synthetics/orders/utils.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
 msgstr "감소"
@@ -1233,8 +1234,8 @@ msgid "Decrease {longText} {0} by {1}"
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.ts
-msgid "Decrease {tokenText} by {sizeText}"
-msgstr ""
+#~ msgid "Decrease {tokenText} by {sizeText}"
+#~ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
@@ -2051,6 +2052,7 @@ msgstr "잘못된 네트워크입니다"
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/domain/synthetics/orders/utils.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase"
 msgstr "증가"
@@ -2068,8 +2070,8 @@ msgid "Increase {longText} {0} by {1}"
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.ts
-msgid "Increase {tokenText} by {sizeText}"
-msgstr ""
+#~ msgid "Increase {tokenText} by {sizeText}"
+#~ msgstr ""
 
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 msgid "Increased"
@@ -2440,6 +2442,7 @@ msgstr "유동성 데이터를 불러오지 못하였습니다."
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/Trade/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Loading..."
 msgstr "로딩중..."
@@ -2854,12 +2857,16 @@ msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Close Fee"
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Funding Fee"
+#~ msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Funding Fee"
+#~ msgstr ""
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Funding Fee - Close Fee"
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Net Value: Initial Collateral + PnL - Fees"
-msgstr ""
+#~ msgid "Net Value: Initial Collateral + PnL - Fees"
+#~ msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -5366,6 +5373,10 @@ msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger ord
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
+
+#: src/domain/synthetics/orders/utils.ts
+msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
+msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 msgid "{longOrShortText} {0} market selected"
