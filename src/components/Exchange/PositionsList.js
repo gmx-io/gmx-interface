@@ -25,7 +25,7 @@ import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import NetValueTooltip from "./NetValueTooltip";
 import { helperToast } from "lib/helperToast";
 import { getUsd } from "domain/tokens/utils";
-import { bigNumberify, formatAmount } from "lib/numbers";
+import { bigNumberify, formatAmount, sortBigNumberArray } from "lib/numbers";
 import { AiOutlineEdit } from "react-icons/ai";
 import useAccountType, { AccountType } from "lib/wallets/useAccountType";
 
@@ -343,49 +343,6 @@ export default function PositionsList(props) {
                           )}
                         </div>
                       </div>
-
-                      <div className="App-card-row">
-                        <div className="label">
-                          <Trans>Orders</Trans>
-                        </div>
-                        <div>
-                          {positionOrders.length === 0 && "None"}
-                          {positionOrders.map((order) => {
-                            const orderText = () => (
-                              <>
-                                {order.triggerAboveThreshold ? ">" : "<"}{" "}
-                                {formatAmount(order.triggerPrice, 30, 2, true)}:{order.type === INCREASE ? " +" : " -"}$
-                                {formatAmount(order.sizeDelta, 30, 2, true)}
-                              </>
-                            );
-                            if (order.error) {
-                              return (
-                                <div
-                                  key={`${order.isLong}-${order.type}-${order.index}`}
-                                  className="Position-list-order"
-                                >
-                                  <Tooltip
-                                    className="order-error"
-                                    handle={orderText()}
-                                    position="right-bottom"
-                                    handleClassName="plain"
-                                    renderContent={() => <span className="negative">{order.error}</span>}
-                                  />
-                                </div>
-                              );
-                            } else {
-                              return (
-                                <div
-                                  key={`${order.isLong}-${order.type}-${order.index}`}
-                                  className="Position-list-order"
-                                >
-                                  {orderText()}
-                                </div>
-                              );
-                            }
-                          })}
-                        </div>
-                      </div>
                     </div>
                     <div className="App-card-divider" />
                     <div className="App-card-content">
@@ -406,6 +363,42 @@ export default function PositionsList(props) {
                           <Trans>Liq. Price</Trans>
                         </div>
                         <div>${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}</div>
+                      </div>
+                    </div>
+                    <div className="App-card-divider" />
+                    <div className="App-card-row">
+                      <div className="label">
+                        <Trans>Orders</Trans>
+                      </div>
+                      <div>
+                        {positionOrders.length === 0 && "None"}
+                        {sortBigNumberArray(positionOrders, "triggerPrice").map((order) => {
+                          const orderText = () => (
+                            <>
+                              {order.triggerAboveThreshold ? ">" : "<"} {formatAmount(order.triggerPrice, 30, 2, true)}:
+                              {order.type === INCREASE ? " +" : " -"}${formatAmount(order.sizeDelta, 30, 2, true)}
+                            </>
+                          );
+                          if (order.error) {
+                            return (
+                              <div key={`${order.isLong}-${order.type}-${order.index}`} className="Position-list-order">
+                                <Tooltip
+                                  className="order-error"
+                                  handle={orderText()}
+                                  position="right-bottom"
+                                  handleClassName="plain"
+                                  renderContent={() => <span className="negative">{order.error}</span>}
+                                />
+                              </div>
+                            );
+                          } else {
+                            return (
+                              <div key={`${order.isLong}-${order.type}-${order.index}`} className="Position-list-order">
+                                {orderText()}
+                              </div>
+                            );
+                          }
+                        })}
                       </div>
                     </div>
                   </div>
