@@ -55,6 +55,7 @@ export default function Button({
         onClick={onClick}
         newTab={newTab}
         showExternalLinkArrow={showExternalLinkArrow}
+        disabled={disabled}
         {...rest}
       >
         {imgInfo && <img className="btn-image" src={imgInfo.src} alt={imgInfo.alt || ""} />}

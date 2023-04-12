@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react";
 import { Link } from "react-router-dom";
+import cx from "classnames";
 import openInNewTab from "img/open-new-tab.svg";
 
 type ButtonProps = {
@@ -9,6 +10,7 @@ type ButtonProps = {
   showExternalLinkArrow: boolean;
   onClick?: () => void;
   newTab?: boolean;
+  disabled?: boolean;
 };
 
 export default function ButtonLink({
@@ -18,12 +20,14 @@ export default function ButtonLink({
   onClick,
   showExternalLinkArrow,
   newTab = false,
+  disabled = false,
   ...rest
 }: ButtonProps) {
+  const classNames = cx(className, { disabled: disabled });
   if (to.startsWith("http") || to.startsWith("https")) {
     const anchorProps = {
       href: to,
-      className,
+      className: classNames,
       onClick,
       ...rest,
       ...(newTab
@@ -41,7 +45,7 @@ export default function ButtonLink({
     );
   }
   return (
-    <Link className={className} to={to}>
+    <Link className={classNames} to={to}>
       {children}
     </Link>
   );
