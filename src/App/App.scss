@@ -1115,12 +1115,12 @@ button.App-button {
 
 .App-slider .rc-slider-dot {
   border: none;
-  background: rgba(40, 45, 74, 1);
-  width: 8px;
-  height: 8px;
-  border-radius: 1.5px;
-  border: none;
-  top: -2px;
+  border-radius: 1px;
+  width: 4px;
+  background: #282d4a;
+  height: 12px;
+  top: -4px;
+  margin-left: -1px;
 }
 
 .App-slider .rc-slider-dot-active {
@@ -1130,10 +1130,9 @@ button.App-button {
 .App-slider .rc-slider-handle {
   background: #fff;
   border: solid 1px #fff;
-  width: 10px;
-  height: 10px;
-  border-radius: 2px;
-  margin-top: -3.5px;
+  width: 12px;
+  height: 12px;
+  top: 5.5px;
 }
 
 .App-slider .rc-slider-handle:active {
