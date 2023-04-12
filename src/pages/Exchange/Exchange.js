@@ -787,7 +787,6 @@ export const Exchange = forwardRef((props, ref) => {
   if (!LIST_SECTIONS.includes(listSection)) {
     listSection = LIST_SECTIONS[0];
   }
-
   if (!getToken(chainId, toTokenAddress)) {
     return null;
   }

@@ -312,6 +312,10 @@
   top: 6.975rem;
   z-index: 1;
 }
+.ExchangeChart-blur {
+  filter: blur(0.2rem);
+}
+
 .ExchangeChart-bottom-controls {
   display: inline-block;
 }

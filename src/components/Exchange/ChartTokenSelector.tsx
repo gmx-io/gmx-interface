@@ -23,6 +23,7 @@ type Props = {
   onSelectToken: (token: Token) => void;
   swapOption: string;
   infoTokens?: InfoTokens;
+  setIsTokenSelectorOpen: (isOpen: boolean) => void;
 };
 
 function addLiquidityToTokens(tokens: Token[], infoTokens: InfoTokens): ChartToken[] {
@@ -61,7 +62,7 @@ function addMaxInAndOut(tokens: Token[], infoTokens: InfoTokens): ChartToken[] {
 }
 
 export default function ChartTokenSelector(props: Props) {
-  const { chainId, selectedToken, onSelectToken, swapOption, infoTokens } = props;
+  const { chainId, selectedToken, onSelectToken, swapOption, infoTokens, setIsTokenSelectorOpen } = props;
   const [searchKeyword, setSearchKeyword] = useState("");
   const isLong = swapOption === LONG;
   const isShort = swapOption === SHORT;
@@ -106,6 +107,7 @@ export default function ChartTokenSelector(props: Props) {
   return (
     <Popover>
       {({ open }) => {
+        setIsTokenSelectorOpen(open);
         if (!open) {
           setSearchKeyword("");
         }
@@ -140,13 +142,14 @@ export default function ChartTokenSelector(props: Props) {
                     <tbody>
                       {filteredTokens.map((option) => {
                         return (
-                          <Popover.Button as="tr" key={option.symbol}>
-                            <td
-                              className="token-item"
-                              onClick={() => {
-                                onSelect(option);
-                              }}
-                            >
+                          <Popover.Button
+                            as="tr"
+                            key={option.symbol}
+                            onClick={() => {
+                              onSelect(option);
+                            }}
+                          >
+                            <td className="token-item">
                               <span>
                                 {option.symbol} {!isSwap && "/ USD"}
                               </span>
