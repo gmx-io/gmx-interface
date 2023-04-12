@@ -83,6 +83,7 @@ import { ErrorCode, ErrorDisplayType } from "./constants";
 import Button from "components/Button/Button";
 import UsefulLinks from "./UsefulLinks";
 import { get1InchSwapUrl } from "config/links";
+import FeesTooltip from "./FeesTooltip";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -1786,6 +1787,18 @@ export default function SwapBox(props) {
     }
   }
 
+  function getFundingFee() {
+    return (
+      <>
+        {isLong && toTokenInfo && formatAmount(toTokenInfo.fundingRate, 4, 4)}
+        {isShort && shortCollateralToken && formatAmount(shortCollateralToken.fundingRate, 4, 4)}
+        {((isLong && toTokenInfo && toTokenInfo.fundingRate) ||
+          (isShort && shortCollateralToken && shortCollateralToken.fundingRate)) &&
+          "% / 1h"}
+      </>
+    );
+  }
+
   function setFromValueToMaximumAvailable() {
     if (!fromToken || !fromBalance) {
       return;
@@ -2249,38 +2262,16 @@ export default function SwapBox(props) {
                 <div>
                   {!feesUsd && "-"}
                   {feesUsd && (
-                    <Tooltip
-                      handle={`$${formatAmount(feesUsd, USD_DECIMALS, 2, true)}`}
-                      position="right-bottom"
-                      renderContent={() => {
-                        return (
-                          <div>
-                            {swapFees && (
-                              <div>
-                                <Trans>{collateralToken.symbol} is required for collateral.</Trans> <br />
-                                <br />
-                                <StatsTooltipRow
-                                  label={t`Swap Fee`}
-                                  value={formatAmount(swapFees, USD_DECIMALS, 2, true)}
-                                />
-                              </div>
-                            )}
-                            <div>
-                              <StatsTooltipRow
-                                label={t`Open Fee`}
-                                value={formatAmount(positionFee, USD_DECIMALS, 2, true)}
-                              />
-                            </div>
-                            <br />
-                            <div className="PositionSeller-fee-item">
-                              <Trans>
-                                <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#fees">More Info</ExternalLink>{" "}
-                                about fees.
-                              </Trans>
-                            </div>
-                          </div>
-                        );
+                    <FeesTooltip
+                      totalFees={minExecutionFeeUSD.add(feesUsd)}
+                      fundingFee={getFundingFee()}
+                      executionFees={{
+                        fee: minExecutionFee,
+                        feeUSD: minExecutionFeeUSD,
                       }}
+                      positionFee={positionFee}
+                      swapFee={swapFees}
+                      titleText={<Trans>{collateralToken.symbol} is required for collateral.</Trans>}
                     />
                   )}
                 </div>
@@ -2560,6 +2551,7 @@ export default function SwapBox(props) {
           entryMarkPrice={entryMarkPrice}
           swapFees={swapFees}
           positionFee={positionFee}
+          fundingFee={getFundingFee()}
         />
       )}
     </div>

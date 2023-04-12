@@ -33,7 +33,7 @@ function getExecutionFeeStr(chainId, executionFee, executionFeeUsd) {
     return "";
   }
 
-  const formattedExecutionFee = formatAmountFree(executionFee, 18, 4);
+  const formattedExecutionFee = formatAmountFree(executionFee, 18, 5);
   const formattedExecutionFeeUsd = formatAmount(executionFeeUsd, USD_DECIMALS, 2);
   return `${formattedExecutionFee} ${nativeTokenSymbol} ($${formattedExecutionFeeUsd})`;
 }
@@ -76,6 +76,7 @@ type Props = {
   swapFee?: BigNumber;
   fundingFee?: string;
   isOpening?: boolean;
+  titleText?: string;
 };
 
 function FeesTooltip({
@@ -86,6 +87,7 @@ function FeesTooltip({
   executionFees,
   depositFee,
   isOpening = true,
+  titleText = "",
 }: Props) {
   const { chainId } = useChainId();
   const executionFee = executionFees?.fee;
@@ -108,6 +110,7 @@ function FeesTooltip({
       handle={<div>{totalFees?.gt(0) ? `$${formatAmount(totalFees, USD_DECIMALS, 2, true)}` : "-"}</div>}
       renderContent={() => (
         <div>
+          {titleText && <p>{titleText}</p>}
           {feesRows.map(({ label, value }) => (
             <StatsTooltipRow key={label} label={label} showDollar={false} value={value} />
           ))}

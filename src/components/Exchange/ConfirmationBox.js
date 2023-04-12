@@ -121,6 +121,7 @@ export default function ConfirmationBox(props) {
     positionFee,
     swapFees,
     infoTokens,
+    fundingFee,
   } = props;
 
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
@@ -601,17 +602,6 @@ export default function ConfirmationBox(props) {
 
   const renderMarginSection = useCallback(() => {
     const collateralToken = getToken(chainId, collateralTokenAddress);
-    function getFundingFee() {
-      return (
-        <>
-          {isLong && toTokenInfo && formatAmount(toTokenInfo.fundingRate, 4, 4)}
-          {isShort && shortCollateralToken && formatAmount(shortCollateralToken.fundingRate, 4, 4)}
-          {((isLong && toTokenInfo && toTokenInfo.fundingRate) ||
-            (isShort && shortCollateralToken && shortCollateralToken.fundingRate)) &&
-            "% / 1h"}
-        </>
-      );
-    }
     return (
       <>
         <div>
@@ -716,7 +706,7 @@ export default function ConfirmationBox(props) {
           <ExchangeInfoRow label={t`Fees`}>
             <FeesTooltip
               totalFees={currentExecutionFeeUsd.add(feesUsd)}
-              fundingFee={getFundingFee()}
+              fundingFee={fundingFee}
               executionFees={{
                 fee: currentExecutionFee,
                 feeUSD: currentExecutionFeeUsd,
