@@ -730,9 +730,6 @@ export default function ConfirmationBox(props) {
     );
   }, [
     renderMain,
-    isShort,
-    isLong,
-    toTokenInfo,
     nextAveragePrice,
     toAmount,
     hasExistingPosition,
@@ -743,7 +740,6 @@ export default function ConfirmationBox(props) {
     existingLiquidationPrice,
     feesUsd,
     leverage,
-    shortCollateralToken,
     chainId,
     renderFeeWarning,
     hasPendingProfit,
@@ -770,6 +766,7 @@ export default function ConfirmationBox(props) {
     renderCollateralSpreadWarning,
     collateralSpreadInfo,
     showCollateralSpread,
+    fundingFee,
   ]);
 
   const renderSwapSection = useCallback(() => {
