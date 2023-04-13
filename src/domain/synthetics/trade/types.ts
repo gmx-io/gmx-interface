@@ -2,6 +2,7 @@ import { BigNumber } from "ethers";
 import { FeeItem, SwapFeeItem } from "../fees";
 import { TokenData, TokensRatio } from "../tokens";
 import { MarketInfo } from "../markets";
+import { TriggerThresholdType } from "../orders";
 
 export enum TradeType {
   Long = "Long",
@@ -57,30 +58,30 @@ export type IncreasePositionAmounts = {
   swapPathStats: SwapPathStats | undefined;
   positionFeeUsd: BigNumber;
   positionPriceImpactDeltaUsd: BigNumber;
-  entryMarkPrice: BigNumber;
+  entryPrice: BigNumber;
   initialCollateralPrice: BigNumber;
   collateralPrice: BigNumber;
   acceptablePrice: BigNumber | undefined;
   acceptablePriceImpactBps: BigNumber | undefined;
+  acceptablePriceAfterSlippage: BigNumber | undefined;
 };
 
 export type DecreasePositionAmounts = {
   sizeDeltaUsd: BigNumber;
   sizeDeltaInTokens: BigNumber;
-  collateralDeltaUsd?: BigNumber;
-  collateralDeltaAmount?: BigNumber;
-  pnlDelta?: BigNumber;
-  isClosing: boolean;
-  receiveTokenAmount?: BigNumber;
-  receiveUsd?: BigNumber;
-  positionFeeUsd?: BigNumber;
-  positionPriceImpactDeltaUsd?: BigNumber;
-  exitMarkPrice: BigNumber;
+  collateralDeltaUsd: BigNumber;
+  collateralDeltaAmount: BigNumber;
+  pnlDelta: BigNumber;
+  receiveTokenAmount: BigNumber;
+  receiveUsd: BigNumber;
+  positionFeeUsd: BigNumber;
+  positionPriceImpactDeltaUsd: BigNumber;
+  exitPrice: BigNumber;
   triggerPrice?: BigNumber;
-  triggerPricePrefix?: string;
-  acceptablePrice: BigNumber;
-  acceptablePriceImpactBps: BigNumber;
-  acceptablePriceAfterSlippage: BigNumber;
+  triggerPricePrefix?: TriggerThresholdType;
+  acceptablePrice: BigNumber | undefined;
+  acceptablePriceImpactBps: BigNumber | undefined;
+  acceptablePriceAfterSlippage: BigNumber | undefined;
 };
 
 export type SwapTradeParams = SwapAmounts & {
@@ -138,8 +139,6 @@ export type SwapStats = {
 export type SwapPathStats = {
   swapPath: string[];
   swapSteps: SwapStats[];
-  // isWrap?: boolean;
-  // isUnwrap?: boolean;
   targetMarketAddress?: string;
   totalSwapPriceImpactDeltaUsd: BigNumber;
   totalSwapFeeUsd: BigNumber;

@@ -47,7 +47,7 @@ import {
   getDisplayedTradeFees,
   getNextPositionValuesForDecreaseTrade,
   getShouldSwapPnlToCollateralToken,
-  getSwapAmounts,
+  getSwapAmountsByFromValue,
   useAvailableTokenOptions,
   useSwapRoutes,
 } from "domain/synthetics/trade";
@@ -139,12 +139,13 @@ export function PositionSeller(p: Props) {
   }, [allowedSlippage, closeSizeUsd, keepLeverage, marketInfo, p.savedIsPnlInLeverage, position]);
 
   const swapAmounts = useMemo(() => {
-    if (!shouldSwap || !decreaseAmounts) return undefined;
+    if (!shouldSwap || !decreaseAmounts || !position?.collateralToken || !receiveToken) return undefined;
 
-    return getSwapAmounts({
+    return getSwapAmountsByFromValue({
       tokenIn: position?.collateralToken,
       tokenOut: receiveToken,
-      tokenInAmount: decreaseAmounts?.receiveTokenAmount,
+      amountIn: decreaseAmounts?.receiveTokenAmount || BigNumber.from(0),
+      isLimit: false,
       findSwapPath,
     });
   }, [decreaseAmounts, findSwapPath, position?.collateralToken, receiveToken, shouldSwap]);
@@ -158,7 +159,7 @@ export function PositionSeller(p: Props) {
       sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
       pnlDelta: decreaseAmounts?.pnlDelta,
       collateralDeltaUsd: decreaseAmounts?.collateralDeltaUsd,
-      executionPrice: decreaseAmounts?.exitMarkPrice,
+      executionPrice: decreaseAmounts?.exitPrice,
       showPnlInLeverage: true,
       isLong: position?.isLong,
       maxLeverage,

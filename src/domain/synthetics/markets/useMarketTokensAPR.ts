@@ -5,7 +5,7 @@ import { BASIS_POINTS_DIVISOR } from "lib/legacy";
 import { bigNumberify, expandDecimals } from "lib/numbers";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import { useMarketTokensData } from "./useMarketTokensData";
-import { useMarketsData } from "./useMarketsData";
+import { useMarkets } from "./useMarkets";
 
 type RawCollectedFee = {
   id: string;
@@ -26,7 +26,7 @@ export type MarketTokensAPRResult = {
 };
 
 export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
-  const { marketsData } = useMarketsData(chainId);
+  const { marketsData } = useMarkets(chainId);
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
 
   const client = getSyntheticsGraphClient(chainId);
@@ -65,8 +65,8 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
       const { data: response } = await client!.query({ query: gql(`{${queryBody}}`) });
 
       const marketTokensAPRData = marketAddresses.reduce((acc, marketAddress) => {
-        const market = marketsData[marketAddress];
-        const marketToken = marketTokensData[marketAddress];
+        const market = marketsData?.[marketAddress]!;
+        const marketToken = marketTokensData?.[marketAddress]!;
 
         const feeItems = [
           ...response[`_${marketAddress}_${market.longTokenAddress}`],

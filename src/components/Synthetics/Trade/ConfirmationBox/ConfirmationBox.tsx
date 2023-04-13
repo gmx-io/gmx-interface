@@ -16,6 +16,7 @@ import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useUserReferralCode } from "domain/referrals";
 import { ExecutionFee, getBorrowingFeeFactor, getFundingFeeFactor, getIsHighPriceImpact } from "domain/synthetics/fees";
 import {
+  MarketInfo,
   getAvailableUsdLiquidityForCollateral,
   getAvailableUsdLiquidityForPosition,
   getTokenPoolType,
@@ -30,10 +31,10 @@ import {
   createDecreaseOrderTxn,
   createIncreaseOrderTxn,
   createSwapOrderTxn,
-  isOrderForPosition,
   getTriggerDecreaseOrderType,
   getTriggerPricePrefixForOrder,
   isLimitOrderType,
+  isOrderForPosition,
   isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
@@ -91,6 +92,7 @@ type Props = {
   allowedSlippage?: number;
   isHigherSlippageAllowed?: boolean;
   isWrapOrUnwrap?: boolean;
+  marketInfo: MarketInfo;
   setIsHigherSlippageAllowed: (isHigherSlippageAllowed: boolean) => void;
   setKeepLeverage: (keepLeverage: boolean) => void;
   onClose: () => void;
@@ -128,11 +130,11 @@ export function ConfirmationBox(p: Props) {
   const intitialCollateralAmount = p.increasePositionParams?.initialCollateralAmount;
   const initialCollateralUsd = p.increasePositionParams?.initialCollateralUsd;
 
-  const market = p.increasePositionParams?.marketInfo || p.decreasePositionParams?.market;
+  const market = p.marketInfo;
   const indexToken = getTokenData(tokensData, market?.indexTokenAddress);
 
-  const sizeDeltaUsdAfterFees = p.increasePositionParams?.sizeDeltaAfterFeesUsd;
-  const sizeDeltaAfterFeesInTokens = p.increasePositionParams?.sizeDeltaAfterFeesInTokens;
+  const sizeDeltaUsdAfterFees = p.increasePositionParams?.sizeDeltaUsd;
+  const sizeDeltaAfterFeesInTokens = p.increasePositionParams?.sizeDeltaInTokens;
 
   const receiveToken = p.decreasePositionParams?.receiveToken;
   const receiveAmount = p.decreasePositionParams?.receiveTokenAmount;
@@ -352,30 +354,23 @@ export function ConfirmationBox(p: Props) {
   }
 
   function onSubmitIncreaseOrder() {
-    if (
-      !tokensData ||
-      !account ||
-      !p.increasePositionParams ||
-      !p.executionFee ||
-      !market ||
-      !p.increasePositionParams.acceptablePriceAfterSlippage
-    ) {
+    if (!tokensData || !account || !p.increasePositionParams || !p.executionFee) {
       return;
     }
 
     createIncreaseOrderTxn(chainId, library, {
       account,
-      marketAddress: p.increasePositionParams.marketInfo.marketTokenAddress,
+      marketAddress: market.marketTokenAddress,
       initialCollateralAddress: p.increasePositionParams.initialCollateralToken.address,
       initialCollateralAmount: p.increasePositionParams.initialCollateralAmount,
       targetCollateralAddress: p.increasePositionParams.collateralToken.address,
       swapPath: p.increasePositionParams.swapPathStats?.swapPath || [],
-      indexTokenAddress: p.increasePositionParams.marketInfo.indexTokenAddress,
+      indexTokenAddress: market.indexTokenAddress,
       sizeDeltaUsd: p.increasePositionParams.sizeDeltaUsd,
-      triggerPrice: isLimit ? p.increasePositionParams.triggerPrice : undefined,
+      triggerPrice: isLimit ? p.increasePositionParams.entryPrice : undefined,
       acceptablePrice: isMarket
-        ? p.increasePositionParams.acceptablePriceAfterSlippage
-        : p.increasePositionParams.acceptablePrice,
+        ? p.increasePositionParams.acceptablePriceAfterSlippage!
+        : p.increasePositionParams.acceptablePrice!,
       executionFee: p.executionFee.feeTokenAmount,
       isLong,
       orderType: isLimit ? OrderType.LimitIncrease : OrderType.MarketIncrease,
@@ -388,11 +383,11 @@ export function ConfirmationBox(p: Props) {
           isIncrease: true,
           positionKey: getPositionKey(
             account,
-            p.increasePositionParams.marketInfo.marketTokenAddress,
+            market.marketTokenAddress,
             p.increasePositionParams.collateralToken.address,
             isLong
           )!,
-          collateralDeltaAmount: p.increasePositionParams.collateralAmount,
+          collateralDeltaAmount: p.increasePositionParams.collateralAmountAfterFees,
           sizeDeltaUsd: p.increasePositionParams.sizeDeltaUsd,
           sizeDeltaInTokens: p.increasePositionParams.sizeDeltaInTokens,
         });
@@ -802,7 +797,7 @@ export function ConfirmationBox(p: Props) {
               isTop
               className="SwapBox-info-row"
               label={t`Mark Price`}
-              value={formatUsd(p.increasePositionParams?.entryMarkPrice) || "-"}
+              value={formatUsd(p.increasePositionParams?.entryPrice) || "-"}
             />
           )}
 
@@ -810,7 +805,7 @@ export function ConfirmationBox(p: Props) {
             <ExchangeInfoRow
               className="SwapBox-info-row"
               label={t`Limit Price`}
-              value={formatUsd(p.increasePositionParams?.triggerPrice) || "-"}
+              value={formatUsd(p.increasePositionParams?.entryPrice) || "-"}
             />
           )}
 

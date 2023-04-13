@@ -180,7 +180,7 @@ export function GmSwapBox(p: Props) {
     let shortTokenAmount = shortTokenInputState?.amount;
     let shortTokenUsd = shortTokenInputState?.usd;
 
-    if (isDeposit && market?.isSameCollaterals) {
+    if (isDeposit && marketInfo?.isSameCollaterals) {
       longTokenAmount = longTokenAmount?.div(2);
       longTokenUsd = longTokenUsd?.div(2);
       shortTokenAmount = shortTokenAmount?.div(2);
@@ -197,7 +197,7 @@ export function GmSwapBox(p: Props) {
     isDeposit,
     longTokenInputState?.amount,
     longTokenInputState?.usd,
-    market?.isSameCollaterals,
+    marketInfo?.isSameCollaterals,
     shortTokenInputState?.amount,
     shortTokenInputState?.usd,
   ]);
@@ -477,7 +477,7 @@ export function GmSwapBox(p: Props) {
           });
 
           if (amounts) {
-            if (market.isSameCollaterals) {
+            if (marketInfo.isSameCollaterals) {
               setFirstTokenInputValue(
                 amounts.longTokenAmount?.gt(0) ? formatAmountFree(amounts.longTokenAmount, longToken.decimals) : ""
               );
@@ -528,7 +528,7 @@ export function GmSwapBox(p: Props) {
             );
 
             if (amounts.longTokenAmount) {
-              if (market.isSameCollaterals) {
+              if (marketInfo.isSameCollaterals) {
                 setFirstTokenInputValue(
                   amounts.longTokenAmount.gt(0) ? formatAmountFree(amounts.longTokenAmount, longToken.decimals) : ""
                 );
@@ -539,7 +539,7 @@ export function GmSwapBox(p: Props) {
               }
             }
             if (amounts.shortTokenAmount) {
-              if (market.isSameCollaterals) {
+              if (marketInfo.isSameCollaterals) {
                 setSecondTokenInputValue(
                   amounts.shortTokenAmount.gt(0) ? formatAmountFree(amounts.shortTokenAmount, shortToken.decimals) : ""
                 );
@@ -603,7 +603,7 @@ export function GmSwapBox(p: Props) {
       }
 
       if (isPair && firstTokenAddress) {
-        if (market?.isSameCollaterals) {
+        if (marketInfo?.isSameCollaterals) {
           if (!secondTokenAddress || firstTokenAddress !== secondTokenAddress) {
             setSecondTokenAddress(firstTokenAddress);
           }
@@ -632,7 +632,7 @@ export function GmSwapBox(p: Props) {
       firstTokenAddress,
       isPair,
       isSingle,
-      market?.isSameCollaterals,
+      marketInfo?.isSameCollaterals,
       secondTokenAddress,
       setFirstTokenAddress,
       setSecondTokenAddress,

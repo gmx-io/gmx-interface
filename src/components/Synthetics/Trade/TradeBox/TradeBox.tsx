@@ -34,7 +34,6 @@ import {
   getMarkPrice,
   getSwapAmountsByFromValue,
   getSwapAmountsByToValue,
-  getSwapTradeParams,
   getTradeFlags,
   useAvailableTokenOptions,
   useSwapRoutes,
@@ -329,8 +328,6 @@ export function TradeBox(p: Props) {
           amountOut: tokenAmount,
           usdOut: usdAmount,
           swapPathStats: undefined,
-          tokenIn: fromTokenInput.token,
-          tokenOut: toTokenInput.token,
           priceIn: price,
           priceOut: price,
           minOutputAmount: tokenAmount,
@@ -1416,8 +1413,12 @@ export function TradeBox(p: Props) {
   }
 
   function renderIncreaseOrderInfo() {
-    const { nextPositionValues, acceptablePrice, acceptablePriceImpactBps, entryMarkPrice } =
-      increasePositionParams || {};
+    const {
+      nextPositionValues,
+      acceptablePrice,
+      acceptablePriceImpactBps,
+      entryPrice: entryMarkPrice,
+    } = increasePositionParams || {};
 
     return (
       <>
@@ -1541,7 +1542,7 @@ export function TradeBox(p: Props) {
         <ExchangeInfoRow
           className="SwapBox-info-row"
           label={t`Mark Price`}
-          value={formatUsd(decreasePositionParams?.exitMarkPrice) || "-"}
+          value={formatUsd(decreasePositionParams?.exitPrice) || "-"}
         />
 
         <ExchangeInfoRow

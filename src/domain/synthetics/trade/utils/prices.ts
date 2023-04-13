@@ -13,15 +13,12 @@ export function getMarkPrice(p: { prices: TokenPrices; isIncrease: boolean; isLo
 
 export function getAcceptablePrice(p: {
   isIncrease: boolean;
-  isLong?: boolean;
-  indexPrice?: BigNumber;
+  isLong: boolean;
+  indexPrice: BigNumber;
   priceImpactDeltaUsd?: BigNumber;
-  sizeDeltaUsd?: BigNumber;
-  allowedSlippage?: number;
+  sizeDeltaUsd: BigNumber;
   acceptablePriceImpactBps?: BigNumber;
 }) {
-  if (!p.indexPrice || typeof p.isLong === "undefined") return {};
-
   let acceptablePrice = p.indexPrice;
   let acceptablePriceImpactBps = p.acceptablePriceImpactBps || BigNumber.from(0);
 
@@ -42,10 +39,6 @@ export function getAcceptablePrice(p: {
       .mul(p.priceImpactDeltaUsd.isNegative() ? -1 : 1);
 
     acceptablePriceImpactBps = getBasisPoints(priceDelta, p.indexPrice);
-  }
-
-  if (p.allowedSlippage) {
-    acceptablePrice = applySlippage(p.allowedSlippage, acceptablePrice, p.isIncrease, p.isLong);
   }
 
   return {

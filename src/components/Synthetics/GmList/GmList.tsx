@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import Button from "components/Button/Button";
 import { getChainName } from "config/chains";
-import { getMarket, getMarketName, useMarketTokensData, useMarketsData } from "domain/synthetics/markets";
+import { useMarketTokensData, useMarkets } from "domain/synthetics/markets";
 import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
 import { convertToUsd, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
@@ -10,19 +10,24 @@ import { useMemo } from "react";
 import { useMedia } from "react-use";
 import { Operation } from "../GmSwap/GmSwapBox/GmSwapBox";
 import "./GmList.scss";
+import { getByKey } from "lib/objects";
 
 export function GmList() {
   const { chainId } = useChainId();
 
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
-  const { marketsData } = useMarketsData(chainId);
+  const { marketsData } = useMarkets(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
   const { marketsTokensAPRData } = useMarketTokensAPR(chainId);
 
   const marketTokens = useMemo(() => {
+    if (!marketTokensData || !marketsData) {
+      return [];
+    }
+
     return Object.values(marketTokensData).sort((a, b) => {
-      const market1 = getMarket(marketsData, a.address)!;
-      const market2 = getMarket(marketsData, b.address)!;
+      const market1 = getByKey(marketsData, a.address)!;
+      const market2 = getByKey(marketsData, b.address)!;
       const indexToken1 = getTokenData(tokensData, market1.indexTokenAddress, "native")!;
       const indexToken2 = getTokenData(tokensData, market2.indexTokenAddress, "native")!;
 
@@ -63,7 +68,7 @@ export function GmList() {
             </thead>
             <tbody>
               {marketTokens.map((token) => {
-                const market = getMarket(marketsData, token.address);
+                const market = getByKey(marketsData, token.address);
 
                 const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
                 const longToken = getTokenData(tokensData, market?.longTokenAddress);
@@ -137,14 +142,13 @@ export function GmList() {
 
               const totalSupply = token.totalSupply;
               const totalSupplyUsd = convertToUsd(totalSupply, token.decimals, token.prices?.minPrice);
+              const market = getByKey(marketsData, token.address);
 
               return (
                 <div className="App-card" key={token.address}>
                   <div className="App-card-title">
                     <div className="mobile-token-card">
-                      <div className="token-symbol-text">
-                        GM: {getMarketName(marketsData, tokensData, token.address, false, false)}
-                      </div>
+                      <div className="token-symbol-text">GM: {market?.name}</div>
                     </div>
                   </div>
                   <div className="App-card-divider"></div>
