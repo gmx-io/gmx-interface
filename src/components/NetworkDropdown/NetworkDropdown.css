@@ -32,6 +32,9 @@
   background: var(--dark-blue-hover);
   cursor: pointer;
 }
+.App-header-network:active {
+  background: var(--dark-blue-active);
+}
 .network-dropdown:active {
   background: var(--dark-blue-active);
 }
@@ -75,6 +78,7 @@
   padding: 0.8rem;
   justify-content: space-between;
 }
+
 .last-dropdown-menu {
   margin-bottom: 0.8rem;
 }

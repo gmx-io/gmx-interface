@@ -55,7 +55,7 @@ input {
   --dark-blue-bg: #16182e;
   --dark-blue-accent: #a0a3c4;
   --primary-btn-bg: #2d42fc;
-  --primary-btn-hover: #3a4dfc;
+  --primary-btn-hover: #3a4efc;
   --primary-btn-active: #4255fc;
   --dark-blue-hover: #808aff14;
   --dark-blue-border: #ffffff29;
@@ -442,4 +442,8 @@ button.btn-link:hover .logout-icon {
 }
 .gap-right > *:not(:last-child) {
   margin-right: 1rem;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }

@@ -479,6 +479,7 @@ function FullApp() {
                   setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
                   connectWallet={connectWallet}
                   savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
+                  openSettings={openSettings}
                 />
               </Route>
               <Route exact path="/dashboard">
