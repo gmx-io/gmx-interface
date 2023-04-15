@@ -53,6 +53,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import FeesTooltip from "./FeesTooltip";
 import Button from "components/Button/Button";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -1056,19 +1057,19 @@ export default function PositionSeller(props) {
               </div>
             )}
             <div className="PositionEditor-keep-leverage-settings">
-              <Checkbox isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
+              <ToggleSwitch isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
                 <span className="muted font-sm">
                   <Trans>Keep leverage at {formatAmount(position.leverage, 4, 2)}x</Trans>
                 </span>
-              </Checkbox>
+              </ToggleSwitch>
             </div>
             {orderOption === MARKET && (
               <div className="PositionEditor-allow-higher-slippage">
-                <Checkbox isChecked={isHigherSlippageAllowed} setIsChecked={setIsHigherSlippageAllowed}>
+                <ToggleSwitch isChecked={isHigherSlippageAllowed} setIsChecked={setIsHigherSlippageAllowed}>
                   <span className="muted font-sm">
                     <Trans>Allow up to 1% slippage</Trans>
                   </span>
-                </Checkbox>
+                </ToggleSwitch>
               </div>
             )}
             {orderOption === MARKET && (

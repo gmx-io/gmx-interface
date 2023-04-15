@@ -82,6 +82,7 @@ import { ErrorCode, ErrorDisplayType } from "./constants";
 import Button from "components/Button/Button";
 import UsefulLinks from "./UsefulLinks";
 import { get1InchSwapUrl } from "config/links";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -2112,20 +2113,13 @@ export default function SwapBox(props) {
         )}
         {(isLong || isShort) && !isStopOrder && (
           <div className="Exchange-leverage-box">
-            <div className="Exchange-leverage-slider-settings">
-              {/* <Checkbox isChecked={isLeverageSliderEnabled} setIsChecked={setIsLeverageSliderEnabled}>
-                <span className="muted">Leverage slider</span>
-              </Checkbox> */}
-
+            <ToggleSwitch
+              className="mb-sm"
+              isChecked={isLeverageSliderEnabled}
+              setIsChecked={setIsLeverageSliderEnabled}
+            >
               <span className="muted">Leverage slider</span>
-              <div
-                className="SwapBox-leverage-toggle"
-                data-is-on={isLeverageSliderEnabled}
-                onClick={() => setIsLeverageSliderEnabled(!isLeverageSliderEnabled)}
-              >
-                <div className="handle" />
-              </div>
-            </div>
+            </ToggleSwitch>
             {isLeverageSliderEnabled && (
               <div
                 className={cx("Exchange-leverage-slider", "App-slider", {
