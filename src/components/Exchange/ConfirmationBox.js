@@ -705,7 +705,6 @@ export default function ConfirmationBox(props) {
           </ExchangeInfoRow>
           <ExchangeInfoRow label={t`Fees`}>
             <FeesTooltip
-              totalFees={currentExecutionFeeUsd.add(feesUsd)}
               fundingFee={fundingFee}
               executionFees={{
                 fee: currentExecutionFee,
@@ -812,7 +811,6 @@ export default function ConfirmationBox(props) {
         )}
         <ExchangeInfoRow label={t`Fees`} isTop>
           <FeesTooltip
-            totalFees={currentExecutionFeeUsd.add(feesUsd)}
             executionFees={{
               fee: currentExecutionFee,
               feeUSD: currentExecutionFeeUsd,

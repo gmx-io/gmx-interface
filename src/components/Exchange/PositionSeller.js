@@ -1228,7 +1228,6 @@ export default function PositionSeller(props) {
                   isOpening={false}
                   positionFee={positionFee}
                   fundingFee={`$${formatAmount(fundingFee, USD_DECIMALS, 2, true)}`}
-                  totalFees={executionFeeUsd.add(totalFees)}
                   executionFees={{
                     fee: executionFee,
                     feeUSD: executionFeeUsd,

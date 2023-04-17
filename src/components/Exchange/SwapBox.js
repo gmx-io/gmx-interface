@@ -172,7 +172,6 @@ export default function SwapBox(props) {
     minExecutionFeeUSD,
     minExecutionFeeErrorMessage,
   } = props;
-
   const [fromValue, setFromValue] = useState("");
   const [toValue, setToValue] = useState("");
   const [anchorOnFromAmount, setAnchorOnFromAmount] = useState(true);
@@ -1882,6 +1881,13 @@ export default function SwapBox(props) {
     [SWAP]: t`Swap`,
   };
 
+  const SWAP_ORDER_EXECUTION_GAS_FEE = getConstant(chainId, "SWAP_ORDER_EXECUTION_GAS_FEE");
+  const INCREASE_ORDER_EXECUTION_GAS_FEE = getConstant(chainId, "INCREASE_ORDER_EXECUTION_GAS_FEE");
+  const executionFee = isSwap ? SWAP_ORDER_EXECUTION_GAS_FEE : INCREASE_ORDER_EXECUTION_GAS_FEE;
+  const executionFeeUsd = getUsd(executionFee, nativeTokenAddress, false, infoTokens);
+  const currentExecutionFee = isMarketOrder ? minExecutionFee : executionFee;
+  const currentExecutionFeeUsd = isMarketOrder ? minExecutionFeeUSD : executionFeeUsd;
+
   function renderPrimaryButton() {
     const [errorMessage, errorType, errorCode] = getError();
     const primaryTextMessage = getPrimaryText();
@@ -2261,13 +2267,13 @@ export default function SwapBox(props) {
               <ExchangeInfoRow label={t`Fees`}>
                 <div>
                   {!feesUsd && "-"}
+
                   {feesUsd && (
                     <FeesTooltip
-                      totalFees={minExecutionFeeUSD.add(feesUsd)}
                       fundingFee={getFundingFee()}
                       executionFees={{
-                        fee: minExecutionFee,
-                        feeUSD: minExecutionFeeUSD,
+                        fee: currentExecutionFee,
+                        feeUSD: currentExecutionFeeUsd,
                       }}
                       positionFee={positionFee}
                       swapFee={swapFees}

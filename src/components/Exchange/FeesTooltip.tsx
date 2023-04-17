@@ -45,11 +45,11 @@ function getFeesStr(fees: BigNumber | undefined): string {
   return `$${formatAmount(fees, USD_DECIMALS, 2, true)}`;
 }
 
-function getFeesRows(isOpening: boolean, formattedFees: Record<string, string>) {
+function getFeesRows(isOpening: boolean, formattedFees: Record<string, string | undefined>) {
   const rows: Fee[] = [];
 
-  function addFeeRow(label: FeeType, value: string) {
-    rows.push({ label: getFeeLabel(label), value });
+  function addFeeRow(label: FeeType, value: string | undefined) {
+    rows.push({ label: getFeeLabel(label), value: value ?? "" });
   }
 
   if (isOpening) {
@@ -68,19 +68,26 @@ function getFeesRows(isOpening: boolean, formattedFees: Record<string, string>) 
   return rows.filter((row) => row.value);
 }
 
+function getTotalFees(fees: (BigNumberish | undefined)[]) {
+  return fees.reduce((acc: BigNumber, fee) => {
+    if (fee instanceof BigNumber) {
+      return acc.add(fee);
+    }
+    return acc;
+  }, BigNumber.from(0));
+}
+
 type Props = {
-  totalFees: BigNumber;
   executionFees: ExecutionFee;
   positionFee?: BigNumber;
   depositFee?: BigNumber;
   swapFee?: BigNumber;
-  fundingFee?: string;
+  fundingFee?: BigNumber | string;
   isOpening?: boolean;
   titleText?: string;
 };
 
 function FeesTooltip({
-  totalFees,
   fundingFee,
   positionFee,
   swapFee,
@@ -92,17 +99,16 @@ function FeesTooltip({
   const { chainId } = useChainId();
   const executionFee = executionFees?.fee;
   const executionFeeUSD = executionFees?.feeUSD;
-
   const formattedFees = {
     swap: getFeesStr(swapFee),
     position: getFeesStr(positionFee),
     deposit: getFeesStr(depositFee),
     execution: getExecutionFeeStr(chainId, executionFee, executionFeeUSD),
-    funding: fundingFee || "",
+    funding: fundingFee instanceof BigNumber ? getFeesStr(fundingFee) : fundingFee,
   };
 
-  let feesRows = getFeesRows(isOpening, formattedFees);
-
+  const feesRows = getFeesRows(isOpening, formattedFees);
+  const totalFees = getTotalFees([executionFees.feeUSD, swapFee, positionFee, depositFee, fundingFee]);
   return (
     <Tooltip
       position="right-top"
