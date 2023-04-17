@@ -108,7 +108,7 @@ function FeesTooltip({
   };
 
   const feesRows = getFeesRows(isOpening, formattedFees);
-  const totalFees = getTotalFees([executionFees.feeUSD, swapFee, positionFee, depositFee, fundingFee]);
+  const totalFees = getTotalFees([executionFees?.feeUSD, swapFee, positionFee, depositFee, fundingFee]);
   return (
     <Tooltip
       position="right-top"

@@ -811,10 +811,12 @@ export default function ConfirmationBox(props) {
         )}
         <ExchangeInfoRow label={t`Fees`} isTop>
           <FeesTooltip
-            executionFees={{
-              fee: currentExecutionFee,
-              feeUSD: currentExecutionFeeUsd,
-            }}
+            executionFees={
+              !isMarketOrder && {
+                fee: currentExecutionFee,
+                feeUSD: currentExecutionFeeUsd,
+              }
+            }
             swapFee={feesUsd}
           />
         </ExchangeInfoRow>

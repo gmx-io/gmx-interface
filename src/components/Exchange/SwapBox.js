@@ -2136,10 +2136,15 @@ export default function SwapBox(props) {
                 <div>
                   {!fees && "-"}
                   {fees && (
-                    <div>
-                      {formatAmount(feeBps, 2, 2, false)}%&nbsp; ({formatAmount(fees, fromToken.decimals, 4, true)}{" "}
-                      {fromToken.symbol}: ${formatAmount(feesUsd, USD_DECIMALS, 2, true)})
-                    </div>
+                    <FeesTooltip
+                      swapFee={feesUsd}
+                      executionFees={
+                        !isMarketOrder && {
+                          fee: currentExecutionFee,
+                          feeUSD: currentExecutionFeeUsd,
+                        }
+                      }
+                    />
                   )}
                 </div>
               </ExchangeInfoRow>
