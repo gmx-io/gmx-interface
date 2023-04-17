@@ -210,7 +210,6 @@ msgstr ""
 msgid "Agree"
 msgstr ""
 
-#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
 msgid "Allow up to 1% slippage"
 msgstr ""
@@ -3775,7 +3774,6 @@ msgstr ""
 msgid "You can change the \"Collateral In\" token above to find lower fees"
 msgstr ""
 
-#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
 msgid "You can change this in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are volatile."
 msgstr ""

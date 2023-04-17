@@ -210,7 +210,6 @@ msgstr "После подачи заявки токены esGMX будут пе�
 msgid "Agree"
 msgstr "Согласен"
 
-#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
 msgid "Allow up to 1% slippage"
 msgstr "Допускается скольжение до 1%"
@@ -3778,7 +3777,6 @@ msgstr ""
 msgid "You can change the \"Collateral In\" token above to find lower fees"
 msgstr "Вы можете изменить \"Залоговый вход\", указанный выше, чтобы найти более низкие комиссии"
 
-#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
 msgid "You can change this in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are volatile."
 msgstr "Вы можете изменить это в настройках в правом верхнем углу страницы.<0/><1/>Обратите внимание, что низкое допустимое скольжение, например, менее 0,5%, может привести к неудачным ордерам, если цены нестабильны."

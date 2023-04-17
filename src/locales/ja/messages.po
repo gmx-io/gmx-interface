@@ -210,7 +210,6 @@ msgstr "請求後7日以内に指定のネットワーク上のあなたのア�
 msgid "Agree"
 msgstr "同意する"
 
-#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
 msgid "Allow up to 1% slippage"
 msgstr "最大1%のスリッページを許容する"
@@ -3778,7 +3777,6 @@ msgstr ""
 msgid "You can change the \"Collateral In\" token above to find lower fees"
 msgstr "より低い手数料を見つけるために上の\"担保資産\"トークンを変更することができます"
 
-#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
 msgid "You can change this in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are volatile."
 msgstr "ページ右上にある設定メニューでこれを変更することができます。<0/><1/>価格変動が激しい場合、最大スリッページを0.5%未満等に低く設定していると、注文が通らないことがあります。"

@@ -210,7 +210,6 @@ msgstr "Après la réclamation, les tokens esGMX seront déposés sur votre comp
 msgid "Agree"
 msgstr "Accepter"
 
-#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
 msgid "Allow up to 1% slippage"
 msgstr "Permettre jusqu'à 1 % de glissement"
@@ -3778,7 +3777,6 @@ msgstr ""
 msgid "You can change the \"Collateral In\" token above to find lower fees"
 msgstr "Vous pouvez changer le token \"Collatéral soumis\" ci-dessus pour trouver des frais réduits"
 
-#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
 msgid "You can change this in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are volatile."
 msgstr "Vous pouvez changer cela dans le menu des paramètres en haut à droite de la page.<0/><1/>Notez qu'un faible glissement autorisé, par exemple moins de 0,5 %, peut entraîner l'échec des ordres si les prix sont volatiles."

@@ -33,6 +33,7 @@ import { Plural, t, Trans } from "@lingui/macro";
 import Button from "components/Button/Button";
 import FeesTooltip from "./FeesTooltip";
 import { getTokenInfo, getUsd } from "domain/tokens";
+import SlippageInput from "./SlippageInput";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 
@@ -54,10 +55,10 @@ function getSwapSpreadInfo(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddres
   }
 }
 
-function renderAllowedSlippage(allowedSlippage) {
+function renderAllowedSlippage(allowedSlippage, setSavedSlippageAmount) {
   return (
     <ExchangeInfoRow label={t`Allowed Slippage`}>
-      <Tooltip
+      {/* <Tooltip
         handle={`${formatAmount(allowedSlippage, 2, 2)}%`}
         position="right-bottom"
         renderContent={() => {
@@ -70,7 +71,8 @@ function renderAllowedSlippage(allowedSlippage) {
             </Trans>
           );
         }}
-      />
+      /> */}
+      <SlippageInput placeholderValue={allowedSlippage} update={setSavedSlippageAmount} />
     </ExchangeInfoRow>
   );
 }
@@ -89,7 +91,6 @@ export default function ConfirmationBox(props) {
     toAmount,
     fromAmount,
     isHigherSlippageAllowed,
-    setIsHigherSlippageAllowed,
     onConfirmationClick,
     setIsConfirming,
     hasExistingPosition,
@@ -122,7 +123,10 @@ export default function ConfirmationBox(props) {
     infoTokens,
   } = props;
 
-  const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
+  const [savedSlippageAmount, setSavedSlippageAmount] = useLocalStorageSerializeKey(
+    [chainId, SLIPPAGE_BPS_KEY],
+    DEFAULT_SLIPPAGE_AMOUNT
+  );
   const [isProfitWarningAccepted, setIsProfitWarningAccepted] = useState(false);
   const [isTriggerWarningAccepted, setIsTriggerWarningAccepted] = useState(false);
   const [isLimitOrdersVisible, setIsLimitOrdersVisible] = useState(false);
@@ -142,7 +146,6 @@ export default function ConfirmationBox(props) {
   if (feesUsd) {
     collateralAfterFees = fromUsdMin.sub(feesUsd);
   }
-
   if (isSwap) {
     minOut = toAmount.mul(BASIS_POINTS_DIVISOR - savedSlippageAmount).div(BASIS_POINTS_DIVISOR);
 
@@ -642,7 +645,7 @@ export default function ConfirmationBox(props) {
             {!toAmount && leverage && leverage.gt(0) && `-`}
             {leverage && leverage.eq(0) && `-`}
           </ExchangeInfoRow>
-          {isMarketOrder && (
+          {/* {isMarketOrder && (
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox isChecked={isHigherSlippageAllowed} setIsChecked={setIsHigherSlippageAllowed}>
                 <span className="muted font-sm">
@@ -650,8 +653,8 @@ export default function ConfirmationBox(props) {
                 </span>
               </Checkbox>
             </div>
-          )}
-          {renderAllowedSlippage(allowedSlippage)}
+          )} */}
+          {renderAllowedSlippage(allowedSlippage, setSavedSlippageAmount)}
           {showCollateralSpread && (
             <ExchangeInfoRow label={t`Collateral Spread`} isWarning={collateralSpreadInfo.isHigh} isTop>
               {formatAmount(collateralSpreadInfo.value.mul(100), USD_DECIMALS, 2, true)}%
@@ -764,8 +767,6 @@ export default function ConfirmationBox(props) {
     renderExistingOrderWarning,
     renderExistingTriggerWarning,
     renderExistingTriggerErrors,
-    isHigherSlippageAllowed,
-    setIsHigherSlippageAllowed,
     isTriggerWarningAccepted,
     decreaseOrdersThatWillBeExecuted,
     minExecutionFeeErrorMessage,
@@ -793,7 +794,7 @@ export default function ConfirmationBox(props) {
           </ExchangeInfoRow>
         )}
         {orderOption === LIMIT && renderAvailableLiquidity()}
-        {renderAllowedSlippage(allowedSlippage)}
+        {renderAllowedSlippage(allowedSlippage, setSavedSlippageAmount)}
         <ExchangeInfoRow label={t`Mark Price`} isTop>
           {getExchangeRateDisplay(getExchangeRate(fromTokenInfo, toTokenInfo), fromTokenInfo, toTokenInfo)}
         </ExchangeInfoRow>

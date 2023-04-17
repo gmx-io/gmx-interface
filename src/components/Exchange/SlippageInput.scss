@@ -1,0 +1,15 @@
+.Slippage-input {
+  border: 1px solid var(--dark-blue-border);
+  border-radius: var(--border-radius-sm);
+  padding-right: 0.5rem;
+
+  &.input-error {
+    border-color: #fa3c58;
+  }
+  input {
+    width: 6rem;
+    padding: 0.5rem 1rem;
+    font-size: 1.4rem;
+    border-radius: 4px;
+  }
+}

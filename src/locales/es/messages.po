@@ -210,7 +210,6 @@ msgstr "Tras reclamar, los tokens esGMX serán enviados a su cuenta en la red se
 msgid "Agree"
 msgstr "Aceptar"
 
-#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
 msgid "Allow up to 1% slippage"
 msgstr "Permitir hasta un 1% de deslizamiento"
@@ -3778,7 +3777,6 @@ msgstr ""
 msgid "You can change the \"Collateral In\" token above to find lower fees"
 msgstr "Puedes cambiar el \"Garantía En\" token arriba para encontrar menores comisiones"
 
-#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
 msgid "You can change this in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are volatile."
 msgstr "Puedes cambiar esto en el menú de ajustes en la esquina superior derecha.<0/><1/>Nótese que un bajo deslizamiento permitido, p.e. menor de 0.5%, puede resultar en órdenes fallidas si los precios son volátiles."
