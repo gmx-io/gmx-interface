@@ -1010,8 +1010,28 @@ table.Exchange-list-small td {
   .Exchange-swap-box .TokenSelector .Modal {
     margin: 0 0.5rem;
   }
+
+  .Exchange-swap-info-group {
+    display: grid;
+    grid-gap: 1rem;
+  }
+
+  .Exchange-swap-box {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    grid-gap: 1rem;
+  }
+  .Exchange-swap-market-box {
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 800px) {
   .Useful-links-swapbox {
     display: none;
+  }
+  .Exchange-swap-box {
+    grid-template-columns: 1fr;
   }
   .Useful-links-exchange {
     display: block;
