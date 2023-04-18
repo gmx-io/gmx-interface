@@ -139,17 +139,3 @@ export function numberWithCommas(x: BigNumberish) {
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   return parts.join(".");
 }
-
-export function sortBigNumberArray(array, key, ascending = true) {
-  return array.sort((a, b) => {
-    const aValue = BigNumber.from(a[key]);
-    const bValue = BigNumber.from(b[key]);
-    if (aValue.lt(bValue)) {
-      return ascending ? -1 : 1;
-    } else if (aValue.gt(bValue)) {
-      return ascending ? -1 : 1;
-    } else {
-      return 0;
-    }
-  });
-}

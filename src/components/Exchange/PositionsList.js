@@ -25,7 +25,7 @@ import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import NetValueTooltip from "./NetValueTooltip";
 import { helperToast } from "lib/helperToast";
 import { getUsd } from "domain/tokens/utils";
-import { bigNumberify, formatAmount, sortBigNumberArray } from "lib/numbers";
+import { bigNumberify, formatAmount } from "lib/numbers";
 import { AiOutlineEdit } from "react-icons/ai";
 import useAccountType, { AccountType } from "lib/wallets/useAccountType";
 
@@ -372,7 +372,7 @@ export default function PositionsList(props) {
                       </div>
                       <div>
                         {positionOrders.length === 0 && "None"}
-                        {sortBigNumberArray(positionOrders, "triggerPrice").map((order) => {
+                        {positionOrders.map((order) => {
                           const orderText = () => (
                             <>
                               {order.triggerAboveThreshold ? ">" : "<"} {formatAmount(order.triggerPrice, 30, 2, true)}:
