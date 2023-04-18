@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import cx from "classnames";
 
 import "./Tooltip.css";
@@ -47,7 +47,7 @@ export default function TooltipWithPortal(props: Props) {
       setCoords({
         height: rect.height,
         width: rect.width,
-        left: rect.x + window.scrollX,
+        left: rect.x,
         top: rect.y + window.scrollY,
       });
       if (props.fitHandleWidth) {
@@ -55,21 +55,6 @@ export default function TooltipWithPortal(props: Props) {
       }
     }
   }, [handlerRef, props.fitHandleWidth]);
-
-  const handleScroll = useCallback(() => {
-    updateTooltipCoords();
-  }, [updateTooltipCoords]);
-
-  useEffect(() => {
-    if (!props.isInsideModal) return;
-    const element = document.querySelector(".Modal-body");
-
-    element?.addEventListener("scroll", handleScroll);
-
-    return () => {
-      element?.removeEventListener("scroll", handleScroll);
-    };
-  }, [handleScroll, props.isInsideModal]);
 
   const onMouseEnter = useCallback(() => {
     if (trigger !== "hover" || IS_TOUCH) return;

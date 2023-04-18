@@ -34,7 +34,6 @@ import Button from "components/Button/Button";
 import FeesTooltip from "./FeesTooltip";
 import { getTokenInfo, getUsd } from "domain/tokens";
 import SlippageInput from "./SlippageInput";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 
@@ -60,19 +59,20 @@ function renderAllowedSlippage(allowedSlippage) {
   return (
     <ExchangeInfoRow
       label={
-        <TooltipWithPortal
+        <Tooltip
           handle={t`Allowed Slippage`}
           position="left-top"
-          isInsideModal
           renderContent={() => {
             return (
-              <Trans>
-                You can edit the default Allowed Slippage in the settings menu on the top right of the page.
-                <br />
-                <br />
-                Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are
-                volatile.
-              </Trans>
+              <div className="text-white">
+                <Trans>
+                  You can edit the default Allowed Slippage in the settings menu on the top right of the page.
+                  <br />
+                  <br />
+                  Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are
+                  volatile.
+                </Trans>
+              </div>
             );
           }}
         />
