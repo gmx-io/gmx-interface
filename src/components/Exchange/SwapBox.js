@@ -2282,7 +2282,7 @@ export default function SwapBox(props) {
                       }}
                       positionFee={positionFee}
                       swapFee={swapFees}
-                      titleText={<Trans>{collateralToken.symbol} is required for collateral.</Trans>}
+                      titleText={swapFees && <Trans>{collateralToken.symbol} is required for collateral.</Trans>}
                     />
                   )}
                 </div>
