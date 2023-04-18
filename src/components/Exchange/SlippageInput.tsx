@@ -3,9 +3,10 @@ import "./SlippageInput.scss";
 import { useState } from "react";
 import cx from "classnames";
 
-const MAX_SLIPPAGE = 100 * 100;
+const MAX_SLIPPAGE = 99 * 100;
+const HIGH_SLIPPAGE = 1 * 100;
 
-export default function SlippageInput({ placeholderValue, update }) {
+export default function SlippageInput({ placeholderValue }) {
   const placeHolderValue = formatAmount(placeholderValue, 2, 2);
 
   const [slippageInput, setSlippageInput] = useState<number | string>(placeHolderValue);
@@ -25,8 +26,13 @@ export default function SlippageInput({ placeholderValue, update }) {
       return;
     }
 
+    if (parsedValue >= HIGH_SLIPPAGE) {
+      setSlippageError("Slippage is too high");
+    }
+
     if (parsedValue >= MAX_SLIPPAGE) {
-      setSlippageError("Slippage must be less than 100%");
+      setSlippageError("Max slippage can be 100%");
+      setSlippageInput(MAX_SLIPPAGE / 100);
       return;
     }
 

@@ -34,6 +34,7 @@ import Button from "components/Button/Button";
 import FeesTooltip from "./FeesTooltip";
 import { getTokenInfo, getUsd } from "domain/tokens";
 import SlippageInput from "./SlippageInput";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 
@@ -55,24 +56,29 @@ function getSwapSpreadInfo(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddres
   }
 }
 
-function renderAllowedSlippage(allowedSlippage, setSavedSlippageAmount) {
+function renderAllowedSlippage(allowedSlippage) {
   return (
-    <ExchangeInfoRow label={t`Allowed Slippage`}>
-      {/* <Tooltip
-        handle={`${formatAmount(allowedSlippage, 2, 2)}%`}
-        position="right-bottom"
-        renderContent={() => {
-          return (
-            <Trans>
-              You can change this in the settings menu on the top right of the page.
-              <br />
-              <br />
-              Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are volatile.
-            </Trans>
-          );
-        }}
-      /> */}
-      <SlippageInput placeholderValue={allowedSlippage} update={setSavedSlippageAmount} />
+    <ExchangeInfoRow
+      label={
+        <TooltipWithPortal
+          handle={t`Allowed Slippage`}
+          position="left-top"
+          isInsideModal
+          renderContent={() => {
+            return (
+              <Trans>
+                You can edit the default Allowed Slippage in the settings menu on the top right of the page.
+                <br />
+                <br />
+                Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are
+                volatile.
+              </Trans>
+            );
+          }}
+        />
+      }
+    >
+      <SlippageInput placeholderValue={allowedSlippage} />
     </ExchangeInfoRow>
   );
 }
@@ -123,10 +129,7 @@ export default function ConfirmationBox(props) {
     infoTokens,
   } = props;
 
-  const [savedSlippageAmount, setSavedSlippageAmount] = useLocalStorageSerializeKey(
-    [chainId, SLIPPAGE_BPS_KEY],
-    DEFAULT_SLIPPAGE_AMOUNT
-  );
+  const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
   const [isProfitWarningAccepted, setIsProfitWarningAccepted] = useState(false);
   const [isTriggerWarningAccepted, setIsTriggerWarningAccepted] = useState(false);
   const [isLimitOrdersVisible, setIsLimitOrdersVisible] = useState(false);
@@ -654,7 +657,7 @@ export default function ConfirmationBox(props) {
               </Checkbox>
             </div>
           )} */}
-          {renderAllowedSlippage(allowedSlippage, setSavedSlippageAmount)}
+          {renderAllowedSlippage(allowedSlippage)}
           {showCollateralSpread && (
             <ExchangeInfoRow label={t`Collateral Spread`} isWarning={collateralSpreadInfo.isHigh} isTop>
               {formatAmount(collateralSpreadInfo.value.mul(100), USD_DECIMALS, 2, true)}%
@@ -794,7 +797,7 @@ export default function ConfirmationBox(props) {
           </ExchangeInfoRow>
         )}
         {orderOption === LIMIT && renderAvailableLiquidity()}
-        {renderAllowedSlippage(allowedSlippage, setSavedSlippageAmount)}
+        {renderAllowedSlippage(allowedSlippage)}
         <ExchangeInfoRow label={t`Mark Price`} isTop>
           {getExchangeRateDisplay(getExchangeRate(fromTokenInfo, toTokenInfo), fromTokenInfo, toTokenInfo)}
         </ExchangeInfoRow>

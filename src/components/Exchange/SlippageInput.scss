@@ -2,14 +2,15 @@
   border: 1px solid var(--dark-blue-border);
   border-radius: var(--border-radius-sm);
   padding-right: 0.5rem;
+  line-height: 1;
 
   &.input-error {
-    border-color: #fa3c58;
+    border-color: #f3b50e;
   }
   input {
-    width: 5rem;
-    padding: 0.25rem 0.75rem;
-    font-size: 1.4rem;
+    width: 4rem;
+    padding: 0.1rem 0.55rem;
+    font-size: 1.2rem;
     border-radius: 4px;
   }
 }

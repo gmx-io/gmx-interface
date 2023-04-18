@@ -3789,6 +3789,10 @@ msgstr "Du kannst deine Claim-Historie <0>hier</0> einsehen."
 msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
 msgstr "Du kannst derzeit maximal {0} esGMX-Token in einem Verhältnis von {1} {stakingToken} zu 1 esGMX übertragen."
 
+#: src/components/Exchange/ConfirmationBox.js
+msgid "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are volatile."
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer AVAX from other networks to Avalanche using any of the below options:"
 msgstr ""
