@@ -612,7 +612,8 @@ export default function GlpSwap(props) {
       });
   };
 
-  const onClickPrimary = () => {
+  const onClickPrimary = (e) => {
+    e.preventDefault();
     if (!active) {
       connectWallet();
       return;

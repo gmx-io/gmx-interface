@@ -1646,7 +1646,8 @@ export default function SwapBox(props) {
     });
   }
 
-  const onClickPrimary = () => {
+  const onClickPrimary = (e) => {
+    e.preventDefault();
     if (isStopOrder) {
       setOrderOption(MARKET);
       return;
