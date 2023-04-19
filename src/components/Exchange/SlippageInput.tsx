@@ -14,7 +14,7 @@ function getSlippageText(value: number) {
 export default function SlippageInput({ setAllowedSlippage, defaultSlippage }) {
   const [slippageText, setSlippageText] = useState(getSlippageText(defaultSlippage));
   const [slippageError, setSlippageError] = useState("");
-  const [isPanelVisible, setIsPanelVisible] = useState(true);
+  const [isPanelVisible, setIsPanelVisible] = useState(false);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     setSlippageError("");

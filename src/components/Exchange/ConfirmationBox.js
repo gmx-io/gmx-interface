@@ -652,16 +652,7 @@ export default function ConfirmationBox(props) {
             {!toAmount && leverage && leverage.gt(0) && `-`}
             {leverage && leverage.eq(0) && `-`}
           </ExchangeInfoRow>
-          {/* {isMarketOrder && (
-            <div className="PositionEditor-allow-higher-slippage">
-              <Checkbox isChecked={isHigherSlippageAllowed} setIsChecked={setIsHigherSlippageAllowed}>
-                <span className="muted font-sm">
-                  <Trans>Allow up to 1% slippage</Trans>
-                </span>
-              </Checkbox>
-            </div>
-          )} */}
-          {renderAllowedSlippage(setAllowedSlippage, savedSlippageAmount)}
+          {isMarketOrder && renderAllowedSlippage(setAllowedSlippage, savedSlippageAmount)}
           {showCollateralSpread && (
             <ExchangeInfoRow label={t`Collateral Spread`} isWarning={collateralSpreadInfo.isHigh} isTop>
               {formatAmount(collateralSpreadInfo.value.mul(100), USD_DECIMALS, 2, true)}%
@@ -801,7 +792,7 @@ export default function ConfirmationBox(props) {
           </ExchangeInfoRow>
         )}
         {orderOption === LIMIT && renderAvailableLiquidity()}
-        {renderAllowedSlippage(setAllowedSlippage, savedSlippageAmount)}
+        {isMarketOrder && renderAllowedSlippage(setAllowedSlippage, savedSlippageAmount)}
         <ExchangeInfoRow label={t`Mark Price`} isTop>
           {getExchangeRateDisplay(getExchangeRate(fromTokenInfo, toTokenInfo), fromTokenInfo, toTokenInfo)}
         </ExchangeInfoRow>
