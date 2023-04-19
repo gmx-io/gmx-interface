@@ -25,11 +25,19 @@ export type MarketInfo = Market &
     longPoolAmount: BigNumber;
     shortPoolAmount: BigNumber;
 
+    longPoolAmountAdjustment: BigNumber;
+    shortPoolAmountAdjustment: BigNumber;
+
+    poolValueMax: BigNumber;
+    poolValueMin: BigNumber;
+
     reserveFactorLong: BigNumber;
     reserveFactorShort: BigNumber;
 
     totalBorrowingLong: BigNumber;
     totalBorrowingShort: BigNumber;
+
+    totalBorrowingFees: BigNumber;
 
     cummulativeBorrowingFactorLong: BigNumber;
     cummulativeBorrowingFactorShort: BigNumber;
@@ -50,10 +58,13 @@ export type MarketInfo = Market &
     maxPnlFactorForDepositsLong: BigNumber;
     maxPnlFactorForDepositsShort: BigNumber;
 
-    pnlLongMax: BigNumber;
     pnlLongMin: BigNumber;
-    pnlShortMax: BigNumber;
+    pnlLongMax: BigNumber;
     pnlShortMin: BigNumber;
+    pnlShortMax: BigNumber;
+
+    netPnlMin: BigNumber;
+    netPnlMax: BigNumber;
 
     claimableFundingAmountLong?: BigNumber;
     claimableFundingAmountShort?: BigNumber;

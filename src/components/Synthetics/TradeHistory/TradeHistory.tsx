@@ -16,10 +16,10 @@ export function TradeHistory(p: Props) {
   const { chainId } = useChainId();
   const [pageIndex, setPageIndex] = useState(0);
 
-  const { minCollateralUsd, maxLeverage } = usePositionsConstants(chainId);
+  const { minCollateralUsd } = usePositionsConstants(chainId);
   const { tradeActions, isLoading: isHistoryLoading } = useTradeHistory(chainId, { pageIndex, pageSize: PAGE_SIZE });
 
-  const isLoading = !minCollateralUsd || !maxLeverage || isHistoryLoading;
+  const isLoading = !minCollateralUsd || isHistoryLoading;
 
   const isEmpty = !isLoading && !tradeActions?.length;
 
@@ -37,12 +37,7 @@ export function TradeHistory(p: Props) {
       )}
       {!isLoading &&
         tradeActions?.map((tradeAction) => (
-          <TradeHistoryRow
-            key={tradeAction.id}
-            tradeAction={tradeAction}
-            minCollateralUsd={minCollateralUsd!}
-            maxLeverage={maxLeverage!}
-          />
+          <TradeHistoryRow key={tradeAction.id} tradeAction={tradeAction} minCollateralUsd={minCollateralUsd!} />
         ))}
       {shouldShowPaginationButtons && (
         <div>

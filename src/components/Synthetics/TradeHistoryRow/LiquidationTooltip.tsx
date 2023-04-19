@@ -4,17 +4,18 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { PositionTradeAction } from "domain/synthetics/tradeHistory";
 import { BigNumber } from "ethers";
-import { BASIS_POINTS_DIVISOR } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR, PRECISION } from "lib/legacy";
 import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 
 type Props = {
   tradeAction: PositionTradeAction;
   minCollateralUsd: BigNumber;
-  maxLeverage: BigNumber;
 };
 
 export function LiquidationTooltip(p: Props) {
-  const { tradeAction, minCollateralUsd, maxLeverage } = p;
+  const { tradeAction, minCollateralUsd } = p;
+
+  const maxLeverage = PRECISION.div(tradeAction.marketInfo.minCollateralFactor);
 
   const {
     initialCollateralToken,

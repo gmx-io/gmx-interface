@@ -1,6 +1,7 @@
 import { MarketInfo } from "domain/synthetics/markets";
 import { BigNumber } from "ethers";
 import { TokenData } from "../tokens";
+import { TriggerThresholdType } from "../trade";
 
 export enum OrderType {
   // the order will be cancelled if the minOutputAmount cannot be fulfilled
@@ -27,11 +28,6 @@ export enum DecreasePositionSwapType {
   NoSwap = 0,
   SwapPnlTokenToCollateralToken = 1,
   SwapCollateralTokenToPnlToken = 2,
-}
-
-export enum TriggerThresholdType {
-  Above = ">",
-  Below = "<",
 }
 
 export type Order = {

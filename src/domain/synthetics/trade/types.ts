@@ -1,8 +1,6 @@
 import { BigNumber } from "ethers";
-import { FeeItem, SwapFeeItem } from "../fees";
-import { TokenData, TokensRatio } from "../tokens";
-import { MarketInfo } from "../markets";
-import { TriggerThresholdType } from "../orders";
+import { FeeItem, SwapFeeItem } from "domain/synthetics/fees";
+import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 
 export enum TradeType {
   Long = "Long",
@@ -16,26 +14,10 @@ export enum TradeMode {
   Trigger = "Trigger",
 }
 
-export type DepositAmounts = {
-  marketTokenAmount: BigNumber;
-  marketTokenUsd: BigNumber;
-  longTokenAmount?: BigNumber;
-  longTokenUsd?: BigNumber;
-  shortTokenAmount?: BigNumber;
-  shortTokenUsd?: BigNumber;
-  swapFeeUsd: BigNumber;
-  swapPriceImpactDeltaUsd: BigNumber;
-};
-
-export type WithdrawalAmounts = {
-  marketTokenAmount: BigNumber;
-  marketTokenUsd: BigNumber;
-  longTokenAmount: BigNumber;
-  shortTokenAmount: BigNumber;
-  longTokenUsd: BigNumber;
-  shortTokenUsd: BigNumber;
-  swapFeeUsd: BigNumber;
-};
+export enum TriggerThresholdType {
+  Above = ">",
+  Below = "<",
+}
 
 export type SwapAmounts = {
   amountIn: BigNumber;
@@ -58,12 +40,13 @@ export type IncreasePositionAmounts = {
   swapPathStats: SwapPathStats | undefined;
   positionFeeUsd: BigNumber;
   positionPriceImpactDeltaUsd: BigNumber;
+  markPrice: BigNumber;
   entryPrice: BigNumber;
+  triggerPrice?: BigNumber;
   initialCollateralPrice: BigNumber;
   collateralPrice: BigNumber;
   acceptablePrice: BigNumber | undefined;
   acceptablePriceImpactBps: BigNumber | undefined;
-  acceptablePriceAfterSlippage: BigNumber | undefined;
 };
 
 export type DecreasePositionAmounts = {
@@ -76,39 +59,38 @@ export type DecreasePositionAmounts = {
   receiveUsd: BigNumber;
   positionFeeUsd: BigNumber;
   positionPriceImpactDeltaUsd: BigNumber;
+  // Mark price or trigger price
   exitPrice: BigNumber;
+  // The pnl including exitPrice
+  exitPnl: BigNumber;
+  exitPnlPercentage: BigNumber;
   triggerPrice?: BigNumber;
+  triggerOrderType?: OrderType.LimitDecrease | OrderType.StopLossDecrease;
   triggerPricePrefix?: TriggerThresholdType;
+  decreaseSwapType: DecreasePositionSwapType;
   acceptablePrice: BigNumber | undefined;
   acceptablePriceImpactBps: BigNumber | undefined;
-  acceptablePriceAfterSlippage: BigNumber | undefined;
 };
 
-export type SwapTradeParams = SwapAmounts & {
-  tokenIn: TokenData;
-  tokenOut: TokenData;
-  tokenInPrice: BigNumber;
-  tokenOutPrice: BigNumber;
-  triggerRatio?: TokensRatio;
-  minOutputAmount: BigNumber;
-  fees?: TradeFees;
+export type DepositAmounts = {
+  marketTokenAmount: BigNumber;
+  marketTokenUsd: BigNumber;
+  longTokenAmount?: BigNumber;
+  longTokenUsd?: BigNumber;
+  shortTokenAmount?: BigNumber;
+  shortTokenUsd?: BigNumber;
+  swapFeeUsd: BigNumber;
+  swapPriceImpactDeltaUsd: BigNumber;
 };
 
-export type IncreasePositionTradeParams = IncreasePositionAmounts & {
-  initialCollateralToken: TokenData;
-  collateralToken: TokenData;
-  market: MarketInfo;
-  isLong: boolean;
-  nextPositionValues?: NextPositionValues;
-  fees?: TradeFees;
-};
-
-export type DecreasePositionTradeParams = DecreasePositionAmounts & {
-  market: MarketInfo;
-  collateralToken: TokenData;
-  receiveToken: TokenData;
-  nextPositionValues?: NextPositionValues;
-  fees?: TradeFees;
+export type WithdrawalAmounts = {
+  marketTokenAmount: BigNumber;
+  marketTokenUsd: BigNumber;
+  longTokenAmount: BigNumber;
+  shortTokenAmount: BigNumber;
+  longTokenUsd: BigNumber;
+  shortTokenUsd: BigNumber;
+  swapFeeUsd: BigNumber;
 };
 
 export type NextPositionValues = {
@@ -117,6 +99,7 @@ export type NextPositionValues = {
   nextCollateralUsd?: BigNumber;
   nextSizeUsd?: BigNumber;
   nextPnl?: BigNumber;
+  nextPnlPercentage?: BigNumber;
   nextEntryPrice?: BigNumber;
 };
 
@@ -170,6 +153,8 @@ export type SwapEstimator = (
 };
 
 export type FindSwapPath = (usdIn: BigNumber, opts: { shouldApplyPriceImpact: boolean }) => SwapPathStats | undefined;
+
+export type TradeFeesType = "swap" | "increase" | "decrease" | "edit";
 
 export type TradeFees = {
   totalFees?: FeeItem;

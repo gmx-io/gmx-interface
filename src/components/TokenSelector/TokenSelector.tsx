@@ -124,7 +124,8 @@ export default function TokenSelector(props: Props) {
         <div className="TokenSelector-tokens">
           {filteredTokens.map((token, tokenIndex) => {
             const tokenPopupImage = importImage(`ic_${token.symbol.toLowerCase()}_40.svg`);
-            let info = infoTokens ? infoTokens[token.address] : ({} as TokenInfo);
+            let info = infoTokens?.[token.address] || ({} as TokenInfo);
+
             let mintAmount;
             let balance = info.balance;
             if (showMintingCap && mintingCap && info.usdgAmount) {

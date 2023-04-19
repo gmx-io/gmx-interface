@@ -14,8 +14,8 @@ export type TokenData = Token & {
 
 export type TokensRatio = {
   ratio: BigNumber;
-  largestAddress: string;
-  smallestAddress: string;
+  largestToken: Token;
+  smallestToken: Token;
 };
 
 export type TokenBalancesData = {

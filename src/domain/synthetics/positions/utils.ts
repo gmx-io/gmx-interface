@@ -72,7 +72,7 @@ export function getPositionPnlUsd(p: {
     return totalPnl;
   }
 
-  const poolPnl = p.isLong ? p.marketInfo.pnlLongMax : p.marketInfo.pnlShortMax;
+  const poolPnl = isLong ? p.marketInfo.pnlLongMax : p.marketInfo.pnlShortMax;
   const poolUsd = getPoolUsd(marketInfo, isLong, "minPrice");
 
   const cappedPnl = getCappedPoolPnl({

@@ -3,7 +3,7 @@ import cx from "classnames";
 import PositionDropdown from "components/Exchange/PositionDropdown";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
-import { PositionOrderInfo, getTriggerPricePrefixForOrder, isIncreaseOrderType } from "domain/synthetics/orders";
+import { PositionOrderInfo, isIncreaseOrderType } from "domain/synthetics/orders";
 import { PositionInfo, formatLeverage } from "domain/synthetics/positions";
 import { formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
 import { AiOutlineEdit } from "react-icons/ai";
@@ -11,6 +11,7 @@ import { ImSpinner2 } from "react-icons/im";
 
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/fees";
 import "./PositionItem.scss";
+import { getTriggerThresholdType } from "domain/synthetics/trade";
 
 export type Props = {
   position: PositionInfo;
@@ -97,9 +98,21 @@ export function PositionItem(p: Props) {
                   )}
                   <StatsTooltipRow
                     label={t`Initial Collateral`}
-                    value={formatUsd(p.position.initialCollateralUsd) || "..."}
+                    value={
+                      <>
+                        <div>
+                          {formatTokenAmount(
+                            p.position.collateralAmount,
+                            p.position.collateralToken?.decimals,
+                            p.position.collateralToken?.symbol
+                          )}
+                          <br />({formatUsd(p.position.initialCollateralUsd)})
+                        </div>
+                      </>
+                    }
                     showDollar={false}
                   />
+                  <br />
                   <StatsTooltipRow
                     label={t`Borrow Fee`}
                     showDollar={false}
@@ -131,12 +144,6 @@ export function PositionItem(p: Props) {
                     )}
                   />
                   <br />
-                  <StatsTooltipRow
-                    label={t`Collateral In`}
-                    value={p.position.collateralToken?.symbol || "..."}
-                    showDollar={false}
-                  />
-                  <br />
                   <Trans>Use the Edit Collateral icon to deposit or withdraw collateral.</Trans>
                 </>
               );
@@ -155,7 +162,7 @@ export function PositionItem(p: Props) {
 
         <div className="Exchange-list-info-label Position-collateral-amount  muted">
           {formatTokenAmount(
-            p.position.collateralAmount,
+            p.position.remainingCollateralAmount,
             p.position.collateralToken?.decimals,
             p.position.collateralToken?.symbol
           )}
@@ -198,7 +205,7 @@ export function PositionItem(p: Props) {
                 {positionOrders.map((order) => {
                   return (
                     <div key={order.key} className="Position-list-order active-order-tooltip">
-                      {getTriggerPricePrefixForOrder(order.orderType, order.isLong)} {formatUsd(order.triggerPrice)}:
+                      {getTriggerThresholdType(order.orderType, order.isLong)} {formatUsd(order.triggerPrice)}:
                       {isIncreaseOrderType(order.orderType) ? "+" : "-"}
                       {formatUsd(order.sizeDeltaUsd)}
                     </div>

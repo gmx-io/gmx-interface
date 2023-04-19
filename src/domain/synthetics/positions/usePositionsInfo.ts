@@ -4,7 +4,7 @@ import { getByKey } from "lib/objects";
 import { useMemo } from "react";
 import { getPositionFee } from "../fees";
 import { useMarketsInfo } from "../markets";
-import { convertToUsd, useAvailableTokensData } from "../tokens";
+import { convertToTokenAmount, convertToUsd, useAvailableTokensData } from "../tokens";
 import { PositionsInfoData } from "./types";
 import { useOptimisticPositions } from "./useOptimisticPositions";
 import { usePositionsConstants } from "./usePositionsConstants";
@@ -17,6 +17,7 @@ import {
   getPositionPnlUsd,
 } from "./utils";
 import { getMarkPrice } from "../trade";
+import { getBasisPoints } from "lib/numbers";
 
 type PositionsInfoResult = {
   positionsInfoData?: PositionsInfoData;
@@ -82,6 +83,11 @@ export function usePositionsInfo(chainId: number, p: { showPnlInLeverage: boolea
           collateralMarkPrice
         )!;
         const remainingCollateralUsd = initialCollateralUsd.sub(totalPendingFeesUsd);
+        const remainingCollateralAmount = convertToTokenAmount(
+          remainingCollateralUsd,
+          collateralToken.decimals,
+          collateralMarkPrice
+        )!;
 
         const pnl = getPositionPnlUsd({
           marketInfo: marketInfo,
@@ -93,7 +99,7 @@ export function usePositionsInfo(chainId: number, p: { showPnlInLeverage: boolea
 
         const pnlPercentage =
           initialCollateralUsd && !initialCollateralUsd.eq(0)
-            ? pnl.mul(BASIS_POINTS_DIVISOR).div(initialCollateralUsd)
+            ? getBasisPoints(pnl, initialCollateralUsd)
             : BigNumber.from(0);
 
         const netValue = getPositionNetValue({
@@ -148,6 +154,7 @@ export function usePositionsInfo(chainId: number, p: { showPnlInLeverage: boolea
           liquidationPrice,
           initialCollateralUsd,
           remainingCollateralUsd,
+          remainingCollateralAmount,
           hasLowCollateral,
           leverage,
           pnl,

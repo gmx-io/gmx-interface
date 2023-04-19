@@ -364,6 +364,15 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
     },
+    {
+      name: "Tether",
+      symbol: "USDT",
+      decimals: 18,
+      address: "0x6931eC3E364245E6d093aFA1F2e96cCe3F17538b",
+      isStable: true,
+      coingeckoUrl: "https://www.coingecko.com/en/coins/tether",
+      imageUrl: "https://assets.coingecko.com/coins/images/325/small/Tether-logo.png",
+    },
   ],
 };
 

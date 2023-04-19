@@ -1,3 +1,9 @@
+.GmConfirmationBox {
+  .Modal-body {
+    overflow-x: hidden;
+  }
+}
+
 .GmConfirmationBox-main {
   display: flex;
   flex-direction: column;

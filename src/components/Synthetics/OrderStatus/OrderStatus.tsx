@@ -11,6 +11,7 @@ import { useChainId } from "lib/chains";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useEffect, useState } from "react";
+import "./OrderStatus.scss";
 
 type Props = {
   orderType: OrderType;

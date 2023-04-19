@@ -7,8 +7,8 @@ type Props = {
   onSelectPositionClick: (key: string) => void;
   onClosePositionClick: (key: string) => void;
   onEditCollateralClick: (key: string) => void;
-  positionsData: PositionsInfoData;
-  ordersData: OrdersInfoData;
+  positionsData?: PositionsInfoData;
+  ordersData?: OrdersInfoData;
   savedIsPnlInLeverage: boolean;
   isLoading: boolean;
   onOrdersClick: () => void;
@@ -16,8 +16,8 @@ type Props = {
 };
 
 export function PositionList(p: Props) {
-  const positions = Object.values(p.positionsData);
-  const orders = Object.values(p.ordersData);
+  const positions = Object.values(p.positionsData || {});
+  const orders = Object.values(p.ordersData || {});
   const isDataLoading = p.isLoading;
 
   return (

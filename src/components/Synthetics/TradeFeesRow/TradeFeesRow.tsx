@@ -8,6 +8,7 @@ import { ExecutionFee, FeeItem, SwapFeeItem } from "domain/synthetics/fees";
 import { useChainId } from "lib/chains";
 import { formatDeltaUsd, formatPercentage, formatTokenAmountWithUsd } from "lib/numbers";
 import { ReactNode, useMemo } from "react";
+import { TradeFeesType } from "domain/synthetics/trade";
 import "./TradeFeesRow.scss";
 
 type Props = {
@@ -23,7 +24,7 @@ type Props = {
   fundingFeeRateStr?: string;
   isTop?: boolean;
   showOnZeroTradeFee?: boolean;
-  feesType: "open" | "close" | "edit" | "swap";
+  feesType: TradeFeesType;
 };
 
 type FeeRow = {
@@ -84,7 +85,7 @@ export function TradeFeesRow(p: Props) {
           id: "positionFee",
           label: (
             <>
-              <div>{p.feesType === "open" ? t`Open Fee` : t`Close Fee`}:</div>
+              <div>{p.feesType === "increase" ? t`Open Fee` : t`Close Fee`}:</div>
               <div>({formatPercentage(p.positionFee.bps.abs())} of position size)</div>
             </>
           ),
@@ -142,7 +143,7 @@ export function TradeFeesRow(p: Props) {
       return [swapPriceImpactRow, ...swapFeeRows, executionFeeRow].filter(Boolean) as FeeRow[];
     }
 
-    if (p.feesType === "open") {
+    if (p.feesType === "increase") {
       return [
         positionPriceImpactRow,
         swapPriceImpactRow,
@@ -156,7 +157,7 @@ export function TradeFeesRow(p: Props) {
       ].filter(Boolean) as FeeRow[];
     }
 
-    if (p.feesType === "close") {
+    if (p.feesType === "decrease") {
       return [
         positionPriceImpactRow,
         swapPriceImpactRow,
@@ -169,7 +170,7 @@ export function TradeFeesRow(p: Props) {
     }
 
     if (p.feesType === "edit") {
-      return [executionFeeRow].filter(Boolean) as FeeRow[];
+      return [borrowFeeRow, fundingFeeRow, executionFeeRow].filter(Boolean) as FeeRow[];
     }
 
     return [];
@@ -195,12 +196,8 @@ export function TradeFeesRow(p: Props) {
   ]);
 
   const totalFeeUsd = useMemo(() => {
-    if (p.feesType === "edit") {
-      return p.executionFee?.feeUsd.mul(-1);
-    }
-
     return p.totalTradeFees?.deltaUsd.sub(p.executionFee?.feeUsd || 0);
-  }, [p.executionFee, p.feesType, p.totalTradeFees]);
+  }, [p.executionFee, p.totalTradeFees]);
 
   return (
     <ExchangeInfoRow

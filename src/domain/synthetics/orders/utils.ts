@@ -2,7 +2,7 @@ import { t } from "@lingui/macro";
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
-import { OrderInfo, OrderType, PositionOrderInfo, TriggerThresholdType } from "./types";
+import { OrderInfo, OrderType, PositionOrderInfo } from "./types";
 import { parsePositionKey } from "../positions";
 
 export function isVisibleOrder(orderType: OrderType) {
@@ -107,31 +107,4 @@ export function getOrderTypeLabel(orderType: OrderType) {
   };
 
   return orderTypeLabels[orderType];
-}
-
-export function getTriggerDecreaseOrderType(p: { isLong: boolean; isTriggerAboveMarkPrice: boolean }) {
-  if (p.isLong) {
-    return p.isTriggerAboveMarkPrice ? OrderType.LimitDecrease : OrderType.StopLossDecrease;
-  } else {
-    return p.isTriggerAboveMarkPrice ? OrderType.LimitDecrease : OrderType.StopLossDecrease;
-  }
-}
-
-export function getTriggerPricePrefixForOrder(orderType: OrderType, isLong: boolean) {
-  return isTriggerPriceAboveThreshold(orderType, isLong) ? TriggerThresholdType.Above : TriggerThresholdType.Below;
-}
-
-export function isTriggerPriceAboveThreshold(orderType: OrderType, isLong: boolean) {
-  if (orderType === OrderType.LimitIncrease) {
-    return !isLong;
-  }
-
-  if (orderType === OrderType.StopLossDecrease) {
-    return isLong;
-  }
-
-  // Take-profit
-  if (orderType === OrderType.LimitDecrease) {
-    return isLong;
-  }
 }

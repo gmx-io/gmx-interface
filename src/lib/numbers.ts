@@ -119,8 +119,8 @@ export const formatAmountFree = (amount: BigNumberish, tokenDecimals: number, di
   return trimZeroDecimals(amountStr);
 };
 
-export function formatUsd(usd?: BigNumber, opts: { fallbackToZero?: boolean } = {}) {
-  const { fallbackToZero = false } = opts;
+export function formatUsd(usd?: BigNumber, opts: { fallbackToZero?: boolean; displayDecimals?: number } = {}) {
+  const { fallbackToZero = false, displayDecimals = 2 } = opts;
 
   if (!usd) {
     if (fallbackToZero) {
@@ -132,7 +132,7 @@ export function formatUsd(usd?: BigNumber, opts: { fallbackToZero?: boolean } = 
 
   const sign = usd.lt(0) ? "-" : "";
 
-  return `${sign}$${formatAmount(usd.abs(), USD_DECIMALS, 2, true)}`;
+  return `${sign}$${formatAmount(usd.abs(), USD_DECIMALS, displayDecimals, true)}`;
 }
 
 export function formatDeltaUsd(deltaUsd?: BigNumber, percentage?: BigNumber, opts: { fallbackToZero?: boolean } = {}) {
@@ -154,16 +154,24 @@ export function formatDeltaUsd(deltaUsd?: BigNumber, percentage?: BigNumber, opt
   return `${sign}${formatUsd(deltaUsd.abs())}${percentageStr}`;
 }
 
-export function formatPercentage(percentage?: BigNumber, opts: { fallbackToZero?: boolean } = {}) {
+export function formatPercentage(percentage?: BigNumber, opts: { fallbackToZero?: boolean; signed?: boolean } = {}) {
+  const { fallbackToZero = false, signed = false } = opts;
+
   if (!percentage) {
-    if (opts.fallbackToZero) {
+    if (fallbackToZero) {
       return `${formatAmount(BigNumber.from(0), 2, 2)}%`;
     }
 
     return undefined;
   }
 
-  return `${formatAmount(percentage, 2, 2)}%`;
+  let sign = "";
+
+  if (signed && !percentage.eq(0)) {
+    sign = percentage?.gt(0) ? "+" : "-";
+  }
+
+  return `${sign}${formatAmount(percentage.abs(), 2, 2)}%`;
 }
 
 export function formatTokenAmount(
@@ -174,9 +182,10 @@ export function formatTokenAmount(
     showAllSignificant?: boolean;
     displayDecimals?: number;
     fallbackToZero?: boolean;
+    useCommas?: boolean;
   } = {}
 ) {
-  const { displayDecimals = 4, showAllSignificant = false, fallbackToZero = false } = opts;
+  const { displayDecimals = 4, showAllSignificant = false, fallbackToZero = false, useCommas = false } = opts;
 
   const symbolStr = symbol ? ` ${symbol}` : "";
 
@@ -191,7 +200,7 @@ export function formatTokenAmount(
 
   const formattedAmount = showAllSignificant
     ? formatAmountFree(amount, tokenDecimals, tokenDecimals)
-    : formatAmount(amount, tokenDecimals, displayDecimals);
+    : formatAmount(amount, tokenDecimals, displayDecimals, useCommas);
 
   return `${formattedAmount}${symbolStr}`;
 }
@@ -212,7 +221,13 @@ export function formatTokenAmountWithUsd(
     }
   }
 
-  return `${formatTokenAmount(tokenAmount, tokenDecimals, tokenSymbol, opts)} (${formatUsd(usdAmount, opts)})`;
+  const tokenStr = formatTokenAmount(tokenAmount, tokenDecimals, tokenSymbol, opts);
+
+  const usdStr = formatUsd(usdAmount, {
+    fallbackToZero: opts.fallbackToZero,
+  });
+
+  return `${tokenStr} (${usdStr})`;
 }
 
 export const parseValue = (value: string, tokenDecimals: number) => {

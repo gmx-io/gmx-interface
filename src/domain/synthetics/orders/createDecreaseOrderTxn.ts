@@ -26,7 +26,8 @@ export type DecreaseOrderParams = {
   indexTokenAddress: string;
   receiveTokenAddress: string;
   triggerPrice?: BigNumber;
-  sizeDeltaUsd?: BigNumber;
+  sizeDeltaUsd: BigNumber;
+  minOutputUsd: BigNumber;
   isLong: boolean;
   acceptablePrice: BigNumber;
   decreasePositionSwapType: DecreasePositionSwapType;
@@ -51,9 +52,6 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
 
   const wntAmount = p.executionFee;
 
-  // TODO min outputUsd
-  const minOutputUsd = BigNumber.from(0);
-
   const multicall = [
     { method: "sendWnt", params: [orderVaultAddress, wntAmount] },
 
@@ -75,7 +73,7 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
             acceptablePrice: convertToContractPrice(p.acceptablePrice, indexToken.decimals),
             executionFee: p.executionFee,
             callbackGasLimit: BigNumber.from(0),
-            minOutputAmount: minOutputUsd,
+            minOutputAmount: p.minOutputUsd,
           },
           orderType: p.orderType,
           decreasePositionSwapType: p.decreasePositionSwapType,

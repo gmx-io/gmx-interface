@@ -4,7 +4,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { getIcon } from "config/icons";
 import { getToken } from "config/tokens";
 import { getFundingFeeFactor } from "domain/synthetics/fees";
-import { Market, getPoolValue, getReservedUsd, useMarketsInfo } from "domain/synthetics/markets";
+import { Market, getReservedUsd, useMarketsInfo } from "domain/synthetics/markets";
 import { TokenData, getMidPrice } from "domain/synthetics/tokens";
 import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
@@ -77,7 +77,7 @@ export function MarketsList() {
 
       const indexTokenStats = indexMap[market.indexTokenAddress];
 
-      const poolValueUsd = getPoolValue(market, true, "FOR_TRADERS") || BigNumber.from(0);
+      const poolValueUsd = market.poolValueMax;
 
       const longReservedUsd = getReservedUsd(market, true);
 

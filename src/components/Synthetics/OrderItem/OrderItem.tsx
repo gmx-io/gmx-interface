@@ -70,9 +70,11 @@ export function OrderItem(p: Props) {
         : undefined;
 
     const [largest, smallest] =
-      tokensRatio?.largestAddress === fromToken?.address ? [fromTokenInfo, toTokenInfo] : [toTokenInfo, fromTokenInfo];
+      tokensRatio?.largestToken.address === fromToken?.address
+        ? [fromTokenInfo, toTokenInfo]
+        : [toTokenInfo, fromTokenInfo];
 
-    const swapRatioText = getExchangeRateDisplay(tokensRatio?.ratio, largest, smallest);
+    const swapRatioText = tokensRatio.ratio.gt(0) ? getExchangeRateDisplay(tokensRatio?.ratio, largest, smallest) : "0";
     const markSwapRatioText = getExchangeRateDisplay(markExchangeRate, fromTokenInfo, toTokenInfo);
 
     return { swapRatioText, markSwapRatioText };
@@ -92,16 +94,23 @@ export function OrderItem(p: Props) {
     }
 
     if (p.isLarge) {
-      if (isDecreaseOrderType(p.order.orderType) || isSwapOrderType(p.order.orderType)) {
+      if (isSwapOrderType(p.order.orderType)) {
         return p.order.title;
       }
 
+      const positionOrder = p.order as PositionOrderInfo;
+
       return (
         <Tooltip
-          handle={p.order.title}
+          handle={positionOrder.title}
           position="left-bottom"
           renderContent={() => {
-            return <StatsTooltipRow label={t`Collateral`} value={getCollateralText()} showDollar={false} />;
+            return (
+              <>
+                <StatsTooltipRow label={t`Market`} value={positionOrder.marketInfo.name} showDollar={false} />
+                <StatsTooltipRow label={t`Collateral`} value={getCollateralText()} showDollar={false} />
+              </>
+            );
           }}
         />
       );

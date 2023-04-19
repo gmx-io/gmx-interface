@@ -231,7 +231,7 @@ export function GmConfirmationBox({
   }
 
   return (
-    <div className="Confirmation-box">
+    <div className="Confirmation-box GmConfirmationBox">
       <Modal isVisible={true} setIsVisible={onClose} label={t`Confirm ${operationText}`} allowContentTouchMove>
         <div className={cx("Confirmation-box-main GmConfirmationBox-main")}>
           {isDeposit && (

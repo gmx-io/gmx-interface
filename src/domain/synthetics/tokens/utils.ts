@@ -68,13 +68,13 @@ export function getTokensRatioByPrice(p: {
 }): TokensRatio {
   const { fromToken, toToken, fromPrice, toPrice } = p;
 
-  const [largestAddress, smallestAddress, largestPrice, smallestPrice] = fromPrice.gt(toPrice)
-    ? [fromToken.address, toToken.address, fromPrice, toPrice]
-    : [toToken.address, fromToken.address, toPrice, fromPrice];
+  const [largestToken, smallestToken, largestPrice, smallestPrice] = fromPrice.gt(toPrice)
+    ? [fromToken, toToken, fromPrice, toPrice]
+    : [toToken, fromToken, toPrice, fromPrice];
 
   const ratio = largestPrice.mul(PRECISION).div(smallestPrice);
 
-  return { ratio, largestAddress, smallestAddress };
+  return { ratio, largestToken, smallestToken };
 }
 
 export function getTokensRatioByAmounts(p: {
@@ -88,13 +88,13 @@ export function getTokensRatioByAmounts(p: {
   const adjustedFromAmount = fromTokenAmount.mul(PRECISION).div(expandDecimals(1, fromToken.decimals));
   const adjustedToAmount = toTokenAmount.mul(PRECISION).div(expandDecimals(1, toToken.decimals));
 
-  const [largestAddress, smallestAddress, largestAmount, smallestAmount] = adjustedFromAmount.gt(adjustedToAmount)
-    ? [fromToken.address, toToken.address, adjustedFromAmount, adjustedToAmount]
-    : [toToken.address, fromToken.address, adjustedToAmount, adjustedFromAmount];
+  const [largestToken, smallestToken, largestAmount, smallestAmount] = adjustedFromAmount.gt(adjustedToAmount)
+    ? [fromToken, toToken, adjustedFromAmount, adjustedToAmount]
+    : [toToken, fromToken, adjustedToAmount, adjustedFromAmount];
 
-  const ratio = largestAmount.mul(PRECISION).div(smallestAmount);
+  const ratio = smallestAmount.gt(0) ? largestAmount.mul(PRECISION).div(smallestAmount) : BigNumber.from(0);
 
-  return { ratio, largestAddress, smallestAddress };
+  return { ratio, largestToken, smallestToken };
 }
 
 export function formatTokensRatio(fromToken?: Token, toToken?: Token, ratio?: TokensRatio) {
@@ -102,7 +102,8 @@ export function formatTokensRatio(fromToken?: Token, toToken?: Token, ratio?: To
     return undefined;
   }
 
-  const [largest, smallest] = ratio.largestAddress === fromToken.address ? [fromToken, toToken] : [toToken, fromToken];
+  const [largest, smallest] =
+    ratio.largestToken.address === fromToken.address ? [fromToken, toToken] : [toToken, fromToken];
 
   return `${formatAmount(ratio.ratio, USD_DECIMALS, 4)} ${smallest.symbol} / ${largest.symbol}`;
 }

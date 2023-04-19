@@ -1,60 +1,42 @@
 import { Trans, t } from "@lingui/macro";
 
+import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
-import { getAvailableUsdLiquidityForCollateral, getTokenPoolType, useMarketsInfo } from "domain/synthetics/markets";
-import { TokensRatio, convertToTokenAmount, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
-import { useChainId } from "lib/chains";
+import { TokenData, TokensRatio, convertToTokenAmount, getTokensRatioByPrice } from "domain/synthetics/tokens";
+import { BigNumber } from "ethers";
+
 import { USD_DECIMALS } from "lib/legacy";
 import { formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
 import { useMemo } from "react";
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
-import { getByKey } from "lib/objects";
 
 export type Props = {
-  marketAddress?: string;
-  fromTokenAddress?: string;
-  toTokenAddress?: string;
+  maxLiquidityUsd?: BigNumber;
+  fromToken?: TokenData;
+  toToken?: TokenData;
   markRatio?: TokensRatio;
 };
 
 export function SwapCard(p: Props) {
-  const { chainId } = useChainId();
+  const { fromToken, toToken, maxLiquidityUsd } = p;
 
-  const { marketsInfoData } = useMarketsInfo(chainId);
-
-  const { tokensData } = useAvailableTokensData(chainId);
-
-  const market = getByKey(marketsInfoData, p.marketAddress);
-  const marketName = market?.name || "...";
-
-  const fromToken = getTokenData(tokensData, p.fromTokenAddress);
-  const toToken = getTokenData(tokensData, p.toTokenAddress);
-
-  const { maxLiquidityAmount, maxLiquidityUsd } = useMemo(() => {
-    if (!market || !p.toTokenAddress) return {};
-
-    const maxLiquidityUsd = getAvailableUsdLiquidityForCollateral(
-      market,
-      getTokenPoolType(market, p.toTokenAddress) === "long"
-    );
-
-    const maxLiquidityAmount = convertToTokenAmount(maxLiquidityUsd, toToken?.decimals, toToken?.prices?.maxPrice);
-
-    return {
-      maxLiquidityUsd,
-      maxLiquidityAmount,
-    };
-  }, [market, p.toTokenAddress, toToken?.decimals, toToken?.prices?.maxPrice]);
+  const maxLiquidityAmount = convertToTokenAmount(maxLiquidityUsd, toToken?.decimals, toToken?.prices?.maxPrice);
 
   const ratioStr = useMemo(() => {
-    if (!p.markRatio) return "...";
+    if (!fromToken || !toToken) return "...";
 
-    const smallest = getTokenData(tokensData, p.markRatio.smallestAddress);
-    const largest = getTokenData(tokensData, p.markRatio.largestAddress);
+    const markRatio = getTokensRatioByPrice({
+      fromToken,
+      toToken,
+      fromPrice: fromToken.prices.minPrice,
+      toPrice: toToken.prices.maxPrice,
+    });
 
-    return `${formatAmount(p.markRatio.ratio, USD_DECIMALS, 4)} ${smallest?.symbol} / ${largest?.symbol}`;
-  }, [p.markRatio, tokensData]);
+    const smallest = markRatio.smallestToken;
+    const largest = markRatio.largestToken;
+
+    return `${formatAmount(markRatio.ratio, USD_DECIMALS, 4)} ${smallest?.symbol} / ${largest?.symbol}`;
+  }, [fromToken, toToken]);
 
   return (
     <div className="Exchange-swap-market-box App-box App-box-border">
@@ -64,8 +46,6 @@ export function SwapCard(p: Props) {
       <div className="App-card-divider" />
 
       <div>
-        <ExchangeInfoRow label={t`Market`} value={marketName || "..."} />
-
         <ExchangeInfoRow
           label={t`${fromToken?.symbol} Price`}
           value={formatUsd(fromToken?.prices?.minPrice) || "..."}
@@ -85,8 +65,11 @@ export function SwapCard(p: Props) {
                     className="al-swap"
                     label={t`Max ${toToken?.symbol} out`}
                     value={[
-                      formatTokenAmount(maxLiquidityAmount, toToken?.decimals, toToken?.symbol),
-                      formatUsd(maxLiquidityUsd),
+                      formatTokenAmount(maxLiquidityAmount, toToken?.decimals, toToken?.symbol, {
+                        useCommas: true,
+                        displayDecimals: 0,
+                      }),
+                      `(${formatUsd(maxLiquidityUsd, { displayDecimals: 0 })})`,
                     ]}
                     showDollar={false}
                   />

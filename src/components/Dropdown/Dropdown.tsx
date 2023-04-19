@@ -31,7 +31,10 @@ export function Dropdown(p: Props) {
         <Menu.Items as="div" className="Dropdown-options menu-items">
           {p.options.map((option) => (
             <Menu.Item key={option.label}>
-              <div className="Dropdown-option" onClick={() => p.onSelect(option)}>
+              <div
+                className={cx("Dropdown-option", { selected: p.selectedOption?.value === option.value })}
+                onClick={() => p.onSelect(option)}
+              >
                 {option.label}
               </div>
             </Menu.Item>

@@ -3,6 +3,12 @@
   position: relative;
   cursor: pointer;
 
+  div[aria-expanded="true"]:first-child {
+    .Dropdown-current {
+      color: #7885ff;
+    }
+  }
+
   &.disabled {
     .Dropdown-current {
       cursor: default;
@@ -62,5 +68,9 @@
   &:hover {
     color: #eee;
     background: #808aff14 !important;
+  }
+
+  &.selected {
+    color: #7885ff;
   }
 }

@@ -1,8 +1,9 @@
+import { ReactNode } from "react";
 import { BsArrowRight } from "react-icons/bs";
 
 type Props = {
-  from?: string;
-  to?: string;
+  from?: ReactNode;
+  to?: ReactNode;
 };
 
 export function ValueTransition(p: Props) {

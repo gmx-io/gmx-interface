@@ -1,3 +1,9 @@
+.ClaimableModal {
+  .Modal-body {
+    overflow-x: hidden;
+  }
+}
+
 .ClaimModal-content {
   font-size: var(--font-sm);
   margin-top: 3rem;

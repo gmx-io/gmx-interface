@@ -19,7 +19,6 @@ export function getSwapAmountsByFromValue(p: {
 
   let amountOut = BigNumber.from(0);
   let usdOut = BigNumber.from(0);
-  // TODO: undefined
   let minOutputAmount = BigNumber.from(0);
 
   const defaultAmounts: SwapAmounts = {
@@ -37,7 +36,7 @@ export function getSwapAmountsByFromValue(p: {
     return defaultAmounts;
   }
 
-  const swapPathStats = findSwapPath(defaultAmounts.usdIn, { shouldApplyPriceImpact: !isLimit });
+  const swapPathStats = findSwapPath(defaultAmounts.usdIn, { shouldApplyPriceImpact: true });
 
   if (!swapPathStats) {
     return defaultAmounts;
@@ -48,12 +47,20 @@ export function getSwapAmountsByFromValue(p: {
       return defaultAmounts;
     }
 
+    const swapFeeAmount = convertToTokenAmount(swapPathStats.totalSwapFeeUsd, tokenIn.decimals, priceIn)!;
+    const priceImpactAmount = convertToTokenAmount(
+      swapPathStats.totalSwapPriceImpactDeltaUsd,
+      tokenIn.decimals,
+      priceIn
+    )!;
+    const amountInAfterFees = amountIn.sub(swapFeeAmount).add(priceImpactAmount);
+
     amountOut = getAmountByRatio({
       fromToken: tokenIn,
       toToken: tokenOut,
-      fromTokenAmount: amountIn,
+      fromTokenAmount: amountInAfterFees,
       ratio: triggerRatio.ratio,
-      shouldInvertRatio: triggerRatio.largestAddress === tokenOut.address,
+      shouldInvertRatio: triggerRatio.largestToken.address === tokenOut.address,
     });
 
     usdOut = convertToUsd(amountOut, tokenOut.decimals, priceOut)!;
@@ -111,7 +118,7 @@ export function getSwapAmountsByToValue(p: {
   }
 
   const baseUsdIn = usdOut;
-  const swapPathStats = findSwapPath(baseUsdIn, { shouldApplyPriceImpact: !isLimit });
+  const swapPathStats = findSwapPath(baseUsdIn, { shouldApplyPriceImpact: true });
 
   if (!swapPathStats) {
     return defaultAmounts;
@@ -127,15 +134,18 @@ export function getSwapAmountsByToValue(p: {
       toToken: tokenIn,
       fromTokenAmount: amountOut,
       ratio: triggerRatio.ratio,
-      shouldInvertRatio: triggerRatio.largestAddress === tokenIn.address,
+      shouldInvertRatio: triggerRatio.largestToken.address === tokenIn.address,
     });
 
+    const swapFeeAmount = convertToTokenAmount(swapPathStats.totalSwapFeeUsd, tokenIn.decimals, priceIn)!;
+    const priceImpactAmount = convertToTokenAmount(
+      swapPathStats.totalSwapPriceImpactDeltaUsd,
+      tokenIn.decimals,
+      priceIn
+    )!;
+
+    amountIn = amountIn.add(swapFeeAmount).sub(priceImpactAmount);
     usdIn = convertToUsd(amountIn, tokenIn.decimals, priceIn)!;
-    usdIn = usdIn.sub(swapPathStats.totalSwapFeeUsd);
-    if (usdIn.lt(0)) {
-      usdIn = BigNumber.from(0);
-    }
-    amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, priceIn)!;
   } else {
     const adjustedUsdIn = swapPathStats.usdOut.gt(0)
       ? baseUsdIn.mul(usdOut).div(swapPathStats.usdOut)

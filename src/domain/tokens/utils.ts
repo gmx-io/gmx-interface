@@ -34,6 +34,14 @@ export function getIsEquivalentTokens(token1: Token, token2: Token) {
   }
 }
 
+export function getIsWrap(token1: Token, token2: Token) {
+  return token1.isNative && token2.isWrapped;
+}
+
+export function getIsUnwrap(token1: Token, token2: Token) {
+  return token1.isWrapped && token2.isNative;
+}
+
 export function getUsd(
   amount: BigNumber | undefined,
   tokenAddress: string,

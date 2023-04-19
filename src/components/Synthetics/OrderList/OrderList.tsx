@@ -11,10 +11,10 @@ import { OrderItem } from "../OrderItem/OrderItem";
 
 type Props = {
   hideActions?: boolean;
-  ordersData: OrdersInfoData;
+  ordersData?: OrdersInfoData;
+  positionsData?: PositionsInfoData;
   setSelectedOrdersKeys?: Dispatch<SetStateAction<{ [key: string]: boolean }>>;
   selectedOrdersKeys?: { [key: string]: boolean };
-  positionsData: PositionsInfoData;
   isLoading: boolean;
   setPendingTxns: (txns: any) => void;
 };
@@ -26,7 +26,7 @@ export function OrderList(p: Props) {
   const [canellingOrdersKeys, setCanellingOrdersKeys] = useState<string[]>([]);
   const [editingOrderKey, setEditingOrderKey] = useState<string>();
 
-  const orders = Object.values(p.ordersData).filter(
+  const orders = Object.values(p.ordersData || {}).filter(
     (order) => isLimitOrderType(order.orderType) || isTriggerDecreaseOrderType(order.orderType)
   );
 
@@ -122,7 +122,7 @@ export function OrderList(p: Props) {
 
       {editingOrder && (
         <OrderEditor
-          positionsData={p.positionsData}
+          positionsData={p.positionsData || {}}
           order={editingOrder}
           onClose={() => setEditingOrderKey(undefined)}
           setPendingTxns={p.setPendingTxns}

@@ -1,7 +1,9 @@
+import { OrderType } from "domain/synthetics/orders";
 import { TokenPrices } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";
 import { getBasisPoints } from "lib/numbers";
+import { TriggerThresholdType } from "../types";
 
 export function getMarkPrice(p: { prices: TokenPrices; isIncrease: boolean; isLong: boolean }) {
   const { prices, isIncrease, isLong } = p;
@@ -9,6 +11,40 @@ export function getMarkPrice(p: { prices: TokenPrices; isIncrease: boolean; isLo
   const shouldUseMaxPrice = isIncrease ? isLong : !isLong;
 
   return shouldUseMaxPrice ? prices.maxPrice : prices.minPrice;
+}
+
+export function getTriggerThresholdType(orderType: OrderType, isLong: boolean) {
+  // limit order
+  if (orderType === OrderType.LimitIncrease) {
+    return isLong ? TriggerThresholdType.Below : TriggerThresholdType.Above;
+  }
+
+  if (orderType === OrderType.LimitDecrease) {
+    return isLong ? TriggerThresholdType.Above : TriggerThresholdType.Below;
+  }
+  // stop-loss order
+
+  if (orderType === OrderType.StopLossDecrease) {
+    return isLong ? TriggerThresholdType.Below : TriggerThresholdType.Above;
+  }
+
+  throw new Error("Invalid trigger order type");
+}
+
+export function getTriggerDecreaseOrderType(p: {
+  triggerPrice: BigNumber;
+  markPrice: BigNumber;
+  isLong: boolean;
+}): OrderType.LimitDecrease | OrderType.StopLossDecrease {
+  const { triggerPrice, markPrice, isLong } = p;
+
+  const isTriggerAboveMarkPrice = triggerPrice.gt(markPrice);
+
+  if (isTriggerAboveMarkPrice) {
+    return isLong ? OrderType.LimitDecrease : OrderType.StopLossDecrease;
+  } else {
+    return isLong ? OrderType.StopLossDecrease : OrderType.LimitDecrease;
+  }
 }
 
 export function getAcceptablePrice(p: {

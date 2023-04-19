@@ -62,13 +62,13 @@ export function getFeeItem(feeDeltaUsd?: BigNumber, basis?: BigNumber): FeeItem 
   };
 }
 
-export function getTotalFeeItem(feeItems: FeeItem[]): FeeItem {
+export function getTotalFeeItem(feeItems: (FeeItem | undefined)[]): FeeItem {
   const totalFeeItem: FeeItem = {
     deltaUsd: BigNumber.from(0),
     bps: BigNumber.from(0),
   };
 
-  feeItems.forEach((feeItem) => {
+  (feeItems.filter(Boolean) as FeeItem[]).forEach((feeItem) => {
     totalFeeItem.deltaUsd = totalFeeItem.deltaUsd.add(feeItem.deltaUsd);
     totalFeeItem.bps = totalFeeItem.bps.add(feeItem.bps);
   });

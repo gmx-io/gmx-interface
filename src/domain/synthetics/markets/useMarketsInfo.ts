@@ -15,6 +15,7 @@ import {
   minCollateralFactorKey,
   openInterestInTokensKey,
   openInterestKey,
+  poolAmountAdjustmentKey,
   poolAmountKey,
   positionFeeFactorKey,
   positionImpactExponentFactorKey,
@@ -72,29 +73,29 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
                 methodName: "getMarketInfo",
                 params: [dataStoreAddress, marketPrices, marketAddress],
               },
-              netPnlMax: {
-                methodName: "getNetPnl",
-                params: [dataStoreAddress, marketProps, marketPrices.indexTokenPrice, true],
+              marketTokenPriceMax: {
+                methodName: "getMarketTokenPrice",
+                params: [
+                  dataStoreAddress,
+                  marketProps,
+                  marketPrices.indexTokenPrice,
+                  marketPrices.longTokenPrice,
+                  marketPrices.shortTokenPrice,
+                  MAX_PNL_FACTOR_FOR_TRADERS_KEY,
+                  true,
+                ],
               },
-              netPnlMin: {
-                methodName: "getNetPnl",
-                params: [dataStoreAddress, marketProps, marketPrices.indexTokenPrice, false],
-              },
-              pnlLongMax: {
-                methodName: "getPnl",
-                params: [dataStoreAddress, marketProps, marketPrices.indexTokenPrice, true, true],
-              },
-              pnlLongMin: {
-                methodName: "getPnl",
-                params: [dataStoreAddress, marketProps, marketPrices.indexTokenPrice, true, false],
-              },
-              pnlShortMax: {
-                methodName: "getPnl",
-                params: [dataStoreAddress, marketProps, marketPrices.indexTokenPrice, false, true],
-              },
-              pnlShortMin: {
-                methodName: "getPnl",
-                params: [dataStoreAddress, marketProps, marketPrices.indexTokenPrice, false, false],
+              marketTokenPriceMin: {
+                methodName: "getMarketTokenPrice",
+                params: [
+                  dataStoreAddress,
+                  marketProps,
+                  marketPrices.indexTokenPrice,
+                  marketPrices.longTokenPrice,
+                  marketPrices.shortTokenPrice,
+                  MAX_PNL_FACTOR_FOR_TRADERS_KEY,
+                  false,
+                ],
               },
             },
           },
@@ -109,6 +110,14 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
               shortPoolAmount: {
                 methodName: "getUint",
                 params: [poolAmountKey(marketAddress, market.shortTokenAddress)],
+              },
+              longPoolAmountAdjustment: {
+                methodName: "getUint",
+                params: [poolAmountAdjustmentKey(marketAddress, market.longTokenAddress)],
+              },
+              shortPoolAmountAdjustment: {
+                methodName: "getUint",
+                params: [poolAmountAdjustmentKey(marketAddress, market.longTokenAddress)],
               },
               reserveFactorLong: {
                 methodName: "getUint",
@@ -305,6 +314,30 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
           fundingAmountPerSize_ShortCollateral_ShortPosition,
         ] = funding;
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const [_priceMin, poolValueInfoMin] = readerValues.marketTokenPriceMin.returnValues;
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const [_priceMax, poolValueInfoMax] = readerValues.marketTokenPriceMax.returnValues;
+
+        const [poolValueMin, pnlLongMin, pnlShortMin, netPnlMin] = poolValueInfoMin.map(bigNumberify);
+
+        const [
+          poolValueMax,
+          pnlLongMax,
+          pnlShortMax,
+          netPnlMax,
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          _longTokenAmount,
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          _shortTokenAmount,
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          longTokenUsd,
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          shortTokenUsd,
+          totalBorrowingFees,
+        ] = poolValueInfoMax.map(bigNumberify);
+
         const market = getByKey(marketsData, marketAddress)!;
         const longToken = getByKey(tokensData!, market.longTokenAddress)!;
         const shortToken = getByKey(tokensData!, market.shortTokenAddress)!;
@@ -321,20 +354,27 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
           shortInterestInTokens,
           longPoolAmount: dataStoreValues.longPoolAmount.returnValues[0],
           shortPoolAmount: dataStoreValues.shortPoolAmount.returnValues[0],
+          longPoolAmountAdjustment: dataStoreValues.longPoolAmountAdjustment.returnValues[0],
+          shortPoolAmountAdjustment: dataStoreValues.shortPoolAmountAdjustment.returnValues[0],
+          poolValueMin: poolValueMin,
+          poolValueMax: poolValueMax,
           reserveFactorLong: dataStoreValues.reserveFactorLong.returnValues[0],
           reserveFactorShort: dataStoreValues.reserveFactorShort.returnValues[0],
           totalBorrowingLong: dataStoreValues.totalBorrowingLong.returnValues[0],
           totalBorrowingShort: dataStoreValues.totalBorrowingShort.returnValues[0],
+          totalBorrowingFees,
           cummulativeBorrowingFactorLong: dataStoreValues.cummulativeBorrowingFactorLong.returnValues[0],
           cummulativeBorrowingFactorShort: dataStoreValues.cummulativeBorrowingFactorShort.returnValues[0],
           borrowingFeeReceiverFactor: dataStoreValues.borrowingFeeReceiverFactor.returnValues[0],
           positionImpactPoolAmount: dataStoreValues.positionImpactPoolAmount.returnValues[0],
           swapImpactPoolAmountLong: dataStoreValues.swapImpactPoolAmountLong.returnValues[0],
           swapImpactPoolAmountShort: dataStoreValues.swapImpactPoolAmountShort.returnValues[0],
-          pnlLongMax: readerValues.pnlLongMax.returnValues[0],
-          pnlLongMin: readerValues.pnlLongMin.returnValues[0],
-          pnlShortMax: readerValues.pnlShortMax.returnValues[0],
-          pnlShortMin: readerValues.pnlShortMin.returnValues[0],
+          pnlLongMax,
+          pnlLongMin,
+          pnlShortMax,
+          pnlShortMin,
+          netPnlMax,
+          netPnlMin,
           maxPnlFactorForTradersLong: dataStoreValues.maxPnlFactorForTradersLong.returnValues[0],
           maxPnlFactorForTradersShort: dataStoreValues.maxPnlFactorForTradersShort.returnValues[0],
           maxPnlFactorForDepositsLong: dataStoreValues.maxPnlFactorForDepositsLong.returnValues[0],

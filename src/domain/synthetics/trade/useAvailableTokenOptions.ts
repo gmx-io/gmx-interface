@@ -1,15 +1,14 @@
-import { getNativeToken } from "config/tokens";
+import { getNativeToken, getTokensMap } from "config/tokens";
 import { useMarkets } from "domain/synthetics/markets";
-import { adaptToV1InfoTokens, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { InfoTokens, Token } from "domain/tokens";
-import { mapValues } from "lodash";
 import { useMemo } from "react";
+import { adaptToV1InfoTokens, useAvailableTokensData } from "../tokens";
 
-type AvailableTokenOptions = {
+export type AvailableTokenOptions = {
+  tokensMap: { [address: string]: Token };
   infoTokens: InfoTokens;
-  availableSwapTokens: Token[];
-  availableIndexTokens: Token[];
-  availablePositionCollateralsByIndexMap: { [indexAddress: string]: Token[] };
+  swapTokens: Token[];
+  indexTokens: Token[];
 };
 
 export function useAvailableTokenOptions(chainId: number): AvailableTokenOptions {
@@ -18,16 +17,19 @@ export function useAvailableTokenOptions(chainId: number): AvailableTokenOptions
 
   return useMemo(() => {
     const markets = Object.values(marketsData || {});
+    const tokensMap = getTokensMap(chainId);
 
     const collaterals = new Set<Token>();
     const indexTokens = new Set<Token>();
-    const collateralsByIndexTokenMap: { [indexAddress: string]: Set<Token> } = {};
     const nativeToken = getNativeToken(chainId);
 
     for (const market of markets) {
-      const longToken = getTokenData(tokensData, market.longTokenAddress);
-      const shortToken = getTokenData(tokensData, market.shortTokenAddress);
-      const indexToken = getTokenData(tokensData, market.indexTokenAddress, "native");
+      const longToken = tokensMap[market.longTokenAddress];
+      const shortToken = tokensMap[market.shortTokenAddress];
+
+      const indexToken = tokensMap[market.indexTokenAddress]?.isWrapped
+        ? nativeToken
+        : tokensMap[market.indexTokenAddress];
 
       if (!longToken || !shortToken || !indexToken) {
         continue;
@@ -39,22 +41,17 @@ export function useAvailableTokenOptions(chainId: number): AvailableTokenOptions
 
       collaterals.add(longToken);
       collaterals.add(shortToken);
-      indexTokens.add(indexToken);
 
-      collateralsByIndexTokenMap[indexToken.address] =
-        collateralsByIndexTokenMap[indexToken.address] || new Set<Token>();
-
-      collateralsByIndexTokenMap[indexToken.address].add(longToken);
-      collateralsByIndexTokenMap[indexToken.address].add(shortToken);
+      if (!market.isSpotOnly) {
+        indexTokens.add(indexToken);
+      }
     }
 
     return {
+      tokensMap,
+      swapTokens: Array.from(collaterals),
+      indexTokens: Array.from(indexTokens),
       infoTokens: adaptToV1InfoTokens(tokensData || {}),
-      availableSwapTokens: Array.from(collaterals),
-      availableIndexTokens: Array.from(indexTokens),
-      availablePositionCollateralsByIndexMap: mapValues(collateralsByIndexTokenMap, (collaterals) =>
-        Array.from(collaterals)
-      ),
     };
   }, [chainId, marketsData, tokensData]);
 }

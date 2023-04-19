@@ -3,7 +3,7 @@ import { useWeb3React } from "@web3-react/core";
 import Modal from "components/Modal/Modal";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { MarketInfo, getTotalClaimableFundingUsd, useMarketsInfo } from "domain/synthetics/markets";
-import { convertToUsd, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
+import { convertToUsd } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
@@ -24,7 +24,6 @@ export function ClaimModal(p: Props) {
   const { account, library } = useWeb3React();
   const { chainId } = useChainId();
   const { marketsInfoData } = useMarketsInfo(chainId);
-  const { tokensData } = useAvailableTokensData(chainId);
 
   const markets = Object.values(marketsInfoData || {});
 
@@ -32,8 +31,8 @@ export function ClaimModal(p: Props) {
 
   function renderMarketSection(market: MarketInfo) {
     const marketName = market.name;
-    const longToken = getTokenData(tokensData, market.longTokenAddress);
-    const shortToken = getTokenData(tokensData, market.shortTokenAddress);
+    const longToken = market.longToken;
+    const shortToken = market.shortToken;
 
     const fundingLongAmount = market.claimableFundingAmountLong;
     const fundingShortAmount = market.claimableFundingAmountShort;
@@ -47,6 +46,16 @@ export function ClaimModal(p: Props) {
 
     if (!totalFundingUsd?.gt(0)) return null;
 
+    const claimableAmountsItems: string[] = [];
+
+    if (fundingLongAmount?.gt(0)) {
+      claimableAmountsItems.push(formatTokenAmount(fundingLongAmount, longToken.decimals, longToken.symbol)!);
+    }
+
+    if (fundingShortAmount?.gt(0)) {
+      claimableAmountsItems.push(formatTokenAmount(fundingShortAmount, shortToken.decimals, shortToken.symbol)!);
+    }
+
     return (
       <div key={market.marketTokenAddress} className="App-card-content">
         <ExchangeInfoRow className="ClaimModal-row" label={t`Market`} value={marketName} />
@@ -57,13 +66,12 @@ export function ClaimModal(p: Props) {
             <Tooltip
               className="ClaimModal-row-tooltip"
               handle={formatUsd(totalFundingUsd)}
-              position="right-bottom"
+              position="right-top"
               renderContent={() => (
                 <>
-                  {fundingLongAmount?.gt(0) &&
-                    formatTokenAmount(fundingLongAmount, longToken?.decimals, longToken?.symbol)}
-                  {fundingShortAmount?.gt(0) &&
-                    formatTokenAmount(fundingShortAmount, shortToken?.decimals, shortToken?.symbol)}
+                  {claimableAmountsItems.map((item, index) => (
+                    <div key={item}>{item}</div>
+                  ))}
                 </>
               )}
             />
@@ -104,7 +112,7 @@ export function ClaimModal(p: Props) {
   }
 
   return (
-    <Modal className="Confirmation-box" isVisible={true} setIsVisible={onClose} label={t`Confirm Claim`}>
+    <Modal className="Confirmation-box ClaimableModal" isVisible={true} setIsVisible={onClose} label={t`Confirm Claim`}>
       <div className="ConfirmationBox-main text-center">Claim {formatUsd(totalClaimableFundingUsd)}</div>
       <div className="ClaimModal-content">{markets.map(renderMarketSection)}</div>
       <SubmitButton onClick={onSubmit}>{t`Claim`}</SubmitButton>

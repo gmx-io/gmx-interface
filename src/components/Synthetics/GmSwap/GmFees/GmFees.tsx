@@ -22,7 +22,7 @@ export function GmFees(p: Props) {
       label={<Trans>Fees and price impact</Trans>}
       value={
         <>
-          {(!p.totalFees?.deltaUsd || p.totalFees.deltaUsd.eq(0)) && "-"}
+          {!p.totalFees?.deltaUsd && "-"}
           {p.totalFees?.deltaUsd && (
             <Tooltip
               className="GmFees-tooltip"

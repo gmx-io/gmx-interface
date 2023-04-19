@@ -49,6 +49,11 @@ export const ACCOUNT_POSITION_LIST_KEY = hashString("ACCOUNT_POSITION_LIST");
 export const ORDER_LIST_KEY = hashString("ORDER_LIST");
 export const ACCOUNT_ORDER_LIST_KEY = hashString("ACCOUNT_ORDER_LIST");
 export const CLAIMABLE_FUNDING_AMOUNT = hashString("CLAIMABLE_FUNDING_AMOUNT");
+export const VIRTUAL_TOKEN_ID_KEY = hashString("VIRTUAL_TOKEN_ID");
+export const VIRTUAL_MARKET_ID_KEY = hashString("VIRTUAL_MARKET_ID");
+export const VIRTUAL_INVENTORY_FOR_POSITIONS_KEY = hashString("VIRTUAL_INVENTORY_FOR_POSITIONS");
+export const VIRTUAL_INVENTORY_FOR_SWAPS_KEY = hashString("VIRTUAL_INVENTORY_FOR_SWAPS");
+export const POOL_AMOUNT_ADJUSTMENT_KEY = hashString("POOL_AMOUNT_ADJUSTMENT");
 
 export function positionImpactFactorKey(market: string, isPositive: boolean) {
   return hashData(["bytes32", "address", "bool"], [POSITION_IMPACT_FACTOR_KEY, market, isPositive]);
@@ -171,4 +176,23 @@ export function hashedPositionKey(account: string, market: string, collateralTok
 
 export function claimableFundingAmountKey(market: string, token: string, account: string) {
   return hashData(["bytes32", "address", "address", "address"], [CLAIMABLE_FUNDING_AMOUNT, market, token, account]);
+}
+export function virtualTokenIdKey(token: string) {
+  return hashData(["bytes32", "address"], [VIRTUAL_TOKEN_ID_KEY, token]);
+}
+
+export function virtualMarketIdKey(market: string) {
+  return hashData(["bytes32", "address"], [VIRTUAL_MARKET_ID_KEY, market]);
+}
+
+export function virtualInventoryForSwapsKey(virtualMarketId: string, token: string) {
+  return hashData(["bytes32", "bytes32", "address"], [VIRTUAL_INVENTORY_FOR_SWAPS_KEY, virtualMarketId, token]);
+}
+
+export function virtualInventoryForPositionsKey(virtualTokenId: string) {
+  return hashData(["bytes32", "bytes32"], [VIRTUAL_INVENTORY_FOR_POSITIONS_KEY, virtualTokenId]);
+}
+
+export function poolAmountAdjustmentKey(market: string, token: string) {
+  return hashData(["bytes32", "address", "address"], [POOL_AMOUNT_ADJUSTMENT_KEY, market, token]);
 }

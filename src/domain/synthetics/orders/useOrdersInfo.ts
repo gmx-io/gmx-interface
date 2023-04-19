@@ -3,16 +3,10 @@ import { getByKey } from "lib/objects";
 import { useMemo } from "react";
 import { useMarketsInfo } from "../markets";
 import { parseContractPrice, useAvailableTokensData } from "../tokens";
-import { getSwapPathOutputAddresses } from "../trade";
+import { getSwapPathOutputAddresses, getTriggerThresholdType } from "../trade";
 import { OrdersInfoData, PositionOrderInfo, SwapOrderInfo } from "./types";
 import { useOrders } from "./useOrders";
-import {
-  getPositionOrderTitle,
-  getSwapOrderTitle,
-  getTriggerPricePrefixForOrder,
-  isSwapOrderType,
-  isVisibleOrder,
-} from "./utils";
+import { getPositionOrderTitle, getSwapOrderTitle, isSwapOrderType, isVisibleOrder } from "./utils";
 
 type AggregatedOrdersDataResult = {
   ordersInfoData?: OrdersInfoData;
@@ -94,7 +88,7 @@ export function useOrdersInfo(chainId: number): AggregatedOrdersDataResult {
             sizeDeltaUsd: order.sizeDeltaUsd,
           });
 
-          const triggerThresholdType = getTriggerPricePrefixForOrder(order.orderType, order.isLong);
+          const triggerThresholdType = getTriggerThresholdType(order.orderType, order.isLong);
 
           const orderInfo: PositionOrderInfo = {
             ...order,

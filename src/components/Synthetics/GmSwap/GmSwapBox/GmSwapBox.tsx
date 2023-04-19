@@ -8,21 +8,7 @@ import Tab from "components/Tab/Tab";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
 import { SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY } from "config/localStorage";
-import { convertTokenAddress, NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import {
-  estimateExecuteDepositGasLimit,
-  estimateExecuteWithdrawalGasLimit,
-  FeeItem,
-  getExecutionFee,
-  getFeeItem,
-  getTotalFeeItem,
-  useGasPrice,
-} from "domain/synthetics/fees";
-import { useGasLimits } from "domain/synthetics/fees";
-import { useMarketsInfo, useMarketTokensData } from "domain/synthetics/markets";
-import { Market } from "domain/synthetics/markets/types";
-import { getAvailableUsdLiquidityForCollateral, getPoolUsd } from "domain/synthetics/markets/utils";
-import { adaptToV1InfoTokens, convertToUsd, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
 import { GmSwapFees } from "domain/synthetics/trade";
 import {
   getNextDepositAmountsByCollaterals,
@@ -32,6 +18,20 @@ import {
   getNextWithdrawalAmountsByCollaterals,
   getNextWithdrawalAmountsByMarketToken,
 } from "domain/synthetics/trade/utils/withdrawal";
+import {
+  FeeItem,
+  estimateExecuteDepositGasLimit,
+  estimateExecuteWithdrawalGasLimit,
+  getExecutionFee,
+  getFeeItem,
+  getTotalFeeItem,
+  useGasLimits,
+  useGasPrice,
+} from "domain/synthetics/fees";
+import { useMarketTokensData, useMarketsInfo } from "domain/synthetics/markets";
+import { Market } from "domain/synthetics/markets/types";
+import { getAvailableUsdLiquidityForCollateral, getPoolUsd } from "domain/synthetics/markets/utils";
+import { adaptToV1InfoTokens, convertToUsd, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
@@ -39,11 +39,13 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmountFree, formatTokenAmount, formatUsd, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
-import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { IoMdSwap } from "react-icons/io";
 import { GmConfirmationBox } from "../GmConfirmationBox/GmConfirmationBox";
 import { GmOrderStatus } from "../GmOrderStatus/GmOrderStatus";
 
+import { useVirtualInventory } from "domain/synthetics/fees/useVirtualInventory";
+import { useSafeState } from "lib/useSafeState";
 import "./GmSwapBox.scss";
 
 export enum Operation {
@@ -80,26 +82,6 @@ const getAvailableModes = (operation: Operation, market?: Market) => {
   return [Mode.Pair];
 };
 
-function useSafeState<S>(
-  inititalValue?: S | (() => S),
-  shouldUpdateFn: (prev: S, next: S) => boolean = (a, b) => a !== b
-): [S, Dispatch<SetStateAction<S>>] {
-  const [state, _setState] = useState<any>(inititalValue);
-
-  const setState = useCallback(
-    (value: S | ((prevState: S) => S)) => {
-      if (typeof value === "function") {
-        _setState(value);
-      } else if (shouldUpdateFn(state, value)) {
-        _setState(value);
-      }
-    },
-    [shouldUpdateFn, state]
-  );
-
-  return [state, setState];
-}
-
 export function GmSwapBox(p: Props) {
   const { operation, mode, setMode, setOperation } = p;
 
@@ -108,6 +90,7 @@ export function GmSwapBox(p: Props) {
   const { chainId } = useChainId();
   const { marketsInfoData } = useMarketsInfo(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
+  const { virtualInventoryForSwaps } = useVirtualInventory(chainId);
 
   const infoTokens = adaptToV1InfoTokens(tokensData || {});
 
@@ -122,8 +105,8 @@ export function GmSwapBox(p: Props) {
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
 
   const operationLabels = {
-    [Operation.Deposit]: t`Deposit`,
-    [Operation.Withdrawal]: t`Withdraw`,
+    [Operation.Deposit]: t`Buy GM`,
+    [Operation.Withdrawal]: t`Sell GM`,
   };
 
   const modeLabels = {
@@ -141,7 +124,7 @@ export function GmSwapBox(p: Props) {
   const availableModes = getAvailableModes(operation, marketInfo);
 
   const marketsOptions: DropdownOption[] = Object.values(marketsInfoData || {}).map((marketInfo) => ({
-    label: marketInfo.name,
+    label: `GM: ${marketInfo.name}`,
     value: marketInfo.marketTokenAddress,
   }));
 
@@ -149,6 +132,7 @@ export function GmSwapBox(p: Props) {
     [chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, isDeposit, marketAddress, "first"],
     undefined
   );
+
   const firstToken = getTokenData(tokensData, firstTokenAddress);
   const [firstTokenInputValue, setFirstTokenInputValue] = useSafeState<string>("");
   const firstTokenAmount = parseValue(firstTokenInputValue, firstToken?.decimals || 0);
@@ -256,8 +240,6 @@ export function GmSwapBox(p: Props) {
   }, [marketInfo]);
 
   const fees: GmSwapFees | undefined = useMemo(() => {
-    if (!marketTokenUsd?.gt(0)) return undefined;
-
     const basisUsd = isDeposit
       ? BigNumber.from(0)
           .add(longTokenUsd || 0)
@@ -298,6 +280,25 @@ export function GmSwapBox(p: Props) {
   const error = (function getError() {
     if (!marketInfo) {
       return t`Loading...`;
+    }
+
+    if (isDeposit) {
+      const totalCollateralUsd = BigNumber.from(0)
+        .add(longTokenUsd || 0)
+        .add(shortTokenUsd || 0);
+
+      if (fees.totalFees?.deltaUsd.lt(0) && fees.totalFees.deltaUsd.abs().gt(totalCollateralUsd)) {
+        return t`Fees exceed Pay amount`;
+      }
+    } else if (
+      fees.totalFees?.deltaUsd.lt(0) &&
+      fees.totalFees.deltaUsd.abs().gt(marketTokenUsd || BigNumber.from(0))
+    ) {
+      return t`Fees exceed Pay amount`;
+    }
+
+    if (longTokenAmount?.lt(0) || shortTokenAmount?.lt(0) || marketTokenAmount?.lt(0)) {
+      return t`Amount should be greater than zero`;
     }
 
     if (!marketTokenAmount?.gt(0)) {
@@ -400,7 +401,8 @@ export function GmSwapBox(p: Props) {
         !marketToken?.prices ||
         !longPoolUsd ||
         !shortPoolUsd ||
-        !focusedInput
+        !focusedInput ||
+        !virtualInventoryForSwaps
       ) {
         return;
       }
@@ -417,6 +419,7 @@ export function GmSwapBox(p: Props) {
             marketToken,
             longTokenAmount,
             shortTokenAmount,
+            virtualInventoryForSwaps,
           });
 
           if (amounts) {
@@ -443,6 +446,7 @@ export function GmSwapBox(p: Props) {
             includeShortToken: Boolean(shortTokenInputState?.address),
             previousLongTokenAmount: longTokenAmount,
             previousShortTokenAmount: shortTokenAmount,
+            virtualInventoryForSwaps,
           });
 
           if (amounts) {
@@ -577,6 +581,7 @@ export function GmSwapBox(p: Props) {
       shortTokenInputState,
       shortTokenUsd,
       tokensData,
+      virtualInventoryForSwaps,
     ]
   );
 

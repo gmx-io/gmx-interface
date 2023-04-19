@@ -42,6 +42,7 @@ export type PositionInfo = Position & {
   liquidationPrice: BigNumber | undefined;
   initialCollateralUsd: BigNumber;
   remainingCollateralUsd: BigNumber;
+  remainingCollateralAmount: BigNumber;
   hasLowCollateral: boolean;
   pnl: BigNumber;
   pnlPercentage: BigNumber;

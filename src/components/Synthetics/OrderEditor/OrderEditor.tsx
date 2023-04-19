@@ -16,6 +16,7 @@ import {
 import { PositionsInfoData, getPositionKey } from "domain/synthetics/positions";
 import {
   TokensRatio,
+  getAmountByRatio,
   getTokenData,
   getTokensRatioByAmounts,
   getTokensRatioByPrice,
@@ -44,7 +45,7 @@ import { getAcceptablePrice, getSwapPathOutputAddresses } from "domain/synthetic
 import { BigNumber } from "ethers";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
-import { getNextTokenAmount } from "../Trade/utils";
+
 import "./OrderEditor.scss";
 
 type Props = {
@@ -74,18 +75,19 @@ export function OrderEditor(p: Props) {
   const sizeDeltaUsd = parseValue(sizeInputValue || "0", USD_DECIMALS);
 
   const [triggerPirceInputValue, setTriggerPriceInputValue] = useState("");
-  const triggerPrice = parseValue(triggerPirceInputValue || "0", USD_DECIMALS);
+  const triggerPrice = parseValue(triggerPirceInputValue || "0", USD_DECIMALS)!;
 
   const { acceptablePrice } = getAcceptablePrice({
     isIncrease: isIncreaseOrderType(p.order.orderType),
     isLong: p.order.isLong,
     indexPrice: triggerPrice,
     acceptablePriceImpactBps: acceptablePriceImpactBps,
+    sizeDeltaUsd: p.order.sizeDeltaUsd,
   });
 
   // Swaps
-  const isSwap = isSwapOrderType(p.order.orderType);
   const fromToken = getTokenData(tokensData, p.order.initialCollateralTokenAddress);
+
   const { outTokenAddress: toTokenAddress } = getSwapPathOutputAddresses({
     marketsInfoData: marketsInfoData!,
     initialCollateralAddress: p.order.initialCollateralTokenAddress,
@@ -111,6 +113,8 @@ export function OrderEditor(p: Props) {
       toPrice: toTokenPrice,
     });
 
+  const isRatioInverted = markRatio?.largestToken.address === fromToken?.address;
+
   const triggerRatio = useMemo(() => {
     if (!markRatio) return undefined;
 
@@ -118,23 +122,22 @@ export function OrderEditor(p: Props) {
 
     return {
       ratio: ratio?.gt(0) ? ratio : markRatio.ratio,
-      largestAddress: markRatio.largestAddress,
-      smallestAddress: markRatio.smallestAddress,
+      largestToken: markRatio.largestToken,
+      smallestToken: markRatio.smallestToken,
     } as TokensRatio;
   }, [markRatio, triggerRatioInputValue]);
 
+  // TODO: fix
   const minOutputAmount =
-    isSwap && fromTokenPrice && toTokenPrice
-      ? getNextTokenAmount({
+    fromToken && toToken && triggerRatio
+      ? getAmountByRatio({
           fromToken,
           toToken,
           fromTokenAmount: p.order.initialCollateralDeltaAmount,
-          fromTokenPrice,
-          toTokenPrice,
-          swapTriggerRatio: triggerRatio?.ratio,
-          isInvertedTriggerRatio: triggerRatio?.largestAddress === "to",
+          ratio: triggerRatio?.ratio,
+          shouldInvertRatio: isRatioInverted,
         })
-      : undefined;
+      : p.order.minOutputAmount;
 
   const market = getByKey(marketsInfoData, p.order.marketAddress);
   const indexToken = getTokenData(tokensData, market?.indexTokenAddress);
@@ -179,12 +182,20 @@ export function OrderEditor(p: Props) {
 
   function getError() {
     if (isSwapOrderType(p.order.orderType)) {
-      if (!triggerRatio?.ratio?.gt(0)) {
+      if (!triggerRatio?.ratio?.gt(0) || !minOutputAmount.gt(0)) {
         return t`Enter a ratio`;
       }
 
-      if (minOutputAmount?.eq(p.order.minOutputAmount)) {
+      if (minOutputAmount.eq(p.order.minOutputAmount)) {
         return t`Enter a new ratio`;
+      }
+
+      if (triggerRatio && !isRatioInverted && markRatio?.ratio.lt(triggerRatio.ratio)) {
+        return t`Price above Mark Price`;
+      }
+
+      if (triggerRatio && isRatioInverted && markRatio?.ratio.gt(triggerRatio.ratio)) {
+        return t`Price below Mark Price`;
       }
 
       return;
@@ -369,9 +380,7 @@ export function OrderEditor(p: Props) {
                   setTriggerRatioInputValue(e.target.value);
                 }}
               >
-                {triggerRatio.largestAddress === fromToken?.address
-                  ? `${toToken?.symbol} per ${fromToken?.symbol}`
-                  : `${fromToken?.symbol} per ${toToken?.symbol}`}
+                {`${triggerRatio.smallestToken.symbol} per ${triggerRatio.largestToken.symbol}`}
               </BuyInputSection>
             )}
           </>

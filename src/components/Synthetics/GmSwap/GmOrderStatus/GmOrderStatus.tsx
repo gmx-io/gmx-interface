@@ -9,6 +9,7 @@ import { getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import { useEffect, useState } from "react";
+import "./GmOrderStatus.scss";
 
 type Props = {
   isDeposit: boolean;
@@ -104,7 +105,7 @@ export function GmOrderStatus(p: Props) {
   }, [depositStatuses, orderKey, p.isDeposit, p.market, touchDepositStatus, touchWithdrawalStatus, withdrawalStatuses]);
 
   return (
-    <div className="Confirmation-box">
+    <div className="Confirmation-box GmOrderStatus">
       <Modal isVisible={true} setIsVisible={p.onClose} label={t`${orderTypeText} status`} allowContentTouchMove>
         <div className={cx("Confirmation-box-main")}>
           {p.isDeposit && <Trans>Depositing to {marketName}</Trans>}

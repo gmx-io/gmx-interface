@@ -13,13 +13,14 @@ import { getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatAmount, formatUsd } from "lib/numbers";
+import { formatAmount, formatPercentage, formatUsd, getBasisPoints } from "lib/numbers";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { getBorrowingFeeFactor, getFundingFeeFactor } from "domain/synthetics/fees";
 import { getByKey } from "lib/objects";
 import { useMemo } from "react";
 import "./MarketCard.scss";
+import { ShareBar } from "components/ShareBar/ShareBar";
 
 export type Props = {
   marketAddress?: string;
@@ -55,6 +56,8 @@ export function MarketCard(p: Props) {
       fundingRate: getFundingFeeFactor(market, p.isLong, 60 * 60),
     };
   }, [market, p.isLong]);
+
+  const totalInterestUsd = market?.longInterestUsd.add(market.shortInterestUsd);
 
   return (
     <div className="Exchange-swap-market-box App-box App-box-border">
@@ -173,18 +176,71 @@ export function MarketCard(p: Props) {
                 <div>
                   <StatsTooltipRow
                     label={t`Max ${indexToken?.symbol} ${longShortText.toLocaleLowerCase()} capacity`}
-                    value={formatUsd(maxReservedUsd) || "..."}
+                    value={formatUsd(maxReservedUsd, { displayDecimals: 0 }) || "..."}
                     showDollar={false}
                   />
 
                   <StatsTooltipRow
                     label={t`Current ${indexToken?.symbol} ${longShortText.toLocaleLowerCase()}`}
-                    value={formatUsd(reservedUsd) || "..."}
+                    value={formatUsd(reservedUsd, { displayDecimals: 0 }) || "..."}
                     showDollar={false}
                   />
                 </div>
               )}
             />
+          }
+        />
+
+        <ExchangeInfoRow
+          label={t`Pool Balance`}
+          value={
+            <div className="MarketCard-pool-balance">
+              <Tooltip
+                position="right-bottom"
+                handle={
+                  totalInterestUsd?.gt(0) ? (
+                    <ShareBar
+                      className="MarketCard-pool-balance-bar"
+                      share={market?.longInterestUsd}
+                      total={totalInterestUsd}
+                    />
+                  ) : (
+                    "..."
+                  )
+                }
+                renderContent={() => (
+                  <div>
+                    {market && totalInterestUsd && (
+                      <>
+                        <StatsTooltipRow
+                          label={t`Long Open Interest`}
+                          value={
+                            <span>
+                              {formatUsd(market.longInterestUsd, { displayDecimals: 0 })} <br />
+                              {totalInterestUsd.gt(0) &&
+                                `(${formatPercentage(getBasisPoints(market.longInterestUsd, totalInterestUsd))})`}
+                            </span>
+                          }
+                          showDollar={false}
+                        />
+                        <br />
+                        <StatsTooltipRow
+                          label={t`Short Open Interest`}
+                          value={
+                            <span>
+                              {formatUsd(market.shortInterestUsd, { displayDecimals: 0 })} <br />
+                              {totalInterestUsd.gt(0) &&
+                                `(${formatPercentage(getBasisPoints(market.shortInterestUsd, totalInterestUsd))})`}
+                            </span>
+                          }
+                          showDollar={false}
+                        />
+                      </>
+                    )}
+                  </div>
+                )}
+              />
+            </div>
           }
         />
       </div>

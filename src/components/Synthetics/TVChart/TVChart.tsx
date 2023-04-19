@@ -19,8 +19,8 @@ import { SyntheticsTVDataProvider } from "domain/synthetics/tradingview/Syntheti
 import "./TVChart.scss";
 
 export type Props = {
-  ordersData: OrdersInfoData;
-  positionsData: PositionsInfoData;
+  ordersInfo?: OrdersInfoData;
+  positionsInfo?: PositionsInfoData;
   savedShouldShowPositionLines: boolean;
   chartTokenAddress?: string;
   onSelectChartTokenAddress: (tokenAddress: string) => void;
@@ -31,8 +31,8 @@ export type Props = {
 const DEFAULT_PERIOD = "5m";
 
 export function TVChart({
-  ordersData,
-  positionsData,
+  ordersInfo,
+  positionsInfo,
   savedShouldShowPositionLines,
   chartTokenAddress,
   onSelectChartTokenAddress,
@@ -74,7 +74,7 @@ export function TVChart({
       return [];
     }
 
-    const orderLines: ChartLine[] = Object.values(ordersData)
+    const orderLines: ChartLine[] = Object.values(ordersInfo || {})
       .filter((order) => {
         if (isSwapOrderType(order.orderType)) {
           return false;
@@ -102,7 +102,7 @@ export function TVChart({
         };
       });
 
-    const positionLines = Object.values(positionsData).reduce((acc, position) => {
+    const positionLines = Object.values(positionsInfo || {}).reduce((acc, position) => {
       if (
         position.marketInfo &&
         convertTokenAddress(chainId, position.marketInfo.indexTokenAddress, "wrapped") ===
@@ -126,7 +126,7 @@ export function TVChart({
     }, [] as ChartLine[]);
 
     return orderLines.concat(positionLines);
-  }, [chainId, chartTokenAddress, ordersData, positionsData, tokensData]);
+  }, [chainId, chartTokenAddress, ordersInfo, positionsInfo, tokensData]);
 
   function onSelectTokenOption(option: DropdownOption) {
     onSelectChartTokenAddress(option.value);
