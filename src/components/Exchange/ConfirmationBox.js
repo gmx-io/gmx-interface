@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo } from "react";
+import React, { useCallback, useState, useMemo, useEffect } from "react";
 import "./ConfirmationBox.css";
 import {
   USD_DECIMALS,
@@ -55,7 +55,7 @@ function getSwapSpreadInfo(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddres
   }
 }
 
-function renderAllowedSlippage(allowedSlippage) {
+function renderAllowedSlippage(setAllowedSlippage, defaultSlippage) {
   return (
     <ExchangeInfoRow
       label={
@@ -78,7 +78,7 @@ function renderAllowedSlippage(allowedSlippage) {
         />
       }
     >
-      <SlippageInput placeholderValue={allowedSlippage} />
+      <SlippageInput setAllowedSlippage={setAllowedSlippage} defaultSlippage={defaultSlippage} />
     </ExchangeInfoRow>
   );
 }
@@ -133,6 +133,15 @@ export default function ConfirmationBox(props) {
   const [isProfitWarningAccepted, setIsProfitWarningAccepted] = useState(false);
   const [isTriggerWarningAccepted, setIsTriggerWarningAccepted] = useState(false);
   const [isLimitOrdersVisible, setIsLimitOrdersVisible] = useState(false);
+
+  const [, setAllowedSlippage] = useState();
+
+  useEffect(() => {
+    setAllowedSlippage(savedSlippageAmount);
+    if (isHigherSlippageAllowed) {
+      setAllowedSlippage(DEFAULT_HIGHER_SLIPPAGE_AMOUNT);
+    }
+  }, [savedSlippageAmount, isHigherSlippageAllowed]);
 
   const onCancelOrderClick = useCallback(
     (order) => {
@@ -280,11 +289,6 @@ export default function ConfirmationBox(props) {
 
   // it's meaningless for limit/stop orders to show spread based on current prices
   const showSwapSpread = isSwap && isMarketOrder && !!spreadInfo;
-
-  let allowedSlippage = savedSlippageAmount;
-  if (isHigherSlippageAllowed) {
-    allowedSlippage = DEFAULT_HIGHER_SLIPPAGE_AMOUNT;
-  }
 
   const renderSwapSpreadWarning = useCallback(() => {
     if (!isMarketOrder) {
@@ -657,7 +661,7 @@ export default function ConfirmationBox(props) {
               </Checkbox>
             </div>
           )} */}
-          {renderAllowedSlippage(allowedSlippage)}
+          {renderAllowedSlippage(setAllowedSlippage, savedSlippageAmount)}
           {showCollateralSpread && (
             <ExchangeInfoRow label={t`Collateral Spread`} isWarning={collateralSpreadInfo.isHigh} isTop>
               {formatAmount(collateralSpreadInfo.value.mul(100), USD_DECIMALS, 2, true)}%
@@ -775,7 +779,6 @@ export default function ConfirmationBox(props) {
     minExecutionFeeErrorMessage,
     collateralTokenAddress,
     entryMarkPrice,
-    allowedSlippage,
     positionFee,
     swapFees,
     currentExecutionFee,
@@ -783,6 +786,7 @@ export default function ConfirmationBox(props) {
     renderCollateralSpreadWarning,
     collateralSpreadInfo,
     showCollateralSpread,
+    savedSlippageAmount,
   ]);
 
   const renderSwapSection = useCallback(() => {
@@ -797,7 +801,7 @@ export default function ConfirmationBox(props) {
           </ExchangeInfoRow>
         )}
         {orderOption === LIMIT && renderAvailableLiquidity()}
-        {renderAllowedSlippage(allowedSlippage)}
+        {renderAllowedSlippage(setAllowedSlippage, savedSlippageAmount)}
         <ExchangeInfoRow label={t`Mark Price`} isTop>
           {getExchangeRateDisplay(getExchangeRate(fromTokenInfo, toTokenInfo), fromTokenInfo, toTokenInfo)}
         </ExchangeInfoRow>
@@ -858,9 +862,9 @@ export default function ConfirmationBox(props) {
     minOut,
     renderFeeWarning,
     renderAvailableLiquidity,
-    allowedSlippage,
     currentExecutionFee,
     currentExecutionFeeUsd,
+    savedSlippageAmount,
   ]);
 
   return (

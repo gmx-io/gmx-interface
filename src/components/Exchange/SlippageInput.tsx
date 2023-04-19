@@ -1,23 +1,25 @@
-import { formatAmount } from "lib/numbers";
 import "./SlippageInput.scss";
 import { useState } from "react";
 import cx from "classnames";
+import { formatAmount } from "lib/numbers";
 
 const MAX_SLIPPAGE = 99 * 100;
-const HIGH_SLIPPAGE = 1 * 100;
+const HIGH_SLIPPAGE = 2 * 100;
 
-export default function SlippageInput({ placeholderValue }) {
-  const placeHolderValue = formatAmount(placeholderValue, 2, 2);
+function getSlippageText(value: number) {
+  return formatAmount(value, 2, 2);
+}
 
-  const [slippageInput, setSlippageInput] = useState<number | string>(placeHolderValue);
+export default function SlippageInput({ setAllowedSlippage, defaultSlippage }) {
+  const [slippageText, setSlippageText] = useState(getSlippageText(defaultSlippage));
   const [slippageError, setSlippageError] = useState("");
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     setSlippageError("");
     const { value } = event.target;
-
     if (value === "") {
-      setSlippageInput(value);
+      setSlippageText(value);
+      setAllowedSlippage(defaultSlippage);
       return;
     }
 
@@ -32,16 +34,18 @@ export default function SlippageInput({ placeholderValue }) {
 
     if (parsedValue >= MAX_SLIPPAGE) {
       setSlippageError("Max slippage can be 100%");
-      setSlippageInput(MAX_SLIPPAGE / 100);
+      setAllowedSlippage(MAX_SLIPPAGE);
+      setSlippageText(String(MAX_SLIPPAGE / 100));
       return;
     }
 
-    setSlippageInput(value);
+    setAllowedSlippage(parsedValue);
+    setSlippageText(value);
   }
 
   return (
     <div className={cx("Slippage-input", { "input-error": slippageError })}>
-      <input value={!!slippageInput ? slippageInput : ""} placeholder={placeHolderValue} onChange={handleChange} />
+      <input value={!!slippageText ? slippageText : ""} placeholder={String(slippageText)} onChange={handleChange} />
       <span>%</span>
     </div>
   );
