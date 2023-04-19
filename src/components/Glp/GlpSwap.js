@@ -612,8 +612,7 @@ export default function GlpSwap(props) {
       });
   };
 
-  const onClickPrimary = (e) => {
-    e.preventDefault();
+  const onClickPrimary = () => {
     if (!active) {
       connectWallet();
       return;
@@ -801,7 +800,12 @@ export default function GlpSwap(props) {
           </div>
         </div>
         <div className="GlpSwap-box App-box">
-          <form onSubmit={onClickPrimary}>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              onClickPrimary();
+            }}
+          >
             <Tab
               options={[t`Buy GLP`, t`Sell GLP`]}
               option={tabLabel}

@@ -1646,8 +1646,7 @@ export default function SwapBox(props) {
     });
   }
 
-  const onClickPrimary = (e) => {
-    e.preventDefault();
+  const onClickPrimary = () => {
     if (isStopOrder) {
       setOrderOption(MARKET);
       return;
@@ -1926,7 +1925,12 @@ export default function SwapBox(props) {
         {active && <div className="Exchange-swap-account" >
         </div>}
       </div> */}
-      <form onSubmit={onClickPrimary}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          onClickPrimary();
+        }}
+      >
         <div className="Exchange-swap-box-inner App-box-highlight">
           <div>
             <Tab
