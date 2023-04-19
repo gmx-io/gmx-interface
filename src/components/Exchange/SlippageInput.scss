@@ -1,17 +1,39 @@
-.Slippage-input {
-  border: 1px solid var(--dark-blue-border);
-  border-radius: var(--border-radius-sm);
-  padding-right: 0.5rem;
-  line-height: 1;
+.Slippage-input-wrapper {
+  position: relative;
+  .Slippage-list {
+    position: absolute;
+    display: flex;
+    list-style: none;
+    border-radius: var(--border-radius-sm);
+    right: 0;
+    padding: 0;
+    top: 1rem;
+    background: var(--primary-btn-bg);
 
-  &.input-error {
-    border-color: #f3b50e;
+    li {
+      padding: 0.25rem 0.5rem;
+      cursor: pointer;
+      border-radius: var(--border-radius-sm);
+      &:hover {
+        background: var(--primary-btn-hover);
+      }
+    }
   }
-  input {
-    width: 4.5rem;
-    padding: 0.1rem 0.55rem;
-    font-size: 1.2rem;
-    border-radius: 4px;
-    text-align: right;
+  .Slippage-input {
+    border: 1px solid var(--dark-blue-border);
+    border-radius: var(--border-radius-sm);
+    padding-right: 0.5rem;
+    line-height: 1;
+
+    &.input-error {
+      border-color: #f3b50e;
+    }
+    input {
+      width: 4.5rem;
+      padding: 0.1rem 0.55rem;
+      font-size: 1.4rem;
+      border-radius: 4px;
+      text-align: right;
+    }
   }
 }
