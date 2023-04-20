@@ -352,7 +352,7 @@ export function useTrades(chainId, account, forSingleAccount, afterId) {
   return { trades, updateTrades };
 }
 
-export function useMinExecutionFee(library, active, chainId, infoTokens) {
+export function useExecutionFee(library, active, chainId, infoTokens) {
   const positionRouterAddress = getContract(chainId, "PositionRouter");
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
 
@@ -383,7 +383,7 @@ export function useMinExecutionFee(library, active, chainId, infoTokens) {
   let multiplier;
 
   if (chainId === ARBITRUM || chainId === ARBITRUM_TESTNET) {
-    multiplier = 1600000;
+    multiplier = 2150000;
   }
 
   // multiplier for Avalanche is just the average gas usage
