@@ -8,14 +8,14 @@
     right: 0;
     padding: 0;
     top: 1rem;
-    background: #2a2b3d;
+    background: #212540;
 
     li {
-      padding: 0.25rem 0.5rem;
+      padding: 0.5rem 0.75rem;
       cursor: pointer;
       border-radius: var(--border-radius-sm);
       &:hover {
-        background: var(--primary-btn-hover);
+        background: rgba(58, 63, 121, 0.5607843137254902);
       }
     }
   }
@@ -29,8 +29,8 @@
       border-color: #f3b50e;
     }
     input {
-      width: 4.5rem;
-      padding: 0.1rem 0.55rem;
+      width: 5rem;
+      padding: 0 0.5rem;
       font-size: 1.4rem;
       border-radius: 4px;
       text-align: right;

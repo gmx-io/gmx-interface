@@ -12,7 +12,8 @@ function getSlippageText(value: number) {
 }
 
 export default function SlippageInput({ setAllowedSlippage, defaultSlippage }) {
-  const [slippageText, setSlippageText] = useState(getSlippageText(defaultSlippage));
+  const defaultValue = getSlippageText(defaultSlippage);
+  const [slippageText, setSlippageText] = useState(defaultValue);
   const [slippageError, setSlippageError] = useState("");
   const [isPanelVisible, setIsPanelVisible] = useState(false);
 
@@ -52,7 +53,7 @@ export default function SlippageInput({ setAllowedSlippage, defaultSlippage }) {
           onFocus={() => setIsPanelVisible(true)}
           onBlur={() => setTimeout(() => setIsPanelVisible(false), 100)}
           value={!!slippageText ? slippageText : ""}
-          placeholder={String(slippageText)}
+          placeholder={String(slippageText || defaultValue)}
           onChange={handleChange}
         />
         <span>%</span>
