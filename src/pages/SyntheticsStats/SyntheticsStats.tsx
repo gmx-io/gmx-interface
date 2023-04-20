@@ -2,7 +2,7 @@ import { useChainId } from "lib/chains";
 import { PRECISION } from "lib/legacy";
 
 import { BigNumber, BigNumberish } from "ethers";
-import { formatAmount, formatDeltaUsd, formatUsd } from "lib/numbers";
+import { formatAmount, formatUsd } from "lib/numbers";
 
 import { ShareBar } from "components/ShareBar/ShareBar";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -11,6 +11,7 @@ import { getBorrowingFeeFactor, getFundingApr } from "domain/synthetics/fees";
 import { useVirtualInventory } from "domain/synthetics/fees/useVirtualInventory";
 import { getMaxReservedUsd, getReservedUsd, useMarketsInfo } from "domain/synthetics/markets";
 import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
+import cx from "classnames";
 import "./SyntheticsStats.scss";
 
 function formatAmountHuman(amount: BigNumberish | undefined, tokenDecimals: number) {
@@ -154,7 +155,11 @@ export function SyntheticsStats() {
                 <td>
                   <div className="cell">
                     <Tooltip
-                      handle={`$${formatAmountHuman(market.netPnlMax, 30)}`}
+                      handle={
+                        <span className={cx({ positive: market.netPnlMax.gt(0), negative: market.netPnlMax.lt(0) })}>
+                          {market.netPnlMax.gt(0) ? "+" : "-"}${formatAmountHuman(market.netPnlMax.abs(), 30)}
+                        </span>
+                      }
                       renderContent={() => (
                         <>
                           <StatsTooltipRow label="PnL Long" value={formatAmountHuman(market.pnlLongMax, 30)} />
