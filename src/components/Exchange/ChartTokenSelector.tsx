@@ -23,7 +23,6 @@ type Props = {
   onSelectToken: (token: Token) => void;
   swapOption: string;
   infoTokens?: InfoTokens;
-  setIsTokenSelectorOpen: (isOpen: boolean) => void;
 };
 
 function addLiquidityToTokens(tokens: Token[], infoTokens: InfoTokens): ChartToken[] {
@@ -62,7 +61,7 @@ function addMaxInAndOut(tokens: Token[], infoTokens: InfoTokens): ChartToken[] {
 }
 
 export default function ChartTokenSelector(props: Props) {
-  const { chainId, selectedToken, onSelectToken, swapOption, infoTokens, setIsTokenSelectorOpen } = props;
+  const { chainId, selectedToken, onSelectToken, swapOption, infoTokens } = props;
   const [searchKeyword, setSearchKeyword] = useState("");
   const isLong = swapOption === LONG;
   const isShort = swapOption === SHORT;
@@ -107,7 +106,6 @@ export default function ChartTokenSelector(props: Props) {
   return (
     <Popover>
       {({ open }) => {
-        setIsTokenSelectorOpen(open);
         if (!open) {
           setSearchKeyword("");
         }

@@ -59,7 +59,6 @@ export default function ExchangeTVChart(props) {
     setToTokenAddress,
   } = props;
   const [currentSeries] = useState();
-  const [isTokenSelectorOpen, setIsTokenSelectorOpen] = useState(false);
 
   const dataProvider = useRef();
   const fromToken = getTokenInfo(infoTokens, fromTokenAddress);
@@ -293,7 +292,6 @@ export default function ExchangeTVChart(props) {
                 infoTokens={infoTokens}
                 onSelectToken={onSelectToken}
                 className="chart-token-selector"
-                setIsTokenSelectorOpen={setIsTokenSelectorOpen}
               />
             </div>
           </div>
@@ -328,7 +326,7 @@ export default function ExchangeTVChart(props) {
           </div>
         </div>
       </div>
-      <div className={cx("ExchangeChart-bottom App-box App-box-border", { "ExchangeChart-blur": isTokenSelectorOpen })}>
+      <div className="ExchangeChart-bottom App-box App-box-border">
         {availableNetworksForChart.includes(chainId) && chartToken.symbol && chainId ? (
           <TVChartContainer
             chartLines={chartLines}
