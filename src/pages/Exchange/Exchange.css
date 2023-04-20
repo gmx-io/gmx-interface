@@ -902,9 +902,12 @@ table.Exchange-list-small td {
   margin-right: 0.25rem;
 }
 
-.Position-leverage:hover,
-.Position-pnl:hover {
+.Position-leverage:hover {
   opacity: 0.9;
+}
+
+.Position-pnl:hover {
+  color: #fb5971;
 }
 
 @media (max-width: 1500px) {
