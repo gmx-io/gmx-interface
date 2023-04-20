@@ -1000,7 +1000,7 @@ msgstr "Conectar"
 msgid "Connect Wallet"
 msgstr "Conectar Monedero"
 
-#: src/components/SubmitButton/SubmitButton.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Connect wallet"
 msgstr ""
@@ -2975,6 +2975,7 @@ msgstr "Solo letras, números y guiones bajos están permitidos"
 msgid "Open Fee"
 msgstr ""
 
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/pages/Home/Home.js
 msgid "Open Interest"
 msgstr "Interés Abierto"
@@ -3248,8 +3249,8 @@ msgid "Pool Amount"
 msgstr "Cantidad de Reserva"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "Pool Balance"
-msgstr ""
+#~ msgid "Pool Balance"
+#~ msgstr ""
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx

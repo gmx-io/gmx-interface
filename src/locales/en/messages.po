@@ -1000,7 +1000,7 @@ msgstr "Connect"
 msgid "Connect Wallet"
 msgstr "Connect Wallet"
 
-#: src/components/SubmitButton/SubmitButton.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Connect wallet"
 msgstr "Connect wallet"
@@ -2975,6 +2975,7 @@ msgstr "Only letters, numbers and underscores are allowed."
 msgid "Open Fee"
 msgstr "Open Fee"
 
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/pages/Home/Home.js
 msgid "Open Interest"
 msgstr "Open Interest"
@@ -3248,8 +3249,8 @@ msgid "Pool Amount"
 msgstr "Pool Amount"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "Pool Balance"
-msgstr "Pool Balance"
+#~ msgid "Pool Balance"
+#~ msgstr "Pool Balance"
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
