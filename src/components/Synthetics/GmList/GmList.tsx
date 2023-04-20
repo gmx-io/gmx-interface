@@ -38,7 +38,7 @@ export function GmList() {
   const isMobile = useMedia("(max-width: 1100px)");
 
   return (
-    <div>
+    <div className="GMList">
       {!isMobile && (
         <div className="token-table-wrapper App-card">
           <div className="App-card-title">
