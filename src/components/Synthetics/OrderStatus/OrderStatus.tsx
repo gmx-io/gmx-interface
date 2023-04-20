@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
+import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
 import { RequestStatus } from "components/RequestStatus/RequestStatus";
-import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useMarkets } from "domain/synthetics/markets";
 import { OrderType, isIncreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
@@ -191,9 +191,9 @@ export function OrderStatus(p: Props) {
             {renderExecutionStatus()}
 
             <div className="App-card-divider" />
-            <SubmitButton onClick={p.onClose} disabled={isProcessing}>
+            <Button className="w-100" variant="primary-action" onClick={p.onClose} disabled={isProcessing}>
               {isProcessing ? t`Processing...` : t`Close`}
-            </SubmitButton>
+            </Button>
           </>
         )}
       </Modal>

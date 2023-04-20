@@ -1,8 +1,8 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
+import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
 import { RequestStatus } from "components/RequestStatus/RequestStatus";
-import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useMarketsInfo } from "domain/synthetics/markets";
 import { getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
@@ -117,9 +117,9 @@ export function GmOrderStatus(p: Props) {
 
         <div className="App-card-divider" />
 
-        <SubmitButton onClick={p.onClose} disabled={isProcessing}>
+        <Button className="w-100" variant="primary-action" onClick={p.onClose} disabled={isProcessing}>
           {isProcessing ? t`Processing...` : t`Close`}
-        </SubmitButton>
+        </Button>
       </Modal>
     </div>
   );

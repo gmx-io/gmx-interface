@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
+import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
-import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { helperToast } from "lib/helperToast";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";
 import { useState } from "react";
@@ -51,7 +51,7 @@ export function AcceptbablePriceImpactEditor(p: Props) {
         </div>
       </div>
 
-      <SubmitButton onClick={onSubmit}>{t`Save`}</SubmitButton>
+      <Button className="w-100" variant="primary-action" onClick={onSubmit}>{t`Save`}</Button>
     </Modal>
   );
 }

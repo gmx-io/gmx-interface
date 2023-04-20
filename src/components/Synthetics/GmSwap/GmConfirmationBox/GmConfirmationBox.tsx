@@ -2,25 +2,25 @@ import { Trans, plural, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import cx from "classnames";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
+import Checkbox from "components/Checkbox/Checkbox";
 import Modal from "components/Modal/Modal";
-import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { getContract } from "config/contracts";
 import { getToken } from "config/tokens";
 import { ExecutionFee } from "domain/synthetics/fees";
 import { useMarkets } from "domain/synthetics/markets";
 import { createDepositTxn } from "domain/synthetics/markets/createDepositTxn";
 import { createWithdrawalTxn } from "domain/synthetics/markets/createWithdrawalTxn";
-import { getTokenData, getNeedTokenApprove, useAvailableTokensData } from "domain/synthetics/tokens";
+import { getNeedTokenApprove, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { TokenData } from "domain/synthetics/tokens/types";
 import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 import { GmSwapFees } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { formatTokenAmount, formatTokenAmountWithUsd } from "lib/numbers";
-import { GmFees } from "../GmFees/GmFees";
-import Checkbox from "components/Checkbox/Checkbox";
 import { getByKey } from "lib/objects";
+import { GmFees } from "../GmFees/GmFees";
 
+import Button from "components/Button/Button";
 import "./GmConfirmationBox.scss";
 
 type Props = {
@@ -300,9 +300,14 @@ export function GmConfirmationBox({
           </>
         )}
         <div className="Confirmation-box-row">
-          <SubmitButton onClick={submitButtonState.onClick} disabled={submitButtonState.disabled}>
+          <Button
+            className="w-100"
+            variant="primary-action"
+            onClick={submitButtonState.onClick}
+            disabled={submitButtonState.disabled}
+          >
             {submitButtonState.text}
-          </SubmitButton>
+          </Button>
         </div>
       </Modal>
     </div>

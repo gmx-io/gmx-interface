@@ -83,7 +83,7 @@ function getSwapOrderMessage(tradeAction: SwapTradeAction) {
         ? [fromTokenInfo, toTokenInfo]
         : [toTokenInfo, fromTokenInfo];
 
-    const ratioText = getExchangeRateDisplay(tokensRatio?.ratio, largest, smallest);
+    const ratioText = tokensRatio.ratio.gt(0) ? getExchangeRateDisplay(tokensRatio?.ratio, largest, smallest) : "0";
 
     return t`${actionText} Order: Swap ${fromText} for ${toText}, Price: ${ratioText}`;
   }

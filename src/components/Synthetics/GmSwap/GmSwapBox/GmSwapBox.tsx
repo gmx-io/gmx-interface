@@ -2,22 +2,12 @@ import { t } from "@lingui/macro";
 import cx from "classnames";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { Dropdown, DropdownOption } from "components/Dropdown/Dropdown";
-import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
 import Tab from "components/Tab/Tab";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
 import { SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY } from "config/localStorage";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
-import { GmSwapFees } from "domain/synthetics/trade";
-import {
-  getNextDepositAmountsByCollaterals,
-  getNextDepositAmountsByMarketToken,
-} from "domain/synthetics/trade/utils/deposit";
-import {
-  getNextWithdrawalAmountsByCollaterals,
-  getNextWithdrawalAmountsByMarketToken,
-} from "domain/synthetics/trade/utils/withdrawal";
 import {
   FeeItem,
   estimateExecuteDepositGasLimit,
@@ -32,6 +22,15 @@ import { useMarketTokensData, useMarketsInfo } from "domain/synthetics/markets";
 import { Market } from "domain/synthetics/markets/types";
 import { getAvailableUsdLiquidityForCollateral, getPoolUsd } from "domain/synthetics/markets/utils";
 import { adaptToV1InfoTokens, convertToUsd, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
+import { GmSwapFees } from "domain/synthetics/trade";
+import {
+  getNextDepositAmountsByCollaterals,
+  getNextDepositAmountsByMarketToken,
+} from "domain/synthetics/trade/utils/deposit";
+import {
+  getNextWithdrawalAmountsByCollaterals,
+  getNextWithdrawalAmountsByMarketToken,
+} from "domain/synthetics/trade/utils/withdrawal";
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
@@ -44,6 +43,8 @@ import { IoMdSwap } from "react-icons/io";
 import { GmConfirmationBox } from "../GmConfirmationBox/GmConfirmationBox";
 import { GmOrderStatus } from "../GmOrderStatus/GmOrderStatus";
 
+import { useWeb3React } from "@web3-react/core";
+import Button from "components/Button/Button";
 import { useVirtualInventory } from "domain/synthetics/fees/useVirtualInventory";
 import { useSafeState } from "lib/useSafeState";
 import "./GmSwapBox.scss";
@@ -88,6 +89,7 @@ export function GmSwapBox(p: Props) {
   const marketAddress = p.selectedMarketAddress;
 
   const { chainId } = useChainId();
+  const { account } = useWeb3React();
   const { marketsInfoData } = useMarketsInfo(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
   const { virtualInventoryForSwaps } = useVirtualInventory(chainId);
@@ -333,6 +335,14 @@ export function GmSwapBox(p: Props) {
       return {
         text: error,
         disabled: true,
+      };
+    }
+
+    if (!account) {
+      return {
+        text: t`Connect wallet`,
+        disabled: false,
+        onClick: p.onConnectWallet,
       };
     }
 
@@ -778,14 +788,14 @@ export function GmSwapBox(p: Props) {
       </div>
 
       <div className="Exchange-swap-button-container">
-        <SubmitButton
-          authRequired
-          onConnectWallet={p.onConnectWallet}
+        <Button
+          className="w-100"
+          variant="primary-action"
           onClick={submitButtonState.onClick}
           disabled={submitButtonState.disabled}
         >
           {submitButtonState.text}
-        </SubmitButton>
+        </Button>
       </div>
 
       {stage === "confirmation" && (

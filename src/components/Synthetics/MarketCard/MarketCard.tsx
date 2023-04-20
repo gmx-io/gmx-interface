@@ -192,7 +192,7 @@ export function MarketCard(p: Props) {
         />
 
         <ExchangeInfoRow
-          label={t`Pool Balance`}
+          label={t`Open Interest`}
           value={
             <div className="MarketCard-pool-balance">
               <Tooltip

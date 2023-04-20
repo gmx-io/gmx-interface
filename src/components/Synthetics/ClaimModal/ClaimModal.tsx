@@ -1,7 +1,6 @@
 import { t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import Modal from "components/Modal/Modal";
-import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { MarketInfo, getTotalClaimableFundingUsd, useMarketsInfo } from "domain/synthetics/markets";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
@@ -12,6 +11,7 @@ import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { claimCollateralTxn } from "domain/synthetics/markets/claimCollateralTxn";
 
+import Button from "components/Button/Button";
 import "./ClaimModal.scss";
 
 type Props = {
@@ -115,7 +115,7 @@ export function ClaimModal(p: Props) {
     <Modal className="Confirmation-box ClaimableModal" isVisible={true} setIsVisible={onClose} label={t`Confirm Claim`}>
       <div className="ConfirmationBox-main text-center">Claim {formatUsd(totalClaimableFundingUsd)}</div>
       <div className="ClaimModal-content">{markets.map(renderMarketSection)}</div>
-      <SubmitButton onClick={onSubmit}>{t`Claim`}</SubmitButton>
+      <Button className="w-100" variant="primary-action" onClick={onSubmit}>{t`Claim`}</Button>
     </Modal>
   );
 }

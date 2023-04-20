@@ -1,7 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Modal from "components/Modal/Modal";
-import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { useMarketsInfo } from "domain/synthetics/markets";
 import {
   OrderInfo,
@@ -46,6 +45,7 @@ import { BigNumber } from "ethers";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
 
+import Button from "components/Button/Button";
 import "./OrderEditor.scss";
 
 type Props = {
@@ -409,9 +409,14 @@ export function OrderEditor(p: Props) {
         </div>
 
         <div className="Exchange-swap-button-container">
-          <SubmitButton onClick={submitButtonState.onClick} disabled={submitButtonState.disabled} authRequired>
+          <Button
+            className="w-100"
+            variant="primary-action"
+            onClick={submitButtonState.onClick}
+            disabled={submitButtonState.disabled}
+          >
             {submitButtonState.text}
-          </SubmitButton>
+          </Button>
         </div>
       </Modal>
     </div>
