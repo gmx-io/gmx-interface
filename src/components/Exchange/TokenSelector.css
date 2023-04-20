@@ -17,10 +17,6 @@
   overflow-y: auto;
 }
 
-.TokenSelector.PositionSeller-token-selector .Modal .Modal-content .Modal-body {
-  max-height: calc(80vh - 13rem);
-}
-
 .TokenSelector-token-name {
   margin-right: 1.5rem;
 }
