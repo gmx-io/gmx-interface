@@ -382,12 +382,8 @@ export function useMinExecutionFee(library, active, chainId, infoTokens) {
 
   let multiplier;
 
-  // if gas prices on Arbitrum are high, the main transaction costs would come from the L2 gas usage
-  // for executing positions this is around 65,000 gas
-  // if gas prices on Ethereum are high, than the gas usage might be higher, this calculation doesn't deal with that
-  // case yet
   if (chainId === ARBITRUM || chainId === ARBITRUM_TESTNET) {
-    multiplier = 65000;
+    multiplier = 3300000;
   }
 
   // multiplier for Avalanche is just the average gas usage
