@@ -51,7 +51,7 @@ export default function SlippageInput({ setAllowedSlippage, defaultSlippage }) {
       <div className={cx("Slippage-input", { "input-error": slippageError })}>
         <input
           onFocus={() => setIsPanelVisible(true)}
-          onBlur={() => setTimeout(() => setIsPanelVisible(false), 100)}
+          onBlur={() => setIsPanelVisible(false)}
           value={!!slippageText ? slippageText : ""}
           placeholder={String(slippageText || defaultValue)}
           onChange={handleChange}
@@ -63,6 +63,7 @@ export default function SlippageInput({ setAllowedSlippage, defaultSlippage }) {
           {SLIPPAGE_LISTS.map((slippage) => (
             <li
               key={slippage}
+              onMouseDown={(e) => e.preventDefault()}
               onClick={() => {
                 setSlippageText(String(slippage));
                 setAllowedSlippage(slippage * 100);
