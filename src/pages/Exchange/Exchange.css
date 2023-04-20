@@ -902,6 +902,11 @@ table.Exchange-list-small td {
   margin-right: 0.25rem;
 }
 
+.Position-leverage:hover,
+.Position-pnl:hover {
+  opacity: 0.9;
+}
+
 @media (max-width: 1500px) {
   .Exchange-swap-box {
     width: 38.75rem;
