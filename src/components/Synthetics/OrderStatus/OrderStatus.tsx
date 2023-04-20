@@ -182,7 +182,7 @@ export function OrderStatus(p: Props) {
   );
 
   return (
-    <div className="Confirmation-box">
+    <div className="Confirmation-box OrderStatus">
       <Modal isVisible={p.isVisible} setIsVisible={p.onClose} label={t`Order status`} allowContentTouchMove>
         {p.isVisible && (
           <>

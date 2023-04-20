@@ -104,6 +104,7 @@ import {
 } from "lib/wallets";
 import { MarketPoolsPage } from "pages/MarketPoolsPage/MarketPoolsPage";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
+import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsFallbackPage";
 import Button from "components/Button/Button";
 
@@ -484,6 +485,9 @@ function FullApp() {
               </Route>
               <Route exact path="/stats">
                 <Stats />
+              </Route>
+              <Route exact path="/stats/v2">
+                {getIsSyntheticsSupported(chainId) ? <SyntheticsStats /> : <SyntheticsFallbackPage />}
               </Route>
               <Route exact path="/earn">
                 <Stake setPendingTxns={setPendingTxns} connectWallet={connectWallet} />

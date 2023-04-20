@@ -86,7 +86,7 @@ export function getReservedUsd(marketInfo: MarketInfo, isLong: boolean) {
   if (isLong) {
     return convertToUsd(marketInfo.longInterestInTokens, marketInfo.indexToken.decimals, indexToken.prices.maxPrice)!;
   } else {
-    return marketInfo.longInterestUsd;
+    return marketInfo.shortInterestUsd;
   }
 }
 

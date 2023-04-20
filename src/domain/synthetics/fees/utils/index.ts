@@ -3,6 +3,7 @@ import { MarketInfo } from "domain/synthetics/markets";
 import { BigNumber } from "ethers";
 import { applyFactor, getBasisPoints } from "lib/numbers";
 import { FeeItem } from "../types";
+import { PRECISION } from "lib/legacy";
 
 export * from "./executionFee";
 export * from "./priceImpact";
@@ -17,6 +18,25 @@ export function getFundingFeeFactor(marketInfo: MarketInfo, isLong: boolean, per
   const isPositive = isLong ? longsPayShorts : !longsPayShorts;
 
   return fundingPerSecond.mul(isPositive ? 1 : -1).mul(periodInSeconds || 1);
+}
+
+export function getFundingApr(marketInfo: MarketInfo, isLong: boolean, periodInSeconds: number) {
+  const fundingFactor = getFundingFeeFactor(marketInfo, isLong, periodInSeconds);
+
+  const usdImbalance = marketInfo.longInterestUsd.sub(marketInfo.shortInterestUsd).abs();
+  const fundingUsd = applyFactor(usdImbalance, fundingFactor);
+
+  if (fundingUsd.eq(0)) {
+    return BigNumber.from(0);
+  }
+
+  if (isLong && marketInfo.longInterestUsd.gt(0)) {
+    return fundingUsd.mul(PRECISION).div(marketInfo.longInterestUsd).mul(100);
+  } else if (!isLong && marketInfo.shortInterestUsd.gt(0)) {
+    return fundingUsd.mul(PRECISION).div(marketInfo.shortInterestUsd).mul(100);
+  }
+
+  return BigNumber.from(0);
 }
 
 export function getFundingFeeRateUsd(
