@@ -2975,10 +2975,13 @@ msgstr "Les lettres, les chiffres et les caractères de soulignement sont autori
 msgid "Open Fee"
 msgstr ""
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/pages/Home/Home.js
 msgid "Open Interest"
 msgstr "Intérêt ouvert"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Open Interest Balance"
+msgstr ""
 
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
 #~ msgid "Open Interest Long"

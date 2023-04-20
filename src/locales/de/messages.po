@@ -2980,9 +2980,12 @@ msgstr "Es sind nur Buchstaben, Zahlen und Unterstriche erlaubt."
 msgid "Open Fee"
 msgstr ""
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/pages/Home/Home.js
 msgid "Open Interest"
+msgstr ""
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Open Interest Balance"
 msgstr ""
 
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx

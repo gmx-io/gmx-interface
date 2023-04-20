@@ -2975,10 +2975,13 @@ msgstr "Допускаются только буквы, цифры и знаки
 msgid "Open Fee"
 msgstr ""
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/pages/Home/Home.js
 msgid "Open Interest"
 msgstr "Открытый Интерес"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Open Interest Balance"
+msgstr ""
 
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
 #~ msgid "Open Interest Long"

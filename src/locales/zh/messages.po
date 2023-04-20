@@ -2975,10 +2975,13 @@ msgstr "只允许使用字母、数字和下底线"
 msgid "Open Fee"
 msgstr ""
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/pages/Home/Home.js
 msgid "Open Interest"
 msgstr "开启利息"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Open Interest Balance"
+msgstr ""
 
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
 #~ msgid "Open Interest Long"

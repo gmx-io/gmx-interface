@@ -2975,10 +2975,13 @@ msgstr "Only letters, numbers and underscores are allowed."
 msgid "Open Fee"
 msgstr "Open Fee"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/pages/Home/Home.js
 msgid "Open Interest"
 msgstr "Open Interest"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Open Interest Balance"
+msgstr "Open Interest Balance"
 
 #: src/components/Synthetics/Trade/MarketCard/MarketCard.tsx
 #~ msgid "Open Interest Long"
