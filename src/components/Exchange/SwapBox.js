@@ -1921,10 +1921,6 @@ export default function SwapBox(props) {
 
   return (
     <div className="Exchange-swap-box">
-      {/* <div className="Exchange-swap-wallet-box App-box">
-        {active && <div className="Exchange-swap-account" >
-        </div>}
-      </div> */}
       <form
         onSubmit={(e) => {
           e.preventDefault();
