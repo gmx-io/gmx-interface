@@ -383,7 +383,7 @@ export function useMinExecutionFee(library, active, chainId, infoTokens) {
   let multiplier;
 
   if (chainId === ARBITRUM || chainId === ARBITRUM_TESTNET) {
-    multiplier = 3300000;
+    multiplier = 1600000;
   }
 
   // multiplier for Avalanche is just the average gas usage
