@@ -362,7 +362,7 @@ export default function PositionSeller(props) {
         }
       }
     }
-
+    console.log({ nextDelta, nextHasProfit, adjustedDelta });
     maxAmount = position.size;
     maxAmountFormatted = formatAmount(maxAmount, USD_DECIMALS, 2, true);
     maxAmountFormattedFree = formatAmountFree(maxAmount, USD_DECIMALS, 2);
@@ -454,15 +454,22 @@ export default function PositionSeller(props) {
     } else {
       if (position.collateral) {
         nextCollateral = position.collateral;
+
+        if (position.hasProfit) {
+          if (adjustedDelta.gt(0) && adjustedDelta.lt(totalFees)) {
+            nextCollateral = nextCollateral.sub(adjustedDelta.sub(totalFees));
+          }
+        } else {
+          nextCollateral = nextCollateral.sub(adjustedDelta);
+        }
+
         if (collateralDelta && collateralDelta.gt(0)) {
           nextCollateral = position.collateral.sub(collateralDelta);
-        } else if (position.delta && position.delta.gt(0) && sizeDelta) {
-          if (!position.hasProfit) {
-            nextCollateral = nextCollateral.sub(adjustedDelta);
-          }
         }
       }
     }
+
+    console.log({ nextCollateral, collateralDelta, receiveAmount, receiveUsd });
 
     if (fromAmount) {
       if (!isClosing && !keepLeverage) {

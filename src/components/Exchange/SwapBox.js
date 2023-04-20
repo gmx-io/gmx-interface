@@ -1769,7 +1769,7 @@ export default function SwapBox(props) {
     }
   }
 
-  const fromUsdMinAfterFees = fromUsdMin?.sub(swapFees ?? 0).sub(positionFee ?? 0);
+  const fromUsdMinAfterFees = fromUsdMin?.sub(swapFees ?? 0).sub(positionFee ?? 0) || bigNumberify(0);
   const liquidationPrice = getLiquidation({
     isLong,
     size: hasExistingPosition ? existingPosition.size.add(toUsdMax || 0) : toUsdMax ?? bigNumberify(0),
