@@ -41,7 +41,7 @@ export function useMarkets(chainId: number): MarketsResult {
             const isSameCollaterals = longTokenAddress === shortTokenAddress;
             const isSpotOnly = indexTokenAddress === ethers.constants.AddressZero;
 
-            const name = getMarketFullName({ indexToken, longToken, shortToken });
+            const name = getMarketFullName({ indexToken, longToken, shortToken, isSpotOnly });
 
             acc.marketsData[marketTokenAddress] = {
               marketTokenAddress,

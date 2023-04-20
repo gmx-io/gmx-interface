@@ -8,10 +8,20 @@ import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { Token } from "domain/tokens";
 import { VirtualInventoryForPositionsData, getCappedPositionImpactUsd, getPriceImpactForPosition } from "../fees";
 
-export function getMarketFullName(p: { longToken: Token; shortToken: Token; indexToken: Token }) {
-  const { indexToken, longToken, shortToken } = p;
+export function getMarketFullName(p: { longToken: Token; shortToken: Token; indexToken: Token; isSpotOnly: boolean }) {
+  const { indexToken, longToken, shortToken, isSpotOnly } = p;
 
-  return `${indexToken.symbol}/USD [${longToken.symbol}-${shortToken.symbol}]`;
+  return `${getMarketIndexName({ indexToken, isSpotOnly })} ${getMarketPoolName({ longToken, shortToken })}`;
+}
+
+export function getMarketIndexName(p: { indexToken: Token; isSpotOnly: boolean }) {
+  const { indexToken, isSpotOnly } = p;
+
+  if (isSpotOnly) {
+    return `SPOT`;
+  }
+
+  return `${indexToken.baseSymbol || indexToken.symbol}/USD`;
 }
 
 export function getMarketPoolName(p: { longToken: Token; shortToken: Token }) {

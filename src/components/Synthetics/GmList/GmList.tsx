@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import Button from "components/Button/Button";
 import { getChainName } from "config/chains";
-import { useMarketTokensData, useMarkets } from "domain/synthetics/markets";
+import { getMarketIndexName, getMarketPoolName, useMarketTokensData, useMarkets } from "domain/synthetics/markets";
 import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
 import { convertToUsd, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
@@ -68,11 +68,11 @@ export function GmList() {
             </thead>
             <tbody>
               {marketTokens.map((token) => {
-                const market = getByKey(marketsData, token.address);
+                const market = getByKey(marketsData, token.address)!;
 
-                const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
-                const longToken = getTokenData(tokensData, market?.longTokenAddress);
-                const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
+                const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native")!;
+                const longToken = getTokenData(tokensData, market?.longTokenAddress)!;
+                const shortToken = getTokenData(tokensData, market?.shortTokenAddress)!;
 
                 const apr = marketsTokensAPRData?.[token.address];
 
@@ -84,10 +84,10 @@ export function GmList() {
                     <td>
                       <div className="App-card-title-info">
                         <div className="App-card-title-info-text">
-                          <div className="App-card-info-title">{indexToken?.symbol}/USD</div>
-                          <div className="App-card-info-subtitle">
-                            [{longToken?.symbol}-{shortToken?.symbol}]
+                          <div className="App-card-info-title">
+                            {getMarketIndexName({ indexToken, isSpotOnly: market?.isSpotOnly })}
                           </div>
+                          <div className="App-card-info-subtitle">{getMarketPoolName({ longToken, shortToken })}</div>
                         </div>
                       </div>
                     </td>

@@ -9,7 +9,14 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getBorrowingFeeFactor, getFundingApr } from "domain/synthetics/fees";
 import { useVirtualInventory } from "domain/synthetics/fees/useVirtualInventory";
-import { getMaxReservedUsd, getReservedUsd, useMarketsInfo } from "domain/synthetics/markets";
+import {
+  MarketInfo,
+  getMarketIndexName,
+  getMarketPoolName,
+  getMaxReservedUsd,
+  getReservedUsd,
+  useMarketsInfo,
+} from "domain/synthetics/markets";
 import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import cx from "classnames";
 import "./SyntheticsStats.scss";
@@ -121,10 +128,8 @@ export function SyntheticsStats() {
               <tr key={market.marketTokenAddress}>
                 <td>
                   <div className="cell">
-                    <div>{market.indexToken.symbol}/USD</div>
-                    <div className="muted">
-                      [{market.longToken.symbol}-{market.shortToken.symbol}]
-                    </div>
+                    <div>{getMarketIndexName(market)}</div>
+                    <div className="muted">{getMarketPoolName(market)}</div>
                   </div>
                 </td>
                 <td>
