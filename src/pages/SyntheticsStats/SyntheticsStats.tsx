@@ -29,7 +29,7 @@ function formatFactor(factor: BigNumber) {
   if (factor.gt(PRECISION)) {
     return factor.div(PRECISION).toString();
   } else if (factor.gt(0)) {
-    let factorDecimals = PRECISION.div(factor).toString().length - 1;
+    let factorDecimals = PRECISION.div(factor).toString().length;
 
     return (Number(factor) / 10 ** 30).toFixed(factorDecimals);
   }
@@ -233,7 +233,7 @@ export function SyntheticsStats() {
                   <div className="cell">
                     <div>
                       {virtualInventoryPositions?.gt(0) ? "Short" : "Long"}{" "}
-                      {formatDeltaUsd(virtualInventoryPositions?.abs()) || "$0.00"}
+                      {formatUsd(virtualInventoryPositions?.abs()) || "$0.00"}
                     </div>
                   </div>
                 </td>
