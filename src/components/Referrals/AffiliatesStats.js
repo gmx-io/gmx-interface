@@ -1,12 +1,28 @@
-import { useMemo, useRef, useState } from "react";
 import { Trans, t } from "@lingui/macro";
-import { FiPlus, FiTwitter } from "react-icons/fi";
-import { useCopyToClipboard } from "react-use";
-import { IoWarningOutline } from "react-icons/io5";
+import Button from "components/Button/Button";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import Pagination from "components/Pagination/Pagination";
+import { AVALANCHE, getExplorerUrl } from "config/chains";
+import { getNativeToken, getToken } from "config/tokens";
+import { useMarketsInfo } from "domain/synthetics/markets";
+import { useAffiliateRewards } from "domain/synthetics/referrals/useAffiliateRewards";
+import { getTotalClaimableAffiliateRewardsUsd } from "domain/synthetics/referrals/utils";
+import { BigNumber } from "ethers";
+import { formatDate } from "lib/dates";
+import { helperToast } from "lib/helperToast";
+import { shortenAddress } from "lib/legacy";
+import { bigNumberify, formatAmount } from "lib/numbers";
+import { useMemo, useRef, useState } from "react";
 import { BiCopy, BiErrorCircle } from "react-icons/bi";
+import { FiPlus, FiTwitter } from "react-icons/fi";
+import { IoWarningOutline } from "react-icons/io5";
+import { useCopyToClipboard } from "react-use";
 import Card from "../Common/Card";
 import Modal from "../Modal/Modal";
-import { shortenAddress } from "lib/legacy";
+import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
+import { AffiliateCodeForm } from "./AddAffiliateCode";
+import "./AffiliatesStats.scss";
+import { ClaimAffiliatesModal } from "./ClaimAffiliatesModal/ClaimAffiliatesModal";
 import EmptyMessage from "./EmptyMessage";
 import InfoCard from "./InfoCard";
 import {
@@ -17,17 +33,7 @@ import {
   isRecentReferralCodeNotExpired,
   tierRebateInfo,
 } from "./referralsHelper";
-import { AffiliateCodeForm } from "./AddAffiliateCode";
-import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
-import { AVALANCHE, getExplorerUrl } from "config/chains";
-import { helperToast } from "lib/helperToast";
-import { bigNumberify, formatAmount } from "lib/numbers";
-import { getNativeToken, getToken } from "config/tokens";
-import { formatDate } from "lib/dates";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import Pagination from "components/Pagination/Pagination";
 import usePagination from "./usePagination";
-import Button from "components/Button/Button";
 
 function AffiliatesStats({
   referralsData,
@@ -39,11 +45,15 @@ function AffiliatesStats({
   const [isAddReferralCodeModalOpen, setIsAddReferralCodeModalOpen] = useState(false);
   const addNewModalRef = useRef(null);
 
+  const { marketsInfoData } = useMarketsInfo(chainId);
+  const { affiliateRewardsData } = useAffiliateRewards(chainId);
+
+  const [isClaiming, setIsClaiming] = useState(false);
   const [, copyToClipboard] = useCopyToClipboard();
   const open = () => setIsAddReferralCodeModalOpen(true);
   const close = () => setIsAddReferralCodeModalOpen(false);
 
-  const { cumulativeStats, referrerTotalStats, rebateDistributions, referrerTierInfo } = referralsData;
+  const { cumulativeStats, referrerTotalStats, rebateDistributions, referrerTierInfo } = referralsData || {};
   const {
     currentPage: currentRebatePage,
     getCurrentData: getCurrentRebateData,
@@ -52,7 +62,7 @@ function AffiliatesStats({
   } = usePagination(rebateDistributions);
 
   const currentRebateData = getCurrentRebateData();
-  const allReferralCodes = referrerTotalStats.map((c) => c.referralCode.trim());
+  const allReferralCodes = referrerTotalStats?.map((c) => c.referralCode.trim());
   const finalAffiliatesTotalStats = useMemo(
     () =>
       recentlyAddedCodes.filter(isRecentReferralCodeNotExpired).reduce((acc, cv) => {
@@ -73,6 +83,14 @@ function AffiliatesStats({
 
   const currentAffiliatesData = getCurrentAffiliatesData();
   const tierId = referrerTierInfo?.tierId;
+
+  const totalClaimableRewardsUsd = useMemo(() => {
+    if (!affiliateRewardsData || !marketsInfoData) {
+      return BigNumber.from(0);
+    }
+
+    return getTotalClaimableAffiliateRewardsUsd(marketsInfoData, affiliateRewardsData);
+  }, [affiliateRewardsData, marketsInfoData]);
 
   let referrerRebates = bigNumberify(0);
   if (cumulativeStats && cumulativeStats.totalRebateUsd && cumulativeStats.discountUsd) {
@@ -95,6 +113,22 @@ function AffiliatesStats({
           label={t`Total Rebates`}
           tooltipText={t`Rebates earned by this account as an affiliate.`}
           data={getUSDValue(referrerRebates, 4)}
+        />
+        <InfoCard
+          label={t`Claimable Rewards`}
+          data={
+            <div className="AffiliateStats-claimable-rewards-container">
+              {getUSDValue(totalClaimableRewardsUsd, 4)}
+              {totalClaimableRewardsUsd.gt(-1) && (
+                <button
+                  className="App-button-option App-card-option AffiliateStats-claim-button"
+                  onClick={() => setIsClaiming(true)}
+                >
+                  <Trans>Claim</Trans>
+                </button>
+              )}
+            </div>
+          }
         />
       </div>
       <div className="list">
@@ -295,6 +329,8 @@ function AffiliatesStats({
           message={t`No rebates distribution history yet.`}
         />
       )}
+
+      {isClaiming && <ClaimAffiliatesModal onClose={() => setIsClaiming(false)} />}
     </div>
   );
 }

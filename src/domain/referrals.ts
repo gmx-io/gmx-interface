@@ -25,6 +25,10 @@ function getGraphClient(chainId) {
   } else if (chainId === AVALANCHE) {
     return avalancheReferralsGraphClient;
   }
+
+  // TODO
+  return avalancheReferralsGraphClient;
+
   throw new Error(`Unsupported chain ${chainId}`);
 }
 

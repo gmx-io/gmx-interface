@@ -47,6 +47,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   const [recentlyAddedCodes, setRecentlyAddedCodes] = useLocalStorageSerializeKey([chainId, "REFERRAL", account], [], {
     deserializer: deserializeSampleStats,
   });
+
   const { userReferralCode, userReferralCodeString } = useUserReferralCode(library, chainId, account);
   const { codeOwner } = useCodeOwner(library, chainId, account, userReferralCode);
   const { referrerTier: traderTier } = useReferrerTier(library, chainId, codeOwner);
@@ -64,7 +65,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     const isReferralCodeAvailable =
       referralsData?.codes?.length > 0 || recentlyAddedCodes?.filter(isRecentReferralCodeNotExpired).length > 0;
     if (loading) return <Loader />;
-    if (isReferralCodeAvailable) {
+    if (true) {
       return (
         <AffiliatesStats
           referralsData={referralsData}

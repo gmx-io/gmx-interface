@@ -293,7 +293,7 @@ const CONTRACTS = {
     PositionManager: AddressZero,
 
     TraderJoeGmxAvaxPool: AddressZero,
-    ReferralStorage: "0x2138a6a72f8C5AEe7BA0B0905aA0e6c1467aC8b7",
+    ReferralStorage: "0x30Ca98257E87c4C3F97fA9d5c337661b84C131B1",
     ReferralReader: AddressZero,
 
     // Synthetics
@@ -304,7 +304,6 @@ const CONTRACTS = {
     WithdrawalVault: "0x2bb36c35C70AB7A689e5C8514261430C316CdfD3",
     OrderVault: "0x22263cfCA335C8563834A9CF989c83Ea6326BFFA",
     SyntheticsReader: "0x055e1C3CADe35CC544e68927D8CA9659005369c8",
-    SyntheticsReferralStorage: "0x30Ca98257E87c4C3F97fA9d5c337661b84C131B1",
     SyntheticsRouter: "0x4D1782e5eb3a49152Ed99d9A4e26eF1a55c2bF6f",
 
     Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
