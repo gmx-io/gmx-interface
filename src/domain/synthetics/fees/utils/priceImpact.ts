@@ -96,6 +96,10 @@ export function getPriceImpactForPosition(
     exponentFactor: marketInfo.positionImpactExponentFactor,
   });
 
+  if (priceImpactUsd.gt(0)) {
+    return priceImpactUsd;
+  }
+
   const virtualInventory = virtualInventoryForPositions[marketInfo.indexTokenAddress];
 
   if (!virtualInventory) {
@@ -117,10 +121,6 @@ export function getPriceImpactForPosition(
     factorNegative: marketInfo.positionImpactFactorNegative,
     exponentFactor: marketInfo.positionImpactExponentFactor,
   });
-
-  if (!priceImpactUsdForVirtualInventory || priceImpactUsdForVirtualInventory.gt(0)) {
-    return priceImpactUsd;
-  }
 
   return priceImpactUsdForVirtualInventory.lt(priceImpactUsd!) ? priceImpactUsdForVirtualInventory : priceImpactUsd;
 }
@@ -162,6 +162,10 @@ export function getPriceImpactForSwap(
     exponentFactor: marketInfo.swapImpactExponentFactor,
   });
 
+  if (priceImpactUsd.gt(0)) {
+    return priceImpactUsd;
+  }
+
   const virtualInventoryLong = virtualInventoryForSwaps[marketInfo.marketTokenAddress]?.[marketInfo.longTokenAddress];
   const virtualInventoryShort = virtualInventoryForSwaps[marketInfo.marketTokenAddress]?.[marketInfo.shortTokenAddress];
 
@@ -188,10 +192,6 @@ export function getPriceImpactForSwap(
     factorNegative: marketInfo.swapImpactFactorNegative,
     exponentFactor: marketInfo.swapImpactExponentFactor,
   });
-
-  if (!priceImpactUsdForVirtualInventory || priceImpactUsdForVirtualInventory.gt(0)) {
-    return priceImpactUsd;
-  }
 
   return priceImpactUsdForVirtualInventory.lt(priceImpactUsd!) ? priceImpactUsdForVirtualInventory : priceImpactUsd;
 }
