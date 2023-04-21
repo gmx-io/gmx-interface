@@ -906,8 +906,12 @@ table.Exchange-list-small td {
   opacity: 0.9;
 }
 
-.Position-pnl:hover {
+.Position-pnl.negative:hover {
   color: #fb5971;
+}
+
+.Position-pnl.positive:hover {
+  color: #3ed69c;
 }
 
 @media (max-width: 1500px) {
