@@ -63,8 +63,7 @@ export default function SlippageInput({ setAllowedSlippage, defaultSlippage }) {
           {SLIPPAGE_LISTS.map((slippage) => (
             <li
               key={slippage}
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => {
+              onMouseDown={() => {
                 setSlippageText(String(slippage));
                 setAllowedSlippage(slippage * 100);
                 setIsPanelVisible(false);
