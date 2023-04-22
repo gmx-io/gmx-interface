@@ -181,7 +181,6 @@
   border-radius: 0.4rem;
   display: flex;
   justify-content: center;
-  align-items: center;
 }
 .info-card .label {
   font-size: var(--font-md);
