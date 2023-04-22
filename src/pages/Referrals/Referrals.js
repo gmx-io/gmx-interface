@@ -113,7 +113,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   const TAB_OPTION_LABELS = { [TRADERS]: t`Traders`, [AFFILIATES]: t`Affiliates` };
 
   return (
-    <SEO title={getPageTitle("Referrals")}>
+    <SEO title={getPageTitle(t`Referrals`)}>
       <div className="default-container page-layout Referrals">
         <div className="section-title-block">
           <div className="section-title-icon" />

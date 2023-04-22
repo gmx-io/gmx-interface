@@ -428,6 +428,10 @@ msgstr ""
 msgid "Buy GLP"
 msgstr "购买GLP"
 
+#: src/pages/Buy/Buy.js
+msgid "Buy GLP or GMX"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 msgid "Buy GMX"
 msgstr "购买GMX"
@@ -927,6 +931,7 @@ msgid "DEX Aggregator"
 msgstr "DEX 聚合器"
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/pages/Dashboard/DashboardV2.js
 msgid "Dashboard"
 msgstr "仪表板"
 
@@ -962,6 +967,10 @@ msgstr "去中心化选项协议"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Decentralized Options Strategies"
 msgstr "去中心化选策略"
+
+#: src/lib/legacy.ts
+msgid "Decentralized Perpetual Exchange | GMX"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Decentralized Trading Protocol"
@@ -1083,12 +1092,17 @@ msgstr "下载"
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Earn"
 msgstr "赚取"
 
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Ecosystem"
 msgstr "生态系统"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Ecosystem Projects"
+msgstr ""
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -1484,6 +1498,10 @@ msgstr "GMX质押奖励更新和详解"
 msgid "GMX transfers not yet enabled"
 msgstr "尚未启用GMX转账功能"
 
+#: src/components/Common/SEO.js
+msgid "GMX | Decentralized Perpetual Exchange"
+msgstr ""
+
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Generate Referral Code"
 msgstr "生成推荐代码"
@@ -1653,6 +1671,10 @@ msgstr "无效代币从代币: \"{0}\" 代币: \"{toTokenAddress}\\"
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Invalid token indexToken: \"{0}\" collateralToken: \"{1}\""
 msgstr "无效代币索引代币: \"{0}\" 抵押品代币: \"{1}\\"
+
+#: src/pages/Jobs/Jobs.js
+msgid "Job Openings"
+msgstr ""
 
 #: src/pages/Jobs/Jobs.js
 msgid "Job openings at GMX."
@@ -2290,6 +2312,7 @@ msgid "PRICE"
 msgstr "价钱"
 
 #: src/pages/PageNotFound/PageNotFound.js
+#: src/pages/PageNotFound/PageNotFound.js
 msgid "Page not found"
 msgstr "没有找到页面"
 
@@ -2564,6 +2587,7 @@ msgid "Referral Codes"
 msgstr "推荐代码"
 
 #: src/components/Footer/constants.ts
+#: src/pages/ReferralTerms/ReferralTerms.js
 msgid "Referral Terms"
 msgstr "推荐条款"
 
@@ -2592,6 +2616,7 @@ msgid "Referral code updated!"
 msgstr "推荐代码已更新"
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/pages/Referrals/Referrals.js
 msgid "Referrals"
 msgstr "推荐人"
 
@@ -3085,6 +3110,7 @@ msgid "Telegram bot for Open Interest on GMX"
 msgstr "GMX上未平仓合约的电报机器人"
 
 #: src/components/Footer/constants.ts
+#: src/pages/TermsAndConditions/TermsAndConditions.js
 msgid "Terms and Conditions"
 msgstr "条款及细则"
 
@@ -3322,6 +3348,10 @@ msgstr ""
 #: src/components/Exchange/ExchangeBanner.js
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
 msgstr "在GMX上进行交易，赢取<0>$250.000</0> 美元的奖金! 活动至11月30h, <1>点击这里</1> 了解更多"
+
+#: src/components/Common/SEO.js
+msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet on Arbitrum and Avalanche."
+msgstr ""
 
 #: src/pages/Referrals/Referrals.js
 msgid "Traders"

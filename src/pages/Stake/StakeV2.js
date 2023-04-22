@@ -425,7 +425,7 @@ function VesterDepositModal(props) {
   };
 
   return (
-    <SEO title={getPageTitle("Earn")}>
+    <SEO title={getPageTitle(t`Earn`)}>
       <div className="StakeModal">
         <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title} className="non-scrollable">
           <div className="Exchange-swap-section">

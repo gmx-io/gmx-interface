@@ -450,7 +450,7 @@ export default function Ecosystem() {
   ];
 
   return (
-    <SEO title={getPageTitle("Ecosystem Projects")}>
+    <SEO title={getPageTitle(t`Ecosystem Projects`)}>
       <div className="default-container page-layout">
         <div>
           <div className="section-title-block">

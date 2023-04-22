@@ -428,6 +428,10 @@ msgstr ""
 msgid "Buy GLP"
 msgstr "GLPを購入"
 
+#: src/pages/Buy/Buy.js
+msgid "Buy GLP or GMX"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 msgid "Buy GMX"
 msgstr "GMXを購入"
@@ -927,6 +931,7 @@ msgid "DEX Aggregator"
 msgstr "DEXアグリゲーター"
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/pages/Dashboard/DashboardV2.js
 msgid "Dashboard"
 msgstr "ダッシュボード"
 
@@ -962,6 +967,10 @@ msgstr "分散型オプションプロトコル"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Decentralized Options Strategies"
 msgstr "分散型オプションストラテジー"
+
+#: src/lib/legacy.ts
+msgid "Decentralized Perpetual Exchange | GMX"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Decentralized Trading Protocol"
@@ -1083,12 +1092,17 @@ msgstr "ダウンロード"
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Earn"
 msgstr "報酬獲得"
 
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Ecosystem"
 msgstr "エコシステム"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Ecosystem Projects"
+msgstr ""
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -1484,6 +1498,10 @@ msgstr "GMXステーキング報酬の最新情報および見通し"
 msgid "GMX transfers not yet enabled"
 msgstr "GMX移転はまだ有効化されていません"
 
+#: src/components/Common/SEO.js
+msgid "GMX | Decentralized Perpetual Exchange"
+msgstr ""
+
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Generate Referral Code"
 msgstr "紹介コード作成"
@@ -1653,6 +1671,10 @@ msgstr "無効なトークン fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Invalid token indexToken: \"{0}\" collateralToken: \"{1}\""
 msgstr "無効なトークン indexToken: \"{0}\" collateralToken: \"{1}\""
+
+#: src/pages/Jobs/Jobs.js
+msgid "Job Openings"
+msgstr ""
 
 #: src/pages/Jobs/Jobs.js
 msgid "Job openings at GMX."
@@ -2290,6 +2312,7 @@ msgid "PRICE"
 msgstr "価格"
 
 #: src/pages/PageNotFound/PageNotFound.js
+#: src/pages/PageNotFound/PageNotFound.js
 msgid "Page not found"
 msgstr "ページが見つかりません"
 
@@ -2564,6 +2587,7 @@ msgid "Referral Codes"
 msgstr "紹介コード"
 
 #: src/components/Footer/constants.ts
+#: src/pages/ReferralTerms/ReferralTerms.js
 msgid "Referral Terms"
 msgstr "紹介の規約"
 
@@ -2592,6 +2616,7 @@ msgid "Referral code updated!"
 msgstr "紹介コードの更新完了!"
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/pages/Referrals/Referrals.js
 msgid "Referrals"
 msgstr "紹介アカウント"
 
@@ -3085,6 +3110,7 @@ msgid "Telegram bot for Open Interest on GMX"
 msgstr "GMX建玉情報提供Telegramボット"
 
 #: src/components/Footer/constants.ts
+#: src/pages/TermsAndConditions/TermsAndConditions.js
 msgid "Terms and Conditions"
 msgstr "規約"
 
@@ -3322,6 +3348,10 @@ msgstr ""
 #: src/components/Exchange/ExchangeBanner.js
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
 msgstr "GMXでトレードして賞金<0>250ドル</0>を獲得しよう! 11月30日まで。詳細は<1>ここをクリック</1> "
+
+#: src/components/Common/SEO.js
+msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet on Arbitrum and Avalanche."
+msgstr ""
 
 #: src/pages/Referrals/Referrals.js
 msgid "Traders"
