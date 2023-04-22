@@ -5,7 +5,8 @@ import { formatAmount } from "lib/numbers";
 
 const MAX_SLIPPAGE = 99 * 100;
 const HIGH_SLIPPAGE = 2 * 100;
-const SLIPPAGE_LISTS = [0.3, 0.5, 1, 1.5];
+const SLIPPAGE_SUGGESTION_LISTS = [0.3, 0.5, 1, 1.5];
+const validDecimalRegex = /^(?=.*\d)\d*\.?\d*$/;
 
 function getSlippageText(value: number) {
   return formatAmount(value, 2, 2);
@@ -42,8 +43,10 @@ export default function SlippageInput({ setAllowedSlippage, defaultSlippage }) {
       return;
     }
 
-    setAllowedSlippage(parsedValue);
-    setSlippageText(value);
+    if (validDecimalRegex.test(value)) {
+      setAllowedSlippage(parsedValue);
+      setSlippageText(value);
+    }
   }
 
   return (
@@ -60,7 +63,7 @@ export default function SlippageInput({ setAllowedSlippage, defaultSlippage }) {
       </div>
       {isPanelVisible && (
         <ul className="Slippage-list">
-          {SLIPPAGE_LISTS.map((slippage) => (
+          {SLIPPAGE_SUGGESTION_LISTS.map((slippage) => (
             <li
               key={slippage}
               onMouseDown={() => {
