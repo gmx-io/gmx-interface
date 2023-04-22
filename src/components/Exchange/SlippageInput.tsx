@@ -9,7 +9,7 @@ const SLIPPAGE_SUGGESTION_LISTS = [0.3, 0.5, 1, 1.5];
 const validDecimalRegex = /^(?=.*\d)\d*\.?\d*$/;
 
 function getSlippageText(value: number) {
-  return formatAmount(value, 2, 2);
+  return formatAmount(value, 2, 2).replace(/0+$/, "");
 }
 
 export default function SlippageInput({ setAllowedSlippage, defaultSlippage }) {
