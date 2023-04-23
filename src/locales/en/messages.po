@@ -2499,6 +2499,10 @@ msgid "Read more"
 msgstr "Read more"
 
 #: src/components/Referrals/TradersStats.js
+#~ msgid "Rebates"
+#~ msgstr "Rebates"
+
+#: src/components/Referrals/TradersStats.js
 msgid "Rebates Distribution History"
 msgstr "Rebates Distribution History"
 

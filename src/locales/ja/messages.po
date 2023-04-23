@@ -196,7 +196,7 @@ msgstr ""
 
 #: src/pages/Referrals/Referrals.js
 msgid "Affiliates"
-msgstr "アフィリエイト"
+msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
@@ -1494,7 +1494,7 @@ msgstr "シェア可能な画像を作成中..."
 
 #: src/pages/Referrals/Referrals.js
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
-msgstr "GMX紹介プログラムで手数料が割引されリベートが得られます。<0/>より詳しくは、 <1>こちらの紹介プログラム詳細を読んでください</1>."
+msgstr ""
 
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Governance"
@@ -2499,6 +2499,10 @@ msgid "Read more"
 msgstr "詳細について読む"
 
 #: src/components/Referrals/TradersStats.js
+#~ msgid "Rebates"
+#~ msgstr ""
+
+#: src/components/Referrals/TradersStats.js
 msgid "Rebates Distribution History"
 msgstr "リベートの分配履歴"
 
@@ -2577,11 +2581,11 @@ msgstr "紹介コードが作成されました!"
 
 #: src/pages/Referrals/Referrals.js
 msgid "Referral code creation failed."
-msgstr "紹介コードが作成できませんでした。"
+msgstr ""
 
 #: src/pages/Referrals/Referrals.js
 msgid "Referral code submitted!"
-msgstr "紹介コードが提出されました!"
+msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Referral code updated failed."
@@ -3325,7 +3329,7 @@ msgstr "GMXでトレードして賞金<0>250ドル</0>を獲得しよう! 11月3
 
 #: src/pages/Referrals/Referrals.js
 msgid "Traders"
-msgstr "トレーダー"
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Traders Referred"

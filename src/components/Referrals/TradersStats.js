@@ -6,8 +6,7 @@ import Modal from "../Modal/Modal";
 import Tooltip from "../Tooltip/Tooltip";
 import { shortenAddress } from "lib/legacy";
 import EmptyMessage from "./EmptyMessage";
-import InfoCard from "./InfoCard";
-import { getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./referralsHelper";
+import { getTierIdDisplay, tierDiscountInfo } from "./referralsHelper";
 import { ReferralCodeForm } from "./JoinReferralCode";
 import { getExplorerUrl } from "config/chains";
 import { formatAmount } from "lib/numbers";
@@ -16,12 +15,14 @@ import { formatDate } from "lib/dates";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import usePagination from "./usePagination";
 import Pagination from "components/Pagination/Pagination";
+import ReferralInfoCard from "./ReferralInfoCard";
 
 function TradersStats({ referralsData, traderTier, chainId, userReferralCodeString, setPendingTxns, pendingTxns }) {
+  const currentReferralsData = referralsData?.[chainId];
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const editModalRef = useRef(null);
   const { getCurrentData, currentPage, setCurrentPage, pageCount } = usePagination(
-    referralsData?.discountDistributions
+    currentReferralsData?.discountDistributions
   );
 
   const currentDiscountDistributions = getCurrentData();
@@ -31,43 +32,42 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
   return (
     <div className="rebate-container">
       <div className="referral-stats">
-        <InfoCard
+        <ReferralInfoCard
           label={t`Total Trading Volume`}
           tooltipText={t`Volume traded by this account with an active referral code.`}
-          data={getUSDValue(referralsData?.referralTotalStats?.volume)}
+          data={referralsData}
+          dataKeys={["referralTotalStats", "volume"]}
         />
-        <InfoCard
+        <ReferralInfoCard
           label={t`Total Rebates`}
           tooltipText={t`Rebates earned by this account as a trader.`}
-          data={getUSDValue(referralsData?.referralTotalStats?.discountUsd, 4)}
+          dataKeys={["referralTotalStats", "discountUsd"]}
+          data={referralsData}
         />
-        <InfoCard
-          label={t`Active Referral Code`}
-          data={
-            <div className="active-referral-code">
-              <div className="edit">
-                <span>{userReferralCodeString}</span>
-                <BiEditAlt onClick={open} />
-              </div>
-              {traderTier && (
-                <div className="tier">
-                  <Tooltip
-                    handle={t`Tier ${getTierIdDisplay(traderTier)} (${tierDiscountInfo[traderTier]}% discount)`}
-                    position="right-bottom"
-                    renderContent={() => (
-                      <p className="text-white">
-                        <Trans>
-                          You will receive a {tierDiscountInfo[traderTier]}% discount on your opening and closing fees,
-                          this discount will be airdropped to your account every Wednesday
-                        </Trans>
-                      </p>
-                    )}
-                  />
-                </div>
-              )}
+        <ReferralInfoCard label={t`Active Referral Code`}>
+          <div className="active-referral-code">
+            <div className="edit">
+              <span>{userReferralCodeString}</span>
+              <BiEditAlt onClick={open} />
             </div>
-          }
-        />
+            {traderTier && (
+              <div className="tier">
+                <Tooltip
+                  handle={t`Tier ${getTierIdDisplay(traderTier)} (${tierDiscountInfo[traderTier]}% discount)`}
+                  position="right-bottom"
+                  renderContent={() => (
+                    <p className="text-white">
+                      <Trans>
+                        You will receive a {tierDiscountInfo[traderTier]}% discount on your opening and closing fees,
+                        this discount will be airdropped to your account every Wednesday
+                      </Trans>
+                    </p>
+                  )}
+                />
+              </div>
+            )}
+          </div>
+        </ReferralInfoCard>
         <Modal
           className="Connect-wallet-modal"
           isVisible={isEditModalOpen}

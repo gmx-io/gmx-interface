@@ -182,7 +182,7 @@
   display: flex;
   justify-content: center;
 }
-.info-card .label {
+.info-card .card-label {
   font-size: var(--font-md);
   line-height: 2.1rem;
   font-weight: normal;
@@ -191,7 +191,7 @@
   margin-bottom: 1.5rem;
   text-align: center;
 }
-.info-card .data {
+.info-card .card-data {
   font-size: var(--font-lg);
   font-weight: normal;
   text-align: center;

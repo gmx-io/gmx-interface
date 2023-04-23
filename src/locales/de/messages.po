@@ -196,7 +196,7 @@ msgstr ""
 
 #: src/pages/Referrals/Referrals.js
 msgid "Affiliates"
-msgstr "Affiliate"
+msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
@@ -1494,7 +1494,7 @@ msgstr "Generierung von teilbaren Bildern..."
 
 #: src/pages/Referrals/Referrals.js
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
-msgstr "Erhalte niedrigere Gebühren und verdiene Rabatte durch das GMX Empfehlungsprogramm.<0/>Für weitere Informationen lese bitte die <1>Details zum Empfehlungsprogramm</1>."
+msgstr ""
 
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Governance"
@@ -2499,6 +2499,10 @@ msgid "Read more"
 msgstr "Mehr lesen"
 
 #: src/components/Referrals/TradersStats.js
+#~ msgid "Rebates"
+#~ msgstr ""
+
+#: src/components/Referrals/TradersStats.js
 msgid "Rebates Distribution History"
 msgstr "Rabatte Verteilungs-Historie"
 
@@ -2577,11 +2581,11 @@ msgstr "Referral Code erstellt!"
 
 #: src/pages/Referrals/Referrals.js
 msgid "Referral code creation failed."
-msgstr "Referral Code Erstellung fehlgeschlagen."
+msgstr ""
 
 #: src/pages/Referrals/Referrals.js
 msgid "Referral code submitted!"
-msgstr "Referral Code übermittelt!"
+msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Referral code updated failed."
@@ -3325,7 +3329,7 @@ msgstr "Handle auf GMX und gewinne <0>$250.000</0> in Preisen! Live bis zum 30. 
 
 #: src/pages/Referrals/Referrals.js
 msgid "Traders"
-msgstr "Traders"
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Traders Referred"

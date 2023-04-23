@@ -196,7 +196,7 @@ msgstr ""
 
 #: src/pages/Referrals/Referrals.js
 msgid "Affiliates"
-msgstr "结盟企业"
+msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
@@ -1494,7 +1494,7 @@ msgstr "生成可分享的图像中..."
 
 #: src/pages/Referrals/Referrals.js
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
-msgstr "通过GMX推荐计划获得折扣和赚取回扣。<0/>更多信息，请阅读<1>推荐计划细节</1>。\""
+msgstr ""
 
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Governance"
@@ -2499,6 +2499,10 @@ msgid "Read more"
 msgstr "了解更多"
 
 #: src/components/Referrals/TradersStats.js
+#~ msgid "Rebates"
+#~ msgstr ""
+
+#: src/components/Referrals/TradersStats.js
 msgid "Rebates Distribution History"
 msgstr "返利分配历史"
 
@@ -2577,11 +2581,11 @@ msgstr "推荐代码已建立"
 
 #: src/pages/Referrals/Referrals.js
 msgid "Referral code creation failed."
-msgstr "推荐代码建立失败"
+msgstr ""
 
 #: src/pages/Referrals/Referrals.js
 msgid "Referral code submitted!"
-msgstr "推荐代码送出"
+msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Referral code updated failed."
@@ -3325,7 +3329,7 @@ msgstr "在GMX上进行交易，赢取<0>$250.000</0> 美元的奖金! 活动至
 
 #: src/pages/Referrals/Referrals.js
 msgid "Traders"
-msgstr "交易者"
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Traders Referred"

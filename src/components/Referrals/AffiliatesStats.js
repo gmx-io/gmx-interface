@@ -8,7 +8,7 @@ import Card from "../Common/Card";
 import Modal from "../Modal/Modal";
 import { shortenAddress } from "lib/legacy";
 import EmptyMessage from "./EmptyMessage";
-import InfoCard from "./InfoCard";
+import ReferralInfoCard from "./ReferralInfoCard";
 import {
   getReferralCodeTradeUrl,
   getTierIdDisplay,
@@ -38,12 +38,13 @@ function AffiliatesStats({
 }) {
   const [isAddReferralCodeModalOpen, setIsAddReferralCodeModalOpen] = useState(false);
   const addNewModalRef = useRef(null);
+  const currentReferralsData = referralsData?.[chainId];
 
   const [, copyToClipboard] = useCopyToClipboard();
   const open = () => setIsAddReferralCodeModalOpen(true);
   const close = () => setIsAddReferralCodeModalOpen(false);
 
-  const { cumulativeStats, referrerTotalStats, rebateDistributions, referrerTierInfo } = referralsData;
+  const { referrerTotalStats, rebateDistributions, referrerTierInfo } = currentReferralsData;
   const {
     currentPage: currentRebatePage,
     getCurrentData: getCurrentRebateData,
@@ -74,27 +75,28 @@ function AffiliatesStats({
   const currentAffiliatesData = getCurrentAffiliatesData();
   const tierId = referrerTierInfo?.tierId;
 
-  let referrerRebates = bigNumberify(0);
-  if (cumulativeStats && cumulativeStats.totalRebateUsd && cumulativeStats.discountUsd) {
-    referrerRebates = cumulativeStats.totalRebateUsd.sub(cumulativeStats.discountUsd);
-  }
   return (
     <div className="referral-body-container">
       <div className="referral-stats">
-        <InfoCard
+        <ReferralInfoCard
           label={t`Total Traders Referred`}
           tooltipText={t`Amount of traders you referred.`}
-          data={cumulativeStats?.registeredReferralsCount || "0"}
+          data={referralsData}
+          dataKeys={["cumulativeStats", "registeredReferralsCount"]}
+          shouldFormat={false}
+          showDollar={false}
         />
-        <InfoCard
+        <ReferralInfoCard
           label={t`Total Trading Volume`}
           tooltipText={t`Volume traded by your referred traders.`}
-          data={getUSDValue(cumulativeStats?.volume)}
+          data={referralsData}
+          dataKeys={["cumulativeStats", "volume"]}
         />
-        <InfoCard
+        <ReferralInfoCard
           label={t`Total Rebates`}
           tooltipText={t`Rebates earned by this account as an affiliate.`}
-          data={getUSDValue(referrerRebates, 4)}
+          dataKeys={["cumulativeStats", "referrerRebates"]}
+          data={referralsData}
         />
       </div>
       <div className="list">
