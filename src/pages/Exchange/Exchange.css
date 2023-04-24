@@ -692,13 +692,13 @@ table.Exchange-list th {
   z-index: 1;
   cursor: pointer;
   font-size: var(--font-sm);
-  background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, rgba(46, 61, 205, 1) 100%);
+  background: var(--primary-btn-bg);
   border: none;
 }
 
 .Exchange-swap-max:hover {
   color: rgba(255, 255, 255, 1);
-  background: linear-gradient(90deg, rgba(58, 78, 252, 1) 0%, rgba(51, 68, 222, 1) 100%);
+  background: var(--primary-btn-hover);
 }
 
 .Exchange-swap-max:active {
@@ -757,7 +757,7 @@ input.Exchange-swap-input.small {
   border-radius: 3.1rem;
   cursor: pointer;
   user-select: none;
-  background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, rgba(46, 61, 205, 1) 100%);
+  background: var(--primary-btn-bg);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -766,7 +766,7 @@ input.Exchange-swap-input.small {
 }
 
 .Exchange-swap-ball:hover {
-  background: linear-gradient(90deg, rgba(58, 78, 252, 1) 0%, rgba(51, 68, 222, 1) 100%);
+  background: var(--primary-btn-hover);
 }
 
 .Exchange-swap-ball:active {
