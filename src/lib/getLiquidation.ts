@@ -6,33 +6,29 @@ import {
   MARGIN_FEE_BASIS_POINTS,
   MAX_LEVERAGE,
 } from "./legacy";
-import compact from "lodash/compact";
 
 type GetLiquidationParams = {
   size: BigNumber;
   collateral: BigNumber;
   averagePrice: BigNumber;
-  fees: BigNumber[];
   isLong: boolean;
+  fundingFees?: BigNumber;
 };
 
-function calculateTotalFees(size: BigNumber, otherFees: BigNumber[]): BigNumber {
-  otherFees = compact(otherFees);
-  let totalFees = size.mul(MARGIN_FEE_BASIS_POINTS).div(BASIS_POINTS_DIVISOR).add(LIQUIDATION_FEE);
-
-  if (otherFees?.length > 0) {
-    totalFees = totalFees.add(otherFees.reduce((a, b) => a.add(b)));
-  }
-  return totalFees;
+function calculateTotalFees(size: BigNumber, fundingFees: BigNumber): BigNumber {
+  return size
+    .mul(MARGIN_FEE_BASIS_POINTS)
+    .div(BASIS_POINTS_DIVISOR)
+    .add(fundingFees || BigNumber.from("0"))
+    .add(LIQUIDATION_FEE);
 }
 
-export function getLiquidation({ size, collateral, averagePrice, fees, isLong }: GetLiquidationParams) {
+export function getLiquidation({ size, collateral, averagePrice, isLong, fundingFees }: GetLiquidationParams) {
   if (!size || !collateral || !averagePrice) {
     return;
   }
 
-  const totalFees = calculateTotalFees(size, fees);
-
+  const totalFees = calculateTotalFees(size, fundingFees || BigNumber.from("0"));
   const liquidationPriceForFees = getLiquidationPriceFromDelta({
     liquidationAmount: totalFees,
     size,

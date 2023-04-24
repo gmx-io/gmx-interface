@@ -240,7 +240,7 @@ export default function PositionsList(props) {
                 collateral: position.collateral,
                 averagePrice: position.averagePrice,
                 isLong: position.isLong,
-                fees: [position.fundingFee],
+                fundingFees: position.fundingFee,
               });
 
               const hasPositionProfit = position[showPnlAfterFees ? "hasProfitAfterFees" : "hasProfit"];
@@ -508,7 +508,7 @@ export default function PositionsList(props) {
                 collateral: position.collateral,
                 averagePrice: position.averagePrice,
                 isLong: position.isLong,
-                fees: [position.fundingFee],
+                fundingFees: position.fundingFee,
               }) || bigNumberify(0);
 
             const positionOrders = getOrdersForPosition(account, position, orders, nativeTokenAddress);

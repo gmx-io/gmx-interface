@@ -49,18 +49,12 @@ export function useInfoTokens(
 
   const indexPricesUrl = getServerUrl(chainId, "/prices");
 
-  // const { data: indexPrices } = useSWR([indexPricesUrl], {
-  //   // @ts-ignore spread args incorrect type
-  //   fetcher: (...args) => fetch(...args).then((res) => res.json()),
-  //   refreshInterval: 500,
-  //   refreshWhenHidden: true,
-  // });
-  const indexPrices = {
-    "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f": BigNumber.from("28868108138100000000000000000000000"),
-    "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1": BigNumber.from("1956050000000000000000000000000000"),
-    "0xf97f4df75117a78c1A5a0DBb814Af92458539FB4": BigNumber.from("7855000000000000000000000000000"),
-    "0xFa7F8980b0f1E64A2062791cc3b0871572f1F7f0": BigNumber.from("5919361140000000000000000000000"),
-  };
+  const { data: indexPrices } = useSWR([indexPricesUrl], {
+    // @ts-ignore spread args incorrect type
+    fetcher: (...args) => fetch(...args).then((res) => res.json()),
+    refreshInterval: 500,
+    refreshWhenHidden: true,
+  });
 
   return {
     infoTokens: getInfoTokens(

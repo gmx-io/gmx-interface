@@ -362,7 +362,6 @@ export default function PositionSeller(props) {
         }
       }
     }
-    console.log({ nextDelta, nextHasProfit, adjustedDelta });
     maxAmount = position.size;
     maxAmountFormatted = formatAmount(maxAmount, USD_DECIMALS, 2, true);
     maxAmountFormattedFree = formatAmountFree(maxAmount, USD_DECIMALS, 2);
@@ -468,8 +467,6 @@ export default function PositionSeller(props) {
         }
       }
     }
-
-    console.log({ nextCollateral, collateralDelta, receiveAmount, receiveUsd });
 
     if (fromAmount) {
       if (!isClosing && !keepLeverage) {

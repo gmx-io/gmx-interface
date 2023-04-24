@@ -1785,7 +1785,7 @@ export default function SwapBox(props) {
         size: existingPosition.size,
         collateral: existingPosition.collateral,
         averagePrice: existingPosition.averagePrice,
-        fees: [existingPosition.fundingFee],
+        fundingFees: existingPosition.fundingFee,
       })
     : undefined;
   let displayLiquidationPrice = liquidationPrice ? liquidationPrice : existingLiquidationPrice;
