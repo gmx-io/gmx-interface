@@ -37,6 +37,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
           tooltipText={t`Volume traded by this account with an active referral code.`}
           data={referralsData}
           dataKeys={["referralTotalStats", "volume"]}
+          totalDataKey="tradersVolume"
         />
         <ReferralInfoCard
           label={t`Total Rebates`}

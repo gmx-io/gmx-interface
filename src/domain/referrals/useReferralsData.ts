@@ -175,14 +175,11 @@ export default function useReferralsData(account) {
             total: {
               registeredReferralsCount:
                 res[0].cumulativeStats.registeredReferralsCount + res[1].cumulativeStats.registeredReferralsCount,
-              volume: res[0].cumulativeStats.volume.add(res[1].cumulativeStats.volume),
+              affiliatesVolume: res[0].cumulativeStats.volume.add(res[1].cumulativeStats.volume),
               referrerRebates: res[0].cumulativeStats.totalRebateUsd
                 .add(res[1].cumulativeStats.totalRebateUsd)
                 .sub(res[0].cumulativeStats.discountUsd.add(res[1].cumulativeStats.discountUsd)),
-              referralTotalStats: res[0].referralTotalStats.volume?.add(res[1].referralTotalStats?.volume || 0),
-              referralDiscountUsd: res[0].referralTotalStats.discountUsd?.add(
-                res[1].referralTotalStats?.discountUsd || 0
-              ),
+              discountUsd: res[0].referralTotalStats.discountUsd?.add(res[1].referralTotalStats?.discountUsd || 0),
               tradersVolume: res[0].referralTotalStats.volume?.add(res[1].referralTotalStats?.volume || 0),
             },
           };

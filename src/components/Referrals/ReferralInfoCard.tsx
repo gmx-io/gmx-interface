@@ -9,6 +9,7 @@ function ReferralInfoCard({
   data,
   tooltipText,
   dataKeys = [],
+  totalDataKey,
   showDollar = true,
   shouldFormat = true,
   toolTipPosition = "left-bottom",
@@ -48,7 +49,7 @@ function ReferralInfoCard({
                   shouldFormat={shouldFormat}
                   arbitrumValue={arbitrumData?.[parentKey]?.[childKey] || "0"}
                   avaxValue={avaxData?.[parentKey]?.[childKey] || "0"}
-                  total={totalData?.[childKey] || "0"}
+                  total={totalData?.[totalDataKey || childKey] || "0"}
                 />
               )}
             />

@@ -21,7 +21,7 @@ import { REFERRALS_SELECTED_TAB_KEY } from "config/localStorage";
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getIcon } from "config/icons";
-import useAllReferralsData from "domain/referrals/useReferralsData";
+import useReferralsData from "domain/referrals/useReferralsData";
 
 const TRADERS = "Traders";
 const AFFILIATES = "Affiliates";
@@ -41,7 +41,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   const [recentlyAddedCodes, setRecentlyAddedCodes] = useLocalStorageSerializeKey([chainId, "REFERRAL", account], [], {
     deserializer: deserializeSampleStats,
   });
-  const { data: referralsData, loading } = useAllReferralsData(account);
+  const { data: referralsData, loading } = useReferralsData(account);
   const { userReferralCode, userReferralCodeString } = useUserReferralCode(library, chainId, account);
   const { codeOwner } = useCodeOwner(library, chainId, account, userReferralCode);
   const { referrerTier: traderTier } = useReferrerTier(library, chainId, codeOwner);
@@ -60,7 +60,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     const isReferralCodeAvailable =
       currentReferralsData?.codes?.length > 0 || recentlyAddedCodes?.filter(isRecentReferralCodeNotExpired).length > 0;
     if (loading) return <Loader />;
-    if (isReferralCodeAvailable) {
+    if (account && isReferralCodeAvailable) {
       return (
         <AffiliatesStats
           referralsData={referralsData}

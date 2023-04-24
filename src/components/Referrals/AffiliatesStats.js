@@ -91,6 +91,7 @@ function AffiliatesStats({
           tooltipText={t`Volume traded by your referred traders.`}
           data={referralsData}
           dataKeys={["cumulativeStats", "volume"]}
+          totalDataKey="affiliatesVolume"
         />
         <ReferralInfoCard
           label={t`Total Rebates`}
