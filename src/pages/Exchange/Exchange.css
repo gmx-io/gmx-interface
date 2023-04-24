@@ -693,11 +693,16 @@ table.Exchange-list th {
   cursor: pointer;
   font-size: var(--font-sm);
   background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, rgba(46, 61, 205, 1) 100%);
+  border: none;
 }
 
 .Exchange-swap-max:hover {
   color: rgba(255, 255, 255, 1);
   background: linear-gradient(90deg, rgba(58, 78, 252, 1) 0%, rgba(51, 68, 222, 1) 100%);
+}
+
+.Exchange-swap-max:active {
+  background: var(--primary-btn-active);
 }
 
 .Exchange-swap-section-bottom .TokenSelector-box {
@@ -756,10 +761,16 @@ input.Exchange-swap-input.small {
   display: flex;
   justify-content: center;
   align-items: center;
+  border: none;
+  color: white;
 }
 
 .Exchange-swap-ball:hover {
   background: linear-gradient(90deg, rgba(58, 78, 252, 1) 0%, rgba(51, 68, 222, 1) 100%);
+}
+
+.Exchange-swap-ball:active {
+  background: var(--primary-btn-active);
 }
 
 .Exchange-swap-ball:hover .Exchange-swap-ball-icon {

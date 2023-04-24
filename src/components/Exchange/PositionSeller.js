@@ -999,14 +999,14 @@ export default function PositionSeller(props) {
                   onChange={(e) => setFromValue(e.target.value)}
                 />
                 {fromValue !== maxAmountFormattedFree && (
-                  <div
+                  <button
                     className="Exchange-swap-max"
                     onClick={() => {
                       setFromValue(maxAmountFormattedFree);
                     }}
                   >
                     <Trans>MAX</Trans>
-                  </div>
+                  </button>
                 )}
               </div>
               <div className="PositionEditor-token-symbol">USD</div>

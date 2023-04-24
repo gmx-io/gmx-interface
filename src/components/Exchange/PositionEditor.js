@@ -543,14 +543,14 @@ export default function PositionEditor(props) {
                         onChange={(e) => setFromValue(e.target.value)}
                       />
                       {fromValue !== maxAmountFormattedFree && maxAmount?.gt(0) && (
-                        <div
+                        <button
                           className="Exchange-swap-max"
                           onClick={() => {
                             setFromValue(maxAmountFormattedFree);
                           }}
                         >
                           <Trans>MAX</Trans>
-                        </div>
+                        </button>
                       )}
                     </div>
                     <div className="PositionEditor-token-symbol">

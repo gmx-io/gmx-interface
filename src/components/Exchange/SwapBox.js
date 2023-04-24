@@ -1946,9 +1946,9 @@ export default function SwapBox(props) {
                     onChange={onFromValueChange}
                   />
                   {shouldShowMaxButton() && (
-                    <div className="Exchange-swap-max" onClick={setFromValueToMaximumAvailable}>
+                    <button className="Exchange-swap-max" onClick={setFromValueToMaximumAvailable}>
                       <Trans>MAX</Trans>
-                    </div>
+                    </button>
                   )}
                 </div>
                 <div>
@@ -1966,9 +1966,9 @@ export default function SwapBox(props) {
               </div>
             </div>
             <div className="Exchange-swap-ball-container">
-              <div className="Exchange-swap-ball" onClick={switchTokens}>
+              <button className="Exchange-swap-ball" onClick={switchTokens}>
                 <IoMdSwap className="Exchange-swap-ball-icon" />
-              </div>
+              </button>
             </div>
             <div className="Exchange-swap-section">
               <div className="Exchange-swap-section-top">
