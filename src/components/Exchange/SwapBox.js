@@ -1074,9 +1074,9 @@ export default function SwapBox(props) {
     if (needOrderBookApproval && isWaitingForPluginApproval) {
       return false;
     }
-    // if ((needApproval && isWaitingForApproval) || isApproving) {
-    //   return false;
-    // }
+    if ((needApproval && isWaitingForApproval) || isApproving) {
+      return false;
+    }
     if (needPositionRouterApproval && isWaitingForPositionRouterApproval) {
       return false;
     }
@@ -1118,15 +1118,15 @@ export default function SwapBox(props) {
       return t`Enable Leverage`;
     }
 
-    // if (needApproval && isWaitingForApproval) {
-    //   return t`Waiting for Approval`;
-    // }
+    if (needApproval && isWaitingForApproval) {
+      return t`Waiting for Approval`;
+    }
     if (isApproving) {
       return t`Approving ${fromToken.symbol}...`;
     }
-    // if (needApproval) {
-    //   return t`Approve ${fromToken.symbol}`;
-    // }
+    if (needApproval) {
+      return t`Approve ${fromToken.symbol}`;
+    }
 
     if (needOrderBookApproval && isWaitingForPluginApproval) {
       return t`Enabling Orders...`;
