@@ -1,11 +1,9 @@
-import { ARBITRUM, AVALANCHE } from "config/chains";
 import { ethers } from "ethers";
 import { bigNumberify } from "lib/numbers";
 import { useEffect, useState } from "react";
 import { decodeReferralCode, getGraphClient, useUserCodesOnAllChain } from ".";
 import { gql } from "@apollo/client";
-
-const ACTIVE_CHAINS = [ARBITRUM, AVALANCHE];
+import { ACTIVE_PRODUCTION_CHAINS } from "config/chains";
 const DISTRIBUTION_TYPE_REBATES = "1";
 const DISTRIBUTION_TYPE_DISCOUNT = "2";
 
@@ -166,25 +164,37 @@ export default function useReferralsData(account) {
         });
     }
 
-    Promise.all(ACTIVE_CHAINS.map((chainId) => getChainReferralData(chainId)))
-      .then((res) => {
-        if (res[0] && res[1]) {
-          return {
-            [ACTIVE_CHAINS[0]]: res[0],
-            [ACTIVE_CHAINS[1]]: res[1],
-            total: {
-              registeredReferralsCount:
-                res[0].cumulativeStats.registeredReferralsCount + res[1].cumulativeStats.registeredReferralsCount,
-              affiliatesVolume: res[0].cumulativeStats.volume.add(res[1].cumulativeStats.volume),
-              referrerRebates: res[0].cumulativeStats.totalRebateUsd
-                .add(res[1].cumulativeStats.totalRebateUsd)
-                .sub(res[0].cumulativeStats.discountUsd.add(res[1].cumulativeStats.discountUsd)),
-              discountUsd: res[0].referralTotalStats.discountUsd?.add(res[1].referralTotalStats?.discountUsd || 0),
-              tradersVolume: res[0].referralTotalStats.volume?.add(res[1].referralTotalStats?.volume || 0),
-            },
-          };
-        }
-      })
+    function accumulateResults(accumulator, currentValue, index) {
+      const chainId = ACTIVE_PRODUCTION_CHAINS[index];
+
+      accumulator[chainId] = currentValue;
+      accumulator.total.registeredReferralsCount += currentValue.cumulativeStats.registeredReferralsCount;
+      accumulator.total.affiliatesVolume = accumulator.total.affiliatesVolume.add(currentValue.cumulativeStats.volume);
+      accumulator.total.referrerRebates = accumulator.total.referrerRebates
+        .add(currentValue.cumulativeStats.totalRebateUsd)
+        .sub(currentValue.cumulativeStats.discountUsd);
+      accumulator.total.discountUsd = accumulator.total.discountUsd.add(
+        currentValue.referralTotalStats.discountUsd || 0
+      );
+      accumulator.total.tradersVolume = accumulator.total.tradersVolume.add(
+        currentValue.referralTotalStats.volume || 0
+      );
+
+      return accumulator;
+    }
+
+    const initialAccumulator = {
+      total: {
+        registeredReferralsCount: 0,
+        affiliatesVolume: bigNumberify(0),
+        referrerRebates: bigNumberify(0),
+        discountUsd: bigNumberify(0),
+        tradersVolume: bigNumberify(0),
+      },
+    };
+
+    Promise.all(ACTIVE_PRODUCTION_CHAINS.map((chainId) => getChainReferralData(chainId)))
+      .then((res) => res.reduce(accumulateResults, initialAccumulator))
       .then(setData)
       // eslint-disable-next-line no-console
       .catch(console.warn)
