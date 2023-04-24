@@ -70,6 +70,7 @@ export default function SlippageInput({ setAllowedSlippage, defaultSlippage }) {
                 setSlippageText(String(slippage));
                 setAllowedSlippage(slippage * 100);
                 setIsPanelVisible(false);
+                setSlippageError("");
               }}
             >
               {slippage}%
