@@ -276,6 +276,7 @@ msgid "Approve GMX"
 msgstr "Aprobar GMX"
 
 #: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
 msgid "Approve {0}"
@@ -3645,6 +3646,7 @@ msgstr "ADVERTENCIA: Esta posición tiene una cantidad baja de garantía despué
 msgid "WEIGHT"
 msgstr "PESO"
 
+#: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
 msgid "Waiting for Approval"

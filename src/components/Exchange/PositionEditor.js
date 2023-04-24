@@ -114,13 +114,15 @@ export default function PositionEditor(props) {
   if (position) {
     title = t`Edit ${longOrShortText} ${position.indexToken.symbol}`;
     collateralToken = position.collateralToken;
+    fundingFee = getFundingFee(position);
+
     liquidationPrice = getLiquidation({
       size: position.size,
       collateral: position.collateral,
       averagePrice: position.averagePrice,
       isLong: position.isLong,
+      fundingFees: fundingFee,
     });
-    fundingFee = getFundingFee(position);
 
     if (isDeposit) {
       fromAmount = parseValue(fromValue, collateralToken.decimals);
