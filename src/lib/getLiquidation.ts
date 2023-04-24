@@ -16,11 +16,7 @@ type GetLiquidationParams = {
 };
 
 function calculateTotalFees(size: BigNumber, fundingFees: BigNumber): BigNumber {
-  return size
-    .mul(MARGIN_FEE_BASIS_POINTS)
-    .div(BASIS_POINTS_DIVISOR)
-    .add(fundingFees || BigNumber.from("0"))
-    .add(LIQUIDATION_FEE);
+  return size.mul(MARGIN_FEE_BASIS_POINTS).div(BASIS_POINTS_DIVISOR).add(fundingFees).add(LIQUIDATION_FEE);
 }
 
 export function getLiquidation({ size, collateral, averagePrice, isLong, fundingFees }: GetLiquidationParams) {
