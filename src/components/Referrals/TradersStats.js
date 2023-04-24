@@ -32,19 +32,6 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
   return (
     <div className="rebate-container">
       <div className="referral-stats">
-        <ReferralInfoCard
-          label={t`Total Trading Volume`}
-          tooltipText={t`Volume traded by this account with an active referral code.`}
-          data={referralsData}
-          dataKeys={["referralTotalStats", "volume"]}
-          totalDataKey="tradersVolume"
-        />
-        <ReferralInfoCard
-          label={t`Total Rebates`}
-          tooltipText={t`Rebates earned by this account as a trader.`}
-          dataKeys={["referralTotalStats", "discountUsd"]}
-          data={referralsData}
-        />
         <ReferralInfoCard label={t`Active Referral Code`}>
           <div className="active-referral-code">
             <div className="edit">
@@ -69,6 +56,20 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
             )}
           </div>
         </ReferralInfoCard>
+        <ReferralInfoCard
+          label={t`Total Trading Volume`}
+          tooltipText={t`Volume traded by this account with an active referral code.`}
+          data={referralsData}
+          dataKeys={["referralTotalStats", "volume"]}
+          totalDataKey="tradersVolume"
+        />
+        <ReferralInfoCard
+          label={t`Total Rebates`}
+          tooltipText={t`Rebates earned by this account as a trader.`}
+          dataKeys={["referralTotalStats", "discountUsd"]}
+          data={referralsData}
+        />
+
         <Modal
           className="Connect-wallet-modal"
           isVisible={isEditModalOpen}
