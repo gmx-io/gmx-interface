@@ -28,6 +28,11 @@ export function createWithdrawalTxn(chainId: number, library: Web3Provider, p: P
 
   const multicall = [
     contract.interface.encodeFunctionData("sendWnt", [withdrawalVaultAddress, wntAmount]),
+    contract.interface.encodeFunctionData("sendTokens", [
+      p.marketTokenAddress,
+      withdrawalVaultAddress,
+      p.marketTokenAmount,
+    ]),
     contract.interface.encodeFunctionData("createWithdrawal", [
       {
         receiver: p.account,
@@ -43,6 +48,7 @@ export function createWithdrawalTxn(chainId: number, library: Web3Provider, p: P
         shouldUnwrapNativeToken: isNativeWithdrawal,
         executionFee: p.executionFee,
         callbackGasLimit: BigNumber.from(0),
+        uiFeeReceiver: ethers.constants.AddressZero,
       },
     ]),
   ];

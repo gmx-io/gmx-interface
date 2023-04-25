@@ -1,3 +1,4 @@
+import { MarketInfo } from "domain/synthetics/markets";
 import { mockMarketsData } from "domain/synthetics/testUtils/mocks";
 import { MarketEdge, SwapEstimator, findAllPaths, getBestSwapPath, getMarketsGraph } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
@@ -17,7 +18,7 @@ const marketsKeys = [
 const marketsData = mockMarketsData(marketsKeys);
 // const feeConfigs = mockFeeConfigsData(marketsKeys);
 
-const graph = getMarketsGraph(Object.values(marketsData));
+const graph = getMarketsGraph(Object.values(marketsData) as MarketInfo[]);
 
 const BASE_FEE = BigNumber.from(-1);
 

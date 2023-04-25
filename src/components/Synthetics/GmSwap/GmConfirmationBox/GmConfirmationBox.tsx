@@ -17,6 +17,7 @@ import { GmSwapFees } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { formatTokenAmount, formatTokenAmountWithUsd } from "lib/numbers";
+import { uniq } from "lodash";
 import { getByKey } from "lib/objects";
 import { GmFees } from "../GmFees/GmFees";
 
@@ -85,9 +86,11 @@ export function GmConfirmationBox({
       if (shortTokenAmount?.gt(0) && shortToken) {
         addresses.push(shortToken.address);
       }
+    } else {
+      addresses.push(marketToken.address);
     }
 
-    return addresses;
+    return uniq(addresses);
   })();
 
   const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
@@ -118,9 +121,17 @@ export function GmConfirmationBox({
       ) {
         addresses.push(shortToken.address);
       }
+    } else {
+      if (
+        marketTokenAmount.gt(0) &&
+        marketToken &&
+        getNeedTokenApprove(tokensAllowanceData, marketToken.address, marketTokenAmount)
+      ) {
+        addresses.push(marketToken.address);
+      }
     }
 
-    return addresses;
+    return uniq(addresses);
   })();
 
   const longSymbol = market?.isSameCollaterals ? `${longToken?.symbol} Long` : longToken?.symbol;

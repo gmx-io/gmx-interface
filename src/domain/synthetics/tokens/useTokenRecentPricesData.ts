@@ -1,9 +1,9 @@
-import useSWR from "swr";
-import { getTokenBySymbol, getTokens, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { jsonFetcher } from "lib/fetcher";
-import { expandDecimals } from "lib/numbers";
 import { getOracleKeeperUrl } from "config/oracleKeeper";
+import { getToken, getTokens, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { jsonFetcher } from "lib/fetcher";
 import { USD_DECIMALS } from "lib/legacy";
+import { expandDecimals } from "lib/numbers";
+import useSWR from "swr";
 import { TokenPricesData } from "./types";
 import { parseOraclePrice } from "./utils";
 
@@ -32,7 +32,7 @@ export function useTokenRecentPrices(chainId: number): TokenPricesDataResult {
           let tokenConfig: any;
 
           try {
-            tokenConfig = getTokenBySymbol(chainId, priceItem.tokenSymbol);
+            tokenConfig = getToken(chainId, priceItem.tokenAddress);
           } catch (e) {
             // ignore unknown token errors
 
@@ -58,8 +58,8 @@ export function useTokenRecentPrices(chainId: number): TokenPricesDataResult {
 
         const wrappedToken = getWrappedToken(chainId);
 
-        if (!result[wrappedToken.address] && result[NATIVE_TOKEN_ADDRESS]) {
-          result[wrappedToken.address] = result[NATIVE_TOKEN_ADDRESS];
+        if (result[wrappedToken.address] && !result[NATIVE_TOKEN_ADDRESS]) {
+          result[NATIVE_TOKEN_ADDRESS] = result[wrappedToken.address];
         }
 
         return result;

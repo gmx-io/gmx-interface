@@ -54,6 +54,7 @@ export const VIRTUAL_MARKET_ID_KEY = hashString("VIRTUAL_MARKET_ID");
 export const VIRTUAL_INVENTORY_FOR_POSITIONS_KEY = hashString("VIRTUAL_INVENTORY_FOR_POSITIONS");
 export const VIRTUAL_INVENTORY_FOR_SWAPS_KEY = hashString("VIRTUAL_INVENTORY_FOR_SWAPS");
 export const POOL_AMOUNT_ADJUSTMENT_KEY = hashString("POOL_AMOUNT_ADJUSTMENT");
+export const IS_MARKET_DISABLED_KEY = hashString("IS_MARKET_DISABLED");
 
 export function positionImpactFactorKey(market: string, isPositive: boolean) {
   return hashData(["bytes32", "address", "bool"], [POSITION_IMPACT_FACTOR_KEY, market, isPositive]);
@@ -195,4 +196,8 @@ export function virtualInventoryForPositionsKey(virtualTokenId: string) {
 
 export function poolAmountAdjustmentKey(market: string, token: string) {
   return hashData(["bytes32", "address", "address"], [POOL_AMOUNT_ADJUSTMENT_KEY, market, token]);
+}
+
+export function isMarketDisabledKey(market: string) {
+  return hashData(["bytes32", "address"], [IS_MARKET_DISABLED_KEY, market]);
 }

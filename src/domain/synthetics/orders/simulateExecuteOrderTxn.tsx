@@ -12,8 +12,6 @@ import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "d
 import { BigNumber, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
-import { expandDecimals, formatUsd } from "lib/numbers";
-import _ from "lodash";
 
 export type MulticallRequest = { method: string; params: any[] }[];
 
@@ -148,28 +146,6 @@ function getSimulationPrices(
     } else {
       secondaryPrices.push(currentPrice);
     }
-  }
-
-  if (isDevelopment()) {
-    // eslint-disable-next-line no-console
-    console.log("simulation prices", {
-      primaryPricesMap: _.mapValues(primaryPricesMap, (v) => ({
-        min: formatUsd(v?.minPrice),
-        max: formatUsd(v?.maxPrice),
-      })),
-      secondaryPricesMap: _.mapValues(secondaryPricesMap, (v) => ({
-        min: formatUsd(v?.minPrice),
-        max: formatUsd(v?.maxPrice),
-      })),
-      primaryPrices: primaryPrices.map((v) => ({
-        min: formatUsd(v.min.mul(expandDecimals(1, 18))),
-        max: formatUsd(v.max.mul(expandDecimals(1, 18))),
-      })),
-      secondaryPrices: secondaryPrices.map((v) => ({
-        min: formatUsd(v.min.mul(expandDecimals(1, 18))),
-        max: formatUsd(v.max.mul(expandDecimals(1, 18))),
-      })),
-    });
   }
 
   return {

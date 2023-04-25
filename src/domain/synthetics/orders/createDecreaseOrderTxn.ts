@@ -65,6 +65,7 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
             callbackContract: AddressZero,
             market: p.marketAddress,
             swapPath: p.swapPath,
+            uiFeeReceiver: ethers.constants.AddressZero,
           },
           numbers: {
             sizeDeltaUsd: p.sizeDeltaUsd,

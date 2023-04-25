@@ -9,6 +9,7 @@ import {
   MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY,
   claimableFundingAmountKey,
   cumulativeBorrowingFactorKey,
+  isMarketDisabledKey,
   maxPnlFactorKey,
   maxPositionImpactFactorForLiquidationsKey,
   maxPositionImpactFactorKey,
@@ -57,6 +58,10 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
         const market = getByKey(marketsData, marketAddress)!;
         const marketPrices = getContractMarketPrices(tokensData!, market)!;
 
+        if (!marketPrices) {
+          return request;
+        }
+
         const marketProps = {
           marketToken: market.marketTokenAddress,
           indexToken: market.indexTokenAddress,
@@ -103,6 +108,10 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
             contractAddress: dataStoreAddress,
             abi: DataStore.abi,
             calls: {
+              isDisabled: {
+                methodName: "getBool",
+                params: [isMarketDisabledKey(marketAddress)],
+              },
               longPoolAmount: {
                 methodName: "getUint",
                 params: [poolAmountKey(marketAddress, market.longTokenAddress)],
@@ -284,6 +293,10 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
         const readerValues = res[`${marketAddress}-reader`];
         const dataStoreValues = res[`${marketAddress}-dataStore`];
 
+        if (!readerValues || !dataStoreValues) {
+          return acc;
+        }
+
         const longInterestUsingLongToken = dataStoreValues.longInterestUsingLongToken.returnValues[0];
         const longInterestUsingShortToken = dataStoreValues.longInterestUsingShortToken.returnValues[0];
         const shortInterestUsingLongToken = dataStoreValues.shortInterestUsingLongToken.returnValues[0];
@@ -345,6 +358,7 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
 
         acc[marketAddress] = {
           ...market,
+          isDisabled: dataStoreValues.isDisabled.returnValues[0],
           longToken,
           shortToken,
           indexToken,

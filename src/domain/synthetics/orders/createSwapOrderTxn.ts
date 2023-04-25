@@ -69,6 +69,7 @@ export async function createSwapOrderTxn(chainId: number, library: Web3Provider,
             callbackContract: AddressZero,
             market: AddressZero,
             swapPath: p.swapPath,
+            uiFeeReceiver: ethers.constants.AddressZero,
           },
           numbers: {
             sizeDeltaUsd: BigNumber.from(0),

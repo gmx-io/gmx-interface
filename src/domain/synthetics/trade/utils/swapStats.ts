@@ -37,11 +37,27 @@ export function getSwapPathOutputAddresses(p: {
   const [firstMarketAddress, ...marketAddresses] = swapPath;
 
   let outMarket = marketsInfoData[firstMarketAddress];
+
+  if (!outMarket) {
+    return {
+      outTokenAddress: undefined,
+      outMarketAddress: undefined,
+    };
+  }
+
   let outTokenType = getTokenPoolType(outMarket, initialCollateralAddress);
   let outToken = outTokenType === "long" ? outMarket.shortToken : outMarket.longToken;
 
   for (const marketAddress of marketAddresses) {
     outMarket = marketsInfoData[marketAddress];
+
+    if (!outMarket) {
+      return {
+        outTokenAddress: undefined,
+        outMarketAddress: undefined,
+      };
+    }
+
     outTokenType = outMarket.longTokenAddress === outToken.address ? "short" : "long";
     outToken = outTokenType === "long" ? outMarket.longToken : outMarket.shortToken;
   }
