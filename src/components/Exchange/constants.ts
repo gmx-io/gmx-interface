@@ -10,6 +10,7 @@ export enum ErrorCode {
   Buffer = "BUFFER",
   MaxUSDG = "MAX_USDG",
   InvalidLiqPrice = "INVALID_LIQ_PRICE",
+  InsufficientDepositAmount = "INSUFFICIENT_DEPOSIT_AMOUNT",
 }
 
 export enum ErrorDisplayType {
