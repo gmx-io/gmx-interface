@@ -234,19 +234,18 @@ export default function PositionEditor(props) {
       return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
     }
 
-    if (nextLeverageExcludingPnl && nextLeverageExcludingPnl.gt(MAX_ALLOWED_LEVERAGE)) {
-      return [t`Max leverage without PnL: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
-    }
-
     if (fromAmount && isDeposit && nextLiquidationPrice) {
       if (nextLiquidationPrice.gt(position.markPrice)) {
         return [t`Invalid liq. price`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientDepositAmount];
       }
     }
 
-    if (isDeposit && parseValue.hasProfit) {
+    if (parseValue.hasProfit) {
       if (nextCollateral.gt(position.closingFee.add(LIQUIDATION_FEE))) {
         return [t`Deposit not enough to cover fees`];
+      }
+      if (nextLeverageExcludingPnl && nextLeverageExcludingPnl.lt(MAX_ALLOWED_LEVERAGE)) {
+        return [t`Max leverage without PnL: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
       }
     }
 
