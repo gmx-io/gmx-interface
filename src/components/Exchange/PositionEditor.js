@@ -12,6 +12,7 @@ import {
   MAX_ALLOWED_LEVERAGE,
   getFundingFee,
   LIQUIDATION_FEE,
+  MAX_LEVERAGE,
 } from "lib/legacy";
 import { getContract } from "config/contracts";
 import Tab from "../Tab/Tab";
@@ -235,17 +236,21 @@ export default function PositionEditor(props) {
     }
 
     if (fromAmount && isDeposit && nextLiquidationPrice) {
-      if (nextLiquidationPrice.gt(position.markPrice)) {
+      const invalidLiqPrice = position.isLong
+        ? nextLiquidationPrice.gte(position.markPrice)
+        : nextLiquidationPrice.lte(position.markPrice);
+
+      if (invalidLiqPrice) {
         return [t`Invalid liq. price`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientDepositAmount];
       }
     }
 
-    if (parseValue.hasProfit) {
-      if (nextCollateral.gt(position.closingFee.add(LIQUIDATION_FEE))) {
+    if (position.hasProfit) {
+      if (nextCollateral.lte(position.closingFee.add(LIQUIDATION_FEE))) {
         return [t`Deposit not enough to cover fees`];
       }
-      if (nextLeverageExcludingPnl && nextLeverageExcludingPnl.lt(MAX_ALLOWED_LEVERAGE)) {
-        return [t`Max leverage without PnL: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
+      if (nextLeverageExcludingPnl && nextLeverageExcludingPnl.lt(MAX_LEVERAGE)) {
+        return [t`Max leverage without PnL: ${(MAX_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
       }
     }
 
