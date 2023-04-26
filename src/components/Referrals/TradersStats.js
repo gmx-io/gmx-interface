@@ -88,13 +88,19 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
       </div>
       {currentDiscountDistributions.length > 0 ? (
         <div className="reward-history">
-          <Card title={t`Rebates Distribution History`} tooltipText={t`Rebates are airdropped weekly.`}>
+          <Card
+            title={t`Rebates Distribution History`}
+            tooltipText={t`V1 rebates are airdropped weekly, V2 rebates are automatically applied as fee discounts on each trade.`}
+          >
             <div className="table-wrapper">
               <table className="referral-table">
                 <thead>
                   <tr>
                     <th className="table-head" scope="col">
                       <Trans>Date</Trans>
+                    </th>
+                    <th className="table-head" scope="col">
+                      <Trans>Type</Trans>
                     </th>
                     <th className="table-head" scope="col">
                       <Trans>Amount</Trans>
@@ -116,6 +122,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                     return (
                       <tr key={index}>
                         <td data-label="Date">{formatDate(rebate.timestamp)}</td>
+                        <td data-label="Type">V1 AIRDROP</td>
                         <td data-label="Amount">
                           {formatAmount(rebate.amount, tokenInfo.decimals, 6, true)} {tokenInfo.symbol}
                         </td>
@@ -135,8 +142,8 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
         </div>
       ) : (
         <EmptyMessage
+          tooltipText={t`V1 rebates are airdropped weekly, V2 rebates are automatically applied as fee discounts on each trade.`}
           message={t`No rebates distribution history yet.`}
-          tooltipText={t`Rebates are airdropped weekly.`}
         />
       )}
     </div>
