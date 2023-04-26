@@ -3472,8 +3472,8 @@ msgstr ""
 #: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
 #: src/components/Referrals/TradersStats.js
-msgid "Rebates are airdropped weekly."
-msgstr ""
+#~ msgid "Rebates are airdropped weekly."
+#~ msgstr ""
 
 #: src/components/Referrals/TradersStats.js
 msgid "Rebates earned by this account as a trader."
@@ -4682,6 +4682,7 @@ msgid "Txn failed. <0>View</0>"
 msgstr ""
 
 #: src/components/Exchange/OrdersList.js
+#: src/components/Referrals/TradersStats.js
 #: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Type"
@@ -4811,6 +4812,12 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Utilization"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "V1 rebates are airdropped weekly, V2 rebates are automatically applied as fee discounts on each trade."
 msgstr ""
 
 #: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
