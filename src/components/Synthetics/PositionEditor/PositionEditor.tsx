@@ -47,6 +47,7 @@ import Tab from "components/Tab/Tab";
 import Button from "components/Button/Button";
 import Tooltip from "components/Tooltip/Tooltip";
 import "./PositionEditor.scss";
+import { useUserReferralCode } from "domain/referrals";
 
 export type Props = {
   position: PositionInfo;
@@ -78,6 +79,8 @@ export function PositionEditor(p: Props) {
   const { gasLimits } = useGasLimits(chainId);
   const { minCollateralUsd } = usePositionsConstants(chainId);
   const routerAddress = getContract(chainId, "SyntheticsRouter");
+  const { userReferralCode } = useUserReferralCode(library, chainId, account);
+
   const { data: tokenAllowance } = useSWR<BigNumber>(
     [active, chainId, position.collateralTokenAddress, "allowance", account, routerAddress],
     {
@@ -290,6 +293,7 @@ export function PositionEditor(p: Props) {
         isLong: position.isLong,
         executionFee: executionFee.feeTokenAmount,
         tokensData,
+        referralCode: userReferralCode,
         setPendingTxns,
       }).then(() => {
         if (p.position) {
@@ -323,6 +327,7 @@ export function PositionEditor(p: Props) {
         decreasePositionSwapType: decreaseSwapType,
         minOutputUsd: receiveUsd,
         tokensData,
+        referralCode: userReferralCode,
         setPendingTxns,
       }).then(() => {
         if (p.position) {

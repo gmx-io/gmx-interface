@@ -143,7 +143,7 @@ export function ConfirmationBox(p: Props) {
   const { tokensData } = useAvailableTokensData(chainId);
   const { setPendingPositionUpdate } = useSyntheticsEvents();
 
-  const referralCodeData = useUserReferralCode(library, chainId, account);
+  const { userReferralCode } = useUserReferralCode(library, chainId, account);
 
   const [isTriggerWarningAccepted, setIsTriggerWarningAccepted] = useState(false);
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
@@ -334,7 +334,7 @@ export function ConfirmationBox(p: Props) {
       executionFee: executionFee.feeTokenAmount,
       orderType: isLimit ? OrderType.LimitSwap : OrderType.MarketSwap,
       minOutputAmount: swapAmounts.minOutputAmount,
-      referralCode: referralCodeData.userReferralCodeString,
+      referralCode: userReferralCode,
       tokensData,
       setPendingTxns,
     }).then(onSubmitted);
@@ -372,7 +372,7 @@ export function ConfirmationBox(p: Props) {
       executionFee: executionFee.feeTokenAmount,
       isLong,
       orderType: isLimit ? OrderType.LimitIncrease : OrderType.MarketIncrease,
-      referralCode: referralCodeData?.userReferralCodeString,
+      referralCode: userReferralCode,
       tokensData,
       setPendingTxns: p.setPendingTxns,
     }).then(() => {
@@ -421,6 +421,7 @@ export function ConfirmationBox(p: Props) {
       decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
       minOutputUsd: decreaseAmounts.receiveUsd,
       tokensData,
+      referralCode: userReferralCode,
       setPendingTxns,
     }).then(onSubmitted);
   }

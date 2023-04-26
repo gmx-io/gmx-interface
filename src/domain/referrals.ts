@@ -7,8 +7,12 @@ import ReferralStorage from "abis/ReferralStorage.json";
 import { MAX_REFERRAL_CODE_LENGTH, isAddressZero, isHashZero } from "lib/legacy";
 import { getContract } from "config/contracts";
 import { REGEX_VERIFY_BYTES32 } from "components/Referrals/referralsHelper";
-import { ARBITRUM, AVALANCHE } from "config/chains";
-import { arbitrumReferralsGraphClient, avalancheReferralsGraphClient } from "lib/subgraph/clients";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
+import {
+  arbitrumReferralsGraphClient,
+  avalancheFujiReferralsGraphClient,
+  avalancheReferralsGraphClient,
+} from "lib/subgraph/clients";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
@@ -24,10 +28,9 @@ function getGraphClient(chainId) {
     return arbitrumReferralsGraphClient;
   } else if (chainId === AVALANCHE) {
     return avalancheReferralsGraphClient;
+  } else if (chainId === AVALANCHE_FUJI) {
+    return avalancheFujiReferralsGraphClient;
   }
-
-  // TODO
-  return avalancheReferralsGraphClient;
 
   throw new Error(`Unsupported chain ${chainId}`);
 }
@@ -324,7 +327,7 @@ export async function getReferralCodeOwner(chainId, referralCode) {
 export function useUserReferralCode(library, chainId, account) {
   const localStorageCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const { data: onChainCode } = useSWR(
+  const { data: onChainCode } = useSWR<string>(
     account && ["ReferralStorage", chainId, referralStorageAddress, "traderReferralCodes", account],
     { fetcher: contractFetcher(library, ReferralStorage) }
   );
@@ -336,13 +339,23 @@ export function useUserReferralCode(library, chainId, account) {
     { fetcher: contractFetcher(library, ReferralStorage) }
   );
 
-  const [attachedOnChain, userReferralCode, userReferralCodeString] = useMemo(() => {
+  const { attachedOnChain, userReferralCode, userReferralCodeString } = useMemo(() => {
     if (onChainCode && !isHashZero(onChainCode)) {
-      return [true, onChainCode, decodeReferralCode(onChainCode)];
+      return {
+        attachedOnChain: true,
+        userReferralCode: onChainCode,
+        userReferralCodeString: decodeReferralCode(onChainCode),
+      };
     } else if (localStorageCodeOwner && !isAddressZero(localStorageCodeOwner)) {
-      return [false, localStorageCode, decodeReferralCode(localStorageCode)];
+      return {
+        attachedOnChain: false,
+        userReferralCode: localStorageCode!,
+        userReferralCodeString: decodeReferralCode(localStorageCode),
+      };
     }
-    return [false];
+    return {
+      attachedOnChain: false,
+    };
   }, [localStorageCode, localStorageCodeOwner, onChainCode]);
 
   return {

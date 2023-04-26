@@ -52,6 +52,7 @@ import TokenSelector from "components/TokenSelector/TokenSelector";
 import cx from "classnames";
 import Button from "components/Button/Button";
 import "./PositionSeller.scss";
+import { useUserReferralCode } from "domain/referrals";
 
 export type Props = {
   position: PositionInfo;
@@ -85,6 +86,7 @@ export function PositionSeller(p: Props) {
   const { virtualInventoryForPositions } = useVirtualInventory(chainId);
   const { gasLimits } = useGasLimits(chainId);
   const { minCollateralUsd } = usePositionsConstants(chainId);
+  const { userReferralCode } = useUserReferralCode(library, chainId, account);
 
   const { setPendingPositionUpdate } = useSyntheticsEvents();
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
@@ -269,6 +271,7 @@ export function PositionSeller(p: Props) {
       decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
       minOutputUsd: receiveUsd,
       tokensData,
+      referralCode: userReferralCode,
       setPendingTxns,
     }).then(() => {
       if (p.position) {

@@ -85,7 +85,7 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
           decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
           isLong: p.isLong,
           shouldUnwrapNativeToken: isNativePayment,
-          referralCode: encodeReferralCode(p.referralCode || ""),
+          referralCode: p.referralCode || encodeReferralCode(""),
         },
       ],
     },

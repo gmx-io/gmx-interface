@@ -80,7 +80,7 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
           decreasePositionSwapType: p.decreasePositionSwapType,
           isLong: p.isLong,
           shouldUnwrapNativeToken: isNativeReceive,
-          referralCode: encodeReferralCode(p.referralCode || ""),
+          referralCode: p.referralCode || encodeReferralCode(""),
         },
       ],
     },

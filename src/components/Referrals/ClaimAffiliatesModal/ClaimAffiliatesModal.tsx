@@ -38,14 +38,12 @@ export function ClaimAffiliatesModal(p: Props) {
       : BigNumber.from(0);
 
   function renderRewardSection(reward: AffiliateReward) {
-    const market = getByKey(marketsInfoData, reward.marketAddress);
-    if (!market) {
+    const marketInfo = getByKey(marketsInfoData, reward.marketAddress);
+    if (!marketInfo) {
       return null;
     }
 
-    const marketName = market.name;
-    const longToken = market.longToken;
-    const shortToken = market.shortToken;
+    const { longToken, shortToken } = marketInfo;
 
     const { longTokenAmount, shortTokenAmount } = reward;
 
@@ -69,8 +67,8 @@ export function ClaimAffiliatesModal(p: Props) {
     }
 
     return (
-      <div key={market.marketTokenAddress} className="App-card-content">
-        <ExchangeInfoRow className="ClaimModal-row" label={t`Market`} value={marketName} />
+      <div key={marketInfo.marketTokenAddress} className="App-card-content">
+        <ExchangeInfoRow className="ClaimModal-row" label={t`Market`} value={marketInfo.name} />
         <ExchangeInfoRow
           className="ClaimModal-row"
           label={t`Rewards`}

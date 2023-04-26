@@ -9,6 +9,7 @@ export const nissohGraphClient = createClient(ARBITRUM, "nissohVault");
 
 export const avalancheGraphClient = createClient(AVALANCHE, "stats");
 export const avalancheReferralsGraphClient = createClient(AVALANCHE, "referrals");
+export const avalancheFujiReferralsGraphClient = createClient(AVALANCHE_FUJI, "referrals");
 
 export const avalancheFujiSyntheticsStatsClient = createClient(AVALANCHE_FUJI, "syntheticsStats");
 
