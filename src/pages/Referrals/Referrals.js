@@ -1,5 +1,5 @@
 import "./Referrals.css";
-import React, { useEffect } from "react";
+import React from "react";
 import { useLocalStorage } from "react-use";
 import { Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
@@ -7,7 +7,6 @@ import { useParams } from "react-router-dom";
 import SEO from "components/Common/SEO";
 import Tab from "components/Tab/Tab";
 import Loader from "components/Common/Loader";
-import ReferralStorage from "abis/ReferralStorage.json";
 import Footer from "components/Footer/Footer";
 import { getPageTitle, isHashZero } from "lib/legacy";
 import {
@@ -16,7 +15,6 @@ import {
   useCodeOwner,
   useReferrerTier,
   useUserReferralCode,
-  getReferralCodeOwner,
 } from "domain/referrals";
 import JoinReferralCode from "components/Referrals/JoinReferralCode";
 import AffiliatesStats from "components/Referrals/AffiliatesStats";
@@ -29,8 +27,6 @@ import { REFERRALS_SELECTED_TAB_KEY } from "config/localStorage";
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getIcon } from "config/icons";
-import { getContract } from "config/contracts";
-import { getProvider } from "lib/rpc";
 
 const TRADERS = "Traders";
 const AFFILIATES = "Affiliates";
@@ -56,29 +52,6 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   const { codeOwner } = useCodeOwner(library, chainId, account, userReferralCode);
   const { referrerTier: traderTier } = useReferrerTier(library, chainId, codeOwner);
   const networkIcon = getIcon(chainId, "network");
-
-  useEffect(() => {
-    const referralStorageAddress = getContract(chainId, "ReferralStorage");
-    const c = new ethers.Contract(referralStorageAddress, ReferralStorage.abi, getProvider(library, chainId));
-
-    if (!userReferralCode || !c) {
-      return;
-    }
-
-    async function getData() {
-      const affiliate = await c.codeOwners(userReferralCode);
-      const tier = await c.referrerTiers(affiliate);
-      const r = await c.tiers(tier);
-
-      console.log("ad", {
-        affiliate,
-        tier,
-        r,
-      });
-    }
-
-    getData();
-  }, [chainId, library, userReferralCode]);
 
   function handleCreateReferralCode(referralCode) {
     return registerReferralCode(chainId, referralCode, library, {
