@@ -103,12 +103,16 @@ export type MarketInfo = Market & {
   fundingAmountPerSize_ShortCollateral_ShortPosition: BigNumber;
 };
 
+export type MarketsData = {
+  [marketTokenAddress: string]: Market;
+};
+
 export type MarketsInfoData = {
   [marketAddress: string]: MarketInfo;
 };
 
-export type MarketsData = {
-  [marketTokenAddress: string]: Market;
+export type MarketTokensAPRData = {
+  [marketTokenAddress: string]: BigNumber;
 };
 
 export type ContractMarketPrices = {

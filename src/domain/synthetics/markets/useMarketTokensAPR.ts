@@ -1,26 +1,24 @@
-import useSWR from "swr";
 import { gql } from "@apollo/client";
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";
 import { bigNumberify, expandDecimals } from "lib/numbers";
 import { getSyntheticsGraphClient } from "lib/subgraph";
-import { useMarketTokensData } from "./useMarketTokensData";
-import { useMarkets } from "./useMarkets";
+import { useMemo } from "react";
+import useSWR from "swr";
+import { useMarketTokensData, useMarkets } from ".";
+import { MarketTokensAPRData } from "./types";
 
-type RawCollectedFee = {
+type RawCollectedFees = {
   id: string;
   period: string;
   marketAddress: string;
-  collateralTokenAddress: string;
+  tokenAddress: string;
   feeUsdForPool: string;
+  cummulativeFeeUsdForPool: string;
   timestampGroup: number;
 };
 
-type MarketTokensAPRData = {
-  [marketAddress: string]: BigNumber;
-};
-
-export type MarketTokensAPRResult = {
+type MarketTokensAPRResult = {
   marketsTokensAPRData?: MarketTokensAPRData;
   avgMarketsAPR?: BigNumber;
 };
@@ -30,77 +28,87 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
 
   const client = getSyntheticsGraphClient(chainId);
+  const marketAddresses = useMemo(() => Object.keys(marketsData || {}), [marketsData]);
 
-  const marketAddresses = Object.keys(marketTokensData || {});
-
-  const key = marketAddresses.length && client ? marketAddresses.join(",") : null;
+  const key = marketAddresses.length && marketTokensData && client ? marketAddresses.join(",") : null;
 
   const { data } = useSWR(key, {
     fetcher: async () => {
-      const getMarketQuery = (marketAddress: string, collateralTokenAddress: string) => `
-        _${marketAddress}_${collateralTokenAddress}: collectedPositionFees(
-            first: 7,
-            orderBy: timestampGroup,
-            orderDirection: desc,
-            where: { marketAddress: "${marketAddress.toLowerCase()}", collateralTokenAddress: "${collateralTokenAddress.toLocaleLowerCase()}", period: "1d" }
-        ) {
-            id
-            period
-            marketAddress
-            collateralTokenAddress
-            feeUsdForPool
-            timestampGroup
-        }
-      `;
+      const nowInSecods = Math.floor(Date.now() / 1000);
+
+      const marketFeesQuery = (marketAddress: string, tokenAddress: string) => `
+            _${marketAddress}_${tokenAddress}: collectedMarketFeesInfos(
+               where: { 
+                    marketAddress: "${marketAddress.toLowerCase()}",
+                    tokenAddress: "${tokenAddress.toLowerCase()}",
+                    period: "1h",
+                    timestampGroup_gte: ${nowInSecods - 3600 * 24 * 7}
+                },
+                orderBy: timestampGroup,
+                orderDirection: desc,
+            ) {
+                id
+                period
+                marketAddress
+                tokenAddress
+                feeUsdForPool
+                cummulativeFeeUsdForPool
+                timestampGroup
+            }
+        `;
 
       const queryBody = marketAddresses.reduce((acc, marketAddress) => {
         const { longTokenAddress, shortTokenAddress } = marketsData![marketAddress];
 
-        acc += getMarketQuery(marketAddress, longTokenAddress);
-        acc += getMarketQuery(marketAddress, shortTokenAddress);
+        acc += marketFeesQuery(marketAddress, longTokenAddress);
+        acc += marketFeesQuery(marketAddress, shortTokenAddress);
 
         return acc;
       }, "");
 
       const { data: response } = await client!.query({ query: gql(`{${queryBody}}`) });
 
-      const marketTokensAPRData = marketAddresses.reduce((acc, marketAddress) => {
-        const market = marketsData?.[marketAddress]!;
-        const marketToken = marketTokensData?.[marketAddress]!;
+      const marketTokensAPRData: MarketTokensAPRData = marketAddresses.reduce((acc, marketAddress) => {
+        const market = marketsData![marketAddress]!;
+        const marketToken = marketTokensData![marketAddress]!;
 
         const feeItems = [
           ...response[`_${marketAddress}_${market.longTokenAddress}`],
           ...response[`_${marketAddress}_${market.shortTokenAddress}`],
         ];
 
-        const feesUsdForPeriod = feeItems.reduce((acc, rawCollectedFee: RawCollectedFee) => {
-          return acc.add(bigNumberify(rawCollectedFee.feeUsdForPool));
+        const feesUsdForPeriod = feeItems.reduce((acc, rawCollectedFees: RawCollectedFees) => {
+          return acc.add(bigNumberify(rawCollectedFees.feeUsdForPool));
         }, BigNumber.from(0));
 
-        const feesPerMarketToken = feesUsdForPeriod.mul(expandDecimals(1, 18)).div(marketToken.totalSupply);
-        const weeksInYear = 52;
-        const apr = feesPerMarketToken.mul(BASIS_POINTS_DIVISOR).div(marketToken.prices!.maxPrice).mul(weeksInYear);
+        if (marketToken.totalSupply?.gt(0)) {
+          const feesPerMarketToken = feesUsdForPeriod.mul(expandDecimals(1, 18)).div(marketToken.totalSupply);
+          const weeksInYear = 52;
+          const apr = feesPerMarketToken.mul(BASIS_POINTS_DIVISOR).div(marketToken.prices.minPrice).mul(weeksInYear);
 
-        acc[marketAddress] = apr;
+          acc[marketAddress] = apr;
+        } else {
+          acc[marketAddress] = BigNumber.from(0);
+        }
 
         return acc;
       }, {} as MarketTokensAPRData);
 
-      const avgApr = Object.values(marketTokensAPRData)
+      const avgMarketsAPR = Object.values(marketTokensAPRData)
         .reduce((acc, apr) => {
           return acc.add(apr);
         }, BigNumber.from(0))
         .div(marketAddresses.length);
 
       return {
-        marketTokensAPRData,
-        avgMarketsAPR: avgApr,
+        marketsTokensAPRData: marketTokensAPRData,
+        avgMarketsAPR: avgMarketsAPR,
       };
     },
   });
 
   return {
-    marketsTokensAPRData: data?.marketTokensAPRData,
+    marketsTokensAPRData: data?.marketsTokensAPRData,
     avgMarketsAPR: data?.avgMarketsAPR,
   };
 }
