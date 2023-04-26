@@ -7,6 +7,7 @@ import { useChainId } from "lib/chains";
 import { formatAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
 import "./MarketStats.scss";
+import { getByKey } from "lib/objects";
 
 type Props = {
   marketInfo?: MarketInfo;
@@ -35,7 +36,7 @@ export function MarketStats(p: Props) {
   const longPoolAmountUsd = marketInfo ? getPoolUsd(marketInfo, true, "midPrice") : undefined;
   const shortPoolAmountUsd = marketInfo ? getPoolUsd(marketInfo, false, "midPrice") : undefined;
 
-  const apr = marketsTokensAPRData?.[marketInfo?.marketTokenAddress || ""];
+  const apr = getByKey(marketsTokensAPRData, marketInfo?.marketTokenAddress);
 
   return (
     <div className="App-card MarketStats-card">

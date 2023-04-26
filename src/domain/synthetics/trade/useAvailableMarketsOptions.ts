@@ -63,8 +63,8 @@ export function useAvailableMarketsOptions(
       return {};
     }
 
-    const availableMarkets = Object.values(marketsInfoData || {}).filter((market) =>
-      isMarketIndexToken(market, indexToken.address)
+    const availableMarkets = Object.values(marketsInfoData || {}).filter(
+      (market) => isMarketIndexToken(market, indexToken.address) && !market.isSpotOnly && !market.isDisabled
     );
 
     const liquidMarkets = increaseSizeUsd

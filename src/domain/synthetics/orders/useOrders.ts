@@ -59,7 +59,9 @@ export function useOrders(chainId: number): OrdersResult {
         ordersData: orders.reduce((acc: OrdersData, order, i) => {
           const key = orderKeys[i];
           const [addresses, numbers, flags, data] = order;
-          const [account, receiver, callbackContract, marketAddress, initialCollateralToken, swapPath] = addresses;
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const [account, receiver, callbackContract, uiFeeReceiver, marketAddress, initialCollateralToken, swapPath] =
+            addresses;
           const [orderType, decreasePositionSwapType, ...restNumbers] = numbers;
           const [
             sizeDeltaUsd,

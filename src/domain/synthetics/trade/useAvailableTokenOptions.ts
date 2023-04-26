@@ -1,5 +1,5 @@
 import { getNativeToken, getTokensMap } from "config/tokens";
-import { useMarkets } from "domain/synthetics/markets";
+import { useMarketsInfo } from "domain/synthetics/markets";
 import { InfoTokens, Token } from "domain/tokens";
 import { useMemo } from "react";
 import { adaptToV1InfoTokens, useAvailableTokensData } from "../tokens";
@@ -12,11 +12,11 @@ export type AvailableTokenOptions = {
 };
 
 export function useAvailableTokenOptions(chainId: number): AvailableTokenOptions {
-  const { marketsData } = useMarkets(chainId);
+  const { marketsInfoData } = useMarketsInfo(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
 
   return useMemo(() => {
-    const markets = Object.values(marketsData || {});
+    const markets = Object.values(marketsInfoData || {});
     const tokensMap = getTokensMap(chainId);
 
     const collaterals = new Set<Token>();
@@ -31,7 +31,7 @@ export function useAvailableTokenOptions(chainId: number): AvailableTokenOptions
         ? nativeToken
         : tokensMap[market.indexTokenAddress];
 
-      if (!longToken || !shortToken || !indexToken) {
+      if (market.isDisabled || !longToken || !shortToken || !indexToken) {
         continue;
       }
 
@@ -53,5 +53,5 @@ export function useAvailableTokenOptions(chainId: number): AvailableTokenOptions
       indexTokens: Array.from(indexTokens),
       infoTokens: adaptToV1InfoTokens(tokensData || {}),
     };
-  }, [chainId, marketsData, tokensData]);
+  }, [chainId, marketsInfoData, tokensData]);
 }

@@ -10,6 +10,7 @@ import { ContractMarketPrices, getContractMarketPrices, useMarkets } from "../ma
 import { useAvailableTokensData } from "../tokens";
 import { PositionsData } from "./types";
 import { getPositionKey } from "./utils";
+import { ethers } from "ethers";
 
 type PositionsResult = {
   positionsData: PositionsData;
@@ -50,6 +51,10 @@ export function usePositions(chainId: number): PositionsResult {
     for (const market of markets) {
       const marketPrices = getContractMarketPrices(tokensData!, market);
 
+      if (!marketPrices) {
+        continue;
+      }
+
       for (const collateralAddress of [market.longTokenAddress, market.shortTokenAddress]) {
         for (const isLong of [true, false]) {
           const key = hashedPositionKey(account, market.marketTokenAddress, collateralAddress, isLong);
@@ -82,9 +87,11 @@ export function usePositions(chainId: number): PositionsResult {
             methodName: "getAccountPositionInfoList",
             params: [
               getContract(chainId, "DataStore"),
-              getContract(chainId, "SyntheticsReferralStorage"),
+              getContract(chainId, "ReferralStorage"),
               queryParams!.positionsKeys,
               queryParams!.marketPricesArray,
+              // uiFeeReceiver
+              ethers.constants.AddressZero,
             ],
           },
         },

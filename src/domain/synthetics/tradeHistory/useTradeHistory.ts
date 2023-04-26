@@ -102,6 +102,7 @@ export function useTradeHistory(chainId: number, p: { pageIndex: number; pageSiz
         if (isSwapOrderType(orderType)) {
           const initialCollateralTokenAddress = fixedAddresses[rawAction.initialCollateralTokenAddress!];
           const swapPath = rawAction.swapPath!.map((address) => fixedAddresses[address]);
+
           const swapPathOutputAddresses = getSwapPathOutputAddresses({
             marketsInfoData,
             swapPath,

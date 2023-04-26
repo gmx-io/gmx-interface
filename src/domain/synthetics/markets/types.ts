@@ -20,90 +20,99 @@ export type MarketPoolTokens = {
   indexToken: TokenData;
 };
 
-export type MarketInfo = Market &
-  MarketPoolTokens & {
-    longPoolAmount: BigNumber;
-    shortPoolAmount: BigNumber;
+export type MarketInfo = Market & {
+  isDisabled: boolean;
 
-    longPoolAmountAdjustment: BigNumber;
-    shortPoolAmountAdjustment: BigNumber;
+  longToken: TokenData;
+  shortToken: TokenData;
+  indexToken: TokenData;
 
-    poolValueMax: BigNumber;
-    poolValueMin: BigNumber;
+  longPoolAmount: BigNumber;
+  shortPoolAmount: BigNumber;
 
-    reserveFactorLong: BigNumber;
-    reserveFactorShort: BigNumber;
+  longPoolAmountAdjustment: BigNumber;
+  shortPoolAmountAdjustment: BigNumber;
 
-    totalBorrowingLong: BigNumber;
-    totalBorrowingShort: BigNumber;
+  poolValueMax: BigNumber;
+  poolValueMin: BigNumber;
 
-    totalBorrowingFees: BigNumber;
+  reserveFactorLong: BigNumber;
+  reserveFactorShort: BigNumber;
 
-    cummulativeBorrowingFactorLong: BigNumber;
-    cummulativeBorrowingFactorShort: BigNumber;
+  totalBorrowingLong: BigNumber;
+  totalBorrowingShort: BigNumber;
 
-    borrowingFeeReceiverFactor: BigNumber;
+  totalBorrowingFees: BigNumber;
 
-    positionImpactPoolAmount: BigNumber;
+  cummulativeBorrowingFactorLong: BigNumber;
+  cummulativeBorrowingFactorShort: BigNumber;
 
-    minCollateralFactor: BigNumber;
+  borrowingFeeReceiverFactor: BigNumber;
 
-    swapImpactPoolAmountLong: BigNumber;
-    swapImpactPoolAmountShort: BigNumber;
+  positionImpactPoolAmount: BigNumber;
 
-    maxPnlFactorForTradersLong: BigNumber;
-    maxPnlFactorForTradersShort: BigNumber;
-    maxPnlFactorForWithdrawalsLong: BigNumber;
-    maxPnlFactorForWithdrawalsShort: BigNumber;
-    maxPnlFactorForDepositsLong: BigNumber;
-    maxPnlFactorForDepositsShort: BigNumber;
+  minCollateralFactor: BigNumber;
 
-    pnlLongMin: BigNumber;
-    pnlLongMax: BigNumber;
-    pnlShortMin: BigNumber;
-    pnlShortMax: BigNumber;
+  swapImpactPoolAmountLong: BigNumber;
+  swapImpactPoolAmountShort: BigNumber;
 
-    netPnlMin: BigNumber;
-    netPnlMax: BigNumber;
+  maxPnlFactorForTradersLong: BigNumber;
+  maxPnlFactorForTradersShort: BigNumber;
+  maxPnlFactorForWithdrawalsLong: BigNumber;
+  maxPnlFactorForWithdrawalsShort: BigNumber;
+  maxPnlFactorForDepositsLong: BigNumber;
+  maxPnlFactorForDepositsShort: BigNumber;
 
-    claimableFundingAmountLong?: BigNumber;
-    claimableFundingAmountShort?: BigNumber;
+  pnlLongMin: BigNumber;
+  pnlLongMax: BigNumber;
+  pnlShortMin: BigNumber;
+  pnlShortMax: BigNumber;
 
-    longInterestUsd: BigNumber;
-    shortInterestUsd: BigNumber;
-    longInterestInTokens: BigNumber;
-    shortInterestInTokens: BigNumber;
+  netPnlMin: BigNumber;
+  netPnlMax: BigNumber;
 
-    positionFeeFactor: BigNumber;
-    positionImpactFactorPositive: BigNumber;
-    positionImpactFactorNegative: BigNumber;
-    maxPositionImpactFactorPositive: BigNumber;
-    maxPositionImpactFactorNegative: BigNumber;
-    maxPositionImpactFactorForLiquidations: BigNumber;
-    positionImpactExponentFactor: BigNumber;
+  claimableFundingAmountLong?: BigNumber;
+  claimableFundingAmountShort?: BigNumber;
 
-    swapFeeFactor: BigNumber;
-    swapImpactFactorPositive: BigNumber;
-    swapImpactFactorNegative: BigNumber;
-    swapImpactExponentFactor: BigNumber;
+  longInterestUsd: BigNumber;
+  shortInterestUsd: BigNumber;
+  longInterestInTokens: BigNumber;
+  shortInterestInTokens: BigNumber;
 
-    borrowingFactorPerSecondForLongs: BigNumber;
-    borrowingFactorPerSecondForShorts: BigNumber;
+  positionFeeFactor: BigNumber;
+  positionImpactFactorPositive: BigNumber;
+  positionImpactFactorNegative: BigNumber;
+  maxPositionImpactFactorPositive: BigNumber;
+  maxPositionImpactFactorNegative: BigNumber;
+  maxPositionImpactFactorForLiquidations: BigNumber;
+  positionImpactExponentFactor: BigNumber;
 
-    fundingPerSecond: BigNumber;
-    longsPayShorts: boolean;
-    fundingAmountPerSize_LongCollateral_LongPosition: BigNumber;
-    fundingAmountPerSize_LongCollateral_ShortPosition: BigNumber;
-    fundingAmountPerSize_ShortCollateral_LongPosition: BigNumber;
-    fundingAmountPerSize_ShortCollateral_ShortPosition: BigNumber;
-  };
+  swapFeeFactor: BigNumber;
+  swapImpactFactorPositive: BigNumber;
+  swapImpactFactorNegative: BigNumber;
+  swapImpactExponentFactor: BigNumber;
+
+  borrowingFactorPerSecondForLongs: BigNumber;
+  borrowingFactorPerSecondForShorts: BigNumber;
+
+  fundingPerSecond: BigNumber;
+  longsPayShorts: boolean;
+  fundingAmountPerSize_LongCollateral_LongPosition: BigNumber;
+  fundingAmountPerSize_LongCollateral_ShortPosition: BigNumber;
+  fundingAmountPerSize_ShortCollateral_LongPosition: BigNumber;
+  fundingAmountPerSize_ShortCollateral_ShortPosition: BigNumber;
+};
+
+export type MarketsData = {
+  [marketTokenAddress: string]: Market;
+};
 
 export type MarketsInfoData = {
   [marketAddress: string]: MarketInfo;
 };
 
-export type MarketsData = {
-  [marketTokenAddress: string]: Market;
+export type MarketTokensAPRData = {
+  [marketTokenAddress: string]: BigNumber;
 };
 
 export type ContractMarketPrices = {

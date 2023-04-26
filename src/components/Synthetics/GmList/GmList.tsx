@@ -74,7 +74,7 @@ export function GmList() {
                 const longToken = getTokenData(tokensData, market?.longTokenAddress)!;
                 const shortToken = getTokenData(tokensData, market?.shortTokenAddress)!;
 
-                const apr = marketsTokensAPRData?.[token.address];
+                const apr = getByKey(marketsTokensAPRData, token.address);
 
                 const totalSupply = token.totalSupply;
                 const totalSupplyUsd = convertToUsd(totalSupply, token.decimals, token.prices?.minPrice);

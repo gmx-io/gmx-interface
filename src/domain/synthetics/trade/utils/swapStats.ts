@@ -1,4 +1,5 @@
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { VirtualInventoryForSwapsData } from "domain/synthetics/fees";
 import {
   MarketInfo,
   MarketsInfoData,
@@ -9,10 +10,9 @@ import {
 import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { BigNumber, ethers } from "ethers";
 import { applyFactor } from "lib/numbers";
+import { getByKey } from "lib/objects";
 import { applySwapImpactWithCap, getPriceImpactForSwap } from "../../fees/utils/priceImpact";
 import { SwapPathStats, SwapStats } from "../types";
-import { getByKey } from "lib/objects";
-import { VirtualInventoryForSwapsData } from "domain/synthetics/fees";
 
 export function getSwapPathOutputAddresses(p: {
   marketsInfoData: MarketsInfoData;
@@ -37,11 +37,27 @@ export function getSwapPathOutputAddresses(p: {
   const [firstMarketAddress, ...marketAddresses] = swapPath;
 
   let outMarket = marketsInfoData[firstMarketAddress];
+
+  if (!outMarket) {
+    return {
+      outTokenAddress: undefined,
+      outMarketAddress: undefined,
+    };
+  }
+
   let outTokenType = getTokenPoolType(outMarket, initialCollateralAddress);
   let outToken = outTokenType === "long" ? outMarket.shortToken : outMarket.longToken;
 
   for (const marketAddress of marketAddresses) {
     outMarket = marketsInfoData[marketAddress];
+
+    if (!outMarket) {
+      return {
+        outTokenAddress: undefined,
+        outMarketAddress: undefined,
+      };
+    }
+
     outTokenType = outMarket.longTokenAddress === outToken.address ? "short" : "long";
     outToken = outTokenType === "long" ? outMarket.longToken : outMarket.shortToken;
   }

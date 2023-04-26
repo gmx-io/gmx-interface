@@ -6,9 +6,9 @@ const ORACLE_KEEPER_URLS = {
 
   [AVALANCHE]: "https://seashell-app-zdvwo.ondigitalocean.app",
 
-  [AVALANCHE_FUJI]: "https://gmx-oracle-keeper-ro-avax-fuji-d4il9.ondigitalocean.app",
+  [AVALANCHE_FUJI]: "https://gmx-oracle-keeper-ro-avalanche-fuji-glyu6psrea-ew.a.run.app",
 
-  default: "https://gmx-oracle-keeper-ro-avax-fuji-d4il9.ondigitalocean.app",
+  default: "https://gmx-oracle-keeper-ro-avalanche-fuji-glyu6psrea-ew.a.run.app",
 };
 
 export function getOracleKeeperBaseUrl(chainId: number) {

@@ -72,6 +72,7 @@ export async function createDepositTxn(chainId: number, library: Web3Provider, p
         shouldUnwrapNativeToken: false,
         executionFee: p.executionFee,
         callbackGasLimit: BigNumber.from(0),
+        uiFeeReceiver: ethers.constants.AddressZero,
       },
     ]),
   ].filter(Boolean) as string[];

@@ -46,7 +46,13 @@ export default function TokenSelector(props: Props) {
   const isSmallerScreen = useMedia("(max-width: 700px)");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
-  const tokenInfo = getToken(props.chainId, props.tokenAddress);
+  let tokenInfo: TokenInfo | undefined;
+
+  try {
+    tokenInfo = getToken(props.chainId, props.tokenAddress);
+  } catch (e) {
+    // ...ignore unsupported tokens
+  }
 
   const {
     tokens,

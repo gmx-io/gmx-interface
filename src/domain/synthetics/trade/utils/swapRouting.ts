@@ -1,19 +1,19 @@
-import { Market, MarketsInfoData } from "domain/synthetics/markets";
-import { MarketEdge, MarketsGraph, SwapEstimator } from "../types";
-import { BigNumber } from "ethers";
-import { getSwapStats } from "./swapStats";
 import { VirtualInventoryForSwapsData } from "domain/synthetics/fees";
+import { MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
+import { BigNumber } from "ethers";
+import { MarketEdge, MarketsGraph, SwapEstimator } from "../types";
+import { getSwapStats } from "./swapStats";
 
-export function getMarketsGraph(markets: Market[]): MarketsGraph {
+export function getMarketsGraph(markets: MarketInfo[]): MarketsGraph {
   const graph: MarketsGraph = {
     abjacencyList: {},
     edges: [],
   };
 
   for (const market of markets) {
-    const { longTokenAddress, shortTokenAddress, marketTokenAddress, isSameCollaterals } = market;
+    const { longTokenAddress, shortTokenAddress, marketTokenAddress, isSameCollaterals, isDisabled } = market;
 
-    if (isSameCollaterals) {
+    if (isSameCollaterals || isDisabled) {
       continue;
     }
 

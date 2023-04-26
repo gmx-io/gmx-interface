@@ -1,12 +1,13 @@
+import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { PRECISION } from "lib/legacy";
 import { applyFactor } from "lib/numbers";
-import { convertToContractTokenPrices, convertToUsd, getMidPrice, getTokenData } from "../tokens";
+import { getByKey } from "lib/objects";
+import { VirtualInventoryForPositionsData, getCappedPositionImpactUsd, getPriceImpactForPosition } from "../fees";
+import { convertToContractTokenPrices, convertToUsd, getMidPrice } from "../tokens";
 import { TokensData } from "../tokens/types";
 import { ContractMarketPrices, Market, MarketInfo, PnlFactorType } from "./types";
-import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { Token } from "domain/tokens";
-import { VirtualInventoryForPositionsData, getCappedPositionImpactUsd, getPriceImpactForPosition } from "../fees";
 
 export function getMarketFullName(p: { longToken: Token; shortToken: Token; indexToken: Token; isSpotOnly: boolean }) {
   const { indexToken, longToken, shortToken, isSpotOnly } = p;
@@ -270,10 +271,14 @@ export function getTotalClaimableFundingUsd(markets: MarketInfo[]) {
   }, BigNumber.from(0));
 }
 
-export function getContractMarketPrices(tokensData: TokensData, market: Market): ContractMarketPrices {
-  const indexToken = getTokenData(tokensData, market.indexTokenAddress)!;
-  const longToken = getTokenData(tokensData, market.longTokenAddress)!;
-  const shortToken = getTokenData(tokensData, market.shortTokenAddress)!;
+export function getContractMarketPrices(tokensData: TokensData, market: Market): ContractMarketPrices | undefined {
+  const indexToken = getByKey(tokensData, market.indexTokenAddress);
+  const longToken = getByKey(tokensData, market.longTokenAddress);
+  const shortToken = getByKey(tokensData, market.shortTokenAddress);
+
+  if (!indexToken || !longToken || !shortToken) {
+    return undefined;
+  }
 
   return {
     indexTokenPrice: convertToContractTokenPrices(indexToken.prices, indexToken.decimals),

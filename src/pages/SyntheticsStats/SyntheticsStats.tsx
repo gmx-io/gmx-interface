@@ -10,7 +10,6 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { getBorrowingFeeFactor, getFundingApr } from "domain/synthetics/fees";
 import { useVirtualInventory } from "domain/synthetics/fees/useVirtualInventory";
 import {
-  MarketInfo,
   getMarketIndexName,
   getMarketPoolName,
   getMaxReservedUsd,

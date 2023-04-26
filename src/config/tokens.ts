@@ -367,7 +367,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "Tether",
       symbol: "USDT",
-      decimals: 18,
+      decimals: 6,
       address: "0x6931eC3E364245E6d093aFA1F2e96cCe3F17538b",
       isStable: true,
       coingeckoUrl: "https://www.coingecko.com/en/coins/tether",
@@ -469,7 +469,7 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
 const AVAILABLE_CHART_TOKENS = {
   [ARBITRUM]: ["ETH", "BTC", "LINK", "UNI"],
   [AVALANCHE]: ["AVAX", "ETH", "BTC"],
-  [AVALANCHE_FUJI]: ["AVAX", "ETH", "BTC", "SOL"],
+  [AVALANCHE_FUJI]: ["AVAX", "ETH", "BTC", "SOL", "TEST"],
 };
 
 export const SYNTHETIC_TOKENS = {
@@ -480,10 +480,21 @@ export const SYNTHETIC_TOKENS = {
       name: "Solana",
       symbol: "SOL",
       decimals: 18,
-      address: "0x36E6dc3CF44FDb8C62c5a11B457A28041f4C6eEF",
+      address: "0x137f4a7336df4f3f11894718528516edaaD0B082",
       isShortable: true,
       isSynthetic: true,
       imageUrl: "https://assets.coingecko.com/coins/images/4128/small/solana.png?1640133422",
+    },
+    {
+      name: "Test token",
+      symbol: "TEST",
+      decimals: 18,
+      address: "0x42DD131E1086FFCc59bAE9498D71E20E0C889B14",
+      isStable: false,
+      isSynthetic: true,
+      isShortable: true,
+      coingeckoUrl: "https://www.coingecko.com/en/coins/tether",
+      imageUrl: "https://assets.coingecko.com/coins/images/325/small/Tether-logo.png",
     },
   ],
 };

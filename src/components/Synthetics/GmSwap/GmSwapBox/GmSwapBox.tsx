@@ -125,10 +125,12 @@ export function GmSwapBox(p: Props) {
 
   const availableModes = getAvailableModes(operation, marketInfo);
 
-  const marketsOptions: DropdownOption[] = Object.values(marketsInfoData || {}).map((marketInfo) => ({
-    label: `GM: ${marketInfo.name}`,
-    value: marketInfo.marketTokenAddress,
-  }));
+  const marketsOptions: DropdownOption[] = Object.values(marketsInfoData || {})
+    .filter((market) => !market.isDisabled)
+    .map((marketInfo) => ({
+      label: `GM: ${marketInfo.name}`,
+      value: marketInfo.marketTokenAddress,
+    }));
 
   const [firstTokenAddress, setFirstTokenAddress] = useLocalStorageSerializeKey<string | undefined>(
     [chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, isDeposit, marketAddress, "first"],
@@ -189,8 +191,7 @@ export function GmSwapBox(p: Props) {
   ]);
 
   const tokenOptions: Token[] = (function getTokenOptions() {
-    const longToken = getTokenData(tokensData, marketInfo?.longTokenAddress);
-    const shortToken = getTokenData(tokensData, marketInfo?.shortTokenAddress);
+    const { longToken, shortToken } = marketInfo || {};
 
     if (!longToken || !shortToken) return [];
 

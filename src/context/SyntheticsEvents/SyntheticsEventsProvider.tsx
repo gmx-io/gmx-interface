@@ -171,9 +171,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
         pushErrorNotification(chainId, `${orderLabel} order cancelled`, txnParams);
 
-        const positionKey = getPositionKey(order.account, order.marketAddress, outTokenAddress, order.isLong);
+        if (outTokenAddress) {
+          const positionKey = getPositionKey(order.account, order.marketAddress, outTokenAddress, order.isLong);
 
-        if (positionKey) {
           setPendingPositionsUpdates((old) => setByKey(old, positionKey, undefined));
         }
       }
