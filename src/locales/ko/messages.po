@@ -211,8 +211,8 @@ msgid "Agree"
 msgstr "동의하기"
 
 #: src/components/Exchange/PositionSeller.js
-msgid "Allow up to 1% slippage"
-msgstr "1%의 슬리피지까지 허용하기"
+#~ msgid "Allow up to 1% slippage"
+#~ msgstr "1%의 슬리피지까지 허용하기"
 
 #: src/App/App.js
 #: src/components/Exchange/ConfirmationBox.js

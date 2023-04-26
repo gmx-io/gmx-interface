@@ -211,8 +211,8 @@ msgid "Agree"
 msgstr "Aceptar"
 
 #: src/components/Exchange/PositionSeller.js
-msgid "Allow up to 1% slippage"
-msgstr "Permitir hasta un 1% de deslizamiento"
+#~ msgid "Allow up to 1% slippage"
+#~ msgstr "Permitir hasta un 1% de deslizamiento"
 
 #: src/App/App.js
 #: src/components/Exchange/ConfirmationBox.js

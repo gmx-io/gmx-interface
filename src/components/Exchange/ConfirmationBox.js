@@ -134,7 +134,7 @@ export default function ConfirmationBox(props) {
   const [isTriggerWarningAccepted, setIsTriggerWarningAccepted] = useState(false);
   const [isLimitOrdersVisible, setIsLimitOrdersVisible] = useState(false);
 
-  const [, setAllowedSlippage] = useState();
+  const [allowedSlippage, setAllowedSlippage] = useState(savedSlippageAmount);
 
   useEffect(() => {
     setAllowedSlippage(savedSlippageAmount);
@@ -159,7 +159,7 @@ export default function ConfirmationBox(props) {
     collateralAfterFees = fromUsdMin.sub(feesUsd);
   }
   if (isSwap) {
-    minOut = toAmount.mul(BASIS_POINTS_DIVISOR - savedSlippageAmount).div(BASIS_POINTS_DIVISOR);
+    minOut = toAmount.mul(BASIS_POINTS_DIVISOR - allowedSlippage).div(BASIS_POINTS_DIVISOR);
 
     fromTokenUsd = fromTokenInfo ? formatAmount(fromTokenInfo.minPrice, USD_DECIMALS, 2, true) : 0;
     toTokenUsd = toTokenInfo ? formatAmount(toTokenInfo.maxPrice, USD_DECIMALS, 2, true) : 0;
