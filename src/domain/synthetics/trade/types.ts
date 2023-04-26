@@ -39,6 +39,7 @@ export type IncreasePositionAmounts = {
   sizeDeltaInTokens: BigNumber;
   swapPathStats: SwapPathStats | undefined;
   positionFeeUsd: BigNumber;
+  feeDiscountUsd: BigNumber;
   positionPriceImpactDeltaUsd: BigNumber;
   markPrice: BigNumber;
   entryPrice: BigNumber;
@@ -58,6 +59,7 @@ export type DecreasePositionAmounts = {
   receiveTokenAmount: BigNumber;
   receiveUsd: BigNumber;
   positionFeeUsd: BigNumber;
+  feeDiscountUsd: BigNumber;
   positionPriceImpactDeltaUsd: BigNumber;
   // Mark price or trigger price
   exitPrice: BigNumber;
@@ -165,6 +167,7 @@ export type TradeFees = {
   positionFeeFactor?: BigNumber;
   borrowFee?: FeeItem;
   fundingFee?: FeeItem;
+  feeDiscountUsd?: BigNumber;
 };
 
 export type GmSwapFees = {

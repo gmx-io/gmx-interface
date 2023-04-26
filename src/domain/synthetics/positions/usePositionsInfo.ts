@@ -18,6 +18,8 @@ import {
 } from "./utils";
 import { getMarkPrice } from "../trade";
 import { getBasisPoints } from "lib/numbers";
+import { useUserReferralInfo } from "domain/referrals";
+import { useWeb3React } from "@web3-react/core";
 
 type PositionsInfoResult = {
   positionsInfoData?: PositionsInfoData;
@@ -27,10 +29,12 @@ type PositionsInfoResult = {
 export function usePositionsInfo(chainId: number, p: { showPnlInLeverage: boolean }): PositionsInfoResult {
   const { showPnlInLeverage } = p;
 
+  const { account, library } = useWeb3React();
   const { marketsInfoData } = useMarketsInfo(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
   const { optimisticPositionsData } = useOptimisticPositions(chainId);
   const { minCollateralUsd } = usePositionsConstants(chainId);
+  const userReferralInfo = useUserReferralInfo(library, chainId, account);
 
   return useMemo(() => {
     if (!marketsInfoData || !tokensData || !optimisticPositionsData || !minCollateralUsd) {
@@ -75,7 +79,8 @@ export function usePositionsInfo(chainId: number, p: { showPnlInLeverage: boolea
           pendingFundingFeesUsd,
         });
 
-        const closingFeeUsd = getPositionFee(marketInfo, position.sizeInUsd);
+        const positionFeeInfo = getPositionFee(marketInfo, position.sizeInUsd, userReferralInfo);
+        const closingFeeUsd = positionFeeInfo.positionFeeUsd;
 
         const initialCollateralUsd = convertToUsd(
           position.collateralAmount,
@@ -175,5 +180,5 @@ export function usePositionsInfo(chainId: number, p: { showPnlInLeverage: boolea
       positionsInfoData,
       isLoading: false,
     };
-  }, [marketsInfoData, minCollateralUsd, optimisticPositionsData, showPnlInLeverage, tokensData]);
+  }, [marketsInfoData, minCollateralUsd, optimisticPositionsData, showPnlInLeverage, tokensData, userReferralInfo]);
 }

@@ -6,10 +6,11 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { getToken } from "config/tokens";
 import { ExecutionFee, FeeItem, SwapFeeItem } from "domain/synthetics/fees";
 import { useChainId } from "lib/chains";
-import { formatDeltaUsd, formatPercentage, formatTokenAmountWithUsd } from "lib/numbers";
+import { formatDeltaUsd, formatPercentage, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { ReactNode, useMemo } from "react";
 import { TradeFeesType } from "domain/synthetics/trade";
 import "./TradeFeesRow.scss";
+import { BigNumber } from "ethers";
 
 type Props = {
   totalTradeFees?: FeeItem;
@@ -22,8 +23,8 @@ type Props = {
   fundingFee?: FeeItem;
   borrowFeeRateStr?: string;
   fundingFeeRateStr?: string;
+  feeDiscountUsd?: BigNumber;
   isTop?: boolean;
-  showOnZeroTradeFee?: boolean;
   feesType: TradeFeesType;
 };
 
@@ -188,10 +189,7 @@ export function TradeFeesRow(p: Props) {
     p.fundingFee?.bps,
     p.borrowFeeRateStr,
     p.fundingFeeRateStr,
-    p.executionFee?.feeTokenAmount,
-    p.executionFee?.feeUsd,
-    p.executionFee?.feeToken.symbol,
-    p.executionFee?.feeToken.decimals,
+    p.executionFee,
     chainId,
   ]);
 
@@ -202,7 +200,7 @@ export function TradeFeesRow(p: Props) {
   return (
     <ExchangeInfoRow
       isTop={p.isTop}
-      label={p.feesType === "edit" ? <Trans>Fees</Trans> : <Trans>Fees and price impact</Trans>}
+      label={p.feesType === "edit" ? <Trans>Fees</Trans> : <Trans>Fees and Price impact</Trans>}
       value={
         <>
           {!totalFeeUsd || totalFeeUsd.eq(0) ? (
@@ -223,6 +221,13 @@ export function TradeFeesRow(p: Props) {
                       className="TradeFeesRow-fee-row"
                     />
                   ))}
+
+                  {p.feeDiscountUsd?.gt(0) && (
+                    <>
+                      <br />
+                      <Trans>Referral fee discount: {formatUsd(p.feeDiscountUsd)}.</Trans>
+                    </>
+                  )}
                 </div>
               )}
             />

@@ -8,8 +8,27 @@ import { PRECISION } from "lib/legacy";
 export * from "./executionFee";
 export * from "./priceImpact";
 
-export function getPositionFee(marketInfo: MarketInfo, sizeDeltaUsd: BigNumber) {
-  return applyFactor(sizeDeltaUsd, marketInfo.positionFeeFactor);
+export function getPositionFee(
+  marketInfo: MarketInfo,
+  sizeDeltaUsd: BigNumber,
+  referralInfo: { totalRebateFactor: BigNumber; discountFactor: BigNumber } | undefined
+) {
+  let positionFeeUsd = applyFactor(sizeDeltaUsd, marketInfo.positionFeeFactor);
+
+  if (!referralInfo) {
+    return { positionFeeUsd, discountUsd: BigNumber.from(0), totalRebateUsd: BigNumber.from(0) };
+  }
+
+  const totalRebateUsd = applyFactor(positionFeeUsd, referralInfo.totalRebateFactor);
+  const discountUsd = applyFactor(totalRebateUsd, referralInfo.discountFactor);
+
+  positionFeeUsd = positionFeeUsd.sub(discountUsd);
+
+  return {
+    positionFeeUsd,
+    discountUsd,
+    totalRebateUsd,
+  };
 }
 
 export function getFundingFeeFactor(marketInfo: MarketInfo, isLong: boolean, periodInSeconds: number) {

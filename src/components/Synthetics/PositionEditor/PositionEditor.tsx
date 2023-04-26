@@ -1,5 +1,17 @@
+import { Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
+import Token from "abis/Token.json";
+import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
+import Button from "components/Button/Button";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import Modal from "components/Modal/Modal";
+import Tab from "components/Tab/Tab";
+import Tooltip from "components/Tooltip/Tooltip";
+import { ValueTransition } from "components/ValueTransition/ValueTransition";
+import { getContract } from "config/contracts";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import { useUserReferralInfo } from "domain/referrals/hooks";
 import {
   FeeItem,
   estimateExecuteDecreaseOrderGasLimit,
@@ -11,7 +23,7 @@ import {
   useGasLimits,
   useGasPrice,
 } from "domain/synthetics/fees";
-import Token from "abis/Token.json";
+import { OrderType, createDecreaseOrderTxn, createIncreaseOrderTxn } from "domain/synthetics/orders";
 import {
   PositionInfo,
   formatLeverage,
@@ -19,14 +31,7 @@ import {
   getLiquidationPrice,
   usePositionsConstants,
 } from "domain/synthetics/positions";
-import { useChainId } from "lib/chains";
-import useSWR from "swr";
-import { contractFetcher } from "lib/contracts";
-import { BigNumber } from "ethers";
-import { getContract } from "config/contracts";
-import { useMemo, useState } from "react";
 import { convertToTokenAmount, convertToUsd, useAvailableTokensData } from "domain/synthetics/tokens";
-import { formatAmountFree, formatTokenAmount, formatTokenAmountWithUsd, formatUsd, parseValue } from "lib/numbers";
 import {
   TradeFees,
   applySlippage,
@@ -35,19 +40,14 @@ import {
   getMarkPrice,
 } from "domain/synthetics/trade";
 import { getCommonError, getEditCollateralError } from "domain/synthetics/trade/utils/validation";
-import { OrderType, createDecreaseOrderTxn, createIncreaseOrderTxn } from "domain/synthetics/orders";
-import Modal from "components/Modal/Modal";
-import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import { BigNumber } from "ethers";
+import { useChainId } from "lib/chains";
+import { contractFetcher } from "lib/contracts";
+import { formatAmountFree, formatTokenAmount, formatTokenAmountWithUsd, formatUsd, parseValue } from "lib/numbers";
+import { useMemo, useState } from "react";
+import useSWR from "swr";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
-import { ValueTransition } from "components/ValueTransition/ValueTransition";
-import { Trans, t } from "@lingui/macro";
-import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import Tab from "components/Tab/Tab";
-import Button from "components/Button/Button";
-import Tooltip from "components/Tooltip/Tooltip";
 import "./PositionEditor.scss";
-import { useUserReferralCode } from "domain/referrals";
 
 export type Props = {
   position: PositionInfo;
@@ -79,7 +79,7 @@ export function PositionEditor(p: Props) {
   const { gasLimits } = useGasLimits(chainId);
   const { minCollateralUsd } = usePositionsConstants(chainId);
   const routerAddress = getContract(chainId, "SyntheticsRouter");
-  const { userReferralCode } = useUserReferralCode(library, chainId, account);
+  const userReferralInfo = useUserReferralInfo(library, chainId, account);
 
   const { data: tokenAllowance } = useSWR<BigNumber>(
     [active, chainId, position.collateralTokenAddress, "allowance", account, routerAddress],
@@ -175,7 +175,7 @@ export function PositionEditor(p: Props) {
       collateralUsd: nextCollateralUsd,
       pnl: position.pnl,
       markPrice: position.markPrice,
-      closingFeeUsd: getPositionFee(position.marketInfo, position.sizeInUsd),
+      closingFeeUsd: getPositionFee(position.marketInfo, position.sizeInUsd, userReferralInfo).positionFeeUsd,
       maxPriceImpactFactor: position.marketInfo.maxPositionImpactFactorForLiquidations,
       pendingFundingFeesUsd: BigNumber.from(0),
       pendingBorrowingFeesUsd: BigNumber.from(0),
@@ -211,6 +211,7 @@ export function PositionEditor(p: Props) {
     position.remainingCollateralUsd,
     position.sizeInUsd,
     showPnlInLeverage,
+    userReferralInfo,
   ]);
 
   const decreaseSwapType = getDecreaseSwapType({
@@ -293,7 +294,7 @@ export function PositionEditor(p: Props) {
         isLong: position.isLong,
         executionFee: executionFee.feeTokenAmount,
         tokensData,
-        referralCode: userReferralCode,
+        referralCode: userReferralInfo?.userReferralCode,
         setPendingTxns,
       }).then(() => {
         if (p.position) {
@@ -327,7 +328,7 @@ export function PositionEditor(p: Props) {
         decreasePositionSwapType: decreaseSwapType,
         minOutputUsd: receiveUsd,
         tokensData,
-        referralCode: userReferralCode,
+        referralCode: userReferralInfo?.userReferralCode,
         setPendingTxns,
       }).then(() => {
         if (p.position) {

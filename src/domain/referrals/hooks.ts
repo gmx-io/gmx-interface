@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { gql } from "@apollo/client";
 import { useState, useEffect, useMemo } from "react";
 import useSWR from "swr";
@@ -17,7 +17,9 @@ import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
 import { getProvider } from "lib/rpc";
-import { bigNumberify } from "lib/numbers";
+import { basisPointsToFloat, bigNumberify } from "lib/numbers";
+import { Web3Provider } from "@ethersproject/providers";
+import { UserReferralInfo } from "./types";
 
 const ACTIVE_CHAINS = [ARBITRUM, AVALANCHE];
 const DISTRIBUTION_TYPE_REBATES = "1";
@@ -156,6 +158,9 @@ export function useReferralsData(chainId, account) {
           token
           transactionHash
           timestamp
+          marketAddresses
+          tokenAddresses
+          amounts
         }
         referrerTotalStats: referrerStats(
           first: 1000
@@ -324,6 +329,33 @@ export async function getReferralCodeOwner(chainId, referralCode) {
   return codeOwner;
 }
 
+export function useUserReferralInfo(
+  library: Web3Provider | undefined,
+  chainId: number,
+  account?: string | null
+): UserReferralInfo | undefined {
+  const { userReferralCode, userReferralCodeString, attachedOnChain } = useUserReferralCode(library, chainId, account);
+  const { codeOwner } = useCodeOwner(library, chainId, account, userReferralCode);
+  const { referrerTier: tierLevel } = useReferrerTier(library, chainId, codeOwner);
+  const { totalRebate, discountShare } = useTiers(library, chainId, tierLevel);
+
+  if (!userReferralCode || !userReferralCodeString || !codeOwner || !tierLevel || !totalRebate || !discountShare) {
+    return undefined;
+  }
+
+  return {
+    userReferralCode,
+    userReferralCodeString,
+    attachedOnChain,
+    affiliate: codeOwner,
+    tierLevel,
+    totalRebate,
+    totalRebateFactor: basisPointsToFloat(totalRebate),
+    discountShare,
+    discountFactor: basisPointsToFloat(discountShare),
+  };
+}
+
 export function useUserReferralCode(library, chainId, account) {
   const localStorageCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
@@ -367,7 +399,7 @@ export function useUserReferralCode(library, chainId, account) {
 
 export function useReferrerTier(library, chainId, account) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const { data: referrerTier, mutate: mutateReferrerTier } = useSWR(
+  const { data: referrerTier, mutate: mutateReferrerTier } = useSWR<BigNumber>(
     account && [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "referrerTiers", account],
     {
       fetcher: contractFetcher(library, ReferralStorage),
@@ -379,9 +411,23 @@ export function useReferrerTier(library, chainId, account) {
   };
 }
 
+export function useTiers(library: Web3Provider | undefined, chainId: number, tierLevel?: BigNumber) {
+  const referralStorageAddress = getContract(chainId, "ReferralStorage");
+  const { data: [totalRebate, discountShare] = [] } = useSWR<BigNumber[]>(
+    tierLevel ? [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "tiers", tierLevel] : null,
+    {
+      fetcher: contractFetcher(library, ReferralStorage),
+    }
+  );
+  return {
+    totalRebate,
+    discountShare,
+  };
+}
+
 export function useCodeOwner(library, chainId, account, code) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const { data: codeOwner, mutate: mutateCodeOwner } = useSWR(
+  const { data: codeOwner, mutate: mutateCodeOwner } = useSWR<string>(
     account && code && [`ReferralStorage:codeOwners`, chainId, referralStorageAddress, "codeOwners", code],
     {
       fetcher: contractFetcher(library, ReferralStorage),

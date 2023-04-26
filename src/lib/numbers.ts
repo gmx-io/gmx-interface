@@ -267,3 +267,7 @@ export function applyFactor(value: BigNumber, factor: BigNumber) {
 export function getBasisPoints(numerator: BigNumber, denominator: BigNumber) {
   return numerator.mul(BASIS_POINTS_DIVISOR).div(denominator);
 }
+
+export function basisPointsToFloat(basisPoints: BigNumber) {
+  return basisPoints.mul(PRECISION).div(BASIS_POINTS_DIVISOR);
+}

@@ -62,7 +62,7 @@ import longImg from "img/long.svg";
 import shortImg from "img/short.svg";
 import swapImg from "img/swap.svg";
 
-import { useUserReferralCode } from "domain/referrals";
+import { useUserReferralCode } from "domain/referrals/hooks";
 import NoLiquidityErrorModal from "./NoLiquidityErrorModal";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { callContract, contractFetcher } from "lib/contracts";

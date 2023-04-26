@@ -78,6 +78,7 @@ import { CollateralSelectorRow } from "./CollateralSelectorRow";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import "./TradeBox.scss";
 import { OrderStatus } from "../OrderStatus/OrderStatus";
+import { useUserReferralInfo } from "domain/referrals/hooks";
 
 export type Props = {
   tradeType: TradeType;
@@ -185,9 +186,10 @@ export function TradeBox(p: Props) {
   };
 
   const { chainId } = useChainId();
-  const { account } = useWeb3React();
+  const { library, account } = useWeb3React();
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
+  const userReferralInfo = useUserReferralInfo(library, chainId, account);
   const { minCollateralUsd } = usePositionsConstants(chainId);
 
   const [stage, setStage] = useState<"trade" | "confirmation" | "processing">("trade");
@@ -331,6 +333,7 @@ export function TradeBox(p: Props) {
         savedAcceptablePriceImpactBps: acceptablePriceImpactBpsForLimitOrders,
         findSwapPath: swapRoute.findSwapPath,
         virtualInventoryForPositions,
+        userReferralInfo,
       });
     } else {
       return getIncreasePositionAmountsBySizeDelta({
@@ -345,6 +348,7 @@ export function TradeBox(p: Props) {
         savedAcceptablePriceImpactBps: acceptablePriceImpactBpsForLimitOrders,
         findSwapPath: swapRoute.findSwapPath,
         virtualInventoryForPositions,
+        userReferralInfo,
       });
     }
   }, [
@@ -362,6 +366,7 @@ export function TradeBox(p: Props) {
     toToken,
     toTokenAmount,
     triggerPrice,
+    userReferralInfo,
     virtualInventoryForPositions,
   ]);
 
@@ -382,6 +387,7 @@ export function TradeBox(p: Props) {
       triggerPrice,
       savedAcceptablePriceImpactBps: acceptablePriceImpactBpsForLimitOrders,
       virtualInventoryForPositions,
+      userReferralInfo,
     });
   }, [
     acceptablePriceImpactBpsForLimitOrders,
@@ -393,6 +399,7 @@ export function TradeBox(p: Props) {
     keepLeverage,
     marketInfo,
     triggerPrice,
+    userReferralInfo,
     virtualInventoryForPositions,
   ]);
 
@@ -411,6 +418,7 @@ export function TradeBox(p: Props) {
         entryPrice: increaseAmounts.acceptablePrice,
         minCollateralUsd,
         showPnlInLeverage: savedIsPnlInLeverage,
+        userReferralInfo,
       });
     }
 
@@ -426,6 +434,7 @@ export function TradeBox(p: Props) {
         showPnlInLeverage: savedIsPnlInLeverage,
         isLong,
         minCollateralUsd,
+        userReferralInfo,
       });
     }
   }, [
@@ -441,6 +450,7 @@ export function TradeBox(p: Props) {
     marketInfo,
     minCollateralUsd,
     savedIsPnlInLeverage,
+    userReferralInfo,
   ]);
 
   const { fees, feesType, executionFee } = useMemo(() => {
@@ -463,6 +473,7 @@ export function TradeBox(p: Props) {
           positionPriceImpactDeltaUsd: BigNumber.from(0),
           borrowingFeeUsd: BigNumber.from(0),
           fundingFeeDeltaUsd: BigNumber.from(0),
+          feeDiscountUsd: BigNumber.from(0),
         }),
         executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
         feesType: "swap" as TradeFeesType,
@@ -484,6 +495,7 @@ export function TradeBox(p: Props) {
           positionPriceImpactDeltaUsd: increaseAmounts.positionPriceImpactDeltaUsd,
           borrowingFeeUsd: existingPosition?.pendingBorrowingFeesUsd || BigNumber.from(0),
           fundingFeeDeltaUsd: existingPosition?.pendingFundingFeesUsd || BigNumber.from(0),
+          feeDiscountUsd: increaseAmounts.feeDiscountUsd,
         }),
         executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
         feesType: "increase" as TradeFeesType,
@@ -503,6 +515,7 @@ export function TradeBox(p: Props) {
           positionPriceImpactDeltaUsd: decreaseAmounts.positionPriceImpactDeltaUsd,
           borrowingFeeUsd: existingPosition?.pendingBorrowingFeesUsd || BigNumber.from(0),
           fundingFeeDeltaUsd: existingPosition?.pendingFundingFeesUsd || BigNumber.from(0),
+          feeDiscountUsd: decreaseAmounts.feeDiscountUsd,
         }),
         executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
         feesType: "decrease" as TradeFeesType,
@@ -1317,6 +1330,7 @@ export function TradeBox(p: Props) {
               borrowFee={fees?.borrowFee}
               fundingFee={fees?.fundingFee}
               executionFee={executionFee}
+              feeDiscountUsd={fees?.feeDiscountUsd}
               feesType={feesType}
             />
           )}

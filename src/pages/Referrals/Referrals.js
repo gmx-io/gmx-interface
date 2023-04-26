@@ -15,7 +15,7 @@ import {
   useCodeOwner,
   useReferrerTier,
   useUserReferralCode,
-} from "domain/referrals";
+} from "domain/referrals/hooks";
 import JoinReferralCode from "components/Referrals/JoinReferralCode";
 import AffiliatesStats from "components/Referrals/AffiliatesStats";
 import TradersStats from "components/Referrals/TradersStats";

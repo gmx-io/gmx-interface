@@ -12,7 +12,7 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { getContract } from "config/contracts";
 import { HIGH_SPREAD_THRESHOLD } from "config/factors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import { useUserReferralCode } from "domain/referrals";
+import { useUserReferralCode } from "domain/referrals/hooks";
 import { ExecutionFee, getBorrowingFeeFactor, getFundingFeeFactor, getIsHighPriceImpact } from "domain/synthetics/fees";
 import { MarketInfo } from "domain/synthetics/markets";
 import {
@@ -862,6 +862,7 @@ export function ConfirmationBox(p: Props) {
               fundigRate && `${fundigRate.gt(0) ? "+" : "-"}${formatAmount(fundigRate.abs(), 30, 4)}% / 1h`
             }
             borrowFeeRateStr={borrowingRate && `-${formatAmount(borrowingRate, 30, 4)}% / 1h`}
+            feeDiscountUsd={fees?.feeDiscountUsd}
             executionFee={p.executionFee}
             feesType="increase"
           />
@@ -1071,6 +1072,7 @@ export function ConfirmationBox(p: Props) {
             positionFee={fees?.positionFee}
             borrowFee={fees?.borrowFee}
             fundingFee={fees?.fundingFee}
+            feeDiscountUsd={fees?.feeDiscountUsd}
             executionFee={p.executionFee}
             feesType="decrease"
           />

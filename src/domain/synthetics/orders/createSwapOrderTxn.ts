@@ -4,13 +4,12 @@ import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
-import { encodeReferralCode } from "domain/referrals";
 import { BigNumber, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { formatTokenAmount } from "lib/numbers";
 import { TokensData, getTokenData } from "../tokens";
-import { DecreasePositionSwapType, OrderType } from "./types";
 import { simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
+import { DecreasePositionSwapType, OrderType } from "./types";
 
 const { AddressZero } = ethers.constants;
 
@@ -84,7 +83,7 @@ export async function createSwapOrderTxn(chainId: number, library: Web3Provider,
           decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
           isLong: false,
           shouldUnwrapNativeToken: isNativeReceive,
-          referralCode: p.referralCode || encodeReferralCode(""),
+          referralCode: p.referralCode || ethers.constants.HashZero,
         },
       ],
     },
