@@ -1,11 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Tooltip from "../Tooltip/Tooltip";
 import { t, Trans } from "@lingui/macro";
-import Slider, { SliderTooltip } from "rc-slider";
-import "rc-slider/assets/index.css";
 import "./SwapBox.scss";
 
-import cx from "classnames";
 import useSWR from "swr";
 import { ethers } from "ethers";
 
@@ -83,6 +80,7 @@ import Button from "components/Button/Button";
 import UsefulLinks from "./UsefulLinks";
 import { get1InchSwapUrl } from "config/links";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
+import LeverageSlider from "./LeverageSlider";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -91,21 +89,6 @@ const SWAP_ICONS = {
 };
 
 const { AddressZero } = ethers.constants;
-
-const leverageSliderHandle = (props) => {
-  const { value, dragging, index, ...restProps } = props;
-  return (
-    <SliderTooltip
-      prefixCls="rc-slider-tooltip"
-      overlay={`${parseFloat(value).toFixed(2)}x`}
-      visible={dragging}
-      placement="top"
-      key={index}
-    >
-      <Slider.Handle value={value} {...restProps} />
-    </SliderTooltip>
-  );
-};
 
 function getNextAveragePrice({ size, sizeDelta, hasProfit, delta, nextPrice, isLong }) {
   if (!size || !sizeDelta || !delta || !nextPrice) {
@@ -1753,20 +1736,6 @@ export default function SwapBox(props) {
     feeBps = feeBasisPoints;
   }
 
-  const leverageMarks = {
-    2: "2x",
-    5: "5x",
-    10: "10x",
-    15: "15x",
-    20: "20x",
-    25: "25x",
-    30: "30x",
-    35: "35x",
-    40: "40x",
-    45: "45x",
-    50: "50x",
-  };
-
   if (!fromToken || !toToken) {
     return null;
   }
@@ -2121,22 +2090,7 @@ export default function SwapBox(props) {
               <span className="muted">Leverage slider</span>
             </ToggleSwitch>
             {isLeverageSliderEnabled && (
-              <div
-                className={cx("Exchange-leverage-slider", "App-slider", {
-                  positive: isLong,
-                  negative: isShort,
-                })}
-              >
-                <Slider
-                  min={1.1}
-                  max={MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR}
-                  step={0.1}
-                  marks={leverageMarks}
-                  handle={leverageSliderHandle}
-                  onChange={(value) => setLeverageOption(value)}
-                  defaultValue={leverageOption}
-                />
-              </div>
+              <LeverageSlider isLong={isLong} leverageOption={leverageOption} setLeverageOption={setLeverageOption} />
             )}
             {isShort && (
               <div className="Exchange-info-row">
