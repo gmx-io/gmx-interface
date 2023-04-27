@@ -94,7 +94,7 @@ export function TradeFeesRow(p: Props) {
         }
       : undefined;
 
-    const feeDiscountRow = p.feeDiscountUsd
+    const feeDiscountRow = p.feeDiscountUsd?.gt(0)
       ? {
           id: "feeDiscount",
           label: t`Referral Discount`,
