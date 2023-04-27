@@ -196,7 +196,7 @@ msgstr ""
 msgid "Active Orders"
 msgstr ""
 
-#: src/components/Referrals/TradersStats.js
+#: src/components/Referrals/TradersStats.tsx
 msgid "Active Referral Code"
 msgstr ""
 
@@ -225,7 +225,7 @@ msgstr ""
 msgid "Address copied to your clipboard"
 msgstr ""
 
-#: src/pages/Referrals/Referrals.js
+#: src/pages/Referrals/Referrals.tsx
 msgid "Affiliates"
 msgstr ""
 
@@ -268,12 +268,12 @@ msgstr ""
 msgid "Alternatively, you can select a different \"Collateral In\" token."
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/TradersStats.tsx
 msgid "Amount"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.tsx
 msgid "Amount of traders you referred."
 msgstr ""
 
@@ -671,7 +671,6 @@ msgstr ""
 msgid "Choose to buy from decentralized or centralized exchanges."
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 #: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
@@ -753,7 +752,7 @@ msgstr ""
 msgid "Claimable"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.tsx
 msgid "Claimable Rewards"
 msgstr ""
 
@@ -1083,7 +1082,7 @@ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/AddAffiliateCode.js
-#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -1104,7 +1103,7 @@ msgstr ""
 msgid "Create Order"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.tsx
 msgid "Create Referral Code"
 msgstr ""
 
@@ -1186,8 +1185,8 @@ msgstr ""
 msgid "Dashboards"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/TradersStats.tsx
 msgid "Date"
 msgstr ""
 
@@ -1401,7 +1400,7 @@ msgstr ""
 msgid "Edit Collateral"
 msgstr ""
 
-#: src/components/Referrals/TradersStats.js
+#: src/components/Referrals/TradersStats.tsx
 msgid "Edit Referral Code"
 msgstr ""
 
@@ -1706,8 +1705,11 @@ msgstr ""
 msgid "Fees"
 msgstr ""
 
-#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Fees and Price impact"
+msgstr ""
+
+#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 msgid "Fees and price impact"
 msgstr ""
 
@@ -2000,7 +2002,7 @@ msgstr ""
 msgid "Generating shareable image..."
 msgstr ""
 
-#: src/pages/Referrals/Referrals.js
+#: src/pages/Referrals/Referrals.tsx
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 msgstr ""
 
@@ -2949,8 +2951,8 @@ msgstr ""
 msgid "No position"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/TradersStats.tsx
 msgid "No rebates distribution history yet."
 msgstr ""
 
@@ -3465,7 +3467,7 @@ msgstr ""
 msgid "Read more"
 msgstr ""
 
-#: src/components/Referrals/TradersStats.js
+#: src/components/Referrals/TradersStats.tsx
 msgid "Rebates Distribution History"
 msgstr ""
 
@@ -3475,12 +3477,24 @@ msgstr ""
 #~ msgid "Rebates are airdropped weekly."
 #~ msgstr ""
 
-#: src/components/Referrals/TradersStats.js
+#: src/components/Referrals/TradersStats.tsx
 msgid "Rebates earned by this account as a trader."
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates earned by this account as an affiliate."
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/TradersStats.tsx
+msgid "Rebates on V1"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/TradersStats.tsx
+msgid "Rebates on V2"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -3533,7 +3547,7 @@ msgstr ""
 msgid "Reducing the position at the current price will forfeit a <0>pending profit</0> of {deltaStr}. <1/>"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Code"
 msgstr ""
 
@@ -3541,8 +3555,12 @@ msgstr ""
 msgid "Referral Code does not exist"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Codes"
+msgstr ""
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Referral Discount"
 msgstr ""
 
 #: src/components/Footer/constants.ts
@@ -3557,11 +3575,11 @@ msgstr ""
 msgid "Referral code created!"
 msgstr ""
 
-#: src/pages/Referrals/Referrals.js
+#: src/pages/Referrals/Referrals.tsx
 msgid "Referral code creation failed."
 msgstr ""
 
-#: src/pages/Referrals/Referrals.js
+#: src/pages/Referrals/Referrals.tsx
 msgid "Referral code submitted!"
 msgstr ""
 
@@ -3577,7 +3595,7 @@ msgstr ""
 msgid "Referrals"
 msgstr ""
 
-#: src/pages/Referrals/Referrals.js
+#: src/pages/Referrals/Referrals.tsx
 msgid "Referrals <0/>"
 msgstr ""
 
@@ -3646,11 +3664,11 @@ msgstr ""
 msgid "Rewards"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rewards Distribution History"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rewards are airdropped weekly."
 msgstr ""
 
@@ -4374,11 +4392,11 @@ msgstr ""
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.tsx
 msgid "This code has been taken by someone else on {0}, you will not receive rebates from traders using this code on {1}."
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.tsx
 msgid "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
 msgstr ""
 
@@ -4398,11 +4416,11 @@ msgstr ""
 msgid "Three tokens create our ecosystem"
 msgstr ""
 
-#: src/components/Referrals/TradersStats.js
+#: src/components/Referrals/TradersStats.tsx
 msgid "Tier {0} ({1}% discount)"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.tsx
 msgid "Tier {0} ({1}% rebate)"
 msgstr ""
 
@@ -4455,9 +4473,9 @@ msgstr ""
 msgid "Total Fees Distributed"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/TradersStats.tsx
 msgid "Total Rebates"
 msgstr ""
 
@@ -4493,12 +4511,12 @@ msgstr ""
 msgid "Total Supply"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total Traders Referred"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/TradersStats.tsx
 #: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr ""
@@ -4507,7 +4525,7 @@ msgstr ""
 msgid "Total Users"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.tsx
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Total Volume"
@@ -4542,11 +4560,11 @@ msgstr ""
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
 msgstr ""
 
-#: src/pages/Referrals/Referrals.js
+#: src/pages/Referrals/Referrals.tsx
 msgid "Traders"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.tsx
 msgid "Traders Referred"
 msgstr ""
 
@@ -4569,8 +4587,8 @@ msgstr ""
 msgid "Transacting with a depegged stable coin is subject to spreads reflecting the worse of current market price or $1.00, with transactions involving multiple stablecoins may have multiple spreads."
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/TradersStats.tsx
 msgid "Transaction"
 msgstr ""
 
@@ -4682,7 +4700,8 @@ msgid "Txn failed. <0>View</0>"
 msgstr ""
 
 #: src/components/Exchange/OrdersList.js
-#: src/components/Referrals/TradersStats.js
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/TradersStats.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Type"
@@ -4814,10 +4833,22 @@ msgstr ""
 msgid "Utilization"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
-#: src/components/Referrals/TradersStats.js
+#: src/components/Referrals/AffiliatesStats.tsx
+msgid "V1 AIRDROP"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.tsx
+msgid "V1 esGMX"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/TradersStats.tsx
+#: src/components/Referrals/TradersStats.tsx
 msgid "V1 rebates are airdropped weekly, V2 rebates are automatically applied as fee discounts on each trade."
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.tsx
+msgid "V2 CLAIM"
 msgstr ""
 
 #: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
@@ -4890,11 +4921,23 @@ msgstr ""
 msgid "Volume"
 msgstr ""
 
-#: src/components/Referrals/TradersStats.js
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/TradersStats.tsx
+msgid "Volume on V1"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/TradersStats.tsx
+msgid "Volume on V2"
+msgstr ""
+
+#: src/components/Referrals/TradersStats.tsx
 msgid "Volume traded by this account with an active referral code."
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.tsx
 msgid "Volume traded by your referred traders."
 msgstr ""
 
@@ -5189,7 +5232,7 @@ msgstr ""
 msgid "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed."
 msgstr ""
 
-#: src/components/Referrals/TradersStats.js
+#: src/components/Referrals/TradersStats.tsx
 msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday"
 msgstr ""
 
