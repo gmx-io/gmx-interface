@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { BigNumber, BigNumberish, ethers } from "ethers";
 import { gql } from "@apollo/client";
 import { useState, useEffect, useMemo } from "react";
 import useSWR from "swr";
@@ -7,24 +7,39 @@ import ReferralStorage from "abis/ReferralStorage.json";
 import { MAX_REFERRAL_CODE_LENGTH, isAddressZero, isHashZero } from "lib/legacy";
 import { getContract } from "config/contracts";
 import { REGEX_VERIFY_BYTES32 } from "components/Referrals/referralsHelper";
-import { ARBITRUM, AVALANCHE } from "config/chains";
-import { arbitrumReferralsGraphClient, avalancheReferralsGraphClient } from "lib/subgraph/clients";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
+import {
+  arbitrumReferralsGraphClient,
+  avalancheFujiReferralsGraphClient,
+  avalancheReferralsGraphClient,
+} from "lib/subgraph/clients";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
 import { getProvider } from "lib/rpc";
-import { bigNumberify } from "lib/numbers";
+import { basisPointsToFloat, bigNumberify } from "lib/numbers";
+import { Web3Provider } from "@ethersproject/providers";
+import {
+  AffiliateTotalStats,
+  ReferralCodeStats,
+  ReferralsStatsData,
+  RewardDistribution,
+  RewardDistributionType,
+  TraderReferralTotalStats,
+  UserReferralInfo,
+} from "./types";
 
 const ACTIVE_CHAINS = [ARBITRUM, AVALANCHE];
-const DISTRIBUTION_TYPE_REBATES = "1";
-const DISTRIBUTION_TYPE_DISCOUNT = "2";
 
 function getGraphClient(chainId) {
   if (chainId === ARBITRUM) {
     return arbitrumReferralsGraphClient;
   } else if (chainId === AVALANCHE) {
     return avalancheReferralsGraphClient;
+  } else if (chainId === AVALANCHE_FUJI) {
+    return avalancheFujiReferralsGraphClient;
   }
+
   throw new Error(`Unsupported chain ${chainId}`);
 }
 
@@ -124,8 +139,13 @@ export function useUserCodesOnAllChain(account) {
   return data;
 }
 
-export function useReferralsData(chainId, account) {
-  const [data, setData] = useState<any>(null);
+type ReferralsDataResult = {
+  referralsData?: ReferralsStatsData;
+  loading: boolean;
+};
+
+export function useReferralsData(chainId: number, account?: string | null): ReferralsDataResult {
+  const [data, setData] = useState<ReferralsStatsData>();
   const [loading, setLoading] = useState(true);
   const ownerOnOtherChain = useUserCodesOnAllChain(account);
   useEffect(() => {
@@ -133,48 +153,46 @@ export function useReferralsData(chainId, account) {
       setLoading(false);
       return;
     }
-    const startOfDayTimestamp = Math.floor(Math.floor(Date.now() / 1000) / 86400) * 86400;
 
     const query = gql`
-      query referralData($typeIds: [String!]!, $account: String!, $timestamp: Int!, $referralTotalStatsId: String!) {
+      query referralData($typeIds: [String!]!, $account: String!, $referralTotalStatsId: String!) {
         distributions(
           first: 1000
           orderBy: timestamp
           orderDirection: desc
           where: { receiver: $account, typeId_in: $typeIds }
         ) {
-          receiver
-          amount
           typeId
-          token
+          receiver
+          markets
+          tokens
+          amounts
           transactionHash
           timestamp
         }
-        referrerTotalStats: referrerStats(
+        affiliateStats: affiliateStats(
           first: 1000
           orderBy: volume
           orderDirection: desc
-          where: { period: total, referrer: $account }
+          where: { period: total, affiliate: $account }
         ) {
           referralCode
-          volume
           trades
           tradedReferralsCount
           registeredReferralsCount
-          totalRebateUsd
-          discountUsd
-        }
-        referrerLastDayStats: referrerStats(
-          first: 1000
-          where: { period: daily, referrer: $account, timestamp: $timestamp }
-        ) {
-          referralCode
           volume
-          trades
-          tradedReferralsCount
-          registeredReferralsCount
           totalRebateUsd
           discountUsd
+          v1Data {
+            volume
+            discountUsd
+            totalRebateUsd
+          }
+          v2Data {
+            volume
+            totalRebateUsd
+            discountUsd
+          }
         }
         referralCodes(first: 1000, where: { owner: $account }) {
           code
@@ -182,8 +200,16 @@ export function useReferralsData(chainId, account) {
         referralTotalStats: referralStat(id: $referralTotalStatsId) {
           volume
           discountUsd
+          v1Data {
+            volume
+            discountUsd
+          }
+          v2Data {
+            volume
+            discountUsd
+          }
         }
-        referrerTierInfo: referrer(id: $account) {
+        affiliateTierInfo: affiliate(id: $account) {
           tierId
           id
           discountShare
@@ -196,84 +222,139 @@ export function useReferralsData(chainId, account) {
       .query({
         query,
         variables: {
-          typeIds: [DISTRIBUTION_TYPE_REBATES, DISTRIBUTION_TYPE_DISCOUNT],
+          typeIds: Object.values(RewardDistributionType),
           account: (account || "").toLowerCase(),
-          timestamp: startOfDayTimestamp,
           referralTotalStatsId: account && `total:0:${account.toLowerCase()}`,
         },
       })
       .then((res) => {
-        const rebateDistributions: any[] = [];
-        const discountDistributions: any[] = [];
+        const affiliateDistributions: RewardDistribution[] = [];
+        const traderDistributions: RewardDistribution[] = [];
+
         res.data.distributions.forEach((d) => {
           const item = {
+            typeId: d.typeId,
+            receiver: ethers.utils.getAddress(d.receiver),
+            markets: d.markets.map((market) => ethers.utils.getAddress(market)),
+            tokens: d.tokens.map((token) => ethers.utils.getAddress(token)),
+            amounts: d.amounts.map((a) => bigNumberify(a)!),
             timestamp: parseInt(d.timestamp),
             transactionHash: d.transactionHash,
-            receiver: ethers.utils.getAddress(d.receiver),
-            amount: bigNumberify(d.amount),
-            typeId: d.typeId,
-            token: ethers.utils.getAddress(d.token),
           };
-          if (d.typeId === DISTRIBUTION_TYPE_REBATES) {
-            rebateDistributions.push(item);
+          if (d.typeId === RewardDistributionType.Rebate || d.typeId === RewardDistributionType.Claim) {
+            affiliateDistributions.push(item);
           } else {
-            discountDistributions.push(item);
+            traderDistributions.push(item);
           }
         });
 
-        function prepareStatsItem(e) {
-          return {
-            volume: bigNumberify(e.volume),
-            trades: parseInt(e.trades),
-            tradedReferralsCount: parseInt(e.tradedReferralsCount),
-            registeredReferralsCount: parseInt(e.registeredReferralsCount),
-            totalRebateUsd: bigNumberify(e.totalRebateUsd),
-            discountUsd: bigNumberify(e.discountUsd),
-            referralCode: decodeReferralCode(e.referralCode),
-            ownerOnOtherChain: ownerOnOtherChain?.[chainId][e.referralCode],
-          };
+        function getAffiliateRebateUsd(data: { totalRebateUsd: BigNumberish; discountUsd: BigNumberish }) {
+          return bigNumberify(data.totalRebateUsd)!.sub(data.discountUsd);
         }
 
-        function getCumulativeStats(data: any[] = []) {
-          return data.reduce(
-            (acc, cv) => {
-              acc.totalRebateUsd = acc.totalRebateUsd.add(cv.totalRebateUsd);
-              acc.volume = acc.volume.add(cv.volume);
-              acc.discountUsd = acc.discountUsd.add(cv.discountUsd);
-              acc.trades = acc.trades + cv.trades;
-              acc.tradedReferralsCount = acc.tradedReferralsCount + cv.tradedReferralsCount;
-              acc.registeredReferralsCount = acc.registeredReferralsCount + cv.registeredReferralsCount;
-              return acc;
-            },
-            {
-              totalRebateUsd: bigNumberify(0),
+        const affiliateReferralCodesStats: ReferralCodeStats[] = res.data.affiliateStats.map((e) => ({
+          referralCode: decodeReferralCode(e.referralCode),
+          trades: parseInt(e.trades),
+          tradedReferralsCount: parseInt(e.tradedReferralsCount),
+          registeredReferralsCount: parseInt(e.registeredReferralsCount),
+          ownerOnOtherChain: ownerOnOtherChain?.[chainId]?.[e.referralCode],
+          volume: bigNumberify(e.volume),
+          totalRebateUsd: bigNumberify(e.totalRebateUsd),
+          affiliateRebateUsd: getAffiliateRebateUsd(e),
+          discountUsd: bigNumberify(e.discountUsd),
+          v1Data: {
+            volume: bigNumberify(e.v1Data.volume),
+            totalRebateUsd: bigNumberify(e.v1Data.totalRebateUsd),
+            discountUsd: bigNumberify(e.v1Data.discountUsd),
+            affiliateRebateUsd: getAffiliateRebateUsd(e.v1Data),
+          },
+          v2Data: {
+            volume: bigNumberify(e.v2Data.volume),
+            totalRebateUsd: bigNumberify(e.v2Data.totalRebateUsd),
+            discountUsd: bigNumberify(e.v2Data.discountUsd),
+            affiliateRebateUsd: getAffiliateRebateUsd(e.v2Data),
+          },
+        }));
+
+        const affiliateTotalStats: AffiliateTotalStats = res.data.affiliateStats.reduce(
+          (acc: AffiliateTotalStats, cv) => {
+            acc.trades = acc.trades + parseInt(cv.trades);
+            acc.tradedReferralsCount = acc.tradedReferralsCount + parseInt(cv.tradedReferralsCount);
+            acc.registeredReferralsCount = acc.registeredReferralsCount + parseInt(cv.registeredReferralsCount);
+
+            acc.totalRebateUsd = acc.totalRebateUsd.add(cv.totalRebateUsd);
+            acc.volume = acc.volume.add(cv.volume);
+            acc.discountUsd = acc.discountUsd.add(cv.discountUsd);
+            acc.affiliateRebateUsd = acc.affiliateRebateUsd.add(getAffiliateRebateUsd(cv));
+
+            acc.v1Data.volume = acc.v1Data.volume.add(cv.v1Data.volume);
+            acc.v1Data.totalRebateUsd = acc.v1Data.totalRebateUsd.add(cv.v1Data.totalRebateUsd);
+            acc.v1Data.discountUsd = acc.v1Data.discountUsd.add(cv.v1Data.discountUsd);
+            acc.v1Data.affiliateRebateUsd = acc.v1Data.affiliateRebateUsd.add(getAffiliateRebateUsd(cv.v1Data));
+
+            acc.v2Data.volume = acc.v2Data.volume.add(cv.v2Data.volume);
+            acc.v2Data.totalRebateUsd = acc.v2Data.totalRebateUsd.add(cv.v2Data.totalRebateUsd);
+            acc.v2Data.discountUsd = acc.v2Data.discountUsd.add(cv.v2Data.discountUsd);
+            acc.v2Data.affiliateRebateUsd = acc.v2Data.affiliateRebateUsd.add(getAffiliateRebateUsd(cv.v2Data));
+            return acc;
+          },
+          {
+            trades: 0,
+            tradedReferralsCount: 0,
+            registeredReferralsCount: 0,
+            volume: bigNumberify(0),
+            totalRebateUsd: bigNumberify(0),
+            affiliateRebateUsd: bigNumberify(0),
+            discountUsd: bigNumberify(0),
+            v1Data: {
               volume: bigNumberify(0),
+              totalRebateUsd: bigNumberify(0),
+              affiliateRebateUsd: bigNumberify(0),
               discountUsd: bigNumberify(0),
-              trades: 0,
-              tradedReferralsCount: 0,
-              registeredReferralsCount: 0,
-            } as any
-          );
-        }
+            },
+            v2Data: {
+              volume: bigNumberify(0),
+              totalRebateUsd: bigNumberify(0),
+              affiliateRebateUsd: bigNumberify(0),
+              discountUsd: bigNumberify(0),
+            },
+          } as AffiliateTotalStats
+        );
 
-        let referrerTotalStats = res.data.referrerTotalStats.map(prepareStatsItem);
-        setData({
-          rebateDistributions,
-          discountDistributions,
-          referrerTotalStats,
-          referrerTierInfo: res.data.referrerTierInfo,
-          referrerLastDayStats: res.data.referrerLastDayStats.map(prepareStatsItem),
-          cumulativeStats: getCumulativeStats(referrerTotalStats),
-          codes: res.data.referralCodes.map((e) => decodeReferralCode(e.code)),
-          referralTotalStats: res.data.referralTotalStats
-            ? {
-                volume: bigNumberify(res.data.referralTotalStats.volume),
-                discountUsd: bigNumberify(res.data.referralTotalStats.discountUsd),
-              }
-            : {
-                volume: bigNumberify(0),
-                discountUsd: bigNumberify(0),
+        const traderReferralTotalStats: TraderReferralTotalStats = res.data.referralTotalStats
+          ? {
+              volume: bigNumberify(res.data.referralTotalStats.volume)!,
+              discountUsd: bigNumberify(res.data.referralTotalStats.discountUsd)!,
+              v1Data: {
+                volume: bigNumberify(res.data.referralTotalStats.v1Data.volume)!,
+                discountUsd: bigNumberify(res.data.referralTotalStats.v1Data.discountUsd)!,
               },
+              v2Data: {
+                volume: bigNumberify(res.data.referralTotalStats.v2Data.volume)!,
+                discountUsd: bigNumberify(res.data.referralTotalStats.v2Data.discountUsd)!,
+              },
+            }
+          : {
+              volume: bigNumberify(0)!,
+              discountUsd: bigNumberify(0)!,
+              v1Data: {
+                volume: bigNumberify(0)!,
+                discountUsd: bigNumberify(0)!,
+              },
+              v2Data: {
+                volume: bigNumberify(0)!,
+                discountUsd: bigNumberify(0)!,
+              },
+            };
+
+        setData({
+          affiliateDistributions,
+          traderDistributions,
+          affiliateReferralCodesStats,
+          affiliateTierInfo: res.data.affiliateTierInfo,
+          affiliateTotalStats,
+          codes: res.data.referralCodes.map((e) => decodeReferralCode(e.code)),
+          traderReferralTotalStats,
         });
       })
       // eslint-disable-next-line no-console
@@ -284,7 +365,7 @@ export function useReferralsData(chainId, account) {
   }, [setData, chainId, account, ownerOnOtherChain]);
 
   return {
-    data: data || null,
+    referralsData: data,
     loading,
   };
 }
@@ -317,10 +398,37 @@ export async function getReferralCodeOwner(chainId, referralCode) {
   return codeOwner;
 }
 
+export function useUserReferralInfo(
+  library: Web3Provider | undefined,
+  chainId: number,
+  account?: string | null
+): UserReferralInfo | undefined {
+  const { userReferralCode, userReferralCodeString, attachedOnChain } = useUserReferralCode(library, chainId, account);
+  const { codeOwner } = useCodeOwner(library, chainId, account, userReferralCode);
+  const { affiliateTier: tierId } = useAffiliateTier(library, chainId, codeOwner);
+  const { totalRebate, discountShare } = useTiers(library, chainId, tierId);
+
+  if (!userReferralCode || !userReferralCodeString || !codeOwner || !tierId || !totalRebate || !discountShare) {
+    return undefined;
+  }
+
+  return {
+    userReferralCode,
+    userReferralCodeString,
+    attachedOnChain,
+    affiliate: codeOwner,
+    tierId,
+    totalRebate,
+    totalRebateFactor: basisPointsToFloat(totalRebate),
+    discountShare,
+    discountFactor: basisPointsToFloat(discountShare),
+  };
+}
+
 export function useUserReferralCode(library, chainId, account) {
   const localStorageCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const { data: onChainCode } = useSWR(
+  const { data: onChainCode } = useSWR<string>(
     account && ["ReferralStorage", chainId, referralStorageAddress, "traderReferralCodes", account],
     { fetcher: contractFetcher(library, ReferralStorage) }
   );
@@ -332,13 +440,23 @@ export function useUserReferralCode(library, chainId, account) {
     { fetcher: contractFetcher(library, ReferralStorage) }
   );
 
-  const [attachedOnChain, userReferralCode, userReferralCodeString] = useMemo(() => {
+  const { attachedOnChain, userReferralCode, userReferralCodeString } = useMemo(() => {
     if (onChainCode && !isHashZero(onChainCode)) {
-      return [true, onChainCode, decodeReferralCode(onChainCode)];
+      return {
+        attachedOnChain: true,
+        userReferralCode: onChainCode,
+        userReferralCodeString: decodeReferralCode(onChainCode),
+      };
     } else if (localStorageCodeOwner && !isAddressZero(localStorageCodeOwner)) {
-      return [false, localStorageCode, decodeReferralCode(localStorageCode)];
+      return {
+        attachedOnChain: false,
+        userReferralCode: localStorageCode!,
+        userReferralCodeString: decodeReferralCode(localStorageCode),
+      };
     }
-    return [false];
+    return {
+      attachedOnChain: false,
+    };
   }, [localStorageCode, localStorageCodeOwner, onChainCode]);
 
   return {
@@ -348,23 +466,37 @@ export function useUserReferralCode(library, chainId, account) {
   };
 }
 
-export function useReferrerTier(library, chainId, account) {
+export function useAffiliateTier(library, chainId, account) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const { data: referrerTier, mutate: mutateReferrerTier } = useSWR(
+  const { data: affiliateTier, mutate: mutateReferrerTier } = useSWR<BigNumber>(
     account && [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "referrerTiers", account],
     {
       fetcher: contractFetcher(library, ReferralStorage),
     }
   );
   return {
-    referrerTier,
+    affiliateTier,
     mutateReferrerTier,
+  };
+}
+
+export function useTiers(library: Web3Provider | undefined, chainId: number, tierLevel?: BigNumberish) {
+  const referralStorageAddress = getContract(chainId, "ReferralStorage");
+  const { data: [totalRebate, discountShare] = [] } = useSWR<BigNumber[]>(
+    tierLevel ? [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "tiers", tierLevel] : null,
+    {
+      fetcher: contractFetcher(library, ReferralStorage),
+    }
+  );
+  return {
+    totalRebate,
+    discountShare,
   };
 }
 
 export function useCodeOwner(library, chainId, account, code) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const { data: codeOwner, mutate: mutateCodeOwner } = useSWR(
+  const { data: codeOwner, mutate: mutateCodeOwner } = useSWR<string>(
     account && code && [`ReferralStorage:codeOwners`, chainId, referralStorageAddress, "codeOwners", code],
     {
       fetcher: contractFetcher(library, ReferralStorage),
@@ -386,11 +518,11 @@ export function useAffiliateCodes(chainId, account) {
   const [affiliateCodes, setAffiliateCodes] = useState({ code: null, success: false });
   const query = gql`
     query userReferralCodes($account: String!) {
-      referrerTotalStats: referrerStats(
+      affiliateStats: affiliateStats(
         first: 1000
         orderBy: volume
         orderDirection: desc
-        where: { period: total, referrer: $account }
+        where: { period: total, affiliate: $account }
       ) {
         referralCode
       }
@@ -401,7 +533,7 @@ export function useAffiliateCodes(chainId, account) {
     getGraphClient(chainId)
       .query({ query, variables: { account: account?.toLowerCase() } })
       .then((res) => {
-        const parsedAffiliateCodes = res?.data?.referrerTotalStats.map((c) => decodeReferralCode(c?.referralCode));
+        const parsedAffiliateCodes = res?.data?.affiliateStats.map((c) => decodeReferralCode(c?.referralCode));
         setAffiliateCodes({ code: parsedAffiliateCodes[0], success: true });
       });
     return () => {

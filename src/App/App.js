@@ -47,7 +47,7 @@ import "./App.scss";
 import SEO from "components/Common/SEO";
 import EventToastContainer from "components/EventToast/EventToastContainer";
 import useEventToast from "components/EventToast/useEventToast";
-import { decodeReferralCode, encodeReferralCode } from "domain/referrals";
+import { decodeReferralCode, encodeReferralCode } from "domain/referrals/hooks";
 import coinbaseImg from "img/coinbaseWallet.png";
 import metamaskImg from "img/metamask.png";
 import walletConnectImg from "img/walletconnect-circle-blue.svg";

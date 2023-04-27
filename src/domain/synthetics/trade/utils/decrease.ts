@@ -8,6 +8,7 @@ import { DUST_USD } from "lib/legacy";
 import { getBasisPoints } from "lib/numbers";
 import { DecreasePositionAmounts, NextPositionValues, TriggerThresholdType } from "../types";
 import { getAcceptablePrice, getMarkPrice, getTriggerDecreaseOrderType, getTriggerThresholdType } from "./prices";
+import { UserReferralInfo } from "domain/referrals";
 
 export function getDecreasePositionAmounts(p: {
   marketInfo: MarketInfo;
@@ -21,6 +22,7 @@ export function getDecreasePositionAmounts(p: {
   isTrigger?: boolean;
   triggerPrice?: BigNumber;
   savedAcceptablePriceImpactBps?: BigNumber;
+  userReferralInfo: UserReferralInfo | undefined;
 }): DecreasePositionAmounts {
   const {
     marketInfo,
@@ -34,6 +36,7 @@ export function getDecreasePositionAmounts(p: {
     triggerPrice,
     savedAcceptablePriceImpactBps,
     virtualInventoryForPositions,
+    userReferralInfo,
   } = p;
 
   const { indexToken } = p.marketInfo;
@@ -68,7 +71,10 @@ export function getDecreasePositionAmounts(p: {
 
   const sizeDeltaInTokens = convertToTokenAmount(sizeDeltaUsd, indexToken.decimals, exitPrice)!;
 
-  const positionFeeUsd = getPositionFee(marketInfo, sizeDeltaUsd);
+  const positionFeeInfo = getPositionFee(marketInfo, sizeDeltaUsd, userReferralInfo);
+  const positionFeeUsd = positionFeeInfo.positionFeeUsd;
+  const feeDiscountUsd = positionFeeInfo.discountUsd;
+
   const positionPriceImpactDeltaUsd = getPriceImpactForPosition(
     marketInfo,
     virtualInventoryForPositions,
@@ -150,6 +156,7 @@ export function getDecreasePositionAmounts(p: {
     exitPnlPercentage,
     acceptablePrice,
     positionFeeUsd,
+    feeDiscountUsd,
     triggerPrice,
     triggerPricePrefix,
     triggerOrderType,
@@ -170,6 +177,7 @@ export function getNextPositionValuesForDecreaseTrade(p: {
   showPnlInLeverage: boolean;
   isLong: boolean;
   minCollateralUsd: BigNumber;
+  userReferralInfo: UserReferralInfo | undefined;
 }): NextPositionValues {
   const {
     existingPosition,
@@ -182,6 +190,7 @@ export function getNextPositionValuesForDecreaseTrade(p: {
     showPnlInLeverage,
     isLong,
     minCollateralUsd,
+    userReferralInfo,
   } = p;
 
   const nextSizeUsd = existingPosition ? existingPosition.sizeInUsd.sub(sizeDeltaUsd) : BigNumber.from(0);
@@ -207,7 +216,7 @@ export function getNextPositionValuesForDecreaseTrade(p: {
     markPrice: executionPrice,
     minCollateralFactor: marketInfo.minCollateralFactor,
     minCollateralUsd,
-    closingFeeUsd: getPositionFee(marketInfo, sizeDeltaUsd),
+    closingFeeUsd: getPositionFee(marketInfo, sizeDeltaUsd, userReferralInfo).positionFeeUsd,
     maxPriceImpactFactor: marketInfo?.maxPositionImpactFactorForLiquidations,
     pendingBorrowingFeesUsd: BigNumber.from(0), // deducted on order
     pendingFundingFeesUsd: BigNumber.from(0), // deducted on order

@@ -1,8 +1,18 @@
 import { Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
+import cx from "classnames";
+import Button from "components/Button/Button";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import Checkbox from "components/Checkbox/Checkbox";
+import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import Modal from "components/Modal/Modal";
+import TokenSelector from "components/TokenSelector/TokenSelector";
+import Tooltip from "components/Tooltip/Tooltip";
+import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { getKeepLeverageKey } from "config/localStorage";
 import { convertTokenAddress } from "config/tokens";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import { useUserReferralInfo } from "domain/referrals/hooks";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   getExecutionFee,
@@ -41,16 +51,7 @@ import {
 import { getByKey } from "lib/objects";
 import { useEffect, useMemo, useState } from "react";
 import { OrderStatus } from "../OrderStatus/OrderStatus";
-import Modal from "components/Modal/Modal";
-import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import Checkbox from "components/Checkbox/Checkbox";
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
-import Tooltip from "components/Tooltip/Tooltip";
-import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
-import TokenSelector from "components/TokenSelector/TokenSelector";
-import cx from "classnames";
-import Button from "components/Button/Button";
 import "./PositionSeller.scss";
 
 export type Props = {
@@ -85,6 +86,7 @@ export function PositionSeller(p: Props) {
   const { virtualInventoryForPositions } = useVirtualInventory(chainId);
   const { gasLimits } = useGasLimits(chainId);
   const { minCollateralUsd } = usePositionsConstants(chainId);
+  const userReferralInfo = useUserReferralInfo(library, chainId, account);
 
   const { setPendingPositionUpdate } = useSyntheticsEvents();
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
@@ -123,8 +125,9 @@ export function PositionSeller(p: Props) {
       isTrigger: false,
       triggerPrice: undefined,
       savedAcceptablePriceImpactBps: undefined,
+      userReferralInfo,
     });
-  }, [closeSizeUsd, keepLeverage, position, virtualInventoryForPositions]);
+  }, [closeSizeUsd, keepLeverage, position, userReferralInfo, virtualInventoryForPositions]);
 
   const shouldSwap = receiveToken && !getIsEquivalentTokens(position.collateralToken, receiveToken);
 
@@ -161,8 +164,9 @@ export function PositionSeller(p: Props) {
       showPnlInLeverage,
       isLong: position.isLong,
       minCollateralUsd,
+      userReferralInfo,
     });
-  }, [decreaseAmounts, minCollateralUsd, position, showPnlInLeverage]);
+  }, [decreaseAmounts, minCollateralUsd, position, showPnlInLeverage, userReferralInfo]);
 
   const { fees, executionFee } = useMemo(() => {
     if (!decreaseAmounts || !gasLimits || !tokensData || !gasPrice) {
@@ -183,6 +187,7 @@ export function PositionSeller(p: Props) {
         positionPriceImpactDeltaUsd: decreaseAmounts.positionPriceImpactDeltaUsd,
         borrowingFeeUsd: position.pendingBorrowingFeesUsd,
         fundingFeeDeltaUsd: position.pendingFundingFeesUsd,
+        feeDiscountUsd: decreaseAmounts.feeDiscountUsd,
       }),
       executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
     };
@@ -269,6 +274,7 @@ export function PositionSeller(p: Props) {
       decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
       minOutputUsd: receiveUsd,
       tokensData,
+      referralCode: userReferralInfo?.userReferralCode,
       setPendingTxns,
     }).then(() => {
       if (p.position) {
@@ -450,6 +456,7 @@ export function PositionSeller(p: Props) {
                     executionFee={executionFee}
                     borrowFee={fees?.borrowFee}
                     fundingFee={fees?.fundingFee}
+                    feeDiscountUsd={fees?.feeDiscountUsd}
                     feesType="decrease"
                   />
 

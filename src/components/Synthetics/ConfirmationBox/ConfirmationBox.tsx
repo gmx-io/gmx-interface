@@ -12,7 +12,7 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { getContract } from "config/contracts";
 import { HIGH_SPREAD_THRESHOLD } from "config/factors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import { useUserReferralCode } from "domain/referrals";
+import { useUserReferralCode } from "domain/referrals/hooks";
 import { ExecutionFee, getBorrowingFeeFactor, getFundingFeeFactor, getIsHighPriceImpact } from "domain/synthetics/fees";
 import { MarketInfo } from "domain/synthetics/markets";
 import {
@@ -143,7 +143,7 @@ export function ConfirmationBox(p: Props) {
   const { tokensData } = useAvailableTokensData(chainId);
   const { setPendingPositionUpdate } = useSyntheticsEvents();
 
-  const referralCodeData = useUserReferralCode(library, chainId, account);
+  const { userReferralCode } = useUserReferralCode(library, chainId, account);
 
   const [isTriggerWarningAccepted, setIsTriggerWarningAccepted] = useState(false);
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
@@ -334,7 +334,7 @@ export function ConfirmationBox(p: Props) {
       executionFee: executionFee.feeTokenAmount,
       orderType: isLimit ? OrderType.LimitSwap : OrderType.MarketSwap,
       minOutputAmount: swapAmounts.minOutputAmount,
-      referralCode: referralCodeData.userReferralCodeString,
+      referralCode: userReferralCode,
       tokensData,
       setPendingTxns,
     }).then(onSubmitted);
@@ -372,7 +372,7 @@ export function ConfirmationBox(p: Props) {
       executionFee: executionFee.feeTokenAmount,
       isLong,
       orderType: isLimit ? OrderType.LimitIncrease : OrderType.MarketIncrease,
-      referralCode: referralCodeData?.userReferralCodeString,
+      referralCode: userReferralCode,
       tokensData,
       setPendingTxns: p.setPendingTxns,
     }).then(() => {
@@ -421,6 +421,7 @@ export function ConfirmationBox(p: Props) {
       decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
       minOutputUsd: decreaseAmounts.receiveUsd,
       tokensData,
+      referralCode: userReferralCode,
       setPendingTxns,
     }).then(onSubmitted);
   }
@@ -861,6 +862,7 @@ export function ConfirmationBox(p: Props) {
               fundigRate && `${fundigRate.gt(0) ? "+" : "-"}${formatAmount(fundigRate.abs(), 30, 4)}% / 1h`
             }
             borrowFeeRateStr={borrowingRate && `-${formatAmount(borrowingRate, 30, 4)}% / 1h`}
+            feeDiscountUsd={fees?.feeDiscountUsd}
             executionFee={p.executionFee}
             feesType="increase"
           />
@@ -1070,6 +1072,7 @@ export function ConfirmationBox(p: Props) {
             positionFee={fees?.positionFee}
             borrowFee={fees?.borrowFee}
             fundingFee={fees?.fundingFee}
+            feeDiscountUsd={fees?.feeDiscountUsd}
             executionFee={p.executionFee}
             feesType="decrease"
           />

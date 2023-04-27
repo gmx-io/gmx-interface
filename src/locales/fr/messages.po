@@ -671,6 +671,8 @@ msgstr "Vérification du code..."
 msgid "Choose to buy from decentralized or centralized exchanges."
 msgstr ""
 
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 #: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
@@ -725,6 +727,7 @@ msgid "Claim failed."
 msgstr "Réclamation échouée."
 
 #: src/domain/synthetics/markets/claimCollateralTxn.ts
+#: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Claim request sent"
 msgstr ""
 
@@ -750,11 +753,16 @@ msgstr "Réclamer les récompenses de {wrappedTokenSymbol}"
 msgid "Claimable"
 msgstr "Réclamable"
 
+#: src/components/Referrals/AffiliatesStats.js
+msgid "Claimable Rewards"
+msgstr ""
+
 #: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
 msgid "Claimable funding"
 msgstr ""
 
 #: src/domain/synthetics/markets/claimCollateralTxn.ts
+#: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Claiming failed"
 msgstr ""
 
@@ -931,6 +939,7 @@ msgstr "Composition soumise !"
 msgid "Compounding..."
 msgstr "Composition en cours..."
 
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 msgid "Confirm Claim"
 msgstr ""
@@ -2604,6 +2613,7 @@ msgstr "Marque: {0}"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
@@ -3465,8 +3475,8 @@ msgstr "Historique de distribution des remises"
 #: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
 #: src/components/Referrals/TradersStats.js
-msgid "Rebates are airdropped weekly."
-msgstr "Les remises sont distribuées chaque semaine."
+#~ msgid "Rebates are airdropped weekly."
+#~ msgstr "Les remises sont distribuées chaque semaine."
 
 #: src/components/Referrals/TradersStats.js
 msgid "Rebates earned by this account as a trader."
@@ -3628,6 +3638,7 @@ msgstr "Réservé pour le vesting"
 msgid "Returns calculator for GMX and GLP"
 msgstr "Calculatrice de rendements pour GMX et GLP"
 
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -4013,6 +4024,7 @@ msgid "Submit"
 msgstr "Soumettre"
 
 #: src/domain/synthetics/markets/claimCollateralTxn.ts
+#: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Success claimings"
 msgstr ""
 
@@ -4673,6 +4685,7 @@ msgid "Txn failed. <0>View</0>"
 msgstr "Txn échouée. <0> Voir</0>"
 
 #: src/components/Exchange/OrdersList.js
+#: src/components/Referrals/TradersStats.js
 #: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Type"
@@ -4803,6 +4816,12 @@ msgstr "Liens utiles"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Utilization"
 msgstr "Utilisation"
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "V1 rebates are airdropped weekly, V2 rebates are automatically applied as fee discounts on each trade."
+msgstr ""
 
 #: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
 msgid "V2 doesn't currently support this network"

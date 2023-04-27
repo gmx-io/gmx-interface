@@ -1,3 +1,4 @@
+import { UserReferralInfo } from "domain/referrals";
 import { VirtualInventoryForPositionsData, getPositionFee, getPriceImpactForPosition } from "domain/synthetics/fees";
 import { MarketInfo } from "domain/synthetics/markets";
 import { PositionInfo, getLeverage, getLiquidationPrice } from "domain/synthetics/positions";
@@ -6,7 +7,7 @@ import { getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";
 import { FindSwapPath, IncreasePositionAmounts, NextPositionValues, SwapAmounts } from "../types";
-import { applySlippage, getAcceptablePrice, getMarkPrice } from "./prices";
+import { getAcceptablePrice, getMarkPrice } from "./prices";
 import { getSwapAmountsByFromValue, getSwapAmountsByToValue } from "./swap";
 
 export function getIncreasePositionAmountsByCollateral(p: {
@@ -19,10 +20,10 @@ export function getIncreasePositionAmountsByCollateral(p: {
   isLimit?: boolean;
   triggerPrice?: BigNumber;
   savedAcceptablePriceImpactBps?: BigNumber;
-  allowedSlippage?: number;
+  userReferralInfo: UserReferralInfo | undefined;
   findSwapPath: FindSwapPath;
   virtualInventoryForPositions: VirtualInventoryForPositionsData;
-}) {
+}): IncreasePositionAmounts {
   const {
     marketInfo,
     initialCollateralToken,
@@ -33,8 +34,8 @@ export function getIncreasePositionAmountsByCollateral(p: {
     triggerPrice,
     isLimit,
     savedAcceptablePriceImpactBps,
-    allowedSlippage,
     findSwapPath,
+    userReferralInfo,
     virtualInventoryForPositions,
   } = p;
   const { indexToken } = marketInfo;
@@ -58,11 +59,11 @@ export function getIncreasePositionAmountsByCollateral(p: {
   let sizeDeltaInTokens = BigNumber.from(0);
 
   let positionFeeUsd = BigNumber.from(0);
+  let feeDiscountUsd = BigNumber.from(0);
   let positionPriceImpactDeltaUsd = BigNumber.from(0);
 
   let acceptablePrice: BigNumber | undefined = undefined;
   let acceptablePriceImpactBps: BigNumber | undefined = undefined;
-  let acceptablePriceAfterSlippage: BigNumber | undefined = undefined;
 
   let swapAmounts: SwapAmounts | undefined = undefined;
 
@@ -74,6 +75,7 @@ export function getIncreasePositionAmountsByCollateral(p: {
     sizeDeltaUsd,
     sizeDeltaInTokens,
     positionFeeUsd,
+    feeDiscountUsd,
     positionPriceImpactDeltaUsd,
     swapPathStats: undefined,
     entryPrice,
@@ -109,18 +111,15 @@ export function getIncreasePositionAmountsByCollateral(p: {
     collateralUsdAfterFees = swapAmounts.usdOut;
   }
 
+  const baseSizeDeltaUsd = collateralUsdAfterFees.mul(leverage || BASIS_POINTS_DIVISOR).div(BASIS_POINTS_DIVISOR);
+  const basePositionFeeInfo = getPositionFee(marketInfo, baseSizeDeltaUsd, userReferralInfo);
+
+  collateralUsdAfterFees = collateralUsdAfterFees.sub(basePositionFeeInfo.positionFeeUsd);
   sizeDeltaUsd = collateralUsdAfterFees.mul(leverage || BASIS_POINTS_DIVISOR).div(BASIS_POINTS_DIVISOR);
-  positionFeeUsd = getPositionFee(marketInfo, sizeDeltaUsd);
 
-  collateralUsdAfterFees = collateralUsdAfterFees.sub(positionFeeUsd);
-  sizeDeltaUsd = collateralUsdAfterFees.mul(leverage || BASIS_POINTS_DIVISOR).div(BASIS_POINTS_DIVISOR);
-
-  if (leverage) {
-  } else {
-    sizeDeltaUsd = collateralUsdAfterFees;
-  }
-
-  positionFeeUsd = getPositionFee(marketInfo, sizeDeltaUsd);
+  const positionFeeInfo = getPositionFee(marketInfo, sizeDeltaUsd, userReferralInfo);
+  positionFeeUsd = positionFeeInfo.positionFeeUsd;
+  feeDiscountUsd = positionFeeInfo.discountUsd;
 
   positionPriceImpactDeltaUsd =
     getPriceImpactForPosition(marketInfo, virtualInventoryForPositions, sizeDeltaUsd, p.isLong) || BigNumber.from(0);
@@ -129,7 +128,7 @@ export function getIncreasePositionAmountsByCollateral(p: {
     isIncrease: true,
     isLong,
     indexPrice: entryPrice,
-    sizeDeltaUsd: sizeDeltaUsd,
+    sizeDeltaUsd,
     priceImpactDeltaUsd: !isLimit ? positionPriceImpactDeltaUsd : undefined,
     // TODO separate to 2 functions?
     acceptablePriceImpactBps: isLimit ? savedAcceptablePriceImpactBps : undefined,
@@ -137,8 +136,6 @@ export function getIncreasePositionAmountsByCollateral(p: {
 
   acceptablePrice = acceptablePriceInfo?.acceptablePrice;
   acceptablePriceImpactBps = acceptablePriceInfo?.acceptablePriceImpactBps;
-
-  acceptablePriceAfterSlippage = applySlippage(allowedSlippage || 0, acceptablePrice, true, p.isLong);
 
   sizeDeltaInTokens = convertToTokenAmount(sizeDeltaUsd, indexToken.decimals, entryPrice)!;
 
@@ -150,6 +147,7 @@ export function getIncreasePositionAmountsByCollateral(p: {
     sizeDeltaUsd,
     sizeDeltaInTokens,
     positionFeeUsd,
+    feeDiscountUsd,
     positionPriceImpactDeltaUsd,
     swapPathStats: swapAmounts?.swapPathStats,
     entryPrice,
@@ -159,7 +157,6 @@ export function getIncreasePositionAmountsByCollateral(p: {
     collateralPrice,
     acceptablePrice,
     acceptablePriceImpactBps,
-    acceptablePriceAfterSlippage,
   };
 }
 
@@ -173,6 +170,7 @@ export function getIncreasePositionAmountsBySizeDelta(p: {
   isLimit?: boolean;
   triggerPrice?: BigNumber;
   savedAcceptablePriceImpactBps?: BigNumber;
+  userReferralInfo: UserReferralInfo | undefined;
   findSwapPath: FindSwapPath;
   virtualInventoryForPositions: VirtualInventoryForPositionsData;
 }): IncreasePositionAmounts {
@@ -186,6 +184,7 @@ export function getIncreasePositionAmountsBySizeDelta(p: {
     triggerPrice,
     isLimit,
     savedAcceptablePriceImpactBps,
+    userReferralInfo,
     findSwapPath,
     virtualInventoryForPositions,
   } = p;
@@ -199,7 +198,10 @@ export function getIncreasePositionAmountsBySizeDelta(p: {
 
   const sizeDeltaUsd = convertToUsd(sizeDeltaInTokens, indexToken.decimals, entryPrice)!;
 
-  let positionFeeUsd = getPositionFee(marketInfo, sizeDeltaUsd)!;
+  const positionFee = getPositionFee(marketInfo, sizeDeltaUsd, userReferralInfo);
+  const positionFeeUsd = positionFee.positionFeeUsd;
+  const feeDiscountUsd = positionFee.discountUsd;
+
   let positionPriceImpactDeltaUsd = getPriceImpactForPosition(
     marketInfo,
     virtualInventoryForPositions,
@@ -233,6 +235,7 @@ export function getIncreasePositionAmountsBySizeDelta(p: {
     sizeDeltaUsd,
     sizeDeltaInTokens,
     positionFeeUsd,
+    feeDiscountUsd,
     positionPriceImpactDeltaUsd,
     swapPathStats: undefined,
     markPrice,
@@ -283,6 +286,7 @@ export function getIncreasePositionAmountsBySizeDelta(p: {
     sizeDeltaUsd,
     sizeDeltaInTokens,
     positionFeeUsd,
+    feeDiscountUsd,
     positionPriceImpactDeltaUsd,
     swapPathStats: swapAmounts?.swapPathStats,
     entryPrice,
@@ -304,6 +308,7 @@ export function getNextPositionValuesForIncreaseTrade(p: {
   isLong: boolean;
   showPnlInLeverage: boolean;
   minCollateralUsd: BigNumber;
+  userReferralInfo: UserReferralInfo | undefined;
 }): NextPositionValues {
   const {
     existingPosition,
@@ -314,6 +319,7 @@ export function getNextPositionValuesForIncreaseTrade(p: {
     isLong,
     showPnlInLeverage,
     minCollateralUsd,
+    userReferralInfo,
   } = p;
 
   const nextSizeUsd = existingPosition ? existingPosition.sizeInUsd.add(sizeDeltaUsd) : sizeDeltaUsd;
@@ -337,7 +343,7 @@ export function getNextPositionValuesForIncreaseTrade(p: {
     markPrice: entryPrice,
     minCollateralFactor: marketInfo.minCollateralFactor,
     minCollateralUsd,
-    closingFeeUsd: getPositionFee(marketInfo, sizeDeltaUsd),
+    closingFeeUsd: getPositionFee(marketInfo, sizeDeltaUsd, userReferralInfo).positionFeeUsd,
     maxPriceImpactFactor: marketInfo?.maxPositionImpactFactorForLiquidations,
     pendingBorrowingFeesUsd: BigNumber.from(0), // deducted on order
     pendingFundingFeesUsd: BigNumber.from(0), // deducted on order

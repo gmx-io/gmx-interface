@@ -1,12 +1,31 @@
-import { useMemo, useRef, useState } from "react";
 import { Trans, t } from "@lingui/macro";
-import { FiPlus, FiTwitter } from "react-icons/fi";
-import { useCopyToClipboard } from "react-use";
-import { IoWarningOutline } from "react-icons/io5";
+import Button from "components/Button/Button";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import Pagination from "components/Pagination/Pagination";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import Tooltip from "components/Tooltip/Tooltip";
+import { AVALANCHE, getExplorerUrl } from "config/chains";
+import { getNativeToken, getToken, getTokenBySymbol } from "config/tokens";
+import { ReferralCodeStats, ReferralsStatsData, RewardDistributionType } from "domain/referrals";
+import { useMarketsInfo } from "domain/synthetics/markets";
+import { useAffiliateRewards } from "domain/synthetics/referrals/useAffiliateRewards";
+import { getTotalClaimableAffiliateRewardsUsd } from "domain/synthetics/referrals/utils";
+import { BigNumber } from "ethers";
+import { formatDate } from "lib/dates";
+import { helperToast } from "lib/helperToast";
+import { shortenAddress } from "lib/legacy";
+import { bigNumberify, formatTokenAmount } from "lib/numbers";
+import { useMemo, useRef, useState } from "react";
 import { BiCopy, BiErrorCircle } from "react-icons/bi";
+import { FiPlus, FiTwitter } from "react-icons/fi";
+import { IoWarningOutline } from "react-icons/io5";
+import { useCopyToClipboard } from "react-use";
 import Card from "../Common/Card";
 import Modal from "../Modal/Modal";
-import { shortenAddress } from "lib/legacy";
+import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
+import { AffiliateCodeForm } from "./AddAffiliateCode";
+import "./AffiliatesStats.scss";
+import { ClaimAffiliatesModal } from "./ClaimAffiliatesModal/ClaimAffiliatesModal";
 import EmptyMessage from "./EmptyMessage";
 import InfoCard from "./InfoCard";
 import {
@@ -17,51 +36,57 @@ import {
   isRecentReferralCodeNotExpired,
   tierRebateInfo,
 } from "./referralsHelper";
-import { AffiliateCodeForm } from "./AddAffiliateCode";
-import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
-import { AVALANCHE, getExplorerUrl } from "config/chains";
-import { helperToast } from "lib/helperToast";
-import { bigNumberify, formatAmount } from "lib/numbers";
-import { getNativeToken, getToken } from "config/tokens";
-import { formatDate } from "lib/dates";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import Pagination from "components/Pagination/Pagination";
 import usePagination from "./usePagination";
-import Button from "components/Button/Button";
+
+type Props = {
+  chainId: number;
+  referralsData?: ReferralsStatsData;
+  handleCreateReferralCode: (code: string) => void;
+  setRecentlyAddedCodes: (codes: ReferralCodeStats[]) => void;
+  recentlyAddedCodes?: ReferralCodeStats[];
+};
 
 function AffiliatesStats({
-  referralsData,
-  handleCreateReferralCode,
   chainId,
-  setRecentlyAddedCodes,
+  referralsData,
   recentlyAddedCodes,
-}) {
+  handleCreateReferralCode,
+  setRecentlyAddedCodes,
+}: Props) {
   const [isAddReferralCodeModalOpen, setIsAddReferralCodeModalOpen] = useState(false);
-  const addNewModalRef = useRef(null);
+  const addNewModalRef = useRef<HTMLDivElement>(null);
 
+  const { marketsInfoData } = useMarketsInfo(chainId);
+  const { affiliateRewardsData } = useAffiliateRewards(chainId);
+
+  const esGmxAddress = getTokenBySymbol(chainId, "esGMX").address;
+
+  const [isClaiming, setIsClaiming] = useState(false);
   const [, copyToClipboard] = useCopyToClipboard();
   const open = () => setIsAddReferralCodeModalOpen(true);
   const close = () => setIsAddReferralCodeModalOpen(false);
 
-  const { cumulativeStats, referrerTotalStats, rebateDistributions, referrerTierInfo } = referralsData;
+  const { affiliateTotalStats, affiliateReferralCodesStats, affiliateDistributions, affiliateTierInfo } =
+    referralsData || {};
+
   const {
     currentPage: currentRebatePage,
     getCurrentData: getCurrentRebateData,
     setCurrentPage: setCurrentRebatePage,
     pageCount: rebatePageCount,
-  } = usePagination(rebateDistributions);
+  } = usePagination(affiliateDistributions);
 
   const currentRebateData = getCurrentRebateData();
-  const allReferralCodes = referrerTotalStats.map((c) => c.referralCode.trim());
+  const allReferralCodes = affiliateReferralCodesStats?.map((c) => c.referralCode.trim());
   const finalAffiliatesTotalStats = useMemo(
     () =>
-      recentlyAddedCodes.filter(isRecentReferralCodeNotExpired).reduce((acc, cv) => {
-        if (!allReferralCodes.includes(cv.referralCode)) {
+      recentlyAddedCodes?.filter(isRecentReferralCodeNotExpired).reduce((acc, cv) => {
+        if (!allReferralCodes?.includes(cv.referralCode)) {
           acc = acc.concat(cv);
         }
         return acc;
-      }, referrerTotalStats),
-    [allReferralCodes, referrerTotalStats, recentlyAddedCodes]
+      }, affiliateReferralCodesStats || []),
+    [allReferralCodes, affiliateReferralCodesStats, recentlyAddedCodes]
   );
 
   const {
@@ -72,29 +97,86 @@ function AffiliatesStats({
   } = usePagination(finalAffiliatesTotalStats);
 
   const currentAffiliatesData = getCurrentAffiliatesData();
-  const tierId = referrerTierInfo?.tierId;
+  const tierId = affiliateTierInfo?.tierId;
 
-  let referrerRebates = bigNumberify(0);
-  if (cumulativeStats && cumulativeStats.totalRebateUsd && cumulativeStats.discountUsd) {
-    referrerRebates = cumulativeStats.totalRebateUsd.sub(cumulativeStats.discountUsd);
+  const totalClaimableRewardsUsd = useMemo(() => {
+    if (!affiliateRewardsData || !marketsInfoData) {
+      return BigNumber.from(0);
+    }
+
+    return getTotalClaimableAffiliateRewardsUsd(marketsInfoData, affiliateRewardsData);
+  }, [affiliateRewardsData, marketsInfoData]);
+
+  let totalRebates = bigNumberify(0);
+  let totalRebatesV1 = bigNumberify(0);
+  let totalRebatesV2 = bigNumberify(0);
+  if (affiliateTotalStats && affiliateTotalStats.totalRebateUsd && affiliateTotalStats.discountUsd) {
+    totalRebates = affiliateTotalStats.totalRebateUsd.sub(affiliateTotalStats.discountUsd);
+    totalRebatesV1 = affiliateTotalStats.v1Data.totalRebateUsd.sub(affiliateTotalStats.v1Data.discountUsd);
+    totalRebatesV2 = affiliateTotalStats.v2Data.totalRebateUsd.sub(affiliateTotalStats.v2Data.discountUsd);
   }
+
   return (
     <div className="referral-body-container">
       <div className="referral-stats">
         <InfoCard
           label={t`Total Traders Referred`}
           tooltipText={t`Amount of traders you referred.`}
-          data={cumulativeStats?.registeredReferralsCount || "0"}
+          data={affiliateTotalStats?.registeredReferralsCount || "0"}
         />
         <InfoCard
           label={t`Total Trading Volume`}
           tooltipText={t`Volume traded by your referred traders.`}
-          data={getUSDValue(cumulativeStats?.volume)}
+          data={
+            <Tooltip
+              handle={getUSDValue(affiliateTotalStats?.volume)}
+              position="left-bottom"
+              renderContent={() => (
+                <>
+                  <StatsTooltipRow
+                    label={t`Volume on V1`}
+                    value={getUSDValue(affiliateTotalStats?.v1Data.volume)}
+                    showDollar={false}
+                  />
+                  <StatsTooltipRow
+                    label={t`Volume on V2`}
+                    value={getUSDValue(affiliateTotalStats?.v2Data.volume)}
+                    showDollar={false}
+                  />
+                </>
+              )}
+            />
+          }
         />
         <InfoCard
           label={t`Total Rebates`}
           tooltipText={t`Rebates earned by this account as an affiliate.`}
-          data={getUSDValue(referrerRebates, 4)}
+          data={
+            <Tooltip
+              handle={getUSDValue(totalRebates)}
+              position="left-bottom"
+              renderContent={() => (
+                <>
+                  <StatsTooltipRow label={t`Rebates on V1`} value={getUSDValue(totalRebatesV1)} showDollar={false} />
+                  <StatsTooltipRow label={t`Rebates on V2`} value={getUSDValue(totalRebatesV2)} showDollar={false} />
+                </>
+              )}
+            />
+          }
+        />
+        <InfoCard
+          label={t`Claimable Rewards`}
+          className="AffiliateStats-claimable-rewards-card"
+          data={
+            <div className="AffiliateStats-claimable-rewards-container">
+              {getUSDValue(totalClaimableRewardsUsd, 4)}
+              {totalClaimableRewardsUsd.gt(0) && (
+                <div onClick={() => setIsClaiming(true)} className="AffiliateStats-claim-button">
+                  Claim
+                </div>
+              )}
+            </div>
+          }
         />
       </div>
       <div className="list">
@@ -120,7 +202,7 @@ function AffiliatesStats({
               <p className="title">
                 <Trans>Referral Codes</Trans>{" "}
                 <span className="sub-title">
-                  {referrerTierInfo && t`Tier ${getTierIdDisplay(tierId)} (${tierRebateInfo[tierId]}% rebate)`}
+                  {affiliateTierInfo && t`Tier ${getTierIdDisplay(tierId)} (${tierRebateInfo[tierId]}% rebate)`}
                 </span>
               </p>
               <Button variant="clear" onClick={open}>
@@ -153,10 +235,6 @@ function AffiliatesStats({
               <tbody>
                 {currentAffiliatesData.map((stat, index) => {
                   const ownerOnOtherChain = stat?.ownerOnOtherChain;
-                  let referrerRebate = bigNumberify(0);
-                  if (stat && stat.totalRebateUsd && stat.discountUsd) {
-                    referrerRebate = stat.totalRebateUsd.sub(stat.discountUsd);
-                  }
                   return (
                     <tr key={index}>
                       <td data-label="Referral Code">
@@ -220,9 +298,47 @@ function AffiliatesStats({
                           )}
                         </div>
                       </td>
-                      <td data-label="Total Volume">{getUSDValue(stat.volume)}</td>
+                      <td data-label="Total Volume">
+                        <Tooltip
+                          handle={getUSDValue(stat.volume)}
+                          position="left-bottom"
+                          renderContent={() => (
+                            <>
+                              <StatsTooltipRow
+                                label={t`Volume on V1`}
+                                value={getUSDValue(stat?.v1Data.volume)}
+                                showDollar={false}
+                              />
+                              <StatsTooltipRow
+                                label={t`Volume on V2`}
+                                value={getUSDValue(stat?.v2Data.volume)}
+                                showDollar={false}
+                              />
+                            </>
+                          )}
+                        />
+                      </td>
                       <td data-label="Traders Referred">{stat.registeredReferralsCount}</td>
-                      <td data-label="Total Rebates">{getUSDValue(referrerRebate, 4)}</td>
+                      <td data-label="Total Rebates">
+                        <Tooltip
+                          handle={getUSDValue(stat.affiliateRebateUsd)}
+                          position="left-bottom"
+                          renderContent={() => (
+                            <>
+                              <StatsTooltipRow
+                                label={t`Rebates on V1`}
+                                value={getUSDValue(stat.v1Data.affiliateRebateUsd)}
+                                showDollar={false}
+                              />
+                              <StatsTooltipRow
+                                label={t`Rebates on V2`}
+                                value={getUSDValue(stat.v2Data.affiliateRebateUsd)}
+                                showDollar={false}
+                              />
+                            </>
+                          )}
+                        />
+                      </td>
                     </tr>
                   );
                 })}
@@ -247,6 +363,9 @@ function AffiliatesStats({
                       <Trans>Date</Trans>
                     </th>
                     <th className="table-head" scope="col">
+                      <Trans>Type</Trans>
+                    </th>
+                    <th className="table-head" scope="col">
                       <Trans>Amount</Trans>
                     </th>
                     <th className="table-head" scope="col">
@@ -256,20 +375,53 @@ function AffiliatesStats({
                 </thead>
                 <tbody>
                   {currentRebateData.map((rebate, index) => {
-                    let tokenInfo;
-                    try {
-                      tokenInfo = getToken(chainId, rebate.token);
-                    } catch {
-                      tokenInfo = getNativeToken(chainId);
+                    let rebateType = "-";
+
+                    if (rebate.typeId === RewardDistributionType.Rebate) {
+                      if (rebate.tokens[0] === esGmxAddress) {
+                        rebateType = t`V1 esGMX`;
+                      } else {
+                        rebateType = t`V1 AIRDROP`;
+                      }
+                    } else if (rebate.typeId === RewardDistributionType.Claim) {
+                      rebateType = t`V2 CLAIM`;
                     }
+
+                    const amountsByTokens = rebate.tokens.reduce((acc, tokenAddress, i) => {
+                      let token;
+                      try {
+                        token = getToken(chainId, tokenAddress);
+                      } catch {
+                        token = getNativeToken(chainId);
+                      }
+                      acc[token.address] = acc[token.address] || BigNumber.from(0);
+                      acc[token.address] = acc[token.address].add(rebate.amounts[i]);
+                      return acc;
+                    }, {} as { [address: string]: BigNumber });
+
                     const explorerURL = getExplorerUrl(chainId);
                     return (
                       <tr key={index}>
                         <td className="table-head" data-label="Date">
                           {formatDate(rebate.timestamp)}
                         </td>
+                        <td className="table-head" data-label="Type">
+                          {rebateType}
+                        </td>
                         <td className="table-head" data-label="Amount">
-                          {formatAmount(rebate.amount, tokenInfo.decimals, 6, true)} {tokenInfo.symbol}
+                          {Object.keys(amountsByTokens).map((tokenAddress) => {
+                            const token = getToken(chainId, tokenAddress);
+                            return (
+                              <>
+                                <div key={tokenAddress}>
+                                  {formatTokenAmount(amountsByTokens[tokenAddress], token.decimals, token.symbol, {
+                                    displayDecimals: 6,
+                                    useCommas: true,
+                                  })}
+                                </div>
+                              </>
+                            );
+                          })}
                         </td>
                         <td className="table-head" data-label="Transaction">
                           <ExternalLink href={explorerURL + `tx/${rebate.transactionHash}`}>
@@ -291,10 +443,12 @@ function AffiliatesStats({
         </div>
       ) : (
         <EmptyMessage
-          tooltipText={t`Rebates are airdropped weekly.`}
+          tooltipText={t`V1 rebates are airdropped weekly, V2 rebates are automatically applied as fee discounts on each trade.`}
           message={t`No rebates distribution history yet.`}
         />
       )}
+
+      {isClaiming && <ClaimAffiliatesModal onClose={() => setIsClaiming(false)} />}
     </div>
   );
 }
