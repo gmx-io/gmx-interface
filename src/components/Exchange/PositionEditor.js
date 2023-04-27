@@ -665,7 +665,7 @@ export default function PositionEditor(props) {
                       <FeesTooltip
                         executionFees={{
                           fee: minExecutionFee,
-                          feeUSD: minExecutionFeeUSD,
+                          feeUsd: minExecutionFeeUSD,
                         }}
                         depositFee={depositFeeUSD}
                       />

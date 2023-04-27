@@ -4,13 +4,13 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getConstant } from "config/chains";
-import { BigNumber, BigNumberish } from "ethers";
+import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
 import { formatAmount, formatAmountFree } from "lib/numbers";
 
 type Fee = { label: string; value: string };
-type ExecutionFee = { fee?: BigNumberish; feeUSD?: BigNumberish };
+type ExecutionFees = { fee?: BigNumber; feeUsd?: BigNumber };
 type FeeType = "open" | "close" | "swap" | "borrow" | "deposit" | "execution";
 
 function getFeeLabel(type: FeeType) {
@@ -55,9 +55,9 @@ function getFeesRows(isOpening: boolean, formattedFees: Record<string, string | 
   if (isOpening) {
     addFeeRow("swap", formattedFees?.swap);
     addFeeRow("open", formattedFees?.position);
-    addFeeRow("borrow", formattedFees?.funding);
+    addFeeRow("borrow", formattedFees?.fundingRate || formattedFees?.funding);
   } else {
-    addFeeRow("borrow", formattedFees?.funding);
+    addFeeRow("borrow", formattedFees?.fundingRate || formattedFees?.funding);
     addFeeRow("close", formattedFees?.position);
     addFeeRow("swap", formattedFees?.swap);
   }
@@ -68,21 +68,22 @@ function getFeesRows(isOpening: boolean, formattedFees: Record<string, string | 
   return rows.filter((row) => row.value);
 }
 
-function getTotalFees(fees: (BigNumberish | undefined)[]) {
+function getTotalFees(fees: (BigNumber | undefined)[]) {
   return fees.reduce((acc: BigNumber, fee) => {
-    if (fee instanceof BigNumber) {
-      return acc.add(fee);
+    if (!fee) {
+      return acc;
     }
-    return acc;
+    return acc.add(fee);
   }, BigNumber.from(0));
 }
 
 type Props = {
-  executionFees: ExecutionFee;
+  executionFees: ExecutionFees;
   positionFee?: BigNumber;
   depositFee?: BigNumber;
   swapFee?: BigNumber;
-  fundingFee?: BigNumber | string;
+  fundingFee?: BigNumber;
+  fundingRate?: string;
   isOpening?: boolean;
   titleText?: string;
 };
@@ -93,22 +94,24 @@ function FeesTooltip({
   swapFee,
   executionFees,
   depositFee,
+  fundingRate,
   isOpening = true,
   titleText = "",
 }: Props) {
   const { chainId } = useChainId();
   const executionFee = executionFees?.fee;
-  const executionFeeUSD = executionFees?.feeUSD;
+  const executionFeeUsd = executionFees?.feeUsd;
   const formattedFees = {
     swap: getFeesStr(swapFee),
     position: getFeesStr(positionFee),
     deposit: getFeesStr(depositFee),
-    execution: getExecutionFeeStr(chainId, executionFee, executionFeeUSD),
-    funding: fundingFee instanceof BigNumber ? getFeesStr(fundingFee) : fundingFee,
+    execution: getExecutionFeeStr(chainId, executionFee, executionFeeUsd),
+    funding: getFeesStr(fundingFee),
+    fundingRate,
   };
 
   const feesRows = getFeesRows(isOpening, formattedFees);
-  const totalFees = getTotalFees([executionFees?.feeUSD, swapFee, positionFee, depositFee, fundingFee]);
+  const totalFees = getTotalFees([executionFees?.feeUsd, swapFee, positionFee, depositFee, fundingFee]);
   return (
     <Tooltip
       position="right-top"

@@ -1786,16 +1786,20 @@ export default function SwapBox(props) {
     }
   }
 
-  function getFundingFee() {
-    return (
-      <>
-        {isLong && toTokenInfo && formatAmount(toTokenInfo.fundingRate, 4, 4)}
-        {isShort && shortCollateralToken && formatAmount(shortCollateralToken.fundingRate, 4, 4)}
-        {((isLong && toTokenInfo && toTokenInfo.fundingRate) ||
-          (isShort && shortCollateralToken && shortCollateralToken.fundingRate)) &&
-          "% / 1h"}
-      </>
-    );
+  function getFundingRate() {
+    let fundingRate = "";
+
+    if (isLong && toTokenInfo) {
+      fundingRate = formatAmount(toTokenInfo.fundingRate, 4, 4);
+    } else if (isShort && shortCollateralToken) {
+      fundingRate = formatAmount(shortCollateralToken.fundingRate, 4, 4);
+    }
+
+    if (fundingRate) {
+      fundingRate += "% / 1h";
+    }
+
+    return fundingRate;
   }
 
   function setFromValueToMaximumAvailable() {
@@ -2142,7 +2146,7 @@ export default function SwapBox(props) {
                       executionFees={
                         !isMarketOrder && {
                           fee: currentExecutionFee,
-                          feeUSD: currentExecutionFeeUsd,
+                          feeUsd: currentExecutionFeeUsd,
                         }
                       }
                     />
@@ -2276,10 +2280,10 @@ export default function SwapBox(props) {
 
                   {feesUsd && (
                     <FeesTooltip
-                      fundingFee={getFundingFee()}
+                      fundingRate={getFundingRate()}
                       executionFees={{
                         fee: currentExecutionFee,
-                        feeUSD: currentExecutionFeeUsd,
+                        feeUsd: currentExecutionFeeUsd,
                       }}
                       positionFee={positionFee}
                       swapFee={swapFees}
@@ -2563,7 +2567,7 @@ export default function SwapBox(props) {
           entryMarkPrice={entryMarkPrice}
           swapFees={swapFees}
           positionFee={positionFee}
-          fundingFee={getFundingFee()}
+          fundingRate={getFundingRate()}
         />
       )}
     </div>

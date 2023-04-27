@@ -121,7 +121,7 @@ export default function ConfirmationBox(props) {
     positionFee,
     swapFees,
     infoTokens,
-    fundingFee,
+    fundingRate,
   } = props;
 
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
@@ -705,10 +705,10 @@ export default function ConfirmationBox(props) {
           </ExchangeInfoRow>
           <ExchangeInfoRow label={t`Fees`}>
             <FeesTooltip
-              fundingFee={fundingFee}
+              fundingRate={fundingRate}
               executionFees={{
                 fee: currentExecutionFee,
-                feeUSD: currentExecutionFeeUsd,
+                feeUsd: currentExecutionFeeUsd,
               }}
               positionFee={positionFee}
               swapFee={swapFees}
@@ -765,7 +765,7 @@ export default function ConfirmationBox(props) {
     renderCollateralSpreadWarning,
     collateralSpreadInfo,
     showCollateralSpread,
-    fundingFee,
+    fundingRate,
   ]);
 
   const renderSwapSection = useCallback(() => {
@@ -814,7 +814,7 @@ export default function ConfirmationBox(props) {
             executionFees={
               !isMarketOrder && {
                 fee: currentExecutionFee,
-                feeUSD: currentExecutionFeeUsd,
+                feeUsd: currentExecutionFeeUsd,
               }
             }
             swapFee={feesUsd}
@@ -848,10 +848,8 @@ export default function ConfirmationBox(props) {
   ]);
   const submitButtonRef = useRef(null);
   useKey("Enter", () => {
-    if (submitButtonRef.current) {
-      submitButtonRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
-      onConfirmationClick();
-    }
+    submitButtonRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+    onConfirmationClick();
   });
 
   return (
