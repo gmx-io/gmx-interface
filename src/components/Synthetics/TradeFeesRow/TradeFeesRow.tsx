@@ -5,12 +5,12 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getToken } from "config/tokens";
 import { ExecutionFee, FeeItem, SwapFeeItem } from "domain/synthetics/fees";
-import { useChainId } from "lib/chains";
-import { formatDeltaUsd, formatPercentage, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
-import { ReactNode, useMemo } from "react";
 import { TradeFeesType } from "domain/synthetics/trade";
-import "./TradeFeesRow.scss";
 import { BigNumber } from "ethers";
+import { useChainId } from "lib/chains";
+import { formatDeltaUsd, formatPercentage, formatTokenAmountWithUsd } from "lib/numbers";
+import { ReactNode, useMemo } from "react";
+import "./TradeFeesRow.scss";
 
 type Props = {
   totalTradeFees?: FeeItem;
@@ -94,6 +94,14 @@ export function TradeFeesRow(p: Props) {
         }
       : undefined;
 
+    const feeDiscountRow = p.feeDiscountUsd
+      ? {
+          id: "feeDiscount",
+          label: t`Referral Discount`,
+          value: formatDeltaUsd(p.feeDiscountUsd),
+        }
+      : undefined;
+
     const borrowFeeRow = p.borrowFee?.deltaUsd?.abs().gt(0)
       ? {
           id: "borrowFee",
@@ -150,6 +158,7 @@ export function TradeFeesRow(p: Props) {
         swapPriceImpactRow,
         ...swapFeeRows,
         positionFeeRow,
+        feeDiscountRow,
         borrowFeeRow,
         fundingFeeRow,
         borrowFeeRateRow,
@@ -165,6 +174,7 @@ export function TradeFeesRow(p: Props) {
         borrowFeeRow,
         fundingFeeRow,
         positionFeeRow,
+        feeDiscountRow,
         ...swapFeeRows,
         executionFeeRow,
       ].filter(Boolean) as FeeRow[];
@@ -176,18 +186,15 @@ export function TradeFeesRow(p: Props) {
 
     return [];
   }, [
-    p.positionPriceImpact?.deltaUsd,
-    p.positionPriceImpact?.bps,
-    p.swapPriceImpact?.deltaUsd,
-    p.swapPriceImpact?.bps,
+    p.positionPriceImpact,
+    p.swapPriceImpact,
     p.swapFees,
     p.positionFee,
     p.feesType,
-    p.borrowFee?.deltaUsd,
-    p.borrowFee?.bps,
-    p.fundingFee?.deltaUsd,
-    p.fundingFee?.bps,
+    p.feeDiscountUsd,
+    p.borrowFee,
     p.borrowFeeRateStr,
+    p.fundingFee,
     p.fundingFeeRateStr,
     p.executionFee,
     chainId,
@@ -221,13 +228,6 @@ export function TradeFeesRow(p: Props) {
                       className="TradeFeesRow-fee-row"
                     />
                   ))}
-
-                  {p.feeDiscountUsd?.gt(0) && (
-                    <>
-                      <br />
-                      <Trans>Referral fee discount: {formatUsd(p.feeDiscountUsd)}.</Trans>
-                    </>
-                  )}
                 </div>
               )}
             />

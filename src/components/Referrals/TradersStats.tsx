@@ -1,28 +1,45 @@
-import { useRef, useState } from "react";
 import { Trans, t } from "@lingui/macro";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import Pagination from "components/Pagination/Pagination";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { getExplorerUrl } from "config/chains";
+import { getNativeToken, getToken } from "config/tokens";
+import { ReferralsStatsData } from "domain/referrals";
+import { BigNumber } from "ethers";
+import { formatDate } from "lib/dates";
+import { shortenAddress } from "lib/legacy";
+import { formatTokenAmount } from "lib/numbers";
+import { useRef, useState } from "react";
 import { BiEditAlt } from "react-icons/bi";
 import Card from "../Common/Card";
 import Modal from "../Modal/Modal";
 import Tooltip from "../Tooltip/Tooltip";
-import { shortenAddress } from "lib/legacy";
 import EmptyMessage from "./EmptyMessage";
 import InfoCard from "./InfoCard";
-import { getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./referralsHelper";
 import { ReferralCodeForm } from "./JoinReferralCode";
-import { getExplorerUrl } from "config/chains";
-import { formatAmount } from "lib/numbers";
-import { getNativeToken, getToken } from "config/tokens";
-import { formatDate } from "lib/dates";
-import ExternalLink from "components/ExternalLink/ExternalLink";
+import { getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./referralsHelper";
 import usePagination from "./usePagination";
-import Pagination from "components/Pagination/Pagination";
 
-function TradersStats({ referralsData, traderTier, chainId, userReferralCodeString, setPendingTxns, pendingTxns }) {
+type Props = {
+  referralsData?: ReferralsStatsData;
+  traderTier?: BigNumber;
+  chainId: number;
+  userReferralCodeString?: string;
+  setPendingTxns: (txns: string[]) => void;
+  pendingTxns: string[];
+};
+
+function TradersStats({
+  referralsData,
+  traderTier,
+  chainId,
+  userReferralCodeString,
+  setPendingTxns,
+  pendingTxns,
+}: Props) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const editModalRef = useRef(null);
-  const { getCurrentData, currentPage, setCurrentPage, pageCount } = usePagination(
-    referralsData?.discountDistributions
-  );
+  const editModalRef = useRef<HTMLDivElement>(null);
+  const { getCurrentData, currentPage, setCurrentPage, pageCount } = usePagination(referralsData?.traderDistributions);
 
   const currentDiscountDistributions = getCurrentData();
 
@@ -34,12 +51,50 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
         <InfoCard
           label={t`Total Trading Volume`}
           tooltipText={t`Volume traded by this account with an active referral code.`}
-          data={getUSDValue(referralsData?.referralTotalStats?.volume)}
+          data={
+            <Tooltip
+              handle={getUSDValue(referralsData?.traderReferralTotalStats?.volume)}
+              position="left-bottom"
+              renderContent={() => (
+                <>
+                  <StatsTooltipRow
+                    label={t`Volume on V1`}
+                    value={getUSDValue(referralsData?.traderReferralTotalStats?.v1Data.volume)}
+                    showDollar={false}
+                  />
+                  <StatsTooltipRow
+                    label={t`Volume on V2`}
+                    value={getUSDValue(referralsData?.traderReferralTotalStats?.v2Data.volume)}
+                    showDollar={false}
+                  />
+                </>
+              )}
+            />
+          }
         />
         <InfoCard
           label={t`Total Rebates`}
           tooltipText={t`Rebates earned by this account as a trader.`}
-          data={getUSDValue(referralsData?.referralTotalStats?.discountUsd, 4)}
+          data={
+            <Tooltip
+              handle={getUSDValue(referralsData?.traderReferralTotalStats?.discountUsd)}
+              position="left-bottom"
+              renderContent={() => (
+                <>
+                  <StatsTooltipRow
+                    label={t`Rebates on V1`}
+                    value={getUSDValue(referralsData?.traderReferralTotalStats?.v1Data.discountUsd)}
+                    showDollar={false}
+                  />
+                  <StatsTooltipRow
+                    label={t`Rebates on V2`}
+                    value={getUSDValue(referralsData?.traderReferralTotalStats?.v2Data.discountUsd)}
+                    showDollar={false}
+                  />
+                </>
+              )}
+            />
+          }
         />
         <InfoCard
           label={t`Active Referral Code`}
@@ -49,7 +104,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                 <span>{userReferralCodeString}</span>
                 <BiEditAlt onClick={open} />
               </div>
-              {traderTier && (
+              {traderTier ? (
                 <div className="tier">
                   <Tooltip
                     handle={t`Tier ${getTierIdDisplay(traderTier)} (${tierDiscountInfo[traderTier]}% discount)`}
@@ -64,7 +119,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                     )}
                   />
                 </div>
-              )}
+              ) : null}
             </div>
           }
         />
@@ -112,19 +167,37 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                 </thead>
                 <tbody>
                   {currentDiscountDistributions.map((rebate, index) => {
-                    let tokenInfo;
-                    try {
-                      tokenInfo = getToken(chainId, rebate.token);
-                    } catch {
-                      tokenInfo = getNativeToken(chainId);
-                    }
+                    const amountsByTokens = rebate.tokens.reduce((acc, tokenAddress, i) => {
+                      let token;
+                      try {
+                        token = getToken(chainId, tokenAddress);
+                      } catch {
+                        token = getNativeToken(chainId);
+                      }
+                      acc[token.address] = acc[token.address] || BigNumber.from(0);
+                      acc[token.address] = acc[token.address].add(rebate.amounts[i]);
+                      return acc;
+                    }, {} as { [address: string]: BigNumber });
+
                     const explorerURL = getExplorerUrl(chainId);
                     return (
                       <tr key={index}>
                         <td data-label="Date">{formatDate(rebate.timestamp)}</td>
                         <td data-label="Type">V1 AIRDROP</td>
                         <td data-label="Amount">
-                          {formatAmount(rebate.amount, tokenInfo.decimals, 6, true)} {tokenInfo.symbol}
+                          {Object.keys(amountsByTokens).map((tokenAddress) => {
+                            const token = getToken(chainId, tokenAddress);
+                            return (
+                              <>
+                                <div key={tokenAddress}>
+                                  {formatTokenAmount(amountsByTokens[tokenAddress], token.decimals, token.symbol, {
+                                    displayDecimals: 6,
+                                    useCommas: true,
+                                  })}
+                                </div>
+                              </>
+                            );
+                          })}
                         </td>
                         <td data-label="Transaction">
                           <ExternalLink href={explorerURL + `tx/${rebate.transactionHash}`}>

@@ -102,6 +102,16 @@ export const getSampleReferrarStat = (code = "", ownerOnOtherNetwork = "", accou
     trades: 0,
     volume: bigNumberify(0),
     time: Date.now(),
+    v1Data: {
+      volume: bigNumberify(0),
+      totalRebateUsd: bigNumberify(0),
+      discountUsd: bigNumberify(0),
+    },
+    v2Data: {
+      volume: bigNumberify(0),
+      totalRebateUsd: bigNumberify(0),
+      discountUsd: bigNumberify(0),
+    },
     ownerOnOtherChain: {
       code: encodeReferralCode(code),
       codeString: code,

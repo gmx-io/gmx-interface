@@ -176,6 +176,7 @@
 }
 
 .info-card {
+  min-height: 12rem;
   background: var(--dark-blue-bg);
   border: 1px solid #1e2136;
   border-radius: 0.4rem;
@@ -183,7 +184,7 @@
   justify-content: center;
   align-items: center;
 }
-.info-card .label {
+.info-card .info-card-label {
   font-size: var(--font-md);
   line-height: 2.1rem;
   font-weight: normal;
@@ -192,7 +193,7 @@
   margin-bottom: 1.5rem;
   text-align: center;
 }
-.info-card .data {
+.info-card .info-card-data {
   font-size: var(--font-lg);
   font-weight: normal;
   text-align: center;

@@ -13,7 +13,7 @@ import {
   useReferralsData,
   registerReferralCode,
   useCodeOwner,
-  useReferrerTier,
+  useAffiliateTier,
   useUserReferralCode,
 } from "domain/referrals/hooks";
 import JoinReferralCode from "components/Referrals/JoinReferralCode";
@@ -27,6 +27,7 @@ import { REFERRALS_SELECTED_TAB_KEY } from "config/localStorage";
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getIcon } from "config/icons";
+import { ReferralCodeStats } from "domain/referrals";
 
 const TRADERS = "Traders";
 const AFFILIATES = "Affiliates";
@@ -34,7 +35,7 @@ const TAB_OPTIONS = [TRADERS, AFFILIATES];
 
 function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   const { active, account: walletAccount, library } = useWeb3React();
-  const { account: queryAccount } = useParams();
+  const { account: queryAccount } = useParams<{ account?: string }>();
   let account;
   if (queryAccount && ethers.utils.isAddress(queryAccount)) {
     account = ethers.utils.getAddress(queryAccount);
@@ -43,14 +44,21 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   }
   const { chainId } = useChainId();
   const [activeTab, setActiveTab] = useLocalStorage(REFERRALS_SELECTED_TAB_KEY, TRADERS);
-  const { data: referralsData, loading } = useReferralsData(chainId, account);
-  const [recentlyAddedCodes, setRecentlyAddedCodes] = useLocalStorageSerializeKey([chainId, "REFERRAL", account], [], {
-    deserializer: deserializeSampleStats,
-  });
+  const { referralsData, loading } = useReferralsData(chainId, account);
+
+  const [recentlyAddedCodes, setRecentlyAddedCodes] = useLocalStorageSerializeKey<ReferralCodeStats[]>(
+    [chainId, "REFERRAL", account],
+    [],
+    {
+      raw: false,
+      deserializer: deserializeSampleStats as any,
+      serializer: (value) => JSON.stringify(value),
+    }
+  );
 
   const { userReferralCode, userReferralCodeString } = useUserReferralCode(library, chainId, account);
   const { codeOwner } = useCodeOwner(library, chainId, account, userReferralCode);
-  const { referrerTier: traderTier } = useReferrerTier(library, chainId, codeOwner);
+  const { affiliateTier: traderTier } = useAffiliateTier(library, chainId, codeOwner);
   const networkIcon = getIcon(chainId, "network");
 
   function handleCreateReferralCode(referralCode) {
@@ -63,7 +71,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
 
   function renderAffiliatesTab() {
     const isReferralCodeAvailable =
-      referralsData?.codes?.length > 0 || recentlyAddedCodes?.filter(isRecentReferralCodeNotExpired).length > 0;
+      referralsData?.codes?.length || recentlyAddedCodes?.filter(isRecentReferralCodeNotExpired).length;
     if (loading) return <Loader />;
     if (isReferralCodeAvailable) {
       return (
