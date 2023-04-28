@@ -319,14 +319,7 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
         const [_, borrowingFactorPerSecondForLongs, borrowingFactorPerSecondForShorts, funding] =
           readerValues.marketInfo.returnValues;
 
-        const [
-          longsPayShorts,
-          fundingFactorPerSecond,
-          fundingAmountPerSize_LongCollateral_LongPosition,
-          fundingAmountPerSize_LongCollateral_ShortPosition,
-          fundingAmountPerSize_ShortCollateral_LongPosition,
-          fundingAmountPerSize_ShortCollateral_ShortPosition,
-        ] = funding;
+        const [longsPayShorts, fundingFactorPerSecond] = funding;
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [_priceMin, poolValueInfoMin] = readerValues.marketTokenPriceMin.returnValues;
@@ -416,18 +409,6 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
           borrowingFactorPerSecondForShorts,
           fundingFactorPerSecond: bigNumberify(fundingFactorPerSecond)!,
           longsPayShorts,
-          fundingAmountPerSize_LongCollateral_LongPosition: bigNumberify(
-            fundingAmountPerSize_LongCollateral_LongPosition
-          )!,
-          fundingAmountPerSize_LongCollateral_ShortPosition: bigNumberify(
-            fundingAmountPerSize_LongCollateral_ShortPosition
-          )!,
-          fundingAmountPerSize_ShortCollateral_LongPosition: bigNumberify(
-            fundingAmountPerSize_ShortCollateral_LongPosition
-          )!,
-          fundingAmountPerSize_ShortCollateral_ShortPosition: bigNumberify(
-            fundingAmountPerSize_ShortCollateral_ShortPosition
-          )!,
         };
 
         return acc;

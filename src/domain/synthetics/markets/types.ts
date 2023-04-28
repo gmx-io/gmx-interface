@@ -97,10 +97,6 @@ export type MarketInfo = Market & {
 
   fundingFactorPerSecond: BigNumber;
   longsPayShorts: boolean;
-  fundingAmountPerSize_LongCollateral_LongPosition: BigNumber;
-  fundingAmountPerSize_LongCollateral_ShortPosition: BigNumber;
-  fundingAmountPerSize_ShortCollateral_LongPosition: BigNumber;
-  fundingAmountPerSize_ShortCollateral_ShortPosition: BigNumber;
 };
 
 export type MarketsData = {
