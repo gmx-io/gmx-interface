@@ -186,7 +186,7 @@ export function PositionSeller(p: Props) {
         swapPriceImpactDeltaUsd: swapAmounts?.swapPathStats?.totalSwapPriceImpactDeltaUsd || BigNumber.from(0),
         positionPriceImpactDeltaUsd: decreaseAmounts.positionPriceImpactDeltaUsd,
         borrowingFeeUsd: position.pendingBorrowingFeesUsd,
-        fundingFeeDeltaUsd: position.pendingFundingFeesUsd,
+        fundingFeeUsd: position.pendingFundingFeesUsd,
         feeDiscountUsd: decreaseAmounts.feeDiscountUsd,
       }),
       executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),

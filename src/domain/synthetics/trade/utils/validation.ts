@@ -85,7 +85,7 @@ export function getSwapError(p: {
     return [t`Couldn't find a swap path with enough liquidity`];
   }
 
-  if (!fees?.totalFees || (fees.totalFees.deltaUsd.lt(0) && fees.totalFees.deltaUsd.abs().gt(fromUsd || 0))) {
+  if (!fees?.payTotalFees || (fees.payTotalFees.deltaUsd.lt(0) && fees.payTotalFees.deltaUsd.abs().gt(fromUsd || 0))) {
     return [t`Fees exceed Pay amount`];
   }
 
@@ -165,7 +165,7 @@ export function getIncreaseError(p: {
     return [t`Select a collateral`];
   }
 
-  if (!initialCollateralAmount?.gt(0) || !initialCollateralUsd?.gt(0) || !sizeDeltaUsd || !fees?.totalFees) {
+  if (!initialCollateralAmount?.gt(0) || !initialCollateralUsd?.gt(0) || !sizeDeltaUsd || !fees?.payTotalFees) {
     return [t`Enter an amount`];
   }
 
@@ -185,7 +185,7 @@ export function getIncreaseError(p: {
     }
   }
 
-  if (fees.totalFees.deltaUsd.lt(0) && fees?.totalFees?.deltaUsd.abs().gt(initialCollateralUsd || 0)) {
+  if (fees.payTotalFees?.deltaUsd.lt(0) && fees?.payTotalFees?.deltaUsd.abs().gt(initialCollateralUsd || 0)) {
     return [t`Fees exceed amount`];
   }
 

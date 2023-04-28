@@ -160,6 +160,7 @@ export type TradeFeesType = "swap" | "increase" | "decrease" | "edit";
 
 export type TradeFees = {
   totalFees?: FeeItem;
+  payTotalFees?: FeeItem;
   swapFees?: SwapFeeItem[];
   positionFee?: FeeItem;
   swapPriceImpact?: FeeItem;
