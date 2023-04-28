@@ -2498,9 +2498,10 @@ msgstr "Comprar Seguro"
 msgid "Read more"
 msgstr "Leer más"
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
-#~ msgid "Rebates"
-#~ msgstr ""
+msgid "Rebates"
+msgstr ""
 
 #: src/components/Referrals/TradersStats.js
 msgid "Rebates Distribution History"
@@ -3332,12 +3333,18 @@ msgid "Traders"
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.js
 msgid "Traders Referred"
 msgstr "Traders Referidos"
 
 #: src/pages/Exchange/Exchange.js
 msgid "Trades"
 msgstr "Operaciones"
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Trading Volume"
+msgstr ""
 
 #: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"

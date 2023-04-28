@@ -2498,9 +2498,10 @@ msgstr "购买保险"
 msgid "Read more"
 msgstr "了解更多"
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
-#~ msgid "Rebates"
-#~ msgstr ""
+msgid "Rebates"
+msgstr ""
 
 #: src/components/Referrals/TradersStats.js
 msgid "Rebates Distribution History"
@@ -3332,12 +3333,18 @@ msgid "Traders"
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.js
 msgid "Traders Referred"
 msgstr "推荐的交易商"
 
 #: src/pages/Exchange/Exchange.js
 msgid "Trades"
 msgstr "交易"
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Trading Volume"
+msgstr ""
 
 #: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"

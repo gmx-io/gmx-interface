@@ -3,18 +3,32 @@ import Tooltip from "../Tooltip/Tooltip";
 import StatsTooltip from "components/StatsTooltip/StatsTooltip";
 import { getUSDValue } from "./referralsHelper";
 import { useChainId } from "lib/chains";
+import { ReactNode } from "react";
+
+type Props = {
+  title: string[];
+  data: any;
+  dataKeys: Array<string>;
+  totalDataKey: string;
+  showDollar?: boolean;
+  shouldFormat?: boolean;
+  tooltipTitle?: string;
+  tooltipPosition?: string;
+  children?: ReactNode;
+};
 
 function ReferralInfoCard({
-  label,
+  title,
   data,
-  tooltipText,
   dataKeys = [],
   totalDataKey,
   showDollar = true,
   shouldFormat = true,
-  toolTipPosition = "left-bottom",
+  tooltipPosition = "left-bottom",
+  tooltipTitle,
   children,
-}) {
+}: Props) {
+  const [label, labelTooltipText] = title;
   const [parentKey, childKey] = dataKeys;
   const { chainId } = useChainId();
   const arbitrumData = data?.[ARBITRUM];
@@ -26,8 +40,8 @@ function ReferralInfoCard({
     <div className="info-card">
       <div className="card-details">
         <h3 className="card-label">
-          {tooltipText ? (
-            <Tooltip handle={label} position={toolTipPosition} renderContent={() => tooltipText} />
+          {labelTooltipText ? (
+            <Tooltip handle={label} position={tooltipPosition} renderContent={() => labelTooltipText} />
           ) : (
             label
           )}
@@ -44,7 +58,7 @@ function ReferralInfoCard({
               }
               renderContent={() => (
                 <StatsTooltip
-                  title={label}
+                  title={tooltipTitle ?? ""}
                   showDollar={showDollar}
                   shouldFormat={shouldFormat}
                   arbitrumValue={arbitrumData?.[parentKey]?.[childKey] || "0"}
