@@ -1026,24 +1026,6 @@ table.Exchange-list-small td {
   }
 }
 
-@media (max-width: 800px) {
-  .Useful-links-swapbox {
-    display: none;
-  }
-  .Exchange-swap-box {
-    grid-template-columns: 1fr;
-  }
-  .Useful-links-exchange {
-    display: block;
-  }
-}
-
-@media (max-width: 750px) {
-  .Exchange-list.small {
-    grid-template-columns: 1fr;
-  }
-}
-
 @media (max-width: 700px) {
   .ExchangeChart-top-inner {
     grid-template-columns: auto auto auto;
@@ -1065,6 +1047,18 @@ table.Exchange-list-small td {
 
   .Exchange {
     padding-top: 1.5rem !important;
+  }
+  .Useful-links-swapbox {
+    display: none;
+  }
+  .Exchange-swap-box {
+    grid-template-columns: 1fr;
+  }
+  .Useful-links-exchange {
+    display: block;
+  }
+  .Exchange-list.small {
+    grid-template-columns: 1fr;
   }
 }
 
