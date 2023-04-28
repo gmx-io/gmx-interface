@@ -192,7 +192,7 @@ export function mockFeeConfigsData(marketsKeys: string[], overrides: { [marketKe
       borrowingFactorPerSecondForLongs: BigNumber.from(0),
       borrowingFactorPerSecondForShorts: BigNumber.from(0),
 
-      fundingPerSecond: BigNumber.from(0),
+      fundingFactorPerSecond: BigNumber.from(0),
       longsPayShorts: false,
       fundingAmountPerSize_LongCollateral_LongPosition: BigNumber.from(0),
       fundingAmountPerSize_LongCollateral_ShortPosition: BigNumber.from(0),

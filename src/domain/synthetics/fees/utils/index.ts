@@ -31,31 +31,27 @@ export function getPositionFee(
   };
 }
 
-export function getFundingFeeFactor(marketInfo: MarketInfo, isLong: boolean, periodInSeconds: number) {
-  const { fundingPerSecond, longsPayShorts } = marketInfo;
+export function getFundingFactorPerPeriod(marketInfo: MarketInfo, isLong: boolean, periodInSeconds: number) {
+  const { fundingFactorPerSecond, longsPayShorts, longInterestUsd, shortInterestUsd } = marketInfo;
 
-  const isPositive = isLong ? longsPayShorts : !longsPayShorts;
+  const isLargerSide = isLong ? longsPayShorts : !longsPayShorts;
 
-  return fundingPerSecond.mul(isPositive ? 1 : -1).mul(periodInSeconds || 1);
-}
+  let factorPerSecond;
 
-export function getFundingApr(marketInfo: MarketInfo, isLong: boolean, periodInSeconds: number) {
-  const fundingFactor = getFundingFeeFactor(marketInfo, isLong, periodInSeconds);
+  if (isLargerSide) {
+    factorPerSecond = fundingFactorPerSecond.mul(-1);
+  } else {
+    const largerInterestUsd = longsPayShorts ? longInterestUsd : shortInterestUsd;
+    const smallerInterestUsd = longsPayShorts ? shortInterestUsd : longInterestUsd;
 
-  const usdImbalance = marketInfo.longInterestUsd.sub(marketInfo.shortInterestUsd).abs();
-  const fundingUsd = applyFactor(usdImbalance, fundingFactor);
+    const ratio = smallerInterestUsd.gt(0)
+      ? largerInterestUsd.mul(PRECISION).div(smallerInterestUsd)
+      : BigNumber.from(0);
 
-  if (fundingUsd.eq(0)) {
-    return BigNumber.from(0);
+    factorPerSecond = applyFactor(ratio, fundingFactorPerSecond);
   }
 
-  if (isLong && marketInfo.longInterestUsd.gt(0)) {
-    return fundingUsd.mul(PRECISION).div(marketInfo.longInterestUsd).mul(100);
-  } else if (!isLong && marketInfo.shortInterestUsd.gt(0)) {
-    return fundingUsd.mul(PRECISION).div(marketInfo.shortInterestUsd).mul(100);
-  }
-
-  return BigNumber.from(0);
+  return factorPerSecond.mul(periodInSeconds);
 }
 
 export function getFundingFeeRateUsd(
@@ -64,12 +60,12 @@ export function getFundingFeeRateUsd(
   sizeInUsd: BigNumber,
   periodInSeconds: number
 ) {
-  const factor = getFundingFeeFactor(marketInfo, isLong, periodInSeconds);
+  const factor = getFundingFactorPerPeriod(marketInfo, isLong, periodInSeconds);
 
   return applyFactor(sizeInUsd, factor);
 }
 
-export function getBorrowingFeeFactor(marketInfo: MarketInfo, isLong: boolean, periodInSeconds: number) {
+export function getBorrowingFactorPerPeriod(marketInfo: MarketInfo, isLong: boolean, periodInSeconds: number) {
   const factorPerSecond = isLong
     ? marketInfo.borrowingFactorPerSecondForLongs
     : marketInfo.borrowingFactorPerSecondForShorts;
@@ -83,7 +79,7 @@ export function getBorrowingFeeRateUsd(
   sizeInUsd: BigNumber,
   periodInSeconds: number
 ) {
-  const factor = getBorrowingFeeFactor(marketInfo, isLong, periodInSeconds);
+  const factor = getBorrowingFactorPerPeriod(marketInfo, isLong, periodInSeconds);
 
   return applyFactor(sizeInUsd, factor);
 }

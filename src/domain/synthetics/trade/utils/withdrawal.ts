@@ -1,4 +1,4 @@
-import { MarketInfo, getPoolUsd } from "domain/synthetics/markets";
+import { MarketInfo, getPoolUsdWithoutPnl } from "domain/synthetics/markets";
 import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { applyFactor } from "lib/numbers";
@@ -9,8 +9,8 @@ export function getNextWithdrawalAmountsByMarketToken(p: {
   marketToken: TokenData;
   marketTokenAmount: BigNumber;
 }): WithdrawalAmounts | undefined {
-  const longPoolUsd = getPoolUsd(p.marketInfo, true, "maxPrice");
-  const shortPoolUsd = getPoolUsd(p.marketInfo, false, "maxPrice");
+  const longPoolUsd = getPoolUsdWithoutPnl(p.marketInfo, true, "maxPrice");
+  const shortPoolUsd = getPoolUsdWithoutPnl(p.marketInfo, false, "maxPrice");
   const { longToken, shortToken } = p.marketInfo;
 
   if (!longPoolUsd || !shortPoolUsd || !p.marketToken.prices || !longToken.prices || !shortToken.prices) {
@@ -56,9 +56,9 @@ export function getNextWithdrawalAmountsByCollaterals(p: {
   longTokenAmount?: BigNumber;
   shortTokenAmount?: BigNumber;
 }): WithdrawalAmounts | undefined {
-  const longPoolUsd = getPoolUsd(p.marketInfo, true, "maxPrice");
+  const longPoolUsd = getPoolUsdWithoutPnl(p.marketInfo, true, "maxPrice");
 
-  const shortPoolUsd = getPoolUsd(p.marketInfo, false, "maxPrice");
+  const shortPoolUsd = getPoolUsdWithoutPnl(p.marketInfo, false, "maxPrice");
 
   const { longToken, shortToken } = p.marketInfo;
 

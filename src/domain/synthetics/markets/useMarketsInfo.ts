@@ -36,6 +36,7 @@ import { useAvailableTokensData } from "../tokens";
 import { MarketsInfoData } from "./types";
 import { useMarkets } from "./useMarkets";
 import { getContractMarketPrices } from "./utils";
+import { convertTokenAddress } from "config/tokens";
 
 export type MarketsInfoResult = {
   marketsInfoData?: MarketsInfoData;
@@ -320,7 +321,7 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
 
         const [
           longsPayShorts,
-          fundingPerSecond,
+          fundingFactorPerSecond,
           fundingAmountPerSize_LongCollateral_LongPosition,
           fundingAmountPerSize_LongCollateral_ShortPosition,
           fundingAmountPerSize_ShortCollateral_LongPosition,
@@ -354,7 +355,7 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
         const market = getByKey(marketsData, marketAddress)!;
         const longToken = getByKey(tokensData!, market.longTokenAddress)!;
         const shortToken = getByKey(tokensData!, market.shortTokenAddress)!;
-        const indexToken = getByKey(tokensData!, market.indexTokenAddress)!;
+        const indexToken = getByKey(tokensData!, convertTokenAddress(chainId, market.indexTokenAddress, "native"))!;
 
         acc[marketAddress] = {
           ...market,
@@ -413,7 +414,7 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
 
           borrowingFactorPerSecondForLongs,
           borrowingFactorPerSecondForShorts,
-          fundingPerSecond: bigNumberify(fundingPerSecond)!,
+          fundingFactorPerSecond: bigNumberify(fundingFactorPerSecond)!,
           longsPayShorts,
           fundingAmountPerSize_LongCollateral_LongPosition: bigNumberify(
             fundingAmountPerSize_LongCollateral_LongPosition

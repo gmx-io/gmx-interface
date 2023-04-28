@@ -19,7 +19,7 @@ export function GmFees(p: Props) {
 
   return (
     <ExchangeInfoRow
-      label={<Trans>Fees and price impact</Trans>}
+      label={<Trans>Fees and Price Impact</Trans>}
       value={
         <>
           {!p.totalFees?.deltaUsd && "-"}
@@ -33,7 +33,7 @@ export function GmFees(p: Props) {
                   {p.swapPriceImpact?.deltaUsd.abs().gt(0) && (
                     <StatsTooltipRow
                       className="GmFees-fee-row"
-                      label={t`Swap price impact`}
+                      label={t`Swap Price Impact`}
                       value={formatDeltaUsd(p.swapPriceImpact.deltaUsd, p.swapPriceImpact.bps)!}
                       showDollar={false}
                     />

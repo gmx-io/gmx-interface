@@ -1,4 +1,4 @@
-import { MarketInfo, getCappedPoolPnl, getPoolUsd } from "domain/synthetics/markets";
+import { MarketInfo, getCappedPoolPnl, getPoolUsdWithoutPnl } from "domain/synthetics/markets";
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";
@@ -73,7 +73,7 @@ export function getPositionPnlUsd(p: {
   }
 
   const poolPnl = isLong ? p.marketInfo.pnlLongMax : p.marketInfo.pnlShortMax;
-  const poolUsd = getPoolUsd(marketInfo, isLong, "minPrice");
+  const poolUsd = getPoolUsdWithoutPnl(marketInfo, isLong, "minPrice");
 
   const cappedPnl = getCappedPoolPnl({
     marketInfo,

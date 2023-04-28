@@ -1349,7 +1349,7 @@ export function TradeBox(p: Props) {
       </div>
 
       {isSwap && <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />}
-      {isPosition && <MarketCard isLong={isLong} marketAddress={marketAddress} />}
+      {isPosition && <MarketCard isLong={isLong} marketInfo={marketInfo} allowedSlippage={allowedSlippage} />}
       {account && <ClaimableCard onClaimClick={() => setIsClaiming(true)} />}
 
       {stage === "confirmation" && (

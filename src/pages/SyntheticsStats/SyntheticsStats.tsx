@@ -1,13 +1,14 @@
 import { useChainId } from "lib/chains";
-import { PRECISION } from "lib/legacy";
+import { CHART_PERIODS, PRECISION } from "lib/legacy";
 
 import { BigNumber, BigNumberish } from "ethers";
 import { formatAmount, formatUsd } from "lib/numbers";
 
+import cx from "classnames";
 import { ShareBar } from "components/ShareBar/ShareBar";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
-import { getBorrowingFeeFactor, getFundingApr } from "domain/synthetics/fees";
+import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
 import { useVirtualInventory } from "domain/synthetics/fees/useVirtualInventory";
 import {
   getMarketIndexName,
@@ -17,7 +18,6 @@ import {
   useMarketsInfo,
 } from "domain/synthetics/markets";
 import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
-import cx from "classnames";
 import "./SyntheticsStats.scss";
 
 function formatAmountHuman(amount: BigNumberish | undefined, tokenDecimals: number) {
@@ -117,11 +117,11 @@ export function SyntheticsStats() {
             const reservedUsdShort = getReservedUsd(market, false);
             const maxReservedUsdShort = getMaxReservedUsd(market, false);
 
-            const borrowingRateLong = getBorrowingFeeFactor(market, true, 60 * 60);
-            const borrowingRateShort = getBorrowingFeeFactor(market, false, 60 * 60);
+            const borrowingRateLong = getBorrowingFactorPerPeriod(market, true, 60 * 60);
+            const borrowingRateShort = getBorrowingFactorPerPeriod(market, false, 60 * 60);
 
-            const fundingAprLong = getFundingApr(market, true, 60 * 60);
-            const fundingAprShort = getFundingApr(market, false, 60 * 60);
+            const fundingAprLong = getFundingFactorPerPeriod(market, true, CHART_PERIODS["1h"]).mul(100);
+            const fundingAprShort = getFundingFactorPerPeriod(market, false, CHART_PERIODS["1h"]).mul(100);
 
             return (
               <tr key={market.marketTokenAddress}>

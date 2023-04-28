@@ -54,7 +54,7 @@ export function SwapCard(p: Props) {
         <ExchangeInfoRow label={t`${toToken?.symbol} Price`} value={formatUsd(toToken?.prices?.maxPrice) || "..."} />
 
         <ExchangeInfoRow
-          label={t`Available liquidity`}
+          label={t`Available Liquidity`}
           value={
             <Tooltip
               handle={formatUsd(maxLiquidityUsd) || "..."}

@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 import { CardRow } from "components/CardRow/CardRow";
 import { getIcon } from "config/icons";
-import { MarketInfo, getPoolUsd } from "domain/synthetics/markets";
+import { MarketInfo, getPoolUsdWithoutPnl } from "domain/synthetics/markets";
 import { TokenData, convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { formatAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
@@ -24,17 +24,15 @@ export function MarketStats(p: Props) {
 
   const marketPrice = marketToken?.prices?.maxPrice;
   const marketBalance = marketToken?.balance;
-  const marketBalanceUsd =
-    marketBalance && marketPrice ? convertToUsd(marketBalance, marketToken.decimals, marketPrice) : undefined;
+  const marketBalanceUsd = convertToUsd(marketBalance, marketToken?.decimals, marketPrice);
 
   const marketTotalSupply = marketToken?.totalSupply;
-  const marketTotalSupplyUsd =
-    marketTotalSupply && marketPrice ? convertToUsd(marketTotalSupply, marketToken.decimals, marketPrice) : undefined;
+  const marketTotalSupplyUsd = convertToUsd(marketTotalSupply, marketToken?.decimals, marketPrice);
 
   const { longToken, shortToken, longPoolAmount, shortPoolAmount } = marketInfo || {};
 
-  const longPoolAmountUsd = marketInfo ? getPoolUsd(marketInfo, true, "midPrice") : undefined;
-  const shortPoolAmountUsd = marketInfo ? getPoolUsd(marketInfo, false, "midPrice") : undefined;
+  const longPoolAmountUsd = marketInfo ? getPoolUsdWithoutPnl(marketInfo, true, "midPrice") : undefined;
+  const shortPoolAmountUsd = marketInfo ? getPoolUsdWithoutPnl(marketInfo, false, "midPrice") : undefined;
 
   const apr = getByKey(marketsTokensAPRData, marketInfo?.marketTokenAddress);
 
@@ -74,9 +72,6 @@ export function MarketStats(p: Props) {
               : "..."
           }
         />
-
-        {/* TODO */}
-        {/* <CardRow label={t`Market worth`} value={formatUsd(bigNumberify(0))} /> */}
 
         <CardRow label={t`APR`} value={apr ? `${formatAmount(apr, 2, 2)}%` : "..."} />
 

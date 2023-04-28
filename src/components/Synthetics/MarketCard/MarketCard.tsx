@@ -2,62 +2,47 @@ import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
-import { SLIPPAGE_BPS_KEY } from "config/localStorage";
 import {
+  MarketInfo,
   getAvailableUsdLiquidityForPosition,
   getMaxReservedUsd,
   getReservedUsd,
-  useMarketsInfo,
 } from "domain/synthetics/markets";
-import { getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
-import { useChainId } from "lib/chains";
-import { DEFAULT_SLIPPAGE_AMOUNT } from "lib/legacy";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { CHART_PERIODS } from "lib/legacy";
 import { formatAmount, formatPercentage, formatUsd, getBasisPoints } from "lib/numbers";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
-import { getBorrowingFeeFactor, getFundingFeeFactor } from "domain/synthetics/fees";
-import { getByKey } from "lib/objects";
+import { ShareBar } from "components/ShareBar/ShareBar";
+import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
 import { useMemo } from "react";
 import "./MarketCard.scss";
-import { ShareBar } from "components/ShareBar/ShareBar";
 
 export type Props = {
-  marketAddress?: string;
+  marketInfo?: MarketInfo;
+  allowedSlippage?: number;
   isLong: boolean;
 };
 
-export function MarketCard(p: Props) {
-  const { chainId } = useChainId();
+export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
+  const { indexToken } = marketInfo || {};
 
-  const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
+  const entryPrice = isLong ? indexToken?.prices?.maxPrice : indexToken?.prices?.minPrice;
+  const exitPrice = isLong ? indexToken?.prices?.minPrice : indexToken?.prices?.maxPrice;
 
-  const { marketsInfoData } = useMarketsInfo(chainId);
-  const { tokensData } = useAvailableTokensData(chainId);
+  const longShortText = isLong ? t`Long` : t`Short`;
 
-  const market = getByKey(marketsInfoData, p.marketAddress);
-  const marketName = market?.name || "...";
-
-  const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
-
-  const entryPrice = p.isLong ? indexToken?.prices?.maxPrice : indexToken?.prices?.minPrice;
-  const exitPrice = p.isLong ? indexToken?.prices?.minPrice : indexToken?.prices?.maxPrice;
-
-  const longShortText = p.isLong ? t`Long` : t`Short`;
-
-  const { liquidity, maxReservedUsd, reservedUsd, borrowingRate, fundingRate } = useMemo(() => {
-    if (!market) return {};
+  const { liquidity, maxReservedUsd, reservedUsd, borrowingRate, fundingRate, totalInterestUsd } = useMemo(() => {
+    if (!marketInfo) return {};
 
     return {
-      liquidity: getAvailableUsdLiquidityForPosition(market, p.isLong),
-      maxReservedUsd: getMaxReservedUsd(market, p.isLong),
-      reservedUsd: getReservedUsd(market, p.isLong),
-      borrowingRate: getBorrowingFeeFactor(market, p.isLong, 60 * 60),
-      fundingRate: getFundingFeeFactor(market, p.isLong, 60 * 60),
+      liquidity: getAvailableUsdLiquidityForPosition(marketInfo, isLong),
+      maxReservedUsd: getMaxReservedUsd(marketInfo, isLong),
+      reservedUsd: getReservedUsd(marketInfo, isLong),
+      borrowingRate: getBorrowingFactorPerPeriod(marketInfo, isLong, CHART_PERIODS["1h"]).mul(100),
+      fundingRate: getFundingFactorPerPeriod(marketInfo, isLong, CHART_PERIODS["1h"]).mul(100),
+      totalInterestUsd: marketInfo.longInterestUsd.add(marketInfo.shortInterestUsd),
     };
-  }, [market, p.isLong]);
-
-  const totalInterestUsd = market?.longInterestUsd.add(market.shortInterestUsd);
+  }, [marketInfo, isLong]);
 
   return (
     <div className="Exchange-swap-market-box App-box App-box-border">
@@ -66,7 +51,7 @@ export function MarketCard(p: Props) {
       </div>
       <div className="App-card-divider" />
       <div>
-        <ExchangeInfoRow label={t`Market`} value={marketName || "..."} />
+        <ExchangeInfoRow label={t`Market`} value={marketInfo?.name || "..."} />
         <ExchangeInfoRow
           label={t`Entry Price`}
           value={
@@ -76,7 +61,7 @@ export function MarketCard(p: Props) {
               renderContent={() => (
                 <Trans>
                   The position will be opened at {formatUsd(entryPrice)} with a max slippage of{" "}
-                  {(savedSlippageAmount! / 100.0).toFixed(2)}%.
+                  {allowedSlippage ? (allowedSlippage / 100.0).toFixed(2) : "..."}%.
                   <br />
                   <br />
                   The slippage amount can be configured under Settings, found by clicking on your address at the top
@@ -113,60 +98,18 @@ export function MarketCard(p: Props) {
 
         <ExchangeInfoRow
           label={t`Borrow Fee`}
-          value={
-            borrowingRate ? `-${formatAmount(borrowingRate, 30, 4)}% / 1h` : "..."
-            // <Tooltip
-            //   handle={borrowingRate ? `${formatAmount(borrowingRate, 30, 4)}% / 1h` : "..."}
-            //   position="right-bottom"
-            //   renderContent={() => (
-            //     <Trans>
-            //       The borrow fee is calculated as:
-            //       <br />
-            //       <br />
-            //       {p.isLong
-            //         ? "a * (open interest in usd + pending pnl) ^ exp / (pool usd)"
-            //         : "a * (open interest in usd) ^ exp / (pool usd)"}
-            //       <br />
-            //       <br />
-            //       a - borrowing fee factor
-            //       <br />
-            //       exp - exponent factor
-            //       {/* <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#opening-a-position">More Info</ExternalLink> */}
-            //     </Trans>
-            //   )}
-            // />
-          }
+          value={borrowingRate ? `-${formatAmount(borrowingRate, 30, 4)}% / 1h` : "..."}
         />
 
         <ExchangeInfoRow
           label={t`Funding Fee`}
           value={
             fundingRate ? `${fundingRate.gt(0) ? "+" : "-"}${formatAmount(fundingRate.abs(), 30, 4)}% / 1h` : "..."
-            // <Tooltip
-            //   handle={borrowingRate ? `${formatAmount(borrowingRate, 30, 4)}% / 1h` : "..."}
-            //   position="right-bottom"
-            //   renderContent={() => (
-            //     <Trans>
-            //       The borrow fee is calculated as:
-            //       <br />
-            //       <br />
-            //       {p.isLong
-            //         ? "a * (open interest in usd + pending pnl) ^ exp / (pool usd)"
-            //         : "a * (open interest in usd) ^ exp / (pool usd)"}
-            //       <br />
-            //       <br />
-            //       a - borrowing fee factor
-            //       <br />
-            //       exp - exponent factor
-            //       {/* <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#opening-a-position">More Info</ExternalLink> */}
-            //     </Trans>
-            //   )}
-            // />
           }
         />
 
         <ExchangeInfoRow
-          label={t`Available liquidity`}
+          label={t`Available Liquidity`}
           value={
             <Tooltip
               className="al-swap"
@@ -175,16 +118,23 @@ export function MarketCard(p: Props) {
               renderContent={() => (
                 <div>
                   <StatsTooltipRow
-                    label={t`Max ${indexToken?.symbol} ${longShortText.toLocaleLowerCase()} capacity`}
+                    label={t`Max ${indexToken?.symbol} ${longShortText} capacity`}
                     value={formatUsd(maxReservedUsd, { displayDecimals: 0 }) || "..."}
                     showDollar={false}
                   />
 
                   <StatsTooltipRow
-                    label={t`Current ${indexToken?.symbol} ${longShortText.toLocaleLowerCase()}`}
+                    label={t`Current ${indexToken?.symbol} ${longShortText}`}
                     value={formatUsd(reservedUsd, { displayDecimals: 0 }) || "..."}
                     showDollar={false}
                   />
+
+                  {isLong && (
+                    <>
+                      <br />
+                      <Trans>"Current {indexToken?.symbol} Long" takes into account PnL of open positions.</Trans>
+                    </>
+                  )}
                 </div>
               )}
             />
@@ -201,7 +151,7 @@ export function MarketCard(p: Props) {
                   totalInterestUsd?.gt(0) ? (
                     <ShareBar
                       className="MarketCard-pool-balance-bar"
-                      share={market?.longInterestUsd}
+                      share={marketInfo?.longInterestUsd}
                       total={totalInterestUsd}
                     />
                   ) : (
@@ -210,15 +160,15 @@ export function MarketCard(p: Props) {
                 }
                 renderContent={() => (
                   <div>
-                    {market && totalInterestUsd && (
+                    {marketInfo && totalInterestUsd && (
                       <>
                         <StatsTooltipRow
                           label={t`Long Open Interest`}
                           value={
                             <span>
-                              {formatUsd(market.longInterestUsd, { displayDecimals: 0 })} <br />
+                              {formatUsd(marketInfo.longInterestUsd, { displayDecimals: 0 })} <br />
                               {totalInterestUsd.gt(0) &&
-                                `(${formatPercentage(getBasisPoints(market.longInterestUsd, totalInterestUsd))})`}
+                                `(${formatPercentage(getBasisPoints(marketInfo.longInterestUsd, totalInterestUsd))})`}
                             </span>
                           }
                           showDollar={false}
@@ -228,9 +178,9 @@ export function MarketCard(p: Props) {
                           label={t`Short Open Interest`}
                           value={
                             <span>
-                              {formatUsd(market.shortInterestUsd, { displayDecimals: 0 })} <br />
+                              {formatUsd(marketInfo.shortInterestUsd, { displayDecimals: 0 })} <br />
                               {totalInterestUsd.gt(0) &&
-                                `(${formatPercentage(getBasisPoints(market.shortInterestUsd, totalInterestUsd))})`}
+                                `(${formatPercentage(getBasisPoints(marketInfo.shortInterestUsd, totalInterestUsd))})`}
                             </span>
                           }
                           showDollar={false}

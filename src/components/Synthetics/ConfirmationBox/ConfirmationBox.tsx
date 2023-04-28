@@ -13,7 +13,12 @@ import { getContract } from "config/contracts";
 import { HIGH_SPREAD_THRESHOLD } from "config/factors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useUserReferralCode } from "domain/referrals/hooks";
-import { ExecutionFee, getBorrowingFeeFactor, getFundingFeeFactor, getIsHighPriceImpact } from "domain/synthetics/fees";
+import {
+  ExecutionFee,
+  getBorrowingFactorPerPeriod,
+  getFundingFactorPerPeriod,
+  getIsHighPriceImpact,
+} from "domain/synthetics/fees";
 import { MarketInfo } from "domain/synthetics/markets";
 import {
   OrderType,
@@ -51,7 +56,7 @@ import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
 import { getIsEquivalentTokens, getSpread } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR, CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 import {
   formatAmount,
   formatDeltaUsd,
@@ -286,7 +291,7 @@ export function ConfirmationBox(p: Props) {
     }
 
     if (isHighPriceImpact && !isHighPriceImpactAccepted) {
-      return t`Need to accept price impact`;
+      return t`Need to accept Price Impact`;
     }
   }, [error, fromToken?.symbol, isHighPriceImpact, isHighPriceImpactAccepted, needPayTokenApproval]);
 
@@ -716,8 +721,8 @@ export function ConfirmationBox(p: Props) {
   }
 
   function renderIncreaseOrderSection() {
-    const borrowingRate = getBorrowingFeeFactor(marketInfo!, isLong, 60 * 60)?.mul(100);
-    const fundigRate = getFundingFeeFactor(marketInfo!, isLong, 60 * 60)?.mul(100);
+    const borrowingRate = getBorrowingFactorPerPeriod(marketInfo!, isLong, CHART_PERIODS["1h"]).mul(100);
+    const fundigRate = getFundingFactorPerPeriod(marketInfo!, isLong, CHART_PERIODS["1h"]).mul(100);
 
     return (
       <>
@@ -881,7 +886,7 @@ export function ConfirmationBox(p: Props) {
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
                 <span className="muted font-sm">
-                  <Trans>I am aware of the high price impact</Trans>
+                  <Trans>I am aware of the high Price Impact</Trans>
                 </span>
               </Checkbox>
             </div>
@@ -936,7 +941,7 @@ export function ConfirmationBox(p: Props) {
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
                 <span className="muted font-sm">
-                  <Trans>I am aware of the high price impact</Trans>
+                  <Trans>I am aware of the high Price Impact</Trans>
                 </span>
               </Checkbox>
             </div>
@@ -1093,7 +1098,7 @@ export function ConfirmationBox(p: Props) {
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
                 <span className="muted font-sm">
-                  <Trans>I am aware of the high price impact</Trans>
+                  <Trans>I am aware of the high Price Impact</Trans>
                 </span>
               </Checkbox>
             </div>

@@ -19,13 +19,13 @@ export function AcceptbablePriceImpactEditor(p: Props) {
   function onSubmit() {
     const parsed = parseFloat(inputValue);
     if (isNaN(parsed)) {
-      helperToast.error(t`Invalid acceptable price impact value`);
+      helperToast.error(t`Invalid acceptable Price Impact value`);
       return;
     }
 
     const bps = (parsed * BASIS_POINTS_DIVISOR) / 100;
     if (parseInt(bps.toString()) !== parseFloat(bps.toString())) {
-      helperToast.error(t`Max acceptable price impact precision is 0.01%`);
+      helperToast.error(t`Max acceptable Price Impact precision is 0.01%`);
       return;
     }
 

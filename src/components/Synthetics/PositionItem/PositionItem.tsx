@@ -226,7 +226,7 @@ export function PositionItem(p: Props) {
           {/* title */}
           <div className="Exchange-list-title">
             <Tooltip
-              handle={p.position.indexToken?.symbol}
+              handle={p.position.marketInfo.indexToken.symbol}
               position="left-bottom"
               handleClassName="plain"
               renderContent={() => (
@@ -325,7 +325,7 @@ export function PositionItem(p: Props) {
     return (
       <div className="App-card">
         <div className="App-card-title">
-          <span className="Exchange-list-title">{p.position.indexToken?.symbol}</span>
+          <span className="Exchange-list-title">{p.position.marketInfo.indexToken?.symbol}</span>
           {p.position.pendingUpdate && <ImSpinner2 className="spin position-loading-icon" />}
         </div>
         <div className="App-card-divider" />

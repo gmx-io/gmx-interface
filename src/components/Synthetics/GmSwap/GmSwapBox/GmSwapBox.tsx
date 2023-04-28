@@ -20,7 +20,7 @@ import {
 } from "domain/synthetics/fees";
 import { useMarketTokensData, useMarketsInfo } from "domain/synthetics/markets";
 import { Market } from "domain/synthetics/markets/types";
-import { getAvailableUsdLiquidityForCollateral, getPoolUsd } from "domain/synthetics/markets/utils";
+import { getAvailableUsdLiquidityForCollateral, getPoolUsdWithoutPnl } from "domain/synthetics/markets/utils";
 import { adaptToV1InfoTokens, convertToUsd, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { GmSwapFees } from "domain/synthetics/trade";
 import {
@@ -237,8 +237,8 @@ export function GmSwapBox(p: Props) {
     return {
       longCollateralLiquidityUsd: getAvailableUsdLiquidityForCollateral(marketInfo, true),
       shortCollateralLiquidityUsd: getAvailableUsdLiquidityForCollateral(marketInfo, false),
-      longPoolUsd: getPoolUsd(marketInfo, true, "midPrice"),
-      shortPoolUsd: getPoolUsd(marketInfo, false, "midPrice"),
+      longPoolUsd: getPoolUsdWithoutPnl(marketInfo, true, "midPrice"),
+      shortPoolUsd: getPoolUsdWithoutPnl(marketInfo, false, "midPrice"),
     };
   }, [marketInfo]);
 

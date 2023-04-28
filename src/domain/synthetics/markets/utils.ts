@@ -74,7 +74,11 @@ export function getMarketCollateral(marketInfo: MarketInfo, isLong: boolean) {
   return isLong ? marketInfo.longToken : marketInfo.shortToken;
 }
 
-export function getPoolUsd(marketInfo: MarketInfo, isLong: boolean, priceType: "minPrice" | "maxPrice" | "midPrice") {
+export function getPoolUsdWithoutPnl(
+  marketInfo: MarketInfo,
+  isLong: boolean,
+  priceType: "minPrice" | "maxPrice" | "midPrice"
+) {
   const poolAmount = isLong ? marketInfo.longPoolAmount : marketInfo.shortPoolAmount;
   const token = isLong ? marketInfo.longToken : marketInfo.shortToken;
 
@@ -102,7 +106,7 @@ export function getReservedUsd(marketInfo: MarketInfo, isLong: boolean) {
 }
 
 export function getMaxReservedUsd(marketInfo: MarketInfo, isLong: boolean) {
-  const poolUsd = getPoolUsd(marketInfo, isLong, "minPrice");
+  const poolUsd = getPoolUsdWithoutPnl(marketInfo, isLong, "minPrice");
   const reserveFactor = isLong ? marketInfo.reserveFactorLong : marketInfo.reserveFactorShort;
 
   return poolUsd.mul(reserveFactor).div(PRECISION);
@@ -122,7 +126,7 @@ export function getAvailableUsdLiquidityForPosition(marketInfo: MarketInfo, isLo
 export function getAvailableUsdLiquidityForCollateral(marketInfo: MarketInfo, isLong: boolean) {
   const reservedUsd = getReservedUsd(marketInfo, isLong);
 
-  const poolUsd = getPoolUsd(marketInfo, isLong, "minPrice");
+  const poolUsd = getPoolUsdWithoutPnl(marketInfo, isLong, "minPrice");
 
   return poolUsd.sub(reservedUsd);
 }
