@@ -358,6 +358,7 @@ msgstr "承認中"
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
+#: src/components/TokenCard/TokenCard.js
 msgid "Arbitrum APR:"
 msgstr "ArbitrumのAPR(実質年利)"
 
@@ -413,12 +414,17 @@ msgstr "利用可能"
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
+#: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
 msgstr "AvalancheでのAPR(実質年利)"
 
 #: src/components/TokenCard/TokenCard.js
-msgid "Avalanche FUJI Avg. APR:"
+msgid "Avalanche FUJI APR:"
 msgstr ""
+
+#: src/components/TokenCard/TokenCard.js
+#~ msgid "Avalanche FUJI Avg. APR:"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Balance"
@@ -1716,12 +1722,13 @@ msgid "Fees"
 msgstr "手数料"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Fees and Price Impact"
 msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Fees and Price impact"
-msgstr ""
+#~ msgid "Fees and Price impact"
+#~ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #~ msgid "Fees and price impact"
@@ -3322,8 +3329,12 @@ msgid "Position Fee"
 msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Position Price impact"
+msgid "Position Price Impact"
 msgstr ""
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+#~ msgid "Position Price impact"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Position close disabled, pending {0} upgrade"
@@ -3390,6 +3401,7 @@ msgid "Price"
 msgstr "価格"
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 msgid "Price Impact"
@@ -3438,8 +3450,8 @@ msgid "Price conditions are met"
 msgstr "価格の条件が満たされていません"
 
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-msgid "Price impact"
-msgstr ""
+#~ msgid "Price impact"
+#~ msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
 msgid "Price is above Mark Price"
@@ -4132,12 +4144,13 @@ msgid "Swap Order submitted!"
 msgstr "スワップ注文提出済!"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap Price Impact"
 msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Swap Price impact"
-msgstr ""
+#~ msgid "Swap Price impact"
+#~ msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Swap active: {0}, executed: {1}, cancelled: {2}"

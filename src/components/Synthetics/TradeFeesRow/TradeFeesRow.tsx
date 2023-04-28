@@ -43,7 +43,7 @@ export function TradeFeesRow(p: Props) {
           id: "positionPriceImpact",
           label: (
             <>
-              <div>{t`Position Price impact`}:</div>
+              <div>{t`Position Price Impact`}:</div>
               <div>({formatPercentage(p.positionPriceImpact.bps.abs())} of position size)</div>
             </>
           ),
@@ -56,7 +56,7 @@ export function TradeFeesRow(p: Props) {
           id: "swapPriceImpact",
           label: (
             <>
-              <div>{t`Swap Price impact`}:</div>
+              <div>{t`Swap Price Impact`}:</div>
               <div>({formatPercentage(p.swapPriceImpact.bps.abs())} of swap amount)</div>
             </>
           ),
@@ -207,7 +207,7 @@ export function TradeFeesRow(p: Props) {
   return (
     <ExchangeInfoRow
       isTop={p.isTop}
-      label={p.feesType === "edit" ? <Trans>Fees</Trans> : <Trans>Fees and Price impact</Trans>}
+      label={p.feesType === "edit" ? <Trans>Fees</Trans> : <Trans>Fees and Price Impact</Trans>}
       value={
         <>
           {!totalFeeUsd || totalFeeUsd.eq(0) ? (

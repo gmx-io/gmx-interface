@@ -27,6 +27,8 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
   const { active } = useWeb3React();
 
   const { avgMarketsAPR: fujiAvgMarketsAPR } = useMarketTokensAPR(AVALANCHE_FUJI);
+  const { avgMarketsAPR: arbitrumAvgMarketsAPR } = useMarketTokensAPR(ARBITRUM);
+  const { avgMarketsAPR: avalancheAvgMarketsAPR } = useMarketTokensAPR(AVALANCHE);
 
   const changeNetwork = useCallback(
     (network) => {
@@ -140,11 +142,23 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
             </Trans>
           </div>
 
-          {isDevelopment() && (
-            <div className="Home-token-card-option-apr">
-              <Trans>Avalanche FUJI Avg. APR:</Trans> {formatAmount(fujiAvgMarketsAPR, 2, 2)}%
-            </div>
-          )}
+          <div className="Home-token-card-option-apr">
+            {isDevelopment() && (
+              <>
+                <span>
+                  <Trans>Avalanche FUJI APR:</Trans> {formatAmount(fujiAvgMarketsAPR, 2, 2)}%
+                </span>
+                {", "}
+              </>
+            )}
+            <span>
+              <Trans>Arbitrum APR:</Trans> {formatAmount(arbitrumAvgMarketsAPR, 2, 2)}%
+            </span>
+            {", "}
+            <span>
+              <Trans>Avalanche APR:</Trans> {formatAmount(avalancheAvgMarketsAPR, 2, 2)}%
+            </span>
+          </div>
 
           <div className="Home-token-card-option-action">
             <div className="buy">

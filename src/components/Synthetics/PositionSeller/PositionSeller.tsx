@@ -370,7 +370,7 @@ export function PositionSeller(p: Props) {
                   <ExchangeInfoRow isTop label={t`Mark Price`} value={formatUsd(markPrice) || "-"} />
                   <ExchangeInfoRow label={t`Entry Price`} value={formatUsd(position?.entryPrice) || "-"} />
                   <ExchangeInfoRow
-                    label={t`Price impact`}
+                    label={t`Price Impact`}
                     value={formatPercentage(decreaseAmounts?.acceptablePriceImpactBps) || "-"}
                   />
                   <ExchangeInfoRow
