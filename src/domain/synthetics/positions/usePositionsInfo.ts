@@ -57,11 +57,8 @@ export function usePositionsInfo(chainId: number, p: { showPnlInLeverage: boolea
         }
 
         const markPrice = getMarkPrice({ prices: indexToken.prices, isLong: position.isLong, isIncrease: false });
-        const collateralMarkPrice = getMarkPrice({
-          prices: collateralToken.prices,
-          isLong: position.isLong,
-          isIncrease: false,
-        });
+        const collateralMinPrice = collateralToken.prices.minPrice;
+
         const entryPrice = getEntryPrice({
           sizeInTokens: position.sizeInTokens,
           sizeInUsd: position.sizeInUsd,
@@ -71,8 +68,23 @@ export function usePositionsInfo(chainId: number, p: { showPnlInLeverage: boolea
         const pendingFundingFeesUsd = convertToUsd(
           position.fundingFeeAmount,
           collateralToken.decimals,
-          collateralMarkPrice
+          collateralToken.prices.minPrice
         )!;
+
+        const pendingClaimableFundingFeesLongUsd = convertToUsd(
+          position.claimableLongTokenAmount,
+          marketInfo.longToken.decimals,
+          marketInfo.longToken.prices.minPrice
+        )!;
+        const pendingClaimableFundingFeesShortUsd = convertToUsd(
+          position.claimableShortTokenAmount,
+          marketInfo.shortToken.decimals,
+          marketInfo.shortToken.prices.minPrice
+        )!;
+
+        const pendingClaimableFundingFeesUsd = pendingClaimableFundingFeesLongUsd?.add(
+          pendingClaimableFundingFeesShortUsd
+        );
 
         const totalPendingFeesUsd = getPositionPendingFeesUsd({
           pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
@@ -85,13 +97,15 @@ export function usePositionsInfo(chainId: number, p: { showPnlInLeverage: boolea
         const initialCollateralUsd = convertToUsd(
           position.collateralAmount,
           collateralToken.decimals,
-          collateralMarkPrice
+          collateralMinPrice
         )!;
+
         const remainingCollateralUsd = initialCollateralUsd.sub(totalPendingFeesUsd);
+
         const remainingCollateralAmount = convertToTokenAmount(
           remainingCollateralUsd,
           collateralToken.decimals,
-          collateralMarkPrice
+          collateralMinPrice
         )!;
 
         const pnl = getPositionPnlUsd({
@@ -154,7 +168,6 @@ export function usePositionsInfo(chainId: number, p: { showPnlInLeverage: boolea
           collateralToken,
           pnlToken,
           markPrice,
-          collateralMarkPrice,
           entryPrice,
           liquidationPrice,
           initialCollateralUsd,
@@ -169,6 +182,7 @@ export function usePositionsInfo(chainId: number, p: { showPnlInLeverage: boolea
           netValue,
           closingFeeUsd,
           pendingFundingFeesUsd,
+          pendingClaimableFundingFeesUsd,
         };
 
         return acc;

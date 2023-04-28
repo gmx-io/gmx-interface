@@ -12,6 +12,7 @@ import { ImSpinner2 } from "react-icons/im";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/fees";
 import "./PositionItem.scss";
 import { getTriggerThresholdType } from "domain/synthetics/trade";
+import { BigNumber } from "ethers";
 
 export type Props = {
   position: PositionInfo;
@@ -55,7 +56,7 @@ export function PositionItem(p: Props) {
             />
             <StatsTooltipRow
               label={t`Funding fee`}
-              value={formatDeltaUsd(p.position.pendingFundingFeesUsd) || "..."}
+              value={formatUsd(p.position.pendingFundingFeesUsd.mul(-1)) || "..."}
               showDollar={false}
             />
             <StatsTooltipRow
@@ -76,6 +77,14 @@ export function PositionItem(p: Props) {
   }
 
   function renderCollateral() {
+    let displayedfundingFeeDeltaUsd: BigNumber | undefined = undefined;
+
+    if (p.position.pendingClaimableFundingFeesUsd.gt(0)) {
+      displayedfundingFeeDeltaUsd = p.position.pendingClaimableFundingFeesUsd;
+    } else {
+      displayedfundingFeeDeltaUsd = p.position.pendingFundingFeesUsd.mul(-1);
+    }
+
     return (
       <>
         <div className="position-list-collateral">
@@ -103,8 +112,8 @@ export function PositionItem(p: Props) {
                         <div>
                           {formatTokenAmount(
                             p.position.collateralAmount,
-                            p.position.collateralToken?.decimals,
-                            p.position.collateralToken?.symbol
+                            p.position.collateralToken.decimals,
+                            p.position.collateralToken.symbol
                           )}
                           <br />({formatUsd(p.position.initialCollateralUsd)})
                         </div>
@@ -121,7 +130,7 @@ export function PositionItem(p: Props) {
                   <StatsTooltipRow
                     label={t`Funding Fee`}
                     showDollar={false}
-                    value={formatDeltaUsd(p.position.pendingFundingFeesUsd) || "..."}
+                    value={formatDeltaUsd(displayedfundingFeeDeltaUsd) || "..."}
                   />
                   <br />
                   <StatsTooltipRow

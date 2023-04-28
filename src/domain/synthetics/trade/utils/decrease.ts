@@ -131,9 +131,9 @@ export function getDecreasePositionAmounts(p: {
 
     receiveUsd = collateralDeltaUsd
       .add(pnlDelta)
+      .add(positionPriceImpactDeltaUsd)
       .sub(positionFeeUsd)
       .sub(existingPosition.pendingBorrowingFeesUsd)
-      .add(positionPriceImpactDeltaUsd)
       .sub(existingPosition.pendingFundingFeesUsd);
 
     if (receiveUsd.lt(0)) {

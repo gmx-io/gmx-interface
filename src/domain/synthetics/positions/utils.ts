@@ -34,11 +34,7 @@ export function getPositionValueUsd(p: { indexToken: Token; sizeInTokens: BigNum
 export function getPositionPendingFeesUsd(p: { pendingFundingFeesUsd: BigNumber; pendingBorrowingFeesUsd: BigNumber }) {
   const { pendingFundingFeesUsd, pendingBorrowingFeesUsd } = p;
 
-  if (pendingFundingFeesUsd.lt(0)) {
-    return pendingBorrowingFeesUsd.add(pendingFundingFeesUsd.abs());
-  }
-
-  return pendingBorrowingFeesUsd;
+  return pendingBorrowingFeesUsd.add(pendingFundingFeesUsd);
 }
 
 export function getPositionNetValue(p: {

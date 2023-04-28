@@ -38,7 +38,6 @@ export type PositionInfo = Position & {
   pnlToken: TokenData;
   markPrice: BigNumber;
   entryPrice: BigNumber | undefined;
-  collateralMarkPrice: BigNumber;
   liquidationPrice: BigNumber | undefined;
   initialCollateralUsd: BigNumber;
   remainingCollateralUsd: BigNumber;
@@ -52,6 +51,7 @@ export type PositionInfo = Position & {
   netValue: BigNumber;
   closingFeeUsd: BigNumber;
   pendingFundingFeesUsd: BigNumber;
+  pendingClaimableFundingFeesUsd: BigNumber;
 };
 
 export type PositionsData = {

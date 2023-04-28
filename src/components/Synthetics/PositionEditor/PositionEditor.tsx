@@ -111,7 +111,7 @@ export function PositionEditor(p: Props) {
 
   let receiveUsd =
     !isDeposit && collateralDeltaUsd?.gt(0)
-      ? collateralDeltaUsd?.sub(position.pendingBorrowingFeesUsd).sub(position.pendingFundingFeesUsd)
+      ? collateralDeltaUsd.sub(position.pendingBorrowingFeesUsd).sub(position.pendingFundingFeesUsd)
       : BigNumber.from(0);
 
   if (receiveUsd?.lt(0)) {
