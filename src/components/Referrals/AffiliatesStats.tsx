@@ -443,7 +443,7 @@ function AffiliatesStats({
         </div>
       ) : (
         <EmptyMessage
-          tooltipText={t`Rebates are airdropped weekly`}
+          tooltipText={t`Rebates are airdropped weekly.`}
           message={t`No rebates distribution history yet.`}
         />
       )}

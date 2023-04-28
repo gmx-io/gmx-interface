@@ -3526,11 +3526,13 @@ msgstr "Lire plus"
 msgid "Rebates Distribution History"
 msgstr "Historique de distribution des remises"
 
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
-#: src/components/Referrals/TradersStats.js
-#~ msgid "Rebates are airdropped weekly."
-#~ msgstr "Les remises sont distribuées chaque semaine."
+#: src/components/Referrals/AffiliatesStats.tsx
+#~ msgid "Rebates are airdropped weekly"
+#~ msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.tsx
+msgid "Rebates are airdropped weekly."
+msgstr "Les remises sont distribuées chaque semaine."
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates earned by this account as a trader."
@@ -4901,7 +4903,6 @@ msgstr ""
 msgid "V1 esGMX"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "V1 rebates are airdropped weekly, V2 rebates are automatically applied as fee discounts on each trade."
