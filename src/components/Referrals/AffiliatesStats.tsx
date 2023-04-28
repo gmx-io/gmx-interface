@@ -443,7 +443,7 @@ function AffiliatesStats({
         </div>
       ) : (
         <EmptyMessage
-          tooltipText={t`V1 rebates are airdropped weekly, V2 rebates are automatically applied as fee discounts on each trade.`}
+          tooltipText={t`Rebates are airdropped weekly`}
           message={t`No rebates distribution history yet.`}
         />
       )}
