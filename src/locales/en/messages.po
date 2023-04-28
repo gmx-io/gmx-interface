@@ -13,6 +13,10 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "\"Current {0} Long\" takes into account PnL of open positions."
+msgstr "\"Current {0} Long\" takes into account PnL of open positions."
+
 #: src/pages/Dashboard/DashboardV2.js
 msgid "01 Sep 2021"
 msgstr "01 Sep 2021"
@@ -379,6 +383,8 @@ msgstr "Available"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/SwapCard/SwapCard.tsx
 msgid "Available Liquidity"
 msgstr "Available Liquidity"
 
@@ -394,8 +400,8 @@ msgstr "Available amount to withdraw from GLP. Funds not utilized by current ope
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
-msgid "Available liquidity"
-msgstr "Available liquidity"
+#~ msgid "Available liquidity"
+#~ msgstr "Available liquidity"
 
 #: src/pages/Home/Home.js
 msgid "Available on your preferred network"
@@ -1162,8 +1168,12 @@ msgid "Current {0} shorts"
 msgstr "Current {0} shorts"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "Current {0} {1}"
-msgstr "Current {0} {1}"
+#~ msgid "Current {0} {1}"
+#~ msgstr "Current {0} {1}"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Current {0} {longShortText}"
+msgstr "Current {0} {longShortText}"
 
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
@@ -1705,13 +1715,17 @@ msgstr "Failed to update order"
 msgid "Fees"
 msgstr "Fees"
 
+#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+msgid "Fees and Price Impact"
+msgstr "Fees and Price Impact"
+
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Fees and Price impact"
 msgstr "Fees and Price impact"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
-msgid "Fees and price impact"
-msgstr "Fees and price impact"
+#~ msgid "Fees and price impact"
+#~ msgstr "Fees and price impact"
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "Fees are high"
@@ -2023,8 +2037,16 @@ msgstr "High USDG Slippage, Long Anyway"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-msgid "I am aware of the high price impact"
-msgstr "I am aware of the high price impact"
+msgid "I am aware of the high Price Impact"
+msgstr "I am aware of the high Price Impact"
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#~ msgid "I am aware of the high price impact"
+#~ msgstr "I am aware of the high price impact"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -2226,8 +2248,12 @@ msgid "Invalid Receiver Address"
 msgstr "Invalid Receiver Address"
 
 #: src/components/Synthetics/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
-msgid "Invalid acceptable price impact value"
-msgstr "Invalid acceptable price impact value"
+msgid "Invalid acceptable Price Impact value"
+msgstr "Invalid acceptable Price Impact value"
+
+#: src/components/Synthetics/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
+#~ msgid "Invalid acceptable price impact value"
+#~ msgstr "Invalid acceptable price impact value"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -2664,8 +2690,12 @@ msgid "Max Pool Capacity"
 msgstr "Max Pool Capacity"
 
 #: src/components/Synthetics/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
-msgid "Max acceptable price impact precision is 0.01%"
-msgstr "Max acceptable price impact precision is 0.01%"
+msgid "Max acceptable Price Impact precision is 0.01%"
+msgstr "Max acceptable Price Impact precision is 0.01%"
+
+#: src/components/Synthetics/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
+#~ msgid "Max acceptable price impact precision is 0.01%"
+#~ msgstr "Max acceptable price impact precision is 0.01%"
 
 #: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
@@ -2741,8 +2771,12 @@ msgid "Max {0} short exceeded"
 msgstr "Max {0} short exceeded"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "Max {0} {1} capacity"
-msgstr "Max {0} {1} capacity"
+#~ msgid "Max {0} {1} capacity"
+#~ msgstr "Max {0} {1} capacity"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Max {0} {longShortText} capacity"
+msgstr "Max {0} {longShortText} capacity"
 
 #: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
@@ -2871,8 +2905,14 @@ msgstr "NFT Wallet"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-msgid "Need to accept price impact"
-msgstr "Need to accept price impact"
+msgid "Need to accept Price Impact"
+msgstr "Need to accept Price Impact"
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#~ msgid "Need to accept price impact"
+#~ msgstr "Need to accept price impact"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -4091,6 +4131,10 @@ msgstr "Swap Order creation failed."
 msgid "Swap Order submitted!"
 msgstr "Swap Order submitted!"
 
+#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+msgid "Swap Price Impact"
+msgstr "Swap Price Impact"
+
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap Price impact"
 msgstr "Swap Price impact"
@@ -4128,8 +4172,8 @@ msgid "Swap on 1inch"
 msgstr "Swap on 1inch"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
-msgid "Swap price impact"
-msgstr "Swap price impact"
+#~ msgid "Swap price impact"
+#~ msgstr "Swap price impact"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Swap submitted!"
