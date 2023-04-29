@@ -1975,11 +1975,11 @@ export default function SwapBox(props) {
                     <input
                       type="number"
                       min="0"
+                      step="any"
                       placeholder="0.0"
                       className="Exchange-swap-input"
                       value={fromValue}
                       onChange={onFromValueChange}
-                      step="any"
                     />
                     {shouldShowMaxButton() && (
                       <div className="Exchange-swap-max" onClick={setFromValueToMaximumAvailable}>
@@ -2032,11 +2032,11 @@ export default function SwapBox(props) {
                     <input
                       type="number"
                       min="0"
+                      step="any"
                       placeholder="0.0"
                       className="Exchange-swap-input"
                       value={toValue}
                       onChange={onToValueChange}
-                      step="any"
                     />
                   </div>
                   <div>
@@ -2082,11 +2082,11 @@ export default function SwapBox(props) {
                   <input
                     type="number"
                     min="0"
+                    step="any"
                     placeholder="0.0"
                     className="Exchange-swap-input small"
                     value={triggerRatioValue}
                     onChange={onTriggerRatioChange}
-                    step="any"
                   />
                 </div>
                 {(() => {
