@@ -4,13 +4,13 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getConstant } from "config/chains";
-import { BigNumber, BigNumberish } from "ethers";
+import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
 import { formatAmount, formatAmountFree } from "lib/numbers";
 
 type Fee = { label: string; value: string };
-type ExecutionFee = { fee?: BigNumberish; feeUSD?: BigNumberish };
+type ExecutionFees = { fee?: BigNumber; feeUsd?: BigNumber };
 type FeeType = "open" | "close" | "swap" | "borrow" | "deposit" | "execution";
 
 function getFeeLabel(type: FeeType) {
@@ -33,7 +33,7 @@ function getExecutionFeeStr(chainId, executionFee, executionFeeUsd) {
     return "";
   }
 
-  const formattedExecutionFee = formatAmountFree(executionFee, 18, 4);
+  const formattedExecutionFee = formatAmountFree(executionFee, 18, 5);
   const formattedExecutionFeeUsd = formatAmount(executionFeeUsd, USD_DECIMALS, 2);
   return `${formattedExecutionFee} ${nativeTokenSymbol} ($${formattedExecutionFeeUsd})`;
 }
@@ -45,19 +45,19 @@ function getFeesStr(fees: BigNumber | undefined): string {
   return `$${formatAmount(fees, USD_DECIMALS, 2, true)}`;
 }
 
-function getFeesRows(isOpening: boolean, formattedFees: Record<string, string>) {
+function getFeesRows(isOpening: boolean, formattedFees: Record<string, string | undefined>) {
   const rows: Fee[] = [];
 
-  function addFeeRow(label: FeeType, value: string) {
-    rows.push({ label: getFeeLabel(label), value });
+  function addFeeRow(label: FeeType, value: string | undefined) {
+    rows.push({ label: getFeeLabel(label), value: value ?? "" });
   }
 
   if (isOpening) {
     addFeeRow("swap", formattedFees?.swap);
     addFeeRow("open", formattedFees?.position);
-    addFeeRow("borrow", formattedFees?.funding);
+    addFeeRow("borrow", formattedFees?.fundingRate || formattedFees?.funding);
   } else {
-    addFeeRow("borrow", formattedFees?.funding);
+    addFeeRow("borrow", formattedFees?.fundingRate || formattedFees?.funding);
     addFeeRow("close", formattedFees?.position);
     addFeeRow("swap", formattedFees?.swap);
   }
@@ -68,39 +68,50 @@ function getFeesRows(isOpening: boolean, formattedFees: Record<string, string>) 
   return rows.filter((row) => row.value);
 }
 
+function getTotalFees(fees: (BigNumber | undefined)[]) {
+  return fees.reduce((acc: BigNumber, fee) => {
+    if (!fee) {
+      return acc;
+    }
+    return acc.add(fee);
+  }, BigNumber.from(0));
+}
+
 type Props = {
-  totalFees: BigNumber;
-  executionFees: ExecutionFee;
+  executionFees: ExecutionFees;
   positionFee?: BigNumber;
   depositFee?: BigNumber;
   swapFee?: BigNumber;
-  fundingFee?: string;
+  fundingFee?: BigNumber;
+  fundingRate?: string;
   isOpening?: boolean;
+  titleText?: string;
 };
 
 function FeesTooltip({
-  totalFees,
   fundingFee,
   positionFee,
   swapFee,
   executionFees,
   depositFee,
+  fundingRate,
   isOpening = true,
+  titleText = "",
 }: Props) {
   const { chainId } = useChainId();
   const executionFee = executionFees?.fee;
-  const executionFeeUSD = executionFees?.feeUSD;
-
+  const executionFeeUsd = executionFees?.feeUsd;
   const formattedFees = {
     swap: getFeesStr(swapFee),
     position: getFeesStr(positionFee),
     deposit: getFeesStr(depositFee),
-    execution: getExecutionFeeStr(chainId, executionFee, executionFeeUSD),
-    funding: fundingFee || "",
+    execution: getExecutionFeeStr(chainId, executionFee, executionFeeUsd),
+    funding: getFeesStr(fundingFee),
+    fundingRate,
   };
 
-  let feesRows = getFeesRows(isOpening, formattedFees);
-
+  const feesRows = getFeesRows(isOpening, formattedFees);
+  const totalFees = getTotalFees([executionFees?.feeUsd, swapFee, positionFee, depositFee, fundingFee]);
   return (
     <Tooltip
       position="right-top"
@@ -108,6 +119,7 @@ function FeesTooltip({
       handle={<div>{totalFees?.gt(0) ? `$${formatAmount(totalFees, USD_DECIMALS, 2, true)}` : "-"}</div>}
       renderContent={() => (
         <div>
+          {titleText && <p>{titleText}</p>}
           {feesRows.map(({ label, value }) => (
             <StatsTooltipRow key={label} label={label} showDollar={false} value={value} />
           ))}
