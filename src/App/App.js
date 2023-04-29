@@ -19,6 +19,7 @@ import {
 import Home from "pages/Home/Home";
 import Dashboard from "pages/Dashboard/Dashboard";
 import Stats from "pages/Stats/Stats";
+import AdminReferrals from "pages/AdminReferrals/AdminReferrals";
 import Ecosystem from "pages/Ecosystem/Ecosystem";
 import Stake from "pages/Stake/Stake";
 import { Exchange } from "pages/Exchange/Exchange";
@@ -484,9 +485,6 @@ function FullApp() {
               <Route exact path="/dashboard">
                 <Dashboard />
               </Route>
-              <Route exact path="/stats">
-                <Stats />
-              </Route>
               <Route exact path="/earn">
                 <Stake setPendingTxns={setPendingTxns} connectWallet={connectWallet} />
               </Route>
@@ -532,7 +530,16 @@ function FullApp() {
               <Route exact path="/actions/:account">
                 <Actions savedIsPnlInLeverage={savedIsPnlInLeverage} savedShowPnlAfterFees={savedShowPnlAfterFees} />
               </Route>
-              <Route exact path="/orders_overview">
+              <Route exact path="/admin/referrals">
+                <AdminReferrals />
+              </Route>
+              <Route exact path="/admin/stats">
+                <Stats />
+              </Route>
+              <Route exact path="/stats">
+                <Redirect to="/admin/stats" />
+              </Route>
+              <Route exact path="/admin/orders_overview">
                 <OrdersOverview />
               </Route>
               <Route exact path="/positions_overview">
