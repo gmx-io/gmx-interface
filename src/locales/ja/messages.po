@@ -3244,8 +3244,6 @@ msgid "Total Fees Distributed"
 msgstr "分配済手数料総額"
 
 #: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
 msgid "Total Rebates"
 msgstr "リベート総額"
 
@@ -3279,12 +3277,6 @@ msgstr "全体統計"
 msgid "Total Supply"
 msgstr "総供給量"
 
-#: src/components/Referrals/AffiliatesStats.js
-msgid "Total Traders Referred"
-msgstr "紹介した全トレーダー"
-
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
 #: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "トレード総額"

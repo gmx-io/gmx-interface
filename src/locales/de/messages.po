@@ -3244,8 +3244,6 @@ msgid "Total Fees Distributed"
 msgstr "Gebühren insgesamt verteilt"
 
 #: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
 msgid "Total Rebates"
 msgstr "Rabatte insgesamt"
 
@@ -3279,12 +3277,6 @@ msgstr "Gesamtstatistik"
 msgid "Total Supply"
 msgstr "Gesamtangebot"
 
-#: src/components/Referrals/AffiliatesStats.js
-msgid "Total Traders Referred"
-msgstr "Vermittelte Trader insgesamt"
-
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
 #: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "Trading Volumen insgesamt"

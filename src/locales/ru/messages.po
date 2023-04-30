@@ -3244,8 +3244,6 @@ msgid "Total Fees Distributed"
 msgstr "Итого Распределено Комиссионных"
 
 #: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
 msgid "Total Rebates"
 msgstr "Всего Ребайтов"
 
@@ -3279,12 +3277,6 @@ msgstr "Общая Статистика"
 msgid "Total Supply"
 msgstr "Общее количество снабжения"
 
-#: src/components/Referrals/AffiliatesStats.js
-msgid "Total Traders Referred"
-msgstr "Всего Привлеченных Трейдеров"
-
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
 #: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "Общий Объем Торгов"

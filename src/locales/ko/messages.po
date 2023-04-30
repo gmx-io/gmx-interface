@@ -3244,8 +3244,6 @@ msgid "Total Fees Distributed"
 msgstr "총 분배된 수수료"
 
 #: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
 msgid "Total Rebates"
 msgstr "총 소개 보수"
 
@@ -3279,12 +3277,6 @@ msgstr "전체 통계"
 msgid "Total Supply"
 msgstr "총 공급량"
 
-#: src/components/Referrals/AffiliatesStats.js
-msgid "Total Traders Referred"
-msgstr "추천한 총 트레이더"
-
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
 #: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "총 트레이딩 거래량"

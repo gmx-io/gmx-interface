@@ -79,25 +79,25 @@ function AffiliatesStats({
     <div className="referral-body-container">
       <div className="referral-stats">
         <ReferralInfoCard
-          title={[t`Total Traders Referred`, t`Amount of traders you referred.`]}
+          label={t`Traders Referred`}
+          labelTooltipText={t`Amount of traders you referred.`}
           data={referralsData}
           dataKeys={["cumulativeStats", "registeredReferralsCount"]}
           shouldFormat={false}
           showDollar={false}
-          tooltipTitle={t`Traders Referred`}
         />
         <ReferralInfoCard
-          title={[t`Total Trading Volume`, t`Volume traded by your referred traders.`]}
+          label={t`Trading Volume`}
+          labelTooltipText={t`Volume traded by your referred traders.`}
           data={referralsData}
           dataKeys={["cumulativeStats", "volume"]}
           totalDataKey="affiliatesVolume"
-          tooltipTitle={t`Trading Volume`}
         />
         <ReferralInfoCard
-          title={[t`Total Rebates`, t`Rebates earned by this account as an affiliate.`]}
+          label={t`Rebates`}
+          labelTooltipText={t`Rebates earned by this account as an affiliate.`}
           dataKeys={["cumulativeStats", "referrerRebates"]}
           data={referralsData}
-          tooltipTitle={t`Rebates`}
         />
       </div>
       <div className="list">

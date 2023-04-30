@@ -32,7 +32,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
   return (
     <div className="rebate-container">
       <div className="referral-stats">
-        <ReferralInfoCard title={[t`Active Referral Code`]}>
+        <ReferralInfoCard label={[t`Active Referral Code`]}>
           <div className="active-referral-code">
             <div className="edit">
               <span>{userReferralCodeString}</span>
@@ -57,17 +57,17 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
           </div>
         </ReferralInfoCard>
         <ReferralInfoCard
-          title={[t`Total Trading Volume`, t`Volume traded by this account with an active referral code.`]}
+          label={t`Trading Volume`}
+          labelTooltipText={t`Volume traded by this account with an active referral code.`}
           data={referralsData}
           dataKeys={["referralTotalStats", "volume"]}
           totalDataKey="tradersVolume"
-          tooltipTitle={t`Trading Volume`}
         />
         <ReferralInfoCard
-          title={[t`Total Rebates`, t`Rebates earned by this account as a trader.`]}
+          label={t`Rebates`}
+          labelTooltipText={t`Rebates earned by this account as a trader.`}
           dataKeys={["referralTotalStats", "discountUsd"]}
           data={referralsData}
-          tooltipTitle={t`Rebates`}
         />
 
         <Modal

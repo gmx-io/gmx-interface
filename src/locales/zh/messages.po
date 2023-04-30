@@ -3244,8 +3244,6 @@ msgid "Total Fees Distributed"
 msgstr "分配费用总额"
 
 #: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
 msgid "Total Rebates"
 msgstr "返利总额"
 
@@ -3279,12 +3277,6 @@ msgstr "总统计表"
 msgid "Total Supply"
 msgstr "总供应量"
 
-#: src/components/Referrals/AffiliatesStats.js
-msgid "Total Traders Referred"
-msgstr "推荐交易者总数"
-
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
 #: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "总交易量"

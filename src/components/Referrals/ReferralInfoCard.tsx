@@ -6,29 +6,28 @@ import { useChainId } from "lib/chains";
 import { ReactNode } from "react";
 
 type Props = {
-  title: string[];
+  label: string;
+  labelTooltipText: string;
   data: any;
   dataKeys: Array<string>;
   totalDataKey: string;
   showDollar?: boolean;
   shouldFormat?: boolean;
-  tooltipTitle?: string;
   tooltipPosition?: string;
   children?: ReactNode;
 };
 
 function ReferralInfoCard({
-  title,
+  label,
   data,
   dataKeys = [],
   totalDataKey,
   showDollar = true,
   shouldFormat = true,
+  labelTooltipText,
   tooltipPosition = "left-bottom",
-  tooltipTitle,
   children,
 }: Props) {
-  const [label, labelTooltipText] = title;
   const [parentKey, childKey] = dataKeys;
   const { chainId } = useChainId();
   const arbitrumData = data?.[ARBITRUM];
@@ -58,7 +57,7 @@ function ReferralInfoCard({
               }
               renderContent={() => (
                 <StatsTooltip
-                  title={tooltipTitle ?? ""}
+                  title={label}
                   showDollar={showDollar}
                   shouldFormat={shouldFormat}
                   arbitrumValue={arbitrumData?.[parentKey]?.[childKey] || "0"}
