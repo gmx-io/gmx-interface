@@ -12,11 +12,16 @@ function getSlippageText(value: number) {
   return formatAmount(value, 2, 2).replace(/0+$/, "");
 }
 
-export default function SlippageInput({ setAllowedSlippage, defaultSlippage }) {
-  const defaultValue = getSlippageText(defaultSlippage);
-  const [slippageText, setSlippageText] = useState(defaultValue);
-  const [slippageError, setSlippageError] = useState("");
-  const [isPanelVisible, setIsPanelVisible] = useState(false);
+type Props = {
+  setAllowedSlippage: (value: number) => void;
+  defaultSlippage: number;
+};
+
+export default function SlippageInput({ setAllowedSlippage, defaultSlippage }: Props) {
+  const defaultSlippageText = getSlippageText(defaultSlippage);
+  const [slippageText, setSlippageText] = useState<string>(defaultSlippageText);
+  const [slippageError, setSlippageError] = useState<string>("");
+  const [isPanelVisible, setIsPanelVisible] = useState<boolean>(false);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     setSlippageError("");
@@ -56,7 +61,7 @@ export default function SlippageInput({ setAllowedSlippage, defaultSlippage }) {
           onFocus={() => setIsPanelVisible(true)}
           onBlur={() => setIsPanelVisible(false)}
           value={!!slippageText ? slippageText : ""}
-          placeholder={String(slippageText || defaultValue)}
+          placeholder={slippageText || defaultSlippageText}
           onChange={handleChange}
         />
         <span>%</span>
