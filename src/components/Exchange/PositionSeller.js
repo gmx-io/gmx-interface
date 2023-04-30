@@ -53,6 +53,8 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import FeesTooltip from "./FeesTooltip";
 
+const PERCENTAGE_SUGGESTION_LISTS = [10, 20, 30, 75];
+
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
 
@@ -159,6 +161,7 @@ export default function PositionSeller(props) {
   const [fromValue, setFromValue] = useState("");
   const [isProfitWarningAccepted, setIsProfitWarningAccepted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isPercentagePanelVisible, setIsPercentagePanelVisible] = useState(false);
   const prevIsVisible = usePrevious(isVisible);
   const positionRouterAddress = getContract(chainId, "PositionRouter");
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
@@ -968,47 +971,66 @@ export default function PositionSeller(props) {
               onChange={onOrderOptionChange}
             />
           )}
-          <div className="Exchange-swap-section">
-            <div className="Exchange-swap-section-top">
-              <div className="muted">
-                {convertedAmountFormatted && (
-                  <div className="Exchange-swap-usd">
-                    <Trans>
-                      Close: {convertedAmountFormatted} {position.collateralToken.symbol}
-                    </Trans>
+          <div>
+            <div className="Exchange-swap-section">
+              <div className="Exchange-swap-section-top">
+                <div className="muted">
+                  {convertedAmountFormatted && (
+                    <div className="Exchange-swap-usd">
+                      <Trans>
+                        Close: {convertedAmountFormatted} {position.collateralToken.symbol}
+                      </Trans>
+                    </div>
+                  )}
+                  {!convertedAmountFormatted && t`Close`}
+                </div>
+                {maxAmount && (
+                  <div className="muted align-right clickable" onClick={() => setFromValue(maxAmountFormattedFree)}>
+                    <Trans>Max: {maxAmountFormatted}</Trans>
                   </div>
                 )}
-                {!convertedAmountFormatted && t`Close`}
               </div>
-              {maxAmount && (
-                <div className="muted align-right clickable" onClick={() => setFromValue(maxAmountFormattedFree)}>
-                  <Trans>Max: {maxAmountFormatted}</Trans>
+              <div className="Exchange-swap-section-bottom">
+                <div className="Exchange-swap-input-container">
+                  <input
+                    type="number"
+                    min="0"
+                    placeholder="0.0"
+                    className="Exchange-swap-input"
+                    value={fromValue}
+                    onChange={(e) => setFromValue(e.target.value)}
+                    onFocus={() => setIsPercentagePanelVisible(true)}
+                    onBlur={() => setIsPercentagePanelVisible(false)}
+                  />
+                  {fromValue !== maxAmountFormattedFree && (
+                    <div
+                      className="Exchange-swap-max"
+                      onClick={() => {
+                        setFromValue(maxAmountFormattedFree);
+                      }}
+                    >
+                      <Trans>MAX</Trans>
+                    </div>
+                  )}
                 </div>
-              )}
+                <div className="PositionEditor-token-symbol">USD</div>
+              </div>
             </div>
-            <div className="Exchange-swap-section-bottom">
-              <div className="Exchange-swap-input-container">
-                <input
-                  type="number"
-                  min="0"
-                  placeholder="0.0"
-                  className="Exchange-swap-input"
-                  value={fromValue}
-                  onChange={(e) => setFromValue(e.target.value)}
-                />
-                {fromValue !== maxAmountFormattedFree && (
-                  <div
-                    className="Exchange-swap-max"
-                    onClick={() => {
-                      setFromValue(maxAmountFormattedFree);
+            {isPercentagePanelVisible && (
+              <ul className="Percentage-list">
+                {PERCENTAGE_SUGGESTION_LISTS.map((slippage) => (
+                  <li
+                    key={slippage}
+                    onMouseDown={() => {
+                      setFromValue(formatAmountFree(maxAmount.mul(slippage).div(100), USD_DECIMALS, 2));
+                      setIsPercentagePanelVisible(false);
                     }}
                   >
-                    <Trans>MAX</Trans>
-                  </div>
-                )}
-              </div>
-              <div className="PositionEditor-token-symbol">USD</div>
-            </div>
+                    {slippage}%
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
           {orderOption === STOP && (
             <div className="Exchange-swap-section">
@@ -1056,7 +1078,7 @@ export default function PositionSeller(props) {
             )}
             <div className="PositionEditor-keep-leverage-settings">
               <Checkbox isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
-                <span className="muted font-sm">
+                <span className="text-gray font-sm">
                   <Trans>Keep leverage at {formatAmount(position.leverage, 4, 2)}x</Trans>
                 </span>
               </Checkbox>

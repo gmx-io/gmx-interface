@@ -37,6 +37,28 @@
   min-width: 30rem;
 }
 
+.Percentage-list {
+  position: absolute;
+  display: flex;
+  list-style: none;
+  border-radius: var(--border-radius-sm);
+  padding: 0;
+  background: #212540;
+  margin-top: -0.8rem;
+}
+
+.Percentage-list li {
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  border-radius: var(--border-radius-sm);
+  width: 4.5rem;
+  text-align: center;
+}
+
+.Percentage-list li:hover {
+  background: rgba(58, 63, 121, 0.5607843137254902);
+}
+
 @media (max-width: 700px) {
   .PositionSeller-fees-tooltip .Tooltip-popup {
     min-width: 30rem;
