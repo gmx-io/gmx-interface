@@ -22,13 +22,16 @@
     }
   }
   .Slippage-input {
-    border: 1px solid transparent;
+    border: 1px solid #212540;
     border-radius: var(--border-radius-sm);
     padding-right: 0.5rem;
     line-height: 1;
-    background: linear-gradient(90deg, rgba(30, 34, 61, 0.9) 0%, rgba(38, 43, 71, 0.9) 100%);
+    background: #212540;
+    cursor: pointer;
 
-    &:focus-within {
+    &:hover,
+    &:focus-within,
+    &:focus {
       border-color: #3a3f798f;
     }
 

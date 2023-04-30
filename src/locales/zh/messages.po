@@ -210,10 +210,6 @@ msgstr "申领后，esGMX代币将在7天内空投到您所选网络的账户中
 msgid "Agree"
 msgstr "同意"
 
-#: src/components/Exchange/PositionSeller.js
-#~ msgid "Allow up to 1% slippage"
-#~ msgstr "允许高达1%滑点"
-
 #: src/App/App.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js

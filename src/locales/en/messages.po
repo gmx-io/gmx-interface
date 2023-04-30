@@ -210,10 +210,6 @@ msgstr "After claiming, the esGMX tokens will be airdropped to your account on t
 msgid "Agree"
 msgstr "Agree"
 
-#: src/components/Exchange/PositionSeller.js
-#~ msgid "Allow up to 1% slippage"
-#~ msgstr "Allow up to 1% slippage"
-
 #: src/App/App.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js

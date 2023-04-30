@@ -210,10 +210,6 @@ msgstr "수령 후, esGMX 토큰은 7일 이내에 선택한 네트워크의 계
 msgid "Agree"
 msgstr "동의하기"
 
-#: src/components/Exchange/PositionSeller.js
-#~ msgid "Allow up to 1% slippage"
-#~ msgstr "1%의 슬리피지까지 허용하기"
-
 #: src/App/App.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js

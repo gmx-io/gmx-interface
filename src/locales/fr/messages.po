@@ -210,10 +210,6 @@ msgstr "Après la réclamation, les tokens esGMX seront déposés sur votre comp
 msgid "Agree"
 msgstr "Accepter"
 
-#: src/components/Exchange/PositionSeller.js
-#~ msgid "Allow up to 1% slippage"
-#~ msgstr "Permettre jusqu'à 1 % de glissement"
-
 #: src/App/App.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js

@@ -210,10 +210,6 @@ msgstr "После подачи заявки токены esGMX будут пе�
 msgid "Agree"
 msgstr "Согласен"
 
-#: src/components/Exchange/PositionSeller.js
-#~ msgid "Allow up to 1% slippage"
-#~ msgstr "Допускается скольжение до 1%"
-
 #: src/App/App.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js

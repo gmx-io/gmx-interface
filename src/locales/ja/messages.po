@@ -210,10 +210,6 @@ msgstr "請求後7日以内に指定のネットワーク上のあなたのア�
 msgid "Agree"
 msgstr "同意する"
 
-#: src/components/Exchange/PositionSeller.js
-#~ msgid "Allow up to 1% slippage"
-#~ msgstr "最大1%のスリッページを許容する"
-
 #: src/App/App.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js

@@ -210,10 +210,6 @@ msgstr "Nach Inanspruchnahme werden die esGMX-Tokens innerhalb von 7 Tagen auf d
 msgid "Agree"
 msgstr "Zustimmen"
 
-#: src/components/Exchange/PositionSeller.js
-#~ msgid "Allow up to 1% slippage"
-#~ msgstr "Bis zu 1% Slippage erlauben"
-
 #: src/App/App.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
