@@ -714,6 +714,10 @@ msgstr ""
 msgid "Claim Rewards"
 msgstr "领取奖励"
 
+#: src/components/Referrals/AffiliatesStats.tsx
+msgid "Claim V2 Rebates from your referred Traders."
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claim completed!"
@@ -765,8 +769,12 @@ msgid "Claimable"
 msgstr "可领取"
 
 #: src/components/Referrals/AffiliatesStats.tsx
-msgid "Claimable Rewards"
+msgid "Claimable Rebates"
 msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.tsx
+#~ msgid "Claimable Rewards"
+#~ msgstr ""
 
 #: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
 msgid "Claimable funding"
@@ -3522,6 +3530,7 @@ msgstr "购买保险"
 msgid "Read more"
 msgstr "了解更多"
 
+#: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates Distribution History"
 msgstr "返利分配历史"
@@ -3722,12 +3731,12 @@ msgid "Rewards"
 msgstr "奖励"
 
 #: src/components/Referrals/AffiliatesStats.tsx
-msgid "Rewards Distribution History"
-msgstr "奖励分配历史"
+#~ msgid "Rewards Distribution History"
+#~ msgstr "奖励分配历史"
 
 #: src/components/Referrals/AffiliatesStats.tsx
-msgid "Rewards are airdropped weekly."
-msgstr "奖励每周都会空投"
+#~ msgid "Rewards are airdropped weekly."
+#~ msgstr "奖励每周都会空投"
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Same as current active code"
@@ -4769,6 +4778,11 @@ msgstr "转移失败 <0>查看</0>"
 msgid "Type"
 msgstr "种类"
 
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/TradersStats.tsx
+msgid "USD Value may not be accurate since the data does not contain prices for {0}"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV1.js
 msgid "USDG Debt"
 msgstr "USDG负债"
@@ -4900,12 +4914,21 @@ msgid "V1 AIRDROP"
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
+msgid "V1 Rebates and V1/V2 esGMX are airdropped weekly. V2 Rebates are claimed manually."
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.tsx
 msgid "V1 esGMX"
 msgstr ""
 
 #: src/components/Referrals/TradersStats.tsx
 #: src/components/Referrals/TradersStats.tsx
-msgid "V1 rebates are airdropped weekly, V2 rebates are automatically applied as fee discounts on each trade."
+#~ msgid "V1 rebates are airdropped weekly, V2 rebates are automatically applied as fee discounts on each trade."
+#~ msgstr ""
+
+#: src/components/Referrals/TradersStats.tsx
+#: src/components/Referrals/TradersStats.tsx
+msgid "V1 rebates are airdropped weekly. V2 rebates are automatically applied as fee discounts on each trade and do not show on this table."
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx

@@ -6,7 +6,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { AVALANCHE, getExplorerUrl } from "config/chains";
 import { getNativeToken, getToken, getTokenBySymbol } from "config/tokens";
-import { ReferralCodeStats, ReferralsStatsData, RewardDistributionType } from "domain/referrals";
+import { ReferralCodeStats, ReferralsStatsData, RebateDistributionType } from "domain/referrals";
 import { useMarketsInfo } from "domain/synthetics/markets";
 import { useAffiliateRewards } from "domain/synthetics/referrals/useAffiliateRewards";
 import { getTotalClaimableAffiliateRewardsUsd } from "domain/synthetics/referrals/utils";
@@ -165,15 +165,20 @@ function AffiliatesStats({
           }
         />
         <InfoCard
-          label={t`Claimable Rewards`}
+          label={t`Claimable Rebates`}
+          tooltipText={t`Claim V2 Rebates from your referred Traders.`}
           className="AffiliateStats-claimable-rewards-card"
           data={
             <div className="AffiliateStats-claimable-rewards-container">
               {getUSDValue(totalClaimableRewardsUsd, 4)}
               {totalClaimableRewardsUsd.gt(0) && (
-                <div onClick={() => setIsClaiming(true)} className="AffiliateStats-claim-button">
+                <Button
+                  variant="semi-clear"
+                  onClick={() => setIsClaiming(true)}
+                  className="AffiliateStats-claim-button"
+                >
                   Claim
-                </div>
+                </Button>
               )}
             </div>
           }
@@ -354,7 +359,10 @@ function AffiliatesStats({
       </div>
       {currentRebateData.length > 0 ? (
         <div className="reward-history">
-          <Card title={t`Rewards Distribution History`} tooltipText={t`Rewards are airdropped weekly.`}>
+          <Card
+            title={t`Rebates Distribution History`}
+            tooltipText={t`V1 Rebates and V1/V2 esGMX are airdropped weekly. V2 Rebates are claimed manually.`}
+          >
             <div className="table-wrapper">
               <table className="referral-table">
                 <thead>
@@ -377,13 +385,13 @@ function AffiliatesStats({
                   {currentRebateData.map((rebate, index) => {
                     let rebateType = "-";
 
-                    if (rebate.typeId === RewardDistributionType.Rebate) {
+                    if (rebate.typeId === RebateDistributionType.Rebate) {
                       if (rebate.tokens[0] === esGmxAddress) {
                         rebateType = t`V1 esGMX`;
                       } else {
                         rebateType = t`V1 AIRDROP`;
                       }
-                    } else if (rebate.typeId === RewardDistributionType.Claim) {
+                    } else if (rebate.typeId === RebateDistributionType.Claim) {
                       rebateType = t`V2 CLAIM`;
                     }
 

@@ -23,8 +23,8 @@ import {
   AffiliateTotalStats,
   ReferralCodeStats,
   ReferralsStatsData,
-  RewardDistribution,
-  RewardDistributionType,
+  RebateDistribution,
+  RebateDistributionType,
   TraderReferralTotalStats,
   UserReferralInfo,
 } from "./types";
@@ -223,14 +223,14 @@ export function useReferralsData(chainId: number, account?: string | null): Refe
       .query({
         query,
         variables: {
-          typeIds: Object.values(RewardDistributionType),
+          typeIds: Object.values(RebateDistributionType),
           account: (account || "").toLowerCase(),
           referralTotalStatsId: account && `total:0:${account.toLowerCase()}`,
         },
       })
       .then((res) => {
-        const affiliateDistributions: RewardDistribution[] = [];
-        const traderDistributions: RewardDistribution[] = [];
+        const affiliateDistributions: RebateDistribution[] = [];
+        const traderDistributions: RebateDistribution[] = [];
 
         res.data.distributions.forEach((d) => {
           const item = {
@@ -243,7 +243,7 @@ export function useReferralsData(chainId: number, account?: string | null): Refe
             timestamp: parseInt(d.timestamp),
             transactionHash: d.transactionHash,
           };
-          if (d.typeId === RewardDistributionType.Rebate || d.typeId === RewardDistributionType.Claim) {
+          if (d.typeId === RebateDistributionType.Rebate || d.typeId === RebateDistributionType.Claim) {
             affiliateDistributions.push(item);
           } else {
             traderDistributions.push(item);

@@ -147,7 +147,7 @@ function TradersStats({
         <div className="reward-history">
           <Card
             title={t`Rebates Distribution History`}
-            tooltipText={t`V1 rebates are airdropped weekly, V2 rebates are automatically applied as fee discounts on each trade.`}
+            tooltipText={t`V1 rebates are airdropped weekly. V2 rebates are automatically applied as fee discounts on each trade and do not show on this table.`}
           >
             <div className="table-wrapper">
               <table className="referral-table">
@@ -261,7 +261,7 @@ function TradersStats({
         </div>
       ) : (
         <EmptyMessage
-          tooltipText={t`V1 rebates are airdropped weekly, V2 rebates are automatically applied as fee discounts on each trade.`}
+          tooltipText={t`V1 rebates are airdropped weekly. V2 rebates are automatically applied as fee discounts on each trade and do not show on this table.`}
           message={t`No rebates distribution history yet.`}
         />
       )}

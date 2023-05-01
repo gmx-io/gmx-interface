@@ -12,7 +12,7 @@ export type UserReferralInfo = {
   discountFactor: BigNumber;
 };
 
-export enum RewardDistributionType {
+export enum RebateDistributionType {
   // V1 Airdrop for Affiliates
   Rebate = "1",
   // V2 Claim for Affiliates
@@ -21,8 +21,8 @@ export enum RewardDistributionType {
   Discount = "2",
 }
 
-export type RewardDistribution = {
-  typeId: RewardDistributionType;
+export type RebateDistribution = {
+  typeId: RebateDistributionType;
   receiver: string;
   markets: string[];
   tokens: string[];
@@ -32,7 +32,7 @@ export type RewardDistribution = {
   transactionHash: string;
 };
 
-export type OwnerOnOtherChain = {
+export type CodeOwnershipInfo = {
   code: string;
   codeString: string;
   owner?: string;
@@ -45,7 +45,7 @@ export type ReferralCodeStats = {
   trades: number;
   tradedReferralsCount: number;
   registeredReferralsCount: number;
-  ownerOnOtherChain?: OwnerOnOtherChain;
+  ownerOnOtherChain?: CodeOwnershipInfo;
   volume: BigNumber;
   totalRebateUsd: BigNumber;
   affiliateRebateUsd: BigNumber;
@@ -106,8 +106,8 @@ export type TierInfo = {
 };
 
 export type ReferralsStatsData = {
-  affiliateDistributions: RewardDistribution[];
-  traderDistributions: RewardDistribution[];
+  affiliateDistributions: RebateDistribution[];
+  traderDistributions: RebateDistribution[];
   affiliateReferralCodesStats: ReferralCodeStats[];
   affiliateTotalStats: AffiliateTotalStats;
   traderReferralTotalStats: TraderReferralTotalStats;
