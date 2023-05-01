@@ -191,6 +191,26 @@ msgstr "Acceptable Price Impact"
 msgid "Account"
 msgstr "Account"
 
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Accrued Borrow Fee"
+msgstr "Accrued Borrow Fee"
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Accrued Negatige Funding Fee"
+msgstr "Accrued Negatige Funding Fee"
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Accrued Positive Funding Fee"
+msgstr "Accrued Positive Funding Fee"
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Accured Borrow fee"
+msgstr "Accured Borrow fee"
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Accurred Funding fee"
+msgstr "Accurred Funding fee"
+
 #: src/pages/Actions/Actions.js
 msgid "Actions"
 msgstr "Actions"
@@ -474,7 +494,6 @@ msgstr "Boost your rewards with Multiplier Points. <0>More info</0>."
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 msgid "Borrow Fee"
@@ -482,7 +501,6 @@ msgstr "Borrow Fee"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Borrow Fee / Day"
 msgstr "Borrow Fee / Day"
 
@@ -491,8 +509,8 @@ msgid "Borrow Fee Rate"
 msgstr "Borrow Fee Rate"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Borrow fee"
-msgstr "Borrow fee"
+#~ msgid "Borrow fee"
+#~ msgstr "Borrow fee"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #~ msgid "Borrow fee:"
@@ -1160,6 +1178,14 @@ msgstr "Creating..."
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Creator"
 msgstr "Creator"
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Current Borrow Fee / Day"
+msgstr "Current Borrow Fee / Day"
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Current Funding Fee / Day"
+msgstr "Current Funding Fee / Day"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Current Pool Amount"
@@ -1842,15 +1868,14 @@ msgstr "Fulfilling {0} {tokensText} request"
 #~ msgstr "Fulfilling {longText} {0} request"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 msgid "Funding Fee"
 msgstr "Funding Fee"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Funding Fee / Day"
-msgstr "Funding Fee / Day"
+#~ msgid "Funding Fee / Day"
+#~ msgstr "Funding Fee / Day"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Funding Fee Rate"
@@ -1865,7 +1890,6 @@ msgid "Funding Rate / 1h"
 msgstr "Funding Rate / 1h"
 
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Funding fee"
 msgstr "Funding fee"
 
@@ -2929,6 +2953,10 @@ msgstr "Need to accept Price Impact"
 #~ msgid "Need to accept price impact"
 #~ msgstr "Need to accept price impact"
 
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Negative Funding Fees are settled against the collateral automatically and will influence the liquidation price. Positive Funding Fees can be claimed under Claimable Funding after realizing any action on the position."
+msgstr "Negative Funding Fees are settled against the collateral automatically and will influence the liquidation price. Positive Funding Fees can be claimed under Claimable Funding after realizing any action on the position."
+
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -2945,8 +2973,12 @@ msgstr "Net Value: Initial Collateral + PnL - Borrow Fee - Close Fee"
 #~ msgstr "Net Value: Initial Collateral + PnL - Borrow Fee - Funding Fee"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Funding Fee - Close Fee"
-msgstr "Net Value: Initial Collateral + PnL - Borrow Fee - Funding Fee - Close Fee"
+#~ msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Funding Fee - Close Fee"
+#~ msgstr "Net Value: Initial Collateral + PnL - Borrow Fee - Funding Fee - Close Fee"
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee"
+msgstr "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #~ msgid "Net Value: Initial Collateral + PnL - Fees"

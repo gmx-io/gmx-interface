@@ -6,6 +6,12 @@
   margin-left: 0;
 }
 
+.PositionItem-collateral-tooltip {
+  .Tooltip-popup {
+    min-width: 32rem;
+  }
+}
+
 @media (max-width: 1300px) {
   .Position-collateral-amount {
     margin-left: 0.8rem;

@@ -191,6 +191,26 @@ msgstr ""
 msgid "Account"
 msgstr "帐户"
 
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Accrued Borrow Fee"
+msgstr ""
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Accrued Negatige Funding Fee"
+msgstr ""
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Accrued Positive Funding Fee"
+msgstr ""
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Accured Borrow fee"
+msgstr ""
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Accurred Funding fee"
+msgstr ""
+
 #: src/pages/Actions/Actions.js
 msgid "Actions"
 msgstr "指令"
@@ -474,7 +494,6 @@ msgstr "用点数提升你的奖励。 <0>更多信息</0>"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 msgid "Borrow Fee"
@@ -482,7 +501,6 @@ msgstr "借款费用"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Borrow Fee / Day"
 msgstr "借款费用/天"
 
@@ -491,8 +509,8 @@ msgid "Borrow Fee Rate"
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Borrow fee"
-msgstr ""
+#~ msgid "Borrow fee"
+#~ msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #~ msgid "Borrow fee:"
@@ -1160,6 +1178,14 @@ msgstr "创建中..."
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Creator"
 msgstr "创造者"
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Current Borrow Fee / Day"
+msgstr ""
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Current Funding Fee / Day"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Current Pool Amount"
@@ -1842,15 +1868,14 @@ msgstr ""
 #~ msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 msgid "Funding Fee"
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Funding Fee / Day"
-msgstr ""
+#~ msgid "Funding Fee / Day"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Funding Fee Rate"
@@ -1865,7 +1890,6 @@ msgid "Funding Rate / 1h"
 msgstr ""
 
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Funding fee"
 msgstr ""
 
@@ -2929,6 +2953,10 @@ msgstr ""
 #~ msgid "Need to accept price impact"
 #~ msgstr ""
 
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Negative Funding Fees are settled against the collateral automatically and will influence the liquidation price. Positive Funding Fees can be claimed under Claimable Funding after realizing any action on the position."
+msgstr ""
+
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -2945,7 +2973,11 @@ msgstr ""
 #~ msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Funding Fee - Close Fee"
+#~ msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Funding Fee - Close Fee"
+#~ msgstr ""
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee"
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx

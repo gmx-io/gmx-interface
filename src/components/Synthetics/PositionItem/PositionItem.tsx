@@ -10,9 +10,9 @@ import { AiOutlineEdit } from "react-icons/ai";
 import { ImSpinner2 } from "react-icons/im";
 
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/fees";
-import "./PositionItem.scss";
 import { getTriggerThresholdType } from "domain/synthetics/trade";
-import { BigNumber } from "ethers";
+import { CHART_PERIODS } from "lib/legacy";
+import "./PositionItem.scss";
 
 export type Props = {
   position: PositionInfo;
@@ -40,7 +40,7 @@ export function PositionItem(p: Props) {
         handleClassName="plain"
         renderContent={() => (
           <div>
-            {t`Net Value: Initial Collateral + PnL - Borrow Fee - Funding Fee - Close Fee`}
+            {t`Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee`}
             <br />
             <br />
             <StatsTooltipRow
@@ -50,12 +50,12 @@ export function PositionItem(p: Props) {
             />
             <StatsTooltipRow label={t`PnL`} value={formatDeltaUsd(p.position?.pnl) || "..."} showDollar={false} />
             <StatsTooltipRow
-              label={t`Borrow fee`}
+              label={t`Accured Borrow fee`}
               value={formatUsd(p.position.pendingBorrowingFeesUsd?.mul(-1)) || "..."}
               showDollar={false}
             />
             <StatsTooltipRow
-              label={t`Funding fee`}
+              label={t`Accurred Funding fee`}
               value={formatUsd(p.position.pendingFundingFeesUsd.mul(-1)) || "..."}
               showDollar={false}
             />
@@ -77,20 +77,13 @@ export function PositionItem(p: Props) {
   }
 
   function renderCollateral() {
-    let displayedfundingFeeDeltaUsd: BigNumber | undefined = undefined;
-
-    if (p.position.pendingClaimableFundingFeesUsd.gt(0)) {
-      displayedfundingFeeDeltaUsd = p.position.pendingClaimableFundingFeesUsd;
-    } else {
-      displayedfundingFeeDeltaUsd = p.position.pendingFundingFeesUsd.mul(-1);
-    }
-
     return (
       <>
         <div className="position-list-collateral">
           <Tooltip
             handle={`${formatUsd(p.position.remainingCollateralUsd)}`}
             position={p.isLarge ? "left-bottom" : "right-bottom"}
+            className="PositionItem-collateral-tooltip"
             handleClassName={cx("plain", { negative: p.position.hasLowCollateral })}
             renderContent={() => {
               return (
@@ -123,37 +116,54 @@ export function PositionItem(p: Props) {
                   />
                   <br />
                   <StatsTooltipRow
-                    label={t`Borrow Fee`}
+                    label={t`Accrued Borrow Fee`}
                     showDollar={false}
                     value={formatUsd(p.position.pendingBorrowingFeesUsd.mul(-1)) || "..."}
                   />
                   <StatsTooltipRow
-                    label={t`Funding Fee`}
+                    label={t`Accrued Negatige Funding Fee`}
                     showDollar={false}
-                    value={formatDeltaUsd(displayedfundingFeeDeltaUsd) || "..."}
+                    value={formatDeltaUsd(p.position.pendingFundingFeesUsd.mul(-1)) || "..."}
+                  />
+                  <StatsTooltipRow
+                    label={t`Accrued Positive Funding Fee`}
+                    showDollar={false}
+                    value={formatDeltaUsd(p.position.pendingClaimableFundingFeesUsd) || "..."}
                   />
                   <br />
                   <StatsTooltipRow
                     showDollar={false}
-                    label={t`Borrow Fee / Day`}
+                    label={t`Current Borrow Fee / Day`}
                     value={formatUsd(
                       getBorrowingFeeRateUsd(
                         p.position.marketInfo,
                         p.position.isLong,
                         p.position.sizeInUsd,
-                        60 * 60 * 24
+                        CHART_PERIODS["1d"]
                       ).mul(-1)
                     )}
                   />
                   <StatsTooltipRow
                     showDollar={false}
-                    label={t`Funding Fee / Day`}
+                    label={t`Current Funding Fee / Day`}
                     value={formatDeltaUsd(
-                      getFundingFeeRateUsd(p.position.marketInfo, p.position.isLong, p.position.sizeInUsd, 60 * 60 * 24)
+                      getFundingFeeRateUsd(
+                        p.position.marketInfo,
+                        p.position.isLong,
+                        p.position.sizeInUsd,
+                        CHART_PERIODS["1d"]
+                      )
                     )}
                   />
                   <br />
                   <Trans>Use the Edit Collateral icon to deposit or withdraw collateral.</Trans>
+                  <br />
+                  <br />
+                  <Trans>
+                    Negative Funding Fees are settled against the collateral automatically and will influence the
+                    liquidation price. Positive Funding Fees can be claimed under Claimable Funding after realizing any
+                    action on the position.
+                  </Trans>
                 </>
               );
             }}
