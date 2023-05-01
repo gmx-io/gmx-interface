@@ -27,6 +27,7 @@ export type RewardDistribution = {
   markets: string[];
   tokens: string[];
   amounts: BigNumber[];
+  amountsInUsd: BigNumber[];
   timestamp: number;
   transactionHash: string;
 };

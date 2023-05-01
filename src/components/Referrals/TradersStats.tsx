@@ -9,6 +9,7 @@ import { BigNumber } from "ethers";
 import { formatDate } from "lib/dates";
 import { shortenAddress } from "lib/legacy";
 import { formatTokenAmount } from "lib/numbers";
+import { IoWarningOutline } from "react-icons/io5";
 import { useRef, useState } from "react";
 import { BiEditAlt } from "react-icons/bi";
 import Card from "../Common/Card";
@@ -19,6 +20,7 @@ import InfoCard from "./InfoCard";
 import { ReferralCodeForm } from "./JoinReferralCode";
 import { getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./referralsHelper";
 import usePagination from "./usePagination";
+import "./TradersStats.scss";
 
 type Props = {
   referralsData?: ReferralsStatsData;
@@ -178,6 +180,15 @@ function TradersStats({
                       acc[token.address] = acc[token.address].add(rebate.amounts[i]);
                       return acc;
                     }, {} as { [address: string]: BigNumber });
+                    const tokensWithoutPrices: string[] = [];
+
+                    const totalUsd = rebate.amountsInUsd.reduce((acc, amount, i) => {
+                      if (amount.eq(0) && !rebate.amounts[i].eq(0)) {
+                        tokensWithoutPrices.push(rebate.tokens[i]);
+                      }
+
+                      return acc.add(amount);
+                    }, BigNumber.from(0));
 
                     const explorerURL = getExplorerUrl(chainId);
                     return (
@@ -185,19 +196,54 @@ function TradersStats({
                         <td data-label="Date">{formatDate(rebate.timestamp)}</td>
                         <td data-label="Type">V1 AIRDROP</td>
                         <td data-label="Amount">
-                          {Object.keys(amountsByTokens).map((tokenAddress) => {
-                            const token = getToken(chainId, tokenAddress);
-                            return (
+                          <Tooltip
+                            handle={
+                              <div className="Rebate-amount-value">
+                                {tokensWithoutPrices.length > 0 && (
+                                  <>
+                                    <IoWarningOutline color="#ffba0e" size={16} />
+                                    &nbsp;
+                                  </>
+                                )}
+
+                                {getUSDValue(totalUsd)}
+                              </div>
+                            }
+                            renderContent={() => (
                               <>
-                                <div key={tokenAddress}>
-                                  {formatTokenAmount(amountsByTokens[tokenAddress], token.decimals, token.symbol, {
-                                    displayDecimals: 6,
-                                    useCommas: true,
-                                  })}
-                                </div>
+                                {Object.keys(amountsByTokens).map((tokenAddress) => {
+                                  const token = getToken(chainId, tokenAddress);
+
+                                  return (
+                                    <>
+                                      {tokensWithoutPrices.length > 0 && (
+                                        <>
+                                          <Trans>
+                                            USD Value may not be accurate since the data does not contain prices for{" "}
+                                            {tokensWithoutPrices
+                                              .map((address) => getToken(chainId, address).symbol)
+                                              .join(", ")}
+                                          </Trans>
+                                          <br />
+                                        </>
+                                      )}
+                                      <StatsTooltipRow
+                                        key={tokenAddress}
+                                        showDollar={false}
+                                        label={token.symbol}
+                                        value={formatTokenAmount(
+                                          amountsByTokens[tokenAddress],
+                                          token.decimals,
+                                          undefined,
+                                          { displayDecimals: 6 }
+                                        )}
+                                      />
+                                    </>
+                                  );
+                                })}
                               </>
-                            );
-                          })}
+                            )}
+                          />
                         </td>
                         <td data-label="Transaction">
                           <ExternalLink href={explorerURL + `tx/${rebate.transactionHash}`}>

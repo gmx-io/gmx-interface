@@ -399,6 +399,16 @@ function AffiliatesStats({
                       return acc;
                     }, {} as { [address: string]: BigNumber });
 
+                    const tokensWithoutPrices: string[] = [];
+
+                    const totalUsd = rebate.amountsInUsd.reduce((acc, usdAmount, i) => {
+                      if (usdAmount.eq(0) && !rebate.amounts[i].eq(0)) {
+                        tokensWithoutPrices.push(rebate.tokens[i]);
+                      }
+
+                      return acc.add(usdAmount);
+                    }, BigNumber.from(0));
+
                     const explorerURL = getExplorerUrl(chainId);
                     return (
                       <tr key={index}>
@@ -409,19 +419,54 @@ function AffiliatesStats({
                           {rebateType}
                         </td>
                         <td className="table-head" data-label="Amount">
-                          {Object.keys(amountsByTokens).map((tokenAddress) => {
-                            const token = getToken(chainId, tokenAddress);
-                            return (
+                          <Tooltip
+                            handle={
+                              <div className="Rebate-amount-value">
+                                {tokensWithoutPrices.length > 0 && (
+                                  <>
+                                    <IoWarningOutline color="#ffba0e" size={16} />
+                                    &nbsp;
+                                  </>
+                                )}
+
+                                {getUSDValue(totalUsd)}
+                              </div>
+                            }
+                            renderContent={() => (
                               <>
-                                <div key={tokenAddress}>
-                                  {formatTokenAmount(amountsByTokens[tokenAddress], token.decimals, token.symbol, {
-                                    displayDecimals: 6,
-                                    useCommas: true,
-                                  })}
-                                </div>
+                                {Object.keys(amountsByTokens).map((tokenAddress) => {
+                                  const token = getToken(chainId, tokenAddress);
+
+                                  return (
+                                    <>
+                                      {tokensWithoutPrices.length > 0 && (
+                                        <>
+                                          <Trans>
+                                            USD Value may not be accurate since the data does not contain prices for{" "}
+                                            {tokensWithoutPrices
+                                              .map((address) => getToken(chainId, address).symbol)
+                                              .join(", ")}
+                                          </Trans>
+                                          <br />
+                                        </>
+                                      )}
+                                      <StatsTooltipRow
+                                        key={tokenAddress}
+                                        showDollar={false}
+                                        label={token.symbol}
+                                        value={formatTokenAmount(
+                                          amountsByTokens[tokenAddress],
+                                          token.decimals,
+                                          undefined,
+                                          { displayDecimals: 6 }
+                                        )}
+                                      />
+                                    </>
+                                  );
+                                })}
                               </>
-                            );
-                          })}
+                            )}
+                          />
                         </td>
                         <td className="table-head" data-label="Transaction">
                           <ExternalLink href={explorerURL + `tx/${rebate.transactionHash}`}>

@@ -167,6 +167,7 @@ export function useReferralsData(chainId: number, account?: string | null): Refe
           markets
           tokens
           amounts
+          amountsInUsd
           transactionHash
           timestamp
         }
@@ -238,6 +239,7 @@ export function useReferralsData(chainId: number, account?: string | null): Refe
             markets: d.markets.map((market) => ethers.utils.getAddress(market)),
             tokens: d.tokens.map((token) => ethers.utils.getAddress(token)),
             amounts: d.amounts.map((a) => bigNumberify(a)!),
+            amountsInUsd: d.amountsInUsd.map((a) => bigNumberify(a)!),
             timestamp: parseInt(d.timestamp),
             transactionHash: d.transactionHash,
           };
