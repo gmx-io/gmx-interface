@@ -196,8 +196,12 @@ msgid "Accrued Borrow Fee"
 msgstr "Accrued Borrow Fee"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Accrued Negatige Funding Fee"
-msgstr "Accrued Negatige Funding Fee"
+#~ msgid "Accrued Negatige Funding Fee"
+#~ msgstr "Accrued Negatige Funding Fee"
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Accrued Negative Funding Fee"
+msgstr "Accrued Negative Funding Fee"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Accrued Positive Funding Fee"
