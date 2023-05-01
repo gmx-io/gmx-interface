@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import useSWR from "swr";
 
 import ReferralStorage from "abis/ReferralStorage.json";
+import Timelock from "abis/Timelock.json";
 import { MAX_REFERRAL_CODE_LENGTH, isAddressZero, isHashZero } from "lib/legacy";
 import { getContract } from "config/contracts";
 import { REGEX_VERIFY_BYTES32 } from "components/Referrals/referralsHelper";
@@ -292,8 +293,9 @@ export function useReferralsData(chainId, account) {
 
 export async function setAffiliateTier(chainId: number, affiliate: string, tierId: number, library, opts) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const contract = new ethers.Contract(referralStorageAddress, ReferralStorage.abi, library.getSigner());
-  return callContract(chainId, contract, "setReferrerTier", [affiliate, tierId], opts);
+  const timelockAddress = getContract(chainId, "Timelock");
+  const contract = new ethers.Contract(timelockAddress, Timelock.abi, library.getSigner());
+  return callContract(chainId, contract, "setReferrerTier", [referralStorageAddress, affiliate, tierId], opts);
 }
 
 export async function registerReferralCode(chainId, referralCode, library, opts) {
