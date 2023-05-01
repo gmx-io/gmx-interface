@@ -13,7 +13,7 @@ export default function AdminReferrals() {
   const { chainId } = useChainId();
 
   const [affiliate, setAffiliate] = useState<string>("");
-  const [affiliateTier, setAffiliateTier] = useState<number>(0);
+  const [affiliateTier, setAffiliateTier] = useState<number>(1);
   const { referrerTier: currentAffiliateTier } = useReferrerTier(library, chainId, affiliate);
 
   const onConfirmation = useCallback(() => {
