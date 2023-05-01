@@ -121,7 +121,7 @@ export function PositionItem(p: Props) {
                     value={formatUsd(p.position.pendingBorrowingFeesUsd.mul(-1)) || "..."}
                   />
                   <StatsTooltipRow
-                    label={t`Accrued Negatige Funding Fee`}
+                    label={t`Accrued Negative Funding Fee`}
                     showDollar={false}
                     value={formatDeltaUsd(p.position.pendingFundingFeesUsd.mul(-1)) || "..."}
                   />
