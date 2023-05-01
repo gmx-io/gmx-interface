@@ -101,6 +101,11 @@ export function ClaimModal(p: Props) {
       }
     }
 
+    console.log("claim funding", {
+      fundingMarketAddresses,
+      fundingTokenAddresses,
+    });
+
     claimCollateralTxn(chainId, library, {
       account,
       fundingFees: {
