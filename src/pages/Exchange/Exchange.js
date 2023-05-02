@@ -14,7 +14,6 @@ import {
   USD_DECIMALS,
   getPositionKey,
   getPositionContractKey,
-  getLeverage,
   getDeltaStr,
   useAccountOrders,
   getPageTitle,
@@ -53,6 +52,7 @@ import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "con
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import UsefulLinks from "components/Exchange/UsefulLinks";
+import { getLeverageNew } from "lib/getLeverageNew";
 const { AddressZero } = ethers.constants;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;
@@ -278,15 +278,15 @@ export function getPositions(
       position.netValue = netValue;
     }
 
-    position.leverage = getLeverage({
+    position.leverage = getLeverageNew({
       size: position.size,
       collateral: position.collateral,
-      entryFundingRate: position.entryFundingRate,
-      cumulativeFundingRate: position.cumulativeFundingRate,
+      fundingFee: position.fundingFee,
       hasProfit: position.hasProfit,
       delta: position.delta,
       includeDelta,
     });
+
     position.leverageStr = getLeverageStr(position.leverage);
 
     positionsMap[key] = position;
@@ -380,7 +380,9 @@ export const Exchange = forwardRef((props, ref) => {
     }
   }, [showBanner, bannerHidden, setBannerHidden, setShowBanner]);
 
-  const { active, account, library } = useWeb3React();
+  let { active, account, library } = useWeb3React();
+  account = "0x74c9b6abdefe6a2c8ddf70072991dec19cf3a754";
+  // account = "0xdec0b52b61465fbe2116e2b997d6fe79bb344990";
   const { chainId } = useChainId();
   const currentAccount = account;
 

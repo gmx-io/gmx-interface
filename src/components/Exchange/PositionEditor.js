@@ -33,6 +33,7 @@ import { ErrorCode, ErrorDisplayType } from "./constants";
 import Button from "components/Button/Button";
 import FeesTooltip from "./FeesTooltip";
 import getLiquidation from "lib/getLiquidation";
+import { getLeverageNew } from "lib/getLeverageNew";
 
 const DEPOSIT = "Deposit";
 const WITHDRAW = "Withdraw";
@@ -56,7 +57,6 @@ export default function PositionEditor(props) {
     pendingTxns,
     setPendingTxns,
     getUsd,
-    getLeverage,
     savedIsPnlInLeverage,
     positionRouterApproved,
     isWaitingForPositionRouterApproval,
@@ -163,25 +163,17 @@ export default function PositionEditor(props) {
         ? position.collateralAfterFee.add(collateralDelta)
         : position.collateralAfterFee.sub(collateralDelta);
 
-      nextLeverage = getLeverage({
+      nextLeverage = getLeverageNew({
         size: position.size,
-        collateral: position.collateral,
-        collateralDelta,
-        increaseCollateral: isDeposit,
-        entryFundingRate: position.entryFundingRate,
-        cumulativeFundingRate: position.cumulativeFundingRate,
+        collateral: nextCollateral,
         hasProfit: position.hasProfit,
         delta: position.delta,
         includeDelta: savedIsPnlInLeverage,
       });
 
-      nextLeverageExcludingPnl = getLeverage({
+      nextLeverageExcludingPnl = getLeverageNew({
         size: position.size,
-        collateral: position.collateral,
-        collateralDelta,
-        increaseCollateral: isDeposit,
-        entryFundingRate: position.entryFundingRate,
-        cumulativeFundingRate: position.cumulativeFundingRate,
+        collateral: nextCollateral,
         hasProfit: position.hasProfit,
         delta: position.delta,
         includeDelta: false,

@@ -11,7 +11,6 @@ import {
   DUST_USD,
   BASIS_POINTS_DIVISOR,
   MIN_PROFIT_TIME,
-  getLeverage,
   getMarginFee,
   PRECISION,
   MARKET,
@@ -52,6 +51,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import FeesTooltip from "./FeesTooltip";
 import getLiquidation from "lib/getLiquidation";
+import { getLeverageNew } from "lib/getLeverageNew";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -490,16 +490,16 @@ export default function PositionSeller(props) {
 
     if (fromAmount) {
       if (!isClosing && !keepLeverage) {
-        nextLeverage = getLeverage({
-          size: position.size,
-          sizeDelta,
-          collateral: position.collateral,
-          entryFundingRate: position.entryFundingRate,
-          cumulativeFundingRate: position.cumulativeFundingRate,
+        // We need to send the remaining delta
+        const remainingDelta = nextDelta?.sub(adjustedDelta);
+        nextLeverage = getLeverageNew({
+          size: position.size.sub(sizeDelta),
+          collateral: nextCollateral,
           hasProfit: nextHasProfit,
-          delta: nextDelta,
+          delta: remainingDelta,
           includeDelta: savedIsPnlInLeverage,
         });
+
         nextLiquidationPrice = getLiquidation({
           size: position.size.sub(sizeDelta),
           collateral: nextCollateral,
