@@ -530,16 +530,13 @@ function FullApp() {
               <Route exact path="/actions/:account">
                 <Actions savedIsPnlInLeverage={savedIsPnlInLeverage} savedShowPnlAfterFees={savedShowPnlAfterFees} />
               </Route>
-              <Route exact path="/admin/referrals">
+              <Route exact path="/referrals-tier">
                 <ReferralsTier />
               </Route>
-              <Route exact path="/admin/stats">
+              <Route exact path="/stats">
                 <Stats />
               </Route>
-              <Route exact path="/stats">
-                <Redirect to="/admin/stats" />
-              </Route>
-              <Route exact path="/admin/orders_overview">
+              <Route exact path="/orders_overview">
                 <OrdersOverview />
               </Route>
               <Route exact path="/positions_overview">
