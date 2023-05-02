@@ -23,16 +23,6 @@ export function getLeverageNew({ size, collateral, fundingFee, hasProfit, delta,
     }
   }
 
-  console.log({
-    size: size?.toString(),
-    collateral: collateral?.toString(),
-    fundingFee: fundingFee?.toString(),
-    hasProfit,
-    delta: delta?.toString(),
-    includeDelta,
-    remainingCollateral: remainingCollateral?.toString(),
-  });
-
   if (remainingCollateral.eq(0)) {
     return;
   }
