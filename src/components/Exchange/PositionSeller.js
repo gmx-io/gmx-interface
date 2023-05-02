@@ -387,8 +387,15 @@ export default function PositionSeller(props) {
 
     if (keepLeverage && sizeDelta && !isClosing) {
       // when keepLeverage is on, the collateralDelta is the leftover after keeping the collateral required for the new position size
+      const leverageWithoutDelta = getLeverageNew({
+        size: position.size,
+        collateral: position.collateral,
+        fundingFee: fundingFee,
+        includeDelta: true,
+      });
+
       collateralDelta = position.collateral.sub(
-        position.size.sub(sizeDelta).mul(BASIS_POINTS_DIVISOR).div(position.leverage)
+        position.size.sub(sizeDelta).mul(BASIS_POINTS_DIVISOR).div(leverageWithoutDelta)
       );
 
       if (nextHasProfit) {
