@@ -11,7 +11,6 @@ import {
   DUST_USD,
   BASIS_POINTS_DIVISOR,
   MIN_PROFIT_TIME,
-  getLiquidationPrice,
   getLeverage,
   getMarginFee,
   PRECISION,
@@ -52,6 +51,7 @@ import { formatDateTime, getTimeRemaining } from "lib/dates";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import FeesTooltip from "./FeesTooltip";
+import getLiquidation from "lib/getLiquidation";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -354,7 +354,13 @@ export default function PositionSeller(props) {
     sizeDelta = fromAmount;
 
     title = t`Close ${longOrShortText} ${position.indexToken.symbol}`;
-    liquidationPrice = getLiquidationPrice(position);
+    liquidationPrice = getLiquidation({
+      size: position.size,
+      collateral: position.collateral,
+      averagePrice: position.averagePrice,
+      isLong: position.isLong,
+      fundingFees: position.fundingFee,
+    });
 
     if (fromAmount) {
       isClosing = position.size.sub(fromAmount).lt(DUST_USD);
@@ -494,17 +500,11 @@ export default function PositionSeller(props) {
           delta: nextDelta,
           includeDelta: savedIsPnlInLeverage,
         });
-        nextLiquidationPrice = getLiquidationPrice({
-          isLong: position.isLong,
-          size: position.size,
-          sizeDelta,
-          collateral: position.collateral,
+        nextLiquidationPrice = getLiquidation({
+          size: position.size.sub(sizeDelta),
+          collateral: nextCollateral,
           averagePrice: position.averagePrice,
-          entryFundingRate: position.entryFundingRate,
-          cumulativeFundingRate: position.cumulativeFundingRate,
-          delta: nextDelta,
-          hasProfit: nextHasProfit,
-          includeDelta: true,
+          isLong: position.isLong,
         });
       }
     }
