@@ -71,41 +71,36 @@ function calculateNextCollateralAndReceiveUsd(
   isClosing,
   adjustedDelta,
   collateralDelta,
-  totalFees,
-  swapFee,
-  spread
+  totalFees
 ) {
   let nextCollateral;
   let receiveUsd = bigNumberify(0);
 
-  if (isClosing) {
-    nextCollateral = bigNumberify(0);
-  } else {
-    if (collateral) {
-      nextCollateral = collateral;
+  if (collateral) {
+    nextCollateral = collateral;
 
-      if (hasProfit) {
-        receiveUsd = receiveUsd.add(adjustedDelta);
-      } else {
-        nextCollateral = nextCollateral.sub(adjustedDelta);
-      }
+    if (hasProfit) {
+      receiveUsd = receiveUsd.add(adjustedDelta);
+    } else {
+      nextCollateral = nextCollateral.sub(adjustedDelta);
+    }
 
-      if (collateralDelta && collateralDelta.gt(0)) {
-        receiveUsd = receiveUsd.add(collateralDelta);
-        nextCollateral = nextCollateral.sub(collateralDelta);
-      }
-      if (receiveUsd.gt(totalFees)) {
-        receiveUsd = receiveUsd.sub(totalFees);
-      } else {
-        nextCollateral = nextCollateral.sub(totalFees);
-      }
+    if (collateralDelta && collateralDelta.gt(0)) {
+      receiveUsd = receiveUsd.add(collateralDelta);
+      nextCollateral = nextCollateral.sub(collateralDelta);
+    }
+    if (isClosing) {
+      receiveUsd = receiveUsd.add(nextCollateral);
+      nextCollateral = bigNumberify(0);
+    }
+    if (receiveUsd.gt(totalFees)) {
+      receiveUsd = receiveUsd.sub(totalFees);
+    } else {
+      nextCollateral = nextCollateral.sub(totalFees);
     }
   }
 
-  if (swapFee) {
-    receiveUsd = receiveUsd.sub(swapFee);
-  }
-  return { nextCollateral, receiveUsd: applySpread(receiveUsd, spread) };
+  return { nextCollateral, receiveUsd };
 }
 
 function shouldSwap(collateralToken, receiveToken) {
@@ -352,7 +347,6 @@ export default function PositionSeller(props) {
 
   const collateralToken = position.collateralToken;
   const collateralTokenInfo = getTokenInfo(infoTokens, collateralToken.address);
-  const swapToTokenInfo = getTokenInfo(infoTokens, swapToToken?.address);
 
   if (position) {
     fundingFee = position.fundingFee;
@@ -369,7 +363,6 @@ export default function PositionSeller(props) {
 
     if (isClosing) {
       sizeDelta = position.size;
-      receiveUsd = position.collateral;
     } else if (orderOption === STOP && sizeDelta && existingOrders.length > 0) {
       let residualSize = position.size;
       for (const order of existingOrders) {
@@ -393,7 +386,7 @@ export default function PositionSeller(props) {
       );
 
       if (nextHasProfit) {
-        if (collateralDelta.add(adjustedDelta).lt(totalFees)) {
+        if (collateralDelta.add(adjustedDelta).lte(totalFees)) {
           collateralDelta = bigNumberify(0);
           // ERROR: Keep Leverage is not possible. Either uncheck the keep leverage same checkbox or close larger amount or do a full close
         }
@@ -406,6 +399,16 @@ export default function PositionSeller(props) {
         }
       }
     }
+
+    ({ receiveUsd, nextCollateral } = calculateNextCollateralAndReceiveUsd(
+      position.collateral,
+      nextHasProfit,
+      isClosing,
+      adjustedDelta,
+      collateralDelta,
+      totalFees
+    ));
+
     maxAmount = position.size;
     maxAmountFormatted = formatAmount(maxAmount, USD_DECIMALS, 2, true);
     maxAmountFormattedFree = formatAmountFree(maxAmount, USD_DECIMALS, 2);
@@ -415,8 +418,7 @@ export default function PositionSeller(props) {
       convertedAmountFormatted = formatAmount(convertedAmount, collateralToken.decimals, 4, true);
     }
 
-    // receiveUsd = applySpread(receiveUsd, collateralTokenInfo?.spread);
-
+    receiveUsd = applySpread(receiveUsd, collateralTokenInfo?.spread);
     receiveToken = isSwapAllowed && swapToToken ? swapToToken : collateralToken;
 
     if (isSwapAllowed && isContractAccount && isAddressZero(receiveToken.address)) {
@@ -441,19 +443,11 @@ export default function PositionSeller(props) {
       if (feeBasisPoints) {
         swapFee = receiveUsd.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR);
         totalFees = totalFees.add(swapFee || bigNumberify(0));
+        receiveUsd = receiveUsd.sub(swapFee);
       }
+      const swapToTokenInfo = getTokenInfo(infoTokens, swapToToken.address);
+      receiveUsd = applySpread(receiveUsd, swapToTokenInfo?.spread);
     }
-
-    ({ receiveUsd, nextCollateral } = calculateNextCollateralAndReceiveUsd(
-      position.collateral,
-      position.hasProfit,
-      isClosing,
-      adjustedDelta,
-      collateralDelta,
-      totalFees,
-      swapFee,
-      swapFee ? swapToTokenInfo?.spread : collateralTokenInfo?.spread
-    ));
 
     // For Shorts trigger orders the collateral is a stable coin, it should not depend on the triggerPrice
     if (orderOption === STOP && position.isLong) {
