@@ -336,18 +336,10 @@ export default function PositionSeller(props) {
       }
     }
 
+    totalFees = totalFees.add(positionFee || bigNumberify(0)).add(fundingFee || bigNumberify(0));
+
     if (sizeDelta && position.size.gt(0)) {
       adjustedDelta = nextDelta.mul(sizeDelta).div(position.size);
-    }
-
-    if (nextHasProfit) {
-      receiveUsd = receiveUsd.add(adjustedDelta);
-    } else {
-      if (receiveUsd.gt(adjustedDelta)) {
-        receiveUsd = receiveUsd.sub(adjustedDelta);
-      } else {
-        receiveUsd = bigNumberify(0);
-      }
     }
 
     if (keepLeverage && sizeDelta && !isClosing) {
@@ -355,13 +347,18 @@ export default function PositionSeller(props) {
       collateralDelta = position.collateral.sub(
         position.size.sub(sizeDelta).mul(BASIS_POINTS_DIVISOR).div(position.leverage)
       );
-      // if the position will be realising a loss then reduce collateralDelta by the realised loss
-      if (!nextHasProfit) {
-        const deductions = adjustedDelta.add(positionFee).add(fundingFee);
-        if (collateralDelta.gt(deductions)) {
-          collateralDelta = collateralDelta = collateralDelta.sub(deductions);
+
+      if (nextHasProfit) {
+        if (collateralDelta.add(adjustedDelta).lt(totalFees)) {
+          collateralDelta = bigNumberify(0);
+          // ERROR: Keep Leverage is not possible. Either uncheck the keep leverage same checkbox or close larger amount or do a full close
+        }
+      } else {
+        if (collateralDelta.sub(adjustedDelta).gt(totalFees)) {
+          collateralDelta = collateralDelta.sub(adjustedDelta);
         } else {
           collateralDelta = bigNumberify(0);
+          // ERROR: Keep leverage the same is not possible
         }
       }
     }
@@ -374,16 +371,20 @@ export default function PositionSeller(props) {
       convertedAmountFormatted = formatAmount(convertedAmount, collateralToken.decimals, 4, true);
     }
 
-    totalFees = totalFees.add(positionFee || bigNumberify(0)).add(fundingFee || bigNumberify(0));
-
-    receiveUsd = receiveUsd.add(collateralDelta);
-
-    if (sizeDelta) {
-      if (receiveUsd.gt(totalFees)) {
-        receiveUsd = receiveUsd.sub(totalFees);
-      } else {
-        receiveUsd = bigNumberify(0);
+    if (position.hasProfit) {
+      receiveUsd = receiveUsd.add(adjustedDelta);
+    } else {
+      if (receiveUsd.gt(adjustedDelta)) {
+        receiveUsd = receiveUsd.sub(adjustedDelta);
       }
+    }
+
+    if (collateralDelta && collateralDelta.gt(0)) {
+      receiveUsd = receiveUsd.add(collateralDelta);
+    }
+
+    if (receiveUsd.gt(totalFees)) {
+      receiveUsd = receiveUsd.sub(totalFees);
     }
 
     receiveUsd = applySpread(receiveUsd, collateralTokenInfo?.spread);
@@ -418,6 +419,25 @@ export default function PositionSeller(props) {
       receiveUsd = applySpread(receiveUsd, swapToTokenInfo?.spread);
     }
 
+    if (isClosing) {
+      nextCollateral = bigNumberify(0);
+    } else {
+      if (position.collateral) {
+        nextCollateral = position.collateral;
+
+        if (!position.hasProfit) {
+          nextCollateral = nextCollateral.sub(adjustedDelta);
+        }
+
+        if (collateralDelta && collateralDelta.gt(0)) {
+          nextCollateral = nextCollateral.sub(collateralDelta);
+        }
+
+        if (nextCollateral.lt(totalFees)) {
+          nextCollateral = nextCollateral.sub(totalFees);
+        }
+      }
+    }
     // For Shorts trigger orders the collateral is a stable coin, it should not depend on the triggerPrice
     if (orderOption === STOP && position.isLong) {
       receiveAmount = getTokenAmountFromUsd(infoTokens, receiveToken.address, receiveUsd, {
@@ -447,26 +467,6 @@ export default function PositionSeller(props) {
 
         if (nextUsdgAmount.gt(collateralInfo.maxUsdgAmount)) {
           isCollateralPoolCapacityExceeded = true;
-        }
-      }
-    }
-
-    if (isClosing) {
-      nextCollateral = bigNumberify(0);
-    } else {
-      if (position.collateral) {
-        nextCollateral = position.collateral;
-
-        if (position.hasProfit) {
-          if (adjustedDelta.gt(0) && adjustedDelta.lt(totalFees)) {
-            nextCollateral = nextCollateral.sub(adjustedDelta.sub(totalFees));
-          }
-        } else {
-          nextCollateral = nextCollateral.sub(adjustedDelta);
-        }
-
-        if (collateralDelta && collateralDelta.gt(0)) {
-          nextCollateral = position.collateral.sub(collateralDelta);
         }
       }
     }
