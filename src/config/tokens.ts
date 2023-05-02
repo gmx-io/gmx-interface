@@ -662,6 +662,10 @@ export const EXPLORER_LINKS = {
       coingecko: "https://www.coingecko.com/en/coins/usd-coin",
       avalanche: "https://testnet.snowtrace.io/address/0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
     },
+    USDT: {
+      coingecko: "https://www.coingecko.com/en/coins/tether",
+      arbitrum: "https://testnet.snowtrace.io/address/0x6931eC3E364245E6d093aFA1F2e96cCe3F17538b",
+    },
   },
 };
 
