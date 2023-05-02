@@ -19,7 +19,7 @@ import {
 import Home from "pages/Home/Home";
 import Dashboard from "pages/Dashboard/Dashboard";
 import Stats from "pages/Stats/Stats";
-import AdminReferrals from "pages/AdminReferrals/AdminReferrals";
+import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
 import Ecosystem from "pages/Ecosystem/Ecosystem";
 import Stake from "pages/Stake/Stake";
 import { Exchange } from "pages/Exchange/Exchange";
@@ -531,7 +531,7 @@ function FullApp() {
                 <Actions savedIsPnlInLeverage={savedIsPnlInLeverage} savedShowPnlAfterFees={savedShowPnlAfterFees} />
               </Route>
               <Route exact path="/admin/referrals">
-                <AdminReferrals />
+                <ReferralsTier />
               </Route>
               <Route exact path="/admin/stats">
                 <Stats />

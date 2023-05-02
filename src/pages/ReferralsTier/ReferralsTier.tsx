@@ -3,12 +3,12 @@ import range from "lodash/range";
 import Button from "components/Button/Button";
 import Select from "components/Select/Select";
 
-import "./AdminReferrals.scss";
+import "./ReferralsTier.scss";
 import { useReferrerTier, setAffiliateTier as contractSetAffiliateTier } from "domain/referrals";
 import { useWeb3React } from "@web3-react/core";
 import { useChainId } from "lib/chains";
 
-export default function AdminReferrals() {
+export default function ReferralsTier() {
   const { active, library } = useWeb3React();
   const { chainId } = useChainId();
 
@@ -29,31 +29,31 @@ export default function AdminReferrals() {
     if (!active) return null;
 
     return (
-      <div className="AdminReferrals-form">
-        <div className="AdminReferrals-row">
-          <label className="AdminReferrals-label">Affiliate Address:</label>
+      <div className="ReferralsTier-form">
+        <div className="ReferralsTier-row">
+          <label className="ReferralsTier-label">Affiliate Address:</label>
           <input
             type="text"
-            className="AdminReferrals-input"
+            className="ReferralsTier-input"
             value={affiliate}
             onChange={(evt) => setAffiliate(evt.target.value)}
           />
         </div>
         {currentAffiliateTier !== undefined && (
           <>
-            <div className="AdminReferrals-row">
-              <label className="AdminReferrals-label">Current Tier:</label>
+            <div className="ReferralsTier-row">
+              <label className="ReferralsTier-label">Current Tier:</label>
               <strong>{currentAffiliateTier?.add(1).toString()}</strong>
             </div>
-            <div className="AdminReferrals-row">
-              <label className="AdminReferrals-label">New Tier:</label>
+            <div className="ReferralsTier-row">
+              <label className="ReferralsTier-label">New Tier:</label>
               <Select
-                onChange={(evt) => setAffiliateTier(evt.target.value)}
+                onChange={(evt) => setAffiliateTier(Number(evt.target.value))}
                 value={affiliateTier}
                 options={range(1, 4).map((tier: number, i: number) => ({ value: i, label: tier }))}
               />
             </div>
-            <div className="AdminReferrals-row">
+            <div className="ReferralsTier-row">
               <Button variant="primary" onClick={onConfirmation}>
                 Save tier
               </Button>
@@ -65,8 +65,8 @@ export default function AdminReferrals() {
   }
 
   return (
-    <div className="AdminReferrals">
-      <h1>Admin Referrals</h1>
+    <div className="ReferralsTier">
+      <h1>Referrals Tier</h1>
       {!active && <div>Wallet is not connected</div>}
       {renderForm()}
     </div>

@@ -1,11 +1,20 @@
-import pick from "lodash/pick";
-
+import { ChangeEvent } from "react";
 import "./Select.scss";
 
-export default function Select(props) {
+type SelectProps = {
+  onChange: (evt: ChangeEvent<HTMLSelectElement>) => void;
+  value: string | number;
+  options: {
+    value: string;
+    label: string;
+  }[];
+};
+
+export default function Select(props: SelectProps) {
+  const { options, ...htmlProps } = props;
   return (
-    <select className="Select" {...pick(props, ["value", "onChange"])}>
-      {props.options.map((option) => {
+    <select className="Select" {...htmlProps}>
+      {options.map((option) => {
         return <option value={option.value}>{option.label}</option>;
       })}
     </select>
