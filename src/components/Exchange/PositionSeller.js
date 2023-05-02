@@ -65,6 +65,49 @@ function applySpread(amount, spread) {
   return amount.sub(amount.mul(spread).div(PRECISION));
 }
 
+function calculateNextCollateralAndReceiveUsd(
+  collateral,
+  hasProfit,
+  isClosing,
+  adjustedDelta,
+  collateralDelta,
+  totalFees,
+  swapFee,
+  spread
+) {
+  let nextCollateral;
+  let receiveUsd = bigNumberify(0);
+
+  if (isClosing) {
+    nextCollateral = bigNumberify(0);
+  } else {
+    if (collateral) {
+      nextCollateral = collateral;
+
+      if (hasProfit) {
+        receiveUsd = receiveUsd.add(adjustedDelta);
+      } else {
+        nextCollateral = nextCollateral.sub(adjustedDelta);
+      }
+
+      if (collateralDelta && collateralDelta.gt(0)) {
+        receiveUsd = receiveUsd.add(collateralDelta);
+        nextCollateral = nextCollateral.sub(collateralDelta);
+      }
+      if (receiveUsd.gt(totalFees)) {
+        receiveUsd = receiveUsd.sub(totalFees);
+      } else {
+        nextCollateral = nextCollateral.sub(totalFees);
+      }
+    }
+  }
+
+  if (swapFee) {
+    receiveUsd = receiveUsd.sub(swapFee);
+  }
+  return { nextCollateral, receiveUsd: applySpread(receiveUsd, spread) };
+}
+
 function shouldSwap(collateralToken, receiveToken) {
   // If position collateral is WETH in contract, then position.collateralToken is { symbol: “ETH”, isNative: true, … }
   // @see https://github.com/gmx-io/gmx-interface/blob/master/src/pages/Exchange/Exchange.js#L162
@@ -309,6 +352,7 @@ export default function PositionSeller(props) {
 
   const collateralToken = position.collateralToken;
   const collateralTokenInfo = getTokenInfo(infoTokens, collateralToken.address);
+  const swapToTokenInfo = getTokenInfo(infoTokens, swapToToken?.address);
 
   if (position) {
     fundingFee = position.fundingFee;
@@ -371,23 +415,7 @@ export default function PositionSeller(props) {
       convertedAmountFormatted = formatAmount(convertedAmount, collateralToken.decimals, 4, true);
     }
 
-    if (position.hasProfit) {
-      receiveUsd = receiveUsd.add(adjustedDelta);
-    } else {
-      if (receiveUsd.gt(adjustedDelta)) {
-        receiveUsd = receiveUsd.sub(adjustedDelta);
-      }
-    }
-
-    if (collateralDelta && collateralDelta.gt(0)) {
-      receiveUsd = receiveUsd.add(collateralDelta);
-    }
-
-    if (receiveUsd.gt(totalFees)) {
-      receiveUsd = receiveUsd.sub(totalFees);
-    }
-
-    receiveUsd = applySpread(receiveUsd, collateralTokenInfo?.spread);
+    // receiveUsd = applySpread(receiveUsd, collateralTokenInfo?.spread);
 
     receiveToken = isSwapAllowed && swapToToken ? swapToToken : collateralToken;
 
@@ -413,31 +441,20 @@ export default function PositionSeller(props) {
       if (feeBasisPoints) {
         swapFee = receiveUsd.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR);
         totalFees = totalFees.add(swapFee || bigNumberify(0));
-        receiveUsd = receiveUsd.sub(swapFee);
-      }
-      const swapToTokenInfo = getTokenInfo(infoTokens, swapToToken.address);
-      receiveUsd = applySpread(receiveUsd, swapToTokenInfo?.spread);
-    }
-
-    if (isClosing) {
-      nextCollateral = bigNumberify(0);
-    } else {
-      if (position.collateral) {
-        nextCollateral = position.collateral;
-
-        if (!position.hasProfit) {
-          nextCollateral = nextCollateral.sub(adjustedDelta);
-        }
-
-        if (collateralDelta && collateralDelta.gt(0)) {
-          nextCollateral = nextCollateral.sub(collateralDelta);
-        }
-
-        if (nextCollateral.lt(totalFees)) {
-          nextCollateral = nextCollateral.sub(totalFees);
-        }
       }
     }
+
+    ({ receiveUsd, nextCollateral } = calculateNextCollateralAndReceiveUsd(
+      position.collateral,
+      position.hasProfit,
+      isClosing,
+      adjustedDelta,
+      collateralDelta,
+      totalFees,
+      swapFee,
+      swapFee ? swapToTokenInfo?.spread : collateralTokenInfo?.spread
+    ));
+
     // For Shorts trigger orders the collateral is a stable coin, it should not depend on the triggerPrice
     if (orderOption === STOP && position.isLong) {
       receiveAmount = getTokenAmountFromUsd(infoTokens, receiveToken.address, receiveUsd, {
