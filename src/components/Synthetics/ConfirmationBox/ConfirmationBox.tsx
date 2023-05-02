@@ -249,7 +249,6 @@ export function ConfirmationBox(p: Props) {
 
     let totalSpread = getSpread(indexToken.prices);
 
-    // TODO: convert addresses
     if (getIsEquivalentTokens(collateralToken, indexToken)) {
       return {
         spread: totalSpread,
@@ -428,6 +427,8 @@ export function ConfirmationBox(p: Props) {
       tokensData,
       referralCode: userReferralCode,
       setPendingTxns,
+      // Skip simulation to avoid EmptyPosition error
+      skipSimulation: !existingPosition,
     }).then(onSubmitted);
   }
 

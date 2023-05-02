@@ -103,7 +103,6 @@ export function ClaimModal(p: Props) {
 
     claimCollateralTxn(chainId, library, {
       account,
-      marketInfo: markets,
       fundingFees: {
         marketAddresses: [...fundingMarketAddresses],
         tokenAddresses: [...fundingTokenAddresses],

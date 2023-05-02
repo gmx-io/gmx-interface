@@ -32,6 +32,7 @@ export type DecreaseOrderParams = {
   decreasePositionSwapType: DecreasePositionSwapType;
   orderType: OrderType.MarketDecrease | OrderType.LimitDecrease | OrderType.StopLossDecrease;
   setPendingTxns: (txns: any) => void;
+  skipSimulation?: boolean;
 };
 
 export async function createDecreaseOrderTxn(chainId: number, library: Web3Provider, p: DecreaseOrderParams) {
@@ -94,27 +95,29 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
     .filter(Boolean)
     .map((call) => exchangeRouter.interface.encodeFunctionData(call!.method, call!.params));
 
-  const primaryPriceOverrides: PriceOverrides = {};
-  const secondaryPriceOverrides: PriceOverrides = {};
+  if (!p.skipSimulation) {
+    const primaryPriceOverrides: PriceOverrides = {};
+    const secondaryPriceOverrides: PriceOverrides = {};
 
-  if (p.triggerPrice) {
-    primaryPriceOverrides[p.indexTokenAddress] = {
-      minPrice: p.triggerPrice,
-      maxPrice: p.triggerPrice,
-    };
-    secondaryPriceOverrides[p.indexTokenAddress] = {
-      minPrice: p.triggerPrice,
-      maxPrice: p.triggerPrice,
-    };
+    if (p.triggerPrice) {
+      primaryPriceOverrides[p.indexTokenAddress] = {
+        minPrice: p.triggerPrice,
+        maxPrice: p.triggerPrice,
+      };
+      secondaryPriceOverrides[p.indexTokenAddress] = {
+        minPrice: p.triggerPrice,
+        maxPrice: p.triggerPrice,
+      };
+    }
+
+    await simulateExecuteOrderTxn(chainId, library, {
+      primaryPriceOverrides,
+      secondaryPriceOverrides,
+      createOrderMulticallPayload: encodedPayload,
+      value: wntAmount,
+      tokensData: p.tokensData,
+    });
   }
-
-  await simulateExecuteOrderTxn(chainId, library, {
-    primaryPriceOverrides,
-    secondaryPriceOverrides,
-    createOrderMulticallPayload: encodedPayload,
-    value: wntAmount,
-    tokensData: p.tokensData,
-  });
 
   const longText = p.isLong ? t`Long` : t`Short`;
 
