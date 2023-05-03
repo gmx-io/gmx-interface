@@ -1773,8 +1773,7 @@ export default function SwapBox(props) {
   if (hasExistingPosition) {
     leverage = getLeverageNew({
       size: existingPosition.size.add(toUsdMax || 0),
-      collateral: existingPosition.collateral.add(fromUsdMinAfterFees),
-      fundingFee: existingPosition.fundingFee,
+      collateral: existingPosition.collateralAfterFee.add(fromUsdMinAfterFees),
       delta: existingPosition.delta,
       hasProfit: existingPosition.hasProfit,
       includeDelta: savedIsPnlInLeverage,

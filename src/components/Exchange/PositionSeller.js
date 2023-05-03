@@ -391,7 +391,7 @@ export default function PositionSeller(props) {
         size: position.size,
         collateral: position.collateral,
         fundingFee: fundingFee,
-        includeDelta: true,
+        includeDelta: false,
       });
 
       collateralDelta = position.collateral.sub(
