@@ -123,7 +123,7 @@ export default function PositionEditor(props) {
       collateral: position.collateral,
       averagePrice: position.averagePrice,
       isLong: position.isLong,
-      fundingFees: fundingFee,
+      fundingFee,
     });
 
     if (isDeposit) {

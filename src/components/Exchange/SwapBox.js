@@ -20,7 +20,6 @@ import {
   DUST_BNB,
   getExchangeRate,
   getExchangeRateDisplay,
-  getLeverage,
   getNextFromAmount,
   getNextToAmount,
   getPositionKey,
@@ -83,6 +82,7 @@ import Button from "components/Button/Button";
 import UsefulLinks from "./UsefulLinks";
 import { get1InchSwapUrl } from "config/links";
 import getLiquidation from "lib/getLiquidation";
+import { getLeverageNew } from "lib/getLeverageNew";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -708,26 +708,6 @@ export default function SwapBox(props) {
       nextPrice: isMarketOrder ? entryMarkPrice : triggerPriceUsd,
       isLong,
     });
-  }
-
-  if (hasExistingPosition) {
-    const collateralDelta = fromUsdMin ? fromUsdMin : bigNumberify(0);
-    const sizeDelta = toUsdMax ? toUsdMax : bigNumberify(0);
-    leverage = getLeverage({
-      size: existingPosition.size,
-      sizeDelta,
-      collateral: existingPosition.collateral,
-      collateralDelta,
-      increaseCollateral: true,
-      entryFundingRate: existingPosition.entryFundingRate,
-      cumulativeFundingRate: existingPosition.cumulativeFundingRate,
-      increaseSize: true,
-      hasProfit: existingPosition.hasProfit,
-      delta: existingPosition.delta,
-      includeDelta: savedIsPnlInLeverage,
-    });
-  } else if (hasLeverageOption) {
-    leverage = bigNumberify(parseInt(leverageOption * BASIS_POINTS_DIVISOR));
   }
 
   const getSwapError = () => {
@@ -1785,10 +1765,24 @@ export default function SwapBox(props) {
         size: existingPosition.size,
         collateral: existingPosition.collateral,
         averagePrice: existingPosition.averagePrice,
-        fundingFees: existingPosition.fundingFee,
+        fundingFee: existingPosition.fundingFee,
       })
     : undefined;
   let displayLiquidationPrice = liquidationPrice ? liquidationPrice : existingLiquidationPrice;
+
+  if (hasExistingPosition) {
+    leverage = getLeverageNew({
+      size: existingPosition.size.add(toUsdMax || 0),
+      collateral: existingPosition.collateral.add(fromUsdMinAfterFees),
+      fundingFee: existingPosition.fundingFee,
+      delta: existingPosition.delta,
+      hasProfit: existingPosition.hasProfit,
+      includeDelta: savedIsPnlInLeverage,
+    });
+  } else if (hasLeverageOption) {
+    leverage = bigNumberify(parseInt(leverageOption * BASIS_POINTS_DIVISOR));
+  }
+
   function setFromValueToMaximumAvailable() {
     if (!fromToken || !fromBalance) {
       return;

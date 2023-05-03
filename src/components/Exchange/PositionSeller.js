@@ -359,7 +359,7 @@ export default function PositionSeller(props) {
       collateral: position.collateral,
       averagePrice: position.averagePrice,
       isLong: position.isLong,
-      fundingFees: position.fundingFee,
+      fundingFee: position.fundingFee,
     });
 
     if (fromAmount) {

@@ -12,19 +12,19 @@ type GetLiquidationParams = {
   collateral: BigNumber;
   averagePrice: BigNumber;
   isLong: boolean;
-  fundingFees?: BigNumber;
+  fundingFee?: BigNumber;
 };
 
 function calculateTotalFees(size: BigNumber, fundingFees: BigNumber): BigNumber {
   return size.mul(MARGIN_FEE_BASIS_POINTS).div(BASIS_POINTS_DIVISOR).add(fundingFees).add(LIQUIDATION_FEE);
 }
 
-export function getLiquidation({ size, collateral, averagePrice, isLong, fundingFees }: GetLiquidationParams) {
+export function getLiquidation({ size, collateral, averagePrice, isLong, fundingFee }: GetLiquidationParams) {
   if (!size || !collateral || !averagePrice) {
     return;
   }
 
-  const totalFees = calculateTotalFees(size, fundingFees || BigNumber.from("0"));
+  const totalFees = calculateTotalFees(size, fundingFee || BigNumber.from("0"));
   const liquidationPriceForFees = getLiquidationPriceFromDelta({
     liquidationAmount: totalFees,
     size,

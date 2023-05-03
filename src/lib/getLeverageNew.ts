@@ -1,7 +1,17 @@
+import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR } from "./legacy";
 
-export function getLeverageNew({ size, collateral, fundingFee, hasProfit, delta, includeDelta }) {
-  if (!size && !collateral && collateral.eq(0)) {
+type GetLeverageParams = {
+  size: BigNumber;
+  collateral: BigNumber;
+  fundingFee?: BigNumber;
+  hasProfit?: boolean;
+  delta?: BigNumber;
+  includeDelta?: boolean;
+};
+
+export function getLeverageNew({ size, collateral, fundingFee, hasProfit, delta, includeDelta }: GetLeverageParams) {
+  if (!size || !collateral) {
     return;
   }
 
