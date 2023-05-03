@@ -195,12 +195,14 @@ export function getIncreaseError(p: {
     return [t`Min order: ${formatUsd(_minCollateralUsd)}`];
   }
 
-  if (isLong && (!longLiquidity || longLiquidity.lt(sizeDeltaUsd))) {
-    return [t`Max ${indexToken.symbol} long exceeded`];
-  }
+  if (!isLimit) {
+    if (isLong && (!longLiquidity || longLiquidity.lt(sizeDeltaUsd))) {
+      return [t`Max ${indexToken.symbol} long exceeded`];
+    }
 
-  if (!isLong && (!shortLiquidity || shortLiquidity.lt(sizeDeltaUsd))) {
-    return [t`Max ${indexToken.symbol} short exceeded`];
+    if (!isLong && (!shortLiquidity || shortLiquidity.lt(sizeDeltaUsd))) {
+      return [t`Max ${indexToken.symbol} short exceeded`];
+    }
   }
 
   if (isLimit) {
