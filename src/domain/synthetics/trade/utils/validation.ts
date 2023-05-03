@@ -180,8 +180,10 @@ export function getIncreaseError(p: {
       return [t`Couldn't find a swap route with enough liquidity`];
     }
 
-    if (!collateralLiquidity || collateralLiquidity?.lt(initialCollateralUsd || BigNumber.from(0))) {
-      return [t`Insufficient liquidity to swap collateral`];
+    if (!isLimit) {
+      if (!collateralLiquidity || collateralLiquidity?.lt(initialCollateralUsd || BigNumber.from(0))) {
+        return [t`Insufficient liquidity to swap collateral`];
+      }
     }
   }
 
