@@ -828,9 +828,7 @@ msgstr "시장에서 위치를 선택하세요. 그런 다음, 필요한 경우 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
@@ -1280,8 +1278,6 @@ msgstr "탈중앙화<0/>퍼페추얼 거래소"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
-#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/domain/synthetics/orders/utils.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
@@ -1297,15 +1293,14 @@ msgid "Decrease size"
 msgstr ""
 
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
-msgid "Decrease {longText} {0} by {1}"
-msgstr ""
+#~ msgid "Decrease {longText} {0} by {1}"
+#~ msgstr ""
 
 #: src/domain/synthetics/orders/utils.ts
 #~ msgid "Decrease {tokenText} by {sizeText}"
 #~ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 msgid "Decreased"
 msgstr "감소 완료"
 
@@ -1313,7 +1308,7 @@ msgstr "감소 완료"
 msgid "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
 msgstr "{tokenSymbol} {longOrShortText} 감소, -{0} USD."
 
-#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 msgid "Decreasing"
 msgstr ""
 
@@ -1322,7 +1317,6 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-#: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/pages/Stake/StakeV2.js
@@ -1336,9 +1330,17 @@ msgstr "예치"
 msgid "Deposit Fee"
 msgstr ""
 
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Deposit cancelled"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 msgid "Deposit disabled, pending {0} upgrade"
 msgstr "{0} 업그레이드를 위해 예치가 비활성화되었습니다"
+
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Deposit executed"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Deposit failed!"
@@ -1349,11 +1351,15 @@ msgid "Deposit failed."
 msgstr "예치 실패."
 
 #: src/domain/synthetics/markets/createDepositTxn.ts
-msgid "Deposit order failed"
-msgstr ""
+#~ msgid "Deposit order failed"
+#~ msgstr ""
 
 #: src/domain/synthetics/markets/createDepositTxn.ts
-msgid "Deposit order sent"
+#~ msgid "Deposit order sent"
+#~ msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Deposit request sent"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
@@ -1385,7 +1391,15 @@ msgid "Deposited!"
 msgstr "예치되었습니다!"
 
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
-msgid "Depositing to {marketName}"
+#~ msgid "Depositing to {marketName}"
+#~ msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
+msgid "Depositing {0} to {positionText}"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Depositing {tokensText} to {0}"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
@@ -1706,8 +1720,8 @@ msgid "Execute order simulation failed."
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
-msgid "Executed {0} {tokensText}"
-msgstr ""
+#~ msgid "Executed {0} {tokensText}"
+#~ msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
@@ -1851,21 +1865,33 @@ msgstr "상실 이익이 확인되지 않았습니다."
 msgid "Freeze"
 msgstr ""
 
-#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
-msgid "Fulfilling swap {0} for {1} request"
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Fulfilling Deposit request"
 msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Fulfilling Withdrawal request"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
+msgid "Fulfilling order request"
+msgstr ""
+
+#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+#~ msgid "Fulfilling swap {0} for {1} request"
+#~ msgstr ""
 
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
 #~ msgid "Fulfilling swap {0} to {1} request"
 #~ msgstr ""
 
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
-msgid "Fulfilling {0} {1} {longText} request"
-msgstr ""
+#~ msgid "Fulfilling {0} {1} {longText} request"
+#~ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
-msgid "Fulfilling {0} {tokensText} request"
-msgstr ""
+#~ msgid "Fulfilling {0} {tokensText} request"
+#~ msgstr ""
 
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
 #~ msgid "Fulfilling {longText} {0} request"
@@ -2136,8 +2162,6 @@ msgstr "잘못된 네트워크입니다"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
-#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/domain/synthetics/orders/utils.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
@@ -2153,22 +2177,22 @@ msgid "Increase {0} {longOrShortText}, +{1} USD, {2} Price: {3} USD"
 msgstr "{0} {longOrShortText}을 증가, +{1} USD, {2} 가격: {3} USD"
 
 #: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
-msgid "Increase {longText} {0} by {1}"
-msgstr ""
+#~ msgid "Increase {longText} {0} by {1}"
+#~ msgstr ""
 
 #: src/domain/synthetics/orders/utils.ts
 #~ msgid "Increase {tokenText} by {sizeText}"
 #~ msgstr ""
 
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
-msgid "Increased"
-msgstr ""
+#~ msgid "Increased"
+#~ msgstr ""
 
 #: src/pages/Exchange/Exchange.js
 msgid "Increased {tokenSymbol} {longOrShortText}, +{0} USD."
 msgstr "{tokenSymbol} {longOrShortText} 증가 완료, +{0} USD."
 
-#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 msgid "Increasing"
 msgstr ""
 
@@ -2568,17 +2592,15 @@ msgstr "로딩중..."
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
-#: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
 #: src/domain/synthetics/orders/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
@@ -3140,6 +3162,7 @@ msgid "Order"
 msgstr "주문"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 msgid "Order cancelled"
 msgstr "주문 최소됨"
 
@@ -3163,6 +3186,14 @@ msgstr "주문 생성!"
 msgid "Order creation failed."
 msgstr "주문 생성 실패."
 
+#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
+msgid "Order executed"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
+msgid "Order request sent"
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Order size exceeds position"
 msgstr "주문의 사이즈가 포지션을 초과했습니다"
@@ -3177,8 +3208,8 @@ msgid "Order size is bigger than position, will only be executable if position i
 msgstr "주문의 사이즈가 포지션을 초과했습니다. 포지션을 증가하는 경우에만 실행 가능합니다."
 
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
-msgid "Order status"
-msgstr ""
+#~ msgid "Order status"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Order submitted!"
@@ -3517,8 +3548,8 @@ msgstr "Avalanche에서 가격"
 
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
-msgid "Processing..."
-msgstr ""
+#~ msgid "Processing..."
+#~ msgstr ""
 
 #: src/pages/Actions/Actions.js
 msgid "Profit"
@@ -3880,21 +3911,33 @@ msgstr "GLP의 베스팅 볼트에서 모든 토큰을 인출했습니다."
 msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr "GMX의 베스팅 볼트에서 모든 토큰을 인출했습니다."
 
-#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
-msgid "Sending swap {0} for {1} request"
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Sending Deposit request"
 msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Sending Withdrawal request"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
+msgid "Sending order request"
+msgstr ""
+
+#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+#~ msgid "Sending swap {0} for {1} request"
+#~ msgstr ""
 
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
 #~ msgid "Sending swap {0} to {1} request"
 #~ msgstr ""
 
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
-msgid "Sending {0} {1} {longText} request"
-msgstr ""
+#~ msgid "Sending {0} {1} {longText} request"
+#~ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
-msgid "Sending {0} {tokensText} request"
-msgstr ""
+#~ msgid "Sending {0} {tokensText} request"
+#~ msgstr ""
 
 #: src/components/Synthetics/Trade/OrderStatus/OrderStatus.tsx
 #~ msgid "Sending {longText} {0} request"
@@ -3943,17 +3986,15 @@ msgstr "포지션 공유"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
-#: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
 #: src/domain/synthetics/orders/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
@@ -4146,12 +4187,12 @@ msgid "Success claimings"
 msgstr ""
 
 #: src/domain/synthetics/markets/createDepositTxn.ts
-msgid "Success deposit order"
-msgstr ""
+#~ msgid "Success deposit order"
+#~ msgstr ""
 
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
-msgid "Success withdrawal order"
-msgstr ""
+#~ msgid "Success withdrawal order"
+#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV1.js
@@ -4257,17 +4298,17 @@ msgstr ""
 msgid "Swap {0} USDG for {1} {2}"
 msgstr "{0} USDG를 {1} {2}로 스왑"
 
-#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 msgid "Swap {0} for {1}"
 msgstr ""
 
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
-msgid "Swap {0} for {1} cancelled"
-msgstr ""
+#~ msgid "Swap {0} for {1} cancelled"
+#~ msgstr ""
 
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
-msgid "Swap {0} for {1} request sent"
-msgstr ""
+#~ msgid "Swap {0} for {1} request sent"
+#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Swap {0} on 1inch"
@@ -4298,8 +4339,8 @@ msgid "Swap {0} {1} for {2} {3}"
 msgstr "{0} {1}을 {2} {3}으로 스왑"
 
 #: src/domain/synthetics/orders/createSwapOrderTxn.ts
-msgid "Swap {fromText} for {toText}"
-msgstr ""
+#~ msgid "Swap {fromText} for {toText}"
+#~ msgstr ""
 
 #: src/domain/synthetics/orders/createSwapOrderTxn.ts
 #~ msgid "Swap {fromText} to {toText}"
@@ -4309,7 +4350,6 @@ msgstr ""
 msgid "Swap {fromTokenText} for {toTokenText}"
 msgstr ""
 
-#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swapped {0} for {1}"
@@ -4828,9 +4868,16 @@ msgstr "USDG 부채"
 msgid "UTILIZATION"
 msgstr "이용률"
 
-#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
-#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Unknown deposit"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 msgid "Unknown order"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Unknown withdrawal"
 msgstr ""
 
 #: src/pages/Stake/StakeV1.js
@@ -5176,8 +5223,15 @@ msgstr "{1} {longOrShortText} {0} USD 인출"
 #~ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-#: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
 msgid "Withdrawal"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Withdrawal cancelled"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Withdrawal executed"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
@@ -5185,20 +5239,32 @@ msgid "Withdrawal failed."
 msgstr "인출 실패."
 
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
-msgid "Withdrawal from {marketName}"
-msgstr ""
+#~ msgid "Withdrawal from {marketName}"
+#~ msgstr ""
 
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
-msgid "Withdrawal order failed"
-msgstr ""
+#~ msgid "Withdrawal order failed"
+#~ msgstr ""
 
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
-msgid "Withdrawal order sent"
+#~ msgid "Withdrawal order sent"
+#~ msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Withdrawal request sent"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Withdrawal submitted."
 msgstr "인출 제출 완료."
+
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Withdrawing from {0}"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
+msgid "Withdrawing {0} from {positionText}"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Withdrawing..."
@@ -5680,48 +5746,48 @@ msgstr ""
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createSwapOrderTxn.ts
-msgid "{orderLabel} order created"
-msgstr ""
+#~ msgid "{orderLabel} order created"
+#~ msgstr ""
 
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createSwapOrderTxn.ts
-msgid "{orderLabel} order failed"
-msgstr ""
+#~ msgid "{orderLabel} order failed"
+#~ msgstr ""
 
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createSwapOrderTxn.ts
-msgid "{orderLabel} order sent"
-msgstr ""
+#~ msgid "{orderLabel} order sent"
+#~ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
-msgid "{orderTypeText} cancelled"
-msgstr ""
+#~ msgid "{orderTypeText} cancelled"
+#~ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
-msgid "{orderTypeText} status"
-msgstr ""
+#~ msgid "{orderTypeText} status"
+#~ msgstr ""
 
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
-msgid "{orderTypeText} {0} {longText}"
-msgstr ""
+#~ msgid "{orderTypeText} {0} {longText}"
+#~ msgstr ""
 
-#: src/components/Synthetics/OrderStatus/OrderStatus.tsx
+#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 msgid "{orderTypeText} {0} {longText} by {1}"
 msgstr ""
 
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
-msgid "{orderTypeText} {0} {longText} cancelled"
-msgstr ""
+#~ msgid "{orderTypeText} {0} {longText} cancelled"
+#~ msgstr ""
 
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
-msgid "{orderTypeText} {0} {longText} request sent"
-msgstr ""
+#~ msgid "{orderTypeText} {0} {longText} request sent"
+#~ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
-msgid "{orderTypeText} {tokensText} request sent"
-msgstr ""
+#~ msgid "{orderTypeText} {tokensText} request sent"
+#~ msgstr ""
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} canceled"
