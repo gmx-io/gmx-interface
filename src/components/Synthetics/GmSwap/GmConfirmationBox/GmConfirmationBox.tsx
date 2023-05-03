@@ -23,6 +23,7 @@ import { GmFees } from "../GmFees/GmFees";
 
 import Button from "components/Button/Button";
 import "./GmConfirmationBox.scss";
+import { useSyntheticsEvents } from "context/SyntheticsEvents";
 
 type Props = {
   marketToken: TokenData;
@@ -71,6 +72,7 @@ export function GmConfirmationBox({
   const { chainId } = useChainId();
   const { marketsData } = useMarkets(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
+  const { setPendingDeposit, setPendingWithdrawal } = useSyntheticsEvents();
 
   const market = getByKey(marketsData, marketToken?.address);
 
@@ -216,12 +218,15 @@ export function GmConfirmationBox({
       account,
       initialLongTokenAddress: longToken?.address || market.longTokenAddress,
       initialShortTokenAddress: shortToken?.address || market.shortTokenAddress,
+      longTokenSwapPath: [],
+      shortTokenSwapPath: [],
       longTokenAmount: longTokenAmount || BigNumber.from(0),
       shortTokenAmount: shortTokenAmount || BigNumber.from(0),
       marketTokenAddress: marketToken.address,
       minMarketTokens: marketTokenAmount,
       executionFee: executionFee.feeTokenAmount,
       setPendingTxns,
+      setPendingDeposit,
     }).then(onSubmitted);
   }
 
@@ -230,14 +235,17 @@ export function GmConfirmationBox({
 
     createWithdrawalTxn(chainId, library, {
       account,
-      longTokenAddress: market.longTokenAddress,
-      shortTokenAddress: market.shortTokenAddress,
+      initialLongTokenAddress: longToken?.address || market.longTokenAddress,
+      initialShortTokenAddress: shortToken?.address || market.shortTokenAddress,
+      longTokenSwapPath: [],
+      shortTokenSwapPath: [],
       marketTokenAmount: marketTokenAmount,
       minLongTokenAmount: longTokenAmount,
       minShortTokenAmount: shortTokenAmount,
       marketTokenAddress: marketToken.address,
       executionFee: executionFee.feeTokenAmount,
       setPendingTxns,
+      setPendingWithdrawal,
     }).then(onSubmitted);
   }
 

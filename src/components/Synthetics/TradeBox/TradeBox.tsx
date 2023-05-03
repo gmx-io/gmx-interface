@@ -5,13 +5,27 @@ import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Checkbox from "components/Checkbox/Checkbox";
 import { Dropdown } from "components/Dropdown/Dropdown";
-import { ConfirmationBox } from "components/Synthetics/ConfirmationBox/ConfirmationBox";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
+import { ConfirmationBox } from "components/Synthetics/ConfirmationBox/ConfirmationBox";
 import Tab from "components/Tab/Tab";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { getKeepLeverageKey, getLeverageEnabledKey, getLeverageKey } from "config/localStorage";
+import { useUserReferralInfo } from "domain/referrals/hooks";
+import {
+  VirtualInventoryForPositionsData,
+  estimateExecuteDecreaseOrderGasLimit,
+  estimateExecuteIncreaseOrderGasLimit,
+  estimateExecuteSwapOrderGasLimit,
+  getExecutionFee,
+  useGasLimits,
+  useGasPrice,
+} from "domain/synthetics/fees";
+import { MarketInfo, getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
+import { OrderInfo, OrdersInfoData } from "domain/synthetics/orders";
+import { PositionInfo, PositionsInfoData, formatLeverage, usePositionsConstants } from "domain/synthetics/positions";
+import { TokenData, TokensData, TokensRatio, convertToUsd, getTokensRatioByPrice } from "domain/synthetics/tokens";
 import {
   AvailableTokenOptions,
   SwapAmounts,
@@ -37,19 +51,6 @@ import {
   getIncreaseError,
   getSwapError,
 } from "domain/synthetics/trade/utils/validation";
-import {
-  VirtualInventoryForPositionsData,
-  estimateExecuteDecreaseOrderGasLimit,
-  estimateExecuteIncreaseOrderGasLimit,
-  estimateExecuteSwapOrderGasLimit,
-  getExecutionFee,
-  useGasLimits,
-  useGasPrice,
-} from "domain/synthetics/fees";
-import { MarketInfo, getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
-import { OrderInfo, OrderType, OrdersInfoData } from "domain/synthetics/orders";
-import { PositionInfo, PositionsInfoData, formatLeverage, usePositionsConstants } from "domain/synthetics/positions";
-import { TokenData, TokensData, TokensRatio, convertToUsd, getTokensRatioByPrice } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import longImg from "img/long.svg";
 import shortImg from "img/short.svg";
@@ -77,8 +78,6 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { CollateralSelectorRow } from "./CollateralSelectorRow";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import "./TradeBox.scss";
-import { OrderStatus } from "../OrderStatus/OrderStatus";
-import { useUserReferralInfo } from "domain/referrals/hooks";
 
 export type Props = {
   tradeType: TradeType;
@@ -1388,18 +1387,6 @@ export function TradeBox(p: Props) {
           onConnectWallet={onConnectWallet}
         />
       )}
-
-      <OrderStatus
-        isVisible={stage === "processing"}
-        orderType={isSwap ? OrderType.MarketSwap : OrderType.MarketIncrease}
-        marketAddress={isPosition ? p.marketAddress : undefined}
-        initialCollateralAddress={isSwap ? fromTokenAddress : undefined}
-        initialCollateralAmount={isSwap ? fromTokenAmount : undefined}
-        toSwapTokenAddress={isSwap ? toTokenAddress : undefined}
-        sizeDeltaUsd={increaseAmounts?.sizeDeltaUsd}
-        isLong={isSwap ? undefined : isLong}
-        onClose={() => setStage("trade")}
-      />
     </>
   );
 }

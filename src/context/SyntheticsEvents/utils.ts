@@ -1,4 +1,4 @@
-import { EventLogData } from "./types";
+import { EventLogData, PendingDepositData, PendingOrderData, PendingWithdrawalData } from "./types";
 
 export function parseEventLogData(eventData): EventLogData {
   const ret: any = {};
@@ -23,4 +23,42 @@ export function parseEventLogData(eventData): EventLogData {
   }
 
   return ret as EventLogData;
+}
+
+export function getPendingOrderKey(data: PendingOrderData) {
+  return [
+    data.account,
+    data.marketAddress,
+    data.initialCollateralTokenAddress,
+    data.swapPath.join("-"),
+    data.shouldUnwrapNativeToken,
+    data.isLong,
+    data.orderType,
+    data.sizeDeltaUsd.toString(),
+    data.initialCollateralDeltaAmount.toString(),
+  ].join(":");
+}
+
+export function getPendingDepositKey(data: PendingDepositData) {
+  return [
+    data.account,
+    data.marketAddress,
+    data.initialLongTokenAddress,
+    data.initialShortTokenAddress,
+    data.longTokenSwapPath.join("-"),
+    data.shortTokenSwapPath.join("-"),
+    data.shouldUnwrapNativeToken,
+    data.initialLongTokenAmount.toString(),
+    data.initialShortTokenAmount.toString(),
+  ].join(":");
+}
+
+export function getPendingWithdrawalKey(data: PendingWithdrawalData) {
+  return [
+    data.account,
+    data.marketAddress,
+    data.minLongTokenAmount.toString(),
+    data.marketTokenAmount.toString(),
+    data.shouldUnwrapNativeToken,
+  ].join(":");
 }

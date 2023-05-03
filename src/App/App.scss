@@ -1026,6 +1026,21 @@ button.App-button {
   border-radius: 0.4rem;
 }
 
+.Toastify__toast--default {
+  background: linear-gradient(90deg, #0b0b0f 0%, rgba(10, 13, 28, 1) 100%);
+  color: white;
+  border-radius: 0.6rem;
+}
+
+.Toastify__toast--default .Toastify__close-button {
+  color: white;
+}
+
+.Toastify__toast--default .Toastify__close-button:hover {
+  color: white;
+  background: transparent;
+}
+
 .Toastify__close-button {
   align-self: flex-start;
   border-radius: 0.4rem;

@@ -2,8 +2,12 @@ import { t } from "@lingui/macro";
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
-import { OrderInfo, OrderType, PositionOrderInfo } from "./types";
+import { Order, OrderInfo, OrderType, PositionOrderInfo, SwapOrderInfo } from "./types";
 import { parsePositionKey } from "../positions";
+import { MarketsInfoData } from "../markets";
+import { getSwapPathOutputAddresses, getTriggerThresholdType } from "../trade";
+import { TokensData, parseContractPrice } from "../tokens";
+import { getByKey } from "lib/objects";
 
 export function isVisibleOrder(orderType: OrderType) {
   return isLimitOrderType(orderType) || isTriggerDecreaseOrderType(orderType) || isLimitSwapOrderType(orderType);
@@ -107,4 +111,87 @@ export function getOrderTypeLabel(orderType: OrderType) {
   };
 
   return orderTypeLabels[orderType];
+}
+
+export function getOrderInfo(
+  marketsInfoData: MarketsInfoData,
+  tokensData: TokensData,
+  wrappedNativeToken: Token,
+  order: Order
+) {
+  if (isSwapOrderType(order.orderType)) {
+    const initialCollateralToken = getByKey(tokensData, order.initialCollateralTokenAddress);
+
+    const { outTokenAddress } = getSwapPathOutputAddresses({
+      marketsInfoData,
+      swapPath: order.swapPath,
+      initialCollateralAddress: order.initialCollateralTokenAddress,
+      wrappedNativeTokenAddress: wrappedNativeToken.address,
+      shouldUnwrapNativeToken: order.shouldUnwrapNativeToken,
+    });
+
+    const targetCollateralToken = getByKey(tokensData, outTokenAddress);
+
+    if (!initialCollateralToken || !targetCollateralToken) {
+      return undefined;
+    }
+
+    const title = getSwapOrderTitle({
+      initialCollateralToken,
+      targetCollateralToken,
+      minOutputAmount: order.minOutputAmount,
+      initialCollateralAmount: order.initialCollateralDeltaAmount,
+    });
+
+    const orderInfo: SwapOrderInfo = {
+      ...order,
+      title,
+      initialCollateralToken,
+      targetCollateralToken,
+    };
+
+    return orderInfo;
+  } else {
+    const marketInfo = getByKey(marketsInfoData, order.marketAddress);
+    const indexToken = marketInfo?.indexToken;
+    const initialCollateralToken = getByKey(tokensData, order.initialCollateralTokenAddress);
+    const { outTokenAddress } = getSwapPathOutputAddresses({
+      marketsInfoData,
+      swapPath: order.swapPath,
+      initialCollateralAddress: order.initialCollateralTokenAddress,
+      wrappedNativeTokenAddress: wrappedNativeToken.address,
+      shouldUnwrapNativeToken: order.shouldUnwrapNativeToken,
+    });
+    const targetCollateralToken = getByKey(tokensData, outTokenAddress);
+
+    if (!marketInfo || !indexToken || !initialCollateralToken || !targetCollateralToken) {
+      return undefined;
+    }
+
+    const title = getPositionOrderTitle({
+      orderType: order.orderType,
+      isLong: order.isLong,
+      indexToken,
+      sizeDeltaUsd: order.sizeDeltaUsd,
+    });
+
+    const acceptablePrice = parseContractPrice(order.contractAcceptablePrice, indexToken.decimals);
+
+    const triggerPrice = parseContractPrice(order.contractTriggerPrice, indexToken.decimals);
+    const triggerThresholdType = getTriggerThresholdType(order.orderType, order.isLong);
+
+    const orderInfo: PositionOrderInfo = {
+      ...order,
+      title,
+      marketInfo,
+      indexToken,
+      initialCollateralToken,
+      targetCollateralToken,
+      acceptablePrice,
+      triggerPrice,
+      triggerThresholdType,
+    };
+
+    return orderInfo;
+  }
 }

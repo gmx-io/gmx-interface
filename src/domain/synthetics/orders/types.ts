@@ -66,9 +66,9 @@ export type PositionOrderInfo = Order & {
   indexToken: TokenData;
   initialCollateralToken: TokenData;
   targetCollateralToken: TokenData;
+  acceptablePrice: BigNumber;
   triggerPrice: BigNumber;
   triggerThresholdType: TriggerThresholdType;
-  acceptablePrice: BigNumber;
 };
 
 export type OrderInfo = SwapOrderInfo | PositionOrderInfo;

@@ -41,7 +41,6 @@ import { usePrevious } from "lib/usePrevious";
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { IoMdSwap } from "react-icons/io";
 import { GmConfirmationBox } from "../GmConfirmationBox/GmConfirmationBox";
-import { GmOrderStatus } from "../GmOrderStatus/GmOrderStatus";
 
 import { useWeb3React } from "@web3-react/core";
 import Button from "components/Button/Button";
@@ -816,7 +815,7 @@ export function GmSwapBox(p: Props) {
           executionFee={executionFee}
           setPendingTxns={p.setPendingTxns}
           onSubmitted={() => {
-            setStage("processing");
+            setStage("swap");
           }}
           onClose={() => {
             setStage("swap");
@@ -824,18 +823,6 @@ export function GmSwapBox(p: Props) {
           isHighPriceImpact={isHighPriceImpact!}
           isHighPriceImpactAccepted={isHighPriceImpactAccepted}
           setIsHighPriceImpactAccepted={setIsHighPriceImpactAccepted}
-        />
-      )}
-
-      {stage === "processing" && (
-        <GmOrderStatus
-          firstToken={firstTokenAddress!}
-          secondToken={secondTokenAmount?.gt(0) ? secondTokenAddress : undefined}
-          market={marketInfo?.marketTokenAddress!}
-          isDeposit={isDeposit}
-          onClose={() => {
-            setStage("swap");
-          }}
         />
       )}
     </div>

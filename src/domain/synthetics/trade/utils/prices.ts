@@ -8,43 +8,9 @@ import { TriggerThresholdType } from "../types";
 export function getMarkPrice(p: { prices: TokenPrices; isIncrease: boolean; isLong: boolean }) {
   const { prices, isIncrease, isLong } = p;
 
-  const shouldUseMaxPrice = isIncrease ? isLong : !isLong;
+  const shouldUseMaxPrice = getShouldUseMaxPrice(isIncrease, isLong);
 
   return shouldUseMaxPrice ? prices.maxPrice : prices.minPrice;
-}
-
-export function getTriggerThresholdType(orderType: OrderType, isLong: boolean) {
-  // limit order
-  if (orderType === OrderType.LimitIncrease) {
-    return isLong ? TriggerThresholdType.Below : TriggerThresholdType.Above;
-  }
-
-  if (orderType === OrderType.LimitDecrease) {
-    return isLong ? TriggerThresholdType.Above : TriggerThresholdType.Below;
-  }
-  // stop-loss order
-
-  if (orderType === OrderType.StopLossDecrease) {
-    return isLong ? TriggerThresholdType.Below : TriggerThresholdType.Above;
-  }
-
-  throw new Error("Invalid trigger order type");
-}
-
-export function getTriggerDecreaseOrderType(p: {
-  triggerPrice: BigNumber;
-  markPrice: BigNumber;
-  isLong: boolean;
-}): OrderType.LimitDecrease | OrderType.StopLossDecrease {
-  const { triggerPrice, markPrice, isLong } = p;
-
-  const isTriggerAboveMarkPrice = triggerPrice.gt(markPrice);
-
-  if (isTriggerAboveMarkPrice) {
-    return isLong ? OrderType.LimitDecrease : OrderType.StopLossDecrease;
-  } else {
-    return isLong ? OrderType.StopLossDecrease : OrderType.LimitDecrease;
-  }
 }
 
 export function getAcceptablePrice(p: {
@@ -58,7 +24,7 @@ export function getAcceptablePrice(p: {
   let acceptablePrice = p.indexPrice;
   let acceptablePriceImpactBps = p.acceptablePriceImpactBps || BigNumber.from(0);
 
-  const shouldFlipPriceImpact = p.isIncrease ? p.isLong : !p.isLong;
+  const shouldFlipPriceImpact = getShouldUseMaxPrice(p.isIncrease, p.isLong);
 
   if (acceptablePriceImpactBps.abs().gt(0)) {
     let priceDelta = p.indexPrice.mul(acceptablePriceImpactBps).div(BASIS_POINTS_DIVISOR);
@@ -84,13 +50,50 @@ export function getAcceptablePrice(p: {
 }
 
 export function applySlippage(allowedSlippage: number, price: BigNumber, isIncrease: boolean, isLong: boolean) {
-  let slippageBasisPoints: number;
+  const shouldIncreasePrice = getShouldUseMaxPrice(isIncrease, isLong);
 
-  if (isIncrease) {
-    slippageBasisPoints = isLong ? BASIS_POINTS_DIVISOR + allowedSlippage : BASIS_POINTS_DIVISOR - allowedSlippage;
-  } else {
-    slippageBasisPoints = isLong ? BASIS_POINTS_DIVISOR - allowedSlippage : BASIS_POINTS_DIVISOR + allowedSlippage;
-  }
+  const slippageBasisPoints = shouldIncreasePrice
+    ? BASIS_POINTS_DIVISOR + allowedSlippage
+    : BASIS_POINTS_DIVISOR - allowedSlippage;
 
   return price.mul(slippageBasisPoints).div(BASIS_POINTS_DIVISOR);
+}
+
+export function getShouldUseMaxPrice(isIncrease: boolean, isLong: boolean) {
+  return isIncrease ? isLong : !isLong;
+}
+
+export function getTriggerThresholdType(orderType: OrderType, isLong: boolean) {
+  // limit order
+  if (orderType === OrderType.LimitIncrease) {
+    return isLong ? TriggerThresholdType.Below : TriggerThresholdType.Above;
+  }
+
+  // take profit order
+  if (orderType === OrderType.LimitDecrease) {
+    return isLong ? TriggerThresholdType.Above : TriggerThresholdType.Below;
+  }
+
+  // stop loss order
+  if (orderType === OrderType.StopLossDecrease) {
+    return isLong ? TriggerThresholdType.Below : TriggerThresholdType.Above;
+  }
+
+  throw new Error("Invalid trigger order type");
+}
+
+export function getTriggerDecreaseOrderType(p: {
+  triggerPrice: BigNumber;
+  markPrice: BigNumber;
+  isLong: boolean;
+}): OrderType.LimitDecrease | OrderType.StopLossDecrease {
+  const { triggerPrice, markPrice, isLong } = p;
+
+  const isTriggerAboveMarkPrice = triggerPrice.gt(markPrice);
+
+  if (isTriggerAboveMarkPrice) {
+    return isLong ? OrderType.LimitDecrease : OrderType.StopLossDecrease;
+  } else {
+    return isLong ? OrderType.StopLossDecrease : OrderType.LimitDecrease;
+  }
 }

@@ -84,7 +84,7 @@ export function TVChart({
 
         return (
           positionOrder.marketInfo &&
-          positionOrder.triggerPrice &&
+          positionOrder.contractTriggerPrice &&
           convertTokenAddress(chainId, positionOrder.marketInfo.indexTokenAddress, "wrapped") ===
             convertTokenAddress(chainId, chartTokenAddress, "wrapped")
         );
@@ -98,7 +98,7 @@ export function TVChart({
 
         return {
           title: `${longOrShortText} ${orderTypeText} ${tokenSymbol}`,
-          price: parseFloat(formatAmount(positionOrder.triggerPrice, USD_DECIMALS, 2)),
+          price: parseFloat(formatAmount(positionOrder.contractTriggerPrice, USD_DECIMALS, 2)),
         };
       });
 

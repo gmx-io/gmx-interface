@@ -1,36 +1,38 @@
 import { Web3Provider } from "@ethersproject/providers";
-import { t } from "@lingui/macro";
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
-import { isDevelopment } from "config/env";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
-import { TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
+import { SetPendingOrder, SetPendingPosition } from "context/SyntheticsEvents";
+import { TokenData, TokensData, convertToContractPrice } from "domain/synthetics/tokens";
 import { BigNumber, ethers } from "ethers";
 import { callContract } from "lib/contracts";
-import { formatUsd } from "lib/numbers";
 import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
+import { isMarketOrderType } from "./utils";
 
 const { AddressZero } = ethers.constants;
 
-// TODO: validate spot only
 type IncreaseOrderParams = {
   account: string;
-  executionFee: BigNumber;
-  referralCode?: string;
   marketAddress: string;
-  swapPath: string[];
   initialCollateralAddress: string;
   initialCollateralAmount: BigNumber;
-  targetCollateralAddress?: string;
-  indexTokenAddress: string;
-  triggerPrice?: BigNumber;
+  collateralDeltaAmount: BigNumber;
+  swapPath: string[];
   sizeDeltaUsd: BigNumber;
+  sizeDeltaInTokens: BigNumber;
   acceptablePrice: BigNumber;
+  triggerPrice: BigNumber | undefined;
   isLong: boolean;
   orderType: OrderType.MarketIncrease | OrderType.LimitIncrease;
+  executionFee: BigNumber;
+  referralCode: string | undefined;
+  existingPositionKey: string | undefined;
+  indexToken: TokenData;
   tokensData: TokensData;
   setPendingTxns: (txns: any) => void;
+  setPendingOrder: SetPendingOrder;
+  setPendingPosition: SetPendingPosition;
 };
 
 export async function createIncreaseOrderTxn(chainId: number, library: Web3Provider, p: IncreaseOrderParams) {
@@ -48,9 +50,7 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
 
   const wntAmount = wntCollateralAmount.add(p.executionFee);
 
-  const indexToken = getTokenData(p.tokensData, p.indexTokenAddress);
-
-  if (!indexToken?.prices) throw new Error("Index token prices are not available");
+  const initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
 
   const multicall = [
     { method: "sendWnt", params: [orderVaultAddress, wntAmount] },
@@ -65,7 +65,7 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
         {
           addresses: {
             receiver: p.account,
-            initialCollateralToken: convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped"),
+            initialCollateralToken: initialCollateralTokenAddress,
             callbackContract: AddressZero,
             market: p.marketAddress,
             swapPath: p.swapPath,
@@ -74,8 +74,8 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
           numbers: {
             sizeDeltaUsd: p.sizeDeltaUsd,
             initialCollateralDeltaAmount: BigNumber.from(0),
-            triggerPrice: convertToContractPrice(p.triggerPrice || BigNumber.from(0), indexToken!.decimals),
-            acceptablePrice: convertToContractPrice(p.acceptablePrice, indexToken!.decimals),
+            triggerPrice: convertToContractPrice(p.triggerPrice || BigNumber.from(0), p.indexToken.decimals),
+            acceptablePrice: convertToContractPrice(p.acceptablePrice, p.indexToken.decimals),
             executionFee: p.executionFee,
             callbackGasLimit: BigNumber.from(0),
             minOutputAmount: BigNumber.from(0),
@@ -90,14 +90,6 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
     },
   ];
 
-  if (isDevelopment()) {
-    // eslint-disable-next-line no-console
-    console.debug("positionIncreaseTxn multicall", multicall, {
-      acceptablePrice: formatUsd(p.acceptablePrice),
-      triggerPrice: formatUsd(p.triggerPrice),
-    });
-  }
-
   const encodedPayload = multicall
     .filter(Boolean)
     .map((call) => exchangeRouter.interface.encodeFunctionData(call!.method, call!.params));
@@ -106,11 +98,7 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
   const primaryPriceOverrides: PriceOverrides = {};
 
   if (p.triggerPrice) {
-    primaryPriceOverrides[p.indexTokenAddress] = {
-      minPrice: p.triggerPrice,
-      maxPrice: p.triggerPrice,
-    };
-    secondaryPriceOverrides[p.indexTokenAddress] = {
+    primaryPriceOverrides[p.indexToken.address] = {
       minPrice: p.triggerPrice,
       maxPrice: p.triggerPrice,
     };
@@ -124,16 +112,34 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
     value: wntAmount,
   });
 
-  const longText = p.isLong ? t`Long` : t`Short`;
-  const orderLabel = t`Increase ${longText} ${indexToken.symbol} by ${formatUsd(p.sizeDeltaUsd)}`;
-
   const txn = await callContract(chainId, exchangeRouter, "multicall", [encodedPayload], {
     value: wntAmount,
-    sentMsg: t`${orderLabel} order sent`,
-    successMsg: t`${orderLabel} order created`,
-    failMsg: t`${orderLabel} order failed`,
+    hideSentMsg: true,
     hideSuccessMsg: true,
     setPendingTxns: p.setPendingTxns,
+  }).then(() => {
+    if (isMarketOrderType(p.orderType) && p.existingPositionKey) {
+      p.setPendingPosition({
+        isIncrease: false,
+        positionKey: p.existingPositionKey,
+        collateralDeltaAmount: p.collateralDeltaAmount,
+        sizeDeltaUsd: p.sizeDeltaUsd,
+        sizeDeltaInTokens: p.sizeDeltaInTokens,
+      });
+    }
+
+    p.setPendingOrder({
+      account: p.account,
+      marketAddress: p.marketAddress,
+      initialCollateralTokenAddress,
+      initialCollateralDeltaAmount: p.initialCollateralAmount,
+      swapPath: p.swapPath,
+      sizeDeltaUsd: p.sizeDeltaUsd,
+      minOutputAmount: BigNumber.from(0),
+      isLong: p.isLong,
+      orderType: p.orderType,
+      shouldUnwrapNativeToken: isNativePayment,
+    });
   });
 
   return txn;

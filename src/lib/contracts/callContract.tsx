@@ -18,6 +18,7 @@ export async function callContract(
     gasLimit?: BigNumber | number;
     sentMsg?: string;
     successMsg?: string;
+    hideSentMsg?: boolean;
     hideSuccessMsg?: boolean;
     failMsg?: string;
     setPendingTxns?: (txns: any) => void;
@@ -44,18 +45,21 @@ export async function callContract(
     await setGasPrice(txnOpts, contract.provider, chainId);
 
     const res = await contract[method](...params, txnOpts);
-    const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash;
-    const sentMsg = opts.sentMsg || t`Transaction sent.`;
 
-    helperToast.success(
-      <div>
-        {sentMsg}{" "}
-        <ExternalLink href={txUrl}>
-          <Trans>View status.</Trans>
-        </ExternalLink>
-        <br />
-      </div>
-    );
+    if (!opts.hideSentMsg) {
+      const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash;
+      const sentMsg = opts.sentMsg || t`Transaction sent.`;
+
+      helperToast.success(
+        <div>
+          {sentMsg}{" "}
+          <ExternalLink href={txUrl}>
+            <Trans>View status.</Trans>
+          </ExternalLink>
+          <br />
+        </div>
+      );
+    }
 
     if (opts.setPendingTxns) {
       const message = opts.hideSuccessMsg ? undefined : opts.successMsg || t`Transaction completed!`;

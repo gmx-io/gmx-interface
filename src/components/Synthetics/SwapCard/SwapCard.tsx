@@ -35,7 +35,7 @@ export function SwapCard(p: Props) {
     const smallest = markRatio.smallestToken;
     const largest = markRatio.largestToken;
 
-    return `${formatAmount(markRatio.ratio, USD_DECIMALS, 4)} ${smallest?.symbol} / ${largest?.symbol}`;
+    return `${formatAmount(markRatio.ratio, USD_DECIMALS, 4)} ${smallest.symbol} / ${largest.symbol}`;
   }, [fromToken, toToken]);
 
   return (

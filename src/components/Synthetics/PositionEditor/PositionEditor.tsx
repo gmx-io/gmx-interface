@@ -73,7 +73,7 @@ export function PositionEditor(p: Props) {
 
   const { chainId } = useChainId();
   const { account, library, active } = useWeb3React();
-  const { setPendingPositionUpdate } = useSyntheticsEvents();
+  const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
   const { tokensData } = useAvailableTokensData(chainId);
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
@@ -278,35 +278,36 @@ export function PositionEditor(p: Props) {
       return;
     }
 
-    const acceptablePriceAfterSlippage = applySlippage(allowedSlippage, acceptablePrice, isDeposit, position.isLong);
+    const acceptablePriceAfterSlippage = applySlippage(
+      allowedSlippage * 2,
+      acceptablePrice,
+      isDeposit,
+      position.isLong
+    );
 
     if (isDeposit) {
       createIncreaseOrderTxn(chainId, library, {
         account,
         marketAddress: position.marketAddress,
-        indexTokenAddress: position.indexToken.address,
-        swapPath: [],
         initialCollateralAddress: position.collateralTokenAddress,
         initialCollateralAmount: collateralDeltaAmount,
-        acceptablePrice: acceptablePriceAfterSlippage,
-        orderType: OrderType.MarketIncrease,
+        collateralDeltaAmount,
+        swapPath: [],
         sizeDeltaUsd: BigNumber.from(0),
+        sizeDeltaInTokens: BigNumber.from(0),
+        acceptablePrice: acceptablePriceAfterSlippage,
+        triggerPrice: undefined,
+        orderType: OrderType.MarketIncrease,
         isLong: position.isLong,
         executionFee: executionFee.feeTokenAmount,
-        tokensData,
         referralCode: userReferralInfo?.userReferralCode,
+        existingPositionKey: position.key,
+        indexToken: position.indexToken,
+        tokensData,
         setPendingTxns,
-      }).then(() => {
-        if (p.position) {
-          setPendingPositionUpdate({
-            isIncrease: true,
-            positionKey: p.position.key,
-            collateralDeltaAmount,
-          });
-        }
-
-        p.onClose();
-      });
+        setPendingOrder,
+        setPendingPosition,
+      }).then(onClose);
     } else {
       if (!receiveUsd) {
         return;
@@ -315,32 +316,27 @@ export function PositionEditor(p: Props) {
       createDecreaseOrderTxn(chainId, library, {
         account,
         marketAddress: position.marketAddress,
-        indexTokenAddress: position.indexToken.address,
-        swapPath: [],
-        initialCollateralDeltaAmount: collateralDeltaAmount,
         initialCollateralAddress: position.collateralTokenAddress,
+        initialCollateralDeltaAmount: collateralDeltaAmount,
         receiveTokenAddress: position.collateralTokenAddress,
-        acceptablePrice: acceptablePriceAfterSlippage,
+        swapPath: [],
         sizeDeltaUsd: BigNumber.from(0),
+        sizeDeltaInTokens: BigNumber.from(0),
+        acceptablePrice: acceptablePriceAfterSlippage,
+        triggerPrice: undefined,
+        decreasePositionSwapType: decreaseSwapType,
         orderType: OrderType.MarketDecrease,
         isLong: position.isLong,
         executionFee: executionFee.feeTokenAmount,
-        decreasePositionSwapType: decreaseSwapType,
         minOutputUsd: receiveUsd,
-        tokensData,
         referralCode: userReferralInfo?.userReferralCode,
+        existingPositionKey: position.key,
+        indexToken: position.indexToken,
+        tokensData,
         setPendingTxns,
-      }).then(() => {
-        if (p.position) {
-          setPendingPositionUpdate({
-            isIncrease: false,
-            positionKey: p.position.key,
-            collateralDeltaAmount: collateralDeltaAmount,
-          });
-        }
-
-        onClose();
-      });
+        setPendingOrder,
+        setPendingPosition,
+      }).then(onClose);
     }
   }
 
@@ -349,7 +345,7 @@ export function PositionEditor(p: Props) {
       <Modal
         className="PositionEditor-modal"
         isVisible={Boolean(position)}
-        setIsVisible={p.onClose}
+        setIsVisible={onClose}
         label={
           <Trans>
             Edit {position?.isLong ? t`Long` : t`Short`} {position?.indexToken?.symbol}

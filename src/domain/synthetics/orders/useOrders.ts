@@ -2,10 +2,10 @@ import { useWeb3React } from "@web3-react/core";
 import DataStore from "abis/DataStore.json";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import { getContract } from "config/contracts";
+import { accountOrderListKey } from "config/dataStore";
 import { useMulticall } from "lib/multicall";
 import { bigNumberify } from "lib/numbers";
 import { useEffect, useState } from "react";
-import { accountOrderListKey } from "config/dataStore";
 import { OrdersData } from "./types";
 
 type OrdersResult = {
@@ -24,7 +24,7 @@ export function useOrders(chainId: number): OrdersResult {
   const { data } = useMulticall(chainId, "useOrdersData", {
     key: account ? [account, startIndex, endIndex] : null,
     request: () => ({
-      orderStore: {
+      dataStore: {
         contractAddress: getContract(chainId, "DataStore"),
         abi: DataStore.abi,
         calls: {
@@ -50,8 +50,8 @@ export function useOrders(chainId: number): OrdersResult {
       },
     }),
     parseResponse: (res) => {
-      const count = Number(res.orderStore.count.returnValues[0]);
-      const orderKeys = res.orderStore.keys.returnValues;
+      const count = Number(res.dataStore.count.returnValues[0]);
+      const orderKeys = res.dataStore.keys.returnValues;
       const orders = res.reader.orders.returnValues;
 
       return {
@@ -59,15 +59,22 @@ export function useOrders(chainId: number): OrdersResult {
         ordersData: orders.reduce((acc: OrdersData, order, i) => {
           const key = orderKeys[i];
           const [addresses, numbers, flags, data] = order;
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const [account, receiver, callbackContract, uiFeeReceiver, marketAddress, initialCollateralToken, swapPath] =
-            addresses;
+          const [
+            account,
+            receiver,
+            callbackContract,
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            uiFeeReceiver,
+            marketAddress,
+            initialCollateralTokenAddress,
+            swapPath,
+          ] = addresses;
           const [orderType, decreasePositionSwapType, ...restNumbers] = numbers;
           const [
             sizeDeltaUsd,
             initialCollateralDeltaAmount,
-            triggerPrice,
-            acceptablePrice,
+            contractTriggerPrice,
+            contractAcceptablePrice,
             executionFee,
             callbackGasLimit,
             minOutputAmount,
@@ -83,12 +90,12 @@ export function useOrders(chainId: number): OrdersResult {
             receiver,
             callbackContract,
             marketAddress,
-            initialCollateralTokenAddress: initialCollateralToken,
+            initialCollateralTokenAddress,
             swapPath,
             sizeDeltaUsd,
             initialCollateralDeltaAmount,
-            contractTriggerPrice: triggerPrice,
-            contractAcceptablePrice: acceptablePrice,
+            contractTriggerPrice,
+            contractAcceptablePrice,
             executionFee,
             callbackGasLimit,
             minOutputAmount,

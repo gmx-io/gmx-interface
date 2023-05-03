@@ -146,7 +146,7 @@ export function ConfirmationBox(p: Props) {
   const { library, account } = useWeb3React();
   const { chainId } = useChainId();
   const { tokensData } = useAvailableTokensData(chainId);
-  const { setPendingPositionUpdate } = useSyntheticsEvents();
+  const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
 
   const { userReferralCode } = useUserReferralCode(library, chainId, account);
 
@@ -211,8 +211,8 @@ export function ConfirmationBox(p: Props) {
 
     return existingTriggerOrders.filter((order) => {
       return order.triggerThresholdType === TriggerThresholdType.Above
-        ? markPrice.gt(order.triggerPrice)
-        : markPrice.lt(order.triggerPrice);
+        ? markPrice.gt(order.contractTriggerPrice)
+        : markPrice.lt(order.contractTriggerPrice);
     });
   }, [existingPosition, existingTriggerOrders, markPrice]);
 
@@ -317,7 +317,7 @@ export function ConfirmationBox(p: Props) {
       return;
     }
 
-    createWrapOrUnwrapTxn(chainId, library, {
+    return createWrapOrUnwrapTxn(chainId, library, {
       amount: swapAmounts.amountIn,
       isWrap: Boolean(fromToken.isNative),
       setPendingTxns,
@@ -341,6 +341,7 @@ export function ConfirmationBox(p: Props) {
       referralCode: userReferralCode,
       tokensData,
       setPendingTxns,
+      setPendingOrder,
     }).then(onSubmitted);
   }
 
@@ -367,31 +368,23 @@ export function ConfirmationBox(p: Props) {
       marketAddress: marketInfo.marketTokenAddress,
       initialCollateralAddress: fromToken?.address,
       initialCollateralAmount: increaseAmounts.initialCollateralAmount,
-      targetCollateralAddress: collateralToken.address,
+      collateralDeltaAmount: increaseAmounts.collateralAmountAfterFees,
       swapPath: increaseAmounts.swapPathStats?.swapPath || [],
-      indexTokenAddress: marketInfo.indexTokenAddress,
       sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
+      sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
       triggerPrice: isLimit ? triggerPrice : undefined,
       acceptablePrice,
       executionFee: executionFee.feeTokenAmount,
       isLong,
       orderType: isLimit ? OrderType.LimitIncrease : OrderType.MarketIncrease,
       referralCode: userReferralCode,
+      existingPositionKey: existingPosition?.key,
+      indexToken: marketInfo.indexToken,
       tokensData,
       setPendingTxns: p.setPendingTxns,
-    }).then(() => {
-      if (isMarket) {
-        setPendingPositionUpdate({
-          isIncrease: true,
-          positionKey: positionKey!,
-          collateralDeltaAmount: increaseAmounts.collateralAmountAfterFees,
-          sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
-          sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
-        });
-      }
-
-      onSubmitted();
-    });
+      setPendingOrder,
+      setPendingPosition,
+    }).then(onSubmitted);
   }
 
   function onSubmitDecreaseOrder() {
@@ -411,7 +404,6 @@ export function ConfirmationBox(p: Props) {
     createDecreaseOrderTxn(chainId, library, {
       account,
       marketAddress: marketInfo.marketTokenAddress,
-      indexTokenAddress: marketInfo.indexTokenAddress,
       swapPath: [],
       initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount,
       initialCollateralAddress: collateralToken.address,
@@ -419,16 +411,21 @@ export function ConfirmationBox(p: Props) {
       triggerPrice: decreaseAmounts.triggerPrice,
       acceptablePrice: decreaseAmounts.acceptablePrice,
       sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
-      orderType: decreaseAmounts.triggerOrderType,
-      isLong,
-      executionFee: executionFee.feeTokenAmount,
-      decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
+      sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
       minOutputUsd: decreaseAmounts.receiveUsd,
-      tokensData,
+      isLong,
+      decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
+      orderType: decreaseAmounts.triggerOrderType,
+      executionFee: executionFee.feeTokenAmount,
       referralCode: userReferralCode,
-      setPendingTxns,
       // Skip simulation to avoid EmptyPosition error
       skipSimulation: !existingPosition,
+      existingPositionKey: existingPosition?.key,
+      indexToken: marketInfo.indexToken,
+      tokensData,
+      setPendingTxns,
+      setPendingOrder,
+      setPendingPosition,
     }).then(onSubmitted);
   }
 
@@ -535,7 +532,7 @@ export function ConfirmationBox(p: Props) {
           {isLimitOrderType(order.orderType) ? t`Increase` : t`Decrease`} {order.indexToken?.symbol}{" "}
           {formatUsd(order.sizeDeltaUsd)} {order.isLong ? t`Long` : t`Short`} &nbsp;
           {order.triggerThresholdType}
-          {formatUsd(order.triggerPrice)}{" "}
+          {formatUsd(order.contractTriggerPrice)}{" "}
         </p>
         <button onClick={() => onCancelOrderClick(order.key)}>
           <Trans>Cancel</Trans>
@@ -560,7 +557,7 @@ export function ConfirmationBox(p: Props) {
         <div className="Confirmation-box-info">
           <Trans>
             You have an active Limit Order to Increase {longShortText} {order.indexToken?.symbol} {sizeText} at price{" "}
-            {formatUsd(order.triggerPrice)}.
+            {formatUsd(order.contractTriggerPrice)}.
           </Trans>
         </div>
       );

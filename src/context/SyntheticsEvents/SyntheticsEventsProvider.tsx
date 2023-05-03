@@ -1,35 +1,40 @@
 import { StaticJsonRpcProvider } from "@ethersproject/providers";
 import { useWeb3React } from "@web3-react/core";
 import EventEmitter from "abis/EventEmitter.json";
+import { GmStatusNotification } from "components/Synthetics/StatusNotifiaction/GmStatusNotification";
+import { OrderStatusNotification } from "components/Synthetics/StatusNotifiaction/OrderStatusNotification";
 import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
+import { getWrappedToken } from "config/tokens";
 import { useMarketsInfo } from "domain/synthetics/markets";
-import { getOrderTypeLabel } from "domain/synthetics/orders";
+import { isDecreaseOrderType, isIncreaseOrderType } from "domain/synthetics/orders";
 import { getPositionKey } from "domain/synthetics/positions";
+import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
-import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
+import { helperToast } from "lib/helperToast";
 import { setByKey, updateByKey } from "lib/objects";
 import { getProvider, getWsProvider } from "lib/rpc";
-import { ReactNode, createContext, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { ReactNode, createContext, useEffect, useMemo, useRef, useState } from "react";
 import {
-  ContractEventsContextType,
-  DepositCreatedEvent,
+  DepositCreatedEventData,
   DepositStatuses,
   EventLogData,
   EventTxnParams,
-  OrderCreatedEvent,
+  OrderCreatedEventData,
   OrderStatuses,
+  PendingDepositData,
+  PendingOrderData,
   PendingPositionUpdate,
   PendingPositionsUpdates,
+  PendingWithdrawalData,
   PositionDecreaseEvent,
   PositionIncreaseEvent,
-  WithdrawalCreatedEvent,
+  SyntheticsEventsContextType,
+  WithdrawalCreatedEventData,
   WithdrawalStatuses,
 } from "./types";
 import { parseEventLogData } from "./utils";
-import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
-import { getWrappedToken } from "config/tokens";
 
 export const SyntheticsEventsContext = createContext({});
 
@@ -39,16 +44,175 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
   const { marketsInfoData } = useMarketsInfo(chainId);
 
+  const [pendingOrders, setPendingOrders] = useState<PendingOrderData[]>([]);
   const [orderStatuses, setOrderStatuses] = useState<OrderStatuses>({});
+
+  const [pendingDeposits, setPendingDeposits] = useState<PendingDepositData[]>([]);
   const [depositStatuses, setDepositStatuses] = useState<DepositStatuses>({});
+
+  const [pendingWithdrawals, setPendingWithdrawals] = useState<PendingWithdrawalData[]>([]);
   const [withdrawalStatuses, setWithdrawalStatuses] = useState<WithdrawalStatuses>({});
+
   const [pendingPositionsUpdates, setPendingPositionsUpdates] = useState<PendingPositionsUpdates>({});
   const [positionIncreaseEvents, setPositionIncreaseEvents] = useState<PositionIncreaseEvent[]>([]);
   const [positionDecreaseEvents, setPositionDecreaseEvents] = useState<PositionDecreaseEvent[]>([]);
 
   const eventLogHandlers = useRef({});
 
-  useImperativeHandle(eventLogHandlers, () => ({
+  // use ref to avoid re-subscribing on state changes
+  eventLogHandlers.current = {
+    OrderCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      const data: OrderCreatedEventData = {
+        account: eventData.addressItems.items.account,
+        receiver: eventData.addressItems.items.receiver,
+        callbackContract: eventData.addressItems.items.callbackContract,
+        marketAddress: eventData.addressItems.items.market,
+        initialCollateralTokenAddress: eventData.addressItems.items.initialCollateralToken,
+        swapPath: eventData.addressItems.arrayItems.swapPath,
+        sizeDeltaUsd: eventData.uintItems.items.sizeDeltaUsd,
+        initialCollateralDeltaAmount: eventData.uintItems.items.initialCollateralDeltaAmount,
+        contractTriggerPrice: eventData.uintItems.items.triggerPrice,
+        contractAcceptablePrice: eventData.uintItems.items.acceptablePrice,
+        executionFee: eventData.uintItems.items.executionFee,
+        callbackGasLimit: eventData.uintItems.items.callbackGasLimit,
+        minOutputAmount: eventData.uintItems.items.minOutputAmount,
+        updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
+        orderType: Number(eventData.uintItems.items.orderType),
+        isLong: eventData.boolItems.items.isLong,
+        shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
+        isFrozen: eventData.boolItems.items.isFrozen,
+        key: eventData.bytes32Items.items.key,
+      };
+
+      if (data.account !== currentAccount) {
+        return;
+      }
+
+      setOrderStatuses((old) =>
+        setByKey(old, data.key, { key: data.key, data, createdTxnHash: txnParams.transactionHash })
+      );
+    },
+
+    OrderExecuted: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      const key = eventData.bytes32Items.items.key;
+
+      setOrderStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
+    },
+
+    OrderCancelled: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      const key = eventData.bytes32Items.items.key;
+      setOrderStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
+
+      const order = orderStatuses[key]?.data;
+
+      // If pending user order is cancelled, reset the pending position state
+      if (order && marketsInfoData) {
+        const wrappedToken = getWrappedToken(chainId);
+
+        let pendingPositionKey: string | undefined;
+
+        // For increase orders, we need to check the target collateral token
+        if (isIncreaseOrderType(order.orderType)) {
+          const { outTokenAddress } = getSwapPathOutputAddresses({
+            marketsInfoData: marketsInfoData,
+            initialCollateralAddress: order.initialCollateralTokenAddress,
+            swapPath: order.swapPath,
+            wrappedNativeTokenAddress: wrappedToken.address,
+            shouldUnwrapNativeToken: order.shouldUnwrapNativeToken,
+          });
+
+          if (outTokenAddress) {
+            pendingPositionKey = getPositionKey(order.account, order.marketAddress, outTokenAddress, order.isLong);
+          }
+        } else if (isDecreaseOrderType(order.orderType)) {
+          pendingPositionKey = getPositionKey(
+            order.account,
+            order.marketAddress,
+            order.initialCollateralTokenAddress,
+            order.isLong
+          );
+        }
+
+        if (pendingPositionKey) {
+          setPendingPositionsUpdates((old) => setByKey(old, pendingPositionKey!, undefined));
+        }
+      }
+    },
+
+    DepositCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      const depositData: DepositCreatedEventData = {
+        account: eventData.addressItems.items.account,
+        receiver: eventData.addressItems.items.receiver,
+        callbackContract: eventData.addressItems.items.callbackContract,
+        marketAddress: eventData.addressItems.items.market,
+        initialLongTokenAddress: eventData.addressItems.items.initialLongToken,
+        initialShortTokenAddress: eventData.addressItems.items.initialShortToken,
+        longTokenSwapPath: eventData.addressItems.arrayItems.longTokenSwapPath,
+        shortTokenSwapPath: eventData.addressItems.arrayItems.shortTokenSwapPath,
+        initialLongTokenAmount: eventData.uintItems.items.initialLongTokenAmount,
+        initialShortTokenAmount: eventData.uintItems.items.initialShortTokenAmount,
+        minMarketTokens: eventData.uintItems.items.minMarketTokens,
+        updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
+        executionFee: eventData.uintItems.items.executionFee,
+        callbackGasLimit: eventData.uintItems.items.callbackGasLimit,
+        shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
+        key: eventData.bytes32Items.items.key,
+      };
+
+      if (depositData.account !== currentAccount) return;
+
+      setDepositStatuses((old) =>
+        setByKey(old, depositData.key, {
+          key: depositData.key,
+          data: depositData,
+          createdTxnHash: txnParams.transactionHash,
+        })
+      );
+    },
+
+    DepositExecuted: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      const key = eventData.bytes32Items.items.key;
+      setDepositStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
+    },
+
+    DepositCancelled: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      const key = eventData.bytes32Items.items.key;
+      setDepositStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
+    },
+
+    WithdrawalCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      const data: WithdrawalCreatedEventData = {
+        account: eventData.addressItems.items.account,
+        receiver: eventData.addressItems.items.receiver,
+        callbackContract: eventData.addressItems.items.callbackContract,
+        marketAddress: eventData.addressItems.items.market,
+        marketTokenAmount: eventData.uintItems.items.marketTokenAmount,
+        minLongTokenAmount: eventData.uintItems.items.minLongTokenAmount,
+        minShortTokenAmount: eventData.uintItems.items.minShortTokenAmount,
+        updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
+        executionFee: eventData.uintItems.items.executionFee,
+        callbackGasLimit: eventData.uintItems.items.callbackGasLimit,
+        shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
+        key: eventData.bytes32Items.items.key,
+      };
+
+      if (data.account !== currentAccount) return;
+
+      setWithdrawalStatuses((old) =>
+        setByKey(old, data.key, { key: data.key, data, createdTxnHash: txnParams.transactionHash })
+      );
+    },
+
+    WithdrawalExecuted: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      const key = eventData.bytes32Items.items.key;
+      setWithdrawalStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
+    },
+
+    WithdrawalCancelled: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      const key = eventData.bytes32Items.items.key;
+      setWithdrawalStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
+    },
+
     PositionIncrease: (eventData: EventLogData, txnParams: EventTxnParams) => {
       const data: PositionIncreaseEvent = {
         positionKey: getPositionKey(
@@ -108,170 +272,71 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
       setPositionDecreaseEvents((old) => [...old, data]);
     },
+  };
 
-    OrderCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
-      const data: OrderCreatedEvent = {
-        account: eventData.addressItems.items.account,
-        receiver: eventData.addressItems.items.receiver,
-        callbackContract: eventData.addressItems.items.callbackContract,
-        marketAddress: eventData.addressItems.items.market,
-        initialCollateralTokenAddress: eventData.addressItems.items.initialCollateralToken,
-        swapPath: eventData.addressItems.arrayItems.swapPath,
-        sizeDeltaUsd: eventData.uintItems.items.sizeDeltaUsd,
-        initialCollateralDeltaAmount: eventData.uintItems.items.initialCollateralDeltaAmount,
-        contractTriggerPrice: eventData.uintItems.items.triggerPrice,
-        contractAcceptablePrice: eventData.uintItems.items.acceptablePrice,
-        executionFee: eventData.uintItems.items.executionFee,
-        callbackGasLimit: eventData.uintItems.items.callbackGasLimit,
-        minOutputAmount: eventData.uintItems.items.minOutputAmount,
-        updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
-        orderType: Number(eventData.uintItems.items.orderType),
-        isLong: eventData.boolItems.items.isLong,
-        shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
-        isFrozen: eventData.boolItems.items.isFrozen,
-        key: eventData.bytes32Items.items.key,
-      };
+  useEffect(
+    function notifyPendingOrders() {
+      const pendingOrder = pendingOrders[0];
 
-      if (data.account !== currentAccount) return;
-
-      setOrderStatuses((old) =>
-        setByKey(old, data.key, { key: data.key, data, createdTxnHash: txnParams.transactionHash })
-      );
-    },
-
-    OrderExecuted: (eventData: EventLogData, txnParams: EventTxnParams) => {
-      const key = eventData.bytes32Items.items.key;
-
-      setOrderStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
-
-      const order = orderStatuses[key]?.data;
-      if (order) {
-        const orderLabel = getOrderTypeLabel(order.orderType);
-
-        pushSuccessNotification(chainId, `${orderLabel} order executed`, txnParams);
+      if (!pendingOrder) {
+        return;
       }
+
+      setPendingOrders([]);
+
+      helperToast.info(<OrderStatusNotification pendingOrderData={pendingOrder} />, {
+        autoClose: false,
+      });
     },
+    [pendingOrders]
+  );
 
-    OrderCancelled: (eventData: EventLogData, txnParams: EventTxnParams) => {
-      const key = eventData.bytes32Items.items.key;
-      setOrderStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
+  useEffect(
+    function notifyPendingDeposits() {
+      const pendingDeposit = pendingDeposits[0];
 
-      const order = orderStatuses[key]?.data;
-
-      if (order && marketsInfoData) {
-        const wrappedToken = getWrappedToken(chainId);
-        const orderLabel = getOrderTypeLabel(order.orderType);
-        const { outTokenAddress } = getSwapPathOutputAddresses({
-          marketsInfoData: marketsInfoData,
-          initialCollateralAddress: order.initialCollateralTokenAddress,
-          swapPath: order.swapPath,
-          wrappedNativeTokenAddress: wrappedToken.address,
-          shouldUnwrapNativeToken: order.shouldUnwrapNativeToken,
-        });
-
-        pushErrorNotification(chainId, `${orderLabel} order cancelled`, txnParams);
-
-        if (outTokenAddress) {
-          const positionKey = getPositionKey(order.account, order.marketAddress, outTokenAddress, order.isLong);
-
-          setPendingPositionsUpdates((old) => setByKey(old, positionKey, undefined));
-        }
+      if (!pendingDeposit) {
+        return;
       }
+
+      setPendingDeposits([]);
+
+      helperToast.info(<GmStatusNotification pendingDepositData={pendingDeposit} />, {
+        autoClose: false,
+      });
     },
+    [pendingDeposits, pendingOrders]
+  );
 
-    DepositCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
-      const depositData: DepositCreatedEvent = {
-        account: eventData.addressItems.items.account,
-        receiver: eventData.addressItems.items.receiver,
-        callbackContract: eventData.addressItems.items.callbackContract,
-        market: eventData.addressItems.items.market,
-        initialLongToken: eventData.addressItems.items.initialLongToken,
-        initialShortToken: eventData.addressItems.items.initialShortToken,
-        longTokenSwapPath: eventData.addressItems.arrayItems.longTokenSwapPath,
-        shortTokenSwapPath: eventData.addressItems.arrayItems.shortTokenSwapPath,
-        initialLongTokenAmount: eventData.uintItems.items.initialLongTokenAmount,
-        initialShortTokenAmount: eventData.uintItems.items.initialShortTokenAmount,
-        minMarketTokens: eventData.uintItems.items.minMarketTokens,
-        updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
-        executionFee: eventData.uintItems.items.executionFee,
-        callbackGasLimit: eventData.uintItems.items.callbackGasLimit,
-        shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
-        key: eventData.bytes32Items.items.key,
-      };
+  useEffect(
+    function notifyPendingWithdrawals() {
+      const pendingWithdrawal = pendingWithdrawals[0];
 
-      if (depositData.account !== currentAccount) return;
+      if (!pendingWithdrawal) {
+        return;
+      }
 
-      setDepositStatuses((old) =>
-        setByKey(old, depositData.key, {
-          key: depositData.key,
-          data: depositData,
-          createdTxnHash: txnParams.transactionHash,
-        })
-      );
+      setPendingWithdrawals([]);
+
+      helperToast.info(<GmStatusNotification pendingWithdrawalData={pendingWithdrawal} />, {
+        autoClose: false,
+      });
     },
-
-    DepositExecuted: (eventData: EventLogData, txnParams: EventTxnParams) => {
-      const key = eventData.bytes32Items.items.key;
-      setDepositStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
-      pushSuccessNotification(chainId, "Deposit executed", txnParams);
-    },
-
-    DepositCancelled: (eventData: EventLogData, txnParams: EventTxnParams) => {
-      const key = eventData.bytes32Items.items.key;
-      setDepositStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
-      pushErrorNotification(chainId, "Deposit cancelled", txnParams);
-    },
-
-    WithdrawalCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
-      const data: WithdrawalCreatedEvent = {
-        account: eventData.addressItems.items.account,
-        receiver: eventData.addressItems.items.receiver,
-        callbackContract: eventData.addressItems.items.callbackContract,
-        market: eventData.addressItems.items.market,
-        marketTokenAmount: eventData.uintItems.items.marketTokenAmount,
-        minLongTokenAmount: eventData.uintItems.items.minLongTokenAmount,
-        minShortTokenAmount: eventData.uintItems.items.minShortTokenAmount,
-        updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
-        executionFee: eventData.uintItems.items.executionFee,
-        callbackGasLimit: eventData.uintItems.items.callbackGasLimit,
-        shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
-        key: eventData.bytes32Items.items.key,
-      };
-
-      if (data.account !== currentAccount) return;
-
-      setWithdrawalStatuses((old) =>
-        setByKey(old, data.key, { key: data.key, data, createdTxnHash: txnParams.transactionHash })
-      );
-    },
-
-    WithdrawalExecuted: (eventData: EventLogData, txnParams: EventTxnParams) => {
-      const key = eventData.bytes32Items.items.key;
-      setWithdrawalStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
-      pushSuccessNotification(chainId, "Withdrawal executed", txnParams);
-    },
-
-    WithdrawalCancelled: (eventData: EventLogData, txnParams: EventTxnParams) => {
-      const key = eventData.bytes32Items.items.key;
-      setWithdrawalStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
-      pushErrorNotification(chainId, "Withdrawal cancelled", txnParams);
-    },
-  }));
+    [pendingDeposits, pendingOrders, pendingWithdrawals]
+  );
 
   useEffect(
     function subscribe() {
       const wsProvider = getWsProvider(active, chainId);
 
-      if (!wsProvider) return;
+      if (!wsProvider) {
+        return;
+      }
 
-      const contracts: { [name: string]: ethers.Contract } = {};
+      let EventEmitterContract: ethers.Contract | undefined;
 
       try {
-        contracts.EventEmitter = new ethers.Contract(
-          getContract(chainId, "EventEmitter"),
-          EventEmitter.abi,
-          wsProvider
-        );
+        EventEmitterContract = new ethers.Contract(getContract(chainId, "EventEmitter"), EventEmitter.abi, wsProvider);
       } catch (e) {
         // ...ignore on unsupported chains
       }
@@ -301,20 +366,20 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         eventLogHandlers.current[eventName]?.(parseEventLogData(eventData), txnOpts);
       }
 
-      contracts.EventEmitter.on("EventLog", handleEventLog);
-      contracts.EventEmitter.on("EventLog1", handleEventLog1);
-      contracts.EventEmitter.on("EventLog2", handleEventLog2);
+      EventEmitterContract?.on("EventLog", handleEventLog);
+      EventEmitterContract?.on("EventLog1", handleEventLog1);
+      EventEmitterContract?.on("EventLog2", handleEventLog2);
 
       return () => {
-        contracts.EventEmitter.off("EventLog", handleEventLog);
-        contracts.EventEmitter.off("EventLog1", handleEventLog1);
-        contracts.EventEmitter.off("EventLog2", handleEventLog2);
+        EventEmitterContract?.off("EventLog", handleEventLog);
+        EventEmitterContract?.off("EventLog1", handleEventLog1);
+        EventEmitterContract?.off("EventLog2", handleEventLog2);
       };
     },
     [active, chainId]
   );
 
-  const contextState: ContractEventsContextType = useMemo(() => {
+  const contextState: SyntheticsEventsContextType = useMemo(() => {
     if (isDevelopment()) {
       // eslint-disable-next-line no-console
       console.debug("events", {
@@ -343,7 +408,16 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       touchWithdrawalStatus: (key: string) => {
         setWithdrawalStatuses((old) => updateByKey(old, key, { isTouched: true }));
       },
-      async setPendingPositionUpdate(update: Omit<PendingPositionUpdate, "updatedAt" | "updatedAtBlock">) {
+      setPendingOrder: (data: PendingOrderData) => {
+        setPendingOrders((old) => [...old, data]);
+      },
+      setPendingDeposit: (data: PendingDepositData) => {
+        setPendingDeposits((old) => [...old, data]);
+      },
+      setPendingWithdrawal: (data: PendingWithdrawalData) => {
+        setPendingWithdrawals((old) => [...old, data]);
+      },
+      async setPendingPosition(update: Omit<PendingPositionUpdate, "updatedAt" | "updatedAtBlock">) {
         const provider = getProvider(undefined, chainId) as StaticJsonRpcProvider;
 
         const currentBlock = await provider.getBlockNumber();

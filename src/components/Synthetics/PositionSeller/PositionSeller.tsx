@@ -50,7 +50,6 @@ import {
 } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useEffect, useMemo, useState } from "react";
-import { OrderStatus } from "../OrderStatus/OrderStatus";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionSeller.scss";
 
@@ -88,10 +87,9 @@ export function PositionSeller(p: Props) {
   const { minCollateralUsd } = usePositionsConstants(chainId);
   const userReferralInfo = useUserReferralInfo(library, chainId, account);
 
-  const { setPendingPositionUpdate } = useSyntheticsEvents();
+  const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
 
-  const [isProcessing, setIsProcessing] = useState(false);
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
 
   const [closeUsdInputValue, setCloseUsdInputValue] = useState("");
@@ -261,34 +259,27 @@ export function PositionSeller(p: Props) {
     createDecreaseOrderTxn(chainId, library, {
       account,
       marketAddress: position.marketAddress,
-      indexTokenAddress: position.indexToken.address,
-      swapPath: swapAmounts?.swapPathStats?.swapPath || [],
-      initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount || BigNumber.from(0),
       initialCollateralAddress: position.collateralTokenAddress,
+      initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount || BigNumber.from(0),
       receiveTokenAddress: receiveToken.address,
+      swapPath: swapAmounts?.swapPathStats?.swapPath || [],
       sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
-      orderType: OrderType.MarketDecrease,
+      sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
       isLong: position.isLong,
-      executionFee: executionFee.feeTokenAmount,
       acceptablePrice,
-      decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
+      triggerPrice: undefined,
       minOutputUsd: receiveUsd,
-      tokensData,
+      decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
+      orderType: OrderType.MarketDecrease,
       referralCode: userReferralInfo?.userReferralCode,
+      executionFee: executionFee.feeTokenAmount,
+      existingPositionKey: position.key,
+      indexToken: position.indexToken,
+      tokensData,
+      setPendingOrder,
       setPendingTxns,
-    }).then(() => {
-      if (p.position) {
-        setPendingPositionUpdate({
-          isIncrease: false,
-          positionKey: position.key,
-          collateralDeltaAmount: decreaseAmounts.collateralDeltaAmount,
-          sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
-          sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
-        });
-      }
-
-      setIsProcessing(true);
-    });
+      setPendingPosition,
+    }).then(onClose);
   }
 
   useEffect(
@@ -302,236 +293,215 @@ export function PositionSeller(p: Props) {
   );
 
   return (
-    <>
-      {!isProcessing && (
-        <div className="PositionEditor PositionSeller">
-          <Modal
-            className="PositionSeller-modal"
-            isVisible={true}
-            setIsVisible={onClose}
-            label={
-              <Trans>
-                Close {position?.isLong ? t`Long` : t`Short`} {position?.indexToken?.symbol}
-              </Trans>
-            }
-            allowContentTouchMove
-          >
-            {position && (
-              <>
-                <BuyInputSection
-                  topLeftLabel={t`Close`}
-                  topRightLabel={t`Max`}
-                  topRightValue={formatUsd(maxCloseSize)}
-                  inputValue={closeUsdInputValue}
-                  onInputValueChange={(e) => setCloseUsdInputValue(e.target.value)}
-                  showMaxButton={maxCloseSize.gt(0) && !closeSizeUsd?.eq(maxCloseSize)}
-                  onClickMax={() => setCloseUsdInputValue(formatAmount(maxCloseSize, USD_DECIMALS, 2))}
-                >
-                  USD
-                </BuyInputSection>
-                <div className="PositionEditor-info-box PositionSeller-info-box">
-                  {executionFee?.warning && <div className="Confirmation-box-warning">{executionFee.warning}</div>}
-                  <div className="PositionEditor-keep-leverage-settings">
-                    <Checkbox isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
-                      <span className="muted font-sm">
-                        <Trans>Keep leverage at {position?.leverage ? formatLeverage(position.leverage) : "..."}</Trans>
+    <div className="PositionEditor PositionSeller">
+      <Modal
+        className="PositionSeller-modal"
+        isVisible={true}
+        setIsVisible={onClose}
+        label={
+          <Trans>
+            Close {position?.isLong ? t`Long` : t`Short`} {position?.indexToken?.symbol}
+          </Trans>
+        }
+        allowContentTouchMove
+      >
+        {position && (
+          <>
+            <BuyInputSection
+              topLeftLabel={t`Close`}
+              topRightLabel={t`Max`}
+              topRightValue={formatUsd(maxCloseSize)}
+              inputValue={closeUsdInputValue}
+              onInputValueChange={(e) => setCloseUsdInputValue(e.target.value)}
+              showMaxButton={maxCloseSize.gt(0) && !closeSizeUsd?.eq(maxCloseSize)}
+              onClickMax={() => setCloseUsdInputValue(formatAmount(maxCloseSize, USD_DECIMALS, 2))}
+            >
+              USD
+            </BuyInputSection>
+            <div className="PositionEditor-info-box PositionSeller-info-box">
+              {executionFee?.warning && <div className="Confirmation-box-warning">{executionFee.warning}</div>}
+              <div className="PositionEditor-keep-leverage-settings">
+                <Checkbox isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
+                  <span className="muted font-sm">
+                    <Trans>Keep leverage at {position?.leverage ? formatLeverage(position.leverage) : "..."}</Trans>
+                  </span>
+                </Checkbox>
+              </div>
+
+              <div className="PositionEditor-allow-higher-slippage">
+                <Checkbox isChecked={isHigherSlippageAllowed} setIsChecked={setIsHigherSlippageAllowed}>
+                  <span className="muted font-sm">
+                    <Trans>Allow up to 1% slippage</Trans>
+                  </span>
+                </Checkbox>
+              </div>
+
+              <div>
+                <ExchangeInfoRow label={t`Allowed Slippage`}>
+                  <Tooltip
+                    handle={`${formatAmount(allowedSlippage, 2, 2)}%`}
+                    position="right-bottom"
+                    renderContent={() => {
+                      return (
+                        <Trans>
+                          You can change this in the settings menu on the top right of the page.
+                          <br />
+                          <br />
+                          Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices
+                          are volatile.
+                        </Trans>
+                      );
+                    }}
+                  />
+                </ExchangeInfoRow>
+              </div>
+
+              <ExchangeInfoRow isTop label={t`Mark Price`} value={formatUsd(markPrice) || "-"} />
+              <ExchangeInfoRow label={t`Entry Price`} value={formatUsd(position?.entryPrice) || "-"} />
+              <ExchangeInfoRow
+                label={t`Price Impact`}
+                value={formatPercentage(decreaseAmounts?.acceptablePriceImpactBps) || "-"}
+              />
+              <ExchangeInfoRow label={t`Acceptable Price`} value={formatUsd(decreaseAmounts?.acceptablePrice) || "-"} />
+              <ExchangeInfoRow
+                className="SwapBox-info-row"
+                label={t`Liq. Price`}
+                value={
+                  decreaseAmounts?.sizeDeltaUsd.eq(position.sizeInUsd) ? (
+                    "-"
+                  ) : (
+                    <ValueTransition
+                      from={formatUsd(position.liquidationPrice)!}
+                      to={formatUsd(nextPositionValues?.nextLiqPrice)}
+                    />
+                  )
+                }
+              />
+
+              <ExchangeInfoRow
+                isTop
+                label={t`Size`}
+                value={
+                  <ValueTransition
+                    from={formatUsd(position?.sizeInUsd)!}
+                    to={formatUsd(nextPositionValues?.nextSizeUsd)}
+                  />
+                }
+              />
+
+              <div className="Exchange-info-row">
+                <div>
+                  <Tooltip
+                    handle={
+                      <span className="Exchange-info-label">
+                        <Trans>Collateral ({position.collateralToken?.symbol})</Trans>
                       </span>
-                    </Checkbox>
-                  </div>
-
-                  <div className="PositionEditor-allow-higher-slippage">
-                    <Checkbox isChecked={isHigherSlippageAllowed} setIsChecked={setIsHigherSlippageAllowed}>
-                      <span className="muted font-sm">
-                        <Trans>Allow up to 1% slippage</Trans>
-                      </span>
-                    </Checkbox>
-                  </div>
-
-                  <div>
-                    <ExchangeInfoRow label={t`Allowed Slippage`}>
-                      <Tooltip
-                        handle={`${formatAmount(allowedSlippage, 2, 2)}%`}
-                        position="right-bottom"
-                        renderContent={() => {
-                          return (
-                            <Trans>
-                              You can change this in the settings menu on the top right of the page.
-                              <br />
-                              <br />
-                              Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if
-                              prices are volatile.
-                            </Trans>
-                          );
-                        }}
-                      />
-                    </ExchangeInfoRow>
-                  </div>
-
-                  <ExchangeInfoRow isTop label={t`Mark Price`} value={formatUsd(markPrice) || "-"} />
-                  <ExchangeInfoRow label={t`Entry Price`} value={formatUsd(position?.entryPrice) || "-"} />
-                  <ExchangeInfoRow
-                    label={t`Price Impact`}
-                    value={formatPercentage(decreaseAmounts?.acceptablePriceImpactBps) || "-"}
-                  />
-                  <ExchangeInfoRow
-                    label={t`Acceptable Price`}
-                    value={formatUsd(decreaseAmounts?.acceptablePrice) || "-"}
-                  />
-                  <ExchangeInfoRow
-                    className="SwapBox-info-row"
-                    label={t`Liq. Price`}
-                    value={
-                      decreaseAmounts?.sizeDeltaUsd.eq(position.sizeInUsd) ? (
-                        "-"
-                      ) : (
-                        <ValueTransition
-                          from={formatUsd(position.liquidationPrice)!}
-                          to={formatUsd(nextPositionValues?.nextLiqPrice)}
-                        />
-                      )
                     }
+                    position="left-top"
+                    renderContent={() => {
+                      return <Trans>Initial Collateral (Collateral excluding Borrow and Funding Fee).</Trans>;
+                    }}
                   />
-
-                  <ExchangeInfoRow
-                    isTop
-                    label={t`Size`}
-                    value={
-                      <ValueTransition
-                        from={formatUsd(position?.sizeInUsd)!}
-                        to={formatUsd(nextPositionValues?.nextSizeUsd)}
-                      />
-                    }
+                </div>
+                <div className="align-right">
+                  <ValueTransition
+                    from={formatUsd(position?.initialCollateralUsd)!}
+                    to={formatUsd(nextPositionValues?.nextCollateralUsd)}
                   />
+                </div>
+              </div>
 
-                  <div className="Exchange-info-row">
-                    <div>
-                      <Tooltip
-                        handle={
-                          <span className="Exchange-info-label">
-                            <Trans>Collateral ({position.collateralToken?.symbol})</Trans>
-                          </span>
-                        }
-                        position="left-top"
-                        renderContent={() => {
-                          return <Trans>Initial Collateral (Collateral excluding Borrow and Funding Fee).</Trans>;
-                        }}
-                      />
-                    </div>
-                    <div className="align-right">
+              {!keepLeverage && (
+                <ExchangeInfoRow
+                  label={t`Leverage`}
+                  value={
+                    decreaseAmounts?.sizeDeltaUsd.eq(position.sizeInUsd) ? (
+                      "-"
+                    ) : (
                       <ValueTransition
-                        from={formatUsd(position?.initialCollateralUsd)!}
-                        to={formatUsd(nextPositionValues?.nextCollateralUsd)}
+                        from={formatLeverage(position.leverage)}
+                        to={formatLeverage(nextPositionValues?.nextLeverage)}
                       />
-                    </div>
-                  </div>
+                    )
+                  }
+                />
+              )}
 
-                  {!keepLeverage && (
-                    <ExchangeInfoRow
-                      label={t`Leverage`}
-                      value={
-                        decreaseAmounts?.sizeDeltaUsd.eq(position.sizeInUsd) ? (
-                          "-"
-                        ) : (
-                          <ValueTransition
-                            from={formatLeverage(position.leverage)}
-                            to={formatLeverage(nextPositionValues?.nextLeverage)}
-                          />
-                        )
+              <ExchangeInfoRow
+                label={t`PnL`}
+                value={position?.pnl ? formatDeltaUsd(position.pnl, position.pnlPercentage) : "..."}
+              />
+
+              <TradeFeesRow
+                isTop
+                totalTradeFees={fees?.totalFees}
+                positionFee={fees?.positionFee}
+                positionPriceImpact={fees?.positionPriceImpact}
+                swapFees={fees?.swapFees}
+                swapPriceImpact={fees?.swapPriceImpact}
+                executionFee={executionFee}
+                borrowFee={fees?.borrowFee}
+                fundingFee={fees?.fundingFee}
+                feeDiscountUsd={fees?.feeDiscountUsd}
+                feesType="decrease"
+              />
+
+              <ExchangeInfoRow
+                isTop
+                label={t`Receive`}
+                className="Exchange-info-row PositionSeller-receive-row "
+                value={
+                  receiveToken && (
+                    <TokenSelector
+                      label={t`Receive`}
+                      className={cx("PositionSeller-token-selector", {
+                        warning: isNotEnoughReceiveTokenLiquidity,
+                      })}
+                      chainId={chainId}
+                      showBalances={false}
+                      disableBodyScrollLock={true}
+                      infoTokens={availableTokensOptions?.infoTokens}
+                      tokenAddress={receiveToken.address}
+                      onSelectToken={(token) => setReceiveTokenAddress(token.address)}
+                      tokens={availableTokensOptions?.swapTokens || []}
+                      showTokenImgInDropdown={true}
+                      selectedTokenLabel={
+                        <span className="PositionSelector-selected-receive-token">
+                          {formatTokenAmountWithUsd(
+                            receiveTokenAmount,
+                            receiveUsd,
+                            receiveToken?.symbol,
+                            receiveToken?.decimals,
+                            {
+                              fallbackToZero: true,
+                            }
+                          )}
+                        </span>
                       }
                     />
-                  )}
+                  )
+                }
+              />
+            </div>
 
-                  <ExchangeInfoRow
-                    label={t`PnL`}
-                    value={position?.pnl ? formatDeltaUsd(position.pnl, position.pnlPercentage) : "..."}
-                  />
-
-                  <TradeFeesRow
-                    isTop
-                    totalTradeFees={fees?.totalFees}
-                    positionFee={fees?.positionFee}
-                    positionPriceImpact={fees?.positionPriceImpact}
-                    swapFees={fees?.swapFees}
-                    swapPriceImpact={fees?.swapPriceImpact}
-                    executionFee={executionFee}
-                    borrowFee={fees?.borrowFee}
-                    fundingFee={fees?.fundingFee}
-                    feeDiscountUsd={fees?.feeDiscountUsd}
-                    feesType="decrease"
-                  />
-
-                  <ExchangeInfoRow
-                    isTop
-                    label={t`Receive`}
-                    className="Exchange-info-row PositionSeller-receive-row "
-                    value={
-                      receiveToken && (
-                        <TokenSelector
-                          label={t`Receive`}
-                          className={cx("PositionSeller-token-selector", {
-                            warning: isNotEnoughReceiveTokenLiquidity,
-                          })}
-                          chainId={chainId}
-                          showBalances={false}
-                          disableBodyScrollLock={true}
-                          infoTokens={availableTokensOptions?.infoTokens}
-                          tokenAddress={receiveToken.address}
-                          onSelectToken={(token) => setReceiveTokenAddress(token.address)}
-                          tokens={availableTokensOptions?.swapTokens || []}
-                          showTokenImgInDropdown={true}
-                          selectedTokenLabel={
-                            <span className="PositionSelector-selected-receive-token">
-                              {formatTokenAmountWithUsd(
-                                receiveTokenAmount,
-                                receiveUsd,
-                                receiveToken?.symbol,
-                                receiveToken?.decimals,
-                                {
-                                  fallbackToZero: true,
-                                }
-                              )}
-                            </span>
-                          }
-                        />
-                      )
-                    }
-                  />
-                </div>
-
-                {isHighPriceImpact && (
-                  <div className="PositionSeller-price-impact-warning">
-                    <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
-                      <span className="muted font-sm">
-                        <Trans>I am aware of the high Price Impact</Trans>
-                      </span>
-                    </Checkbox>
-                  </div>
-                )}
-
-                <div className="Exchange-swap-button-container">
-                  <Button className="w-100" variant="primary-action" disabled={Boolean(error)} onClick={onSubmit}>
-                    {error || t`Close`}
-                  </Button>
-                </div>
-              </>
+            {isHighPriceImpact && (
+              <div className="PositionSeller-price-impact-warning">
+                <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
+                  <span className="muted font-sm">
+                    <Trans>I am aware of the high Price Impact</Trans>
+                  </span>
+                </Checkbox>
+              </div>
             )}
-          </Modal>
-        </div>
-      )}
 
-      <OrderStatus
-        isVisible={isProcessing}
-        orderType={OrderType.MarketDecrease}
-        marketAddress={position?.marketAddress}
-        initialCollateralAddress={position?.collateralTokenAddress}
-        initialCollateralAmount={decreaseAmounts?.collateralDeltaAmount}
-        sizeDeltaUsd={decreaseAmounts?.sizeDeltaUsd}
-        isLong={position?.isLong}
-        onClose={() => {
-          setIsProcessing(false);
-          p.onClose();
-        }}
-      />
-    </>
+            <div className="Exchange-swap-button-container">
+              <Button className="w-100" variant="primary-action" disabled={Boolean(error)} onClick={onSubmit}>
+                {error || t`Close`}
+              </Button>
+            </div>
+          </>
+        )}
+      </Modal>
+    </div>
   );
 }

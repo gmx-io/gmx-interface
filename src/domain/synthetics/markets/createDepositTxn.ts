@@ -1,21 +1,24 @@
 import { Web3Provider } from "@ethersproject/providers";
-import { t } from "@lingui/macro";
 import { getContract } from "config/contracts";
 import { BigNumber, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
+import { SetPendingDeposit } from "context/SyntheticsEvents";
 
 type Params = {
   account: string;
   initialLongTokenAddress: string;
   initialShortTokenAddress: string;
+  longTokenSwapPath: string[];
+  shortTokenSwapPath: string[];
   marketTokenAddress: string;
-  longTokenAmount?: BigNumber;
-  shortTokenAmount?: BigNumber;
+  longTokenAmount: BigNumber;
+  shortTokenAmount: BigNumber;
   minMarketTokens: BigNumber;
   executionFee: BigNumber;
   setPendingTxns: (txns: any) => void;
+  setPendingDeposit: SetPendingDeposit;
 };
 
 export async function createDepositTxn(chainId: number, library: Web3Provider, p: Params) {
@@ -35,54 +38,68 @@ export async function createDepositTxn(chainId: number, library: Web3Provider, p
     wntDeposit = wntDeposit.add(p.shortTokenAmount!);
   }
 
+  const shouldUnwrapNativeToken = isNativeLongDeposit || isNativeShortDeposit;
+
   const wntAmount = p.executionFee.add(wntDeposit);
 
-  const sendLongTokenCall =
-    !isNativeLongDeposit && p.longTokenAmount?.gt(0)
-      ? contract.interface.encodeFunctionData("sendTokens", [
-          p.initialLongTokenAddress,
-          depositVaultAddress,
-          p.longTokenAmount,
-        ])
-      : undefined;
+  const initialLongTokenAddress = convertTokenAddress(chainId, p.initialLongTokenAddress, "wrapped");
+  const initialShortTokenAddress = convertTokenAddress(chainId, p.initialShortTokenAddress, "wrapped");
 
-  const sendShortTokenCall =
-    !isNativeShortDeposit && p.shortTokenAmount?.gt(0)
-      ? contract.interface.encodeFunctionData("sendTokens", [
-          p.initialShortTokenAddress,
-          depositVaultAddress,
-          p.shortTokenAmount,
-        ])
-      : undefined;
+  const minMarketTokens = p.minMarketTokens.sub(p.minMarketTokens.div(10));
 
   const multicall = [
-    contract.interface.encodeFunctionData("sendWnt", [depositVaultAddress, wntAmount]),
-    sendLongTokenCall,
-    sendShortTokenCall,
-    contract.interface.encodeFunctionData("createDeposit", [
-      {
-        receiver: p.account,
-        callbackContract: ethers.constants.AddressZero,
-        market: p.marketTokenAddress,
-        initialLongToken: convertTokenAddress(chainId, p.initialLongTokenAddress, "wrapped"),
-        initialShortToken: convertTokenAddress(chainId, p.initialShortTokenAddress, "wrapped"),
-        longTokenSwapPath: [],
-        shortTokenSwapPath: [],
-        minMarketTokens: p.minMarketTokens.sub(p.minMarketTokens.div(10)) || BigNumber.from(0),
-        shouldUnwrapNativeToken: false,
-        executionFee: p.executionFee,
-        callbackGasLimit: BigNumber.from(0),
-        uiFeeReceiver: ethers.constants.AddressZero,
-      },
-    ]),
-  ].filter(Boolean) as string[];
+    { method: "sendWnt", params: [depositVaultAddress, wntAmount] },
 
-  return callContract(chainId, contract, "multicall", [multicall], {
+    !isNativeLongDeposit && p.longTokenAmount.gt(0)
+      ? { method: "sendTokens", params: [p.initialLongTokenAddress, depositVaultAddress, p.longTokenAmount] }
+      : undefined,
+
+    !isNativeShortDeposit && p.shortTokenAmount.gt(0)
+      ? { method: "sendTokens", params: [p.initialShortTokenAddress, depositVaultAddress, p.shortTokenAmount] }
+      : undefined,
+
+    {
+      method: "createDeposit",
+      params: [
+        {
+          receiver: p.account,
+          callbackContract: ethers.constants.AddressZero,
+          market: p.marketTokenAddress,
+          initialLongToken: initialLongTokenAddress,
+          initialShortToken: initialShortTokenAddress,
+          longTokenSwapPath: p.longTokenSwapPath,
+          shortTokenSwapPath: p.shortTokenSwapPath,
+          minMarketTokens: minMarketTokens,
+          shouldUnwrapNativeToken: shouldUnwrapNativeToken,
+          executionFee: p.executionFee,
+          callbackGasLimit: BigNumber.from(0),
+          uiFeeReceiver: ethers.constants.AddressZero,
+        },
+      ],
+    },
+  ];
+
+  const encodedPayload = multicall
+    .filter(Boolean)
+    .map((call) => contract.interface.encodeFunctionData(call!.method, call!.params));
+
+  return callContract(chainId, contract, "multicall", [encodedPayload], {
     value: wntAmount,
-    sentMsg: t`Deposit order sent`,
-    successMsg: t`Success deposit order`,
-    failMsg: t`Deposit order failed`,
+    hideSentMsg: true,
     hideSuccessMsg: true,
     setPendingTxns: p.setPendingTxns,
+  }).then(() => {
+    p.setPendingDeposit({
+      account: p.account,
+      marketAddress: p.marketTokenAddress,
+      initialLongTokenAddress,
+      initialShortTokenAddress,
+      longTokenSwapPath: p.longTokenSwapPath,
+      shortTokenSwapPath: p.shortTokenSwapPath,
+      initialLongTokenAmount: p.longTokenAmount,
+      initialShortTokenAmount: p.shortTokenAmount,
+      minMarketTokens: minMarketTokens,
+      shouldUnwrapNativeToken,
+    });
   });
 }
