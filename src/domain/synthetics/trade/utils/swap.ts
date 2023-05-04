@@ -71,6 +71,12 @@ export function getSwapAmountsByFromValue(p: {
     minOutputAmount = amountOut;
   }
 
+  if (amountOut.lt(0)) {
+    amountOut = BigNumber.from(0);
+    usdOut = BigNumber.from(0);
+    minOutputAmount = BigNumber.from(0);
+  }
+
   return {
     amountIn,
     usdIn,
@@ -153,6 +159,11 @@ export function getSwapAmountsByToValue(p: {
 
     usdIn = adjustedUsdIn;
     amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, priceIn)!;
+  }
+
+  if (amountIn.lt(0)) {
+    amountIn = BigNumber.from(0);
+    usdIn = BigNumber.from(0);
   }
 
   return {
