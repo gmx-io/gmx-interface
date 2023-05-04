@@ -29,6 +29,7 @@ import {
   swapImpactPoolAmountKey,
   totalBorrowingKey,
 } from "config/dataStore";
+import { convertTokenAddress } from "config/tokens";
 import { useMulticall } from "lib/multicall";
 import { bigNumberify } from "lib/numbers";
 import { getByKey } from "lib/objects";
@@ -36,7 +37,6 @@ import { useAvailableTokensData } from "../tokens";
 import { MarketsInfoData } from "./types";
 import { useMarkets } from "./useMarkets";
 import { getContractMarketPrices } from "./utils";
-import { convertTokenAddress } from "config/tokens";
 
 export type MarketsInfoResult = {
   marketsInfoData?: MarketsInfoData;

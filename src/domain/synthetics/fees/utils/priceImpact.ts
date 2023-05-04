@@ -237,14 +237,6 @@ function getNextOpenInterestParams(p: {
     nextShortUsd = currentShortUsd?.add(usdDelta || 0);
   }
 
-  console.log("getNextOpenInterestParams", {
-    currentLongUsd: currentLongUsd.toString(),
-    currentShortUsd: currentShortUsd.toString(),
-    nextLongUsd: nextLongUsd.toString(),
-    nextShortUsd: nextShortUsd.toString(),
-    usdDelta: usdDelta.toString(),
-  });
-
   return {
     currentLongUsd,
     currentShortUsd,
