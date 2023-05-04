@@ -4,9 +4,9 @@ import { BiEditAlt } from "react-icons/bi";
 import Card from "../Common/Card";
 import Modal from "../Modal/Modal";
 import Tooltip from "../Tooltip/Tooltip";
-import { USD_DECIMALS, shortenAddress } from "lib/legacy";
+import { shortenAddress } from "lib/legacy";
 import EmptyMessage from "./EmptyMessage";
-import { getTierIdDisplay, tierDiscountInfo } from "./referralsHelper";
+import { getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./referralsHelper";
 import { ReferralCodeForm } from "./JoinReferralCode";
 import { ARBITRUM, AVALANCHE, getExplorerUrl } from "config/chains";
 import { formatAmount } from "lib/numbers";
@@ -19,7 +19,12 @@ import ReferralInfoCard from "./ReferralInfoCard";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
 function TradersStats({ referralsData, traderTier, chainId, userReferralCodeString, setPendingTxns, pendingTxns }) {
-  const currentReferralsData = referralsData?.[chainId];
+  const {
+    [chainId]: currentReferralsData,
+    [ARBITRUM]: arbitrumData,
+    [AVALANCHE]: avalancheData,
+    total,
+  } = referralsData || {};
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const editModalRef = useRef(null);
   const { getCurrentData, currentPage, setCurrentPage, pageCount } = usePagination(
@@ -58,51 +63,40 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
           </div>
         </ReferralInfoCard>
         <ReferralInfoCard
+          value={getUSDValue(currentReferralsData?.referralTotalStats?.volume)}
           label={t`Trading Volume`}
           labelTooltipText={t`Volume traded by this account with an active referral code.`}
-          data={referralsData}
-          dataKeys={["referralTotalStats", "volume"]}
-          totalDataKey="tradersVolume"
           tooltipContent={
             <>
               <StatsTooltipRow
                 label={t`Trading Volume on Arbitrum`}
-                value={formatAmount(referralsData?.[ARBITRUM].referralTotalStats.volume, USD_DECIMALS, 2, true)}
+                value={getUSDValue(arbitrumData?.referralTotalStats.volume)}
               />
               <StatsTooltipRow
                 label={t`Trading Volume on Avalanche`}
-                value={formatAmount(referralsData?.[AVALANCHE].referralTotalStats.volume, USD_DECIMALS, 2, true)}
+                value={getUSDValue(avalancheData?.referralTotalStats.volume)}
               />
               <div className="Tooltip-divider" />
-
-              <StatsTooltipRow
-                label={t`Total`}
-                value={formatAmount(referralsData?.total.tradersVolume, USD_DECIMALS, 2, true)}
-              />
+              <StatsTooltipRow label={t`Total`} value={getUSDValue(total?.tradersVolume)} />
             </>
           }
         />
         <ReferralInfoCard
+          value={getUSDValue(currentReferralsData?.referralTotalStats?.discountUsd)}
           label={t`Rebates`}
           labelTooltipText={t`Rebates earned by this account as a trader.`}
-          dataKeys={["referralTotalStats", "discountUsd"]}
-          data={referralsData}
           tooltipContent={
             <>
               <StatsTooltipRow
                 label={t`Rebates on Arbitrum`}
-                value={formatAmount(referralsData?.[ARBITRUM].referralTotalStats.discountUsd, USD_DECIMALS, 2, true)}
+                value={getUSDValue(arbitrumData?.referralTotalStats.discountUsd)}
               />
               <StatsTooltipRow
                 label={t`Rebates on Avalanche`}
-                value={formatAmount(referralsData?.[AVALANCHE].referralTotalStats.discountUsd, USD_DECIMALS, 2, true)}
+                value={getUSDValue(avalancheData?.referralTotalStats.discountUsd)}
               />
               <div className="Tooltip-divider" />
-
-              <StatsTooltipRow
-                label={t`Total`}
-                value={formatAmount(referralsData?.total.discountUsd, USD_DECIMALS, 2, true)}
-              />
+              <StatsTooltipRow label={t`Total`} value={getUSDValue(total?.discountUsd)} />
             </>
           }
         />

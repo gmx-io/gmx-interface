@@ -6,7 +6,7 @@ import { IoWarningOutline } from "react-icons/io5";
 import { BiCopy, BiErrorCircle } from "react-icons/bi";
 import Card from "../Common/Card";
 import Modal from "../Modal/Modal";
-import { USD_DECIMALS, shortenAddress } from "lib/legacy";
+import { shortenAddress } from "lib/legacy";
 import EmptyMessage from "./EmptyMessage";
 import ReferralInfoCard from "./ReferralInfoCard";
 import {
@@ -39,12 +39,16 @@ function AffiliatesStats({
 }) {
   const [isAddReferralCodeModalOpen, setIsAddReferralCodeModalOpen] = useState(false);
   const addNewModalRef = useRef(null);
-  const currentReferralsData = referralsData?.[chainId];
-
   const [, copyToClipboard] = useCopyToClipboard();
   const open = () => setIsAddReferralCodeModalOpen(true);
   const close = () => setIsAddReferralCodeModalOpen(false);
 
+  const {
+    [chainId]: currentReferralsData,
+    [ARBITRUM]: arbitrumData,
+    [AVALANCHE]: avalancheData,
+    total,
+  } = referralsData || {};
   const { referrerTotalStats, rebateDistributions, referrerTierInfo } = currentReferralsData;
   const {
     currentPage: currentRebatePage,
@@ -80,80 +84,61 @@ function AffiliatesStats({
     <div className="referral-body-container">
       <div className="referral-stats">
         <ReferralInfoCard
+          value={currentReferralsData?.cumulativeStats?.registeredReferralsCount || 0}
           label={t`Traders Referred`}
           labelTooltipText={t`Amount of traders you referred.`}
-          data={referralsData}
-          dataKeys={["cumulativeStats", "registeredReferralsCount"]}
-          shouldFormat={false}
-          showDollar={false}
           tooltipContent={
             <>
               <StatsTooltipRow
                 label={t`Traders Referred on Arbitrum`}
-                value={referralsData?.[ARBITRUM].cumulativeStats.registeredReferralsCount}
+                value={arbitrumData.cumulativeStats.registeredReferralsCount}
                 showDollar={false}
               />
               <StatsTooltipRow
                 label={t`Traders Referred on Avalanche`}
-                value={referralsData?.[AVALANCHE].cumulativeStats.registeredReferralsCount}
+                value={avalancheData.cumulativeStats.registeredReferralsCount}
                 showDollar={false}
               />
               <div className="Tooltip-divider" />
-
-              <StatsTooltipRow
-                label={t`Total`}
-                value={referralsData?.total.registeredReferralsCount}
-                showDollar={false}
-              />
+              <StatsTooltipRow label={t`Total`} value={total?.registeredReferralsCount} showDollar={false} />
             </>
           }
         />
         <ReferralInfoCard
+          value={getUSDValue(currentReferralsData?.cumulativeStats?.volume)}
           label={t`Trading Volume`}
           labelTooltipText={t`Volume traded by your referred traders.`}
-          data={referralsData}
-          dataKeys={["cumulativeStats", "volume"]}
-          totalDataKey="affiliatesVolume"
           tooltipContent={
             <>
               <StatsTooltipRow
                 label={t`Trading Volume on Arbitrum`}
-                value={formatAmount(referralsData?.[ARBITRUM].cumulativeStats.volume, USD_DECIMALS, 2, true)}
+                value={getUSDValue(arbitrumData?.cumulativeStats.volume)}
               />
               <StatsTooltipRow
                 label={t`Trading Volume on Avalanche`}
-                value={formatAmount(referralsData?.[AVALANCHE].cumulativeStats.volume, USD_DECIMALS, 2, true)}
+                value={getUSDValue(avalancheData?.cumulativeStats.volume)}
               />
               <div className="Tooltip-divider" />
-
-              <StatsTooltipRow
-                label={t`Total`}
-                value={formatAmount(referralsData?.total.affiliatesVolume, USD_DECIMALS, 2, true)}
-              />
+              <StatsTooltipRow label={t`Total`} value={getUSDValue(total?.affiliatesVolume)} />
             </>
           }
         />
         <ReferralInfoCard
+          value={getUSDValue(currentReferralsData?.cumulativeStats?.referrerRebates)}
           label={t`Rebates`}
           labelTooltipText={t`Rebates earned by this account as an affiliate.`}
-          dataKeys={["cumulativeStats", "referrerRebates"]}
-          data={referralsData}
           tooltipContent={
             <>
               <StatsTooltipRow
                 label={t`Rebates on Arbitrum`}
-                value={formatAmount(referralsData?.[ARBITRUM].cumulativeStats.referrerRebates, USD_DECIMALS, 2, true)}
+                value={getUSDValue(arbitrumData?.cumulativeStats.referrerRebates)}
               />
               <StatsTooltipRow
                 label={t`Rebates on Avalanche`}
-                value={formatAmount(referralsData?.[AVALANCHE].cumulativeStats.referrerRebates, USD_DECIMALS, 2, true)}
+                value={getUSDValue(avalancheData?.cumulativeStats.referrerRebates)}
               />
               <div className="Tooltip-divider" />
-
-              <StatsTooltipRow
-                label={t`Total`}
-                value={formatAmount(referralsData?.total.referrerRebates, USD_DECIMALS, 2, true)}
-              />
+              <StatsTooltipRow label={t`Total`} value={getUSDValue(total?.referrerRebates)} />
             </>
           }
         />

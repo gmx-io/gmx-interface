@@ -1,35 +1,23 @@
 import Tooltip from "../Tooltip/Tooltip";
-import { getUSDValue } from "./referralsHelper";
-import { useChainId } from "lib/chains";
 import { ReactNode } from "react";
 
 type Props = {
   label: string;
-  labelTooltipText: string;
-  data: any;
-  dataKeys: Array<string>;
-  totalDataKey: string;
-  showDollar?: boolean;
-  shouldFormat?: boolean;
+  value: string;
+  labelTooltipText?: string;
   tooltipPosition?: string;
-  children?: ReactNode;
   tooltipContent?: ReactNode;
+  children?: ReactNode;
 };
 
 function ReferralInfoCard({
+  value,
   label,
-  data,
-  dataKeys = [],
-  shouldFormat = true,
   labelTooltipText,
-  tooltipPosition = "left-bottom",
   children,
   tooltipContent,
+  tooltipPosition = "left-bottom",
 }: Props) {
-  const [parentKey, childKey] = dataKeys;
-  const { chainId } = useChainId();
-  const currentChainData = data?.[chainId];
-
   return (
     <div className="info-card">
       <div className="card-details">
@@ -41,17 +29,8 @@ function ReferralInfoCard({
           )}
         </h3>
         <div className="card-data">
-          {data && (
-            <Tooltip
-              position="center-bottom"
-              className="nowrap"
-              handle={
-                shouldFormat
-                  ? getUSDValue(currentChainData?.[parentKey]?.[childKey])
-                  : currentChainData?.[parentKey]?.[childKey] || "0"
-              }
-              renderContent={() => tooltipContent}
-            />
+          {tooltipContent && (
+            <Tooltip position="center-bottom" className="nowrap" handle={value} renderContent={() => tooltipContent} />
           )}
           {children}
         </div>
