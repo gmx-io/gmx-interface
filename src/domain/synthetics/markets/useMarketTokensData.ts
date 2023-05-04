@@ -11,6 +11,7 @@ import { expandDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useMarkets } from "./useMarkets";
 import { getContractMarketPrices } from "./utils";
+import { useRef } from "react";
 
 type MarketTokensDataResult = {
   marketTokensData?: TokensData;
@@ -19,13 +20,15 @@ type MarketTokensDataResult = {
 export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }): MarketTokensDataResult {
   const { isDeposit } = p;
   const { account } = useWeb3React();
-  const { tokensData } = useAvailableTokensData(chainId);
+  const { tokensData, pricesUpdatedAt } = useAvailableTokensData(chainId);
   const { marketsData, marketsAddresses } = useMarkets(chainId);
 
   const isDataLoaded = tokensData && marketsAddresses?.length;
 
+  const marketTokensDataCache = useRef<TokensData>();
+
   const { data } = useMulticall(chainId, "useMarketTokensData", {
-    key: isDataLoaded ? [account, marketsAddresses.join("-")] : undefined,
+    key: isDataLoaded ? [account, marketsAddresses.join("-"), pricesUpdatedAt] : undefined,
     request: () =>
       marketsAddresses!.reduce((requests, marketAddress) => {
         const market = getByKey(marketsData, marketAddress)!;
@@ -117,7 +120,11 @@ export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }):
       }, {} as TokensData),
   });
 
+  if (data) {
+    marketTokensDataCache.current = data;
+  }
+
   return {
-    marketTokensData: data,
+    marketTokensData: marketTokensDataCache.current,
   };
 }

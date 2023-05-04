@@ -46,21 +46,18 @@ import { parseEventLogData } from "./utils";
 
 export const SyntheticsEventsContext = createContext({});
 
+const STATUS_NOTIFIACTION_DURATION = 60 * 1000;
+
 export function SyntheticsEventsProvider({ children }: { children: ReactNode }) {
   const { chainId } = useChainId();
   const { active, account: currentAccount } = useWeb3React();
 
   const { marketsInfoData } = useMarketsInfo(chainId);
 
-  const [pendingOrders, setPendingOrders] = useState<PendingOrderData[]>([]);
   const [orderStatuses, setOrderStatuses] = useState<OrderStatuses>({});
-
-  const [pendingDeposits, setPendingDeposits] = useState<PendingDepositData[]>([]);
   const [depositStatuses, setDepositStatuses] = useState<DepositStatuses>({});
 
-  const [pendingWithdrawals, setPendingWithdrawals] = useState<PendingWithdrawalData[]>([]);
   const [withdrawalStatuses, setWithdrawalStatuses] = useState<WithdrawalStatuses>({});
-
   const [pendingPositionsUpdates, setPendingPositionsUpdates] = useState<PendingPositionsUpdates>({});
   const [positionIncreaseEvents, setPositionIncreaseEvents] = useState<PositionIncreaseEvent[]>([]);
   const [positionDecreaseEvents, setPositionDecreaseEvents] = useState<PositionDecreaseEvent[]>([]);
@@ -374,57 +371,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   };
 
   useEffect(
-    function notifyPendingOrders() {
-      const pendingOrder = pendingOrders[0];
-
-      if (!pendingOrder) {
-        return;
-      }
-
-      setPendingOrders([]);
-
-      helperToast.info(<OrderStatusNotification pendingOrderData={pendingOrder} />, {
-        autoClose: false,
-      });
-    },
-    [pendingOrders]
-  );
-
-  useEffect(
-    function notifyPendingDeposits() {
-      const pendingDeposit = pendingDeposits[0];
-
-      if (!pendingDeposit) {
-        return;
-      }
-
-      setPendingDeposits([]);
-
-      helperToast.info(<GmStatusNotification pendingDepositData={pendingDeposit} />, {
-        autoClose: false,
-      });
-    },
-    [pendingDeposits, pendingOrders]
-  );
-
-  useEffect(
-    function notifyPendingWithdrawals() {
-      const pendingWithdrawal = pendingWithdrawals[0];
-
-      if (!pendingWithdrawal) {
-        return;
-      }
-
-      setPendingWithdrawals([]);
-
-      helperToast.info(<GmStatusNotification pendingWithdrawalData={pendingWithdrawal} />, {
-        autoClose: false,
-      });
-    },
-    [pendingDeposits, pendingOrders, pendingWithdrawals]
-  );
-
-  useEffect(
     function subscribe() {
       const wsProvider = getWsProvider(active, chainId);
 
@@ -508,13 +454,19 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         setWithdrawalStatuses((old) => updateByKey(old, key, { isTouched: true }));
       },
       setPendingOrder: (data: PendingOrderData) => {
-        setPendingOrders((old) => [...old, data]);
+        helperToast.info(<OrderStatusNotification pendingOrderData={data} />, {
+          autoClose: STATUS_NOTIFIACTION_DURATION,
+        });
       },
       setPendingDeposit: (data: PendingDepositData) => {
-        setPendingDeposits((old) => [...old, data]);
+        helperToast.info(<GmStatusNotification pendingDepositData={data} />, {
+          autoClose: STATUS_NOTIFIACTION_DURATION,
+        });
       },
       setPendingWithdrawal: (data: PendingWithdrawalData) => {
-        setPendingWithdrawals((old) => [...old, data]);
+        helperToast.info(<GmStatusNotification pendingWithdrawalData={data} />, {
+          autoClose: STATUS_NOTIFIACTION_DURATION,
+        });
       },
       async setPendingPosition(update: Omit<PendingPositionUpdate, "updatedAt" | "updatedAtBlock">) {
         const provider = getProvider(undefined, chainId) as StaticJsonRpcProvider;

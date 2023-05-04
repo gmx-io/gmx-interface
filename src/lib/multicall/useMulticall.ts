@@ -18,7 +18,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
   name: string,
   params: {
     key: CacheKey | SkipKey;
-    refreshInterval?: number;
+    refreshInterval?: number | null;
     request: TConfig | ((chainId: number, key: CacheKey) => TConfig);
     parseResponse?: (result: MulticallResult<TConfig>, chainId: number, key: CacheKey) => TResult;
   }
@@ -30,7 +30,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
   const swrOpts: any = {};
 
   // SWR resets global options if pass undefined explicitly
-  if (params.refreshInterval) {
+  if (params.refreshInterval !== undefined) {
     swrOpts.refreshInterval = params.refreshInterval;
   }
 

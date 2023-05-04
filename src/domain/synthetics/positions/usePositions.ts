@@ -5,7 +5,7 @@ import { hashedPositionKey } from "config/dataStore";
 import { ethers } from "ethers";
 import { useMulticall } from "lib/multicall";
 import { bigNumberify } from "lib/numbers";
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { ContractMarketPrices, getContractMarketPrices, useMarkets } from "../markets";
 import { useAvailableTokensData } from "../tokens";
 import { PositionsData } from "./types";
@@ -19,7 +19,9 @@ type PositionsResult = {
 export function usePositions(chainId: number): PositionsResult {
   const { account } = useWeb3React();
   const { marketsData } = useMarkets(chainId);
-  const { tokensData } = useAvailableTokensData(chainId);
+  const { tokensData, pricesUpdatedAt } = useAvailableTokensData(chainId);
+
+  const positionsDataCache = useRef<PositionsData>();
 
   const keysAndPrices = useMemo(() => {
     if (!account || !marketsData || !tokensData) {
@@ -63,7 +65,11 @@ export function usePositions(chainId: number): PositionsResult {
   }, [account, marketsData, tokensData]);
 
   const { data: positionsData } = useMulticall(chainId, "usePositionsData", {
-    key: keysAndPrices?.positionsKeys.length ? [keysAndPrices.positionsKeys.join("-")] : null,
+    key: keysAndPrices?.positionsKeys.length ? [keysAndPrices.positionsKeys.join("-"), pricesUpdatedAt] : null,
+
+    // Refresh on every prices update
+    refreshInterval: null,
+
     request: () => ({
       reader: {
         contractAddress: getContract(chainId, "SyntheticsReader"),
@@ -184,8 +190,12 @@ export function usePositions(chainId: number): PositionsResult {
     },
   });
 
+  if (positionsData) {
+    positionsDataCache.current = positionsData;
+  }
+
   return {
-    positionsData,
+    positionsData: positionsDataCache.current,
     allPossiblePositionsKeys: keysAndPrices?.positionsKeys,
   };
 }

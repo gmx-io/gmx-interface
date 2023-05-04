@@ -33,6 +33,7 @@ import { convertTokenAddress } from "config/tokens";
 import { useMulticall } from "lib/multicall";
 import { bigNumberify } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { useRef } from "react";
 import { useAvailableTokensData } from "../tokens";
 import { MarketsInfoData } from "./types";
 import { useMarkets } from "./useMarkets";
@@ -45,14 +46,20 @@ export type MarketsInfoResult = {
 export function useMarketsInfo(chainId: number): MarketsInfoResult {
   const { account } = useWeb3React();
   const { marketsData, marketsAddresses } = useMarkets(chainId);
-  const { tokensData } = useAvailableTokensData(chainId);
+  const { tokensData, pricesUpdatedAt } = useAvailableTokensData(chainId);
   const dataStoreAddress = getContract(chainId, "DataStore");
 
   const isDepencenciesLoading = !marketsAddresses || !tokensData;
 
+  // Use ref to cache data from previos key with old prices
+  const marketsInfoDataCache = useRef<MarketsInfoData>();
+
   const { data } = useMulticall(chainId, "useMarketsInfo", {
     key: !isDepencenciesLoading &&
-      marketsAddresses.length > 0 && [marketsAddresses.join("-"), dataStoreAddress, account],
+      marketsAddresses.length > 0 && [marketsAddresses.join("-"), dataStoreAddress, account, pricesUpdatedAt],
+
+    // Refreshed on every prices update
+    refreshInterval: null,
 
     request: () =>
       marketsAddresses!.reduce((request, marketAddress) => {
@@ -416,7 +423,11 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
     },
   });
 
+  if (data) {
+    marketsInfoDataCache.current = data;
+  }
+
   return {
-    marketsInfoData: data,
+    marketsInfoData: marketsInfoDataCache.current,
   };
 }

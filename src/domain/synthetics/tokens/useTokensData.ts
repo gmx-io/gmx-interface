@@ -6,6 +6,7 @@ import { useTokenRecentPrices } from "./useTokenRecentPricesData";
 
 type TokensDataResult = {
   tokensData?: TokensData;
+  pricesUpdatedAt?: number;
 };
 
 export function useAvailableTokensData(chainId: number): TokensDataResult {
@@ -20,7 +21,7 @@ export function useAvailableTokensData(chainId: number): TokensDataResult {
 export function useTokensData(chainId: number, { tokenAddresses }: { tokenAddresses: string[] }): TokensDataResult {
   const tokenConfigs = getTokensMap(chainId);
   const { balancesData } = useTokenBalances(chainId, { tokenAddresses });
-  const { pricesData } = useTokenRecentPrices(chainId);
+  const { pricesData, updatedAt: pricesUpdatedAt } = useTokenRecentPrices(chainId);
 
   const tokenKeys = tokenAddresses.join("-");
 
@@ -28,6 +29,7 @@ export function useTokensData(chainId: number, { tokenAddresses }: { tokenAddres
     if (!pricesData) {
       return {
         tokensData: undefined,
+        pricesUpdatedAt: undefined,
       };
     }
 
@@ -48,6 +50,7 @@ export function useTokensData(chainId: number, { tokenAddresses }: { tokenAddres
         };
         return acc;
       }, {} as TokensData),
+      pricesUpdatedAt,
     };
-  }, [tokenKeys, tokenConfigs, pricesData, balancesData]);
+  }, [pricesData, tokenKeys, pricesUpdatedAt, balancesData, tokenConfigs]);
 }
