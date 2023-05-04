@@ -273,6 +273,10 @@ export function getSwapStats(p: {
     usdOut = usdOut.add(cappedImpactDeltaUsd);
   }
 
+  if (usdOut.lt(0)) {
+    usdOut = BigNumber.from(0);
+  }
+
   amountOut = convertToTokenAmount(usdOut, tokenOut.decimals, priceOut)!;
 
   const liquidity = getAvailableUsdLiquidityForCollateral(
