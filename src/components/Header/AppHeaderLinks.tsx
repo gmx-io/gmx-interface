@@ -58,7 +58,8 @@ export function AppHeaderLinks({
           <Trans>Buy</Trans>
         </HeaderLink>
       </div>
-      <div className="App-header-link-container">
+      {/* @todo decide on whether we need this section */}
+      {/* <div className="App-header-link-container">
         <HeaderLink
           to="/referrals"
           redirectPopupTimestamp={redirectPopupTimestamp}
@@ -66,7 +67,7 @@ export function AppHeaderLinks({
         >
           <Trans>Referrals</Trans>
         </HeaderLink>
-      </div>
+      </div> */}
       <div className="App-header-link-container">
         <HeaderLink
           to="/ecosystem"

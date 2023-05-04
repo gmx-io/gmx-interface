@@ -1,7 +1,9 @@
-import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
+// eslint-disable-next-line
+import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, AVALANCHE_FUJI, SEPOLIA_TESTNET } from "config/chains";
 import arbitrum from "img/ic_arbitrum_24.svg";
 import avalanche from "img/ic_avalanche_24.svg";
 import avalancheTestnet from "img/ic_avalanche_testnet_24.svg";
+import sepoliaTesnet from "img/ic_sepolia_testnet_24.svg";
 
 import gmxIcon from "img/ic_gmx_40.svg";
 import glpIcon from "img/ic_glp_40.svg";
@@ -26,6 +28,9 @@ const ICONS = {
   },
   [AVALANCHE_FUJI]: {
     network: avalancheTestnet,
+  },
+  [SEPOLIA_TESTNET]: {
+    network: sepoliaTesnet,
   },
   common: {
     gmx: gmxIcon,
