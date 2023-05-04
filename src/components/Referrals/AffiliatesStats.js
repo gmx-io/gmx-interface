@@ -105,7 +105,7 @@ function AffiliatesStats({
           }
         />
         <ReferralInfoCard
-          value={getUSDValue(currentReferralsData?.cumulativeStats?.volume)}
+          value={`$${getUSDValue(currentReferralsData?.cumulativeStats?.volume)}`}
           label={t`Trading Volume`}
           labelTooltipText={t`Volume traded by your referred traders.`}
           tooltipContent={
@@ -124,7 +124,7 @@ function AffiliatesStats({
           }
         />
         <ReferralInfoCard
-          value={getUSDValue(currentReferralsData?.cumulativeStats?.referrerRebates)}
+          value={`$${getUSDValue(currentReferralsData?.cumulativeStats?.referrerRebates)}`}
           label={t`Rebates`}
           labelTooltipText={t`Rebates earned by this account as an affiliate.`}
           tooltipContent={
@@ -266,9 +266,9 @@ function AffiliatesStats({
                           )}
                         </div>
                       </td>
-                      <td data-label="Total Volume">{getUSDValue(stat.volume)}</td>
+                      <td data-label="Total Volume">${getUSDValue(stat.volume)}</td>
                       <td data-label="Traders Referred">{stat.registeredReferralsCount}</td>
-                      <td data-label="Total Rebates">{getUSDValue(referrerRebate, 4)}</td>
+                      <td data-label="Total Rebates">${getUSDValue(referrerRebate, 4)}</td>
                     </tr>
                   );
                 })}

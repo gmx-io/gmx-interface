@@ -114,7 +114,7 @@ export const getSampleReferrarStat = (code = "", ownerOnOtherNetwork = "", accou
 };
 
 export function getUSDValue(value, decimals = 2) {
-  return `$${formatAmount(value, USD_DECIMALS, decimals, true, "0.00")}`;
+  return formatAmount(value, USD_DECIMALS, decimals, true, "0.00");
 }
 
 export function getCodeError(value) {
