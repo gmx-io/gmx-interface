@@ -160,7 +160,7 @@ export function OrderStatusNotification({ pendingOrderData }: Props) {
       }
 
       const matchedStatusKey = Object.values(orderStatuses).find(
-        (orderStatus) => getPendingOrderKey(orderStatus.data) === pendingOrderKey && !orderStatus.isTouched
+        (orderStatus) => !orderStatus.isTouched && getPendingOrderKey(orderStatus.data) === pendingOrderKey
       )?.key;
 
       if (matchedStatusKey) {

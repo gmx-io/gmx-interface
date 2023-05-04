@@ -173,9 +173,9 @@ export type PositionDecreaseEvent = {
 export type PendingPositionUpdate = {
   isIncrease: boolean;
   positionKey: string;
-  sizeDeltaUsd?: BigNumber;
-  sizeDeltaInTokens?: BigNumber;
-  collateralDeltaAmount?: BigNumber;
+  sizeDeltaUsd: BigNumber;
+  sizeDeltaInTokens: BigNumber;
+  collateralDeltaAmount: BigNumber;
   updatedAt: number;
   updatedAtBlock: BigNumber;
 };

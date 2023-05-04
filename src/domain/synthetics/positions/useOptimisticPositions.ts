@@ -139,7 +139,6 @@ function getPendingPosition(pendingUpdate: PendingPositionUpdate): Position {
     pendingBorrowingFeesUsd: BigNumber.from(0),
     longTokenFundingAmountPerSize: BigNumber.from(0),
     shortTokenFundingAmountPerSize: BigNumber.from(0),
-    data: "0x",
     fundingFeeAmount: BigNumber.from(0),
     claimableLongTokenAmount: BigNumber.from(0),
     claimableShortTokenAmount: BigNumber.from(0),
@@ -147,6 +146,7 @@ function getPendingPosition(pendingUpdate: PendingPositionUpdate): Position {
     latestShortTokenFundingAmountPerSize: BigNumber.from(0),
     hasPendingLongTokenFundingFee: false,
     hasPendingShortTokenFundingFee: false,
+    data: "0x",
 
     isOpening: true,
     pendingUpdate: pendingUpdate,

@@ -176,8 +176,8 @@ export function getOrderInfo(
     });
 
     const acceptablePrice = parseContractPrice(order.contractAcceptablePrice, indexToken.decimals);
-
     const triggerPrice = parseContractPrice(order.contractTriggerPrice, indexToken.decimals);
+
     const triggerThresholdType = getTriggerThresholdType(order.orderType, order.isLong);
 
     const orderInfo: PositionOrderInfo = {

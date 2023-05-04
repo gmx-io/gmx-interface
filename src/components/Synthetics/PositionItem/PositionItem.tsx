@@ -224,7 +224,7 @@ export function PositionItem(p: Props) {
                 {positionOrders.map((order) => {
                   return (
                     <div key={order.key} className="Position-list-order active-order-tooltip">
-                      {getTriggerThresholdType(order.orderType, order.isLong)} {formatUsd(order.contractTriggerPrice)}:
+                      {getTriggerThresholdType(order.orderType, order.isLong)} {formatUsd(order.triggerPrice)}:
                       {isIncreaseOrderType(order.orderType) ? "+" : "-"}
                       {formatUsd(order.sizeDeltaUsd)}
                     </div>

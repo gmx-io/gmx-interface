@@ -211,8 +211,8 @@ export function ConfirmationBox(p: Props) {
 
     return existingTriggerOrders.filter((order) => {
       return order.triggerThresholdType === TriggerThresholdType.Above
-        ? markPrice.gt(order.contractTriggerPrice)
-        : markPrice.lt(order.contractTriggerPrice);
+        ? markPrice.gt(order.triggerPrice)
+        : markPrice.lt(order.triggerPrice);
     });
   }, [existingPosition, existingTriggerOrders, markPrice]);
 
@@ -531,7 +531,7 @@ export function ConfirmationBox(p: Props) {
           {isLimitOrderType(order.orderType) ? t`Increase` : t`Decrease`} {order.indexToken?.symbol}{" "}
           {formatUsd(order.sizeDeltaUsd)} {order.isLong ? t`Long` : t`Short`} &nbsp;
           {order.triggerThresholdType}
-          {formatUsd(order.contractTriggerPrice)}{" "}
+          {formatUsd(order.triggerPrice)}{" "}
         </p>
         <button onClick={() => onCancelOrderClick(order.key)}>
           <Trans>Cancel</Trans>
@@ -556,7 +556,7 @@ export function ConfirmationBox(p: Props) {
         <div className="Confirmation-box-info">
           <Trans>
             You have an active Limit Order to Increase {longShortText} {order.indexToken?.symbol} {sizeText} at price{" "}
-            {formatUsd(order.contractTriggerPrice)}.
+            {formatUsd(order.triggerPrice)}.
           </Trans>
         </div>
       );

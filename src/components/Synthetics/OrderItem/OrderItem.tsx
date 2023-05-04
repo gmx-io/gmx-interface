@@ -143,7 +143,7 @@ export function OrderItem(p: Props) {
       );
     } else {
       const positionOrder = p.order as PositionOrderInfo;
-      return `${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.contractTriggerPrice)}`;
+      return `${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.triggerPrice)}`;
     }
   }
 

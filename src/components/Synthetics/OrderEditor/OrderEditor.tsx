@@ -215,7 +215,7 @@ export function OrderEditor(p: Props) {
       return t`Enter a price`;
     }
 
-    if (sizeDeltaUsd?.eq(positionOrder.sizeDeltaUsd) && triggerPrice?.eq(positionOrder.contractTriggerPrice!)) {
+    if (sizeDeltaUsd?.eq(positionOrder.sizeDeltaUsd) && triggerPrice?.eq(positionOrder.triggerPrice!)) {
       return t`Enter a new size or price`;
     }
 
@@ -236,7 +236,7 @@ export function OrderEditor(p: Props) {
         return t`Loading...`;
       }
 
-      if (sizeDeltaUsd?.eq(p.order.sizeDeltaUsd || 0) && triggerPrice?.eq(positionOrder.contractTriggerPrice || 0)) {
+      if (sizeDeltaUsd?.eq(p.order.sizeDeltaUsd || 0) && triggerPrice?.eq(positionOrder.triggerPrice || 0)) {
         return t`Enter a new size or price`;
       }
 
@@ -293,7 +293,7 @@ export function OrderEditor(p: Props) {
     updateOrderTxn(chainId, library, {
       orderKey: p.order.key,
       sizeDeltaUsd: sizeDeltaUsd || positionOrder.sizeDeltaUsd,
-      triggerPrice: triggerPrice || positionOrder.contractTriggerPrice!,
+      triggerPrice: triggerPrice || positionOrder.triggerPrice!,
       acceptablePrice: acceptablePrice || positionOrder.contractAcceptablePrice!,
       minOutputAmount: minOutputAmount || p.order.minOutputAmount,
       executionFee: executionFee?.feeTokenAmount,
@@ -326,7 +326,7 @@ export function OrderEditor(p: Props) {
         const positionOrder = p.order as PositionOrderInfo;
 
         setSizeInputValue(formatAmountFree(positionOrder.sizeDeltaUsd || 0, USD_DECIMALS));
-        setTriggerPriceInputValue(formatAmount(positionOrder.contractTriggerPrice || 0, USD_DECIMALS, 2));
+        setTriggerPriceInputValue(formatAmount(positionOrder.triggerPrice || 0, USD_DECIMALS, 2));
       }
 
       setIsInited(true);
