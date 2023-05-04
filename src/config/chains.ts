@@ -12,7 +12,7 @@ export const AVALANCHE = 43114;
 export const AVALANCHE_FUJI = 43113;
 export const ARBITRUM = 42161;
 export const ARBITRUM_TESTNET = 421611;
-export const FEES_HIGH_BPS = 50;
+export const SEPOLIA_TESTNET = 11155111;
 
 // TODO take it from web3
 export const DEFAULT_CHAIN_ID = ARBITRUM;
@@ -21,7 +21,7 @@ export const CHAIN_ID = DEFAULT_CHAIN_ID;
 export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 if (isDevelopment()) {
-  SUPPORTED_CHAIN_IDS.push(ARBITRUM_TESTNET, AVALANCHE_FUJI);
+  SUPPORTED_CHAIN_IDS.push(ARBITRUM_TESTNET, AVALANCHE_FUJI, SEPOLIA_TESTNET);
 }
 
 export const IS_NETWORK_DISABLED = {
@@ -36,6 +36,7 @@ export const CHAIN_NAMES_MAP = {
   [ARBITRUM]: "Arbitrum",
   [AVALANCHE]: "Avalanche",
   [AVALANCHE_FUJI]: "Avalanche Fuji",
+  [SEPOLIA_TESTNET]: "Sepolia",
 };
 
 export const GAS_PRICE_ADJUSTMENT_MAP = {
@@ -123,6 +124,20 @@ const constants = {
     // contract requires that execution fee be strictly greater than instead of gte
     DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0100001"),
   },
+
+  [SEPOLIA_TESTNET]: {
+    nativeTokenSymbol: "ETH",
+    wrappedTokenSymbol: "WETH",
+    defaultCollateralSymbol: "USDC",
+    defaultFlagOrdersEnabled: true,
+    positionReaderPropsLength: 9,
+    v2: true,
+
+    SWAP_ORDER_EXECUTION_GAS_FEE: parseEther("0.01"),
+    INCREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.01"),
+    // contract requires that execution fee be strictly greater than instead of gte
+    DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0100001"),
+  },
 };
 
 const ALCHEMY_WHITELISTED_DOMAINS = ["gmx.io", "app.gmx.io"];
@@ -149,6 +164,7 @@ export const RPC_PROVIDERS = {
   [ARBITRUM_TESTNET]: ["https://rinkeby.arbitrum.io/rpc"],
   [AVALANCHE]: ["https://api.avax.network/ext/bc/C/rpc"],
   [AVALANCHE_FUJI]: ["https://api.avax-test.network/ext/bc/C/rpc"],
+  [SEPOLIA_TESTNET]: ["https://sepolia.infura.io/v3/88088bd69e9f45cd9e1842a20addb42d"],
 };
 
 export const FALLBACK_PROVIDERS = {
@@ -223,6 +239,17 @@ export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {
     rpcUrls: RPC_PROVIDERS[AVALANCHE_FUJI],
     blockExplorerUrls: [getExplorerUrl(AVALANCHE_FUJI)],
   },
+  [SEPOLIA_TESTNET]: {
+    chainId: "0x" + SEPOLIA_TESTNET.toString(16),
+    chainName: "Sepolia",
+    nativeCurrency: {
+      name: "ETH",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    rpcUrls: RPC_PROVIDERS[SEPOLIA_TESTNET],
+    blockExplorerUrls: [getExplorerUrl(SEPOLIA_TESTNET)],
+  },
 };
 
 export const getConstant = (chainId: number, key: string) => {
@@ -284,6 +311,8 @@ export function getExplorerUrl(chainId) {
     return "https://snowtrace.io/";
   } else if (chainId === AVALANCHE_FUJI) {
     return "https://testnet.snowtrace.io/";
+  } else if (chainId === SEPOLIA_TESTNET) {
+    return "https://sepolia.etherscan.io/";
   }
   return "https://etherscan.io/";
 }

@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, AVALANCHE_FUJI, MAINNET, TESTNET } from "./chains";
+import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, AVALANCHE_FUJI, MAINNET, TESTNET, SEPOLIA_TESTNET } from "./chains";
 
 const { AddressZero } = ethers.constants;
 
@@ -240,6 +240,47 @@ const CONTRACTS = {
     TraderJoeGmxAvaxPool: AddressZero,
     ReferralStorage: AddressZero,
     ReferralReader: AddressZero,
+  },
+  [SEPOLIA_TESTNET]: {
+    Vault: "0xA6e44bFCbb9762BE1a1c77Eaaf630bF8F6D3868e",
+    Router: "0x33261e1bFdcd2371dB4E3532Acf99753b8fd6293",
+    VaultReader: "0x2338Fc557db07789c3982ebd38481a4476527901",
+    Reader: "0xFfaA8dab9D93A1F34945dA871f5d642147e8f815",
+    GlpManager: "0xc934E5372D8c3841DD08b9FBeeF52473CfD9ABf5",
+    RewardRouter: "0x10F2450fd6c0a7B3319095a3079b6100721c9c61",
+    GlpRewardRouter: "0x10F2450fd6c0a7B3319095a3079b6100721c9c61",
+    RewardReader: "0xABB2611743d579b09a4d04E797862701fAA2ba04",
+    NATIVE_TOKEN: "0x422FbAA3A1504f5D1e93a632CF08423EE654727a",
+    GLP: "0xF6312ffa20Bc63fE20E70C8f305Ea5e26Afd960C",
+    GMX: "0x7fc01541d0d0BC7c87291af768a935d3Fc43ceb7",
+    ES_GMX: "0x07d9b60c7F719994c07C96a7f87460a0cC94379F",
+    BN_GMX: "0x9d99A199e0aD402EBf8a418e61E5EBBC2bEBaD99",
+    USDG: "0xdf888680104E171aF83F4F2E38bBA0B12183Fc97",
+    ES_GMX_IOU: AddressZero,
+    StakedGmxTracker: "0xe3B620B1557696DA5324EFcA934Ea6c27ad69e00",
+    BonusGmxTracker: "0xa0D9b745e5E99ABFd60f01857e90854DAe597e88",
+    FeeGmxTracker: "0x833f0d68dDb44aCa2ddfa82Aeb7d83EA28E0F860",
+    StakedGlpTracker: "0x3DC455a4E51c43EbBe82FC364d8D761B0242916F",
+    FeeGlpTracker: "0x0EAbb0891A811Ad32f4Fb6F4270D96CB5E294421",
+
+    StakedGmxDistributor: "0x8E060de8DC6296c6f96C03Cb5379112391054fd1",
+    StakedGlpDistributor: "0x8655f879EfBAEff8DcCA540020b0346d49f88C94",
+
+    GmxVester: "0xEE07b1C6Fa3B1f34aF6E9c35653F3E4E2A792A3c",
+    GlpVester: "0xBeb44f1b8b45A23bC1dBe4873A1149e6cd012Cc6",
+
+    OrderBook: "0x5d8518787d21765Fe0C871B6482764F0F5169758",
+    OrderExecutor: AddressZero,
+    OrderBookReader: "0xf3689f773b4C464a04C3408eee0f8597ae9EBd99",
+
+    PositionRouter: AddressZero,
+    PositionManager: AddressZero,
+
+    UniswapGmxEthPool: AddressZero,
+    ReferralStorage: AddressZero,
+    ReferralReader: AddressZero,
+
+    Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
   },
 };
 
