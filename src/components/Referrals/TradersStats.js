@@ -4,11 +4,11 @@ import { BiEditAlt } from "react-icons/bi";
 import Card from "../Common/Card";
 import Modal from "../Modal/Modal";
 import Tooltip from "../Tooltip/Tooltip";
-import { shortenAddress } from "lib/legacy";
+import { USD_DECIMALS, shortenAddress } from "lib/legacy";
 import EmptyMessage from "./EmptyMessage";
 import { getTierIdDisplay, tierDiscountInfo } from "./referralsHelper";
 import { ReferralCodeForm } from "./JoinReferralCode";
-import { getExplorerUrl } from "config/chains";
+import { ARBITRUM, AVALANCHE, getExplorerUrl } from "config/chains";
 import { formatAmount } from "lib/numbers";
 import { getNativeToken, getToken } from "config/tokens";
 import { formatDate } from "lib/dates";
@@ -16,6 +16,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import usePagination from "./usePagination";
 import Pagination from "components/Pagination/Pagination";
 import ReferralInfoCard from "./ReferralInfoCard";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
 function TradersStats({ referralsData, traderTier, chainId, userReferralCodeString, setPendingTxns, pendingTxns }) {
   const currentReferralsData = referralsData?.[chainId];
@@ -62,12 +63,48 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
           data={referralsData}
           dataKeys={["referralTotalStats", "volume"]}
           totalDataKey="tradersVolume"
+          tooltipContent={
+            <>
+              <StatsTooltipRow
+                label={t`Trading Volume on Arbitrum`}
+                value={formatAmount(referralsData?.[ARBITRUM].referralTotalStats.volume, USD_DECIMALS, 2, true)}
+              />
+              <StatsTooltipRow
+                label={t`Trading Volume on Avalanche`}
+                value={formatAmount(referralsData?.[AVALANCHE].referralTotalStats.volume, USD_DECIMALS, 2, true)}
+              />
+              <div className="Tooltip-divider" />
+
+              <StatsTooltipRow
+                label={t`Total`}
+                value={formatAmount(referralsData?.total.tradersVolume, USD_DECIMALS, 2, true)}
+              />
+            </>
+          }
         />
         <ReferralInfoCard
           label={t`Rebates`}
           labelTooltipText={t`Rebates earned by this account as a trader.`}
           dataKeys={["referralTotalStats", "discountUsd"]}
           data={referralsData}
+          tooltipContent={
+            <>
+              <StatsTooltipRow
+                label={t`Rebates on Arbitrum`}
+                value={formatAmount(referralsData?.[ARBITRUM].referralTotalStats.discountUsd, USD_DECIMALS, 2, true)}
+              />
+              <StatsTooltipRow
+                label={t`Rebates on Avalanche`}
+                value={formatAmount(referralsData?.[AVALANCHE].referralTotalStats.discountUsd, USD_DECIMALS, 2, true)}
+              />
+              <div className="Tooltip-divider" />
+
+              <StatsTooltipRow
+                label={t`Total`}
+                value={formatAmount(referralsData?.total.discountUsd, USD_DECIMALS, 2, true)}
+              />
+            </>
+          }
         />
 
         <Modal

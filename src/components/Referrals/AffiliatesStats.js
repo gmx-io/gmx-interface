@@ -6,7 +6,7 @@ import { IoWarningOutline } from "react-icons/io5";
 import { BiCopy, BiErrorCircle } from "react-icons/bi";
 import Card from "../Common/Card";
 import Modal from "../Modal/Modal";
-import { shortenAddress } from "lib/legacy";
+import { USD_DECIMALS, shortenAddress } from "lib/legacy";
 import EmptyMessage from "./EmptyMessage";
 import ReferralInfoCard from "./ReferralInfoCard";
 import {
@@ -19,7 +19,7 @@ import {
 } from "./referralsHelper";
 import { AffiliateCodeForm } from "./AddAffiliateCode";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
-import { AVALANCHE, getExplorerUrl } from "config/chains";
+import { ARBITRUM, AVALANCHE, getExplorerUrl } from "config/chains";
 import { helperToast } from "lib/helperToast";
 import { bigNumberify, formatAmount } from "lib/numbers";
 import { getNativeToken, getToken } from "config/tokens";
@@ -28,6 +28,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import Pagination from "components/Pagination/Pagination";
 import usePagination from "./usePagination";
 import Button from "components/Button/Button";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
 function AffiliatesStats({
   referralsData,
@@ -85,6 +86,27 @@ function AffiliatesStats({
           dataKeys={["cumulativeStats", "registeredReferralsCount"]}
           shouldFormat={false}
           showDollar={false}
+          tooltipContent={
+            <>
+              <StatsTooltipRow
+                label={t`Traders Referred on Arbitrum`}
+                value={referralsData?.[ARBITRUM].cumulativeStats.registeredReferralsCount}
+                showDollar={false}
+              />
+              <StatsTooltipRow
+                label={t`Traders Referred on Avalanche`}
+                value={referralsData?.[AVALANCHE].cumulativeStats.registeredReferralsCount}
+                showDollar={false}
+              />
+              <div className="Tooltip-divider" />
+
+              <StatsTooltipRow
+                label={t`Total`}
+                value={referralsData?.total.registeredReferralsCount}
+                showDollar={false}
+              />
+            </>
+          }
         />
         <ReferralInfoCard
           label={t`Trading Volume`}
@@ -92,12 +114,48 @@ function AffiliatesStats({
           data={referralsData}
           dataKeys={["cumulativeStats", "volume"]}
           totalDataKey="affiliatesVolume"
+          tooltipContent={
+            <>
+              <StatsTooltipRow
+                label={t`Trading Volume on Arbitrum`}
+                value={formatAmount(referralsData?.[ARBITRUM].cumulativeStats.volume, USD_DECIMALS, 2, true)}
+              />
+              <StatsTooltipRow
+                label={t`Trading Volume on Avalanche`}
+                value={formatAmount(referralsData?.[AVALANCHE].cumulativeStats.volume, USD_DECIMALS, 2, true)}
+              />
+              <div className="Tooltip-divider" />
+
+              <StatsTooltipRow
+                label={t`Total`}
+                value={formatAmount(referralsData?.total.affiliatesVolume, USD_DECIMALS, 2, true)}
+              />
+            </>
+          }
         />
         <ReferralInfoCard
           label={t`Rebates`}
           labelTooltipText={t`Rebates earned by this account as an affiliate.`}
           dataKeys={["cumulativeStats", "referrerRebates"]}
           data={referralsData}
+          tooltipContent={
+            <>
+              <StatsTooltipRow
+                label={t`Rebates on Arbitrum`}
+                value={formatAmount(referralsData?.[ARBITRUM].cumulativeStats.referrerRebates, USD_DECIMALS, 2, true)}
+              />
+              <StatsTooltipRow
+                label={t`Rebates on Avalanche`}
+                value={formatAmount(referralsData?.[AVALANCHE].cumulativeStats.referrerRebates, USD_DECIMALS, 2, true)}
+              />
+              <div className="Tooltip-divider" />
+
+              <StatsTooltipRow
+                label={t`Total`}
+                value={formatAmount(referralsData?.total.referrerRebates, USD_DECIMALS, 2, true)}
+              />
+            </>
+          }
         />
       </div>
       <div className="list">
