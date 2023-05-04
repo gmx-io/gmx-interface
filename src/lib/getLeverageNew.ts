@@ -17,7 +17,7 @@ export function getLeverageNew({ size, collateral, fundingFee, hasProfit, delta,
 
   let remainingCollateral = collateral;
 
-  if (fundingFee && fundingFee.gt(0) && fundingFee.lt(remainingCollateral)) {
+  if (fundingFee && fundingFee.gt(0)) {
     remainingCollateral = remainingCollateral.sub(fundingFee);
   }
 
