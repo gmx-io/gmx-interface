@@ -23,15 +23,23 @@ export function TransactionStatus({ status, text, txnHash }: Props) {
       <div
         className={cx("TransactionStatus-title", {
           muted: status === "muted",
-          positive: status === "success",
-          negative: status === "error",
         })}
       >
         {text}
       </div>
       <div className="TransactionStatus-status">
         {status === "loading" && <ImSpinner2 width={60} height={60} className="spin TransactionStatus-spin" />}
-        {status !== "loading" && txnHash && <ExternalLink href={txnLink}>View</ExternalLink>}
+        {status !== "loading" && txnHash && (
+          <ExternalLink
+            className={cx({
+              positive: status === "success",
+              negative: status === "error",
+            })}
+            href={txnLink}
+          >
+            View
+          </ExternalLink>
+        )}
       </div>
     </div>
   );

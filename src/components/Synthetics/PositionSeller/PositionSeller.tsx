@@ -273,7 +273,6 @@ export function PositionSeller(p: Props) {
       orderType: OrderType.MarketDecrease,
       referralCode: userReferralInfo?.userReferralCode,
       executionFee: executionFee.feeTokenAmount,
-      existingPositionKey: position.key,
       indexToken: position.indexToken,
       tokensData,
       setPendingOrder,

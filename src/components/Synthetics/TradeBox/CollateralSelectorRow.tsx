@@ -57,6 +57,7 @@ export function CollateralSelectorRow(p: Props) {
     }
 
     if (
+      !hasExistingPosition &&
       !hasExistingOrder &&
       !collateralWithPosition &&
       marketWithOrder &&

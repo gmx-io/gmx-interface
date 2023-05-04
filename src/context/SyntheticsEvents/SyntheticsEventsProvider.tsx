@@ -1,4 +1,5 @@
 import { StaticJsonRpcProvider } from "@ethersproject/providers";
+import { t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import EventEmitter from "abis/EventEmitter.json";
 import { GmStatusNotification } from "components/Synthetics/StatusNotifiaction/GmStatusNotification";
@@ -17,7 +18,9 @@ import { getPositionKey } from "domain/synthetics/positions";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
+import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
+import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey, setByKey, updateByKey } from "lib/objects";
 import { getProvider, getWsProvider } from "lib/rpc";
 import { ReactNode, createContext, useEffect, useMemo, useRef, useState } from "react";
@@ -40,9 +43,6 @@ import {
   WithdrawalStatuses,
 } from "./types";
 import { parseEventLogData } from "./utils";
-import { formatTokenAmount, formatUsd } from "lib/numbers";
-import { t } from "@lingui/macro";
-import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
 
 export const SyntheticsEventsContext = createContext({});
 
@@ -104,12 +104,17 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     OrderExecuted: (eventData: EventLogData, txnParams: EventTxnParams) => {
       const key = eventData.bytes32Items.items.key;
 
-      setOrderStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
+      if (orderStatuses[key]) {
+        setOrderStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
+      }
     },
 
     OrderCancelled: (eventData: EventLogData, txnParams: EventTxnParams) => {
       const key = eventData.bytes32Items.items.key;
-      setOrderStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
+
+      if (orderStatuses[key]) {
+        setOrderStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
+      }
 
       const order = orderStatuses[key]?.data;
 
@@ -167,7 +172,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         key: eventData.bytes32Items.items.key,
       };
 
-      if (depositData.account !== currentAccount) return;
+      if (depositData.account !== currentAccount) {
+        return;
+      }
 
       setDepositStatuses((old) =>
         setByKey(old, depositData.key, {
@@ -180,12 +187,17 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
     DepositExecuted: (eventData: EventLogData, txnParams: EventTxnParams) => {
       const key = eventData.bytes32Items.items.key;
-      setDepositStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
+      if (depositStatuses[key]) {
+        setDepositStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
+      }
     },
 
     DepositCancelled: (eventData: EventLogData, txnParams: EventTxnParams) => {
       const key = eventData.bytes32Items.items.key;
-      setDepositStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
+
+      if (depositStatuses[key]) {
+        setDepositStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
+      }
     },
 
     WithdrawalCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
@@ -204,7 +216,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         key: eventData.bytes32Items.items.key,
       };
 
-      if (data.account !== currentAccount) return;
+      if (data.account !== currentAccount) {
+        return;
+      }
 
       setWithdrawalStatuses((old) =>
         setByKey(old, data.key, { key: data.key, data, createdTxnHash: txnParams.transactionHash })
@@ -213,12 +227,18 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
     WithdrawalExecuted: (eventData: EventLogData, txnParams: EventTxnParams) => {
       const key = eventData.bytes32Items.items.key;
-      setWithdrawalStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
+
+      if (withdrawalStatuses[key]) {
+        setWithdrawalStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
+      }
     },
 
     WithdrawalCancelled: (eventData: EventLogData, txnParams: EventTxnParams) => {
       const key = eventData.bytes32Items.items.key;
-      setWithdrawalStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
+
+      if (withdrawalStatuses[key]) {
+        setWithdrawalStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
+      }
     },
 
     PositionIncrease: (eventData: EventLogData, txnParams: EventTxnParams) => {
@@ -262,8 +282,12 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         const marketInfo = getByKey(marketsInfoData, data.marketAddress);
         const indexToken = marketInfo?.indexToken;
         const collateralToken = getToken(chainId, data.collateralTokenAddress);
-        const longShortText = data.isLong ? t`Long` : t`Short`;
 
+        if (!marketInfo || !indexToken || !collateralToken) {
+          return;
+        }
+
+        const longShortText = data.isLong ? t`Long` : t`Short`;
         const positionText = `${indexToken?.symbol} ${longShortText}`;
 
         if (data.sizeDeltaUsd.eq(0)) {
@@ -321,8 +345,12 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         const marketInfo = getByKey(marketsInfoData, data.marketAddress);
         const indexToken = marketInfo?.indexToken;
         const collateralToken = getToken(chainId, data.collateralTokenAddress);
-        const longShortText = data.isLong ? t`Long` : t`Short`;
 
+        if (!marketInfo || !indexToken || !collateralToken) {
+          return;
+        }
+
+        const longShortText = data.isLong ? t`Long` : t`Short`;
         const positionText = `${indexToken?.symbol} ${longShortText}`;
 
         if (data.sizeDeltaUsd.eq(0)) {

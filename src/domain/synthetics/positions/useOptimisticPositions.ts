@@ -1,35 +1,34 @@
+import { hashedPositionKey } from "config/dataStore";
 import {
   PendingPositionUpdate,
   PositionDecreaseEvent,
   PositionIncreaseEvent,
   useSyntheticsEvents,
 } from "context/SyntheticsEvents";
-import { uniq } from "lodash";
-import { usePositions } from "./usePositions";
-import { Position, PositionsData } from "./types";
 import { BigNumber } from "ethers";
-import { parsePositionKey } from "./utils";
 import { useMemo } from "react";
-import { hashedPositionKey } from "config/dataStore";
+import { Position, PositionsData } from "./types";
+import { usePositions } from "./usePositions";
+import { parsePositionKey } from "./utils";
 
 const MAX_PENDING_UPDATE_AGE = 600 * 1000;
 
 export function useOptimisticPositions(chainId: number) {
-  const { positionsData } = usePositions(chainId);
+  const { positionsData, allPossiblePositionsKeys } = usePositions(chainId);
   const { positionDecreaseEvents, positionIncreaseEvents, pendingPositionsUpdates } = useSyntheticsEvents();
 
   const optimisticPositionsData: PositionsData = useMemo(() => {
-    if (!positionDecreaseEvents || !positionIncreaseEvents || !pendingPositionsUpdates) {
+    if (
+      !positionDecreaseEvents ||
+      !positionIncreaseEvents ||
+      !pendingPositionsUpdates ||
+      !positionsData ||
+      !allPossiblePositionsKeys
+    ) {
       return {};
     }
 
-    const positionsKeys = uniq(
-      Object.keys(positionsData)
-        .concat(Object.keys(pendingPositionsUpdates))
-        .concat(positionIncreaseEvents.map((e) => e.positionKey))
-    );
-
-    return positionsKeys.reduce((acc, key) => {
+    return allPossiblePositionsKeys.reduce((acc, key) => {
       const now = Date.now();
 
       const increaseEvents = positionIncreaseEvents.filter((e) => e.positionKey === key);
@@ -56,13 +55,13 @@ export function useOptimisticPositions(chainId: number) {
       if (
         lastIncreaseEvent &&
         lastIncreaseEvent.increasedAtBlock.gt(position.increasedAtBlock) &&
-        lastIncreaseEvent.increasedAtBlock.gt(lastDecreaseEvent?.decreasedAtBlock || 0)
+        lastIncreaseEvent.increasedAtBlock.gt(lastIncreaseEvent.increasedAtBlock)
       ) {
         position = applyEventChanges(position, lastIncreaseEvent);
       } else if (
         lastDecreaseEvent &&
         lastDecreaseEvent.decreasedAtBlock.gt(position.decreasedAtBlock) &&
-        lastDecreaseEvent.decreasedAtBlock.gt(lastIncreaseEvent?.increasedAtBlock || 0)
+        lastDecreaseEvent.decreasedAtBlock.gt(lastDecreaseEvent.decreasedAtBlock)
       ) {
         position = applyEventChanges(position, lastDecreaseEvent);
       }
@@ -81,7 +80,13 @@ export function useOptimisticPositions(chainId: number) {
 
       return acc;
     }, {} as PositionsData);
-  }, [pendingPositionsUpdates, positionDecreaseEvents, positionIncreaseEvents, positionsData]);
+  }, [
+    allPossiblePositionsKeys,
+    pendingPositionsUpdates,
+    positionDecreaseEvents,
+    positionIncreaseEvents,
+    positionsData,
+  ]);
 
   return {
     optimisticPositionsData,
@@ -97,6 +102,10 @@ function applyEventChanges(position: Position, event: PositionIncreaseEvent | Po
   nextPosition.borrowingFactor = event.borrowingFactor;
   nextPosition.longTokenFundingAmountPerSize = event.longTokenFundingAmountPerSize;
   nextPosition.shortTokenFundingAmountPerSize = event.shortTokenFundingAmountPerSize;
+  nextPosition.pendingBorrowingFeesUsd = BigNumber.from(0);
+  nextPosition.fundingFeeAmount = BigNumber.from(0);
+  nextPosition.claimableLongTokenAmount = BigNumber.from(0);
+  nextPosition.claimableShortTokenAmount = BigNumber.from(0);
   nextPosition.pendingUpdate = undefined;
   nextPosition.isOpening = false;
 

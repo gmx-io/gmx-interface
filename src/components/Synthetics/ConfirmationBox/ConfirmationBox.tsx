@@ -368,6 +368,7 @@ export function ConfirmationBox(p: Props) {
       marketAddress: marketInfo.marketTokenAddress,
       initialCollateralAddress: fromToken?.address,
       initialCollateralAmount: increaseAmounts.initialCollateralAmount,
+      targetCollateralAddress: collateralToken.address,
       collateralDeltaAmount: increaseAmounts.collateralAmountAfterFees,
       swapPath: increaseAmounts.swapPathStats?.swapPath || [],
       sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
@@ -378,7 +379,6 @@ export function ConfirmationBox(p: Props) {
       isLong,
       orderType: isLimit ? OrderType.LimitIncrease : OrderType.MarketIncrease,
       referralCode: userReferralCode,
-      existingPositionKey: existingPosition?.key,
       indexToken: marketInfo.indexToken,
       tokensData,
       setPendingTxns: p.setPendingTxns,
@@ -420,7 +420,6 @@ export function ConfirmationBox(p: Props) {
       referralCode: userReferralCode,
       // Skip simulation to avoid EmptyPosition error
       skipSimulation: !existingPosition,
-      existingPositionKey: existingPosition?.key,
       indexToken: marketInfo.indexToken,
       tokensData,
       setPendingTxns,

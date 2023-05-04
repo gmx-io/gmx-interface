@@ -10,6 +10,7 @@ import { callContract } from "lib/contracts";
 import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
 import { isMarketOrderType } from "./utils";
+import { getPositionKey } from "../positions";
 
 const { AddressZero } = ethers.constants;
 
@@ -31,7 +32,6 @@ export type DecreaseOrderParams = {
   executionFee: BigNumber;
   skipSimulation?: boolean;
   referralCode?: string;
-  existingPositionKey: string | undefined;
   indexToken: Token;
   tokensData: TokensData;
   setPendingTxns: (txns: any) => void;
@@ -118,10 +118,12 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
     hideSuccessMsg: true,
     setPendingTxns: p.setPendingTxns,
   }).then(() => {
-    if (isMarketOrderType(p.orderType) && p.existingPositionKey) {
+    if (isMarketOrderType(p.orderType)) {
+      const positionKey = getPositionKey(p.account, p.marketAddress, p.initialCollateralAddress, p.isLong);
+
       p.setPendingPosition({
         isIncrease: false,
-        positionKey: p.existingPositionKey,
+        positionKey,
         collateralDeltaAmount: p.initialCollateralDeltaAmount,
         sizeDeltaUsd: p.sizeDeltaUsd,
         sizeDeltaInTokens: p.sizeDeltaInTokens,
