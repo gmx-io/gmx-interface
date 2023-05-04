@@ -1301,6 +1301,7 @@ msgstr ""
 #~ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
+#: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Decreased"
 msgstr "Уменьшено"
 
@@ -1385,6 +1386,10 @@ msgstr "Внесено"
 #: src/pages/Exchange/Exchange.js
 msgid "Deposited {0} USD into {tokenSymbol} {longOrShortText}"
 msgstr "Внесено {0} USD на {tokenSymbol} {longOrShortText}"
+
+#: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
+msgid "Deposited {0} into {positionText}"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Deposited!"
@@ -2188,6 +2193,10 @@ msgstr "Увеличить {0} {longOrShortText}, +{1} USD, {2} Цена: {3} US
 #~ msgid "Increased"
 #~ msgstr ""
 
+#: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
+msgid "Increased {positionText}, +{0}"
+msgstr ""
+
 #: src/pages/Exchange/Exchange.js
 msgid "Increased {tokenSymbol} {longOrShortText}, +{0} USD."
 msgstr "Увеличено {tokenSymbol} {longOrShortText}, +{0} USD."
@@ -2456,6 +2465,7 @@ msgstr ""
 msgid "Limit Price"
 msgstr "Предельная Цена"
 
+#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 #: src/domain/synthetics/orders/utils.ts
 msgid "Limit Swap"
 msgstr ""
@@ -2463,6 +2473,10 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 msgid "Limit order creation failed."
 msgstr "Не удалось создать лимитный ордер."
+
+#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
+msgid "Limit order for"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Limit order submitted!"
@@ -2516,6 +2530,7 @@ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Liquidated"
 msgstr "Ликвидировано"
 
@@ -2601,6 +2616,8 @@ msgstr "Загрузка..."
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
+#: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/domain/synthetics/orders/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
@@ -3995,6 +4012,8 @@ msgstr "Позиция Акции"
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
+#: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/domain/synthetics/orders/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
@@ -4207,6 +4226,7 @@ msgstr "Обеспечение"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
@@ -4299,8 +4319,8 @@ msgid "Swap {0} USDG for {1} {2}"
 msgstr "Обмен {0} USDG на {1} {2}"
 
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
-msgid "Swap {0} for {1}"
-msgstr ""
+#~ msgid "Swap {0} for {1}"
+#~ msgstr ""
 
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #~ msgid "Swap {0} for {1} cancelled"
@@ -4814,6 +4834,10 @@ msgstr "Триггерная Цена"
 msgid "Trigger order disabled, pending {0} upgrade"
 msgstr "Триггерный ордер недействителен, ожидается {0} обновление"
 
+#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
+msgid "Trigger order for"
+msgstr ""
+
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #~ msgid "Trigger price"
 #~ msgstr ""
@@ -5277,6 +5301,10 @@ msgstr "Выведено!"
 #: src/pages/Exchange/Exchange.js
 msgid "Withdrew {0} USD from {tokenSymbol} {longOrShortText}."
 msgstr "Снял {0} USD с {tokenSymbol} {longOrShortText}."
+
+#: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
+msgid "Withdrew {0} from {positionText}"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Yield Optimizer on Avalanche"
@@ -5761,6 +5789,10 @@ msgstr ""
 #~ msgid "{orderLabel} order sent"
 #~ msgstr ""
 
+#: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
+msgid "{orderTypeLabel} {positionText}, -{0}"
+msgstr ""
+
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
 #~ msgid "{orderTypeText} cancelled"
 #~ msgstr ""
@@ -5769,13 +5801,21 @@ msgstr ""
 #~ msgid "{orderTypeText} status"
 #~ msgstr ""
 
+#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
+msgid "{orderTypeText} {0} for {1}"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
+msgid "{orderTypeText} {0} {longShortText}: {sign}{1}"
+msgstr ""
+
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #~ msgid "{orderTypeText} {0} {longText}"
 #~ msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
-msgid "{orderTypeText} {0} {longText} by {1}"
-msgstr ""
+#~ msgid "{orderTypeText} {0} {longText} by {1}"
+#~ msgstr ""
 
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #~ msgid "{orderTypeText} {0} {longText} cancelled"

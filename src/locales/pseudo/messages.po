@@ -1301,6 +1301,7 @@ msgstr ""
 #~ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
+#: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Decreased"
 msgstr ""
 
@@ -1384,6 +1385,10 @@ msgstr ""
 
 #: src/pages/Exchange/Exchange.js
 msgid "Deposited {0} USD into {tokenSymbol} {longOrShortText}"
+msgstr ""
+
+#: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
+msgid "Deposited {0} into {positionText}"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
@@ -2188,6 +2193,10 @@ msgstr ""
 #~ msgid "Increased"
 #~ msgstr ""
 
+#: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
+msgid "Increased {positionText}, +{0}"
+msgstr ""
+
 #: src/pages/Exchange/Exchange.js
 msgid "Increased {tokenSymbol} {longOrShortText}, +{0} USD."
 msgstr ""
@@ -2456,12 +2465,17 @@ msgstr ""
 msgid "Limit Price"
 msgstr ""
 
+#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 #: src/domain/synthetics/orders/utils.ts
 msgid "Limit Swap"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Limit order creation failed."
+msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
+msgid "Limit order for"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -2516,6 +2530,7 @@ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Liquidated"
 msgstr ""
 
@@ -2598,6 +2613,8 @@ msgstr ""
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
+#: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/domain/synthetics/orders/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
@@ -3992,6 +4009,8 @@ msgstr ""
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
+#: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/domain/synthetics/orders/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
@@ -4204,6 +4223,7 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
@@ -4296,8 +4316,8 @@ msgid "Swap {0} USDG for {1} {2}"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
-msgid "Swap {0} for {1}"
-msgstr ""
+#~ msgid "Swap {0} for {1}"
+#~ msgstr ""
 
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #~ msgid "Swap {0} for {1} cancelled"
@@ -4811,6 +4831,10 @@ msgstr ""
 msgid "Trigger order disabled, pending {0} upgrade"
 msgstr ""
 
+#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
+msgid "Trigger order for"
+msgstr ""
+
 #: src/components/Synthetics/Trade/ConfirmationBox/ConfirmationBox.tsx
 #~ msgid "Trigger price"
 #~ msgstr ""
@@ -5273,6 +5297,10 @@ msgstr ""
 
 #: src/pages/Exchange/Exchange.js
 msgid "Withdrew {0} USD from {tokenSymbol} {longOrShortText}."
+msgstr ""
+
+#: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
+msgid "Withdrew {0} from {positionText}"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -5755,6 +5783,10 @@ msgstr ""
 #~ msgid "{orderLabel} order sent"
 #~ msgstr ""
 
+#: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
+msgid "{orderTypeLabel} {positionText}, -{0}"
+msgstr ""
+
 #: src/components/Synthetics/GmSwap/GmOrderStatus/GmOrderStatus.tsx
 #~ msgid "{orderTypeText} cancelled"
 #~ msgstr ""
@@ -5763,13 +5795,21 @@ msgstr ""
 #~ msgid "{orderTypeText} status"
 #~ msgstr ""
 
+#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
+msgid "{orderTypeText} {0} for {1}"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
+msgid "{orderTypeText} {0} {longShortText}: {sign}{1}"
+msgstr ""
+
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #~ msgid "{orderTypeText} {0} {longText}"
 #~ msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
-msgid "{orderTypeText} {0} {longText} by {1}"
-msgstr ""
+#~ msgid "{orderTypeText} {0} {longText} by {1}"
+#~ msgstr ""
 
 #: src/components/Synthetics/OrderStatus/OrderStatus.tsx
 #~ msgid "{orderTypeText} {0} {longText} cancelled"
