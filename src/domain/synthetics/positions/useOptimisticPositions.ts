@@ -55,13 +55,13 @@ export function useOptimisticPositions(chainId: number) {
       if (
         lastIncreaseEvent &&
         lastIncreaseEvent.increasedAtBlock.gt(position.increasedAtBlock) &&
-        lastIncreaseEvent.increasedAtBlock.gt(lastIncreaseEvent.increasedAtBlock)
+        lastIncreaseEvent.increasedAtBlock.gt(lastDecreaseEvent.decreasedAtBlock)
       ) {
         position = applyEventChanges(position, lastIncreaseEvent);
       } else if (
         lastDecreaseEvent &&
         lastDecreaseEvent.decreasedAtBlock.gt(position.decreasedAtBlock) &&
-        lastDecreaseEvent.decreasedAtBlock.gt(lastDecreaseEvent.decreasedAtBlock)
+        lastDecreaseEvent.decreasedAtBlock.gt(lastIncreaseEvent.increasedAtBlock)
       ) {
         position = applyEventChanges(position, lastDecreaseEvent);
       }
