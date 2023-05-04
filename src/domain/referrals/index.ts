@@ -7,7 +7,7 @@ import ReferralStorage from "abis/ReferralStorage.json";
 import { MAX_REFERRAL_CODE_LENGTH, isAddressZero, isHashZero } from "lib/legacy";
 import { getContract } from "config/contracts";
 import { REGEX_VERIFY_BYTES32 } from "components/Referrals/referralsHelper";
-import { ACTIVE_PRODUCTION_CHAINS, ARBITRUM, AVALANCHE } from "config/chains";
+import { SUPPORTED_CHAIN_IDS, ARBITRUM, AVALANCHE } from "config/chains";
 import { arbitrumReferralsGraphClient, avalancheReferralsGraphClient } from "lib/subgraph/clients";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
@@ -89,12 +89,14 @@ export function useUserCodesOnAllChain(account) {
   useEffect(() => {
     async function main() {
       const [arbitrumCodes, avalancheCodes] = await Promise.all(
-        ACTIVE_PRODUCTION_CHAINS.map((chainId) => {
-          return getGraphClient(chainId)
-            .query({ query, variables: { account: (account || "").toLowerCase() } })
-            .then(({ data }) => {
-              return data.referralCodes.map((c) => c.code);
-            });
+        SUPPORTED_CHAIN_IDS.map(async (chainId) => {
+          try {
+            const client = getGraphClient(chainId);
+            const { data } = await client.query({ query, variables: { account: (account || "").toLowerCase() } });
+            return data.referralCodes.map((c) => c.code);
+          } catch (ex) {
+            return [];
+          }
         })
       );
       const [codeOwnersOnAvax = [], codeOwnersOnArbitrum = []] = await Promise.all([

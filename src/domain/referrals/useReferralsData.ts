@@ -3,7 +3,7 @@ import { bigNumberify } from "lib/numbers";
 import { useEffect, useState } from "react";
 import { decodeReferralCode, getGraphClient, useUserCodesOnAllChain } from ".";
 import { gql } from "@apollo/client";
-import { ACTIVE_PRODUCTION_CHAINS } from "config/chains";
+import { SUPPORTED_CHAIN_IDS } from "config/chains";
 const DISTRIBUTION_TYPE_REBATES = "1";
 const DISTRIBUTION_TYPE_DISCOUNT = "2";
 
@@ -76,6 +76,8 @@ export default function useReferralsData(account) {
     setLoading(true);
 
     async function getChainReferralData(chainId: number) {
+      const graphClient = getGraphClient(chainId);
+      if (!graphClient) return null;
       return getGraphClient(chainId)
         .query({
           query,
@@ -144,6 +146,7 @@ export default function useReferralsData(account) {
 
           let referrerTotalStats = res.data.referrerTotalStats.map(prepareStatsItem);
           return {
+            chainId,
             rebateDistributions,
             discountDistributions,
             referrerTotalStats,
@@ -164,23 +167,25 @@ export default function useReferralsData(account) {
         });
     }
 
-    function accumulateResults(accumulator, currentValue, index) {
-      const chainId = ACTIVE_PRODUCTION_CHAINS[index];
+    function updateTotalStats(accumulator, currentValue) {
+      const { cumulativeStats = {}, referralTotalStats = {} } = currentValue;
 
-      accumulator[chainId] = currentValue;
-      accumulator.total.registeredReferralsCount += currentValue.cumulativeStats.registeredReferralsCount;
-      accumulator.total.affiliatesVolume = accumulator.total.affiliatesVolume.add(currentValue.cumulativeStats.volume);
+      accumulator.total.registeredReferralsCount += cumulativeStats.registeredReferralsCount || 0;
+      accumulator.total.affiliatesVolume = accumulator.total.affiliatesVolume.add(cumulativeStats.volume || 0);
       accumulator.total.referrerRebates = accumulator.total.referrerRebates
-        .add(currentValue.cumulativeStats.totalRebateUsd)
-        .sub(currentValue.cumulativeStats.discountUsd);
-      accumulator.total.discountUsd = accumulator.total.discountUsd.add(
-        currentValue.referralTotalStats.discountUsd || 0
-      );
-      accumulator.total.tradersVolume = accumulator.total.tradersVolume.add(
-        currentValue.referralTotalStats.volume || 0
-      );
+        .add(cumulativeStats.totalRebateUsd || 0)
+        .sub(cumulativeStats.discountUsd || 0);
+      accumulator.total.discountUsd = accumulator.total.discountUsd.add(referralTotalStats.discountUsd || 0);
+      accumulator.total.tradersVolume = accumulator.total.tradersVolume.add(referralTotalStats.volume || 0);
 
       return accumulator;
+    }
+
+    function accumulateResults(accumulator, currentValue) {
+      if (!currentValue) return accumulator;
+      const { chainId } = currentValue;
+      accumulator[chainId] = currentValue;
+      return updateTotalStats(accumulator, currentValue);
     }
 
     const initialAccumulator = {
@@ -193,7 +198,16 @@ export default function useReferralsData(account) {
       },
     };
 
-    Promise.all(ACTIVE_PRODUCTION_CHAINS.map((chainId) => getChainReferralData(chainId)))
+    Promise.all(
+      SUPPORTED_CHAIN_IDS.map(async (chainId) => {
+        try {
+          const data = await getChainReferralData(chainId);
+          return data;
+        } catch (e) {
+          return null;
+        }
+      })
+    )
       .then((res) => res.reduce(accumulateResults, initialAccumulator))
       .then(setData)
       // eslint-disable-next-line no-console
