@@ -6,11 +6,11 @@ import { applyFactor, expandDecimals, formatAmount } from "lib/numbers";
 import { convertToUsd } from "../tokens";
 
 export function getPositionKey(account: string, marketAddress: string, collateralAddress: string, isLong: boolean) {
-  return `${account}-${marketAddress}-${collateralAddress}-${isLong}`;
+  return `${account}:${marketAddress}:${collateralAddress}:${isLong}`;
 }
 
 export function parsePositionKey(positionKey: string) {
-  const [account, marketAddress, collateralAddress, isLong] = positionKey.split("-");
+  const [account, marketAddress, collateralAddress, isLong] = positionKey.split(":");
 
   return { account, marketAddress, collateralAddress, isLong: isLong === "true" };
 }

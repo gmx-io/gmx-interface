@@ -9,7 +9,7 @@ import { callContract } from "lib/contracts";
 import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
 import { isMarketOrderType } from "./utils";
-import { getPositionKey } from "lib/legacy";
+import { getPositionKey } from "../positions";
 
 const { AddressZero } = ethers.constants;
 

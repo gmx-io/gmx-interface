@@ -87,7 +87,6 @@ export function usePositions(chainId: number): PositionsResult {
       const positions = res.reader.positions.returnValues;
 
       return positions.reduce((positionsMap: PositionsData, positionInfo, i) => {
-        // TODO: parsing from abi?
         const [positionProps, positionFees] = positionInfo;
         const [addresses, numbers, flags, data] = positionProps;
         const [account, marketAddress, collateralTokenAddress] = addresses;
@@ -145,8 +144,13 @@ export function usePositions(chainId: number): PositionsResult {
           latestShortTokenFundingAmountPerSize,
         ] = funding.map(bigNumberify);
 
-        const positionKey = getPositionKey(account, marketAddress, collateralTokenAddress, isLong)!;
-        const contractPositionKey = keysAndPrices!.positionsKeys[i];
+        const positionKey = keysAndPrices!.positionsKeys[i];
+        const contractPositionKey = keysAndPrices!.contractPositionsKeys[i];
+
+        // Empty position
+        if (increasedAtBlock.eq(0)) {
+          return positionsMap;
+        }
 
         positionsMap[positionKey] = {
           key: positionKey,
