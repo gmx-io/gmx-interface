@@ -139,11 +139,12 @@ export type PositionIncreaseEvent = {
   executionPrice: BigNumber;
   sizeDeltaUsd: BigNumber;
   sizeDeltaInTokens: BigNumber;
-  orderType: OrderType;
   longTokenFundingAmountPerSize: BigNumber;
   shortTokenFundingAmountPerSize: BigNumber;
   collateralDeltaAmount: BigNumber;
   isLong: boolean;
+  orderType: OrderType;
+  orderKey: string;
   increasedAtBlock: BigNumber;
 };
 
@@ -155,12 +156,17 @@ export type PositionDecreaseEvent = {
   collateralTokenAddress: string;
   sizeInUsd: BigNumber;
   sizeInTokens: BigNumber;
+  sizeDeltaUsd: BigNumber;
+  sizeDeltaInTokens: BigNumber;
   collateralAmount: BigNumber;
+  collateralDeltaAmount: BigNumber;
   borrowingFactor: BigNumber;
   longTokenFundingAmountPerSize: BigNumber;
   shortTokenFundingAmountPerSize: BigNumber;
   pnlUsd: BigNumber;
   isLong: boolean;
+  orderType: OrderType;
+  orderKey: string;
   decreasedAtBlock: BigNumber;
 };
 

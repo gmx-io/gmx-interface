@@ -3,7 +3,13 @@ import { TransactionStatus, TransactionStatusType } from "components/Transaction
 import { getWrappedToken } from "config/tokens";
 import { PendingOrderData, getPendingOrderKey, useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useMarketsInfo } from "domain/synthetics/markets";
-import { isIncreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
+import {
+  isIncreaseOrderType,
+  isLimitOrderType,
+  isLimitSwapOrderType,
+  isMarketOrderType,
+  isSwapOrderType,
+} from "domain/synthetics/orders";
 import { useAvailableTokensData } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import { useChainId } from "lib/chains";
@@ -61,7 +67,9 @@ export function OrderStatusNotification({ pendingOrderData }: Props) {
       const { initialCollateralToken, targetCollateralToken, initialCollateralDeltaAmount, minOutputAmount } =
         orderData;
 
-      return t`Swap ${formatTokenAmount(
+      const orderTypeText = isLimitSwapOrderType(orderData.orderType) ? t`Limit Swap` : t`Swap`;
+
+      return t`${orderTypeText} ${formatTokenAmount(
         initialCollateralDeltaAmount,
         initialCollateralToken?.decimals,
         initialCollateralToken?.symbol
@@ -70,8 +78,8 @@ export function OrderStatusNotification({ pendingOrderData }: Props) {
       const { marketInfo, sizeDeltaUsd, orderType, isLong, initialCollateralDeltaAmount, initialCollateralToken } =
         orderData;
 
-      const longText = isLong ? t`Long` : t`Short`;
-      const positionText = `${marketInfo?.indexToken.symbol} ${longText}`;
+      const longShortText = isLong ? t`Long` : t`Short`;
+      const positionText = `${marketInfo?.indexToken.symbol} ${longShortText}`;
 
       if (sizeDeltaUsd.eq(0)) {
         if (isIncreaseOrderType(orderType)) {
@@ -88,9 +96,19 @@ export function OrderStatusNotification({ pendingOrderData }: Props) {
           )} from ${positionText}`;
         }
       } else {
-        const orderTypeText = isIncreaseOrderType(orderType) ? t`Increasing` : t`Decreasing`;
+        let orderTypeText = "";
 
-        return t`${orderTypeText} ${marketInfo?.indexToken?.symbol} ${longText} by ${formatUsd(sizeDeltaUsd)}`;
+        if (isMarketOrderType(orderType)) {
+          orderTypeText = isIncreaseOrderType(orderType) ? t`Increasing` : t`Decreasing`;
+        } else {
+          orderTypeText = isLimitOrderType(orderType) ? t`Limit order for` : t`Trigger order for`;
+        }
+
+        const sign = isIncreaseOrderType(orderType) ? "+" : "-";
+
+        return t`${orderTypeText} ${marketInfo?.indexToken?.symbol} ${longShortText}: ${sign}${formatUsd(
+          sizeDeltaUsd
+        )}`;
       }
     }
   }, [orderData]);
@@ -108,6 +126,10 @@ export function OrderStatusNotification({ pendingOrderData }: Props) {
   }, [orderStatus?.createdTxnHash]);
 
   const executionStatus = useMemo(() => {
+    if (!orderData || !isMarketOrderType(orderData?.orderType)) {
+      return null;
+    }
+
     let text = t`Fulfilling order request`;
     let status: TransactionStatusType = "muted";
     let txnHash: string | undefined;
@@ -129,7 +151,7 @@ export function OrderStatusNotification({ pendingOrderData }: Props) {
     }
 
     return <TransactionStatus status={status} txnHash={txnHash} text={text} />;
-  }, [orderStatus]);
+  }, [orderData, orderStatus?.cancelledTxnHash, orderStatus?.createdTxnHash, orderStatus?.executedTxnHash]);
 
   useEffect(
     function getOrderStatusKey() {

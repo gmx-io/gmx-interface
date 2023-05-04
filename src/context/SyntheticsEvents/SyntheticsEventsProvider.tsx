@@ -5,15 +5,20 @@ import { GmStatusNotification } from "components/Synthetics/StatusNotifiaction/G
 import { OrderStatusNotification } from "components/Synthetics/StatusNotifiaction/OrderStatusNotification";
 import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
-import { getWrappedToken } from "config/tokens";
+import { getToken, getWrappedToken } from "config/tokens";
 import { useMarketsInfo } from "domain/synthetics/markets";
-import { isDecreaseOrderType, isIncreaseOrderType } from "domain/synthetics/orders";
+import {
+  isDecreaseOrderType,
+  isIncreaseOrderType,
+  isLiquidationOrderType,
+  isMarketOrderType,
+} from "domain/synthetics/orders";
 import { getPositionKey } from "domain/synthetics/positions";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
-import { setByKey, updateByKey } from "lib/objects";
+import { getByKey, setByKey, updateByKey } from "lib/objects";
 import { getProvider, getWsProvider } from "lib/rpc";
 import { ReactNode, createContext, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -35,6 +40,9 @@ import {
   WithdrawalStatuses,
 } from "./types";
 import { parseEventLogData } from "./utils";
+import { formatTokenAmount, formatUsd } from "lib/numbers";
+import { t } from "@lingui/macro";
+import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
 
 export const SyntheticsEventsContext = createContext({});
 
@@ -232,17 +240,44 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         executionPrice: eventData.uintItems.items.executionPrice,
         sizeDeltaUsd: eventData.uintItems.items.sizeDeltaUsd,
         sizeDeltaInTokens: eventData.uintItems.items.sizeDeltaInTokens,
-        orderType: Number(eventData.uintItems.items.orderType),
         longTokenFundingAmountPerSize: eventData.intItems.items.longTokenFundingAmountPerSize,
         shortTokenFundingAmountPerSize: eventData.intItems.items.shortTokenFundingAmountPerSize,
         collateralDeltaAmount: eventData.intItems.items.collateralDeltaAmount,
         isLong: eventData.boolItems.items.isLong,
         increasedAtBlock: BigNumber.from(txnParams.blockNumber),
+        orderType: Number(eventData.uintItems.items.orderType),
+        orderKey: eventData.bytes32Items.items.orderKey,
       };
 
-      if (data.account !== currentAccount) return;
+      if (data.account !== currentAccount) {
+        return;
+      }
 
       setPositionIncreaseEvents((old) => [...old, data]);
+
+      // If this is a limit order, or the order status is not received previosly, notify the user
+      if (!isMarketOrderType(data.orderType) || !orderStatuses[data.orderKey]) {
+        let text = "";
+
+        const marketInfo = getByKey(marketsInfoData, data.marketAddress);
+        const indexToken = marketInfo?.indexToken;
+        const collateralToken = getToken(chainId, data.collateralTokenAddress);
+        const longShortText = data.isLong ? t`Long` : t`Short`;
+
+        const positionText = `${indexToken?.symbol} ${longShortText}`;
+
+        if (data.sizeDeltaUsd.eq(0)) {
+          text = t`Deposited ${formatTokenAmount(
+            data.collateralDeltaAmount,
+            collateralToken.decimals,
+            collateralToken.symbol
+          )} into ${positionText}`;
+        } else {
+          text = t`Increased ${positionText}, +${formatUsd(data.sizeDeltaUsd)}`;
+        }
+
+        pushSuccessNotification(chainId, text, { transactionHash: txnParams.transactionHash });
+      }
     },
 
     PositionDecrease: (eventData: EventLogData, txnParams: EventTxnParams) => {
@@ -258,7 +293,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         collateralTokenAddress: eventData.addressItems.items.collateralToken,
         sizeInUsd: eventData.uintItems.items.sizeInUsd,
         sizeInTokens: eventData.uintItems.items.sizeInTokens,
+        sizeDeltaUsd: eventData.uintItems.items.sizeDeltaUsd,
+        sizeDeltaInTokens: eventData.uintItems.items.sizeDeltaInTokens,
         collateralAmount: eventData.uintItems.items.collateralAmount,
+        collateralDeltaAmount: eventData.intItems.items.collateralDeltaAmount,
         borrowingFactor: eventData.uintItems.items.borrowingFactor,
         longTokenFundingAmountPerSize: eventData.intItems.items.longTokenFundingAmountPerSize,
         shortTokenFundingAmountPerSize: eventData.intItems.items.shortTokenFundingAmountPerSize,
@@ -266,11 +304,44 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         isLong: eventData.boolItems.items.isLong,
         contractPositionKey: eventData.bytes32Items.items.positionKey,
         decreasedAtBlock: BigNumber.from(txnParams.blockNumber),
+        orderType: Number(eventData.uintItems.items.orderType),
+        orderKey: eventData.bytes32Items.items.orderKey,
       };
 
-      if (data.account !== currentAccount) return;
+      if (data.account !== currentAccount) {
+        return;
+      }
 
       setPositionDecreaseEvents((old) => [...old, data]);
+
+      // If this is a trigger or liquidation order, or the order status is not received previosly, notify the user
+      if (!isMarketOrderType(data.orderType) || !orderStatuses[data.orderKey]) {
+        let text = "";
+
+        const marketInfo = getByKey(marketsInfoData, data.marketAddress);
+        const indexToken = marketInfo?.indexToken;
+        const collateralToken = getToken(chainId, data.collateralTokenAddress);
+        const longShortText = data.isLong ? t`Long` : t`Short`;
+
+        const positionText = `${indexToken?.symbol} ${longShortText}`;
+
+        if (data.sizeDeltaUsd.eq(0)) {
+          text = t`Withdrew ${formatTokenAmount(
+            data.collateralDeltaAmount,
+            collateralToken.decimals,
+            collateralToken.symbol
+          )} from ${positionText}`;
+        } else {
+          const orderTypeLabel = isLiquidationOrderType(data.orderType) ? t`Liquidated` : t`Decreased`;
+          text = t`${orderTypeLabel} ${positionText}, -${formatUsd(data.sizeDeltaUsd)}`;
+        }
+
+        if (isLiquidationOrderType(data.orderType)) {
+          pushErrorNotification(chainId, text, { transactionHash: txnParams.transactionHash });
+        } else {
+          pushSuccessNotification(chainId, text, { transactionHash: txnParams.transactionHash });
+        }
+      }
     },
   };
 
