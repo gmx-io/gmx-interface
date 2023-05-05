@@ -4,7 +4,7 @@ import { BigNumber } from "ethers";
 import { PRECISION } from "lib/legacy";
 import { applyFactor } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { VirtualInventoryForPositionsData, getCappedPositionImpactUsd, getPriceImpactForPosition } from "../fees";
+import { VirtualInventoryForPositionsData, getCappedPositionImpactUsd } from "../fees";
 import { convertToContractTokenPrices, convertToUsd, getMidPrice } from "../tokens";
 import { TokensData } from "../tokens/types";
 import { ContractMarketPrices, Market, MarketInfo, PnlFactorType } from "./types";
@@ -236,13 +236,12 @@ export function getMinPriceImpactMarket(
     const liquidity = getAvailableUsdLiquidityForPosition(marketInfo, isLong);
 
     if (isMarketIndexToken(marketInfo, indexTokenAddress) && liquidity.gt(sizeDeltaUsd)) {
-      let priceImpactDeltaUsd = getPriceImpactForPosition(
+      const priceImpactDeltaUsd = getCappedPositionImpactUsd(
         marketInfo,
         virtualInventoryForPositions,
         sizeDeltaUsd,
         isLong
       );
-      priceImpactDeltaUsd = getCappedPositionImpactUsd(marketInfo, priceImpactDeltaUsd, sizeDeltaUsd);
 
       if (!bestImpactDeltaUsd || priceImpactDeltaUsd.gt(bestImpactDeltaUsd)) {
         bestMarket = marketInfo;

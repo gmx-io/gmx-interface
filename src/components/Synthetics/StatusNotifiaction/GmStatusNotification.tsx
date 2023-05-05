@@ -8,8 +8,8 @@ import {
   getPendingWithdrawalKey,
   useSyntheticsEvents,
 } from "context/SyntheticsEvents";
-import { useMarketsInfo } from "domain/synthetics/markets";
-import { TokenData, useAvailableTokensData } from "domain/synthetics/tokens";
+import { MarketsInfoData } from "domain/synthetics/markets";
+import { TokenData, TokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import { useEffect, useMemo, useState } from "react";
@@ -17,13 +17,18 @@ import { useEffect, useMemo, useState } from "react";
 export type Props = {
   pendingDepositData?: PendingDepositData;
   pendingWithdrawalData?: PendingWithdrawalData;
+  marketsInfoData?: MarketsInfoData;
+  tokensData?: TokensData;
 };
 
-export function GmStatusNotification({ pendingDepositData, pendingWithdrawalData }: Props) {
+export function GmStatusNotification({
+  pendingDepositData,
+  pendingWithdrawalData,
+  marketsInfoData,
+  tokensData,
+}: Props) {
   const { chainId } = useChainId();
   const { depositStatuses, withdrawalStatuses, touchDepositStatus, touchWithdrawalStatus } = useSyntheticsEvents();
-  const { tokensData } = useAvailableTokensData(chainId);
-  const { marketsInfoData } = useMarketsInfo(chainId);
 
   const isDeposit = Boolean(pendingDepositData);
 

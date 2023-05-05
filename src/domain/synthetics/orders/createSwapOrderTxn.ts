@@ -8,6 +8,8 @@ import { callContract } from "lib/contracts";
 import { TokensData } from "../tokens";
 import { simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
+import { applySlippageToMinOut } from "../trade";
+import { isMarketOrderType } from "./utils";
 
 const { AddressZero } = ethers.constants;
 
@@ -22,6 +24,7 @@ export type SwapOrderParams = {
   minOutputAmount: BigNumber;
   orderType: OrderType.MarketSwap | OrderType.LimitSwap;
   executionFee: BigNumber;
+  allowedSlippage: number;
   setPendingTxns: (txns: any) => void;
   setPendingOrder: SetPendingOrder;
 };
@@ -39,13 +42,17 @@ export async function createSwapOrderTxn(chainId: number, library: Web3Provider,
   const isNativeReceive = p.toTokenAddress === NATIVE_TOKEN_ADDRESS;
 
   const wntSwapAmount = isNativePayment ? p.fromTokenAmount : BigNumber.from(0);
-
-  const wntAmount = wntSwapAmount.add(p.executionFee);
+  const totalWntAmount = wntSwapAmount.add(p.executionFee);
 
   const initialCollateralTokenAddress = convertTokenAddress(chainId, p.fromTokenAddress, "wrapped");
 
+  const shouldApplySlippage = isMarketOrderType(p.orderType);
+  const minOutputAmount = shouldApplySlippage
+    ? applySlippageToMinOut(p.allowedSlippage, p.minOutputAmount)
+    : p.minOutputAmount;
+
   const multicall = [
-    { method: "sendWnt", params: [orderVaultAddress, wntAmount] },
+    { method: "sendWnt", params: [orderVaultAddress, totalWntAmount] },
 
     !isNativePayment
       ? { method: "sendTokens", params: [p.fromTokenAddress, orderVaultAddress, p.fromTokenAmount] }
@@ -70,7 +77,7 @@ export async function createSwapOrderTxn(chainId: number, library: Web3Provider,
             acceptablePrice: BigNumber.from(0),
             executionFee: p.executionFee,
             callbackGasLimit: BigNumber.from(0),
-            minOutputAmount: p.minOutputAmount,
+            minOutputAmount,
           },
           orderType: p.orderType,
           decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
@@ -91,13 +98,13 @@ export async function createSwapOrderTxn(chainId: number, library: Web3Provider,
       primaryPriceOverrides: {},
       secondaryPriceOverrides: {},
       createOrderMulticallPayload: encodedPayload,
-      value: wntAmount,
+      value: totalWntAmount,
       tokensData: p.tokensData,
     });
   }
 
   return callContract(chainId, exchangeRouter, "multicall", [encodedPayload], {
-    value: wntAmount,
+    value: totalWntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
     setPendingTxns: p.setPendingTxns,
@@ -109,7 +116,7 @@ export async function createSwapOrderTxn(chainId: number, library: Web3Provider,
       initialCollateralDeltaAmount: p.fromTokenAmount,
       swapPath: p.swapPath,
       sizeDeltaUsd: BigNumber.from(0),
-      minOutputAmount: p.minOutputAmount,
+      minOutputAmount,
       isLong: false,
       orderType: p.orderType,
       shouldUnwrapNativeToken: isNativeReceive,

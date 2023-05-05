@@ -17,6 +17,7 @@ type Params = {
   shortTokenAmount: BigNumber;
   minMarketTokens: BigNumber;
   executionFee: BigNumber;
+  allowedSlippage: number;
   setPendingTxns: (txns: any) => void;
   setPendingDeposit: SetPendingDeposit;
 };

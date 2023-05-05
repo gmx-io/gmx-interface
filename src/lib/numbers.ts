@@ -253,6 +253,10 @@ export function numberWithCommas(x: BigNumberish) {
 }
 
 export function roundUpDivision(a: BigNumber, b: BigNumber) {
+  return a.add(b).sub(1).div(b);
+}
+
+export function roundUpMagnitudeDivision(a: BigNumber, b: BigNumber) {
   if (a.lt(0)) {
     return a.sub(b).add(1).div(b);
   }

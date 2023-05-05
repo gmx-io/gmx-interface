@@ -1,8 +1,30 @@
 import { MarketInfo, getTokenPoolType } from "domain/synthetics/markets";
 import { TokenData, convertToTokenAmount, convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
-import { applyFactor, bigNumberify, expandDecimals, roundUpDivision } from "lib/numbers";
+import { applyFactor, bigNumberify, expandDecimals, roundUpMagnitudeDivision } from "lib/numbers";
 import { VirtualInventoryForPositionsData, VirtualInventoryForSwapsData } from "../types";
+
+export function getPriceImpactAmount(p: {
+  sizeDeltaUsd: BigNumber;
+  acceptablePrice: BigNumber;
+  markPrice: BigNumber;
+  isLong: boolean;
+  isIncrease: boolean;
+}) {
+  const { sizeDeltaUsd, acceptablePrice, markPrice, isLong, isIncrease } = p;
+
+  const shouldFlipPriceDiff = isIncrease ? !isLong : isLong;
+
+  let priceDiff = markPrice.sub(acceptablePrice).mul(shouldFlipPriceDiff ? -1 : 1);
+
+  const priceImpactUsd = sizeDeltaUsd.mul(priceDiff).div(acceptablePrice);
+
+  if (priceImpactUsd.gt(0)) {
+    return roundUpMagnitudeDivision(priceImpactUsd, markPrice);
+  }
+
+  return priceImpactUsd.div(markPrice);
+}
 
 export function applySwapImpactWithCap(marketInfo: MarketInfo, tokenAddress: string, priceImpactDeltaUsd: BigNumber) {
   const tokenPoolType = getTokenPoolType(marketInfo, tokenAddress);
@@ -30,7 +52,7 @@ export function applySwapImpactWithCap(marketInfo: MarketInfo, tokenAddress: str
     }
   } else {
     // round negative impactAmount up, this will be deducted from the user
-    impactDeltaAmount = roundUpDivision(priceImpactDeltaUsd.mul(expandDecimals(1, token.decimals)), price);
+    impactDeltaAmount = roundUpMagnitudeDivision(priceImpactDeltaUsd.mul(expandDecimals(1, token.decimals)), price);
   }
 
   return impactDeltaAmount;
@@ -38,9 +60,12 @@ export function applySwapImpactWithCap(marketInfo: MarketInfo, tokenAddress: str
 
 export function getCappedPositionImpactUsd(
   marketInfo: MarketInfo,
-  priceImpactDeltaUsd: BigNumber,
-  sizeDeltaUsd: BigNumber
+  virtualInventoryForPositions: VirtualInventoryForPositionsData,
+  sizeDeltaUsd: BigNumber,
+  isLong: boolean
 ) {
+  const priceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, virtualInventoryForPositions, sizeDeltaUsd, isLong);
+
   if (priceImpactDeltaUsd.lt(0)) {
     return priceImpactDeltaUsd;
   }

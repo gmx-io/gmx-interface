@@ -50,7 +50,6 @@ import {
   SwapAmounts,
   TradeFees,
   TriggerThresholdType,
-  applySlippage,
 } from "domain/synthetics/trade";
 import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
 import { getIsEquivalentTokens, getSpread } from "domain/tokens";
@@ -325,7 +324,15 @@ export function ConfirmationBox(p: Props) {
   }
 
   function onSubmitSwap() {
-    if (!account || !tokensData || !swapAmounts?.swapPathStats || !fromToken || !toToken || !executionFee) {
+    if (
+      !account ||
+      !tokensData ||
+      !swapAmounts?.swapPathStats ||
+      !fromToken ||
+      !toToken ||
+      !executionFee ||
+      typeof allowedSlippage !== "number"
+    ) {
       return;
     }
 
@@ -335,10 +342,11 @@ export function ConfirmationBox(p: Props) {
       fromTokenAmount: swapAmounts.amountIn,
       swapPath: swapAmounts.swapPathStats?.swapPath,
       toTokenAddress: toToken.address,
-      executionFee: executionFee.feeTokenAmount,
       orderType: isLimit ? OrderType.LimitSwap : OrderType.MarketSwap,
       minOutputAmount: swapAmounts.minOutputAmount,
       referralCode: userReferralCode,
+      executionFee: executionFee.feeTokenAmount,
+      allowedSlippage,
       tokensData,
       setPendingTxns,
       setPendingOrder,
@@ -354,14 +362,10 @@ export function ConfirmationBox(p: Props) {
       !increaseAmounts?.acceptablePrice ||
       !executionFee ||
       !marketInfo ||
-      !allowedSlippage
+      typeof allowedSlippage !== "number"
     ) {
       return;
     }
-
-    const acceptablePrice = isMarket
-      ? applySlippage(allowedSlippage, increaseAmounts.acceptablePrice, true, isLong)
-      : increaseAmounts.acceptablePrice;
 
     createIncreaseOrderTxn(chainId, library, {
       account,
@@ -374,10 +378,11 @@ export function ConfirmationBox(p: Props) {
       sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
       sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
       triggerPrice: isLimit ? triggerPrice : undefined,
-      acceptablePrice,
-      executionFee: executionFee.feeTokenAmount,
+      acceptablePrice: increaseAmounts.acceptablePrice,
       isLong,
       orderType: isLimit ? OrderType.LimitIncrease : OrderType.MarketIncrease,
+      executionFee: executionFee.feeTokenAmount,
+      allowedSlippage,
       referralCode: userReferralCode,
       indexToken: marketInfo.indexToken,
       tokensData,
@@ -396,7 +401,8 @@ export function ConfirmationBox(p: Props) {
       decreaseAmounts.triggerOrderType === undefined ||
       !decreaseAmounts.triggerPrice ||
       !executionFee ||
-      !tokensData
+      !tokensData ||
+      typeof allowedSlippage !== "number"
     ) {
       return;
     }
@@ -417,6 +423,7 @@ export function ConfirmationBox(p: Props) {
       decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
       orderType: decreaseAmounts.triggerOrderType,
       executionFee: executionFee.feeTokenAmount,
+      allowedSlippage,
       referralCode: userReferralCode,
       // Skip simulation to avoid EmptyPosition error
       skipSimulation: !existingPosition,

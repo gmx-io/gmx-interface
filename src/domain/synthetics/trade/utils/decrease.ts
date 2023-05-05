@@ -1,4 +1,5 @@
-import { VirtualInventoryForPositionsData, getPositionFee, getPriceImpactForPosition } from "domain/synthetics/fees";
+import { UserReferralInfo } from "domain/referrals";
+import { VirtualInventoryForPositionsData, getCappedPositionImpactUsd, getPositionFee } from "domain/synthetics/fees";
 import { Market, MarketInfo } from "domain/synthetics/markets";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { PositionInfo, getLeverage, getLiquidationPrice, getPositionPnlUsd } from "domain/synthetics/positions";
@@ -8,7 +9,6 @@ import { DUST_USD } from "lib/legacy";
 import { getBasisPoints } from "lib/numbers";
 import { DecreasePositionAmounts, NextPositionValues, TriggerThresholdType } from "../types";
 import { getAcceptablePrice, getMarkPrice, getTriggerDecreaseOrderType, getTriggerThresholdType } from "./prices";
-import { UserReferralInfo } from "domain/referrals";
 
 export function getDecreasePositionAmounts(p: {
   marketInfo: MarketInfo;
@@ -75,7 +75,7 @@ export function getDecreasePositionAmounts(p: {
   const positionFeeUsd = positionFeeInfo.positionFeeUsd;
   const feeDiscountUsd = positionFeeInfo.discountUsd;
 
-  const positionPriceImpactDeltaUsd = getPriceImpactForPosition(
+  const positionPriceImpactDeltaUsd = getCappedPositionImpactUsd(
     marketInfo,
     virtualInventoryForPositions,
     sizeDeltaUsd,
@@ -273,6 +273,8 @@ export function getPnlDeltaForDecreaseOrder(p: {
   const { pnl, sizeInTokens, sizeInUsd, isLong, sizeDeltaUsd } = p;
 
   let sizeDeltaInTokens: BigNumber;
+
+  // cache.estimatedRealizedPnlUsd = cache.estimatedPositionPnlUsd * params.order.sizeDeltaUsd().toInt256() / params.position.sizeInUsd().toInt256();
 
   if (sizeInUsd.eq(sizeDeltaUsd)) {
     sizeDeltaInTokens = sizeInTokens;

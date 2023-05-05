@@ -26,7 +26,6 @@ import { PositionInfo, formatLeverage, usePositionsConstants } from "domain/synt
 import { useAvailableTokensData } from "domain/synthetics/tokens";
 import {
   AvailableTokenOptions,
-  applySlippage,
   getDecreasePositionAmounts,
   getMarkPrice,
   getNextPositionValuesForDecreaseTrade,
@@ -254,8 +253,6 @@ export function PositionSeller(p: Props) {
       return;
     }
 
-    const acceptablePrice = applySlippage(allowedSlippage, decreaseAmounts.acceptablePrice, false, position.isLong);
-
     createDecreaseOrderTxn(chainId, library, {
       account,
       marketAddress: position.marketAddress,
@@ -266,13 +263,14 @@ export function PositionSeller(p: Props) {
       sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
       sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
       isLong: position.isLong,
-      acceptablePrice,
+      acceptablePrice: decreaseAmounts.acceptablePrice,
       triggerPrice: undefined,
       minOutputUsd: receiveUsd,
       decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
       orderType: OrderType.MarketDecrease,
       referralCode: userReferralInfo?.userReferralCode,
       executionFee: executionFee.feeTokenAmount,
+      allowedSlippage,
       indexToken: position.indexToken,
       tokensData,
       setPendingOrder,

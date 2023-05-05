@@ -1,5 +1,10 @@
 import { UserReferralInfo } from "domain/referrals";
-import { VirtualInventoryForPositionsData, getPositionFee, getPriceImpactForPosition } from "domain/synthetics/fees";
+import {
+  VirtualInventoryForPositionsData,
+  getCappedPositionImpactUsd,
+  getPositionFee,
+  getPriceImpactForPosition,
+} from "domain/synthetics/fees";
 import { MarketInfo } from "domain/synthetics/markets";
 import { PositionInfo, getLeverage, getLiquidationPrice } from "domain/synthetics/positions";
 import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
@@ -122,7 +127,7 @@ export function getIncreasePositionAmountsByCollateral(p: {
   feeDiscountUsd = positionFeeInfo.discountUsd;
 
   positionPriceImpactDeltaUsd =
-    getPriceImpactForPosition(marketInfo, virtualInventoryForPositions, sizeDeltaUsd, p.isLong) || BigNumber.from(0);
+    getCappedPositionImpactUsd(marketInfo, virtualInventoryForPositions, sizeDeltaUsd, p.isLong) || BigNumber.from(0);
 
   const acceptablePriceInfo = getAcceptablePrice({
     isIncrease: true,
@@ -202,7 +207,7 @@ export function getIncreasePositionAmountsBySizeDelta(p: {
   const positionFeeUsd = positionFee.positionFeeUsd;
   const feeDiscountUsd = positionFee.discountUsd;
 
-  let positionPriceImpactDeltaUsd = getPriceImpactForPosition(
+  const positionPriceImpactDeltaUsd = getPriceImpactForPosition(
     marketInfo,
     virtualInventoryForPositions,
     sizeDeltaUsd,

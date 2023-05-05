@@ -68,6 +68,7 @@ export function useTradeHistory(chainId: number, p: { pageIndex: number; pageSiz
             collateralTokenPriceMin
             
             orderType
+            orderKey
             isLong
             shouldUnwrapNativeToken
             
@@ -124,6 +125,7 @@ export function useTradeHistory(chainId: number, p: { pageIndex: number; pageSiz
             account: rawAction.account,
             swapPath,
             orderType,
+            orderKey: rawAction.orderKey,
             initialCollateralTokenAddress: rawAction.initialCollateralTokenAddress!,
             initialCollateralDeltaAmount: bigNumberify(rawAction.initialCollateralDeltaAmount)!,
             minOutputAmount: bigNumberify(rawAction.minOutputAmount)!,
@@ -186,6 +188,7 @@ export function useTradeHistory(chainId: number, p: { pageIndex: number; pageSiz
               : undefined,
 
             orderType,
+            orderKey: rawAction.orderKey,
             isLong: rawAction.isLong!,
 
             priceImpactDiffUsd: rawAction.priceImpactDiffUsd ? bigNumberify(rawAction.priceImpactDiffUsd) : undefined,

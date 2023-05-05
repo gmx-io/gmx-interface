@@ -21,6 +21,13 @@ export function getAcceptablePrice(p: {
   sizeDeltaUsd: BigNumber;
   acceptablePriceImpactBps?: BigNumber;
 }) {
+  if (!p.sizeDeltaUsd?.gt(0)) {
+    return {
+      acceptablePrice: p.indexPrice,
+      acceptablePriceImpactBps: BigNumber.from(0),
+    };
+  }
+
   let acceptablePrice = p.indexPrice;
   let acceptablePriceImpactBps = p.acceptablePriceImpactBps || BigNumber.from(0);
 
@@ -31,7 +38,7 @@ export function getAcceptablePrice(p: {
     priceDelta = shouldFlipPriceImpact ? priceDelta?.mul(-1) : priceDelta;
 
     acceptablePrice = p.indexPrice.sub(priceDelta);
-  } else if (p.sizeDeltaUsd?.gt(0) && p.priceImpactDeltaUsd?.abs().gt(0)) {
+  } else if (p.priceImpactDeltaUsd?.abs().gt(0)) {
     const priceImpactForPriceAdjustment = shouldFlipPriceImpact ? p.priceImpactDeltaUsd.mul(-1) : p.priceImpactDeltaUsd;
     acceptablePrice = p.indexPrice.mul(p.sizeDeltaUsd.add(priceImpactForPriceAdjustment)).div(p.sizeDeltaUsd);
 
@@ -49,7 +56,7 @@ export function getAcceptablePrice(p: {
   };
 }
 
-export function applySlippage(allowedSlippage: number, price: BigNumber, isIncrease: boolean, isLong: boolean) {
+export function applySlippageToPrice(allowedSlippage: number, price: BigNumber, isIncrease: boolean, isLong: boolean) {
   const shouldIncreasePrice = getShouldUseMaxPrice(isIncrease, isLong);
 
   const slippageBasisPoints = shouldIncreasePrice
@@ -57,6 +64,12 @@ export function applySlippage(allowedSlippage: number, price: BigNumber, isIncre
     : BASIS_POINTS_DIVISOR - allowedSlippage;
 
   return price.mul(slippageBasisPoints).div(BASIS_POINTS_DIVISOR);
+}
+
+export function applySlippageToMinOut(allowedSlippage: number, minOutputAmount: BigNumber) {
+  const slippageBasisPoints = BASIS_POINTS_DIVISOR - allowedSlippage;
+
+  return minOutputAmount.mul(slippageBasisPoints).div(BASIS_POINTS_DIVISOR);
 }
 
 export function getShouldUseMaxPrice(isIncrease: boolean, isLong: boolean) {

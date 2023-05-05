@@ -11,6 +11,7 @@ import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderT
 import { DecreasePositionSwapType, OrderType } from "./types";
 import { isMarketOrderType } from "./utils";
 import { getPositionKey } from "../positions";
+import { applySlippageToMinOut, applySlippageToPrice } from "../trade";
 
 const { AddressZero } = ethers.constants;
 
@@ -30,6 +31,7 @@ export type DecreaseOrderParams = {
   decreasePositionSwapType: DecreasePositionSwapType;
   orderType: OrderType.MarketDecrease | OrderType.LimitDecrease | OrderType.StopLossDecrease;
   executionFee: BigNumber;
+  allowedSlippage: number;
   skipSimulation?: boolean;
   referralCode?: string;
   indexToken: Token;
@@ -50,12 +52,22 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
 
   const isNativeReceive = p.receiveTokenAddress === NATIVE_TOKEN_ADDRESS;
 
-  const wntAmount = p.executionFee;
+  const totalWntAmount = p.executionFee;
 
   const initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
 
+  const shouldApplySlippage = isMarketOrderType(p.orderType);
+
+  const acceptablePrice = shouldApplySlippage
+    ? applySlippageToPrice(p.allowedSlippage, p.acceptablePrice, false, p.isLong)
+    : p.acceptablePrice;
+
+  const minOutputAmount = shouldApplySlippage
+    ? applySlippageToMinOut(p.allowedSlippage, p.minOutputUsd)
+    : p.minOutputUsd;
+
   const multicall = [
-    { method: "sendWnt", params: [orderVaultAddress, wntAmount] },
+    { method: "sendWnt", params: [orderVaultAddress, totalWntAmount] },
 
     {
       method: "createOrder",
@@ -73,10 +85,10 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
             sizeDeltaUsd: p.sizeDeltaUsd,
             initialCollateralDeltaAmount: p.initialCollateralDeltaAmount,
             triggerPrice: convertToContractPrice(p.triggerPrice || BigNumber.from(0), p.indexToken.decimals),
-            acceptablePrice: convertToContractPrice(p.acceptablePrice, p.indexToken.decimals),
+            acceptablePrice: convertToContractPrice(acceptablePrice, p.indexToken.decimals),
             executionFee: p.executionFee,
             callbackGasLimit: BigNumber.from(0),
-            minOutputAmount: p.minOutputUsd,
+            minOutputAmount,
           },
           orderType: p.orderType,
           decreasePositionSwapType: p.decreasePositionSwapType,
@@ -107,13 +119,13 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
       primaryPriceOverrides,
       secondaryPriceOverrides,
       createOrderMulticallPayload: encodedPayload,
-      value: wntAmount,
+      value: totalWntAmount,
       tokensData: p.tokensData,
     });
   }
 
   const txn = await callContract(chainId, exchangeRouter, "multicall", [encodedPayload], {
-    value: wntAmount,
+    value: totalWntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
     setPendingTxns: p.setPendingTxns,
@@ -137,7 +149,7 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
       initialCollateralDeltaAmount: p.initialCollateralDeltaAmount,
       swapPath: p.swapPath,
       sizeDeltaUsd: p.sizeDeltaUsd,
-      minOutputAmount: p.minOutputUsd,
+      minOutputAmount,
       isLong: p.isLong,
       orderType: p.orderType,
       shouldUnwrapNativeToken: isNativeReceive,

@@ -10,6 +10,7 @@ import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderT
 import { DecreasePositionSwapType, OrderType } from "./types";
 import { isMarketOrderType } from "./utils";
 import { getPositionKey } from "../positions";
+import { applySlippageToPrice } from "../trade";
 
 const { AddressZero } = ethers.constants;
 
@@ -28,6 +29,7 @@ type IncreaseOrderParams = {
   isLong: boolean;
   orderType: OrderType.MarketIncrease | OrderType.LimitIncrease;
   executionFee: BigNumber;
+  allowedSlippage: number;
   referralCode: string | undefined;
   indexToken: TokenData;
   tokensData: TokensData;
@@ -48,13 +50,18 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
   const isNativePayment = p.initialCollateralAddress === NATIVE_TOKEN_ADDRESS;
 
   const wntCollateralAmount = isNativePayment ? p.initialCollateralAmount : BigNumber.from(0);
-
-  const wntAmount = wntCollateralAmount.add(p.executionFee);
+  const totalWntAmount = wntCollateralAmount.add(p.executionFee);
 
   const initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
 
+  const shouldApplySlippage = isMarketOrderType(p.orderType);
+
+  const acceptablePrice = shouldApplySlippage
+    ? applySlippageToPrice(p.allowedSlippage, p.acceptablePrice, true, p.isLong)
+    : p.acceptablePrice;
+
   const multicall = [
-    { method: "sendWnt", params: [orderVaultAddress, wntAmount] },
+    { method: "sendWnt", params: [orderVaultAddress, totalWntAmount] },
 
     !isNativePayment
       ? { method: "sendTokens", params: [p.initialCollateralAddress, orderVaultAddress, p.initialCollateralAmount] }
@@ -76,7 +83,7 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
             sizeDeltaUsd: p.sizeDeltaUsd,
             initialCollateralDeltaAmount: BigNumber.from(0),
             triggerPrice: convertToContractPrice(p.triggerPrice || BigNumber.from(0), p.indexToken.decimals),
-            acceptablePrice: convertToContractPrice(p.acceptablePrice, p.indexToken.decimals),
+            acceptablePrice: convertToContractPrice(acceptablePrice, p.indexToken.decimals),
             executionFee: p.executionFee,
             callbackGasLimit: BigNumber.from(0),
             minOutputAmount: BigNumber.from(0),
@@ -110,11 +117,11 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
     primaryPriceOverrides,
     secondaryPriceOverrides,
     createOrderMulticallPayload: encodedPayload,
-    value: wntAmount,
+    value: totalWntAmount,
   });
 
   const txn = await callContract(chainId, exchangeRouter, "multicall", [encodedPayload], {
-    value: wntAmount,
+    value: totalWntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
     setPendingTxns: p.setPendingTxns,

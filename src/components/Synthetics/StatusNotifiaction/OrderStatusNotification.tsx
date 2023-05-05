@@ -2,7 +2,7 @@ import { t } from "@lingui/macro";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
 import { getWrappedToken } from "config/tokens";
 import { PendingOrderData, getPendingOrderKey, useSyntheticsEvents } from "context/SyntheticsEvents";
-import { useMarketsInfo } from "domain/synthetics/markets";
+import { MarketsInfoData } from "domain/synthetics/markets";
 import {
   isIncreaseOrderType,
   isLimitOrderType,
@@ -10,7 +10,7 @@ import {
   isMarketOrderType,
   isSwapOrderType,
 } from "domain/synthetics/orders";
-import { useAvailableTokensData } from "domain/synthetics/tokens";
+import { TokensData } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import { useChainId } from "lib/chains";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
@@ -20,12 +20,12 @@ import "./StatusNotification.scss";
 
 type Props = {
   pendingOrderData: PendingOrderData;
+  marketsInfoData?: MarketsInfoData;
+  tokensData?: TokensData;
 };
 
-export function OrderStatusNotification({ pendingOrderData }: Props) {
+export function OrderStatusNotification({ pendingOrderData, marketsInfoData, tokensData }: Props) {
   const { chainId } = useChainId();
-  const { tokensData } = useAvailableTokensData(chainId);
-  const { marketsInfoData } = useMarketsInfo(chainId);
   const wrappedNativeToken = getWrappedToken(chainId);
   const { orderStatuses, touchOrderStatus } = useSyntheticsEvents();
 
@@ -82,17 +82,21 @@ export function OrderStatusNotification({ pendingOrderData }: Props) {
       const positionText = `${marketInfo?.indexToken.symbol} ${longShortText}`;
 
       if (sizeDeltaUsd.eq(0)) {
+        const symbol = orderData.shouldUnwrapNativeToken
+          ? initialCollateralToken?.baseSymbol
+          : initialCollateralToken?.symbol;
+
         if (isIncreaseOrderType(orderType)) {
           return t`Depositing ${formatTokenAmount(
             initialCollateralDeltaAmount,
             initialCollateralToken?.decimals,
-            initialCollateralToken?.symbol
+            symbol
           )} to ${positionText}`;
         } else {
           return t`Withdrawing ${formatTokenAmount(
             initialCollateralDeltaAmount,
             initialCollateralToken?.decimals,
-            initialCollateralToken?.symbol
+            symbol
           )} from ${positionText}`;
         }
       } else {

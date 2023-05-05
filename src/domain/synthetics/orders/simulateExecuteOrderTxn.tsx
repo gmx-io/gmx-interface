@@ -28,7 +28,7 @@ type SimulateExecuteOrderParams = {
 };
 
 // only for debugging empty reverts
-const SHOULD_MINE = false;
+const RUN_ON_CHAIN = false;
 
 export async function simulateExecuteOrderTxn(chainId: number, library: Web3Provider, p: SimulateExecuteOrderParams) {
   const dataStoreAddress = getContract(chainId, "DataStore");
@@ -67,7 +67,7 @@ export async function simulateExecuteOrderTxn(chainId: number, library: Web3Prov
   ];
 
   try {
-    if (SHOULD_MINE && isDevelopment()) {
+    if (RUN_ON_CHAIN && isDevelopment()) {
       const txn = await callContract(chainId, exchangeRouter, "multicall", [simulationPayload], {
         value: p.value,
         gasLimit: 13 ** 6,
@@ -79,16 +79,36 @@ export async function simulateExecuteOrderTxn(chainId: number, library: Web3Prov
     }
   } catch (e) {
     const customErrors = new ethers.Contract(ethers.constants.AddressZero, CustomErrors.abi);
-    const parsedError = customErrors.interface.parseError(e.data?.data);
 
-    if (parsedError.name === "EndOfOracleSimulation") {
+    let isSimulationPassed = false;
+    let msg = "";
+
+    try {
+      const parsedError = customErrors.interface.parseError(e.data?.data);
+
+      isSimulationPassed = parsedError.name === "EndOfOracleSimulation";
+
+      const parsedArgs = Object.keys(parsedError.args).reduce((acc, k) => {
+        if (!Number.isNaN(Number(k))) {
+          return acc;
+        }
+        acc[k] = parsedError.args[k].toString();
+        return acc;
+      }, {});
+
+      msg = `${parsedError.name} ${JSON.stringify(parsedArgs, null, 2)}`;
+    } catch (e) {
+      msg = "Unknown error";
+    }
+
+    if (isSimulationPassed) {
       return undefined;
     } else {
       helperToast.error(
         <div>
           <Trans>Execute order simulation failed.</Trans>
           <br />
-          <ToastifyDebug>{parsedError.name}</ToastifyDebug>
+          <ToastifyDebug>{msg}</ToastifyDebug>
         </div>
       );
     }

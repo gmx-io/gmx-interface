@@ -38,6 +38,7 @@ export type RawTradeAction = {
   collateralTokenPriceMin?: string;
 
   orderType: OrderType;
+  orderKey: string;
   isLong?: boolean;
   shouldUnwrapNativeToken?: boolean;
 
@@ -74,6 +75,7 @@ export type PositionTradeAction = {
   fundingFeeAmount?: BigNumber;
   pnlUsd?: BigNumber;
   orderType: OrderType;
+  orderKey: string;
   isLong: boolean;
   reason?: string;
 
@@ -96,6 +98,7 @@ export type SwapTradeAction = {
   minOutputAmount: BigNumber;
   executionAmountOut?: BigNumber;
   orderType: OrderType;
+  orderKey: string;
 
   reason?: string;
 

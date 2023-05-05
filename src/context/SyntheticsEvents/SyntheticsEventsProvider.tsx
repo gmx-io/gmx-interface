@@ -43,6 +43,7 @@ import {
   WithdrawalStatuses,
 } from "./types";
 import { parseEventLogData } from "./utils";
+import { useAvailableTokensData } from "domain/synthetics/tokens";
 
 export const SyntheticsEventsContext = createContext({});
 
@@ -52,6 +53,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const { chainId } = useChainId();
   const { active, account: currentAccount } = useWeb3React();
 
+  const { tokensData } = useAvailableTokensData(chainId);
   const { marketsInfoData } = useMarketsInfo(chainId);
 
   const [orderStatuses, setOrderStatuses] = useState<OrderStatuses>({});
@@ -454,19 +456,32 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         setWithdrawalStatuses((old) => updateByKey(old, key, { isTouched: true }));
       },
       setPendingOrder: (data: PendingOrderData) => {
-        helperToast.info(<OrderStatusNotification pendingOrderData={data} />, {
-          autoClose: STATUS_NOTIFIACTION_DURATION,
-        });
+        helperToast.info(
+          <OrderStatusNotification pendingOrderData={data} marketsInfoData={marketsInfoData} tokensData={tokensData} />,
+          {
+            autoClose: STATUS_NOTIFIACTION_DURATION,
+          }
+        );
       },
       setPendingDeposit: (data: PendingDepositData) => {
-        helperToast.info(<GmStatusNotification pendingDepositData={data} />, {
-          autoClose: STATUS_NOTIFIACTION_DURATION,
-        });
+        helperToast.info(
+          <GmStatusNotification pendingDepositData={data} marketsInfoData={marketsInfoData} tokensData={tokensData} />,
+          {
+            autoClose: STATUS_NOTIFIACTION_DURATION,
+          }
+        );
       },
       setPendingWithdrawal: (data: PendingWithdrawalData) => {
-        helperToast.info(<GmStatusNotification pendingWithdrawalData={data} />, {
-          autoClose: STATUS_NOTIFIACTION_DURATION,
-        });
+        helperToast.info(
+          <GmStatusNotification
+            pendingWithdrawalData={data}
+            marketsInfoData={marketsInfoData}
+            tokensData={tokensData}
+          />,
+          {
+            autoClose: STATUS_NOTIFIACTION_DURATION,
+          }
+        );
       },
       async setPendingPosition(update: Omit<PendingPositionUpdate, "updatedAt" | "updatedAtBlock">) {
         const provider = getProvider(undefined, chainId) as StaticJsonRpcProvider;
@@ -485,10 +500,12 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   }, [
     chainId,
     depositStatuses,
+    marketsInfoData,
     orderStatuses,
     pendingPositionsUpdates,
     positionDecreaseEvents,
     positionIncreaseEvents,
+    tokensData,
     withdrawalStatuses,
   ]);
 

@@ -18,6 +18,7 @@ type Params = {
   shortTokenSwapPath: string[];
   minShortTokenAmount: BigNumber;
   executionFee: BigNumber;
+  allowedSlippage: number;
   setPendingTxns: (txns: any) => void;
   setPendingWithdrawal: SetPendingWithdrawal;
 };

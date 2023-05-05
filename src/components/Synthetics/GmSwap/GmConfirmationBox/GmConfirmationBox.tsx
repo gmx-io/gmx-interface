@@ -17,13 +17,14 @@ import { GmSwapFees } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { formatTokenAmount, formatTokenAmountWithUsd } from "lib/numbers";
-import { uniq } from "lodash";
 import { getByKey } from "lib/objects";
+import { uniq } from "lodash";
 import { GmFees } from "../GmFees/GmFees";
 
 import Button from "components/Button/Button";
-import "./GmConfirmationBox.scss";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import "./GmConfirmationBox.scss";
+import { DEFAULT_SLIPPAGE_AMOUNT } from "lib/legacy";
 
 type Props = {
   marketToken: TokenData;
@@ -225,6 +226,7 @@ export function GmConfirmationBox({
       marketTokenAddress: marketToken.address,
       minMarketTokens: marketTokenAmount,
       executionFee: executionFee.feeTokenAmount,
+      allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
       setPendingTxns,
       setPendingDeposit,
     }).then(onSubmitted);
@@ -244,6 +246,7 @@ export function GmConfirmationBox({
       minShortTokenAmount: shortTokenAmount,
       marketTokenAddress: marketToken.address,
       executionFee: executionFee.feeTokenAmount,
+      allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
       setPendingTxns,
       setPendingWithdrawal,
     }).then(onSubmitted);

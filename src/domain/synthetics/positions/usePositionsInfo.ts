@@ -1,10 +1,14 @@
+import { useWeb3React } from "@web3-react/core";
+import { useUserReferralInfo } from "domain/referrals";
 import { BigNumber } from "ethers";
-import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "lib/legacy";
+import { MAX_ALLOWED_LEVERAGE } from "lib/legacy";
+import { getBasisPoints } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useMemo } from "react";
 import { getPositionFee } from "../fees";
 import { useMarketsInfo } from "../markets";
 import { convertToTokenAmount, convertToUsd, useAvailableTokensData } from "../tokens";
+import { getMarkPrice } from "../trade";
 import { PositionsInfoData } from "./types";
 import { useOptimisticPositions } from "./useOptimisticPositions";
 import { usePositionsConstants } from "./usePositionsConstants";
@@ -16,10 +20,6 @@ import {
   getPositionPendingFeesUsd,
   getPositionPnlUsd,
 } from "./utils";
-import { getMarkPrice } from "../trade";
-import { getBasisPoints } from "lib/numbers";
-import { useUserReferralInfo } from "domain/referrals";
-import { useWeb3React } from "@web3-react/core";
 
 type PositionsInfoResult = {
   positionsInfoData?: PositionsInfoData;
@@ -130,12 +130,9 @@ export function usePositionsInfo(chainId: number, p: { showPnlInLeverage: boolea
         });
 
         const pnlAfterFees = pnl.sub(totalPendingFeesUsd).sub(closingFeeUsd);
-
-        const pnlAfterFeesPercentage =
-          // while calculating delta percentage after fees, we need to add opening fee (which is equal to closing fee) to collateral
-          !initialCollateralUsd.eq(0)
-            ? pnlAfterFees.mul(BASIS_POINTS_DIVISOR).div(initialCollateralUsd.add(closingFeeUsd))
-            : BigNumber.from(0);
+        const pnlAfterFeesPercentage = !initialCollateralUsd.eq(0)
+          ? getBasisPoints(pnlAfterFees, initialCollateralUsd.add(closingFeeUsd))
+          : BigNumber.from(0);
 
         const leverage = getLeverage({
           sizeInUsd: position.sizeInUsd,

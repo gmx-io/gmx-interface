@@ -269,7 +269,7 @@ export function PositionItem(p: Props) {
             {p.position.pendingUpdate && <ImSpinner2 className="spin position-loading-icon" />}
           </div>
           <div className="Exchange-list-info-label" onClick={p.onSelectPositionClick}>
-            <span className="muted">{formatLeverage(p.position.leverage)}&nbsp;</span>
+            <span className="muted">{formatLeverage(p.position.leverage) || "..."}&nbsp;</span>
             <span className={cx({ positive: p.position.isLong, negative: !p.position.isLong })}>
               {p.position.isLong ? t`Long` : t`Short`}
             </span>

@@ -28,6 +28,7 @@ export const SYNTHETICS_TRADE_TYPE_KEY = "synthetics-trade-type";
 export const SYNTHETICS_TRADE_MODE_KEY = "synthetics-trade-mode";
 export const SYNTHETICS_TRADE_MARKET_KEY = "synthetics-trade-market";
 export const SYNTHETICS_TRADE_FROM_TOKEN_KEY = "synthetics-trade-from-token";
+export const SYNTHETICS_COLLATERAL_EDIT_TOKEN_KEY = "synthetics-collateral-edit-token";
 export const SYNTHETICS_TRADE_TO_TOKEN_KEY = "synthetics-swap-to-token";
 export const SYNTHETICS_TRADE_COLLATERAL_KEY = "synthetics-swap-collateral-token";
 export const PRODUCTION_PREVIEW_KEY = "production-preview";
@@ -68,6 +69,10 @@ export function getSyntheticsCollateralAddressKey(
   marketAddress: string | undefined
 ) {
   return [chainId, SYNTHETICS_TRADE_COLLATERAL_KEY, tradeType, marketAddress];
+}
+
+export function getSyntheticsCollateralEditAddressKey(chainId: number, positionCollateralAddress: string) {
+  return [chainId, SYNTHETICS_COLLATERAL_EDIT_TOKEN_KEY, positionCollateralAddress];
 }
 
 export function getLeverageKey(chainId: number) {
