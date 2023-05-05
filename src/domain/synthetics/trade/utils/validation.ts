@@ -331,12 +331,12 @@ export function getEditCollateralError(p: {
     position,
   } = p;
 
-  if (collateralDeltaAmount?.lte(0)) {
-    return [t`Amount should be greater than zero`];
+  if (!collateralDeltaAmount || !collateralDeltaUsd || collateralDeltaAmount.eq(0) || collateralDeltaUsd?.eq(0)) {
+    return [t`Enter an amount`];
   }
 
-  if (!collateralDeltaAmount?.gt(0) || !collateralDeltaUsd?.gt(0)) {
-    return [t`Enter an amount`];
+  if (collateralDeltaAmount?.lte(0)) {
+    return [t`Amount should be greater than zero`];
   }
 
   if (nextCollateralUsd && minCollateralUsd) {
