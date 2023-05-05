@@ -863,16 +863,11 @@ export function ConfirmationBox(p: Props) {
           </ExchangeInfoRow>
 
           <TradeFeesRow
-            totalTradeFees={fees?.totalFees}
-            swapFees={fees?.swapFees}
-            positionFee={fees?.positionFee}
-            positionPriceImpact={fees?.positionPriceImpact}
-            swapPriceImpact={fees?.swapPriceImpact}
+            {...fees}
             fundingFeeRateStr={
               fundigRate && `${fundigRate.gt(0) ? "+" : "-"}${formatAmount(fundigRate.abs(), 30, 4)}% / 1h`
             }
             borrowFeeRateStr={borrowingRate && `-${formatAmount(borrowingRate, 30, 4)}% / 1h`}
-            feeDiscountUsd={fees?.feeDiscountUsd}
             executionFee={p.executionFee}
             feesType="increase"
           />
@@ -928,16 +923,8 @@ export function ConfirmationBox(p: Props) {
 
           <ExchangeInfoRow label={t`${toToken?.symbol} Price`}>{formatUsd(swapAmounts?.priceOut)}</ExchangeInfoRow>
 
-          {!p.isWrapOrUnwrap && (
-            <TradeFeesRow
-              isTop
-              totalTradeFees={fees?.totalFees}
-              swapFees={fees?.swapFees}
-              swapPriceImpact={fees?.swapPriceImpact}
-              executionFee={p.executionFee}
-              feesType="swap"
-            />
-          )}
+          {!p.isWrapOrUnwrap && <TradeFeesRow {...fees} isTop executionFee={p.executionFee} feesType="swap" />}
+
           <ExchangeInfoRow label={t`Min. Receive`} isTop>
             {formatTokenAmount(swapAmounts?.minOutputAmount, toToken?.decimals, toToken?.symbol)}
           </ExchangeInfoRow>
@@ -1073,19 +1060,7 @@ export function ConfirmationBox(p: Props) {
             />
           )}
 
-          <TradeFeesRow
-            isTop
-            totalTradeFees={fees?.totalFees}
-            positionPriceImpact={fees?.positionPriceImpact}
-            swapPriceImpact={fees?.swapPriceImpact}
-            swapFees={fees?.swapFees}
-            positionFee={fees?.positionFee}
-            borrowFee={fees?.borrowFee}
-            fundingFee={fees?.fundingFee}
-            feeDiscountUsd={fees?.feeDiscountUsd}
-            executionFee={p.executionFee}
-            feesType="decrease"
-          />
+          <TradeFeesRow {...fees} isTop executionFee={p.executionFee} feesType="decrease" />
 
           {decreaseAmounts?.receiveUsd && (
             <ExchangeInfoRow

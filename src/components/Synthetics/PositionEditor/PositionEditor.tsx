@@ -163,17 +163,20 @@ export function PositionEditor(p: Props) {
       let nextCollateralUsd: BigNumber;
       let receiveUsd = BigNumber.from(0);
 
-      const remainingCollateralFeesUsd = fees.totalFees.deltaUsd.abs().sub(collateralDeltaUsd);
+      let remainingCollateralFeesUsd = fees.totalFees.deltaUsd.abs().sub(collateralDeltaUsd);
+      if (remainingCollateralFeesUsd.lt(0)) {
+        remainingCollateralFeesUsd = BigNumber.from(0);
+      }
 
       if (isDeposit) {
         const collateralDeltaAfterFeesUsd = collateralDeltaUsd.sub(fees.totalFees.deltaUsd.abs());
         nextCollateralUsd = position.initialCollateralUsd.add(collateralDeltaAfterFeesUsd);
       } else {
-        if (remainingCollateralFeesUsd.lte(0)) {
+        if (collateralDeltaUsd.gt(fees.totalFees.deltaUsd.abs())) {
           nextCollateralUsd = position.initialCollateralUsd.sub(collateralDeltaUsd);
           receiveUsd = collateralDeltaUsd.sub(fees.totalFees.deltaUsd.abs());
         } else {
-          nextCollateralUsd = position.initialCollateralUsd.sub(remainingCollateralFeesUsd);
+          nextCollateralUsd = position.initialCollateralUsd.sub(collateralDeltaUsd).sub(remainingCollateralFeesUsd);
           receiveUsd = BigNumber.from(0);
         }
       }
@@ -451,10 +454,8 @@ export function PositionEditor(p: Props) {
           </div>
 
           <TradeFeesRow
+            {...fees}
             executionFee={executionFee}
-            totalTradeFees={fees?.totalFees}
-            fundingFee={fees?.fundingFee}
-            borrowFee={fees?.borrowFee}
             feesType={"edit"}
             warning={
               remainingCollateralFeesUsd?.gt(0)

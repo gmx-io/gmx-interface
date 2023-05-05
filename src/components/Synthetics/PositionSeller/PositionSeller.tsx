@@ -429,19 +429,7 @@ export function PositionSeller(p: Props) {
                 value={position?.pnl ? formatDeltaUsd(position.pnl, position.pnlPercentage) : "..."}
               />
 
-              <TradeFeesRow
-                isTop
-                totalTradeFees={fees?.totalFees}
-                positionFee={fees?.positionFee}
-                positionPriceImpact={fees?.positionPriceImpact}
-                swapFees={fees?.swapFees}
-                swapPriceImpact={fees?.swapPriceImpact}
-                executionFee={executionFee}
-                borrowFee={fees?.borrowFee}
-                fundingFee={fees?.fundingFee}
-                feeDiscountUsd={fees?.feeDiscountUsd}
-                feesType="decrease"
-              />
+              <TradeFeesRow {...fees} isTop executionFee={executionFee} feesType="decrease" />
 
               <ExchangeInfoRow
                 isTop

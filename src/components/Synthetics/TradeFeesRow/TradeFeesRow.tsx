@@ -13,7 +13,7 @@ import { ReactNode, useMemo } from "react";
 import "./TradeFeesRow.scss";
 
 type Props = {
-  totalTradeFees?: FeeItem;
+  totalFees?: FeeItem;
   swapFees?: SwapFeeItem[];
   swapPriceImpact?: FeeItem;
   positionFee?: FeeItem;
@@ -202,8 +202,8 @@ export function TradeFeesRow(p: Props) {
   ]);
 
   const totalFeeUsd = useMemo(() => {
-    return p.totalTradeFees?.deltaUsd.sub(p.executionFee?.feeUsd || 0);
-  }, [p.executionFee, p.totalTradeFees]);
+    return p.totalFees?.deltaUsd.sub(p.executionFee?.feeUsd || 0);
+  }, [p.executionFee, p.totalFees]);
 
   const title = p.feesType === "edit" ? t`Fees` : t`Fees and Price Impact`;
 

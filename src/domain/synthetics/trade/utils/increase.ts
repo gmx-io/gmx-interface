@@ -6,7 +6,7 @@ import {
   getPriceImpactForPosition,
 } from "domain/synthetics/fees";
 import { MarketInfo } from "domain/synthetics/markets";
-import { PositionInfo, getLeverage, getLiquidationPrice } from "domain/synthetics/positions";
+import { PositionInfo, getLeverage, getLiquidationPrice, getPositionPendingFeesUsd } from "domain/synthetics/positions";
 import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber } from "ethers";
@@ -329,12 +329,19 @@ export function getNextPositionValuesForIncreaseTrade(p: {
     userReferralInfo,
   } = p;
 
-  const nextSizeUsd = existingPosition ? existingPosition.sizeInUsd.add(sizeDeltaUsd) : sizeDeltaUsd;
+  let nextCollateralUsd: BigNumber;
+  let remainingCollateralFeesUsd = BigNumber.from(0);
 
-  // TODO: initialCollateralInstread?
-  const nextCollateralUsd = existingPosition
-    ? existingPosition.remainingCollateralUsd.add(collateralDeltaUsd)
-    : collateralDeltaUsd;
+  if (existingPosition) {
+    const pendingFeesUsd = getPositionPendingFeesUsd(existingPosition);
+    const collateralDeltaAfterFeesUsd = collateralDeltaUsd.sub(pendingFeesUsd);
+    remainingCollateralFeesUsd = pendingFeesUsd.sub(collateralDeltaUsd);
+    nextCollateralUsd = existingPosition.initialCollateralUsd.add(collateralDeltaAfterFeesUsd);
+  } else {
+    nextCollateralUsd = collateralDeltaUsd;
+  }
+
+  const nextSizeUsd = existingPosition ? existingPosition.sizeInUsd.add(sizeDeltaUsd) : sizeDeltaUsd;
 
   const nextLeverage = getLeverage({
     sizeInUsd: nextSizeUsd,
@@ -347,14 +354,14 @@ export function getNextPositionValuesForIncreaseTrade(p: {
   const nextLiqPrice = getLiquidationPrice({
     sizeInUsd: nextSizeUsd,
     collateralUsd: nextCollateralUsd,
+    pnl: existingPosition?.pnl || BigNumber.from(0),
     markPrice: entryPrice,
     minCollateralFactor: marketInfo.minCollateralFactor,
     minCollateralUsd,
-    closingFeeUsd: getPositionFee(marketInfo, sizeDeltaUsd, userReferralInfo).positionFeeUsd,
+    closingFeeUsd: getPositionFee(marketInfo, nextSizeUsd, userReferralInfo).positionFeeUsd,
     maxPriceImpactFactor: marketInfo?.maxPositionImpactFactorForLiquidations,
     pendingBorrowingFeesUsd: BigNumber.from(0), // deducted on order
     pendingFundingFeesUsd: BigNumber.from(0), // deducted on order
-    pnl: existingPosition?.pnl || BigNumber.from(0),
     isLong: isLong,
   });
 
@@ -364,5 +371,6 @@ export function getNextPositionValuesForIncreaseTrade(p: {
     nextLeverage,
     nextLiqPrice,
     nextEntryPrice: entryPrice,
+    remainingCollateralFeesUsd,
   };
 }

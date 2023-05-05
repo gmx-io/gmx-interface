@@ -411,12 +411,12 @@ export function TradeBox(p: Props) {
       return getNextPositionValuesForIncreaseTrade({
         marketInfo,
         existingPosition,
-        sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
-        collateralDeltaUsd: increaseAmounts.collateralUsdAfterFees,
         isLong,
+        collateralDeltaUsd: increaseAmounts.collateralUsdAfterFees,
+        sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
         entryPrice: increaseAmounts.acceptablePrice,
-        minCollateralUsd,
         showPnlInLeverage: savedIsPnlInLeverage,
+        minCollateralUsd,
         userReferralInfo,
       });
     }
@@ -1319,20 +1319,7 @@ export function TradeBox(p: Props) {
           {isIncrease && renderIncreaseOrderInfo()}
           {isTrigger && renderTriggerOrderInfo()}
 
-          {feesType && (
-            <TradeFeesRow
-              totalTradeFees={fees?.totalFees}
-              swapFees={fees?.swapFees}
-              positionFee={fees?.positionFee}
-              swapPriceImpact={fees?.swapPriceImpact}
-              positionPriceImpact={fees?.positionPriceImpact}
-              borrowFee={fees?.borrowFee}
-              fundingFee={fees?.fundingFee}
-              executionFee={executionFee}
-              feeDiscountUsd={fees?.feeDiscountUsd}
-              feesType={feesType}
-            />
-          )}
+          {feesType && <TradeFeesRow {...fees} executionFee={executionFee} feesType={feesType} />}
         </div>
 
         <div className="Exchange-swap-button-container">

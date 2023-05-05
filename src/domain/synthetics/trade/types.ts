@@ -103,6 +103,7 @@ export type NextPositionValues = {
   nextPnl?: BigNumber;
   nextPnlPercentage?: BigNumber;
   nextEntryPrice?: BigNumber;
+  remainingCollateralFeesUsd?: BigNumber;
 };
 
 export type SwapStats = {
