@@ -4,6 +4,7 @@ import { ethers } from "ethers";
 import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 import useScrollToTop from "lib/useScrollToTop";
+import { HashRouter as Router } from "react-router-dom";
 
 import { Switch, Route, Redirect, useLocation, useHistory } from "react-router-dom";
 
@@ -660,9 +661,11 @@ function App() {
     <SWRConfig value={{ refreshInterval: 5000 }}>
       <Web3ReactProvider getLibrary={getLibrary}>
         <SEO>
-          <I18nProvider i18n={i18n}>
-            <FullApp />
-          </I18nProvider>
+          <Router>
+            <I18nProvider i18n={i18n}>
+              <FullApp />
+            </I18nProvider>
+          </Router>
         </SEO>
       </Web3ReactProvider>
     </SWRConfig>
