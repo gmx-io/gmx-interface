@@ -371,7 +371,7 @@ msgstr "残高"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Balance: {0}"
-msgstr "残高: {0}"
+msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"
@@ -2325,7 +2325,7 @@ msgstr "支払い額"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Pay: {0} USD"
-msgstr "支払う: {0} USD"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Platform and GLP index tokens."

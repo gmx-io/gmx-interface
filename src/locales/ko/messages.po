@@ -371,7 +371,7 @@ msgstr "잔고:"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Balance: {0}"
-msgstr "잔고: {0}"
+msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"
@@ -2325,7 +2325,7 @@ msgstr "지불액"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Pay: {0} USD"
-msgstr "지불: {0} USD"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Platform and GLP index tokens."

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import cx from "classnames";
 import "./BuyInputSection.css";
 import { Trans } from "@lingui/macro";
@@ -16,9 +16,16 @@ export default function BuyInputSection(props) {
     balance,
     tokenBalance,
   } = props;
+  const inputRef = useRef(null);
+
+  function handleBoxClick() {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }
 
   return (
-    <div className="Exchange-swap-section buy-input">
+    <div className="Exchange-swap-section buy-input" onClick={handleBoxClick}>
       <div className="Exchange-swap-section-top">
         <div className="muted">
           {topLeftLabel}: {balance}
@@ -40,6 +47,7 @@ export default function BuyInputSection(props) {
               className="Exchange-swap-input"
               value={inputValue}
               onChange={onInputValueChange}
+              ref={inputRef}
             />
           )}
           {staticInput && <div className="InputSection-static-input">{inputValue}</div>}

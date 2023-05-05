@@ -371,7 +371,7 @@ msgstr "Баланс:"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Balance: {0}"
-msgstr "Баланс: {0}"
+msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"
@@ -2325,7 +2325,7 @@ msgstr "Оплата Суммы"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Pay: {0} USD"
-msgstr "Оплата: {0} USD"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Platform and GLP index tokens."
