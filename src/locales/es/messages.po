@@ -50,7 +50,6 @@ msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which
 msgstr "<0>Liquidez insuficiente para ejecutar la orden</0><1>El precio de referencia, que es un agregado de precios de mercado, no alcanzó el precio especificado</1><2>Se alcanzó el precio especificado pero no lo suficiente como para ejecutarlo</2><3>Ningún guardián recogió la orden para ejecutarla</3>"
 
 #: src/components/Exchange/FeesTooltip.tsx
-#: src/components/Exchange/SwapBox.js
 msgid "<0>More Info</0> about fees."
 msgstr "<0>Más Info</0> acerca de las comisiones."
 
@@ -2158,7 +2157,6 @@ msgstr "Solo letras, números y guiones bajos están permitidos"
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/NetValueTooltip.tsx
-#: src/components/Exchange/SwapBox.js
 msgid "Open Fee"
 msgstr ""
 
@@ -2965,7 +2963,6 @@ msgid "Swap"
 msgstr "Intercambiar"
 
 #: src/components/Exchange/FeesTooltip.tsx
-#: src/components/Exchange/SwapBox.js
 msgid "Swap Fee"
 msgstr ""
 

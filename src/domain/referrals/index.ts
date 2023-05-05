@@ -1,9 +1,10 @@
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { gql } from "@apollo/client";
 import { useState, useEffect, useMemo } from "react";
 import useSWR from "swr";
 
 import ReferralStorage from "abis/ReferralStorage.json";
+import Timelock from "abis/Timelock.json";
 import { MAX_REFERRAL_CODE_LENGTH, isAddressZero, isHashZero } from "lib/legacy";
 import { getContract } from "config/contracts";
 import { REGEX_VERIFY_BYTES32 } from "components/Referrals/referralsHelper";
@@ -13,6 +14,7 @@ import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
 import { getProvider } from "lib/rpc";
+import { isAddress } from "ethers/lib/utils";
 
 export function getGraphClient(chainId) {
   if (chainId === ARBITRUM) {
@@ -121,6 +123,13 @@ export function useUserCodesOnAllChain(account) {
   return data;
 }
 
+export async function setAffiliateTier(chainId: number, affiliate: string, tierId: number, library, opts) {
+  const referralStorageAddress = getContract(chainId, "ReferralStorage");
+  const timelockAddress = getContract(chainId, "Timelock");
+  const contract = new ethers.Contract(timelockAddress, Timelock.abi, library.getSigner());
+  return callContract(chainId, contract, "setReferrerTier", [referralStorageAddress, affiliate, tierId], opts);
+}
+
 export async function registerReferralCode(chainId, referralCode, library, opts) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const referralCodeHex = encodeReferralCode(referralCode);
@@ -182,8 +191,9 @@ export function useUserReferralCode(library, chainId, account) {
 
 export function useReferrerTier(library, chainId, account) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const { data: referrerTier, mutate: mutateReferrerTier } = useSWR(
-    account && [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "referrerTiers", account],
+  const validAccount = useMemo(() => (isAddress(account) ? account : null), [account]);
+  const { data: referrerTier, mutate: mutateReferrerTier } = useSWR<BigNumber>(
+    validAccount && [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "referrerTiers", validAccount],
     {
       fetcher: contractFetcher(library, ReferralStorage),
     }

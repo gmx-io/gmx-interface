@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo } from "react";
+import React, { useCallback, useState, useMemo, useRef } from "react";
 import "./ConfirmationBox.css";
 import {
   USD_DECIMALS,
@@ -33,6 +33,7 @@ import { Plural, t, Trans } from "@lingui/macro";
 import Button from "components/Button/Button";
 import FeesTooltip from "./FeesTooltip";
 import { getTokenInfo, getUsd } from "domain/tokens";
+import { useKey } from "react-use";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 
@@ -120,6 +121,7 @@ export default function ConfirmationBox(props) {
     positionFee,
     swapFees,
     infoTokens,
+    fundingRate,
   } = props;
 
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
@@ -600,17 +602,6 @@ export default function ConfirmationBox(props) {
 
   const renderMarginSection = useCallback(() => {
     const collateralToken = getToken(chainId, collateralTokenAddress);
-    function getFundingFee() {
-      return (
-        <>
-          {isLong && toTokenInfo && formatAmount(toTokenInfo.fundingRate, 4, 4)}
-          {isShort && shortCollateralToken && formatAmount(shortCollateralToken.fundingRate, 4, 4)}
-          {((isLong && toTokenInfo && toTokenInfo.fundingRate) ||
-            (isShort && shortCollateralToken && shortCollateralToken.fundingRate)) &&
-            "% / 1h"}
-        </>
-      );
-    }
     return (
       <>
         <div>
@@ -714,11 +705,10 @@ export default function ConfirmationBox(props) {
           </ExchangeInfoRow>
           <ExchangeInfoRow label={t`Fees`}>
             <FeesTooltip
-              totalFees={currentExecutionFeeUsd.add(feesUsd)}
-              fundingFee={getFundingFee()}
+              fundingRate={fundingRate}
               executionFees={{
                 fee: currentExecutionFee,
-                feeUSD: currentExecutionFeeUsd,
+                feeUsd: currentExecutionFeeUsd,
               }}
               positionFee={positionFee}
               swapFee={swapFees}
@@ -739,9 +729,6 @@ export default function ConfirmationBox(props) {
     );
   }, [
     renderMain,
-    isShort,
-    isLong,
-    toTokenInfo,
     nextAveragePrice,
     toAmount,
     hasExistingPosition,
@@ -752,7 +739,6 @@ export default function ConfirmationBox(props) {
     existingLiquidationPrice,
     feesUsd,
     leverage,
-    shortCollateralToken,
     chainId,
     renderFeeWarning,
     hasPendingProfit,
@@ -779,6 +765,7 @@ export default function ConfirmationBox(props) {
     renderCollateralSpreadWarning,
     collateralSpreadInfo,
     showCollateralSpread,
+    fundingRate,
   ]);
 
   const renderSwapSection = useCallback(() => {
@@ -824,11 +811,12 @@ export default function ConfirmationBox(props) {
         )}
         <ExchangeInfoRow label={t`Fees`} isTop>
           <FeesTooltip
-            totalFees={currentExecutionFeeUsd.add(feesUsd)}
-            executionFees={{
-              fee: currentExecutionFee,
-              feeUSD: currentExecutionFeeUsd,
-            }}
+            executionFees={
+              !isMarketOrder && {
+                fee: currentExecutionFee,
+                feeUsd: currentExecutionFeeUsd,
+              }
+            }
             swapFee={feesUsd}
           />
         </ExchangeInfoRow>
@@ -858,18 +846,24 @@ export default function ConfirmationBox(props) {
     currentExecutionFee,
     currentExecutionFeeUsd,
   ]);
+  const submitButtonRef = useRef(null);
+  useKey("Enter", () => {
+    submitButtonRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+    onConfirmationClick();
+  });
 
   return (
     <div className="Confirmation-box">
       <Modal isVisible={true} setIsVisible={() => setIsConfirming(false)} label={title}>
         {isSwap && renderSwapSection()}
         {!isSwap && renderMarginSection()}
-        <div className="Confirmation-box-row">
+        <div className="Confirmation-box-row" ref={submitButtonRef}>
           <Button
             variant="primary-action"
             onClick={onConfirmationClick}
             className="w-100 mt-sm"
             disabled={!isPrimaryEnabled()}
+            type="submit"
           >
             {getPrimaryText()}
           </Button>
