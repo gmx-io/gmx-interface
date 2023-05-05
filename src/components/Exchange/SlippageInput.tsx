@@ -6,7 +6,7 @@ import { formatAmount } from "lib/numbers";
 const MAX_SLIPPAGE = 99 * 100;
 const HIGH_SLIPPAGE = 2 * 100;
 const SLIPPAGE_SUGGESTION_LISTS = [0.3, 0.5, 1, 1.5];
-const validDecimalRegex = /^(?=.*\d)\d*\.?\d*$/;
+const validDecimalRegex = /^\d+(\.\d{0,2})?$/; // 0.00 ~ 99.99
 
 function getSlippageText(value: number) {
   return formatAmount(value, 2, 2).replace(/0+$/, "");
@@ -58,13 +58,16 @@ export default function SlippageInput({ setAllowedSlippage, defaultSlippage }: P
     <div className="Slippage-input-wrapper">
       <div className={cx("Slippage-input", { "input-error": slippageError })}>
         <input
+          id="slippage-input"
           onFocus={() => setIsPanelVisible(true)}
           onBlur={() => setIsPanelVisible(false)}
           value={!!slippageText ? slippageText : ""}
           placeholder={slippageText || defaultSlippageText}
           onChange={handleChange}
         />
-        <span>%</span>
+        <label htmlFor="slippage-input">
+          <span>%</span>
+        </label>
       </div>
       {isPanelVisible && (
         <ul className="Slippage-list">
