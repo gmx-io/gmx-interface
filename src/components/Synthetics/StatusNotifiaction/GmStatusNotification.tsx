@@ -1,6 +1,7 @@
 import { t } from "@lingui/macro";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
 import { convertTokenAddress } from "config/tokens";
+import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import {
   PendingDepositData,
   PendingWithdrawalData,
@@ -13,8 +14,10 @@ import { TokenData, TokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import { useEffect, useMemo, useState } from "react";
+import { toast } from "react-toastify";
 
 export type Props = {
+  toastId: number;
   pendingDepositData?: PendingDepositData;
   pendingWithdrawalData?: PendingWithdrawalData;
   marketsInfoData?: MarketsInfoData;
@@ -22,13 +25,14 @@ export type Props = {
 };
 
 export function GmStatusNotification({
+  toastId,
   pendingDepositData,
   pendingWithdrawalData,
   marketsInfoData,
   tokensData,
 }: Props) {
   const { chainId } = useChainId();
-  const { depositStatuses, withdrawalStatuses, touchDepositStatus, touchWithdrawalStatus } = useSyntheticsEvents();
+  const { depositStatuses, withdrawalStatuses } = useSyntheticsEvents();
 
   const isDeposit = Boolean(pendingDepositData);
 
@@ -37,6 +41,10 @@ export function GmStatusNotification({
 
   const depositStatus = getByKey(depositStatuses, depositStatusKey);
   const withdrawalStatus = getByKey(withdrawalStatuses, withdrawalStatusKey);
+
+  const isCompleted = isDeposit
+    ? depositStatus?.executedTxnHash || depositStatus?.cancelledTxnHash
+    : withdrawalStatus?.executedTxnHash || withdrawalStatus?.cancelledTxnHash;
 
   const pendingDepositKey = useMemo(() => {
     if (pendingDepositData) {
@@ -180,12 +188,11 @@ export function GmStatusNotification({
         }
 
         const matchedStatusKey = Object.values(depositStatuses).find(
-          (status) => !status.isTouched && getPendingDepositKey(status.data) === pendingDepositKey
+          (status) => status.createdAt > toastId && getPendingDepositKey(status.data) === pendingDepositKey
         )?.key;
 
         if (matchedStatusKey) {
           setDepositStatusKey(matchedStatusKey);
-          touchDepositStatus(matchedStatusKey);
         }
       } else {
         if (withdrawalStatusKey) {
@@ -193,12 +200,11 @@ export function GmStatusNotification({
         }
 
         const matchedStatusKey = Object.values(withdrawalStatuses).find(
-          (status) => !status.isTouched && getPendingWithdrawalKey(status.data) === pendingWithdrawalKey
+          (status) => status.createdAt > toastId && getPendingWithdrawalKey(status.data) === pendingWithdrawalKey
         )?.key;
 
         if (matchedStatusKey) {
           setWithdrawalStatusKey(matchedStatusKey);
-          touchWithdrawalStatus(matchedStatusKey);
         }
       }
     },
@@ -208,11 +214,27 @@ export function GmStatusNotification({
       isDeposit,
       pendingDepositKey,
       pendingWithdrawalKey,
-      touchDepositStatus,
-      touchWithdrawalStatus,
+      toastId,
       withdrawalStatusKey,
       withdrawalStatuses,
     ]
+  );
+
+  useEffect(
+    function autoClose() {
+      let timerId;
+
+      if (isCompleted) {
+        timerId = setTimeout(() => {
+          toast.dismiss(toastId);
+        }, TOAST_AUTO_CLOSE_TIME);
+      }
+
+      return () => {
+        clearTimeout(timerId);
+      };
+    },
+    [isCompleted, toastId]
   );
 
   return (

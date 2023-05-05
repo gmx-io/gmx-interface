@@ -8,9 +8,6 @@ export type SyntheticsEventsContextType = {
   pendingPositionsUpdates: PendingPositionsUpdates;
   positionIncreaseEvents: PositionIncreaseEvent[];
   positionDecreaseEvents: PositionDecreaseEvent[];
-  touchOrderStatus: (key: string) => void;
-  touchDepositStatus: (key: string) => void;
-  touchWithdrawalStatus: (key: string) => void;
   setPendingOrder: SetPendingOrder;
   setPendingPosition: SetPendingPosition;
   setPendingDeposit: SetPendingDeposit;
@@ -119,7 +116,7 @@ export type MultiTransactionStatus<TEventData> = {
   createdTxnHash: string;
   cancelledTxnHash?: string;
   executedTxnHash?: string;
-  isTouched?: boolean;
+  createdAt: number;
 };
 
 export type OrderStatus = MultiTransactionStatus<OrderCreatedEventData>;

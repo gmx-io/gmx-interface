@@ -107,6 +107,7 @@ import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsFallbackPage";
 import Button from "components/Button/Button";
+import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -580,7 +581,7 @@ function FullApp() {
         limit={1}
         transition={Zoom}
         position="bottom-right"
-        autoClose={7000}
+        autoClose={TOAST_AUTO_CLOSE_TIME}
         hideProgressBar={true}
         newestOnTop={false}
         closeOnClick={false}

@@ -47,8 +47,6 @@ import { useAvailableTokensData } from "domain/synthetics/tokens";
 
 export const SyntheticsEventsContext = createContext({});
 
-const STATUS_NOTIFIACTION_DURATION = 60 * 1000;
-
 export function SyntheticsEventsProvider({ children }: { children: ReactNode }) {
   const { chainId } = useChainId();
   const { active, account: currentAccount } = useWeb3React();
@@ -96,7 +94,12 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       }
 
       setOrderStatuses((old) =>
-        setByKey(old, data.key, { key: data.key, data, createdTxnHash: txnParams.transactionHash })
+        setByKey(old, data.key, {
+          key: data.key,
+          data,
+          createdTxnHash: txnParams.transactionHash,
+          createdAt: Date.now(),
+        })
       );
     },
 
@@ -180,6 +183,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           key: depositData.key,
           data: depositData,
           createdTxnHash: txnParams.transactionHash,
+          createdAt: Date.now(),
         })
       );
     },
@@ -220,7 +224,12 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       }
 
       setWithdrawalStatuses((old) =>
-        setByKey(old, data.key, { key: data.key, data, createdTxnHash: txnParams.transactionHash })
+        setByKey(old, data.key, {
+          key: data.key,
+          data,
+          createdTxnHash: txnParams.transactionHash,
+          createdAt: Date.now(),
+        })
       );
     },
 
@@ -389,27 +398,14 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       }
 
       function handleEventLog(sender, eventName, eventNameHash, eventData, txnOpts) {
-        if (isDevelopment()) {
-          // eslint-disable-next-line no-console
-          console.log("handleEventLog", sender, eventName, eventNameHash, eventData, txnOpts);
-        }
         eventLogHandlers.current[eventName]?.(parseEventLogData(eventData), txnOpts);
       }
 
       function handleEventLog1(sender, eventName, eventNameHash, topic1, eventData, txnOpts) {
-        if (isDevelopment()) {
-          // eslint-disable-next-line no-console
-          console.log("handleEventLog1", sender, eventName, eventNameHash, topic1, eventData, txnOpts);
-        }
-
         eventLogHandlers.current[eventName]?.(parseEventLogData(eventData), txnOpts);
       }
 
       function handleEventLog2(msgSender, eventName, eventNameHash, topic1, topic2, eventData, txnOpts) {
-        if (isDevelopment()) {
-          // eslint-disable-next-line no-console
-          console.log("handleEventLog2", msgSender, eventNameHash, eventName, topic1, topic2, eventData, txnOpts);
-        }
         eventLogHandlers.current[eventName]?.(parseEventLogData(eventData), txnOpts);
       }
 
@@ -446,40 +442,51 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       pendingPositionsUpdates,
       positionIncreaseEvents,
       positionDecreaseEvents,
-      touchOrderStatus: (key: string) => {
-        setOrderStatuses((old) => updateByKey(old, key, { isTouched: true }));
-      },
-      touchDepositStatus: (key: string) => {
-        setDepositStatuses((old) => updateByKey(old, key, { isTouched: true }));
-      },
-      touchWithdrawalStatus: (key: string) => {
-        setWithdrawalStatuses((old) => updateByKey(old, key, { isTouched: true }));
-      },
       setPendingOrder: (data: PendingOrderData) => {
+        const toastId = Date.now();
+
         helperToast.info(
-          <OrderStatusNotification pendingOrderData={data} marketsInfoData={marketsInfoData} tokensData={tokensData} />,
+          <OrderStatusNotification
+            pendingOrderData={data}
+            marketsInfoData={marketsInfoData}
+            tokensData={tokensData}
+            toastId={toastId}
+          />,
           {
-            autoClose: STATUS_NOTIFIACTION_DURATION,
+            autoClose: false,
+            toastId,
           }
         );
       },
       setPendingDeposit: (data: PendingDepositData) => {
+        const toastId = Date.now();
+
         helperToast.info(
-          <GmStatusNotification pendingDepositData={data} marketsInfoData={marketsInfoData} tokensData={tokensData} />,
+          <GmStatusNotification
+            pendingDepositData={data}
+            marketsInfoData={marketsInfoData}
+            tokensData={tokensData}
+            toastId={toastId}
+          />,
           {
-            autoClose: STATUS_NOTIFIACTION_DURATION,
+            autoClose: false,
+            toastId,
           }
         );
       },
       setPendingWithdrawal: (data: PendingWithdrawalData) => {
+        const toastId = Date.now();
+
         helperToast.info(
           <GmStatusNotification
             pendingWithdrawalData={data}
             marketsInfoData={marketsInfoData}
             tokensData={tokensData}
+            toastId={toastId}
           />,
           {
-            autoClose: STATUS_NOTIFIACTION_DURATION,
+            autoClose: false,
+            toastId,
           }
         );
       },

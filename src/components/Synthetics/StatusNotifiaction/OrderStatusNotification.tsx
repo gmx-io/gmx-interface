@@ -17,22 +17,26 @@ import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useEffect, useMemo, useState } from "react";
 import "./StatusNotification.scss";
+import { toast } from "react-toastify";
+import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 
 type Props = {
+  toastId: number;
   pendingOrderData: PendingOrderData;
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
 };
 
-export function OrderStatusNotification({ pendingOrderData, marketsInfoData, tokensData }: Props) {
+export function OrderStatusNotification({ pendingOrderData, marketsInfoData, tokensData, toastId }: Props) {
   const { chainId } = useChainId();
   const wrappedNativeToken = getWrappedToken(chainId);
-  const { orderStatuses, touchOrderStatus } = useSyntheticsEvents();
+  const { orderStatuses } = useSyntheticsEvents();
 
   const [orderStatusKey, setOrderStatusKey] = useState<string>();
 
   const pendingOrderKey = useMemo(() => getPendingOrderKey(pendingOrderData), [pendingOrderData]);
   const orderStatus = getByKey(orderStatuses, orderStatusKey);
+  const isCompleted = orderStatus?.executedTxnHash || orderStatus?.cancelledTxnHash;
 
   const orderData = useMemo(() => {
     if (!marketsInfoData || !orderStatuses || !tokensData || !wrappedNativeToken) {
@@ -164,15 +168,31 @@ export function OrderStatusNotification({ pendingOrderData, marketsInfoData, tok
       }
 
       const matchedStatusKey = Object.values(orderStatuses).find(
-        (orderStatus) => !orderStatus.isTouched && getPendingOrderKey(orderStatus.data) === pendingOrderKey
+        (orderStatus) => orderStatus.createdAt > toastId && getPendingOrderKey(orderStatus.data) === pendingOrderKey
       )?.key;
 
       if (matchedStatusKey) {
         setOrderStatusKey(matchedStatusKey);
-        touchOrderStatus(matchedStatusKey);
       }
     },
-    [orderStatus, orderStatusKey, orderStatuses, pendingOrderKey, touchOrderStatus]
+    [orderStatus, orderStatusKey, orderStatuses, pendingOrderKey, toastId]
+  );
+
+  useEffect(
+    function autoClose() {
+      let timerId;
+
+      if (isCompleted) {
+        timerId = setTimeout(() => {
+          toast.dismiss(toastId);
+        }, TOAST_AUTO_CLOSE_TIME);
+      }
+
+      return () => {
+        clearTimeout(timerId);
+      };
+    },
+    [isCompleted, toastId]
   );
 
   return (
