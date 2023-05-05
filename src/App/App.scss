@@ -1120,6 +1120,14 @@ button.App-button {
   background: linear-gradient(45deg, rgba(115, 30, 43, 1) 0%, rgba(174, 43, 63, 1) 100%);
 }
 
+.waring {
+  color: rgb(243, 181, 12);
+}
+
+.warning-decoration {
+  text-decoration-color: rgb(243, 181, 12);
+}
+
 .App-warning,
 .App-warning a {
   color: #f037b5;

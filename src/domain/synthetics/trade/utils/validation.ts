@@ -329,27 +329,27 @@ export function getEditCollateralError(p: {
     nextLeverage,
     nextLiqPrice,
     position,
-    isDeposit,
   } = p;
 
-  if (!collateralDeltaAmount || collateralDeltaAmount.eq(0)) {
-    return [t`Enter an amount`];
-  }
-
-  if (collateralDeltaAmount.lte(0)) {
+  if (collateralDeltaAmount?.lte(0)) {
     return [t`Amount should be greater than zero`];
   }
 
-  if (!isDeposit && nextCollateralUsd && minCollateralUsd) {
+  if (!collateralDeltaAmount?.gt(0) || !collateralDeltaUsd?.gt(0)) {
+    return [t`Enter an amount`];
+  }
+
+  if (nextCollateralUsd && minCollateralUsd) {
     if (nextCollateralUsd.lt(minCollateralUsd)) {
       return [t`Min residual collateral: ${formatAmount(minCollateralUsd, USD_DECIMALS, 2)} USD`];
     }
   }
 
-  if (!isDeposit && collateralDeltaUsd && nextLiqPrice && position?.markPrice) {
+  if (nextLiqPrice && position?.markPrice) {
     if (position?.isLong && position?.markPrice.lt(nextLiqPrice)) {
       return [t`Invalid liq. price`];
     }
+
     if (!position.isLong && position.markPrice.gt(nextLiqPrice)) {
       return [t`Invalid liq. price`];
     }

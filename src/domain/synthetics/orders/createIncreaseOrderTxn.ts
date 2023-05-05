@@ -30,6 +30,7 @@ type IncreaseOrderParams = {
   orderType: OrderType.MarketIncrease | OrderType.LimitIncrease;
   executionFee: BigNumber;
   allowedSlippage: number;
+  skipSimulation?: boolean;
   referralCode: string | undefined;
   indexToken: TokenData;
   tokensData: TokensData;
@@ -112,13 +113,15 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
     };
   }
 
-  await simulateExecuteOrderTxn(chainId, library, {
-    tokensData: p.tokensData,
-    primaryPriceOverrides,
-    secondaryPriceOverrides,
-    createOrderMulticallPayload: encodedPayload,
-    value: totalWntAmount,
-  });
+  if (!p.skipSimulation) {
+    await simulateExecuteOrderTxn(chainId, library, {
+      tokensData: p.tokensData,
+      primaryPriceOverrides,
+      secondaryPriceOverrides,
+      createOrderMulticallPayload: encodedPayload,
+      value: totalWntAmount,
+    });
+  }
 
   const txn = await callContract(chainId, exchangeRouter, "multicall", [encodedPayload], {
     value: totalWntAmount,

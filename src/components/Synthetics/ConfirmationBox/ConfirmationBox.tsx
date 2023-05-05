@@ -386,6 +386,7 @@ export function ConfirmationBox(p: Props) {
       referralCode: userReferralCode,
       indexToken: marketInfo.indexToken,
       tokensData,
+      skipSimulation: isLimit,
       setPendingTxns: p.setPendingTxns,
       setPendingOrder,
       setPendingPosition,

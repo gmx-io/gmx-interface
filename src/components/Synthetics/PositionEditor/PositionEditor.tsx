@@ -154,74 +154,77 @@ export function PositionEditor(p: Props) {
     };
   }, [chainId, collateralDeltaUsd, gasLimits, gasPrice, isDeposit, position, tokensData]);
 
-  const { nextCollateralUsd, nextLeverage, nextLiqPrice, receiveUsd, receiveAmount } = useMemo(() => {
-    if (!collateralDeltaUsd?.gt(0) || !minCollateralUsd || !fees?.totalFees) {
-      return {};
-    }
-
-    let nextCollateralUsd: BigNumber;
-    let receiveUsd = BigNumber.from(0);
-
-    if (isDeposit) {
-      const collateralDeltaAfterFeesUsd = collateralDeltaUsd.sub(fees.totalFees.deltaUsd.abs());
-      nextCollateralUsd = position.initialCollateralUsd.add(collateralDeltaAfterFeesUsd);
-    } else {
-      if (collateralDeltaUsd.gt(fees.totalFees.deltaUsd.abs())) {
-        nextCollateralUsd = position.initialCollateralUsd.sub(collateralDeltaUsd);
-        receiveUsd = collateralDeltaUsd.sub(fees.totalFees.deltaUsd.abs());
-      } else {
-        receiveUsd = BigNumber.from(0);
-        const remainingFeesUsd = fees.totalFees.deltaUsd.abs().sub(collateralDeltaUsd);
-        nextCollateralUsd = position.initialCollateralUsd.sub(remainingFeesUsd);
+  const { nextCollateralUsd, nextLeverage, nextLiqPrice, receiveUsd, receiveAmount, remainingCollateralFeesUsd } =
+    useMemo(() => {
+      if (!collateralDeltaUsd?.gt(0) || !minCollateralUsd || !fees?.totalFees) {
+        return {};
       }
-    }
 
-    const receiveAmount = convertToTokenAmount(receiveUsd, collateralToken?.decimals, collateralPrice)!;
+      let nextCollateralUsd: BigNumber;
+      let receiveUsd = BigNumber.from(0);
 
-    if (nextCollateralUsd?.lt(0)) {
-      nextCollateralUsd = BigNumber.from(0);
-    }
+      const remainingCollateralFeesUsd = fees.totalFees.deltaUsd.abs().sub(collateralDeltaUsd);
 
-    const nextLeverage = getLeverage({
-      sizeInUsd: position.sizeInUsd,
-      collateralUsd: nextCollateralUsd,
-      pendingBorrowingFeesUsd: BigNumber.from(0),
-      pendingFundingFeesUsd: BigNumber.from(0),
-      pnl: showPnlInLeverage ? position.pnl : BigNumber.from(0),
-    });
+      if (isDeposit) {
+        const collateralDeltaAfterFeesUsd = collateralDeltaUsd.sub(fees.totalFees.deltaUsd.abs());
+        nextCollateralUsd = position.initialCollateralUsd.add(collateralDeltaAfterFeesUsd);
+      } else {
+        if (remainingCollateralFeesUsd.lte(0)) {
+          nextCollateralUsd = position.initialCollateralUsd.sub(collateralDeltaUsd);
+          receiveUsd = collateralDeltaUsd.sub(fees.totalFees.deltaUsd.abs());
+        } else {
+          nextCollateralUsd = position.initialCollateralUsd.sub(remainingCollateralFeesUsd);
+          receiveUsd = BigNumber.from(0);
+        }
+      }
 
-    const nextLiqPrice = getLiquidationPrice({
-      sizeInUsd: position.sizeInUsd,
-      collateralUsd: nextCollateralUsd,
-      pnl: position.pnl,
-      markPrice: position.markPrice,
-      closingFeeUsd: getPositionFee(position.marketInfo, position.sizeInUsd, userReferralInfo).positionFeeUsd,
-      maxPriceImpactFactor: position.marketInfo.maxPositionImpactFactorForLiquidations,
-      pendingFundingFeesUsd: BigNumber.from(0),
-      pendingBorrowingFeesUsd: BigNumber.from(0),
-      minCollateralFactor: position.marketInfo.minCollateralFactor,
+      const receiveAmount = convertToTokenAmount(receiveUsd, collateralToken?.decimals, collateralPrice)!;
+
+      if (nextCollateralUsd?.lt(0)) {
+        nextCollateralUsd = BigNumber.from(0);
+      }
+
+      const nextLeverage = getLeverage({
+        sizeInUsd: position.sizeInUsd,
+        collateralUsd: nextCollateralUsd,
+        pendingBorrowingFeesUsd: BigNumber.from(0),
+        pendingFundingFeesUsd: BigNumber.from(0),
+        pnl: showPnlInLeverage ? position.pnl : BigNumber.from(0),
+      });
+
+      const nextLiqPrice = getLiquidationPrice({
+        sizeInUsd: position.sizeInUsd,
+        collateralUsd: nextCollateralUsd,
+        pnl: position.pnl,
+        markPrice: position.markPrice,
+        closingFeeUsd: getPositionFee(position.marketInfo, position.sizeInUsd, userReferralInfo).positionFeeUsd,
+        maxPriceImpactFactor: position.marketInfo.maxPositionImpactFactorForLiquidations,
+        pendingFundingFeesUsd: BigNumber.from(0),
+        pendingBorrowingFeesUsd: BigNumber.from(0),
+        minCollateralFactor: position.marketInfo.minCollateralFactor,
+        minCollateralUsd,
+        isLong: position.isLong,
+      });
+
+      return {
+        nextCollateralUsd,
+        nextLeverage,
+        nextLiqPrice,
+        receiveUsd,
+        receiveAmount,
+        remainingCollateralFeesUsd,
+      };
+    }, [
+      collateralDeltaUsd,
+      collateralPrice,
+      collateralToken,
+      fees,
+      isDeposit,
       minCollateralUsd,
-      isLong: position.isLong,
-    });
-
-    return {
-      nextCollateralUsd,
-      nextLeverage,
-      nextLiqPrice,
-      receiveUsd,
-      receiveAmount,
-    };
-  }, [
-    collateralDeltaUsd,
-    collateralPrice,
-    collateralToken,
-    fees,
-    isDeposit,
-    minCollateralUsd,
-    position,
-    showPnlInLeverage,
-    userReferralInfo,
-  ]);
+      position,
+      showPnlInLeverage,
+      userReferralInfo,
+    ]);
 
   const error = useMemo(() => {
     const commonError = getCommonError({
@@ -343,6 +346,8 @@ export function PositionEditor(p: Props) {
     [Operation.Withdraw]: t`Withdraw`,
   };
 
+  const depositWithdrawalText = isDeposit ? t`deposit` : t`withdrawal`;
+
   return (
     <div className="PositionEditor">
       <Modal
@@ -451,6 +456,13 @@ export function PositionEditor(p: Props) {
             fundingFee={fees?.fundingFee}
             borrowFee={fees?.borrowFee}
             feesType={"edit"}
+            warning={
+              remainingCollateralFeesUsd?.gt(0)
+                ? t`Remaining ${formatUsd(
+                    remainingCollateralFeesUsd
+                  )} fees will be deducted from the position collateral since the ${depositWithdrawalText} amount is not sufficient.`
+                : ""
+            }
           />
 
           {!isDeposit && (

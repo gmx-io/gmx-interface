@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { t } from "@lingui/macro";
 import cx from "classnames";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -26,6 +26,7 @@ type Props = {
   feeDiscountUsd?: BigNumber;
   isTop?: boolean;
   feesType: TradeFeesType;
+  warning?: string;
 };
 
 type FeeRow = {
@@ -204,10 +205,24 @@ export function TradeFeesRow(p: Props) {
     return p.totalTradeFees?.deltaUsd.sub(p.executionFee?.feeUsd || 0);
   }, [p.executionFee, p.totalTradeFees]);
 
+  const title = p.feesType === "edit" ? t`Fees` : t`Fees and Price Impact`;
+
   return (
     <ExchangeInfoRow
+      className="TradeFeesRow"
       isTop={p.isTop}
-      label={p.feesType === "edit" ? <Trans>Fees</Trans> : <Trans>Fees and Price Impact</Trans>}
+      label={
+        p.warning ? (
+          <Tooltip
+            position="left-top"
+            className="TradeFeesRow-warning-tooltip"
+            handle={title}
+            renderContent={() => p.warning}
+          />
+        ) : (
+          title
+        )
+      }
       value={
         <>
           {!totalFeeUsd || totalFeeUsd.eq(0) ? (
