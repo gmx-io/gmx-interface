@@ -3748,6 +3748,10 @@ msgstr "推荐人"
 msgid "Referrals <0/>"
 msgstr ""
 
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+msgid "Remaining {0} fees will be deducted from the position collateral since the {depositWithdrawalText} amount is not sufficient."
+msgstr ""
+
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "Request"
@@ -5493,6 +5497,10 @@ msgstr "帐户"
 msgid "collateral"
 msgstr "抵押品"
 
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+msgid "deposit"
+msgstr ""
+
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "fee"
 msgstr "费用"
@@ -5526,6 +5534,10 @@ msgstr "流动性时间将至"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "view"
 msgstr "查看"
+
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+msgid "withdrawal"
+msgstr ""
 
 #: src/pages/Exchange/Exchange.js
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
