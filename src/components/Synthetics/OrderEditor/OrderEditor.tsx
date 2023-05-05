@@ -293,8 +293,8 @@ export function OrderEditor(p: Props) {
     updateOrderTxn(chainId, library, {
       orderKey: p.order.key,
       sizeDeltaUsd: sizeDeltaUsd || positionOrder.sizeDeltaUsd,
-      triggerPrice: triggerPrice || positionOrder.triggerPrice!,
-      acceptablePrice: acceptablePrice || positionOrder.contractAcceptablePrice!,
+      triggerPrice: triggerPrice || positionOrder.triggerPrice,
+      acceptablePrice: acceptablePrice || positionOrder.acceptablePrice,
       minOutputAmount: minOutputAmount || p.order.minOutputAmount,
       executionFee: executionFee?.feeTokenAmount,
       indexToken: indexToken,

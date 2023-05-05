@@ -142,7 +142,7 @@ export function getIncreasePositionAmountsByCollateral(p: {
   acceptablePrice = acceptablePriceInfo?.acceptablePrice;
   acceptablePriceImpactBps = acceptablePriceInfo?.acceptablePriceImpactBps;
 
-  sizeDeltaInTokens = convertToTokenAmount(sizeDeltaUsd, indexToken.decimals, entryPrice)!;
+  sizeDeltaInTokens = convertToTokenAmount(sizeDeltaUsd, indexToken.decimals, acceptablePrice)!;
 
   return {
     initialCollateralAmount,
@@ -201,7 +201,7 @@ export function getIncreasePositionAmountsBySizeDelta(p: {
   const initialCollateralPrice = initialCollateralToken.prices.minPrice;
   const collateralPrice = collateralToken.prices.maxPrice;
 
-  const sizeDeltaUsd = convertToUsd(sizeDeltaInTokens, indexToken.decimals, entryPrice)!;
+  let sizeDeltaUsd = convertToUsd(sizeDeltaInTokens, indexToken.decimals, entryPrice)!;
 
   const positionFee = getPositionFee(marketInfo, sizeDeltaUsd, userReferralInfo);
   const positionFeeUsd = positionFee.positionFeeUsd;
@@ -223,6 +223,8 @@ export function getIncreasePositionAmountsBySizeDelta(p: {
     // TODO separate to 2 functions?
     acceptablePriceImpactBps: isLimit ? savedAcceptablePriceImpactBps : undefined,
   });
+
+  sizeDeltaUsd = convertToUsd(sizeDeltaInTokens, indexToken.decimals, acceptablePrice)!;
 
   let initialCollateralAmount = BigNumber.from(0);
   let initialCollateralUsd = BigNumber.from(0);

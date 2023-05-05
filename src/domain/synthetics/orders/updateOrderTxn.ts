@@ -48,8 +48,8 @@ export function updateOrderTxn(chainId: number, library: Web3Provider, p: Update
     params: [
       orderKey,
       sizeDeltaUsd,
-      convertToContractPrice(triggerPrice, indexToken?.decimals || 0),
       convertToContractPrice(acceptablePrice, indexToken?.decimals || 0),
+      convertToContractPrice(triggerPrice, indexToken?.decimals || 0),
       minOutputAmount,
     ],
   });
