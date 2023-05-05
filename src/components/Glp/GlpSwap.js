@@ -44,7 +44,7 @@ import "./GlpSwap.css";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import SwapErrorModal from "./SwapErrorModal";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
-import { ARBITRUM, FEES_HIGH_BPS, getChainName, IS_NETWORK_DISABLED } from "config/chains";
+import { ARBITRUM, getChainName, IS_NETWORK_DISABLED } from "config/chains";
 import { callContract, contractFetcher } from "lib/contracts";
 import { approveTokens, useInfoTokens } from "domain/tokens";
 import { useLocalStorageByChainId } from "lib/localStorage";
@@ -142,7 +142,7 @@ export default function GlpSwap(props) {
   const tokensForBalanceAndSupplyQuery = [stakedGlpTrackerAddress, usdgAddress];
   const glpIcon = getIcon(chainId, "glp");
 
-  const isFeesHigh = feeBasisPoints > FEES_HIGH_BPS;
+  // const isFeesHigh = feeBasisPoints > FEES_HIGH_BPS;
 
   const tokenAddresses = tokens.map((token) => token.address);
   const { data: tokenBalances } = useSWR(
@@ -911,7 +911,7 @@ export default function GlpSwap(props) {
 
             <div>
               <div className="Exchange-info-row">
-                <div className="Exchange-info-label">{isFeesHigh ? t`WARNING: High Fees` : t`Fees`}</div>
+                {/* <div className="Exchange-info-label">{isFeesHigh ? t`WARNING: High Fees` : t`Fees`}</div> */}
                 <div className="align-right fee-block">
                   {isBuying && (
                     <Tooltip
@@ -927,7 +927,7 @@ export default function GlpSwap(props) {
                         }
                         return (
                           <div className="text-white">
-                            {isFeesHigh && <Trans>To reduce fees, select a different asset to pay with.</Trans>}
+                            {/* {isFeesHigh && <Trans>To reduce fees, select a different asset to pay with.</Trans>} */}
                             <Trans>Check the "Save on Fees" section below to get the lowest fee percentages.</Trans>
                           </div>
                         );
@@ -948,7 +948,7 @@ export default function GlpSwap(props) {
                         }
                         return (
                           <div className="text-white">
-                            {isFeesHigh && <Trans>To reduce fees, select a different asset to receive.</Trans>}
+                            {/* {isFeesHigh && <Trans>To reduce fees, select a different asset to receive.</Trans>} */}
                             <Trans>Check the "Save on Fees" section below to get the lowest fee percentages.</Trans>
                           </div>
                         );
