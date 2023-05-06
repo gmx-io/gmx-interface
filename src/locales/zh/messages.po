@@ -360,6 +360,7 @@ msgid "Avalanche APR:"
 msgstr "Avalanche年利率"
 
 #: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Balance"
 msgstr "余额"
 
@@ -368,10 +369,6 @@ msgstr "余额"
 #: src/components/Glp/GlpSwap.js
 msgid "Balance:"
 msgstr "余额"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Balance: {0}"
-msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"
@@ -1846,10 +1843,9 @@ msgstr "看来你没有推荐代码可以分享。<0/> 创建一个，开始赚�
 msgid "Loss"
 msgstr "亏损"
 
-#: src/components/BuyInputSection/BuyInputSection.js
+#: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
 #: src/components/InputSection/InputSection.js
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "MAX"
@@ -1858,6 +1854,10 @@ msgstr "最大值"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "MEV Optimizer"
 msgstr "MEV优化器"
+
+#: src/components/Exchange/SwapBox.js
+msgid "Mark"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
@@ -1878,7 +1878,6 @@ msgstr "标价"
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
 msgid "Mark: {0}"
 msgstr "标识: {0}"
 
@@ -2322,10 +2321,6 @@ msgstr "支付"
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Pay Amount"
 msgstr "支付金额"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Pay: {0} USD"
-msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Platform and GLP index tokens."

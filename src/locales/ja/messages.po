@@ -360,6 +360,7 @@ msgid "Avalanche APR:"
 msgstr "AvalancheでのAPR(実質年利)"
 
 #: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Balance"
 msgstr "残高"
 
@@ -368,10 +369,6 @@ msgstr "残高"
 #: src/components/Glp/GlpSwap.js
 msgid "Balance:"
 msgstr "残高"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Balance: {0}"
-msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"
@@ -1846,10 +1843,9 @@ msgstr "シェアできる紹介コードがないようです。<0/> コード�
 msgid "Loss"
 msgstr "損失"
 
-#: src/components/BuyInputSection/BuyInputSection.js
+#: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
 #: src/components/InputSection/InputSection.js
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "MAX"
@@ -1858,6 +1854,10 @@ msgstr "最大"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "MEV Optimizer"
 msgstr "MEVオプティマイザー"
+
+#: src/components/Exchange/SwapBox.js
+msgid "Mark"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
@@ -1878,7 +1878,6 @@ msgstr "マーク価格"
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
 msgid "Mark: {0}"
 msgstr "マーク: {0}"
 
@@ -2322,10 +2321,6 @@ msgstr "支払い"
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Pay Amount"
 msgstr "支払い額"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Pay: {0} USD"
-msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Platform and GLP index tokens."

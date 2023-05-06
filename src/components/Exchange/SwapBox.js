@@ -81,6 +81,7 @@ import UsefulLinks from "./UsefulLinks";
 import { get1InchSwapUrl } from "config/links";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import LeverageSlider from "./LeverageSlider";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -1886,184 +1887,106 @@ export default function SwapBox(props) {
             />
           )}
         </div>
+
         {showFromAndToSection && (
           <React.Fragment>
-            <div className="Exchange-swap-section">
-              <div className="Exchange-swap-section-top">
-                <div className="muted">
-                  {fromUsdMin && (
-                    <div className="Exchange-swap-usd">
-                      <Trans>Pay: {formatAmount(fromUsdMin, USD_DECIMALS, 2, true)} USD</Trans>
-                    </div>
-                  )}
-                  {!fromUsdMin && t`Pay`}
-                </div>
-                {fromBalance && (
-                  <div className="muted align-right clickable" onClick={setFromValueToMaximumAvailable}>
-                    <Trans>Balance: {formatAmount(fromBalance, fromToken.decimals, 4, true)}</Trans>
-                  </div>
-                )}
-              </div>
-              <div className="Exchange-swap-section-bottom">
-                <div className="Exchange-swap-input-container">
-                  <input
-                    type="number"
-                    min="0"
-                    placeholder="0.0"
-                    className="Exchange-swap-input"
-                    value={fromValue}
-                    onChange={onFromValueChange}
-                  />
-                  {shouldShowMaxButton() && (
-                    <button className="Exchange-swap-max" onClick={setFromValueToMaximumAvailable}>
-                      <Trans>MAX</Trans>
-                    </button>
-                  )}
-                </div>
-                <div>
-                  <TokenSelector
-                    label={t`Pay`}
-                    chainId={chainId}
-                    tokenAddress={fromTokenAddress}
-                    onSelectToken={onSelectFromToken}
-                    tokens={fromTokens}
-                    infoTokens={infoTokens}
-                    showMintingCap={false}
-                    showTokenImgInDropdown={true}
-                  />
-                </div>
-              </div>
-            </div>
+            <BuyInputSection
+              topLeftLabel={t`Pay`}
+              topRightLabel={t`Balance`}
+              balance={fromUsdMin?.gt(0) && `${formatAmount(fromUsdMin, USD_DECIMALS, 2, true)} USD`}
+              tokenBalance={`${formatAmount(fromBalance, fromToken.decimals, 4, true)}`}
+              onClickTopRightLabel={setFromValueToMaximumAvailable}
+              showMaxButton={shouldShowMaxButton()}
+              inputValue={fromValue}
+              onInputValueChange={onFromValueChange}
+              onClickMax={setFromValueToMaximumAvailable}
+            >
+              <TokenSelector
+                label={t`Pay`}
+                chainId={chainId}
+                tokenAddress={fromTokenAddress}
+                onSelectToken={onSelectFromToken}
+                tokens={fromTokens}
+                infoTokens={infoTokens}
+                showMintingCap={false}
+                showTokenImgInDropdown={true}
+              />
+            </BuyInputSection>
             <div className="Exchange-swap-ball-container">
               <button className="Exchange-swap-ball" onClick={switchTokens}>
                 <IoMdSwap className="Exchange-swap-ball-icon" />
               </button>
             </div>
-            <div className="Exchange-swap-section">
-              <div className="Exchange-swap-section-top">
-                <div className="muted">
-                  {toUsdMax && (
-                    <div className="Exchange-swap-usd">
-                      {getToLabel()}: {formatAmount(toUsdMax, USD_DECIMALS, 2, true)} USD
-                    </div>
-                  )}
-                  {!toUsdMax && getToLabel()}
-                </div>
-                {toBalance && isSwap && (
-                  <div className="muted align-right">
-                    <Trans>Balance</Trans>: {formatAmount(toBalance, toToken.decimals, 4, true)}
-                  </div>
-                )}
-                {(isLong || isShort) && hasLeverageOption && (
-                  <div className="muted align-right">
-                    <Trans>Leverage</Trans>: {parseFloat(leverageOption).toFixed(2)}x
-                  </div>
-                )}
-              </div>
-              <div className="Exchange-swap-section-bottom">
-                <div>
-                  <input
-                    type="number"
-                    min="0"
-                    placeholder="0.0"
-                    className="Exchange-swap-input"
-                    value={toValue}
-                    onChange={onToValueChange}
-                  />
-                </div>
-                <div>
-                  <TokenSelector
-                    label={getTokenLabel()}
-                    chainId={chainId}
-                    tokenAddress={toTokenAddress}
-                    onSelectToken={onSelectToToken}
-                    tokens={toTokens}
-                    infoTokens={infoTokens}
-                    showTokenImgInDropdown={true}
-                  />
-                </div>
-              </div>
-            </div>
+            <BuyInputSection
+              topLeftLabel={getToLabel()}
+              topRightLabel={isSwap ? t`Balance` : t`Leverage`}
+              balance={toUsdMax?.gt(0) && `${formatAmount(toUsdMax, USD_DECIMALS, 2, true)} USD`}
+              tokenBalance={
+                isSwap
+                  ? formatAmount(toBalance, toToken.decimals, 4, true)
+                  : `${parseFloat(leverageOption).toFixed(2)}x`
+              }
+              showMaxButton={false}
+              inputValue={toValue}
+              onInputValueChange={onToValueChange}
+            >
+              <TokenSelector
+                label={getTokenLabel()}
+                chainId={chainId}
+                tokenAddress={toTokenAddress}
+                onSelectToken={onSelectToToken}
+                tokens={toTokens}
+                infoTokens={infoTokens}
+                showTokenImgInDropdown={true}
+              />
+            </BuyInputSection>
           </React.Fragment>
         )}
         {showTriggerRatioSection && (
-          <div className="Exchange-swap-section">
-            <div className="Exchange-swap-section-top">
-              <div className="muted">
-                <Trans>Price</Trans>
-              </div>
-              {fromTokenInfo && toTokenInfo && (
-                <div
-                  className="muted align-right clickable"
-                  onClick={() => {
-                    setTriggerRatioValue(
-                      formatAmountFree(
-                        getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted),
-                        USD_DECIMALS,
-                        10
-                      )
-                    );
-                  }}
-                >
-                  {formatAmount(getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted), USD_DECIMALS, 4)}
+          <BuyInputSection
+            topLeftLabel={t`Price`}
+            topRightLabel={formatAmount(
+              getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted),
+              USD_DECIMALS,
+              4
+            )}
+            onClickTopRightLabel={() => {
+              setTriggerRatioValue(
+                formatAmountFree(getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted), USD_DECIMALS, 10)
+              );
+            }}
+            showMaxButton={false}
+            inputValue={triggerRatioValue}
+            onInputValueChange={onTriggerRatioChange}
+          >
+            {(() => {
+              if (!toTokenInfo) return;
+              if (!fromTokenInfo) return;
+              const [tokenA, tokenB] = triggerRatioInverted
+                ? [toTokenInfo, fromTokenInfo]
+                : [fromTokenInfo, toTokenInfo];
+              return (
+                <div className="PositionEditor-token-symbol">
+                  {tokenA.symbol}&nbsp;per&nbsp;{tokenB.symbol}
                 </div>
-              )}
-            </div>
-            <div className="Exchange-swap-section-bottom">
-              <div className="Exchange-swap-input-container">
-                <input
-                  type="number"
-                  min="0"
-                  placeholder="0.0"
-                  className="Exchange-swap-input small"
-                  value={triggerRatioValue}
-                  onChange={onTriggerRatioChange}
-                />
-              </div>
-              {(() => {
-                if (!toTokenInfo) return;
-                if (!fromTokenInfo) return;
-                const [tokenA, tokenB] = triggerRatioInverted
-                  ? [toTokenInfo, fromTokenInfo]
-                  : [fromTokenInfo, toTokenInfo];
-                return (
-                  <div className="PositionEditor-token-symbol">
-                    {tokenA.symbol}&nbsp;per&nbsp;{tokenB.symbol}
-                  </div>
-                );
-              })()}
-            </div>
-          </div>
+              );
+            })()}
+          </BuyInputSection>
         )}
         {showTriggerPriceSection && (
-          <div className="Exchange-swap-section">
-            <div className="Exchange-swap-section-top">
-              <div className="muted">
-                <Trans>Price</Trans>
-              </div>
-              <div
-                className="muted align-right clickable"
-                onClick={() => {
-                  setTriggerPriceValue(formatAmountFree(entryMarkPrice, USD_DECIMALS, 2));
-                }}
-              >
-                <Trans>Mark: {formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)}</Trans>
-              </div>
-            </div>
-            <div className="Exchange-swap-section-bottom">
-              <div className="Exchange-swap-input-container">
-                <input
-                  type="number"
-                  min="0"
-                  placeholder="0.0"
-                  className="Exchange-swap-input"
-                  value={triggerPriceValue}
-                  onChange={onTriggerPriceChange}
-                />
-              </div>
-              <div className="PositionEditor-token-symbol">USD</div>
-            </div>
-          </div>
+          <BuyInputSection
+            topLeftLabel={t`Price`}
+            topRightLabel={t`Mark`}
+            tokenBalance={formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)}
+            onClickTopRightLabel={() => {
+              setTriggerPriceValue(formatAmountFree(entryMarkPrice, USD_DECIMALS, 2));
+            }}
+            showMaxButton={false}
+            inputValue={triggerPriceValue}
+            onInputValueChange={onTriggerPriceChange}
+          >
+            USD
+          </BuyInputSection>
         )}
         {isSwap && (
           <div className="Exchange-swap-box-info">

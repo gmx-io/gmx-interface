@@ -360,6 +360,7 @@ msgid "Avalanche APR:"
 msgstr "Avalanche APR:"
 
 #: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Balance"
 msgstr "잔고"
 
@@ -368,10 +369,6 @@ msgstr "잔고"
 #: src/components/Glp/GlpSwap.js
 msgid "Balance:"
 msgstr "잔고:"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Balance: {0}"
-msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"
@@ -1846,10 +1843,9 @@ msgstr "공유할 수 있는 추천인 코드가 없는 것 같습니다. <0/> �
 msgid "Loss"
 msgstr "손실"
 
-#: src/components/BuyInputSection/BuyInputSection.js
+#: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
 #: src/components/InputSection/InputSection.js
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "MAX"
@@ -1858,6 +1854,10 @@ msgstr "최대"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "MEV Optimizer"
 msgstr "MEV 옵티마이저"
+
+#: src/components/Exchange/SwapBox.js
+msgid "Mark"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
@@ -1878,7 +1878,6 @@ msgstr "시장 평균가"
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
 msgid "Mark: {0}"
 msgstr "시장 평균가: {0}"
 
@@ -2322,10 +2321,6 @@ msgstr "지불"
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Pay Amount"
 msgstr "지불액"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Pay: {0} USD"
-msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Platform and GLP index tokens."

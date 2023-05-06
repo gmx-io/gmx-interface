@@ -1,22 +1,36 @@
-import React, { useRef } from "react";
+import "./BuyInputSection.scss";
+import React, { useRef, ReactNode, ChangeEvent } from "react";
 import cx from "classnames";
-import "./BuyInputSection.css";
 import { Trans } from "@lingui/macro";
 
-export default function BuyInputSection(props) {
-  const {
-    topLeftLabel,
-    topRightLabel,
-    onClickTopRightLabel,
-    inputValue,
-    onInputValueChange,
-    onClickMax,
-    showMaxButton,
-    staticInput,
-    balance,
-    tokenBalance,
-  } = props;
-  const inputRef = useRef(null);
+type Props = {
+  topLeftLabel: string;
+  topRightLabel: string;
+  inputValue: string | number;
+  showMaxButton: boolean;
+  staticInput: boolean;
+  children: ReactNode;
+  balance?: string | number;
+  tokenBalance?: string | number;
+  onClickMax?: () => void;
+  onInputValueChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+  onClickTopRightLabel?: () => void;
+};
+
+export default function BuyInputSection({
+  topLeftLabel,
+  topRightLabel,
+  onClickTopRightLabel,
+  inputValue,
+  onInputValueChange,
+  onClickMax,
+  showMaxButton,
+  staticInput,
+  balance,
+  tokenBalance,
+  children,
+}: Props) {
+  const inputRef = useRef<HTMLInputElement>(null);
 
   function handleBoxClick() {
     if (inputRef.current) {
@@ -28,13 +42,12 @@ export default function BuyInputSection(props) {
     <div className="Exchange-swap-section buy-input" onClick={handleBoxClick}>
       <div className="Exchange-swap-section-top">
         <div className="muted">
-          {topLeftLabel}: {balance}
+          {topLeftLabel}
+          {balance && `: ${balance}`}
         </div>
         <div className={cx("align-right", { clickable: onClickTopRightLabel })} onClick={onClickTopRightLabel}>
-          <span className="Exchange-swap-label muted">{topRightLabel}</span>&nbsp;
-          <span className="Exchange-swap-balance">
-            {tokenBalance} {/*(selectedToken && selectedToken.symbol) || defaultTokenName*/}
-          </span>
+          <span className="Exchange-swap-label muted">{topRightLabel}</span>
+          <span className="Exchange-swap-balance">{tokenBalance && `: ${tokenBalance}`}</span>
         </div>
       </div>
       <div className="Exchange-swap-section-bottom">
@@ -57,7 +70,7 @@ export default function BuyInputSection(props) {
             </button>
           )}
         </div>
-        <div className="PositionEditor-token-symbol">{props.children}</div>
+        <div className="PositionEditor-token-symbol">{children}</div>
       </div>
     </div>
   );

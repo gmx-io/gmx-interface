@@ -360,6 +360,7 @@ msgid "Avalanche APR:"
 msgstr "Avalanche APR:"
 
 #: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Balance"
 msgstr "Balance"
 
@@ -368,10 +369,6 @@ msgstr "Balance"
 #: src/components/Glp/GlpSwap.js
 msgid "Balance:"
 msgstr "Balance:"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Balance: {0}"
-msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"
@@ -1846,10 +1843,9 @@ msgstr "Parece que no tienes un código de referido para compartir. <0/> ¡Crea 
 msgid "Loss"
 msgstr "Pérdida"
 
-#: src/components/BuyInputSection/BuyInputSection.js
+#: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
 #: src/components/InputSection/InputSection.js
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "MAX"
@@ -1858,6 +1854,10 @@ msgstr "MÁX"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "MEV Optimizer"
 msgstr "Optimizador de MEV"
+
+#: src/components/Exchange/SwapBox.js
+msgid "Mark"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
@@ -1878,7 +1878,6 @@ msgstr "Precio de Referencia:"
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
 msgid "Mark: {0}"
 msgstr "Referencia: {0}"
 
@@ -2322,10 +2321,6 @@ msgstr "Pagar"
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Pay Amount"
 msgstr "Importe a pagar"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Pay: {0} USD"
-msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Platform and GLP index tokens."
