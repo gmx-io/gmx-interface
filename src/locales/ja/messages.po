@@ -351,10 +351,6 @@ msgstr "GLPから引き出し可能な金額。現在オープンなポジショ
 msgid "Available on your preferred network"
 msgstr "選択されたネットワークにて利用可能"
 
-#: src/components/Glp/GlpSwap.js
-#~ msgid "Available:"
-#~ msgstr "利用可能"
-
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
@@ -367,12 +363,6 @@ msgstr "AvalancheでのAPR(実質年利)"
 #: src/components/Glp/GlpSwap.js
 msgid "Balance"
 msgstr "残高"
-
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#~ msgid "Balance:"
-#~ msgstr "残高"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"

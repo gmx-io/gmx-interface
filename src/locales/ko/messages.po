@@ -351,10 +351,6 @@ msgstr "GLP로부터 인출가능한 수량. 현재 포지션에 의해 활용�
 msgid "Available on your preferred network"
 msgstr "선택한 네트워크에서 이용가능"
 
-#: src/components/Glp/GlpSwap.js
-#~ msgid "Available:"
-#~ msgstr "사용가능"
-
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
@@ -367,12 +363,6 @@ msgstr "Avalanche APR:"
 #: src/components/Glp/GlpSwap.js
 msgid "Balance"
 msgstr "잔고"
-
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#~ msgid "Balance:"
-#~ msgstr "잔고:"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"

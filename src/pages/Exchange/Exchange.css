@@ -642,6 +642,7 @@ table.Exchange-list th {
   outline: 2px solid transparent;
 }
 
+.Exchange-swap-section:hover,
 .Exchange-swap-section:focus-within {
   outline-color: #3a3f798f;
 }

@@ -351,10 +351,6 @@ msgstr "Доступная сумма для вывода средств из GL
 msgid "Available on your preferred network"
 msgstr "Доступно в предпочитаемой сети"
 
-#: src/components/Glp/GlpSwap.js
-#~ msgid "Available:"
-#~ msgstr "Доступно:"
-
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
@@ -367,12 +363,6 @@ msgstr "Avalanche APR:"
 #: src/components/Glp/GlpSwap.js
 msgid "Balance"
 msgstr "Баланс"
-
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#~ msgid "Balance:"
-#~ msgstr "Баланс:"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"

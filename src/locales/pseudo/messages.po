@@ -351,10 +351,6 @@ msgstr ""
 msgid "Available on your preferred network"
 msgstr ""
 
-#: src/components/Glp/GlpSwap.js
-#~ msgid "Available:"
-#~ msgstr ""
-
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
@@ -367,12 +363,6 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 msgid "Balance"
 msgstr ""
-
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#~ msgid "Balance:"
-#~ msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"

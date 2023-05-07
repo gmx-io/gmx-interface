@@ -351,10 +351,6 @@ msgstr "Somme disponible pour retirer de GLP. Montant non utilisé par les poste
 msgid "Available on your preferred network"
 msgstr "Disponible sur le réseau de votre choix"
 
-#: src/components/Glp/GlpSwap.js
-#~ msgid "Available:"
-#~ msgstr "Disponible:"
-
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
@@ -367,12 +363,6 @@ msgstr "Taux de Rendement Annuels Avalanche:"
 #: src/components/Glp/GlpSwap.js
 msgid "Balance"
 msgstr "Balance"
-
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#~ msgid "Balance:"
-#~ msgstr "Balance:"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"
