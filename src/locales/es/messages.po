@@ -326,6 +326,7 @@ msgstr "Activos bajo gestión: GMX stakeados (Todas las cadenas) + Reserva GLP (
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "Available"
 msgstr "Disponible"
 
@@ -351,8 +352,8 @@ msgid "Available on your preferred network"
 msgstr "Disponible en su red preferida"
 
 #: src/components/Glp/GlpSwap.js
-msgid "Available:"
-msgstr "Disponible:"
+#~ msgid "Available:"
+#~ msgstr "Disponible:"
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
@@ -361,14 +362,17 @@ msgstr "Avalanche APR:"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "Balance"
 msgstr "Balance"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
-msgid "Balance:"
-msgstr "Balance:"
+#~ msgid "Balance:"
+#~ msgstr "Balance:"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"

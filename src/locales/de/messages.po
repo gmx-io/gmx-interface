@@ -326,6 +326,7 @@ msgstr "Verwaltetes Vermögen: GMX-Staked (Alle Chains) + GLP-Pool ({chainName})
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "Available"
 msgstr "Verfügbar"
 
@@ -351,8 +352,8 @@ msgid "Available on your preferred network"
 msgstr "Verfügbar in deinem bevorzugten Netzwerk"
 
 #: src/components/Glp/GlpSwap.js
-msgid "Available:"
-msgstr "Verfügbar:"
+#~ msgid "Available:"
+#~ msgstr "Verfügbar:"
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
@@ -361,14 +362,17 @@ msgstr "Avalanche APR:"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "Balance"
 msgstr "Balance"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
-msgid "Balance:"
-msgstr "Balance:"
+#~ msgid "Balance:"
+#~ msgstr "Balance:"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"

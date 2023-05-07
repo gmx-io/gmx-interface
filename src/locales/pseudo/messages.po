@@ -326,6 +326,7 @@ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "Available"
 msgstr ""
 
@@ -351,8 +352,8 @@ msgid "Available on your preferred network"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
-msgid "Available:"
-msgstr ""
+#~ msgid "Available:"
+#~ msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
@@ -361,14 +362,17 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "Balance"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
-msgid "Balance:"
-msgstr ""
+#~ msgid "Balance:"
+#~ msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"

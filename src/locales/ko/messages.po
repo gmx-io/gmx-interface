@@ -326,6 +326,7 @@ msgstr "자산운용규모: 스테이킹된 GMX + GLP 풀 ({chainName})."
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "Available"
 msgstr "사용가능"
 
@@ -351,8 +352,8 @@ msgid "Available on your preferred network"
 msgstr "선택한 네트워크에서 이용가능"
 
 #: src/components/Glp/GlpSwap.js
-msgid "Available:"
-msgstr "사용가능"
+#~ msgid "Available:"
+#~ msgstr "사용가능"
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
@@ -361,14 +362,17 @@ msgstr "Avalanche APR:"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "Balance"
 msgstr "잔고"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
-msgid "Balance:"
-msgstr "잔고:"
+#~ msgid "Balance:"
+#~ msgstr "잔고:"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"

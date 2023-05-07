@@ -326,6 +326,7 @@ msgstr "Активы под управлением: Ставка GMX (все ц�
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "Available"
 msgstr "Доступно"
 
@@ -351,8 +352,8 @@ msgid "Available on your preferred network"
 msgstr "Доступно в предпочитаемой сети"
 
 #: src/components/Glp/GlpSwap.js
-msgid "Available:"
-msgstr "Доступно:"
+#~ msgid "Available:"
+#~ msgstr "Доступно:"
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
@@ -361,14 +362,17 @@ msgstr "Avalanche APR:"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "Balance"
 msgstr "Баланс"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
-msgid "Balance:"
-msgstr "Баланс:"
+#~ msgid "Balance:"
+#~ msgstr "Баланс:"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"

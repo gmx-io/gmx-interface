@@ -326,6 +326,7 @@ msgstr "管理中资产。 GMX质押（所有链）+GLP池（{链名}）."
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "Available"
 msgstr "可用的"
 
@@ -351,8 +352,8 @@ msgid "Available on your preferred network"
 msgstr "可在您的首选网络上使用"
 
 #: src/components/Glp/GlpSwap.js
-msgid "Available:"
-msgstr "可用的"
+#~ msgid "Available:"
+#~ msgstr "可用的"
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
@@ -361,14 +362,17 @@ msgstr "Avalanche年利率"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "Balance"
 msgstr "余额"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
-msgid "Balance:"
-msgstr "余额"
+#~ msgid "Balance:"
+#~ msgstr "余额"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"

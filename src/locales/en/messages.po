@@ -326,6 +326,7 @@ msgstr "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName}
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "Available"
 msgstr "Available"
 
@@ -351,8 +352,8 @@ msgid "Available on your preferred network"
 msgstr "Available on your preferred network"
 
 #: src/components/Glp/GlpSwap.js
-msgid "Available:"
-msgstr "Available:"
+#~ msgid "Available:"
+#~ msgstr "Available:"
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
@@ -361,14 +362,17 @@ msgstr "Avalanche APR:"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "Balance"
 msgstr "Balance"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
-msgid "Balance:"
-msgstr "Balance:"
+#~ msgid "Balance:"
+#~ msgstr "Balance:"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"

@@ -326,6 +326,7 @@ msgstr "管理資産: 全チェーンでステークされているGMX + GLPプ�
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "Available"
 msgstr "利用可能"
 
@@ -351,8 +352,8 @@ msgid "Available on your preferred network"
 msgstr "選択されたネットワークにて利用可能"
 
 #: src/components/Glp/GlpSwap.js
-msgid "Available:"
-msgstr "利用可能"
+#~ msgid "Available:"
+#~ msgstr "利用可能"
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
@@ -361,14 +362,17 @@ msgstr "AvalancheでのAPR(実質年利)"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "Balance"
 msgstr "残高"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
-msgid "Balance:"
-msgstr "残高"
+#~ msgid "Balance:"
+#~ msgstr "残高"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"
