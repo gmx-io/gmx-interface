@@ -809,7 +809,7 @@ export default function GlpSwap(props) {
           {isBuying && (
             <BuyInputSection
               topLeftLabel={payLabel}
-              topRightLabel={t`Balance:`}
+              topRightLabel={t`Balance`}
               tokenBalance={`${formatAmount(swapTokenBalance, swapToken.decimals, 4, true)}`}
               inputValue={swapValue}
               onInputValueChange={onSwapValueChange}
@@ -836,7 +836,7 @@ export default function GlpSwap(props) {
           {!isBuying && (
             <BuyInputSection
               topLeftLabel={payLabel}
-              topRightLabel={t`Available:`}
+              topRightLabel={t`Available`}
               tokenBalance={`${formatAmount(maxSellAmount, GLP_DECIMALS, 4, true)}`}
               inputValue={glpValue}
               onInputValueChange={onGlpValueChange}
@@ -866,7 +866,7 @@ export default function GlpSwap(props) {
           {isBuying && (
             <BuyInputSection
               topLeftLabel={receiveLabel}
-              topRightLabel={t`Balance:`}
+              topRightLabel={t`Balance`}
               tokenBalance={`${formatAmount(glpBalance, GLP_DECIMALS, 4, true)}`}
               inputValue={glpValue}
               onInputValueChange={onGlpValueChange}
@@ -880,7 +880,7 @@ export default function GlpSwap(props) {
           {!isBuying && (
             <BuyInputSection
               topLeftLabel={receiveLabel}
-              topRightLabel={t`Balance:`}
+              topRightLabel={t`Balance`}
               tokenBalance={`${formatAmount(swapTokenBalance, swapToken.decimals, 4, true)}`}
               inputValue={swapValue}
               onInputValueChange={onSwapValueChange}

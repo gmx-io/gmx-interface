@@ -41,13 +41,12 @@ export default function BuyInputSection({
   return (
     <div className="Exchange-swap-section buy-input" onClick={handleBoxClick}>
       <div className="Exchange-swap-section-top">
-        <div className="muted">
+        <div className="text-gray">
           {topLeftLabel}
           {balance && `: ${balance}`}
         </div>
         <div className={cx("align-right", { clickable: onClickTopRightLabel })} onClick={onClickTopRightLabel}>
-          <span className="Exchange-swap-label muted">{topRightLabel}</span>
-          <span className="Exchange-swap-balance">{tokenBalance && `: ${tokenBalance}`}</span>
+          {tokenBalance && <span className="Exchange-swap-label text-gray">{`${topRightLabel}: ${tokenBalance}`}</span>}
         </div>
       </div>
       <div className="Exchange-swap-section-bottom">

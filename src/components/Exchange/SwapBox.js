@@ -1894,7 +1894,7 @@ export default function SwapBox(props) {
               topLeftLabel={t`Pay`}
               topRightLabel={t`Balance`}
               balance={fromUsdMin?.gt(0) && `${formatAmount(fromUsdMin, USD_DECIMALS, 2, true)} USD`}
-              tokenBalance={`${formatAmount(fromBalance, fromToken.decimals, 4, true)}`}
+              tokenBalance={fromBalance?.gt(0) && `${formatAmount(fromBalance, fromToken.decimals, 4, true)}`}
               onClickTopRightLabel={setFromValueToMaximumAvailable}
               showMaxButton={shouldShowMaxButton()}
               inputValue={fromValue}
