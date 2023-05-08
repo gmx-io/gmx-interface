@@ -2493,6 +2493,11 @@ msgstr ""
 msgid "Read more"
 msgstr ""
 
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Rebates"
+msgstr ""
+
 #: src/components/Referrals/TradersStats.js
 msgid "Rebates Distribution History"
 msgstr ""
@@ -2509,6 +2514,16 @@ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Rebates earned by this account as an affiliate."
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Rebates on Arbitrum"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Rebates on Avalanche"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -3211,6 +3226,11 @@ msgstr ""
 msgid "Tokens"
 msgstr ""
 
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+#: src/components/Referrals/TradersStats.js
 #: src/pages/Stake/StakeV2.js
 msgid "Total"
 msgstr ""
@@ -3233,8 +3253,6 @@ msgid "Total Fees Distributed"
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
 msgid "Total Rebates"
 msgstr ""
 
@@ -3268,12 +3286,6 @@ msgstr ""
 msgid "Total Supply"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
-msgid "Total Traders Referred"
-msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
 #: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr ""
@@ -3322,11 +3334,35 @@ msgid "Traders"
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.js
 msgid "Traders Referred"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js
+msgid "Traders Referred on Arbitrum"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js
+msgid "Traders Referred on Avalanche"
 msgstr ""
 
 #: src/pages/Exchange/Exchange.js
 msgid "Trades"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Trading Volume"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Trading Volume on Arbitrum"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Trading Volume on Avalanche"
 msgstr ""
 
 #: src/components/Exchange/UsefulLinks.tsx

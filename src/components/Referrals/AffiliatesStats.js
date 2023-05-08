@@ -8,7 +8,7 @@ import Card from "../Common/Card";
 import Modal from "../Modal/Modal";
 import { shortenAddress } from "lib/legacy";
 import EmptyMessage from "./EmptyMessage";
-import InfoCard from "./InfoCard";
+import ReferralInfoCard from "./ReferralInfoCard";
 import {
   getReferralCodeTradeUrl,
   getTierIdDisplay,
@@ -19,7 +19,7 @@ import {
 } from "./referralsHelper";
 import { AffiliateCodeForm } from "./AddAffiliateCode";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
-import { AVALANCHE, getExplorerUrl } from "config/chains";
+import { ARBITRUM, AVALANCHE, getExplorerUrl } from "config/chains";
 import { helperToast } from "lib/helperToast";
 import { bigNumberify, formatAmount } from "lib/numbers";
 import { getNativeToken, getToken } from "config/tokens";
@@ -28,6 +28,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import Pagination from "components/Pagination/Pagination";
 import usePagination from "./usePagination";
 import Button from "components/Button/Button";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
 function AffiliatesStats({
   referralsData,
@@ -38,12 +39,17 @@ function AffiliatesStats({
 }) {
   const [isAddReferralCodeModalOpen, setIsAddReferralCodeModalOpen] = useState(false);
   const addNewModalRef = useRef(null);
-
   const [, copyToClipboard] = useCopyToClipboard();
   const open = () => setIsAddReferralCodeModalOpen(true);
   const close = () => setIsAddReferralCodeModalOpen(false);
 
-  const { cumulativeStats, referrerTotalStats, rebateDistributions, referrerTierInfo } = referralsData;
+  const {
+    [chainId]: currentReferralsData,
+    [ARBITRUM]: arbitrumData,
+    [AVALANCHE]: avalancheData,
+    total,
+  } = referralsData || {};
+  const { referrerTotalStats, rebateDistributions, referrerTierInfo } = currentReferralsData;
   const {
     currentPage: currentRebatePage,
     getCurrentData: getCurrentRebateData,
@@ -74,27 +80,67 @@ function AffiliatesStats({
   const currentAffiliatesData = getCurrentAffiliatesData();
   const tierId = referrerTierInfo?.tierId;
 
-  let referrerRebates = bigNumberify(0);
-  if (cumulativeStats && cumulativeStats.totalRebateUsd && cumulativeStats.discountUsd) {
-    referrerRebates = cumulativeStats.totalRebateUsd.sub(cumulativeStats.discountUsd);
-  }
   return (
     <div className="referral-body-container">
       <div className="referral-stats">
-        <InfoCard
-          label={t`Total Traders Referred`}
-          tooltipText={t`Amount of traders you referred.`}
-          data={cumulativeStats?.registeredReferralsCount || "0"}
+        <ReferralInfoCard
+          value={currentReferralsData?.cumulativeStats?.registeredReferralsCount || 0}
+          label={t`Traders Referred`}
+          labelTooltipText={t`Amount of traders you referred.`}
+          tooltipContent={
+            <>
+              <StatsTooltipRow
+                label={t`Traders Referred on Arbitrum`}
+                value={arbitrumData.cumulativeStats.registeredReferralsCount}
+                showDollar={false}
+              />
+              <StatsTooltipRow
+                label={t`Traders Referred on Avalanche`}
+                value={avalancheData.cumulativeStats.registeredReferralsCount}
+                showDollar={false}
+              />
+              <div className="Tooltip-divider" />
+              <StatsTooltipRow label={t`Total`} value={total?.registeredReferralsCount} showDollar={false} />
+            </>
+          }
         />
-        <InfoCard
-          label={t`Total Trading Volume`}
-          tooltipText={t`Volume traded by your referred traders.`}
-          data={getUSDValue(cumulativeStats?.volume)}
+        <ReferralInfoCard
+          value={`$${getUSDValue(currentReferralsData?.cumulativeStats?.volume)}`}
+          label={t`Trading Volume`}
+          labelTooltipText={t`Volume traded by your referred traders.`}
+          tooltipContent={
+            <>
+              <StatsTooltipRow
+                label={t`Trading Volume on Arbitrum`}
+                value={getUSDValue(arbitrumData?.cumulativeStats.volume)}
+              />
+              <StatsTooltipRow
+                label={t`Trading Volume on Avalanche`}
+                value={getUSDValue(avalancheData?.cumulativeStats.volume)}
+              />
+              <div className="Tooltip-divider" />
+              <StatsTooltipRow label={t`Total`} value={getUSDValue(total?.affiliatesVolume)} />
+            </>
+          }
         />
-        <InfoCard
-          label={t`Total Rebates`}
-          tooltipText={t`Rebates earned by this account as an affiliate.`}
-          data={getUSDValue(referrerRebates, 4)}
+        <ReferralInfoCard
+          value={`$${getUSDValue(currentReferralsData?.cumulativeStats?.referrerRebates)}`}
+          label={t`Rebates`}
+          labelTooltipText={t`Rebates earned by this account as an affiliate.`}
+          tooltipContent={
+            <>
+              <StatsTooltipRow
+                label={t`Rebates on Arbitrum`}
+                value={getUSDValue(arbitrumData?.cumulativeStats.referrerRebates)}
+              />
+              <StatsTooltipRow
+                label={t`Rebates on Avalanche`}
+                value={getUSDValue(avalancheData?.cumulativeStats.referrerRebates)}
+              />
+              <div className="Tooltip-divider" />
+              <StatsTooltipRow label={t`Total`} value={getUSDValue(total?.referrerRebates)} />
+            </>
+          }
         />
       </div>
       <div className="list">
@@ -220,9 +266,9 @@ function AffiliatesStats({
                           )}
                         </div>
                       </td>
-                      <td data-label="Total Volume">{getUSDValue(stat.volume)}</td>
+                      <td data-label="Total Volume">${getUSDValue(stat.volume)}</td>
                       <td data-label="Traders Referred">{stat.registeredReferralsCount}</td>
-                      <td data-label="Total Rebates">{getUSDValue(referrerRebate, 4)}</td>
+                      <td data-label="Total Rebates">${getUSDValue(referrerRebate, 4)}</td>
                     </tr>
                   );
                 })}

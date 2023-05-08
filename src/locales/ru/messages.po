@@ -195,7 +195,7 @@ msgstr ""
 
 #: src/pages/Referrals/Referrals.js
 msgid "Affiliates"
-msgstr "Аффилированные лица"
+msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
@@ -1493,7 +1493,7 @@ msgstr "Создание изображения, доступного для с�
 
 #: src/pages/Referrals/Referrals.js
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
-msgstr "Получайте скидки на оплату и получайте возвраты благодаря реферальной программе GMX.<0/>Для получения дополнительной информации, пожалуйста, ознакомьтесь с <1>деталями реферальной программы</1>."
+msgstr ""
 
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Governance"
@@ -2496,6 +2496,11 @@ msgstr "Приобрести Страховку"
 msgid "Read more"
 msgstr "Читать больше"
 
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Rebates"
+msgstr ""
+
 #: src/components/Referrals/TradersStats.js
 msgid "Rebates Distribution History"
 msgstr "История Распределения Рибейтов"
@@ -2513,6 +2518,16 @@ msgstr "Рибейты, заработанные этим аккаунтом в 
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Rebates earned by this account as an affiliate."
 msgstr "Рибейты, заработанные этим аккаунтом в качестве аффилированного лица."
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Rebates on Arbitrum"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Rebates on Avalanche"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
@@ -2575,11 +2590,11 @@ msgstr "Реферальный код создан!"
 
 #: src/pages/Referrals/Referrals.js
 msgid "Referral code creation failed."
-msgstr "Создание реферального кода не прошло."
+msgstr ""
 
 #: src/pages/Referrals/Referrals.js
 msgid "Referral code submitted!"
-msgstr "Реферальный код предоставлен!"
+msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Referral code updated failed."
@@ -3214,6 +3229,11 @@ msgstr "Чтобы уменьшить комиссию, выберите дру�
 msgid "Tokens"
 msgstr "Токены"
 
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+#: src/components/Referrals/TradersStats.js
 #: src/pages/Stake/StakeV2.js
 msgid "Total"
 msgstr "Итого"
@@ -3236,8 +3256,6 @@ msgid "Total Fees Distributed"
 msgstr "Итого Распределено Комиссионных"
 
 #: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
 msgid "Total Rebates"
 msgstr "Всего Ребайтов"
 
@@ -3271,12 +3289,6 @@ msgstr "Общая Статистика"
 msgid "Total Supply"
 msgstr "Общее количество снабжения"
 
-#: src/components/Referrals/AffiliatesStats.js
-msgid "Total Traders Referred"
-msgstr "Всего Привлеченных Трейдеров"
-
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
 #: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "Общий Объем Торгов"
@@ -3322,15 +3334,39 @@ msgstr "Торгуйте на GMX и выиграйте <0>$250.000</0> в ка�
 
 #: src/pages/Referrals/Referrals.js
 msgid "Traders"
-msgstr "Трейдеры"
+msgstr ""
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Traders Referred"
 msgstr "Привлеченные Трейдеров"
 
+#: src/components/Referrals/AffiliatesStats.js
+msgid "Traders Referred on Arbitrum"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js
+msgid "Traders Referred on Avalanche"
+msgstr ""
+
 #: src/pages/Exchange/Exchange.js
 msgid "Trades"
 msgstr "Торги"
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Trading Volume"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Trading Volume on Arbitrum"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Trading Volume on Avalanche"
+msgstr ""
 
 #: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"

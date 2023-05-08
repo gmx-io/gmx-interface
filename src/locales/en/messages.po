@@ -2496,6 +2496,11 @@ msgstr "Purchase Insurance"
 msgid "Read more"
 msgstr "Read more"
 
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Rebates"
+msgstr "Rebates"
+
 #: src/components/Referrals/TradersStats.js
 msgid "Rebates Distribution History"
 msgstr "Rebates Distribution History"
@@ -2513,6 +2518,16 @@ msgstr "Rebates earned by this account as a trader."
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Rebates earned by this account as an affiliate."
 msgstr "Rebates earned by this account as an affiliate."
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Rebates on Arbitrum"
+msgstr "Rebates on Arbitrum"
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Rebates on Avalanche"
+msgstr "Rebates on Avalanche"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
@@ -3214,6 +3229,11 @@ msgstr "To reduce fees, select a different asset to receive."
 msgid "Tokens"
 msgstr "Tokens"
 
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+#: src/components/Referrals/TradersStats.js
 #: src/pages/Stake/StakeV2.js
 msgid "Total"
 msgstr "Total"
@@ -3236,8 +3256,6 @@ msgid "Total Fees Distributed"
 msgstr "Total Fees Distributed"
 
 #: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
 msgid "Total Rebates"
 msgstr "Total Rebates"
 
@@ -3271,12 +3289,6 @@ msgstr "Total Stats"
 msgid "Total Supply"
 msgstr "Total Supply"
 
-#: src/components/Referrals/AffiliatesStats.js
-msgid "Total Traders Referred"
-msgstr "Total Traders Referred"
-
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
 #: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "Total Trading Volume"
@@ -3325,12 +3337,36 @@ msgid "Traders"
 msgstr "Traders"
 
 #: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.js
 msgid "Traders Referred"
 msgstr "Traders Referred"
+
+#: src/components/Referrals/AffiliatesStats.js
+msgid "Traders Referred on Arbitrum"
+msgstr "Traders Referred on Arbitrum"
+
+#: src/components/Referrals/AffiliatesStats.js
+msgid "Traders Referred on Avalanche"
+msgstr "Traders Referred on Avalanche"
 
 #: src/pages/Exchange/Exchange.js
 msgid "Trades"
 msgstr "Trades"
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Trading Volume"
+msgstr "Trading Volume"
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Trading Volume on Arbitrum"
+msgstr "Trading Volume on Arbitrum"
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Trading Volume on Avalanche"
+msgstr "Trading Volume on Avalanche"
 
 #: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"

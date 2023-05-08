@@ -195,7 +195,7 @@ msgstr ""
 
 #: src/pages/Referrals/Referrals.js
 msgid "Affiliates"
-msgstr "アフィリエイト"
+msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
@@ -1493,7 +1493,7 @@ msgstr "シェア可能な画像を作成中..."
 
 #: src/pages/Referrals/Referrals.js
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
-msgstr "GMX紹介プログラムで手数料が割引されリベートが得られます。<0/>より詳しくは、 <1>こちらの紹介プログラム詳細を読んでください</1>."
+msgstr ""
 
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Governance"
@@ -2496,6 +2496,11 @@ msgstr "保険購入"
 msgid "Read more"
 msgstr "詳細について読む"
 
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Rebates"
+msgstr ""
+
 #: src/components/Referrals/TradersStats.js
 msgid "Rebates Distribution History"
 msgstr "リベートの分配履歴"
@@ -2513,6 +2518,16 @@ msgstr "トレーダーとしてこのアカウントが獲得したリベート
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Rebates earned by this account as an affiliate."
 msgstr "アフィリエイトとしてこのアカウントが獲得した紹介報酬"
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Rebates on Arbitrum"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Rebates on Avalanche"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
@@ -2575,11 +2590,11 @@ msgstr "紹介コードが作成されました!"
 
 #: src/pages/Referrals/Referrals.js
 msgid "Referral code creation failed."
-msgstr "紹介コードが作成できませんでした。"
+msgstr ""
 
 #: src/pages/Referrals/Referrals.js
 msgid "Referral code submitted!"
-msgstr "紹介コードが提出されました!"
+msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Referral code updated failed."
@@ -3214,6 +3229,11 @@ msgstr "手数料を削減するには別のアセットで受け取ってくだ
 msgid "Tokens"
 msgstr "トークン"
 
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+#: src/components/Referrals/TradersStats.js
 #: src/pages/Stake/StakeV2.js
 msgid "Total"
 msgstr "総計"
@@ -3236,8 +3256,6 @@ msgid "Total Fees Distributed"
 msgstr "分配済手数料総額"
 
 #: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
 msgid "Total Rebates"
 msgstr "リベート総額"
 
@@ -3271,12 +3289,6 @@ msgstr "全体統計"
 msgid "Total Supply"
 msgstr "総供給量"
 
-#: src/components/Referrals/AffiliatesStats.js
-msgid "Total Traders Referred"
-msgstr "紹介した全トレーダー"
-
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
 #: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "トレード総額"
@@ -3322,15 +3334,39 @@ msgstr "GMXでトレードして賞金<0>250ドル</0>を獲得しよう! 11月3
 
 #: src/pages/Referrals/Referrals.js
 msgid "Traders"
-msgstr "トレーダー"
+msgstr ""
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Traders Referred"
 msgstr "紹介したトレーダー"
 
+#: src/components/Referrals/AffiliatesStats.js
+msgid "Traders Referred on Arbitrum"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js
+msgid "Traders Referred on Avalanche"
+msgstr ""
+
 #: src/pages/Exchange/Exchange.js
 msgid "Trades"
 msgstr "トレード"
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Trading Volume"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Trading Volume on Arbitrum"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Trading Volume on Avalanche"
+msgstr ""
 
 #: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"
