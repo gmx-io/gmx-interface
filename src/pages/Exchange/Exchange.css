@@ -755,11 +755,11 @@ input.Exchange-swap-input.small {
 
 .Exchange-swap-ball {
   position: absolute;
-  width: 3.565rem;
-  height: 3.565rem;
+  width: 3.5rem;
+  height: 3.5rem;
   left: 50%;
   margin-left: -1.7825rem;
-  top: -1.9375rem;
+  top: -2rem;
   border-radius: 3.1rem;
   cursor: pointer;
   user-select: none;

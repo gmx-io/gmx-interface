@@ -214,23 +214,40 @@
   opacity: 0.7;
 }
 
+.AppOrder-ball-icon {
+  text-align: center;
+  display: block;
+  font-size: 2rem;
+  opacity: 0.7;
+}
+
 .AppOrder-ball {
+  position: absolute;
+  width: 3.5rem;
+  height: 3.5rem;
+  left: 50%;
+  margin-left: -1.7825rem;
+  top: -2.5rem;
+  border-radius: 3.1rem;
+  cursor: pointer;
+  user-select: none;
+  background: var(--primary-btn-bg);
   display: flex;
   justify-content: center;
   align-items: center;
-  position: absolute;
-  width: 3.565rem;
-  height: 3.565rem;
-  left: 50%;
-  margin-left: -1.7825rem;
-  top: -2.2rem;
-  border-radius: 3.1rem;
-  user-select: none;
-  background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, rgba(46, 61, 205, 1) 100%);
-  cursor: pointer;
-  opacity: 0.85;
+  border: none;
+  color: white;
 }
+
 .AppOrder-ball:hover {
+  background: var(--primary-btn-hover);
+}
+
+.AppOrder-ball:active {
+  background: var(--primary-btn-active);
+}
+
+.AppOrder-ball:hover .AppOrder-ball-icon {
   opacity: 1;
 }
 

@@ -38,8 +38,6 @@ import Vester from "abis/Vester.json";
 import RewardRouter from "abis/RewardRouter.json";
 import Token from "abis/Token.json";
 
-import arrowIcon from "img/ic_convert_down.svg";
-
 import "./GlpSwap.css";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import SwapErrorModal from "./SwapErrorModal";
@@ -56,6 +54,7 @@ import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getIcon } from "config/icons";
 import Button from "components/Button/Button";
+import { IoChevronDownOutline } from "react-icons/io5";
 
 const { AddressZero } = ethers.constants;
 
@@ -851,16 +850,9 @@ export default function GlpSwap(props) {
           )}
 
           <div className="AppOrder-ball-container">
-            <div className="AppOrder-ball">
-              <img
-                src={arrowIcon}
-                alt="arrowIcon"
-                onClick={() => {
-                  setIsBuying(!isBuying);
-                  switchSwapOption(isBuying ? "redeem" : "");
-                }}
-              />
-            </div>
+            <button className="AppOrder-ball">
+              <IoChevronDownOutline className="AppOrder-ball-icon" />
+            </button>
           </div>
 
           {isBuying && (
