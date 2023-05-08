@@ -48,7 +48,7 @@ export default function BuyInputSection({
         <div className={cx("align-right", { clickable: onClickTopRightLabel })} onClick={onClickTopRightLabel}>
           {tokenBalance && (
             <span className="Exchange-swap-label">
-              <span className="text-gray">{topLeftLabel}:</span>
+              <span className="text-gray">{topRightLabel}:</span>
               &nbsp;{tokenBalance}
             </span>
           )}
