@@ -273,12 +273,12 @@ const CONTRACTS = {
     OrderExecutor: AddressZero,
     OrderBookReader: "0xf3689f773b4C464a04C3408eee0f8597ae9EBd99",
 
-    PositionRouter: AddressZero,
+    PositionRouter: "0x188ebB85deb6Eb8fD050FFe789404113A52522aB",
     PositionManager: AddressZero,
 
     UniswapGmxEthPool: AddressZero,
-    ReferralStorage: AddressZero,
-    ReferralReader: AddressZero,
+    ReferralStorage: "0xb14d58Ced7047Df5a0ef3296cA64614C8A2Eb4B9",
+    ReferralReader: "0x6C4d0404BE3182b06f3A9f17dcf1bf75bF88A655",
 
     Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
   },
