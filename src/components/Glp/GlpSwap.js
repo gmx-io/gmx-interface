@@ -413,8 +413,10 @@ export default function GlpSwap(props) {
   ]);
 
   const switchSwapOption = (hash = "") => {
+    const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
     history.push(`${history.location.pathname}#${hash}`);
     props.setIsBuying(hash === "redeem" ? false : true);
+    window.scrollTo(0, currentScrollPosition);
   };
 
   const fillMaxAmount = () => {
@@ -850,7 +852,13 @@ export default function GlpSwap(props) {
           )}
 
           <div className="AppOrder-ball-container">
-            <button className="AppOrder-ball">
+            <button
+              className="AppOrder-ball"
+              onClick={() => {
+                setIsBuying(!isBuying);
+                switchSwapOption(isBuying ? "redeem" : "");
+              }}
+            >
               <IoChevronDownOutline className="AppOrder-ball-icon" />
             </button>
           </div>
