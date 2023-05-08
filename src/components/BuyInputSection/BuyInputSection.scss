@@ -1,4 +1,8 @@
 .buy-input {
+  .buy-input-top-row {
+    display: inline-flex;
+    justify-content: space-between;
+  }
   .InputSection-static-input {
     font-size: var(--font-lg);
   }

@@ -40,7 +40,7 @@ export default function BuyInputSection({
 
   return (
     <div className="Exchange-swap-section buy-input" onClick={handleBoxClick}>
-      <div className="Exchange-swap-section-top">
+      <div className="buy-input-top-row">
         <div className="text-gray">
           {topLeftLabel}
           {balance && `: ${balance}`}
