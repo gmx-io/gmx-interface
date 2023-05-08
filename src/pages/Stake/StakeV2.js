@@ -50,6 +50,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import GMXAprTooltip from "components/Stake/GMXAprTooltip";
 import Button from "components/Button/Button";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 
 const { AddressZero } = ethers.constants;
 
@@ -156,30 +157,18 @@ function StakeModal(props) {
   return (
     <div className="StakeModal">
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
-        <div className="Exchange-swap-section">
-          <div className="Exchange-swap-section-top">
-            <div className="muted">
-              <div className="Exchange-swap-usd">
-                <Trans>Stake</Trans>
-              </div>
-            </div>
-            <div className="muted align-right clickable" onClick={() => setValue(formatAmountFree(maxAmount, 18, 18))}>
-              <Trans>Max: {formatAmount(maxAmount, 18, 4, true)}</Trans>
-            </div>
-          </div>
-          <div className="Exchange-swap-section-bottom">
-            <div>
-              <input
-                type="number"
-                placeholder="0.0"
-                className="Exchange-swap-input"
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-              />
-            </div>
-            <div className="PositionEditor-token-symbol">{stakingTokenSymbol}</div>
-          </div>
-        </div>
+        <BuyInputSection
+          topLeftLabel={t`Stake`}
+          topRightLabel={t`Max`}
+          tokenBalance={formatAmount(maxAmount, 18, 4, true)}
+          onClickTopRightLabel={() => setValue(formatAmountFree(maxAmount, 18, 18))}
+          inputValue={value}
+          onInputValueChange={(e) => setValue(e.target.value)}
+          showMaxButton={false}
+        >
+          {stakingTokenSymbol}
+        </BuyInputSection>
+
         <div className="Exchange-swap-button-container">
           <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
             {getPrimaryText()}
@@ -281,30 +270,17 @@ function UnstakeModal(props) {
   return (
     <div className="StakeModal">
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
-        <div className="Exchange-swap-section">
-          <div className="Exchange-swap-section-top">
-            <div className="muted">
-              <div className="Exchange-swap-usd">
-                <Trans>Unstake</Trans>
-              </div>
-            </div>
-            <div className="muted align-right clickable" onClick={() => setValue(formatAmountFree(maxAmount, 18, 18))}>
-              <Trans>Max: {formatAmount(maxAmount, 18, 4, true)}</Trans>
-            </div>
-          </div>
-          <div className="Exchange-swap-section-bottom">
-            <div>
-              <input
-                type="number"
-                placeholder="0.0"
-                className="Exchange-swap-input"
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-              />
-            </div>
-            <div className="PositionEditor-token-symbol">{unstakingTokenSymbol}</div>
-          </div>
-        </div>
+        <BuyInputSection
+          topLeftLabel={t`Unstake`}
+          topRightLabel={t`Max`}
+          tokenBalance={formatAmount(maxAmount, 18, 4, true)}
+          onClickTopRightLabel={() => setValue(formatAmountFree(maxAmount, 18, 18))}
+          inputValue={value}
+          onInputValueChange={(e) => setValue(e.target.value)}
+          showMaxButton={false}
+        >
+          {unstakingTokenSymbol}
+        </BuyInputSection>
         {reservedAmount && reservedAmount.gt(0) && (
           <div className="Modal-note">
             You have {formatAmount(reservedAmount, 18, 2, true)} tokens reserved for vesting.
@@ -429,33 +405,18 @@ function VesterDepositModal(props) {
     <SEO title={getPageTitle("Earn")}>
       <div className="StakeModal">
         <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title} className="non-scrollable">
-          <div className="Exchange-swap-section">
-            <div className="Exchange-swap-section-top">
-              <div className="muted">
-                <div className="Exchange-swap-usd">
-                  <Trans>Deposit</Trans>
-                </div>
-              </div>
-              <div
-                className="muted align-right clickable"
-                onClick={() => setValue(formatAmountFree(maxAmount, 18, 18))}
-              >
-                <Trans>Max: {formatAmount(maxAmount, 18, 4, true)}</Trans>
-              </div>
-            </div>
-            <div className="Exchange-swap-section-bottom">
-              <div>
-                <input
-                  type="number"
-                  placeholder="0.0"
-                  className="Exchange-swap-input"
-                  value={value}
-                  onChange={(e) => setValue(e.target.value)}
-                />
-              </div>
-              <div className="PositionEditor-token-symbol">esGMX</div>
-            </div>
-          </div>
+          <BuyInputSection
+            topLeftLabel={t`Deposit`}
+            topRightLabel={t`Max`}
+            tokenBalance={formatAmount(maxAmount, 18, 4, true)}
+            onClickTopRightLabel={() => setValue(formatAmountFree(maxAmount, 18, 18))}
+            inputValue={value}
+            onInputValueChange={(e) => setValue(e.target.value)}
+            showMaxButton={false}
+          >
+            esGMX
+          </BuyInputSection>
+
           <div className="VesterDepositModal-info-rows">
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">
