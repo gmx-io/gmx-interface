@@ -639,7 +639,7 @@ table.Exchange-list th {
   border-radius: 0.3rem;
   background: linear-gradient(90deg, rgba(30, 34, 61, 0.9) 0%, rgba(38, 43, 71, 0.9) 100%);
   box-shadow: inset 0px 0px 3rem 0.5rem rgba(255, 255, 255, 0.01);
-  outline: 2px solid transparent;
+  outline: 1px solid transparent;
 }
 
 .Exchange-swap-section:hover,
