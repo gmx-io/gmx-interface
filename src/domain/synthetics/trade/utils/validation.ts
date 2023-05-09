@@ -5,7 +5,7 @@ import { PositionInfo } from "domain/synthetics/positions";
 import { TokenData, TokensRatio } from "domain/synthetics/tokens";
 import { getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber } from "ethers";
-import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE, USD_DECIMALS, isAddressZero } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR, DUST_USD, MAX_ALLOWED_LEVERAGE, USD_DECIMALS, isAddressZero } from "lib/legacy";
 import { expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 import { NextPositionValues, SwapPathStats, TradeFees } from "../types";
 
@@ -297,7 +297,7 @@ export function getDecreaseError(p: {
     }
 
     if (
-      !existingPosition.sizeInUsd.eq(sizeDeltaUsd) &&
+      existingPosition.sizeInUsd.sub(sizeDeltaUsd).gt(DUST_USD) &&
       nextPositionValues?.nextCollateralUsd?.lt(minCollateralUsd || 0)
     ) {
       return [t`Leftover collateral below ${formatAmount(minCollateralUsd, USD_DECIMALS, 2)} USD`];

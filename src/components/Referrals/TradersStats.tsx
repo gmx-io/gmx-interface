@@ -225,6 +225,7 @@ function TradersStats({
                                               .join(", ")}
                                           </Trans>
                                           <br />
+                                          <br />
                                         </>
                                       )}
                                       <StatsTooltipRow

@@ -94,7 +94,7 @@ export function SyntheticsPage(p: Props) {
   const [tradeType, setTradeType] = useLocalStorageSerializeKey(getSyntheticsTradeTypeKey(chainId), TradeType.Long);
   const [tradeMode, setTradeMode] = useLocalStorageSerializeKey(getSyntheticsTradeModeKey(chainId), TradeMode.Market);
   const tradeFlags = useTradeFlags(tradeType!, tradeMode!);
-  const { isSwap, isLong } = tradeFlags;
+  const { isSwap, isLong, isTrigger } = tradeFlags;
 
   const availableTokensOptions = useAvailableTokenOptions(chainId);
   const { indexTokens, tokensMap } = availableTokensOptions;
@@ -121,7 +121,30 @@ export function SyntheticsPage(p: Props) {
     getSyntheticsMarketAddressKey(chainId, tradeType, toTokenAddress),
     undefined
   );
+  const onSelectMarketAddress = useCallback(
+    (marketAddress) => {
+      const marketInfo = getByKey(marketsInfoData, marketAddress);
+
+      if (isTrigger && marketInfo) {
+        localStorage.setItem(
+          JSON.stringify(getSyntheticsToTokenAddressKey(chainId, isSwap)),
+          marketInfo.indexToken.address
+        );
+        localStorage.setItem(
+          JSON.stringify(getSyntheticsMarketAddressKey(chainId, tradeType, marketInfo.indexToken.address)),
+          marketInfo.indexToken.address
+        );
+      } else {
+        setMarketAddress(marketAddress);
+      }
+    },
+    [chainId, isSwap, isTrigger, marketsInfoData, setMarketAddress, tradeType]
+  );
   const marketInfo = getByKey(marketsInfoData, marketAddress);
+  console.log("bra", {
+    marketAddress,
+    toTokenAddress,
+  });
 
   const [collateralAddress, setCollateralAddress] = useLocalStorageSerializeKey<string | undefined>(
     getSyntheticsCollateralAddressKey(chainId, tradeType, marketAddress),
@@ -340,7 +363,7 @@ export function SyntheticsPage(p: Props) {
               positionsInfo={positionsInfoData}
               virtualInventoryForPositions={virtualInventoryForPositions}
               setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
-              onSelectMarketAddress={setMarketAddress}
+              onSelectMarketAddress={onSelectMarketAddress}
               onSelectCollateralAddress={setCollateralAddress}
               onSelectFromTokenAddress={setFromTokenAddress}
               onSelectToTokenAddress={setToTokenAddress}

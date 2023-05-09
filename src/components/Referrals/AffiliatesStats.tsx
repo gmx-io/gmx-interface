@@ -456,6 +456,7 @@ function AffiliatesStats({
                                               .join(", ")}
                                           </Trans>
                                           <br />
+                                          <br />
                                         </>
                                       )}
                                       <StatsTooltipRow

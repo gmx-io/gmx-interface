@@ -9,7 +9,7 @@ const SUBGRAPH_URLS = {
     // referrals: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-arbitrum-referrals",
     // TODO: Test refferals updates
     referrals:
-      "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-referrals/version/synts-stats-230502230837-32d9120/api",
+      "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-referrals/version/synts-stats-230509054500-2deb6a4/api",
     nissohVault: "https://api.thegraph.com/subgraphs/name/nissoh/gmx-vault",
   },
 
@@ -18,7 +18,8 @@ const SUBGRAPH_URLS = {
     stats: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-stats",
     // TODO: Test refferals updates
     // referrals: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-referrals",
-    referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-avalanche-referrals/api",
+    referrals:
+      "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-avalanche-referrals/version/synts-stats-230509054250-2deb6a4/api",
   },
 
   [AVALANCHE_FUJI]: {
