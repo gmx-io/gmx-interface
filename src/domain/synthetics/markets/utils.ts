@@ -12,7 +12,7 @@ import { ContractMarketPrices, Market, MarketInfo, PnlFactorType } from "./types
 export function getMarketFullName(p: { longToken: Token; shortToken: Token; indexToken: Token; isSpotOnly: boolean }) {
   const { indexToken, longToken, shortToken, isSpotOnly } = p;
 
-  return `${getMarketIndexName({ indexToken, isSpotOnly })} ${getMarketPoolName({ longToken, shortToken })}`;
+  return `${getMarketIndexName({ indexToken, isSpotOnly })} [${getMarketPoolName({ longToken, shortToken })}]`;
 }
 
 export function getMarketIndexName(p: { indexToken: Token; isSpotOnly: boolean }) {
@@ -28,7 +28,11 @@ export function getMarketIndexName(p: { indexToken: Token; isSpotOnly: boolean }
 export function getMarketPoolName(p: { longToken: Token; shortToken: Token }) {
   const { longToken, shortToken } = p;
 
-  return `[${longToken.symbol}-${shortToken.symbol}]`;
+  if (longToken.address === shortToken.address) {
+    return longToken.symbol;
+  }
+
+  return `${longToken.symbol}-${shortToken.symbol}`;
 }
 
 export function getTokenPoolType(marketInfo: MarketInfo, tokenAddress: string) {

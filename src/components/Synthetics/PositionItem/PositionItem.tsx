@@ -50,12 +50,12 @@ export function PositionItem(p: Props) {
             />
             <StatsTooltipRow label={t`PnL`} value={formatDeltaUsd(p.position?.pnl) || "..."} showDollar={false} />
             <StatsTooltipRow
-              label={t`Accured Borrow fee`}
+              label={t`Accrued Borrow fee`}
               value={formatUsd(p.position.pendingBorrowingFeesUsd?.mul(-1)) || "..."}
               showDollar={false}
             />
             <StatsTooltipRow
-              label={t`Accurred Funding fee`}
+              label={t`Accrued Funding fee`}
               value={formatUsd(p.position.pendingFundingFeesUsd.mul(-1)) || "..."}
               showDollar={false}
             />
@@ -257,11 +257,11 @@ export function PositionItem(p: Props) {
                   <div>
                     <Trans>
                       Click on a row to select the position's market, then use the swap box to increase your position
-                      size, or to set stop-loss / take-profit orders. if needed.
+                      size or to set stop-loss / take-profit orders.
                     </Trans>
                     <br />
                     <br />
-                    <Trans>Use the "Close" button to reduce your position size</Trans>
+                    <Trans>Use the "Close" button to reduce your position size.</Trans>
                   </div>
                 </div>
               )}

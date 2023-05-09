@@ -128,7 +128,7 @@ export function SyntheticsStats() {
                 <td>
                   <div className="cell">
                     <div>{getMarketIndexName(market)}</div>
-                    <div className="muted">{getMarketPoolName(market)}</div>
+                    <div className="muted">[{getMarketPoolName(market)}]</div>
                   </div>
                 </td>
                 <td>

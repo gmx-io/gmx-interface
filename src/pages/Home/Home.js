@@ -212,7 +212,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
             </div>
             <div className="Home-benefit-description">
               <Trans>
-                Enter and exit positions with minimal spread and zero price impact. Get the optimal price without
+                Enter and exit positions with minimal spread and low price impact. Get the optimal price without
                 incurring additional costs.
               </Trans>
             </div>

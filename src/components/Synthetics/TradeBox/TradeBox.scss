@@ -78,7 +78,11 @@
 .SwapBox-market-selector-dropdown {
   .Dropdown-options {
     top: 2.8rem;
-    min-width: 22rem;
+    text-align: right;
+  }
+
+  .Dropdown-current-arrow {
+    margin-left: 0.8rem;
   }
 }
 

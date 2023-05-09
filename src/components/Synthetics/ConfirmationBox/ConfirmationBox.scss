@@ -3,6 +3,12 @@
   flex-direction: column;
 }
 
+.Confirmation-box {
+  .Modal-body {
+    overflow-x: hidden;
+  }
+}
+
 .ConfirmationBox-approve-tokens {
   display: flex;
   flex-direction: column;

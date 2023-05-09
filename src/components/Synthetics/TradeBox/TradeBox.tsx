@@ -236,6 +236,10 @@ export function TradeBox(p: Props) {
 
     const triggerRatioValue = parseValue(triggerRatioInputValue, USD_DECIMALS);
 
+    if (!triggerRatioValue) {
+      return { markRatio };
+    }
+
     const triggerRatio: TokensRatio = {
       ratio: triggerRatioValue?.gt(0) ? triggerRatioValue : markRatio.ratio,
       largestToken: markRatio.largestToken,
@@ -286,7 +290,7 @@ export function TradeBox(p: Props) {
         tokenIn: fromToken,
         tokenOut: toToken,
         amountIn: fromTokenAmount,
-        triggerRatio: triggerRatio,
+        triggerRatio: triggerRatio || markRatio,
         isLimit,
         findSwapPath: swapRoute.findSwapPath,
       });
@@ -295,7 +299,7 @@ export function TradeBox(p: Props) {
         tokenIn: fromToken,
         tokenOut: toToken,
         amountOut: toTokenAmount,
-        triggerRatio: triggerRatio,
+        triggerRatio: triggerRatio || markRatio,
         isLimit,
         findSwapPath: swapRoute.findSwapPath,
       });
@@ -308,6 +312,7 @@ export function TradeBox(p: Props) {
     isLimit,
     isSwap,
     isWrapOrUnwrap,
+    markRatio,
     swapRoute.findSwapPath,
     toToken,
     toTokenAmount,
@@ -326,7 +331,7 @@ export function TradeBox(p: Props) {
         collateralToken,
         isLong,
         initialCollateralAmount: fromTokenAmount,
-        leverage,
+        leverage: isLeverageEnabled ? leverage : undefined,
         isLimit,
         triggerPrice,
         savedAcceptablePriceImpactBps: acceptablePriceImpactBpsForLimitOrders,
@@ -341,7 +346,7 @@ export function TradeBox(p: Props) {
         collateralToken,
         isLong,
         sizeDeltaInTokens: toTokenAmount,
-        leverage,
+        leverage: isLeverageEnabled ? leverage : undefined,
         isLimit,
         triggerPrice,
         savedAcceptablePriceImpactBps: acceptablePriceImpactBpsForLimitOrders,
@@ -357,6 +362,7 @@ export function TradeBox(p: Props) {
     fromToken,
     fromTokenAmount,
     isIncrease,
+    isLeverageEnabled,
     isLimit,
     isLong,
     leverage,

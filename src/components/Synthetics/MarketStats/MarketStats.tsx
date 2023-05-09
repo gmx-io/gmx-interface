@@ -42,27 +42,15 @@ export function MarketStats(p: Props) {
         <div className="App-card-title-mark">
           <div className="App-card-title-mark-icon">
             <img className="MarketStats-gm-icon" src={getIcon(chainId, "gm")} alt="GM" />
-            {/* TODO: change to unified */}
-            {/* <img
-              src={getIcon(chainId, "network")}
-              width={20}
-              alt="arbitrum16Icon"
-              className="selected-network-symbol"
-            /> */}
           </div>
           <div className="App-card-title-mark-info">
             <div className="App-card-title-mark-title">{marketName}</div>
             <div className="App-card-title-mark-subtitle">GMX Market tokens</div>
           </div>
-          {/* TODO */}
-          {/* <div>
-            <AssetDropdown assetSymbol="GM" />
-          </div> */}
         </div>
       </div>
       <div className="App-card-divider" />
       <div className="App-card-content">
-        {/* <CardRow label={t`Market`} value={marketName} /> */}
         <CardRow label={t`Price`} value={formatUsd(marketPrice) || "..."} />
         <CardRow
           label={t`Wallet`}

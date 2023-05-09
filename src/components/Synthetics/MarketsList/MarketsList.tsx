@@ -193,7 +193,7 @@ export function MarketsList() {
                             <StatsTooltipRow
                               key={marketInfo.marketTokenAddress}
                               showDollar={false}
-                              label={getMarketPoolName(marketInfo)}
+                              label={`[${getMarketPoolName(marketInfo)}]`}
                               value={formatUsd(poolValueUsd)}
                             />
                           ))}
@@ -212,7 +212,7 @@ export function MarketsList() {
                             <StatsTooltipRow
                               key={market.marketTokenAddress}
                               showDollar={false}
-                              label={getMarketPoolName(market)}
+                              label={`[${getMarketPoolName(market)}]`}
                               value={`${formatFundingRate(fundingRateLong)} / ${formatFundingRate(fundingRateShort)}`}
                             />
                           ))}
@@ -276,7 +276,7 @@ export function MarketsList() {
                               <StatsTooltipRow
                                 key={marketInfo.marketTokenAddress}
                                 showDollar={false}
-                                label={getMarketPoolName(marketInfo)}
+                                label={`[${getMarketPoolName(marketInfo)}]`}
                                 value={`${formatFundingRate(fundingRateLong)} / ${formatFundingRate(fundingRateShort)}`}
                               />
                             ))}
@@ -300,7 +300,7 @@ export function MarketsList() {
                               <StatsTooltipRow
                                 key={marketInfo.marketTokenAddress}
                                 showDollar={false}
-                                label={getMarketPoolName(marketInfo)}
+                                label={`[${getMarketPoolName(marketInfo)}]`}
                                 value={`${formatFundingRate(fundingRateLong)} / ${formatFundingRate(fundingRateShort)}`}
                               />
                             ))}

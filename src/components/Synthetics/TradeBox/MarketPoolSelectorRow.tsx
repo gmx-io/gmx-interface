@@ -3,7 +3,7 @@ import { Dropdown, DropdownOption } from "components/Dropdown/Dropdown";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { AvailableMarketsOptions } from "domain/synthetics/trade/useAvailableMarketsOptions";
-import { Market } from "domain/synthetics/markets";
+import { Market, MarketInfo, getMarketPoolName } from "domain/synthetics/markets";
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { formatPercentage } from "lib/numbers";
@@ -11,7 +11,7 @@ import { useCallback, useMemo } from "react";
 
 export type Props = {
   indexToken?: Token;
-  selectedMarket?: Market;
+  selectedMarket?: MarketInfo;
   marketsOptions?: AvailableMarketsOptions;
   hasExistingPosition?: boolean;
   hasExistingOrder?: boolean;
@@ -62,12 +62,12 @@ export function MarketPoolSelectorRow(p: Props) {
       return (
         <div className="MarketSelector-tooltip-row">
           <Trans>
-            Insufficient liquidity in {selectedMarket?.name} market pool. <br />
+            Insufficient liquidity in {selectedMarket ? getMarketPoolName(selectedMarket) : "..."} market pool. <br />
             <div
               className="MarketSelector-tooltip-row-action clickable underline muted "
               onClick={() => onSelectMarketAddress(maxLiquidityMarket!.marketTokenAddress)}
             >
-              Switch to {maxLiquidityMarket!.name} market pool.
+              Switch to {getMarketPoolName(maxLiquidityMarket)} market pool.
             </div>
           </Trans>
         </div>
@@ -78,14 +78,14 @@ export function MarketPoolSelectorRow(p: Props) {
       return (
         <div className="MarketSelector-tooltip-row">
           <Trans>
-            You have an existing position in the {marketWithPosition.name} market pool.{" "}
+            You have an existing position in the {getMarketPoolName(marketWithPosition)} market pool.{" "}
             <div
               className="MarketSelector-tooltip-row-action clickable underline muted"
               onClick={() => {
                 onSelectMarketAddress(marketWithPosition.marketTokenAddress);
               }}
             >
-              Switch to {marketWithPosition.name} market pool.
+              Switch to {getMarketPoolName(marketWithPosition)} market pool.
             </div>{" "}
           </Trans>
         </div>
@@ -96,14 +96,14 @@ export function MarketPoolSelectorRow(p: Props) {
       return (
         <div className="MarketSelector-tooltip-row">
           <Trans>
-            You have an existing order in the {marketWithOrder.name} market pool.{" "}
+            You have an existing order in the {getMarketPoolName(marketWithOrder)} market pool.{" "}
             <div
               className="MarketSelector-tooltip-row-action clickable underline muted"
               onClick={() => {
                 onSelectMarketAddress(marketWithOrder.marketTokenAddress);
               }}
             >
-              Switch to {marketWithOrder.name} market pool.
+              Switch to {getMarketPoolName(marketWithOrder)} market pool.
             </div>{" "}
           </Trans>
         </div>
@@ -121,12 +121,12 @@ export function MarketPoolSelectorRow(p: Props) {
         <div className="MarketSelector-tooltip-row">
           <Trans>
             You can get a {formatPercentage(currentPriceImpactBps?.sub(minPriceImpactBps))} better execution price in
-            the {minPriceImpactMarket.name} market pool.
+            the {getMarketPoolName(minPriceImpactMarket)} market pool.
             <div
               className="MarketSelector-tooltip-row-action clickable underline muted"
               onClick={() => onSelectMarketAddress(minPriceImpactMarket.marketTokenAddress)}
             >
-              Switch to {minPriceImpactMarket.name} market pool.
+              Switch to {getMarketPoolName(minPriceImpactMarket)} market pool.
             </div>
           </Trans>
         </div>
@@ -148,13 +148,13 @@ export function MarketPoolSelectorRow(p: Props) {
     minPriceImpactBps,
     minPriceImpactMarket,
     onSelectMarketAddress,
-    selectedMarket?.name,
+    selectedMarket,
   ]);
 
   const dropdownOptions: DropdownOption[] =
     availableMarkets?.map((market) => ({
       value: market.marketTokenAddress,
-      label: market.name,
+      label: getMarketPoolName(market),
     })) || [];
 
   return (

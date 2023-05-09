@@ -10,7 +10,12 @@ import {
   isIncreaseOrderType,
   isSwapOrderType,
 } from "domain/synthetics/orders";
-import { adaptToV1TokenInfo, convertToUsd, getTokensRatioByAmounts } from "domain/synthetics/tokens";
+import {
+  adaptToV1TokenInfo,
+  convertToTokenAmount,
+  convertToUsd,
+  getTokensRatioByAmounts,
+} from "domain/synthetics/tokens";
 import { getMarkPrice } from "domain/synthetics/trade";
 import { getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
@@ -28,19 +33,31 @@ type Props = {
 };
 
 export function OrderItem(p: Props) {
+  const isCollateralSwap = p.order.initialCollateralToken.address !== p.order.targetCollateralToken.address;
+
   function getCollateralText() {
-    const collateralAmount = p.order.initialCollateralDeltaAmount;
-    const collateralToken = p.order.initialCollateralToken;
+    const initialCollateralToken = p.order.initialCollateralToken;
+    const targetCollateralToken = p.order.targetCollateralToken;
 
-    const collateralUsd = collateralToken?.prices
-      ? convertToUsd(collateralAmount, collateralToken.decimals, collateralToken.prices.maxPrice)
-      : undefined;
+    const collateralUsd = convertToUsd(
+      p.order.initialCollateralDeltaAmount,
+      initialCollateralToken.decimals,
+      initialCollateralToken.prices.minPrice
+    );
 
-    const usdText = formatUsd(collateralUsd);
+    const targetCollateralAmount = convertToTokenAmount(
+      collateralUsd,
+      targetCollateralToken.decimals,
+      targetCollateralToken.prices.minPrice
+    );
 
-    const tokenAmountText = formatTokenAmount(collateralAmount, collateralToken?.decimals, collateralToken?.symbol);
+    const tokenAmountText = formatTokenAmount(
+      targetCollateralAmount,
+      targetCollateralToken?.decimals,
+      targetCollateralToken?.symbol
+    );
 
-    return `${usdText} (${tokenAmountText})`;
+    return `${tokenAmountText}`;
   }
 
   function getSwapRatioText() {
@@ -109,6 +126,20 @@ export function OrderItem(p: Props) {
               <>
                 <StatsTooltipRow label={t`Market`} value={positionOrder.marketInfo.name} showDollar={false} />
                 <StatsTooltipRow label={t`Collateral`} value={getCollateralText()} showDollar={false} />
+
+                {isCollateralSwap && (
+                  <>
+                    <br />
+                    <Trans>
+                      {formatTokenAmount(
+                        p.order.initialCollateralDeltaAmount,
+                        p.order.initialCollateralToken.decimals,
+                        p.order.initialCollateralToken.symbol
+                      )}{" "}
+                      will be swapped to {p.order.targetCollateralToken.symbol} on order execution.
+                    </Trans>
+                  </>
+                )}
               </>
             );
           }}
@@ -248,7 +279,28 @@ export function OrderItem(p: Props) {
               <div className="label">
                 <Trans>Collateral</Trans>
               </div>
-              <div>{getCollateralText()}</div>
+              <div>
+                {isCollateralSwap ? (
+                  <Tooltip
+                    handle={getCollateralText()}
+                    position="right-bottom"
+                    renderContent={() => {
+                      return (
+                        <Trans>
+                          {formatTokenAmount(
+                            p.order.initialCollateralDeltaAmount,
+                            p.order.initialCollateralToken.decimals,
+                            p.order.initialCollateralToken.symbol
+                          )}{" "}
+                          will be swapped to {p.order.targetCollateralToken.symbol} on order execution.
+                        </Trans>
+                      );
+                    }}
+                  />
+                ) : (
+                  getCollateralText()
+                )}
+              </div>
             </div>
           )}
 

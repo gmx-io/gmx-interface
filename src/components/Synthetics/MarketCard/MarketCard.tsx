@@ -60,8 +60,8 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
               position="right-bottom"
               renderContent={() => (
                 <Trans>
-                  The position will be opened at {formatUsd(entryPrice)} with a max slippage of{" "}
-                  {allowedSlippage ? (allowedSlippage / 100.0).toFixed(2) : "..."}%.
+                  The position will be opened at a reference price of {formatUsd(entryPrice)} not accounting for price
+                  impact with a max slippage of {allowedSlippage ? (allowedSlippage / 100.0).toFixed(2) : "..."}%.
                   <br />
                   <br />
                   The slippage amount can be configured under Settings, found by clicking on your address at the top
@@ -83,7 +83,8 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
               position="right-bottom"
               renderContent={() => (
                 <Trans>
-                  If you have an existing position, the position will be closed at {formatUsd(entryPrice)}.
+                  If you have an existing position, the position will be closed at a reference price of{" "}
+                  {formatUsd(entryPrice)} not accounting for price impact.
                   <br />
                   <br />
                   This exit price will change with the price of the asset.
@@ -104,7 +105,18 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
         <ExchangeInfoRow
           label={t`Funding Fee`}
           value={
-            fundingRate ? `${fundingRate.gt(0) ? "+" : "-"}${formatAmount(fundingRate.abs(), 30, 4)}% / 1h` : "..."
+            <Tooltip
+              className="al-swap"
+              handle={
+                fundingRate ? `${fundingRate.gt(0) ? "+" : "-"}${formatAmount(fundingRate.abs(), 30, 4)}% / 1h` : "..."
+              }
+              position="right-bottom"
+              renderContent={() => (
+                <div>
+                  <Trans>Positions earn a funding fee if positive and pays if negative.</Trans>
+                </div>
+              )}
+            />
           }
         />
 

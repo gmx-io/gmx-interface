@@ -87,7 +87,7 @@ export function GmList() {
                           <div className="App-card-info-title">
                             {getMarketIndexName({ indexToken, isSpotOnly: market?.isSpotOnly })}
                           </div>
-                          <div className="App-card-info-subtitle">{getMarketPoolName({ longToken, shortToken })}</div>
+                          <div className="App-card-info-subtitle">[{getMarketPoolName({ longToken, shortToken })}]</div>
                         </div>
                       </div>
                     </td>

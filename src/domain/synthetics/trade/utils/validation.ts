@@ -69,6 +69,10 @@ export function getSwapError(p: {
     return [t`Enter an amount`];
   }
 
+  if (isLimit && !triggerRatio?.ratio.gt(0)) {
+    return [t`Enter a  price`];
+  }
+
   if (fromTokenAmount.gt(fromToken.balance || BigNumber.from(0))) {
     return [t`Insufficient ${fromToken?.symbol} balance`];
   }
@@ -89,11 +93,7 @@ export function getSwapError(p: {
     return [t`Fees exceed Pay amount`];
   }
 
-  if (isLimit) {
-    if (!triggerRatio?.ratio.gt(0)) {
-      return [t`Enter a  price`];
-    }
-
+  if (isLimit && triggerRatio) {
     const isRatioInverted = [fromToken.wrappedAddress, fromToken.address].includes(triggerRatio.largestToken.address);
 
     if (triggerRatio && !isRatioInverted && markRatio?.ratio.lt(triggerRatio.ratio)) {

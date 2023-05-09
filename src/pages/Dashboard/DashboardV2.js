@@ -684,7 +684,7 @@ export default function DashboardV2() {
               <Trans>Tokens</Trans> <img src={currentIcons.network} width="24" alt="Network Icon" />
             </div>
             <div className="Page-description">
-              <Trans>Platform, GLP and GM index tokens.</Trans>
+              <Trans>Platform, GLP and GM tokens.</Trans>
             </div>
           </div>
           <div className="DashboardV2-token-cards">

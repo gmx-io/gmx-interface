@@ -729,6 +729,8 @@ export function ConfirmationBox(p: Props) {
     const borrowingRate = getBorrowingFactorPerPeriod(marketInfo!, isLong, CHART_PERIODS["1h"]).mul(100);
     const fundigRate = getFundingFactorPerPeriod(marketInfo!, isLong, CHART_PERIODS["1h"]).mul(100);
 
+    const isCollateralSwap = !getIsEquivalentTokens(fromToken!, collateralToken!);
+
     return (
       <>
         <div>
@@ -826,41 +828,73 @@ export function ConfirmationBox(p: Props) {
             }
           />
 
-          <ExchangeInfoRow label={t`Collateral (${collateralToken?.symbol})`} isTop>
-            <Tooltip
-              handle={formatUsd(increaseAmounts?.collateralUsdAfterFees)}
-              position="right-top"
-              renderContent={() => {
-                return (
-                  <>
-                    <Trans>Your position's collateral after deducting fees.</Trans>
-                    <br />
-                    <br />
-                    <StatsTooltipRow
-                      label={t`Pay Amount`}
-                      value={formatUsd(increaseAmounts?.initialCollateralUsd) || "-"}
-                      showDollar={false}
-                    />
-                    <StatsTooltipRow
-                      label={t`Fees`}
-                      value={
-                        fees?.totalFees?.deltaUsd && !fees.totalFees.deltaUsd.eq(0)
-                          ? `${fees.totalFees.deltaUsd.gt(0) ? "+" : "-"}${formatUsd(fees.totalFees.deltaUsd.abs())}`
-                          : "0.00$"
-                      }
-                      showDollar={false}
-                    />
-                    <div className="Tooltip-divider" />
-                    <StatsTooltipRow
-                      label={t`Collateral`}
-                      value={formatUsd(increaseAmounts?.collateralUsdAfterFees) || "-"}
-                      showDollar={false}
-                    />
-                  </>
-                );
-              }}
-            />
-          </ExchangeInfoRow>
+          <div className="Exchange-info-row top-line">
+            <div>
+              {isCollateralSwap ? (
+                <Tooltip
+                  handle={
+                    <span className="Exchange-info-label">
+                      <Trans>Collateral ({collateralToken?.symbol})</Trans>
+                    </span>
+                  }
+                  position="left-top"
+                  renderContent={() => {
+                    return (
+                      <div>
+                        <Trans>
+                          {fromToken?.symbol} will be swapped to {collateralToken?.symbol} on order execution.{" "}
+                        </Trans>{" "}
+                        {isLimit && (
+                          <Trans>
+                            Collateral value may differ due to different Price Impact at the time of execution.
+                          </Trans>
+                        )}
+                      </div>
+                    );
+                  }}
+                />
+              ) : (
+                <span className="Exchange-info-label">
+                  <Trans>Collateral ({collateralToken?.symbol})</Trans>
+                </span>
+              )}
+            </div>
+            <div className="align-right">
+              <Tooltip
+                handle={formatUsd(increaseAmounts?.collateralUsdAfterFees)}
+                position="right-top"
+                renderContent={() => {
+                  return (
+                    <>
+                      <Trans>Your position's collateral after deducting fees.</Trans>
+                      <br />
+                      <br />
+                      <StatsTooltipRow
+                        label={t`Pay Amount`}
+                        value={formatUsd(increaseAmounts?.initialCollateralUsd) || "-"}
+                        showDollar={false}
+                      />
+                      <StatsTooltipRow
+                        label={t`Fees`}
+                        value={
+                          fees?.totalFees?.deltaUsd && !fees.totalFees.deltaUsd.eq(0)
+                            ? `${fees.totalFees.deltaUsd.gt(0) ? "+" : "-"}${formatUsd(fees.totalFees.deltaUsd.abs())}`
+                            : "0.00$"
+                        }
+                        showDollar={false}
+                      />
+                      <div className="Tooltip-divider" />
+                      <StatsTooltipRow
+                        label={t`Collateral`}
+                        value={formatUsd(increaseAmounts?.collateralUsdAfterFees) || "-"}
+                        showDollar={false}
+                      />
+                    </>
+                  );
+                }}
+              />
+            </div>
+          </div>
 
           <TradeFeesRow
             {...fees}
