@@ -192,6 +192,14 @@ msgid "Accrued Borrow Fee"
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Accrued Borrow fee"
+msgstr ""
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Accrued Funding fee"
+msgstr ""
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Accrued Negative Funding Fee"
 msgstr ""
 
@@ -200,12 +208,12 @@ msgid "Accrued Positive Funding Fee"
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Accured Borrow fee"
-msgstr ""
+#~ msgid "Accured Borrow fee"
+#~ msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Accurred Funding fee"
-msgstr ""
+#~ msgid "Accurred Funding fee"
+#~ msgstr ""
 
 #: src/pages/Actions/Actions.js
 msgid "Actions"
@@ -780,8 +788,12 @@ msgid "Claims"
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Click on a row to select the position's market, then use the swap box to increase your position size, or to set stop-loss / take-profit orders. if needed."
+msgid "Click on a row to select the position's market, then use the swap box to increase your position size or to set stop-loss / take-profit orders."
 msgstr ""
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#~ msgid "Click on a row to select the position's market, then use the swap box to increase your position size, or to set stop-loss / take-profit orders. if needed."
+#~ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 msgid "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
@@ -872,6 +884,7 @@ msgstr "担保"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -890,6 +903,10 @@ msgstr "担保の種類"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "Collateral Spread"
+msgstr ""
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "Collateral value may differ due to different Price Impact at the time of execution."
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -1246,6 +1263,7 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1552,8 +1570,12 @@ msgid "Enter an amount"
 msgstr "額を入力"
 
 #: src/pages/Home/Home.js
-msgid "Enter and exit positions with minimal spread and zero price impact. Get the optimal price without incurring additional costs."
-msgstr "最小のスプレッドで価格への影響なしでポジションにエントリーおよび手仕舞い。追加コストなしで最適価格を入手。"
+msgid "Enter and exit positions with minimal spread and low price impact. Get the optimal price without incurring additional costs."
+msgstr ""
+
+#: src/pages/Home/Home.js
+#~ msgid "Enter and exit positions with minimal spread and zero price impact. Get the optimal price without incurring additional costs."
+#~ msgstr "最小のスプレッドで価格への影響なしでポジションにエントリーおよび手仕舞い。追加コストなしで最適価格を入手。"
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrderEditor.js
@@ -1946,13 +1968,17 @@ msgstr ""
 msgid "I am aware of the trigger orders"
 msgstr "トリガー注文について承知しています"
 
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "If you have an existing position, the position will be closed at a reference price of {0} not accounting for price impact.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "If you have an existing position, the position will be closed at {0} USD.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
 msgstr "もし現在ポジションがある場合、そのポジションは{0} USDでクローズされます。<0/><1/>この手仕舞い価格はアセットの価格変動に従い変化します。<2/><3/><4>さらなる詳細</4>"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "If you have an existing position, the position will be closed at {0}.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
-msgstr ""
+#~ msgid "If you have an existing position, the position will be closed at {0}.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionShare.js
 msgid "Image generation error, please refresh and try again."
@@ -3071,7 +3097,11 @@ msgid "Pending {0} approval"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
-msgid "Platform, GLP and GM index tokens."
+#~ msgid "Platform, GLP and GM index tokens."
+#~ msgstr ""
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "Platform, GLP and GM tokens."
 msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.js
@@ -3151,6 +3181,10 @@ msgstr "ポジション"
 #: src/pages/Exchange/Exchange.js
 msgid "Positions ({0})"
 msgstr "ポジション ({0})"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Positions earn a funding fee if positive and pays if negative."
+msgstr ""
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Positions{0}"
@@ -3444,8 +3478,8 @@ msgid "Referrals <0/>"
 msgstr ""
 
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-msgid "Remaining {0} fees will be deducted from the position collateral since the {depositWithdrawalText} amount is not sufficient."
-msgstr ""
+#~ msgid "Remaining {0} fees will be deducted from the position collateral since the {depositWithdrawalText} amount is not sufficient."
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
@@ -4103,13 +4137,17 @@ msgstr "価格の条件が満たされ、さらに十分な流動性が存在し
 msgid "The pending borrow fee will be charged on this transaction."
 msgstr ""
 
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "The position will be opened at a reference price of {0} not accounting for price impact with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
 msgstr "ポジションは最大スリッページ {1}%で{0} USDでオープンされます。<0/><1/>スリッページを変更するには、ウォレット接続後にページの右上に表示されるアドレスをクリックしたときに表れる設定メニューで設定してください。<2/><3/><4>詳細情報</4>"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "The position will be opened at {0} with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
-msgstr ""
+#~ msgid "The position will be opened at {0} with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
+#~ msgstr ""
 
 #: src/components/Exchange/OrdersList.js
 msgid "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
@@ -4563,12 +4601,16 @@ msgid "Updating..."
 msgstr "更新中..."
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Use the \"Close\" button to reduce your position size"
-msgstr ""
+#~ msgid "Use the \"Close\" button to reduce your position size"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 msgid "Use the \"Close\" button to reduce your position size, or to set stop-loss / take-profit orders."
 msgstr "ポジションサイズを縮小するには、\"クローズ\"ボタンを使用するか、またはストップロス注文かテイクプロフィット注文をセットしてください。"
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Use the \"Close\" button to reduce your position size."
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Use the \"Compound\" button to stake your Multiplier Points."
@@ -4811,6 +4853,7 @@ msgid "Withdraw {0} USD from {1} {longOrShortText}"
 msgstr "{1} {longOrShortText}から{0} USDを出金"
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Withdrawal"
 msgstr ""
 
@@ -5032,8 +5075,8 @@ msgid "collateral"
 msgstr "担保"
 
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-msgid "deposit"
-msgstr ""
+#~ msgid "deposit"
+#~ msgstr ""
 
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "fee"
@@ -5070,8 +5113,8 @@ msgid "view"
 msgstr "見る"
 
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-msgid "withdrawal"
-msgstr ""
+#~ msgid "withdrawal"
+#~ msgstr ""
 
 #: src/pages/Exchange/Exchange.js
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -5164,6 +5207,12 @@ msgstr "{0}が注文フォームで選択されました"
 msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
 msgstr "{0}トークンがべスティング用に入金された{1} esGMXからGMXに変換されました。"
 
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+msgid "{0} will be swapped to {1} on order execution."
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "{0} {1} not supported"
 msgstr ""
@@ -5230,6 +5279,10 @@ msgstr "{chainName}の全統計の開始日は{totalStatsStartDate}です。<0/>
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{count, plural, one {Order} other {# Orders}}"
+msgstr ""
+
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+msgid "{depositWithdrawalText} amount is insufficient to cover Fees. They are deducted from Collateral."
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
