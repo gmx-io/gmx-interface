@@ -700,6 +700,7 @@ table.Exchange-list th {
   font-size: var(--font-sm);
   background: var(--primary-btn-bg);
   border: none;
+  opacity: 0.8;
 }
 
 .Exchange-swap-max:hover {

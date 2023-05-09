@@ -22,7 +22,8 @@
   }
 
   &.checked {
-    background-color: #3d51ff;
+    background-color: var(--primary-btn-bg);
+    opacity: 0.8;
   }
   &.checked .handle {
     left: 14px;

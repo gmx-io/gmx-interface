@@ -2006,7 +2006,7 @@ export default function SwapBox(props) {
         {(isLong || isShort) && !isStopOrder && (
           <div className="Exchange-leverage-box">
             <ToggleSwitch
-              className="mb-sm"
+              className="Exchange-leverage-toggle-wrapper"
               isChecked={isLeverageSliderEnabled}
               setIsChecked={setIsLeverageSliderEnabled}
             >
