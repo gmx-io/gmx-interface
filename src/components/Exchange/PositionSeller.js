@@ -24,6 +24,7 @@ import {
   adjustForDecimals,
   isAddressZero,
   MAX_ALLOWED_LEVERAGE,
+  MAX_LEVERAGE,
 } from "lib/legacy";
 import { ARBITRUM, getChainName, getConstant, IS_NETWORK_DISABLED } from "config/chains";
 import { createDecreaseOrder, useHasOutdatedUi } from "domain/legacy";
@@ -312,6 +313,8 @@ export default function PositionSeller(props) {
   let nextLiquidationPrice;
   let isClosing;
   let sizeDelta;
+  let leverageWithoutDelta;
+  let nextLeverageWithoutDelta;
 
   let nextCollateral;
   let collateralDelta = bigNumberify(0);
@@ -321,6 +324,7 @@ export default function PositionSeller(props) {
 
   let isNotEnoughReceiveTokenLiquidity;
   let isCollateralPoolCapacityExceeded;
+  let isKeepLeverageNotPossible;
 
   let title;
   let fundingFee;
@@ -362,6 +366,13 @@ export default function PositionSeller(props) {
       fundingFee: position.fundingFee,
     });
 
+    leverageWithoutDelta = getLeverageNew({
+      size: position.size,
+      collateral: position.collateral,
+      fundingFee: fundingFee,
+      includeDelta: false,
+    });
+
     if (fromAmount) {
       isClosing = position.size.sub(fromAmount).lt(DUST_USD);
       positionFee = getMarginFee(fromAmount);
@@ -387,13 +398,6 @@ export default function PositionSeller(props) {
 
     if (keepLeverage && sizeDelta && !isClosing) {
       // when keepLeverage is on, the collateralDelta is the leftover after keeping the collateral required for the new position size
-      const leverageWithoutDelta = getLeverageNew({
-        size: position.size,
-        collateral: position.collateral,
-        fundingFee: fundingFee,
-        includeDelta: false,
-      });
-
       collateralDelta = position.collateral.sub(
         position.size.sub(sizeDelta).mul(BASIS_POINTS_DIVISOR).div(leverageWithoutDelta)
       );
@@ -401,14 +405,16 @@ export default function PositionSeller(props) {
       if (nextHasProfit) {
         if (collateralDelta.add(adjustedDelta).lte(totalFees)) {
           collateralDelta = bigNumberify(0);
-          // ERROR: Keep Leverage is not possible. Either uncheck the keep leverage same checkbox or close larger amount or do a full close
+          // Keep Leverage is not possible
+          isKeepLeverageNotPossible = true;
         }
       } else {
         if (collateralDelta.sub(adjustedDelta).gt(totalFees)) {
           collateralDelta = collateralDelta.sub(adjustedDelta);
         } else {
           collateralDelta = bigNumberify(0);
-          // ERROR: Keep leverage the same is not possible
+          // Keep leverage the same is not possible
+          isKeepLeverageNotPossible = true;
         }
       }
     }
@@ -507,6 +513,14 @@ export default function PositionSeller(props) {
           includeDelta: savedIsPnlInLeverage,
         });
 
+        nextLeverageWithoutDelta = getLeverageNew({
+          size: position.size.sub(sizeDelta),
+          collateral: nextCollateral,
+          hasProfit: nextHasProfit,
+          delta: remainingDelta,
+          includeDelta: false,
+        });
+
         nextLiquidationPrice = getLiquidation({
           size: position.size.sub(sizeDelta),
           collateral: nextCollateral,
@@ -589,6 +603,18 @@ export default function PositionSeller(props) {
       return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientReceiveToken];
     }
 
+    if (leverageWithoutDelta?.lt(0) || leverageWithoutDelta?.gt(100 * BASIS_POINTS_DIVISOR)) {
+      return [t`Fees are higher than Collateral`, ErrorDisplayType.Tooltip, ErrorCode.FeesHigherThanCollateral];
+    }
+
+    if (keepLeverage && isKeepLeverageNotPossible) {
+      return [t`Keep Leverage is not possible`, ErrorDisplayType.Tooltip, ErrorCode.KeepLeverageNotPossible];
+    }
+
+    if (nextCollateral?.lt(0)) {
+      return [t`rPnL not enough to cover pending Fees`, ErrorDisplayType.Tooltip, ErrorCode.NegativeNextCollateral];
+    }
+
     if (isCollateralPoolCapacityExceeded) {
       return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.ReceiveCollateralTokenOnly];
     }
@@ -614,9 +640,28 @@ export default function PositionSeller(props) {
       return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
     }
 
+    if (nextLeverageWithoutDelta && nextLeverageWithoutDelta.gt(MAX_LEVERAGE)) {
+      return [t`Max Leverage without PnL: 100x`];
+    }
+
     if (hasPendingProfit && orderOption !== STOP && !isProfitWarningAccepted) {
       return [t`Forfeit profit not checked`];
     }
+
+    if (position.isLong) {
+      if (nextLiquidationPrice && nextLiquidationPrice.gt(position.markPrice)) {
+        return [t`Invalid Liquidation Price`];
+      }
+    } else {
+      if (nextLiquidationPrice && nextLiquidationPrice.lt(position.markPrice)) {
+        return [t`Invalid Liquidation Price`];
+      }
+    }
+
+    if ((nextCollateral && nextCollateral.lt(0)) || (receiveUsd && receiveUsd.lt(0))) {
+      return [t`Invalid amount`];
+    }
+
     return [false];
   };
 
@@ -951,6 +996,20 @@ export default function PositionSeller(props) {
       <Trans>
         Swap amount from {position.collateralToken.symbol} to {receiveToken.symbol} exceeds{" "}
         {position.collateralToken.symbol} acceptable amount. Can only receive {position.collateralToken.symbol}.
+      </Trans>
+    ),
+    [ErrorCode.KeepLeverageNotPossible]: (
+      <Trans>Please uncheck "Keep Leverage", or close a larger position amount.</Trans>
+    ),
+    [ErrorCode.FeesHigherThanCollateral]: (
+      <Trans>
+        Collateral is not enough to cover pending Fees. Please uncheck "Keep Leverage" to pay the Fees with the realized
+        PnL.
+      </Trans>
+    ),
+    [ErrorCode.NegativeNextCollateral]: (
+      <Trans>
+        Neither Collateral nor realized PnL is enough to cover pending Fees. Please close a larger position amount.
       </Trans>
     ),
   };
