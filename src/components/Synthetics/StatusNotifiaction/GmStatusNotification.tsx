@@ -42,9 +42,7 @@ export function GmStatusNotification({
   const depositStatus = getByKey(depositStatuses, depositStatusKey);
   const withdrawalStatus = getByKey(withdrawalStatuses, withdrawalStatusKey);
 
-  const isCompleted = isDeposit
-    ? depositStatus?.executedTxnHash || depositStatus?.cancelledTxnHash
-    : withdrawalStatus?.executedTxnHash || withdrawalStatus?.cancelledTxnHash;
+  const isCompleted = isDeposit ? Boolean(depositStatus?.executedTxnHash) : Boolean(withdrawalStatus?.executedTxnHash);
 
   const pendingDepositKey = useMemo(() => {
     if (pendingDepositData) {

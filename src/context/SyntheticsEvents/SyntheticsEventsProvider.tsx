@@ -445,7 +445,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       setPendingOrder: (data: PendingOrderData) => {
         const toastId = Date.now();
 
-        helperToast.info(
+        helperToast.success(
           <OrderStatusNotification
             pendingOrderData={data}
             marketsInfoData={marketsInfoData}
@@ -461,7 +461,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       setPendingDeposit: (data: PendingDepositData) => {
         const toastId = Date.now();
 
-        helperToast.info(
+        helperToast.success(
           <GmStatusNotification
             pendingDepositData={data}
             marketsInfoData={marketsInfoData}
@@ -477,7 +477,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       setPendingWithdrawal: (data: PendingWithdrawalData) => {
         const toastId = Date.now();
 
-        helperToast.info(
+        helperToast.success(
           <GmStatusNotification
             pendingWithdrawalData={data}
             marketsInfoData={marketsInfoData}

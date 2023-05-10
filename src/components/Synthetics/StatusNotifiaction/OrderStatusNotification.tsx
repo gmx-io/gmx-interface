@@ -36,7 +36,7 @@ export function OrderStatusNotification({ pendingOrderData, marketsInfoData, tok
 
   const pendingOrderKey = useMemo(() => getPendingOrderKey(pendingOrderData), [pendingOrderData]);
   const orderStatus = getByKey(orderStatuses, orderStatusKey);
-  const isCompleted = orderStatus?.executedTxnHash || orderStatus?.cancelledTxnHash;
+  const isCompleted = Boolean(orderStatus?.executedTxnHash);
 
   const orderData = useMemo(() => {
     if (!marketsInfoData || !orderStatuses || !tokensData || !wrappedNativeToken) {
