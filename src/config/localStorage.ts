@@ -18,6 +18,7 @@ export const REDIRECT_POPUP_TIMESTAMP_KEY = "redirect-popup-timestamp";
 export const LEVERAGE_OPTION_KEY = "leverage-option";
 export const LEVERAGE_ENABLED_KEY = "leverage-enabled";
 export const KEEP_LEVERAGE_FOR_DECREASE_KEY = "Exchange-keep-leverage";
+export const TRADE_LINK_KEY = "trade-link";
 
 export const SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BPS_KEY = "synthetics-acceptable-price-impact-bps";
 export const SYNTHETICS_MARKET_DEPOSIT_MARKET_KEY = "synthetics-market-deposit-market";

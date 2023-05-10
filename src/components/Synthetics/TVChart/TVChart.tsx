@@ -17,6 +17,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { SyntheticsTVDataProvider } from "domain/synthetics/tradingview/SyntheticsTVDataProvider";
 
 import "./TVChart.scss";
+import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 
 export type Props = {
   ordersInfo?: OrdersInfoData;
@@ -151,7 +152,7 @@ export function TVChart({
 
   return (
     <div className="ExchangeChart tv">
-      <div className="ExchangeChart-top App-box App-box-border">
+      <div className="TVChart-top-card ExchangeChart-top App-box App-box-border">
         <div className="ExchangeChart-top-inner">
           <div>
             <Dropdown
@@ -185,6 +186,8 @@ export function TVChart({
             <div className="ExchangeChart-info-label">24h Low</div>
             <div>{candlesDelta?.low ? numberWithCommas(candlesDelta?.low.toFixed(2)) : "-"}</div>
           </div>
+
+          <VersionSwitch />
         </div>
       </div>
       <div className="ExchangeChart-bottom App-box App-box-border">

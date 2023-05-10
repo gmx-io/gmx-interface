@@ -1,21 +1,24 @@
 import { useWeb3React } from "@web3-react/core";
+import connectWalletImg from "img/ic_wallet_24.svg";
+import { useCallback, useEffect } from "react";
 import AddressDropdown from "../AddressDropdown/AddressDropdown";
 import ConnectWalletButton from "../Common/ConnectWalletButton";
-import React, { useCallback, useEffect } from "react";
-import connectWalletImg from "img/ic_wallet_24.svg";
 
-import "./Header.css";
-import { isHomeSite, getAccountUrl } from "lib/legacy";
-import cx from "classnames";
 import { Trans } from "@lingui/macro";
-import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
-import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
+import cx from "classnames";
 import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
-import { switchNetwork } from "lib/wallets";
-import { useChainId } from "lib/chains";
 import { isDevelopment } from "config/env";
 import { getIcon } from "config/icons";
-import { TradeDropdown } from "components/TradeDropdown/TradeDropdown";
+import { TRADE_LINK_KEY } from "config/localStorage";
+import { useChainId } from "lib/chains";
+import { getAccountUrl, isHomeSite } from "lib/legacy";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { switchNetwork } from "lib/wallets";
+import { useLocation } from "react-router-dom";
+import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
+import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
+import "./Header.css";
+import { HeaderLink } from "./HeaderLink";
 
 type Props = {
   openSettings: () => void;
@@ -67,12 +70,28 @@ export function AppHeaderUser({
   const { chainId } = useChainId();
   const { active, account } = useWeb3React();
   const showConnectionOptions = !isHomeSite();
+  const location = useLocation();
+
+  const [tradeLink, setTradeLink] = useLocalStorageSerializeKey(TRADE_LINK_KEY, "/trade");
 
   useEffect(() => {
     if (active) {
       setWalletModalVisible(false);
     }
   }, [active, setWalletModalVisible]);
+
+  useEffect(
+    function saveTradeLinkVersion() {
+      if (location.pathname === "/v2") {
+        setTradeLink("/v2");
+      }
+
+      if (location.pathname === "/trade") {
+        setTradeLink("/trade");
+      }
+    },
+    [location.pathname, setTradeLink]
+  );
 
   const onNetworkSelect = useCallback(
     (option) => {
@@ -90,11 +109,14 @@ export function AppHeaderUser({
     return (
       <div className="App-header-user">
         <div className={cx("App-header-trade-link", { "homepage-header": isHomeSite() })}>
-          <TradeDropdown
+          <HeaderLink
+            className="default-btn"
+            to={tradeLink!}
             redirectPopupTimestamp={redirectPopupTimestamp}
             showRedirectModal={showRedirectModal}
-            buttonLabel={isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
-          />
+          >
+            {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
+          </HeaderLink>
         </div>
 
         {showConnectionOptions ? (
@@ -122,11 +144,14 @@ export function AppHeaderUser({
   return (
     <div className="App-header-user">
       <div className={cx("App-header-trade-link")}>
-        <TradeDropdown
+        <HeaderLink
+          className="default-btn"
+          to={tradeLink!}
           redirectPopupTimestamp={redirectPopupTimestamp}
           showRedirectModal={showRedirectModal}
-          buttonLabel={isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
-        />
+        >
+          {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
+        </HeaderLink>
       </div>
 
       {showConnectionOptions ? (

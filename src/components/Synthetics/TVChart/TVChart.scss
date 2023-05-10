@@ -12,6 +12,7 @@
     font-size: var(--font-sm);
     color: hsla(0, 0%, 100%, 0.7);
     margin-left: 1rem;
+    margin-top: -2px;
   }
 
   .Dropdown-options {
@@ -25,4 +26,10 @@
     height: 3.4rem;
     font-weight: 700;
   }
+}
+
+.TVChart-top-card {
+  height: 53px;
+  display: flex;
+  align-items: center;
 }
