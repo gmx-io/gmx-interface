@@ -420,6 +420,7 @@ export function TradeBox(p: Props) {
         isLong,
         collateralDeltaUsd: increaseAmounts.collateralUsdAfterFees,
         sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
+        sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
         entryPrice: increaseAmounts.acceptablePrice,
         showPnlInLeverage: savedIsPnlInLeverage,
         minCollateralUsd,
@@ -1143,7 +1144,7 @@ export function TradeBox(p: Props) {
         <ExchangeInfoRow
           className="SwapBox-info-row"
           label={t`Entry Price`}
-          value={formatUsd(increaseAmounts?.entryPrice) || "-"}
+          value={formatUsd(nextPositionValues?.nextEntryPrice) || "-"}
         />
 
         {isMarket && (

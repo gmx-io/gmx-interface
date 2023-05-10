@@ -6,7 +6,13 @@ import {
   getPriceImpactForPosition,
 } from "domain/synthetics/fees";
 import { MarketInfo } from "domain/synthetics/markets";
-import { PositionInfo, getLeverage, getLiquidationPrice, getPositionPendingFeesUsd } from "domain/synthetics/positions";
+import {
+  PositionInfo,
+  getEntryPrice,
+  getLeverage,
+  getLiquidationPrice,
+  getPositionPendingFeesUsd,
+} from "domain/synthetics/positions";
 import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber } from "ethers";
@@ -310,6 +316,7 @@ export function getNextPositionValuesForIncreaseTrade(p: {
   existingPosition?: PositionInfo;
   marketInfo: MarketInfo;
   sizeDeltaUsd: BigNumber;
+  sizeDeltaInTokens: BigNumber;
   collateralDeltaUsd: BigNumber;
   entryPrice: BigNumber;
   isLong: boolean;
@@ -321,6 +328,7 @@ export function getNextPositionValuesForIncreaseTrade(p: {
     existingPosition,
     marketInfo,
     sizeDeltaUsd,
+    sizeDeltaInTokens,
     collateralDeltaUsd,
     entryPrice,
     isLong,
@@ -342,6 +350,14 @@ export function getNextPositionValuesForIncreaseTrade(p: {
   }
 
   const nextSizeUsd = existingPosition ? existingPosition.sizeInUsd.add(sizeDeltaUsd) : sizeDeltaUsd;
+  const nextSizeInTokens = existingPosition ? existingPosition.sizeInTokens.add(sizeDeltaInTokens) : sizeDeltaInTokens;
+
+  const nextEntryPrice =
+    getEntryPrice({
+      sizeInUsd: nextSizeUsd,
+      sizeInTokens: nextSizeInTokens,
+      indexToken: marketInfo.indexToken,
+    }) || entryPrice;
 
   const nextLeverage = getLeverage({
     sizeInUsd: nextSizeUsd,
@@ -355,7 +371,7 @@ export function getNextPositionValuesForIncreaseTrade(p: {
     sizeInUsd: nextSizeUsd,
     collateralUsd: nextCollateralUsd,
     pnl: existingPosition?.pnl || BigNumber.from(0),
-    markPrice: entryPrice,
+    markPrice: nextEntryPrice,
     minCollateralFactor: marketInfo.minCollateralFactor,
     minCollateralUsd,
     closingFeeUsd: getPositionFee(marketInfo, nextSizeUsd, userReferralInfo).positionFeeUsd,
@@ -370,7 +386,7 @@ export function getNextPositionValuesForIncreaseTrade(p: {
     nextCollateralUsd,
     nextLeverage,
     nextLiqPrice,
-    nextEntryPrice: entryPrice,
+    nextEntryPrice,
     remainingCollateralFeesUsd,
   };
 }
