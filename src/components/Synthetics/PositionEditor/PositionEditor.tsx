@@ -349,8 +349,6 @@ export function PositionEditor(p: Props) {
     [Operation.Withdraw]: t`Withdraw`,
   };
 
-  const depositWithdrawalText = isDeposit ? t`Deposit` : t`Withdrawal`;
-
   return (
     <div className="PositionEditor">
       <Modal
@@ -459,7 +457,9 @@ export function PositionEditor(p: Props) {
             feesType={"edit"}
             warning={
               remainingCollateralFeesUsd?.gt(0)
-                ? t`${depositWithdrawalText} amount is insufficient to cover Fees. They are deducted from Collateral.`
+                ? isDeposit
+                  ? t`Deposit amount is insufficient to cover pending Fees. Collateral will be reduced after this deposit.`
+                  : t`Withdrawal amount is insufficient to cover pending Fees. They are deducted from Collateral.`
                 : ""
             }
           />

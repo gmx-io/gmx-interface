@@ -7,11 +7,12 @@ import { AcceptbablePriceImpactEditor } from "components/Synthetics/AcceptablePr
 import { ClaimHistory } from "components/Synthetics/ClaimHistory/ClaimHistory";
 import { ClaimModal } from "components/Synthetics/ClaimModal/ClaimModal";
 import { OrderList } from "components/Synthetics/OrderList/OrderList";
+import { PositionEditor } from "components/Synthetics/PositionEditor/PositionEditor";
 import { PositionList } from "components/Synthetics/PositionList/PositionList";
+import { PositionSeller } from "components/Synthetics/PositionSeller/PositionSeller";
 import { TVChart } from "components/Synthetics/TVChart/TVChart";
 import { TradeBox } from "components/Synthetics/TradeBox/TradeBox";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
-import { PositionSeller } from "components/Synthetics/PositionSeller/PositionSeller";
 import Tab from "components/Tab/Tab";
 import { DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS } from "config/factors";
 import {
@@ -26,6 +27,7 @@ import {
   getSyntheticsTradeTypeKey,
 } from "config/localStorage";
 import { getToken } from "config/tokens";
+import { useVirtualInventory } from "domain/synthetics/fees/useVirtualInventory";
 import { useMarketsInfo } from "domain/synthetics/markets";
 import { isSwapOrderType } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
@@ -43,8 +45,6 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { bigNumberify } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useCallback, useMemo, useState } from "react";
-import { useVirtualInventory } from "domain/synthetics/fees/useVirtualInventory";
-import { PositionEditor } from "components/Synthetics/PositionEditor/PositionEditor";
 
 import "./SyntheticsPage.scss";
 
@@ -141,10 +141,6 @@ export function SyntheticsPage(p: Props) {
     [chainId, isSwap, isTrigger, marketsInfoData, setMarketAddress, tradeType]
   );
   const marketInfo = getByKey(marketsInfoData, marketAddress);
-  console.log("bra", {
-    marketAddress,
-    toTokenAddress,
-  });
 
   const [collateralAddress, setCollateralAddress] = useLocalStorageSerializeKey<string | undefined>(
     getSyntheticsCollateralAddressKey(chainId, tradeType, marketAddress),

@@ -1263,7 +1263,6 @@ msgstr "Decreasing"
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1274,6 +1273,10 @@ msgstr "Deposit"
 #: src/components/Exchange/FeesTooltip.tsx
 msgid "Deposit Fee"
 msgstr "Deposit Fee"
+
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+msgid "Deposit amount is insufficient to cover pending Fees. Collateral will be reduced after this deposit."
+msgstr "Deposit amount is insufficient to cover pending Fees. Collateral will be reduced after this deposit."
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
 msgid "Deposit cancelled"
@@ -1969,8 +1972,12 @@ msgid "I am aware of the trigger orders"
 msgstr "I am aware of the trigger orders"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "If you have an existing position, the position will be closed at a reference price of {0} not accounting for price impact.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
-msgstr "If you have an existing position, the position will be closed at a reference price of {0} not accounting for price impact.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
+#~ msgid "If you have an existing position, the position will be closed at a reference price of {0} not accounting for price impact.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
+#~ msgstr "If you have an existing position, the position will be closed at a reference price of {0} not accounting for price impact.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "If you have an existing position, the position will be closed at a reference price of {0}, not accounting for price impact.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
+msgstr "If you have an existing position, the position will be closed at a reference price of {0}, not accounting for price impact.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
 
 #: src/components/Exchange/SwapBox.js
 msgid "If you have an existing position, the position will be closed at {0} USD.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
@@ -4138,8 +4145,12 @@ msgid "The pending borrow fee will be charged on this transaction."
 msgstr "The pending borrow fee will be charged on this transaction."
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "The position will be opened at a reference price of {0} not accounting for price impact with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
-msgstr "The position will be opened at a reference price of {0} not accounting for price impact with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
+#~ msgid "The position will be opened at a reference price of {0} not accounting for price impact with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
+#~ msgstr "The position will be opened at a reference price of {0} not accounting for price impact with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
+msgstr "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
 
 #: src/components/Exchange/SwapBox.js
 msgid "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
@@ -4853,9 +4864,12 @@ msgid "Withdraw {0} USD from {1} {longOrShortText}"
 msgstr "Withdraw {0} USD from {1} {longOrShortText}"
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Withdrawal"
 msgstr "Withdrawal"
+
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+msgid "Withdrawal amount is insufficient to cover pending Fees. They are deducted from Collateral."
+msgstr "Withdrawal amount is insufficient to cover pending Fees. They are deducted from Collateral."
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
 msgid "Withdrawal cancelled"
@@ -5288,8 +5302,8 @@ msgid "{count, plural, one {Order} other {# Orders}}"
 msgstr "{count, plural, one {Order} other {# Orders}}"
 
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-msgid "{depositWithdrawalText} amount is insufficient to cover Fees. They are deducted from Collateral."
-msgstr "{depositWithdrawalText} amount is insufficient to cover Fees. They are deducted from Collateral."
+#~ msgid "{depositWithdrawalText} amount is insufficient to cover Fees. They are deducted from Collateral."
+#~ msgstr "{depositWithdrawalText} amount is insufficient to cover Fees. They are deducted from Collateral."
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx

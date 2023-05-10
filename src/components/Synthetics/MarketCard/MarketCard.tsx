@@ -60,8 +60,8 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
               position="right-bottom"
               renderContent={() => (
                 <Trans>
-                  The position will be opened at a reference price of {formatUsd(entryPrice)} not accounting for price
-                  impact with a max slippage of {allowedSlippage ? (allowedSlippage / 100.0).toFixed(2) : "..."}%.
+                  The position will be opened at a reference price of {formatUsd(entryPrice)}, not accounting for price
+                  impact, with a max slippage of {allowedSlippage ? (allowedSlippage / 100.0).toFixed(2) : "..."}%.
                   <br />
                   <br />
                   The slippage amount can be configured under Settings, found by clicking on your address at the top
@@ -84,7 +84,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
               renderContent={() => (
                 <Trans>
                   If you have an existing position, the position will be closed at a reference price of{" "}
-                  {formatUsd(entryPrice)} not accounting for price impact.
+                  {formatUsd(entryPrice)}, not accounting for price impact.
                   <br />
                   <br />
                   This exit price will change with the price of the asset.
