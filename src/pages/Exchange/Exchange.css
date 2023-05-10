@@ -770,6 +770,7 @@ input.Exchange-swap-input.small {
   align-items: center;
   border: none;
   color: white;
+  opacity: 0.8;
 }
 
 .Exchange-swap-ball:hover {
