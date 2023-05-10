@@ -58,6 +58,8 @@ export default function ExchangeTVChart(props) {
     savedShouldShowPositionLines,
     orders,
     setToTokenAddress,
+    tradePageVersion,
+    setTradePageVersion,
   } = props;
   const [currentSeries] = useState();
   const dataProvider = useRef();
@@ -328,7 +330,7 @@ export default function ExchangeTVChart(props) {
               {low && numberWithCommas(low.toFixed(2))}
             </div>
           </div>
-          <VersionSwitch />
+          <VersionSwitch currentVersion={tradePageVersion} setCurrentVersion={setTradePageVersion} />
         </div>
       </div>
       <div className="ExchangeChart-bottom App-box App-box-border">

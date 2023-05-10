@@ -9,12 +9,10 @@ import cx from "classnames";
 import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getIcon } from "config/icons";
-import { TRADE_LINK_KEY } from "config/localStorage";
 import { useChainId } from "lib/chains";
 import { getAccountUrl, isHomeSite } from "lib/legacy";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { switchNetwork } from "lib/wallets";
-import { useLocation } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
 import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
 import "./Header.css";
@@ -27,6 +25,7 @@ type Props = {
   disconnectAccountAndCloseSettings: () => void;
   redirectPopupTimestamp: number;
   showRedirectModal: (to: string) => void;
+  tradePageVersion: number;
 };
 
 const NETWORK_OPTIONS = [
@@ -66,13 +65,15 @@ export function AppHeaderUser({
   disconnectAccountAndCloseSettings,
   redirectPopupTimestamp,
   showRedirectModal,
+  tradePageVersion,
 }: Props) {
   const { chainId } = useChainId();
   const { active, account } = useWeb3React();
   const showConnectionOptions = !isHomeSite();
   const location = useLocation();
+  const history = useHistory();
 
-  const [tradeLink, setTradeLink] = useLocalStorageSerializeKey(TRADE_LINK_KEY, "/trade");
+  const tradeLink = tradePageVersion === 1 ? "/trade" : "/v2";
 
   useEffect(() => {
     if (active) {
@@ -81,16 +82,16 @@ export function AppHeaderUser({
   }, [active, setWalletModalVisible]);
 
   useEffect(
-    function saveTradeLinkVersion() {
-      if (location.pathname === "/v2") {
-        setTradeLink("/v2");
+    function redirectTradePage() {
+      if (location.pathname === "/trade" && tradePageVersion === 2) {
+        history.replace("/v2");
       }
 
-      if (location.pathname === "/trade") {
-        setTradeLink("/trade");
+      if (location.pathname === "/v2" && tradePageVersion === 1) {
+        history.replace("/trade");
       }
     },
-    [location.pathname, setTradeLink]
+    [history, location.pathname, tradePageVersion]
   );
 
   const onNetworkSelect = useCallback(

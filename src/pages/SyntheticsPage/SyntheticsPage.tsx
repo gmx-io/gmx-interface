@@ -56,6 +56,8 @@ export type Props = {
   onConnectWallet: () => void;
   setSavedShouldShowPositionLines: (value: boolean) => void;
   setPendingTxns: (txns: any) => void;
+  tradePageVersion: number;
+  setTradePageVersion: (version: number) => void;
 };
 
 enum ListSection {
@@ -71,9 +73,11 @@ export function SyntheticsPage(p: Props) {
     shouldDisableValidation,
     savedShouldShowPositionLines,
     showPnlAfterFees,
+    tradePageVersion,
     onConnectWallet,
     setSavedShouldShowPositionLines,
     setPendingTxns,
+    setTradePageVersion,
   } = p;
   const { chainId } = useChainId();
   const { library, account } = useWeb3React();
@@ -263,6 +267,8 @@ export function SyntheticsPage(p: Props) {
             availableTokens={isSwap && chartTokenAddress ? [getToken(chainId, chartTokenAddress)] : indexTokens}
             onSelectChartTokenAddress={setToTokenAddress}
             disableSelectToken={isSwap}
+            tradePageVersion={tradePageVersion}
+            setTradePageVersion={setTradePageVersion}
           />
 
           <div className="SyntheticsTrade-lists large">

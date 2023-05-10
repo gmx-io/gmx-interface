@@ -27,6 +27,8 @@ export type Props = {
   onSelectChartTokenAddress: (tokenAddress: string) => void;
   availableTokens?: Token[];
   disableSelectToken?: boolean;
+  tradePageVersion: number;
+  setTradePageVersion: (version: number) => void;
 };
 
 const DEFAULT_PERIOD = "5m";
@@ -39,6 +41,8 @@ export function TVChart({
   onSelectChartTokenAddress,
   availableTokens,
   disableSelectToken,
+  tradePageVersion,
+  setTradePageVersion,
 }: Props) {
   const { chainId } = useChainId();
   const { tokensData } = useAvailableTokensData(chainId);
@@ -187,7 +191,7 @@ export function TVChart({
             <div>{candlesDelta?.low ? numberWithCommas(candlesDelta?.low.toFixed(2)) : "-"}</div>
           </div>
 
-          <VersionSwitch />
+          <VersionSwitch currentVersion={tradePageVersion} setCurrentVersion={setTradePageVersion} />
         </div>
       </div>
       <div className="ExchangeChart-bottom App-box App-box-border">

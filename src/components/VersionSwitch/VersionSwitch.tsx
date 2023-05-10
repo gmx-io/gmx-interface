@@ -1,15 +1,26 @@
-import { NavLink } from "react-router-dom";
+import cx from "classnames";
 import "./VersionSwitch.scss";
 
-export function VersionSwitch() {
+type Props = {
+  currentVersion: number;
+  setCurrentVersion: (version: number) => void;
+};
+
+export function VersionSwitch({ currentVersion, setCurrentVersion }: Props) {
   return (
     <div className="VersionSwitch">
-      <NavLink className="VersionSwitch-option" activeClassName="active" exact to="/trade">
+      <div
+        className={cx("VersionSwitch-option", { active: currentVersion === 1 })}
+        onClick={() => setCurrentVersion(1)}
+      >
         V1
-      </NavLink>
-      <NavLink className="VersionSwitch-option" activeClassName="active" exact to="/v2">
+      </div>
+      <div
+        className={cx("VersionSwitch-option", { active: currentVersion === 2 })}
+        onClick={() => setCurrentVersion(2)}
+      >
         V2
-      </NavLink>
+      </div>
     </div>
   );
 }

@@ -58,7 +58,7 @@ import VaultV2 from "abis/VaultV2.json";
 import VaultV2b from "abis/VaultV2b.json";
 import { RedirectPopupModal } from "components/ModalViews/RedirectModal";
 import { getContract } from "config/contracts";
-import { REDIRECT_POPUP_TIMESTAMP_KEY } from "config/localStorage";
+import { REDIRECT_POPUP_TIMESTAMP_KEY, TRADE_LINK_KEY } from "config/localStorage";
 import Jobs from "pages/Jobs/Jobs";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
 import ReferralTerms from "pages/ReferralTerms/ReferralTerms";
@@ -257,6 +257,7 @@ function FullApp() {
     connectInjectedWallet();
   };
 
+  const [tradePageVersion, setTradePageVersion] = useLocalStorageSerializeKey(TRADE_LINK_KEY, 1);
   const [walletModalVisible, setWalletModalVisible] = useState(false);
   const [redirectModalVisible, setRedirectModalVisible] = useState(false);
   const [shouldHideRedirectModal, setShouldHideRedirectModal] = useState(false);
@@ -444,6 +445,7 @@ function FullApp() {
             setWalletModalVisible={setWalletModalVisible}
             redirectPopupTimestamp={redirectPopupTimestamp}
             showRedirectModal={showRedirectModal}
+            tradePageVersion={tradePageVersion}
           />
           {isHome && (
             <Switch>
@@ -479,6 +481,8 @@ function FullApp() {
                   setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
                   connectWallet={connectWallet}
                   savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
+                  tradePageVersion={tradePageVersion}
+                  setTradePageVersion={setTradePageVersion}
                 />
               </Route>
               <Route exact path="/dashboard">
@@ -518,6 +522,8 @@ function FullApp() {
                     setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
                     setPendingTxns={setPendingTxns}
                     showPnlAfterFees={showPnlAfterFees}
+                    tradePageVersion={tradePageVersion}
+                    setTradePageVersion={setTradePageVersion}
                   />
                 ) : (
                   <SyntheticsFallbackPage />
