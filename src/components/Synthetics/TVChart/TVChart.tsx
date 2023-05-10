@@ -2,7 +2,7 @@ import { t } from "@lingui/macro";
 import cx from "classnames";
 import { Dropdown, DropdownOption } from "components/Dropdown/Dropdown";
 import TVChartContainer, { ChartLine } from "components/TVChartContainer/TVChartContainer";
-import { convertTokenAddress, isChartAvailabeForToken } from "config/tokens";
+import { convertTokenAddress, getToken, isChartAvailabeForToken } from "config/tokens";
 import { OrdersInfoData, PositionOrderInfo, isIncreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import { PositionsInfoData } from "domain/synthetics/positions";
 import { getCandlesDelta, getMidPrice, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
@@ -59,7 +59,13 @@ export function TVChart({
         value: token.address,
       })) || [];
 
-  const selectedTokenOption = tokenOptions.find((option) => option.value === chartTokenAddress);
+  const selectedTokenOption = chartTokenAddress
+    ? {
+        label: `${getToken(chainId, chartTokenAddress).symbol} / USD`,
+        value: chartTokenAddress,
+      }
+    : undefined;
+
   const currentAveragePrice = chartToken?.prices ? getMidPrice(chartToken.prices) : undefined;
 
   const { candles } = useLastCandles(chainId, chartToken?.symbol, period);
