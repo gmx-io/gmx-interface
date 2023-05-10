@@ -502,31 +502,33 @@ export default function PositionSeller(props) {
     }
 
     if (fromAmount) {
-      if (!isClosing && !keepLeverage) {
-        // We need to send the remaining delta
-        const remainingDelta = nextDelta?.sub(adjustedDelta);
-        nextLeverage = getLeverageNew({
-          size: position.size.sub(sizeDelta),
-          collateral: nextCollateral,
-          hasProfit: nextHasProfit,
-          delta: remainingDelta,
-          includeDelta: savedIsPnlInLeverage,
-        });
-
-        nextLeverageWithoutDelta = getLeverageNew({
-          size: position.size.sub(sizeDelta),
-          collateral: nextCollateral,
-          hasProfit: nextHasProfit,
-          delta: remainingDelta,
-          includeDelta: false,
-        });
-
+      if (!isClosing) {
         nextLiquidationPrice = getLiquidation({
           size: position.size.sub(sizeDelta),
           collateral: nextCollateral,
           averagePrice: position.averagePrice,
           isLong: position.isLong,
         });
+
+        if (!keepLeverage) {
+          // We need to send the remaining delta
+          const remainingDelta = nextDelta?.sub(adjustedDelta);
+          nextLeverage = getLeverageNew({
+            size: position.size.sub(sizeDelta),
+            collateral: nextCollateral,
+            hasProfit: nextHasProfit,
+            delta: remainingDelta,
+            includeDelta: savedIsPnlInLeverage,
+          });
+
+          nextLeverageWithoutDelta = getLeverageNew({
+            size: position.size.sub(sizeDelta),
+            collateral: nextCollateral,
+            hasProfit: nextHasProfit,
+            delta: remainingDelta,
+            includeDelta: false,
+          });
+        }
       }
     }
   }
@@ -603,7 +605,7 @@ export default function PositionSeller(props) {
       return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientReceiveToken];
     }
 
-    if (leverageWithoutDelta?.lt(0) || leverageWithoutDelta?.gt(100 * BASIS_POINTS_DIVISOR)) {
+    if (!isClosing && (leverageWithoutDelta?.lt(0) || leverageWithoutDelta?.gt(100 * BASIS_POINTS_DIVISOR))) {
       return [t`Fees are higher than Collateral`, ErrorDisplayType.Tooltip, ErrorCode.FeesHigherThanCollateral];
     }
 
@@ -658,7 +660,7 @@ export default function PositionSeller(props) {
       }
     }
 
-    if ((nextCollateral && nextCollateral.lt(0)) || (receiveUsd && receiveUsd.lt(0))) {
+    if ((collateralDelta && collateralDelta.lt(0)) || (receiveUsd && receiveUsd.lt(0))) {
       return [t`Invalid amount`];
     }
 
