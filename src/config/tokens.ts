@@ -368,10 +368,18 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Tether",
       symbol: "USDT",
       decimals: 6,
-      address: "0x6931eC3E364245E6d093aFA1F2e96cCe3F17538b",
+      address: "0x50df4892Bd13f01E4e1Cd077ff394A8fa1A3fD7c",
       isStable: true,
-      coingeckoUrl: "https://www.coingecko.com/en/coins/tether",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/dai",
       imageUrl: "https://assets.coingecko.com/coins/images/325/small/Tether-logo.png",
+    },
+    {
+      name: "Dai",
+      symbol: "DAI",
+      address: "0x51290cb93bE5062A6497f16D9cd3376Adf54F920",
+      decimals: 6,
+      isStable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/9956/thumb/4943.png?1636636734",
     },
   ],
 };
@@ -469,7 +477,7 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
 const AVAILABLE_CHART_TOKENS = {
   [ARBITRUM]: ["ETH", "BTC", "LINK", "UNI"],
   [AVALANCHE]: ["AVAX", "ETH", "BTC"],
-  [AVALANCHE_FUJI]: ["AVAX", "ETH", "BTC", "SOL", "TEST"],
+  [AVALANCHE_FUJI]: ["AVAX", "ETH", "BTC", "SOL", "TEST", "DOGE", "LINK", "BNB"],
 };
 
 export const SYNTHETIC_TOKENS = {
@@ -495,6 +503,30 @@ export const SYNTHETIC_TOKENS = {
       isShortable: true,
       coingeckoUrl: "https://www.coingecko.com/en/coins/tether",
       imageUrl: "https://assets.coingecko.com/coins/images/325/small/Tether-logo.png",
+    },
+    {
+      name: "BNB",
+      symbol: "BNB",
+      isSynthetic: true,
+      isShortable: true,
+      decimals: 18,
+      address: "0x110892Dd5fa73bE430c0ade694febD9a4CAc68Be",
+    },
+    {
+      name: "Dogecoin",
+      symbol: "DOGE",
+      isSynthetic: true,
+      isShortable: true,
+      decimals: 8,
+      address: "0x2265F317eA5f47A684E5B26c50948617c945d986",
+    },
+    {
+      name: "Chainlink",
+      symbol: "LINK",
+      isSynthetic: true,
+      isShortable: true,
+      decimals: 18,
+      address: "0x6BD09E8D65AD5cc761DF62454452d4EC1545e647",
     },
   ],
 };
@@ -664,7 +696,19 @@ export const EXPLORER_LINKS = {
     },
     USDT: {
       coingecko: "https://www.coingecko.com/en/coins/tether",
-      arbitrum: "https://testnet.snowtrace.io/address/0x6931eC3E364245E6d093aFA1F2e96cCe3F17538b",
+      avalanche: "https://testnet.snowtrace.io/address/0x6931eC3E364245E6d093aFA1F2e96cCe3F17538b",
+    },
+    SOL: {
+      coingecko: "https://www.coingecko.com/en/coins/solana",
+    },
+    DOGE: {
+      coingecko: "https://www.coingecko.com/en/coins/dogecoin",
+    },
+    BNB: {
+      coingecko: "https://www.coingecko.com/en/coins/bnb",
+    },
+    LINK: {
+      coingecko: "https://www.coingecko.com/en/coins/chainlink",
     },
   },
 };
