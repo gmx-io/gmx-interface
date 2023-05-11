@@ -149,6 +149,7 @@ msgid "About"
 msgstr "关于"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "Accept confirmation of trigger orders"
 msgstr "接受并确认触发订单"
 
@@ -524,6 +525,7 @@ msgid "Buy GLP"
 msgstr "购买GLP"
 
 #: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Buy GM"
@@ -778,6 +780,8 @@ msgstr ""
 msgid "Claiming failed"
 msgstr ""
 
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claiming..."
@@ -1123,10 +1127,21 @@ msgstr ""
 msgid "Created limit order for {0} {1}: {2} USD!"
 msgstr "为{0} {1}: {2} USD!创建限量的指令"
 
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+msgid "Creating Deposit..."
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Creating Order..."
 msgstr "创建指令中..."
+
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+msgid "Creating Withdrawal..."
+msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Creating..."
@@ -1842,6 +1857,10 @@ msgstr ""
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "GM Index Composition"
+msgstr ""
+
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+msgid "GM Token pricing includes positions' Pending PnL, Impact Pool Amount and Borrow Fees."
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
@@ -3190,8 +3209,8 @@ msgid "Positions ({0})"
 msgstr "仓位({0})"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "Positions earn a funding fee if positive and pays if negative."
-msgstr ""
+#~ msgid "Positions earn a funding fee if positive and pays if negative."
+#~ msgstr ""
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Positions{0}"
@@ -3628,6 +3647,7 @@ msgstr "不支持自行转让"
 msgid "Sell GLP"
 msgstr "出售GLP"
 
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
@@ -4600,6 +4620,7 @@ msgid "Update order executed"
 msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Updating Order..."
 msgstr "更新指令中..."
 
@@ -5092,6 +5113,10 @@ msgstr "抵押品"
 #~ msgid "deposit"
 #~ msgstr ""
 
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "earn"
+msgstr ""
+
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "fee"
 msgstr "费用"
@@ -5108,6 +5133,10 @@ msgstr "流动性中"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "not staked"
 msgstr "未质押的"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "pay"
+msgstr ""
 
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "size"
@@ -5318,6 +5347,10 @@ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 msgid "{longOrShortText} {0} market selected"
+msgstr ""
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "{longShortText} positions {0} a funding fee of {1}% per hour."
 msgstr ""
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx

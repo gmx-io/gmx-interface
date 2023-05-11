@@ -149,6 +149,7 @@ msgid "About"
 msgstr "About"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "Accept confirmation of trigger orders"
 msgstr "Accept confirmation of trigger orders"
 
@@ -524,6 +525,7 @@ msgid "Buy GLP"
 msgstr "Buy GLP"
 
 #: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Buy GM"
@@ -778,6 +780,8 @@ msgstr "Claimable funding"
 msgid "Claiming failed"
 msgstr "Claiming failed"
 
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claiming..."
@@ -1123,10 +1127,21 @@ msgstr "Created At"
 msgid "Created limit order for {0} {1}: {2} USD!"
 msgstr "Created limit order for {0} {1}: {2} USD!"
 
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+msgid "Creating Deposit..."
+msgstr "Creating Deposit..."
+
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Creating Order..."
 msgstr "Creating Order..."
+
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+msgid "Creating Withdrawal..."
+msgstr "Creating Withdrawal..."
 
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Creating..."
@@ -1843,6 +1858,10 @@ msgstr "GM ({0})"
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "GM Index Composition"
 msgstr "GM Index Composition"
+
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+msgid "GM Token pricing includes positions' Pending PnL, Impact Pool Amount and Borrow Fees."
+msgstr "GM Token pricing includes positions' Pending PnL, Impact Pool Amount and Borrow Fees."
 
 #: src/components/TokenCard/TokenCard.js
 msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 70% of the V2 markets generated fees."
@@ -3190,8 +3209,8 @@ msgid "Positions ({0})"
 msgstr "Positions ({0})"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "Positions earn a funding fee if positive and pays if negative."
-msgstr "Positions earn a funding fee if positive and pays if negative."
+#~ msgid "Positions earn a funding fee if positive and pays if negative."
+#~ msgstr "Positions earn a funding fee if positive and pays if negative."
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Positions{0}"
@@ -3628,6 +3647,7 @@ msgstr "Self-transfer not supported"
 msgid "Sell GLP"
 msgstr "Sell GLP"
 
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
@@ -4600,6 +4620,7 @@ msgid "Update order executed"
 msgstr "Update order executed"
 
 #: src/components/Exchange/OrderEditor.js
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Updating Order..."
 msgstr "Updating Order..."
 
@@ -5092,6 +5113,10 @@ msgstr "collateral"
 #~ msgid "deposit"
 #~ msgstr "deposit"
 
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "earn"
+msgstr "earn"
+
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "fee"
 msgstr "fee"
@@ -5108,6 +5133,10 @@ msgstr "in liquidity"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "not staked"
 msgstr "not staked"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "pay"
+msgstr "pay"
 
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "size"
@@ -5322,6 +5351,10 @@ msgstr "{increaseOrDecreaseText} {tokenText} by {sizeText}"
 #: src/components/Exchange/PositionsList.js
 msgid "{longOrShortText} {0} market selected"
 msgstr "{longOrShortText} {0} market selected"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "{longShortText} positions {0} a funding fee of {1}% per hour."
+msgstr "{longShortText} positions {0} a funding fee of {1}% per hour."
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "{marketsCount, plural, one {# Market} other {# Markets}}"
