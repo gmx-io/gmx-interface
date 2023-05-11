@@ -1,4 +1,4 @@
-import { LAST_BAR_REFRESH_INTERVAL } from "config/tradingview";
+import { LAST_BAR_REFRESH_INTERVAL, SUPPORTED_RESOLUTIONS } from "config/tradingview";
 import { getLimitChartPricesFromStats, timezoneOffset } from "domain/prices";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
@@ -97,7 +97,6 @@ export class TVDataProvider {
     if (bars.length < countBack) {
       return bars;
     }
-
     // if bars are more than countBack, return latest bars
     return bars.slice(bars.length - countBack, bars.length);
   }
@@ -122,6 +121,25 @@ export class TVDataProvider {
       return bars.map(formatTimeInBarToMs);
     } catch {
       throw new Error("Failed to get history bars");
+    }
+  }
+
+  async getMissingBars(chainId: number, ticker: string, period: string, from: number) {
+    if (!ticker || !period || !chainId || !from) return;
+    const periodSeconds = CHART_PERIODS[period];
+    const currentPeriod = getCurrentCandleTime(period);
+    const periods = Math.ceil((currentPeriod - from) / periodSeconds);
+    console.log({
+      currentPeriod,
+      from,
+      periods,
+    });
+    if (from === currentPeriod) return;
+    if (periods > 0) {
+      const bars = await getLimitChartPricesFromStats(chainId, ticker, period, periods);
+      return fillBarGaps(bars, periodSeconds)
+        .filter((bar) => bar.time >= from)
+        .map(formatTimeInBarToMs);
     }
   }
 
