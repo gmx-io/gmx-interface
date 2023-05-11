@@ -605,7 +605,11 @@ export default function PositionSeller(props) {
       return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientReceiveToken];
     }
 
-    if (!isClosing && (leverageWithoutDelta?.lt(0) || leverageWithoutDelta?.gt(100 * BASIS_POINTS_DIVISOR))) {
+    if (
+      !isClosing &&
+      keepLeverage &&
+      (leverageWithoutDelta?.lt(0) || leverageWithoutDelta?.gt(100 * BASIS_POINTS_DIVISOR))
+    ) {
       return [t`Fees are higher than Collateral`, ErrorDisplayType.Tooltip, ErrorCode.FeesHigherThanCollateral];
     }
 
