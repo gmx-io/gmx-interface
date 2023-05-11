@@ -148,7 +148,7 @@ export function getIncreasePositionAmountsByCollateral(p: {
   acceptablePrice = acceptablePriceInfo?.acceptablePrice;
   acceptablePriceImpactBps = acceptablePriceInfo?.acceptablePriceImpactBps;
 
-  sizeDeltaInTokens = convertToTokenAmount(sizeDeltaUsd, indexToken.decimals, acceptablePrice)!;
+  sizeDeltaInTokens = convertToTokenAmount(sizeDeltaUsd, indexToken.decimals, entryPrice)!;
 
   return {
     initialCollateralAmount,
