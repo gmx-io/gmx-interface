@@ -399,6 +399,22 @@ export function GmSwapBox(p: Props) {
     }
   }
 
+  function resetInputs() {
+    setFirstTokenInputValue("");
+    setSecondTokenInputValue("");
+    setMarketTokenInputValue("");
+  }
+
+  function onOperationChange(operation: Operation) {
+    resetInputs();
+    setOperation(operation);
+  }
+
+  function onMarketChange(marketAddress: string) {
+    resetInputs();
+    p.onSelectMarket(marketAddress);
+  }
+
   useEffect(
     function updateAmounts() {
       const longToken = getTokenData(tokensData, marketInfo?.longTokenAddress);
@@ -662,14 +678,14 @@ export function GmSwapBox(p: Props) {
         className="GmSwapBox-market-dropdown"
         selectedOption={marketsOptions.find((o) => o.value === p.selectedMarketAddress)}
         options={marketsOptions}
-        onSelect={(o) => p.onSelectMarket(o.value)}
+        onSelect={(o) => onMarketChange(o.value)}
       />
 
       <Tab
         options={Object.values(Operation)}
         optionLabels={operationLabels}
         option={operation}
-        onChange={setOperation}
+        onChange={onOperationChange}
         className="Exchange-swap-option-tabs"
       />
 
