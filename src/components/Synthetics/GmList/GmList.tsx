@@ -107,19 +107,19 @@ export function GmList() {
                       {formatUsd(totalSupplyUsd)}
                     </td>
 
-                    <td>
+                    <td className="GmList-actions">
                       <Button variant="semi-clear" to={`/pools?operation=${Operation.Deposit}&market=${token.address}`}>
                         <Trans>Buy GM</Trans>
                       </Button>
-                    </td>
-                    <td>
                       <Button
+                        className="GMList-action"
                         variant="semi-clear"
                         to={`/pools?operation=${Operation.Withdrawal}&market=${token.address}`}
                       >
                         <Trans>Sell GM</Trans>
                       </Button>
                     </td>
+                    {/* <td></td> */}
                   </tr>
                 );
               })}
@@ -182,6 +182,18 @@ export function GmList() {
                         {" "}
                         {formatTokenAmount(totalSupply, token.decimals, "GM")} ({formatUsd(totalSupplyUsd)})
                       </div>
+                    </div>
+                    <div className="App-card-divider"></div>
+                    <div className="App-card-buttons m-0">
+                      <Button variant="semi-clear" to={`/pools?operation=${Operation.Deposit}&market=${token.address}`}>
+                        <Trans>Buy GM</Trans>
+                      </Button>
+                      <Button
+                        variant="semi-clear"
+                        to={`/pools?operation=${Operation.Withdrawal}&market=${token.address}`}
+                      >
+                        <Trans>Sell GM</Trans>
+                      </Button>
                     </div>
                   </div>
                 </div>

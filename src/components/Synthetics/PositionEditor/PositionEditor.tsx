@@ -98,6 +98,8 @@ export function PositionEditor(p: Props) {
     }
   );
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [operation, setOperation] = useState(Operation.Deposit);
   const isDeposit = operation === Operation.Deposit;
 
@@ -256,6 +258,10 @@ export function PositionEditor(p: Props) {
     if (needCollateralApproval) {
       return t`Pending ${collateralToken?.symbol} approval`;
     }
+
+    if (isSubmitting) {
+      return t`Creating Order...`;
+    }
   }, [
     account,
     chainId,
@@ -263,6 +269,7 @@ export function PositionEditor(p: Props) {
     collateralDeltaUsd,
     collateralToken?.symbol,
     isDeposit,
+    isSubmitting,
     minCollateralUsd,
     needCollateralApproval,
     nextCollateralUsd,
@@ -289,6 +296,8 @@ export function PositionEditor(p: Props) {
     }
 
     if (isDeposit) {
+      setIsSubmitting(true);
+
       createIncreaseOrderTxn(chainId, library, {
         account,
         marketAddress: position.marketAddress,
@@ -311,11 +320,17 @@ export function PositionEditor(p: Props) {
         setPendingTxns,
         setPendingOrder,
         setPendingPosition,
-      }).then(onClose);
+      })
+        .then(onClose)
+        .finally(() => {
+          setIsSubmitting(false);
+        });
     } else {
       if (!receiveUsd) {
         return;
       }
+
+      setIsSubmitting(true);
 
       createDecreaseOrderTxn(chainId, library, {
         account,
@@ -340,7 +355,11 @@ export function PositionEditor(p: Props) {
         setPendingTxns,
         setPendingOrder,
         setPendingPosition,
-      }).then(onClose);
+      })
+        .then(onClose)
+        .finally(() => {
+          setIsSubmitting(false);
+        });
     }
   }
 

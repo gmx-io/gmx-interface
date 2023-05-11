@@ -16,6 +16,7 @@ import { getByKey } from "lib/objects";
 import { claimAffiliateRewardsTxn } from "domain/synthetics/referrals/claimAffiliateRewardsTxn";
 
 import "./ClaimAffiliatesModal.scss";
+import { useState } from "react";
 
 type Props = {
   onClose: () => void;
@@ -29,6 +30,7 @@ export function ClaimAffiliatesModal(p: Props) {
 
   const { marketsInfoData } = useMarketsInfo(chainId);
   const { affiliateRewardsData } = useAffiliateRewards(chainId);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const rewards = Object.values(affiliateRewardsData || {});
 
@@ -117,6 +119,8 @@ export function ClaimAffiliatesModal(p: Props) {
       }
     }
 
+    setIsSubmitting(true);
+
     claimAffiliateRewardsTxn(chainId, library, {
       account,
       rewardsParams: {
@@ -124,14 +128,18 @@ export function ClaimAffiliatesModal(p: Props) {
         tokenAddresses: tokenAddresses,
       },
       setPendingTxns,
-    }).then(onClose);
+    })
+      .then(onClose)
+      .finally(() => setIsSubmitting(false));
   }
 
   return (
     <Modal className="Confirmation-box ClaimableModal" isVisible={true} setIsVisible={onClose} label={t`Confirm Claim`}>
       <div className="ConfirmationBox-main text-center">Claim {formatUsd(totalClaimableFundingUsd)}</div>
       <div className="ClaimModal-content">{rewards.map(renderRewardSection)}</div>
-      <Button className="w-100" variant="primary-action" onClick={onSubmit}>{t`Claim`}</Button>
+      <Button className="w-100" variant="primary-action" onClick={onSubmit} disabled={isSubmitting}>
+        {isSubmitting ? t`Claiming...` : t`Claim`}
+      </Button>
     </Modal>
   );
 }

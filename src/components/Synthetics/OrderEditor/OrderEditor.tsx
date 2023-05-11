@@ -70,6 +70,7 @@ export function OrderEditor(p: Props) {
   const acceptablePriceImpactBps = bigNumberify(savedAcceptablePriceImpactBps!);
 
   const [isInited, setIsInited] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [sizeInputValue, setSizeInputValue] = useState("");
   const sizeDeltaUsd = parseValue(sizeInputValue || "0", USD_DECIMALS);
@@ -181,6 +182,10 @@ export function OrderEditor(p: Props) {
   }, [chainId, gasLimits, gasPrice, p.order.isFrozen, p.order.orderType, p.order.swapPath, tokensData]);
 
   function getError() {
+    if (isSubmitting) {
+      return t`Updating Order...`;
+    }
+
     if (isSwapOrderType(p.order.orderType)) {
       if (!triggerRatio?.ratio?.gt(0) || !minOutputAmount.gt(0)) {
         return t`Enter a ratio`;
@@ -290,6 +295,8 @@ export function OrderEditor(p: Props) {
   function onSubmit() {
     const positionOrder = p.order as PositionOrderInfo;
 
+    setIsSubmitting(true);
+
     updateOrderTxn(chainId, library, {
       orderKey: p.order.key,
       sizeDeltaUsd: sizeDeltaUsd || positionOrder.sizeDeltaUsd,
@@ -299,7 +306,11 @@ export function OrderEditor(p: Props) {
       executionFee: executionFee?.feeTokenAmount,
       indexToken: indexToken,
       setPendingTxns: p.setPendingTxns,
-    }).then(() => p.onClose());
+    })
+      .then(() => p.onClose())
+      .finally(() => {
+        setIsSubmitting(false);
+      });
   }
 
   const submitButtonState = getSubmitButtonState();

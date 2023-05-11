@@ -152,6 +152,7 @@ export function ConfirmationBox(p: Props) {
   const [isTriggerWarningAccepted, setIsTriggerWarningAccepted] = useState(false);
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
   const [isLimitOrdersVisible, setIsLimitOrdersVisible] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const payAmount = useMemo(() => {
     if (isSwap && !isWrapOrUnwrap) {
@@ -279,33 +280,96 @@ export function ConfirmationBox(p: Props) {
     return t`Confirm Trigger Order`;
   }, [isLimit, isLong, isMarket, isSwap]);
 
-  const confirmationError = useMemo(() => {
+  // const confirmationError = useMemo(() => {
+  //   if (error) {
+  //     return error;
+  //   }
+
+  //   if (needPayTokenApproval) {
+  //     return t`Pending ${fromToken?.symbol} approval`;
+  //   }
+
+  //   if (isHighPriceImpact && !isHighPriceImpactAccepted) {
+  //     return t`Need to accept Price Impact`;
+  //   }
+  // }, [error, fromToken?.symbol, isHighPriceImpact, isHighPriceImpactAccepted, needPayTokenApproval]);
+
+  // const submitText = useMemo(() => {
+  //   if (isMarket) {
+  //     if (isSwap) {
+  //       return t`Swap`;
+  //     } else {
+  //       return isLong ? t`Long` : t`Short`;
+  //     }
+  //   } else if (isLimit) {
+  //     return t`Confirm Limit Order`;
+  //   } else {
+  //     return t`Confirm Trigger Order`;
+  //   }
+  // }, [isLimit, isLong, isMarket, isSwap]);
+
+  const submitButtonState = useMemo(() => {
+    if (isSubmitting) {
+      return {
+        text: t`Creating Order...`,
+        disabled: true,
+      };
+    }
+
     if (error) {
-      return error;
+      return {
+        text: error,
+        disabled: true,
+      };
     }
 
     if (needPayTokenApproval) {
-      return t`Pending ${fromToken?.symbol} approval`;
+      return { text: t`Pending ${fromToken?.symbol} approval`, disabled: true };
     }
 
     if (isHighPriceImpact && !isHighPriceImpactAccepted) {
-      return t`Need to accept Price Impact`;
+      return { text: t`Need to accept Price Impact`, disabled: true };
     }
-  }, [error, fromToken?.symbol, isHighPriceImpact, isHighPriceImpactAccepted, needPayTokenApproval]);
 
-  const submitText = useMemo(() => {
+    if (decreaseOrdersThatWillBeExecuted.length > 0 && !isTriggerWarningAccepted) {
+      return {
+        text: t`Accept confirmation of trigger orders`,
+        disabled: true,
+      };
+    }
+
+    let text = "";
+
     if (isMarket) {
       if (isSwap) {
-        return t`Swap`;
+        text = t`Swap`;
       } else {
-        return isLong ? t`Long` : t`Short`;
+        text = isLong ? t`Long` : t`Short`;
       }
     } else if (isLimit) {
-      return t`Confirm Limit Order`;
+      text = t`Confirm Limit Order`;
     } else {
-      return t`Confirm Trigger Order`;
+      text = t`Confirm Trigger Order`;
     }
-  }, [isLimit, isLong, isMarket, isSwap]);
+
+    return {
+      text,
+      disabled: false,
+    };
+  }, [
+    decreaseOrdersThatWillBeExecuted.length,
+    error,
+    fromToken?.symbol,
+    isHighPriceImpact,
+    isHighPriceImpactAccepted,
+    isLimit,
+    isLong,
+    isMarket,
+    isSubmitting,
+    isSwap,
+    isTriggerWarningAccepted,
+    needPayTokenApproval,
+  ]);
 
   function onCancelOrderClick(key: string): void {
     cancelOrdersTxn(chainId, library, { orderKeys: [key], setPendingTxns: p.setPendingTxns });
@@ -313,14 +377,14 @@ export function ConfirmationBox(p: Props) {
 
   function onSubmitWrapOrUnwrap() {
     if (!account || !swapAmounts || !fromToken) {
-      return;
+      return Promise.resolve();
     }
 
     return createWrapOrUnwrapTxn(chainId, library, {
       amount: swapAmounts.amountIn,
       isWrap: Boolean(fromToken.isNative),
       setPendingTxns,
-    }).then(onSubmitted);
+    });
   }
 
   function onSubmitSwap() {
@@ -333,10 +397,10 @@ export function ConfirmationBox(p: Props) {
       !executionFee ||
       typeof allowedSlippage !== "number"
     ) {
-      return;
+      return Promise.resolve();
     }
 
-    createSwapOrderTxn(chainId, library, {
+    return createSwapOrderTxn(chainId, library, {
       account,
       fromTokenAddress: fromToken.address,
       fromTokenAmount: swapAmounts.amountIn,
@@ -350,7 +414,7 @@ export function ConfirmationBox(p: Props) {
       tokensData,
       setPendingTxns,
       setPendingOrder,
-    }).then(onSubmitted);
+    });
   }
 
   function onSubmitIncreaseOrder() {
@@ -364,10 +428,10 @@ export function ConfirmationBox(p: Props) {
       !marketInfo ||
       typeof allowedSlippage !== "number"
     ) {
-      return;
+      return Promise.resolve();
     }
 
-    createIncreaseOrderTxn(chainId, library, {
+    return createIncreaseOrderTxn(chainId, library, {
       account,
       marketAddress: marketInfo.marketTokenAddress,
       initialCollateralAddress: fromToken?.address,
@@ -390,7 +454,7 @@ export function ConfirmationBox(p: Props) {
       setPendingTxns: p.setPendingTxns,
       setPendingOrder,
       setPendingPosition,
-    }).then(onSubmitted);
+    });
   }
 
   function onSubmitDecreaseOrder() {
@@ -405,10 +469,10 @@ export function ConfirmationBox(p: Props) {
       !tokensData ||
       typeof allowedSlippage !== "number"
     ) {
-      return;
+      return Promise.resolve();
     }
 
-    createDecreaseOrderTxn(chainId, library, {
+    return createDecreaseOrderTxn(chainId, library, {
       account,
       marketAddress: marketInfo.marketTokenAddress,
       swapPath: [],
@@ -433,30 +497,34 @@ export function ConfirmationBox(p: Props) {
       setPendingTxns,
       setPendingOrder,
       setPendingPosition,
-    }).then(onSubmitted);
+    });
   }
 
   function onSubmit() {
+    setIsSubmitting(true);
+
+    let txnPromise: Promise<any>;
+
     if (!account) {
       onConnectWallet();
       return;
+    } else if (isWrapOrUnwrap) {
+      txnPromise = onSubmitWrapOrUnwrap();
+    } else if (isSwap) {
+      txnPromise = onSubmitSwap();
+    } else if (isIncrease) {
+      txnPromise = onSubmitIncreaseOrder();
+    } else {
+      txnPromise = onSubmitDecreaseOrder();
     }
-    if (isWrapOrUnwrap) {
-      onSubmitWrapOrUnwrap();
-      return;
-    }
-    if (isSwap) {
-      onSubmitSwap();
-      return;
-    }
-    if (isIncrease) {
-      onSubmitIncreaseOrder();
-      return;
-    }
-    if (isTrigger) {
-      onSubmitDecreaseOrder();
-      return;
-    }
+
+    txnPromise
+      .then(() => {
+        onSubmitted();
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
   }
 
   function renderMain() {
@@ -1152,9 +1220,9 @@ export function ConfirmationBox(p: Props) {
             variant="primary-action"
             className="w-100"
             onClick={onSubmit}
-            disabled={Boolean(confirmationError) && !shouldDisableValidation}
+            disabled={submitButtonState.disabled && !shouldDisableValidation}
           >
-            {confirmationError || submitText}
+            {submitButtonState.text}
           </Button>
         </div>
       </Modal>

@@ -352,12 +352,13 @@ export function getNextPositionValuesForIncreaseTrade(p: {
   const nextSizeUsd = existingPosition ? existingPosition.sizeInUsd.add(sizeDeltaUsd) : sizeDeltaUsd;
   const nextSizeInTokens = existingPosition ? existingPosition.sizeInTokens.add(sizeDeltaInTokens) : sizeDeltaInTokens;
 
-  const nextEntryPrice =
-    getEntryPrice({
-      sizeInUsd: nextSizeUsd,
-      sizeInTokens: nextSizeInTokens,
-      indexToken: marketInfo.indexToken,
-    }) || entryPrice;
+  const nextEntryPrice = existingPosition?.sizeInTokens.gt(0)
+    ? getEntryPrice({
+        sizeInUsd: nextSizeUsd,
+        sizeInTokens: nextSizeInTokens,
+        indexToken: marketInfo.indexToken,
+      })!
+    : entryPrice;
 
   const nextLeverage = getLeverage({
     sizeInUsd: nextSizeUsd,

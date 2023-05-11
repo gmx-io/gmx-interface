@@ -90,6 +90,7 @@ export function PositionSeller(p: Props) {
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
 
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [closeUsdInputValue, setCloseUsdInputValue] = useState("");
   const closeSizeUsd = parseValue(closeUsdInputValue || "0", USD_DECIMALS)!;
@@ -221,7 +222,11 @@ export function PositionSeller(p: Props) {
     }
 
     if (isHighPriceImpact && !isHighPriceImpactAccepted) {
-      return [t`Need to accept Price Impact`];
+      return t`Need to accept Price Impact`;
+    }
+
+    if (isSubmitting) {
+      return t`Creating Order...`;
     }
   }, [
     account,
@@ -230,6 +235,7 @@ export function PositionSeller(p: Props) {
     isHighPriceImpact,
     isHighPriceImpactAccepted,
     isNotEnoughReceiveTokenLiquidity,
+    isSubmitting,
     minCollateralUsd,
     nextPositionValues,
     position,
@@ -252,6 +258,8 @@ export function PositionSeller(p: Props) {
     ) {
       return;
     }
+
+    setIsSubmitting(true);
 
     createDecreaseOrderTxn(chainId, library, {
       account,
@@ -276,7 +284,9 @@ export function PositionSeller(p: Props) {
       setPendingOrder,
       setPendingTxns,
       setPendingPosition,
-    }).then(onClose);
+    })
+      .then(onClose)
+      .finally(() => setIsSubmitting(false));
   }
 
   useEffect(

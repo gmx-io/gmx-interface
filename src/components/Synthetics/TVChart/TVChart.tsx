@@ -15,9 +15,8 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatUsd, numberWithCommas } from "lib/numbers";
 import { useEffect, useMemo, useRef } from "react";
 import { SyntheticsTVDataProvider } from "domain/synthetics/tradingview/SyntheticsTVDataProvider";
-
-import "./TVChart.scss";
 import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
+import "./TVChart.scss";
 
 export type Props = {
   ordersInfo?: OrdersInfoData;

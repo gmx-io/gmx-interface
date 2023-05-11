@@ -13,6 +13,7 @@ import { claimCollateralTxn } from "domain/synthetics/markets/claimCollateralTxn
 
 import Button from "components/Button/Button";
 import "./ClaimModal.scss";
+import { useState } from "react";
 
 type Props = {
   onClose: () => void;
@@ -24,6 +25,8 @@ export function ClaimModal(p: Props) {
   const { account, library } = useWeb3React();
   const { chainId } = useChainId();
   const { marketsInfoData } = useMarketsInfo(chainId);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const markets = Object.values(marketsInfoData || {});
 
@@ -101,6 +104,8 @@ export function ClaimModal(p: Props) {
       }
     }
 
+    setIsSubmitting(true);
+
     claimCollateralTxn(chainId, library, {
       account,
       fundingFees: {
@@ -108,14 +113,18 @@ export function ClaimModal(p: Props) {
         tokenAddresses: [...fundingTokenAddresses],
       },
       setPendingTxns,
-    }).then(onClose);
+    })
+      .then(onClose)
+      .finally(() => setIsSubmitting(false));
   }
 
   return (
     <Modal className="Confirmation-box ClaimableModal" isVisible={true} setIsVisible={onClose} label={t`Confirm Claim`}>
       <div className="ConfirmationBox-main text-center">Claim {formatUsd(totalClaimableFundingUsd)}</div>
       <div className="ClaimModal-content">{markets.map(renderMarketSection)}</div>
-      <Button className="w-100" variant="primary-action" onClick={onSubmit}>{t`Claim`}</Button>
+      <Button className="w-100" variant="primary-action" onClick={onSubmit} disabled={isSubmitting}>
+        {isSubmitting ? t`Claiming...` : t`Claim`}
+      </Button>
     </Modal>
   );
 }

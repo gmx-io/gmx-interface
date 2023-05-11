@@ -113,7 +113,10 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
               position="right-bottom"
               renderContent={() => (
                 <div>
-                  <Trans>Positions earn a funding fee if positive and pays if negative.</Trans>
+                  <Trans>
+                    {longShortText} positions {fundingRate.gt(0) ? t`earn` : t`pay`} a funding fee of{" "}
+                    {formatAmount(fundingRate.abs(), 30, 4)}% per hour.
+                  </Trans>
                 </div>
               )}
             />

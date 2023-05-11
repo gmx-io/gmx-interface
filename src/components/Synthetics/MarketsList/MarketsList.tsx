@@ -38,7 +38,9 @@ export function MarketsList() {
   const isMobile = useMedia("(max-width: 1100px)");
 
   const indexTokensStats = useMemo(() => {
-    const markets = Object.values(marketsInfoData || {});
+    const markets = Object.values(marketsInfoData || {}).sort((a, b) => {
+      return a.indexToken.symbol.localeCompare(b.indexToken.symbol);
+    });
 
     const indexMap: {
       [address: string]: {

@@ -25,6 +25,7 @@ import Button from "components/Button/Button";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import "./GmConfirmationBox.scss";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "lib/legacy";
+import { useState } from "react";
 
 type Props = {
   marketToken: TokenData;
@@ -74,6 +75,8 @@ export function GmConfirmationBox({
   const { marketsData } = useMarkets(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
   const { setPendingDeposit, setPendingWithdrawal } = useSyntheticsEvents();
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const market = getByKey(marketsData, marketToken?.address);
 
@@ -174,6 +177,13 @@ export function GmConfirmationBox({
       };
     }
 
+    if (isSubmitting) {
+      return {
+        text: isDeposit ? t`Creating Deposit...` : t`Creating Withdrawal...`,
+        disabled: true,
+      };
+    }
+
     if (isHighPriceImpact && !isHighPriceImpactAccepted) {
       return {
         text: t`Need to accept Price Impact`,
@@ -203,19 +213,32 @@ export function GmConfirmationBox({
     return {
       text,
       onClick: () => {
+        setIsSubmitting(true);
+
+        let txnPromise: Promise<any>;
         if (isDeposit) {
-          onCreateDeposit();
+          txnPromise = onCreateDeposit();
         } else {
-          onCreateWithdrawal();
+          txnPromise = onCreateWithdrawal();
         }
+
+        txnPromise
+          .then(() => {
+            onSubmitted();
+          })
+          .finally(() => {
+            setIsSubmitting(false);
+          });
       },
     };
   })();
 
   function onCreateDeposit() {
-    if (!account || !executionFee || !marketToken || !market || !marketTokenAmount) return;
+    if (!account || !executionFee || !marketToken || !market || !marketTokenAmount) {
+      return Promise.resolve();
+    }
 
-    createDepositTxn(chainId, library, {
+    return createDepositTxn(chainId, library, {
       account,
       initialLongTokenAddress: longToken?.address || market.longTokenAddress,
       initialShortTokenAddress: shortToken?.address || market.shortTokenAddress,
@@ -229,13 +252,15 @@ export function GmConfirmationBox({
       allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
       setPendingTxns,
       setPendingDeposit,
-    }).then(onSubmitted);
+    });
   }
 
   function onCreateWithdrawal() {
-    if (!account || !market || !executionFee || !longTokenAmount || !shortTokenAmount) return;
+    if (!account || !market || !executionFee || !longTokenAmount || !shortTokenAmount) {
+      return Promise.resolve();
+    }
 
-    createWithdrawalTxn(chainId, library, {
+    return createWithdrawalTxn(chainId, library, {
       account,
       initialLongTokenAddress: longToken?.address || market.longTokenAddress,
       initialShortTokenAddress: shortToken?.address || market.shortTokenAddress,
@@ -249,7 +274,7 @@ export function GmConfirmationBox({
       allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
       setPendingTxns,
       setPendingWithdrawal,
-    }).then(onSubmitted);
+    });
   }
 
   return (

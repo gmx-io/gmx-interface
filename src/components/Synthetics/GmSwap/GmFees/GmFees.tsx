@@ -32,7 +32,6 @@ export function GmFees(p: Props) {
                 <div>
                   {p.swapPriceImpact?.deltaUsd.abs().gt(0) && (
                     <StatsTooltipRow
-                      className="GmFees-fee-row"
                       label={t`Swap Price Impact`}
                       value={formatDeltaUsd(p.swapPriceImpact.deltaUsd, p.swapPriceImpact.bps)!}
                       showDollar={false}
@@ -42,7 +41,6 @@ export function GmFees(p: Props) {
                   {p.swapFee && (
                     <>
                       <StatsTooltipRow
-                        className="GmFees-fee-row"
                         label={t`Swap Fee`}
                         value={formatDeltaUsd(p.swapFee.deltaUsd, p.swapFee.bps)!}
                         showDollar={false}
@@ -52,7 +50,6 @@ export function GmFees(p: Props) {
 
                   {p.executionFee && (
                     <StatsTooltipRow
-                      className="GmFees-fee-row"
                       label={t`Execution Fee`}
                       value={formatTokenAmountWithUsd(
                         p.executionFee.feeTokenAmount,

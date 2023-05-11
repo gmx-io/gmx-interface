@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import { CardRow } from "components/CardRow/CardRow";
 import { getIcon } from "config/icons";
 import { MarketInfo, getPoolUsdWithoutPnl } from "domain/synthetics/markets";
@@ -8,6 +8,7 @@ import { formatAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
 import "./MarketStats.scss";
 import { getByKey } from "lib/objects";
+import Tooltip from "components/Tooltip/Tooltip";
 
 type Props = {
   marketInfo?: MarketInfo;
@@ -51,7 +52,21 @@ export function MarketStats(p: Props) {
       </div>
       <div className="App-card-divider" />
       <div className="App-card-content">
-        <CardRow label={t`Price`} value={formatUsd(marketPrice) || "..."} />
+        <CardRow
+          label={t`Price`}
+          value={
+            <Tooltip
+              handle={formatUsd(marketPrice) || "..."}
+              renderContent={() => {
+                return (
+                  <div>
+                    <Trans>GM Token pricing includes positions' Pending PnL, Impact Pool Amount and Borrow Fees.</Trans>
+                  </div>
+                );
+              }}
+            />
+          }
+        />
         <CardRow
           label={t`Wallet`}
           value={
