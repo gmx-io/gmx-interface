@@ -42,8 +42,10 @@ export function ApproveTokenButton(p: Props) {
   const isLoading = isApproving || (isApproveSubmitted && !p.isApproved);
 
   return (
-    <div className="ApproveTokenButton" onClick={onApprove}>
-      <Trans>Allow {p.tokenSymbol} to be spent</Trans>
+    <div className="ApproveTokenButton Checkbox fullRow" onClick={onApprove}>
+      <span className="muted">
+        <Trans>Allow {p.tokenSymbol} to be spent</Trans>
+      </span>
 
       <div className="ApproveTokenButton-checkbox">
         {isLoading ? (

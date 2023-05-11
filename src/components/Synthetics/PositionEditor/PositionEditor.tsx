@@ -501,21 +501,15 @@ export function PositionEditor(p: Props) {
           <>
             <div className="App-card-divider" />
 
-            <div className="ConfirmationBox-approve-tokens">
-              <div className="ConfirmationBox-approve-token">
-                <ApproveTokenButton
-                  tokenAddress={collateralToken.address}
-                  tokenSymbol={collateralToken.symbol}
-                  spenderAddress={routerAddress}
-                />
-              </div>
-            </div>
-
-            <div className="App-card-divider" />
+            <ApproveTokenButton
+              tokenAddress={collateralToken.address}
+              tokenSymbol={collateralToken.symbol}
+              spenderAddress={routerAddress}
+            />
           </>
         )}
 
-        <div className="Exchange-swap-button-container">
+        <div className="Exchange-swap-button-container Confirmation-box-row">
           <Button className="w-100" variant="primary-action" onClick={onSubmit} disabled={Boolean(error)}>
             {error || operationLabels[operation]}
           </Button>

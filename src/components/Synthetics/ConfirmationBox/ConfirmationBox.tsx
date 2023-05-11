@@ -1201,17 +1201,11 @@ export function ConfirmationBox(p: Props) {
           <>
             <div className="App-card-divider" />
 
-            <div className="ConfirmationBox-approve-tokens">
-              <div className="ConfirmationBox-approve-token">
-                <ApproveTokenButton
-                  tokenAddress={fromToken.address}
-                  tokenSymbol={fromToken.symbol}
-                  spenderAddress={getContract(chainId, "SyntheticsRouter")}
-                />
-              </div>
-            </div>
-
-            <div className="App-card-divider" />
+            <ApproveTokenButton
+              tokenAddress={fromToken.address}
+              tokenSymbol={fromToken.symbol}
+              spenderAddress={getContract(chainId, "SyntheticsRouter")}
+            />
           </>
         )}
 

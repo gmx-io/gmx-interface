@@ -330,9 +330,9 @@ export function GmConfirmationBox({
           <>
             <div className="App-card-divider" />
 
-            <div className="GmConfirmationBox-approve-tokens">
+            <div>
               {tokensToApprove.map((address) => (
-                <div className="GmConfirmationBox-approve-token">
+                <div>
                   <ApproveTokenButton
                     key={address}
                     tokenAddress={address}
@@ -342,8 +342,6 @@ export function GmConfirmationBox({
                 </div>
               ))}
             </div>
-
-            <div className="App-card-divider" />
           </>
         )}
         <div className="Confirmation-box-row">
