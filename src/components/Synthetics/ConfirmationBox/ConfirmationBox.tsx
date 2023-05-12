@@ -280,34 +280,6 @@ export function ConfirmationBox(p: Props) {
     return t`Confirm Trigger Order`;
   }, [isLimit, isLong, isMarket, isSwap]);
 
-  // const confirmationError = useMemo(() => {
-  //   if (error) {
-  //     return error;
-  //   }
-
-  //   if (needPayTokenApproval) {
-  //     return t`Pending ${fromToken?.symbol} approval`;
-  //   }
-
-  //   if (isHighPriceImpact && !isHighPriceImpactAccepted) {
-  //     return t`Need to accept Price Impact`;
-  //   }
-  // }, [error, fromToken?.symbol, isHighPriceImpact, isHighPriceImpactAccepted, needPayTokenApproval]);
-
-  // const submitText = useMemo(() => {
-  //   if (isMarket) {
-  //     if (isSwap) {
-  //       return t`Swap`;
-  //     } else {
-  //       return isLong ? t`Long` : t`Short`;
-  //     }
-  //   } else if (isLimit) {
-  //     return t`Confirm Limit Order`;
-  //   } else {
-  //     return t`Confirm Trigger Order`;
-  //   }
-  // }, [isLimit, isLong, isMarket, isSwap]);
-
   const submitButtonState = useMemo(() => {
     if (isSubmitting) {
       return {
@@ -331,7 +303,7 @@ export function ConfirmationBox(p: Props) {
       return { text: t`Need to accept Price Impact`, disabled: true };
     }
 
-    if (decreaseOrdersThatWillBeExecuted.length > 0 && !isTriggerWarningAccepted) {
+    if (isIncrease && decreaseOrdersThatWillBeExecuted.length > 0 && !isTriggerWarningAccepted) {
       return {
         text: t`Accept confirmation of trigger orders`,
         disabled: true,
@@ -362,6 +334,7 @@ export function ConfirmationBox(p: Props) {
     fromToken?.symbol,
     isHighPriceImpact,
     isHighPriceImpactAccepted,
+    isIncrease,
     isLimit,
     isLong,
     isMarket,

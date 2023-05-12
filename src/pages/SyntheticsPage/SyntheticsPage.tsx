@@ -27,7 +27,6 @@ import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useOrdersInfo } from "domain/synthetics/orders/useOrdersInfo";
 import { getPositionKey } from "domain/synthetics/positions";
 import { usePositionsInfo } from "domain/synthetics/positions/usePositionsInfo";
-import { TradeType } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT, DEFAULT_SLIPPAGE_AMOUNT } from "lib/legacy";
@@ -100,6 +99,7 @@ export function SyntheticsPage(p: Props) {
     setToTokenAddress,
     setMarketAddress,
     setCollateralAddress,
+    setActivePosition,
   } = useSelectedTradeOption(chainId);
 
   const [listSection, setListSection] = useLocalStorageSerializeKey(
@@ -199,20 +199,6 @@ export function SyntheticsPage(p: Props) {
     setEditingPositionKey(undefined);
   }, []);
 
-  function onSelectPosition(positionKey: string) {
-    const position = getByKey(positionsInfoData, positionKey);
-
-    if (!position) return;
-
-    // disable merge state updates to correctly save values to local storage
-    setTimeout(() => {
-      setTradeType(position.isLong ? TradeType.Long : TradeType.Short);
-      setToTokenAddress(position.indexToken.address);
-      setMarketAddress(position.marketAddress);
-      setCollateralAddress(position.collateralTokenAddress);
-    });
-  }
-
   function onCancelOrdersClick() {
     setIsCancelOrdersProcessig(true);
     cancelOrdersTxn(chainId, library, {
@@ -282,7 +268,7 @@ export function SyntheticsPage(p: Props) {
                 isLoading={isPositionsLoading}
                 savedIsPnlInLeverage={savedIsPnlInLeverage}
                 onOrdersClick={() => setListSection(ListSection.Orders)}
-                onSelectPositionClick={onSelectPosition}
+                onSelectPositionClick={(key) => setActivePosition(getByKey(positionsInfoData, key))}
                 onClosePositionClick={setClosingPositionKey}
                 onEditCollateralClick={setEditingPositionKey}
                 showPnlAfterFees={showPnlAfterFees}
@@ -364,7 +350,7 @@ export function SyntheticsPage(p: Props) {
               savedIsPnlInLeverage={savedIsPnlInLeverage}
               isLoading={isPositionsLoading}
               onOrdersClick={() => setListSection(ListSection.Orders)}
-              onSelectPositionClick={onSelectPosition}
+              onSelectPositionClick={(key) => setActivePosition(getByKey(positionsInfoData, key))}
               onClosePositionClick={setClosingPositionKey}
               onEditCollateralClick={setEditingPositionKey}
               showPnlAfterFees={showPnlAfterFees}

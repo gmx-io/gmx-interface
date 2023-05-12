@@ -8,6 +8,7 @@ import { TradeFlags, useTradeFlags } from "./useTradeFlags";
 import { TokenData, TokensData, useAvailableTokensData } from "../tokens";
 import { getIsUnwrap, getIsWrap } from "domain/tokens";
 import { getSyntheticsTradeOptionsKey } from "config/localStorage";
+import { PositionInfo } from "../positions";
 
 export type SelectedTradeOption = {
   tradeType: TradeType;
@@ -26,6 +27,7 @@ export type SelectedTradeOption = {
   availableTokensOptions: AvailableTokenOptions;
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
+  setActivePosition: (position?: PositionInfo) => void;
   setTradeType: (tradeType: TradeType) => void;
   setTradeMode: (tradeMode: TradeMode) => void;
   setFromTokenAddress: (tokenAddress?: string) => void;
@@ -135,8 +137,8 @@ export function useSelectedTradeOption(chainId: number): SelectedTradeOption {
   const setFromTokenAddress = useCallback(
     (tokenAddress?: string) => {
       const oldState = JSON.parse(JSON.stringify(storedOptions));
-      oldState.tokens.fromTokenAddress = tokenAddress;
 
+      oldState.tokens.fromTokenAddress = tokenAddress;
       setStoredOptions(oldState);
     },
     [setStoredOptions, storedOptions]
@@ -175,6 +177,27 @@ export function useSelectedTradeOption(chainId: number): SelectedTradeOption {
       setStoredOptions(oldState);
     },
     [setStoredOptions, storedOptions, toTokenAddress, tradeFlags.isLong]
+  );
+
+  const setActivePosition = useCallback(
+    (position?: PositionInfo) => {
+      if (!position) {
+        return;
+      }
+
+      const oldState: StoredTradeOptions = JSON.parse(JSON.stringify(storedOptions));
+
+      oldState.tradeType = position.isLong ? TradeType.Long : TradeType.Short;
+      oldState.tokens.indexTokenAddress = position.indexToken.address;
+      oldState.markets[oldState.tokens.indexTokenAddress] = oldState.markets[oldState.tokens.indexTokenAddress] || {};
+      oldState.markets[oldState.tokens.indexTokenAddress][position.isLong ? "long" : "short"] = position.marketAddress;
+      oldState.collaterals[position.marketAddress] = oldState.collaterals[position.marketAddress] || {};
+      oldState.collaterals[position.marketAddress][position.isLong ? "long" : "short"] =
+        position.collateralToken.address;
+
+      setStoredOptions(oldState);
+    },
+    [setStoredOptions, storedOptions]
   );
 
   const setCollateralAddress = useCallback(
@@ -286,6 +309,7 @@ export function useSelectedTradeOption(chainId: number): SelectedTradeOption {
     avaialbleTradeModes,
     marketsInfoData,
     tokensData,
+    setActivePosition,
     setFromTokenAddress,
     setToTokenAddress,
     setMarketAddress,
