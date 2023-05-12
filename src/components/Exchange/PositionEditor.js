@@ -239,7 +239,7 @@ export default function PositionEditor(props) {
 
     if (position.hasProfit) {
       if (nextCollateral.lte(position.closingFee.add(LIQUIDATION_FEE))) {
-        return [t`Deposit not enough to cover fees`];
+        return isDeposit ? [t`Deposit not enough to cover fees`] : [t`Leftover Collateral not enough to cover fees`];
       }
       if (nextLeverageExcludingPnl && nextLeverageExcludingPnl.gt(MAX_LEVERAGE)) {
         return [t`Max leverage without PnL: ${(MAX_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
