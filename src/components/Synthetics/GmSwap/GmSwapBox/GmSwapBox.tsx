@@ -716,6 +716,7 @@ export function GmSwapBox(p: Props) {
       }
 
       if (isSingle && secondTokenAddress) {
+        setFocusedInput(secondTokenAddress === marketInfo?.longTokenAddress ? "longCollateral" : "shortCollateral");
         setSecondTokenAddress(undefined);
         setSecondTokenInputValue("");
       }
