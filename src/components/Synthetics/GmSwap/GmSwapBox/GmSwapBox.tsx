@@ -752,6 +752,7 @@ export function GmSwapBox(p: Props) {
       isPair,
       isSingle,
       marketInfo?.isSameCollaterals,
+      marketInfo?.longTokenAddress,
       secondTokenAddress,
       setFirstTokenAddress,
       setSecondTokenAddress,
