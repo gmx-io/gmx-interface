@@ -30,6 +30,15 @@ export default function useTVDatafeed({ dataProvider }: Props) {
   const lastLiveTime = useRef<number>(0);
   const missingData = useRef([]);
   const isFetching = useRef(false);
+  const feedData = useRef(true);
+
+  const stableTokens = useMemo(
+    () =>
+      getTokens(chainId)
+        .filter((t) => t.isStable)
+        .map((t) => t.symbol),
+    [chainId]
+  );
 
   useEffect(() => {
     if (dataProvider && tvDataProvider.current !== dataProvider) {
@@ -41,16 +50,19 @@ export default function useTVDatafeed({ dataProvider }: Props) {
     const handleVisibilityChange = async () => {
       if (document.visibilityState === "visible") {
         isFetching.current = true;
+        // don't do this if the token is stable
         const data = await tvDataProvider.current?.getMissingBars(
           chainId,
           activeTicker.current!,
           activePeriod.current!,
           lastLiveTime.current
         );
-        console.log("data", data);
+
         missingData.current = data || [];
         isFetching.current = false;
+        feedData.current = true;
       } else {
+        feedData.current = false;
         missingData.current = [];
         isFetching.current = false;
       }
@@ -80,9 +92,6 @@ export default function useTVDatafeed({ dataProvider }: Props) {
             symbolName = getNativeToken(chainId).symbol;
           }
 
-          const stableTokens = getTokens(chainId)
-            .filter((t) => t.isStable)
-            .map((t) => t.symbol);
           const symbolInfo = {
             name: symbolName,
             type: "crypto",
@@ -140,39 +149,7 @@ export default function useTVDatafeed({ dataProvider }: Props) {
             onErrorCallback("Unable to load historical data!");
           }
         },
-        // async subscribeBars(
-        //   symbolInfo: SymbolInfo,
-        //   resolution: ResolutionString,
-        //   onRealtimeCallback: SubscribeBarsCallback,
-        //   _subscribeUID,
-        //   onResetCacheNeededCallback: () => void
-        // ) {
-        //   const period = SUPPORTED_RESOLUTIONS[resolution];
-        //   const { ticker, isStable } = symbolInfo;
-        //   if (!ticker || !period) {
-        //     return;
-        //   }
-        //   intervalRef.current && clearInterval(intervalRef.current);
-        //   resetCacheRef.current = onResetCacheNeededCallback;
-        //   if (!isStable) {
-        //     intervalRef.current = setInterval(function () {
-        //       if (isFetching.current) return;
-        //       if (missingData.current.length > 0) {
-        //         missingData.current.forEach((bar) => {
-        //           onRealtimeCallback(formatTimeInBarToMs(bar));
-        //           missingData.current = [];
-        //         });
-        //       } else {
-        //         tvDataProvider.current?.getLiveBar(chainId, ticker, period).then((bar) => {
-        //           if (bar && bar.ticker === activeTicker.current && bar.period === activePeriod.current) {
-        //             lastLiveTime.current = bar.time;
-        //             onRealtimeCallback(formatTimeInBarToMs(bar));
-        //           }
-        //         });
-        //       }
-        //     }, 500);
-        //   }
-        // },
+
         async subscribeBars(
           symbolInfo: SymbolInfo,
           resolution: ResolutionString,
@@ -182,24 +159,24 @@ export default function useTVDatafeed({ dataProvider }: Props) {
         ) {
           const period = SUPPORTED_RESOLUTIONS[resolution];
           const { ticker, isStable } = symbolInfo;
-          if (!ticker || !period) {
+          if (!ticker) {
             return;
           }
+
           intervalRef.current && clearInterval(intervalRef.current);
           resetCacheRef.current = onResetCacheNeededCallback;
 
           if (!isStable) {
             intervalRef.current = setInterval(function () {
-              if (isFetching.current) return;
-              console.log(isFetching.current);
+              if (isFetching.current || !feedData.current || !missingData.current) return;
               if (missingData.current.length > 0) {
-                missingData.current.forEach((bar) => {
+                missingData.current.forEach((bar: any) => {
                   onRealtimeCallback(formatTimeInBarToMs(bar));
+                  missingData.current = missingData.current.filter((b: { time: any }) => b.time !== bar.time);
                 });
               } else {
                 tvDataProvider.current?.getLiveBar(chainId, ticker, period).then((bar) => {
                   if (bar && bar.ticker === activeTicker.current && bar.period === activePeriod.current) {
-                    console.log("bar inside interval", bar);
                     lastLiveTime.current = bar.time;
                     onRealtimeCallback(formatTimeInBarToMs(bar));
                   }
@@ -208,11 +185,15 @@ export default function useTVDatafeed({ dataProvider }: Props) {
             }, 500);
           }
         },
-
-        unsubscribeBars: () => {
-          intervalRef.current && clearInterval(intervalRef.current);
+        unsubscribeBars: (id) => {
+          // id is in the format ETH_#_USD_#_5
+          const ticker = id.split("_")[0];
+          const isStable = stableTokens.includes(ticker);
+          if (!isStable && intervalRef.current) {
+            clearInterval(intervalRef.current);
+          }
         },
       },
     };
-  }, [chainId]);
+  }, [chainId, stableTokens]);
 }

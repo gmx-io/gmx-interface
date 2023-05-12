@@ -87,6 +87,7 @@ export async function getLimitChartPricesFromStats(chainId, symbol, period, limi
   } catch (error) {
     // eslint-disable-next-line no-console
     console.log(`Error fetching data: ${error}`);
+    return [];
   }
 }
 
