@@ -350,7 +350,9 @@ export function getNextPositionValuesForIncreaseTrade(p: {
   }
 
   const nextSizeUsd = existingPosition ? existingPosition.sizeInUsd.add(sizeDeltaUsd) : sizeDeltaUsd;
-  const nextSizeInTokens = existingPosition ? existingPosition.sizeInTokens.add(sizeDeltaInTokens) : sizeDeltaInTokens;
+  const nextSizeInTokens = existingPosition
+    ? existingPosition.sizeInTokens.add(sizeDeltaInTokens || 0)
+    : sizeDeltaInTokens;
 
   const nextEntryPrice = existingPosition?.sizeInTokens.gt(0)
     ? getEntryPrice({
