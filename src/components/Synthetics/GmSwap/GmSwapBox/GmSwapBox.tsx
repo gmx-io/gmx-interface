@@ -6,7 +6,7 @@ import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
 import Tab from "components/Tab/Tab";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
-import { SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY } from "config/localStorage";
+import { SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, getSyntheticsDepositIndexTokenKey } from "config/localStorage";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
 import {
   FeeItem,
@@ -20,9 +20,13 @@ import {
 } from "domain/synthetics/fees";
 import { useMarketTokensData, useMarketsInfo } from "domain/synthetics/markets";
 import { Market } from "domain/synthetics/markets/types";
-import { getAvailableUsdLiquidityForCollateral, getPoolUsdWithoutPnl } from "domain/synthetics/markets/utils";
-import { adaptToV1InfoTokens, convertToUsd, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
-import { GmSwapFees } from "domain/synthetics/trade";
+import {
+  getAvailableUsdLiquidityForCollateral,
+  getMarketPoolName,
+  getPoolUsdWithoutPnl,
+} from "domain/synthetics/markets/utils";
+import { convertToUsd, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
+import { GmSwapFees, useAvailableTokenOptions } from "domain/synthetics/trade";
 import {
   getNextDepositAmountsByCollaterals,
   getNextDepositAmountsByMarketToken,
@@ -38,14 +42,17 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmountFree, formatTokenAmount, formatUsd, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
+import { uniqBy } from "lodash";
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 import { IoMdSwap } from "react-icons/io";
 import { GmConfirmationBox } from "../GmConfirmationBox/GmConfirmationBox";
 
 import { useWeb3React } from "@web3-react/core";
 import Button from "components/Button/Button";
+import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { useVirtualInventory } from "domain/synthetics/fees/useVirtualInventory";
 import { useSafeState } from "lib/useSafeState";
+import { useHistory, useLocation } from "react-router-dom";
 import "./GmSwapBox.scss";
 
 export enum Operation {
@@ -83,7 +90,10 @@ const getAvailableModes = (operation: Operation, market?: Market) => {
 };
 
 export function GmSwapBox(p: Props) {
-  const { operation, mode, setMode, setOperation } = p;
+  const { operation, mode, setMode, setOperation, onSelectMarket } = p;
+  const { search } = useLocation();
+  const history = useHistory();
+  const queryParams = useMemo(() => new URLSearchParams(search), [search]);
 
   const marketAddress = p.selectedMarketAddress;
 
@@ -92,8 +102,6 @@ export function GmSwapBox(p: Props) {
   const { marketsInfoData } = useMarketsInfo(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
   const { virtualInventoryForSwaps } = useVirtualInventory(chainId);
-
-  const infoTokens = adaptToV1InfoTokens(tokensData || {});
 
   const { gasLimits } = useGasLimits(chainId);
   const { gasPrice } = useGasPrice(chainId);
@@ -121,15 +129,40 @@ export function GmSwapBox(p: Props) {
   const isPair = mode === Mode.Pair;
 
   const marketInfo = getByKey(marketsInfoData, marketAddress);
-
   const availableModes = getAvailableModes(operation, marketInfo);
 
-  const marketsOptions: DropdownOption[] = Object.values(marketsInfoData || {})
-    .filter((market) => !market.isDisabled)
-    .map((marketInfo) => ({
-      label: `GM: ${marketInfo.name}`,
-      value: marketInfo.marketTokenAddress,
+  const [indexTokenSymbol, setIndexTokenSymbol] = useLocalStorageSerializeKey<string | undefined>(
+    getSyntheticsDepositIndexTokenKey(chainId),
+    undefined
+  );
+  const { infoTokens } = useAvailableTokenOptions(chainId);
+
+  const { marketOptions, indexTokenOptions } = useMemo(() => {
+    const indexSymbols = uniqBy(Object.values(marketsInfoData || {}), (market) => market.indexTokenAddress).map(
+      (market) => (market.isSpotOnly ? "SPOT" : market.indexToken.symbol)
+    );
+
+    const indexTokenOptions: DropdownOption[] = indexSymbols.map((symbol) => ({
+      label: symbol === "SPOT" ? "SPOT" : `${symbol}/USD`,
+      value: symbol,
     }));
+
+    const marketOptions: DropdownOption[] = Object.values(marketsInfoData || {})
+      .filter((market) =>
+        !market.isDisabled && indexTokenSymbol === "SPOT"
+          ? market.isSpotOnly
+          : market.indexToken.symbol === indexTokenSymbol
+      )
+      .map((market) => ({
+        label: getMarketPoolName(market),
+        value: market.marketTokenAddress,
+      }));
+
+    return {
+      marketOptions,
+      indexTokenOptions,
+    };
+  }, [indexTokenSymbol, marketsInfoData]);
 
   const [firstTokenAddress, setFirstTokenAddress] = useLocalStorageSerializeKey<string | undefined>(
     [chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, isDeposit, marketAddress, "first"],
@@ -399,21 +432,32 @@ export function GmSwapBox(p: Props) {
     }
   }
 
-  function resetInputs() {
+  const onSwitchSide = useCallback(() => {
+    setFocusedInput("market");
+    setOperation(operation === Operation.Deposit ? Operation.Withdrawal : Operation.Deposit);
+  }, [operation, setOperation]);
+
+  const resetInputs = useCallback(() => {
     setFirstTokenInputValue("");
     setSecondTokenInputValue("");
     setMarketTokenInputValue("");
-  }
+  }, [setFirstTokenInputValue, setMarketTokenInputValue, setSecondTokenInputValue]);
 
-  function onOperationChange(operation: Operation) {
-    resetInputs();
-    setOperation(operation);
-  }
+  const onOperationChange = useCallback(
+    (operation: Operation) => {
+      resetInputs();
+      setOperation(operation);
+    },
+    [resetInputs, setOperation]
+  );
 
-  function onMarketChange(marketAddress: string) {
-    resetInputs();
-    p.onSelectMarket(marketAddress);
-  }
+  const onMarketChange = useCallback(
+    (marketAddress: string) => {
+      resetInputs();
+      onSelectMarket(marketAddress);
+    },
+    [onSelectMarket, resetInputs]
+  );
 
   useEffect(
     function updateAmounts() {
@@ -621,6 +665,49 @@ export function GmSwapBox(p: Props) {
   );
 
   useEffect(
+    function updateIndexToken() {
+      if (!indexTokenSymbol && indexTokenOptions.length) {
+        setIndexTokenSymbol(indexTokenOptions[0].value);
+      }
+    },
+    [indexTokenSymbol, indexTokenOptions, setIndexTokenSymbol]
+  );
+
+  useEffect(
+    function updateMarket() {
+      if (!marketOptions.length) {
+        return;
+      }
+
+      if (!marketAddress || !marketOptions.find((option) => option.value === marketAddress)) {
+        onMarketChange(marketOptions[0].value);
+      }
+    },
+    [marketAddress, marketOptions, onMarketChange]
+  );
+
+  useEffect(
+    function updateByQueryParams() {
+      if (queryParams.get("operation") === Operation.Withdrawal) {
+        setOperation(Operation.Withdrawal);
+      } else if (queryParams.get("operation") === Operation.Deposit) {
+        setOperation(Operation.Deposit);
+      }
+
+      if (queryParams.get("market")) {
+        const marketInfo = getByKey(marketsInfoData, queryParams.get("market")!);
+        if (marketInfo) {
+          setIndexTokenSymbol(marketInfo?.isSpotOnly ? "SPOT" : marketInfo?.indexToken.symbol);
+          onSelectMarket(marketInfo?.marketTokenAddress);
+        }
+      }
+
+      history.replace({ search: "" });
+    },
+    [history, marketsInfoData, onSelectMarket, queryParams, setIndexTokenSymbol, setOperation]
+  );
+
+  useEffect(
     function updateTokens() {
       if (!tokenOptions.length) return;
 
@@ -674,13 +761,6 @@ export function GmSwapBox(p: Props) {
 
   return (
     <div className={`App-box GmSwapBox`}>
-      <Dropdown
-        className="GmSwapBox-market-dropdown"
-        selectedOption={marketsOptions.find((o) => o.value === p.selectedMarketAddress)}
-        options={marketsOptions}
-        onSelect={(o) => onMarketChange(o.value)}
-      />
-
       <Tab
         options={Object.values(Operation)}
         optionLabels={operationLabels}
@@ -761,12 +841,7 @@ export function GmSwapBox(p: Props) {
           </BuyInputSection>
         )}
 
-        <div
-          className="AppOrder-ball-container"
-          onClick={() => {
-            setOperation((prev) => (prev === Operation.Deposit ? Operation.Withdrawal : Operation.Deposit));
-          }}
-        >
+        <div className="AppOrder-ball-container" onClick={onSwitchSide}>
           <div className="AppOrder-ball">
             <IoMdSwap className="Exchange-swap-ball-icon" />
           </div>
@@ -795,6 +870,38 @@ export function GmSwapBox(p: Props) {
       </div>
 
       <div className="GmSwapBox-info-section">
+        <ExchangeInfoRow
+          className="SwapBox-info-row"
+          label={t`Market`}
+          value={
+            <Dropdown
+              selectedOption={indexTokenOptions.find((o) => o.value === indexTokenSymbol)}
+              placeholder={"-"}
+              options={indexTokenOptions}
+              onSelect={(option) => {
+                setIndexTokenSymbol(option.value);
+              }}
+            />
+          }
+        />
+
+        <ExchangeInfoRow
+          className="SwapBox-info-row"
+          label={t`Pool`}
+          value={
+            <Dropdown
+              selectedOption={marketOptions.find((o) => o.value === marketAddress)}
+              placeholder={"-"}
+              options={marketOptions}
+              onSelect={(option) => {
+                onMarketChange(option.value);
+              }}
+            />
+          }
+        />
+
+        <div className="App-card-divider" />
+
         <GmFees
           totalFees={fees?.totalFees}
           swapFee={fees?.swapFee}

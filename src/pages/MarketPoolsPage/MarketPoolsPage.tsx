@@ -3,17 +3,15 @@ import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { GmSwapBox, Mode, Operation } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";
 import { MarketStats } from "components/Synthetics/MarketStats/MarketStats";
-import { SYNTHETICS_MARKET_DEPOSIT_MARKET_KEY } from "config/localStorage";
+import { getSyntheticsDepositMarketKey } from "config/localStorage";
 import { useMarketTokensData, useMarketsInfo } from "domain/synthetics/markets";
 import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { getTokenData } from "domain/synthetics/tokens";
 import { getByKey } from "lib/objects";
-import { useMemo } from "react";
-import { useHistory, useLocation } from "react-router-dom";
 import "./MarketPoolsPage.scss";
 
 type Props = {
@@ -23,10 +21,6 @@ type Props = {
 
 export function MarketPoolsPage(p: Props) {
   const { chainId } = useChainId();
-  const { search } = useLocation();
-  const history = useHistory();
-
-  const queryParams = useMemo(() => new URLSearchParams(search), [search]);
 
   const { marketsInfoData = {} } = useMarketsInfo(chainId);
   const markets = Object.values(marketsInfoData);
@@ -38,45 +32,15 @@ export function MarketPoolsPage(p: Props) {
   const [mode, setMode] = useState<Mode>(Mode.Single);
 
   const [selectedMarketKey, setSelectedMarketKey] = useLocalStorageSerializeKey<string | undefined>(
-    [chainId, SYNTHETICS_MARKET_DEPOSIT_MARKET_KEY],
+    getSyntheticsDepositMarketKey(chainId),
     undefined
   );
+
   const marketInfo = getByKey(marketsInfoData, selectedMarketKey);
 
   const marketToken = getTokenData(
     operation === Operation.Deposit ? depositMarketTokensData : withdrawalMarketTokensData,
     selectedMarketKey
-  );
-
-  useEffect(
-    function updateByQueryParams() {
-      if (queryParams.get("operation") === Operation.Withdrawal) {
-        setOperation(Operation.Withdrawal);
-      } else if (queryParams.get("operation") === Operation.Deposit) {
-        setOperation(Operation.Deposit);
-      }
-
-      if (queryParams.get("market")) {
-        setSelectedMarketKey(queryParams.get("market")!);
-      }
-
-      history.replace({ search: "" });
-    },
-    [history, queryParams, setSelectedMarketKey]
-  );
-
-  useEffect(
-    function updateMarket() {
-      if (!markets.length) return;
-
-      if (
-        (markets.length > 0 && !selectedMarketKey) ||
-        !markets.find((m) => m.marketTokenAddress === selectedMarketKey)
-      ) {
-        setSelectedMarketKey(markets[0].marketTokenAddress);
-      }
-    },
-    [selectedMarketKey, markets, setSelectedMarketKey]
   );
 
   return (

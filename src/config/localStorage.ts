@@ -22,7 +22,9 @@ export const TRADE_LINK_KEY = "trade-link";
 
 export const SYNTHETICS_TRADE_OPTIONS = "synthetics-trade-options";
 export const SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BPS_KEY = "synthetics-acceptable-price-impact-bps";
-export const SYNTHETICS_MARKET_DEPOSIT_MARKET_KEY = "synthetics-market-deposit-market";
+export const SYNTHETICS_DEPOSIT_INDEX_TOKEN_KEY = "synthetics-deposit-index-token";
+export const SYNTHETICS_DEPOSIT_MARKET_KEY = "synthetics-market-deposit-market";
+
 export const SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY = "synthetics-market-deposit-token";
 export const SYNTHETICS_COLLATERAL_DEPOSIT_TOKEN_KEY = "synthetics-collateral-deposit-token";
 export const SYNTHETICS_LIST_SECTION_KEY = "synthetics-list-section";
@@ -30,6 +32,14 @@ export const SYNTHETICS_COLLATERAL_EDIT_TOKEN_KEY = "synthetics-collateral-edit-
 export const PRODUCTION_PREVIEW_KEY = "production-preview";
 
 export const getSubgraphUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
+
+export function getSyntheticsDepositIndexTokenKey(chainId: number) {
+  return [chainId, SYNTHETICS_DEPOSIT_INDEX_TOKEN_KEY];
+}
+
+export function getSyntheticsDepositMarketKey(chainId: number) {
+  return [chainId, SYNTHETICS_DEPOSIT_MARKET_KEY];
+}
 
 export function getSyntheticsListSectionKey(chainId: number) {
   return [chainId, SYNTHETICS_LIST_SECTION_KEY];

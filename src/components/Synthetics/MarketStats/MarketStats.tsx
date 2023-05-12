@@ -21,8 +21,6 @@ export function MarketStats(p: Props) {
 
   const { marketsTokensAPRData } = useMarketTokensAPR(chainId);
 
-  const marketName = `GM: ${marketInfo?.name || "---/--- [-------]"}`;
-
   const marketPrice = marketToken?.prices?.maxPrice;
   const marketBalance = marketToken?.balance;
   const marketBalanceUsd = convertToUsd(marketBalance, marketToken?.decimals, marketPrice);
@@ -45,13 +43,14 @@ export function MarketStats(p: Props) {
             <img className="MarketStats-gm-icon" src={getIcon(chainId, "gm")} alt="GM" />
           </div>
           <div className="App-card-title-mark-info">
-            <div className="App-card-title-mark-title">{marketName}</div>
+            <div className="App-card-title-mark-title">GM</div>
             <div className="App-card-title-mark-subtitle">GMX Market tokens</div>
           </div>
         </div>
       </div>
       <div className="App-card-divider" />
       <div className="App-card-content">
+        <CardRow label={t`Market`} value={marketInfo?.name || "..."} />
         <CardRow
           label={t`Price`}
           value={

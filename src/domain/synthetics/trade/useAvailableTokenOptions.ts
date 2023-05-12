@@ -16,7 +16,7 @@ export function useAvailableTokenOptions(chainId: number): AvailableTokenOptions
   const { tokensData } = useAvailableTokensData(chainId);
 
   return useMemo(() => {
-    const markets = Object.values(marketsInfoData || {});
+    const markets = Object.values(marketsInfoData || {}).filter((market) => !market.isDisabled);
     const tokensMap = getTokensMap(chainId);
 
     const collaterals = new Set<Token>();
