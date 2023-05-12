@@ -13,6 +13,7 @@ import { useState } from "react";
 import { getTokenData } from "domain/synthetics/tokens";
 import { getByKey } from "lib/objects";
 import "./MarketPoolsPage.scss";
+import { GmList } from "components/Synthetics/GmList/GmList";
 
 type Props = {
   connectWallet: () => void;
@@ -77,6 +78,13 @@ export function MarketPoolsPage(p: Props) {
             />
           </div>
         </div>
+
+        <div className="Tab-title-section">
+          <div className="Page-title">
+            <Trans>Select a Market</Trans>
+          </div>
+        </div>
+        <GmList />
       </div>
     </SEO>
   );

@@ -3602,6 +3602,10 @@ msgstr ""
 msgid "Select Market"
 msgstr ""
 
+#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
+msgid "Select a Market"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a Pay token"
 msgstr ""

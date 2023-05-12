@@ -12,7 +12,11 @@ import { Operation } from "../GmSwap/GmSwapBox/GmSwapBox";
 import "./GmList.scss";
 import { getByKey } from "lib/objects";
 
-export function GmList() {
+type Props = {
+  hideTitle?: boolean;
+};
+
+export function GmList({ hideTitle }: Props) {
   const { chainId } = useChainId();
 
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
@@ -41,10 +45,15 @@ export function GmList() {
     <div className="GMList">
       {!isMobile && (
         <div className="token-table-wrapper App-card">
-          <div className="App-card-title">
-            <Trans>GM ({getChainName(chainId)})</Trans>
-          </div>
-          <div className="App-card-divider"></div>
+          {!hideTitle && (
+            <>
+              <div className="App-card-title">
+                <Trans>GM ({getChainName(chainId)})</Trans>
+              </div>
+              <div className="App-card-divider"></div>
+            </>
+          )}
+
           <table className="token-table">
             <thead>
               <tr>
@@ -96,30 +105,33 @@ export function GmList() {
                     <td>
                       {formatTokenAmount(token.balance, token.decimals, "GM")}
                       <br />
-                      {formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice))}
+                      {formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice)) || "..."}
                     </td>
 
                     <td>{apr ? `${formatAmount(apr, 2, 2)}%` : "..."}</td>
 
-                    <td>
+                    <td className="GmList-last-column">
                       {formatTokenAmount(totalSupply, token.decimals, "GM")}
                       <br />
                       {formatUsd(totalSupplyUsd)}
                     </td>
 
                     <td className="GmList-actions">
-                      <Button variant="semi-clear" to={`/pools?operation=${Operation.Deposit}&market=${token.address}`}>
+                      <Button
+                        className="GmList-action"
+                        variant="semi-clear"
+                        to={`/pools?operation=${Operation.Deposit}&market=${token.address}`}
+                      >
                         <Trans>Buy GM</Trans>
                       </Button>
                       <Button
-                        className="GMList-action"
+                        className="GmList-action GmList-last-action"
                         variant="semi-clear"
                         to={`/pools?operation=${Operation.Withdrawal}&market=${token.address}`}
                       >
                         <Trans>Sell GM</Trans>
                       </Button>
                     </td>
-                    {/* <td></td> */}
                   </tr>
                 );
               })}
@@ -130,11 +142,13 @@ export function GmList() {
 
       {isMobile && (
         <>
-          <div className="App-card-title">
-            <span>
-              <Trans>GM ({getChainName(chainId)})</Trans>
-            </span>
-          </div>
+          {!hideTitle && (
+            <div className="App-card-title">
+              <span>
+                <Trans>GM ({getChainName(chainId)})</Trans>
+              </span>
+            </div>
+          )}
 
           <div className="token-grid">
             {marketTokens.map((token) => {
