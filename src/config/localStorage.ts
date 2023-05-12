@@ -20,18 +20,13 @@ export const LEVERAGE_ENABLED_KEY = "leverage-enabled";
 export const KEEP_LEVERAGE_FOR_DECREASE_KEY = "Exchange-keep-leverage";
 export const TRADE_LINK_KEY = "trade-link";
 
+export const SYNTHETICS_TRADE_OPTIONS = "synthetics-trade-options";
 export const SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BPS_KEY = "synthetics-acceptable-price-impact-bps";
 export const SYNTHETICS_MARKET_DEPOSIT_MARKET_KEY = "synthetics-market-deposit-market";
 export const SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY = "synthetics-market-deposit-token";
 export const SYNTHETICS_COLLATERAL_DEPOSIT_TOKEN_KEY = "synthetics-collateral-deposit-token";
 export const SYNTHETICS_LIST_SECTION_KEY = "synthetics-list-section";
-export const SYNTHETICS_TRADE_TYPE_KEY = "synthetics-trade-type";
-export const SYNTHETICS_TRADE_MODE_KEY = "synthetics-trade-mode";
-export const SYNTHETICS_TRADE_MARKET_KEY = "synthetics-trade-market";
-export const SYNTHETICS_TRADE_FROM_TOKEN_KEY = "synthetics-trade-from-token";
 export const SYNTHETICS_COLLATERAL_EDIT_TOKEN_KEY = "synthetics-collateral-edit-token";
-export const SYNTHETICS_TRADE_TO_TOKEN_KEY = "synthetics-swap-to-token";
-export const SYNTHETICS_TRADE_COLLATERAL_KEY = "synthetics-swap-collateral-token";
 export const PRODUCTION_PREVIEW_KEY = "production-preview";
 
 export const getSubgraphUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
@@ -40,36 +35,8 @@ export function getSyntheticsListSectionKey(chainId: number) {
   return [chainId, SYNTHETICS_LIST_SECTION_KEY];
 }
 
-export function getSyntheticsTradeTypeKey(chainId: number) {
-  return [chainId, SYNTHETICS_TRADE_TYPE_KEY];
-}
-
-export function getSyntheticsTradeModeKey(chainId: number) {
-  return [chainId, SYNTHETICS_TRADE_MODE_KEY];
-}
-
-export function getSyntheticsFromTokenAddressKey(chainId: number, isSwap: boolean) {
-  return [chainId, SYNTHETICS_TRADE_FROM_TOKEN_KEY, isSwap];
-}
-
-export function getSyntheticsToTokenAddressKey(chainId: number, isSwap: boolean) {
-  return [chainId, SYNTHETICS_TRADE_TO_TOKEN_KEY, isSwap];
-}
-
-export function getSyntheticsMarketAddressKey(
-  chainId: number,
-  tradeType: string | undefined,
-  toTokenAddress: string | undefined
-) {
-  return [chainId, tradeType, toTokenAddress];
-}
-
-export function getSyntheticsCollateralAddressKey(
-  chainId: number,
-  tradeType: string | undefined,
-  marketAddress: string | undefined
-) {
-  return [chainId, SYNTHETICS_TRADE_COLLATERAL_KEY, tradeType, marketAddress];
+export function getSyntheticsTradeOptionsKey(chainId: number) {
+  return [chainId, SYNTHETICS_TRADE_OPTIONS];
 }
 
 export function getSyntheticsCollateralEditAddressKey(chainId: number, positionCollateralAddress: string) {

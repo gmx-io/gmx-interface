@@ -83,9 +83,7 @@ export function useAvailableMarketsOptions(
       return result;
     }
 
-    if (isIncrease) {
-      result.maxLiquidityMarket = getMostLiquidMarketForPosition(liquidMarkets, indexToken.address, undefined, isLong);
-    }
+    result.maxLiquidityMarket = getMostLiquidMarketForPosition(liquidMarkets, indexToken.address, undefined, isLong);
 
     if (!hasExistingPosition) {
       const positions = Object.values(positionsInfo || {});
@@ -116,7 +114,6 @@ export function useAvailableMarketsOptions(
     }
 
     if (
-      isIncrease &&
       increaseSizeUsd &&
       !hasExistingPosition &&
       !hasExistingOrder &&

@@ -82,6 +82,7 @@ import "./TradeBox.scss";
 export type Props = {
   tradeType: TradeType;
   tradeMode: TradeMode;
+  availableTradeModes: TradeMode[];
   tradeFlags: TradeFlags;
   isWrapOrUnwrap: boolean;
   tokensData?: TokensData;
@@ -123,17 +124,12 @@ const tradeTypeIcons = {
   [TradeType.Swap]: swapImg,
 };
 
-const avaialbleModes = {
-  [TradeType.Long]: [TradeMode.Market, TradeMode.Limit, TradeMode.Trigger],
-  [TradeType.Short]: [TradeMode.Market, TradeMode.Limit, TradeMode.Trigger],
-  [TradeType.Swap]: [TradeMode.Market, TradeMode.Limit],
-};
-
 export function TradeBox(p: Props) {
   const {
     tradeMode,
     tradeType,
     tradeFlags,
+    availableTradeModes,
     isWrapOrUnwrap,
     tokensData,
     fromTokenAddress,
@@ -769,73 +765,6 @@ export function TradeBox(p: Props) {
   );
 
   useEffect(
-    function updateMode() {
-      if (tradeType && tradeMode && !avaialbleModes[tradeType].includes(tradeMode)) {
-        onSelectTradeMode(avaialbleModes[tradeType][0]);
-      }
-    },
-    [tradeType, onSelectTradeMode, tradeMode]
-  );
-
-  useEffect(
-    function updateSwapTokens() {
-      if (!isSwap) return;
-
-      const needFromUpdate = !swapTokens.find((t) => t.address === fromTokenAddress);
-
-      if (needFromUpdate && swapTokens.length) {
-        onSelectFromTokenAddress(swapTokens[0].address);
-      }
-
-      const needToUpdate = !swapTokens.find((t) => t.address === toTokenAddress);
-
-      if (needToUpdate && swapTokens.length) {
-        onSelectToTokenAddress(swapTokens[0].address);
-      }
-    },
-    [fromTokenAddress, isSwap, onSelectFromTokenAddress, onSelectToTokenAddress, swapTokens, toTokenAddress]
-  );
-
-  useEffect(
-    function updatePositionTokens() {
-      if (!isPosition) return;
-
-      const needFromUpdate = !swapTokens.find((t) => t.address === fromTokenAddress);
-
-      if (needFromUpdate && swapTokens.length) {
-        onSelectFromTokenAddress(swapTokens[0].address);
-      }
-
-      const needIndexUpdateByAvailableTokens = !indexTokens.find((t) => t.address === toTokenAddress);
-
-      if (needIndexUpdateByAvailableTokens && indexTokens.length) {
-        onSelectToTokenAddress(indexTokens[0].address);
-      }
-
-      const needCollateralUpdate =
-        !collateralAddress ||
-        (marketInfo && ![marketInfo.longTokenAddress, marketInfo.shortTokenAddress].includes(collateralAddress));
-
-      if (needCollateralUpdate && marketInfo) {
-        onSelectCollateralAddress(isLong ? marketInfo.longTokenAddress : marketInfo.shortTokenAddress);
-      }
-    },
-    [
-      collateralAddress,
-      fromTokenAddress,
-      indexTokens,
-      isLong,
-      isPosition,
-      marketInfo,
-      onSelectCollateralAddress,
-      onSelectFromTokenAddress,
-      onSelectToTokenAddress,
-      swapTokens,
-      toTokenAddress,
-    ]
-  );
-
-  useEffect(
     function updatePositionMarket() {
       if (!isPosition || !marketsOptions.availableMarkets) {
         return;
@@ -1075,8 +1004,8 @@ export function TradeBox(p: Props) {
               <Dropdown
                 className="SwapBox-market-selector-dropdown"
                 selectedOption={{
-                  label: `${marketInfo?.indexToken.symbol}/USD`,
-                  value: marketInfo?.indexToken.address,
+                  label: `${toToken?.symbol}/USD`,
+                  value: toToken?.address,
                 }}
                 placeholder={"-"}
                 options={indexTokens.map((token) => ({ label: `${token.symbol}/USD`, value: token.address }))}
@@ -1307,7 +1236,7 @@ export function TradeBox(p: Props) {
         />
 
         <Tab
-          options={avaialbleModes[tradeType!]}
+          options={availableTradeModes}
           optionLabels={tradeModeLabels}
           className="SwapBox-asset-options-tabs"
           type="inline"

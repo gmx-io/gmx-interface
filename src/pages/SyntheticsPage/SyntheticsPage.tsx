@@ -18,26 +18,16 @@ import { DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS } from "config/factors";
 import {
   getAcceptablePriceImpactBpsKey,
   getAllowedSlippageKey,
-  getSyntheticsCollateralAddressKey,
-  getSyntheticsFromTokenAddressKey,
   getSyntheticsListSectionKey,
-  getSyntheticsMarketAddressKey,
-  getSyntheticsToTokenAddressKey,
-  getSyntheticsTradeModeKey,
-  getSyntheticsTradeTypeKey,
 } from "config/localStorage";
 import { getToken } from "config/tokens";
 import { useVirtualInventory } from "domain/synthetics/fees/useVirtualInventory";
-import { useMarketsInfo } from "domain/synthetics/markets";
 import { isSwapOrderType } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useOrdersInfo } from "domain/synthetics/orders/useOrdersInfo";
 import { getPositionKey } from "domain/synthetics/positions";
 import { usePositionsInfo } from "domain/synthetics/positions/usePositionsInfo";
-import { useAvailableTokensData } from "domain/synthetics/tokens";
-import { TradeMode, TradeType, useAvailableTokenOptions } from "domain/synthetics/trade";
-import { useTradeFlags } from "domain/synthetics/trade/useTradeFlags";
-import { getIsUnwrap, getIsWrap } from "domain/tokens";
+import { TradeType } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT, DEFAULT_SLIPPAGE_AMOUNT } from "lib/legacy";
@@ -46,6 +36,7 @@ import { bigNumberify } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useCallback, useMemo, useState } from "react";
 
+import { useSelectedTradeOption } from "domain/synthetics/trade/useSelectedTradeOption";
 import "./SyntheticsPage.scss";
 
 export type Props = {
@@ -81,84 +72,59 @@ export function SyntheticsPage(p: Props) {
   } = p;
   const { chainId } = useChainId();
   const { library, account } = useWeb3React();
-  const { tokensData } = useAvailableTokensData(chainId);
-  const { marketsInfoData } = useMarketsInfo(chainId);
   const { virtualInventoryForPositions } = useVirtualInventory(chainId);
   const { positionsInfoData, isLoading: isPositionsLoading } = usePositionsInfo(chainId, {
     showPnlInLeverage: savedIsPnlInLeverage,
   });
-
   const { ordersInfoData, isLoading: isOrdersLoading } = useOrdersInfo(chainId);
+
+  const {
+    tradeType,
+    tradeMode,
+    tradeFlags,
+    isWrapOrUnwrap,
+    fromTokenAddress,
+    fromToken,
+    toTokenAddress,
+    toToken,
+    marketAddress,
+    marketInfo,
+    collateralAddress,
+    collateralToken,
+    availableTokensOptions,
+    avaialbleTradeModes,
+    tokensData,
+    setTradeType,
+    setTradeMode,
+    setFromTokenAddress,
+    setToTokenAddress,
+    setMarketAddress,
+    setCollateralAddress,
+  } = useSelectedTradeOption(chainId);
 
   const [listSection, setListSection] = useLocalStorageSerializeKey(
     getSyntheticsListSectionKey(chainId),
     ListSection.Positions
   );
 
-  const [tradeType, setTradeType] = useLocalStorageSerializeKey(getSyntheticsTradeTypeKey(chainId), TradeType.Long);
-  const [tradeMode, setTradeMode] = useLocalStorageSerializeKey(getSyntheticsTradeModeKey(chainId), TradeMode.Market);
-  const tradeFlags = useTradeFlags(tradeType!, tradeMode!);
-  const { isSwap, isLong, isTrigger } = tradeFlags;
+  const { isSwap, isLong } = tradeFlags;
+  const { indexTokens } = availableTokensOptions;
 
-  const availableTokensOptions = useAvailableTokenOptions(chainId);
-  const { indexTokens, tokensMap } = availableTokensOptions;
-
-  const [fromTokenAddress, setFromTokenAddress] = useLocalStorageSerializeKey<string | undefined>(
-    getSyntheticsFromTokenAddressKey(chainId, isSwap),
-    undefined
-  );
-  const fromToken = getByKey(tokensMap, fromTokenAddress);
-  const fromTokenData = getByKey(tokensData, fromTokenAddress);
-
-  const [toTokenAddress, setToTokenAddress] = useLocalStorageSerializeKey<string | undefined>(
-    getSyntheticsToTokenAddressKey(chainId, isSwap),
-    undefined
-  );
-  const toToken = getByKey(tokensMap, toTokenAddress);
-  const toTokenData = getByKey(tokensData, toTokenAddress);
-
-  const isWrapOrUnwrap = Boolean(
-    isSwap && fromToken && toToken && (getIsWrap(fromToken, toToken) || getIsUnwrap(fromToken, toToken))
-  );
-
-  const [marketAddress, setMarketAddress] = useLocalStorageSerializeKey<string | undefined>(
-    getSyntheticsMarketAddressKey(chainId, tradeType, toTokenAddress),
-    undefined
-  );
-  const onSelectMarketAddress = useCallback(
-    (marketAddress) => {
-      const marketInfo = getByKey(marketsInfoData, marketAddress);
-
-      if (isTrigger && marketInfo) {
-        localStorage.setItem(
-          JSON.stringify(getSyntheticsToTokenAddressKey(chainId, isSwap)),
-          marketInfo.indexToken.address
-        );
-        localStorage.setItem(
-          JSON.stringify(getSyntheticsMarketAddressKey(chainId, tradeType, marketInfo.indexToken.address)),
-          marketInfo.indexToken.address
-        );
-      } else {
-        setMarketAddress(marketAddress);
-      }
-    },
-    [chainId, isSwap, isTrigger, marketsInfoData, setMarketAddress, tradeType]
-  );
-  const marketInfo = getByKey(marketsInfoData, marketAddress);
-
-  const [collateralAddress, setCollateralAddress] = useLocalStorageSerializeKey<string | undefined>(
-    getSyntheticsCollateralAddressKey(chainId, tradeType, marketAddress),
-    undefined
-  );
-  const collateralTokenData = getByKey(tokensData, collateralAddress);
-
-  const chartTokenAddress = useMemo(() => {
-    if (isSwap && toToken?.isStable && !fromToken?.isStable) {
-      return fromTokenAddress;
-    } else {
-      return toTokenAddress;
+  const { chartToken, availableChartTokens } = useMemo(() => {
+    if (!fromTokenAddress || !toTokenAddress) {
+      return {};
     }
-  }, [fromToken?.isStable, fromTokenAddress, isSwap, toToken?.isStable, toTokenAddress]);
+    const fromToken = getToken(chainId, fromTokenAddress);
+    const toToken = getToken(chainId, toTokenAddress);
+
+    const chartToken = isSwap && toToken?.isStable && !fromToken?.isStable ? fromToken : toToken;
+    const availableChartTokens = isSwap ? [chartToken] : indexTokens;
+
+    return {
+      chartToken,
+      availableChartTokens,
+    };
+  }, [chainId, fromTokenAddress, indexTokens, isSwap, toTokenAddress]);
 
   const [closingPositionKey, setClosingPositionKey] = useState<string>();
   const closingPosition = getByKey(positionsInfoData, closingPositionKey);
@@ -263,8 +229,8 @@ export function SyntheticsPage(p: Props) {
             savedShouldShowPositionLines={savedShouldShowPositionLines}
             ordersInfo={ordersInfoData}
             positionsInfo={positionsInfoData}
-            chartTokenAddress={chartTokenAddress}
-            availableTokens={isSwap && chartTokenAddress ? [getToken(chainId, chartTokenAddress)] : indexTokens}
+            chartTokenAddress={chartToken?.address}
+            availableTokens={availableChartTokens}
             onSelectChartTokenAddress={setToTokenAddress}
             disableSelectToken={isSwap}
             tradePageVersion={tradePageVersion}
@@ -340,18 +306,19 @@ export function SyntheticsPage(p: Props) {
         <div className="SyntheticsTrade-right">
           <div className="SyntheticsTrade-swap-box">
             <TradeBox
-              tradeMode={tradeMode!}
-              tradeType={tradeType!}
+              tradeMode={tradeMode}
+              tradeType={tradeType}
+              availableTradeModes={avaialbleTradeModes}
               tradeFlags={tradeFlags}
               isWrapOrUnwrap={isWrapOrUnwrap}
               fromTokenAddress={fromTokenAddress}
-              fromToken={fromTokenData}
+              fromToken={fromToken}
               toTokenAddress={toTokenAddress}
-              toToken={toTokenData}
+              toToken={toToken}
               marketAddress={marketAddress}
               marketInfo={marketInfo}
               collateralAddress={collateralAddress}
-              collateralToken={collateralTokenData}
+              collateralToken={collateralToken}
               avaialbleTokenOptions={availableTokensOptions}
               savedIsPnlInLeverage={savedIsPnlInLeverage}
               existingPosition={selectedPosition}
@@ -365,7 +332,7 @@ export function SyntheticsPage(p: Props) {
               positionsInfo={positionsInfoData}
               virtualInventoryForPositions={virtualInventoryForPositions}
               setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
-              onSelectMarketAddress={onSelectMarketAddress}
+              onSelectMarketAddress={setMarketAddress}
               onSelectCollateralAddress={setCollateralAddress}
               onSelectFromTokenAddress={setFromTokenAddress}
               onSelectToTokenAddress={setToTokenAddress}
