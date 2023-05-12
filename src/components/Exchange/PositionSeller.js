@@ -309,12 +309,12 @@ export default function PositionSeller(props) {
   let convertedAmountFormatted;
 
   let nextLeverage;
+  let nextLeverageWithoutDelta;
   let liquidationPrice;
   let nextLiquidationPrice;
   let isClosing;
   let sizeDelta;
   let leverageWithoutDelta;
-  let nextLeverageWithoutDelta;
 
   let nextCollateral;
   let collateralDelta = bigNumberify(0);
@@ -372,6 +372,10 @@ export default function PositionSeller(props) {
       fundingFee: fundingFee,
       includeDelta: false,
     });
+
+    // initialising next leverage to the current leverage to start weith
+    nextLeverage = position.leverage;
+    nextLeverageWithoutDelta = leverageWithoutDelta;
 
     if (fromAmount) {
       isClosing = position.size.sub(fromAmount).lt(DUST_USD);
