@@ -117,6 +117,7 @@ export function getDecreasePositionAmounts(p: {
       isLong,
       markPrice: exitPrice,
     });
+
     exitPnlPercentage = !existingPosition.initialCollateralUsd.eq(0)
       ? getBasisPoints(exitPnl, existingPosition.initialCollateralUsd)
       : BigNumber.from(0);

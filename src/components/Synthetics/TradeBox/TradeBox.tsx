@@ -1073,7 +1073,12 @@ export function TradeBox(p: Props) {
         <ExchangeInfoRow
           className="SwapBox-info-row"
           label={t`Entry Price`}
-          value={formatUsd(nextPositionValues?.nextEntryPrice) || "-"}
+          value={
+            <ValueTransition
+              from={formatUsd(existingPosition?.entryPrice)}
+              to={formatUsd(nextPositionValues?.nextEntryPrice)}
+            />
+          }
         />
 
         {isMarket && (

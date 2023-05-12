@@ -11,6 +11,7 @@ import { getPositionKey } from "../positions";
 import { applySlippageToMinOut, applySlippageToPrice } from "../trade";
 import { DecreasePositionSwapType, OrderType } from "./types";
 import { isMarketOrderType } from "./utils";
+import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
 
 const { AddressZero } = ethers.constants;
 
@@ -104,21 +105,21 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
     .map((call) => exchangeRouter.interface.encodeFunctionData(call!.method, call!.params));
 
   if (!p.skipSimulation) {
-    // const primaryPriceOverrides: PriceOverrides = {};
-    // const secondaryPriceOverrides: PriceOverrides = {};
-    // if (p.triggerPrice) {
-    //   primaryPriceOverrides[p.indexToken.address] = {
-    //     minPrice: p.triggerPrice,
-    //     maxPrice: p.triggerPrice,
-    //   };
-    // }
-    // await simulateExecuteOrderTxn(chainId, library, {
-    //   primaryPriceOverrides,
-    //   secondaryPriceOverrides,
-    //   createOrderMulticallPayload: encodedPayload,
-    //   value: totalWntAmount,
-    //   tokensData: p.tokensData,
-    // });
+    const primaryPriceOverrides: PriceOverrides = {};
+    const secondaryPriceOverrides: PriceOverrides = {};
+    if (p.triggerPrice) {
+      primaryPriceOverrides[p.indexToken.address] = {
+        minPrice: p.triggerPrice,
+        maxPrice: p.triggerPrice,
+      };
+    }
+    await simulateExecuteOrderTxn(chainId, library, {
+      primaryPriceOverrides,
+      secondaryPriceOverrides,
+      createOrderMulticallPayload: encodedPayload,
+      value: totalWntAmount,
+      tokensData: p.tokensData,
+    });
   }
 
   const txn = await callContract(chainId, exchangeRouter, "multicall", [encodedPayload], {
