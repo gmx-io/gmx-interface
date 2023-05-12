@@ -1723,6 +1723,10 @@ msgstr "가스를 위해 최소 {0} ETH를 남겨주세요"
 msgid "Leave at least {0} {1} for gas"
 msgstr "가스를 위해 최소 {0} {1}을(를) 남겨주세요"
 
+#: src/components/Exchange/PositionEditor.js
+msgid "Leftover Collateral not enough to cover fees"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Leftover collateral below 5 USD"
 msgstr "남은 담보가 5 USD 미만입니다"

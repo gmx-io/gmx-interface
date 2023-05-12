@@ -1723,6 +1723,10 @@ msgstr "至少保留{0}ETH作为手续费"
 msgid "Leave at least {0} {1} for gas"
 msgstr "至少为手续费留{0}{1}"
 
+#: src/components/Exchange/PositionEditor.js
+msgid "Leftover Collateral not enough to cover fees"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Leftover collateral below 5 USD"
 msgstr "剩余低于5美元以下的抵押品"

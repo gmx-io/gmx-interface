@@ -1723,6 +1723,10 @@ msgstr "ガスとして最低 {0}ETHを残しておいてください"
 msgid "Leave at least {0} {1} for gas"
 msgstr "ガスのため最低 {0} {1} を残しておいてください"
 
+#: src/components/Exchange/PositionEditor.js
+msgid "Leftover Collateral not enough to cover fees"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Leftover collateral below 5 USD"
 msgstr "残りの担保が5 USD以下"

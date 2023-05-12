@@ -1723,6 +1723,10 @@ msgstr "Leave at least {0} ETH for gas"
 msgid "Leave at least {0} {1} for gas"
 msgstr "Leave at least {0} {1} for gas"
 
+#: src/components/Exchange/PositionEditor.js
+msgid "Leftover Collateral not enough to cover fees"
+msgstr "Leftover Collateral not enough to cover fees"
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Leftover collateral below 5 USD"
 msgstr "Leftover collateral below 5 USD"
