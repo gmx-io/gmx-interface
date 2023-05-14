@@ -423,7 +423,7 @@ export function ConfirmationBox(p: Props) {
       referralCode: userReferralCode,
       indexToken: marketInfo.indexToken,
       tokensData,
-      skipSimulation: isLimit,
+      skipSimulation: isLimit || shouldDisableValidation,
       setPendingTxns: p.setPendingTxns,
       setPendingOrder,
       setPendingPosition,
@@ -464,7 +464,7 @@ export function ConfirmationBox(p: Props) {
       allowedSlippage,
       referralCode: userReferralCode,
       // Skip simulation to avoid EmptyPosition error
-      // skipSimulation: !existingPosition,
+      // skipSimulation: !existingPosition || shouldDisableValidation,
       skipSimulation: true,
       indexToken: marketInfo.indexToken,
       tokensData,

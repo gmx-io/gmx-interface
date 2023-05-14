@@ -1,4 +1,5 @@
 import { t } from "@lingui/macro";
+import cx from "classnames";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
 import { getWrappedToken } from "config/tokens";
 import { PendingOrderData, getPendingOrderKey, useSyntheticsEvents } from "context/SyntheticsEvents";
@@ -36,7 +37,12 @@ export function OrderStatusNotification({ pendingOrderData, marketsInfoData, tok
 
   const pendingOrderKey = useMemo(() => getPendingOrderKey(pendingOrderData), [pendingOrderData]);
   const orderStatus = getByKey(orderStatuses, orderStatusKey);
-  const isCompleted = Boolean(orderStatus?.executedTxnHash);
+
+  const isCompleted = isLimitOrderType(pendingOrderData.orderType)
+    ? Boolean(orderStatus?.createdTxnHash)
+    : Boolean(orderStatus?.executedTxnHash);
+
+  const hasError = Boolean(orderStatus?.cancelledTxnHash);
 
   const orderData = useMemo(() => {
     if (!marketsInfoData || !orderStatuses || !tokensData || !wrappedNativeToken) {
@@ -196,13 +202,17 @@ export function OrderStatusNotification({ pendingOrderData, marketsInfoData, tok
   );
 
   return (
-    <div className="StatusNotification">
-      <div className="StatusNotification-title">{title}</div>
+    <div className={"StatusNotification"}>
+      <div className="StatusNotification-content">
+        <div className="StatusNotification-title">{title}</div>
 
-      <div className="StatusNotification-items">
-        {creationStatus}
-        {executionStatus}
+        <div className="StatusNotification-items">
+          {creationStatus}
+          {executionStatus}
+        </div>
       </div>
+
+      <div className={cx("StatusNotification-background", { error: hasError })}></div>
     </div>
   );
 }

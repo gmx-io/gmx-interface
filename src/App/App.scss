@@ -1051,6 +1051,7 @@ button.App-button {
   justify-content: center;
   align-items: center;
   transition: none;
+  z-index: 2;
 }
 .Toastify__close-button:hover {
   background: #ffffff47 0% 0% no-repeat padding-box;
