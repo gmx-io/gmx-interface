@@ -1,22 +1,33 @@
+<<<<<<<< HEAD:src/domain/referrals/hooks.ts
 import { BigNumber, BigNumberish, ethers } from "ethers";
+========
+import { BigNumber, ethers } from "ethers";
+>>>>>>>> bdf4c39ecbfe41f00545b7b95e7726ae0d2cfbcc:src/domain/referrals/index.ts
 import { gql } from "@apollo/client";
 import { useState, useEffect, useMemo } from "react";
 import useSWR from "swr";
 
 import ReferralStorage from "abis/ReferralStorage.json";
+import Timelock from "abis/Timelock.json";
 import { MAX_REFERRAL_CODE_LENGTH, isAddressZero, isHashZero } from "lib/legacy";
 import { getContract } from "config/contracts";
 import { REGEX_VERIFY_BYTES32 } from "components/Referrals/referralsHelper";
+<<<<<<<< HEAD:src/domain/referrals/hooks.ts
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
 import {
   arbitrumReferralsGraphClient,
   avalancheFujiReferralsGraphClient,
   avalancheReferralsGraphClient,
 } from "lib/subgraph/clients";
+========
+import { SUPPORTED_CHAIN_IDS, ARBITRUM, AVALANCHE } from "config/chains";
+import { arbitrumReferralsGraphClient, avalancheReferralsGraphClient } from "lib/subgraph/clients";
+>>>>>>>> bdf4c39ecbfe41f00545b7b95e7726ae0d2cfbcc:src/domain/referrals/index.ts
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
 import { getProvider } from "lib/rpc";
+<<<<<<<< HEAD:src/domain/referrals/hooks.ts
 import { basisPointsToFloat, bigNumberify } from "lib/numbers";
 import { Web3Provider } from "@ethersproject/providers";
 import {
@@ -32,6 +43,11 @@ import {
 const ACTIVE_CHAINS = [ARBITRUM, AVALANCHE];
 
 function getGraphClient(chainId) {
+========
+import { isAddress } from "ethers/lib/utils";
+
+export function getGraphClient(chainId) {
+>>>>>>>> bdf4c39ecbfe41f00545b7b95e7726ae0d2cfbcc:src/domain/referrals/index.ts
   if (chainId === ARBITRUM) {
     return arbitrumReferralsGraphClient;
   } else if (chainId === AVALANCHE) {
@@ -109,12 +125,14 @@ export function useUserCodesOnAllChain(account) {
   useEffect(() => {
     async function main() {
       const [arbitrumCodes, avalancheCodes] = await Promise.all(
-        ACTIVE_CHAINS.map((chainId) => {
-          return getGraphClient(chainId)
-            .query({ query, variables: { account: (account || "").toLowerCase() } })
-            .then(({ data }) => {
-              return data.referralCodes.map((c) => c.code);
-            });
+        SUPPORTED_CHAIN_IDS.map(async (chainId) => {
+          try {
+            const client = getGraphClient(chainId);
+            const { data } = await client.query({ query, variables: { account: (account || "").toLowerCase() } });
+            return data.referralCodes.map((c) => c.code);
+          } catch (ex) {
+            return [];
+          }
         })
       );
       const [codeOwnersOnAvax = [], codeOwnersOnArbitrum = []] = await Promise.all([
@@ -139,6 +157,7 @@ export function useUserCodesOnAllChain(account) {
   return data;
 }
 
+<<<<<<<< HEAD:src/domain/referrals/hooks.ts
 type ReferralsDataResult = {
   referralsData?: ReferralsStatsData;
   loading: boolean;
@@ -370,6 +389,13 @@ export function useReferralsData(chainId: number, account?: string | null): Refe
     referralsData: data,
     loading,
   };
+========
+export async function setAffiliateTier(chainId: number, affiliate: string, tierId: number, library, opts) {
+  const referralStorageAddress = getContract(chainId, "ReferralStorage");
+  const timelockAddress = getContract(chainId, "Timelock");
+  const contract = new ethers.Contract(timelockAddress, Timelock.abi, library.getSigner());
+  return callContract(chainId, contract, "setReferrerTier", [referralStorageAddress, affiliate, tierId], opts);
+>>>>>>>> bdf4c39ecbfe41f00545b7b95e7726ae0d2cfbcc:src/domain/referrals/index.ts
 }
 
 export async function registerReferralCode(chainId, referralCode, library, opts) {
@@ -470,8 +496,14 @@ export function useUserReferralCode(library, chainId, account) {
 
 export function useAffiliateTier(library, chainId, account) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
+<<<<<<<< HEAD:src/domain/referrals/hooks.ts
   const { data: affiliateTier, mutate: mutateReferrerTier } = useSWR<BigNumber>(
     account && [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "referrerTiers", account],
+========
+  const validAccount = useMemo(() => (isAddress(account) ? account : null), [account]);
+  const { data: referrerTier, mutate: mutateReferrerTier } = useSWR<BigNumber>(
+    validAccount && [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "referrerTiers", validAccount],
+>>>>>>>> bdf4c39ecbfe41f00545b7b95e7726ae0d2cfbcc:src/domain/referrals/index.ts
     {
       fetcher: contractFetcher(library, ReferralStorage),
     }

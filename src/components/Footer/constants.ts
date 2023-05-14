@@ -4,7 +4,7 @@ import twitterIcon from "img/ic_twitter.svg";
 import discordIcon from "img/ic_discord.svg";
 import telegramIcon from "img/ic_telegram.svg";
 import githubIcon from "img/ic_github.svg";
-import mediumIcon from "img/ic_medium.svg";
+import substackIcon from "img/ic_substack.svg";
 import { MessageDescriptor } from "@lingui/core";
 
 type Link = {
@@ -39,7 +39,7 @@ export function getFooterLinks(isHome) {
 
 export const SOCIAL_LINKS: SocialLink[] = [
   { link: "https://twitter.com/GMX_IO", name: "Twitter", icon: twitterIcon },
-  { link: "https://medium.com/@gmx.io", name: "Medium", icon: mediumIcon },
+  { link: "https://gmxio.substack.com/", name: "Substack", icon: substackIcon },
   { link: "https://github.com/gmx-io", name: "Github", icon: githubIcon },
   { link: "https://t.me/GMX_IO", name: "Telegram", icon: telegramIcon },
   { link: "https://discord.com/invite/ymN38YefH9", name: "Discord", icon: discordIcon },

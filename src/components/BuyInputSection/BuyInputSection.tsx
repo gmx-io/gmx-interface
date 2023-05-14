@@ -53,6 +53,7 @@ export default function BuyInputSection(props: Props) {
             <input
               type="number"
               min="0"
+              step="any"
               placeholder="0.0"
               className="Exchange-swap-input"
               value={inputValue}

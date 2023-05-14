@@ -25,6 +25,7 @@ import ClaimEsGmx from "pages/ClaimEsGmx/ClaimEsGmx";
 import CompleteAccountTransfer from "pages/CompleteAccountTransfer/CompleteAccountTransfer";
 import Dashboard from "pages/Dashboard/Dashboard";
 import Stats from "pages/Stats/Stats";
+import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
 import Ecosystem from "pages/Ecosystem/Ecosystem";
 import { Exchange } from "pages/Exchange/Exchange";
 import Home from "pages/Home/Home";
@@ -563,6 +564,12 @@ function FullApp() {
               </Route>
               <Route exact path="/actions/:account">
                 <Actions savedIsPnlInLeverage={savedIsPnlInLeverage} savedShowPnlAfterFees={savedShowPnlAfterFees} />
+              </Route>
+              <Route exact path="/referrals-tier">
+                <ReferralsTier />
+              </Route>
+              <Route exact path="/stats">
+                <Stats />
               </Route>
               <Route exact path="/orders_overview">
                 <OrdersOverview />

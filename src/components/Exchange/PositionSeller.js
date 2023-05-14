@@ -1227,11 +1227,10 @@ export default function PositionSeller(props) {
                 <FeesTooltip
                   isOpening={false}
                   positionFee={positionFee}
-                  fundingFee={`$${formatAmount(fundingFee, USD_DECIMALS, 2, true)}`}
-                  totalFees={executionFeeUsd.add(totalFees)}
+                  fundingFee={fundingFee}
                   executionFees={{
                     fee: executionFee,
-                    feeUSD: executionFeeUsd,
+                    feeUsd: executionFeeUsd,
                   }}
                   swapFee={swapFee}
                 />

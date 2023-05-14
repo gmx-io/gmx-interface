@@ -44,7 +44,7 @@ import "./GlpSwap.css";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import SwapErrorModal from "./SwapErrorModal";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
-import { ARBITRUM, getChainName, IS_NETWORK_DISABLED } from "config/chains";
+import { ARBITRUM, FEES_HIGH_BPS, getChainName, IS_NETWORK_DISABLED } from "config/chains";
 import { callContract, contractFetcher } from "lib/contracts";
 import { approveTokens, useInfoTokens } from "domain/tokens";
 import { useLocalStorageByChainId } from "lib/localStorage";
@@ -141,6 +141,8 @@ export default function GlpSwap(props) {
 
   const tokensForBalanceAndSupplyQuery = [stakedGlpTrackerAddress, usdgAddress];
   const glpIcon = getIcon(chainId, "glp");
+
+  const isFeesHigh = feeBasisPoints > FEES_HIGH_BPS;
 
   const tokenAddresses = tokens.map((token) => token.address);
   const { data: tokenBalances } = useSWR(
@@ -800,157 +802,168 @@ export default function GlpSwap(props) {
           </div>
         </div>
         <div className="GlpSwap-box App-box">
-          <Tab
-            options={[t`Buy GLP`, t`Sell GLP`]}
-            option={tabLabel}
-            onChange={onSwapOptionChange}
-            className="Exchange-swap-option-tabs"
-          />
-          {isBuying && (
-            <BuyInputSection
-              topLeftLabel={payLabel}
-              topLeftValue={payBalance}
-              topRightLabel={t`Balance:`}
-              topRightValue={`${formatAmount(swapTokenBalance, swapToken.decimals, 4, true)}`}
-              inputValue={swapValue}
-              onInputValueChange={onSwapValueChange}
-              showMaxButton={swapValue !== formatAmountFree(swapTokenBalance, swapToken.decimals, swapToken.decimals)}
-              onClickTopRightLabel={fillMaxAmount}
-              onClickMax={fillMaxAmount}
-            >
-              <TokenSelector
-                label={t`Pay`}
-                chainId={chainId}
-                tokenAddress={swapTokenAddress}
-                onSelectToken={onSelectSwapToken}
-                tokens={whitelistedTokens}
-                infoTokens={infoTokens}
-                className="GlpSwap-from-token"
-                showSymbolImage={true}
-                showTokenImgInDropdown={true}
-              />
-            </BuyInputSection>
-          )}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              onClickPrimary();
+            }}
+          >
+            <Tab
+              options={[t`Buy GLP`, t`Sell GLP`]}
+              option={tabLabel}
+              onChange={onSwapOptionChange}
+              className="Exchange-swap-option-tabs"
+            />
+            {isBuying && (
+              <BuyInputSection
+                topLeftLabel={payLabel}
+                topRightLabel={t`Balance:`}
+                tokenBalance={`${formatAmount(swapTokenBalance, swapToken.decimals, 4, true)}`}
+                inputValue={swapValue}
+                onInputValueChange={onSwapValueChange}
+                showMaxButton={swapValue !== formatAmountFree(swapTokenBalance, swapToken.decimals, swapToken.decimals)}
+                onClickTopRightLabel={fillMaxAmount}
+                onClickMax={fillMaxAmount}
+                selectedToken={swapToken}
+                balance={payBalance}
+              >
+                <TokenSelector
+                  label={t`Pay`}
+                  chainId={chainId}
+                  tokenAddress={swapTokenAddress}
+                  onSelectToken={onSelectSwapToken}
+                  tokens={whitelistedTokens}
+                  infoTokens={infoTokens}
+                  className="GlpSwap-from-token"
+                  showSymbolImage={true}
+                  showTokenImgInDropdown={true}
+                />
+              </BuyInputSection>
+            )}
 
-          {!isBuying && (
-            <BuyInputSection
-              topLeftLabel={payLabel}
-              topLeftValue={payBalance}
-              topRightLabel={t`Available:`}
-              topRightValue={`${formatAmount(maxSellAmount, GLP_DECIMALS, 4, true)}`}
-              inputValue={glpValue}
-              onInputValueChange={onGlpValueChange}
-              showMaxButton={glpValue !== formatAmountFree(maxSellAmount, GLP_DECIMALS, GLP_DECIMALS)}
-              onClickTopRightLabel={fillMaxAmount}
-              onClickMax={fillMaxAmount}
-            >
-              <div className="selected-token">GLP</div>
-            </BuyInputSection>
-          )}
+            {!isBuying && (
+              <BuyInputSection
+                topLeftLabel={payLabel}
+                topRightLabel={t`Available:`}
+                tokenBalance={`${formatAmount(maxSellAmount, GLP_DECIMALS, 4, true)}`}
+                inputValue={glpValue}
+                onInputValueChange={onGlpValueChange}
+                showMaxButton={glpValue !== formatAmountFree(maxSellAmount, GLP_DECIMALS, GLP_DECIMALS)}
+                onClickTopRightLabel={fillMaxAmount}
+                onClickMax={fillMaxAmount}
+                balance={payBalance}
+                defaultTokenName={"GLP"}
+              >
+                <div className="selected-token">GLP</div>
+              </BuyInputSection>
+            )}
 
-          <div className="AppOrder-ball-container">
-            <div className="AppOrder-ball">
-              <img
-                src={arrowIcon}
-                alt="arrowIcon"
-                onClick={() => {
-                  setIsBuying(!isBuying);
-                  switchSwapOption(isBuying ? "redeem" : "");
-                }}
-              />
-            </div>
-          </div>
-
-          {isBuying && (
-            <BuyInputSection
-              topLeftLabel={receiveLabel}
-              topLeftValue={receiveBalance}
-              topRightLabel={t`Balance:`}
-              topRightValue={`${formatAmount(glpBalance, GLP_DECIMALS, 4, true)}`}
-              inputValue={glpValue}
-              onInputValueChange={onGlpValueChange}
-            >
-              <div className="selected-token">GLP</div>
-            </BuyInputSection>
-          )}
-
-          {!isBuying && (
-            <BuyInputSection
-              topLeftLabel={receiveLabel}
-              topLeftValue={receiveBalance}
-              topRightLabel={t`Balance:`}
-              topRightValue={`${formatAmount(swapTokenBalance, swapToken.decimals, 4, true)}`}
-              inputValue={swapValue}
-              onInputValueChange={onSwapValueChange}
-            >
-              <TokenSelector
-                label={t`Receive`}
-                chainId={chainId}
-                tokenAddress={swapTokenAddress}
-                onSelectToken={onSelectSwapToken}
-                tokens={whitelistedTokens}
-                infoTokens={infoTokens}
-                className="GlpSwap-from-token"
-                showSymbolImage={true}
-                showTokenImgInDropdown={true}
-              />
-            </BuyInputSection>
-          )}
-
-          <div>
-            <div className="Exchange-info-row">
-              <div className="Exchange-info-label">{feeBasisPoints > 50 ? t`WARNING: High Fees` : t`Fees`}</div>
-              <div className="align-right fee-block">
-                {isBuying && (
-                  <Tooltip
-                    handle={isBuying && isSwapTokenCapReached ? "NA" : feePercentageText}
-                    position="right-bottom"
-                    renderContent={() => {
-                      if (!feeBasisPoints) {
-                        return (
-                          <div className="text-white">
-                            <Trans>Fees will be shown once you have entered an amount in the order form.</Trans>
-                          </div>
-                        );
-                      }
-                      return (
-                        <div className="text-white">
-                          {feeBasisPoints > 50 && <Trans>To reduce fees, select a different asset to pay with.</Trans>}
-                          <Trans>Check the "Save on Fees" section below to get the lowest fee percentages.</Trans>
-                        </div>
-                      );
-                    }}
-                  />
-                )}
-                {!isBuying && (
-                  <Tooltip
-                    handle={feePercentageText}
-                    position="right-bottom"
-                    renderContent={() => {
-                      if (!feeBasisPoints) {
-                        return (
-                          <div className="text-white">
-                            <Trans>Fees will be shown once you have entered an amount in the order form.</Trans>
-                          </div>
-                        );
-                      }
-                      return (
-                        <div className="text-white">
-                          {feeBasisPoints > 50 && <Trans>To reduce fees, select a different asset to receive.</Trans>}
-                          <Trans>Check the "Save on Fees" section below to get the lowest fee percentages.</Trans>
-                        </div>
-                      );
-                    }}
-                  />
-                )}
+            <div className="AppOrder-ball-container">
+              <div className="AppOrder-ball">
+                <img
+                  src={arrowIcon}
+                  alt="arrowIcon"
+                  onClick={() => {
+                    setIsBuying(!isBuying);
+                    switchSwapOption(isBuying ? "redeem" : "");
+                  }}
+                />
               </div>
             </div>
-          </div>
-          <div className="GlpSwap-cta Exchange-swap-button-container">
-            <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
-              {getPrimaryText()}
-            </Button>
-          </div>
+
+            {isBuying && (
+              <BuyInputSection
+                topLeftLabel={receiveLabel}
+                topRightLabel={t`Balance:`}
+                tokenBalance={`${formatAmount(glpBalance, GLP_DECIMALS, 4, true)}`}
+                inputValue={glpValue}
+                onInputValueChange={onGlpValueChange}
+                balance={receiveBalance}
+                defaultTokenName={"GLP"}
+              >
+                <div className="selected-token">GLP</div>
+              </BuyInputSection>
+            )}
+
+            {!isBuying && (
+              <BuyInputSection
+                topLeftLabel={receiveLabel}
+                topRightLabel={t`Balance:`}
+                tokenBalance={`${formatAmount(swapTokenBalance, swapToken.decimals, 4, true)}`}
+                inputValue={swapValue}
+                onInputValueChange={onSwapValueChange}
+                balance={receiveBalance}
+                selectedToken={swapToken}
+              >
+                <TokenSelector
+                  label={t`Receive`}
+                  chainId={chainId}
+                  tokenAddress={swapTokenAddress}
+                  onSelectToken={onSelectSwapToken}
+                  tokens={whitelistedTokens}
+                  infoTokens={infoTokens}
+                  className="GlpSwap-from-token"
+                  showSymbolImage={true}
+                  showTokenImgInDropdown={true}
+                />
+              </BuyInputSection>
+            )}
+
+            <div>
+              <div className="Exchange-info-row">
+                <div className="Exchange-info-label">{isFeesHigh ? t`WARNING: High Fees` : t`Fees`}</div>
+                <div className="align-right fee-block">
+                  {isBuying && (
+                    <Tooltip
+                      handle={isBuying && isSwapTokenCapReached ? "NA" : feePercentageText}
+                      position="right-bottom"
+                      renderContent={() => {
+                        if (!feeBasisPoints) {
+                          return (
+                            <div className="text-white">
+                              <Trans>Fees will be shown once you have entered an amount in the order form.</Trans>
+                            </div>
+                          );
+                        }
+                        return (
+                          <div className="text-white">
+                            {isFeesHigh && <Trans>To reduce fees, select a different asset to pay with.</Trans>}
+                            <Trans>Check the "Save on Fees" section below to get the lowest fee percentages.</Trans>
+                          </div>
+                        );
+                      }}
+                    />
+                  )}
+                  {!isBuying && (
+                    <Tooltip
+                      handle={feePercentageText}
+                      position="right-bottom"
+                      renderContent={() => {
+                        if (!feeBasisPoints) {
+                          return (
+                            <div className="text-white">
+                              <Trans>Fees will be shown once you have entered an amount in the order form.</Trans>
+                            </div>
+                          );
+                        }
+                        return (
+                          <div className="text-white">
+                            {isFeesHigh && <Trans>To reduce fees, select a different asset to receive.</Trans>}
+                            <Trans>Check the "Save on Fees" section below to get the lowest fee percentages.</Trans>
+                          </div>
+                        );
+                      }}
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="GlpSwap-cta Exchange-swap-button-container">
+              <Button type="submit" variant="primary-action" className="w-100" disabled={!isPrimaryEnabled()}>
+                {getPrimaryText()}
+              </Button>
+            </div>
+          </form>
         </div>
       </div>
       <div className="Tab-title-section">
