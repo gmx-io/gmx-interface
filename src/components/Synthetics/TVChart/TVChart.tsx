@@ -2,11 +2,13 @@ import { t } from "@lingui/macro";
 import cx from "classnames";
 import { Dropdown, DropdownOption } from "components/Dropdown/Dropdown";
 import TVChartContainer, { ChartLine } from "components/TVChartContainer/TVChartContainer";
+import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 import { convertTokenAddress, getToken, isChartAvailabeForToken } from "config/tokens";
 import { OrdersInfoData, PositionOrderInfo, isIncreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import { PositionsInfoData } from "domain/synthetics/positions";
 import { getCandlesDelta, getMidPrice, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useLastCandles } from "domain/synthetics/tokens/useLastCandles";
+import { SyntheticsTVDataProvider } from "domain/synthetics/tradingview/SyntheticsTVDataProvider";
 import { Token } from "domain/tokens";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 import { useChainId } from "lib/chains";
@@ -14,8 +16,7 @@ import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatUsd, numberWithCommas } from "lib/numbers";
 import { useEffect, useMemo, useRef } from "react";
-import { SyntheticsTVDataProvider } from "domain/synthetics/tradingview/SyntheticsTVDataProvider";
-import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
+import { useMedia } from "react-use";
 import "./TVChart.scss";
 
 export type Props = {
@@ -45,6 +46,9 @@ export function TVChart({
 }: Props) {
   const { chainId } = useChainId();
   const { tokensData } = useAvailableTokensData(chainId);
+
+  const isMobile = useMedia("(max-width: 768px)");
+  const isSmallMobile = useMedia("(max-width: 468px)");
 
   const dataProvider = useRef<TVDataProvider>();
   const [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
@@ -176,26 +180,31 @@ export function TVChart({
             <div className="ExchangeChart-main-price">{formatUsd(chartToken?.prices?.maxPrice) || "..."}</div>
             <div className="ExchangeChart-info-label">{formatUsd(chartToken?.prices?.minPrice) || "..."}</div>
           </div>
-          <div>
-            <div className="ExchangeChart-info-label">24h Change</div>
-            <div
-              className={cx({
-                positive: candlesDelta?.deltaPercentage && candlesDelta?.deltaPercentage > 0,
-                negative: candlesDelta?.deltaPercentage && candlesDelta?.deltaPercentage < 0,
-              })}
-            >
-              {candlesDelta?.deltaPercentageStr || "-"}
+          {!isSmallMobile && (
+            <div>
+              <div className="ExchangeChart-info-label">24h Change</div>
+              <div
+                className={cx({
+                  positive: candlesDelta?.deltaPercentage && candlesDelta?.deltaPercentage > 0,
+                  negative: candlesDelta?.deltaPercentage && candlesDelta?.deltaPercentage < 0,
+                })}
+              >
+                {candlesDelta?.deltaPercentageStr || "-"}
+              </div>
             </div>
-          </div>
-          <div className="ExchangeChart-additional-info">
-            <div className="ExchangeChart-info-label">24h High</div>
-            <div>{candlesDelta?.high ? numberWithCommas(candlesDelta.high.toFixed(2)) : "-"}</div>
-          </div>
-          <div className="ExchangeChart-additional-info">
-            <div className="ExchangeChart-info-label">24h Low</div>
-            <div>{candlesDelta?.low ? numberWithCommas(candlesDelta?.low.toFixed(2)) : "-"}</div>
-          </div>
-
+          )}
+          {!isMobile && (
+            <>
+              <div className="ExchangeChart-additional-info">
+                <div className="ExchangeChart-info-label">24h High</div>
+                <div>{candlesDelta?.high ? numberWithCommas(candlesDelta.high.toFixed(2)) : "-"}</div>
+              </div>
+              <div className="ExchangeChart-additional-info">
+                <div className="ExchangeChart-info-label">24h Low</div>
+                <div>{candlesDelta?.low ? numberWithCommas(candlesDelta?.low.toFixed(2)) : "-"}</div>
+              </div>
+            </>
+          )}
           <VersionSwitch currentVersion={tradePageVersion} setCurrentVersion={setTradePageVersion} />
         </div>
       </div>

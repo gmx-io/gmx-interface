@@ -36,7 +36,6 @@ import { getByKey } from "lib/objects";
 import { useCallback, useMemo, useState } from "react";
 
 import { useSelectedTradeOption } from "domain/synthetics/trade/useSelectedTradeOption";
-import "./SyntheticsPage.scss";
 
 export type Props = {
   savedIsPnlInLeverage: boolean;
@@ -208,9 +207,9 @@ export function SyntheticsPage(p: Props) {
   }
 
   return (
-    <div className="SyntheticsTrade page-layout">
-      <div className="SyntheticsTrade-content">
-        <div className="SyntheticsTrade-left">
+    <div className="Exchange page-layout">
+      <div className="Exchange-content">
+        <div className="Exchange-left">
           <TVChart
             savedShouldShowPositionLines={savedShouldShowPositionLines}
             ordersInfo={ordersInfoData}
@@ -223,8 +222,8 @@ export function SyntheticsPage(p: Props) {
             setTradePageVersion={setTradePageVersion}
           />
 
-          <div className="SyntheticsTrade-lists large">
-            <div className="SyntheticsTrade-list-tab-container">
+          <div className="Exchange-lists large">
+            <div className="Exchange-list-tab-container">
               <Tab
                 options={Object.keys(ListSection)}
                 optionLabels={{
@@ -289,8 +288,8 @@ export function SyntheticsPage(p: Props) {
           </div>
         </div>
 
-        <div className="SyntheticsTrade-right">
-          <div className="SyntheticsTrade-swap-box">
+        <div className="Exchange-right">
+          <div className="Exchange-swap-box">
             <TradeBox
               tradeMode={tradeMode}
               tradeType={tradeType}
@@ -332,8 +331,8 @@ export function SyntheticsPage(p: Props) {
           </div>
         </div>
 
-        <div className="SyntheticsTrade-lists small">
-          <div className="SyntheticsTrade-list-tab-container">
+        <div className="Exchange-lists small">
+          <div className="Exchange-list-tab-container">
             <Tab
               options={Object.keys(ListSection)}
               optionLabels={ListSection}

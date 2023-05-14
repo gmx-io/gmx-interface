@@ -17,6 +17,7 @@ import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
 import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
 import "./Header.css";
 import { HeaderLink } from "./HeaderLink";
+import { getIsSyntheticsSupported } from "config/features";
 
 type Props = {
   openSettings: () => void;
@@ -83,15 +84,15 @@ export function AppHeaderUser({
 
   useEffect(
     function redirectTradePage() {
-      if (location.pathname === "/trade" && tradePageVersion === 2) {
+      if (location.pathname === "/trade" && tradePageVersion === 2 && getIsSyntheticsSupported(chainId)) {
         history.replace("/v2");
       }
 
-      if (location.pathname === "/v2" && tradePageVersion === 1) {
+      if ((location.pathname === "/v2" && tradePageVersion === 1) || !getIsSyntheticsSupported(chainId)) {
         history.replace("/trade");
       }
     },
-    [history, location.pathname, tradePageVersion]
+    [chainId, history, location.pathname, tradePageVersion]
   );
 
   const onNetworkSelect = useCallback(

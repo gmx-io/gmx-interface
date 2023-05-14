@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import cx from "classnames";
-
+import { useMedia } from "react-use";
 import { USD_DECIMALS, SWAP, INCREASE, getLiquidationPrice } from "lib/legacy";
 import { useChartPrices } from "domain/legacy";
 import ChartTokenSelector from "./ChartTokenSelector";
@@ -63,6 +63,8 @@ export default function ExchangeTVChart(props) {
   } = props;
   const [currentSeries] = useState();
   const dataProvider = useRef();
+
+  const isSmallMobile = useMedia("(max-width: 596px)");
 
   const fromToken = getTokenInfo(infoTokens, fromTokenAddress);
   const toToken = getTokenInfo(infoTokens, toTokenAddress);
@@ -309,13 +311,15 @@ export default function ExchangeTVChart(props) {
               ${chartToken.minPrice && formatAmount(chartToken.minPrice, USD_DECIMALS, 2, true)}
             </div>
           </div>
-          <div>
-            <div className="ExchangeChart-info-label">24h Change</div>
-            <div className={cx({ positive: deltaPercentage > 0, negative: deltaPercentage < 0 })}>
-              {!deltaPercentageStr && "-"}
-              {deltaPercentageStr && deltaPercentageStr}
+          {!isSmallMobile && (
+            <div>
+              <div className="ExchangeChart-info-label">24h Change</div>
+              <div className={cx({ positive: deltaPercentage > 0, negative: deltaPercentage < 0 })}>
+                {!deltaPercentageStr && "-"}
+                {deltaPercentageStr && deltaPercentageStr}
+              </div>
             </div>
-          </div>
+          )}
           <div className="ExchangeChart-additional-info">
             <div className="ExchangeChart-info-label">24h High</div>
             <div>

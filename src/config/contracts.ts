@@ -267,6 +267,7 @@ const CONTRACTS = {
     GlpManager: AddressZero,
     RewardRouter: AddressZero,
     RewardReader: AddressZero,
+    GlpRewardRouter: AddressZero,
     NATIVE_TOKEN: "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
     GLP: AddressZero,
     GMX: AddressZero,
@@ -307,6 +308,7 @@ const CONTRACTS = {
     OrderVault: "0x21D44C73b6B341F98Be57eaF8008bCbf6e2D5811",
     SyntheticsReader: "0x6Ab84F5EF9782683BDf4f2108EBaC7287312ad96",
     SyntheticsRouter: "0x56827bEd66CafC5CDcB30620475a25cA42Bb6fD5",
+    Timelock: AddressZero,
 
     Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
   },

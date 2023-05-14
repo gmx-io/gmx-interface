@@ -1,5 +1,7 @@
 import cx from "classnames";
 import "./VersionSwitch.scss";
+import { useChainId } from "lib/chains";
+import { getIsSyntheticsSupported } from "config/features";
 
 type Props = {
   currentVersion: number;
@@ -7,6 +9,12 @@ type Props = {
 };
 
 export function VersionSwitch({ currentVersion, setCurrentVersion }: Props) {
+  const { chainId } = useChainId();
+
+  if (!getIsSyntheticsSupported(chainId)) {
+    return null;
+  }
+
   return (
     <div className="VersionSwitch">
       <div
