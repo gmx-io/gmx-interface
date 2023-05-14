@@ -56,7 +56,8 @@ export function useMarkets(chainId: number): MarketsResult {
 
             acc.marketsAddresses.push(marketTokenAddress);
           } catch (e) {
-            // ignore parsing errors on unknown tokens
+            // eslint-disable-next-line no-console
+            console.warn("unsupported market", e);
           }
 
           return acc;
