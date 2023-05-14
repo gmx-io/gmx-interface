@@ -2,28 +2,29 @@ import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Pagination from "components/Pagination/Pagination";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { getExplorerUrl } from "config/chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getExplorerUrl } from "config/chains";
+import { isDevelopment } from "config/env";
 import { getNativeToken, getToken } from "config/tokens";
-import { ReferralsStatsData } from "domain/referrals";
+import { TotalReferralsStats } from "domain/referrals";
 import { BigNumber } from "ethers";
 import { formatDate } from "lib/dates";
 import { shortenAddress } from "lib/legacy";
 import { formatTokenAmount } from "lib/numbers";
-import { IoWarningOutline } from "react-icons/io5";
 import { useRef, useState } from "react";
 import { BiEditAlt } from "react-icons/bi";
+import { IoWarningOutline } from "react-icons/io5";
 import Card from "../Common/Card";
 import Modal from "../Modal/Modal";
 import Tooltip from "../Tooltip/Tooltip";
 import EmptyMessage from "./EmptyMessage";
-import InfoCard from "./InfoCard";
 import { ReferralCodeForm } from "./JoinReferralCode";
+import ReferralInfoCard from "./ReferralInfoCard";
+import "./TradersStats.scss";
 import { getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./referralsHelper";
 import usePagination from "./usePagination";
-import "./TradersStats.scss";
 
 type Props = {
-  referralsData?: ReferralsStatsData;
+  referralsData?: TotalReferralsStats;
   traderTier?: BigNumber;
   chainId: number;
   userReferralCodeString?: string;
@@ -41,7 +42,18 @@ function TradersStats({
 }: Props) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const editModalRef = useRef<HTMLDivElement>(null);
-  const { getCurrentData, currentPage, setCurrentPage, pageCount } = usePagination(referralsData?.traderDistributions);
+
+  const { chains, total } = referralsData || {};
+  const {
+    [chainId]: currentReferralsData,
+    [ARBITRUM]: arbitrumData,
+    [AVALANCHE]: avalancheData,
+    [AVALANCHE_FUJI]: fujiData,
+  } = chains || {};
+
+  const { getCurrentData, currentPage, setCurrentPage, pageCount } = usePagination(
+    currentReferralsData?.traderDistributions
+  );
 
   const currentDiscountDistributions = getCurrentData();
 
@@ -50,79 +62,106 @@ function TradersStats({
   return (
     <div className="rebate-container">
       <div className="referral-stats">
-        <InfoCard
-          label={t`Total Trading Volume`}
-          tooltipText={t`Volume traded by this account with an active referral code.`}
-          data={
-            <Tooltip
-              handle={getUSDValue(referralsData?.traderReferralTotalStats?.volume)}
-              position="left-bottom"
-              renderContent={() => (
-                <>
-                  <StatsTooltipRow
-                    label={t`Volume on V1`}
-                    value={getUSDValue(referralsData?.traderReferralTotalStats?.v1Data.volume)}
-                    showDollar={false}
-                  />
-                  <StatsTooltipRow
-                    label={t`Volume on V2`}
-                    value={getUSDValue(referralsData?.traderReferralTotalStats?.v2Data.volume)}
-                    showDollar={false}
-                  />
-                </>
-              )}
-            />
-          }
-        />
-        <InfoCard
-          label={t`Total Rebates`}
-          tooltipText={t`Rebates earned by this account as a trader.`}
-          data={
-            <Tooltip
-              handle={getUSDValue(referralsData?.traderReferralTotalStats?.discountUsd)}
-              position="left-bottom"
-              renderContent={() => (
-                <>
-                  <StatsTooltipRow
-                    label={t`Rebates on V1`}
-                    value={getUSDValue(referralsData?.traderReferralTotalStats?.v1Data.discountUsd)}
-                    showDollar={false}
-                  />
-                  <StatsTooltipRow
-                    label={t`Rebates on V2`}
-                    value={getUSDValue(referralsData?.traderReferralTotalStats?.v2Data.discountUsd)}
-                    showDollar={false}
-                  />
-                </>
-              )}
-            />
-          }
-        />
-        <InfoCard
-          label={t`Active Referral Code`}
-          data={
-            <div className="active-referral-code">
-              <div className="edit">
-                <span>{userReferralCodeString}</span>
-                <BiEditAlt onClick={open} />
-              </div>
-              {traderTier ? (
-                <div className="tier">
-                  <Tooltip
-                    handle={t`Tier ${getTierIdDisplay(traderTier)} (${tierDiscountInfo[traderTier]}% discount)`}
-                    position="right-bottom"
-                    renderContent={() => (
-                      <p className="text-white">
-                        <Trans>
-                          You will receive a {tierDiscountInfo[traderTier]}% discount on your opening and closing fees,
-                          this discount will be airdropped to your account every Wednesday
-                        </Trans>
-                      </p>
-                    )}
-                  />
-                </div>
-              ) : null}
+        <ReferralInfoCard label={t`Active Referral Code`}>
+          <div className="active-referral-code">
+            <div className="edit">
+              <span>{userReferralCodeString}</span>
+              <BiEditAlt onClick={open} />
             </div>
+            {traderTier && (
+              <div className="tier">
+                <Tooltip
+                  handle={t`Tier ${getTierIdDisplay(traderTier)} (${tierDiscountInfo[traderTier]}% discount)`}
+                  position="right-bottom"
+                  renderContent={() => (
+                    <p className="text-white">
+                      <Trans>
+                        You will receive a {tierDiscountInfo[traderTier]}% discount on your opening and closing fees,
+                        this discount will be airdropped to your account every Wednesday
+                      </Trans>
+                    </p>
+                  )}
+                />
+              </div>
+            )}
+          </div>
+        </ReferralInfoCard>
+        <ReferralInfoCard
+          value={`$${getUSDValue(currentReferralsData?.traderReferralTotalStats?.volume)}`}
+          label={t`Trading Volume`}
+          labelTooltipText={t`Volume traded by this account with an active referral code.`}
+          tooltipContent={
+            <>
+              <StatsTooltipRow
+                label={t`Trading Volume on V1 Arbitrum`}
+                value={getUSDValue(arbitrumData?.traderReferralTotalStats.v1Data.volume)}
+              />
+              <StatsTooltipRow
+                label={t`Trading Volume on V1 Avalanche`}
+                value={getUSDValue(avalancheData?.traderReferralTotalStats.v1Data.volume)}
+              />
+              {isDevelopment() && (
+                <StatsTooltipRow
+                  label={t`Trading Volume on V1 Avalanche Fuji`}
+                  value={getUSDValue(fujiData?.traderReferralTotalStats.v1Data.volume)}
+                />
+              )}
+              <StatsTooltipRow
+                label={t`Trading Volume on V2 Arbitrum`}
+                value={getUSDValue(arbitrumData?.traderReferralTotalStats.v2Data.volume)}
+              />
+              <StatsTooltipRow
+                label={t`Trading Volume on V2 Avalanche`}
+                value={getUSDValue(avalancheData?.traderReferralTotalStats.v2Data.volume)}
+              />
+              {isDevelopment() && (
+                <StatsTooltipRow
+                  label={t`Trading Volume on V2 Avalanche Fuji`}
+                  value={getUSDValue(fujiData?.traderReferralTotalStats.v2Data.volume)}
+                />
+              )}
+              <div className="Tooltip-divider" />
+              <StatsTooltipRow label={t`Total`} value={getUSDValue(total?.traderVolume)} />
+            </>
+          }
+        />
+        <ReferralInfoCard
+          value={`$${getUSDValue(currentReferralsData?.traderReferralTotalStats?.discountUsd)}`}
+          label={t`Rebates`}
+          labelTooltipText={t`Rebates earned by this account as a trader.`}
+          tooltipContent={
+            <>
+              <StatsTooltipRow
+                label={t`Rebates on V1 Arbitrum`}
+                value={getUSDValue(arbitrumData?.traderReferralTotalStats.v1Data.discountUsd)}
+              />
+              <StatsTooltipRow
+                label={t`Rebates on V1 Avalanche`}
+                value={getUSDValue(avalancheData?.traderReferralTotalStats.v1Data.discountUsd)}
+              />
+              {isDevelopment() && (
+                <StatsTooltipRow
+                  label={t`Rebates on V1 Avalanche Fuji`}
+                  value={getUSDValue(avalancheData?.traderReferralTotalStats.v1Data.discountUsd)}
+                />
+              )}
+              <StatsTooltipRow
+                label={t`Rebates on V2 Arbitrum`}
+                value={getUSDValue(arbitrumData?.traderReferralTotalStats.v2Data.discountUsd)}
+              />
+              <StatsTooltipRow
+                label={t`Rebates on V2 Avalanche`}
+                value={getUSDValue(avalancheData?.traderReferralTotalStats.v2Data.discountUsd)}
+              />
+              {isDevelopment() && (
+                <StatsTooltipRow
+                  label={t`Rebates on V2 Avalanche Fuji`}
+                  value={getUSDValue(fujiData?.traderReferralTotalStats.v2Data.discountUsd)}
+                />
+              )}
+              <div className="Tooltip-divider" />
+              <StatsTooltipRow label={t`Total`} value={getUSDValue(total?.discountUsd)} />
+            </>
           }
         />
         <Modal

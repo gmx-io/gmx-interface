@@ -32,3 +32,14 @@ export function getGmxGraphClient(chainId: number) {
 
   throw new Error(`Unsupported chain ${chainId}`);
 }
+
+export function getReferralsGraphClient(chainId) {
+  if (chainId === ARBITRUM) {
+    return arbitrumReferralsGraphClient;
+  } else if (chainId === AVALANCHE) {
+    return avalancheReferralsGraphClient;
+  } else if (chainId === AVALANCHE_FUJI) {
+    return avalancheFujiReferralsGraphClient;
+  }
+  throw new Error(`Unsupported chain ${chainId}`);
+}

@@ -33,7 +33,7 @@ import AssetDropdown from "./AssetDropdown";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import SEO from "components/Common/SEO";
 import { useTotalVolume, useVolumeInfo, useFeesSummary } from "domain/stats";
-import StatsTooltip from "components/StatsTooltip/StatsTooltip";
+import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
 import { getServerUrl } from "config/backend";
@@ -539,7 +539,7 @@ export default function DashboardV2() {
                       className="nowrap"
                       handle={`$${formatAmount(currentVolumeInfo?.[chainId], USD_DECIMALS, 0, true)}`}
                       renderContent={() => (
-                        <StatsTooltip
+                        <ChainsStatsTooltipRow
                           title={t`Volume`}
                           arbitrumValue={currentVolumeInfo?.[ARBITRUM]}
                           avaxValue={currentVolumeInfo?.[AVALANCHE]}
@@ -564,7 +564,7 @@ export default function DashboardV2() {
                         true
                       )}`}
                       renderContent={() => (
-                        <StatsTooltip
+                        <ChainsStatsTooltipRow
                           title={t`Long Positions`}
                           arbitrumValue={positionStatsInfo?.[ARBITRUM].totalLongPositionSizes}
                           avaxValue={positionStatsInfo?.[AVALANCHE].totalLongPositionSizes}
@@ -589,7 +589,7 @@ export default function DashboardV2() {
                         true
                       )}`}
                       renderContent={() => (
-                        <StatsTooltip
+                        <ChainsStatsTooltipRow
                           title={t`Short Positions`}
                           arbitrumValue={positionStatsInfo?.[ARBITRUM].totalShortPositionSizes}
                           avaxValue={positionStatsInfo?.[AVALANCHE].totalShortPositionSizes}
@@ -610,7 +610,7 @@ export default function DashboardV2() {
                         className="nowrap"
                         handle={`$${formatAmount(currentFees?.[chainId], USD_DECIMALS, 2, true)}`}
                         renderContent={() => (
-                          <StatsTooltip
+                          <ChainsStatsTooltipRow
                             title={t`Fees`}
                             arbitrumValue={currentFees?.[ARBITRUM]}
                             avaxValue={currentFees?.[AVALANCHE]}
@@ -639,7 +639,7 @@ export default function DashboardV2() {
                       className="nowrap"
                       handle={`$${numberWithCommas(totalFees?.[chainId])}`}
                       renderContent={() => (
-                        <StatsTooltip
+                        <ChainsStatsTooltipRow
                           title={t`Total Fees`}
                           arbitrumValue={totalFees?.[ARBITRUM]}
                           avaxValue={totalFees?.[AVALANCHE]}
@@ -660,7 +660,7 @@ export default function DashboardV2() {
                       className="nowrap"
                       handle={`$${formatAmount(totalVolume?.[chainId], USD_DECIMALS, 0, true)}`}
                       renderContent={() => (
-                        <StatsTooltip
+                        <ChainsStatsTooltipRow
                           title={t`Total Volume`}
                           arbitrumValue={totalVolume?.[ARBITRUM]}
                           avaxValue={totalVolume?.[AVALANCHE]}
@@ -752,7 +752,7 @@ export default function DashboardV2() {
                           className="nowrap"
                           handle={`$${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)}`}
                           renderContent={() => (
-                            <StatsTooltip
+                            <ChainsStatsTooltipRow
                               title={t`Staked`}
                               arbitrumValue={arbitrumStakedGmx}
                               avaxValue={avaxStakedGmx}

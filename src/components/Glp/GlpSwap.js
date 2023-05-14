@@ -818,14 +818,13 @@ export default function GlpSwap(props) {
               <BuyInputSection
                 topLeftLabel={payLabel}
                 topRightLabel={t`Balance:`}
-                tokenBalance={`${formatAmount(swapTokenBalance, swapToken.decimals, 4, true)}`}
+                topRightValue={`${formatAmount(swapTokenBalance, swapToken.decimals, 4, true)}`}
                 inputValue={swapValue}
                 onInputValueChange={onSwapValueChange}
                 showMaxButton={swapValue !== formatAmountFree(swapTokenBalance, swapToken.decimals, swapToken.decimals)}
                 onClickTopRightLabel={fillMaxAmount}
                 onClickMax={fillMaxAmount}
-                selectedToken={swapToken}
-                balance={payBalance}
+                topLeftValue={payBalance}
               >
                 <TokenSelector
                   label={t`Pay`}
@@ -845,14 +844,13 @@ export default function GlpSwap(props) {
               <BuyInputSection
                 topLeftLabel={payLabel}
                 topRightLabel={t`Available:`}
-                tokenBalance={`${formatAmount(maxSellAmount, GLP_DECIMALS, 4, true)}`}
+                topRightValue={`${formatAmount(maxSellAmount, GLP_DECIMALS, 4, true)}`}
                 inputValue={glpValue}
                 onInputValueChange={onGlpValueChange}
                 showMaxButton={glpValue !== formatAmountFree(maxSellAmount, GLP_DECIMALS, GLP_DECIMALS)}
                 onClickTopRightLabel={fillMaxAmount}
                 onClickMax={fillMaxAmount}
-                balance={payBalance}
-                defaultTokenName={"GLP"}
+                topLeftValue={payBalance}
               >
                 <div className="selected-token">GLP</div>
               </BuyInputSection>

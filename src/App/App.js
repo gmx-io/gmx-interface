@@ -32,6 +32,7 @@ import Home from "pages/Home/Home";
 import NftWallet from "pages/NftWallet/NftWallet";
 import OrdersOverview from "pages/OrdersOverview/OrdersOverview";
 import PositionsOverview from "pages/PositionsOverview/PositionsOverview";
+import { encodeReferralCode, decodeReferralCode } from "domain/referrals";
 import Referrals from "pages/Referrals/Referrals";
 import Stake from "pages/Stake/Stake";
 
@@ -48,7 +49,6 @@ import "./App.scss";
 import SEO from "components/Common/SEO";
 import EventToastContainer from "components/EventToast/EventToastContainer";
 import useEventToast from "components/EventToast/useEventToast";
-import { decodeReferralCode, encodeReferralCode } from "domain/referrals/hooks";
 import coinbaseImg from "img/coinbaseWallet.png";
 import metamaskImg from "img/metamask.png";
 import walletConnectImg from "img/walletconnect-circle-blue.svg";
@@ -168,7 +168,7 @@ function FullApp() {
 
     if (referralCode && referralCode.length <= 20) {
       const encodedReferralCode = encodeReferralCode(referralCode);
-      if (encodeReferralCode !== ethers.constants.HashZero) {
+      if (encodedReferralCode !== ethers.constants.HashZero) {
         localStorage.setItem(REFERRAL_CODE_KEY, encodedReferralCode);
         const queryParams = new URLSearchParams(location.search);
         if (queryParams.has(REFERRAL_CODE_QUERY_PARAM)) {

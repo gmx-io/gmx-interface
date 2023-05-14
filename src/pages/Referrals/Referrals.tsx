@@ -1,27 +1,32 @@
-import "./Referrals.css";
-import React from "react";
-import { useLocalStorage } from "react-use";
 import { Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
-import { useParams } from "react-router-dom";
-import SEO from "components/Common/SEO";
-import Tab from "components/Tab/Tab";
 import Loader from "components/Common/Loader";
-import Footer from "components/Footer/Footer";
-import { getPageTitle, isHashZero } from "lib/legacy";
-import { registerReferralCode, useCodeOwner, useReferrerTier, useUserReferralCode } from "domain/referrals";
-import JoinReferralCode from "components/Referrals/JoinReferralCode";
-import AffiliatesStats from "components/Referrals/AffiliatesStats";
-import TradersStats from "components/Referrals/TradersStats";
-import AddAffiliateCode from "components/Referrals/AddAffiliateCode";
-import { deserializeSampleStats, isRecentReferralCodeNotExpired } from "components/Referrals/referralsHelper";
-import { ethers } from "ethers";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { REFERRALS_SELECTED_TAB_KEY } from "config/localStorage";
-import { useChainId } from "lib/chains";
+import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import Footer from "components/Footer/Footer";
+import AddAffiliateCode from "components/Referrals/AddAffiliateCode";
+import AffiliatesStats from "components/Referrals/AffiliatesStats";
+import JoinReferralCode from "components/Referrals/JoinReferralCode";
+import TradersStats from "components/Referrals/TradersStats";
+import { deserializeSampleStats, isRecentReferralCodeNotExpired } from "components/Referrals/referralsHelper";
+import Tab from "components/Tab/Tab";
 import { getIcon } from "config/icons";
-import useReferralsData from "domain/referrals/useReferralsData";
+import { REFERRALS_SELECTED_TAB_KEY } from "config/localStorage";
+import {
+  ReferralCodeStats,
+  registerReferralCode,
+  useAffiliateTier,
+  useCodeOwner,
+  useReferralsData,
+  useUserReferralCode,
+} from "domain/referrals";
+import { ethers } from "ethers";
+import { useChainId } from "lib/chains";
+import { getPageTitle, isHashZero } from "lib/legacy";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { useParams } from "react-router-dom";
+import { useLocalStorage } from "react-use";
+import "./Referrals.css";
 
 const TRADERS = "Traders";
 const AFFILIATES = "Affiliates";
@@ -38,9 +43,15 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   }
   const { chainId } = useChainId();
   const [activeTab, setActiveTab] = useLocalStorage(REFERRALS_SELECTED_TAB_KEY, TRADERS);
-  const [recentlyAddedCodes, setRecentlyAddedCodes] = useLocalStorageSerializeKey([chainId, "REFERRAL", account], [], {
-    deserializer: deserializeSampleStats,
-  });
+  const [recentlyAddedCodes, setRecentlyAddedCodes] = useLocalStorageSerializeKey<ReferralCodeStats[]>(
+    [chainId, "REFERRAL", account],
+    [],
+    {
+      raw: false,
+      deserializer: deserializeSampleStats as any,
+      serializer: (value) => JSON.stringify(value),
+    }
+  );
   const { data: referralsData, loading } = useReferralsData(account);
   const { userReferralCode, userReferralCodeString } = useUserReferralCode(library, chainId, account);
   const { codeOwner } = useCodeOwner(library, chainId, account, userReferralCode);
@@ -56,9 +67,11 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   }
 
   function renderAffiliatesTab() {
-    const currentReferralsData = referralsData?.[chainId];
+    const currentReferralsData = referralsData?.chains?.[chainId];
+
     const isReferralCodeAvailable =
-      currentReferralsData?.codes?.length > 0 || recentlyAddedCodes?.filter(isRecentReferralCodeNotExpired).length > 0;
+      currentReferralsData?.codes?.length || recentlyAddedCodes?.filter(isRecentReferralCodeNotExpired).length;
+
     if (loading) return <Loader />;
     if (account && isReferralCodeAvailable) {
       return (

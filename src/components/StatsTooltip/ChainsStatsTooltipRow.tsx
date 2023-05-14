@@ -15,7 +15,7 @@ type Props = {
   shouldFormat?: boolean;
 };
 
-export default function StatsTooltip({
+export default function ChainsStatsTooltipRow({
   title,
   total,
   avaxValue,

@@ -37,7 +37,7 @@ import { getContract } from "config/contracts";
 
 import "./StakeV2.css";
 import SEO from "components/Common/SEO";
-import StatsTooltip from "components/StatsTooltip/StatsTooltip";
+import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { getServerUrl } from "config/backend";
 import { callContract, contractFetcher } from "lib/contracts";
@@ -1622,7 +1622,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                         ` ($${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)})`
                       }
                       renderContent={() => (
-                        <StatsTooltip
+                        <ChainsStatsTooltipRow
                           showDollar={false}
                           title={t`Staked`}
                           avaxValue={avaxGmxStaked}

@@ -2900,11 +2900,6 @@ msgstr "Solo letras, números y guiones bajos están permitidos"
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/NetValueTooltip.tsx
-<<<<<<< HEAD
-#: src/components/Exchange/SwapBox.js
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-=======
->>>>>>> bdf4c39ecbfe41f00545b7b95e7726ae0d2cfbcc
 msgid "Open Fee"
 msgstr ""
 
@@ -3373,17 +3368,12 @@ msgstr "Comprar Seguro"
 msgid "Read more"
 msgstr "Leer más"
 
-<<<<<<< HEAD
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-=======
 #: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
 msgid "Rebates"
 msgstr ""
 
 #: src/components/Referrals/TradersStats.js
->>>>>>> bdf4c39ecbfe41f00545b7b95e7726ae0d2cfbcc
 msgid "Rebates Distribution History"
 msgstr "Historial de distribución de reembolsos"
 
@@ -3399,18 +3389,6 @@ msgstr "Reembolsos ganados por esta cuenta como trader."
 msgid "Rebates earned by this account as an affiliate."
 msgstr "Reembolsos ganados por esta cuenta como afiliado."
 
-<<<<<<< HEAD
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-msgid "Rebates on V1"
-msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-msgid "Rebates on V2"
-=======
 #: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
 msgid "Rebates on Arbitrum"
@@ -3419,7 +3397,6 @@ msgstr ""
 #: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
 msgid "Rebates on Avalanche"
->>>>>>> bdf4c39ecbfe41f00545b7b95e7726ae0d2cfbcc
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -3970,11 +3947,6 @@ msgid "Swap"
 msgstr "Intercambiar"
 
 #: src/components/Exchange/FeesTooltip.tsx
-<<<<<<< HEAD
-#: src/components/Exchange/SwapBox.js
-#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
-=======
->>>>>>> bdf4c39ecbfe41f00545b7b95e7726ae0d2cfbcc
 msgid "Swap Fee"
 msgstr ""
 
@@ -4336,13 +4308,7 @@ msgstr "Comisiones Totales"
 msgid "Total Fees Distributed"
 msgstr "Comisiones Totales Distribuidas"
 
-<<<<<<< HEAD
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-=======
 #: src/components/Referrals/AffiliatesStats.js
->>>>>>> bdf4c39ecbfe41f00545b7b95e7726ae0d2cfbcc
 msgid "Total Rebates"
 msgstr "Total de Reembolsos"
 
@@ -4378,15 +4344,6 @@ msgstr "Estadísticas Totales"
 msgid "Total Supply"
 msgstr "Suministro Total"
 
-<<<<<<< HEAD
-#: src/components/Referrals/AffiliatesStats.tsx
-msgid "Total Traders Referred"
-msgstr "Total de Traders Referidos"
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-=======
->>>>>>> bdf4c39ecbfe41f00545b7b95e7726ae0d2cfbcc
 #: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "Volumen Total de Operaciones"
@@ -4434,12 +4391,8 @@ msgstr "Opere en GMX y gane <0>$250.000</0> en premios! Activo hasta el 30 de No
 msgid "Traders"
 msgstr ""
 
-<<<<<<< HEAD
-#: src/components/Referrals/AffiliatesStats.tsx
-=======
 #: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.js
->>>>>>> bdf4c39ecbfe41f00545b7b95e7726ae0d2cfbcc
 msgid "Traders Referred"
 msgstr "Traders Referidos"
 

@@ -5,7 +5,7 @@ import {
   getTwitterIntentURL,
   REFERRAL_CODE_QUERY_PARAM,
 } from "lib/legacy";
-import { encodeReferralCode, getReferralCodeOwner } from "domain/referrals/hooks";
+import { getReferralCodeOwner, encodeReferralCode } from "domain/referrals";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { bigNumberify, formatAmount } from "lib/numbers";
 import { t } from "@lingui/macro";

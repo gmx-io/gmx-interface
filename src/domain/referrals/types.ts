@@ -105,7 +105,8 @@ export type TierInfo = {
   discountShare: BigNumber;
 };
 
-export type ReferralsStatsData = {
+export type ReferralsStats = {
+  chainId: number;
   affiliateDistributions: RebateDistribution[];
   traderDistributions: RebateDistribution[];
   affiliateReferralCodesStats: ReferralCodeStats[];
@@ -113,4 +114,17 @@ export type ReferralsStatsData = {
   traderReferralTotalStats: TraderReferralTotalStats;
   codes: string[];
   affiliateTierInfo: TierInfo;
+};
+
+export type TotalReferralsStats = {
+  total: {
+    registeredReferralsCount: number;
+    affiliateVolume: BigNumber;
+    affiliateRebateUsd: BigNumber;
+    discountUsd: BigNumber;
+    traderVolume: BigNumber;
+  };
+  chains: {
+    [chainId: number]: ReferralsStats;
+  };
 };
