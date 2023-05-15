@@ -168,10 +168,8 @@ export default function useTVDatafeed({ dataProvider }: Props) {
 
           const handleInterval = () => {
             if (missingBarsInfo.current.isFetching || !feedData.current) return;
-
-            const bars = missingBarsInfo.current.bars;
-            if (bars?.length > 0) {
-              bars.forEach((bar: Bar) => {
+            if (missingBarsInfo.current.bars?.length > 0) {
+              missingBarsInfo.current.bars.forEach((bar: any) => {
                 onRealtimeCallback(formatTimeInBarToMs(bar));
                 missingBarsInfo.current.bars = missingBarsInfo.current.bars.filter((b: Bar) => b.time !== bar.time);
               });
