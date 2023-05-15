@@ -60,11 +60,10 @@ export class TVDataProvider {
     chainId: number,
     ticker: string,
     period: string,
-    periodParams: PeriodParams,
-    shouldRefetchBars: boolean
+    periodParams: PeriodParams
   ): Promise<Bar[]> {
     const barsInfo = this.barsInfo;
-    if (!barsInfo.data.length || barsInfo.ticker !== ticker || barsInfo.period !== period || shouldRefetchBars) {
+    if (!barsInfo.data.length || barsInfo.ticker !== ticker || barsInfo.period !== period) {
       try {
         const bars = await this.getTokenChartPrice(chainId, ticker, period);
         const filledBars = fillBarGaps(bars, CHART_PERIODS[period]);
@@ -101,14 +100,7 @@ export class TVDataProvider {
     return bars.slice(bars.length - countBack, bars.length);
   }
 
-  async getBars(
-    chainId: number,
-    ticker: string,
-    period: string,
-    isStable: boolean,
-    periodParams: PeriodParams,
-    shouldRefetchBars: boolean
-  ) {
+  async getBars(chainId: number, ticker: string, period: string, isStable: boolean, periodParams: PeriodParams) {
     const { from, to } = periodParams;
     // getBars is called on period and token change so it's better to rest the values
     this.resetState();
@@ -116,7 +108,7 @@ export class TVDataProvider {
     try {
       const bars = isStable
         ? getStableCoinPrice(period, from, to)
-        : await this.getTokenHistoryBars(chainId, ticker, period, periodParams, shouldRefetchBars);
+        : await this.getTokenHistoryBars(chainId, ticker, period, periodParams);
 
       return bars.map(formatTimeInBarToMs);
     } catch {
@@ -190,10 +182,8 @@ export class TVDataProvider {
       console.error(error);
     }
     const currentPrice = await this.getCurrentPriceOfToken(chainId, ticker);
-
     if (!this.lastBar?.time || !currentPrice || ticker !== this.lastBar.ticker || ticker !== this.barsInfo.ticker)
       return;
-
     if (currentCandleTime === this.lastBar.time) {
       this.currentBar = {
         ...this.lastBar,
