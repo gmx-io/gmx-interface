@@ -36,7 +36,7 @@ export function getSwapPathOutputAddresses(p: {
 
   const [firstMarketAddress, ...marketAddresses] = swapPath;
 
-  let outMarket = marketsInfoData[firstMarketAddress];
+  let outMarket = getByKey(marketsInfoData, firstMarketAddress);
 
   if (!outMarket) {
     return {
@@ -49,7 +49,7 @@ export function getSwapPathOutputAddresses(p: {
   let outToken = outTokenType === "long" ? outMarket.shortToken : outMarket.longToken;
 
   for (const marketAddress of marketAddresses) {
-    outMarket = marketsInfoData[marketAddress];
+    outMarket = getByKey(marketsInfoData, marketAddress);
 
     if (!outMarket) {
       return {
