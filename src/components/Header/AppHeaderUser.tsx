@@ -88,7 +88,7 @@ export function AppHeaderUser({
         history.replace("/v2");
       }
 
-      if ((location.pathname === "/v2" && tradePageVersion === 1) || !getIsSyntheticsSupported(chainId)) {
+      if (location.pathname === "/v2" && (tradePageVersion === 1 || !getIsSyntheticsSupported(chainId))) {
         history.replace("/trade");
       }
     },
