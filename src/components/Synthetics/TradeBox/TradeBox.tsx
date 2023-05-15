@@ -116,6 +116,7 @@ export type Props = {
   onConnectWallet: () => void;
   setIsEditingAcceptablePriceImpact: (val: boolean) => void;
   setIsClaiming: (val: boolean) => void;
+  switchTokenAddresses: () => void;
 };
 
 const tradeTypeIcons = {
@@ -162,6 +163,7 @@ export function TradeBox(p: Props) {
     setIsEditingAcceptablePriceImpact,
     setIsClaiming,
     setPendingTxns,
+    switchTokenAddresses,
   } = p;
   const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket } = tradeFlags;
   const { swapTokens, indexTokens, infoTokens } = avaialbleTokenOptions;
@@ -793,13 +795,10 @@ export function TradeBox(p: Props) {
   );
 
   function onSwitchTokens() {
-    onSelectFromTokenAddress(toTokenAddress);
-    setFromTokenInputValue(toTokenInputValue || "");
-
-    onSelectToTokenAddress(fromTokenAddress);
-    setToTokenInputValue(fromTokenInputValue || "");
-
     setFocusedInput((old) => (old === "from" ? "to" : "from"));
+    switchTokenAddresses();
+    setFromTokenInputValue(toTokenInputValue || "");
+    setToTokenInputValue(fromTokenInputValue || "");
   }
 
   const onConfirmationClose = useCallback(() => {

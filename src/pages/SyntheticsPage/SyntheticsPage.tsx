@@ -99,6 +99,7 @@ export function SyntheticsPage(p: Props) {
     setMarketAddress,
     setCollateralAddress,
     setActivePosition,
+    switchTokenAddresses,
   } = useSelectedTradeOption(chainId);
 
   const [listSection, setListSection] = useLocalStorageSerializeKey(
@@ -334,6 +335,7 @@ export function SyntheticsPage(p: Props) {
               setIsEditingAcceptablePriceImpact={onEditAcceptablePriceImpact}
               setPendingTxns={setPendingTxns}
               setIsClaiming={setIsClaiming}
+              switchTokenAddresses={switchTokenAddresses}
             />
           </div>
         </div>
