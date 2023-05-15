@@ -173,7 +173,21 @@ export function OrderItem(p: Props) {
       );
     } else {
       const positionOrder = p.order as PositionOrderInfo;
-      return `${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.triggerPrice)}`;
+
+      return (
+        <Tooltip
+          handle={`${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.triggerPrice)}`}
+          renderContent={() => (
+            <>
+              <StatsTooltipRow
+                label={t`Acceptable Price`}
+                value={`${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.acceptablePrice)}`}
+                showDollar={false}
+              />
+            </>
+          )}
+        />
+      );
     }
   }
 
