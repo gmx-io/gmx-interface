@@ -19,11 +19,17 @@ export function claimCollateralTxn(chainId: number, library: Web3Provider, p: Pa
 
   const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, library.getSigner());
 
-  return callContract(chainId, contract, "claimFundingFees", [fundingFees.marketAddresses, [], account], {
-    sentMsg: t`Claim request sent`,
-    successMsg: t`Success claimings`,
-    failMsg: t`Claiming failed`,
-    hideSuccessMsg: true,
-    setPendingTxns,
-  });
+  return callContract(
+    chainId,
+    contract,
+    "claimFundingFees",
+    [fundingFees.marketAddresses, fundingFees.tokenAddresses, account],
+    {
+      sentMsg: t`Claim request sent`,
+      successMsg: t`Success claimings`,
+      failMsg: t`Claiming failed`,
+      hideSuccessMsg: true,
+      setPendingTxns,
+    }
+  );
 }
