@@ -710,8 +710,8 @@ export function ConfirmationBox(p: Props) {
           }
           renderContent={() =>
             isLiquidityRisk
-              ? t`There may not be sufficient liquidity to execute your order when the price conditions are met`
-              : t`The order will only execute if the price conditions are met and there is sufficient liquidity`
+              ? t`There may not be sufficient liquidity to execute your order when the price conditions are met.`
+              : t`The order will only execute if the price conditions are met and there is sufficient liquidity.`
           }
         />
       </ExchangeInfoRow>

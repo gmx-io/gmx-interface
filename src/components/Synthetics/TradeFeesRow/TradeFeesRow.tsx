@@ -235,13 +235,7 @@ export function TradeFeesRow(p: Props) {
               renderContent={() => (
                 <div>
                   {feeRows.map((feeRow, i) => (
-                    <StatsTooltipRow
-                      key={feeRow.id}
-                      label={feeRow.label}
-                      value={feeRow.value}
-                      showDollar={false}
-                      className="TradeFeesRow-fee-row"
-                    />
+                    <StatsTooltipRow key={feeRow.id} label={feeRow.label} value={feeRow.value} showDollar={false} />
                   ))}
                 </div>
               )}

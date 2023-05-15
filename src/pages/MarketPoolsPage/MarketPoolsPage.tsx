@@ -50,7 +50,7 @@ export function MarketPoolsPage(p: Props) {
         <div className="section-title-block">
           <div className="section-title-content">
             <div className="Page-title">
-              <Trans>Synthetics Pools</Trans>
+              <Trans>V2 Pools</Trans>
             </div>
             <div className="Page-description">
               <Trans>

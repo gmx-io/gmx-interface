@@ -50,17 +50,17 @@ export function PositionItem(p: Props) {
             />
             <StatsTooltipRow label={t`PnL`} value={formatDeltaUsd(p.position?.pnl) || "..."} showDollar={false} />
             <StatsTooltipRow
-              label={t`Accrued Borrow fee`}
+              label={t`Accrued Borrow Fee`}
               value={formatUsd(p.position.pendingBorrowingFeesUsd?.mul(-1)) || "..."}
               showDollar={false}
             />
             <StatsTooltipRow
-              label={t`Accrued Funding fee`}
+              label={t`Accrued Funding Fee`}
               value={formatUsd(p.position.pendingFundingFeesUsd.mul(-1)) || "..."}
               showDollar={false}
             />
             <StatsTooltipRow
-              label={t`Close fee`}
+              label={t`Close Fee`}
               showDollar={false}
               value={formatUsd(p.position.closingFeeUsd?.mul(-1)) || "..."}
             />

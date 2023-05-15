@@ -90,7 +90,7 @@ export function OrderList(p: Props) {
             </th>
             <th>
               <div>
-                <Trans>Price</Trans>
+                <Trans>Trigger Price</Trans>
               </div>
             </th>
             <th>
