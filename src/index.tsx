@@ -18,3 +18,6 @@ ReactDOM.render(
 // to log results (for example: reportWebVitals(console.info))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+export { formatUsd } from "./lib/numbers";
+export { formatTokenAmountWithUsd } from "./lib/numbers";
+export { formatTokenAmount } from "./lib/numbers";

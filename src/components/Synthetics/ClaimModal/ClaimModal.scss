@@ -1,0 +1,25 @@
+.ClaimableModal {
+  .Modal-body {
+    overflow-x: hidden;
+  }
+}
+
+.ClaimModal-content {
+  font-size: var(--font-sm);
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+}
+
+.ClaimModal-row {
+  margin-bottom: 0rem;
+}
+
+.ClaimModal-row-tooltip {
+  .Tooltip-popup {
+    min-width: 0;
+  }
+}
+
+.ClaimModal-divider {
+  margin-top: 0;
+}

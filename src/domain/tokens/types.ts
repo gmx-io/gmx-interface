@@ -6,6 +6,7 @@ export type Token = {
   baseSymbol?: string;
   decimals: number;
   address: string;
+  wrappedAddress?: string;
   coingeckoUrl?: string;
   imageUrl?: string;
 
@@ -14,6 +15,7 @@ export type Token = {
   isWrapped?: boolean;
   isShortable?: boolean;
   isStable?: boolean;
+  isSynthetic?: boolean;
   isTempHidden?: boolean;
 };
 

@@ -212,7 +212,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
             </div>
             <div className="Home-benefit-description">
               <Trans>
-                Enter and exit positions with minimal spread and zero price impact. Get the optimal price without
+                Enter and exit positions with minimal spread and low price impact. Get the optimal price without
                 incurring additional costs.
               </Trans>
             </div>
@@ -273,7 +273,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
         <div className="Home-token-card-container default-container">
           <div className="Home-token-card-info">
             <div className="Home-token-card-info__title">
-              <Trans>Two tokens create our ecosystem</Trans>
+              <Trans>Three tokens create our ecosystem</Trans>
             </div>
           </div>
           <TokenCard showRedirectModal={showRedirectModal} redirectPopupTimestamp={redirectPopupTimestamp} />

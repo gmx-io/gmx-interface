@@ -1,12 +1,14 @@
 import Tooltip from "../Tooltip/Tooltip";
+import cx from "classnames";
 import { ReactNode } from "react";
 
 type Props = {
   label: string;
-  value: string;
+  value?: string;
   labelTooltipText?: string;
   tooltipPosition?: string;
   tooltipContent?: ReactNode;
+  className?: string;
   children?: ReactNode;
 };
 
@@ -17,9 +19,10 @@ function ReferralInfoCard({
   children,
   tooltipContent,
   tooltipPosition = "left-bottom",
+  className,
 }: Props) {
   return (
-    <div className="info-card">
+    <div className={cx("info-card", className)}>
       <div className="card-details">
         <h3 className="card-label">
           {labelTooltipText ? (

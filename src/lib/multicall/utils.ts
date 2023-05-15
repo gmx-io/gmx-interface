@@ -64,7 +64,7 @@ function getMulticallLib(provider: ethers.providers.Provider) {
   return new Multicall({
     // @ts-ignore inconsistent provider types
     ethersProvider: provider,
-    tryAggregate: true,
+    tryAggregate: false,
   });
 }
 

@@ -1,0 +1,40 @@
+.StatusNotification {
+  position: relative;
+}
+
+.StatusNotification-background {
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  right: auto;
+  width: 150%;
+  height: 150%;
+  bottom: 0;
+  background-color: rgba(174, 43, 63, 0);
+  transition: background-color 0.3s ease-in-out;
+
+  &.error {
+    background-color: rgba(174, 43, 63, 1);
+  }
+}
+
+.StatusNotification-content {
+  position: relative;
+  z-index: 1;
+}
+
+.StatusNotification-title {
+  font-weight: bold;
+}
+
+.StatusNotification-items {
+  margin-top: 1rem;
+
+  .TransactionStatus-status {
+    margin-right: -1.8rem !important;
+  }
+
+  .TransactionStatus-spin {
+    margin-right: -0.3rem !important;
+  }
+}

@@ -114,6 +114,39 @@ const CONTRACTS = {
     ReferralStorage: "0x0000000000000000000000000000000000000000",
     ReferralReader: "0x0000000000000000000000000000000000000000",
 
+    // Synthetics
+    AdlUtils: AddressZero,
+    DecreaseOrderUtils: AddressZero,
+    DataStore: AddressZero,
+    DecreasePositionUtils: AddressZero,
+    DepositHandler: AddressZero,
+    DepositStore: AddressZero,
+    EventEmitter: AddressZero,
+    ExchangeRouter: AddressZero,
+    FeeReceiver: AddressZero,
+    GasUtils: AddressZero,
+    IncreaseOrderUtils: AddressZero,
+    IncreasePositionUtils: AddressZero,
+    LiquidationUtils: AddressZero,
+    MarketFactory: AddressZero,
+    MarketStore: AddressZero,
+    MarketUtils: AddressZero,
+    Multicall3: AddressZero,
+    Oracle: AddressZero,
+    OracleStore: AddressZero,
+    OrderHandler: AddressZero,
+    OrderStore: AddressZero,
+    OrderUtils: AddressZero,
+    PositionStore: AddressZero,
+    SyntheticsReader: AddressZero,
+    SyntheticsReferralStorage: AddressZero,
+    RoleStore: AddressZero,
+    SyntheticsRouter: AddressZero,
+    SwapHandler: AddressZero,
+    SwapOrderUtils: AddressZero,
+    WithdrawalHandler: AddressZero,
+    WithdrawalStore: AddressZero,
+
     Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
   },
   [ARBITRUM]: {
@@ -156,6 +189,16 @@ const CONTRACTS = {
     ReferralStorage: "0xe6fab3f0c7199b0d34d7fbe83394fc0e0d06e99d",
     ReferralReader: "0x8Aa382760BCdCe8644C33e6C2D52f6304A76F5c8",
 
+    // Synthetics
+    DataStore: AddressZero,
+    EventEmitter: AddressZero,
+    ExchangeRouter: AddressZero,
+    DepositVault: AddressZero,
+    WithdrawalVault: AddressZero,
+    OrderVault: AddressZero,
+    SyntheticsReader: AddressZero,
+    SyntheticsReferralStorage: AddressZero,
+    SyntheticsRouter: AddressZero,
     Timelock: "0x8A68a039D555599Fd745f9343e8dE20C9eaFca75",
 
     Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
@@ -201,6 +244,16 @@ const CONTRACTS = {
     ReferralStorage: "0x827ed045002ecdabeb6e2b0d1604cf5fc3d322f8",
     ReferralReader: "0x505Ce16D3017be7D76a7C2631C0590E71A975083",
 
+    // Synthetics
+    DataStore: AddressZero,
+    EventEmitter: AddressZero,
+    ExchangeRouter: AddressZero,
+    DepositVault: AddressZero,
+    WithdrawalVault: AddressZero,
+    OrderVault: AddressZero,
+    SyntheticsReader: AddressZero,
+    SyntheticsReferralStorage: AddressZero,
+    SyntheticsRouter: AddressZero,
     Timelock: "0x8Ea12810271a0fD70bBEB8614B8735621abC3718",
 
     Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
@@ -214,6 +267,7 @@ const CONTRACTS = {
     GlpManager: AddressZero,
     RewardRouter: AddressZero,
     RewardReader: AddressZero,
+    GlpRewardRouter: AddressZero,
     NATIVE_TOKEN: "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
     GLP: AddressZero,
     GMX: AddressZero,
@@ -242,8 +296,21 @@ const CONTRACTS = {
     PositionManager: AddressZero,
 
     TraderJoeGmxAvaxPool: AddressZero,
-    ReferralStorage: AddressZero,
+    ReferralStorage: "0xB16E0131611A35853eD018694A185B62176d3b8d",
     ReferralReader: AddressZero,
+
+    // Synthetics
+    DataStore: "0xF6268517F5726c563480Aa39fE02B580ff3c8fC5",
+    EventEmitter: "0x764E9B799B53D44B0377a92955DF2930E37136C6",
+    ExchangeRouter: "0xC173233D27749bA8fed5dd0b6902d303Fa0f5466",
+    DepositVault: "0x57D23c7EBF2Ff06a37347015404E08FD84EF9B46",
+    WithdrawalVault: "0xd94eA74D785b8DcA4578E845242ec8E7217e3EB1",
+    OrderVault: "0x21D44C73b6B341F98Be57eaF8008bCbf6e2D5811",
+    SyntheticsReader: "0x6Ab84F5EF9782683BDf4f2108EBaC7287312ad96",
+    SyntheticsRouter: "0x56827bEd66CafC5CDcB30620475a25cA42Bb6fD5",
+    Timelock: AddressZero,
+
+    Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
   },
 };
 

@@ -1,21 +1,23 @@
 import { useWeb3React } from "@web3-react/core";
+import connectWalletImg from "img/ic_wallet_24.svg";
+import { useCallback, useEffect } from "react";
 import AddressDropdown from "../AddressDropdown/AddressDropdown";
 import ConnectWalletButton from "../Common/ConnectWalletButton";
-import React, { useCallback, useEffect } from "react";
-import { HeaderLink } from "./HeaderLink";
-import connectWalletImg from "img/ic_wallet_24.svg";
 
-import "./Header.css";
-import { isHomeSite, getAccountUrl } from "lib/legacy";
-import cx from "classnames";
 import { Trans } from "@lingui/macro";
-import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
-import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
+import cx from "classnames";
 import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
-import { switchNetwork } from "lib/wallets";
-import { useChainId } from "lib/chains";
 import { isDevelopment } from "config/env";
 import { getIcon } from "config/icons";
+import { useChainId } from "lib/chains";
+import { getAccountUrl, isHomeSite } from "lib/legacy";
+import { switchNetwork } from "lib/wallets";
+import { useHistory, useLocation } from "react-router-dom";
+import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
+import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
+import "./Header.css";
+import { HeaderLink } from "./HeaderLink";
+import { getIsSyntheticsSupported } from "config/features";
 
 type Props = {
   openSettings: () => void;
@@ -24,6 +26,7 @@ type Props = {
   disconnectAccountAndCloseSettings: () => void;
   redirectPopupTimestamp: number;
   showRedirectModal: (to: string) => void;
+  tradePageVersion: number;
 };
 
 const NETWORK_OPTIONS = [
@@ -63,16 +66,34 @@ export function AppHeaderUser({
   disconnectAccountAndCloseSettings,
   redirectPopupTimestamp,
   showRedirectModal,
+  tradePageVersion,
 }: Props) {
   const { chainId } = useChainId();
   const { active, account } = useWeb3React();
   const showConnectionOptions = !isHomeSite();
+  const location = useLocation();
+  const history = useHistory();
+
+  const tradeLink = tradePageVersion === 1 ? "/trade" : "/v2";
 
   useEffect(() => {
     if (active) {
       setWalletModalVisible(false);
     }
   }, [active, setWalletModalVisible]);
+
+  useEffect(
+    function redirectTradePage() {
+      if (location.pathname === "/trade" && tradePageVersion === 2 && getIsSyntheticsSupported(chainId)) {
+        history.replace("/v2");
+      }
+
+      if (location.pathname === "/v2" && (tradePageVersion === 1 || !getIsSyntheticsSupported(chainId))) {
+        history.replace("/trade");
+      }
+    },
+    [chainId, history, location.pathname, tradePageVersion]
+  );
 
   const onNetworkSelect = useCallback(
     (option) => {
@@ -92,7 +113,7 @@ export function AppHeaderUser({
         <div className={cx("App-header-trade-link", { "homepage-header": isHomeSite() })}>
           <HeaderLink
             className="default-btn"
-            to="/trade"
+            to={tradeLink!}
             redirectPopupTimestamp={redirectPopupTimestamp}
             showRedirectModal={showRedirectModal}
           >
@@ -124,14 +145,14 @@ export function AppHeaderUser({
 
   return (
     <div className="App-header-user">
-      <div className="App-header-trade-link">
+      <div className={cx("App-header-trade-link")}>
         <HeaderLink
           className="default-btn"
-          to="/trade"
+          to={tradeLink!}
           redirectPopupTimestamp={redirectPopupTimestamp}
           showRedirectModal={showRedirectModal}
         >
-          <Trans>Trade</Trans>
+          {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
         </HeaderLink>
       </div>
 

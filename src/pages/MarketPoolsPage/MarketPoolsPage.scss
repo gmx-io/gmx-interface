@@ -1,0 +1,20 @@
+.MarketPoolsPage-content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.MarketPoolsPage-content .MarketPoolsPage-swap-box {
+  max-width: 47.95rem;
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .MarketPoolsPage-content {
+    flex-wrap: wrap;
+  }
+
+  .MarketPoolsPage-content .MarketPoolsPage-swap-box {
+    max-width: none;
+    width: 100%;
+  }
+}

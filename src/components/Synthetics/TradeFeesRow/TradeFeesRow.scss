@@ -1,0 +1,33 @@
+.TradeFeesRow {
+  opacity: 1;
+
+  .Exchange-info-label {
+    opacity: 1;
+    color: rgba(255, 255, 255, 0.7);
+  }
+}
+
+.TradeFeesRow-tooltip {
+  .Tooltip-popup {
+    min-width: 32rem;
+  }
+}
+
+.TradeFeesRow-fee-row:first-child {
+  margin-bottom: 0.5rem;
+}
+
+.TradeFeesRow-fee-row {
+  margin-top: 1.2rem;
+}
+
+.TradeFeesRow-warning-tooltip {
+  .Tooltip-handle {
+    color: rgb(243, 181, 12);
+    text-decoration-color: rgb(243, 181, 12);
+  }
+
+  .Tooltip-popup {
+    color: white;
+  }
+}

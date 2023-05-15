@@ -1,0 +1,34 @@
+.GMList {
+  .token-table {
+    td {
+      text-align: left !important;
+      width: 20rem !important;
+    }
+  }
+
+  .App-card-info-title {
+    display: flex;
+    line-height: normal !important;
+  }
+
+  .App-card-info-subtitle {
+    font-size: 1.4rem !important;
+    margin-top: 0.1rem;
+  }
+
+  .GmList-last-column {
+    width: 40rem !important;
+  }
+
+  .GmList-action {
+    width: 17rem;
+  }
+
+  .GmList-last-action {
+    margin-left: 1rem;
+  }
+
+  .Asset-dropdown-container {
+    display: inline-block;
+  }
+}

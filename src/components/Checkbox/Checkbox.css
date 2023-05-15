@@ -35,3 +35,12 @@
   vertical-align: middle;
   font-size: var(--font-sm);
 }
+
+.Checkbox.fullRow {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  direction: rtl;
+  font-size: var(--font-sm);
+  margin-bottom: 0.465rem;
+}

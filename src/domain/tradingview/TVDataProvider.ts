@@ -40,6 +40,7 @@ export class TVDataProvider {
   async getTokenLastBars(chainId: number, ticker: string, period: string, limit: number): Promise<Bar[]> {
     return getLimitChartPricesFromStats(chainId, ticker, period, limit);
   }
+
   async getTokenChartPrice(chainId: number, ticker: string, period: string): Promise<Bar[]> {
     return getTokenChartPrice(chainId, ticker, period);
   }

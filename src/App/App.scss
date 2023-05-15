@@ -556,11 +556,18 @@ button.App-connect-wallet:hover {
 .App-card-title-small {
   font-size: var(--font-md);
   margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
 }
 
 .App-card-content {
   display: grid;
   grid-row-gap: 0.8rem;
+}
+
+.title-icon {
+  margin-left: 1rem;
+  align-self: flex-end;
 }
 
 .App-card-row {
@@ -1019,6 +1026,21 @@ button.App-button {
   border-radius: 0.4rem;
 }
 
+.Toastify__toast--default {
+  background: linear-gradient(90deg, #0b0b0f 0%, rgba(10, 13, 28, 1) 100%);
+  color: white;
+  border-radius: 0.6rem;
+}
+
+.Toastify__toast--default .Toastify__close-button {
+  color: white;
+}
+
+.Toastify__toast--default .Toastify__close-button:hover {
+  color: white;
+  background: transparent;
+}
+
 .Toastify__close-button {
   align-self: flex-start;
   border-radius: 0.4rem;
@@ -1029,6 +1051,7 @@ button.App-button {
   justify-content: center;
   align-items: center;
   transition: none;
+  z-index: 2;
 }
 .Toastify__close-button:hover {
   background: #ffffff47 0% 0% no-repeat padding-box;
@@ -1096,6 +1119,14 @@ button.App-button {
 
 .negative-background {
   background: linear-gradient(45deg, rgba(115, 30, 43, 1) 0%, rgba(174, 43, 63, 1) 100%);
+}
+
+.waring {
+  color: rgb(243, 181, 12);
+}
+
+.warning-decoration {
+  text-decoration-color: rgb(243, 181, 12);
 }
 
 .App-warning,

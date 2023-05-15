@@ -1,6 +1,7 @@
 import { BigNumber, BigNumberish, ethers } from "ethers";
+import { BASIS_POINTS_DIVISOR, PRECISION, USD_DECIMALS } from "./legacy";
 
-export function bigNumberify(n: BigNumberish) {
+export function bigNumberify(n?: BigNumberish) {
   try {
     return BigNumber.from(n);
   } catch (e) {
@@ -118,6 +119,117 @@ export const formatAmountFree = (amount: BigNumberish, tokenDecimals: number, di
   return trimZeroDecimals(amountStr);
 };
 
+export function formatUsd(usd?: BigNumber, opts: { fallbackToZero?: boolean; displayDecimals?: number } = {}) {
+  const { fallbackToZero = false, displayDecimals = 2 } = opts;
+
+  if (!usd) {
+    if (fallbackToZero) {
+      usd = BigNumber.from(0);
+    } else {
+      return undefined;
+    }
+  }
+
+  const sign = usd.lt(0) ? "-" : "";
+
+  return `${sign}$${formatAmount(usd.abs(), USD_DECIMALS, displayDecimals, true)}`;
+}
+
+export function formatDeltaUsd(deltaUsd?: BigNumber, percentage?: BigNumber, opts: { fallbackToZero?: boolean } = {}) {
+  if (!deltaUsd) {
+    if (opts.fallbackToZero) {
+      return `${formatUsd(BigNumber.from(0))} (${formatAmount(BigNumber.from(0), 2, 2)}%)`;
+    }
+
+    return undefined;
+  }
+
+  let sign = "";
+  if (!deltaUsd.eq(0)) {
+    sign = deltaUsd?.gt(0) ? "+" : "-";
+  }
+
+  const percentageStr = percentage ? ` (${sign}${formatPercentage(percentage.abs())})` : "";
+
+  return `${sign}${formatUsd(deltaUsd.abs())}${percentageStr}`;
+}
+
+export function formatPercentage(percentage?: BigNumber, opts: { fallbackToZero?: boolean; signed?: boolean } = {}) {
+  const { fallbackToZero = false, signed = false } = opts;
+
+  if (!percentage) {
+    if (fallbackToZero) {
+      return `${formatAmount(BigNumber.from(0), 2, 2)}%`;
+    }
+
+    return undefined;
+  }
+
+  let sign = "";
+
+  if (signed && !percentage.eq(0)) {
+    sign = percentage?.gt(0) ? "+" : "-";
+  }
+
+  return `${sign}${formatAmount(percentage.abs(), 2, 2)}%`;
+}
+
+export function formatTokenAmount(
+  amount?: BigNumber,
+  tokenDecimals?: number,
+  symbol?: string,
+  opts: {
+    showAllSignificant?: boolean;
+    displayDecimals?: number;
+    fallbackToZero?: boolean;
+    useCommas?: boolean;
+  } = {}
+) {
+  const { displayDecimals = 4, showAllSignificant = false, fallbackToZero = false, useCommas = false } = opts;
+
+  const symbolStr = symbol ? ` ${symbol}` : "";
+
+  if (!amount || !tokenDecimals) {
+    if (fallbackToZero) {
+      amount = BigNumber.from(0);
+      tokenDecimals = displayDecimals;
+    } else {
+      return undefined;
+    }
+  }
+
+  const formattedAmount = showAllSignificant
+    ? formatAmountFree(amount, tokenDecimals, tokenDecimals)
+    : formatAmount(amount, tokenDecimals, displayDecimals, useCommas);
+
+  return `${formattedAmount}${symbolStr}`;
+}
+
+export function formatTokenAmountWithUsd(
+  tokenAmount?: BigNumber,
+  usdAmount?: BigNumber,
+  tokenSymbol?: string,
+  tokenDecimals?: number,
+  opts: {
+    fallbackToZero?: boolean;
+    displayDecimals?: number;
+  } = {}
+) {
+  if (!tokenAmount || !usdAmount || !tokenSymbol || !tokenDecimals) {
+    if (!opts.fallbackToZero) {
+      return undefined;
+    }
+  }
+
+  const tokenStr = formatTokenAmount(tokenAmount, tokenDecimals, tokenSymbol, opts);
+
+  const usdStr = formatUsd(usdAmount, {
+    fallbackToZero: opts.fallbackToZero,
+  });
+
+  return `${tokenStr} (${usdStr})`;
+}
+
 export const parseValue = (value: string, tokenDecimals: number) => {
   const pValue = parseFloat(value);
 
@@ -138,4 +250,28 @@ export function numberWithCommas(x: BigNumberish) {
   var parts = x.toString().split(".");
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   return parts.join(".");
+}
+
+export function roundUpDivision(a: BigNumber, b: BigNumber) {
+  return a.add(b).sub(1).div(b);
+}
+
+export function roundUpMagnitudeDivision(a: BigNumber, b: BigNumber) {
+  if (a.lt(0)) {
+    return a.sub(b).add(1).div(b);
+  }
+
+  return a.add(b).sub(1).div(b);
+}
+
+export function applyFactor(value: BigNumber, factor: BigNumber) {
+  return value.mul(factor).div(PRECISION);
+}
+
+export function getBasisPoints(numerator: BigNumber, denominator: BigNumber) {
+  return numerator.mul(BASIS_POINTS_DIVISOR).div(denominator);
+}
+
+export function basisPointsToFloat(basisPoints: BigNumber) {
+  return basisPoints.mul(PRECISION).div(BASIS_POINTS_DIVISOR);
 }

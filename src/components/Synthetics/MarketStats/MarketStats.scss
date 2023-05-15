@@ -1,0 +1,57 @@
+.MarketStats-card {
+  flex: 1;
+  max-width: 71.2rem;
+  min-width: 40rem;
+  margin-right: 1.5rem;
+}
+
+.MarketStats-card .App-card-row .label {
+  color: #a9a9b0;
+  opacity: 1;
+}
+
+.MarketStats-gm-icon {
+  width: 45px;
+  margin-top: -4px;
+  margin-left: -4px;
+}
+
+.App-card-title-mark-icon {
+  position: relative;
+  margin-right: 0.8rem;
+  display: flex;
+}
+
+.App-card-title-mark-icon .selected-network-symbol {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  border: 1px solid #1e1f37;
+  border-radius: 50%;
+}
+
+.App-card-title-mark {
+  display: flex;
+}
+
+.App-card-title-mark .App-card-title-mark-title {
+  font-size: 1.6rem;
+  line-height: 2.1rem;
+  letter-spacing: 0px;
+  color: #ffffff;
+}
+
+.App-card-title-mark .App-card-title-mark-subtitle {
+  font-size: 1.2rem;
+  line-height: 1.5rem;
+  letter-spacing: 0px;
+  color: #a9a9b0;
+}
+
+@media (max-width: 900px) {
+  .MarketStats-card {
+    margin: 0;
+    margin-bottom: 3.1rem;
+    max-width: 100%;
+  }
+}

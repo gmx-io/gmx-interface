@@ -354,6 +354,8 @@ export const Exchange = forwardRef((props, ref) => {
     setSavedShouldShowPositionLines,
     connectWallet,
     savedShouldDisableValidationForTesting,
+    tradePageVersion,
+    setTradePageVersion,
   } = props;
   const [showBanner, setShowBanner] = useLocalStorageSerializeKey("showBanner", true);
   const [bannerHidden, setBannerHidden] = useLocalStorageSerializeKey("bannerHidden", null);
@@ -918,6 +920,8 @@ export const Exchange = forwardRef((props, ref) => {
         savedShouldShowPositionLines={savedShouldShowPositionLines}
         orders={orders}
         setToTokenAddress={setToTokenAddress}
+        tradePageVersion={tradePageVersion}
+        setTradePageVersion={setTradePageVersion}
       />
     );
   };

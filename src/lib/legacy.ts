@@ -1413,8 +1413,7 @@ export function getProcessedData(
 }
 
 export function getPageTitle(data) {
-  return `${data} | Decentralized
-  Perpetual Exchange | GMX`;
+  return `${data} | Decentralized Perpetual Exchange | GMX`;
 }
 
 export function isHashZero(value) {
@@ -1513,11 +1512,6 @@ export function getOrderError(account, order, positionsMap, position) {
       return t`Order cannot be executed as the remaining position would be smaller than $5.00`;
     }
   }
-}
-
-export function arrayURLFetcher(...urlArr) {
-  const fetcher = (url) => fetch(url).then((res) => res.json());
-  return Promise.all(urlArr.map(fetcher));
 }
 
 export function shouldShowRedirectModal(timestamp) {

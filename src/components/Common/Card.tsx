@@ -3,7 +3,7 @@ import Tooltip from "../Tooltip/Tooltip";
 import "./Card.css";
 
 type Props = {
-  title: string;
+  title: ReactNode;
   children: ReactNode;
   className?: string;
   tooltipText?: string;

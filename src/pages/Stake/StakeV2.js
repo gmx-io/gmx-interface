@@ -37,7 +37,7 @@ import { getContract } from "config/contracts";
 
 import "./StakeV2.css";
 import SEO from "components/Common/SEO";
-import StatsTooltip from "components/StatsTooltip/StatsTooltip";
+import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { getServerUrl } from "config/backend";
 import { callContract, contractFetcher } from "lib/contracts";
@@ -49,6 +49,8 @@ import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import GMXAprTooltip from "components/Stake/GMXAprTooltip";
 import Button from "components/Button/Button";
+import { GmList } from "components/Synthetics/GmList/GmList";
+import { getIsSyntheticsSupported } from "config/features";
 
 const { AddressZero } = ethers.constants;
 
@@ -1620,7 +1622,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                         ` ($${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)})`
                       }
                       renderContent={() => (
-                        <StatsTooltip
+                        <ChainsStatsTooltipRow
                           showDollar={false}
                           title={t`Staked`}
                           avaxValue={avaxGmxStaked}
@@ -1983,6 +1985,12 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
           </div>
         </div>
       </div>
+
+      {getIsSyntheticsSupported(chainId) && (
+        <div className="StakeV2-section">
+          <GmList />
+        </div>
+      )}
 
       <div>
         <div className="Tab-title-section">

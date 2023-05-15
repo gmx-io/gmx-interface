@@ -1,5 +1,5 @@
 import { createClient } from "./utils";
-import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, ETH_MAINNET } from "config/chains";
+import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, AVALANCHE_FUJI, ETH_MAINNET } from "config/chains";
 
 export const chainlinkClient = createClient(ETH_MAINNET, "chainLink");
 
@@ -9,6 +9,17 @@ export const nissohGraphClient = createClient(ARBITRUM, "nissohVault");
 
 export const avalancheGraphClient = createClient(AVALANCHE, "stats");
 export const avalancheReferralsGraphClient = createClient(AVALANCHE, "referrals");
+export const avalancheFujiReferralsGraphClient = createClient(AVALANCHE_FUJI, "referrals");
+
+export const avalancheFujiSyntheticsStatsClient = createClient(AVALANCHE_FUJI, "syntheticsStats");
+
+export function getSyntheticsGraphClient(chainId: number) {
+  if (chainId === AVALANCHE_FUJI) {
+    return avalancheFujiSyntheticsStatsClient;
+  }
+
+  return null;
+}
 
 export function getGmxGraphClient(chainId: number) {
   if (chainId === ARBITRUM) {
@@ -19,5 +30,16 @@ export function getGmxGraphClient(chainId: number) {
     return null;
   }
 
+  throw new Error(`Unsupported chain ${chainId}`);
+}
+
+export function getReferralsGraphClient(chainId) {
+  if (chainId === ARBITRUM) {
+    return arbitrumReferralsGraphClient;
+  } else if (chainId === AVALANCHE) {
+    return avalancheReferralsGraphClient;
+  } else if (chainId === AVALANCHE_FUJI) {
+    return avalancheFujiReferralsGraphClient;
+  }
   throw new Error(`Unsupported chain ${chainId}`);
 }

@@ -3,6 +3,8 @@ import { getContract } from "./contracts";
 import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, AVALANCHE_FUJI, MAINNET, TESTNET } from "./chains";
 import { Token } from "domain/tokens";
 
+export const NATIVE_TOKEN_ADDRESS = ethers.constants.AddressZero;
+
 export const TOKENS: { [chainId: number]: Token[] } = {
   [MAINNET]: [
     {
@@ -349,7 +351,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "Ethereum (WETH.e)",
       symbol: "ETH",
-      address: "0x8226EC2c1926c9162b6F815153d10018A7ccdf07",
+      address: "0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
       decimals: 18,
       isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
@@ -357,10 +359,27 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "USD Coin",
       symbol: "USDC",
-      address: "0xC492c8d82DC576Ad870707bb40EDb63E2026111E",
+      address: "0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
       decimals: 6,
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
+    },
+    {
+      name: "Tether",
+      symbol: "USDT",
+      decimals: 6,
+      address: "0x50df4892Bd13f01E4e1Cd077ff394A8fa1A3fD7c",
+      isStable: true,
+      coingeckoUrl: "https://www.coingecko.com/en/coins/dai",
+      imageUrl: "https://assets.coingecko.com/coins/images/325/small/Tether-logo.png",
+    },
+    {
+      name: "Dai",
+      symbol: "DAI",
+      address: "0x51290cb93bE5062A6497f16D9cd3376Adf54F920",
+      decimals: 6,
+      isStable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/9956/thumb/4943.png?1636636734",
     },
   ],
 };
@@ -387,6 +406,13 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
       decimals: 18,
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
     },
+    {
+      name: "GMX Market tokens",
+      symbol: "GM",
+      address: "<market-token-address>",
+      decimals: 18,
+      imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
+    },
   ],
   [AVALANCHE]: [
     {
@@ -409,6 +435,99 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
       decimals: 18,
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
     },
+    {
+      name: "GMX Market tokens",
+      symbol: "GM",
+      address: "<market-token-address>",
+      decimals: 18,
+      imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
+    },
+  ],
+  [AVALANCHE_FUJI]: [
+    {
+      name: "GMX",
+      symbol: "GMX",
+      address: getContract(AVALANCHE, "GMX"),
+      decimals: 18,
+      imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
+    },
+    {
+      name: "Escrowed GMX",
+      symbol: "esGMX",
+      address: getContract(AVALANCHE, "ES_GMX"),
+      decimals: 18,
+    },
+    {
+      name: "GMX LP",
+      symbol: "GLP",
+      address: getContract(ARBITRUM, "GLP"),
+      decimals: 18,
+      imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
+    },
+    {
+      name: "GMX Market tokens",
+      symbol: "GM",
+      address: "<market-token-address>",
+      decimals: 18,
+      imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
+    },
+  ],
+};
+
+const AVAILABLE_CHART_TOKENS = {
+  [ARBITRUM]: ["ETH", "BTC", "LINK", "UNI"],
+  [AVALANCHE]: ["AVAX", "ETH", "BTC"],
+  [AVALANCHE_FUJI]: ["AVAX", "ETH", "BTC", "SOL", "TEST", "DOGE", "LINK", "BNB"],
+};
+
+export const SYNTHETIC_TOKENS = {
+  [AVALANCHE]: [],
+  [ARBITRUM]: [],
+  [AVALANCHE_FUJI]: [
+    {
+      name: "Solana",
+      symbol: "SOL",
+      decimals: 18,
+      address: "0x137f4a7336df4f3f11894718528516edaaD0B082",
+      isShortable: true,
+      isSynthetic: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/4128/small/solana.png?1640133422",
+    },
+    {
+      name: "Test token",
+      symbol: "TEST",
+      decimals: 18,
+      address: "0x42DD131E1086FFCc59bAE9498D71E20E0C889B14",
+      isStable: false,
+      isSynthetic: true,
+      isShortable: true,
+      coingeckoUrl: "https://www.coingecko.com/en/coins/tether",
+      imageUrl: "https://assets.coingecko.com/coins/images/325/small/Tether-logo.png",
+    },
+    {
+      name: "BNB",
+      symbol: "BNB",
+      isSynthetic: true,
+      isShortable: true,
+      decimals: 18,
+      address: "0x110892Dd5fa73bE430c0ade694febD9a4CAc68Be",
+    },
+    {
+      name: "Dogecoin",
+      symbol: "DOGE",
+      isSynthetic: true,
+      isShortable: true,
+      decimals: 8,
+      address: "0x2265F317eA5f47A684E5B26c50948617c945d986",
+    },
+    {
+      name: "Chainlink",
+      symbol: "LINK",
+      isSynthetic: true,
+      isShortable: true,
+      decimals: 18,
+      address: "0x6BD09E8D65AD5cc761DF62454452d4EC1545e647",
+    },
   ],
 };
 
@@ -429,6 +548,13 @@ export const PLATFORM_TOKENS: { [chainId: number]: { [symbol: string]: Token } }
       address: getContract(ARBITRUM, "StakedGlpTracker"), // address of fsGLP token because user only holds fsGLP
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
     },
+    GM: {
+      name: "GMX Market tokens",
+      symbol: "GM",
+      address: "<market-token-address>",
+      decimals: 18,
+      imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
+    },
   },
   [AVALANCHE]: {
     // avalanche
@@ -446,10 +572,17 @@ export const PLATFORM_TOKENS: { [chainId: number]: { [symbol: string]: Token } }
       address: getContract(AVALANCHE, "StakedGlpTracker"), // address of fsGLP token because user only holds fsGLP
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
     },
+    GM: {
+      name: "GMX Market tokens",
+      symbol: "GM",
+      address: "<market-token-address>",
+      decimals: 18,
+      imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
+    },
   },
 };
 
-export const ICONLINKS = {
+export const EXPLORER_LINKS = {
   [ARBITRUM_TESTNET]: {
     GMX: {
       coingecko: "https://www.coingecko.com/en/coins/gmx",
@@ -467,6 +600,10 @@ export const ICONLINKS = {
     GLP: {
       arbitrum: "https://arbiscan.io/token/0x1aDDD80E6039594eE970E5872D247bf0414C8903",
       reserves: "https://portfolio.nansen.ai/dashboard/gmx?chain=ARBITRUM",
+    },
+    GM: {
+      coingecko: "https://www.coingecko.com/en/coins/gmx",
+      arbitrum: "https://arbiscan.io/address/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a",
     },
     ETH: {
       coingecko: "https://www.coingecko.com/en/coins/ethereum",
@@ -513,6 +650,10 @@ export const ICONLINKS = {
       avalanche: "https://snowtrace.io/address/0x9e295B5B976a184B14aD8cd72413aD846C299660",
       reserves: "https://portfolio.nansen.ai/dashboard/gmx?chain=AVAX",
     },
+    GM: {
+      coingecko: "https://www.coingecko.com/en/coins/gmx",
+      arbitrum: "https://arbiscan.io/address/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a",
+    },
     AVAX: {
       coingecko: "https://www.coingecko.com/en/coins/avalanche",
     },
@@ -547,11 +688,27 @@ export const ICONLINKS = {
     },
     ETH: {
       coingecko: "https://www.coingecko.com/en/coins/weth",
-      avalanche: "https://testnet.snowtrace.io/address/0x8226EC2c1926c9162b6F815153d10018A7ccdf07",
+      avalanche: "https://testnet.snowtrace.io/address/0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
     },
     USDC: {
       coingecko: "https://www.coingecko.com/en/coins/usd-coin",
-      avalanche: "https://testnet.snowtrace.io/address/0xC492c8d82DC576Ad870707bb40EDb63E2026111E",
+      avalanche: "https://testnet.snowtrace.io/address/0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
+    },
+    USDT: {
+      coingecko: "https://www.coingecko.com/en/coins/tether",
+      avalanche: "https://testnet.snowtrace.io/address/0x6931eC3E364245E6d093aFA1F2e96cCe3F17538b",
+    },
+    SOL: {
+      coingecko: "https://www.coingecko.com/en/coins/solana",
+    },
+    DOGE: {
+      coingecko: "https://www.coingecko.com/en/coins/dogecoin",
+    },
+    BNB: {
+      coingecko: "https://www.coingecko.com/en/coins/bnb",
+    },
+    LINK: {
+      coingecko: "https://www.coingecko.com/en/coins/chainlink",
     },
   },
 };
@@ -580,11 +737,18 @@ const CHAIN_IDS = [MAINNET, TESTNET, ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, AVAL
 
 for (let j = 0; j < CHAIN_IDS.length; j++) {
   const chainId = CHAIN_IDS[j];
+
   TOKENS_MAP[chainId] = {};
   TOKENS_BY_SYMBOL_MAP[chainId] = {};
+
   let tokens = TOKENS[chainId];
+
   if (ADDITIONAL_TOKENS[chainId]) {
     tokens = tokens.concat(ADDITIONAL_TOKENS[chainId]);
+  }
+
+  if (SYNTHETIC_TOKENS[chainId]) {
+    tokens = tokens.concat(SYNTHETIC_TOKENS[chainId]);
   }
 
   for (let i = 0; i < tokens.length; i++) {
@@ -604,6 +768,10 @@ for (const chainId of CHAIN_IDS) {
   }
 }
 
+for (const chainId of CHAIN_IDS) {
+  NATIVE_TOKENS_MAP[chainId].wrappedAddress = WRAPPED_TOKENS_MAP[chainId].address;
+}
+
 export function getWrappedToken(chainId: number) {
   return WRAPPED_TOKENS_MAP[chainId];
 }
@@ -614,6 +782,10 @@ export function getNativeToken(chainId: number) {
 
 export function getTokens(chainId: number) {
   return TOKENS[chainId];
+}
+
+export function getTokensMap(chainId: number) {
+  return TOKENS_MAP[chainId];
 }
 
 export function isValidToken(chainId: number, address: string) {
@@ -630,6 +802,7 @@ export function getToken(chainId: number, address: string) {
   if (!TOKENS_MAP[chainId][address]) {
     throw new Error(`Incorrect address "${address}" for chainId ${chainId}`);
   }
+
   return TOKENS_MAP[chainId][address];
 }
 
@@ -641,8 +814,32 @@ export function getTokenBySymbol(chainId: number, symbol: string) {
   return token;
 }
 
+export function convertTokenAddress(chainId: number, address: string, convertTo?: "wrapped" | "native") {
+  const wrappedToken = getWrappedToken(chainId);
+
+  if (convertTo === "wrapped" && address === NATIVE_TOKEN_ADDRESS) {
+    return wrappedToken.address;
+  }
+
+  if (convertTo === "native" && address === wrappedToken.address) {
+    return NATIVE_TOKEN_ADDRESS;
+  }
+
+  return address;
+}
+
 export function getWhitelistedTokens(chainId: number) {
   return TOKENS[chainId].filter((token) => token.symbol !== "USDG");
+}
+
+export function getAvailableTradeTokens(chainId: number, p: { includeSynthetic?: boolean } = {}) {
+  const tokens = getWhitelistedTokens(chainId).filter((token) => !token.isTempHidden);
+
+  if (p.includeSynthetic && SYNTHETIC_TOKENS[chainId]) {
+    return tokens.concat(SYNTHETIC_TOKENS[chainId]);
+  }
+
+  return tokens;
 }
 
 export function getVisibleTokens(chainId: number) {
@@ -657,11 +854,6 @@ export function getNormalizedTokenSymbol(tokenSymbol) {
   }
   return tokenSymbol;
 }
-
-const AVAILABLE_CHART_TOKENS = {
-  [ARBITRUM]: ["ETH", "BTC", "LINK", "UNI"],
-  [AVALANCHE]: ["AVAX", "ETH", "BTC"],
-};
 
 export function isChartAvailabeForToken(chainId: number, tokenSymbol: string) {
   const token = getTokenBySymbol(chainId, tokenSymbol);

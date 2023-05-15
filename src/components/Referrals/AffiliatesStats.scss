@@ -1,0 +1,29 @@
+.AffiliateStats-claimable-rewards-card {
+  .info-card-label {
+    margin-bottom: 0;
+  }
+
+  .info-card-data {
+    margin-top: 1rem;
+  }
+}
+
+.AffiliateStats-claimable-rewards-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.AffiliateStats-claim-button {
+  cursor: pointer;
+  display: flex;
+  margin-top: 1rem !important;
+  font-size: var(--font-md);
+  color: #a9a9b0;
+}
+
+.Rebate-amount-value {
+  display: flex;
+  align-items: center;
+}

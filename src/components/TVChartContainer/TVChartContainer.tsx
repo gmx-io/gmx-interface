@@ -12,8 +12,9 @@ import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 import Loader from "components/Common/Loader";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { CHART_PERIODS } from "lib/legacy";
+import { Token } from "domain/tokens";
 
-type ChartLine = {
+export type ChartLine = {
   price: number;
   title: string;
 };
@@ -23,7 +24,7 @@ type Props = {
   chainId: number;
   savedShouldShowPositionLines: boolean;
   chartLines: ChartLine[];
-  onSelectToken: () => void;
+  onSelectToken: (token: Token) => void;
   dataProvider?: TVDataProvider;
 };
 

@@ -14,6 +14,7 @@ type Props = {
   position?: string;
   trigger?: string;
   className?: string;
+  portalClassName?: string;
   disableHandleStyle?: boolean;
   handleClassName?: string;
   isHandlerDisabled?: boolean;

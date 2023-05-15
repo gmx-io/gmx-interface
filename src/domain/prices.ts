@@ -86,7 +86,6 @@ export async function getLimitChartPricesFromStats(chainId, symbol, period, limi
     return prices.map(formatBarInfo);
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.log(`Error fetching data: ${error}`);
   }
 }
 
@@ -140,6 +139,7 @@ export async function getChartPricesFromStats(chainId, symbol, period) {
   }
 
   prices = prices.map(formatBarInfo);
+
   return prices;
 }
 

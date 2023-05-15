@@ -50,6 +50,18 @@ export const MAX_GAS_PRICE_MAP = {
 export const HIGH_EXECUTION_FEES_MAP = {
   [ARBITRUM]: 3, // 3 USD
   [AVALANCHE]: 3, // 3 USD
+  [AVALANCHE_FUJI]: 3, // 3 USD
+};
+
+export const EXECUTION_FEE_MULTIPLIER_MAP = {
+  // if gas prices on Arbitrum are high, the main transaction costs would come from the L2 gas usage
+  // for executing positions this is around 65,000 gas
+  // if gas prices on Ethereum are high, than the gas usage might be higher, this calculation doesn't deal with that
+  // case yet
+  [ARBITRUM]: 65000,
+  // multiplier for Avalanche is just the average gas usage
+  [AVALANCHE]: 700000,
+  [AVALANCHE_FUJI]: 700000,
 };
 
 const constants = {
@@ -214,7 +226,7 @@ export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {
   },
   [AVALANCHE_FUJI]: {
     chainId: "0x" + AVALANCHE_FUJI.toString(16),
-    chainName: "Avalanche Fuji",
+    chainName: "Avalanche Fuji Testnet",
     nativeCurrency: {
       name: "AVAX",
       symbol: "AVAX",
@@ -290,6 +302,10 @@ export function getExplorerUrl(chainId) {
 
 export function getHighExecutionFee(chainId) {
   return HIGH_EXECUTION_FEES_MAP[chainId] || 3;
+}
+
+export function getExecutionFeeMultiplier(chainId) {
+  return EXECUTION_FEE_MULTIPLIER_MAP[chainId] || 1;
 }
 
 export function isSupportedChain(chainId) {
