@@ -160,12 +160,17 @@ export const RPC_PROVIDERS = {
   [ARBITRUM]: [getDefaultArbitrumRpcUrl()],
   [ARBITRUM_TESTNET]: ["https://rinkeby.arbitrum.io/rpc"],
   [AVALANCHE]: ["https://api.avax.network/ext/bc/C/rpc"],
-  [AVALANCHE_FUJI]: ["https://api.avax-test.network/ext/bc/C/rpc"],
+  [AVALANCHE_FUJI]: ["https://rpc.ankr.com/avalanche_fuji"],
 };
 
 export const FALLBACK_PROVIDERS = {
   [ARBITRUM]: [getAlchemyHttpUrl()],
   [AVALANCHE]: ["https://avax-mainnet.gateway.pokt.network/v1/lb/626f37766c499d003aada23b"],
+  [AVALANCHE_FUJI]: [
+    "https://endpoints.omniatech.io/v1/avax/fuji/public",
+    "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
+    "https://api.avax-test.network/ext/bc/C/rpc",
+  ],
 };
 
 export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {
