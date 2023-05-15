@@ -10,7 +10,7 @@ import { callContract } from "lib/contracts";
 import { getPositionKey } from "../positions";
 import { applySlippageToMinOut, applySlippageToPrice } from "../trade";
 import { DecreasePositionSwapType, OrderType } from "./types";
-import { isMarketOrderType } from "./utils";
+import { isMarketOrderType, isTriggerDecreaseOrderType } from "./utils";
 import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
 
 const { AddressZero } = ethers.constants;
@@ -88,7 +88,7 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
             acceptablePrice: convertToContractPrice(acceptablePrice, p.indexToken.decimals),
             executionFee: p.executionFee,
             callbackGasLimit: BigNumber.from(0),
-            minOutputAmount,
+            minOutputAmount: isTriggerDecreaseOrderType(p.orderType) ? BigNumber.from(0) : minOutputAmount,
           },
           orderType: p.orderType,
           decreasePositionSwapType: p.decreasePositionSwapType,
