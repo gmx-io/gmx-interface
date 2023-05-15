@@ -14,7 +14,7 @@ import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getIcon } from "config/icons";
 
-const glpIcon = getIcon("common", "glp");
+const glpIcon = getIcon(SEPOLIA_TESTNET, "glp");
 const gmxIcon = getIcon("common", "gmx");
 
 export default function TokenCard({ showRedirectModal, redirectPopupTimestamp }) {
