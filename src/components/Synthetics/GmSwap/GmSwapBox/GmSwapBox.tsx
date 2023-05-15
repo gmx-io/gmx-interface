@@ -139,17 +139,17 @@ export function GmSwapBox(p: Props) {
 
   const { marketOptions, indexTokenOptions } = useMemo(() => {
     const indexSymbols = uniqBy(Object.values(marketsInfoData || {}), (market) => market.indexTokenAddress).map(
-      (market) => (market.isSpotOnly ? "SPOT" : market.indexToken.symbol)
+      (market) => (market.isSpotOnly ? "SPOT-ONLY" : market.indexToken.symbol)
     );
 
     const indexTokenOptions: DropdownOption[] = indexSymbols.map((symbol) => ({
-      label: symbol === "SPOT" ? "SPOT" : `${symbol}/USD`,
+      label: symbol === "SPOT-ONLY" ? "SPOT-ONLY" : `${symbol}/USD`,
       value: symbol,
     }));
 
     const marketOptions: DropdownOption[] = Object.values(marketsInfoData || {})
       .filter((market) =>
-        !market.isDisabled && indexTokenSymbol === "SPOT"
+        !market.isDisabled && indexTokenSymbol === "SPOT-ONLY"
           ? market.isSpotOnly
           : market.indexToken.symbol === indexTokenSymbol
       )
@@ -697,7 +697,7 @@ export function GmSwapBox(p: Props) {
       if (queryParams.get("market")) {
         const marketInfo = getByKey(marketsInfoData, queryParams.get("market")!);
         if (marketInfo) {
-          setIndexTokenSymbol(marketInfo?.isSpotOnly ? "SPOT" : marketInfo?.indexToken.symbol);
+          setIndexTokenSymbol(marketInfo?.isSpotOnly ? "SPOT-ONLY" : marketInfo?.indexToken.symbol);
           onSelectMarket(marketInfo?.marketTokenAddress);
         }
       }

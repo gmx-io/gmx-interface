@@ -11,6 +11,8 @@ import { useMedia } from "react-use";
 import { Operation } from "../GmSwap/GmSwapBox/GmSwapBox";
 import "./GmList.scss";
 import { getByKey } from "lib/objects";
+import { importImage } from "lib/legacy";
+import AssetDropdown from "pages/Dashboard/AssetDropdown";
 
 type Props = {
   hideTitle?: boolean;
@@ -92,9 +94,24 @@ export function GmList({ hideTitle }: Props) {
                   <tr key={token.address}>
                     <td>
                       <div className="App-card-title-info">
+                        <div className="App-card-title-info-icon">
+                          <img
+                            src={importImage(
+                              "ic_" + (market.isSpotOnly ? "spot" : indexToken.symbol.toLocaleLowerCase()) + "_40.svg"
+                            )}
+                            alt={indexToken.symbol}
+                            width="40"
+                          />
+                        </div>
+
                         <div className="App-card-title-info-text">
                           <div className="App-card-info-title">
                             {getMarketIndexName({ indexToken, isSpotOnly: market?.isSpotOnly })}
+                            {!market.isSpotOnly && (
+                              <div className="Asset-dropdown-container">
+                                <AssetDropdown assetSymbol={indexToken.symbol} assetInfo={indexToken} />
+                              </div>
+                            )}
                           </div>
                           <div className="App-card-info-subtitle">[{getMarketPoolName({ longToken, shortToken })}]</div>
                         </div>
@@ -157,12 +174,23 @@ export function GmList({ hideTitle }: Props) {
               const totalSupply = token.totalSupply;
               const totalSupplyUsd = convertToUsd(totalSupply, token.decimals, token.prices?.minPrice);
               const market = getByKey(marketsData, token.address);
+              const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native")!;
 
               return (
                 <div className="App-card" key={token.address}>
                   <div className="App-card-title">
                     <div className="mobile-token-card">
-                      <div className="token-symbol-text">GM: {market?.name}</div>
+                      <img
+                        src={importImage(
+                          "ic_" + (market?.isSpotOnly ? "spot" : indexToken?.symbol.toLocaleLowerCase()) + "_40.svg"
+                        )}
+                        alt={indexToken.symbol}
+                        width="40"
+                      />
+                      <div className="token-symbol-text">{market?.name}</div>
+                      <div>
+                        <AssetDropdown assetSymbol={indexToken.symbol} assetInfo={indexToken} />
+                      </div>
                     </div>
                   </div>
                   <div className="App-card-divider"></div>
