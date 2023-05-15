@@ -89,13 +89,17 @@ export function OrderEditor(p: Props) {
   // Swaps
   const fromToken = getTokenData(tokensData, p.order.initialCollateralTokenAddress);
 
-  const { outTokenAddress: toTokenAddress } = getSwapPathOutputAddresses({
-    marketsInfoData: marketsInfoData!,
-    initialCollateralAddress: p.order.initialCollateralTokenAddress,
-    swapPath: p.order.swapPath,
-    wrappedNativeTokenAddress: getWrappedToken(chainId).address,
-    shouldUnwrapNativeToken: p.order.shouldUnwrapNativeToken,
-  });
+  const swapPathInfo = marketsInfoData
+    ? getSwapPathOutputAddresses({
+        marketsInfoData: marketsInfoData,
+        initialCollateralAddress: p.order.initialCollateralTokenAddress,
+        swapPath: p.order.swapPath,
+        wrappedNativeTokenAddress: getWrappedToken(chainId).address,
+        shouldUnwrapNativeToken: p.order.shouldUnwrapNativeToken,
+      })
+    : undefined;
+
+  const toTokenAddress = swapPathInfo?.outTokenAddress;
 
   const toToken = getTokenData(tokensData, toTokenAddress);
   const fromTokenPrice = fromToken?.prices?.maxPrice;
