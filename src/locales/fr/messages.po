@@ -65,12 +65,15 @@ msgstr "<0>Retourner à </0><1>la page d'accueil</1> <2>ou </2> <3>échanger</3>
 msgid "<0>Switch to:</0>"
 msgstr ""
 
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+msgid "<0>The order will be executed when the oracle price is {0} {1}.</0><1>Note that there may be rare cases where the order cannot be executed, for example, if the chain is down and no oracle reports are produced or if the price impact exceeds your acceptable price.</1>"
+msgstr ""
+
 #: src/components/Glp/SwapErrorModal.tsx
 msgid "<0>The pool's capacity has been reached for {0}. Please use another token to buy GLP.</0><1>Check the \"Save on Fees\" section for tokens with the lowest fees.</1>"
 msgstr "<0>La capacité du pool a été atteinte pour {0}. Veuillez utiliser un autre token pour acheter GLP.</0><1>Vérifier la section \"économiser sur les frais\" pour les tokens ayant les meilleur frais.</1>"
 
 #: src/components/Exchange/OrdersList.js
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "<0>The price that orders can be executed at may differ slightly from the chart price, as market orders update oracle prices, while limit/trigger orders do not.</0><1>This can also cause limit/triggers to not be executed if the price is not reached for long enough. <2>Read more</2>.</1>"
 msgstr ""
 
@@ -167,6 +170,7 @@ msgstr "Accepter que les ordres ne sont pas garantis de s'exécuter et que les o
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -188,16 +192,21 @@ msgid "Account"
 msgstr "Compte"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Accrued Borrow Fee"
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Accrued Borrow fee"
+#~ msgid "Accrued Borrow fee"
+#~ msgstr ""
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Accrued Funding Fee"
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Accrued Funding fee"
-msgstr ""
+#~ msgid "Accrued Funding fee"
+#~ msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Accrued Negative Funding Fee"
@@ -817,6 +826,7 @@ msgstr "Fermer"
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/NetValueTooltip.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close Fee"
 msgstr ""
@@ -826,8 +836,8 @@ msgid "Close failed."
 msgstr "Fermeture échouée."
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Close fee"
-msgstr ""
+#~ msgid "Close fee"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close submitted!"
@@ -3237,8 +3247,6 @@ msgstr "Préc"
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -4102,8 +4110,8 @@ msgid "Swaps disabled, pending {0} upgrade"
 msgstr "Échanges désactivés, en attente de {0} actualisations"
 
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-msgid "Synthetics Pools"
-msgstr ""
+#~ msgid "Synthetics Pools"
+#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
@@ -4197,9 +4205,12 @@ msgid "The network cost to send transactions is high at the moment, please check
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "The order will only execute if the price conditions are met and there is sufficient liquidity"
 msgstr "L'ordre ne sera exécuté que si les conditions de prix sont remplies et si la liquidité est suffisante."
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "The order will only execute if the price conditions are met and there is sufficient liquidity."
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "The pending borrow fee will be charged on this transaction."
@@ -4259,9 +4270,12 @@ msgid "There is not enough liquidity in a single token for your size. Please che
 msgstr "Il n'y a pas assez de liquidité dans un seul token pour votre grandeur. Veuillez consulter la section \"Économiser sur les frais\" et envisagez de diviser votre ordre en plusieurs ordres différents."
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met"
 msgstr "Il se peut que la liquidité soit insuffisante pour exécuter votre ordre lorsque les conditions de prix sont remplies."
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "There may not be sufficient liquidity to execute your order when the price conditions are met."
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "This code has been taken by someone else on {0}, you will not receive rebates from traders using this code on {1}."
@@ -4585,6 +4599,8 @@ msgstr "Déclencheur"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Trigger Price"
 msgstr "Prix de déclenchement"
@@ -4779,6 +4795,10 @@ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "V2 CLAIM"
+msgstr ""
+
+#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
+msgid "V2 Pools"
 msgstr ""
 
 #: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
@@ -5169,8 +5189,12 @@ msgid "You will receive at least {0} {1} if this order is executed. The executio
 msgstr "Vous recevrez au moins {0} {1}, si cet ordre est exécuté. Le prix d'exécution peut varier en fonction des frais d'échange au moment de l'exécution de l'ordre."
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-msgid "You will receive at least {toAmountText} if this order is executed. The execution price may vary depending on swap fees at the time the order is executed."
+msgid "You will receive at least {toAmountText} if this order is executed. The execution price may vary depending on swap fees and price impact at the time the order is executed."
 msgstr ""
+
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+#~ msgid "You will receive at least {toAmountText} if this order is executed. The execution price may vary depending on swap fees at the time the order is executed."
+#~ msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
