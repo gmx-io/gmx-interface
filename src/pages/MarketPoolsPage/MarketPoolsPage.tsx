@@ -45,12 +45,12 @@ export function MarketPoolsPage(p: Props) {
   );
 
   return (
-    <SEO title={getPageTitle("Synthetics pools")}>
+    <SEO title={getPageTitle("V2 pools")}>
       <div className="default-container page-layout">
         <div className="section-title-block">
           <div className="section-title-content">
             <div className="Page-title">
-              <Trans>Synthetics Pools</Trans>
+              <Trans>V2 Pools</Trans>
             </div>
             <div className="Page-description">
               <Trans>

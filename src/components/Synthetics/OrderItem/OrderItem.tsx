@@ -1,6 +1,5 @@
 import { Trans, t } from "@lingui/macro";
 import Checkbox from "components/Checkbox/Checkbox";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import {
@@ -164,7 +163,7 @@ export function OrderItem(p: Props) {
             <Tooltip
               handle={swapRatioText}
               renderContent={() =>
-                t`You will receive at least ${toAmountText} if this order is executed. The execution price may vary depending on swap fees at the time the order is executed.`
+                t`You will receive at least ${toAmountText} if this order is executed. The execution price may vary depending on swap fees and price impact at the time the order is executed.`
               }
             />
           ) : (
@@ -174,7 +173,21 @@ export function OrderItem(p: Props) {
       );
     } else {
       const positionOrder = p.order as PositionOrderInfo;
-      return `${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.triggerPrice)}`;
+
+      return (
+        <Tooltip
+          handle={`${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.triggerPrice)}`}
+          renderContent={() => (
+            <>
+              <StatsTooltipRow
+                label={t`Acceptable Price`}
+                value={`${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.acceptablePrice)}`}
+                showDollar={false}
+              />
+            </>
+          )}
+        />
+      );
     }
   }
 
@@ -200,15 +213,12 @@ export function OrderItem(p: Props) {
             return (
               <Trans>
                 <p>
-                  The price that orders can be executed at may differ slightly from the chart price, as market orders
-                  update oracle prices, while limit/trigger orders do not.
+                  The order will be executed when the oracle price is {positionOrder.triggerThresholdType}{" "}
+                  {formatUsd(positionOrder.triggerPrice)}.
                 </p>
                 <p>
-                  This can also cause limit/triggers to not be executed if the price is not reached for long enough.{" "}
-                  <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#stop-loss-take-profit-orders">
-                    Read more
-                  </ExternalLink>
-                  .
+                  Note that there may be rare cases where the order cannot be executed, for example, if the chain is
+                  down and no oracle reports are produced or if the price impact exceeds your acceptable price.
                 </p>
               </Trans>
             );
@@ -262,7 +272,14 @@ export function OrderItem(p: Props) {
         <div className="App-card-content">
           <div className="App-card-row">
             <div className="label">
-              <Trans>Price</Trans>
+              <Trans>Trigger Price</Trans>
+            </div>
+            <div>{renderTriggerPrice()}</div>
+          </div>
+
+          <div className="App-card-row">
+            <div className="label">
+              <Trans>Acceptable Price</Trans>
             </div>
             <div>{renderTriggerPrice()}</div>
           </div>

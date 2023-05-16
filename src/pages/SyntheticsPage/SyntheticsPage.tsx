@@ -29,11 +29,11 @@ import { getPositionKey } from "domain/synthetics/positions";
 import { usePositionsInfo } from "domain/synthetics/positions/usePositionsInfo";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT, DEFAULT_SLIPPAGE_AMOUNT } from "lib/legacy";
+import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT, DEFAULT_SLIPPAGE_AMOUNT, getPageTitle } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { bigNumberify } from "lib/numbers";
+import { bigNumberify, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useSelectedTradeOption } from "domain/synthetics/trade/useSelectedTradeOption";
 
@@ -99,6 +99,7 @@ export function SyntheticsPage(p: Props) {
     setMarketAddress,
     setCollateralAddress,
     setActivePosition,
+    switchTokenAddresses,
   } = useSelectedTradeOption(chainId);
 
   const [listSection, setListSection] = useLocalStorageSerializeKey(
@@ -205,6 +206,13 @@ export function SyntheticsPage(p: Props) {
       setPendingTxns: setPendingTxns,
     }).finally(() => setIsCancelOrdersProcessig(false));
   }
+
+  useEffect(() => {
+    const chartTokenData = getByKey(tokensData, chartToken?.address);
+    let currentTokenPriceStr = formatUsd(chartTokenData?.prices.maxPrice) || "...";
+    let title = getPageTitle(currentTokenPriceStr + ` | ${chartToken?.symbol}${chartToken?.isStable ? "" : "USD"}`);
+    document.title = title;
+  }, [chartToken?.address, chartToken?.isStable, chartToken?.symbol, tokensData]);
 
   return (
     <div className="Exchange page-layout">
@@ -327,6 +335,7 @@ export function SyntheticsPage(p: Props) {
               setIsEditingAcceptablePriceImpact={onEditAcceptablePriceImpact}
               setPendingTxns={setPendingTxns}
               setIsClaiming={setIsClaiming}
+              switchTokenAddresses={switchTokenAddresses}
             />
           </div>
         </div>

@@ -8,10 +8,10 @@ import { Token } from "domain/tokens";
 import { BigNumber, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { getPositionKey } from "../positions";
-import { applySlippageToMinOut, applySlippageToPrice } from "../trade";
-import { DecreasePositionSwapType, OrderType } from "./types";
-import { isMarketOrderType, isTriggerDecreaseOrderType } from "./utils";
+import { applySlippageToPrice } from "../trade";
 import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
+import { DecreasePositionSwapType, OrderType } from "./types";
+import { isMarketOrderType } from "./utils";
 
 const { AddressZero } = ethers.constants;
 
@@ -62,9 +62,9 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
     ? applySlippageToPrice(p.allowedSlippage, p.acceptablePrice, false, p.isLong)
     : p.acceptablePrice;
 
-  const minOutputAmount = shouldApplySlippage
-    ? applySlippageToMinOut(p.allowedSlippage, p.minOutputUsd)
-    : p.minOutputUsd;
+  // const minOutputAmount = shouldApplySlippage
+  //   ? applySlippageToMinOut(p.allowedSlippage, p.minOutputUsd)
+  //   : p.minOutputUsd;
 
   const multicall = [
     { method: "sendWnt", params: [orderVaultAddress, totalWntAmount] },
@@ -88,7 +88,7 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
             acceptablePrice: convertToContractPrice(acceptablePrice, p.indexToken.decimals),
             executionFee: p.executionFee,
             callbackGasLimit: BigNumber.from(0),
-            minOutputAmount: isTriggerDecreaseOrderType(p.orderType) ? BigNumber.from(0) : minOutputAmount,
+            minOutputAmount: BigNumber.from(0),
           },
           orderType: p.orderType,
           decreasePositionSwapType: p.decreasePositionSwapType,
@@ -147,7 +147,7 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
       initialCollateralDeltaAmount: p.initialCollateralDeltaAmount,
       swapPath: p.swapPath,
       sizeDeltaUsd: p.sizeDeltaUsd,
-      minOutputAmount,
+      minOutputAmount: BigNumber.from(0),
       isLong: p.isLong,
       orderType: p.orderType,
       shouldUnwrapNativeToken: isNativeReceive,

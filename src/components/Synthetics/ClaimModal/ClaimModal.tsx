@@ -109,8 +109,8 @@ export function ClaimModal(p: Props) {
     claimCollateralTxn(chainId, library, {
       account,
       fundingFees: {
-        marketAddresses: [...fundingMarketAddresses],
-        tokenAddresses: [...fundingTokenAddresses],
+        marketAddresses: fundingMarketAddresses,
+        tokenAddresses: fundingTokenAddresses,
       },
       setPendingTxns,
     })
