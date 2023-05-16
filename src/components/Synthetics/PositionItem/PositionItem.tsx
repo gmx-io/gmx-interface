@@ -239,6 +239,7 @@ export function PositionItem(p: Props) {
   }
 
   function renderLarge() {
+    const indexPriceDecimals = p.position?.indexToken?.priceDecimals;
     return (
       <tr className="Exhange-list-item">
         <td className="clickable" onClick={p.onSelectPositionClick}>
@@ -306,15 +307,23 @@ export function PositionItem(p: Props) {
         </td>
         <td>
           {/* entryPrice */}
-          {p.position.isOpening ? t`Opening...` : formatUsd(p.position.entryPrice)}
+          {p.position.isOpening
+            ? t`Opening...`
+            : formatUsd(p.position.entryPrice, {
+                displayDecimals: indexPriceDecimals,
+              })}
         </td>
         <td className="clickable" onClick={p.onSelectPositionClick}>
           {/* markPrice */}
-          {formatUsd(p.position.markPrice)}
+          {formatUsd(p.position.markPrice, {
+            displayDecimals: indexPriceDecimals,
+          })}
         </td>
         <td>
           {/* liqPrice */}
-          {p.position.isOpening ? formatUsd(p.position.liquidationPrice) : formatUsd(p.position.liquidationPrice)}
+          {formatUsd(p.position.liquidationPrice, {
+            displayDecimals: indexPriceDecimals,
+          })}
         </td>
         <td>
           {/* Close */}
@@ -341,6 +350,7 @@ export function PositionItem(p: Props) {
   }
 
   function renderSmall() {
+    const indexPriceDecimals = p.position?.indexToken?.priceDecimals;
     return (
       <div className="App-card">
         <div className="App-card-title">
@@ -421,19 +431,31 @@ export function PositionItem(p: Props) {
             <div className="label">
               <Trans>Entry Price</Trans>
             </div>
-            <div>{formatUsd(p.position.entryPrice)}</div>
+            <div>
+              {formatUsd(p.position.entryPrice, {
+                displayDecimals: indexPriceDecimals,
+              })}
+            </div>
           </div>
           <div className="App-card-row">
             <div className="label">
               <Trans>Mark Price</Trans>
             </div>
-            <div>{formatUsd(p.position.markPrice)}</div>
+            <div>
+              {formatUsd(p.position.markPrice, {
+                displayDecimals: indexPriceDecimals,
+              })}
+            </div>
           </div>
           <div className="App-card-row">
             <div className="label">
               <Trans>Liq. Price</Trans>
             </div>
-            <div>{formatUsd(p.position.liquidationPrice)}</div>
+            <div>
+              {formatUsd(p.position.liquidationPrice, {
+                displayDecimals: indexPriceDecimals,
+              })}
+            </div>
           </div>
         </div>
         {!p.hideActions && (

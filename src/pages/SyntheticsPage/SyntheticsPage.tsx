@@ -209,7 +209,10 @@ export function SyntheticsPage(p: Props) {
 
   useEffect(() => {
     const chartTokenData = getByKey(tokensData, chartToken?.address);
-    let currentTokenPriceStr = formatUsd(chartTokenData?.prices.maxPrice) || "...";
+    let currentTokenPriceStr =
+      formatUsd(chartTokenData?.prices.maxPrice, {
+        displayDecimals: chartTokenData?.priceDecimals,
+      }) || "...";
     let title = getPageTitle(currentTokenPriceStr + ` | ${chartToken?.symbol}${chartToken?.isStable ? "" : "USD"}`);
     document.title = title;
   }, [chartToken?.address, chartToken?.isStable, chartToken?.symbol, tokensData]);
