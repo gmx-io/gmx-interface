@@ -519,6 +519,7 @@ export const SYNTHETIC_TOKENS = {
       isShortable: true,
       decimals: 8,
       address: "0x2265F317eA5f47A684E5B26c50948617c945d986",
+      priceDecimals: 4,
     },
     {
       name: "Chainlink",
@@ -859,4 +860,10 @@ export function isChartAvailabeForToken(chainId: number, tokenSymbol: string) {
   const token = getTokenBySymbol(chainId, tokenSymbol);
   if (!token) return false;
   return (token.isStable || AVAILABLE_CHART_TOKENS[chainId]?.includes(getNormalizedTokenSymbol(tokenSymbol))) ?? false;
+}
+
+export function getPriceDecimals(chainId: number, tokenSymbol: string) {
+  const token = getTokenBySymbol(chainId, tokenSymbol);
+  if (!token) return 2;
+  return token.priceDecimals ?? 2;
 }

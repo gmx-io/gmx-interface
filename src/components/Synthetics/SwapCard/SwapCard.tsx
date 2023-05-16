@@ -48,10 +48,21 @@ export function SwapCard(p: Props) {
       <div>
         <ExchangeInfoRow
           label={t`${fromToken?.symbol} Price`}
-          value={formatUsd(fromToken?.prices?.minPrice) || "..."}
+          value={
+            formatUsd(fromToken?.prices?.minPrice, {
+              displayDecimals: fromToken?.priceDecimals,
+            }) || "..."
+          }
         />
 
-        <ExchangeInfoRow label={t`${toToken?.symbol} Price`} value={formatUsd(toToken?.prices?.maxPrice) || "..."} />
+        <ExchangeInfoRow
+          label={t`${toToken?.symbol} Price`}
+          value={
+            formatUsd(toToken?.prices?.maxPrice, {
+              displayDecimals: toToken?.priceDecimals,
+            }) || "..."
+          }
+        />
 
         <ExchangeInfoRow
           label={t`Available Liquidity`}

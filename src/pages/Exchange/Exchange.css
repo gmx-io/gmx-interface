@@ -1003,6 +1003,12 @@ table.Exchange-list-small td {
   }
 }
 
+@media (max-width: 1200px) {
+  .ExchangeChart-top-inner {
+    grid-column-gap: 3rem;
+  }
+}
+
 @media (max-width: 700px) {
   .ExchangeChart-top-inner {
     grid-template-columns: auto auto auto;

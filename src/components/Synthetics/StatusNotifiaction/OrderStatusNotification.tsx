@@ -38,9 +38,9 @@ export function OrderStatusNotification({ pendingOrderData, marketsInfoData, tok
   const pendingOrderKey = useMemo(() => getPendingOrderKey(pendingOrderData), [pendingOrderData]);
   const orderStatus = getByKey(orderStatuses, orderStatusKey);
 
-  const isCompleted = isLimitOrderType(pendingOrderData.orderType)
-    ? Boolean(orderStatus?.createdTxnHash)
-    : Boolean(orderStatus?.executedTxnHash);
+  const isCompleted = isMarketOrderType(pendingOrderData.orderType)
+    ? Boolean(orderStatus?.executedTxnHash)
+    : Boolean(orderStatus?.createdTxnHash);
 
   const hasError = Boolean(orderStatus?.cancelledTxnHash);
 

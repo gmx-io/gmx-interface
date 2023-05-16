@@ -202,13 +202,14 @@ msgstr ""
 #~ msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Accrued Funding Fee"
-msgstr ""
+#~ msgid "Accrued Funding Fee"
+#~ msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #~ msgid "Accrued Funding fee"
 #~ msgstr ""
 
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Accrued Negative Funding Fee"
 msgstr ""

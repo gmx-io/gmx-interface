@@ -234,7 +234,7 @@ export function TradeFeesRow(p: Props) {
               position="right-top"
               renderContent={() => (
                 <div>
-                  {feeRows.map((feeRow, i) => (
+                  {feeRows.map((feeRow) => (
                     <StatsTooltipRow key={feeRow.id} label={feeRow.label} value={feeRow.value} showDollar={false} />
                   ))}
                 </div>

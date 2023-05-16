@@ -175,8 +175,7 @@ export function ConfirmationBox(p: Props) {
     payAmount &&
     getNeedTokenApprove(tokensAllowanceData, fromToken.address, payAmount);
 
-  const isHighPriceImpact =
-    getIsHighPriceImpact(fees?.swapPriceImpact) || getIsHighPriceImpact(fees?.positionPriceImpact);
+  const isHighPriceImpact = getIsHighPriceImpact(fees?.positionPriceImpact, fees?.swapPriceImpact);
 
   const positionKey = useMemo(() => {
     if (!account || !marketInfo || !collateralToken) {
@@ -770,8 +769,9 @@ export function ConfirmationBox(p: Props) {
   function renderIncreaseOrderSection() {
     const borrowingRate = getBorrowingFactorPerPeriod(marketInfo!, isLong, CHART_PERIODS["1h"]).mul(100);
     const fundigRate = getFundingFactorPerPeriod(marketInfo!, isLong, CHART_PERIODS["1h"]).mul(100);
-
     const isCollateralSwap = !getIsEquivalentTokens(fromToken!, collateralToken!);
+    const existingPriceDecimals = p.existingPosition?.indexToken?.priceDecimals;
+    const toTokenPriceDecimals = toToken?.priceDecimals;
 
     return (
       <>
@@ -819,8 +819,12 @@ export function ConfirmationBox(p: Props) {
               label={t`Entry Price`}
               value={
                 <ValueTransition
-                  from={formatUsd(p.existingPosition?.entryPrice)}
-                  to={formatUsd(nextPositionValues?.nextEntryPrice)}
+                  from={formatUsd(p.existingPosition?.entryPrice, {
+                    displayDecimals: existingPriceDecimals,
+                  })}
+                  to={formatUsd(nextPositionValues?.nextEntryPrice, {
+                    displayDecimals: toTokenPriceDecimals,
+                  })}
                 />
               }
             />
@@ -831,7 +835,11 @@ export function ConfirmationBox(p: Props) {
               isTop
               className="SwapBox-info-row"
               label={t`Mark Price`}
-              value={formatUsd(markPrice) || "-"}
+              value={
+                formatUsd(markPrice, {
+                  displayDecimals: toTokenPriceDecimals,
+                }) || "-"
+              }
             />
           )}
 
@@ -839,7 +847,11 @@ export function ConfirmationBox(p: Props) {
             <ExchangeInfoRow
               className="SwapBox-info-row"
               label={t`Limit Price`}
-              value={formatUsd(triggerPrice) || "-"}
+              value={
+                formatUsd(triggerPrice, {
+                  displayDecimals: toTokenPriceDecimals,
+                }) || "-"
+              }
             />
           )}
 
@@ -856,7 +868,11 @@ export function ConfirmationBox(p: Props) {
           <ExchangeInfoRow
             className="SwapBox-info-row"
             label={t`Acceptable Price`}
-            value={formatUsd(increaseAmounts?.acceptablePrice) || "-"}
+            value={
+              formatUsd(increaseAmounts?.acceptablePrice, {
+                displayDecimals: toTokenPriceDecimals,
+              }) || "-"
+            }
           />
 
           <ExchangeInfoRow
@@ -864,8 +880,14 @@ export function ConfirmationBox(p: Props) {
             label={t`Liq. Price`}
             value={
               <ValueTransition
-                from={formatUsd(p.existingPosition?.liquidationPrice)}
-                to={formatUsd(nextPositionValues?.nextLiqPrice) || "-"}
+                from={formatUsd(p.existingPosition?.liquidationPrice, {
+                  displayDecimals: existingPriceDecimals,
+                })}
+                to={
+                  formatUsd(nextPositionValues?.nextLiqPrice, {
+                    displayDecimals: toTokenPriceDecimals,
+                  }) || "-"
+                }
               />
             }
           />
@@ -995,9 +1017,17 @@ export function ConfirmationBox(p: Props) {
             </ExchangeInfoRow>
           )}
 
-          <ExchangeInfoRow label={t`${fromToken?.symbol} Price`}>{formatUsd(swapAmounts?.priceIn)}</ExchangeInfoRow>
+          <ExchangeInfoRow label={t`${fromToken?.symbol} Price`}>
+            {formatUsd(swapAmounts?.priceIn, {
+              displayDecimals: fromToken?.priceDecimals,
+            })}
+          </ExchangeInfoRow>
 
-          <ExchangeInfoRow label={t`${toToken?.symbol} Price`}>{formatUsd(swapAmounts?.priceOut)}</ExchangeInfoRow>
+          <ExchangeInfoRow label={t`${toToken?.symbol} Price`}>
+            {formatUsd(swapAmounts?.priceOut, {
+              displayDecimals: toToken?.priceDecimals,
+            })}
+          </ExchangeInfoRow>
 
           {!p.isWrapOrUnwrap && <TradeFeesRow {...fees} isTop executionFee={p.executionFee} feesType="swap" />}
 

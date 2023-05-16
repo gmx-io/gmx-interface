@@ -191,8 +191,7 @@ export function PositionSeller(p: Props) {
     };
   }, [chainId, decreaseAmounts, gasLimits, gasPrice, position, swapAmounts, tokensData]);
 
-  const isHighPriceImpact =
-    getIsHighPriceImpact(fees?.positionPriceImpact) || getIsHighPriceImpact(fees?.swapPriceImpact);
+  const isHighPriceImpact = getIsHighPriceImpact(fees?.positionPriceImpact, fees?.swapPriceImpact);
 
   const isNotEnoughReceiveTokenLiquidity = shouldSwap ? maxSwapLiquidity?.lt(receiveUsd || 0) : false;
 
@@ -299,6 +298,8 @@ export function PositionSeller(p: Props) {
     [chainId, position?.collateralToken, receiveTokenAddress]
   );
 
+  const indexPriceDecimals = position.indexToken?.priceDecimals;
+
   return (
     <div className="PositionEditor PositionSeller">
       <Modal
@@ -363,13 +364,35 @@ export function PositionSeller(p: Props) {
                 </ExchangeInfoRow>
               </div>
 
-              <ExchangeInfoRow isTop label={t`Mark Price`} value={formatUsd(markPrice) || "-"} />
-              <ExchangeInfoRow label={t`Entry Price`} value={formatUsd(position?.entryPrice) || "-"} />
+              <ExchangeInfoRow
+                isTop
+                label={t`Mark Price`}
+                value={
+                  formatUsd(markPrice, {
+                    displayDecimals: indexPriceDecimals,
+                  }) || "-"
+                }
+              />
+              <ExchangeInfoRow
+                label={t`Entry Price`}
+                value={
+                  formatUsd(position?.entryPrice, {
+                    displayDecimals: indexPriceDecimals,
+                  }) || "-"
+                }
+              />
               <ExchangeInfoRow
                 label={t`Price Impact`}
                 value={formatPercentage(decreaseAmounts?.acceptablePriceImpactBps) || "-"}
               />
-              <ExchangeInfoRow label={t`Acceptable Price`} value={formatUsd(decreaseAmounts?.acceptablePrice) || "-"} />
+              <ExchangeInfoRow
+                label={t`Acceptable Price`}
+                value={
+                  formatUsd(decreaseAmounts?.acceptablePrice, {
+                    displayDecimals: indexPriceDecimals,
+                  }) || "-"
+                }
+              />
               <ExchangeInfoRow
                 className="SwapBox-info-row"
                 label={t`Liq. Price`}
@@ -378,8 +401,14 @@ export function PositionSeller(p: Props) {
                     "-"
                   ) : (
                     <ValueTransition
-                      from={formatUsd(position.liquidationPrice)!}
-                      to={formatUsd(nextPositionValues?.nextLiqPrice)}
+                      from={
+                        formatUsd(position.liquidationPrice, {
+                          displayDecimals: indexPriceDecimals,
+                        })!
+                      }
+                      to={formatUsd(nextPositionValues?.nextLiqPrice, {
+                        displayDecimals: indexPriceDecimals,
+                      })}
                     />
                   )
                 }
