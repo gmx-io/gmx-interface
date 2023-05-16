@@ -334,7 +334,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Avalanche",
       symbol: "AVAX",
       decimals: 18,
-      priceDecimals: 3,
       address: ethers.constants.AddressZero,
       isNative: true,
       isShortable: true,

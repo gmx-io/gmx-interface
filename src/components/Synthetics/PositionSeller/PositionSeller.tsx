@@ -191,8 +191,7 @@ export function PositionSeller(p: Props) {
     };
   }, [chainId, decreaseAmounts, gasLimits, gasPrice, position, swapAmounts, tokensData]);
 
-  const isHighPriceImpact =
-    getIsHighPriceImpact(fees?.positionPriceImpact) || getIsHighPriceImpact(fees?.swapPriceImpact);
+  const isHighPriceImpact = getIsHighPriceImpact(fees?.positionPriceImpact, fees?.swapPriceImpact);
 
   const isNotEnoughReceiveTokenLiquidity = shouldSwap ? maxSwapLiquidity?.lt(receiveUsd || 0) : false;
 

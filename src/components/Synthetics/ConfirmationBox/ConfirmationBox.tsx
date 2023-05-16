@@ -175,8 +175,7 @@ export function ConfirmationBox(p: Props) {
     payAmount &&
     getNeedTokenApprove(tokensAllowanceData, fromToken.address, payAmount);
 
-  const isHighPriceImpact =
-    getIsHighPriceImpact(fees?.swapPriceImpact) || getIsHighPriceImpact(fees?.positionPriceImpact);
+  const isHighPriceImpact = getIsHighPriceImpact(fees?.positionPriceImpact, fees?.swapPriceImpact);
 
   const positionKey = useMemo(() => {
     if (!account || !marketInfo || !collateralToken) {

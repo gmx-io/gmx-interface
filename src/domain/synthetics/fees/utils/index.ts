@@ -84,8 +84,9 @@ export function getBorrowingFeeRateUsd(
   return applyFactor(sizeInUsd, factor);
 }
 
-export function getIsHighPriceImpact(priceImpact?: FeeItem) {
-  return priceImpact?.deltaUsd.lt(0) && priceImpact.bps.abs().gte(HIGH_PRICE_IMPACT_BPS);
+export function getIsHighPriceImpact(positionPriceImpact?: FeeItem, swapPriceImpact?: FeeItem) {
+  const totalPriceImpact = getTotalFeeItem([positionPriceImpact, swapPriceImpact]);
+  return totalPriceImpact.deltaUsd.lt(0) && totalPriceImpact.bps.abs().gte(HIGH_PRICE_IMPACT_BPS);
 }
 
 export function getFeeItem(feeDeltaUsd?: BigNumber, basis?: BigNumber): FeeItem | undefined {
