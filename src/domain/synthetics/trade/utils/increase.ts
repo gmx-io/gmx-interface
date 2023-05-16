@@ -52,7 +52,7 @@ export function getIncreasePositionAmountsByCollateral(p: {
   const { indexToken } = marketInfo;
 
   const markPrice = getMarkPrice({ prices: indexToken.prices, isIncrease: true, isLong })!;
-  const entryPrice = isLimit && triggerPrice ? triggerPrice : markPrice;
+  const entryPrice = isLimit && triggerPrice?.gt(0) ? triggerPrice : markPrice;
 
   const initialCollateralPrice = initialCollateralToken.prices.minPrice;
   const collateralPrice = collateralToken.prices.maxPrice;
@@ -202,7 +202,7 @@ export function getIncreasePositionAmountsBySizeDelta(p: {
   const { indexToken } = marketInfo;
 
   const markPrice = getMarkPrice({ prices: indexToken.prices, isIncrease: true, isLong })!;
-  const entryPrice = isLimit && triggerPrice ? triggerPrice : markPrice;
+  const entryPrice = isLimit && triggerPrice?.gt(0) ? triggerPrice : markPrice;
 
   const initialCollateralPrice = initialCollateralToken.prices.minPrice;
   const collateralPrice = collateralToken.prices.maxPrice;
