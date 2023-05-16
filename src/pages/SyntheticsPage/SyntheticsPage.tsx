@@ -275,7 +275,9 @@ export function SyntheticsPage(p: Props) {
                 isLoading={isPositionsLoading}
                 savedIsPnlInLeverage={savedIsPnlInLeverage}
                 onOrdersClick={() => setListSection(ListSection.Orders)}
-                onSelectPositionClick={(key) => setActivePosition(getByKey(positionsInfoData, key))}
+                onSelectPositionClick={(key, tradeMode) =>
+                  setActivePosition(getByKey(positionsInfoData, key), tradeMode)
+                }
                 onClosePositionClick={setClosingPositionKey}
                 onEditCollateralClick={setEditingPositionKey}
                 showPnlAfterFees={showPnlAfterFees}
@@ -358,7 +360,7 @@ export function SyntheticsPage(p: Props) {
               savedIsPnlInLeverage={savedIsPnlInLeverage}
               isLoading={isPositionsLoading}
               onOrdersClick={() => setListSection(ListSection.Orders)}
-              onSelectPositionClick={(key) => setActivePosition(getByKey(positionsInfoData, key))}
+              onSelectPositionClick={(key, tradeMode) => setActivePosition(getByKey(positionsInfoData, key), tradeMode)}
               onClosePositionClick={setClosingPositionKey}
               onEditCollateralClick={setEditingPositionKey}
               showPnlAfterFees={showPnlAfterFees}
