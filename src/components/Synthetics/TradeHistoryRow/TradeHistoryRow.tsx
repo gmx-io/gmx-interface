@@ -96,6 +96,7 @@ function getSwapOrderMessage(tradeAction: SwapTradeAction) {
 
 function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateralUsd: BigNumber) {
   const indexToken = tradeAction.indexToken;
+  const priceDecimals = tradeAction.indexToken.priceDecimals;
   const collateralToken = tradeAction.initialCollateralToken;
   const sizeDeltaUsd = tradeAction.sizeDeltaUsd;
   const collateralDeltaAmount = tradeAction.initialCollateralDeltaAmount;
@@ -113,13 +114,16 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
 
     if (tradeAction.eventName === TradeActionType.OrderExecuted) {
       return t`Execute Order: ${increaseText} ${positionText} ${sizeDeltaText}, ${indexToken.symbol} Price: ${formatUsd(
-        executionPrice
+        executionPrice,
+        { displayDecimals: priceDecimals }
       )}, Market: ${tradeAction.marketInfo.name}`;
     }
 
     return t`${actionText} Order: ${increaseText} ${positionText} ${sizeDeltaText}, ${
       indexToken.symbol
-    } Price: ${pricePrefix} ${formatUsd(acceptablePrice)}, Market: ${tradeAction.marketInfo.name}`;
+    } Price: ${pricePrefix} ${formatUsd(acceptablePrice, { displayDecimals: priceDecimals })}, Market: ${
+      tradeAction.marketInfo.name
+    }`;
   }
 
   if (isMarketOrderType(tradeAction.orderType!)) {
@@ -138,9 +142,9 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
           ? tradeAction.executionPrice
           : tradeAction.acceptablePrice;
 
-      return t`${actionText} ${increaseText} ${positionText} ${sizeDeltaText}, ${pricePrefix}: ${formatUsd(
-        price
-      )},  Market: ${tradeAction.marketInfo.name}`;
+      return t`${actionText} ${increaseText} ${positionText} ${sizeDeltaText}, ${pricePrefix}: ${formatUsd(price, {
+        displayDecimals: priceDecimals,
+      })},  Market: ${tradeAction.marketInfo.name}`;
     } else {
       const collateralText = formatTokenAmount(collateralDeltaAmount, collateralToken.decimals, collateralToken.symbol);
 
@@ -160,7 +164,8 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
         <LiquidationTooltip tradeAction={tradeAction} minCollateralUsd={minCollateralUsd} />
         {" "}
         <Trans>
-          {positionText} {sizeDeltaText}, Price: {formatUsd(executionPrice)}, Market: {tradeAction.marketInfo.name}
+          {positionText} {sizeDeltaText}, Price: {formatUsd(executionPrice, { displayDecimals: priceDecimals })},
+          Market: {tradeAction.marketInfo.name}
         </Trans>
       </>
     );

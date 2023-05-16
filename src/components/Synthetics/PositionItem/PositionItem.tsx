@@ -321,13 +321,9 @@ export function PositionItem(p: Props) {
         </td>
         <td>
           {/* liqPrice */}
-          {p.position.isOpening
-            ? formatUsd(p.position.liquidationPrice, {
-                displayDecimals: indexPriceDecimals,
-              })
-            : formatUsd(p.position.liquidationPrice, {
-                displayDecimals: indexPriceDecimals,
-              })}
+          {formatUsd(p.position.liquidationPrice, {
+            displayDecimals: indexPriceDecimals,
+          })}
         </td>
         <td>
           {/* Close */}

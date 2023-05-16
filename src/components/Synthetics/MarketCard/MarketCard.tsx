@@ -31,18 +31,20 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
 
   const longShortText = isLong ? t`Long` : t`Short`;
 
-  const { liquidity, maxReservedUsd, reservedUsd, borrowingRate, fundingRate, totalInterestUsd } = useMemo(() => {
-    if (!marketInfo) return {};
+  const { liquidity, maxReservedUsd, reservedUsd, borrowingRate, fundingRate, totalInterestUsd, priceDecimals } =
+    useMemo(() => {
+      if (!marketInfo) return {};
 
-    return {
-      liquidity: getAvailableUsdLiquidityForPosition(marketInfo, isLong),
-      maxReservedUsd: getMaxReservedUsd(marketInfo, isLong),
-      reservedUsd: getReservedUsd(marketInfo, isLong),
-      borrowingRate: getBorrowingFactorPerPeriod(marketInfo, isLong, CHART_PERIODS["1h"]).mul(100),
-      fundingRate: getFundingFactorPerPeriod(marketInfo, isLong, CHART_PERIODS["1h"]).mul(100),
-      totalInterestUsd: marketInfo.longInterestUsd.add(marketInfo.shortInterestUsd),
-    };
-  }, [marketInfo, isLong]);
+      return {
+        liquidity: getAvailableUsdLiquidityForPosition(marketInfo, isLong),
+        maxReservedUsd: getMaxReservedUsd(marketInfo, isLong),
+        reservedUsd: getReservedUsd(marketInfo, isLong),
+        borrowingRate: getBorrowingFactorPerPeriod(marketInfo, isLong, CHART_PERIODS["1h"]).mul(100),
+        fundingRate: getFundingFactorPerPeriod(marketInfo, isLong, CHART_PERIODS["1h"]).mul(100),
+        totalInterestUsd: marketInfo.longInterestUsd.add(marketInfo.shortInterestUsd),
+        priceDecimals: marketInfo.indexToken.priceDecimals,
+      };
+    }, [marketInfo, isLong]);
 
   return (
     <div className="Exchange-swap-market-box App-box App-box-border">
@@ -56,12 +58,13 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
           label={t`Entry Price`}
           value={
             <Tooltip
-              handle={formatUsd(entryPrice) || "..."}
+              handle={formatUsd(entryPrice, { displayDecimals: priceDecimals }) || "..."}
               position="right-bottom"
               renderContent={() => (
                 <Trans>
-                  The position will be opened at a reference price of {formatUsd(entryPrice)}, not accounting for price
-                  impact, with a max slippage of {allowedSlippage ? (allowedSlippage / 100.0).toFixed(2) : "..."}%.
+                  The position will be opened at a reference price of{" "}
+                  {formatUsd(entryPrice, { displayDecimals: priceDecimals })}, not accounting for price impact, with a
+                  max slippage of {allowedSlippage ? (allowedSlippage / 100.0).toFixed(2) : "..."}%.
                   <br />
                   <br />
                   The slippage amount can be configured under Settings, found by clicking on your address at the top

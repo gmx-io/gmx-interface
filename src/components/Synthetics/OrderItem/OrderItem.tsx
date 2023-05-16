@@ -173,15 +173,20 @@ export function OrderItem(p: Props) {
       );
     } else {
       const positionOrder = p.order as PositionOrderInfo;
+      const priceDecimals = positionOrder.indexToken.priceDecimals;
 
       return (
         <Tooltip
-          handle={`${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.triggerPrice)}`}
+          handle={`${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.triggerPrice, {
+            displayDecimals: priceDecimals,
+          })}`}
           renderContent={() => (
             <>
               <StatsTooltipRow
                 label={t`Acceptable Price`}
-                value={`${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.acceptablePrice)}`}
+                value={`${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.acceptablePrice, {
+                  displayDecimals: priceDecimals,
+                })}`}
                 showDollar={false}
               />
             </>
@@ -198,6 +203,7 @@ export function OrderItem(p: Props) {
       return markSwapRatioText;
     } else {
       const positionOrder = p.order as PositionOrderInfo;
+      const priceDecimals = positionOrder.indexToken.priceDecimals;
 
       const markPrice = getMarkPrice({
         prices: positionOrder.indexToken.prices,
@@ -207,14 +213,14 @@ export function OrderItem(p: Props) {
 
       return (
         <Tooltip
-          handle={formatUsd(markPrice)}
+          handle={formatUsd(markPrice, { displayDecimals: priceDecimals })}
           position="right-bottom"
           renderContent={() => {
             return (
               <Trans>
                 <p>
                   The order will be executed when the oracle price is {positionOrder.triggerThresholdType}{" "}
-                  {formatUsd(positionOrder.triggerPrice)}.
+                  {formatUsd(positionOrder.triggerPrice, { displayDecimals: priceDecimals })}.
                 </p>
                 <p>
                   Note that there may be rare cases where the order cannot be executed, for example, if the chain is
