@@ -739,7 +739,7 @@ export function TradeBox(p: Props) {
       if (isIncrease && increaseAmounts) {
         if (focusedInput === "from") {
           setToTokenInputValue(
-            increaseAmounts.sizeDeltaInTokens.gt(0)
+            increaseAmounts.sizeDeltaInTokens?.gt(0)
               ? formatAmountFree(increaseAmounts.sizeDeltaInTokens, toToken.decimals)
               : ""
           );
@@ -1074,8 +1074,12 @@ export function TradeBox(p: Props) {
           label={t`Entry Price`}
           value={
             <ValueTransition
-              from={formatUsd(existingPosition?.entryPrice)}
-              to={formatUsd(nextPositionValues?.nextEntryPrice)}
+              from={formatUsd(existingPosition?.entryPrice, {
+                displayDecimals: existingPosition?.indexToken?.priceDecimals,
+              })}
+              to={formatUsd(nextPositionValues?.nextEntryPrice, {
+                displayDecimals: toToken?.priceDecimals,
+              })}
             />
           }
         />
@@ -1113,7 +1117,11 @@ export function TradeBox(p: Props) {
         <ExchangeInfoRow
           className="SwapBox-info-row"
           label={t`Acceptable Price`}
-          value={formatUsd(increaseAmounts?.acceptablePrice) || "-"}
+          value={
+            formatUsd(increaseAmounts?.acceptablePrice, {
+              displayDecimals: toToken?.priceDecimals,
+            }) || "-"
+          }
         />
 
         <ExchangeInfoRow
@@ -1121,8 +1129,18 @@ export function TradeBox(p: Props) {
           label={t`Liq. Price`}
           value={
             <ValueTransition
-              from={nextPositionValues?.nextLiqPrice ? formatUsd(existingPosition?.liquidationPrice) : undefined}
-              to={formatUsd(nextPositionValues?.nextLiqPrice) || "-"}
+              from={
+                nextPositionValues?.nextLiqPrice
+                  ? formatUsd(existingPosition?.liquidationPrice, {
+                      displayDecimals: existingPosition?.indexToken?.priceDecimals,
+                    })
+                  : undefined
+              }
+              to={
+                formatUsd(nextPositionValues?.nextLiqPrice, {
+                  displayDecimals: toToken?.priceDecimals,
+                }) || "-"
+              }
             />
           }
         />
@@ -1178,12 +1196,24 @@ export function TradeBox(p: Props) {
           />
         )}
 
-        <ExchangeInfoRow className="SwapBox-info-row" label={t`Mark Price`} value={formatUsd(markPrice) || "-"} />
+        <ExchangeInfoRow
+          className="SwapBox-info-row"
+          label={t`Mark Price`}
+          value={
+            formatUsd(markPrice, {
+              displayDecimals: toToken?.priceDecimals,
+            }) || "-"
+          }
+        />
 
         <ExchangeInfoRow
           className="SwapBox-info-row"
           label={t`Trigger Price`}
-          value={`${decreaseAmounts?.triggerPricePrefix || ""} ${formatUsd(decreaseAmounts?.triggerPrice) || "-"}`}
+          value={`${decreaseAmounts?.triggerPricePrefix || ""} ${
+            formatUsd(decreaseAmounts?.triggerPrice, {
+              displayDecimals: toToken?.priceDecimals,
+            }) || "-"
+          }`}
         />
 
         <ExchangeInfoRow
@@ -1202,7 +1232,11 @@ export function TradeBox(p: Props) {
         <ExchangeInfoRow
           className="SwapBox-info-row"
           label={t`Acceptable Price`}
-          value={formatUsd(decreaseAmounts?.acceptablePrice) || "-"}
+          value={
+            formatUsd(decreaseAmounts?.acceptablePrice, {
+              displayDecimals: toToken?.priceDecimals,
+            }) || "-"
+          }
         />
 
         {existingPosition && (

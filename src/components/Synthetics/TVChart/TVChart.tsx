@@ -177,8 +177,16 @@ export function TVChart({
             />
           </div>
           <div>
-            <div className="ExchangeChart-main-price">{formatUsd(chartToken?.prices?.maxPrice) || "..."}</div>
-            <div className="ExchangeChart-info-label">{formatUsd(chartToken?.prices?.minPrice) || "..."}</div>
+            <div className="ExchangeChart-main-price">
+              {formatUsd(chartToken?.prices?.maxPrice, {
+                displayDecimals: chartToken?.priceDecimals,
+              }) || "..."}
+            </div>
+            <div className="ExchangeChart-info-label">
+              {formatUsd(chartToken?.prices?.minPrice, {
+                displayDecimals: chartToken?.priceDecimals,
+              }) || "..."}
+            </div>
           </div>
           {!isSmallMobile && (
             <div>
@@ -197,11 +205,19 @@ export function TVChart({
             <>
               <div className="ExchangeChart-additional-info">
                 <div className="ExchangeChart-info-label">24h High</div>
-                <div>{candlesDelta?.high ? numberWithCommas(candlesDelta.high.toFixed(2)) : "-"}</div>
+                <div>
+                  {candlesDelta?.high
+                    ? numberWithCommas(candlesDelta.high.toFixed(chartToken?.priceDecimals || 2))
+                    : "-"}
+                </div>
               </div>
               <div className="ExchangeChart-additional-info">
                 <div className="ExchangeChart-info-label">24h Low</div>
-                <div>{candlesDelta?.low ? numberWithCommas(candlesDelta?.low.toFixed(2)) : "-"}</div>
+                <div>
+                  {candlesDelta?.low
+                    ? numberWithCommas(candlesDelta?.low.toFixed(chartToken?.priceDecimals || 2))
+                    : "-"}
+                </div>
               </div>
             </>
           )}
