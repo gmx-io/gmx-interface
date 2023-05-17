@@ -2,6 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import Checkbox from "components/Checkbox/Checkbox";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   OrderInfo,
   PositionOrderInfo,
@@ -32,6 +33,8 @@ type Props = {
 };
 
 export function OrderItem(p: Props) {
+  const { showDebugValues } = useSettings();
+
   const isCollateralSwap = p.order.initialCollateralToken.address !== p.order.targetCollateralToken.address;
 
   function getCollateralText() {
@@ -111,6 +114,21 @@ export function OrderItem(p: Props) {
 
     if (p.isLarge) {
       if (isSwapOrderType(p.order.orderType)) {
+        if (showDebugValues) {
+          return (
+            <Tooltip
+              handle={p.order.title}
+              position="left-bottom"
+              renderContent={() => (
+                <StatsTooltipRow
+                  label={"Key"}
+                  value={<div className="debug-key muted">{p.order.key}</div>}
+                  showDollar={false}
+                />
+              )}
+            />
+          );
+        }
         return p.order.title;
       }
 
@@ -137,6 +155,18 @@ export function OrderItem(p: Props) {
                       )}{" "}
                       will be swapped to {p.order.targetCollateralToken.symbol} on order execution.
                     </Trans>
+                  </>
+                )}
+
+                {showDebugValues && (
+                  <>
+                    <br />
+                    <br />
+                    <StatsTooltipRow
+                      label={"Key"}
+                      value={<div className="debug-key muted">{positionOrder.key}</div>}
+                      showDollar={false}
+                    />
                   </>
                 )}
               </>
@@ -276,6 +306,12 @@ export function OrderItem(p: Props) {
         <div className="App-card-title-small">{renderTitle()}</div>
         <div className="App-card-divider" />
         <div className="App-card-content">
+          {showDebugValues && (
+            <div className="App-card-row">
+              <div className="label">Key</div>
+              <div className="debug-key muted">{p.order.key}</div>
+            </div>
+          )}
           <div className="App-card-row">
             <div className="label">
               <Trans>Trigger Price</Trans>

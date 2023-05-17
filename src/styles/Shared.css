@@ -445,3 +445,8 @@ button.btn-link:hover .logout-icon {
 .gap-right > *:not(:last-child) {
   margin-right: 1rem;
 }
+
+.debug-key {
+  overflow-wrap: break-word;
+  max-width: 30rem;
+}

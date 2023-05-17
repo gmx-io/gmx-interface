@@ -103,6 +103,7 @@ import {
   useHandleUnsupportedNetwork,
   useInactiveListener,
 } from "lib/wallets";
+import { SettingsContextProvider, useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { MarketPoolsPage } from "pages/MarketPoolsPage/MarketPoolsPage";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
@@ -269,6 +270,7 @@ function FullApp() {
   const [selectedToPage, setSelectedToPage] = useState("");
   const connectWallet = () => setWalletModalVisible(true);
 
+  const settings = useSettings();
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [savedSlippageAmount, setSavedSlippageAmount] = useLocalStorageSerializeKey(
     [chainId, SLIPPAGE_BPS_KEY],
@@ -278,6 +280,7 @@ function FullApp() {
   const [isPnlInLeverage, setIsPnlInLeverage] = useState(false);
   const [shouldDisableValidationForTesting, setShouldDisableValidationForTesting] = useState(false);
   const [showPnlAfterFees, setShowPnlAfterFees] = useState(true);
+  const [showDebugValues, setShowDebugValues] = useState(false);
 
   const [savedIsPnlInLeverage, setSavedIsPnlInLeverage] = useLocalStorageSerializeKey(
     [chainId, IS_PNL_IN_LEVERAGE_KEY],
@@ -301,6 +304,7 @@ function FullApp() {
     setSlippageAmount((slippage / BASIS_POINTS_DIVISOR) * 100);
     setIsPnlInLeverage(savedIsPnlInLeverage);
     setShowPnlAfterFees(savedShowPnlAfterFees);
+    setShowDebugValues(settings.showDebugValues);
     setShouldDisableValidationForTesting(savedShouldDisableValidationForTesting);
     setIsSettingsVisible(true);
   };
@@ -327,6 +331,7 @@ function FullApp() {
     setSavedShouldDisableValidationForTesting(shouldDisableValidationForTesting);
     setSavedSlippageAmount(basisPoints);
     setIsSettingsVisible(false);
+    settings.setShowDebugValues(showDebugValues);
   };
 
   const localStorageCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
@@ -684,6 +689,14 @@ function FullApp() {
           </div>
         )}
 
+        {isDevelopment() && (
+          <div className="Exchange-settings-row">
+            <Checkbox isChecked={showDebugValues} setIsChecked={setShowDebugValues}>
+              <Trans>Show debug values</Trans>
+            </Checkbox>
+          </div>
+        )}
+
         <Button variant="primary-action" className="w-100 mt-md" onClick={saveAndCloseSettings}>
           <Trans>Save</Trans>
         </Button>
@@ -701,15 +714,17 @@ function App() {
   return (
     <SWRConfig value={{ refreshInterval: 5000 }}>
       <Web3ReactProvider getLibrary={getLibrary}>
-        <SyntheticsEventsProviderWrapper>
-          <SEO>
-            <Router>
-              <I18nProvider i18n={i18n}>
-                <FullApp />
-              </I18nProvider>
-            </Router>
-          </SEO>
-        </SyntheticsEventsProviderWrapper>
+        <SettingsContextProvider>
+          <SyntheticsEventsProviderWrapper>
+            <SEO>
+              <Router>
+                <I18nProvider i18n={i18n}>
+                  <FullApp />
+                </I18nProvider>
+              </Router>
+            </SEO>
+          </SyntheticsEventsProviderWrapper>
+        </SettingsContextProvider>
       </Web3ReactProvider>
     </SWRConfig>
   );
