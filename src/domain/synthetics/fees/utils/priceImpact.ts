@@ -1,7 +1,7 @@
 import { MarketInfo, getTokenPoolType } from "domain/synthetics/markets";
 import { TokenData, convertToTokenAmount, convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
-import { applyFactor, bigNumberify, expandDecimals, roundUpMagnitudeDivision } from "lib/numbers";
+import { applyFactor, bigNumberify, expandDecimals, formatUsd, roundUpMagnitudeDivision } from "lib/numbers";
 import { VirtualInventoryForPositionsData, VirtualInventoryForSwapsData } from "../types";
 
 export function getPriceImpactAmount(p: {
@@ -235,6 +235,12 @@ function getNextOpenInterestForVirtualInventory(p: {
     currentShortUsd = virtualInventory;
   } else {
     currentLongUsd = virtualInventory.mul(-1);
+  }
+
+  if (usdDelta.lt(0)) {
+    const offset = usdDelta.abs();
+    currentLongUsd = currentLongUsd.add(offset);
+    currentShortUsd = currentShortUsd.add(offset);
   }
 
   return getNextOpenInterestParams({
