@@ -176,12 +176,16 @@ export function OrderItem(p: Props) {
 
       return (
         <Tooltip
-          handle={`${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.triggerPrice)}`}
+          handle={`${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.triggerPrice, {
+            displayDecimals: positionOrder.indexToken?.priceDecimals,
+          })}`}
           renderContent={() => (
             <>
               <StatsTooltipRow
                 label={t`Acceptable Price`}
-                value={`${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.acceptablePrice)}`}
+                value={`${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.acceptablePrice, {
+                  displayDecimals: positionOrder.indexToken?.priceDecimals,
+                })}`}
                 showDollar={false}
               />
             </>
@@ -207,14 +211,19 @@ export function OrderItem(p: Props) {
 
       return (
         <Tooltip
-          handle={formatUsd(markPrice)}
+          handle={formatUsd(markPrice, {
+            displayDecimals: positionOrder.indexToken?.priceDecimals,
+          })}
           position="right-bottom"
           renderContent={() => {
             return (
               <Trans>
                 <p>
                   The order will be executed when the oracle price is {positionOrder.triggerThresholdType}{" "}
-                  {formatUsd(positionOrder.triggerPrice)}.
+                  {formatUsd(positionOrder.triggerPrice, {
+                    displayDecimals: positionOrder.indexToken?.priceDecimals,
+                  })}
+                  .
                 </p>
                 <p>
                   Note that there may be rare cases where the order cannot be executed, for example, if the chain is
