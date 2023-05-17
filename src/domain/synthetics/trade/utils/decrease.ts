@@ -6,7 +6,7 @@ import { PositionInfo, getLeverage, getLiquidationPrice, getPositionPnlUsd } fro
 import { TokenData, convertToTokenAmount } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { DUST_USD } from "lib/legacy";
-import { applyFactor, getBasisPoints } from "lib/numbers";
+import { getBasisPoints } from "lib/numbers";
 import { DecreasePositionAmounts, NextPositionValues, TriggerThresholdType } from "../types";
 import { getAcceptablePrice, getMarkPrice, getTriggerDecreaseOrderType, getTriggerThresholdType } from "./prices";
 
