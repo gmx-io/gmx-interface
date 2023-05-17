@@ -943,7 +943,7 @@ export function TradeBox(p: Props) {
           displayDecimals: toToken?.priceDecimals,
         })}
         onClickTopRightLabel={() => {
-          setTriggerPriceInputValue(formatAmount(markPrice, USD_DECIMALS, 2));
+          setTriggerPriceInputValue(formatAmount(markPrice, USD_DECIMALS, toToken?.priceDecimals || 2));
         }}
         inputValue={triggerPriceInputValue}
         onInputValueChange={(e) => {
