@@ -88,6 +88,8 @@ export function getDecreasePositionAmounts(p: {
     // resulting in an invalid calculation of the price impact
     if (isTrigger) {
       positionPriceImpactDeltaUsd = BigNumber.from(0);
+    } else {
+      throw e;
     }
   }
 
