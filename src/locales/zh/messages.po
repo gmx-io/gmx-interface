@@ -3841,6 +3841,10 @@ msgstr "做空{0}"
 msgid "Shorting..."
 msgstr "做空中..."
 
+#: src/App/App.js
+msgid "Show debug values"
+msgstr ""
+
 #: src/pages/Home/Home.js
 msgid "Simple Swaps"
 msgstr "简易交易"

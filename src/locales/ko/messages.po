@@ -3847,6 +3847,10 @@ msgstr "{0} 숏"
 msgid "Shorting..."
 msgstr "숏 실행중..."
 
+#: src/App/App.js
+msgid "Show debug values"
+msgstr ""
+
 #: src/pages/Home/Home.js
 msgid "Simple Swaps"
 msgstr "간단한 스왑"

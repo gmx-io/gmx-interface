@@ -3841,6 +3841,10 @@ msgstr "{0}をショート"
 msgid "Shorting..."
 msgstr "ショート中..."
 
+#: src/App/App.js
+msgid "Show debug values"
+msgstr ""
+
 #: src/pages/Home/Home.js
 msgid "Simple Swaps"
 msgstr "シンプルなスワップ"

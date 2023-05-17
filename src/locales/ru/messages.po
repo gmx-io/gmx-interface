@@ -3841,6 +3841,10 @@ msgstr "Шорт {0}"
 msgid "Shorting..."
 msgstr "Шортинг..."
 
+#: src/App/App.js
+msgid "Show debug values"
+msgstr ""
+
 #: src/pages/Home/Home.js
 msgid "Simple Swaps"
 msgstr "Простые Обмены"
