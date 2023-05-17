@@ -1,7 +1,7 @@
 import { MarketInfo, getTokenPoolType } from "domain/synthetics/markets";
 import { TokenData, convertToTokenAmount, convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
-import { applyFactor, bigNumberify, expandDecimals, formatUsd, roundUpMagnitudeDivision } from "lib/numbers";
+import { applyFactor, bigNumberify, expandDecimals, roundUpMagnitudeDivision } from "lib/numbers";
 import { VirtualInventoryForPositionsData, VirtualInventoryForSwapsData } from "../types";
 
 export function getPriceImpactAmount(p: {
