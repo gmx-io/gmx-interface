@@ -71,7 +71,7 @@ import { t, Trans } from "@lingui/macro";
 import { I18nProvider } from "@lingui/react";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { Header } from "components/Header/Header";
-import { ARBITRUM, getExplorerUrl } from "config/chains";
+import { ARBITRUM, AVALANCHE_FUJI, getExplorerUrl } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getIsSyntheticsSupported } from "config/features";
 import {
@@ -258,7 +258,10 @@ function FullApp() {
     connectInjectedWallet();
   };
 
-  const [tradePageVersion, setTradePageVersion] = useLocalStorageSerializeKey(TRADE_LINK_KEY, 1);
+  const [tradePageVersion, setTradePageVersion] = useLocalStorageSerializeKey(
+    [chainId, TRADE_LINK_KEY],
+    chainId === AVALANCHE_FUJI ? 2 : 1
+  );
   const [walletModalVisible, setWalletModalVisible] = useState(false);
   const [redirectModalVisible, setRedirectModalVisible] = useState(false);
   const [shouldHideRedirectModal, setShouldHideRedirectModal] = useState(false);
