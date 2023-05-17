@@ -939,7 +939,9 @@ export function TradeBox(p: Props) {
       <BuyInputSection
         topLeftLabel={t`Price`}
         topRightLabel={t`Mark:`}
-        topRightValue={formatUsd(markPrice)}
+        topRightValue={formatUsd(markPrice, {
+          displayDecimals: toToken?.priceDecimals,
+        })}
         onClickTopRightLabel={() => {
           setTriggerPriceInputValue(formatAmount(markPrice, USD_DECIMALS, 2));
         }}
