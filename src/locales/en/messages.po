@@ -3429,18 +3429,18 @@ msgstr "Rebates on V1"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
-msgid "Rebates on V1 Arbitrum"
-msgstr "Rebates on V1 Arbitrum"
+#~ msgid "Rebates on V1 Arbitrum"
+#~ msgstr "Rebates on V1 Arbitrum"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
-msgid "Rebates on V1 Avalanche"
-msgstr "Rebates on V1 Avalanche"
+#~ msgid "Rebates on V1 Avalanche"
+#~ msgstr "Rebates on V1 Avalanche"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
-msgid "Rebates on V1 Avalanche Fuji"
-msgstr "Rebates on V1 Avalanche Fuji"
+#~ msgid "Rebates on V1 Avalanche Fuji"
+#~ msgstr "Rebates on V1 Avalanche Fuji"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates on V2"
@@ -3448,18 +3448,18 @@ msgstr "Rebates on V2"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
-msgid "Rebates on V2 Arbitrum"
-msgstr "Rebates on V2 Arbitrum"
+#~ msgid "Rebates on V2 Arbitrum"
+#~ msgstr "Rebates on V2 Arbitrum"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
-msgid "Rebates on V2 Avalanche"
-msgstr "Rebates on V2 Avalanche"
+#~ msgid "Rebates on V2 Avalanche"
+#~ msgstr "Rebates on V2 Avalanche"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
-msgid "Rebates on V2 Avalanche Fuji"
-msgstr "Rebates on V2 Avalanche Fuji"
+#~ msgid "Rebates on V2 Avalanche Fuji"
+#~ msgstr "Rebates on V2 Avalanche Fuji"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
@@ -4499,33 +4499,33 @@ msgstr "Trading Volume"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
-msgid "Trading Volume on V1 Arbitrum"
-msgstr "Trading Volume on V1 Arbitrum"
+#~ msgid "Trading Volume on V1 Arbitrum"
+#~ msgstr "Trading Volume on V1 Arbitrum"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
-msgid "Trading Volume on V1 Avalanche"
-msgstr "Trading Volume on V1 Avalanche"
+#~ msgid "Trading Volume on V1 Avalanche"
+#~ msgstr "Trading Volume on V1 Avalanche"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
-msgid "Trading Volume on V1 Avalanche Fuji"
-msgstr "Trading Volume on V1 Avalanche Fuji"
+#~ msgid "Trading Volume on V1 Avalanche Fuji"
+#~ msgstr "Trading Volume on V1 Avalanche Fuji"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
-msgid "Trading Volume on V2 Arbitrum"
-msgstr "Trading Volume on V2 Arbitrum"
+#~ msgid "Trading Volume on V2 Arbitrum"
+#~ msgstr "Trading Volume on V2 Arbitrum"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
-msgid "Trading Volume on V2 Avalanche"
-msgstr "Trading Volume on V2 Avalanche"
+#~ msgid "Trading Volume on V2 Avalanche"
+#~ msgstr "Trading Volume on V2 Avalanche"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
-msgid "Trading Volume on V2 Avalanche Fuji"
-msgstr "Trading Volume on V2 Avalanche Fuji"
+#~ msgid "Trading Volume on V2 Avalanche Fuji"
+#~ msgstr "Trading Volume on V2 Avalanche Fuji"
 
 #: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"
@@ -4799,6 +4799,27 @@ msgid "V1 AIRDROP"
 msgstr "V1 AIRDROP"
 
 #: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/TradersStats.tsx
+#: src/components/Referrals/TradersStats.tsx
+msgid "V1 Arbitrum"
+msgstr "V1 Arbitrum"
+
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/TradersStats.tsx
+#: src/components/Referrals/TradersStats.tsx
+msgid "V1 Avalanche"
+msgstr "V1 Avalanche"
+
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/TradersStats.tsx
+#: src/components/Referrals/TradersStats.tsx
+msgid "V1 Avalanche Fuji"
+msgstr "V1 Avalanche Fuji"
+
+#: src/components/Referrals/AffiliatesStats.tsx
 msgid "V1 Rebates and V1/V2 esGMX are airdropped weekly. V2 Rebates are claimed manually."
 msgstr "V1 Rebates and V1/V2 esGMX are airdropped weekly. V2 Rebates are claimed manually."
 
@@ -4810,6 +4831,27 @@ msgstr "V1 esGMX"
 #: src/components/Referrals/TradersStats.tsx
 msgid "V1 rebates are airdropped weekly. V2 rebates are automatically applied as fee discounts on each trade and do not show on this table."
 msgstr "V1 rebates are airdropped weekly. V2 rebates are automatically applied as fee discounts on each trade and do not show on this table."
+
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/TradersStats.tsx
+#: src/components/Referrals/TradersStats.tsx
+msgid "V2 Arbitrum"
+msgstr "V2 Arbitrum"
+
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/TradersStats.tsx
+#: src/components/Referrals/TradersStats.tsx
+msgid "V2 Avalanche"
+msgstr "V2 Avalanche"
+
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/TradersStats.tsx
+#: src/components/Referrals/TradersStats.tsx
+msgid "V2 Avalanche Fuji"
+msgstr "V2 Avalanche Fuji"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "V2 CLAIM"
