@@ -229,7 +229,7 @@ export function getNextPositionValuesForDecreaseTrade(p: {
     minCollateralFactor: marketInfo.minCollateralFactor,
     minCollateralUsd,
     closingFeeUsd: getPositionFee(marketInfo, sizeDeltaUsd, userReferralInfo).positionFeeUsd,
-    maxPriceImpactFactor: marketInfo?.maxPositionImpactFactorForLiquidations,
+    maxPriceImpactFactor: marketInfo.maxPositionImpactFactorForLiquidations,
     pendingBorrowingFeesUsd: BigNumber.from(0), // deducted on order
     pendingFundingFeesUsd: BigNumber.from(0), // deducted on order
     pnl: pnlDelta,

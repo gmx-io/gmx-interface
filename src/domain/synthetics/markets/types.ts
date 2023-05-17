@@ -39,19 +39,21 @@ export type MarketInfo = Market & {
   reserveFactorLong: BigNumber;
   reserveFactorShort: BigNumber;
 
-  totalBorrowingLong: BigNumber;
-  totalBorrowingShort: BigNumber;
+  borrowingFactorLong: BigNumber;
+  borrowingFactorShort: BigNumber;
+  borrowingExponentFactorLong: BigNumber;
+  borrowingExponentFactorShort: BigNumber;
+
+  fundingFactor: BigNumber;
+  fundingExponentFactor: BigNumber;
 
   totalBorrowingFees: BigNumber;
-
-  cummulativeBorrowingFactorLong: BigNumber;
-  cummulativeBorrowingFactorShort: BigNumber;
-
-  borrowingFeeReceiverFactor: BigNumber;
 
   positionImpactPoolAmount: BigNumber;
 
   minCollateralFactor: BigNumber;
+  minCollateralFactorForOpenInterestLong: BigNumber;
+  minCollateralFactorForOpenInterestShort: BigNumber;
 
   swapImpactPoolAmountLong: BigNumber;
   swapImpactPoolAmountShort: BigNumber;
