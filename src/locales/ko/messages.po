@@ -2055,6 +2055,14 @@ msgstr "잘못된 네트워크입니다"
 msgid "Increase"
 msgstr "증가"
 
+#: src/components/Exchange/PositionDropdown.js
+msgid "Increase Size (Limit)"
+msgstr ""
+
+#: src/components/Exchange/PositionDropdown.js
+msgid "Increase Size (Market)"
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase active: {0}, executed: {1}, cancelled: {2}"
 msgstr "중가 액티브: {0}, 실행 완료: {1}, 취소 완료: {2}"
@@ -3223,6 +3231,10 @@ msgstr "포지션 ({0})"
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Positions{0}"
+msgstr ""
+
+#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
+msgid "Positive Funding Fees for a position are claimable once an action is taken on it."
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -4608,6 +4620,10 @@ msgstr "이전중"
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Trigger"
 msgstr "트리거"
+
+#: src/components/Exchange/PositionDropdown.js
+msgid "Trigger Close"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx

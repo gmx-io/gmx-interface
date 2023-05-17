@@ -2055,6 +2055,14 @@ msgstr "誤ったネットワーク"
 msgid "Increase"
 msgstr "増加"
 
+#: src/components/Exchange/PositionDropdown.js
+msgid "Increase Size (Limit)"
+msgstr ""
+
+#: src/components/Exchange/PositionDropdown.js
+msgid "Increase Size (Market)"
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase active: {0}, executed: {1}, cancelled: {2}"
 msgstr "増加 アクティブ: {0} 執行済: {1} キャンセル済: {2}"
@@ -3223,6 +3231,10 @@ msgstr "ポジション ({0})"
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Positions{0}"
+msgstr ""
+
+#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
+msgid "Positive Funding Fees for a position are claimable once an action is taken on it."
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -4598,6 +4610,10 @@ msgstr "移転中..."
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Trigger"
 msgstr "トリガー"
+
+#: src/components/Exchange/PositionDropdown.js
+msgid "Trigger Close"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx

@@ -2055,6 +2055,14 @@ msgstr "Red incorrecta"
 msgid "Increase"
 msgstr "Incrementar"
 
+#: src/components/Exchange/PositionDropdown.js
+msgid "Increase Size (Limit)"
+msgstr ""
+
+#: src/components/Exchange/PositionDropdown.js
+msgid "Increase Size (Market)"
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase active: {0}, executed: {1}, cancelled: {2}"
 msgstr "Incrementar activo: {0}, ejecutado: {1}, cancelado: {2}"
@@ -3223,6 +3231,10 @@ msgstr "Posiciones ({0})"
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Positions{0}"
+msgstr ""
+
+#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
+msgid "Positive Funding Fees for a position are claimable once an action is taken on it."
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -4598,6 +4610,10 @@ msgstr "Transfiriendo"
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Trigger"
 msgstr "Activador"
+
+#: src/components/Exchange/PositionDropdown.js
+msgid "Trigger Close"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
