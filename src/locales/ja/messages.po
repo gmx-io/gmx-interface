@@ -1867,8 +1867,8 @@ msgstr ""
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "GM Index Composition"
-msgstr ""
+#~ msgid "GM Index Composition"
+#~ msgstr ""
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "GM Token pricing includes positions' Pending PnL, Impact Pool Amount and Borrow Fees."
@@ -4799,6 +4799,8 @@ msgstr ""
 msgid "V2 CLAIM"
 msgstr ""
 
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
 msgid "V2 Pools"
 msgstr ""
