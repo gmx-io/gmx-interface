@@ -10,7 +10,7 @@ import { AiOutlineEdit } from "react-icons/ai";
 import { ImSpinner2 } from "react-icons/im";
 
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/fees";
-import { getTriggerThresholdType } from "domain/synthetics/trade";
+import { TradeMode, getTriggerThresholdType } from "domain/synthetics/trade";
 import { CHART_PERIODS } from "lib/legacy";
 import "./PositionItem.scss";
 
@@ -22,7 +22,7 @@ export type Props = {
   onClosePositionClick?: () => void;
   onEditCollateralClick?: () => void;
   onShareClick?: () => void;
-  onSelectPositionClick?: () => void;
+  onSelectPositionClick?: (tradeMode?: TradeMode) => void;
   onOrdersClick?: () => void;
   isLarge: boolean;
 };
@@ -245,7 +245,7 @@ export function PositionItem(p: Props) {
     const indexPriceDecimals = p.position?.indexToken?.priceDecimals;
     return (
       <tr className="Exhange-list-item">
-        <td className="clickable" onClick={p.onSelectPositionClick}>
+        <td className="clickable" onClick={() => p.onSelectPositionClick?.()}>
           {/* title */}
           <div className="Exchange-list-title">
             <Tooltip
@@ -272,7 +272,7 @@ export function PositionItem(p: Props) {
             />
             {p.position.pendingUpdate && <ImSpinner2 className="spin position-loading-icon" />}
           </div>
-          <div className="Exchange-list-info-label" onClick={p.onSelectPositionClick}>
+          <div className="Exchange-list-info-label" onClick={() => p.onSelectPositionClick?.()}>
             <span className="muted">{formatLeverage(p.position.leverage) || "..."}&nbsp;</span>
             <span className={cx({ positive: p.position.isLong, negative: !p.position.isLong })}>
               {p.position.isLong ? t`Long` : t`Short`}
@@ -316,7 +316,7 @@ export function PositionItem(p: Props) {
                 displayDecimals: indexPriceDecimals,
               })}
         </td>
-        <td className="clickable" onClick={p.onSelectPositionClick}>
+        <td className="clickable" onClick={() => p.onSelectPositionClick?.()}>
           {/* markPrice */}
           {formatUsd(p.position.markPrice, {
             displayDecimals: indexPriceDecimals,
@@ -344,7 +344,10 @@ export function PositionItem(p: Props) {
           {!p.position.isOpening && !p.hideActions && (
             <PositionDropdown
               handleEditCollateral={p.onEditCollateralClick}
-              handleMarketSelect={p.onSelectPositionClick}
+              handleMarketSelect={() => p.onSelectPositionClick?.()}
+              handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market)}
+              handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit)}
+              handleTriggerClose={() => p.onSelectPositionClick?.(TradeMode.Trigger)}
             />
           )}
         </td>

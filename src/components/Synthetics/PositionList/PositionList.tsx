@@ -2,9 +2,10 @@ import { Trans, t } from "@lingui/macro";
 import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
 import { OrdersInfoData, PositionOrderInfo, isOrderForPosition } from "domain/synthetics/orders";
 import { PositionsInfoData } from "domain/synthetics/positions";
+import { TradeMode } from "domain/synthetics/trade";
 
 type Props = {
-  onSelectPositionClick: (key: string) => void;
+  onSelectPositionClick: (key: string, tradeMode?: TradeMode) => void;
   onClosePositionClick: (key: string) => void;
   onEditCollateralClick: (key: string) => void;
   positionsData?: PositionsInfoData;
@@ -37,7 +38,7 @@ export function PositionList(p: Props) {
               onEditCollateralClick={() => p.onEditCollateralClick(position.key)}
               onClosePositionClick={() => p.onClosePositionClick(position.key)}
               onOrdersClick={p.onOrdersClick}
-              onSelectPositionClick={() => p.onSelectPositionClick(position.key)}
+              onSelectPositionClick={(tradeMode?: TradeMode) => p.onSelectPositionClick(position.key, tradeMode)}
               showPnlAfterFees={p.showPnlAfterFees}
               isLarge={false}
             />
@@ -89,7 +90,7 @@ export function PositionList(p: Props) {
                 onEditCollateralClick={() => p.onEditCollateralClick(position.key)}
                 onClosePositionClick={() => p.onClosePositionClick(position.key)}
                 onOrdersClick={p.onOrdersClick}
-                onSelectPositionClick={() => p.onSelectPositionClick(position.key)}
+                onSelectPositionClick={(tradeMode?: TradeMode) => p.onSelectPositionClick(position.key, tradeMode)}
                 showPnlAfterFees={p.showPnlAfterFees}
                 isLarge={true}
               />
