@@ -139,7 +139,7 @@ export function MarketsList() {
       {!isMobile && (
         <div className="token-table-wrapper App-card">
           <div className="App-card-title">
-            <Trans>GM Index Composition</Trans> <img src={getIcon(chainId, "network")} width="16" alt="Network Icon" />
+            <Trans>V2 Pools</Trans> <img src={getIcon(chainId, "network")} width="16" alt="Network Icon" />
           </div>
           <div className="App-card-divider"></div>
           <table className="token-table">
@@ -234,7 +234,7 @@ export function MarketsList() {
         <>
           <div className="App-card-title-small">
             <span>
-              <Trans>GM Index Composition</Trans>
+              <Trans>V2 Pools</Trans>
             </span>
             <img className="title-icon" src={getIcon(chainId, "network")} width="16" alt="Network Icon" />
           </div>
