@@ -6,6 +6,7 @@ import { useChainId } from "lib/chains";
 import { formatUsd } from "lib/numbers";
 
 import "./ClaimableCard.scss";
+import Tooltip from "components/Tooltip/Tooltip";
 
 type Props = {
   onClaimClick: () => void;
@@ -28,7 +29,18 @@ export function ClaimableCard(p: Props) {
       </div>
       <div className="App-card-divider" />
 
-      <ExchangeInfoRow label={t`Funding Fees`} value={formatUsd(totalClaimableFundingUsd)} />
+      <ExchangeInfoRow
+        label={t`Funding Fees`}
+        value={
+          <Tooltip
+            handle={formatUsd(totalClaimableFundingUsd)}
+            position="right-bottom"
+            renderContent={() => {
+              return t`Positive Funding Fees for a position are claimable once an action is taken on it.`;
+            }}
+          />
+        }
+      />
       <ExchangeInfoRow label={t`Total Claimable`} value={formatUsd(totalClaimableFundingUsd)} />
 
       <div className="App-card-options ClaimableCard-actions">
