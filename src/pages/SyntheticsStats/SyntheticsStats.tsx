@@ -83,7 +83,7 @@ export function SyntheticsStats() {
           </tr>
         </thead>
         <tbody>
-          {markets.map((market, i) => {
+          {markets.map((market) => {
             const totalInterestUsd = market.longInterestUsd.add(market.shortInterestUsd);
 
             const midLongPrice = getMidPrice(market.longToken.prices);
@@ -132,7 +132,16 @@ export function SyntheticsStats() {
               <tr key={market.marketTokenAddress}>
                 <td>
                   <div className="cell">
-                    <div>{getMarketIndexName(market)}</div>
+                    <div>
+                      <Tooltip
+                        handle={getMarketIndexName(market)}
+                        renderContent={() => (
+                          <>
+                            <StatsTooltipRow label="Key" value={market.marketTokenAddress} showDollar={false} />
+                          </>
+                        )}
+                      />
+                    </div>
                     <div className="muted">[{getMarketPoolName(market)}]</div>
                   </div>
                 </td>
@@ -309,7 +318,7 @@ export function SyntheticsStats() {
                 <td>
                   <div className="cell">
                     <Tooltip
-                      position={i < 6 ? "right-bottom" : "right-top"}
+                      position={"right-bottom"}
                       handle="..."
                       renderContent={() => (
                         <>
