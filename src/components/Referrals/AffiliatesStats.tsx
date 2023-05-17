@@ -153,30 +153,30 @@ function AffiliatesStats({
           tooltipContent={
             <>
               <StatsTooltipRow
-                label={t`Trading Volume on V1 Arbitrum`}
+                label={t`V1 Arbitrum`}
                 value={getUSDValue(arbitrumData?.affiliateTotalStats.v1Data.volume)}
               />
               <StatsTooltipRow
-                label={t`Trading Volume on V1 Avalanche`}
+                label={t`V1 Avalanche`}
                 value={getUSDValue(avalancheData?.affiliateTotalStats.v1Data.volume)}
               />
               {isDevelopment() && (
                 <StatsTooltipRow
-                  label={t`Trading Volume on V1 Avalanche Fuji`}
+                  label={t`V1 Avalanche Fuji`}
                   value={getUSDValue(fujiData?.affiliateTotalStats.v1Data.volume)}
                 />
               )}
               <StatsTooltipRow
-                label={t`Trading Volume on V2 Arbitrum`}
+                label={t`V2 Arbitrum`}
                 value={getUSDValue(arbitrumData?.affiliateTotalStats.v2Data.volume)}
               />
               <StatsTooltipRow
-                label={t`Trading Volume on V2 Avalanche`}
+                label={t`V2 Avalanche`}
                 value={getUSDValue(avalancheData?.affiliateTotalStats.v2Data.volume)}
               />
               {isDevelopment() && (
                 <StatsTooltipRow
-                  label={t`Trading Volume on V2 Avalanche Fuji`}
+                  label={t`V2 Avalanche Fuji`}
                   value={getUSDValue(fujiData?.affiliateTotalStats.v2Data.volume)}
                 />
               )}
@@ -192,30 +192,30 @@ function AffiliatesStats({
           tooltipContent={
             <>
               <StatsTooltipRow
-                label={t`Rebates on V1 Arbitrum`}
+                label={t`V1 Arbitrum`}
                 value={getUSDValue(arbitrumData?.affiliateTotalStats.v1Data.affiliateRebateUsd)}
               />
               <StatsTooltipRow
-                label={t`Rebates on V1 Avalanche`}
+                label={t`V1 Avalanche`}
                 value={getUSDValue(avalancheData?.affiliateTotalStats.v1Data.affiliateRebateUsd)}
               />
               {isDevelopment() && (
                 <StatsTooltipRow
-                  label={t`Rebates on V1 Avalanche Fuji`}
+                  label={t`V1 Avalanche Fuji`}
                   value={getUSDValue(fujiData?.affiliateTotalStats.v1Data.affiliateRebateUsd)}
                 />
               )}
               <StatsTooltipRow
-                label={t`Rebates on V2 Arbitrum`}
+                label={t`V2 Arbitrum`}
                 value={getUSDValue(arbitrumData?.affiliateTotalStats.v2Data.affiliateRebateUsd)}
               />
               <StatsTooltipRow
-                label={t`Rebates on V2 Avalanche`}
+                label={t`V2 Avalanche`}
                 value={getUSDValue(avalancheData?.affiliateTotalStats.v2Data.affiliateRebateUsd)}
               />
               {isDevelopment() && (
                 <StatsTooltipRow
-                  label={t`Rebates on V2 Avalanche Fuji`}
+                  label={t`V2 Avalanche Fuji`}
                   value={getUSDValue(fujiData?.affiliateTotalStats.v2Data.affiliateRebateUsd)}
                 />
               )}
