@@ -6,7 +6,7 @@ import { PositionInfo, getLeverage, getLiquidationPrice, getPositionPnlUsd } fro
 import { TokenData, convertToTokenAmount } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { DUST_USD } from "lib/legacy";
-import { getBasisPoints } from "lib/numbers";
+import { applyFactor, getBasisPoints } from "lib/numbers";
 import { DecreasePositionAmounts, NextPositionValues, TriggerThresholdType } from "../types";
 import { getAcceptablePrice, getMarkPrice, getTriggerDecreaseOrderType, getTriggerThresholdType } from "./prices";
 
@@ -78,7 +78,7 @@ export function getDecreasePositionAmounts(p: {
   const positionPriceImpactDeltaUsd = getCappedPositionImpactUsd(
     marketInfo,
     virtualInventoryForPositions,
-    sizeDeltaUsd,
+    sizeDeltaUsd.mul(-1),
     isLong
   );
 

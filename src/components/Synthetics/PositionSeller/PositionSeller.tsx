@@ -270,8 +270,7 @@ export function PositionSeller(p: Props) {
       sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
       sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
       isLong: position.isLong,
-      // TODO
-      acceptablePrice: position.isLong ? markPrice.div(2) : markPrice.mul(2),
+      acceptablePrice: decreaseAmounts.acceptablePrice,
       triggerPrice: undefined,
       minOutputUsd: receiveUsd,
       decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
