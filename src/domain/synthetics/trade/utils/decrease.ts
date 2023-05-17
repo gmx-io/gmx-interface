@@ -75,12 +75,21 @@ export function getDecreasePositionAmounts(p: {
   const positionFeeUsd = positionFeeInfo.positionFeeUsd;
   const feeDiscountUsd = positionFeeInfo.discountUsd;
 
-  const positionPriceImpactDeltaUsd = getCappedPositionImpactUsd(
-    marketInfo,
-    virtualInventoryForPositions,
-    sizeDeltaUsd.mul(-1),
-    isLong
-  );
+  let positionPriceImpactDeltaUsd;
+  try {
+    positionPriceImpactDeltaUsd = getCappedPositionImpactUsd(
+      marketInfo,
+      virtualInventoryForPositions,
+      sizeDeltaUsd.mul(-1),
+      isLong
+    );
+  } catch (e) {
+    // For trigger orders  there may be a case where close size > current open interest,
+    // resulting in an invalid calculation of the price impact
+    if (isTrigger) {
+      positionPriceImpactDeltaUsd = BigNumber.from(0);
+    }
+  }
 
   const { acceptablePrice, acceptablePriceImpactBps } = getAcceptablePrice({
     isIncrease: false,
