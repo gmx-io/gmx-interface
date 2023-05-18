@@ -1,6 +1,7 @@
 import { Trans } from "@lingui/macro";
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import Footer from "components/Footer/Footer";
 import { GmSwapBox, Mode, Operation } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";
 import { MarketStats } from "components/Synthetics/MarketStats/MarketStats";
 import { getSyntheticsDepositMarketKey } from "config/localStorage";
@@ -86,6 +87,7 @@ export function MarketPoolsPage(p: Props) {
         </div>
         <GmList />
       </div>
+      <Footer />
     </SEO>
   );
 }

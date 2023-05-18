@@ -54,7 +54,7 @@ function PositionDropdown(p) {
           {handleMarketIncreaseSize && (
             <Menu.Item>
               <div className="menu-item" onClick={handleMarketIncreaseSize}>
-                <RiShareBoxFill fontSize={16} />
+                <BiSelectMultiple fontSize={16} />
                 <p>
                   <Trans>Increase Size (Market)</Trans>
                 </p>
@@ -64,7 +64,7 @@ function PositionDropdown(p) {
           {handleLimitIncreaseSize && (
             <Menu.Item>
               <div className="menu-item" onClick={handleLimitIncreaseSize}>
-                <RiShareBoxFill fontSize={16} />
+                <BiSelectMultiple fontSize={16} />
                 <p>
                   <Trans>Increase Size (Limit)</Trans>
                 </p>
@@ -74,7 +74,7 @@ function PositionDropdown(p) {
           {handleTriggerClose && (
             <Menu.Item>
               <div className="menu-item" onClick={handleTriggerClose}>
-                <RiShareBoxFill fontSize={16} />
+                <BiSelectMultiple fontSize={16} />
                 <p>
                   <Trans>Trigger Close</Trans>
                 </p>

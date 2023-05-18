@@ -230,7 +230,7 @@ export function PositionItem(p: Props) {
                       {formatUsd(order.triggerPrice, {
                         displayDecimals: order.indexToken?.priceDecimals,
                       })}
-                      :{isIncreaseOrderType(order.orderType) ? "+" : "-"}
+                      : {isIncreaseOrderType(order.orderType) ? "+" : "-"}
                       {formatUsd(order.sizeDeltaUsd)}
                     </div>
                   );
