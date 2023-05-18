@@ -3,7 +3,7 @@ import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { Order, OrderInfo, OrderType, PositionOrderInfo, SwapOrderInfo } from "./types";
-import { parsePositionKey } from "../positions";
+import { PositionInfo, getPositionKey, parsePositionKey } from "../positions";
 import { MarketsInfoData } from "../markets";
 import { getSwapPathOutputAddresses, getTriggerThresholdType } from "../trade";
 import { TokensData, parseContractPrice } from "../tokens";
@@ -193,5 +193,22 @@ export function getOrderInfo(
     };
 
     return orderInfo;
+  }
+}
+
+export function getOrderError(order: OrderInfo, position?: PositionInfo) {
+  const positionKey = getPositionKey(
+    order.account,
+    order.marketAddress,
+    order.initialCollateralTokenAddress,
+    order.isLong
+  );
+
+  if (isOrderForPosition(order, positionKey)) {
+    if (position?.isLong) {
+      if (position.liquidationPrice?.lt(order.triggerPrice)) {
+        return t`Order Trigger Price is beyond position's Liquidation Price.`;
+      }
+    }
   }
 }

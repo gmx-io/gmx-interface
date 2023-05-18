@@ -1,13 +1,14 @@
 import { Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import Checkbox from "components/Checkbox/Checkbox";
-import { OrdersInfoData, isLimitOrderType, isTriggerDecreaseOrderType } from "domain/synthetics/orders";
+import { OrdersInfoData, getOrderError, isLimitOrderType, isTriggerDecreaseOrderType } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
-import { PositionsInfoData } from "domain/synthetics/positions";
+import { PositionsInfoData, getPositionKey } from "domain/synthetics/positions";
 import { useChainId } from "lib/chains";
 import { Dispatch, SetStateAction, useState } from "react";
 import { OrderEditor } from "../OrderEditor/OrderEditor";
 import { OrderItem } from "../OrderItem/OrderItem";
+import { getByKey } from "lib/objects";
 
 type Props = {
   hideActions?: boolean;
@@ -64,7 +65,14 @@ export function OrderList(p: Props) {
             {p.isLoading ? t`Loading...` : t`No open orders`}
           </div>
         )}
-        {!p.isLoading && orders.map((order) => <OrderItem key={order.key} order={order} isLarge={false} />)}
+        {!p.isLoading &&
+          orders.map((order) => {
+            const position = getByKey(
+              p.positionsData,
+              getPositionKey(order.account, order.marketAddress, order.initialCollateralTokenAddress, order.isLong)
+            );
+            return <OrderItem key={order.key} order={order} isLarge={false} error={getOrderError(order, position)} />;
+          })}
       </div>
 
       <table className="Exchange-list Orders large App-box">
@@ -105,18 +113,25 @@ export function OrderList(p: Props) {
             </tr>
           )}
           {!p.isLoading &&
-            orders.map((order) => (
-              <OrderItem
-                isSelected={p.selectedOrdersKeys?.[order.key]}
-                key={order.key}
-                order={order}
-                isLarge={true}
-                onSelectOrder={() => onSelectOrder(order.key)}
-                isCanceling={canellingOrdersKeys.includes(order.key)}
-                onCancelOrder={() => onCancelOrder(order.key)}
-                onEditOrder={() => setEditingOrderKey(order.key)}
-              />
-            ))}
+            orders.map((order) => {
+              const position = getByKey(
+                p.positionsData,
+                getPositionKey(order.account, order.marketAddress, order.initialCollateralTokenAddress, order.isLong)
+              );
+              return (
+                <OrderItem
+                  isSelected={p.selectedOrdersKeys?.[order.key]}
+                  key={order.key}
+                  order={order}
+                  isLarge={true}
+                  onSelectOrder={() => onSelectOrder(order.key)}
+                  isCanceling={canellingOrdersKeys.includes(order.key)}
+                  onCancelOrder={() => onCancelOrder(order.key)}
+                  onEditOrder={() => setEditingOrderKey(order.key)}
+                  error={getOrderError(order, position)}
+                />
+              );
+            })}
         </tbody>
       </table>
 

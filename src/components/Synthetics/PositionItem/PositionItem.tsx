@@ -3,7 +3,7 @@ import cx from "classnames";
 import PositionDropdown from "components/Exchange/PositionDropdown";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
-import { PositionOrderInfo, isIncreaseOrderType } from "domain/synthetics/orders";
+import { PositionOrderInfo, getOrderError, isIncreaseOrderType } from "domain/synthetics/orders";
 import { PositionInfo, formatLeverage } from "domain/synthetics/positions";
 import { formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
 import { AiOutlineEdit } from "react-icons/ai";
@@ -222,11 +222,17 @@ export function PositionItem(p: Props) {
                   <Trans>Active Orders</Trans>
                 </strong>
                 {positionOrders.map((order) => {
+                  const error = getOrderError(order, p.position);
                   return (
-                    <div key={order.key} className="Position-list-order active-order-tooltip">
+                    <div
+                      key={order.key}
+                      className={cx("Position-list-order active-order-tooltip", { "order-error": !!error })}
+                    >
                       {getTriggerThresholdType(order.orderType, order.isLong)} {formatUsd(order.triggerPrice)}:
                       {isIncreaseOrderType(order.orderType) ? "+" : "-"}
                       {formatUsd(order.sizeDeltaUsd)}
+                      <br />
+                      {error && <span>{error}</span>}
                     </div>
                   );
                 })}
