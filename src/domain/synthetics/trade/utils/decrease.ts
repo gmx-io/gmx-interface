@@ -85,7 +85,7 @@ export function getDecreasePositionAmounts(p: {
     );
   } catch (e) {
     // For trigger orders there may be a case where close size > current open interest,
-    // resulting in an invalid calculation of the price impact
+    // resulting in an invalid calculation of the price impact.
     if (isTrigger) {
       positionPriceImpactDeltaUsd = BigNumber.from(0);
     } else {

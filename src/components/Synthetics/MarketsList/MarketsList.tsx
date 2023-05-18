@@ -63,7 +63,7 @@ export function MarketsList() {
     } = {};
 
     for (const marketInfo of markets) {
-      if (marketInfo.isSpotOnly) {
+      if (marketInfo.isSpotOnly || marketInfo.isDisabled) {
         continue;
       }
 

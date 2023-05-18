@@ -5,7 +5,7 @@ import { bigNumberify, expandDecimals } from "lib/numbers";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import { useMemo } from "react";
 import useSWR from "swr";
-import { useMarketTokensData, useMarkets } from ".";
+import { useMarketTokensData, useMarketsInfo } from ".";
 import { MarketTokensAPRData } from "./types";
 
 type RawCollectedFees = {
@@ -24,11 +24,14 @@ type MarketTokensAPRResult = {
 };
 
 export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
-  const { marketsData } = useMarkets(chainId);
+  const { marketsInfoData } = useMarketsInfo(chainId);
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
 
   const client = getSyntheticsGraphClient(chainId);
-  const marketAddresses = useMemo(() => Object.keys(marketsData || {}), [marketsData]);
+  const marketAddresses = useMemo(
+    () => Object.keys(marketsInfoData || {}).filter((address) => !marketsInfoData![address].isDisabled),
+    [marketsInfoData]
+  );
 
   const key = marketAddresses.length && marketTokensData && client ? marketAddresses.join(",") : null;
 
@@ -58,7 +61,7 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
         `;
 
       const queryBody = marketAddresses.reduce((acc, marketAddress) => {
-        const { longTokenAddress, shortTokenAddress } = marketsData![marketAddress];
+        const { longTokenAddress, shortTokenAddress } = marketsInfoData![marketAddress];
 
         acc += marketFeesQuery(marketAddress, longTokenAddress);
         acc += marketFeesQuery(marketAddress, shortTokenAddress);
@@ -69,7 +72,7 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
       const { data: response } = await client!.query({ query: gql(`{${queryBody}}`) });
 
       const marketTokensAPRData: MarketTokensAPRData = marketAddresses.reduce((acc, marketAddress) => {
-        const market = marketsData![marketAddress]!;
+        const market = marketsInfoData![marketAddress]!;
         const marketToken = marketTokensData![marketAddress]!;
 
         const feeItems = [
