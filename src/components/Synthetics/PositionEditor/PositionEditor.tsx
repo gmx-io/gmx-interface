@@ -103,6 +103,8 @@ export function PositionEditor(p: Props) {
   const [operation, setOperation] = useState(Operation.Deposit);
   const isDeposit = operation === Operation.Deposit;
 
+  const indexPriceDecimals = position.indexToken.priceDecimals || 2;
+
   const [selectedCollateralAddress, setSelectedCollateralAddress] = useLocalStorageSerializeKey(
     getSyntheticsCollateralEditAddressKey(chainId, position.collateralTokenAddress),
     position.collateralTokenAddress
@@ -438,12 +440,24 @@ export function PositionEditor(p: Props) {
             value={<ValueTransition from={formatLeverage(position?.leverage)} to={formatLeverage(nextLeverage)} />}
           />
 
-          <ExchangeInfoRow isTop label={t`Entry Price`} value={formatUsd(position.entryPrice)} />
-          <ExchangeInfoRow label={t`Mark Price`} value={formatUsd(position.markPrice)} />
+          <ExchangeInfoRow
+            isTop
+            label={t`Entry Price`}
+            value={formatUsd(position.entryPrice, { displayDecimals: indexPriceDecimals })}
+          />
+          <ExchangeInfoRow
+            label={t`Mark Price`}
+            value={formatUsd(position.markPrice, { displayDecimals: indexPriceDecimals })}
+          />
 
           <ExchangeInfoRow
             label={t`Liq Price`}
-            value={<ValueTransition from={formatUsd(position.liquidationPrice)} to={formatUsd(nextLiqPrice)} />}
+            value={
+              <ValueTransition
+                from={formatUsd(position.liquidationPrice)}
+                to={formatUsd(nextLiqPrice, { displayDecimals: indexPriceDecimals })}
+              />
+            }
           />
 
           <ExchangeInfoRow isTop label={t`Size`} value={formatUsd(position.sizeInUsd)} />

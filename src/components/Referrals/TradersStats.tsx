@@ -93,30 +93,30 @@ function TradersStats({
           tooltipContent={
             <>
               <StatsTooltipRow
-                label={t`Trading Volume on V1 Arbitrum`}
+                label={t`V1 Arbitrum`}
                 value={getUSDValue(arbitrumData?.traderReferralTotalStats.v1Data.volume)}
               />
               <StatsTooltipRow
-                label={t`Trading Volume on V1 Avalanche`}
+                label={t`V1 Avalanche`}
                 value={getUSDValue(avalancheData?.traderReferralTotalStats.v1Data.volume)}
               />
               {isDevelopment() && (
                 <StatsTooltipRow
-                  label={t`Trading Volume on V1 Avalanche Fuji`}
+                  label={t`V1 Avalanche Fuji`}
                   value={getUSDValue(fujiData?.traderReferralTotalStats.v1Data.volume)}
                 />
               )}
               <StatsTooltipRow
-                label={t`Trading Volume on V2 Arbitrum`}
+                label={t`V2 Arbitrum`}
                 value={getUSDValue(arbitrumData?.traderReferralTotalStats.v2Data.volume)}
               />
               <StatsTooltipRow
-                label={t`Trading Volume on V2 Avalanche`}
+                label={t`V2 Avalanche`}
                 value={getUSDValue(avalancheData?.traderReferralTotalStats.v2Data.volume)}
               />
               {isDevelopment() && (
                 <StatsTooltipRow
-                  label={t`Trading Volume on V2 Avalanche Fuji`}
+                  label={t`V2 Avalanche Fuji`}
                   value={getUSDValue(fujiData?.traderReferralTotalStats.v2Data.volume)}
                 />
               )}
@@ -132,30 +132,30 @@ function TradersStats({
           tooltipContent={
             <>
               <StatsTooltipRow
-                label={t`Rebates on V1 Arbitrum`}
+                label={t`V1 Arbitrum`}
                 value={getUSDValue(arbitrumData?.traderReferralTotalStats.v1Data.discountUsd)}
               />
               <StatsTooltipRow
-                label={t`Rebates on V1 Avalanche`}
+                label={t`V1 Avalanche`}
                 value={getUSDValue(avalancheData?.traderReferralTotalStats.v1Data.discountUsd)}
               />
               {isDevelopment() && (
                 <StatsTooltipRow
-                  label={t`Rebates on V1 Avalanche Fuji`}
+                  label={t`V1 Avalanche Fuji`}
                   value={getUSDValue(avalancheData?.traderReferralTotalStats.v1Data.discountUsd)}
                 />
               )}
               <StatsTooltipRow
-                label={t`Rebates on V2 Arbitrum`}
+                label={t`V2 Arbitrum`}
                 value={getUSDValue(arbitrumData?.traderReferralTotalStats.v2Data.discountUsd)}
               />
               <StatsTooltipRow
-                label={t`Rebates on V2 Avalanche`}
+                label={t`V2 Avalanche`}
                 value={getUSDValue(avalancheData?.traderReferralTotalStats.v2Data.discountUsd)}
               />
               {isDevelopment() && (
                 <StatsTooltipRow
-                  label={t`Rebates on V2 Avalanche Fuji`}
+                  label={t`V2 Avalanche Fuji`}
                   value={getUSDValue(fujiData?.traderReferralTotalStats.v2Data.discountUsd)}
                 />
               )}

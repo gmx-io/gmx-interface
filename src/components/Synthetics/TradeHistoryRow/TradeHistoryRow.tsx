@@ -20,6 +20,7 @@ import { BigNumber } from "ethers";
 import { LiquidationTooltip } from "./LiquidationTooltip";
 import "./TradeHistoryRow.scss";
 import { getTriggerThresholdType } from "domain/synthetics/trade";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 type Props = {
   tradeAction: TradeAction;
@@ -176,6 +177,7 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
 
 export function TradeHistoryRow(p: Props) {
   const { chainId } = useChainId();
+  const { showDebugValues } = useSettings();
   const { tradeAction, minCollateralUsd } = p;
 
   const msg = useMemo(() => {
@@ -194,6 +196,13 @@ export function TradeHistoryRow(p: Props) {
       <ExternalLink className="plain" href={`${getExplorerUrl(chainId)}tx/${tradeAction.transaction.hash}`}>
         {msg}
       </ExternalLink>
+      {showDebugValues && (
+        <>
+          <br />
+          <br />
+          <div className="muted">Order Key: {tradeAction.orderKey}</div>
+        </>
+      )}
     </div>
   );
 }

@@ -237,6 +237,12 @@ function getNextOpenInterestForVirtualInventory(p: {
     currentLongUsd = virtualInventory.mul(-1);
   }
 
+  if (usdDelta.lt(0)) {
+    const offset = usdDelta.abs();
+    currentLongUsd = currentLongUsd.add(offset);
+    currentShortUsd = currentShortUsd.add(offset);
+  }
+
   return getNextOpenInterestParams({
     currentLongUsd,
     currentShortUsd,

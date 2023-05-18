@@ -27,7 +27,7 @@ export type SelectedTradeOption = {
   availableTokensOptions: AvailableTokenOptions;
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
-  setActivePosition: (position?: PositionInfo) => void;
+  setActivePosition: (position?: PositionInfo, tradeMode?: TradeMode) => void;
   setTradeType: (tradeType: TradeType) => void;
   setTradeMode: (tradeMode: TradeMode) => void;
   setFromTokenAddress: (tokenAddress?: string) => void;
@@ -196,13 +196,16 @@ export function useSelectedTradeOption(chainId: number): SelectedTradeOption {
   );
 
   const setActivePosition = useCallback(
-    (position?: PositionInfo) => {
+    (position?: PositionInfo, tradeMode?: TradeMode) => {
       if (!position) {
         return;
       }
 
       const oldState: StoredTradeOptions = JSON.parse(JSON.stringify(storedOptions));
 
+      if (tradeMode) {
+        oldState.tradeMode = tradeMode;
+      }
       oldState.tradeType = position.isLong ? TradeType.Long : TradeType.Short;
       oldState.tokens.indexTokenAddress = position.indexToken.address;
       oldState.markets[oldState.tokens.indexTokenAddress] = oldState.markets[oldState.tokens.indexTokenAddress] || {};

@@ -7,7 +7,14 @@ import { RiShareBoxFill } from "react-icons/ri";
 import "./PositionDropdown.css";
 
 function PositionDropdown(p) {
-  const { handleEditCollateral, handleShare, handleMarketSelect } = p;
+  const {
+    handleEditCollateral,
+    handleShare,
+    handleMarketSelect,
+    handleMarketIncreaseSize,
+    handleLimitIncreaseSize,
+    handleTriggerClose,
+  } = p;
 
   return (
     <Menu>
@@ -40,6 +47,36 @@ function PositionDropdown(p) {
                 <RiShareBoxFill fontSize={16} />
                 <p>
                   <Trans>Share Position</Trans>
+                </p>
+              </div>
+            </Menu.Item>
+          )}
+          {handleMarketIncreaseSize && (
+            <Menu.Item>
+              <div className="menu-item" onClick={handleMarketIncreaseSize}>
+                <RiShareBoxFill fontSize={16} />
+                <p>
+                  <Trans>Increase Size (Market)</Trans>
+                </p>
+              </div>
+            </Menu.Item>
+          )}
+          {handleLimitIncreaseSize && (
+            <Menu.Item>
+              <div className="menu-item" onClick={handleLimitIncreaseSize}>
+                <RiShareBoxFill fontSize={16} />
+                <p>
+                  <Trans>Increase Size (Limit)</Trans>
+                </p>
+              </div>
+            </Menu.Item>
+          )}
+          {handleTriggerClose && (
+            <Menu.Item>
+              <div className="menu-item" onClick={handleTriggerClose}>
+                <RiShareBoxFill fontSize={16} />
+                <p>
+                  <Trans>Trigger Close</Trans>
                 </p>
               </div>
             </Menu.Item>

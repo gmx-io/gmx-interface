@@ -1,18 +1,18 @@
 import { Trans } from "@lingui/macro";
 import Button from "components/Button/Button";
 import { getChainName } from "config/chains";
-import { getMarketIndexName, getMarketPoolName, useMarketTokensData, useMarkets } from "domain/synthetics/markets";
+import { getMarketIndexName, getMarketPoolName, useMarketTokensData, useMarketsInfo } from "domain/synthetics/markets";
 import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
 import { convertToUsd, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
+import { importImage } from "lib/legacy";
 import { formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
+import { getByKey } from "lib/objects";
+import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import { useMemo } from "react";
 import { useMedia } from "react-use";
 import { Operation } from "../GmSwap/GmSwapBox/GmSwapBox";
 import "./GmList.scss";
-import { getByKey } from "lib/objects";
-import { importImage } from "lib/legacy";
-import AssetDropdown from "pages/Dashboard/AssetDropdown";
 
 type Props = {
   hideTitle?: boolean;
@@ -22,24 +22,29 @@ export function GmList({ hideTitle }: Props) {
   const { chainId } = useChainId();
 
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
-  const { marketsData } = useMarkets(chainId);
+  const { marketsInfoData } = useMarketsInfo(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
   const { marketsTokensAPRData } = useMarketTokensAPR(chainId);
 
   const marketTokens = useMemo(() => {
-    if (!marketTokensData || !marketsData) {
+    if (!marketTokensData || !marketsInfoData) {
       return [];
     }
 
-    return Object.values(marketTokensData).sort((a, b) => {
-      const market1 = getByKey(marketsData, a.address)!;
-      const market2 = getByKey(marketsData, b.address)!;
-      const indexToken1 = getTokenData(tokensData, market1.indexTokenAddress, "native")!;
-      const indexToken2 = getTokenData(tokensData, market2.indexTokenAddress, "native")!;
+    return Object.values(marketTokensData)
+      .filter((marketToken) => {
+        const market = getByKey(marketsInfoData, marketToken.address);
+        return market && !market.isDisabled;
+      })
+      .sort((a, b) => {
+        const market1 = getByKey(marketsInfoData, a.address)!;
+        const market2 = getByKey(marketsInfoData, b.address)!;
+        const indexToken1 = getTokenData(tokensData, market1.indexTokenAddress, "native")!;
+        const indexToken2 = getTokenData(tokensData, market2.indexTokenAddress, "native")!;
 
-      return indexToken1.symbol.localeCompare(indexToken2.symbol);
-    });
-  }, [marketTokensData, marketsData, tokensData]);
+        return indexToken1.symbol.localeCompare(indexToken2.symbol);
+      });
+  }, [marketTokensData, marketsInfoData, tokensData]);
 
   const isMobile = useMedia("(max-width: 1100px)");
 
@@ -79,7 +84,7 @@ export function GmList({ hideTitle }: Props) {
             </thead>
             <tbody>
               {marketTokens.map((token) => {
-                const market = getByKey(marketsData, token.address)!;
+                const market = getByKey(marketsInfoData, token.address)!;
 
                 const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native")!;
                 const longToken = getTokenData(tokensData, market?.longTokenAddress)!;
@@ -173,7 +178,7 @@ export function GmList({ hideTitle }: Props) {
 
               const totalSupply = token.totalSupply;
               const totalSupplyUsd = convertToUsd(totalSupply, token.decimals, token.prices?.minPrice);
-              const market = getByKey(marketsData, token.address);
+              const market = getByKey(marketsInfoData, token.address);
               const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native")!;
 
               return (

@@ -1064,9 +1064,44 @@ export function ConfirmationBox(p: Props) {
               </Checkbox>
             </div>
           )}
+          <ExchangeInfoRow
+            label={t`Trigger Price`}
+            value={triggerPrice ? `${decreaseAmounts?.triggerPricePrefix} ${formatUsd(triggerPrice)}` : "..."}
+          />
+
+          <ExchangeInfoRow isTop label={t`Mark Price`} value={p.markPrice ? formatUsd(p.markPrice) : "..."} />
+
+          <ExchangeInfoRow
+            className="SwapBox-info-row"
+            label={t`Acceptable Price Impact`}
+            value={formatPercentage(decreaseAmounts?.acceptablePriceImpactBps?.mul(-1)) || "-"}
+          />
+
+          <ExchangeInfoRow
+            className="SwapBox-info-row"
+            label={t`Acceptable Price`}
+            value={formatUsd(decreaseAmounts?.acceptablePrice) || "-"}
+          />
+
+          {p.existingPosition && (
+            <ExchangeInfoRow
+              label={t`Liq. Price`}
+              value={
+                nextPositionValues?.nextSizeUsd?.gt(0) ? (
+                  <ValueTransition
+                    from={formatUsd(existingPosition?.liquidationPrice)!}
+                    to={formatUsd(nextPositionValues.nextLiqPrice)}
+                  />
+                ) : (
+                  "-"
+                )
+              }
+            />
+          )}
 
           <ExchangeInfoRow
             label={p.existingPosition?.sizeInUsd ? t`Size` : t`Decrease size`}
+            isTop
             value={
               p.existingPosition?.sizeInUsd ? (
                 <ValueTransition
@@ -1108,42 +1143,6 @@ export function ConfirmationBox(p: Props) {
               }
             />
           )}
-
-          <ExchangeInfoRow isTop label={t`Mark Price`} value={p.markPrice ? formatUsd(p.markPrice) : "..."} />
-
-          <ExchangeInfoRow
-            label={t`Trigger Price`}
-            value={triggerPrice ? `${decreaseAmounts?.triggerPricePrefix} ${formatUsd(triggerPrice)}` : "..."}
-          />
-
-          <ExchangeInfoRow
-            className="SwapBox-info-row"
-            label={t`Acceptable Price Impact`}
-            value={formatPercentage(decreaseAmounts?.acceptablePriceImpactBps?.mul(-1)) || "-"}
-          />
-
-          <ExchangeInfoRow
-            className="SwapBox-info-row"
-            label={t`Acceptable Price`}
-            value={formatUsd(decreaseAmounts?.acceptablePrice) || "-"}
-          />
-
-          {p.existingPosition && (
-            <ExchangeInfoRow
-              label={t`Liq. Price`}
-              value={
-                nextPositionValues?.nextSizeUsd?.gt(0) ? (
-                  <ValueTransition
-                    from={formatUsd(existingPosition?.liquidationPrice)!}
-                    to={formatUsd(nextPositionValues.nextLiqPrice)}
-                  />
-                ) : (
-                  "-"
-                )
-              }
-            />
-          )}
-
           {existingPosition && (
             <ExchangeInfoRow
               label={t`PnL`}
@@ -1166,7 +1165,7 @@ export function ConfirmationBox(p: Props) {
             />
           )}
 
-          <TradeFeesRow {...fees} isTop executionFee={p.executionFee} feesType="decrease" />
+          <TradeFeesRow {...fees} executionFee={p.executionFee} feesType="decrease" />
 
           {decreaseAmounts?.receiveUsd && (
             <ExchangeInfoRow

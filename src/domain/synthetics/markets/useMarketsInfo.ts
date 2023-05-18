@@ -3,16 +3,19 @@ import DataStore from "abis/DataStore.json";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import { getContract } from "config/contracts";
 import {
-  BORROWING_FEE_RECEIVER_FACTOR_KEY,
   MAX_PNL_FACTOR_FOR_DEPOSITS_KEY,
   MAX_PNL_FACTOR_FOR_TRADERS_KEY,
   MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY,
+  borrowingExponentFactorKey,
+  borrowingFactorKey,
   claimableFundingAmountKey,
-  cumulativeBorrowingFactorKey,
+  fundingExponentFactorKey,
+  fundingFactorKey,
   isMarketDisabledKey,
   maxPnlFactorKey,
   maxPositionImpactFactorForLiquidationsKey,
   maxPositionImpactFactorKey,
+  minCollateralFactorForOpenInterest,
   minCollateralFactorKey,
   openInterestInTokensKey,
   openInterestKey,
@@ -27,7 +30,6 @@ import {
   swapImpactExponentFactorKey,
   swapImpactFactorKey,
   swapImpactPoolAmountKey,
-  totalBorrowingKey,
 } from "config/dataStore";
 import { convertTokenAddress } from "config/tokens";
 import { useMulticall } from "lib/multicall";
@@ -144,26 +146,6 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
                 methodName: "getUint",
                 params: [reserveFactorKey(marketAddress, true)],
               },
-              totalBorrowingLong: {
-                methodName: "getUint",
-                params: [totalBorrowingKey(marketAddress, true)],
-              },
-              totalBorrowingShort: {
-                methodName: "getUint",
-                params: [totalBorrowingKey(marketAddress, false)],
-              },
-              cummulativeBorrowingFactorLong: {
-                methodName: "getUint",
-                params: [cumulativeBorrowingFactorKey(marketAddress, true)],
-              },
-              cummulativeBorrowingFactorShort: {
-                methodName: "getUint",
-                params: [cumulativeBorrowingFactorKey(marketAddress, false)],
-              },
-              borrowingFeeReceiverFactor: {
-                methodName: "getUint",
-                params: [BORROWING_FEE_RECEIVER_FACTOR_KEY],
-              },
               positionImpactPoolAmount: {
                 methodName: "getUint",
                 params: [positionImpactPoolAmountKey(marketAddress)],
@@ -175,6 +157,30 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
               swapImpactPoolAmountShort: {
                 methodName: "getUint",
                 params: [swapImpactPoolAmountKey(marketAddress, market.shortTokenAddress)],
+              },
+              borrowingFactorLong: {
+                methodName: "getUint",
+                params: [borrowingFactorKey(marketAddress, true)],
+              },
+              borrowingFactorShort: {
+                methodName: "getUint",
+                params: [borrowingFactorKey(marketAddress, false)],
+              },
+              borrowingExponentFactorLong: {
+                methodName: "getUint",
+                params: [borrowingExponentFactorKey(marketAddress, true)],
+              },
+              borrowingExponentFactorShort: {
+                methodName: "getUint",
+                params: [borrowingExponentFactorKey(marketAddress, false)],
+              },
+              fundingFactor: {
+                methodName: "getUint",
+                params: [fundingFactorKey(marketAddress)],
+              },
+              fundingExponentFactor: {
+                methodName: "getUint",
+                params: [fundingExponentFactorKey(marketAddress)],
               },
               maxPnlFactorForTradersLong: {
                 methodName: "getUint",
@@ -239,6 +245,14 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
               minCollateralFactor: {
                 methodName: "getUint",
                 params: [minCollateralFactorKey(marketAddress)],
+              },
+              minCollateralFactorForOpenInterestLong: {
+                methodName: "getUint",
+                params: [minCollateralFactorForOpenInterest(marketAddress, true)],
+              },
+              minCollateralFactorForOpenInterestShort: {
+                methodName: "getUint",
+                params: [minCollateralFactorForOpenInterest(marketAddress, false)],
               },
               positionImpactExponentFactor: {
                 methodName: "getUint",
@@ -375,15 +389,16 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
           poolValueMax: poolValueMax,
           reserveFactorLong: dataStoreValues.reserveFactorLong.returnValues[0],
           reserveFactorShort: dataStoreValues.reserveFactorShort.returnValues[0],
-          totalBorrowingLong: dataStoreValues.totalBorrowingLong.returnValues[0],
-          totalBorrowingShort: dataStoreValues.totalBorrowingShort.returnValues[0],
           totalBorrowingFees,
-          cummulativeBorrowingFactorLong: dataStoreValues.cummulativeBorrowingFactorLong.returnValues[0],
-          cummulativeBorrowingFactorShort: dataStoreValues.cummulativeBorrowingFactorShort.returnValues[0],
-          borrowingFeeReceiverFactor: dataStoreValues.borrowingFeeReceiverFactor.returnValues[0],
           positionImpactPoolAmount: dataStoreValues.positionImpactPoolAmount.returnValues[0],
           swapImpactPoolAmountLong: dataStoreValues.swapImpactPoolAmountLong.returnValues[0],
           swapImpactPoolAmountShort: dataStoreValues.swapImpactPoolAmountShort.returnValues[0],
+          borrowingFactorLong: dataStoreValues.borrowingFactorLong.returnValues[0],
+          borrowingFactorShort: dataStoreValues.borrowingFactorShort.returnValues[0],
+          borrowingExponentFactorLong: dataStoreValues.borrowingExponentFactorLong.returnValues[0],
+          borrowingExponentFactorShort: dataStoreValues.borrowingExponentFactorShort.returnValues[0],
+          fundingFactor: dataStoreValues.fundingFactor.returnValues[0],
+          fundingExponentFactor: dataStoreValues.fundingExponentFactor.returnValues[0],
           pnlLongMax,
           pnlLongMin,
           pnlShortMax,
@@ -397,6 +412,10 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
           maxPnlFactorForWithdrawalsLong: dataStoreValues.maxPnlFactorForWithdrawalsLong.returnValues[0],
           maxPnlFactorForWithdrawalsShort: dataStoreValues.maxPnlFactorForWithdrawalsShort.returnValues[0],
           minCollateralFactor: dataStoreValues.minCollateralFactor.returnValues[0],
+          minCollateralFactorForOpenInterestLong:
+            dataStoreValues.minCollateralFactorForOpenInterestLong.returnValues[0],
+          minCollateralFactorForOpenInterestShort:
+            dataStoreValues.minCollateralFactorForOpenInterestShort.returnValues[0],
           claimableFundingAmountLong: dataStoreValues.claimableFundingAmountLong?.returnValues[0],
           claimableFundingAmountShort: dataStoreValues.claimableFundingAmountShort?.returnValues[0],
           positionFeeFactor: dataStoreValues.positionFeeFactor.returnValues[0],

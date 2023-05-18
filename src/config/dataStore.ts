@@ -19,8 +19,11 @@ export const POOL_AMOUNT_KEY = hashString("POOL_AMOUNT");
 export const RESERVE_FACTOR_KEY = hashString("RESERVE_FACTOR");
 export const NONCE_KEY = hashString("NONCE");
 export const BORROWING_FACTOR_KEY = hashString("BORROWING_FACTOR");
+export const BORROWING_EXPONENT_FACTOR_KEY = hashString("BORROWING_EXPONENT_FACTOR");
 export const CUMULATIVE_BORROWING_FACTOR_KEY = hashString("CUMULATIVE_BORROWING_FACTOR");
 export const TOTAL_BORROWING_KEY = hashString("TOTAL_BORROWING");
+export const FUNDING_FACTOR_KEY = hashString("FUNDING_FACTOR");
+export const FUNDING_EXPONENT_FACTOR_KEY = hashString("FUNDING_EXPONENT_FACTOR");
 export const MAX_PNL_FACTOR_KEY = hashString("MAX_PNL_FACTOR");
 export const MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY = hashString("MAX_PNL_FACTOR_FOR_WITHDRAWALS");
 export const MAX_PNL_FACTOR_FOR_DEPOSITS_KEY = hashString("MAX_PNL_FACTOR_FOR_DEPOSITS");
@@ -32,6 +35,10 @@ export const POSITION_IMPACT_POOL_AMOUNT_KEY = hashString("POSITION_IMPACT_POOL_
 export const SWAP_IMPACT_POOL_AMOUNT_KEY = hashString("SWAP_IMPACT_POOL_AMOUNT");
 export const MIN_COLLATERAL_USD_KEY = hashString("MIN_COLLATERAL_USD");
 export const MIN_COLLATERAL_FACTOR_KEY = hashString("MIN_COLLATERAL_FACTOR");
+export const MIN_COLLATERAL_FACTOR_FOR_OPEN_INTEREST_MULTIPLIER_KEY = hashString(
+  "MIN_COLLATERAL_FACTOR_FOR_OPEN_INTEREST_MULTIPLIER"
+);
+export const MIN_POSITION_SIZE_USD_KEY = hashString("MIN_POSITION_SIZE_USD");
 export const MAX_LEVERAGE_KEY = hashString("MAX_LEVERAGE");
 export const DEPOSIT_GAS_LIMIT_KEY = hashString("DEPOSIT_GAS_LIMIT");
 export const WITHDRAWAL_GAS_LIMIT_KEY = hashString("WITHDRAWAL_GAS_LIMIT");
@@ -108,12 +115,24 @@ export function borrowingFactorKey(market: string, isLong: boolean) {
   return hashData(["bytes32", "address", "bool"], [BORROWING_FACTOR_KEY, market, isLong]);
 }
 
+export function borrowingExponentFactorKey(market: string, isLong: boolean) {
+  return hashData(["bytes32", "address", "bool"], [BORROWING_EXPONENT_FACTOR_KEY, market, isLong]);
+}
+
 export function cumulativeBorrowingFactorKey(market: string, isLong: boolean) {
   return hashData(["bytes32", "address", "bool"], [CUMULATIVE_BORROWING_FACTOR_KEY, market, isLong]);
 }
 
 export function totalBorrowingKey(market: string, isLong: boolean) {
   return hashData(["bytes32", "address", "bool"], [TOTAL_BORROWING_KEY, market, isLong]);
+}
+
+export function fundingFactorKey(market: string) {
+  return hashData(["bytes32", "address"], [FUNDING_FACTOR_KEY, market]);
+}
+
+export function fundingExponentFactorKey(market: string) {
+  return hashData(["bytes32", "address"], [FUNDING_EXPONENT_FACTOR_KEY, market]);
 }
 
 export function maxPnlFactorKey(pnlFactorType: string, market: string, isLong: boolean) {
@@ -170,6 +189,13 @@ export function accountPositionListKey(account: string) {
 
 export function minCollateralFactorKey(market: string) {
   return hashData(["bytes32", "address"], [MIN_COLLATERAL_FACTOR_KEY, market]);
+}
+
+export function minCollateralFactorForOpenInterest(market: string, isLong: boolean) {
+  return hashData(
+    ["bytes32", "address", "bool"],
+    [MIN_COLLATERAL_FACTOR_FOR_OPEN_INTEREST_MULTIPLIER_KEY, market, isLong]
+  );
 }
 
 export function hashedPositionKey(account: string, market: string, collateralToken: string, isLong: boolean) {

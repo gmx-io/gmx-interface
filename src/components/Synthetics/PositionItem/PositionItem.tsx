@@ -10,9 +10,10 @@ import { AiOutlineEdit } from "react-icons/ai";
 import { ImSpinner2 } from "react-icons/im";
 
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/fees";
-import { getTriggerThresholdType } from "domain/synthetics/trade";
+import { TradeMode, getTriggerThresholdType } from "domain/synthetics/trade";
 import { CHART_PERIODS } from "lib/legacy";
 import "./PositionItem.scss";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 export type Props = {
   position: PositionInfo;
@@ -22,12 +23,13 @@ export type Props = {
   onClosePositionClick?: () => void;
   onEditCollateralClick?: () => void;
   onShareClick?: () => void;
-  onSelectPositionClick?: () => void;
+  onSelectPositionClick?: (tradeMode?: TradeMode) => void;
   onOrdersClick?: () => void;
   isLarge: boolean;
 };
 
 export function PositionItem(p: Props) {
+  const { showDebugValues } = useSettings();
   const { positionOrders } = p;
   const displayedPnl = p.showPnlAfterFees ? p.position.pnlAfterFees : p.position.pnl;
   const displayedPnlPercentage = p.showPnlAfterFees ? p.position.pnlAfterFeesPercentage : p.position.pnlPercentage;
@@ -224,15 +226,15 @@ export function PositionItem(p: Props) {
                 {positionOrders.map((order) => {
                   const error = getOrderError(order, p.position);
                   return (
-                    <div
-                      key={order.key}
-                      className={cx("Position-list-order active-order-tooltip", { "order-error": !!error })}
-                    >
-                      {getTriggerThresholdType(order.orderType, order.isLong)} {formatUsd(order.triggerPrice)}:
-                      {isIncreaseOrderType(order.orderType) ? "+" : "-"}
+                    <div key={order.key} className="Position-list-order active-order-tooltip">
+                      {getTriggerThresholdType(order.orderType, order.isLong)}{" "}
+                      {formatUsd(order.triggerPrice, {
+                        displayDecimals: order.indexToken?.priceDecimals,
+                      })}
+                      :{isIncreaseOrderType(order.orderType) ? "+" : "-"}
                       {formatUsd(order.sizeDeltaUsd)}
                       <br />
-                      {error && <span>{error}</span>}
+                      {error && <div className="order-error-text">{error}</div>}
                     </div>
                   );
                 })}
@@ -247,111 +249,127 @@ export function PositionItem(p: Props) {
   function renderLarge() {
     const indexPriceDecimals = p.position?.indexToken?.priceDecimals;
     return (
-      <tr className="Exhange-list-item">
-        <td className="clickable" onClick={p.onSelectPositionClick}>
-          {/* title */}
-          <div className="Exchange-list-title">
-            <Tooltip
-              handle={p.position.marketInfo.indexToken.symbol}
-              position="left-bottom"
-              handleClassName="plain"
-              renderContent={() => (
-                <div>
-                  <StatsTooltipRow label={t`Market`} value={p.position.marketInfo.name} showDollar={false} />
-
-                  <br />
-
+      <>
+        <tr className="Exhange-list-item">
+          <td className="clickable" onClick={() => p.onSelectPositionClick?.()}>
+            {/* title */}
+            <div className="Exchange-list-title">
+              <Tooltip
+                handle={p.position.marketInfo.indexToken.symbol}
+                position="left-bottom"
+                handleClassName="plain"
+                renderContent={() => (
                   <div>
-                    <Trans>
-                      Click on a row to select the position's market, then use the swap box to increase your position
-                      size or to set stop-loss / take-profit orders.
-                    </Trans>
+                    <StatsTooltipRow label={t`Market`} value={p.position.marketInfo.name} showDollar={false} />
+
                     <br />
-                    <br />
-                    <Trans>Use the "Close" button to reduce your position size.</Trans>
+
+                    <div>
+                      <Trans>
+                        Click on a row to select the position's market, then use the swap box to increase your position
+                        size or to set stop-loss / take-profit orders.
+                      </Trans>
+                      <br />
+                      <br />
+                      <Trans>Use the "Close" button to reduce your position size.</Trans>
+                    </div>
+
+                    {showDebugValues && (
+                      <>
+                        <br />
+                        <StatsTooltipRow
+                          label={"Key"}
+                          value={<div className="debug-key muted">{p.position.contractKey}</div>}
+                          showDollar={false}
+                        />
+                      </>
+                    )}
                   </div>
-                </div>
-              )}
-            />
-            {p.position.pendingUpdate && <ImSpinner2 className="spin position-loading-icon" />}
-          </div>
-          <div className="Exchange-list-info-label" onClick={p.onSelectPositionClick}>
-            <span className="muted">{formatLeverage(p.position.leverage) || "..."}&nbsp;</span>
-            <span className={cx({ positive: p.position.isLong, negative: !p.position.isLong })}>
-              {p.position.isLong ? t`Long` : t`Short`}
-            </span>
-          </div>
-        </td>
-        <td>
-          {/* netValue */}
-          {p.position.isOpening ? (
-            t`Opening...`
-          ) : (
-            <>
-              {renderNetValue()}
-              {displayedPnl && (
-                <div
-                  className={cx("Exchange-list-info-label", {
-                    positive: displayedPnl.gt(0),
-                    negative: displayedPnl.lt(0),
-                    muted: displayedPnl.eq(0),
-                  })}
-                >
-                  {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
-                </div>
-              )}
-            </>
-          )}
-        </td>
-        <td>
-          {formatUsd(p.position.sizeInUsd)}
-          {renderPositionOrders()}
-        </td>
-        <td>
-          {/* collateral */}
-          <div>{renderCollateral()}</div>
-        </td>
-        <td>
-          {/* entryPrice */}
-          {p.position.isOpening
-            ? t`Opening...`
-            : formatUsd(p.position.entryPrice, {
-                displayDecimals: indexPriceDecimals,
-              })}
-        </td>
-        <td className="clickable" onClick={p.onSelectPositionClick}>
-          {/* markPrice */}
-          {formatUsd(p.position.markPrice, {
-            displayDecimals: indexPriceDecimals,
-          })}
-        </td>
-        <td>
-          {/* liqPrice */}
-          {formatUsd(p.position.liquidationPrice, {
-            displayDecimals: indexPriceDecimals,
-          })}
-        </td>
-        <td>
-          {/* Close */}
-          {!p.position.isOpening && !p.hideActions && (
-            <button
-              className="Exchange-list-action"
-              onClick={p.onClosePositionClick}
-              disabled={p.position.sizeInUsd.eq(0)}
-            >
-              <Trans>Close</Trans>
-            </button>
-          )}
-        </td>
-        <td>
-          {!p.position.isOpening && !p.hideActions && (
-            <PositionDropdown
-              handleEditCollateral={p.onEditCollateralClick}
-              handleMarketSelect={p.onSelectPositionClick}
-            />
-          )}
-        </td>
-      </tr>
+                )}
+              />
+              {p.position.pendingUpdate && <ImSpinner2 className="spin position-loading-icon" />}
+            </div>
+            <div className="Exchange-list-info-label" onClick={() => p.onSelectPositionClick?.()}>
+              <span className="muted">{formatLeverage(p.position.leverage) || "..."}&nbsp;</span>
+              <span className={cx({ positive: p.position.isLong, negative: !p.position.isLong })}>
+                {p.position.isLong ? t`Long` : t`Short`}
+              </span>
+            </div>
+          </td>
+          <td>
+            {/* netValue */}
+            {p.position.isOpening ? (
+              t`Opening...`
+            ) : (
+              <>
+                {renderNetValue()}
+                {displayedPnl && (
+                  <div
+                    className={cx("Exchange-list-info-label", {
+                      positive: displayedPnl.gt(0),
+                      negative: displayedPnl.lt(0),
+                      muted: displayedPnl.eq(0),
+                    })}
+                  >
+                    {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
+                  </div>
+                )}
+              </>
+            )}
+          </td>
+          <td>
+            {formatUsd(p.position.sizeInUsd)}
+            {renderPositionOrders()}
+          </td>
+          <td>
+            {/* collateral */}
+            <div>{renderCollateral()}</div>
+          </td>
+          <td>
+            {/* entryPrice */}
+            {p.position.isOpening
+              ? t`Opening...`
+              : formatUsd(p.position.entryPrice, {
+                  displayDecimals: indexPriceDecimals,
+                })}
+          </td>
+          <td className="clickable" onClick={() => p.onSelectPositionClick?.()}>
+            {/* markPrice */}
+            {formatUsd(p.position.markPrice, {
+              displayDecimals: indexPriceDecimals,
+            })}
+          </td>
+          <td>
+            {/* liqPrice */}
+            {formatUsd(p.position.liquidationPrice, {
+              displayDecimals: indexPriceDecimals,
+            })}
+          </td>
+          <td>
+            {/* Close */}
+            {!p.position.isOpening && !p.hideActions && (
+              <button
+                className="Exchange-list-action"
+                onClick={p.onClosePositionClick}
+                disabled={p.position.sizeInUsd.eq(0)}
+              >
+                <Trans>Close</Trans>
+              </button>
+            )}
+          </td>
+          <td>
+            {!p.position.isOpening && !p.hideActions && (
+              <PositionDropdown
+                handleEditCollateral={p.onEditCollateralClick}
+                handleMarketSelect={() => p.onSelectPositionClick?.()}
+                handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market)}
+                handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit)}
+                handleTriggerClose={() => p.onSelectPositionClick?.(TradeMode.Trigger)}
+              />
+            )}
+          </td>
+        </tr>
+      </>
     );
   }
 
@@ -365,6 +383,12 @@ export function PositionItem(p: Props) {
         </div>
         <div className="App-card-divider" />
         <div className="App-card-content">
+          {showDebugValues && (
+            <div className="App-card-row">
+              <div className="label">Key</div>
+              <div className="debug-key muted">{p.position.contractKey}</div>
+            </div>
+          )}
           <div className="App-card-row">
             <div className="label">
               <Trans>Market</Trans>

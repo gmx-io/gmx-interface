@@ -146,6 +146,7 @@ export function OrderEditor(p: Props) {
 
   const market = getByKey(marketsInfoData, p.order.marketAddress);
   const indexToken = getTokenData(tokensData, market?.indexTokenAddress);
+  const indexPriceDecimals = indexToken?.priceDecimals;
   const markPrice = p.order.isLong ? indexToken?.prices?.minPrice : indexToken?.prices?.maxPrice;
 
   const positionKey = getPositionKey(
@@ -341,12 +342,12 @@ export function OrderEditor(p: Props) {
         const positionOrder = p.order as PositionOrderInfo;
 
         setSizeInputValue(formatAmountFree(positionOrder.sizeDeltaUsd || 0, USD_DECIMALS));
-        setTriggerPriceInputValue(formatAmount(positionOrder.triggerPrice || 0, USD_DECIMALS, 2));
+        setTriggerPriceInputValue(formatAmount(positionOrder.triggerPrice || 0, USD_DECIMALS, indexPriceDecimals || 2));
       }
 
       setIsInited(true);
     },
-    [fromToken, isInited, p.order, sizeInputValue, toToken]
+    [fromToken, indexPriceDecimals, isInited, p.order, sizeInputValue, toToken]
   );
 
   return (
@@ -371,8 +372,10 @@ export function OrderEditor(p: Props) {
             <BuyInputSection
               topLeftLabel={t`Price`}
               topRightLabel={t`Mark:`}
-              topRightValue={formatUsd(markPrice)}
-              onClickTopRightLabel={() => setTriggerPriceInputValue(formatAmount(markPrice, USD_DECIMALS, 2))}
+              topRightValue={formatUsd(markPrice, { displayDecimals: indexPriceDecimals })}
+              onClickTopRightLabel={() =>
+                setTriggerPriceInputValue(formatAmount(markPrice, USD_DECIMALS, indexPriceDecimals || 2))
+              }
               inputValue={triggerPirceInputValue}
               onInputValueChange={(e) => setTriggerPriceInputValue(e.target.value)}
             >
@@ -404,9 +407,15 @@ export function OrderEditor(p: Props) {
         <div className="PositionEditor-info-box">
           {!isSwapOrderType(p.order.orderType) && (
             <>
-              <ExchangeInfoRow label={t`Acceptable Price`} value={formatUsd(acceptablePrice)} />
+              <ExchangeInfoRow
+                label={t`Acceptable Price`}
+                value={formatUsd(acceptablePrice, { displayDecimals: indexPriceDecimals })}
+              />
               {existingPosition?.liquidationPrice && (
-                <ExchangeInfoRow label={t`Liq. Price`} value={formatUsd(existingPosition.liquidationPrice)} />
+                <ExchangeInfoRow
+                  label={t`Liq. Price`}
+                  value={formatUsd(existingPosition.liquidationPrice, { displayDecimals: indexPriceDecimals })}
+                />
               )}
             </>
           )}

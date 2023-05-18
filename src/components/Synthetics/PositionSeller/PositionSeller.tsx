@@ -468,10 +468,9 @@ export function PositionSeller(p: Props) {
                 value={position?.pnl ? formatDeltaUsd(position.pnl, position.pnlPercentage) : "..."}
               />
 
-              <TradeFeesRow {...fees} isTop executionFee={executionFee} feesType="decrease" />
+              <TradeFeesRow {...fees} executionFee={executionFee} feesType="decrease" />
 
               <ExchangeInfoRow
-                isTop
                 label={t`Receive`}
                 className="Exchange-info-row PositionSeller-receive-row "
                 value={
