@@ -56,6 +56,7 @@ export function MarketStats(p: Props) {
           value={
             <Tooltip
               handle={formatUsd(marketPrice) || "..."}
+              position="right-bottom"
               renderContent={() => {
                 return (
                   <div>
