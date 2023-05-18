@@ -49,7 +49,7 @@ function AffiliatesStats({
     [AVALANCHE]: avalancheData,
     total,
   } = referralsData || {};
-  const { referrerTotalStats, rebateDistributions, referrerTierInfo } = currentReferralsData;
+  const { affiliateTotalStats, rebateDistributions, affiliateTierInfo } = currentReferralsData;
   const {
     currentPage: currentRebatePage,
     getCurrentData: getCurrentRebateData,
@@ -58,7 +58,7 @@ function AffiliatesStats({
   } = usePagination(rebateDistributions);
 
   const currentRebateData = getCurrentRebateData();
-  const allReferralCodes = referrerTotalStats.map((c) => c.referralCode.trim());
+  const allReferralCodes = affiliateTotalStats.map((c) => c.referralCode.trim());
   const finalAffiliatesTotalStats = useMemo(
     () =>
       recentlyAddedCodes.filter(isRecentReferralCodeNotExpired).reduce((acc, cv) => {
@@ -66,8 +66,8 @@ function AffiliatesStats({
           acc = acc.concat(cv);
         }
         return acc;
-      }, referrerTotalStats),
-    [allReferralCodes, referrerTotalStats, recentlyAddedCodes]
+      }, affiliateTotalStats),
+    [allReferralCodes, affiliateTotalStats, recentlyAddedCodes]
   );
 
   const {
@@ -78,7 +78,7 @@ function AffiliatesStats({
   } = usePagination(finalAffiliatesTotalStats);
 
   const currentAffiliatesData = getCurrentAffiliatesData();
-  const tierId = referrerTierInfo?.tierId;
+  const tierId = affiliateTierInfo?.tierId;
 
   return (
     <div className="referral-body-container">
@@ -124,21 +124,21 @@ function AffiliatesStats({
           }
         />
         <ReferralInfoCard
-          value={`$${getUSDValue(currentReferralsData?.cumulativeStats?.referrerRebates)}`}
+          value={`$${getUSDValue(currentReferralsData?.cumulativeStats?.affiliateRebates)}`}
           label={t`Rebates`}
           labelTooltipText={t`Rebates earned by this account as an affiliate.`}
           tooltipContent={
             <>
               <StatsTooltipRow
                 label={t`Rebates on Arbitrum`}
-                value={getUSDValue(arbitrumData?.cumulativeStats.referrerRebates)}
+                value={getUSDValue(arbitrumData?.cumulativeStats.affiliateRebates)}
               />
               <StatsTooltipRow
                 label={t`Rebates on Avalanche`}
-                value={getUSDValue(avalancheData?.cumulativeStats.referrerRebates)}
+                value={getUSDValue(avalancheData?.cumulativeStats.affiliateRebates)}
               />
               <div className="Tooltip-divider" />
-              <StatsTooltipRow label={t`Total`} value={getUSDValue(total?.referrerRebates)} />
+              <StatsTooltipRow label={t`Total`} value={getUSDValue(total?.affiliateRebates)} />
             </>
           }
         />
@@ -166,7 +166,7 @@ function AffiliatesStats({
               <p className="title">
                 <Trans>Referral Codes</Trans>{" "}
                 <span className="sub-title">
-                  {referrerTierInfo && t`Tier ${getTierIdDisplay(tierId)} (${tierRebateInfo[tierId]}% rebate)`}
+                  {affiliateTierInfo && t`Tier ${getTierIdDisplay(tierId)} (${tierRebateInfo[tierId]}% rebate)`}
                 </span>
               </p>
               <Button variant="clear" onClick={open}>
@@ -199,9 +199,9 @@ function AffiliatesStats({
               <tbody>
                 {currentAffiliatesData.map((stat, index) => {
                   const ownerOnOtherChain = stat?.ownerOnOtherChain;
-                  let referrerRebate = bigNumberify(0);
+                  let affiliateRebate = bigNumberify(0);
                   if (stat && stat.totalRebateUsd && stat.discountUsd) {
-                    referrerRebate = stat.totalRebateUsd.sub(stat.discountUsd);
+                    affiliateRebate = stat.totalRebateUsd.sub(stat.discountUsd);
                   }
                   return (
                     <tr key={index}>
@@ -220,7 +220,7 @@ function AffiliatesStats({
                           <a
                             href={getTwitterShareUrl(stat.referralCode)}
                             target="_blank"
-                            rel="noopener noreferrer"
+                            rel="noopener noaffiliate noreferrer"
                             className="referral-code-icon"
                           >
                             <FiTwitter />
@@ -268,7 +268,7 @@ function AffiliatesStats({
                       </td>
                       <td data-label="Total Volume">${getUSDValue(stat.volume)}</td>
                       <td data-label="Traders Referred">{stat.registeredReferralsCount}</td>
-                      <td data-label="Total Rebates">${getUSDValue(referrerRebate, 4)}</td>
+                      <td data-label="Total Rebates">${getUSDValue(affiliateRebate, 4)}</td>
                     </tr>
                   );
                 })}

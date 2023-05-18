@@ -8,7 +8,7 @@ import Timelock from "abis/Timelock.json";
 import { MAX_REFERRAL_CODE_LENGTH, isAddressZero, isHashZero } from "lib/legacy";
 import { getContract } from "config/contracts";
 import { REGEX_VERIFY_BYTES32 } from "components/Referrals/referralsHelper";
-import { SUPPORTED_CHAIN_IDS, ARBITRUM, AVALANCHE } from "config/chains";
+import { ARBITRUM, AVALANCHE } from "config/chains";
 import { arbitrumReferralsGraphClient, avalancheReferralsGraphClient } from "lib/subgraph/clients";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
@@ -91,12 +91,14 @@ export function useUserCodesOnAllChain(account) {
   useEffect(() => {
     async function main() {
       const [arbitrumCodes, avalancheCodes] = await Promise.all(
-        SUPPORTED_CHAIN_IDS.map(async (chainId) => {
+        [ARBITRUM, AVALANCHE].map(async (chainId) => {
           try {
             const client = getGraphClient(chainId);
             const { data } = await client.query({ query, variables: { account: (account || "").toLowerCase() } });
             return data.referralCodes.map((c) => c.code);
           } catch (ex) {
+            // eslint-disable-next-line no-console
+            console.warn("Failed to fetch referral codes on chain %s", chainId, ex);
             return [];
           }
         })
