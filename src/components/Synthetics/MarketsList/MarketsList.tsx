@@ -176,8 +176,8 @@ export function MarketsList() {
                           />
                         </div>
                         <div className="App-card-title-info-text">
-                          <div className="App-card-title-info-text-name">{stats.token.name}</div>
-                          <div className="App-card-title-info-text-address">{stats.token.symbol}</div>
+                          <div className="App-card-info-title">{stats.token.name}</div>
+                          <div className="App-card-info-subtitle">{stats.token.symbol}</div>
                         </div>
                         <div>
                           <AssetDropdown assetSymbol={stats.token.symbol} assetInfo={stats.token} />
