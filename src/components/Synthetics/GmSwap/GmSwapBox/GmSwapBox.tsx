@@ -677,7 +677,7 @@ export function GmSwapBox(p: Props) {
       if (queryParams.get("market")) {
         const marketInfo = getByKey(marketsInfoData, queryParams.get("market")!);
         if (marketInfo) {
-          setIndexName(marketInfo?.isSpotOnly ? "SPOT-ONLY" : marketInfo?.indexToken.symbol);
+          setIndexName(getMarketIndexName(marketInfo));
           onSelectMarket(marketInfo?.marketTokenAddress);
         }
       }
