@@ -423,7 +423,7 @@ export function PositionEditor(p: Props) {
               onSelectToken={(token) => setSelectedCollateralAddress(token.address)}
               tokens={availableSwapTokens}
               infoTokens={infoTokens}
-              className="GlpSwap-from-token"
+              className="Edit-collateral-token-selector"
               showSymbolImage={true}
               showTokenImgInDropdown={true}
             />
