@@ -18,6 +18,7 @@ import { getAcceptablePrice, getMarkPrice } from "./utils";
 import { useVirtualInventory } from "../fees/useVirtualInventory";
 
 export type AvailableMarketsOptions = {
+  allMarkets?: MarketInfo[];
   availableMarkets?: MarketInfo[];
   marketWithPosition?: MarketInfo;
   collateralWithPosition?: TokenData;
@@ -63,9 +64,11 @@ export function useAvailableMarketsOptions(
       return {};
     }
 
-    const availableMarkets = Object.values(marketsInfoData || {}).filter(
-      (market) => isMarketIndexToken(market, indexToken.address) && !market.isSpotOnly && !market.isDisabled
+    const allMarkets = Object.values(marketsInfoData || {}).filter(
+      (market) => !market.isSpotOnly && !market.isDisabled
     );
+
+    const availableMarkets = allMarkets.filter((market) => isMarketIndexToken(market, indexToken.address));
 
     const liquidMarkets = increaseSizeUsd
       ? availableMarkets.filter((marketInfo) => {
@@ -75,7 +78,7 @@ export function useAvailableMarketsOptions(
         })
       : availableMarkets;
 
-    const result: AvailableMarketsOptions = { availableMarkets };
+    const result: AvailableMarketsOptions = { allMarkets, availableMarkets };
 
     if (isIncrease && liquidMarkets.length === 0) {
       result.isNoSufficientLiquidityInAnyMarket = true;

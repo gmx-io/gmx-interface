@@ -4,9 +4,9 @@ import cx from "classnames";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Checkbox from "components/Checkbox/Checkbox";
-import { Dropdown } from "components/Dropdown/Dropdown";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
+import { MarketSelector } from "components/MarketSelector/MarketSelector";
 import { ConfirmationBox } from "components/Synthetics/ConfirmationBox/ConfirmationBox";
 import Tab from "components/Tab/Tab";
 import TokenSelector from "components/TokenSelector/TokenSelector";
@@ -22,7 +22,7 @@ import {
   useGasLimits,
   useGasPrice,
 } from "domain/synthetics/fees";
-import { MarketInfo, getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
+import { MarketInfo, getAvailableUsdLiquidityForPosition, getMarketIndexName } from "domain/synthetics/markets";
 import { OrderInfo, OrdersInfoData } from "domain/synthetics/orders";
 import { PositionInfo, PositionsInfoData, formatLeverage, usePositionsConstants } from "domain/synthetics/positions";
 import { TokenData, TokensData, TokensRatio, convertToUsd, getTokensRatioByPrice } from "domain/synthetics/tokens";
@@ -552,7 +552,7 @@ export function TradeBox(p: Props) {
     hasExistingOrder: Boolean(existingOrder),
     hasExistingPosition: Boolean(existingPosition),
   });
-  const { availableMarkets } = marketsOptions;
+  const { availableMarkets, allMarkets } = marketsOptions;
 
   const availableCollaterals = useMemo(() => {
     if (!marketInfo) {
@@ -999,22 +999,14 @@ export function TradeBox(p: Props) {
           className="SwapBox-info-row"
           label={t`Market`}
           value={
-            isIncrease ? (
-              `${toToken?.symbol}/USD`
-            ) : (
-              <Dropdown
-                className="SwapBox-market-selector-dropdown"
-                selectedOption={{
-                  label: `${toToken?.symbol}/USD`,
-                  value: toToken?.address,
-                }}
-                placeholder={"-"}
-                options={indexTokens.map((token) => ({ label: `${token.symbol}/USD`, value: token.address }))}
-                onSelect={(option) => {
-                  onSelectToTokenAddress(option.value);
-                }}
-              />
-            )
+            <MarketSelector
+              label={t`Market`}
+              className="SwapBox-info-dropdown"
+              selectedIndexName={toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined}
+              markets={allMarkets || []}
+              isSideMenu
+              onSelectMarket={(indexName, marketInfo) => onSelectToTokenAddress(marketInfo.indexToken.address)}
+            />
           }
         />
 
