@@ -204,10 +204,16 @@ export function getOrderError(order: OrderInfo, position?: PositionInfo) {
     order.isLong
   );
 
+  const errorMessage = t`Order Trigger Price is beyond position's Liquidation Price.`;
+
   if (isOrderForPosition(order, positionKey)) {
     if (position?.isLong) {
       if (position.liquidationPrice?.lt(order.triggerPrice)) {
-        return t`Order Trigger Price is beyond position's Liquidation Price.`;
+        return errorMessage;
+      }
+    } else {
+      if (position?.liquidationPrice?.gt(order.triggerPrice)) {
+        return errorMessage;
       }
     }
   }
