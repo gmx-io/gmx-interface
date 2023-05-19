@@ -3660,8 +3660,11 @@ msgid "Save on Fees"
 msgstr "수수료 절약"
 
 #: src/components/MarketSelector/MarketSelector.tsx
-#: src/components/MarketSelector/PoolSelector.tsx
 msgid "Search Market"
+msgstr ""
+
+#: src/components/MarketSelector/PoolSelector.tsx
+msgid "Search Pool"
 msgstr ""
 
 #: src/components/TokenSelector/TokenSelector.tsx

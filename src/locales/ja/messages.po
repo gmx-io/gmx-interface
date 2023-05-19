@@ -3654,8 +3654,11 @@ msgid "Save on Fees"
 msgstr "手数料削減"
 
 #: src/components/MarketSelector/MarketSelector.tsx
-#: src/components/MarketSelector/PoolSelector.tsx
 msgid "Search Market"
+msgstr ""
+
+#: src/components/MarketSelector/PoolSelector.tsx
+msgid "Search Pool"
 msgstr ""
 
 #: src/components/TokenSelector/TokenSelector.tsx
