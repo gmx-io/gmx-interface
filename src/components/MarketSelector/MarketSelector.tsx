@@ -95,7 +95,8 @@ export function MarketSelector({
   const filteredOptions = marketsOptions.filter((option) => {
     return (
       option.indexName.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 ||
-      option.marketInfo.indexToken.name.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1
+      (!option.marketInfo.isSpotOnly &&
+        option.marketInfo.indexToken.name.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1)
     );
   });
 

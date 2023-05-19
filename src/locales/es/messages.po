@@ -2570,11 +2570,13 @@ msgstr "Referencia: {0}"
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Market"
@@ -3181,7 +3183,9 @@ msgid "PnL After Fees"
 msgstr "GyP Después de Comisiones"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
+#: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 #: src/pages/Dashboard/DashboardV1.js
@@ -3648,6 +3652,11 @@ msgstr "Ahorrar en Costes"
 #: src/components/Glp/GlpSwap.js
 msgid "Save on Fees"
 msgstr "Ahorrar en Comisiones"
+
+#: src/components/MarketSelector/MarketSelector.tsx
+#: src/components/MarketSelector/PoolSelector.tsx
+msgid "Search Market"
+msgstr ""
 
 #: src/components/TokenSelector/TokenSelector.tsx
 msgid "Search Token"

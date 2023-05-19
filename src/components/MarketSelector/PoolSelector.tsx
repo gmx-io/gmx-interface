@@ -109,7 +109,7 @@ export function PoolSelector({
           <div className="TokenSelector-token-row TokenSelector-token-input-row">
             <input
               type="text"
-              placeholder={t`Search Market`}
+              placeholder={t`Search Pool`}
               value={searchKeyword}
               onChange={(e) => setSearchKeyword(e.target.value)}
               onKeyDown={_handleKeyDown}
