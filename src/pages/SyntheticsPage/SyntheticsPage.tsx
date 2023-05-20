@@ -42,6 +42,7 @@ export type Props = {
   shouldDisableValidation: boolean;
   savedShouldShowPositionLines: boolean;
   showPnlAfterFees: boolean;
+  savedShowPnlAfterFees: boolean;
   onConnectWallet: () => void;
   setSavedShouldShowPositionLines: (value: boolean) => void;
   setPendingTxns: (txns: any) => void;
@@ -67,6 +68,7 @@ export function SyntheticsPage(p: Props) {
     setSavedShouldShowPositionLines,
     setPendingTxns,
     setTradePageVersion,
+    savedShowPnlAfterFees,
   } = p;
   const { chainId } = useChainId();
   const { library, account } = useWeb3React();
@@ -284,6 +286,7 @@ export function SyntheticsPage(p: Props) {
                 onClosePositionClick={setClosingPositionKey}
                 onEditCollateralClick={setEditingPositionKey}
                 showPnlAfterFees={showPnlAfterFees}
+                savedShowPnlAfterFees={savedShowPnlAfterFees}
               />
             )}
             {listSection === ListSection.Orders && (
@@ -367,6 +370,7 @@ export function SyntheticsPage(p: Props) {
               onClosePositionClick={setClosingPositionKey}
               onEditCollateralClick={setEditingPositionKey}
               showPnlAfterFees={showPnlAfterFees}
+              savedShowPnlAfterFees={savedShowPnlAfterFees}
             />
           )}
           {listSection === ListSection.Orders && (

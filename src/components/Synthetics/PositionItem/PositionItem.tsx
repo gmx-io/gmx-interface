@@ -20,6 +20,7 @@ export type Props = {
   positionOrders: PositionOrderInfo[];
   hideActions?: boolean;
   showPnlAfterFees: boolean;
+  savedShowPnlAfterFees: boolean;
   onClosePositionClick?: () => void;
   onEditCollateralClick?: () => void;
   onShareClick?: () => void;
@@ -31,8 +32,8 @@ export type Props = {
 export function PositionItem(p: Props) {
   const { showDebugValues } = useSettings();
   const { positionOrders } = p;
-  const displayedPnl = p.showPnlAfterFees ? p.position.pnlAfterFees : p.position.pnl;
-  const displayedPnlPercentage = p.showPnlAfterFees ? p.position.pnlAfterFeesPercentage : p.position.pnlPercentage;
+  const displayedPnl = p.savedShowPnlAfterFees ? p.position.pnlAfterFees : p.position.pnl;
+  const displayedPnlPercentage = p.savedShowPnlAfterFees ? p.position.pnlAfterFeesPercentage : p.position.pnlPercentage;
 
   function renderNetValue() {
     return (
@@ -50,7 +51,7 @@ export function PositionItem(p: Props) {
               value={formatUsd(p.position.initialCollateralUsd) || "..."}
               showDollar={false}
             />
-            <StatsTooltipRow label={t`PnL`} value={formatDeltaUsd(displayedPnl) || "..."} showDollar={false} />
+            <StatsTooltipRow label={t`PnL`} value={formatDeltaUsd(p.position?.pnl) || "..."} showDollar={false} />
             <StatsTooltipRow
               label={t`Accrued Borrow Fee`}
               value={formatUsd(p.position.pendingBorrowingFeesUsd?.mul(-1)) || "..."}
