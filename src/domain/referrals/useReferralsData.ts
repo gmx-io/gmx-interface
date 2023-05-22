@@ -3,7 +3,7 @@ import { bigNumberify } from "lib/numbers";
 import { useEffect, useState } from "react";
 import { decodeReferralCode, getGraphClient, useUserCodesOnAllChain } from ".";
 import { gql } from "@apollo/client";
-import { ARBITRUM, AVALANCHE } from "config/chains";
+import { SUPPORTED_CHAIN_IDS } from "config/chains";
 const DISTRIBUTION_TYPE_REBATES = "1";
 const DISTRIBUTION_TYPE_DISCOUNT = "2";
 
@@ -201,7 +201,7 @@ export default function useReferralsData(account) {
     };
 
     Promise.all(
-      [ARBITRUM, AVALANCHE].map(async (chainId) => {
+      SUPPORTED_CHAIN_IDS.map(async (chainId) => {
         try {
           const data = await getChainReferralData(chainId);
           return data;
