@@ -220,7 +220,7 @@ function AffiliatesStats({
                           <a
                             href={getTwitterShareUrl(stat.referralCode)}
                             target="_blank"
-                            rel="noopener noaffiliate noreferrer"
+                            rel="noopener noreferrer"
                             className="referral-code-icon"
                           >
                             <FiTwitter />
