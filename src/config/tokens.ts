@@ -446,6 +446,28 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
     },
   ],
+  [SEPOLIA_TESTNET]: [
+    {
+      name: "GMX",
+      symbol: "GMX",
+      address: getContract(SEPOLIA_TESTNET, "GMX"),
+      decimals: 18,
+      imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
+    },
+    {
+      name: "Escrowed GMX",
+      symbol: "esGMX",
+      address: getContract(SEPOLIA_TESTNET, "ES_GMX"),
+      decimals: 18,
+    },
+    {
+      name: "GMX LP",
+      symbol: "GLP",
+      address: getContract(SEPOLIA_TESTNET, "GLP"),
+      decimals: 18,
+      imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
+    },
+  ],
 };
 
 export const PLATFORM_TOKENS: { [chainId: number]: { [symbol: string]: Token } } = {
@@ -480,6 +502,22 @@ export const PLATFORM_TOKENS: { [chainId: number]: { [symbol: string]: Token } }
       symbol: "GLP",
       decimals: 18,
       address: getContract(AVALANCHE, "StakedGlpTracker"), // address of fsGLP token because user only holds fsGLP
+      imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
+    },
+  },
+  [SEPOLIA_TESTNET]: {
+    GMX: {
+      name: "GMX",
+      symbol: "GMX",
+      decimals: 18,
+      address: getContract(SEPOLIA_TESTNET, "GMX"),
+      imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
+    },
+    GLP: {
+      name: "GMX LP",
+      symbol: "GLP",
+      decimals: 18,
+      address: getContract(SEPOLIA_TESTNET, "StakedGlpTracker"), // address of fsGLP token because user only holds fsGLP
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
     },
   },
