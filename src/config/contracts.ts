@@ -274,7 +274,7 @@ const CONTRACTS = {
     OrderBookReader: "0xf3689f773b4C464a04C3408eee0f8597ae9EBd99",
 
     PositionRouter: "0x188ebB85deb6Eb8fD050FFe789404113A52522aB",
-    PositionManager: AddressZero,
+    PositionManager: "0x5CA587a30860242D011EDE45a3A0fdb1fe699f72",
 
     UniswapGmxEthPool: AddressZero,
     ReferralStorage: "0xb14d58Ced7047Df5a0ef3296cA64614C8A2Eb4B9",

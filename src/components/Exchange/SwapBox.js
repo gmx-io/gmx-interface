@@ -1559,7 +1559,6 @@ export default function SwapBox(props) {
     })
       .then(async () => {
         setIsConfirming(false);
-        // @todo post long call 
         const key = getPositionKey(account, path[path.length - 1], indexTokenAddress, isLong);
         let nextSize = toUsdMax;
         if (hasExistingPosition) {

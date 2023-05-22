@@ -27,7 +27,7 @@ import {
   isAddressZero,
   MAX_ALLOWED_LEVERAGE,
 } from "lib/legacy";
-import { ARBITRUM, getChainName, getConstant, IS_NETWORK_DISABLED } from "config/chains";
+import { ARBITRUM, getChainName, getConstant, IS_NETWORK_DISABLED, SEPOLIA_TESTNET } from "config/chains";
 import { createDecreaseOrder, useHasOutdatedUi } from "domain/legacy";
 import { getContract } from "config/contracts";
 import PositionRouter from "abis/PositionRouter.json";
@@ -1273,6 +1273,8 @@ export default function PositionSeller(props) {
                       if (!shouldSwap(collateralToken, tokenOptionInfo)) {
                         return;
                       }
+
+                      if (tokenOptionInfo.address === getContract(SEPOLIA_TESTNET, "USDG")) return;
 
                       const convertedTokenAmount = getTokenAmountFromUsd(
                         infoTokens,
