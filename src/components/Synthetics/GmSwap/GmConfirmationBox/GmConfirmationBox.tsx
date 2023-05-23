@@ -315,6 +315,7 @@ export function GmConfirmationBox({
           swapPriceImpact={fees?.swapPriceImpact}
           executionFee={executionFee}
         />
+        {(isHighPriceImpact || tokensToApprove?.length > 0) && <div className="App-card-divider" />}
 
         {isHighPriceImpact && (
           <div className="GmSwapBox-warnings">
@@ -327,22 +328,18 @@ export function GmConfirmationBox({
         )}
 
         {tokensToApprove && tokensToApprove.length > 0 && (
-          <>
-            <div className="App-card-divider" />
-
-            <div>
-              {tokensToApprove.map((address) => (
-                <div>
-                  <ApproveTokenButton
-                    key={address}
-                    tokenAddress={address}
-                    tokenSymbol={address === marketToken.address ? "GM" : getToken(chainId, address).symbol}
-                    spenderAddress={routerAddress}
-                  />
-                </div>
-              ))}
-            </div>
-          </>
+          <div>
+            {tokensToApprove.map((address) => (
+              <div key={address}>
+                <ApproveTokenButton
+                  key={address}
+                  tokenAddress={address}
+                  tokenSymbol={address === marketToken.address ? "GM" : getToken(chainId, address).symbol}
+                  spenderAddress={routerAddress}
+                />
+              </div>
+            ))}
+          </div>
         )}
         <div className="Confirmation-box-row">
           <Button

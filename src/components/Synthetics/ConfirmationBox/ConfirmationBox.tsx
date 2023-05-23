@@ -970,6 +970,8 @@ export function ConfirmationBox(p: Props) {
             feesType="increase"
           />
 
+          {(decreaseOrdersThatWillBeExecuted?.length > 0 || isHighPriceImpact) && <div className="App-card-divider" />}
+
           {decreaseOrdersThatWillBeExecuted?.length > 0 && (
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox isChecked={isTriggerWarningAccepted} setIsChecked={setIsTriggerWarningAccepted}>
@@ -1034,6 +1036,8 @@ export function ConfirmationBox(p: Props) {
           <ExchangeInfoRow label={t`Min. Receive`} isTop>
             {formatTokenAmount(swapAmounts?.minOutputAmount, toToken?.decimals, toToken?.symbol)}
           </ExchangeInfoRow>
+
+          {isHighPriceImpact && <div className="App-card-divider" />}
 
           {isHighPriceImpact && (
             <div className="PositionEditor-allow-higher-slippage">
@@ -1178,6 +1182,8 @@ export function ConfirmationBox(p: Props) {
               )}
             />
           )}
+
+          {isHighPriceImpact && <div className="App-card-divider" />}
 
           {isHighPriceImpact && (
             <div className="PositionEditor-allow-higher-slippage">

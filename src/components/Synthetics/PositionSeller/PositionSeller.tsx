@@ -507,6 +507,8 @@ export function PositionSeller(p: Props) {
               />
             </div>
 
+            {isHighPriceImpact && <div className="App-card-divider" />}
+
             {isHighPriceImpact && (
               <div className="PositionSeller-price-impact-warning">
                 <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
