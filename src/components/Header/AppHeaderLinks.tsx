@@ -78,7 +78,7 @@ export function AppHeaderLinks({
         </HeaderLink>
       </div>
       <div className="App-header-link-container">
-        <ExternalLink href="https://gmxio.gitbook.io/gmx/">
+        <ExternalLink href="https://docs.moleculeprotocol.io/t3-finance/">
           <Trans>Docs</Trans>
         </ExternalLink>
       </div>
