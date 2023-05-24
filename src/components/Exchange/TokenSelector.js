@@ -14,6 +14,8 @@ import { getToken } from "config/tokens";
 import { importImage } from "lib/legacy";
 import { t } from "@lingui/macro";
 import { useMedia } from "react-use";
+import { getContract } from "config/contracts";
+import { SEPOLIA_TESTNET } from "config/chains";
 
 export default function TokenSelector(props) {
   const isSmallerScreen = useMedia("(max-width: 700px)");
@@ -34,7 +36,7 @@ export default function TokenSelector(props) {
     getTokenState = () => ({ disabled: false, message: null }),
   } = props;
 
-  const visibleTokens = tokens.filter((t) => !t.isTempHidden);
+  const visibleTokens = tokens.filter((t) => !t.isTempHidden && t.address !== getContract(SEPOLIA_TESTNET, "USDG"));
 
   const onSelectToken = (token) => {
     setIsModalVisible(false);
