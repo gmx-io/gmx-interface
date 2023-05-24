@@ -5,7 +5,7 @@ import {
   LIQUIDATION_FEE,
   MARGIN_FEE_BASIS_POINTS,
   MAX_LEVERAGE,
-} from "./legacy";
+} from "../legacy";
 
 type GetLiquidationParams = {
   size: BigNumber;

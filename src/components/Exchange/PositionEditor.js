@@ -32,8 +32,8 @@ import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValu
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import Button from "components/Button/Button";
 import FeesTooltip from "./FeesTooltip";
-import getLiquidation from "lib/getLiquidation";
-import { getLeverageNew } from "lib/getLeverageNew";
+import getLiquidation from "lib/positions/getLiquidation";
+import { getLeverageNew } from "lib/positions/getLeverageNew";
 
 const DEPOSIT = "Deposit";
 const WITHDRAW = "Withdraw";

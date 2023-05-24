@@ -12,7 +12,7 @@ import TVChartContainer from "components/TVChartContainer/TVChartContainer";
 import { t } from "@lingui/macro";
 import { availableNetworksForChart } from "components/TVChartContainer/constants";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
-import getLiquidation from "lib/getLiquidation";
+import getLiquidation from "lib/positions/getLiquidation";
 
 const PRICE_LINE_TEXT_WIDTH = 15;
 

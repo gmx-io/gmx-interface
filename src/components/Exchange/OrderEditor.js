@@ -23,7 +23,7 @@ import { bigNumberify, formatAmount, formatAmountFree, parseValue } from "lib/nu
 import { useChainId } from "lib/chains";
 import { t, Trans } from "@lingui/macro";
 import Button from "components/Button/Button";
-import getLiquidation from "lib/getLiquidation";
+import getLiquidation from "lib/positions/getLiquidation";
 
 export default function OrderEditor(props) {
   const {

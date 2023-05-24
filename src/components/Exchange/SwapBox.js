@@ -81,8 +81,8 @@ import { ErrorCode, ErrorDisplayType } from "./constants";
 import Button from "components/Button/Button";
 import UsefulLinks from "./UsefulLinks";
 import { get1InchSwapUrl } from "config/links";
-import getLiquidation from "lib/getLiquidation";
-import { getLeverageNew } from "lib/getLeverageNew";
+import getLiquidation from "lib/positions/getLiquidation";
+import { getLeverageNew } from "lib/positions/getLeverageNew";
 
 const SWAP_ICONS = {
   [LONG]: longImg,

@@ -51,8 +51,8 @@ import { formatDateTime, getTimeRemaining } from "lib/dates";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import FeesTooltip from "./FeesTooltip";
-import getLiquidation from "lib/getLiquidation";
-import { getLeverageNew } from "lib/getLeverageNew";
+import getLiquidation from "lib/positions/getLiquidation";
+import { getLeverageNew } from "lib/positions/getLeverageNew";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -69,7 +69,7 @@ function applySpread(amount, spread) {
 /*
  This function replicates the backend logic of calculating Next Collateral and Receive Amount based on
  Collateral Delta, Realized PnL and Fees for the position
- 
+
  The backend logic can be found in reduceCollateral function at
  https://github.com/gmx-io/gmx-contracts/blob/master/contracts/core/Vault.sol#L992
 */

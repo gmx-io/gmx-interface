@@ -1,5 +1,5 @@
 import { BigNumber } from "ethers";
-import { BASIS_POINTS_DIVISOR } from "./legacy";
+import { BASIS_POINTS_DIVISOR } from "../legacy";
 
 type GetLeverageParams = {
   size: BigNumber;
