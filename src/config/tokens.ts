@@ -483,7 +483,7 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
 const AVAILABLE_CHART_TOKENS = {
   [ARBITRUM]: ["ETH", "BTC", "LINK", "UNI"],
   [AVALANCHE]: ["AVAX", "ETH", "BTC"],
-  [AVALANCHE_FUJI]: ["AVAX", "ETH", "BTC", "SOL", "TEST", "DOGE", "LINK", "BNB"],
+  [AVALANCHE_FUJI]: ["AVAX", "ETH", "BTC", "SOL", "TEST", "DOGE", "LINK", "BNB", "DOT", "UNI", "ADA", "TRX", "MATIC"],
 };
 
 export const SYNTHETIC_TOKENS = {
@@ -518,6 +518,7 @@ export const SYNTHETIC_TOKENS = {
       symbol: "ADA",
       isSynthetic: true,
       decimals: 18,
+      priceDecimals: 4,
       address: "0xE64dfFF37Fa6Fe969b792B4146cEe2774Ef6e1a1",
     },
     {
@@ -525,6 +526,7 @@ export const SYNTHETIC_TOKENS = {
       symbol: "TRX",
       isSynthetic: true,
       decimals: 18,
+      priceDecimals: 4,
       address: "0x0D1495527C255068F2f6feE31C85d326D0A76FE8",
     },
     {
@@ -532,6 +534,7 @@ export const SYNTHETIC_TOKENS = {
       symbol: "MATIC",
       isSynthetic: true,
       decimals: 18,
+      priceDecimals: 4,
       address: "0xadc4698B257F78187Fd675FBf591a09f4c975240",
     },
     {
