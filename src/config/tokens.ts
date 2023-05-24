@@ -730,6 +730,10 @@ export const EXPLORER_LINKS = {
       coingecko: "https://www.coingecko.com/en/coins/weth",
       avalanche: "https://testnet.snowtrace.io/address/0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
     },
+    BTC: {
+      coingecko: "https://www.coingecko.com/en/coins/bitcoin-avalanche-bridged-btc-b",
+      avalanche: "https://snowtrace.io/address/0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
+    },
     USDC: {
       coingecko: "https://www.coingecko.com/en/coins/usd-coin",
       avalanche: "https://testnet.snowtrace.io/address/0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
@@ -749,6 +753,21 @@ export const EXPLORER_LINKS = {
     },
     LINK: {
       coingecko: "https://www.coingecko.com/en/coins/chainlink",
+    },
+    ADA: {
+      coingecko: "https://www.coingecko.com/en/coins/cardano",
+    },
+    TRX: {
+      coingecko: "https://www.coingecko.com/en/coins/tron",
+    },
+    MATIC: {
+      coingecko: "https://www.coingecko.com/en/coins/polygon",
+    },
+    DOT: {
+      coingecko: "https://www.coingecko.com/en/coins/polkadot",
+    },
+    UNI: {
+      coingecko: "https://www.coingecko.com/en/coins/uniswap",
     },
   },
 };
