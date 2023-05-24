@@ -66,8 +66,14 @@ function applySpread(amount, spread) {
   return amount.sub(amount.mul(spread).div(PRECISION));
 }
 
-// This function replicates the backend logic of calculating Next Collateral and Receive Amount based on Collateral Delta, Realized PnL and Fees for the position
-// The backend logic can be found in reduceCollateral function at https://github.com/gmx-io/gmx-contracts/blob/master/contracts/core/Vault.sol#L992
+/*
+ This function replicates the backend logic of calculating Next Collateral and Receive Amount based on
+ Collateral Delta, Realized PnL and Fees for the position
+ 
+ The backend logic can be found in reduceCollateral function at
+ https://github.com/gmx-io/gmx-contracts/blob/master/contracts/core/Vault.sol#L992
+*/
+
 function calculateNextCollateralAndReceiveUsd(
   collateral,
   hasProfit,
@@ -408,8 +414,16 @@ export default function PositionSeller(props) {
         position.size.sub(sizeDelta).mul(BASIS_POINTS_DIVISOR).div(leverageWithoutDelta)
       );
 
-      // In the backend nextCollateral is determined based on not just collateralDelta we pass but also whether a position has profit or loss and how much fees it has. The following logic counters the backend logic and determines the exact collateralDelta to be passed so that ultimately the nextCollateral value generated will keep leverage the same.
-      // The backend logic can be found in reduceCollateral function at https://github.com/gmx-io/gmx-contracts/blob/master/contracts/core/Vault.sol#L992
+      /*
+       In the backend nextCollateral is determined based on not just collateralDelta we pass but also whether
+       a position has profit or loss and how much fees it has. The following logic counters the backend logic
+       and determines the exact collateralDelta to be passed so that ultimately the nextCollateral value
+       generated will keep leverage the same.
+       
+       The backend logic can be found in reduceCollateral function at
+       https://github.com/gmx-io/gmx-contracts/blob/master/contracts/core/Vault.sol#L992
+      */
+
       if (nextHasProfit) {
         if (collateralDelta.add(adjustedDelta).lte(totalFees)) {
           collateralDelta = bigNumberify(0);
