@@ -2,6 +2,7 @@ import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI } from "config/cha
 import arbitrum from "img/ic_arbitrum_24.svg";
 import avalanche from "img/ic_avalanche_24.svg";
 import avalancheTestnet from "img/ic_avalanche_testnet_24.svg";
+import arbitrumGoerli from "img/ic_arbitrum_goerli_24.svg";
 
 import gmxIcon from "img/ic_gmx_40.svg";
 import gmxOutlineIcon from "img/ic_gmxv1flat.svg";
@@ -28,7 +29,9 @@ const ICONS = {
     gm: gmAvax,
   },
   [ARBITRUM_GOERLI]: {
-    network: arbitrum,
+    network: arbitrumGoerli,
+    gmx: gmxArbitrum,
+    glp: glpArbitrum,
     gm: gmArbitrum,
   },
   [AVALANCHE_FUJI]: {
