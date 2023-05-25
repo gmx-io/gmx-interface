@@ -54,6 +54,7 @@ import { useVirtualInventory } from "domain/synthetics/fees/useVirtualInventory"
 import { useSafeState } from "lib/useSafeState";
 import { useHistory, useLocation } from "react-router-dom";
 import "./GmSwapBox.scss";
+import { helperToast } from "lib/helperToast";
 
 export enum Operation {
   Deposit = "Deposit",
@@ -88,6 +89,11 @@ const getAvailableModes = (operation: Operation, market?: Market) => {
 
   return [Mode.Pair];
 };
+
+function showMarketToast(market) {
+  if (!market?.name) return;
+  helperToast.success(t`${market?.name} selected in order form`);
+}
 
 export function GmSwapBox(p: Props) {
   const { operation, mode, setMode, setOperation, onSelectMarket } = p;
@@ -865,7 +871,10 @@ export function GmSwapBox(p: Props) {
               marketsInfoData={marketsInfoData}
               isSideMenu
               showBalances
-              onSelectMarket={setIndexName}
+              onSelectMarket={(marketName, marketInfo) => {
+                setIndexName(marketName);
+                showMarketToast(marketInfo);
+              }}
             />
           }
         />
@@ -884,7 +893,10 @@ export function GmSwapBox(p: Props) {
               marketsInfoData={marketsInfoData}
               isSideMenu
               showBalances
-              onSelectMarket={(marketInfo) => onMarketChange(marketInfo.marketTokenAddress)}
+              onSelectMarket={(marketInfo) => {
+                onMarketChange(marketInfo.marketTokenAddress);
+                showMarketToast(marketInfo);
+              }}
             />
           }
         />
