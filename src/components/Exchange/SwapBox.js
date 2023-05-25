@@ -680,6 +680,9 @@ export default function SwapBox(props) {
   }
 
   let leverage = bigNumberify(0);
+  let nextDelta = bigNumberify(0);
+  let nextHasProfit = false;
+
   if (fromUsdMin && toUsdMax && fromUsdMin.gt(0)) {
     const fees = toUsdMax.mul(MARGIN_FEE_BASIS_POINTS).div(BASIS_POINTS_DIVISOR);
     if (fromUsdMin.sub(fees).gt(0)) {
@@ -689,8 +692,6 @@ export default function SwapBox(props) {
 
   let nextAveragePrice = isMarketOrder ? entryMarkPrice : triggerPriceUsd;
   if (hasExistingPosition) {
-    let nextDelta, nextHasProfit;
-
     if (isMarketOrder) {
       nextDelta = existingPosition.delta;
       nextHasProfit = existingPosition.hasProfit;
@@ -1774,8 +1775,8 @@ export default function SwapBox(props) {
     leverage = getLeverageNew({
       size: existingPosition.size.add(toUsdMax || 0),
       collateral: existingPosition.collateralAfterFee.add(fromUsdMinAfterFees),
-      delta: existingPosition.delta,
-      hasProfit: existingPosition.hasProfit,
+      delta: nextDelta,
+      hasProfit: nextHasProfit,
       includeDelta: savedIsPnlInLeverage,
     });
   } else if (hasLeverageOption) {
