@@ -7,7 +7,7 @@ import { isHomeSite } from "lib/legacy";
 import { useWeb3React } from "@web3-react/core";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
+import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
 import { getIcon } from "config/icons";
 import { useChainId } from "lib/chains";
 import { switchNetwork } from "lib/wallets";
@@ -27,6 +27,7 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
   const { active } = useWeb3React();
 
   const { avgMarketsAPR: fujiAvgMarketsAPR } = useMarketTokensAPR(AVALANCHE_FUJI);
+  const { avgMarketsAPR: goerliAvgMarketsAPR } = useMarketTokensAPR(ARBITRUM_GOERLI);
   const { avgMarketsAPR: arbitrumAvgMarketsAPR } = useMarketTokensAPR(ARBITRUM);
   const { avgMarketsAPR: avalancheAvgMarketsAPR } = useMarketTokensAPR(AVALANCHE);
 
@@ -149,6 +150,10 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
                   <Trans>Avalanche FUJI APR:</Trans> {formatAmount(fujiAvgMarketsAPR, 2, 2)}%
                 </span>
                 {", "}
+                <span>
+                  <Trans>Arbitrum Goerli APR:</Trans> {formatAmount(fujiAvgMarketsAPR, 2, 2)}%
+                </span>
+                {", "}
               </>
             )}
             <span>
@@ -164,6 +169,9 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
             <div className="buy">
               <BuyLink to="/pools" className="default-btn" network={AVALANCHE_FUJI}>
                 <Trans>Buy on Avalanche FUJI</Trans>
+              </BuyLink>
+              <BuyLink to="/pools" className="default-btn" network={ARBITRUM_GOERLI}>
+                <Trans>Buy on Arbitrum Goerli</Trans>
               </BuyLink>
             </div>
             {/* <a
