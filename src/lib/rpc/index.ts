@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   ARBITRUM,
+  ARBITRUM_GOERLI,
   AVALANCHE,
   AVALANCHE_FUJI,
   FALLBACK_PROVIDERS,
@@ -15,6 +16,9 @@ const arbWsProvider = new ethers.providers.WebSocketProvider(getAlchemyWsUrl());
 
 const avaxWsProvider = new ethers.providers.JsonRpcProvider("https://api.avax.network/ext/bc/C/rpc");
 avaxWsProvider.pollingInterval = 2000;
+
+const goerliWsProvider = new ethers.providers.JsonRpcProvider(getRpcUrl(ARBITRUM_GOERLI));
+goerliWsProvider.pollingInterval = 2000;
 
 const fujiWsProvider = new ethers.providers.JsonRpcProvider(getRpcUrl(AVALANCHE_FUJI));
 fujiWsProvider.pollingInterval = 2000;
@@ -81,6 +85,10 @@ export function getWsProvider(active, chainId) {
 
   if (chainId === AVALANCHE) {
     return avaxWsProvider;
+  }
+
+  if (chainId === ARBITRUM_GOERLI) {
+    return goerliWsProvider;
   }
 
   if (chainId === AVALANCHE_FUJI) {

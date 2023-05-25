@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { InjectedConnector } from "@web3-react/injected-connector";
 import {
   ARBITRUM,
-  ARBITRUM_TESTNET,
+  ARBITRUM_GOERLI,
   AVALANCHE,
   AVALANCHE_FUJI,
   DEFAULT_CHAIN_ID,
@@ -95,7 +95,7 @@ export const getWalletConnectConnector = () => {
     rpc: {
       [AVALANCHE]: getRpcUrl(AVALANCHE)!,
       [ARBITRUM]: getRpcUrl(ARBITRUM)!,
-      [ARBITRUM_TESTNET]: getRpcUrl(ARBITRUM_TESTNET)!,
+      [ARBITRUM_GOERLI]: getRpcUrl(ARBITRUM_GOERLI)!,
       [AVALANCHE_FUJI]: getRpcUrl(AVALANCHE_FUJI)!,
     },
     qrcode: true,
