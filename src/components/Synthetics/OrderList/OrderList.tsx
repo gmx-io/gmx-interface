@@ -64,7 +64,19 @@ export function OrderList(p: Props) {
             {p.isLoading ? t`Loading...` : t`No open orders`}
           </div>
         )}
-        {!p.isLoading && orders.map((order) => <OrderItem key={order.key} order={order} isLarge={false} />)}
+        {!p.isLoading &&
+          orders.map((order) => (
+            <OrderItem
+              key={order.key}
+              order={order}
+              isLarge={false}
+              isSelected={p.selectedOrdersKeys?.[order.key]}
+              onSelectOrder={() => onSelectOrder(order.key)}
+              isCanceling={canellingOrdersKeys.includes(order.key)}
+              onCancelOrder={() => onCancelOrder(order.key)}
+              onEditOrder={() => setEditingOrderKey(order.key)}
+            />
+          ))}
       </div>
 
       <table className="Exchange-list Orders large App-box">
