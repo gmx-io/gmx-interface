@@ -519,6 +519,7 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
 const AVAILABLE_CHART_TOKENS = {
   [ARBITRUM]: ["ETH", "BTC", "LINK", "UNI"],
   [AVALANCHE]: ["AVAX", "ETH", "BTC"],
+  [ARBITRUM_GOERLI]: ["ETH", "BTC", "SOL", "TEST", "DOGE", "LINK", "BNB", "DOT", "UNI", "ADA", "TRX", "MATIC"],
   [AVALANCHE_FUJI]: ["AVAX", "ETH", "BTC", "SOL", "TEST", "DOGE", "LINK", "BNB", "DOT", "UNI", "ADA", "TRX", "MATIC"],
 };
 
