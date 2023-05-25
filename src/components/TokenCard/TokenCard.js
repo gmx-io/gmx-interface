@@ -151,7 +151,7 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
                 </span>
                 {", "}
                 <span>
-                  <Trans>Arbitrum Goerli APR:</Trans> {formatAmount(fujiAvgMarketsAPR, 2, 2)}%
+                  <Trans>Arbitrum Goerli APR:</Trans> {formatAmount(goerliAvgMarketsAPR, 2, 2)}%
                 </span>
                 {", "}
               </>
