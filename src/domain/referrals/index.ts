@@ -230,7 +230,7 @@ export function useAffiliateCodes(chainId, account) {
   const [affiliateCodes, setAffiliateCodes] = useState({ code: null, success: false });
   const query = gql`
     query userReferralCodes($account: String!) {
-      referrerTotalStats: affiliateStats(
+      affiliateCodes: affiliateStats(
         first: 1000
         orderBy: volume
         orderDirection: desc
@@ -245,7 +245,7 @@ export function useAffiliateCodes(chainId, account) {
     getGraphClient(chainId)
       .query({ query, variables: { account: account?.toLowerCase() } })
       .then((res) => {
-        const parsedAffiliateCodes = res?.data?.referrerTotalStats.map((c) => decodeReferralCode(c?.referralCode));
+        const parsedAffiliateCodes = res?.data?.affiliateCodes.map((c) => decodeReferralCode(c?.referralCode));
         setAffiliateCodes({ code: parsedAffiliateCodes[0], success: true });
       });
     return () => {
