@@ -709,7 +709,7 @@ export default function DashboardV2() {
                     />
                   </div>
                 </div>
-                <div className="App-card-row mt-lg">
+                <div className="App-card-row">
                   <div className="label">
                     <Trans>Floor Price Fund</Trans>
                   </div>
