@@ -201,16 +201,16 @@ export function PositionEditor(p: Props) {
 
       const nextLiqPrice = getLiquidationPrice({
         sizeInUsd: position.sizeInUsd,
-        collateralUsd: nextCollateralUsd,
-        pnl: position.pnl,
+        sizeInTokens: position.sizeInTokens,
+        initialCollateralUsd: nextCollateralUsd,
+        collateralToken: position.collateralToken,
+        marketInfo: position.marketInfo,
         markPrice: position.markPrice,
         closingFeeUsd: getPositionFee(position.marketInfo, position.sizeInUsd, userReferralInfo).positionFeeUsd,
-        maxPriceImpactFactor: position.marketInfo.maxPositionImpactFactorForLiquidations,
         pendingFundingFeesUsd: BigNumber.from(0),
         pendingBorrowingFeesUsd: BigNumber.from(0),
-        minCollateralFactor: position.marketInfo.minCollateralFactor,
-        minCollateralUsd,
         isLong: position.isLong,
+        minCollateralUsd,
       });
 
       return {

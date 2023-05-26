@@ -145,17 +145,32 @@ export function usePositionsInfo(chainId: number, p: { showPnlInLeverage: boolea
         const hasLowCollateral = leverage?.gt(MAX_ALLOWED_LEVERAGE) || false;
 
         const liquidationPrice = getLiquidationPrice({
+          marketInfo,
+          collateralToken,
           sizeInUsd: position.sizeInUsd,
-          collateralUsd: initialCollateralUsd,
-          pnl,
+          sizeInTokens: position.sizeInTokens,
+          initialCollateralUsd: initialCollateralUsd,
           markPrice,
           closingFeeUsd,
-          maxPriceImpactFactor: marketInfo.maxPositionImpactFactorForLiquidations,
-          minCollateralFactor: marketInfo.minCollateralFactor,
           minCollateralUsd,
           pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
           pendingFundingFeesUsd,
           isLong: position.isLong,
+        });
+
+        const liquidationPriceWithMaxPriceImpact = getLiquidationPrice({
+          marketInfo,
+          collateralToken,
+          sizeInUsd: position.sizeInUsd,
+          sizeInTokens: position.sizeInTokens,
+          initialCollateralUsd: initialCollateralUsd,
+          markPrice,
+          closingFeeUsd,
+          minCollateralUsd,
+          pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
+          pendingFundingFeesUsd,
+          isLong: position.isLong,
+          useMaxPriceImpact: true,
         });
 
         acc[positionKey] = {
@@ -167,6 +182,7 @@ export function usePositionsInfo(chainId: number, p: { showPnlInLeverage: boolea
           markPrice,
           entryPrice,
           liquidationPrice,
+          liquidationPriceWithMaxPriceImpact,
           initialCollateralUsd,
           remainingCollateralUsd,
           remainingCollateralAmount,

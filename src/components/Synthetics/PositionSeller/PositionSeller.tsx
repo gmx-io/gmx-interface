@@ -154,6 +154,7 @@ export function PositionSeller(p: Props) {
     return getNextPositionValuesForDecreaseTrade({
       existingPosition: position,
       marketInfo: position.marketInfo,
+      collateralToken: position.collateralToken,
       sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
       collateralDeltaUsd: decreaseAmounts.collateralDeltaUsd,
       pnlDelta: decreaseAmounts.pnlDelta,

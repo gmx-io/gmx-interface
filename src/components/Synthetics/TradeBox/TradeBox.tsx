@@ -407,13 +407,14 @@ export function TradeBox(p: Props) {
   ]);
 
   const nextPositionValues = useMemo(() => {
-    if (!isPosition || !minCollateralUsd || !marketInfo) {
+    if (!isPosition || !minCollateralUsd || !marketInfo || !collateralToken) {
       return undefined;
     }
 
     if (isIncrease && increaseAmounts?.acceptablePrice && fromTokenAmount.gt(0)) {
       return getNextPositionValuesForIncreaseTrade({
         marketInfo,
+        collateralToken,
         existingPosition,
         isLong,
         collateralDeltaUsd: increaseAmounts.collateralUsdAfterFees,
@@ -430,6 +431,7 @@ export function TradeBox(p: Props) {
       return getNextPositionValuesForDecreaseTrade({
         existingPosition,
         marketInfo,
+        collateralToken,
         sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
         exitPnl: decreaseAmounts.exitPnl,
         pnlDelta: decreaseAmounts.pnlDelta,
@@ -443,6 +445,7 @@ export function TradeBox(p: Props) {
     }
   }, [
     closeSizeUsd,
+    collateralToken,
     decreaseAmounts,
     existingPosition,
     fromTokenAmount,
