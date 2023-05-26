@@ -200,45 +200,6 @@ export function getLiquidationPrice(p: {
   }
 }
 
-// Considers changes in collateral price
-export function getLiquidationPriceForSameCollateral(p: {
-  minCollateralUsd: BigNumber;
-  remainigCollateralUsd: BigNumber;
-  sizeInUsd: BigNumber;
-  sizeInTokens: BigNumber;
-  markPrice: BigNumber;
-  indexToken: TokenData;
-  isLong: boolean;
-}) {
-  const remainingCollateralAmount = convertToTokenAmount(p.remainigCollateralUsd, p.indexToken.decimals, p.markPrice)!;
-
-  if (p.isLong) {
-    return p.minCollateralUsd.add(p.sizeInUsd).div(remainingCollateralAmount.add(p.sizeInTokens));
-  } else {
-    return p.minCollateralUsd.sub(p.sizeInUsd).div(remainingCollateralAmount.sub(p.sizeInTokens));
-  }
-}
-
-export function getLiquidationPriceFromDelta(p: {
-  minCollateralUsd: BigNumber;
-  positionValueUsd: BigNumber;
-  remainingCollateralUsd: BigNumber;
-  markPrice: BigNumber;
-  isLong: boolean;
-}) {
-  if (p.minCollateralUsd.gt(p.remainingCollateralUsd)) {
-    const liquidationDelta = p.minCollateralUsd.sub(p.remainingCollateralUsd);
-    const priceDelta = liquidationDelta.mul(p.markPrice).div(p.positionValueUsd);
-
-    return p.isLong ? p.markPrice.add(priceDelta) : p.markPrice.sub(priceDelta);
-  }
-
-  const liquidationDelta = p.remainingCollateralUsd.sub(p.minCollateralUsd);
-  const priceDelta = liquidationDelta.mul(p.markPrice).div(p.positionValueUsd);
-
-  return p.isLong ? p.markPrice.sub(priceDelta) : p.markPrice.add(priceDelta);
-}
-
 export function getLeverage(p: {
   sizeInUsd: BigNumber;
   collateralUsd: BigNumber;
