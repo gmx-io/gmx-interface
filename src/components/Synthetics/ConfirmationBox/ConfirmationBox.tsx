@@ -988,7 +988,7 @@ export function ConfirmationBox(p: Props) {
             feesType="increase"
           />
 
-          {(decreaseOrdersThatWillBeExecuted?.length > 0 || isHighPriceImpact) && <div className="App-card-divider" />}
+          {(decreaseOrdersThatWillBeExecuted?.length > 0 || isHighPriceImpact) && <div className="line-separator" />}
 
           {decreaseOrdersThatWillBeExecuted?.length > 0 && (
             <div className="PositionEditor-allow-higher-slippage">
@@ -1055,7 +1055,7 @@ export function ConfirmationBox(p: Props) {
             {formatTokenAmount(swapAmounts?.minOutputAmount, toToken?.decimals, toToken?.symbol)}
           </ExchangeInfoRow>
 
-          {isHighPriceImpact && <div className="App-card-divider" />}
+          {isHighPriceImpact && <div className="line-separator" />}
 
           {isHighPriceImpact && (
             <div className="PositionEditor-allow-higher-slippage">
@@ -1201,7 +1201,7 @@ export function ConfirmationBox(p: Props) {
             />
           )}
 
-          {isHighPriceImpact && <div className="App-card-divider" />}
+          {isHighPriceImpact && <div className="line-separator" />}
 
           {isHighPriceImpact && (
             <div className="PositionEditor-allow-higher-slippage">
@@ -1226,7 +1226,7 @@ export function ConfirmationBox(p: Props) {
 
         {needPayTokenApproval && fromToken && (
           <>
-            <div className="App-card-divider" />
+            <div className="line-separator" />
 
             <ApproveTokenButton
               tokenAddress={fromToken.address}
