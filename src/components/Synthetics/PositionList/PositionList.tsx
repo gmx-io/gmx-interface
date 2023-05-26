@@ -14,6 +14,7 @@ type Props = {
   isLoading: boolean;
   onOrdersClick: () => void;
   showPnlAfterFees: boolean;
+  savedShowPnlAfterFees: boolean;
 };
 
 export function PositionList(p: Props) {
@@ -40,6 +41,7 @@ export function PositionList(p: Props) {
               onOrdersClick={p.onOrdersClick}
               onSelectPositionClick={(tradeMode?: TradeMode) => p.onSelectPositionClick(position.key, tradeMode)}
               showPnlAfterFees={p.showPnlAfterFees}
+              savedShowPnlAfterFees={p.savedShowPnlAfterFees}
               isLarge={false}
             />
           ))}
@@ -93,6 +95,7 @@ export function PositionList(p: Props) {
                 onSelectPositionClick={(tradeMode?: TradeMode) => p.onSelectPositionClick(position.key, tradeMode)}
                 showPnlAfterFees={p.showPnlAfterFees}
                 isLarge={true}
+                savedShowPnlAfterFees={p.savedShowPnlAfterFees}
               />
             ))}
         </tbody>

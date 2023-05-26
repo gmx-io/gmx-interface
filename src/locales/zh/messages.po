@@ -198,18 +198,6 @@ msgid "Accrued Borrow Fee"
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Accrued Borrow fee"
-#~ msgstr ""
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Accrued Funding Fee"
-#~ msgstr ""
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Accrued Funding fee"
-#~ msgstr ""
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Accrued Negative Funding Fee"
 msgstr ""
@@ -217,14 +205,6 @@ msgstr ""
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Accrued Positive Funding Fee"
 msgstr ""
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Accured Borrow fee"
-#~ msgstr ""
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Accurred Funding fee"
-#~ msgstr ""
 
 #: src/pages/Actions/Actions.js
 msgid "Actions"
@@ -534,8 +514,6 @@ msgstr ""
 msgid "Buy GLP"
 msgstr "购买GLP"
 
-#: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Buy GM"
@@ -805,10 +783,6 @@ msgstr ""
 msgid "Click on a row to select the position's market, then use the swap box to increase your position size or to set stop-loss / take-profit orders."
 msgstr ""
 
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Click on a row to select the position's market, then use the swap box to increase your position size, or to set stop-loss / take-profit orders. if needed."
-#~ msgstr ""
-
 #: src/components/Exchange/PositionsList.js
 msgid "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
 msgstr "点取一排以选择仓位市场,若需要可接着点选交换栏来增加幅度"
@@ -836,10 +810,6 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 msgid "Close failed."
 msgstr "收盘失败"
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Close fee"
-#~ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close submitted!"
@@ -1287,6 +1257,8 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/pages/Stake/StakeV2.js
@@ -1602,10 +1574,6 @@ msgstr "输入金额"
 msgid "Enter and exit positions with minimal spread and low price impact. Get the optimal price without incurring additional costs."
 msgstr ""
 
-#: src/pages/Home/Home.js
-#~ msgid "Enter and exit positions with minimal spread and zero price impact. Get the optimal price without incurring additional costs."
-#~ msgstr "以最小的点差和零价格影响进入和退出头寸。获得最佳价格而不产生额外费用"
-
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrderEditor.js
 msgid "Enter new Price"
@@ -1865,11 +1833,6 @@ msgstr "GLP售卖已禁止，等待{0}升级"
 msgid "GM ({0})"
 msgstr ""
 
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-#~ msgid "GM Index Composition"
-#~ msgstr ""
-
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "GM Token pricing includes positions' Pending PnL, Impact Pool Amount and Borrow Fees."
 msgstr ""
@@ -2002,20 +1965,12 @@ msgid "I am aware of the trigger orders"
 msgstr "我了解触发的指令"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "If you have an existing position, the position will be closed at a reference price of {0} not accounting for price impact.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
-#~ msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "If you have an existing position, the position will be closed at a reference price of {0}, not accounting for price impact.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "If you have an existing position, the position will be closed at {0} USD.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
 msgstr "如果你有一个现有的头寸，它将在{0}美元被关闭。<0/><1/>这个退出价格将随着资产的价格所变化。<2/><3/><4>更多信息</4>"
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "If you have an existing position, the position will be closed at {0}.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
-#~ msgstr ""
 
 #: src/components/Exchange/PositionShare.js
 msgid "Image generation error, please refresh and try again."
@@ -3149,10 +3104,6 @@ msgid "Pending {0} approval"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
-#~ msgid "Platform, GLP and GM index tokens."
-#~ msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Platform, GLP and GM tokens."
 msgstr ""
 
@@ -3232,10 +3183,6 @@ msgstr "仓位"
 #: src/pages/Exchange/Exchange.js
 msgid "Positions ({0})"
 msgstr "仓位({0})"
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Positions earn a funding fee if positive and pays if negative."
-#~ msgstr ""
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Positions{0}"
@@ -3421,53 +3368,13 @@ msgstr "该账户作为交易商所赚取的回扣"
 msgid "Rebates earned by this account as an affiliate."
 msgstr "该账户作为合作公司赚取的回扣"
 
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
-#~ msgid "Rebates on Arbitrum"
-#~ msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
-#~ msgid "Rebates on Avalanche"
-#~ msgstr ""
-
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates on V1"
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "Rebates on V1 Arbitrum"
-#~ msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "Rebates on V1 Avalanche"
-#~ msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "Rebates on V1 Avalanche Fuji"
-#~ msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates on V2"
 msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "Rebates on V2 Arbitrum"
-#~ msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "Rebates on V2 Avalanche"
-#~ msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "Rebates on V2 Avalanche Fuji"
-#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
@@ -3570,10 +3477,6 @@ msgstr "推荐人"
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referrals <0/>"
 msgstr ""
-
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-#~ msgid "Remaining {0} fees will be deducted from the position collateral since the {depositWithdrawalText} amount is not sufficient."
-#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
@@ -3727,8 +3630,6 @@ msgstr "不支持自行转让"
 msgid "Sell GLP"
 msgstr "出售GLP"
 
-#: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Sell GM"
@@ -4143,10 +4044,6 @@ msgstr "交易中..."
 msgid "Swaps disabled, pending {0} upgrade"
 msgstr "交易取消，等待 {0} 升级"
 
-#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-#~ msgid "Synthetics Pools"
-#~ msgstr ""
-
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/DashboardV2.js
@@ -4259,20 +4156,12 @@ msgid "The pending borrow fee will be charged on this transaction."
 msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "The position will be opened at a reference price of {0} not accounting for price impact with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
-#~ msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
 msgstr "该仓位将在 {0} USD 开仓,最大滑点为{1}%.<0/><1/>滑点金额可在设置下配置, 在连接你的钱包后，点击页面右上方的地址即可找到<2/><3/><4>更多资讯</4>"
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "The position will be opened at {0} with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
-#~ msgstr ""
 
 #: src/components/Exchange/OrdersList.js
 msgid "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
@@ -4515,46 +4404,6 @@ msgstr "交易"
 msgid "Trading Volume"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
-#~ msgid "Trading Volume on Arbitrum"
-#~ msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
-#~ msgid "Trading Volume on Avalanche"
-#~ msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "Trading Volume on V1 Arbitrum"
-#~ msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "Trading Volume on V1 Avalanche"
-#~ msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "Trading Volume on V1 Avalanche Fuji"
-#~ msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "Trading Volume on V2 Arbitrum"
-#~ msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "Trading Volume on V2 Avalanche"
-#~ msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "Trading Volume on V2 Avalanche Fuji"
-#~ msgstr ""
-
 #: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"
 msgstr "交易指南"
@@ -4789,10 +4638,6 @@ msgstr ""
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Updating..."
 msgstr "更新中..."
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Use the \"Close\" button to reduce your position size"
-#~ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 msgid "Use the \"Close\" button to reduce your position size, or to set stop-loss / take-profit orders."
@@ -5056,6 +4901,8 @@ msgstr "在平仓时，你可以选择你想用哪种代币来接收利润"
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -5282,10 +5129,6 @@ msgstr "如果该订单被执行，您将至少收到{0} {1} 确切的执行价�
 msgid "You will receive at least {toAmountText} if this order is executed. The execution price may vary depending on swap fees and price impact at the time the order is executed."
 msgstr ""
 
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
-#~ msgid "You will receive at least {toAmountText} if this order is executed. The execution price may vary depending on swap fees at the time the order is executed."
-#~ msgstr ""
-
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 msgstr "你的esGMX（IOU）余额在提领后将减少您的领回金额，这是可预期的"
@@ -5314,10 +5157,6 @@ msgstr "帐户"
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "collateral"
 msgstr "抵押品"
-
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-#~ msgid "deposit"
-#~ msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "earn"
@@ -5360,10 +5199,6 @@ msgstr "流动性时间将至"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "view"
 msgstr "查看"
-
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-#~ msgid "withdrawal"
-#~ msgstr ""
 
 #: src/pages/Exchange/Exchange.js
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -5448,6 +5283,7 @@ msgid "{0} price"
 msgstr "{0}价格"
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "{0} selected in order form"
 msgstr "{0}在指令表中选择"
 
@@ -5532,10 +5368,6 @@ msgstr "{chainName}总统计数据从{totalStatsStartDate}开始。<0/>详细统
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{count, plural, one {Order} other {# Orders}}"
 msgstr ""
-
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-#~ msgid "{depositWithdrawalText} amount is insufficient to cover Fees. They are deducted from Collateral."
-#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
