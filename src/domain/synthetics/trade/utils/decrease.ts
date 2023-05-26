@@ -181,6 +181,7 @@ export function getDecreasePositionAmounts(p: {
 export function getNextPositionValuesForDecreaseTrade(p: {
   existingPosition?: PositionInfo;
   marketInfo: MarketInfo;
+  collateralToken: TokenData;
   sizeDeltaUsd: BigNumber;
   pnlDelta: BigNumber;
   exitPnl: BigNumber;
@@ -194,6 +195,7 @@ export function getNextPositionValuesForDecreaseTrade(p: {
   const {
     existingPosition,
     marketInfo,
+    collateralToken,
     sizeDeltaUsd,
     pnlDelta,
     exitPnl,
@@ -206,6 +208,7 @@ export function getNextPositionValuesForDecreaseTrade(p: {
   } = p;
 
   const nextSizeUsd = existingPosition ? existingPosition.sizeInUsd.sub(sizeDeltaUsd) : BigNumber.from(0);
+  const nextSizeInTokens = convertToTokenAmount(nextSizeUsd, marketInfo.indexToken.decimals, executionPrice)!;
 
   const nextCollateralUsd = existingPosition
     ? existingPosition.initialCollateralUsd.sub(collateralDeltaUsd)
@@ -223,16 +226,16 @@ export function getNextPositionValuesForDecreaseTrade(p: {
   });
 
   const nextLiqPrice = getLiquidationPrice({
+    marketInfo,
+    collateralToken,
+    sizeInTokens: nextSizeInTokens,
     sizeInUsd: nextSizeUsd,
-    collateralUsd: nextCollateralUsd,
+    initialCollateralUsd: nextCollateralUsd,
     markPrice: executionPrice,
-    minCollateralFactor: marketInfo.minCollateralFactor,
     minCollateralUsd,
-    closingFeeUsd: getPositionFee(marketInfo, sizeDeltaUsd, userReferralInfo).positionFeeUsd,
-    maxPriceImpactFactor: marketInfo.maxPositionImpactFactorForLiquidations,
+    closingFeeUsd: getPositionFee(marketInfo, nextSizeUsd, userReferralInfo).positionFeeUsd,
     pendingBorrowingFeesUsd: BigNumber.from(0), // deducted on order
     pendingFundingFeesUsd: BigNumber.from(0), // deducted on order
-    pnl: pnlDelta,
     isLong: isLong,
   });
 

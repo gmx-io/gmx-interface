@@ -51,9 +51,10 @@ import { getByKey } from "lib/objects";
 import { useEffect, useMemo, useState } from "react";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionSeller.scss";
+import { usePrevious } from "lib/usePrevious";
 
 export type Props = {
-  position: PositionInfo;
+  position?: PositionInfo;
   showPnlInLeverage: boolean;
   allowedSlippage: number;
   availableTokensOptions?: AvailableTokenOptions;
@@ -86,6 +87,9 @@ export function PositionSeller(p: Props) {
   const { minCollateralUsd } = usePositionsConstants(chainId);
   const userReferralInfo = useUserReferralInfo(library, chainId, account);
 
+  const isVisible = Boolean(position);
+  const prevIsVisible = usePrevious(isVisible);
+
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
 
@@ -99,15 +103,17 @@ export function PositionSeller(p: Props) {
   const [receiveTokenAddress, setReceiveTokenAddress] = useState<string>();
   const receiveToken = getByKey(tokensData, receiveTokenAddress);
 
-  const markPrice = getMarkPrice({ prices: position.indexToken.prices, isLong: position.isLong, isIncrease: false });
+  const markPrice = position
+    ? getMarkPrice({ prices: position.indexToken.prices, isLong: position.isLong, isIncrease: false })
+    : undefined;
 
   const { findSwapPath, maxSwapLiquidity } = useSwapRoutes({
-    fromTokenAddress: position.collateralTokenAddress,
+    fromTokenAddress: position?.collateralTokenAddress,
     toTokenAddress: receiveTokenAddress,
   });
 
   const decreaseAmounts = useMemo(() => {
-    if (!virtualInventoryForPositions) {
+    if (!virtualInventoryForPositions || !position) {
       return undefined;
     }
 
@@ -127,10 +133,10 @@ export function PositionSeller(p: Props) {
     });
   }, [closeSizeUsd, keepLeverage, position, userReferralInfo, virtualInventoryForPositions]);
 
-  const shouldSwap = receiveToken && !getIsEquivalentTokens(position.collateralToken, receiveToken);
+  const shouldSwap = position && receiveToken && !getIsEquivalentTokens(position.collateralToken, receiveToken);
 
   const swapAmounts = useMemo(() => {
-    if (!shouldSwap || !receiveToken || !decreaseAmounts?.receiveTokenAmount) {
+    if (!shouldSwap || !receiveToken || !decreaseAmounts?.receiveTokenAmount || !position) {
       return undefined;
     }
 
@@ -141,19 +147,20 @@ export function PositionSeller(p: Props) {
       isLimit: false,
       findSwapPath,
     });
-  }, [decreaseAmounts, findSwapPath, position.collateralToken, receiveToken, shouldSwap]);
+  }, [decreaseAmounts, findSwapPath, position, receiveToken, shouldSwap]);
 
   const receiveUsd = swapAmounts?.usdOut || decreaseAmounts?.receiveUsd;
   const receiveTokenAmount = swapAmounts?.amountOut || decreaseAmounts?.receiveTokenAmount;
 
   const nextPositionValues = useMemo(() => {
-    if (!decreaseAmounts?.sizeDeltaUsd.gt(0) || !minCollateralUsd) {
+    if (!position || !decreaseAmounts?.sizeDeltaUsd.gt(0) || !minCollateralUsd) {
       return undefined;
     }
 
     return getNextPositionValuesForDecreaseTrade({
       existingPosition: position,
       marketInfo: position.marketInfo,
+      collateralToken: position.collateralToken,
       sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
       collateralDeltaUsd: decreaseAmounts.collateralDeltaUsd,
       pnlDelta: decreaseAmounts.pnlDelta,
@@ -167,7 +174,7 @@ export function PositionSeller(p: Props) {
   }, [decreaseAmounts, minCollateralUsd, position, showPnlInLeverage, userReferralInfo]);
 
   const { fees, executionFee } = useMemo(() => {
-    if (!decreaseAmounts || !gasLimits || !tokensData || !gasPrice) {
+    if (!position || !decreaseAmounts || !gasLimits || !tokensData || !gasPrice) {
       return {};
     }
 
@@ -196,6 +203,10 @@ export function PositionSeller(p: Props) {
   const isNotEnoughReceiveTokenLiquidity = shouldSwap ? maxSwapLiquidity?.lt(receiveUsd || 0) : false;
 
   const error = useMemo(() => {
+    if (!position) {
+      return undefined;
+    }
+
     const commonError = getCommonError({
       chainId,
       isConnected: Boolean(account),
@@ -298,17 +309,27 @@ export function PositionSeller(p: Props) {
     [chainId, position?.collateralToken, receiveTokenAddress]
   );
 
-  const indexPriceDecimals = position.indexToken?.priceDecimals;
+  useEffect(
+    function resetForm() {
+      if (isVisible !== prevIsVisible) {
+        setCloseUsdInputValue("");
+        setIsHighPriceImpactAccepted(false);
+      }
+    },
+    [isVisible, prevIsVisible]
+  );
+
+  const indexPriceDecimals = position?.indexToken?.priceDecimals;
 
   return (
     <div className="PositionEditor PositionSeller">
       <Modal
         className="PositionSeller-modal"
-        isVisible={true}
-        setIsVisible={onClose}
+        isVisible={position}
+        setIsVisible={p.onClose}
         label={
           <Trans>
-            Close {position?.isLong ? t`Long` : t`Short`} {position?.indexToken?.symbol}
+            Close {p.position?.isLong ? t`Long` : t`Short`} {p.position?.indexToken?.symbol}
           </Trans>
         }
         allowContentTouchMove
@@ -326,6 +347,7 @@ export function PositionSeller(p: Props) {
             >
               USD
             </BuyInputSection>
+
             <div className="PositionEditor-info-box PositionSeller-info-box">
               {executionFee?.warning && <div className="Confirmation-box-warning">{executionFee.warning}</div>}
               <div className="PositionEditor-keep-leverage-settings">

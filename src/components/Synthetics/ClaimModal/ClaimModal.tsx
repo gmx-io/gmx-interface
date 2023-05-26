@@ -16,6 +16,7 @@ import "./ClaimModal.scss";
 import { useState } from "react";
 
 type Props = {
+  isVisible: boolean;
   onClose: () => void;
   setPendingTxns: (txns: any) => void;
 };
@@ -119,7 +120,12 @@ export function ClaimModal(p: Props) {
   }
 
   return (
-    <Modal className="Confirmation-box ClaimableModal" isVisible={true} setIsVisible={onClose} label={t`Confirm Claim`}>
+    <Modal
+      className="Confirmation-box ClaimableModal"
+      isVisible={p.isVisible}
+      setIsVisible={onClose}
+      label={t`Confirm Claim`}
+    >
       <div className="ConfirmationBox-main text-center">Claim {formatUsd(totalClaimableFundingUsd)}</div>
       <div className="ClaimModal-content">{markets.map(renderMarketSection)}</div>
       <Button className="w-100" variant="primary-action" onClick={onSubmit} disabled={isSubmitting}>
