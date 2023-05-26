@@ -1,5 +1,5 @@
 import { createClient } from "./utils";
-import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, ETH_MAINNET } from "config/chains";
+import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, ETH_MAINNET, SEPOLIA_TESTNET } from "config/chains";
 
 export const chainlinkClient = createClient(ETH_MAINNET, "chainLink");
 
@@ -16,6 +16,9 @@ export function getGmxGraphClient(chainId: number) {
   } else if (chainId === AVALANCHE) {
     return avalancheGraphClient;
   } else if (chainId === ARBITRUM_TESTNET) {
+    return null;
+  } else if (chainId === SEPOLIA_TESTNET) {
+    // @todo implement subgraph
     return null;
   }
 
