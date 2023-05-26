@@ -910,33 +910,32 @@ export function GmSwapBox(p: Props) {
         </Button>
       </div>
 
-      {stage === "confirmation" && (
-        <GmConfirmationBox
-          marketToken={marketToken!}
-          longToken={longTokenInputState?.token}
-          shortToken={shortTokenInputState?.token}
-          marketTokenAmount={marketTokenAmount!}
-          marketTokenUsd={marketTokenUsd!}
-          longTokenAmount={longTokenAmount}
-          longTokenUsd={longTokenUsd}
-          shortTokenAmount={shortTokenAmount}
-          shortTokenUsd={shortTokenUsd}
-          fees={fees!}
-          error={error}
-          isDeposit={isDeposit}
-          executionFee={executionFee}
-          setPendingTxns={p.setPendingTxns}
-          onSubmitted={() => {
-            setStage("swap");
-          }}
-          onClose={() => {
-            setStage("swap");
-          }}
-          isHighPriceImpact={isHighPriceImpact!}
-          isHighPriceImpactAccepted={isHighPriceImpactAccepted}
-          setIsHighPriceImpactAccepted={setIsHighPriceImpactAccepted}
-        />
-      )}
+      <GmConfirmationBox
+        isVisible={stage === "confirmation"}
+        marketToken={marketToken!}
+        longToken={longTokenInputState?.token}
+        shortToken={shortTokenInputState?.token}
+        marketTokenAmount={marketTokenAmount!}
+        marketTokenUsd={marketTokenUsd!}
+        longTokenAmount={longTokenAmount}
+        longTokenUsd={longTokenUsd}
+        shortTokenAmount={shortTokenAmount}
+        shortTokenUsd={shortTokenUsd}
+        fees={fees!}
+        error={error}
+        isDeposit={isDeposit}
+        executionFee={executionFee}
+        setPendingTxns={p.setPendingTxns}
+        onSubmitted={() => {
+          setStage("swap");
+        }}
+        onClose={() => {
+          setStage("swap");
+        }}
+        isHighPriceImpact={isHighPriceImpact!}
+        isHighPriceImpactAccepted={isHighPriceImpactAccepted}
+        setIsHighPriceImpactAccepted={setIsHighPriceImpactAccepted}
+      />
     </div>
   );
 }

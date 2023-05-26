@@ -52,13 +52,14 @@ import { contractFetcher } from "lib/contracts";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmountFree, formatTokenAmount, formatTokenAmountWithUsd, formatUsd, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionEditor.scss";
+import { usePrevious } from "lib/usePrevious";
 
 export type Props = {
-  position: PositionInfo;
+  position?: PositionInfo;
   showPnlInLeverage: boolean;
   allowedSlippage: number;
   setPendingTxns: (txns: any) => void;
@@ -73,7 +74,6 @@ enum Operation {
 
 export function PositionEditor(p: Props) {
   const { position, showPnlInLeverage, setPendingTxns, onClose, onConnectWallet, allowedSlippage } = p;
-
   const { chainId } = useChainId();
   const { account, library, active } = useWeb3React();
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
@@ -84,6 +84,9 @@ export function PositionEditor(p: Props) {
   const routerAddress = getContract(chainId, "SyntheticsRouter");
   const userReferralInfo = useUserReferralInfo(library, chainId, account);
 
+  const isVisible = Boolean(position);
+  const prevIsVisible = usePrevious(isVisible);
+
   const infoTokens = useMemo(() => {
     if (!tokensData) {
       return undefined;
@@ -92,7 +95,7 @@ export function PositionEditor(p: Props) {
   }, [tokensData]);
 
   const { data: tokenAllowance } = useSWR<BigNumber>(
-    [active, chainId, position.collateralTokenAddress, "allowance", account, routerAddress],
+    position ? [active, chainId, position.collateralTokenAddress, "allowance", account, routerAddress] : null,
     {
       fetcher: contractFetcher(library, Token),
     }
@@ -103,37 +106,44 @@ export function PositionEditor(p: Props) {
   const [operation, setOperation] = useState(Operation.Deposit);
   const isDeposit = operation === Operation.Deposit;
 
-  const indexPriceDecimals = position.indexToken.priceDecimals || 2;
+  const indexPriceDecimals = position?.indexToken.priceDecimals || 2;
 
   const [selectedCollateralAddress, setSelectedCollateralAddress] = useLocalStorageSerializeKey(
-    getSyntheticsCollateralEditAddressKey(chainId, position.collateralTokenAddress),
-    position.collateralTokenAddress
+    getSyntheticsCollateralEditAddressKey(chainId, position?.collateralTokenAddress),
+    position?.collateralTokenAddress
   );
+
   const collateralToken = getByKey(tokensData, selectedCollateralAddress);
 
-  const availableSwapTokens = position.collateralToken.isWrapped
-    ? [getToken(chainId, position.collateralTokenAddress), getToken(chainId, NATIVE_TOKEN_ADDRESS)]
-    : undefined;
+  const availableSwapTokens = useMemo(() => {
+    return position?.collateralToken.isWrapped
+      ? [getToken(chainId, position.collateralTokenAddress), getToken(chainId, NATIVE_TOKEN_ADDRESS)]
+      : undefined;
+  }, [chainId, position?.collateralToken.isWrapped, position?.collateralTokenAddress]);
 
   const collateralPrice = collateralToken?.prices.minPrice;
-  const markPrice = getMarkPrice({
-    prices: position.indexToken.prices,
-    isLong: position.isLong,
-    isIncrease: isDeposit,
-  });
+
+  const markPrice = position
+    ? getMarkPrice({
+        prices: position.indexToken.prices,
+        isLong: position.isLong,
+        isIncrease: isDeposit,
+      })
+    : undefined;
 
   const [collateralInputValue, setCollateralInputValue] = useState("");
-  const collateralDeltaAmount = parseValue(collateralInputValue || "0", collateralToken?.decimals || 0)!;
+  const collateralDeltaAmount = parseValue(collateralInputValue || "0", collateralToken?.decimals || 0);
   const collateralDeltaUsd = convertToUsd(collateralDeltaAmount, collateralToken?.decimals, collateralPrice);
 
   const needCollateralApproval =
     isDeposit && tokenAllowance && collateralDeltaAmount && collateralDeltaAmount.gt(tokenAllowance);
 
-  const maxWithdrawUsd = minCollateralUsd ? position.initialCollateralUsd.sub(minCollateralUsd) : BigNumber.from(0);
-  const maxWithdrawAmount = convertToTokenAmount(maxWithdrawUsd, collateralToken?.decimals, collateralPrice)!;
+  const maxWithdrawUsd =
+    position && minCollateralUsd ? position.initialCollateralUsd.sub(minCollateralUsd) : BigNumber.from(0);
+  const maxWithdrawAmount = convertToTokenAmount(maxWithdrawUsd, collateralToken?.decimals, collateralPrice);
 
   const { fees, executionFee } = useMemo(() => {
-    if (!gasLimits || !tokensData || !gasPrice) {
+    if (!position || !gasLimits || !tokensData || !gasPrice) {
       return {};
     }
 
@@ -160,7 +170,7 @@ export function PositionEditor(p: Props) {
 
   const { nextCollateralUsd, nextLeverage, nextLiqPrice, receiveUsd, receiveAmount, remainingCollateralFeesUsd } =
     useMemo(() => {
-      if (!collateralDeltaUsd?.gt(0) || !minCollateralUsd || !fees?.totalFees) {
+      if (!position || !collateralDeltaUsd?.gt(0) || !minCollateralUsd || !fees?.totalFees) {
         return {};
       }
 
@@ -365,6 +375,31 @@ export function PositionEditor(p: Props) {
     }
   }
 
+  useEffect(
+    function initCollateral() {
+      if (!position) {
+        return;
+      }
+
+      if (
+        !selectedCollateralAddress ||
+        !availableSwapTokens?.find((token) => token.address === selectedCollateralAddress)
+      ) {
+        setSelectedCollateralAddress(position.collateralTokenAddress);
+      }
+    },
+    [availableSwapTokens, position, selectedCollateralAddress, setSelectedCollateralAddress]
+  );
+
+  useEffect(
+    function resetForm() {
+      if (isVisible !== prevIsVisible) {
+        setCollateralInputValue("");
+      }
+    },
+    [isVisible, prevIsVisible]
+  );
+
   const operationLabels = {
     [Operation.Deposit]: t`Deposit`,
     [Operation.Withdraw]: t`Withdraw`,
@@ -374,7 +409,7 @@ export function PositionEditor(p: Props) {
     <div className="PositionEditor">
       <Modal
         className="PositionEditor-modal"
-        isVisible={Boolean(position)}
+        isVisible={position}
         setIsVisible={onClose}
         label={
           <Trans>
@@ -383,151 +418,155 @@ export function PositionEditor(p: Props) {
         }
         allowContentTouchMove
       >
-        <Tab
-          onChange={setOperation}
-          option={operation}
-          options={Object.values(Operation)}
-          optionLabels={operationLabels}
-          className="PositionEditor-tabs SwapBox-option-tabs"
-        />
-
-        <BuyInputSection
-          topLeftLabel={operationLabels[operation] + `:`}
-          topLeftValue={formatUsd(collateralDeltaUsd)}
-          topRightLabel={t`Max` + `:`}
-          topRightValue={
-            isDeposit
-              ? formatTokenAmount(collateralToken?.balance, collateralToken?.decimals)
-              : formatTokenAmount(maxWithdrawAmount, position?.collateralToken?.decimals)
-          }
-          inputValue={collateralInputValue}
-          onInputValueChange={(e) => setCollateralInputValue(e.target.value)}
-          showMaxButton={
-            isDeposit
-              ? collateralToken?.balance && !collateralDeltaAmount?.eq(collateralToken?.balance)
-              : maxWithdrawAmount && !collateralDeltaAmount?.eq(maxWithdrawAmount)
-          }
-          onClickMax={() =>
-            isDeposit
-              ? setCollateralInputValue(formatAmountFree(collateralToken!.balance!, collateralToken!.decimals, 4))
-              : setCollateralInputValue(
-                  formatAmountFree(maxWithdrawAmount!, position?.collateralToken?.decimals || 0, 6)
-                )
-          }
-        >
-          {availableSwapTokens ? (
-            <TokenSelector
-              label={operationLabels[operation]}
-              chainId={chainId}
-              tokenAddress={selectedCollateralAddress!}
-              onSelectToken={(token) => setSelectedCollateralAddress(token.address)}
-              tokens={availableSwapTokens}
-              infoTokens={infoTokens}
-              className="Edit-collateral-token-selector"
-              showSymbolImage={true}
-              showTokenImgInDropdown={true}
-            />
-          ) : (
-            collateralToken?.symbol
-          )}
-        </BuyInputSection>
-
-        <div className="PositionEditor-info-box">
-          {executionFee?.warning && <div className="Confirmation-box-warning">{executionFee.warning}</div>}
-
-          <ExchangeInfoRow
-            label={t`Leverage`}
-            value={<ValueTransition from={formatLeverage(position?.leverage)} to={formatLeverage(nextLeverage)} />}
-          />
-
-          <ExchangeInfoRow
-            isTop
-            label={t`Entry Price`}
-            value={formatUsd(position.entryPrice, { displayDecimals: indexPriceDecimals })}
-          />
-          <ExchangeInfoRow
-            label={t`Mark Price`}
-            value={formatUsd(position.markPrice, { displayDecimals: indexPriceDecimals })}
-          />
-
-          <ExchangeInfoRow
-            label={t`Liq Price`}
-            value={
-              <ValueTransition
-                from={formatUsd(position.liquidationPrice)}
-                to={formatUsd(nextLiqPrice, { displayDecimals: indexPriceDecimals })}
-              />
-            }
-          />
-
-          <ExchangeInfoRow isTop label={t`Size`} value={formatUsd(position.sizeInUsd)} />
-
-          <div className="Exchange-info-row">
-            <div>
-              <Tooltip
-                handle={
-                  <span className="Exchange-info-label">
-                    <Trans>Collateral ({position?.collateralToken?.symbol})</Trans>
-                  </span>
-                }
-                position="left-top"
-                renderContent={() => {
-                  return <Trans>Initial Collateral (Collateral excluding Borrow and Funding Fee).</Trans>;
-                }}
-              />
-            </div>
-            <div className="align-right">
-              <ValueTransition
-                from={formatUsd(position?.initialCollateralUsd)!}
-                to={collateralDeltaUsd?.gt(0) ? formatUsd(nextCollateralUsd) : undefined}
-              />
-            </div>
-          </div>
-
-          <TradeFeesRow
-            {...fees}
-            executionFee={executionFee}
-            feesType={"edit"}
-            warning={
-              remainingCollateralFeesUsd?.gt(0)
-                ? isDeposit
-                  ? t`Deposit amount is insufficient to cover pending Fees. Collateral will be reduced after this deposit.`
-                  : t`Withdrawal amount is insufficient to cover pending Fees. They are deducted from Collateral.`
-                : ""
-            }
-          />
-
-          {!isDeposit && (
-            <ExchangeInfoRow
-              label={t`Receive`}
-              value={formatTokenAmountWithUsd(
-                receiveAmount,
-                receiveUsd,
-                collateralToken?.symbol,
-                collateralToken?.decimals,
-                { fallbackToZero: true }
-              )}
-            />
-          )}
-        </div>
-
-        {needCollateralApproval && collateralToken && (
+        {position && (
           <>
-            <div className="App-card-divider" />
-
-            <ApproveTokenButton
-              tokenAddress={collateralToken.address}
-              tokenSymbol={collateralToken.symbol}
-              spenderAddress={routerAddress}
+            <Tab
+              onChange={setOperation}
+              option={operation}
+              options={Object.values(Operation)}
+              optionLabels={operationLabels}
+              className="PositionEditor-tabs SwapBox-option-tabs"
             />
+
+            <BuyInputSection
+              topLeftLabel={operationLabels[operation] + `:`}
+              topLeftValue={formatUsd(collateralDeltaUsd)}
+              topRightLabel={t`Max` + `:`}
+              topRightValue={
+                isDeposit
+                  ? formatTokenAmount(collateralToken?.balance, collateralToken?.decimals)
+                  : formatTokenAmount(maxWithdrawAmount, position?.collateralToken?.decimals)
+              }
+              inputValue={collateralInputValue}
+              onInputValueChange={(e) => setCollateralInputValue(e.target.value)}
+              showMaxButton={
+                isDeposit
+                  ? collateralToken?.balance && !collateralDeltaAmount?.eq(collateralToken?.balance)
+                  : maxWithdrawAmount && !collateralDeltaAmount?.eq(maxWithdrawAmount)
+              }
+              onClickMax={() =>
+                isDeposit
+                  ? setCollateralInputValue(formatAmountFree(collateralToken!.balance!, collateralToken!.decimals, 4))
+                  : setCollateralInputValue(
+                      formatAmountFree(maxWithdrawAmount!, position?.collateralToken?.decimals || 0, 6)
+                    )
+              }
+            >
+              {availableSwapTokens ? (
+                <TokenSelector
+                  label={operationLabels[operation]}
+                  chainId={chainId}
+                  tokenAddress={selectedCollateralAddress!}
+                  onSelectToken={(token) => setSelectedCollateralAddress(token.address)}
+                  tokens={availableSwapTokens}
+                  infoTokens={infoTokens}
+                  className="Edit-collateral-token-selector"
+                  showSymbolImage={true}
+                  showTokenImgInDropdown={true}
+                />
+              ) : (
+                collateralToken?.symbol
+              )}
+            </BuyInputSection>
+
+            <div className="PositionEditor-info-box">
+              {executionFee?.warning && <div className="Confirmation-box-warning">{executionFee.warning}</div>}
+
+              <ExchangeInfoRow
+                label={t`Leverage`}
+                value={<ValueTransition from={formatLeverage(position?.leverage)} to={formatLeverage(nextLeverage)} />}
+              />
+
+              <ExchangeInfoRow
+                isTop
+                label={t`Entry Price`}
+                value={formatUsd(position.entryPrice, { displayDecimals: indexPriceDecimals })}
+              />
+              <ExchangeInfoRow
+                label={t`Mark Price`}
+                value={formatUsd(position.markPrice, { displayDecimals: indexPriceDecimals })}
+              />
+
+              <ExchangeInfoRow
+                label={t`Liq Price`}
+                value={
+                  <ValueTransition
+                    from={formatUsd(position.liquidationPrice)}
+                    to={formatUsd(nextLiqPrice, { displayDecimals: indexPriceDecimals })}
+                  />
+                }
+              />
+
+              <ExchangeInfoRow isTop label={t`Size`} value={formatUsd(position.sizeInUsd)} />
+
+              <div className="Exchange-info-row">
+                <div>
+                  <Tooltip
+                    handle={
+                      <span className="Exchange-info-label">
+                        <Trans>Collateral ({position?.collateralToken?.symbol})</Trans>
+                      </span>
+                    }
+                    position="left-top"
+                    renderContent={() => {
+                      return <Trans>Initial Collateral (Collateral excluding Borrow and Funding Fee).</Trans>;
+                    }}
+                  />
+                </div>
+                <div className="align-right">
+                  <ValueTransition
+                    from={formatUsd(position?.initialCollateralUsd)!}
+                    to={collateralDeltaUsd?.gt(0) ? formatUsd(nextCollateralUsd) : undefined}
+                  />
+                </div>
+              </div>
+
+              <TradeFeesRow
+                {...fees}
+                executionFee={executionFee}
+                feesType={"edit"}
+                warning={
+                  remainingCollateralFeesUsd?.gt(0)
+                    ? isDeposit
+                      ? t`Deposit amount is insufficient to cover pending Fees. Collateral will be reduced after this deposit.`
+                      : t`Withdrawal amount is insufficient to cover pending Fees. They are deducted from Collateral.`
+                    : ""
+                }
+              />
+
+              {!isDeposit && (
+                <ExchangeInfoRow
+                  label={t`Receive`}
+                  value={formatTokenAmountWithUsd(
+                    receiveAmount,
+                    receiveUsd,
+                    collateralToken?.symbol,
+                    collateralToken?.decimals,
+                    { fallbackToZero: true }
+                  )}
+                />
+              )}
+            </div>
+
+            {needCollateralApproval && collateralToken && (
+              <>
+                <div className="App-card-divider" />
+
+                <ApproveTokenButton
+                  tokenAddress={collateralToken.address}
+                  tokenSymbol={collateralToken.symbol}
+                  spenderAddress={routerAddress}
+                />
+              </>
+            )}
+
+            <div className="Exchange-swap-button-container Confirmation-box-row">
+              <Button className="w-100" variant="primary-action" onClick={onSubmit} disabled={Boolean(error)}>
+                {error || operationLabels[operation]}
+              </Button>
+            </div>
           </>
         )}
-
-        <div className="Exchange-swap-button-container Confirmation-box-row">
-          <Button className="w-100" variant="primary-action" onClick={onSubmit} disabled={Boolean(error)}>
-            {error || operationLabels[operation]}
-          </Button>
-        </div>
       </Modal>
     </div>
   );

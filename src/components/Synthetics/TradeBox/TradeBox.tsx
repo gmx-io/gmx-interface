@@ -1309,42 +1309,41 @@ export function TradeBox(p: Props) {
       {isPosition && <MarketCard isLong={isLong} marketInfo={marketInfo} allowedSlippage={allowedSlippage} />}
       {account && <ClaimableCard onClaimClick={() => setIsClaiming(true)} />}
 
-      {stage === "confirmation" && (
-        <ConfirmationBox
-          tradeFlags={tradeFlags}
-          isWrapOrUnwrap={isWrapOrUnwrap}
-          fromToken={fromToken}
-          toToken={toToken}
-          markPrice={markPrice}
-          markRatio={markRatio}
-          triggerPrice={triggerPrice}
-          triggerRatio={triggerRatio}
-          marketInfo={marketInfo}
-          collateralToken={collateralToken}
-          swapAmounts={swapAmounts}
-          increaseAmounts={increaseAmounts}
-          decreaseAmounts={decreaseAmounts}
-          nextPositionValues={nextPositionValues}
-          swapLiquidityUsd={swapOutLiquidity}
-          longLiquidityUsd={longLiquidity}
-          shortLiquidityUsd={shortLiquidity}
-          keepLeverage={keepLeverage}
-          fees={fees}
-          executionFee={executionFee}
-          error={error}
-          existingPosition={existingPosition}
-          shouldDisableValidation={shouldDisableValidation!}
-          allowedSlippage={allowedSlippage}
-          isHigherSlippageAllowed={isHigherSlippageAllowed}
-          ordersData={ordersInfo}
-          setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
-          setKeepLeverage={setKeepLeverage}
-          onClose={onConfirmationClose}
-          onSubmitted={onConfirmed}
-          setPendingTxns={setPendingTxns}
-          onConnectWallet={onConnectWallet}
-        />
-      )}
+      <ConfirmationBox
+        isVisible={stage === "confirmation"}
+        tradeFlags={tradeFlags}
+        isWrapOrUnwrap={isWrapOrUnwrap}
+        fromToken={fromToken}
+        toToken={toToken}
+        markPrice={markPrice}
+        markRatio={markRatio}
+        triggerPrice={triggerPrice}
+        triggerRatio={triggerRatio}
+        marketInfo={marketInfo}
+        collateralToken={collateralToken}
+        swapAmounts={swapAmounts}
+        increaseAmounts={increaseAmounts}
+        decreaseAmounts={decreaseAmounts}
+        nextPositionValues={nextPositionValues}
+        swapLiquidityUsd={swapOutLiquidity}
+        longLiquidityUsd={longLiquidity}
+        shortLiquidityUsd={shortLiquidity}
+        keepLeverage={keepLeverage}
+        fees={fees}
+        executionFee={executionFee}
+        error={error}
+        existingPosition={existingPosition}
+        shouldDisableValidation={shouldDisableValidation!}
+        allowedSlippage={allowedSlippage}
+        isHigherSlippageAllowed={isHigherSlippageAllowed}
+        ordersData={ordersInfo}
+        setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
+        setKeepLeverage={setKeepLeverage}
+        onClose={onConfirmationClose}
+        onSubmitted={onConfirmed}
+        setPendingTxns={setPendingTxns}
+        onConnectWallet={onConnectWallet}
+      />
     </>
   );
 }
