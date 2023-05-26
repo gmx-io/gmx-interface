@@ -144,14 +144,14 @@ export function GmList({ hideTitle }: Props) {
                         variant="semi-clear"
                         to={`/pools?operation=${Operation.Deposit}&market=${token.address}`}
                       >
-                        <Trans>Buy GM</Trans>
+                        <Trans>Deposit</Trans>
                       </Button>
                       <Button
                         className="GmList-action GmList-last-action"
                         variant="semi-clear"
                         to={`/pools?operation=${Operation.Withdrawal}&market=${token.address}`}
                       >
-                        <Trans>Sell GM</Trans>
+                        <Trans>Withdraw</Trans>
                       </Button>
                     </td>
                   </tr>
@@ -233,13 +233,13 @@ export function GmList({ hideTitle }: Props) {
                     <div className="App-card-divider"></div>
                     <div className="App-card-buttons m-0">
                       <Button variant="semi-clear" to={`/pools?operation=${Operation.Deposit}&market=${token.address}`}>
-                        <Trans>Buy GM</Trans>
+                        <Trans>Deposit</Trans>
                       </Button>
                       <Button
                         variant="semi-clear"
                         to={`/pools?operation=${Operation.Withdrawal}&market=${token.address}`}
                       >
-                        <Trans>Sell GM</Trans>
+                        <Trans>Withdraw</Trans>
                       </Button>
                     </div>
                   </div>

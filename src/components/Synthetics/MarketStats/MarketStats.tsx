@@ -43,8 +43,8 @@ export function MarketStats(p: Props) {
             <img className="MarketStats-gm-icon" src={getIcon(chainId, "gm")} alt="GM" />
           </div>
           <div className="App-card-title-mark-info">
-            <div className="App-card-title-mark-title">GM</div>
-            <div className="App-card-title-mark-subtitle">GMX Market tokens</div>
+            <div className="App-card-title-mark-title">GM{marketInfo && `: ${marketInfo.name}`}</div>
+            <div className="App-card-title-mark-subtitle">GMX Market Tokens</div>
           </div>
         </div>
       </div>
