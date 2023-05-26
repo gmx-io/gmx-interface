@@ -2376,6 +2376,10 @@ msgstr ""
 msgid "Liq. Price"
 msgstr "Prix de liquidation"
 
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Liq. Price with max Price Impact"
+msgstr ""
+
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Liq. {0} {longOrShortText}"
 msgstr ""
@@ -4208,6 +4212,14 @@ msgstr "Le Taux de Rendement Annuel boosté provient de vos points multiplicateu
 
 #: src/pages/Stake/StakeV1.js
 msgid "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
+msgstr ""
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "The actual Liquidation Price depends on the Price Impact in the Market and the Collateral Price ({0})."
+msgstr ""
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "The actual Liquidation Price depends on the Price Impact in the Market."
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js

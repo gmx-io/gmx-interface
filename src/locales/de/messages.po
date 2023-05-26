@@ -2376,6 +2376,10 @@ msgstr ""
 msgid "Liq. Price"
 msgstr "Liq. Preis"
 
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Liq. Price with max Price Impact"
+msgstr ""
+
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Liq. {0} {longOrShortText}"
 msgstr ""
@@ -4206,6 +4210,14 @@ msgstr "Der erhöhte APR ergibt sich aus den von dir gestaketen Multiplikatorpun
 #: src/pages/Stake/StakeV1.js
 msgid "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
 msgstr "Das Gambit-Protokoll befindet sich in der Beta-Phase, bitte lese die <0>Details zum Staking</0>, bevor du teilnimmst."
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "The actual Liquidation Price depends on the Price Impact in the Market and the Collateral Price ({0})."
+msgstr ""
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "The actual Liquidation Price depends on the Price Impact in the Market."
+msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
