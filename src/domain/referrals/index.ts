@@ -230,11 +230,11 @@ export function useAffiliateCodes(chainId, account) {
   const [affiliateCodes, setAffiliateCodes] = useState({ code: null, success: false });
   const query = gql`
     query userReferralCodes($account: String!) {
-      referrerTotalStats: referrerStats(
+      referrerTotalStats: affiliateStats(
         first: 1000
         orderBy: volume
         orderDirection: desc
-        where: { period: total, referrer: $account }
+        where: { period: total, affiliate: $account }
       ) {
         referralCode
       }
