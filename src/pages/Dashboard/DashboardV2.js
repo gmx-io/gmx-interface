@@ -45,6 +45,8 @@ import { bigNumberify, expandDecimals, formatAmount, formatKeyAmount, numberWith
 import { useChainId } from "lib/chains";
 import { formatDate } from "lib/dates";
 import { getIcons } from "config/icons";
+import useOpenInterest from "domain/stats/useOpenInterest";
+import useUniqueUsers from "domain/stats/useUniqueUsers";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;
@@ -91,10 +93,10 @@ export default function DashboardV2() {
   const { active, library } = useWeb3React();
   const { chainId } = useChainId();
   const totalVolume = useTotalVolume();
-
+  const openInterest = useOpenInterest();
+  const uniqueUsers = useUniqueUsers();
   const chainName = getChainName(chainId);
   const currentIcons = getIcons(chainId);
-
   const { data: positionStats } = useSWR(
     ACTIVE_CHAIN_IDS.map((chainId) => getServerUrl(chainId, "/position_stats")),
     {
@@ -546,6 +548,26 @@ export default function DashboardV2() {
                 </div>
                 <div className="App-card-row">
                   <div className="label">
+                    <Trans>Open Interest</Trans>
+                  </div>
+                  <div>
+                    <TooltipComponent
+                      position="right-bottom"
+                      className="nowrap"
+                      handle={`$${formatAmount(openInterest?.[chainId], USD_DECIMALS, 0, true)}`}
+                      renderContent={() => (
+                        <StatsTooltip
+                          title={t`Open Interest`}
+                          arbitrumValue={openInterest?.[ARBITRUM]}
+                          avaxValue={openInterest?.[AVALANCHE]}
+                          total={openInterest?.total}
+                        />
+                      )}
+                    />
+                  </div>
+                </div>
+                <div className="App-card-row">
+                  <div className="label">
                     <Trans>Long Positions</Trans>
                   </div>
                   <div>
@@ -666,6 +688,28 @@ export default function DashboardV2() {
                   </div>
                 </div>
                 <div className="App-card-row">
+                  <div className="label">
+                    <Trans>Total Users</Trans>
+                  </div>
+                  <div>
+                    <TooltipComponent
+                      position="right-bottom"
+                      className="nowrap"
+                      handle={formatAmount(uniqueUsers?.[chainId], 0, 0, true)}
+                      renderContent={() => (
+                        <StatsTooltip
+                          title={t`Total Users`}
+                          arbitrumValue={uniqueUsers?.[ARBITRUM]}
+                          avaxValue={uniqueUsers?.[AVALANCHE]}
+                          total={uniqueUsers?.total}
+                          showDollar={false}
+                          shouldFormat={false}
+                        />
+                      )}
+                    />
+                  </div>
+                </div>
+                <div className="App-card-row mt-lg">
                   <div className="label">
                     <Trans>Floor Price Fund</Trans>
                   </div>
