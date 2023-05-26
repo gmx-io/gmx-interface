@@ -531,6 +531,7 @@ function FullApp() {
                     setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
                     setPendingTxns={setPendingTxns}
                     showPnlAfterFees={showPnlAfterFees}
+                    savedShowPnlAfterFees={savedShowPnlAfterFees}
                     tradePageVersion={tradePageVersion}
                     setTradePageVersion={setTradePageVersion}
                   />

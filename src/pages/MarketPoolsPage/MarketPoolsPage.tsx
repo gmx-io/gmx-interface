@@ -55,7 +55,7 @@ export function MarketPoolsPage(p: Props) {
             </div>
             <div className="Page-description">
               <Trans>
-                Purchase <ExternalLink href="https://gmxio.gitbook.io/gmx/gd">GM tokens</ExternalLink>
+                Purchase <ExternalLink href="https://gmxio.gitbook.io/gmx/gm">GM Tokens.</ExternalLink>
               </Trans>
               <br />
             </div>

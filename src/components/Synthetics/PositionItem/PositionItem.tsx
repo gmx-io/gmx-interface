@@ -21,6 +21,7 @@ export type Props = {
   positionOrders: PositionOrderInfo[];
   hideActions?: boolean;
   showPnlAfterFees: boolean;
+  savedShowPnlAfterFees: boolean;
   onClosePositionClick?: () => void;
   onEditCollateralClick?: () => void;
   onShareClick?: () => void;
@@ -32,8 +33,8 @@ export type Props = {
 export function PositionItem(p: Props) {
   const { showDebugValues } = useSettings();
   const { positionOrders } = p;
-  const displayedPnl = p.showPnlAfterFees ? p.position.pnlAfterFees : p.position.pnl;
-  const displayedPnlPercentage = p.showPnlAfterFees ? p.position.pnlAfterFeesPercentage : p.position.pnlPercentage;
+  const displayedPnl = p.savedShowPnlAfterFees ? p.position.pnlAfterFees : p.position.pnl;
+  const displayedPnlPercentage = p.savedShowPnlAfterFees ? p.position.pnlAfterFeesPercentage : p.position.pnlPercentage;
 
   const indexPriceDecimals = p.position?.indexToken?.priceDecimals;
 
