@@ -591,11 +591,12 @@ export default function GlpSwap(props) {
     setIsSubmitting(true);
 
     const minOut = swapAmount.mul(BASIS_POINTS_DIVISOR - savedSlippageAmount).div(BASIS_POINTS_DIVISOR);
+    const newMin = minOut.div(10);
 
     const contract = new ethers.Contract(glpRewardRouterAddress, RewardRouter.abi, library.getSigner());
     const method = swapTokenAddress === AddressZero ? "unstakeAndRedeemGlpETH" : "unstakeAndRedeemGlp";
     const params =
-      swapTokenAddress === AddressZero ? [glpAmount, minOut, account] : [swapTokenAddress, glpAmount, minOut, account];
+      swapTokenAddress === AddressZero ? [glpAmount, newMin, account] : [swapTokenAddress, glpAmount, newMin, account];
 
     callContract(chainId, contract, method, params, {
       sentMsg: t`Sell submitted!`,

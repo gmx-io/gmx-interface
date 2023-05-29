@@ -45,10 +45,10 @@ export const GLP_DECIMALS = 18;
 export const GMX_DECIMALS = 18;
 export const DEFAULT_MAX_USDG_AMOUNT = expandDecimals(200 * 1000 * 1000, 18);
 
-export const TAX_BASIS_POINTS = 60;
+export const TAX_BASIS_POINTS = 10;
 export const STABLE_TAX_BASIS_POINTS = 5;
-export const MINT_BURN_FEE_BASIS_POINTS = 25;
-export const SWAP_FEE_BASIS_POINTS = 25;
+export const MINT_BURN_FEE_BASIS_POINTS = 20;
+export const SWAP_FEE_BASIS_POINTS = 20;
 export const STABLE_SWAP_FEE_BASIS_POINTS = 1;
 export const MARGIN_FEE_BASIS_POINTS = 10;
 
@@ -72,7 +72,7 @@ export const STOP = "Stop";
 export const LEVERAGE_ORDER_OPTIONS = [MARKET, LIMIT, STOP];
 export const SWAP_ORDER_OPTIONS = [MARKET, LIMIT];
 export const SWAP_OPTIONS = [LONG, SHORT, SWAP];
-export const DEFAULT_SLIPPAGE_AMOUNT = 30;
+export const DEFAULT_SLIPPAGE_AMOUNT = 20;
 export const DEFAULT_HIGHER_SLIPPAGE_AMOUNT = 100;
 
 export const REFERRAL_CODE_QUERY_PARAM = "ref";
