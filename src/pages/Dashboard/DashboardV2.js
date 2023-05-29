@@ -45,7 +45,6 @@ import { bigNumberify, expandDecimals, formatAmount, formatKeyAmount, numberWith
 import { useChainId } from "lib/chains";
 import { formatDate } from "lib/dates";
 import { getIcons } from "config/icons";
-import useOpenInterest from "domain/stats/useOpenInterest";
 import useUniqueUsers from "domain/stats/useUniqueUsers";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
@@ -57,14 +56,18 @@ function getPositionStats(positionStats) {
   }
   return positionStats.reduce(
     (acc, cv, i) => {
+      cv.openInterest = bigNumberify(cv.totalLongPositionSizes).add(cv.totalShortPositionSizes).toString();
       acc.totalLongPositionSizes = acc.totalLongPositionSizes.add(cv.totalLongPositionSizes);
       acc.totalShortPositionSizes = acc.totalShortPositionSizes.add(cv.totalShortPositionSizes);
+      acc.totalOpenInterest = acc.totalOpenInterest.add(cv.openInterest);
+
       acc[ACTIVE_CHAIN_IDS[i]] = cv;
       return acc;
     },
     {
       totalLongPositionSizes: bigNumberify(0),
       totalShortPositionSizes: bigNumberify(0),
+      totalOpenInterest: bigNumberify(0),
     }
   );
 }
@@ -93,7 +96,6 @@ export default function DashboardV2() {
   const { active, library } = useWeb3React();
   const { chainId } = useChainId();
   const totalVolume = useTotalVolume();
-  const openInterest = useOpenInterest();
   const uniqueUsers = useUniqueUsers();
   const chainName = getChainName(chainId);
   const currentIcons = getIcons(chainId);
@@ -554,13 +556,13 @@ export default function DashboardV2() {
                     <TooltipComponent
                       position="right-bottom"
                       className="nowrap"
-                      handle={`$${formatAmount(openInterest?.[chainId], USD_DECIMALS, 0, true)}`}
+                      handle={`$${formatAmount(positionStatsInfo?.[chainId]?.openInterest, USD_DECIMALS, 0, true)}`}
                       renderContent={() => (
                         <StatsTooltip
                           title={t`Open Interest`}
-                          arbitrumValue={openInterest?.[ARBITRUM]}
-                          avaxValue={openInterest?.[AVALANCHE]}
-                          total={openInterest?.total}
+                          arbitrumValue={positionStatsInfo?.[ARBITRUM].openInterest}
+                          avaxValue={positionStatsInfo?.[AVALANCHE].openInterest}
+                          total={positionStatsInfo?.totalOpenInterest}
                         />
                       )}
                     />
