@@ -1,6 +1,9 @@
 import { BigNumber, BigNumberish, ethers } from "ethers";
 import { BASIS_POINTS_DIVISOR, PRECISION, USD_DECIMALS } from "./legacy";
 
+const MAX_EXCEEDING_THRESHOLD = "1000000000";
+const MIN_EXCEEDING_THRESHOLD = "0.01";
+
 export function bigNumberify(n?: BigNumberish) {
   try {
     return BigNumber.from(n);
@@ -16,28 +19,30 @@ export function expandDecimals(n: BigNumberish, decimals: number): BigNumber {
   return bigNumberify(n).mul(bigNumberify(10).pow(decimals));
 }
 
-const MAX_EXCEEDING_THRESHOLD = "1000000000";
-const MIN_EXCEEDING_THRESHOLD = "0.01";
+function getLimitedDisplay(
+  amount: BigNumber,
+  tokenDecimals: number,
+  opts: { maxThreshold?: string; minThreshold?: string; shouldSkip?: boolean } = {}
+) {
+  const { maxThreshold = MAX_EXCEEDING_THRESHOLD, minThreshold = MIN_EXCEEDING_THRESHOLD, shouldSkip = false } = opts;
+  const max = expandDecimals(maxThreshold, tokenDecimals);
+  const min = ethers.utils.parseUnits(minThreshold, tokenDecimals);
+  const absAmount = amount.abs();
 
-function checkPriceThresholdExceeding(value: BigNumber, tokenDecimals: number) {
-  const maxExceeding = expandDecimals(MAX_EXCEEDING_THRESHOLD, tokenDecimals);
-  const minExceeding = ethers.utils.parseUnits(MIN_EXCEEDING_THRESHOLD, tokenDecimals);
-
-  if (!value || value.eq(0)) return;
-
-  if (value.gte(maxExceeding)) {
+  if (amount.eq(0) || shouldSkip) {
     return {
-      symbol: ">",
-      value: maxExceeding,
+      symbol: "",
+      value: absAmount,
     };
   }
 
-  if (value.lte(minExceeding)) {
-    return {
-      symbol: "<",
-      value: minExceeding,
-    };
-  }
+  const symbol = amount.gt(max) ? ">" : amount.lt(min) ? "<" : "";
+  const value = amount.gt(max) ? max : amount.lt(min) ? min : absAmount;
+
+  return {
+    symbol,
+    value,
+  };
 }
 
 export const trimZeroDecimals = (amount: string) => {
@@ -155,11 +160,10 @@ export function formatUsd(usd?: BigNumber, opts: { fallbackToZero?: boolean; dis
     }
   }
 
-  const exceedingInfo = checkPriceThresholdExceeding(usd, USD_DECIMALS);
+  const exceedingInfo = getLimitedDisplay(usd, USD_DECIMALS);
   const sign = usd.lt(0) ? "-" : "";
-  const displayUsd = formatAmount(exceedingInfo?.value ?? usd.abs(), USD_DECIMALS, displayDecimals, true);
-  const exceedingSign = exceedingInfo?.symbol ? `${exceedingInfo?.symbol}` : "";
-  return `${exceedingSign}${sign}$${displayUsd}`;
+  const displayUsd = formatAmount(exceedingInfo.value, USD_DECIMALS, displayDecimals, true);
+  return `${exceedingInfo.symbol}${sign}$${displayUsd}`;
 }
 
 export function formatDeltaUsd(deltaUsd?: BigNumber, percentage?: BigNumber, opts: { fallbackToZero?: boolean } = {}) {
@@ -192,7 +196,7 @@ export function formatPercentage(percentage?: BigNumber, opts: { fallbackToZero?
     return undefined;
   }
 
-  const exceedingInfo = checkPriceThresholdExceeding(percentage, 2);
+  const exceedingInfo = getLimitedDisplay(percentage, 2);
 
   let sign = "";
 
@@ -200,7 +204,7 @@ export function formatPercentage(percentage?: BigNumber, opts: { fallbackToZero?
     sign = percentage?.gt(0) ? "+" : "-";
   }
 
-  return `${exceedingInfo?.symbol ?? ""}${sign}${formatAmount(exceedingInfo?.value ?? percentage.abs(), 2, 2)}%`;
+  return `${exceedingInfo.symbol}${sign}${formatAmount(exceedingInfo.value, 2, 2)}%`;
 }
 
 export function formatTokenAmount(
@@ -226,13 +230,13 @@ export function formatTokenAmount(
       return undefined;
     }
   }
-  const exceedingInfo = checkPriceThresholdExceeding(amount, tokenDecimals);
+  const exceedingInfo = getLimitedDisplay(amount, tokenDecimals);
 
   const formattedAmount = showAllSignificant
-    ? formatAmountFree(exceedingInfo?.value ?? amount, tokenDecimals, tokenDecimals)
-    : formatAmount(exceedingInfo?.value ?? amount, tokenDecimals, displayDecimals, useCommas);
+    ? formatAmountFree(amount, tokenDecimals, tokenDecimals)
+    : formatAmount(exceedingInfo.value, tokenDecimals, displayDecimals, useCommas);
 
-  return `${exceedingInfo?.symbol ?? ""}${formattedAmount}${symbolStr}`;
+  return `${exceedingInfo.symbol}${formattedAmount}${symbolStr}`;
 }
 
 export function formatTokenAmountWithUsd(
