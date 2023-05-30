@@ -22,14 +22,14 @@ export function expandDecimals(n: BigNumberish, decimals: number): BigNumber {
 function getLimitedDisplay(
   amount: BigNumber,
   tokenDecimals: number,
-  opts: { maxThreshold?: string; minThreshold?: string; shouldSkip?: boolean } = {}
+  opts: { maxThreshold?: string; minThreshold?: string } = {}
 ) {
-  const { maxThreshold = MAX_EXCEEDING_THRESHOLD, minThreshold = MIN_EXCEEDING_THRESHOLD, shouldSkip = false } = opts;
+  const { maxThreshold = MAX_EXCEEDING_THRESHOLD, minThreshold = MIN_EXCEEDING_THRESHOLD } = opts;
   const max = expandDecimals(maxThreshold, tokenDecimals);
   const min = ethers.utils.parseUnits(minThreshold, tokenDecimals);
   const absAmount = amount.abs();
 
-  if (amount.eq(0) || shouldSkip) {
+  if (amount.eq(0)) {
     return {
       symbol: "",
       value: absAmount,
