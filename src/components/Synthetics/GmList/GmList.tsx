@@ -125,7 +125,7 @@ export function GmList({ hideTitle }: Props) {
                     <td>{formatUsd(token.prices?.minPrice)}</td>
 
                     <td>
-                      {formatTokenAmount(token.balance, token.decimals, "GM")}
+                      {formatTokenAmount(token.balance, token.decimals, "GM", { useCommas: true })}
                       <br />
                       {formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice)) || "..."}
                     </td>

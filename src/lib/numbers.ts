@@ -221,7 +221,7 @@ export function formatTokenAmountWithUsd(
     }
   }
 
-  const tokenStr = formatTokenAmount(tokenAmount, tokenDecimals, tokenSymbol, opts);
+  const tokenStr = formatTokenAmount(tokenAmount, tokenDecimals, tokenSymbol, { ...opts, useCommas: true });
 
   const usdStr = formatUsd(usdAmount, {
     fallbackToZero: opts.fallbackToZero,
