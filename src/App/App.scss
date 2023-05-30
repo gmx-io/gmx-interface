@@ -408,6 +408,12 @@ button.App-connect-wallet:hover {
   margin: 1.05rem -1.5rem;
 }
 
+.line-separator {
+  height: 1px;
+  background: #23263b;
+  margin: 1.5rem 0;
+}
+
 .App-box-solid {
   background: linear-gradient(90deg, rgba(20, 21, 38, 1) 0%, rgba(25, 27, 47, 1) 100%);
 }

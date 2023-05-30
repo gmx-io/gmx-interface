@@ -91,7 +91,7 @@ export function MarketStats(p: Props) {
 
         <CardRow label={t`Long Collateral`} value={longToken?.symbol || "..."} />
         <CardRow
-          label={t`Pool amount`}
+          label={t`Pool Amount`}
           value={formatTokenAmountWithUsd(longPoolAmount, longPoolAmountUsd, longToken?.symbol, longToken?.decimals)}
         />
 

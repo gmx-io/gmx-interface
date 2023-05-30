@@ -493,6 +493,7 @@ export function PositionSeller(p: Props) {
               <TradeFeesRow {...fees} executionFee={executionFee} feesType="decrease" />
 
               <ExchangeInfoRow
+                isTop
                 label={t`Receive`}
                 className="Exchange-info-row PositionSeller-receive-row "
                 value={
@@ -529,7 +530,7 @@ export function PositionSeller(p: Props) {
               />
             </div>
 
-            {isHighPriceImpact && <div className="App-card-divider" />}
+            {isHighPriceImpact && <div className="line-separator" />}
 
             {isHighPriceImpact && (
               <div className="PositionSeller-price-impact-warning">

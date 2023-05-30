@@ -133,7 +133,9 @@ export function GmList({ hideTitle }: Props) {
                     <td>{apr ? `${formatAmount(apr, 2, 2)}%` : "..."}</td>
 
                     <td className="GmList-last-column">
-                      {formatTokenAmount(totalSupply, token.decimals, "GM")}
+                      {formatTokenAmount(totalSupply, token.decimals, "GM", {
+                        useCommas: true,
+                      })}
                       <br />
                       {formatUsd(totalSupplyUsd)}
                     </td>
@@ -144,14 +146,14 @@ export function GmList({ hideTitle }: Props) {
                         variant="semi-clear"
                         to={`/pools?operation=${Operation.Deposit}&market=${token.address}`}
                       >
-                        <Trans>Deposit</Trans>
+                        <Trans>Buy</Trans>
                       </Button>
                       <Button
                         className="GmList-action GmList-last-action"
                         variant="semi-clear"
                         to={`/pools?operation=${Operation.Withdrawal}&market=${token.address}`}
                       >
-                        <Trans>Withdraw</Trans>
+                        <Trans>Sell</Trans>
                       </Button>
                     </td>
                   </tr>
@@ -233,13 +235,13 @@ export function GmList({ hideTitle }: Props) {
                     <div className="App-card-divider"></div>
                     <div className="App-card-buttons m-0">
                       <Button variant="semi-clear" to={`/pools?operation=${Operation.Deposit}&market=${token.address}`}>
-                        <Trans>Deposit</Trans>
+                        <Trans>Buy</Trans>
                       </Button>
                       <Button
                         variant="semi-clear"
                         to={`/pools?operation=${Operation.Withdrawal}&market=${token.address}`}
                       >
-                        <Trans>Withdraw</Trans>
+                        <Trans>Sell</Trans>
                       </Button>
                     </div>
                   </div>
