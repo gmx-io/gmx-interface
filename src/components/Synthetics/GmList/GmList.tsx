@@ -133,7 +133,9 @@ export function GmList({ hideTitle }: Props) {
                     <td>{apr ? `${formatAmount(apr, 2, 2)}%` : "..."}</td>
 
                     <td className="GmList-last-column">
-                      {formatTokenAmount(totalSupply, token.decimals, "GM")}
+                      {formatTokenAmount(totalSupply, token.decimals, "GM", {
+                        useCommas: true,
+                      })}
                       <br />
                       {formatUsd(totalSupplyUsd)}
                     </td>
