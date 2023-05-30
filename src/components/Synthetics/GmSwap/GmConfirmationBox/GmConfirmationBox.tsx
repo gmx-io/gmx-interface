@@ -323,7 +323,7 @@ export function GmConfirmationBox({
               swapPriceImpact={fees?.swapPriceImpact}
               executionFee={executionFee}
             />
-            {(isHighPriceImpact || tokensToApprove?.length > 0) && <div className="line-separator" />}
+            {(isHighPriceImpact || tokensToApprove?.length > 0) && <div className="line-divider" />}
 
             {isHighPriceImpact && (
               <div className="GmSwapBox-warnings">

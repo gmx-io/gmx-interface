@@ -530,7 +530,7 @@ export function PositionSeller(p: Props) {
               />
             </div>
 
-            {isHighPriceImpact && <div className="line-separator" />}
+            {isHighPriceImpact && <div className="line-divider" />}
 
             {isHighPriceImpact && (
               <div className="PositionSeller-price-impact-warning">
