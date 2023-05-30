@@ -16,6 +16,30 @@ export function expandDecimals(n: BigNumberish, decimals: number): BigNumber {
   return bigNumberify(n).mul(bigNumberify(10).pow(decimals));
 }
 
+const MAX_EXCEEDING_THRESHOLD = "1000000000";
+const MIN_EXCEEDING_THRESHOLD = "0.01";
+
+function checkPriceThresholdExceeding(value: BigNumber, tokenDecimals: number) {
+  const maxExceeding = expandDecimals(MAX_EXCEEDING_THRESHOLD, tokenDecimals);
+  const minExceeding = ethers.utils.parseUnits(MIN_EXCEEDING_THRESHOLD, tokenDecimals);
+
+  if (!value || value.eq(0)) return;
+
+  if (value.gte(maxExceeding)) {
+    return {
+      symbol: ">",
+      value: maxExceeding,
+    };
+  }
+
+  if (value.lte(minExceeding)) {
+    return {
+      symbol: "<",
+      value: minExceeding,
+    };
+  }
+}
+
 export const trimZeroDecimals = (amount: string) => {
   if (parseFloat(amount) === parseInt(amount)) {
     return parseInt(amount).toString();
@@ -38,6 +62,7 @@ export const limitDecimals = (amount: BigNumberish, maxDecimals?: number) => {
       amountStr = amountStr.substr(0, amountStr.length - (decimals - maxDecimals));
     }
   }
+
   return amountStr;
 };
 
@@ -130,9 +155,11 @@ export function formatUsd(usd?: BigNumber, opts: { fallbackToZero?: boolean; dis
     }
   }
 
+  const exceedingInfo = checkPriceThresholdExceeding(usd, USD_DECIMALS);
   const sign = usd.lt(0) ? "-" : "";
-
-  return `${sign}$${formatAmount(usd.abs(), USD_DECIMALS, displayDecimals, true)}`;
+  const displayUsd = formatAmount(exceedingInfo?.value ?? usd.abs(), USD_DECIMALS, displayDecimals, true);
+  const exceedingSign = exceedingInfo?.symbol ? `${exceedingInfo?.symbol}` : "";
+  return `${exceedingSign}${sign}$${displayUsd}`;
 }
 
 export function formatDeltaUsd(deltaUsd?: BigNumber, percentage?: BigNumber, opts: { fallbackToZero?: boolean } = {}) {
@@ -165,13 +192,15 @@ export function formatPercentage(percentage?: BigNumber, opts: { fallbackToZero?
     return undefined;
   }
 
+  const exceedingInfo = checkPriceThresholdExceeding(percentage, 2);
+
   let sign = "";
 
   if (signed && !percentage.eq(0)) {
     sign = percentage?.gt(0) ? "+" : "-";
   }
 
-  return `${sign}${formatAmount(percentage.abs(), 2, 2)}%`;
+  return `${exceedingInfo?.symbol ?? ""}${sign}${formatAmount(exceedingInfo?.value ?? percentage.abs(), 2, 2)}%`;
 }
 
 export function formatTokenAmount(
@@ -197,12 +226,13 @@ export function formatTokenAmount(
       return undefined;
     }
   }
+  const exceedingInfo = checkPriceThresholdExceeding(amount, tokenDecimals);
 
   const formattedAmount = showAllSignificant
-    ? formatAmountFree(amount, tokenDecimals, tokenDecimals)
-    : formatAmount(amount, tokenDecimals, displayDecimals, useCommas);
+    ? formatAmountFree(exceedingInfo?.value ?? amount, tokenDecimals, tokenDecimals)
+    : formatAmount(exceedingInfo?.value ?? amount, tokenDecimals, displayDecimals, useCommas);
 
-  return `${formattedAmount}${symbolStr}`;
+  return `${exceedingInfo?.symbol ?? ""}${formattedAmount}${symbolStr}`;
 }
 
 export function formatTokenAmountWithUsd(
@@ -236,7 +266,6 @@ export const parseValue = (value: string, tokenDecimals: number) => {
   if (isNaN(pValue)) {
     return undefined;
   }
-
   value = limitDecimals(value, tokenDecimals);
   const amount = ethers.utils.parseUnits(value, tokenDecimals);
   return bigNumberify(amount);
