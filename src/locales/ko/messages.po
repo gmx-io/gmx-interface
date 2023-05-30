@@ -5108,6 +5108,18 @@ msgstr ""
 msgid "You have not deposited any tokens for vesting."
 msgstr "베스트팅을 위한 토큰이 예치되지 않았습니다."
 
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "You have selected {collateralTokenSymbol} as Collateral, the Liquidation Price is higher compared to using a stablecoin as collateral, since the worth of the collateral will change with its price."
+msgstr ""
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "You have selected {collateralTokenSymbol} as Collateral, the Liquidation Price will vary based on the price of {collateralTokenSymbol}."
+msgstr ""
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "You have selected {collateralTokenSymbol} as collateral to short {indexTokenSymbol}."
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "You have {0} esGMX (IOU) tokens."
 msgstr "귀하는 {0} esGMx (IOU) 토큰을 보유하고 있습니다."
