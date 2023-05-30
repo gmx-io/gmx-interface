@@ -57,6 +57,7 @@ export default function BuyInputSection({
               type="number"
               min="0"
               placeholder="0.0"
+              step="any"
               className="Exchange-swap-input"
               value={inputValue}
               onChange={onInputValueChange}

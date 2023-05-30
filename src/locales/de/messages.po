@@ -50,7 +50,6 @@ msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which
 msgstr "<0>Unzureichende Liquidität für die Ausführung des Auftrags</0><1>Der Markpreis, der ein Aggregat der Börsenkurse ist, hat den angegebenen Preis nicht erreicht</1><2>Der angegebene Preis wurde erreicht, aber nicht lange genug, um ihn auszuführen</2><3>Kein Keeper hat den Auftrag zur Ausführung angenommen</3>"
 
 #: src/components/Exchange/FeesTooltip.tsx
-#: src/components/Exchange/SwapBox.js
 msgid "<0>More Info</0> about fees."
 msgstr "<0>Mehr Infos</0> über Gebühren."
 
@@ -196,7 +195,7 @@ msgstr ""
 
 #: src/pages/Referrals/Referrals.js
 msgid "Affiliates"
-msgstr "Affiliate"
+msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
@@ -1485,7 +1484,7 @@ msgstr "Generierung von teilbaren Bildern..."
 
 #: src/pages/Referrals/Referrals.js
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
-msgstr "Erhalte niedrigere Gebühren und verdiene Rabatte durch das GMX Empfehlungsprogramm.<0/>Für weitere Informationen lese bitte die <1>Details zum Empfehlungsprogramm</1>."
+msgstr ""
 
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Governance"
@@ -2154,7 +2153,6 @@ msgstr "Es sind nur Buchstaben, Zahlen und Unterstriche erlaubt."
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/NetValueTooltip.tsx
-#: src/components/Exchange/SwapBox.js
 msgid "Open Fee"
 msgstr ""
 
@@ -2331,10 +2329,6 @@ msgstr "Bitte gebe einen Empfehlungscode ein, um von Gebührenermäßigungen zu 
 msgid "Please only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP and Multiplier Points to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
 msgstr "Bitte verwende dies nur für vollständige Kontotransfers.<0/>Damit werden alle deine GMX, esGMX, GLP und Multiplikatorpunkte auf dein neues Konto übertragen.<1/>Transfers werden nur unterstützt, wenn das Empfängerkonto noch keine GMX- oder GLP-Token gestaket hat.<2/>Transfers sind einseitig, du kannst keine gestaketen Token zurück auf das Sendekonto übertragen."
 
-#: src/components/Migration/Migration.js
-msgid "Please read the <0>Medium post</0> before migrating."
-msgstr "Bitte lese vor der Migration den <0>Medium Beitrag</0>."
-
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Please switch your network to Arbitrum."
 msgstr "Bitte wechsle dein Netzwerk zu Arbitrum."
@@ -2494,6 +2488,11 @@ msgstr "Versicherung kaufen"
 msgid "Read more"
 msgstr "Mehr lesen"
 
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Rebates"
+msgstr ""
+
 #: src/components/Referrals/TradersStats.js
 msgid "Rebates Distribution History"
 msgstr "Rabatte Verteilungs-Historie"
@@ -2511,6 +2510,16 @@ msgstr "Rabatte, die mit diesem Konto als Händler verdient wurden."
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Rebates earned by this account as an affiliate."
 msgstr "Rabatte, die von diesem Konto als Affiliate-Partner verdient wurden."
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Rebates on Arbitrum"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Rebates on Avalanche"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
@@ -2573,11 +2582,11 @@ msgstr "Referral Code erstellt!"
 
 #: src/pages/Referrals/Referrals.js
 msgid "Referral code creation failed."
-msgstr "Referral Code Erstellung fehlgeschlagen."
+msgstr ""
 
 #: src/pages/Referrals/Referrals.js
 msgid "Referral code submitted!"
-msgstr "Referral Code übermittelt!"
+msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Referral code updated failed."
@@ -2946,7 +2955,6 @@ msgid "Swap"
 msgstr "Swap"
 
 #: src/components/Exchange/FeesTooltip.tsx
-#: src/components/Exchange/SwapBox.js
 msgid "Swap Fee"
 msgstr ""
 
@@ -3213,6 +3221,11 @@ msgstr "Um die Gebühren zu senken, wähle einen anderen Vermögenswert aus, den
 msgid "Tokens"
 msgstr "Tokens"
 
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+#: src/components/Referrals/TradersStats.js
 #: src/pages/Stake/StakeV2.js
 msgid "Total"
 msgstr "Insgesamt"
@@ -3235,8 +3248,6 @@ msgid "Total Fees Distributed"
 msgstr "Gebühren insgesamt verteilt"
 
 #: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
 msgid "Total Rebates"
 msgstr "Rabatte insgesamt"
 
@@ -3270,12 +3281,6 @@ msgstr "Gesamtstatistik"
 msgid "Total Supply"
 msgstr "Gesamtangebot"
 
-#: src/components/Referrals/AffiliatesStats.js
-msgid "Total Traders Referred"
-msgstr "Vermittelte Trader insgesamt"
-
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
 #: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "Trading Volumen insgesamt"
@@ -3321,15 +3326,39 @@ msgstr "Handle auf GMX und gewinne <0>$250.000</0> in Preisen! Live bis zum 30. 
 
 #: src/pages/Referrals/Referrals.js
 msgid "Traders"
-msgstr "Traders"
+msgstr ""
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Traders Referred"
 msgstr "Vermittelte Trader"
 
+#: src/components/Referrals/AffiliatesStats.js
+msgid "Traders Referred on Arbitrum"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js
+msgid "Traders Referred on Avalanche"
+msgstr ""
+
 #: src/pages/Exchange/Exchange.js
 msgid "Trades"
 msgstr "Trades"
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Trading Volume"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Trading Volume on Arbitrum"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Trading Volume on Avalanche"
+msgstr ""
 
 #: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"

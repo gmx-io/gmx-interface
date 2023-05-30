@@ -22,7 +22,7 @@ import {
   getLeverageStr,
 } from "lib/legacy";
 import { getConstant, getExplorerUrl } from "config/chains";
-import { approvePlugin, useMinExecutionFee, cancelMultipleOrders } from "domain/legacy";
+import { approvePlugin, useExecutionFee, cancelMultipleOrders } from "domain/legacy";
 
 import { getContract } from "config/contracts";
 
@@ -514,7 +514,7 @@ export const Exchange = forwardRef((props, ref) => {
   );
 
   const { infoTokens } = useInfoTokens(library, chainId, active, tokenBalances, fundingRateInfo);
-  const { minExecutionFee, minExecutionFeeUSD, minExecutionFeeErrorMessage } = useMinExecutionFee(
+  const { minExecutionFee, minExecutionFeeUSD, minExecutionFeeErrorMessage } = useExecutionFee(
     library,
     active,
     chainId,

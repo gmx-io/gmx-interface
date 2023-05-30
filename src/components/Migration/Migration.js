@@ -415,15 +415,6 @@ export default function Migration() {
       <div className="Migration-note">
         <Trans>Your wallet: {formatAmount(gmxBalance, 18, 4, true)}</Trans> GMX
       </div>
-      <div className="Migration-note">
-        <Trans>
-          Please read the{" "}
-          <ExternalLink href="https://gambitprotocol.medium.com/gambit-gmx-migration-now-live-2ba999d208dd">
-            Medium post
-          </ExternalLink>{" "}
-          before migrating.
-        </Trans>
-      </div>
       <div className="Migration-cards">
         {tokens.map((token, index) => {
           const { cap, price, bonus } = token;

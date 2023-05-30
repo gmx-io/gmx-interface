@@ -82,6 +82,7 @@ import { get1InchSwapUrl } from "config/links";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import LeverageSlider from "./LeverageSlider";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import FeesTooltip from "./FeesTooltip";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -155,7 +156,6 @@ export default function SwapBox(props) {
     minExecutionFeeUSD,
     minExecutionFeeErrorMessage,
   } = props;
-
   const [fromValue, setFromValue] = useState("");
   const [toValue, setToValue] = useState("");
   const [anchorOnFromAmount, setAnchorOnFromAmount] = useState(true);
@@ -1756,6 +1756,22 @@ export default function SwapBox(props) {
     }
   }
 
+  function getFundingRate() {
+    let fundingRate = "";
+
+    if (isLong && toTokenInfo) {
+      fundingRate = formatAmount(toTokenInfo.fundingRate, 4, 4);
+    } else if (isShort && shortCollateralToken) {
+      fundingRate = formatAmount(shortCollateralToken.fundingRate, 4, 4);
+    }
+
+    if (fundingRate) {
+      fundingRate += "% / 1h";
+    }
+
+    return fundingRate;
+  }
+
   function setFromValueToMaximumAvailable() {
     if (!fromToken || !fromBalance) {
       return;
@@ -1839,6 +1855,13 @@ export default function SwapBox(props) {
     [SWAP]: t`Swap`,
   };
 
+  const SWAP_ORDER_EXECUTION_GAS_FEE = getConstant(chainId, "SWAP_ORDER_EXECUTION_GAS_FEE");
+  const INCREASE_ORDER_EXECUTION_GAS_FEE = getConstant(chainId, "INCREASE_ORDER_EXECUTION_GAS_FEE");
+  const executionFee = isSwap ? SWAP_ORDER_EXECUTION_GAS_FEE : INCREASE_ORDER_EXECUTION_GAS_FEE;
+  const executionFeeUsd = getUsd(executionFee, nativeTokenAddress, false, infoTokens);
+  const currentExecutionFee = isMarketOrder ? minExecutionFee : executionFee;
+  const currentExecutionFeeUsd = isMarketOrder ? minExecutionFeeUSD : executionFeeUsd;
+
   function renderPrimaryButton() {
     const [errorMessage, errorType, errorCode] = getError();
     const primaryTextMessage = getPrimaryText();
@@ -1858,7 +1881,13 @@ export default function SwapBox(props) {
       );
     }
     return (
-      <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+      <Button
+        type="submit"
+        variant="primary-action"
+        className="w-full"
+        onClick={onClickPrimary}
+        disabled={!isPrimaryEnabled()}
+      >
         {primaryTextMessage}
       </Button>
     );
@@ -1866,307 +1895,293 @@ export default function SwapBox(props) {
 
   return (
     <div className="Exchange-swap-box">
-      <div className="Exchange-swap-box-inner App-box-highlight">
-        <div>
-          <Tab
-            icons={SWAP_ICONS}
-            options={SWAP_OPTIONS}
-            optionLabels={SWAP_LABELS}
-            option={swapOption}
-            onChange={onSwapOptionChange}
-            className="Exchange-swap-option-tabs"
-          />
-          {flagOrdersEnabled && (
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          onClickPrimary();
+        }}
+      >
+        <div className="Exchange-swap-box-inner App-box-highlight">
+          <div>
             <Tab
-              options={orderOptions}
-              optionLabels={orderOptionLabels}
-              className="Exchange-swap-order-type-tabs"
-              type="inline"
-              option={orderOption}
-              onChange={onOrderOptionChange}
+              icons={SWAP_ICONS}
+              options={SWAP_OPTIONS}
+              optionLabels={SWAP_LABELS}
+              option={swapOption}
+              onChange={onSwapOptionChange}
+              className="Exchange-swap-option-tabs"
             />
+            {flagOrdersEnabled && (
+              <Tab
+                options={orderOptions}
+                optionLabels={orderOptionLabels}
+                className="Exchange-swap-order-type-tabs"
+                type="inline"
+                option={orderOption}
+                onChange={onOrderOptionChange}
+              />
+            )}
+          </div>
+          {showFromAndToSection && (
+            <React.Fragment>
+              <BuyInputSection
+                topLeftLabel={t`Pay`}
+                topRightLabel={t`Balance`}
+                balance={fromUsdMin && `${formatAmount(fromUsdMin, USD_DECIMALS, 2, true)} USD`}
+                tokenBalance={fromBalance && `${formatAmount(fromBalance, fromToken.decimals, 4, true)}`}
+                onClickTopRightLabel={setFromValueToMaximumAvailable}
+                showMaxButton={shouldShowMaxButton()}
+                inputValue={fromValue}
+                onInputValueChange={onFromValueChange}
+                onClickMax={setFromValueToMaximumAvailable}
+              >
+                <TokenSelector
+                  label={t`Pay`}
+                  chainId={chainId}
+                  tokenAddress={fromTokenAddress}
+                  onSelectToken={onSelectFromToken}
+                  tokens={fromTokens}
+                  infoTokens={infoTokens}
+                  showMintingCap={false}
+                  showTokenImgInDropdown={true}
+                />
+              </BuyInputSection>
+              <div className="Exchange-swap-ball-container">
+                <button className="Exchange-swap-ball" type="button" onClick={switchTokens}>
+                  <IoMdSwap className="Exchange-swap-ball-icon" />
+                </button>
+              </div>
+              <BuyInputSection
+                topLeftLabel={getToLabel()}
+                topRightLabel={isSwap ? t`Balance` : t`Leverage`}
+                balance={toUsdMax && `${formatAmount(toUsdMax, USD_DECIMALS, 2, true)} USD`}
+                tokenBalance={
+                  isSwap
+                    ? formatAmount(toBalance, toToken.decimals, 4, true)
+                    : `${parseFloat(leverageOption).toFixed(2)}x`
+                }
+                showMaxButton={false}
+                inputValue={toValue}
+                onInputValueChange={onToValueChange}
+              >
+                <TokenSelector
+                  label={getTokenLabel()}
+                  chainId={chainId}
+                  tokenAddress={toTokenAddress}
+                  onSelectToken={onSelectToToken}
+                  tokens={toTokens}
+                  infoTokens={infoTokens}
+                  showTokenImgInDropdown={true}
+                />
+              </BuyInputSection>
+            </React.Fragment>
           )}
-        </div>
-
-        {showFromAndToSection && (
-          <React.Fragment>
+          {showTriggerRatioSection && (
             <BuyInputSection
-              topLeftLabel={t`Pay`}
-              topRightLabel={t`Balance`}
-              balance={fromUsdMin && `${formatAmount(fromUsdMin, USD_DECIMALS, 2, true)} USD`}
-              tokenBalance={fromBalance && `${formatAmount(fromBalance, fromToken.decimals, 4, true)}`}
-              onClickTopRightLabel={setFromValueToMaximumAvailable}
-              showMaxButton={shouldShowMaxButton()}
-              inputValue={fromValue}
-              onInputValueChange={onFromValueChange}
-              onClickMax={setFromValueToMaximumAvailable}
-            >
-              <TokenSelector
-                label={t`Pay`}
-                chainId={chainId}
-                tokenAddress={fromTokenAddress}
-                onSelectToken={onSelectFromToken}
-                tokens={fromTokens}
-                infoTokens={infoTokens}
-                showMintingCap={false}
-                showTokenImgInDropdown={true}
-              />
-            </BuyInputSection>
-            <div className="Exchange-swap-ball-container">
-              <button className="Exchange-swap-ball" onClick={switchTokens}>
-                <IoMdSwap className="Exchange-swap-ball-icon" />
-              </button>
-            </div>
-            <BuyInputSection
-              topLeftLabel={getToLabel()}
-              topRightLabel={isSwap ? t`Balance` : t`Leverage`}
-              balance={toUsdMax && `${formatAmount(toUsdMax, USD_DECIMALS, 2, true)} USD`}
-              tokenBalance={
-                isSwap
-                  ? formatAmount(toBalance, toToken.decimals, 4, true)
-                  : `${parseFloat(leverageOption).toFixed(2)}x`
-              }
+              topLeftLabel={t`Price`}
+              topRightLabel={formatAmount(
+                getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted),
+                USD_DECIMALS,
+                4
+              )}
+              onClickTopRightLabel={() => {
+                setTriggerRatioValue(
+                  formatAmountFree(getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted), USD_DECIMALS, 10)
+                );
+              }}
               showMaxButton={false}
-              inputValue={toValue}
-              onInputValueChange={onToValueChange}
+              inputValue={triggerRatioValue}
+              onInputValueChange={onTriggerRatioChange}
             >
-              <TokenSelector
-                label={getTokenLabel()}
-                chainId={chainId}
-                tokenAddress={toTokenAddress}
-                onSelectToken={onSelectToToken}
-                tokens={toTokens}
-                infoTokens={infoTokens}
-                showTokenImgInDropdown={true}
-              />
+              {(() => {
+                if (!toTokenInfo) return;
+                if (!fromTokenInfo) return;
+                const [tokenA, tokenB] = triggerRatioInverted
+                  ? [toTokenInfo, fromTokenInfo]
+                  : [fromTokenInfo, toTokenInfo];
+                return (
+                  <div className="PositionEditor-token-symbol">
+                    {tokenA.symbol}&nbsp;per&nbsp;{tokenB.symbol}
+                  </div>
+                );
+              })()}
             </BuyInputSection>
-          </React.Fragment>
-        )}
-        {showTriggerRatioSection && (
-          <BuyInputSection
-            topLeftLabel={t`Price`}
-            topRightLabel={formatAmount(
-              getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted),
-              USD_DECIMALS,
-              4
-            )}
-            onClickTopRightLabel={() => {
-              setTriggerRatioValue(
-                formatAmountFree(getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted), USD_DECIMALS, 10)
-              );
-            }}
-            showMaxButton={false}
-            inputValue={triggerRatioValue}
-            onInputValueChange={onTriggerRatioChange}
-          >
-            {(() => {
-              if (!toTokenInfo) return;
-              if (!fromTokenInfo) return;
-              const [tokenA, tokenB] = triggerRatioInverted
-                ? [toTokenInfo, fromTokenInfo]
-                : [fromTokenInfo, toTokenInfo];
-              return (
-                <div className="PositionEditor-token-symbol">
-                  {tokenA.symbol}&nbsp;per&nbsp;{tokenB.symbol}
-                </div>
-              );
-            })()}
-          </BuyInputSection>
-        )}
-        {showTriggerPriceSection && (
-          <BuyInputSection
-            topLeftLabel={t`Price`}
-            topRightLabel={t`Mark`}
-            tokenBalance={formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)}
-            onClickTopRightLabel={() => {
-              setTriggerPriceValue(formatAmountFree(entryMarkPrice, USD_DECIMALS, 2));
-            }}
-            showMaxButton={false}
-            inputValue={triggerPriceValue}
-            onInputValueChange={onTriggerPriceChange}
-          >
-            USD
-          </BuyInputSection>
-        )}
-        {isSwap && (
-          <div className="Exchange-swap-box-info">
-            <ExchangeInfoRow label={t`Fees`}>
-              <div>
-                {!fees && "-"}
-                {fees && (
-                  <div>
-                    {formatAmount(feeBps, 2, 2, false)}%&nbsp; ({formatAmount(fees, fromToken.decimals, 4, true)}{" "}
-                    {fromToken.symbol}: ${formatAmount(feesUsd, USD_DECIMALS, 2, true)})
-                  </div>
-                )}
-              </div>
-            </ExchangeInfoRow>
-          </div>
-        )}
-        {(isLong || isShort) && !isStopOrder && (
-          <div className="Exchange-leverage-box">
-            <ToggleSwitch
-              className="Exchange-leverage-toggle-wrapper"
-              isChecked={isLeverageSliderEnabled}
-              setIsChecked={setIsLeverageSliderEnabled}
+          )}
+          {showTriggerPriceSection && (
+            <BuyInputSection
+              topLeftLabel={t`Price`}
+              topRightLabel={t`Mark`}
+              tokenBalance={formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)}
+              onClickTopRightLabel={() => {
+                setTriggerPriceValue(formatAmountFree(entryMarkPrice, USD_DECIMALS, 2));
+              }}
+              showMaxButton={false}
+              inputValue={triggerPriceValue}
+              onInputValueChange={onTriggerPriceChange}
             >
-              <span className="muted">Leverage slider</span>
-            </ToggleSwitch>
-            {isLeverageSliderEnabled && (
-              <LeverageSlider isLong={isLong} leverageOption={leverageOption} setLeverageOption={setLeverageOption} />
-            )}
-            {isShort && (
-              <div className="Exchange-info-row">
-                <div className="Exchange-info-label">
-                  <Trans>Collateral In</Trans>
+              USD
+            </BuyInputSection>
+          )}
+          {isSwap && (
+            <div className="Exchange-swap-box-info">
+              <ExchangeInfoRow label={t`Fees`}>
+                <div>
+                  {!fees && "-"}
+                  {fees && (
+                    <div>
+                      {formatAmount(feeBps, 2, 2, false)}%&nbsp; ({formatAmount(fees, fromToken.decimals, 4, true)}{" "}
+                      {fromToken.symbol}: ${formatAmount(feesUsd, USD_DECIMALS, 2, true)})
+                    </div>
+                  )}
                 </div>
+              </ExchangeInfoRow>
+            </div>
+          )}
+          {(isLong || isShort) && !isStopOrder && (
+            <div className="Exchange-leverage-box">
+              <ToggleSwitch
+                className="Exchange-leverage-toggle-wrapper"
+                isChecked={isLeverageSliderEnabled}
+                setIsChecked={setIsLeverageSliderEnabled}
+              >
+                <span className="muted">Leverage slider</span>
+              </ToggleSwitch>
+              {isLeverageSliderEnabled && (
+                <LeverageSlider isLong={isLong} leverageOption={leverageOption} setLeverageOption={setLeverageOption} />
+              )}
+              {isShort && (
+                <div className="Exchange-info-row">
+                  <div className="Exchange-info-label">
+                    <Trans>Collateral In</Trans>
+                  </div>
 
-                <div className="align-right">
-                  <TokenSelector
-                    label={t`Collateral In`}
-                    chainId={chainId}
-                    tokenAddress={shortCollateralAddress}
-                    onSelectToken={onSelectShortCollateralAddress}
-                    tokens={stableTokens}
-                    showTokenImgInDropdown={true}
-                  />
+                  <div className="align-right">
+                    <TokenSelector
+                      label={t`Collateral In`}
+                      chainId={chainId}
+                      tokenAddress={shortCollateralAddress}
+                      onSelectToken={onSelectShortCollateralAddress}
+                      tokens={stableTokens}
+                      showTokenImgInDropdown={true}
+                    />
+                  </div>
                 </div>
-              </div>
-            )}
-            {isLong && (
+              )}
+              {isLong && (
+                <div className="Exchange-info-row">
+                  <div className="Exchange-info-label">
+                    <Trans>Collateral In</Trans>
+                  </div>
+                  <div className="align-right">
+                    <Tooltip
+                      position="right-bottom"
+                      handle="USD"
+                      renderContent={() => (
+                        <span className="SwapBox-collateral-tooltip-text">
+                          <Trans>
+                            A snapshot of the USD value of your {existingPosition?.collateralToken?.symbol} collateral
+                            is taken when the position is opened.
+                          </Trans>
+                          <br />
+                          <br />
+                          <Trans>
+                            When closing the position, you can select which token you would like to receive the profits
+                            in.
+                          </Trans>
+                        </span>
+                      )}
+                    />
+                  </div>
+                </div>
+              )}
               <div className="Exchange-info-row">
                 <div className="Exchange-info-label">
-                  <Trans>Collateral In</Trans>
+                  <Trans>Leverage</Trans>
                 </div>
                 <div className="align-right">
-                  <Tooltip
-                    position="right-bottom"
-                    handle="USD"
-                    renderContent={() => (
-                      <span className="SwapBox-collateral-tooltip-text">
-                        <Trans>
-                          A snapshot of the USD value of your {existingPosition?.collateralToken?.symbol} collateral is
-                          taken when the position is opened.
-                        </Trans>
-                        <br />
-                        <br />
-                        <Trans>
-                          When closing the position, you can select which token you would like to receive the profits
-                          in.
-                        </Trans>
-                      </span>
-                    )}
-                  />
+                  {hasExistingPosition && toAmount && toAmount.gt(0) && (
+                    <div className="inline-block muted">
+                      {formatAmount(existingPosition.leverage, 4, 2)}x
+                      <BsArrowRight className="transition-arrow" />
+                    </div>
+                  )}
+                  {toAmount && leverage && leverage.gt(0) && `${formatAmount(leverage, 4, 2)}x`}
+                  {!toAmount && leverage && leverage.gt(0) && `-`}
+                  {leverage && leverage.eq(0) && `-`}
                 </div>
               </div>
-            )}
-            <div className="Exchange-info-row">
-              <div className="Exchange-info-label">
-                <Trans>Leverage</Trans>
+              <div className="Exchange-info-row">
+                <div className="Exchange-info-label">
+                  <Trans>Entry Price</Trans>
+                </div>
+                <div className="align-right">
+                  {hasExistingPosition && toAmount && toAmount.gt(0) && (
+                    <div className="inline-block muted">
+                      ${formatAmount(existingPosition.averagePrice, USD_DECIMALS, 2, true)}
+                      <BsArrowRight className="transition-arrow" />
+                    </div>
+                  )}
+                  {nextAveragePrice && `$${formatAmount(nextAveragePrice, USD_DECIMALS, 2, true)}`}
+                  {!nextAveragePrice && `-`}
+                </div>
               </div>
-              <div className="align-right">
-                {hasExistingPosition && toAmount && toAmount.gt(0) && (
-                  <div className="inline-block muted">
-                    {formatAmount(existingPosition.leverage, 4, 2)}x
-                    <BsArrowRight className="transition-arrow" />
-                  </div>
-                )}
-                {toAmount && leverage && leverage.gt(0) && `${formatAmount(leverage, 4, 2)}x`}
-                {!toAmount && leverage && leverage.gt(0) && `-`}
-                {leverage && leverage.eq(0) && `-`}
+              <div className="Exchange-info-row">
+                <div className="Exchange-info-label">
+                  <Trans>Liq. Price</Trans>
+                </div>
+                <div className="align-right">
+                  {hasExistingPosition && toAmount && toAmount.gt(0) && (
+                    <div className="inline-block muted">
+                      ${formatAmount(existingLiquidationPrice, USD_DECIMALS, 2, true)}
+                      <BsArrowRight className="transition-arrow" />
+                    </div>
+                  )}
+                  {toAmount &&
+                    displayLiquidationPrice &&
+                    `$${formatAmount(displayLiquidationPrice, USD_DECIMALS, 2, true)}`}
+                  {!toAmount && displayLiquidationPrice && `-`}
+                  {!displayLiquidationPrice && `-`}
+                </div>
               </div>
+              <ExchangeInfoRow label={t`Fees`}>
+                <div>
+                  {!feesUsd && "-"}
+
+                  {feesUsd && (
+                    <FeesTooltip
+                      fundingRate={getFundingRate()}
+                      executionFees={{
+                        fee: currentExecutionFee,
+                        feeUsd: currentExecutionFeeUsd,
+                      }}
+                      positionFee={positionFee}
+                      swapFee={swapFees}
+                      titleText={swapFees && <Trans>{collateralToken.symbol} is required for collateral.</Trans>}
+                    />
+                  )}
+                </div>
+              </ExchangeInfoRow>
             </div>
-            <div className="Exchange-info-row">
-              <div className="Exchange-info-label">
-                <Trans>Entry Price</Trans>
-              </div>
-              <div className="align-right">
-                {hasExistingPosition && toAmount && toAmount.gt(0) && (
-                  <div className="inline-block muted">
-                    ${formatAmount(existingPosition.averagePrice, USD_DECIMALS, 2, true)}
-                    <BsArrowRight className="transition-arrow" />
-                  </div>
-                )}
-                {nextAveragePrice && `$${formatAmount(nextAveragePrice, USD_DECIMALS, 2, true)}`}
-                {!nextAveragePrice && `-`}
-              </div>
+          )}
+          {isStopOrder && (
+            <div className="Exchange-swap-section Exchange-trigger-order-info">
+              <Trans>
+                Take-profit and stop-loss orders can be set after opening a position. <br />
+                <br />
+                There will be a "Close" button on each position row, clicking this will display the option to set
+                trigger orders. <br />
+                <br />
+                For screenshots and more information, please see the{" "}
+                <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#stop-loss-take-profit-orders">
+                  docs
+                </ExternalLink>
+                .
+              </Trans>
             </div>
-            <div className="Exchange-info-row">
-              <div className="Exchange-info-label">
-                <Trans>Liq. Price</Trans>
-              </div>
-              <div className="align-right">
-                {hasExistingPosition && toAmount && toAmount.gt(0) && (
-                  <div className="inline-block muted">
-                    ${formatAmount(existingLiquidationPrice, USD_DECIMALS, 2, true)}
-                    <BsArrowRight className="transition-arrow" />
-                  </div>
-                )}
-                {toAmount &&
-                  displayLiquidationPrice &&
-                  `$${formatAmount(displayLiquidationPrice, USD_DECIMALS, 2, true)}`}
-                {!toAmount && displayLiquidationPrice && `-`}
-                {!displayLiquidationPrice && `-`}
-              </div>
-            </div>
-            <ExchangeInfoRow label={t`Fees`}>
-              <div>
-                {!feesUsd && "-"}
-                {feesUsd && (
-                  <Tooltip
-                    handle={`$${formatAmount(feesUsd, USD_DECIMALS, 2, true)}`}
-                    position="right-bottom"
-                    renderContent={() => {
-                      return (
-                        <div>
-                          {swapFees && (
-                            <div>
-                              <Trans>{collateralToken.symbol} is required for collateral.</Trans> <br />
-                              <br />
-                              <StatsTooltipRow
-                                label={t`Swap Fee`}
-                                value={formatAmount(swapFees, USD_DECIMALS, 2, true)}
-                              />
-                            </div>
-                          )}
-                          <div>
-                            <StatsTooltipRow
-                              label={t`Open Fee`}
-                              value={formatAmount(positionFee, USD_DECIMALS, 2, true)}
-                            />
-                          </div>
-                          <br />
-                          <div className="PositionSeller-fee-item">
-                            <Trans>
-                              <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#fees">More Info</ExternalLink>{" "}
-                              about fees.
-                            </Trans>
-                          </div>
-                        </div>
-                      );
-                    }}
-                  />
-                )}
-              </div>
-            </ExchangeInfoRow>
-          </div>
-        )}
-        {isStopOrder && (
-          <div className="Exchange-swap-section Exchange-trigger-order-info">
-            <Trans>
-              Take-profit and stop-loss orders can be set after opening a position. <br />
-              <br />
-              There will be a "Close" button on each position row, clicking this will display the option to set trigger
-              orders. <br />
-              <br />
-              For screenshots and more information, please see the{" "}
-              <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#stop-loss-take-profit-orders">docs</ExternalLink>
-              .
-            </Trans>
-          </div>
-        )}
-        <div className="Exchange-swap-button-container">{renderPrimaryButton()}</div>
-      </div>
+          )}
+          <div className="Exchange-swap-button-container">{renderPrimaryButton()}</div>
+        </div>
+      </form>
       {isSwap && (
         <div className="Exchange-swap-market-box App-box App-box-border">
           <div className="Exchange-swap-market-box-title">
@@ -2421,6 +2436,7 @@ export default function SwapBox(props) {
           entryMarkPrice={entryMarkPrice}
           swapFees={swapFees}
           positionFee={positionFee}
+          fundingRate={getFundingRate()}
         />
       )}
     </div>
