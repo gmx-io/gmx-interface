@@ -181,7 +181,7 @@ export default function PositionsList(props) {
           isPluginApproving={isPluginApproving}
         />
       )}
-      {isPositionSellerVisible && (
+      {isPositionSellerVisible && positionToSellKey in positionsMap && (
         <PositionSeller
           pendingPositions={pendingPositions}
           setPendingPositions={setPendingPositions}
