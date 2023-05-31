@@ -91,7 +91,7 @@ export function useMarkets(chainId: number): MarketsResult {
     },
   });
 
-  console.log("markets", data?.marketsData);
+  // console.log("markets", data?.marketsData);
 
   return {
     marketsData: data?.marketsData,

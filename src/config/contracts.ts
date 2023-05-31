@@ -277,7 +277,7 @@ const CONTRACTS = {
     PositionManager: AddressZero,
 
     TraderJoeGmxAvaxPool: AddressZero,
-    ReferralStorage: "0x5D0715E8f7611f772Ecaddb80Af93b69D43f5262",
+    ReferralStorage: "0x41037500DF49EdCD24Df6E19D4e0c4ae8879cE58",
     ReferralReader: AddressZero,
 
     // Synthetics
@@ -291,7 +291,7 @@ const CONTRACTS = {
     SyntheticsRouter: "0x38faD23226F24741E89283aD3333a97F013Bd1BD",
     Timelock: AddressZero,
 
-    Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
+    Multicall: "0x0f53e512b49202a37c81c6085417C9a9005F2196",
   },
 };
 

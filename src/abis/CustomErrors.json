@@ -142,6 +142,17 @@
           "type": "bytes32"
         }
       ],
+      "name": "DepositNotFound",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "key",
+          "type": "bytes32"
+        }
+      ],
       "name": "DisabledFeature",
       "type": "error"
     },
@@ -154,6 +165,17 @@
         }
       ],
       "name": "DisabledMarket",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        }
+      ],
+      "name": "DuplicateTokenPrice",
       "type": "error"
     },
     {
@@ -238,17 +260,6 @@
       "type": "error"
     },
     {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "token",
-          "type": "address"
-        }
-      ],
-      "name": "EmptyCustomPrice",
-      "type": "error"
-    },
-    {
       "inputs": [],
       "name": "EmptyDeposit",
       "type": "error"
@@ -266,17 +277,6 @@
     {
       "inputs": [],
       "name": "EmptyHoldingAddress",
-      "type": "error"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "token",
-          "type": "address"
-        }
-      ],
-      "name": "EmptyLatestPrice",
       "type": "error"
     },
     {
@@ -335,17 +335,6 @@
     {
       "inputs": [
         {
-          "internalType": "address",
-          "name": "token",
-          "type": "address"
-        }
-      ],
-      "name": "EmptySecondaryPrice",
-      "type": "error"
-    },
-    {
-      "inputs": [
-        {
           "internalType": "uint256",
           "name": "signerIndex",
           "type": "uint256"
@@ -367,11 +356,6 @@
     },
     {
       "inputs": [],
-      "name": "EmptyTokens",
-      "type": "error"
-    },
-    {
-      "inputs": [],
       "name": "EmptyWithdrawal",
       "type": "error"
     },
@@ -383,17 +367,6 @@
     {
       "inputs": [],
       "name": "EndOfOracleSimulation",
-      "type": "error"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "int256",
-          "name": "remainingCollateralAmount",
-          "type": "int256"
-        }
-      ],
-      "name": "InsufficientCollateral",
       "type": "error"
     },
     {
@@ -420,7 +393,7 @@
           "type": "int256"
         }
       ],
-      "name": "InsufficientCollateralForOpenInterestLeverage",
+      "name": "InsufficientCollateralUsd",
       "type": "error"
     },
     {
@@ -437,6 +410,38 @@
         }
       ],
       "name": "InsufficientExecutionFee",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "startingGas",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "minHandleErrorGas",
+          "type": "uint256"
+        }
+      ],
+      "name": "InsufficientExecutionGas",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "remainingCostUsd",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "step",
+          "type": "string"
+        }
+      ],
+      "name": "InsufficientFundsToPayForCosts",
       "type": "error"
     },
     {
@@ -582,7 +587,12 @@
       "inputs": [
         {
           "internalType": "uint256",
-          "name": "blockNumber",
+          "name": "minOracleBlockNumber",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "currentBlockNumber",
           "type": "uint256"
         }
       ],
@@ -730,22 +740,6 @@
           "type": "uint256"
         }
       ],
-      "name": "InvalidFactor",
-      "type": "error"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "bytes32",
-          "name": "baseKey",
-          "type": "bytes32"
-        },
-        {
-          "internalType": "uint256",
-          "name": "value",
-          "type": "uint256"
-        }
-      ],
       "name": "InvalidFeeFactor",
       "type": "error"
     },
@@ -785,27 +779,6 @@
         }
       ],
       "name": "InvalidKeeperForFrozenOrder",
-      "type": "error"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "primaryPrice",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "triggerPrice",
-          "type": "uint256"
-        },
-        {
-          "internalType": "bool",
-          "name": "shouldValidateSmallerPrimaryPrice",
-          "type": "bool"
-        }
-      ],
-      "name": "InvalidLimitOrderPrices",
       "type": "error"
     },
     {
@@ -858,6 +831,32 @@
         }
       ],
       "name": "InvalidMarketTokenBalanceForClaimableFunding",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "market",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "balance",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "collateralAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "InvalidMarketTokenBalanceForCollateralAmount",
       "type": "error"
     },
     {
@@ -923,6 +922,32 @@
         }
       ],
       "name": "InvalidOracleSigner",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "primaryPriceMin",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "primaryPriceMax",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "triggerPrice",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "orderType",
+          "type": "uint256"
+        }
+      ],
+      "name": "InvalidOrderPrices",
       "type": "error"
     },
     {
@@ -1030,22 +1055,6 @@
     {
       "inputs": [
         {
-          "internalType": "uint256",
-          "name": "secondaryTokensLength",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "secondaryPricesLength",
-          "type": "uint256"
-        }
-      ],
-      "name": "InvalidSecondaryPricesForSimulation",
-      "type": "error"
-    },
-    {
-      "inputs": [
-        {
           "internalType": "address",
           "name": "recoveredSigner",
           "type": "address"
@@ -1089,32 +1098,6 @@
         }
       ],
       "name": "InvalidSizeDeltaForAdl",
-      "type": "error"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "primaryPrice",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "secondaryPrice",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "triggerPrice",
-          "type": "uint256"
-        },
-        {
-          "internalType": "bool",
-          "name": "shouldValidateAscendingPrice",
-          "type": "bool"
-        }
-      ],
-      "name": "InvalidStopLossOrderPrices",
       "type": "error"
     },
     {
@@ -1188,7 +1171,13 @@
       "type": "error"
     },
     {
-      "inputs": [],
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "reason",
+          "type": "string"
+        }
+      ],
       "name": "LiquidatablePosition",
       "type": "error"
     },
@@ -1206,6 +1195,17 @@
         }
       ],
       "name": "MarketAlreadyExists",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "key",
+          "type": "address"
+        }
+      ],
+      "name": "MarketNotFound",
       "type": "error"
     },
     {
@@ -1293,6 +1293,11 @@
         {
           "internalType": "uint256",
           "name": "oracleTimestamp",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "currentTimestamp",
           "type": "uint256"
         }
       ],
@@ -1493,6 +1498,53 @@
     {
       "inputs": [
         {
+          "internalType": "int256",
+          "name": "executionPrice",
+          "type": "int256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "price",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "positionSizeInUsd",
+          "type": "uint256"
+        },
+        {
+          "internalType": "int256",
+          "name": "priceImpactUsd",
+          "type": "int256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "sizeDeltaUsd",
+          "type": "uint256"
+        }
+      ],
+      "name": "NegativeExecutionPrice",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "baseSizeDeltaInTokens",
+          "type": "uint256"
+        },
+        {
+          "internalType": "int256",
+          "name": "priceImpactAmount",
+          "type": "int256"
+        }
+      ],
+      "name": "NegativeSizeDeltaInTokens",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "uint256",
           "name": "tokensWithPricesLength",
           "type": "uint256"
@@ -1546,28 +1598,23 @@
           "type": "uint256"
         }
       ],
-      "name": "OracleBlockNumbersAreNotEqual",
-      "type": "error"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256[]",
-          "name": "oracleBlockNumbers",
-          "type": "uint256[]"
-        },
-        {
-          "internalType": "uint256",
-          "name": "expectedBlockNumber",
-          "type": "uint256"
-        }
-      ],
       "name": "OracleBlockNumbersAreSmallerThanRequired",
       "type": "error"
     },
     {
       "inputs": [],
       "name": "OrderAlreadyFrozen",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "key",
+          "type": "bytes32"
+        }
+      ],
+      "name": "OrderNotFound",
       "type": "error"
     },
     {
@@ -1657,6 +1704,17 @@
       "type": "error"
     },
     {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "key",
+          "type": "bytes32"
+        }
+      ],
+      "name": "PositionNotFound",
+      "type": "error"
+    },
+    {
       "inputs": [],
       "name": "PositionShouldNotBeLiquidated",
       "type": "error"
@@ -1707,7 +1765,7 @@
       "inputs": [
         {
           "internalType": "int256",
-          "name": "priceImpactUsdForPriceAdjustment",
+          "name": "priceImpactUsd",
           "type": "int256"
         },
         {
@@ -1760,6 +1818,22 @@
         }
       ],
       "name": "SignalTimeNotYetPassed",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amountAfterFees",
+          "type": "uint256"
+        },
+        {
+          "internalType": "int256",
+          "name": "negativeImpactAmount",
+          "type": "int256"
+        }
+      ],
+      "name": "SwapPriceImpactExceedsAmountIn",
       "type": "error"
     },
     {
@@ -1843,7 +1917,7 @@
           "type": "int256"
         }
       ],
-      "name": "UnableToWithdrawCollateralDueToLeverage",
+      "name": "UnableToWithdrawCollateral",
       "type": "error"
     },
     {
@@ -1881,6 +1955,17 @@
     {
       "inputs": [],
       "name": "UnexpectedMarket",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "int256",
+          "name": "poolValue",
+          "type": "int256"
+        }
+      ],
+      "name": "UnexpectedPoolValue",
       "type": "error"
     },
     {
@@ -1956,10 +2041,21 @@
       ],
       "name": "UsdDeltaExceedsShortOpenInterest",
       "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "key",
+          "type": "bytes32"
+        }
+      ],
+      "name": "WithdrawalNotFound",
+      "type": "error"
     }
   ],
-  "bytecode": "0x60566037600b82828239805160001a607314602a57634e487b7160e01b600052600060045260246000fd5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220b78f808f4bc6ddac56fc25e3eb448ed5ea11646d84d52c5ef7ccfa3cd1daf90464736f6c63430008100033",
-  "deployedBytecode": "0x73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220b78f808f4bc6ddac56fc25e3eb448ed5ea11646d84d52c5ef7ccfa3cd1daf90464736f6c63430008100033",
+  "bytecode": "0x60566037600b82828239805160001a607314602a57634e487b7160e01b600052600060045260246000fd5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220a05a1b0b821f70aca958e4a61e976a2266213de98a0d071da24fd23d6276520164736f6c63430008120033",
+  "deployedBytecode": "0x73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220a05a1b0b821f70aca958e4a61e976a2266213de98a0d071da24fd23d6276520164736f6c63430008120033",
   "linkReferences": {},
   "deployedLinkReferences": {}
 }
