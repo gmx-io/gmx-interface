@@ -29,15 +29,15 @@ function getLimitedDisplay(
   const min = ethers.utils.parseUnits(minThreshold, tokenDecimals);
   const absAmount = amount.abs();
 
-  if (amount.eq(0)) {
+  if (absAmount.eq(0)) {
     return {
       symbol: "",
       value: absAmount,
     };
   }
 
-  const symbol = amount.gt(max) ? ">" : amount.lt(min) ? "<" : "";
-  const value = amount.gt(max) ? max : amount.lt(min) ? min : absAmount;
+  const symbol = absAmount.gt(max) ? ">" : absAmount.lt(min) ? "<" : "";
+  const value = absAmount.gt(max) ? max : absAmount.lt(min) ? min : absAmount;
 
   return {
     symbol,
@@ -179,10 +179,11 @@ export function formatDeltaUsd(deltaUsd?: BigNumber, percentage?: BigNumber, opt
   if (!deltaUsd.eq(0)) {
     sign = deltaUsd?.gt(0) ? "+" : "-";
   }
-
+  const exceedingInfo = getLimitedDisplay(deltaUsd, USD_DECIMALS);
   const percentageStr = percentage ? ` (${sign}${formatPercentage(percentage.abs())})` : "";
+  const deltaUsdStr = formatAmount(exceedingInfo.value, USD_DECIMALS, 2, true);
 
-  return `${sign}${formatUsd(deltaUsd.abs())}${percentageStr}`;
+  return `${exceedingInfo.symbol} ${sign}$${deltaUsdStr}${percentageStr}`;
 }
 
 export function formatPercentage(percentage?: BigNumber, opts: { fallbackToZero?: boolean; signed?: boolean } = {}) {
@@ -196,15 +197,13 @@ export function formatPercentage(percentage?: BigNumber, opts: { fallbackToZero?
     return undefined;
   }
 
-  const exceedingInfo = getLimitedDisplay(percentage, 2);
-
   let sign = "";
 
   if (signed && !percentage.eq(0)) {
     sign = percentage?.gt(0) ? "+" : "-";
   }
 
-  return `${exceedingInfo.symbol}${sign}${formatAmount(exceedingInfo.value, 2, 2)}%`;
+  return `${sign}${formatAmount(percentage, 2, 2)}%`;
 }
 
 export function formatTokenAmount(
@@ -230,13 +229,12 @@ export function formatTokenAmount(
       return undefined;
     }
   }
-  const exceedingInfo = getLimitedDisplay(amount, tokenDecimals);
 
   const formattedAmount = showAllSignificant
     ? formatAmountFree(amount, tokenDecimals, tokenDecimals)
-    : formatAmount(exceedingInfo.value, tokenDecimals, displayDecimals, useCommas);
+    : formatAmount(amount, tokenDecimals, displayDecimals, useCommas);
 
-  return `${exceedingInfo.symbol}${formattedAmount}${symbolStr}`;
+  return `${formattedAmount}${symbolStr}`;
 }
 
 export function formatTokenAmountWithUsd(
