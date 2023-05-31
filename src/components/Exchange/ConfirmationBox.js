@@ -33,7 +33,7 @@ import { Plural, t, Trans } from "@lingui/macro";
 import Button from "components/Button/Button";
 import FeesTooltip from "./FeesTooltip";
 import { getTokenInfo, getUsd } from "domain/tokens";
-import SlippageInput from "./SlippageInput";
+import SlippageInput from "components/SlippageInput/SlippageInput";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 

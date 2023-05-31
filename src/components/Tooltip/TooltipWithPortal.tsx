@@ -117,7 +117,7 @@ export default function TooltipWithPortal(props: Props) {
       {visible && coords.left && (
         <Portal>
           <div style={{ ...coords, position: "absolute" }}>
-            <div className={cx(["Tooltip-popup high-z-index", position])} style={{ width: tooltipWidth }}>
+            <div className={cx(["Tooltip-popup z-index-1001", position])} style={{ width: tooltipWidth }}>
               {props.renderContent()}
             </div>
           </div>
