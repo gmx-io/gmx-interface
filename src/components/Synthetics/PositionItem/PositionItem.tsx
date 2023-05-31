@@ -15,6 +15,7 @@ import { TradeMode, getTriggerThresholdType } from "domain/synthetics/trade";
 import { getIsEquivalentTokens } from "domain/tokens";
 import { CHART_PERIODS } from "lib/legacy";
 import "./PositionItem.scss";
+import { LIQUIDATION_PRICE_THRESHOLD } from "config/ui";
 
 export type Props = {
   position: PositionInfo;
@@ -209,29 +210,47 @@ export function PositionItem(p: Props) {
   function renderLiquidationPrice() {
     const shouldShowCollateralPriceWarning =
       !getIsEquivalentTokens(p.position.collateralToken, p.position.indexToken) && !p.position.collateralToken.isStable;
+    const isLargeLiquidationPrice = p.position.liquidationPrice?.gt(LIQUIDATION_PRICE_THRESHOLD);
 
     return (
       <Tooltip
-        handle={formatUsd(p.position.liquidationPrice, { displayDecimals: indexPriceDecimals }) || "..."}
+        handle={
+          isLargeLiquidationPrice
+            ? "NA"
+            : formatUsd(p.position.liquidationPrice, { displayDecimals: indexPriceDecimals }) || "..."
+        }
         position={p.isLarge ? "left-bottom" : "right-bottom"}
         handleClassName="plain"
-        renderContent={() => (
-          <div>
-            {shouldShowCollateralPriceWarning
-              ? t`The actual Liquidation Price depends on the Price Impact in the Market and the Collateral Price (${p.position.collateralToken.symbol}).`
-              : t`The actual Liquidation Price depends on the Price Impact in the Market.`}
-            <br />
-            <br />
-            <StatsTooltipRow
-              label={t`Liq. Price with max Price Impact`}
-              value={
-                formatUsd(p.position.liquidationPriceWithMaxPriceImpact, { displayDecimals: indexPriceDecimals }) ||
-                "..."
-              }
-              showDollar={false}
-            />
-          </div>
-        )}
+        renderContent={() => {
+          if (isLargeLiquidationPrice) {
+            return (
+              <Trans>
+                Since your position's Collateral is {p.position.collateralToken?.symbol} with a larger value than the
+                Position Size, the Collateral value will increase to cover any negative PnL.
+                <br />
+                <br />
+                Note that Borrowing and Funding Fees can reduce the position's Collateral over time.
+              </Trans>
+            );
+          }
+          return (
+            <div>
+              {shouldShowCollateralPriceWarning
+                ? t`The actual Liquidation Price depends on the Price Impact in the Market and the Collateral Price (${p.position.collateralToken.symbol}).`
+                : t`The actual Liquidation Price depends on the Price Impact in the Market.`}
+              <br />
+              <br />
+              <StatsTooltipRow
+                label={t`Liq. Price with max Price Impact`}
+                value={
+                  formatUsd(p.position.liquidationPriceWithMaxPriceImpact, { displayDecimals: indexPriceDecimals }) ||
+                  "..."
+                }
+                showDollar={false}
+              />
+            </div>
+          );
+        }}
       />
     );
   }
