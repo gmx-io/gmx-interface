@@ -412,6 +412,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: "0xC22C0319A02492437F3f5A42a3159c59ba5ca3C8",
       decimals: 8,
       isStable: false,
+      isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/7598/small/wrapped_bitcoin_wbtc.png?1548822744",
     },
     {
@@ -420,6 +421,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: "0x414759076bD10b8262E753982458f1E2A6479aF4",
       decimals: 18,
       isStable: false,
+      isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/12504/small/uniswap-uni.png?1600306604",
     },
     {
@@ -428,6 +430,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: "0x5a7689314c41BDB7783B24c12e2E60Ae9fa1d20c",
       decimals: 18,
       isStable: false,
+      isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/877/small/chainlink-new-logo.png?1547034700",
     },
     {
