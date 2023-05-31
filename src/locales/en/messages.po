@@ -3772,6 +3772,10 @@ msgstr "Simple Swaps"
 msgid "Simulate your hedge strategy"
 msgstr "Simulate your hedge strategy"
 
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Since your position's Collateral is {0} with a larger value than the Position Size, the Collateral value will increase to cover any negative PnL.<0/><1/>Note that Borrowing and Funding Fees can reduce the position's Collateral over time."
+msgstr "Since your position's Collateral is {0} with a larger value than the Position Size, the Collateral value will increase to cover any negative PnL.<0/><1/>Note that Borrowing and Funding Fees can reduce the position's Collateral over time."
+
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Single"
 msgstr "Single"
