@@ -66,7 +66,7 @@ export default function BuyInputSection({
           )}
           {staticInput && <div className="InputSection-static-input">{inputValue}</div>}
           {showMaxButton && (
-            <button className="Exchange-swap-max" onClick={onClickMax}>
+            <button type="button" className="Exchange-swap-max" onClick={onClickMax}>
               <Trans>MAX</Trans>
             </button>
           )}
