@@ -171,13 +171,13 @@ export function getLiquidationPrice(p: {
 
       return liquidationCollateralUsd.add(sizeInUsd).div(denominator).mul(expandDecimals(1, indexToken.decimals));
     } else {
-      const denominator = remainingCollateralAmount.sub(sizeInTokens);
+      const denominator = remainingCollateralAmount.sub(sizeInTokens).abs();
 
       if (denominator.eq(0)) {
         return undefined;
       }
 
-      return liquidationCollateralUsd.sub(sizeInUsd).div(denominator).mul(expandDecimals(1, indexToken.decimals));
+      return liquidationCollateralUsd.sub(sizeInUsd).abs().div(denominator).mul(expandDecimals(1, indexToken.decimals));
     }
   } else {
     if (sizeInTokens.eq(0)) {
