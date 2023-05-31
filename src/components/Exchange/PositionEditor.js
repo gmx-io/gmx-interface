@@ -494,13 +494,6 @@ export default function PositionEditor(props) {
     );
   }
 
-  function getTotalFees() {
-    if (isDeposit && position?.isLong && minExecutionFeeUSD.gt(0)) {
-      return depositFeeUSD && minExecutionFeeUSD.add(depositFeeUSD);
-    }
-    return minExecutionFeeUSD;
-  }
-
   return (
     <div className="PositionEditor">
       {position && (
@@ -672,9 +665,8 @@ export default function PositionEditor(props) {
                       <FeesTooltip
                         executionFees={{
                           fee: minExecutionFee,
-                          feeUSD: minExecutionFeeUSD,
+                          feeUsd: minExecutionFeeUSD,
                         }}
-                        totalFees={getTotalFees()}
                         depositFee={depositFeeUSD}
                       />
                     </div>
