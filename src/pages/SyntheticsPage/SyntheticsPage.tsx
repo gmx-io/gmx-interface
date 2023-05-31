@@ -42,6 +42,7 @@ export type Props = {
   shouldDisableValidation: boolean;
   savedShouldShowPositionLines: boolean;
   showPnlAfterFees: boolean;
+  savedShowPnlAfterFees: boolean;
   onConnectWallet: () => void;
   setSavedShouldShowPositionLines: (value: boolean) => void;
   setPendingTxns: (txns: any) => void;
@@ -67,6 +68,7 @@ export function SyntheticsPage(p: Props) {
     setSavedShouldShowPositionLines,
     setPendingTxns,
     setTradePageVersion,
+    savedShowPnlAfterFees,
   } = p;
   const { chainId } = useChainId();
   const { library, account } = useWeb3React();
@@ -284,6 +286,7 @@ export function SyntheticsPage(p: Props) {
                 onClosePositionClick={setClosingPositionKey}
                 onEditCollateralClick={setEditingPositionKey}
                 showPnlAfterFees={showPnlAfterFees}
+                savedShowPnlAfterFees={savedShowPnlAfterFees}
               />
             )}
             {listSection === ListSection.Orders && (
@@ -367,6 +370,7 @@ export function SyntheticsPage(p: Props) {
               onClosePositionClick={setClosingPositionKey}
               onEditCollateralClick={setEditingPositionKey}
               showPnlAfterFees={showPnlAfterFees}
+              savedShowPnlAfterFees={savedShowPnlAfterFees}
             />
           )}
           {listSection === ListSection.Orders && (
@@ -384,40 +388,35 @@ export function SyntheticsPage(p: Props) {
         </div>
       </div>
 
-      {closingPosition && (
-        <PositionSeller
-          position={closingPosition}
-          showPnlInLeverage={savedIsPnlInLeverage}
-          onClose={onPositionSellerClose}
-          setPendingTxns={setPendingTxns}
-          allowedSlippage={allowedSlippage}
-          availableTokensOptions={availableTokensOptions}
-          isHigherSlippageAllowed={isHigherSlippageAllowed}
-          setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
-          onConnectWallet={onConnectWallet}
-        />
-      )}
+      <PositionSeller
+        position={closingPosition!}
+        showPnlInLeverage={savedIsPnlInLeverage}
+        onClose={onPositionSellerClose}
+        setPendingTxns={setPendingTxns}
+        allowedSlippage={allowedSlippage}
+        availableTokensOptions={availableTokensOptions}
+        isHigherSlippageAllowed={isHigherSlippageAllowed}
+        setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
+        onConnectWallet={onConnectWallet}
+      />
 
-      {editingPosition && (
-        <PositionEditor
-          showPnlInLeverage={savedIsPnlInLeverage}
-          position={editingPosition}
-          allowedSlippage={allowedSlippage}
-          onClose={onPositionEditorClose}
-          setPendingTxns={setPendingTxns}
-          onConnectWallet={onConnectWallet}
-        />
-      )}
+      <PositionEditor
+        showPnlInLeverage={savedIsPnlInLeverage}
+        position={editingPosition}
+        allowedSlippage={allowedSlippage}
+        onClose={onPositionEditorClose}
+        setPendingTxns={setPendingTxns}
+        onConnectWallet={onConnectWallet}
+      />
 
-      {isAcceptablePriceImpactEditing && (
-        <AcceptbablePriceImpactEditor
-          savedAcceptablePriceImpactBps={savedAcceptablePriceImpactBps!}
-          saveAcceptablePriceImpactBps={saveAcceptablePriceImpactBps}
-          onClose={() => setIsAcceptablePriceImpactEditing(false)}
-        />
-      )}
+      <AcceptbablePriceImpactEditor
+        isVisible={isAcceptablePriceImpactEditing}
+        savedAcceptablePriceImpactBps={savedAcceptablePriceImpactBps!}
+        saveAcceptablePriceImpactBps={saveAcceptablePriceImpactBps}
+        onClose={() => setIsAcceptablePriceImpactEditing(false)}
+      />
 
-      {isClaiming && <ClaimModal onClose={() => setIsClaiming(false)} setPendingTxns={setPendingTxns} />}
+      <ClaimModal isVisible={isClaiming} onClose={() => setIsClaiming(false)} setPendingTxns={setPendingTxns} />
 
       {/* {sharingPosition && (
         <PositionShare

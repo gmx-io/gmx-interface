@@ -64,11 +64,13 @@ import {
   formatTokenAmountWithUsd,
   formatUsd,
 } from "lib/numbers";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./ConfirmationBox.scss";
+import { usePrevious } from "lib/usePrevious";
 
 export type Props = {
+  isVisible: boolean;
   tradeFlags: TradeFlags;
   isWrapOrUnwrap: boolean;
   fromToken?: TokenData;
@@ -146,6 +148,8 @@ export function ConfirmationBox(p: Props) {
   const { chainId } = useChainId();
   const { tokensData } = useAvailableTokensData(chainId);
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
+
+  const prevIsVisible = usePrevious(p.isVisible);
 
   const { userReferralCode } = useUserReferralCode(library, chainId, account);
 
@@ -500,6 +504,16 @@ export function ConfirmationBox(p: Props) {
       });
   }
 
+  useEffect(
+    function reset() {
+      if (p.isVisible !== prevIsVisible) {
+        setIsTriggerWarningAccepted(false);
+        setIsHighPriceImpactAccepted(false);
+      }
+    },
+    [p.isVisible, prevIsVisible]
+  );
+
   function renderMain() {
     if (isSwap) {
       return (
@@ -767,9 +781,13 @@ export function ConfirmationBox(p: Props) {
   }
 
   function renderIncreaseOrderSection() {
-    const borrowingRate = getBorrowingFactorPerPeriod(marketInfo!, isLong, CHART_PERIODS["1h"]).mul(100);
-    const fundigRate = getFundingFactorPerPeriod(marketInfo!, isLong, CHART_PERIODS["1h"]).mul(100);
-    const isCollateralSwap = !getIsEquivalentTokens(fromToken!, collateralToken!);
+    if (!marketInfo || !fromToken || !collateralToken || !toToken) {
+      return null;
+    }
+
+    const borrowingRate = getBorrowingFactorPerPeriod(marketInfo, isLong, CHART_PERIODS["1h"]).mul(100);
+    const fundigRate = getFundingFactorPerPeriod(marketInfo, isLong, CHART_PERIODS["1h"]).mul(100);
+    const isCollateralSwap = !getIsEquivalentTokens(fromToken, collateralToken);
     const existingPriceDecimals = p.existingPosition?.indexToken?.priceDecimals;
     const toTokenPriceDecimals = toToken?.priceDecimals;
 
@@ -970,6 +988,8 @@ export function ConfirmationBox(p: Props) {
             feesType="increase"
           />
 
+          {(decreaseOrdersThatWillBeExecuted?.length > 0 || isHighPriceImpact) && <div className="line-divider" />}
+
           {decreaseOrdersThatWillBeExecuted?.length > 0 && (
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox isChecked={isTriggerWarningAccepted} setIsChecked={setIsTriggerWarningAccepted}>
@@ -1034,6 +1054,8 @@ export function ConfirmationBox(p: Props) {
           <ExchangeInfoRow label={t`Min. Receive`} isTop>
             {formatTokenAmount(swapAmounts?.minOutputAmount, toToken?.decimals, toToken?.symbol)}
           </ExchangeInfoRow>
+
+          {isHighPriceImpact && <div className="line-divider" />}
 
           {isHighPriceImpact && (
             <div className="PositionEditor-allow-higher-slippage">
@@ -1179,6 +1201,8 @@ export function ConfirmationBox(p: Props) {
             />
           )}
 
+          {isHighPriceImpact && <div className="line-divider" />}
+
           {isHighPriceImpact && (
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
@@ -1195,14 +1219,14 @@ export function ConfirmationBox(p: Props) {
 
   return (
     <div className="Confirmation-box">
-      <Modal isVisible={true} setIsVisible={onClose} label={title} allowContentTouchMove>
+      <Modal isVisible={p.isVisible} setIsVisible={onClose} label={title} allowContentTouchMove>
         {isSwap && renderSwapSection()}
         {isIncrease && renderIncreaseOrderSection()}
         {isTrigger && renderTriggerDecreaseSection()}
 
         {needPayTokenApproval && fromToken && (
           <>
-            <div className="App-card-divider" />
+            <div className="line-divider" />
 
             <ApproveTokenButton
               tokenAddress={fromToken.address}

@@ -198,18 +198,6 @@ msgid "Accrued Borrow Fee"
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Accrued Borrow fee"
-#~ msgstr ""
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Accrued Funding Fee"
-#~ msgstr ""
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Accrued Funding fee"
-#~ msgstr ""
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Accrued Negative Funding Fee"
 msgstr ""
@@ -217,14 +205,6 @@ msgstr ""
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Accrued Positive Funding Fee"
 msgstr ""
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Accured Borrow fee"
-#~ msgstr ""
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Accurred Funding fee"
-#~ msgstr ""
 
 #: src/pages/Actions/Actions.js
 msgid "Actions"
@@ -511,6 +491,8 @@ msgid "Borrow Fee Rate"
 msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "Buy"
 msgstr "Купить"
@@ -534,8 +516,6 @@ msgstr ""
 msgid "Buy GLP"
 msgstr "Купить GLP"
 
-#: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Buy GM"
@@ -777,13 +757,17 @@ msgstr "Запрос на получение {wrappedTokenSymbol} Вознагр
 msgid "Claimable"
 msgstr "Заявленный"
 
+#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
+msgid "Claimable Funding"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Claimable Rebates"
 msgstr ""
 
 #: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
-msgid "Claimable funding"
-msgstr ""
+#~ msgid "Claimable funding"
+#~ msgstr ""
 
 #: src/domain/synthetics/markets/claimCollateralTxn.ts
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
@@ -804,10 +788,6 @@ msgstr ""
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Click on a row to select the position's market, then use the swap box to increase your position size or to set stop-loss / take-profit orders."
 msgstr ""
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Click on a row to select the position's market, then use the swap box to increase your position size, or to set stop-loss / take-profit orders. if needed."
-#~ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 msgid "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
@@ -836,10 +816,6 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 msgid "Close failed."
 msgstr "Закрыть не удалось."
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Close fee"
-#~ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close submitted!"
@@ -1602,10 +1578,6 @@ msgstr "Введите сумму"
 msgid "Enter and exit positions with minimal spread and low price impact. Get the optimal price without incurring additional costs."
 msgstr ""
 
-#: src/pages/Home/Home.js
-#~ msgid "Enter and exit positions with minimal spread and zero price impact. Get the optimal price without incurring additional costs."
-#~ msgstr "Вход и выход из позиций с минимальным спредом и нулевым влиянием на цену. Получайте оптимальную цену без дополнительных затрат."
-
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrderEditor.js
 msgid "Enter new Price"
@@ -1865,11 +1837,6 @@ msgstr "Продажа GLP приостановлена, ожидается {0} 
 msgid "GM ({0})"
 msgstr ""
 
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-#~ msgid "GM Index Composition"
-#~ msgstr ""
-
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "GM Token pricing includes positions' Pending PnL, Impact Pool Amount and Borrow Fees."
 msgstr ""
@@ -2002,20 +1969,12 @@ msgid "I am aware of the trigger orders"
 msgstr "Я осведомлён о запуске ордера"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "If you have an existing position, the position will be closed at a reference price of {0} not accounting for price impact.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
-#~ msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "If you have an existing position, the position will be closed at a reference price of {0}, not accounting for price impact.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "If you have an existing position, the position will be closed at {0} USD.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
 msgstr "Если у вас есть существующая позиция, позиция будет закрыта по цене {0} USD.<0/><1/>Цена выхода будет меняться в зависимости от цены актива.<2/><3/><4>Более подробная Информация</4>"
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "If you have an existing position, the position will be closed at {0}.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
-#~ msgstr ""
 
 #: src/components/Exchange/PositionShare.js
 msgid "Image generation error, please refresh and try again."
@@ -2375,6 +2334,10 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Liq. Price"
 msgstr "Лик. Цена"
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Liq. Price with max Price Impact"
+msgstr ""
 
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Liq. {0} {longOrShortText}"
@@ -3145,10 +3108,6 @@ msgid "Pending {0} approval"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
-#~ msgid "Platform, GLP and GM index tokens."
-#~ msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Platform, GLP and GM tokens."
 msgstr ""
 
@@ -3193,12 +3152,12 @@ msgstr "PnL После уплаты Комиссии"
 msgid "Pool"
 msgstr "Пул"
 
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Pool Amount"
 msgstr "Сумма Пула"
 
-#: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "Pool amount"
 msgstr ""
@@ -3229,16 +3188,16 @@ msgstr "Позиции"
 msgid "Positions ({0})"
 msgstr "Позиции ({0})"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Positions earn a funding fee if positive and pays if negative."
-#~ msgstr ""
-
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Positions{0}"
 msgstr ""
 
 #: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
-msgid "Positive Funding Fees for a position are claimable once an action is taken on it."
+#~ msgid "Positive Funding Fees for a position are claimable once an action is taken on it."
+#~ msgstr ""
+
+#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
+msgid "Positive Funding Fees for a position become claimable after the position is increased, decreased or closed."
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -3383,7 +3342,7 @@ msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps an
 msgstr "Покупайте <0>токенов GLP</0>, чтобы получить {nativeTokenSymbol} комиссионные от торговли с применением свопов и кредитного плеча."
 
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-msgid "Purchase <0>GM tokens</0>"
+msgid "Purchase <0>GM Tokens.</0>"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
@@ -3417,53 +3376,13 @@ msgstr "Рибейты, заработанные этим аккаунтом в 
 msgid "Rebates earned by this account as an affiliate."
 msgstr "Рибейты, заработанные этим аккаунтом в качестве аффилированного лица."
 
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
-#~ msgid "Rebates on Arbitrum"
-#~ msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
-#~ msgid "Rebates on Avalanche"
-#~ msgstr ""
-
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates on V1"
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "Rebates on V1 Arbitrum"
-#~ msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "Rebates on V1 Avalanche"
-#~ msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "Rebates on V1 Avalanche Fuji"
-#~ msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates on V2"
 msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "Rebates on V2 Arbitrum"
-#~ msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "Rebates on V2 Avalanche"
-#~ msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "Rebates on V2 Avalanche Fuji"
-#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
@@ -3566,10 +3485,6 @@ msgstr "Рефералы"
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referrals <0/>"
 msgstr ""
-
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-#~ msgid "Remaining {0} fees will be deducted from the position collateral since the {depositWithdrawalText} amount is not sufficient."
-#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
@@ -3715,6 +3630,11 @@ msgstr "Выберите свой вариант вестинга ниже и н
 msgid "Self-transfer not supported"
 msgstr "Самостоятельный перевод не поддерживается"
 
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "Sell"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -3723,8 +3643,6 @@ msgstr "Самостоятельный перевод не поддержива�
 msgid "Sell GLP"
 msgstr "Продать GLP"
 
-#: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Sell GM"
@@ -4139,10 +4057,6 @@ msgstr "Обмен идет..."
 msgid "Swaps disabled, pending {0} upgrade"
 msgstr "Обмен неактивен, ожидается {0} обновление"
 
-#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-#~ msgid "Synthetics Pools"
-#~ msgstr ""
-
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/DashboardV2.js
@@ -4210,6 +4124,14 @@ msgstr "Повышенный APR рассчитывается из постав�
 msgid "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
 msgstr "Протокол Gambit находится в стадии бета-тестирования, пожалуйста, прочитайте <0>детали стакинга</0>перед участием."
 
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "The actual Liquidation Price depends on the Price Impact in the Market and the Collateral Price ({0})."
+msgstr ""
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "The actual Liquidation Price depends on the Price Impact in the Market."
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
 msgstr "Адрес токена esGMX называется {esGmxIouAddress}."
@@ -4247,20 +4169,12 @@ msgid "The pending borrow fee will be charged on this transaction."
 msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "The position will be opened at a reference price of {0} not accounting for price impact with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
-#~ msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
 msgstr "Позиция будет открыта на {0} USD с максимальным скольжением в {1}%.<0/><1/>Сумма скольжения может быть настроена в разделе Настройки, который можно найти, нажав на свой адрес в правом верхнем углу страницы после подключения кошелька.<2/><3/><4>Более подробная информация</4>"
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "The position will be opened at {0} with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
-#~ msgstr ""
 
 #: src/components/Exchange/OrdersList.js
 msgid "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
@@ -4503,46 +4417,6 @@ msgstr "Торги"
 msgid "Trading Volume"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
-#~ msgid "Trading Volume on Arbitrum"
-#~ msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
-#~ msgid "Trading Volume on Avalanche"
-#~ msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "Trading Volume on V1 Arbitrum"
-#~ msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "Trading Volume on V1 Avalanche"
-#~ msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "Trading Volume on V1 Avalanche Fuji"
-#~ msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "Trading Volume on V2 Arbitrum"
-#~ msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "Trading Volume on V2 Avalanche"
-#~ msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "Trading Volume on V2 Avalanche Fuji"
-#~ msgstr ""
-
 #: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"
 msgstr "Руководство по трейдингу"
@@ -4777,10 +4651,6 @@ msgstr ""
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Updating..."
 msgstr "Обновление..."
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Use the \"Close\" button to reduce your position size"
-#~ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 msgid "Use the \"Close\" button to reduce your position size, or to set stop-loss / take-profit orders."
@@ -5270,10 +5140,6 @@ msgstr "Вы получите не менее {0} {1}, если этот орд�
 msgid "You will receive at least {toAmountText} if this order is executed. The execution price may vary depending on swap fees and price impact at the time the order is executed."
 msgstr ""
 
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
-#~ msgid "You will receive at least {toAmountText} if this order is executed. The execution price may vary depending on swap fees at the time the order is executed."
-#~ msgstr ""
-
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 msgstr "После подачи требования ваш баланс esGMX уменьшится на сумму вашего требования, это ожидаемое поведение."
@@ -5302,10 +5168,6 @@ msgstr "счёт"
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "collateral"
 msgstr "залог"
-
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-#~ msgid "deposit"
-#~ msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "earn"
@@ -5348,10 +5210,6 @@ msgstr "время ликвидировать"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "view"
 msgstr "смотреть"
-
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-#~ msgid "withdrawal"
-#~ msgstr ""
 
 #: src/pages/Exchange/Exchange.js
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -5436,6 +5294,7 @@ msgid "{0} price"
 msgstr "{0} цена"
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "{0} selected in order form"
 msgstr "{0} выбран в форме ордера"
 
@@ -5517,10 +5376,6 @@ msgstr "{chainName} Общая Статистика начинается с {tot
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{count, plural, one {Order} other {# Orders}}"
 msgstr ""
-
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-#~ msgid "{depositWithdrawalText} amount is insufficient to cover Fees. They are deducted from Collateral."
-#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx

@@ -271,10 +271,10 @@ export function getTotalClaimableFundingUsd(markets: MarketInfo[]) {
     const amountLong = getClaimableFundingAmount(market, true);
     const amountShort = getClaimableFundingAmount(market, false);
 
-    const usdLong = convertToUsd(amountLong, longToken.decimals, longToken.prices.minPrice)!;
-    const usdShort = convertToUsd(amountShort, shortToken.decimals, shortToken.prices.minPrice)!;
+    const usdLong = convertToUsd(amountLong, longToken.decimals, longToken.prices.minPrice);
+    const usdShort = convertToUsd(amountShort, shortToken.decimals, shortToken.prices.minPrice);
 
-    return acc.add(usdLong).add(usdShort);
+    return acc.add(usdLong || 0).add(usdShort || 0);
   }, BigNumber.from(0));
 }
 

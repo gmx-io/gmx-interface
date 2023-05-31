@@ -50,7 +50,7 @@ export function getSyntheticsTradeOptionsKey(chainId: number) {
   return [chainId, SYNTHETICS_TRADE_OPTIONS];
 }
 
-export function getSyntheticsCollateralEditAddressKey(chainId: number, positionCollateralAddress: string) {
+export function getSyntheticsCollateralEditAddressKey(chainId: number, positionCollateralAddress?: string) {
   return [chainId, SYNTHETICS_COLLATERAL_EDIT_TOKEN_KEY, positionCollateralAddress];
 }
 

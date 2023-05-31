@@ -6,6 +6,7 @@ import { BASIS_POINTS_DIVISOR } from "lib/legacy";
 import { useState } from "react";
 
 type Props = {
+  isVisible: boolean;
   onClose: () => void;
   savedAcceptablePriceImpactBps: number;
   saveAcceptablePriceImpactBps: (acceptablePriceImpactBps: number) => void;
@@ -34,7 +35,7 @@ export function AcceptbablePriceImpactEditor(p: Props) {
   }
 
   return (
-    <Modal className="App-settings" isVisible={true} setIsVisible={p.onClose} label={t`Edit`}>
+    <Modal className="App-settings" isVisible={p.isVisible} setIsVisible={p.onClose} label={t`Edit`}>
       <div className="App-settings-row">
         <div>
           <Trans>Acceptable Price Impact</Trans>

@@ -54,6 +54,7 @@ import { useVirtualInventory } from "domain/synthetics/fees/useVirtualInventory"
 import { useSafeState } from "lib/useSafeState";
 import { useHistory, useLocation } from "react-router-dom";
 import "./GmSwapBox.scss";
+import { helperToast } from "lib/helperToast";
 
 export enum Operation {
   Deposit = "Deposit",
@@ -88,6 +89,11 @@ const getAvailableModes = (operation: Operation, market?: Market) => {
 
   return [Mode.Pair];
 };
+
+function showMarketToast(market) {
+  if (!market?.name) return;
+  helperToast.success(t`${market?.name} selected in order form`);
+}
 
 export function GmSwapBox(p: Props) {
   const { operation, mode, setMode, setOperation, onSelectMarket } = p;
@@ -865,7 +871,10 @@ export function GmSwapBox(p: Props) {
               marketsInfoData={marketsInfoData}
               isSideMenu
               showBalances
-              onSelectMarket={setIndexName}
+              onSelectMarket={(marketName, marketInfo) => {
+                setIndexName(marketName);
+                showMarketToast(marketInfo);
+              }}
             />
           }
         />
@@ -884,7 +893,10 @@ export function GmSwapBox(p: Props) {
               marketsInfoData={marketsInfoData}
               isSideMenu
               showBalances
-              onSelectMarket={(marketInfo) => onMarketChange(marketInfo.marketTokenAddress)}
+              onSelectMarket={(marketInfo) => {
+                onMarketChange(marketInfo.marketTokenAddress);
+                showMarketToast(marketInfo);
+              }}
             />
           }
         />
@@ -910,33 +922,32 @@ export function GmSwapBox(p: Props) {
         </Button>
       </div>
 
-      {stage === "confirmation" && (
-        <GmConfirmationBox
-          marketToken={marketToken!}
-          longToken={longTokenInputState?.token}
-          shortToken={shortTokenInputState?.token}
-          marketTokenAmount={marketTokenAmount!}
-          marketTokenUsd={marketTokenUsd!}
-          longTokenAmount={longTokenAmount}
-          longTokenUsd={longTokenUsd}
-          shortTokenAmount={shortTokenAmount}
-          shortTokenUsd={shortTokenUsd}
-          fees={fees!}
-          error={error}
-          isDeposit={isDeposit}
-          executionFee={executionFee}
-          setPendingTxns={p.setPendingTxns}
-          onSubmitted={() => {
-            setStage("swap");
-          }}
-          onClose={() => {
-            setStage("swap");
-          }}
-          isHighPriceImpact={isHighPriceImpact!}
-          isHighPriceImpactAccepted={isHighPriceImpactAccepted}
-          setIsHighPriceImpactAccepted={setIsHighPriceImpactAccepted}
-        />
-      )}
+      <GmConfirmationBox
+        isVisible={stage === "confirmation"}
+        marketToken={marketToken!}
+        longToken={longTokenInputState?.token}
+        shortToken={shortTokenInputState?.token}
+        marketTokenAmount={marketTokenAmount!}
+        marketTokenUsd={marketTokenUsd!}
+        longTokenAmount={longTokenAmount}
+        longTokenUsd={longTokenUsd}
+        shortTokenAmount={shortTokenAmount}
+        shortTokenUsd={shortTokenUsd}
+        fees={fees!}
+        error={error}
+        isDeposit={isDeposit}
+        executionFee={executionFee}
+        setPendingTxns={p.setPendingTxns}
+        onSubmitted={() => {
+          setStage("swap");
+        }}
+        onClose={() => {
+          setStage("swap");
+        }}
+        isHighPriceImpact={isHighPriceImpact!}
+        isHighPriceImpactAccepted={isHighPriceImpactAccepted}
+        setIsHighPriceImpactAccepted={setIsHighPriceImpactAccepted}
+      />
     </div>
   );
 }

@@ -9,17 +9,19 @@ import { formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
 import { AiOutlineEdit } from "react-icons/ai";
 import { ImSpinner2 } from "react-icons/im";
 
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/fees";
 import { TradeMode, getTriggerThresholdType } from "domain/synthetics/trade";
+import { getIsEquivalentTokens } from "domain/tokens";
 import { CHART_PERIODS } from "lib/legacy";
 import "./PositionItem.scss";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 export type Props = {
   position: PositionInfo;
   positionOrders: PositionOrderInfo[];
   hideActions?: boolean;
   showPnlAfterFees: boolean;
+  savedShowPnlAfterFees: boolean;
   onClosePositionClick?: () => void;
   onEditCollateralClick?: () => void;
   onShareClick?: () => void;
@@ -31,8 +33,10 @@ export type Props = {
 export function PositionItem(p: Props) {
   const { showDebugValues } = useSettings();
   const { positionOrders } = p;
-  const displayedPnl = p.showPnlAfterFees ? p.position.pnlAfterFees : p.position.pnl;
-  const displayedPnlPercentage = p.showPnlAfterFees ? p.position.pnlAfterFeesPercentage : p.position.pnlPercentage;
+  const displayedPnl = p.savedShowPnlAfterFees ? p.position.pnlAfterFees : p.position.pnl;
+  const displayedPnlPercentage = p.savedShowPnlAfterFees ? p.position.pnlAfterFeesPercentage : p.position.pnlPercentage;
+
+  const indexPriceDecimals = p.position?.indexToken?.priceDecimals;
 
   function renderNetValue() {
     return (
@@ -202,6 +206,36 @@ export function PositionItem(p: Props) {
     );
   }
 
+  function renderLiquidationPrice() {
+    const shouldShowCollateralPriceWarning =
+      !getIsEquivalentTokens(p.position.collateralToken, p.position.indexToken) && !p.position.collateralToken.isStable;
+
+    return (
+      <Tooltip
+        handle={formatUsd(p.position.liquidationPrice, { displayDecimals: indexPriceDecimals }) || "..."}
+        position={p.isLarge ? "left-bottom" : "right-bottom"}
+        handleClassName="plain"
+        renderContent={() => (
+          <div>
+            {shouldShowCollateralPriceWarning
+              ? t`The actual Liquidation Price depends on the Price Impact in the Market and the Collateral Price (${p.position.collateralToken.symbol}).`
+              : t`The actual Liquidation Price depends on the Price Impact in the Market.`}
+            <br />
+            <br />
+            <StatsTooltipRow
+              label={t`Liq. Price with max Price Impact`}
+              value={
+                formatUsd(p.position.liquidationPriceWithMaxPriceImpact, { displayDecimals: indexPriceDecimals }) ||
+                "..."
+              }
+              showDollar={false}
+            />
+          </div>
+        )}
+      />
+    );
+  }
+
   function renderPositionOrders() {
     if (positionOrders.length === 0) return null;
 
@@ -244,7 +278,6 @@ export function PositionItem(p: Props) {
   }
 
   function renderLarge() {
-    const indexPriceDecimals = p.position?.indexToken?.priceDecimals;
     return (
       <>
         <tr className="Exhange-list-item">
@@ -338,9 +371,7 @@ export function PositionItem(p: Props) {
           </td>
           <td>
             {/* liqPrice */}
-            {formatUsd(p.position.liquidationPrice, {
-              displayDecimals: indexPriceDecimals,
-            })}
+            {renderLiquidationPrice()}
           </td>
           <td>
             {/* Close */}
@@ -371,7 +402,6 @@ export function PositionItem(p: Props) {
   }
 
   function renderSmall() {
-    const indexPriceDecimals = p.position?.indexToken?.priceDecimals;
     return (
       <div className="App-card">
         <div className="App-card-title">
@@ -478,11 +508,7 @@ export function PositionItem(p: Props) {
             <div className="label">
               <Trans>Liq. Price</Trans>
             </div>
-            <div>
-              {formatUsd(p.position.liquidationPrice, {
-                displayDecimals: indexPriceDecimals,
-              })}
-            </div>
+            <div>{renderLiquidationPrice()}</div>
           </div>
         </div>
         {!p.hideActions && (

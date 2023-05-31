@@ -407,13 +407,14 @@ export function TradeBox(p: Props) {
   ]);
 
   const nextPositionValues = useMemo(() => {
-    if (!isPosition || !minCollateralUsd || !marketInfo) {
+    if (!isPosition || !minCollateralUsd || !marketInfo || !collateralToken) {
       return undefined;
     }
 
     if (isIncrease && increaseAmounts?.acceptablePrice && fromTokenAmount.gt(0)) {
       return getNextPositionValuesForIncreaseTrade({
         marketInfo,
+        collateralToken,
         existingPosition,
         isLong,
         collateralDeltaUsd: increaseAmounts.collateralUsdAfterFees,
@@ -430,6 +431,7 @@ export function TradeBox(p: Props) {
       return getNextPositionValuesForDecreaseTrade({
         existingPosition,
         marketInfo,
+        collateralToken,
         sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
         exitPnl: decreaseAmounts.exitPnl,
         pnlDelta: decreaseAmounts.pnlDelta,
@@ -443,6 +445,7 @@ export function TradeBox(p: Props) {
     }
   }, [
     closeSizeUsd,
+    collateralToken,
     decreaseAmounts,
     existingPosition,
     fromTokenAmount,
@@ -1306,42 +1309,41 @@ export function TradeBox(p: Props) {
       {isPosition && <MarketCard isLong={isLong} marketInfo={marketInfo} allowedSlippage={allowedSlippage} />}
       {account && <ClaimableCard onClaimClick={() => setIsClaiming(true)} />}
 
-      {stage === "confirmation" && (
-        <ConfirmationBox
-          tradeFlags={tradeFlags}
-          isWrapOrUnwrap={isWrapOrUnwrap}
-          fromToken={fromToken}
-          toToken={toToken}
-          markPrice={markPrice}
-          markRatio={markRatio}
-          triggerPrice={triggerPrice}
-          triggerRatio={triggerRatio}
-          marketInfo={marketInfo}
-          collateralToken={collateralToken}
-          swapAmounts={swapAmounts}
-          increaseAmounts={increaseAmounts}
-          decreaseAmounts={decreaseAmounts}
-          nextPositionValues={nextPositionValues}
-          swapLiquidityUsd={swapOutLiquidity}
-          longLiquidityUsd={longLiquidity}
-          shortLiquidityUsd={shortLiquidity}
-          keepLeverage={keepLeverage}
-          fees={fees}
-          executionFee={executionFee}
-          error={error}
-          existingPosition={existingPosition}
-          shouldDisableValidation={shouldDisableValidation!}
-          allowedSlippage={allowedSlippage}
-          isHigherSlippageAllowed={isHigherSlippageAllowed}
-          ordersData={ordersInfo}
-          setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
-          setKeepLeverage={setKeepLeverage}
-          onClose={onConfirmationClose}
-          onSubmitted={onConfirmed}
-          setPendingTxns={setPendingTxns}
-          onConnectWallet={onConnectWallet}
-        />
-      )}
+      <ConfirmationBox
+        isVisible={stage === "confirmation"}
+        tradeFlags={tradeFlags}
+        isWrapOrUnwrap={isWrapOrUnwrap}
+        fromToken={fromToken}
+        toToken={toToken}
+        markPrice={markPrice}
+        markRatio={markRatio}
+        triggerPrice={triggerPrice}
+        triggerRatio={triggerRatio}
+        marketInfo={marketInfo}
+        collateralToken={collateralToken}
+        swapAmounts={swapAmounts}
+        increaseAmounts={increaseAmounts}
+        decreaseAmounts={decreaseAmounts}
+        nextPositionValues={nextPositionValues}
+        swapLiquidityUsd={swapOutLiquidity}
+        longLiquidityUsd={longLiquidity}
+        shortLiquidityUsd={shortLiquidity}
+        keepLeverage={keepLeverage}
+        fees={fees}
+        executionFee={executionFee}
+        error={error}
+        existingPosition={existingPosition}
+        shouldDisableValidation={shouldDisableValidation!}
+        allowedSlippage={allowedSlippage}
+        isHigherSlippageAllowed={isHigherSlippageAllowed}
+        ordersData={ordersInfo}
+        setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
+        setKeepLeverage={setKeepLeverage}
+        onClose={onConfirmationClose}
+        onSubmitted={onConfirmed}
+        setPendingTxns={setPendingTxns}
+        onConnectWallet={onConnectWallet}
+      />
     </>
   );
 }

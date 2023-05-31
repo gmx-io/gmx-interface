@@ -25,7 +25,7 @@ export function ClaimableCard(p: Props) {
   return (
     <div className="Exchange-swap-market-box App-box App-box-border">
       <div className="App-card-title">
-        <Trans>Claimable funding</Trans>
+        <Trans>Claimable Funding</Trans>
       </div>
       <div className="App-card-divider" />
 
@@ -36,7 +36,7 @@ export function ClaimableCard(p: Props) {
             handle={formatUsd(totalClaimableFundingUsd)}
             position="right-bottom"
             renderContent={() => {
-              return t`Positive Funding Fees for a position are claimable once an action is taken on it.`;
+              return t`Positive Funding Fees for a position become claimable after the position is increased, decreased or closed.`;
             }}
           />
         }

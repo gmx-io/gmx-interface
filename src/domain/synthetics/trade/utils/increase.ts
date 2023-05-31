@@ -315,6 +315,7 @@ export function getIncreasePositionAmountsBySizeDelta(p: {
 export function getNextPositionValuesForIncreaseTrade(p: {
   existingPosition?: PositionInfo;
   marketInfo: MarketInfo;
+  collateralToken: TokenData;
   sizeDeltaUsd: BigNumber;
   sizeDeltaInTokens: BigNumber;
   collateralDeltaUsd: BigNumber;
@@ -327,6 +328,7 @@ export function getNextPositionValuesForIncreaseTrade(p: {
   const {
     existingPosition,
     marketInfo,
+    collateralToken,
     sizeDeltaUsd,
     sizeDeltaInTokens,
     collateralDeltaUsd,
@@ -371,14 +373,14 @@ export function getNextPositionValuesForIncreaseTrade(p: {
   });
 
   const nextLiqPrice = getLiquidationPrice({
+    marketInfo,
+    collateralToken,
     sizeInUsd: nextSizeUsd,
-    collateralUsd: nextCollateralUsd,
-    pnl: existingPosition?.pnl || BigNumber.from(0),
+    sizeInTokens: nextSizeInTokens,
+    initialCollateralUsd: nextCollateralUsd,
     markPrice: nextEntryPrice,
-    minCollateralFactor: marketInfo.minCollateralFactor,
     minCollateralUsd,
     closingFeeUsd: getPositionFee(marketInfo, nextSizeUsd, userReferralInfo).positionFeeUsd,
-    maxPriceImpactFactor: marketInfo?.maxPositionImpactFactorForLiquidations,
     pendingBorrowingFeesUsd: BigNumber.from(0), // deducted on order
     pendingFundingFeesUsd: BigNumber.from(0), // deducted on order
     isLong: isLong,
