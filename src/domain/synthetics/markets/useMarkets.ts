@@ -16,12 +16,12 @@ const MARKETS_COUNT = 100;
 
 const DISABLED_MARKETS = {
   [AVALANCHE_FUJI]: {
-    "0x6824C723F252B5EC911b186F428F9fe0eFba7E11": true,
-    "0x5670eF8CDC5A0652735487091b2BE43EF8c60F68": true,
+    "0x81A076DBf71Bb46D414203bf31b2E519189E29c7": true,
     "0x33CFc2F096057E1f950D83E8b7c8eE4c2e7c9eec": true,
-    "0x6C63BBD727eA924FE79e441a88667d9e4Bc528C5": true,
-    "0x7E5AC649E1E6471399D09be6f60c38246Ff409C9": true,
-    "0xa88548591F6D9fFd86C8022022E39CcFb30e5Dd8": true,
+    "0xd111A46943F588309cdddB64Fa8eB033B53d0Ff9": true,
+    "0x3D500c62294aB071Da5a2aE9A11C8d386B9bE5A8": true,
+    "0xb6088c08f05a2B3b3a0Cc5f8198DAEA8b2fB8629": true,
+    "0xB9bc5B9A2401F5ED866ee27e80De01da88291215": true,
   },
   [ARBITRUM_GOERLI]: {
     "0x6b3B6CAB5Cc605E5Fb312e5fBB6b2Ac3CA47f1cA": true,
@@ -52,6 +52,10 @@ export function useMarkets(chainId: number): MarketsResult {
       return res.reader.markets.returnValues.reduce(
         (acc: { marketsData: MarketsData; marketsAddresses: string[] }, marketValues) => {
           const [marketTokenAddress, indexTokenAddress, longTokenAddress, shortTokenAddress, data] = marketValues;
+
+          if (DISABLED_MARKETS[chainId]?.[marketTokenAddress]) {
+            return acc;
+          }
 
           try {
             const indexToken = getToken(chainId, convertTokenAddress(chainId, indexTokenAddress, "native"));
