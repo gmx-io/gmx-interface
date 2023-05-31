@@ -778,7 +778,8 @@ export function TradeBox(p: Props) {
       const needUpdateMarket =
         !marketAddress || !marketsOptions.availableMarkets.find((m) => m.marketTokenAddress === marketAddress);
 
-      const optimalMarket = marketsOptions.minPriceImpactMarket || marketsOptions.maxLiquidityMarket;
+      const optimalMarket =
+        marketsOptions.minPriceImpactMarket || marketsOptions.maxLiquidityMarket || marketsOptions.availableMarkets[0];
 
       if (needUpdateMarket && optimalMarket) {
         onSelectMarketAddress(optimalMarket.marketTokenAddress);
@@ -1015,7 +1016,7 @@ export function TradeBox(p: Props) {
 
         <MarketPoolSelectorRow
           selectedMarket={marketInfo}
-          indexToken={marketInfo?.indexToken}
+          indexToken={toToken}
           marketsOptions={marketsOptions}
           hasExistingOrder={Boolean(existingOrder)}
           hasExistingPosition={Boolean(existingPosition)}

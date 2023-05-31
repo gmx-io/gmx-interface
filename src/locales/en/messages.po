@@ -377,6 +377,10 @@ msgstr "Approving..."
 msgid "Arbitrum APR:"
 msgstr "Arbitrum APR:"
 
+#: src/components/TokenCard/TokenCard.js
+msgid "Arbitrum Goerli APR:"
+msgstr "Arbitrum Goerli APR:"
+
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
 msgstr "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
@@ -573,6 +577,10 @@ msgstr "Buy failed."
 #: src/components/TokenCard/TokenCard.js
 msgid "Buy on Arbitrum"
 msgstr "Buy on Arbitrum"
+
+#: src/components/TokenCard/TokenCard.js
+msgid "Buy on Arbitrum Goerli"
+msgstr "Buy on Arbitrum Goerli"
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js

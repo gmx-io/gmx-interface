@@ -404,7 +404,7 @@ export function applyImpactFactor(diff: BigNumber, factor: BigNumber, exponent: 
   // Pow and convert back to BigNumber with 30 decimals
   let result = bigNumberify(BigInt(Math.round(_diff ** _exponent * 10 ** 30)))!;
 
-  result = result.mul(factor).div(expandDecimals(1, 30)).div(2);
+  result = result.mul(factor).div(expandDecimals(1, 30));
 
   return result;
 }

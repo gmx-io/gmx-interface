@@ -78,7 +78,7 @@ export function useAvailableMarketsOptions(
         })
       : availableMarkets;
 
-    const result: AvailableMarketsOptions = { allMarkets, availableMarkets, maxLiquidityMarket: availableMarkets[0] };
+    const result: AvailableMarketsOptions = { allMarkets, availableMarkets };
 
     if (isIncrease && liquidMarkets.length === 0) {
       result.isNoSufficientLiquidityInAnyMarket = true;

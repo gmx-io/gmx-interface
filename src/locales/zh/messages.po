@@ -377,6 +377,10 @@ msgstr "核准中"
 msgid "Arbitrum APR:"
 msgstr "Arbitrum年利率"
 
+#: src/components/TokenCard/TokenCard.js
+msgid "Arbitrum Goerli APR:"
+msgstr ""
+
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
 msgstr "若流动率不足以交换GLP {0} 成 {swapTokenSymbol}, 您可使用下方其他选项："
@@ -573,6 +577,10 @@ msgstr "买入失败"
 #: src/components/TokenCard/TokenCard.js
 msgid "Buy on Arbitrum"
 msgstr "在Arbitrum上购买"
+
+#: src/components/TokenCard/TokenCard.js
+msgid "Buy on Arbitrum Goerli"
+msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
