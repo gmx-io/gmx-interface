@@ -120,11 +120,18 @@ export function OrderItem(p: Props) {
               handle={p.order.title}
               position="left-bottom"
               renderContent={() => (
-                <StatsTooltipRow
-                  label={"Key"}
-                  value={<div className="debug-key muted">{p.order.key}</div>}
-                  showDollar={false}
-                />
+                <>
+                  <StatsTooltipRow
+                    label={"Key"}
+                    value={<div className="debug-key muted">{p.order.key}</div>}
+                    showDollar={false}
+                  />
+                  <StatsTooltipRow
+                    label={"Amount"}
+                    value={<div className="debug-key muted">{p.order.minOutputAmount.toString()}</div>}
+                    showDollar={false}
+                  />
+                </>
               )}
             />
           );
