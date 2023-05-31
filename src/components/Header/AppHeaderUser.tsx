@@ -6,8 +6,9 @@ import ConnectWalletButton from "../Common/ConnectWalletButton";
 
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
-import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
 import { isDevelopment } from "config/env";
+import { getIsSyntheticsSupported } from "config/features";
 import { getIcon } from "config/icons";
 import { useChainId } from "lib/chains";
 import { getAccountUrl, isHomeSite } from "lib/legacy";
@@ -17,7 +18,6 @@ import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
 import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
 import "./Header.css";
 import { HeaderLink } from "./HeaderLink";
-import { getIsSyntheticsSupported } from "config/features";
 
 type Props = {
   openSettings: () => void;
@@ -45,12 +45,12 @@ const NETWORK_OPTIONS = [
 ];
 
 if (isDevelopment()) {
-  NETWORK_OPTIONS.push({
-    label: getChainName(ARBITRUM_GOERLI),
-    value: ARBITRUM_GOERLI,
-    icon: getIcon(ARBITRUM_GOERLI, "network"),
-    color: "#264f79",
-  });
+  // NETWORK_OPTIONS.push({
+  //   label: getChainName(ARBITRUM_GOERLI),
+  //   value: ARBITRUM_GOERLI,
+  //   icon: getIcon(ARBITRUM_GOERLI, "network"),
+  //   color: "#264f79",
+  // });
   NETWORK_OPTIONS.push({
     label: getChainName(AVALANCHE_FUJI),
     value: AVALANCHE_FUJI,
