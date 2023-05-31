@@ -1947,7 +1947,7 @@ export default function SwapBox(props) {
                 />
               </BuyInputSection>
               <div className="Exchange-swap-ball-container">
-                <button className="Exchange-swap-ball" type="button" onClick={switchTokens}>
+                <button type="button" className="Exchange-swap-ball" onClick={switchTokens}>
                   <IoMdSwap className="Exchange-swap-ball-icon" />
                 </button>
               </div>
@@ -1994,8 +1994,7 @@ export default function SwapBox(props) {
               onInputValueChange={onTriggerRatioChange}
             >
               {(() => {
-                if (!toTokenInfo) return;
-                if (!fromTokenInfo) return;
+                if (!toTokenInfo || !fromTokenInfo) return;
                 const [tokenA, tokenB] = triggerRatioInverted
                   ? [toTokenInfo, fromTokenInfo]
                   : [fromTokenInfo, toTokenInfo];

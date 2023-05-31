@@ -861,8 +861,8 @@ export default function GlpSwap(props) {
 
             <div className="AppOrder-ball-container">
               <button
-                className="AppOrder-ball"
                 type="button"
+                className="AppOrder-ball"
                 onClick={() => {
                   setIsBuying(!isBuying);
                   switchSwapOption(isBuying ? "redeem" : "");
