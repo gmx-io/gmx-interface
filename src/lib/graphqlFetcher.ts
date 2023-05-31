@@ -17,7 +17,6 @@ export default async function graphqlFetcher<T>(
     const { data } = await response.json();
     return data;
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error("graphql fetcher error", error);
+    throw new Error(`Error fetching GraphQL query: ${error}`);
   }
 }

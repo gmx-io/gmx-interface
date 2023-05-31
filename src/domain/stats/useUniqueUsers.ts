@@ -25,21 +25,21 @@ export default function useUniqueUsers() {
         SUPPORTED_CHAIN_IDS.map(async (chainId) => {
           const endpoint = getSubgraphUrl(chainId, "stats");
           if (!endpoint) return undefined;
-          return graphqlFetcher<UserStatsData>(endpoint, UNIQUE_USERS_QUERY);
+          return await graphqlFetcher<UserStatsData>(endpoint, UNIQUE_USERS_QUERY);
         })
       );
       return results;
     },
     {
-      refreshInterval: 1000 * 60,
+      refreshInterval: 60000,
     }
   );
 
   return data?.reduce(
     (acc, userInfo, index) => {
-      const currentChainUsers = userInfo?.userStats?.[0]?.uniqueCountCumulative;
+      const currentChainUsers = userInfo?.userStats?.[0]?.uniqueCountCumulative ?? 0;
       acc[SUPPORTED_CHAIN_IDS[index]] = currentChainUsers;
-      acc.total += currentChainUsers || 0;
+      acc.total += currentChainUsers;
       return acc;
     },
     {
