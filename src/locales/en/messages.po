@@ -5108,6 +5108,18 @@ msgstr "You have multiple existing Increase {longShortText} {0} limit orders"
 msgid "You have not deposited any tokens for vesting."
 msgstr "You have not deposited any tokens for vesting."
 
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "You have selected {collateralTokenSymbol} as Collateral, the Liquidation Price is higher compared to using a stablecoin as collateral, since the worth of the collateral will change with its price."
+msgstr "You have selected {collateralTokenSymbol} as Collateral, the Liquidation Price is higher compared to using a stablecoin as collateral, since the worth of the collateral will change with its price."
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "You have selected {collateralTokenSymbol} as Collateral, the Liquidation Price will vary based on the price of {collateralTokenSymbol}."
+msgstr "You have selected {collateralTokenSymbol} as Collateral, the Liquidation Price will vary based on the price of {collateralTokenSymbol}."
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "You have selected {collateralTokenSymbol} as collateral to short {indexTokenSymbol}."
+msgstr "You have selected {collateralTokenSymbol} as collateral to short {indexTokenSymbol}."
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "You have {0} esGMX (IOU) tokens."
 msgstr "You have {0} esGMX (IOU) tokens."
