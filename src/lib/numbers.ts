@@ -1,5 +1,6 @@
 import { BigNumber, BigNumberish, ethers } from "ethers";
 import { BASIS_POINTS_DIVISOR, PRECISION, USD_DECIMALS } from "./legacy";
+import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 
 const MAX_EXCEEDING_THRESHOLD = "1000000000";
 const MIN_EXCEEDING_THRESHOLD = "0.01";
@@ -36,7 +37,7 @@ function getLimitedDisplay(
     };
   }
 
-  const symbol = absAmount.gt(max) ? ">" : absAmount.lt(min) ? "<" : "";
+  const symbol = absAmount.gt(max) ? TRIGGER_PREFIX_ABOVE : absAmount.lt(min) ? TRIGGER_PREFIX_BELOW : "";
   const value = absAmount.gt(max) ? max : absAmount.lt(min) ? min : absAmount;
 
   return {
