@@ -54,7 +54,8 @@ export function useSwapRoutes(p: { fromTokenAddress?: string; toTokenAddress?: s
 
     const p = findAllPaths(graph, wrappedFromAddress, wrappedToAddress);
 
-    return p;
+    // TODO: optimize
+    return p?.slice(0, 5);
   }, [graph, isSameToken, isUnwrap, isWrap, wrappedFromAddress, wrappedToAddress]);
 
   const { maxLiquidity, maxLiquidityPath } = useMemo(() => {

@@ -39,8 +39,12 @@ export function GmList({ hideTitle }: Props) {
       .sort((a, b) => {
         const market1 = getByKey(marketsInfoData, a.address)!;
         const market2 = getByKey(marketsInfoData, b.address)!;
-        const indexToken1 = getTokenData(tokensData, market1.indexTokenAddress, "native")!;
-        const indexToken2 = getTokenData(tokensData, market2.indexTokenAddress, "native")!;
+        const indexToken1 = getTokenData(tokensData, market1.indexTokenAddress, "native");
+        const indexToken2 = getTokenData(tokensData, market2.indexTokenAddress, "native");
+
+        if (!indexToken1 || !indexToken2) {
+          return 0;
+        }
 
         return indexToken1.symbol.localeCompare(indexToken2.symbol);
       });
@@ -86,14 +90,18 @@ export function GmList({ hideTitle }: Props) {
               {marketTokens.map((token) => {
                 const market = getByKey(marketsInfoData, token.address)!;
 
-                const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native")!;
-                const longToken = getTokenData(tokensData, market?.longTokenAddress)!;
-                const shortToken = getTokenData(tokensData, market?.shortTokenAddress)!;
+                const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
+                const longToken = getTokenData(tokensData, market?.longTokenAddress);
+                const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
 
                 const apr = getByKey(marketsTokensAPRData, token.address);
 
                 const totalSupply = token.totalSupply;
                 const totalSupplyUsd = convertToUsd(totalSupply, token.decimals, token.prices?.minPrice);
+
+                if (!indexToken || !longToken || !shortToken) {
+                  return null;
+                }
 
                 return (
                   <tr key={token.address}>
@@ -181,7 +189,11 @@ export function GmList({ hideTitle }: Props) {
               const totalSupply = token.totalSupply;
               const totalSupplyUsd = convertToUsd(totalSupply, token.decimals, token.prices?.minPrice);
               const market = getByKey(marketsInfoData, token.address);
-              const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native")!;
+              const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
+
+              if (!indexToken) {
+                return null;
+              }
 
               return (
                 <div className="App-card" key={token.address}>
