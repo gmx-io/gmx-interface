@@ -2,7 +2,6 @@ import { MarketInfo, getTokenPoolType } from "domain/synthetics/markets";
 import { TokenData, convertToTokenAmount, convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { applyFactor, bigNumberify, expandDecimals, roundUpMagnitudeDivision } from "lib/numbers";
-import { VirtualInventoryForPositionsData, VirtualInventoryForSwapsData } from "../types";
 
 export function getPriceImpactAmount(p: {
   sizeDeltaUsd: BigNumber;
@@ -30,7 +29,7 @@ export function applySwapImpactWithCap(marketInfo: MarketInfo, tokenAddress: str
   const tokenPoolType = getTokenPoolType(marketInfo, tokenAddress);
 
   if (!tokenPoolType) {
-    throw new Error(`Token ${tokenAddress} is not a collateral of market ${marketInfo.marketTokenAddress}`);
+    throw new Error(`Token ${tokenAddress} is not a collateral of the market ${marketInfo.marketTokenAddress}`);
   }
 
   const token = tokenPoolType === "long" ? marketInfo.longToken : marketInfo.shortToken;
@@ -58,13 +57,8 @@ export function applySwapImpactWithCap(marketInfo: MarketInfo, tokenAddress: str
   return impactDeltaAmount;
 }
 
-export function getCappedPositionImpactUsd(
-  marketInfo: MarketInfo,
-  virtualInventoryForPositions: VirtualInventoryForPositionsData,
-  sizeDeltaUsd: BigNumber,
-  isLong: boolean
-) {
-  const priceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, virtualInventoryForPositions, sizeDeltaUsd, isLong);
+export function getCappedPositionImpactUsd(marketInfo: MarketInfo, sizeDeltaUsd: BigNumber, isLong: boolean) {
+  const priceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, sizeDeltaUsd, isLong);
 
   if (priceImpactDeltaUsd.lt(0)) {
     return priceImpactDeltaUsd;
@@ -96,12 +90,7 @@ export function getCappedPositionImpactUsd(
   return cappedImpactUsd;
 }
 
-export function getPriceImpactForPosition(
-  marketInfo: MarketInfo,
-  virtualInventoryForPositions: VirtualInventoryForPositionsData,
-  sizeDeltaUsd: BigNumber,
-  isLong: boolean
-) {
+export function getPriceImpactForPosition(marketInfo: MarketInfo, sizeDeltaUsd: BigNumber, isLong: boolean) {
   const { longInterestUsd, shortInterestUsd } = marketInfo;
 
   const { currentLongUsd, currentShortUsd, nextLongUsd, nextShortUsd } = getNextOpenInterestParams({
@@ -125,14 +114,12 @@ export function getPriceImpactForPosition(
     return priceImpactUsd;
   }
 
-  const virtualInventory = virtualInventoryForPositions[marketInfo.indexTokenAddress];
-
-  if (!virtualInventory) {
+  if (!marketInfo.virtualInventoryForPositions.abs().gt(0)) {
     return priceImpactUsd;
   }
 
   const virtualInventoryParams = getNextOpenInterestForVirtualInventory({
-    virtualInventory,
+    virtualInventory: marketInfo.virtualInventoryForPositions,
     usdDelta: sizeDeltaUsd,
     isLong: isLong!,
   });
@@ -152,7 +139,6 @@ export function getPriceImpactForPosition(
 
 export function getPriceImpactForSwap(
   marketInfo: MarketInfo,
-  virtualInventoryForSwaps: VirtualInventoryForSwapsData,
   fromTokenAddress: string,
   fromDeltaAmount: BigNumber,
   toDeltaAmount: BigNumber
@@ -191,10 +177,10 @@ export function getPriceImpactForSwap(
     return priceImpactUsd;
   }
 
-  const virtualInventoryLong = virtualInventoryForSwaps[marketInfo.marketTokenAddress]?.[marketInfo.longTokenAddress];
-  const virtualInventoryShort = virtualInventoryForSwaps[marketInfo.marketTokenAddress]?.[marketInfo.shortTokenAddress];
+  const virtualInventoryLong = marketInfo.virtualPoolAmountForLongToken;
+  const virtualInventoryShort = marketInfo.virtualPoolAmountForShortToken;
 
-  if (!virtualInventoryLong || !virtualInventoryShort) {
+  if (!virtualInventoryLong.gt(0) || !virtualInventoryShort.gt(0)) {
     return priceImpactUsd;
   }
 

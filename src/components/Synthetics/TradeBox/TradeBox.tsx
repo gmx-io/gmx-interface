@@ -14,7 +14,6 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { getKeepLeverageKey, getLeverageEnabledKey, getLeverageKey } from "config/localStorage";
 import { useUserReferralInfo } from "domain/referrals/hooks";
 import {
-  VirtualInventoryForPositionsData,
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
   estimateExecuteSwapOrderGasLimit,
@@ -99,7 +98,6 @@ export type Props = {
   existingOrder?: OrderInfo;
   positionsInfo?: PositionsInfoData;
   ordersInfo?: OrdersInfoData;
-  virtualInventoryForPositions?: VirtualInventoryForPositionsData;
   allowedSlippage: number;
   acceptablePriceImpactBpsForLimitOrders: BigNumber;
   savedIsPnlInLeverage: boolean;
@@ -150,7 +148,6 @@ export function TradeBox(p: Props) {
     shouldDisableValidation,
     acceptablePriceImpactBpsForLimitOrders,
     allowedSlippage,
-    virtualInventoryForPositions,
     isHigherSlippageAllowed,
     setIsHigherSlippageAllowed,
     onSelectMarketAddress,
@@ -318,7 +315,7 @@ export function TradeBox(p: Props) {
   ]);
 
   const increaseAmounts = useMemo(() => {
-    if (!isIncrease || !toToken || !fromToken || !collateralToken || !marketInfo || !virtualInventoryForPositions) {
+    if (!isIncrease || !toToken || !fromToken || !collateralToken || !marketInfo) {
       return undefined;
     }
 
@@ -334,7 +331,6 @@ export function TradeBox(p: Props) {
         triggerPrice,
         savedAcceptablePriceImpactBps: acceptablePriceImpactBpsForLimitOrders,
         findSwapPath: swapRoute.findSwapPath,
-        virtualInventoryForPositions,
         userReferralInfo,
       });
     } else {
@@ -349,7 +345,6 @@ export function TradeBox(p: Props) {
         triggerPrice,
         savedAcceptablePriceImpactBps: acceptablePriceImpactBpsForLimitOrders,
         findSwapPath: swapRoute.findSwapPath,
-        virtualInventoryForPositions,
         userReferralInfo,
       });
     }
@@ -370,11 +365,10 @@ export function TradeBox(p: Props) {
     toTokenAmount,
     triggerPrice,
     userReferralInfo,
-    virtualInventoryForPositions,
   ]);
 
   const decreaseAmounts = useMemo(() => {
-    if (!isTrigger || !closeSizeUsd || !marketInfo || !collateralToken || !virtualInventoryForPositions) {
+    if (!isTrigger || !closeSizeUsd || !marketInfo || !collateralToken) {
       return undefined;
     }
 
@@ -389,7 +383,6 @@ export function TradeBox(p: Props) {
       isTrigger: true,
       triggerPrice,
       savedAcceptablePriceImpactBps: acceptablePriceImpactBpsForLimitOrders,
-      virtualInventoryForPositions,
       userReferralInfo,
     });
   }, [
@@ -403,7 +396,6 @@ export function TradeBox(p: Props) {
     marketInfo,
     triggerPrice,
     userReferralInfo,
-    virtualInventoryForPositions,
   ]);
 
   const nextPositionValues = useMemo(() => {

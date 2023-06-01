@@ -337,8 +337,11 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
         const shortInterestInTokens = shortInterestInTokensUsingLongToken.add(shortInterestInTokensUsingShortToken);
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const [_, borrowingFactorPerSecondForLongs, borrowingFactorPerSecondForShorts, funding] =
+        const [_, borrowingFactorPerSecondForLongs, borrowingFactorPerSecondForShorts, funding, virtualInventory] =
           readerValues.marketInfo.returnValues;
+
+        const [virtualPoolAmountForLongToken, virtualPoolAmountForShortToken, virtualInventoryForPositions] =
+          virtualInventory.map(bigNumberify);
 
         const [longsPayShorts, fundingFactorPerSecond] = funding;
 
@@ -435,6 +438,10 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
           borrowingFactorPerSecondForShorts,
           fundingFactorPerSecond: bigNumberify(fundingFactorPerSecond)!,
           longsPayShorts,
+
+          virtualPoolAmountForLongToken,
+          virtualPoolAmountForShortToken,
+          virtualInventoryForPositions,
         };
 
         return acc;

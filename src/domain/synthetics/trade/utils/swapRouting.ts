@@ -1,4 +1,3 @@
-import { VirtualInventoryForSwapsData } from "domain/synthetics/fees";
 import { MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
 import { BigNumber } from "ethers";
 import { MarketEdge, MarketsGraph, SwapEstimator } from "../types";
@@ -40,10 +39,7 @@ export function getMarketsGraph(markets: MarketInfo[]): MarketsGraph {
   return graph;
 }
 
-export const createSwapEstimator = (
-  marketsInfoData: MarketsInfoData,
-  virtualInventoryForSwaps: VirtualInventoryForSwapsData
-): SwapEstimator => {
+export const createSwapEstimator = (marketsInfoData: MarketsInfoData): SwapEstimator => {
   return (e: MarketEdge, usdIn: BigNumber) => {
     const marketInfo = marketsInfoData[e.marketAddress];
 
@@ -53,7 +49,6 @@ export const createSwapEstimator = (
       tokenInAddress: e.from,
       tokenOutAddress: e.to,
       shouldApplyPriceImpact: true,
-      virtualInventoryForSwaps,
     });
 
     const isOutLiquidity = swapStats?.isOutLiquidity;

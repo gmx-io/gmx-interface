@@ -1,10 +1,5 @@
 import { UserReferralInfo } from "domain/referrals";
-import {
-  VirtualInventoryForPositionsData,
-  getCappedPositionImpactUsd,
-  getPositionFee,
-  getPriceImpactForPosition,
-} from "domain/synthetics/fees";
+import { getCappedPositionImpactUsd, getPositionFee, getPriceImpactForPosition } from "domain/synthetics/fees";
 import { MarketInfo } from "domain/synthetics/markets";
 import {
   PositionInfo,
@@ -33,7 +28,6 @@ export function getIncreasePositionAmountsByCollateral(p: {
   savedAcceptablePriceImpactBps?: BigNumber;
   userReferralInfo: UserReferralInfo | undefined;
   findSwapPath: FindSwapPath;
-  virtualInventoryForPositions: VirtualInventoryForPositionsData;
 }): IncreasePositionAmounts {
   const {
     marketInfo,
@@ -47,7 +41,6 @@ export function getIncreasePositionAmountsByCollateral(p: {
     savedAcceptablePriceImpactBps,
     findSwapPath,
     userReferralInfo,
-    virtualInventoryForPositions,
   } = p;
   const { indexToken } = marketInfo;
 
@@ -132,8 +125,7 @@ export function getIncreasePositionAmountsByCollateral(p: {
   positionFeeUsd = positionFeeInfo.positionFeeUsd;
   feeDiscountUsd = positionFeeInfo.discountUsd;
 
-  positionPriceImpactDeltaUsd =
-    getCappedPositionImpactUsd(marketInfo, virtualInventoryForPositions, sizeDeltaUsd, p.isLong) || BigNumber.from(0);
+  positionPriceImpactDeltaUsd = getCappedPositionImpactUsd(marketInfo, sizeDeltaUsd, p.isLong) || BigNumber.from(0);
 
   const acceptablePriceInfo = getAcceptablePrice({
     isIncrease: true,
@@ -183,7 +175,6 @@ export function getIncreasePositionAmountsBySizeDelta(p: {
   savedAcceptablePriceImpactBps?: BigNumber;
   userReferralInfo: UserReferralInfo | undefined;
   findSwapPath: FindSwapPath;
-  virtualInventoryForPositions: VirtualInventoryForPositionsData;
 }): IncreasePositionAmounts {
   const {
     marketInfo,
@@ -197,7 +188,6 @@ export function getIncreasePositionAmountsBySizeDelta(p: {
     savedAcceptablePriceImpactBps,
     userReferralInfo,
     findSwapPath,
-    virtualInventoryForPositions,
   } = p;
   const { indexToken } = marketInfo;
 
@@ -213,12 +203,7 @@ export function getIncreasePositionAmountsBySizeDelta(p: {
   const positionFeeUsd = positionFee.positionFeeUsd;
   const feeDiscountUsd = positionFee.discountUsd;
 
-  const positionPriceImpactDeltaUsd = getPriceImpactForPosition(
-    marketInfo,
-    virtualInventoryForPositions,
-    sizeDeltaUsd,
-    isLong
-  );
+  const positionPriceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, sizeDeltaUsd, isLong);
 
   const { acceptablePrice, acceptablePriceImpactBps } = getAcceptablePrice({
     isIncrease: true,

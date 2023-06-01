@@ -50,11 +50,10 @@ import Button from "components/Button/Button";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { MarketSelector } from "components/MarketSelector/MarketSelector";
 import { PoolSelector } from "components/MarketSelector/PoolSelector";
-import { useVirtualInventory } from "domain/synthetics/fees/useVirtualInventory";
+import { helperToast } from "lib/helperToast";
 import { useSafeState } from "lib/useSafeState";
 import { useHistory, useLocation } from "react-router-dom";
 import "./GmSwapBox.scss";
-import { helperToast } from "lib/helperToast";
 
 export enum Operation {
   Deposit = "Deposit",
@@ -107,7 +106,6 @@ export function GmSwapBox(p: Props) {
   const { account } = useWeb3React();
   const { marketsInfoData } = useMarketsInfo(chainId);
   const { tokensData } = useAvailableTokensData(chainId);
-  const { virtualInventoryForSwaps } = useVirtualInventory(chainId);
 
   const { gasLimits } = useGasLimits(chainId);
   const { gasPrice } = useGasPrice(chainId);
@@ -455,8 +453,7 @@ export function GmSwapBox(p: Props) {
         !marketToken?.prices ||
         !longPoolUsd ||
         !shortPoolUsd ||
-        !focusedInput ||
-        !virtualInventoryForSwaps
+        !focusedInput
       ) {
         return;
       }
@@ -473,7 +470,6 @@ export function GmSwapBox(p: Props) {
             marketToken,
             longTokenAmount,
             shortTokenAmount,
-            virtualInventoryForSwaps,
           });
 
           if (amounts) {
@@ -500,7 +496,6 @@ export function GmSwapBox(p: Props) {
             includeShortToken: Boolean(shortTokenInputState?.address),
             previousLongTokenAmount: longTokenAmount,
             previousShortTokenAmount: shortTokenAmount,
-            virtualInventoryForSwaps,
           });
 
           if (amounts) {
@@ -635,7 +630,6 @@ export function GmSwapBox(p: Props) {
       shortTokenInputState,
       shortTokenUsd,
       tokensData,
-      virtualInventoryForSwaps,
     ]
   );
 

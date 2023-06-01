@@ -1,9 +1,4 @@
-import {
-  VirtualInventoryForSwapsData,
-  applySwapImpactWithCap,
-  getNextPoolAmountsParams,
-  getPriceImpactUsd,
-} from "domain/synthetics/fees";
+import { applySwapImpactWithCap, getNextPoolAmountsParams, getPriceImpactUsd } from "domain/synthetics/fees";
 import { MarketInfo } from "domain/synthetics/markets";
 import { TokenData, convertToTokenAmount, convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
@@ -15,9 +10,8 @@ export function getNextDepositAmountsByCollaterals(p: {
   marketToken: TokenData;
   longTokenAmount?: BigNumber;
   shortTokenAmount?: BigNumber;
-  virtualInventoryForSwaps: VirtualInventoryForSwapsData;
 }): DepositAmounts | undefined {
-  const { marketToken, longTokenAmount, shortTokenAmount, marketInfo, virtualInventoryForSwaps } = p;
+  const { marketToken, longTokenAmount, shortTokenAmount, marketInfo } = p;
   const { longToken, shortToken } = marketInfo;
 
   if (!longToken.prices || !shortToken.prices || !marketToken.prices) {
@@ -53,9 +47,8 @@ export function getNextDepositAmountsByCollaterals(p: {
     return undefined;
   }
 
-  const virtualInventoryLong = virtualInventoryForSwaps?.[marketInfo.marketTokenAddress]?.[marketInfo.longTokenAddress];
-  const virtualInventoryShort =
-    virtualInventoryForSwaps?.[marketInfo.marketTokenAddress]?.[marketInfo.shortTokenAddress];
+  const virtualInventoryLong = marketInfo.virtualPoolAmountForLongToken;
+  const virtualInventoryShort = marketInfo.virtualPoolAmountForShortToken;
 
   if (virtualInventoryLong && virtualInventoryShort) {
     const virtualInventoryParams = getNextPoolAmountsParams({
@@ -151,7 +144,6 @@ export function getNextDepositAmountsByCollaterals(p: {
 
 export function getNextDepositAmountsByMarketToken(p: {
   marketInfo: MarketInfo;
-  virtualInventoryForSwaps: VirtualInventoryForSwapsData;
   marketToken: TokenData;
   marketTokenAmount: BigNumber;
   includeLongToken?: boolean;
@@ -167,7 +159,6 @@ export function getNextDepositAmountsByMarketToken(p: {
     previousShortTokenAmount,
     includeLongToken,
     includeShortToken,
-    virtualInventoryForSwaps,
   } = p;
 
   const { longToken, shortToken } = marketInfo;
@@ -209,7 +200,6 @@ export function getNextDepositAmountsByMarketToken(p: {
     marketToken,
     longTokenAmount,
     shortTokenAmount,
-    virtualInventoryForSwaps,
   })!;
 
   longTokenUsd = marketTokenUsd.mul(baseAmounts.longTokenUsd!).div(baseAmounts.marketTokenUsd!);
