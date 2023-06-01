@@ -11,6 +11,7 @@ export function getNextWithdrawalAmountsByMarketToken(p: {
 }): WithdrawalAmounts | undefined {
   const longPoolUsd = getPoolUsdWithoutPnl(p.marketInfo, true, "maxPrice");
   const shortPoolUsd = getPoolUsdWithoutPnl(p.marketInfo, false, "maxPrice");
+
   const { longToken, shortToken } = p.marketInfo;
 
   if (!longPoolUsd || !shortPoolUsd || !p.marketToken.prices || !longToken.prices || !shortToken.prices) {

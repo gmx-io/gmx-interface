@@ -11,7 +11,7 @@ export const ETH_MAINNET = 1;
 export const AVALANCHE = 43114;
 export const AVALANCHE_FUJI = 43113;
 export const ARBITRUM = 42161;
-export const ARBITRUM_TESTNET = 421611;
+export const ARBITRUM_GOERLI = 421613;
 export const FEES_HIGH_BPS = 50;
 
 // TODO take it from web3
@@ -21,7 +21,7 @@ export const CHAIN_ID = DEFAULT_CHAIN_ID;
 export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 if (isDevelopment()) {
-  SUPPORTED_CHAIN_IDS.push(ARBITRUM_TESTNET, AVALANCHE_FUJI);
+  SUPPORTED_CHAIN_IDS.push(AVALANCHE_FUJI);
 }
 
 export const IS_NETWORK_DISABLED = {
@@ -32,7 +32,7 @@ export const IS_NETWORK_DISABLED = {
 export const CHAIN_NAMES_MAP = {
   [MAINNET]: "BSC",
   [TESTNET]: "BSC Testnet",
-  [ARBITRUM_TESTNET]: "ArbRinkeby",
+  [ARBITRUM_GOERLI]: "Arbitrum Goerli",
   [ARBITRUM]: "Arbitrum",
   [AVALANCHE]: "Avalanche",
   [AVALANCHE_FUJI]: "Avalanche Fuji",
@@ -81,8 +81,9 @@ const constants = {
     v2: false,
   },
 
-  [ARBITRUM_TESTNET]: {
+  [ARBITRUM_GOERLI]: {
     nativeTokenSymbol: "ETH",
+    wrappedTokenSymbol: "WETH",
     defaultCollateralSymbol: "USDC",
     defaultFlagOrdersEnabled: false,
     positionReaderPropsLength: 9,
@@ -158,7 +159,10 @@ export const RPC_PROVIDERS = {
   ],
   [TESTNET]: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
   [ARBITRUM]: [getDefaultArbitrumRpcUrl()],
-  [ARBITRUM_TESTNET]: ["https://rinkeby.arbitrum.io/rpc"],
+  [ARBITRUM_GOERLI]: [
+    "https://endpoints.omniatech.io/v1/arbitrum/goerli/public",
+    "https://arbitrum-goerli.public.blastapi.io",
+  ],
   [AVALANCHE]: ["https://api.avax.network/ext/bc/C/rpc"],
   [AVALANCHE_FUJI]: ["https://rpc.ankr.com/avalanche_fuji"],
 };
@@ -196,16 +200,16 @@ export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {
     rpcUrls: RPC_PROVIDERS[TESTNET],
     blockExplorerUrls: ["https://testnet.bscscan.com/"],
   },
-  [ARBITRUM_TESTNET]: {
-    chainId: "0x" + ARBITRUM_TESTNET.toString(16),
-    chainName: "Arbitrum Testnet",
+  [ARBITRUM_GOERLI]: {
+    chainId: "0x" + ARBITRUM_GOERLI.toString(16),
+    chainName: "Arbitrum Goerli Testnet",
     nativeCurrency: {
       name: "ETH",
       symbol: "ETH",
       decimals: 18,
     },
-    rpcUrls: RPC_PROVIDERS[ARBITRUM_TESTNET],
-    blockExplorerUrls: ["https://rinkeby-explorer.arbitrum.io/"],
+    rpcUrls: RPC_PROVIDERS[ARBITRUM_GOERLI],
+    blockExplorerUrls: ["https://goerli.arbiscan.io/"],
   },
   [ARBITRUM]: {
     chainId: "0x" + ARBITRUM.toString(16),
@@ -293,8 +297,8 @@ export function getExplorerUrl(chainId) {
     return "https://bscscan.com/";
   } else if (chainId === TESTNET) {
     return "https://testnet.bscscan.com/";
-  } else if (chainId === ARBITRUM_TESTNET) {
-    return "https://testnet.arbiscan.io/";
+  } else if (chainId === ARBITRUM_GOERLI) {
+    return "https://goerli.arbiscan.io/";
   } else if (chainId === ARBITRUM) {
     return "https://arbiscan.io/";
   } else if (chainId === AVALANCHE) {
