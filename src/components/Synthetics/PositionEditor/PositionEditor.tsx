@@ -139,7 +139,7 @@ export function PositionEditor(p: Props) {
     isDeposit && tokenAllowance && collateralDeltaAmount && collateralDeltaAmount.gt(tokenAllowance);
 
   const maxWithdrawUsd =
-    position && minCollateralUsd ? position.initialCollateralUsd.sub(minCollateralUsd) : BigNumber.from(0);
+    position && minCollateralUsd ? position.collateralUsd.sub(minCollateralUsd) : BigNumber.from(0);
   const maxWithdrawAmount = convertToTokenAmount(maxWithdrawUsd, collateralToken?.decimals, collateralPrice);
 
   const { fees, executionFee } = useMemo(() => {
@@ -184,13 +184,13 @@ export function PositionEditor(p: Props) {
 
       if (isDeposit) {
         const collateralDeltaAfterFeesUsd = collateralDeltaUsd.sub(fees.totalFees.deltaUsd.abs());
-        nextCollateralUsd = position.initialCollateralUsd.add(collateralDeltaAfterFeesUsd);
+        nextCollateralUsd = position.collateralUsd.add(collateralDeltaAfterFeesUsd);
       } else {
         if (collateralDeltaUsd.gt(fees.totalFees.deltaUsd.abs())) {
-          nextCollateralUsd = position.initialCollateralUsd.sub(collateralDeltaUsd);
+          nextCollateralUsd = position.collateralUsd.sub(collateralDeltaUsd);
           receiveUsd = collateralDeltaUsd.sub(fees.totalFees.deltaUsd.abs());
         } else {
-          nextCollateralUsd = position.initialCollateralUsd.sub(collateralDeltaUsd).sub(remainingCollateralFeesUsd);
+          nextCollateralUsd = position.collateralUsd.sub(collateralDeltaUsd).sub(remainingCollateralFeesUsd);
           receiveUsd = BigNumber.from(0);
         }
       }
@@ -212,7 +212,7 @@ export function PositionEditor(p: Props) {
       const nextLiqPrice = getLiquidationPrice({
         sizeInUsd: position.sizeInUsd,
         sizeInTokens: position.sizeInTokens,
-        initialCollateralUsd: nextCollateralUsd,
+        collateralUsd: nextCollateralUsd,
         collateralToken: position.collateralToken,
         marketInfo: position.marketInfo,
         markPrice: position.markPrice,
@@ -515,7 +515,7 @@ export function PositionEditor(p: Props) {
                 </div>
                 <div className="align-right">
                   <ValueTransition
-                    from={formatUsd(position?.initialCollateralUsd)!}
+                    from={formatUsd(position?.collateralUsd)!}
                     to={collateralDeltaUsd?.gt(0) ? formatUsd(nextCollateralUsd) : undefined}
                   />
                 </div>

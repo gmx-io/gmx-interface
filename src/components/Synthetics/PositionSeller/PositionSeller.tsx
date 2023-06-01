@@ -460,7 +460,7 @@ export function PositionSeller(p: Props) {
                 </div>
                 <div className="align-right">
                   <ValueTransition
-                    from={formatUsd(position?.initialCollateralUsd)!}
+                    from={formatUsd(position?.collateralUsd)!}
                     to={formatUsd(nextPositionValues?.nextCollateralUsd)}
                   />
                 </div>

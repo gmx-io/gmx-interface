@@ -51,7 +51,7 @@ export function PositionItem(p: Props) {
             <br />
             <StatsTooltipRow
               label={t`Initial Collateral`}
-              value={formatUsd(p.position.initialCollateralUsd) || "..."}
+              value={formatUsd(p.position.collateralUsd) || "..."}
               showDollar={false}
             />
             <StatsTooltipRow label={t`PnL`} value={formatDeltaUsd(p.position?.pnl) || "..."} showDollar={false} />
@@ -114,7 +114,7 @@ export function PositionItem(p: Props) {
                             p.position.collateralToken.decimals,
                             p.position.collateralToken.symbol
                           )}
-                          <br />({formatUsd(p.position.initialCollateralUsd)})
+                          <br />({formatUsd(p.position.collateralUsd)})
                         </div>
                       </>
                     }

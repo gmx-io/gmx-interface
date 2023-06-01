@@ -94,13 +94,9 @@ export function usePositionsInfo(chainId: number, p: { showPnlInLeverage: boolea
         const positionFeeInfo = getPositionFee(marketInfo, position.sizeInUsd, userReferralInfo);
         const closingFeeUsd = positionFeeInfo.positionFeeUsd;
 
-        const initialCollateralUsd = convertToUsd(
-          position.collateralAmount,
-          collateralToken.decimals,
-          collateralMinPrice
-        )!;
+        const collateralUsd = convertToUsd(position.collateralAmount, collateralToken.decimals, collateralMinPrice)!;
 
-        const remainingCollateralUsd = initialCollateralUsd.sub(totalPendingFeesUsd);
+        const remainingCollateralUsd = collateralUsd.sub(totalPendingFeesUsd);
 
         const remainingCollateralAmount = convertToTokenAmount(
           remainingCollateralUsd,
@@ -117,12 +113,10 @@ export function usePositionsInfo(chainId: number, p: { showPnlInLeverage: boolea
         });
 
         const pnlPercentage =
-          initialCollateralUsd && !initialCollateralUsd.eq(0)
-            ? getBasisPoints(pnl, initialCollateralUsd)
-            : BigNumber.from(0);
+          collateralUsd && !collateralUsd.eq(0) ? getBasisPoints(pnl, collateralUsd) : BigNumber.from(0);
 
         const netValue = getPositionNetValue({
-          collateralUsd: initialCollateralUsd,
+          collateralUsd: collateralUsd,
           pnl,
           pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
           pendingFundingFeesUsd: pendingFundingFeesUsd,
@@ -130,13 +124,13 @@ export function usePositionsInfo(chainId: number, p: { showPnlInLeverage: boolea
         });
 
         const pnlAfterFees = pnl.sub(totalPendingFeesUsd).sub(closingFeeUsd);
-        const pnlAfterFeesPercentage = !initialCollateralUsd.eq(0)
-          ? getBasisPoints(pnlAfterFees, initialCollateralUsd.add(closingFeeUsd))
+        const pnlAfterFeesPercentage = !collateralUsd.eq(0)
+          ? getBasisPoints(pnlAfterFees, collateralUsd.add(closingFeeUsd))
           : BigNumber.from(0);
 
         const leverage = getLeverage({
           sizeInUsd: position.sizeInUsd,
-          collateralUsd: initialCollateralUsd,
+          collateralUsd: collateralUsd,
           pnl: showPnlInLeverage ? pnl : undefined,
           pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
           pendingFundingFeesUsd: pendingFundingFeesUsd,
@@ -149,7 +143,7 @@ export function usePositionsInfo(chainId: number, p: { showPnlInLeverage: boolea
           collateralToken,
           sizeInUsd: position.sizeInUsd,
           sizeInTokens: position.sizeInTokens,
-          initialCollateralUsd: initialCollateralUsd,
+          collateralUsd,
           markPrice,
           closingFeeUsd,
           minCollateralUsd,
@@ -163,7 +157,7 @@ export function usePositionsInfo(chainId: number, p: { showPnlInLeverage: boolea
           collateralToken,
           sizeInUsd: position.sizeInUsd,
           sizeInTokens: position.sizeInTokens,
-          initialCollateralUsd: initialCollateralUsd,
+          collateralUsd,
           markPrice,
           closingFeeUsd,
           minCollateralUsd,
@@ -183,7 +177,7 @@ export function usePositionsInfo(chainId: number, p: { showPnlInLeverage: boolea
           entryPrice,
           liquidationPrice,
           liquidationPriceWithMaxPriceImpact,
-          initialCollateralUsd,
+          collateralUsd,
           remainingCollateralUsd,
           remainingCollateralAmount,
           hasLowCollateral,

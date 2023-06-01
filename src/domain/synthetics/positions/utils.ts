@@ -92,7 +92,7 @@ export function getPositionPnlUsd(p: {
 export function getLiquidationPrice(p: {
   sizeInUsd: BigNumber;
   sizeInTokens: BigNumber;
-  initialCollateralUsd: BigNumber;
+  collateralUsd: BigNumber;
   collateralToken: TokenData;
   markPrice: BigNumber;
   closingFeeUsd: BigNumber;
@@ -106,7 +106,7 @@ export function getLiquidationPrice(p: {
   const {
     sizeInUsd,
     sizeInTokens,
-    initialCollateralUsd,
+    collateralUsd,
     marketInfo,
     collateralToken,
     // markPrice,
@@ -144,10 +144,7 @@ export function getLiquidationPrice(p: {
     }
   }
 
-  const remainingCollateralUsd = initialCollateralUsd
-    .add(priceImpactDeltaUsd)
-    .sub(totalPendingFeesUsd)
-    .sub(closingFeeUsd);
+  const remainingCollateralUsd = collateralUsd.add(priceImpactDeltaUsd).sub(totalPendingFeesUsd).sub(closingFeeUsd);
 
   let liquidationCollateralUsd = applyFactor(sizeInUsd, marketInfo.minCollateralFactor);
   if (liquidationCollateralUsd.lt(minCollateralUsd)) {

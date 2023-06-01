@@ -103,7 +103,7 @@ export function getDecreasePositionAmounts(p: {
   let exitPnlPercentage = BigNumber.from(0);
   let pnlDelta = BigNumber.from(0);
 
-  if (existingPosition && existingPosition.sizeInUsd.gt(0) && existingPosition.initialCollateralUsd.gt(0)) {
+  if (existingPosition && existingPosition.sizeInUsd.gt(0) && existingPosition.collateralUsd.gt(0)) {
     const collateralDeltaInfo = getCollateralDeltaForDecreaseOrder({
       position: existingPosition,
       sizeDeltaUsd,
@@ -122,8 +122,8 @@ export function getDecreasePositionAmounts(p: {
       markPrice: exitPrice,
     });
 
-    exitPnlPercentage = !existingPosition.initialCollateralUsd.eq(0)
-      ? getBasisPoints(exitPnl, existingPosition.initialCollateralUsd)
+    exitPnlPercentage = !existingPosition.collateralUsd.eq(0)
+      ? getBasisPoints(exitPnl, existingPosition.collateralUsd)
       : BigNumber.from(0);
 
     pnlDelta = getPnlDeltaForDecreaseOrder({
@@ -204,7 +204,7 @@ export function getNextPositionValuesForDecreaseTrade(p: {
   const nextSizeInTokens = convertToTokenAmount(nextSizeUsd, marketInfo.indexToken.decimals, executionPrice)!;
 
   const nextCollateralUsd = existingPosition
-    ? existingPosition.initialCollateralUsd.sub(collateralDeltaUsd)
+    ? existingPosition.collateralUsd.sub(collateralDeltaUsd)
     : BigNumber.from(0);
 
   const nextPnl = exitPnl.gt(0) ? exitPnl.sub(pnlDelta) : BigNumber.from(0);
@@ -223,7 +223,7 @@ export function getNextPositionValuesForDecreaseTrade(p: {
     collateralToken,
     sizeInTokens: nextSizeInTokens,
     sizeInUsd: nextSizeUsd,
-    initialCollateralUsd: nextCollateralUsd,
+    collateralUsd: nextCollateralUsd,
     markPrice: executionPrice,
     minCollateralUsd,
     closingFeeUsd: getPositionFee(marketInfo, nextSizeUsd, userReferralInfo).positionFeeUsd,
@@ -245,7 +245,7 @@ export function getNextPositionValuesForDecreaseTrade(p: {
 export function getCollateralDeltaForDecreaseOrder(p: {
   position: {
     sizeInUsd: BigNumber;
-    initialCollateralUsd: BigNumber;
+    collateralUsd: BigNumber;
     collateralToken: TokenData;
   };
   sizeDeltaUsd: BigNumber;
@@ -257,9 +257,9 @@ export function getCollateralDeltaForDecreaseOrder(p: {
   let collateralDeltaUsd = BigNumber.from(0);
 
   if (position.sizeInUsd.eq(sizeDeltaUsd)) {
-    collateralDeltaUsd = position.initialCollateralUsd;
+    collateralDeltaUsd = position.collateralUsd;
   } else if (keepLeverage) {
-    collateralDeltaUsd = sizeDeltaUsd.mul(position.initialCollateralUsd).div(position.sizeInUsd);
+    collateralDeltaUsd = sizeDeltaUsd.mul(position.collateralUsd).div(position.sizeInUsd);
   }
 
   const collateralDeltaAmount = convertToTokenAmount(
