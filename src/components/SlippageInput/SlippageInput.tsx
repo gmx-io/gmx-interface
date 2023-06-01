@@ -20,11 +20,9 @@ type Props = {
 export default function SlippageInput({ setAllowedSlippage, defaultSlippage }: Props) {
   const defaultSlippageText = getSlippageText(defaultSlippage);
   const [slippageText, setSlippageText] = useState<string>(defaultSlippageText);
-  const [slippageError, setSlippageError] = useState<string>("");
   const [isPanelVisible, setIsPanelVisible] = useState<boolean>(false);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setSlippageError("");
     const { value } = event.target;
     if (value === "") {
       setSlippageText(value);
@@ -37,12 +35,7 @@ export default function SlippageInput({ setAllowedSlippage, defaultSlippage }: P
       return;
     }
 
-    if (parsedValue >= HIGH_SLIPPAGE) {
-      setSlippageError("Slippage is too high");
-    }
-
     if (parsedValue >= MAX_SLIPPAGE) {
-      setSlippageError("Max slippage can be 100%");
       setAllowedSlippage(MAX_SLIPPAGE);
       setSlippageText(String(MAX_SLIPPAGE / 100));
       return;
@@ -54,9 +47,16 @@ export default function SlippageInput({ setAllowedSlippage, defaultSlippage }: P
     }
   }
 
+  function getSlippageError() {
+    const parsedValue = Math.round(Number.parseFloat(slippageText) * 100);
+    if (parsedValue >= HIGH_SLIPPAGE) {
+      return "Slippage is too high";
+    }
+  }
+
   return (
     <div className="Slippage-input-wrapper">
-      <div className={cx("Slippage-input", { "input-error": slippageError })}>
+      <div className={cx("Slippage-input", { "input-error": !!getSlippageError() })}>
         <input
           id="slippage-input"
           onFocus={() => setIsPanelVisible(true)}
@@ -78,7 +78,6 @@ export default function SlippageInput({ setAllowedSlippage, defaultSlippage }: P
                 setSlippageText(String(slippage));
                 setAllowedSlippage(slippage * 100);
                 setIsPanelVisible(false);
-                setSlippageError("");
               }}
             >
               {slippage}%
