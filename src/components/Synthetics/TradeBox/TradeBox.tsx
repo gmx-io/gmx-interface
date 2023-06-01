@@ -1179,7 +1179,7 @@ export function TradeBox(p: Props) {
             label={t`Collateral (${existingPosition?.collateralToken?.symbol})`}
             value={
               <ValueTransition
-                from={formatUsd(existingPosition.initialCollateralUsd)}
+                from={formatUsd(existingPosition.collateralUsd)}
                 to={formatUsd(nextPositionValues?.nextCollateralUsd)}
               />
             }

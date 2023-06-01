@@ -331,7 +331,7 @@ export function getNextPositionValuesForIncreaseTrade(p: {
     const pendingFeesUsd = getPositionPendingFeesUsd(existingPosition);
     const collateralDeltaAfterFeesUsd = collateralDeltaUsd.sub(pendingFeesUsd);
     remainingCollateralFeesUsd = pendingFeesUsd.sub(collateralDeltaUsd);
-    nextCollateralUsd = existingPosition.initialCollateralUsd.add(collateralDeltaAfterFeesUsd);
+    nextCollateralUsd = existingPosition.collateralUsd.add(collateralDeltaAfterFeesUsd);
   } else {
     nextCollateralUsd = collateralDeltaUsd;
   }
@@ -362,7 +362,7 @@ export function getNextPositionValuesForIncreaseTrade(p: {
     collateralToken,
     sizeInUsd: nextSizeUsd,
     sizeInTokens: nextSizeInTokens,
-    initialCollateralUsd: nextCollateralUsd,
+    collateralUsd: nextCollateralUsd,
     markPrice: nextEntryPrice,
     minCollateralUsd,
     closingFeeUsd: getPositionFee(marketInfo, nextSizeUsd, userReferralInfo).positionFeeUsd,
