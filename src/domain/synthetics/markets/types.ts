@@ -100,9 +100,9 @@ export type MarketInfo = Market & {
   fundingFactorPerSecond: BigNumber;
   longsPayShorts: boolean;
 
-  // virtualPoolAmountForLongToken: BigNumber;
-  // virtualPoolAmountForShortToken: BigNumber;
-  // virtualInventoryForPositions: BigNumber;
+  virtualPoolAmountForLongToken: BigNumber;
+  virtualPoolAmountForShortToken: BigNumber;
+  virtualInventoryForPositions: BigNumber;
 };
 
 export type MarketsData = {

@@ -1,5 +1,5 @@
 import { UserReferralInfo } from "domain/referrals";
-import { VirtualInventoryForPositionsData, getCappedPositionImpactUsd, getPositionFee } from "domain/synthetics/fees";
+import { getCappedPositionImpactUsd, getPositionFee } from "domain/synthetics/fees";
 import { Market, MarketInfo } from "domain/synthetics/markets";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { PositionInfo, getLeverage, getLiquidationPrice, getPositionPnlUsd } from "domain/synthetics/positions";
@@ -13,7 +13,6 @@ import { getAcceptablePrice, getMarkPrice, getTriggerDecreaseOrderType, getTrigg
 export function getDecreasePositionAmounts(p: {
   marketInfo: MarketInfo;
   collateralToken: TokenData;
-  virtualInventoryForPositions: VirtualInventoryForPositionsData;
   isLong: boolean;
   existingPosition?: PositionInfo;
   receiveToken: TokenData;
@@ -35,7 +34,6 @@ export function getDecreasePositionAmounts(p: {
     isTrigger,
     triggerPrice,
     savedAcceptablePriceImpactBps,
-    virtualInventoryForPositions,
     userReferralInfo,
   } = p;
 
@@ -77,12 +75,7 @@ export function getDecreasePositionAmounts(p: {
 
   let positionPriceImpactDeltaUsd;
   try {
-    positionPriceImpactDeltaUsd = getCappedPositionImpactUsd(
-      marketInfo,
-      virtualInventoryForPositions,
-      sizeDeltaUsd.mul(-1),
-      isLong
-    );
+    positionPriceImpactDeltaUsd = getCappedPositionImpactUsd(marketInfo, sizeDeltaUsd.mul(-1), isLong);
   } catch (e) {
     // For trigger orders there may be a case where close size > current open interest,
     // resulting in an invalid calculation of the price impact.

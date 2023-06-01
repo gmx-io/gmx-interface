@@ -1,5 +1,4 @@
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { VirtualInventoryForSwapsData } from "domain/synthetics/fees";
 import {
   MarketInfo,
   MarketsInfoData,
@@ -123,7 +122,6 @@ export function getSwapPathStats(p: {
   usdIn: BigNumber;
   shouldUnwrapNativeToken: boolean;
   shouldApplyPriceImpact: boolean;
-  virtualInventoryForSwaps: VirtualInventoryForSwapsData;
 }): SwapPathStats | undefined {
   const {
     marketsInfoData,
@@ -133,7 +131,6 @@ export function getSwapPathStats(p: {
     shouldUnwrapNativeToken,
     shouldApplyPriceImpact,
     wrappedNativeTokenAddress,
-    virtualInventoryForSwaps,
   } = p;
 
   if (swapPath.length === 0) {
@@ -166,7 +163,6 @@ export function getSwapPathStats(p: {
       tokenOutAddress,
       usdIn: usdOut,
       shouldApplyPriceImpact,
-      virtualInventoryForSwaps,
     });
 
     tokenInAddress = swapStep.tokenOutAddress;
@@ -204,9 +200,8 @@ export function getSwapStats(p: {
   tokenOutAddress: string;
   usdIn: BigNumber;
   shouldApplyPriceImpact: boolean;
-  virtualInventoryForSwaps: VirtualInventoryForSwapsData;
 }): SwapStats {
-  const { marketInfo, tokenInAddress, tokenOutAddress, usdIn, shouldApplyPriceImpact, virtualInventoryForSwaps } = p;
+  const { marketInfo, tokenInAddress, tokenOutAddress, usdIn, shouldApplyPriceImpact } = p;
 
   const isWrap = tokenInAddress === NATIVE_TOKEN_ADDRESS;
   const isUnwrap = tokenOutAddress === NATIVE_TOKEN_ADDRESS;
@@ -234,13 +229,7 @@ export function getSwapStats(p: {
   let priceImpactDeltaUsd: BigNumber;
 
   try {
-    priceImpactDeltaUsd = getPriceImpactForSwap(
-      marketInfo,
-      virtualInventoryForSwaps,
-      tokenIn.address,
-      amountInAfterFees,
-      amountOut.mul(-1)
-    );
+    priceImpactDeltaUsd = getPriceImpactForSwap(marketInfo, tokenIn.address, amountInAfterFees, amountOut.mul(-1));
   } catch (e) {
     return {
       swapFeeUsd,

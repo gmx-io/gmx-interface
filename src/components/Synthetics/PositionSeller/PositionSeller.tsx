@@ -20,7 +20,6 @@ import {
   useGasLimits,
   useGasPrice,
 } from "domain/synthetics/fees";
-import { useVirtualInventory } from "domain/synthetics/fees/useVirtualInventory";
 import { OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
 import { PositionInfo, formatLeverage, usePositionsConstants } from "domain/synthetics/positions";
 import { useAvailableTokensData } from "domain/synthetics/tokens";
@@ -48,10 +47,10 @@ import {
   parseValue,
 } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { usePrevious } from "lib/usePrevious";
 import { useEffect, useMemo, useState } from "react";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionSeller.scss";
-import { usePrevious } from "lib/usePrevious";
 
 export type Props = {
   position?: PositionInfo;
@@ -82,7 +81,6 @@ export function PositionSeller(p: Props) {
   const { library, account } = useWeb3React();
   const { tokensData } = useAvailableTokensData(chainId);
   const { gasPrice } = useGasPrice(chainId);
-  const { virtualInventoryForPositions } = useVirtualInventory(chainId);
   const { gasLimits } = useGasLimits(chainId);
   const { minCollateralUsd } = usePositionsConstants(chainId);
   const userReferralInfo = useUserReferralInfo(library, chainId, account);
@@ -113,14 +111,13 @@ export function PositionSeller(p: Props) {
   });
 
   const decreaseAmounts = useMemo(() => {
-    if (!virtualInventoryForPositions || !position) {
+    if (!position) {
       return undefined;
     }
 
     return getDecreasePositionAmounts({
       marketInfo: position.marketInfo,
       collateralToken: position.collateralToken,
-      virtualInventoryForPositions,
       receiveToken: position.collateralToken,
       isLong: position.isLong,
       existingPosition: position,
@@ -131,7 +128,7 @@ export function PositionSeller(p: Props) {
       savedAcceptablePriceImpactBps: undefined,
       userReferralInfo,
     });
-  }, [closeSizeUsd, keepLeverage, position, userReferralInfo, virtualInventoryForPositions]);
+  }, [closeSizeUsd, keepLeverage, position, userReferralInfo]);
 
   const shouldSwap = position && receiveToken && !getIsEquivalentTokens(position.collateralToken, receiveToken);
 

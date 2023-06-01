@@ -132,8 +132,7 @@ export function getLiquidationPrice(p: {
     priceImpactDeltaUsd = applyFactor(sizeInUsd, marketInfo.maxPositionImpactFactorForLiquidations).mul(-1);
   } else {
     try {
-      // TODO: virtual inventory from market info after contracts migration
-      priceImpactDeltaUsd = getCappedPositionImpactUsd(marketInfo, {}, sizeInUsd.mul(-1), isLong);
+      priceImpactDeltaUsd = getCappedPositionImpactUsd(marketInfo, sizeInUsd.mul(-1), isLong);
     } catch (e) {
       // Ignore price impact error in case of negative OI
       priceImpactDeltaUsd = BigNumber.from(0);

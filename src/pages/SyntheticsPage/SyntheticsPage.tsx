@@ -21,7 +21,6 @@ import {
   getSyntheticsListSectionKey,
 } from "config/localStorage";
 import { getToken } from "config/tokens";
-import { useVirtualInventory } from "domain/synthetics/fees/useVirtualInventory";
 import { isSwapOrderType } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useOrdersInfo } from "domain/synthetics/orders/useOrdersInfo";
@@ -72,7 +71,6 @@ export function SyntheticsPage(p: Props) {
   } = p;
   const { chainId } = useChainId();
   const { library, account } = useWeb3React();
-  const { virtualInventoryForPositions } = useVirtualInventory(chainId);
   const { positionsInfoData, isLoading: isPositionsLoading } = usePositionsInfo(chainId, {
     showPnlInLeverage: savedIsPnlInLeverage,
   });
@@ -331,7 +329,6 @@ export function SyntheticsPage(p: Props) {
               tokensData={tokensData}
               ordersInfo={ordersInfoData}
               positionsInfo={positionsInfoData}
-              virtualInventoryForPositions={virtualInventoryForPositions}
               setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
               onSelectMarketAddress={setMarketAddress}
               onSelectCollateralAddress={setCollateralAddress}

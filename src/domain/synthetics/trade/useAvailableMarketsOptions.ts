@@ -1,8 +1,3 @@
-import { BigNumber } from "ethers";
-import { USD_DECIMALS } from "lib/legacy";
-import { expandDecimals } from "lib/numbers";
-import { getByKey } from "lib/objects";
-import { useMemo } from "react";
 import {
   MarketInfo,
   getAvailableUsdLiquidityForPosition,
@@ -11,11 +6,15 @@ import {
   isMarketIndexToken,
   useMarketsInfo,
 } from "domain/synthetics/markets";
-import { OrdersInfoData, PositionOrderInfo, isIncreaseOrderType } from "../orders";
 import { PositionsInfoData } from "domain/synthetics/positions";
 import { TokenData } from "domain/synthetics/tokens";
+import { BigNumber } from "ethers";
+import { USD_DECIMALS } from "lib/legacy";
+import { expandDecimals } from "lib/numbers";
+import { getByKey } from "lib/objects";
+import { useMemo } from "react";
+import { OrdersInfoData, PositionOrderInfo, isIncreaseOrderType } from "../orders";
 import { getAcceptablePrice, getMarkPrice } from "./utils";
-import { useVirtualInventory } from "../fees/useVirtualInventory";
 
 export type AvailableMarketsOptions = {
   allMarkets?: MarketInfo[];
@@ -57,10 +56,9 @@ export function useAvailableMarketsOptions(
   } = p;
 
   const { marketsInfoData } = useMarketsInfo(chainId);
-  const { virtualInventoryForPositions } = useVirtualInventory(chainId);
 
   return useMemo(() => {
-    if (disable || !indexToken || isLong === undefined || !virtualInventoryForPositions) {
+    if (disable || !indexToken || isLong === undefined) {
       return {};
     }
 
@@ -125,7 +123,6 @@ export function useAvailableMarketsOptions(
     ) {
       const { bestMarket, bestImpactDeltaUsd } = getMinPriceImpactMarket(
         liquidMarkets,
-        virtualInventoryForPositions,
         indexToken.address,
         isLong,
         increaseSizeUsd.gt(0) ? increaseSizeUsd : expandDecimals(1000, USD_DECIMALS)
@@ -147,10 +144,9 @@ export function useAvailableMarketsOptions(
   }, [
     disable,
     indexToken,
-    increaseSizeUsd,
     isLong,
-    virtualInventoryForPositions,
     marketsInfoData,
+    increaseSizeUsd,
     isIncrease,
     hasExistingPosition,
     hasExistingOrder,
