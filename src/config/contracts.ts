@@ -114,18 +114,18 @@ const CONTRACTS = {
     PositionManager: AddressZero,
 
     TraderJoeGmxAvaxPool: AddressZero,
-    ReferralStorage: "0x3d92A8AD14692B452726dBB6B6624800Bf6c69DF",
+    ReferralStorage: "0x91C55cE4221bE83e1934D1654193e41028A75EA1",
     ReferralReader: AddressZero,
 
     // Synthetics
-    DataStore: "0x3A0C2411E84A6F0432a6E393Bb31Fa47E4eafa2F",
-    EventEmitter: "0xa2898E240dcf291784384a6d65B142F70d091977",
-    ExchangeRouter: "0x438230293CA2e1F007F652C4EFd8378c1A76E708",
-    DepositVault: "0xF4a7dEF5A54c5dF866289132B4A19dCfFdC58B87",
-    WithdrawalVault: "0x24F15D41aa904253917caBc19973E4C2a73DE57D",
-    OrderVault: "0x6080C8D75435c8AA00ebe24fF70d1040eeB2Ae27",
-    SyntheticsReader: "0x6517F74b3ec184f3d113144cA7762d9698d63d0e",
-    SyntheticsRouter: "0x126Cc5C00C3778A91C4a34e1F83E85dF4Ff860a5",
+    DataStore: "0xF2B6e9BAbCdD8812Dd8f93D9BA8aF5112df5A05C",
+    EventEmitter: "0xBaA2ad3E03A07FB93218c45454EE07612b6E5d2E",
+    ExchangeRouter: "0x0D197c431318fdAc874E17388087D6ae0b269e56",
+    DepositVault: "0x3B754Ef7A4408798FDEfDB769caD5eD7D43c3Dbe",
+    WithdrawalVault: "0xa929598B867b4Ce2FEa61d1f948F78f8ad060180",
+    OrderVault: "0x5F3662D37E83B8B13315F801B91aaB03B97d530D",
+    SyntheticsReader: "0x6242BB44BBD282B98dE507F2b6c03062CfD3fF6c",
+    SyntheticsRouter: "0xd9E55a9f0a4D0E89B23f9CFDB7a0C59C058939ec",
     Timelock: AddressZero,
 
     Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
