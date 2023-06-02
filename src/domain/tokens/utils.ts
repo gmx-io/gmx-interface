@@ -32,6 +32,8 @@ export function getIsEquivalentTokens(token1: Token, token2: Token) {
   if (token1.wrappedAddress === token2.address || token2.wrappedAddress === token1.address) {
     return true;
   }
+
+  return false;
 }
 
 export function getIsWrap(token1: Token, token2: Token) {

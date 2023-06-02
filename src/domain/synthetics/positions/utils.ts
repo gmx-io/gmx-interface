@@ -1,10 +1,10 @@
 import { MarketInfo, getCappedPoolPnl, getPoolUsdWithoutPnl } from "domain/synthetics/markets";
 import { Token, getIsEquivalentTokens } from "domain/tokens";
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";
-import { applyFactor, expandDecimals, formatAmount } from "lib/numbers";
+import { applyFactor, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 import { getCappedPositionImpactUsd } from "../fees";
-import { TokenData, convertToTokenAmount, convertToUsd } from "../tokens";
+import { TokenData, convertToUsd } from "../tokens";
 
 export function getPositionKey(account: string, marketAddress: string, collateralAddress: string, isLong: boolean) {
   return `${account}:${marketAddress}:${collateralAddress}:${isLong}`;
@@ -92,6 +92,7 @@ export function getPositionPnlUsd(p: {
 export function getLiquidationPrice(p: {
   sizeInUsd: BigNumber;
   sizeInTokens: BigNumber;
+  collateralAmount: BigNumber;
   collateralUsd: BigNumber;
   collateralToken: TokenData;
   markPrice: BigNumber;
@@ -107,6 +108,7 @@ export function getLiquidationPrice(p: {
     sizeInUsd,
     sizeInTokens,
     collateralUsd,
+    collateralAmount,
     marketInfo,
     collateralToken,
     // markPrice,
@@ -131,12 +133,7 @@ export function getLiquidationPrice(p: {
   if (useMaxPriceImpact) {
     priceImpactDeltaUsd = applyFactor(sizeInUsd, marketInfo.maxPositionImpactFactorForLiquidations).mul(-1);
   } else {
-    try {
-      priceImpactDeltaUsd = getCappedPositionImpactUsd(marketInfo, sizeInUsd.mul(-1), isLong);
-    } catch (e) {
-      // Ignore price impact error in case of negative OI
-      priceImpactDeltaUsd = BigNumber.from(0);
-    }
+    priceImpactDeltaUsd = getCappedPositionImpactUsd(marketInfo, sizeInUsd.mul(-1), isLong, { fallbackToZero: true });
 
     // Ignore positive price impact
     if (priceImpactDeltaUsd.gt(0)) {
@@ -144,7 +141,7 @@ export function getLiquidationPrice(p: {
     }
   }
 
-  const remainingCollateralUsd = collateralUsd.add(priceImpactDeltaUsd).sub(totalPendingFeesUsd).sub(closingFeeUsd);
+  const totalFeesUsd = totalPendingFeesUsd.add(closingFeeUsd);
 
   let liquidationCollateralUsd = applyFactor(sizeInUsd, marketInfo.minCollateralFactor);
   if (liquidationCollateralUsd.lt(minCollateralUsd)) {
@@ -152,33 +149,40 @@ export function getLiquidationPrice(p: {
   }
 
   if (getIsEquivalentTokens(collateralToken, indexToken)) {
-    const remainingCollateralAmount = convertToTokenAmount(
-      remainingCollateralUsd,
-      indexToken.decimals,
-      indexToken.prices.minPrice
-    )!;
-
     if (isLong) {
-      const denominator = remainingCollateralAmount.add(sizeInTokens);
+      const denominator = sizeInTokens.add(collateralAmount);
 
-      if (denominator.eq(0)) {
-        return undefined;
+      if (denominator.lt(expandDecimals(1, indexToken.decimals - 2))) {
+        return ethers.constants.MaxUint256;
       }
 
-      return liquidationCollateralUsd.add(sizeInUsd).div(denominator).mul(expandDecimals(1, indexToken.decimals));
+      return sizeInUsd
+        .add(liquidationCollateralUsd)
+        .sub(priceImpactDeltaUsd)
+        .add(totalFeesUsd)
+        .div(denominator)
+        .mul(expandDecimals(1, indexToken.decimals));
     } else {
-      const denominator = remainingCollateralAmount.sub(sizeInTokens).abs();
+      const denominator = sizeInTokens.sub(collateralAmount).abs();
 
-      if (denominator.eq(0)) {
-        return undefined;
+      if (denominator.lt(expandDecimals(1, indexToken.decimals - 2))) {
+        return ethers.constants.MaxUint256;
       }
 
-      return liquidationCollateralUsd.sub(sizeInUsd).abs().div(denominator).mul(expandDecimals(1, indexToken.decimals));
+      return sizeInUsd
+        .sub(liquidationCollateralUsd)
+        .add(priceImpactDeltaUsd)
+        .sub(totalFeesUsd)
+        .abs()
+        .div(denominator)
+        .mul(expandDecimals(1, indexToken.decimals));
     }
   } else {
     if (sizeInTokens.eq(0)) {
       return undefined;
     }
+
+    const remainingCollateralUsd = collateralUsd.add(priceImpactDeltaUsd).sub(totalPendingFeesUsd).sub(closingFeeUsd);
 
     if (isLong) {
       return liquidationCollateralUsd
@@ -194,6 +198,14 @@ export function getLiquidationPrice(p: {
         .mul(expandDecimals(1, indexToken.decimals));
     }
   }
+}
+
+export function formatLiquidationPrice(liquidationPrice?: BigNumber, opts: { displayDecimals?: number } = {}) {
+  if (liquidationPrice?.eq(ethers.constants.MaxUint256)) {
+    return "NA";
+  }
+
+  return formatUsd(liquidationPrice, opts);
 }
 
 export function getLeverage(p: {

@@ -15,6 +15,7 @@ import "./TradeFeesRow.scss";
 type Props = {
   totalFees?: FeeItem;
   swapFees?: SwapFeeItem[];
+  swapProfitFee?: FeeItem;
   swapPriceImpact?: FeeItem;
   positionFee?: FeeItem;
   positionPriceImpact?: FeeItem;
@@ -82,7 +83,20 @@ export function TradeFeesRow(p: Props) {
         value: formatDeltaUsd(swap.deltaUsd),
       })) || [];
 
-    const positionFeeRow = p.positionFee
+    const swapProfitFeeRow = p.swapProfitFee?.deltaUsd.abs().gt(0)
+      ? {
+          id: "swapProfitFee",
+          label: (
+            <>
+              <div>{t`Swap Profit Fee`}:</div>
+              <div>({formatPercentage(p.swapProfitFee.bps.abs())} of collateral)</div>
+            </>
+          ),
+          value: formatDeltaUsd(p.swapProfitFee.deltaUsd),
+        }
+      : undefined;
+
+    const positionFeeRow = p.positionFee?.deltaUsd.abs().gt(0)
       ? {
           id: "positionFee",
           label: (
@@ -116,7 +130,7 @@ export function TradeFeesRow(p: Props) {
         }
       : undefined;
 
-    const fundingFeeRow = p.fundingFee?.deltaUsd?.lt(0)
+    const fundingFeeRow = p.fundingFee?.deltaUsd?.abs().gt(0)
       ? {
           id: "fundingFee",
           label: (
@@ -176,6 +190,7 @@ export function TradeFeesRow(p: Props) {
         fundingFeeRow,
         positionFeeRow,
         feeDiscountRow,
+        swapProfitFeeRow,
         ...swapFeeRows,
         executionFeeRow,
       ].filter(Boolean) as FeeRow[];
@@ -190,12 +205,13 @@ export function TradeFeesRow(p: Props) {
     p.positionPriceImpact,
     p.swapPriceImpact,
     p.swapFees,
+    p.swapProfitFee,
     p.positionFee,
+    p.fundingFee,
     p.feesType,
     p.feeDiscountUsd,
     p.borrowFee,
     p.borrowFeeRateStr,
-    p.fundingFee,
     p.fundingFeeRateStr,
     p.executionFee,
     chainId,

@@ -138,7 +138,7 @@ export function getIncreasePositionAmountsByCollateral(p: {
   });
 
   acceptablePrice = acceptablePriceInfo?.acceptablePrice;
-  acceptablePriceImpactBps = acceptablePriceInfo?.acceptablePriceImpactBps;
+  acceptablePriceImpactBps = acceptablePriceInfo?.priceDiffBps;
 
   sizeDeltaInTokens = convertToTokenAmount(sizeDeltaUsd, indexToken.decimals, entryPrice)!;
 
@@ -205,7 +205,7 @@ export function getIncreasePositionAmountsBySizeDelta(p: {
 
   const positionPriceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, sizeDeltaUsd, isLong);
 
-  const { acceptablePrice, acceptablePriceImpactBps } = getAcceptablePrice({
+  const { acceptablePrice, priceDiffBps: acceptablePriceImpactBps } = getAcceptablePrice({
     isIncrease: true,
     isLong,
     indexPrice: entryPrice,
@@ -335,6 +335,11 @@ export function getNextPositionValuesForIncreaseTrade(p: {
   } else {
     nextCollateralUsd = collateralDeltaUsd;
   }
+  const nextCollateralAmount = convertToTokenAmount(
+    nextCollateralUsd,
+    collateralToken.decimals,
+    collateralToken.prices.minPrice
+  )!;
 
   const nextSizeUsd = existingPosition ? existingPosition.sizeInUsd.add(sizeDeltaUsd) : sizeDeltaUsd;
   const nextSizeInTokens = existingPosition
@@ -363,6 +368,7 @@ export function getNextPositionValuesForIncreaseTrade(p: {
     sizeInUsd: nextSizeUsd,
     sizeInTokens: nextSizeInTokens,
     collateralUsd: nextCollateralUsd,
+    collateralAmount: nextCollateralAmount,
     markPrice: nextEntryPrice,
     minCollateralUsd,
     closingFeeUsd: getPositionFee(marketInfo, nextSizeUsd, userReferralInfo).positionFeeUsd,

@@ -175,6 +175,7 @@ export function PositionEditor(p: Props) {
       }
 
       let nextCollateralUsd: BigNumber;
+      let nextCollateralAmount: BigNumber;
       let receiveUsd = BigNumber.from(0);
 
       let remainingCollateralFeesUsd = fees.totalFees.deltaUsd.abs().sub(collateralDeltaUsd);
@@ -195,11 +196,12 @@ export function PositionEditor(p: Props) {
         }
       }
 
-      const receiveAmount = convertToTokenAmount(receiveUsd, collateralToken?.decimals, collateralPrice)!;
-
       if (nextCollateralUsd?.lt(0)) {
         nextCollateralUsd = BigNumber.from(0);
       }
+      nextCollateralAmount = convertToTokenAmount(nextCollateralUsd, collateralToken?.decimals, collateralPrice)!;
+
+      const receiveAmount = convertToTokenAmount(receiveUsd, collateralToken?.decimals, collateralPrice)!;
 
       const nextLeverage = getLeverage({
         sizeInUsd: position.sizeInUsd,
@@ -213,6 +215,7 @@ export function PositionEditor(p: Props) {
         sizeInUsd: position.sizeInUsd,
         sizeInTokens: position.sizeInTokens,
         collateralUsd: nextCollateralUsd,
+        collateralAmount: nextCollateralAmount,
         collateralToken: position.collateralToken,
         marketInfo: position.marketInfo,
         markPrice: position.markPrice,

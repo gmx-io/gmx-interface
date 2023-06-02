@@ -51,27 +51,40 @@ export type IncreasePositionAmounts = {
 };
 
 export type DecreasePositionAmounts = {
+  isFullClose: boolean;
   sizeDeltaUsd: BigNumber;
   sizeDeltaInTokens: BigNumber;
   collateralDeltaUsd: BigNumber;
   collateralDeltaAmount: BigNumber;
-  pnlDelta: BigNumber;
-  receiveTokenAmount: BigNumber;
-  receiveUsd: BigNumber;
+
+  indexPrice: BigNumber;
+  collateralPrice: BigNumber;
+  triggerPrice?: BigNumber;
+  acceptablePrice: BigNumber;
+  acceptablePriceDeltaBps: BigNumber;
+
+  estimatedPnl: BigNumber;
+  estimatedPnlPercentage: BigNumber;
+  realizedPnl: BigNumber;
+
   positionFeeUsd: BigNumber;
   feeDiscountUsd: BigNumber;
+  borrowingFeeUsd: BigNumber;
+  fundingFeeUsd: BigNumber;
+  swapProfitFeeUsd: BigNumber;
   positionPriceImpactDeltaUsd: BigNumber;
-  // Mark price or trigger price
-  exitPrice: BigNumber;
-  // The pnl including exitPrice
-  exitPnl: BigNumber;
-  exitPnlPercentage: BigNumber;
-  triggerPrice?: BigNumber;
+
+  initialReceiveUsd: BigNumber;
+
+  payedOutputUsd: BigNumber;
+  payedRemainingCollateralUsd: BigNumber;
+
+  receiveTokenAmount: BigNumber;
+  receiveUsd: BigNumber;
+
   triggerOrderType?: OrderType.LimitDecrease | OrderType.StopLossDecrease;
-  triggerPricePrefix?: TriggerThresholdType;
+  triggerThresholdType?: TriggerThresholdType;
   decreaseSwapType: DecreasePositionSwapType;
-  acceptablePrice: BigNumber | undefined;
-  acceptablePriceImpactBps: BigNumber | undefined;
 };
 
 export type DepositAmounts = {
@@ -170,6 +183,7 @@ export type TradeFees = {
   borrowFee?: FeeItem;
   fundingFee?: FeeItem;
   feeDiscountUsd?: BigNumber;
+  swapProfitFee?: FeeItem;
 };
 
 export type GmSwapFees = {

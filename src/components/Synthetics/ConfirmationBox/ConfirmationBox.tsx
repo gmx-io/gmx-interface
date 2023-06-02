@@ -33,7 +33,7 @@ import {
 } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
-import { PositionInfo, formatLeverage, getPositionKey } from "domain/synthetics/positions";
+import { PositionInfo, formatLeverage, formatLiquidationPrice, getPositionKey } from "domain/synthetics/positions";
 import {
   TokenData,
   TokensRatio,
@@ -897,11 +897,11 @@ export function ConfirmationBox(p: Props) {
             label={t`Liq. Price`}
             value={
               <ValueTransition
-                from={formatUsd(p.existingPosition?.liquidationPrice, {
+                from={formatLiquidationPrice(p.existingPosition?.liquidationPrice, {
                   displayDecimals: existingPriceDecimals,
                 })}
                 to={
-                  formatUsd(nextPositionValues?.nextLiqPrice, {
+                  formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
                     displayDecimals: toTokenPriceDecimals,
                   }) || "-"
                 }
@@ -1096,7 +1096,7 @@ export function ConfirmationBox(p: Props) {
           )}
           <ExchangeInfoRow
             label={t`Trigger Price`}
-            value={triggerPrice ? `${decreaseAmounts?.triggerPricePrefix} ${formatUsd(triggerPrice)}` : "..."}
+            value={triggerPrice ? `${decreaseAmounts?.triggerThresholdType} ${formatUsd(triggerPrice)}` : "..."}
           />
 
           <ExchangeInfoRow isTop label={t`Mark Price`} value={p.markPrice ? formatUsd(p.markPrice) : "..."} />
@@ -1104,7 +1104,7 @@ export function ConfirmationBox(p: Props) {
           <ExchangeInfoRow
             className="SwapBox-info-row"
             label={t`Acceptable Price Impact`}
-            value={formatPercentage(decreaseAmounts?.acceptablePriceImpactBps?.mul(-1)) || "-"}
+            value={formatPercentage(decreaseAmounts?.acceptablePriceDeltaBps?.mul(-1)) || "-"}
           />
 
           <ExchangeInfoRow
@@ -1180,8 +1180,8 @@ export function ConfirmationBox(p: Props) {
                 <ValueTransition
                   from={
                     <>
-                      {formatDeltaUsd(decreaseAmounts?.exitPnl)} (
-                      {formatPercentage(decreaseAmounts?.exitPnlPercentage, { signed: true })})
+                      {formatDeltaUsd(decreaseAmounts?.estimatedPnl)} (
+                      {formatPercentage(decreaseAmounts?.estimatedPnlPercentage, { signed: true })})
                     </>
                   }
                   to={

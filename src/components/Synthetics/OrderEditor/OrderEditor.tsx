@@ -12,7 +12,7 @@ import {
   isSwapOrderType,
   isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
-import { PositionsInfoData, getPositionKey } from "domain/synthetics/positions";
+import { PositionsInfoData, formatLiquidationPrice, getPositionKey } from "domain/synthetics/positions";
 import {
   TokensRatio,
   getAmountByRatio,
@@ -414,7 +414,9 @@ export function OrderEditor(p: Props) {
               {existingPosition?.liquidationPrice && (
                 <ExchangeInfoRow
                   label={t`Liq. Price`}
-                  value={formatUsd(existingPosition.liquidationPrice, { displayDecimals: indexPriceDecimals })}
+                  value={formatLiquidationPrice(existingPosition.liquidationPrice, {
+                    displayDecimals: indexPriceDecimals,
+                  })}
                 />
               )}
             </>
