@@ -14,7 +14,6 @@ import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/
 import { TradeMode, getTriggerThresholdType } from "domain/synthetics/trade";
 import { CHART_PERIODS } from "lib/legacy";
 import "./PositionItem.scss";
-import { LIQUIDATION_PRICE_THRESHOLD } from "config/ui";
 
 export type Props = {
   position: PositionInfo;
