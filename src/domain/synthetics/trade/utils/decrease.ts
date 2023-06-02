@@ -146,11 +146,23 @@ export function getDecreasePositionAmounts(p: {
     values.collateralPrice
   )!;
 
+  if (keepLeverage && position.sizeInUsd.gt(0)) {
+    values.collateralDeltaUsd = values.sizeDeltaUsd.mul(estimatedCollateralUsd).div(position.sizeInUsd);
+    values.collateralDeltaAmount = convertToTokenAmount(
+      values.collateralDeltaUsd,
+      collateralToken.decimals,
+      values.collateralPrice
+    )!;
+  } else {
+    values.collateralDeltaUsd = BigNumber.from(0);
+    values.collateralDeltaAmount = BigNumber.from(0);
+  }
+
   values.isFullClose = getIsFullClose({
     position,
     sizeDeltaUsd: values.sizeDeltaUsd,
     indexPrice: values.indexPrice,
-    remainingCollateralUsd: estimatedCollateralUsd,
+    remainingCollateralUsd: estimatedCollateralUsd.sub(values.collateralDeltaUsd),
     minCollateralUsd,
     minPositionSizeUsd,
   });
@@ -158,6 +170,8 @@ export function getDecreasePositionAmounts(p: {
   if (values.isFullClose) {
     values.sizeDeltaUsd = position.sizeInUsd;
     values.sizeDeltaInTokens = position.sizeInTokens;
+    values.collateralDeltaAmount = position.collateralAmount;
+    values.collateralDeltaUsd = estimatedCollateralUsd;
   }
 
   // PNL
@@ -319,9 +333,9 @@ export function getIsFullClose(p: {
 
   const estimatedRemainingPnl = estimatedPnl.sub(realizedPnl);
 
-  let estimatedRemainingCollateralUsd = remainingCollateralUsd;
-
   if (realizedPnl.lt(0)) {
+    const estimatedRemainingCollateralUsd = remainingCollateralUsd.sub(realizedPnl);
+
     let minCollateralFactor = isLong
       ? marketInfo.minCollateralFactorForOpenInterestLong
       : marketInfo.minCollateralFactorForOpenInterestShort;
