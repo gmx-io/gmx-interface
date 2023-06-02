@@ -88,7 +88,7 @@ export function getTokensRatioByAmounts(p: {
   const adjustedFromAmount = fromTokenAmount.mul(PRECISION).div(expandDecimals(1, fromToken.decimals));
   const adjustedToAmount = toTokenAmount.mul(PRECISION).div(expandDecimals(1, toToken.decimals));
 
-  const [largestToken, smallestToken, largestAmount, smallestAmount] = adjustedFromAmount.gt(adjustedToAmount)
+  const [smallestToken, largestToken, largestAmount, smallestAmount] = adjustedFromAmount.gt(adjustedToAmount)
     ? [fromToken, toToken, adjustedFromAmount, adjustedToAmount]
     : [toToken, fromToken, adjustedToAmount, adjustedFromAmount];
 

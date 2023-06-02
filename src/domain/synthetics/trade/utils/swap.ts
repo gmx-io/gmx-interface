@@ -47,13 +47,7 @@ export function getSwapAmountsByFromValue(p: {
       return defaultAmounts;
     }
 
-    const swapFeeAmount = convertToTokenAmount(swapPathStats.totalSwapFeeUsd, tokenIn.decimals, priceIn)!;
-    const priceImpactAmount = convertToTokenAmount(
-      swapPathStats.totalSwapPriceImpactDeltaUsd,
-      tokenIn.decimals,
-      priceIn
-    )!;
-    const amountInAfterFees = amountIn.sub(swapFeeAmount).add(priceImpactAmount);
+    const amountInAfterFees = amountIn;
 
     amountOut = getAmountByRatio({
       fromToken: tokenIn,
@@ -143,14 +137,6 @@ export function getSwapAmountsByToValue(p: {
       shouldInvertRatio: triggerRatio.largestToken.address === tokenIn.address,
     });
 
-    const swapFeeAmount = convertToTokenAmount(swapPathStats.totalSwapFeeUsd, tokenIn.decimals, priceIn)!;
-    const priceImpactAmount = convertToTokenAmount(
-      swapPathStats.totalSwapPriceImpactDeltaUsd,
-      tokenIn.decimals,
-      priceIn
-    )!;
-
-    amountIn = amountIn.add(swapFeeAmount).sub(priceImpactAmount);
     usdIn = convertToUsd(amountIn, tokenIn.decimals, priceIn)!;
   } else {
     const adjustedUsdIn = swapPathStats.usdOut.gt(0)
