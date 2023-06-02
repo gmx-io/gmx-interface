@@ -1,8 +1,8 @@
 module.exports = function override(config) {
   // https://github.com/lingui/js-lingui/issues/1195
   // Adding loader to use for .po files to webpack
-  const loaders = config.module.rules[1].oneOf;
-  loaders.splice(loaders.length - 1, 0, {
+  const loaders = config.module.rules.find((rule) => Array.isArray(rule.oneOf));
+  loaders.oneOf.splice(loaders.length - 1, 0, {
     test: /\.po/,
     use: [
       {
