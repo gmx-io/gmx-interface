@@ -1457,7 +1457,7 @@ export function getTradePageUrl() {
 }
 
 export function importImage(name) {
-  let tokenImage: { default: string } | null = null;
+  let tokenImage = "";
 
   try {
     tokenImage = require("img/" + name);
@@ -1466,7 +1466,7 @@ export function importImage(name) {
     console.error(error);
   }
 
-  return tokenImage?.default;
+  return tokenImage;
 }
 
 export function getTwitterIntentURL(text, url = "", hashtag = "") {
