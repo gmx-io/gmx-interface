@@ -427,6 +427,10 @@ msgstr "Buy ETH directly to Arbitrum or transfer it there."
 msgid "Buy GLP"
 msgstr "Buy GLP"
 
+#: src/pages/Buy/Buy.js
+msgid "Buy GLP or GMX"
+msgstr "Buy GLP or GMX"
+
 #: src/pages/Stake/StakeV2.js
 msgid "Buy GMX"
 msgstr "Buy GMX"
@@ -926,6 +930,7 @@ msgid "DEX Aggregator"
 msgstr "DEX Aggregator"
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/pages/Dashboard/DashboardV2.js
 msgid "Dashboard"
 msgstr "Dashboard"
 
@@ -961,6 +966,10 @@ msgstr "Decentralized Options Protocol"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Decentralized Options Strategies"
 msgstr "Decentralized Options Strategies"
+
+#: src/lib/legacy.ts
+msgid "Decentralized Perpetual Exchange | GMX"
+msgstr "Decentralized Perpetual Exchange | GMX"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Decentralized Trading Protocol"
@@ -1082,12 +1091,17 @@ msgstr "Download"
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Earn"
 msgstr "Earn"
 
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Ecosystem"
 msgstr "Ecosystem"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Ecosystem Projects"
+msgstr "Ecosystem Projects"
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -1483,6 +1497,10 @@ msgstr "GMX staking rewards updates and insights"
 msgid "GMX transfers not yet enabled"
 msgstr "GMX transfers not yet enabled"
 
+#: src/components/Common/SEO.js
+msgid "GMX | Decentralized Perpetual Exchange"
+msgstr "GMX | Decentralized Perpetual Exchange"
+
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Generate Referral Code"
 msgstr "Generate Referral Code"
@@ -1652,6 +1670,10 @@ msgstr "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Invalid token indexToken: \"{0}\" collateralToken: \"{1}\""
 msgstr "Invalid token indexToken: \"{0}\" collateralToken: \"{1}\""
+
+#: src/pages/Jobs/Jobs.js
+msgid "Job Openings"
+msgstr "Job Openings"
 
 #: src/pages/Jobs/Jobs.js
 msgid "Job openings at GMX."
@@ -2288,6 +2310,7 @@ msgid "PRICE"
 msgstr "PRICE"
 
 #: src/pages/PageNotFound/PageNotFound.js
+#: src/pages/PageNotFound/PageNotFound.js
 msgid "Page not found"
 msgstr "Page not found"
 
@@ -2577,6 +2600,7 @@ msgid "Referral Codes"
 msgstr "Referral Codes"
 
 #: src/components/Footer/constants.ts
+#: src/pages/ReferralTerms/ReferralTerms.js
 msgid "Referral Terms"
 msgstr "Referral Terms"
 
@@ -2605,6 +2629,7 @@ msgid "Referral code updated!"
 msgstr "Referral code updated!"
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/pages/Referrals/Referrals.js
 msgid "Referrals"
 msgstr "Referrals"
 
@@ -3097,6 +3122,7 @@ msgid "Telegram bot for Open Interest on GMX"
 msgstr "Telegram bot for Open Interest on GMX"
 
 #: src/components/Footer/constants.ts
+#: src/pages/TermsAndConditions/TermsAndConditions.js
 msgid "Terms and Conditions"
 msgstr "Terms and Conditions"
 
@@ -3331,6 +3357,10 @@ msgstr "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x lever
 #: src/components/Exchange/ExchangeBanner.js
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
 msgstr "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
+
+#: src/components/Common/SEO.js
+msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet on Arbitrum and Avalanche."
+msgstr "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet on Arbitrum and Avalanche."
 
 #: src/pages/Referrals/Referrals.js
 msgid "Traders"

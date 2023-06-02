@@ -4,10 +4,11 @@ import SEO from "components/Common/SEO";
 import { getPageTitle } from "lib/legacy";
 import "./ReferralTerms.css";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { t } from "@lingui/macro";
 
 export default function ReferralTerms() {
   return (
-    <SEO title={getPageTitle("Referral Terms")}>
+    <SEO title={getPageTitle(t`Referral Terms`)}>
       <div className="default-container Page page-layout">
         <div>
           <div className="Page-title-section center">

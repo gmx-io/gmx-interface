@@ -427,6 +427,10 @@ msgstr ""
 msgid "Buy GLP"
 msgstr "GLP 구매"
 
+#: src/pages/Buy/Buy.js
+msgid "Buy GLP or GMX"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 msgid "Buy GMX"
 msgstr "GMX 구매"
@@ -926,6 +930,7 @@ msgid "DEX Aggregator"
 msgstr "DEX 어그리게이터"
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/pages/Dashboard/DashboardV2.js
 msgid "Dashboard"
 msgstr "대시보드"
 
@@ -961,6 +966,10 @@ msgstr "탈중앙화 옵션 프로토콜"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Decentralized Options Strategies"
 msgstr "탈중앙화 옵션 전략"
+
+#: src/lib/legacy.ts
+msgid "Decentralized Perpetual Exchange | GMX"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Decentralized Trading Protocol"
@@ -1082,12 +1091,17 @@ msgstr "다운로드"
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Earn"
 msgstr "보상"
 
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Ecosystem"
 msgstr "이코시스템"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Ecosystem Projects"
+msgstr ""
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -1483,6 +1497,10 @@ msgstr "GMX 스테이킹 보상 업데이트 및 인사이트"
 msgid "GMX transfers not yet enabled"
 msgstr "GMX 전송이 아직 불가능합니다."
 
+#: src/components/Common/SEO.js
+msgid "GMX | Decentralized Perpetual Exchange"
+msgstr ""
+
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Generate Referral Code"
 msgstr "추천인 코드 생성"
@@ -1652,6 +1670,10 @@ msgstr "유요하지 않은 fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Invalid token indexToken: \"{0}\" collateralToken: \"{1}\""
 msgstr "유요하지 않은 indexToken: \"{0}\" collateralToken\" \"{1}\""
+
+#: src/pages/Jobs/Jobs.js
+msgid "Job Openings"
+msgstr ""
 
 #: src/pages/Jobs/Jobs.js
 msgid "Job openings at GMX."
@@ -2288,6 +2310,7 @@ msgid "PRICE"
 msgstr "가격"
 
 #: src/pages/PageNotFound/PageNotFound.js
+#: src/pages/PageNotFound/PageNotFound.js
 msgid "Page not found"
 msgstr "페이지를 찾을 수 없습니다"
 
@@ -2577,6 +2600,7 @@ msgid "Referral Codes"
 msgstr "추천인 코드"
 
 #: src/components/Footer/constants.ts
+#: src/pages/ReferralTerms/ReferralTerms.js
 msgid "Referral Terms"
 msgstr "추천 약관"
 
@@ -2605,6 +2629,7 @@ msgid "Referral code updated!"
 msgstr "추천인 코드 업데이트 완료!"
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/pages/Referrals/Referrals.js
 msgid "Referrals"
 msgstr "추천"
 
@@ -3097,6 +3122,7 @@ msgid "Telegram bot for Open Interest on GMX"
 msgstr "GMX 미결제약정을 위한 텔레그램 봇"
 
 #: src/components/Footer/constants.ts
+#: src/pages/TermsAndConditions/TermsAndConditions.js
 msgid "Terms and Conditions"
 msgstr "약관"
 
@@ -3331,6 +3357,10 @@ msgstr ""
 #: src/components/Exchange/ExchangeBanner.js
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
 msgstr "GMX에서 트레이드하고 <0>$250.000</0> 상금을 획득하세요! 11월 30일까지 진행되며, <1>여기를 클릭해</1> 더 많은 정보를 확인하세요."
+
+#: src/components/Common/SEO.js
+msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet on Arbitrum and Avalanche."
+msgstr ""
 
 #: src/pages/Referrals/Referrals.js
 msgid "Traders"

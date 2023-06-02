@@ -427,6 +427,10 @@ msgstr ""
 msgid "Buy GLP"
 msgstr "Купить GLP"
 
+#: src/pages/Buy/Buy.js
+msgid "Buy GLP or GMX"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 msgid "Buy GMX"
 msgstr "Купить GMX"
@@ -926,6 +930,7 @@ msgid "DEX Aggregator"
 msgstr "Агрегатор DEX"
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/pages/Dashboard/DashboardV2.js
 msgid "Dashboard"
 msgstr "Панель"
 
@@ -961,6 +966,10 @@ msgstr "Децентрализованный Протокол Опционов"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Decentralized Options Strategies"
 msgstr "Децентрализованные Опционные Стратегии"
+
+#: src/lib/legacy.ts
+msgid "Decentralized Perpetual Exchange | GMX"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Decentralized Trading Protocol"
@@ -1082,12 +1091,17 @@ msgstr "Загрузить"
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Earn"
 msgstr "Зарабатывать"
 
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Ecosystem"
 msgstr "Экосистема"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Ecosystem Projects"
+msgstr ""
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -1483,6 +1497,10 @@ msgstr "Обновления и информация о вознагражден
 msgid "GMX transfers not yet enabled"
 msgstr "Перевод GMX еще не активирован"
 
+#: src/components/Common/SEO.js
+msgid "GMX | Decentralized Perpetual Exchange"
+msgstr ""
+
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Generate Referral Code"
 msgstr "Сгенерировать Реферальный Код"
@@ -1652,6 +1670,10 @@ msgstr "Неверный токен отТокен:: \"{0}\" кТокен: \"{to
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Invalid token indexToken: \"{0}\" collateralToken: \"{1}\""
 msgstr "Неверный токен индексТокен: \"{0}\" займТокен: \"{1}\""
+
+#: src/pages/Jobs/Jobs.js
+msgid "Job Openings"
+msgstr ""
 
 #: src/pages/Jobs/Jobs.js
 msgid "Job openings at GMX."
@@ -2288,6 +2310,7 @@ msgid "PRICE"
 msgstr "ЦЕНА"
 
 #: src/pages/PageNotFound/PageNotFound.js
+#: src/pages/PageNotFound/PageNotFound.js
 msgid "Page not found"
 msgstr "Страница не найдена"
 
@@ -2577,6 +2600,7 @@ msgid "Referral Codes"
 msgstr "Реферальные Коды"
 
 #: src/components/Footer/constants.ts
+#: src/pages/ReferralTerms/ReferralTerms.js
 msgid "Referral Terms"
 msgstr "Реферальные Условия"
 
@@ -2605,6 +2629,7 @@ msgid "Referral code updated!"
 msgstr "Реферальный код обновлен!"
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/pages/Referrals/Referrals.js
 msgid "Referrals"
 msgstr "Рефералы"
 
@@ -3097,6 +3122,7 @@ msgid "Telegram bot for Open Interest on GMX"
 msgstr "Telegram бот для Открытого Процента на GMX"
 
 #: src/components/Footer/constants.ts
+#: src/pages/TermsAndConditions/TermsAndConditions.js
 msgid "Terms and Conditions"
 msgstr "Правила и Условия"
 
@@ -3331,6 +3357,10 @@ msgstr "Торгуйте BTC, ETH, AVAX и другими популярными
 #: src/components/Exchange/ExchangeBanner.js
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
 msgstr "Торгуйте на GMX и выиграйте <0>$250.000</0> в качестве призов! Действует до 30 ноября, <1> нажмите здесь</1>, чтобы узнать больше.\""
+
+#: src/components/Common/SEO.js
+msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet on Arbitrum and Avalanche."
+msgstr ""
 
 #: src/pages/Referrals/Referrals.js
 msgid "Traders"
