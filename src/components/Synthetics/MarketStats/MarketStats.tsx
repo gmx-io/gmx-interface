@@ -1,25 +1,23 @@
 import { Trans, t } from "@lingui/macro";
 import { CardRow } from "components/CardRow/CardRow";
+import Tooltip from "components/Tooltip/Tooltip";
 import { getIcon } from "config/icons";
-import { MarketInfo, getPoolUsdWithoutPnl } from "domain/synthetics/markets";
+import { MarketInfo, MarketTokensAPRData, getPoolUsdWithoutPnl } from "domain/synthetics/markets";
 import { TokenData, convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { formatAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
-import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
-import "./MarketStats.scss";
 import { getByKey } from "lib/objects";
-import Tooltip from "components/Tooltip/Tooltip";
+import "./MarketStats.scss";
 
 type Props = {
   marketInfo?: MarketInfo;
   marketToken?: TokenData;
+  marketsTokensAPRData?: MarketTokensAPRData;
 };
 
 export function MarketStats(p: Props) {
-  const { marketInfo, marketToken } = p;
+  const { marketInfo, marketToken, marketsTokensAPRData } = p;
   const { chainId } = useChainId();
-
-  const { marketsTokensAPRData } = useMarketTokensAPR(chainId);
 
   const marketPrice = marketToken?.prices?.maxPrice;
   const marketBalance = marketToken?.balance;

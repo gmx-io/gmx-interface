@@ -38,12 +38,7 @@ import {
   getLiquidationPrice,
   usePositionsConstants,
 } from "domain/synthetics/positions";
-import {
-  adaptToV1InfoTokens,
-  convertToTokenAmount,
-  convertToUsd,
-  useAvailableTokensData,
-} from "domain/synthetics/tokens";
+import { TokensData, adaptToV1InfoTokens, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { TradeFees, getMarkPrice } from "domain/synthetics/trade";
 import { getCommonError, getEditCollateralError } from "domain/synthetics/trade/utils/validation";
 import { BigNumber } from "ethers";
@@ -52,14 +47,15 @@ import { contractFetcher } from "lib/contracts";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmountFree, formatTokenAmount, formatTokenAmountWithUsd, formatUsd, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { usePrevious } from "lib/usePrevious";
 import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionEditor.scss";
-import { usePrevious } from "lib/usePrevious";
 
 export type Props = {
   position?: PositionInfo;
+  tokensData?: TokensData;
   showPnlInLeverage: boolean;
   allowedSlippage: number;
   setPendingTxns: (txns: any) => void;
@@ -73,11 +69,10 @@ enum Operation {
 }
 
 export function PositionEditor(p: Props) {
-  const { position, showPnlInLeverage, setPendingTxns, onClose, onConnectWallet, allowedSlippage } = p;
+  const { position, tokensData, showPnlInLeverage, setPendingTxns, onClose, onConnectWallet, allowedSlippage } = p;
   const { chainId } = useChainId();
   const { account, library, active } = useWeb3React();
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
-  const { tokensData } = useAvailableTokensData(chainId);
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
   const { minCollateralUsd } = usePositionsConstants(chainId);

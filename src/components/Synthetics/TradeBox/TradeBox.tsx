@@ -21,7 +21,12 @@ import {
   useGasLimits,
   useGasPrice,
 } from "domain/synthetics/fees";
-import { MarketInfo, getAvailableUsdLiquidityForPosition, getMarketIndexName } from "domain/synthetics/markets";
+import {
+  MarketInfo,
+  MarketsInfoData,
+  getAvailableUsdLiquidityForPosition,
+  getMarketIndexName,
+} from "domain/synthetics/markets";
 import { OrderInfo, OrdersInfoData } from "domain/synthetics/orders";
 import {
   PositionInfo,
@@ -90,7 +95,6 @@ export type Props = {
   availableTradeModes: TradeMode[];
   tradeFlags: TradeFlags;
   isWrapOrUnwrap: boolean;
-  tokensData?: TokensData;
   fromTokenAddress?: string;
   fromToken?: TokenData;
   toTokenAddress?: string;
@@ -109,6 +113,8 @@ export type Props = {
   savedIsPnlInLeverage: boolean;
   isHigherSlippageAllowed: boolean;
   shouldDisableValidation?: boolean;
+  marketsInfoData?: MarketsInfoData;
+  tokensData?: TokensData;
   setIsHigherSlippageAllowed: (value: boolean) => void;
   onSelectFromTokenAddress: (fromTokenAddress?: string) => void;
   onSelectToTokenAddress: (toTokenAddress?: string) => void;
@@ -155,6 +161,7 @@ export function TradeBox(p: Props) {
     acceptablePriceImpactBpsForLimitOrders,
     allowedSlippage,
     isHigherSlippageAllowed,
+    marketsInfoData,
     setIsHigherSlippageAllowed,
     onSelectMarketAddress,
     onSelectCollateralAddress,
@@ -260,6 +267,7 @@ export function TradeBox(p: Props) {
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
 
   const swapRoute = useSwapRoutes({
+    marketsInfoData,
     fromTokenAddress,
     toTokenAddress: isPosition ? collateralAddress : toTokenAddress,
   });
@@ -550,7 +558,8 @@ export function TradeBox(p: Props) {
     tokensData,
   ]);
 
-  const marketsOptions = useAvailableMarketsOptions(chainId, {
+  const marketsOptions = useAvailableMarketsOptions({
+    marketsInfoData,
     isIncrease,
     disable: !isPosition,
     indexToken: toToken,
@@ -1344,6 +1353,7 @@ export function TradeBox(p: Props) {
         allowedSlippage={allowedSlippage}
         isHigherSlippageAllowed={isHigherSlippageAllowed}
         ordersData={ordersInfo}
+        tokensData={tokensData}
         setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
         setKeepLeverage={setKeepLeverage}
         onClose={onConfirmationClose}

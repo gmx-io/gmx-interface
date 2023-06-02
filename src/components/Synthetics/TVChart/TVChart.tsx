@@ -6,7 +6,7 @@ import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 import { convertTokenAddress, getToken, isChartAvailabeForToken } from "config/tokens";
 import { OrdersInfoData, PositionOrderInfo, isIncreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import { PositionsInfoData } from "domain/synthetics/positions";
-import { getCandlesDelta, getMidPrice, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
+import { TokensData, getCandlesDelta, getMidPrice, getTokenData } from "domain/synthetics/tokens";
 import { useLastCandles } from "domain/synthetics/tokens/useLastCandles";
 import { SyntheticsTVDataProvider } from "domain/synthetics/tradingview/SyntheticsTVDataProvider";
 import { Token } from "domain/tokens";
@@ -22,6 +22,7 @@ import "./TVChart.scss";
 export type Props = {
   ordersInfo?: OrdersInfoData;
   positionsInfo?: PositionsInfoData;
+  tokensData?: TokensData;
   savedShouldShowPositionLines: boolean;
   chartTokenAddress?: string;
   onSelectChartTokenAddress: (tokenAddress: string) => void;
@@ -36,6 +37,7 @@ const DEFAULT_PERIOD = "5m";
 export function TVChart({
   ordersInfo,
   positionsInfo,
+  tokensData,
   savedShouldShowPositionLines,
   chartTokenAddress,
   onSelectChartTokenAddress,
@@ -45,7 +47,6 @@ export function TVChart({
   setTradePageVersion,
 }: Props) {
   const { chainId } = useChainId();
-  const { tokensData } = useAvailableTokensData(chainId);
 
   const isMobile = useMedia("(max-width: 768px)");
   const isSmallMobile = useMedia("(max-width: 468px)");

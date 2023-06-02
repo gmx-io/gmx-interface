@@ -20,6 +20,7 @@ import {
   useGasLimits,
   useGasPrice,
 } from "domain/synthetics/fees";
+import { MarketsInfoData } from "domain/synthetics/markets";
 import { OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
 import {
   PositionInfo,
@@ -27,7 +28,7 @@ import {
   formatLiquidationPrice,
   usePositionsConstants,
 } from "domain/synthetics/positions";
-import { useAvailableTokensData } from "domain/synthetics/tokens";
+import { TokensData } from "domain/synthetics/tokens";
 import {
   AvailableTokenOptions,
   getDecreasePositionAmounts,
@@ -59,6 +60,8 @@ import "./PositionSeller.scss";
 
 export type Props = {
   position?: PositionInfo;
+  marketsInfoData?: MarketsInfoData;
+  tokensData?: TokensData;
   showPnlInLeverage: boolean;
   allowedSlippage: number;
   availableTokensOptions?: AvailableTokenOptions;
@@ -72,6 +75,8 @@ export type Props = {
 export function PositionSeller(p: Props) {
   const {
     position,
+    marketsInfoData,
+    tokensData,
     showPnlInLeverage,
     onClose,
     setPendingTxns,
@@ -84,7 +89,6 @@ export function PositionSeller(p: Props) {
 
   const { chainId } = useChainId();
   const { library, account } = useWeb3React();
-  const { tokensData } = useAvailableTokensData(chainId);
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
@@ -111,6 +115,7 @@ export function PositionSeller(p: Props) {
     : undefined;
 
   const { findSwapPath, maxSwapLiquidity } = useSwapRoutes({
+    marketsInfoData,
     fromTokenAddress: position?.collateralTokenAddress,
     toTokenAddress: receiveTokenAddress,
   });

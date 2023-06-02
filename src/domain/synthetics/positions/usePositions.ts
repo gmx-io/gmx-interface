@@ -1,14 +1,14 @@
 import { useWeb3React } from "@web3-react/core";
+import DataStore from "abis/DataStore.json";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import { getContract } from "config/contracts";
 import { accountPositionListKey, hashedPositionKey } from "config/dataStore";
-import DataStore from "abis/DataStore.json";
 import { ethers } from "ethers";
 import { useMulticall } from "lib/multicall";
 import { bigNumberify } from "lib/numbers";
 import { useMemo, useRef } from "react";
-import { ContractMarketPrices, getContractMarketPrices, useMarkets } from "../markets";
-import { useAvailableTokensData } from "../tokens";
+import { ContractMarketPrices, MarketsData, getContractMarketPrices } from "../markets";
+import { TokensData } from "../tokens";
 import { PositionsData } from "./types";
 import { getPositionKey } from "./utils";
 
@@ -17,10 +17,16 @@ type PositionsResult = {
   allPossiblePositionsKeys?: string[];
 };
 
-export function usePositions(chainId: number): PositionsResult {
+export function usePositions(
+  chainId: number,
+  p: {
+    marketsInfoData?: MarketsData;
+    tokensData?: TokensData;
+    pricesUpdatedAt?: number;
+  }
+): PositionsResult {
+  const { marketsInfoData, tokensData, pricesUpdatedAt } = p;
   const { account } = useWeb3React();
-  const { marketsData } = useMarkets(chainId);
-  const { tokensData, pricesUpdatedAt } = useAvailableTokensData(chainId);
 
   const positionsDataCache = useRef<PositionsData>();
 
@@ -44,11 +50,11 @@ export function usePositions(chainId: number): PositionsResult {
   });
 
   const keysAndPrices = useMemo(() => {
-    if (!account || !marketsData || !tokensData || !existingPositionsKeys) {
+    if (!account || !marketsInfoData || !tokensData || !existingPositionsKeys) {
       return undefined;
     }
 
-    const markets = Object.values(marketsData);
+    const markets = Object.values(marketsInfoData);
 
     const positionsKeys: string[] = [];
     const contractPositionsKeys: string[] = [];
@@ -84,7 +90,7 @@ export function usePositions(chainId: number): PositionsResult {
       contractPositionsKeys,
       marketsPrices,
     };
-  }, [account, existingPositionsKeys, marketsData, tokensData]);
+  }, [account, existingPositionsKeys, marketsInfoData, tokensData]);
 
   const { data: positionsData } = useMulticall(chainId, "usePositionsData", {
     key: keysAndPrices?.positionsKeys.length ? [keysAndPrices.positionsKeys.join("-"), pricesUpdatedAt] : null,

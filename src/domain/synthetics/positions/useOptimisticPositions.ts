@@ -10,11 +10,16 @@ import { useMemo } from "react";
 import { Position, PositionsData } from "./types";
 import { usePositions } from "./usePositions";
 import { parsePositionKey } from "./utils";
+import { MarketsInfoData } from "../markets";
+import { TokensData } from "../tokens";
 
 const MAX_PENDING_UPDATE_AGE = 600 * 1000;
 
-export function useOptimisticPositions(chainId: number) {
-  const { positionsData, allPossiblePositionsKeys } = usePositions(chainId);
+export function useOptimisticPositions(
+  chainId: number,
+  p: { marketsInfoData?: MarketsInfoData; tokensData?: TokensData; pricesUpdatedAt?: number }
+) {
+  const { positionsData, allPossiblePositionsKeys } = usePositions(chainId, p);
   const { positionDecreaseEvents, positionIncreaseEvents, pendingPositionsUpdates } = useSyntheticsEvents();
 
   const optimisticPositionsData: PositionsData = useMemo(() => {

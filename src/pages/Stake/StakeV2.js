@@ -51,6 +51,8 @@ import GMXAprTooltip from "components/Stake/GMXAprTooltip";
 import Button from "components/Button/Button";
 import { GmList } from "components/Synthetics/GmList/GmList";
 import { getIsSyntheticsSupported } from "config/features";
+import { useMarketTokensData, useMarketsInfo } from "domain/synthetics/markets";
+import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
 
 const { AddressZero } = ethers.constants;
 
@@ -1014,6 +1016,10 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     stakedGlpTrackerAddress,
     feeGlpTrackerAddress,
   ];
+
+  const { marketsInfoData, tokensData } = useMarketsInfo(chainId);
+  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
+  const { marketsTokensAPRData } = useMarketTokensAPR(chainId, { marketsInfoData, marketTokensData });
 
   const { data: walletBalances } = useSWR(
     [
@@ -1988,7 +1994,12 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
 
       {getIsSyntheticsSupported(chainId) && (
         <div className="StakeV2-section">
-          <GmList />
+          <GmList
+            marketsTokensAPRData={marketsTokensAPRData}
+            marketTokensData={marketTokensData}
+            marketsInfoData={marketsInfoData}
+            tokensData={tokensData}
+          />
         </div>
       )}
 

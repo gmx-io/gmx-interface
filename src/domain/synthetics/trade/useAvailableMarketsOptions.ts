@@ -1,10 +1,10 @@
 import {
   MarketInfo,
+  MarketsInfoData,
   getAvailableUsdLiquidityForPosition,
   getMinPriceImpactMarket,
   getMostLiquidMarketForPosition,
   isMarketIndexToken,
-  useMarketsInfo,
 } from "domain/synthetics/markets";
 import { PositionsInfoData } from "domain/synthetics/positions";
 import { TokenData } from "domain/synthetics/tokens";
@@ -29,21 +29,20 @@ export type AvailableMarketsOptions = {
   isNoSufficientLiquidityInAnyMarket?: boolean;
 };
 
-export function useAvailableMarketsOptions(
-  chainId: number,
-  p: {
-    isIncrease: boolean;
-    disable?: boolean;
-    indexToken: TokenData | undefined;
-    isLong: boolean;
-    increaseSizeUsd: BigNumber | undefined;
-    positionsInfo: PositionsInfoData | undefined;
-    ordersInfo: OrdersInfoData | undefined;
-    hasExistingPosition: boolean;
-    hasExistingOrder: boolean;
-  }
-): AvailableMarketsOptions {
+export function useAvailableMarketsOptions(p: {
+  marketsInfoData?: MarketsInfoData;
+  isIncrease: boolean;
+  disable?: boolean;
+  indexToken: TokenData | undefined;
+  isLong: boolean;
+  increaseSizeUsd: BigNumber | undefined;
+  positionsInfo: PositionsInfoData | undefined;
+  ordersInfo: OrdersInfoData | undefined;
+  hasExistingPosition: boolean;
+  hasExistingOrder: boolean;
+}): AvailableMarketsOptions {
   const {
+    marketsInfoData,
     disable,
     positionsInfo,
     ordersInfo,
@@ -54,8 +53,6 @@ export function useAvailableMarketsOptions(
     increaseSizeUsd,
     isLong,
   } = p;
-
-  const { marketsInfoData } = useMarketsInfo(chainId);
 
   return useMemo(() => {
     if (disable || !indexToken || isLong === undefined) {

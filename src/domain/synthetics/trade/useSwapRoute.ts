@@ -1,5 +1,6 @@
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getWrappedToken } from "config/tokens";
-import { useMarketsInfo } from "domain/synthetics/markets";
+import { MarketsInfoData } from "domain/synthetics/markets";
+import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { useCallback, useMemo } from "react";
 import { FindSwapPath, MarketEdge } from "./types";
@@ -11,7 +12,6 @@ import {
   getMaxSwapPathLiquidity,
   getSwapPathStats,
 } from "./utils";
-import { BigNumber } from "ethers";
 
 export type SwapRoutesResult = {
   allPaths?: MarketEdge[][];
@@ -20,10 +20,13 @@ export type SwapRoutesResult = {
   findSwapPath: FindSwapPath;
 };
 
-export function useSwapRoutes(p: { fromTokenAddress?: string; toTokenAddress?: string }): SwapRoutesResult {
-  const { fromTokenAddress, toTokenAddress } = p;
+export function useSwapRoutes(p: {
+  marketsInfoData?: MarketsInfoData;
+  fromTokenAddress?: string;
+  toTokenAddress?: string;
+}): SwapRoutesResult {
+  const { fromTokenAddress, toTokenAddress, marketsInfoData } = p;
   const { chainId } = useChainId();
-  const { marketsInfoData } = useMarketsInfo(chainId);
 
   const wrappedToken = getWrappedToken(chainId);
 

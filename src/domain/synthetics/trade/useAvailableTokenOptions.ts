@@ -1,8 +1,8 @@
 import { getNativeToken, getTokensMap } from "config/tokens";
-import { useMarketsInfo } from "domain/synthetics/markets";
+import { MarketsInfoData } from "domain/synthetics/markets";
 import { InfoTokens, Token } from "domain/tokens";
 import { useMemo } from "react";
-import { adaptToV1InfoTokens, useAvailableTokensData } from "../tokens";
+import { TokensData, adaptToV1InfoTokens } from "../tokens";
 
 export type AvailableTokenOptions = {
   tokensMap: { [address: string]: Token };
@@ -11,9 +11,14 @@ export type AvailableTokenOptions = {
   indexTokens: Token[];
 };
 
-export function useAvailableTokenOptions(chainId: number): AvailableTokenOptions {
-  const { marketsInfoData } = useMarketsInfo(chainId);
-  const { tokensData } = useAvailableTokensData(chainId);
+export function useAvailableTokenOptions(
+  chainId: number,
+  p: {
+    marketsInfoData?: MarketsInfoData;
+    tokensData?: TokensData;
+  }
+): AvailableTokenOptions {
+  const { marketsInfoData, tokensData } = p;
 
   return useMemo(() => {
     const markets = Object.values(marketsInfoData || {}).filter((market) => !market.isDisabled);

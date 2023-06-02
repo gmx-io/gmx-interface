@@ -17,14 +17,14 @@ import {
   useGasLimits,
   useGasPrice,
 } from "domain/synthetics/fees";
-import { useMarketTokensData, useMarketsInfo } from "domain/synthetics/markets";
-import { Market } from "domain/synthetics/markets/types";
+import { useMarketTokensData } from "domain/synthetics/markets";
+import { Market, MarketsInfoData } from "domain/synthetics/markets/types";
 import {
   getAvailableUsdLiquidityForCollateral,
   getMarketIndexName,
   getPoolUsdWithoutPnl,
 } from "domain/synthetics/markets/utils";
-import { convertToUsd, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
+import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { GmSwapFees, useAvailableTokenOptions } from "domain/synthetics/trade";
 import {
   getNextDepositAmountsByCollaterals,
@@ -68,6 +68,8 @@ export enum Mode {
 type Props = {
   selectedMarketAddress?: string;
   markets: Market[];
+  marketsInfoData?: MarketsInfoData;
+  tokensData?: TokensData;
   onSelectMarket: (marketAddress: string) => void;
   onConnectWallet: () => void;
   setPendingTxns: (txns: any) => void;
@@ -95,7 +97,7 @@ function showMarketToast(market) {
 }
 
 export function GmSwapBox(p: Props) {
-  const { operation, mode, setMode, setOperation, onSelectMarket } = p;
+  const { operation, mode, setMode, setOperation, onSelectMarket, marketsInfoData, tokensData } = p;
   const { search } = useLocation();
   const history = useHistory();
   const queryParams = useMemo(() => new URLSearchParams(search), [search]);
@@ -104,8 +106,6 @@ export function GmSwapBox(p: Props) {
 
   const { chainId } = useChainId();
   const { account } = useWeb3React();
-  const { marketsInfoData } = useMarketsInfo(chainId);
-  const { tokensData } = useAvailableTokensData(chainId);
 
   const { gasLimits } = useGasLimits(chainId);
   const { gasPrice } = useGasPrice(chainId);
@@ -144,7 +144,7 @@ export function GmSwapBox(p: Props) {
     getSyntheticsDepositIndexTokenKey(chainId),
     undefined
   );
-  const { infoTokens } = useAvailableTokenOptions(chainId);
+  const { infoTokens } = useAvailableTokenOptions(chainId, { marketsInfoData, tokensData });
 
   const [firstTokenAddress, setFirstTokenAddress] = useLocalStorageSerializeKey<string | undefined>(
     [chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, isDeposit, marketAddress, "first"],

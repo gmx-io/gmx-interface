@@ -36,13 +36,15 @@ import { useMulticall } from "lib/multicall";
 import { bigNumberify } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useRef } from "react";
-import { useAvailableTokensData } from "../tokens";
+import { TokensData, useAvailableTokensData } from "../tokens";
 import { MarketsInfoData } from "./types";
 import { useMarkets } from "./useMarkets";
 import { getContractMarketPrices } from "./utils";
 
 export type MarketsInfoResult = {
   marketsInfoData?: MarketsInfoData;
+  tokensData?: TokensData;
+  pricesUpdatedAt?: number;
 };
 
 export function useMarketsInfo(chainId: number): MarketsInfoResult {
@@ -455,5 +457,7 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
 
   return {
     marketsInfoData: marketsInfoDataCache.current,
+    tokensData,
+    pricesUpdatedAt,
   };
 }
