@@ -331,7 +331,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Dai",
       symbol: "DAI",
       address: "0x7b7c6c49fA99b37270077FBFA398748c27046984",
-      decimals: 6,
+      decimals: 18,
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/9956/thumb/4943.png?1636636734",
     },
