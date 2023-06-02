@@ -1,4 +1,4 @@
-import { i18n, Messages } from "@lingui/core";
+import { i18n } from "@lingui/core";
 import { en, es, zh, ko, ru, ja, fr, de } from "make-plural/plurals";
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 import { isDevelopment } from "config/env";
