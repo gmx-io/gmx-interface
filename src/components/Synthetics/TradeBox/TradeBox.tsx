@@ -1261,8 +1261,14 @@ export function TradeBox(p: Props) {
                 "-"
               ) : (
                 <ValueTransition
-                  from={formatUsd(existingPosition.liquidationPrice)!}
-                  to={formatUsd(nextPositionValues?.nextLiqPrice)}
+                  from={
+                    formatLiquidationPrice(existingPosition.liquidationPrice, {
+                      displayDecimals: toToken?.priceDecimals,
+                    })!
+                  }
+                  to={formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
+                    displayDecimals: toToken?.priceDecimals,
+                  })}
                 />
               )
             }

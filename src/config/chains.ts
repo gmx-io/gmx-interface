@@ -21,7 +21,7 @@ export const CHAIN_ID = DEFAULT_CHAIN_ID;
 export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 if (isDevelopment()) {
-  SUPPORTED_CHAIN_IDS.push(AVALANCHE_FUJI);
+  SUPPORTED_CHAIN_IDS.push(AVALANCHE_FUJI, ARBITRUM_GOERLI);
 }
 
 export const IS_NETWORK_DISABLED = {
@@ -160,6 +160,7 @@ export const RPC_PROVIDERS = {
   [TESTNET]: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
   [ARBITRUM]: [getDefaultArbitrumRpcUrl()],
   [ARBITRUM_GOERLI]: [
+    "https://goerli-rollup.arbitrum.io/rpc",
     "https://endpoints.omniatech.io/v1/arbitrum/goerli/public",
     "https://arbitrum-goerli.public.blastapi.io",
   ],

@@ -120,16 +120,21 @@ export function SyntheticsPage(p: Props) {
     if (!fromTokenAddress || !toTokenAddress) {
       return {};
     }
-    const fromToken = getToken(chainId, fromTokenAddress);
-    const toToken = getToken(chainId, toTokenAddress);
 
-    const chartToken = isSwap && toToken?.isStable && !fromToken?.isStable ? fromToken : toToken;
-    const availableChartTokens = isSwap ? [chartToken] : indexTokens;
+    try {
+      const fromToken = getToken(chainId, fromTokenAddress);
+      const toToken = getToken(chainId, toTokenAddress);
 
-    return {
-      chartToken,
-      availableChartTokens,
-    };
+      const chartToken = isSwap && toToken?.isStable && !fromToken?.isStable ? fromToken : toToken;
+      const availableChartTokens = isSwap ? [chartToken] : indexTokens;
+
+      return {
+        chartToken,
+        availableChartTokens,
+      };
+    } catch (e) {
+      return {};
+    }
   }, [chainId, fromTokenAddress, indexTokens, isSwap, toTokenAddress]);
 
   const [closingPositionKey, setClosingPositionKey] = useState<string>();

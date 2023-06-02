@@ -165,9 +165,7 @@ export function getLiquidationPrice(p: {
     } else {
       const denominator = sizeInTokens.sub(collateralAmount).abs();
 
-      const LOW_LEVERAGE = 10100; // 1.01x
-
-      if (sizeInTokens.mul(BASIS_POINTS_DIVISOR).div(collateralAmount).lt(LOW_LEVERAGE)) {
+      if (sizeInTokens.mul(BASIS_POINTS_DIVISOR).div(collateralAmount).lt(BASIS_POINTS_DIVISOR)) {
         return ethers.constants.MaxUint256;
       }
 
