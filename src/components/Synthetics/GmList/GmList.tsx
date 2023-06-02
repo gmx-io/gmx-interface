@@ -1,9 +1,8 @@
 import { Trans } from "@lingui/macro";
 import Button from "components/Button/Button";
 import { getChainName } from "config/chains";
-import { getMarketIndexName, getMarketPoolName, useMarketTokensData, useMarketsInfo } from "domain/synthetics/markets";
-import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
-import { convertToUsd, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
+import { MarketTokensAPRData, MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
+import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { importImage } from "lib/legacy";
 import { formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
@@ -16,15 +15,14 @@ import "./GmList.scss";
 
 type Props = {
   hideTitle?: boolean;
+  marketsInfoData?: MarketsInfoData;
+  tokensData?: TokensData;
+  marketTokensData?: TokensData;
+  marketsTokensAPRData?: MarketTokensAPRData;
 };
 
-export function GmList({ hideTitle }: Props) {
+export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensData, marketsTokensAPRData }: Props) {
   const { chainId } = useChainId();
-
-  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
-  const { marketsInfoData } = useMarketsInfo(chainId);
-  const { tokensData } = useAvailableTokensData(chainId);
-  const { marketsTokensAPRData } = useMarketTokensAPR(chainId);
 
   const marketTokens = useMemo(() => {
     if (!marketTokensData || !marketsInfoData) {

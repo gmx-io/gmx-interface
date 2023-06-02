@@ -6,8 +6,8 @@ import { getBasisPoints } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useMemo } from "react";
 import { getPositionFee } from "../fees";
-import { useMarketsInfo } from "../markets";
-import { convertToTokenAmount, convertToUsd, useAvailableTokensData } from "../tokens";
+import { MarketsInfoData } from "../markets";
+import { TokensData, convertToTokenAmount, convertToUsd } from "../tokens";
 import { getMarkPrice } from "../trade";
 import { PositionsInfoData } from "./types";
 import { useOptimisticPositions } from "./useOptimisticPositions";
@@ -26,13 +26,19 @@ type PositionsInfoResult = {
   isLoading: boolean;
 };
 
-export function usePositionsInfo(chainId: number, p: { showPnlInLeverage: boolean }): PositionsInfoResult {
-  const { showPnlInLeverage } = p;
+export function usePositionsInfo(
+  chainId: number,
+  p: {
+    marketsInfoData?: MarketsInfoData;
+    tokensData?: TokensData;
+    pricesUpdatedAt?: number;
+    showPnlInLeverage: boolean;
+  }
+): PositionsInfoResult {
+  const { showPnlInLeverage, marketsInfoData, tokensData } = p;
 
   const { account, library } = useWeb3React();
-  const { marketsInfoData } = useMarketsInfo(chainId);
-  const { tokensData } = useAvailableTokensData(chainId);
-  const { optimisticPositionsData } = useOptimisticPositions(chainId);
+  const { optimisticPositionsData } = useOptimisticPositions(chainId, p);
   const { minCollateralUsd } = usePositionsConstants(chainId);
   const userReferralInfo = useUserReferralInfo(library, chainId, account);
 

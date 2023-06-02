@@ -5,8 +5,8 @@ import { bigNumberify, expandDecimals } from "lib/numbers";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import { useMemo } from "react";
 import useSWR from "swr";
-import { useMarketTokensData, useMarketsInfo } from ".";
-import { MarketTokensAPRData } from "./types";
+import { MarketTokensAPRData, MarketsInfoData } from "./types";
+import { TokensData } from "../tokens";
 
 type RawCollectedFees = {
   id: string;
@@ -23,9 +23,14 @@ type MarketTokensAPRResult = {
   avgMarketsAPR?: BigNumber;
 };
 
-export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
-  const { marketsInfoData } = useMarketsInfo(chainId);
-  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
+export function useMarketTokensAPR(
+  chainId: number,
+  p: {
+    marketsInfoData?: MarketsInfoData;
+    marketTokensData?: TokensData;
+  }
+): MarketTokensAPRResult {
+  const { marketTokensData, marketsInfoData } = p;
 
   const client = getSyntheticsGraphClient(chainId);
   const marketAddresses = useMemo(

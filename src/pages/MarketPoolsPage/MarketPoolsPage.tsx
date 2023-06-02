@@ -15,6 +15,7 @@ import { getTokenData } from "domain/synthetics/tokens";
 import { getByKey } from "lib/objects";
 import "./MarketPoolsPage.scss";
 import { GmList } from "components/Synthetics/GmList/GmList";
+import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
 
 type Props = {
   connectWallet: () => void;
@@ -24,11 +25,16 @@ type Props = {
 export function MarketPoolsPage(p: Props) {
   const { chainId } = useChainId();
 
-  const { marketsInfoData = {} } = useMarketsInfo(chainId);
+  const { marketsInfoData = {}, tokensData } = useMarketsInfo(chainId);
   const markets = Object.values(marketsInfoData);
 
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
   const { marketTokensData: withdrawalMarketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
+
+  const { marketsTokensAPRData } = useMarketTokensAPR(chainId, {
+    marketsInfoData,
+    marketTokensData: withdrawalMarketTokensData,
+  });
 
   const [operation, setOperation] = useState<Operation>(Operation.Deposit);
   const [mode, setMode] = useState<Mode>(Mode.Single);
@@ -63,13 +69,15 @@ export function MarketPoolsPage(p: Props) {
         </div>
 
         <div className="MarketPoolsPage-content">
-          <MarketStats marketInfo={marketInfo} marketToken={marketToken} />
+          <MarketStats marketsTokensAPRData={marketsTokensAPRData} marketInfo={marketInfo} marketToken={marketToken} />
 
           <div className="MarketPoolsPage-swap-box">
             <GmSwapBox
               onConnectWallet={p.connectWallet}
               selectedMarketAddress={selectedMarketKey}
               markets={markets}
+              marketsInfoData={marketsInfoData}
+              tokensData={tokensData}
               onSelectMarket={setSelectedMarketKey}
               setPendingTxns={p.setPendingTxns}
               operation={operation}
@@ -85,7 +93,12 @@ export function MarketPoolsPage(p: Props) {
             <Trans>Select a Market</Trans>
           </div>
         </div>
-        <GmList />
+        <GmList
+          marketsTokensAPRData={marketsTokensAPRData}
+          marketTokensData={depositMarketTokensData}
+          marketsInfoData={marketsInfoData}
+          tokensData={tokensData}
+        />
       </div>
       <Footer />
     </SEO>

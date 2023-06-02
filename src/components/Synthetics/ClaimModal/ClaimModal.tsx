@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import Modal from "components/Modal/Modal";
-import { MarketInfo, getTotalClaimableFundingUsd, useMarketsInfo } from "domain/synthetics/markets";
+import { MarketInfo, MarketsInfoData, getTotalClaimableFundingUsd } from "domain/synthetics/markets";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
@@ -12,24 +12,24 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { claimCollateralTxn } from "domain/synthetics/markets/claimCollateralTxn";
 
 import Button from "components/Button/Button";
-import "./ClaimModal.scss";
 import { useState } from "react";
+import "./ClaimModal.scss";
 
 type Props = {
   isVisible: boolean;
+  marketsInfoData?: MarketsInfoData;
   onClose: () => void;
   setPendingTxns: (txns: any) => void;
 };
 
 export function ClaimModal(p: Props) {
-  const { onClose, setPendingTxns } = p;
+  const { isVisible, onClose, setPendingTxns, marketsInfoData } = p;
   const { account, library } = useWeb3React();
   const { chainId } = useChainId();
-  const { marketsInfoData } = useMarketsInfo(chainId);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const markets = Object.values(marketsInfoData || {});
+  const markets = isVisible ? Object.values(marketsInfoData || {}) : [];
 
   const totalClaimableFundingUsd = getTotalClaimableFundingUsd(markets);
 

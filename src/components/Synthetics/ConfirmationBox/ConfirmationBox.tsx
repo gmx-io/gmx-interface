@@ -36,11 +36,11 @@ import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwr
 import { PositionInfo, formatLeverage, formatLiquidationPrice, getPositionKey } from "domain/synthetics/positions";
 import {
   TokenData,
+  TokensData,
   TokensRatio,
   convertToTokenAmount,
   formatTokensRatio,
   getNeedTokenApprove,
-  useAvailableTokensData,
   useTokensAllowanceData,
 } from "domain/synthetics/tokens";
 import {
@@ -64,10 +64,10 @@ import {
   formatTokenAmountWithUsd,
   formatUsd,
 } from "lib/numbers";
+import { usePrevious } from "lib/usePrevious";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./ConfirmationBox.scss";
-import { usePrevious } from "lib/usePrevious";
 
 export type Props = {
   isVisible: boolean;
@@ -97,6 +97,7 @@ export type Props = {
   allowedSlippage?: number;
   isHigherSlippageAllowed?: boolean;
   ordersData?: OrdersInfoData;
+  tokensData?: TokensData;
   setIsHigherSlippageAllowed: (isHigherSlippageAllowed: boolean) => void;
   setKeepLeverage: (keepLeverage: boolean) => void;
   onClose: () => void;
@@ -133,6 +134,7 @@ export function ConfirmationBox(p: Props) {
     allowedSlippage,
     isHigherSlippageAllowed,
     ordersData,
+    tokensData,
     setIsHigherSlippageAllowed,
     setKeepLeverage,
     onClose,
@@ -146,7 +148,6 @@ export function ConfirmationBox(p: Props) {
 
   const { library, account } = useWeb3React();
   const { chainId } = useChainId();
-  const { tokensData } = useAvailableTokensData(chainId);
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
 
   const prevIsVisible = usePrevious(p.isVisible);

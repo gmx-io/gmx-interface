@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 import { useWeb3React } from "@web3-react/core";
 import { getWrappedToken } from "config/tokens";
-import { useMarketsInfo } from "domain/synthetics/markets";
-import { parseContractPrice, useAvailableTokensData } from "domain/synthetics/tokens";
+import { MarketsInfoData } from "domain/synthetics/markets";
+import { TokensData, parseContractPrice } from "domain/synthetics/tokens";
 import { bigNumberify } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getSyntheticsGraphClient } from "lib/subgraph";
@@ -18,11 +18,12 @@ export type TradeHistoryResult = {
   isLoading: boolean;
 };
 
-export function useTradeHistory(chainId: number, p: { pageIndex: number; pageSize: number }) {
-  const { pageIndex, pageSize } = p;
+export function useTradeHistory(
+  chainId: number,
+  p: { marketsInfoData?: MarketsInfoData; tokensData?: TokensData; pageIndex: number; pageSize: number }
+) {
+  const { pageIndex, pageSize, marketsInfoData, tokensData } = p;
   const { account } = useWeb3React();
-  const { marketsInfoData } = useMarketsInfo(chainId);
-  const { tokensData } = useAvailableTokensData(chainId);
   const fixedAddresses = useFixedAddreseses(marketsInfoData, tokensData);
 
   const client = getSyntheticsGraphClient(chainId);
