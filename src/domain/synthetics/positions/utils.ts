@@ -152,6 +152,10 @@ export function getLiquidationPrice(p: {
     if (isLong) {
       const denominator = sizeInTokens.add(collateralAmount);
 
+      if (denominator.eq(0)) {
+        return undefined;
+      }
+
       return sizeInUsd
         .add(liquidationCollateralUsd)
         .sub(priceImpactDeltaUsd)
