@@ -8,10 +8,14 @@ import { useChainId } from "lib/chains";
 import { Dispatch, SetStateAction, useState } from "react";
 import { OrderEditor } from "../OrderEditor/OrderEditor";
 import { OrderItem } from "../OrderItem/OrderItem";
+import { MarketsInfoData } from "domain/synthetics/markets";
+import { TokensData } from "domain/synthetics/tokens";
 
 type Props = {
   hideActions?: boolean;
   ordersData?: OrdersInfoData;
+  marketsInfoData?: MarketsInfoData;
+  tokensData?: TokensData;
   positionsData?: PositionsInfoData;
   setSelectedOrdersKeys?: Dispatch<SetStateAction<{ [key: string]: boolean }>>;
   selectedOrdersKeys?: { [key: string]: boolean };
@@ -20,6 +24,7 @@ type Props = {
 };
 
 export function OrderList(p: Props) {
+  const { marketsInfoData, tokensData, positionsData } = p;
   const { chainId } = useChainId();
   const { library } = useWeb3React();
 
@@ -134,7 +139,9 @@ export function OrderList(p: Props) {
 
       {editingOrder && (
         <OrderEditor
-          positionsData={p.positionsData || {}}
+          marketsInfoData={marketsInfoData}
+          tokensData={tokensData}
+          positionsData={positionsData}
           order={editingOrder}
           onClose={() => setEditingOrderKey(undefined)}
           setPendingTxns={p.setPendingTxns}

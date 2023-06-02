@@ -17,8 +17,8 @@ import {
   getTokensRatioByAmounts,
 } from "domain/synthetics/tokens";
 import { getMarkPrice } from "domain/synthetics/trade";
-import { getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
-import { formatTokenAmount, formatUsd } from "lib/numbers";
+import { USD_DECIMALS, getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
+import { formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
 
 type Props = {
   order: OrderInfo;
@@ -73,27 +73,24 @@ export function OrderItem(p: Props) {
     const fromTokenInfo = fromToken ? adaptToV1TokenInfo(fromToken) : undefined;
     const toTokenInfo = toToken ? adaptToV1TokenInfo(toToken) : undefined;
 
-    const tokensRatio =
-      fromToken &&
-      toToken &&
-      getTokensRatioByAmounts({
-        fromToken,
-        toToken,
-        fromTokenAmount: fromAmount,
-        toTokenAmount: toAmount,
-      });
+    const tokensRatio = getTokensRatioByAmounts({
+      fromToken,
+      toToken,
+      fromTokenAmount: fromAmount,
+      toTokenAmount: toAmount,
+    });
 
     const markExchangeRate =
       fromToken && toToken
         ? getExchangeRate(adaptToV1TokenInfo(fromToken), adaptToV1TokenInfo(toToken), false)
         : undefined;
 
-    const [largest, smallest] =
-      tokensRatio?.largestToken.address === fromToken?.address
-        ? [fromTokenInfo, toTokenInfo]
-        : [toTokenInfo, fromTokenInfo];
+    const swapRatioText = `${formatAmount(
+      tokensRatio.ratio,
+      USD_DECIMALS,
+      tokensRatio.smallestToken.isStable ? 2 : 4
+    )} ${tokensRatio.smallestToken.symbol} / ${tokensRatio.largestToken.symbol}`;
 
-    const swapRatioText = tokensRatio.ratio.gt(0) ? getExchangeRateDisplay(tokensRatio?.ratio, largest, smallest) : "0";
     const markSwapRatioText = getExchangeRateDisplay(markExchangeRate, fromTokenInfo, toTokenInfo);
 
     return { swapRatioText, markSwapRatioText };
