@@ -2344,8 +2344,8 @@ msgid "Liq. Price"
 msgstr "청산가"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Liq. Price with max Price Impact"
-msgstr ""
+#~ msgid "Liq. Price with max Price Impact"
+#~ msgstr ""
 
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Liq. {0} {longOrShortText}"
@@ -2373,6 +2373,10 @@ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Liquidation Fee"
+msgstr ""
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Liquidation Price is influenced by Fees, Collateral value, and Price Impact."
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
@@ -3972,6 +3976,10 @@ msgstr "스왑 주문 제출 완료!"
 msgid "Swap Price Impact"
 msgstr ""
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Swap Profit Fee"
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Swap active: {0}, executed: {1}, cancelled: {2}"
 msgstr "스왑 액티브: {0}, 실행 완료: {1}, 취소 완료: {2}"
@@ -4133,12 +4141,12 @@ msgid "The Gambit protocol is in beta, please read the <0>staking details</0>be
 msgstr "해당 Gambit 프로토콜은 베타 버전입니다. 참여하기 전에 <0>스테이킹 세부사항</0>을 참조해주세요."
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "The actual Liquidation Price depends on the Price Impact in the Market and the Collateral Price ({0})."
-msgstr ""
+#~ msgid "The actual Liquidation Price depends on the Price Impact in the Market and the Collateral Price ({0})."
+#~ msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "The actual Liquidation Price depends on the Price Impact in the Market."
-msgstr ""
+#~ msgid "The actual Liquidation Price depends on the Price Impact in the Market."
+#~ msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."

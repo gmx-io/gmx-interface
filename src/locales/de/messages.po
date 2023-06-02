@@ -2344,8 +2344,8 @@ msgid "Liq. Price"
 msgstr "Liq. Preis"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Liq. Price with max Price Impact"
-msgstr ""
+#~ msgid "Liq. Price with max Price Impact"
+#~ msgstr ""
 
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Liq. {0} {longOrShortText}"
@@ -2370,6 +2370,10 @@ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Liquidation Fee"
+msgstr ""
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Liquidation Price is influenced by Fees, Collateral value, and Price Impact."
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
@@ -3969,6 +3973,10 @@ msgstr "Swap Order übermittelt!"
 msgid "Swap Price Impact"
 msgstr ""
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Swap Profit Fee"
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Swap active: {0}, executed: {1}, cancelled: {2}"
 msgstr ""
@@ -4130,12 +4138,12 @@ msgid "The Gambit protocol is in beta, please read the <0>staking details</0>be
 msgstr "Das Gambit-Protokoll befindet sich in der Beta-Phase, bitte lese die <0>Details zum Staking</0>, bevor du teilnimmst."
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "The actual Liquidation Price depends on the Price Impact in the Market and the Collateral Price ({0})."
-msgstr ""
+#~ msgid "The actual Liquidation Price depends on the Price Impact in the Market and the Collateral Price ({0})."
+#~ msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "The actual Liquidation Price depends on the Price Impact in the Market."
-msgstr ""
+#~ msgid "The actual Liquidation Price depends on the Price Impact in the Market."
+#~ msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
