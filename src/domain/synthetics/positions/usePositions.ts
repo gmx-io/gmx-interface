@@ -30,7 +30,7 @@ export function usePositions(
 
   const positionsDataCache = useRef<PositionsData>();
 
-  const { data: existingPositionsKeys } = useMulticall(chainId, "usePositions-keys", {
+  const { data: existingPositionsKeysSet } = useMulticall(chainId, "usePositions-keys", {
     key: account ? [account] : null,
     request: () => ({
       dataStore: {
@@ -45,12 +45,12 @@ export function usePositions(
       },
     }),
     parseResponse: (res) => {
-      return res.dataStore.keys.returnValues;
+      return new Set(res.dataStore.keys.returnValues);
     },
   });
 
   const keysAndPrices = useMemo(() => {
-    if (!account || !marketsInfoData || !tokensData || !existingPositionsKeys) {
+    if (!account || !marketsInfoData || !tokensData || !existingPositionsKeysSet) {
       return undefined;
     }
 
@@ -76,7 +76,7 @@ export function usePositions(
           const positionKey = getPositionKey(account, market.marketTokenAddress, collateralAddress, isLong);
           const contractPositionKey = hashedPositionKey(account, market.marketTokenAddress, collateralAddress, isLong);
 
-          if (existingPositionsKeys.includes(contractPositionKey)) {
+          if (existingPositionsKeysSet.has(contractPositionKey)) {
             positionsKeys.push(positionKey);
             contractPositionsKeys.push(contractPositionKey);
             marketsPrices.push(marketPrices);
@@ -90,7 +90,7 @@ export function usePositions(
       contractPositionsKeys,
       marketsPrices,
     };
-  }, [account, existingPositionsKeys, marketsInfoData, tokensData]);
+  }, [account, existingPositionsKeysSet, marketsInfoData, tokensData]);
 
   const { data: positionsData } = useMulticall(chainId, "usePositionsData", {
     key: keysAndPrices?.positionsKeys.length ? [keysAndPrices.positionsKeys.join("-"), pricesUpdatedAt] : null,
