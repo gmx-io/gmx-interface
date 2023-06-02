@@ -296,6 +296,8 @@ export function SyntheticsPage(p: Props) {
             )}
             {listSection === ListSection.Orders && (
               <OrderList
+                marketsInfoData={marketsInfoData}
+                tokensData={tokensData}
                 positionsData={positionsInfoData}
                 ordersData={ordersInfoData}
                 selectedOrdersKeys={selectedOrdersKeys}
@@ -384,6 +386,8 @@ export function SyntheticsPage(p: Props) {
           )}
           {listSection === ListSection.Orders && (
             <OrderList
+              marketsInfoData={marketsInfoData}
+              tokensData={tokensData}
               positionsData={positionsInfoData}
               ordersData={ordersInfoData}
               isLoading={isOrdersLoading}
