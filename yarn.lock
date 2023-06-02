@@ -177,7 +177,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/generator@npm:^7.22.0, @babel/generator@npm:^7.22.3, @babel/generator@npm:^7.7.2":
+"@babel/generator@npm:^7.20.14, @babel/generator@npm:^7.22.0, @babel/generator@npm:^7.22.3, @babel/generator@npm:^7.7.2":
   version: 7.22.3
   resolution: "@babel/generator@npm:7.22.3"
   dependencies:
@@ -655,7 +655,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/parser@npm:^7.20.7, @babel/parser@npm:^7.21.9, @babel/parser@npm:^7.22.0, @babel/parser@npm:^7.22.4":
+"@babel/parser@npm:^7.20.15, @babel/parser@npm:^7.20.7, @babel/parser@npm:^7.21.9, @babel/parser@npm:^7.22.0, @babel/parser@npm:^7.22.4":
   version: 7.22.4
   resolution: "@babel/parser@npm:7.22.4"
   bin:
@@ -2318,7 +2318,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.20.7":
+"@babel/runtime@npm:^7.20.13, @babel/runtime@npm:^7.20.7":
   version: 7.22.3
   resolution: "@babel/runtime@npm:7.22.3"
   dependencies:
@@ -4100,6 +4100,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@lingui/babel-plugin-extract-messages@npm:3.17.2":
+  version: 3.17.2
+  resolution: "@lingui/babel-plugin-extract-messages@npm:3.17.2"
+  dependencies:
+    "@babel/generator": ^7.20.14
+    "@babel/runtime": ^7.20.13
+    "@lingui/conf": 3.17.2
+    mkdirp: ^1.0.4
+  checksum: 3f4a8fa52be55e652b55acc40b7c42a2716fc3fe6eeeaf941b8cdfad731d05a7fba43cdbb54f43b162538f09a7a27747fa886e4f32db38590d7c8e8a040e7336
+  languageName: node
+  linkType: hard
+
 "@lingui/babel-plugin-extract-messages@npm:^3.14.0":
   version: 3.14.0
   resolution: "@lingui/babel-plugin-extract-messages@npm:3.14.0"
@@ -4112,7 +4124,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lingui/cli@npm:^3.13.3, @lingui/cli@npm:^3.14.0":
+"@lingui/cli@npm:^3.13.3":
   version: 3.14.0
   resolution: "@lingui/cli@npm:3.14.0"
   dependencies:
@@ -4157,6 +4169,74 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@lingui/cli@npm:^3.14.0":
+  version: 3.17.2
+  resolution: "@lingui/cli@npm:3.17.2"
+  dependencies:
+    "@babel/generator": ^7.20.14
+    "@babel/parser": ^7.20.15
+    "@babel/plugin-syntax-jsx": ^7.18.6
+    "@babel/runtime": ^7.20.13
+    "@babel/types": ^7.20.7
+    "@lingui/babel-plugin-extract-messages": 3.17.2
+    "@lingui/conf": 3.17.2
+    "@lingui/core": 3.17.2
+    "@messageformat/parser": ^5.0.0
+    babel-plugin-macros: ^3.0.1
+    bcp-47: ^1.0.7
+    chalk: ^4.1.0
+    chokidar: 3.5.1
+    cli-table: 0.3.6
+    commander: ^6.1.0
+    date-fns: ^2.16.1
+    fs-extra: ^9.0.1
+    fuzzaldrin: ^2.1.0
+    glob: ^7.1.4
+    inquirer: ^7.3.3
+    make-plural: ^6.2.2
+    micromatch: 4.0.2
+    mkdirp: ^1.0.4
+    node-gettext: ^3.0.0
+    normalize-path: ^3.0.0
+    ora: ^5.1.0
+    papaparse: ^5.3.0
+    pkg-up: ^3.1.0
+    plurals-cldr: ^1.0.4
+    pofile: ^1.1.0
+    pseudolocale: ^1.1.0
+    ramda: ^0.27.1
+  peerDependencies:
+    "@babel/core": ^7.0.0
+    babel-plugin-macros: 2 || 3
+    typescript: 2 || 3 || 4
+  bin:
+    lingui: build/lingui.js
+  checksum: 226775a9cc1b0521dfed6356d6d81f6f620dda97b97232cb42c0f96cb042f3fffcdb81085acb71bcd24686752f77ce34cda83ac5da025ed1d7c7db5a5c70c2aa
+  languageName: node
+  linkType: hard
+
+"@lingui/conf@npm:3.17.2":
+  version: 3.17.2
+  resolution: "@lingui/conf@npm:3.17.2"
+  dependencies:
+    "@babel/runtime": ^7.20.13
+    chalk: ^4.1.0
+    cosmiconfig: ^8.0.0
+    cosmiconfig-typescript-loader: ^4.3.0
+    jest-validate: ^26.5.2
+    lodash.get: ^4.4.2
+  peerDependencies:
+    ts-node: ">=10"
+    typescript: ">=4"
+  peerDependenciesMeta:
+    ts-node:
+      optional: true
+    typescript:
+      optional: true
+  checksum: 9c73e544a3a3cfd8a90769f5a1959404965e9b064fd36ef43e9629ae675adc99c940a7a0b18a985d7f85dd80392edc5bb6bc7bb0da091ddbc514db83cc095c84
+  languageName: node
+  linkType: hard
+
 "@lingui/conf@npm:^3.13.3, @lingui/conf@npm:^3.14.0":
   version: 3.14.0
   resolution: "@lingui/conf@npm:3.14.0"
@@ -4179,6 +4259,17 @@ __metadata:
     make-plural: ^6.2.2
     messageformat-parser: ^4.1.3
   checksum: 608bb8c7f53302f4df21497e34318a7dc1e59fcaaa69432b4b62e4d46871036e895012d8e94f452395afeb247c45555977a7c98a1b5702f99bdfacbc7fc461bd
+  languageName: node
+  linkType: hard
+
+"@lingui/core@npm:3.17.2":
+  version: 3.17.2
+  resolution: "@lingui/core@npm:3.17.2"
+  dependencies:
+    "@babel/runtime": ^7.20.13
+    "@messageformat/parser": ^5.0.0
+    make-plural: ^6.2.2
+  checksum: 92689ccc4e03c18be4d875faef4b6b22dca590e744dfa1b004bfb02f946e87d6fb3747fd4d421f49cb847e818c145a2c9c75cf1af569fd48bb7512b8a7749d6d
   languageName: node
   linkType: hard
 
@@ -4232,6 +4323,15 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0
   checksum: 7a83a88cabd5d5a0e77df0cf7ce3e64876145381df42e7d11c9464c79122eb0ef4cbdd7787a8fc52fdab875e15e58cf78ca0cc4c5eb8a194459372c27d470cd5
+  languageName: node
+  linkType: hard
+
+"@messageformat/parser@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "@messageformat/parser@npm:5.0.0"
+  dependencies:
+    moo: ^0.5.1
+  checksum: e595910e8801e17b1e762a1824e4fc97baf6ccc21f5f896d6eae3e537ca2eaed0f699ac20b44d03c38ad20340b57ef0f7c7cf056213d31dd156e65b4d030c8c0
   languageName: node
   linkType: hard
 
@@ -7743,6 +7843,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cosmiconfig-typescript-loader@npm:^4.3.0":
+  version: 4.3.0
+  resolution: "cosmiconfig-typescript-loader@npm:4.3.0"
+  peerDependencies:
+    "@types/node": "*"
+    cosmiconfig: ">=7"
+    ts-node: ">=10"
+    typescript: ">=3"
+  checksum: ea61dfd8e112cf2bb18df0ef89280bd3ae3dd5b997b4a9fc22bbabdc02513aadfbc6d4e15e922b6a9a5d987e9dad42286fa38caf77a9b8dcdbe7d4ce1c9db4fb
+  languageName: node
+  linkType: hard
+
 "cosmiconfig@npm:^6.0.0":
   version: 6.0.0
   resolution: "cosmiconfig@npm:6.0.0"
@@ -7766,6 +7878,18 @@ __metadata:
     path-type: ^4.0.0
     yaml: ^1.10.0
   checksum: 4be63e7117955fd88333d7460e4c466a90f556df6ef34efd59034d2463484e339666c41f02b523d574a797ec61f4a91918c5b89a316db2ea2f834e0d2d09465b
+  languageName: node
+  linkType: hard
+
+"cosmiconfig@npm:^8.0.0":
+  version: 8.1.3
+  resolution: "cosmiconfig@npm:8.1.3"
+  dependencies:
+    import-fresh: ^3.2.1
+    js-yaml: ^4.1.0
+    parse-json: ^5.0.0
+    path-type: ^4.0.0
+  checksum: b3d277bc3a8a9e649bf4c3fc9740f4c52bf07387481302aa79839f595045368903bf26ea24a8f7f7b8b180bf46037b027c5cb63b1391ab099f3f78814a147b2b
   languageName: node
   linkType: hard
 
@@ -13095,6 +13219,13 @@ __metadata:
   bin:
     mkdirp: bin/cmd.js
   checksum: 0c91b721bb12c3f9af4b77ebf73604baf350e64d80df91754dc509491ae93bf238581e59c7188360cec7cb62fc4100959245a42cfe01834efedc5e9d068376c2
+  languageName: node
+  linkType: hard
+
+"moo@npm:^0.5.1":
+  version: 0.5.2
+  resolution: "moo@npm:0.5.2"
+  checksum: 5a41ddf1059fd0feb674d917c4774e41c877f1ca980253be4d3aae1a37f4bc513f88815041243f36f5cf67a62fb39324f3f997cf7fb17b6cb00767c165e7c499
   languageName: node
   linkType: hard
 
