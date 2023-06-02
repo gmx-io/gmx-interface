@@ -160,6 +160,7 @@ export const RPC_PROVIDERS = {
   [TESTNET]: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
   [ARBITRUM]: [getDefaultArbitrumRpcUrl()],
   [ARBITRUM_GOERLI]: [
+    "https://goerli-rollup.arbitrum.io/rpc",
     "https://endpoints.omniatech.io/v1/arbitrum/goerli/public",
     "https://arbitrum-goerli.public.blastapi.io",
   ],

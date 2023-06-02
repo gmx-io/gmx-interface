@@ -76,8 +76,9 @@ export function usePositions(
           const positionKey = getPositionKey(account, market.marketTokenAddress, collateralAddress, isLong);
           const contractPositionKey = hashedPositionKey(account, market.marketTokenAddress, collateralAddress, isLong);
 
+          positionsKeys.push(positionKey);
+
           if (existingPositionsKeysSet.has(contractPositionKey)) {
-            positionsKeys.push(positionKey);
             contractPositionsKeys.push(contractPositionKey);
             marketsPrices.push(marketPrices);
           }

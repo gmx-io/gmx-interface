@@ -65,7 +65,10 @@ export function getAcceptablePriceInfo(p: {
   values.priceImpactDeltaUsd = getCappedPositionImpactUsd(
     marketInfo,
     isIncrease ? sizeDeltaUsd : sizeDeltaUsd.mul(-1),
-    isLong
+    isLong,
+    {
+      fallbackToZero: !isIncrease,
+    }
   );
 
   if (values.priceImpactDeltaUsd.lt(0)) {

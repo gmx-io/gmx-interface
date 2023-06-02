@@ -152,8 +152,8 @@ export function getLiquidationPrice(p: {
     if (isLong) {
       const denominator = sizeInTokens.add(collateralAmount);
 
-      if (denominator.eq(0)) {
-        return undefined;
+      if (denominator.lt(expandDecimals(1, indexToken.decimals - 2))) {
+        return ethers.constants.MaxUint256;
       }
 
       return sizeInUsd
@@ -165,7 +165,7 @@ export function getLiquidationPrice(p: {
     } else {
       const denominator = sizeInTokens.sub(collateralAmount).abs();
 
-      if (denominator.lt(10)) {
+      if (sizeInTokens.mul(BASIS_POINTS_DIVISOR).div(collateralAmount).lt(BASIS_POINTS_DIVISOR)) {
         return ethers.constants.MaxUint256;
       }
 
