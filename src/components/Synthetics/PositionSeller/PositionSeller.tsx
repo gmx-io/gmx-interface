@@ -21,7 +21,12 @@ import {
   useGasPrice,
 } from "domain/synthetics/fees";
 import { OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
-import { PositionInfo, formatLeverage, usePositionsConstants } from "domain/synthetics/positions";
+import {
+  PositionInfo,
+  formatLeverage,
+  formatLiquidationPrice,
+  usePositionsConstants,
+} from "domain/synthetics/positions";
 import { useAvailableTokensData } from "domain/synthetics/tokens";
 import {
   AvailableTokenOptions,
@@ -82,7 +87,7 @@ export function PositionSeller(p: Props) {
   const { tokensData } = useAvailableTokensData(chainId);
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
-  const { minCollateralUsd } = usePositionsConstants(chainId);
+  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
   const userReferralInfo = useUserReferralInfo(library, chainId, account);
 
   const isVisible = Boolean(position);
@@ -111,24 +116,24 @@ export function PositionSeller(p: Props) {
   });
 
   const decreaseAmounts = useMemo(() => {
-    if (!position) {
+    if (!position || !minCollateralUsd || !minPositionSizeUsd) {
       return undefined;
     }
 
     return getDecreasePositionAmounts({
       marketInfo: position.marketInfo,
       collateralToken: position.collateralToken,
-      receiveToken: position.collateralToken,
       isLong: position.isLong,
-      existingPosition: position,
+      position,
       closeSizeUsd: closeSizeUsd,
       keepLeverage: keepLeverage!,
-      isTrigger: false,
       triggerPrice: undefined,
       savedAcceptablePriceImpactBps: undefined,
       userReferralInfo,
+      minCollateralUsd,
+      minPositionSizeUsd,
     });
-  }, [closeSizeUsd, keepLeverage, position, userReferralInfo]);
+  }, [closeSizeUsd, keepLeverage, minCollateralUsd, minPositionSizeUsd, position, userReferralInfo]);
 
   const shouldSwap = position && receiveToken && !getIsEquivalentTokens(position.collateralToken, receiveToken);
 
@@ -159,10 +164,13 @@ export function PositionSeller(p: Props) {
       marketInfo: position.marketInfo,
       collateralToken: position.collateralToken,
       sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
+      sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
       collateralDeltaUsd: decreaseAmounts.collateralDeltaUsd,
-      pnlDelta: decreaseAmounts.pnlDelta,
-      exitPnl: decreaseAmounts.exitPnl,
-      executionPrice: decreaseAmounts.exitPrice,
+      collateralDeltaAmount: decreaseAmounts.collateralDeltaAmount,
+      payedRemainingCollateralUsd: decreaseAmounts.payedRemainingCollateralUsd,
+      realizedPnl: decreaseAmounts.realizedPnl,
+      estimatedPnl: decreaseAmounts.estimatedPnl,
+      indexPrice: decreaseAmounts.indexPrice,
       showPnlInLeverage,
       isLong: position.isLong,
       minCollateralUsd,
@@ -181,15 +189,16 @@ export function PositionSeller(p: Props) {
 
     return {
       fees: getTradeFees({
-        initialCollateralUsd: decreaseAmounts?.collateralDeltaUsd,
+        initialCollateralUsd: decreaseAmounts?.initialReceiveUsd,
         sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
         swapSteps: swapAmounts?.swapPathStats?.swapSteps || [],
         positionFeeUsd: decreaseAmounts.positionFeeUsd,
         swapPriceImpactDeltaUsd: swapAmounts?.swapPathStats?.totalSwapPriceImpactDeltaUsd || BigNumber.from(0),
         positionPriceImpactDeltaUsd: decreaseAmounts.positionPriceImpactDeltaUsd,
-        borrowingFeeUsd: position.pendingBorrowingFeesUsd,
-        fundingFeeUsd: position.pendingFundingFeesUsd,
+        borrowingFeeUsd: decreaseAmounts.borrowingFeeUsd,
+        fundingFeeUsd: decreaseAmounts.fundingFeeUsd,
         feeDiscountUsd: decreaseAmounts.feeDiscountUsd,
+        swapProfitFeeUsd: decreaseAmounts.swapProfitFeeUsd,
       }),
       executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
     };
@@ -402,7 +411,7 @@ export function PositionSeller(p: Props) {
               />
               <ExchangeInfoRow
                 label={t`Price Impact`}
-                value={formatPercentage(decreaseAmounts?.acceptablePriceImpactBps) || "-"}
+                value={formatPercentage(decreaseAmounts?.acceptablePriceDeltaBps) || "-"}
               />
               <ExchangeInfoRow
                 label={t`Acceptable Price`}
@@ -421,11 +430,11 @@ export function PositionSeller(p: Props) {
                   ) : (
                     <ValueTransition
                       from={
-                        formatUsd(position.liquidationPrice, {
+                        formatLiquidationPrice(position.liquidationPrice, {
                           displayDecimals: indexPriceDecimals,
                         })!
                       }
-                      to={formatUsd(nextPositionValues?.nextLiqPrice, {
+                      to={formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
                         displayDecimals: indexPriceDecimals,
                       })}
                     />
@@ -484,7 +493,12 @@ export function PositionSeller(p: Props) {
 
               <ExchangeInfoRow
                 label={t`PnL`}
-                value={position?.pnl ? formatDeltaUsd(position.pnl, position.pnlPercentage) : "..."}
+                value={
+                  <ValueTransition
+                    from={formatDeltaUsd(position.pnl, position.pnlPercentage)}
+                    to={formatDeltaUsd(nextPositionValues?.nextPnl, nextPositionValues?.nextPnlPercentage)}
+                  />
+                }
               />
 
               <TradeFeesRow {...fees} executionFee={executionFee} feesType="decrease" />

@@ -23,7 +23,13 @@ import {
 } from "domain/synthetics/fees";
 import { MarketInfo, getAvailableUsdLiquidityForPosition, getMarketIndexName } from "domain/synthetics/markets";
 import { OrderInfo, OrdersInfoData } from "domain/synthetics/orders";
-import { PositionInfo, PositionsInfoData, formatLeverage, usePositionsConstants } from "domain/synthetics/positions";
+import {
+  PositionInfo,
+  PositionsInfoData,
+  formatLeverage,
+  formatLiquidationPrice,
+  usePositionsConstants,
+} from "domain/synthetics/positions";
 import { TokenData, TokensData, TokensRatio, convertToUsd, getTokensRatioByPrice } from "domain/synthetics/tokens";
 import {
   AvailableTokenOptions,
@@ -184,7 +190,7 @@ export function TradeBox(p: Props) {
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
   const userReferralInfo = useUserReferralInfo(library, chainId, account);
-  const { minCollateralUsd } = usePositionsConstants(chainId);
+  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
 
   const [stage, setStage] = useState<"trade" | "confirmation" | "processing">("trade");
   const [focusedInput, setFocusedInput] = useState<"from" | "to">();
@@ -368,7 +374,7 @@ export function TradeBox(p: Props) {
   ]);
 
   const decreaseAmounts = useMemo(() => {
-    if (!isTrigger || !closeSizeUsd || !marketInfo || !collateralToken) {
+    if (!isTrigger || !closeSizeUsd || !marketInfo || !collateralToken || !minCollateralUsd || !minPositionSizeUsd) {
       return undefined;
     }
 
@@ -376,14 +382,14 @@ export function TradeBox(p: Props) {
       marketInfo,
       collateralToken,
       isLong,
-      existingPosition,
-      receiveToken: collateralToken,
+      position: existingPosition,
       closeSizeUsd: closeSizeUsd,
       keepLeverage: keepLeverage!,
-      isTrigger: true,
       triggerPrice,
       savedAcceptablePriceImpactBps: acceptablePriceImpactBpsForLimitOrders,
       userReferralInfo,
+      minCollateralUsd,
+      minPositionSizeUsd,
     });
   }, [
     acceptablePriceImpactBpsForLimitOrders,
@@ -394,6 +400,8 @@ export function TradeBox(p: Props) {
     isTrigger,
     keepLeverage,
     marketInfo,
+    minCollateralUsd,
+    minPositionSizeUsd,
     triggerPrice,
     userReferralInfo,
   ]);
@@ -425,10 +433,13 @@ export function TradeBox(p: Props) {
         marketInfo,
         collateralToken,
         sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
-        exitPnl: decreaseAmounts.exitPnl,
-        pnlDelta: decreaseAmounts.pnlDelta,
+        sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
+        estimatedPnl: decreaseAmounts.estimatedPnl,
+        realizedPnl: decreaseAmounts.realizedPnl,
         collateralDeltaUsd: decreaseAmounts.collateralDeltaUsd,
-        executionPrice: decreaseAmounts.acceptablePrice,
+        collateralDeltaAmount: decreaseAmounts.collateralDeltaAmount,
+        payedRemainingCollateralUsd: decreaseAmounts.payedRemainingCollateralUsd,
+        indexPrice: decreaseAmounts.indexPrice,
         showPnlInLeverage: savedIsPnlInLeverage,
         isLong,
         minCollateralUsd,
@@ -473,6 +484,7 @@ export function TradeBox(p: Props) {
           borrowingFeeUsd: BigNumber.from(0),
           fundingFeeUsd: BigNumber.from(0),
           feeDiscountUsd: BigNumber.from(0),
+          swapProfitFeeUsd: BigNumber.from(0),
         }),
         executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
         feesType: "swap" as TradeFeesType,
@@ -495,6 +507,7 @@ export function TradeBox(p: Props) {
           borrowingFeeUsd: existingPosition?.pendingBorrowingFeesUsd || BigNumber.from(0),
           fundingFeeUsd: existingPosition?.pendingFundingFeesUsd || BigNumber.from(0),
           feeDiscountUsd: increaseAmounts.feeDiscountUsd,
+          swapProfitFeeUsd: BigNumber.from(0),
         }),
         executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
         feesType: "increase" as TradeFeesType,
@@ -506,15 +519,16 @@ export function TradeBox(p: Props) {
 
       return {
         fees: getTradeFees({
-          initialCollateralUsd: decreaseAmounts.receiveUsd,
+          initialCollateralUsd: decreaseAmounts.initialReceiveUsd,
           sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
           swapSteps: [],
           positionFeeUsd: decreaseAmounts.positionFeeUsd,
           swapPriceImpactDeltaUsd: BigNumber.from(0),
           positionPriceImpactDeltaUsd: decreaseAmounts.positionPriceImpactDeltaUsd,
-          borrowingFeeUsd: existingPosition?.pendingBorrowingFeesUsd || BigNumber.from(0),
-          fundingFeeUsd: existingPosition?.pendingFundingFeesUsd || BigNumber.from(0),
+          borrowingFeeUsd: decreaseAmounts.borrowingFeeUsd,
+          fundingFeeUsd: decreaseAmounts.fundingFeeUsd,
           feeDiscountUsd: decreaseAmounts.feeDiscountUsd,
+          swapProfitFeeUsd: decreaseAmounts.swapProfitFeeUsd,
         }),
         executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
         feesType: "decrease" as TradeFeesType,
@@ -1121,13 +1135,13 @@ export function TradeBox(p: Props) {
             <ValueTransition
               from={
                 nextPositionValues?.nextLiqPrice
-                  ? formatUsd(existingPosition?.liquidationPrice, {
+                  ? formatLiquidationPrice(existingPosition?.liquidationPrice, {
                       displayDecimals: existingPosition?.indexToken?.priceDecimals,
                     })
                   : undefined
               }
               to={
-                formatUsd(nextPositionValues?.nextLiqPrice, {
+                formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
                   displayDecimals: toToken?.priceDecimals,
                 }) || "-"
               }
@@ -1199,7 +1213,7 @@ export function TradeBox(p: Props) {
         <ExchangeInfoRow
           className="SwapBox-info-row"
           label={t`Trigger Price`}
-          value={`${decreaseAmounts?.triggerPricePrefix || ""} ${
+          value={`${decreaseAmounts?.triggerThresholdType || ""} ${
             formatUsd(decreaseAmounts?.triggerPrice, {
               displayDecimals: toToken?.priceDecimals,
             }) || "-"

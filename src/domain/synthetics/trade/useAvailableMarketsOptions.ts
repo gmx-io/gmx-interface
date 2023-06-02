@@ -128,7 +128,7 @@ export function useAvailableMarketsOptions(
         increaseSizeUsd.gt(0) ? increaseSizeUsd : expandDecimals(1000, USD_DECIMALS)
       );
 
-      const { acceptablePriceImpactBps } = getAcceptablePrice({
+      const { priceDiffBps: acceptablePriceImpactBps } = getAcceptablePrice({
         isIncrease: true,
         isLong,
         indexPrice: getMarkPrice({ prices: indexToken.prices, isLong, isIncrease: true }),
