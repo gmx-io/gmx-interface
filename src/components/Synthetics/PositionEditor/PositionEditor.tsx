@@ -470,8 +470,17 @@ export function PositionEditor(p: Props) {
             </BuyInputSection>
 
             <div className="PositionEditor-info-box">
-              {executionFee?.warning && <div className="Confirmation-box-warning">{executionFee.warning}</div>}
-
+              <div className="Confirmation-box-warning color-warning-yellow">
+                {executionFee?.warning && (
+                  <Tooltip
+                    handle={t`Fees and Price Impact`}
+                    position="center-bottom"
+                    renderContent={() => {
+                      return executionFee.warning;
+                    }}
+                  />
+                )}
+              </div>
               <ExchangeInfoRow
                 label={t`Leverage`}
                 value={<ValueTransition from={formatLeverage(position?.leverage)} to={formatLeverage(nextLeverage)} />}

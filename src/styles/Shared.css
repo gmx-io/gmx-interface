@@ -64,6 +64,7 @@ input {
   --arbitrum-blue: #28a0f0;
   --border-radius-sm: 0.4rem;
   --error-red: #fa3c58;
+  --warning-yellow: #ffba0e;
   --font-sm: 1.4rem;
   --font-base: 1.5rem;
   --font-md: 1.6rem;
@@ -449,4 +450,8 @@ button.btn-link:hover .logout-icon {
 .debug-key {
   overflow-wrap: break-word;
   max-width: 30rem;
+}
+
+.color-warning-yellow {
+  color: var(--warning-yellow);
 }

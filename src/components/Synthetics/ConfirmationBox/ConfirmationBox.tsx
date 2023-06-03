@@ -780,6 +780,22 @@ export function ConfirmationBox(p: Props) {
     );
   }
 
+  function renderFeeAndPriceImpactWarning() {
+    return (
+      <div className="Confirmation-box-warning color-warning-yellow">
+        {executionFee?.warning && (
+          <Tooltip
+            handle={t`Fees and Price Impact`}
+            position="center-bottom"
+            renderContent={() => {
+              return executionFee.warning;
+            }}
+          />
+        )}
+      </div>
+    );
+  }
+
   function renderIncreaseOrderSection() {
     if (!marketInfo || !fromToken || !collateralToken || !toToken) {
       return null;
@@ -800,7 +816,7 @@ export function ConfirmationBox(p: Props) {
           {renderExistingLimitOrdersWarning()}
           {renderExistingTriggerErrors()}
           {renderExistingTriggerWarning()}
-          {p.executionFee?.warning && <div className="Confirmation-box-warning">{p.executionFee.warning}</div>}
+          {renderFeeAndPriceImpactWarning()}
           {isLimit && renderAvailableLiquidity()}
 
           <ExchangeInfoRow

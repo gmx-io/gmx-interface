@@ -349,7 +349,17 @@ export function PositionSeller(p: Props) {
             </BuyInputSection>
 
             <div className="PositionEditor-info-box PositionSeller-info-box">
-              {executionFee?.warning && <div className="Confirmation-box-warning">{executionFee.warning}</div>}
+              <div className="Confirmation-box-warning color-warning-yellow">
+                {executionFee?.warning && (
+                  <Tooltip
+                    handle={t`Fees and Price Impact`}
+                    position="center-bottom"
+                    renderContent={() => {
+                      return executionFee.warning;
+                    }}
+                  />
+                )}
+              </div>
               <div className="PositionEditor-keep-leverage-settings">
                 <Checkbox isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
                   <span className="muted font-sm">
