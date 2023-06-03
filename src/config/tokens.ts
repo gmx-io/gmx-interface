@@ -217,8 +217,8 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/12504/thumb/uniswap-uni.png?1600306604",
     },
     {
-      name: "USD Coin",
-      symbol: "USDC",
+      name: "Bridged USDC",
+      symbol: "USDC.e",
       decimals: 6,
       address: "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
       isStable: true,
