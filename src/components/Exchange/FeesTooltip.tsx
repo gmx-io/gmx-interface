@@ -22,8 +22,7 @@ function getFeeLabel(type: FeeType) {
     deposit: t`Deposit Fee`,
     execution: t`Execution Fee`,
   };
-
-  return i18n._(labels[type]);
+  return i18n._(/*i18n*/ labels[type]);
 }
 
 function getExecutionFeeStr(chainId, executionFee, executionFeeUsd) {
