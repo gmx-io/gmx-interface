@@ -54,6 +54,7 @@ import { ErrorCode, ErrorDisplayType } from "./constants";
 import FeesTooltip from "./FeesTooltip";
 import Button from "components/Button/Button";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
+import SlippageInput from "components/SlippageInput/SlippageInput";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -148,7 +149,6 @@ export default function PositionSeller(props) {
     isPositionRouterApproving,
     approvePositionRouter,
     isHigherSlippageAllowed,
-    setIsHigherSlippageAllowed,
     minExecutionFee,
     minExecutionFeeErrorMessage,
     usdgSupply,
@@ -162,6 +162,15 @@ export default function PositionSeller(props) {
   const [isProfitWarningAccepted, setIsProfitWarningAccepted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const prevIsVisible = usePrevious(isVisible);
+  const [allowedSlippage, setAllowedSlippage] = useState(savedSlippageAmount);
+
+  useEffect(() => {
+    setAllowedSlippage(savedSlippageAmount);
+    if (isHigherSlippageAllowed) {
+      setAllowedSlippage(DEFAULT_HIGHER_SLIPPAGE_AMOUNT);
+    }
+  }, [savedSlippageAmount, isHigherSlippageAllowed]);
+
   const positionRouterAddress = getContract(chainId, "PositionRouter");
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
   const longOrShortText = position?.isLong ? t`Long` : t`Short`;
@@ -177,11 +186,6 @@ export default function PositionSeller(props) {
   const [swapToToken, setSwapToToken] = useState(() =>
     savedRecieveTokenAddress ? toTokens.find((token) => token.address === savedRecieveTokenAddress) : undefined
   );
-
-  let allowedSlippage = savedSlippageAmount;
-  if (isHigherSlippageAllowed) {
-    allowedSlippage = DEFAULT_HIGHER_SLIPPAGE_AMOUNT;
-  }
 
   const ORDER_OPTIONS = [MARKET, STOP];
   const ORDER_OPTION_LABELS = {
@@ -1064,32 +1068,29 @@ export default function PositionSeller(props) {
               </ToggleSwitch>
             </div>
             {orderOption === MARKET && (
-              <div className="PositionEditor-allow-higher-slippage">
-                <ToggleSwitch isChecked={isHigherSlippageAllowed} setIsChecked={setIsHigherSlippageAllowed}>
-                  <span className="muted font-sm">
-                    <Trans>Allow up to 1% slippage</Trans>
-                  </span>
-                </ToggleSwitch>
-              </div>
-            )}
-            {orderOption === MARKET && (
               <div>
-                <ExchangeInfoRow label={t`Allowed Slippage`}>
-                  <Tooltip
-                    handle={`${formatAmount(allowedSlippage, 2, 2)}%`}
-                    position="right-bottom"
-                    renderContent={() => {
-                      return (
-                        <Trans>
-                          You can change this in the settings menu on the top right of the page.
-                          <br />
-                          <br />
-                          Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices
-                          are volatile.
-                        </Trans>
-                      );
-                    }}
-                  />
+                <ExchangeInfoRow
+                  label={
+                    <Tooltip
+                      handle={t`Allowed Slippage`}
+                      position="left-top"
+                      renderContent={() => {
+                        return (
+                          <div className="text-white">
+                            <Trans>
+                              You can change this in the settings menu on the top right of the page.
+                              <br />
+                              <br />
+                              Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if
+                              prices are volatile.
+                            </Trans>
+                          </div>
+                        );
+                      }}
+                    />
+                  }
+                >
+                  <SlippageInput setAllowedSlippage={setAllowedSlippage} defaultSlippage={savedSlippageAmount} />
                 </ExchangeInfoRow>
               </div>
             )}

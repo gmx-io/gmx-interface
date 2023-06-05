@@ -30,5 +30,5 @@ export function getSubgraphUrl(chainId: number, subgraph: string) {
     }
   }
 
-  return SUBGRAPH_URLS[chainId][subgraph];
+  return SUBGRAPH_URLS?.[chainId]?.[subgraph];
 }
