@@ -780,22 +780,6 @@ export function ConfirmationBox(p: Props) {
     );
   }
 
-  function renderFeeAndPriceImpactWarning() {
-    return (
-      <div className="Confirmation-box-warning color-warning-yellow">
-        {executionFee?.warning && (
-          <Tooltip
-            handle={t`Fees and Price Impact`}
-            position="center-bottom"
-            renderContent={() => {
-              return executionFee.warning;
-            }}
-          />
-        )}
-      </div>
-    );
-  }
-
   function renderIncreaseOrderSection() {
     if (!marketInfo || !fromToken || !collateralToken || !toToken) {
       return null;
@@ -816,7 +800,6 @@ export function ConfirmationBox(p: Props) {
           {renderExistingLimitOrdersWarning()}
           {renderExistingTriggerErrors()}
           {renderExistingTriggerWarning()}
-          {renderFeeAndPriceImpactWarning()}
           {isLimit && renderAvailableLiquidity()}
 
           <ExchangeInfoRow
@@ -1002,6 +985,7 @@ export function ConfirmationBox(p: Props) {
             borrowFeeRateStr={borrowingRate && `-${formatAmount(borrowingRate, 30, 4)}% / 1h`}
             executionFee={p.executionFee}
             feesType="increase"
+            warning={p.executionFee?.warning}
           />
 
           {(decreaseOrdersThatWillBeExecuted?.length > 0 || isHighPriceImpact) && <div className="line-divider" />}
@@ -1065,7 +1049,15 @@ export function ConfirmationBox(p: Props) {
             })}
           </ExchangeInfoRow>
 
-          {!p.isWrapOrUnwrap && <TradeFeesRow {...fees} isTop executionFee={p.executionFee} feesType="swap" />}
+          {!p.isWrapOrUnwrap && (
+            <TradeFeesRow
+              {...fees}
+              isTop
+              executionFee={p.executionFee}
+              feesType="swap"
+              warning={p.executionFee?.warning}
+            />
+          )}
 
           <ExchangeInfoRow label={t`Min. Receive`} isTop>
             {formatTokenAmount(swapAmounts?.minOutputAmount, toToken?.decimals, toToken?.symbol)}
@@ -1203,7 +1195,7 @@ export function ConfirmationBox(p: Props) {
             />
           )}
 
-          <TradeFeesRow {...fees} executionFee={p.executionFee} feesType="decrease" />
+          <TradeFeesRow {...fees} executionFee={p.executionFee} feesType="decrease" warning={p.executionFee?.warning} />
 
           {decreaseAmounts?.receiveUsd && (
             <ExchangeInfoRow
