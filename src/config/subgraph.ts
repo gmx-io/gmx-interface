@@ -1,4 +1,4 @@
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, ETH_MAINNET } from "./chains";
+import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, ETH_MAINNET } from "./chains";
 import { isDevelopment } from "./env";
 import { getSubgraphUrlKey } from "./localStorage";
 
@@ -11,6 +11,12 @@ const SUBGRAPH_URLS = {
     referrals:
       "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-referrals/version/synts-stats-230509054500-2deb6a4/api",
     nissohVault: "https://api.thegraph.com/subgraphs/name/nissoh/gmx-vault",
+  },
+
+  [ARBITRUM_GOERLI]: {
+    stats: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-stats",
+    referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-goerli-referrals/api",
+    syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-goerli-stats/api",
   },
 
   [AVALANCHE]: {
