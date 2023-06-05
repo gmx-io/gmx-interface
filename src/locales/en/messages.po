@@ -2182,6 +2182,8 @@ msgstr "Only letters, numbers and underscores are allowed."
 msgid "Open Fee"
 msgstr "Open Fee"
 
+#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Home/Home.js
 msgid "Open Interest"
 msgstr "Open Interest"
@@ -3319,6 +3321,8 @@ msgstr "Total Supply"
 msgid "Total Trading Volume"
 msgstr "Total Trading Volume"
 
+#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Home/Home.js
 msgid "Total Users"
 msgstr "Total Users"

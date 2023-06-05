@@ -2182,6 +2182,8 @@ msgstr "英数字とアンダースコア記号のみ使用できます。"
 msgid "Open Fee"
 msgstr ""
 
+#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Home/Home.js
 msgid "Open Interest"
 msgstr "建玉"
@@ -3319,6 +3321,8 @@ msgstr "総供給量"
 msgid "Total Trading Volume"
 msgstr "トレード総額"
 
+#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Home/Home.js
 msgid "Total Users"
 msgstr "ユーザー総数"

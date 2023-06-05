@@ -2182,6 +2182,8 @@ msgstr "只允许使用字母、数字和下底线"
 msgid "Open Fee"
 msgstr ""
 
+#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Home/Home.js
 msgid "Open Interest"
 msgstr "开启利息"
@@ -3319,6 +3321,8 @@ msgstr "总供应量"
 msgid "Total Trading Volume"
 msgstr "总交易量"
 
+#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Home/Home.js
 msgid "Total Users"
 msgstr "用户总数"

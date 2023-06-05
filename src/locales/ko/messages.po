@@ -2182,6 +2182,8 @@ msgstr "문자, 숫자 및 언더스코어만 가능합니다"
 msgid "Open Fee"
 msgstr ""
 
+#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Home/Home.js
 msgid "Open Interest"
 msgstr "미결제 약정"
@@ -3319,6 +3321,8 @@ msgstr "총 공급량"
 msgid "Total Trading Volume"
 msgstr "총 트레이딩 거래량"
 
+#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Home/Home.js
 msgid "Total Users"
 msgstr "총 유저"
