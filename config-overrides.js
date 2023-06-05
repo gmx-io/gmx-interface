@@ -1,3 +1,5 @@
+const webpack = require("webpack");
+
 module.exports = function override(config) {
   // https://github.com/lingui/js-lingui/issues/1195
   // Adding loader to use for .po files to webpack
@@ -18,5 +20,10 @@ module.exports = function override(config) {
     stream: false,
     crypto: false,
   };
+  config.plugins = (config.plugins || []).concat([
+    new webpack.ProvidePlugin({
+      Buffer: ["buffer", "Buffer"],
+    }),
+  ]);
   return config;
 };
