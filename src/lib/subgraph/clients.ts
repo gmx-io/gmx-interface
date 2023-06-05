@@ -5,6 +5,7 @@ export const chainlinkClient = createClient(ETH_MAINNET, "chainLink");
 
 export const arbitrumGraphClient = createClient(ARBITRUM, "stats");
 export const arbitrumReferralsGraphClient = createClient(ARBITRUM, "referrals");
+export const arbitrumGoerliReferralsGraphClient = createClient(ARBITRUM_GOERLI, "referrals");
 export const nissohGraphClient = createClient(ARBITRUM, "nissohVault");
 
 export const avalancheGraphClient = createClient(AVALANCHE, "stats");
@@ -12,10 +13,15 @@ export const avalancheReferralsGraphClient = createClient(AVALANCHE, "referrals"
 export const avalancheFujiReferralsGraphClient = createClient(AVALANCHE_FUJI, "referrals");
 
 export const avalancheFujiSyntheticsStatsClient = createClient(AVALANCHE_FUJI, "syntheticsStats");
+export const arbitrumGoerliSyntheticsStatsClient = createClient(ARBITRUM_GOERLI, "syntheticsStats");
 
 export function getSyntheticsGraphClient(chainId: number) {
   if (chainId === AVALANCHE_FUJI) {
     return avalancheFujiSyntheticsStatsClient;
+  }
+
+  if (chainId === ARBITRUM_GOERLI) {
+    return arbitrumGoerliSyntheticsStatsClient;
   }
 
   return null;
@@ -40,6 +46,8 @@ export function getReferralsGraphClient(chainId) {
     return avalancheReferralsGraphClient;
   } else if (chainId === AVALANCHE_FUJI) {
     return avalancheFujiReferralsGraphClient;
+  } else if (chainId === ARBITRUM_GOERLI) {
+    return arbitrumGoerliReferralsGraphClient;
   }
   throw new Error(`Unsupported chain ${chainId}`);
 }
