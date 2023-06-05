@@ -27,7 +27,11 @@
 }
 
 .Exchange-empty-positions-list-note {
-  padding-bottom: 0.465rem;
+  padding-bottom: 0.5rem;
+}
+
+.Exchange-empty-positions-list-note.small {
+  display: none;
 }
 
 .position-loading-icon {
@@ -430,7 +434,7 @@
   width: 100%;
 }
 
-.Position-list-order {
+.Position-list-order:not(:first-child) {
   white-space: nowrap;
   margin-top: 8px;
 }
@@ -456,6 +460,9 @@
 
 .Exchange-list .App-card {
   margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .Exchange-list-item-error {
@@ -937,9 +944,17 @@ table.Exchange-list-small td {
   .Exchange-list.large {
     display: none;
   }
-
   .Exchange-list.small {
-    display: table;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 1rem;
+  }
+  .Exchange-list-title,
+  .Position-leverage {
+    margin-right: 1rem;
+  }
+  .Exchange-empty-positions-list-note.small {
+    display: block;
   }
 }
 
@@ -1026,11 +1041,19 @@ table.Exchange-list-small td {
   .Exchange-swap-box .TokenSelector .Modal {
     margin: 0 0.5rem;
   }
-  .Useful-links-swapbox {
-    display: none;
+
+  .Exchange-swap-info-group {
+    display: grid;
+    grid-gap: 1rem;
   }
-  .Useful-links-exchange {
-    display: block;
+
+  .Exchange-swap-box {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    grid-gap: 1rem;
+  }
+  .Exchange-swap-market-box {
+    margin-top: 0;
   }
 }
 
@@ -1055,6 +1078,18 @@ table.Exchange-list-small td {
 
   .Exchange {
     padding-top: 1.5rem !important;
+  }
+  .Useful-links-swapbox {
+    display: none;
+  }
+  .Exchange-swap-box {
+    grid-template-columns: 1fr;
+  }
+  .Useful-links-exchange {
+    display: block;
+  }
+  .Exchange-list.small {
+    grid-template-columns: 1fr;
   }
 }
 

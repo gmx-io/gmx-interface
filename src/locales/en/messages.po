@@ -683,6 +683,8 @@ msgstr "Coinbase Wallet not detected."
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Collateral"
@@ -1365,6 +1367,7 @@ msgid "GBC NFTs APR tracker and rewards"
 msgstr "GBC NFTs APR tracker and rewards"
 
 #: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
 msgid "GLP Index Composition"
 msgstr "GLP Index Composition"
 
@@ -1711,7 +1714,6 @@ msgstr "Leftover position below 10 USD"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "Leverage"
@@ -1793,6 +1795,7 @@ msgstr "Liquidation price would cross mark price."
 msgid "Liquidity data not loaded"
 msgstr "Liquidity data not loaded"
 
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Loading..."
 msgstr "Loading..."

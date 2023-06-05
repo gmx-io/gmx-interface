@@ -683,6 +683,8 @@ msgstr "Coinbase 지갑이 존재하지 않습니다."
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Collateral"
@@ -1365,6 +1367,7 @@ msgid "GBC NFTs APR tracker and rewards"
 msgstr "GBC NFT의 APR 트래커 및 보상"
 
 #: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
 msgid "GLP Index Composition"
 msgstr "GLP 인덱스 구성"
 
@@ -1711,7 +1714,6 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "Leverage"
@@ -1793,6 +1795,7 @@ msgstr ""
 msgid "Liquidity data not loaded"
 msgstr "유동성 데이터를 불러오지 못하였습니다."
 
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Loading..."
 msgstr "로딩중..."

@@ -683,6 +683,8 @@ msgstr "无法侦测Coinbase钱包"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Collateral"
@@ -1365,6 +1367,7 @@ msgid "GBC NFTs APR tracker and rewards"
 msgstr "GBC NFTs 年利率跟踪器和奖励"
 
 #: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
 msgid "GLP Index Composition"
 msgstr "GLP指数构成"
 
@@ -1711,7 +1714,6 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "Leverage"
@@ -1793,6 +1795,7 @@ msgstr ""
 msgid "Liquidity data not loaded"
 msgstr "未加载流动资金数据"
 
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Loading..."
 msgstr "加载中..."

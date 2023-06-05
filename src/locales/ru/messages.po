@@ -683,6 +683,8 @@ msgstr "Кошелек Coinbase не обнаружен."
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Collateral"
@@ -1365,6 +1367,7 @@ msgid "GBC NFTs APR tracker and rewards"
 msgstr "GBC NFTs APR отслеживание и вознаграждения"
 
 #: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
 msgid "GLP Index Composition"
 msgstr "Состав Индекса GLP"
 
@@ -1711,7 +1714,6 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "Leverage"
@@ -1793,6 +1795,7 @@ msgstr ""
 msgid "Liquidity data not loaded"
 msgstr "Данные о ликвидности не загружены"
 
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Loading..."
 msgstr "Загрузка..."
