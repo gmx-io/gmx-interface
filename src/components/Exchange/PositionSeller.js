@@ -52,6 +52,8 @@ import { formatDateTime, getTimeRemaining } from "lib/dates";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import FeesTooltip from "./FeesTooltip";
+import Button from "components/Button/Button";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import SlippageInput from "components/SlippageInput/SlippageInput";
 
 const { AddressZero } = ethers.constants;
@@ -942,9 +944,9 @@ export default function PositionSeller(props) {
         <Tooltip
           isHandlerDisabled
           handle={
-            <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+            <Button variant="primary-action w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
               {primaryTextMessage}
-            </button>
+            </Button>
           }
           position="center-top"
           className="Tooltip-flex"
@@ -954,9 +956,9 @@ export default function PositionSeller(props) {
     }
 
     return (
-      <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+      <Button variant="primary-action w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
         {primaryTextMessage}
-      </button>
+      </Button>
     );
   }
 
@@ -1001,14 +1003,14 @@ export default function PositionSeller(props) {
                   onChange={(e) => setFromValue(e.target.value)}
                 />
                 {fromValue !== maxAmountFormattedFree && (
-                  <div
+                  <button
                     className="Exchange-swap-max"
                     onClick={() => {
                       setFromValue(maxAmountFormattedFree);
                     }}
                   >
                     <Trans>MAX</Trans>
-                  </div>
+                  </button>
                 )}
               </div>
               <div className="PositionEditor-token-symbol">USD</div>
@@ -1059,11 +1061,11 @@ export default function PositionSeller(props) {
               </div>
             )}
             <div className="PositionEditor-keep-leverage-settings">
-              <Checkbox isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
+              <ToggleSwitch isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
                 <span className="muted font-sm">
                   <Trans>Keep leverage at {formatAmount(position.leverage, 4, 2)}x</Trans>
                 </span>
-              </Checkbox>
+              </ToggleSwitch>
             </div>
             {orderOption === MARKET && (
               <div>

@@ -10,7 +10,7 @@ import { shortenAddress, useENS } from "lib/legacy";
 import { useJsonRpcProvider } from "lib/rpc";
 import { FaChevronDown } from "react-icons/fa";
 import { createBreakpoint, useCopyToClipboard } from "react-use";
-import "./AddressDropdown.css";
+import "./AddressDropdown.scss";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 type Props = {

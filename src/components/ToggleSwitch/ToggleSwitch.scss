@@ -1,0 +1,39 @@
+.Switch-toggle {
+  width: 30px;
+  height: 18px;
+  background-color: rgba(255, 255, 255, 0.4);
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  border-radius: 50px;
+  padding: 2px;
+  cursor: pointer;
+  position: relative;
+  opacity: 0.8;
+
+  .handle {
+    width: 14.5px;
+    height: 14.5px;
+    background-color: white;
+    border-radius: 40px;
+    transition: all 200ms ease-in-out;
+    position: absolute;
+    left: 2px;
+    bottom: 2px;
+  }
+
+  &.checked {
+    background-color: var(--primary-btn-bg);
+  }
+  &.checked .handle {
+    left: 14px;
+  }
+}
+
+.Switch-toggle-wrapper {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--font-sm);
+}

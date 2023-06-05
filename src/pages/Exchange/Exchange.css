@@ -266,6 +266,11 @@
   font-weight: bold;
 }
 
+.ExchangeChart-title:hover .chart-token-selector,
+.ExchangeChart-title:hover .chart-token-selector span {
+  color: #7885ff !important;
+}
+
 .ExchangeChart-info-label {
   font-size: 1.25rem;
   opacity: 0.7;
@@ -634,6 +639,12 @@ table.Exchange-list th {
   border-radius: 0.3rem;
   background: linear-gradient(90deg, rgba(30, 34, 61, 0.9) 0%, rgba(38, 43, 71, 0.9) 100%);
   box-shadow: inset 0px 0px 3rem 0.5rem rgba(255, 255, 255, 0.01);
+  outline: 1px solid transparent;
+}
+
+.Exchange-swap-section:hover,
+.Exchange-swap-section:focus-within {
+  outline-color: #3a3f798f;
 }
 
 .Exchange-swap-option-tabs.Tab.block .Tab-option {
@@ -656,6 +667,7 @@ table.Exchange-list th {
   grid-template-columns: auto auto;
   font-size: var(--font-sm);
   padding-bottom: 1.25rem;
+  line-height: 1;
 }
 
 .Exchange-swap-section-bottom {
@@ -680,12 +692,18 @@ table.Exchange-list th {
   z-index: 1;
   cursor: pointer;
   font-size: var(--font-sm);
-  background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, rgba(46, 61, 205, 1) 100%);
+  background: var(--primary-btn-bg);
+  border: none;
+  opacity: 0.8;
 }
 
 .Exchange-swap-max:hover {
   color: rgba(255, 255, 255, 1);
-  background: linear-gradient(90deg, rgba(58, 78, 252, 1) 0%, rgba(51, 68, 222, 1) 100%);
+  background: var(--primary-btn-hover);
+}
+
+.Exchange-swap-max:active {
+  background: var(--primary-btn-active);
 }
 
 .Exchange-swap-section-bottom .TokenSelector-box {
@@ -727,27 +745,34 @@ input.Exchange-swap-input.small {
   display: block;
   transform: rotate(90deg);
   font-size: 2rem;
-  opacity: 0.7;
+  opacity: 0.8;
 }
 
 .Exchange-swap-ball {
   position: absolute;
-  width: 3.565rem;
-  height: 3.565rem;
+  width: 3.5rem;
+  height: 3.5rem;
   left: 50%;
   margin-left: -1.7825rem;
-  top: -1.9375rem;
+  top: -2rem;
   border-radius: 3.1rem;
   cursor: pointer;
   user-select: none;
-  background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, rgba(46, 61, 205, 1) 100%);
+  background: var(--primary-btn-bg);
   display: flex;
   justify-content: center;
   align-items: center;
+  border: none;
+  color: white;
+  opacity: 0.8;
 }
 
 .Exchange-swap-ball:hover {
-  background: linear-gradient(90deg, rgba(58, 78, 252, 1) 0%, rgba(51, 68, 222, 1) 100%);
+  background: var(--primary-btn-hover);
+}
+
+.Exchange-swap-ball:active {
+  background: var(--primary-btn-active);
 }
 
 .Exchange-swap-ball:hover .Exchange-swap-ball-icon {
@@ -888,6 +913,18 @@ table.Exchange-list-small td {
 
 .Position-leverage {
   margin-right: 0.25rem;
+}
+
+.Position-leverage:hover {
+  opacity: 0.9;
+}
+
+.Position-pnl.negative:hover {
+  color: #fb5971;
+}
+
+.Position-pnl.positive:hover {
+  color: #56dba8;
 }
 
 @media (max-width: 1500px) {

@@ -155,7 +155,6 @@
 .App-box-highlight,
 .App-box-solid {
   position: relative;
-  border: 1px solid #1e2136;
   border-radius: 0.4rem;
   background: #16182e;
   font-size: var(--font-base);
@@ -536,7 +535,6 @@ button.App-connect-wallet:hover {
 
 .App-card {
   padding: 1.5rem 1.5rem 1.86rem;
-  border: 1px solid #1e2136;
   border-radius: 0.4rem;
   font-size: var(--font-base);
 }
@@ -1108,11 +1106,11 @@ button.App-button {
 }
 
 .App-slider .rc-slider-rail {
-  background: linear-gradient(90deg, rgba(30, 34, 61, 1) 0%, rgba(40, 45, 74, 1) 100%);
+  background: linear-gradient(90deg, #1e223d, #282d4a);
 }
 
 .App-slider .rc-slider-track {
-  background: linear-gradient(90deg, rgba(46, 61, 205, 1) 0%, rgba(45, 66, 252, 1) 100%);
+  background: linear-gradient(90deg, #2e3dcd, #2d42fc);
 }
 
 .App-slider .rc-slider-dot {
@@ -1120,7 +1118,7 @@ button.App-button {
   border-radius: 1px;
   width: 2px;
   margin-left: -1px;
-  background: rgba(40, 45, 74, 1);
+  background: #282d4a;
 }
 
 .App-slider .rc-slider-dot-active {
@@ -1129,7 +1127,7 @@ button.App-button {
 
 .App-slider .rc-slider-handle {
   background: #303652;
-  border: solid 2px rgba(45, 66, 252, 1);
+  border: 2px solid #2d42fc;
 }
 
 .App-slider .rc-slider-handle:active {

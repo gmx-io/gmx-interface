@@ -96,6 +96,7 @@ export default function PositionsList(props) {
     usdgSupply,
     totalTokenWeights,
     hideActions,
+    openSettings,
   } = props;
 
   const [positionToEditKey, setPositionToEditKey] = useState(undefined);
@@ -260,7 +261,9 @@ export default function PositionsList(props) {
                         <Trans>Leverage</Trans>
                       </div>
                       <div>
-                        <span className="Position-leverage">{position.leverageStr}</span>
+                        <span className="Position-leverage" onClick={openSettings}>
+                          {position.leverageStr}
+                        </span>
                         <span
                           className={cx("Exchange-list-side", {
                             positive: position.isLong,
@@ -335,6 +338,7 @@ export default function PositionsList(props) {
                       </div>
                       <div>
                         <span
+                          onClick={openSettings}
                           className={cx("Exchange-list-info-label", {
                             positive: hasPositionProfit && positionDelta.gt(0),
                             negative: !hasPositionProfit && positionDelta.gt(0),
@@ -542,7 +546,17 @@ export default function PositionsList(props) {
                     {position.hasPendingChanges && <ImSpinner2 className="spin position-loading-icon" />}
                   </div>
                   <div className="Exchange-list-info-label">
-                    {position.leverageStr && <span className="muted Position-leverage">{position.leverageStr}</span>}
+                    {position.leverageStr && (
+                      <span
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openSettings();
+                        }}
+                        className="muted Position-leverage"
+                      >
+                        {position.leverageStr}
+                      </span>
+                    )}
                     <span className={cx({ positive: position.isLong, negative: !position.isLong })}>
                       {position.isLong ? t`Long` : t`Short`}
                     </span>
@@ -553,11 +567,12 @@ export default function PositionsList(props) {
 
                   {position.deltaStr && (
                     <div
-                      className={cx("Exchange-list-info-label", {
+                      className={cx("Exchange-list-info-label cursor-pointer Position-pnl", {
                         positive: hasPositionProfit && positionDelta.gt(0),
                         negative: !hasPositionProfit && positionDelta.gt(0),
                         muted: positionDelta.eq(0),
                       })}
+                      onClick={openSettings}
                     >
                       {position.deltaStr} ({position.deltaPercentageStr})
                     </div>
