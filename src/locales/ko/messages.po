@@ -209,11 +209,6 @@ msgstr "수령 후, esGMX 토큰은 7일 이내에 선택한 네트워크의 계
 msgid "Agree"
 msgstr "동의하기"
 
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionSeller.js
-msgid "Allow up to 1% slippage"
-msgstr "1%의 슬리피지까지 허용하기"
-
 #: src/App/App.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
@@ -3845,7 +3840,6 @@ msgstr ""
 msgid "You can change the \"Collateral In\" token above to find lower fees"
 msgstr "더 낮은 수수로를 찾기 위해 \"담보자산\"을 변경할 수 있습니다"
 
-#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
 msgid "You can change this in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are volatile."
 msgstr "페이지 우측 상단의 설정 메뉴를 통해 변경할 수 있습니다.<0/><1/>가격 변동이 심할 경우, 0.5%미만의 낮은 슬리피지는, 주문이 실패될 수 있습니다."
@@ -3857,6 +3851,10 @@ msgstr "<0>여기</0>에서 수령한 내역을 확인할 수 있습니다."
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
 msgstr "{1} {stakingToken} 대 1 esGMX 비율로 최대 {0} esGMX 토큰을 현재 베스팅 할 수 있습니다."
+
+#: src/components/Exchange/ConfirmationBox.js
+msgid "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are volatile."
+msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer AVAX from other networks to Avalanche using any of the below options:"

@@ -209,11 +209,6 @@ msgstr "After claiming, the esGMX tokens will be airdropped to your account on t
 msgid "Agree"
 msgstr "Agree"
 
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionSeller.js
-msgid "Allow up to 1% slippage"
-msgstr "Allow up to 1% slippage"
-
 #: src/App/App.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
@@ -3845,7 +3840,6 @@ msgstr "You can buy ETH directly on <0>Arbitrum</0> using these options:"
 msgid "You can change the \"Collateral In\" token above to find lower fees"
 msgstr "You can change the \"Collateral In\" token above to find lower fees"
 
-#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
 msgid "You can change this in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are volatile."
 msgstr "You can change this in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are volatile."
@@ -3857,6 +3851,10 @@ msgstr "You can check your claim history <0>here</0>."
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
 msgstr "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
+
+#: src/components/Exchange/ConfirmationBox.js
+msgid "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are volatile."
+msgstr "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are volatile."
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer AVAX from other networks to Avalanche using any of the below options:"

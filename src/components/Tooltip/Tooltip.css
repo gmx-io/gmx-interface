@@ -135,6 +135,10 @@
   flex: 0 0 100%;
 }
 
+.z-index-1001 {
+  z-index: 1001;
+}
+
 @media (max-width: 700px) {
   .Tooltip-row {
     display: block;

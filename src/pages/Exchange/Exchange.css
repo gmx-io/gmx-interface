@@ -543,7 +543,7 @@ table.Exchange-list th {
 }
 
 .Exchange-info-label {
-  opacity: 0.7;
+  color: var(--text-gray);
   margin-right: 0.8rem;
 }
 .Exchange-info-value-warning {
@@ -662,12 +662,6 @@ table.Exchange-list th {
   display: grid;
   grid-template-columns: 1fr auto;
   padding-bottom: 0.31rem;
-}
-
-.Exchange-swap-message {
-  font-size: var(--font-sm);
-  opacity: 0.7;
-  margin: 0.5rem 0;
 }
 
 .Exchange-swap-input-container {

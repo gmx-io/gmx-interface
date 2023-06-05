@@ -19,6 +19,7 @@ type Props = {
   isHandlerDisabled?: boolean;
   fitHandleWidth?: boolean;
   closeOnDoubleClick?: boolean;
+  isInsideModal?: boolean;
 };
 
 type Coords = {
@@ -116,7 +117,7 @@ export default function TooltipWithPortal(props: Props) {
       {visible && coords.left && (
         <Portal>
           <div style={{ ...coords, position: "absolute" }}>
-            <div className={cx(["Tooltip-popup", position])} style={{ width: tooltipWidth }}>
+            <div className={cx(["Tooltip-popup z-index-1001", position])} style={{ width: tooltipWidth }}>
               {props.renderContent()}
             </div>
           </div>

@@ -209,11 +209,6 @@ msgstr "Nach Inanspruchnahme werden die esGMX-Tokens innerhalb von 7 Tagen auf d
 msgid "Agree"
 msgstr "Zustimmen"
 
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionSeller.js
-msgid "Allow up to 1% slippage"
-msgstr "Bis zu 1% Slippage erlauben"
-
 #: src/App/App.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
@@ -3845,7 +3840,6 @@ msgstr ""
 msgid "You can change the \"Collateral In\" token above to find lower fees"
 msgstr "Du kannst das obige Zeichen \"Kollateral in\" ändern, um niedrigere Gebühren zu finden"
 
-#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
 msgid "You can change this in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are volatile."
 msgstr "Du kannst dies im Einstellungsmenü oben rechts auf der Seite ändern.<0/><1/>Bitte beachte, dass eine niedrige zulässige Slippage, z. B. weniger als 0,5 %, zu fehlgeschlagenen Aufträgen führen kann, wenn die Preise volatil sind."
@@ -3857,6 +3851,10 @@ msgstr "Du kannst deine Claim-Historie <0>hier</0> einsehen."
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
 msgstr "Du kannst derzeit maximal {0} esGMX-Token in einem Verhältnis von {1} {stakingToken} zu 1 esGMX übertragen."
+
+#: src/components/Exchange/ConfirmationBox.js
+msgid "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are volatile."
+msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer AVAX from other networks to Avalanche using any of the below options:"
