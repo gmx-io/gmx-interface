@@ -27,7 +27,7 @@ msgstr "24시간 거래량"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "<0/>Profit price: {0} ${1}. This rule applies for the next {2}, until {3}."
-msgstr "<0/>수익 가격: {0} ${1}. 해당 규칙은 다음의 {2}동안, {3}까지 적용됩니다."
+msgstr ""
 
 #: src/App/App.js
 msgid "<0>Install Coinbase Wallet</0> to start using GMX."
@@ -209,11 +209,6 @@ msgstr "수령 후, esGMX 토큰은 7일 이내에 선택한 네트워크의 계
 msgid "Agree"
 msgstr "동의하기"
 
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionSeller.js
-msgid "Allow up to 1% slippage"
-msgstr "1%의 슬리피지까지 허용하기"
-
 #: src/App/App.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
@@ -325,6 +320,7 @@ msgstr "자산운용규모: 스테이킹된 GMX + GLP 풀 ({chainName})."
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "Available"
 msgstr "사용가능"
 
@@ -349,28 +345,18 @@ msgstr "GLP로부터 인출가능한 수량. 현재 포지션에 의해 활용�
 msgid "Available on your preferred network"
 msgstr "선택한 네트워크에서 이용가능"
 
-#: src/components/Glp/GlpSwap.js
-msgid "Available:"
-msgstr "사용가능"
-
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
 msgstr "Avalanche APR:"
 
 #: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "Balance"
 msgstr "잔고"
-
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-msgid "Balance:"
-msgstr "잔고:"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Balance: {0}"
-msgstr "잔고: {0}"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"
@@ -417,7 +403,7 @@ msgid "Buy AVAX directly to Avalanche or transfer it there."
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy ETH directly to Arbitrum or transfer it there."
+msgid "Buy ETH directly on Arbitrum or transfer it there."
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -426,6 +412,10 @@ msgstr ""
 #: src/pages/Stake/StakeV2.js
 msgid "Buy GLP"
 msgstr "GLP 구매"
+
+#: src/pages/Buy/Buy.js
+msgid "Buy GLP or GMX"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Buy GMX"
@@ -440,15 +430,15 @@ msgid "Buy GMX from Uniswap (make sure to select Arbitrum):"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX from a Decentralized Exchange"
-msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from centralized exchanges:"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from centralized services"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "Buy GMX from decentralized exchanges"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
@@ -652,11 +642,11 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close failed."
-msgstr "포지션 종료 실패"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close submitted!"
-msgstr "포지션 종료 제출 완료"
+msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Close to execution price"
@@ -664,19 +654,19 @@ msgstr "집행 가격에 종료"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close without profit"
-msgstr "수익없이 포지션 종료"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close {longOrShortText} {0}"
-msgstr "{longOrShortText} 종료 {0}"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close: {convertedAmountFormatted} {0}"
-msgstr "종료: {convertedAmountFormatted} {0}"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Closing..."
-msgstr "종료중..."
+msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Code already taken"
@@ -928,6 +918,7 @@ msgid "DEX Aggregator"
 msgstr "DEX 어그리게이터"
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/pages/Dashboard/DashboardV2.js
 msgid "Dashboard"
 msgstr "대시보드"
 
@@ -963,6 +954,10 @@ msgstr "탈중앙화 옵션 프로토콜"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Decentralized Options Strategies"
 msgstr "탈중앙화 옵션 전략"
+
+#: src/lib/legacy.ts
+msgid "Decentralized Perpetual Exchange | GMX"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Decentralized Trading Protocol"
@@ -1084,12 +1079,17 @@ msgstr "다운로드"
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Earn"
 msgstr "보상"
 
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Ecosystem"
 msgstr "이코시스템"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Ecosystem Projects"
+msgstr ""
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -1486,6 +1486,10 @@ msgstr "GMX 스테이킹 보상 업데이트 및 인사이트"
 msgid "GMX transfers not yet enabled"
 msgstr "GMX 전송이 아직 불가능합니다."
 
+#: src/components/Common/SEO.js
+msgid "GMX | Decentralized Perpetual Exchange"
+msgstr ""
+
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Generate Referral Code"
 msgstr "추천인 코드 생성"
@@ -1584,7 +1588,7 @@ msgstr "최초 담보"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Insufficient Available Liquidity to swap to {0}:"
-msgstr "{0}으로 스왑하기 위한 유동성이 충분하지 않습니다:"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Insufficient GLP balance"
@@ -1657,6 +1661,10 @@ msgid "Invalid token indexToken: \"{0}\" collateralToken: \"{1}\""
 msgstr "유요하지 않은 indexToken: \"{0}\" collateralToken\" \"{1}\""
 
 #: src/pages/Jobs/Jobs.js
+msgid "Job Openings"
+msgstr ""
+
+#: src/pages/Jobs/Jobs.js
 msgid "Job openings at GMX."
 msgstr "GMX의 구인"
 
@@ -1666,7 +1674,7 @@ msgstr "구인"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Keep leverage at {0}x"
-msgstr "레버리지를 {0}x로 유지"
+msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Language"
@@ -1697,11 +1705,11 @@ msgstr "가스를 위해 최소 {0} {1}을(를) 남겨주세요"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Leftover collateral below 5 USD"
-msgstr "남은 담보가 5 USD 미만입니다"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Leftover position below 10 USD"
-msgstr "남은 포지션이 10 USD 미만입니다."
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
@@ -1848,10 +1856,9 @@ msgstr "공유할 수 있는 추천인 코드가 없는 것 같습니다. <0/> �
 msgid "Loss"
 msgstr "손실"
 
-#: src/components/BuyInputSection/BuyInputSection.js
+#: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
 #: src/components/InputSection/InputSection.js
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "MAX"
@@ -1860,6 +1867,10 @@ msgstr "최대"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "MEV Optimizer"
 msgstr "MEV 옵티마이저"
+
+#: src/components/Exchange/SwapBox.js
+msgid "Mark"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
@@ -1880,7 +1891,6 @@ msgstr "시장 평균가"
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
 msgid "Mark: {0}"
 msgstr "시장 평균가: {0}"
 
@@ -1896,6 +1906,12 @@ msgstr "마켓"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Market Cap"
 msgstr "시가총액"
+
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "Max"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Max Capacity"
@@ -1920,7 +1936,7 @@ msgstr "최대 수량을 초과했습니다"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Max close amount exceeded"
-msgstr "닫을 수 있는 최댜 수량을 초과했습니다"
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account:"
@@ -1978,9 +1994,6 @@ msgstr "{0} 숏 최대치를 초과했습니다."
 #: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "Max: {0}"
 msgstr "최대: {0}"
 
@@ -2163,6 +2176,8 @@ msgstr "문자, 숫자 및 언더스코어만 가능합니다"
 msgid "Open Fee"
 msgstr ""
 
+#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Home/Home.js
 msgid "Open Interest"
 msgstr "미결제 약정"
@@ -2223,11 +2238,11 @@ msgstr "포지션의 금액이 $5.00 이하로 남게되면 주문은 실행될 
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Order created!"
-msgstr "주문 생성!"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Order creation failed."
-msgstr "주문 생성 실패."
+msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Order size exceeds position"
@@ -2244,7 +2259,7 @@ msgstr "주문의 사이즈가 포지션을 초과했습니다. 포지션을 증
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Order submitted!"
-msgstr "주문 제출 완료!"
+msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
 msgid "Order update failed."
@@ -2291,6 +2306,7 @@ msgid "PRICE"
 msgstr "가격"
 
 #: src/pages/PageNotFound/PageNotFound.js
+#: src/pages/PageNotFound/PageNotFound.js
 msgid "Page not found"
 msgstr "페이지를 찾을 수 없습니다"
 
@@ -2323,10 +2339,6 @@ msgstr "지불"
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Pay Amount"
 msgstr "지불액"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Pay: {0} USD"
-msgstr "지불: {0} USD"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Platform and GLP index tokens."
@@ -2372,7 +2384,7 @@ msgstr "포지션"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Position close disabled, pending {0} upgrade"
-msgstr "{0} 업그레이드를 위해 포지션 종료가 비활성화되었습니다"
+msgstr ""
 
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
@@ -2463,7 +2475,7 @@ msgstr "수익"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Profit price: {0} ${1}. This rule applies for the next {2}, until {3}."
-msgstr "수익 가격: {0} ${1}. 해당 규칙은 다음의 {2}동안, {3}까지 적용됩니다."
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
@@ -2565,7 +2577,7 @@ msgstr "청산 위험 감소하기"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Reducing the position at the current price will forfeit a <0>pending profit</0> of {deltaStr}. <1/>"
-msgstr "현재 가격에서 포지션을 줄이게되면 {deltaStr}의 <0>미확정손익</0>을 상실합니다."
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Referral Code"
@@ -2580,6 +2592,7 @@ msgid "Referral Codes"
 msgstr "추천인 코드"
 
 #: src/components/Footer/constants.ts
+#: src/pages/ReferralTerms/ReferralTerms.js
 msgid "Referral Terms"
 msgstr "추천 약관"
 
@@ -2608,6 +2621,7 @@ msgid "Referral code updated!"
 msgstr "추천인 코드 업데이트 완료!"
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/pages/Referrals/Referrals.js
 msgid "Referrals"
 msgstr "추천"
 
@@ -2633,7 +2647,7 @@ msgstr "{0} {longOrShortText} 인출 요청"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
-msgstr "{0} {longOrShortText} {sizeDeltaUsd} USD만큼의 감소 요청됨."
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Requested deposit of {0} {1} into {2} {longOrShortText}."
@@ -3100,6 +3114,7 @@ msgid "Telegram bot for Open Interest on GMX"
 msgstr "GMX 미결제약정을 위한 텔레그램 봇"
 
 #: src/components/Footer/constants.ts
+#: src/pages/TermsAndConditions/TermsAndConditions.js
 msgid "Terms and Conditions"
 msgstr "약관"
 
@@ -3194,7 +3209,7 @@ msgstr "해당 코드는 {0}에 아직 등록되지 않았기때문에, 소개 �
 
 #: src/components/Exchange/PositionSeller.js
 msgid "This order will forfeit a <0>profit</0> of {deltaStr}. <1/>"
-msgstr "해당 주문은 {deltaStr}의 <0>손익</0>을 상실하게 돕니다. <1/>"
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "This position was liquidated as the max leverage of 100x was exceeded."
@@ -3296,6 +3311,8 @@ msgstr "총 공급량"
 msgid "Total Trading Volume"
 msgstr "총 트레이딩 거래량"
 
+#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Home/Home.js
 msgid "Total Users"
 msgstr "총 유저"
@@ -3334,6 +3351,10 @@ msgstr ""
 #: src/components/Exchange/ExchangeBanner.js
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
 msgstr "GMX에서 트레이드하고 <0>$250.000</0> 상금을 획득하세요! 11월 30일까지 진행되며, <1>여기를 클릭해</1> 더 많은 정보를 확인하세요."
+
+#: src/components/Common/SEO.js
+msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet on Arbitrum and Avalanche."
+msgstr ""
 
 #: src/pages/Referrals/Referrals.js
 msgid "Traders"
@@ -3454,11 +3475,11 @@ msgstr "트리거"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Trigger Price"
-msgstr "트리거 가격"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Trigger order disabled, pending {0} upgrade"
-msgstr "{0} 업그레이들 위해 트리거 주문이 비활성화되었습니다."
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right"
@@ -3814,10 +3835,9 @@ msgstr ""
 msgid "You can change the \"Collateral In\" token above to find lower fees"
 msgstr "더 낮은 수수로를 찾기 위해 \"담보자산\"을 변경할 수 있습니다"
 
-#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
 msgid "You can change this in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are volatile."
-msgstr "페이지 우측 상단의 설정 메뉴를 통해 변경할 수 있습니다.<0/><1/>가격 변동이 심할 경우, 0.5%미만의 낮은 슬리피지는, 주문이 실패될 수 있습니다."
+msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "You can check your claim history <0>here</0>."
@@ -3826,6 +3846,10 @@ msgstr "<0>여기</0>에서 수령한 내역을 확인할 수 있습니다."
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
 msgstr "{1} {stakingToken} 대 1 esGMX 비율로 최대 {0} esGMX 토큰을 현재 베스팅 할 수 있습니다."
+
+#: src/components/Exchange/ConfirmationBox.js
+msgid "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are volatile."
+msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer AVAX from other networks to Avalanche using any of the below options:"
@@ -3849,7 +3873,7 @@ msgstr "{longOrShortText} {sizeInToken} {0} (${1})를 ${2} 가격에서 증가�
 
 #: src/components/Exchange/PositionSeller.js
 msgid "You have an active order to decrease {longOrShortText} {sizeInToken} {0} (${1}) at {prefix} {2}"
-msgstr "{longOrShortText} {sizeInToken} {0} (${1})을 {prefix} {2}에 감소시키는 액티브한 주문이 존재합니다."
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "You have multiple existing Increase {longOrShortText} {0} limit orders"

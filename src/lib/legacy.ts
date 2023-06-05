@@ -1413,8 +1413,8 @@ export function getProcessedData(
 }
 
 export function getPageTitle(data) {
-  return `${data} | Decentralized
-  Perpetual Exchange | GMX`;
+  const title = t`Decentralized Perpetual Exchange | GMX`;
+  return `${data} | ${title}`;
 }
 
 export function isHashZero(value) {

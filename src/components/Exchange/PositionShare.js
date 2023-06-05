@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { t, Trans } from "@lingui/macro";
 import { toJpeg } from "html-to-image";
-import cx from "classnames";
 import { BiCopy } from "react-icons/bi";
 import { RiFileDownloadLine } from "react-icons/ri";
 import { FiTwitter } from "react-icons/fi";
@@ -18,6 +17,7 @@ import shareBgImg from "img/position-share-bg.png";
 import { helperToast } from "lib/helperToast";
 import { formatAmount } from "lib/numbers";
 import downloadImage from "lib/downloadImage";
+import Button from "components/Button/Button";
 const ROOT_SHARE_URL = getRootShareApiUrl();
 const UPLOAD_URL = ROOT_SHARE_URL + "/api/upload";
 const UPLOAD_SHARE = ROOT_SHARE_URL + "/api/s";
@@ -99,25 +99,18 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
       {uploadedImageError && <span className="error">{uploadedImageError}</span>}
 
       <div className="actions">
-        <button disabled={!uploadedImageInfo} className="mr-base App-button-option" onClick={handleCopy}>
+        <Button variant="secondary" disabled={!uploadedImageInfo} className="mr-base" onClick={handleCopy}>
           <BiCopy className="icon" />
           <Trans>Copy</Trans>
-        </button>
-        <button disabled={!uploadedImageInfo} className="mr-base App-button-option" onClick={handleDownload}>
+        </Button>
+        <Button variant="secondary" disabled={!uploadedImageInfo} className="mr-base" onClick={handleDownload}>
           <RiFileDownloadLine className="icon" />
           <Trans>Download</Trans>
-        </button>
-        <div className={cx("tweet-link-container", { disabled: !uploadedImageInfo })}>
-          <a
-            target="_blank"
-            className={cx("tweet-link App-button-option", { disabled: !uploadedImageInfo })}
-            rel="noreferrer"
-            href={tweetLink}
-          >
-            <FiTwitter className="icon" />
-            <Trans>Tweet</Trans>
-          </a>
-        </div>
+        </Button>
+        <Button newTab variant="secondary" disabled={!uploadedImageInfo} className="mr-base" to={tweetLink}>
+          <FiTwitter className="icon" />
+          <Trans>Tweet</Trans>
+        </Button>
       </div>
     </Modal>
   );

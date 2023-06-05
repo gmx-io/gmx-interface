@@ -354,6 +354,7 @@ export const Exchange = forwardRef((props, ref) => {
     setSavedShouldShowPositionLines,
     connectWallet,
     savedShouldDisableValidationForTesting,
+    openSettings,
   } = props;
   const [showBanner, setShowBanner] = useLocalStorageSerializeKey("showBanner", true);
   const [bannerHidden, setBannerHidden] = useLocalStorageSerializeKey("bannerHidden", null);
@@ -525,7 +526,9 @@ export const Exchange = forwardRef((props, ref) => {
     const toToken = getTokenInfo(infoTokens, toTokenAddress);
     let selectedToken = getChartToken(swapOption, fromToken, toToken, chainId);
     let currentTokenPriceStr = formatAmount(selectedToken.maxPrice, USD_DECIMALS, 2, true);
-    let title = getPageTitle(currentTokenPriceStr + ` | ${selectedToken.symbol}${selectedToken.isStable ? "" : "USD"}`);
+    let title = getPageTitle(
+      currentTokenPriceStr + ` | ${selectedToken.symbol}${selectedToken.isStable ? "" : "-USD"}`
+    );
     document.title = title;
   }, [tokenSelection, swapOption, infoTokens, chainId, fromTokenAddress, toTokenAddress]);
 
@@ -867,6 +870,7 @@ export const Exchange = forwardRef((props, ref) => {
             minExecutionFeeErrorMessage={minExecutionFeeErrorMessage}
             usdgSupply={usdgSupply}
             totalTokenWeights={totalTokenWeights}
+            openSettings={openSettings}
           />
         )}
         {listSection === ORDERS && (

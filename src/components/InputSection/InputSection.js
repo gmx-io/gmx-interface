@@ -37,9 +37,9 @@ export default function InputSection(props) {
           )}
           {staticInput && <div className="InputSection-static-input">{inputValue}</div>}
           {showMaxButton && (
-            <div className="Exchange-swap-max" onClick={onClickMax}>
+            <button className="Exchange-swap-max" onClick={onClickMax}>
               <Trans>MAX</Trans>
-            </div>
+            </button>
           )}
         </div>
         <div className="PositionEditor-token-symbol">{props.children}</div>

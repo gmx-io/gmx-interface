@@ -53,7 +53,7 @@ export function RedirectPopupModal({
           <Trans>Don't show this message again for 30 days.</Trans>
         </Checkbox>
       </div>
-      <Button variant="primary-action" className="w-100" to={appRedirectUrl} onClick={onClickAgree}>
+      <Button variant="primary-action" className="w-full" to={appRedirectUrl} onClick={onClickAgree}>
         <Trans>Agree</Trans>
       </Button>
     </Modal>
