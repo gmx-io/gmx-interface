@@ -217,7 +217,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/12504/thumb/uniswap-uni.png?1600306604",
     },
     {
-      name: "Bridged USDC",
+      name: "USD Coin (USDC.e)",
       symbol: "USDC.e",
       decimals: 6,
       address: "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
@@ -634,6 +634,11 @@ export function getToken(chainId: number, address: string) {
 }
 
 export function getTokenBySymbol(chainId: number, symbol: string) {
+  if (chainId === ARBITRUM) {
+    if (symbol === "USDC") {
+      symbol = "USDC.e";
+    }
+  }
   const token = TOKENS_BY_SYMBOL_MAP[chainId][symbol];
   if (!token) {
     throw new Error(`Incorrect symbol "${symbol}" for chainId ${chainId}`);
