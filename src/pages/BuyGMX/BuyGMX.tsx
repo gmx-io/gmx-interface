@@ -23,10 +23,13 @@ import {
   GMX_FROM_ANY_NETWORKS,
   TRANSFER_EXCHANGES,
 } from "./constants";
+import { getIcons } from "config/icons";
 
 export default function BuyGMX() {
   const { chainId } = useChainId();
   const isArbitrum = chainId === ARBITRUM;
+  const icons = getIcons(chainId);
+  const chainName = getChainName(chainId);
   const { active } = useWeb3React();
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
   const externalLinks = EXTERNAL_LINKS[chainId];
@@ -47,7 +50,8 @@ export default function BuyGMX() {
         <div className="section-title-block">
           <div className="section-title-content">
             <div className="Page-title">
-              <Trans>Buy GMX on {getChainName(chainId)}</Trans>
+              <Trans>Buy GMX on {chainName}</Trans>
+              <img className="ml-xs" height={24} src={icons.network} alt={chainName} />
             </div>
             <div className="Page-description">
               <Trans>Choose to buy from decentralized or centralized exchanges.</Trans>
@@ -69,6 +73,7 @@ export default function BuyGMX() {
             <div className="section-title-content">
               <div className="Page-title">
                 <Trans>Buy or Transfer ETH to Arbitrum</Trans>
+                <img className="ml-xs" height={24} src={icons.network} alt={chainName} />
               </div>
               <div className="Page-description">
                 <Trans>Buy ETH directly on Arbitrum or transfer it there.</Trans>

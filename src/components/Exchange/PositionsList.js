@@ -28,6 +28,7 @@ import { getUsd } from "domain/tokens/utils";
 import { bigNumberify, formatAmount } from "lib/numbers";
 import { AiOutlineEdit } from "react-icons/ai";
 import useAccountType, { AccountType } from "lib/wallets/useAccountType";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 
 const getOrdersForPosition = (account, position, orders, nativeTokenAddress) => {
   if (!orders || orders.length === 0) {
@@ -247,6 +248,12 @@ export default function PositionsList(props) {
                 <div key={position.key} className="App-card">
                   <div>
                     <div className="App-card-title Position-card-title">
+                      <TokenIcon
+                        className="PositionList-token-icon"
+                        symbol={position.indexToken.symbol}
+                        displySize={20}
+                        importSize={24}
+                      />
                       <span className="Exchange-list-title">{position.indexToken.symbol}</span>
                       <div>
                         <span className="Position-leverage" onClick={openSettings}>
@@ -505,7 +512,17 @@ export default function PositionsList(props) {
                   <div className="Exchange-list-title">
                     {!hideActions ? (
                       <Tooltip
-                        handle={position.indexToken.symbol}
+                        handle={
+                          <>
+                            <TokenIcon
+                              className="PositionList-token-icon"
+                              symbol={position.indexToken.symbol}
+                              displySize={20}
+                              importSize={24}
+                            />
+                            {position.indexToken.symbol}
+                          </>
+                        }
                         position="left-bottom"
                         handleClassName="plain clickable"
                         renderContent={() => {

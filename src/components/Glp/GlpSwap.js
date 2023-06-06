@@ -20,7 +20,6 @@ import {
   SECONDS_PER_YEAR,
   USDG_DECIMALS,
   PLACEHOLDER_ACCOUNT,
-  importImage,
 } from "lib/legacy";
 
 import { useGmxPrice } from "domain/legacy";
@@ -52,9 +51,10 @@ import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, formatKey
 import { getNativeToken, getToken, getTokens, getWhitelistedTokens, getWrappedToken } from "config/tokens";
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { getIcon } from "config/icons";
+import { getIcon, getIcons } from "config/icons";
 import Button from "components/Button/Button";
 import { IoChevronDownOutline } from "react-icons/io5";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 
 const { AddressZero } = ethers.constants;
 
@@ -110,6 +110,7 @@ export default function GlpSwap(props) {
   const tabLabel = isBuying ? t`Buy GLP` : t`Sell GLP`;
   const { active, library, account } = useWeb3React();
   const { chainId } = useChainId();
+  const currentIcons = getIcons(chainId);
   const tokens = getTokens(chainId);
   const whitelistedTokens = getWhitelistedTokens(chainId);
   const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
@@ -968,8 +969,9 @@ export default function GlpSwap(props) {
         </div>
       </div>
       <div className="Tab-title-section">
-        <div className="Page-title">
+        <div className="Page-title items-center">
           <Trans>Save on Fees</Trans>
+          <img className="ml-xs" width="24" src={currentIcons.network} alt="Network Icon" />
         </div>
         {isBuying && (
           <div className="Page-description">
@@ -1087,7 +1089,6 @@ export default function GlpSwap(props) {
               if (tokenInfo && tokenInfo.minPrice && tokenInfo.balance) {
                 balanceUsd = tokenInfo.balance.mul(tokenInfo.minPrice).div(expandDecimals(1, token.decimals));
               }
-              const tokenImage = importImage("ic_" + token.symbol.toLowerCase() + "_40.svg");
               let isCapReached = tokenInfo.managedAmount?.gt(tokenInfo.maxUsdgAmount);
 
               let amountLeftToDeposit = bigNumberify(0);
@@ -1140,7 +1141,7 @@ export default function GlpSwap(props) {
                   <td>
                     <div className="App-card-title-info">
                       <div className="App-card-title-info-icon">
-                        <img src={tokenImage} alt={token.symbol} width="40" />
+                        <TokenIcon symbol={token.symbol} displySize={40} importSize={40} />
                       </div>
                       <div className="App-card-title-info-text">
                         <div className="App-card-info-title">{token.name}</div>
@@ -1277,11 +1278,11 @@ export default function GlpSwap(props) {
                   return "";
               }
             }
-            const tokenImage = importImage("ic_" + token.symbol.toLowerCase() + "_24.svg");
+
             return (
               <div className="App-card" key={token.symbol}>
                 <div className="mobile-token-card">
-                  <img src={tokenImage} alt={token.symbol} width="20px" />
+                  <TokenIcon symbol={token.symbol} displySize={24} importSize={24} />
                   <div className="token-symbol-text">{token.symbol}</div>
                   <div>
                     <AssetDropdown assetSymbol={token.symbol} assetInfo={token} />

@@ -8,7 +8,7 @@ import glpIcon from "img/ic_glp_40.svg";
 import gmxArbitrum from "img/ic_gmx_arbitrum.svg";
 import gmxAvax from "img/ic_gmx_avax.svg";
 import glpArbitrum from "img/ic_glp_arbitrum.svg";
-import glpAvax from "img/ic_glp_avax.svg";
+import glpAvax from "img/ic_glp_avalanche.svg";
 
 const ICONS = {
   [ARBITRUM]: {

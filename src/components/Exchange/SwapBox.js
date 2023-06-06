@@ -83,6 +83,7 @@ import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import LeverageSlider from "./LeverageSlider";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import FeesTooltip from "./FeesTooltip";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -1944,6 +1945,7 @@ export default function SwapBox(props) {
                   infoTokens={infoTokens}
                   showMintingCap={false}
                   showTokenImgInDropdown={true}
+                  showSymbolImage
                 />
               </BuyInputSection>
               <div className="Exchange-swap-ball-container">
@@ -1972,6 +1974,7 @@ export default function SwapBox(props) {
                   tokens={toTokens}
                   infoTokens={infoTokens}
                   showTokenImgInDropdown={true}
+                  showSymbolImage
                 />
               </BuyInputSection>
             </React.Fragment>
@@ -2251,7 +2254,9 @@ export default function SwapBox(props) {
         {(isLong || isShort) && (
           <div className="Exchange-swap-market-box App-box App-box-border">
             <div className="Exchange-swap-market-box-title">
-              {isLong ? t`Long` : t`Short`}&nbsp;{toToken.symbol}
+              {isLong ? t`Long` : t`Short`}&nbsp;{" "}
+              <TokenIcon className="mr-xxs" symbol={toToken.symbol} displySize={16} importSize={24} />
+              {toToken.symbol}
             </div>
             <div className="App-card-divider" />
             <div className="Exchange-info-row">

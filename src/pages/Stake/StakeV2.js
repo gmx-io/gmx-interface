@@ -51,6 +51,7 @@ import GMXAprTooltip from "components/Stake/GMXAprTooltip";
 import Button from "components/Button/Button";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import { getIcons } from "config/icons";
 
 const { AddressZero } = ethers.constants;
 
@@ -876,9 +877,8 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
   const { chainId } = useChainId();
 
   const chainName = getChainName(chainId);
-
+  const icons = getIcons(chainId);
   const hasInsurance = true;
-
   const [isStakeModalVisible, setIsStakeModalVisible] = useState(false);
   const [stakeModalTitle, setStakeModalTitle] = useState("");
   const [stakeModalMaxAmount, setStakeModalMaxAmount] = useState(undefined);
@@ -1415,8 +1415,9 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
       <div className="section-title-block">
         <div className="section-title-icon"></div>
         <div className="section-title-content">
-          <div className="Page-title">
+          <div className="Page-title items-center">
             <Trans>Earn</Trans>
+            <img className="ml-xs" alt="GMX" src={icons.network} height={24} />
           </div>
           <div className="Page-description">
             <Trans>
@@ -1430,7 +1431,12 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
       <div className="StakeV2-content">
         <div className="StakeV2-cards">
           <div className="App-card StakeV2-gmx-card">
-            <div className="App-card-title">GMX</div>
+            <div className="App-card-title">
+              <div className="items-center">
+                <img className="mr-xs" alt="GMX" src={icons.gmx} height={20} />
+                GMX
+              </div>
+            </div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
@@ -1703,7 +1709,12 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
             </div>
           </div>
           <div className="App-card">
-            <div className="App-card-title">GLP ({chainName})</div>
+            <div className="App-card-title">
+              <div className="items-center">
+                <img className="mr-xs" alt="GLP" src={icons.glp} height={20} />
+                GLP ({chainName})
+              </div>
+            </div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
@@ -1965,7 +1976,10 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
           <div className="StakeV2-cards">
             <div className="App-card StakeV2-gmx-card">
               <div className="App-card-title">
-                <Trans>GMX Vault</Trans>
+                <div className="items-center">
+                  <img className="mr-xs" alt="GMX" src={icons.gmx} height={20} />
+                  <Trans>GMX Vault</Trans>
+                </div>
               </div>
               <div className="App-card-divider"></div>
               <div className="App-card-content">
@@ -2079,7 +2093,10 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
             </div>
             <div className="App-card StakeV2-gmx-card">
               <div className="App-card-title">
-                <Trans>GLP Vault</Trans>
+                <div className="items-center">
+                  <img className="mr-xs" alt="GLP" src={icons.glp} height={20} />
+                  <Trans>GLP Vault</Trans>
+                </div>
               </div>
               <div className="App-card-divider"></div>
               <div className="App-card-content">

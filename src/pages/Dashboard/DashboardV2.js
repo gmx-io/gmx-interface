@@ -16,7 +16,6 @@ import {
   BASIS_POINTS_DIVISOR,
   DEFAULT_MAX_USDG_AMOUNT,
   getPageTitle,
-  importImage,
   arrayURLFetcher,
 } from "lib/legacy";
 import { useTotalGmxInLiquidity, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
@@ -46,6 +45,7 @@ import { useChainId } from "lib/chains";
 import { formatDate } from "lib/dates";
 import { getIcons } from "config/icons";
 import useUniqueUsers from "domain/stats/useUniqueUsers";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;
@@ -472,8 +472,8 @@ export default function DashboardV2() {
         <div className="section-title-block">
           <div className="section-title-icon"></div>
           <div className="section-title-content">
-            <div className="Page-title">
-              <Trans>Stats</Trans> <img width="24" src={currentIcons.network} alt="Network Icon" />
+            <div className="Page-title items-center">
+              <Trans>Stats</Trans> <img className="ml-xs" width="24" src={currentIcons.network} alt="Network Icon" />
             </div>
             <div className="Page-description">
               <Trans>
@@ -721,8 +721,8 @@ export default function DashboardV2() {
             </div>
           </div>
           <div className="Tab-title-section">
-            <div className="Page-title">
-              <Trans>Tokens</Trans> <img src={currentIcons.network} width="24" alt="Network Icon" />
+            <div className="Page-title items-center">
+              <Trans>Tokens</Trans> <img className="ml-xs" src={currentIcons.network} width="24" alt="Network Icon" />
             </div>
             <div className="Page-description">
               <Trans>Platform and GLP index tokens.</Trans>
@@ -984,7 +984,6 @@ export default function DashboardV2() {
                     if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
                       maxUsdgAmount = tokenInfo.maxUsdgAmount;
                     }
-                    const tokenImage = importImage("ic_" + token.symbol.toLowerCase() + "_40.svg");
 
                     return (
                       <tr key={token.symbol}>
@@ -992,7 +991,7 @@ export default function DashboardV2() {
                           <div className="token-symbol-wrapper">
                             <div className="App-card-title-info">
                               <div className="App-card-title-info-icon">
-                                <img src={tokenImage} alt={token.symbol} width="40" />
+                                <TokenIcon symbol={token.symbol} displySize={40} importSize={40} />
                               </div>
                               <div className="App-card-title-info-text">
                                 <div className="App-card-info-title">{token.name}</div>
@@ -1061,12 +1060,11 @@ export default function DashboardV2() {
                   maxUsdgAmount = tokenInfo.maxUsdgAmount;
                 }
 
-                const tokenImage = importImage("ic_" + token.symbol.toLowerCase() + "_24.svg");
                 return (
                   <div className="App-card" key={token.symbol}>
                     <div className="App-card-title">
                       <div className="mobile-token-card">
-                        <img src={tokenImage} alt={token.symbol} width="20px" />
+                        <TokenIcon symbol={token.symbol} importSize={24} displySize={24} />
                         <div className="token-symbol-text">{token.symbol}</div>
                         <div>
                           <AssetDropdown assetSymbol={token.symbol} assetInfo={token} />

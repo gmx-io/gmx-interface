@@ -9,12 +9,14 @@ import { Trans } from "@lingui/macro";
 import { getNativeToken } from "config/tokens";
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { getIcons } from "config/icons";
 
 export default function BuyGlp(props) {
   const { chainId } = useChainId();
   const history = useHistory();
   const [isBuying, setIsBuying] = useState(true);
   const nativeTokenSymbol = getNativeToken(chainId).symbol;
+  const currentIcons = getIcons(chainId);
 
   useEffect(() => {
     const hash = history.location.hash.replace("#", "");
@@ -26,8 +28,9 @@ export default function BuyGlp(props) {
     <div className="default-container page-layout">
       <div className="section-title-block">
         <div className="section-title-content">
-          <div className="Page-title">
+          <div className="Page-title items-center">
             <Trans>Buy / Sell GLP</Trans>
+            <img className="ml-xs" width="24" src={currentIcons.network} alt="Network Icon" />
           </div>
           <div className="Page-description">
             <Trans>

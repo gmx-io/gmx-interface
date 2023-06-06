@@ -442,8 +442,8 @@ msgid "Buy GMX from decentralized exchanges"
 msgstr "Buy GMX from decentralized exchanges"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX on {0}"
-msgstr "Buy GMX on {0}"
+msgid "Buy GMX on {chainName}"
+msgstr "Buy GMX on {chainName}"
 
 #: src/pages/Buy/Buy.js
 msgid "Buy GMX or GLP"

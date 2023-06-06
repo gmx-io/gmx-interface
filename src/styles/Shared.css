@@ -452,3 +452,25 @@ button.btn-link:hover .logout-icon {
 .text-gray {
   color: var(--text-gray);
 }
+
+.inline-flex {
+  display: inline-flex;
+}
+
+.items-center {
+  display: inline-flex;
+  align-items: center;
+}
+
+.mr-xxs {
+  margin-right: 0.25rem;
+}
+.mr-xs {
+  margin-right: 0.5rem;
+}
+.ml-xxs {
+  margin-left: 0.25rem;
+}
+.ml-xs {
+  margin-left: 0.5rem;
+}

@@ -5,6 +5,7 @@ import cx from "classnames";
 import "./ChartTokenSelector.css";
 import { LONG, SHORT, SWAP } from "lib/legacy";
 import { getTokens, getWhitelistedTokens } from "config/tokens";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 
 export default function ChartTokenSelector(props) {
   const { chainId, selectedToken, onSelectToken, swapOption } = props;
@@ -30,12 +31,19 @@ export default function ChartTokenSelector(props) {
   };
 
   var value = selectedToken;
+  const displyTokenLabel = `${value.symbol} / USD`;
 
   return (
     <Menu>
       <Menu.Button as="div" disabled={isSwap}>
-        <button className={cx("App-cta small transparent chart-token-selector", { "default-cursor": isSwap })}>
-          <span className="chart-token-selector--current">{value.symbol} / USD</span>
+        <button className={cx("chart-token-selector", { "default-cursor": isSwap })}>
+          <TokenIcon
+            className="chart-token-selector-img"
+            symbol={selectedToken.symbol}
+            displySize={20}
+            importSize={24}
+          />
+          <span className="chart-token-selector--current">{displyTokenLabel}</span>
           {!isSwap && <FaChevronDown />}
         </button>
       </Menu.Button>

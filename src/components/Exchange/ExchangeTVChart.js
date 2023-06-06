@@ -304,7 +304,7 @@ export default function ExchangeTVChart(props) {
               ${chartToken.minPrice && formatAmount(chartToken.minPrice, USD_DECIMALS, 2, true)}
             </div>
           </div>
-          <div>
+          <div className="ExchnageChart-24h">
             <div className="ExchangeChart-info-label">24h Change</div>
             <div className={cx({ positive: deltaPercentage > 0, negative: deltaPercentage < 0 })}>
               {!deltaPercentageStr && "-"}

@@ -598,6 +598,7 @@ table.Exchange-list th {
 .Exchange-swap-market-box-title {
   font-size: var(--font-md);
   margin-bottom: 1.25rem;
+  display: flex;
 }
 
 .Exchange-swap-box-inner {
@@ -808,6 +809,10 @@ table.Exchange-list-small td {
   width: 3.1rem;
   display: inline-block;
   white-space: nowrap;
+}
+
+.PositionList-token-icon {
+  margin-right: 0.5rem;
 }
 
 .Exchange-list-info-label {
@@ -1090,6 +1095,12 @@ table.Exchange-list-small td {
   }
   .Exchange-list.small {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 350px) {
+  .ExchnageChart-24h {
+    display: none;
   }
 }
 
