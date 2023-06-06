@@ -7,7 +7,7 @@ import githubIcon from "img/ic_github.svg";
 import substackIcon from "img/ic_substack.svg";
 
 type Link = {
-  text: string;
+  label: string;
   link: string;
   external?: boolean;
   isAppLink?: boolean;
@@ -19,20 +19,19 @@ type SocialLink = {
   icon: string;
 };
 
-export const FOOTER_LINKS: { home: Link[]; app: Link[] } = {
-  home: [
-    { text: t`Terms and Conditions`, link: "/terms-and-conditions" },
-    { text: t`Referral Terms`, link: "/referral-terms" },
-    { text: t`Media Kit`, link: "https://gmxio.gitbook.io/gmx/media-kit", external: true },
-    // { text: "Jobs", link: "/jobs", isAppLink: true },
-  ],
-  app: [
-    { text: t`Media Kit`, link: "https://gmxio.gitbook.io/gmx/media-kit", external: true },
-    // { text: "Jobs", link: "/jobs" },
-  ],
-};
-
 export function getFooterLinks(isHome) {
+  const FOOTER_LINKS: { home: Link[]; app: Link[] } = {
+    home: [
+      { label: t`Terms and Conditions`, link: "/terms-and-conditions" },
+      { label: t`Referral Terms`, link: "/referral-terms" },
+      { label: t`Media Kit`, link: "https://gmxio.gitbook.io/gmx/media-kit", external: true },
+      // { label: "Jobs", link: "/jobs", isAppLink: true },
+    ],
+    app: [
+      { label: t`Media Kit`, link: "https://gmxio.gitbook.io/gmx/media-kit", external: true },
+      // { label: "Jobs", link: "/jobs" },
+    ],
+  };
   return FOOTER_LINKS[isHome ? "home" : "app"];
 }
 

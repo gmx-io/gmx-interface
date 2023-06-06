@@ -1,4 +1,3 @@
-import { i18n } from "@lingui/core";
 import { t, Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -22,7 +21,7 @@ function getFeeLabel(type: FeeType) {
     deposit: t`Deposit Fee`,
     execution: t`Execution Fee`,
   };
-  return i18n._(/*i18n*/ labels[type]);
+  return labels[type];
 }
 
 function getExecutionFeeStr(chainId, executionFee, executionFeeUsd) {
