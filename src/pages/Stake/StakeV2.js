@@ -1648,9 +1648,9 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               </div>
               <div className="App-card-divider" />
               <div className="App-card-buttons m-0">
-                <Button variant="semi-clear" to="/buy_gmx">
+                {/* <Button variant="semi-clear" to="/buy_gmx">
                   <Trans>Buy GMX</Trans>
-                </Button>
+                </Button> */}
                 {active && (
                   <Button variant="semi-clear" onClick={() => showStakeGmxModal()}>
                     <Trans>Stake</Trans>
