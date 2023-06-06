@@ -24,12 +24,13 @@ const DISABLED_MARKETS = {
     // "0xB9bc5B9A2401F5ED866ee27e80De01da88291215": true,
   },
   [ARBITRUM_GOERLI]: {
-    // "0x6b3B6CAB5Cc605E5Fb312e5fBB6b2Ac3CA47f1cA": true,
-    // "0xD03f452046024d10FCF733E016DD451ecfA8bE81": true,
-    // "0x5BF821F3E457e15073ccedDe1E8B22ECc383B66F": true,
-    // "0x05225ff4f7c6637832527D4C37d14f36ccbe3477": true,
-    // "0x2eEE1e25e317Fb134812a6494512C2C6e45e5e9E": true,
-    // "0x1F9939015D76cb91b27B5A0c6dA9ad797005C12B": true,
+    "0x056a0d631920D8A37EacA2521911072F7a5c33F9": true,
+    "0x9F551A599FB0584739eDC641634F244e89100d0c": true,
+    "0x577a79FB4e5c9987fe41A4DD84ca54Df54Ba8431": true,
+    "0x47E80247037722B762dc0B516Cb47dCb061ad56A": true,
+    "0x1AF827a3E41F6648757270Ba3C7bD74563666bBd": true,
+    "0xb590091Eb0EB48259475f17c812743218Fe772f5": true,
+    "0xF95A9B0B47D560EDCce67356B3d6aEA0cA15CfBd": true,
   },
 };
 
@@ -90,8 +91,6 @@ export function useMarkets(chainId: number): MarketsResult {
       );
     },
   });
-
-  // console.log("markets", data?.marketsData);
 
   return {
     marketsData: data?.marketsData,

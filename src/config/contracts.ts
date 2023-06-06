@@ -128,7 +128,7 @@ const CONTRACTS = {
     SyntheticsRouter: "0xd9E55a9f0a4D0E89B23f9CFDB7a0C59C058939ec",
     Timelock: AddressZero,
 
-    Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
+    Multicall: "0x6d85594c9BD6b0833bC85AE62B360654A1e52D70",
   },
   [ARBITRUM]: {
     // arbitrum mainnet
