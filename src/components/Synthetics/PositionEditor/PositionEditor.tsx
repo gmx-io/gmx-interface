@@ -461,6 +461,7 @@ export function PositionEditor(p: Props) {
                   className="Edit-collateral-token-selector"
                   showSymbolImage={true}
                   showTokenImgInDropdown={true}
+                  showBalances={false}
                 />
               ) : (
                 collateralToken?.symbol
