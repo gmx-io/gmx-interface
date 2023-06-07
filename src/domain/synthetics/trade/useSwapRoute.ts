@@ -1,5 +1,6 @@
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getWrappedToken } from "config/tokens";
-import { useMarketsInfo } from "domain/synthetics/markets";
+import { MarketsInfoData } from "domain/synthetics/markets";
+import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { useCallback, useMemo } from "react";
 import { FindSwapPath, MarketEdge } from "./types";
@@ -11,8 +12,6 @@ import {
   getMaxSwapPathLiquidity,
   getSwapPathStats,
 } from "./utils";
-import { BigNumber } from "ethers";
-import { useVirtualInventory } from "../fees/useVirtualInventory";
 
 export type SwapRoutesResult = {
   allPaths?: MarketEdge[][];
@@ -21,11 +20,13 @@ export type SwapRoutesResult = {
   findSwapPath: FindSwapPath;
 };
 
-export function useSwapRoutes(p: { fromTokenAddress?: string; toTokenAddress?: string }): SwapRoutesResult {
-  const { fromTokenAddress, toTokenAddress } = p;
+export function useSwapRoutes(p: {
+  marketsInfoData?: MarketsInfoData;
+  fromTokenAddress?: string;
+  toTokenAddress?: string;
+}): SwapRoutesResult {
+  const { fromTokenAddress, toTokenAddress, marketsInfoData } = p;
   const { chainId } = useChainId();
-  const { marketsInfoData } = useMarketsInfo(chainId);
-  const { virtualInventoryForSwaps } = useVirtualInventory(chainId);
 
   const wrappedToken = getWrappedToken(chainId);
 
@@ -37,15 +38,15 @@ export function useSwapRoutes(p: { fromTokenAddress?: string; toTokenAddress?: s
   const wrappedToAddress = toTokenAddress ? convertTokenAddress(chainId, toTokenAddress, "wrapped") : undefined;
 
   const { graph, estimator } = useMemo(() => {
-    if (!marketsInfoData || !virtualInventoryForSwaps) {
+    if (!marketsInfoData) {
       return {};
     }
 
     return {
       graph: getMarketsGraph(Object.values(marketsInfoData)),
-      estimator: createSwapEstimator(marketsInfoData, virtualInventoryForSwaps),
+      estimator: createSwapEstimator(marketsInfoData),
     };
-  }, [marketsInfoData, virtualInventoryForSwaps]);
+  }, [marketsInfoData]);
 
   const allPaths = useMemo(() => {
     if (!graph || !wrappedFromAddress || !wrappedToAddress || isWrap || isUnwrap || isSameToken) {
@@ -86,7 +87,7 @@ export function useSwapRoutes(p: { fromTokenAddress?: string; toTokenAddress?: s
 
   const findSwapPath = useCallback(
     (usdIn: BigNumber, opts: { shouldApplyPriceImpact: boolean }) => {
-      if (!allPaths || !estimator || !marketsInfoData || !fromTokenAddress || !virtualInventoryForSwaps) {
+      if (!allPaths || !estimator || !marketsInfoData || !fromTokenAddress) {
         return undefined;
       }
 
@@ -106,7 +107,6 @@ export function useSwapRoutes(p: { fromTokenAddress?: string; toTokenAddress?: s
         shouldUnwrapNativeToken: toTokenAddress === NATIVE_TOKEN_ADDRESS,
         shouldApplyPriceImpact: opts.shouldApplyPriceImpact,
         usdIn,
-        virtualInventoryForSwaps,
       });
 
       if (!swapPathStats) {
@@ -115,15 +115,7 @@ export function useSwapRoutes(p: { fromTokenAddress?: string; toTokenAddress?: s
 
       return swapPathStats;
     },
-    [
-      allPaths,
-      estimator,
-      fromTokenAddress,
-      marketsInfoData,
-      toTokenAddress,
-      virtualInventoryForSwaps,
-      wrappedToken.address,
-    ]
+    [allPaths, estimator, fromTokenAddress, marketsInfoData, toTokenAddress, wrappedToken.address]
   );
 
   return {

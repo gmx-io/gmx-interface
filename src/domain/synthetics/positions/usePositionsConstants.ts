@@ -28,10 +28,12 @@ export function usePositionsConstants(chainId: number): PositionsConstantsResult
         },
       },
     },
-    parseResponse: (res) => ({
-      minCollateralUsd: res.dataStore.minCollateralUsd.returnValues[0] as BigNumber,
-      minPositionSizeIsd: res.dataStore.minPositionSizeUsd.returnValues[0] as BigNumber,
-    }),
+    parseResponse: (res) => {
+      return {
+        minCollateralUsd: res.dataStore.minCollateralUsd.returnValues[0] as BigNumber,
+        minPositionSizeUsd: res.dataStore.minPositionSizeUsd.returnValues[0] as BigNumber,
+      };
+    },
   });
 
   return data || {};

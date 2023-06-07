@@ -31,13 +31,3 @@ export type GasLimitsConfig = {
   estimatedFeeBaseGasLimit: BigNumber;
   estimatedFeeMultiplierFactor: BigNumber;
 };
-
-export type VirtualInventoryForSwapsData = {
-  [marketAddress: string]: {
-    [tokenAddress: string]: BigNumber;
-  };
-};
-
-export type VirtualInventoryForPositionsData = {
-  [tokenAddress: string]: BigNumber;
-};

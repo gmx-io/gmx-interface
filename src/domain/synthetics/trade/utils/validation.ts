@@ -4,7 +4,7 @@ import { MarketInfo } from "domain/synthetics/markets";
 import { PositionInfo } from "domain/synthetics/positions";
 import { TokenData, TokensRatio } from "domain/synthetics/tokens";
 import { getIsEquivalentTokens } from "domain/tokens";
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { BASIS_POINTS_DIVISOR, DUST_USD, MAX_ALLOWED_LEVERAGE, USD_DECIMALS, isAddressZero } from "lib/legacy";
 import { expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 import { NextPositionValues, SwapPathStats, TradeFees } from "../types";
@@ -276,7 +276,7 @@ export function getDecreaseError(p: {
       return [t`Enter a trigger price`];
     }
 
-    if (existingPosition?.liquidationPrice) {
+    if (existingPosition?.liquidationPrice && existingPosition.liquidationPrice !== ethers.constants.MaxUint256) {
       if (isLong && triggerPrice.lte(existingPosition.liquidationPrice)) {
         return [t`Price below Liq. Price`];
       }

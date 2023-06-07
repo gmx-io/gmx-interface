@@ -33,14 +33,14 @@ import {
 } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
-import { PositionInfo, formatLeverage, getPositionKey } from "domain/synthetics/positions";
+import { PositionInfo, formatLeverage, formatLiquidationPrice, getPositionKey } from "domain/synthetics/positions";
 import {
   TokenData,
+  TokensData,
   TokensRatio,
   convertToTokenAmount,
   formatTokensRatio,
   getNeedTokenApprove,
-  useAvailableTokensData,
   useTokensAllowanceData,
 } from "domain/synthetics/tokens";
 import {
@@ -64,10 +64,10 @@ import {
   formatTokenAmountWithUsd,
   formatUsd,
 } from "lib/numbers";
+import { usePrevious } from "lib/usePrevious";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./ConfirmationBox.scss";
-import { usePrevious } from "lib/usePrevious";
 
 export type Props = {
   isVisible: boolean;
@@ -97,6 +97,7 @@ export type Props = {
   allowedSlippage?: number;
   isHigherSlippageAllowed?: boolean;
   ordersData?: OrdersInfoData;
+  tokensData?: TokensData;
   setIsHigherSlippageAllowed: (isHigherSlippageAllowed: boolean) => void;
   setKeepLeverage: (keepLeverage: boolean) => void;
   onClose: () => void;
@@ -133,6 +134,7 @@ export function ConfirmationBox(p: Props) {
     allowedSlippage,
     isHigherSlippageAllowed,
     ordersData,
+    tokensData,
     setIsHigherSlippageAllowed,
     setKeepLeverage,
     onClose,
@@ -146,7 +148,6 @@ export function ConfirmationBox(p: Props) {
 
   const { library, account } = useWeb3React();
   const { chainId } = useChainId();
-  const { tokensData } = useAvailableTokensData(chainId);
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
 
   const prevIsVisible = usePrevious(p.isVisible);
@@ -898,11 +899,11 @@ export function ConfirmationBox(p: Props) {
             label={t`Liq. Price`}
             value={
               <ValueTransition
-                from={formatUsd(p.existingPosition?.liquidationPrice, {
+                from={formatLiquidationPrice(p.existingPosition?.liquidationPrice, {
                   displayDecimals: existingPriceDecimals,
                 })}
                 to={
-                  formatUsd(nextPositionValues?.nextLiqPrice, {
+                  formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
                     displayDecimals: toTokenPriceDecimals,
                   }) || "-"
                 }
@@ -1088,7 +1089,7 @@ export function ConfirmationBox(p: Props) {
           )}
           <ExchangeInfoRow
             label={t`Trigger Price`}
-            value={triggerPrice ? `${decreaseAmounts?.triggerPricePrefix} ${formatUsd(triggerPrice)}` : "..."}
+            value={triggerPrice ? `${decreaseAmounts?.triggerThresholdType} ${formatUsd(triggerPrice)}` : "..."}
           />
 
           <ExchangeInfoRow isTop label={t`Mark Price`} value={p.markPrice ? formatUsd(p.markPrice) : "..."} />
@@ -1096,7 +1097,7 @@ export function ConfirmationBox(p: Props) {
           <ExchangeInfoRow
             className="SwapBox-info-row"
             label={t`Acceptable Price Impact`}
-            value={formatPercentage(decreaseAmounts?.acceptablePriceImpactBps?.mul(-1)) || "-"}
+            value={formatPercentage(decreaseAmounts?.acceptablePriceDeltaBps?.mul(-1)) || "-"}
           />
 
           <ExchangeInfoRow
@@ -1172,8 +1173,8 @@ export function ConfirmationBox(p: Props) {
                 <ValueTransition
                   from={
                     <>
-                      {formatDeltaUsd(decreaseAmounts?.exitPnl)} (
-                      {formatPercentage(decreaseAmounts?.exitPnlPercentage, { signed: true })})
+                      {formatDeltaUsd(decreaseAmounts?.estimatedPnl)} (
+                      {formatPercentage(decreaseAmounts?.estimatedPnlPercentage, { signed: true })})
                     </>
                   }
                   to={

@@ -21,7 +21,6 @@ import {
   getSyntheticsListSectionKey,
 } from "config/localStorage";
 import { getToken } from "config/tokens";
-import { useVirtualInventory } from "domain/synthetics/fees/useVirtualInventory";
 import { isSwapOrderType } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useOrdersInfo } from "domain/synthetics/orders/useOrdersInfo";
@@ -36,6 +35,7 @@ import { getByKey } from "lib/objects";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useSelectedTradeOption } from "domain/synthetics/trade/useSelectedTradeOption";
+import { useMarketsInfo } from "domain/synthetics/markets";
 
 export type Props = {
   savedIsPnlInLeverage: boolean;
@@ -72,11 +72,16 @@ export function SyntheticsPage(p: Props) {
   } = p;
   const { chainId } = useChainId();
   const { library, account } = useWeb3React();
-  const { virtualInventoryForPositions } = useVirtualInventory(chainId);
+  const { marketsInfoData, tokensData, pricesUpdatedAt } = useMarketsInfo(chainId);
+
   const { positionsInfoData, isLoading: isPositionsLoading } = usePositionsInfo(chainId, {
+    marketsInfoData,
+    tokensData,
+    pricesUpdatedAt,
     showPnlInLeverage: savedIsPnlInLeverage,
   });
-  const { ordersInfoData, isLoading: isOrdersLoading } = useOrdersInfo(chainId);
+
+  const { ordersInfoData, isLoading: isOrdersLoading } = useOrdersInfo(chainId, { marketsInfoData, tokensData });
 
   const {
     tradeType,
@@ -93,7 +98,6 @@ export function SyntheticsPage(p: Props) {
     collateralToken,
     availableTokensOptions,
     avaialbleTradeModes,
-    tokensData,
     setTradeType,
     setTradeMode,
     setFromTokenAddress,
@@ -102,7 +106,7 @@ export function SyntheticsPage(p: Props) {
     setCollateralAddress,
     setActivePosition,
     switchTokenAddresses,
-  } = useSelectedTradeOption(chainId);
+  } = useSelectedTradeOption(chainId, { marketsInfoData, tokensData });
 
   const [listSection, setListSection] = useLocalStorageSerializeKey(
     getSyntheticsListSectionKey(chainId),
@@ -116,16 +120,21 @@ export function SyntheticsPage(p: Props) {
     if (!fromTokenAddress || !toTokenAddress) {
       return {};
     }
-    const fromToken = getToken(chainId, fromTokenAddress);
-    const toToken = getToken(chainId, toTokenAddress);
 
-    const chartToken = isSwap && toToken?.isStable && !fromToken?.isStable ? fromToken : toToken;
-    const availableChartTokens = isSwap ? [chartToken] : indexTokens;
+    try {
+      const fromToken = getToken(chainId, fromTokenAddress);
+      const toToken = getToken(chainId, toTokenAddress);
 
-    return {
-      chartToken,
-      availableChartTokens,
-    };
+      const chartToken = isSwap && toToken?.isStable && !fromToken?.isStable ? fromToken : toToken;
+      const availableChartTokens = isSwap ? [chartToken] : indexTokens;
+
+      return {
+        chartToken,
+        availableChartTokens,
+      };
+    } catch (e) {
+      return {};
+    }
   }, [chainId, fromTokenAddress, indexTokens, isSwap, toTokenAddress]);
 
   const [closingPositionKey, setClosingPositionKey] = useState<string>();
@@ -224,6 +233,7 @@ export function SyntheticsPage(p: Props) {
       <div className="Exchange-content">
         <div className="Exchange-left">
           <TVChart
+            tokensData={tokensData}
             savedShouldShowPositionLines={savedShouldShowPositionLines}
             ordersInfo={ordersInfoData}
             positionsInfo={positionsInfoData}
@@ -291,6 +301,8 @@ export function SyntheticsPage(p: Props) {
             )}
             {listSection === ListSection.Orders && (
               <OrderList
+                marketsInfoData={marketsInfoData}
+                tokensData={tokensData}
                 positionsData={positionsInfoData}
                 ordersData={ordersInfoData}
                 selectedOrdersKeys={selectedOrdersKeys}
@@ -299,8 +311,12 @@ export function SyntheticsPage(p: Props) {
                 setPendingTxns={setPendingTxns}
               />
             )}
-            {listSection === ListSection.Trades && <TradeHistory shouldShowPaginationButtons />}
-            {listSection === ListSection.Claims && <ClaimHistory shouldShowPaginationButtons />}
+            {listSection === ListSection.Trades && (
+              <TradeHistory marketsInfoData={marketsInfoData} tokensData={tokensData} shouldShowPaginationButtons />
+            )}
+            {listSection === ListSection.Claims && (
+              <ClaimHistory marketsInfoData={marketsInfoData} tokensData={tokensData} shouldShowPaginationButtons />
+            )}
           </div>
         </div>
 
@@ -331,7 +347,7 @@ export function SyntheticsPage(p: Props) {
               tokensData={tokensData}
               ordersInfo={ordersInfoData}
               positionsInfo={positionsInfoData}
-              virtualInventoryForPositions={virtualInventoryForPositions}
+              marketsInfoData={marketsInfoData}
               setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
               onSelectMarketAddress={setMarketAddress}
               onSelectCollateralAddress={setCollateralAddress}
@@ -375,6 +391,8 @@ export function SyntheticsPage(p: Props) {
           )}
           {listSection === ListSection.Orders && (
             <OrderList
+              marketsInfoData={marketsInfoData}
+              tokensData={tokensData}
               positionsData={positionsInfoData}
               ordersData={ordersInfoData}
               isLoading={isOrdersLoading}
@@ -383,13 +401,19 @@ export function SyntheticsPage(p: Props) {
               setPendingTxns={setPendingTxns}
             />
           )}
-          {listSection === ListSection.Trades && <TradeHistory shouldShowPaginationButtons />}
-          {listSection === ListSection.Claims && <ClaimHistory shouldShowPaginationButtons />}
+          {listSection === ListSection.Trades && (
+            <TradeHistory marketsInfoData={marketsInfoData} tokensData={tokensData} shouldShowPaginationButtons />
+          )}
+          {listSection === ListSection.Claims && (
+            <ClaimHistory marketsInfoData={marketsInfoData} tokensData={tokensData} shouldShowPaginationButtons />
+          )}
         </div>
       </div>
 
       <PositionSeller
         position={closingPosition!}
+        marketsInfoData={marketsInfoData}
+        tokensData={tokensData}
         showPnlInLeverage={savedIsPnlInLeverage}
         onClose={onPositionSellerClose}
         setPendingTxns={setPendingTxns}
@@ -401,6 +425,7 @@ export function SyntheticsPage(p: Props) {
       />
 
       <PositionEditor
+        tokensData={tokensData}
         showPnlInLeverage={savedIsPnlInLeverage}
         position={editingPosition}
         allowedSlippage={allowedSlippage}
@@ -416,7 +441,12 @@ export function SyntheticsPage(p: Props) {
         onClose={() => setIsAcceptablePriceImpactEditing(false)}
       />
 
-      <ClaimModal isVisible={isClaiming} onClose={() => setIsClaiming(false)} setPendingTxns={setPendingTxns} />
+      <ClaimModal
+        marketsInfoData={marketsInfoData}
+        isVisible={isClaiming}
+        onClose={() => setIsClaiming(false)}
+        setPendingTxns={setPendingTxns}
+      />
 
       {/* {sharingPosition && (
         <PositionShare

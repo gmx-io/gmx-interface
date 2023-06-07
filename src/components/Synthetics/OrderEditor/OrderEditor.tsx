@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Modal from "components/Modal/Modal";
-import { useMarketsInfo } from "domain/synthetics/markets";
+import { MarketsInfoData } from "domain/synthetics/markets";
 import {
   OrderInfo,
   OrderType,
@@ -12,14 +12,14 @@ import {
   isSwapOrderType,
   isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
-import { PositionsInfoData, getPositionKey } from "domain/synthetics/positions";
+import { PositionsInfoData, formatLiquidationPrice, getPositionKey } from "domain/synthetics/positions";
 import {
+  TokensData,
   TokensRatio,
   getAmountByRatio,
   getTokenData,
   getTokensRatioByAmounts,
   getTokensRatioByPrice,
-  useAvailableTokensData,
 } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
@@ -49,20 +49,21 @@ import Button from "components/Button/Button";
 import "./OrderEditor.scss";
 
 type Props = {
-  positionsData: PositionsInfoData;
+  positionsData?: PositionsInfoData;
+  marketsInfoData?: MarketsInfoData;
+  tokensData?: TokensData;
   order: OrderInfo;
   onClose: () => void;
   setPendingTxns: (txns: any) => void;
 };
 
 export function OrderEditor(p: Props) {
+  const { marketsInfoData, tokensData } = p;
   const { chainId } = useChainId();
   const { library } = useWeb3React();
 
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
-  const { tokensData } = useAvailableTokensData(chainId);
-  const { marketsInfoData } = useMarketsInfo(chainId);
   const [savedAcceptablePriceImpactBps] = useLocalStorageSerializeKey(
     [chainId, SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BPS_KEY],
     DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS
@@ -414,7 +415,9 @@ export function OrderEditor(p: Props) {
               {existingPosition?.liquidationPrice && (
                 <ExchangeInfoRow
                   label={t`Liq. Price`}
-                  value={formatUsd(existingPosition.liquidationPrice, { displayDecimals: indexPriceDecimals })}
+                  value={formatLiquidationPrice(existingPosition.liquidationPrice, {
+                    displayDecimals: indexPriceDecimals,
+                  })}
                 />
               )}
             </>

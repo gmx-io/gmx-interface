@@ -14,7 +14,6 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { getKeepLeverageKey, getLeverageEnabledKey, getLeverageKey } from "config/localStorage";
 import { useUserReferralInfo } from "domain/referrals/hooks";
 import {
-  VirtualInventoryForPositionsData,
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
   estimateExecuteSwapOrderGasLimit,
@@ -22,9 +21,20 @@ import {
   useGasLimits,
   useGasPrice,
 } from "domain/synthetics/fees";
-import { MarketInfo, getAvailableUsdLiquidityForPosition, getMarketIndexName } from "domain/synthetics/markets";
+import {
+  MarketInfo,
+  MarketsInfoData,
+  getAvailableUsdLiquidityForPosition,
+  getMarketIndexName,
+} from "domain/synthetics/markets";
 import { OrderInfo, OrdersInfoData } from "domain/synthetics/orders";
-import { PositionInfo, PositionsInfoData, formatLeverage, usePositionsConstants } from "domain/synthetics/positions";
+import {
+  PositionInfo,
+  PositionsInfoData,
+  formatLeverage,
+  formatLiquidationPrice,
+  usePositionsConstants,
+} from "domain/synthetics/positions";
 import { TokenData, TokensData, TokensRatio, convertToUsd, getTokensRatioByPrice } from "domain/synthetics/tokens";
 import {
   AvailableTokenOptions,
@@ -85,7 +95,6 @@ export type Props = {
   availableTradeModes: TradeMode[];
   tradeFlags: TradeFlags;
   isWrapOrUnwrap: boolean;
-  tokensData?: TokensData;
   fromTokenAddress?: string;
   fromToken?: TokenData;
   toTokenAddress?: string;
@@ -99,12 +108,13 @@ export type Props = {
   existingOrder?: OrderInfo;
   positionsInfo?: PositionsInfoData;
   ordersInfo?: OrdersInfoData;
-  virtualInventoryForPositions?: VirtualInventoryForPositionsData;
   allowedSlippage: number;
   acceptablePriceImpactBpsForLimitOrders: BigNumber;
   savedIsPnlInLeverage: boolean;
   isHigherSlippageAllowed: boolean;
   shouldDisableValidation?: boolean;
+  marketsInfoData?: MarketsInfoData;
+  tokensData?: TokensData;
   setIsHigherSlippageAllowed: (value: boolean) => void;
   onSelectFromTokenAddress: (fromTokenAddress?: string) => void;
   onSelectToTokenAddress: (toTokenAddress?: string) => void;
@@ -150,8 +160,8 @@ export function TradeBox(p: Props) {
     shouldDisableValidation,
     acceptablePriceImpactBpsForLimitOrders,
     allowedSlippage,
-    virtualInventoryForPositions,
     isHigherSlippageAllowed,
+    marketsInfoData,
     setIsHigherSlippageAllowed,
     onSelectMarketAddress,
     onSelectCollateralAddress,
@@ -187,7 +197,7 @@ export function TradeBox(p: Props) {
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
   const userReferralInfo = useUserReferralInfo(library, chainId, account);
-  const { minCollateralUsd } = usePositionsConstants(chainId);
+  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
 
   const [stage, setStage] = useState<"trade" | "confirmation" | "processing">("trade");
   const [focusedInput, setFocusedInput] = useState<"from" | "to">();
@@ -257,6 +267,7 @@ export function TradeBox(p: Props) {
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
 
   const swapRoute = useSwapRoutes({
+    marketsInfoData,
     fromTokenAddress,
     toTokenAddress: isPosition ? collateralAddress : toTokenAddress,
   });
@@ -318,7 +329,7 @@ export function TradeBox(p: Props) {
   ]);
 
   const increaseAmounts = useMemo(() => {
-    if (!isIncrease || !toToken || !fromToken || !collateralToken || !marketInfo || !virtualInventoryForPositions) {
+    if (!isIncrease || !toToken || !fromToken || !collateralToken || !marketInfo) {
       return undefined;
     }
 
@@ -334,7 +345,6 @@ export function TradeBox(p: Props) {
         triggerPrice,
         savedAcceptablePriceImpactBps: acceptablePriceImpactBpsForLimitOrders,
         findSwapPath: swapRoute.findSwapPath,
-        virtualInventoryForPositions,
         userReferralInfo,
       });
     } else {
@@ -349,7 +359,6 @@ export function TradeBox(p: Props) {
         triggerPrice,
         savedAcceptablePriceImpactBps: acceptablePriceImpactBpsForLimitOrders,
         findSwapPath: swapRoute.findSwapPath,
-        virtualInventoryForPositions,
         userReferralInfo,
       });
     }
@@ -370,11 +379,10 @@ export function TradeBox(p: Props) {
     toTokenAmount,
     triggerPrice,
     userReferralInfo,
-    virtualInventoryForPositions,
   ]);
 
   const decreaseAmounts = useMemo(() => {
-    if (!isTrigger || !closeSizeUsd || !marketInfo || !collateralToken || !virtualInventoryForPositions) {
+    if (!isTrigger || !closeSizeUsd || !marketInfo || !collateralToken || !minCollateralUsd || !minPositionSizeUsd) {
       return undefined;
     }
 
@@ -382,15 +390,14 @@ export function TradeBox(p: Props) {
       marketInfo,
       collateralToken,
       isLong,
-      existingPosition,
-      receiveToken: collateralToken,
+      position: existingPosition,
       closeSizeUsd: closeSizeUsd,
       keepLeverage: keepLeverage!,
-      isTrigger: true,
       triggerPrice,
       savedAcceptablePriceImpactBps: acceptablePriceImpactBpsForLimitOrders,
-      virtualInventoryForPositions,
       userReferralInfo,
+      minCollateralUsd,
+      minPositionSizeUsd,
     });
   }, [
     acceptablePriceImpactBpsForLimitOrders,
@@ -401,9 +408,10 @@ export function TradeBox(p: Props) {
     isTrigger,
     keepLeverage,
     marketInfo,
+    minCollateralUsd,
+    minPositionSizeUsd,
     triggerPrice,
     userReferralInfo,
-    virtualInventoryForPositions,
   ]);
 
   const nextPositionValues = useMemo(() => {
@@ -433,10 +441,13 @@ export function TradeBox(p: Props) {
         marketInfo,
         collateralToken,
         sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
-        exitPnl: decreaseAmounts.exitPnl,
-        pnlDelta: decreaseAmounts.pnlDelta,
+        sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
+        estimatedPnl: decreaseAmounts.estimatedPnl,
+        realizedPnl: decreaseAmounts.realizedPnl,
         collateralDeltaUsd: decreaseAmounts.collateralDeltaUsd,
-        executionPrice: decreaseAmounts.acceptablePrice,
+        collateralDeltaAmount: decreaseAmounts.collateralDeltaAmount,
+        payedRemainingCollateralUsd: decreaseAmounts.payedRemainingCollateralUsd,
+        indexPrice: decreaseAmounts.indexPrice,
         showPnlInLeverage: savedIsPnlInLeverage,
         isLong,
         minCollateralUsd,
@@ -481,6 +492,7 @@ export function TradeBox(p: Props) {
           borrowingFeeUsd: BigNumber.from(0),
           fundingFeeUsd: BigNumber.from(0),
           feeDiscountUsd: BigNumber.from(0),
+          swapProfitFeeUsd: BigNumber.from(0),
         }),
         executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
         feesType: "swap" as TradeFeesType,
@@ -503,6 +515,7 @@ export function TradeBox(p: Props) {
           borrowingFeeUsd: existingPosition?.pendingBorrowingFeesUsd || BigNumber.from(0),
           fundingFeeUsd: existingPosition?.pendingFundingFeesUsd || BigNumber.from(0),
           feeDiscountUsd: increaseAmounts.feeDiscountUsd,
+          swapProfitFeeUsd: BigNumber.from(0),
         }),
         executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
         feesType: "increase" as TradeFeesType,
@@ -514,15 +527,16 @@ export function TradeBox(p: Props) {
 
       return {
         fees: getTradeFees({
-          initialCollateralUsd: decreaseAmounts.receiveUsd,
+          initialCollateralUsd: decreaseAmounts.initialReceiveUsd,
           sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
           swapSteps: [],
           positionFeeUsd: decreaseAmounts.positionFeeUsd,
           swapPriceImpactDeltaUsd: BigNumber.from(0),
           positionPriceImpactDeltaUsd: decreaseAmounts.positionPriceImpactDeltaUsd,
-          borrowingFeeUsd: existingPosition?.pendingBorrowingFeesUsd || BigNumber.from(0),
-          fundingFeeUsd: existingPosition?.pendingFundingFeesUsd || BigNumber.from(0),
+          borrowingFeeUsd: decreaseAmounts.borrowingFeeUsd,
+          fundingFeeUsd: decreaseAmounts.fundingFeeUsd,
           feeDiscountUsd: decreaseAmounts.feeDiscountUsd,
+          swapProfitFeeUsd: decreaseAmounts.swapProfitFeeUsd,
         }),
         executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
         feesType: "decrease" as TradeFeesType,
@@ -544,7 +558,8 @@ export function TradeBox(p: Props) {
     tokensData,
   ]);
 
-  const marketsOptions = useAvailableMarketsOptions(chainId, {
+  const marketsOptions = useAvailableMarketsOptions({
+    marketsInfoData,
     isIncrease,
     disable: !isPosition,
     indexToken: toToken,
@@ -1129,13 +1144,13 @@ export function TradeBox(p: Props) {
             <ValueTransition
               from={
                 nextPositionValues?.nextLiqPrice
-                  ? formatUsd(existingPosition?.liquidationPrice, {
+                  ? formatLiquidationPrice(existingPosition?.liquidationPrice, {
                       displayDecimals: existingPosition?.indexToken?.priceDecimals,
                     })
                   : undefined
               }
               to={
-                formatUsd(nextPositionValues?.nextLiqPrice, {
+                formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
                   displayDecimals: toToken?.priceDecimals,
                 }) || "-"
               }
@@ -1187,7 +1202,7 @@ export function TradeBox(p: Props) {
             label={t`Collateral (${existingPosition?.collateralToken?.symbol})`}
             value={
               <ValueTransition
-                from={formatUsd(existingPosition.initialCollateralUsd)}
+                from={formatUsd(existingPosition.collateralUsd)}
                 to={formatUsd(nextPositionValues?.nextCollateralUsd)}
               />
             }
@@ -1207,7 +1222,7 @@ export function TradeBox(p: Props) {
         <ExchangeInfoRow
           className="SwapBox-info-row"
           label={t`Trigger Price`}
-          value={`${decreaseAmounts?.triggerPricePrefix || ""} ${
+          value={`${decreaseAmounts?.triggerThresholdType || ""} ${
             formatUsd(decreaseAmounts?.triggerPrice, {
               displayDecimals: toToken?.priceDecimals,
             }) || "-"
@@ -1246,8 +1261,14 @@ export function TradeBox(p: Props) {
                 "-"
               ) : (
                 <ValueTransition
-                  from={formatUsd(existingPosition.liquidationPrice)!}
-                  to={formatUsd(nextPositionValues?.nextLiqPrice)}
+                  from={
+                    formatLiquidationPrice(existingPosition.liquidationPrice, {
+                      displayDecimals: toToken?.priceDecimals,
+                    })!
+                  }
+                  to={formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
+                    displayDecimals: toToken?.priceDecimals,
+                  })}
                 />
               )
             }
@@ -1338,6 +1359,7 @@ export function TradeBox(p: Props) {
         allowedSlippage={allowedSlippage}
         isHigherSlippageAllowed={isHigherSlippageAllowed}
         ordersData={ordersInfo}
+        tokensData={tokensData}
         setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
         setKeepLeverage={setKeepLeverage}
         onClose={onConfirmationClose}

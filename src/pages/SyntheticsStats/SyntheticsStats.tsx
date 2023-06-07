@@ -9,7 +9,6 @@ import { ShareBar } from "components/ShareBar/ShareBar";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
-import { useVirtualInventory } from "domain/synthetics/fees/useVirtualInventory";
 import {
   getMarketIndexName,
   getMarketPoolName,
@@ -17,9 +16,9 @@ import {
   getReservedUsd,
   useMarketsInfo,
 } from "domain/synthetics/markets";
+import { usePositionsConstants } from "domain/synthetics/positions";
 import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import "./SyntheticsStats.scss";
-import { usePositionsConstants } from "domain/synthetics/positions";
 
 function formatAmountHuman(amount: BigNumberish | undefined, tokenDecimals: number) {
   const n = Number(formatAmount(amount, tokenDecimals));
@@ -50,10 +49,6 @@ export function SyntheticsStats() {
 
   const { marketsInfoData } = useMarketsInfo(chainId);
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
-  const { virtualInventoryForPositions, virtualInventoryForSwaps } = useVirtualInventory(chainId);
-  // const { swapTokens, infoTokens } = useAvailableTokenOptions(chainId);
-
-  // const [fromTokenAddress, setFromTokenAddress] = useState(NATIVE_TOKEN_ADDRESS);
 
   const markets = Object.values(marketsInfoData || {});
 
@@ -110,11 +105,9 @@ export function SyntheticsStats() {
               market.indexToken.prices.minPrice
             );
 
-            const virtualInventoryPositions = virtualInventoryForPositions?.[market.indexToken.address];
-            const virtualInventorySwapsLong =
-              virtualInventoryForSwaps?.[market.marketTokenAddress]?.[market.longTokenAddress];
-            const virtualInventorySwapsShort =
-              virtualInventoryForSwaps?.[market.marketTokenAddress]?.[market.shortTokenAddress];
+            const virtualInventoryPositions = market.virtualInventoryForPositions;
+            const virtualInventorySwapsLong = market.virtualPoolAmountForLongToken;
+            const virtualInventorySwapsShort = market.virtualPoolAmountForShortToken;
 
             const reservedUsdLong = getReservedUsd(market, true);
             const maxReservedUsdLong = getMaxReservedUsd(market, true);

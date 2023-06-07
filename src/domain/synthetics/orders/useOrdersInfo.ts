@@ -1,8 +1,8 @@
 import { getWrappedToken } from "config/tokens";
 import { getByKey } from "lib/objects";
 import { useMemo } from "react";
-import { useMarketsInfo } from "../markets";
-import { useAvailableTokensData } from "../tokens";
+import { MarketsInfoData } from "../markets";
+import { TokensData } from "../tokens";
 import { OrdersInfoData } from "./types";
 import { useOrders } from "./useOrders";
 import { getOrderInfo, isVisibleOrder } from "./utils";
@@ -12,9 +12,14 @@ type AggregatedOrdersDataResult = {
   isLoading: boolean;
 };
 
-export function useOrdersInfo(chainId: number): AggregatedOrdersDataResult {
-  const { tokensData } = useAvailableTokensData(chainId);
-  const { marketsInfoData } = useMarketsInfo(chainId);
+export function useOrdersInfo(
+  chainId: number,
+  p: {
+    marketsInfoData?: MarketsInfoData;
+    tokensData?: TokensData;
+  }
+): AggregatedOrdersDataResult {
+  const { marketsInfoData, tokensData } = p;
   const { ordersData } = useOrders(chainId);
 
   const wrappedToken = getWrappedToken(chainId);

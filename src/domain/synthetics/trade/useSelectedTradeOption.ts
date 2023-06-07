@@ -1,14 +1,14 @@
+import { getSyntheticsTradeOptionsKey } from "config/localStorage";
+import { getIsUnwrap, getIsWrap } from "domain/tokens";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
 import { useCallback, useEffect, useMemo } from "react";
-import { MarketInfo, MarketsInfoData, useMarketsInfo } from "../markets";
+import { MarketInfo, MarketsInfoData } from "../markets";
+import { PositionInfo } from "../positions";
+import { TokenData, TokensData } from "../tokens";
 import { TradeMode, TradeType } from "./types";
 import { AvailableTokenOptions, useAvailableTokenOptions } from "./useAvailableTokenOptions";
 import { TradeFlags, useTradeFlags } from "./useTradeFlags";
-import { TokenData, TokensData, useAvailableTokensData } from "../tokens";
-import { getIsUnwrap, getIsWrap } from "domain/tokens";
-import { getSyntheticsTradeOptionsKey } from "config/localStorage";
-import { PositionInfo } from "../positions";
 
 export type SelectedTradeOption = {
   tradeType: TradeType;
@@ -59,9 +59,14 @@ type StoredTradeOptions = {
   };
 };
 
-export function useSelectedTradeOption(chainId: number): SelectedTradeOption {
-  const { marketsInfoData } = useMarketsInfo(chainId);
-  const { tokensData } = useAvailableTokensData(chainId);
+export function useSelectedTradeOption(
+  chainId: number,
+  p: {
+    marketsInfoData?: MarketsInfoData;
+    tokensData?: TokensData;
+  }
+): SelectedTradeOption {
+  const { marketsInfoData, tokensData } = p;
 
   const [storedOptions, setStoredOptions] = useLocalStorageSerializeKey<StoredTradeOptions>(
     getSyntheticsTradeOptionsKey(chainId),
@@ -74,7 +79,7 @@ export function useSelectedTradeOption(chainId: number): SelectedTradeOption {
     }
   );
 
-  const availableTokensOptions = useAvailableTokenOptions(chainId);
+  const availableTokensOptions = useAvailableTokenOptions(chainId, { marketsInfoData, tokensData });
   const { swapTokens, indexTokens } = availableTokensOptions;
 
   const tradeType = storedOptions?.tradeType;

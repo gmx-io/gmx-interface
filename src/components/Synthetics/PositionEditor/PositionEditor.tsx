@@ -38,12 +38,7 @@ import {
   getLiquidationPrice,
   usePositionsConstants,
 } from "domain/synthetics/positions";
-import {
-  adaptToV1InfoTokens,
-  convertToTokenAmount,
-  convertToUsd,
-  useAvailableTokensData,
-} from "domain/synthetics/tokens";
+import { TokensData, adaptToV1InfoTokens, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { TradeFees, getMarkPrice } from "domain/synthetics/trade";
 import { getCommonError, getEditCollateralError } from "domain/synthetics/trade/utils/validation";
 import { BigNumber } from "ethers";
@@ -52,14 +47,15 @@ import { contractFetcher } from "lib/contracts";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmountFree, formatTokenAmount, formatTokenAmountWithUsd, formatUsd, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { usePrevious } from "lib/usePrevious";
 import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionEditor.scss";
-import { usePrevious } from "lib/usePrevious";
 
 export type Props = {
   position?: PositionInfo;
+  tokensData?: TokensData;
   showPnlInLeverage: boolean;
   allowedSlippage: number;
   setPendingTxns: (txns: any) => void;
@@ -73,11 +69,10 @@ enum Operation {
 }
 
 export function PositionEditor(p: Props) {
-  const { position, showPnlInLeverage, setPendingTxns, onClose, onConnectWallet, allowedSlippage } = p;
+  const { position, tokensData, showPnlInLeverage, setPendingTxns, onClose, onConnectWallet, allowedSlippage } = p;
   const { chainId } = useChainId();
   const { account, library, active } = useWeb3React();
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
-  const { tokensData } = useAvailableTokensData(chainId);
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
   const { minCollateralUsd } = usePositionsConstants(chainId);
@@ -139,7 +134,7 @@ export function PositionEditor(p: Props) {
     isDeposit && tokenAllowance && collateralDeltaAmount && collateralDeltaAmount.gt(tokenAllowance);
 
   const maxWithdrawUsd =
-    position && minCollateralUsd ? position.initialCollateralUsd.sub(minCollateralUsd) : BigNumber.from(0);
+    position && minCollateralUsd ? position.collateralUsd.sub(minCollateralUsd) : BigNumber.from(0);
   const maxWithdrawAmount = convertToTokenAmount(maxWithdrawUsd, collateralToken?.decimals, collateralPrice);
 
   const { fees, executionFee } = useMemo(() => {
@@ -175,6 +170,7 @@ export function PositionEditor(p: Props) {
       }
 
       let nextCollateralUsd: BigNumber;
+      let nextCollateralAmount: BigNumber;
       let receiveUsd = BigNumber.from(0);
 
       let remainingCollateralFeesUsd = fees.totalFees.deltaUsd.abs().sub(collateralDeltaUsd);
@@ -184,22 +180,23 @@ export function PositionEditor(p: Props) {
 
       if (isDeposit) {
         const collateralDeltaAfterFeesUsd = collateralDeltaUsd.sub(fees.totalFees.deltaUsd.abs());
-        nextCollateralUsd = position.initialCollateralUsd.add(collateralDeltaAfterFeesUsd);
+        nextCollateralUsd = position.collateralUsd.add(collateralDeltaAfterFeesUsd);
       } else {
         if (collateralDeltaUsd.gt(fees.totalFees.deltaUsd.abs())) {
-          nextCollateralUsd = position.initialCollateralUsd.sub(collateralDeltaUsd);
+          nextCollateralUsd = position.collateralUsd.sub(collateralDeltaUsd);
           receiveUsd = collateralDeltaUsd.sub(fees.totalFees.deltaUsd.abs());
         } else {
-          nextCollateralUsd = position.initialCollateralUsd.sub(collateralDeltaUsd).sub(remainingCollateralFeesUsd);
+          nextCollateralUsd = position.collateralUsd.sub(collateralDeltaUsd).sub(remainingCollateralFeesUsd);
           receiveUsd = BigNumber.from(0);
         }
       }
 
-      const receiveAmount = convertToTokenAmount(receiveUsd, collateralToken?.decimals, collateralPrice)!;
-
       if (nextCollateralUsd?.lt(0)) {
         nextCollateralUsd = BigNumber.from(0);
       }
+      nextCollateralAmount = convertToTokenAmount(nextCollateralUsd, collateralToken?.decimals, collateralPrice)!;
+
+      const receiveAmount = convertToTokenAmount(receiveUsd, collateralToken?.decimals, collateralPrice)!;
 
       const nextLeverage = getLeverage({
         sizeInUsd: position.sizeInUsd,
@@ -212,7 +209,8 @@ export function PositionEditor(p: Props) {
       const nextLiqPrice = getLiquidationPrice({
         sizeInUsd: position.sizeInUsd,
         sizeInTokens: position.sizeInTokens,
-        initialCollateralUsd: nextCollateralUsd,
+        collateralUsd: nextCollateralUsd,
+        collateralAmount: nextCollateralAmount,
         collateralToken: position.collateralToken,
         marketInfo: position.marketInfo,
         markPrice: position.markPrice,
@@ -515,7 +513,7 @@ export function PositionEditor(p: Props) {
                 </div>
                 <div className="align-right">
                   <ValueTransition
-                    from={formatUsd(position?.initialCollateralUsd)!}
+                    from={formatUsd(position?.collateralUsd)!}
                     to={collateralDeltaUsd?.gt(0) ? formatUsd(nextCollateralUsd) : undefined}
                   />
                 </div>
