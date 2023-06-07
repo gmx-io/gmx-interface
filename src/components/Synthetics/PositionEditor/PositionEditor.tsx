@@ -403,6 +403,17 @@ export function PositionEditor(p: Props) {
     [Operation.Withdraw]: t`Withdraw`,
   };
 
+  function getFeesWarning() {
+    if (remainingCollateralFeesUsd?.gt(0)) {
+      if (isDeposit) {
+        return t`Deposit amount is insufficient to cover pending Fees. Collateral will be reduced after this deposit.`;
+      } else {
+        return t`Withdrawal amount is insufficient to cover pending Fees. They are deducted from Collateral.`;
+      }
+    }
+    return executionFee?.warning;
+  }
+
   return (
     <div className="PositionEditor">
       <Modal
@@ -469,7 +480,6 @@ export function PositionEditor(p: Props) {
             </BuyInputSection>
 
             <div className="PositionEditor-info-box">
-              {executionFee?.warning && <div className="Confirmation-box-warning">{executionFee.warning}</div>}
               <ExchangeInfoRow
                 label={t`Leverage`}
                 value={<ValueTransition from={formatLeverage(position?.leverage)} to={formatLeverage(nextLeverage)} />}
@@ -519,18 +529,7 @@ export function PositionEditor(p: Props) {
                 </div>
               </div>
 
-              <TradeFeesRow
-                {...fees}
-                executionFee={executionFee}
-                feesType={"edit"}
-                warning={
-                  remainingCollateralFeesUsd?.gt(0)
-                    ? isDeposit
-                      ? t`Deposit amount is insufficient to cover pending Fees. Collateral will be reduced after this deposit.`
-                      : t`Withdrawal amount is insufficient to cover pending Fees. They are deducted from Collateral.`
-                    : ""
-                }
-              />
+              <TradeFeesRow {...fees} executionFee={executionFee} feesType={"edit"} warning={getFeesWarning()} />
 
               {!isDeposit && (
                 <ExchangeInfoRow
