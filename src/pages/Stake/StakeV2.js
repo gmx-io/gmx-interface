@@ -29,7 +29,7 @@ import {
   getPageTitle,
 } from "lib/legacy";
 import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
-import { ARBITRUM, getChainName, getConstant } from "config/chains";
+import { ARBITRUM, getConstant } from "config/chains";
 
 import useSWR from "swr";
 
@@ -875,8 +875,6 @@ function ClaimModal(props) {
 export default function StakeV2({ setPendingTxns, connectWallet }) {
   const { active, library, account } = useWeb3React();
   const { chainId } = useChainId();
-
-  const chainName = getChainName(chainId);
   const icons = getIcons(chainId);
   const hasInsurance = true;
   const [isStakeModalVisible, setIsStakeModalVisible] = useState(false);
@@ -1712,7 +1710,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
             <div className="App-card-title">
               <div className="items-center">
                 <img className="mr-xs" alt="GLP" src={icons.glp} height={20} />
-                GLP ({chainName})
+                GLP
               </div>
             </div>
             <div className="App-card-divider"></div>
@@ -1960,7 +1958,10 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
       <div>
         <div className="Tab-title-section">
           <div className="Page-title">
-            <Trans>Vest</Trans>
+            <div>
+              <Trans>Vest</Trans>
+              <img className="ml-xs" alt="GMX" src={icons.network} height={24} />
+            </div>
           </div>
           <div className="Page-description">
             <Trans>

@@ -24,6 +24,7 @@ import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { t, Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Button from "components/Button/Button";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 
 const { AddressZero } = ethers.constants;
 
@@ -337,8 +338,12 @@ export default function TradeHistory(props) {
           return (
             <>
               {renderLiquidationTooltip(liquidationData, t`Partial Liquidation`)}&nbsp;
-              {indexToken.symbol} {longOrShortText}, -{formatAmount(params.sizeDelta, USD_DECIMALS, 2, true)} USD,{" "}
-              {indexToken.symbol}&nbsp; Price: ${formatAmount(params.price, USD_DECIMALS, 2, true)} USD
+              <span className="mr-xs">
+                <TokenIcon symbol={indexToken.symbol} importSize={24} displySize={16} />
+                {indexToken.symbol}
+              </span>
+              {longOrShortText}, -{formatAmount(params.sizeDelta, USD_DECIMALS, 2, true)} USD, {indexToken.symbol}&nbsp;
+              Price: ${formatAmount(params.price, USD_DECIMALS, 2, true)} USD
             </>
           );
         }
@@ -358,8 +363,12 @@ export default function TradeHistory(props) {
         if (liquidationData) {
           return (
             <Trans>
-              {renderLiquidationTooltip(liquidationData, t`Liquidated`)}&nbsp; {indexToken.symbol} {longOrShortText}, -
-              {formatAmount(params.size, USD_DECIMALS, 2, true)} USD,&nbsp;
+              {renderLiquidationTooltip(liquidationData, t`Liquidated`)}&nbsp;{" "}
+              <span className="mr-xs inline-flex">
+                <TokenIcon className="mr-xs" symbol={indexToken.symbol} importSize={24} displySize={16} />
+                {indexToken.symbol}
+              </span>
+              {longOrShortText}, -{formatAmount(params.size, USD_DECIMALS, 2, true)} USD,&nbsp;
               {indexToken.symbol} Price: ${formatAmount(params.markPrice, USD_DECIMALS, 2, true)} USD
             </Trans>
           );

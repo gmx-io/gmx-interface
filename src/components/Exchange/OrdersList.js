@@ -24,13 +24,23 @@ import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { getTokenInfo, getUsd } from "domain/tokens/utils";
 import { formatAmount } from "lib/numbers";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 
 function getOrderTitle(order, indexTokenSymbol) {
   const orderTypeText = order.type === INCREASE ? t`Increase` : t`Decrease`;
   const longShortText = order.isLong ? t`Long` : t`Short`;
   const sizeDeltaText = formatAmount(order.sizeDelta, USD_DECIMALS, 2, true);
-
-  return `${orderTypeText} ${indexTokenSymbol} ${longShortText} by $${sizeDeltaText}`;
+  const symbolWithIcon = (
+    <>
+      <TokenIcon className="mx-xs" symbol={indexTokenSymbol} displySize={16} importSize={24} />
+      {indexTokenSymbol}
+    </>
+  );
+  return (
+    <>
+      {orderTypeText} {symbolWithIcon} {longShortText} by ${sizeDeltaText}
+    </>
+  );
 }
 
 export default function OrdersList(props) {
@@ -173,6 +183,7 @@ export default function OrdersList(props) {
               fromTokenInfo.isStable || fromTokenInfo.isUsdg ? 2 : 4,
               true
             )}{" "}
+            <TokenIcon className="mx-xs" symbol={fromTokenInfo.symbol} displySize={16} importSize={24} />
             {fromTokenInfo.symbol} for{" "}
             {formatAmount(order.minOut, toTokenInfo.decimals, toTokenInfo.isStable || toTokenInfo.isUsdg ? 2 : 4, true)}{" "}
             {toTokenInfo.symbol}
@@ -202,7 +213,7 @@ export default function OrdersList(props) {
             <td className="Exchange-list-item-type">
               <Trans>Limit</Trans>
             </td>
-            <td>
+            <td className="inline-flex">
               <Tooltip
                 handle={titleText}
                 position="right-bottom"
@@ -300,7 +311,7 @@ export default function OrdersList(props) {
             </td>
           )}
           <td className="Exchange-list-item-type">{order.type === INCREASE ? t`Limit` : t`Trigger`}</td>
-          <td>
+          <td className="inline-flex">
             {order.type === DECREASE ? (
               orderText
             ) : (
@@ -388,6 +399,7 @@ export default function OrdersList(props) {
         const titleText = (
           <>
             Swap {formatAmount(order.amountIn, fromTokenInfo.decimals, fromTokenInfo.isStable ? 2 : 4, true)}{" "}
+            <TokenIcon className="mx-xs" symbol={fromTokenInfo.symbol} displySize={16} importSize={24} />
             {fromTokenInfo.symbol} for{" "}
             {formatAmount(order.minOut, toTokenInfo.decimals, toTokenInfo.isStable ? 2 : 4, true)} {toTokenInfo.symbol}
           </>

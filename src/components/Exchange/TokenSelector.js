@@ -129,7 +129,7 @@ export default function TokenSelector(props) {
                 )}
                 <div className="Token-info">
                   {showTokenImgInDropdown && (
-                    <TokenIcon symbol={token.name} className="token-logo" displySize={40} importSize={40} />
+                    <TokenIcon symbol={token.symbol} className="token-logo" displySize={40} importSize={40} />
                   )}
                   <div className="Token-symbol">
                     <div className="Token-text">{token.symbol}</div>

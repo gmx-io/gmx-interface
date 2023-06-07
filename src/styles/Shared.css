@@ -468,9 +468,18 @@ button.btn-link:hover .logout-icon {
 .mr-xs {
   margin-right: 0.5rem;
 }
+
 .ml-xxs {
   margin-left: 0.25rem;
 }
 .ml-xs {
   margin-left: 0.5rem;
+}
+
+.mx-xs {
+  margin: 0 0.5rem;
+}
+
+.mx-xxs {
+  margin: 0 0.25rem;
 }
