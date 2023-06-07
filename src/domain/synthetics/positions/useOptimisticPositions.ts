@@ -22,8 +22,6 @@ export function useOptimisticPositions(
   const { positionsData, allPossiblePositionsKeys } = usePositions(chainId, p);
   const { positionDecreaseEvents, positionIncreaseEvents, pendingPositionsUpdates } = useSyntheticsEvents();
 
-  console.log("positionDecreaseEvents", pendingPositionsUpdates);
-
   const optimisticPositionsData: PositionsData = useMemo(() => {
     if (
       !positionDecreaseEvents ||
