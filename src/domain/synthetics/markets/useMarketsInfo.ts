@@ -58,6 +58,317 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
   // Use ref to cache data from previos key with old prices
   const marketsInfoDataCache = useRef<MarketsInfoData>();
 
+  // const key =
+  //   !isDepencenciesLoading && marketsAddresses.length > 0
+  //     ? [chainId, marketsAddresses.join("-"), dataStoreAddress, account, pricesUpdatedAt]
+  //     : null;
+
+  // const { data, error } = useSWR(key, {
+  //   refreshInterval: undefined,
+  //   fetcher: async () => {
+  //     const provider = getProvider(undefined, chainId);
+  //     console.log("pff fetcher");
+
+  //     // const dataStore = new ethers.Contract(dataStoreAddress, DataStore.abi, provider);
+  //     // const reader = new ethers.Contract(getContract(chainId, "SyntheticsReader"), SyntheticsReader.abi, provider);
+  //     const multicall3 = new ethers.Contract(getContract(chainId, "Multicall"), Multicall3.abi, provider);
+
+  //     const payload = marketsAddresses!.reduce(
+  //       (acc, marketAddress) => {
+  //         const market = getByKey(marketsData, marketAddress)!;
+  //         const marketPrices = getContractMarketPrices(tokensData!, market)!;
+
+  //         if (!marketPrices) {
+  //           return acc;
+  //         }
+
+  //         const marketProps = {
+  //           marketToken: market.marketTokenAddress,
+  //           indexToken: market.indexTokenAddress,
+  //           longToken: market.longTokenAddress,
+  //           shortToken: market.shortTokenAddress,
+  //         };
+
+  //         /**
+  //          *
+  //          * encoded payload = [
+  //          *    contractName
+  //          *    methodName,
+  //          *    payload,
+  //          * ]
+  //          *
+  //          *
+  //          *
+  //          */
+
+  //         const req = {
+  //           reader: {
+  //             target: getContract(chainId, "SyntheticsReader"),
+  //             abi: SyntheticsReader.abi,
+  //             calls: {
+  //               marketInfo: {
+  //                 methodName: "getMarketInfo",
+  //                 params: [dataStoreAddress, marketPrices, marketAddress],
+  //               },
+  //               marketTokenPriceMax: {
+  //                 methodName: "getMarketTokenPrice",
+  //                 params: [
+  //                   dataStoreAddress,
+  //                   marketProps,
+  //                   marketPrices.indexTokenPrice,
+  //                   marketPrices.longTokenPrice,
+  //                   marketPrices.shortTokenPrice,
+  //                   MAX_PNL_FACTOR_FOR_TRADERS_KEY,
+  //                   true,
+  //                 ],
+  //               },
+  //               marketTokenPriceMin: {
+  //                 methodName: "getMarketTokenPrice",
+  //                 params: [
+  //                   dataStoreAddress,
+  //                   marketProps,
+  //                   marketPrices.indexTokenPrice,
+  //                   marketPrices.longTokenPrice,
+  //                   marketPrices.shortTokenPrice,
+  //                   MAX_PNL_FACTOR_FOR_TRADERS_KEY,
+  //                   false,
+  //                 ],
+  //               },
+  //             },
+  //           },
+  //           dataStore: {
+  //             target: getContract(chainId, "DataStore"),
+  //             abi: DataStore.abi,
+  //             calls: {
+  //               isDisabled: {
+  //                 methodName: "getBool",
+  //                 params: [isMarketDisabledKey(marketAddress)],
+  //               },
+  //               longPoolAmount: {
+  //                 methodName: "getUint",
+  //                 params: [poolAmountKey(marketAddress, market.longTokenAddress)],
+  //               },
+  //               shortPoolAmount: {
+  //                 methodName: "getUint",
+  //                 params: [poolAmountKey(marketAddress, market.shortTokenAddress)],
+  //               },
+  //               longPoolAmountAdjustment: {
+  //                 methodName: "getUint",
+  //                 params: [poolAmountAdjustmentKey(marketAddress, market.longTokenAddress)],
+  //               },
+  //               shortPoolAmountAdjustment: {
+  //                 methodName: "getUint",
+  //                 params: [poolAmountAdjustmentKey(marketAddress, market.longTokenAddress)],
+  //               },
+  //               reserveFactorLong: {
+  //                 methodName: "getUint",
+  //                 params: [reserveFactorKey(marketAddress, true)],
+  //               },
+  //               reserveFactorShort: {
+  //                 methodName: "getUint",
+  //                 params: [reserveFactorKey(marketAddress, true)],
+  //               },
+  //               positionImpactPoolAmount: {
+  //                 methodName: "getUint",
+  //                 params: [positionImpactPoolAmountKey(marketAddress)],
+  //               },
+  //               swapImpactPoolAmountLong: {
+  //                 methodName: "getUint",
+  //                 params: [swapImpactPoolAmountKey(marketAddress, market.longTokenAddress)],
+  //               },
+  //               swapImpactPoolAmountShort: {
+  //                 methodName: "getUint",
+  //                 params: [swapImpactPoolAmountKey(marketAddress, market.shortTokenAddress)],
+  //               },
+  //               borrowingFactorLong: {
+  //                 methodName: "getUint",
+  //                 params: [borrowingFactorKey(marketAddress, true)],
+  //               },
+  //               borrowingFactorShort: {
+  //                 methodName: "getUint",
+  //                 params: [borrowingFactorKey(marketAddress, false)],
+  //               },
+  //               borrowingExponentFactorLong: {
+  //                 methodName: "getUint",
+  //                 params: [borrowingExponentFactorKey(marketAddress, true)],
+  //               },
+  //               borrowingExponentFactorShort: {
+  //                 methodName: "getUint",
+  //                 params: [borrowingExponentFactorKey(marketAddress, false)],
+  //               },
+  //               fundingFactor: {
+  //                 methodName: "getUint",
+  //                 params: [fundingFactorKey(marketAddress)],
+  //               },
+  //               fundingExponentFactor: {
+  //                 methodName: "getUint",
+  //                 params: [fundingExponentFactorKey(marketAddress)],
+  //               },
+  //               maxPnlFactorForTradersLong: {
+  //                 methodName: "getUint",
+  //                 params: [maxPnlFactorKey(MAX_PNL_FACTOR_FOR_TRADERS_KEY, marketAddress, true)],
+  //               },
+  //               maxPnlFactorForTradersShort: {
+  //                 methodName: "getUint",
+  //                 params: [maxPnlFactorKey(MAX_PNL_FACTOR_FOR_TRADERS_KEY, marketAddress, false)],
+  //               },
+  //               maxPnlFactorForDepositsLong: {
+  //                 methodName: "getUint",
+  //                 params: [maxPnlFactorKey(MAX_PNL_FACTOR_FOR_DEPOSITS_KEY, marketAddress, true)],
+  //               },
+  //               maxPnlFactorForDepositsShort: {
+  //                 methodName: "getUint",
+  //                 params: [maxPnlFactorKey(MAX_PNL_FACTOR_FOR_DEPOSITS_KEY, marketAddress, false)],
+  //               },
+  //               maxPnlFactorForWithdrawalsLong: {
+  //                 methodName: "getUint",
+  //                 params: [maxPnlFactorKey(MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY, marketAddress, true)],
+  //               },
+  //               maxPnlFactorForWithdrawalsShort: {
+  //                 methodName: "getUint",
+  //                 params: [maxPnlFactorKey(MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY, marketAddress, false)],
+  //               },
+  //               claimableFundingAmountLong: account
+  //                 ? {
+  //                     methodName: "getUint",
+  //                     params: [claimableFundingAmountKey(marketAddress, market.longTokenAddress, account)],
+  //                   }
+  //                 : undefined,
+  //               claimableFundingAmountShort: account
+  //                 ? {
+  //                     methodName: "getUint",
+  //                     params: [claimableFundingAmountKey(marketAddress, market.shortTokenAddress, account)],
+  //                   }
+  //                 : undefined,
+  //               positionFeeFactor: {
+  //                 methodName: "getUint",
+  //                 params: [positionFeeFactorKey(marketAddress)],
+  //               },
+  //               positionImpactFactorPositive: {
+  //                 methodName: "getUint",
+  //                 params: [positionImpactFactorKey(marketAddress, true)],
+  //               },
+  //               positionImpactFactorNegative: {
+  //                 methodName: "getUint",
+  //                 params: [positionImpactFactorKey(marketAddress, false)],
+  //               },
+  //               maxPositionImpactFactorPositive: {
+  //                 methodName: "getUint",
+  //                 params: [maxPositionImpactFactorKey(marketAddress, true)],
+  //               },
+  //               maxPositionImpactFactorNegative: {
+  //                 methodName: "getUint",
+  //                 params: [maxPositionImpactFactorKey(marketAddress, false)],
+  //               },
+  //               maxPositionImpactFactorForLiquidations: {
+  //                 methodName: "getUint",
+  //                 params: [maxPositionImpactFactorForLiquidationsKey(marketAddress)],
+  //               },
+  //               minCollateralFactor: {
+  //                 methodName: "getUint",
+  //                 params: [minCollateralFactorKey(marketAddress)],
+  //               },
+  //               minCollateralFactorForOpenInterestLong: {
+  //                 methodName: "getUint",
+  //                 params: [minCollateralFactorForOpenInterest(marketAddress, true)],
+  //               },
+  //               minCollateralFactorForOpenInterestShort: {
+  //                 methodName: "getUint",
+  //                 params: [minCollateralFactorForOpenInterest(marketAddress, false)],
+  //               },
+  //               positionImpactExponentFactor: {
+  //                 methodName: "getUint",
+  //                 params: [positionImpactExponentFactorKey(marketAddress)],
+  //               },
+  //               swapFeeFactor: {
+  //                 methodName: "getUint",
+  //                 params: [swapFeeFactorKey(marketAddress)],
+  //               },
+  //               swapImpactFactorPositive: {
+  //                 methodName: "getUint",
+  //                 params: [swapImpactFactorKey(marketAddress, true)],
+  //               },
+  //               swapImpactFactorNegative: {
+  //                 methodName: "getUint",
+  //                 params: [swapImpactFactorKey(marketAddress, false)],
+  //               },
+  //               swapImpactExponentFactor: {
+  //                 methodName: "getUint",
+  //                 params: [swapImpactExponentFactorKey(marketAddress)],
+  //               },
+  //               longInterestUsingLongToken: {
+  //                 methodName: "getUint",
+  //                 params: [openInterestKey(marketAddress, market.longTokenAddress, true)],
+  //               },
+  //               longInterestUsingShortToken: {
+  //                 methodName: "getUint",
+  //                 params: [openInterestKey(marketAddress, market.shortTokenAddress, true)],
+  //               },
+  //               shortInterestUsingLongToken: {
+  //                 methodName: "getUint",
+  //                 params: [openInterestKey(marketAddress, market.longTokenAddress, false)],
+  //               },
+  //               shortInterestUsingShortToken: {
+  //                 methodName: "getUint",
+  //                 params: [openInterestKey(marketAddress, market.shortTokenAddress, false)],
+  //               },
+  //               longInterestInTokensUsingLongToken: {
+  //                 methodName: "getUint",
+  //                 params: [openInterestInTokensKey(marketAddress, market.longTokenAddress, true)],
+  //               },
+  //               longInterestInTokensUsingShortToken: {
+  //                 methodName: "getUint",
+  //                 params: [openInterestInTokensKey(marketAddress, market.shortTokenAddress, true)],
+  //               },
+  //               shortInterestInTokensUsingLongToken: {
+  //                 methodName: "getUint",
+  //                 params: [openInterestInTokensKey(marketAddress, market.longTokenAddress, false)],
+  //               },
+  //               shortInterestInTokensUsingShortToken: {
+  //                 methodName: "getUint",
+  //                 params: [openInterestInTokensKey(marketAddress, market.shortTokenAddress, false)],
+  //               },
+  //             },
+  //           },
+  //         };
+
+  //         Object.keys(req).forEach((contractKey) => {
+  //           const contract = req[contractKey];
+  //           const cntr = new ethers.Contract(contract.target, contract.abi, provider);
+
+  //           Object.keys(contract.calls).forEach((callKey) => {
+  //             const call = contract.calls[callKey];
+  //             if (!call) return;
+  //             acc.payload.push({
+  //               target: contract.target,
+  //               callData: cntr.interface.encodeFunctionData(call.methodName, call.params),
+  //             });
+  //           });
+  //         });
+  //         acc.requests.push(req);
+
+  //         // acc.reqs.push(req);
+
+  //         // acc.marketAddress.push(marketAddress);
+
+  //         return acc;
+  //       },
+  //       {
+  //         payload: [],
+  //         requests: [],
+  //       } as any
+  //     );
+
+  //     const result = await multicall3.callStatic.aggregate(payload.payload);
+
+  //     console.log("ees", result);
+
+  //     return undefined;
+  //   },
+  // });
+
+  // console.log("swr err", error);
+
   const { data } = useMulticall(chainId, "useMarketsInfo", {
     key: !isDepencenciesLoading &&
       marketsAddresses.length > 0 && [marketsAddresses.join("-"), dataStoreAddress, account, pricesUpdatedAt],
@@ -340,7 +651,7 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [_, borrowingFactorPerSecondForLongs, borrowingFactorPerSecondForShorts, funding, virtualInventory] =
-          readerValues.marketInfo.returnValues;
+          readerValues.marketInfo.returnValues[0];
 
         const [virtualPoolAmountForLongToken, virtualPoolAmountForShortToken, virtualInventoryForPositions] =
           virtualInventory.map(bigNumberify);

@@ -50,9 +50,9 @@ export function useMarkets(chainId: number): MarketsResult {
       },
     }),
     parseResponse: (res) => {
-      return res.reader.markets.returnValues.reduce(
+      return res.reader.markets.returnValues[0].reduce(
         (acc: { marketsData: MarketsData; marketsAddresses: string[] }, marketValues) => {
-          const [marketTokenAddress, indexTokenAddress, longTokenAddress, shortTokenAddress, data] = marketValues;
+          const [marketTokenAddress, indexTokenAddress, longTokenAddress, shortTokenAddress] = marketValues;
 
           if (DISABLED_MARKETS[chainId]?.[marketTokenAddress]) {
             return acc;
@@ -76,7 +76,7 @@ export function useMarkets(chainId: number): MarketsResult {
               isSameCollaterals,
               isSpotOnly,
               name,
-              data,
+              data: "",
             };
 
             acc.marketsAddresses.push(marketTokenAddress);
