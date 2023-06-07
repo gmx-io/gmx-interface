@@ -51,8 +51,8 @@ export function useOrders(chainId: number): OrdersResult {
     }),
     parseResponse: (res) => {
       const count = Number(res.dataStore.count.returnValues[0]);
-      const orderKeys = res.dataStore.keys.returnValues;
-      const orders = res.reader.orders.returnValues;
+      const orderKeys = res.dataStore.keys.returnValues[0];
+      const orders = res.reader.orders.returnValues[0];
 
       return {
         count,

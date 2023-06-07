@@ -45,7 +45,7 @@ export function usePositions(
       },
     }),
     parseResponse: (res) => {
-      return new Set(res.dataStore.keys.returnValues);
+      return new Set(res.dataStore.keys.returnValues[0]);
     },
   });
 
@@ -119,7 +119,7 @@ export function usePositions(
       },
     }),
     parseResponse: (res) => {
-      const positions = res.reader.positions.returnValues;
+      const positions = res.reader.positions.returnValues[0];
 
       return positions.reduce((positionsMap: PositionsData, positionInfo, i) => {
         const [positionProps, positionFees] = positionInfo;
