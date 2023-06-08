@@ -65,7 +65,7 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
     // Refreshed on every prices update
     refreshInterval: null,
 
-    requireSuccess: true,
+    requireSuccess: false,
 
     request: () =>
       marketsAddresses!.reduce((request, marketAddress) => {
