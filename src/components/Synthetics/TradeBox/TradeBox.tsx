@@ -1088,7 +1088,7 @@ export function TradeBox(p: Props) {
           value={
             <ValueTransition
               from={formatUsd(existingPosition?.entryPrice, {
-                displayDecimals: existingPosition?.indexToken?.priceDecimals,
+                displayDecimals: toToken?.priceDecimals,
               })}
               to={formatUsd(nextPositionValues?.nextEntryPrice, {
                 displayDecimals: toToken?.priceDecimals,
