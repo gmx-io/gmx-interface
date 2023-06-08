@@ -29,6 +29,9 @@ export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }):
 
   const { data } = useMulticall(chainId, "useMarketTokensData", {
     key: isDataLoaded ? [account, marketsAddresses.join("-"), pricesUpdatedAt] : undefined,
+
+    requireSuccess: false,
+
     request: () =>
       marketsAddresses!.reduce((requests, marketAddress) => {
         const market = getByKey(marketsData, marketAddress)!;
@@ -97,8 +100,15 @@ export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }):
       }, {}),
     parseResponse: (res) =>
       marketsAddresses!.reduce((marketTokensMap: TokensData, marketAddress: string) => {
-        const pricesData = res[`${marketAddress}-prices`];
-        const tokenData = res[`${marketAddress}-tokenData`];
+        const pricesErrors = res.errors[`${marketAddress}-prices`];
+        const tokenDataErrors = res.errors[`${marketAddress}-tokenData`];
+
+        const pricesData = res.data[`${marketAddress}-prices`];
+        const tokenData = res.data[`${marketAddress}-tokenData`];
+
+        if (pricesErrors || tokenDataErrors) {
+          return marketTokensMap;
+        }
 
         const tokenConfig = getTokenBySymbol(chainId, "GM");
 

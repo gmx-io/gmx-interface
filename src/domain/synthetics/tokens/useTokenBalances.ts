@@ -48,8 +48,8 @@ export function useTokenBalances(chainId: number, p: { tokenAddresses: string[] 
         return acc;
       }, {}),
     parseResponse: (res) =>
-      Object.keys(res).reduce((tokenBalances: TokenBalancesData, tokenAddress) => {
-        tokenBalances[tokenAddress] = res[tokenAddress].balance.returnValues[0];
+      Object.keys(res.data).reduce((tokenBalances: TokenBalancesData, tokenAddress) => {
+        tokenBalances[tokenAddress] = res.data[tokenAddress].balance.returnValues[0];
 
         return tokenBalances;
       }, {} as TokenBalancesData),

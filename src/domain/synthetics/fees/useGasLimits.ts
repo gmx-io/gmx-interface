@@ -69,7 +69,7 @@ export function useGasLimits(chainId: number): GasLimitsResult {
       },
     }),
     parseResponse: (res) => {
-      const results = res.dataStore;
+      const results = res.data.dataStore;
 
       return {
         depositSingleToken: results.depositSingleToken.returnValues[0],
