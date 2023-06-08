@@ -44,8 +44,8 @@ export function useAffiliateRewards(chainId: number) {
 
       marketsAddresses!.forEach((marketAddress) => {
         const market = marketsData![marketAddress];
-        const longTokenAmount = res.dataStore[`${marketAddress}-${market.longTokenAddress}`].returnValues[0];
-        const shortTokenAmount = res.dataStore[`${marketAddress}-${market.shortTokenAddress}`].returnValues[0];
+        const longTokenAmount = res.data.dataStore[`${marketAddress}-${market.longTokenAddress}`].returnValues[0];
+        const shortTokenAmount = res.data.dataStore[`${marketAddress}-${market.shortTokenAddress}`].returnValues[0];
 
         result[marketAddress] = {
           marketAddress,

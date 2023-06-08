@@ -44,8 +44,8 @@ export function useTokensAllowanceData(
         }, {}),
 
     parseResponse: (res) =>
-      Object.keys(res).reduce((tokenAllowance: TokensAllowanceData, address) => {
-        tokenAllowance[address] = res[address].allowance.returnValues[0];
+      Object.keys(res.data).reduce((tokenAllowance: TokensAllowanceData, address) => {
+        tokenAllowance[address] = res.data[address].allowance.returnValues[0];
 
         return tokenAllowance;
       }, {} as TokensAllowanceData),

@@ -65,6 +65,8 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
     // Refreshed on every prices update
     refreshInterval: null,
 
+    requireSuccess: false,
+
     request: () =>
       marketsAddresses!.reduce((request, marketAddress) => {
         const market = getByKey(marketsData, marketAddress)!;
@@ -314,10 +316,14 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
       }, {}),
     parseResponse: (res) => {
       return marketsAddresses!.reduce((acc: MarketsInfoData, marketAddress) => {
-        const readerValues = res[`${marketAddress}-reader`];
-        const dataStoreValues = res[`${marketAddress}-dataStore`];
+        const readerErrors = res.errors[`${marketAddress}-reader`];
+        const dataStoreErrors = res.errors[`${marketAddress}-dataStore`];
 
-        if (!readerValues || !dataStoreValues) {
+        const readerValues = res.data[`${marketAddress}-reader`];
+        const dataStoreValues = res.data[`${marketAddress}-dataStore`];
+
+        // Skip invalid market
+        if (!readerValues || !dataStoreValues || readerErrors || dataStoreErrors) {
           return acc;
         }
 
@@ -340,7 +346,7 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [_, borrowingFactorPerSecondForLongs, borrowingFactorPerSecondForShorts, funding, virtualInventory] =
-          readerValues.marketInfo.returnValues;
+          readerValues.marketInfo.returnValues[0];
 
         const [virtualPoolAmountForLongToken, virtualPoolAmountForShortToken, virtualInventoryForPositions] =
           virtualInventory.map(bigNumberify);
