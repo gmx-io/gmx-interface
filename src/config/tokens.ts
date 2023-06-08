@@ -638,11 +638,6 @@ export function getToken(chainId: number, address: string) {
 }
 
 export function getTokenBySymbol(chainId: number, symbol: string) {
-  if (chainId === ARBITRUM) {
-    if (symbol === "USDC") {
-      symbol = "USDC.e";
-    }
-  }
   const token = TOKENS_BY_SYMBOL_MAP[chainId][symbol];
   if (!token) {
     throw new Error(`Incorrect symbol "${symbol}" for chainId ${chainId}`);
