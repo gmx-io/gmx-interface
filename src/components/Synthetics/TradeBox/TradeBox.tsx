@@ -1086,14 +1086,20 @@ export function TradeBox(p: Props) {
           className="SwapBox-info-row"
           label={t`Entry Price`}
           value={
-            <ValueTransition
-              from={formatUsd(existingPosition?.entryPrice, {
-                displayDecimals: existingPosition?.indexToken?.priceDecimals,
-              })}
-              to={formatUsd(nextPositionValues?.nextEntryPrice, {
+            nextPositionValues?.nextEntryPrice || existingPosition?.entryPrice ? (
+              <ValueTransition
+                from={formatUsd(existingPosition?.entryPrice, {
+                  displayDecimals: toToken?.priceDecimals,
+                })}
+                to={formatUsd(nextPositionValues?.nextEntryPrice, {
+                  displayDecimals: toToken?.priceDecimals,
+                })}
+              />
+            ) : (
+              formatUsd(markPrice, {
                 displayDecimals: toToken?.priceDecimals,
-              })}
-            />
+              })
+            )
           }
         />
 
