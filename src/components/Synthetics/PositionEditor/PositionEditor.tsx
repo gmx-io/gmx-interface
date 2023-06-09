@@ -34,6 +34,7 @@ import {
 import {
   PositionInfo,
   formatLeverage,
+  formatLiquidationPrice,
   getLeverage,
   getLiquidationPrice,
   usePositionsConstants,
@@ -163,83 +164,63 @@ export function PositionEditor(p: Props) {
     };
   }, [chainId, collateralDeltaUsd, gasLimits, gasPrice, isDeposit, position, tokensData]);
 
-  const { nextCollateralUsd, nextLeverage, nextLiqPrice, receiveUsd, receiveAmount, remainingCollateralFeesUsd } =
-    useMemo(() => {
-      if (!position || !collateralDeltaUsd?.gt(0) || !minCollateralUsd || !fees?.totalFees) {
-        return {};
-      }
+  const { nextCollateralUsd, nextLeverage, nextLiqPrice, receiveUsd, receiveAmount } = useMemo(() => {
+    if (!position || !collateralDeltaUsd?.gt(0) || !minCollateralUsd || !fees?.totalFees) {
+      return {};
+    }
 
-      let nextCollateralUsd: BigNumber;
-      let nextCollateralAmount: BigNumber;
-      let receiveUsd = BigNumber.from(0);
+    const totalFeesUsd = fees.totalFees.deltaUsd.abs();
 
-      let remainingCollateralFeesUsd = fees.totalFees.deltaUsd.abs().sub(collateralDeltaUsd);
-      if (remainingCollateralFeesUsd.lt(0)) {
-        remainingCollateralFeesUsd = BigNumber.from(0);
-      }
+    const nextCollateralUsd = isDeposit
+      ? position.collateralUsd.sub(totalFeesUsd).add(collateralDeltaUsd)
+      : position.collateralUsd.sub(totalFeesUsd).sub(collateralDeltaUsd);
 
-      if (isDeposit) {
-        const collateralDeltaAfterFeesUsd = collateralDeltaUsd.sub(fees.totalFees.deltaUsd.abs());
-        nextCollateralUsd = position.collateralUsd.add(collateralDeltaAfterFeesUsd);
-      } else {
-        if (collateralDeltaUsd.gt(fees.totalFees.deltaUsd.abs())) {
-          nextCollateralUsd = position.collateralUsd.sub(collateralDeltaUsd);
-          receiveUsd = collateralDeltaUsd.sub(fees.totalFees.deltaUsd.abs());
-        } else {
-          nextCollateralUsd = position.collateralUsd.sub(collateralDeltaUsd).sub(remainingCollateralFeesUsd);
-          receiveUsd = BigNumber.from(0);
-        }
-      }
+    const nextCollateralAmount = convertToTokenAmount(nextCollateralUsd, collateralToken?.decimals, collateralPrice)!;
 
-      if (nextCollateralUsd?.lt(0)) {
-        nextCollateralUsd = BigNumber.from(0);
-      }
-      nextCollateralAmount = convertToTokenAmount(nextCollateralUsd, collateralToken?.decimals, collateralPrice)!;
+    const receiveUsd = isDeposit ? BigNumber.from(0) : collateralDeltaUsd;
+    const receiveAmount = convertToTokenAmount(receiveUsd, collateralToken?.decimals, collateralPrice)!;
 
-      const receiveAmount = convertToTokenAmount(receiveUsd, collateralToken?.decimals, collateralPrice)!;
+    const nextLeverage = getLeverage({
+      sizeInUsd: position.sizeInUsd,
+      collateralUsd: nextCollateralUsd,
+      pendingBorrowingFeesUsd: BigNumber.from(0),
+      pendingFundingFeesUsd: BigNumber.from(0),
+      pnl: showPnlInLeverage ? position.pnl : BigNumber.from(0),
+    });
 
-      const nextLeverage = getLeverage({
-        sizeInUsd: position.sizeInUsd,
-        collateralUsd: nextCollateralUsd,
-        pendingBorrowingFeesUsd: BigNumber.from(0),
-        pendingFundingFeesUsd: BigNumber.from(0),
-        pnl: showPnlInLeverage ? position.pnl : BigNumber.from(0),
-      });
-
-      const nextLiqPrice = getLiquidationPrice({
-        sizeInUsd: position.sizeInUsd,
-        sizeInTokens: position.sizeInTokens,
-        collateralUsd: nextCollateralUsd,
-        collateralAmount: nextCollateralAmount,
-        collateralToken: position.collateralToken,
-        marketInfo: position.marketInfo,
-        markPrice: position.markPrice,
-        closingFeeUsd: getPositionFee(position.marketInfo, position.sizeInUsd, userReferralInfo).positionFeeUsd,
-        pendingFundingFeesUsd: BigNumber.from(0),
-        pendingBorrowingFeesUsd: BigNumber.from(0),
-        isLong: position.isLong,
-        minCollateralUsd,
-      });
-
-      return {
-        nextCollateralUsd,
-        nextLeverage,
-        nextLiqPrice,
-        receiveUsd,
-        receiveAmount,
-        remainingCollateralFeesUsd,
-      };
-    }, [
-      collateralDeltaUsd,
-      collateralPrice,
-      collateralToken,
-      fees,
-      isDeposit,
+    const nextLiqPrice = getLiquidationPrice({
+      sizeInUsd: position.sizeInUsd,
+      sizeInTokens: position.sizeInTokens,
+      collateralUsd: nextCollateralUsd,
+      collateralAmount: nextCollateralAmount,
+      collateralToken: position.collateralToken,
+      marketInfo: position.marketInfo,
+      markPrice: position.markPrice,
+      closingFeeUsd: getPositionFee(position.marketInfo, position.sizeInUsd, userReferralInfo).positionFeeUsd,
+      pendingFundingFeesUsd: BigNumber.from(0),
+      pendingBorrowingFeesUsd: BigNumber.from(0),
+      isLong: position.isLong,
       minCollateralUsd,
-      position,
-      showPnlInLeverage,
-      userReferralInfo,
-    ]);
+    });
+
+    return {
+      nextCollateralUsd,
+      nextLeverage,
+      nextLiqPrice,
+      receiveUsd,
+      receiveAmount,
+    };
+  }, [
+    collateralDeltaUsd,
+    collateralPrice,
+    collateralToken,
+    fees,
+    isDeposit,
+    minCollateralUsd,
+    position,
+    showPnlInLeverage,
+    userReferralInfo,
+  ]);
 
   const error = useMemo(() => {
     const commonError = getCommonError({
@@ -489,8 +470,8 @@ export function PositionEditor(p: Props) {
                 label={t`Liq Price`}
                 value={
                   <ValueTransition
-                    from={formatUsd(position.liquidationPrice)}
-                    to={formatUsd(nextLiqPrice, { displayDecimals: indexPriceDecimals })}
+                    from={formatLiquidationPrice(position.liquidationPrice, { displayDecimals: indexPriceDecimals })}
+                    to={formatLiquidationPrice(nextLiqPrice, { displayDecimals: indexPriceDecimals })}
                   />
                 }
               />
@@ -519,18 +500,7 @@ export function PositionEditor(p: Props) {
                 </div>
               </div>
 
-              <TradeFeesRow
-                {...fees}
-                executionFee={executionFee}
-                feesType={"edit"}
-                warning={
-                  remainingCollateralFeesUsd?.gt(0)
-                    ? isDeposit
-                      ? t`Deposit amount is insufficient to cover pending Fees. Collateral will be reduced after this deposit.`
-                      : t`Withdrawal amount is insufficient to cover pending Fees. They are deducted from Collateral.`
-                    : ""
-                }
-              />
+              <TradeFeesRow {...fees} executionFee={executionFee} feesType={"edit"} />
 
               {!isDeposit && (
                 <ExchangeInfoRow

@@ -153,14 +153,7 @@ export function getLiquidationPrice(p: {
     if (isLong) {
       const denominator = sizeInTokens.add(collateralAmount);
 
-      if (
-        denominator.lte(0) ||
-        // check sizeInTokens / collateralAmount <= 1.0001
-        sizeInTokens
-          .mul(BASIS_POINTS_DIVISOR)
-          .div(collateralAmount)
-          .lte(BASIS_POINTS_DIVISOR + 1)
-      ) {
+      if (denominator.lte(0)) {
         return ethers.constants.MaxUint256;
       }
 
@@ -174,12 +167,12 @@ export function getLiquidationPrice(p: {
       const denominator = sizeInTokens.sub(collateralAmount);
 
       if (
-        (denominator.lte(0),
+        denominator.lte(0) ||
         // check sizeInTokens / collateralAmount <= 1.0001
         sizeInTokens
           .mul(BASIS_POINTS_DIVISOR)
           .div(collateralAmount)
-          .lte(BASIS_POINTS_DIVISOR + 1))
+          .lte(BASIS_POINTS_DIVISOR + 1)
       ) {
         return ethers.constants.MaxUint256;
       }

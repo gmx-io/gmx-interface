@@ -8,6 +8,7 @@ import { BigNumber, ethers } from "ethers";
 import { BASIS_POINTS_DIVISOR, DUST_USD, MAX_ALLOWED_LEVERAGE, USD_DECIMALS, isAddressZero } from "lib/legacy";
 import { expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 import { NextPositionValues, SwapPathStats, TradeFees } from "../types";
+import { getMinCollateralUsdForLeverage } from "./decrease";
 
 export function getCommonError(p: { chainId: number; isConnected: boolean; hasOutdatedUi: boolean }) {
   const { chainId, isConnected, hasOutdatedUi } = p;
@@ -339,14 +340,16 @@ export function getEditCollateralError(p: {
     return [t`Amount should be greater than zero`];
   }
 
-  if (nextCollateralUsd && minCollateralUsd) {
-    if (nextCollateralUsd.lt(minCollateralUsd)) {
-      return [t`Min residual collateral: ${formatAmount(minCollateralUsd, USD_DECIMALS, 2)} USD`];
+  if (nextCollateralUsd && minCollateralUsd && position) {
+    const minCollateralUsdForLeverage = getMinCollateralUsdForLeverage(position);
+
+    if (nextCollateralUsd.lt(minCollateralUsdForLeverage)) {
+      return [t`Min collateral: ${formatAmount(minCollateralUsdForLeverage, USD_DECIMALS, 2)} USD`];
     }
   }
 
   if (nextLiqPrice && position?.markPrice) {
-    if (position?.isLong && position?.markPrice.lt(nextLiqPrice)) {
+    if (position?.isLong && nextLiqPrice.lt(ethers.constants.MaxUint256) && position?.markPrice.lt(nextLiqPrice)) {
       return [t`Invalid liq. price`];
     }
 
