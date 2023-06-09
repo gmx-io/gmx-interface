@@ -434,10 +434,10 @@ function AffiliatesStats({
                       if (rebate.tokens[0] === esGmxAddress) {
                         rebateType = t`V1 esGMX`;
                       } else {
-                        rebateType = t`V1 AIRDROP`;
+                        rebateType = t`V1 Airdrop`;
                       }
                     } else if (rebate.typeId === RebateDistributionType.Claim) {
-                      rebateType = t`V2 CLAIM`;
+                      rebateType = t`V2 Claim`;
                     }
 
                     const amountsByTokens = rebate.tokens.reduce((acc, tokenAddress, i) => {
