@@ -14,6 +14,7 @@ import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/
 import { TradeMode, getTriggerThresholdType } from "domain/synthetics/trade";
 import { CHART_PERIODS } from "lib/legacy";
 import "./PositionItem.scss";
+import { ethers } from "ethers";
 
 export type Props = {
   position: PositionInfo;
@@ -206,16 +207,28 @@ export function PositionItem(p: Props) {
   }
 
   function renderLiquidationPrice() {
-    return (
-      <Tooltip
-        handle={formatLiquidationPrice(p.position.liquidationPrice, { displayDecimals: indexPriceDecimals }) || "..."}
-        position={p.isLarge ? "left-bottom" : "right-bottom"}
-        handleClassName="plain"
-        renderContent={() => (
-          <div>{t`Liquidation Price is influenced by Fees, Collateral value, and Price Impact.`}</div>
-        )}
-      />
-    );
+    let liqPriceWarning: string | undefined;
+
+    if (p.position.liquidationPrice?.eq(ethers.constants.MaxUint256)) {
+      if (p.position.collateralAmount.lt(p.position.sizeInTokens)) {
+        liqPriceWarning = t`Since your position's Collateral is ${p.position.collateralToken.symbol} with a larger value than the Position Size, the Collateral value will increase to cover any negative PnL.`;
+      } else {
+        liqPriceWarning = t`Since your position's Collateral is ${p.position.collateralToken.symbol} with a value very close or larger than the Position Size, the Collateral value will increase to cover any negative PnL.`;
+      }
+    }
+
+    if (liqPriceWarning) {
+      return (
+        <Tooltip
+          handle={formatLiquidationPrice(p.position.liquidationPrice, { displayDecimals: indexPriceDecimals }) || "..."}
+          position={p.isLarge ? "left-bottom" : "right-bottom"}
+          handleClassName="plain"
+          renderContent={() => <div>{liqPriceWarning}</div>}
+        />
+      );
+    }
+
+    return formatLiquidationPrice(p.position.liquidationPrice, { displayDecimals: indexPriceDecimals }) || "...";
   }
 
   function renderPositionOrders() {

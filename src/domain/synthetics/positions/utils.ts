@@ -111,7 +111,6 @@ export function getLiquidationPrice(p: {
     collateralAmount,
     marketInfo,
     collateralToken,
-    // markPrice,
     closingFeeUsd,
     pendingFundingFeesUsd,
     pendingBorrowingFeesUsd,
@@ -148,32 +147,47 @@ export function getLiquidationPrice(p: {
     liquidationCollateralUsd = minCollateralUsd;
   }
 
+  let liquidationPrice: BigNumber;
+
   if (getIsEquivalentTokens(collateralToken, indexToken)) {
     if (isLong) {
       const denominator = sizeInTokens.add(collateralAmount);
 
-      if (denominator.lt(expandDecimals(1, indexToken.decimals - 2))) {
+      if (
+        denominator.lte(0) ||
+        // check sizeInTokens / collateralAmount <= 1.0001
+        sizeInTokens
+          .mul(BASIS_POINTS_DIVISOR)
+          .div(collateralAmount)
+          .lte(BASIS_POINTS_DIVISOR + 1)
+      ) {
         return ethers.constants.MaxUint256;
       }
 
-      return sizeInUsd
+      liquidationPrice = sizeInUsd
         .add(liquidationCollateralUsd)
         .sub(priceImpactDeltaUsd)
         .add(totalFeesUsd)
         .div(denominator)
         .mul(expandDecimals(1, indexToken.decimals));
     } else {
-      const denominator = sizeInTokens.sub(collateralAmount).abs();
+      const denominator = sizeInTokens.sub(collateralAmount);
 
-      if (sizeInTokens.mul(BASIS_POINTS_DIVISOR).div(collateralAmount).lt(BASIS_POINTS_DIVISOR)) {
+      if (
+        (denominator.lte(0),
+        // check sizeInTokens / collateralAmount <= 1.0001
+        sizeInTokens
+          .mul(BASIS_POINTS_DIVISOR)
+          .div(collateralAmount)
+          .lte(BASIS_POINTS_DIVISOR + 1))
+      ) {
         return ethers.constants.MaxUint256;
       }
 
-      return sizeInUsd
+      liquidationPrice = sizeInUsd
         .sub(liquidationCollateralUsd)
         .add(priceImpactDeltaUsd)
         .sub(totalFeesUsd)
-        .abs()
         .div(denominator)
         .mul(expandDecimals(1, indexToken.decimals));
     }
@@ -185,19 +199,25 @@ export function getLiquidationPrice(p: {
     const remainingCollateralUsd = collateralUsd.add(priceImpactDeltaUsd).sub(totalPendingFeesUsd).sub(closingFeeUsd);
 
     if (isLong) {
-      return liquidationCollateralUsd
+      liquidationPrice = liquidationCollateralUsd
         .sub(remainingCollateralUsd)
         .add(sizeInUsd)
         .div(sizeInTokens)
         .mul(expandDecimals(1, indexToken.decimals));
     } else {
-      return liquidationCollateralUsd
+      liquidationPrice = liquidationCollateralUsd
         .sub(remainingCollateralUsd)
         .sub(sizeInUsd)
         .div(sizeInTokens.mul(-1))
         .mul(expandDecimals(1, indexToken.decimals));
     }
   }
+
+  if (liquidationPrice.lte(0)) {
+    return ethers.constants.MaxUint256;
+  }
+
+  return liquidationPrice;
 }
 
 export function formatLiquidationPrice(liquidationPrice?: BigNumber, opts: { displayDecimals?: number } = {}) {
