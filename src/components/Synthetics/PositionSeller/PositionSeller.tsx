@@ -294,7 +294,7 @@ export function PositionSeller(p: Props) {
       isLong: position.isLong,
       acceptablePrice: decreaseAmounts.acceptablePrice,
       triggerPrice: undefined,
-      minOutputUsd: receiveUsd,
+      minOutputUsd: BigNumber.from(0),
       decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
       orderType: OrderType.MarketDecrease,
       referralCode: userReferralInfo?.userReferralCode,
@@ -311,6 +311,17 @@ export function PositionSeller(p: Props) {
   }
 
   useEffect(
+    function resetForm() {
+      if (!isVisible !== prevIsVisible) {
+        setCloseUsdInputValue("");
+        setIsHighPriceImpactAccepted(false);
+        setReceiveTokenAddress(undefined);
+      }
+    },
+    [isVisible, prevIsVisible]
+  );
+
+  useEffect(
     function initReceiveToken() {
       if (!receiveTokenAddress && position?.collateralToken?.address) {
         const convertedAddress = convertTokenAddress(chainId, position?.collateralToken.address, "native");
@@ -318,16 +329,6 @@ export function PositionSeller(p: Props) {
       }
     },
     [chainId, position?.collateralToken, receiveTokenAddress]
-  );
-
-  useEffect(
-    function resetForm() {
-      if (isVisible !== prevIsVisible) {
-        setCloseUsdInputValue("");
-        setIsHighPriceImpactAccepted(false);
-      }
-    },
-    [isVisible, prevIsVisible]
   );
 
   const indexPriceDecimals = position?.indexToken?.priceDecimals;

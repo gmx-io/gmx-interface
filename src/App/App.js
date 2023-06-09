@@ -16,6 +16,7 @@ import {
   REFERRAL_CODE_QUERY_PARAM,
 } from "lib/legacy";
 
+import { decodeReferralCode, encodeReferralCode } from "domain/referrals";
 import Actions from "pages/Actions/Actions";
 import BeginAccountTransfer from "pages/BeginAccountTransfer/BeginAccountTransfer";
 import Buy from "pages/Buy/Buy";
@@ -24,17 +25,16 @@ import BuyGMX from "pages/BuyGMX/BuyGMX";
 import ClaimEsGmx from "pages/ClaimEsGmx/ClaimEsGmx";
 import CompleteAccountTransfer from "pages/CompleteAccountTransfer/CompleteAccountTransfer";
 import Dashboard from "pages/Dashboard/Dashboard";
-import Stats from "pages/Stats/Stats";
-import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
 import Ecosystem from "pages/Ecosystem/Ecosystem";
 import { Exchange } from "pages/Exchange/Exchange";
 import Home from "pages/Home/Home";
 import NftWallet from "pages/NftWallet/NftWallet";
 import OrdersOverview from "pages/OrdersOverview/OrdersOverview";
 import PositionsOverview from "pages/PositionsOverview/PositionsOverview";
-import { encodeReferralCode, decodeReferralCode } from "domain/referrals";
 import Referrals from "pages/Referrals/Referrals";
+import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
 import Stake from "pages/Stake/Stake";
+import Stats from "pages/Stats/Stats";
 
 import Checkbox from "components/Checkbox/Checkbox";
 import Modal from "components/Modal/Modal";
@@ -69,9 +69,10 @@ import { useLocalStorage } from "react-use";
 import { i18n } from "@lingui/core";
 import { t, Trans } from "@lingui/macro";
 import { I18nProvider } from "@lingui/react";
+import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { Header } from "components/Header/Header";
-import { ARBITRUM, AVALANCHE_FUJI, getExplorerUrl } from "config/chains";
+import { ARBITRUM, getExplorerUrl } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getIsSyntheticsSupported } from "config/features";
 import {
@@ -85,6 +86,8 @@ import {
   SHOW_PNL_AFTER_FEES_KEY,
   SLIPPAGE_BPS_KEY,
 } from "config/localStorage";
+import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
+import { SettingsContextProvider, useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
@@ -103,13 +106,10 @@ import {
   useHandleUnsupportedNetwork,
   useInactiveListener,
 } from "lib/wallets";
-import { SettingsContextProvider, useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { MarketPoolsPage } from "pages/MarketPoolsPage/MarketPoolsPage";
+import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsFallbackPage";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
-import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsFallbackPage";
-import Button from "components/Button/Button";
-import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -261,7 +261,7 @@ function FullApp() {
 
   const [tradePageVersion, setTradePageVersion] = useLocalStorageSerializeKey(
     [chainId, TRADE_LINK_KEY],
-    chainId === AVALANCHE_FUJI ? 2 : 1
+    getIsSyntheticsSupported(chainId) ? 2 : 1
   );
   const [walletModalVisible, setWalletModalVisible] = useState(false);
   const [redirectModalVisible, setRedirectModalVisible] = useState(false);

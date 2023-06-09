@@ -17,8 +17,9 @@ const arbWsProvider = new ethers.providers.WebSocketProvider(getAlchemyWsUrl());
 const avaxWsProvider = new ethers.providers.JsonRpcProvider("https://api.avax.network/ext/bc/C/rpc");
 avaxWsProvider.pollingInterval = 2000;
 
-const goerliWsProvider = new ethers.providers.JsonRpcProvider(getRpcUrl(ARBITRUM_GOERLI)!);
-goerliWsProvider.pollingInterval = 1000;
+const goerliWsProvider = new ethers.providers.WebSocketProvider(
+  "wss://arb-goerli.g.alchemy.com/v2/cZfd99JyN42V9Clbs_gOvA3GSBZH1-1j"
+);
 
 const fujiWsProvider = new ethers.providers.JsonRpcProvider(getRpcUrl(AVALANCHE_FUJI));
 fujiWsProvider.pollingInterval = 2000;

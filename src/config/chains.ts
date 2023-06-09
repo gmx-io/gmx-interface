@@ -160,8 +160,9 @@ export const RPC_PROVIDERS = {
   [TESTNET]: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
   [ARBITRUM]: [getDefaultArbitrumRpcUrl()],
   [ARBITRUM_GOERLI]: [
-    "https://endpoints.omniatech.io/v1/arbitrum/goerli/public",
     "https://goerli-rollup.arbitrum.io/rpc",
+    // "https://arb-goerli.g.alchemy.com/v2/cZfd99JyN42V9Clbs_gOvA3GSBZH1-1j",
+    // "https://endpoints.omniatech.io/v1/arbitrum/goerli/public",
     // "https://arbitrum-goerli.public.blastapi.io",
   ],
   [AVALANCHE]: ["https://api.avax.network/ext/bc/C/rpc"],
@@ -176,6 +177,7 @@ export const FALLBACK_PROVIDERS = {
     "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
     "https://api.avax-test.network/ext/bc/C/rpc",
   ],
+  [ARBITRUM_GOERLI]: ["https://arb-goerli.g.alchemy.com/v2/cZfd99JyN42V9Clbs_gOvA3GSBZH1-1j"],
 };
 
 export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {

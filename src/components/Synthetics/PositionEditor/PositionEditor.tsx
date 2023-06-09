@@ -42,7 +42,7 @@ import {
 import { TokensData, adaptToV1InfoTokens, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { TradeFees, getMarkPrice } from "domain/synthetics/trade";
 import { getCommonError, getEditCollateralError } from "domain/synthetics/trade/utils/validation";
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -132,7 +132,11 @@ export function PositionEditor(p: Props) {
   const collateralDeltaUsd = convertToUsd(collateralDeltaAmount, collateralToken?.decimals, collateralPrice);
 
   const needCollateralApproval =
-    isDeposit && tokenAllowance && collateralDeltaAmount && collateralDeltaAmount.gt(tokenAllowance);
+    isDeposit &&
+    tokenAllowance &&
+    collateralDeltaAmount &&
+    selectedCollateralAddress !== ethers.constants.AddressZero &&
+    collateralDeltaAmount.gt(tokenAllowance);
 
   const maxWithdrawUsd =
     position && minCollateralUsd ? position.collateralUsd.sub(minCollateralUsd) : BigNumber.from(0);
