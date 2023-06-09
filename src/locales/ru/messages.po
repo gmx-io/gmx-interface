@@ -1285,8 +1285,8 @@ msgid "Deposit Fee"
 msgstr ""
 
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-msgid "Deposit amount is insufficient to cover pending Fees. Collateral will be reduced after this deposit."
-msgstr ""
+#~ msgid "Deposit amount is insufficient to cover pending Fees. Collateral will be reduced after this deposit."
+#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
 msgid "Deposit cancelled"
@@ -2730,6 +2730,10 @@ msgstr "Перенос не удался"
 msgid "Migration submitted! <0>View status.</0>"
 msgstr "Перенос завершен! <0> Просмотр статуса.</0>"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min collateral: {0} USD"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -2754,8 +2758,8 @@ msgid "Min residual collateral: 10 USD"
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
-msgid "Min residual collateral: {0} USD"
-msgstr ""
+#~ msgid "Min residual collateral: {0} USD"
+#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -4981,8 +4985,8 @@ msgid "Withdrawal"
 msgstr ""
 
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-msgid "Withdrawal amount is insufficient to cover pending Fees. They are deducted from Collateral."
-msgstr ""
+#~ msgid "Withdrawal amount is insufficient to cover pending Fees. They are deducted from Collateral."
+#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
 msgid "Withdrawal cancelled"
