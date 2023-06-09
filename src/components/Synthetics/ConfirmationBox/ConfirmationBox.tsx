@@ -460,7 +460,7 @@ export function ConfirmationBox(p: Props) {
       acceptablePrice: decreaseAmounts.acceptablePrice,
       sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
       sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
-      minOutputUsd: decreaseAmounts.receiveUsd,
+      minOutputUsd: BigNumber.from(0),
       isLong,
       decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
       orderType: decreaseAmounts.triggerOrderType,
