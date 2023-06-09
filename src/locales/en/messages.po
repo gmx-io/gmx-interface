@@ -4705,8 +4705,12 @@ msgid "Utilization"
 msgstr "Utilization"
 
 #: src/components/Referrals/AffiliatesStats.tsx
-msgid "V1 AIRDROP"
-msgstr "V1 AIRDROP"
+#~ msgid "V1 AIRDROP"
+#~ msgstr "V1 AIRDROP"
+
+#: src/components/Referrals/AffiliatesStats.tsx
+msgid "V1 Airdrop"
+msgstr "V1 Airdrop"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -4764,8 +4768,12 @@ msgid "V2 Avalanche Fuji"
 msgstr "V2 Avalanche Fuji"
 
 #: src/components/Referrals/AffiliatesStats.tsx
-msgid "V2 CLAIM"
-msgstr "V2 CLAIM"
+#~ msgid "V2 CLAIM"
+#~ msgstr "V2 CLAIM"
+
+#: src/components/Referrals/AffiliatesStats.tsx
+msgid "V2 Claim"
+msgstr "V2 Claim"
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
