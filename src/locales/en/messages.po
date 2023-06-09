@@ -2376,8 +2376,8 @@ msgid "Liquidation Fee"
 msgstr "Liquidation Fee"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Liquidation Price is influenced by Fees, Collateral value, and Price Impact."
-msgstr "Liquidation Price is influenced by Fees, Collateral value, and Price Impact."
+#~ msgid "Liquidation Price is influenced by Fees, Collateral value, and Price Impact."
+#~ msgstr "Liquidation Price is influenced by Fees, Collateral value, and Price Impact."
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Liquidation price would cross mark price."
@@ -3794,6 +3794,14 @@ msgstr "Simple Swaps"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Simulate your hedge strategy"
 msgstr "Simulate your hedge strategy"
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Since your position's Collateral is {0} with a larger value than the Position Size, the Collateral value will increase to cover any negative PnL."
+msgstr "Since your position's Collateral is {0} with a larger value than the Position Size, the Collateral value will increase to cover any negative PnL."
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Since your position's Collateral is {0} with a value very close or larger than the Position Size, the Collateral value will increase to cover any negative PnL."
+msgstr "Since your position's Collateral is {0} with a value very close or larger than the Position Size, the Collateral value will increase to cover any negative PnL."
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Single"
