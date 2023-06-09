@@ -194,7 +194,7 @@ export function PositionSeller(p: Props) {
 
     return {
       fees: getTradeFees({
-        initialCollateralUsd: decreaseAmounts?.initialReceiveUsd,
+        initialCollateralUsd: position.collateralUsd,
         sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
         swapSteps: swapAmounts?.swapPathStats?.swapSteps || [],
         positionFeeUsd: decreaseAmounts.positionFeeUsd,

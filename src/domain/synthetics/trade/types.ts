@@ -74,8 +74,6 @@ export type DecreasePositionAmounts = {
   swapProfitFeeUsd: BigNumber;
   positionPriceImpactDeltaUsd: BigNumber;
 
-  initialReceiveUsd: BigNumber;
-
   payedOutputUsd: BigNumber;
   payedRemainingCollateralUsd: BigNumber;
 

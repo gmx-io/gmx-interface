@@ -527,7 +527,7 @@ export function TradeBox(p: Props) {
 
       return {
         fees: getTradeFees({
-          initialCollateralUsd: decreaseAmounts.initialReceiveUsd,
+          initialCollateralUsd: existingPosition?.collateralUsd || BigNumber.from(0),
           sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
           swapSteps: [],
           positionFeeUsd: decreaseAmounts.positionFeeUsd,

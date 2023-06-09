@@ -66,8 +66,6 @@ export function getDecreasePositionAmounts(p: {
     payedOutputUsd: BigNumber.from(0),
     payedRemainingCollateralUsd: BigNumber.from(0),
 
-    initialReceiveUsd: BigNumber.from(0),
-
     receiveTokenAmount: BigNumber.from(0),
     receiveUsd: BigNumber.from(0),
 
@@ -282,8 +280,7 @@ export function getDecreasePositionAmounts(p: {
     .add(negativePriceImpactUsd)
     .add(priceImpactDiffUsd);
 
-  values.receiveTokenAmount = values.collateralDeltaAmount.add(profitAmount);
-  values.initialReceiveUsd = convertToUsd(values.receiveTokenAmount, collateralToken.decimals, values.collateralPrice)!;
+  values.receiveTokenAmount = profitAmount;
 
   const payedInfo = payForCollateralCost({
     initialCostUsd: totalFeesUsd,
@@ -293,7 +290,7 @@ export function getDecreasePositionAmounts(p: {
     remainingCollateralAmount: position.collateralAmount,
   });
 
-  values.receiveTokenAmount = payedInfo.outputAmount;
+  values.receiveTokenAmount = payedInfo.outputAmount.add(values.collateralDeltaAmount);
   values.receiveUsd = convertToUsd(values.receiveTokenAmount, collateralToken.decimals, values.collateralPrice)!;
 
   values.payedOutputUsd = convertToUsd(payedInfo.paidOutputAmount, collateralToken.decimals, values.collateralPrice)!;

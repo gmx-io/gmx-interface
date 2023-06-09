@@ -143,8 +143,12 @@ export function PositionEditor(p: Props) {
       return {};
     }
 
-    const fundingFee = getFeeItem(position.pendingFundingFeesUsd.mul(-1), collateralDeltaUsd);
-    const borrowFee = getFeeItem(position.pendingBorrowingFeesUsd.mul(-1), collateralDeltaUsd);
+    const collateralBasisUsd = isDeposit
+      ? position.collateralUsd.add(collateralDeltaUsd || BigNumber.from(0))
+      : position.collateralUsd;
+
+    const fundingFee = getFeeItem(position.pendingFundingFeesUsd.mul(-1), collateralBasisUsd);
+    const borrowFee = getFeeItem(position.pendingBorrowingFeesUsd.mul(-1), collateralBasisUsd);
     const totalFees = getTotalFeeItem([fundingFee, borrowFee]);
 
     const fees: TradeFees = {

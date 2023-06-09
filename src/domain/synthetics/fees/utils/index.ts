@@ -90,11 +90,11 @@ export function getIsHighPriceImpact(positionPriceImpact?: FeeItem, swapPriceImp
 }
 
 export function getFeeItem(feeDeltaUsd?: BigNumber, basis?: BigNumber): FeeItem | undefined {
-  if (!feeDeltaUsd || !basis?.gt(0)) return undefined;
+  if (!feeDeltaUsd) return undefined;
 
   return {
     deltaUsd: feeDeltaUsd,
-    bps: getBasisPoints(feeDeltaUsd, basis),
+    bps: basis?.gt(0) ? getBasisPoints(feeDeltaUsd, basis) : BigNumber.from(0),
   };
 }
 
