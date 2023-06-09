@@ -261,7 +261,7 @@ function FullApp() {
 
   const [tradePageVersion, setTradePageVersion] = useLocalStorageSerializeKey(
     [chainId, TRADE_LINK_KEY],
-    chainId === AVALANCHE_FUJI ? 2 : 1
+    getIsSyntheticsSupported(chainId) ? 2 : 1
   );
   const [walletModalVisible, setWalletModalVisible] = useState(false);
   const [redirectModalVisible, setRedirectModalVisible] = useState(false);
