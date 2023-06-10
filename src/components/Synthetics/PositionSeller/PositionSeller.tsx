@@ -506,7 +506,7 @@ export function PositionSeller(p: Props) {
                 }
               />
 
-              <TradeFeesRow {...fees} executionFee={executionFee} feesType="decrease" />
+              <TradeFeesRow {...fees} executionFee={executionFee} feesType="decrease" warning={executionFee?.warning} />
 
               <ExchangeInfoRow
                 isTop

@@ -446,6 +446,7 @@ export function PositionEditor(p: Props) {
                   className="Edit-collateral-token-selector"
                   showSymbolImage={true}
                   showTokenImgInDropdown={true}
+                  showBalances={false}
                 />
               ) : (
                 collateralToken?.symbol
@@ -504,7 +505,7 @@ export function PositionEditor(p: Props) {
                 </div>
               </div>
 
-              <TradeFeesRow {...fees} executionFee={executionFee} feesType={"edit"} />
+              <TradeFeesRow {...fees} executionFee={executionFee} feesType={"edit"} warning={executionFee?.warning} />
 
               {!isDeposit && (
                 <ExchangeInfoRow
