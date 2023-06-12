@@ -1214,13 +1214,16 @@ export default function SwapBox(props) {
       setAnchorOnFromAmount(!anchorOnFromAmount);
     }
     setIsWaitingForApproval(false);
+    const shouldSwitch = toTokens.find((token) => token.address === fromTokenAddress);
+    if (shouldSwitch) {
+      const updatedTokenSelection = JSON.parse(JSON.stringify(tokenSelection));
 
-    const updatedTokenSelection = JSON.parse(JSON.stringify(tokenSelection));
-    updatedTokenSelection[swapOption] = {
-      from: toTokenAddress,
-      to: fromTokenAddress,
-    };
-    setTokenSelection(updatedTokenSelection);
+      updatedTokenSelection[swapOption] = {
+        from: toTokenAddress,
+        to: fromTokenAddress,
+      };
+      setTokenSelection(updatedTokenSelection);
+    }
   };
 
   const wrap = async () => {

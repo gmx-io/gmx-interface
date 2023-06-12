@@ -1825,6 +1825,10 @@ msgstr "ロード中"
 msgid "Long"
 msgstr "ロング"
 
+#: src/components/Exchange/ChartTokenSelector.tsx
+msgid "Long Liquidity"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Long Positions"
@@ -1914,6 +1918,14 @@ msgstr "最大キャパシティ"
 #: src/components/Glp/GlpSwap.js
 msgid "Max Capacity for {0} Reached"
 msgstr "{0}の最大キャパシティに到達しています"
+
+#: src/components/Exchange/ChartTokenSelector.tsx
+msgid "Max In"
+msgstr ""
+
+#: src/components/Exchange/ChartTokenSelector.tsx
+msgid "Max Out"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Max Pool Capacity"
@@ -2706,7 +2718,7 @@ msgstr "コスト削減"
 msgid "Save on Fees"
 msgstr "手数料削減"
 
-#: src/components/Exchange/TokenSelector.js
+#: src/components/SearchInput/SearchInput.tsx
 msgid "Search Token"
 msgstr "トークン検索"
 
@@ -2817,6 +2829,10 @@ msgstr "ポジションをシェアする"
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Short"
 msgstr "ショート"
+
+#: src/components/Exchange/ChartTokenSelector.tsx
+msgid "Short Liquidity"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js

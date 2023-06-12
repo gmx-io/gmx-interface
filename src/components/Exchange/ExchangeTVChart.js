@@ -275,9 +275,10 @@ export default function ExchangeTVChart(props) {
   }
 
   const onSelectToken = (token) => {
-    const tmp = getTokenInfo(infoTokens, token.address);
+    const toTokenInfo = getTokenInfo(infoTokens, token.address);
+    setToTokenAddress(swapOption, toTokenInfo.address);
+    const tmp = getChartToken(swapOption, fromToken, toTokenInfo, chainId);
     setChartToken(tmp);
-    setToTokenAddress(swapOption, token.address);
   };
 
   return (

@@ -6,17 +6,14 @@ import { BiChevronDown } from "react-icons/bi";
 import Modal from "../Modal/Modal";
 
 import dropDownIcon from "img/DROP_DOWN.svg";
-import searchIcon from "img/search.svg";
 import "./TokenSelector.css";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 import { bigNumberify, expandDecimals, formatAmount } from "lib/numbers";
 import { getToken } from "config/tokens";
-import { t } from "@lingui/macro";
-import { useMedia } from "react-use";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import SearchInput from "components/SearchInput/SearchInput";
 
 export default function TokenSelector(props) {
-  const isSmallerScreen = useMedia("(max-width: 700px)");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
   const tokenInfo = getToken(props.chainId, props.tokenAddress);
@@ -75,20 +72,12 @@ export default function TokenSelector(props) {
         setIsVisible={setIsModalVisible}
         label={props.label}
         headerContent={() => (
-          <div className="TokenSelector-token-row TokenSelector-token-input-row">
-            <input
-              type="text"
-              placeholder={t`Search Token`}
-              value={searchKeyword}
-              onChange={(e) => onSearchKeywordChange(e)}
-              onKeyDown={_handleKeyDown}
-              autoFocus={!isSmallerScreen}
-              className="Tokenselector-search-input"
-              style={{
-                backgroundImage: `url(${searchIcon})`,
-              }}
-            />
-          </div>
+          <SearchInput
+            className="mt-md"
+            value={searchKeyword}
+            setValue={onSearchKeywordChange}
+            onKeyDown={_handleKeyDown}
+          />
         )}
       >
         <div className="TokenSelector-tokens">
