@@ -312,12 +312,15 @@ export function PositionSeller(p: Props) {
 
   useEffect(
     function initReceiveToken() {
-      if (!receiveTokenAddress && position?.collateralToken?.address) {
+      if (position?.collateralToken?.address) {
         const convertedAddress = convertTokenAddress(chainId, position?.collateralToken.address, "native");
         setReceiveTokenAddress(convertedAddress);
       }
+      return () => {
+        setReceiveTokenAddress("");
+      };
     },
-    [chainId, position?.collateralToken, receiveTokenAddress]
+    [chainId, position?.collateralToken]
   );
 
   useEffect(
