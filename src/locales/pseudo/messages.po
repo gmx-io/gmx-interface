@@ -1773,10 +1773,7 @@ msgid "Liquidated"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-msgid ""
-"Liquidated {0} {longOrShortText},\n"
-"-{1} USD,\n"
-"{2} Price: {3} USD"
+msgid "Liquidated {0} {longOrShortText}, -{1} USD,{2} Price: {3} USD"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -3027,7 +3024,7 @@ msgid "Swap submitted."
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Swap {0} USDG for {1} {2}"
+msgid "Swap {0} USDG for{1} {2}"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -3043,11 +3040,11 @@ msgid "Swap {0} to {1} on 1inch"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Swap {0} {1} for {2} USDG"
+msgid "Swap {0} {1} for{2} USDG"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Swap {0} {1} for {2} {3}"
+msgid "Swap {0} {1} for{2} {3}"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -3773,7 +3770,7 @@ msgid "Withdraw submitted."
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Withdraw {0} USD from {1} {longOrShortText}"
+msgid "Withdraw {0} USD from {1}{longOrShortText}"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
@@ -4052,21 +4049,15 @@ msgid "{0} {1} not supported"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-msgid ""
-"{0}:\n"
-"{1},\n"
-"Price: {priceDisplay}"
+msgid "{0}: Swap {amountInDisplay}{1} for{minOutDisplay} {2}, Price:{3}"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-msgid ""
-"{0}: Swap {amountInDisplay}\n"
-"{1} for {minOutDisplay} {2},\n"
-"Price: {3}"
+msgid "{0}: {1}, Price: {priceDisplay}"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-msgid "{0}  {1} {longOrShortText}, -{2} USD, {3} Price: ${4} USD"
+msgid "{0}  {1}{longOrShortText}, -{2} USD, {3} Price: ${4} USD"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -4074,10 +4065,7 @@ msgid "{actionDisplay} Order"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-msgid ""
-"{actionDisplay} {0} {longOrShortText},\n"
-"-{1} USD,\n"
-"{2} Price: {3} USD"
+msgid "{actionDisplay} {0} {longOrShortText}, -{1} USD, {2} Price:{3} USD"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js

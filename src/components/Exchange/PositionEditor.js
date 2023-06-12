@@ -31,6 +31,7 @@ import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValu
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import Button from "components/Button/Button";
 import FeesTooltip from "./FeesTooltip";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 
 const DEPOSIT = "Deposit";
 const WITHDRAW = "Withdraw";
@@ -546,7 +547,13 @@ export default function PositionEditor(props) {
                         </button>
                       )}
                     </div>
-                    <div className="PositionEditor-token-symbol">
+                    <div className="PositionEditor-token-symbol items-center">
+                      <TokenIcon
+                        className="mr-xs"
+                        symbol={isDeposit ? position.collateralToken.symbol : "USD"}
+                        displySize={20}
+                        importSize={24}
+                      />
                       {isDeposit ? position.collateralToken.symbol : "USD"}
                     </div>
                   </div>

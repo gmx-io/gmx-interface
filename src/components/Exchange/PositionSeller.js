@@ -1046,7 +1046,10 @@ export default function PositionSeller(props) {
                     onChange={onTriggerPriceChange}
                   />
                 </div>
-                <div className="PositionEditor-token-symbol">USD</div>
+                <div className="PositionEditor-token-symbol items-center">
+                  <TokenIcon className="mr-xs" symbol="USD" displySize={20} importSize={24} />
+                  USD
+                </div>
               </div>
             </div>
           )}

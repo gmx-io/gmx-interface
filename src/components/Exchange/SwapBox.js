@@ -83,6 +83,7 @@ import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import LeverageSlider from "./LeverageSlider";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import FeesTooltip from "./FeesTooltip";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -2020,7 +2021,10 @@ export default function SwapBox(props) {
               inputValue={triggerPriceValue}
               onInputValueChange={onTriggerPriceChange}
             >
-              USD
+              <div className="items-center">
+                <TokenIcon className="mr-xs" symbol="USD" displySize={20} importSize={24} />
+                USD
+              </div>
             </BuyInputSection>
           )}
           {isSwap && (
