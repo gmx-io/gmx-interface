@@ -46,6 +46,7 @@ import { USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   formatAmount,
+  formatAmountFree,
   formatDeltaUsd,
   formatPercentage,
   formatTokenAmountWithUsd,
@@ -356,8 +357,8 @@ export function PositionSeller(p: Props) {
               topRightValue={formatUsd(maxCloseSize)}
               inputValue={closeUsdInputValue}
               onInputValueChange={(e) => setCloseUsdInputValue(e.target.value)}
-              showMaxButton={maxCloseSize.gt(0) && !closeSizeUsd?.eq(maxCloseSize)}
-              onClickMax={() => setCloseUsdInputValue(formatAmount(maxCloseSize, USD_DECIMALS, 2))}
+              showMaxButton={maxCloseSize?.gt(0) && !closeSizeUsd?.eq(maxCloseSize)}
+              onClickMax={() => setCloseUsdInputValue(formatAmountFree(maxCloseSize, USD_DECIMALS))}
             >
               USD
             </BuyInputSection>

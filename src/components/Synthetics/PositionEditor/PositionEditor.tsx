@@ -429,9 +429,9 @@ export function PositionEditor(p: Props) {
               }
               onClickMax={() =>
                 isDeposit
-                  ? setCollateralInputValue(formatAmountFree(collateralToken!.balance!, collateralToken!.decimals, 4))
+                  ? setCollateralInputValue(formatAmountFree(collateralToken!.balance!, collateralToken!.decimals))
                   : setCollateralInputValue(
-                      formatAmountFree(maxWithdrawAmount!, position?.collateralToken?.decimals || 0, 6)
+                      formatAmountFree(maxWithdrawAmount!, position?.collateralToken?.decimals || 0)
                     )
               }
             >
