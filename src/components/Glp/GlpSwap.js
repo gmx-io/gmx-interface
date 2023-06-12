@@ -856,7 +856,10 @@ export default function GlpSwap(props) {
                 balance={payBalance}
                 defaultTokenName={"GLP"}
               >
-                <div className="selected-token">GLP</div>
+                <div className="selected-token items-center">
+                  <img className="mr-xs" width={20} src={glpIcon} alt="GLP" />
+                  GLP
+                </div>
               </BuyInputSection>
             )}
 
@@ -883,7 +886,10 @@ export default function GlpSwap(props) {
                 balance={receiveBalance}
                 defaultTokenName={"GLP"}
               >
-                <div className="selected-token">GLP</div>
+                <div className="selected-token items-center">
+                  <img className="mr-xs" width={20} src={glpIcon} alt="GLP" />
+                  GLP
+                </div>
               </BuyInputSection>
             )}
 
