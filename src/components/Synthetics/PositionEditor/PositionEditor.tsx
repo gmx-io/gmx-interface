@@ -454,8 +454,6 @@ export function PositionEditor(p: Props) {
             </BuyInputSection>
 
             <div className="PositionEditor-info-box">
-              {executionFee?.warning && <div className="Confirmation-box-warning">{executionFee.warning}</div>}
-
               <ExchangeInfoRow
                 label={t`Leverage`}
                 value={<ValueTransition from={formatLeverage(position?.leverage)} to={formatLeverage(nextLeverage)} />}
