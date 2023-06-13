@@ -3056,12 +3056,16 @@ msgid "Swap {0} to {1} on 1inch"
 msgstr "交易{0} 成 {1}在1inch"
 
 #: src/components/Exchange/TradeHistory.js
+msgid "Swap {0} {1} for {2} {3}"
+msgstr ""
+
+#: src/components/Exchange/TradeHistory.js
 msgid "Swap {0} {1} for{2} USDG"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Swap {0} {1} for{2} {3}"
-msgstr ""
+#~ msgid "Swap {0} {1} for{2} {3}"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
