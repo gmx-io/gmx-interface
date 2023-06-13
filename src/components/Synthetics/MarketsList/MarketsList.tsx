@@ -139,7 +139,7 @@ export function MarketsList() {
       {!isMobile && (
         <div className="token-table-wrapper App-card">
           <div className="App-card-title">
-            <Trans>V2 Pools</Trans> <img src={getIcon(chainId, "network")} width="16" alt="Network Icon" />
+            <Trans>GM Pools</Trans> <img src={getIcon(chainId, "network")} width="16" alt="Network Icon" />
           </div>
           <div className="App-card-divider"></div>
           <table className="token-table">
@@ -215,6 +215,8 @@ export function MarketsList() {
                         )}`}
                         renderContent={() => (
                           <>
+                            <StatsTooltipRow showDollar={false} label="[Pool]" value="Long / Short" />
+                            <br />
                             {stats.marketsStats.map(({ marketInfo: market, fundingRateLong, fundingRateShort }) => (
                               <StatsTooltipRow
                                 key={market.marketTokenAddress}
@@ -239,9 +241,7 @@ export function MarketsList() {
       {isMobile && (
         <>
           <div className="App-card-title-small">
-            <span>
-              <Trans>V2 Pools</Trans>
-            </span>
+            <Trans>GM Pools</Trans>
             <img className="title-icon" src={getIcon(chainId, "network")} width="16" alt="Network Icon" />
           </div>
 
@@ -275,17 +275,16 @@ export function MarketsList() {
                     </div>
                     <div>
                       <Tooltip
-                        handle={`${formatFundingRate(stats.avgFundingRateLong)} / ${formatFundingRate(
-                          stats.avgFundingRateShort
-                        )}`}
+                        handle={formatUsd(stats.totalPoolValue)}
+                        position="right-bottom"
                         renderContent={() => (
                           <>
-                            {stats.marketsStats.map(({ marketInfo, fundingRateLong, fundingRateShort }) => (
+                            {stats.marketsStats.map(({ marketInfo, poolValueUsd }) => (
                               <StatsTooltipRow
                                 key={marketInfo.marketTokenAddress}
                                 showDollar={false}
                                 label={`[${getMarketPoolName(marketInfo)}]`}
-                                value={`${formatFundingRate(fundingRateLong)} / ${formatFundingRate(fundingRateShort)}`}
+                                value={formatUsd(poolValueUsd)}
                               />
                             ))}
                           </>
