@@ -130,6 +130,14 @@ export function AppHeaderUser({
 
   return (
     <div className="App-header-user">
+      {chainId === SEPOLIA_TESTNET && (
+        <div className="App-header-trade-link">
+          <a href={`http://t3-finance-faucet.s3-website.us-east-2.amazonaws.com/`} target="_blank" rel="noreferrer">
+            <button className="default-btn">{`Faucet`}</button>
+          </a>
+        </div>
+      )}
+
       <div className="App-header-trade-link">
         <HeaderLink
           className="default-btn"
