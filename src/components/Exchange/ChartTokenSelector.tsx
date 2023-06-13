@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Popover } from "@headlessui/react";
+import cx from "classnames";
 import { FaChevronDown } from "react-icons/fa";
 import "./ChartTokenSelector.scss";
 import { LONG, SHORT, SWAP, USDG_DECIMALS, USD_DECIMALS } from "lib/legacy";
@@ -114,7 +115,7 @@ export default function ChartTokenSelector(props: Props) {
         return (
           <>
             <Popover.Button as="div">
-              <button className="App-cta small transparent chart-token-selector">
+              <button className={cx("chart-token-selector", { "chart-token-label--active": open })}>
                 <span className="chart-token-selector--current items-center">
                   <TokenIcon className="mr-xs" symbol={selectedToken.symbol} displySize={20} importSize={24} />
                   {selectedToken.symbol} / USD

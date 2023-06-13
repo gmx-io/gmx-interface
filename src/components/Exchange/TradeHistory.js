@@ -56,8 +56,8 @@ function getOrderActionTitle(action) {
 
 function renderSymbolWithIcon(symbol) {
   return (
-    <span className="mr-xs">
-      <TokenIcon className="mr-xs" symbol={symbol} importSize={24} displySize={12} />
+    <span>
+      <TokenIcon className="mr-xxs" symbol={symbol} importSize={24} displySize={12} />
       {symbol}
     </span>
   );
@@ -197,7 +197,7 @@ export default function TradeHistory(props) {
         }
         return (
           <Trans>
-            Swap {formatAmount(params.amountIn, tokenIn.decimals, 4, true)} {renderSymbolWithIcon(tokenIn.symbol)} for
+            Swap {formatAmount(params.amountIn, tokenIn.decimals, 4, true)} {renderSymbolWithIcon(tokenIn.symbol)} for{" "}
             {formatAmount(params.amountOut, tokenOut.decimals, 4, true)} {renderSymbolWithIcon(tokenOut.symbol)}
           </Trans>
         );
@@ -364,10 +364,9 @@ export default function TradeHistory(props) {
           return (
             <>
               {renderLiquidationTooltip(liquidationData, t`Partial Liquidation`)}&nbsp;
-              {renderSymbolWithIcon(indexToken.symbol)}
-              {longOrShortText}, -{formatAmount(params.sizeDelta, USD_DECIMALS, 2, true)} USD,{" "}
-              {renderSymbolWithIcon(indexToken.symbol)}&nbsp; Price: $
-              {formatAmount(params.price, USD_DECIMALS, 2, true)} USD
+              {renderSymbolWithIcon(indexToken.symbol)} {longOrShortText}, -
+              {formatAmount(params.sizeDelta, USD_DECIMALS, 2, true)} USD, {renderSymbolWithIcon(indexToken.symbol)}
+              &nbsp; Price: ${formatAmount(params.price, USD_DECIMALS, 2, true)} USD
             </>
           );
         }
