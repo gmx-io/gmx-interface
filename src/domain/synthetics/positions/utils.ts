@@ -3,7 +3,7 @@ import { Token, getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber, ethers } from "ethers";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";
 import { applyFactor, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
-import { getCappedPositionImpactUsd, getPriceImpactForPosition } from "../fees";
+import { getPriceImpactForPosition } from "../fees";
 import { TokenData, convertToUsd } from "../tokens";
 
 export function getPositionKey(account: string, marketAddress: string, collateralAddress: string, isLong: boolean) {
