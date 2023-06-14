@@ -131,9 +131,8 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
                     <td>{formatUsd(token.prices?.minPrice)}</td>
 
                     <td>
-                      {formatTokenAmount(token.balance, token.decimals, "GM")}
-                      <br />
-                      {formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice)) || "..."}
+                      {formatTokenAmount(token.balance, token.decimals, "GM", { useCommas: true })}
+                      <br />({formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice)) || "..."})
                     </td>
 
                     <td>{apr ? `${formatAmount(apr, 2, 2)}%` : "..."}</td>
@@ -142,8 +141,7 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
                       {formatTokenAmount(totalSupply, token.decimals, "GM", {
                         useCommas: true,
                       })}
-                      <br />
-                      {formatUsd(totalSupplyUsd)}
+                      <br />({formatUsd(totalSupplyUsd)})
                     </td>
 
                     <td className="GmList-actions">

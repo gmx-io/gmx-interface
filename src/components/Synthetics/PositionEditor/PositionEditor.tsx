@@ -433,9 +433,9 @@ export function PositionEditor(p: Props) {
               }
               onClickMax={() =>
                 isDeposit
-                  ? setCollateralInputValue(formatAmountFree(collateralToken!.balance!, collateralToken!.decimals, 4))
+                  ? setCollateralInputValue(formatAmountFree(collateralToken!.balance!, collateralToken!.decimals))
                   : setCollateralInputValue(
-                      formatAmountFree(maxWithdrawAmount!, position?.collateralToken?.decimals || 0, 6)
+                      formatAmountFree(maxWithdrawAmount!, position?.collateralToken?.decimals || 0)
                     )
               }
             >
@@ -450,6 +450,7 @@ export function PositionEditor(p: Props) {
                   className="Edit-collateral-token-selector"
                   showSymbolImage={true}
                   showTokenImgInDropdown={true}
+                  showBalances={false}
                 />
               ) : (
                 collateralToken?.symbol
@@ -457,8 +458,6 @@ export function PositionEditor(p: Props) {
             </BuyInputSection>
 
             <div className="PositionEditor-info-box">
-              {executionFee?.warning && <div className="Confirmation-box-warning">{executionFee.warning}</div>}
-
               <ExchangeInfoRow
                 label={t`Leverage`}
                 value={<ValueTransition from={formatLeverage(position?.leverage)} to={formatLeverage(nextLeverage)} />}
@@ -508,7 +507,7 @@ export function PositionEditor(p: Props) {
                 </div>
               </div>
 
-              <TradeFeesRow {...fees} executionFee={executionFee} feesType={"edit"} />
+              <TradeFeesRow {...fees} executionFee={executionFee} feesType={"edit"} warning={executionFee?.warning} />
 
               {!isDeposit && (
                 <ExchangeInfoRow

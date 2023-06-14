@@ -99,6 +99,22 @@ export function PoolSelector({
     }
   };
 
+  function displayPoolLabel(marketInfo: MarketInfo | undefined) {
+    if (!marketInfo) return "...";
+    const marketPoolName = getMarketPoolName(marketInfo);
+
+    if (filteredOptions?.length > 1) {
+      return (
+        <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
+          {marketPoolName ? marketPoolName : "..."}
+          <BiChevronDown className="TokenSelector-caret" />
+        </div>
+      );
+    }
+
+    return <div>{marketPoolName ? marketPoolName : "..."}</div>;
+  }
+
   return (
     <div className={cx("TokenSelector", "MarketSelector", { "side-menu": isSideMenu }, className)}>
       <Modal
@@ -185,10 +201,7 @@ export function PoolSelector({
           <BiChevronDown className="TokenSelector-caret" />
         </div>
       ) : (
-        <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
-          {marketInfo ? getMarketPoolName(marketInfo) : "..."}
-          <BiChevronDown className="TokenSelector-caret" />
-        </div>
+        displayPoolLabel(marketInfo)
       )}
     </div>
   );
