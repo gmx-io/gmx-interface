@@ -10,7 +10,7 @@ type Props = {
   showColon?: boolean;
 };
 
-export default function StatsTooltipRow({ label, value, className, showDollar = true, showColon = true }: Props) {
+export default function StatsTooltipRow({ label, value, className, showDollar = true }: Props) {
   function renderValue() {
     if (Array.isArray(value)) {
       return (
@@ -31,7 +31,7 @@ export default function StatsTooltipRow({ label, value, className, showDollar = 
 
   function renderLabel() {
     if (typeof label === "string") {
-      return `${label}${showColon ? ":" : ""}`;
+      return `${label}:`;
     }
 
     return label;

@@ -215,7 +215,10 @@ export function MarketsList() {
                         )}`}
                         renderContent={() => (
                           <>
-                            <StatsTooltipRow showColon={false} showDollar={false} label="POOL" value="LONG / SHORT" />
+                            <div className="Tooltip-row">
+                              <span className="label">POOL</span>
+                              <span className="label">LONG / SHORT</span>
+                            </div>
                             <br />
                             {stats.marketsStats.map(({ marketInfo: market, fundingRateLong, fundingRateShort }) => (
                               <StatsTooltipRow
@@ -304,7 +307,10 @@ export function MarketsList() {
                         position="right-bottom"
                         renderContent={() => (
                           <>
-                            <StatsTooltipRow showColon={false} showDollar={false} label="POOL" value="LONG / SHORT" />
+                            <div className="Tooltip-row">
+                              <span className="label">POOL</span>
+                              <span className="label">LONG / SHORT</span>
+                            </div>
                             <br />
                             {stats.marketsStats.map(({ marketInfo, fundingRateLong, fundingRateShort }) => (
                               <StatsTooltipRow
