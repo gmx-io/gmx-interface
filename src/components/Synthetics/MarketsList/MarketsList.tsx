@@ -215,7 +215,7 @@ export function MarketsList() {
                         )}`}
                         renderContent={() => (
                           <>
-                            <StatsTooltipRow showDollar={false} label="[Pool]" value="Long / Short" />
+                            <StatsTooltipRow showColon={false} showDollar={false} label="POOL" value="LONG / SHORT" />
                             <br />
                             {stats.marketsStats.map(({ marketInfo: market, fundingRateLong, fundingRateShort }) => (
                               <StatsTooltipRow
@@ -301,8 +301,11 @@ export function MarketsList() {
                         handle={`${formatFundingRate(stats.avgFundingRateLong)} / ${formatFundingRate(
                           stats.avgFundingRateShort
                         )}`}
+                        position="right-bottom"
                         renderContent={() => (
                           <>
+                            <StatsTooltipRow showColon={false} showDollar={false} label="POOL" value="LONG / SHORT" />
+                            <br />
                             {stats.marketsStats.map(({ marketInfo, fundingRateLong, fundingRateShort }) => (
                               <StatsTooltipRow
                                 key={marketInfo.marketTokenAddress}
