@@ -37,6 +37,6 @@ export const appEventsData: EventData[] = [
     isActive: true,
     validTill: "17 Jun 2023, 12:00",
     bodyText:
-      "Due to the coming native USDC to Arbitrum, the Ethereum-bridged version of USDC is being renamed to USDC.e.",
+      "Since native USDC is available on Arbitrum, the Ethereum-bridged version of USDC has been renamed to USDC.e.",
   },
 ];
