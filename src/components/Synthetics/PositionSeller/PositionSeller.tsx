@@ -46,6 +46,7 @@ import { USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   formatAmount,
+  formatAmountFree,
   formatDeltaUsd,
   formatPercentage,
   formatTokenAmountWithUsd,
@@ -323,12 +324,15 @@ export function PositionSeller(p: Props) {
 
   useEffect(
     function initReceiveToken() {
-      if (!receiveTokenAddress && position?.collateralToken?.address) {
+      if (position?.collateralToken?.address) {
         const convertedAddress = convertTokenAddress(chainId, position?.collateralToken.address, "native");
         setReceiveTokenAddress(convertedAddress);
       }
+      return () => {
+        setReceiveTokenAddress("");
+      };
     },
-    [chainId, position?.collateralToken, receiveTokenAddress]
+    [chainId, position?.collateralToken]
   );
 
   const indexPriceDecimals = position?.indexToken?.priceDecimals;
@@ -354,8 +358,8 @@ export function PositionSeller(p: Props) {
               topRightValue={formatUsd(maxCloseSize)}
               inputValue={closeUsdInputValue}
               onInputValueChange={(e) => setCloseUsdInputValue(e.target.value)}
-              showMaxButton={maxCloseSize.gt(0) && !closeSizeUsd?.eq(maxCloseSize)}
-              onClickMax={() => setCloseUsdInputValue(formatAmount(maxCloseSize, USD_DECIMALS, 2))}
+              showMaxButton={maxCloseSize?.gt(0) && !closeSizeUsd?.eq(maxCloseSize)}
+              onClickMax={() => setCloseUsdInputValue(formatAmountFree(maxCloseSize, USD_DECIMALS))}
             >
               USD
             </BuyInputSection>
@@ -507,7 +511,7 @@ export function PositionSeller(p: Props) {
                 }
               />
 
-              <TradeFeesRow {...fees} executionFee={executionFee} feesType="decrease" />
+              <TradeFeesRow {...fees} executionFee={executionFee} feesType="decrease" warning={executionFee?.warning} />
 
               <ExchangeInfoRow
                 isTop

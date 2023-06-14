@@ -52,8 +52,8 @@ export function GmFees(p: Props) {
                     <StatsTooltipRow
                       label={t`Execution Fee`}
                       value={formatTokenAmountWithUsd(
-                        p.executionFee.feeTokenAmount,
-                        p.executionFee.feeUsd,
+                        p.executionFee.feeTokenAmount.mul(-1),
+                        p.executionFee.feeUsd.mul(-1),
                         p.executionFee.feeToken.symbol,
                         p.executionFee.feeToken.decimals
                       )}

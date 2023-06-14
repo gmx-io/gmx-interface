@@ -3169,14 +3169,15 @@ msgid "Pool"
 msgstr "Pool"
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Pool Amount"
 msgstr "Pool Amount"
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
-msgid "Pool amount"
-msgstr "Pool amount"
+#~ msgid "Pool amount"
+#~ msgstr "Pool amount"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionList/PositionList.tsx
