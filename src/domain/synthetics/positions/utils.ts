@@ -3,7 +3,7 @@ import { Token, getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber, ethers } from "ethers";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";
 import { applyFactor, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
-import { getCappedPositionImpactUsd } from "../fees";
+import { getCappedPositionImpactUsd, getPriceImpactForPosition } from "../fees";
 import { TokenData, convertToUsd } from "../tokens";
 
 export function getPositionKey(account: string, marketAddress: string, collateralAddress: string, isLong: boolean) {
@@ -127,12 +127,18 @@ export function getLiquidationPrice(p: {
 
   const totalPendingFeesUsd = getPositionPendingFeesUsd({ pendingFundingFeesUsd, pendingBorrowingFeesUsd });
 
+  const maxNegativePriceImpactUsd = applyFactor(sizeInUsd, marketInfo.maxPositionImpactFactorForLiquidations).mul(-1);
+
   let priceImpactDeltaUsd: BigNumber = BigNumber.from(0);
 
   if (useMaxPriceImpact) {
-    priceImpactDeltaUsd = applyFactor(sizeInUsd, marketInfo.maxPositionImpactFactorForLiquidations).mul(-1);
+    priceImpactDeltaUsd = maxNegativePriceImpactUsd;
   } else {
-    priceImpactDeltaUsd = getCappedPositionImpactUsd(marketInfo, sizeInUsd.mul(-1), isLong, { fallbackToZero: true });
+    priceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, sizeInUsd.mul(-1), isLong, { fallbackToZero: true });
+
+    if (priceImpactDeltaUsd.lt(maxNegativePriceImpactUsd)) {
+      priceImpactDeltaUsd = maxNegativePriceImpactUsd;
+    }
 
     // Ignore positive price impact
     if (priceImpactDeltaUsd.gt(0)) {
