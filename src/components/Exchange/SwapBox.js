@@ -83,6 +83,7 @@ import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import LeverageSlider from "./LeverageSlider";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import FeesTooltip from "./FeesTooltip";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -91,6 +92,15 @@ const SWAP_ICONS = {
 };
 
 const { AddressZero } = ethers.constants;
+
+function renderSymbolWithIcon(symbol) {
+  return (
+    <span className="items-center">
+      <TokenIcon className="mr-xxs" symbol={symbol} importSize={24} displySize={20} />
+      {symbol}
+    </span>
+  );
+}
 
 function getNextAveragePrice({ size, sizeDelta, hasProfit, delta, nextPrice, isLong }) {
   if (!size || !sizeDelta || !delta || !nextPrice) {
@@ -2005,7 +2015,7 @@ export default function SwapBox(props) {
                   : [fromTokenInfo, toTokenInfo];
                 return (
                   <div className="PositionEditor-token-symbol">
-                    {tokenA.symbol}&nbsp;per&nbsp;{tokenB.symbol}
+                    {renderSymbolWithIcon(tokenA.symbol)}&nbsp;per&nbsp;{renderSymbolWithIcon(tokenB.symbol)}
                   </div>
                 );
               })()}

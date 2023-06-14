@@ -76,7 +76,7 @@ function StakeModal(props) {
   } = props;
   const [isStaking, setIsStaking] = useState(false);
   const [isApproving, setIsApproving] = useState(false);
-
+  const icons = getIcons("common");
   const { data: tokenAllowance } = useSWR(
     active && stakingTokenAddress && [active, chainId, stakingTokenAddress, "allowance", account, farmAddress],
     {
@@ -167,7 +167,10 @@ function StakeModal(props) {
           onInputValueChange={(e) => setValue(e.target.value)}
           showMaxButton={false}
         >
-          {stakingTokenSymbol}
+          <div className="items-center">
+            <img className="mr-xs" width="20" src={icons[stakingTokenSymbol.toLowerCase()]} alt={stakingTokenSymbol} />
+            {stakingTokenSymbol}
+          </div>
         </BuyInputSection>
 
         <div className="Exchange-swap-button-container">
@@ -199,6 +202,7 @@ function UnstakeModal(props) {
     setPendingTxns,
   } = props;
   const [isUnstaking, setIsUnstaking] = useState(false);
+  const icons = getIcons("common");
 
   let amount = parseValue(value, 18);
   let burnAmount;
@@ -280,7 +284,15 @@ function UnstakeModal(props) {
           onInputValueChange={(e) => setValue(e.target.value)}
           showMaxButton={false}
         >
-          {unstakingTokenSymbol}
+          <div className="items-center">
+            <img
+              className="mr-xs"
+              width="20"
+              src={icons[unstakingTokenSymbol.toLowerCase()]}
+              alt={unstakingTokenSymbol}
+            />
+            {unstakingTokenSymbol}
+          </div>
         </BuyInputSection>
         {reservedAmount && reservedAmount.gt(0) && (
           <div className="Modal-note">
@@ -332,6 +344,7 @@ function VesterDepositModal(props) {
     setPendingTxns,
   } = props;
   const [isDepositing, setIsDepositing] = useState(false);
+  const icons = getIcons("common");
 
   let amount = parseValue(value, 18);
 
@@ -415,7 +428,10 @@ function VesterDepositModal(props) {
             onInputValueChange={(e) => setValue(e.target.value)}
             showMaxButton={false}
           >
-            esGMX
+            <div className="items-center">
+              <img className="mr-xs" width="20" src={icons.esgmx} alt="esGMX" />
+              esGMX
+            </div>
           </BuyInputSection>
 
           <div className="VesterDepositModal-info-rows">
@@ -1957,7 +1973,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
 
       <div>
         <div className="Tab-title-section">
-          <div className="Page-title">
+          <div className="Page-title items-center">
             <div>
               <Trans>Vest</Trans>
               <img className="ml-xs" alt="GMX" src={icons.network} height={24} />

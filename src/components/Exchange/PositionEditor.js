@@ -548,13 +548,19 @@ export default function PositionEditor(props) {
                       )}
                     </div>
                     <div className="PositionEditor-token-symbol items-center">
-                      <TokenIcon
-                        className="mr-xs"
-                        symbol={isDeposit ? position.collateralToken.symbol : "USD"}
-                        displySize={20}
-                        importSize={24}
-                      />
-                      {isDeposit ? position.collateralToken.symbol : "USD"}
+                      {isDeposit ? (
+                        <>
+                          <TokenIcon
+                            className="mr-xs"
+                            symbol={position.collateralToken.symbol}
+                            displySize={20}
+                            importSize={24}
+                          />
+                          {position.collateralToken.symbol}
+                        </>
+                      ) : (
+                        "USD"
+                      )}
                     </div>
                   </div>
                 </div>

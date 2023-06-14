@@ -838,8 +838,8 @@ msgid "Could not execute withdrawal from {0} {longOrShortText}"
 msgstr "Konnte Abhebung von {0} {longOrShortText} nicht ausführen"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Could not increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2}"
-msgstr "Konnte {0} {longOrShortText} nicht erhöhen, +{1} USD, Akzeptabler Preis: {2}"
+msgid "Could not increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2}  USD"
+msgstr ""
 
 #: src/pages/Exchange/Exchange.js
 msgid "Could not increase {tokenSymbol} {longOrShortText} within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page."
@@ -3063,10 +3063,6 @@ msgstr ""
 msgid "Swap {0} {1} for{2} USDG"
 msgstr ""
 
-#: src/components/Exchange/TradeHistory.js
-#~ msgid "Swap {0} {1} for{2} {3}"
-#~ msgstr ""
-
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -4069,7 +4065,7 @@ msgid "{0} {1} not supported"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-msgid "{0}: Swap {amountInDisplay}{1} for{minOutDisplay} {2}, Price:{3}"
+msgid "{0}: Swap {amountInDisplay}{1} for{minOutDisplay} {2}, Price:{3} USD"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -4077,7 +4073,7 @@ msgid "{0}: {1}, Price: {priceDisplay}"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-msgid "{0}  {1}{longOrShortText}, -{2} USD, {3} Price: ${4} USD"
+msgid "{0}  {1}{longOrShortText}, -{2} USD, {3} Price: {4} USD"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js

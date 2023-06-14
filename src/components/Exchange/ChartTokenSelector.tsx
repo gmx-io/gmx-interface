@@ -100,18 +100,10 @@ export default function ChartTokenSelector(props: Props) {
     );
   });
 
-  const _handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && filteredTokens.length > 0) {
-      onSelect(filteredTokens[0]);
-    }
-  };
-
   return (
     <Popover>
-      {({ open }) => {
-        if (!open) {
-          setSearchKeyword("");
-        }
+      {({ open, close }) => {
+        if (!open) setSearchKeyword("");
         return (
           <>
             <Popover.Button as="div">
@@ -129,7 +121,12 @@ export default function ChartTokenSelector(props: Props) {
                   className="m-md"
                   value={searchKeyword}
                   setValue={({ target }) => setSearchKeyword(target.value)}
-                  onKeyDown={_handleKeyDown}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && filteredTokens.length > 0) {
+                      onSelect(filteredTokens[0]);
+                      close();
+                    }
+                  }}
                 />
                 <div className="divider" />
                 <div className="chart-token-list">
@@ -146,13 +143,7 @@ export default function ChartTokenSelector(props: Props) {
                     <tbody>
                       {filteredTokens.map((option) => {
                         return (
-                          <Popover.Button
-                            as="tr"
-                            key={option.symbol}
-                            onClick={() => {
-                              onSelect(option);
-                            }}
-                          >
+                          <Popover.Button as="tr" key={option.symbol} onClick={() => onSelect(option)}>
                             <td className="token-item">
                               <span className="items-center">
                                 <TokenIcon className="mr-xs" symbol={option.symbol} displySize={16} importSize={24} />
