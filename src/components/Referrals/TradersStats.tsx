@@ -244,8 +244,7 @@ function TradersStats({
                                     &nbsp;
                                   </>
                                 )}
-
-                                {getUSDValue(totalUsd)}
+                                ${getUSDValue(totalUsd)}
                               </div>
                             }
                             renderContent={() => (

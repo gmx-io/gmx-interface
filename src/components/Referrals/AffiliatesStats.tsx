@@ -481,8 +481,7 @@ function AffiliatesStats({
                                     &nbsp;
                                   </>
                                 )}
-
-                                {getUSDValue(totalUsd)}
+                                ${getUSDValue(totalUsd)}
                               </div>
                             }
                             renderContent={() => (
