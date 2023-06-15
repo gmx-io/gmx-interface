@@ -143,7 +143,7 @@ export function PositionSeller(p: Props) {
   }, [closeSizeUsd, keepLeverage, minCollateralUsd, minPositionSizeUsd, position, userReferralInfo]);
 
   useDebugExecutionPrice(chainId, {
-    skip: false,
+    skip: true,
     marketInfo: position?.marketInfo,
     sizeInUsd: position?.sizeInUsd,
     sizeInTokens: position?.sizeInTokens,

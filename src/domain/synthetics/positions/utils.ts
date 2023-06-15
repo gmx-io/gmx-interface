@@ -3,8 +3,9 @@ import { Token, getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber, ethers } from "ethers";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";
 import { applyFactor, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
-import { getPriceImpactForPosition } from "../fees";
+import { getPositionFee, getPriceImpactForPosition } from "../fees";
 import { TokenData, convertToUsd } from "../tokens";
+import { UserReferralInfo } from "domain/referrals";
 
 export function getPositionKey(account: string, marketAddress: string, collateralAddress: string, isLong: boolean) {
   return `${account}:${marketAddress}:${collateralAddress}:${isLong}`;
@@ -96,13 +97,13 @@ export function getLiquidationPrice(p: {
   collateralUsd: BigNumber;
   collateralToken: TokenData;
   markPrice: BigNumber;
-  closingFeeUsd: BigNumber;
   marketInfo: MarketInfo;
   pendingFundingFeesUsd: BigNumber;
   pendingBorrowingFeesUsd: BigNumber;
   minCollateralUsd: BigNumber;
   isLong: boolean;
   useMaxPriceImpact?: boolean;
+  userReferralInfo: UserReferralInfo | undefined;
 }) {
   const {
     sizeInUsd,
@@ -111,11 +112,11 @@ export function getLiquidationPrice(p: {
     collateralAmount,
     marketInfo,
     collateralToken,
-    closingFeeUsd,
     pendingFundingFeesUsd,
     pendingBorrowingFeesUsd,
     minCollateralUsd,
     isLong,
+    userReferralInfo,
     useMaxPriceImpact,
   } = p;
 
@@ -125,7 +126,9 @@ export function getLiquidationPrice(p: {
 
   const { indexToken } = marketInfo;
 
+  const closingFeeUsd = getPositionFee(marketInfo, sizeInUsd, userReferralInfo).positionFeeUsd;
   const totalPendingFeesUsd = getPositionPendingFeesUsd({ pendingFundingFeesUsd, pendingBorrowingFeesUsd });
+  const totalFeesUsd = totalPendingFeesUsd.add(closingFeeUsd);
 
   const maxNegativePriceImpactUsd = applyFactor(sizeInUsd, marketInfo.maxPositionImpactFactorForLiquidations).mul(-1);
 
@@ -145,8 +148,6 @@ export function getLiquidationPrice(p: {
       priceImpactDeltaUsd = BigNumber.from(0);
     }
   }
-
-  const totalFeesUsd = totalPendingFeesUsd.add(closingFeeUsd);
 
   let liquidationCollateralUsd = applyFactor(sizeInUsd, marketInfo.minCollateralFactor);
   if (liquidationCollateralUsd.lt(minCollateralUsd)) {

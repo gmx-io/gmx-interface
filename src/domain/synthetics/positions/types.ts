@@ -39,7 +39,6 @@ export type PositionInfo = Position & {
   markPrice: BigNumber;
   entryPrice: BigNumber | undefined;
   liquidationPrice: BigNumber | undefined;
-  liquidationPriceWithMaxPriceImpact: BigNumber | undefined;
   collateralUsd: BigNumber;
   remainingCollateralUsd: BigNumber;
   remainingCollateralAmount: BigNumber;

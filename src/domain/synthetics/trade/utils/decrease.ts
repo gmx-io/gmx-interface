@@ -539,7 +539,7 @@ export function getNextPositionValuesForDecreaseTrade(p: {
     collateralAmount: nextCollateralAmount,
     markPrice: indexPrice,
     minCollateralUsd,
-    closingFeeUsd: getPositionFee(marketInfo, nextSizeUsd, userReferralInfo).positionFeeUsd,
+    userReferralInfo,
     pendingBorrowingFeesUsd: BigNumber.from(0), // deducted on order
     pendingFundingFeesUsd: BigNumber.from(0), // deducted on order
     isLong: isLong,

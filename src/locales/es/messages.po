@@ -1845,6 +1845,11 @@ msgstr "Venta de GLP desactivada, actualización {0} pendiente"
 msgid "GM ({0})"
 msgstr ""
 
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "GM Pools"
+msgstr ""
+
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "GM Token pricing includes positions' Pending PnL, Impact Pool Amount and Borrow Fees."
 msgstr ""
@@ -3049,10 +3054,13 @@ msgstr ""
 msgid "Overview"
 msgstr "Resumen"
 
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/DashboardV2.js
 msgid "POOL"
 msgstr "RESERVA"
+
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "POOLS VALUE"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/GmList/GmList.tsx
@@ -3159,7 +3167,6 @@ msgstr "GyP Después de Comisiones"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
@@ -3178,6 +3185,10 @@ msgstr "Cantidad de Reserva"
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #~ msgid "Pool amount"
 #~ msgstr ""
+
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "Pools Value"
+msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionList/PositionList.tsx
@@ -4780,8 +4791,6 @@ msgstr ""
 msgid "V2 Claim"
 msgstr ""
 
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
 msgid "V2 Pools"
 msgstr ""

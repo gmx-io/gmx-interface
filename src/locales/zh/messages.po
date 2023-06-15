@@ -1845,6 +1845,11 @@ msgstr "GLP售卖已禁止，等待{0}升级"
 msgid "GM ({0})"
 msgstr ""
 
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "GM Pools"
+msgstr ""
+
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "GM Token pricing includes positions' Pending PnL, Impact Pool Amount and Borrow Fees."
 msgstr ""
@@ -3049,10 +3054,13 @@ msgstr ""
 msgid "Overview"
 msgstr "总览"
 
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/DashboardV2.js
 msgid "POOL"
 msgstr "池子"
+
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "POOLS VALUE"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/GmList/GmList.tsx
@@ -3159,7 +3167,6 @@ msgstr "扣除费用后的PnL"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
@@ -3178,6 +3185,10 @@ msgstr "池子数量"
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #~ msgid "Pool amount"
 #~ msgstr ""
+
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "Pools Value"
+msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionList/PositionList.tsx
@@ -4780,8 +4791,6 @@ msgstr ""
 msgid "V2 Claim"
 msgstr ""
 
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
 msgid "V2 Pools"
 msgstr ""

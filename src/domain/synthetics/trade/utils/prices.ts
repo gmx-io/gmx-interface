@@ -42,11 +42,19 @@ export function getAcceptablePriceInfo(p: {
 
   // For Limit / Trigger orders
   if (maxNegativePriceImpactBps?.gt(0)) {
+    // for longs increase
+    // price delta is positive
+    // for longs decrease
+    // price delta is negative
+    // for short increase
+    // price delta is negative
+    // for short decrease
+    // price delta is positive
     let priceDelta = indexPrice.mul(maxNegativePriceImpactBps).div(BASIS_POINTS_DIVISOR);
     priceDelta = shouldFlipPriceImpact ? priceDelta?.mul(-1) : priceDelta;
 
     values.acceptablePrice = indexPrice.sub(priceDelta);
-    values.acceptablePriceDeltaBps = maxNegativePriceImpactBps;
+    values.acceptablePriceDeltaBps = maxNegativePriceImpactBps.mul(-1);
 
     const priceImpact = getPriceImpactByAcceptablePrice({
       sizeDeltaUsd,

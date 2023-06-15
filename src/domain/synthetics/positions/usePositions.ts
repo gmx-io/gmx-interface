@@ -56,7 +56,7 @@ export function usePositions(
 
     const markets = Object.values(marketsInfoData);
 
-    const positionsKeys: string[] = [];
+    const allPositionKeys: string[] = [];
     const contractPositionsKeys: string[] = [];
     const marketsPrices: ContractMarketPrices[] = [];
 
@@ -76,7 +76,7 @@ export function usePositions(
           const positionKey = getPositionKey(account, market.marketTokenAddress, collateralAddress, isLong);
           const contractPositionKey = hashedPositionKey(account, market.marketTokenAddress, collateralAddress, isLong);
 
-          positionsKeys.push(positionKey);
+          allPositionKeys.push(positionKey);
 
           if (existingPositionsKeysSet.has(contractPositionKey)) {
             contractPositionsKeys.push(contractPositionKey);
@@ -87,14 +87,16 @@ export function usePositions(
     }
 
     return {
-      positionsKeys,
+      allPositionKeys,
       contractPositionsKeys,
       marketsPrices,
     };
   }, [account, existingPositionsKeysSet, marketsInfoData, tokensData]);
 
   const { data: positionsData } = useMulticall(chainId, "usePositionsData", {
-    key: keysAndPrices?.positionsKeys.length ? [keysAndPrices.positionsKeys.join("-"), pricesUpdatedAt] : null,
+    key: keysAndPrices?.contractPositionsKeys.length
+      ? [keysAndPrices.contractPositionsKeys.join("-"), pricesUpdatedAt]
+      : null,
 
     // Refresh on every prices update
     refreshInterval: null,
@@ -179,7 +181,7 @@ export function usePositions(
           latestShortTokenFundingAmountPerSize,
         ] = funding.map(bigNumberify);
 
-        const positionKey = keysAndPrices!.positionsKeys[i];
+        const positionKey = getPositionKey(account, marketAddress, collateralTokenAddress, isLong);
         const contractPositionKey = keysAndPrices!.contractPositionsKeys[i];
 
         // Empty position
@@ -225,6 +227,6 @@ export function usePositions(
 
   return {
     positionsData: positionsDataCache.current,
-    allPossiblePositionsKeys: keysAndPrices?.positionsKeys,
+    allPossiblePositionsKeys: keysAndPrices?.allPositionKeys,
   };
 }

@@ -414,7 +414,7 @@ export function ConfirmationBox(p: Props) {
       initialCollateralAddress: fromToken?.address,
       initialCollateralAmount: increaseAmounts.initialCollateralAmount,
       targetCollateralAddress: collateralToken.address,
-      collateralDeltaAmount: increaseAmounts.collateralAmountAfterFees,
+      collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
       swapPath: increaseAmounts.swapPathStats?.swapPath || [],
       sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
       sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
@@ -877,8 +877,8 @@ export function ConfirmationBox(p: Props) {
             className="SwapBox-info-row"
             label={isMarket ? t`Price Impact` : t`Acceptable Price Impact`}
             value={
-              <span className={cx({ positive: isMarket && increaseAmounts?.acceptablePriceImpactBps?.gt(0) })}>
-                {formatPercentage(increaseAmounts?.acceptablePriceImpactBps?.mul(isMarket ? 1 : -1), {
+              <span className={cx({ positive: isMarket && increaseAmounts?.acceptablePriceDeltaBps?.gt(0) })}>
+                {formatPercentage(increaseAmounts?.acceptablePriceDeltaBps, {
                   signed: true,
                 }) || "-"}
               </span>
@@ -945,7 +945,7 @@ export function ConfirmationBox(p: Props) {
             </div>
             <div className="align-right">
               <Tooltip
-                handle={formatUsd(increaseAmounts?.collateralUsdAfterFees)}
+                handle={formatUsd(increaseAmounts?.collateralDeltaUsd)}
                 position="right-top"
                 renderContent={() => {
                   return (
@@ -970,7 +970,7 @@ export function ConfirmationBox(p: Props) {
                       <div className="Tooltip-divider" />
                       <StatsTooltipRow
                         label={t`Collateral`}
-                        value={formatUsd(increaseAmounts?.collateralUsdAfterFees) || "-"}
+                        value={formatUsd(increaseAmounts?.collateralDeltaUsd) || "-"}
                         showDollar={false}
                       />
                     </>
@@ -1107,7 +1107,7 @@ export function ConfirmationBox(p: Props) {
           <ExchangeInfoRow
             className="SwapBox-info-row"
             label={t`Acceptable Price Impact`}
-            value={formatPercentage(decreaseAmounts?.acceptablePriceDeltaBps?.mul(-1)) || "-"}
+            value={formatPercentage(decreaseAmounts?.acceptablePriceDeltaBps) || "-"}
           />
 
           <ExchangeInfoRow

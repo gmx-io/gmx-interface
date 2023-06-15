@@ -43,8 +43,7 @@ import {
   TradeMode,
   TradeType,
   getDecreasePositionAmounts,
-  getIncreasePositionAmountsByCollateral,
-  getIncreasePositionAmountsBySizeDelta,
+  getIncreasePositionAmounts,
   getMarkPrice,
   getNextPositionValuesForDecreaseTrade,
   getNextPositionValuesForIncreaseTrade,
@@ -333,44 +332,34 @@ export function TradeBox(p: Props) {
       return undefined;
     }
 
-    if (focusedInput === "from") {
-      return getIncreasePositionAmountsByCollateral({
-        marketInfo,
-        initialCollateralToken: fromToken,
-        collateralToken,
-        isLong,
-        initialCollateralAmount: fromTokenAmount,
-        leverage: isLeverageEnabled ? leverage : undefined,
-        isLimit,
-        triggerPrice,
-        savedAcceptablePriceImpactBps: acceptablePriceImpactBpsForLimitOrders,
-        findSwapPath: swapRoute.findSwapPath,
-        userReferralInfo,
-      });
-    } else {
-      return getIncreasePositionAmountsBySizeDelta({
-        marketInfo,
-        initialCollateralToken: fromToken,
-        collateralToken,
-        isLong,
-        sizeDeltaInTokens: toTokenAmount,
-        leverage: isLeverageEnabled ? leverage : undefined,
-        isLimit,
-        triggerPrice,
-        savedAcceptablePriceImpactBps: acceptablePriceImpactBpsForLimitOrders,
-        findSwapPath: swapRoute.findSwapPath,
-        userReferralInfo,
-      });
-    }
+    return getIncreasePositionAmounts({
+      marketInfo,
+      initialCollateralToken: fromToken,
+      collateralToken,
+      isLong,
+      initialCollateralAmount: fromTokenAmount,
+      indexTokenAmount: toTokenAmount,
+      leverage,
+      triggerPrice,
+      position: existingPosition,
+      savedAcceptablePriceImpactBps: acceptablePriceImpactBpsForLimitOrders,
+      findSwapPath: swapRoute.findSwapPath,
+      userReferralInfo,
+      strategy: isLeverageEnabled
+        ? focusedInput === "from"
+          ? "leverageByCollateral"
+          : "leverageBySize"
+        : "independent",
+    });
   }, [
     acceptablePriceImpactBpsForLimitOrders,
     collateralToken,
+    existingPosition,
     focusedInput,
     fromToken,
     fromTokenAmount,
     isIncrease,
     isLeverageEnabled,
-    isLimit,
     isLong,
     leverage,
     marketInfo,
@@ -425,10 +414,11 @@ export function TradeBox(p: Props) {
         collateralToken,
         existingPosition,
         isLong,
-        collateralDeltaUsd: increaseAmounts.collateralUsdAfterFees,
+        collateralDeltaUsd: increaseAmounts.collateralDeltaUsd,
+        collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
         sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
-        sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
-        entryPrice: increaseAmounts.entryPrice,
+        sizeDeltaInTokens: increaseAmounts.indexTokenAmount,
+        indexPrice: increaseAmounts.indexPrice,
         showPnlInLeverage: savedIsPnlInLeverage,
         minCollateralUsd,
         userReferralInfo,
@@ -470,6 +460,15 @@ export function TradeBox(p: Props) {
     savedIsPnlInLeverage,
     userReferralInfo,
   ]);
+
+  // useDebugExecutionPrice(chainId, {
+  //   skip: false,
+  //   marketInfo,
+  //   sizeInUsd: existingPosition?.sizeInUsd || BigNumber.from(0),
+  //   sizeInTokens: existingPosition?.sizeInTokens || BigNumber.from(0),
+  //   sizeDeltaUsd: increaseAmounts?.sizeDeltaUsd,
+  //   isLong,
+  // });
 
   const { fees, feesType, executionFee } = useMemo(() => {
     if (!gasLimits || !gasPrice || !tokensData) {
@@ -637,7 +636,7 @@ export function TradeBox(p: Props) {
         initialCollateralAmount: fromTokenAmount,
         initialCollateralUsd: increaseAmounts?.initialCollateralUsd,
         targetCollateralToken: collateralToken,
-        collateralUsd: increaseAmounts?.collateralUsdAfterFees,
+        collateralUsd: increaseAmounts?.collateralDeltaUsd,
         sizeDeltaUsd: increaseAmounts?.sizeDeltaUsd,
         existingPosition,
         fees,
@@ -757,8 +756,8 @@ export function TradeBox(p: Props) {
       if (isIncrease && increaseAmounts) {
         if (focusedInput === "from") {
           setToTokenInputValue(
-            increaseAmounts.sizeDeltaInTokens?.gt(0)
-              ? formatAmountFree(increaseAmounts.sizeDeltaInTokens, toToken.decimals)
+            increaseAmounts.indexTokenAmount?.gt(0)
+              ? formatAmountFree(increaseAmounts.indexTokenAmount, toToken.decimals)
               : ""
           );
         } else {
@@ -909,7 +908,7 @@ export function TradeBox(p: Props) {
             topLeftLabel={`${tradeTypeLabels[tradeType!]}:`}
             topLeftValue={formatUsd(increaseAmounts?.sizeDeltaUsd, { fallbackToZero: true })}
             topRightLabel={t`Leverage:`}
-            topRightValue={formatLeverage(leverage)}
+            topRightValue={formatLeverage(isLeverageEnabled ? leverage : increaseAmounts?.estimatedLeverage) || "-"}
             inputValue={toTokenInputValue}
             onInputValueChange={(e) => {
               setFocusedInput("to");
@@ -1036,7 +1035,7 @@ export function TradeBox(p: Props) {
           hasExistingOrder={Boolean(existingOrder)}
           hasExistingPosition={Boolean(existingPosition)}
           isOutPositionLiquidity={isOutPositionLiquidity}
-          currentPriceImpactBps={increaseAmounts?.acceptablePriceImpactBps}
+          currentPriceImpactBps={increaseAmounts?.acceptablePriceDeltaBps}
           onSelectMarketAddress={onSelectMarketAddress}
         />
 
@@ -1077,7 +1076,7 @@ export function TradeBox(p: Props) {
                 to={formatLeverage(nextPositionValues?.nextLeverage) || "-"}
               />
             ) : (
-              formatLeverage(leverage)
+              formatLeverage(isLeverageEnabled ? leverage : increaseAmounts?.estimatedLeverage) || "-"
             )
           }
         />
@@ -1108,8 +1107,8 @@ export function TradeBox(p: Props) {
             className="SwapBox-info-row"
             label={t`Price Impact`}
             value={
-              <span className={cx({ positive: increaseAmounts?.acceptablePriceImpactBps?.gt(0) })}>
-                {formatPercentage(increaseAmounts?.acceptablePriceImpactBps, { signed: true }) || "-"}
+              <span className={cx({ positive: increaseAmounts?.acceptablePriceDeltaBps?.gt(0) })}>
+                {formatPercentage(increaseAmounts?.acceptablePriceDeltaBps, { signed: true }) || "-"}
               </span>
             }
           />
