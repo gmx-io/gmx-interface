@@ -44,9 +44,6 @@ export type MarketInfo = Market & {
   borrowingExponentFactorLong: BigNumber;
   borrowingExponentFactorShort: BigNumber;
 
-  marketTokenPrices: TokenPrices;
-  marketTokenTotalSupply: BigNumber;
-
   fundingFactor: BigNumber;
   fundingExponentFactor: BigNumber;
 
