@@ -107,7 +107,7 @@ export default function Stats() {
     if (
       !isLong &&
       tokenInfo.maxGlobalShortSize &&
-      tokenInfo.guaranteedUsd?.mul(11).div(10).gt(tokenInfo.maxGlobalShortSize)
+      tokenInfo.globalShortSize?.mul(11).div(10).gt(tokenInfo.maxGlobalShortSize)
     ) {
       className = "warn";
     }
