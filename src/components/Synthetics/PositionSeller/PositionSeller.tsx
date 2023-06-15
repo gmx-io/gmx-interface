@@ -324,15 +324,12 @@ export function PositionSeller(p: Props) {
 
   useEffect(
     function initReceiveToken() {
-      if (position?.collateralToken?.address) {
+      if (!receiveTokenAddress && position?.collateralToken?.address) {
         const convertedAddress = convertTokenAddress(chainId, position?.collateralToken.address, "native");
         setReceiveTokenAddress(convertedAddress);
       }
-      return () => {
-        setReceiveTokenAddress("");
-      };
     },
-    [chainId, position?.collateralToken]
+    [chainId, position?.collateralToken, receiveTokenAddress]
   );
 
   const indexPriceDecimals = position?.indexToken?.priceDecimals;

@@ -554,32 +554,3 @@ export function getNextPositionValuesForDecreaseTrade(p: {
     nextLeverage,
   };
 }
-
-// export function getPnlDeltaForDecreaseOrder(p: {
-//     pnl: BigNumber;
-//     sizeInUsd: BigNumber;
-//     sizeInTokens: BigNumber;
-//     isLong: boolean;
-//     sizeDeltaUsd: BigNumber;
-//   }) {
-//     const { pnl, sizeInTokens, sizeInUsd, isLong, sizeDeltaUsd } = p;
-
-//     let sizeDeltaInTokens: BigNumber;
-
-//     // cache.estimatedRealizedPnlUsd = cache.estimatedPositionPnlUsd * params.order.sizeDeltaUsd().toInt256() / params.position.sizeInUsd().toInt256();
-
-//     if (sizeInUsd.eq(sizeDeltaUsd)) {
-//       sizeDeltaInTokens = sizeInTokens;
-//     } else {
-//       if (isLong) {
-//         // roudUpDivision
-//         sizeDeltaInTokens = sizeDeltaUsd.mul(sizeInTokens).div(sizeInUsd);
-//       } else {
-//         sizeDeltaInTokens = sizeDeltaUsd.mul(sizeInTokens).div(sizeInUsd);
-//       }
-//     }
-
-//     const pnlDelta = pnl.mul(sizeDeltaInTokens).div(sizeInTokens);
-
-//     return pnlDelta;
-//   }
