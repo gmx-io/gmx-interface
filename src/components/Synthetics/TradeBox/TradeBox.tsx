@@ -1338,7 +1338,7 @@ export function TradeBox(p: Props) {
 
       {isSwap && <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />}
       {isPosition && <MarketCard isLong={isLong} marketInfo={marketInfo} allowedSlippage={allowedSlippage} />}
-      {account && <ClaimableCard onClaimClick={() => setIsClaiming(true)} />}
+      {account && <ClaimableCard marketsInfoData={marketsInfoData} onClaimClick={() => setIsClaiming(true)} />}
 
       <ConfirmationBox
         isVisible={stage === "confirmation"}

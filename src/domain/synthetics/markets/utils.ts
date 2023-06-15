@@ -254,16 +254,12 @@ export function getMinPriceImpactMarket(
   };
 }
 
-export function getClaimableFundingAmount(marketInfo: MarketInfo, isLong: boolean) {
-  return isLong ? marketInfo.claimableFundingAmountLong : marketInfo.claimableFundingAmountShort;
-}
-
 export function getTotalClaimableFundingUsd(markets: MarketInfo[]) {
   return markets.reduce((acc, market) => {
     const { longToken, shortToken } = market;
 
-    const amountLong = getClaimableFundingAmount(market, true);
-    const amountShort = getClaimableFundingAmount(market, false);
+    const amountLong = market.claimableFundingAmountLong;
+    const amountShort = market.claimableFundingAmountShort;
 
     const usdLong = convertToUsd(amountLong, longToken.decimals, longToken.prices.minPrice);
     const usdShort = convertToUsd(amountShort, shortToken.decimals, shortToken.prices.minPrice);
