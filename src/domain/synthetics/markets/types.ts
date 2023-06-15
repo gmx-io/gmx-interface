@@ -1,5 +1,5 @@
 import { BigNumber } from "ethers";
-import { TokenData } from "domain/synthetics/tokens";
+import { TokenData, TokenPrices } from "domain/synthetics/tokens";
 
 export type PnlFactorType = "FOR_DEPOSITS" | "FOR_WITHDRAWALS" | "FOR_TRADERS";
 
@@ -43,6 +43,9 @@ export type MarketInfo = Market & {
   borrowingFactorShort: BigNumber;
   borrowingExponentFactorLong: BigNumber;
   borrowingExponentFactorShort: BigNumber;
+
+  marketTokenPrices: TokenPrices;
+  marketTokenTotalSupply: BigNumber;
 
   fundingFactor: BigNumber;
   fundingExponentFactor: BigNumber;

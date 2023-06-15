@@ -3,12 +3,12 @@ import { useWeb3React } from "@web3-react/core";
 import { getWrappedToken } from "config/tokens";
 import { MarketsInfoData } from "domain/synthetics/markets";
 import { TokensData, parseContractPrice } from "domain/synthetics/tokens";
+import { ethers } from "ethers";
 import { bigNumberify } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import { useMemo } from "react";
 import useSWR from "swr";
-import { useFixedAddreseses } from "../common/useFixedAddresses";
 import { isSwapOrderType } from "../orders";
 import { getSwapPathOutputAddresses } from "../trade/utils";
 import { PositionTradeAction, RawTradeAction, SwapTradeAction, TradeAction } from "./types";
@@ -24,7 +24,6 @@ export function useTradeHistory(
 ) {
   const { pageIndex, pageSize, marketsInfoData, tokensData } = p;
   const { account } = useWeb3React();
-  const fixedAddresses = useFixedAddreseses(marketsInfoData, tokensData);
 
   const client = getSyntheticsGraphClient(chainId);
 
@@ -88,10 +87,10 @@ export function useTradeHistory(
     },
   });
 
-  const isLoading = (!error && !data) || !marketsInfoData || !tokensData || !fixedAddresses;
+  const isLoading = (!error && !data) || !marketsInfoData || !tokensData;
 
   const tradeActions = useMemo(() => {
-    if (!data || !marketsInfoData || !tokensData || !fixedAddresses) {
+    if (!data || !marketsInfoData || !tokensData) {
       return undefined;
     }
 
@@ -102,8 +101,8 @@ export function useTradeHistory(
         const orderType = Number(rawAction.orderType);
 
         if (isSwapOrderType(orderType)) {
-          const initialCollateralTokenAddress = fixedAddresses[rawAction.initialCollateralTokenAddress!];
-          const swapPath = rawAction.swapPath!.map((address) => fixedAddresses[address]);
+          const initialCollateralTokenAddress = ethers.utils.getAddress(rawAction.initialCollateralTokenAddress!);
+          const swapPath = rawAction.swapPath!.map((address) => ethers.utils.getAddress(address));
 
           const swapPathOutputAddresses = getSwapPathOutputAddresses({
             marketsInfoData,
@@ -139,11 +138,11 @@ export function useTradeHistory(
 
           return tradeAction;
         } else {
-          const marketAddress = fixedAddresses[rawAction.marketAddress!];
+          const marketAddress = ethers.utils.getAddress(rawAction.marketAddress!);
           const marketInfo = getByKey(marketsInfoData, marketAddress);
           const indexToken = marketInfo?.indexToken;
-          const initialCollateralTokenAddress = fixedAddresses[rawAction.initialCollateralTokenAddress!];
-          const swapPath = rawAction.swapPath!.map((address) => fixedAddresses[address]);
+          const initialCollateralTokenAddress = ethers.utils.getAddress(rawAction.initialCollateralTokenAddress!);
+          const swapPath = rawAction.swapPath!.map((address) => ethers.utils.getAddress(address));
           const swapPathOutputAddresses = getSwapPathOutputAddresses({
             marketsInfoData,
             swapPath,
@@ -205,7 +204,7 @@ export function useTradeHistory(
         }
       })
       .filter(Boolean) as TradeAction[];
-  }, [chainId, data, fixedAddresses, marketsInfoData, tokensData]);
+  }, [chainId, data, marketsInfoData, tokensData]);
 
   return {
     tradeActions,

@@ -204,7 +204,7 @@ export function formatPercentage(percentage?: BigNumber, opts: { fallbackToZero?
     sign = percentage?.gt(0) ? "+" : "-";
   }
 
-  return `${sign}${formatAmount(percentage, 2, 2)}%`;
+  return `${sign}${formatAmount(percentage.abs(), 2, 2)}%`;
 }
 
 export function formatTokenAmount(

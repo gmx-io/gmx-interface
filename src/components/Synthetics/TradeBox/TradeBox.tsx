@@ -1109,7 +1109,7 @@ export function TradeBox(p: Props) {
             label={t`Price Impact`}
             value={
               <span className={cx({ positive: increaseAmounts?.acceptablePriceImpactBps?.gt(0) })}>
-                {formatPercentage(increaseAmounts?.acceptablePriceImpactBps) || "-"}
+                {formatPercentage(increaseAmounts?.acceptablePriceImpactBps, { signed: true }) || "-"}
               </span>
             }
           />
@@ -1124,7 +1124,7 @@ export function TradeBox(p: Props) {
                 className="TradeBox-acceptable-price-impact"
                 onClick={() => setIsEditingAcceptablePriceImpact(true)}
               >
-                {formatPercentage(acceptablePriceImpactBpsForLimitOrders.mul(-1))}
+                {formatPercentage(acceptablePriceImpactBpsForLimitOrders.mul(-1), { signed: true })}
                 <span className="edit-icon" onClick={() => null}>
                   <AiOutlineEdit fontSize={16} />
                 </span>

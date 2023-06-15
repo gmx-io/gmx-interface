@@ -58,6 +58,7 @@ import { usePrevious } from "lib/usePrevious";
 import { useEffect, useMemo, useState } from "react";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionSeller.scss";
+import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
 
 export type Props = {
   position?: PositionInfo;
@@ -140,6 +141,15 @@ export function PositionSeller(p: Props) {
       minPositionSizeUsd,
     });
   }, [closeSizeUsd, keepLeverage, minCollateralUsd, minPositionSizeUsd, position, userReferralInfo]);
+
+  useDebugExecutionPrice(chainId, {
+    skip: false,
+    marketInfo: position?.marketInfo,
+    sizeInUsd: position?.sizeInUsd,
+    sizeInTokens: position?.sizeInTokens,
+    sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd.mul(-1),
+    isLong: position?.isLong,
+  });
 
   const shouldSwap = position && receiveToken && !getIsEquivalentTokens(position.collateralToken, receiveToken);
 
@@ -418,8 +428,9 @@ export function PositionSeller(p: Props) {
               />
               <ExchangeInfoRow
                 label={t`Price Impact`}
-                value={formatPercentage(decreaseAmounts?.acceptablePriceDeltaBps) || "-"}
+                value={formatPercentage(decreaseAmounts?.acceptablePriceDeltaBps, { signed: true }) || "-"}
               />
+
               <ExchangeInfoRow
                 label={t`Acceptable Price`}
                 value={
@@ -428,6 +439,7 @@ export function PositionSeller(p: Props) {
                   }) || "-"
                 }
               />
+
               <ExchangeInfoRow
                 className="SwapBox-info-row"
                 label={t`Liq. Price`}
