@@ -108,7 +108,7 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
   const sizeDeltaText = `${isIncreaseOrderType(tradeAction.orderType!) ? "+" : "-"}${formatUsd(sizeDeltaUsd)}`;
 
   if (isLimitOrderType(tradeAction.orderType!) || isTriggerDecreaseOrderType(tradeAction.orderType!)) {
-    const acceptablePrice = tradeAction.acceptablePrice;
+    const triggerPrice = tradeAction.triggerPrice;
     const executionPrice = tradeAction.executionPrice;
     const pricePrefix = getTriggerThresholdType(tradeAction.orderType!, tradeAction.isLong!);
     const actionText = getOrderActionText(tradeAction);
@@ -122,7 +122,7 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
 
     return t`${actionText} Order: ${increaseText} ${positionText} ${sizeDeltaText}, ${
       indexToken.symbol
-    } Price: ${pricePrefix} ${formatUsd(acceptablePrice, { displayDecimals: priceDecimals })}, Market: ${
+    } Price: ${pricePrefix} ${formatUsd(triggerPrice, { displayDecimals: priceDecimals })}, Market: ${
       tradeAction.marketInfo.name
     }`;
   }
