@@ -101,6 +101,7 @@ import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { isDevelopment } from "config/env";
 import Button from "components/Button/Button";
+import { roundToTwoDecimals } from "lib/numbers";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -294,7 +295,7 @@ function FullApp() {
 
   const openSettings = () => {
     const slippage = parseInt(savedSlippageAmount);
-    setSlippageAmount((slippage / BASIS_POINTS_DIVISOR) * 100);
+    setSlippageAmount(roundToTwoDecimals((slippage / BASIS_POINTS_DIVISOR) * 100));
     setIsPnlInLeverage(savedIsPnlInLeverage);
     setShowPnlAfterFees(savedShowPnlAfterFees);
     setShouldDisableValidationForTesting(savedShouldDisableValidationForTesting);
@@ -311,8 +312,7 @@ function FullApp() {
       helperToast.error(t`Slippage should be less than 5%`);
       return;
     }
-
-    const basisPoints = (slippage * BASIS_POINTS_DIVISOR) / 100;
+    const basisPoints = roundToTwoDecimals((slippage * BASIS_POINTS_DIVISOR) / 100);
     if (parseInt(basisPoints) !== parseFloat(basisPoints)) {
       helperToast.error(t`Max slippage precision is 0.01%`);
       return;
@@ -480,6 +480,7 @@ function FullApp() {
                   setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
                   connectWallet={connectWallet}
                   savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
+                  openSettings={openSettings}
                 />
               </Route>
               <Route exact path="/dashboard">
@@ -646,7 +647,7 @@ function FullApp() {
           </div>
         )}
 
-        <Button variant="primary-action" className="w-100 mt-md" onClick={saveAndCloseSettings}>
+        <Button variant="primary-action" className="w-full mt-md" onClick={saveAndCloseSettings}>
           <Trans>Save</Trans>
         </Button>
       </Modal>

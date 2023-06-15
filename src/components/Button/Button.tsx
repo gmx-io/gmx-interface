@@ -3,12 +3,13 @@ import cx from "classnames";
 import ButtonLink from "./ButtonLink";
 import "./Button.scss";
 
-type ButtonVariant = "primary" | "primary-action" | "semi-clear" | "clear";
+type ButtonVariant = "primary" | "primary-action" | "secondary";
 
 type ButtonProps = HTMLProps<HTMLButtonElement> & {
   children: ReactNode;
   variant: ButtonVariant;
   className?: string;
+  textAlign?: "center" | "left" | "right";
   disabled?: boolean;
   onClick?: () => void;
   to?: string;
@@ -25,6 +26,7 @@ export default function Button({
   disabled,
   onClick,
   children,
+  textAlign = "center",
   to,
   className,
   imgInfo,
@@ -32,7 +34,8 @@ export default function Button({
   newTab,
   ...rest
 }: ButtonProps) {
-  const classNames = cx("button", variant, className);
+  const classNames = cx("button", variant, className, textAlign);
+  const showExternalLinkArrow = variant === "secondary";
 
   function handleClick() {
     if (disabled || !onClick) {
@@ -46,7 +49,15 @@ export default function Button({
 
   if (to) {
     return (
-      <ButtonLink className={classNames} to={to} onClick={onClick} newTab={newTab} {...rest}>
+      <ButtonLink
+        className={classNames}
+        to={to}
+        onClick={onClick}
+        newTab={newTab}
+        showExternalLinkArrow={showExternalLinkArrow}
+        disabled={disabled}
+        {...rest}
+      >
         {imgInfo && <img className="btn-image" src={imgInfo.src} alt={imgInfo.alt || ""} />}
         {children}
       </ButtonLink>

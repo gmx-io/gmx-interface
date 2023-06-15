@@ -19,7 +19,7 @@ function JoinReferralCode({ setPendingTxns, pendingTxns, active, connectWallet }
         {active ? (
           <ReferralCodeForm setPendingTxns={setPendingTxns} pendingTxns={pendingTxns} />
         ) : (
-          <Button variant="primary-action" className="w-100" type="submit" onClick={connectWallet}>
+          <Button variant="primary-action" className="w-full" type="submit" onClick={connectWallet}>
             <Trans>Connect Wallet</Trans>
           </Button>
         )}

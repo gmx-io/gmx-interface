@@ -27,17 +27,17 @@ export default function useReferralsData(account) {
           where: { receiver: $account, typeId_in: $typeIds }
         ) {
           receiver
-          amount
+          amounts
           typeId
-          token
+          tokens
           transactionHash
           timestamp
         }
-        referrerTotalStats: referrerStats(
+        affiliateTotalStats: affiliateStats(
           first: 1000
           orderBy: volume
           orderDirection: desc
-          where: { period: total, referrer: $account }
+          where: { period: total, affiliate: $account }
         ) {
           referralCode
           volume
@@ -47,9 +47,9 @@ export default function useReferralsData(account) {
           totalRebateUsd
           discountUsd
         }
-        referrerLastDayStats: referrerStats(
+        affiliateLastDayStats: affiliateStats(
           first: 1000
-          where: { period: daily, referrer: $account, timestamp: $timestamp }
+          where: { period: daily, affiliate: $account, timestamp: $timestamp }
         ) {
           referralCode
           volume
@@ -66,7 +66,7 @@ export default function useReferralsData(account) {
           volume
           discountUsd
         }
-        referrerTierInfo: referrer(id: $account) {
+        affiliateTierInfo: affiliate(id: $account) {
           tierId
           id
           discountShare
@@ -92,19 +92,21 @@ export default function useReferralsData(account) {
           const rebateDistributions: any[] = [];
           const discountDistributions: any[] = [];
           res.data.distributions.forEach((d) => {
-            const item = {
-              timestamp: parseInt(d.timestamp),
-              transactionHash: d.transactionHash,
-              receiver: ethers.utils.getAddress(d.receiver),
-              amount: bigNumberify(d.amount),
-              typeId: d.typeId,
-              token: ethers.utils.getAddress(d.token),
-            };
-            if (d.typeId === DISTRIBUTION_TYPE_REBATES) {
-              rebateDistributions.push(item);
-            } else {
-              discountDistributions.push(item);
-            }
+            d.amounts.forEach((amount, i) => {
+              const item = {
+                timestamp: parseInt(d.timestamp),
+                transactionHash: d.transactionHash,
+                receiver: ethers.utils.getAddress(d.receiver),
+                amount: bigNumberify(amount),
+                typeId: d.typeId,
+                token: ethers.utils.getAddress(d.tokens[i]),
+              };
+              if (d.typeId === DISTRIBUTION_TYPE_REBATES) {
+                rebateDistributions.push(item);
+              } else {
+                discountDistributions.push(item);
+              }
+            });
           });
 
           function prepareStatsItem(e) {
@@ -129,14 +131,14 @@ export default function useReferralsData(account) {
                 acc.trades = acc.trades + cv.trades;
                 acc.tradedReferralsCount = acc.tradedReferralsCount + cv.tradedReferralsCount;
                 acc.registeredReferralsCount = acc.registeredReferralsCount + cv.registeredReferralsCount;
-                acc.referrerRebates = acc.totalRebateUsd.sub(acc.discountUsd);
+                acc.affiliateRebates = acc.totalRebateUsd.sub(acc.discountUsd);
                 return acc;
               },
               {
                 totalRebateUsd: bigNumberify(0),
                 volume: bigNumberify(0),
                 discountUsd: bigNumberify(0),
-                referrerRebates: bigNumberify(0),
+                affiliateRebates: bigNumberify(0),
                 trades: 0,
                 tradedReferralsCount: 0,
                 registeredReferralsCount: 0,
@@ -144,15 +146,15 @@ export default function useReferralsData(account) {
             );
           }
 
-          let referrerTotalStats = res.data.referrerTotalStats.map(prepareStatsItem);
+          let affiliateTotalStats = res.data.affiliateTotalStats.map(prepareStatsItem);
           return {
             chainId,
             rebateDistributions,
             discountDistributions,
-            referrerTotalStats,
-            referrerTierInfo: res.data.referrerTierInfo,
-            referrerLastDayStats: res.data.referrerLastDayStats.map(prepareStatsItem),
-            cumulativeStats: getCumulativeStats(referrerTotalStats),
+            affiliateTotalStats,
+            affiliateTierInfo: res.data.affiliateTierInfo,
+            affiliateLastDayStats: res.data.affiliateLastDayStats.map(prepareStatsItem),
+            cumulativeStats: getCumulativeStats(affiliateTotalStats),
             codes: res.data.referralCodes.map((e) => decodeReferralCode(e.code)),
             referralTotalStats: res.data.referralTotalStats
               ? {
@@ -172,7 +174,7 @@ export default function useReferralsData(account) {
 
       accumulator.total.registeredReferralsCount += cumulativeStats.registeredReferralsCount || 0;
       accumulator.total.affiliatesVolume = accumulator.total.affiliatesVolume.add(cumulativeStats.volume || 0);
-      accumulator.total.referrerRebates = accumulator.total.referrerRebates
+      accumulator.total.affiliateRebates = accumulator.total.affiliateRebates
         .add(cumulativeStats.totalRebateUsd || 0)
         .sub(cumulativeStats.discountUsd || 0);
       accumulator.total.discountUsd = accumulator.total.discountUsd.add(referralTotalStats.discountUsd || 0);
@@ -192,7 +194,7 @@ export default function useReferralsData(account) {
       total: {
         registeredReferralsCount: 0,
         affiliatesVolume: bigNumberify(0),
-        referrerRebates: bigNumberify(0),
+        affiliateRebates: bigNumberify(0),
         discountUsd: bigNumberify(0),
         tradersVolume: bigNumberify(0),
       },
@@ -204,6 +206,8 @@ export default function useReferralsData(account) {
           const data = await getChainReferralData(chainId);
           return data;
         } catch (e) {
+          // eslint-disable-next-line no-console
+          console.warn("Failed to fetch referral data on chain %s", chainId, e);
           return null;
         }
       })
