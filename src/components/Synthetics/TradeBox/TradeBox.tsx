@@ -1152,16 +1152,18 @@ export function TradeBox(p: Props) {
           value={
             <ValueTransition
               from={
-                nextPositionValues?.nextLiqPrice
+                existingPosition
                   ? formatLiquidationPrice(existingPosition?.liquidationPrice, {
                       displayDecimals: existingPosition?.indexToken?.priceDecimals,
                     })
                   : undefined
               }
               to={
-                formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
-                  displayDecimals: toToken?.priceDecimals,
-                }) || "-"
+                increaseAmounts?.sizeDeltaUsd.gt(0)
+                  ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
+                      displayDecimals: toToken?.priceDecimals,
+                    })
+                  : "-"
               }
             />
           }
@@ -1266,18 +1268,24 @@ export function TradeBox(p: Props) {
             className="SwapBox-info-row"
             label={t`Liq. Price`}
             value={
-              existingPosition.sizeInUsd.eq(decreaseAmounts?.sizeDeltaUsd || 0) ? (
+              decreaseAmounts?.isFullClose ? (
                 "-"
               ) : (
                 <ValueTransition
                   from={
-                    formatLiquidationPrice(existingPosition.liquidationPrice, {
-                      displayDecimals: toToken?.priceDecimals,
-                    })!
+                    existingPosition
+                      ? formatLiquidationPrice(existingPosition?.liquidationPrice, {
+                          displayDecimals: existingPosition?.indexToken?.priceDecimals,
+                        })
+                      : undefined
                   }
-                  to={formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
-                    displayDecimals: toToken?.priceDecimals,
-                  })}
+                  to={
+                    decreaseAmounts?.sizeDeltaUsd.gt(0)
+                      ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
+                          displayDecimals: toToken?.priceDecimals,
+                        })
+                      : "-"
+                  }
                 />
               )
             }

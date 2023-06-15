@@ -14,7 +14,6 @@ import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/
 import { TradeMode, getTriggerThresholdType } from "domain/synthetics/trade";
 import { CHART_PERIODS } from "lib/legacy";
 import "./PositionItem.scss";
-import { ethers } from "ethers";
 
 export type Props = {
   position: PositionInfo;
@@ -209,11 +208,15 @@ export function PositionItem(p: Props) {
   function renderLiquidationPrice() {
     let liqPriceWarning: string | undefined;
 
-    if (p.position.liquidationPrice?.eq(ethers.constants.MaxUint256)) {
-      if (p.position.collateralAmount.lt(p.position.sizeInTokens)) {
-        liqPriceWarning = t`Since your position's Collateral is ${p.position.collateralToken.symbol} with a larger value than the Position Size, the Collateral value will increase to cover any negative PnL.`;
-      } else {
-        liqPriceWarning = t`Since your position's Collateral is ${p.position.collateralToken.symbol} with a value very close or larger than the Position Size, the Collateral value will increase to cover any negative PnL.`;
+    if (!p.position.liquidationPrice) {
+      if (!p.position.isLong && p.position.collateralAmount.gte(p.position.sizeInTokens)) {
+        liqPriceWarning = t`Since your position's Collateral is ${p.position.collateralToken.symbol} with a value larger than the Position Size, the Collateral value will increase to cover any negative PnL.`;
+      } else if (
+        p.position.isLong &&
+        p.position.collateralToken.isStable &&
+        p.position.collateralUsd.gte(p.position.sizeInUsd)
+      ) {
+        liqPriceWarning = t`Since your position's Collateral is ${p.position.collateralToken.symbol} with a value larger than the Position Size, the Collateral value will cover any negative PnL.`;
       }
     }
 

@@ -150,7 +150,10 @@ export const formatAmountFree = (amount: BigNumberish, tokenDecimals: number, di
   return trimZeroDecimals(amountStr);
 };
 
-export function formatUsd(usd?: BigNumber, opts: { fallbackToZero?: boolean; displayDecimals?: number } = {}) {
+export function formatUsd(
+  usd?: BigNumber,
+  opts: { fallbackToZero?: boolean; displayDecimals?: number; maxThreshold?: string; minThreshold?: string } = {}
+) {
   const { fallbackToZero = false, displayDecimals = 2 } = opts;
 
   if (!usd) {
@@ -161,7 +164,7 @@ export function formatUsd(usd?: BigNumber, opts: { fallbackToZero?: boolean; dis
     }
   }
 
-  const exceedingInfo = getLimitedDisplay(usd, USD_DECIMALS);
+  const exceedingInfo = getLimitedDisplay(usd, USD_DECIMALS, opts);
   const sign = usd.lt(0) ? "-" : "";
   const displayUsd = formatAmount(exceedingInfo.value, USD_DECIMALS, displayDecimals, true);
   return `${exceedingInfo.symbol}${sign}$${displayUsd}`;

@@ -1,11 +1,11 @@
+import { UserReferralInfo } from "domain/referrals";
 import { MarketInfo, getCappedPoolPnl, getPoolUsdWithoutPnl } from "domain/synthetics/markets";
 import { Token, getIsEquivalentTokens } from "domain/tokens";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";
 import { applyFactor, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 import { getPositionFee, getPriceImpactForPosition } from "../fees";
 import { TokenData, convertToUsd } from "../tokens";
-import { UserReferralInfo } from "domain/referrals";
 
 export function getPositionKey(account: string, marketAddress: string, collateralAddress: string, isLong: boolean) {
   return `${account}:${marketAddress}:${collateralAddress}:${isLong}`;
@@ -160,8 +160,8 @@ export function getLiquidationPrice(p: {
     if (isLong) {
       const denominator = sizeInTokens.add(collateralAmount);
 
-      if (denominator.lte(0)) {
-        return ethers.constants.MaxUint256;
+      if (denominator.eq(0)) {
+        return undefined;
       }
 
       liquidationPrice = sizeInUsd
@@ -173,15 +173,8 @@ export function getLiquidationPrice(p: {
     } else {
       const denominator = sizeInTokens.sub(collateralAmount);
 
-      if (
-        denominator.lte(0) ||
-        // check sizeInTokens / collateralAmount <= 1.0001
-        sizeInTokens
-          .mul(BASIS_POINTS_DIVISOR)
-          .div(collateralAmount)
-          .lte(BASIS_POINTS_DIVISOR + 1)
-      ) {
-        return ethers.constants.MaxUint256;
+      if (denominator.eq(0)) {
+        return undefined;
       }
 
       liquidationPrice = sizeInUsd
@@ -214,18 +207,18 @@ export function getLiquidationPrice(p: {
   }
 
   if (liquidationPrice.lte(0)) {
-    return ethers.constants.MaxUint256;
+    return undefined;
   }
 
   return liquidationPrice;
 }
 
 export function formatLiquidationPrice(liquidationPrice?: BigNumber, opts: { displayDecimals?: number } = {}) {
-  if (liquidationPrice?.eq(ethers.constants.MaxUint256)) {
+  if (!liquidationPrice || liquidationPrice.lte(0)) {
     return "NA";
   }
 
-  return formatUsd(liquidationPrice, opts);
+  return formatUsd(liquidationPrice, { ...opts, maxThreshold: "1000000" });
 }
 
 export function getLeverage(p: {
