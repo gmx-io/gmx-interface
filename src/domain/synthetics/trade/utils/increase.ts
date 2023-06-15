@@ -105,7 +105,7 @@ export function getIncreasePositionAmounts(p: {
     values.initialCollateralAmount = initialCollateralAmount;
     values.initialCollateralUsd = convertToUsd(
       initialCollateralAmount,
-      collateralToken.decimals,
+      initialCollateralToken.decimals,
       values.initialCollateralPrice
     )!;
 

@@ -961,8 +961,10 @@ export function ConfirmationBox(p: Props) {
                       <StatsTooltipRow
                         label={t`Fees`}
                         value={
-                          fees?.totalFees?.deltaUsd && !fees.totalFees.deltaUsd.eq(0)
-                            ? `${fees.totalFees.deltaUsd.gt(0) ? "+" : "-"}${formatUsd(fees.totalFees.deltaUsd.abs())}`
+                          fees?.payTotalFees?.deltaUsd && !fees.payTotalFees.deltaUsd.eq(0)
+                            ? `${fees.payTotalFees.deltaUsd.gt(0) ? "+" : "-"}${formatUsd(
+                                fees.payTotalFees.deltaUsd.abs()
+                              )}`
                             : "0.00$"
                         }
                         showDollar={false}

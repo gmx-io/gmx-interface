@@ -205,6 +205,7 @@ export function PositionSeller(p: Props) {
 
     return {
       fees: getTradeFees({
+        isIncrease: false,
         initialCollateralUsd: position.collateralUsd,
         sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
         swapSteps: swapAmounts?.swapPathStats?.swapSteps || [],

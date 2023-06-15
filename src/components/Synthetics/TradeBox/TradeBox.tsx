@@ -482,6 +482,7 @@ export function TradeBox(p: Props) {
 
       return {
         fees: getTradeFees({
+          isIncrease: false,
           initialCollateralUsd: swapAmounts.usdIn,
           sizeDeltaUsd: BigNumber.from(0),
           swapSteps: swapAmounts.swapPathStats.swapSteps,
@@ -505,6 +506,7 @@ export function TradeBox(p: Props) {
 
       return {
         fees: getTradeFees({
+          isIncrease: true,
           initialCollateralUsd: increaseAmounts.initialCollateralUsd,
           sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
           swapSteps: increaseAmounts.swapPathStats?.swapSteps || [],
@@ -526,6 +528,7 @@ export function TradeBox(p: Props) {
 
       return {
         fees: getTradeFees({
+          isIncrease: false,
           initialCollateralUsd: existingPosition?.collateralUsd || BigNumber.from(0),
           sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
           swapSteps: [],
@@ -836,7 +839,7 @@ export function TradeBox(p: Props) {
       <>
         <BuyInputSection
           topLeftLabel={t`Pay:`}
-          topLeftValue={formatUsd(fromUsd)}
+          topLeftValue={formatUsd(isIncrease ? increaseAmounts?.initialCollateralUsd : fromUsd)}
           topRightLabel={t`Balance:`}
           topRightValue={formatTokenAmount(fromToken?.balance, fromToken?.decimals)}
           inputValue={fromTokenInputValue}
