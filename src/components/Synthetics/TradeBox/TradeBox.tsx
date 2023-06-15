@@ -334,6 +334,7 @@ export function TradeBox(p: Props) {
 
     return getIncreasePositionAmounts({
       marketInfo,
+      indexToken: toToken,
       initialCollateralToken: fromToken,
       collateralToken,
       isLong,

@@ -13,6 +13,7 @@ import { getSwapAmountsByFromValue, getSwapAmountsByToValue } from "./swap";
 
 export function getIncreasePositionAmounts(p: {
   marketInfo: MarketInfo;
+  indexToken: TokenData;
   initialCollateralToken: TokenData;
   collateralToken: TokenData;
   isLong: boolean;
@@ -28,6 +29,7 @@ export function getIncreasePositionAmounts(p: {
 }): IncreasePositionAmounts {
   const {
     marketInfo,
+    indexToken,
     initialCollateralToken,
     collateralToken,
     initialCollateralAmount,
@@ -41,7 +43,6 @@ export function getIncreasePositionAmounts(p: {
     userReferralInfo,
     strategy,
   } = p;
-  const { indexToken } = marketInfo;
 
   const values: IncreasePositionAmounts = {
     initialCollateralAmount: BigNumber.from(0),
@@ -73,7 +74,6 @@ export function getIncreasePositionAmounts(p: {
     positionPriceImpactDeltaUsd: BigNumber.from(0),
   };
 
-  const markPrice = getMarkPrice({ prices: indexToken.prices, isIncrease: false, isLong });
   const isLimit = triggerPrice?.gt(0);
 
   if (triggerPrice?.gt(0)) {
@@ -90,7 +90,7 @@ export function getIncreasePositionAmounts(p: {
       ? triggerPrice
       : collateralToken.prices.minPrice;
   } else {
-    values.indexPrice = markPrice;
+    values.indexPrice = getMarkPrice({ prices: indexToken.prices, isIncrease: true, isLong });
     values.initialCollateralPrice = initialCollateralToken.prices.minPrice;
     values.collateralPrice = collateralToken.prices.minPrice;
   }
