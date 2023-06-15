@@ -233,7 +233,7 @@ function TradersStats({
                     return (
                       <tr key={index}>
                         <td data-label="Date">{formatDate(rebate.timestamp)}</td>
-                        <td data-label="Type">V1 AIRDROP</td>
+                        <td data-label="Type">V1 Airdrop</td>
                         <td data-label="Amount">
                           <Tooltip
                             handle={
