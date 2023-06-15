@@ -31,8 +31,8 @@ import {
   isOrderForPosition,
   isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
-import { cancelOrdersTxn } from "domain/synthetics/transactions/cancelOrdersTxn";
-import { createWrapOrUnwrapTxn } from "domain/synthetics/transactions/createWrapOrUnwrapTxn";
+import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
+import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
 import { PositionInfo, formatLeverage, formatLiquidationPrice, getPositionKey } from "domain/synthetics/positions";
 import {
   TokenData,

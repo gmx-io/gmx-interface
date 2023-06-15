@@ -1,5 +1,5 @@
+import { TokenData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
-import { TokenData, TokenPrices } from "domain/synthetics/tokens";
 
 export type PnlFactorType = "FOR_DEPOSITS" | "FOR_WITHDRAWALS" | "FOR_TRADERS";
 
