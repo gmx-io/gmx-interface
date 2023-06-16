@@ -17,6 +17,8 @@ body {
   -webkit-font-smoothing: subpixel-antialiased;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* used for walletconnect v2 modal */
+  --w3m-z-index: 1100;
 }
 
 code {

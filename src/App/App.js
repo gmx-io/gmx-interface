@@ -91,6 +91,7 @@ import {
   clearWalletLinkData,
   getInjectedHandler,
   getWalletConnectHandler,
+  getWalletConnectV2Handler,
   hasCoinBaseWalletExtension,
   hasMetaMaskWalletExtension,
   useEagerConnect,
@@ -200,6 +201,9 @@ function FullApp() {
   const connectInjectedWallet = getInjectedHandler(activate, deactivate);
   const activateWalletConnect = () => {
     getWalletConnectHandler(activate, deactivate, setActivatingConnector)();
+  };
+  const activateWalletConnectV2 = () => {
+    getWalletConnectV2Handler(activate, deactivate, setActivatingConnector)();
   };
 
   const userOnMobileDevice = "navigator" in window && isMobileDevice(window.navigator);
@@ -598,6 +602,12 @@ function FullApp() {
           <img src={walletConnectImg} alt="WalletConnect" />
           <div>
             <Trans>WalletConnect</Trans>
+          </div>
+        </button>
+        <button className="Wallet-btn WalletConnect-btn" onClick={activateWalletConnectV2}>
+          <img src={walletConnectImg} alt="WalletConnect" />
+          <div>
+            <Trans>WalletConnect V2</Trans>
           </div>
         </button>
       </Modal>

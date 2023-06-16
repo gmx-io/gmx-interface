@@ -28,6 +28,10 @@ import { helperToast } from "../helperToast";
 import { t, Trans } from "@lingui/macro";
 
 import { Web3ReactManagerFunctions } from "@web3-react/core/dist/types";
+import {
+  UserRejectedRequestError as UserRejectedRequestErrorWalletConnectV2,
+  WalletConnectConnectorV2,
+} from "./WalletConnectV2";
 
 export type NetworkMetadata = {
   chainId: string;
@@ -100,6 +104,23 @@ export const getWalletConnectConnector = () => {
     },
     qrcode: true,
     chainId,
+  });
+};
+
+export const getWalletConnectConnectorV2 = () => {
+  const [arbitrum, ...optionalChains] = SUPPORTED_CHAIN_IDS;
+  return new WalletConnectConnectorV2({
+    rpcMap: {
+      [AVALANCHE]: getRpcUrl(AVALANCHE)!,
+      [ARBITRUM]: getRpcUrl(ARBITRUM)!,
+      [ARBITRUM_TESTNET]: getRpcUrl(ARBITRUM_TESTNET)!,
+      [AVALANCHE_FUJI]: getRpcUrl(AVALANCHE_FUJI)!,
+    },
+    showQrModal: true,
+    chains: [arbitrum],
+    optionalChains,
+    projectId: "de24cddbaf2a68f027eae30d9bb5df58",
+    defaultChainId: arbitrum,
   });
 };
 
@@ -279,6 +300,31 @@ export const getWalletConnectHandler = (
         // eslint-disable-next-line no-console
         console.warn(ex);
       } else if (!(ex instanceof UserRejectedRequestErrorWalletConnect)) {
+        helperToast.error(ex.message);
+        // eslint-disable-next-line no-console
+        console.warn(ex);
+      }
+      clearWalletConnectData();
+      deactivate();
+    });
+  };
+  return fn;
+};
+
+export const getWalletConnectV2Handler = (
+  activate: Web3ReactManagerFunctions["activate"],
+  deactivate: Web3ReactManagerFunctions["deactivate"],
+  setActivatingConnector: (connector?: WalletConnectConnectorV2) => void
+) => {
+  const fn = async () => {
+    const walletConnect = getWalletConnectConnectorV2();
+    setActivatingConnector(walletConnect);
+    activate(walletConnect, (ex) => {
+      if (ex instanceof UnsupportedChainIdError) {
+        helperToast.error(t`Unsupported chain. Switch to Arbitrum network on your wallet and try again`);
+        // eslint-disable-next-line no-console
+        console.warn(ex);
+      } else if (!(ex instanceof UserRejectedRequestErrorWalletConnectV2)) {
         helperToast.error(ex.message);
         // eslint-disable-next-line no-console
         console.warn(ex);
