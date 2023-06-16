@@ -3154,6 +3154,10 @@ msgstr "标价已改变, 请考虑点击你地址旁的 \"...\" 图示来增加�
 msgid "The order will only execute if the price conditions are met and there is sufficient liquidity"
 msgstr "该订单只在满足价格条件并有足够的流动性时才会执行"
 
+#: src/components/Referrals/TradersStats.js
+msgid "The owner of this Referral Code has set a custom discount of {currentTierDiscount}% instead of the standard {0}% for Tier {1}."
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 msgid "The pending borrow fee will be charged on this transaction."
 msgstr ""
@@ -3216,12 +3220,16 @@ msgid "This position was liquidated as the max leverage of 100x was exceeded."
 msgstr "这个头寸因超过100倍的最大杠杆而被清算了"
 
 #: src/components/Referrals/TradersStats.js
-msgid "Tier {0} ({1}% discount)"
-msgstr "第{0}级 ({1}% discount)"
+#~ msgid "Tier {0} ({1}% discount)"
+#~ msgstr "第{0}级 ({1}% discount)"
 
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Tier {0} ({1}% rebate)"
 msgstr "第{0}级 ({1}% discount)"
+
+#: src/components/Referrals/TradersStats.js
+msgid "Tier {0} ({currentTierDiscount}% discount)"
+msgstr ""
 
 #: src/components/Migration/Migration.js
 msgid "To Receive"
@@ -3901,8 +3909,12 @@ msgid "You will need to be on this page to accept the transfer, <0>click here</0
 msgstr "你需要在此页面上接受转让，<0>点击这里</0>，若需要，可复制链接至此页面"
 
 #: src/components/Referrals/TradersStats.js
-msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday"
-msgstr "你将收到{0}%的开盘费和成交费折扣，此折扣将在每周三空投到你账户"
+#~ msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday"
+#~ msgstr "你将收到{0}%的开盘费和成交费折扣，此折扣将在每周三空投到你账户"
+
+#: src/components/Referrals/TradersStats.js
+msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
+msgstr ""
 
 #: src/components/Exchange/OrdersList.js
 msgid "You will receive at least {0} {1} if this order is executed. The exact execution price may vary depending on fees at the time the order is executed."

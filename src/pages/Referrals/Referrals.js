@@ -10,7 +10,6 @@ import Loader from "components/Common/Loader";
 import Footer from "components/Footer/Footer";
 import { getPageTitle, isHashZero } from "lib/legacy";
 import {
-  encodeReferralCode,
   registerReferralCode,
   useCodeOwner,
   useReferrerDiscountShare,

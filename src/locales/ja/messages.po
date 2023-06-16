@@ -3154,6 +3154,10 @@ msgstr "マーク価格が変化したため、アドレスの横に表示され
 msgid "The order will only execute if the price conditions are met and there is sufficient liquidity"
 msgstr "価格の条件が満たされ、さらに十分な流動性が存在している場合にのみ注文は執行されます。"
 
+#: src/components/Referrals/TradersStats.js
+msgid "The owner of this Referral Code has set a custom discount of {currentTierDiscount}% instead of the standard {0}% for Tier {1}."
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 msgid "The pending borrow fee will be charged on this transaction."
 msgstr ""
@@ -3216,12 +3220,16 @@ msgid "This position was liquidated as the max leverage of 100x was exceeded."
 msgstr "このポジションは最大レバレッジ倍率(100倍)を超過したため清算されました。"
 
 #: src/components/Referrals/TradersStats.js
-msgid "Tier {0} ({1}% discount)"
-msgstr "ティア {0} ({1}%割引)"
+#~ msgid "Tier {0} ({1}% discount)"
+#~ msgstr "ティア {0} ({1}%割引)"
 
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Tier {0} ({1}% rebate)"
 msgstr "ティア {0} ({1}% 紹介報酬)"
+
+#: src/components/Referrals/TradersStats.js
+msgid "Tier {0} ({currentTierDiscount}% discount)"
+msgstr ""
 
 #: src/components/Migration/Migration.js
 msgid "To Receive"
@@ -3901,8 +3909,12 @@ msgid "You will need to be on this page to accept the transfer, <0>click here</0
 msgstr "移転を受け入れるにはこのページを開いておく必要があります。必要に応じて<0>ここをクリック</0>してこのページへのリンクをコピーしておいてください。"
 
 #: src/components/Referrals/TradersStats.js
-msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday"
-msgstr "あなたはオープン手数料とクローズ手数料で{0}%の割引を受けられますが、この割引分は毎週水曜日にあなたのアカウントにエアドロップされます。"
+#~ msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday"
+#~ msgstr "あなたはオープン手数料とクローズ手数料で{0}%の割引を受けられますが、この割引分は毎週水曜日にあなたのアカウントにエアドロップされます。"
+
+#: src/components/Referrals/TradersStats.js
+msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
+msgstr ""
 
 #: src/components/Exchange/OrdersList.js
 msgid "You will receive at least {0} {1} if this order is executed. The exact execution price may vary depending on fees at the time the order is executed."

@@ -3154,6 +3154,10 @@ msgstr "Le prix du marché a changé, envisagez d'augmenter votre marge autoris�
 msgid "The order will only execute if the price conditions are met and there is sufficient liquidity"
 msgstr "L'ordre ne sera exécuté que si les conditions de prix sont remplies et si la liquidité est suffisante."
 
+#: src/components/Referrals/TradersStats.js
+msgid "The owner of this Referral Code has set a custom discount of {currentTierDiscount}% instead of the standard {0}% for Tier {1}."
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 msgid "The pending borrow fee will be charged on this transaction."
 msgstr ""
@@ -3216,12 +3220,16 @@ msgid "This position was liquidated as the max leverage of 100x was exceeded."
 msgstr "Cette position a été liquidée car le levier maximal de 100x a été dépassé."
 
 #: src/components/Referrals/TradersStats.js
-msgid "Tier {0} ({1}% discount)"
-msgstr "Niveau {0} (réduction {1}%)"
+#~ msgid "Tier {0} ({1}% discount)"
+#~ msgstr "Niveau {0} (réduction {1}%)"
 
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Tier {0} ({1}% rebate)"
 msgstr "Niveau {0} (Remise {1}%)"
+
+#: src/components/Referrals/TradersStats.js
+msgid "Tier {0} ({currentTierDiscount}% discount)"
+msgstr ""
 
 #: src/components/Migration/Migration.js
 msgid "To Receive"
@@ -3901,8 +3909,12 @@ msgid "You will need to be on this page to accept the transfer, <0>click here</0
 msgstr "Vous devrez être sur cette page pour accepter le transfert, <0>cliquez ici</0> pour copier le lien vers cette page si nécessaire."
 
 #: src/components/Referrals/TradersStats.js
-msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday"
-msgstr "Vous recevrez une réduction de {0}% sur vos frais d'ouverture et de clôture, cette réduction sera airdroppée sur votre compte chaque mercredi."
+#~ msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday"
+#~ msgstr "Vous recevrez une réduction de {0}% sur vos frais d'ouverture et de clôture, cette réduction sera airdroppée sur votre compte chaque mercredi."
+
+#: src/components/Referrals/TradersStats.js
+msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
+msgstr ""
 
 #: src/components/Exchange/OrdersList.js
 msgid "You will receive at least {0} {1} if this order is executed. The exact execution price may vary depending on fees at the time the order is executed."
