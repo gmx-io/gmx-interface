@@ -1,4 +1,4 @@
-import { ARBITRUM, AVALANCHE, ETH_MAINNET } from "./chains";
+import { ARBITRUM, AVALANCHE, ETH_MAINNET, SEPOLIA_TESTNET } from "./chains";
 import { isDevelopment } from "./env";
 import { getSubgraphUrlKey } from "./localStorage";
 
@@ -18,6 +18,10 @@ const SUBGRAPH_URLS = {
 
   [ETH_MAINNET]: {
     chainLink: "https://api.thegraph.com/subgraphs/name/deividask/chainlink",
+  },
+
+  [SEPOLIA_TESTNET]: {
+    stats: "https://api.studio.thegraph.com/query/12759/gmx_vault/version/latest",
   },
 };
 
