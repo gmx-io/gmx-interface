@@ -1,7 +1,7 @@
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS, PRECISION } from "lib/legacy";
 
-import { BigNumber, BigNumberish } from "ethers";
+import { BigNumber, BigNumberish, ethers } from "ethers";
 import { formatAmount, formatUsd } from "lib/numbers";
 
 import cx from "classnames";
@@ -131,6 +131,40 @@ export function SyntheticsStats() {
                         renderContent={() => (
                           <>
                             <StatsTooltipRow label="Key" value={market.marketTokenAddress} showDollar={false} />
+                            <br />
+                            <StatsTooltipRow
+                              label="Virtual Market Id"
+                              value={
+                                <div className="debug-key">
+                                  {market.virtualMarketId !== ethers.constants.HashZero ? market.virtualMarketId : "-"}
+                                </div>
+                              }
+                              showDollar={false}
+                            />
+                            <br />
+                            <StatsTooltipRow
+                              label="Virtual Long Token Id"
+                              value={
+                                <div className="debug-key">
+                                  {market.virtualLongTokenId !== ethers.constants.HashZero
+                                    ? market.virtualLongTokenId
+                                    : "-"}
+                                </div>
+                              }
+                              showDollar={false}
+                            />
+                            <br />
+                            <StatsTooltipRow
+                              label="Virtual Short Token Id"
+                              value={
+                                <div className="debug-key">
+                                  {market.virtualShortTokenId !== ethers.constants.HashZero
+                                    ? market.virtualShortTokenId
+                                    : "-"}
+                                </div>
+                              }
+                              showDollar={false}
+                            />
                           </>
                         )}
                       />

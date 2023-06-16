@@ -30,6 +30,8 @@ import {
   swapImpactExponentFactorKey,
   swapImpactFactorKey,
   swapImpactPoolAmountKey,
+  virtualMarketIdKey,
+  virtualTokenIdKey,
 } from "config/dataStore";
 import { convertTokenAddress } from "config/tokens";
 import { useMulticall } from "lib/multicall";
@@ -310,6 +312,18 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
                 methodName: "getUint",
                 params: [openInterestInTokensKey(marketAddress, market.shortTokenAddress, false)],
               },
+              virtualMarketId: {
+                methodName: "getBytes32",
+                params: [virtualMarketIdKey(marketAddress)],
+              },
+              virtualLongTokenId: {
+                methodName: "getBytes32",
+                params: [virtualTokenIdKey(market.longTokenAddress)],
+              },
+              virtualShortTokenId: {
+                methodName: "getBytes32",
+                params: [virtualTokenIdKey(market.shortTokenAddress)],
+              },
             },
           },
         });
@@ -450,6 +464,10 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
           virtualPoolAmountForLongToken,
           virtualPoolAmountForShortToken,
           virtualInventoryForPositions,
+
+          virtualMarketId: dataStoreValues.virtualMarketId.returnValues[0],
+          virtualLongTokenId: dataStoreValues.virtualLongTokenId.returnValues[0],
+          virtualShortTokenId: dataStoreValues.virtualShortTokenId.returnValues[0],
         };
 
         return acc;

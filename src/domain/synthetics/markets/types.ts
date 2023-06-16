@@ -103,6 +103,10 @@ export type MarketInfo = Market & {
   virtualPoolAmountForLongToken: BigNumber;
   virtualPoolAmountForShortToken: BigNumber;
   virtualInventoryForPositions: BigNumber;
+
+  virtualMarketId?: string;
+  virtualLongTokenId?: string;
+  virtualShortTokenId?: string;
 };
 
 export type MarketsData = {
