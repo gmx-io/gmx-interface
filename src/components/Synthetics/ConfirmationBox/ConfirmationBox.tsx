@@ -900,9 +900,13 @@ export function ConfirmationBox(p: Props) {
             label={t`Liq. Price`}
             value={
               <ValueTransition
-                from={formatLiquidationPrice(p.existingPosition?.liquidationPrice, {
-                  displayDecimals: existingPriceDecimals,
-                })}
+                from={
+                  p.existingPosition
+                    ? formatLiquidationPrice(p.existingPosition?.liquidationPrice, {
+                        displayDecimals: existingPriceDecimals,
+                      })
+                    : undefined
+                }
                 to={
                   formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
                     displayDecimals: toTokenPriceDecimals,

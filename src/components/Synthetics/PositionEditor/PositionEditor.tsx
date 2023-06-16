@@ -477,7 +477,11 @@ export function PositionEditor(p: Props) {
                 value={
                   <ValueTransition
                     from={formatLiquidationPrice(position.liquidationPrice, { displayDecimals: indexPriceDecimals })}
-                    to={formatLiquidationPrice(nextLiqPrice, { displayDecimals: indexPriceDecimals })}
+                    to={
+                      collateralDeltaAmount?.gt(0)
+                        ? formatLiquidationPrice(nextLiqPrice, { displayDecimals: indexPriceDecimals })
+                        : undefined
+                    }
                   />
                 }
               />
