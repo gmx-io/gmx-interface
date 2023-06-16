@@ -4,10 +4,11 @@ import {
   MAX_REFERRAL_CODE_LENGTH,
   getTwitterIntentURL,
   REFERRAL_CODE_QUERY_PARAM,
+  BASIS_POINTS_DIVISOR,
 } from "lib/legacy";
 import { encodeReferralCode, getReferralCodeOwner } from "domain/referrals";
 import { ARBITRUM, AVALANCHE } from "config/chains";
-import { bigNumberify, formatAmount } from "lib/numbers";
+import { bigNumberify, formatAmount, trimZeroDecimals } from "lib/numbers";
 import { t } from "@lingui/macro";
 import { getRootUrl } from "lib/url";
 
@@ -68,6 +69,25 @@ export const tierDiscountInfo = {
   1: 10,
   2: 10,
 };
+
+export const totalRebateInfo = {
+  0: 10,
+  1: 20,
+  2: 25,
+};
+
+export function getDiscountSharePercentage(tierId, discountBps) {
+  if (!tierId) return;
+  if (!discountBps || discountBps?.eq(0)) return tierDiscountInfo[tierId];
+  const decimals = 4;
+
+  const totalDiscount = totalRebateInfo[tierId];
+  const discountPercentage = bigNumberify(totalDiscount)
+    .mul(discountBps)
+    .mul(Math.pow(10, decimals))
+    .div(BASIS_POINTS_DIVISOR);
+  return trimZeroDecimals(formatAmount(discountPercentage, decimals, 3, true));
+}
 
 function areObjectsWithSameKeys(obj1, obj2) {
   return Object.keys(obj1).every((key) => key in obj2);

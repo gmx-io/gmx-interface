@@ -6,7 +6,7 @@ import Modal from "../Modal/Modal";
 import Tooltip from "../Tooltip/Tooltip";
 import { shortenAddress } from "lib/legacy";
 import EmptyMessage from "./EmptyMessage";
-import { getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./referralsHelper";
+import { getDiscountSharePercentage, getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./referralsHelper";
 import { ReferralCodeForm } from "./JoinReferralCode";
 import { ARBITRUM, AVALANCHE, getExplorerUrl } from "config/chains";
 import { formatAmount } from "lib/numbers";
@@ -18,7 +18,15 @@ import Pagination from "components/Pagination/Pagination";
 import ReferralInfoCard from "./ReferralInfoCard";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
-function TradersStats({ referralsData, traderTier, chainId, userReferralCodeString, setPendingTxns, pendingTxns }) {
+function TradersStats({
+  referralsData,
+  traderTier,
+  chainId,
+  userReferralCodeString,
+  setPendingTxns,
+  pendingTxns,
+  discountShare,
+}) {
   const {
     [chainId]: currentReferralsData,
     [ARBITRUM]: arbitrumData,
@@ -30,8 +38,8 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
   const { getCurrentData, currentPage, setCurrentPage, pageCount } = usePagination(
     currentReferralsData?.discountDistributions
   );
-
   const currentDiscountDistributions = getCurrentData();
+  const currentTierDiscount = getDiscountSharePercentage(traderTier, discountShare);
 
   const open = () => setIsEditModalOpen(true);
   const close = () => setIsEditModalOpen(false);
@@ -47,13 +55,22 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
             {traderTier && (
               <div className="tier">
                 <Tooltip
-                  handle={t`Tier ${getTierIdDisplay(traderTier)} (${tierDiscountInfo[traderTier]}% discount)`}
+                  handle={t`Tier ${getTierIdDisplay(traderTier)} (${currentTierDiscount}% discount)`}
                   position="right-bottom"
+                  className={discountShare?.gt(0) ? "tier-discount-warning" : ""}
                   renderContent={() => (
                     <p className="text-white">
+                      {discountShare?.gt(0) && (
+                        <Trans>
+                          The owner of this Referral Code has set a custom discount of {currentTierDiscount}% instead of
+                          the standard {tierDiscountInfo[traderTier]}% for Tier {getTierIdDisplay(traderTier)}.
+                        </Trans>
+                      )}
+                      <br />
+                      <br />
                       <Trans>
                         You will receive a {tierDiscountInfo[traderTier]}% discount on your opening and closing fees,
-                        this discount will be airdropped to your account every Wednesday
+                        this discount will be airdropped to your account every Wednesday.
                       </Trans>
                     </p>
                   )}

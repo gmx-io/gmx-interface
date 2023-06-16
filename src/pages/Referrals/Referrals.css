@@ -77,11 +77,17 @@
   align-items: center;
   justify-content: center;
 }
+
 .active-referral-code .tier span {
   font-size: var(--font-sm);
   color: #a9a9b0;
   margin-right: 0.775rem;
 }
+
+.active-referral-code .tier-discount-warning span {
+  color: var(--warning-yellow);
+}
+
 .active-referral-code .tier a {
   text-decoration: none;
   font-size: 0;

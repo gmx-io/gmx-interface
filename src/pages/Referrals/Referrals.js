@@ -9,7 +9,14 @@ import Tab from "components/Tab/Tab";
 import Loader from "components/Common/Loader";
 import Footer from "components/Footer/Footer";
 import { getPageTitle, isHashZero } from "lib/legacy";
-import { registerReferralCode, useCodeOwner, useReferrerTier, useUserReferralCode } from "domain/referrals";
+import {
+  encodeReferralCode,
+  registerReferralCode,
+  useCodeOwner,
+  useReferrerDiscountShare,
+  useReferrerTier,
+  useUserReferralCode,
+} from "domain/referrals";
 import JoinReferralCode from "components/Referrals/JoinReferralCode";
 import AffiliatesStats from "components/Referrals/AffiliatesStats";
 import TradersStats from "components/Referrals/TradersStats";
@@ -45,6 +52,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   const { userReferralCode, userReferralCodeString } = useUserReferralCode(library, chainId, account);
   const { codeOwner } = useCodeOwner(library, chainId, account, userReferralCode);
   const { referrerTier: traderTier } = useReferrerTier(library, chainId, codeOwner);
+  const { discountShare } = useReferrerDiscountShare(library, chainId, codeOwner);
   const networkIcon = getIcon(chainId, "network");
 
   function handleCreateReferralCode(referralCode) {
@@ -103,6 +111,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
         setPendingTxns={setPendingTxns}
         pendingTxns={pendingTxns}
         traderTier={traderTier}
+        discountShare={discountShare}
       />
     );
   }
