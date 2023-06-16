@@ -3812,12 +3812,20 @@ msgid "Simulate your hedge strategy"
 msgstr "Simulate your hedge strategy"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Since your position's Collateral is {0} with a larger value than the Position Size, the Collateral value will increase to cover any negative PnL."
-msgstr "Since your position's Collateral is {0} with a larger value than the Position Size, the Collateral value will increase to cover any negative PnL."
+#~ msgid "Since your position's Collateral is {0} with a larger value than the Position Size, the Collateral value will increase to cover any negative PnL."
+#~ msgstr "Since your position's Collateral is {0} with a larger value than the Position Size, the Collateral value will increase to cover any negative PnL."
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Since your position's Collateral is {0} with a value very close or larger than the Position Size, the Collateral value will increase to cover any negative PnL."
-msgstr "Since your position's Collateral is {0} with a value very close or larger than the Position Size, the Collateral value will increase to cover any negative PnL."
+msgid "Since your position's Collateral is {0} with a value larger than the Position Size, the Collateral value will cover any negative PnL."
+msgstr "Since your position's Collateral is {0} with a value larger than the Position Size, the Collateral value will cover any negative PnL."
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Since your position's Collateral is {0} with a value larger than the Position Size, the Collateral value will increase to cover any negative PnL."
+msgstr "Since your position's Collateral is {0} with a value larger than the Position Size, the Collateral value will increase to cover any negative PnL."
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#~ msgid "Since your position's Collateral is {0} with a value very close or larger than the Position Size, the Collateral value will increase to cover any negative PnL."
+#~ msgstr "Since your position's Collateral is {0} with a value very close or larger than the Position Size, the Collateral value will increase to cover any negative PnL."
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Single"
