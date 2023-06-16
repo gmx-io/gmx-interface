@@ -413,7 +413,7 @@ export function OrderEditor(p: Props) {
                 value={formatUsd(acceptablePrice, { displayDecimals: indexPriceDecimals })}
               />
 
-              {existingPosition?.liquidationPrice && (
+              {existingPosition && (
                 <ExchangeInfoRow
                   label={t`Liq. Price`}
                   value={formatLiquidationPrice(existingPosition.liquidationPrice, {
