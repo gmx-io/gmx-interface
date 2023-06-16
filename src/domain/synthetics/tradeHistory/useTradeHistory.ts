@@ -81,7 +81,7 @@ export function useTradeHistory(
         }
       }`);
 
-      const { data } = await client!.query({ query });
+      const { data } = await client!.query({ query, fetchPolicy: "no-cache" });
 
       return data?.tradeActions;
     },

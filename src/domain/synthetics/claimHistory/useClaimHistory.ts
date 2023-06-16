@@ -67,7 +67,7 @@ export function useClaimCollateralHistory(
         }
       }`);
 
-      const { data } = await client!.query({ query });
+      const { data } = await client!.query({ query, fetchPolicy: "no-cache" });
 
       return data?.claimCollateralActions;
     },
