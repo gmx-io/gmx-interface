@@ -60,18 +60,21 @@ function TradersStats({
                   className={discountShare?.gt(0) ? "tier-discount-warning" : ""}
                   renderContent={() => (
                     <p className="text-white">
-                      {discountShare?.gt(0) && (
-                        <Trans>
-                          The owner of this Referral Code has set a custom discount of {currentTierDiscount}% instead of
-                          the standard {tierDiscountInfo[traderTier]}% for Tier {getTierIdDisplay(traderTier)}.
-                        </Trans>
-                      )}
-                      <br />
-                      <br />
                       <Trans>
-                        You will receive a {tierDiscountInfo[traderTier]}% discount on your opening and closing fees,
-                        this discount will be airdropped to your account every Wednesday.
+                        You will receive a {currentTierDiscount}% discount on your opening and closing fees, this
+                        discount will be airdropped to your account every Wednesday.
                       </Trans>
+
+                      {discountShare?.gt(0) && (
+                        <>
+                          <br />
+                          <br />
+                          <Trans>
+                            The owner of this Referral Code has set a custom discount of {currentTierDiscount}% instead
+                            of the standard {tierDiscountInfo[traderTier]}% for Tier {getTierIdDisplay(traderTier)}.
+                          </Trans>
+                        </>
+                      )}
                     </p>
                   )}
                 />

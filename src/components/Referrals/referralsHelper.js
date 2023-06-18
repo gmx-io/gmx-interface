@@ -14,6 +14,7 @@ import { getRootUrl } from "lib/url";
 
 export const REFERRAL_CODE_REGEX = /^\w+$/; // only number, string and underscore is allowed
 export const REGEX_VERIFY_BYTES32 = /^0x[0-9a-f]{64}$/;
+const MAX_DISCOUNT_SHARE = 10000; // 100%
 
 export function isRecentReferralCodeNotExpired(referralCodeInfo) {
   const REFERRAL_DATA_MAX_TIME = 60000 * 5; // 5 minutes
@@ -84,6 +85,20 @@ export function getDiscountSharePercentage(tierId, discountBps) {
   const totalDiscount = totalRebateInfo[tierId];
   const discountPercentage = bigNumberify(totalDiscount)
     .mul(discountBps)
+    .mul(Math.pow(10, decimals))
+    .div(BASIS_POINTS_DIVISOR);
+  return trimZeroDecimals(formatAmount(discountPercentage, decimals, 3, true));
+}
+
+export function getRebateSharePercentage(tierId, discountBps) {
+  console.log({ tierId, discountBps });
+  if (!tierId) return;
+  if (!discountBps || discountBps?.eq(0)) return tierRebateInfo[tierId];
+  const decimals = 4;
+
+  const totalDiscount = totalRebateInfo[tierId];
+  const discountPercentage = bigNumberify(totalDiscount)
+    .mul(MAX_DISCOUNT_SHARE - discountBps)
     .mul(Math.pow(10, decimals))
     .div(BASIS_POINTS_DIVISOR);
   return trimZeroDecimals(formatAmount(discountPercentage, decimals, 3, true));

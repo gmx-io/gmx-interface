@@ -10,12 +10,12 @@ import { shortenAddress } from "lib/legacy";
 import EmptyMessage from "./EmptyMessage";
 import ReferralInfoCard from "./ReferralInfoCard";
 import {
+  getRebateSharePercentage,
   getReferralCodeTradeUrl,
   getTierIdDisplay,
   getTwitterShareUrl,
   getUSDValue,
   isRecentReferralCodeNotExpired,
-  tierRebateInfo,
 } from "./referralsHelper";
 import { AffiliateCodeForm } from "./AddAffiliateCode";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
@@ -79,6 +79,8 @@ function AffiliatesStats({
 
   const currentAffiliatesData = getCurrentAffiliatesData();
   const tierId = affiliateTierInfo?.tierId;
+  const discountShare = affiliateTierInfo?.discountShare;
+  const currentRebatePercentage = getRebateSharePercentage(tierId, bigNumberify(discountShare | 0));
 
   return (
     <div className="referral-body-container">
@@ -166,7 +168,7 @@ function AffiliatesStats({
               <p className="title">
                 <Trans>Referral Codes</Trans>{" "}
                 <span className="sub-title">
-                  {affiliateTierInfo && t`Tier ${getTierIdDisplay(tierId)} (${tierRebateInfo[tierId]}% rebate)`}
+                  {affiliateTierInfo && t`Tier ${getTierIdDisplay(tierId)} (${currentRebatePercentage}% rebate)`}
                 </span>
               </p>
               <Button variant="secondary" onClick={open}>
