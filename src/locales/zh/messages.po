@@ -3224,8 +3224,12 @@ msgstr "这个头寸因超过100倍的最大杠杆而被清算了"
 #~ msgstr "第{0}级 ({1}% discount)"
 
 #: src/components/Referrals/AffiliatesStats.js
-msgid "Tier {0} ({1}% rebate)"
-msgstr "第{0}级 ({1}% discount)"
+#~ msgid "Tier {0} ({1}% rebate)"
+#~ msgstr "第{0}级 ({1}% discount)"
+
+#: src/components/Referrals/AffiliatesStats.js
+msgid "Tier {0} ({currentRebatePercentage}% rebate)"
+msgstr ""
 
 #: src/components/Referrals/TradersStats.js
 msgid "Tier {0} ({currentTierDiscount}% discount)"
@@ -3913,7 +3917,11 @@ msgstr "你需要在此页面上接受转让，<0>点击这里</0>，若需要�
 #~ msgstr "你将收到{0}%的开盘费和成交费折扣，此折扣将在每周三空投到你账户"
 
 #: src/components/Referrals/TradersStats.js
-msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
+#~ msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
+#~ msgstr ""
+
+#: src/components/Referrals/TradersStats.js
+msgid "You will receive a {currentTierDiscount}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
 msgstr ""
 
 #: src/components/Exchange/OrdersList.js

@@ -3224,8 +3224,12 @@ msgstr "Diese Position wurde liquidiert, da die maximale Hebelwirkung von 100x �
 #~ msgstr "Tier {0} ({1}% Discount)"
 
 #: src/components/Referrals/AffiliatesStats.js
-msgid "Tier {0} ({1}% rebate)"
-msgstr "Tier {0} ({1}% Rabatt)"
+#~ msgid "Tier {0} ({1}% rebate)"
+#~ msgstr "Tier {0} ({1}% Rabatt)"
+
+#: src/components/Referrals/AffiliatesStats.js
+msgid "Tier {0} ({currentRebatePercentage}% rebate)"
+msgstr ""
 
 #: src/components/Referrals/TradersStats.js
 msgid "Tier {0} ({currentTierDiscount}% discount)"
@@ -3913,7 +3917,11 @@ msgstr "Du musst auf dieser Seite sein, um den Transfer zu akzeptieren. <0>Klick
 #~ msgstr "Du erhältst einen Rabatt von {0}% auf deine Eröffnungs- und Schließungsgebühren, dieser Rabatt wird jeden Mittwoch auf dein Konto überwiesen"
 
 #: src/components/Referrals/TradersStats.js
-msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
+#~ msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
+#~ msgstr ""
+
+#: src/components/Referrals/TradersStats.js
+msgid "You will receive a {currentTierDiscount}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
 msgstr ""
 
 #: src/components/Exchange/OrdersList.js

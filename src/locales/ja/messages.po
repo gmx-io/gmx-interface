@@ -3224,8 +3224,12 @@ msgstr "このポジションは最大レバレッジ倍率(100倍)を超過し�
 #~ msgstr "ティア {0} ({1}%割引)"
 
 #: src/components/Referrals/AffiliatesStats.js
-msgid "Tier {0} ({1}% rebate)"
-msgstr "ティア {0} ({1}% 紹介報酬)"
+#~ msgid "Tier {0} ({1}% rebate)"
+#~ msgstr "ティア {0} ({1}% 紹介報酬)"
+
+#: src/components/Referrals/AffiliatesStats.js
+msgid "Tier {0} ({currentRebatePercentage}% rebate)"
+msgstr ""
 
 #: src/components/Referrals/TradersStats.js
 msgid "Tier {0} ({currentTierDiscount}% discount)"
@@ -3913,7 +3917,11 @@ msgstr "移転を受け入れるにはこのページを開いておく必要が
 #~ msgstr "あなたはオープン手数料とクローズ手数料で{0}%の割引を受けられますが、この割引分は毎週水曜日にあなたのアカウントにエアドロップされます。"
 
 #: src/components/Referrals/TradersStats.js
-msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
+#~ msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
+#~ msgstr ""
+
+#: src/components/Referrals/TradersStats.js
+msgid "You will receive a {currentTierDiscount}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
 msgstr ""
 
 #: src/components/Exchange/OrdersList.js

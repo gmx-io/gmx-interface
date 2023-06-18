@@ -3224,8 +3224,12 @@ msgstr "Эта позиция была ликвидирована, так как
 #~ msgstr "Уровень {0} (скидка {1}%)"
 
 #: src/components/Referrals/AffiliatesStats.js
-msgid "Tier {0} ({1}% rebate)"
-msgstr "Уровень {0} (рибейт {1}%)"
+#~ msgid "Tier {0} ({1}% rebate)"
+#~ msgstr "Уровень {0} (рибейт {1}%)"
+
+#: src/components/Referrals/AffiliatesStats.js
+msgid "Tier {0} ({currentRebatePercentage}% rebate)"
+msgstr ""
 
 #: src/components/Referrals/TradersStats.js
 msgid "Tier {0} ({currentTierDiscount}% discount)"
@@ -3913,7 +3917,11 @@ msgstr "Вам нужно будет находиться на этой стра
 #~ msgstr "Вы получите скидку {0}% на комиссию за открытие и закрытие счета, эта скидка будет перечисляться на ваш счет каждую Среду"
 
 #: src/components/Referrals/TradersStats.js
-msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
+#~ msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
+#~ msgstr ""
+
+#: src/components/Referrals/TradersStats.js
+msgid "You will receive a {currentTierDiscount}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
 msgstr ""
 
 #: src/components/Exchange/OrdersList.js

@@ -3224,8 +3224,12 @@ msgstr "Cette position a été liquidée car le levier maximal de 100x a été d
 #~ msgstr "Niveau {0} (réduction {1}%)"
 
 #: src/components/Referrals/AffiliatesStats.js
-msgid "Tier {0} ({1}% rebate)"
-msgstr "Niveau {0} (Remise {1}%)"
+#~ msgid "Tier {0} ({1}% rebate)"
+#~ msgstr "Niveau {0} (Remise {1}%)"
+
+#: src/components/Referrals/AffiliatesStats.js
+msgid "Tier {0} ({currentRebatePercentage}% rebate)"
+msgstr ""
 
 #: src/components/Referrals/TradersStats.js
 msgid "Tier {0} ({currentTierDiscount}% discount)"
@@ -3913,7 +3917,11 @@ msgstr "Vous devrez être sur cette page pour accepter le transfert, <0>cliquez 
 #~ msgstr "Vous recevrez une réduction de {0}% sur vos frais d'ouverture et de clôture, cette réduction sera airdroppée sur votre compte chaque mercredi."
 
 #: src/components/Referrals/TradersStats.js
-msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
+#~ msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
+#~ msgstr ""
+
+#: src/components/Referrals/TradersStats.js
+msgid "You will receive a {currentTierDiscount}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
 msgstr ""
 
 #: src/components/Exchange/OrdersList.js

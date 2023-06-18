@@ -91,7 +91,6 @@ export function getDiscountSharePercentage(tierId, discountBps) {
 }
 
 export function getRebateSharePercentage(tierId, discountBps) {
-  console.log({ tierId, discountBps });
   if (!tierId) return;
   if (!discountBps || discountBps?.eq(0)) return tierRebateInfo[tierId];
   const decimals = 4;

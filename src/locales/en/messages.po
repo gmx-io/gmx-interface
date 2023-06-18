@@ -3224,8 +3224,12 @@ msgstr "This position was liquidated as the max leverage of 100x was exceeded."
 #~ msgstr "Tier {0} ({1}% discount)"
 
 #: src/components/Referrals/AffiliatesStats.js
-msgid "Tier {0} ({1}% rebate)"
-msgstr "Tier {0} ({1}% rebate)"
+#~ msgid "Tier {0} ({1}% rebate)"
+#~ msgstr "Tier {0} ({1}% rebate)"
+
+#: src/components/Referrals/AffiliatesStats.js
+msgid "Tier {0} ({currentRebatePercentage}% rebate)"
+msgstr "Tier {0} ({currentRebatePercentage}% rebate)"
 
 #: src/components/Referrals/TradersStats.js
 msgid "Tier {0} ({currentTierDiscount}% discount)"
@@ -3913,8 +3917,12 @@ msgstr "You will need to be on this page to accept the transfer, <0>click here</
 #~ msgstr "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday"
 
 #: src/components/Referrals/TradersStats.js
-msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
-msgstr "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
+#~ msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
+#~ msgstr "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
+
+#: src/components/Referrals/TradersStats.js
+msgid "You will receive a {currentTierDiscount}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
+msgstr "You will receive a {currentTierDiscount}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
 
 #: src/components/Exchange/OrdersList.js
 msgid "You will receive at least {0} {1} if this order is executed. The exact execution price may vary depending on fees at the time the order is executed."
