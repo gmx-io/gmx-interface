@@ -3216,14 +3216,6 @@ msgstr ""
 msgid "This position was liquidated as the max leverage of 100x was exceeded."
 msgstr ""
 
-#: src/components/Referrals/TradersStats.js
-#~ msgid "Tier {0} ({1}% discount)"
-#~ msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.js
-#~ msgid "Tier {0} ({1}% rebate)"
-#~ msgstr ""
-
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Tier {0} ({currentRebatePercentage}% rebate)"
 msgstr ""
@@ -3908,14 +3900,6 @@ msgstr ""
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed."
 msgstr ""
-
-#: src/components/Referrals/TradersStats.js
-#~ msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday"
-#~ msgstr ""
-
-#: src/components/Referrals/TradersStats.js
-#~ msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
-#~ msgstr ""
 
 #: src/components/Referrals/TradersStats.js
 msgid "You will receive a {currentTierDiscount}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."

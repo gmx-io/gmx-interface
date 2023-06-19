@@ -3219,14 +3219,6 @@ msgstr "This order will forfeit a <0>profit</0> of {deltaStr}. <1/>"
 msgid "This position was liquidated as the max leverage of 100x was exceeded."
 msgstr "This position was liquidated as the max leverage of 100x was exceeded."
 
-#: src/components/Referrals/TradersStats.js
-#~ msgid "Tier {0} ({1}% discount)"
-#~ msgstr "Tier {0} ({1}% discount)"
-
-#: src/components/Referrals/AffiliatesStats.js
-#~ msgid "Tier {0} ({1}% rebate)"
-#~ msgstr "Tier {0} ({1}% rebate)"
-
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Tier {0} ({currentRebatePercentage}% rebate)"
 msgstr "Tier {0} ({currentRebatePercentage}% rebate)"
@@ -3911,14 +3903,6 @@ msgstr "You need to select {swapTokenSymbol} as the \"Pay\" token to use it for 
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed."
 msgstr "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed."
-
-#: src/components/Referrals/TradersStats.js
-#~ msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday"
-#~ msgstr "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday"
-
-#: src/components/Referrals/TradersStats.js
-#~ msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
-#~ msgstr "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
 
 #: src/components/Referrals/TradersStats.js
 msgid "You will receive a {currentTierDiscount}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."

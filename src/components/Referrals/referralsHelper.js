@@ -8,13 +8,18 @@ import {
 } from "lib/legacy";
 import { encodeReferralCode, getReferralCodeOwner } from "domain/referrals";
 import { ARBITRUM, AVALANCHE } from "config/chains";
-import { bigNumberify, formatAmount, trimZeroDecimals } from "lib/numbers";
+import { bigNumberify, formatAmount } from "lib/numbers";
 import { t } from "@lingui/macro";
 import { getRootUrl } from "lib/url";
 
 export const REFERRAL_CODE_REGEX = /^\w+$/; // only number, string and underscore is allowed
 export const REGEX_VERIFY_BYTES32 = /^0x[0-9a-f]{64}$/;
 const MAX_DISCOUNT_SHARE = 10000; // 100%
+
+export function removeTrailingZeros(amount) {
+  const regex = /\.?0+$/;
+  return amount.replace(regex, "");
+}
 
 export function isRecentReferralCodeNotExpired(referralCodeInfo) {
   const REFERRAL_DATA_MAX_TIME = 60000 * 5; // 5 minutes
@@ -77,30 +82,31 @@ export const totalRebateInfo = {
   2: 25,
 };
 
-export function getDiscountSharePercentage(tierId, discountBps) {
+export function getDiscountSharePercentage(tierId, discountShare) {
   if (!tierId) return;
-  if (!discountBps || discountBps?.eq(0)) return tierDiscountInfo[tierId];
+  if (!discountShare || discountShare?.eq(0)) return tierDiscountInfo[tierId];
   const decimals = 4;
 
   const totalDiscount = totalRebateInfo[tierId];
   const discountPercentage = bigNumberify(totalDiscount)
-    .mul(discountBps)
+    .mul(discountShare)
     .mul(Math.pow(10, decimals))
     .div(BASIS_POINTS_DIVISOR);
-  return trimZeroDecimals(formatAmount(discountPercentage, decimals, 3, true));
+
+  return removeTrailingZeros(formatAmount(discountPercentage, decimals, 3, true));
 }
 
-export function getRebateSharePercentage(tierId, discountBps) {
+export function getRebateSharePercentage(tierId, discountShare) {
   if (!tierId) return;
-  if (!discountBps || discountBps?.eq(0)) return tierRebateInfo[tierId];
+  if (!discountShare || discountShare?.eq(0)) return tierRebateInfo[tierId];
   const decimals = 4;
 
   const totalDiscount = totalRebateInfo[tierId];
   const discountPercentage = bigNumberify(totalDiscount)
-    .mul(MAX_DISCOUNT_SHARE - discountBps)
+    .mul(MAX_DISCOUNT_SHARE - discountShare)
     .mul(Math.pow(10, decimals))
     .div(BASIS_POINTS_DIVISOR);
-  return trimZeroDecimals(formatAmount(discountPercentage, decimals, 3, true));
+  return removeTrailingZeros(formatAmount(discountPercentage, decimals, 3, true));
 }
 
 function areObjectsWithSameKeys(obj1, obj2) {

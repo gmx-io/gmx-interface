@@ -3219,14 +3219,6 @@ msgstr ""
 msgid "This position was liquidated as the max leverage of 100x was exceeded."
 msgstr "Diese Position wurde liquidiert, da die maximale Hebelwirkung von 100x überschritten wurde."
 
-#: src/components/Referrals/TradersStats.js
-#~ msgid "Tier {0} ({1}% discount)"
-#~ msgstr "Tier {0} ({1}% Discount)"
-
-#: src/components/Referrals/AffiliatesStats.js
-#~ msgid "Tier {0} ({1}% rebate)"
-#~ msgstr "Tier {0} ({1}% Rabatt)"
-
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Tier {0} ({currentRebatePercentage}% rebate)"
 msgstr ""
@@ -3911,14 +3903,6 @@ msgstr "Du musst {swapTokenSymbol} als \"Bezahlen\"-Token auswählen, um es als 
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed."
 msgstr "Du musst auf dieser Seite sein, um den Transfer zu akzeptieren. <0>Klicke hier</0>, um den Link zu dieser Seite zu kopieren, falls nötig."
-
-#: src/components/Referrals/TradersStats.js
-#~ msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday"
-#~ msgstr "Du erhältst einen Rabatt von {0}% auf deine Eröffnungs- und Schließungsgebühren, dieser Rabatt wird jeden Mittwoch auf dein Konto überwiesen"
-
-#: src/components/Referrals/TradersStats.js
-#~ msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
-#~ msgstr ""
 
 #: src/components/Referrals/TradersStats.js
 msgid "You will receive a {currentTierDiscount}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."

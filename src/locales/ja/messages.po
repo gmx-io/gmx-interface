@@ -3219,14 +3219,6 @@ msgstr ""
 msgid "This position was liquidated as the max leverage of 100x was exceeded."
 msgstr "このポジションは最大レバレッジ倍率(100倍)を超過したため清算されました。"
 
-#: src/components/Referrals/TradersStats.js
-#~ msgid "Tier {0} ({1}% discount)"
-#~ msgstr "ティア {0} ({1}%割引)"
-
-#: src/components/Referrals/AffiliatesStats.js
-#~ msgid "Tier {0} ({1}% rebate)"
-#~ msgstr "ティア {0} ({1}% 紹介報酬)"
-
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Tier {0} ({currentRebatePercentage}% rebate)"
 msgstr ""
@@ -3911,14 +3903,6 @@ msgstr "この取引を始めるには担保用に{swapTokenSymbol}を\"支払�
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed."
 msgstr "移転を受け入れるにはこのページを開いておく必要があります。必要に応じて<0>ここをクリック</0>してこのページへのリンクをコピーしておいてください。"
-
-#: src/components/Referrals/TradersStats.js
-#~ msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday"
-#~ msgstr "あなたはオープン手数料とクローズ手数料で{0}%の割引を受けられますが、この割引分は毎週水曜日にあなたのアカウントにエアドロップされます。"
-
-#: src/components/Referrals/TradersStats.js
-#~ msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
-#~ msgstr ""
 
 #: src/components/Referrals/TradersStats.js
 msgid "You will receive a {currentTierDiscount}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."

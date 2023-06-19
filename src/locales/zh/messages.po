@@ -3219,14 +3219,6 @@ msgstr ""
 msgid "This position was liquidated as the max leverage of 100x was exceeded."
 msgstr "这个头寸因超过100倍的最大杠杆而被清算了"
 
-#: src/components/Referrals/TradersStats.js
-#~ msgid "Tier {0} ({1}% discount)"
-#~ msgstr "第{0}级 ({1}% discount)"
-
-#: src/components/Referrals/AffiliatesStats.js
-#~ msgid "Tier {0} ({1}% rebate)"
-#~ msgstr "第{0}级 ({1}% discount)"
-
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Tier {0} ({currentRebatePercentage}% rebate)"
 msgstr ""
@@ -3911,14 +3903,6 @@ msgstr "你需要选择 {swapTokenSymbol} 作为 \"Pay\" 代币 以将它作为�
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed."
 msgstr "你需要在此页面上接受转让，<0>点击这里</0>，若需要，可复制链接至此页面"
-
-#: src/components/Referrals/TradersStats.js
-#~ msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday"
-#~ msgstr "你将收到{0}%的开盘费和成交费折扣，此折扣将在每周三空投到你账户"
-
-#: src/components/Referrals/TradersStats.js
-#~ msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
-#~ msgstr ""
 
 #: src/components/Referrals/TradersStats.js
 msgid "You will receive a {currentTierDiscount}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
