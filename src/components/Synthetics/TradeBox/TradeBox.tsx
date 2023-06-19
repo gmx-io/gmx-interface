@@ -87,6 +87,7 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { CollateralSelectorRow } from "./CollateralSelectorRow";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import "./TradeBox.scss";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 
 export type Props = {
   tradeType: TradeType;
@@ -840,9 +841,9 @@ export function TradeBox(p: Props) {
     return (
       <>
         <BuyInputSection
-          topLeftLabel={t`Pay:`}
+          topLeftLabel={t`Pay`}
           topLeftValue={formatUsd(isIncrease ? increaseAmounts?.initialCollateralUsd : fromUsd)}
-          topRightLabel={t`Balance:`}
+          topRightLabel={t`Balance`}
           topRightValue={formatTokenAmount(fromToken?.balance, fromToken?.decimals)}
           inputValue={fromTokenInputValue}
           onInputValueChange={(e) => {
@@ -880,9 +881,9 @@ export function TradeBox(p: Props) {
 
         {isSwap && (
           <BuyInputSection
-            topLeftLabel={t`Receive:`}
+            topLeftLabel={t`Receive`}
             topLeftValue={formatUsd(swapAmounts?.usdOut)}
-            topRightLabel={t`Balance:`}
+            topRightLabel={t`Balance`}
             topRightValue={formatTokenAmount(toToken?.balance, toToken?.decimals)}
             inputValue={toTokenInputValue}
             onInputValueChange={(e) => {
@@ -912,7 +913,7 @@ export function TradeBox(p: Props) {
           <BuyInputSection
             topLeftLabel={`${tradeTypeLabels[tradeType!]}:`}
             topLeftValue={formatUsd(increaseAmounts?.sizeDeltaUsd, { fallbackToZero: true })}
-            topRightLabel={t`Leverage:`}
+            topRightLabel={t`Leverage`}
             topRightValue={formatLeverage(isLeverageEnabled ? leverage : increaseAmounts?.estimatedLeverage) || "-"}
             inputValue={toTokenInputValue}
             onInputValueChange={(e) => {
@@ -961,7 +962,7 @@ export function TradeBox(p: Props) {
     return (
       <BuyInputSection
         topLeftLabel={t`Price`}
-        topRightLabel={t`Mark:`}
+        topRightLabel={t`Mark`}
         topRightValue={formatUsd(markPrice, {
           displayDecimals: toToken?.priceDecimals,
         })}
@@ -1006,13 +1007,16 @@ export function TradeBox(p: Props) {
       <>
         {isIncrease && (
           <>
-            <div className="Exchange-leverage-slider-settings">
-              <Checkbox isChecked={isLeverageEnabled} setIsChecked={setIsLeverageEnabled}>
-                <span className="muted">
-                  <Trans>Leverage slider</Trans>
-                </span>
-              </Checkbox>
-            </div>
+            <ToggleSwitch
+              className="Exchange-leverage-slider-settings"
+              isChecked={isLeverageEnabled ?? false}
+              setIsChecked={setIsLeverageEnabled}
+            >
+              <span className="muted">
+                <Trans>Leverage slider</Trans>
+              </span>
+            </ToggleSwitch>
+
             {isLeverageEnabled && (
               <LeverageSlider value={leverageOption} onChange={setLeverageOption} isPositive={isLong} />
             )}
@@ -1336,7 +1340,7 @@ export function TradeBox(p: Props) {
         <div className="Exchange-swap-button-container">
           <Button
             variant="primary-action"
-            className="w-100"
+            className="w-full"
             onClick={onSubmit}
             disabled={Boolean(error) && !shouldDisableValidation}
           >

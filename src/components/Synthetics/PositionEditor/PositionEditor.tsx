@@ -417,7 +417,7 @@ export function PositionEditor(p: Props) {
             <BuyInputSection
               topLeftLabel={operationLabels[operation] + `:`}
               topLeftValue={formatUsd(collateralDeltaUsd)}
-              topRightLabel={t`Max` + `:`}
+              topRightLabel={t`Max`}
               topRightValue={
                 isDeposit
                   ? formatTokenAmount(collateralToken?.balance, collateralToken?.decimals)
@@ -539,7 +539,7 @@ export function PositionEditor(p: Props) {
             )}
 
             <div className="Exchange-swap-button-container Confirmation-box-row">
-              <Button className="w-100" variant="primary-action" onClick={onSubmit} disabled={Boolean(error)}>
+              <Button className="w-full" variant="primary-action" onClick={onSubmit} disabled={Boolean(error)}>
                 {error || operationLabels[operation]}
               </Button>
             </div>

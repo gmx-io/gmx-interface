@@ -128,7 +128,7 @@ export function ClaimModal(p: Props) {
     >
       <div className="ConfirmationBox-main text-center">Claim {formatUsd(totalClaimableFundingUsd)}</div>
       <div className="ClaimModal-content">{markets.map(renderMarketSection)}</div>
-      <Button className="w-100" variant="primary-action" onClick={onSubmit} disabled={isSubmitting}>
+      <Button className="w-full" variant="primary-action" onClick={onSubmit} disabled={isSubmitting}>
         {isSubmitting ? t`Claiming...` : t`Claim`}
       </Button>
     </Modal>

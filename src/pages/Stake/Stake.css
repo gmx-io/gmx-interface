@@ -24,9 +24,6 @@
 }
 
 @media (max-width: 800px) {
-  .StakeModal .Modal-content {
-    width: auto;
-  }
   .Stake-cards {
     grid-template-columns: 1fr;
   }

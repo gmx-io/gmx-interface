@@ -310,3 +310,7 @@ export function getBasisPoints(numerator: BigNumber, denominator: BigNumber) {
 export function basisPointsToFloat(basisPoints: BigNumber) {
   return basisPoints.mul(PRECISION).div(BASIS_POINTS_DIVISOR);
 }
+
+export function roundToTwoDecimals(n) {
+  return Math.round(n * 100) / 100;
+}

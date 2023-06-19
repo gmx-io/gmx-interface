@@ -180,8 +180,9 @@ const CONTRACTS = {
     SyntheticsReader: AddressZero,
     SyntheticsReferralStorage: AddressZero,
     SyntheticsRouter: AddressZero,
-    Timelock: "0x8A68a039D555599Fd745f9343e8dE20C9eaFca75",
+    Synthetics: "0x8A68a039D555599Fd745f9343e8dE20C9eaFca75",
 
+    Timelock: "0xaa50bD556CE0Fe61D4A57718BA43177a3aB6A597",
     Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
   },
   [AVALANCHE]: {
@@ -235,8 +236,9 @@ const CONTRACTS = {
     SyntheticsReader: AddressZero,
     SyntheticsReferralStorage: AddressZero,
     SyntheticsRouter: AddressZero,
-    Timelock: "0x8Ea12810271a0fD70bBEB8614B8735621abC3718",
+    SyntheticsTimelock: "0x8Ea12810271a0fD70bBEB8614B8735621abC3718",
 
+    Timelock: "0x8A68a039D555599Fd745f9343e8dE20C9eaFca75",
     Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
   },
 

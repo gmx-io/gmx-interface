@@ -33,7 +33,7 @@ export default function ChainsStatsTooltipRow({
         </span>
         <span className="amount">
           {showDollar && "$"}
-          {shouldFormat ? formatAmount(arbitrumValue, decimalsForConversion, 0, true) : arbitrumValue?.toString()}
+          {formatAmount(arbitrumValue, shouldFormat ? decimalsForConversion : 0, 0, true)}
           {!showDollar && symbol && " " + symbol}
         </span>
       </p>
@@ -43,7 +43,7 @@ export default function ChainsStatsTooltipRow({
         </span>
         <span className="amount">
           {showDollar && "$"}
-          {shouldFormat ? formatAmount(avaxValue, decimalsForConversion, 0, true) : avaxValue?.toString()}
+          {formatAmount(avaxValue, shouldFormat ? decimalsForConversion : 0, 0, true)}
           {!showDollar && symbol && " " + symbol}
         </span>
       </p>
@@ -54,7 +54,7 @@ export default function ChainsStatsTooltipRow({
         </span>
         <span className="amount">
           {showDollar && "$"}
-          {shouldFormat ? formatAmount(total, decimalsForConversion, 0, true) : total?.toString()}
+          {formatAmount(total, shouldFormat ? decimalsForConversion : 0, 0, true)}
           {!showDollar && symbol && " " + symbol}
         </span>
       </p>

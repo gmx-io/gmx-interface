@@ -1256,7 +1256,7 @@ export function ConfirmationBox(p: Props) {
         <div className="Confirmation-box-row">
           <Button
             variant="primary-action"
-            className="w-100"
+            className="w-full"
             onClick={onSubmit}
             disabled={submitButtonState.disabled && !shouldDisableValidation}
           >

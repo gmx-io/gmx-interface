@@ -764,7 +764,7 @@ export function GmSwapBox(p: Props) {
         <BuyInputSection
           topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
           topLeftValue={formatUsd(firstTokenUsd)}
-          topRightLabel={t`Balance:`}
+          topRightLabel={t`Balance`}
           topRightValue={formatTokenAmount(firstToken?.balance, firstToken?.decimals)}
           showMaxButton={isDeposit && firstToken?.balance?.gt(0) && !firstTokenAmount?.eq(firstToken.balance)}
           inputValue={firstTokenInputValue}
@@ -802,7 +802,7 @@ export function GmSwapBox(p: Props) {
           <BuyInputSection
             topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
             topLeftValue={formatUsd(secondTokenUsd)}
-            topRightLabel={t`Balance:`}
+            topRightLabel={t`Balance`}
             topRightValue={formatTokenAmount(secondToken?.balance, secondToken?.decimals)}
             inputValue={secondTokenInputValue}
             showMaxButton={isDeposit && secondToken?.balance?.gt(0) && !secondTokenAmount?.eq(secondToken.balance)}
@@ -832,7 +832,7 @@ export function GmSwapBox(p: Props) {
         <BuyInputSection
           topLeftLabel={isWithdrawal ? t`Pay` : t`Receive`}
           topLeftValue={formatUsd(marketTokenUsd)}
-          topRightLabel={t`Balance:`}
+          topRightLabel={t`Balance`}
           topRightValue={formatTokenAmount(marketToken?.balance, marketToken?.decimals)}
           showMaxButton={isWithdrawal && marketToken?.balance?.gt(0) && !marketTokenAmount?.eq(marketToken.balance)}
           inputValue={marketTokenInputValue}
@@ -907,7 +907,7 @@ export function GmSwapBox(p: Props) {
 
       <div className="Exchange-swap-button-container">
         <Button
-          className="w-100"
+          className="w-full"
           variant="primary-action"
           onClick={submitButtonState.onClick}
           disabled={submitButtonState.disabled}

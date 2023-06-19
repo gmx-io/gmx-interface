@@ -31,7 +31,7 @@ msgstr "24小时数量"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "<0/>Profit price: {0} ${1}. This rule applies for the next {2}, until {3}."
-msgstr "利润价格： {0} ${1}此规则生效从{2}至{3}"
+msgstr ""
 
 #: src/App/App.js
 msgid "<0>Install Coinbase Wallet</0> to start using GMX."
@@ -260,8 +260,6 @@ msgstr "申领后，esGMX代币将在7天内空投到您所选网络的账户中
 msgid "Agree"
 msgstr "同意"
 
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Allow up to 1% slippage"
@@ -287,11 +285,13 @@ msgstr "其他选项链接可在<0>docs</0>.<1/><2/>点选同意接受<3>相关�
 msgid "Alternatively, you can select a different \"Collateral In\" token."
 msgstr "或者,您可选择\"Collateral In\" 代币"
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Amount"
 msgstr "数量"
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Amount of traders you referred."
 msgstr "你所介绍的交易者数量"
@@ -395,6 +395,7 @@ msgstr "管理中资产。 GMX质押（所有链）+GLP池（{链名}）."
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "Available"
 msgstr "可用的"
 
@@ -422,10 +423,6 @@ msgstr "可提取的GLP数量. 资金未被当前开仓所使用."
 msgid "Available on your preferred network"
 msgstr "可在您的首选网络上使用"
 
-#: src/components/Glp/GlpSwap.js
-msgid "Available:"
-msgstr "可用的"
-
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
@@ -437,23 +434,25 @@ msgid "Avalanche FUJI APR:"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Balance"
 msgstr "余额"
 
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-msgid "Balance:"
-msgstr "余额"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Balance: {0}"
-msgstr "余额: {0}"
+#~ msgid "Balance:"
+#~ msgstr "余额"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"
@@ -510,7 +509,7 @@ msgid "Buy AVAX directly to Avalanche or transfer it there."
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy ETH directly to Arbitrum or transfer it there."
+msgid "Buy ETH directly on Arbitrum or transfer it there."
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -519,6 +518,10 @@ msgstr ""
 #: src/pages/Stake/StakeV2.js
 msgid "Buy GLP"
 msgstr "购买GLP"
+
+#: src/pages/Buy/Buy.js
+msgid "Buy GLP or GMX"
+msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
@@ -538,15 +541,15 @@ msgid "Buy GMX from Uniswap (make sure to select Arbitrum):"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX from a Decentralized Exchange"
-msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from centralized exchanges:"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from centralized services"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "Buy GMX from decentralized exchanges"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
@@ -773,10 +776,6 @@ msgstr ""
 msgid "Claimable Rebates"
 msgstr ""
 
-#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
-#~ msgid "Claimable funding"
-#~ msgstr ""
-
 #: src/domain/synthetics/markets/claimCollateralTxn.ts
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Claiming failed"
@@ -823,11 +822,11 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close failed."
-msgstr "收盘失败"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close submitted!"
-msgstr "收盘送出"
+msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Close to execution price"
@@ -835,7 +834,7 @@ msgstr "关闭执行价格"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close without profit"
-msgstr "收盘时无利润"
+msgstr ""
 
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Close {0} {1}"
@@ -843,15 +842,15 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close {longOrShortText} {0}"
-msgstr "关闭{longOrShortText} {0}"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close: {convertedAmountFormatted} {0}"
-msgstr "关闭: {convertedAmountFormatted} {0}"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Closing..."
-msgstr "收盘中"
+msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Code already taken"
@@ -866,6 +865,8 @@ msgid "Coinbase Wallet not detected."
 msgstr "无法侦测Coinbase钱包"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionsList.js
@@ -1085,6 +1086,7 @@ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/AddAffiliateCode.js
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/pages/Stake/StakeV1.js
@@ -1102,6 +1104,7 @@ msgstr ""
 msgid "Create Order"
 msgstr "创建指令"
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Create Referral Code"
 msgstr "创建推荐代码"
@@ -1188,6 +1191,7 @@ msgid "DEX Aggregator"
 msgstr "DEX 聚合器"
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/pages/Dashboard/DashboardV2.js
 msgid "Dashboard"
 msgstr "仪表板"
 
@@ -1199,6 +1203,7 @@ msgstr "GMX推荐统计数据仪表板"
 msgid "Dashboards"
 msgstr "仪表板"
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Date"
@@ -1224,6 +1229,10 @@ msgstr "去中心化选项协议"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Decentralized Options Strategies"
 msgstr "去中心化选策略"
+
+#: src/lib/legacy.ts
+msgid "Decentralized Perpetual Exchange | GMX"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Decentralized Trading Protocol"
@@ -1283,10 +1292,6 @@ msgstr "存取"
 #: src/components/Exchange/FeesTooltip.tsx
 msgid "Deposit Fee"
 msgstr ""
-
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-#~ msgid "Deposit amount is insufficient to cover pending Fees. Collateral will be reduced after this deposit."
-#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
 msgid "Deposit cancelled"
@@ -1388,12 +1393,17 @@ msgstr "下载"
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Earn"
 msgstr "赚取"
 
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Ecosystem"
 msgstr "生态系统"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Ecosystem Projects"
+msgstr ""
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -1944,6 +1954,10 @@ msgstr "GMX质押奖励更新和详解"
 msgid "GMX transfers not yet enabled"
 msgstr "尚未启用GMX转账功能"
 
+#: src/components/Common/SEO.js
+msgid "GMX | Decentralized Perpetual Exchange"
+msgstr ""
+
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Generate Referral Code"
 msgstr "生成推荐代码"
@@ -2083,7 +2097,7 @@ msgstr "初始抵押品"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Insufficient Available Liquidity to swap to {0}:"
-msgstr "可用流动资金不足，无法换成{0}。"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Insufficient GLP balance"
@@ -2189,6 +2203,10 @@ msgid "Invalid token indexToken: \"{0}\" collateralToken: \"{1}\""
 msgstr "无效代币索引代币: \"{0}\" 抵押品代币: \"{1}\\"
 
 #: src/pages/Jobs/Jobs.js
+msgid "Job Openings"
+msgstr ""
+
+#: src/pages/Jobs/Jobs.js
 msgid "Job openings at GMX."
 msgstr "GMX的职位空缺"
 
@@ -2204,7 +2222,7 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Keep leverage at {0}x"
-msgstr "将杠杆率保持在{0}x"
+msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Language"
@@ -2236,7 +2254,7 @@ msgstr "至少为手续费留{0}{1}"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Leftover collateral below 5 USD"
-msgstr "剩余低于5美元以下的抵押品"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Leftover collateral below {0} USD"
@@ -2244,12 +2262,11 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Leftover position below 10 USD"
-msgstr "剩余低于5美元以下的头寸"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -2257,6 +2274,7 @@ msgstr "剩余低于5美元以下的头寸"
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Leverage"
@@ -2271,8 +2289,8 @@ msgid "Leverage slider"
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-msgid "Leverage:"
-msgstr ""
+#~ msgid "Leverage:"
+#~ msgstr ""
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -2348,10 +2366,6 @@ msgstr ""
 msgid "Liq. Price"
 msgstr "流动资金价格"
 
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Liq. Price with max Price Impact"
-#~ msgstr ""
-
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Liq. {0} {longOrShortText}"
 msgstr ""
@@ -2380,10 +2394,6 @@ msgstr ""
 msgid "Liquidation Fee"
 msgstr ""
 
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Liquidation Price is influenced by Fees, Collateral value, and Price Impact."
-#~ msgstr ""
-
 #: src/components/Exchange/PositionEditor.js
 msgid "Liquidation price would cross mark price."
 msgstr ""
@@ -2393,6 +2403,7 @@ msgstr ""
 msgid "Liquidity data not loaded"
 msgstr "未加载流动资金数据"
 
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/ClaimHistory/ClaimHistory.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
@@ -2497,7 +2508,6 @@ msgstr ""
 #: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
 #: src/components/InputSection/InputSection.js
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "MAX"
@@ -2506,6 +2516,12 @@ msgstr "最大值"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "MEV Optimizer"
 msgstr "MEV优化器"
+
+#: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "Mark"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
@@ -2536,12 +2552,11 @@ msgstr "标价"
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-msgid "Mark:"
-msgstr ""
+#~ msgid "Mark:"
+#~ msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
 msgid "Mark: {0}"
 msgstr "标识: {0}"
 
@@ -2584,6 +2599,9 @@ msgstr ""
 
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Max"
 msgstr ""
 
@@ -2615,7 +2633,7 @@ msgstr "超出最高金额"
 #: src/components/Exchange/PositionSeller.js
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max close amount exceeded"
-msgstr "超出最大成交金额"
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account:"
@@ -2683,9 +2701,6 @@ msgstr ""
 #: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "Max: {0}"
 msgstr "最高: {0}"
 
@@ -2761,10 +2776,6 @@ msgstr "所需的最低抵押品"
 #: src/components/Exchange/PositionEditor.js
 msgid "Min residual collateral: 10 USD"
 msgstr ""
-
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "Min residual collateral: {0} USD"
-#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -2882,6 +2893,7 @@ msgstr "目前在GMX没有未结头寸"
 msgid "No position"
 msgstr "没有头寸"
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "No rebates distribution history yet."
@@ -2910,6 +2922,8 @@ msgstr "只允许使用字母、数字和下底线"
 msgid "Open Fee"
 msgstr ""
 
+#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Home/Home.js
 msgid "Open Interest"
 msgstr "开启利息"
@@ -2982,11 +2996,11 @@ msgstr "订单无法执行，剩余头寸小于5美元"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Order created!"
-msgstr "订单已创建!"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Order creation failed."
-msgstr "订单创建失败"
+msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 msgid "Order executed"
@@ -3011,7 +3025,7 @@ msgstr "订单规模大于头寸，只有在头寸增加的情况下才会执行
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Order submitted!"
-msgstr "提交订单"
+msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
 msgid "Order update failed."
@@ -3070,6 +3084,7 @@ msgid "PRICE"
 msgstr "价钱"
 
 #: src/pages/PageNotFound/PageNotFound.js
+#: src/pages/PageNotFound/PageNotFound.js
 msgid "Page not found"
 msgstr "没有找到页面"
 
@@ -3109,6 +3124,7 @@ msgstr "合作伙伴与整合"
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Pay"
 msgstr "支付"
 
@@ -3118,13 +3134,8 @@ msgid "Pay Amount"
 msgstr "支付金额"
 
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Pay:"
 msgstr ""
-
-#: src/components/Exchange/SwapBox.js
-msgid "Pay: {0} USD"
-msgstr "支付: {0} USD"
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
@@ -3182,10 +3193,6 @@ msgstr "池子"
 msgid "Pool Amount"
 msgstr "池子数量"
 
-#: src/components/Synthetics/MarketStats/MarketStats.tsx
-#~ msgid "Pool amount"
-#~ msgstr ""
-
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "Pools Value"
 msgstr ""
@@ -3205,7 +3212,7 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Position close disabled, pending {0} upgrade"
-msgstr "关闭仓位功能失效，等待{0}升级"
+msgstr ""
 
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
@@ -3219,10 +3226,6 @@ msgstr "仓位({0})"
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Positions{0}"
 msgstr ""
-
-#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
-#~ msgid "Positive Funding Fees for a position are claimable once an action is taken on it."
-#~ msgstr ""
 
 #: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
 msgid "Positive Funding Fees for a position become claimable after the position is increased, decreased or closed."
@@ -3342,7 +3345,7 @@ msgstr "盈利"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Profit price: {0} ${1}. This rule applies for the next {2}, until {3}."
-msgstr "盈利价格：{0}美元{1}此规则适用于接下来的{2}，直到{3}"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
@@ -3382,6 +3385,7 @@ msgstr "购买保险"
 msgid "Read more"
 msgstr "了解更多"
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates"
@@ -3392,6 +3396,7 @@ msgstr ""
 msgid "Rebates Distribution History"
 msgstr "返利分配历史"
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates are airdropped weekly."
 msgstr "回扣将在每周空投一次"
@@ -3400,9 +3405,18 @@ msgstr "回扣将在每周空投一次"
 msgid "Rebates earned by this account as a trader."
 msgstr "该账户作为交易商所赚取的回扣"
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates earned by this account as an affiliate."
 msgstr "该账户作为合作公司赚取的回扣"
+
+#: src/components/Referrals/AffiliatesStats.js
+msgid "Rebates on Arbitrum"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js
+msgid "Rebates on Avalanche"
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates on V1"
@@ -3428,11 +3442,11 @@ msgstr ""
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Receive"
 msgstr "收取"
 
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Receive:"
 msgstr ""
@@ -3460,8 +3474,9 @@ msgstr "降低清算风险"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Reducing the position at the current price will forfeit a <0>pending profit</0> of {deltaStr}. <1/>"
-msgstr "以当前价格减仓将放弃{deltaStr}的<0>未决利润</0><1/>"
+msgstr ""
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Code"
 msgstr "推荐代码"
@@ -3470,6 +3485,7 @@ msgstr "推荐代码"
 msgid "Referral Code does not exist"
 msgstr "推荐代码不存在"
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Codes"
 msgstr "推荐代码"
@@ -3479,6 +3495,7 @@ msgid "Referral Discount"
 msgstr ""
 
 #: src/components/Footer/constants.ts
+#: src/pages/ReferralTerms/ReferralTerms.js
 msgid "Referral Terms"
 msgstr "推荐条款"
 
@@ -3507,6 +3524,7 @@ msgid "Referral code updated!"
 msgstr "推荐代码已更新"
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/pages/Referrals/Referrals.tsx
 msgid "Referrals"
 msgstr "推荐人"
 
@@ -3537,7 +3555,7 @@ msgstr "要求提款从 {0} {longOrShortText}"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
-msgstr "要求减少{0} {longOrShortText} 由 {sizeDeltaUsd} USD"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Requested deposit of {0} {1} into {2} {longOrShortText}."
@@ -3578,6 +3596,14 @@ msgstr "GMX和GLP的收益计算器"
 #: src/pages/Stake/StakeV2.js
 msgid "Rewards"
 msgstr "奖励"
+
+#: src/components/Referrals/AffiliatesStats.js
+msgid "Rewards Distribution History"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js
+msgid "Rewards are airdropped weekly."
+msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Same as current active code"
@@ -3812,20 +3838,12 @@ msgid "Simulate your hedge strategy"
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Since your position's Collateral is {0} with a larger value than the Position Size, the Collateral value will increase to cover any negative PnL."
-#~ msgstr ""
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Since your position's Collateral is {0} with a value larger than the Position Size, the Collateral value will cover any negative PnL."
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Since your position's Collateral is {0} with a value larger than the Position Size, the Collateral value will increase to cover any negative PnL."
 msgstr ""
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Since your position's Collateral is {0} with a value very close or larger than the Position Size, the Collateral value will increase to cover any negative PnL."
-#~ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Single"
@@ -4157,6 +4175,7 @@ msgid "Telegram bot for Open Interest on GMX"
 msgstr "GMX上未平仓合约的电报机器人"
 
 #: src/components/Footer/constants.ts
+#: src/pages/TermsAndConditions/TermsAndConditions.js
 msgid "Terms and Conditions"
 msgstr "条款及细则"
 
@@ -4171,14 +4190,6 @@ msgstr "提升的年利率来自于你所投注的乘数点"
 #: src/pages/Stake/StakeV1.js
 msgid "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
 msgstr "Gambit协议处于测试阶段，请在参与之前阅读<0>质押细节</0>"
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "The actual Liquidation Price depends on the Price Impact in the Market and the Collateral Price ({0})."
-#~ msgstr ""
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "The actual Liquidation Price depends on the Price Impact in the Market."
-#~ msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
@@ -4269,17 +4280,19 @@ msgstr "当价格条件得到满足时，可能没有足够的流动性来执行
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met."
 msgstr ""
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "This code has been taken by someone else on {0}, you will not receive rebates from traders using this code on {1}."
 msgstr "这个代码在{0}上已被别人取用，你将不会获得从{1}上使用此代码的交易者回扣"
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
 msgstr "此代码尚未在{0}上注册，你将不会收到回扣<0/><1/>切换你的网络，在{1}上创建此代码"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "This order will forfeit a <0>profit</0> of {deltaStr}. <1/>"
-msgstr "这个订单将放弃<0>利润</0>的{deltaStr}. <1/>"
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "This position was liquidated as the max leverage of 100x was exceeded."
@@ -4297,6 +4310,7 @@ msgstr ""
 msgid "Tier {0} ({1}% discount)"
 msgstr "第{0}级 ({1}% discount)"
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Tier {0} ({1}% rebate)"
 msgstr "第{0}级 ({1}% discount)"
@@ -4325,6 +4339,9 @@ msgstr "为了减少费用，请选择不同的资产来接收"
 msgid "Tokens"
 msgstr "代币"
 
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -4355,6 +4372,7 @@ msgstr "费用总额"
 msgid "Total Fees Distributed"
 msgstr "分配费用总额"
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total Rebates"
 msgstr "返利总额"
@@ -4395,10 +4413,13 @@ msgstr "总供应量"
 msgid "Total Trading Volume"
 msgstr "总交易量"
 
+#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Home/Home.js
 msgid "Total Users"
 msgstr "用户总数"
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -4434,19 +4455,27 @@ msgstr ""
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
 msgstr "在GMX上进行交易，赢取<0>$250.000</0> 美元的奖金! 活动至11月30h, <1>点击这里</1> 了解更多"
 
+#: src/components/Common/SEO.js
+msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet on Arbitrum and Avalanche."
+msgstr ""
+
 #: src/pages/Referrals/Referrals.tsx
 msgid "Traders"
 msgstr ""
 
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Traders Referred"
 msgstr "推荐的交易商"
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Traders Referred on Arbitrum"
 msgstr ""
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Traders Referred on Avalanche"
 msgstr ""
@@ -4460,9 +4489,18 @@ msgstr ""
 msgid "Trades"
 msgstr "交易"
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Trading Volume"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js
+msgid "Trading Volume on Arbitrum"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js
+msgid "Trading Volume on Avalanche"
 msgstr ""
 
 #: src/components/Exchange/UsefulLinks.tsx
@@ -4479,6 +4517,7 @@ msgstr "转移中..."
 msgid "Transacting with a depegged stable coin is subject to spreads reflecting the worse of current market price or $1.00, with transactions involving multiple stablecoins may have multiple spreads."
 msgstr ""
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Transaction"
@@ -4559,11 +4598,11 @@ msgstr ""
 #: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Trigger Price"
-msgstr "触发价格"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Trigger order disabled, pending {0} upgrade"
-msgstr "触发指令被禁用，等待{0}升级"
+msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 msgid "Trigger order for"
@@ -4729,10 +4768,6 @@ msgid "Utilization"
 msgstr "使用情况"
 
 #: src/components/Referrals/AffiliatesStats.tsx
-#~ msgid "V1 AIRDROP"
-#~ msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.tsx
 msgid "V1 Airdrop"
 msgstr ""
 
@@ -4790,10 +4825,6 @@ msgstr ""
 #: src/components/Referrals/TradersStats.tsx
 msgid "V2 Avalanche Fuji"
 msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#~ msgid "V2 CLAIM"
-#~ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "V2 Claim"
@@ -4885,6 +4916,7 @@ msgstr ""
 msgid "Volume traded by this account with an active referral code."
 msgstr "该账户的交易量与活跃的推荐代码相关"
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Volume traded by your referred traders."
 msgstr "您推荐交易者的交易量"
@@ -5002,10 +5034,6 @@ msgstr "由{1} {longOrShortText}提领{0} USD"
 msgid "Withdrawal"
 msgstr ""
 
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-#~ msgid "Withdrawal amount is insufficient to cover pending Fees. They are deducted from Collateral."
-#~ msgstr ""
-
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
 msgid "Withdrawal cancelled"
 msgstr ""
@@ -5086,12 +5114,11 @@ msgstr ""
 msgid "You can change the \"Collateral In\" token above to find lower fees"
 msgstr "您可更改\"Collateral In\"上述的代币来找寻较低的费用 "
 
-#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "You can change this in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are volatile."
-msgstr "你可以在页面右上方的设置中进行更改<0/><1/>注意，如果价格波动较大，允许的滑点较低，例如小于0.5%，可能会导致指令失败"
+msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "You can check your claim history <0>here</0>."
@@ -5100,6 +5127,10 @@ msgstr "你可以在这里查看你的提领历史<0></0>"
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
 msgstr "目前，您最多可以授权{0}个esGMX代币，比例为{1}个esGMX。 {stakingToken}对1esGMX"
+
+#: src/components/Exchange/ConfirmationBox.js
+msgid "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are volatile."
+msgstr ""
 
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 msgid "You can get a {0} better execution price in the {1} market pool.<0>Switch to {2} market pool.</0>"
@@ -5131,7 +5162,7 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "You have an active order to decrease {longOrShortText} {sizeInToken} {0} (${1}) at {prefix} {2}"
-msgstr "您有一个有效的限价订单，{longOrShortText} {sizeInToken} {0} (${1}) 以{2}美元的价格减少"
+msgstr ""
 
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 msgid "You have an existing order in the {0} market pool. <0>Switch to {1} market pool.</0>"
@@ -5336,7 +5367,7 @@ msgstr "{0}低于其目标重量。<0/><1/>获取较低的费用，以<2>用{1}�
 
 #: src/components/Exchange/SwapBox.js
 msgid "{0} is required for collateral."
-msgstr "{0}是需要抵押品的<<<<<<< HEAD"
+msgstr "{0}是需要抵押品的"
 
 #: src/components/Glp/GlpSwap.js
 msgid "{0} pool exceeded, try different token"
