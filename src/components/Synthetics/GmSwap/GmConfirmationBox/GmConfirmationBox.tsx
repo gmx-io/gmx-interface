@@ -352,7 +352,7 @@ export function GmConfirmationBox({
 
             <div className="Confirmation-box-row">
               <Button
-                className="w-100"
+                className="w-full"
                 variant="primary-action"
                 onClick={submitButtonState.onClick}
                 disabled={submitButtonState.disabled}

@@ -147,14 +147,14 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
                     <td className="GmList-actions">
                       <Button
                         className="GmList-action"
-                        variant="semi-clear"
+                        variant="secondary"
                         to={`/pools?operation=${Operation.Deposit}&market=${token.address}`}
                       >
                         <Trans>Buy</Trans>
                       </Button>
                       <Button
                         className="GmList-action GmList-last-action"
-                        variant="semi-clear"
+                        variant="secondary"
                         to={`/pools?operation=${Operation.Withdrawal}&market=${token.address}`}
                       >
                         <Trans>Sell</Trans>
@@ -242,11 +242,11 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
                     </div>
                     <div className="App-card-divider"></div>
                     <div className="App-card-buttons m-0">
-                      <Button variant="semi-clear" to={`/pools?operation=${Operation.Deposit}&market=${token.address}`}>
+                      <Button variant="secondary" to={`/pools?operation=${Operation.Deposit}&market=${token.address}`}>
                         <Trans>Buy</Trans>
                       </Button>
                       <Button
-                        variant="semi-clear"
+                        variant="secondary"
                         to={`/pools?operation=${Operation.Withdrawal}&market=${token.address}`}
                       >
                         <Trans>Sell</Trans>

@@ -1,5 +1,5 @@
 import React from "react";
-import { Trans } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import Footer from "components/Footer/Footer";
 import "./Buy.css";
 import TokenCard from "components/TokenCard/TokenCard";
@@ -9,7 +9,7 @@ import { getPageTitle } from "lib/legacy";
 
 export default function BuyGMXGLP() {
   return (
-    <SEO title={getPageTitle("Buy GLP or GMX")}>
+    <SEO title={getPageTitle(t`Buy GLP or GMX`)}>
       <div className="BuyGMXGLP page-layout">
         <div className="BuyGMXGLP-container default-container">
           <div className="section-title-block">

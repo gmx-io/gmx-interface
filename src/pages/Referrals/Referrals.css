@@ -178,7 +178,6 @@
 .info-card {
   min-height: 13rem;
   background: var(--dark-blue-bg);
-  border: 1px solid #1e2136;
   border-radius: 0.4rem;
   display: flex;
   justify-content: center;

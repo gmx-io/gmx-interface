@@ -1,7 +1,7 @@
-import { Trans } from "@lingui/macro";
+import "./BuyInputSection.scss";
+import React, { useRef, ReactNode, ChangeEvent } from "react";
 import cx from "classnames";
-import { ChangeEvent, ReactNode } from "react";
-import "./BuyInputSection.css";
+import { Trans } from "@lingui/macro";
 
 type Props = {
   topLeftLabel: string;
@@ -36,15 +36,24 @@ export default function BuyInputSection(props: Props) {
     children,
   } = props;
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  function handleBoxClick() {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }
+
   return (
-    <div className="Exchange-swap-section buy-input">
-      <div className="Exchange-swap-section-top">
-        <div className="muted">
-          {topLeftLabel} {topLeftValue}
+    <div className="Exchange-swap-section buy-input" onClick={handleBoxClick}>
+      <div className="buy-input-top-row">
+        <div className="text-gray">
+          {topLeftLabel}
+          {topLeftValue && `: ${topLeftValue}`}
         </div>
         <div className={cx("align-right", { clickable: onClickTopRightLabel })} onClick={onClickTopRightLabel}>
-          <span className="Exchange-swap-label muted">{topRightLabel}</span>&nbsp;
-          <span className="Exchange-swap-balance">{topRightValue}</span>
+          <span className="text-gray">{topRightLabel}</span>
+          {topRightValue && <span className="Exchange-swap-label">:&nbsp;{topRightValue}</span>}
         </div>
       </div>
       <div className="Exchange-swap-section-bottom">
@@ -53,20 +62,21 @@ export default function BuyInputSection(props: Props) {
             <input
               type="number"
               min="0"
-              step="any"
               placeholder="0.0"
+              step="any"
               className="Exchange-swap-input"
               value={inputValue}
               onChange={onInputValueChange}
+              ref={inputRef}
               onFocus={onFocus}
               onBlur={onBlur}
             />
           )}
           {staticInput && <div className="InputSection-static-input">{inputValue}</div>}
           {showMaxButton && (
-            <div className="Exchange-swap-max" onClick={onClickMax}>
+            <button type="button" className="Exchange-swap-max" onClick={onClickMax}>
               <Trans>MAX</Trans>
-            </div>
+            </button>
           )}
         </div>
         <div className="PositionEditor-token-symbol">{children}</div>

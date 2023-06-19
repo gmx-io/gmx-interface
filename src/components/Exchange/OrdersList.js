@@ -161,9 +161,23 @@ export default function OrdersList(props) {
           order.shouldUnwrap,
           nativeTokenAddress
         );
-
+        const collateralUSD = getUsd(order.amountIn, fromTokenInfo.address, true, infoTokens);
         const markExchangeRate = getExchangeRate(fromTokenInfo, toTokenInfo);
         const orderId = `${order.type}-${order.index}`;
+        const titleText = (
+          <>
+            <Trans>Swap</Trans>{" "}
+            {formatAmount(
+              order.amountIn,
+              fromTokenInfo.decimals,
+              fromTokenInfo.isStable || fromTokenInfo.isUsdg ? 2 : 4,
+              true
+            )}{" "}
+            {fromTokenInfo.symbol} for{" "}
+            {formatAmount(order.minOut, toTokenInfo.decimals, toTokenInfo.isStable || toTokenInfo.isUsdg ? 2 : 4, true)}{" "}
+            {toTokenInfo.symbol}
+          </>
+        );
 
         return (
           <tr className="Exchange-list-item" key={orderId}>
@@ -189,21 +203,24 @@ export default function OrdersList(props) {
               <Trans>Limit</Trans>
             </td>
             <td>
-              <Trans>Swap</Trans>{" "}
-              {formatAmount(
-                order.amountIn,
-                fromTokenInfo.decimals,
-                fromTokenInfo.isStable || fromTokenInfo.isUsdg ? 2 : 4,
-                true
-              )}{" "}
-              {fromTokenInfo.symbol} for{" "}
-              {formatAmount(
-                order.minOut,
-                toTokenInfo.decimals,
-                toTokenInfo.isStable || toTokenInfo.isUsdg ? 2 : 4,
-                true
-              )}{" "}
-              {toTokenInfo.symbol}
+              <Tooltip
+                handle={titleText}
+                position="right-bottom"
+                renderContent={() => {
+                  return (
+                    <StatsTooltipRow
+                      label={t`Collateral`}
+                      value={`${formatAmount(collateralUSD, USD_DECIMALS, 2, true)} (${formatAmount(
+                        order.amountIn,
+                        fromTokenInfo.decimals,
+                        4,
+                        true
+                      )}
+                      ${fromTokenInfo.baseSymbol || fromTokenInfo.symbol})`}
+                    />
+                  );
+                }}
+              />
             </td>
             <td>
               {!hideActions ? (
@@ -367,17 +384,19 @@ export default function OrdersList(props) {
           nativeTokenAddress
         );
         const markExchangeRate = getExchangeRate(fromTokenInfo, toTokenInfo);
-
+        const collateralUSD = getUsd(order.amountIn, fromTokenInfo.address, true, infoTokens);
+        const titleText = (
+          <>
+            Swap {formatAmount(order.amountIn, fromTokenInfo.decimals, fromTokenInfo.isStable ? 2 : 4, true)}{" "}
+            {fromTokenInfo.symbol} for{" "}
+            {formatAmount(order.minOut, toTokenInfo.decimals, toTokenInfo.isStable ? 2 : 4, true)} {toTokenInfo.symbol}
+          </>
+        );
         return (
           <div key={`${order.type}-${order.index}`} className="App-card">
-            <div className="App-card-title-small">
-              Swap {formatAmount(order.amountIn, fromTokenInfo.decimals, fromTokenInfo.isStable ? 2 : 4, true)}{" "}
-              {fromTokenInfo.symbol} for{" "}
-              {formatAmount(order.minOut, toTokenInfo.decimals, toTokenInfo.isStable ? 2 : 4, true)}{" "}
-              {toTokenInfo.symbol}
-            </div>
-            <div className="App-card-divider"></div>
             <div className="App-card-content">
+              <div className="App-card-title-small">{titleText}</div>
+              <div className="App-card-divider"></div>
               <div className="App-card-row">
                 <div className="label">
                   <Trans>Price</Trans>
@@ -405,6 +424,18 @@ export default function OrdersList(props) {
                 </div>
                 <div>{getExchangeRateDisplay(markExchangeRate, fromTokenInfo, toTokenInfo)}</div>
               </div>
+              <div className="App-card-row">
+                <div className="label">
+                  <Trans>Collateral</Trans>
+                </div>
+                <div>
+                  ${formatAmount(collateralUSD, USD_DECIMALS, 2, true)} (
+                  {formatAmount(order.amountIn, fromTokenInfo.decimals, 4, true)}{" "}
+                  {fromTokenInfo.baseSymbol || fromTokenInfo.symbol})
+                </div>
+              </div>
+            </div>
+            <div>
               {!hideActions && (
                 <>
                   <div className="App-card-divider"></div>
@@ -437,21 +468,21 @@ export default function OrdersList(props) {
 
       return (
         <div key={`${order.isLong}-${order.type}-${order.index}`} className="App-card">
-          <div className="App-card-title-small">
-            {error ? (
-              <Tooltip
-                className="order-error"
-                handle={orderTitle}
-                position="left-bottom"
-                handleClassName="plain"
-                renderContent={() => <span className="negative">{error}</span>}
-              />
-            ) : (
-              orderTitle
-            )}
-          </div>
-          <div className="App-card-divider"></div>
           <div className="App-card-content">
+            <div className="App-card-title-small">
+              {error ? (
+                <Tooltip
+                  className="order-error"
+                  handle={orderTitle}
+                  position="left-bottom"
+                  handleClassName="plain"
+                  renderContent={() => <span className="negative">{error}</span>}
+                />
+              ) : (
+                orderTitle
+              )}
+            </div>
+            <div className="App-card-divider"></div>
             <div className="App-card-row">
               <div className="label">
                 <Trans>Price</Trans>
@@ -491,6 +522,8 @@ export default function OrdersList(props) {
                 </div>
               </div>
             )}
+          </div>
+          <div>
             {!hideActions && (
               <>
                 <div className="App-card-divider"></div>
@@ -519,14 +552,12 @@ export default function OrdersList(props) {
           {renderLargeList()}
         </tbody>
       </table>
-      <div className="Exchange-list Orders small">
-        {(!orders || orders.length === 0) && (
-          <div className="Exchange-empty-positions-list-note App-card">
-            <Trans>No open orders</Trans>
-          </div>
-        )}
-        {renderSmallList()}
-      </div>
+      {(!orders || orders.length === 0) && (
+        <div className="Exchange-empty-positions-list-note small App-card">
+          <Trans>No open orders</Trans>
+        </div>
+      )}
+      <div className="Exchange-list Orders small">{renderSmallList()}</div>
       {editingOrder && (
         <OrderEditor
           account={account}

@@ -48,6 +48,7 @@ import { arrayURLFetcher } from "lib/fetcher";
 import { getIsSyntheticsSupported } from "config/features";
 import { MarketsList } from "components/Synthetics/MarketsList/MarketsList";
 import { useMedia } from "react-use";
+import useUniqueUsers from "domain/stats/useUniqueUsers";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;
@@ -58,14 +59,18 @@ function getPositionStats(positionStats) {
   }
   return positionStats.reduce(
     (acc, cv, i) => {
+      cv.openInterest = bigNumberify(cv.totalLongPositionSizes).add(cv.totalShortPositionSizes).toString();
       acc.totalLongPositionSizes = acc.totalLongPositionSizes.add(cv.totalLongPositionSizes);
       acc.totalShortPositionSizes = acc.totalShortPositionSizes.add(cv.totalShortPositionSizes);
+      acc.totalOpenInterest = acc.totalOpenInterest.add(cv.openInterest);
+
       acc[ACTIVE_CHAIN_IDS[i]] = cv;
       return acc;
     },
     {
       totalLongPositionSizes: bigNumberify(0),
       totalShortPositionSizes: bigNumberify(0),
+      totalOpenInterest: bigNumberify(0),
     }
   );
 }
@@ -97,9 +102,9 @@ export default function DashboardV2() {
 
   const isMobile = useMedia("(max-width: 1200px)");
 
+  const uniqueUsers = useUniqueUsers();
   const chainName = getChainName(chainId);
   const currentIcons = getIcons(chainId);
-
   const { data: positionStats } = useSWR(
     ACTIVE_CHAIN_IDS.map((chainId) => getServerUrl(chainId, "/position_stats")),
     {
@@ -468,7 +473,7 @@ export default function DashboardV2() {
   };
 
   return (
-    <SEO title={getPageTitle("Dashboard")}>
+    <SEO title={getPageTitle(t`Dashboard`)}>
       <div className="default-container DashboardV2 page-layout">
         <div className="section-title-block">
           <div className="section-title-icon"></div>
@@ -544,6 +549,26 @@ export default function DashboardV2() {
                           arbitrumValue={currentVolumeInfo?.[ARBITRUM]}
                           avaxValue={currentVolumeInfo?.[AVALANCHE]}
                           total={currentVolumeInfo?.total}
+                        />
+                      )}
+                    />
+                  </div>
+                </div>
+                <div className="App-card-row">
+                  <div className="label">
+                    <Trans>Open Interest</Trans>
+                  </div>
+                  <div>
+                    <TooltipComponent
+                      position="right-bottom"
+                      className="nowrap"
+                      handle={`$${formatAmount(positionStatsInfo?.[chainId]?.openInterest, USD_DECIMALS, 0, true)}`}
+                      renderContent={() => (
+                        <ChainsStatsTooltipRow
+                          title={t`Open Interest`}
+                          arbitrumValue={positionStatsInfo?.[ARBITRUM].openInterest}
+                          avaxValue={positionStatsInfo?.[AVALANCHE].openInterest}
+                          total={positionStatsInfo?.totalOpenInterest}
                         />
                       )}
                     />
@@ -665,6 +690,28 @@ export default function DashboardV2() {
                           arbitrumValue={totalVolume?.[ARBITRUM]}
                           avaxValue={totalVolume?.[AVALANCHE]}
                           total={totalVolume?.total}
+                        />
+                      )}
+                    />
+                  </div>
+                </div>
+                <div className="App-card-row">
+                  <div className="label">
+                    <Trans>Total Users</Trans>
+                  </div>
+                  <div>
+                    <TooltipComponent
+                      position="right-bottom"
+                      className="nowrap"
+                      handle={formatAmount(uniqueUsers?.[chainId], 0, 0, true)}
+                      renderContent={() => (
+                        <ChainsStatsTooltipRow
+                          title={t`Total Users`}
+                          arbitrumValue={uniqueUsers?.[ARBITRUM]}
+                          avaxValue={uniqueUsers?.[AVALANCHE]}
+                          total={uniqueUsers?.total}
+                          showDollar={false}
+                          shouldFormat={false}
                         />
                       )}
                     />

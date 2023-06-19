@@ -372,7 +372,7 @@ export function OrderEditor(p: Props) {
 
             <BuyInputSection
               topLeftLabel={t`Price`}
-              topRightLabel={t`Mark:`}
+              topRightLabel={t`Mark`}
               topRightValue={formatUsd(markPrice, { displayDecimals: indexPriceDecimals })}
               onClickTopRightLabel={() =>
                 setTriggerPriceInputValue(formatAmount(markPrice, USD_DECIMALS, indexPriceDecimals || 2))
@@ -438,7 +438,7 @@ export function OrderEditor(p: Props) {
 
         <div className="Exchange-swap-button-container">
           <Button
-            className="w-100"
+            className="w-full"
             variant="primary-action"
             onClick={submitButtonState.onClick}
             disabled={submitButtonState.disabled}
