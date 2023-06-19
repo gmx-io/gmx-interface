@@ -16,6 +16,7 @@ import { switchNetwork } from "lib/wallets";
 import { useChainId } from "lib/chains";
 import { isDevelopment } from "config/env";
 import { getIcon } from "config/icons";
+import { addUser, checkUserExists } from "supabase/supabaseFns";
 
 type Props = {
   openSettings: () => void;
@@ -75,10 +76,23 @@ export function AppHeaderUser({
   const showConnectionOptions = !isHomeSite();
 
   useEffect(() => {
-    if (active) {
+    if (active && account) {
+      // check that user is active and account is successfully signed up
+      const checkAndCreateUser = async () => {
+        const userExists = await checkUserExists(account);
+
+        if (!userExists) {
+          // Add user to the database
+          const newUser = await addUser(account);
+          // eslint-disable-next-line no-console
+          console.log("New user added:", newUser);
+        }
+      };
+
+      checkAndCreateUser();
       setWalletModalVisible(false);
     }
-  }, [active, setWalletModalVisible]);
+  }, [account, active, setWalletModalVisible]);
 
   const onNetworkSelect = useCallback(
     (option) => {

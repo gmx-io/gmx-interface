@@ -78,7 +78,6 @@ export function activateInjectedProvider(providerName: string) {
         break;
     }
   }
-
   if (provider) {
     ethereum?.setSelectedProvider?.(provider);
   }
