@@ -298,7 +298,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Wrapped Ethereum",
       symbol: "WETH",
       decimals: 18,
-      address: "0xEe01c0CD76354C383B8c7B4e65EA88D00B06f36f",
+      address: "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
       isWrapped: true,
       baseSymbol: "ETH",
       imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
