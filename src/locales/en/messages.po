@@ -206,6 +206,12 @@ msgstr "Accrued Negative Funding Fee"
 msgid "Accrued Positive Funding Fee"
 msgstr "Accrued Positive Funding Fee"
 
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+msgid "Acknowledge high Price Impact"
+msgstr "Acknowledge high Price Impact"
+
 #: src/pages/Actions/Actions.js
 msgid "Actions"
 msgstr "Actions"
@@ -1987,8 +1993,8 @@ msgstr "High USDG Slippage, Long Anyway"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-msgid "I am aware of the high Price Impact"
-msgstr "I am aware of the high Price Impact"
+#~ msgid "I am aware of the high Price Impact"
+#~ msgstr "I am aware of the high Price Impact"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -2818,8 +2824,8 @@ msgstr "NFT Wallet"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-msgid "Need to accept Price Impact"
-msgstr "Need to accept Price Impact"
+#~ msgid "Need to accept Price Impact"
+#~ msgstr "Need to accept Price Impact"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Negative Funding Fees are settled against the collateral automatically and will influence the liquidation price. Positive Funding Fees can be claimed under Claimable Funding after realizing any action on the position."
@@ -3278,6 +3284,12 @@ msgstr "Price"
 #: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 msgid "Price Impact"
 msgstr "Price Impact"
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+msgid "Price Impact not yet acknowledged"
+msgstr "Price Impact not yet acknowledged"
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js

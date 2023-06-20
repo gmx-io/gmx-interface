@@ -206,6 +206,12 @@ msgstr ""
 msgid "Accrued Positive Funding Fee"
 msgstr ""
 
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+msgid "Acknowledge high Price Impact"
+msgstr ""
+
 #: src/pages/Actions/Actions.js
 msgid "Actions"
 msgstr "指令"
@@ -1987,8 +1993,8 @@ msgstr "高 USDG 滑点，继续做多"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-msgid "I am aware of the high Price Impact"
-msgstr ""
+#~ msgid "I am aware of the high Price Impact"
+#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -2818,8 +2824,8 @@ msgstr "NFT钱包"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-msgid "Need to accept Price Impact"
-msgstr ""
+#~ msgid "Need to accept Price Impact"
+#~ msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Negative Funding Fees are settled against the collateral automatically and will influence the liquidation price. Positive Funding Fees can be claimed under Claimable Funding after realizing any action on the position."
@@ -3277,6 +3283,12 @@ msgstr "价钱"
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 msgid "Price Impact"
+msgstr ""
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+msgid "Price Impact not yet acknowledged"
 msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
