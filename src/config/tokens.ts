@@ -493,7 +493,7 @@ export const ICONLINKS = {
     },
     USDC: {
       coingecko: "https://www.coingecko.com/en/coins/usd-coin",
-      arbitrum: "https://arbiscan.io/address/0xff970a61a04b1ca14834a43f5de4533ebddb5cc8",
+      arbitrum: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
     "USDC.e": {
       coingecko: "https://www.coingecko.com/en/coins/usd-coin",
