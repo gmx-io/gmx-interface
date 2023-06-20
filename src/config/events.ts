@@ -32,4 +32,13 @@ export const appEventsData: EventData[] = [
   //   ],
   // },
   // {
+  {
+    id: "contracts-updade-2",
+    title: "New V2 contracts deployment",
+    isActive: true,
+    validTill: "30 Jun 2023, 23:00",
+    bodyText:
+      "New testnet V2 contracts will be deployed this week on the Avalanche Fuji and Arbitrum Goerli, testnet data will be cleared. For testnet users, positions can be closed beforehand if it is desired to retain the testnet funds in the position collateral.",
+    buttons: [],
+  },
 ];
