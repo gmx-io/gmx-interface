@@ -192,7 +192,7 @@ export function GmConfirmationBox({
 
     if (isHighPriceImpact && !isHighPriceImpactAccepted) {
       return {
-        text: t`Need to accept Price Impact`,
+        text: t`Price Impact not yet acknowledged`,
         disabled: true,
       };
     }
@@ -329,7 +329,7 @@ export function GmConfirmationBox({
               <div className="GmSwapBox-warnings">
                 <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
                   <span className="muted font-sm">
-                    <Trans>I am aware of the high Price Impact</Trans>
+                    <Trans>Acknowledge high Price Impact</Trans>
                   </span>
                 </Checkbox>
               </div>

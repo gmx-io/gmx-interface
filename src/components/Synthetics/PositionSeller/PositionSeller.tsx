@@ -255,7 +255,7 @@ export function PositionSeller(p: Props) {
     }
 
     if (isHighPriceImpact && !isHighPriceImpactAccepted) {
-      return t`Need to accept Price Impact`;
+      return t`Price Impact not yet acknowledged`;
     }
 
     if (isSubmitting) {
@@ -569,7 +569,7 @@ export function PositionSeller(p: Props) {
               <div className="PositionSeller-price-impact-warning">
                 <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
                   <span className="muted font-sm">
-                    <Trans>I am aware of the high Price Impact</Trans>
+                    <Trans>Acknowledge high Price Impact</Trans>
                   </span>
                 </Checkbox>
               </div>

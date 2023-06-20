@@ -304,7 +304,7 @@ export function ConfirmationBox(p: Props) {
     }
 
     if (isHighPriceImpact && !isHighPriceImpactAccepted) {
-      return { text: t`Need to accept Price Impact`, disabled: true };
+      return { text: t`Price Impact not yet acknowledged`, disabled: true };
     }
 
     if (isIncrease && decreaseOrdersThatWillBeExecuted.length > 0 && !isTriggerWarningAccepted) {
@@ -787,6 +787,18 @@ export function ConfirmationBox(p: Props) {
     );
   }
 
+  function renderHighPriceImpactWarning() {
+    return (
+      <div className="PositionEditor-allow-higher-slippage">
+        <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
+          <span className="muted font-sm">
+            <Trans>Acknowledge high Price Impact</Trans>
+          </span>
+        </Checkbox>
+      </div>
+    );
+  }
+
   function renderIncreaseOrderSection() {
     if (!marketInfo || !fromToken || !collateralToken || !toToken) {
       return null;
@@ -1006,15 +1018,7 @@ export function ConfirmationBox(p: Props) {
             </div>
           )}
 
-          {isHighPriceImpact && (
-            <div className="PositionEditor-allow-higher-slippage">
-              <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
-                <span className="muted font-sm">
-                  <Trans>I am aware of the high Price Impact</Trans>
-                </span>
-              </Checkbox>
-            </div>
-          )}
+          {isHighPriceImpact && renderHighPriceImpactWarning()}
         </div>
       </>
     );
@@ -1071,15 +1075,7 @@ export function ConfirmationBox(p: Props) {
 
           {isHighPriceImpact && <div className="line-divider" />}
 
-          {isHighPriceImpact && (
-            <div className="PositionEditor-allow-higher-slippage">
-              <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
-                <span className="muted font-sm">
-                  <Trans>I am aware of the high Price Impact</Trans>
-                </span>
-              </Checkbox>
-            </div>
-          )}
+          {isHighPriceImpact && renderHighPriceImpactWarning()}
         </div>
       </>
     );
@@ -1217,15 +1213,7 @@ export function ConfirmationBox(p: Props) {
 
           {isHighPriceImpact && <div className="line-divider" />}
 
-          {isHighPriceImpact && (
-            <div className="PositionEditor-allow-higher-slippage">
-              <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
-                <span className="muted font-sm">
-                  <Trans>I am aware of the high Price Impact</Trans>
-                </span>
-              </Checkbox>
-            </div>
-          )}
+          {isHighPriceImpact && renderHighPriceImpactWarning()}
         </div>
       </>
     );
