@@ -373,7 +373,6 @@ export function PositionSeller(p: Props) {
             </BuyInputSection>
 
             <div className="PositionEditor-info-box">
-              {executionFee?.warning && <div className="Confirmation-box-warning">{executionFee.warning}</div>}
               <div className="PositionEditor-keep-leverage-settings">
                 <ToggleSwitch isChecked={keepLeverage ?? false} setIsChecked={setKeepLeverage}>
                   <span className="muted font-sm">

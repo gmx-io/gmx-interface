@@ -262,8 +262,8 @@ msgstr "同意する"
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-msgid "Allow up to 1% slippage"
-msgstr "最大1%のスリッページを許容する"
+#~ msgid "Allow up to 1% slippage"
+#~ msgstr "最大1%のスリッページを許容する"
 
 #: src/components/ApproveTokenButton/ApproveTokenButton.tsx
 msgid "Allow {0} to be spent"
@@ -5115,8 +5115,6 @@ msgid "You can change the \"Collateral In\" token above to find lower fees"
 msgstr "より低い手数料を見つけるために上の\"担保資産\"トークンを変更することができます"
 
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "You can change this in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are volatile."
 msgstr ""
 
@@ -5129,6 +5127,8 @@ msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {s
 msgstr "{1} {stakingToken}対1 esGMXの比率で最大{0} esGMXトークンを現在べスティングすることができます。"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are volatile."
 msgstr ""
 
