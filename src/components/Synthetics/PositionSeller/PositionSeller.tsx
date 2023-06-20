@@ -45,7 +45,6 @@ import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
-  formatAmount,
   formatAmountFree,
   formatDeltaUsd,
   formatPercentage,
@@ -59,6 +58,8 @@ import { useEffect, useMemo, useState } from "react";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionSeller.scss";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
+import SlippageInput from "components/SlippageInput/SlippageInput";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 
 export type Props = {
   position?: PositionInfo;
@@ -82,10 +83,8 @@ export function PositionSeller(p: Props) {
     showPnlInLeverage,
     onClose,
     setPendingTxns,
-    allowedSlippage,
+    allowedSlippage: savedAllowedSlippage,
     availableTokensOptions,
-    isHigherSlippageAllowed,
-    setIsHigherSlippageAllowed,
     onConnectWallet,
   } = p;
 
@@ -103,6 +102,7 @@ export function PositionSeller(p: Props) {
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
 
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
+  const [allowedSlippage, setAllowedSlippage] = useState(savedAllowedSlippage);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [closeUsdInputValue, setCloseUsdInputValue] = useState("");
@@ -372,41 +372,40 @@ export function PositionSeller(p: Props) {
               USD
             </BuyInputSection>
 
-            <div className="PositionEditor-info-box PositionSeller-info-box">
+            <div className="PositionEditor-info-box">
               {executionFee?.warning && <div className="Confirmation-box-warning">{executionFee.warning}</div>}
               <div className="PositionEditor-keep-leverage-settings">
-                <Checkbox isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
+                <ToggleSwitch isChecked={keepLeverage ?? false} setIsChecked={setKeepLeverage}>
                   <span className="muted font-sm">
                     <Trans>Keep leverage at {position?.leverage ? formatLeverage(position.leverage) : "..."}</Trans>
                   </span>
-                </Checkbox>
-              </div>
-
-              <div className="PositionEditor-allow-higher-slippage">
-                <Checkbox isChecked={isHigherSlippageAllowed} setIsChecked={setIsHigherSlippageAllowed}>
-                  <span className="muted font-sm">
-                    <Trans>Allow up to 1% slippage</Trans>
-                  </span>
-                </Checkbox>
+                </ToggleSwitch>
               </div>
 
               <div>
-                <ExchangeInfoRow label={t`Allowed Slippage`}>
-                  <Tooltip
-                    handle={`${formatAmount(allowedSlippage, 2, 2)}%`}
-                    position="right-bottom"
-                    renderContent={() => {
-                      return (
-                        <Trans>
-                          You can change this in the settings menu on the top right of the page.
-                          <br />
-                          <br />
-                          Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices
-                          are volatile.
-                        </Trans>
-                      );
-                    }}
-                  />
+                <ExchangeInfoRow
+                  label={
+                    <Tooltip
+                      handle={t`Allowed Slippage`}
+                      position="left-top"
+                      renderContent={() => {
+                        return (
+                          <div className="text-white">
+                            <Trans>
+                              You can edit the default Allowed Slippage in the settings menu on the top right of the
+                              page.
+                              <br />
+                              <br />
+                              Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if
+                              prices are volatile.
+                            </Trans>
+                          </div>
+                        );
+                      }}
+                    />
+                  }
+                >
+                  <SlippageInput setAllowedSlippage={setAllowedSlippage} defaultSlippage={allowedSlippage} />
                 </ExchangeInfoRow>
               </div>
 
