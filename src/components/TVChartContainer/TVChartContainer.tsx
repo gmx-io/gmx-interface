@@ -1,17 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { TV_CHART_RELOAD_TIMESTAMP_KEY, TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
 import { useLocalStorage, useMedia } from "react-use";
-import { defaultChartProps, DEFAULT_PERIOD, disabledFeaturesOnMobile } from "./constants";
+import { defaultChartProps, disabledFeaturesOnMobile } from "./constants";
 import useTVDatafeed from "domain/tradingview/useTVDatafeed";
 import { ChartData, IChartingLibraryWidget, IPositionLineAdapter } from "../../charting_library";
 import { getObjectKeyFromValue } from "domain/tradingview/utils";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
-import { SUPPORTED_RESOLUTIONS, TV_CHART_RELOAD_INTERVAL } from "config/tradingview";
+import { TV_CHART_RELOAD_INTERVAL } from "config/tradingview";
 import { isChartAvailabeForToken } from "config/tokens";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 import Loader from "components/Common/Loader";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { CHART_PERIODS } from "lib/legacy";
 import { Token } from "domain/tokens";
 
 export type ChartLine = {
@@ -25,6 +23,9 @@ type Props = {
   savedShouldShowPositionLines: boolean;
   chartLines: ChartLine[];
   onSelectToken: (token: Token) => void;
+  supportedResolutions: { [key: number]: string };
+  period: string;
+  setPeriod: (period: string) => void;
   dataProvider?: TVDataProvider;
 };
 
@@ -35,19 +36,16 @@ export default function TVChartContainer({
   chartLines,
   onSelectToken,
   dataProvider,
+  supportedResolutions,
+  period,
+  setPeriod,
 }: Props) {
-  let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
-
-  if (!period || !(period in CHART_PERIODS)) {
-    period = DEFAULT_PERIOD;
-  }
-
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const tvWidgetRef = useRef<IChartingLibraryWidget | null>(null);
   const [chartReady, setChartReady] = useState(false);
   const [chartDataLoading, setChartDataLoading] = useState(true);
   const [tvCharts, setTvCharts] = useLocalStorage<ChartData[] | undefined>(TV_SAVE_LOAD_CHARTS_KEY, []);
-  const { datafeed, resetCache } = useTVDatafeed({ dataProvider });
+  const { datafeed, resetCache } = useTVDatafeed({ dataProvider, supportedResolutions });
   const isMobile = useMedia("(max-width: 550px)");
   const symbolRef = useRef(symbol);
 
@@ -140,8 +138,8 @@ export default function TVChartContainer({
       autosize: defaultChartProps.autosize,
       custom_css_url: defaultChartProps.custom_css_url,
       overrides: defaultChartProps.overrides,
-      interval: getObjectKeyFromValue(period, SUPPORTED_RESOLUTIONS),
-      favorites: defaultChartProps.favorites,
+      interval: getObjectKeyFromValue(period, supportedResolutions),
+      favorites: { ...defaultChartProps.favorites, intervals: Object.keys(supportedResolutions) },
       custom_formatters: defaultChartProps.custom_formatters,
       save_load_adapter: new SaveLoadAdapter(chainId, tvCharts, setTvCharts, onSelectToken),
     };
@@ -156,8 +154,8 @@ export default function TVChartContainer({
         ?.activeChart()
         .onIntervalChanged()
         .subscribe(null, (interval) => {
-          if (SUPPORTED_RESOLUTIONS[interval]) {
-            const period = SUPPORTED_RESOLUTIONS[interval];
+          if (supportedResolutions[interval]) {
+            const period = supportedResolutions[interval];
             setPeriod(period);
           }
         });

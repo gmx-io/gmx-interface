@@ -22,6 +22,10 @@
   margin-bottom: 0;
 }
 
+.Checkbox.fullRow .Checkbox-icon {
+  margin-right: 0;
+}
+
 .Checkbox.disabled .Checkbox-icon {
   color: #47509e;
 }
