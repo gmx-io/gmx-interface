@@ -719,6 +719,7 @@ msgid "Community-led Telegram groups."
 msgstr "Von der Gemeinschaft geführte Telegram-Gruppen."
 
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
+#: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Complete Account Transfer"
 msgstr "Vollständige Kontoübertragung"
 
@@ -1636,6 +1637,10 @@ msgstr "Ungültiger Empfänger"
 #: src/pages/NftWallet/NftWallet.js
 msgid "Invalid Receiver Address"
 msgstr "Ungültige Empfängeradresse"
+
+#: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
+msgid "Invalid Transfer Addresses: Please check the url."
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js

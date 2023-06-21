@@ -719,6 +719,7 @@ msgid "Community-led Telegram groups."
 msgstr "커뮤니티 주도 텔레그램 그룹"
 
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
+#: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Complete Account Transfer"
 msgstr "계정 전송 완료"
 
@@ -1636,6 +1637,10 @@ msgstr "유효하지 않은 수령인"
 #: src/pages/NftWallet/NftWallet.js
 msgid "Invalid Receiver Address"
 msgstr "유효하지 않은 수령 주소"
+
+#: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
+msgid "Invalid Transfer Addresses: Please check the url."
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
