@@ -33,13 +33,9 @@ export function useGasLimits(chainId: number): GasLimitsResult {
             methodName: "getUint",
             params: [depositGasLimitKey(false)],
           },
-          withdrawalSingleToken: {
-            methodName: "getUint",
-            params: [withdrawalGasLimitKey(true)],
-          },
           withdrawalMultiToken: {
             methodName: "getUint",
-            params: [withdrawalGasLimitKey(false)],
+            params: [withdrawalGasLimitKey()],
           },
           singleSwap: {
             methodName: "getUint",
@@ -74,7 +70,7 @@ export function useGasLimits(chainId: number): GasLimitsResult {
       return {
         depositSingleToken: results.depositSingleToken.returnValues[0],
         depositMultiToken: results.depositMultiToken.returnValues[0],
-        withdrawalSingleToken: results.withdrawalSingleToken.returnValues[0],
+
         withdrawalMultiToken: results.withdrawalMultiToken.returnValues[0],
         singleSwap: results.singleSwap.returnValues[0],
         swapOrder: results.swapOrder.returnValues[0],
