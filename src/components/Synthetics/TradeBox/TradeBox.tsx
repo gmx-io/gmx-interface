@@ -911,7 +911,7 @@ export function TradeBox(p: Props) {
 
         {isIncrease && (
           <BuyInputSection
-            topLeftLabel={`${tradeTypeLabels[tradeType!]}:`}
+            topLeftLabel={`${tradeTypeLabels[tradeType!]}`}
             topLeftValue={formatUsd(increaseAmounts?.sizeDeltaUsd, { fallbackToZero: true })}
             topRightLabel={t`Leverage`}
             topRightValue={formatLeverage(isLeverageEnabled ? leverage : increaseAmounts?.estimatedLeverage) || "-"}
@@ -946,7 +946,7 @@ export function TradeBox(p: Props) {
     return (
       <BuyInputSection
         topLeftLabel={t`Close`}
-        topRightLabel={existingPosition?.sizeInUsd ? `Max:` : undefined}
+        topRightLabel={existingPosition?.sizeInUsd ? `Max` : undefined}
         topRightValue={existingPosition?.sizeInUsd ? formatUsd(existingPosition.sizeInUsd) : undefined}
         inputValue={closeSizeInputValue}
         onInputValueChange={(e) => setCloseSizeInputValue(e.target.value)}
@@ -1350,8 +1350,10 @@ export function TradeBox(p: Props) {
       </div>
 
       {isSwap && <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />}
-      {isPosition && <MarketCard isLong={isLong} marketInfo={marketInfo} allowedSlippage={allowedSlippage} />}
-      {account && <ClaimableCard marketsInfoData={marketsInfoData} onClaimClick={() => setIsClaiming(true)} />}
+      <div className="Exchange-swap-info-group">
+        {isPosition && <MarketCard isLong={isLong} marketInfo={marketInfo} allowedSlippage={allowedSlippage} />}
+        {account && <ClaimableCard marketsInfoData={marketsInfoData} onClaimClick={() => setIsClaiming(true)} />}
+      </div>
 
       <ConfirmationBox
         isVisible={stage === "confirmation"}
