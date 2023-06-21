@@ -1095,13 +1095,11 @@ export function ConfirmationBox(p: Props) {
           {renderMain()}
 
           {isTrigger && existingPosition?.leverage && (
-            <div className="Exchange-leverage-slider-settings">
-              <Checkbox asRow isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
-                <span className="muted font-sm">
-                  <Trans>Keep leverage at {formatLeverage(existingPosition.leverage)} </Trans>
-                </span>
-              </Checkbox>
-            </div>
+            <Checkbox asRow isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
+              <span className="muted font-sm">
+                <Trans>Keep leverage at {formatLeverage(existingPosition.leverage)} </Trans>
+              </span>
+            </Checkbox>
           )}
           <ExchangeInfoRow
             label={t`Trigger Price`}
