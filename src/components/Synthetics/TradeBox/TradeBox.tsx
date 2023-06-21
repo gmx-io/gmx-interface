@@ -911,7 +911,7 @@ export function TradeBox(p: Props) {
 
         {isIncrease && (
           <BuyInputSection
-            topLeftLabel={`${tradeTypeLabels[tradeType!]}:`}
+            topLeftLabel={tradeTypeLabels[tradeType!]}
             topLeftValue={formatUsd(increaseAmounts?.sizeDeltaUsd, { fallbackToZero: true })}
             topRightLabel={t`Leverage`}
             topRightValue={formatLeverage(isLeverageEnabled ? leverage : increaseAmounts?.estimatedLeverage) || "-"}
@@ -946,7 +946,7 @@ export function TradeBox(p: Props) {
     return (
       <BuyInputSection
         topLeftLabel={t`Close`}
-        topRightLabel={existingPosition?.sizeInUsd ? `Max:` : undefined}
+        topRightLabel={existingPosition?.sizeInUsd ? `Max` : undefined}
         topRightValue={existingPosition?.sizeInUsd ? formatUsd(existingPosition.sizeInUsd) : undefined}
         inputValue={closeSizeInputValue}
         onInputValueChange={(e) => setCloseSizeInputValue(e.target.value)}
