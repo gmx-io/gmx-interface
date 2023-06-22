@@ -127,7 +127,7 @@ export function getDecreasePositionAmounts(p: {
     const positionFeeInfo = getPositionFee(marketInfo, values.sizeDeltaUsd, userReferralInfo);
 
     values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
-    values.feeDiscountUsd = positionFeeInfo.positionFeeUsd;
+    values.feeDiscountUsd = positionFeeInfo.discountUsd;
 
     const totalFeesUsd = BigNumber.from(0)
       .add(values.positionFeeUsd)
