@@ -2407,8 +2407,8 @@ msgid "PnL After Fees"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
-msgid "PnL not enough to cover pending Fees"
-msgstr ""
+#~ msgid "PnL not enough to cover pending Fees"
+#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -2551,6 +2551,10 @@ msgstr ""
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Read more"
+msgstr ""
+
+#: src/components/Exchange/PositionSeller.js
+msgid "Realized PnL insufficient for Fees"
 msgstr ""
 
 #: src/components/Referrals/TradersStats.js

@@ -639,7 +639,7 @@ export default function PositionSeller(props) {
     }
 
     if (nextCollateral?.lt(0)) {
-      return [t`PnL not enough to cover pending Fees`, ErrorDisplayType.Tooltip, ErrorCode.NegativeNextCollateral];
+      return [t`Realized PnL insufficient for Fees`, ErrorDisplayType.Tooltip, ErrorCode.NegativeNextCollateral];
     }
 
     if (isCollateralPoolCapacityExceeded) {
