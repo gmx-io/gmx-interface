@@ -2559,16 +2559,16 @@ msgstr "Purchase Insurance"
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Read more"
-msgstr "Read more<<<<<<< HEAD"
+msgstr "Read more"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Realized PnL insufficient for Fees"
-msgstr "Realized PnL insufficient for Fees======="
+msgstr "Realized PnL insufficient for Fees"
 
 #: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
 msgid "Rebates"
-msgstr "Rebates>>>>>>> master"
+msgstr "Rebates"
 
 #: src/components/Referrals/TradersStats.js
 msgid "Rebates Distribution History"
