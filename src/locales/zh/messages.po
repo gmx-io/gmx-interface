@@ -290,13 +290,11 @@ msgstr "其他选项链接可在<0>docs</0>.<1/><2/>点选同意接受<3>相关�
 msgid "Alternatively, you can select a different \"Collateral In\" token."
 msgstr "或者,您可选择\"Collateral In\" 代币"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Amount"
 msgstr "数量"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Amount of traders you referred."
 msgstr "你所介绍的交易者数量"
@@ -1095,7 +1093,6 @@ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/AddAffiliateCode.js
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/pages/Stake/StakeV1.js
@@ -1113,7 +1110,6 @@ msgstr ""
 msgid "Create Order"
 msgstr "创建指令"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Create Referral Code"
 msgstr "创建推荐代码"
@@ -1212,7 +1208,6 @@ msgstr "GMX推荐统计数据仪表板"
 msgid "Dashboards"
 msgstr "仪表板"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Date"
@@ -2900,7 +2895,6 @@ msgstr "目前在GMX没有未结头寸"
 msgid "No position"
 msgstr "没有头寸"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "No rebates distribution history yet."
@@ -3396,7 +3390,6 @@ msgstr "购买保险"
 msgid "Read more"
 msgstr "了解更多"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates"
@@ -3407,7 +3400,6 @@ msgstr ""
 msgid "Rebates Distribution History"
 msgstr "返利分配历史"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates are airdropped weekly."
 msgstr "回扣将在每周空投一次"
@@ -3416,18 +3408,17 @@ msgstr "回扣将在每周空投一次"
 msgid "Rebates earned by this account as a trader."
 msgstr "该账户作为交易商所赚取的回扣"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates earned by this account as an affiliate."
 msgstr "该账户作为合作公司赚取的回扣"
 
 #: src/components/Referrals/AffiliatesStats.js
-msgid "Rebates on Arbitrum"
-msgstr ""
+#~ msgid "Rebates on Arbitrum"
+#~ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.js
-msgid "Rebates on Avalanche"
-msgstr ""
+#~ msgid "Rebates on Avalanche"
+#~ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates on V1"
@@ -3487,7 +3478,6 @@ msgstr "降低清算风险"
 msgid "Reducing the position at the current price will forfeit a <0>pending profit</0> of {deltaStr}. <1/>"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Code"
 msgstr "推荐代码"
@@ -3496,7 +3486,6 @@ msgstr "推荐代码"
 msgid "Referral Code does not exist"
 msgstr "推荐代码不存在"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Codes"
 msgstr "推荐代码"
@@ -3609,12 +3598,12 @@ msgid "Rewards"
 msgstr "奖励"
 
 #: src/components/Referrals/AffiliatesStats.js
-msgid "Rewards Distribution History"
-msgstr ""
+#~ msgid "Rewards Distribution History"
+#~ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.js
-msgid "Rewards are airdropped weekly."
-msgstr ""
+#~ msgid "Rewards are airdropped weekly."
+#~ msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Same as current active code"
@@ -4291,12 +4280,10 @@ msgstr "当价格条件得到满足时，可能没有足够的流动性来执行
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met."
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "This code has been taken by someone else on {0}, you will not receive rebates from traders using this code on {1}."
 msgstr "这个代码在{0}上已被别人取用，你将不会获得从{1}上使用此代码的交易者回扣"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
 msgstr "此代码尚未在{0}上注册，你将不会收到回扣<0/><1/>切换你的网络，在{1}上创建此代码"
@@ -4321,7 +4308,6 @@ msgstr ""
 msgid "Tier {0} ({1}% discount)"
 msgstr "第{0}级 ({1}% discount)"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Tier {0} ({1}% rebate)"
 msgstr "第{0}级 ({1}% discount)"
@@ -4350,9 +4336,6 @@ msgstr "为了减少费用，请选择不同的资产来接收"
 msgid "Tokens"
 msgstr "代币"
 
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -4383,7 +4366,6 @@ msgstr "费用总额"
 msgid "Total Fees Distributed"
 msgstr "分配费用总额"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total Rebates"
 msgstr "返利总额"
@@ -4430,7 +4412,6 @@ msgstr "总交易量"
 msgid "Total Users"
 msgstr "用户总数"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -4474,19 +4455,15 @@ msgstr ""
 msgid "Traders"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Traders Referred"
 msgstr "推荐的交易商"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Traders Referred on Arbitrum"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Traders Referred on Avalanche"
 msgstr ""
@@ -4500,19 +4477,18 @@ msgstr ""
 msgid "Trades"
 msgstr "交易"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Trading Volume"
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.js
-msgid "Trading Volume on Arbitrum"
-msgstr ""
+#~ msgid "Trading Volume on Arbitrum"
+#~ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.js
-msgid "Trading Volume on Avalanche"
-msgstr ""
+#~ msgid "Trading Volume on Avalanche"
+#~ msgstr ""
 
 #: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"
@@ -4528,7 +4504,6 @@ msgstr "转移中..."
 msgid "Transacting with a depegged stable coin is subject to spreads reflecting the worse of current market price or $1.00, with transactions involving multiple stablecoins may have multiple spreads."
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Transaction"
@@ -4927,7 +4902,6 @@ msgstr ""
 msgid "Volume traded by this account with an active referral code."
 msgstr "该账户的交易量与活跃的推荐代码相关"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Volume traded by your referred traders."
 msgstr "您推荐交易者的交易量"

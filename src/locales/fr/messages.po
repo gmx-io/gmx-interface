@@ -290,13 +290,11 @@ msgstr "Des liens alternatifs peuvent être trouvés dans la section <0>docs</0>
 msgid "Alternatively, you can select a different \"Collateral In\" token."
 msgstr "Vous pouvez également sélectionner un autre.\"Collatéral En\" token."
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Amount"
 msgstr "Somme"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Amount of traders you referred."
 msgstr "Le nombre de traders que vous avez parrainés."
@@ -1095,7 +1093,6 @@ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/AddAffiliateCode.js
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/pages/Stake/StakeV1.js
@@ -1113,7 +1110,6 @@ msgstr ""
 msgid "Create Order"
 msgstr "Créer un Ordre"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Create Referral Code"
 msgstr "Créer un code de parrainage"
@@ -1212,7 +1208,6 @@ msgstr "Tableau de bord pour les statistiques de parrainage GMX"
 msgid "Dashboards"
 msgstr "Tableaux de bords"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Date"
@@ -2900,7 +2895,6 @@ msgstr "Aucune position ouverte actuellement chez GMX"
 msgid "No position"
 msgstr "Pas de position"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "No rebates distribution history yet."
@@ -3396,7 +3390,6 @@ msgstr "Acheter l'assurance"
 msgid "Read more"
 msgstr "Lire plus"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates"
@@ -3407,7 +3400,6 @@ msgstr ""
 msgid "Rebates Distribution History"
 msgstr "Historique de distribution des remises"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates are airdropped weekly."
 msgstr "Les remises sont distribuées chaque semaine."
@@ -3416,18 +3408,17 @@ msgstr "Les remises sont distribuées chaque semaine."
 msgid "Rebates earned by this account as a trader."
 msgstr "Remises obtenues par ce compte en tant que trader."
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates earned by this account as an affiliate."
 msgstr "Remises obtenues par ce compte en tant qu'affilié. "
 
 #: src/components/Referrals/AffiliatesStats.js
-msgid "Rebates on Arbitrum"
-msgstr ""
+#~ msgid "Rebates on Arbitrum"
+#~ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.js
-msgid "Rebates on Avalanche"
-msgstr ""
+#~ msgid "Rebates on Avalanche"
+#~ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates on V1"
@@ -3487,7 +3478,6 @@ msgstr "Réduire les risques de liquidation"
 msgid "Reducing the position at the current price will forfeit a <0>pending profit</0> of {deltaStr}. <1/>"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Code"
 msgstr "Code de parrainage"
@@ -3496,7 +3486,6 @@ msgstr "Code de parrainage"
 msgid "Referral Code does not exist"
 msgstr "Ce code de parrainage n'existe pas"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Codes"
 msgstr "Codes de parrainage"
@@ -3609,12 +3598,12 @@ msgid "Rewards"
 msgstr "Récompenses"
 
 #: src/components/Referrals/AffiliatesStats.js
-msgid "Rewards Distribution History"
-msgstr ""
+#~ msgid "Rewards Distribution History"
+#~ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.js
-msgid "Rewards are airdropped weekly."
-msgstr ""
+#~ msgid "Rewards are airdropped weekly."
+#~ msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Same as current active code"
@@ -4291,12 +4280,10 @@ msgstr "Il se peut que la liquidité soit insuffisante pour exécuter votre ordr
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met."
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "This code has been taken by someone else on {0}, you will not receive rebates from traders using this code on {1}."
 msgstr "Ce code a été utilisé par quelqu'un d'autre sur {0}, vous ne recevrez pas de remise de la part des traders utilisant ce code sur {1}."
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
 msgstr "Ce code n'est pas encore enregistré sur {0}, vous ne recevrez pas de remise dans ce cas.<0/><1/>Changez votre réseau pour créer ce code sur  {1}."
@@ -4321,7 +4308,6 @@ msgstr ""
 msgid "Tier {0} ({1}% discount)"
 msgstr "Niveau {0} (réduction {1}%)"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Tier {0} ({1}% rebate)"
 msgstr "Niveau {0} (Remise {1}%)"
@@ -4350,9 +4336,6 @@ msgstr "Pour réduire les frais, sélectionnez un autre actif à recevoir."
 msgid "Tokens"
 msgstr "Tokens"
 
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -4383,7 +4366,6 @@ msgstr "Frais totaux"
 msgid "Total Fees Distributed"
 msgstr "Total des frais distribués"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total Rebates"
 msgstr "Remise totale"
@@ -4430,7 +4412,6 @@ msgstr "Volume total des échanges"
 msgid "Total Users"
 msgstr "Nombre total d'utilisateurs"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -4474,19 +4455,15 @@ msgstr ""
 msgid "Traders"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Traders Referred"
 msgstr "Traders parrainés"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Traders Referred on Arbitrum"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Traders Referred on Avalanche"
 msgstr ""
@@ -4500,19 +4477,18 @@ msgstr ""
 msgid "Trades"
 msgstr "Opérations"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Trading Volume"
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.js
-msgid "Trading Volume on Arbitrum"
-msgstr ""
+#~ msgid "Trading Volume on Arbitrum"
+#~ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.js
-msgid "Trading Volume on Avalanche"
-msgstr ""
+#~ msgid "Trading Volume on Avalanche"
+#~ msgstr ""
 
 #: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"
@@ -4528,7 +4504,6 @@ msgstr "Transfert en cours..."
 msgid "Transacting with a depegged stable coin is subject to spreads reflecting the worse of current market price or $1.00, with transactions involving multiple stablecoins may have multiple spreads."
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Transaction"
@@ -4927,7 +4902,6 @@ msgstr ""
 msgid "Volume traded by this account with an active referral code."
 msgstr "Volume échangé par ce compte avec un code de parrainage actif."
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Volume traded by your referred traders."
 msgstr "Volume échangé par vos traders parrainés."
