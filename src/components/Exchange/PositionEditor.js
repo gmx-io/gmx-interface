@@ -497,7 +497,7 @@ export default function PositionEditor(props) {
         <Tooltip
           isHandlerDisabled
           handle={
-            <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+            <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
               {primaryTextMessage}
             </Button>
           }
@@ -508,17 +508,10 @@ export default function PositionEditor(props) {
       );
     }
     return (
-      <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+      <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
         {primaryTextMessage}
       </Button>
     );
-  }
-
-  function getTotalFees() {
-    if (isDeposit && position?.isLong && minExecutionFeeUSD.gt(0)) {
-      return depositFeeUSD && minExecutionFeeUSD.add(depositFeeUSD);
-    }
-    return minExecutionFeeUSD;
   }
 
   return (
@@ -563,14 +556,14 @@ export default function PositionEditor(props) {
                         onChange={(e) => setFromValue(e.target.value)}
                       />
                       {fromValue !== maxAmountFormattedFree && maxAmount?.gt(0) && (
-                        <div
+                        <button
                           className="Exchange-swap-max"
                           onClick={() => {
                             setFromValue(maxAmountFormattedFree);
                           }}
                         >
                           <Trans>MAX</Trans>
-                        </div>
+                        </button>
                       )}
                     </div>
                     <div className="PositionEditor-token-symbol">
@@ -692,9 +685,8 @@ export default function PositionEditor(props) {
                       <FeesTooltip
                         executionFees={{
                           fee: minExecutionFee,
-                          feeUSD: minExecutionFeeUSD,
+                          feeUsd: minExecutionFeeUSD,
                         }}
-                        totalFees={getTotalFees()}
                         depositFee={depositFeeUSD}
                       />
                     </div>

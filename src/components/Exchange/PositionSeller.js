@@ -53,6 +53,9 @@ import { ErrorCode, ErrorDisplayType } from "./constants";
 import FeesTooltip from "./FeesTooltip";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import { getLeverage } from "lib/positions/getLeverage";
+import Button from "components/Button/Button";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
+import SlippageInput from "components/SlippageInput/SlippageInput";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -193,7 +196,6 @@ export default function PositionSeller(props) {
     isPositionRouterApproving,
     approvePositionRouter,
     isHigherSlippageAllowed,
-    setIsHigherSlippageAllowed,
     minExecutionFee,
     minExecutionFeeErrorMessage,
     usdgSupply,
@@ -207,6 +209,15 @@ export default function PositionSeller(props) {
   const [isProfitWarningAccepted, setIsProfitWarningAccepted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const prevIsVisible = usePrevious(isVisible);
+  const [allowedSlippage, setAllowedSlippage] = useState(savedSlippageAmount);
+
+  useEffect(() => {
+    setAllowedSlippage(savedSlippageAmount);
+    if (isHigherSlippageAllowed) {
+      setAllowedSlippage(DEFAULT_HIGHER_SLIPPAGE_AMOUNT);
+    }
+  }, [savedSlippageAmount, isHigherSlippageAllowed]);
+
   const positionRouterAddress = getContract(chainId, "PositionRouter");
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
   const longOrShortText = position?.isLong ? t`Long` : t`Short`;
@@ -222,11 +233,6 @@ export default function PositionSeller(props) {
   const [swapToToken, setSwapToToken] = useState(() =>
     savedRecieveTokenAddress ? toTokens.find((token) => token.address === savedRecieveTokenAddress) : undefined
   );
-
-  let allowedSlippage = savedSlippageAmount;
-  if (isHigherSlippageAllowed) {
-    allowedSlippage = DEFAULT_HIGHER_SLIPPAGE_AMOUNT;
-  }
 
   const ORDER_OPTIONS = [MARKET, STOP];
   const ORDER_OPTION_LABELS = {
@@ -1049,9 +1055,9 @@ export default function PositionSeller(props) {
         <Tooltip
           isHandlerDisabled
           handle={
-            <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+            <Button variant="primary-action w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
               {primaryTextMessage}
-            </button>
+            </Button>
           }
           position="center-top"
           className="Tooltip-flex"
@@ -1061,9 +1067,9 @@ export default function PositionSeller(props) {
     }
 
     return (
-      <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+      <Button variant="primary-action w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
         {primaryTextMessage}
-      </button>
+      </Button>
     );
   }
 
@@ -1108,14 +1114,14 @@ export default function PositionSeller(props) {
                   onChange={(e) => setFromValue(e.target.value)}
                 />
                 {fromValue !== maxAmountFormattedFree && (
-                  <div
+                  <button
                     className="Exchange-swap-max"
                     onClick={() => {
                       setFromValue(maxAmountFormattedFree);
                     }}
                   >
                     <Trans>MAX</Trans>
-                  </div>
+                  </button>
                 )}
               </div>
               <div className="PositionEditor-token-symbol">USD</div>
@@ -1166,39 +1172,36 @@ export default function PositionSeller(props) {
               </div>
             )}
             <div className="PositionEditor-keep-leverage-settings">
-              <Checkbox isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
+              <ToggleSwitch isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
                 <span className="muted font-sm">
                   <Trans>Keep leverage at {formatAmount(position.leverage, 4, 2)}x</Trans>
                 </span>
-              </Checkbox>
+              </ToggleSwitch>
             </div>
             {orderOption === MARKET && (
-              <div className="PositionEditor-allow-higher-slippage">
-                <Checkbox isChecked={isHigherSlippageAllowed} setIsChecked={setIsHigherSlippageAllowed}>
-                  <span className="muted font-sm">
-                    <Trans>Allow up to 1% slippage</Trans>
-                  </span>
-                </Checkbox>
-              </div>
-            )}
-            {orderOption === MARKET && (
               <div>
-                <ExchangeInfoRow label={t`Allowed Slippage`}>
-                  <Tooltip
-                    handle={`${formatAmount(allowedSlippage, 2, 2)}%`}
-                    position="right-bottom"
-                    renderContent={() => {
-                      return (
-                        <Trans>
-                          You can change this in the settings menu on the top right of the page.
-                          <br />
-                          <br />
-                          Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices
-                          are volatile.
-                        </Trans>
-                      );
-                    }}
-                  />
+                <ExchangeInfoRow
+                  label={
+                    <Tooltip
+                      handle={t`Allowed Slippage`}
+                      position="left-top"
+                      renderContent={() => {
+                        return (
+                          <div className="text-white">
+                            <Trans>
+                              You can change this in the settings menu on the top right of the page.
+                              <br />
+                              <br />
+                              Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if
+                              prices are volatile.
+                            </Trans>
+                          </div>
+                        );
+                      }}
+                    />
+                  }
+                >
+                  <SlippageInput setAllowedSlippage={setAllowedSlippage} defaultSlippage={savedSlippageAmount} />
                 </ExchangeInfoRow>
               </div>
             )}
@@ -1338,11 +1341,10 @@ export default function PositionSeller(props) {
                 <FeesTooltip
                   isOpening={false}
                   positionFee={positionFee}
-                  fundingFee={`$${formatAmount(fundingFee, USD_DECIMALS, 2, true)}`}
-                  totalFees={executionFeeUsd.add(totalFees)}
+                  fundingFee={fundingFee}
                   executionFees={{
                     fee: executionFee,
-                    feeUSD: executionFeeUsd,
+                    feeUsd: executionFeeUsd,
                   }}
                   swapFee={swapFee}
                 />

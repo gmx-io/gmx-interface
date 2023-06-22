@@ -4,16 +4,14 @@ import { getSubgraphUrlKey } from "./localStorage";
 
 const SUBGRAPH_URLS = {
   [ARBITRUM]: {
-    // stats: "https://api.thegraph.com/subgraphs/name/gdev8317/gmx-arbitrum-stats
-    stats: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-stats",
-    referrals: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-arbitrum-referrals",
+    stats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-stats/api",
+    referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-referrals/api",
     nissohVault: "https://api.thegraph.com/subgraphs/name/nissoh/gmx-vault",
   },
 
   [AVALANCHE]: {
-    // stats: "https://api.thegraph.com/subgraphs/name/gdev8317/gmx-avalanche-staging", // testing
-    stats: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-stats",
-    referrals: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-referrals",
+    stats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-avalanche-stats/api",
+    referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-avalanche-referrals/api",
   },
 
   [ETH_MAINNET]: {
@@ -32,5 +30,5 @@ export function getSubgraphUrl(chainId: number, subgraph: string) {
     }
   }
 
-  return SUBGRAPH_URLS[chainId][subgraph];
+  return SUBGRAPH_URLS?.[chainId]?.[subgraph];
 }

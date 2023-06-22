@@ -1218,8 +1218,8 @@ export function getProcessedData(
 }
 
 export function getPageTitle(data) {
-  return `${data} | Decentralized
-  Perpetual Exchange | GMX`;
+  const title = t`Decentralized Perpetual Exchange | GMX`;
+  return `${data} | ${title}`;
 }
 
 export function isHashZero(value) {
@@ -1262,7 +1262,7 @@ export function getTradePageUrl() {
 }
 
 export function importImage(name) {
-  let tokenImage: { default: string } | null = null;
+  let tokenImage = "";
 
   try {
     tokenImage = require("img/" + name);
@@ -1271,7 +1271,7 @@ export function importImage(name) {
     console.error(error);
   }
 
-  return tokenImage?.default;
+  return tokenImage;
 }
 
 export function getTwitterIntentURL(text, url = "", hashtag = "") {

@@ -298,7 +298,7 @@ export default function OrderEditor(props) {
           </div>
         )}
         <div className="Exchange-swap-button-container">
-          <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+          <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
             {getPrimaryText()}
           </Button>
         </div>
@@ -405,7 +405,7 @@ export default function OrderEditor(props) {
         </div>
       )}
       <div className="Exchange-swap-button-container">
-        <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+        <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
           {getPrimaryText()}
         </Button>
       </div>

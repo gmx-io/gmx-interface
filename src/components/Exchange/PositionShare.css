@@ -8,25 +8,6 @@
   grid-template-columns: 1fr 1fr 1fr;
 }
 
-.position-share-modal button,
-.position-share-modal a {
-  background: none;
-  color: white;
-  font-size: 1.45rem;
-  border: none;
-  opacity: 0.9;
-}
-
-.position-share-modal button:hover,
-.position-share-modal a:hover {
-  opacity: 1;
-}
-
-.position-share-modal button:active,
-.position-share-modal a:active {
-  opacity: 0.8;
-}
-
 .position-share-modal .icon {
   vertical-align: middle;
   margin-right: 0.5rem;

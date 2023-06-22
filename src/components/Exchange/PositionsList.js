@@ -86,8 +86,8 @@ export default function PositionsList(props) {
     usdgSupply,
     totalTokenWeights,
     hideActions,
+    openSettings,
   } = props;
-
   const [positionToEditKey, setPositionToEditKey] = useState(undefined);
   const [positionToSellKey, setPositionToSellKey] = useState(undefined);
   const [positionToShare, setPositionToShare] = useState(null);
@@ -170,7 +170,7 @@ export default function PositionsList(props) {
           isPluginApproving={isPluginApproving}
         />
       )}
-      {isPositionSellerVisible && (
+      {isPositionSellerVisible && positionToSellKey in positionsMap && (
         <PositionSeller
           pendingPositions={pendingPositions}
           setPendingPositions={setPendingPositions}
@@ -210,18 +210,13 @@ export default function PositionsList(props) {
         />
       )}
       {positions && (
-        <div className="Exchange-list small">
-          <div>
-            {positions.length === 0 && positionsDataIsLoading && (
-              <div className="Exchange-empty-positions-list-note App-card">
-                <Trans>Loading...</Trans>
-              </div>
-            )}
-            {positions.length === 0 && !positionsDataIsLoading && (
-              <div className="Exchange-empty-positions-list-note App-card">
-                <Trans>No open positions</Trans>
-              </div>
-            )}
+        <>
+          {positions.length === 0 && (
+            <div className="Exchange-empty-positions-list-note small App-card">
+              {positionsDataIsLoading ? <Trans>Loading...</Trans> : <Trans>No open positions</Trans>}
+            </div>
+          )}
+          <div className="Exchange-list small">
             {positions.map((position) => {
               const positionOrders = getOrdersForPosition(account, position, orders, nativeTokenAddress);
               const liquidationPrice = getLiquidationPrice({
@@ -246,17 +241,13 @@ export default function PositionsList(props) {
 
               return (
                 <div key={position.key} className="App-card">
-                  <div className="App-card-title">
-                    <span className="Exchange-list-title">{position.indexToken.symbol}</span>
-                  </div>
-                  <div className="App-card-divider" />
-                  <div className="App-card-content">
-                    <div className="App-card-row">
-                      <div className="label">
-                        <Trans>Leverage</Trans>
-                      </div>
+                  <div>
+                    <div className="App-card-title Position-card-title">
+                      <span className="Exchange-list-title">{position.indexToken.symbol}</span>
                       <div>
-                        <span className="Position-leverage">{position.leverageStr}</span>
+                        <span className="Position-leverage" onClick={openSettings}>
+                          {position.leverageStr}
+                        </span>
                         <span
                           className={cx("Exchange-list-side", {
                             positive: position.isLong,
@@ -267,88 +258,113 @@ export default function PositionsList(props) {
                         </span>
                       </div>
                     </div>
-                    <div className="App-card-row">
-                      <div className="label">
-                        <Trans>Size</Trans>
+                    <div className="App-card-divider" />
+                    <div className="App-card-content">
+                      <div className="App-card-row">
+                        <div className="label">
+                          <Trans>Net Value</Trans>
+                        </div>
+                        <div>
+                          <NetValueTooltip isMobile position={position} />
+                        </div>
                       </div>
-                      <div>${formatAmount(position.size, USD_DECIMALS, 2, true)}</div>
-                    </div>
-                    <div className="App-card-row">
-                      <div className="label">
-                        <Trans>Collateral</Trans>
-                      </div>
-                      <div className="position-list-collateral">
-                        <Tooltip
-                          handle={`$${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}`}
-                          position="right-bottom"
-                          handleClassName={cx("plain", { negative: position.hasLowCollateral })}
-                          renderContent={() => {
-                            return (
-                              <>
-                                {position.hasLowCollateral && (
-                                  <div>
-                                    <Trans>
-                                      WARNING: This position has a low amount of collateral after deducting borrowing
-                                      fees, deposit more collateral to reduce the position's liquidation risk.
-                                    </Trans>
-                                    <br />
-                                    <br />
-                                  </div>
-                                )}
-                                <StatsTooltipRow
-                                  label={t`Initial Collateral`}
-                                  value={formatAmount(position.collateral, USD_DECIMALS, 2, true)}
-                                />
-                                <StatsTooltipRow
-                                  label={t`Borrow Fee`}
-                                  value={formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
-                                />
-                                <StatsTooltipRow
-                                  showDollar={false}
-                                  label={t`Borrow Fee / Day`}
-                                  value={`-$${borrowFeeUSD}`}
-                                />
-
-                                {!hideActions && (
-                                  <span>
-                                    <Trans>Use the Edit Collateral icon to deposit or withdraw collateral.</Trans>
-                                  </span>
-                                )}
-                              </>
-                            );
-                          }}
-                        />
-                        {!hideActions && (
-                          <span className="edit-icon" onClick={() => editPosition(position)}>
-                            <AiOutlineEdit fontSize={16} />
+                      <div className="App-card-row">
+                        <div className="label">
+                          <Trans>PnL</Trans>
+                        </div>
+                        <div>
+                          <span
+                            className={cx("Exchange-list-info-label", {
+                              positive: hasPositionProfit && positionDelta.gt(0),
+                              negative: !hasPositionProfit && positionDelta.gt(0),
+                              muted: positionDelta.eq(0),
+                            })}
+                          >
+                            {position.deltaStr} ({position.deltaPercentageStr})
                           </span>
-                        )}
+                        </div>
+                      </div>
+                      <div className="App-card-row">
+                        <div className="label">
+                          <Trans>Size</Trans>
+                        </div>
+                        <div>${formatAmount(position.size, USD_DECIMALS, 2, true)}</div>
+                      </div>
+                      <div className="App-card-row">
+                        <div className="label">
+                          <Trans>Collateral</Trans>
+                        </div>
+                        <div className="position-list-collateral">
+                          <Tooltip
+                            handle={`$${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}`}
+                            position="right-bottom"
+                            handleClassName={cx("plain", { negative: position.hasLowCollateral })}
+                            renderContent={() => {
+                              return (
+                                <>
+                                  {position.hasLowCollateral && (
+                                    <div>
+                                      <Trans>
+                                        WARNING: This position has a low amount of collateral after deducting borrowing
+                                        fees, deposit more collateral to reduce the position's liquidation risk.
+                                      </Trans>
+                                      <br />
+                                      <br />
+                                    </div>
+                                  )}
+                                  <StatsTooltipRow
+                                    label={t`Initial Collateral`}
+                                    value={formatAmount(position.collateral, USD_DECIMALS, 2, true)}
+                                  />
+                                  <StatsTooltipRow
+                                    label={t`Borrow Fee`}
+                                    value={formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
+                                  />
+                                  <StatsTooltipRow
+                                    showDollar={false}
+                                    label={t`Borrow Fee / Day`}
+                                    value={`-$${borrowFeeUSD}`}
+                                  />
+
+                                  {!hideActions && (
+                                    <span>
+                                      <Trans>Use the Edit Collateral icon to deposit or withdraw collateral.</Trans>
+                                    </span>
+                                  )}
+                                </>
+                              );
+                            }}
+                          />
+                          {!hideActions && (
+                            <span className="edit-icon" onClick={() => editPosition(position)}>
+                              <AiOutlineEdit fontSize={16} />
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
-                    <div className="App-card-row">
-                      <div className="label">
-                        <Trans>PnL</Trans>
+                    <div className="App-card-divider" />
+                    <div className="App-card-content">
+                      <div className="App-card-row">
+                        <div className="label">
+                          <Trans>Entry Price</Trans>
+                        </div>
+                        <div>${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}</div>
                       </div>
-                      <div>
-                        <span
-                          className={cx("Exchange-list-info-label", {
-                            positive: hasPositionProfit && positionDelta.gt(0),
-                            negative: !hasPositionProfit && positionDelta.gt(0),
-                            muted: positionDelta.eq(0),
-                          })}
-                        >
-                          {position.deltaStr} ({position.deltaPercentageStr})
-                        </span>
+                      <div className="App-card-row">
+                        <div className="label">
+                          <Trans>Mark Price</Trans>
+                        </div>
+                        <div>${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}</div>
                       </div>
-                    </div>
-                    <div className="App-card-row">
-                      <div className="label">
-                        <Trans>Net Value</Trans>
-                      </div>
-                      <div>
-                        <NetValueTooltip isMobile position={position} />
+                      <div className="App-card-row">
+                        <div className="label">
+                          <Trans>Liq. Price</Trans>
+                        </div>
+                        <div>${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}</div>
                       </div>
                     </div>
+                    <div className="App-card-divider" />
                     <div className="App-card-row">
                       <div className="label">
                         <Trans>Orders</Trans>
@@ -385,29 +401,8 @@ export default function PositionsList(props) {
                       </div>
                     </div>
                   </div>
-                  <div className="App-card-divider" />
-                  <div className="App-card-content">
-                    <div className="App-card-row">
-                      <div className="label">
-                        <Trans>Entry Price</Trans>
-                      </div>
-                      <div>${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}</div>
-                    </div>
-                    <div className="App-card-row">
-                      <div className="label">
-                        <Trans>Mark Price</Trans>
-                      </div>
-                      <div>${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}</div>
-                    </div>
-                    <div className="App-card-row">
-                      <div className="label">
-                        <Trans>Liq. Price</Trans>
-                      </div>
-                      <div>${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}</div>
-                    </div>
-                  </div>
                   {!hideActions && (
-                    <>
+                    <div>
                       <div className="App-card-divider"></div>
                       <div className="App-card-options">
                         <button
@@ -435,13 +430,13 @@ export default function PositionsList(props) {
                           <Trans>Share</Trans>
                         </button>
                       </div>
-                    </>
+                    </div>
                   )}
                 </div>
               );
             })}
           </div>
-        </div>
+        </>
       )}
       <table className="Exchange-list large App-box">
         <tbody>
@@ -474,22 +469,16 @@ export default function PositionsList(props) {
               </>
             )}
           </tr>
-          {positions.length === 0 && positionsDataIsLoading && (
-            <tr>
-              <td colSpan="15">
-                <div className="Exchange-empty-positions-list-note">Loading...</div>
-              </td>
-            </tr>
-          )}
-          {positions.length === 0 && !positionsDataIsLoading && (
+          {positions.length === 0 && (
             <tr>
               <td colSpan="15">
                 <div className="Exchange-empty-positions-list-note">
-                  <Trans>No open positions</Trans>
+                  {positionsDataIsLoading ? <Trans>Loading...</Trans> : <Trans>No open positions</Trans>}
                 </div>
               </td>
             </tr>
           )}
+
           {positions.map((position) => {
             const liquidationPrice =
               getLiquidationPrice({
@@ -546,7 +535,17 @@ export default function PositionsList(props) {
                     {position.hasPendingChanges && <ImSpinner2 className="spin position-loading-icon" />}
                   </div>
                   <div className="Exchange-list-info-label">
-                    {position.leverageStr && <span className="muted Position-leverage">{position.leverageStr}</span>}
+                    {position.leverageStr && (
+                      <span
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openSettings();
+                        }}
+                        className="muted Position-leverage"
+                      >
+                        {position.leverageStr}
+                      </span>
+                    )}
                     <span className={cx({ positive: position.isLong, negative: !position.isLong })}>
                       {position.isLong ? t`Long` : t`Short`}
                     </span>
@@ -557,11 +556,12 @@ export default function PositionsList(props) {
 
                   {position.deltaStr && (
                     <div
-                      className={cx("Exchange-list-info-label", {
+                      className={cx("Exchange-list-info-label cursor-pointer Position-pnl", {
                         positive: hasPositionProfit && positionDelta.gt(0),
                         negative: !hasPositionProfit && positionDelta.gt(0),
                         muted: positionDelta.eq(0),
                       })}
+                      onClick={openSettings}
                     >
                       {position.deltaStr} ({position.deltaPercentageStr})
                     </div>

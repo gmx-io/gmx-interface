@@ -12,6 +12,7 @@ export const AVALANCHE = 43114;
 export const AVALANCHE_FUJI = 43113;
 export const ARBITRUM = 42161;
 export const ARBITRUM_TESTNET = 421611;
+export const FEES_HIGH_BPS = 50;
 
 // TODO take it from web3
 export const DEFAULT_CHAIN_ID = ARBITRUM;
@@ -84,7 +85,7 @@ const constants = {
   [ARBITRUM]: {
     nativeTokenSymbol: "ETH",
     wrappedTokenSymbol: "WETH",
-    defaultCollateralSymbol: "USDC",
+    defaultCollateralSymbol: "USDC.e",
     defaultFlagOrdersEnabled: false,
     positionReaderPropsLength: 9,
     v2: true,

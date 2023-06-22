@@ -9,13 +9,7 @@ import Tab from "components/Tab/Tab";
 import Loader from "components/Common/Loader";
 import Footer from "components/Footer/Footer";
 import { getPageTitle, isHashZero } from "lib/legacy";
-import {
-  useReferralsData,
-  registerReferralCode,
-  useCodeOwner,
-  useReferrerTier,
-  useUserReferralCode,
-} from "domain/referrals";
+import { registerReferralCode, useCodeOwner, useReferrerTier, useUserReferralCode } from "domain/referrals";
 import JoinReferralCode from "components/Referrals/JoinReferralCode";
 import AffiliatesStats from "components/Referrals/AffiliatesStats";
 import TradersStats from "components/Referrals/TradersStats";
@@ -27,6 +21,7 @@ import { REFERRALS_SELECTED_TAB_KEY } from "config/localStorage";
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getIcon } from "config/icons";
+import useReferralsData from "domain/referrals/useReferralsData";
 
 const TRADERS = "Traders";
 const AFFILIATES = "Affiliates";
@@ -43,10 +38,10 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   }
   const { chainId } = useChainId();
   const [activeTab, setActiveTab] = useLocalStorage(REFERRALS_SELECTED_TAB_KEY, TRADERS);
-  const { data: referralsData, loading } = useReferralsData(chainId, account);
   const [recentlyAddedCodes, setRecentlyAddedCodes] = useLocalStorageSerializeKey([chainId, "REFERRAL", account], [], {
     deserializer: deserializeSampleStats,
   });
+  const { data: referralsData, loading } = useReferralsData(account);
   const { userReferralCode, userReferralCodeString } = useUserReferralCode(library, chainId, account);
   const { codeOwner } = useCodeOwner(library, chainId, account, userReferralCode);
   const { referrerTier: traderTier } = useReferrerTier(library, chainId, codeOwner);
@@ -61,10 +56,11 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   }
 
   function renderAffiliatesTab() {
+    const currentReferralsData = referralsData?.[chainId];
     const isReferralCodeAvailable =
-      referralsData?.codes?.length > 0 || recentlyAddedCodes?.filter(isRecentReferralCodeNotExpired).length > 0;
+      currentReferralsData?.codes?.length > 0 || recentlyAddedCodes?.filter(isRecentReferralCodeNotExpired).length > 0;
     if (loading) return <Loader />;
-    if (isReferralCodeAvailable) {
+    if (account && isReferralCodeAvailable) {
       return (
         <AffiliatesStats
           referralsData={referralsData}
@@ -113,7 +109,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   const TAB_OPTION_LABELS = { [TRADERS]: t`Traders`, [AFFILIATES]: t`Affiliates` };
 
   return (
-    <SEO title={getPageTitle("Referrals")}>
+    <SEO title={getPageTitle(t`Referrals`)}>
       <div className="default-container page-layout Referrals">
         <div className="section-title-block">
           <div className="section-title-icon" />

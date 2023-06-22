@@ -2,7 +2,7 @@ import SEO from "components/Common/SEO";
 import Footer from "components/Footer/Footer";
 import { getPageTitle } from "lib/legacy";
 import "./PageNotFound.css";
-import { Trans } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import { getHomeUrl, getTradePageUrl } from "lib/legacy";
 
 function PageNotFound() {
@@ -10,7 +10,7 @@ function PageNotFound() {
   const tradePageUrl = getTradePageUrl();
 
   return (
-    <SEO title={getPageTitle("Page not found")}>
+    <SEO title={getPageTitle(t`Page not found`)}>
       <div className="page-layout">
         <div className="page-not-found-container">
           <div className="page-not-found">
