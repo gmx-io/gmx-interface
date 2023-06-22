@@ -53,6 +53,7 @@
   border-radius: var(--border-radius-sm);
   width: 4.5rem;
   text-align: center;
+  font-size: 1.4rem;
 }
 
 .Percentage-list li:hover {

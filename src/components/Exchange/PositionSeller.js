@@ -53,7 +53,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import FeesTooltip from "./FeesTooltip";
 
-const PERCENTAGE_SUGGESTION_LISTS = [10, 20, 30, 75];
+const PERCENTAGE_SUGGESTION_LISTS = [10, 25, 50, 75];
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -161,7 +161,7 @@ export default function PositionSeller(props) {
   const [fromValue, setFromValue] = useState("");
   const [isProfitWarningAccepted, setIsProfitWarningAccepted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isPercentagePanelVisible, setIsPercentagePanelVisible] = useState(false);
+  const [isPercentagePanelVisible, setIsPercentagePanelVisible] = useState(true);
   const prevIsVisible = usePrevious(isVisible);
   const positionRouterAddress = getContract(chainId, "PositionRouter");
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
@@ -1018,15 +1018,15 @@ export default function PositionSeller(props) {
             </div>
             {isPercentagePanelVisible && (
               <ul className="Percentage-list">
-                {PERCENTAGE_SUGGESTION_LISTS.map((slippage) => (
+                {PERCENTAGE_SUGGESTION_LISTS.map((percentage) => (
                   <li
-                    key={slippage}
+                    key={percentage}
                     onMouseDown={() => {
-                      setFromValue(formatAmountFree(maxAmount.mul(slippage).div(100), USD_DECIMALS, 2));
+                      setFromValue(formatAmountFree(maxAmount.mul(percentage).div(100), USD_DECIMALS, 2));
                       setIsPercentagePanelVisible(false);
                     }}
                   >
-                    {slippage}%
+                    {percentage}%
                   </li>
                 ))}
               </ul>
