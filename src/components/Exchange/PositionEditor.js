@@ -228,11 +228,11 @@ export default function PositionEditor(props) {
     }
 
     if (fromAmount && isDeposit && nextLiquidationPrice) {
-      const invalidLiqPrice = position.isLong
+      const isInvalidLiquidationPrice = position.isLong
         ? nextLiquidationPrice.gte(position.markPrice)
         : nextLiquidationPrice.lte(position.markPrice);
 
-      if (invalidLiqPrice) {
+      if (isInvalidLiquidationPrice) {
         return [t`Invalid liq. price`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientDepositAmount];
       }
     }

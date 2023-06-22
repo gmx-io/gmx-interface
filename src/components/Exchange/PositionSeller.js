@@ -378,10 +378,9 @@ export default function PositionSeller(props) {
       size: position.size,
       collateral: position.collateral,
       fundingFee: fundingFee,
-      includeDelta: false,
     });
 
-    // initialising next leverage to the current leverage to start weith
+    // Initializing next leverage to the current leverage to start with
     nextLeverage = position.leverage;
     nextLeverageWithoutDelta = leverageWithoutDelta;
 
@@ -640,7 +639,7 @@ export default function PositionSeller(props) {
     }
 
     if (nextCollateral?.lt(0)) {
-      return [t`rPnL not enough to cover pending Fees`, ErrorDisplayType.Tooltip, ErrorCode.NegativeNextCollateral];
+      return [t`PnL not enough to cover pending Fees`, ErrorDisplayType.Tooltip, ErrorCode.NegativeNextCollateral];
     }
 
     if (isCollateralPoolCapacityExceeded) {

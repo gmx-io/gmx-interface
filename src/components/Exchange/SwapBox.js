@@ -1769,7 +1769,8 @@ export default function SwapBox(props) {
         fundingFee: existingPosition.fundingFee,
       })
     : undefined;
-  let displayLiquidationPrice = liquidationPrice ? liquidationPrice : existingLiquidationPrice;
+
+  const displayLiquidationPrice = liquidationPrice ? liquidationPrice : existingLiquidationPrice;
 
   if (hasExistingPosition) {
     leverage = getLeverage({
