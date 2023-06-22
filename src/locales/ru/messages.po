@@ -2409,6 +2409,10 @@ msgstr "PnL"
 msgid "PnL After Fees"
 msgstr "PnL После уплаты Комиссии"
 
+#: src/components/Exchange/PositionSeller.js
+msgid "PnL not enough to cover pending Fees"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Pool"
@@ -3951,8 +3955,8 @@ msgid "not staked"
 msgstr "без стейкинга"
 
 #: src/components/Exchange/PositionSeller.js
-msgid "rPnL not enough to cover pending Fees"
-msgstr ""
+#~ msgid "rPnL not enough to cover pending Fees"
+#~ msgstr ""
 
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "size"
