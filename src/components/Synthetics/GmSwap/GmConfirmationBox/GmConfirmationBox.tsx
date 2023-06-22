@@ -222,6 +222,7 @@ export function GmConfirmationBox({
         setIsSubmitting(true);
 
         let txnPromise: Promise<any>;
+
         if (isDeposit) {
           txnPromise = onCreateDeposit();
         } else {

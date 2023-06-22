@@ -25,7 +25,7 @@ import {
   getPoolUsdWithoutPnl,
 } from "domain/synthetics/markets/utils";
 import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
-import { GmSwapFees, useAvailableTokenOptions } from "domain/synthetics/trade";
+import { GmSwapFees, TradeFees, useAvailableTokenOptions } from "domain/synthetics/trade";
 import {
   getNextDepositAmountsByCollaterals,
   getNextDepositAmountsByMarketToken,
@@ -54,6 +54,7 @@ import { helperToast } from "lib/helperToast";
 import { useSafeState } from "lib/useSafeState";
 import { useHistory, useLocation } from "react-router-dom";
 import "./GmSwapBox.scss";
+import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
 
 export enum Operation {
   Deposit = "Deposit",
@@ -173,36 +174,36 @@ export function GmSwapBox(p: Props) {
     isDeposit ? secondToken?.prices?.minPrice : secondToken?.prices?.maxPrice
   );
 
-  const longTokenInputState = getInputStateByCollateralType("long");
-  const shortTokenInputState = getInputStateByCollateralType("short");
+  // const longTokenInputState = getInputStateByCollateralType("long");
+  // const shortTokenInputState = getInputStateByCollateralType("short");
 
-  const { longTokenAmount, longTokenUsd, shortTokenAmount, shortTokenUsd } = useMemo(() => {
-    let longTokenAmount = longTokenInputState?.amount;
-    let longTokenUsd = longTokenInputState?.usd;
-    let shortTokenAmount = shortTokenInputState?.amount;
-    let shortTokenUsd = shortTokenInputState?.usd;
+  // const { longTokenAmount, longTokenUsd, shortTokenAmount, shortTokenUsd } = useMemo(() => {
+  //   let longTokenAmount = longTokenInputState?.amount;
+  //   let longTokenUsd = longTokenInputState?.usd;
+  //   let shortTokenAmount = shortTokenInputState?.amount;
+  //   let shortTokenUsd = shortTokenInputState?.usd;
 
-    if (isDeposit && marketInfo?.isSameCollaterals) {
-      longTokenAmount = longTokenAmount?.div(2);
-      longTokenUsd = longTokenUsd?.div(2);
-      shortTokenAmount = shortTokenAmount?.div(2);
-      shortTokenUsd = shortTokenUsd?.div(2);
-    }
+  //   if (isDeposit && marketInfo?.isSameCollaterals) {
+  //     longTokenAmount = longTokenAmount?.div(2);
+  //     longTokenUsd = longTokenUsd?.div(2);
+  //     shortTokenAmount = shortTokenAmount?.div(2);
+  //     shortTokenUsd = shortTokenUsd?.div(2);
+  //   }
 
-    return {
-      longTokenAmount,
-      longTokenUsd,
-      shortTokenAmount,
-      shortTokenUsd,
-    };
-  }, [
-    isDeposit,
-    longTokenInputState?.amount,
-    longTokenInputState?.usd,
-    marketInfo?.isSameCollaterals,
-    shortTokenInputState?.amount,
-    shortTokenInputState?.usd,
-  ]);
+  //   return {
+  //     longTokenAmount,
+  //     longTokenUsd,
+  //     shortTokenAmount,
+  //     shortTokenUsd,
+  //   };
+  // }, [
+  //   isDeposit,
+  //   longTokenInputState?.amount,
+  //   longTokenInputState?.usd,
+  //   marketInfo?.isSameCollaterals,
+  //   shortTokenInputState?.amount,
+  //   shortTokenInputState?.usd,
+  // ]);
 
   const tokenOptions: Token[] = (function getTokenOptions() {
     const { longToken, shortToken } = marketInfo || {};
@@ -256,7 +257,11 @@ export function GmSwapBox(p: Props) {
     };
   }, [marketInfo]);
 
-  const fees: GmSwapFees | undefined = useMemo(() => {
+  const { fees, executionFee } = useMemo(() => {
+    if (!gasLimits || !gasPrice || !tokensData) {
+      return {};
+    }
+
     const basisUsd = isDeposit
       ? BigNumber.from(0)
           .add(longTokenUsd || 0)
@@ -267,139 +272,184 @@ export function GmSwapBox(p: Props) {
     const swapPriceImpact = getFeeItem(swapPriceImpactDeltaUsd, basisUsd);
     const totalFees = getTotalFeeItem([swapPriceImpact, swapFee].filter(Boolean) as FeeItem[]);
 
-    return {
-      totalFees,
+    const fees: GmSwapFees = {
       swapFee,
       swapPriceImpact,
+      totalFees,
     };
-  }, [isDeposit, longTokenUsd, marketTokenUsd, shortTokenUsd, swapFeeUsd, swapPriceImpactDeltaUsd]);
+
+    const gasLimit = isDeposit
+      ? estimateExecuteDepositGasLimit(gasLimits, {
+          initialLongTokenAmount: longTokenAmount,
+          initialShortTokenAmount: shortTokenAmount,
+        })
+      : estimateExecuteWithdrawalGasLimit(gasLimits, {});
+
+    const executionFee = getExecutionFee(chainId, gasLimits, tokensData, gasLimit, gasPrice);
+
+    return {
+      fees,
+      executionFee,
+    };
+  }, [
+    chainId,
+    gasLimits,
+    gasPrice,
+    isDeposit,
+    longTokenAmount,
+    longTokenUsd,
+    marketTokenUsd,
+    shortTokenAmount,
+    shortTokenUsd,
+    swapFeeUsd,
+    swapPriceImpactDeltaUsd,
+    tokensData,
+  ]);
 
   const isHighPriceImpact =
     fees?.swapPriceImpact?.deltaUsd.lt(0) && fees.swapPriceImpact.bps.abs().gte(HIGH_PRICE_IMPACT_BPS);
 
-  const executionFee = useMemo(() => {
-    if (!gasLimits || !gasPrice || !tokensData) return undefined;
+  const error = useMemo(() => {
+    const commonError = getCommonError({
+      chainId,
+      isConnected: Boolean(account),
+      hasOutdatedUi: false,
+    })[0];
 
-    if (isDeposit) {
-      const estimatedGasLimit = estimateExecuteDepositGasLimit(gasLimits, {
-        initialLongTokenAmount: longTokenAmount,
-        initialShortTokenAmount: shortTokenAmount,
-      });
+    const swapError = getGmSwapError({
+      isDeposit,
+      marketInfo,
+      marketToken,
+      longToken: longTokenInputState?.token,
+      shortToken: shortTokenInputState?.token,
+      marketTokenAmount,
+      marketTokenUsd,
+      longTokenAmount,
+      shortTokenAmount,
+      longTokenUsd,
+      shortTokenUsd,
+      longTokenLiquidityUsd: longCollateralLiquidityUsd,
+      shortTokenLiquidityUsd: shortCollateralLiquidityUsd,
+      fees,
+    })[0];
 
-      return getExecutionFee(chainId, gasLimits, tokensData, estimatedGasLimit, gasPrice);
-    } else {
-      const estimatedGasLimit = estimateExecuteWithdrawalGasLimit(gasLimits, {});
+    return commonError || swapError;
+  }, [
+    account,
+    chainId,
+    fees,
+    isDeposit,
+    longCollateralLiquidityUsd,
+    longTokenAmount,
+    longTokenInputState?.token,
+    longTokenUsd,
+    marketInfo,
+    marketToken,
+    marketTokenAmount,
+    marketTokenUsd,
+    shortCollateralLiquidityUsd,
+    shortTokenAmount,
+    shortTokenInputState?.token,
+    shortTokenUsd,
+  ]);
 
-      return getExecutionFee(chainId, gasLimits, tokensData, estimatedGasLimit, gasPrice);
-    }
-  }, [chainId, gasLimits, gasPrice, isDeposit, longTokenAmount, shortTokenAmount, tokensData]);
+  const submitState = useMemo(() => {
+    const commonError = getCommonError({
+      chainId,
+      isConnected: true,
+      hasOutdatedUi: false,
+    })[0];
 
-  const error = (function getError() {
-    if (!marketInfo) {
-      return t`Loading...`;
-    }
+    const swapError = getGmSwapError({
+      isDeposit,
+      marketInfo,
+      marketToken,
+      longToken: longTokenInputState?.token,
+      shortToken: shortTokenInputState?.token,
+      marketTokenAmount,
+      marketTokenUsd,
+      longTokenAmount,
+      shortTokenAmount,
+      longTokenUsd,
+      shortTokenUsd,
+      longTokenLiquidityUsd: longCollateralLiquidityUsd,
+      shortTokenLiquidityUsd: shortCollateralLiquidityUsd,
+      fees,
+    })[0];
 
-    if (isDeposit) {
-      const totalCollateralUsd = BigNumber.from(0)
-        .add(longTokenUsd || 0)
-        .add(shortTokenUsd || 0);
-
-      if (fees.totalFees?.deltaUsd.lt(0) && fees.totalFees.deltaUsd.abs().gt(totalCollateralUsd)) {
-        return t`Fees exceed Pay amount`;
-      }
-    } else if (
-      fees.totalFees?.deltaUsd.lt(0) &&
-      fees.totalFees.deltaUsd.abs().gt(marketTokenUsd || BigNumber.from(0))
-    ) {
-      return t`Fees exceed Pay amount`;
-    }
-
-    if (longTokenAmount?.lt(0) || shortTokenAmount?.lt(0) || marketTokenAmount?.lt(0)) {
-      return t`Amount should be greater than zero`;
-    }
-
-    if (!marketTokenAmount?.gt(0)) {
-      return t`Enter an amount`;
-    }
-
-    if (isDeposit) {
-      if (longTokenInputState?.amount?.gt(longTokenInputState.token?.balance || 0)) {
-        return t`Insufficient ${longTokenInputState.token?.symbol} balance`;
-      }
-
-      if (shortTokenInputState?.amount?.gt(shortTokenInputState.token?.balance || 0)) {
-        return t`Insufficient ${shortTokenInputState.token?.symbol} balance`;
-      }
-    } else {
-      if (marketTokenAmount.gt(marketToken?.balance || BigNumber.from(0))) {
-        return t`Insufficient ${marketToken?.symbol} balance`;
-      }
-
-      if (longTokenUsd?.gt(longCollateralLiquidityUsd || BigNumber.from(0))) {
-        return t`Insufficient ${longTokenInputState?.token?.symbol} liquidity`;
-      }
-
-      if (shortTokenUsd?.gt(shortCollateralLiquidityUsd || BigNumber.from(0))) {
-        return t`Insufficient ${shortTokenInputState?.token?.symbol} liquidity`;
-      }
-    }
-  })();
-
-  const submitButtonState = (function getSubmitButtonState() {
-    if (error) {
-      return {
-        text: error,
-        disabled: true,
-      };
-    }
+    const error = commonError || swapError;
 
     if (!account) {
       return {
-        text: t`Connect wallet`,
-        disabled: false,
-        onClick: p.onConnectWallet,
+        text: t`Connect Wallet`,
+        onSubmit: p.onConnectWallet,
+      };
+    }
+
+    if (error) {
+      return {
+        text: error,
+        error,
+        isDisabled: true,
       };
     }
 
     return {
       text: isDeposit ? t`Buy GM` : t`Sell GM`,
-      disabled: false,
-      onClick: () => {
+      onSubmit: () => {
         setStage("confirmation");
       },
     };
-  })();
+  }, [
+    account,
+    chainId,
+    fees,
+    isDeposit,
+    longCollateralLiquidityUsd,
+    longTokenAmount,
+    longTokenInputState?.token,
+    longTokenUsd,
+    marketInfo,
+    marketToken,
+    marketTokenAmount,
+    marketTokenUsd,
+    p.onConnectWallet,
+    shortCollateralLiquidityUsd,
+    shortTokenAmount,
+    shortTokenInputState?.token,
+    shortTokenUsd,
+  ]);
 
-  function getInputStateByCollateralType(type: "long" | "short") {
-    if (!marketInfo) return undefined;
+  // function getInputStateByCollateralType(type: "long" | "short") {
+  //   if (!marketInfo) return undefined;
 
-    const inputs = [
-      {
-        address: firstTokenAddress,
-        value: firstTokenInputValue,
-        setValue: setFirstTokenInputValue,
-        amount: firstTokenAmount,
-        usd: firstTokenUsd,
-        token: firstToken,
-      },
-      {
-        address: secondTokenAddress,
-        value: secondTokenInputValue,
-        setValue: setSecondTokenInputValue,
-        amount: secondTokenAmount,
-        usd: secondTokenUsd,
-        token: secondToken,
-      },
-    ];
+  //   const inputs = [
+  //     {
+  //       address: firstTokenAddress,
+  //       value: firstTokenInputValue,
+  //       setValue: setFirstTokenInputValue,
+  //       amount: firstTokenAmount,
+  //       usd: firstTokenUsd,
+  //       token: firstToken,
+  //     },
+  //     {
+  //       address: secondTokenAddress,
+  //       value: secondTokenInputValue,
+  //       setValue: setSecondTokenInputValue,
+  //       amount: secondTokenAmount,
+  //       usd: secondTokenUsd,
+  //       token: secondToken,
+  //     },
+  //   ];
 
-    return inputs.find((input) => {
-      return (
-        input.address &&
-        convertTokenAddress(chainId, input.address, "wrapped") ===
-          (type === "long" ? marketInfo.longTokenAddress : marketInfo.shortTokenAddress)
-      );
-    });
-  }
+  //   return inputs.find((input) => {
+  //     return (
+  //       input.address &&
+  //       convertTokenAddress(chainId, input.address, "wrapped") ===
+  //         (type === "long" ? marketInfo.longTokenAddress : marketInfo.shortTokenAddress)
+  //     );
+  //   });
+  // }
 
   function onFocusedCollateralInputChange(tokenAddress: string) {
     if (marketInfo?.isSameCollaterals) {
@@ -909,10 +959,10 @@ export function GmSwapBox(p: Props) {
         <Button
           className="w-full"
           variant="primary-action"
-          onClick={submitButtonState.onClick}
-          disabled={submitButtonState.disabled}
+          onClick={submitState.onSubmit}
+          disabled={submitState.isDisabled}
         >
-          {submitButtonState.text}
+          {submitState.text}
         </Button>
       </div>
 
