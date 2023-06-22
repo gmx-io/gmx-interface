@@ -266,11 +266,6 @@ msgstr "수령 후, esGMX 토큰은 7일 이내에 선택한 네트워크의 계
 msgid "Agree"
 msgstr "동의하기"
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#~ msgid "Allow up to 1% slippage"
-#~ msgstr "1%의 슬리피지까지 허용하기"
-
 #: src/components/ApproveTokenButton/ApproveTokenButton.tsx
 msgid "Allow {0} to be spent"
 msgstr ""
@@ -451,14 +446,6 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Balance"
 msgstr "잔고"
-
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#~ msgid "Balance:"
-#~ msgstr "잔고:"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"
@@ -1988,14 +1975,6 @@ msgstr "높은 슬리피지 상관 없이 스왑"
 msgid "High USDG Slippage, Long Anyway"
 msgstr "높은 USDG 슬리피지 상관 없이 롱 포지션 체결"
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#~ msgid "I am aware of the high Price Impact"
-#~ msgstr ""
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "I am aware of the trigger orders"
@@ -2294,10 +2273,6 @@ msgstr "{0} 업그레이드를 위해 레버리지가 비활성화되었습니�
 msgid "Leverage slider"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#~ msgid "Leverage:"
-#~ msgstr ""
-
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/SwapBox.js
@@ -2555,11 +2530,6 @@ msgstr "시장 평균가"
 #: src/components/Exchange/OrderEditor.js
 msgid "Mark Price:"
 msgstr "시장 평균가"
-
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#~ msgid "Mark:"
-#~ msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2820,12 +2790,6 @@ msgstr "NFT ID"
 #: src/pages/NftWallet/NftWallet.js
 msgid "NFT Wallet"
 msgstr "NFT 지갑"
-
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#~ msgid "Need to accept Price Impact"
-#~ msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Negative Funding Fees are settled against the collateral automatically and will influence the liquidation price. Positive Funding Fees can be claimed under Claimable Funding after realizing any action on the position."
