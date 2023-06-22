@@ -329,8 +329,9 @@ function FullApp() {
     setSavedIsPnlInLeverage(isPnlInLeverage);
     setSavedShowPnlAfterFees(showPnlAfterFees);
     setSavedShouldDisableValidationForTesting(shouldDisableValidationForTesting);
-    setSavedSlippageAmount(basisPoints);
     setIsSettingsVisible(false);
+    setSavedSlippageAmount(basisPoints);
+    settings.setSavedAllowedSlippage(basisPoints);
     settings.setShowDebugValues(showDebugValues);
   };
 

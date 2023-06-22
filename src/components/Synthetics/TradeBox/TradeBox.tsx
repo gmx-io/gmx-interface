@@ -1378,7 +1378,6 @@ export function TradeBox(p: Props) {
         error={error}
         existingPosition={existingPosition}
         shouldDisableValidation={shouldDisableValidation!}
-        allowedSlippage={allowedSlippage}
         isHigherSlippageAllowed={isHigherSlippageAllowed}
         ordersData={ordersInfo}
         tokensData={tokensData}
