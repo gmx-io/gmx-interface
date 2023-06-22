@@ -81,8 +81,8 @@ import { ErrorCode, ErrorDisplayType } from "./constants";
 import Button from "components/Button/Button";
 import UsefulLinks from "./UsefulLinks";
 import { get1InchSwapUrl } from "config/links";
-import getLiquidation from "lib/positions/getLiquidation";
-import { getLeverageNew } from "lib/positions/getLeverageNew";
+import getLiquidationPrice from "lib/positions/getLiquidationPrice";
+import { getLeverage } from "lib/positions/getLeverage";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -1751,7 +1751,7 @@ export default function SwapBox(props) {
   }
 
   const fromUsdMinAfterFees = fromUsdMin?.sub(swapFees ?? 0).sub(positionFee ?? 0) || bigNumberify(0);
-  const liquidationPrice = getLiquidation({
+  const liquidationPrice = getLiquidationPrice({
     isLong,
     size: hasExistingPosition ? existingPosition.size.add(toUsdMax || 0) : toUsdMax ?? bigNumberify(0),
     collateral: hasExistingPosition
@@ -1761,7 +1761,7 @@ export default function SwapBox(props) {
   });
 
   const existingLiquidationPrice = existingPosition
-    ? getLiquidation({
+    ? getLiquidationPrice({
         isLong: existingPosition.isLong,
         size: existingPosition.size,
         collateral: existingPosition.collateral,
@@ -1772,7 +1772,7 @@ export default function SwapBox(props) {
   let displayLiquidationPrice = liquidationPrice ? liquidationPrice : existingLiquidationPrice;
 
   if (hasExistingPosition) {
-    leverage = getLeverageNew({
+    leverage = getLeverage({
       size: existingPosition.size.add(toUsdMax || 0),
       collateral: existingPosition.collateralAfterFee.add(fromUsdMinAfterFees),
       delta: nextDelta,

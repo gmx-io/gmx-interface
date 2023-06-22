@@ -12,7 +12,7 @@ import TVChartContainer from "components/TVChartContainer/TVChartContainer";
 import { t } from "@lingui/macro";
 import { availableNetworksForChart } from "components/TVChartContainer/constants";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
-import getLiquidation from "lib/positions/getLiquidation";
+import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 
 const PRICE_LINE_TEXT_WIDTH = 15;
 
@@ -118,7 +118,7 @@ export default function ExchangeTVChart(props) {
       .filter((p) => p.indexToken.address === chartToken.address)
       .map((position) => {
         const longOrShortText = position.isLong ? t`Long` : t`Short`;
-        const liquidationPrice = getLiquidation({
+        const liquidationPrice = getLiquidationPrice({
           size: position.size,
           collateral: position.collateral,
           averagePrice: position.averagePrice,
@@ -212,7 +212,7 @@ export default function ExchangeTVChart(props) {
             })
           );
 
-          const liquidationPrice = getLiquidation({
+          const liquidationPrice = getLiquidationPrice({
             size: position.size,
             collateral: position.collateral,
             averagePrice: position.averagePrice,

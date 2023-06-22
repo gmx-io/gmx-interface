@@ -18,7 +18,6 @@ import {
   useAccountOrders,
   getPageTitle,
   getFundingFee,
-  getLeverageStr,
 } from "lib/legacy";
 import { getConstant, getExplorerUrl } from "config/chains";
 import { approvePlugin, useMinExecutionFee, cancelMultipleOrders } from "domain/legacy";
@@ -52,7 +51,7 @@ import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "con
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import UsefulLinks from "components/Exchange/UsefulLinks";
-import { getLeverageNew } from "lib/positions/getLeverageNew";
+import { getLeverage, getLeverageStr } from "lib/positions/getLeverage";
 const { AddressZero } = ethers.constants;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;
@@ -278,7 +277,7 @@ export function getPositions(
       position.netValue = netValue;
     }
 
-    position.leverage = getLeverageNew({
+    position.leverage = getLeverage({
       size: position.size,
       collateral: position.collateral,
       fundingFee: position.fundingFee,

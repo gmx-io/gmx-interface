@@ -7,17 +7,7 @@ import PositionEditor from "./PositionEditor";
 import OrdersToa from "./OrdersToa";
 import { ImSpinner2 } from "react-icons/im";
 
-import {
-  getLeverage,
-  getOrderError,
-  USD_DECIMALS,
-  FUNDING_RATE_PRECISION,
-  SWAP,
-  LONG,
-  SHORT,
-  INCREASE,
-  DECREASE,
-} from "lib/legacy";
+import { getOrderError, USD_DECIMALS, FUNDING_RATE_PRECISION, SWAP, LONG, SHORT, INCREASE, DECREASE } from "lib/legacy";
 import PositionShare from "./PositionShare";
 import PositionDropdown from "./PositionDropdown";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
@@ -27,7 +17,7 @@ import { getUsd } from "domain/tokens/utils";
 import { bigNumberify, formatAmount } from "lib/numbers";
 import { AiOutlineEdit } from "react-icons/ai";
 import useAccountType, { AccountType } from "lib/wallets/useAccountType";
-import getLiquidation from "lib/positions/getLiquidation";
+import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 
 const getOrdersForPosition = (account, position, orders, nativeTokenAddress) => {
   if (!orders || orders.length === 0) {
@@ -146,7 +136,6 @@ export default function PositionsList(props) {
         pendingTxns={pendingTxns}
         setPendingTxns={setPendingTxns}
         getUsd={getUsd}
-        getLeverage={getLeverage}
         savedIsPnlInLeverage={savedIsPnlInLeverage}
         positionRouterApproved={positionRouterApproved}
         isPositionRouterApproving={isPositionRouterApproving}
@@ -235,7 +224,7 @@ export default function PositionsList(props) {
             )}
             {positions.map((position) => {
               const positionOrders = getOrdersForPosition(account, position, orders, nativeTokenAddress);
-              const liquidationPrice = getLiquidation({
+              const liquidationPrice = getLiquidationPrice({
                 size: position.size,
                 collateral: position.collateral,
                 averagePrice: position.averagePrice,
@@ -503,7 +492,7 @@ export default function PositionsList(props) {
           )}
           {positions.map((position) => {
             const liquidationPrice =
-              getLiquidation({
+              getLiquidationPrice({
                 size: position.size,
                 collateral: position.collateral,
                 averagePrice: position.averagePrice,

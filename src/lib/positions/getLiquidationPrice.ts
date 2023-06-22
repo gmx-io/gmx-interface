@@ -1,11 +1,5 @@
 import { BigNumber } from "ethers";
-import {
-  BASIS_POINTS_DIVISOR,
-  getLiquidationPriceFromDelta,
-  LIQUIDATION_FEE,
-  MARGIN_FEE_BASIS_POINTS,
-  MAX_LEVERAGE,
-} from "../legacy";
+import { BASIS_POINTS_DIVISOR, LIQUIDATION_FEE, MARGIN_FEE_BASIS_POINTS, MAX_LEVERAGE } from "../legacy";
 
 type GetLiquidationParams = {
   size: BigNumber;
@@ -15,11 +9,41 @@ type GetLiquidationParams = {
   fundingFee?: BigNumber;
 };
 
+export function getLiquidationPriceFromDelta({
+  liquidationAmount,
+  size,
+  collateral,
+  averagePrice,
+  isLong,
+}: {
+  liquidationAmount: BigNumber;
+  size: BigNumber;
+  collateral: BigNumber;
+  averagePrice: BigNumber;
+  isLong: boolean;
+}) {
+  if (!size || size.eq(0)) {
+    return;
+  }
+
+  if (liquidationAmount.gt(collateral)) {
+    const liquidationDelta = liquidationAmount.sub(collateral);
+    const priceDelta = liquidationDelta.mul(averagePrice).div(size);
+
+    return isLong ? averagePrice.add(priceDelta) : averagePrice.sub(priceDelta);
+  }
+
+  const liquidationDelta = collateral.sub(liquidationAmount);
+  const priceDelta = liquidationDelta.mul(averagePrice).div(size);
+
+  return isLong ? averagePrice.sub(priceDelta) : averagePrice.add(priceDelta);
+}
+
 function calculateTotalFees(size: BigNumber, fundingFees: BigNumber): BigNumber {
   return size.mul(MARGIN_FEE_BASIS_POINTS).div(BASIS_POINTS_DIVISOR).add(fundingFees).add(LIQUIDATION_FEE);
 }
 
-export function getLiquidation({ size, collateral, averagePrice, isLong, fundingFee }: GetLiquidationParams) {
+export function getLiquidationPrice({ size, collateral, averagePrice, isLong, fundingFee }: GetLiquidationParams) {
   if (!size || !collateral || !averagePrice) {
     return;
   }
@@ -62,4 +86,4 @@ export function getLiquidation({ size, collateral, averagePrice, isLong, funding
     : liquidationPriceForMaxLeverage;
 }
 
-export default getLiquidation;
+export default getLiquidationPrice;

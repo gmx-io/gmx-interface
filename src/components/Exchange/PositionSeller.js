@@ -51,8 +51,8 @@ import { formatDateTime, getTimeRemaining } from "lib/dates";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import FeesTooltip from "./FeesTooltip";
-import getLiquidation from "lib/positions/getLiquidation";
-import { getLeverageNew } from "lib/positions/getLeverageNew";
+import getLiquidationPrice from "lib/positions/getLiquidationPrice";
+import { getLeverage } from "lib/positions/getLeverage";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -366,7 +366,7 @@ export default function PositionSeller(props) {
     sizeDelta = fromAmount;
 
     title = t`Close ${longOrShortText} ${position.indexToken.symbol}`;
-    liquidationPrice = getLiquidation({
+    liquidationPrice = getLiquidationPrice({
       size: position.size,
       collateral: position.collateral,
       averagePrice: position.averagePrice,
@@ -374,7 +374,7 @@ export default function PositionSeller(props) {
       fundingFee: position.fundingFee,
     });
 
-    leverageWithoutDelta = getLeverageNew({
+    leverageWithoutDelta = getLeverage({
       size: position.size,
       collateral: position.collateral,
       fundingFee: fundingFee,
@@ -525,7 +525,7 @@ export default function PositionSeller(props) {
 
     if (fromAmount) {
       if (!isClosing) {
-        nextLiquidationPrice = getLiquidation({
+        nextLiquidationPrice = getLiquidationPrice({
           size: position.size.sub(sizeDelta),
           collateral: nextCollateral,
           averagePrice: position.averagePrice,
@@ -535,7 +535,7 @@ export default function PositionSeller(props) {
         if (!keepLeverage) {
           // We need to send the remaining delta
           const remainingDelta = nextDelta?.sub(adjustedDelta);
-          nextLeverage = getLeverageNew({
+          nextLeverage = getLeverage({
             size: position.size.sub(sizeDelta),
             collateral: nextCollateral,
             hasProfit: nextHasProfit,
@@ -543,7 +543,7 @@ export default function PositionSeller(props) {
             includeDelta: savedIsPnlInLeverage,
           });
 
-          nextLeverageWithoutDelta = getLeverageNew({
+          nextLeverageWithoutDelta = getLeverage({
             size: position.size.sub(sizeDelta),
             collateral: nextCollateral,
             hasProfit: nextHasProfit,

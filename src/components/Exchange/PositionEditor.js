@@ -32,8 +32,8 @@ import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValu
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import Button from "components/Button/Button";
 import FeesTooltip from "./FeesTooltip";
-import getLiquidation from "lib/positions/getLiquidation";
-import { getLeverageNew } from "lib/positions/getLeverageNew";
+import getLiquidationPrice from "lib/positions/getLiquidationPrice";
+import { getLeverage } from "lib/positions/getLeverage";
 
 const DEPOSIT = "Deposit";
 const WITHDRAW = "Withdraw";
@@ -118,7 +118,7 @@ export default function PositionEditor(props) {
     collateralToken = position.collateralToken;
     fundingFee = getFundingFee(position);
 
-    liquidationPrice = getLiquidation({
+    liquidationPrice = getLiquidationPrice({
       size: position.size,
       collateral: position.collateral,
       averagePrice: position.averagePrice,
@@ -163,7 +163,7 @@ export default function PositionEditor(props) {
         ? position.collateralAfterFee.add(collateralDelta)
         : position.collateralAfterFee.sub(collateralDelta);
 
-      nextLeverage = getLeverageNew({
+      nextLeverage = getLeverage({
         size: position.size,
         collateral: nextCollateral,
         hasProfit: position.hasProfit,
@@ -171,7 +171,7 @@ export default function PositionEditor(props) {
         includeDelta: savedIsPnlInLeverage,
       });
 
-      nextLeverageExcludingPnl = getLeverageNew({
+      nextLeverageExcludingPnl = getLeverage({
         size: position.size,
         collateral: nextCollateral,
         hasProfit: position.hasProfit,
@@ -181,7 +181,7 @@ export default function PositionEditor(props) {
 
       // nextCollateral is prev collateral + deposit amount - borrow fee - deposit fee
       // in case of withdrawal nextCollateral is prev collateral - withdraw amount - borrow fee
-      nextLiquidationPrice = getLiquidation({
+      nextLiquidationPrice = getLiquidationPrice({
         isLong: position.isLong,
         size: position.size,
         collateral: nextCollateral,

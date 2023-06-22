@@ -1,5 +1,6 @@
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR } from "../legacy";
+import { formatAmount } from "lib/numbers";
 
 type GetLeverageParams = {
   size: BigNumber;
@@ -10,7 +11,7 @@ type GetLeverageParams = {
   includeDelta?: boolean;
 };
 
-export function getLeverageNew({ size, collateral, fundingFee, hasProfit, delta, includeDelta }: GetLeverageParams) {
+export function getLeverage({ size, collateral, fundingFee, hasProfit, delta, includeDelta }: GetLeverageParams) {
   if (!size || !collateral) {
     return;
   }
@@ -37,4 +38,13 @@ export function getLeverageNew({ size, collateral, fundingFee, hasProfit, delta,
     return;
   }
   return size.mul(BASIS_POINTS_DIVISOR).div(remainingCollateral);
+}
+
+export function getLeverageStr(leverage: BigNumber) {
+  if (leverage && BigNumber.isBigNumber(leverage)) {
+    if (leverage.lt(0)) {
+      return "> 100x";
+    }
+    return `${formatAmount(leverage, 4, 2, true)}x`;
+  }
 }

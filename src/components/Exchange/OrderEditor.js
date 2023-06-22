@@ -23,7 +23,7 @@ import { bigNumberify, formatAmount, formatAmountFree, parseValue } from "lib/nu
 import { useChainId } from "lib/chains";
 import { t, Trans } from "@lingui/macro";
 import Button from "components/Button/Button";
-import getLiquidation from "lib/positions/getLiquidation";
+import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 
 export default function OrderEditor(props) {
   const {
@@ -46,7 +46,7 @@ export default function OrderEditor(props) {
   const position = order.type !== SWAP ? getPositionForOrder(account, order, positionsMap) : null;
   const liquidationPrice =
     order.type === DECREASE && position
-      ? getLiquidation({
+      ? getLiquidationPrice({
           size: position.size,
           collateral: position.collateral,
           fundingFee: position.fundingFee,
