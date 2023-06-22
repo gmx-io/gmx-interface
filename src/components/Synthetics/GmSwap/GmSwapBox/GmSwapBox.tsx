@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
@@ -48,6 +48,8 @@ import { helperToast } from "lib/helperToast";
 import { useSafeState } from "lib/useSafeState";
 import { useHistory, useLocation } from "react-router-dom";
 import "./GmSwapBox.scss";
+import Checkbox from "components/Checkbox/Checkbox";
+import Tooltip from "components/Tooltip/Tooltip";
 
 export enum Operation {
   Deposit = "Deposit",
@@ -377,6 +379,8 @@ export function GmSwapBox(p: Props) {
       longTokenLiquidityUsd: longCollateralLiquidityUsd,
       shortTokenLiquidityUsd: shortCollateralLiquidityUsd,
       fees,
+      isHighPriceImpact: Boolean(isHighPriceImpact),
+      isHighPriceImpactAccepted,
     })[0];
 
     const error = commonError || swapError;
@@ -404,14 +408,12 @@ export function GmSwapBox(p: Props) {
     };
   }, [
     account,
-    amounts?.longTokenAmount,
-    amounts?.longTokenUsd,
-    amounts?.marketTokenUsd,
-    amounts?.shortTokenAmount,
-    amounts?.shortTokenUsd,
+    amounts,
     chainId,
     fees,
     isDeposit,
+    isHighPriceImpact,
+    isHighPriceImpactAccepted,
     longCollateralLiquidityUsd,
     longTokenInputState?.token,
     marketInfo,
@@ -869,6 +871,33 @@ export function GmSwapBox(p: Props) {
           executionFee={executionFee}
         />
       </div>
+
+      {isHighPriceImpact && (
+        <>
+          <div className="App-card-divider" />
+          <Checkbox
+            className="GmSwapBox-warning"
+            asRow
+            isChecked={isHighPriceImpactAccepted}
+            setIsChecked={setIsHighPriceImpactAccepted}
+          >
+            {isSingle ? (
+              <Tooltip
+                className="warning-tooltip"
+                handle={<Trans>Acknowledge high Price Impact</Trans>}
+                position="left-top"
+                renderContent={() => (
+                  <div>{t`Consider selecting and using the "Pair" option to reduce the Price Impact.`}</div>
+                )}
+              />
+            ) : (
+              <span className="muted font-sm">
+                <Trans>Acknowledge high Price Impact</Trans>
+              </span>
+            )}
+          </Checkbox>
+        </>
+      )}
 
       <div className="Exchange-swap-button-container">
         <Button

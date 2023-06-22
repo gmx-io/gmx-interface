@@ -38,6 +38,23 @@
   margin-bottom: 0.5rem;
 }
 
+.GmSwapBox-warning {
+  margin-bottom: 1rem;
+}
+
+.warning-tooltip {
+  direction: ltr;
+
+  .Tooltip-handle {
+    color: rgb(243, 181, 12);
+    text-decoration-color: rgb(243, 181, 12);
+  }
+
+  .Tooltip-popup {
+    color: white;
+  }
+}
+
 @media (max-width: 900px) {
   .GmSwapBox-content {
     flex-wrap: wrap;

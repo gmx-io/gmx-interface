@@ -380,6 +380,8 @@ export function getGmSwapError(p: {
   longTokenLiquidityUsd: BigNumber | undefined;
   shortTokenLiquidityUsd: BigNumber | undefined;
   fees: GmSwapFees | undefined;
+  isHighPriceImpact: boolean;
+  isHighPriceImpactAccepted: boolean;
 }) {
   const {
     isDeposit,
@@ -396,10 +398,16 @@ export function getGmSwapError(p: {
     longTokenLiquidityUsd,
     shortTokenLiquidityUsd,
     fees,
+    isHighPriceImpact,
+    isHighPriceImpactAccepted,
   } = p;
 
   if (!marketInfo) {
     return [t`Loading...`];
+  }
+
+  if (isHighPriceImpact && !isHighPriceImpactAccepted) {
+    return [t`Price Impact not yet acknowledged`];
   }
 
   if (isDeposit) {
