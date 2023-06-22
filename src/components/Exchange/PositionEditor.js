@@ -553,7 +553,7 @@ export default function PositionEditor(props) {
                           <TokenIcon
                             className="mr-xs"
                             symbol={position.collateralToken.symbol}
-                            displySize={20}
+                            displaySize={20}
                             importSize={24}
                           />
                           {position.collateralToken.symbol}

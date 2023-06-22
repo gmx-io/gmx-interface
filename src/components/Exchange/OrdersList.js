@@ -32,7 +32,7 @@ function getOrderTitle(order, indexTokenSymbol) {
   const sizeDeltaText = formatAmount(order.sizeDelta, USD_DECIMALS, 2, true);
   const symbolWithIcon = (
     <>
-      <TokenIcon className="mx-xs" symbol={indexTokenSymbol} displySize={16} importSize={24} />
+      <TokenIcon className="mx-xs" symbol={indexTokenSymbol} displaySize={16} importSize={24} />
       {indexTokenSymbol}
     </>
   );
@@ -183,7 +183,7 @@ export default function OrdersList(props) {
               fromTokenInfo.isStable || fromTokenInfo.isUsdg ? 2 : 4,
               true
             )}{" "}
-            <TokenIcon className="mx-xs" symbol={fromTokenInfo.symbol} displySize={16} importSize={24} />
+            <TokenIcon className="mx-xs" symbol={fromTokenInfo.symbol} displaySize={16} importSize={24} />
             {fromTokenInfo.symbol} for{" "}
             {formatAmount(order.minOut, toTokenInfo.decimals, toTokenInfo.isStable || toTokenInfo.isUsdg ? 2 : 4, true)}{" "}
             {toTokenInfo.symbol}
@@ -399,7 +399,7 @@ export default function OrdersList(props) {
         const titleText = (
           <>
             Swap {formatAmount(order.amountIn, fromTokenInfo.decimals, fromTokenInfo.isStable ? 2 : 4, true)}{" "}
-            <TokenIcon className="mx-xs" symbol={fromTokenInfo.symbol} displySize={16} importSize={24} />
+            <TokenIcon className="mx-xs" symbol={fromTokenInfo.symbol} displaySize={16} importSize={24} />
             {fromTokenInfo.symbol} for{" "}
             {formatAmount(order.minOut, toTokenInfo.decimals, toTokenInfo.isStable ? 2 : 4, true)} {toTokenInfo.symbol}
           </>

@@ -251,7 +251,7 @@ export default function PositionsList(props) {
                       <TokenIcon
                         className="PositionList-token-icon"
                         symbol={position.indexToken.symbol}
-                        displySize={20}
+                        displaySize={20}
                         importSize={24}
                       />
                       <span className="Exchange-list-title">{position.indexToken.symbol}</span>
@@ -517,7 +517,7 @@ export default function PositionsList(props) {
                             <TokenIcon
                               className="PositionList-token-icon"
                               symbol={position.indexToken.symbol}
-                              displySize={20}
+                              displaySize={20}
                               importSize={24}
                             />
                             {position.indexToken.symbol}

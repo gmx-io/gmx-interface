@@ -7,15 +7,15 @@ function getIconUrlPath(symbol, size: 24 | 40) {
 
 type Props = {
   symbol: string;
-  displySize: number;
+  displaySize: number;
   importSize: 24 | 40;
   className?: string;
 };
 
-function TokenIcon({ className, symbol, displySize, importSize }: Props) {
+function TokenIcon({ className, symbol, displaySize, importSize }: Props) {
   const iconPath = getIconUrlPath(symbol, importSize);
   if (!iconPath) return <></>;
-  return <img className={className} src={importImage(iconPath)} alt={symbol} width={displySize} />;
+  return <img className={className} src={importImage(iconPath)} alt={symbol} width={displaySize} />;
 }
 
 export default TokenIcon;

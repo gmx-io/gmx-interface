@@ -991,7 +991,7 @@ export default function DashboardV2() {
                           <div className="token-symbol-wrapper">
                             <div className="App-card-title-info">
                               <div className="App-card-title-info-icon">
-                                <TokenIcon symbol={token.symbol} displySize={40} importSize={40} />
+                                <TokenIcon symbol={token.symbol} displaySize={40} importSize={40} />
                               </div>
                               <div className="App-card-title-info-text">
                                 <div className="App-card-info-title">{token.name}</div>
@@ -1064,7 +1064,7 @@ export default function DashboardV2() {
                   <div className="App-card" key={token.symbol}>
                     <div className="App-card-title">
                       <div className="mobile-token-card">
-                        <TokenIcon symbol={token.symbol} importSize={24} displySize={24} />
+                        <TokenIcon symbol={token.symbol} importSize={24} displaySize={24} />
                         <div className="token-symbol-text">{token.symbol}</div>
                         <div>
                           <AssetDropdown assetSymbol={token.symbol} assetInfo={token} />

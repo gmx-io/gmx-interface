@@ -1147,7 +1147,7 @@ export default function GlpSwap(props) {
                   <td>
                     <div className="App-card-title-info">
                       <div className="App-card-title-info-icon">
-                        <TokenIcon symbol={token.symbol} displySize={40} importSize={40} />
+                        <TokenIcon symbol={token.symbol} displaySize={40} importSize={40} />
                       </div>
                       <div className="App-card-title-info-text">
                         <div className="App-card-info-title">{token.name}</div>
@@ -1288,7 +1288,7 @@ export default function GlpSwap(props) {
             return (
               <div className="App-card" key={token.symbol}>
                 <div className="mobile-token-card">
-                  <TokenIcon symbol={token.symbol} displySize={24} importSize={24} />
+                  <TokenIcon symbol={token.symbol} displaySize={24} importSize={24} />
                   <div className="token-symbol-text">{token.symbol}</div>
                   <div>
                     <AssetDropdown assetSymbol={token.symbol} assetInfo={token} />

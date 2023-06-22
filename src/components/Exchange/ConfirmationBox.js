@@ -60,7 +60,7 @@ function getSwapSpreadInfo(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddres
 function renderSymbolWithIcon(symbol) {
   return (
     <span className="items-center">
-      <TokenIcon className="mr-xxs" symbol={symbol} importSize={24} displySize={20} />
+      <TokenIcon className="mr-xxs" symbol={symbol} importSize={24} displaySize={18} />
       {symbol}
     </span>
   );
