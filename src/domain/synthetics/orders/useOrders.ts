@@ -3,8 +3,8 @@ import DataStore from "abis/DataStore.json";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import { getContract } from "config/contracts";
 import { accountOrderListKey } from "config/dataStore";
+import { BigNumber } from "ethers";
 import { useMulticall } from "lib/multicall";
-import { bigNumberify } from "lib/numbers";
 import { OrdersData } from "./types";
 
 type OrdersResult = {
@@ -46,25 +46,25 @@ export function useOrders(chainId: number): OrdersResult {
     }),
     parseResponse: (res) => {
       const count = Number(res.data.dataStore.count.returnValues[0]);
-      const orderKeys = res.data.dataStore.keys.returnValues[0];
-      const orders = res.data.reader.orders.returnValues[0];
+      const orderKeys = res.data.dataStore.keys.returnValues;
+      const orders = res.data.reader.orders.returnValues;
 
       return {
         count,
         ordersData: orders.reduce((acc: OrdersData, order, i) => {
           const key = orderKeys[i];
-          const [addresses, numbers, flags, data] = order;
-          const [
+          const { addresses, numbers, flags, data } = order;
+          const {
             account,
             receiver,
             callbackContract,
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             uiFeeReceiver,
-            marketAddress,
-            initialCollateralTokenAddress,
+            market: marketAddress,
+            initialCollateralToken: initialCollateralTokenAddress,
             swapPath,
-          ] = addresses;
-          const [orderType, decreasePositionSwapType, ...restNumbers] = numbers;
+          } = addresses;
+          const { orderType, decreasePositionSwapType, ...restNumbers } = numbers;
           const [
             sizeDeltaUsd,
             initialCollateralDeltaAmount,
@@ -74,9 +74,9 @@ export function useOrders(chainId: number): OrdersResult {
             callbackGasLimit,
             minOutputAmount,
             updatedAtBlock,
-          ] = restNumbers.map(bigNumberify);
+          ] = Object.values(restNumbers).map(BigNumber.from);
 
-          const [isLong, shouldUnwrapNativeToken, isFrozen] = flags;
+          const { isLong, shouldUnwrapNativeToken, isFrozen } = flags;
 
           acc[key] = {
             key,
