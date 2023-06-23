@@ -53,7 +53,11 @@ export function useSwapRoutes(p: {
       return undefined;
     }
 
-    const p = findAllPaths(graph, wrappedFromAddress, wrappedToAddress);
+    let p = findAllPaths(graph, wrappedFromAddress, wrappedToAddress);
+
+    p = p?.sort((a, b) => {
+      return a.length - b.length;
+    });
 
     // TODO: optimize
     return p?.slice(0, 5);
