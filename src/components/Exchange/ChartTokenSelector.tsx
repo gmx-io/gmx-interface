@@ -112,7 +112,7 @@ export default function ChartTokenSelector(props: Props) {
                   <TokenIcon className="mr-xs" symbol={selectedToken.symbol} displaySize={20} importSize={24} />
                   {selectedToken.symbol} / USD
                 </span>
-                <FaChevronDown />
+                <FaChevronDown fontSize={14} />
               </button>
             </Popover.Button>
             <div className="chart-token-menu">

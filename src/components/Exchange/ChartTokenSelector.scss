@@ -9,14 +9,12 @@
   border-radius: var(--border-radius-sm);
 
   &:hover {
-    background: var(--dark-blue-hover);
-    box-shadow: inset 0 0 30px 5px hsla(0, 0%, 100%, 0.01);
+    background: rgba(180, 187, 255, 0.1);
   }
 }
 
 .chart-token-label--active {
-  background: #808aff14;
-  box-shadow: inset 0 0 30px 5px hsla(0, 0%, 100%, 0.01);
+  background: rgba(180, 187, 255, 0.1);
 }
 
 .chart-token-selector--current {
