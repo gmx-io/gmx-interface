@@ -64,7 +64,7 @@ export function OrderList(p: Props) {
   return (
     <>
       {orders.length === 0 && (
-        <div className="Exchange-empty-positions-list-note App-card">
+        <div className="Exchange-empty-positions-list-note App-card small">
           {p.isLoading ? t`Loading...` : t`No open orders`}
         </div>
       )}
