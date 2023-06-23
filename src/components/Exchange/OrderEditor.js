@@ -24,6 +24,16 @@ import { bigNumberify, formatAmount, formatAmountFree, parseValue } from "lib/nu
 import { useChainId } from "lib/chains";
 import { t, Trans } from "@lingui/macro";
 import Button from "components/Button/Button";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+
+function renderSymbolWithIcon(symbol) {
+  return (
+    <span className="items-center">
+      <TokenIcon className="mr-xxs" symbol={symbol} importSize={24} displaySize={18} />
+      {symbol}
+    </span>
+  );
+}
 
 export default function OrderEditor(props) {
   const {
@@ -340,7 +350,7 @@ export default function OrderEditor(props) {
             const [tokenA, tokenB] = triggerRatioInverted ? [toTokenInfo, fromTokenInfo] : [fromTokenInfo, toTokenInfo];
             return (
               <div className="PositionEditor-token-symbol">
-                {tokenA.symbol}&nbsp;/&nbsp;{tokenB.symbol}
+                {renderSymbolWithIcon(tokenA.symbol)}&nbsp;/&nbsp;{renderSymbolWithIcon(tokenB.symbol)}
               </div>
             );
           })()}

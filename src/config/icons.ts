@@ -16,11 +16,13 @@ const ICONS = {
     network: arbitrum,
     gmx: gmxArbitrum,
     glp: glpArbitrum,
+    esgmx: esGMXIcon,
   },
   [AVALANCHE]: {
     network: avalanche,
     gmx: gmxAvax,
     glp: glpAvax,
+    esgmx: esGMXIcon,
   },
   [ARBITRUM_TESTNET]: {
     network: arbitrum,

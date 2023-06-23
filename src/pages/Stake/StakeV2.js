@@ -76,7 +76,7 @@ function StakeModal(props) {
   } = props;
   const [isStaking, setIsStaking] = useState(false);
   const [isApproving, setIsApproving] = useState(false);
-  const icons = getIcons("common");
+  const icons = getIcons(chainId);
   const { data: tokenAllowance } = useSWR(
     active && stakingTokenAddress && [active, chainId, stakingTokenAddress, "allowance", account, farmAddress],
     {
@@ -167,8 +167,13 @@ function StakeModal(props) {
           onInputValueChange={(e) => setValue(e.target.value)}
           showMaxButton={false}
         >
-          <div className="items-center">
-            <img className="mr-xs" width="20" src={icons[stakingTokenSymbol.toLowerCase()]} alt={stakingTokenSymbol} />
+          <div className="Stake-modal-icons">
+            <img
+              className="mr-xs icon"
+              width="25"
+              src={icons[stakingTokenSymbol.toLowerCase()]}
+              alt={stakingTokenSymbol}
+            />
             {stakingTokenSymbol}
           </div>
         </BuyInputSection>
@@ -202,7 +207,7 @@ function UnstakeModal(props) {
     setPendingTxns,
   } = props;
   const [isUnstaking, setIsUnstaking] = useState(false);
-  const icons = getIcons("common");
+  const icons = getIcons(chainId);
 
   let amount = parseValue(value, 18);
   let burnAmount;
@@ -284,10 +289,10 @@ function UnstakeModal(props) {
           onInputValueChange={(e) => setValue(e.target.value)}
           showMaxButton={false}
         >
-          <div className="items-center">
+          <div className="Stake-modal-icons">
             <img
-              className="mr-xs"
-              width="20"
+              className="mr-xs icon"
+              width="25"
               src={icons[unstakingTokenSymbol.toLowerCase()]}
               alt={unstakingTokenSymbol}
             />
@@ -344,7 +349,7 @@ function VesterDepositModal(props) {
     setPendingTxns,
   } = props;
   const [isDepositing, setIsDepositing] = useState(false);
-  const icons = getIcons("common");
+  const icons = getIcons(chainId);
 
   let amount = parseValue(value, 18);
 
@@ -428,8 +433,8 @@ function VesterDepositModal(props) {
             onInputValueChange={(e) => setValue(e.target.value)}
             showMaxButton={false}
           >
-            <div className="items-center">
-              <img className="mr-xs" width="20" src={icons.esgmx} alt="esGMX" />
+            <div className="Stake-modal-icons">
+              <img className="mr-xs icon" width="25" src={icons.esgmx} alt="esGMX" />
               esGMX
             </div>
           </BuyInputSection>
@@ -1882,7 +1887,10 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
           </div>
           <div className="App-card">
             <div className="App-card-title">
-              <Trans>Escrowed GMX</Trans>
+              <div className="items-center">
+                <img className="mr-xs" alt="GLP" src={icons.esgmx} height={20} />
+                <Trans>Escrowed GMX</Trans>
+              </div>
             </div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
