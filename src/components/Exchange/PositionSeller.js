@@ -161,7 +161,7 @@ export default function PositionSeller(props) {
   const [fromValue, setFromValue] = useState("");
   const [isProfitWarningAccepted, setIsProfitWarningAccepted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isPercentagePanelVisible, setIsPercentagePanelVisible] = useState(true);
+  const [isPercentagePanelVisible, setIsPercentagePanelVisible] = useState(false);
   const prevIsVisible = usePrevious(isVisible);
   const positionRouterAddress = getContract(chainId, "PositionRouter");
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
