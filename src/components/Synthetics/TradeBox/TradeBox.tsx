@@ -984,6 +984,7 @@ export function TradeBox(p: Props) {
     return (
       <BuyInputSection
         topLeftLabel={t`Price`}
+        topRightLabel={t`Mark`}
         topRightValue={formatAmount(markRatio?.ratio, USD_DECIMALS, 4)}
         onClickTopRightLabel={() => {
           setTriggerRatioInputValue(formatAmount(markRatio?.ratio, USD_DECIMALS, 10));
