@@ -197,6 +197,7 @@ export function TradeBox(p: Props) {
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
   const userReferralInfo = useUserReferralInfo(library, chainId, account);
+
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
 
   const [stage, setStage] = useState<"trade" | "confirmation" | "processing">("trade");

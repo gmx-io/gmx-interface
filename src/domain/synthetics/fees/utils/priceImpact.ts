@@ -26,14 +26,13 @@ export function getPriceImpactByAcceptablePrice(p: {
   };
 }
 
-export function applySwapImpactWithCap(marketInfo: MarketInfo, tokenAddress: string, priceImpactDeltaUsd: BigNumber) {
-  const tokenPoolType = getTokenPoolType(marketInfo, tokenAddress);
+export function applySwapImpactWithCap(marketInfo: MarketInfo, token: TokenData, priceImpactDeltaUsd: BigNumber) {
+  const tokenPoolType = getTokenPoolType(marketInfo, token.address);
 
   if (!tokenPoolType) {
-    throw new Error(`Token ${tokenAddress} is not a collateral of the market ${marketInfo.marketTokenAddress}`);
+    throw new Error(`Token ${token.address} is not a collateral of the market ${marketInfo.marketTokenAddress}`);
   }
 
-  const token = tokenPoolType === "long" ? marketInfo.longToken : marketInfo.shortToken;
   const isLongCollateral = tokenPoolType === "long";
   const price = priceImpactDeltaUsd.gt(0) ? token.prices.maxPrice : token.prices.minPrice;
 
@@ -152,20 +151,26 @@ export function getPriceImpactForPosition(
 
 export function getPriceImpactForSwap(
   marketInfo: MarketInfo,
-  fromTokenAddress: string,
-  fromDeltaAmount: BigNumber,
-  toDeltaAmount: BigNumber,
+  tokenA: TokenData,
+  tokenB: TokenData,
+  usdDeltaTokenA: BigNumber,
+  usdDeltaTokenB: BigNumber,
   opts: { fallbackToZero?: boolean } = {}
 ) {
-  const { longToken, shortToken } = marketInfo;
+  const tokenAPoolType = getTokenPoolType(marketInfo, tokenA.address);
+  const tokenBPoolType = getTokenPoolType(marketInfo, tokenB.address);
 
-  const fromTokenPoolType = getTokenPoolType(marketInfo, fromTokenAddress);
+  if (
+    tokenAPoolType === undefined ||
+    tokenBPoolType === undefined ||
+    (tokenAPoolType === tokenBPoolType && !marketInfo.isSameCollaterals)
+  ) {
+    throw new Error(`Invalid tokens to swap ${marketInfo.marketTokenAddress} ${tokenA.address} ${tokenB.address}`);
+  }
 
-  const longDeltaAmount = fromTokenPoolType === "long" ? fromDeltaAmount : toDeltaAmount;
-  const shortDeltaAmount = fromTokenPoolType === "short" ? fromDeltaAmount : toDeltaAmount;
-
-  const longDeltaUsd = convertToUsd(longDeltaAmount, longToken.decimals, getMidPrice(longToken.prices))!;
-  const shortDeltaUsd = convertToUsd(shortDeltaAmount, shortToken.decimals, getMidPrice(shortToken.prices))!;
+  const [longToken, shortToken] = tokenAPoolType === "long" ? [tokenA, tokenB] : [tokenB, tokenA];
+  const [longDeltaUsd, shortDeltaUsd] =
+    tokenAPoolType === "long" ? [usdDeltaTokenA, usdDeltaTokenB] : [usdDeltaTokenB, usdDeltaTokenA];
 
   const { longPoolUsd, shortPoolUsd, nextLongPoolUsd, nextShortPoolUsd } = getNextPoolAmountsParams({
     marketInfo,

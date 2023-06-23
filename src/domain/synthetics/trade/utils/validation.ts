@@ -7,7 +7,7 @@ import { getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber, ethers } from "ethers";
 import { BASIS_POINTS_DIVISOR, DUST_USD, MAX_ALLOWED_LEVERAGE, USD_DECIMALS, isAddressZero } from "lib/legacy";
 import { expandDecimals, formatAmount, formatUsd } from "lib/numbers";
-import { NextPositionValues, SwapPathStats, TradeFees } from "../types";
+import { GmSwapFees, NextPositionValues, SwapPathStats, TradeFees } from "../types";
 import { getMinCollateralUsdForLeverage } from "./decrease";
 
 export function getCommonError(p: { chainId: number; isConnected: boolean; hasOutdatedUi: boolean }) {
@@ -362,5 +362,95 @@ export function getEditCollateralError(p: {
     return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
   }
 
-  return [false];
+  return [undefined];
+}
+
+export function getGmSwapError(p: {
+  isDeposit: boolean;
+  marketInfo: MarketInfo | undefined;
+  marketToken: TokenData | undefined;
+  longToken: TokenData | undefined;
+  shortToken: TokenData | undefined;
+  longTokenAmount: BigNumber | undefined;
+  shortTokenAmount: BigNumber | undefined;
+  longTokenUsd: BigNumber | undefined;
+  shortTokenUsd: BigNumber | undefined;
+  marketTokenAmount: BigNumber | undefined;
+  marketTokenUsd: BigNumber | undefined;
+  longTokenLiquidityUsd: BigNumber | undefined;
+  shortTokenLiquidityUsd: BigNumber | undefined;
+  fees: GmSwapFees | undefined;
+  isHighPriceImpact: boolean;
+  isHighPriceImpactAccepted: boolean;
+}) {
+  const {
+    isDeposit,
+    marketInfo,
+    marketToken,
+    longToken,
+    shortToken,
+    longTokenAmount,
+    shortTokenAmount,
+    longTokenUsd,
+    shortTokenUsd,
+    marketTokenAmount,
+    marketTokenUsd,
+    longTokenLiquidityUsd,
+    shortTokenLiquidityUsd,
+    fees,
+    isHighPriceImpact,
+    isHighPriceImpactAccepted,
+  } = p;
+
+  if (!marketInfo) {
+    return [t`Loading...`];
+  }
+
+  if (isHighPriceImpact && !isHighPriceImpactAccepted) {
+    return [t`Price Impact not yet acknowledged`];
+  }
+
+  if (isDeposit) {
+    const totalCollateralUsd = BigNumber.from(0)
+      .add(longTokenUsd || 0)
+      .add(shortTokenUsd || 0);
+
+    if (fees?.totalFees?.deltaUsd.lt(0) && fees.totalFees.deltaUsd.abs().gt(totalCollateralUsd)) {
+      return [t`Fees exceed Pay amount`];
+    }
+  } else if (fees?.totalFees?.deltaUsd.lt(0) && fees.totalFees.deltaUsd.abs().gt(marketTokenUsd || BigNumber.from(0))) {
+    return [t`Fees exceed Pay amount`];
+  }
+
+  if (longTokenAmount?.lt(0) || shortTokenAmount?.lt(0) || marketTokenAmount?.lt(0)) {
+    return [t`Amount should be greater than zero`];
+  }
+
+  if (!marketTokenAmount?.gt(0)) {
+    return [t`Enter an amount`];
+  }
+
+  if (isDeposit) {
+    if (longTokenAmount?.gt(longToken?.balance || 0)) {
+      return [t`Insufficient ${longToken?.symbol} balance`];
+    }
+
+    if (shortTokenAmount?.gt(shortToken?.balance || 0)) {
+      return [t`Insufficient ${shortToken?.symbol} balance`];
+    }
+  } else {
+    if (marketTokenAmount.gt(marketToken?.balance || 0)) {
+      return [t`Insufficient ${marketToken?.symbol} balance`];
+    }
+
+    if (longTokenUsd?.gt(longTokenLiquidityUsd || 0)) {
+      return [t`Insufficient ${longToken?.symbol} liquidity`];
+    }
+
+    if (shortTokenUsd?.gt(shortTokenLiquidityUsd || 0)) {
+      return [t`Insufficient ${shortToken?.symbol} liquidity`];
+    }
+  }
+
+  return [undefined];
 }

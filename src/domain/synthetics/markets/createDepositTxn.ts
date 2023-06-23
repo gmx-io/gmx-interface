@@ -46,7 +46,7 @@ export async function createDepositTxn(chainId: number, library: Web3Provider, p
   const initialLongTokenAddress = convertTokenAddress(chainId, p.initialLongTokenAddress, "wrapped");
   const initialShortTokenAddress = convertTokenAddress(chainId, p.initialShortTokenAddress, "wrapped");
 
-  const minMarketTokens = p.minMarketTokens.sub(p.minMarketTokens.div(10));
+  const minMarketTokens = BigNumber.from(0);
 
   const multicall = [
     { method: "sendWnt", params: [depositVaultAddress, wntAmount] },

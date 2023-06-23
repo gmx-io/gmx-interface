@@ -99,15 +99,15 @@ export type DecreasePositionAmounts = {
 export type DepositAmounts = {
   marketTokenAmount: BigNumber;
   marketTokenUsd: BigNumber;
-  longTokenAmount?: BigNumber;
-  longTokenUsd?: BigNumber;
-  shortTokenAmount?: BigNumber;
-  shortTokenUsd?: BigNumber;
+  longTokenAmount: BigNumber;
+  longTokenUsd: BigNumber;
+  shortTokenAmount: BigNumber;
+  shortTokenUsd: BigNumber;
   swapFeeUsd: BigNumber;
   swapPriceImpactDeltaUsd: BigNumber;
 };
 
-export type WithdrawalAmounts = {
+export type WitdhrawalAmounts = {
   marketTokenAmount: BigNumber;
   marketTokenUsd: BigNumber;
   longTokenAmount: BigNumber;
@@ -115,6 +115,7 @@ export type WithdrawalAmounts = {
   longTokenUsd: BigNumber;
   shortTokenUsd: BigNumber;
   swapFeeUsd: BigNumber;
+  swapPriceImpactDeltaUsd: BigNumber;
 };
 
 export type NextPositionValues = {
