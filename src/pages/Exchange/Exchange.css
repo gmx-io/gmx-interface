@@ -640,9 +640,12 @@ table.Exchange-list th {
   outline: 1px solid transparent;
 }
 
-.Exchange-swap-section:hover,
-.Exchange-swap-section:focus-within {
+.Exchange-swap-section:hover {
   outline-color: #3a3f798f;
+}
+
+.Exchange-swap-section:focus-within {
+  outline-color: #364176;
 }
 
 .Exchange-swap-option-tabs.Tab.block .Tab-option {

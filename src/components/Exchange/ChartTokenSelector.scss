@@ -1,15 +1,22 @@
 .chart-token-selector {
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
   border: none;
   background: transparent;
   color: white;
   font-size: 2rem;
   display: inline-flex;
   align-items: center;
+  padding: 0.5rem;
+  border-radius: var(--border-radius-sm);
+
   &:hover {
-    color: #7885ff !important;
+    background: var(--dark-blue-hover);
+    box-shadow: inset 0 0 30px 5px hsla(0, 0%, 100%, 0.01);
   }
+}
+
+.chart-token-label--active {
+  background: #808aff14;
+  box-shadow: inset 0 0 30px 5px hsla(0, 0%, 100%, 0.01);
 }
 
 .chart-token-selector--current {
@@ -17,9 +24,6 @@
   margin-right: 1rem;
   color: white;
   vertical-align: bottom;
-  &:hover {
-    color: #7885ff !important;
-  }
 }
 
 .chart-token-menu-items.menu-items {
@@ -34,13 +38,6 @@
   font-size: var(--font-sm);
   height: 3.4rem;
   color: #a0a3c4;
-}
-
-.chart-token-label--active {
-  color: #7885ff !important;
-  span {
-    color: #7885ff !important;
-  }
 }
 
 .chart-token-list {
