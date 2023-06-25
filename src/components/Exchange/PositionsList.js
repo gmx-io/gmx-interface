@@ -28,6 +28,7 @@ import { getUsd } from "domain/tokens/utils";
 import { bigNumberify, formatAmount } from "lib/numbers";
 import { AiOutlineEdit } from "react-icons/ai";
 import useAccountType, { AccountType } from "lib/wallets/useAccountType";
+import { FaAngleRight } from "react-icons/fa";
 
 const getOrdersForPosition = (account, position, orders, nativeTokenAddress) => {
   if (!orders || orders.length === 0) {
@@ -566,7 +567,10 @@ export default function PositionsList(props) {
                 <td>
                   <div>${formatAmount(position.size, USD_DECIMALS, 2, true)}</div>
                   {positionOrders.length > 0 && (
-                    <div onClick={() => setListSection && setListSection("Orders")}>
+                    <div
+                      className="Position-list-active-orders"
+                      onClick={() => setListSection && setListSection("Orders")}
+                    >
                       <Tooltip
                         handle={t`Orders (${positionOrders.length})`}
                         position="left-bottom"
@@ -581,15 +585,24 @@ export default function PositionsList(props) {
                                 <Trans>Active Orders</Trans>
                               </strong>
                               {positionOrders.map((order) => {
+                                const className = order.type === INCREASE ? "text-green" : "text-red";
                                 return (
                                   <div
                                     key={`${order.isLong}-${order.type}-${order.index}`}
                                     className="Position-list-order active-order-tooltip"
                                   >
-                                    {order.triggerAboveThreshold ? ">" : "<"}{" "}
-                                    {formatAmount(order.triggerPrice, 30, 2, true)}:
-                                    {order.type === INCREASE ? " +" : " -"}${formatAmount(order.sizeDelta, 30, 2, true)}
-                                    {order.error && <div className="negative active-oredr-error">{order.error}</div>}
+                                    <div className="Position-list-order-label">
+                                      <span>
+                                        {order.triggerAboveThreshold ? ">" : "<"}{" "}
+                                        {formatAmount(order.triggerPrice, 30, 2, true)}:
+                                        <span className={className}>
+                                          {order.type === INCREASE ? " +" : " -"}$
+                                          {formatAmount(order.sizeDelta, 30, 2, true)}
+                                        </span>
+                                      </span>
+                                      <FaAngleRight fontSize={14} />
+                                    </div>
+                                    {order.error && <div className="negative active-order-error">{order.error}</div>}
                                   </div>
                                 );
                               })}

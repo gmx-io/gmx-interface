@@ -1,4 +1,5 @@
 import cx from "classnames";
+import "./Tooltip.scss";
 import { useCallback, useState, useRef } from "react";
 import { IS_TOUCH } from "config/env";
 
