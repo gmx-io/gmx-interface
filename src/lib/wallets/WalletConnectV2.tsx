@@ -26,14 +26,12 @@ export class WalletConnectConnectorV2 extends AbstractConnector {
     chains,
     optionalChains,
     rpcMap,
-    defaultChainId,
   }: {
     projectId: string;
     showQrModal: boolean;
     chains: number[];
-    optionalChains: number[];
+    optionalChains?: number[];
     rpcMap: { [networkId: number]: string };
-    defaultChainId?: number;
   }) {
     super();
 

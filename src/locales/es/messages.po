@@ -3564,6 +3564,7 @@ msgid "Unstaking..."
 msgstr "Destakeando..."
 
 #: src/lib/wallets/index.tsx
+#: src/lib/wallets/index.tsx
 msgid "Unsupported chain. Switch to Arbitrum network on your wallet and try again"
 msgstr "Cadena no soportada. Cambia a la red de Arbitrum en tu monedero y vuelve a intentarlo"
 
@@ -3737,6 +3738,10 @@ msgstr "Monedero no conectado todavía"
 #: src/App/App.js
 msgid "WalletConnect"
 msgstr "WalletConnect"
+
+#: src/App/App.js
+msgid "WalletConnect V2"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Weight"

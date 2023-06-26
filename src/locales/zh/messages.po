@@ -3564,6 +3564,7 @@ msgid "Unstaking..."
 msgstr "解除质押中..."
 
 #: src/lib/wallets/index.tsx
+#: src/lib/wallets/index.tsx
 msgid "Unsupported chain. Switch to Arbitrum network on your wallet and try again"
 msgstr "不支持的链。在你的钱包上切换到Arbitrum网络并重试"
 
@@ -3737,6 +3738,10 @@ msgstr "钱包尚未连接"
 #: src/App/App.js
 msgid "WalletConnect"
 msgstr "连接钱包"
+
+#: src/App/App.js
+msgid "WalletConnect V2"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Weight"

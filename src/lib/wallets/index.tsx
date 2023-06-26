@@ -18,6 +18,7 @@ import {
   SELECTED_NETWORK_LOCAL_STORAGE_KEY,
   SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
   WALLET_CONNECT_LOCALSTORAGE_KEY,
+  WALLET_CONNECT_V2_LOCALSTORAGE_KEY,
   WALLET_LINK_LOCALSTORAGE_PREFIX,
 } from "config/localStorage";
 import {
@@ -108,24 +109,22 @@ export const getWalletConnectConnector = () => {
 };
 
 export const getWalletConnectConnectorV2 = () => {
-  const [arbitrum, ...optionalChains] = SUPPORTED_CHAIN_IDS;
+  const chainId = Number(localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY)) || DEFAULT_CHAIN_ID;
   return new WalletConnectConnectorV2({
     rpcMap: {
       [AVALANCHE]: getRpcUrl(AVALANCHE)!,
       [ARBITRUM]: getRpcUrl(ARBITRUM)!,
-      [ARBITRUM_TESTNET]: getRpcUrl(ARBITRUM_TESTNET)!,
-      [AVALANCHE_FUJI]: getRpcUrl(AVALANCHE_FUJI)!,
     },
     showQrModal: true,
-    chains: [arbitrum],
-    optionalChains,
+    chains: [chainId],
+    optionalChains: [ARBITRUM, AVALANCHE],
     projectId: "de24cddbaf2a68f027eae30d9bb5df58",
-    defaultChainId: arbitrum,
   });
 };
 
 export function clearWalletConnectData() {
   localStorage.removeItem(WALLET_CONNECT_LOCALSTORAGE_KEY);
+  localStorage.removeItem(WALLET_CONNECT_V2_LOCALSTORAGE_KEY);
 }
 
 export function clearWalletLinkData() {
