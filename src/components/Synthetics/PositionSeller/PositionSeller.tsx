@@ -184,6 +184,7 @@ export function PositionSeller(p: Props) {
       collateralDeltaUsd: decreaseAmounts.collateralDeltaUsd,
       collateralDeltaAmount: decreaseAmounts.collateralDeltaAmount,
       payedRemainingCollateralUsd: decreaseAmounts.payedRemainingCollateralUsd,
+      payedRemainingCollateralAmount: decreaseAmounts.payedRemainingCollateralAmount,
       realizedPnl: decreaseAmounts.realizedPnl,
       estimatedPnl: decreaseAmounts.estimatedPnl,
       indexPrice: decreaseAmounts.indexPrice,
@@ -238,6 +239,7 @@ export function PositionSeller(p: Props) {
 
     const decreaseError = getDecreaseError({
       marketInfo: position.marketInfo,
+      inputSizeUsd: closeSizeUsd,
       sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
       receiveToken,
       isTrigger: false,
@@ -264,6 +266,7 @@ export function PositionSeller(p: Props) {
   }, [
     account,
     chainId,
+    closeSizeUsd,
     decreaseAmounts?.sizeDeltaUsd,
     isHighPriceImpact,
     isHighPriceImpactAccepted,

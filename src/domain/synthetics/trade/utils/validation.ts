@@ -235,6 +235,7 @@ export function getIncreaseError(p: {
 
 export function getDecreaseError(p: {
   marketInfo: MarketInfo | undefined;
+  inputSizeUsd: BigNumber | undefined;
   sizeDeltaUsd: BigNumber | undefined;
   receiveToken: TokenData | undefined;
   isTrigger: boolean;
@@ -249,6 +250,7 @@ export function getDecreaseError(p: {
   const {
     marketInfo,
     sizeDeltaUsd,
+    inputSizeUsd,
     isTrigger,
     triggerPrice,
     existingPosition,
@@ -293,7 +295,7 @@ export function getDecreaseError(p: {
   }
 
   if (existingPosition) {
-    if (sizeDeltaUsd.gt(existingPosition.sizeInUsd)) {
+    if (inputSizeUsd?.gt(existingPosition.sizeInUsd)) {
       return [t`Max close amount exceeded`];
     }
 
