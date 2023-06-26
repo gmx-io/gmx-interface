@@ -26,10 +26,16 @@ export default function NetValueTooltip({ position, isMobile }: Props) {
               label={t`Initial Collateral`}
               value={formatAmount(position.collateral, USD_DECIMALS, 2, true)}
             />
-            <StatsTooltipRow label={t`PnL`} value={position.deltaBeforeFeesStr} showDollar={false} />
+            <StatsTooltipRow
+              className={position.hasProfit ? "text-green" : "text-red"}
+              label={t`PnL`}
+              value={position.deltaBeforeFeesStr}
+              showDollar={false}
+            />
             <StatsTooltipRow
               label={t`Borrow Fee`}
               showDollar={false}
+              className="text-red"
               value={`-$${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}`}
             />
             <StatsTooltipRow
@@ -44,6 +50,7 @@ export default function NetValueTooltip({ position, isMobile }: Props) {
             />
             <br />
             <StatsTooltipRow
+              className={position.hasProfitAfterFees ? "text-green" : "text-red"}
               label={t`PnL After Fees`}
               value={[position.deltaAfterFeesStr, `(${position.deltaAfterFeesPercentageStr})`]}
               showDollar={false}

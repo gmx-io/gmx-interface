@@ -1,23 +1,28 @@
 import "./StatsTooltip.css";
+import cx from "classnames";
+
 type Props = {
   label: string;
   value: number | string | string[] | number[];
   showDollar?: boolean;
+  className?: string;
 };
 
-export default function StatsTooltipRow({ label, value, showDollar = true }: Props) {
+export default function StatsTooltipRow({ label, value, className, showDollar = true }: Props) {
   function renderValue() {
     if (Array.isArray(value)) {
       return (
         <ul className="Tooltip-row-values">
           {value.map((v, i) => (
-            <li key={i}>{v}</li>
+            <li className={className} key={i}>
+              {v}
+            </li>
           ))}
         </ul>
       );
     }
     return (
-      <span className="Tooltip-row-value">
+      <span className={cx("Tooltip-row-value", className)}>
         {showDollar && "$"}
         {value}
       </span>
@@ -25,7 +30,7 @@ export default function StatsTooltipRow({ label, value, showDollar = true }: Pro
   }
   return (
     <div className="Tooltip-row">
-      <span className="label">{label}:</span>
+      <span className="Tooltip-row-label">{label}:</span>
       {renderValue()}
     </div>
   );
