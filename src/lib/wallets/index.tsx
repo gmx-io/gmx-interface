@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { Connector } from "@wagmi/connectors";
+import { switchNetwork as switchNetworkWagmi } from "@wagmi/core";
 import { InjectedConnector } from "@web3-react/injected-connector";
 import {
   ARBITRUM,
@@ -56,7 +58,7 @@ export function hasCoinBaseWalletExtension() {
     return false;
   }
 
-  return window.ethereum.isCoinbaseWallet || ethereum.providers.find(({ isCoinbaseWallet }) => isCoinbaseWallet);
+  // return window.ethereum.isCoinbaseWallet || ethereum.providers.find(({ isCoinbaseWallet }) => isCoinbaseWallet);
 }
 
 export function activateInjectedProvider(providerName: string) {
@@ -80,7 +82,7 @@ export function activateInjectedProvider(providerName: string) {
   }
 
   if (provider) {
-    ethereum?.setSelectedProvider?.(provider);
+    // ethereum?.setSelectedProvider?.(provider);
   }
 }
 
@@ -231,7 +233,7 @@ export const addBscNetwork = async () => {
 };
 
 export const addNetwork = async (metadata: NetworkMetadata) => {
-  await window.ethereum.request({ method: "wallet_addEthereumChain", params: [metadata] }).catch();
+  // await window.ethereum.request({ method: "wallet_addEthereumChain", params: [metadata] }).catch();
 };
 
 export const switchNetwork = async (chainId: number, active?: boolean) => {
@@ -244,22 +246,11 @@ export const switchNetwork = async (chainId: number, active?: boolean) => {
   }
 
   try {
-    const chainIdHex = "0x" + chainId.toString(16);
-    await window.ethereum.request({
-      method: "wallet_switchEthereumChain",
-      params: [{ chainId: chainIdHex }],
-    });
+    await switchNetworkWagmi({ chainId });
     helperToast.success(t`Connected to ${getChainName(chainId)}`);
     return getChainName(chainId);
   } catch (ex) {
-    // https://docs.metamask.io/guide/rpc-api.html#other-rpc-methods
-    // This error code indicates that the chain has not been added to MetaMask.
-    // 4001 error means user has denied the request
-    // If the error code is not 4001, then we need to add the network
-    if (ex.code !== 4001) {
-      return await addNetwork(NETWORK_METADATA[chainId]);
-    }
-
+    helperToast.error(t`Connection to ${getChainName(chainId)} failed!`);
     // eslint-disable-next-line no-console
     console.error("error", ex);
   }
@@ -311,28 +302,26 @@ export const getInjectedHandler = (
   return fn;
 };
 
-export async function addTokenToMetamask(token: {
-  address: string;
-  symbol: string;
-  decimals: number;
-  imageUrl?: string;
-}) {
+export async function addTokenToMetamask(
+  token: {
+    address: string;
+    symbol: string;
+    decimals?: number;
+    imageUrl?: string;
+  },
+  connector?: Connector
+) {
   try {
-    const wasAdded = await window.ethereum.request({
-      method: "wallet_watchAsset",
-      params: {
-        type: "ERC20",
-        options: {
-          address: token.address,
-          symbol: token.symbol,
-          decimals: token.decimals,
-          image: token.imageUrl,
-        },
-      },
+    const wasAdded = await connector?.watchAsset?.({
+      address: token.address,
+      symbol: token.symbol,
+      decimals: token.decimals,
+      image: token.imageUrl,
     });
+
     if (wasAdded) {
       // https://github.com/MetaMask/metamask-extension/issues/11377
-      // We can show a toast message when the token is added to metamask but because of the bug we can't. Once the bug is fixed we can show a toast message.
+      helperToast.success(t`${token.symbol} is added to the wallet!`);
     }
   } catch (error) {
     // eslint-disable-next-line no-console

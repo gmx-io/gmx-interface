@@ -1,7 +1,8 @@
+import React, { useCallback, useEffect } from "react";
 import { useWeb3React } from "@web3-react/core";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import AddressDropdown from "../AddressDropdown/AddressDropdown";
 import ConnectWalletButton from "../Common/ConnectWalletButton";
-import React, { useCallback, useEffect } from "react";
 import { HeaderLink } from "./HeaderLink";
 import connectWalletImg from "img/ic_wallet_24.svg";
 
@@ -16,6 +17,7 @@ import { switchNetwork } from "lib/wallets";
 import { useChainId } from "lib/chains";
 import { isDevelopment } from "config/env";
 import { getIcon } from "config/icons";
+import { useAccount } from "wagmi";
 
 type Props = {
   openSettings: () => void;
@@ -67,6 +69,8 @@ export function AppHeaderUser({
   const { chainId } = useChainId();
   const { active, account } = useWeb3React();
   const showConnectionOptions = !isHomeSite();
+  const { openConnectModal } = useConnectModal();
+  const { isConnected, address } = useAccount();
 
   useEffect(() => {
     if (active) {
@@ -79,14 +83,14 @@ export function AppHeaderUser({
       if (option.value === chainId) {
         return;
       }
-      return switchNetwork(option.value, active);
+      return switchNetwork(option.value, isConnected);
     },
-    [chainId, active]
+    [chainId, isConnected]
   );
 
   const selectorLabel = getChainName(chainId);
 
-  if (!active || !account) {
+  if (!isConnected || !address) {
     return (
       <div className="App-header-user">
         <div className={cx("App-header-trade-link", { "homepage-header": isHomeSite() })}>
@@ -102,7 +106,7 @@ export function AppHeaderUser({
 
         {showConnectionOptions ? (
           <>
-            <ConnectWalletButton onClick={() => setWalletModalVisible(true)} imgSrc={connectWalletImg}>
+            <ConnectWalletButton onClick={() => openConnectModal?.()} imgSrc={connectWalletImg}>
               {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans>}
             </ConnectWalletButton>
             <NetworkDropdown
@@ -139,7 +143,7 @@ export function AppHeaderUser({
         <>
           <div className="App-header-user-address">
             <AddressDropdown
-              account={account}
+              account={address}
               accountUrl={accountUrl}
               disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
             />

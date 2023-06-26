@@ -161,6 +161,7 @@ export async function getReferralCodeOwner(chainId, referralCode) {
 }
 
 export function useUserReferralCode(library, chainId, account) {
+  console.log("xoxo", { library });
   const localStorageCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const { data: onChainCode } = useSWR(

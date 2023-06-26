@@ -98,7 +98,7 @@ describe("executeMulticall", () => {
   const ethTesting = generateTestingUtils({ providerType: "MetaMask" });
 
   beforeAll(() => {
-    window.ethereum = ethTesting.getProvider();
+    window.ethereum = ethTesting.getProvider() as any;
   });
 
   beforeEach(() => {

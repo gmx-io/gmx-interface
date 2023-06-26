@@ -4,7 +4,7 @@ import { t, Trans } from "@lingui/macro";
 import { ETH_MAINNET } from "config/chains";
 import copy from "img/ic_copy_16.svg";
 import externalLink from "img/ic_new_link_16.svg";
-import disconnect from "img/ic_sign_out_16.svg";
+import disconnectIcon from "img/ic_sign_out_16.svg";
 import { helperToast } from "lib/helperToast";
 import { shortenAddress, useENS } from "lib/legacy";
 import { useJsonRpcProvider } from "lib/rpc";
@@ -63,7 +63,7 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
           </Menu.Item>
           <Menu.Item>
             <div className="menu-item" onClick={disconnectAccountAndCloseSettings}>
-              <img src={disconnect} alt="Disconnect the wallet" />
+              <img src={disconnectIcon} alt="Disconnect the wallet" />
               <p>
                 <Trans>Disconnect</Trans>
               </p>

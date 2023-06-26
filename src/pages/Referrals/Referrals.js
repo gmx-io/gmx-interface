@@ -1,5 +1,6 @@
 import "./Referrals.css";
 import React from "react";
+import { useSigner } from "wagmi";
 import { useLocalStorage } from "react-use";
 import { Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
@@ -22,13 +23,15 @@ import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getIcon } from "config/icons";
 import useReferralsData from "domain/referrals/useReferralsData";
+import { useAccount } from "wagmi";
 
 const TRADERS = "Traders";
 const AFFILIATES = "Affiliates";
 const TAB_OPTIONS = [TRADERS, AFFILIATES];
 
 function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
-  const { active, account: walletAccount, library } = useWeb3React();
+  const { active, library } = useWeb3React();
+  const { isConnected, address: walletAccount, connector } = useAccount();
   const { account: queryAccount } = useParams();
   let account;
   if (queryAccount && ethers.utils.isAddress(queryAccount)) {
@@ -42,7 +45,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     deserializer: deserializeSampleStats,
   });
   const { data: referralsData, loading } = useReferralsData(account);
-  const { userReferralCode, userReferralCodeString } = useUserReferralCode(library, chainId, account);
+  const { userReferralCode, userReferralCodeString } = useUserReferralCode(connector, chainId, account);
   const { codeOwner } = useCodeOwner(library, chainId, account, userReferralCode);
   const { referrerTier: traderTier } = useReferrerTier(library, chainId, codeOwner);
   const networkIcon = getIcon(chainId, "network");
@@ -74,7 +77,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
       return (
         <AddAffiliateCode
           handleCreateReferralCode={handleCreateReferralCode}
-          active={active}
+          active={isConnected}
           connectWallet={connectWallet}
           recentlyAddedCodes={recentlyAddedCodes}
           setRecentlyAddedCodes={setRecentlyAddedCodes}
@@ -89,7 +92,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
       return (
         <JoinReferralCode
           connectWallet={connectWallet}
-          active={active}
+          active={isConnected}
           setPendingTxns={setPendingTxns}
           pendingTxns={pendingTxns}
         />

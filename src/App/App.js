@@ -87,8 +87,6 @@ import {
 } from "config/localStorage";
 import {
   activateInjectedProvider,
-  clearWalletConnectData,
-  clearWalletLinkData,
   getInjectedHandler,
   getWalletConnectHandler,
   hasCoinBaseWalletExtension,
@@ -102,6 +100,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { isDevelopment } from "config/env";
 import Button from "components/Button/Button";
 import { roundToTwoDecimals } from "lib/numbers";
+import { useDisconnect } from "wagmi";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -140,6 +139,7 @@ function getWsProvider(active, chainId) {
 }
 
 function FullApp() {
+  const { disconnect } = useDisconnect();
   const isHome = isHomeSite();
   const exchangeRef = useRef();
   const { connector, library, deactivate, activate, active } = useWeb3React();
@@ -184,17 +184,18 @@ function FullApp() {
 
   const disconnectAccount = useCallback(() => {
     // only works with WalletConnect
-    clearWalletConnectData();
+    // clearWalletConnectData();
     // force clear localStorage connection for MM/CB Wallet (Brave legacy)
-    clearWalletLinkData();
-    deactivate();
-  }, [deactivate]);
+    // clearWalletLinkData();
+
+    disconnect();
+  }, [disconnect]);
 
   const disconnectAccountAndCloseSettings = () => {
     disconnectAccount();
     localStorage.removeItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY);
     localStorage.removeItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY);
-    setIsSettingsVisible(false);
+    // setIsSettingsVisible(false);
   };
 
   const connectInjectedWallet = getInjectedHandler(activate, deactivate);

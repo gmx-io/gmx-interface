@@ -7,14 +7,10 @@ import { ARBITRUM } from "config/chains";
 import { helperToast } from "lib/helperToast";
 import { useDebounce } from "lib/useDebounce";
 import Button from "components/Button/Button";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 
-function AddAffiliateCode({
-  handleCreateReferralCode,
-  active,
-  connectWallet,
-  setRecentlyAddedCodes,
-  recentlyAddedCodes,
-}) {
+function AddAffiliateCode({ handleCreateReferralCode, active, setRecentlyAddedCodes, recentlyAddedCodes }) {
+  const { openConnectModal } = useConnectModal();
   return (
     <div className="referral-card section-center mt-medium">
       <h2 className="title">
@@ -33,7 +29,7 @@ function AddAffiliateCode({
             setRecentlyAddedCodes={setRecentlyAddedCodes}
           />
         ) : (
-          <Button variant="primary-action" className="w-full" onClick={connectWallet}>
+          <Button variant="primary-action" className="w-full" onClick={openConnectModal}>
             <Trans>Connect Wallet</Trans>
           </Button>
         )}

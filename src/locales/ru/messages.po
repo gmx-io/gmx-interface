@@ -794,6 +794,10 @@ msgstr "Подключить Кошелек"
 msgid "Connected to {0}"
 msgstr "Подключение к {0}"
 
+#: src/lib/wallets/index.tsx
+msgid "Connection to {0} failed!"
+msgstr ""
+
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Continue"
@@ -4023,6 +4027,10 @@ msgstr "{0} Требуется"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
 msgstr "{0} превышает целевой вес.<0/><1/>Получите меньшую комиссию, чтобы <2>обменять</2> токены на {1}."
+
+#: src/lib/wallets/index.tsx
+msgid "{0} is added to the wallet!"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."

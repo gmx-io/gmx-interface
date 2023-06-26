@@ -794,6 +794,10 @@ msgstr "지갑 연동"
 msgid "Connected to {0}"
 msgstr "{0}에 연동하기"
 
+#: src/lib/wallets/index.tsx
+msgid "Connection to {0} failed!"
+msgstr ""
+
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Continue"
@@ -4023,6 +4027,10 @@ msgstr "{0} 요구됨"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
 msgstr "{0}은 목표 가중치를 초과 했습니다.<0/><1/>토큰을 {1}로 <2>스왑</2>하는 수수료가 감소합니다."
+
+#: src/lib/wallets/index.tsx
+msgid "{0} is added to the wallet!"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."

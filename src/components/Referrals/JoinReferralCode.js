@@ -5,8 +5,10 @@ import { setTraderReferralCodeByUser, validateReferralCodeExists } from "domain/
 import { REFERRAL_CODE_REGEX } from "./referralsHelper";
 import { useDebounce } from "lib/useDebounce";
 import Button from "components/Button/Button";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 
-function JoinReferralCode({ setPendingTxns, pendingTxns, active, connectWallet }) {
+function JoinReferralCode({ setPendingTxns, pendingTxns, active }) {
+  const { openConnectModal } = useConnectModal();
   return (
     <div className="referral-card section-center mt-medium">
       <h2 className="title">
@@ -19,7 +21,7 @@ function JoinReferralCode({ setPendingTxns, pendingTxns, active, connectWallet }
         {active ? (
           <ReferralCodeForm setPendingTxns={setPendingTxns} pendingTxns={pendingTxns} />
         ) : (
-          <Button variant="primary-action" className="w-full" type="submit" onClick={connectWallet}>
+          <Button variant="primary-action" className="w-full" type="submit" onClick={openConnectModal}>
             <Trans>Connect Wallet</Trans>
           </Button>
         )}
