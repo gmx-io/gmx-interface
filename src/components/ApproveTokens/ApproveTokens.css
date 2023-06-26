@@ -1,0 +1,44 @@
+.Approve-tokens-modal-body {
+  width: 60vw; /* 60% of viewport width */
+  height: 40vh; /* 40% of viewport height */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.Approve-tokens-section-top {
+  padding-bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.Approve-tokens-section-bottom {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  padding-bottom: 0.31rem;
+  width: 100%;
+}
+
+.code {
+  display: inline-block;
+  font-family: "Courier New", monospace;
+  background-color: #f0f0f0;
+  padding: 0.2em 0.4em;
+  margin: 0;
+  font-size: 100%;
+  border-radius: 6px;
+  font-weight: bold;
+  font-colour: #eb5756;
+  background-color: #a08e86;
+}
+
+.checkbox-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  font-size: 15px;
+  padding: 15px;
+  gap: 5px;
+}

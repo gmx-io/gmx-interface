@@ -345,6 +345,33 @@
 .Wallet-btn:not(:last-child) {
   margin-bottom: 1.05rem;
 }
+.Wallet-btn-approve {
+  display: block;
+  box-shadow: inset 0px 0px 1rem 0.5rem rgba(27, 30, 46, 0.2);
+  background: var(--dark-blue);
+  height: 5.1rem;
+  width: 26.35rem;
+  border: 1px solid var(--dark-blue-border);
+  border-radius: 0.3rem;
+  position: relative;
+  color: white;
+  font-size: 2rem;
+  display: flex; /* changed to flex from grid */
+  justify-content: center;
+  padding-left: 1.85rem;
+  padding-top: 1.05rem;
+}
+
+.Wallet-btn-approve:hover {
+  background: var(--dark-blue-hover);
+  border-color: var(--dark-blue-border);
+}
+.Wallet-btn-approve:active {
+  background: var(--dark-blue-active);
+}
+.Wallet-btn-approve:not(:last-child) {
+  margin-bottom: 1.05rem;
+}
 
 .MetaMask-btn img {
   display: inline-block;

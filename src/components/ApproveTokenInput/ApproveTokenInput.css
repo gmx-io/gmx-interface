@@ -1,0 +1,44 @@
+.Approve-token-input-section-bottom {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  padding-bottom: 0.31rem;
+  position: relative; /* Added for absolute positioning of MAX button */
+}
+
+.Approve-tokens-input-section {
+  min-height: 9.2rem;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-top: 1rem; /* Set the size of the top margin */
+  margin-bottom: 1rem; /* Set the size of the bottom margin */
+  background-color: rgba(0, 0, 0, 0.2); /* Set the background color to black with 20% opacity */
+  padding: 1rem;
+}
+
+.Approve-token-input-max {
+  position: absolute;
+  right: 1.25rem;
+  top: 50%; /* Adjusted for center alignment */
+  transform: translateY(-50%);
+  color: #fff;
+  z-index: 1;
+  cursor: pointer;
+  font-size: var(--font-sm);
+  background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, rgba(46, 61, 205, 1) 100%);
+}
+
+.Approve-token-input-max:hover {
+  color: rgba(255, 255, 255, 1);
+  background: linear-gradient(90deg, rgba(58, 78, 252, 1) 0%, rgba(51, 68, 222, 1) 100%);
+}
+
+.Approve-tokens-input-section-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.Approve-tokens-input-section-wrapper > * + * {
+  margin-left: 2.5rem; /* equivalent to Tailwind's 10 spacing unit */
+}

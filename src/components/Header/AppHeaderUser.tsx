@@ -90,7 +90,6 @@ export function AppHeaderUser({
       };
 
       checkAndCreateUser();
-      setWalletModalVisible(false);
     }
   }, [account, active, setWalletModalVisible]);
 

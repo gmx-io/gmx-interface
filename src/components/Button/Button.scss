@@ -25,6 +25,22 @@
     }
   }
 
+  &.approved {
+    background: #59923f; // You'll have to define this variable with your chosen green color
+    color: #fff; // Set the text color as needed
+    border-radius: 0.3rem;
+    padding: 1.65rem 1.6rem;
+    line-height: 1;
+
+    &:not([disabled]):hover {
+      background: #68aa49; // Define this with a suitable hover color
+    }
+
+    &:not([disabled]):active {
+      background-color: #59923f; // Define this with a suitable active color
+    }
+  }
+
   &.primary-action {
     background: linear-gradient(90deg, #2d42fc, #2e3dcd);
     color: #fff;
