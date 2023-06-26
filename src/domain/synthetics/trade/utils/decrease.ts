@@ -180,8 +180,7 @@ export function getDecreasePositionAmounts(p: {
     isLong,
   });
 
-  // TODO: check sizeDeltaInTokens?
-  values.realizedPnl = values.estimatedPnl.mul(values.sizeDeltaUsd).div(position.sizeInUsd);
+  values.realizedPnl = values.estimatedPnl.mul(values.sizeDeltaInTokens).div(position.sizeInTokens);
   values.estimatedPnlPercentage = !estimatedCollateralUsd.eq(0)
     ? getBasisPoints(values.estimatedPnl, estimatedCollateralUsd)
     : BigNumber.from(0);
@@ -519,6 +518,7 @@ export function getNextPositionValuesForDecreaseTrade(p: {
     collateralToken,
     sizeDeltaUsd,
     sizeDeltaInTokens,
+    realizedPnl,
     estimatedPnl,
     collateralDeltaUsd,
     collateralDeltaAmount,
@@ -550,10 +550,7 @@ export function getNextPositionValuesForDecreaseTrade(p: {
     nextCollateralAmount = BigNumber.from(0);
   }
 
-  const nextPnl =
-    estimatedPnl && existingPosition
-      ? estimatedPnl.mul(sizeDeltaInTokens).div(existingPosition.sizeInTokens)
-      : BigNumber.from(0);
+  const nextPnl = estimatedPnl ? estimatedPnl.sub(realizedPnl) : BigNumber.from(0);
 
   const nextPnlPercentage = !nextCollateralUsd.eq(0) ? getBasisPoints(nextPnl, nextCollateralUsd) : BigNumber.from(0);
 
