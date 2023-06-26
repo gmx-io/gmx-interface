@@ -7,7 +7,7 @@ import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics
 import { getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { DUST_USD } from "lib/legacy";
-import { applyFactor, getBasisPoints } from "lib/numbers";
+import { applyFactor, getBasisPoints, roundUpDivision } from "lib/numbers";
 import { DecreasePositionAmounts, NextPositionValues } from "../types";
 import { getAcceptablePriceInfo, getMarkPrice, getTriggerDecreaseOrderType, getTriggerThresholdType } from "./prices";
 
@@ -108,7 +108,6 @@ export function getDecreasePositionAmounts(p: {
   }
 
   values.sizeDeltaUsd = closeSizeUsd;
-  values.sizeDeltaInTokens = convertToTokenAmount(values.sizeDeltaUsd, indexToken.decimals, values.indexPrice)!;
 
   if (!position) {
     const acceptablePriceInfo = getAcceptablePriceInfo({
@@ -144,23 +143,17 @@ export function getDecreasePositionAmounts(p: {
     values.collateralPrice
   )!;
 
+  let estimatedCollateralDeltaUsd = BigNumber.from(0);
+
   if (keepLeverage && position.sizeInUsd.gt(0)) {
-    values.collateralDeltaUsd = values.sizeDeltaUsd.mul(estimatedCollateralUsd).div(position.sizeInUsd);
-    values.collateralDeltaAmount = convertToTokenAmount(
-      values.collateralDeltaUsd,
-      collateralToken.decimals,
-      values.collateralPrice
-    )!;
-  } else {
-    values.collateralDeltaUsd = BigNumber.from(0);
-    values.collateralDeltaAmount = BigNumber.from(0);
+    estimatedCollateralDeltaUsd = values.sizeDeltaUsd.mul(estimatedCollateralUsd).div(position.sizeInUsd);
   }
 
   values.isFullClose = getIsFullClose({
     position,
     sizeDeltaUsd: values.sizeDeltaUsd,
     indexPrice: values.indexPrice,
-    remainingCollateralUsd: estimatedCollateralUsd.sub(values.collateralDeltaUsd),
+    remainingCollateralUsd: estimatedCollateralUsd.sub(estimatedCollateralDeltaUsd),
     minCollateralUsd,
     minPositionSizeUsd,
   });
@@ -168,8 +161,12 @@ export function getDecreasePositionAmounts(p: {
   if (values.isFullClose) {
     values.sizeDeltaUsd = position.sizeInUsd;
     values.sizeDeltaInTokens = position.sizeInTokens;
-    values.collateralDeltaAmount = position.collateralAmount;
-    values.collateralDeltaUsd = estimatedCollateralUsd;
+  } else {
+    if (position.isLong) {
+      values.sizeDeltaInTokens = roundUpDivision(position.sizeInTokens.mul(values.sizeDeltaUsd), position.sizeInUsd);
+    } else {
+      values.sizeDeltaInTokens = position.sizeInTokens.mul(values.sizeDeltaUsd).div(position.sizeInUsd);
+    }
   }
 
   // PNL
@@ -181,27 +178,26 @@ export function getDecreasePositionAmounts(p: {
     isLong,
   });
 
-  // TODO: check sizeDeltaInTokens?
   values.realizedPnl = values.estimatedPnl.mul(values.sizeDeltaUsd).div(position.sizeInUsd);
   values.estimatedPnlPercentage = !estimatedCollateralUsd.eq(0)
     ? getBasisPoints(values.estimatedPnl, estimatedCollateralUsd)
     : BigNumber.from(0);
 
   // Collateral delta
-  if (values.isFullClose) {
-    values.collateralDeltaUsd = estimatedCollateralUsd;
-    values.collateralDeltaAmount = position.collateralAmount;
-  } else if (keepLeverage && position.sizeInUsd.gt(0)) {
-    values.collateralDeltaUsd = values.sizeDeltaUsd.mul(estimatedCollateralUsd).div(position.sizeInUsd);
-    values.collateralDeltaAmount = convertToTokenAmount(
-      values.collateralDeltaUsd,
-      collateralToken.decimals,
-      values.collateralPrice
-    )!;
-  } else {
-    values.collateralDeltaUsd = BigNumber.from(0);
-    values.collateralDeltaAmount = BigNumber.from(0);
-  }
+  // if (values.isFullClose) {
+  //   values.collateralDeltaUsd = estimatedCollateralUsd;
+  //   values.collateralDeltaAmount = position.collateralAmount;
+  // } else if (keepLeverage && position.sizeInUsd.gt(0)) {
+  //   values.collateralDeltaUsd = values.sizeDeltaUsd.mul(estimatedCollateralUsd).div(position.sizeInUsd);
+  //   values.collateralDeltaAmount = convertToTokenAmount(
+  //     values.collateralDeltaUsd,
+  //     collateralToken.decimals,
+  //     values.collateralPrice
+  //   )!;
+  // } else {
+  //   values.collateralDeltaUsd = BigNumber.from(0);
+  //   values.collateralDeltaAmount = BigNumber.from(0);
+  // }
 
   const acceptablePriceInfo = getAcceptablePriceInfo({
     marketInfo,
@@ -290,15 +286,40 @@ export function getDecreasePositionAmounts(p: {
     remainingCollateralAmount: position.collateralAmount,
   });
 
-  values.receiveTokenAmount = payedInfo.outputAmount.add(values.collateralDeltaAmount);
-  values.receiveUsd = convertToUsd(values.receiveTokenAmount, collateralToken.decimals, values.collateralPrice)!;
-
   values.payedOutputUsd = convertToUsd(payedInfo.paidOutputAmount, collateralToken.decimals, values.collateralPrice)!;
   values.payedRemainingCollateralUsd = convertToUsd(
     payedInfo.paidRemainingCollateralAmount,
     collateralToken.decimals,
     values.collateralPrice
   )!;
+
+  values.receiveTokenAmount = payedInfo.outputAmount;
+
+  const remainigCollateralAmount = payedInfo.remainingCollateralAmount;
+  const remainingCollateralUsd = convertToUsd(
+    remainigCollateralAmount,
+    collateralToken.decimals,
+    values.collateralPrice
+  )!;
+
+  // Collateral delta
+  if (values.isFullClose) {
+    values.collateralDeltaUsd = estimatedCollateralUsd;
+    values.collateralDeltaAmount = position.collateralAmount;
+  } else if (keepLeverage && position.sizeInUsd.gt(0)) {
+    values.collateralDeltaUsd = values.sizeDeltaUsd.mul(remainingCollateralUsd).div(position.sizeInUsd);
+    values.collateralDeltaAmount = convertToTokenAmount(
+      values.collateralDeltaUsd,
+      collateralToken.decimals,
+      values.collateralPrice
+    )!;
+  } else {
+    values.collateralDeltaUsd = BigNumber.from(0);
+    values.collateralDeltaAmount = BigNumber.from(0);
+  }
+
+  values.receiveTokenAmount = payedInfo.outputAmount.add(values.collateralDeltaAmount);
+  values.receiveUsd = convertToUsd(values.receiveTokenAmount, collateralToken.decimals, values.collateralPrice)!;
 
   return values;
 }
