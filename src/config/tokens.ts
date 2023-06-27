@@ -225,7 +225,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
     },
     {
-      name: "USD Coin (USDC)",
+      name: "USD Coin",
       symbol: "USDC",
       decimals: 6,
       address: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
@@ -318,7 +318,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
     },
     {
-      name: "USD Coin (USDC.e)",
+      name: "Bridged USDC (USDC.e)",
       symbol: "USDC.e",
       address: "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
       decimals: 6,
