@@ -102,6 +102,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { isDevelopment } from "config/env";
 import Button from "components/Button/Button";
 import { roundToTwoDecimals } from "lib/numbers";
+import { MAX_SLIPPAGE, VALID_SLIPPAGE_REGEX } from "config/ui";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -613,19 +614,31 @@ function FullApp() {
           </div>
           <div className="App-slippage-tolerance-input-container">
             <input
-              type="number"
+              type="text"
               className="App-slippage-tolerance-input"
-              min="0"
               value={slippageAmount}
+              placeholder="0.3"
               onChange={(e) => {
-                const regex = /^\d+(\.\d+)?$/;
+                const maxSlippagePercentage = MAX_SLIPPAGE / 100;
                 let value = e.target.value;
+
+                if (value === "") {
+                  setSlippageAmount(value);
+                }
+
                 if (value === ".") {
                   value = "0.";
                 }
-                if (value && regex.test(value)) {
-                  setSlippageAmount(value);
+
+                if (!VALID_SLIPPAGE_REGEX.test(value)) {
+                  return;
                 }
+
+                if (value > maxSlippagePercentage) {
+                  value = maxSlippagePercentage;
+                }
+
+                setSlippageAmount(value);
               }}
             />
             <div className="App-slippage-tolerance-input-percent">%</div>
