@@ -105,6 +105,7 @@ export function useReferralsData(account?: string | null) {
             account: (account || "").toLowerCase(),
             referralTotalStatsId: account && `total:0:${account.toLowerCase()}`,
           },
+          fetchPolicy: "no-cache",
         })
         .then((res) => {
           const affiliateDistributions: RebateDistribution[] = [];

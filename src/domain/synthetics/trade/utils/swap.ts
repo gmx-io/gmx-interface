@@ -1,6 +1,7 @@
 import { TokenData, TokensRatio, convertToTokenAmount, convertToUsd, getAmountByRatio } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { FindSwapPath, SwapAmounts } from "../types";
+import { getIsEquivalentTokens } from "domain/tokens";
 
 export function getSwapAmountsByFromValue(p: {
   tokenIn: TokenData;
@@ -34,6 +35,24 @@ export function getSwapAmountsByFromValue(p: {
 
   if (amountIn.lte(0)) {
     return defaultAmounts;
+  }
+
+  // TODO: refactor
+  if (getIsEquivalentTokens(tokenIn, tokenOut)) {
+    amountOut = amountIn;
+    usdOut = usdIn;
+    minOutputAmount = amountOut;
+
+    return {
+      amountIn,
+      usdIn,
+      amountOut,
+      usdOut,
+      minOutputAmount,
+      priceIn,
+      priceOut,
+      swapPathStats: undefined,
+    };
   }
 
   const swapPathStats = findSwapPath(defaultAmounts.usdIn, { shouldApplyPriceImpact: true });
@@ -115,6 +134,22 @@ export function getSwapAmountsByToValue(p: {
 
   if (amountOut.lte(0)) {
     return defaultAmounts;
+  }
+
+  if (getIsEquivalentTokens(tokenIn, tokenOut)) {
+    amountIn = amountOut;
+    usdIn = usdOut;
+
+    return {
+      amountIn,
+      usdIn,
+      amountOut,
+      usdOut,
+      minOutputAmount,
+      priceIn,
+      priceOut,
+      swapPathStats: undefined,
+    };
   }
 
   const baseUsdIn = usdOut;

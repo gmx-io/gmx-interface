@@ -1,0 +1,73 @@
+.buy-input {
+  .buy-input-top-row {
+    display: inline-flex;
+    justify-content: space-between;
+    font-size: 1.4rem;
+  }
+  .InputSection-static-input {
+    font-size: var(--font-lg);
+  }
+
+  &.Exchange-swap-section {
+    min-height: 9.2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .TokenSelector-box {
+      display: flex;
+      align-items: center;
+      border-radius: 0.4rem;
+      color: #ffffff;
+      min-width: 4.65rem;
+      font-size: 2.1rem;
+      line-height: 2.5rem;
+      justify-content: flex-end;
+
+      &:hover {
+        color: #7885ff;
+      }
+
+      &-symbol {
+        margin-left: 0.8rem;
+      }
+    }
+
+    .Exchange-swap-input-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .Exchange-swap-max {
+      position: unset;
+      color: white;
+      font-size: var(--font-sm);
+    }
+
+    .TokenSelector-caret {
+      margin: 0;
+      margin-right: -0.5rem;
+    }
+
+    .PositionEditor-token-symbol {
+      display: flex;
+      align-items: center;
+      margin-left: 1.4rem;
+
+      img {
+        margin-left: 0.8rem;
+        display: none;
+      }
+    }
+
+    &-top {
+      padding-bottom: 0;
+    }
+
+    .selected-token {
+      display: flex;
+      align-items: center;
+    }
+  }
+}

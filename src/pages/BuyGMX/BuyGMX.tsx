@@ -71,7 +71,7 @@ export default function BuyGMX() {
                 <Trans>Buy or Transfer ETH to Arbitrum</Trans>
               </div>
               <div className="Page-description">
-                <Trans>Buy ETH directly to Arbitrum or transfer it there.</Trans>
+                <Trans>Buy ETH directly on Arbitrum or transfer it there.</Trans>
               </div>
             </div>
           </div>
@@ -110,7 +110,8 @@ export default function BuyGMX() {
                   const link = exchange.links[chainId];
                   return (
                     <Button
-                      variant="clear"
+                      variant="secondary"
+                      textAlign="left"
                       key={exchange.name}
                       to={link}
                       imgInfo={{ src: icon, alt: exchange.name }}
@@ -140,7 +141,8 @@ export default function BuyGMX() {
                   const link = exchange.links[chainId];
                   return (
                     <Button
-                      variant="clear"
+                      variant="secondary"
+                      textAlign="left"
                       key={exchange.name}
                       to={link}
                       imgInfo={{ src: icon, alt: exchange.name }}
@@ -163,7 +165,7 @@ export default function BuyGMX() {
 function DecentralisedExchanges({ chainId, externalLinks }) {
   const isArbitrum = chainId === ARBITRUM;
   return (
-    <Card title={t`Buy GMX from a Decentralized Exchange`}>
+    <Card title={t`Buy GMX from decentralized exchanges`}>
       <div className="App-card-content">
         {isArbitrum ? (
           <div className="exchange-info-group">
@@ -172,7 +174,8 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
             </div>
             <div className="buttons-group col-1">
               <Button
-                variant="clear"
+                variant="secondary"
+                textAlign="left"
                 imgInfo={{ src: uniswapArbitrumIcon, alt: "Uniswap" }}
                 to={externalLinks.buyGmx.uniswap}
                 newTab
@@ -188,7 +191,8 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
             </div>
             <div className="buttons-group col-1">
               <Button
-                variant="clear"
+                variant="secondary"
+                textAlign="left"
                 to={externalLinks.buyGmx.traderjoe}
                 imgInfo={{ src: traderjoeIcon, alt: "Traderjoe" }}
                 newTab
@@ -208,7 +212,8 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
               const link = exchange.links[chainId];
               return (
                 <Button
-                  variant="clear"
+                  variant="secondary"
+                  textAlign="left"
                   key={exchange.name}
                   to={link}
                   imgInfo={{ src: icon, alt: exchange.name }}
@@ -230,7 +235,8 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
               const link = exchange.links[chainId];
               return (
                 <Button
-                  variant="clear"
+                  variant="secondary"
+                  textAlign="left"
                   key={exchange.name}
                   to={link}
                   imgInfo={{ src: icon, alt: exchange.name }}
@@ -249,7 +255,8 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
             </div>
             <div className="buttons-group col-1">
               <Button
-                variant="clear"
+                variant="secondary"
+                textAlign="left"
                 to={"https://app.bondprotocol.finance/#/issuers/GMX"}
                 imgInfo={{ src: bondProtocolIcon, alt: "Bond Protocol" }}
                 newTab
@@ -278,7 +285,8 @@ function CentralisedExchanges({ chainId }) {
               const link = exchange.links[chainId];
               return (
                 <Button
-                  variant="clear"
+                  variant="secondary"
+                  textAlign="left"
                   key={exchange.name}
                   to={link}
                   imgInfo={{ src: icon, alt: exchange.name }}
@@ -302,7 +310,8 @@ function CentralisedExchanges({ chainId }) {
 
               return (
                 <Button
-                  variant="clear"
+                  variant="secondary"
+                  textAlign="left"
                   key={exchange.name}
                   to={link}
                   imgInfo={{ src: icon, alt: exchange.name }}

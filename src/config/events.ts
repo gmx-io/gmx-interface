@@ -6,7 +6,7 @@ export type EventData = {
   isActive?: boolean;
   validTill: string;
   bodyText: string | string[];
-  buttons: {
+  buttons?: {
     text: string;
     link: string;
     newTab: boolean;
@@ -16,29 +16,19 @@ export type EventData = {
 export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
-  // {
-  //   id: "glp-manager-updates",
-  //   title: "GLP Manager Updates",
-  //   isActive: true,
-  //   validTill: "18 Dec 2022, 12:00",
-  //   bodyText:
-  //     "The GLP Manager address has been updated based on the linked post, existing users will need to approve the new GLP Manager to buy GLP tokens.",
-  //   buttons: [
-  //     {
-  //       text: "Read More",
-  //       link: "https://medium.com/@gmx.io/gmx-deployment-updates-nov-2022-16572314874d",
-  //       newTab: true,
-  //     },
-  //   ],
-  // },
-  // {
   {
-    id: "contracts-updade-2",
-    title: "New V2 contracts deployment",
+    id: "usdc-to-usdce",
+    title: "USDC renamed to USDC.e",
     isActive: true,
-    validTill: "30 Jun 2023, 23:00",
+    validTill: "17 Jun 2023, 12:00",
     bodyText:
-      "New testnet V2 contracts will be deployed this week on the Avalanche Fuji and Arbitrum Goerli, testnet data will be cleared. For testnet users, positions can be closed beforehand if it is desired to retain the testnet funds in the position collateral.",
-    buttons: [],
+      "Since native USDC is available on Arbitrum, the Ethereum-bridged version of USDC has been renamed to USDC.e.",
+    buttons: [
+      {
+        text: "Read More",
+        link: "https://www.circle.com/blog/arbitrum-usdc-now-available",
+        newTab: true,
+      },
+    ],
   },
 ];

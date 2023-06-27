@@ -2,7 +2,6 @@ import { Trans, plural, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import cx from "classnames";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
-import Checkbox from "components/Checkbox/Checkbox";
 import Modal from "components/Modal/Modal";
 import { getContract } from "config/contracts";
 import { getToken } from "config/tokens";
@@ -23,9 +22,9 @@ import { GmFees } from "../GmFees/GmFees";
 
 import Button from "components/Button/Button";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import "./GmConfirmationBox.scss";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "lib/legacy";
 import { useState } from "react";
+import "./GmConfirmationBox.scss";
 
 type Props = {
   isVisible: boolean;
@@ -190,13 +189,6 @@ export function GmConfirmationBox({
       };
     }
 
-    if (isHighPriceImpact && !isHighPriceImpactAccepted) {
-      return {
-        text: t`Need to accept Price Impact`,
-        disabled: true,
-      };
-    }
-
     if (tokensToApprove.length > 0 && marketToken) {
       const symbols = tokensToApprove.map((address) => {
         return address === marketToken.address ? "GM" : getTokenData(tokensData, address)!.symbol;
@@ -222,6 +214,7 @@ export function GmConfirmationBox({
         setIsSubmitting(true);
 
         let txnPromise: Promise<any>;
+
         if (isDeposit) {
           txnPromise = onCreateDeposit();
         } else {
@@ -323,9 +316,9 @@ export function GmConfirmationBox({
               swapPriceImpact={fees?.swapPriceImpact}
               executionFee={executionFee}
             />
-            {(isHighPriceImpact || tokensToApprove?.length > 0) && <div className="line-divider" />}
+            {tokensToApprove?.length > 0 && <div className="line-divider" />}
 
-            {isHighPriceImpact && (
+            {/* {isHighPriceImpact && (
               <div className="GmSwapBox-warnings">
                 <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
                   <span className="muted font-sm">
@@ -333,7 +326,7 @@ export function GmConfirmationBox({
                   </span>
                 </Checkbox>
               </div>
-            )}
+            )} */}
 
             {tokensToApprove && tokensToApprove.length > 0 && (
               <div>
@@ -352,7 +345,7 @@ export function GmConfirmationBox({
 
             <div className="Confirmation-box-row">
               <Button
-                className="w-100"
+                className="w-full"
                 variant="primary-action"
                 onClick={submitButtonState.onClick}
                 disabled={submitButtonState.disabled}

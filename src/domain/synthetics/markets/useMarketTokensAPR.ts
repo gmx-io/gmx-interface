@@ -74,7 +74,7 @@ export function useMarketTokensAPR(
         return acc;
       }, "");
 
-      const { data: response } = await client!.query({ query: gql(`{${queryBody}}`) });
+      const { data: response } = await client!.query({ query: gql(`{${queryBody}}`), fetchPolicy: "no-cache" });
 
       const marketTokensAPRData: MarketTokensAPRData = marketAddresses.reduce((acc, marketAddress) => {
         const market = marketsInfoData![marketAddress]!;

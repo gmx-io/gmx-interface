@@ -6,6 +6,7 @@ import { SetPendingWithdrawal } from "context/SyntheticsEvents";
 import { BigNumber, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { isAddressZero } from "lib/legacy";
+import { applySlippageToMinOut } from "../trade";
 
 type Params = {
   account: string;
@@ -34,8 +35,8 @@ export function createWithdrawalTxn(chainId: number, library: Web3Provider, p: P
   const initialLongTokenAddress = convertTokenAddress(chainId, p.initialLongTokenAddress, "wrapped");
   const initialShortTokenAddress = convertTokenAddress(chainId, p.initialShortTokenAddress, "wrapped");
 
-  const minLongTokenAmount = p.minLongTokenAmount.div(2);
-  const minShortTokenAmount = p.minShortTokenAmount.div(2);
+  const minLongTokenAmount = applySlippageToMinOut(p.allowedSlippage, p.minLongTokenAmount);
+  const minShortTokenAmount = applySlippageToMinOut(p.allowedSlippage, p.minShortTokenAmount);
 
   const multicall = [
     { method: "sendWnt", params: [withdrawalVaultAddress, wntAmount] },

@@ -24,12 +24,12 @@ export function PositionList(p: Props) {
 
   return (
     <div>
+      {positions.length === 0 && (
+        <div className="Exchange-empty-positions-list-note App-card small">
+          {isDataLoading ? t`Loading...` : t`No open positions`}
+        </div>
+      )}
       <div className="Exchange-list small">
-        {positions.length === 0 && (
-          <div className="Exchange-empty-positions-list-note App-card">
-            {isDataLoading ? t`Loading...` : t`No open positions`}
-          </div>
-        )}
         {!isDataLoading &&
           positions.map((position) => (
             <PositionItem

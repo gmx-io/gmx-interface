@@ -20,7 +20,6 @@ import {
   estimateExecuteIncreaseOrderGasLimit,
   getExecutionFee,
   getFeeItem,
-  getPositionFee,
   getTotalFeeItem,
   useGasLimits,
   useGasPrice,
@@ -204,7 +203,7 @@ export function PositionEditor(p: Props) {
       collateralToken: position.collateralToken,
       marketInfo: position.marketInfo,
       markPrice: position.markPrice,
-      closingFeeUsd: getPositionFee(position.marketInfo, position.sizeInUsd, userReferralInfo).positionFeeUsd,
+      userReferralInfo,
       pendingFundingFeesUsd: BigNumber.from(0),
       pendingBorrowingFeesUsd: BigNumber.from(0),
       isLong: position.isLong,
@@ -418,7 +417,7 @@ export function PositionEditor(p: Props) {
             <BuyInputSection
               topLeftLabel={operationLabels[operation] + `:`}
               topLeftValue={formatUsd(collateralDeltaUsd)}
-              topRightLabel={t`Max` + `:`}
+              topRightLabel={t`Max`}
               topRightValue={
                 isDeposit
                   ? formatTokenAmount(collateralToken?.balance, collateralToken?.decimals)
@@ -433,9 +432,9 @@ export function PositionEditor(p: Props) {
               }
               onClickMax={() =>
                 isDeposit
-                  ? setCollateralInputValue(formatAmountFree(collateralToken!.balance!, collateralToken!.decimals, 4))
+                  ? setCollateralInputValue(formatAmountFree(collateralToken!.balance!, collateralToken!.decimals))
                   : setCollateralInputValue(
-                      formatAmountFree(maxWithdrawAmount!, position?.collateralToken?.decimals || 0, 6)
+                      formatAmountFree(maxWithdrawAmount!, position?.collateralToken?.decimals || 0)
                     )
               }
             >
@@ -450,6 +449,7 @@ export function PositionEditor(p: Props) {
                   className="Edit-collateral-token-selector"
                   showSymbolImage={true}
                   showTokenImgInDropdown={true}
+                  showBalances={false}
                 />
               ) : (
                 collateralToken?.symbol
@@ -457,8 +457,6 @@ export function PositionEditor(p: Props) {
             </BuyInputSection>
 
             <div className="PositionEditor-info-box">
-              {executionFee?.warning && <div className="Confirmation-box-warning">{executionFee.warning}</div>}
-
               <ExchangeInfoRow
                 label={t`Leverage`}
                 value={<ValueTransition from={formatLeverage(position?.leverage)} to={formatLeverage(nextLeverage)} />}
@@ -479,7 +477,11 @@ export function PositionEditor(p: Props) {
                 value={
                   <ValueTransition
                     from={formatLiquidationPrice(position.liquidationPrice, { displayDecimals: indexPriceDecimals })}
-                    to={formatLiquidationPrice(nextLiqPrice, { displayDecimals: indexPriceDecimals })}
+                    to={
+                      collateralDeltaAmount?.gt(0)
+                        ? formatLiquidationPrice(nextLiqPrice, { displayDecimals: indexPriceDecimals })
+                        : undefined
+                    }
                   />
                 }
               />
@@ -508,7 +510,7 @@ export function PositionEditor(p: Props) {
                 </div>
               </div>
 
-              <TradeFeesRow {...fees} executionFee={executionFee} feesType={"edit"} />
+              <TradeFeesRow {...fees} executionFee={executionFee} feesType={"edit"} warning={executionFee?.warning} />
 
               {!isDeposit && (
                 <ExchangeInfoRow
@@ -537,7 +539,7 @@ export function PositionEditor(p: Props) {
             )}
 
             <div className="Exchange-swap-button-container Confirmation-box-row">
-              <Button className="w-100" variant="primary-action" onClick={onSubmit} disabled={Boolean(error)}>
+              <Button className="w-full" variant="primary-action" onClick={onSubmit} disabled={Boolean(error)}>
                 {error || operationLabels[operation]}
               </Button>
             </div>

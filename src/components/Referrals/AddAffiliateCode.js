@@ -33,7 +33,7 @@ function AddAffiliateCode({
             setRecentlyAddedCodes={setRecentlyAddedCodes}
           />
         ) : (
-          <Button variant="primary-action" className="w-100" onClick={connectWallet}>
+          <Button variant="primary-action" className="w-full" onClick={connectWallet}>
             <Trans>Connect Wallet</Trans>
           </Button>
         )}
@@ -169,7 +169,7 @@ export function AffiliateCodeForm({
         }}
       />
       {error && <p className="error">{error}</p>}
-      <Button variant="primary-action" className="w-100" type="submit" disabled={!isPrimaryEnabled()}>
+      <Button variant="primary-action" className="w-full" type="submit" disabled={!isPrimaryEnabled()}>
         {getPrimaryText()}
       </Button>
     </form>

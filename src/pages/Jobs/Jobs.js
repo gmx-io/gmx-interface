@@ -9,7 +9,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 
 function Jobs() {
   return (
-    <SEO title={getPageTitle("Job Openings")}>
+    <SEO title={getPageTitle(t`Job Openings`)}>
       <div className="default-container page-layout Referrals">
         <div className="section-title-block">
           <div className="section-title-icon" />

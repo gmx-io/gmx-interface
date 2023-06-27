@@ -42,16 +42,24 @@ export function getAcceptablePriceInfo(p: {
 
   // For Limit / Trigger orders
   if (maxNegativePriceImpactBps?.gt(0)) {
+    // for longs increase
+    // price delta is positive
+    // for longs decrease
+    // price delta is negative
+    // for short increase
+    // price delta is negative
+    // for short decrease
+    // price delta is positive
     let priceDelta = indexPrice.mul(maxNegativePriceImpactBps).div(BASIS_POINTS_DIVISOR);
     priceDelta = shouldFlipPriceImpact ? priceDelta?.mul(-1) : priceDelta;
 
     values.acceptablePrice = indexPrice.sub(priceDelta);
-    values.acceptablePriceDeltaBps = maxNegativePriceImpactBps;
+    values.acceptablePriceDeltaBps = maxNegativePriceImpactBps.mul(-1);
 
     const priceImpact = getPriceImpactByAcceptablePrice({
       sizeDeltaUsd,
       acceptablePrice: values.acceptablePrice,
-      indexPrice: indexPrice,
+      indexPrice,
       isLong,
       isIncrease,
     });
@@ -93,33 +101,13 @@ export function getAcceptablePriceInfo(p: {
     );
   }
 
-  //   if (sizeDeltaUsd > 0 && positionSizeInTokens > 0) {
-  //     cache.adjustedPriceImpactUsd = isLong ? priceImpactUsd : -priceImpactUsd;
-
-  //     if (cache.adjustedPriceImpactUsd < 0 && (-cache.adjustedPriceImpactUsd).toUint256() > sizeDeltaUsd) {
-  //         revert Errors.PriceImpactLargerThanOrderSize(cache.adjustedPriceImpactUsd, sizeDeltaUsd);
-  //     }
-
-  //     int256 adjustment = Precision.applyFraction(positionSizeInUsd, cache.adjustedPriceImpactUsd, positionSizeInTokens) / sizeDeltaUsd.toInt256();
-  //     int256 _executionPrice = cache.price.toInt256() + adjustment;
-
-  //     if (_executionPrice < 0) {
-  //         revert Errors.NegativeExecutionPrice(_executionPrice, cache.price, positionSizeInUsd, cache.adjustedPriceImpactUsd, sizeDeltaUsd);
-  //     }
-
-  //     cache.executionPrice = _executionPrice.toUint256();
-  // }
-
   const priceImpactForPriceAdjustment = shouldFlipPriceImpact
     ? values.priceImpactDeltaUsd.mul(-1)
     : values.priceImpactDeltaUsd;
 
   values.acceptablePrice = indexPrice.mul(sizeDeltaUsd.add(priceImpactForPriceAdjustment)).div(sizeDeltaUsd);
 
-  const priceDelta = indexPrice
-    .sub(values.acceptablePrice)
-    .abs()
-    .mul(values.priceImpactDeltaUsd.isNegative() ? -1 : 1);
+  const priceDelta = indexPrice.sub(values.acceptablePrice).mul(shouldFlipPriceImpact ? 1 : -1);
 
   values.acceptablePriceDeltaBps = getBasisPoints(priceDelta, p.indexPrice);
 

@@ -1,10 +1,13 @@
 import { Menu } from "@headlessui/react";
 import { Trans } from "@lingui/macro";
+import "./PositionDropdown.css";
 import { HiDotsVertical } from "react-icons/hi";
 import { AiOutlineEdit } from "react-icons/ai";
 import { BiSelectMultiple } from "react-icons/bi";
 import { RiShareBoxFill } from "react-icons/ri";
-import "./PositionDropdown.css";
+import increaseLimit from "img/ic_increaselimit_16.svg";
+import increaseMarket from "img/ic_increasemarket_16.svg";
+import triggerClose from "img/ic_triggerclose_16.svg";
 
 function PositionDropdown(p) {
   const {
@@ -54,7 +57,7 @@ function PositionDropdown(p) {
           {handleMarketIncreaseSize && (
             <Menu.Item>
               <div className="menu-item" onClick={handleMarketIncreaseSize}>
-                <BiSelectMultiple fontSize={16} />
+                <img src={increaseMarket} alt="Increase Limit" height={16} />
                 <p>
                   <Trans>Increase Size (Market)</Trans>
                 </p>
@@ -64,7 +67,7 @@ function PositionDropdown(p) {
           {handleLimitIncreaseSize && (
             <Menu.Item>
               <div className="menu-item" onClick={handleLimitIncreaseSize}>
-                <BiSelectMultiple fontSize={16} />
+                <img src={increaseLimit} alt="Increase Limit" height={16} />
                 <p>
                   <Trans>Increase Size (Limit)</Trans>
                 </p>
@@ -74,7 +77,7 @@ function PositionDropdown(p) {
           {handleTriggerClose && (
             <Menu.Item>
               <div className="menu-item" onClick={handleTriggerClose}>
-                <BiSelectMultiple fontSize={16} />
+                <img src={triggerClose} alt="Increase Limit" height={16} />
                 <p>
                   <Trans>Trigger Close</Trans>
                 </p>

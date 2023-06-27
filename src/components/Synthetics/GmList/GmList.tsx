@@ -131,9 +131,8 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
                     <td>{formatUsd(token.prices?.minPrice)}</td>
 
                     <td>
-                      {formatTokenAmount(token.balance, token.decimals, "GM")}
-                      <br />
-                      {formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice)) || "..."}
+                      {formatTokenAmount(token.balance, token.decimals, "GM", { useCommas: true })}
+                      <br />({formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice)) || "..."})
                     </td>
 
                     <td>{apr ? `${formatAmount(apr, 2, 2)}%` : "..."}</td>
@@ -142,21 +141,20 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
                       {formatTokenAmount(totalSupply, token.decimals, "GM", {
                         useCommas: true,
                       })}
-                      <br />
-                      {formatUsd(totalSupplyUsd)}
+                      <br />({formatUsd(totalSupplyUsd)})
                     </td>
 
                     <td className="GmList-actions">
                       <Button
                         className="GmList-action"
-                        variant="semi-clear"
+                        variant="secondary"
                         to={`/pools?operation=${Operation.Deposit}&market=${token.address}`}
                       >
                         <Trans>Buy</Trans>
                       </Button>
                       <Button
                         className="GmList-action GmList-last-action"
-                        variant="semi-clear"
+                        variant="secondary"
                         to={`/pools?operation=${Operation.Withdrawal}&market=${token.address}`}
                       >
                         <Trans>Sell</Trans>
@@ -244,11 +242,11 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
                     </div>
                     <div className="App-card-divider"></div>
                     <div className="App-card-buttons m-0">
-                      <Button variant="semi-clear" to={`/pools?operation=${Operation.Deposit}&market=${token.address}`}>
+                      <Button variant="secondary" to={`/pools?operation=${Operation.Deposit}&market=${token.address}`}>
                         <Trans>Buy</Trans>
                       </Button>
                       <Button
-                        variant="semi-clear"
+                        variant="secondary"
                         to={`/pools?operation=${Operation.Withdrawal}&market=${token.address}`}
                       >
                         <Trans>Sell</Trans>

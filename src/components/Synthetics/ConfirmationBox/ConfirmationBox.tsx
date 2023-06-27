@@ -414,7 +414,7 @@ export function ConfirmationBox(p: Props) {
       initialCollateralAddress: fromToken?.address,
       initialCollateralAmount: increaseAmounts.initialCollateralAmount,
       targetCollateralAddress: collateralToken.address,
-      collateralDeltaAmount: increaseAmounts.collateralAmountAfterFees,
+      collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
       swapPath: increaseAmounts.swapPathStats?.swapPath || [],
       sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
       sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
@@ -801,7 +801,6 @@ export function ConfirmationBox(p: Props) {
           {renderExistingLimitOrdersWarning()}
           {renderExistingTriggerErrors()}
           {renderExistingTriggerWarning()}
-          {p.executionFee?.warning && <div className="Confirmation-box-warning">{p.executionFee.warning}</div>}
           {isLimit && renderAvailableLiquidity()}
 
           <ExchangeInfoRow
@@ -878,8 +877,10 @@ export function ConfirmationBox(p: Props) {
             className="SwapBox-info-row"
             label={isMarket ? t`Price Impact` : t`Acceptable Price Impact`}
             value={
-              <span className={cx({ positive: isMarket && increaseAmounts?.acceptablePriceImpactBps?.gt(0) })}>
-                {formatPercentage(increaseAmounts?.acceptablePriceImpactBps?.mul(isMarket ? 1 : -1)) || "-"}
+              <span className={cx({ positive: isMarket && increaseAmounts?.acceptablePriceDeltaBps?.gt(0) })}>
+                {formatPercentage(increaseAmounts?.acceptablePriceDeltaBps, {
+                  signed: true,
+                }) || "-"}
               </span>
             }
           />
@@ -899,9 +900,13 @@ export function ConfirmationBox(p: Props) {
             label={t`Liq. Price`}
             value={
               <ValueTransition
-                from={formatLiquidationPrice(p.existingPosition?.liquidationPrice, {
-                  displayDecimals: existingPriceDecimals,
-                })}
+                from={
+                  p.existingPosition
+                    ? formatLiquidationPrice(p.existingPosition?.liquidationPrice, {
+                        displayDecimals: existingPriceDecimals,
+                      })
+                    : undefined
+                }
                 to={
                   formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
                     displayDecimals: toTokenPriceDecimals,
@@ -944,7 +949,7 @@ export function ConfirmationBox(p: Props) {
             </div>
             <div className="align-right">
               <Tooltip
-                handle={formatUsd(increaseAmounts?.collateralUsdAfterFees)}
+                handle={formatUsd(increaseAmounts?.collateralDeltaUsd)}
                 position="right-top"
                 renderContent={() => {
                   return (
@@ -960,8 +965,10 @@ export function ConfirmationBox(p: Props) {
                       <StatsTooltipRow
                         label={t`Fees`}
                         value={
-                          fees?.totalFees?.deltaUsd && !fees.totalFees.deltaUsd.eq(0)
-                            ? `${fees.totalFees.deltaUsd.gt(0) ? "+" : "-"}${formatUsd(fees.totalFees.deltaUsd.abs())}`
+                          fees?.payTotalFees?.deltaUsd && !fees.payTotalFees.deltaUsd.eq(0)
+                            ? `${fees.payTotalFees.deltaUsd.gt(0) ? "+" : "-"}${formatUsd(
+                                fees.payTotalFees.deltaUsd.abs()
+                              )}`
                             : "0.00$"
                         }
                         showDollar={false}
@@ -969,7 +976,7 @@ export function ConfirmationBox(p: Props) {
                       <div className="Tooltip-divider" />
                       <StatsTooltipRow
                         label={t`Collateral`}
-                        value={formatUsd(increaseAmounts?.collateralUsdAfterFees) || "-"}
+                        value={formatUsd(increaseAmounts?.collateralDeltaUsd) || "-"}
                         showDollar={false}
                       />
                     </>
@@ -987,6 +994,7 @@ export function ConfirmationBox(p: Props) {
             borrowFeeRateStr={borrowingRate && `-${formatAmount(borrowingRate, 30, 4)}% / 1h`}
             executionFee={p.executionFee}
             feesType="increase"
+            warning={p.executionFee?.warning}
           />
 
           {(decreaseOrdersThatWillBeExecuted?.length > 0 || isHighPriceImpact) && <div className="line-divider" />}
@@ -1050,7 +1058,15 @@ export function ConfirmationBox(p: Props) {
             })}
           </ExchangeInfoRow>
 
-          {!p.isWrapOrUnwrap && <TradeFeesRow {...fees} isTop executionFee={p.executionFee} feesType="swap" />}
+          {!p.isWrapOrUnwrap && (
+            <TradeFeesRow
+              {...fees}
+              isTop
+              executionFee={p.executionFee}
+              feesType="swap"
+              warning={p.executionFee?.warning}
+            />
+          )}
 
           <ExchangeInfoRow label={t`Min. Receive`} isTop>
             {formatTokenAmount(swapAmounts?.minOutputAmount, toToken?.decimals, toToken?.symbol)}
@@ -1079,13 +1095,11 @@ export function ConfirmationBox(p: Props) {
           {renderMain()}
 
           {isTrigger && existingPosition?.leverage && (
-            <div className="Exchange-leverage-slider-settings">
-              <Checkbox isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
-                <span className="muted font-sm">
-                  <Trans>Keep leverage at {formatLeverage(existingPosition.leverage)} </Trans>
-                </span>
-              </Checkbox>
-            </div>
+            <Checkbox asRow isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
+              <span className="muted font-sm">
+                <Trans>Keep leverage at {formatLeverage(existingPosition.leverage)} </Trans>
+              </span>
+            </Checkbox>
           )}
           <ExchangeInfoRow
             label={t`Trigger Price`}
@@ -1097,7 +1111,7 @@ export function ConfirmationBox(p: Props) {
           <ExchangeInfoRow
             className="SwapBox-info-row"
             label={t`Acceptable Price Impact`}
-            value={formatPercentage(decreaseAmounts?.acceptablePriceDeltaBps?.mul(-1)) || "-"}
+            value={formatPercentage(decreaseAmounts?.acceptablePriceDeltaBps) || "-"}
           />
 
           <ExchangeInfoRow
@@ -1188,7 +1202,7 @@ export function ConfirmationBox(p: Props) {
             />
           )}
 
-          <TradeFeesRow {...fees} executionFee={p.executionFee} feesType="decrease" />
+          <TradeFeesRow {...fees} executionFee={p.executionFee} feesType="decrease" warning={p.executionFee?.warning} />
 
           {decreaseAmounts?.receiveUsd && (
             <ExchangeInfoRow
@@ -1240,7 +1254,7 @@ export function ConfirmationBox(p: Props) {
         <div className="Confirmation-box-row">
           <Button
             variant="primary-action"
-            className="w-100"
+            className="w-full"
             onClick={onSubmit}
             disabled={submitButtonState.disabled && !shouldDisableValidation}
           >

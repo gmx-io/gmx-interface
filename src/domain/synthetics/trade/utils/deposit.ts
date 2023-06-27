@@ -1,277 +1,180 @@
-import { applySwapImpactWithCap, getNextPoolAmountsParams, getPriceImpactUsd } from "domain/synthetics/fees";
-import { MarketInfo } from "domain/synthetics/markets";
+import { applySwapImpactWithCap, getPriceImpactForSwap } from "domain/synthetics/fees";
+import { MarketInfo, marketTokenAmountToUsd, usdToMarketTokenAmount } from "domain/synthetics/markets";
 import { TokenData, convertToTokenAmount, convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { applyFactor } from "lib/numbers";
 import { DepositAmounts } from "../types";
 
-export function getNextDepositAmountsByCollaterals(p: {
+export function getDepositAmounts(p: {
   marketInfo: MarketInfo;
   marketToken: TokenData;
-  longTokenAmount?: BigNumber;
-  shortTokenAmount?: BigNumber;
-}): DepositAmounts | undefined {
-  const { marketToken, longTokenAmount, shortTokenAmount, marketInfo } = p;
-  const { longToken, shortToken } = marketInfo;
-
-  if (!longToken.prices || !shortToken.prices || !marketToken.prices) {
-    return undefined;
-  }
-
-  let longTokenUsd =
-    convertToUsd(longTokenAmount, longToken.decimals, getMidPrice(longToken.prices)) || BigNumber.from(0);
-  let shortTokenUsd =
-    convertToUsd(shortTokenAmount, shortToken.decimals, getMidPrice(shortToken.prices)) || BigNumber.from(0);
-
-  const nextPoolAmountParams = getNextPoolAmountsParams({
-    marketInfo,
-    longToken,
-    shortToken,
-    longPoolAmount: marketInfo.longPoolAmount,
-    shortPoolAmount: marketInfo.shortPoolAmount,
-    longDeltaUsd: longTokenUsd,
-    shortDeltaUsd: shortTokenUsd,
-  });
-
-  let totalPriceImpactDeltaUsd = getPriceImpactUsd({
-    currentLongUsd: nextPoolAmountParams.longPoolUsd,
-    currentShortUsd: nextPoolAmountParams.shortPoolUsd,
-    nextLongUsd: nextPoolAmountParams.nextLongPoolUsd,
-    nextShortUsd: nextPoolAmountParams.nextShortPoolUsd,
-    factorPositive: marketInfo.swapImpactFactorPositive,
-    factorNegative: marketInfo.swapImpactFactorNegative,
-    exponentFactor: marketInfo.swapImpactExponentFactor,
-  });
-
-  if (!totalPriceImpactDeltaUsd) {
-    return undefined;
-  }
-
-  const virtualInventoryLong = marketInfo.virtualPoolAmountForLongToken;
-  const virtualInventoryShort = marketInfo.virtualPoolAmountForShortToken;
-
-  if (virtualInventoryLong && virtualInventoryShort) {
-    const virtualInventoryParams = getNextPoolAmountsParams({
-      marketInfo,
-      longToken,
-      shortToken,
-      longPoolAmount: virtualInventoryLong,
-      shortPoolAmount: virtualInventoryShort,
-      longDeltaUsd: longTokenUsd,
-      shortDeltaUsd: shortTokenUsd,
-    });
-
-    const virtualInventoryPriceImpactDeltaUsd = getPriceImpactUsd({
-      currentLongUsd: virtualInventoryParams.longPoolUsd,
-      currentShortUsd: virtualInventoryParams.shortPoolUsd,
-      nextLongUsd: virtualInventoryParams.nextLongPoolUsd,
-      nextShortUsd: virtualInventoryParams.nextShortPoolUsd,
-      factorPositive: marketInfo.swapImpactFactorPositive,
-      factorNegative: marketInfo.swapImpactFactorNegative,
-      exponentFactor: marketInfo.swapImpactExponentFactor,
-    });
-
-    if (virtualInventoryPriceImpactDeltaUsd && virtualInventoryPriceImpactDeltaUsd.lt(totalPriceImpactDeltaUsd)) {
-      totalPriceImpactDeltaUsd = virtualInventoryPriceImpactDeltaUsd;
-    }
-  }
-
-  if (!totalPriceImpactDeltaUsd) {
-    return undefined;
-  }
-
-  let marketTokenAmount = BigNumber.from(0);
-  let marketTokenUsd = BigNumber.from(0);
-  let swapFeeUsd = BigNumber.from(0);
-  let swapPriceImpactDeltaUsd = BigNumber.from(0);
-
-  if (longTokenAmount?.gt(0)) {
-    const amounts = getMarketTokenAmountByCollateralDeposit({
-      marketInfo,
-      marketToken,
-      tokenIn: longToken,
-      tokenOut: shortToken,
-      tokenInAmount: longTokenAmount,
-      priceImpactDeltaUsd: totalPriceImpactDeltaUsd.mul(longTokenUsd).div(longTokenUsd.add(shortTokenUsd)),
-    });
-
-    if (!amounts) {
-      return undefined;
-    }
-
-    marketTokenAmount = marketTokenAmount.add(amounts.marketTokenAmount);
-    marketTokenUsd = marketTokenUsd.add(amounts.marketTokenUsd);
-    swapFeeUsd = swapFeeUsd.add(amounts.swapFeeUsd);
-    swapPriceImpactDeltaUsd = swapPriceImpactDeltaUsd.add(amounts.cappedPriceImpactDeltaUsd);
-  }
-
-  if (shortTokenAmount?.gt(0)) {
-    const amounts = getMarketTokenAmountByCollateralDeposit({
-      marketInfo,
-      marketToken,
-      tokenIn: shortToken,
-      tokenOut: longToken,
-      tokenInAmount: shortTokenAmount,
-      priceImpactDeltaUsd: totalPriceImpactDeltaUsd.mul(shortTokenUsd).div(longTokenUsd.add(shortTokenUsd)),
-    });
-
-    if (!amounts) {
-      return undefined;
-    }
-
-    marketTokenAmount = marketTokenAmount.add(amounts.marketTokenAmount)!;
-    marketTokenUsd = marketTokenUsd.add(amounts.marketTokenUsd)!;
-    swapFeeUsd = swapFeeUsd.add(amounts.swapFeeUsd)!;
-    swapPriceImpactDeltaUsd = swapPriceImpactDeltaUsd.add(amounts.cappedPriceImpactDeltaUsd)!;
-  }
-
-  if (marketTokenAmount.lt(0)) {
-    marketTokenAmount = BigNumber.from(0);
-    marketTokenUsd = BigNumber.from(0);
-  }
-
-  return {
-    longTokenAmount,
-    longTokenUsd,
-    shortTokenAmount,
-    shortTokenUsd,
-    marketTokenAmount,
-    marketTokenUsd,
-    swapFeeUsd,
-    swapPriceImpactDeltaUsd,
-  };
-}
-
-export function getNextDepositAmountsByMarketToken(p: {
-  marketInfo: MarketInfo;
-  marketToken: TokenData;
+  longToken: TokenData;
+  shortToken: TokenData;
+  longTokenAmount: BigNumber;
+  shortTokenAmount: BigNumber;
   marketTokenAmount: BigNumber;
-  includeLongToken?: boolean;
-  includeShortToken?: boolean;
-  previousLongTokenAmount?: BigNumber;
-  previousShortTokenAmount?: BigNumber;
-}): DepositAmounts | undefined {
+  strategy: "byCollaterals" | "byMarketToken";
+  includeLongToken: boolean;
+  includeShortToken: boolean;
+}): DepositAmounts {
   const {
     marketInfo,
     marketToken,
+    longToken,
+    shortToken,
+    longTokenAmount,
+    shortTokenAmount,
     marketTokenAmount,
-    previousLongTokenAmount,
-    previousShortTokenAmount,
+    strategy,
     includeLongToken,
     includeShortToken,
   } = p;
 
-  const { longToken, shortToken } = marketInfo;
+  const longTokenPrice = getMidPrice(longToken.prices);
+  const shortTokenPrice = getMidPrice(shortToken.prices);
 
-  if (!longToken.prices || !shortToken.prices || !marketToken.prices) {
-    return undefined;
-  }
-
-  const marketTokenUsd = convertToUsd(marketTokenAmount, marketToken.decimals, marketToken.prices.maxPrice)!;
-
-  const previousLongTokenUsd = convertToUsd(previousLongTokenAmount, longToken.decimals, getMidPrice(longToken.prices));
-  const previousShortTokenUsd = convertToUsd(
-    previousShortTokenAmount,
-    shortToken.decimals,
-    getMidPrice(shortToken.prices)
-  );
-
-  const previousSumUsd = BigNumber.from(0)
-    .add(previousLongTokenUsd || 0)
-    .add(previousShortTokenUsd || 0);
-
-  let longTokenUsd = BigNumber.from(0);
-  let shortTokenUsd = BigNumber.from(0);
-
-  if (includeLongToken && includeShortToken && previousSumUsd.gt(0)) {
-    longTokenUsd = marketTokenUsd.mul(previousLongTokenUsd || 0).div(previousSumUsd);
-    shortTokenUsd = marketTokenUsd.sub(longTokenUsd);
-  } else if (includeLongToken) {
-    longTokenUsd = marketTokenUsd;
-  } else if (includeShortToken) {
-    shortTokenUsd = marketTokenUsd;
-  }
-
-  let longTokenAmount = convertToTokenAmount(longTokenUsd, longToken.decimals, getMidPrice(longToken.prices));
-  let shortTokenAmount = convertToTokenAmount(shortTokenUsd, shortToken.decimals, getMidPrice(shortToken.prices));
-
-  const baseAmounts = getNextDepositAmountsByCollaterals({
-    marketInfo,
-    marketToken,
-    longTokenAmount,
-    shortTokenAmount,
-  })!;
-
-  longTokenUsd = marketTokenUsd.mul(baseAmounts.longTokenUsd!).div(baseAmounts.marketTokenUsd!);
-  shortTokenUsd = marketTokenUsd.mul(baseAmounts.shortTokenUsd!).div(baseAmounts.marketTokenUsd!);
-  longTokenAmount = convertToTokenAmount(longTokenUsd, longToken.decimals, getMidPrice(longToken.prices));
-  shortTokenAmount = convertToTokenAmount(shortTokenUsd, shortToken.decimals, getMidPrice(shortToken.prices));
-
-  return {
-    longTokenAmount,
-    longTokenUsd,
-    shortTokenAmount,
-    shortTokenUsd,
-    marketTokenAmount,
-    marketTokenUsd,
-    swapFeeUsd: baseAmounts.swapFeeUsd,
-    swapPriceImpactDeltaUsd: baseAmounts.swapPriceImpactDeltaUsd,
+  const values: DepositAmounts = {
+    longTokenAmount: BigNumber.from(0),
+    longTokenUsd: BigNumber.from(0),
+    shortTokenAmount: BigNumber.from(0),
+    shortTokenUsd: BigNumber.from(0),
+    marketTokenAmount: BigNumber.from(0),
+    marketTokenUsd: BigNumber.from(0),
+    swapFeeUsd: BigNumber.from(0),
+    swapPriceImpactDeltaUsd: BigNumber.from(0),
   };
+
+  if (strategy === "byCollaterals") {
+    if (longTokenAmount.eq(0) && shortTokenAmount.eq(0)) {
+      return values;
+    }
+
+    values.longTokenAmount = longTokenAmount;
+    values.longTokenUsd = convertToUsd(longTokenAmount, longToken.decimals, longTokenPrice)!;
+    values.shortTokenAmount = shortTokenAmount;
+    values.shortTokenUsd = convertToUsd(shortTokenAmount, shortToken.decimals, shortTokenPrice)!;
+
+    values.swapPriceImpactDeltaUsd = getPriceImpactForSwap(
+      marketInfo,
+      longToken,
+      shortToken,
+      values.longTokenUsd,
+      values.shortTokenUsd
+    );
+
+    const totalDepositUsd = values.longTokenUsd.add(values.shortTokenUsd);
+
+    if (values.longTokenUsd.gt(0)) {
+      const swapFeeUsd = applyFactor(values.longTokenUsd, marketInfo.swapFeeFactor);
+      values.swapFeeUsd = values.swapFeeUsd.add(swapFeeUsd);
+
+      values.marketTokenAmount = values.marketTokenAmount.add(
+        getMarketTokenAmountByCollateral({
+          marketInfo,
+          marketToken,
+          tokenIn: longToken,
+          tokenOut: shortToken,
+          amount: values.longTokenAmount,
+          priceImpactDeltaUsd: values.swapPriceImpactDeltaUsd.mul(values.longTokenUsd).div(totalDepositUsd),
+          swapFeeUsd,
+        })
+      );
+    }
+
+    if (values.shortTokenUsd.gt(0)) {
+      const swapFeeUsd = applyFactor(values.shortTokenUsd, marketInfo.swapFeeFactor);
+      values.swapFeeUsd = values.swapFeeUsd.add(swapFeeUsd);
+
+      values.marketTokenAmount = values.marketTokenAmount.add(
+        getMarketTokenAmountByCollateral({
+          marketInfo,
+          marketToken,
+          tokenIn: shortToken,
+          tokenOut: longToken,
+          amount: values.shortTokenAmount,
+          priceImpactDeltaUsd: values.swapPriceImpactDeltaUsd.mul(values.shortTokenUsd).div(totalDepositUsd),
+          swapFeeUsd,
+        })
+      );
+    }
+
+    values.marketTokenUsd = convertToUsd(values.marketTokenAmount, marketToken.decimals, marketToken.prices.minPrice)!;
+  } else if (strategy === "byMarketToken") {
+    if (marketTokenAmount.eq(0)) {
+      return values;
+    }
+
+    values.marketTokenAmount = marketTokenAmount;
+    values.marketTokenUsd = marketTokenAmountToUsd(marketInfo, marketToken, marketTokenAmount);
+
+    const prevLongTokenUsd = convertToUsd(longTokenAmount, longToken.decimals, longTokenPrice)!;
+    const prevShortTokenUsd = convertToUsd(shortTokenAmount, shortToken.decimals, shortTokenPrice)!;
+    const prevSumUsd = prevLongTokenUsd.add(prevShortTokenUsd);
+
+    if (includeLongToken && includeShortToken && prevSumUsd.gt(0)) {
+      values.longTokenUsd = values.marketTokenUsd.mul(prevLongTokenUsd).div(prevSumUsd);
+      values.shortTokenUsd = values.marketTokenUsd.sub(values.longTokenUsd);
+    } else if (includeLongToken) {
+      values.longTokenUsd = values.marketTokenUsd;
+    } else if (includeShortToken) {
+      values.shortTokenUsd = values.marketTokenUsd;
+    }
+
+    // const totalDepositUsd = values.longTokenUsd.add(values.shortTokenUsd);
+
+    // TODO: add to original amounts
+    values.swapPriceImpactDeltaUsd = getPriceImpactForSwap(
+      marketInfo,
+      longToken,
+      shortToken,
+      values.longTokenUsd,
+      values.shortTokenUsd
+    );
+
+    const swapFeeUsd = applyFactor(values.marketTokenUsd, marketInfo.swapFeeFactor);
+    values.swapFeeUsd = values.swapFeeUsd.add(swapFeeUsd);
+
+    // values.longTokenUsd = values.longTokenUsd.sub(swapFeeUsd.mul(values.longTokenUsd).div(totalDepositUsd));
+
+    values.longTokenAmount = convertToTokenAmount(values.longTokenUsd, longToken.decimals, longTokenPrice)!;
+    values.shortTokenAmount = convertToTokenAmount(values.shortTokenUsd, shortToken.decimals, shortTokenPrice)!;
+  }
+
+  return values;
 }
 
-export function getMarketTokenAmountByCollateralDeposit(p: {
+function getMarketTokenAmountByCollateral(p: {
   marketInfo: MarketInfo;
   marketToken: TokenData;
   tokenIn: TokenData;
   tokenOut: TokenData;
-  tokenInAmount: BigNumber;
+  amount: BigNumber;
   priceImpactDeltaUsd: BigNumber;
-}) {
-  const { marketInfo } = p;
+  swapFeeUsd: BigNumber;
+}): BigNumber {
+  const { marketInfo, marketToken, tokenIn, tokenOut, amount, priceImpactDeltaUsd, swapFeeUsd } = p;
 
-  if (!p.tokenIn.prices || !p.tokenOut.prices || !p.marketToken.prices) {
-    return undefined;
-  }
+  const swapFeeAmount = convertToTokenAmount(swapFeeUsd, tokenIn.decimals, tokenIn.prices.minPrice)!;
 
+  let amountInAfterFees = amount.sub(swapFeeAmount);
   let mintAmount = BigNumber.from(0);
 
-  const swapFeeAmount = applyFactor(p.tokenInAmount, marketInfo.swapFeeFactor);
-  const swapFeeUsd = convertToUsd(swapFeeAmount, p.tokenIn.decimals, p.tokenIn.prices.minPrice)!;
+  if (priceImpactDeltaUsd.gt(0)) {
+    const positiveImpactAmount = applySwapImpactWithCap(marketInfo, tokenOut, priceImpactDeltaUsd);
 
-  let amountInAfterFees = p.tokenInAmount.sub(swapFeeAmount);
-  let usdInAfterFees = convertToUsd(amountInAfterFees, p.tokenIn.decimals, p.tokenIn.prices.minPrice);
+    const usdValue = convertToUsd(positiveImpactAmount, tokenOut.decimals, tokenOut.prices.maxPrice)!;
 
-  let cappedPriceImpactDeltaUsd: BigNumber | undefined;
-
-  if (p.priceImpactDeltaUsd.gt(0)) {
-    const positiveImpactAmount = applySwapImpactWithCap(p.marketInfo, p.tokenOut.address, p.priceImpactDeltaUsd)!;
-
-    cappedPriceImpactDeltaUsd = convertToUsd(positiveImpactAmount, p.tokenOut.decimals, p.tokenOut.prices.minPrice)!;
     mintAmount = mintAmount.add(
-      convertToTokenAmount(cappedPriceImpactDeltaUsd, p.marketToken.decimals, p.marketToken.prices.minPrice)!
+      // TODO: poolValue for deposit
+      usdToMarketTokenAmount(marketInfo, marketToken, usdValue)
     );
   } else {
-    const negativeImpactAmount = applySwapImpactWithCap(p.marketInfo, p.tokenIn.address, p.priceImpactDeltaUsd)!;
-
-    cappedPriceImpactDeltaUsd = convertToUsd(negativeImpactAmount, p.tokenIn.decimals, p.tokenIn.prices?.minPrice);
+    const negativeImpactAmount = applySwapImpactWithCap(marketInfo, tokenIn, priceImpactDeltaUsd);
     amountInAfterFees = amountInAfterFees.sub(negativeImpactAmount.mul(-1));
-    usdInAfterFees = convertToUsd(amountInAfterFees, p.tokenIn.decimals, p.tokenIn.prices?.minPrice);
   }
 
-  if (!cappedPriceImpactDeltaUsd) {
-    return undefined;
-  }
+  const usdValue = convertToUsd(amountInAfterFees, tokenIn.decimals, tokenIn.prices.minPrice)!;
+  mintAmount = mintAmount.add(usdToMarketTokenAmount(marketInfo, marketToken, usdValue));
 
-  mintAmount = mintAmount.add(
-    convertToTokenAmount(usdInAfterFees, p.marketToken.decimals, p.marketToken.prices.minPrice)!
-  );
-
-  const mintUsd = convertToUsd(mintAmount, p.marketToken.decimals, p.marketToken.prices.maxPrice)!;
-
-  return {
-    marketTokenAmount: mintAmount,
-    marketTokenUsd: mintUsd,
-    cappedPriceImpactDeltaUsd,
-    swapFeeUsd,
-  };
+  return mintAmount;
 }

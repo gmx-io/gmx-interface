@@ -152,27 +152,11 @@ export function usePositionsInfo(
           collateralUsd,
           collateralAmount: position.collateralAmount,
           markPrice,
-          closingFeeUsd,
+          userReferralInfo,
           minCollateralUsd,
           pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
           pendingFundingFeesUsd,
           isLong: position.isLong,
-        });
-
-        const liquidationPriceWithMaxPriceImpact = getLiquidationPrice({
-          marketInfo,
-          collateralToken,
-          sizeInUsd: position.sizeInUsd,
-          sizeInTokens: position.sizeInTokens,
-          collateralUsd,
-          collateralAmount: position.collateralAmount,
-          markPrice,
-          closingFeeUsd,
-          minCollateralUsd,
-          pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
-          pendingFundingFeesUsd,
-          isLong: position.isLong,
-          useMaxPriceImpact: true,
         });
 
         acc[positionKey] = {
@@ -184,7 +168,6 @@ export function usePositionsInfo(
           markPrice,
           entryPrice,
           liquidationPrice,
-          liquidationPriceWithMaxPriceImpact,
           collateralUsd,
           remainingCollateralUsd,
           remainingCollateralAmount,

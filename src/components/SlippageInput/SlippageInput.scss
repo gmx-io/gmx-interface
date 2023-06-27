@@ -1,0 +1,56 @@
+.Slippage-input-wrapper {
+  position: relative;
+  .Slippage-list {
+    position: absolute;
+    display: flex;
+    list-style: none;
+    border-radius: var(--border-radius-sm);
+    right: 0;
+    padding: 0;
+    top: 1.25rem;
+    background: #212540;
+
+    li {
+      padding: 0.5rem 0.75rem;
+      cursor: pointer;
+      border-radius: var(--border-radius-sm);
+      width: 4.5rem;
+      text-align: center;
+      &:hover {
+        background: rgba(58, 63, 121, 0.5607843137254902);
+      }
+    }
+  }
+  .Slippage-input {
+    border: 1px solid #212540;
+    border-radius: var(--border-radius-sm);
+    padding-right: 0.5rem;
+    line-height: 1;
+    background: #212540;
+
+    label {
+      cursor: pointer;
+    }
+
+    &:hover,
+    &:focus-within,
+    &:focus {
+      border-color: #3a3f798f;
+    }
+
+    &.input-error {
+      border-color: #f3b50e;
+    }
+
+    input {
+      width: 4rem;
+      padding: 0.2rem 0.5rem 0.35rem;
+      font-size: 1.4rem;
+      border-radius: 4px;
+      text-align: right;
+    }
+    span {
+      opacity: 0.7;
+    }
+  }
+}

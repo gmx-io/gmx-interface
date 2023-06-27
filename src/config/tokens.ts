@@ -174,8 +174,8 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/12504/thumb/uniswap-uni.png?1600306604",
     },
     {
-      name: "USD Coin",
-      symbol: "USDC",
+      name: "USD Coin (USDC.e)",
+      symbol: "USDC.e",
       decimals: 6,
       address: "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
       isStable: true,
@@ -298,7 +298,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Wrapped Ethereum",
       symbol: "WETH",
       decimals: 18,
-      address: "0xEe01c0CD76354C383B8c7B4e65EA88D00B06f36f",
+      address: "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
       isWrapped: true,
       baseSymbol: "ETH",
       imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
@@ -751,6 +751,10 @@ export const EXPLORER_LINKS = {
       arbitrum: "https://arbiscan.io/address/0xfa7f8980b0f1e64a2062791cc3b0871572f1f7f0",
     },
     USDC: {
+      coingecko: "https://www.coingecko.com/en/coins/usd-coin",
+      arbitrum: "https://arbiscan.io/address/0xff970a61a04b1ca14834a43f5de4533ebddb5cc8",
+    },
+    "USDC.e": {
       coingecko: "https://www.coingecko.com/en/coins/usd-coin",
       arbitrum: "https://arbiscan.io/address/0xff970a61a04b1ca14834a43f5de4533ebddb5cc8",
     },

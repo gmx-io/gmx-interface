@@ -46,6 +46,7 @@ import { USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   formatAmount,
+  formatAmountFree,
   formatDeltaUsd,
   formatPercentage,
   formatTokenAmountWithUsd,
@@ -57,6 +58,7 @@ import { usePrevious } from "lib/usePrevious";
 import { useEffect, useMemo, useState } from "react";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionSeller.scss";
+import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
 
 export type Props = {
   position?: PositionInfo;
@@ -140,6 +142,15 @@ export function PositionSeller(p: Props) {
     });
   }, [closeSizeUsd, keepLeverage, minCollateralUsd, minPositionSizeUsd, position, userReferralInfo]);
 
+  useDebugExecutionPrice(chainId, {
+    skip: true,
+    marketInfo: position?.marketInfo,
+    sizeInUsd: position?.sizeInUsd,
+    sizeInTokens: position?.sizeInTokens,
+    sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd.mul(-1),
+    isLong: position?.isLong,
+  });
+
   const shouldSwap = position && receiveToken && !getIsEquivalentTokens(position.collateralToken, receiveToken);
 
   const swapAmounts = useMemo(() => {
@@ -173,6 +184,7 @@ export function PositionSeller(p: Props) {
       collateralDeltaUsd: decreaseAmounts.collateralDeltaUsd,
       collateralDeltaAmount: decreaseAmounts.collateralDeltaAmount,
       payedRemainingCollateralUsd: decreaseAmounts.payedRemainingCollateralUsd,
+      payedRemainingCollateralAmount: decreaseAmounts.payedRemainingCollateralAmount,
       realizedPnl: decreaseAmounts.realizedPnl,
       estimatedPnl: decreaseAmounts.estimatedPnl,
       indexPrice: decreaseAmounts.indexPrice,
@@ -194,6 +206,7 @@ export function PositionSeller(p: Props) {
 
     return {
       fees: getTradeFees({
+        isIncrease: false,
         initialCollateralUsd: position.collateralUsd,
         sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
         swapSteps: swapAmounts?.swapPathStats?.swapSteps || [],
@@ -226,6 +239,7 @@ export function PositionSeller(p: Props) {
 
     const decreaseError = getDecreaseError({
       marketInfo: position.marketInfo,
+      inputSizeUsd: closeSizeUsd,
       sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
       receiveToken,
       isTrigger: false,
@@ -252,6 +266,7 @@ export function PositionSeller(p: Props) {
   }, [
     account,
     chainId,
+    closeSizeUsd,
     decreaseAmounts?.sizeDeltaUsd,
     isHighPriceImpact,
     isHighPriceImpactAccepted,
@@ -354,8 +369,8 @@ export function PositionSeller(p: Props) {
               topRightValue={formatUsd(maxCloseSize)}
               inputValue={closeUsdInputValue}
               onInputValueChange={(e) => setCloseUsdInputValue(e.target.value)}
-              showMaxButton={maxCloseSize.gt(0) && !closeSizeUsd?.eq(maxCloseSize)}
-              onClickMax={() => setCloseUsdInputValue(formatAmount(maxCloseSize, USD_DECIMALS, 2))}
+              showMaxButton={maxCloseSize?.gt(0) && !closeSizeUsd?.eq(maxCloseSize)}
+              onClickMax={() => setCloseUsdInputValue(formatAmountFree(maxCloseSize, USD_DECIMALS))}
             >
               USD
             </BuyInputSection>
@@ -417,8 +432,9 @@ export function PositionSeller(p: Props) {
               />
               <ExchangeInfoRow
                 label={t`Price Impact`}
-                value={formatPercentage(decreaseAmounts?.acceptablePriceDeltaBps) || "-"}
+                value={formatPercentage(decreaseAmounts?.acceptablePriceDeltaBps, { signed: true }) || "-"}
               />
+
               <ExchangeInfoRow
                 label={t`Acceptable Price`}
                 value={
@@ -427,11 +443,12 @@ export function PositionSeller(p: Props) {
                   }) || "-"
                 }
               />
+
               <ExchangeInfoRow
                 className="SwapBox-info-row"
                 label={t`Liq. Price`}
                 value={
-                  decreaseAmounts?.sizeDeltaUsd.eq(position.sizeInUsd) ? (
+                  decreaseAmounts?.isFullClose ? (
                     "-"
                   ) : (
                     <ValueTransition
@@ -440,9 +457,13 @@ export function PositionSeller(p: Props) {
                           displayDecimals: indexPriceDecimals,
                         })!
                       }
-                      to={formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
-                        displayDecimals: indexPriceDecimals,
-                      })}
+                      to={
+                        decreaseAmounts?.sizeDeltaUsd.gt(0)
+                          ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
+                              displayDecimals: indexPriceDecimals,
+                            })
+                          : undefined
+                      }
                     />
                   )
                 }
@@ -507,7 +528,7 @@ export function PositionSeller(p: Props) {
                 }
               />
 
-              <TradeFeesRow {...fees} executionFee={executionFee} feesType="decrease" />
+              <TradeFeesRow {...fees} executionFee={executionFee} feesType="decrease" warning={executionFee?.warning} />
 
               <ExchangeInfoRow
                 isTop
@@ -560,7 +581,7 @@ export function PositionSeller(p: Props) {
             )}
 
             <div className="Exchange-swap-button-container">
-              <Button className="w-100" variant="primary-action" disabled={Boolean(error)} onClick={onSubmit}>
+              <Button className="w-full" variant="primary-action" disabled={Boolean(error)} onClick={onSubmit}>
                 {error || t`Close`}
               </Button>
             </div>

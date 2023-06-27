@@ -5,24 +5,19 @@ import { getContract } from "config/contracts";
 import { accountOrderListKey } from "config/dataStore";
 import { useMulticall } from "lib/multicall";
 import { bigNumberify } from "lib/numbers";
-import { useEffect, useState } from "react";
 import { OrdersData } from "./types";
 
 type OrdersResult = {
   ordersData?: OrdersData;
 };
 
-const DEFAULT_COUNT = 100;
+const DEFAULT_COUNT = 1000;
 
 export function useOrders(chainId: number): OrdersResult {
   const { account } = useWeb3React();
 
-  const [ordersData, setOrdersData] = useState<OrdersData>({});
-  const [startIndex, setStartIndex] = useState(0);
-  const [endIndex, setEndIndex] = useState(DEFAULT_COUNT);
-
   const { data } = useMulticall(chainId, "useOrdersData", {
-    key: account ? [account, startIndex, endIndex] : null,
+    key: account ? [account] : null,
     request: () => ({
       dataStore: {
         contractAddress: getContract(chainId, "DataStore"),
@@ -34,7 +29,7 @@ export function useOrders(chainId: number): OrdersResult {
           },
           keys: {
             methodName: "getBytes32ValuesAt",
-            params: [accountOrderListKey(account!), startIndex, endIndex],
+            params: [accountOrderListKey(account!), 0, DEFAULT_COUNT],
           },
         },
       },
@@ -44,7 +39,7 @@ export function useOrders(chainId: number): OrdersResult {
         calls: {
           orders: {
             methodName: "getAccountOrders",
-            params: [getContract(chainId, "DataStore"), account, startIndex, endIndex],
+            params: [getContract(chainId, "DataStore"), account, 0, DEFAULT_COUNT],
           },
         },
       },
@@ -113,28 +108,7 @@ export function useOrders(chainId: number): OrdersResult {
     },
   });
 
-  useEffect(() => {
-    if (!account) {
-      setOrdersData({});
-      setStartIndex(0);
-      setEndIndex(DEFAULT_COUNT);
-      return;
-    }
-
-    if (data?.count && data.count > endIndex) {
-      setStartIndex(endIndex);
-      setEndIndex(data.count);
-    }
-
-    if (data?.ordersData) {
-      setOrdersData((old) => ({
-        ...old,
-        ...data.ordersData,
-      }));
-    }
-  }, [account, data?.count, data?.ordersData, endIndex]);
-
   return {
-    ordersData,
+    ordersData: data?.ordersData,
   };
 }

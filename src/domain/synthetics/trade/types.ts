@@ -33,21 +33,32 @@ export type SwapAmounts = {
 export type IncreasePositionAmounts = {
   initialCollateralAmount: BigNumber;
   initialCollateralUsd: BigNumber;
-  collateralAmountAfterFees: BigNumber;
-  collateralUsdAfterFees: BigNumber;
+
+  collateralDeltaAmount: BigNumber;
+  collateralDeltaUsd: BigNumber;
+
+  swapPathStats: SwapPathStats | undefined;
+
+  indexTokenAmount: BigNumber;
+
   sizeDeltaUsd: BigNumber;
   sizeDeltaInTokens: BigNumber;
-  swapPathStats: SwapPathStats | undefined;
-  positionFeeUsd: BigNumber;
-  feeDiscountUsd: BigNumber;
-  positionPriceImpactDeltaUsd: BigNumber;
-  markPrice: BigNumber;
-  entryPrice: BigNumber;
-  triggerPrice?: BigNumber;
+
+  estimatedLeverage?: BigNumber;
+
+  indexPrice: BigNumber;
   initialCollateralPrice: BigNumber;
   collateralPrice: BigNumber;
-  acceptablePrice: BigNumber | undefined;
-  acceptablePriceImpactBps: BigNumber | undefined;
+  triggerPrice?: BigNumber;
+  triggerThresholdType?: TriggerThresholdType;
+  acceptablePrice: BigNumber;
+  acceptablePriceDeltaBps: BigNumber;
+
+  positionFeeUsd: BigNumber;
+  feeDiscountUsd: BigNumber;
+  borrowingFeeUsd: BigNumber;
+  fundingFeeUsd: BigNumber;
+  positionPriceImpactDeltaUsd: BigNumber;
 };
 
 export type DecreasePositionAmounts = {
@@ -73,6 +84,7 @@ export type DecreasePositionAmounts = {
   fundingFeeUsd: BigNumber;
   swapProfitFeeUsd: BigNumber;
   positionPriceImpactDeltaUsd: BigNumber;
+  payedRemainingCollateralAmount: BigNumber;
 
   payedOutputUsd: BigNumber;
   payedRemainingCollateralUsd: BigNumber;
@@ -88,15 +100,15 @@ export type DecreasePositionAmounts = {
 export type DepositAmounts = {
   marketTokenAmount: BigNumber;
   marketTokenUsd: BigNumber;
-  longTokenAmount?: BigNumber;
-  longTokenUsd?: BigNumber;
-  shortTokenAmount?: BigNumber;
-  shortTokenUsd?: BigNumber;
+  longTokenAmount: BigNumber;
+  longTokenUsd: BigNumber;
+  shortTokenAmount: BigNumber;
+  shortTokenUsd: BigNumber;
   swapFeeUsd: BigNumber;
   swapPriceImpactDeltaUsd: BigNumber;
 };
 
-export type WithdrawalAmounts = {
+export type WitdhrawalAmounts = {
   marketTokenAmount: BigNumber;
   marketTokenUsd: BigNumber;
   longTokenAmount: BigNumber;
@@ -104,6 +116,7 @@ export type WithdrawalAmounts = {
   longTokenUsd: BigNumber;
   shortTokenUsd: BigNumber;
   swapFeeUsd: BigNumber;
+  swapPriceImpactDeltaUsd: BigNumber;
 };
 
 export type NextPositionValues = {

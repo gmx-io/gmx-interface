@@ -229,7 +229,7 @@ export function getSwapStats(p: {
   let priceImpactDeltaUsd: BigNumber;
 
   try {
-    priceImpactDeltaUsd = getPriceImpactForSwap(marketInfo, tokenIn.address, amountInAfterFees, amountOut.mul(-1));
+    priceImpactDeltaUsd = getPriceImpactForSwap(marketInfo, tokenIn, tokenOut, usdInAfterFees, usdOut.mul(-1));
   } catch (e) {
     return {
       swapFeeUsd,
@@ -251,10 +251,10 @@ export function getSwapStats(p: {
   let cappedImpactDeltaUsd: BigNumber;
 
   if (priceImpactDeltaUsd.gt(0)) {
-    const positiveImpactAmount = applySwapImpactWithCap(marketInfo, tokenOut.address, priceImpactDeltaUsd);
+    const positiveImpactAmount = applySwapImpactWithCap(marketInfo, tokenOut, priceImpactDeltaUsd);
     cappedImpactDeltaUsd = convertToUsd(positiveImpactAmount, tokenOut.decimals, priceOut)!;
   } else {
-    const negativeImpactAmount = applySwapImpactWithCap(marketInfo, tokenIn.address, priceImpactDeltaUsd);
+    const negativeImpactAmount = applySwapImpactWithCap(marketInfo, tokenIn, priceImpactDeltaUsd);
     cappedImpactDeltaUsd = convertToUsd(negativeImpactAmount, tokenIn.decimals, priceIn)!;
   }
 

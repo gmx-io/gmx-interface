@@ -1,5 +1,5 @@
-import { BigNumber } from "ethers";
 import { TokenData } from "domain/synthetics/tokens";
+import { BigNumber } from "ethers";
 
 export type PnlFactorType = "FOR_DEPOSITS" | "FOR_WITHDRAWALS" | "FOR_TRADERS";
 
@@ -103,6 +103,10 @@ export type MarketInfo = Market & {
   virtualPoolAmountForLongToken: BigNumber;
   virtualPoolAmountForShortToken: BigNumber;
   virtualInventoryForPositions: BigNumber;
+
+  virtualMarketId?: string;
+  virtualLongTokenId?: string;
+  virtualShortTokenId?: string;
 };
 
 export type MarketsData = {

@@ -52,7 +52,7 @@ export function AcceptbablePriceImpactEditor(p: Props) {
         </div>
       </div>
 
-      <Button className="w-100" variant="primary-action" onClick={onSubmit}>{t`Save`}</Button>
+      <Button className="w-full" variant="primary-action" onClick={onSubmit}>{t`Save`}</Button>
     </Modal>
   );
 }

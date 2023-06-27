@@ -1,5 +1,9 @@
 import { BigNumber, BigNumberish, ethers } from "ethers";
 import { BASIS_POINTS_DIVISOR, PRECISION, USD_DECIMALS } from "./legacy";
+import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
+
+const MAX_EXCEEDING_THRESHOLD = "1000000000";
+const MIN_EXCEEDING_THRESHOLD = "0.01";
 
 export function bigNumberify(n?: BigNumberish) {
   try {
@@ -14,6 +18,32 @@ export function bigNumberify(n?: BigNumberish) {
 export function expandDecimals(n: BigNumberish, decimals: number): BigNumber {
   // @ts-ignore
   return bigNumberify(n).mul(bigNumberify(10).pow(decimals));
+}
+
+function getLimitedDisplay(
+  amount: BigNumber,
+  tokenDecimals: number,
+  opts: { maxThreshold?: string; minThreshold?: string } = {}
+) {
+  const { maxThreshold = MAX_EXCEEDING_THRESHOLD, minThreshold = MIN_EXCEEDING_THRESHOLD } = opts;
+  const max = expandDecimals(maxThreshold, tokenDecimals);
+  const min = ethers.utils.parseUnits(minThreshold, tokenDecimals);
+  const absAmount = amount.abs();
+
+  if (absAmount.eq(0)) {
+    return {
+      symbol: "",
+      value: absAmount,
+    };
+  }
+
+  const symbol = absAmount.gt(max) ? TRIGGER_PREFIX_ABOVE : absAmount.lt(min) ? TRIGGER_PREFIX_BELOW : "";
+  const value = absAmount.gt(max) ? max : absAmount.lt(min) ? min : absAmount;
+
+  return {
+    symbol,
+    value,
+  };
 }
 
 export const trimZeroDecimals = (amount: string) => {
@@ -38,6 +68,7 @@ export const limitDecimals = (amount: BigNumberish, maxDecimals?: number) => {
       amountStr = amountStr.substr(0, amountStr.length - (decimals - maxDecimals));
     }
   }
+
   return amountStr;
 };
 
@@ -119,7 +150,10 @@ export const formatAmountFree = (amount: BigNumberish, tokenDecimals: number, di
   return trimZeroDecimals(amountStr);
 };
 
-export function formatUsd(usd?: BigNumber, opts: { fallbackToZero?: boolean; displayDecimals?: number } = {}) {
+export function formatUsd(
+  usd?: BigNumber,
+  opts: { fallbackToZero?: boolean; displayDecimals?: number; maxThreshold?: string; minThreshold?: string } = {}
+) {
   const { fallbackToZero = false, displayDecimals = 2 } = opts;
 
   if (!usd) {
@@ -130,9 +164,10 @@ export function formatUsd(usd?: BigNumber, opts: { fallbackToZero?: boolean; dis
     }
   }
 
+  const exceedingInfo = getLimitedDisplay(usd, USD_DECIMALS, opts);
   const sign = usd.lt(0) ? "-" : "";
-
-  return `${sign}$${formatAmount(usd.abs(), USD_DECIMALS, displayDecimals, true)}`;
+  const displayUsd = formatAmount(exceedingInfo.value, USD_DECIMALS, displayDecimals, true);
+  return `${exceedingInfo.symbol}${sign}$${displayUsd}`;
 }
 
 export function formatDeltaUsd(deltaUsd?: BigNumber, percentage?: BigNumber, opts: { fallbackToZero?: boolean } = {}) {
@@ -148,10 +183,11 @@ export function formatDeltaUsd(deltaUsd?: BigNumber, percentage?: BigNumber, opt
   if (!deltaUsd.eq(0)) {
     sign = deltaUsd?.gt(0) ? "+" : "-";
   }
-
+  const exceedingInfo = getLimitedDisplay(deltaUsd, USD_DECIMALS);
   const percentageStr = percentage ? ` (${sign}${formatPercentage(percentage.abs())})` : "";
+  const deltaUsdStr = formatAmount(exceedingInfo.value, USD_DECIMALS, 2, true);
 
-  return `${sign}${formatUsd(deltaUsd.abs())}${percentageStr}`;
+  return `${exceedingInfo.symbol} ${sign}$${deltaUsdStr}${percentageStr}`;
 }
 
 export function formatPercentage(percentage?: BigNumber, opts: { fallbackToZero?: boolean; signed?: boolean } = {}) {
@@ -221,7 +257,7 @@ export function formatTokenAmountWithUsd(
     }
   }
 
-  const tokenStr = formatTokenAmount(tokenAmount, tokenDecimals, tokenSymbol, opts);
+  const tokenStr = formatTokenAmount(tokenAmount, tokenDecimals, tokenSymbol, { ...opts, useCommas: true });
 
   const usdStr = formatUsd(usdAmount, {
     fallbackToZero: opts.fallbackToZero,
@@ -236,7 +272,6 @@ export const parseValue = (value: string, tokenDecimals: number) => {
   if (isNaN(pValue)) {
     return undefined;
   }
-
   value = limitDecimals(value, tokenDecimals);
   const amount = ethers.utils.parseUnits(value, tokenDecimals);
   return bigNumberify(amount);
@@ -274,4 +309,8 @@ export function getBasisPoints(numerator: BigNumber, denominator: BigNumber) {
 
 export function basisPointsToFloat(basisPoints: BigNumber) {
   return basisPoints.mul(PRECISION).div(BASIS_POINTS_DIVISOR);
+}
+
+export function roundToTwoDecimals(n) {
+  return Math.round(n * 100) / 100;
 }

@@ -137,7 +137,7 @@ export function ClaimAffiliatesModal(p: Props) {
     <Modal className="Confirmation-box ClaimableModal" isVisible={true} setIsVisible={onClose} label={t`Confirm Claim`}>
       <div className="ConfirmationBox-main text-center">Claim {formatUsd(totalClaimableFundingUsd)}</div>
       <div className="ClaimModal-content">{rewards.map(renderRewardSection)}</div>
-      <Button className="w-100" variant="primary-action" onClick={onSubmit} disabled={isSubmitting}>
+      <Button className="w-full" variant="primary-action" onClick={onSubmit} disabled={isSubmitting}>
         {isSubmitting ? t`Claiming...` : t`Claim`}
       </Button>
     </Modal>

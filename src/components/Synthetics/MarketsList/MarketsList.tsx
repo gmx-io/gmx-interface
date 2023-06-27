@@ -139,7 +139,7 @@ export function MarketsList() {
       {!isMobile && (
         <div className="token-table-wrapper App-card">
           <div className="App-card-title">
-            <Trans>V2 Pools</Trans> <img src={getIcon(chainId, "network")} width="16" alt="Network Icon" />
+            <Trans>GM Pools</Trans> <img src={getIcon(chainId, "network")} width="16" alt="Network Icon" />
           </div>
           <div className="App-card-divider"></div>
           <table className="token-table">
@@ -152,7 +152,7 @@ export function MarketsList() {
                   <Trans>PRICE</Trans>
                 </th>
                 <th>
-                  <Trans>POOL</Trans>
+                  <Trans>POOLS VALUE</Trans>
                 </th>
                 <th>
                   <Trans>FUNDING RATE / 1h</Trans>
@@ -163,68 +163,79 @@ export function MarketsList() {
               </tr>
             </thead>
             <tbody>
-              {indexTokensStats.map((stats) => (
-                <tr key={stats.token.symbol}>
-                  <td>
-                    <div className="token-symbol-wrapper">
-                      <div className="App-card-title-info">
-                        <div className="App-card-title-info-icon">
-                          <img
-                            src={importImage("ic_" + stats.token.symbol.toLocaleLowerCase() + "_40.svg")}
-                            alt={stats.token.symbol}
-                            width="40"
-                          />
-                        </div>
-                        <div className="App-card-title-info-text">
-                          <div className="App-card-info-title">{stats.token.name}</div>
-                          <div className="App-card-info-subtitle">{stats.token.symbol}</div>
-                        </div>
-                        <div>
-                          <AssetDropdown assetSymbol={stats.token.symbol} assetInfo={stats.token} />
+              {indexTokensStats.map((stats) => {
+                const largestPool = stats.marketsStats.sort((a, b) => {
+                  return b.poolValueUsd.gt(a.poolValueUsd) ? 1 : -1;
+                })[0];
+
+                return (
+                  <tr key={stats.token.symbol}>
+                    <td>
+                      <div className="token-symbol-wrapper">
+                        <div className="App-card-title-info">
+                          <div className="App-card-title-info-icon">
+                            <img
+                              src={importImage("ic_" + stats.token.symbol.toLocaleLowerCase() + "_40.svg")}
+                              alt={stats.token.symbol}
+                              width="40"
+                            />
+                          </div>
+                          <div className="App-card-title-info-text">
+                            <div className="App-card-info-title">{stats.token.name}</div>
+                            <div className="App-card-info-subtitle">{stats.token.symbol}</div>
+                          </div>
+                          <div>
+                            <AssetDropdown assetSymbol={stats.token.symbol} assetInfo={stats.token} />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </td>
-                  <td>{formatUsd(stats.token.prices?.minPrice)}</td>
-                  <td>
-                    <Tooltip
-                      handle={formatUsd(stats.totalPoolValue)}
-                      renderContent={() => (
-                        <>
-                          {stats.marketsStats.map(({ marketInfo, poolValueUsd }) => (
-                            <StatsTooltipRow
-                              key={marketInfo.marketTokenAddress}
-                              showDollar={false}
-                              label={`[${getMarketPoolName(marketInfo)}]`}
-                              value={formatUsd(poolValueUsd)}
-                            />
-                          ))}
-                        </>
-                      )}
-                    />
-                  </td>
-                  <td>
-                    <Tooltip
-                      handle={`${formatFundingRate(stats.avgFundingRateLong)} / ${formatFundingRate(
-                        stats.avgFundingRateShort
-                      )}`}
-                      renderContent={() => (
-                        <>
-                          {stats.marketsStats.map(({ marketInfo: market, fundingRateLong, fundingRateShort }) => (
-                            <StatsTooltipRow
-                              key={market.marketTokenAddress}
-                              showDollar={false}
-                              label={`[${getMarketPoolName(market)}]`}
-                              value={`${formatFundingRate(fundingRateLong)} / ${formatFundingRate(fundingRateShort)}`}
-                            />
-                          ))}
-                        </>
-                      )}
-                    />
-                  </td>
-                  <td>{formatAmount(stats.totalUtilization, 2, 2)}%</td>
-                </tr>
-              ))}
+                    </td>
+                    <td>{formatUsd(stats.token.prices?.minPrice)}</td>
+                    <td>
+                      <Tooltip
+                        handle={formatUsd(stats.totalPoolValue)}
+                        renderContent={() => (
+                          <>
+                            {stats.marketsStats.map(({ marketInfo, poolValueUsd }) => (
+                              <StatsTooltipRow
+                                key={marketInfo.marketTokenAddress}
+                                showDollar={false}
+                                label={`[${getMarketPoolName(marketInfo)}]`}
+                                value={formatUsd(poolValueUsd)}
+                              />
+                            ))}
+                          </>
+                        )}
+                      />
+                    </td>
+                    <td>
+                      <Tooltip
+                        handle={`${formatFundingRate(largestPool.fundingRateLong)} / ${formatFundingRate(
+                          largestPool.fundingRateShort
+                        )}`}
+                        renderContent={() => (
+                          <>
+                            <div className="Tooltip-row">
+                              <span className="label">POOL</span>
+                              <span className="label">LONG / SHORT</span>
+                            </div>
+                            <br />
+                            {stats.marketsStats.map(({ marketInfo: market, fundingRateLong, fundingRateShort }) => (
+                              <StatsTooltipRow
+                                key={market.marketTokenAddress}
+                                showDollar={false}
+                                label={`[${getMarketPoolName(market)}]`}
+                                value={`${formatFundingRate(fundingRateLong)} / ${formatFundingRate(fundingRateShort)}`}
+                              />
+                            ))}
+                          </>
+                        )}
+                      />
+                    </td>
+                    <td>{formatAmount(stats.totalUtilization, 2, 2)}%</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -233,9 +244,7 @@ export function MarketsList() {
       {isMobile && (
         <>
           <div className="App-card-title-small">
-            <span>
-              <Trans>V2 Pools</Trans>
-            </span>
+            <Trans>GM Pools</Trans>
             <img className="title-icon" src={getIcon(chainId, "network")} width="16" alt="Network Icon" />
           </div>
 
@@ -265,21 +274,20 @@ export function MarketsList() {
                   </div>
                   <div className="App-card-row">
                     <div className="label">
-                      <Trans>Pool</Trans>
+                      <Trans>Pools Value</Trans>
                     </div>
                     <div>
                       <Tooltip
-                        handle={`${formatFundingRate(stats.avgFundingRateLong)} / ${formatFundingRate(
-                          stats.avgFundingRateShort
-                        )}`}
+                        handle={formatUsd(stats.totalPoolValue)}
+                        position="right-bottom"
                         renderContent={() => (
                           <>
-                            {stats.marketsStats.map(({ marketInfo, fundingRateLong, fundingRateShort }) => (
+                            {stats.marketsStats.map(({ marketInfo, poolValueUsd }) => (
                               <StatsTooltipRow
                                 key={marketInfo.marketTokenAddress}
                                 showDollar={false}
                                 label={`[${getMarketPoolName(marketInfo)}]`}
-                                value={`${formatFundingRate(fundingRateLong)} / ${formatFundingRate(fundingRateShort)}`}
+                                value={formatUsd(poolValueUsd)}
                               />
                             ))}
                           </>
@@ -296,8 +304,14 @@ export function MarketsList() {
                         handle={`${formatFundingRate(stats.avgFundingRateLong)} / ${formatFundingRate(
                           stats.avgFundingRateShort
                         )}`}
+                        position="right-bottom"
                         renderContent={() => (
                           <>
+                            <div className="Tooltip-row">
+                              <span className="label">POOL</span>
+                              <span className="label">LONG / SHORT</span>
+                            </div>
+                            <br />
                             {stats.marketsStats.map(({ marketInfo, fundingRateLong, fundingRateShort }) => (
                               <StatsTooltipRow
                                 key={marketInfo.marketTokenAddress}

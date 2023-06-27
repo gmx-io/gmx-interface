@@ -14,7 +14,6 @@
 }
 
 .token-table-wrapper {
-  border: 1px solid #1e2136;
   border-radius: 0.4rem;
   background: #17182c;
   padding: 0 1.5rem;
@@ -138,6 +137,10 @@
   margin-right: 0.8rem;
 }
 
+.glp-composition-small {
+  display: none;
+}
+
 @media (max-width: 1024px) {
   .stats-wrapper {
     display: grid;
@@ -155,15 +158,17 @@
   .token-table-wrapper {
     display: none;
   }
+  .stats-wrapper {
+    margin-bottom: 0;
+  }
+  .glp-composition-small {
+    display: block;
+  }
 }
 
 @media (max-width: 900px) {
   .DashboardV2-cards {
     grid-template-columns: 1fr;
-  }
-
-  .DashboardV2-token-cards .token-grid {
-    padding-top: 0;
   }
 }
 
