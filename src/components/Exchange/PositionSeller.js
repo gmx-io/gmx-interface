@@ -665,20 +665,16 @@ export default function PositionSeller(props) {
       return [t`Max close amount exceeded`];
     }
 
-    if (nextLeverage && nextLeverage.lt(1.1 * BASIS_POINTS_DIVISOR)) {
+    if (!isClosing && nextLeverage && nextLeverage.lt(1.1 * BASIS_POINTS_DIVISOR)) {
       return [t`Min leverage: 1.1x`];
     }
 
-    if (nextLeverage && nextLeverage.gt(MAX_ALLOWED_LEVERAGE)) {
+    if (!isClosing && nextLeverage && nextLeverage.gt(MAX_ALLOWED_LEVERAGE)) {
       return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
     }
 
     if (!isClosing && nextLeverageWithoutDelta && nextLeverageWithoutDelta.gt(MAX_LEVERAGE)) {
       return [t`Max Leverage without PnL: 100x`];
-    }
-
-    if (hasPendingProfit && orderOption !== STOP && !isProfitWarningAccepted) {
-      return [t`Forfeit profit not checked`];
     }
 
     if (position.isLong) {
