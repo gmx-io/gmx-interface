@@ -69,6 +69,7 @@ export function fillGaps(prices, periodSeconds) {
 }
 
 export async function getLimitChartPricesFromStats(chainId, symbol, period, limit = 1) {
+  // @todo chart data
   symbol = getNormalizedTokenSymbol(symbol);
 
   if (!isChartAvailabeForToken(chainId, symbol)) {
