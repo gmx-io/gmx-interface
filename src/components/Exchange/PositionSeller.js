@@ -424,7 +424,7 @@ export default function PositionSeller(props) {
        a position has profit or loss and how much fees it has. The following logic counters the backend logic
        and determines the exact collateralDelta to be passed so that ultimately the nextCollateral value
        generated will keep leverage the same.
-       
+
        The backend logic can be found in reduceCollateral function at
        https://github.com/gmx-io/gmx-contracts/blob/master/contracts/core/Vault.sol#L992
       */
@@ -637,15 +637,15 @@ export default function PositionSeller(props) {
       keepLeverage &&
       (leverageWithoutDelta?.lt(0) || leverageWithoutDelta?.gt(100 * BASIS_POINTS_DIVISOR))
     ) {
-      return [t`Fees are higher than Collateral`, ErrorDisplayType.Tooltip, ErrorCode.FeesHigherThanCollateral];
+      // return [t`Fees are higher than Collateral`, ErrorDisplayType.Tooltip, ErrorCode.FeesHigherThanCollateral];
     }
 
     if (keepLeverage && isKeepLeverageNotPossible) {
-      return [t`Keep Leverage is not possible`, ErrorDisplayType.Tooltip, ErrorCode.KeepLeverageNotPossible];
+      // return [t`Keep Leverage is not possible`, ErrorDisplayType.Tooltip, ErrorCode.KeepLeverageNotPossible];
     }
 
     if (nextCollateral?.lt(0)) {
-      return [t`Realized PnL insufficient for Fees`, ErrorDisplayType.Tooltip, ErrorCode.NegativeNextCollateral];
+      // return [t`Realized PnL insufficient for Fees`, ErrorDisplayType.Tooltip, ErrorCode.NegativeNextCollateral];
     }
 
     if (isCollateralPoolCapacityExceeded) {
@@ -674,7 +674,7 @@ export default function PositionSeller(props) {
     }
 
     if (nextLeverageWithoutDelta && nextLeverageWithoutDelta.gt(MAX_LEVERAGE)) {
-      return [t`Max Leverage without PnL: 100x`];
+      // return [t`Max Leverage without PnL: 100x`];
     }
 
     if (hasPendingProfit && orderOption !== STOP && !isProfitWarningAccepted) {
@@ -683,11 +683,11 @@ export default function PositionSeller(props) {
 
     if (position.isLong) {
       if (nextLiquidationPrice && nextLiquidationPrice.gt(position.markPrice)) {
-        return [t`Invalid Liquidation Price`];
+        // return [t`Invalid Liquidation Price`];
       }
     } else {
       if (nextLiquidationPrice && nextLiquidationPrice.lt(position.markPrice)) {
-        return [t`Invalid Liquidation Price`];
+        // return [t`Invalid Liquidation Price`];
       }
     }
 
