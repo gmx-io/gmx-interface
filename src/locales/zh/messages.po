@@ -1659,8 +1659,8 @@ msgid "Invalid Receiver Address"
 msgstr "无效的接收地址"
 
 #: src/components/Exchange/PositionSeller.js
-msgid "Invalid amount"
-msgstr ""
+#~ msgid "Invalid amount"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js

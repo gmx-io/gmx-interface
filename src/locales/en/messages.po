@@ -1659,8 +1659,8 @@ msgid "Invalid Receiver Address"
 msgstr "Invalid Receiver Address"
 
 #: src/components/Exchange/PositionSeller.js
-msgid "Invalid amount"
-msgstr "Invalid amount"
+#~ msgid "Invalid amount"
+#~ msgstr "Invalid amount"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
