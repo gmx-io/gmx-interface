@@ -1041,7 +1041,7 @@ export function ConfirmationBox(p: Props) {
             </ExchangeInfoRow>
           )}
           {isLimit && renderAvailableLiquidity()}
-          {renderAllowedSlippage(allowedSlippage, setAllowedSlippage)}
+          {renderAllowedSlippage(savedAllowedSlippage, setAllowedSlippage)}
           <ExchangeInfoRow label={t`Mark Price`} isTop>
             {formatTokensRatio(fromToken, toToken, markRatio)}
           </ExchangeInfoRow>

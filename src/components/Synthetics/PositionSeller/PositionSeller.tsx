@@ -408,7 +408,7 @@ export function PositionSeller(p: Props) {
                     />
                   }
                 >
-                  <SlippageInput setAllowedSlippage={setAllowedSlippage} defaultSlippage={allowedSlippage} />
+                  <SlippageInput setAllowedSlippage={setAllowedSlippage} defaultSlippage={savedAllowedSlippage} />
                 </ExchangeInfoRow>
               </div>
 
