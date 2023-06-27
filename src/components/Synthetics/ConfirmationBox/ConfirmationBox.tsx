@@ -610,8 +610,8 @@ export function ConfirmationBox(p: Props) {
       return null;
     }
     const isCollateralTokenNonStable = !collateralToken?.isStable;
-    const collateralTokenSymbol = collateralToken?.symbol;
-    const indexTokenSymbol = indexToken?.symbol;
+    const collateralTokenSymbol = collateralToken?.[collateralToken?.isWrapped ? "baseSymbol" : "symbol"];
+    const indexTokenSymbol = indexToken?.[indexToken?.isWrapped ? "baseSymbol" : "symbol"];
 
     if (isCollateralTokenNonStable && collateralTokenSymbol !== indexTokenSymbol) {
       return (
