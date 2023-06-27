@@ -130,7 +130,7 @@ const constants = {
   [SEPOLIA_TESTNET]: {
     nativeTokenSymbol: "ETH",
     wrappedTokenSymbol: "WETH",
-    defaultCollateralSymbol: "USDC",
+    defaultCollateralSymbol: "USDT",
     defaultFlagOrdersEnabled: true,
     positionReaderPropsLength: 9,
     v2: true,

@@ -672,6 +672,10 @@ export const ICONLINKS = {
       coingecko: "https://www.coingecko.com/en/coins/usd-coin",
       avalanche: "https://testnet.snowtrace.io/address/0xC492c8d82DC576Ad870707bb40EDb63E2026111E",
     },
+    USDT: {
+      coingecko: "https://assets.coingecko.com/coins/images/325/small/Tether.png?1668148663",
+      avalanche: "https://testnet.snowtrace.io/address/0xC492c8d82DC576Ad870707bb40EDb63E2026111E",
+    },
     GMX: {
       coingecko: "https://www.coingecko.com/en/coins/gmx",
       arbitrum: "https://arbiscan.io/address/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a",
