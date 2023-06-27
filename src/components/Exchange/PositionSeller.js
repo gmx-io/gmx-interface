@@ -617,19 +617,19 @@ export default function PositionSeller(props) {
         return [t`Enter Price`];
       }
       if (position.isLong && triggerPriceUsd.lte(liquidationPrice)) {
-        return [t`Price below Liq. Price`];
+        // return [t`Price below Liq. Price`];
       }
       if (!position.isLong && triggerPriceUsd.gte(liquidationPrice)) {
-        return [t`Price above Liq. Price`];
+        // return [t`Price above Liq. Price`];
       }
 
       if (profitPrice && nextDelta.eq(0) && nextHasProfit) {
-        return [t`Invalid price, see warning`];
+        // return [t`Invalid price, see warning`];
       }
     }
 
     if (isNotEnoughReceiveTokenLiquidity) {
-      return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientReceiveToken];
+      // return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientReceiveToken];
     }
 
     if (
@@ -649,28 +649,28 @@ export default function PositionSeller(props) {
     }
 
     if (isCollateralPoolCapacityExceeded) {
-      return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.ReceiveCollateralTokenOnly];
+      // return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.ReceiveCollateralTokenOnly];
     }
 
     if (!isClosing && position && position.size && fromAmount) {
       if (position.size.sub(fromAmount).lt(expandDecimals(10, USD_DECIMALS))) {
-        return [t`Leftover position below 10 USD`];
+        // return [t`Leftover position below 10 USD`];
       }
       if (nextCollateral && nextCollateral.lt(expandDecimals(5, USD_DECIMALS))) {
-        return [t`Leftover collateral below 5 USD`];
+        // return [t`Leftover collateral below 5 USD`];
       }
     }
 
     if (position && position.size && position.size.lt(fromAmount)) {
-      return [t`Max close amount exceeded`];
+      // return [t`Max close amount exceeded`];
     }
 
     if (nextLeverage && nextLeverage.lt(1.1 * BASIS_POINTS_DIVISOR)) {
-      return [t`Min leverage: 1.1x`];
+      // return [t`Min leverage: 1.1x`];
     }
 
     if (nextLeverage && nextLeverage.gt(MAX_ALLOWED_LEVERAGE)) {
-      return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
+      // return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
     }
 
     if (nextLeverageWithoutDelta && nextLeverageWithoutDelta.gt(MAX_LEVERAGE)) {
@@ -678,7 +678,7 @@ export default function PositionSeller(props) {
     }
 
     if (hasPendingProfit && orderOption !== STOP && !isProfitWarningAccepted) {
-      return [t`Forfeit profit not checked`];
+      // return [t`Forfeit profit not checked`];
     }
 
     if (position.isLong) {
