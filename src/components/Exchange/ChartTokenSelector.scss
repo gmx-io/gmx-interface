@@ -71,7 +71,7 @@
       border-radius: var(--border-radius-sm);
       cursor: pointer;
       &:hover {
-        background-color: var(--dark-blue-hover);
+        background-color: rgba(180, 187, 255, 0.1);
         border-radius: var(--border-radius-sm);
       }
       td {
