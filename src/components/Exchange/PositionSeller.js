@@ -640,11 +640,11 @@ export default function PositionSeller(props) {
       return [t`Fees are higher than Collateral`, ErrorDisplayType.Tooltip, ErrorCode.FeesHigherThanCollateral];
     }
 
-    if (keepLeverage && isKeepLeverageNotPossible) {
+    if (!isClosing && keepLeverage && isKeepLeverageNotPossible) {
       return [t`Keep Leverage is not possible`, ErrorDisplayType.Tooltip, ErrorCode.KeepLeverageNotPossible];
     }
 
-    if (nextCollateral?.lt(0)) {
+    if (!isClosing && nextCollateral?.lt(0)) {
       return [t`Realized PnL insufficient for Fees`, ErrorDisplayType.Tooltip, ErrorCode.NegativeNextCollateral];
     }
 
@@ -673,7 +673,7 @@ export default function PositionSeller(props) {
       return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
     }
 
-    if (nextLeverageWithoutDelta && nextLeverageWithoutDelta.gt(MAX_LEVERAGE)) {
+    if (!isClosing && nextLeverageWithoutDelta && nextLeverageWithoutDelta.gt(MAX_LEVERAGE)) {
       return [t`Max Leverage without PnL: 100x`];
     }
 
@@ -682,17 +682,13 @@ export default function PositionSeller(props) {
     }
 
     if (position.isLong) {
-      if (nextLiquidationPrice && nextLiquidationPrice.gt(position.markPrice)) {
+      if (!isClosing && nextLiquidationPrice && nextLiquidationPrice.gt(position.markPrice)) {
         return [t`Invalid Liquidation Price`];
       }
     } else {
-      if (nextLiquidationPrice && nextLiquidationPrice.lt(position.markPrice)) {
+      if (!isClosing && nextLiquidationPrice && nextLiquidationPrice.lt(position.markPrice)) {
         return [t`Invalid Liquidation Price`];
       }
-    }
-
-    if ((collateralDelta && collateralDelta.lt(0)) || (receiveUsd && receiveUsd.lt(0))) {
-      return [t`Invalid amount`];
     }
 
     return [false];
