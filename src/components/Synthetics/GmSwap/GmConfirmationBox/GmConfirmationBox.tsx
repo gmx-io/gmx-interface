@@ -318,16 +318,6 @@ export function GmConfirmationBox({
             />
             {tokensToApprove?.length > 0 && <div className="line-divider" />}
 
-            {/* {isHighPriceImpact && (
-              <div className="GmSwapBox-warnings">
-                <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
-                  <span className="muted font-sm">
-                    <Trans>I am aware of the high Price Impact</Trans>
-                  </span>
-                </Checkbox>
-              </div>
-            )} */}
-
             {tokensToApprove && tokensToApprove.length > 0 && (
               <div>
                 {tokensToApprove.map((address) => (
