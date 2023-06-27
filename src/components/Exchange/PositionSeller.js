@@ -640,11 +640,11 @@ export default function PositionSeller(props) {
       return [t`Fees are higher than Collateral`, ErrorDisplayType.Tooltip, ErrorCode.FeesHigherThanCollateral];
     }
 
-    if (keepLeverage && isKeepLeverageNotPossible) {
+    if (!isClosing && keepLeverage && isKeepLeverageNotPossible) {
       return [t`Keep Leverage is not possible`, ErrorDisplayType.Tooltip, ErrorCode.KeepLeverageNotPossible];
     }
 
-    if (nextCollateral?.lt(0)) {
+    if (!isClosing && nextCollateral?.lt(0)) {
       return [t`Realized PnL insufficient for Fees`, ErrorDisplayType.Tooltip, ErrorCode.NegativeNextCollateral];
     }
 
@@ -665,34 +665,26 @@ export default function PositionSeller(props) {
       return [t`Max close amount exceeded`];
     }
 
-    if (nextLeverage && nextLeverage.lt(1.1 * BASIS_POINTS_DIVISOR)) {
+    if (!isClosing && nextLeverage && nextLeverage.lt(1.1 * BASIS_POINTS_DIVISOR)) {
       return [t`Min leverage: 1.1x`];
     }
 
-    if (nextLeverage && nextLeverage.gt(MAX_ALLOWED_LEVERAGE)) {
+    if (!isClosing && nextLeverage && nextLeverage.gt(MAX_ALLOWED_LEVERAGE)) {
       return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
     }
 
-    if (nextLeverageWithoutDelta && nextLeverageWithoutDelta.gt(MAX_LEVERAGE)) {
+    if (!isClosing && nextLeverageWithoutDelta && nextLeverageWithoutDelta.gt(MAX_LEVERAGE)) {
       return [t`Max Leverage without PnL: 100x`];
     }
 
-    if (hasPendingProfit && orderOption !== STOP && !isProfitWarningAccepted) {
-      return [t`Forfeit profit not checked`];
-    }
-
     if (position.isLong) {
-      if (nextLiquidationPrice && nextLiquidationPrice.gt(position.markPrice)) {
+      if (!isClosing && nextLiquidationPrice && nextLiquidationPrice.gt(position.markPrice)) {
         return [t`Invalid Liquidation Price`];
       }
     } else {
-      if (nextLiquidationPrice && nextLiquidationPrice.lt(position.markPrice)) {
+      if (!isClosing && nextLiquidationPrice && nextLiquidationPrice.lt(position.markPrice)) {
         return [t`Invalid Liquidation Price`];
       }
-    }
-
-    if ((collateralDelta && collateralDelta.lt(0)) || (receiveUsd && receiveUsd.lt(0))) {
-      return [t`Invalid amount`];
     }
 
     return [false];
