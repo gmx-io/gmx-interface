@@ -114,10 +114,12 @@ export const getWalletConnectConnectorV2 = () => {
     rpcMap: {
       [AVALANCHE]: getRpcUrl(AVALANCHE)!,
       [ARBITRUM]: getRpcUrl(ARBITRUM)!,
+      [ARBITRUM_TESTNET]: getRpcUrl(ARBITRUM_TESTNET)!,
+      [AVALANCHE_FUJI]: getRpcUrl(AVALANCHE_FUJI)!,
     },
     showQrModal: true,
     chains: [chainId],
-    optionalChains: [ARBITRUM, AVALANCHE],
+    optionalChains: SUPPORTED_CHAIN_IDS,
     projectId: "de24cddbaf2a68f027eae30d9bb5df58",
   });
 };
