@@ -28,8 +28,8 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 
 function renderSymbolWithIcon(symbol) {
   return (
-    <span className="items-center">
-      <TokenIcon className="mr-xxs" symbol={symbol} importSize={24} displaySize={18} />
+    <span>
+      <TokenIcon className="mr-xs Order-editor-icon" symbol={symbol} importSize={24} displaySize={18} />
       {symbol}
     </span>
   );
@@ -349,7 +349,7 @@ export default function OrderEditor(props) {
             if (!fromTokenInfo) return;
             const [tokenA, tokenB] = triggerRatioInverted ? [toTokenInfo, fromTokenInfo] : [fromTokenInfo, toTokenInfo];
             return (
-              <div className="PositionEditor-token-symbol">
+              <div className="PositionEditor-token-symbol Order-editor-tokens">
                 {renderSymbolWithIcon(tokenA.symbol)}&nbsp;/&nbsp;{renderSymbolWithIcon(tokenB.symbol)}
               </div>
             );

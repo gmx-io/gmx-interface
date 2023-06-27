@@ -408,6 +408,16 @@
   text-align: right;
 }
 
+.Order-editor-tokens .Order-editor-icon {
+  vertical-align: bottom;
+  height: 2.5rem;
+}
+
+.Swap-limit-icon {
+  vertical-align: bottom;
+  height: 2.5rem;
+}
+
 .ExchangeChart-container {
   position: absolute;
   left: 0;
@@ -695,7 +705,6 @@ table.Exchange-list th {
   font-size: var(--font-sm);
   background: var(--primary-btn-bg);
   border: none;
-  opacity: 0.8;
 }
 
 .Exchange-swap-max:hover {
@@ -765,7 +774,6 @@ input.Exchange-swap-input.small {
   align-items: center;
   border: none;
   color: white;
-  opacity: 0.8;
 }
 
 .Exchange-swap-ball:hover {
