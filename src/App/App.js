@@ -617,7 +617,16 @@ function FullApp() {
               className="App-slippage-tolerance-input"
               min="0"
               value={slippageAmount}
-              onChange={(e) => setSlippageAmount(e.target.value)}
+              onChange={(e) => {
+                const regex = /^\d+(\.\d+)?$/;
+                let value = e.target.value;
+                if (value === ".") {
+                  value = "0.";
+                }
+                if (value && regex.test(value)) {
+                  setSlippageAmount(value);
+                }
+              }}
             />
             <div className="App-slippage-tolerance-input-percent">%</div>
           </div>
