@@ -198,6 +198,10 @@ export function getIncreaseError(p: {
     return [t`Min order: ${formatUsd(_minCollateralUsd)}`];
   }
 
+  if (!sizeDeltaUsd.gt(0)) {
+    return [t`Enter a size`];
+  }
+
   if (!isLimit) {
     if (isLong && (!longLiquidity || longLiquidity.lt(sizeDeltaUsd))) {
       return [t`Max ${indexToken.symbol} long exceeded`];

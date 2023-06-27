@@ -63,6 +63,11 @@ export function useTokenRecentPrices(chainId: number): TokenPricesDataResult {
           result[NATIVE_TOKEN_ADDRESS] = result[wrappedToken.address];
         }
 
+        // // TODO: remove this after the oracle keeper is updated
+        // if (result["0xEe01c0CD76354C383B8c7B4e65EA88D00B06f36f"] && !result[NATIVE_TOKEN_ADDRESS]) {
+        //   result[NATIVE_TOKEN_ADDRESS] = result["0xEe01c0CD76354C383B8c7B4e65EA88D00B06f36f"];
+        // }
+
         return {
           pricesData: result,
           updatedAt: Date.now(),

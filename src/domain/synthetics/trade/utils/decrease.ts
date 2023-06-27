@@ -109,7 +109,6 @@ export function getDecreasePositionAmounts(p: {
   }
 
   values.sizeDeltaUsd = closeSizeUsd;
-  values.sizeDeltaInTokens = convertToTokenAmount(values.sizeDeltaUsd, indexToken.decimals, values.indexPrice)!;
 
   if (!position) {
     const acceptablePriceInfo = getAcceptablePriceInfo({

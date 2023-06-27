@@ -124,8 +124,8 @@ export function usePositions(
       const positions = res.data.reader.positions.returnValues[0];
 
       return positions.reduce((positionsMap: PositionsData, positionInfo, i) => {
-        const [positionProps, positionFees] = positionInfo;
-        const [addresses, numbers, flags, data] = positionProps;
+        const [position, fees] = positionInfo;
+        const [addresses, numbers, flags, data] = position;
         const [account, marketAddress, collateralTokenAddress] = addresses;
 
         const [
@@ -133,8 +133,10 @@ export function usePositions(
           sizeInTokens,
           collateralAmount,
           borrowingFactor,
-          longTokenFundingAmountPerSize,
-          shortTokenFundingAmountPerSize,
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          fundingFeeAmountPerSize,
+          longTokenClaimableFundingAmountPerSize,
+          shortTokenClaimableFundingAmountPerSize,
           increasedAtBlock,
           decreasedAtBlock,
         ] = numbers.map(bigNumberify);
@@ -156,7 +158,7 @@ export function usePositions(
           // positionFeeAmount,
           // totalNetCostAmount,
           // totalNetCostUsd,
-        ] = positionFees;
+        ] = fees;
 
         // const [
         //   referralCode,
@@ -177,6 +179,8 @@ export function usePositions(
           fundingFeeAmount,
           claimableLongTokenAmount,
           claimableShortTokenAmount,
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          latestFundingFeeAmountPerSize,
           latestLongTokenFundingAmountPerSize,
           latestShortTokenFundingAmountPerSize,
         ] = funding.map(bigNumberify);
@@ -199,8 +203,8 @@ export function usePositions(
           sizeInTokens,
           collateralAmount,
           borrowingFactor,
-          longTokenFundingAmountPerSize,
-          shortTokenFundingAmountPerSize,
+          longTokenFundingAmountPerSize: longTokenClaimableFundingAmountPerSize,
+          shortTokenFundingAmountPerSize: shortTokenClaimableFundingAmountPerSize,
           increasedAtBlock,
           decreasedAtBlock,
           isLong,
