@@ -90,7 +90,6 @@ import {
   clearWalletConnectData,
   clearWalletLinkData,
   getInjectedHandler,
-  getWalletConnectHandler,
   getWalletConnectV2Handler,
   hasCoinBaseWalletExtension,
   hasMetaMaskWalletExtension,
@@ -199,9 +198,7 @@ function FullApp() {
   };
 
   const connectInjectedWallet = getInjectedHandler(activate, deactivate);
-  const activateWalletConnect = () => {
-    getWalletConnectHandler(activate, deactivate, setActivatingConnector)();
-  };
+
   const activateWalletConnectV2 = () => {
     getWalletConnectV2Handler(activate, deactivate, setActivatingConnector)();
   };
