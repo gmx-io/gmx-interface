@@ -313,10 +313,14 @@ function FullApp() {
       helperToast.error(t`Slippage should be less than 5%`);
       return;
     }
-    const basisPoints = roundToTwoDecimals((slippage * BASIS_POINTS_DIVISOR) / 100);
+    let basisPoints = roundToTwoDecimals((slippage * BASIS_POINTS_DIVISOR) / 100);
     if (parseInt(basisPoints) !== parseFloat(basisPoints)) {
       helperToast.error(t`Max slippage precision is 0.01%`);
       return;
+    }
+
+    if (basisPoints === 0) {
+      basisPoints = DEFAULT_SLIPPAGE_AMOUNT;
     }
 
     setSavedIsPnlInLeverage(isPnlInLeverage);
