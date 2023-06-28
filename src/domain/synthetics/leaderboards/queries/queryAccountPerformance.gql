@@ -1,0 +1,26 @@
+query GetAccountPerformance(
+  $pageSize: Int = 10,
+  $offset: Int = 0,
+  $orderBy: AccountPerf_orderBy = timestamp,
+  $orderDirection: OrderDirection = desc,
+  $since: Int = 0,
+  $period: Period = daily,
+) {
+  accountPerfs(
+    first: $pageSize
+    offset: $offset
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+    where: {timestamp_gte: $since, period: $period}
+  ) {
+    id
+    timestamp
+    period
+    account
+    losses
+    maxCollateral
+    totalPnl
+    volume
+    wins
+  }
+}

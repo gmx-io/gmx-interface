@@ -248,12 +248,20 @@ msgstr "Требуется дополнительный резерв"
 msgid "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 msgstr "Кроме того, триггерные ордера являются рыночными и не гарантируют расчет по триггерной цене."
 
+#: src/components/Leaderboard/GeneralOpenLeaderboard.tsx
+#: src/components/Leaderboard/GeneralSettledLeaderboard.tsx
+msgid "Address"
+msgstr ""
+
 #: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "Address copied to your clipboard"
 msgstr ""
 
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Affiliate Rewards Claimed"
+
+#: src/pages/Leaderboard/Leaderboard.tsx
+msgid "Addresses trading statistics. Choose between general or competitions leaderboards."
 msgstr ""
 
 #: src/pages/Referrals/Referrals.tsx
@@ -1597,10 +1605,8 @@ msgstr ""
 msgid "Entry Price"
 msgstr "Входная Цена"
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-msgid "Error submitting order"
+#: src/components/Leaderboard/GeneralOpenLeaderboard.tsx
+msgid "Entry Price ($)"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
@@ -1943,6 +1949,10 @@ msgstr "Перевод GMX еще не активирован"
 msgid "GMX | Decentralized Perpetual Exchange"
 msgstr ""
 
+#: src/pages/Leaderboard/Leaderboard.tsx
+msgid "General"
+msgstr ""
+
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Generate Referral Code"
 msgstr "Сгенерировать Реферальный Код"
@@ -2240,6 +2250,11 @@ msgstr "Таблица лидеров"
 msgid "Leaderboard for GMX traders"
 msgstr "Таблица лидеров для трейдеров GMX"
 
+#: src/components/Header/AppHeaderLinks.tsx
+#: src/pages/Leaderboard/Leaderboard.tsx
+msgid "Leaderboards"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 msgid "Leave at least {0} ETH for gas"
 msgstr ""
@@ -2373,6 +2388,10 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Liq. Price"
 msgstr "Лик. Цена"
+
+#: src/components/Leaderboard/GeneralOpenLeaderboard.tsx
+msgid "Liq. Price ($)"
+msgstr ""
 
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Liq. {0} {longOrShortText}"
@@ -2756,6 +2775,10 @@ msgstr "Максимально: {0}"
 msgid "Media Kit"
 msgstr "Медиа-Кит"
 
+#: src/components/Leaderboard/TeamLeaderboard.tsx
+#~ msgid "Members"
+#~ msgstr ""
+
 #: src/App/App.js
 msgid "MetaMask"
 msgstr "MetaMask"
@@ -2866,6 +2889,16 @@ msgstr "NFT ID"
 #: src/pages/NftWallet/NftWallet.js
 msgid "NFT Wallet"
 msgstr "NFT Кошелёк"
+
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
+#~ msgid "Name"
+#~ msgstr ""
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#~ msgid "Need to accept Price Impact"
+#~ msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Negative Funding Fees are settled against the collateral automatically and will influence the liquidation price. Positive Funding Fees can be claimed under Claimable Funding after realizing any action on the position."
@@ -2979,6 +3012,10 @@ msgstr "Открытый Интерес"
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "Open Interest Balance"
 msgstr ""
+
+#: src/components/Leaderboard/TeamLeaderboard.tsx
+#~ msgid "Open Positions"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Open a position"
@@ -3225,6 +3262,11 @@ msgstr ""
 msgid "PnL"
 msgstr "PnL"
 
+#: src/components/Leaderboard/GeneralOpenLeaderboard.tsx
+#: src/components/Leaderboard/GeneralSettledLeaderboard.tsx
+msgid "PnL ($)"
+msgstr ""
+
 #: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "PnL After Fees"
@@ -3440,6 +3482,11 @@ msgstr ""
 #: src/pages/Stake/StakeV2.js
 msgid "Purchase Insurance"
 msgstr "Приобрести Страховку"
+
+#: src/components/Leaderboard/GeneralOpenLeaderboard.tsx
+#: src/components/Leaderboard/GeneralSettledLeaderboard.tsx
+msgid "Rank"
+msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
@@ -3927,6 +3974,10 @@ msgstr ""
 msgid "Size"
 msgstr "Размер"
 
+#: src/components/Leaderboard/GeneralOpenLeaderboard.tsx
+msgid "Size ($)"
+msgstr ""
+
 #: src/App/App.js
 msgid "Slippage should be less than 5%"
 msgstr "Скольжение должно составлять менее 5%"
@@ -4216,6 +4267,10 @@ msgstr "Целевой показатель Мин Суммы"
 msgid "Target Weight"
 msgstr "Целевой Вес"
 
+#: src/components/Leaderboard/TeamLeaderboard.tsx
+#~ msgid "Team Name"
+#~ msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram Group"
 msgstr "Группа в Телеграмме"
@@ -4413,6 +4468,10 @@ msgstr "Чтобы уменьшить комиссию, выберите дру�
 #: src/components/Glp/GlpSwap.js
 msgid "To reduce fees, select a different asset to receive."
 msgstr "Чтобы уменьшить комиссию, выберите другой способ получения."
+
+#: src/components/Leaderboard/GeneralOpenLeaderboard.tsx
+msgid "Token"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Tokens"
@@ -5032,6 +5091,10 @@ msgstr "Вес"
 #: src/components/Exchange/SwapBox.js
 msgid "When closing the position, you can select which token you would like to receive the profits in."
 msgstr "При закрытии позиции вы можете выбрать, в каком токене вы хотели бы получить прибыль."
+
+#: src/components/Leaderboard/GeneralSettledLeaderboard.tsx
+msgid "Win / Loss"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js

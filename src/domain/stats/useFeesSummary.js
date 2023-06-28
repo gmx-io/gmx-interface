@@ -1,8 +1,14 @@
-import { getServerUrl } from "config/backend";
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
-import { arrayURLFetcher } from "lib/fetcher";
 import useSWR from "swr";
+import { isDevelopment } from "config/env";
+import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
+import { getServerUrl } from "config/backend";
+import { arrayURLFetcher } from "lib/fetcher";
+
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE, AVALANCHE_FUJI];
+
+if (isDevelopment()) {
+  ACTIVE_CHAIN_IDS.push(ARBITRUM_GOERLI);
+}
 
 export function useFeesSummary() {
   const { data: feesSummary } = useSWR(

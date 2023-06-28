@@ -17,6 +17,8 @@ export const avalancheSyntheticsStatsClient = createClient(AVALANCHE, "synthetic
 export const avalancheFujiSyntheticsStatsClient = createClient(AVALANCHE_FUJI, "syntheticsStats");
 export const arbitrumGoerliSyntheticsStatsClient = createClient(ARBITRUM_GOERLI, "syntheticsStats");
 
+export const arbitrumGoerliLeaderboardsClient = createClient(ARBITRUM_GOERLI, "leaderboards");
+
 export function getSyntheticsGraphClient(chainId: number) {
   if (chainId === ARBITRUM) {
     return arbitrumSyntheticsStatsClient;

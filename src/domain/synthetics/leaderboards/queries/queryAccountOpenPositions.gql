@@ -1,0 +1,22 @@
+query GetAccountOpenPositions(
+  $pageSize: Int,
+  $offset: Int = 0,
+  $orderBy: AccountOpenPosition_orderBy = sizeInUsd,
+  $orderDirection: OrderDirection = desc,
+) {
+  accountOpenPositions(
+    first: $pageSize,
+    offset: $offset,
+    orderBy: $orderBy,
+    orderDirection: $orderDirection
+  ) {
+    id
+    account
+    market
+    collateralToken
+    isLong
+    realizedPnl
+    sizeInTokens
+    sizeInUsd
+  }
+}
