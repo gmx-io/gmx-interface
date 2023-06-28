@@ -598,16 +598,10 @@ function FullApp() {
             <Trans>Coinbase Wallet</Trans>
           </div>
         </button>
-        <button className="Wallet-btn WalletConnect-btn" onClick={activateWalletConnect}>
-          <img src={walletConnectImg} alt="WalletConnect" />
-          <div>
-            <Trans>WalletConnect</Trans>
-          </div>
-        </button>
         <button className="Wallet-btn WalletConnect-btn" onClick={activateWalletConnectV2}>
           <img src={walletConnectImg} alt="WalletConnect" />
           <div>
-            <Trans>WalletConnect V2</Trans>
+            <Trans>WalletConnect</Trans>
           </div>
         </button>
       </Modal>
