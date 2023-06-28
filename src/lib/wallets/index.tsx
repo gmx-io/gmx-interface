@@ -120,7 +120,7 @@ export const getWalletConnectConnectorV2 = () => {
     showQrModal: true,
     chains: [chainId],
     optionalChains: SUPPORTED_CHAIN_IDS,
-    projectId: "de24cddbaf2a68f027eae30d9bb5df58",
+    projectId: "8fceb548bea9a92efcb7c0230d70011b",
   });
 };
 

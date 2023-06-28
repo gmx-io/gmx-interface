@@ -41,6 +41,15 @@ export class WalletConnectConnectorV2 extends AbstractConnector {
       rpcMap,
       projectId,
       showQrModal,
+      qrModalOptions: {
+        enableExplorer: true,
+        chainImages: undefined,
+        themeMode: "dark",
+        themeVariables: {
+          "--w3m-font-family": '"Relative",sans-serif',
+          "--w3m-z-index": "1100",
+        },
+      },
     };
 
     this.handleChainChanged = this.handleChainChanged.bind(this);
