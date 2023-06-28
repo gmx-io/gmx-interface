@@ -660,7 +660,6 @@ export function GmSwapBox(p: Props) {
           onSelectMarket(marketInfo?.marketTokenAddress);
         }
       }
-
       history.replace({ search: "" });
     },
     [history, marketsInfoData, onSelectMarket, queryParams, setIndexName, setOperation]

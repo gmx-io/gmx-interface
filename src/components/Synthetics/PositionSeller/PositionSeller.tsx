@@ -573,7 +573,7 @@ export function PositionSeller(p: Props) {
             {isHighPriceImpact && (
               <div className="PositionSeller-price-impact-warning">
                 <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
-                  <span className="muted font-sm">
+                  <span className="text-gray font-sm">
                     <Trans>I am aware of the high Price Impact</Trans>
                   </span>
                 </Checkbox>

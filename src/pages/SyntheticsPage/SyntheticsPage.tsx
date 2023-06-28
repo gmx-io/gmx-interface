@@ -32,6 +32,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useMarketsInfo } from "domain/synthetics/markets";
 import { useSelectedTradeOption } from "domain/synthetics/trade/useSelectedTradeOption";
+import { TradeMode } from "domain/synthetics/trade";
+import { helperToast } from "lib/helperToast";
 
 export type Props = {
   savedIsPnlInLeverage: boolean;
@@ -225,6 +227,13 @@ export function SyntheticsPage(p: Props) {
     document.title = title;
   }, [chartToken?.address, chartToken?.isStable, chartToken?.symbol, tokensData]);
 
+  function onSelectPositionClick(key: string, tradeMode?: TradeMode) {
+    const position = getByKey(positionsInfoData, key);
+    setActivePosition(getByKey(positionsInfoData, key), tradeMode);
+    const message = t`${position?.isLong ? "Long" : "Short"} ${position?.marketInfo.name} market selected.`;
+    helperToast.success(message);
+  }
+
   return (
     <div className="Exchange page-layout">
       <div className="Exchange-content">
@@ -287,9 +296,7 @@ export function SyntheticsPage(p: Props) {
                 isLoading={isPositionsLoading}
                 savedIsPnlInLeverage={savedIsPnlInLeverage}
                 onOrdersClick={() => setListSection(ListSection.Orders)}
-                onSelectPositionClick={(key, tradeMode) =>
-                  setActivePosition(getByKey(positionsInfoData, key), tradeMode)
-                }
+                onSelectPositionClick={onSelectPositionClick}
                 onClosePositionClick={setClosingPositionKey}
                 onEditCollateralClick={setEditingPositionKey}
                 showPnlAfterFees={showPnlAfterFees}
@@ -380,7 +387,7 @@ export function SyntheticsPage(p: Props) {
               savedIsPnlInLeverage={savedIsPnlInLeverage}
               isLoading={isPositionsLoading}
               onOrdersClick={() => setListSection(ListSection.Orders)}
-              onSelectPositionClick={(key, tradeMode) => setActivePosition(getByKey(positionsInfoData, key), tradeMode)}
+              onSelectPositionClick={onSelectPositionClick}
               onClosePositionClick={setClosingPositionKey}
               onEditCollateralClick={setEditingPositionKey}
               showPnlAfterFees={showPnlAfterFees}

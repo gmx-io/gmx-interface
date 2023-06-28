@@ -1002,7 +1002,7 @@ export function ConfirmationBox(p: Props) {
           {decreaseOrdersThatWillBeExecuted?.length > 0 && (
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox isChecked={isTriggerWarningAccepted} setIsChecked={setIsTriggerWarningAccepted}>
-                <span className="muted font-sm">
+                <span className="text-gray font-sm">
                   <Trans>I am aware of the trigger orders</Trans>
                 </span>
               </Checkbox>
@@ -1012,7 +1012,7 @@ export function ConfirmationBox(p: Props) {
           {isHighPriceImpact && (
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
-                <span className="muted font-sm">
+                <span className="text-gray font-sm">
                   <Trans>I am aware of the high Price Impact</Trans>
                 </span>
               </Checkbox>
@@ -1077,7 +1077,7 @@ export function ConfirmationBox(p: Props) {
           {isHighPriceImpact && (
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
-                <span className="muted font-sm">
+                <span className="text-gray font-sm">
                   <Trans>I am aware of the high Price Impact</Trans>
                 </span>
               </Checkbox>
@@ -1221,7 +1221,7 @@ export function ConfirmationBox(p: Props) {
           {isHighPriceImpact && (
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
-                <span className="muted font-sm">
+                <span className="text-gray font-sm">
                   <Trans>I am aware of the high Price Impact</Trans>
                 </span>
               </Checkbox>
