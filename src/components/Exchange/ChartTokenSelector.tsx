@@ -109,7 +109,12 @@ export default function ChartTokenSelector(props: Props) {
             <Popover.Button as="div">
               <button className={cx("chart-token-selector", { "chart-token-label--active": open })}>
                 <span className="chart-token-selector--current items-center">
-                  <TokenIcon className="mr-xs" symbol={selectedToken.symbol} displaySize={20} importSize={24} />
+                  <TokenIcon
+                    className="chart-token-current-icon"
+                    symbol={selectedToken.symbol}
+                    displaySize={20}
+                    importSize={24}
+                  />
                   {selectedToken.symbol} / USD
                 </span>
                 <FaChevronDown fontSize={14} />
