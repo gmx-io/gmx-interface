@@ -3618,6 +3618,7 @@ msgid "Unstaking..."
 msgstr "언스테이킹중..."
 
 #: src/lib/wallets/index.tsx
+#: src/lib/wallets/index.tsx
 msgid "Unsupported chain. Switch to Arbitrum network on your wallet and try again"
 msgstr "지원하지 않는 체인입니다. 지갑을 Arbitrum 네트워크로 변경하여 다시 시도해주세요"
 
@@ -3791,6 +3792,10 @@ msgstr "지갑이 아직 연동되지 않았습니다"
 #: src/App/App.js
 msgid "WalletConnect"
 msgstr "지갑연결"
+
+#: src/App/App.js
+#~ msgid "WalletConnect V2"
+#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Weight"
