@@ -206,6 +206,11 @@ msgstr "Accrued Negative Funding Fee"
 msgid "Accrued Positive Funding Fee"
 msgstr "Accrued Positive Funding Fee"
 
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+msgid "Acknowledge high Price Impact"
+msgstr "Acknowledge high Price Impact"
+
 #: src/pages/Actions/Actions.js
 msgid "Actions"
 msgstr "Actions"
@@ -285,19 +290,17 @@ msgstr "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Ag
 msgid "Alternatively, you can select a different \"Collateral In\" token."
 msgstr "Alternatively, you can select a different \"Collateral In\" token."
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Amount"
 msgstr "Amount"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Amount of traders you referred."
 msgstr "Amount of traders you referred."
 
 #: src/components/Exchange/PositionEditor.js
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Amount should be greater than zero"
 msgstr "Amount should be greater than zero"
@@ -996,6 +999,7 @@ msgstr "Connect"
 #: src/components/Migration/Migration.js
 #: src/components/Referrals/AddAffiliateCode.js
 #: src/components/Referrals/JoinReferralCode.js
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -1008,7 +1012,6 @@ msgstr "Connect"
 msgid "Connect Wallet"
 msgstr "Connect Wallet"
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Connect wallet"
 msgstr "Connect wallet"
@@ -1016,6 +1019,10 @@ msgstr "Connect wallet"
 #: src/lib/wallets/index.tsx
 msgid "Connected to {0}"
 msgstr "Connected to {0}"
+
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+msgid "Consider selecting and using the \"Pair\" option to reduce the Price Impact."
+msgstr "Consider selecting and using the \"Pair\" option to reduce the Price Impact."
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
@@ -1078,7 +1085,6 @@ msgstr "Couldn't find a swap route with enough liquidity"
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/AddAffiliateCode.js
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/pages/Stake/StakeV1.js
@@ -1096,7 +1102,6 @@ msgstr "Create Limit order"
 msgid "Create Order"
 msgstr "Create Order"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Create Referral Code"
 msgstr "Create Referral Code"
@@ -1195,7 +1200,6 @@ msgstr "Dashboard for GMX referral stats"
 msgid "Dashboards"
 msgstr "Dashboards"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Date"
@@ -1554,6 +1558,7 @@ msgstr "Enter a ratio"
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter a size"
 msgstr "Enter a size"
 
@@ -1571,7 +1576,7 @@ msgstr "Enter a trigger price"
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -1703,8 +1708,8 @@ msgstr "Fees are high to swap from {0} to {1}."
 msgid "Fees are high to swap from {0} to {1}. <0/>{2} is needed for collateral."
 msgstr "Fees are high to swap from {0} to {1}. <0/>{2} is needed for collateral."
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Fees exceed Pay amount"
 msgstr "Fees exceed Pay amount"
@@ -1977,7 +1982,6 @@ msgstr "High USDG Slippage, Long Anyway"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "I am aware of the high Price Impact"
 msgstr "I am aware of the high Price Impact"
@@ -2139,16 +2143,16 @@ msgstr "Insufficient staked tokens"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} balance"
 msgstr "Insufficient {0} balance"
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} liquidity"
 msgstr "Insufficient {0} liquidity"
 
@@ -2395,7 +2399,6 @@ msgstr "Liquidity data not loaded"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/ClaimHistory/ClaimHistory.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
@@ -2403,6 +2406,7 @@ msgstr "Liquidity data not loaded"
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Loading..."
 msgstr "Loading..."
@@ -2507,6 +2511,7 @@ msgstr "MEV Optimizer"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Mark"
 msgstr "Mark"
@@ -2799,7 +2804,6 @@ msgid "NFT Wallet"
 msgstr "NFT Wallet"
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Need to accept Price Impact"
 msgstr "Need to accept Price Impact"
@@ -2876,7 +2880,6 @@ msgstr "No open positions at GMX currently"
 msgid "No position"
 msgstr "No position"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "No rebates distribution history yet."
@@ -3262,6 +3265,10 @@ msgstr "Price"
 msgid "Price Impact"
 msgstr "Price Impact"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Price Impact not yet acknowledged"
+msgstr "Price Impact not yet acknowledged"
+
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -3368,7 +3375,6 @@ msgstr "Purchase Insurance"
 msgid "Read more"
 msgstr "Read more"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates"
@@ -3379,7 +3385,6 @@ msgstr "Rebates"
 msgid "Rebates Distribution History"
 msgstr "Rebates Distribution History"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates are airdropped weekly."
 msgstr "Rebates are airdropped weekly."
@@ -3388,18 +3393,17 @@ msgstr "Rebates are airdropped weekly."
 msgid "Rebates earned by this account as a trader."
 msgstr "Rebates earned by this account as a trader."
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates earned by this account as an affiliate."
 msgstr "Rebates earned by this account as an affiliate."
 
 #: src/components/Referrals/AffiliatesStats.js
-msgid "Rebates on Arbitrum"
-msgstr "Rebates on Arbitrum"
+#~ msgid "Rebates on Arbitrum"
+#~ msgstr "Rebates on Arbitrum"
 
 #: src/components/Referrals/AffiliatesStats.js
-msgid "Rebates on Avalanche"
-msgstr "Rebates on Avalanche"
+#~ msgid "Rebates on Avalanche"
+#~ msgstr "Rebates on Avalanche"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates on V1"
@@ -3459,7 +3463,6 @@ msgstr "Reduce Liquidation Risks"
 msgid "Reducing the position at the current price will forfeit a <0>pending profit</0> of {deltaStr}. <1/>"
 msgstr "Reducing the position at the current price will forfeit a <0>pending profit</0> of {deltaStr}. <1/>"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Code"
 msgstr "Referral Code"
@@ -3468,7 +3471,6 @@ msgstr "Referral Code"
 msgid "Referral Code does not exist"
 msgstr "Referral Code does not exist"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Codes"
 msgstr "Referral Codes"
@@ -3581,12 +3583,12 @@ msgid "Rewards"
 msgstr "Rewards"
 
 #: src/components/Referrals/AffiliatesStats.js
-msgid "Rewards Distribution History"
-msgstr "Rewards Distribution History"
+#~ msgid "Rewards Distribution History"
+#~ msgstr "Rewards Distribution History"
 
 #: src/components/Referrals/AffiliatesStats.js
-msgid "Rewards are airdropped weekly."
-msgstr "Rewards are airdropped weekly."
+#~ msgid "Rewards are airdropped weekly."
+#~ msgstr "Rewards are airdropped weekly."
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Same as current active code"
@@ -4263,12 +4265,10 @@ msgstr "There may not be sufficient liquidity to execute your order when the pri
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met."
 msgstr "There may not be sufficient liquidity to execute your order when the price conditions are met."
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "This code has been taken by someone else on {0}, you will not receive rebates from traders using this code on {1}."
 msgstr "This code has been taken by someone else on {0}, you will not receive rebates from traders using this code on {1}."
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
 msgstr "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
@@ -4293,7 +4293,6 @@ msgstr "Three tokens create our ecosystem"
 msgid "Tier {0} ({1}% discount)"
 msgstr "Tier {0} ({1}% discount)"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Tier {0} ({1}% rebate)"
 msgstr "Tier {0} ({1}% rebate)"
@@ -4322,9 +4321,6 @@ msgstr "To reduce fees, select a different asset to receive."
 msgid "Tokens"
 msgstr "Tokens"
 
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -4355,7 +4351,6 @@ msgstr "Total Fees"
 msgid "Total Fees Distributed"
 msgstr "Total Fees Distributed"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total Rebates"
 msgstr "Total Rebates"
@@ -4402,7 +4397,6 @@ msgstr "Total Trading Volume"
 msgid "Total Users"
 msgstr "Total Users"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -4446,19 +4440,15 @@ msgstr "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies wi
 msgid "Traders"
 msgstr "Traders"
 
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Traders Referred"
 msgstr "Traders Referred"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Traders Referred on Arbitrum"
 msgstr "Traders Referred on Arbitrum"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Traders Referred on Avalanche"
 msgstr "Traders Referred on Avalanche"
@@ -4472,19 +4462,18 @@ msgstr "Traders Referred on Avalanche Fuji"
 msgid "Trades"
 msgstr "Trades"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Trading Volume"
 msgstr "Trading Volume"
 
 #: src/components/Referrals/AffiliatesStats.js
-msgid "Trading Volume on Arbitrum"
-msgstr "Trading Volume on Arbitrum"
+#~ msgid "Trading Volume on Arbitrum"
+#~ msgstr "Trading Volume on Arbitrum"
 
 #: src/components/Referrals/AffiliatesStats.js
-msgid "Trading Volume on Avalanche"
-msgstr "Trading Volume on Avalanche"
+#~ msgid "Trading Volume on Avalanche"
+#~ msgstr "Trading Volume on Avalanche"
 
 #: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"
@@ -4500,7 +4489,6 @@ msgstr "Tranferring..."
 msgid "Transacting with a depegged stable coin is subject to spreads reflecting the worse of current market price or $1.00, with transactions involving multiple stablecoins may have multiple spreads."
 msgstr "Transacting with a depegged stable coin is subject to spreads reflecting the worse of current market price or $1.00, with transactions involving multiple stablecoins may have multiple spreads."
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Transaction"
@@ -4899,7 +4887,6 @@ msgstr "Volume on V2"
 msgid "Volume traded by this account with an active referral code."
 msgstr "Volume traded by this account with an active referral code."
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Volume traded by your referred traders."
 msgstr "Volume traded by your referred traders."

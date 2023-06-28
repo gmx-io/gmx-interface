@@ -9,6 +9,7 @@ import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
 import { MarketSelector } from "components/MarketSelector/MarketSelector";
 import { ConfirmationBox } from "components/Synthetics/ConfirmationBox/ConfirmationBox";
 import Tab from "components/Tab/Tab";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { getKeepLeverageKey, getLeverageEnabledKey, getLeverageKey } from "config/localStorage";
@@ -87,7 +88,6 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { CollateralSelectorRow } from "./CollateralSelectorRow";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import "./TradeBox.scss";
-import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 
 export type Props = {
   tradeType: TradeType;
@@ -197,6 +197,7 @@ export function TradeBox(p: Props) {
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
   const userReferralInfo = useUserReferralInfo(library, chainId, account);
+
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
 
   const [stage, setStage] = useState<"trade" | "confirmation" | "processing">("trade");
@@ -440,6 +441,7 @@ export function TradeBox(p: Props) {
         collateralDeltaUsd: decreaseAmounts.collateralDeltaUsd,
         collateralDeltaAmount: decreaseAmounts.collateralDeltaAmount,
         payedRemainingCollateralUsd: decreaseAmounts.payedRemainingCollateralUsd,
+        payedRemainingCollateralAmount: decreaseAmounts.payedRemainingCollateralAmount,
         indexPrice: decreaseAmounts.indexPrice,
         showPnlInLeverage: savedIsPnlInLeverage,
         isLong,
@@ -660,7 +662,8 @@ export function TradeBox(p: Props) {
     } else if (isTrigger) {
       tradeError = getDecreaseError({
         marketInfo,
-        sizeDeltaUsd: closeSizeUsd,
+        inputSizeUsd: closeSizeUsd,
+        sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
         triggerPrice,
         existingPosition,
         isContractAccount: false,
@@ -679,11 +682,15 @@ export function TradeBox(p: Props) {
     chainId,
     closeSizeUsd,
     collateralToken,
+    decreaseAmounts?.sizeDeltaUsd,
     existingPosition,
     fees,
     fromToken,
     fromTokenAmount,
-    increaseAmounts,
+    increaseAmounts?.collateralDeltaUsd,
+    increaseAmounts?.initialCollateralUsd,
+    increaseAmounts?.sizeDeltaUsd,
+    increaseAmounts?.swapPathStats,
     isIncrease,
     isLimit,
     isLong,
@@ -697,7 +704,9 @@ export function TradeBox(p: Props) {
     minCollateralUsd,
     nextPositionValues,
     shortLiquidity,
-    swapAmounts,
+    swapAmounts?.swapPathStats,
+    swapAmounts?.usdIn,
+    swapAmounts?.usdOut,
     swapOutLiquidity,
     toToken,
     toTokenAmount,
@@ -983,6 +992,7 @@ export function TradeBox(p: Props) {
     return (
       <BuyInputSection
         topLeftLabel={t`Price`}
+        topRightLabel={t`Mark`}
         topRightValue={formatAmount(markRatio?.ratio, USD_DECIMALS, 4)}
         onClickTopRightLabel={() => {
           setTriggerRatioInputValue(formatAmount(markRatio?.ratio, USD_DECIMALS, 10));

@@ -1,12 +1,12 @@
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
-import { PRECISION } from "lib/legacy";
-import { applyFactor } from "lib/numbers";
+import { PRECISION, USD_DECIMALS } from "lib/legacy";
+import { applyFactor, expandDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getCappedPositionImpactUsd } from "../fees";
-import { convertToContractTokenPrices, convertToUsd, getMidPrice } from "../tokens";
-import { TokensData } from "../tokens/types";
+import { convertToContractTokenPrices, convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens";
+import { TokenData, TokensData } from "../tokens/types";
 import { ContractMarketPrices, Market, MarketInfo, PnlFactorType } from "./types";
 
 export function getMarketFullName(p: { longToken: Token; shortToken: Token; indexToken: Token; isSpotOnly: boolean }) {
@@ -266,6 +266,39 @@ export function getTotalClaimableFundingUsd(markets: MarketInfo[]) {
 
     return acc.add(usdLong || 0).add(usdShort || 0);
   }, BigNumber.from(0));
+}
+
+export function usdToMarketTokenAmount(marketInfo: MarketInfo, marketToken: TokenData, usdValue: BigNumber) {
+  const supply = marketToken.totalSupply!;
+  const poolValue = marketInfo.poolValueMax!;
+  // if the supply and poolValue is zero, use 1 USD as the token price
+  if (supply.eq(0) && poolValue.eq(0)) {
+    return convertToTokenAmount(usdValue, marketToken.decimals, expandDecimals(1, USD_DECIMALS))!;
+  }
+
+  // if the supply is zero and the poolValue is more than zero,
+  // then include the poolValue for the amount of tokens minted so that
+  // the market token price after mint would be 1 USD
+  if (supply.eq(0) && poolValue.gt(0)) {
+    return convertToTokenAmount(usdValue.add(poolValue), marketToken.decimals, expandDecimals(1, USD_DECIMALS))!;
+  }
+
+  if (poolValue.eq(0)) {
+    return BigNumber.from(0);
+  }
+
+  return supply.mul(usdValue).div(poolValue);
+}
+
+export function marketTokenAmountToUsd(marketInfo: MarketInfo, marketToken: TokenData, amount: BigNumber) {
+  const supply = marketToken.totalSupply!;
+  const poolValue = marketInfo.poolValueMax!;
+
+  const price = supply.eq(0)
+    ? expandDecimals(1, USD_DECIMALS)
+    : poolValue.mul(expandDecimals(1, marketToken.decimals)).div(supply);
+
+  return convertToUsd(amount, marketToken.decimals, price)!;
 }
 
 export function getContractMarketPrices(tokensData: TokensData, market: Market): ContractMarketPrices | undefined {

@@ -286,6 +286,11 @@
     },
     {
       "inputs": [],
+      "name": "EmptyMarketTokenSupply",
+      "type": "error"
+    },
+    {
+      "inputs": [],
       "name": "EmptyOrder",
       "type": "error"
     },
@@ -969,27 +974,6 @@
     {
       "inputs": [
         {
-          "internalType": "address",
-          "name": "token",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "poolUsdForToken",
-          "type": "uint256"
-        },
-        {
-          "internalType": "int256",
-          "name": "poolUsdAdjustmentForToken",
-          "type": "int256"
-        }
-      ],
-      "name": "InvalidPoolAdjustment",
-      "type": "error"
-    },
-    {
-      "inputs": [
-        {
           "internalType": "int256",
           "name": "poolValue",
           "type": "int256"
@@ -1630,7 +1614,7 @@
           "type": "uint256"
         }
       ],
-      "name": "OrderNotFulfillableDueToPriceImpact",
+      "name": "OrderNotFulfillableAtAcceptablePrice",
       "type": "error"
     },
     {
@@ -1969,24 +1953,24 @@
       "type": "error"
     },
     {
-      "inputs": [
-        {
-          "internalType": "int256",
-          "name": "poolValue",
-          "type": "int256"
-        }
-      ],
-      "name": "UnexpectedPoolValueForTokenPriceCalculation",
-      "type": "error"
-    },
-    {
       "inputs": [],
       "name": "UnexpectedPositionState",
       "type": "error"
     },
     {
-      "inputs": [],
-      "name": "UnexpectedSupplyForTokenPriceCalculation",
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "market",
+          "type": "address"
+        }
+      ],
+      "name": "UnexpectedTokenForVirtualInventory",
       "type": "error"
     },
     {
@@ -2054,8 +2038,8 @@
       "type": "error"
     }
   ],
-  "bytecode": "0x60566037600b82828239805160001a607314602a57634e487b7160e01b600052600060045260246000fd5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220a05a1b0b821f70aca958e4a61e976a2266213de98a0d071da24fd23d6276520164736f6c63430008120033",
-  "deployedBytecode": "0x73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220a05a1b0b821f70aca958e4a61e976a2266213de98a0d071da24fd23d6276520164736f6c63430008120033",
+  "bytecode": "0x60566037600b82828239805160001a607314602a57634e487b7160e01b600052600060045260246000fd5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea26469706673582212204638651572c419ee91a40aed5b27622e666d0e2005da0cd387937885d066861864736f6c63430008120033",
+  "deployedBytecode": "0x73000000000000000000000000000000000000000030146080604052600080fdfea26469706673582212204638651572c419ee91a40aed5b27622e666d0e2005da0cd387937885d066861864736f6c63430008120033",
   "linkReferences": {},
   "deployedLinkReferences": {}
 }

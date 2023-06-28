@@ -535,6 +535,7 @@ function FullApp() {
                     savedShowPnlAfterFees={savedShowPnlAfterFees}
                     tradePageVersion={tradePageVersion}
                     setTradePageVersion={setTradePageVersion}
+                    savedSlippageAmount={savedSlippageAmount}
                   />
                 ) : (
                   <SyntheticsFallbackPage />

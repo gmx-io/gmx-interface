@@ -228,7 +228,7 @@ export function getLeverage(p: {
   pendingFundingFeesUsd: BigNumber;
   pendingBorrowingFeesUsd: BigNumber;
 }) {
-  const { pnl, sizeInUsd: sizeUsd, collateralUsd, pendingBorrowingFeesUsd, pendingFundingFeesUsd } = p;
+  const { pnl, sizeInUsd, collateralUsd, pendingBorrowingFeesUsd, pendingFundingFeesUsd } = p;
 
   const totalPendingFeesUsd = getPositionPendingFeesUsd({ pendingFundingFeesUsd, pendingBorrowingFeesUsd });
 
@@ -238,7 +238,7 @@ export function getLeverage(p: {
     return undefined;
   }
 
-  return sizeUsd.mul(BASIS_POINTS_DIVISOR).div(remainingCollateralUsd);
+  return sizeInUsd.mul(BASIS_POINTS_DIVISOR).div(remainingCollateralUsd);
 }
 
 export function formatLeverage(leverage?: BigNumber) {

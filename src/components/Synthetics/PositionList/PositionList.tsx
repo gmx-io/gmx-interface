@@ -25,7 +25,7 @@ export function PositionList(p: Props) {
   return (
     <div>
       {positions.length === 0 && (
-        <div className="Exchange-empty-positions-list-note App-card">
+        <div className="Exchange-empty-positions-list-note App-card small">
           {isDataLoading ? t`Loading...` : t`No open positions`}
         </div>
       )}

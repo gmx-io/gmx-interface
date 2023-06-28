@@ -15,11 +15,7 @@ import { TradeBox } from "components/Synthetics/TradeBox/TradeBox";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import Tab from "components/Tab/Tab";
 import { DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS } from "config/factors";
-import {
-  getAcceptablePriceImpactBpsKey,
-  getAllowedSlippageKey,
-  getSyntheticsListSectionKey,
-} from "config/localStorage";
+import { getAcceptablePriceImpactBpsKey, getSyntheticsListSectionKey } from "config/localStorage";
 import { getToken } from "config/tokens";
 import { isSwapOrderType } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
@@ -28,14 +24,14 @@ import { getPositionKey } from "domain/synthetics/positions";
 import { usePositionsInfo } from "domain/synthetics/positions/usePositionsInfo";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT, DEFAULT_SLIPPAGE_AMOUNT, getPageTitle } from "lib/legacy";
+import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT, getPageTitle } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { bigNumberify, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { useSelectedTradeOption } from "domain/synthetics/trade/useSelectedTradeOption";
 import { useMarketsInfo } from "domain/synthetics/markets";
+import { useSelectedTradeOption } from "domain/synthetics/trade/useSelectedTradeOption";
 
 export type Props = {
   savedIsPnlInLeverage: boolean;
@@ -43,6 +39,7 @@ export type Props = {
   savedShouldShowPositionLines: boolean;
   showPnlAfterFees: boolean;
   savedShowPnlAfterFees: boolean;
+  savedSlippageAmount: number;
   onConnectWallet: () => void;
   setSavedShouldShowPositionLines: (value: boolean) => void;
   setPendingTxns: (txns: any) => void;
@@ -69,6 +66,7 @@ export function SyntheticsPage(p: Props) {
     setPendingTxns,
     setTradePageVersion,
     savedShowPnlAfterFees,
+    savedSlippageAmount,
   } = p;
   const { chainId } = useChainId();
   const { library, account } = useWeb3React();
@@ -195,7 +193,6 @@ export function SyntheticsPage(p: Props) {
     return setIsAcceptablePriceImpactEditing(true);
   }, []);
 
-  const [savedSlippageAmount] = useLocalStorageSerializeKey(getAllowedSlippageKey(chainId), DEFAULT_SLIPPAGE_AMOUNT);
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
   let allowedSlippage = savedSlippageAmount!;
   if (isHigherSlippageAllowed) {
