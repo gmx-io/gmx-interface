@@ -10,6 +10,9 @@
 
   &:hover {
     color: #7885ff;
+    span {
+      color: #7885ff;
+    }
   }
 }
 
@@ -28,10 +31,6 @@
 
   .chart-token-current-icon {
     margin-right: 0.75rem;
-  }
-
-  &:hover {
-    color: #7885ff;
   }
 }
 
