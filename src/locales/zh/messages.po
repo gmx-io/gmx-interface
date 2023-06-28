@@ -3740,8 +3740,8 @@ msgid "WalletConnect"
 msgstr "连接钱包"
 
 #: src/App/App.js
-msgid "WalletConnect V2"
-msgstr ""
+#~ msgid "WalletConnect V2"
+#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Weight"
