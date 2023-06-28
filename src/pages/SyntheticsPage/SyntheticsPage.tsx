@@ -301,7 +301,8 @@ export function SyntheticsPage(p: Props) {
                 onEditCollateralClick={setEditingPositionKey}
                 showPnlAfterFees={showPnlAfterFees}
                 savedShowPnlAfterFees={savedShowPnlAfterFees}
-                currentMarketAddress={marketAddress ?? ""}
+                currentMarketAddress={marketAddress}
+                currentCollateralAddress={collateralAddress}
               />
             )}
             {listSection === ListSection.Orders && (
@@ -392,7 +393,8 @@ export function SyntheticsPage(p: Props) {
               onEditCollateralClick={setEditingPositionKey}
               showPnlAfterFees={showPnlAfterFees}
               savedShowPnlAfterFees={savedShowPnlAfterFees}
-              currentMarketAddress={marketAddress ?? ""}
+              currentMarketAddress={marketAddress}
+              currentCollateralAddress={collateralAddress}
             />
           )}
           {listSection === ListSection.Orders && (

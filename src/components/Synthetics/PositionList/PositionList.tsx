@@ -15,7 +15,8 @@ type Props = {
   onOrdersClick: () => void;
   showPnlAfterFees: boolean;
   savedShowPnlAfterFees: boolean;
-  currentMarketAddress: string;
+  currentMarketAddress?: string;
+  currentCollateralAddress?: string;
 };
 
 export function PositionList(p: Props) {
@@ -45,6 +46,7 @@ export function PositionList(p: Props) {
               savedShowPnlAfterFees={p.savedShowPnlAfterFees}
               isLarge={false}
               currentMarketAddress={p.currentMarketAddress}
+              currentCollateralAddress={p.currentCollateralAddress}
             />
           ))}
       </div>
@@ -99,6 +101,7 @@ export function PositionList(p: Props) {
                 isLarge={true}
                 savedShowPnlAfterFees={p.savedShowPnlAfterFees}
                 currentMarketAddress={p.currentMarketAddress}
+                currentCollateralAddress={p.currentCollateralAddress}
               />
             ))}
         </tbody>

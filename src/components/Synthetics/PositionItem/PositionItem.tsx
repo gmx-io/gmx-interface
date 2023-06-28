@@ -27,7 +27,8 @@ export type Props = {
   onSelectPositionClick?: (tradeMode?: TradeMode) => void;
   onOrdersClick?: () => void;
   isLarge: boolean;
-  currentMarketAddress: string;
+  currentMarketAddress?: string;
+  currentCollateralAddress?: string;
 };
 
 export function PositionItem(p: Props) {
@@ -277,10 +278,13 @@ export function PositionItem(p: Props) {
   }
 
   function renderLarge() {
+    const isCurrentMarket =
+      p.currentMarketAddress === p.position.marketAddress &&
+      p.currentCollateralAddress === p.position.collateralTokenAddress;
     return (
       <tr
         className={cx("Exhange-list-item", {
-          "Exhange-list-item-active": p.currentMarketAddress === p.position.marketAddress,
+          "Exhange-list-item-active": isCurrentMarket,
         })}
       >
         <td className="clickable" onClick={() => p.onSelectPositionClick?.()}>
