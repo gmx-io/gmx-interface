@@ -24,7 +24,7 @@ import {
   getMarketIndexName,
   getTokenPoolType,
 } from "domain/synthetics/markets/utils";
-import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
+import { TokenData, TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { GmSwapFees, useAvailableTokenOptions } from "domain/synthetics/trade";
 import { getDepositAmounts } from "domain/synthetics/trade/utils/deposit";
 import { getWithdrawalAmounts } from "domain/synthetics/trade/utils/withdrawal";
@@ -170,31 +170,43 @@ export function GmSwapBox(p: Props) {
   );
 
   const { longTokenInputState, shortTokenInputState } = useMemo(() => {
-    const inputs = [
-      {
+    if (!marketInfo) {
+      return {};
+    }
+
+    const inputs: {
+      address: string;
+      value: string;
+      amount?: BigNumber;
+      usd?: BigNumber;
+      token?: TokenData;
+      setValue: (val: string) => void;
+    }[] = [];
+
+    if (firstTokenAddress) {
+      inputs.push({
         address: firstTokenAddress,
         value: firstTokenInputValue,
         setValue: setFirstTokenInputValue,
         amount: firstTokenAmount,
         usd: firstTokenUsd,
         token: firstToken,
-      },
-      {
+      });
+    }
+
+    if ((isWithdrawal || isPair) && secondTokenAddress) {
+      inputs.push({
         address: secondTokenAddress,
         value: secondTokenInputValue,
         setValue: setSecondTokenInputValue,
         amount: secondTokenAmount,
         usd: secondTokenUsd,
         token: secondToken,
-      },
-    ].filter((input) => input.address);
-
-    if (!marketInfo || !inputs.length) {
-      return {};
+      });
     }
 
-    const [longTokenInputState, shortTokenInputState] =
-      getTokenPoolType(marketInfo, inputs[0].address!) === "long" ? inputs : inputs.reverse();
+    const longTokenInputState = inputs.find((input) => getTokenPoolType(marketInfo, input.address) === "long");
+    const shortTokenInputState = inputs.find((input) => getTokenPoolType(marketInfo, input.address) === "short");
 
     return {
       longTokenInputState,
@@ -206,6 +218,8 @@ export function GmSwapBox(p: Props) {
     firstTokenAmount,
     firstTokenInputValue,
     firstTokenUsd,
+    isPair,
+    isWithdrawal,
     marketInfo,
     secondToken,
     secondTokenAddress,

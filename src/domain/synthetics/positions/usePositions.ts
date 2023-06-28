@@ -123,17 +123,19 @@ export function usePositions(
       const positions = res.data.reader.positions.returnValues;
 
       return positions.reduce((positionsMap: PositionsData, positionInfo, i) => {
-        const { position, fees } = positionInfo;
-        const { addresses, numbers, flags, data } = position;
-        const { account, market: marketAddress, collateralToken: collateralTokenAddress } = addresses;
+        const [position, fees] = positionInfo;
+        const [addresses, numbers, flags, data] = position;
+        const [account, marketAddress, collateralTokenAddress] = addresses;
 
         const [
           sizeInUsd,
           sizeInTokens,
           collateralAmount,
           borrowingFactor,
-          longTokenFundingAmountPerSize,
-          shortTokenFundingAmountPerSize,
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          fundingFeeAmountPerSize,
+          longTokenClaimableFundingAmountPerSize,
+          shortTokenClaimableFundingAmountPerSize,
           increasedAtBlock,
           decreasedAtBlock,
         ] = Object.values(numbers).map(BigNumber.from);
@@ -176,6 +178,8 @@ export function usePositions(
           fundingFeeAmount,
           claimableLongTokenAmount,
           claimableShortTokenAmount,
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          latestFundingFeeAmountPerSize,
           latestLongTokenFundingAmountPerSize,
           latestShortTokenFundingAmountPerSize,
         ] = Object.values(funding).map(BigNumber.from);
@@ -198,8 +202,8 @@ export function usePositions(
           sizeInTokens,
           collateralAmount,
           borrowingFactor,
-          longTokenFundingAmountPerSize,
-          shortTokenFundingAmountPerSize,
+          longTokenFundingAmountPerSize: longTokenClaimableFundingAmountPerSize,
+          shortTokenFundingAmountPerSize: shortTokenClaimableFundingAmountPerSize,
           increasedAtBlock,
           decreasedAtBlock,
           isLong,

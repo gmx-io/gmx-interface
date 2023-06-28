@@ -449,14 +449,6 @@ msgstr "Avalanche FUJI APR:"
 msgid "Balance"
 msgstr "Balance"
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#~ msgid "Balance:"
-#~ msgstr "Balance:"
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"
 msgstr "Begin Transfer"
@@ -1566,6 +1558,7 @@ msgstr "Enter a ratio"
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter a size"
 msgstr "Enter a size"
 
@@ -2291,10 +2284,6 @@ msgstr "Leverage disabled, pending {0} upgrade"
 msgid "Leverage slider"
 msgstr "Leverage slider"
 
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#~ msgid "Leverage:"
-#~ msgstr "Leverage:"
-
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/SwapBox.js
@@ -2523,6 +2512,7 @@ msgstr "MEV Optimizer"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Mark"
 msgstr "Mark"
 
@@ -2552,11 +2542,6 @@ msgstr "Mark Price"
 #: src/components/Exchange/OrderEditor.js
 msgid "Mark Price:"
 msgstr "Mark Price:"
-
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#~ msgid "Mark:"
-#~ msgstr "Mark:"
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js

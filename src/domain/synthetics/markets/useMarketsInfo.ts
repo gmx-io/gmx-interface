@@ -360,13 +360,21 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
         const shortInterestInTokens = shortInterestInTokensUsingLongToken.add(shortInterestInTokensUsingShortToken);
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { borrowingFactorPerSecondForLongs, borrowingFactorPerSecondForShorts, funding, virtualInventory } =
-          readerValues.marketInfo.returnValues;
+        const [
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          _,
+          borrowingFactorPerSecondForLongs,
+          borrowingFactorPerSecondForShorts,
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          baseFunding,
+          nextFunding,
+          virtualInventory,
+        ] = readerValues.marketInfo.returnValues[0];
 
         const [virtualPoolAmountForLongToken, virtualPoolAmountForShortToken, virtualInventoryForPositions] =
           Object.values(virtualInventory).map(BigNumber.from) as any;
 
-        const { longsPayShorts, fundingFactorPerSecond } = funding;
+        const [longsPayShorts, fundingFactorPerSecond] = nextFunding;
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [_priceMin, poolValueInfoMin] = readerValues.marketTokenPriceMin.returnValues;
