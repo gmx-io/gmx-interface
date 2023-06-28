@@ -9,12 +9,15 @@
   border-radius: var(--border-radius-sm);
 
   &:hover {
-    background: rgba(180, 187, 255, 0.1);
+    color: #7885ff;
   }
 }
 
 .chart-token-label--active {
-  background: rgba(180, 187, 255, 0.1);
+  color: #7885ff;
+  span {
+    color: #7885ff;
+  }
 }
 
 .chart-token-selector--current {
@@ -22,6 +25,9 @@
   margin-right: 1rem;
   color: white;
   vertical-align: bottom;
+  &:hover {
+    color: #7885ff;
+  }
 }
 
 .chart-token-menu-items.menu-items {
@@ -71,7 +77,7 @@
       border-radius: var(--border-radius-sm);
       cursor: pointer;
       &:hover {
-        background-color: rgba(180, 187, 255, 0.1);
+        background-color: var(--dark-blue-hover);
         border-radius: var(--border-radius-sm);
       }
       td {
