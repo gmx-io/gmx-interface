@@ -5340,6 +5340,10 @@ msgstr "{0}代币已经从存入的{1}esGMX中转换为GMX，以便归属。"
 msgid "{0} will be swapped to {1} on order execution."
 msgstr ""
 
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
+msgid "{0} {1} market selected."
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "{0} {1} not supported"
 msgstr ""

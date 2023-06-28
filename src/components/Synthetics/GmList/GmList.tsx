@@ -45,6 +45,13 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
         }
 
         return indexToken1.symbol.localeCompare(indexToken2.symbol);
+      })
+      .map((market) => {
+        const totalSupplyUsd = convertToUsd(market.totalSupply, market.decimals, market.prices?.minPrice);
+        return { ...market, totalSupplyUsd };
+      })
+      .sort((a, b) => {
+        return b.totalSupplyUsd!.gt(a.totalSupplyUsd!) ? 1 : -1;
       });
   }, [marketTokensData, marketsInfoData, tokensData]);
 
