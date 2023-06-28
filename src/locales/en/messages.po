@@ -449,14 +449,6 @@ msgstr "Avalanche FUJI APR:"
 msgid "Balance"
 msgstr "Balance"
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#~ msgid "Balance:"
-#~ msgstr "Balance:"
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"
 msgstr "Begin Transfer"
@@ -2292,10 +2284,6 @@ msgstr "Leverage disabled, pending {0} upgrade"
 msgid "Leverage slider"
 msgstr "Leverage slider"
 
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#~ msgid "Leverage:"
-#~ msgstr "Leverage:"
-
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/SwapBox.js
@@ -2554,11 +2542,6 @@ msgstr "Mark Price"
 #: src/components/Exchange/OrderEditor.js
 msgid "Mark Price:"
 msgstr "Mark Price:"
-
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#~ msgid "Mark:"
-#~ msgstr "Mark:"
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -3414,14 +3397,6 @@ msgstr "Rebates earned by this account as a trader."
 msgid "Rebates earned by this account as an affiliate."
 msgstr "Rebates earned by this account as an affiliate."
 
-#: src/components/Referrals/AffiliatesStats.js
-#~ msgid "Rebates on Arbitrum"
-#~ msgstr "Rebates on Arbitrum"
-
-#: src/components/Referrals/AffiliatesStats.js
-#~ msgid "Rebates on Avalanche"
-#~ msgstr "Rebates on Avalanche"
-
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates on V1"
 msgstr "Rebates on V1"
@@ -3598,14 +3573,6 @@ msgstr "Returns calculator for GMX and GLP"
 #: src/pages/Stake/StakeV2.js
 msgid "Rewards"
 msgstr "Rewards"
-
-#: src/components/Referrals/AffiliatesStats.js
-#~ msgid "Rewards Distribution History"
-#~ msgstr "Rewards Distribution History"
-
-#: src/components/Referrals/AffiliatesStats.js
-#~ msgid "Rewards are airdropped weekly."
-#~ msgstr "Rewards are airdropped weekly."
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Same as current active code"
@@ -4483,14 +4450,6 @@ msgstr "Trades"
 #: src/components/Referrals/TradersStats.tsx
 msgid "Trading Volume"
 msgstr "Trading Volume"
-
-#: src/components/Referrals/AffiliatesStats.js
-#~ msgid "Trading Volume on Arbitrum"
-#~ msgstr "Trading Volume on Arbitrum"
-
-#: src/components/Referrals/AffiliatesStats.js
-#~ msgid "Trading Volume on Avalanche"
-#~ msgstr "Trading Volume on Avalanche"
 
 #: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"
