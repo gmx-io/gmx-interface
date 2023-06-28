@@ -151,7 +151,12 @@ export default function ChartTokenSelector(props: Props) {
                           <Popover.Button as="tr" key={option.symbol} onClick={() => onSelect(option)}>
                             <td className="token-item">
                               <span className="items-center">
-                                <TokenIcon className="mr-xs" symbol={option.symbol} displaySize={16} importSize={24} />
+                                <TokenIcon
+                                  className="ChartToken-list-icon"
+                                  symbol={option.symbol}
+                                  displaySize={16}
+                                  importSize={24}
+                                />
                                 {option.symbol} {!isSwap && "/ USD"}
                               </span>
                             </td>

@@ -91,6 +91,10 @@
 
         &.token-item {
           color: #a0a3c4;
+
+          .ChartToken-list-icon {
+            margin-right: 0.75rem;
+          }
         }
       }
     }
