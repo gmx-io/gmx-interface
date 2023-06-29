@@ -1,10 +1,10 @@
 import { BigNumber, Contract } from "ethers";
+import { switchNetwork } from "@wagmi/core";
 import { helperToast } from "../helperToast";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import { extractError, NETWORK_CHANGED, NOT_ENOUGH_FUNDS, RPC_ERROR, SLIPPAGE, USER_DENIED } from "./transactionErrors";
 import { getGasLimit, setGasPrice } from "./utils";
 import { getChainName, getExplorerUrl } from "config/chains";
-import { switchNetwork } from "lib/wallets";
 import { t, Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
@@ -89,7 +89,7 @@ export async function callContract(
           <Trans>
             <div>Your wallet is not connected to {getChainName(chainId)}.</div>
             <br />
-            <div className="clickable underline" onClick={() => switchNetwork(chainId, true)}>
+            <div className="clickable underline" onClick={() => switchNetwork({ chainId })}>
               Switch to {getChainName(chainId)}
             </div>
           </Trans>

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useWeb3React } from "@web3-react/core";
 import { Trans, t } from "@lingui/macro";
 import useSWR from "swr";
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
@@ -46,6 +45,7 @@ import { useChainId } from "lib/chains";
 import { formatDate } from "lib/dates";
 import { getIcons } from "config/icons";
 import useUniqueUsers from "domain/stats/useUniqueUsers";
+import { useAccount, useSigner } from "wagmi";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;
@@ -93,7 +93,8 @@ function getCurrentFeesUsd(tokenAddresses, fees, infoTokens) {
 }
 
 export default function DashboardV2() {
-  const { active, library } = useWeb3React();
+  const { isConnected: active } = useAccount();
+  const { data: library } = useSigner();
   const { chainId } = useChainId();
   const totalVolume = useTotalVolume();
   const uniqueUsers = useUniqueUsers();

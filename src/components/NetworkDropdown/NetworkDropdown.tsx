@@ -12,6 +12,7 @@ import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 import LanguageModalContent from "./LanguageModalContent";
 import { useChainId } from "lib/chains";
 import { getIcon } from "config/icons";
+import { useSwitchNetwork } from "wagmi";
 
 const LANGUAGE_MODAL_KEY: string = "LANGUAGE";
 const NETWORK_MODAL_KEY: string = "NETWORK";
@@ -29,7 +30,6 @@ export default function NetworkDropdown(props) {
           <NetworkModalContent
             setActiveModal={setActiveModal}
             networkOptions={props.networkOptions}
-            onNetworkSelect={props.onNetworkSelect}
             selectorLabel={props.selectorLabel}
             openSettings={props.openSettings}
           />
@@ -175,10 +175,8 @@ function NetworkMenuItems({ networkOptions, selectorLabel, onNetworkSelect }) {
   });
 }
 
-function NetworkModalContent({ networkOptions, onNetworkSelect, selectorLabel, setActiveModal, openSettings }) {
-  async function handleNetworkSelect(option) {
-    await onNetworkSelect(option);
-  }
+function NetworkModalContent({ networkOptions, selectorLabel, setActiveModal, openSettings }) {
+  const { switchNetwork } = useSwitchNetwork();
   return (
     <div className="network-dropdown-items">
       <div className="network-dropdown-list">
@@ -188,11 +186,7 @@ function NetworkModalContent({ networkOptions, onNetworkSelect, selectorLabel, s
 
         {networkOptions.map((network) => {
           return (
-            <div
-              className="network-option"
-              onClick={() => handleNetworkSelect({ value: network.value })}
-              key={network.value}
-            >
+            <div className="network-option" onClick={() => switchNetwork?.(network.value)} key={network.value}>
               <div className="menu-item-group">
                 <img src={network.icon} alt={network.label} />
                 <span>{network.label}</span>

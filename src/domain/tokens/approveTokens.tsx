@@ -1,15 +1,14 @@
-import { ethers } from "ethers";
+import { Signer, ethers } from "ethers";
 import Token from "abis/Token.json";
 import { getExplorerUrl } from "config/chains";
 import { helperToast } from "lib/helperToast";
 import { InfoTokens, TokenInfo } from "./types";
-import { Web3Provider } from "@ethersproject/providers";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { t, Trans } from "@lingui/macro";
 
 type Params = {
   setIsApproving: (val: boolean) => void;
-  library: Web3Provider;
+  signer: Signer;
   tokenAddress: string;
   spender: string;
   chainId: number;
@@ -23,7 +22,7 @@ type Params = {
 
 export function approveTokens({
   setIsApproving,
-  library,
+  signer,
   tokenAddress,
   spender,
   chainId,
@@ -35,7 +34,7 @@ export function approveTokens({
   includeMessage,
 }: Params) {
   setIsApproving(true);
-  const contract = new ethers.Contract(tokenAddress, Token.abi, library.getSigner());
+  const contract = new ethers.Contract(tokenAddress, Token.abi, signer);
   contract
     .approve(spender, ethers.constants.MaxUint256)
     .then(async (res) => {

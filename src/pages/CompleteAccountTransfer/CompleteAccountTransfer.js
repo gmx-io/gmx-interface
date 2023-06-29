@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ethers } from "ethers";
-import { useWeb3React } from "@web3-react/core";
 import { useCopyToClipboard } from "react-use";
 
 import { getContract } from "config/contracts";
@@ -18,23 +17,25 @@ import { callContract } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { useChainId } from "lib/chains";
 import Button from "components/Button/Button";
+import { useAccount, useSigner } from "wagmi";
 
 export default function CompleteAccountTransfer(props) {
   const [, copyToClipboard] = useCopyToClipboard();
   const { sender, receiver } = useParams();
   const { setPendingTxns } = props;
-  const { library, account } = useWeb3React();
+  const { isConnected, address } = useAccount();
+  const { data: signer } = useSigner();
   const [isTransferSubmittedModalVisible, setIsTransferSubmittedModalVisible] = useState(false);
 
   const { chainId } = useChainId();
 
   const [isConfirming, setIsConfirming] = useState(false);
-  const isCorrectAccount = (account || "").toString().toLowerCase() === (receiver || "").toString().toLowerCase();
+  const isCorrectAccount = (address || "").toString().toLowerCase() === (receiver || "").toString().toLowerCase();
 
   const rewardRouterAddress = getContract(chainId, "RewardRouter");
 
   const getError = () => {
-    if (!account) {
+    if (!isConnected) {
       return t`Wallet is not connected`;
     }
     if (!isCorrectAccount) {
@@ -64,7 +65,7 @@ export default function CompleteAccountTransfer(props) {
   const onClickPrimary = () => {
     setIsConfirming(true);
 
-    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, library.getSigner());
+    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, signer);
 
     callContract(chainId, contract, "acceptTransfer", [sender], {
       sentMsg: t`Transfer submitted!`,

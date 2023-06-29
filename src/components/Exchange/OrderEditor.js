@@ -24,16 +24,15 @@ import { bigNumberify, formatAmount, formatAmountFree, parseValue } from "lib/nu
 import { useChainId } from "lib/chains";
 import { t, Trans } from "@lingui/macro";
 import Button from "components/Button/Button";
+import { useAccount, useSigner } from "wagmi";
 
 export default function OrderEditor(props) {
   const {
-    account,
     order,
     setEditingOrder,
     infoTokens,
     pendingTxns,
     setPendingTxns,
-    library,
     totalTokenWeights,
     usdgSupply,
     getPositionForOrder,
@@ -42,6 +41,8 @@ export default function OrderEditor(props) {
   } = props;
 
   const { chainId } = useChainId();
+  const { address: account } = useAccount();
+  const { data: signer } = useSigner();
 
   const position = order.type !== SWAP ? getPositionForOrder(account, order, positionsMap) : null;
   const liquidationPrice = order.type === DECREASE && position ? getLiquidationPrice(position) : null;
@@ -117,12 +118,12 @@ export default function OrderEditor(props) {
 
     if (order.type === SWAP) {
       func = updateSwapOrder;
-      params = [chainId, library, order.index, toAmount, triggerRatio, order.triggerAboveThreshold];
+      params = [chainId, signer, order.index, toAmount, triggerRatio, order.triggerAboveThreshold];
     } else if (order.type === DECREASE) {
       func = updateDecreaseOrder;
       params = [
         chainId,
-        library,
+        signer,
         order.index,
         order.collateralDelta,
         order.sizeDelta,
@@ -131,7 +132,7 @@ export default function OrderEditor(props) {
       ];
     } else if (order.type === INCREASE) {
       func = updateIncreaseOrder;
-      params = [chainId, library, order.index, order.sizeDelta, triggerPrice, order.triggerAboveThreshold];
+      params = [chainId, signer, order.index, order.sizeDelta, triggerPrice, order.triggerAboveThreshold];
     }
 
     params.push({

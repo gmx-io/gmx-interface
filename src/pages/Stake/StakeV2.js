@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from "react";
 import { Trans, t } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
 
 import Modal from "components/Modal/Modal";
 import Checkbox from "components/Checkbox/Checkbox";
@@ -51,6 +50,8 @@ import GMXAprTooltip from "components/Stake/GMXAprTooltip";
 import Button from "components/Button/Button";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import { useAccount, useSigner } from "wagmi";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 
 const { AddressZero } = ethers.constants;
 
@@ -871,9 +872,11 @@ function ClaimModal(props) {
   );
 }
 
-export default function StakeV2({ setPendingTxns, connectWallet }) {
-  const { active, library, account } = useWeb3React();
+export default function StakeV2({ setPendingTxns }) {
+  const { isConnected: active, address: account } = useAccount();
+  const { data: library } = useSigner();
   const { chainId } = useChainId();
+  const { openConnectModal } = useConnectModal();
 
   const chainName = getChainName(chainId);
 
@@ -1694,7 +1697,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                     </Button>
                   )}
                   {!active && (
-                    <Button variant="secondary" onClick={() => connectWallet()}>
+                    <Button variant="secondary" onClick={() => openConnectModal()}>
                       <Trans>Connect Wallet</Trans>
                     </Button>
                   )}
@@ -1936,7 +1939,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                   </Button>
                 )}
                 {!active && (
-                  <Button variant="secondary" onClick={() => connectWallet()}>
+                  <Button variant="secondary" onClick={() => openConnectModal()}>
                     <Trans> Connect Wallet</Trans>
                   </Button>
                 )}
@@ -2060,7 +2063,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 <div className="App-card-divider"></div>
                 <div className="App-card-buttons m-0">
                   {!active && (
-                    <Button variant="secondary" onClick={() => connectWallet()}>
+                    <Button variant="secondary" onClick={() => openConnectModal()}>
                       <Trans>Connect Wallet</Trans>
                     </Button>
                   )}
@@ -2147,7 +2150,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 <div className="App-card-divider"></div>
                 <div className="App-card-buttons m-0">
                   {!active && (
-                    <Button variant="secondary" onClick={() => connectWallet()}>
+                    <Button variant="secondary" onClick={() => openConnectModal()}>
                       <Trans>Connect Wallet</Trans>
                     </Button>
                   )}

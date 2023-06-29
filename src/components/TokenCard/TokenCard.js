@@ -1,42 +1,22 @@
-import React, { useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Trans } from "@lingui/macro";
 
 import { isHomeSite } from "lib/legacy";
 
-import { useWeb3React } from "@web3-react/core";
-
 import APRLabel from "../APRLabel/APRLabel";
 import { HeaderLink } from "../Header/HeaderLink";
 import { ARBITRUM, AVALANCHE } from "config/chains";
-import { switchNetwork } from "lib/wallets";
-import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getIcon } from "config/icons";
+import { useSwitchNetwork } from "wagmi";
 
 const glpIcon = getIcon("common", "glp");
 const gmxIcon = getIcon("common", "gmx");
 
 export default function TokenCard({ showRedirectModal, redirectPopupTimestamp }) {
   const isHome = isHomeSite();
-  const { chainId } = useChainId();
-  const { active } = useWeb3React();
 
-  const changeNetwork = useCallback(
-    (network) => {
-      if (network === chainId) {
-        return;
-      }
-      if (!active) {
-        setTimeout(() => {
-          return switchNetwork(network, active);
-        }, 500);
-      } else {
-        return switchNetwork(network, active);
-      }
-    },
-    [chainId, active]
-  );
+  const { switchNetwork } = useSwitchNetwork();
 
   const BuyLink = ({ className, to, children, network }) => {
     if (isHome && showRedirectModal) {
@@ -53,7 +33,7 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
     }
 
     return (
-      <Link to={to} className={className} onClick={() => changeNetwork(network)}>
+      <Link to={to} className={className} onClick={() => switchNetwork(network)}>
         {children}
       </Link>
     );

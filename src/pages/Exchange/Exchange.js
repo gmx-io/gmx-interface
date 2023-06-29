@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useMemo, useCallback, forwardRef, useImperativeHandle } from "react";
 import { Trans, t, Plural } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
 import useSWR from "swr";
 import { ethers } from "ethers";
 import cx from "classnames";
@@ -53,6 +52,7 @@ import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "con
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import UsefulLinks from "components/Exchange/UsefulLinks";
+import { useAccount, useSigner } from "wagmi";
 const { AddressZero } = ethers.constants;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;
@@ -352,7 +352,6 @@ export const Exchange = forwardRef((props, ref) => {
     setPendingTxns,
     savedShouldShowPositionLines,
     setSavedShouldShowPositionLines,
-    connectWallet,
     savedShouldDisableValidationForTesting,
     openSettings,
   } = props;
@@ -381,7 +380,8 @@ export const Exchange = forwardRef((props, ref) => {
     }
   }, [showBanner, bannerHidden, setBannerHidden, setShowBanner]);
 
-  const { active, account, library } = useWeb3React();
+  const { isConnected: active, address: account } = useAccount();
+  const { data: signer } = useSigner();
   const { chainId } = useChainId();
   const currentAccount = account;
 
@@ -466,13 +466,13 @@ export const Exchange = forwardRef((props, ref) => {
 
   const tokenAddresses = tokens.map((token) => token.address);
   const { data: tokenBalances } = useSWR(active && [active, chainId, readerAddress, "getTokenBalances", account], {
-    fetcher: contractFetcher(library, Reader, [tokenAddresses]),
+    fetcher: contractFetcher(signer, Reader, [tokenAddresses]),
   });
 
   const { data: positionData, error: positionDataError } = useSWR(
     active && [active, chainId, readerAddress, "getPositions", vaultAddress, account],
     {
-      fetcher: contractFetcher(library, Reader, [
+      fetcher: contractFetcher(signer, Reader, [
         positionQuery.collateralTokens,
         positionQuery.indexTokens,
         positionQuery.isLong,
@@ -483,18 +483,18 @@ export const Exchange = forwardRef((props, ref) => {
   const positionsDataIsLoading = active && !positionData && !positionDataError;
 
   const { data: fundingRateInfo } = useSWR([active, chainId, readerAddress, "getFundingRates"], {
-    fetcher: contractFetcher(library, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
+    fetcher: contractFetcher(signer, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
   });
 
   const { data: totalTokenWeights } = useSWR(
     [`Exchange:totalTokenWeights:${active}`, chainId, vaultAddress, "totalTokenWeights"],
     {
-      fetcher: contractFetcher(library, VaultV2),
+      fetcher: contractFetcher(signer, VaultV2),
     }
   );
 
   const { data: usdgSupply } = useSWR([`Exchange:usdgSupply:${active}`, chainId, usdgAddress, "totalSupply"], {
-    fetcher: contractFetcher(library, Token),
+    fetcher: contractFetcher(signer, Token),
   });
 
   const orderBookAddress = getContract(chainId, "OrderBook");
@@ -502,20 +502,20 @@ export const Exchange = forwardRef((props, ref) => {
   const { data: orderBookApproved } = useSWR(
     active && [active, chainId, routerAddress, "approvedPlugins", account, orderBookAddress],
     {
-      fetcher: contractFetcher(library, Router),
+      fetcher: contractFetcher(signer, Router),
     }
   );
 
   const { data: positionRouterApproved } = useSWR(
     active && [active, chainId, routerAddress, "approvedPlugins", account, positionRouterAddress],
     {
-      fetcher: contractFetcher(library, Router),
+      fetcher: contractFetcher(signer, Router),
     }
   );
 
-  const { infoTokens } = useInfoTokens(library, chainId, active, tokenBalances, fundingRateInfo);
+  const { infoTokens } = useInfoTokens(signer, chainId, active, tokenBalances, fundingRateInfo);
   const { minExecutionFee, minExecutionFeeUSD, minExecutionFeeErrorMessage } = useExecutionFee(
-    library,
+    signer,
     active,
     chainId,
     infoTokens
@@ -714,7 +714,7 @@ export const Exchange = forwardRef((props, ref) => {
     async function () {
       setIsCancelMultipleOrderProcessing(true);
       try {
-        const tx = await cancelMultipleOrders(chainId, library, cancelOrderIdList, {
+        const tx = await cancelMultipleOrders(chainId, signer, cancelOrderIdList, {
           successMsg: t`Orders cancelled.`,
           failMsg: t`Cancel failed.`,
           sentMsg: t`Cancel submitted.`,
@@ -734,7 +734,7 @@ export const Exchange = forwardRef((props, ref) => {
     },
     [
       chainId,
-      library,
+      signer,
       pendingTxns,
       setPendingTxns,
       setCancelOrderIdList,
@@ -746,7 +746,7 @@ export const Exchange = forwardRef((props, ref) => {
   const approveOrderBook = () => {
     setIsPluginApproving(true);
     return approvePlugin(chainId, orderBookAddress, {
-      library,
+      signer,
       pendingTxns,
       setPendingTxns,
       sentMsg: t`Enable orders sent.`,
@@ -763,7 +763,7 @@ export const Exchange = forwardRef((props, ref) => {
   const approvePositionRouter = ({ sentMsg, failMsg }) => {
     setIsPositionRouterApproving(true);
     return approvePlugin(chainId, positionRouterAddress, {
-      library,
+      signer,
       pendingTxns,
       setPendingTxns,
       sentMsg,
@@ -855,7 +855,6 @@ export const Exchange = forwardRef((props, ref) => {
             infoTokens={infoTokens}
             active={active}
             account={account}
-            library={library}
             pendingTxns={pendingTxns}
             setPendingTxns={setPendingTxns}
             flagOrdersEnabled={flagOrdersEnabled}
@@ -875,9 +874,6 @@ export const Exchange = forwardRef((props, ref) => {
         )}
         {listSection === ORDERS && (
           <OrdersList
-            account={account}
-            active={active}
-            library={library}
             pendingTxns={pendingTxns}
             setPendingTxns={setPendingTxns}
             infoTokens={infoTokens}
@@ -952,10 +948,6 @@ export const Exchange = forwardRef((props, ref) => {
             flagOrdersEnabled={flagOrdersEnabled}
             chainId={chainId}
             infoTokens={infoTokens}
-            active={active}
-            connectWallet={connectWallet}
-            library={library}
-            account={account}
             positionsMap={positionsMap}
             fromTokenAddress={fromTokenAddress}
             setFromTokenAddress={setFromTokenAddress}

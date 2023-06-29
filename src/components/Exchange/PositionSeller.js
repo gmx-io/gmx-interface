@@ -55,6 +55,7 @@ import FeesTooltip from "./FeesTooltip";
 import Button from "components/Button/Button";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import SlippageInput from "components/SlippageInput/SlippageInput";
+import { useAccount, useSigner } from "wagmi";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -131,8 +132,6 @@ export default function PositionSeller(props) {
     positionKey,
     isVisible,
     setIsVisible,
-    account,
-    library,
     infoTokens,
     setPendingTxns,
     flagOrdersEnabled,
@@ -155,6 +154,8 @@ export default function PositionSeller(props) {
     totalTokenWeights,
     isContractAccount,
   } = props;
+  const { address: account } = useAccount();
+  const { data: signer } = useSigner();
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey([chainId, "Exchange-keep-leverage"], true);
   const position = positionsMap && positionKey ? positionsMap[positionKey] : undefined;
@@ -738,7 +739,7 @@ export default function PositionSeller(props) {
 
       createDecreaseOrder(
         chainId,
-        library,
+        signer,
         indexTokenAddress,
         sizeDelta,
         collateralTokenAddress,
@@ -810,7 +811,7 @@ export default function PositionSeller(props) {
     const sizeDeltaUsd = formatAmount(sizeDelta, USD_DECIMALS, 2);
     const successMsg = t`Requested decrease of ${position.indexToken.symbol} ${longOrShortText} by ${sizeDeltaUsd} USD.`;
 
-    const contract = new ethers.Contract(positionRouterAddress, PositionRouter.abi, library.getSigner());
+    const contract = new ethers.Contract(positionRouterAddress, PositionRouter.abi, signer);
 
     callContract(chainId, contract, "createDecreasePosition", params, {
       value: minExecutionFee,

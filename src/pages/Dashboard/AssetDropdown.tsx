@@ -8,7 +8,6 @@ import nansenPortfolioIcon from "img/nansen_portfolio.svg";
 import { t, Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ICONLINKS, PLATFORM_TOKENS } from "config/tokens";
-import { addTokenToMetamask } from "lib/wallets";
 import { useChainId } from "lib/chains";
 import { Token } from "domain/tokens";
 import { ARBITRUM, AVALANCHE } from "config/chains";
@@ -91,7 +90,16 @@ function AssetDropdown({ assetSymbol, assetInfo }: Props) {
                   let token = assetInfo
                     ? { ...assetInfo, image: assetInfo.imageUrl }
                     : PLATFORM_TOKENS[chainId][assetSymbol];
-                  addTokenToMetamask(token, connector);
+
+                  if (connector?.watchAsset && token) {
+                    const { address, decimals, imageUrl, symbol } = token;
+                    connector.watchAsset?.({
+                      address: address,
+                      decimals: decimals,
+                      image: imageUrl,
+                      symbol: symbol,
+                    });
+                  }
                 }}
                 className="asset-item"
               >

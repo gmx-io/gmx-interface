@@ -14,10 +14,9 @@ const WALLET_CONNECT_PROJECT_ID = "de24cddbaf2a68f027eae30d9bb5df58";
 
 const walletTheme = merge(darkTheme(), {
   colors: {
-    modalBackground: "#17182c",
+    modalBackground: "#212641",
     menuItemBackground: "#808aff14",
-    accentColor: "#2d42fc",
-    modalBorder: "transparent",
+    accentColor: "#9da5f2",
   },
   radii: {
     modal: "4px",

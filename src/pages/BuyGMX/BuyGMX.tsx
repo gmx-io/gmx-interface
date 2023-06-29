@@ -1,11 +1,8 @@
-import React, { useCallback } from "react";
 import Footer from "components/Footer/Footer";
 import "./BuyGMX.css";
-import { useWeb3React } from "@web3-react/core";
 import { Trans, t } from "@lingui/macro";
 import Button from "components/Button/Button";
 import { ARBITRUM, AVALANCHE, getChainName, getConstant } from "config/chains";
-import { switchNetwork } from "lib/wallets";
 import { useChainId } from "lib/chains";
 import Card from "components/Common/Card";
 import { importImage } from "lib/legacy";
@@ -23,23 +20,14 @@ import {
   GMX_FROM_ANY_NETWORKS,
   TRANSFER_EXCHANGES,
 } from "./constants";
+import { useSwitchNetwork } from "wagmi";
 
 export default function BuyGMX() {
   const { chainId } = useChainId();
+  const { switchNetwork } = useSwitchNetwork();
   const isArbitrum = chainId === ARBITRUM;
-  const { active } = useWeb3React();
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
   const externalLinks = EXTERNAL_LINKS[chainId];
-
-  const onNetworkSelect = useCallback(
-    (value) => {
-      if (value === chainId) {
-        return;
-      }
-      return switchNetwork(value, active);
-    },
-    [chainId, active]
-  );
 
   return (
     <div className="BuyGMXGLP default-container page-layout">
@@ -54,7 +42,7 @@ export default function BuyGMX() {
               <br />
               <Trans>
                 To purchase GMX on the {isArbitrum ? "Avalanche" : "Arbitrum"} blockchain, please{" "}
-                <span onClick={() => onNetworkSelect(isArbitrum ? AVALANCHE : ARBITRUM)}>change your network</span>.
+                <span onClick={() => switchNetwork?.(isArbitrum ? AVALANCHE : ARBITRUM)}>change your network</span>.
               </Trans>
             </div>
           </div>

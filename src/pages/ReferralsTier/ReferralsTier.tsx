@@ -1,32 +1,33 @@
 import { useCallback, useState } from "react";
+import { useAccount, useSigner } from "wagmi";
 import range from "lodash/range";
 import Button from "components/Button/Button";
 import Select from "components/Select/Select";
 
 import "./ReferralsTier.scss";
 import { useReferrerTier, setAffiliateTier as contractSetAffiliateTier } from "domain/referrals";
-import { useWeb3React } from "@web3-react/core";
 import { useChainId } from "lib/chains";
 
 export default function ReferralsTier() {
-  const { active, library } = useWeb3React();
+  const { isConnected } = useAccount();
+  const { data: signer } = useSigner();
   const { chainId } = useChainId();
 
   const [affiliate, setAffiliate] = useState<string>("");
   const [affiliateTier, setAffiliateTier] = useState<number>(1);
-  const { referrerTier: currentAffiliateTier } = useReferrerTier(library, chainId, affiliate);
+  const { referrerTier: currentAffiliateTier } = useReferrerTier(signer, chainId, affiliate);
 
   const onConfirmation = useCallback(() => {
     if (affiliate) {
-      contractSetAffiliateTier(chainId, affiliate, affiliateTier, library, {
+      contractSetAffiliateTier(chainId, affiliate, affiliateTier, signer, {
         sentMsg: "Transaction sent!",
         failMsg: "Transaction failed.",
       });
     }
-  }, [affiliate, affiliateTier, chainId, library]);
+  }, [affiliate, affiliateTier, chainId, signer]);
 
   function renderForm() {
-    if (!active) return null;
+    if (!isConnected) return null;
 
     return (
       <div className="ReferralsTier-form">
@@ -67,7 +68,7 @@ export default function ReferralsTier() {
   return (
     <div className="ReferralsTier">
       <h1>Referrals Tier</h1>
-      {!active && <div>Wallet is not connected</div>}
+      {!isConnected && <div>Wallet is not connected</div>}
       {renderForm()}
     </div>
   );

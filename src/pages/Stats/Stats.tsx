@@ -1,4 +1,3 @@
-import { useWeb3React } from "@web3-react/core";
 import { getContract } from "config/contracts";
 import { getWhitelistedTokens } from "config/tokens";
 import { TokenInfo, useInfoTokens } from "domain/tokens";
@@ -11,11 +10,12 @@ import { formatDistance } from "date-fns";
 
 import Reader from "abis/Reader.json";
 import VaultV2 from "abis/VaultV2.json";
-import { BigNumber, BigNumberish } from "ethers";
+import { BigNumber, BigNumberish, Signer } from "ethers";
 import { bigNumberify, expandDecimals, formatAmount } from "lib/numbers";
 
 import "./Stats.css";
 import Tooltip from "components/Tooltip/Tooltip";
+import { useAccount, useSigner } from "wagmi";
 
 function shareBar(share?: BigNumberish, total?: BigNumberish) {
   if (!share || !total || bigNumberify(total)!.eq(0)) {
@@ -45,7 +45,9 @@ function formatAmountHuman(amount: BigNumberish | undefined, tokenDecimals: numb
 }
 
 export default function Stats() {
-  const { active, library } = useWeb3React();
+  const { isConnected } = useAccount();
+  const { data } = useSigner();
+  const signer = (data as Signer) || undefined;
   const { chainId } = useChainId();
 
   const readerAddress = getContract(chainId, "Reader");
@@ -58,16 +60,16 @@ export default function Stats() {
   const vaultAddress = getContract(chainId, "Vault");
 
   const { data: totalTokenWeights } = useSWR<BigNumber>(
-    [`GlpSwap:totalTokenWeights:${active}`, chainId, vaultAddress, "totalTokenWeights"],
+    [`GlpSwap:totalTokenWeights:${isConnected}`, chainId, vaultAddress, "totalTokenWeights"],
     {
-      fetcher: contractFetcher(library, VaultV2),
+      fetcher: contractFetcher(signer, VaultV2),
     }
   );
 
-  const { data: fundingRateInfo } = useSWR([active, chainId, readerAddress, "getFundingRates"], {
-    fetcher: contractFetcher(library, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
+  const { data: fundingRateInfo } = useSWR([isConnected, chainId, readerAddress, "getFundingRates"], {
+    fetcher: contractFetcher(signer, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
   });
-  const { infoTokens } = useInfoTokens(library, chainId, active, undefined, fundingRateInfo as any);
+  const { infoTokens } = useInfoTokens(signer, chainId, isConnected, undefined, fundingRateInfo as any);
 
   let adjustedUsdgSupply = bigNumberify(0);
 

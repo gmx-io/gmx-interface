@@ -1,9 +1,7 @@
 import "./Referrals.css";
-import React from "react";
 import { useSigner } from "wagmi";
 import { useLocalStorage } from "react-use";
 import { Trans, t } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
 import { useParams } from "react-router-dom";
 import SEO from "components/Common/SEO";
 import Tab from "components/Tab/Tab";
@@ -29,10 +27,12 @@ const TRADERS = "Traders";
 const AFFILIATES = "Affiliates";
 const TAB_OPTIONS = [TRADERS, AFFILIATES];
 
-function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
-  const { active, library } = useWeb3React();
-  const { isConnected, address: walletAccount, connector } = useAccount();
+function Referrals({ setPendingTxns, pendingTxns }) {
+  const { isConnected, address: walletAccount } = useAccount();
+
   const { account: queryAccount } = useParams();
+  const { data: signer } = useSigner();
+
   let account;
   if (queryAccount && ethers.utils.isAddress(queryAccount)) {
     account = ethers.utils.getAddress(queryAccount);
@@ -45,13 +45,13 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     deserializer: deserializeSampleStats,
   });
   const { data: referralsData, loading } = useReferralsData(account);
-  const { userReferralCode, userReferralCodeString } = useUserReferralCode(connector, chainId, account);
-  const { codeOwner } = useCodeOwner(library, chainId, account, userReferralCode);
-  const { referrerTier: traderTier } = useReferrerTier(library, chainId, codeOwner);
+  const { userReferralCode, userReferralCodeString } = useUserReferralCode(signer, chainId, account);
+  const { codeOwner } = useCodeOwner(signer, chainId, account, userReferralCode);
+  const { referrerTier: traderTier } = useReferrerTier(signer, chainId, codeOwner);
   const networkIcon = getIcon(chainId, "network");
 
   function handleCreateReferralCode(referralCode) {
-    return registerReferralCode(chainId, referralCode, library, {
+    return registerReferralCode(chainId, referralCode, signer, {
       sentMsg: t`Referral code submitted!`,
       failMsg: t`Referral code creation failed.`,
       pendingTxns,
@@ -78,7 +78,6 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
         <AddAffiliateCode
           handleCreateReferralCode={handleCreateReferralCode}
           active={isConnected}
-          connectWallet={connectWallet}
           recentlyAddedCodes={recentlyAddedCodes}
           setRecentlyAddedCodes={setRecentlyAddedCodes}
         />
@@ -89,14 +88,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   function renderTradersTab() {
     if (loading) return <Loader />;
     if (isHashZero(userReferralCode) || !account || !userReferralCode) {
-      return (
-        <JoinReferralCode
-          connectWallet={connectWallet}
-          active={isConnected}
-          setPendingTxns={setPendingTxns}
-          pendingTxns={pendingTxns}
-        />
-      );
+      return <JoinReferralCode active={isConnected} setPendingTxns={setPendingTxns} pendingTxns={pendingTxns} />;
     }
     return (
       <TradersStats

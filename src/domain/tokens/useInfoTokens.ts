@@ -11,14 +11,13 @@ import {
 } from "lib/legacy";
 import { getServerUrl } from "config/backend";
 import { InfoTokens, Token, TokenInfo } from "./types";
-import { BigNumber } from "ethers";
+import { BigNumber, Signer } from "ethers";
 import { bigNumberify, expandDecimals } from "lib/numbers";
 import { getTokens, getWhitelistedTokens } from "config/tokens";
-import { Web3Provider } from "@ethersproject/providers";
 import { getSpread } from "./utils";
 
 export function useInfoTokens(
-  library: Web3Provider | undefined,
+  signer: Signer | undefined,
   chainId: number,
   active: boolean,
   tokenBalances?: BigNumber[],
@@ -37,7 +36,7 @@ export function useInfoTokens(
   const { data: vaultTokenInfo } = useSWR<BigNumber[], any>(
     [`useInfoTokens:${active}`, chainId, vaultReaderAddress, "getVaultTokenInfoV4"],
     {
-      fetcher: contractFetcher(library, VaultReader, [
+      fetcher: contractFetcher(signer, VaultReader, [
         vaultAddress,
         positionRouterAddress,
         nativeTokenAddress,

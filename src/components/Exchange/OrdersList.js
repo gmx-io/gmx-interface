@@ -24,6 +24,7 @@ import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { getTokenInfo, getUsd } from "domain/tokens/utils";
 import { formatAmount } from "lib/numbers";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { useAccount, useSigner } from "wagmi";
 
 function getOrderTitle(order, indexTokenSymbol) {
   const orderTypeText = order.type === INCREASE ? t`Increase` : t`Decrease`;
@@ -35,8 +36,6 @@ function getOrderTitle(order, indexTokenSymbol) {
 
 export default function OrdersList(props) {
   const {
-    account,
-    library,
     setPendingTxns,
     pendingTxns,
     infoTokens,
@@ -51,13 +50,16 @@ export default function OrdersList(props) {
     setCancelOrderIdList,
   } = props;
 
+  const { address: account } = useAccount();
+  const { data: signer } = useSigner();
+
   const [editingOrder, setEditingOrder] = useState(null);
 
   const onCancelClick = useCallback(
     (order) => {
-      handleCancelOrder(chainId, library, order, { pendingTxns, setPendingTxns });
+      handleCancelOrder(chainId, signer, order, { pendingTxns, setPendingTxns });
     },
-    [library, pendingTxns, setPendingTxns, chainId]
+    [signer, pendingTxns, setPendingTxns, chainId]
   );
 
   const onEditClick = useCallback(
@@ -560,7 +562,6 @@ export default function OrdersList(props) {
       <div className="Exchange-list Orders small">{renderSmallList()}</div>
       {editingOrder && (
         <OrderEditor
-          account={account}
           order={editingOrder}
           setEditingOrder={setEditingOrder}
           infoTokens={infoTokens}
@@ -568,7 +569,6 @@ export default function OrdersList(props) {
           setPendingTxns={setPendingTxns}
           getPositionForOrder={getPositionForOrder}
           positionsMap={positionsMap}
-          library={library}
           totalTokenWeights={totalTokenWeights}
           usdgSupply={usdgSupply}
           savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}

@@ -1,4 +1,3 @@
-import { Web3Provider } from "@ethersproject/providers";
 import { CHAIN_NAMES_MAP, getRpcUrl } from "config/chains";
 import { ContractCallContext, Multicall } from "ethereum-multicall";
 import { CallContext, ContractCallResults } from "ethereum-multicall/dist/esm/models";
@@ -7,6 +6,7 @@ import { bigNumberify } from "lib/numbers";
 import { getFallbackProvider } from "lib/rpc";
 import { sleep } from "lib/sleep";
 import { MulticallRequestConfig, MulticallResult } from "./types";
+import { Web3Provider } from "@ethersproject/providers";
 
 export const MAX_TIMEOUT = 2000;
 

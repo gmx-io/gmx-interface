@@ -1,5 +1,3 @@
-import React, { useCallback, useEffect } from "react";
-import { useWeb3React } from "@web3-react/core";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import AddressDropdown from "../AddressDropdown/AddressDropdown";
 import ConnectWalletButton from "../Common/ConnectWalletButton";
@@ -13,7 +11,6 @@ import { Trans } from "@lingui/macro";
 import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
 import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
 import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
-import { switchNetwork } from "lib/wallets";
 import { useChainId } from "lib/chains";
 import { isDevelopment } from "config/env";
 import { getIcon } from "config/icons";
@@ -22,7 +19,6 @@ import { useAccount } from "wagmi";
 type Props = {
   openSettings: () => void;
   small?: boolean;
-  setWalletModalVisible: (visible: boolean) => void;
   disconnectAccountAndCloseSettings: () => void;
   redirectPopupTimestamp: number;
   showRedirectModal: (to: string) => void;
@@ -61,32 +57,14 @@ if (isDevelopment()) {
 export function AppHeaderUser({
   openSettings,
   small,
-  setWalletModalVisible,
   disconnectAccountAndCloseSettings,
   redirectPopupTimestamp,
   showRedirectModal,
 }: Props) {
   const { chainId } = useChainId();
-  const { active, account } = useWeb3React();
   const showConnectionOptions = !isHomeSite();
   const { openConnectModal } = useConnectModal();
   const { isConnected, address } = useAccount();
-
-  useEffect(() => {
-    if (active) {
-      setWalletModalVisible(false);
-    }
-  }, [active, setWalletModalVisible]);
-
-  const onNetworkSelect = useCallback(
-    (option) => {
-      if (option.value === chainId) {
-        return;
-      }
-      return switchNetwork(option.value, isConnected);
-    },
-    [chainId, isConnected]
-  );
 
   const selectorLabel = getChainName(chainId);
 
@@ -113,7 +91,6 @@ export function AppHeaderUser({
               small={small}
               networkOptions={NETWORK_OPTIONS}
               selectorLabel={selectorLabel}
-              onNetworkSelect={onNetworkSelect}
               openSettings={openSettings}
             />
           </>
@@ -124,7 +101,7 @@ export function AppHeaderUser({
     );
   }
 
-  const accountUrl = getAccountUrl(chainId, account);
+  const accountUrl = getAccountUrl(chainId, address);
 
   return (
     <div className="App-header-user">
@@ -152,7 +129,6 @@ export function AppHeaderUser({
             small={small}
             networkOptions={NETWORK_OPTIONS}
             selectorLabel={selectorLabel}
-            onNetworkSelect={onNetworkSelect}
             openSettings={openSettings}
           />
         </>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useWeb3React } from "@web3-react/core";
+import { Address, useAccount, useSigner } from "wagmi";
 
 export enum AccountType {
   CONTRACT = "contract",
@@ -7,17 +7,18 @@ export enum AccountType {
 }
 
 export default function useAccountType() {
-  const { active, account, library } = useWeb3React();
+  const { isConnected, address } = useAccount();
+  const { data: signer } = useSigner();
   const [contractType, setContractType] = useState<AccountType | null>(null);
 
   useEffect(() => {
-    if (!active) return;
+    if (!isConnected) return;
     (async function () {
-      const code = await library.getCode(account);
+      const code = await signer?.provider?.getCode(address as Address);
       const type = code === "0x" ? AccountType.EOA : AccountType.CONTRACT;
       setContractType(type);
     })();
-  }, [account, library, active]);
+  }, [address, isConnected, signer]);
 
   return contractType;
 }

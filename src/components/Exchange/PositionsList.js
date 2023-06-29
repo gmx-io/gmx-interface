@@ -68,9 +68,7 @@ export default function PositionsList(props) {
     positionsDataIsLoading,
     positionsMap,
     infoTokens,
-    active,
     account,
-    library,
     pendingTxns,
     setPendingTxns,
     setListSection,
@@ -139,9 +137,6 @@ export default function PositionsList(props) {
         isVisible={isPositionEditorVisible}
         setIsVisible={setIsPositionEditorVisible}
         infoTokens={infoTokens}
-        active={active}
-        account={account}
-        library={library}
         collateralTokenAddress={collateralTokenAddress}
         pendingTxns={pendingTxns}
         setPendingTxns={setPendingTxns}
@@ -195,10 +190,7 @@ export default function PositionsList(props) {
           isVisible={isPositionSellerVisible}
           setIsVisible={setIsPositionSellerVisible}
           infoTokens={infoTokens}
-          active={active}
-          account={account}
           orders={orders}
-          library={library}
           pendingTxns={pendingTxns}
           setPendingTxns={setPendingTxns}
           flagOrdersEnabled={flagOrdersEnabled}

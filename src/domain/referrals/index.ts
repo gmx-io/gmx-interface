@@ -139,10 +139,10 @@ export async function registerReferralCode(chainId, referralCode, library, opts)
   return callContract(chainId, contract, "registerCode", [referralCodeHex], opts);
 }
 
-export async function setTraderReferralCodeByUser(chainId, referralCode, library, opts) {
+export async function setTraderReferralCodeByUser(chainId, referralCode, signer, opts) {
   const referralCodeHex = encodeReferralCode(referralCode);
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const contract = new ethers.Contract(referralStorageAddress, ReferralStorage.abi, library.getSigner());
+  const contract = new ethers.Contract(referralStorageAddress, ReferralStorage.abi, signer);
   const codeOwner = await contract.codeOwners(referralCodeHex);
   if (isAddressZero(codeOwner)) {
     const errorMsg = "Referral code does not exist";
@@ -160,20 +160,19 @@ export async function getReferralCodeOwner(chainId, referralCode) {
   return codeOwner;
 }
 
-export function useUserReferralCode(library, chainId, account) {
-  console.log("xoxo", { library });
+export function useUserReferralCode(signer, chainId, account) {
   const localStorageCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const { data: onChainCode } = useSWR(
     account && ["ReferralStorage", chainId, referralStorageAddress, "traderReferralCodes", account],
-    { fetcher: contractFetcher(library, ReferralStorage) }
+    { fetcher: contractFetcher(signer, ReferralStorage) }
   );
 
   const { data: localStorageCodeOwner } = useSWR(
     localStorageCode && REGEX_VERIFY_BYTES32.test(localStorageCode)
       ? ["ReferralStorage", chainId, referralStorageAddress, "codeOwners", localStorageCode]
       : null,
-    { fetcher: contractFetcher(library, ReferralStorage) }
+    { fetcher: contractFetcher(signer, ReferralStorage) }
   );
 
   const [attachedOnChain, userReferralCode, userReferralCodeString] = useMemo(() => {
