@@ -110,6 +110,7 @@ export const getWalletConnectConnector = () => {
 
 export const getWalletConnectConnectorV2 = () => {
   const chainId = Number(localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY)) || DEFAULT_CHAIN_ID;
+  const [defaultChainId, ...supportedChainIds] = SUPPORTED_CHAIN_IDS;
   return new WalletConnectConnectorV2({
     rpcMap: {
       [AVALANCHE]: getRpcUrl(AVALANCHE)!,
@@ -118,8 +119,8 @@ export const getWalletConnectConnectorV2 = () => {
       [AVALANCHE_FUJI]: getRpcUrl(AVALANCHE_FUJI)!,
     },
     showQrModal: true,
-    chains: [chainId],
-    optionalChains: SUPPORTED_CHAIN_IDS,
+    chains: [defaultChainId],
+    optionalChains: supportedChainIds,
     projectId: "8fceb548bea9a92efcb7c0230d70011b",
   });
 };

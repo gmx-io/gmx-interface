@@ -43,11 +43,10 @@ export class WalletConnectConnectorV2 extends AbstractConnector {
       showQrModal,
       qrModalOptions: {
         enableExplorer: true,
-        chainImages: undefined,
         themeMode: "dark",
         themeVariables: {
-          "--w3m-font-family": '"Relative",sans-serif',
-          "--w3m-z-index": "1100",
+          "--wcm-font-family": '"Relative",sans-serif',
+          "--wcm-z-index": "1100",
         },
       },
     };
