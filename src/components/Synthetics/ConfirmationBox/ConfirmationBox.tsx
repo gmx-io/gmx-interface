@@ -141,7 +141,7 @@ export function ConfirmationBox(p: Props) {
     onConnectWallet,
   } = p;
 
-  const { isLong, isSwap, isMarket, isLimit, isTrigger, isIncrease } = tradeFlags;
+  const { isLong, isShort, isPosition, isSwap, isMarket, isLimit, isTrigger, isIncrease } = tradeFlags;
   const { indexToken } = marketInfo || {};
 
   const { library, account } = useWeb3React();
@@ -610,6 +610,47 @@ export function ConfirmationBox(p: Props) {
 
   const longShortText = isLong ? t`Long` : t`Short`;
 
+  function renderDifferentTokensWarning() {
+    if (!isPosition || !fromToken || !toToken) {
+      return null;
+    }
+    const isCollateralTokenNonStable = !collateralToken?.isStable;
+    const collateralTokenSymbol = collateralToken?.[collateralToken?.isWrapped ? "baseSymbol" : "symbol"];
+    const indexTokenSymbol = indexToken?.[indexToken?.isWrapped ? "baseSymbol" : "symbol"];
+
+    if (isCollateralTokenNonStable && collateralTokenSymbol !== indexTokenSymbol) {
+      return (
+        <div className="Confirmation-box-info">
+          <Trans>
+            You have selected {collateralTokenSymbol} as Collateral, the Liquidation Price will vary based on the price
+            of {collateralTokenSymbol}.
+          </Trans>
+        </div>
+      );
+    }
+
+    if (isLong && isCollateralTokenNonStable && collateralTokenSymbol === indexTokenSymbol) {
+      return (
+        <div className="Confirmation-box-info">
+          <Trans>
+            You have selected {collateralTokenSymbol} as Collateral, the Liquidation Price is higher compared to using a
+            stablecoin as collateral, since the worth of the collateral will change with its price.
+          </Trans>
+        </div>
+      );
+    }
+
+    if (isShort && isCollateralTokenNonStable && collateralTokenSymbol === indexTokenSymbol) {
+      return (
+        <div className="Confirmation-box-info">
+          <Trans>
+            You have selected {collateralTokenSymbol} as collateral to short {indexTokenSymbol}.
+          </Trans>
+        </div>
+      );
+    }
+  }
+
   function renderExistingLimitOrdersWarning() {
     if (!existingLimitOrders?.length || !toToken) {
       return;
@@ -824,6 +865,7 @@ export function ConfirmationBox(p: Props) {
           {renderExistingTriggerErrors()}
           {renderExistingTriggerWarning()}
           {isLimit && renderAvailableLiquidity()}
+          {renderDifferentTokensWarning()}
 
           <ExchangeInfoRow
             className="SwapBox-info-row"
