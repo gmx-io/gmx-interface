@@ -12,7 +12,6 @@ import {
   getExchangeRate,
   getExchangeRateDisplay,
   calculatePositionDelta,
-  getLiquidationPrice,
 } from "lib/legacy";
 import { updateSwapOrder, updateIncreaseOrder, updateDecreaseOrder } from "domain/legacy";
 import Modal from "../Modal/Modal";
@@ -25,6 +24,7 @@ import { useChainId } from "lib/chains";
 import { t, Trans } from "@lingui/macro";
 import Button from "components/Button/Button";
 import { useAccount, useSigner } from "wagmi";
+import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 
 export default function OrderEditor(props) {
   const {
@@ -45,7 +45,16 @@ export default function OrderEditor(props) {
   const { data: signer } = useSigner();
 
   const position = order.type !== SWAP ? getPositionForOrder(account, order, positionsMap) : null;
-  const liquidationPrice = order.type === DECREASE && position ? getLiquidationPrice(position) : null;
+  const liquidationPrice =
+    order.type === DECREASE && position
+      ? getLiquidationPrice({
+          size: position.size,
+          collateral: position.collateral,
+          fundingFee: position.fundingFee,
+          isLong: position.isLong,
+          averagePrice: position.averagePrice,
+        })
+      : null;
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 

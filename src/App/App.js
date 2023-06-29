@@ -79,7 +79,6 @@ import {
   SHOW_PNL_AFTER_FEES_KEY,
   SLIPPAGE_BPS_KEY,
 } from "config/localStorage";
-
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { isDevelopment } from "config/env";

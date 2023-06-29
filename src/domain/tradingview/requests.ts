@@ -33,6 +33,7 @@ export async function getCurrentPriceOfToken(chainId: number, symbol: string) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const indexPrices = await response.json();
+
     let symbolInfo = getTokenBySymbol(chainId, symbol);
     if (symbolInfo.isNative) {
       symbolInfo = getWrappedToken(chainId);
