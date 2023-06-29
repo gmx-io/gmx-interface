@@ -204,10 +204,11 @@ msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Accrued Positive Funding Fee"
-msgstr ""
+msgstr "<<<<<<< HEAD"
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Acknowledge high Price Impact"
 msgstr ""
@@ -266,11 +267,6 @@ msgstr "수령 후, esGMX 토큰은 7일 이내에 선택한 네트워크의 계
 msgid "Agree"
 msgstr "동의하기"
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#~ msgid "Allow up to 1% slippage"
-#~ msgstr "1%의 슬리피지까지 허용하기"
-
 #: src/components/ApproveTokenButton/ApproveTokenButton.tsx
 msgid "Allow {0} to be spent"
 msgstr ""
@@ -291,19 +287,17 @@ msgstr "이외의 링크는 <0>docs</0>에서 확인할 수 있습니다.<1/><2/
 msgid "Alternatively, you can select a different \"Collateral In\" token."
 msgstr "추가적으로, 별도의 \"담보자산\"을 선택할 수 있습니다."
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Amount"
 msgstr "수량"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Amount of traders you referred."
 msgstr "추천한 거래자 수"
 
 #: src/components/Exchange/PositionEditor.js
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Amount should be greater than zero"
 msgstr ""
@@ -451,14 +445,6 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Balance"
 msgstr "잔고"
-
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#~ msgid "Balance:"
-#~ msgstr "잔고:"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"
@@ -1010,6 +996,7 @@ msgstr "연동"
 #: src/components/Migration/Migration.js
 #: src/components/Referrals/AddAffiliateCode.js
 #: src/components/Referrals/JoinReferralCode.js
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -1022,7 +1009,6 @@ msgstr "연동"
 msgid "Connect Wallet"
 msgstr "지갑 연동"
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Connect wallet"
 msgstr ""
@@ -1030,6 +1016,10 @@ msgstr ""
 #: src/lib/wallets/index.tsx
 msgid "Connected to {0}"
 msgstr "{0}에 연동하기"
+
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+msgid "Consider selecting and using the \"Pair\" option to reduce the Price Impact."
+msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
@@ -1092,7 +1082,6 @@ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/AddAffiliateCode.js
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/pages/Stake/StakeV1.js
@@ -1110,7 +1099,6 @@ msgstr ""
 msgid "Create Order"
 msgstr "주문 생성"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Create Referral Code"
 msgstr "추천 코드 생성"
@@ -1209,7 +1197,6 @@ msgstr "GMX 추천 시스템 통계 대시보드"
 msgid "Dashboards"
 msgstr "대시보드"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Date"
@@ -1568,6 +1555,7 @@ msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter a size"
 msgstr ""
 
@@ -1585,7 +1573,7 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -1717,8 +1705,8 @@ msgstr "{0}을 {1}로 스왑하는 수수료가 높습니다."
 msgid "Fees are high to swap from {0} to {1}. <0/>{2} is needed for collateral."
 msgstr "{0}을 {1}로 스왑하는 수수료가 높습니다. <0/>{2}가 담보로 필요합니다."
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Fees exceed Pay amount"
 msgstr ""
@@ -1988,14 +1976,6 @@ msgstr "높은 슬리피지 상관 없이 스왑"
 msgid "High USDG Slippage, Long Anyway"
 msgstr "높은 USDG 슬리피지 상관 없이 롱 포지션 체결"
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#~ msgid "I am aware of the high Price Impact"
-#~ msgstr ""
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "I am aware of the trigger orders"
@@ -2153,16 +2133,16 @@ msgstr "스테이킹된 토큰 부족"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} balance"
 msgstr "{0} 잔고 부족"
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} liquidity"
 msgstr ""
 
@@ -2294,10 +2274,6 @@ msgstr "{0} 업그레이드를 위해 레버리지가 비활성화되었습니�
 msgid "Leverage slider"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#~ msgid "Leverage:"
-#~ msgstr ""
-
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/SwapBox.js
@@ -2413,7 +2389,6 @@ msgstr "유동성 데이터를 불러오지 못하였습니다."
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/ClaimHistory/ClaimHistory.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
@@ -2421,6 +2396,7 @@ msgstr "유동성 데이터를 불러오지 못하였습니다."
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Loading..."
 msgstr "로딩중..."
@@ -2526,6 +2502,7 @@ msgstr "MEV 옵티마이저"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Mark"
 msgstr ""
 
@@ -2555,11 +2532,6 @@ msgstr "시장 평균가"
 #: src/components/Exchange/OrderEditor.js
 msgid "Mark Price:"
 msgstr "시장 평균가"
-
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#~ msgid "Mark:"
-#~ msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2821,12 +2793,6 @@ msgstr "NFT ID"
 msgid "NFT Wallet"
 msgstr "NFT 지갑"
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#~ msgid "Need to accept Price Impact"
-#~ msgstr ""
-
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Negative Funding Fees are settled against the collateral automatically and will influence the liquidation price. Positive Funding Fees can be claimed under Claimable Funding after realizing any action on the position."
 msgstr ""
@@ -2899,7 +2865,6 @@ msgstr "현재 GMX에서 열려있는 포지션이 없습니다."
 msgid "No position"
 msgstr "열려있는 포지션이 없음"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "No rebates distribution history yet."
@@ -3283,11 +3248,11 @@ msgstr "가격"
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 msgid "Price Impact"
-msgstr ""
+msgstr "<<<<<<< HEAD"
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Price Impact not yet acknowledged"
 msgstr ""
 
@@ -3397,7 +3362,6 @@ msgstr "보험 구입"
 msgid "Read more"
 msgstr "더 알아보기"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates"
@@ -3408,7 +3372,6 @@ msgstr ""
 msgid "Rebates Distribution History"
 msgstr "소개 보수 분배 내역"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates are airdropped weekly."
 msgstr "소개 보수는 매주 에어드랍됩니다."
@@ -3417,18 +3380,9 @@ msgstr "소개 보수는 매주 에어드랍됩니다."
 msgid "Rebates earned by this account as a trader."
 msgstr "트레이더로서 이 계정이 획득한 소개 보수."
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates earned by this account as an affiliate."
 msgstr "어필리에이트로서 이 계정이 획득한 소개 보수."
-
-#: src/components/Referrals/AffiliatesStats.js
-msgid "Rebates on Arbitrum"
-msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.js
-msgid "Rebates on Avalanche"
-msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates on V1"
@@ -3488,7 +3442,6 @@ msgstr "청산 위험 감소하기"
 msgid "Reducing the position at the current price will forfeit a <0>pending profit</0> of {deltaStr}. <1/>"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Code"
 msgstr "추천인 코드"
@@ -3497,7 +3450,6 @@ msgstr "추천인 코드"
 msgid "Referral Code does not exist"
 msgstr "추천인 코드가 존재하지 않습니다"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Codes"
 msgstr "추천인 코드"
@@ -3608,14 +3560,6 @@ msgstr "GMX 및 GLP 수익 계산기"
 #: src/pages/Stake/StakeV2.js
 msgid "Rewards"
 msgstr "보상"
-
-#: src/components/Referrals/AffiliatesStats.js
-msgid "Rewards Distribution History"
-msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.js
-msgid "Rewards are airdropped weekly."
-msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Same as current active code"
@@ -4292,12 +4236,10 @@ msgstr "가격 조건이 충족되었을 때 귀하의 주문을 실행할 수 �
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met."
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "This code has been taken by someone else on {0}, you will not receive rebates from traders using this code on {1}."
 msgstr "해당 코드는 {0}에서 다른 사용자에 의해 이미 사용되었습니다. {1}에서는 해당 코드를 통해 트레이더로부터의 소개 보수는 받을 수 없습니다."
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
 msgstr "해당 코드는 {0}에 아직 등록되지 않았기때문에, 소개 보수를 받을 수 없습니다.<0/><1/>네트워크를 변경후 해당 코드를 {1}상에서 생성하세요."
@@ -4322,7 +4264,6 @@ msgstr ""
 msgid "Tier {0} ({1}% discount)"
 msgstr "티어 {0} ({1}% 할인)"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Tier {0} ({1}% rebate)"
 msgstr "티어 {0} ({1}% 소개보수)"
@@ -4351,9 +4292,6 @@ msgstr "수수료를 줄이기 위해서는 다른 자산으로 수령해주세�
 msgid "Tokens"
 msgstr "토큰"
 
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -4384,7 +4322,6 @@ msgstr "총 수수료"
 msgid "Total Fees Distributed"
 msgstr "총 분배된 수수료"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total Rebates"
 msgstr "총 소개 보수"
@@ -4431,7 +4368,6 @@ msgstr "총 트레이딩 거래량"
 msgid "Total Users"
 msgstr "총 유저"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -4475,19 +4411,15 @@ msgstr ""
 msgid "Traders"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Traders Referred"
 msgstr "추천한 트레이더"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Traders Referred on Arbitrum"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Traders Referred on Avalanche"
 msgstr ""
@@ -4501,18 +4433,9 @@ msgstr ""
 msgid "Trades"
 msgstr "트레이드"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Trading Volume"
-msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.js
-msgid "Trading Volume on Arbitrum"
-msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.js
-msgid "Trading Volume on Avalanche"
 msgstr ""
 
 #: src/components/Exchange/UsefulLinks.tsx
@@ -4529,7 +4452,6 @@ msgstr "전송중..."
 msgid "Transacting with a depegged stable coin is subject to spreads reflecting the worse of current market price or $1.00, with transactions involving multiple stablecoins may have multiple spreads."
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Transaction"
@@ -4928,7 +4850,6 @@ msgstr ""
 msgid "Volume traded by this account with an active referral code."
 msgstr "유효한 추천인 코드를 사용하여 이 계정으로 트레이드된 거래량"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Volume traded by your referred traders."
 msgstr "귀하가 추천한 트레이더들의 거래량"

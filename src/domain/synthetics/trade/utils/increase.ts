@@ -134,7 +134,7 @@ export function getIncreasePositionAmounts(p: {
     const positionFeeInfo = getPositionFee(marketInfo, values.sizeDeltaUsd, userReferralInfo);
 
     values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
-    values.feeDiscountUsd = positionFeeInfo.positionFeeUsd;
+    values.feeDiscountUsd = positionFeeInfo.discountUsd;
 
     values.collateralDeltaUsd = baseCollateralUsd
       .sub(values.positionFeeUsd)

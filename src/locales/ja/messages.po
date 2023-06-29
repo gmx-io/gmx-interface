@@ -204,10 +204,11 @@ msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Accrued Positive Funding Fee"
-msgstr ""
+msgstr "<<<<<<< HEAD"
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Acknowledge high Price Impact"
 msgstr ""
@@ -266,11 +267,6 @@ msgstr "請求後7日以内に指定のネットワーク上のあなたのア�
 msgid "Agree"
 msgstr "同意する"
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#~ msgid "Allow up to 1% slippage"
-#~ msgstr "最大1%のスリッページを許容する"
-
 #: src/components/ApproveTokenButton/ApproveTokenButton.tsx
 msgid "Allow {0} to be spent"
 msgstr ""
@@ -291,19 +287,17 @@ msgstr "他にもリンクが <0>文書ページ</0>にあります。<1/><2/>�
 msgid "Alternatively, you can select a different \"Collateral In\" token."
 msgstr "または、別の\"担保\"トークンを選択することもできます。"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Amount"
 msgstr "額"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Amount of traders you referred."
 msgstr "あなたが紹介したトレーダー数"
 
 #: src/components/Exchange/PositionEditor.js
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Amount should be greater than zero"
 msgstr ""
@@ -451,14 +445,6 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Balance"
 msgstr "残高"
-
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#~ msgid "Balance:"
-#~ msgstr "残高"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"
@@ -1010,6 +996,7 @@ msgstr "接続"
 #: src/components/Migration/Migration.js
 #: src/components/Referrals/AddAffiliateCode.js
 #: src/components/Referrals/JoinReferralCode.js
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -1022,7 +1009,6 @@ msgstr "接続"
 msgid "Connect Wallet"
 msgstr "ウォレット接続"
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Connect wallet"
 msgstr ""
@@ -1030,6 +1016,10 @@ msgstr ""
 #: src/lib/wallets/index.tsx
 msgid "Connected to {0}"
 msgstr "{0}に接続中"
+
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+msgid "Consider selecting and using the \"Pair\" option to reduce the Price Impact."
+msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
@@ -1092,7 +1082,6 @@ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/AddAffiliateCode.js
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/pages/Stake/StakeV1.js
@@ -1110,7 +1099,6 @@ msgstr ""
 msgid "Create Order"
 msgstr "注文の作成"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Create Referral Code"
 msgstr "紹介コード作成"
@@ -1209,7 +1197,6 @@ msgstr "GMXの紹介統計ダッシュボード"
 msgid "Dashboards"
 msgstr "ダッシュボード"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Date"
@@ -1568,6 +1555,7 @@ msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter a size"
 msgstr ""
 
@@ -1585,7 +1573,7 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -1717,8 +1705,8 @@ msgstr "{0} を {1}にスワップするには手数料が高額です"
 msgid "Fees are high to swap from {0} to {1}. <0/>{2} is needed for collateral."
 msgstr "{0} を {1}にスワップするには手数料が高額です。<0/>{2}が担保に必要です。"
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Fees exceed Pay amount"
 msgstr ""
@@ -1988,14 +1976,6 @@ msgstr "スリッページが大きいです。ともかく交換する"
 msgid "High USDG Slippage, Long Anyway"
 msgstr "USDGスリッページが大きいです。ともかくロングする"
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#~ msgid "I am aware of the high Price Impact"
-#~ msgstr ""
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "I am aware of the trigger orders"
@@ -2153,16 +2133,16 @@ msgstr "ステークされたトークンが不足しています"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} balance"
 msgstr "{0} 残高の不足"
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} liquidity"
 msgstr ""
 
@@ -2294,10 +2274,6 @@ msgstr "{0}の更新が未完了のためレバレッジが無効化されてい
 msgid "Leverage slider"
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#~ msgid "Leverage:"
-#~ msgstr ""
-
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/SwapBox.js
@@ -2413,7 +2389,6 @@ msgstr "流動性データがロードされていません"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/ClaimHistory/ClaimHistory.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
@@ -2421,6 +2396,7 @@ msgstr "流動性データがロードされていません"
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Loading..."
 msgstr "ロード中"
@@ -2526,6 +2502,7 @@ msgstr "MEVオプティマイザー"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Mark"
 msgstr ""
 
@@ -2555,11 +2532,6 @@ msgstr "マーク価格"
 #: src/components/Exchange/OrderEditor.js
 msgid "Mark Price:"
 msgstr "マーク価格"
-
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#~ msgid "Mark:"
-#~ msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2821,12 +2793,6 @@ msgstr "NFT ID"
 msgid "NFT Wallet"
 msgstr "NFTウォレット"
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#~ msgid "Need to accept Price Impact"
-#~ msgstr ""
-
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Negative Funding Fees are settled against the collateral automatically and will influence the liquidation price. Positive Funding Fees can be claimed under Claimable Funding after realizing any action on the position."
 msgstr ""
@@ -2899,7 +2865,6 @@ msgstr "現在GMXにオープンのポジションはありません"
 msgid "No position"
 msgstr "ポジションなし"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "No rebates distribution history yet."
@@ -3283,11 +3248,11 @@ msgstr "価格"
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 msgid "Price Impact"
-msgstr ""
+msgstr "<<<<<<< HEAD"
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Price Impact not yet acknowledged"
 msgstr ""
 
@@ -3397,7 +3362,6 @@ msgstr "保険購入"
 msgid "Read more"
 msgstr "詳細について読む"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates"
@@ -3408,7 +3372,6 @@ msgstr ""
 msgid "Rebates Distribution History"
 msgstr "リベートの分配履歴"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates are airdropped weekly."
 msgstr "リベートと紹介報酬は毎週エアドロップされます。"
@@ -3417,18 +3380,9 @@ msgstr "リベートと紹介報酬は毎週エアドロップされます。"
 msgid "Rebates earned by this account as a trader."
 msgstr "トレーダーとしてこのアカウントが獲得したリベート"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates earned by this account as an affiliate."
 msgstr "アフィリエイトとしてこのアカウントが獲得した紹介報酬"
-
-#: src/components/Referrals/AffiliatesStats.js
-msgid "Rebates on Arbitrum"
-msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.js
-msgid "Rebates on Avalanche"
-msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Rebates on V1"
@@ -3488,7 +3442,6 @@ msgstr "清算リスクを減らす"
 msgid "Reducing the position at the current price will forfeit a <0>pending profit</0> of {deltaStr}. <1/>"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Code"
 msgstr "紹介コード"
@@ -3497,7 +3450,6 @@ msgstr "紹介コード"
 msgid "Referral Code does not exist"
 msgstr "紹介コードが存在しません"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Codes"
 msgstr "紹介コード"
@@ -3608,14 +3560,6 @@ msgstr "GMXとGLPのリターンの計算機"
 #: src/pages/Stake/StakeV2.js
 msgid "Rewards"
 msgstr "報酬"
-
-#: src/components/Referrals/AffiliatesStats.js
-msgid "Rewards Distribution History"
-msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.js
-msgid "Rewards are airdropped weekly."
-msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Same as current active code"
@@ -4292,12 +4236,10 @@ msgstr "価格の条件が満たされたとしても、あなたの注文を執
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met."
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "This code has been taken by someone else on {0}, you will not receive rebates from traders using this code on {1}."
 msgstr "このコードは{0}上で他の人がすでに取得済です。このコードを使用した場合、{1}上のトレーダーからの紹介報酬は受け取れません。"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
 msgstr "このコードは{0}上ではまだ登録されていないため、紹介報酬を受け取ることはできません。<0/><1/>ネットワークを切り替えて、{1}上でこのコードを作成してください。"
@@ -4322,7 +4264,6 @@ msgstr ""
 msgid "Tier {0} ({1}% discount)"
 msgstr "ティア {0} ({1}%割引)"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Tier {0} ({1}% rebate)"
 msgstr "ティア {0} ({1}% 紹介報酬)"
@@ -4351,9 +4292,6 @@ msgstr "手数料を削減するには別のアセットで受け取ってくだ
 msgid "Tokens"
 msgstr "トークン"
 
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -4384,7 +4322,6 @@ msgstr "手数料総額"
 msgid "Total Fees Distributed"
 msgstr "分配済手数料総額"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total Rebates"
 msgstr "リベート総額"
@@ -4431,7 +4368,6 @@ msgstr "トレード総額"
 msgid "Total Users"
 msgstr "ユーザー総数"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -4475,19 +4411,15 @@ msgstr ""
 msgid "Traders"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Traders Referred"
 msgstr "紹介したトレーダー"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Traders Referred on Arbitrum"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Traders Referred on Avalanche"
 msgstr ""
@@ -4501,18 +4433,9 @@ msgstr ""
 msgid "Trades"
 msgstr "トレード"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Trading Volume"
-msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.js
-msgid "Trading Volume on Arbitrum"
-msgstr ""
-
-#: src/components/Referrals/AffiliatesStats.js
-msgid "Trading Volume on Avalanche"
 msgstr ""
 
 #: src/components/Exchange/UsefulLinks.tsx
@@ -4529,7 +4452,6 @@ msgstr "移転中..."
 msgid "Transacting with a depegged stable coin is subject to spreads reflecting the worse of current market price or $1.00, with transactions involving multiple stablecoins may have multiple spreads."
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Transaction"
@@ -4928,7 +4850,6 @@ msgstr ""
 msgid "Volume traded by this account with an active referral code."
 msgstr "有効な紹介コードを使ってこのアカウントでトレードされた取引高"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Volume traded by your referred traders."
 msgstr "あなたが紹介したトレーダーによる取引高"

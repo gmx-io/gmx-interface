@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import cx from "classnames";
 import { useMedia } from "react-use";
-import { USD_DECIMALS, SWAP, INCREASE, getLiquidationPrice } from "lib/legacy";
+import { USD_DECIMALS, SWAP, INCREASE, getLiquidationPrice, CHART_PERIODS } from "lib/legacy";
 import { useChartPrices } from "domain/legacy";
 import ChartTokenSelector from "./ChartTokenSelector";
 import { getTokenInfo } from "domain/tokens/utils";
@@ -10,8 +10,10 @@ import { getToken, getTokens } from "config/tokens";
 import TVChartContainer from "components/TVChartContainer/TVChartContainer";
 import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 import { t } from "@lingui/macro";
-import { availableNetworksForChart } from "components/TVChartContainer/constants";
+import { DEFAULT_PERIOD, availableNetworksForChart } from "components/TVChartContainer/constants";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
+import { SUPPORTED_RESOLUTIONS_V1 } from "config/tradingview";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 
 const PRICE_LINE_TEXT_WIDTH = 15;
 
@@ -61,6 +63,13 @@ export default function ExchangeTVChart(props) {
     tradePageVersion,
     setTradePageVersion,
   } = props;
+
+  let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
+
+  if (!period || !(period in CHART_PERIODS)) {
+    period = DEFAULT_PERIOD;
+  }
+
   const [currentSeries] = useState();
   const dataProvider = useRef();
 
@@ -75,7 +84,7 @@ export default function ExchangeTVChart(props) {
   });
 
   useEffect(() => {
-    dataProvider.current = new TVDataProvider();
+    dataProvider.current = new TVDataProvider(SUPPORTED_RESOLUTIONS_V1);
   }, []);
 
   useEffect(() => {
@@ -273,10 +282,6 @@ export default function ExchangeTVChart(props) {
     }
   }
 
-  useEffect(() => {
-    dataProvider.current = new TVDataProvider();
-  }, []);
-
   if (!chartToken) {
     return null;
   }
@@ -346,6 +351,9 @@ export default function ExchangeTVChart(props) {
             chainId={chainId}
             onSelectToken={onSelectToken}
             dataProvider={dataProvider.current}
+            supportedResolutions={SUPPORTED_RESOLUTIONS_V1}
+            period={period}
+            setPeriod={setPeriod}
           />
         ) : (
           <p className="ExchangeChart-error">Sorry, chart is not supported on this network yet.</p>

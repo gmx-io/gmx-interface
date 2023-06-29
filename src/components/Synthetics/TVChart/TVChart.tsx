@@ -18,6 +18,7 @@ import { formatAmount, formatUsd, numberWithCommas } from "lib/numbers";
 import { useEffect, useMemo, useRef } from "react";
 import { useMedia } from "react-use";
 import "./TVChart.scss";
+import { SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 
 export type Props = {
   ordersInfo?: OrdersInfoData;
@@ -47,12 +48,16 @@ export function TVChart({
   setTradePageVersion,
 }: Props) {
   const { chainId } = useChainId();
-
   const isMobile = useMedia("(max-width: 768px)");
   const isSmallMobile = useMedia("(max-width: 468px)");
 
+  let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period-v2"], DEFAULT_PERIOD);
+
+  if (!period || !(period in CHART_PERIODS)) {
+    period = DEFAULT_PERIOD;
+  }
+
   const dataProvider = useRef<TVDataProvider>();
-  const [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
   const chartToken = getTokenData(tokensData, chartTokenAddress);
 
   const tokenOptions: DropdownOption[] =
@@ -154,7 +159,7 @@ export function TVChart({
   }
 
   useEffect(() => {
-    dataProvider.current = new SyntheticsTVDataProvider();
+    dataProvider.current = new SyntheticsTVDataProvider(SUPPORTED_RESOLUTIONS_V2);
   }, []);
 
   useEffect(
@@ -236,6 +241,9 @@ export function TVChart({
             chainId={chainId}
             onSelectToken={onSelectChartToken}
             dataProvider={dataProvider.current}
+            supportedResolutions={SUPPORTED_RESOLUTIONS_V2}
+            period={period}
+            setPeriod={setPeriod}
           />
         )}
       </div>
