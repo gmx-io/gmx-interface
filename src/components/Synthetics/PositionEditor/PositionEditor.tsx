@@ -415,7 +415,7 @@ export function PositionEditor(p: Props) {
             />
 
             <BuyInputSection
-              topLeftLabel={operationLabels[operation] + `:`}
+              topLeftLabel={operationLabels[operation]}
               topLeftValue={formatUsd(collateralDeltaUsd)}
               topRightLabel={t`Max`}
               topRightValue={

@@ -6,7 +6,7 @@ import { IS_TOUCH } from "config/env";
 import Portal from "../Common/Portal";
 
 const OPEN_DELAY = 100;
-const CLOSE_DELAY = 100;
+const CLOSE_DELAY = 0;
 
 type Props = {
   handle: React.ReactNode;

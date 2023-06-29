@@ -37,6 +37,7 @@ export default function BuyInputSection(props: Props) {
   } = props;
 
   const inputRef = useRef<HTMLInputElement>(null);
+  const seperator = ":";
 
   function handleBoxClick() {
     if (inputRef.current) {
@@ -49,11 +50,15 @@ export default function BuyInputSection(props: Props) {
       <div className="buy-input-top-row">
         <div className="text-gray">
           {topLeftLabel}
-          {topLeftValue && `: ${topLeftValue}`}
+          {topLeftValue && `${seperator} ${topLeftValue}`}
         </div>
         <div className={cx("align-right", { clickable: onClickTopRightLabel })} onClick={onClickTopRightLabel}>
           <span className="text-gray">{topRightLabel}</span>
-          {topRightValue && <span className="Exchange-swap-label">:&nbsp;{topRightValue}</span>}
+          {topRightValue && (
+            <span className="Exchange-swap-label">
+              {topRightLabel ? seperator : ""}&nbsp;{topRightValue}
+            </span>
+          )}
         </div>
       </div>
       <div className="Exchange-swap-section-bottom">

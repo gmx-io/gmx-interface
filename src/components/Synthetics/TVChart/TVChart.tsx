@@ -5,7 +5,7 @@ import TVChartContainer, { ChartLine } from "components/TVChartContainer/TVChart
 import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 import { convertTokenAddress, getToken, isChartAvailabeForToken } from "config/tokens";
 import { OrdersInfoData, PositionOrderInfo, isIncreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
-import { PositionsInfoData } from "domain/synthetics/positions";
+import { PositionsInfoData, formatLiquidationPrice } from "domain/synthetics/positions";
 import { TokensData, getCandlesDelta, getMidPrice, getTokenData } from "domain/synthetics/tokens";
 import { useLastCandles } from "domain/synthetics/tokens/useLastCandles";
 import { SyntheticsTVDataProvider } from "domain/synthetics/tradingview/SyntheticsTVDataProvider";
@@ -130,16 +130,18 @@ export function TVChart({
       ) {
         const longOrShortText = position.isLong ? t`Long` : t`Short`;
         const tokenSymbol = getTokenData(tokensData, position.marketInfo?.indexTokenAddress, "native")?.symbol;
+        const liquidationPrice = formatLiquidationPrice(position?.liquidationPrice);
 
         acc.push({
           title: t`Open ${longOrShortText} ${tokenSymbol}`,
           price: parseFloat(formatAmount(position.entryPrice, USD_DECIMALS, 2)),
         });
-
-        acc.push({
-          title: t`Liq. ${longOrShortText} ${tokenSymbol}`,
-          price: parseFloat(formatAmount(position.liquidationPrice, USD_DECIMALS, 2)),
-        });
+        if (liquidationPrice && liquidationPrice !== "NA") {
+          acc.push({
+            title: t`Liq. ${longOrShortText} ${tokenSymbol}`,
+            price: parseFloat(liquidationPrice),
+          });
+        }
       }
 
       return acc;
