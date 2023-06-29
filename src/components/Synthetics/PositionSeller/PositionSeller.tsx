@@ -60,13 +60,13 @@ import "./PositionSeller.scss";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
 import SlippageInput from "components/SlippageInput/SlippageInput";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 export type Props = {
   position?: PositionInfo;
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
   showPnlInLeverage: boolean;
-  allowedSlippage: number;
   availableTokensOptions?: AvailableTokenOptions;
   onClose: () => void;
   setPendingTxns: (txns: any) => void;
@@ -83,12 +83,12 @@ export function PositionSeller(p: Props) {
     showPnlInLeverage,
     onClose,
     setPendingTxns,
-    allowedSlippage: savedAllowedSlippage,
     availableTokensOptions,
     onConnectWallet,
   } = p;
 
   const { chainId } = useChainId();
+  const { savedAllowedSlippage } = useSettings();
   const { library, account } = useWeb3React();
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
@@ -102,7 +102,6 @@ export function PositionSeller(p: Props) {
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
 
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
-  const [allowedSlippage, setAllowedSlippage] = useState(savedAllowedSlippage);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [closeUsdInputValue, setCloseUsdInputValue] = useState("");
@@ -110,7 +109,12 @@ export function PositionSeller(p: Props) {
   const maxCloseSize = position?.sizeInUsd || BigNumber.from(0);
 
   const [receiveTokenAddress, setReceiveTokenAddress] = useState<string>();
+  const [allowedSlippage, setAllowedSlippage] = useState(savedAllowedSlippage);
   const receiveToken = getByKey(tokensData, receiveTokenAddress);
+
+  useEffect(() => {
+    setAllowedSlippage(savedAllowedSlippage);
+  }, [savedAllowedSlippage]);
 
   const markPrice = position
     ? getMarkPrice({ prices: position.indexToken.prices, isLong: position.isLong, isIncrease: false })
@@ -407,7 +411,7 @@ export function PositionSeller(p: Props) {
                     />
                   }
                 >
-                  <SlippageInput setAllowedSlippage={setAllowedSlippage} defaultSlippage={allowedSlippage} />
+                  <SlippageInput setAllowedSlippage={setAllowedSlippage} defaultSlippage={savedAllowedSlippage} />
                 </ExchangeInfoRow>
               </div>
 

@@ -69,6 +69,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./ConfirmationBox.scss";
 import SlippageInput from "components/SlippageInput/SlippageInput";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 export type Props = {
   isVisible: boolean;
@@ -95,7 +96,6 @@ export type Props = {
   error?: string;
   existingPosition?: PositionInfo;
   shouldDisableValidation: boolean;
-  allowedSlippage?: number;
   isHigherSlippageAllowed?: boolean;
   ordersData?: OrdersInfoData;
   tokensData?: TokensData;
@@ -132,7 +132,6 @@ export function ConfirmationBox(p: Props) {
     error,
     existingPosition,
     shouldDisableValidation,
-    allowedSlippage: savedAllowedSlippage,
     ordersData,
     tokensData,
     setKeepLeverage,
@@ -148,6 +147,7 @@ export function ConfirmationBox(p: Props) {
   const { library, account } = useWeb3React();
   const { chainId } = useChainId();
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
+  const { savedAllowedSlippage } = useSettings();
 
   const prevIsVisible = usePrevious(p.isVisible);
 
@@ -158,6 +158,10 @@ export function ConfirmationBox(p: Props) {
   const [isLimitOrdersVisible, setIsLimitOrdersVisible] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [allowedSlippage, setAllowedSlippage] = useState(savedAllowedSlippage);
+
+  useEffect(() => {
+    setAllowedSlippage(savedAllowedSlippage);
+  }, [savedAllowedSlippage]);
 
   const payAmount = useMemo(() => {
     if (isSwap && !isWrapOrUnwrap) {
@@ -1037,7 +1041,7 @@ export function ConfirmationBox(p: Props) {
             </ExchangeInfoRow>
           )}
           {isLimit && renderAvailableLiquidity()}
-          {renderAllowedSlippage(allowedSlippage, setAllowedSlippage)}
+          {renderAllowedSlippage(savedAllowedSlippage, setAllowedSlippage)}
           <ExchangeInfoRow label={t`Mark Price`} isTop>
             {formatTokensRatio(fromToken, toToken, markRatio)}
           </ExchangeInfoRow>
