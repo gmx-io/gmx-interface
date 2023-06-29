@@ -15,7 +15,7 @@ export class UserRejectedRequestError extends Error {
   }
 }
 
-export class WalletConnectConnectorV2 extends AbstractConnector {
+export class WalletConnectConnector extends AbstractConnector {
   private readonly config: EthereumProviderOptions;
 
   public walletConnectProvider?: EthereumProvider;
@@ -23,21 +23,21 @@ export class WalletConnectConnectorV2 extends AbstractConnector {
   constructor({
     projectId,
     showQrModal,
-    chains,
-    optionalChains,
+    chainId,
+    supportedChainIds,
     rpcMap,
   }: {
     projectId: string;
     showQrModal: boolean;
-    chains: number[];
-    optionalChains?: number[];
+    chainId: number;
+    supportedChainIds: number[];
     rpcMap: { [networkId: number]: string };
   }) {
     super();
 
     this.config = {
-      chains,
-      optionalChains,
+      chains: [chainId],
+      optionalChains: supportedChainIds.filter((id) => id !== chainId),
       rpcMap,
       projectId,
       showQrModal,
@@ -74,10 +74,8 @@ export class WalletConnectConnectorV2 extends AbstractConnector {
 
   public async activate(): Promise<ConnectorUpdate> {
     if (!this.walletConnectProvider) {
-      const walletConnectProviderFactory = await import("@walletconnect/ethereum-provider").then(
-        (m) => m?.default ?? m
-      );
-      this.walletConnectProvider = await walletConnectProviderFactory.init(this.config);
+      const WalletConnectProvider = await import("@walletconnect/ethereum-provider").then((m) => m?.default ?? m);
+      this.walletConnectProvider = await WalletConnectProvider.init(this.config);
     }
 
     this.walletConnectProvider.on("chainChanged", this.handleChainChanged);
@@ -85,40 +83,48 @@ export class WalletConnectConnectorV2 extends AbstractConnector {
     this.walletConnectProvider.on("disconnect", this.handleDisconnect);
     this.walletConnectProvider.on("display_uri", this.handleDisplayURI);
     try {
+      // If there is an active session, disconnect the current session.
+      if (this.walletConnectProvider.session) await this.walletConnectProvider.disconnect();
+
       const accounts = await this.walletConnectProvider.enable();
       const defaultAccount = accounts[0];
-      return { provider: this.walletConnectProvider, account: defaultAccount };
+      const chainId = await this.getChainId();
+      return { provider: this.walletConnectProvider, account: defaultAccount, chainId };
     } catch (error) {
-      if (error.message === "User closed the modal!") {
+      if (/request reset/i.test(error.message)) {
         throw new UserRejectedRequestError();
       }
       throw error;
     }
   }
 
-  public async getProvider(): Promise<typeof this.walletConnectProvider> {
+  async getProvider(): Promise<typeof this.walletConnectProvider> {
     return this.walletConnectProvider;
   }
 
-  public async getChainId(): Promise<number | string> {
+  async getChainId(): Promise<number | string> {
     return Promise.resolve(this.walletConnectProvider!.chainId);
   }
 
-  public async getAccount(): Promise<null | string> {
+  async getAccount(): Promise<null | string> {
     return Promise.resolve(this.walletConnectProvider!.accounts).then((accounts: string[]): string => accounts[0]);
   }
 
-  public deactivate() {
-    if (this.walletConnectProvider) {
+  async deactivate() {
+    if (!this.walletConnectProvider) return;
+    try {
+      this.walletConnectProvider.disconnect();
+    } catch (error) {
+      if (!/No matching key/i.test((error as Error).message)) throw error;
+    } finally {
       this.walletConnectProvider.removeListener("disconnect", this.handleDisconnect);
       this.walletConnectProvider.removeListener("chainChanged", this.handleChainChanged);
       this.walletConnectProvider.removeListener("accountsChanged", this.handleAccountsChanged);
       this.walletConnectProvider.removeListener("display_uri", this.handleDisplayURI);
-      this.walletConnectProvider.disconnect();
     }
   }
 
-  public async close() {
+  async close() {
     this.emitDeactivate();
   }
 }

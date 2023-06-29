@@ -1374,7 +1374,6 @@ msgid "Forfeit profit and {action}"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionSeller.js
 msgid "Forfeit profit not checked"
 msgstr ""
 
@@ -1657,10 +1656,6 @@ msgstr ""
 #: src/pages/NftWallet/NftWallet.js
 msgid "Invalid Receiver Address"
 msgstr ""
-
-#: src/components/Exchange/PositionSeller.js
-#~ msgid "Invalid amount"
-#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -3615,7 +3610,6 @@ msgid "Unstaking..."
 msgstr ""
 
 #: src/lib/wallets/index.tsx
-#: src/lib/wallets/index.tsx
 msgid "Unsupported chain. Switch to Arbitrum network on your wallet and try again"
 msgstr ""
 
@@ -3789,10 +3783,6 @@ msgstr ""
 #: src/App/App.js
 msgid "WalletConnect"
 msgstr ""
-
-#: src/App/App.js
-#~ msgid "WalletConnect V2"
-#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Weight"

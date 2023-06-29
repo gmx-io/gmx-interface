@@ -17,22 +17,14 @@ import {
   CURRENT_PROVIDER_LOCALSTORAGE_KEY,
   SELECTED_NETWORK_LOCAL_STORAGE_KEY,
   SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
-  WALLET_CONNECT_LOCALSTORAGE_KEY,
   WALLET_CONNECT_V2_LOCALSTORAGE_KEY,
   WALLET_LINK_LOCALSTORAGE_PREFIX,
 } from "config/localStorage";
-import {
-  UserRejectedRequestError as UserRejectedRequestErrorWalletConnect,
-  WalletConnectConnector,
-} from "@web3-react/walletconnect-connector";
 import { helperToast } from "../helperToast";
 import { t, Trans } from "@lingui/macro";
 
 import { Web3ReactManagerFunctions } from "@web3-react/core/dist/types";
-import {
-  UserRejectedRequestError as UserRejectedRequestErrorWalletConnectV2,
-  WalletConnectConnectorV2,
-} from "./WalletConnectV2";
+import { UserRejectedRequestError, WalletConnectConnector } from "./WalletConnectConnector";
 
 export type NetworkMetadata = {
   chainId: string;
@@ -95,23 +87,7 @@ export function getInjectedConnector() {
 
 export const getWalletConnectConnector = () => {
   const chainId = Number(localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY)) || DEFAULT_CHAIN_ID;
-
   return new WalletConnectConnector({
-    rpc: {
-      [AVALANCHE]: getRpcUrl(AVALANCHE)!,
-      [ARBITRUM]: getRpcUrl(ARBITRUM)!,
-      [ARBITRUM_TESTNET]: getRpcUrl(ARBITRUM_TESTNET)!,
-      [AVALANCHE_FUJI]: getRpcUrl(AVALANCHE_FUJI)!,
-    },
-    qrcode: true,
-    chainId,
-  });
-};
-
-export const getWalletConnectConnectorV2 = () => {
-  const chainId = Number(localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY)) || DEFAULT_CHAIN_ID;
-  const [defaultChainId, ...supportedChainIds] = SUPPORTED_CHAIN_IDS;
-  return new WalletConnectConnectorV2({
     rpcMap: {
       [AVALANCHE]: getRpcUrl(AVALANCHE)!,
       [ARBITRUM]: getRpcUrl(ARBITRUM)!,
@@ -119,14 +95,13 @@ export const getWalletConnectConnectorV2 = () => {
       [AVALANCHE_FUJI]: getRpcUrl(AVALANCHE_FUJI)!,
     },
     showQrModal: true,
-    chains: [defaultChainId],
-    optionalChains: supportedChainIds,
+    chainId,
+    supportedChainIds: SUPPORTED_CHAIN_IDS,
     projectId: "8fceb548bea9a92efcb7c0230d70011b",
   });
 };
 
 export function clearWalletConnectData() {
-  localStorage.removeItem(WALLET_CONNECT_LOCALSTORAGE_KEY);
   localStorage.removeItem(WALLET_CONNECT_V2_LOCALSTORAGE_KEY);
 }
 
@@ -154,7 +129,7 @@ export function useEagerConnect(setActivatingConnector: (connector: any) => void
       let shouldTryWalletConnect = false;
       try {
         // naive validation to not trigger Wallet Connect if data is corrupted
-        const rawData = localStorage.getItem(WALLET_CONNECT_LOCALSTORAGE_KEY);
+        const rawData = localStorage.getItem(WALLET_CONNECT_V2_LOCALSTORAGE_KEY);
         if (rawData) {
           const data = JSON.parse(rawData);
           if (data && data.connected) {
@@ -301,32 +276,7 @@ export const getWalletConnectHandler = (
         helperToast.error(t`Unsupported chain. Switch to Arbitrum network on your wallet and try again`);
         // eslint-disable-next-line no-console
         console.warn(ex);
-      } else if (!(ex instanceof UserRejectedRequestErrorWalletConnect)) {
-        helperToast.error(ex.message);
-        // eslint-disable-next-line no-console
-        console.warn(ex);
-      }
-      clearWalletConnectData();
-      deactivate();
-    });
-  };
-  return fn;
-};
-
-export const getWalletConnectV2Handler = (
-  activate: Web3ReactManagerFunctions["activate"],
-  deactivate: Web3ReactManagerFunctions["deactivate"],
-  setActivatingConnector: (connector?: WalletConnectConnectorV2) => void
-) => {
-  const fn = async () => {
-    const walletConnect = getWalletConnectConnectorV2();
-    setActivatingConnector(walletConnect);
-    activate(walletConnect, (ex) => {
-      if (ex instanceof UnsupportedChainIdError) {
-        helperToast.error(t`Unsupported chain. Switch to Arbitrum network on your wallet and try again`);
-        // eslint-disable-next-line no-console
-        console.warn(ex);
-      } else if (!(ex instanceof UserRejectedRequestErrorWalletConnectV2)) {
+      } else if (!(ex instanceof UserRejectedRequestError)) {
         helperToast.error(ex.message);
         // eslint-disable-next-line no-console
         console.warn(ex);

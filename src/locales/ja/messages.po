@@ -1374,7 +1374,6 @@ msgid "Forfeit profit and {action}"
 msgstr "利益喪失および{action}"
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionSeller.js
 msgid "Forfeit profit not checked"
 msgstr "利益喪失がチェックされていません"
 
@@ -1657,10 +1656,6 @@ msgstr "無効な受け取り人"
 #: src/pages/NftWallet/NftWallet.js
 msgid "Invalid Receiver Address"
 msgstr "無効な受け取りアドレス"
-
-#: src/components/Exchange/PositionSeller.js
-#~ msgid "Invalid amount"
-#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -3618,7 +3613,6 @@ msgid "Unstaking..."
 msgstr "アンステーク中..."
 
 #: src/lib/wallets/index.tsx
-#: src/lib/wallets/index.tsx
 msgid "Unsupported chain. Switch to Arbitrum network on your wallet and try again"
 msgstr "サポートされていないチェーンです。ウォレットをArbitrumネットワークに切り替えて再試行してください"
 
@@ -3792,10 +3786,6 @@ msgstr "ウォレット未接続"
 #: src/App/App.js
 msgid "WalletConnect"
 msgstr "WalletConnect"
-
-#: src/App/App.js
-#~ msgid "WalletConnect V2"
-#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Weight"
