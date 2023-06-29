@@ -97,7 +97,7 @@ function NavIcons({ selectorLabel }) {
   );
 }
 
-function DesktopDropdown({ setActiveModal, selectorLabel, networkOptions, onNetworkSelect, openSettings }) {
+function DesktopDropdown({ setActiveModal, selectorLabel, networkOptions, openSettings }) {
   return (
     <div className="App-header-network">
       <Menu>
@@ -109,11 +109,7 @@ function DesktopDropdown({ setActiveModal, selectorLabel, networkOptions, onNetw
             <Trans>Networks</Trans>
           </div>
           <div className="network-dropdown-list">
-            <NetworkMenuItems
-              networkOptions={networkOptions}
-              selectorLabel={selectorLabel}
-              onNetworkSelect={onNetworkSelect}
-            />
+            <NetworkMenuItems networkOptions={networkOptions} selectorLabel={selectorLabel} />
           </div>
           <div className="network-dropdown-divider" />
           <Menu.Item>
@@ -149,17 +145,12 @@ function DesktopDropdown({ setActiveModal, selectorLabel, networkOptions, onNetw
   );
 }
 
-function NetworkMenuItems({ networkOptions, selectorLabel, onNetworkSelect }) {
-  async function handleNetworkSelect(option) {
-    await onNetworkSelect(option);
-  }
+function NetworkMenuItems({ networkOptions, selectorLabel }) {
+  const { switchNetwork } = useSwitchNetwork();
   return networkOptions.map((network) => {
     return (
       <Menu.Item key={network.value}>
-        <div
-          className="network-dropdown-menu-item menu-item"
-          onClick={() => handleNetworkSelect({ value: network.value })}
-        >
+        <div className="network-dropdown-menu-item menu-item" onClick={() => switchNetwork?.(network.value)}>
           <div className="menu-item-group">
             <div className="menu-item-icon">
               <img className="network-dropdown-icon" src={network.icon} alt={network.label} />
