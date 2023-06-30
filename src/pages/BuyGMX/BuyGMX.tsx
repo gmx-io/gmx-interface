@@ -20,11 +20,12 @@ import {
   GMX_FROM_ANY_NETWORKS,
   TRANSFER_EXCHANGES,
 } from "./constants";
-import { useSwitchNetwork } from "wagmi";
+import { useAccount } from "wagmi";
+import { switchNetwork } from "lib/wallets";
 
 export default function BuyGMX() {
   const { chainId } = useChainId();
-  const { switchNetwork } = useSwitchNetwork();
+  const { isConnected } = useAccount();
   const isArbitrum = chainId === ARBITRUM;
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
   const externalLinks = EXTERNAL_LINKS[chainId];
@@ -42,7 +43,10 @@ export default function BuyGMX() {
               <br />
               <Trans>
                 To purchase GMX on the {isArbitrum ? "Avalanche" : "Arbitrum"} blockchain, please{" "}
-                <span onClick={() => switchNetwork?.(isArbitrum ? AVALANCHE : ARBITRUM)}>change your network</span>.
+                <span onClick={() => switchNetwork(isArbitrum ? AVALANCHE : ARBITRUM, isConnected)}>
+                  change your network
+                </span>
+                .
               </Trans>
             </div>
           </div>

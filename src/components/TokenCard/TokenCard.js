@@ -8,15 +8,15 @@ import { HeaderLink } from "../Header/HeaderLink";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getIcon } from "config/icons";
-import { useSwitchNetwork } from "wagmi";
+import { switchNetwork } from "lib/wallets";
+import { useAccount } from "wagmi";
 
 const glpIcon = getIcon("common", "glp");
 const gmxIcon = getIcon("common", "gmx");
 
 export default function TokenCard({ showRedirectModal, redirectPopupTimestamp }) {
   const isHome = isHomeSite();
-
-  const { switchNetwork } = useSwitchNetwork();
+  const { isConnected } = useAccount();
 
   const BuyLink = ({ className, to, children, network }) => {
     if (isHome && showRedirectModal) {
@@ -33,7 +33,7 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
     }
 
     return (
-      <Link to={to} className={className} onClick={() => switchNetwork(network)}>
+      <Link to={to} className={className} onClick={() => switchNetwork(network, isConnected)}>
         {children}
       </Link>
     );

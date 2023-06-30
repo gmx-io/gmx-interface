@@ -12,7 +12,8 @@ import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 import LanguageModalContent from "./LanguageModalContent";
 import { useChainId } from "lib/chains";
 import { getIcon } from "config/icons";
-import { useSwitchNetwork } from "wagmi";
+import { useAccount } from "wagmi";
+import { switchNetwork } from "lib/wallets";
 
 const LANGUAGE_MODAL_KEY: string = "LANGUAGE";
 const NETWORK_MODAL_KEY: string = "NETWORK";
@@ -146,11 +147,12 @@ function DesktopDropdown({ setActiveModal, selectorLabel, networkOptions, openSe
 }
 
 function NetworkMenuItems({ networkOptions, selectorLabel }) {
-  const { switchNetwork } = useSwitchNetwork();
+  const { isConnected } = useAccount();
+
   return networkOptions.map((network) => {
     return (
       <Menu.Item key={network.value}>
-        <div className="network-dropdown-menu-item menu-item" onClick={() => switchNetwork?.(network.value)}>
+        <div className="network-dropdown-menu-item menu-item" onClick={() => switchNetwork(network.value, isConnected)}>
           <div className="menu-item-group">
             <div className="menu-item-icon">
               <img className="network-dropdown-icon" src={network.icon} alt={network.label} />
@@ -167,7 +169,7 @@ function NetworkMenuItems({ networkOptions, selectorLabel }) {
 }
 
 function NetworkModalContent({ networkOptions, selectorLabel, setActiveModal, openSettings }) {
-  const { switchNetwork } = useSwitchNetwork();
+  const { isConnected } = useAccount();
   return (
     <div className="network-dropdown-items">
       <div className="network-dropdown-list">
@@ -177,7 +179,11 @@ function NetworkModalContent({ networkOptions, selectorLabel, setActiveModal, op
 
         {networkOptions.map((network) => {
           return (
-            <div className="network-option" onClick={() => switchNetwork?.(network.value)} key={network.value}>
+            <div
+              className="network-option"
+              onClick={() => switchNetwork(network.value, isConnected)}
+              key={network.value}
+            >
               <div className="menu-item-group">
                 <img src={network.icon} alt={network.label} />
                 <span>{network.label}</span>
