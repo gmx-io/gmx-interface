@@ -253,13 +253,6 @@ export function getFallbackRpcUrl(chainId: number): string | undefined {
   return sample(FALLBACK_PROVIDERS[chainId]);
 }
 
-export function getAlchemyApiKey() {
-  if (ALCHEMY_WHITELISTED_DOMAINS.includes(window.location.host)) {
-    return "ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ";
-  }
-  return "EmVYwUw0N2tXOuG0SZfe5Z04rzBsCbr2";
-}
-
 export function getAlchemyHttpUrl() {
   if (ALCHEMY_WHITELISTED_DOMAINS.includes(window.location.host)) {
     return "https://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ";

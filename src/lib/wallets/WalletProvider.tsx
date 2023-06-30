@@ -4,11 +4,9 @@ import { connectorsForWallets, darkTheme, getDefaultWallets, RainbowKitProvider,
 import { ledgerWallet, trustWallet, argentWallet, zerionWallet } from "@rainbow-me/rainbowkit/wallets";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
 import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "wagmi/chains";
-import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
 import merge from "lodash/merge";
 import { isDevelopment } from "config/env";
-import { getAlchemyApiKey } from "config/chains";
 
 const WALLET_CONNECT_PROJECT_ID = "de24cddbaf2a68f027eae30d9bb5df58";
 
@@ -26,7 +24,7 @@ const walletTheme = merge(darkTheme(), {
 
 const { chains, provider } = configureChains(
   [arbitrum, avalanche, ...(isDevelopment() ? [arbitrumGoerli, avalancheFuji] : [])],
-  [alchemyProvider({ apiKey: getAlchemyApiKey() }), publicProvider()]
+  [publicProvider()]
 );
 
 const { wallets } = getDefaultWallets({
