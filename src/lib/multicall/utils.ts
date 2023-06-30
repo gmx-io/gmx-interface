@@ -1,16 +1,31 @@
 import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import CustomErrors from "abis/CustomErrors.json";
 import Multicall3 from "abis/Multicall.json";
-import { ARBITRUM_GOERLI, AVALANCHE_FUJI, CHAIN_NAMES_MAP, getRpcUrl } from "config/chains";
+import {
+  ARBITRUM,
+  ARBITRUM_GOERLI,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  CHAIN_NAMES_MAP,
+  getFallbackRpcUrl,
+  getRpcUrl,
+} from "config/chains";
 import { BigNumber, ethers } from "ethers";
 import { createPublicClient, decodeErrorResult, getContract as getViemContract, http } from "viem";
-import { arbitrumGoerli, avalancheFuji } from "viem/chains";
+import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "viem/chains";
 import { MulticallRequestConfig, MulticallResult } from "./types";
 
 import { getContract } from "config/contracts";
 import { mapValues } from "lodash";
 
 export const MAX_TIMEOUT = 20000;
+
+const CHAIN_BY_CHAIN_ID = {
+  [AVALANCHE_FUJI]: avalancheFuji,
+  [ARBITRUM_GOERLI]: arbitrumGoerli,
+  [ARBITRUM]: arbitrum,
+  [AVALANCHE]: avalanche,
+};
 
 export async function executeMulticall(
   chainId: number,
@@ -61,10 +76,7 @@ export class Multicall {
     this.contracts = {};
     this.viemClient = createPublicClient({
       transport: http(provider.connection.url, { retryCount: 0, retryDelay: 10000000, batch: true }),
-      chain: {
-        [AVALANCHE_FUJI]: avalancheFuji,
-        [ARBITRUM_GOERLI]: arbitrumGoerli,
-      }[chainId],
+      chain: CHAIN_BY_CHAIN_ID[chainId],
     });
     this.viemMulticallContract = getViemContract({
       address: getContract(chainId, "Multicall") as any,
@@ -133,24 +145,23 @@ export class Multicall {
 
     const response = await this.viemClient
       .multicall({ contracts: encodedPayload, allowFailures: !requireSuccess })
-      // .catch((e) => {
-      //   const fallbackProvider = getFallbackProvider(this.chainId);
+      .catch((e) => {
+        const rpcUrl = getFallbackRpcUrl(this.chainId);
 
-      //   if (!fallbackProvider) {
-      //     throw e;
-      //   }
+        if (!rpcUrl) {
+          throw e;
+        }
 
-      //   // eslint-disable-next-line no-console
-      //   console.log(`using multicall fallback for chain ${this.chainId}`);
+        const fallbackClient = createPublicClient({
+          transport: http(rpcUrl, { retryCount: 0, retryDelay: 10000000, batch: true }),
+          chain: CHAIN_BY_CHAIN_ID[this.chainId],
+        });
 
-      //   const fallbbackMulticallContract = new ethers.Contract(
-      //     this.multicallContract.address,
-      //     this.multicallContract.interface,
-      //     fallbackProvider
-      //   );
+        // eslint-disable-next-line no-console
+        console.log(`using multicall fallback for chain ${this.chainId}`);
 
-      //   return fallbbackMulticallContract.callStatic.tryAggregate(requireSuccess, encodedPayload);
-      // })
+        return fallbackClient.multicall({ contracts: encodedPayload as any, allowFailure: !requireSuccess });
+      })
       .catch((e) => {
         const err = decodeErrorResult({
           abi: CustomErrors.abi,
