@@ -123,9 +123,9 @@ export function usePositions(
       const positions = res.data.reader.positions.returnValues;
 
       return positions.reduce((positionsMap: PositionsData, positionInfo, i) => {
-        const [position, fees] = positionInfo;
-        const [addresses, numbers, flags, data] = position;
-        const [account, marketAddress, collateralTokenAddress] = addresses;
+        const { position, fees } = positionInfo;
+        const { addresses, numbers, flags, data } = position;
+        const { account, market: marketAddress, collateralToken: collateralTokenAddress } = addresses;
 
         const [
           sizeInUsd,
