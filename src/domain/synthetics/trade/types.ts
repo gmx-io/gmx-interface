@@ -1,6 +1,7 @@
 import { BigNumber } from "ethers";
 import { FeeItem, SwapFeeItem } from "domain/synthetics/fees";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
+import { MarketInfo } from "../markets";
 
 export enum TradeType {
   Long = "Long",
@@ -161,10 +162,17 @@ export type SwapPathStats = {
 
 export type MarketEdge = {
   marketAddress: string;
+  marketInfo: MarketInfo;
   // from token
   from: string;
   // to token
   to: string;
+};
+
+export type SwapRoute = {
+  edged: MarketEdge[];
+  path: string[];
+  liquidity: BigNumber;
 };
 
 export type MarketsGraph = {
