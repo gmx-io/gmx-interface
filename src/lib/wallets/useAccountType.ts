@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Address, useAccount, useSigner } from "wagmi";
+import { Address } from "wagmi";
+import useWallet from "./useWallet";
 
 export enum AccountType {
   CONTRACT = "contract",
@@ -7,8 +8,7 @@ export enum AccountType {
 }
 
 export default function useAccountType() {
-  const { isConnected, address } = useAccount();
-  const { data: signer } = useSigner();
+  const { isConnected, address, signer } = useWallet();
   const [contractType, setContractType] = useState<AccountType | null>(null);
 
   useEffect(() => {

@@ -1,5 +1,4 @@
 import "./Referrals.css";
-import { useSigner } from "wagmi";
 import { useLocalStorage } from "react-use";
 import { Trans, t } from "@lingui/macro";
 import { useParams } from "react-router-dom";
@@ -21,17 +20,16 @@ import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getIcon } from "config/icons";
 import useReferralsData from "domain/referrals/useReferralsData";
-import { useAccount } from "wagmi";
+import useWallet from "lib/wallets/useWallet";
 
 const TRADERS = "Traders";
 const AFFILIATES = "Affiliates";
 const TAB_OPTIONS = [TRADERS, AFFILIATES];
 
 function Referrals({ setPendingTxns, pendingTxns }) {
-  const { isConnected, address: walletAccount } = useAccount();
+  const { isConnected, address: walletAccount, signer } = useWallet();
 
   const { account: queryAccount } = useParams();
-  const { data: signer } = useSigner();
 
   let account;
   if (queryAccount && ethers.utils.isAddress(queryAccount)) {

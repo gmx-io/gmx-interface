@@ -24,14 +24,13 @@ import { getTokenInfo } from "domain/tokens/utils";
 import { formatAmount } from "lib/numbers";
 import { getToken, getTokens, getWhitelistedTokens } from "config/tokens";
 import { useChainId } from "lib/chains";
-import { useAccount, useSigner } from "wagmi";
+import useWallet from "lib/wallets/useWallet";
 
 const USD_DECIMALS = 30;
 
 export default function Actions({ savedIsPnlInLeverage, savedShowPnlAfterFees }) {
   const { account } = useParams();
-  const { isConnected: active } = useAccount();
-  const { data: signer } = useSigner();
+  const { isConnected: active, signer } = useWallet();
 
   const { chainId } = useChainId();
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");

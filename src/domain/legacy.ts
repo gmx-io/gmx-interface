@@ -195,7 +195,7 @@ export function useAllPositions(chainId, library) {
   return positions;
 }
 
-export function useAllOrders(chainId, library) {
+export function useAllOrders(chainId, signer) {
   const query = gql(`{
     orders(
       first: 1000,
@@ -219,7 +219,7 @@ export function useAllOrders(chainId, library) {
 
   const key = res ? res.data.orders.map((order) => `${order.type}-${order.account}-${order.index}`) : null;
   const { data: orders = [] } = useSWR(key, () => {
-    const provider = getProvider(library, chainId);
+    const provider = getProvider(signer, chainId);
     const orderBookAddress = getContract(chainId, "OrderBook");
     const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, provider);
     return Promise.all(
@@ -251,10 +251,10 @@ export function useAllOrders(chainId, library) {
   return orders.filter(Boolean);
 }
 
-export function usePositionsForOrders(chainId, library, orders) {
+export function usePositionsForOrders(chainId, signer, orders) {
   const key = orders ? orders.map((order) => getOrderKey(order) + "____") : null;
   const { data: positions = {} } = useSWR(key, async () => {
-    const provider = getProvider(library, chainId);
+    const provider = getProvider(signer, chainId);
     const vaultAddress = getContract(chainId, "Vault");
     const contract = new ethers.Contract(vaultAddress, Vault.abi, provider);
     const data = await Promise.all(
@@ -888,21 +888,21 @@ export async function updateSwapOrder(chainId, signer, index, minOut, triggerRat
   return callContract(chainId, contract, method, params, opts);
 }
 
-export async function _executeOrder(chainId, library, method, account, index, feeReceiver, opts) {
+export async function _executeOrder(chainId, signer, method, account, index, feeReceiver, opts) {
   const params = [account, index, feeReceiver];
   const positionManagerAddress = getContract(chainId, "PositionManager");
-  const contract = new ethers.Contract(positionManagerAddress, PositionManager.abi, library.getSigner());
+  const contract = new ethers.Contract(positionManagerAddress, PositionManager.abi, signer);
   return callContract(chainId, contract, method, params, opts);
 }
 
-export function executeSwapOrder(chainId, library, account, index, feeReceiver, opts) {
-  return _executeOrder(chainId, library, "executeSwapOrder", account, index, feeReceiver, opts);
+export function executeSwapOrder(chainId, sibner, account, index, feeReceiver, opts) {
+  return _executeOrder(chainId, sibner, "executeSwapOrder", account, index, feeReceiver, opts);
 }
 
-export function executeIncreaseOrder(chainId, library, account, index, feeReceiver, opts) {
-  return _executeOrder(chainId, library, "executeIncreaseOrder", account, index, feeReceiver, opts);
+export function executeIncreaseOrder(chainId, sibner, account, index, feeReceiver, opts) {
+  return _executeOrder(chainId, sibner, "executeIncreaseOrder", account, index, feeReceiver, opts);
 }
 
-export function executeDecreaseOrder(chainId, library, account, index, feeReceiver, opts) {
-  return _executeOrder(chainId, library, "executeDecreaseOrder", account, index, feeReceiver, opts);
+export function executeDecreaseOrder(chainId, sibner, account, index, feeReceiver, opts) {
+  return _executeOrder(chainId, sibner, "executeDecreaseOrder", account, index, feeReceiver, opts);
 }

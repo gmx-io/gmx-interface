@@ -23,10 +23,10 @@ import { getContract } from "config/contracts";
 import { getServerUrl } from "config/backend";
 import { contractFetcher } from "lib/contracts";
 import { formatKeyAmount } from "lib/numbers";
-import { useAccount } from "wagmi";
+import useWallet from "lib/wallets/useWallet";
 
 export default function APRLabel({ chainId, label }) {
-  let { isConnected: active } = useAccount();
+  let { isConnected: active } = useWallet();
 
   const rewardReaderAddress = getContract(chainId, "RewardReader");
   const readerAddress = getContract(chainId, "Reader");

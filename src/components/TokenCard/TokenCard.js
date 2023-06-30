@@ -9,14 +9,14 @@ import { ARBITRUM, AVALANCHE } from "config/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getIcon } from "config/icons";
 import { switchNetwork } from "lib/wallets";
-import { useAccount } from "wagmi";
+import useWallet from "lib/wallets/useWallet";
 
 const glpIcon = getIcon("common", "glp");
 const gmxIcon = getIcon("common", "gmx");
 
 export default function TokenCard({ showRedirectModal, redirectPopupTimestamp }) {
   const isHome = isHomeSite();
-  const { isConnected } = useAccount();
+  const { isConnected } = useWallet();
 
   const BuyLink = ({ className, to, children, network }) => {
     if (isHome && showRedirectModal) {

@@ -50,8 +50,8 @@ import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "con
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import UsefulLinks from "components/Exchange/UsefulLinks";
-import { useAccount, useSigner } from "wagmi";
 import { getLeverage, getLeverageStr } from "lib/positions/getLeverage";
+import useWallet from "lib/wallets/useWallet";
 const { AddressZero } = ethers.constants;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;
@@ -379,8 +379,7 @@ export const Exchange = forwardRef((props, ref) => {
     }
   }, [showBanner, bannerHidden, setBannerHidden, setShowBanner]);
 
-  const { isConnected: active, address: account } = useAccount();
-  const { data: signer } = useSigner();
+  const { isConnected: active, address: account, signer } = useWallet();
   const { chainId } = useChainId();
   const currentAccount = account;
 

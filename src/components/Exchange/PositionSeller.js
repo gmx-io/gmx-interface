@@ -56,7 +56,7 @@ import { getLeverage } from "lib/positions/getLeverage";
 import Button from "components/Button/Button";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import SlippageInput from "components/SlippageInput/SlippageInput";
-import { useAccount, useSigner } from "wagmi";
+import useWallet from "lib/wallets/useWallet";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -201,8 +201,7 @@ export default function PositionSeller(props) {
     totalTokenWeights,
     isContractAccount,
   } = props;
-  const { address: account } = useAccount();
-  const { data: signer } = useSigner();
+  const { address: account, signer } = useWallet();
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey([chainId, "Exchange-keep-leverage"], true);
   const position = positionsMap && positionKey ? positionsMap[positionKey] : undefined;

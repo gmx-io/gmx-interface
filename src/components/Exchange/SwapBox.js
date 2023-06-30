@@ -83,8 +83,8 @@ import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import LeverageSlider from "./LeverageSlider";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import FeesTooltip from "./FeesTooltip";
-import { useAccount, useSigner } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import useWallet from "lib/wallets/useWallet";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -155,8 +155,7 @@ export default function SwapBox(props) {
     minExecutionFeeUSD,
     minExecutionFeeErrorMessage,
   } = props;
-  const { address: account, isConnected: active } = useAccount();
-  const { data: signer } = useSigner();
+  const { address: account, isConnected: active, signer } = useWallet();
   const { openConnectModal } = useConnectModal();
 
   const [fromValue, setFromValue] = useState("");

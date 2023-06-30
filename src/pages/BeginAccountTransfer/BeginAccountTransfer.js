@@ -22,7 +22,7 @@ import { callContract, contractFetcher } from "lib/contracts";
 import { approveTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import Button from "components/Button/Button";
-import { useAccount, useSigner } from "wagmi";
+import useWallet from "lib/wallets/useWallet";
 
 function ValidationRow({ isValid, children }) {
   return (
@@ -38,8 +38,7 @@ function ValidationRow({ isValid, children }) {
 
 export default function BeginAccountTransfer(props) {
   const { setPendingTxns } = props;
-  const { isConnected: active, address: account } = useAccount();
-  const { data: signer } = useSigner();
+  const { isConnected: active, address: account, signer } = useWallet();
   const { chainId } = useChainId();
 
   const [receiver, setReceiver] = useState("");

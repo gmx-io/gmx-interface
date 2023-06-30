@@ -5,7 +5,7 @@ import { REFERRAL_CODE_REGEX } from "./referralsHelper";
 import { useDebounce } from "lib/useDebounce";
 import Button from "components/Button/Button";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { useAccount, useNetwork, useSigner } from "wagmi";
+import useWallet from "lib/wallets/useWallet";
 
 function JoinReferralCode({ setPendingTxns, pendingTxns, active }) {
   const { openConnectModal } = useConnectModal();
@@ -37,11 +37,7 @@ export function ReferralCodeForm({
   userReferralCodeString = "",
   type = "join",
 }) {
-  const { address: account } = useAccount();
-  const { data: signer } = useSigner();
-  const {
-    chain: { id: chainId },
-  } = useNetwork();
+  const { address: account, signer, chainId } = useWallet();
   const [referralCode, setReferralCode] = useState("");
   const inputRef = useRef("");
   const [isValidating, setIsValidating] = useState(false);

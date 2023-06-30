@@ -23,8 +23,8 @@ import { bigNumberify, formatAmount, formatAmountFree, parseValue } from "lib/nu
 import { useChainId } from "lib/chains";
 import { t, Trans } from "@lingui/macro";
 import Button from "components/Button/Button";
-import { useAccount, useSigner } from "wagmi";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
+import useWallet from "lib/wallets/useWallet";
 
 export default function OrderEditor(props) {
   const {
@@ -41,8 +41,7 @@ export default function OrderEditor(props) {
   } = props;
 
   const { chainId } = useChainId();
-  const { address: account } = useAccount();
-  const { data: signer } = useSigner();
+  const { address: account, signer } = useWallet();
 
   const position = order.type !== SWAP ? getPositionForOrder(account, order, positionsMap) : null;
   const liquidationPrice =

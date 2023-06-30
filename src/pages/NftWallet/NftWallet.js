@@ -7,7 +7,7 @@ import "./NftWallet.css";
 import { t, Trans } from "@lingui/macro";
 import { callContract } from "lib/contracts";
 import { useChainId } from "lib/chains";
-import { useAccount, useSigner } from "wagmi";
+import useWallet from "lib/wallets/useWallet";
 
 export default function NftWallet() {
   const [nftAddress, setNftAddress] = useState("");
@@ -15,8 +15,7 @@ export default function NftWallet() {
   const [receiver, setReceiver] = useState("");
   const [isSubmitting, setIsSubmitting] = useState("");
 
-  const { isConnected: active, address: account } = useAccount();
-  const { data: signer } = useSigner();
+  const { isConnected: active, address: account, signer } = useWallet();
   const { chainId } = useChainId();
 
   function getTransferError() {

@@ -22,7 +22,7 @@ import { bigNumberify, formatAmount, formatAmountFree, parseValue } from "lib/nu
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Button from "components/Button/Button";
-import { useAccount, useSigner } from "wagmi";
+import useWallet from "lib/wallets/useWallet";
 
 const VEST_WITH_GMX_ARB = "VEST_WITH_GMX_ARB";
 const VEST_WITH_GLP_ARB = "VEST_WITH_GLP_ARB";
@@ -127,8 +127,7 @@ function getVestingValues({ minRatio, amount, vestingDataItem }) {
 }
 
 export default function ClaimEsGmx({ setPendingTxns }) {
-  const { isConnected: active, address: account } = useAccount();
-  const { data: signer } = useSigner();
+  const { isConnected: active, address: account, signer } = useWallet();
   const { chainId } = useChainId();
   const [selectedOption, setSelectedOption] = useState("");
   const [isClaiming, setIsClaiming] = useState(false);

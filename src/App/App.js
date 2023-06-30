@@ -3,7 +3,7 @@ import { SWRConfig } from "swr";
 import { ethers } from "ethers";
 import useScrollToTop from "lib/useScrollToTop";
 import { watchNetwork } from "@wagmi/core";
-import { useAccount, useDisconnect, useSigner } from "wagmi";
+import { useDisconnect } from "wagmi";
 
 import { Switch, Route, HashRouter as Router, Redirect, useLocation, useHistory } from "react-router-dom";
 import {
@@ -84,6 +84,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { isDevelopment } from "config/env";
 import Button from "components/Button/Button";
 import { roundToTwoDecimals } from "lib/numbers";
+import useWallet from "lib/wallets/useWallet";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -117,8 +118,7 @@ function getWsProvider(active, chainId) {
 }
 
 function FullApp() {
-  const { isConnected: active } = useAccount();
-  const { data: signer } = useSigner();
+  const { isConnected: active, signer } = useWallet();
   const { disconnect } = useDisconnect();
   const isHome = isHomeSite();
   const exchangeRef = useRef();

@@ -24,7 +24,7 @@ import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { getTokenInfo, getUsd } from "domain/tokens/utils";
 import { formatAmount } from "lib/numbers";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { useAccount, useSigner } from "wagmi";
+import useWallet from "lib/wallets/useWallet";
 
 function getOrderTitle(order, indexTokenSymbol) {
   const orderTypeText = order.type === INCREASE ? t`Increase` : t`Decrease`;
@@ -50,8 +50,7 @@ export default function OrdersList(props) {
     setCancelOrderIdList,
   } = props;
 
-  const { address: account } = useAccount();
-  const { data: signer } = useSigner();
+  const { address: account, signer } = useWallet();
 
   const [editingOrder, setEditingOrder] = useState(null);
 

@@ -29,6 +29,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { t, Trans } from "@lingui/macro";
 import { useAccount, useSigner } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import useWallet from "lib/wallets/useWallet";
 
 const { MaxUint256, AddressZero } = ethers.constants;
 
@@ -316,8 +317,7 @@ export default function Migration() {
   const [migrationValue, setMigrationValue] = useState("");
   const { openConnectModal } = useConnectModal();
 
-  const { isConnected: active, address: account } = useAccount();
-  const { data: signer } = useSigner();
+  const { isConnected: active, address: account, signer } = useWallet();
 
   const tokenAddresses = tokens.map((token) => token.address);
   const iouTokenAddresses = tokens.map((token) => token.iouToken);

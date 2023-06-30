@@ -7,7 +7,7 @@ import { helperToast } from "lib/helperToast";
 import { useDebounce } from "lib/useDebounce";
 import Button from "components/Button/Button";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { useAccount, useNetwork } from "wagmi";
+import useWallet from "lib/wallets/useWallet";
 
 function AddAffiliateCode({ handleCreateReferralCode, active, setRecentlyAddedCodes, recentlyAddedCodes }) {
   const { openConnectModal } = useConnectModal();
@@ -50,10 +50,7 @@ export function AffiliateCodeForm({
   const inputRef = useRef("");
   const [referralCodeCheckStatus, setReferralCodeCheckStatus] = useState("ok");
   const debouncedReferralCode = useDebounce(referralCode, 300);
-  const { address: account } = useAccount();
-  const {
-    chain: { id: chainId },
-  } = useNetwork();
+  const { address: account, chainId } = useWallet();
 
   useEffect(() => {
     inputRef.current.focus();

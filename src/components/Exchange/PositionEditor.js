@@ -32,9 +32,9 @@ import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValu
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import Button from "components/Button/Button";
 import FeesTooltip from "./FeesTooltip";
-import { useAccount, useSigner } from "wagmi";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import { getLeverage } from "lib/positions/getLeverage";
+import useWallet from "lib/wallets/useWallet";
 
 const DEPOSIT = "Deposit";
 const WITHDRAW = "Withdraw";
@@ -66,8 +66,7 @@ export default function PositionEditor(props) {
     minExecutionFeeErrorMessage,
     isContractAccount,
   } = props;
-  const { isConnected: active, address: account } = useAccount();
-  const { data: signer } = useSigner();
+  const { isConnected: active, address: account, signer } = useWallet();
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
   const position = positionsMap && positionKey ? positionsMap[positionKey] : undefined;
   const [option, setOption] = useState(DEPOSIT);

@@ -12,8 +12,8 @@ import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 import LanguageModalContent from "./LanguageModalContent";
 import { useChainId } from "lib/chains";
 import { getIcon } from "config/icons";
-import { useAccount } from "wagmi";
 import { switchNetwork } from "lib/wallets";
+import useWallet from "lib/wallets/useWallet";
 
 const LANGUAGE_MODAL_KEY: string = "LANGUAGE";
 const NETWORK_MODAL_KEY: string = "NETWORK";
@@ -147,7 +147,7 @@ function DesktopDropdown({ setActiveModal, selectorLabel, networkOptions, openSe
 }
 
 function NetworkMenuItems({ networkOptions, selectorLabel }) {
-  const { isConnected } = useAccount();
+  const { isConnected } = useWallet();
 
   return networkOptions.map((network) => {
     return (
@@ -169,7 +169,7 @@ function NetworkMenuItems({ networkOptions, selectorLabel }) {
 }
 
 function NetworkModalContent({ networkOptions, selectorLabel, setActiveModal, openSettings }) {
-  const { isConnected } = useAccount();
+  const { isConnected } = useWallet();
   return (
     <div className="network-dropdown-items">
       <div className="network-dropdown-list">

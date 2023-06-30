@@ -1,5 +1,4 @@
 import { useCallback, useState } from "react";
-import { useAccount, useSigner } from "wagmi";
 import range from "lodash/range";
 import Button from "components/Button/Button";
 import Select from "components/Select/Select";
@@ -7,10 +6,10 @@ import Select from "components/Select/Select";
 import "./ReferralsTier.scss";
 import { useReferrerTier, setAffiliateTier as contractSetAffiliateTier } from "domain/referrals";
 import { useChainId } from "lib/chains";
+import useWallet from "lib/wallets/useWallet";
 
 export default function ReferralsTier() {
-  const { isConnected } = useAccount();
-  const { data: signer } = useSigner();
+  const { isConnected, signer } = useWallet();
   const { chainId } = useChainId();
 
   const [affiliate, setAffiliate] = useState<string>("");

@@ -17,14 +17,13 @@ import { callContract } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { useChainId } from "lib/chains";
 import Button from "components/Button/Button";
-import { useAccount, useSigner } from "wagmi";
+import useWallet from "lib/wallets/useWallet";
 
 export default function CompleteAccountTransfer(props) {
   const [, copyToClipboard] = useCopyToClipboard();
   const { sender, receiver } = useParams();
   const { setPendingTxns } = props;
-  const { isConnected, address } = useAccount();
-  const { data: signer } = useSigner();
+  const { isConnected, address, signer } = useWallet();
   const [isTransferSubmittedModalVisible, setIsTransferSubmittedModalVisible] = useState(false);
 
   const { chainId } = useChainId();

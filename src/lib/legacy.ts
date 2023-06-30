@@ -17,7 +17,7 @@ import { useChainId } from "./chains";
 import { isValidTimestamp } from "./dates";
 import { t } from "@lingui/macro";
 import { isLocal } from "config/env";
-import { useAccount, useSigner } from "wagmi";
+import useWallet from "./wallets/useWallet";
 
 const { AddressZero } = ethers.constants;
 
@@ -844,8 +844,7 @@ export function getOrderKey(order) {
 }
 
 export function useAccountOrders(flagOrdersEnabled, overrideAccount) {
-  const { address: connectedAccount } = useAccount();
-  const { data: signer } = useSigner();
+  const { address: connectedAccount, signer } = useWallet();
   const active = true; // this is used in Actions.js so set active to always be true
   const account = overrideAccount || connectedAccount;
 

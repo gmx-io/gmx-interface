@@ -54,7 +54,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getIcon } from "config/icons";
 import Button from "components/Button/Button";
 import { IoChevronDownOutline } from "react-icons/io5";
-import { useAccount, useSigner } from "wagmi";
+import useWallet from "lib/wallets/useWallet";
 
 const { AddressZero } = ethers.constants;
 
@@ -108,8 +108,7 @@ export default function GlpSwap(props) {
   const history = useHistory();
   const swapLabel = isBuying ? "BuyGlp" : "SellGlp";
   const tabLabel = isBuying ? t`Buy GLP` : t`Sell GLP`;
-  const { address: account, isConnected: active } = useAccount();
-  const { data: signer } = useSigner();
+  const { address: account, isConnected: active, signer } = useWallet();
   const { chainId } = useChainId();
   const tokens = getTokens(chainId);
   const whitelistedTokens = getWhitelistedTokens(chainId);

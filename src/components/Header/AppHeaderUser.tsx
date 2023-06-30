@@ -14,7 +14,7 @@ import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, AVALANCHE_FUJI, getChainName } f
 import { useChainId } from "lib/chains";
 import { isDevelopment } from "config/env";
 import { getIcon } from "config/icons";
-import { useAccount } from "wagmi";
+import useWallet from "lib/wallets/useWallet";
 
 type Props = {
   openSettings: () => void;
@@ -64,7 +64,7 @@ export function AppHeaderUser({
   const { chainId } = useChainId();
   const showConnectionOptions = !isHomeSite();
   const { openConnectModal } = useConnectModal();
-  const { isConnected, address } = useAccount();
+  const { isConnected, address } = useWallet();
 
   const selectorLabel = getChainName(chainId);
 

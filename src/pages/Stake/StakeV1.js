@@ -25,8 +25,8 @@ import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, formatKey
 import { getTokenBySymbol } from "config/tokens";
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { useAccount, useSigner } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import useWallet from "lib/wallets/useWallet";
 
 const BASIS_POINTS_DIVISOR = 10000;
 const HOURS_PER_YEAR = 8760;
@@ -548,8 +548,7 @@ export default function StakeV1() {
   const [unstakeValue, setUnstakeValue] = useState("");
   const [unstakingFarmAddress, setUnstakingFarmAddress] = useState("");
 
-  const { isConnected: active, address: account } = useAccount();
-  const { data: signer } = useSigner();
+  const { isConnected: active, address: account, signer } = useWallet();
   const { openConnectModal } = useConnectModal();
 
   const readerAddress = getContract(CHAIN_ID, "Reader");
