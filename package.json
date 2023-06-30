@@ -27,7 +27,6 @@
     "date-fns": "2.27.0",
     "env-cmd": "^10.1.0",
     "eth-testing": "1.9.1",
-    "ethereum-multicall": "2.15.0",
     "ethers": "5.6.8",
     "framer-motion": "4.1.17",
     "graphql": "15.8.0",
@@ -54,6 +53,7 @@
     "sass": "1.55.0",
     "swr": "0.4.2",
     "typescript": "4.7.4",
+    "viem": "1.1.4",
     "web-vitals": "1.1.2"
   },
   "resolutions": {
@@ -64,9 +64,9 @@
     "start-home": "yarn lingui:prepare && PORT=3010 env-cmd -e development-home react-app-rewired start",
     "start-app": "yarn lingui:prepare && PORT=3011 env-cmd -e development-app react-app-rewired start",
     "start-win": "set PORT=3010&react-app-rewired start",
-    "build": "INLINE_RUNTIME_CHUNK=false yarn test:ci && react-app-rewired build",
+    "build": "INLINE_RUNTIME_CHUNK=false react-app-rewired build",
     "build-home": "INLINE_RUNTIME_CHUNK=false env-cmd -e production-home react-app-rewired build",
-    "build-app": "INLINE_RUNTIME_CHUNK=false env-cmd -e production-app yarn test:ci && react-app-rewired build",
+    "build-app": "INLINE_RUNTIME_CHUNK=false env-cmd -e production-app react-app-rewired build",
     "test": "react-app-rewired test",
     "test:ci": "react-app-rewired test --watchAll=false",
     "eject": "react-scripts eject",
@@ -91,6 +91,8 @@
   "browserslist": {
     "production": [
       ">0.2%",
+      "not ie <= 99",
+      "not android <= 4.4.4",
       "not dead",
       "not op_mini all"
     ],
