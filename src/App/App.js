@@ -535,7 +535,7 @@ function App() {
       }
     });
     return () => unwatch();
-  }, []);
+  }, [disconnect]);
   return (
     <SWRConfig value={{ refreshInterval: 5000 }}>
       <SEO>
