@@ -2,9 +2,10 @@ import React, { useState, useEffect, useRef } from "react";
 import { SWRConfig } from "swr";
 import { ethers } from "ethers";
 import useScrollToTop from "lib/useScrollToTop";
+import { watchNetwork } from "@wagmi/core";
+import { useAccount, useDisconnect, useSigner } from "wagmi";
 
 import { Switch, Route, HashRouter as Router, Redirect, useLocation, useHistory } from "react-router-dom";
-
 import {
   DEFAULT_SLIPPAGE_AMOUNT,
   BASIS_POINTS_DIVISOR,
@@ -12,7 +13,6 @@ import {
   isHomeSite,
   REFERRAL_CODE_QUERY_PARAM,
 } from "lib/legacy";
-
 import Home from "pages/Home/Home";
 import Dashboard from "pages/Dashboard/Dashboard";
 import Stats from "pages/Stats/Stats";
@@ -84,7 +84,6 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { isDevelopment } from "config/env";
 import Button from "components/Button/Button";
 import { roundToTwoDecimals } from "lib/numbers";
-import { useAccount, useDisconnect, useSigner } from "wagmi";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -522,10 +521,20 @@ function FullApp() {
 }
 
 function App() {
+  const { disconnect } = useDisconnect();
   useScrollToTop();
   useEffect(() => {
     const defaultLanguage = localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY) || defaultLocale;
     dynamicActivate(defaultLanguage);
+  }, []);
+  useEffect(() => {
+    const unwatch = watchNetwork(({ chain, chains }) => {
+      const isValidChain = !!chains.find((c) => c.id === chain.id);
+      if (!isValidChain) {
+        disconnect();
+      }
+    });
+    return () => unwatch();
   }, []);
   return (
     <SWRConfig value={{ refreshInterval: 5000 }}>
