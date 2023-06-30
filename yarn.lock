@@ -8312,15 +8312,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"customize-cra@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "customize-cra@npm:1.0.0"
-  dependencies:
-    lodash.flow: ^3.5.0
-  checksum: b38c48a607efc2321e6f2f12a3b53f3497b2f9b0008b48242524a92a1f26f8ae50bd73c97526e7d89c32b51f53711948e0da8f7e3618c9875087227a11a5feeb
-  languageName: node
-  linkType: hard
-
 "d3-array@npm:2, d3-array@npm:^2.3.0":
   version: 2.12.1
   resolution: "d3-array@npm:2.12.1"
@@ -10265,7 +10256,6 @@ __metadata:
   resolution: "gambit-interface@workspace:."
   dependencies:
     "@apollo/client": 3.5.6
-    "@babel/plugin-syntax-bigint": ^7.8.3
     "@davatar/react": 1.8.1
     "@ethersproject/providers": 5.5.1
     "@ethersproject/units": 5.5.0
@@ -10290,7 +10280,6 @@ __metadata:
     bigdecimal: 0.6.1
     buffer: 6.0.3
     classnames: 2.3.1
-    customize-cra: ^1.0.0
     date-fns: 2.27.0
     env-cmd: ^10.1.0
     eslint: ^8.41.0
@@ -12843,13 +12832,6 @@ __metadata:
   version: 4.0.8
   resolution: "lodash.debounce@npm:4.0.8"
   checksum: a3f527d22c548f43ae31c861ada88b2637eb48ac6aa3eb56e82d44917971b8aa96fbb37aa60efea674dc4ee8c42074f90f7b1f772e9db375435f6c83a19b3bc6
-  languageName: node
-  linkType: hard
-
-"lodash.flow@npm:^3.5.0":
-  version: 3.5.0
-  resolution: "lodash.flow@npm:3.5.0"
-  checksum: a9a62ad344e3c5a1f42bc121da20f64dd855aaafecee24b1db640f29b88bd165d81c37ff7e380a7191de6f70b26f5918abcebbee8396624f78f3618a0b18634c
   languageName: node
   linkType: hard
 
