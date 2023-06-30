@@ -42,6 +42,7 @@ import { TokensData, useAvailableTokensData } from "../tokens";
 import { MarketsInfoData } from "./types";
 import { useMarkets } from "./useMarkets";
 import { getContractMarketPrices } from "./utils";
+import { BigNumber } from "ethers";
 
 export type MarketsInfoResult = {
   marketsInfoData?: MarketsInfoData;
@@ -359,21 +360,20 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
         const shortInterestInTokens = shortInterestInTokensUsingLongToken.add(shortInterestInTokensUsingShortToken);
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const [
+        const {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          _,
           borrowingFactorPerSecondForLongs,
           borrowingFactorPerSecondForShorts,
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           baseFunding,
           nextFunding,
           virtualInventory,
-        ] = readerValues.marketInfo.returnValues[0];
+        } = readerValues.marketInfo.returnValues;
 
         const [virtualPoolAmountForLongToken, virtualPoolAmountForShortToken, virtualInventoryForPositions] =
-          virtualInventory.map(bigNumberify);
+          Object.values(virtualInventory).map(BigNumber.from) as any;
 
-        const [longsPayShorts, fundingFactorPerSecond] = nextFunding;
+        const { longsPayShorts, fundingFactorPerSecond } = nextFunding;
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [_priceMin, poolValueInfoMin] = readerValues.marketTokenPriceMin.returnValues;
@@ -381,7 +381,9 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [_priceMax, poolValueInfoMax] = readerValues.marketTokenPriceMax.returnValues;
 
-        const [poolValueMin, pnlLongMin, pnlShortMin, netPnlMin] = poolValueInfoMin.map(bigNumberify);
+        const [poolValueMin, pnlLongMin, pnlShortMin, netPnlMin] = Object.values(poolValueInfoMin).map(
+          BigNumber.from
+        ) as any[];
 
         const [
           poolValueMax,
@@ -397,7 +399,7 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           shortTokenUsd,
           totalBorrowingFees,
-        ] = poolValueInfoMax.map(bigNumberify);
+        ] = Object.values(poolValueInfoMax).map(BigNumber.from) as any[];
 
         const market = getByKey(marketsData, marketAddress)!;
         const longToken = getByKey(tokensData!, market.longTokenAddress)!;

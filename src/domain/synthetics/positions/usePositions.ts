@@ -3,9 +3,8 @@ import DataStore from "abis/DataStore.json";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import { getContract } from "config/contracts";
 import { accountPositionListKey, hashedPositionKey } from "config/dataStore";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { useMulticall } from "lib/multicall";
-import { bigNumberify } from "lib/numbers";
 import { useMemo, useRef } from "react";
 import { ContractMarketPrices, MarketsData, getContractMarketPrices } from "../markets";
 import { TokensData } from "../tokens";
@@ -45,7 +44,7 @@ export function usePositions(
       },
     }),
     parseResponse: (res) => {
-      return new Set(res.data.dataStore.keys.returnValues[0]);
+      return new Set(res.data.dataStore.keys.returnValues as any);
     },
   });
 
@@ -121,12 +120,12 @@ export function usePositions(
       },
     }),
     parseResponse: (res) => {
-      const positions = res.data.reader.positions.returnValues[0];
+      const positions = res.data.reader.positions.returnValues;
 
       return positions.reduce((positionsMap: PositionsData, positionInfo, i) => {
-        const [position, fees] = positionInfo;
-        const [addresses, numbers, flags, data] = position;
-        const [account, marketAddress, collateralTokenAddress] = addresses;
+        const { position, fees } = positionInfo;
+        const { addresses, numbers, flags, data } = position;
+        const { account, market: marketAddress, collateralToken: collateralTokenAddress } = addresses;
 
         const [
           sizeInUsd,
@@ -139,11 +138,11 @@ export function usePositions(
           shortTokenClaimableFundingAmountPerSize,
           increasedAtBlock,
           decreasedAtBlock,
-        ] = numbers.map(bigNumberify);
+        ] = Object.values(numbers).map(BigNumber.from);
 
-        const [isLong] = flags;
+        const { isLong } = flags;
 
-        const [
+        const {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           referral,
           funding,
@@ -158,7 +157,7 @@ export function usePositions(
           // positionFeeAmount,
           // totalNetCostAmount,
           // totalNetCostUsd,
-        ] = fees;
+        } = fees;
 
         // const [
         //   referralCode,
@@ -173,7 +172,7 @@ export function usePositions(
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [borrowingFeeUsd, borrowingFeeAmount, borrowingFeeReceiverFactor, borrowingFeeAmountForFeeReceiver] =
-          borrowing.map(bigNumberify);
+          Object.values(borrowing).map(BigNumber.from);
 
         const [
           fundingFeeAmount,
@@ -183,7 +182,7 @@ export function usePositions(
           latestFundingFeeAmountPerSize,
           latestLongTokenFundingAmountPerSize,
           latestShortTokenFundingAmountPerSize,
-        ] = funding.map(bigNumberify);
+        ] = Object.values(funding).map(BigNumber.from);
 
         const positionKey = getPositionKey(account, marketAddress, collateralTokenAddress, isLong);
         const contractPositionKey = keysAndPrices!.contractPositionsKeys[i];

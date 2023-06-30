@@ -920,7 +920,7 @@ export function TradeBox(p: Props) {
 
         {isIncrease && (
           <BuyInputSection
-            topLeftLabel={`${tradeTypeLabels[tradeType!]}`}
+            topLeftLabel={tradeTypeLabels[tradeType!]}
             topLeftValue={formatUsd(increaseAmounts?.sizeDeltaUsd, { fallbackToZero: true })}
             topRightLabel={t`Leverage`}
             topRightValue={formatLeverage(isLeverageEnabled ? leverage : increaseAmounts?.estimatedLeverage) || "-"}
@@ -1388,7 +1388,6 @@ export function TradeBox(p: Props) {
         error={error}
         existingPosition={existingPosition}
         shouldDisableValidation={shouldDisableValidation!}
-        allowedSlippage={allowedSlippage}
         isHigherSlippageAllowed={isHigherSlippageAllowed}
         ordersData={ordersInfo}
         tokensData={tokensData}

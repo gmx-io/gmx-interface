@@ -24,7 +24,7 @@ const DISABLED_MARKETS = {
     // "0xb6088c08f05a2B3b3a0Cc5f8198DAEA8b2fB8629": true,
     // "0xB9bc5B9A2401F5ED866ee27e80De01da88291215": true,
     // "0xac575be6f40b37BB1fc43d9A273cD289e8f36c8D": true,
-    // "0x64b77721FAb0D37b84f0A2D1B78ddE5892d46a8D": true,
+    "0x64b77721FAb0D37b84f0A2D1B78ddE5892d46a8D": true,
     // "0x9F4C3f7C073C1b80977396B1505513b23236982B": true,
   },
   [ARBITRUM_GOERLI]: {
@@ -55,36 +55,34 @@ export function useMarkets(chainId: number): MarketsResult {
       },
     }),
     parseResponse: (res) => {
-      return res.data.reader.markets.returnValues[0].reduce(
+      return res.data.reader.markets.returnValues.reduce(
         (acc: { marketsData: MarketsData; marketsAddresses: string[] }, marketValues) => {
-          const [marketTokenAddress, indexTokenAddress, longTokenAddress, shortTokenAddress] = marketValues;
-
-          if (DISABLED_MARKETS[chainId]?.[marketTokenAddress]) {
+          if (DISABLED_MARKETS[chainId]?.[marketValues.marketToken]) {
             return acc;
           }
 
           try {
-            const indexToken = getToken(chainId, convertTokenAddress(chainId, indexTokenAddress, "native"));
-            const longToken = getToken(chainId, longTokenAddress);
-            const shortToken = getToken(chainId, shortTokenAddress);
+            const indexToken = getToken(chainId, convertTokenAddress(chainId, marketValues.indexToken, "native"));
+            const longToken = getToken(chainId, marketValues.longToken);
+            const shortToken = getToken(chainId, marketValues.shortToken);
 
-            const isSameCollaterals = longTokenAddress === shortTokenAddress;
-            const isSpotOnly = indexTokenAddress === ethers.constants.AddressZero;
+            const isSameCollaterals = marketValues.longToken === marketValues.shortToken;
+            const isSpotOnly = marketValues.indexToken === ethers.constants.AddressZero;
 
             const name = getMarketFullName({ indexToken, longToken, shortToken, isSpotOnly });
 
-            acc.marketsData[marketTokenAddress] = {
-              marketTokenAddress,
-              indexTokenAddress,
-              longTokenAddress,
-              shortTokenAddress,
+            acc.marketsData[marketValues.marketToken] = {
+              marketTokenAddress: marketValues.marketToken,
+              indexTokenAddress: marketValues.indexToken,
+              longTokenAddress: marketValues.longToken,
+              shortTokenAddress: marketValues.shortToken,
               isSameCollaterals,
               isSpotOnly,
               name,
               data: "",
             };
 
-            acc.marketsAddresses.push(marketTokenAddress);
+            acc.marketsAddresses.push(marketValues.marketToken);
           } catch (e) {
             // eslint-disable-next-line no-console
             console.warn("unsupported market", e);

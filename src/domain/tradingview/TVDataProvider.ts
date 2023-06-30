@@ -1,4 +1,4 @@
-import { LAST_BAR_REFRESH_INTERVAL, SUPPORTED_RESOLUTIONS } from "config/tradingview";
+import { LAST_BAR_REFRESH_INTERVAL } from "config/tradingview";
 import { getLimitChartPricesFromStats, timezoneOffset } from "domain/prices";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
@@ -15,6 +15,7 @@ const initialHistoryBarsInfo = {
 };
 
 export class TVDataProvider {
+  supportedResolutions: { [key: number]: string };
   lastBar: Bar | null;
   startTime: number;
   lastTicker: string;
@@ -25,12 +26,13 @@ export class TVDataProvider {
     ticker: string;
   };
 
-  constructor() {
+  constructor(supportedResolutions: { [key: number]: string }) {
     this.lastBar = null;
     this.startTime = 0;
     this.lastTicker = "";
     this.lastPeriod = "";
     this.barsInfo = initialHistoryBarsInfo;
+    this.supportedResolutions = supportedResolutions;
   }
 
   async getCurrentPriceOfToken(chainId: number, ticker: string): Promise<BigNumberish> {
@@ -100,9 +102,8 @@ export class TVDataProvider {
     periodParams: PeriodParams,
     shouldRefetchBars: boolean
   ) {
-    const period = SUPPORTED_RESOLUTIONS[resolution];
+    const period = this.supportedResolutions[resolution];
     const { from, to } = periodParams;
-
     try {
       const bars = isStable
         ? getStableCoinPrice(period, from, to)
@@ -142,7 +143,7 @@ export class TVDataProvider {
   }
 
   async getLiveBar(chainId: number, ticker: string, resolution: string) {
-    const period = SUPPORTED_RESOLUTIONS[resolution];
+    const period = this.supportedResolutions[resolution];
     if (!ticker || !period || !chainId) return;
 
     const currentCandleTime = getCurrentCandleTime(period);

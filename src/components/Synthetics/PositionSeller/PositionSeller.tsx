@@ -45,7 +45,6 @@ import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
-  formatAmount,
   formatAmountFree,
   formatDeltaUsd,
   formatPercentage,
@@ -59,13 +58,15 @@ import { useEffect, useMemo, useState } from "react";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionSeller.scss";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
+import SlippageInput from "components/SlippageInput/SlippageInput";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 export type Props = {
   position?: PositionInfo;
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
   showPnlInLeverage: boolean;
-  allowedSlippage: number;
   availableTokensOptions?: AvailableTokenOptions;
   onClose: () => void;
   setPendingTxns: (txns: any) => void;
@@ -82,14 +83,12 @@ export function PositionSeller(p: Props) {
     showPnlInLeverage,
     onClose,
     setPendingTxns,
-    allowedSlippage,
     availableTokensOptions,
-    isHigherSlippageAllowed,
-    setIsHigherSlippageAllowed,
     onConnectWallet,
   } = p;
 
   const { chainId } = useChainId();
+  const { savedAllowedSlippage } = useSettings();
   const { library, account } = useWeb3React();
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
@@ -110,7 +109,12 @@ export function PositionSeller(p: Props) {
   const maxCloseSize = position?.sizeInUsd || BigNumber.from(0);
 
   const [receiveTokenAddress, setReceiveTokenAddress] = useState<string>();
+  const [allowedSlippage, setAllowedSlippage] = useState(savedAllowedSlippage);
   const receiveToken = getByKey(tokensData, receiveTokenAddress);
+
+  useEffect(() => {
+    setAllowedSlippage(savedAllowedSlippage);
+  }, [savedAllowedSlippage]);
 
   const markPrice = position
     ? getMarkPrice({ prices: position.indexToken.prices, isLong: position.isLong, isIncrease: false })
@@ -257,7 +261,7 @@ export function PositionSeller(p: Props) {
     }
 
     if (isHighPriceImpact && !isHighPriceImpactAccepted) {
-      return t`Need to accept Price Impact`;
+      return t`Price Impact not yet acknowledged`;
     }
 
     if (isSubmitting) {
@@ -375,41 +379,39 @@ export function PositionSeller(p: Props) {
               USD
             </BuyInputSection>
 
-            <div className="PositionEditor-info-box PositionSeller-info-box">
-              {executionFee?.warning && <div className="Confirmation-box-warning">{executionFee.warning}</div>}
+            <div className="PositionEditor-info-box">
               <div className="PositionEditor-keep-leverage-settings">
-                <Checkbox isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
+                <ToggleSwitch isChecked={keepLeverage ?? false} setIsChecked={setKeepLeverage}>
                   <span className="muted font-sm">
                     <Trans>Keep leverage at {position?.leverage ? formatLeverage(position.leverage) : "..."}</Trans>
                   </span>
-                </Checkbox>
-              </div>
-
-              <div className="PositionEditor-allow-higher-slippage">
-                <Checkbox isChecked={isHigherSlippageAllowed} setIsChecked={setIsHigherSlippageAllowed}>
-                  <span className="muted font-sm">
-                    <Trans>Allow up to 1% slippage</Trans>
-                  </span>
-                </Checkbox>
+                </ToggleSwitch>
               </div>
 
               <div>
-                <ExchangeInfoRow label={t`Allowed Slippage`}>
-                  <Tooltip
-                    handle={`${formatAmount(allowedSlippage, 2, 2)}%`}
-                    position="right-bottom"
-                    renderContent={() => {
-                      return (
-                        <Trans>
-                          You can change this in the settings menu on the top right of the page.
-                          <br />
-                          <br />
-                          Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices
-                          are volatile.
-                        </Trans>
-                      );
-                    }}
-                  />
+                <ExchangeInfoRow
+                  label={
+                    <Tooltip
+                      handle={t`Allowed Slippage`}
+                      position="left-top"
+                      renderContent={() => {
+                        return (
+                          <div className="text-white">
+                            <Trans>
+                              You can edit the default Allowed Slippage in the settings menu on the top right of the
+                              page.
+                              <br />
+                              <br />
+                              Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if
+                              prices are volatile.
+                            </Trans>
+                          </div>
+                        );
+                      }}
+                    />
+                  }
+                >
+                  <SlippageInput setAllowedSlippage={setAllowedSlippage} defaultSlippage={savedAllowedSlippage} />
                 </ExchangeInfoRow>
               </div>
 
@@ -574,7 +576,7 @@ export function PositionSeller(p: Props) {
               <div className="PositionSeller-price-impact-warning">
                 <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
                   <span className="muted font-sm">
-                    <Trans>I am aware of the high Price Impact</Trans>
+                    <Trans>Acknowledge high Price Impact</Trans>
                   </span>
                 </Checkbox>
               </div>
