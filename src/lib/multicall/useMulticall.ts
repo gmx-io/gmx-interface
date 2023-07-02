@@ -1,8 +1,8 @@
 import useSWR from "swr";
 import { CacheKey, MulticallRequestConfig, MulticallResult, SkipKey } from "./types";
 import { executeMulticall } from "./utils";
-import { useSigner } from "wagmi";
 import { Web3Provider } from "@ethersproject/providers";
+import useWallet from "lib/wallets/useWallet";
 
 /**
  * A hook to fetch data from contracts via multicall.
@@ -24,7 +24,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
     parseResponse?: (result: MulticallResult<TConfig>, chainId: number, key: CacheKey) => TResult;
   }
 ) {
-  const { data: signer } = useSigner();
+  const { signer } = useWallet();
   const provider = (signer?.provider as Web3Provider) || undefined;
 
   const swrFullKey = Array.isArray(params.key) && chainId && name ? [chainId, name, ...params.key] : null;

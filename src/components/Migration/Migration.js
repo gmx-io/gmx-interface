@@ -27,7 +27,6 @@ import {
 } from "lib/numbers";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { t, Trans } from "@lingui/macro";
-import { useAccount, useSigner } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import useWallet from "lib/wallets/useWallet";
 
