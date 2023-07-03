@@ -7,7 +7,7 @@ import { HIGH_SLIPPAGE, MAX_SLIPPAGE, VALID_SLIPPAGE_REGEX } from "config/ui";
 const SLIPPAGE_SUGGESTION_LISTS = [0.3, 0.5, 1, 1.5];
 
 function getSlippageText(value: number) {
-  return formatAmount(value, 2, 2).replace(/0+$/, "");
+  return formatAmount(value, 2, 2);
 }
 
 type Props = {
@@ -19,6 +19,7 @@ export default function SlippageInput({ setAllowedSlippage, defaultSlippage }: P
   const defaultSlippageText = getSlippageText(defaultSlippage);
   const [slippageText, setSlippageText] = useState<string>(defaultSlippageText);
   const [isPanelVisible, setIsPanelVisible] = useState<boolean>(false);
+  console.log({ defaultSlippage, slippageText });
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { value } = event.target;
