@@ -1,11 +1,18 @@
 import { Trans } from "@lingui/macro";
+import { groupBy } from "lodash";
 import Button from "components/Button/Button";
 import { getChainName } from "config/chains";
-import { MarketTokensAPRData, MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
+import {
+  MarketInfo,
+  MarketTokensAPRData,
+  MarketsInfoData,
+  getMarketIndexName,
+  getMarketPoolName,
+} from "domain/synthetics/markets";
 import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { importImage } from "lib/legacy";
-import { formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
+import { bigNumberify, formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import { useMemo } from "react";
@@ -23,38 +30,63 @@ type Props = {
 
 export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensData, marketsTokensAPRData }: Props) {
   const { chainId } = useChainId();
-
-  const marketTokens = useMemo(() => {
-    if (!marketTokensData || !marketsInfoData) {
+  const sortedMarketTokens = useMemo(() => {
+    if (!marketsInfoData) {
       return [];
     }
+    // Group markets by index token address
+    const groupedMarketList: { [marketAddress: string]: MarketInfo[] } = groupBy(
+      Object.values(marketsInfoData),
+      (market) => market.indexTokenAddress
+    );
 
-    return Object.values(marketTokensData)
-      .filter((marketToken) => {
-        const market = getByKey(marketsInfoData, marketToken.address);
-        return market && !market.isDisabled;
+    // Sort groups by total market supply
+    const sortedGroups = Object.values(groupedMarketList)
+      .map((markets: MarketInfo[]) => {
+        return markets.map((market) => getByKey(marketTokensData, market.marketTokenAddress));
       })
       .sort((a, b) => {
-        const market1 = getByKey(marketsInfoData, a.address)!;
-        const market2 = getByKey(marketsInfoData, b.address)!;
-        const indexToken1 = getTokenData(tokensData, market1.indexTokenAddress, "native");
-        const indexToken2 = getTokenData(tokensData, market2.indexTokenAddress, "native");
-
-        if (!indexToken1 || !indexToken2) {
-          return 0;
-        }
-
-        return indexToken1.symbol.localeCompare(indexToken2.symbol);
-      })
-      .map((market) => {
-        const totalSupplyUsd = convertToUsd(market.totalSupply, market.decimals, market.prices?.minPrice);
-        return { ...market, totalSupplyUsd };
-      })
-      .sort((a, b) => {
-        return b.totalSupplyUsd!.gt(a.totalSupplyUsd!) ? 1 : -1;
+        const totalMarketSupplyA = a.reduce((acc, market) => acc.add(market?.totalSupply || 0), bigNumberify(0)!);
+        const totalMarketSupplyB = b.reduce((acc, market) => acc.add(market?.totalSupply || 0), bigNumberify(0)!);
+        return totalMarketSupplyA.gt(totalMarketSupplyB) ? -1 : 1;
       });
-  }, [marketTokensData, marketsInfoData, tokensData]);
 
+    // Sort markets within each group by total supply
+    const sortedMarkets = sortedGroups.map((markets: any) => {
+      return markets.sort((a, b) => {
+        return a.totalSupply.gt(b.totalSupply) ? -1 : 1;
+      });
+    });
+
+    // Flatten the sorted markets array
+    const flattenedMarkets = sortedMarkets.flat(Infinity);
+
+    return flattenedMarkets;
+  }, [marketsInfoData, marketTokensData]);
+
+  // const marketTokens = useMemo(() => {
+  //   if (!marketTokensData || !marketsInfoData) {
+  //     return [];
+  //   }
+
+  //   return Object.values(marketTokensData)
+  //     .filter((marketToken) => {
+  //       const market = getByKey(marketsInfoData, marketToken.address);
+  //       return market && !market.isDisabled;
+  //     })
+  //     .sort((a, b) => {
+  //       const market1 = getByKey(marketsInfoData, a.address)!;
+  //       const market2 = getByKey(marketsInfoData, b.address)!;
+  //       const indexToken1 = getTokenData(tokensData, market1.indexTokenAddress, "native");
+  //       const indexToken2 = getTokenData(tokensData, market2.indexTokenAddress, "native");
+
+  //       if (!indexToken1 || !indexToken2) {
+  //         return 0;
+  //       }
+
+  //       return indexToken1.symbol.localeCompare(indexToken2.symbol);
+  //     });
+  // }, [marketTokensData, marketsInfoData, tokensData]);
   const isMobile = useMedia("(max-width: 1100px)");
 
   return (
@@ -92,7 +124,7 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
               </tr>
             </thead>
             <tbody>
-              {marketTokens.map((token) => {
+              {sortedMarketTokens.map((token) => {
                 const market = getByKey(marketsInfoData, token.address)!;
 
                 const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
@@ -186,7 +218,7 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
           )}
 
           <div className="token-grid">
-            {marketTokens.map((token) => {
+            {sortedMarketTokens.map((token) => {
               const apr = marketsTokensAPRData?.[token.address];
 
               const totalSupply = token.totalSupply;
