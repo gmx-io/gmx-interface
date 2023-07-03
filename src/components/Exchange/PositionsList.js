@@ -543,7 +543,15 @@ export default function PositionsList(props) {
                         }}
                       />
                     ) : (
-                      position.indexToken.symbol
+                      <div className="inline-flex">
+                        <TokenIcon
+                          className="PositionList-token-icon"
+                          symbol={position.indexToken.symbol}
+                          displaySize={20}
+                          importSize={24}
+                        />
+                        {position.indexToken.symbol}
+                      </div>
                     )}
                     {position.hasPendingChanges && <ImSpinner2 className="spin position-loading-icon" />}
                   </div>
