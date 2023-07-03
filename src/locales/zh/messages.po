@@ -1374,7 +1374,6 @@ msgid "Forfeit profit and {action}"
 msgstr "没收收益并 {action}"
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionSeller.js
 msgid "Forfeit profit not checked"
 msgstr "未检查没收利润"
 
@@ -1657,10 +1656,6 @@ msgstr "无效的接收者"
 #: src/pages/NftWallet/NftWallet.js
 msgid "Invalid Receiver Address"
 msgstr "无效的接收地址"
-
-#: src/components/Exchange/PositionSeller.js
-#~ msgid "Invalid amount"
-#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -3618,7 +3613,6 @@ msgid "Unstaking..."
 msgstr "解除质押中..."
 
 #: src/lib/wallets/index.tsx
-#: src/lib/wallets/index.tsx
 msgid "Unsupported chain. Switch to Arbitrum network on your wallet and try again"
 msgstr "不支持的链。在你的钱包上切换到Arbitrum网络并重试"
 
@@ -3792,10 +3786,6 @@ msgstr "钱包尚未连接"
 #: src/App/App.js
 msgid "WalletConnect"
 msgstr "连接钱包"
-
-#: src/App/App.js
-#~ msgid "WalletConnect V2"
-#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Weight"

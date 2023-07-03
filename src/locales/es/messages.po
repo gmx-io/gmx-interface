@@ -1374,7 +1374,6 @@ msgid "Forfeit profit and {action}"
 msgstr "Renunciar a la ganancia y {action}"
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionSeller.js
 msgid "Forfeit profit not checked"
 msgstr "Renuncia de ganancias no marcada"
 
@@ -1657,10 +1656,6 @@ msgstr "Receptor Inválido"
 #: src/pages/NftWallet/NftWallet.js
 msgid "Invalid Receiver Address"
 msgstr "Dirección del Receptor Inválida"
-
-#: src/components/Exchange/PositionSeller.js
-#~ msgid "Invalid amount"
-#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -3618,7 +3613,6 @@ msgid "Unstaking..."
 msgstr "Destakeando..."
 
 #: src/lib/wallets/index.tsx
-#: src/lib/wallets/index.tsx
 msgid "Unsupported chain. Switch to Arbitrum network on your wallet and try again"
 msgstr "Cadena no soportada. Cambia a la red de Arbitrum en tu monedero y vuelve a intentarlo"
 
@@ -3792,10 +3786,6 @@ msgstr "Monedero no conectado todavía"
 #: src/App/App.js
 msgid "WalletConnect"
 msgstr "WalletConnect"
-
-#: src/App/App.js
-#~ msgid "WalletConnect V2"
-#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Weight"
