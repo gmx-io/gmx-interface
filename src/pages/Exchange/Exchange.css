@@ -47,6 +47,12 @@
   margin-bottom: 0.8rem;
 }
 
+.App-settings-error {
+  margin: 0 0 1.25rem;
+  color: #f3b50c;
+  font-size: 1.4rem;
+}
+
 .Exchange-settings .App-cta {
   margin-top: 1.5rem;
 }

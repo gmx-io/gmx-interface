@@ -19,7 +19,6 @@ export default function SlippageInput({ setAllowedSlippage, defaultSlippage }: P
   const defaultSlippageText = getSlippageText(defaultSlippage);
   const [slippageText, setSlippageText] = useState<string>(defaultSlippageText);
   const [isPanelVisible, setIsPanelVisible] = useState<boolean>(false);
-  console.log({ defaultSlippage, slippageText });
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { value } = event.target;

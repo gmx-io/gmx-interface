@@ -894,6 +894,11 @@ button.App-button-option:disabled {
   align-items: center;
 }
 
+.App-settings .Modal-content {
+  max-width: 300px;
+  width: 100%;
+}
+
 .App-settings-row {
   margin-bottom: 0.8rem;
   font-size: var(--font-base);

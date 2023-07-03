@@ -102,7 +102,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { isDevelopment } from "config/env";
 import Button from "components/Button/Button";
 import { roundToTwoDecimals } from "lib/numbers";
-import { MAX_SLIPPAGE, VALID_SLIPPAGE_REGEX } from "config/ui";
+import { MAX_SLIPPAGE, VALID_SLIPPAGE_REGEX, MINIMUM_SLIPPAGE_PERCENTAGE } from "config/ui";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -148,7 +148,10 @@ function FullApp() {
   const location = useLocation();
   const history = useHistory();
   useEventToast();
+
   const [activatingConnector, setActivatingConnector] = useState();
+  const [settingsModalError, setSettingsModalError] = useState();
+
   useEffect(() => {
     if (activatingConnector && activatingConnector === connector) {
       setActivatingConnector(undefined);
@@ -317,10 +320,6 @@ function FullApp() {
     if (parseInt(basisPoints) !== parseFloat(basisPoints)) {
       helperToast.error(t`Max slippage precision is 0.01%`);
       return;
-    }
-
-    if (basisPoints === 0) {
-      basisPoints = DEFAULT_SLIPPAGE_AMOUNT;
     }
 
     setSavedIsPnlInLeverage(isPnlInLeverage);
@@ -642,11 +641,18 @@ function FullApp() {
                   value = maxSlippagePercentage;
                 }
 
+                if (value < MINIMUM_SLIPPAGE_PERCENTAGE) {
+                  setSettingsModalError("Slippage below 0.05% may result in a failed transaction");
+                } else {
+                  setSettingsModalError("");
+                }
+
                 setSlippageAmount(value);
               }}
             />
             <div className="App-slippage-tolerance-input-percent">%</div>
           </div>
+          {settingsModalError && <span className="App-settings-error">{settingsModalError}</span>}
         </div>
         <div className="Exchange-settings-row">
           <Checkbox isChecked={showPnlAfterFees} setIsChecked={setShowPnlAfterFees}>
@@ -665,6 +671,7 @@ function FullApp() {
             </span>
           </Checkbox>
         </div>
+
         {isDevelopment() && (
           <div className="Exchange-settings-row">
             <Checkbox isChecked={shouldDisableValidationForTesting} setIsChecked={setShouldDisableValidationForTesting}>
