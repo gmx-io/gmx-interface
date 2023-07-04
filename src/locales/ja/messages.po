@@ -2628,12 +2628,13 @@ msgstr "紹介コードの更新完了!"
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Referrals/Referrals.js
+#: src/pages/Referrals/Referrals.js
 msgid "Referrals"
 msgstr "紹介アカウント"
 
 #: src/pages/Referrals/Referrals.js
-msgid "Referrals <0/>"
-msgstr ""
+#~ msgid "Referrals <0/>"
+#~ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Request decrease {0} {longOrShortText}, -{1} USD, Acceptable Price: {2} {3} USD"
