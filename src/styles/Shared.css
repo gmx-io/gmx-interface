@@ -458,3 +458,7 @@ button.btn-link:hover .logout-icon {
 .text-gray {
   color: var(--text-gray);
 }
+
+.text-waring {
+  color: rgb(243, 181, 12);
+}

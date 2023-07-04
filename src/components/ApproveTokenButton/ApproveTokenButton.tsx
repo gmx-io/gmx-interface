@@ -43,7 +43,7 @@ export function ApproveTokenButton(p: Props) {
 
   return (
     <div className="ApproveTokenButton Checkbox fullRow" onClick={onApprove}>
-      <span className="text-gray">
+      <span className="text-waring">
         <Trans>Allow {p.tokenSymbol} to be spent</Trans>
       </span>
 
