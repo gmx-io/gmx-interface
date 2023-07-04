@@ -624,7 +624,7 @@ function FullApp() {
               placeholder={parsedSavedSlippageAmount / 100}
               onChange={(e) => {
                 const maxSlippagePercentage = MAX_SLIPPAGE / 100;
-                const defaultSlippagePercentage = parsedSavedSlippageAmount / 100;
+                const defaultSlippagePercentage = DEFAULT_SLIPPAGE_AMOUNT / 100;
                 let value = e.target.value;
 
                 if (value === "") {
@@ -656,7 +656,7 @@ function FullApp() {
             />
             <div className="App-slippage-tolerance-input-percent">%</div>
           </div>
-          {settingsModalError && <span className="App-settings-error">{settingsModalError}</span>}
+          {settingsModalError && <p className="App-settings-error">{settingsModalError}</p>}
         </div>
         <div className="Exchange-settings-row">
           <Checkbox isChecked={showPnlAfterFees} setIsChecked={setShowPnlAfterFees}>
