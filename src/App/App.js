@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
-import { SWRConfig } from "swr";
+import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import useSWR, { SWRConfig } from "swr";
 import { ethers } from "ethers";
 import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
@@ -56,13 +56,14 @@ import { encodeReferralCode, decodeReferralCode } from "domain/referrals";
 import { getContract } from "config/contracts";
 import VaultV2 from "abis/VaultV2.json";
 import VaultV2b from "abis/VaultV2b.json";
+import Reader from "abis/ReaderV2.json";
 import PositionRouter from "abis/PositionRouter.json";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
 import ReferralTerms from "pages/ReferralTerms/ReferralTerms";
 import TermsAndConditions from "pages/TermsAndConditions/TermsAndConditions";
 import { useLocalStorage } from "react-use";
 import { RedirectPopupModal } from "components/ModalViews/RedirectModal";
-import { REDIRECT_POPUP_TIMESTAMP_KEY, SHOULD_SHOW_APPROVE_TOKENS_MODAL } from "config/localStorage";
+import { REDIRECT_POPUP_TIMESTAMP_KEY } from "config/localStorage";
 import Jobs from "pages/Jobs/Jobs";
 
 import { i18n } from "@lingui/core";
@@ -101,6 +102,9 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { isDevelopment } from "config/env";
 import Button from "components/Button/Button";
 import ApproveTokens from "components/ApproveTokens/ApproveTokens";
+import { useInfoTokens } from "domain/tokens";
+import { contractFetcher } from "lib/contracts";
+import { getTokens } from "config/tokens";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -141,7 +145,7 @@ function getWsProvider(active, chainId) {
 function FullApp() {
   const isHome = isHomeSite();
   const exchangeRef = useRef();
-  const { connector, library, deactivate, activate, active } = useWeb3React();
+  const { connector, library, deactivate, activate, active, account } = useWeb3React();
   const { chainId } = useChainId();
   const location = useLocation();
   const history = useHistory();
@@ -262,7 +266,7 @@ function FullApp() {
   const [redirectPopupTimestamp, setRedirectPopupTimestamp] = useLocalStorage(REDIRECT_POPUP_TIMESTAMP_KEY);
   const [selectedToPage, setSelectedToPage] = useState("");
   const [approvalsModalVisible, setApprovalsModalVisible] = useState(false);
-  const [approvalsButton, setApprovalsButton] = useState(true);
+  const [hasTokens, setHasTokens] = useState(false);
   const connectWallet = () => setWalletModalVisible(true);
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
@@ -297,13 +301,6 @@ function FullApp() {
     localStorage.setItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY, providerName);
     activateInjectedProvider(providerName);
     connectInjectedWallet();
-
-    if (localStorage.getItem(SHOULD_SHOW_APPROVE_TOKENS_MODAL) !== null) {
-      if (JSON.parse(localStorage.getItem(SHOULD_SHOW_APPROVE_TOKENS_MODAL)) === false) {
-        setWalletModalVisible(false);
-      }
-      setApprovalsButton(JSON.parse(localStorage.getItem(SHOULD_SHOW_APPROVE_TOKENS_MODAL)));
-    }
   };
 
   const openSettings = () => {
@@ -355,6 +352,32 @@ function FullApp() {
     setRedirectModalVisible(true);
     setSelectedToPage(to);
   };
+
+  const readerAddress = getContract(chainId, "Reader");
+  const tokens = getTokens(chainId);
+  const tokenAddresses = tokens.map((token) => token.address);
+  const { data: tokenBalances } = useSWR(active && [active, chainId, readerAddress, "getTokenBalances", account], {
+    fetcher: contractFetcher(library, Reader, [tokenAddresses]),
+  });
+  const { infoTokens } = useInfoTokens(library, chainId, active, tokenBalances);
+  const nonZeroBalanceTokens = useMemo(() => {
+    return [];
+  }, []);
+
+  useEffect(() => {
+    for (let key in infoTokens) {
+      let tokenInfo = infoTokens[key];
+      if (tokenInfo.balance && tokenInfo.balance.gt(0) && tokenInfo.symbol !== "ETH") {
+        if (!nonZeroBalanceTokens.some((token) => token.address === tokenInfo.address)) {
+          nonZeroBalanceTokens.push(tokenInfo);
+        }
+      }
+    }
+
+    if (nonZeroBalanceTokens.length > 0) {
+      setHasTokens(true);
+    }
+  }, [infoTokens, nonZeroBalanceTokens]);
 
   useEffect(() => {
     const checkPendingTxns = async () => {
@@ -610,7 +633,7 @@ function FullApp() {
             <Trans>WalletConnect</Trans>
           </div>
         </button>
-        {active && approvalsButton === true && (
+        {active && hasTokens && (
           <button className="Wallet-btn-approve" onClick={handleApproveTokens}>
             <div>
               <Trans>{`Approve Tokens`}</Trans>
@@ -628,6 +651,7 @@ function FullApp() {
           chainId={chainId}
           pendingTxns={pendingTxns}
           setPendingTxns={setPendingTxns}
+          nonZeroBalanceTokens={nonZeroBalanceTokens}
           closeApprovalsModal={() => setApprovalsModalVisible(false)}
         />
       </Modal>

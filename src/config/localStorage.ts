@@ -16,6 +16,5 @@ export const TV_SAVE_LOAD_CHARTS_KEY = "tv-save-load-charts";
 export const TV_CHART_RELOAD_TIMESTAMP_KEY = "tv-chart-reload-timestamp";
 export const REDIRECT_POPUP_TIMESTAMP_KEY = "redirect-popup-timestamp";
 export const PRODUCTION_PREVIEW_KEY = "production-preview";
-export const SHOULD_SHOW_APPROVE_TOKENS_MODAL = "approvetokensmodaltrue";
 
 export const getSubgraphUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
