@@ -115,9 +115,10 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
           <div className="section-title-icon" />
           <div className="section-title-content">
             <div className="Page-title">
-              <Trans>
-                Referrals <img width="24" src={networkIcon} alt="Network Icon" />
-              </Trans>
+              <span>
+                <Trans>Referrals</Trans>
+              </span>
+              <img className="ml-xs Page-title-icon" src={networkIcon} alt="Network Icon" />
             </div>
             <div className="Page-description">
               <Trans>

@@ -1436,7 +1436,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         <div className="section-title-content">
           <div className="Page-title">
             <Trans>Earn</Trans>
-            <img className="ml-xs" alt="GMX" src={icons.network} height={24} />
+            <img className="ml-xs Page-title-icon" alt="GMX" src={icons.network} />
           </div>
           <div className="Page-description">
             <Trans>
@@ -1981,11 +1981,9 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
 
       <div>
         <div className="Tab-title-section">
-          <div className="Page-title items-center">
-            <div>
-              <Trans>Vest</Trans>
-              <img className="ml-xs" alt="GMX" src={icons.network} height={24} />
-            </div>
+          <div className="Page-title">
+            <Trans>Vest</Trans>
+            <img className="ml-xs Page-title-icon" alt="GMX" src={icons.network} />
           </div>
           <div className="Page-description">
             <Trans>

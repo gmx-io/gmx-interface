@@ -472,8 +472,9 @@ export default function DashboardV2() {
         <div className="section-title-block">
           <div className="section-title-icon"></div>
           <div className="section-title-content">
-            <div className="Page-title inline-flex">
-              <Trans>Stats</Trans> <img className="ml-xs" width="24" src={currentIcons.network} alt="Network Icon" />
+            <div className="Page-title">
+              <Trans>Stats</Trans>
+              <img className="ml-xs Page-title-icon" src={currentIcons.network} alt="Network Icon" />
             </div>
             <div className="Page-description">
               <Trans>
@@ -721,8 +722,9 @@ export default function DashboardV2() {
             </div>
           </div>
           <div className="Tab-title-section">
-            <div className="Page-title inline-flex">
-              <Trans>Tokens</Trans> <img className="ml-xs" src={currentIcons.network} width="24" alt="Network Icon" />
+            <div className="Page-title">
+              <Trans>Tokens</Trans>
+              <img className="ml-xs Page-title-icon" src={currentIcons.network} alt="Network Icon" />
             </div>
             <div className="Page-description">
               <Trans>Platform and GLP index tokens.</Trans>
@@ -1045,8 +1047,8 @@ export default function DashboardV2() {
               </table>
             </div>
             <div className="Page-title Tab-title-section glp-composition-small">
-              <Trans>GLP Index Composition</Trans>{" "}
-              <img className="ml-xs" src={currentIcons.network} width="24" alt="Network Icon" />
+              <Trans>GLP Index Composition</Trans>
+              <img className="ml-xs Page-title-icon" src={currentIcons.network} width="24" alt="Network Icon" />
             </div>
             <div className="token-grid">
               {visibleTokens.map((token) => {

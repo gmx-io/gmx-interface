@@ -80,7 +80,8 @@
 }
 
 .Stake-modal-icons {
-  display: inline-block;
+  display: inline-flex;
+  line-height: 1;
 }
 
 .Stake-modal-icons .icon {

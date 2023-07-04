@@ -975,9 +975,9 @@ export default function GlpSwap(props) {
         </div>
       </div>
       <div className="Tab-title-section">
-        <div className="Page-title items-center">
+        <div className="Page-title">
           <Trans>Save on Fees</Trans>
-          <img className="ml-xs" width="24" src={currentIcons.network} alt="Network Icon" />
+          <img className="ml-xs Page-title-icon" src={currentIcons.network} alt="Network Icon" />
         </div>
         {isBuying && (
           <div className="Page-description">

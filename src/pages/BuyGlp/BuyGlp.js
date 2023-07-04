@@ -28,9 +28,9 @@ export default function BuyGlp(props) {
     <div className="default-container page-layout">
       <div className="section-title-block">
         <div className="section-title-content">
-          <div className="Page-title items-center">
+          <div className="Page-title">
             <Trans>Buy / Sell GLP</Trans>
-            <img className="ml-xs" width="24" src={currentIcons.network} alt="Network Icon" />
+            <img className="ml-xs Page-title-icon" src={currentIcons.network} alt="Network Icon" />
           </div>
           <div className="Page-description">
             <Trans>

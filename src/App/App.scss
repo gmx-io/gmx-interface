@@ -486,6 +486,12 @@ button.App-connect-wallet:hover {
   font-size: var(--font-xl);
   margin-bottom: 0.8rem;
   font-weight: bold;
+  display: inline-block;
+  line-height: 1;
+  .Page-title-icon {
+    width: 24px;
+    vertical-align: baseline;
+  }
 }
 
 .Page-description {
@@ -1215,10 +1221,6 @@ button.App-button {
   .chart-positions-settings {
     display: block;
   }
-
-  .Page-title {
-    display: flex;
-  }
 }
 @media (max-width: 1033px) {
   .long-connect-btn {
@@ -1331,6 +1333,10 @@ button.App-button {
 
   .Page-title {
     font-size: var(--font-lg);
+    .Page-title-icon {
+      width: 20px;
+      vertical-align: bottom;
+    }
   }
 }
 
