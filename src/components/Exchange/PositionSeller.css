@@ -43,8 +43,10 @@
   list-style: none;
   border-radius: var(--border-radius-sm);
   padding: 0;
-  background: #212540;
-  margin-top: -0.8rem;
+  background: linear-gradient(270deg, rgba(49, 54, 85, 0.9) 0%, rgba(37, 40, 65, 0.9) 100%);
+  box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.25);
+  margin-top: -2rem;
+  backdrop-filter: blur(7px);
 }
 
 .Percentage-list li {
@@ -57,7 +59,7 @@
 }
 
 .Percentage-list li:hover {
-  background: rgba(58, 63, 121, 0.5607843137254902);
+  background: rgba(180, 187, 255, 0.1);
 }
 
 @media (max-width: 700px) {
