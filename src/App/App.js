@@ -102,7 +102,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { isDevelopment } from "config/env";
 import Button from "components/Button/Button";
 import { roundToTwoDecimals } from "lib/numbers";
-import { MAX_SLIPPAGE, VALID_SLIPPAGE_REGEX, MINIMUM_SLIPPAGE_PERCENTAGE } from "config/ui";
+import { MAX_SLIPPAGE, VALID_SLIPPAGE_REGEX } from "config/ui";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -275,6 +275,7 @@ function FullApp() {
     [chainId, SLIPPAGE_BPS_KEY],
     DEFAULT_SLIPPAGE_AMOUNT
   );
+  const parsedSavedSlippageAmount = parseInt(savedSlippageAmount);
   const [slippageAmount, setSlippageAmount] = useState(0);
   const [isPnlInLeverage, setIsPnlInLeverage] = useState(false);
   const [shouldDisableValidationForTesting, setShouldDisableValidationForTesting] = useState(false);
@@ -620,9 +621,10 @@ function FullApp() {
               type="text"
               className="App-slippage-tolerance-input"
               value={slippageAmount}
-              placeholder="0.3"
+              placeholder={parsedSavedSlippageAmount / 100}
               onChange={(e) => {
                 const maxSlippagePercentage = MAX_SLIPPAGE / 100;
+                const defaultSlippagePercentage = parsedSavedSlippageAmount / 100;
                 let value = e.target.value;
 
                 if (value === "") {
@@ -641,8 +643,10 @@ function FullApp() {
                   value = maxSlippagePercentage;
                 }
 
-                if (value < MINIMUM_SLIPPAGE_PERCENTAGE) {
-                  setSettingsModalError("Slippage below 0.05% may result in a failed transaction");
+                if (value < defaultSlippagePercentage) {
+                  setSettingsModalError(
+                    t`Allowed Slippage below ${defaultSlippagePercentage}% may result in failed orders`
+                  );
                 } else {
                   setSettingsModalError("");
                 }
