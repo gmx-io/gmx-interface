@@ -40,21 +40,39 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
       (market) => market.indexTokenAddress
     );
 
-    // Sort groups by total market supply
-    const sortedGroups = Object.values(groupedMarketList)
-      .map((markets: MarketInfo[]) => {
-        return markets.map((market) => getByKey(marketTokensData, market.marketTokenAddress));
+    const allMarkets = Object.values(groupedMarketList)
+      .map((markets) => {
+        return markets
+          .filter((market) => {
+            const marketInfoData = getByKey(marketsInfoData, market.marketTokenAddress)!;
+            return !marketInfoData.isDisabled;
+          })
+          .map((market) => getByKey(marketTokensData, market.marketTokenAddress)!);
       })
-      .sort((a, b) => {
-        const totalMarketSupplyA = a.reduce((acc, market) => acc.add(market?.totalSupply || 0), bigNumberify(0)!);
-        const totalMarketSupplyB = b.reduce((acc, market) => acc.add(market?.totalSupply || 0), bigNumberify(0)!);
-        return totalMarketSupplyA.gt(totalMarketSupplyB) ? -1 : 1;
-      });
+      .filter((markets) => markets.length > 0);
+
+    const sortedGroups = allMarkets!.sort((a, b) => {
+      const totalMarketSupplyA = a.reduce((acc, market) => {
+        const totalSupplyUsd = convertToUsd(market.totalSupply, market.decimals, market.prices.minPrice);
+        acc = acc.add(totalSupplyUsd || 0);
+        return acc;
+      }, bigNumberify(0)!);
+
+      const totalMarketSupplyB = b.reduce((acc, market) => {
+        const totalSupplyUsd = convertToUsd(market.totalSupply, market.decimals, market.prices.minPrice);
+        acc = acc.add(totalSupplyUsd || 0);
+        return acc;
+      }, bigNumberify(0)!);
+
+      return totalMarketSupplyA.gt(totalMarketSupplyB) ? -1 : 1;
+    });
 
     // Sort markets within each group by total supply
     const sortedMarkets = sortedGroups.map((markets: any) => {
       return markets.sort((a, b) => {
-        return a.totalSupply.gt(b.totalSupply) ? -1 : 1;
+        const totalSupplyUsdA = convertToUsd(a.totalSupply, a.decimals, a.prices.minPrice)!;
+        const totalSupplyUsdB = convertToUsd(b.totalSupply, b.decimals, b.prices.minPrice)!;
+        return totalSupplyUsdA.gt(totalSupplyUsdB) ? -1 : 1;
       });
     });
 
@@ -64,29 +82,6 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
     return flattenedMarkets;
   }, [marketsInfoData, marketTokensData]);
 
-  // const marketTokens = useMemo(() => {
-  //   if (!marketTokensData || !marketsInfoData) {
-  //     return [];
-  //   }
-
-  //   return Object.values(marketTokensData)
-  //     .filter((marketToken) => {
-  //       const market = getByKey(marketsInfoData, marketToken.address);
-  //       return market && !market.isDisabled;
-  //     })
-  //     .sort((a, b) => {
-  //       const market1 = getByKey(marketsInfoData, a.address)!;
-  //       const market2 = getByKey(marketsInfoData, b.address)!;
-  //       const indexToken1 = getTokenData(tokensData, market1.indexTokenAddress, "native");
-  //       const indexToken2 = getTokenData(tokensData, market2.indexTokenAddress, "native");
-
-  //       if (!indexToken1 || !indexToken2) {
-  //         return 0;
-  //       }
-
-  //       return indexToken1.symbol.localeCompare(indexToken2.symbol);
-  //     });
-  // }, [marketTokensData, marketsInfoData, tokensData]);
   const isMobile = useMedia("(max-width: 1100px)");
 
   return (
