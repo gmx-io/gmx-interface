@@ -1,7 +1,6 @@
 import React from "react";
 import cx from "classnames";
 import "./Footer.css";
-import logoImg from "img/logo_t3.svg";
 import { NavLink } from "react-router-dom";
 import { isHomeSite, getAppBaseUrl, shouldShowRedirectModal } from "lib/legacy";
 import { getFooterLinks, SOCIAL_LINKS } from "./constants";
@@ -16,9 +15,6 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp }: Pr
   return (
     <div className="Footer">
       <div className={cx("Footer-wrapper", { home: isHome })}>
-        <div className="Footer-logo">
-          <img src={logoImg} alt="MetaMask" />
-        </div>
         <div className="Footer-social-link-block">
           {SOCIAL_LINKS.map((platform) => {
             return (

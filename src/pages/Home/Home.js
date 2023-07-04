@@ -1,6 +1,4 @@
 import React from "react";
-import Footer from "components/Footer/Footer";
-import "./Home.css";
 
 import simpleSwapIcon from "img/ic_simpleswaps.svg";
 import costIcon from "img/ic_cost.svg";
@@ -320,7 +318,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
           </div>
         </div>
       </div> */}
-      <Footer showRedirectModal={showRedirectModal} redirectPopupTimestamp={redirectPopupTimestamp} />
+      {/* <Footer showRedirectModal={showRedirectModal} redirectPopupTimestamp={redirectPopupTimestamp} /> */}
     </div>
   );
 }

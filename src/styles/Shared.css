@@ -208,13 +208,13 @@ a.plain {
 }
 
 .default-btn {
-  background: #2d42fc;
+  background: #14f187;
   border-radius: 4px;
   font-size: var(--font-sm);
   line-height: 2rem;
   font-weight: normal;
   letter-spacing: 0px;
-  color: #ffffff !important;
+  color: #000000 !important;
   padding-left: 1.6rem;
   padding-right: 1.6rem;
   /* padding: 9px 16px!important; */

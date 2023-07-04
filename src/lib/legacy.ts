@@ -90,7 +90,7 @@ export function deserialize(data) {
 }
 
 export function isHomeSite() {
-  return process.env.REACT_APP_IS_HOME_SITE === "true";
+  return false;
 }
 
 export function getLiquidationPriceFromDelta({ liquidationAmount, size, collateral, averagePrice, isLong }) {
