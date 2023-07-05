@@ -303,6 +303,7 @@ export function SyntheticsPage(p: Props) {
                 savedShowPnlAfterFees={savedShowPnlAfterFees}
                 currentMarketAddress={marketAddress}
                 currentCollateralAddress={collateralAddress}
+                currentTradeType={tradeType}
               />
             )}
             {listSection === ListSection.Orders && (
@@ -395,6 +396,7 @@ export function SyntheticsPage(p: Props) {
               savedShowPnlAfterFees={savedShowPnlAfterFees}
               currentMarketAddress={marketAddress}
               currentCollateralAddress={collateralAddress}
+              currentTradeType={tradeType}
             />
           )}
           {listSection === ListSection.Orders && (

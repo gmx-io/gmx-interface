@@ -11,7 +11,7 @@ import { ImSpinner2 } from "react-icons/im";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/fees";
-import { TradeMode, getTriggerThresholdType } from "domain/synthetics/trade";
+import { TradeMode, TradeType, getTriggerThresholdType } from "domain/synthetics/trade";
 import { CHART_PERIODS } from "lib/legacy";
 import "./PositionItem.scss";
 
@@ -29,6 +29,7 @@ export type Props = {
   isLarge: boolean;
   currentMarketAddress?: string;
   currentCollateralAddress?: string;
+  currentTradeType?: TradeType;
 };
 
 export function PositionItem(p: Props) {
@@ -278,9 +279,12 @@ export function PositionItem(p: Props) {
   }
 
   function renderLarge() {
+    const isCurrentTradeTypeLong = p.currentTradeType === TradeType.Long;
+
     const isCurrentMarket =
       p.currentMarketAddress === p.position.marketAddress &&
-      p.currentCollateralAddress === p.position.collateralTokenAddress;
+      p.currentCollateralAddress === p.position.collateralTokenAddress &&
+      isCurrentTradeTypeLong === p.position.isLong;
     return (
       <tr
         className={cx("Exhange-list-item", {
