@@ -307,84 +307,86 @@ export function OrderItem(p: Props) {
   function renderSmall() {
     return (
       <div className="App-card">
-        <div className="App-card-title-small">{renderTitle()}</div>
-        <div className="App-card-divider" />
-        <div className="App-card-content">
-          {showDebugValues && (
-            <div className="App-card-row">
-              <div className="label">Key</div>
-              <div className="debug-key muted">{p.order.key}</div>
-            </div>
-          )}
-          <div className="App-card-row">
-            <div className="label">
-              <Trans>Trigger Price</Trans>
-            </div>
-            <div>{renderTriggerPrice()}</div>
-          </div>
-
-          <div className="App-card-row">
-            <div className="label">
-              <Trans>Acceptable Price</Trans>
-            </div>
-            <div>{renderTriggerPrice()}</div>
-          </div>
-
-          <div className="App-card-row">
-            <div className="label">
-              <Trans>Mark Price</Trans>
-            </div>
-            <div>{renderMarkPrice()}</div>
-          </div>
-
-          {isIncreaseOrderType(p.order.orderType) && (
+        <div>
+          <div className="App-card-title-small">{renderTitle()}</div>
+          <div className="App-card-divider" />
+          <div className="App-card-content">
+            {showDebugValues && (
+              <div className="App-card-row">
+                <div className="label">Key</div>
+                <div className="debug-key muted">{p.order.key}</div>
+              </div>
+            )}
             <div className="App-card-row">
               <div className="label">
-                <Trans>Collateral</Trans>
+                <Trans>Trigger Price</Trans>
               </div>
-              <div>
-                {isCollateralSwap ? (
-                  <Tooltip
-                    handle={getCollateralText()}
-                    position="right-bottom"
-                    renderContent={() => {
-                      return (
-                        <Trans>
-                          {formatTokenAmount(
-                            p.order.initialCollateralDeltaAmount,
-                            p.order.initialCollateralToken.decimals,
-                            p.order.initialCollateralToken.symbol
-                          )}{" "}
-                          will be swapped to {p.order.targetCollateralToken.symbol} on order execution.
-                        </Trans>
-                      );
-                    }}
-                  />
-                ) : (
-                  getCollateralText()
-                )}
-              </div>
+              <div>{renderTriggerPrice()}</div>
             </div>
-          )}
 
-          {!p.hideActions && (
-            <>
-              <div className="App-card-divider"></div>
-              <div className="App-card-options">
-                {p.onEditOrder && (
-                  <button className="App-button-option App-card-option" onClick={p.onEditOrder}>
-                    <Trans>Edit</Trans>
-                  </button>
-                )}
-
-                {p.onCancelOrder && (
-                  <button className="App-button-option App-card-option" onClick={p.onCancelOrder}>
-                    <Trans>Cancel</Trans>
-                  </button>
-                )}
+            <div className="App-card-row">
+              <div className="label">
+                <Trans>Acceptable Price</Trans>
               </div>
-            </>
-          )}
+              <div>{renderTriggerPrice()}</div>
+            </div>
+
+            <div className="App-card-row">
+              <div className="label">
+                <Trans>Mark Price</Trans>
+              </div>
+              <div>{renderMarkPrice()}</div>
+            </div>
+
+            {isIncreaseOrderType(p.order.orderType) && (
+              <div className="App-card-row">
+                <div className="label">
+                  <Trans>Collateral</Trans>
+                </div>
+                <div>
+                  {isCollateralSwap ? (
+                    <Tooltip
+                      handle={getCollateralText()}
+                      position="right-bottom"
+                      renderContent={() => {
+                        return (
+                          <Trans>
+                            {formatTokenAmount(
+                              p.order.initialCollateralDeltaAmount,
+                              p.order.initialCollateralToken.decimals,
+                              p.order.initialCollateralToken.symbol
+                            )}{" "}
+                            will be swapped to {p.order.targetCollateralToken.symbol} on order execution.
+                          </Trans>
+                        );
+                      }}
+                    />
+                  ) : (
+                    getCollateralText()
+                  )}
+                </div>
+              </div>
+            )}
+
+            {!p.hideActions && (
+              <>
+                <div className="App-card-divider"></div>
+                <div className="App-card-options">
+                  {p.onEditOrder && (
+                    <button className="App-button-option App-card-option" onClick={p.onEditOrder}>
+                      <Trans>Edit</Trans>
+                    </button>
+                  )}
+
+                  {p.onCancelOrder && (
+                    <button className="App-button-option App-card-option" onClick={p.onCancelOrder}>
+                      <Trans>Cancel</Trans>
+                    </button>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
     );

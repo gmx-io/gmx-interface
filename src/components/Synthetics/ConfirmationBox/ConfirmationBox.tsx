@@ -1241,7 +1241,7 @@ export function ConfirmationBox(p: Props) {
 
         {needPayTokenApproval && fromToken && (
           <>
-            <div className="line-divider" />
+            {!isHighPriceImpact && <div className="line-divider" />}
 
             <ApproveTokenButton
               tokenAddress={fromToken.address}

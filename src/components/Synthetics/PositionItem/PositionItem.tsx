@@ -90,7 +90,7 @@ export function PositionItem(p: Props) {
         <div className="position-list-collateral">
           <Tooltip
             handle={`${formatUsd(p.position.remainingCollateralUsd)}`}
-            position={p.isLarge ? "left-bottom" : "right-bottom"}
+            position={p.isLarge ? "left-bottom" : "center-bottom"}
             className="PositionItem-collateral-tooltip"
             handleClassName={cx("plain", { negative: p.position.hasLowCollateral })}
             renderContent={() => {
@@ -413,137 +413,140 @@ export function PositionItem(p: Props) {
   function renderSmall() {
     return (
       <div className="App-card">
-        <div className="App-card-title Position-card-title">
-          <span className="Exchange-list-title">{p.position.marketInfo.indexToken?.symbol}</span>
-          <div>
-            <span className="Position-leverage">{formatLeverage(p.position.leverage)}&nbsp;</span>
-            <span
-              className={cx("Exchange-list-side", {
-                positive: p.position.isLong,
-                negative: !p.position.isLong,
-              })}
-            >
-              {p.position.isLong ? t`Long` : t`Short`}
-            </span>
-          </div>
-          {p.position.pendingUpdate && <ImSpinner2 className="spin position-loading-icon" />}
-        </div>
-        <div className="App-card-divider" />
-        <div className="App-card-content">
-          {showDebugValues && (
-            <div className="App-card-row">
-              <div className="label">Key</div>
-              <div className="debug-key muted">{p.position.contractKey}</div>
-            </div>
-          )}
-          <div className="App-card-row">
-            <div className="label">
-              <Trans>Market</Trans>
-            </div>
-            <div>{p.position.marketInfo.name}</div>
-          </div>
-          <div className="App-card-row">
-            <div className="label">
-              <Trans>Net Value</Trans>
-            </div>
-            <div>{renderNetValue()}</div>
-          </div>
-          <div className="App-card-row">
-            <div className="label">
-              <Trans>PnL</Trans>
-            </div>
+        <div>
+          <div className="App-card-title Position-card-title">
+            <span className="Exchange-list-title">{p.position.marketInfo.indexToken?.symbol}</span>
             <div>
+              <span className="Position-leverage">{formatLeverage(p.position.leverage)}&nbsp;</span>
               <span
-                className={cx("Exchange-list-info-label", {
-                  positive: displayedPnl?.gt(0),
-                  negative: displayedPnl?.lt(0),
-                  muted: displayedPnl?.eq(0),
+                className={cx("Exchange-list-side", {
+                  positive: p.position.isLong,
+                  negative: !p.position.isLong,
                 })}
               >
-                {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
+                {p.position.isLong ? t`Long` : t`Short`}
               </span>
             </div>
+            {p.position.pendingUpdate && <ImSpinner2 className="spin position-loading-icon" />}
           </div>
-          <div className="App-card-row">
-            <div className="label">
-              <Trans>Size</Trans>
+
+          <div className="App-card-divider" />
+          <div className="App-card-content">
+            {showDebugValues && (
+              <div className="App-card-row">
+                <div className="label">Key</div>
+                <div className="debug-key muted">{p.position.contractKey}</div>
+              </div>
+            )}
+            <div className="App-card-row">
+              <div className="label">
+                <Trans>Market</Trans>
+              </div>
+              <div>{p.position.marketInfo.name}</div>
             </div>
-            <div>{formatUsd(p.position.sizeInUsd)}</div>
-          </div>
-          <div className="App-card-row">
-            <div className="label">
-              <Trans>Collateral</Trans>
+            <div className="App-card-row">
+              <div className="label">
+                <Trans>Net Value</Trans>
+              </div>
+              <div>{renderNetValue()}</div>
             </div>
-            <div className="position-list-collateral">{renderCollateral()}</div>
+            <div className="App-card-row">
+              <div className="label">
+                <Trans>PnL</Trans>
+              </div>
+              <div>
+                <span
+                  className={cx("Exchange-list-info-label", {
+                    positive: displayedPnl?.gt(0),
+                    negative: displayedPnl?.lt(0),
+                    muted: displayedPnl?.eq(0),
+                  })}
+                >
+                  {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
+                </span>
+              </div>
+            </div>
+            <div className="App-card-row">
+              <div className="label">
+                <Trans>Size</Trans>
+              </div>
+              <div>{formatUsd(p.position.sizeInUsd)}</div>
+            </div>
+            <div className="App-card-row">
+              <div className="label">
+                <Trans>Collateral</Trans>
+              </div>
+              <div className="position-list-collateral">{renderCollateral()}</div>
+            </div>
           </div>
-        </div>
-        <div className="App-card-divider" />
-        <div className="App-card-content">
+          <div className="App-card-divider" />
+          <div className="App-card-content">
+            <div className="App-card-row">
+              <div className="label">
+                <Trans>Entry Price</Trans>
+              </div>
+              <div>
+                {formatUsd(p.position.entryPrice, {
+                  displayDecimals: indexPriceDecimals,
+                })}
+              </div>
+            </div>
+            <div className="App-card-row">
+              <div className="label">
+                <Trans>Mark Price</Trans>
+              </div>
+              <div>
+                {formatUsd(p.position.markPrice, {
+                  displayDecimals: indexPriceDecimals,
+                })}
+              </div>
+            </div>
+            <div className="App-card-row">
+              <div className="label">
+                <Trans>Liq. Price</Trans>
+              </div>
+              <div>{renderLiquidationPrice()}</div>
+            </div>
+          </div>
+          <div className="App-card-divider" />
           <div className="App-card-row">
             <div className="label">
-              <Trans>Entry Price</Trans>
+              <Trans>Orders</Trans>
             </div>
             <div>
-              {formatUsd(p.position.entryPrice, {
-                displayDecimals: indexPriceDecimals,
-              })}
+              {!p.positionOrders?.length && "None"}
+              {renderPositionOrders()}
             </div>
           </div>
-          <div className="App-card-row">
-            <div className="label">
-              <Trans>Mark Price</Trans>
-            </div>
-            <div>
-              {formatUsd(p.position.markPrice, {
-                displayDecimals: indexPriceDecimals,
-              })}
-            </div>
-          </div>
-          <div className="App-card-row">
-            <div className="label">
-              <Trans>Liq. Price</Trans>
-            </div>
-            <div>{renderLiquidationPrice()}</div>
-          </div>
-        </div>
-        <div className="App-card-divider" />
-        <div className="App-card-row">
-          <div className="label">
-            <Trans>Orders</Trans>
-          </div>
-          <div>
-            {!p.positionOrders?.length && "None"}
-            {renderPositionOrders()}
-          </div>
-        </div>
-        {!p.hideActions && (
-          <>
-            <div className="App-card-divider"></div>
-            <div className="App-card-options">
-              <button
-                className="App-button-option App-card-option"
-                disabled={p.position.sizeInUsd.eq(0)}
-                onClick={p.onClosePositionClick}
-              >
-                <Trans>Close</Trans>
-              </button>
-              <button
-                className="App-button-option App-card-option"
-                disabled={p.position.sizeInUsd.eq(0)}
-                onClick={p.onEditCollateralClick}
-              >
-                <Trans>Edit Collateral</Trans>
-              </button>
-              {/* <button
+          {!p.hideActions && (
+            <>
+              <div className="App-card-divider"></div>
+              <div className="App-card-options">
+                <button
+                  className="App-button-option App-card-option"
+                  disabled={p.position.sizeInUsd.eq(0)}
+                  onClick={p.onClosePositionClick}
+                >
+                  <Trans>Close</Trans>
+                </button>
+                <button
+                  className="App-button-option App-card-option"
+                  disabled={p.position.sizeInUsd.eq(0)}
+                  onClick={p.onEditCollateralClick}
+                >
+                  <Trans>Edit Collateral</Trans>
+                </button>
+                {/* <button
                   className="Exchange-list-action App-button-option App-card-option"
                   onClick={p.onShareClick}
                   disabled={p.position.sizeInUsd.eq(0)}
                 >
                   <Trans>Share</Trans>
                 </button> */}
-            </div>
-          </>
-        )}
+              </div>
+            </>
+          )}
+        </div>
       </div>
     );
   }
