@@ -1,6 +1,7 @@
 import cx from "classnames";
 import { useCallback, useState, useRef } from "react";
 import { IS_TOUCH } from "config/env";
+import "./Tooltip.css";
 
 const OPEN_DELAY = 0;
 const CLOSE_DELAY = 100;
