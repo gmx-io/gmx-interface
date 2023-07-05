@@ -413,8 +413,19 @@ export function PositionItem(p: Props) {
   function renderSmall() {
     return (
       <div className="App-card">
-        <div className="App-card-title">
+        <div className="App-card-title Position-card-title">
           <span className="Exchange-list-title">{p.position.marketInfo.indexToken?.symbol}</span>
+          <div>
+            <span className="Position-leverage">{formatLeverage(p.position.leverage)}&nbsp;</span>
+            <span
+              className={cx("Exchange-list-side", {
+                positive: p.position.isLong,
+                negative: !p.position.isLong,
+              })}
+            >
+              {p.position.isLong ? t`Long` : t`Short`}
+            </span>
+          </div>
           {p.position.pendingUpdate && <ImSpinner2 className="spin position-loading-icon" />}
         </div>
         <div className="App-card-divider" />
@@ -433,31 +444,9 @@ export function PositionItem(p: Props) {
           </div>
           <div className="App-card-row">
             <div className="label">
-              <Trans>Leverage</Trans>
+              <Trans>Net Value</Trans>
             </div>
-            <div>
-              {formatLeverage(p.position.leverage)}&nbsp;
-              <span
-                className={cx("Exchange-list-side", {
-                  positive: p.position.isLong,
-                  negative: !p.position.isLong,
-                })}
-              >
-                {p.position.isLong ? t`Long` : t`Short`}
-              </span>
-            </div>
-          </div>
-          <div className="App-card-row">
-            <div className="label">
-              <Trans>Size</Trans>
-            </div>
-            <div>{formatUsd(p.position.sizeInUsd)}</div>
-          </div>
-          <div className="App-card-row">
-            <div className="label">
-              <Trans>Collateral</Trans>
-            </div>
-            <div className="position-list-collateral">{renderCollateral()}</div>
+            <div>{renderNetValue()}</div>
           </div>
           <div className="App-card-row">
             <div className="label">
@@ -477,18 +466,15 @@ export function PositionItem(p: Props) {
           </div>
           <div className="App-card-row">
             <div className="label">
-              <Trans>Net Value</Trans>
+              <Trans>Size</Trans>
             </div>
-            <div>{renderNetValue()}</div>
+            <div>{formatUsd(p.position.sizeInUsd)}</div>
           </div>
           <div className="App-card-row">
             <div className="label">
-              <Trans>Orders</Trans>
+              <Trans>Collateral</Trans>
             </div>
-            <div>
-              {!p.positionOrders?.length && "None"}
-              {renderPositionOrders()}
-            </div>
+            <div className="position-list-collateral">{renderCollateral()}</div>
           </div>
         </div>
         <div className="App-card-divider" />
@@ -520,10 +506,20 @@ export function PositionItem(p: Props) {
             <div>{renderLiquidationPrice()}</div>
           </div>
         </div>
+        <div className="App-card-divider" />
+        <div className="App-card-row">
+          <div className="label">
+            <Trans>Orders</Trans>
+          </div>
+          <div>
+            {!p.positionOrders?.length && "None"}
+            {renderPositionOrders()}
+          </div>
+        </div>
         {!p.hideActions && (
           <>
             <div className="App-card-divider"></div>
-            <div className="App-card-options Position-buttons-container">
+            <div className="App-card-options">
               <button
                 className="App-button-option App-card-option"
                 disabled={p.position.sizeInUsd.eq(0)}
