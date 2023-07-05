@@ -71,7 +71,7 @@
     "test:ci": "react-app-rewired test --watchAll=false",
     "eject": "react-scripts eject",
     "lint": "node node_modules/.bin/eslint src",
-    "pre-commit": "npm run test -- --watchAll=false && npm run lint",
+    "pre-commit": "npm run lint",
     "prepare": "husky install && yarn lingui:prepare",
     "extract": "NODE_ENV=development lingui extract --clean",
     "compile": "lingui compile",

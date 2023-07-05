@@ -154,10 +154,11 @@ export class TVDataProvider {
       console.error(error);
     }
 
-    if (!this.lastBar) return;
-
     const currentPrice = await this.getCurrentPriceOfToken(chainId, ticker);
     const averagePriceValue = parseFloat(formatAmount(currentPrice, USD_DECIMALS, 4));
+
+    if (!this.lastBar || !averagePriceValue) return;
+
     if (this.lastBar.time && currentCandleTime === this.lastBar.time && ticker === this.lastBar.ticker) {
       return {
         ...this.lastBar,

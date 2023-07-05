@@ -24,7 +24,7 @@ type TokenPricesDataResult = {
 export function useTokenRecentPrices(chainId: number): TokenPricesDataResult {
   const url = getOracleKeeperUrl(chainId, "/prices/tickers");
 
-  const { data } = useSWR(url, {
+  const { data } = useSWR([url], {
     fetcher: (...args) =>
       jsonFetcher(...args).then((priceItems: BackendResponse) => {
         const result: TokenPricesData = {};
@@ -73,6 +73,7 @@ export function useTokenRecentPrices(chainId: number): TokenPricesDataResult {
           updatedAt: Date.now(),
         };
       }),
+    refreshInterval: 500,
   });
 
   return {
