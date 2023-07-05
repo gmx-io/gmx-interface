@@ -546,6 +546,7 @@ table.Exchange-list th {
   grid-template-columns: auto auto;
   font-size: var(--font-sm);
   margin-bottom: 0.465rem;
+  align-items: center;
 }
 
 .Exchange-info-row.top-line {

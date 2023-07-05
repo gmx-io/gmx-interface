@@ -2632,10 +2632,6 @@ msgstr "紹介コードの更新完了!"
 msgid "Referrals"
 msgstr "紹介アカウント"
 
-#: src/pages/Referrals/Referrals.js
-#~ msgid "Referrals <0/>"
-#~ msgstr ""
-
 #: src/components/Exchange/TradeHistory.js
 msgid "Request decrease {0} {longOrShortText}, -{1} USD, Acceptable Price: {2} {3} USD"
 msgstr "{0} {longOrShortText} の減額をリクエスト -{1} USD 可能な価格: {2} {3} USD"

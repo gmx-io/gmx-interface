@@ -2632,10 +2632,6 @@ msgstr "Реферальный код обновлен!"
 msgid "Referrals"
 msgstr "Рефералы"
 
-#: src/pages/Referrals/Referrals.js
-#~ msgid "Referrals <0/>"
-#~ msgstr ""
-
 #: src/components/Exchange/TradeHistory.js
 msgid "Request decrease {0} {longOrShortText}, -{1} USD, Acceptable Price: {2} {3} USD"
 msgstr "Уменьшение запроса {0} {longOrShortText}, -{1} USD, Приемлемая Цена: {2} {3} USD"
