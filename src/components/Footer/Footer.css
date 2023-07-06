@@ -6,8 +6,9 @@
   position: absolute;
   transform: translateX(-50%);
   left: 50%;
-  height: 11.5rem;
+  height: 3rem;
   bottom: 0;
+  margin-bottom: 1em;
   border-top: 1px solid #282b4c;
 }
 
@@ -94,7 +95,7 @@
     margin-bottom: 1.4rem;
   }
   .Footer-wrapper {
-    padding-top: 2.5rem;
+    padding-top: 1rem;
   }
   .home {
     height: 23rem;

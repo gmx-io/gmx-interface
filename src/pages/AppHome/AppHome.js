@@ -1,46 +1,40 @@
-import React from "react";
-import "./AppHome.css";
 import Footer from "components/Footer/Footer";
+import "./AppHome.css";
 
 import { Trans } from "@lingui/macro";
 import { HeaderLink } from "components/Header/HeaderLink";
+import arrow from "img/arrow-narrow-right.svg";
 
-export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
-  const LaunchExchangeButton = () => {
+export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
+  const TradeNowButton = () => {
     return (
       <HeaderLink
-        className="default-btn"
+        className="btn"
         to="/trade"
         redirectPopupTimestamp={redirectPopupTimestamp}
         showRedirectModal={showRedirectModal}
       >
-        <Trans>Trade now</Trans>
+        <Trans>Trade Now</Trans>
+        <img className="logo" src={arrow} alt="arrow" />
       </HeaderLink>
     );
   };
 
   return (
-    <div>
-      <div className="Home">
-        <div className="Home-top">
-          <div className="Home-title-section-container default-container">
-            <div className="Home-title-section">
-              <div className="Home-title">
-                <Trans>
-                  User-driven
-                  <br />
-                  <span className="Home-title-subtext">WEB 3.0</span>
-                  <br />
-                  Digital asset exchange
-                </Trans>
-                <br />
-                <LaunchExchangeButton />
-              </div>
-            </div>
+    <div className="hero-outer">
+      <div className="hero">
+        <div className="hero-inner">
+          <div className="hero-title">
+            <Trans>User-friendly</Trans>
+            <br />
+            <span className="Home-title-subtext">Compliant</span>
+            <br />
+            Digital asset exchange
           </div>
+          <TradeNowButton />
         </div>
+        <Footer showRedirectModal={showRedirectModal} redirectPopupTimestamp={redirectPopupTimestamp} />
       </div>
-      <Footer />
     </div>
   );
 }
