@@ -5340,8 +5340,8 @@ msgid "{0} will be swapped to {1} on order execution."
 msgstr "{0} will be swapped to {1} on order execution."
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
-msgid "{0} {1} market selected."
-msgstr "{0} {1} market selected."
+msgid "{0} {1} market selected"
+msgstr "{0} {1} market selected"
 
 #: src/components/Exchange/SwapBox.js
 msgid "{0} {1} not supported"

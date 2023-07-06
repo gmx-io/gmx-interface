@@ -230,7 +230,7 @@ export function SyntheticsPage(p: Props) {
   function onSelectPositionClick(key: string, tradeMode?: TradeMode) {
     const position = getByKey(positionsInfoData, key);
     setActivePosition(getByKey(positionsInfoData, key), tradeMode);
-    const message = t`${position?.isLong ? "Long" : "Short"} ${position?.marketInfo.name} market selected.`;
+    const message = t`${position?.isLong ? "Long" : "Short"} ${position?.marketInfo.name} market selected`;
     helperToast.success(message);
   }
 

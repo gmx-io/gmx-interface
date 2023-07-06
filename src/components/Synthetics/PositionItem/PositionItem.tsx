@@ -287,8 +287,8 @@ export function PositionItem(p: Props) {
       isCurrentTradeTypeLong === p.position.isLong;
     return (
       <tr
-        className={cx("Exhange-list-item", {
-          "Exhange-list-item-active": isCurrentMarket,
+        className={cx("Exchange-list-item", {
+          "Exchange-list-item-active": isCurrentMarket,
         })}
       >
         <td className="clickable" onClick={() => p.onSelectPositionClick?.()}>

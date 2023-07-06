@@ -500,6 +500,7 @@ table.Exchange-list td {
   padding: 1.05rem;
   padding-left: 1.5rem;
 }
+
 table.Exchange-list.Orders th,
 table.Exchange-list.Orders td {
   padding-top: 1.4rem;
@@ -533,11 +534,15 @@ table.Exchange-list th {
   opacity: 0.7;
 }
 
-table.Exchange-list .Exhange-list-item {
+table.Exchange-list .Exchange-list-item {
   border-left: 2px solid transparent;
 }
 
-table.Exchange-list .Exhange-list-item-active {
+table.Exchange-list .Exchange-list-item td {
+  padding-left: 1.3rem;
+}
+
+table.Exchange-list .Exchange-list-item-active {
   border-left: 2px solid #3a3f79;
 }
 
