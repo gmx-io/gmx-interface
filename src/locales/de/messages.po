@@ -2726,6 +2726,10 @@ msgid "Migration submitted! <0>View status.</0>"
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min collateral: {0}"
+msgstr ""
+
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min collateral: {0} USD"
 msgstr ""
 

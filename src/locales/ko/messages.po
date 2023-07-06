@@ -2729,6 +2729,10 @@ msgid "Migration submitted! <0>View status.</0>"
 msgstr "이전 제출완료! <0>상태 보기.</0>"
 
 #: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min collateral: {0}"
+msgstr ""
+
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min collateral: {0} USD"
 msgstr ""
 
