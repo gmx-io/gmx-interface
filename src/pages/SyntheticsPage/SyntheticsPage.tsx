@@ -47,6 +47,7 @@ export type Props = {
   setPendingTxns: (txns: any) => void;
   tradePageVersion: number;
   setTradePageVersion: (version: number) => void;
+  openSettings: () => void;
 };
 
 enum ListSection {
@@ -69,6 +70,7 @@ export function SyntheticsPage(p: Props) {
     setTradePageVersion,
     savedShowPnlAfterFees,
     savedSlippageAmount,
+    openSettings,
   } = p;
   const { chainId } = useChainId();
   const { library, account } = useWeb3React();
@@ -304,6 +306,7 @@ export function SyntheticsPage(p: Props) {
                 currentMarketAddress={marketAddress}
                 currentCollateralAddress={collateralAddress}
                 currentTradeType={tradeType}
+                openSettings={openSettings}
               />
             )}
             {listSection === ListSection.Orders && (
@@ -397,6 +400,7 @@ export function SyntheticsPage(p: Props) {
               currentMarketAddress={marketAddress}
               currentCollateralAddress={collateralAddress}
               currentTradeType={tradeType}
+              openSettings={openSettings}
             />
           )}
           {listSection === ListSection.Orders && (

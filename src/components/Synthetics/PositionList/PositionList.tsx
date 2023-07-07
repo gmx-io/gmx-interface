@@ -18,6 +18,7 @@ type Props = {
   currentMarketAddress?: string;
   currentCollateralAddress?: string;
   currentTradeType?: TradeType;
+  openSettings: () => void;
 };
 
 export function PositionList(p: Props) {
@@ -49,6 +50,7 @@ export function PositionList(p: Props) {
               currentMarketAddress={p.currentMarketAddress}
               currentCollateralAddress={p.currentCollateralAddress}
               currentTradeType={p.currentTradeType}
+              openSettings={p.openSettings}
             />
           ))}
       </div>
@@ -105,6 +107,7 @@ export function PositionList(p: Props) {
                 currentMarketAddress={p.currentMarketAddress}
                 currentCollateralAddress={p.currentCollateralAddress}
                 currentTradeType={p.currentTradeType}
+                openSettings={p.openSettings}
               />
             ))}
         </tbody>
