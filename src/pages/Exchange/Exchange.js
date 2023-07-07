@@ -956,6 +956,7 @@ export const Exchange = forwardRef((props, ref) => {
             library={library}
             account={account}
             positionsMap={positionsMap}
+            positions={positions}
             fromTokenAddress={fromTokenAddress}
             setFromTokenAddress={setFromTokenAddress}
             toTokenAddress={toTokenAddress}

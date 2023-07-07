@@ -60,6 +60,7 @@ input {
   --dark-blue-hover: #808aff14;
   --dark-blue-border: #ffffff29;
   --dark-blue-active: #818cef33;
+  --warning-yellow: rgb(243, 181, 12);
   --text-gray: rgba(255, 255, 255, 0.7);
   --avax-red: #e84143;
   --arbitrum-blue: #28a0f0;
@@ -451,4 +452,8 @@ button.btn-link:hover .logout-icon {
 
 .text-gray {
   color: var(--text-gray);
+}
+
+.text-warning {
+  color: var(--warning-yellow);
 }
