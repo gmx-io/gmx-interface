@@ -86,12 +86,18 @@ export function useSwapRoutes(p: {
   }, [allRoutes, marketsInfoData, wrappedFromAddress]);
 
   const findSwapPath = useCallback(
-    (usdIn: BigNumber, opts: { shouldApplyPriceImpact: boolean }) => {
-      if (!allRoutes || !estimator || !marketsInfoData || !fromTokenAddress) {
+    (usdIn: BigNumber, opts: { byLiquidity?: boolean }) => {
+      if (!allRoutes?.length || !estimator || !marketsInfoData || !fromTokenAddress) {
         return undefined;
       }
 
-      const swapPath = getBestSwapPath(allRoutes, usdIn, estimator);
+      let swapPath: string[] | undefined = undefined;
+
+      if (opts.byLiquidity) {
+        swapPath = allRoutes[0].path;
+      } else {
+        swapPath = getBestSwapPath(allRoutes, usdIn, estimator);
+      }
 
       if (!swapPath) {
         return undefined;
@@ -103,7 +109,7 @@ export function useSwapRoutes(p: {
         initialCollateralAddress: fromTokenAddress,
         wrappedNativeTokenAddress: wrappedToken.address,
         shouldUnwrapNativeToken: toTokenAddress === NATIVE_TOKEN_ADDRESS,
-        shouldApplyPriceImpact: opts.shouldApplyPriceImpact,
+        shouldApplyPriceImpact: true,
         usdIn,
       });
 

@@ -736,6 +736,8 @@ export function ConfirmationBox(p: Props) {
     let availableLiquidityAmount: BigNumber | undefined = undefined;
     let isLiquidityRisk = false;
 
+    let tooltipContent = "";
+
     if (isSwap && swapAmounts) {
       availableLiquidityUsd = swapLiquidityUsd;
 
@@ -746,6 +748,10 @@ export function ConfirmationBox(p: Props) {
       );
 
       isLiquidityRisk = availableLiquidityUsd!.mul(riskThresholdBps).div(BASIS_POINTS_DIVISOR).lt(swapAmounts.usdOut);
+
+      tooltipContent = isLiquidityRisk
+        ? t`There may not be sufficient liquidity to execute your order when the Min. Receive are met.`
+        : t`The order will only execute if the Min. Receive is met and there is sufficient liquidity.`;
     }
 
     if (isIncrease && increaseAmounts) {
@@ -755,6 +761,10 @@ export function ConfirmationBox(p: Props) {
         .mul(riskThresholdBps)
         .div(BASIS_POINTS_DIVISOR)
         .lt(increaseAmounts.sizeDeltaUsd);
+
+      tooltipContent = isLiquidityRisk
+        ? t`There may not be sufficient liquidity to execute your order when the price conditions are met.`
+        : t`The order will only execute if the price conditions are met and there is sufficient liquidity.`;
     }
 
     return (
@@ -767,11 +777,7 @@ export function ConfirmationBox(p: Props) {
               ? formatTokenAmount(availableLiquidityAmount, toToken?.decimals, toToken?.symbol)
               : formatUsd(availableLiquidityUsd)
           }
-          renderContent={() =>
-            isLiquidityRisk
-              ? t`There may not be sufficient liquidity to execute your order when the price conditions are met.`
-              : t`The order will only execute if the price conditions are met and there is sufficient liquidity.`
-          }
+          renderContent={() => tooltipContent}
         />
       </ExchangeInfoRow>
     );
@@ -789,6 +795,14 @@ export function ConfirmationBox(p: Props) {
         </div>
       );
     }
+  }
+
+  function renderLimitPriceWarning() {
+    return (
+      <div className="Confirmation-box-info">
+        <Trans>Limit Order Price will vary based on Fees and Price Impact to guarantee the Min. Receive amount.</Trans>
+      </div>
+    );
   }
 
   const renderCollateralSpreadWarning = useCallback(() => {
@@ -878,7 +892,7 @@ export function ConfirmationBox(p: Props) {
             }
           />
 
-          {renderAllowedSlippage(savedAllowedSlippage, setAllowedSlippage)}
+          {isMarket && renderAllowedSlippage(savedAllowedSlippage, setAllowedSlippage)}
 
           {isMarket && collateralSpreadInfo?.spread && (
             <ExchangeInfoRow label={t`Collateral Spread`} isWarning={swapSpreadInfo.isHigh} isTop={true}>
@@ -1077,19 +1091,26 @@ export function ConfirmationBox(p: Props) {
           {renderMain()}
           {renderFeeWarning()}
           {renderSwapSpreadWarining()}
+          {isLimit && renderLimitPriceWarning()}
           {swapSpreadInfo.showSpread && swapSpreadInfo.spread && (
             <ExchangeInfoRow label={t`Spread`} isWarning={swapSpreadInfo.isHigh}>
               {formatAmount(swapSpreadInfo.spread.mul(100), USD_DECIMALS, 2, true)}%
             </ExchangeInfoRow>
           )}
           {isLimit && renderAvailableLiquidity()}
-          {renderAllowedSlippage(savedAllowedSlippage, setAllowedSlippage)}
+          {isMarket && renderAllowedSlippage(savedAllowedSlippage, setAllowedSlippage)}
           <ExchangeInfoRow label={t`Mark Price`} isTop>
             {formatTokensRatio(fromToken, toToken, markRatio)}
           </ExchangeInfoRow>
           {isLimit && (
             <ExchangeInfoRow label={t`Limit Price`}>
-              {formatTokensRatio(fromToken, toToken, triggerRatio)}
+              <Tooltip
+                position="right-bottom"
+                handle={formatTokensRatio(fromToken, toToken, triggerRatio)}
+                renderContent={() =>
+                  t`Limit Order Price to guarantee Min. Receive amount is updated in real time in the Orders tab after the order has been created.`
+                }
+              />
             </ExchangeInfoRow>
           )}
 

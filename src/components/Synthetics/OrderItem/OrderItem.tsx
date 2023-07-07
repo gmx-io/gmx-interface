@@ -197,7 +197,7 @@ export function OrderItem(p: Props) {
             <Tooltip
               handle={swapRatioText}
               renderContent={() =>
-                t`You will receive at least ${toAmountText} if this order is executed. The execution price may vary depending on swap fees and price impact at the time the order is executed.`
+                t`You will receive at least ${toAmountText} if this order is executed. This price is being updated in real time based on Swap Fees and Price Impact.`
               }
             />
           ) : (

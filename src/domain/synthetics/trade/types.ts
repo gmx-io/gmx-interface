@@ -187,7 +187,7 @@ export type SwapEstimator = (
   usdOut: BigNumber;
 };
 
-export type FindSwapPath = (usdIn: BigNumber, opts: { shouldApplyPriceImpact: boolean }) => SwapPathStats | undefined;
+export type FindSwapPath = (usdIn: BigNumber, opts: { byLiquidity?: boolean }) => SwapPathStats | undefined;
 
 export type TradeFeesType = "swap" | "increase" | "decrease" | "edit";
 
