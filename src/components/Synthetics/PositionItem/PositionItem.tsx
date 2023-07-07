@@ -343,7 +343,7 @@ export function PositionItem(p: Props) {
             </span>
           </div>
         </td>
-        <td>
+        <td onClick={p.openSettings} className="cursor-pointer">
           {/* netValue */}
           {p.position.isOpening ? (
             t`Opening...`
@@ -463,7 +463,7 @@ export function PositionItem(p: Props) {
               <div className="label">
                 <Trans>PnL</Trans>
               </div>
-              <div>
+              <div onClick={p.openSettings}>
                 <span
                   className={cx("Exchange-list-info-label", {
                     positive: displayedPnl?.gt(0),
