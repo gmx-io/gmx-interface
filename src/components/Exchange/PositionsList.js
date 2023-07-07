@@ -243,11 +243,11 @@ export default function PositionsList(props) {
                 <div key={position.key} className="App-card">
                   <div>
                     <div className="App-card-title Position-card-title">
-                      <span className="Exchange-list-title">{position.indexToken.symbol}</span>
-                      <div>
-                        <span className="Position-leverage" onClick={openSettings}>
-                          {position.leverageStr}
-                        </span>
+                      <span onClick={() => onPositionClick(position)} className="Exchange-list-title">
+                        {position.indexToken.symbol}
+                      </span>
+                      <div onClick={openSettings}>
+                        <span className="Position-leverage">{position.leverageStr}</span>
                         <span
                           className={cx("Exchange-list-side", {
                             positive: position.isLong,
@@ -279,6 +279,7 @@ export default function PositionsList(props) {
                               negative: !hasPositionProfit && positionDelta.gt(0),
                               muted: positionDelta.eq(0),
                             })}
+                            onClick={openSettings}
                           >
                             {position.deltaStr} ({position.deltaPercentageStr})
                           </span>
@@ -506,7 +507,7 @@ export default function PositionsList(props) {
             return (
               <tr key={position.key}>
                 <td className="clickable" onClick={() => onPositionClick(position)}>
-                  <div className="Exchange-list-title">
+                  <div className="Exchange-list-title" onClick={() => onPositionClick(position)}>
                     {!hideActions ? (
                       <Tooltip
                         handle={position.indexToken.symbol}
@@ -534,18 +535,14 @@ export default function PositionsList(props) {
                     )}
                     {position.hasPendingChanges && <ImSpinner2 className="spin position-loading-icon" />}
                   </div>
-                  <div className="Exchange-list-info-label">
-                    {position.leverageStr && (
-                      <span
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openSettings();
-                        }}
-                        className="muted Position-leverage"
-                      >
-                        {position.leverageStr}
-                      </span>
-                    )}
+                  <div
+                    className="Exchange-list-info-label"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openSettings();
+                    }}
+                  >
+                    {position.leverageStr && <span className="muted Position-leverage">{position.leverageStr}</span>}
                     <span className={cx({ positive: position.isLong, negative: !position.isLong })}>
                       {position.isLong ? t`Long` : t`Short`}
                     </span>
