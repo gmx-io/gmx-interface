@@ -699,6 +699,7 @@ msgstr "担保  ({0})"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Collateral In"
 msgstr "担保の種類"
 
@@ -3116,6 +3117,10 @@ msgstr "スワップ中..."
 msgid "Swaps disabled, pending {0} upgrade"
 msgstr "{0}の更新が未完了のためスワップが停止中です"
 
+#: src/components/Exchange/SwapBox.js
+msgid "Switch to {0} collateral."
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "TOKEN"
@@ -3922,6 +3927,10 @@ msgstr "{longOrShortText} {sizeInToken} {0} (${1})を${2}の価格で増額す�
 
 #: src/components/Exchange/PositionSeller.js
 msgid "You have an active order to decrease {longOrShortText} {sizeInToken} {0} (${1}) at {prefix} {2}"
+msgstr ""
+
+#: src/components/Exchange/SwapBox.js
+msgid "You have an existing position with {0} as collateral."
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js

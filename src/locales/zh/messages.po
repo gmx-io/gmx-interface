@@ -699,6 +699,7 @@ msgstr "抵押品({0})"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Collateral In"
 msgstr "抵押品进入"
 
@@ -3116,6 +3117,10 @@ msgstr "交易中..."
 msgid "Swaps disabled, pending {0} upgrade"
 msgstr "交易取消，等待 {0} 升级"
 
+#: src/components/Exchange/SwapBox.js
+msgid "Switch to {0} collateral."
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "TOKEN"
@@ -3922,6 +3927,10 @@ msgstr "您有一个有效的限价订单，{longOrShortText} {sizeInToken} {0} 
 
 #: src/components/Exchange/PositionSeller.js
 msgid "You have an active order to decrease {longOrShortText} {sizeInToken} {0} (${1}) at {prefix} {2}"
+msgstr ""
+
+#: src/components/Exchange/SwapBox.js
+msgid "You have an existing position with {0} as collateral."
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
