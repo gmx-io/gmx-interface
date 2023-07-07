@@ -505,7 +505,6 @@ export function getNextPositionValuesForDecreaseTrade(p: {
   collateralDeltaAmount: BigNumber;
   payedRemainingCollateralUsd: BigNumber;
   payedRemainingCollateralAmount: BigNumber;
-  indexPrice: BigNumber;
   showPnlInLeverage: boolean;
   isLong: boolean;
   minCollateralUsd: BigNumber;
@@ -523,7 +522,6 @@ export function getNextPositionValuesForDecreaseTrade(p: {
     collateralDeltaAmount,
     payedRemainingCollateralUsd,
     payedRemainingCollateralAmount,
-    indexPrice,
     showPnlInLeverage,
     isLong,
     minCollateralUsd,
@@ -568,7 +566,6 @@ export function getNextPositionValuesForDecreaseTrade(p: {
     sizeInUsd: nextSizeUsd,
     collateralUsd: nextCollateralUsd,
     collateralAmount: nextCollateralAmount,
-    markPrice: indexPrice,
     minCollateralUsd,
     userReferralInfo,
     pendingBorrowingFeesUsd: BigNumber.from(0), // deducted on order

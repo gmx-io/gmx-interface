@@ -191,7 +191,6 @@ export function PositionSeller(p: Props) {
       payedRemainingCollateralAmount: decreaseAmounts.payedRemainingCollateralAmount,
       realizedPnl: decreaseAmounts.realizedPnl,
       estimatedPnl: decreaseAmounts.estimatedPnl,
-      indexPrice: decreaseAmounts.indexPrice,
       showPnlInLeverage,
       isLong: position.isLong,
       minCollateralUsd,

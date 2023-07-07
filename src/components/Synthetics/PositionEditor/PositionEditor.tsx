@@ -202,7 +202,6 @@ export function PositionEditor(p: Props) {
       collateralAmount: nextCollateralAmount,
       collateralToken: position.collateralToken,
       marketInfo: position.marketInfo,
-      markPrice: position.markPrice,
       userReferralInfo,
       pendingFundingFeesUsd: BigNumber.from(0),
       pendingBorrowingFeesUsd: BigNumber.from(0),

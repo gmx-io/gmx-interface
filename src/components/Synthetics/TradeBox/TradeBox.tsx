@@ -442,7 +442,6 @@ export function TradeBox(p: Props) {
         collateralDeltaAmount: decreaseAmounts.collateralDeltaAmount,
         payedRemainingCollateralUsd: decreaseAmounts.payedRemainingCollateralUsd,
         payedRemainingCollateralAmount: decreaseAmounts.payedRemainingCollateralAmount,
-        indexPrice: decreaseAmounts.indexPrice,
         showPnlInLeverage: savedIsPnlInLeverage,
         isLong,
         minCollateralUsd,

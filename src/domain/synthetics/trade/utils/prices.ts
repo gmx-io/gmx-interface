@@ -42,14 +42,6 @@ export function getAcceptablePriceInfo(p: {
 
   // For Limit / Trigger orders
   if (maxNegativePriceImpactBps?.gt(0)) {
-    // for longs increase
-    // price delta is positive
-    // for longs decrease
-    // price delta is negative
-    // for short increase
-    // price delta is negative
-    // for short decrease
-    // price delta is positive
     let priceDelta = indexPrice.mul(maxNegativePriceImpactBps).div(BASIS_POINTS_DIVISOR);
     priceDelta = shouldFlipPriceImpact ? priceDelta?.mul(-1) : priceDelta;
 
@@ -79,7 +71,7 @@ export function getAcceptablePriceInfo(p: {
     }
   );
 
-  if (values.priceImpactDeltaUsd.lt(0)) {
+  if (!isIncrease && values.priceImpactDeltaUsd.lt(0)) {
     const minPriceImpactUsd = applyFactor(sizeDeltaUsd, marketInfo.maxPositionImpactFactorNegative).mul(-1);
 
     if (values.priceImpactDeltaUsd.lt(minPriceImpactUsd)) {

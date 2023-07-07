@@ -96,7 +96,6 @@ export function getLiquidationPrice(p: {
   collateralAmount: BigNumber;
   collateralUsd: BigNumber;
   collateralToken: TokenData;
-  markPrice: BigNumber;
   marketInfo: MarketInfo;
   pendingFundingFeesUsd: BigNumber;
   pendingBorrowingFeesUsd: BigNumber;
