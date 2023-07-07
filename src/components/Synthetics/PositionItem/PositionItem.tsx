@@ -330,14 +330,16 @@ export function PositionItem(p: Props) {
             />
             {p.position.pendingUpdate && <ImSpinner2 className="spin position-loading-icon" />}
           </div>
-          <div
-            className="Exchange-list-info-label"
-            onClick={(e) => {
-              e.stopPropagation();
-              p.openSettings();
-            }}
-          >
-            <span className="muted">{formatLeverage(p.position.leverage) || "..."}&nbsp;</span>
+          <div className="Exchange-list-info-label">
+            <span
+              onClick={(e) => {
+                e.stopPropagation();
+                p.openSettings();
+              }}
+              className="muted"
+            >
+              {formatLeverage(p.position.leverage) || "..."}&nbsp;
+            </span>
             <span className={cx({ positive: p.position.isLong, negative: !p.position.isLong })}>
               {p.position.isLong ? t`Long` : t`Short`}
             </span>
@@ -425,8 +427,10 @@ export function PositionItem(p: Props) {
             <span className="Exchange-list-title" onClick={() => p.onSelectPositionClick?.()}>
               {p.position.marketInfo.indexToken?.symbol}
             </span>
-            <div onClick={() => p.openSettings()}>
-              <span className="Position-leverage">{formatLeverage(p.position.leverage)}&nbsp;</span>
+            <div>
+              <span onClick={() => p.openSettings()} className="Position-leverage">
+                {formatLeverage(p.position.leverage)}&nbsp;
+              </span>
               <span
                 className={cx("Exchange-list-side", {
                   positive: p.position.isLong,
@@ -451,7 +455,7 @@ export function PositionItem(p: Props) {
               <div className="label">
                 <Trans>Market</Trans>
               </div>
-              <div>{p.position.marketInfo.name}</div>
+              <div onClick={() => p.onSelectPositionClick?.()}>{p.position.marketInfo.name}</div>
             </div>
             <div className="App-card-row">
               <div className="label">
