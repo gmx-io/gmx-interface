@@ -39,7 +39,7 @@ import {
   usePositionsConstants,
 } from "domain/synthetics/positions";
 import { TokensData, adaptToV1InfoTokens, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
-import { TradeFees, getMarkPrice } from "domain/synthetics/trade";
+import { TradeFees, getMarkPrice, getMinCollateralUsdForLeverage } from "domain/synthetics/trade";
 import { getCommonError, getEditCollateralError } from "domain/synthetics/trade/utils/validation";
 import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
@@ -137,8 +137,17 @@ export function PositionEditor(p: Props) {
     selectedCollateralAddress !== ethers.constants.AddressZero &&
     collateralDeltaAmount.gt(tokenAllowance);
 
-  const maxWithdrawUsd =
-    position && minCollateralUsd ? position.collateralUsd.sub(minCollateralUsd) : BigNumber.from(0);
+  const minCollateralUsdForLeverage = position ? getMinCollateralUsdForLeverage(position) : BigNumber.from(0);
+  let _minCollateralUsd = minCollateralUsdForLeverage;
+  if (minCollateralUsd?.gt(_minCollateralUsd)) {
+    _minCollateralUsd = minCollateralUsd;
+  }
+  _minCollateralUsd = _minCollateralUsd
+    .add(position?.pendingBorrowingFeesUsd || 0)
+    .add(position?.pendingFundingFeesUsd || 0);
+
+  const maxWithdrawUsd = position ? position.collateralUsd.sub(_minCollateralUsd) : BigNumber.from(0);
+
   const maxWithdrawAmount = convertToTokenAmount(maxWithdrawUsd, collateralToken?.decimals, collateralPrice);
 
   const { fees, executionFee } = useMemo(() => {
