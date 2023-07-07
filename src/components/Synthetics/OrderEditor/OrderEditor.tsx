@@ -1,4 +1,5 @@
 import { Trans, t } from "@lingui/macro";
+import cx from "classnames";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Modal from "components/Modal/Modal";
 import { MarketsInfoData } from "domain/synthetics/markets";
@@ -6,6 +7,7 @@ import {
   OrderInfo,
   OrderType,
   PositionOrderInfo,
+  SwapOrderInfo,
   isDecreaseOrderType,
   isIncreaseOrderType,
   isLimitOrderType,
@@ -16,14 +18,22 @@ import { PositionsInfoData, formatLiquidationPrice, getPositionKey } from "domai
 import {
   TokensData,
   TokensRatio,
+  convertToTokenAmount,
   getAmountByRatio,
   getTokenData,
-  getTokensRatioByAmounts,
   getTokensRatioByPrice,
 } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
-import { bigNumberify, formatAmount, formatAmountFree, formatTokenAmount, formatUsd, parseValue } from "lib/numbers";
+import {
+  bigNumberify,
+  formatAmount,
+  formatAmountFree,
+  formatDeltaUsd,
+  formatTokenAmount,
+  formatUsd,
+  parseValue,
+} from "lib/numbers";
 import { useEffect, useMemo, useState } from "react";
 
 import { useWeb3React } from "@web3-react/core";
@@ -133,17 +143,31 @@ export function OrderEditor(p: Props) {
     } as TokensRatio;
   }, [markRatio, triggerRatioInputValue]);
 
-  // TODO: fix
-  const minOutputAmount =
-    fromToken && toToken && triggerRatio
-      ? getAmountByRatio({
-          fromToken,
-          toToken,
-          fromTokenAmount: p.order.initialCollateralDeltaAmount,
-          ratio: triggerRatio?.ratio,
-          shouldInvertRatio: isRatioInverted,
-        })
-      : p.order.minOutputAmount;
+  let minOutputAmount = p.order.minOutputAmount;
+
+  if (fromToken && toToken && triggerRatio) {
+    minOutputAmount = getAmountByRatio({
+      fromToken,
+      toToken,
+      fromTokenAmount: p.order.initialCollateralDeltaAmount,
+      ratio: triggerRatio?.ratio,
+      shouldInvertRatio: !isRatioInverted,
+    });
+
+    const priceImpactAmount = convertToTokenAmount(
+      p.order.swapPathStats?.totalSwapPriceImpactDeltaUsd,
+      p.order.targetCollateralToken.decimals,
+      p.order.targetCollateralToken.prices.minPrice
+    );
+
+    const swapFeeAmount = convertToTokenAmount(
+      p.order.swapPathStats?.totalSwapFeeUsd,
+      p.order.targetCollateralToken.decimals,
+      p.order.targetCollateralToken.prices.minPrice
+    );
+
+    minOutputAmount = minOutputAmount.add(priceImpactAmount || 0).sub(swapFeeAmount || 0);
+  }
 
   const market = getByKey(marketsInfoData, p.order.marketAddress);
   const indexToken = getTokenData(tokensData, market?.indexTokenAddress);
@@ -326,15 +350,7 @@ export function OrderEditor(p: Props) {
       if (isInited) return;
 
       if (isSwapOrderType(p.order.orderType)) {
-        const ratio =
-          fromToken &&
-          toToken &&
-          getTokensRatioByAmounts({
-            fromToken,
-            toToken,
-            fromTokenAmount: p.order.initialCollateralDeltaAmount,
-            toTokenAmount: p.order.minOutputAmount,
-          });
+        const ratio = (p.order as SwapOrderInfo).triggerRatio;
 
         if (ratio) {
           setTriggerRatioInputValue(formatAmount(ratio.ratio, USD_DECIMALS, 2));
@@ -421,6 +437,34 @@ export function OrderEditor(p: Props) {
                   })}
                 />
               )}
+            </>
+          )}
+
+          {isSwapOrderType(p.order.orderType) && (
+            <>
+              <ExchangeInfoRow
+                label={t`Swap Price Impact`}
+                value={
+                  <span
+                    className={cx({
+                      positive: p.order.swapPathStats?.totalSwapPriceImpactDeltaUsd?.gt(0),
+                    })}
+                  >
+                    {formatDeltaUsd(p.order.swapPathStats?.totalSwapPriceImpactDeltaUsd)}
+                  </span>
+                }
+              />
+
+              <ExchangeInfoRow label={t`Swap Fees`} value={formatUsd(p.order.swapPathStats?.totalSwapFeeUsd)} />
+
+              <ExchangeInfoRow
+                label={t`Min. Receive`}
+                value={formatTokenAmount(
+                  minOutputAmount,
+                  p.order.targetCollateralToken.decimals,
+                  p.order.targetCollateralToken.symbol
+                )}
+              />
             </>
           )}
 

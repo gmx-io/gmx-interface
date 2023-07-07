@@ -5,8 +5,8 @@ import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { Order, OrderInfo, OrderType, PositionOrderInfo, SwapOrderInfo } from "./types";
 import { parsePositionKey } from "../positions";
 import { MarketsInfoData } from "../markets";
-import { getSwapPathOutputAddresses, getTriggerThresholdType } from "../trade";
-import { TokensData, parseContractPrice } from "../tokens";
+import { getSwapPathOutputAddresses, getSwapPathStats, getTriggerThresholdType } from "../trade";
+import { TokensData, convertToTokenAmount, convertToUsd, getTokensRatioByAmounts, parseContractPrice } from "../tokens";
 import { getByKey } from "lib/objects";
 
 export function isVisibleOrder(orderType: OrderType) {
@@ -136,6 +136,41 @@ export function getOrderInfo(
       return undefined;
     }
 
+    const swapPathStats = getSwapPathStats({
+      marketsInfoData,
+      swapPath: order.swapPath,
+      initialCollateralAddress: order.initialCollateralTokenAddress,
+      wrappedNativeTokenAddress: wrappedNativeToken.address,
+      usdIn: convertToUsd(
+        order.initialCollateralDeltaAmount,
+        initialCollateralToken.decimals,
+        initialCollateralToken.prices.minPrice
+      )!,
+      shouldUnwrapNativeToken: order.shouldUnwrapNativeToken,
+      shouldApplyPriceImpact: true,
+    });
+
+    const priceImpactAmount = convertToTokenAmount(
+      swapPathStats?.totalSwapPriceImpactDeltaUsd,
+      targetCollateralToken.decimals,
+      targetCollateralToken.prices.minPrice
+    );
+
+    const swapFeeAmount = convertToTokenAmount(
+      swapPathStats?.totalSwapFeeUsd,
+      targetCollateralToken.decimals,
+      targetCollateralToken.prices.minPrice
+    );
+
+    const toAmount = order.minOutputAmount.sub(priceImpactAmount || 0).add(swapFeeAmount || 0);
+
+    const triggerRatio = getTokensRatioByAmounts({
+      fromToken: initialCollateralToken,
+      toToken: targetCollateralToken,
+      fromTokenAmount: order.initialCollateralDeltaAmount,
+      toTokenAmount: toAmount,
+    });
+
     const title = getSwapOrderTitle({
       initialCollateralToken,
       targetCollateralToken,
@@ -145,6 +180,8 @@ export function getOrderInfo(
 
     const orderInfo: SwapOrderInfo = {
       ...order,
+      swapPathStats,
+      triggerRatio,
       title,
       initialCollateralToken,
       targetCollateralToken,
@@ -178,11 +215,26 @@ export function getOrderInfo(
     const acceptablePrice = parseContractPrice(order.contractAcceptablePrice, indexToken.decimals);
     const triggerPrice = parseContractPrice(order.contractTriggerPrice, indexToken.decimals);
 
+    const swapPathStats = getSwapPathStats({
+      marketsInfoData,
+      swapPath: order.swapPath,
+      initialCollateralAddress: order.initialCollateralTokenAddress,
+      wrappedNativeTokenAddress: wrappedNativeToken.address,
+      usdIn: convertToUsd(
+        order.initialCollateralDeltaAmount,
+        initialCollateralToken.decimals,
+        initialCollateralToken.prices.minPrice
+      )!,
+      shouldUnwrapNativeToken: order.shouldUnwrapNativeToken,
+      shouldApplyPriceImpact: true,
+    });
+
     const triggerThresholdType = getTriggerThresholdType(order.orderType, order.isLong);
 
     const orderInfo: PositionOrderInfo = {
       ...order,
       title,
+      swapPathStats,
       marketInfo,
       indexToken,
       initialCollateralToken,
