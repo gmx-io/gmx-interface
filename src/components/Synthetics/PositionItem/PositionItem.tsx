@@ -41,6 +41,12 @@ export function PositionItem(p: Props) {
 
   const indexPriceDecimals = p.position?.indexToken?.priceDecimals;
 
+  const isCurrentTradeTypeLong = p.currentTradeType === TradeType.Long;
+  const isCurrentMarket =
+    p.currentMarketAddress === p.position.marketAddress &&
+    p.currentCollateralAddress === p.position.collateralTokenAddress &&
+    isCurrentTradeTypeLong === p.position.isLong;
+
   function renderNetValue() {
     return (
       <Tooltip
@@ -280,12 +286,6 @@ export function PositionItem(p: Props) {
   }
 
   function renderLarge() {
-    const isCurrentTradeTypeLong = p.currentTradeType === TradeType.Long;
-
-    const isCurrentMarket =
-      p.currentMarketAddress === p.position.marketAddress &&
-      p.currentCollateralAddress === p.position.collateralTokenAddress &&
-      isCurrentTradeTypeLong === p.position.isLong;
     return (
       <tr
         className={cx("Exchange-list-item", {
@@ -423,7 +423,7 @@ export function PositionItem(p: Props) {
     return (
       <div className="App-card">
         <div>
-          <div className="App-card-title Position-card-title">
+          <div className={cx("App-card-title Position-card-title", { "Position-active-card": isCurrentMarket })}>
             <span className="Exchange-list-title" onClick={() => p.onSelectPositionClick?.()}>
               {p.position.marketInfo.indexToken?.symbol}
             </span>
