@@ -555,8 +555,8 @@ table.Exchange-list .Exchange-list-item-active {
   border-left: 2px solid #3a3f79;
   position: absolute;
   left: -7px;
-  bottom: 0px;
-  height: 20px;
+  bottom: -1px;
+  height: 21px;
 }
 
 .Exchange-leverage-box {

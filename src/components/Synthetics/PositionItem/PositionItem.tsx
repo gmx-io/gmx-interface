@@ -354,7 +354,7 @@ export function PositionItem(p: Props) {
               {renderNetValue()}
               {displayedPnl && (
                 <div
-                  className={cx("Exchange-list-info-label", {
+                  className={cx("Exchange-list-info-label Position-pnl", {
                     positive: displayedPnl.gt(0),
                     negative: displayedPnl.lt(0),
                     muted: displayedPnl.eq(0),
@@ -469,7 +469,7 @@ export function PositionItem(p: Props) {
               </div>
               <div onClick={p.openSettings}>
                 <span
-                  className={cx("Exchange-list-info-label", {
+                  className={cx("Exchange-list-info-label Position-pnl", {
                     positive: displayedPnl?.gt(0),
                     negative: displayedPnl?.lt(0),
                     muted: displayedPnl?.eq(0),
