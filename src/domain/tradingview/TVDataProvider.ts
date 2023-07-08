@@ -33,7 +33,7 @@ export class TVDataProvider {
     this.barsInfo = initialHistoryBarsInfo;
   }
 
-  async getCurrentPriceOfToken(chainId: number, ticker: string): Promise<BigNumberish> {
+  async getCurrentPriceOfToken(chainId: number, ticker: string): Promise<BigNumberish | undefined> {
     return getCurrentPriceOfToken(chainId, ticker);
   }
 
