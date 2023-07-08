@@ -276,7 +276,7 @@ export default function PositionsList(props) {
                         </div>
                         <div>
                           <span
-                            className={cx("Exchange-list-info-label", {
+                            className={cx("Exchange-list-info-label Position-pnl", {
                               positive: hasPositionProfit && positionDelta.gt(0),
                               negative: !hasPositionProfit && positionDelta.gt(0),
                               muted: positionDelta.eq(0),
