@@ -109,8 +109,9 @@ export default function useTVDatafeed({ dataProvider }: Props) {
           _subscribeUID,
           onResetCacheNeededCallback: () => void
         ) {
+          const period = SUPPORTED_RESOLUTIONS[resolution];
           const { ticker, isStable } = symbolInfo;
-          if (!ticker) {
+          if (!ticker || !period) {
             return;
           }
 
@@ -119,7 +120,7 @@ export default function useTVDatafeed({ dataProvider }: Props) {
           if (!isStable) {
             intervalRef.current = setInterval(function () {
               const { isChartRady, ticker: activeTicker } = activeChartStore.getState();
-              tvDataProvider.current?.getLiveBar(chainId, ticker, resolution).then((bar) => {
+              tvDataProvider.current?.getLiveBar(chainId, ticker, period).then((bar) => {
                 if (bar && isChartRady && activeTicker === ticker) {
                   onRealtimeCallback(formatTimeInBarToMs(bar));
                 }

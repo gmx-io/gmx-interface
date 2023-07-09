@@ -3,27 +3,38 @@ import { getLimitChartPricesFromStats, timezoneOffset } from "domain/prices";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
 import { Bar } from "./types";
-import { formatTimeInBarToMs, getCurrentCandleTime } from "./utils";
+import { formatTimeInBarToMs, getCurrentCandleTime, getMax, getMin } from "./utils";
 import { fillBarGaps, getCurrentPriceOfToken, getStableCoinPrice, getTokenChartPrice } from "./requests";
-import { BigNumberish } from "ethers";
 import { PeriodParams } from "charting_library";
 import activeChartStore from "./activeChartStore";
 
+const initialState = {
+  lastBar: null,
+  currentBar: null,
+  startTime: 0,
+  lastTicker: "",
+  lastPeriod: "",
+};
+
 export class TVDataProvider {
   lastBar: Bar | null;
+  currentBar: Bar | null;
   startTime: number;
   lastTicker: string;
   lastPeriod: string;
 
   constructor() {
-    this.lastBar = null;
-    this.startTime = 0;
-    this.lastTicker = "";
-    this.lastPeriod = "";
+    this.lastBar = initialState.lastBar;
+    this.currentBar = initialState.currentBar;
+    this.startTime = initialState.startTime;
+    this.lastTicker = initialState.lastTicker;
+    this.lastPeriod = initialState.lastPeriod;
   }
 
-  async getCurrentPriceOfToken(chainId: number, ticker: string): Promise<BigNumberish | undefined> {
-    return getCurrentPriceOfToken(chainId, ticker);
+  async getCurrentPriceOfToken(chainId: number, ticker: string): Promise<number | undefined> {
+    const currentPrice = await getCurrentPriceOfToken(chainId, ticker);
+    const formattedPrice = parseFloat(formatAmount(currentPrice, USD_DECIMALS, 4));
+    return formattedPrice;
   }
 
   async getTokenLastBars(chainId: number, ticker: string, period: string, limit: number): Promise<Bar[]> {
@@ -56,10 +67,9 @@ export class TVDataProvider {
         const historyBars = await this.getTokenChartPrice(chainId, ticker, period);
         const filledBars = fillBarGaps(historyBars, CHART_PERIODS[period]);
         const currentCandleTime = getCurrentCandleTime(period);
-        const lastCandleTime = currentCandleTime - CHART_PERIODS[period];
-        const lastBar = filledBars[filledBars.length - 1];
-        if (lastBar.time === currentCandleTime || lastBar.time === lastCandleTime) {
-          this.lastBar = { ...lastBar, ticker };
+        const lastBar = historyBars[historyBars.length - 1];
+        if (lastBar.time === currentCandleTime) {
+          this.lastBar = { ...lastBar, ticker, period };
         }
         activeChartStore.setState({
           ticker,
@@ -104,6 +114,10 @@ export class TVDataProvider {
   ) {
     const period = SUPPORTED_RESOLUTIONS[resolution];
     const { from, to } = periodParams;
+
+    // getBars is called on period and token change so it's better to rest the values
+    this.resetState();
+
     try {
       const bars = isStable
         ? getStableCoinPrice(period, from, to)
@@ -125,24 +139,35 @@ export class TVDataProvider {
       this.lastPeriod !== period
     ) {
       const prices = await this.getTokenLastBars(chainId, ticker, period, 1);
-      if (prices?.length) {
-        // @ts-ignore
+      const currentPrice = await this.getCurrentPriceOfToken(chainId, ticker);
+
+      if (prices?.length && currentPrice) {
         const lastBar = prices[0];
         const currentCandleTime = getCurrentCandleTime(period);
         const lastCandleTime = currentCandleTime - CHART_PERIODS[period];
-        if (lastBar.time === currentCandleTime || lastBar.time === lastCandleTime) {
-          this.lastBar = { ...lastBar, ticker };
+        if (lastBar.time === currentCandleTime) {
+          this.lastBar = { ...lastBar, close: currentPrice, ticker, period };
           this.startTime = currentTime;
           this.lastTicker = ticker;
           this.lastPeriod = period;
+        }
+        if (this.lastBar && lastBar.time === lastCandleTime) {
+          this.lastBar = {
+            open: this.lastBar.close,
+            high: this.lastBar.close,
+            low: this.lastBar.close,
+            time: currentCandleTime,
+            close: currentPrice,
+            ticker,
+            period,
+          };
         }
       }
     }
     return this.lastBar;
   }
 
-  async getLiveBar(chainId: number, ticker: string, resolution: string) {
-    const period = SUPPORTED_RESOLUTIONS[resolution];
+  async getLiveBar(chainId: number, ticker: string, period: string) {
     if (!ticker || !period || !chainId) return;
 
     const currentCandleTime = getCurrentCandleTime(period);
@@ -154,29 +179,46 @@ export class TVDataProvider {
     }
 
     const currentPrice = await this.getCurrentPriceOfToken(chainId, ticker);
-    const averagePriceValue = parseFloat(formatAmount(currentPrice, USD_DECIMALS, 2));
 
-    if (!this.lastBar || !averagePriceValue) return;
+    if (
+      !this.lastBar?.time ||
+      !currentPrice ||
+      ticker !== this.lastBar.ticker ||
+      ticker !== activeChartStore.getState().ticker
+    ) {
+      return;
+    }
 
-    if (this.lastBar.time && currentCandleTime === this.lastBar.time && ticker === this.lastBar.ticker) {
-      return {
+    if (currentCandleTime === this.lastBar.time) {
+      this.currentBar = {
         ...this.lastBar,
-        close: averagePriceValue,
-        high: Math.max(this.lastBar.open, this.lastBar.high, averagePriceValue),
-        low: Math.min(this.lastBar.open, this.lastBar.low, averagePriceValue),
+        close: currentPrice,
+        high: getMax(this.lastBar.open, this.lastBar.high, currentPrice, this.currentBar?.high),
+        low: getMin(this.lastBar.open, this.lastBar.low, currentPrice, this.currentBar?.low),
         ticker,
+        period,
       };
     } else {
+      const { close } = this.currentBar ? this.currentBar : this.lastBar;
       const newBar = {
         time: currentCandleTime,
-        open: this.lastBar.close,
-        close: averagePriceValue,
-        high: Math.max(this.lastBar.close, averagePriceValue),
-        low: Math.min(this.lastBar.close, averagePriceValue),
+        open: close,
+        close: currentPrice,
+        high: getMax(close, currentPrice),
+        low: getMin(close, currentPrice),
         ticker,
+        period,
       };
       this.lastBar = newBar;
-      return this.lastBar;
+      this.currentBar = newBar;
     }
+    return this.currentBar;
+  }
+  resetState() {
+    this.lastBar = initialState.lastBar;
+    this.currentBar = initialState.currentBar;
+    this.lastTicker = initialState.lastTicker;
+    this.lastPeriod = initialState.lastPeriod;
+    this.startTime = initialState.startTime;
   }
 }
