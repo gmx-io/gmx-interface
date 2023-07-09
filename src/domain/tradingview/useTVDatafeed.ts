@@ -6,6 +6,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { TVDataProvider } from "./TVDataProvider";
 import { SymbolInfo } from "./types";
 import { formatTimeInBarToMs } from "./utils";
+import activeChartStore from "./activeChartStore";
 
 const configurationData = {
   supported_resolutions: Object.keys(SUPPORTED_RESOLUTIONS),
@@ -23,7 +24,6 @@ export default function useTVDatafeed({ dataProvider }: Props) {
   const { chainId } = useChainId();
   const intervalRef = useRef<ReturnType<typeof setInterval> | undefined>();
   const resetCacheRef = useRef<() => void | undefined>();
-  const activeTicker = useRef<string | undefined>();
   const tvDataProvider = useRef<TVDataProvider>();
   const shouldRefetchBars = useRef<boolean>(false);
 
@@ -82,9 +82,6 @@ export default function useTVDatafeed({ dataProvider }: Props) {
             return onErrorCallback("[getBars] Invalid resolution");
           }
           const { ticker, isStable } = symbolInfo;
-          if (activeTicker.current !== ticker) {
-            activeTicker.current = ticker;
-          }
 
           try {
             if (!ticker) {
@@ -116,12 +113,14 @@ export default function useTVDatafeed({ dataProvider }: Props) {
           if (!ticker) {
             return;
           }
+
           intervalRef.current && clearInterval(intervalRef.current);
           resetCacheRef.current = onResetCacheNeededCallback;
           if (!isStable) {
             intervalRef.current = setInterval(function () {
+              const { isChartRady, ticker: activeTicker } = activeChartStore.getState();
               tvDataProvider.current?.getLiveBar(chainId, ticker, resolution).then((bar) => {
-                if (bar && ticker === activeTicker.current) {
+                if (bar && isChartRady && activeTicker === ticker) {
                   onRealtimeCallback(formatTimeInBarToMs(bar));
                 }
               });
@@ -133,5 +132,6 @@ export default function useTVDatafeed({ dataProvider }: Props) {
         },
       },
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId]);
 }
