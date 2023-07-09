@@ -10902,7 +10902,7 @@ __metadata:
     swr: 0.4.2
     typescript: 4.7.4
     web-vitals: 1.1.2
-    zustand: ^4.3.9
+    zustand: 4.3.9
   languageName: unknown
   linkType: soft
 
@@ -19945,7 +19945,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zustand@npm:^4.3.9":
+"zustand@npm:4.3.9":
   version: 4.3.9
   resolution: "zustand@npm:4.3.9"
   dependencies:
