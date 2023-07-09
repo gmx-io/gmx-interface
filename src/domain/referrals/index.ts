@@ -125,17 +125,17 @@ export function useUserCodesOnAllChain(account) {
   return data;
 }
 
-export async function setAffiliateTier(chainId: number, affiliate: string, tierId: number, library, opts) {
+export async function setAffiliateTier(chainId: number, affiliate: string, tierId: number, signer, opts) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const timelockAddress = getContract(chainId, "Timelock");
-  const contract = new ethers.Contract(timelockAddress, Timelock.abi, library.getSigner());
+  const contract = new ethers.Contract(timelockAddress, Timelock.abi, signer);
   return callContract(chainId, contract, "setReferrerTier", [referralStorageAddress, affiliate, tierId], opts);
 }
 
-export async function registerReferralCode(chainId, referralCode, library, opts) {
+export async function registerReferralCode(chainId, referralCode, signer, opts) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const referralCodeHex = encodeReferralCode(referralCode);
-  const contract = new ethers.Contract(referralStorageAddress, ReferralStorage.abi, library.getSigner());
+  const contract = new ethers.Contract(referralStorageAddress, ReferralStorage.abi, signer);
   return callContract(chainId, contract, "registerCode", [referralCodeHex], opts);
 }
 
