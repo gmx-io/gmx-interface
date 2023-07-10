@@ -216,6 +216,10 @@ msgid "Allowed Slippage"
 msgstr "Deslizamiento permitido"
 
 #: src/App/App.js
+msgid "Allowed Slippage below {0}% may result in failed orders"
+msgstr ""
+
+#: src/App/App.js
 msgid "Allowed Slippage below {defaultSlippagePercentage}% may result in failed orders"
 msgstr ""
 
@@ -1653,8 +1657,8 @@ msgid "Invalid price, see warning"
 msgstr "Precio no válido, ver advertencia"
 
 #: src/App/App.js
-msgid "Invalid slippage value"
-msgstr "Valor de deslizamiento no válido"
+#~ msgid "Invalid slippage value"
+#~ msgstr "Valor de deslizamiento no válido"
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""

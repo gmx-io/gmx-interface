@@ -216,6 +216,10 @@ msgid "Allowed Slippage"
 msgstr "最大スリッページ"
 
 #: src/App/App.js
+msgid "Allowed Slippage below {0}% may result in failed orders"
+msgstr ""
+
+#: src/App/App.js
 msgid "Allowed Slippage below {defaultSlippagePercentage}% may result in failed orders"
 msgstr ""
 
@@ -1653,8 +1657,8 @@ msgid "Invalid price, see warning"
 msgstr "無効な価格につき、警告を確認してください"
 
 #: src/App/App.js
-msgid "Invalid slippage value"
-msgstr "無効なスリッページ値"
+#~ msgid "Invalid slippage value"
+#~ msgstr "無効なスリッページ値"
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
