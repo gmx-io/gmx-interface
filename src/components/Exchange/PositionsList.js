@@ -7,18 +7,7 @@ import PositionEditor from "./PositionEditor";
 import OrdersToa from "./OrdersToa";
 import { ImSpinner2 } from "react-icons/im";
 
-import {
-  getLiquidationPrice,
-  getLeverage,
-  getOrderError,
-  USD_DECIMALS,
-  FUNDING_RATE_PRECISION,
-  SWAP,
-  LONG,
-  SHORT,
-  INCREASE,
-  DECREASE,
-} from "lib/legacy";
+import { getOrderError, USD_DECIMALS, FUNDING_RATE_PRECISION, SWAP, LONG, SHORT, INCREASE, DECREASE } from "lib/legacy";
 import PositionShare from "./PositionShare";
 import PositionDropdown from "./PositionDropdown";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
@@ -29,6 +18,7 @@ import { bigNumberify, formatAmount } from "lib/numbers";
 import { AiOutlineEdit } from "react-icons/ai";
 import useAccountType, { AccountType } from "lib/wallets/useAccountType";
 import { FaAngleRight } from "react-icons/fa";
+import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 
 const getOrdersForPosition = (account, position, orders, nativeTokenAddress) => {
   if (!orders || orders.length === 0) {
@@ -147,7 +137,6 @@ export default function PositionsList(props) {
         pendingTxns={pendingTxns}
         setPendingTxns={setPendingTxns}
         getUsd={getUsd}
-        getLeverage={getLeverage}
         savedIsPnlInLeverage={savedIsPnlInLeverage}
         positionRouterApproved={positionRouterApproved}
         isPositionRouterApproving={isPositionRouterApproving}
@@ -231,7 +220,14 @@ export default function PositionsList(props) {
           <div className="Exchange-list small">
             {positions.map((position) => {
               const positionOrders = getOrdersForPosition(account, position, orders, nativeTokenAddress);
-              const liquidationPrice = getLiquidationPrice(position);
+              const liquidationPrice = getLiquidationPrice({
+                size: position.size,
+                collateral: position.collateral,
+                averagePrice: position.averagePrice,
+                isLong: position.isLong,
+                fundingFee: position.fundingFee,
+              });
+
               const hasPositionProfit = position[showPnlAfterFees ? "hasProfitAfterFees" : "hasProfit"];
               const positionDelta =
                 position[showPnlAfterFees ? "pendingDeltaAfterFees" : "pendingDelta"] || bigNumberify(0);
@@ -487,7 +483,15 @@ export default function PositionsList(props) {
           )}
 
           {positions.map((position) => {
-            const liquidationPrice = getLiquidationPrice(position) || bigNumberify(0);
+            const liquidationPrice =
+              getLiquidationPrice({
+                size: position.size,
+                collateral: position.collateral,
+                averagePrice: position.averagePrice,
+                isLong: position.isLong,
+                fundingFee: position.fundingFee,
+              }) || bigNumberify(0);
+
             const positionOrders = getOrdersForPosition(account, position, orders, nativeTokenAddress);
             const hasOrderError = !!positionOrders.find((order) => order.error);
             const hasPositionProfit = position[showPnlAfterFees ? "hasProfitAfterFees" : "hasProfit"];
