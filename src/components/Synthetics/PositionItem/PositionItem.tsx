@@ -336,7 +336,7 @@ export function PositionItem(p: Props) {
                 e.stopPropagation();
                 p.openSettings();
               }}
-              className="muted"
+              className="muted Position-leverage"
             >
               {formatLeverage(p.position.leverage) || "..."}&nbsp;
             </span>
