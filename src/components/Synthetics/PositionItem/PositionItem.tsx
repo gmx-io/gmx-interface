@@ -375,7 +375,7 @@ export function PositionItem(p: Props) {
           {/* collateral */}
           <div>{renderCollateral()}</div>
         </td>
-        <td>
+        <td className="clickable" onClick={() => p.onSelectPositionClick?.()}>
           {/* entryPrice */}
           {p.position.isOpening
             ? t`Opening...`
@@ -389,7 +389,7 @@ export function PositionItem(p: Props) {
             displayDecimals: indexPriceDecimals,
           })}
         </td>
-        <td>
+        <td className="clickable" onClick={() => p.onSelectPositionClick?.()}>
           {/* liqPrice */}
           {renderLiquidationPrice()}
         </td>
