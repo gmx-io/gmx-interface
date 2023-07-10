@@ -308,15 +308,13 @@ function FullApp() {
   };
 
   const saveAndCloseSettings = () => {
-    const slippage = parseFloat(slippageAmount);
-    if (isNaN(slippage)) {
-      helperToast.error(t`Invalid slippage value`);
-      return;
-    }
+    const slippage = isNaN(parseFloat(slippageAmount)) ? parsedSavedSlippageAmount / 100 : parseFloat(slippageAmount);
+
     if (slippage > 5) {
       helperToast.error(t`Slippage should be less than 5%`);
       return;
     }
+
     let basisPoints = roundToTwoDecimals((slippage * BASIS_POINTS_DIVISOR) / 100);
     if (parseInt(basisPoints) !== parseFloat(basisPoints)) {
       helperToast.error(t`Max slippage precision is 0.01%`);
@@ -346,6 +344,19 @@ function FullApp() {
     setRedirectModalVisible(true);
     setSelectedToPage(to);
   };
+
+  useEffect(() => {
+    // making sure that the saved slippage amount is a valid number not values like null or NaN
+    if (savedSlippageAmount === null || isNaN(Number(savedSlippageAmount))) {
+      setSavedSlippageAmount(DEFAULT_SLIPPAGE_AMOUNT);
+    } else {
+      if (savedSlippageAmount < DEFAULT_SLIPPAGE_AMOUNT) {
+        setSettingsModalError(t`Allowed Slippage below ${DEFAULT_SLIPPAGE_AMOUNT / 100}% may result in failed orders`);
+      }
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const checkPendingTxns = async () => {
