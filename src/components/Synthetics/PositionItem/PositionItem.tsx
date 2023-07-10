@@ -345,7 +345,7 @@ export function PositionItem(p: Props) {
             </span>
           </div>
         </td>
-        <td onClick={p.openSettings} className="cursor-pointer">
+        <td className="cursor-pointer">
           {/* netValue */}
           {p.position.isOpening ? (
             t`Opening...`
@@ -354,6 +354,7 @@ export function PositionItem(p: Props) {
               {renderNetValue()}
               {displayedPnl && (
                 <div
+                  onClick={p.openSettings}
                   className={cx("Exchange-list-info-label Position-pnl", {
                     positive: displayedPnl.gt(0),
                     negative: displayedPnl.lt(0),
@@ -467,13 +468,14 @@ export function PositionItem(p: Props) {
               <div className="label">
                 <Trans>PnL</Trans>
               </div>
-              <div onClick={p.openSettings}>
+              <div>
                 <span
                   className={cx("Exchange-list-info-label Position-pnl", {
                     positive: displayedPnl?.gt(0),
                     negative: displayedPnl?.lt(0),
                     muted: displayedPnl?.eq(0),
                   })}
+                  onClick={p.openSettings}
                 >
                   {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
                 </span>
