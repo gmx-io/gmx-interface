@@ -114,7 +114,6 @@ export default function useTVDatafeed({ dataProvider }: Props) {
           if (!ticker || !period) {
             return;
           }
-
           intervalRef.current && clearInterval(intervalRef.current);
           resetCacheRef.current = onResetCacheNeededCallback;
           if (!isStable) {
