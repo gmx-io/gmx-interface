@@ -447,5 +447,5 @@ button.btn-link:hover .logout-icon {
 }
 
 .text-gray {
-  color: var(----text-gray);
+  color: var(--text-gray);
 }
