@@ -1,13 +1,13 @@
-import React, { useEffect, useState, useRef, useMemo } from "react";
+import React, { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import cx from "classnames";
 
 import { USD_DECIMALS, SWAP, INCREASE } from "lib/legacy";
 import { useChartPrices } from "domain/legacy";
 
 import ChartTokenSelector from "./ChartTokenSelector";
-import { getTokenInfo } from "domain/tokens/utils";
+import { getMidPrice, getTokenInfo } from "domain/tokens/utils";
 import { formatAmount, numberWithCommas } from "lib/numbers";
-import { getToken, getTokens } from "config/tokens";
+import { getToken, getTokenBySymbol, getTokens } from "config/tokens";
 import TVChartContainer from "components/TVChartContainer/TVChartContainer";
 import { t } from "@lingui/macro";
 import { availableNetworksForChart } from "components/TVChartContainer/constants";
@@ -67,14 +67,30 @@ export default function ExchangeTVChart(props) {
   const fromToken = getTokenInfo(infoTokens, fromTokenAddress);
   const toToken = getTokenInfo(infoTokens, toTokenAddress);
 
+  const getCurrentPrice = useCallback(
+    function getCurrentPrice(symbol) {
+      const currentToken = getTokenBySymbol(chainId, symbol);
+      const tokenInfo = getTokenInfo(infoTokens, currentToken.address);
+
+      if (!tokenInfo.minPrice || !tokenInfo.maxPrice) return;
+
+      const prices = {
+        minPrice: tokenInfo.minPrice,
+        maxPrice: tokenInfo.maxPrice,
+      };
+      return getMidPrice(prices);
+    },
+    [chainId, infoTokens]
+  );
+
   const [chartToken, setChartToken] = useState({
     maxPrice: null,
     minPrice: null,
   });
 
   useEffect(() => {
-    dataProvider.current = new TVDataProvider();
-  }, []);
+    dataProvider.current = new TVDataProvider({ getCurrentPrice });
+  }, [getCurrentPrice]);
 
   useEffect(() => {
     const tmp = getChartToken(swapOption, fromToken, toToken, chainId);

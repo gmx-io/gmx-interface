@@ -66,3 +66,8 @@ export type TokenInfo = Token & {
 export type InfoTokens = {
   [key: string]: TokenInfo;
 };
+
+export type TokenPrices = {
+  minPrice: BigNumber;
+  maxPrice: BigNumber;
+};

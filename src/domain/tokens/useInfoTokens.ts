@@ -16,7 +16,6 @@ import { bigNumberify, expandDecimals } from "lib/numbers";
 import { getTokens, getWhitelistedTokens } from "config/tokens";
 import { Web3Provider } from "@ethersproject/providers";
 import { getSpread } from "./utils";
-import currentPriceStore from "./currentPriceStore";
 
 export function useInfoTokens(
   library: Web3Provider | undefined,
@@ -51,15 +50,11 @@ export function useInfoTokens(
   const indexPricesUrl = getServerUrl(chainId, "/prices");
 
   const { data: indexPrices } = useSWR([indexPricesUrl], {
-    fetcher: (...args) =>
-      // @ts-ignore spread args incorrect type
-      fetch(...args).then((res) => res.json()),
+    // @ts-ignore spread args incorrect type
+    fetcher: (...args) => fetch(...args).then((res) => res.json()),
     refreshInterval: 500,
     refreshWhenHidden: true,
   });
-
-  // update store to use the price on tradingview
-  currentPriceStore.setState({ v1Prices: indexPrices });
 
   return {
     infoTokens: getInfoTokens(

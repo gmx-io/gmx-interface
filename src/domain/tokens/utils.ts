@@ -13,7 +13,7 @@ import {
 } from "lib/legacy";
 import { getVisibleTokens, getWhitelistedTokens } from "config/tokens";
 import { getExplorerUrl } from "config/chains";
-import { InfoTokens, Token, TokenInfo } from "./types";
+import { InfoTokens, Token, TokenInfo, TokenPrices } from "./types";
 import { bigNumberify, expandDecimals } from "lib/numbers";
 
 const { AddressZero } = ethers.constants;
@@ -241,4 +241,8 @@ export const replaceNativeTokenAddress = (path: string[], nativeTokenAddress: st
 export function getSpread(p: { minPrice: BigNumber; maxPrice: BigNumber }): BigNumber {
   const diff = p.maxPrice.sub(p.minPrice);
   return diff.mul(PRECISION).div(p.maxPrice.add(p.minPrice).div(2));
+}
+
+export function getMidPrice(prices: TokenPrices) {
+  return prices.minPrice.add(prices.maxPrice).div(2);
 }

@@ -4,7 +4,7 @@ import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
 import { Bar } from "./types";
 import { formatTimeInBarToMs, getCurrentCandleTime, getMax, getMin } from "./utils";
-import { fillBarGaps, getCurrentPriceOfToken, getStableCoinPrice, getTokenChartPrice } from "./requests";
+import { fillBarGaps, getStableCoinPrice, getTokenChartPrice } from "./requests";
 import { PeriodParams } from "charting_library";
 import activeChartStore from "./activeChartStore";
 
@@ -22,19 +22,21 @@ export class TVDataProvider {
   startTime: number;
   lastTicker: string;
   lastPeriod: string;
+  getCurrentPrice: (symbol: string) => number | undefined;
 
-  constructor() {
+  constructor({ getCurrentPrice }) {
     this.lastBar = initialState.lastBar;
     this.currentBar = initialState.currentBar;
     this.startTime = initialState.startTime;
     this.lastTicker = initialState.lastTicker;
     this.lastPeriod = initialState.lastPeriod;
+    this.getCurrentPrice = getCurrentPrice;
   }
 
-  async getCurrentPriceOfToken(chainId: number, ticker: string): Promise<number | undefined> {
-    const currentPrice = await getCurrentPriceOfToken(chainId, ticker);
-    const formattedPrice = parseFloat(formatAmount(currentPrice, USD_DECIMALS, 4));
-    return formattedPrice;
+  async getCurrentPriceOfToken(ticker: string): Promise<number | undefined> {
+    const currentPrice = this.getCurrentPrice(ticker);
+    const price = parseFloat(formatAmount(currentPrice, USD_DECIMALS, 4));
+    return price;
   }
 
   async getTokenLastBars(chainId: number, ticker: string, period: string, limit: number): Promise<Bar[]> {
@@ -139,7 +141,7 @@ export class TVDataProvider {
       this.lastPeriod !== period
     ) {
       const prices = await this.getTokenLastBars(chainId, ticker, period, 1);
-      const currentPrice = await this.getCurrentPriceOfToken(chainId, ticker);
+      const currentPrice = await this.getCurrentPriceOfToken(ticker);
 
       if (prices?.length && currentPrice) {
         const lastBar = prices[0];
@@ -178,7 +180,7 @@ export class TVDataProvider {
       console.error(error);
     }
 
-    const currentPrice = await this.getCurrentPriceOfToken(chainId, ticker);
+    const currentPrice = await this.getCurrentPriceOfToken(ticker);
 
     if (
       !this.lastBar?.time ||
