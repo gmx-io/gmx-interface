@@ -290,7 +290,7 @@ export default function BeginAccountTransfer(props) {
           <div className="input-row">
             <Button
               variant="primary-action"
-              className="w-100"
+              className="w-full"
               disabled={!isPrimaryEnabled()}
               onClick={() => onClickPrimary()}
             >

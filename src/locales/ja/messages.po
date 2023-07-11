@@ -27,7 +27,7 @@ msgstr "24時間取引高"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "<0/>Profit price: {0} ${1}. This rule applies for the next {2}, until {3}."
-msgstr "<0/>利益価格: {0} ${1} このルールはつぎの{2}のあいだ{3}まで適用されます。"
+msgstr ""
 
 #: src/App/App.js
 msgid "<0>Install Coinbase Wallet</0> to start using GMX."
@@ -195,7 +195,7 @@ msgstr ""
 
 #: src/pages/Referrals/Referrals.js
 msgid "Affiliates"
-msgstr "アフィリエイト"
+msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
@@ -208,11 +208,6 @@ msgstr "請求後7日以内に指定のネットワーク上のあなたのア�
 #: src/components/ModalViews/RedirectModal.js
 msgid "Agree"
 msgstr "同意する"
-
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionSeller.js
-msgid "Allow up to 1% slippage"
-msgstr "最大1%のスリッページを許容する"
 
 #: src/App/App.js
 #: src/components/Exchange/ConfirmationBox.js
@@ -325,6 +320,7 @@ msgstr "管理資産: 全チェーンでステークされているGMX + GLPプ�
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "Available"
 msgstr "利用可能"
 
@@ -349,28 +345,18 @@ msgstr "GLPから引き出し可能な金額。現在オープンなポジショ
 msgid "Available on your preferred network"
 msgstr "選択されたネットワークにて利用可能"
 
-#: src/components/Glp/GlpSwap.js
-msgid "Available:"
-msgstr "利用可能"
-
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
 msgstr "AvalancheでのAPR(実質年利)"
 
 #: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "Balance"
 msgstr "残高"
-
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-msgid "Balance:"
-msgstr "残高"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Balance: {0}"
-msgstr "残高: {0}"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"
@@ -417,7 +403,7 @@ msgid "Buy AVAX directly to Avalanche or transfer it there."
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy ETH directly to Arbitrum or transfer it there."
+msgid "Buy ETH directly on Arbitrum or transfer it there."
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -426,6 +412,10 @@ msgstr ""
 #: src/pages/Stake/StakeV2.js
 msgid "Buy GLP"
 msgstr "GLPを購入"
+
+#: src/pages/Buy/Buy.js
+msgid "Buy GLP or GMX"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Buy GMX"
@@ -440,15 +430,15 @@ msgid "Buy GMX from Uniswap (make sure to select Arbitrum):"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX from a Decentralized Exchange"
-msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from centralized exchanges:"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from centralized services"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "Buy GMX from decentralized exchanges"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
@@ -652,11 +642,11 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close failed."
-msgstr "クローズできませんでした"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close submitted!"
-msgstr "クローズ申し込み完了!"
+msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Close to execution price"
@@ -664,19 +654,19 @@ msgstr "執行価格に近すぎます"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close without profit"
-msgstr "利益なしでクローズ"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close {longOrShortText} {0}"
-msgstr "{longOrShortText} {0}をクローズする"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close: {convertedAmountFormatted} {0}"
-msgstr "クローズ: {convertedAmountFormatted} {0}"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Closing..."
-msgstr "クローズ中..."
+msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Code already taken"
@@ -691,6 +681,8 @@ msgid "Coinbase Wallet not detected."
 msgstr "コインベースウォレットが検出できません。"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionsList.js
@@ -712,6 +704,10 @@ msgstr "担保の種類"
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Collateral Spread"
+msgstr ""
+
+#: src/components/Exchange/PositionSeller.js
+msgid "Collateral is not enough to cover pending Fees. Please uncheck \"Keep Leverage\" to pay the Fees with the realized PnL."
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -926,6 +922,7 @@ msgid "DEX Aggregator"
 msgstr "DEXアグリゲーター"
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/pages/Dashboard/DashboardV2.js
 msgid "Dashboard"
 msgstr "ダッシュボード"
 
@@ -961,6 +958,10 @@ msgstr "分散型オプションプロトコル"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Decentralized Options Strategies"
 msgstr "分散型オプションストラテジー"
+
+#: src/lib/legacy.ts
+msgid "Decentralized Perpetual Exchange | GMX"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Decentralized Trading Protocol"
@@ -1007,6 +1008,10 @@ msgid "Deposit Fee"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
+msgid "Deposit amount is insufficient to bring leverage below the max allowed leverage of 100x"
+msgstr ""
+
+#: src/components/Exchange/PositionEditor.js
 msgid "Deposit disabled, pending {0} upgrade"
 msgstr "{0}のアップグレードのため入金停止中"
 
@@ -1017,6 +1022,10 @@ msgstr "入金できませんでした!"
 #: src/components/Exchange/PositionEditor.js
 msgid "Deposit failed."
 msgstr "入金できませんでした。"
+
+#: src/components/Exchange/PositionEditor.js
+msgid "Deposit not enough to cover fees"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Deposit submitted!"
@@ -1082,12 +1091,17 @@ msgstr "ダウンロード"
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Earn"
 msgstr "報酬獲得"
 
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Ecosystem"
 msgstr "エコシステム"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Ecosystem Projects"
+msgstr ""
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -1308,6 +1322,10 @@ msgstr "{0} を {1}にスワップするには手数料が高額です"
 msgid "Fees are high to swap from {0} to {1}. <0/>{2} is needed for collateral."
 msgstr "{0} を {1}にスワップするには手数料が高額です。<0/>{2}が担保に必要です。"
 
+#: src/components/Exchange/PositionSeller.js
+msgid "Fees are higher than Collateral"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Fees generated by GMX"
 msgstr "GMXが得た手数料"
@@ -1356,7 +1374,6 @@ msgid "Forfeit profit and {action}"
 msgstr "利益喪失および{action}"
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionSeller.js
 msgid "Forfeit profit not checked"
 msgstr "利益喪失がチェックされていません"
 
@@ -1364,6 +1381,7 @@ msgstr "利益喪失がチェックされていません"
 msgid "GBC NFTs APR tracker and rewards"
 msgstr "GBC NFTのAPRトラッカーおよび報酬"
 
+#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "GLP Index Composition"
 msgstr "GLPインデックス構成"
@@ -1483,6 +1501,10 @@ msgstr "GMXステーキング報酬の最新情報および見通し"
 msgid "GMX transfers not yet enabled"
 msgstr "GMX移転はまだ有効化されていません"
 
+#: src/components/Common/SEO.js
+msgid "GMX | Decentralized Perpetual Exchange"
+msgstr ""
+
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Generate Referral Code"
 msgstr "紹介コード作成"
@@ -1493,7 +1515,7 @@ msgstr "シェア可能な画像を作成中..."
 
 #: src/pages/Referrals/Referrals.js
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
-msgstr "GMX紹介プログラムで手数料が割引されリベートが得られます。<0/>より詳しくは、 <1>こちらの紹介プログラム詳細を読んでください</1>."
+msgstr ""
 
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Governance"
@@ -1581,7 +1603,7 @@ msgstr "最初の担保"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Insufficient Available Liquidity to swap to {0}:"
-msgstr "{0}にスワップするには流動性が不足しています:"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Insufficient GLP balance"
@@ -1617,6 +1639,11 @@ msgstr "ステークされたトークンが不足しています"
 msgid "Insufficient {0} balance"
 msgstr "{0} 残高の不足"
 
+#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/PositionSeller.js
+msgid "Invalid Liquidation Price"
+msgstr ""
+
 #: src/pages/NftWallet/NftWallet.js
 msgid "Invalid NFT Address"
 msgstr "無効なNFTアドレス"
@@ -1630,6 +1657,7 @@ msgstr "無効な受け取り人"
 msgid "Invalid Receiver Address"
 msgstr "無効な受け取りアドレス"
 
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 msgid "Invalid liq. price"
@@ -1654,6 +1682,10 @@ msgid "Invalid token indexToken: \"{0}\" collateralToken: \"{1}\""
 msgstr "無効なトークン indexToken: \"{0}\" collateralToken: \"{1}\""
 
 #: src/pages/Jobs/Jobs.js
+msgid "Job Openings"
+msgstr ""
+
+#: src/pages/Jobs/Jobs.js
 msgid "Job openings at GMX."
 msgstr "GMXの求人"
 
@@ -1662,8 +1694,12 @@ msgid "Jobs"
 msgstr "求人"
 
 #: src/components/Exchange/PositionSeller.js
+msgid "Keep Leverage is not possible"
+msgstr ""
+
+#: src/components/Exchange/PositionSeller.js
 msgid "Keep leverage at {0}x"
-msgstr "レバレッジを{0}倍に保ってください"
+msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Language"
@@ -1692,18 +1728,21 @@ msgstr "ガスとして最低 {0}ETHを残しておいてください"
 msgid "Leave at least {0} {1} for gas"
 msgstr "ガスのため最低 {0} {1} を残しておいてください"
 
+#: src/components/Exchange/PositionEditor.js
+msgid "Leftover Collateral not enough to cover fees"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Leftover collateral below 5 USD"
-msgstr "残りの担保が5 USD以下"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Leftover position below 10 USD"
-msgstr "残りのポジションが10 USD以下"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "Leverage"
@@ -1786,6 +1825,7 @@ msgid "Liquidity data not loaded"
 msgstr "流動性データがロードされていません"
 
 #: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/PositionsList.js
 msgid "Loading..."
 msgstr "ロード中"
 
@@ -1845,10 +1885,9 @@ msgstr "シェアできる紹介コードがないようです。<0/> コード�
 msgid "Loss"
 msgstr "損失"
 
-#: src/components/BuyInputSection/BuyInputSection.js
+#: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
 #: src/components/InputSection/InputSection.js
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "MAX"
@@ -1857,6 +1896,10 @@ msgstr "最大"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "MEV Optimizer"
 msgstr "MEVオプティマイザー"
+
+#: src/components/Exchange/SwapBox.js
+msgid "Mark"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
@@ -1877,7 +1920,6 @@ msgstr "マーク価格"
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
 msgid "Mark: {0}"
 msgstr "マーク: {0}"
 
@@ -1895,12 +1937,22 @@ msgid "Market Cap"
 msgstr "時価総額"
 
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "Max"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
 msgid "Max Capacity"
 msgstr "最大キャパシティ"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Max Capacity for {0} Reached"
 msgstr "{0}の最大キャパシティに到達しています"
+
+#: src/components/Exchange/PositionSeller.js
+msgid "Max Leverage without PnL: 100x"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Max Pool Capacity"
@@ -1917,11 +1969,15 @@ msgstr "最大値超過"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Max close amount exceeded"
-msgstr "最大クローズ値超過"
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account:"
 msgstr "最大レバレッジ100倍を超過し、損失と手数料を差し引き後に残った担保はアカウントに返送されました:"
+
+#: src/components/Exchange/PositionEditor.js
+msgid "Max leverage without PnL: {0}x"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -1975,9 +2031,6 @@ msgstr "{0}の最大ショート値を超過しています"
 #: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "Max: {0}"
 msgstr "最大: {0}"
 
@@ -2082,6 +2135,10 @@ msgstr "NFT ID"
 msgid "NFT Wallet"
 msgstr "NFTウォレット"
 
+#: src/components/Exchange/PositionSeller.js
+msgid "Neither Collateral nor realized PnL is enough to cover pending Fees. Please close a larger position amount."
+msgstr ""
+
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Net Value"
@@ -2160,6 +2217,8 @@ msgstr "英数字とアンダースコア記号のみ使用できます。"
 msgid "Open Fee"
 msgstr ""
 
+#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Home/Home.js
 msgid "Open Interest"
 msgstr "建玉"
@@ -2220,11 +2279,11 @@ msgstr "ポジション金額が$5未満になるため注文を執行できま�
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Order created!"
-msgstr "注文作成完了!"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Order creation failed."
-msgstr "注文が作成できませんでした。"
+msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Order size exceeds position"
@@ -2241,7 +2300,7 @@ msgstr "注文サイズがポジションより大きいため、ポジション
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Order submitted!"
-msgstr "注文提出完了!"
+msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
 msgid "Order update failed."
@@ -2288,6 +2347,7 @@ msgid "PRICE"
 msgstr "価格"
 
 #: src/pages/PageNotFound/PageNotFound.js
+#: src/pages/PageNotFound/PageNotFound.js
 msgid "Page not found"
 msgstr "ページが見つかりません"
 
@@ -2321,10 +2381,6 @@ msgstr "支払い"
 msgid "Pay Amount"
 msgstr "支払い額"
 
-#: src/components/Exchange/SwapBox.js
-msgid "Pay: {0} USD"
-msgstr "支払う: {0} USD"
-
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Platform and GLP index tokens."
 msgstr "プラットフォームとGLPインデックストークン"
@@ -2340,6 +2396,10 @@ msgstr "アカウント全体を移行する場合だけこの機能を利用し
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Please switch your network to Arbitrum."
 msgstr "ネットワークをArbitrumに切り替えてください。"
+
+#: src/components/Exchange/PositionSeller.js
+msgid "Please uncheck \"Keep Leverage\", or close a larger position amount."
+msgstr ""
 
 #: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionSeller.js
@@ -2369,7 +2429,7 @@ msgstr "ポジション"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Position close disabled, pending {0} upgrade"
-msgstr "{0}の更新が未完了のためポジションのクローズは無効化されています"
+msgstr ""
 
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
@@ -2460,7 +2520,7 @@ msgstr "利益"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Profit price: {0} ${1}. This rule applies for the next {2}, until {3}."
-msgstr "利益価格: {0} ${1} このルールは{3}まで{2}のあいだ適用されます。"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
@@ -2494,7 +2554,16 @@ msgstr "保険購入"
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Read more"
-msgstr "詳細について読む"
+msgstr "詳細について読む<<<<<<< HEAD"
+
+#: src/components/Exchange/PositionSeller.js
+msgid "Realized PnL insufficient for Fees"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Rebates"
+msgstr ""
 
 #: src/components/Referrals/TradersStats.js
 msgid "Rebates Distribution History"
@@ -2513,6 +2582,16 @@ msgstr "トレーダーとしてこのアカウントが獲得したリベート
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Rebates earned by this account as an affiliate."
 msgstr "アフィリエイトとしてこのアカウントが獲得した紹介報酬"
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Rebates on Arbitrum"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Rebates on Avalanche"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
@@ -2547,7 +2626,7 @@ msgstr "清算リスクを減らす"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Reducing the position at the current price will forfeit a <0>pending profit</0> of {deltaStr}. <1/>"
-msgstr "現在の価格でポジションを縮小すると、{deltaStr}の<0>未確定利益</0>が没収されます。<1/>"
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Referral Code"
@@ -2562,6 +2641,7 @@ msgid "Referral Codes"
 msgstr "紹介コード"
 
 #: src/components/Footer/constants.ts
+#: src/pages/ReferralTerms/ReferralTerms.js
 msgid "Referral Terms"
 msgstr "紹介の規約"
 
@@ -2575,11 +2655,11 @@ msgstr "紹介コードが作成されました!"
 
 #: src/pages/Referrals/Referrals.js
 msgid "Referral code creation failed."
-msgstr "紹介コードが作成できませんでした。"
+msgstr ""
 
 #: src/pages/Referrals/Referrals.js
 msgid "Referral code submitted!"
-msgstr "紹介コードが提出されました!"
+msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Referral code updated failed."
@@ -2590,6 +2670,7 @@ msgid "Referral code updated!"
 msgstr "紹介コードの更新完了!"
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/pages/Referrals/Referrals.js
 msgid "Referrals"
 msgstr "紹介アカウント"
 
@@ -2615,7 +2696,7 @@ msgstr "{0} {longOrShortText}からの出金をリクエスト"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
-msgstr "{0} {longOrShortText}の{sizeDeltaUsd} USDの減額をリクエストしました。"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Requested deposit of {0} {1} into {2} {longOrShortText}."
@@ -3082,6 +3163,7 @@ msgid "Telegram bot for Open Interest on GMX"
 msgstr "GMX建玉情報提供Telegramボット"
 
 #: src/components/Footer/constants.ts
+#: src/pages/TermsAndConditions/TermsAndConditions.js
 msgid "Terms and Conditions"
 msgstr "規約"
 
@@ -3176,7 +3258,7 @@ msgstr "このコードは{0}上ではまだ登録されていないため、紹
 
 #: src/components/Exchange/PositionSeller.js
 msgid "This order will forfeit a <0>profit</0> of {deltaStr}. <1/>"
-msgstr "この注文により{deltaStr}の<0>利益</0>を喪失します。<1/>"
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "This position was liquidated as the max leverage of 100x was exceeded."
@@ -3214,6 +3296,11 @@ msgstr "手数料を削減するには別のアセットで受け取ってくだ
 msgid "Tokens"
 msgstr "トークン"
 
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+#: src/components/Referrals/TradersStats.js
 #: src/pages/Stake/StakeV2.js
 msgid "Total"
 msgstr "総計"
@@ -3236,8 +3323,6 @@ msgid "Total Fees Distributed"
 msgstr "分配済手数料総額"
 
 #: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
 msgid "Total Rebates"
 msgstr "リベート総額"
 
@@ -3271,16 +3356,12 @@ msgstr "全体統計"
 msgid "Total Supply"
 msgstr "総供給量"
 
-#: src/components/Referrals/AffiliatesStats.js
-msgid "Total Traders Referred"
-msgstr "紹介した全トレーダー"
-
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
 #: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "トレード総額"
 
+#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Home/Home.js
 msgid "Total Users"
 msgstr "ユーザー総数"
@@ -3320,17 +3401,45 @@ msgstr ""
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
 msgstr "GMXでトレードして賞金<0>250ドル</0>を獲得しよう! 11月30日まで。詳細は<1>ここをクリック</1> "
 
+#: src/components/Common/SEO.js
+msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet on Arbitrum and Avalanche."
+msgstr ""
+
 #: src/pages/Referrals/Referrals.js
 msgid "Traders"
-msgstr "トレーダー"
+msgstr ""
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Traders Referred"
 msgstr "紹介したトレーダー"
 
+#: src/components/Referrals/AffiliatesStats.js
+msgid "Traders Referred on Arbitrum"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js
+msgid "Traders Referred on Avalanche"
+msgstr ""
+
 #: src/pages/Exchange/Exchange.js
 msgid "Trades"
 msgstr "トレード"
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Trading Volume"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Trading Volume on Arbitrum"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+msgid "Trading Volume on Avalanche"
+msgstr ""
 
 #: src/components/Exchange/UsefulLinks.tsx
 msgid "Trading guide"
@@ -3415,11 +3524,11 @@ msgstr "トリガー"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Trigger Price"
-msgstr "トリガー価格"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Trigger order disabled, pending {0} upgrade"
-msgstr "{0}の更新が未完了のためトリガー注文は停止中です"
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right"
@@ -3775,10 +3884,9 @@ msgstr ""
 msgid "You can change the \"Collateral In\" token above to find lower fees"
 msgstr "より低い手数料を見つけるために上の\"担保資産\"トークンを変更することができます"
 
-#: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
 msgid "You can change this in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are volatile."
-msgstr "ページ右上にある設定メニューでこれを変更することができます。<0/><1/>価格変動が激しい場合、最大スリッページを0.5%未満等に低く設定していると、注文が通らないことがあります。"
+msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "You can check your claim history <0>here</0>."
@@ -3787,6 +3895,10 @@ msgstr "<0>こちら</0>で請求履歴を確認できます。"
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
 msgstr "{1} {stakingToken}対1 esGMXの比率で最大{0} esGMXトークンを現在べスティングすることができます。"
+
+#: src/components/Exchange/ConfirmationBox.js
+msgid "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are volatile."
+msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer AVAX from other networks to Avalanche using any of the below options:"
@@ -3810,7 +3922,7 @@ msgstr "{longOrShortText} {sizeInToken} {0} (${1})を${2}の価格で増額す�
 
 #: src/components/Exchange/PositionSeller.js
 msgid "You have an active order to decrease {longOrShortText} {sizeInToken} {0} (${1}) at {prefix} {2}"
-msgstr "{longOrShortText} {sizeInToken} {0} (${1})を{prefix} {2}で減額するアクティブな注文があります"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "You have multiple existing Increase {longOrShortText} {0} limit orders"

@@ -444,7 +444,12 @@ export default function ClaimEsGmx({ setPendingTxns }) {
             </div>
             <br />
             <div>
-              <Button variant="primary-action" className="w-100" disabled={!isPrimaryEnabled()} onClick={() => claim()}>
+              <Button
+                variant="primary-action"
+                className="w-full"
+                disabled={!isPrimaryEnabled()}
+                onClick={() => claim()}
+              >
                 {getPrimaryText()}
               </Button>
             </div>

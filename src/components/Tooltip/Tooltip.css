@@ -12,8 +12,8 @@
   min-width: 28rem;
   text-align: left;
   white-space: normal;
-  background: linear-gradient(90deg, #0b0b0f 0%, rgba(10, 13, 28, 1) 100%);
-  z-index: 1000;
+  background: #070914;
+  z-index: 10000;
 }
 
 .Tooltip.nowrap .Tooltip-popup {
@@ -133,6 +133,10 @@
   pointer-events: none;
   display: flex;
   flex: 0 0 100%;
+}
+
+.z-index-1001 {
+  z-index: 1001;
 }
 
 @media (max-width: 700px) {

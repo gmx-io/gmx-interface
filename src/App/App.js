@@ -19,6 +19,7 @@ import {
 import Home from "pages/Home/Home";
 import Dashboard from "pages/Dashboard/Dashboard";
 import Stats from "pages/Stats/Stats";
+import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
 import Ecosystem from "pages/Ecosystem/Ecosystem";
 import Stake from "pages/Stake/Stake";
 import { Exchange } from "pages/Exchange/Exchange";
@@ -100,6 +101,7 @@ import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { isDevelopment } from "config/env";
 import Button from "components/Button/Button";
+import { roundToTwoDecimals } from "lib/numbers";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -121,8 +123,7 @@ const Zoom = cssTransition({
 
 const arbWsProvider = new ethers.providers.WebSocketProvider(getAlchemyWsUrl());
 
-const avaxWsProvider = new ethers.providers.JsonRpcProvider("https://api.avax.network/ext/bc/C/rpc");
-avaxWsProvider.pollingInterval = 2000;
+const avaxWsProvider = new ethers.providers.WebSocketProvider("wss://api.avax.network/ext/bc/C/ws");
 
 function getWsProvider(active, chainId) {
   if (!active) {
@@ -196,6 +197,7 @@ function FullApp() {
   };
 
   const connectInjectedWallet = getInjectedHandler(activate, deactivate);
+
   const activateWalletConnect = () => {
     getWalletConnectHandler(activate, deactivate, setActivatingConnector)();
   };
@@ -293,7 +295,7 @@ function FullApp() {
 
   const openSettings = () => {
     const slippage = parseInt(savedSlippageAmount);
-    setSlippageAmount((slippage / BASIS_POINTS_DIVISOR) * 100);
+    setSlippageAmount(roundToTwoDecimals((slippage / BASIS_POINTS_DIVISOR) * 100));
     setIsPnlInLeverage(savedIsPnlInLeverage);
     setShowPnlAfterFees(savedShowPnlAfterFees);
     setShouldDisableValidationForTesting(savedShouldDisableValidationForTesting);
@@ -310,8 +312,7 @@ function FullApp() {
       helperToast.error(t`Slippage should be less than 5%`);
       return;
     }
-
-    const basisPoints = (slippage * BASIS_POINTS_DIVISOR) / 100;
+    const basisPoints = roundToTwoDecimals((slippage * BASIS_POINTS_DIVISOR) / 100);
     if (parseInt(basisPoints) !== parseFloat(basisPoints)) {
       helperToast.error(t`Max slippage precision is 0.01%`);
       return;
@@ -479,13 +480,11 @@ function FullApp() {
                   setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
                   connectWallet={connectWallet}
                   savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
+                  openSettings={openSettings}
                 />
               </Route>
               <Route exact path="/dashboard">
                 <Dashboard />
-              </Route>
-              <Route exact path="/stats">
-                <Stats />
               </Route>
               <Route exact path="/earn">
                 <Stake setPendingTxns={setPendingTxns} connectWallet={connectWallet} />
@@ -531,6 +530,12 @@ function FullApp() {
               </Route>
               <Route exact path="/actions/:account">
                 <Actions savedIsPnlInLeverage={savedIsPnlInLeverage} savedShowPnlAfterFees={savedShowPnlAfterFees} />
+              </Route>
+              <Route exact path="/referrals-tier">
+                <ReferralsTier />
+              </Route>
+              <Route exact path="/stats">
+                <Stats />
               </Route>
               <Route exact path="/orders_overview">
                 <OrdersOverview />
@@ -642,7 +647,7 @@ function FullApp() {
           </div>
         )}
 
-        <Button variant="primary-action" className="w-100 mt-md" onClick={saveAndCloseSettings}>
+        <Button variant="primary-action" className="w-full mt-md" onClick={saveAndCloseSettings}>
           <Trans>Save</Trans>
         </Button>
       </Modal>

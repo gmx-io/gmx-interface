@@ -6,12 +6,13 @@ import { formatAmount } from "lib/numbers";
 
 type Props = {
   title: string;
-  total?: BigNumber;
-  avaxValue?: BigNumber;
-  arbitrumValue?: BigNumber;
+  total: BigNumber;
+  avaxValue: BigNumber;
+  arbitrumValue: BigNumber;
   showDollar?: boolean;
-  decimalsForConversion: number;
-  symbol: string;
+  decimalsForConversion?: number;
+  symbol?: string;
+  shouldFormat?: boolean;
 };
 
 export default function StatsTooltip({
@@ -22,6 +23,7 @@ export default function StatsTooltip({
   showDollar = true,
   decimalsForConversion = USD_DECIMALS,
   symbol,
+  shouldFormat = true,
 }: Props) {
   return (
     <>
@@ -31,7 +33,7 @@ export default function StatsTooltip({
         </span>
         <span className="amount">
           {showDollar && "$"}
-          {formatAmount(arbitrumValue, decimalsForConversion, 0, true)}
+          {formatAmount(arbitrumValue, shouldFormat ? decimalsForConversion : 0, 0, true)}
           {!showDollar && symbol && " " + symbol}
         </span>
       </p>
@@ -41,7 +43,7 @@ export default function StatsTooltip({
         </span>
         <span className="amount">
           {showDollar && "$"}
-          {formatAmount(avaxValue, decimalsForConversion, 0, true)}
+          {formatAmount(avaxValue, shouldFormat ? decimalsForConversion : 0, 0, true)}
           {!showDollar && symbol && " " + symbol}
         </span>
       </p>
@@ -52,7 +54,7 @@ export default function StatsTooltip({
         </span>
         <span className="amount">
           {showDollar && "$"}
-          {formatAmount(total, decimalsForConversion, 0, true)}
+          {formatAmount(total, shouldFormat ? decimalsForConversion : 0, 0, true)}
           {!showDollar && symbol && " " + symbol}
         </span>
       </p>

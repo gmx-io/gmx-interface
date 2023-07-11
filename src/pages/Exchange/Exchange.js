@@ -14,12 +14,10 @@ import {
   USD_DECIMALS,
   getPositionKey,
   getPositionContractKey,
-  getLeverage,
   getDeltaStr,
   useAccountOrders,
   getPageTitle,
   getFundingFee,
-  getLeverageStr,
 } from "lib/legacy";
 import { getConstant, getExplorerUrl } from "config/chains";
 import { approvePlugin, useExecutionFee, cancelMultipleOrders } from "domain/legacy";
@@ -53,6 +51,7 @@ import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "con
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import UsefulLinks from "components/Exchange/UsefulLinks";
+import { getLeverage, getLeverageStr } from "lib/positions/getLeverage";
 const { AddressZero } = ethers.constants;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;
@@ -281,12 +280,12 @@ export function getPositions(
     position.leverage = getLeverage({
       size: position.size,
       collateral: position.collateral,
-      entryFundingRate: position.entryFundingRate,
-      cumulativeFundingRate: position.cumulativeFundingRate,
+      fundingFee: position.fundingFee,
       hasProfit: position.hasProfit,
       delta: position.delta,
       includeDelta,
     });
+
     position.leverageStr = getLeverageStr(position.leverage);
 
     positionsMap[key] = position;
@@ -354,6 +353,7 @@ export const Exchange = forwardRef((props, ref) => {
     setSavedShouldShowPositionLines,
     connectWallet,
     savedShouldDisableValidationForTesting,
+    openSettings,
   } = props;
   const [showBanner, setShowBanner] = useLocalStorageSerializeKey("showBanner", true);
   const [bannerHidden, setBannerHidden] = useLocalStorageSerializeKey("bannerHidden", null);
@@ -525,7 +525,9 @@ export const Exchange = forwardRef((props, ref) => {
     const toToken = getTokenInfo(infoTokens, toTokenAddress);
     let selectedToken = getChartToken(swapOption, fromToken, toToken, chainId);
     let currentTokenPriceStr = formatAmount(selectedToken.maxPrice, USD_DECIMALS, 2, true);
-    let title = getPageTitle(currentTokenPriceStr + ` | ${selectedToken.symbol}${selectedToken.isStable ? "" : "USD"}`);
+    let title = getPageTitle(
+      currentTokenPriceStr + ` | ${selectedToken.symbol}${selectedToken.isStable ? "" : "-USD"}`
+    );
     document.title = title;
   }, [tokenSelection, swapOption, infoTokens, chainId, fromTokenAddress, toTokenAddress]);
 
@@ -867,6 +869,7 @@ export const Exchange = forwardRef((props, ref) => {
             minExecutionFeeErrorMessage={minExecutionFeeErrorMessage}
             usdgSupply={usdgSupply}
             totalTokenWeights={totalTokenWeights}
+            openSettings={openSettings}
           />
         )}
         {listSection === ORDERS && (

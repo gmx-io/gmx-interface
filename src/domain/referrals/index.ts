@@ -1,9 +1,10 @@
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { gql } from "@apollo/client";
 import { useState, useEffect, useMemo } from "react";
 import useSWR from "swr";
 
 import ReferralStorage from "abis/ReferralStorage.json";
+import Timelock from "abis/Timelock.json";
 import { MAX_REFERRAL_CODE_LENGTH, isAddressZero, isHashZero } from "lib/legacy";
 import { getContract } from "config/contracts";
 import { REGEX_VERIFY_BYTES32 } from "components/Referrals/referralsHelper";
@@ -13,13 +14,9 @@ import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
 import { getProvider } from "lib/rpc";
-import { bigNumberify } from "lib/numbers";
+import { isAddress } from "ethers/lib/utils";
 
-const ACTIVE_CHAINS = [ARBITRUM, AVALANCHE];
-const DISTRIBUTION_TYPE_REBATES = "1";
-const DISTRIBUTION_TYPE_DISCOUNT = "2";
-
-function getGraphClient(chainId) {
+export function getGraphClient(chainId) {
   if (chainId === ARBITRUM) {
     return arbitrumReferralsGraphClient;
   } else if (chainId === AVALANCHE) {
@@ -94,12 +91,16 @@ export function useUserCodesOnAllChain(account) {
   useEffect(() => {
     async function main() {
       const [arbitrumCodes, avalancheCodes] = await Promise.all(
-        ACTIVE_CHAINS.map((chainId) => {
-          return getGraphClient(chainId)
-            .query({ query, variables: { account: (account || "").toLowerCase() } })
-            .then(({ data }) => {
-              return data.referralCodes.map((c) => c.code);
-            });
+        [ARBITRUM, AVALANCHE].map(async (chainId) => {
+          try {
+            const client = getGraphClient(chainId);
+            const { data } = await client.query({ query, variables: { account: (account || "").toLowerCase() } });
+            return data.referralCodes.map((c) => c.code);
+          } catch (ex) {
+            // eslint-disable-next-line no-console
+            console.warn("Failed to fetch referral codes on chain %s", chainId, ex);
+            return [];
+          }
         })
       );
       const [codeOwnersOnAvax = [], codeOwnersOnArbitrum = []] = await Promise.all([
@@ -124,169 +125,11 @@ export function useUserCodesOnAllChain(account) {
   return data;
 }
 
-export function useReferralsData(chainId, account) {
-  const [data, setData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const ownerOnOtherChain = useUserCodesOnAllChain(account);
-  useEffect(() => {
-    if (!chainId || !account) {
-      setLoading(false);
-      return;
-    }
-    const startOfDayTimestamp = Math.floor(Math.floor(Date.now() / 1000) / 86400) * 86400;
-
-    const query = gql`
-      query referralData($typeIds: [String!]!, $account: String!, $timestamp: Int!, $referralTotalStatsId: String!) {
-        distributions(
-          first: 1000
-          orderBy: timestamp
-          orderDirection: desc
-          where: { receiver: $account, typeId_in: $typeIds }
-        ) {
-          receiver
-          amount
-          typeId
-          token
-          transactionHash
-          timestamp
-        }
-        referrerTotalStats: referrerStats(
-          first: 1000
-          orderBy: volume
-          orderDirection: desc
-          where: { period: total, referrer: $account }
-        ) {
-          referralCode
-          volume
-          trades
-          tradedReferralsCount
-          registeredReferralsCount
-          totalRebateUsd
-          discountUsd
-        }
-        referrerLastDayStats: referrerStats(
-          first: 1000
-          where: { period: daily, referrer: $account, timestamp: $timestamp }
-        ) {
-          referralCode
-          volume
-          trades
-          tradedReferralsCount
-          registeredReferralsCount
-          totalRebateUsd
-          discountUsd
-        }
-        referralCodes(first: 1000, where: { owner: $account }) {
-          code
-        }
-        referralTotalStats: referralStat(id: $referralTotalStatsId) {
-          volume
-          discountUsd
-        }
-        referrerTierInfo: referrer(id: $account) {
-          tierId
-          id
-          discountShare
-        }
-      }
-    `;
-    setLoading(true);
-
-    getGraphClient(chainId)
-      .query({
-        query,
-        variables: {
-          typeIds: [DISTRIBUTION_TYPE_REBATES, DISTRIBUTION_TYPE_DISCOUNT],
-          account: (account || "").toLowerCase(),
-          timestamp: startOfDayTimestamp,
-          referralTotalStatsId: account && `total:0:${account.toLowerCase()}`,
-        },
-      })
-      .then((res) => {
-        const rebateDistributions: any[] = [];
-        const discountDistributions: any[] = [];
-        res.data.distributions.forEach((d) => {
-          const item = {
-            timestamp: parseInt(d.timestamp),
-            transactionHash: d.transactionHash,
-            receiver: ethers.utils.getAddress(d.receiver),
-            amount: bigNumberify(d.amount),
-            typeId: d.typeId,
-            token: ethers.utils.getAddress(d.token),
-          };
-          if (d.typeId === DISTRIBUTION_TYPE_REBATES) {
-            rebateDistributions.push(item);
-          } else {
-            discountDistributions.push(item);
-          }
-        });
-
-        function prepareStatsItem(e) {
-          return {
-            volume: bigNumberify(e.volume),
-            trades: parseInt(e.trades),
-            tradedReferralsCount: parseInt(e.tradedReferralsCount),
-            registeredReferralsCount: parseInt(e.registeredReferralsCount),
-            totalRebateUsd: bigNumberify(e.totalRebateUsd),
-            discountUsd: bigNumberify(e.discountUsd),
-            referralCode: decodeReferralCode(e.referralCode),
-            ownerOnOtherChain: ownerOnOtherChain?.[chainId][e.referralCode],
-          };
-        }
-
-        function getCumulativeStats(data: any[] = []) {
-          return data.reduce(
-            (acc, cv) => {
-              acc.totalRebateUsd = acc.totalRebateUsd.add(cv.totalRebateUsd);
-              acc.volume = acc.volume.add(cv.volume);
-              acc.discountUsd = acc.discountUsd.add(cv.discountUsd);
-              acc.trades = acc.trades + cv.trades;
-              acc.tradedReferralsCount = acc.tradedReferralsCount + cv.tradedReferralsCount;
-              acc.registeredReferralsCount = acc.registeredReferralsCount + cv.registeredReferralsCount;
-              return acc;
-            },
-            {
-              totalRebateUsd: bigNumberify(0),
-              volume: bigNumberify(0),
-              discountUsd: bigNumberify(0),
-              trades: 0,
-              tradedReferralsCount: 0,
-              registeredReferralsCount: 0,
-            } as any
-          );
-        }
-
-        let referrerTotalStats = res.data.referrerTotalStats.map(prepareStatsItem);
-        setData({
-          rebateDistributions,
-          discountDistributions,
-          referrerTotalStats,
-          referrerTierInfo: res.data.referrerTierInfo,
-          referrerLastDayStats: res.data.referrerLastDayStats.map(prepareStatsItem),
-          cumulativeStats: getCumulativeStats(referrerTotalStats),
-          codes: res.data.referralCodes.map((e) => decodeReferralCode(e.code)),
-          referralTotalStats: res.data.referralTotalStats
-            ? {
-                volume: bigNumberify(res.data.referralTotalStats.volume),
-                discountUsd: bigNumberify(res.data.referralTotalStats.discountUsd),
-              }
-            : {
-                volume: bigNumberify(0),
-                discountUsd: bigNumberify(0),
-              },
-        });
-      })
-      // eslint-disable-next-line no-console
-      .catch(console.warn)
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [setData, chainId, account, ownerOnOtherChain]);
-
-  return {
-    data: data || null,
-    loading,
-  };
+export async function setAffiliateTier(chainId: number, affiliate: string, tierId: number, library, opts) {
+  const referralStorageAddress = getContract(chainId, "ReferralStorage");
+  const timelockAddress = getContract(chainId, "Timelock");
+  const contract = new ethers.Contract(timelockAddress, Timelock.abi, library.getSigner());
+  return callContract(chainId, contract, "setReferrerTier", [referralStorageAddress, affiliate, tierId], opts);
 }
 
 export async function registerReferralCode(chainId, referralCode, library, opts) {
@@ -350,8 +193,9 @@ export function useUserReferralCode(library, chainId, account) {
 
 export function useReferrerTier(library, chainId, account) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const { data: referrerTier, mutate: mutateReferrerTier } = useSWR(
-    account && [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "referrerTiers", account],
+  const validAccount = useMemo(() => (isAddress(account) ? account : null), [account]);
+  const { data: referrerTier, mutate: mutateReferrerTier } = useSWR<BigNumber>(
+    validAccount && [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "referrerTiers", validAccount],
     {
       fetcher: contractFetcher(library, ReferralStorage),
     }
@@ -386,11 +230,11 @@ export function useAffiliateCodes(chainId, account) {
   const [affiliateCodes, setAffiliateCodes] = useState({ code: null, success: false });
   const query = gql`
     query userReferralCodes($account: String!) {
-      referrerTotalStats: referrerStats(
+      affiliateCodes: affiliateStats(
         first: 1000
         orderBy: volume
         orderDirection: desc
-        where: { period: total, referrer: $account }
+        where: { period: total, affiliate: $account }
       ) {
         referralCode
       }
@@ -401,7 +245,7 @@ export function useAffiliateCodes(chainId, account) {
     getGraphClient(chainId)
       .query({ query, variables: { account: account?.toLowerCase() } })
       .then((res) => {
-        const parsedAffiliateCodes = res?.data?.referrerTotalStats.map((c) => decodeReferralCode(c?.referralCode));
+        const parsedAffiliateCodes = res?.data?.affiliateCodes.map((c) => decodeReferralCode(c?.referralCode));
         setAffiliateCodes({ code: parsedAffiliateCodes[0], success: true });
       });
     return () => {

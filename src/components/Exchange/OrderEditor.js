@@ -12,7 +12,6 @@ import {
   getExchangeRate,
   getExchangeRateDisplay,
   calculatePositionDelta,
-  getLiquidationPrice,
 } from "lib/legacy";
 import { updateSwapOrder, updateIncreaseOrder, updateDecreaseOrder } from "domain/legacy";
 import Modal from "../Modal/Modal";
@@ -24,6 +23,7 @@ import { bigNumberify, formatAmount, formatAmountFree, parseValue } from "lib/nu
 import { useChainId } from "lib/chains";
 import { t, Trans } from "@lingui/macro";
 import Button from "components/Button/Button";
+import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 
 export default function OrderEditor(props) {
   const {
@@ -44,7 +44,16 @@ export default function OrderEditor(props) {
   const { chainId } = useChainId();
 
   const position = order.type !== SWAP ? getPositionForOrder(account, order, positionsMap) : null;
-  const liquidationPrice = order.type === DECREASE && position ? getLiquidationPrice(position) : null;
+  const liquidationPrice =
+    order.type === DECREASE && position
+      ? getLiquidationPrice({
+          size: position.size,
+          collateral: position.collateral,
+          fundingFee: position.fundingFee,
+          isLong: position.isLong,
+          averagePrice: position.averagePrice,
+        })
+      : null;
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -289,7 +298,7 @@ export default function OrderEditor(props) {
           </div>
         )}
         <div className="Exchange-swap-button-container">
-          <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+          <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
             {getPrimaryText()}
           </Button>
         </div>
@@ -396,7 +405,7 @@ export default function OrderEditor(props) {
         </div>
       )}
       <div className="Exchange-swap-button-container">
-        <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+        <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
           {getPrimaryText()}
         </Button>
       </div>

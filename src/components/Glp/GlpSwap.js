@@ -38,8 +38,6 @@ import Vester from "abis/Vester.json";
 import RewardRouter from "abis/RewardRouter.json";
 import Token from "abis/Token.json";
 
-import arrowIcon from "img/ic_convert_down.svg";
-
 import "./GlpSwap.css";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import SwapErrorModal from "./SwapErrorModal";
@@ -56,6 +54,7 @@ import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getIcon } from "config/icons";
 import Button from "components/Button/Button";
+import { IoChevronDownOutline } from "react-icons/io5";
 
 const { AddressZero } = ethers.constants;
 
@@ -416,8 +415,10 @@ export default function GlpSwap(props) {
   ]);
 
   const switchSwapOption = (hash = "") => {
+    const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
     history.push(`${history.location.pathname}#${hash}`);
     props.setIsBuying(hash === "redeem" ? false : true);
+    window.scrollTo(0, currentScrollPosition);
   };
 
   const fillMaxAmount = () => {
@@ -817,7 +818,7 @@ export default function GlpSwap(props) {
             {isBuying && (
               <BuyInputSection
                 topLeftLabel={payLabel}
-                topRightLabel={t`Balance:`}
+                topRightLabel={t`Balance`}
                 tokenBalance={`${formatAmount(swapTokenBalance, swapToken.decimals, 4, true)}`}
                 inputValue={swapValue}
                 onInputValueChange={onSwapValueChange}
@@ -844,7 +845,7 @@ export default function GlpSwap(props) {
             {!isBuying && (
               <BuyInputSection
                 topLeftLabel={payLabel}
-                topRightLabel={t`Available:`}
+                topRightLabel={t`Available`}
                 tokenBalance={`${formatAmount(maxSellAmount, GLP_DECIMALS, 4, true)}`}
                 inputValue={glpValue}
                 onInputValueChange={onGlpValueChange}
@@ -859,22 +860,22 @@ export default function GlpSwap(props) {
             )}
 
             <div className="AppOrder-ball-container">
-              <div className="AppOrder-ball">
-                <img
-                  src={arrowIcon}
-                  alt="arrowIcon"
-                  onClick={() => {
-                    setIsBuying(!isBuying);
-                    switchSwapOption(isBuying ? "redeem" : "");
-                  }}
-                />
-              </div>
+              <button
+                type="button"
+                className="AppOrder-ball"
+                onClick={() => {
+                  setIsBuying(!isBuying);
+                  switchSwapOption(isBuying ? "redeem" : "");
+                }}
+              >
+                <IoChevronDownOutline className="AppOrder-ball-icon" />
+              </button>
             </div>
 
             {isBuying && (
               <BuyInputSection
                 topLeftLabel={receiveLabel}
-                topRightLabel={t`Balance:`}
+                topRightLabel={t`Balance`}
                 tokenBalance={`${formatAmount(glpBalance, GLP_DECIMALS, 4, true)}`}
                 inputValue={glpValue}
                 onInputValueChange={onGlpValueChange}
@@ -888,7 +889,7 @@ export default function GlpSwap(props) {
             {!isBuying && (
               <BuyInputSection
                 topLeftLabel={receiveLabel}
-                topRightLabel={t`Balance:`}
+                topRightLabel={t`Balance`}
                 tokenBalance={`${formatAmount(swapTokenBalance, swapToken.decimals, 4, true)}`}
                 inputValue={swapValue}
                 onInputValueChange={onSwapValueChange}
@@ -959,7 +960,7 @@ export default function GlpSwap(props) {
               </div>
             </div>
             <div className="GlpSwap-cta Exchange-swap-button-container">
-              <Button type="submit" variant="primary-action" className="w-100" disabled={!isPrimaryEnabled()}>
+              <Button type="submit" variant="primary-action" className="w-full" disabled={!isPrimaryEnabled()}>
                 {getPrimaryText()}
               </Button>
             </div>
@@ -1190,8 +1191,8 @@ export default function GlpSwap(props) {
                   <td>{renderFees()}</td>
                   <td>
                     <Button
-                      variant="semi-clear"
-                      className={cx("w-100", isBuying ? "buying" : "selling")}
+                      variant="secondary"
+                      className={cx("w-full", isBuying ? "buying" : "selling")}
                       onClick={() => selectToken(token)}
                     >
                       {isBuying ? t`Buy with ${token.symbol}` : t`Sell for ${token.symbol}`}
@@ -1379,12 +1380,12 @@ export default function GlpSwap(props) {
                   <div className="App-card-divider"></div>
                   <div className="App-card-options">
                     {isBuying && (
-                      <Button variant="semi-clear" onClick={() => selectToken(token)}>
+                      <Button variant="secondary" onClick={() => selectToken(token)}>
                         <Trans>Buy with {token.symbol}</Trans>
                       </Button>
                     )}
                     {!isBuying && (
-                      <Button variant="semi-clear" onClick={() => selectToken(token)}>
+                      <Button variant="secondary" onClick={() => selectToken(token)}>
                         <Trans>Sell for {token.symbol}</Trans>
                       </Button>
                     )}
