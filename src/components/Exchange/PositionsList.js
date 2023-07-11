@@ -587,9 +587,7 @@ export default function PositionsList(props) {
                         renderContent={() => {
                           return (
                             <>
-                              <strong>
-                                <Trans>Active Orders</Trans>
-                              </strong>
+                              <Trans>Active Orders</Trans>
                               {positionOrders.map((order) => {
                                 const className = order.type === INCREASE ? "text-green" : "text-red";
                                 return (

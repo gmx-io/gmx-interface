@@ -41,11 +41,13 @@ export default function NetValueTooltip({ position, isMobile }: Props) {
             <StatsTooltipRow
               label={t`Open Fee`}
               showDollar={false}
+              className="text-red"
               value={`-$${formatAmount(position.closingFee, USD_DECIMALS, 2, true)}`}
             />
             <StatsTooltipRow
               label={t`Close Fee`}
               showDollar={false}
+              className="text-red"
               value={`-$${formatAmount(position.closingFee, USD_DECIMALS, 2, true)}`}
             />
             <br />

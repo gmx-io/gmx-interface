@@ -12,7 +12,7 @@ export default function StatsTooltipRow({ label, value, className, showDollar = 
   function renderValue() {
     if (Array.isArray(value)) {
       return (
-        <ul className="Tooltip-row-values">
+        <ul className="Tooltip-row-values text-white">
           {value.map((v, i) => (
             <li className={className} key={i}>
               {v}
@@ -22,7 +22,7 @@ export default function StatsTooltipRow({ label, value, className, showDollar = 
       );
     }
     return (
-      <span className={cx("Tooltip-row-value", className)}>
+      <span className={cx("Tooltip-row-value text-white", className)}>
         {showDollar && "$"}
         {value}
       </span>
@@ -30,7 +30,7 @@ export default function StatsTooltipRow({ label, value, className, showDollar = 
   }
   return (
     <div className="Tooltip-row">
-      <span className="Tooltip-row-label">{label}:</span>
+      <span className="Tooltip-row-label text-gray">{label}:</span>
       {renderValue()}
     </div>
   );
