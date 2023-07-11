@@ -1,30 +1,27 @@
 import { HistoryCallback, PeriodParams, ResolutionString, SubscribeBarsCallback } from "charting_library";
 import { getNativeToken, getTokens, isChartAvailabeForToken } from "config/tokens";
-import { SUPPORTED_RESOLUTIONS } from "config/tradingview";
 import { useChainId } from "lib/chains";
 import { useEffect, useMemo, useRef } from "react";
 import { TVDataProvider } from "./TVDataProvider";
 import { SymbolInfo } from "./types";
 import { formatTimeInBarToMs } from "./utils";
 
-type ChartInfo = {
-  ticker: string;
-  period: string;
-};
-
-const configurationData = {
-  supported_resolutions: Object.keys(SUPPORTED_RESOLUTIONS),
-  supports_marks: false,
-  supports_timescale_marks: false,
-  supports_time: true,
-  reset_cache_timeout: 100,
-};
+function getConfigurationData(supportedResolutions) {
+  return {
+    supported_resolutions: Object.keys(supportedResolutions),
+    supports_marks: false,
+    supports_timescale_marks: false,
+    supports_time: true,
+    reset_cache_timeout: 100,
+  };
+}
 
 type Props = {
   dataProvider?: TVDataProvider;
+  supportedResolutions: { [key: number]: string };
 };
 
-export default function useTVDatafeed({ dataProvider }: Props) {
+export default function useTVDatafeed({ dataProvider, supportedResolutions }: Props) {
   const { chainId } = useChainId();
   const intervalRef = useRef<ReturnType<typeof setInterval> | undefined>();
   const resetCacheRef = useRef<() => void | undefined>();
@@ -54,7 +51,7 @@ export default function useTVDatafeed({ dataProvider }: Props) {
       },
       datafeed: {
         onReady: (callback) => {
-          setTimeout(() => callback(configurationData));
+          setTimeout(() => callback(getConfigurationData(supportedResolutions)));
         },
         resolveSymbol(symbolName, onSymbolResolvedCallback) {
           if (!isChartAvailabeForToken(chainId, symbolName)) {
@@ -87,10 +84,8 @@ export default function useTVDatafeed({ dataProvider }: Props) {
           onHistoryCallback: HistoryCallback,
           onErrorCallback: (error: string) => void
         ) {
-          const period = SUPPORTED_RESOLUTIONS[resolution];
-
-          if (!period) {
-            return onErrorCallback("Invalid period!");
+          if (!supportedResolutions[resolution]) {
+            return onErrorCallback("[getBars] Invalid resolution");
           }
           const { ticker, isStable } = symbolInfo;
           try {
@@ -120,7 +115,7 @@ export default function useTVDatafeed({ dataProvider }: Props) {
           _subscribeUID,
           onResetCacheNeededCallback: () => void
         ) {
-          const period = SUPPORTED_RESOLUTIONS[resolution];
+          const period = supportedResolutions[resolution];
           const { ticker, isStable } = symbolInfo;
           if (!ticker || !period) {
             return;
@@ -151,5 +146,5 @@ export default function useTVDatafeed({ dataProvider }: Props) {
         },
       },
     };
-  }, [chainId, stableTokens]);
+  }, [chainId, stableTokens, supportedResolutions]);
 }

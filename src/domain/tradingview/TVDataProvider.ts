@@ -1,4 +1,4 @@
-import { LAST_BAR_REFRESH_INTERVAL, SUPPORTED_RESOLUTIONS } from "config/tradingview";
+import { LAST_BAR_REFRESH_INTERVAL } from "config/tradingview";
 import { getLimitChartPricesFromStats, timezoneOffset } from "domain/prices";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
@@ -27,13 +27,14 @@ export class TVDataProvider {
   lastTicker: string;
   lastPeriod: string;
   getCurrentPrice: (symbol: string) => number | undefined;
+  supportedResolutions: string[];
   barsInfo: {
     period: string;
     data: Bar[];
     ticker: string;
   };
 
-  constructor({ getCurrentPrice }) {
+  constructor({ getCurrentPrice, resolutions }) {
     const { lastBar, currentBar, startTime, lastTicker, lastPeriod, barsInfo: initialHistoryBarsInfo } = initialState;
     this.lastBar = lastBar;
     this.currentBar = currentBar;
@@ -42,6 +43,7 @@ export class TVDataProvider {
     this.lastPeriod = lastPeriod;
     this.barsInfo = initialHistoryBarsInfo;
     this.getCurrentPrice = getCurrentPrice;
+    this.supportedResolutions = resolutions;
   }
 
   async getCurrentPriceOfToken(ticker: string): Promise<number | undefined> {
@@ -113,7 +115,7 @@ export class TVDataProvider {
     periodParams: PeriodParams,
     shouldRefetchBars: boolean
   ) {
-    const period = SUPPORTED_RESOLUTIONS[resolution];
+    const period = this.supportedResolutions[resolution];
     const { from, to } = periodParams;
 
     // getBars is called on period and token change so it's better to rest the values
