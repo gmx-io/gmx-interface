@@ -623,81 +623,91 @@ function FullApp() {
         setIsVisible={setIsSettingsVisible}
         label={t`Settings`}
       >
-        <div className="App-settings-row">
-          <div>
-            <Trans>Allowed Slippage</Trans>
-          </div>
-          <div className="App-slippage-tolerance-input-container">
-            <input
-              type="text"
-              className="App-slippage-tolerance-input"
-              value={slippageAmount}
-              placeholder={parsedSavedSlippageAmount / 100}
-              onChange={(e) => {
-                const maxSlippagePercentage = MAX_SLIPPAGE / 100;
-                const defaultSlippagePercentage = DEFAULT_SLIPPAGE_AMOUNT / 100;
-                let value = e.target.value;
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            saveAndCloseSettings();
+          }}
+        >
+          <div className="App-settings-row">
+            <div>
+              <Trans>Allowed Slippage</Trans>
+            </div>
+            <div className="App-slippage-tolerance-input-container">
+              <input
+                type="text"
+                className="App-slippage-tolerance-input"
+                value={slippageAmount}
+                placeholder={parsedSavedSlippageAmount / 100}
+                onChange={(e) => {
+                  const maxSlippagePercentage = MAX_SLIPPAGE / 100;
+                  const defaultSlippagePercentage = DEFAULT_SLIPPAGE_AMOUNT / 100;
+                  let value = e.target.value;
 
-                if (value === "") {
+                  if (value === "") {
+                    setSlippageAmount(value);
+                  }
+
+                  if (value === ".") {
+                    value = "0.";
+                  }
+
+                  if (!VALID_SLIPPAGE_REGEX.test(value)) {
+                    return;
+                  }
+
+                  if (value > maxSlippagePercentage) {
+                    value = maxSlippagePercentage;
+                  }
+
+                  if (value < defaultSlippagePercentage) {
+                    setSettingsModalError(
+                      t`Allowed Slippage below ${defaultSlippagePercentage}% may result in failed orders`
+                    );
+                  } else {
+                    setSettingsModalError("");
+                  }
+
                   setSlippageAmount(value);
-                }
-
-                if (value === ".") {
-                  value = "0.";
-                }
-
-                if (!VALID_SLIPPAGE_REGEX.test(value)) {
-                  return;
-                }
-
-                if (value > maxSlippagePercentage) {
-                  value = maxSlippagePercentage;
-                }
-
-                if (value < defaultSlippagePercentage) {
-                  setSettingsModalError(
-                    t`Allowed Slippage below ${defaultSlippagePercentage}% may result in failed orders`
-                  );
-                } else {
-                  setSettingsModalError("");
-                }
-
-                setSlippageAmount(value);
-              }}
-            />
-            <div className="App-slippage-tolerance-input-percent">%</div>
+                }}
+              />
+              <div className="App-slippage-tolerance-input-percent">%</div>
+            </div>
+            {settingsModalError && <p className="App-settings-error">{settingsModalError}</p>}
           </div>
-          {settingsModalError && <p className="App-settings-error">{settingsModalError}</p>}
-        </div>
-        <div className="Exchange-settings-row">
-          <Checkbox isChecked={showPnlAfterFees} setIsChecked={setShowPnlAfterFees}>
-            <Trans>Display PnL after fees</Trans>
-          </Checkbox>
-        </div>
-        <div className="Exchange-settings-row">
-          <Checkbox isChecked={isPnlInLeverage} setIsChecked={setIsPnlInLeverage}>
-            <Trans>Include PnL in leverage display</Trans>
-          </Checkbox>
-        </div>
-        <div className="Exchange-settings-row chart-positions-settings">
-          <Checkbox isChecked={savedShouldShowPositionLines} setIsChecked={setSavedShouldShowPositionLines}>
-            <span>
-              <Trans>Chart positions</Trans>
-            </span>
-          </Checkbox>
-        </div>
-
-        {isDevelopment() && (
           <div className="Exchange-settings-row">
-            <Checkbox isChecked={shouldDisableValidationForTesting} setIsChecked={setShouldDisableValidationForTesting}>
-              <Trans>Disable order validations</Trans>
+            <Checkbox isChecked={showPnlAfterFees} setIsChecked={setShowPnlAfterFees}>
+              <Trans>Display PnL after fees</Trans>
             </Checkbox>
           </div>
-        )}
+          <div className="Exchange-settings-row">
+            <Checkbox isChecked={isPnlInLeverage} setIsChecked={setIsPnlInLeverage}>
+              <Trans>Include PnL in leverage display</Trans>
+            </Checkbox>
+          </div>
+          <div className="Exchange-settings-row chart-positions-settings">
+            <Checkbox isChecked={savedShouldShowPositionLines} setIsChecked={setSavedShouldShowPositionLines}>
+              <span>
+                <Trans>Chart positions</Trans>
+              </span>
+            </Checkbox>
+          </div>
 
-        <Button variant="primary-action" className="w-full mt-md" onClick={saveAndCloseSettings}>
-          <Trans>Save</Trans>
-        </Button>
+          {isDevelopment() && (
+            <div className="Exchange-settings-row">
+              <Checkbox
+                isChecked={shouldDisableValidationForTesting}
+                setIsChecked={setShouldDisableValidationForTesting}
+              >
+                <Trans>Disable order validations</Trans>
+              </Checkbox>
+            </div>
+          )}
+
+          <Button type="submit" variant="primary-action" className="w-full mt-md">
+            <Trans>Save</Trans>
+          </Button>
+        </form>
       </Modal>
     </>
   );
