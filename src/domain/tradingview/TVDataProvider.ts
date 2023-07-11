@@ -6,7 +6,6 @@ import { Bar } from "./types";
 import { formatTimeInBarToMs, getCurrentCandleTime, getMax, getMin } from "./utils";
 import { fillBarGaps, getStableCoinPrice, getTokenChartPrice } from "./requests";
 import { PeriodParams } from "charting_library";
-import activeChartStore from "./activeChartStore";
 
 const initialState = {
   lastBar: null,
@@ -14,6 +13,11 @@ const initialState = {
   startTime: 0,
   lastTicker: "",
   lastPeriod: "",
+  barsInfo: {
+    period: "",
+    data: [],
+    ticker: "",
+  },
 };
 
 export class TVDataProvider {
@@ -23,13 +27,20 @@ export class TVDataProvider {
   lastTicker: string;
   lastPeriod: string;
   getCurrentPrice: (symbol: string) => number | undefined;
+  barsInfo: {
+    period: string;
+    data: Bar[];
+    ticker: string;
+  };
 
   constructor({ getCurrentPrice }) {
-    this.lastBar = initialState.lastBar;
-    this.currentBar = initialState.currentBar;
-    this.startTime = initialState.startTime;
-    this.lastTicker = initialState.lastTicker;
-    this.lastPeriod = initialState.lastPeriod;
+    const { lastBar, currentBar, startTime, lastTicker, lastPeriod, barsInfo: initialHistoryBarsInfo } = initialState;
+    this.lastBar = lastBar;
+    this.currentBar = currentBar;
+    this.startTime = startTime;
+    this.lastTicker = lastTicker;
+    this.lastPeriod = lastPeriod;
+    this.barsInfo = initialHistoryBarsInfo;
     this.getCurrentPrice = getCurrentPrice;
   }
 
@@ -53,18 +64,9 @@ export class TVDataProvider {
     periodParams: PeriodParams,
     shouldRefetchBars: boolean
   ): Promise<Bar[]> {
-    const {
-      bars: activeBars,
-      ticker: activeTicker,
-      period: activePeriod,
-      reset: resetActiveChartInfo,
-    } = activeChartStore.getState();
+    const barsInfo = this.barsInfo;
 
-    if (!activeBars.length || activeTicker !== ticker || activePeriod !== period || shouldRefetchBars) {
-      activeChartStore.setState({
-        ticker,
-        period,
-      });
+    if (!barsInfo.data.length || barsInfo.ticker !== ticker || barsInfo.period !== period || shouldRefetchBars) {
       try {
         const historyBars = await this.getTokenChartPrice(chainId, ticker, period);
         const filledBars = fillBarGaps(historyBars, CHART_PERIODS[period]);
@@ -73,24 +75,21 @@ export class TVDataProvider {
         if (lastBar.time === currentCandleTime) {
           this.lastBar = { ...lastBar, ticker, period };
         }
-        activeChartStore.setState({
-          ticker,
-          period,
-          bars: filledBars,
-        });
+        this.barsInfo.data = filledBars;
+        this.barsInfo.ticker = ticker;
+        this.barsInfo.period = period;
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error(error);
-        resetActiveChartInfo();
+        this.barsInfo = initialState.barsInfo;
       }
     }
 
     const { from, to, countBack } = periodParams;
     const toWithOffset = to + timezoneOffset;
     const fromWithOffset = from + timezoneOffset;
-    const { bars: currentBars } = activeChartStore.getState();
 
-    const bars = currentBars.filter((bar) => bar.time > fromWithOffset && bar.time <= toWithOffset);
+    const bars = barsInfo.data.filter((bar) => bar.time > fromWithOffset && bar.time <= toWithOffset);
 
     // if no bars returned, return empty array
     if (!bars.length) {
@@ -124,6 +123,7 @@ export class TVDataProvider {
       const bars = isStable
         ? getStableCoinPrice(period, from, to)
         : await this.getTokenHistoryBars(chainId, ticker, period, periodParams, shouldRefetchBars);
+
       return bars.map(formatTimeInBarToMs);
     } catch {
       throw new Error("Failed to get history bars");
@@ -182,12 +182,7 @@ export class TVDataProvider {
 
     const currentPrice = await this.getCurrentPriceOfToken(ticker);
 
-    if (
-      !this.lastBar?.time ||
-      !currentPrice ||
-      ticker !== this.lastBar.ticker ||
-      ticker !== activeChartStore.getState().ticker
-    ) {
+    if (!this.lastBar?.time || !currentPrice || ticker !== this.lastBar.ticker || ticker !== this.barsInfo.ticker) {
       return;
     }
 
@@ -216,11 +211,18 @@ export class TVDataProvider {
     }
     return this.currentBar;
   }
+  get currentPeriod() {
+    return this.barsInfo.period;
+  }
+  get currentTicker() {
+    return this.barsInfo.ticker;
+  }
   resetState() {
     this.lastBar = initialState.lastBar;
     this.currentBar = initialState.currentBar;
     this.lastTicker = initialState.lastTicker;
     this.lastPeriod = initialState.lastPeriod;
     this.startTime = initialState.startTime;
+    this.barsInfo = initialState.barsInfo;
   }
 }

@@ -12,7 +12,6 @@ import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 import Loader from "components/Common/Loader";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { CHART_PERIODS } from "lib/legacy";
-import activeChartStore from "domain/tradingview/activeChartStore";
 
 type ChartLine = {
   price: number;
@@ -50,12 +49,6 @@ export default function TVChartContainer({
   const { datafeed, resetCache } = useTVDatafeed({ dataProvider });
   const isMobile = useMedia("(max-width: 550px)");
   const symbolRef = useRef(symbol);
-
-  useEffect(() => {
-    activeChartStore.setState({
-      isChartRady: chartReady,
-    });
-  }, [chartReady]);
 
   const drawLineOnChart = useCallback(
     (title: string, price: number) => {

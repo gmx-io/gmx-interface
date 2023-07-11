@@ -6,7 +6,11 @@ import { useEffect, useMemo, useRef } from "react";
 import { TVDataProvider } from "./TVDataProvider";
 import { SymbolInfo } from "./types";
 import { formatTimeInBarToMs } from "./utils";
-import activeChartStore from "./activeChartStore";
+
+type ChartInfo = {
+  ticker: string;
+  period: string;
+};
 
 const configurationData = {
   supported_resolutions: Object.keys(SUPPORTED_RESOLUTIONS),
@@ -26,6 +30,14 @@ export default function useTVDatafeed({ dataProvider }: Props) {
   const resetCacheRef = useRef<() => void | undefined>();
   const tvDataProvider = useRef<TVDataProvider>();
   const shouldRefetchBars = useRef<boolean>(false);
+
+  const stableTokens = useMemo(
+    () =>
+      getTokens(chainId)
+        .filter((t) => t.isStable)
+        .map((t) => t.symbol),
+    [chainId]
+  );
 
   useEffect(() => {
     if (dataProvider && tvDataProvider.current !== dataProvider) {
@@ -49,9 +61,6 @@ export default function useTVDatafeed({ dataProvider }: Props) {
             symbolName = getNativeToken(chainId).symbol;
           }
 
-          const stableTokens = getTokens(chainId)
-            .filter((t) => t.isStable)
-            .map((t) => t.symbol);
           const symbolInfo = {
             name: symbolName,
             type: "crypto",
@@ -78,11 +87,12 @@ export default function useTVDatafeed({ dataProvider }: Props) {
           onHistoryCallback: HistoryCallback,
           onErrorCallback: (error: string) => void
         ) {
-          if (!SUPPORTED_RESOLUTIONS[resolution]) {
-            return onErrorCallback("[getBars] Invalid resolution");
+          const period = SUPPORTED_RESOLUTIONS[resolution];
+
+          if (!period) {
+            return onErrorCallback("Invalid period!");
           }
           const { ticker, isStable } = symbolInfo;
-
           try {
             if (!ticker) {
               onErrorCallback("Invalid ticker!");
@@ -96,6 +106,7 @@ export default function useTVDatafeed({ dataProvider }: Props) {
               periodParams,
               shouldRefetchBars.current
             );
+
             const noData = !bars || bars.length === 0;
             onHistoryCallback(bars, { noData });
           } catch {
@@ -118,20 +129,27 @@ export default function useTVDatafeed({ dataProvider }: Props) {
           resetCacheRef.current = onResetCacheNeededCallback;
           if (!isStable) {
             intervalRef.current = setInterval(function () {
-              const { isChartRady, ticker: activeTicker } = activeChartStore.getState();
               tvDataProvider.current?.getLiveBar(chainId, ticker, period).then((bar) => {
-                if (bar && isChartRady && activeTicker === ticker) {
+                if (
+                  bar &&
+                  bar.ticker === tvDataProvider.current?.currentTicker &&
+                  bar.period === tvDataProvider.current?.currentPeriod
+                ) {
                   onRealtimeCallback(formatTimeInBarToMs(bar));
                 }
               });
             }, 500);
           }
         },
-        unsubscribeBars: () => {
-          intervalRef.current && clearInterval(intervalRef.current);
+        unsubscribeBars: (id) => {
+          // id is in the format ETH_#_USD_#_5
+          const ticker = id.split("_")[0];
+          const isStable = stableTokens.includes(ticker);
+          if (!isStable && intervalRef.current) {
+            clearInterval(intervalRef.current);
+          }
         },
       },
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId]);
+  }, [chainId, stableTokens]);
 }
