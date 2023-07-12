@@ -5,9 +5,9 @@ import { USD_DECIMALS, SWAP, INCREASE, CHART_PERIODS } from "lib/legacy";
 import { useChartPrices } from "domain/legacy";
 
 import ChartTokenSelector from "./ChartTokenSelector";
-import { getMidPrice, getTokenInfo } from "domain/tokens/utils";
+import { getTokenInfo } from "domain/tokens/utils";
 import { formatAmount, numberWithCommas } from "lib/numbers";
-import { getNormalizedTokenSymbol, getToken, getTokens } from "config/tokens";
+import { getToken, getTokens } from "config/tokens";
 import TVChartContainer from "components/TVChartContainer/TVChartContainer";
 import { t } from "@lingui/macro";
 import { DEFAULT_PERIOD, availableNetworksForChart } from "components/TVChartContainer/constants";
@@ -86,28 +86,6 @@ export default function ExchangeTVChart(props) {
       resolutions: SUPPORTED_RESOLUTIONS_V1,
     });
   }, []);
-
-  useEffect(() => {
-    if (chartToken) {
-      const tokenInfo = getTokenInfo(infoTokens, chartToken.address);
-
-      if (!tokenInfo?.minPrice || !tokenInfo?.maxPrice) return;
-
-      const prices = {
-        minPrice: tokenInfo.minPrice,
-        maxPrice: tokenInfo.maxPrice,
-      };
-      const averagePrice = getMidPrice(prices);
-
-      if (averagePrice) {
-        const formattedPrice = parseFloat(formatAmount(averagePrice, USD_DECIMALS, 2));
-        dataProvider.current?.setCurrentChartToken({
-          price: formattedPrice,
-          ticker: getNormalizedTokenSymbol(tokenInfo.symbol),
-        });
-      }
-    }
-  }, [chartToken, infoTokens]);
 
   useEffect(() => {
     const tmp = getChartToken(swapOption, fromToken, toToken, chainId);
@@ -387,6 +365,7 @@ export default function ExchangeTVChart(props) {
             dataProvider={dataProvider.current}
             period={period}
             setPeriod={setPeriod}
+            chartToken={chartToken}
           />
         ) : (
           <p className="ExchangeChart-error">Sorry, chart is not supported on this network yet.</p>

@@ -10,6 +10,7 @@ const initialState = {
   chartToken: {
     price: 0,
     ticker: "",
+    isChartReady: false,
   },
   lastBar: null,
   currentBar: null,
@@ -27,6 +28,7 @@ export class TVDataProvider {
   chartToken: {
     price: number;
     ticker: string;
+    isChartReady: boolean;
   };
   lastBar: Bar | null;
   currentBar: Bar | null;
@@ -151,7 +153,9 @@ export class TVDataProvider {
     if (
       currentTime - this.startTime > LAST_BAR_REFRESH_INTERVAL ||
       this.lastTicker !== ticker ||
-      this.lastPeriod !== period
+      this.lastPeriod !== period ||
+      this.lastBar?.ticker !== ticker ||
+      this.lastBar?.period !== period
     ) {
       const prices = await this.getTokenLastBars(chainId, ticker, period, 1);
       const currentPrice = this.chartToken.ticker === this.barsInfo.ticker && this.chartToken.price;
@@ -198,7 +202,9 @@ export class TVDataProvider {
       console.error(error);
     }
     const currentPrice = this.chartToken.ticker === this.barsInfo.ticker && this.chartToken.price;
+
     if (
+      !this.chartToken.isChartReady ||
       !this.lastBar?.time ||
       !currentPrice ||
       this.barsInfo.ticker !== this.lastBar.ticker ||
@@ -236,7 +242,7 @@ export class TVDataProvider {
     }
     return this.currentBar;
   }
-  setCurrentChartToken(chartToken: { price: number; ticker: string }) {
+  setCurrentChartToken(chartToken: { price: number; ticker: string; isChartReady: boolean }) {
     this.chartToken = chartToken;
   }
   get resolutions() {

@@ -6,9 +6,13 @@ import useTVDatafeed from "domain/tradingview/useTVDatafeed";
 import { ChartData, IChartingLibraryWidget, IPositionLineAdapter } from "../../charting_library";
 import { getObjectKeyFromValue } from "domain/tradingview/utils";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
-import { isChartAvailabeForToken } from "config/tokens";
+import { getNormalizedTokenSymbol, isChartAvailabeForToken } from "config/tokens";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 import Loader from "components/Common/Loader";
+import { BigNumber } from "ethers";
+import { formatAmount } from "lib/numbers";
+import { getMidPrice } from "domain/tokens";
+import { USD_DECIMALS } from "lib/legacy";
 
 type ChartLine = {
   price: number;
@@ -24,6 +28,11 @@ type Props = {
   period: string;
   setPeriod: (period: string) => void;
   dataProvider?: TVDataProvider;
+  chartToken: {
+    symbol: string;
+    minPrice: BigNumber;
+    maxPrice: BigNumber;
+  };
 };
 
 export default function TVChartContainer({
@@ -35,6 +44,7 @@ export default function TVChartContainer({
   dataProvider,
   period,
   setPeriod,
+  chartToken,
 }: Props) {
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const tvWidgetRef = useRef<IChartingLibraryWidget | null>(null);
@@ -46,6 +56,19 @@ export default function TVChartContainer({
   const symbolRef = useRef(symbol);
 
   const supportedResolutions = useMemo(() => dataProvider?.resolutions || {}, [dataProvider]);
+
+  useEffect(() => {
+    if (chartToken.maxPrice && chartToken.minPrice) {
+      const averagePrice = getMidPrice(chartToken);
+      const formattedPrice = parseFloat(formatAmount(averagePrice, USD_DECIMALS, 2));
+      dataProvider?.setCurrentChartToken({
+        price: formattedPrice,
+        ticker: getNormalizedTokenSymbol(chartToken.symbol),
+        isChartReady: chartReady,
+      });
+    }
+  }, [chartToken, chartReady, dataProvider]);
+
   const drawLineOnChart = useCallback(
     (title: string, price: number) => {
       if (chartReady && tvWidgetRef.current?.activeChart?.().dataReady()) {
