@@ -658,6 +658,7 @@ export function GmSwapBox(p: Props) {
         if (marketInfo) {
           setIndexName(getMarketIndexName(marketInfo));
           onSelectMarket(marketInfo?.marketTokenAddress);
+          helperToast.success(t`${marketInfo.name} selected in order form`);
         }
       }
       history.replace({ search: "" });

@@ -5325,6 +5325,7 @@ msgstr "{0} prix"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "{0} selected in order form"
 msgstr "{0} sélectionné dans le formulaire d'ordre"
 

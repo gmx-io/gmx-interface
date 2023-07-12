@@ -53,13 +53,13 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
 
     const sortedGroups = allMarkets!.sort((a, b) => {
       const totalMarketSupplyA = a.reduce((acc, market) => {
-        const totalSupplyUsd = convertToUsd(market.totalSupply, market.decimals, market.prices.minPrice);
+        const totalSupplyUsd = convertToUsd(market?.totalSupply, market?.decimals, market?.prices.minPrice);
         acc = acc.add(totalSupplyUsd || 0);
         return acc;
       }, bigNumberify(0)!);
 
       const totalMarketSupplyB = b.reduce((acc, market) => {
-        const totalSupplyUsd = convertToUsd(market.totalSupply, market.decimals, market.prices.minPrice);
+        const totalSupplyUsd = convertToUsd(market?.totalSupply, market?.decimals, market?.prices.minPrice);
         acc = acc.add(totalSupplyUsd || 0);
         return acc;
       }, bigNumberify(0)!);
@@ -128,8 +128,8 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
 
                 const apr = getByKey(marketsTokensAPRData, token.address);
 
-                const totalSupply = token.totalSupply;
-                const totalSupplyUsd = convertToUsd(totalSupply, token.decimals, token.prices?.minPrice);
+                const totalSupply = token?.totalSupply;
+                const totalSupplyUsd = convertToUsd(totalSupply, token?.decimals, token.prices?.minPrice);
 
                 if (!indexToken || !longToken || !shortToken) {
                   return null;
