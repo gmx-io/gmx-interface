@@ -46,6 +46,11 @@ export class TVDataProvider {
     this.supportedResolutions = resolutions;
   }
 
+  async getLimitBars(chainId: number, ticker: string, period: string, limit: number): Promise<Bar[]> {
+    const prices = await getLimitChartPricesFromStats(chainId, ticker, period, limit);
+    return prices;
+  }
+
   async getCurrentPriceOfToken(ticker: string): Promise<number | undefined> {
     const currentPrice = this.getCurrentPrice(ticker);
     const price = parseFloat(formatAmount(currentPrice, USD_DECIMALS, 4));
@@ -53,8 +58,9 @@ export class TVDataProvider {
   }
 
   async getTokenLastBars(chainId: number, ticker: string, period: string, limit: number): Promise<Bar[]> {
-    return getLimitChartPricesFromStats(chainId, ticker, period, limit);
+    return this.getLimitBars(chainId, ticker, period, limit);
   }
+
   async getTokenChartPrice(chainId: number, ticker: string, period: string): Promise<Bar[]> {
     return getTokenChartPrice(chainId, ticker, period);
   }
@@ -63,17 +69,16 @@ export class TVDataProvider {
     chainId: number,
     ticker: string,
     period: string,
-    periodParams: PeriodParams,
-    shouldRefetchBars: boolean
+    periodParams: PeriodParams
   ): Promise<Bar[]> {
     const barsInfo = this.barsInfo;
 
-    if (!barsInfo.data.length || barsInfo.ticker !== ticker || barsInfo.period !== period || shouldRefetchBars) {
+    if (!barsInfo.data.length || barsInfo.ticker !== ticker || barsInfo.period !== period) {
       try {
-        const historyBars = await this.getTokenChartPrice(chainId, ticker, period);
-        const filledBars = fillBarGaps(historyBars, CHART_PERIODS[period]);
+        const bars = await this.getTokenChartPrice(chainId, ticker, period);
+        const filledBars = fillBarGaps(bars, CHART_PERIODS[period]);
         const currentCandleTime = getCurrentCandleTime(period);
-        const lastBar = historyBars[historyBars.length - 1];
+        const lastBar = bars[bars.length - 1];
         if (lastBar.time === currentCandleTime) {
           this.lastBar = { ...lastBar, ticker, period };
         }
@@ -107,14 +112,7 @@ export class TVDataProvider {
     return bars.slice(bars.length - countBack, bars.length);
   }
 
-  async getBars(
-    chainId: number,
-    ticker: string,
-    resolution: string,
-    isStable: boolean,
-    periodParams: PeriodParams,
-    shouldRefetchBars: boolean
-  ) {
+  async getBars(chainId: number, ticker: string, resolution: string, isStable: boolean, periodParams: PeriodParams) {
     const period = this.supportedResolutions[resolution];
     const { from, to } = periodParams;
 
@@ -124,11 +122,28 @@ export class TVDataProvider {
     try {
       const bars = isStable
         ? getStableCoinPrice(period, from, to)
-        : await this.getTokenHistoryBars(chainId, ticker, period, periodParams, shouldRefetchBars);
+        : await this.getTokenHistoryBars(chainId, ticker, period, periodParams);
 
       return bars.map(formatTimeInBarToMs);
     } catch {
       throw new Error("Failed to get history bars");
+    }
+  }
+
+  async getMissingBars(chainId: number, ticker: string, period: string, from: number) {
+    if (!ticker || !period || !chainId || !from) return;
+    const periodSeconds = CHART_PERIODS[period];
+    const currentPeriod = getCurrentCandleTime(period);
+    const barsCount = Math.ceil((currentPeriod - from) / periodSeconds) + 1;
+
+    if (from === currentPeriod) return;
+    if (barsCount > 0) {
+      const bars = await this.getLimitBars(chainId, ticker, period, barsCount);
+      if (bars && ticker === this.barsInfo.ticker && period === this.barsInfo.period) {
+        this.lastBar = bars[bars.length - 1];
+        this.currentBar = null;
+      }
+      return bars.filter((bar) => bar.time >= from);
     }
   }
 
