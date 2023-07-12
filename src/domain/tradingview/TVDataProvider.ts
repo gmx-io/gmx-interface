@@ -109,9 +109,6 @@ export class TVDataProvider {
     const period = this.supportedResolutions[resolution];
     const { from, to } = periodParams;
 
-    // getBars is called on period and token change so it's better to rest the values
-    this.resetState();
-
     try {
       const bars = isStable
         ? getStableCoinPrice(period, from, to)
@@ -157,6 +154,11 @@ export class TVDataProvider {
         const lastBar = prices[0];
         const currentCandleTime = getCurrentCandleTime(period);
         const lastCandleTime = currentCandleTime - CHART_PERIODS[period];
+
+        if (!this.lastBar) {
+          this.lastBar = lastBar;
+        }
+
         if (lastBar.time === currentCandleTime) {
           this.lastBar = { ...lastBar, close: currentPrice, ticker, period };
           this.startTime = currentTime;
@@ -189,13 +191,17 @@ export class TVDataProvider {
       // eslint-disable-next-line no-console
       console.error(error);
     }
-
     const currentPrice = this.currentTokenPrice;
-    if (!this.lastBar?.time || !currentPrice || ticker !== this.lastBar.ticker || ticker !== this.barsInfo.ticker) {
+    if (
+      !this.lastBar?.time ||
+      !currentPrice ||
+      this.barsInfo.ticker !== this.lastBar.ticker ||
+      ticker !== this.barsInfo.ticker
+    ) {
       return;
     }
 
-    if (this.currentBar && this.currentBar.ticker !== ticker) {
+    if (this.currentBar?.ticker !== this.barsInfo.ticker || this.currentBar?.period !== this.barsInfo.period) {
       this.currentBar = null;
     }
 
