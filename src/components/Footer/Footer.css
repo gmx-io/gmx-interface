@@ -1,14 +1,14 @@
 .Footer-wrapper {
   text-align: center;
   padding-top: 1rem;
-  background: #16182e;
+  background: #000000;
   width: 100vw;
   position: absolute;
   transform: translateX(-50%);
   left: 50%;
-  height: 3rem;
+  height: 4.5rem;
   bottom: 0;
-  margin-bottom: 1em;
+  margin-bottom: 0em;
   border-top: 1px solid #282b4c;
 }
 

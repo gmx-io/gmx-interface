@@ -60,6 +60,15 @@ export function AppHeaderLinks({
           <Trans>Docs</Trans>
         </ExternalLink>
       </div>
+      <div className="App-header-link-container">
+        <HeaderLink
+          to="/dashboard"
+          redirectPopupTimestamp={redirectPopupTimestamp}
+          showRedirectModal={showRedirectModal}
+        >
+          <Trans>Dashboard</Trans>
+        </HeaderLink>
+      </div>
       {small && !isHomeSite() && (
         <div className="App-header-link-container">
           {/* eslint-disable-next-line */}

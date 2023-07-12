@@ -1,5 +1,10 @@
-.hero-outer {
-  background-image: url(img/t3.jpg);
+.main {
+  margin: 0;
+}
+
+img {
+  display: block;
+  max-width: 100%;
 }
 .hero {
   /* Sizing */
@@ -38,7 +43,7 @@
 .Home-title-subtext {
   color: #14f187;
 }
-.logo {
+.arrow {
   height: 2.8rem;
   width: 2.8rem;
   margin-left: 0.5rem;
@@ -68,17 +73,60 @@
   appearance: none;
   margin-left: 5em;
 }
+
+.mobile {
+  display: none;
+}
 @media (max-width: 1000px) {
-  .hero-title {
-    margin-left: 1em;
-  }
-  .hero .btn {
-    margin-left: 6rem;
-  }
   .hero {
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: local;
+    display: none;
+  }
+  .mobile {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* Text styles */
+    text-align: center;
+    color: white;
+  }
+
+  .mobile .text {
+    /* Text styles */
+    font-size: 5.7rem;
+    line-height: 6.8rem;
+    font-weight: bold;
+    letter-spacing: 0;
+
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .mobile .subtext {
+    color: #14f187;
+  }
+  .mobile .btn {
+    background: #14f187;
+    border-radius: 16px;
+    font-size: 2.4rem;
+    line-height: 6.8rem;
+    font-weight: bold;
+    letter-spacing: 0;
+    color: #000000 !important;
+    padding-left: 2.5rem;
+    padding-right: 1.6rem;
+    /* padding: 9px 16px!important; */
+    text-decoration: none;
+    box-sizing: border-box;
+    height: 6.1rem;
+    width: 20rem;
+    display: inline-flex !important;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    appearance: none;
   }
 }

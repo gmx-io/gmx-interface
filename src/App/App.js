@@ -18,6 +18,7 @@ import {
 
 import Home from "pages/Home/Home";
 import AppHome from "pages/AppHome/AppHome";
+import Dashboard from "pages/Dashboard/Dashboard";
 import Stats from "pages/Stats/Stats";
 import Ecosystem from "pages/Ecosystem/Ecosystem";
 import Stake from "pages/Stake/Stake";
@@ -105,6 +106,7 @@ import ApproveTokens from "components/ApproveTokens/ApproveTokens";
 import { useInfoTokens } from "domain/tokens";
 import { contractFetcher } from "lib/contracts";
 import { getTokens } from "config/tokens";
+import { SwapBox } from "pages/Swap/Swap";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -519,11 +521,29 @@ function FullApp() {
                   savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
                 />
               </Route>
+              <Route exact path="/dashboard">
+                <Dashboard />
+              </Route>
               <Route exact path="/stats">
                 <Stats />
               </Route>
               <Route exact path="/earn">
                 <Stake setPendingTxns={setPendingTxns} connectWallet={connectWallet} />
+              </Route>
+              <Route exact path="/swap">
+                <SwapBox
+                  ref={exchangeRef}
+                  savedShowPnlAfterFees={savedShowPnlAfterFees}
+                  savedIsPnlInLeverage={savedIsPnlInLeverage}
+                  setSavedIsPnlInLeverage={setSavedIsPnlInLeverage}
+                  savedSlippageAmount={savedSlippageAmount}
+                  setPendingTxns={setPendingTxns}
+                  pendingTxns={pendingTxns}
+                  savedShouldShowPositionLines={savedShouldShowPositionLines}
+                  setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
+                  connectWallet={connectWallet}
+                  savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
+                />
               </Route>
               <Route exact path="/buy">
                 <Buy

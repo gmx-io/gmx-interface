@@ -71,7 +71,8 @@ export const LIMIT = "Limit";
 export const STOP = "Stop";
 export const LEVERAGE_ORDER_OPTIONS = [MARKET, LIMIT, STOP];
 export const SWAP_ORDER_OPTIONS = [MARKET, LIMIT];
-export const SWAP_OPTIONS = [LONG, SHORT, SWAP];
+export const SWAP_OPTIONS = [LONG, SHORT];
+export const SWAP_OPTION = [SWAP];
 export const DEFAULT_SLIPPAGE_AMOUNT = 20;
 export const DEFAULT_HIGHER_SLIPPAGE_AMOUNT = 100;
 
@@ -1434,7 +1435,7 @@ export function getHomeUrl() {
 
 export function getAppBaseUrl() {
   if (isLocal()) {
-    return "http://localhost:3011/#";
+    return "http://localhost:3010/#";
   }
 
   return "https://app.gmx.io/#";
@@ -1450,7 +1451,7 @@ export function getRootShareApiUrl() {
 
 export function getTradePageUrl() {
   if (isLocal()) {
-    return "http://localhost:3011/#/trade";
+    return "http://localhost:3010/#/trade";
   }
 
   return "https://app.gmx.io/#/trade";
