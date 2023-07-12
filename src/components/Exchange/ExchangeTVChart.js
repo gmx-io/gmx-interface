@@ -7,7 +7,7 @@ import { useChartPrices } from "domain/legacy";
 import ChartTokenSelector from "./ChartTokenSelector";
 import { getMidPrice, getTokenInfo } from "domain/tokens/utils";
 import { formatAmount, numberWithCommas } from "lib/numbers";
-import { getToken, getTokens } from "config/tokens";
+import { getNormalizedTokenSymbol, getToken, getTokens } from "config/tokens";
 import TVChartContainer from "components/TVChartContainer/TVChartContainer";
 import { t } from "@lingui/macro";
 import { DEFAULT_PERIOD, availableNetworksForChart } from "components/TVChartContainer/constants";
@@ -101,7 +101,10 @@ export default function ExchangeTVChart(props) {
 
       if (averagePrice) {
         const formattedPrice = parseFloat(formatAmount(averagePrice, USD_DECIMALS, 2));
-        dataProvider.current?.setCurrentTokenPrice(formattedPrice);
+        dataProvider.current?.setCurrentChartToken({
+          price: formattedPrice,
+          ticker: getNormalizedTokenSymbol(tokenInfo.symbol),
+        });
       }
     }
   }, [chartToken, infoTokens]);

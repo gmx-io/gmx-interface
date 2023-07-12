@@ -7,7 +7,10 @@ import { fillBarGaps, getStableCoinPrice, getTokenChartPrice } from "./requests"
 import { PeriodParams } from "charting_library";
 
 const initialState = {
-  currentTokenPrice: 0,
+  chartToken: {
+    price: 0,
+    ticker: "",
+  },
   lastBar: null,
   currentBar: null,
   startTime: 0,
@@ -21,7 +24,10 @@ const initialState = {
 };
 
 export class TVDataProvider {
-  currentTokenPrice: number;
+  chartToken: {
+    price: number;
+    ticker: string;
+  };
   lastBar: Bar | null;
   currentBar: Bar | null;
   startTime: number;
@@ -148,7 +154,7 @@ export class TVDataProvider {
       this.lastPeriod !== period
     ) {
       const prices = await this.getTokenLastBars(chainId, ticker, period, 1);
-      const currentPrice = this.currentTokenPrice;
+      const currentPrice = this.chartToken.ticker === this.barsInfo.ticker && this.chartToken.price;
 
       if (prices?.length && currentPrice) {
         const lastBar = prices[0];
@@ -191,7 +197,7 @@ export class TVDataProvider {
       // eslint-disable-next-line no-console
       console.error(error);
     }
-    const currentPrice = this.currentTokenPrice;
+    const currentPrice = this.chartToken.ticker === this.barsInfo.ticker && this.chartToken.price;
     if (
       !this.lastBar?.time ||
       !currentPrice ||
@@ -230,8 +236,8 @@ export class TVDataProvider {
     }
     return this.currentBar;
   }
-  setCurrentTokenPrice(price: number) {
-    this.currentTokenPrice = price;
+  setCurrentChartToken(chartToken: { price: number; ticker: string }) {
+    this.chartToken = chartToken;
   }
   get resolutions() {
     return this.supportedResolutions;
