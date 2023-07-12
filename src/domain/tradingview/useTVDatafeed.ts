@@ -18,10 +18,9 @@ function getConfigurationData(supportedResolutions) {
 
 type Props = {
   dataProvider?: TVDataProvider;
-  supportedResolutions: { [key: number]: string };
 };
 
-export default function useTVDatafeed({ dataProvider, supportedResolutions }: Props) {
+export default function useTVDatafeed({ dataProvider }: Props) {
   const { chainId } = useChainId();
   const intervalRef = useRef<ReturnType<typeof setInterval> | undefined>();
   const tvDataProvider = useRef<TVDataProvider>();
@@ -40,6 +39,8 @@ export default function useTVDatafeed({ dataProvider, supportedResolutions }: Pr
         .map((t) => t.symbol),
     [chainId]
   );
+
+  const supportedResolutions = useMemo(() => dataProvider?.resolutions || {}, [dataProvider]);
 
   useEffect(() => {
     if (dataProvider && tvDataProvider.current !== dataProvider) {
@@ -186,5 +187,5 @@ export default function useTVDatafeed({ dataProvider, supportedResolutions }: Pr
         },
       },
     };
-  }, [chainId, stableTokens]);
+  }, [chainId, stableTokens, supportedResolutions]);
 }

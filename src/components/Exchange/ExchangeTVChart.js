@@ -380,7 +380,6 @@ export default function ExchangeTVChart(props) {
             chainId={chainId}
             onSelectToken={onSelectToken}
             dataProvider={dataProvider.current}
-            supportedResolutions={SUPPORTED_RESOLUTIONS_V1}
             period={period}
             setPeriod={setPeriod}
           />

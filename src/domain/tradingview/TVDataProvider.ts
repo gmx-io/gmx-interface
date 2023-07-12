@@ -27,7 +27,7 @@ export class TVDataProvider {
   lastTicker: string;
   lastPeriod: string;
   getCurrentPrice: (symbol: string) => number | undefined;
-  supportedResolutions: string[];
+  supportedResolutions: { [key: number]: string };
   barsInfo: {
     period: string;
     data: Bar[];
@@ -72,7 +72,6 @@ export class TVDataProvider {
     periodParams: PeriodParams
   ): Promise<Bar[]> {
     const barsInfo = this.barsInfo;
-
     if (!barsInfo.data.length || barsInfo.ticker !== ticker || barsInfo.period !== period) {
       try {
         const bars = await this.getTokenChartPrice(chainId, ticker, period);
@@ -198,7 +197,6 @@ export class TVDataProvider {
     }
 
     const currentPrice = await this.getCurrentPriceOfToken(ticker);
-
     if (!this.lastBar?.time || !currentPrice || ticker !== this.lastBar.ticker || ticker !== this.barsInfo.ticker) {
       return;
     }
@@ -227,6 +225,9 @@ export class TVDataProvider {
       this.currentBar = newBar;
     }
     return this.currentBar;
+  }
+  get resolutions() {
+    return this.supportedResolutions;
   }
   get currentPeriod() {
     return this.barsInfo.period;

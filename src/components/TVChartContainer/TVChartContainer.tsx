@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
 import { useLocalStorage, useMedia } from "react-use";
 import { defaultChartProps, disabledFeaturesOnMobile } from "./constants";
@@ -21,7 +21,6 @@ type Props = {
   savedShouldShowPositionLines: boolean;
   chartLines: ChartLine[];
   onSelectToken: () => void;
-  supportedResolutions: { [key: number]: string };
   period: string;
   setPeriod: (period: string) => void;
   dataProvider?: TVDataProvider;
@@ -34,7 +33,6 @@ export default function TVChartContainer({
   chartLines,
   onSelectToken,
   dataProvider,
-  supportedResolutions,
   period,
   setPeriod,
 }: Props) {
@@ -43,10 +41,11 @@ export default function TVChartContainer({
   const [chartReady, setChartReady] = useState(false);
   const [chartDataLoading, setChartDataLoading] = useState(true);
   const [tvCharts, setTvCharts] = useLocalStorage<ChartData[] | undefined>(TV_SAVE_LOAD_CHARTS_KEY, []);
-  const { datafeed } = useTVDatafeed({ dataProvider, supportedResolutions });
+  const { datafeed } = useTVDatafeed({ dataProvider });
   const isMobile = useMedia("(max-width: 550px)");
   const symbolRef = useRef(symbol);
 
+  const supportedResolutions = useMemo(() => dataProvider?.resolutions || {}, [dataProvider]);
   const drawLineOnChart = useCallback(
     (title: string, price: number) => {
       if (chartReady && tvWidgetRef.current?.activeChart?.().dataReady()) {
