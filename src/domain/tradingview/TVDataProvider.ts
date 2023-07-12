@@ -1,13 +1,13 @@
 import { LAST_BAR_REFRESH_INTERVAL } from "config/tradingview";
 import { getLimitChartPricesFromStats, timezoneOffset } from "domain/prices";
-import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
-import { formatAmount } from "lib/numbers";
+import { CHART_PERIODS } from "lib/legacy";
 import { Bar } from "./types";
 import { formatTimeInBarToMs, getCurrentCandleTime, getMax, getMin } from "./utils";
 import { fillBarGaps, getStableCoinPrice, getTokenChartPrice } from "./requests";
 import { PeriodParams } from "charting_library";
 
 const initialState = {
+  currentTokenPrice: 0,
   lastBar: null,
   currentBar: null,
   startTime: 0,
@@ -21,6 +21,7 @@ const initialState = {
 };
 
 export class TVDataProvider {
+  currentTokenPrice: number;
   lastBar: Bar | null;
   currentBar: Bar | null;
   startTime: number;
@@ -34,7 +35,7 @@ export class TVDataProvider {
     ticker: string;
   };
 
-  constructor({ getCurrentPrice, resolutions }) {
+  constructor({ resolutions }) {
     const { lastBar, currentBar, startTime, lastTicker, lastPeriod, barsInfo: initialHistoryBarsInfo } = initialState;
     this.lastBar = lastBar;
     this.currentBar = currentBar;
@@ -42,19 +43,12 @@ export class TVDataProvider {
     this.lastTicker = lastTicker;
     this.lastPeriod = lastPeriod;
     this.barsInfo = initialHistoryBarsInfo;
-    this.getCurrentPrice = getCurrentPrice;
     this.supportedResolutions = resolutions;
   }
 
   async getLimitBars(chainId: number, ticker: string, period: string, limit: number): Promise<Bar[]> {
     const prices = await getLimitChartPricesFromStats(chainId, ticker, period, limit);
     return prices;
-  }
-
-  async getCurrentPriceOfToken(ticker: string): Promise<number | undefined> {
-    const currentPrice = this.getCurrentPrice(ticker);
-    const price = parseFloat(formatAmount(currentPrice, USD_DECIMALS, 4));
-    return price;
   }
 
   async getTokenLastBars(chainId: number, ticker: string, period: string, limit: number): Promise<Bar[]> {
@@ -142,7 +136,7 @@ export class TVDataProvider {
         this.lastBar = bars[bars.length - 1];
         this.currentBar = null;
       }
-      return bars.filter((bar) => bar.time >= from);
+      return bars.filter((bar) => bar.time >= from).sort((a, b) => a.time - b.time);
     }
   }
 
@@ -157,7 +151,7 @@ export class TVDataProvider {
       this.lastPeriod !== period
     ) {
       const prices = await this.getTokenLastBars(chainId, ticker, period, 1);
-      const currentPrice = await this.getCurrentPriceOfToken(ticker);
+      const currentPrice = this.currentTokenPrice;
 
       if (prices?.length && currentPrice) {
         const lastBar = prices[0];
@@ -196,9 +190,13 @@ export class TVDataProvider {
       console.error(error);
     }
 
-    const currentPrice = await this.getCurrentPriceOfToken(ticker);
+    const currentPrice = this.currentTokenPrice;
     if (!this.lastBar?.time || !currentPrice || ticker !== this.lastBar.ticker || ticker !== this.barsInfo.ticker) {
       return;
+    }
+
+    if (this.currentBar && this.currentBar.ticker !== ticker) {
+      this.currentBar = null;
     }
 
     if (currentCandleTime === this.lastBar.time) {
@@ -225,6 +223,9 @@ export class TVDataProvider {
       this.currentBar = newBar;
     }
     return this.currentBar;
+  }
+  setCurrentTokenPrice(price: number) {
+    this.currentTokenPrice = price;
   }
   get resolutions() {
     return this.supportedResolutions;

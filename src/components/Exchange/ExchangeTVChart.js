@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo, useCallback } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import cx from "classnames";
 
 import { USD_DECIMALS, SWAP, INCREASE, CHART_PERIODS } from "lib/legacy";
@@ -7,7 +7,7 @@ import { useChartPrices } from "domain/legacy";
 import ChartTokenSelector from "./ChartTokenSelector";
 import { getMidPrice, getTokenInfo } from "domain/tokens/utils";
 import { formatAmount, numberWithCommas } from "lib/numbers";
-import { getToken, getTokenBySymbol, getTokens } from "config/tokens";
+import { getToken, getTokens } from "config/tokens";
 import TVChartContainer from "components/TVChartContainer/TVChartContainer";
 import { t } from "@lingui/macro";
 import { DEFAULT_PERIOD, availableNetworksForChart } from "components/TVChartContainer/constants";
@@ -76,22 +76,6 @@ export default function ExchangeTVChart(props) {
   const fromToken = getTokenInfo(infoTokens, fromTokenAddress);
   const toToken = getTokenInfo(infoTokens, toTokenAddress);
 
-  const getCurrentPrice = useCallback(
-    function getCurrentPrice(symbol) {
-      const currentToken = getTokenBySymbol(chainId, symbol);
-      const tokenInfo = getTokenInfo(infoTokens, currentToken.address);
-
-      if (!tokenInfo.minPrice || !tokenInfo.maxPrice) return;
-
-      const prices = {
-        minPrice: tokenInfo.minPrice,
-        maxPrice: tokenInfo.maxPrice,
-      };
-      return getMidPrice(prices);
-    },
-    [chainId, infoTokens]
-  );
-
   const [chartToken, setChartToken] = useState({
     maxPrice: null,
     minPrice: null,
@@ -100,9 +84,27 @@ export default function ExchangeTVChart(props) {
   useEffect(() => {
     dataProvider.current = new TVDataProvider({
       resolutions: SUPPORTED_RESOLUTIONS_V1,
-      getCurrentPrice,
     });
-  }, [getCurrentPrice]);
+  }, []);
+
+  useEffect(() => {
+    if (chartToken) {
+      const tokenInfo = getTokenInfo(infoTokens, chartToken.address);
+
+      if (!tokenInfo?.minPrice || !tokenInfo?.maxPrice) return;
+
+      const prices = {
+        minPrice: tokenInfo.minPrice,
+        maxPrice: tokenInfo.maxPrice,
+      };
+      const averagePrice = getMidPrice(prices);
+
+      if (averagePrice) {
+        const formattedPrice = parseFloat(formatAmount(averagePrice, USD_DECIMALS, 2));
+        dataProvider.current?.setCurrentTokenPrice(formattedPrice);
+      }
+    }
+  }, [chartToken, infoTokens]);
 
   useEffect(() => {
     const tmp = getChartToken(swapOption, fromToken, toToken, chainId);
