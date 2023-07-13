@@ -245,8 +245,8 @@ msgid "An aggregate of high-quality price feeds determine when liquidations occu
 msgstr "An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from temporary wicks."
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Announcement"
-msgstr "Announcement"
+#~ msgid "Announcement"
+#~ msgstr "Announcement"
 
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "App"
@@ -918,6 +918,7 @@ msgstr "Current {0} shorts"
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
+#: src/pages/Ecosystem/Ecosystem.js
 msgid "DEX Aggregator"
 msgstr "DEX Aggregator"
 
@@ -950,6 +951,10 @@ msgstr "Dec."
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Decentralized Finance Dashboard"
 msgstr "Decentralized Finance Dashboard"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Decentralized Money Market"
+msgstr "Decentralized Money Market"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Decentralized Options Protocol"
@@ -1491,6 +1496,10 @@ msgstr "GMX is the utility and governance token. Accrues 30% of the platform's g
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX staking calculator"
 msgstr "GMX staking calculator"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "GMX staking calculator and guide"
+msgstr "GMX staking calculator and guide"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX staking rewards updates and insights"
@@ -2542,6 +2551,10 @@ msgstr "Protocol"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Protocol analytics"
 msgstr "Protocol analytics"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Protocol risk explorer and stats"
+msgstr "Protocol risk explorer and stats"
 
 #: src/pages/BuyGlp/BuyGlp.js
 msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
@@ -3853,6 +3866,10 @@ msgid "Yield Optimizer on Avalanche"
 msgstr "Yield Optimizer on Avalanche"
 
 #: src/pages/Ecosystem/Ecosystem.js
+msgid "Yield Trading"
+msgstr "Yield Trading"
+
+#: src/pages/Ecosystem/Ecosystem.js
 msgid "Yield Vaults"
 msgstr "Yield Vaults"
 
@@ -3988,6 +4005,10 @@ msgstr "account"
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "collateral"
 msgstr "collateral"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "esGMX OTC Market"
+msgstr "esGMX OTC Market"
 
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "fee"

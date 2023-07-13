@@ -245,8 +245,8 @@ msgid "An aggregate of high-quality price feeds determine when liquidations occu
 msgstr "Ein Aggregat aus hochwertigen Kursen bestimmt, wann Liquidationen stattfinden. Dadurch sind die Positionen vor vorübergehenden Wicks sicher."
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Announcement"
-msgstr "Ankündigung"
+#~ msgid "Announcement"
+#~ msgstr "Ankündigung"
 
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "App"
@@ -918,6 +918,7 @@ msgstr "Aktuell {0} shorts"
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
+#: src/pages/Ecosystem/Ecosystem.js
 msgid "DEX Aggregator"
 msgstr "DEX Aggregator"
 
@@ -950,6 +951,10 @@ msgstr "Dezentr."
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Decentralized Finance Dashboard"
 msgstr "Dezentrales Finanz-Dashboard"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Decentralized Money Market"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Decentralized Options Protocol"
@@ -1491,6 +1496,10 @@ msgstr "GMX ist der Utility- und Governance-Token. Bekommt 30 % der von der Plat
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX staking calculator"
 msgstr "GMX-Sataking-Rechner"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "GMX staking calculator and guide"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX staking rewards updates and insights"
@@ -2542,6 +2551,10 @@ msgstr ""
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Protocol analytics"
 msgstr "Protokoll-Analytik"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Protocol risk explorer and stats"
+msgstr ""
 
 #: src/pages/BuyGlp/BuyGlp.js
 msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
@@ -3853,6 +3866,10 @@ msgid "Yield Optimizer on Avalanche"
 msgstr "Yield-Optimierer auf Avalanche"
 
 #: src/pages/Ecosystem/Ecosystem.js
+msgid "Yield Trading"
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
 msgid "Yield Vaults"
 msgstr "Yield Vaults"
 
@@ -3988,6 +4005,10 @@ msgstr "Konto"
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "collateral"
 msgstr "Kollateral"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "esGMX OTC Market"
+msgstr ""
 
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "fee"

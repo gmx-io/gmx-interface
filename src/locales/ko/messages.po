@@ -245,8 +245,8 @@ msgid "An aggregate of high-quality price feeds determine when liquidations occu
 msgstr "고품질의 여러 가격 피드를 통해 청산 발생 시기를 결정합니다. 이것은 일시적인 가격 변화로부터 포지션을 안전하게 유지합니다."
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Announcement"
-msgstr "공지"
+#~ msgid "Announcement"
+#~ msgstr "공지"
 
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "App"
@@ -918,6 +918,7 @@ msgstr "현재 {0} 숏"
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
+#: src/pages/Ecosystem/Ecosystem.js
 msgid "DEX Aggregator"
 msgstr "DEX 어그리게이터"
 
@@ -950,6 +951,10 @@ msgstr "12월"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Decentralized Finance Dashboard"
 msgstr "탈중앙화 금융 대시보드"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Decentralized Money Market"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Decentralized Options Protocol"
@@ -1491,6 +1496,10 @@ msgstr "GMX는 유틸리티 및 거버넌스 토큰입니다. 플랫폼에서 �
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX staking calculator"
 msgstr "GMX 스테이킹 계산기"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "GMX staking calculator and guide"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX staking rewards updates and insights"
@@ -2542,6 +2551,10 @@ msgstr ""
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Protocol analytics"
 msgstr "프로토콜 분석"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Protocol risk explorer and stats"
+msgstr ""
 
 #: src/pages/BuyGlp/BuyGlp.js
 msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
@@ -3853,6 +3866,10 @@ msgid "Yield Optimizer on Avalanche"
 msgstr "Avalanche 일드 옵티마이저"
 
 #: src/pages/Ecosystem/Ecosystem.js
+msgid "Yield Trading"
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
 msgid "Yield Vaults"
 msgstr "일드 볼트"
 
@@ -3988,6 +4005,10 @@ msgstr "게정"
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "collateral"
 msgstr "담보"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "esGMX OTC Market"
+msgstr ""
 
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "fee"
