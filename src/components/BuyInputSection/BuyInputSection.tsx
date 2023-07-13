@@ -79,7 +79,6 @@ export default function BuyInputSection({
               placeholder="0.0"
               className="Exchange-swap-input"
               type="text"
-              pattern="^[0-9]*[.,]?[0-9]*$"
               value={inputValue}
               onChange={onUserInput}
               autoComplete="off"
