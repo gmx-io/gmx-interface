@@ -37,7 +37,7 @@ export default function ChartTokenSelector(props) {
         <button
           className={cx("App-cta small transparent chart-token-selector", {
             "default-cursor": isSwap,
-            "chart-token-item": !isSwap,
+            "chart-token-dropdown": !isSwap,
           })}
         >
           <span className="chart-token-selector--current">{value.symbol} / USD</span>

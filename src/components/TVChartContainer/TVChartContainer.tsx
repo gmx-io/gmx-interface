@@ -13,6 +13,7 @@ import { BigNumber } from "ethers";
 import { formatAmount } from "lib/numbers";
 import { getMidPrice } from "domain/tokens";
 import { USD_DECIMALS } from "lib/legacy";
+import { SUPPORTED_RESOLUTIONS_V1 } from "config/tradingview";
 
 type ChartLine = {
   price: number;
@@ -55,7 +56,7 @@ export default function TVChartContainer({
   const isMobile = useMedia("(max-width: 550px)");
   const symbolRef = useRef(symbol);
 
-  const supportedResolutions = useMemo(() => dataProvider?.resolutions || {}, [dataProvider]);
+  const supportedResolutions = useMemo(() => dataProvider?.resolutions || SUPPORTED_RESOLUTIONS_V1, [dataProvider]);
 
   useEffect(() => {
     if (chartToken.maxPrice && chartToken.minPrice) {

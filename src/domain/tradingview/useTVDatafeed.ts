@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { TVDataProvider } from "./TVDataProvider";
 import { Bar, SymbolInfo } from "./types";
 import { formatTimeInBarToMs } from "./utils";
+import { SUPPORTED_RESOLUTIONS_V1 } from "config/tradingview";
 
 function getConfigurationData(supportedResolutions) {
   return {
@@ -40,7 +41,7 @@ export default function useTVDatafeed({ dataProvider }: Props) {
     [chainId]
   );
 
-  const supportedResolutions = useMemo(() => dataProvider?.resolutions || {}, [dataProvider]);
+  const supportedResolutions = useMemo(() => dataProvider?.resolutions || SUPPORTED_RESOLUTIONS_V1, [dataProvider]);
 
   useEffect(() => {
     if (dataProvider && tvDataProvider.current !== dataProvider) {
