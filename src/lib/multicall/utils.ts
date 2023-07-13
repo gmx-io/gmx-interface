@@ -11,7 +11,7 @@ import {
   getRpcUrl,
 } from "config/chains";
 import { BigNumber, ethers } from "ethers";
-import { createPublicClient, decodeErrorResult, getContract as getViemContract, http } from "viem";
+import { createPublicClient, getContract as getViemContract, http } from "viem";
 import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "viem/chains";
 import { MulticallRequestConfig, MulticallResult } from "./types";
 
@@ -160,15 +160,11 @@ export class Multicall {
         // eslint-disable-next-line no-console
         console.log(`using multicall fallback for chain ${this.chainId}`);
 
-        return fallbackClient.multicall({ contracts: encodedPayload as any, allowFailure: !requireSuccess });
+        return fallbackClient.multicall({ contracts: encodedPayload as any });
       })
       .catch((e) => {
-        const err = decodeErrorResult({
-          abi: CustomErrors.abi,
-          data: "0xb5218c53",
-        });
         // eslint-disable-next-line no-console
-        console.error("multicall error", err, e.data);
+        console.error("multicall error", e.data);
 
         throw e;
       });
