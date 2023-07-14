@@ -257,12 +257,26 @@ export function getIncreasePositionAmounts(p: {
     isLong,
     indexPrice: values.indexPrice,
     sizeDeltaUsd: values.sizeDeltaUsd,
-    maxNegativePriceImpactBps: isLimit ? savedAcceptablePriceImpactBps : undefined,
   });
 
-  values.acceptablePrice = acceptablePriceInfo.acceptablePrice;
-  values.acceptablePriceDeltaBps = acceptablePriceInfo.acceptablePriceDeltaBps;
   values.positionPriceImpactDeltaUsd = acceptablePriceInfo.priceImpactDeltaUsd;
+
+  if (isLimit) {
+    const limitAcceptablePriceInfo = getAcceptablePriceInfo({
+      marketInfo,
+      isIncrease: true,
+      isLong,
+      indexPrice: values.indexPrice,
+      sizeDeltaUsd: values.sizeDeltaUsd,
+      maxNegativePriceImpactBps: savedAcceptablePriceImpactBps,
+    });
+
+    values.acceptablePrice = limitAcceptablePriceInfo.acceptablePrice;
+    values.acceptablePriceDeltaBps = limitAcceptablePriceInfo.acceptablePriceDeltaBps;
+  } else {
+    values.acceptablePrice = acceptablePriceInfo.acceptablePrice;
+    values.acceptablePriceDeltaBps = acceptablePriceInfo.acceptablePriceDeltaBps;
+  }
 
   let priceImpactAmount = BigNumber.from(0);
 

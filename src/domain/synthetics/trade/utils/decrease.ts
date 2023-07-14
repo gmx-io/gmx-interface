@@ -117,12 +117,26 @@ export function getDecreasePositionAmounts(p: {
       isLong,
       indexPrice: values.indexPrice,
       sizeDeltaUsd: values.sizeDeltaUsd,
-      maxNegativePriceImpactBps: isTrigger ? savedAcceptablePriceImpactBps : undefined,
     });
 
-    values.acceptablePrice = acceptablePriceInfo.acceptablePrice;
-    values.acceptablePriceDeltaBps = acceptablePriceInfo.acceptablePriceDeltaBps;
     values.positionPriceImpactDeltaUsd = acceptablePriceInfo.priceImpactDeltaUsd;
+
+    if (isTrigger) {
+      const triggerAcceptablePriceInfo = getAcceptablePriceInfo({
+        marketInfo,
+        isIncrease: false,
+        isLong,
+        indexPrice: values.indexPrice,
+        sizeDeltaUsd: values.sizeDeltaUsd,
+        maxNegativePriceImpactBps: savedAcceptablePriceImpactBps,
+      });
+
+      values.acceptablePrice = triggerAcceptablePriceInfo.acceptablePrice;
+      values.acceptablePriceDeltaBps = triggerAcceptablePriceInfo.acceptablePriceDeltaBps;
+    } else {
+      values.acceptablePrice = acceptablePriceInfo.acceptablePrice;
+      values.acceptablePriceDeltaBps = acceptablePriceInfo.acceptablePriceDeltaBps;
+    }
 
     const positionFeeInfo = getPositionFee(marketInfo, values.sizeDeltaUsd, userReferralInfo);
 
@@ -190,13 +204,26 @@ export function getDecreasePositionAmounts(p: {
     isLong,
     indexPrice: values.indexPrice,
     sizeDeltaUsd: values.sizeDeltaUsd,
-    maxNegativePriceImpactBps: isTrigger ? savedAcceptablePriceImpactBps : undefined,
   });
 
-  values.acceptablePrice = acceptablePriceInfo.acceptablePrice;
-  values.acceptablePriceDeltaBps = acceptablePriceInfo.acceptablePriceDeltaBps;
   values.positionPriceImpactDeltaUsd = acceptablePriceInfo.priceImpactDeltaUsd;
 
+  if (isTrigger) {
+    const triggerAcceptablePriceInfo = getAcceptablePriceInfo({
+      marketInfo,
+      isIncrease: false,
+      isLong,
+      indexPrice: values.indexPrice,
+      sizeDeltaUsd: values.sizeDeltaUsd,
+      maxNegativePriceImpactBps: savedAcceptablePriceImpactBps,
+    });
+
+    values.acceptablePrice = triggerAcceptablePriceInfo.acceptablePrice;
+    values.acceptablePriceDeltaBps = triggerAcceptablePriceInfo.acceptablePriceDeltaBps;
+  } else {
+    values.acceptablePrice = acceptablePriceInfo.acceptablePrice;
+    values.acceptablePriceDeltaBps = acceptablePriceInfo.acceptablePriceDeltaBps;
+  }
   // Profit
   let profitUsd = BigNumber.from(0);
   if (values.realizedPnl.gt(0)) {
