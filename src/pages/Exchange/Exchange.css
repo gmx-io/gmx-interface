@@ -270,8 +270,8 @@
   font-weight: bold;
 }
 
-.ExchangeChart-title:hover .chart-token-selector,
-.ExchangeChart-title:hover .chart-token-selector span {
+.ExchangeChart-title:hover .chart-token-dropdown,
+.ExchangeChart-title:hover .chart-token-dropdown span {
   color: #7885ff !important;
 }
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import cx from "classnames";
 
-import { USD_DECIMALS, SWAP, INCREASE } from "lib/legacy";
+import { USD_DECIMALS, SWAP, INCREASE, CHART_PERIODS } from "lib/legacy";
 import { useChartPrices } from "domain/legacy";
 
 import ChartTokenSelector from "./ChartTokenSelector";
@@ -10,9 +10,11 @@ import { formatAmount, numberWithCommas } from "lib/numbers";
 import { getToken, getTokens } from "config/tokens";
 import TVChartContainer from "components/TVChartContainer/TVChartContainer";
 import { t } from "@lingui/macro";
-import { availableNetworksForChart } from "components/TVChartContainer/constants";
+import { DEFAULT_PERIOD, availableNetworksForChart } from "components/TVChartContainer/constants";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
+import { SUPPORTED_RESOLUTIONS_V1 } from "config/tradingview";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 
 const PRICE_LINE_TEXT_WIDTH = 15;
 
@@ -60,6 +62,13 @@ export default function ExchangeTVChart(props) {
     orders,
     setToTokenAddress,
   } = props;
+
+  let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
+
+  if (!period || !(period in CHART_PERIODS)) {
+    period = DEFAULT_PERIOD;
+  }
+
   const [currentSeries] = useState();
 
   const dataProvider = useRef();
@@ -73,7 +82,9 @@ export default function ExchangeTVChart(props) {
   });
 
   useEffect(() => {
-    dataProvider.current = new TVDataProvider();
+    dataProvider.current = new TVDataProvider({
+      resolutions: SUPPORTED_RESOLUTIONS_V1,
+    });
   }, []);
 
   useEffect(() => {
@@ -352,6 +363,9 @@ export default function ExchangeTVChart(props) {
             chainId={chainId}
             onSelectToken={onSelectToken}
             dataProvider={dataProvider.current}
+            period={period}
+            setPeriod={setPeriod}
+            chartToken={chartToken}
           />
         ) : (
           <p className="ExchangeChart-error">Sorry, chart is not supported on this network yet.</p>
