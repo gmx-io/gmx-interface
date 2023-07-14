@@ -1,7 +1,7 @@
 query GetAccountPerformance(
   $pageSize: Int = 10,
   $offset: Int = 0,
-  $orderBy: AccountPerf_orderBy = timestamp,
+  $orderBy: AccountPerf_orderBy = totalPnl,
   $orderDirection: OrderDirection = desc,
   $since: Int = 0,
   $period: Period = daily,
@@ -18,9 +18,13 @@ query GetAccountPerformance(
     period
     account
     losses
-    maxCollateral
     totalPnl
     volume
     wins
+    sumSize
+    sumCollateral
+    sumMaxSize
+    sumMaxCollateral
+    positionCount
   }
 }

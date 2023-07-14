@@ -18,5 +18,11 @@ query GetAccountOpenPositions(
     realizedPnl
     sizeInTokens
     sizeInUsd
+    entryPrice
+    maxSize
+    maxCollateral
+    sumSize
+    sumCollateral
+    changeCount
   }
 }

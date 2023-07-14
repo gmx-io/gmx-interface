@@ -27,7 +27,7 @@ export function useTopPositions() {
         orderBy: "sizeInUsd",
         orderDirection: "desc",
       }
-    });
+    }); // TODO: pagination
 
     return res.data.accountOpenPositions.map((p) => ({
       ...p,
@@ -76,7 +76,9 @@ export function useTopPositions() {
 
       setTopPositions(s => ({
         ...s,
-        data: data.sort((a, b) => a.unrealizedPnlBN.gt(b.unrealizedPnlBN) ? -1 : 1)
+        isLoading: false,
+        error: null,
+        data,
       }));
     }
   }, [

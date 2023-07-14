@@ -32,12 +32,12 @@ export function useTopAccounts(period: AccountFilterPeriod) {
         orderDirection: "desc",
         ...filtersByPeriod[period],
       }
-    });
+    }); // TODO: pagination
 
     return res.data.accountPerfs.map(a => ({
       id: a.id,
       account: a.account,
-      absPnl: formatAmount(a.totalPnl, USD_DECIMALS + 18, 0, true),
+      absPnl: formatAmount(a.totalPnl, USD_DECIMALS, 0, true),
       relPnl: BigNumber.from(0).toString(), // TODO: calculate relative pnl on subgraph side
       sizeLev: `${formatAmount(a.volume, USD_DECIMALS, 0, true)} (0)`, // TODO: return avg. leverage from subgraph
       perf: `${a.wins}/${a.losses}`,
