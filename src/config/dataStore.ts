@@ -17,6 +17,7 @@ export const OPEN_INTEREST_KEY = hashString("OPEN_INTEREST");
 export const OPEN_INTEREST_IN_TOKENS_KEY = hashString("OPEN_INTEREST_IN_TOKENS");
 export const POOL_AMOUNT_KEY = hashString("POOL_AMOUNT");
 export const RESERVE_FACTOR_KEY = hashString("RESERVE_FACTOR");
+export const OPEN_INTEREST_RESERVE_FACTOR_KEY = hashString("OPEN_INTEREST_RESERVE_FACTOR");
 export const NONCE_KEY = hashString("NONCE");
 export const BORROWING_FACTOR_KEY = hashString("BORROWING_FACTOR");
 export const BORROWING_EXPONENT_FACTOR_KEY = hashString("BORROWING_EXPONENT_FACTOR");
@@ -109,6 +110,10 @@ export function poolAmountKey(market: string, token: string) {
 
 export function reserveFactorKey(market: string, isLong: boolean) {
   return hashData(["bytes32", "address", "bool"], [RESERVE_FACTOR_KEY, market, isLong]);
+}
+
+export function openInterestReserveFactorKey(market: string, isLong: boolean) {
+  return hashData(["bytes32", "address", "bool"], [OPEN_INTEREST_RESERVE_FACTOR_KEY, market, isLong]);
 }
 
 export function borrowingFactorKey(market: string, isLong: boolean) {
