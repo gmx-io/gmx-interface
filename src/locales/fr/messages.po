@@ -1898,6 +1898,7 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -1910,8 +1911,8 @@ msgid "Mark Price"
 msgstr "Prix de marque"
 
 #: src/components/Exchange/OrderEditor.js
-msgid "Mark Price:"
-msgstr "Prix de marque:"
+#~ msgid "Mark Price:"
+#~ msgstr "Prix de marque:"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
