@@ -453,7 +453,3 @@ button.btn-link:hover .logout-icon {
 .text-gray {
   color: var(--text-gray);
 }
-
-.text-warning {
-  color: var(--warning-yellow);
-}

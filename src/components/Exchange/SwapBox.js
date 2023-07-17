@@ -2067,11 +2067,8 @@ export default function SwapBox(props) {
                   {isExistingAndCollateralTokenDifferent ? (
                     <Tooltip
                       position="left-bottom"
-                      handle={
-                        <div className="Exchange-info-label text-warning">
-                          <Trans>Collateral In</Trans>
-                        </div>
-                      }
+                      className="Collateral-warning"
+                      handle={<Trans>Collateral In</Trans>}
                       renderContent={() => (
                         <span>
                           <Trans>
