@@ -149,11 +149,23 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     },
     {
       name: "Bitcoin (WBTC)",
-      symbol: "BTC",
+      symbol: "WBTC",
       decimals: 8,
       address: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
+    },
+    {
+      name: "Arbitrum",
+      symbol: "ARB",
+      address: "0x912CE59144191C1204E64559FE8253a0e49E6548",
+      decimals: 18,
+    },
+    {
+      name: "Solana",
+      symbol: "SOL",
+      address: "0x2bcC6D6CdBbDC0a4071e48bb3B969b06B3330c07",
+      decimals: 9,
     },
     {
       name: "Chainlink",
@@ -172,6 +184,13 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isStable: false,
       isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/12504/thumb/uniswap-uni.png?1600306604",
+    },
+    {
+      name: "USD Coin",
+      symbol: "USDC",
+      address: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      isStable: true,
+      decimals: 6,
     },
     {
       name: "USD Coin (USDC.e)",
@@ -516,8 +535,9 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
   ],
 };
 
+// TODO: remove
 const AVAILABLE_CHART_TOKENS = {
-  [ARBITRUM]: ["ETH", "BTC", "LINK", "UNI"],
+  [ARBITRUM]: ["ETH", "BTC", "LINK", "UNI", "SOL", "DOGE", "LTC"],
   [AVALANCHE]: ["AVAX", "ETH", "BTC"],
   [ARBITRUM_GOERLI]: ["ETH", "BTC", "SOL", "TEST", "DOGE", "LINK", "BNB", "DOT", "UNI", "ADA", "TRX", "MATIC"],
   [AVALANCHE_FUJI]: ["AVAX", "ETH", "BTC", "SOL", "TEST", "DOGE", "LINK", "BNB", "DOT", "UNI", "ADA", "TRX", "MATIC"],
@@ -525,7 +545,36 @@ const AVAILABLE_CHART_TOKENS = {
 
 export const SYNTHETIC_TOKENS = {
   [AVALANCHE]: [],
-  [ARBITRUM]: [],
+  [ARBITRUM]: [
+    {
+      name: "Bitcoin",
+      symbol: "BTC",
+      address: "0x47904963fc8b2340414262125aF798B9655E58Cd",
+      isSynthetic: true,
+      decimals: 8,
+    },
+    {
+      name: "Uniswap",
+      symbol: "UNI",
+      address: "0x4e2EF355D541f9D8b379c237255Fe7e89f760f6f",
+      isSynthetic: true,
+      decimals: 18,
+    },
+    {
+      name: "Dogecoin",
+      symbol: "DOGE",
+      address: "0xC4da4c24fd591125c3F47b340b6f4f76111883d8",
+      isSynthetic: true,
+      decimals: 8,
+    },
+    {
+      name: "Litecoin",
+      symbol: "LTC",
+      address: "0xB46A094Bc4B0adBD801E14b9DB95e05E28962764",
+      isSynthetic: true,
+      decimals: 8,
+    },
+  ],
   [ARBITRUM_GOERLI]: [
     {
       name: "Solana",

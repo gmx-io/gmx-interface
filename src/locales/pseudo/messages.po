@@ -570,21 +570,23 @@ msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
+#: src/components/TokenCard/TokenCard.js
 msgid "Buy on Arbitrum"
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
-msgid "Buy on Arbitrum Goerli"
-msgstr ""
+#~ msgid "Buy on Arbitrum Goerli"
+#~ msgstr ""
 
+#: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Buy on Avalanche"
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
-msgid "Buy on Avalanche FUJI"
-msgstr ""
+#~ msgid "Buy on Avalanche FUJI"
+#~ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy or Transfer AVAX to Avalanche"
@@ -2766,6 +2768,7 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Min. Receive"
 msgstr ""
 
@@ -3974,6 +3977,10 @@ msgstr ""
 msgid "Swap Fee"
 msgstr ""
 
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+msgid "Swap Fees"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Swap Order created!"
 msgstr ""
@@ -3987,6 +3994,7 @@ msgid "Swap Order submitted!"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap Price Impact"
 msgstr ""
