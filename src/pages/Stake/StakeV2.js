@@ -160,7 +160,7 @@ function StakeModal(props) {
         <BuyInputSection
           topLeftLabel={t`Stake`}
           topRightLabel={t`Max`}
-          tokenBalance={formatAmount(maxAmount, 18, 4, true)}
+          topRightValue={formatAmount(maxAmount, 18, 4, true)}
           onClickTopRightLabel={() => setValue(formatAmountFree(maxAmount, 18, 18))}
           inputValue={value}
           onInputValueChange={(e) => setValue(e.target.value)}
@@ -273,7 +273,7 @@ function UnstakeModal(props) {
         <BuyInputSection
           topLeftLabel={t`Unstake`}
           topRightLabel={t`Max`}
-          tokenBalance={formatAmount(maxAmount, 18, 4, true)}
+          topRightValue={formatAmount(maxAmount, 18, 4, true)}
           onClickTopRightLabel={() => setValue(formatAmountFree(maxAmount, 18, 18))}
           inputValue={value}
           onInputValueChange={(e) => setValue(e.target.value)}
@@ -408,7 +408,7 @@ function VesterDepositModal(props) {
           <BuyInputSection
             topLeftLabel={t`Deposit`}
             topRightLabel={t`Max`}
-            tokenBalance={formatAmount(maxAmount, 18, 4, true)}
+            topRightValue={formatAmount(maxAmount, 18, 4, true)}
             onClickTopRightLabel={() => setValue(formatAmountFree(maxAmount, 18, 18))}
             inputValue={value}
             onInputValueChange={(e) => setValue(e.target.value)}

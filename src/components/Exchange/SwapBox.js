@@ -1925,8 +1925,8 @@ export default function SwapBox(props) {
               <BuyInputSection
                 topLeftLabel={t`Pay`}
                 topRightLabel={t`Balance`}
-                balance={fromUsdMin && `${formatAmount(fromUsdMin, USD_DECIMALS, 2, true)} USD`}
-                tokenBalance={fromBalance && `${formatAmount(fromBalance, fromToken.decimals, 4, true)}`}
+                topLeftValue={fromUsdMin && `${formatAmount(fromUsdMin, USD_DECIMALS, 2, true)} USD`}
+                topRightValue={fromBalance && `${formatAmount(fromBalance, fromToken.decimals, 4, true)}`}
                 onClickTopRightLabel={setFromValueToMaximumAvailable}
                 showMaxButton={shouldShowMaxButton()}
                 inputValue={fromValue}
@@ -1952,8 +1952,8 @@ export default function SwapBox(props) {
               <BuyInputSection
                 topLeftLabel={getToLabel()}
                 topRightLabel={isSwap ? t`Balance` : t`Leverage`}
-                balance={toUsdMax && `${formatAmount(toUsdMax, USD_DECIMALS, 2, true)} USD`}
-                tokenBalance={
+                topLeftValue={toUsdMax && `${formatAmount(toUsdMax, USD_DECIMALS, 2, true)} USD`}
+                topRightValue={
                   isSwap
                     ? formatAmount(toBalance, toToken.decimals, 4, true)
                     : `${parseFloat(leverageOption).toFixed(2)}x`
@@ -2008,7 +2008,7 @@ export default function SwapBox(props) {
             <BuyInputSection
               topLeftLabel={t`Price`}
               topRightLabel={t`Mark`}
-              tokenBalance={formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)}
+              topRightValue={formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)}
               onClickTopRightLabel={() => {
                 setTriggerPriceValue(formatAmountFree(entryMarkPrice, USD_DECIMALS, 2));
               }}

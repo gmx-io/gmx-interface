@@ -24,6 +24,7 @@ import { useChainId } from "lib/chains";
 import { t, Trans } from "@lingui/macro";
 import Button from "components/Button/Button";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 
 export default function OrderEditor(props) {
   const {
@@ -244,34 +245,16 @@ export default function OrderEditor(props) {
         setIsVisible={() => setEditingOrder(null)}
         label={t`Edit order`}
       >
-        <div className="Exchange-swap-section">
-          <div className="Exchange-swap-section-top">
-            <div className="muted">
-              <Trans>Price</Trans>
-            </div>
-            <div
-              className="muted align-right clickable"
-              onClick={() => {
-                setTriggerPriceValue(formatAmountFree(indexTokenMarkPrice, USD_DECIMALS, 2));
-              }}
-            >
-              <Trans>Mark: {formatAmount(indexTokenMarkPrice, USD_DECIMALS, 2)}</Trans>
-            </div>
-          </div>
-          <div className="Exchange-swap-section-bottom">
-            <div className="Exchange-swap-input-container">
-              <input
-                type="number"
-                min="0"
-                placeholder="0.0"
-                className="Exchange-swap-input"
-                value={triggerPriceValue}
-                onChange={onTriggerPriceChange}
-              />
-            </div>
-            <div className="PositionEditor-token-symbol">USD</div>
-          </div>
-        </div>
+        <BuyInputSection
+          topLeftLabel={t`Price`}
+          topRightLabel={t`Mark`}
+          topRightValue={formatAmount(indexTokenMarkPrice, USD_DECIMALS, 2)}
+          onClickTopRightLabel={() => setTriggerPriceValue(formatAmountFree(indexTokenMarkPrice, USD_DECIMALS, 2))}
+          onInputValueChange={onTriggerPriceChange}
+          inputValue={triggerPriceValue}
+        >
+          USD
+        </BuyInputSection>
         <ExchangeInfoRow label={t`Price`}>
           {triggerPrice && !triggerPrice.eq(order.triggerPrice) ? (
             <>
