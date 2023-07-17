@@ -14,8 +14,7 @@ import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 
 const arbWsProvider = new ethers.providers.WebSocketProvider(getAlchemyWsUrl());
 
-const avaxWsProvider = new ethers.providers.JsonRpcProvider("https://api.avax.network/ext/bc/C/rpc");
-avaxWsProvider.pollingInterval = 2000;
+const avaxWsProvider = new ethers.providers.WebSocketProvider("wss://api.avax.network/ext/bc/C/ws");
 
 const goerliWsProvider = new ethers.providers.WebSocketProvider(
   "wss://arb-goerli.g.alchemy.com/v2/cZfd99JyN42V9Clbs_gOvA3GSBZH1-1j"
