@@ -6,7 +6,7 @@ import { t } from "@lingui/macro";
 import { useDebounce } from "lib/useDebounce";
 import { useState } from "react";
 import { useLeaderboardContext } from "./Context";
-import { AccountFilterPeriod } from "domain/synthetics/leaderboards";
+import { PerfPeriod } from "domain/synthetics/leaderboards";
 
 export default function AccountsLeaderboard() {
   const perPage = 15;
@@ -37,7 +37,7 @@ export default function AccountsLeaderboard() {
           type="inline"
           option={period}
           onChange={setPeriod}
-          options={[AccountFilterPeriod.DAY, AccountFilterPeriod.WEEK, AccountFilterPeriod.MONTH]}
+          options={[PerfPeriod.DAY, PerfPeriod.WEEK, PerfPeriod.MONTH]}
           optionLabels={[t`24 hours`, t`7 days`, t`1 month`]}
         />
       </div>

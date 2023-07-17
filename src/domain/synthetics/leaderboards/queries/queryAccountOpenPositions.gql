@@ -1,12 +1,12 @@
 query GetAccountOpenPositions(
-  $pageSize: Int,
-  $offset: Int = 0,
+  $first: Int,
+  $skip: Int = 0,
   $orderBy: AccountOpenPosition_orderBy = sizeInUsd,
   $orderDirection: OrderDirection = desc,
 ) {
   accountOpenPositions(
-    first: $pageSize,
-    offset: $offset,
+    first: $first,
+    skip: $skip,
     orderBy: $orderBy,
     orderDirection: $orderDirection
   ) {

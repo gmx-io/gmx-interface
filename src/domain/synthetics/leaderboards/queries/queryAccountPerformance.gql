@@ -1,17 +1,17 @@
 query GetAccountPerformance(
-  $pageSize: Int = 10,
-  $offset: Int = 0,
+  $first: Int = 10,
+  $skip: Int = 0,
   $orderBy: AccountPerf_orderBy = totalPnl,
   $orderDirection: OrderDirection = desc,
-  $since: Int = 0,
   $period: Period = daily,
+  $since: Int = 0,
 ) {
   accountPerfs(
-    first: $pageSize
-    offset: $offset
-    orderBy: $orderBy
-    orderDirection: $orderDirection
-    where: {timestamp_gte: $since, period: $period}
+    first: $first,
+    skip: $skip,
+    orderBy: $orderBy,
+    orderDirection: $orderDirection,
+    where: { timestamp_gte: $since, period: $period }
   ) {
     id
     timestamp

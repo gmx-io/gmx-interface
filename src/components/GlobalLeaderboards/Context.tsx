@@ -8,7 +8,7 @@ import {
 
 import { useChainId } from "lib/chains";
 import {
-  AccountFilterPeriod,
+  PerfPeriod,
   LeaderboardContextType,
   useTopAccounts,
   useTopPositions,
@@ -18,7 +18,7 @@ export const LeaderboardContext = createContext<LeaderboardContextType>({
   chainId: 0,
   topPositions: { isLoading: false, data: [], error: null },
   topAccounts: { isLoading: false, data: [], error: null },
-  period: AccountFilterPeriod.DAY,
+  period: PerfPeriod.DAY,
   setPeriod: () => {},
 });
 
@@ -26,7 +26,7 @@ export const useLeaderboardContext = () => useContext(LeaderboardContext);
 
 export const LeaderboardContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const { chainId } = useChainId();
-  const [period, setPeriod] = useState<AccountFilterPeriod>(AccountFilterPeriod.DAY);
+  const [period, setPeriod] = useState<PerfPeriod>(PerfPeriod.DAY);
   const topPositions = useTopPositions();
   const topAccounts = useTopAccounts(period);
   const context = {
