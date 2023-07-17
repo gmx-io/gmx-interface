@@ -917,6 +917,10 @@ table.Exchange-list-small td {
 }
 
 @media (max-width: 1100px) {
+  .Exchangeswap {
+    align-items: inherit;
+  }
+
   .Exchange-swap-box {
     width: auto;
   }
@@ -1029,10 +1033,18 @@ table.Exchange-list-small td {
   .Exchange {
     padding-top: 1.5rem !important;
   }
+
+  .Exchangeswap {
+    align-items: inherit;
+  }
 }
 
 @media (max-width: 450px) {
   .chart-positions {
     display: none;
+  }
+
+  .Exchangeswap {
+    align-items: inherit;
   }
 }

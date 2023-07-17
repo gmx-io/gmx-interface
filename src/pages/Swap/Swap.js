@@ -967,7 +967,7 @@ export const SwapBox = forwardRef((props, ref) => {
         <UsefulLinks className="Useful-links-exchange" />
       </div>
       <div className="Exchange-left">
-        <div className="">{getListSection()}</div>
+        <div className="Exchange-lists large">{getListSection()}</div>
       </div>
       <Footer />
     </div>

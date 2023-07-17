@@ -122,10 +122,6 @@ export function Header({
             })}
           >
             <div className="App-header-container-left">
-              <div className="App-header-menu-icon-block" onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
-                {!isDrawerVisible && <RiMenuLine className="App-header-menu-icon" />}
-                {isDrawerVisible && <FaTimes className="App-header-menu-icon" />}
-              </div>
               <div className="App-header-link-main clickable" onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
                 <img src={logoImg} className="big" alt="t3 Logo" />
                 <img src={logoSmallImg} className="small" alt="t3 Logo" />
@@ -140,6 +136,10 @@ export function Header({
                 redirectPopupTimestamp={redirectPopupTimestamp}
                 showRedirectModal={showRedirectModal}
               />
+              <div className="App-header-menu-icon-block" onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
+                {!isDrawerVisible && <RiMenuLine className="App-header-menu-icon" />}
+                {isDrawerVisible && <FaTimes className="App-header-menu-icon" />}
+              </div>
             </div>
           </div>
         </div>
