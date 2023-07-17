@@ -186,6 +186,14 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/12504/thumb/uniswap-uni.png?1600306604",
     },
     {
+      name: "Bridged USDC (USDC.e)",
+      symbol: "USDC.e",
+      decimals: 6,
+      address: "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
+      isStable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
+    },
+    {
       name: "USD Coin",
       symbol: "USDC",
       address: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
@@ -196,7 +204,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "USD Coin (USDC.e)",
       symbol: "USDC.e",
       decimals: 6,
-      address: "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
+      address: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
     },
@@ -286,7 +294,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
     },
     {
-      name: "USD Coin (USDC.e)",
+      name: "Bridged USDC (USDC.e)",
       symbol: "USDC.e",
       address: "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
       decimals: 6,
@@ -800,6 +808,10 @@ export const EXPLORER_LINKS = {
       arbitrum: "https://arbiscan.io/address/0xfa7f8980b0f1e64a2062791cc3b0871572f1f7f0",
     },
     USDC: {
+      coingecko: "https://www.coingecko.com/en/coins/usd-coin",
+      arbitrum: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    "USDC.e": {
       coingecko: "https://www.coingecko.com/en/coins/usd-coin",
       arbitrum: "https://arbiscan.io/address/0xff970a61a04b1ca14834a43f5de4533ebddb5cc8",
     },

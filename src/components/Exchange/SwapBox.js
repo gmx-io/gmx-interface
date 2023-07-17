@@ -17,8 +17,6 @@ import {
   DUST_BNB,
   getExchangeRate,
   getExchangeRateDisplay,
-  getLeverage,
-  getLiquidationPrice,
   getNextFromAmount,
   getNextToAmount,
   getPositionKey,
@@ -79,7 +77,10 @@ import { ErrorCode, ErrorDisplayType } from "./constants";
 import Button from "components/Button/Button";
 import UsefulLinks from "./UsefulLinks";
 import { get1InchSwapUrl } from "config/links";
+import getLiquidationPrice from "lib/positions/getLiquidationPrice";
+import { getLeverage } from "lib/positions/getLeverage";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
+import LeverageSlider from "./LeverageSlider";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import FeesTooltip from "./FeesTooltip";
 import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
@@ -561,7 +562,6 @@ export default function SwapBox(props) {
             totalTokenWeights,
             isSwap
           );
-
           let fromUsdMinAfterFee = fromUsdMin;
           if (feeBasisPoints) {
             fromUsdMinAfterFee = fromUsdMin.mul(BASIS_POINTS_DIVISOR - feeBasisPoints).div(BASIS_POINTS_DIVISOR);
@@ -665,6 +665,9 @@ export default function SwapBox(props) {
   }
 
   let leverage = bigNumberify(0);
+  let nextDelta = bigNumberify(0);
+  let nextHasProfit = false;
+
   if (fromUsdMin && toUsdMax && fromUsdMin.gt(0)) {
     const fees = toUsdMax.mul(MARGIN_FEE_BASIS_POINTS).div(BASIS_POINTS_DIVISOR);
     if (fromUsdMin.sub(fees).gt(0)) {
@@ -674,8 +677,6 @@ export default function SwapBox(props) {
 
   let nextAveragePrice = isMarketOrder ? entryMarkPrice : triggerPriceUsd;
   if (hasExistingPosition) {
-    let nextDelta, nextHasProfit;
-
     if (isMarketOrder) {
       nextDelta = existingPosition.delta;
       nextHasProfit = existingPosition.hasProfit;
@@ -693,42 +694,6 @@ export default function SwapBox(props) {
       nextPrice: isMarketOrder ? entryMarkPrice : triggerPriceUsd,
       isLong,
     });
-  }
-
-  const liquidationPrice = getLiquidationPrice({
-    isLong,
-    size: hasExistingPosition ? existingPosition.size : bigNumberify(0),
-    collateral: hasExistingPosition ? existingPosition.collateral : bigNumberify(0),
-    averagePrice: nextAveragePrice,
-    entryFundingRate: hasExistingPosition ? existingPosition.entryFundingRate : bigNumberify(0),
-    cumulativeFundingRate: hasExistingPosition ? existingPosition.cumulativeFundingRate : bigNumberify(0),
-    sizeDelta: toUsdMax,
-    collateralDelta: fromUsdMin,
-    increaseCollateral: true,
-    increaseSize: true,
-  });
-
-  const existingLiquidationPrice = existingPosition ? getLiquidationPrice(existingPosition) : undefined;
-  let displayLiquidationPrice = liquidationPrice ? liquidationPrice : existingLiquidationPrice;
-
-  if (hasExistingPosition) {
-    const collateralDelta = fromUsdMin ? fromUsdMin : bigNumberify(0);
-    const sizeDelta = toUsdMax ? toUsdMax : bigNumberify(0);
-    leverage = getLeverage({
-      size: existingPosition.size,
-      sizeDelta,
-      collateral: existingPosition.collateral,
-      collateralDelta,
-      increaseCollateral: true,
-      entryFundingRate: existingPosition.entryFundingRate,
-      cumulativeFundingRate: existingPosition.cumulativeFundingRate,
-      increaseSize: true,
-      hasProfit: existingPosition.hasProfit,
-      delta: existingPosition.delta,
-      includeDelta: savedIsPnlInLeverage,
-    });
-  } else if (hasLeverageOption) {
-    leverage = bigNumberify(parseInt(leverageOption * BASIS_POINTS_DIVISOR));
   }
 
   const getSwapError = () => {
@@ -1756,6 +1721,40 @@ export default function SwapBox(props) {
     }
   }
 
+  const fromUsdMinAfterFees = fromUsdMin?.sub(swapFees ?? 0).sub(positionFee ?? 0) || bigNumberify(0);
+  const liquidationPrice = getLiquidationPrice({
+    isLong,
+    size: hasExistingPosition ? existingPosition.size.add(toUsdMax || 0) : toUsdMax ?? bigNumberify(0),
+    collateral: hasExistingPosition
+      ? existingPosition.collateralAfterFee.add(fromUsdMinAfterFees)
+      : fromUsdMinAfterFees ?? bigNumberify(0),
+    averagePrice: nextAveragePrice ?? bigNumberify(0),
+  });
+
+  const existingLiquidationPrice = existingPosition
+    ? getLiquidationPrice({
+        isLong: existingPosition.isLong,
+        size: existingPosition.size,
+        collateral: existingPosition.collateral,
+        averagePrice: existingPosition.averagePrice,
+        fundingFee: existingPosition.fundingFee,
+      })
+    : undefined;
+
+  const displayLiquidationPrice = liquidationPrice ? liquidationPrice : existingLiquidationPrice;
+
+  if (hasExistingPosition) {
+    leverage = getLeverage({
+      size: existingPosition.size.add(toUsdMax || 0),
+      collateral: existingPosition.collateralAfterFee.add(fromUsdMinAfterFees),
+      delta: nextDelta,
+      hasProfit: nextHasProfit,
+      includeDelta: savedIsPnlInLeverage,
+    });
+  } else if (hasLeverageOption) {
+    leverage = bigNumberify(parseInt(leverageOption * BASIS_POINTS_DIVISOR));
+  }
+
   function getFundingRate() {
     let fundingRate = "";
 
@@ -1927,8 +1926,8 @@ export default function SwapBox(props) {
               <BuyInputSection
                 topLeftLabel={t`Pay`}
                 topRightLabel={t`Balance`}
-                topLeftValue={fromUsdMin && `${formatAmount(fromUsdMin, USD_DECIMALS, 2, true)} USD`}
-                topRightValue={fromBalance && `${formatAmount(fromBalance, fromToken.decimals, 4, true)}`}
+                balance={fromUsdMin && `${formatAmount(fromUsdMin, USD_DECIMALS, 2, true)} USD`}
+                tokenBalance={fromBalance && `${formatAmount(fromBalance, fromToken.decimals, 4, true)}`}
                 onClickTopRightLabel={setFromValueToMaximumAvailable}
                 showMaxButton={shouldShowMaxButton()}
                 inputValue={fromValue}
@@ -2051,7 +2050,7 @@ export default function SwapBox(props) {
                 <span className="muted">Leverage slider</span>
               </ToggleSwitch>
               {isLeverageSliderEnabled && (
-                <LeverageSlider isPositive={isLong} value={leverageOption} onChange={setLeverageOption} />
+                <LeverageSlider isLong={isLong} leverageOption={leverageOption} setLeverageOption={setLeverageOption} />
               )}
               {isShort && (
                 <div className="Exchange-info-row">

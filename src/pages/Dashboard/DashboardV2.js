@@ -1,54 +1,54 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { useWeb3React } from "@web3-react/core";
 import { Trans, t } from "@lingui/macro";
-import useSWR from "swr";
-import { PieChart, Pie, Cell, Tooltip } from "recharts";
+import { useWeb3React } from "@web3-react/core";
 import TooltipComponent from "components/Tooltip/Tooltip";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { Cell, Pie, PieChart, Tooltip } from "recharts";
+import useSWR from "swr";
 
-import hexToRgba from "hex-to-rgba";
 import { ethers } from "ethers";
+import hexToRgba from "hex-to-rgba";
 
+import { useGmxPrice, useTotalGmxInLiquidity, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
 import {
-  USD_DECIMALS,
-  GMX_DECIMALS,
-  GLP_DECIMALS,
   BASIS_POINTS_DIVISOR,
   DEFAULT_MAX_USDG_AMOUNT,
+  GLP_DECIMALS,
+  GMX_DECIMALS,
+  USD_DECIMALS,
   getPageTitle,
   importImage,
 } from "lib/legacy";
-import { useTotalGmxInLiquidity, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
 
 import { getContract } from "config/contracts";
 
-import VaultV2 from "abis/VaultV2.json";
-import ReaderV2 from "abis/ReaderV2.json";
 import GlpManager from "abis/GlpManager.json";
+import ReaderV2 from "abis/ReaderV2.json";
+import VaultV2 from "abis/VaultV2.json";
 import Footer from "components/Footer/Footer";
 
 import "./DashboardV2.css";
 
-import AssetDropdown from "./AssetDropdown";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import SEO from "components/Common/SEO";
-import { useTotalVolume, useVolumeInfo, useFeesSummary } from "domain/stats";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
-import { getServerUrl } from "config/backend";
-import { contractFetcher } from "lib/contracts";
-import { useInfoTokens } from "domain/tokens";
-import { getTokenBySymbol, getWhitelistedTokens, GLP_POOL_COLORS } from "config/tokens";
-import { bigNumberify, expandDecimals, formatAmount, formatKeyAmount, numberWithCommas } from "lib/numbers";
-import { useChainId } from "lib/chains";
-import { formatDate } from "lib/dates";
-import { getIcons } from "config/icons";
-import { arrayURLFetcher } from "lib/fetcher";
-import { getIsSyntheticsSupported } from "config/features";
 import { MarketsList } from "components/Synthetics/MarketsList/MarketsList";
-import { useMedia } from "react-use";
+import { getServerUrl } from "config/backend";
+import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
+import { getIsSyntheticsSupported } from "config/features";
+import { getIcons } from "config/icons";
+import { GLP_POOL_COLORS, getTokenBySymbol, getWhitelistedTokens } from "config/tokens";
+import { useFeesSummary, useTotalVolume, useVolumeInfo } from "domain/stats";
 import useUniqueUsers from "domain/stats/useUniqueUsers";
+import { useInfoTokens } from "domain/tokens";
+import { useChainId } from "lib/chains";
+import { contractFetcher } from "lib/contracts";
+import { formatDate } from "lib/dates";
+import { arrayURLFetcher } from "lib/fetcher";
+import { bigNumberify, expandDecimals, formatAmount, formatKeyAmount, numberWithCommas } from "lib/numbers";
+import { useMedia } from "react-use";
+import AssetDropdown from "./AssetDropdown";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;

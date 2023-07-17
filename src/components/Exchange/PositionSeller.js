@@ -11,8 +11,6 @@ import {
   DUST_USD,
   BASIS_POINTS_DIVISOR,
   MIN_PROFIT_TIME,
-  getLiquidationPrice,
-  getLeverage,
   getMarginFee,
   PRECISION,
   MARKET,
@@ -26,6 +24,7 @@ import {
   adjustForDecimals,
   isAddressZero,
   MAX_ALLOWED_LEVERAGE,
+  MAX_LEVERAGE,
 } from "lib/legacy";
 import { ARBITRUM, getChainName, getConstant, IS_NETWORK_DISABLED } from "config/chains";
 import { createDecreaseOrder, useHasOutdatedUi } from "domain/legacy";
@@ -52,6 +51,8 @@ import { formatDateTime, getTimeRemaining } from "lib/dates";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import FeesTooltip from "./FeesTooltip";
+import getLiquidationPrice from "lib/positions/getLiquidationPrice";
+import { getLeverage } from "lib/positions/getLeverage";
 import Button from "components/Button/Button";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import SlippageInput from "components/SlippageInput/SlippageInput";
@@ -66,6 +67,52 @@ function applySpread(amount, spread) {
     return amount;
   }
   return amount.sub(amount.mul(spread).div(PRECISION));
+}
+
+/*
+ This function replicates the backend logic of calculating Next Collateral and Receive Amount based on
+ Collateral Delta, Realized PnL and Fees for the position
+
+ The backend logic can be found in reduceCollateral function at
+ https://github.com/gmx-io/gmx-contracts/blob/master/contracts/core/Vault.sol#L992
+*/
+
+function calculateNextCollateralAndReceiveUsd(
+  collateral,
+  hasProfit,
+  isClosing,
+  adjustedDelta,
+  collateralDelta,
+  totalFees
+) {
+  let nextCollateral;
+  let receiveUsd = bigNumberify(0);
+
+  if (collateral) {
+    nextCollateral = collateral;
+
+    if (hasProfit) {
+      receiveUsd = receiveUsd.add(adjustedDelta);
+    } else {
+      nextCollateral = nextCollateral.sub(adjustedDelta);
+    }
+
+    if (collateralDelta && collateralDelta.gt(0)) {
+      receiveUsd = receiveUsd.add(collateralDelta);
+      nextCollateral = nextCollateral.sub(collateralDelta);
+    }
+    if (isClosing) {
+      receiveUsd = receiveUsd.add(nextCollateral);
+      nextCollateral = bigNumberify(0);
+    }
+    if (receiveUsd.gt(totalFees)) {
+      receiveUsd = receiveUsd.sub(totalFees);
+    } else {
+      nextCollateral = nextCollateral.sub(totalFees);
+    }
+  }
+
+  return { nextCollateral, receiveUsd };
 }
 
 function shouldSwap(collateralToken, receiveToken) {
@@ -276,10 +323,12 @@ export default function PositionSeller(props) {
   let convertedAmountFormatted;
 
   let nextLeverage;
+  let nextLeverageWithoutDelta;
   let liquidationPrice;
   let nextLiquidationPrice;
   let isClosing;
   let sizeDelta;
+  let leverageWithoutDelta;
 
   let nextCollateral;
   let collateralDelta = bigNumberify(0);
@@ -289,6 +338,7 @@ export default function PositionSeller(props) {
 
   let isNotEnoughReceiveTokenLiquidity;
   let isCollateralPoolCapacityExceeded;
+  let isKeepLeverageNotPossible;
 
   let title;
   let fundingFee;
@@ -322,7 +372,23 @@ export default function PositionSeller(props) {
     sizeDelta = fromAmount;
 
     title = t`Close ${longOrShortText} ${position.indexToken.symbol}`;
-    liquidationPrice = getLiquidationPrice(position);
+    liquidationPrice = getLiquidationPrice({
+      size: position.size,
+      collateral: position.collateral,
+      averagePrice: position.averagePrice,
+      isLong: position.isLong,
+      fundingFee: position.fundingFee,
+    });
+
+    leverageWithoutDelta = getLeverage({
+      size: position.size,
+      collateral: position.collateral,
+      fundingFee: fundingFee,
+    });
+
+    // Initializing next leverage to the current leverage to start with
+    nextLeverage = position.leverage;
+    nextLeverageWithoutDelta = leverageWithoutDelta;
 
     if (fromAmount) {
       isClosing = position.size.sub(fromAmount).lt(DUST_USD);
@@ -331,7 +397,6 @@ export default function PositionSeller(props) {
 
     if (isClosing) {
       sizeDelta = position.size;
-      receiveUsd = position.collateral;
     } else if (orderOption === STOP && sizeDelta && existingOrders.length > 0) {
       let residualSize = position.size;
       for (const order of existingOrders) {
@@ -342,32 +407,53 @@ export default function PositionSeller(props) {
       }
     }
 
+    totalFees = totalFees.add(positionFee || bigNumberify(0)).add(fundingFee || bigNumberify(0));
+
     if (sizeDelta && position.size.gt(0)) {
       adjustedDelta = nextDelta.mul(sizeDelta).div(position.size);
     }
 
-    if (nextHasProfit) {
-      receiveUsd = receiveUsd.add(adjustedDelta);
-    } else {
-      if (receiveUsd.gt(adjustedDelta)) {
-        receiveUsd = receiveUsd.sub(adjustedDelta);
-      } else {
-        receiveUsd = bigNumberify(0);
-      }
-    }
-
     if (keepLeverage && sizeDelta && !isClosing) {
-      collateralDelta = sizeDelta.mul(position.collateral).div(position.size);
-      // if the position will be realising a loss then reduce collateralDelta by the realised loss
-      if (!nextHasProfit) {
-        const deductions = adjustedDelta.add(positionFee).add(fundingFee);
-        if (collateralDelta.gt(deductions)) {
-          collateralDelta = collateralDelta = collateralDelta.sub(deductions);
+      // Calculating the collateralDelta needed to keep the next leverage same as current leverage
+      collateralDelta = position.collateral.sub(
+        position.size.sub(sizeDelta).mul(BASIS_POINTS_DIVISOR).div(leverageWithoutDelta)
+      );
+
+      /*
+       In the backend nextCollateral is determined based on not just collateralDelta we pass but also whether
+       a position has profit or loss and how much fees it has. The following logic counters the backend logic
+       and determines the exact collateralDelta to be passed so that ultimately the nextCollateral value
+       generated will keep leverage the same.
+       
+       The backend logic can be found in reduceCollateral function at
+       https://github.com/gmx-io/gmx-contracts/blob/master/contracts/core/Vault.sol#L992
+      */
+
+      if (nextHasProfit) {
+        if (collateralDelta.add(adjustedDelta).lte(totalFees)) {
+          collateralDelta = bigNumberify(0);
+          // Keep Leverage is not possible
+          isKeepLeverageNotPossible = true;
+        }
+      } else {
+        if (collateralDelta.sub(adjustedDelta).gt(totalFees)) {
+          collateralDelta = collateralDelta.sub(adjustedDelta);
         } else {
           collateralDelta = bigNumberify(0);
+          // Keep leverage the same is not possible
+          isKeepLeverageNotPossible = true;
         }
       }
     }
+
+    ({ receiveUsd, nextCollateral } = calculateNextCollateralAndReceiveUsd(
+      position.collateral,
+      nextHasProfit,
+      isClosing,
+      adjustedDelta,
+      collateralDelta,
+      totalFees
+    ));
 
     maxAmount = position.size;
     maxAmountFormatted = formatAmount(maxAmount, USD_DECIMALS, 2, true);
@@ -378,20 +464,7 @@ export default function PositionSeller(props) {
       convertedAmountFormatted = formatAmount(convertedAmount, collateralToken.decimals, 4, true);
     }
 
-    totalFees = totalFees.add(positionFee || bigNumberify(0)).add(fundingFee || bigNumberify(0));
-
-    receiveUsd = receiveUsd.add(collateralDelta);
-
-    if (sizeDelta) {
-      if (receiveUsd.gt(totalFees)) {
-        receiveUsd = receiveUsd.sub(totalFees);
-      } else {
-        receiveUsd = bigNumberify(0);
-      }
-    }
-
     receiveUsd = applySpread(receiveUsd, collateralTokenInfo?.spread);
-
     receiveToken = isSwapAllowed && swapToToken ? swapToToken : collateralToken;
 
     if (isSwapAllowed && isContractAccount && isAddressZero(receiveToken.address)) {
@@ -455,45 +528,34 @@ export default function PositionSeller(props) {
       }
     }
 
-    if (isClosing) {
-      nextCollateral = bigNumberify(0);
-    } else {
-      if (position.collateral) {
-        nextCollateral = position.collateral;
-        if (collateralDelta && collateralDelta.gt(0)) {
-          nextCollateral = position.collateral.sub(collateralDelta);
-        } else if (position.delta && position.delta.gt(0) && sizeDelta) {
-          if (!position.hasProfit) {
-            nextCollateral = nextCollateral.sub(adjustedDelta);
-          }
-        }
-      }
-    }
-
     if (fromAmount) {
-      if (!isClosing && !keepLeverage) {
-        nextLeverage = getLeverage({
-          size: position.size,
-          sizeDelta,
-          collateral: position.collateral,
-          entryFundingRate: position.entryFundingRate,
-          cumulativeFundingRate: position.cumulativeFundingRate,
-          hasProfit: nextHasProfit,
-          delta: nextDelta,
-          includeDelta: savedIsPnlInLeverage,
-        });
+      if (!isClosing) {
         nextLiquidationPrice = getLiquidationPrice({
-          isLong: position.isLong,
-          size: position.size,
-          sizeDelta,
-          collateral: position.collateral,
+          size: position.size.sub(sizeDelta),
+          collateral: nextCollateral,
           averagePrice: position.averagePrice,
-          entryFundingRate: position.entryFundingRate,
-          cumulativeFundingRate: position.cumulativeFundingRate,
-          delta: nextDelta,
-          hasProfit: nextHasProfit,
-          includeDelta: true,
+          isLong: position.isLong,
         });
+
+        if (!keepLeverage) {
+          // We need to send the remaining delta
+          const remainingDelta = nextDelta?.sub(adjustedDelta);
+          nextLeverage = getLeverage({
+            size: position.size.sub(sizeDelta),
+            collateral: nextCollateral,
+            hasProfit: nextHasProfit,
+            delta: remainingDelta,
+            includeDelta: savedIsPnlInLeverage,
+          });
+
+          nextLeverageWithoutDelta = getLeverage({
+            size: position.size.sub(sizeDelta),
+            collateral: nextCollateral,
+            hasProfit: nextHasProfit,
+            delta: remainingDelta,
+            includeDelta: false,
+          });
+        }
       }
     }
   }
@@ -570,6 +632,22 @@ export default function PositionSeller(props) {
       return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientReceiveToken];
     }
 
+    if (
+      !isClosing &&
+      keepLeverage &&
+      (leverageWithoutDelta?.lt(0) || leverageWithoutDelta?.gt(100 * BASIS_POINTS_DIVISOR))
+    ) {
+      return [t`Fees are higher than Collateral`, ErrorDisplayType.Tooltip, ErrorCode.FeesHigherThanCollateral];
+    }
+
+    if (!isClosing && keepLeverage && isKeepLeverageNotPossible) {
+      return [t`Keep Leverage is not possible`, ErrorDisplayType.Tooltip, ErrorCode.KeepLeverageNotPossible];
+    }
+
+    if (!isClosing && nextCollateral?.lt(0)) {
+      return [t`Realized PnL insufficient for Fees`, ErrorDisplayType.Tooltip, ErrorCode.NegativeNextCollateral];
+    }
+
     if (isCollateralPoolCapacityExceeded) {
       return [t`Insufficient Liquidity`, ErrorDisplayType.Tooltip, ErrorCode.ReceiveCollateralTokenOnly];
     }
@@ -587,17 +665,28 @@ export default function PositionSeller(props) {
       return [t`Max close amount exceeded`];
     }
 
-    if (nextLeverage && nextLeverage.lt(1.1 * BASIS_POINTS_DIVISOR)) {
+    if (!isClosing && nextLeverage && nextLeverage.lt(1.1 * BASIS_POINTS_DIVISOR)) {
       return [t`Min leverage: 1.1x`];
     }
 
-    if (nextLeverage && nextLeverage.gt(MAX_ALLOWED_LEVERAGE)) {
+    if (!isClosing && nextLeverage && nextLeverage.gt(MAX_ALLOWED_LEVERAGE)) {
       return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
     }
 
-    if (hasPendingProfit && orderOption !== STOP && !isProfitWarningAccepted) {
-      return [t`Forfeit profit not checked`];
+    if (!isClosing && nextLeverageWithoutDelta && nextLeverageWithoutDelta.gt(MAX_LEVERAGE)) {
+      return [t`Max Leverage without PnL: 100x`];
     }
+
+    if (position.isLong) {
+      if (!isClosing && nextLiquidationPrice && nextLiquidationPrice.gt(position.markPrice)) {
+        return [t`Invalid Liquidation Price`];
+      }
+    } else {
+      if (!isClosing && nextLiquidationPrice && nextLiquidationPrice.lt(position.markPrice)) {
+        return [t`Invalid Liquidation Price`];
+      }
+    }
+
     return [false];
   };
 
@@ -932,6 +1021,20 @@ export default function PositionSeller(props) {
       <Trans>
         Swap amount from {position.collateralToken.symbol} to {receiveToken.symbol} exceeds{" "}
         {position.collateralToken.symbol} acceptable amount. Can only receive {position.collateralToken.symbol}.
+      </Trans>
+    ),
+    [ErrorCode.KeepLeverageNotPossible]: (
+      <Trans>Please uncheck "Keep Leverage", or close a larger position amount.</Trans>
+    ),
+    [ErrorCode.FeesHigherThanCollateral]: (
+      <Trans>
+        Collateral is not enough to cover pending Fees. Please uncheck "Keep Leverage" to pay the Fees with the realized
+        PnL.
+      </Trans>
+    ),
+    [ErrorCode.NegativeNextCollateral]: (
+      <Trans>
+        Neither Collateral nor realized PnL is enough to cover pending Fees. Please close a larger position amount.
       </Trans>
     ),
   };

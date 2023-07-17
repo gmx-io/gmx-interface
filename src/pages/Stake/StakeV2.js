@@ -1,60 +1,60 @@
-import React, { useState, useCallback } from "react";
 import { Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
+import { useCallback, useState } from "react";
 
-import Modal from "components/Modal/Modal";
 import Checkbox from "components/Checkbox/Checkbox";
-import Tooltip from "components/Tooltip/Tooltip";
 import Footer from "components/Footer/Footer";
+import Modal from "components/Modal/Modal";
+import Tooltip from "components/Tooltip/Tooltip";
 
-import Vault from "abis/Vault.json";
-import ReaderV2 from "abis/ReaderV2.json";
-import Vester from "abis/Vester.json";
-import RewardRouter from "abis/RewardRouter.json";
-import RewardReader from "abis/RewardReader.json";
-import Token from "abis/Token.json";
 import GlpManager from "abis/GlpManager.json";
+import ReaderV2 from "abis/ReaderV2.json";
+import RewardReader from "abis/RewardReader.json";
+import RewardRouter from "abis/RewardRouter.json";
+import Token from "abis/Token.json";
+import Vault from "abis/Vault.json";
+import Vester from "abis/Vester.json";
 
+import { ARBITRUM, getChainName, getConstant } from "config/chains";
+import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
 import { ethers } from "ethers";
 import {
-  GLP_DECIMALS,
-  USD_DECIMALS,
   BASIS_POINTS_DIVISOR,
+  GLP_DECIMALS,
   PLACEHOLDER_ACCOUNT,
+  USD_DECIMALS,
   getBalanceAndSupplyData,
   getDepositBalanceData,
-  getVestingData,
-  getStakingData,
-  getProcessedData,
   getPageTitle,
+  getProcessedData,
+  getStakingData,
+  getVestingData,
 } from "lib/legacy";
-import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
-import { ARBITRUM, getChainName, getConstant } from "config/chains";
 
 import useSWR from "swr";
 
 import { getContract } from "config/contracts";
 
-import "./StakeV2.css";
+import Button from "components/Button/Button";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import SEO from "components/Common/SEO";
-import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { getServerUrl } from "config/backend";
-import { callContract, contractFetcher } from "lib/contracts";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { helperToast } from "lib/helperToast";
-import { approveTokens } from "domain/tokens";
-import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, formatKeyAmount, parseValue } from "lib/numbers";
-import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import GMXAprTooltip from "components/Stake/GMXAprTooltip";
-import Button from "components/Button/Button";
+import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { GmList } from "components/Synthetics/GmList/GmList";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { getServerUrl } from "config/backend";
 import { getIsSyntheticsSupported } from "config/features";
 import { useMarketTokensData, useMarketsInfo } from "domain/synthetics/markets";
 import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import { approveTokens } from "domain/tokens";
+import { useChainId } from "lib/chains";
+import { callContract, contractFetcher } from "lib/contracts";
+import { helperToast } from "lib/helperToast";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, formatKeyAmount, parseValue } from "lib/numbers";
+import "./StakeV2.css";
 
 const { AddressZero } = ethers.constants;
 

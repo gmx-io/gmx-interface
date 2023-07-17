@@ -22,6 +22,7 @@ import Button from "components/Button/Button";
 export default function CompleteAccountTransfer(props) {
   const [, copyToClipboard] = useCopyToClipboard();
   const { sender, receiver } = useParams();
+  const isSenderAndReceiverValid = ethers.utils.isAddress(sender) && ethers.utils.isAddress(receiver);
   const { setPendingTxns } = props;
   const { library, account } = useWeb3React();
   const [isTransferSubmittedModalVisible, setIsTransferSubmittedModalVisible] = useState(false);
@@ -78,6 +79,21 @@ export default function CompleteAccountTransfer(props) {
         setIsConfirming(false);
       });
   };
+
+  if (!isSenderAndReceiverValid) {
+    return (
+      <div className="CompleteAccountTransfer Page page-layout">
+        <div className="Page-title-section">
+          <div className="Page-title">
+            <Trans>Complete Account Transfer</Trans>
+          </div>
+          <div className="Page-description">
+            <Trans>Invalid Transfer Addresses: Please check the url.</Trans>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="CompleteAccountTransfer Page page-layout">

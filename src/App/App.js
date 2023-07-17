@@ -93,6 +93,7 @@ import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { roundToTwoDecimals } from "lib/numbers";
 import { getWsProvider } from "lib/rpc";
 import {
   activateInjectedProvider,
@@ -110,7 +111,6 @@ import { MarketPoolsPage } from "pages/MarketPoolsPage/MarketPoolsPage";
 import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsFallbackPage";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
-import { roundToTwoDecimals } from "lib/numbers";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -199,6 +199,7 @@ function FullApp() {
   };
 
   const connectInjectedWallet = getInjectedHandler(activate, deactivate);
+
   const activateWalletConnect = () => {
     getWalletConnectHandler(activate, deactivate, setActivatingConnector)();
   };

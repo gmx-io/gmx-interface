@@ -9,9 +9,10 @@ import {
   BASIS_POINTS_DIVISOR,
   DEPOSIT_FEE,
   DUST_BNB,
-  getLiquidationPrice,
   MAX_ALLOWED_LEVERAGE,
   getFundingFee,
+  LIQUIDATION_FEE,
+  MAX_LEVERAGE,
 } from "lib/legacy";
 import { getContract } from "config/contracts";
 import Tab from "../Tab/Tab";
@@ -31,6 +32,8 @@ import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValu
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import Button from "components/Button/Button";
 import FeesTooltip from "./FeesTooltip";
+import getLiquidationPrice from "lib/positions/getLiquidationPrice";
+import { getLeverage } from "lib/positions/getLeverage";
 
 const DEPOSIT = "Deposit";
 const WITHDRAW = "Withdraw";
@@ -54,7 +57,6 @@ export default function PositionEditor(props) {
     pendingTxns,
     setPendingTxns,
     getUsd,
-    getLeverage,
     savedIsPnlInLeverage,
     positionRouterApproved,
     isWaitingForPositionRouterApproval,
@@ -114,8 +116,15 @@ export default function PositionEditor(props) {
   if (position) {
     title = t`Edit ${longOrShortText} ${position.indexToken.symbol}`;
     collateralToken = position.collateralToken;
-    liquidationPrice = getLiquidationPrice(position);
     fundingFee = getFundingFee(position);
+
+    liquidationPrice = getLiquidationPrice({
+      size: position.size,
+      collateral: position.collateral,
+      averagePrice: position.averagePrice,
+      isLong: position.isLong,
+      fundingFee,
+    });
 
     if (isDeposit) {
       fromAmount = parseValue(fromValue, collateralToken.decimals);
@@ -150,13 +159,13 @@ export default function PositionEditor(props) {
         depositFeeUSD = convertedAmount.mul(DEPOSIT_FEE).div(BASIS_POINTS_DIVISOR);
       }
 
+      nextCollateral = isDeposit
+        ? position.collateralAfterFee.add(collateralDelta)
+        : position.collateralAfterFee.sub(collateralDelta);
+
       nextLeverage = getLeverage({
         size: position.size,
-        collateral: position.collateral,
-        collateralDelta,
-        increaseCollateral: isDeposit,
-        entryFundingRate: position.entryFundingRate,
-        cumulativeFundingRate: position.cumulativeFundingRate,
+        collateral: nextCollateral,
         hasProfit: position.hasProfit,
         delta: position.delta,
         includeDelta: savedIsPnlInLeverage,
@@ -164,30 +173,20 @@ export default function PositionEditor(props) {
 
       nextLeverageExcludingPnl = getLeverage({
         size: position.size,
-        collateral: position.collateral,
-        collateralDelta,
-        increaseCollateral: isDeposit,
-        entryFundingRate: position.entryFundingRate,
-        cumulativeFundingRate: position.cumulativeFundingRate,
+        collateral: nextCollateral,
         hasProfit: position.hasProfit,
         delta: position.delta,
         includeDelta: false,
       });
 
+      // nextCollateral is prev collateral + deposit amount - borrow fee - deposit fee
+      // in case of withdrawal nextCollateral is prev collateral - withdraw amount - borrow fee
       nextLiquidationPrice = getLiquidationPrice({
         isLong: position.isLong,
         size: position.size,
-        collateral: position.collateral,
+        collateral: nextCollateral,
         averagePrice: position.averagePrice,
-        entryFundingRate: position.entryFundingRate,
-        cumulativeFundingRate: position.cumulativeFundingRate,
-        collateralDelta,
-        increaseCollateral: isDeposit,
       });
-
-      nextCollateral = isDeposit
-        ? position.collateralAfterFee.add(collateralDelta)
-        : position.collateralAfterFee.sub(collateralDelta);
     }
   }
 
@@ -227,6 +226,26 @@ export default function PositionEditor(props) {
     if (nextLeverage && nextLeverage.gt(MAX_ALLOWED_LEVERAGE)) {
       return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
     }
+
+    if (fromAmount && isDeposit && nextLiquidationPrice) {
+      const isInvalidLiquidationPrice = position.isLong
+        ? nextLiquidationPrice.gte(position.markPrice)
+        : nextLiquidationPrice.lte(position.markPrice);
+
+      if (isInvalidLiquidationPrice) {
+        return [t`Invalid liq. price`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientDepositAmount];
+      }
+    }
+
+    if (position.hasProfit) {
+      if (nextCollateral.lte(position.closingFee.add(LIQUIDATION_FEE))) {
+        return isDeposit ? [t`Deposit not enough to cover fees`] : [t`Leftover Collateral not enough to cover fees`];
+      }
+      if (nextLeverageExcludingPnl && nextLeverageExcludingPnl.gt(MAX_LEVERAGE)) {
+        return [t`Max leverage without PnL: ${(MAX_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
+      }
+    }
+
     return [false];
   };
 
@@ -467,6 +486,7 @@ export default function PositionEditor(props) {
   };
   const ERROR_TOOLTIP_MSG = {
     [ErrorCode.InvalidLiqPrice]: t`Liquidation price would cross mark price.`,
+    [ErrorCode.InsufficientDepositAmount]: t`Deposit amount is insufficient to bring leverage below the max allowed leverage of 100x`,
   };
 
   function renderPrimaryButton() {

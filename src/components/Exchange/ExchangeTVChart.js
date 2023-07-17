@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import cx from "classnames";
-import { useMedia } from "react-use";
-import { USD_DECIMALS, SWAP, INCREASE, getLiquidationPrice, CHART_PERIODS } from "lib/legacy";
+
+import { USD_DECIMALS, SWAP, INCREASE, CHART_PERIODS } from "lib/legacy";
 import { useChartPrices } from "domain/legacy";
 import ChartTokenSelector from "./ChartTokenSelector";
 import { getTokenInfo } from "domain/tokens/utils";
@@ -12,6 +12,7 @@ import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 import { t } from "@lingui/macro";
 import { DEFAULT_PERIOD, availableNetworksForChart } from "components/TVChartContainer/constants";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
+import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import { SUPPORTED_RESOLUTIONS_V1 } from "config/tradingview";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
@@ -71,6 +72,14 @@ export default function ExchangeTVChart(props) {
   }
 
   const [currentSeries] = useState();
+
+  let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
+
+  if (!period || !(period in CHART_PERIODS)) {
+    period = DEFAULT_PERIOD;
+  }
+
+  const [currentSeries] = useState();
   const dataProvider = useRef();
 
   const isSmallMobile = useMedia("(max-width: 596px)");
@@ -84,7 +93,9 @@ export default function ExchangeTVChart(props) {
   });
 
   useEffect(() => {
-    dataProvider.current = new TVDataProvider(SUPPORTED_RESOLUTIONS_V1);
+    dataProvider.current = new TVDataProvider({
+      resolutions: SUPPORTED_RESOLUTIONS_V1,
+    });
   }, []);
 
   useEffect(() => {
@@ -129,13 +140,21 @@ export default function ExchangeTVChart(props) {
       .filter((p) => p.indexToken.address === chartToken.address)
       .map((position) => {
         const longOrShortText = position.isLong ? t`Long` : t`Short`;
+        const liquidationPrice = getLiquidationPrice({
+          size: position.size,
+          collateral: position.collateral,
+          averagePrice: position.averagePrice,
+          isLong: position.isLong,
+          fundingFee: position.fundingFee,
+        });
+
         return {
           open: {
             price: parseFloat(formatAmount(position.averagePrice, USD_DECIMALS, 2)),
             title: t`Open ${position.indexToken.symbol} ${longOrShortText}`,
           },
           liquidation: {
-            price: parseFloat(formatAmount(getLiquidationPrice(position), USD_DECIMALS, 2)),
+            price: parseFloat(formatAmount(liquidationPrice, USD_DECIMALS, 2)),
             title: t`Liq. ${position.indexToken.symbol} ${longOrShortText}`,
           },
         };
@@ -215,7 +234,14 @@ export default function ExchangeTVChart(props) {
             })
           );
 
-          const liquidationPrice = getLiquidationPrice(position);
+          const liquidationPrice = getLiquidationPrice({
+            size: position.size,
+            collateral: position.collateral,
+            averagePrice: position.averagePrice,
+            isLong: position.isLong,
+            fundingFee: position.fundingFee,
+          });
+
           lines.push(
             currentSeries.createPriceLine({
               price: parseFloat(formatAmount(liquidationPrice, USD_DECIMALS, 2)),
@@ -351,9 +377,9 @@ export default function ExchangeTVChart(props) {
             chainId={chainId}
             onSelectToken={onSelectToken}
             dataProvider={dataProvider.current}
-            supportedResolutions={SUPPORTED_RESOLUTIONS_V1}
             period={period}
             setPeriod={setPeriod}
+            chartToken={chartToken}
           />
         ) : (
           <p className="ExchangeChart-error">Sorry, chart is not supported on this network yet.</p>
