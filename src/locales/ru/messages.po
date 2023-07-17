@@ -244,10 +244,6 @@ msgstr "Сумма к оплате"
 msgid "An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from temporary wicks."
 msgstr "Совокупность высококачественных ценовых сигналов определяет, когда происходит ликвидация. Это позволяет обезопасить позиции от временных колебаний."
 
-#: src/pages/Ecosystem/Ecosystem.js
-#~ msgid "Announcement"
-#~ msgstr "Объявление"
-
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "App"
 msgstr ""
@@ -1358,10 +1354,6 @@ msgstr "Комиссионные будут показаны после того
 #: src/components/Exchange/SwapBox.js
 msgid "Fetching token info..."
 msgstr "Получение информации о токенах..."
-
-#: src/pages/Ecosystem/Ecosystem.js
-msgid "Financial reports and protocol analytics"
-msgstr "Финансовые отчеты и аналитика протоколов"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Floor Price Fund"

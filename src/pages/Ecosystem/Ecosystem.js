@@ -202,15 +202,6 @@ export default function Ecosystem() {
       chainIds: [ARBITRUM],
     },
     {
-      title: "GMX Analytics",
-      link: "https://gmxstats.com/",
-      linkLabel: "gmxstats.com",
-      about: t`Financial reports and protocol analytics`,
-      creatorLabel: "@CryptoMessiah",
-      creatorLink: "https://t.me/LarpCapital",
-      chainIds: [ARBITRUM, AVALANCHE],
-    },
-    {
       title: "TokenTerminal",
       link: "https://tokenterminal.com/terminal/projects/gmx",
       linkLabel: "tokenterminal.com",

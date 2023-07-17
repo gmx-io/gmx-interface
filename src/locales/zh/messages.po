@@ -244,10 +244,6 @@ msgstr "取回金额"
 msgid "An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from temporary wicks."
 msgstr "高质量价格供给的总和决定了清算时间。使头寸不受暂时波动的影响"
 
-#: src/pages/Ecosystem/Ecosystem.js
-#~ msgid "Announcement"
-#~ msgstr "公告"
-
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "App"
 msgstr ""
@@ -1358,10 +1354,6 @@ msgstr "在订单中输入金额，费用就会显示出来"
 #: src/components/Exchange/SwapBox.js
 msgid "Fetching token info..."
 msgstr "正在获取代币信息"
-
-#: src/pages/Ecosystem/Ecosystem.js
-msgid "Financial reports and protocol analytics"
-msgstr "财务报告和协议分析"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Floor Price Fund"

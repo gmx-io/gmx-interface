@@ -244,10 +244,6 @@ msgstr ""
 msgid "An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from temporary wicks."
 msgstr ""
 
-#: src/pages/Ecosystem/Ecosystem.js
-#~ msgid "Announcement"
-#~ msgstr ""
-
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "App"
 msgstr ""
@@ -1357,10 +1353,6 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Fetching token info..."
-msgstr ""
-
-#: src/pages/Ecosystem/Ecosystem.js
-msgid "Financial reports and protocol analytics"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js

@@ -244,10 +244,6 @@ msgstr "Cantidad a reclamar"
 msgid "An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from temporary wicks."
 msgstr "Un conjunto de fuentes de precios de alta calidad determinan cuando se producen las liquidaciones. Esto mantiene las posiciones a salvo de altibajos temporales."
 
-#: src/pages/Ecosystem/Ecosystem.js
-#~ msgid "Announcement"
-#~ msgstr "Anuncio"
-
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "App"
 msgstr "Aplicación"
@@ -1358,10 +1354,6 @@ msgstr "Las comisiones se mostrarán una vez que haya introducido una cantidad e
 #: src/components/Exchange/SwapBox.js
 msgid "Fetching token info..."
 msgstr "Obteniendo información de los tokens..."
-
-#: src/pages/Ecosystem/Ecosystem.js
-msgid "Financial reports and protocol analytics"
-msgstr "Reportes financieros y análisis de datos del protocolo"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Floor Price Fund"

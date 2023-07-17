@@ -244,10 +244,6 @@ msgstr "Amount to claim"
 msgid "An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from temporary wicks."
 msgstr "An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from temporary wicks."
 
-#: src/pages/Ecosystem/Ecosystem.js
-#~ msgid "Announcement"
-#~ msgstr "Announcement"
-
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "App"
 msgstr "App"
@@ -1358,10 +1354,6 @@ msgstr "Fees will be shown once you have entered an amount in the order form."
 #: src/components/Exchange/SwapBox.js
 msgid "Fetching token info..."
 msgstr "Fetching token info..."
-
-#: src/pages/Ecosystem/Ecosystem.js
-msgid "Financial reports and protocol analytics"
-msgstr "Financial reports and protocol analytics"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Floor Price Fund"

@@ -244,10 +244,6 @@ msgstr "수령할 양"
 msgid "An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from temporary wicks."
 msgstr "고품질의 여러 가격 피드를 통해 청산 발생 시기를 결정합니다. 이것은 일시적인 가격 변화로부터 포지션을 안전하게 유지합니다."
 
-#: src/pages/Ecosystem/Ecosystem.js
-#~ msgid "Announcement"
-#~ msgstr "공지"
-
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "App"
 msgstr ""
@@ -1358,10 +1354,6 @@ msgstr "입력란에 수량을 입력하면 수수료가 표시됩니다."
 #: src/components/Exchange/SwapBox.js
 msgid "Fetching token info..."
 msgstr "토큰 정보 가져오는 중..."
-
-#: src/pages/Ecosystem/Ecosystem.js
-msgid "Financial reports and protocol analytics"
-msgstr "금융 보고서 및 프로토콜 분석"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Floor Price Fund"

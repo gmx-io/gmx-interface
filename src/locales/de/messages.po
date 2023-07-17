@@ -244,10 +244,6 @@ msgstr "Zu beanspruchender Betrag"
 msgid "An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from temporary wicks."
 msgstr "Ein Aggregat aus hochwertigen Kursen bestimmt, wann Liquidationen stattfinden. Dadurch sind die Positionen vor vorübergehenden Wicks sicher."
 
-#: src/pages/Ecosystem/Ecosystem.js
-#~ msgid "Announcement"
-#~ msgstr "Ankündigung"
-
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "App"
 msgstr "App"
@@ -1358,10 +1354,6 @@ msgstr "Die Gebühren werden angezeigt, sobald du einen Betrag in das Order-Form
 #: src/components/Exchange/SwapBox.js
 msgid "Fetching token info..."
 msgstr "Token-Informationen abrufen..."
-
-#: src/pages/Ecosystem/Ecosystem.js
-msgid "Financial reports and protocol analytics"
-msgstr "Finanzberichte und Protokollanalyse"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Floor Price Fund"
