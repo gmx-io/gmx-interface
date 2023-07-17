@@ -98,6 +98,25 @@ export default function TokenSelector(props: Props) {
     );
   });
 
+  const sortedFilteredTokens = filteredTokens.sort((a, b) => {
+    const aInfo = infoTokens?.[a.address]!;
+    const bInfo = infoTokens?.[b.address]!;
+
+    if (!aInfo?.balance || !bInfo?.balance || !aInfo?.maxPrice || !bInfo?.maxPrice) {
+      return 0;
+    }
+
+    const aBalanceUsd = aInfo.balance.mul(aInfo.maxPrice).div(expandDecimals(1, a.decimals));
+    const bBalanceUsd = bInfo.balance.mul(bInfo.maxPrice).div(expandDecimals(1, b.decimals));
+
+    // if aBalanceUsd and bBalanceUsd is zero sort them alphabatically
+    if (aBalanceUsd.isZero() && bBalanceUsd.isZero()) {
+      return aInfo?.symbol > bInfo?.symbol ? 1 : -1;
+    }
+
+    return bBalanceUsd.sub(aBalanceUsd).gt(0) ? 1 : -1;
+  });
+
   const _handleKeyDown = (e) => {
     if (e.key === "Enter" && filteredTokens.length > 0) {
       onSelectToken(filteredTokens[0]);
@@ -128,7 +147,7 @@ export default function TokenSelector(props: Props) {
         )}
       >
         <div className="TokenSelector-tokens">
-          {filteredTokens.map((token, tokenIndex) => {
+          {sortedFilteredTokens.map((token, tokenIndex) => {
             const tokenPopupImage = importImage(`ic_${token.symbol.toLowerCase()}_40.svg`);
             let info = infoTokens?.[token.address] || ({} as TokenInfo);
 
