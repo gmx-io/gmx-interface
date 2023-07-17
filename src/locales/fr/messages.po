@@ -661,8 +661,8 @@ msgid "Close {longOrShortText} {0}"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
-msgid "Close: {convertedAmountFormatted} {0}"
-msgstr ""
+#~ msgid "Close: {convertedAmountFormatted} {0}"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Closing..."
@@ -992,7 +992,6 @@ msgstr "Diminué"
 msgid "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
 msgstr "{tokenSymbol} {longOrShortText} diminué, -{0} USD."
 
-#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -1886,8 +1885,6 @@ msgid "Loss"
 msgstr "Perte"
 
 #: src/components/BuyInputSection/BuyInputSection.tsx
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
 #: src/components/InputSection/InputSection.js
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "MAX"
@@ -1897,6 +1894,8 @@ msgstr "MAX"
 msgid "MEV Optimizer"
 msgstr "Optimiseur MEV"
 
+#: src/components/Exchange/OrderEditor.js
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 msgid "Mark"
 msgstr ""
@@ -1920,8 +1919,8 @@ msgstr "Prix de marque:"
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
-msgid "Mark: {0}"
-msgstr "Marque: {0}"
+#~ msgid "Mark: {0}"
+#~ msgstr "Marque: {0}"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -1936,6 +1935,8 @@ msgstr "Bourse"
 msgid "Market Cap"
 msgstr "Capitalisation boursière"
 
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionSeller.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -2036,8 +2037,8 @@ msgstr "Max: {0}"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
-msgid "Max: {maxAmountFormatted}"
-msgstr "Max: {maxAmountFormatted}"
+#~ msgid "Max: {maxAmountFormatted}"
+#~ msgstr "Max: {maxAmountFormatted}"
 
 #: src/components/Footer/constants.ts
 #: src/components/Footer/constants.ts
@@ -3796,7 +3797,6 @@ msgstr "Poids"
 msgid "When closing the position, you can select which token you would like to receive the profits in."
 msgstr "Lors de la clôture de la position, vous pouvez sélectionner le token avec lequel vous souhaitez recevoir vos profits."
 
-#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
