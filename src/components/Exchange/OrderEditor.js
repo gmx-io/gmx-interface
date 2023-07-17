@@ -296,48 +296,33 @@ export default function OrderEditor(props) {
       setIsVisible={() => setEditingOrder(null)}
       label={t`Edit order`}
     >
-      <div className="Exchange-swap-section">
-        <div className="Exchange-swap-section-top">
-          <div className="muted">
-            <Trans>Price</Trans>
-          </div>
-          {fromTokenInfo && toTokenInfo && (
-            <div
-              className="muted align-right clickable"
-              onClick={() => {
-                setTriggerRatioValue(
-                  formatAmountFree(getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted), USD_DECIMALS, 10)
-                );
-              }}
-            >
-              <Trans>Mark Price: </Trans>
-              {formatAmount(getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted), USD_DECIMALS, 2)}
+      <BuyInputSection
+        topLeftLabel={t`Price`}
+        topRightLabel={t`Mark Price`}
+        topRightValue={
+          fromTokenInfo &&
+          toTokenInfo &&
+          formatAmount(getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted), USD_DECIMALS, 2)
+        }
+        onClickTopRightLabel={() =>
+          setTriggerRatioValue(
+            formatAmountFree(getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted), USD_DECIMALS, 10)
+          )
+        }
+        onInputValueChange={onTriggerRatioChange}
+        inputValue={triggerRatioValue}
+      >
+        {(() => {
+          if (!toTokenInfo) return;
+          if (!fromTokenInfo) return;
+          const [tokenA, tokenB] = triggerRatioInverted ? [toTokenInfo, fromTokenInfo] : [fromTokenInfo, toTokenInfo];
+          return (
+            <div className="PositionEditor-token-symbol">
+              {tokenA.symbol}&nbsp;/&nbsp;{tokenB.symbol}
             </div>
-          )}
-        </div>
-        <div className="Exchange-swap-section-bottom">
-          <div className="Exchange-swap-input-container">
-            <input
-              type="number"
-              min="0"
-              placeholder="0.0"
-              className="Exchange-swap-input"
-              value={triggerRatioValue}
-              onChange={onTriggerRatioChange}
-            />
-          </div>
-          {(() => {
-            if (!toTokenInfo) return;
-            if (!fromTokenInfo) return;
-            const [tokenA, tokenB] = triggerRatioInverted ? [toTokenInfo, fromTokenInfo] : [fromTokenInfo, toTokenInfo];
-            return (
-              <div className="PositionEditor-token-symbol">
-                {tokenA.symbol}&nbsp;/&nbsp;{tokenB.symbol}
-              </div>
-            );
-          })()}
-        </div>
-      </div>
+          );
+        })()}
+      </BuyInputSection>
       <ExchangeInfoRow label={t`Minimum received`}>
         {triggerRatio && !triggerRatio.eq(order.triggerRatio) ? (
           <>

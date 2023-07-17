@@ -661,10 +661,6 @@ msgid "Close {longOrShortText} {0}"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
-#~ msgid "Close: {convertedAmountFormatted} {0}"
-#~ msgstr ""
-
-#: src/components/Exchange/PositionSeller.js
 msgid "Closing..."
 msgstr ""
 
@@ -1917,11 +1913,6 @@ msgstr "マーク価格"
 msgid "Mark Price:"
 msgstr "マーク価格"
 
-#: src/components/Exchange/OrderEditor.js
-#: src/components/Exchange/PositionSeller.js
-#~ msgid "Mark: {0}"
-#~ msgstr "マーク: {0}"
-
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 msgid "Market"
@@ -2034,11 +2025,6 @@ msgstr "{0}の最大ショート値を超過しています"
 #: src/pages/Stake/StakeV1.js
 msgid "Max: {0}"
 msgstr "最大: {0}"
-
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
-#~ msgid "Max: {maxAmountFormatted}"
-#~ msgstr "最大: {maxAmountFormatted}"
 
 #: src/components/Footer/constants.ts
 #: src/components/Footer/constants.ts

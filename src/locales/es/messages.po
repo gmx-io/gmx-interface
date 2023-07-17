@@ -661,10 +661,6 @@ msgid "Close {longOrShortText} {0}"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
-#~ msgid "Close: {convertedAmountFormatted} {0}"
-#~ msgstr ""
-
-#: src/components/Exchange/PositionSeller.js
 msgid "Closing..."
 msgstr ""
 
@@ -1917,11 +1913,6 @@ msgstr "Precio de Referencia"
 msgid "Mark Price:"
 msgstr "Precio de Referencia:"
 
-#: src/components/Exchange/OrderEditor.js
-#: src/components/Exchange/PositionSeller.js
-#~ msgid "Mark: {0}"
-#~ msgstr "Referencia: {0}"
-
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 msgid "Market"
@@ -2034,11 +2025,6 @@ msgstr "Superados cortos Máx. de {0}"
 #: src/pages/Stake/StakeV1.js
 msgid "Max: {0}"
 msgstr "Máx: {0}"
-
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
-#~ msgid "Max: {maxAmountFormatted}"
-#~ msgstr "Máx: {maxAmountFormatted}"
 
 #: src/components/Footer/constants.ts
 #: src/components/Footer/constants.ts

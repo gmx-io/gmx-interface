@@ -661,10 +661,6 @@ msgid "Close {longOrShortText} {0}"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
-#~ msgid "Close: {convertedAmountFormatted} {0}"
-#~ msgstr ""
-
-#: src/components/Exchange/PositionSeller.js
 msgid "Closing..."
 msgstr ""
 
@@ -1917,11 +1913,6 @@ msgstr "시장 평균가"
 msgid "Mark Price:"
 msgstr "시장 평균가"
 
-#: src/components/Exchange/OrderEditor.js
-#: src/components/Exchange/PositionSeller.js
-#~ msgid "Mark: {0}"
-#~ msgstr "시장 평균가: {0}"
-
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 msgid "Market"
@@ -2034,11 +2025,6 @@ msgstr "{0} 숏 최대치를 초과했습니다."
 #: src/pages/Stake/StakeV1.js
 msgid "Max: {0}"
 msgstr "최대: {0}"
-
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
-#~ msgid "Max: {maxAmountFormatted}"
-#~ msgstr "최대: {maxAmountFormatted}"
 
 #: src/components/Footer/constants.ts
 #: src/components/Footer/constants.ts
