@@ -3,12 +3,12 @@ import cx from "classnames";
 
 import { USD_DECIMALS, SWAP, INCREASE, CHART_PERIODS } from "lib/legacy";
 import { useChartPrices } from "domain/legacy";
+
 import ChartTokenSelector from "./ChartTokenSelector";
 import { getTokenInfo } from "domain/tokens/utils";
 import { formatAmount, numberWithCommas } from "lib/numbers";
 import { getToken, getTokens } from "config/tokens";
 import TVChartContainer from "components/TVChartContainer/TVChartContainer";
-import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 import { t } from "@lingui/macro";
 import { DEFAULT_PERIOD, availableNetworksForChart } from "components/TVChartContainer/constants";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
@@ -61,10 +61,7 @@ export default function ExchangeTVChart(props) {
     savedShouldShowPositionLines,
     orders,
     setToTokenAddress,
-    tradePageVersion,
-    setTradePageVersion,
   } = props;
-
   let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
 
   if (!period || !(period in CHART_PERIODS)) {
@@ -73,16 +70,7 @@ export default function ExchangeTVChart(props) {
 
   const [currentSeries] = useState();
 
-  let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
-
-  if (!period || !(period in CHART_PERIODS)) {
-    period = DEFAULT_PERIOD;
-  }
-
-  const [currentSeries] = useState();
   const dataProvider = useRef();
-
-  const isSmallMobile = useMedia("(max-width: 596px)");
 
   const fromToken = getTokenInfo(infoTokens, fromTokenAddress);
   const toToken = getTokenInfo(infoTokens, toTokenAddress);
@@ -342,15 +330,13 @@ export default function ExchangeTVChart(props) {
               ${chartToken.minPrice && formatAmount(chartToken.minPrice, USD_DECIMALS, 2, true)}
             </div>
           </div>
-          {!isSmallMobile && (
-            <div>
-              <div className="ExchangeChart-info-label">24h Change</div>
-              <div className={cx({ positive: deltaPercentage > 0, negative: deltaPercentage < 0 })}>
-                {!deltaPercentageStr && "-"}
-                {deltaPercentageStr && deltaPercentageStr}
-              </div>
+          <div>
+            <div className="ExchangeChart-info-label">24h Change</div>
+            <div className={cx({ positive: deltaPercentage > 0, negative: deltaPercentage < 0 })}>
+              {!deltaPercentageStr && "-"}
+              {deltaPercentageStr && deltaPercentageStr}
             </div>
-          )}
+          </div>
           <div className="ExchangeChart-additional-info">
             <div className="ExchangeChart-info-label">24h High</div>
             <div>
@@ -365,7 +351,6 @@ export default function ExchangeTVChart(props) {
               {low && numberWithCommas(low.toFixed(2))}
             </div>
           </div>
-          <VersionSwitch currentVersion={tradePageVersion} setCurrentVersion={setTradePageVersion} />
         </div>
       </div>
       <div className="ExchangeChart-bottom App-box App-box-border">

@@ -23,7 +23,6 @@ const initialState = {
 };
 
 export class TVDataProvider {
-  supportedResolutions: { [key: number]: string };
   lastBar: Bar | null;
   currentBar: Bar | null;
   lastBarRefreshTime: number;
@@ -40,15 +39,6 @@ export class TVDataProvider {
     isChartReady: boolean;
   };
 
-<<<<<<< HEAD
-  constructor(supportedResolutions: { [key: number]: string }) {
-    this.lastBar = null;
-    this.startTime = 0;
-    this.lastTicker = "";
-    this.lastPeriod = "";
-    this.barsInfo = initialHistoryBarsInfo;
-    this.supportedResolutions = supportedResolutions;
-=======
   constructor({ resolutions }) {
     const { lastBar, currentBar, lastBarRefreshTime, barsInfo } = initialState;
     this.lastBar = lastBar;
@@ -56,7 +46,6 @@ export class TVDataProvider {
     this.lastBarRefreshTime = lastBarRefreshTime;
     this.barsInfo = barsInfo;
     this.supportedResolutions = resolutions;
->>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604
   }
 
   async getLimitBars(chainId: number, ticker: string, period: string, limit: number): Promise<Bar[]> {
@@ -118,20 +107,10 @@ export class TVDataProvider {
     return bars.slice(bars.length - countBack, bars.length);
   }
 
-<<<<<<< HEAD
-  async getBars(
-    chainId: number,
-    ticker: string,
-    resolution: string,
-    isStable: boolean,
-    periodParams: PeriodParams,
-    shouldRefetchBars: boolean
-  ) {
-=======
   async getBars(chainId: number, ticker: string, resolution: string, isStable: boolean, periodParams: PeriodParams) {
->>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604
     const period = this.supportedResolutions[resolution];
     const { from, to } = periodParams;
+
     try {
       const bars = isStable
         ? getStableCoinPrice(period, from, to)
@@ -204,12 +183,7 @@ export class TVDataProvider {
     return this.lastBar;
   }
 
-<<<<<<< HEAD
-  async getLiveBar(chainId: number, ticker: string, resolution: string) {
-    const period = this.supportedResolutions[resolution];
-=======
   async getLiveBar(chainId: number, ticker: string, period: string) {
->>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604
     if (!ticker || !period || !chainId) return;
     const barsInfo = this.barsInfo;
     const currentCandleTime = getCurrentCandleTime(period);

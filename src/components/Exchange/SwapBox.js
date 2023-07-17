@@ -80,7 +80,6 @@ import { get1InchSwapUrl } from "config/links";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import { getLeverage } from "lib/positions/getLeverage";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
-import LeverageSlider from "./LeverageSlider";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import FeesTooltip from "./FeesTooltip";
 import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";

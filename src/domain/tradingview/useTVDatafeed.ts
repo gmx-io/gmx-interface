@@ -1,9 +1,5 @@
 import { HistoryCallback, PeriodParams, ResolutionString, SubscribeBarsCallback } from "charting_library";
-<<<<<<< HEAD
-import { getNativeToken, getPriceDecimals, getTokens, isChartAvailabeForToken } from "config/tokens";
-=======
 import { getNativeToken, getTokens, isChartAvailabeForToken } from "config/tokens";
->>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604
 import { useChainId } from "lib/chains";
 import { useEffect, useMemo, useRef } from "react";
 import { TVDataProvider } from "./TVDataProvider";
@@ -23,16 +19,12 @@ function getConfigurationData(supportedResolutions) {
 
 type Props = {
   dataProvider?: TVDataProvider;
-  supportedResolutions: { [key: number]: string };
 };
 
-export default function useTVDatafeed({ dataProvider, supportedResolutions }: Props) {
+export default function useTVDatafeed({ dataProvider }: Props) {
   const { chainId } = useChainId();
   const intervalRef = useRef<ReturnType<typeof setInterval> | undefined>();
   const tvDataProvider = useRef<TVDataProvider>();
-<<<<<<< HEAD
-  const shouldRefetchBars = useRef<boolean>(false);
-=======
   const lastBarTime = useRef<number>(0);
   const missingBarsInfo = useRef({
     bars: [],
@@ -51,7 +43,6 @@ export default function useTVDatafeed({ dataProvider, supportedResolutions }: Pr
 
   const supportedResolutions = useMemo(() => dataProvider?.resolutions || SUPPORTED_RESOLUTIONS_V1, [dataProvider]);
 
->>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604
   useEffect(() => {
     if (dataProvider && tvDataProvider.current !== dataProvider) {
       tvDataProvider.current = dataProvider;
@@ -105,14 +96,6 @@ export default function useTVDatafeed({ dataProvider, supportedResolutions }: Pr
             symbolName = getNativeToken(chainId).symbol;
           }
 
-<<<<<<< HEAD
-          const stableTokens = getTokens(chainId)
-            .filter((t) => t.isStable)
-            .map((t) => t.symbol);
-
-          const pricescale = Math.pow(10, getPriceDecimals(chainId, symbolName));
-=======
->>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604
           const symbolInfo = {
             name: symbolName,
             type: "crypto",
@@ -120,7 +103,7 @@ export default function useTVDatafeed({ dataProvider, supportedResolutions }: Pr
             ticker: symbolName,
             session: "24x7",
             minmov: 1,
-            pricescale: pricescale,
+            pricescale: 100,
             timezone: "Etc/UTC",
             has_intraday: true,
             has_daily: true,
@@ -205,9 +188,5 @@ export default function useTVDatafeed({ dataProvider, supportedResolutions }: Pr
         },
       },
     };
-<<<<<<< HEAD
-  }, [chainId, supportedResolutions]);
-=======
   }, [chainId, stableTokens, supportedResolutions]);
->>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604
 }

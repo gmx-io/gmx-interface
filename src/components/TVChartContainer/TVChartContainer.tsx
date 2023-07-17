@@ -9,6 +9,7 @@ import { SaveLoadAdapter } from "./SaveLoadAdapter";
 import { getNormalizedTokenSymbol, isChartAvailabeForToken } from "config/tokens";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 import Loader from "components/Common/Loader";
+import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { formatAmount } from "lib/numbers";
 import { getMidPrice } from "domain/tokens";
@@ -25,7 +26,7 @@ type Props = {
   chainId: number;
   savedShouldShowPositionLines: boolean;
   chartLines: ChartLine[];
-  onSelectToken: () => void;
+  onSelectToken: (token: Token) => void;
   period: string;
   setPeriod: (period: string) => void;
   dataProvider?: TVDataProvider;
@@ -43,33 +44,23 @@ export default function TVChartContainer({
   chartLines,
   onSelectToken,
   dataProvider,
-<<<<<<< HEAD
-  supportedResolutions,
-  period,
-  setPeriod,
-=======
   period,
   setPeriod,
   chartToken,
->>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604
 }: Props) {
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const tvWidgetRef = useRef<IChartingLibraryWidget | null>(null);
   const [chartReady, setChartReady] = useState(false);
   const [chartDataLoading, setChartDataLoading] = useState(true);
   const [tvCharts, setTvCharts] = useLocalStorage<ChartData[] | undefined>(TV_SAVE_LOAD_CHARTS_KEY, []);
-<<<<<<< HEAD
-  const { datafeed, resetCache } = useTVDatafeed({ dataProvider, supportedResolutions });
-=======
   const { datafeed } = useTVDatafeed({ dataProvider });
->>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604
   const isMobile = useMedia("(max-width: 550px)");
   const symbolRef = useRef(symbol);
 
   const supportedResolutions = useMemo(() => dataProvider?.resolutions || SUPPORTED_RESOLUTIONS_V1, [dataProvider]);
 
   useEffect(() => {
-    if (chartToken.maxPrice && chartToken.minPrice) {
+    if (chartToken.maxPrice && chartToken.minPrice && chartToken.symbol) {
       const averagePrice = getMidPrice(chartToken);
       const formattedPrice = parseFloat(formatAmount(averagePrice, USD_DECIMALS, 2));
       dataProvider?.setCurrentChartToken({

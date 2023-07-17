@@ -815,10 +815,6 @@ export const EXPLORER_LINKS = {
       coingecko: "https://www.coingecko.com/en/coins/usd-coin",
       arbitrum: "https://arbiscan.io/address/0xff970a61a04b1ca14834a43f5de4533ebddb5cc8",
     },
-    "USDC.e": {
-      coingecko: "https://www.coingecko.com/en/coins/usd-coin",
-      arbitrum: "https://arbiscan.io/address/0xff970a61a04b1ca14834a43f5de4533ebddb5cc8",
-    },
     USDT: {
       coingecko: "https://www.coingecko.com/en/coins/tether",
       arbitrum: "https://arbiscan.io/address/0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9",
