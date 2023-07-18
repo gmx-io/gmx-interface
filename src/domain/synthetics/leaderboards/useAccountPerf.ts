@@ -33,16 +33,18 @@ const fetchAccountPerfs = async (
 
   return res.data.accountPerfs.map(a => ({
     id: a.account,
-    period: period,
     account: a.account,
+    period: period,
+    timestamp: a.timestamp,
     wins: BigNumber.from(a.wins),
     losses: BigNumber.from(a.losses),
     totalPnl: BigNumber.from(a.totalPnl),
-    sumSize: BigNumber.from(a.sumSize),
-    sumCollateral: BigNumber.from(a.sumCollateral),
-    sumMaxCollateral: BigNumber.from(a.sumMaxCollateral),
+    totalCollateral: BigNumber.from(a.totalCollateral),
+    maxCollateral: BigNumber.from(a.maxCollateral),
+    cumsumSize: BigNumber.from(a.cumsumSize),
+    cumsumCollateral: BigNumber.from(a.cumsumCollateral),
     sumMaxSize: BigNumber.from(a.sumMaxSize),
-    positionCount: BigNumber.from(a.positionCount),
+    closedCount: BigNumber.from(a.closedCount),
   }));
 };
 
@@ -53,16 +55,18 @@ const sumScoresByAccount = (accountPerfs: AccountPerf[], period: PerfPeriod) => 
     if (!groupBy[accountData.account]) {
       groupBy[accountData.account] = {
         id: accountData.account,
-        period: period,
         account: accountData.account,
+        period: period,
+        timestamp: accountData.timestamp,
         wins: BigNumber.from(0),
         losses: BigNumber.from(0),
         totalPnl: BigNumber.from(0),
-        sumSize: BigNumber.from(0),
-        sumCollateral: BigNumber.from(0),
-        sumMaxCollateral: BigNumber.from(0),
+        totalCollateral: BigNumber.from(0),
+        maxCollateral: BigNumber.from(0),
+        cumsumSize: BigNumber.from(0),
+        cumsumCollateral: BigNumber.from(0),
         sumMaxSize: BigNumber.from(0),
-        positionCount: BigNumber.from(0),
+        closedCount: BigNumber.from(0),
       };
     }
 
@@ -71,11 +75,12 @@ const sumScoresByAccount = (accountPerfs: AccountPerf[], period: PerfPeriod) => 
     perf.wins = perf.wins.add(accountData.wins);
     perf.losses = perf.losses.add(accountData.losses);
     perf.totalPnl = perf.totalPnl.add(accountData.totalPnl);
-    perf.sumSize = perf.sumSize.add(accountData.sumSize);
-    perf.sumCollateral = perf.sumCollateral.add(accountData.sumCollateral);
-    perf.sumMaxCollateral = perf.sumMaxCollateral.add(accountData.sumMaxCollateral);
+    perf.totalCollateral = perf.totalCollateral.add(accountData.totalCollateral);
+    perf.maxCollateral = perf.maxCollateral.lt(accountData.maxCollateral) ? accountData.maxCollateral : perf.maxCollateral;
+    perf.cumsumSize = perf.cumsumSize.add(accountData.cumsumSize);
+    perf.cumsumCollateral = perf.cumsumCollateral.add(accountData.cumsumCollateral);
     perf.sumMaxSize = perf.sumMaxSize.add(accountData.sumMaxSize);
-    perf.positionCount = perf.positionCount.add(accountData.positionCount);
+    perf.closedCount = perf.closedCount.add(accountData.closedCount);
   }
 
   return groupBy;

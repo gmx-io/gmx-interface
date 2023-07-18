@@ -17,9 +17,9 @@ export function usePositionScores() {
 
   useEffect(() => {
     if (openPositions.error) {
-      setPositionScores(s => ({...s, error: openPositions.error}));
+      setPositionScores(s => ({...s, isLoading: false, error: openPositions.error}));
     } else if (!pricesData || !openPositions.data) {
-      setPositionScores(s => ({...s, isLoading: true}));
+      setPositionScores(s => ({...s, error: null, isLoading: true}));
     } else {
       const data: Array<PositionScores> = [];
 
@@ -51,6 +51,7 @@ export function usePositionScores() {
           size: value,
           liqPrice: BigNumber.from(0),
           collateralAmount: p.collateralAmount,
+          maxSize: p.maxSize,
         });
       }
 

@@ -20,9 +20,5 @@ query GetAccountOpenPositions(
     sizeInUsd
     entryPrice
     maxSize
-    maxCollateral
-    sumSize
-    sumCollateral
-    changeCount
   }
 }

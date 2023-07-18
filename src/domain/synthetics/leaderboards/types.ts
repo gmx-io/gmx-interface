@@ -10,31 +10,34 @@ export enum PerfPeriod {
 export type AccountPerfJson = {
   id: string;
   timestamp: number;
-  period: "hourly" | "daily";
+  period: "hourly" | "daily" | "total";
   account: string;
   wins: string;
   losses: string;
   volume: string;
   totalPnl: string;
-  sumSize: string;
-  sumCollateral: string;
-  sumMaxCollateral: string;
+  totalCollateral: string;
+  maxCollateral: string;
+  cumsumCollateral: string;
+  cumsumSize: string;
   sumMaxSize: string;
-  positionCount: string;
+  closedCount: string;
 };
 
 export type AccountPerf = {
   id: string;
-  period: PerfPeriod;
   account: string;
+  period: PerfPeriod;
+  timestamp: number;
   wins: BigNumber;
   losses: BigNumber;
   totalPnl: BigNumber;
-  sumSize: BigNumber;
-  sumCollateral: BigNumber;
-  sumMaxCollateral: BigNumber;
+  totalCollateral: BigNumber;
+  maxCollateral: BigNumber;
+  cumsumSize: BigNumber;
+  cumsumCollateral: BigNumber;
   sumMaxSize: BigNumber;
-  positionCount: BigNumber;
+  closedCount: BigNumber;
 };
 
 export type PerfByAccount = { [key: string]: AccountPerf };
@@ -61,10 +64,6 @@ export type AccountOpenPositionJson = {
   collateralAmount: string;
   entryPrice: string;
   maxSize: string;
-  maxCollateral: string;
-  sumSize: string;
-  sumCollateral: string;
-  changeCount: string;
 };
 
 export type AccountOpenPosition = {
@@ -79,10 +78,6 @@ export type AccountOpenPosition = {
   collateralAmount: BigNumber;
   entryPrice: BigNumber;
   maxSize: BigNumber;
-  maxCollateral: BigNumber;
-  sumSize: BigNumber;
-  sumCollateral: BigNumber;
-  changeCount: BigNumber;
 };
 
 export type AccountPositionsSummary = {
@@ -90,6 +85,7 @@ export type AccountPositionsSummary = {
   positions: Array<PositionScores>;
   unrealizedPnl: BigNumber;
   sumCollateral: BigNumber;
+  sumMaxSize: BigNumber;
 };
 
 export type PositionsSummaryByAccount = Record<string, AccountPositionsSummary>;
@@ -105,6 +101,7 @@ export type PositionScores = {
   size: BigNumber;
   liqPrice: BigNumber;
   collateralAmount: BigNumber;
+  maxSize: BigNumber;
 };
 
 export type DataByPeriod<T> = {

@@ -14,6 +14,7 @@ const groupPositionsByAccount = (positions: Array<PositionScores>): PositionsSum
         account,
         unrealizedPnl: BigNumber.from(0),
         sumCollateral: BigNumber.from(0),
+        sumMaxSize: BigNumber.from(0),
         positions: [],
       };
     }
@@ -23,6 +24,7 @@ const groupPositionsByAccount = (positions: Array<PositionScores>): PositionsSum
     summary.positions.push(p);
     summary.unrealizedPnl = summary.unrealizedPnl.add(p.unrealizedPnl);
     summary.sumCollateral = summary.sumCollateral.add(p.collateralAmount);
+    summary.sumMaxSize = summary.sumMaxSize.add(p.maxSize);
   }
 
   return groupBy;
@@ -40,10 +42,10 @@ export function useTopAccounts(period: PerfPeriod) {
 
   useEffect(() => {
     if (accountPerf.error || positions.error) {
-      setTopAccounts(s => ({...s, error: accountPerf.error || positions.error}));
+      setTopAccounts(s => ({...s, isLoading: false, error: accountPerf.error || positions.error}));
       return;
-    } else if (!accountPerf.data.length || !positions.data.length) {
-      setTopAccounts(s => ({...s, isLoading: true}));
+    } else if (!(accountPerf.data && accountPerf.data.length) || !(positions.data && positions.data.length)) {
+      setTopAccounts(s => ({...s, error: null, isLoading: true}));
       return;
     }
 
@@ -56,16 +58,16 @@ export function useTopAccounts(period: PerfPeriod) {
       const acc = perfOrderedByPnl[i];
       const summary = summaryByAccount[acc.account];
       const profit = acc.totalPnl.add(summary.unrealizedPnl);
-      const maxCollateral = summary.sumCollateral.sub(acc.totalPnl); // FIXME: maxCollateral is wrong here
-      const relPnl = profit.div(maxCollateral);
+      const maxCollateral = acc.maxCollateral;
+      const relPnl = profit.div(maxCollateral).mul(BigNumber.from(100));
       const scores = {
         id: acc.account + ":" + period,
         rank: i + 1,
         account: acc.account,
         absPnl: acc.totalPnl,
         relPnl,
-        size: acc.sumMaxSize.div(acc.positionCount),
-        leverage: acc.sumSize.div(acc.sumCollateral),
+        size: acc.sumMaxSize.add(summary.sumMaxSize).div(acc.closedCount.add(BigNumber.from(summary.positions.length))),
+        leverage: acc.cumsumSize.div(acc.cumsumCollateral),
       };
 
       scoresByAccount[acc.account] = scores;
@@ -78,7 +80,8 @@ export function useTopAccounts(period: PerfPeriod) {
     period,
     positions.data,
     positions.data.length,
-    positions.error]);
+    positions.error
+  ]);
 
   return topAccounts;
 }

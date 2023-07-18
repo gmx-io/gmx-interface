@@ -14,17 +14,17 @@ query GetAccountPerformance(
     where: { timestamp_gte: $since, period: $period }
   ) {
     id
-    timestamp
-    period
     account
+    period
+    timestamp
+    wins
     losses
     totalPnl
-    volume
-    wins
-    sumSize
-    sumCollateral
+    totalCollateral
+    maxCollateral
+    cumsumSize
+    cumsumCollateral
     sumMaxSize
-    sumMaxCollateral
-    positionCount
+    closedCount
   }
 }

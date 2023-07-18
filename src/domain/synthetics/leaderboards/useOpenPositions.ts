@@ -27,10 +27,6 @@ const fetchOpenPositions = async (
     collateralAmount: BigNumber.from(p.collateralAmount),
     entryPrice: BigNumber.from(p.entryPrice),
     maxSize: BigNumber.from(p.maxSize),
-    maxCollateral: BigNumber.from(p.maxCollateral),
-    sumSize: BigNumber.from(p.sumSize),
-    sumCollateral: BigNumber.from(p.sumCollateral),
-    changeCount: BigNumber.from(p.changeCount),
   }));
 };
 
