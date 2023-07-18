@@ -36,7 +36,6 @@
     "graphql": "15.8.0",
     "hex-to-rgba": "2.0.1",
     "html-to-image": "^1.10.8",
-    "krasulya-lightweight-charts": "3.4.3",
     "lodash": "4.17.21",
     "qrcode.react": "^3.1.0",
     "query-string": "7.1.1",
