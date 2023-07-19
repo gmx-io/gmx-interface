@@ -1,22 +1,22 @@
-import React, { useEffect, useState, useRef, useMemo } from "react";
 import cx from "classnames";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-import { USD_DECIMALS, SWAP, INCREASE, CHART_PERIODS } from "lib/legacy";
 import { useChartPrices } from "domain/legacy";
+import { CHART_PERIODS, INCREASE, SWAP, USD_DECIMALS } from "lib/legacy";
 
-import ChartTokenSelector from "./ChartTokenSelector";
-import { getTokenInfo } from "domain/tokens/utils";
-import { formatAmount, numberWithCommas } from "lib/numbers";
-import { getToken, getTokens } from "config/tokens";
-import TVChartContainer from "components/TVChartContainer/TVChartContainer";
-import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 import { t } from "@lingui/macro";
+import TVChartContainer from "components/TVChartContainer/TVChartContainer";
 import { DEFAULT_PERIOD, availableNetworksForChart } from "components/TVChartContainer/constants";
-import { TVDataProvider } from "domain/tradingview/TVDataProvider";
-import getLiquidationPrice from "lib/positions/getLiquidationPrice";
+import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
+import { getToken, getV1Tokens } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS_V1 } from "config/tradingview";
+import { getTokenInfo } from "domain/tokens/utils";
+import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { formatAmount, numberWithCommas } from "lib/numbers";
+import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import { useMedia } from "react-use";
+import ChartTokenSelector from "./ChartTokenSelector";
 
 const PRICE_LINE_TEXT_WIDTH = 15;
 
@@ -30,7 +30,7 @@ export function getChartToken(swapOption, fromToken, toToken, chainId) {
   }
 
   if (fromToken.isUsdg && toToken.isUsdg) {
-    return getTokens(chainId).find((t) => t.isStable);
+    return getV1Tokens(chainId).find((t) => t.isStable);
   }
   if (fromToken.isUsdg) {
     return toToken;

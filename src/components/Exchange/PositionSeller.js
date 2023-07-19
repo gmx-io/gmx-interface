@@ -1,61 +1,61 @@
-import React, { useState, useCallback, useEffect, useMemo } from "react";
-import { ethers } from "ethers";
-import cx from "classnames";
 import { Trans, t } from "@lingui/macro";
+import cx from "classnames";
+import { ethers } from "ethers";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { BsArrowRight } from "react-icons/bs";
 
+import PositionRouter from "abis/PositionRouter.json";
+import Button from "components/Button/Button";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import SlippageInput from "components/SlippageInput/SlippageInput";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
+import TokenSelector from "components/TokenSelector/TokenSelector";
+import { ARBITRUM, IS_NETWORK_DISABLED, getChainName, getConstant } from "config/chains";
+import { getContract } from "config/contracts";
+import { CLOSE_POSITION_RECEIVE_TOKEN_KEY, SLIPPAGE_BPS_KEY } from "config/localStorage";
+import { getV1Tokens, getWrappedToken } from "config/tokens";
+import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
+import { createDecreaseOrder, useHasOutdatedUi } from "domain/legacy";
+import { getTokenAmountFromUsd } from "domain/tokens";
+import { getTokenInfo, getUsd } from "domain/tokens/utils";
+import { callContract } from "lib/contracts";
+import { formatDateTime, getTimeRemaining } from "lib/dates";
 import {
-  DEFAULT_SLIPPAGE_AMOUNT,
-  DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
-  USD_DECIMALS,
-  DUST_USD,
   BASIS_POINTS_DIVISOR,
-  MIN_PROFIT_TIME,
-  getMarginFee,
-  PRECISION,
-  MARKET,
-  STOP,
   DECREASE,
-  calculatePositionDelta,
-  getDeltaStr,
-  getProfitPrice,
-  getNextToAmount,
-  USDG_DECIMALS,
-  adjustForDecimals,
-  isAddressZero,
+  DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
+  DEFAULT_SLIPPAGE_AMOUNT,
+  DUST_USD,
+  MARKET,
   MAX_ALLOWED_LEVERAGE,
   MAX_LEVERAGE,
+  MIN_PROFIT_TIME,
+  PRECISION,
+  STOP,
+  USDG_DECIMALS,
+  USD_DECIMALS,
+  adjustForDecimals,
+  calculatePositionDelta,
+  getDeltaStr,
+  getMarginFee,
+  getNextToAmount,
+  getProfitPrice,
+  isAddressZero,
 } from "lib/legacy";
-import { ARBITRUM, getChainName, getConstant, IS_NETWORK_DISABLED } from "config/chains";
-import { createDecreaseOrder, useHasOutdatedUi } from "domain/legacy";
-import { getContract } from "config/contracts";
-import PositionRouter from "abis/PositionRouter.json";
-import Checkbox from "../Checkbox/Checkbox";
-import Tab from "../Tab/Tab";
-import Modal from "../Modal/Modal";
-import ExchangeInfoRow from "./ExchangeInfoRow";
-import Tooltip from "../Tooltip/Tooltip";
-import TokenSelector from "components/TokenSelector/TokenSelector";
-import "./PositionSeller.css";
-import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
-import { callContract } from "lib/contracts";
-import { getTokenAmountFromUsd } from "domain/tokens";
-import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
-import { CLOSE_POSITION_RECEIVE_TOKEN_KEY, SLIPPAGE_BPS_KEY } from "config/localStorage";
-import { getTokenInfo, getUsd } from "domain/tokens/utils";
-import { usePrevious } from "lib/usePrevious";
 import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
-import { getTokens, getWrappedToken } from "config/tokens";
-import { formatDateTime, getTimeRemaining } from "lib/dates";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import { ErrorCode, ErrorDisplayType } from "./constants";
-import FeesTooltip from "./FeesTooltip";
-import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import { getLeverage } from "lib/positions/getLeverage";
-import Button from "components/Button/Button";
-import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
-import SlippageInput from "components/SlippageInput/SlippageInput";
+import getLiquidationPrice from "lib/positions/getLiquidationPrice";
+import { usePrevious } from "lib/usePrevious";
+import Checkbox from "../Checkbox/Checkbox";
+import Modal from "../Modal/Modal";
+import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
+import Tab from "../Tab/Tab";
+import Tooltip from "../Tooltip/Tooltip";
+import ExchangeInfoRow from "./ExchangeInfoRow";
+import FeesTooltip from "./FeesTooltip";
+import "./PositionSeller.css";
+import { ErrorCode, ErrorDisplayType } from "./constants";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -222,7 +222,7 @@ export default function PositionSeller(props) {
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
   const longOrShortText = position?.isLong ? t`Long` : t`Short`;
 
-  const toTokens = isContractAccount ? getTokens(chainId).filter((t) => !t.isNative) : getTokens(chainId);
+  const toTokens = isContractAccount ? getV1Tokens(chainId).filter((t) => !t.isNative) : getV1Tokens(chainId);
   const wrappedToken = getWrappedToken(chainId);
 
   const [savedRecieveTokenAddress, setSavedRecieveTokenAddress] = useLocalStorageByChainId(

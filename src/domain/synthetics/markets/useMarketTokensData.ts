@@ -4,7 +4,7 @@ import TokenAbi from "abis/Token.json";
 import { getContract } from "config/contracts";
 import { MAX_PNL_FACTOR_FOR_DEPOSITS_KEY, MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY } from "config/dataStore";
 import { getTokenBySymbol } from "config/tokens";
-import { TokensData, useAvailableTokensData } from "domain/synthetics/tokens";
+import { TokensData, useTokensData } from "domain/synthetics/tokens";
 import { USD_DECIMALS } from "lib/legacy";
 import { useMulticall } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
@@ -20,7 +20,7 @@ type MarketTokensDataResult = {
 export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }): MarketTokensDataResult {
   const { isDeposit } = p;
   const { account } = useWeb3React();
-  const { tokensData, pricesUpdatedAt } = useAvailableTokensData(chainId);
+  const { tokensData, pricesUpdatedAt } = useTokensData(chainId);
   const { marketsData, marketsAddresses } = useMarkets(chainId);
 
   const isDataLoaded = tokensData && marketsAddresses?.length;

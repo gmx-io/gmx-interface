@@ -9,6 +9,8 @@ export type Token = {
   priceDecimals?: number;
   wrappedAddress?: string;
   coingeckoUrl?: string;
+  explorerUrl?: string;
+  reservesUrl?: string;
   imageUrl?: string;
 
   isUsdg?: boolean;
@@ -18,7 +20,9 @@ export type Token = {
   isStable?: boolean;
   isSynthetic?: boolean;
   isTempHidden?: boolean;
+  isChartDisabled?: boolean;
   isV1Available?: boolean;
+  isPlatformToken?: boolean;
 };
 
 export type TokenInfo = Token & {

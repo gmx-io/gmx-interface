@@ -39,7 +39,7 @@ import { useMulticall } from "lib/multicall";
 import { bigNumberify } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useRef } from "react";
-import { TokensData, useAvailableTokensData } from "../tokens";
+import { TokensData, useTokensData } from "../tokens";
 import { MarketsInfoData } from "./types";
 import { useMarkets } from "./useMarkets";
 import { getContractMarketPrices } from "./utils";
@@ -54,7 +54,7 @@ export type MarketsInfoResult = {
 export function useMarketsInfo(chainId: number): MarketsInfoResult {
   const { account } = useWeb3React();
   const { marketsData, marketsAddresses } = useMarkets(chainId);
-  const { tokensData, pricesUpdatedAt } = useAvailableTokensData(chainId);
+  const { tokensData, pricesUpdatedAt } = useTokensData(chainId);
   const dataStoreAddress = getContract(chainId, "DataStore");
 
   const isDepencenciesLoading = !marketsAddresses || !tokensData;

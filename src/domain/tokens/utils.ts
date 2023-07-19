@@ -1,5 +1,5 @@
 import { getExplorerUrl } from "config/chains";
-import { getVisibleTokens, getWhitelistedTokens } from "config/tokens";
+import { getVisibleV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
 import { BigNumber, ethers } from "ethers";
 import {
   DUST_BNB,
@@ -151,7 +151,7 @@ export function getLowestFeeTokenForBuyGlp(
     return;
   }
 
-  const tokens = getVisibleTokens(chainId);
+  const tokens = getVisibleV1Tokens(chainId);
 
   const usdgAmount = toAmount.mul(glpPrice).div(PRECISION);
 
@@ -200,7 +200,7 @@ export function getLowestFeeTokenForBuyGlp(
 }
 
 export function getMostAbundantStableToken(chainId: number, infoTokens: InfoTokens) {
-  const whitelistedTokens = getWhitelistedTokens(chainId);
+  const whitelistedTokens = getWhitelistedV1Tokens(chainId);
   let availableAmount;
   let stableToken = whitelistedTokens.find((t) => t.isStable);
 

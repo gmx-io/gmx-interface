@@ -38,7 +38,7 @@ import { getServerUrl } from "config/backend";
 import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
 import { getIsSyntheticsSupported } from "config/features";
 import { getIcons } from "config/icons";
-import { GLP_POOL_COLORS, getTokenBySymbol, getWhitelistedTokens } from "config/tokens";
+import { GLP_POOL_COLORS, getTokenBySymbol, getWhitelistedV1Tokens } from "config/tokens";
 import { useFeesSummary, useTotalVolume, useVolumeInfo } from "domain/stats";
 import useUniqueUsers from "domain/stats/useUniqueUsers";
 import { useInfoTokens } from "domain/tokens";
@@ -119,11 +119,11 @@ export default function DashboardV2() {
   const positionStatsInfo = getPositionStats(positionStats);
 
   function getWhitelistedTokenAddresses(chainId) {
-    const whitelistedTokens = getWhitelistedTokens(chainId);
+    const whitelistedTokens = getWhitelistedV1Tokens(chainId);
     return whitelistedTokens.map((token) => token.address);
   }
 
-  const whitelistedTokens = getWhitelistedTokens(chainId);
+  const whitelistedTokens = getWhitelistedV1Tokens(chainId);
   const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
   const visibleTokens = tokenList.filter((t) => !t.isTempHidden);
 
@@ -993,7 +993,7 @@ export default function DashboardV2() {
                     const tokenImage = importImage("ic_" + token.symbol.toLowerCase() + "_40.svg");
 
                     return (
-                      <tr key={token.symbol}>
+                      <tr key={token.address}>
                         <td>
                           <div className="token-symbol-wrapper">
                             <div className="App-card-title-info">

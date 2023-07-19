@@ -1,27 +1,27 @@
-import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
-import useSWR from "swr";
-import { ethers } from "ethers";
-import Tab from "../Tab/Tab";
 import cx from "classnames";
 import { getContract } from "config/contracts";
+import { ethers } from "ethers";
 import {
-  getBuyGlpToAmount,
+  adjustForDecimals,
+  BASIS_POINTS_DIVISOR,
   getBuyGlpFromAmount,
+  getBuyGlpToAmount,
   getSellGlpFromAmount,
   getSellGlpToAmount,
-  adjustForDecimals,
-  GLP_DECIMALS,
-  USD_DECIMALS,
-  BASIS_POINTS_DIVISOR,
   GLP_COOLDOWN_DURATION,
-  SECONDS_PER_YEAR,
-  USDG_DECIMALS,
-  PLACEHOLDER_ACCOUNT,
+  GLP_DECIMALS,
   importImage,
+  PLACEHOLDER_ACCOUNT,
+  SECONDS_PER_YEAR,
+  USD_DECIMALS,
+  USDG_DECIMALS,
 } from "lib/legacy";
+import { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
+import useSWR from "swr";
+import Tab from "../Tab/Tab";
 
 import { useGmxPrice } from "domain/legacy";
 
@@ -29,32 +29,32 @@ import TokenSelector from "components/TokenSelector/TokenSelector";
 import BuyInputSection from "../BuyInputSection/BuyInputSection";
 import Tooltip from "../Tooltip/Tooltip";
 
+import GlpManager from "abis/GlpManager.json";
 import ReaderV2 from "abis/ReaderV2.json";
 import RewardReader from "abis/RewardReader.json";
-import VaultV2 from "abis/VaultV2.json";
-import GlpManager from "abis/GlpManager.json";
-import RewardTracker from "abis/RewardTracker.json";
-import Vester from "abis/Vester.json";
 import RewardRouter from "abis/RewardRouter.json";
+import RewardTracker from "abis/RewardTracker.json";
 import Token from "abis/Token.json";
+import VaultV2 from "abis/VaultV2.json";
+import Vester from "abis/Vester.json";
 
-import "./GlpSwap.css";
-import AssetDropdown from "pages/Dashboard/AssetDropdown";
-import SwapErrorModal from "./SwapErrorModal";
-import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
-import { ARBITRUM, FEES_HIGH_BPS, getChainName, IS_NETWORK_DISABLED } from "config/chains";
-import { callContract, contractFetcher } from "lib/contracts";
-import { approveTokens, useInfoTokens } from "domain/tokens";
-import { useLocalStorageByChainId } from "lib/localStorage";
-import { helperToast } from "lib/helperToast";
-import { getTokenInfo, getUsd } from "domain/tokens/utils";
-import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, formatKeyAmount, parseValue } from "lib/numbers";
-import { getNativeToken, getToken, getTokens, getWhitelistedTokens, getWrappedToken } from "config/tokens";
-import { useChainId } from "lib/chains";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import { getIcon } from "config/icons";
 import Button from "components/Button/Button";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { ARBITRUM, FEES_HIGH_BPS, getChainName, IS_NETWORK_DISABLED } from "config/chains";
+import { getIcon } from "config/icons";
+import { getNativeToken, getToken, getV1Tokens, getWhitelistedV1Tokens, getWrappedToken } from "config/tokens";
+import { approveTokens, useInfoTokens } from "domain/tokens";
+import { getTokenInfo, getUsd } from "domain/tokens/utils";
+import { useChainId } from "lib/chains";
+import { callContract, contractFetcher } from "lib/contracts";
+import { helperToast } from "lib/helperToast";
+import { useLocalStorageByChainId } from "lib/localStorage";
+import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, formatKeyAmount, parseValue } from "lib/numbers";
+import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import { IoChevronDownOutline } from "react-icons/io5";
+import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
+import "./GlpSwap.css";
+import SwapErrorModal from "./SwapErrorModal";
 
 const { AddressZero } = ethers.constants;
 
@@ -110,8 +110,8 @@ export default function GlpSwap(props) {
   const tabLabel = isBuying ? t`Buy GLP` : t`Sell GLP`;
   const { active, library, account } = useWeb3React();
   const { chainId } = useChainId();
-  const tokens = getTokens(chainId);
-  const whitelistedTokens = getWhitelistedTokens(chainId);
+  const tokens = getV1Tokens(chainId);
+  const whitelistedTokens = getWhitelistedV1Tokens(chainId);
   const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
   const visibleTokens = tokenList.filter((t) => !t.isTempHidden);
   const [swapValue, setSwapValue] = useState("");

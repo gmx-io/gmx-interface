@@ -2,7 +2,7 @@ import { useWeb3React } from "@web3-react/core";
 import Multicall from "abis/Multicall.json";
 import Token from "abis/Token.json";
 import { getContract } from "config/contracts";
-import { getToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { getV2Tokens, NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { useMulticall } from "lib/multicall";
 import { TokenBalancesData } from "./types";
 
@@ -10,16 +10,17 @@ type BalancesDataResult = {
   balancesData?: TokenBalancesData;
 };
 
-export function useTokenBalances(chainId: number, p: { tokenAddresses: string[] }): BalancesDataResult {
+export function useTokenBalances(chainId: number): BalancesDataResult {
   const { account } = useWeb3React();
 
   const { data } = useMulticall(chainId, "useTokenBalances", {
-    key: account && p.tokenAddresses.length > 0 ? [account, p.tokenAddresses.join("-")] : null,
+    key: account ? [account] : null,
     request: () =>
-      p.tokenAddresses.reduce((acc, address) => {
-        const token = getToken(chainId, address);
+      getV2Tokens(chainId).reduce((acc, token) => {
         // Skip synthetic tokens
         if (token.isSynthetic) return acc;
+
+        const address = token.address;
 
         if (address === NATIVE_TOKEN_ADDRESS) {
           acc[address] = {

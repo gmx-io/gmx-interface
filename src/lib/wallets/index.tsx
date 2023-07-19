@@ -8,7 +8,7 @@ import {
   DEFAULT_CHAIN_ID,
   getChainName,
   getRpcUrl,
-  MAINNET,
+  BCS_MAINNET,
   NETWORK_METADATA,
   SUPPORTED_CHAIN_IDS,
 } from "config/chains";
@@ -225,7 +225,7 @@ export function useInactiveListener(suppress = false) {
 }
 
 export const addBscNetwork = async () => {
-  return addNetwork(NETWORK_METADATA[MAINNET]);
+  return addNetwork(NETWORK_METADATA[BCS_MAINNET]);
 };
 
 export const addNetwork = async (metadata: NetworkMetadata) => {
