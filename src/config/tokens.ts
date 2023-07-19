@@ -855,7 +855,6 @@ for (let j = 0; j < CHAIN_IDS.length; j++) {
     }
 
     if (token.isNative) {
-      token.wrappedAddress = wrappedTokenAddress;
       NATIVE_TOKENS_MAP[chainId] = token;
     }
 
@@ -867,6 +866,8 @@ for (let j = 0; j < CHAIN_IDS.length; j++) {
       V2_TOKENS[chainId].push(token);
     }
   }
+
+  NATIVE_TOKENS_MAP[chainId].wrappedAddress = wrappedTokenAddress;
 }
 
 export function getWrappedToken(chainId: number) {
