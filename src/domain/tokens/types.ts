@@ -18,6 +18,7 @@ export type Token = {
   isStable?: boolean;
   isSynthetic?: boolean;
   isTempHidden?: boolean;
+  isV1Available?: boolean;
 };
 
 export type TokenInfo = Token & {
