@@ -1,4 +1,5 @@
 import { Trans, t } from "@lingui/macro";
+import { groupBy } from "lodash";
 import { useWeb3React } from "@web3-react/core";
 import cx from "classnames";
 import Button from "components/Button/Button";
@@ -27,6 +28,7 @@ import {
   MarketsInfoData,
   getAvailableUsdLiquidityForPosition,
   getMarketIndexName,
+  useMarketTokensData,
 } from "domain/synthetics/markets";
 import { OrderInfo, OrdersInfoData } from "domain/synthetics/orders";
 import {
@@ -211,6 +213,24 @@ export function TradeBox(p: Props) {
 
   const [toTokenInputValue, setToTokenInputValue] = useSafeState("");
   const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : BigNumber.from(0);
+  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
+
+  const groupedMarketsTotalSupply = useMemo(() => {
+    if (!marketsInfoData || !marketTokensData) return;
+    const groupedMarketsInfo: { [indexTokenAddress: string]: MarketInfo[] } = groupBy(
+      Object.values(marketsInfoData),
+      (market) => market.indexTokenAddress
+    );
+
+    return Object.entries(groupedMarketsInfo).reduce((acc, [indexTokenAddress, marketsInfo]) => {
+      const totalSupply = marketsInfo
+        .map((marketInfo) => marketTokensData[marketInfo.marketTokenAddress])
+        .reduce((acc, marketToken) => acc.add(marketToken.totalSupply || 0), BigNumber.from(0));
+
+      acc[indexTokenAddress] = totalSupply;
+      return acc;
+    }, {});
+  }, [marketsInfoData, marketTokensData]);
 
   const markPrice = useMemo(() => {
     if (!toToken) {
@@ -877,6 +897,7 @@ export function TradeBox(p: Props) {
               className="GlpSwap-from-token"
               showSymbolImage={true}
               showTokenImgInDropdown={true}
+              extendedSortData={groupedMarketsTotalSupply}
             />
           )}
         </BuyInputSection>
@@ -912,6 +933,7 @@ export function TradeBox(p: Props) {
                 showSymbolImage={true}
                 showBalances={true}
                 showTokenImgInDropdown={true}
+                extendedSortData={groupedMarketsTotalSupply}
               />
             )}
           </BuyInputSection>
@@ -942,6 +964,7 @@ export function TradeBox(p: Props) {
                 showSymbolImage={true}
                 showBalances={false}
                 showTokenImgInDropdown={true}
+                extendedSortData={groupedMarketsTotalSupply}
               />
             )}
           </BuyInputSection>

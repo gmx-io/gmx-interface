@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ReactNode } from "react";
+import React, { useState, useEffect, ReactNode, useMemo } from "react";
 import cx from "classnames";
 
 import { BiChevronDown } from "react-icons/bi";
@@ -40,6 +40,7 @@ type Props = {
   getTokenState?: (info: TokenInfo) => TokenState | undefined;
   disableBodyScrollLock?: boolean;
   onSelectToken: (token: Token) => void;
+  extendedSortData?: { [key: string]: BigNumber } | undefined;
 };
 
 export default function TokenSelector(props: Props) {
@@ -81,12 +82,6 @@ export default function TokenSelector(props: Props) {
     }
   }, [isModalVisible]);
 
-  if (!tokenInfo) {
-    return null;
-  }
-
-  const tokenImage = showSymbolImage ? importImage(`ic_${tokenInfo.symbol.toLowerCase()}_24.svg`) : undefined;
-
   const onSearchKeywordChange = (e) => {
     setSearchKeyword(e.target.value);
   };
@@ -98,30 +93,41 @@ export default function TokenSelector(props: Props) {
     );
   });
 
-  const sortedFilteredTokens = filteredTokens.sort((a, b) => {
-    const aInfo = infoTokens?.[a.address]!;
-    const bInfo = infoTokens?.[b.address]!;
+  const sortedFilteredTokens = useMemo(() => {
+    return filteredTokens.sort((a, b) => {
+      const aInfo = infoTokens?.[a.address];
+      const bInfo = infoTokens?.[b.address];
 
-    if (!aInfo?.balance || !bInfo?.balance || !aInfo?.maxPrice || !bInfo?.maxPrice) {
+      if (!aInfo || !bInfo) return 0;
+
+      if (aInfo?.balance && bInfo?.balance && aInfo?.maxPrice && bInfo?.maxPrice) {
+        const aBalanceUsd = aInfo.balance.mul(aInfo.maxPrice).div(expandDecimals(1, a.decimals));
+        const bBalanceUsd = bInfo.balance.mul(bInfo.maxPrice).div(expandDecimals(1, b.decimals));
+
+        return bBalanceUsd.sub(aBalanceUsd).gt(0) ? 1 : -1;
+      }
+      if (props.extendedSortData) {
+        const aExtendedSortData = props.extendedSortData[aInfo.wrappedAddress || aInfo.address];
+        const bExtendedSortData = props.extendedSortData[bInfo.wrappedAddress || bInfo.address];
+        if (aExtendedSortData && bExtendedSortData) {
+          return bExtendedSortData.sub(aExtendedSortData).gt(0) ? 1 : -1;
+        }
+      }
       return 0;
-    }
-
-    const aBalanceUsd = aInfo.balance.mul(aInfo.maxPrice).div(expandDecimals(1, a.decimals));
-    const bBalanceUsd = bInfo.balance.mul(bInfo.maxPrice).div(expandDecimals(1, b.decimals));
-
-    // if aBalanceUsd and bBalanceUsd is zero sort them alphabatically
-    if (aBalanceUsd.isZero() && bBalanceUsd.isZero()) {
-      return aInfo?.symbol > bInfo?.symbol ? 1 : -1;
-    }
-
-    return bBalanceUsd.sub(aBalanceUsd).gt(0) ? 1 : -1;
-  });
+    });
+  }, [filteredTokens, infoTokens, props.extendedSortData]);
 
   const _handleKeyDown = (e) => {
     if (e.key === "Enter" && filteredTokens.length > 0) {
       onSelectToken(filteredTokens[0]);
     }
   };
+
+  if (!tokenInfo) {
+    return null;
+  }
+
+  const tokenImage = showSymbolImage ? importImage(`ic_${tokenInfo.symbol.toLowerCase()}_24.svg`) : undefined;
 
   return (
     <div className={cx("TokenSelector", { disabled }, props.className)}>
