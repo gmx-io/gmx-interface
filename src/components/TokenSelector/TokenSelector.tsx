@@ -94,14 +94,14 @@ export default function TokenSelector(props: Props) {
   });
 
   const sortedFilteredTokens = useMemo(() => {
-    const tokensWithBalance = props.showBalances
+    const tokensWithBalance = showBalances
       ? filteredTokens.filter((token) => {
           const info = infoTokens?.[token.address];
           return info?.balance?.gt(0);
         })
       : [];
 
-    const tokensWithoutBalance = props.showBalances
+    const tokensWithoutBalance = showBalances
       ? filteredTokens.filter((token) => {
           const info = infoTokens?.[token.address];
           return !info?.balance || info.balance.isZero();
@@ -135,15 +135,13 @@ export default function TokenSelector(props: Props) {
         if (aExtendedSortData && bExtendedSortData) {
           return bExtendedSortData.sub(aExtendedSortData).gt(0) ? 1 : -1;
         }
-      } else {
-        return aInfo?.symbol > bInfo?.symbol ? 1 : -1;
       }
 
       return 0;
     });
 
     return [...sortedTokensWithBalance, ...sortedTokensWithoutBalance];
-  }, [filteredTokens, infoTokens, props.extendedSortData, props.showBalances]);
+  }, [filteredTokens, infoTokens, props.extendedSortData, showBalances]);
 
   const _handleKeyDown = (e) => {
     if (e.key === "Enter" && filteredTokens.length > 0) {
