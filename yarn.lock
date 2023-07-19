@@ -9485,13 +9485,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fancy-canvas@npm:0.2.2":
-  version: 0.2.2
-  resolution: "fancy-canvas@npm:0.2.2"
-  checksum: 965446383e59aa0108e03a4bc2b12dbb386089a24d95ba1abfb3d0f7a96cf168af70de0c06fabb9f396542e8ea56d1fc8609db108d9ec0ca5f454749d1f78203
-  languageName: node
-  linkType: hard
-
 "fast-deep-equal@npm:^3.1.1, fast-deep-equal@npm:^3.1.3":
   version: 3.1.3
   resolution: "fast-deep-equal@npm:3.1.3"
@@ -10002,7 +9995,6 @@ __metadata:
     hex-to-rgba: 2.0.1
     html-to-image: ^1.10.8
     husky: 7.0.4
-    krasulya-lightweight-charts: 3.4.3
     lint-staged: 12.3.4
     lodash: 4.17.21
     prettier: 2.5.1
@@ -12248,15 +12240,6 @@ __metadata:
   version: 2.0.6
   resolution: "klona@npm:2.0.6"
   checksum: ac9ee3732e42b96feb67faae4d27cf49494e8a3bf3fa7115ce242fe04786788e0aff4741a07a45a2462e2079aa983d73d38519c85d65b70ef11447bbc3c58ce7
-  languageName: node
-  linkType: hard
-
-"krasulya-lightweight-charts@npm:3.4.3":
-  version: 3.4.3
-  resolution: "krasulya-lightweight-charts@npm:3.4.3"
-  dependencies:
-    fancy-canvas: 0.2.2
-  checksum: 51e122fc5be255c1cc3b0cf272366b8771ef124461a28a97903477d23ee7d1ae1690b9f8b813b9f80464ed6a9a62dd0811cc8e6a0b5fc683e8c3d909307f3817
   languageName: node
   linkType: hard
 
