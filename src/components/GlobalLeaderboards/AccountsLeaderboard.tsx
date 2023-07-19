@@ -15,7 +15,15 @@ export default function AccountsLeaderboard() {
   const term = useDebounce(search, 300);
   const { topAccounts, period, setPeriod } = useLeaderboardContext();
   const filteredStats = topAccounts.data.filter(a => a.account.indexOf(term.toLowerCase()) >= 0);
-  const displayedStats = filteredStats.slice((page - 1) * perPage, page * perPage);
+  const displayedStats = filteredStats.slice((page - 1) * perPage, page * perPage).map(s => ({
+    id: s.id,
+    account: s.account,
+    absPnl: s.absPnl.toString(),
+    relPnl: s.relPnl.toString(),
+    sizeLev: `${ s.size.toString() } (${ s.leverage.toString() })`,
+    perf: `${ s.wins.toString() }/${ s.losses.toString() }`,
+  }));
+
   const pageCount = Math.ceil(filteredStats.length / perPage);
   const handleSearchInput = ({ target }) => setSearch(target.value);
   const titles = {

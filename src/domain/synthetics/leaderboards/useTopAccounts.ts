@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { AccountPerf, AccountPositionsSummary, AccountScores, PerfPeriod, PositionScores, PositionsSummaryByAccount, RemoteData } from "./types";
+// import { useState, useEffect } from "react";
+import { AccountPerf, AccountPositionsSummary, AccountScores, PerfPeriod, PositionScores, PositionsSummaryByAccount } from "./types";
 import { useAccountPerf, usePositionScores } from "./index";
 import { BigNumber } from "ethers";
 
@@ -13,6 +13,7 @@ const groupPositionsByAccount = (positions: Array<PositionScores>): PositionsSum
       groupBy[account] = {
         account,
         unrealizedPnl: BigNumber.from(0),
+        sumSize: BigNumber.from(0),
         sumCollateral: BigNumber.from(0),
         sumMaxSize: BigNumber.from(0),
         positions: [],
@@ -23,6 +24,7 @@ const groupPositionsByAccount = (positions: Array<PositionScores>): PositionsSum
 
     summary.positions.push(p);
     summary.unrealizedPnl = summary.unrealizedPnl.add(p.unrealizedPnl);
+    summary.sumSize = summary.sumSize.add(p.sizeInUsd)
     summary.sumCollateral = summary.sumCollateral.add(p.collateralAmount);
     summary.sumMaxSize = summary.sumMaxSize.add(p.maxSize);
   }
@@ -31,57 +33,51 @@ const groupPositionsByAccount = (positions: Array<PositionScores>): PositionsSum
 };
 
 export function useTopAccounts(period: PerfPeriod) {
-  const [topAccounts, setTopAccounts] = useState<RemoteData<AccountScores>>({
-    isLoading: false,
-    data: [],
-    error: null,
-  });
-
   const accountPerf = useAccountPerf(period);
+  console.log({accountPerf});
   const positions = usePositionScores();
+  console.log({positions});
 
-  useEffect(() => {
-    if (accountPerf.error || positions.error) {
-      setTopAccounts(s => ({...s, isLoading: false, error: accountPerf.error || positions.error}));
-      return;
-    } else if (!(accountPerf.data && accountPerf.data.length) || !(positions.data && positions.data.length)) {
-      setTopAccounts(s => ({...s, error: null, isLoading: true}));
-      return;
+  if (accountPerf.error || positions.error) {
+    return { data: [], isLoading: false, error: accountPerf.error || positions.error };
+  } else if (accountPerf.isLoading || positions.isLoading) {
+    return { data: [], isLoading: true, error: null };
+  }
+
+  const data: Array<AccountScores> = []
+  const summaryByAccount: Record<string, AccountPositionsSummary> = groupPositionsByAccount(positions.data);
+  const perfOrderedByPnl: Array<AccountPerf> = accountPerf.data.sort((a, b) => a.totalPnl.gt(b.totalPnl) ? -1 : 1);
+
+  for (let i = 0; i < perfOrderedByPnl.length; i++) {
+    const acc = perfOrderedByPnl[i];
+    const summary = summaryByAccount[acc.account] || {
+      unrealizedPnl: BigNumber.from(0),
+      sumMaxSize: BigNumber.from(0),
+      positions: [],
+    };
+
+    const profit = acc.totalPnl.add(summary.unrealizedPnl);
+    const relPnl = profit.div(acc.maxCollateral).mul(BigNumber.from(100));
+
+    if (acc.cumsumCollateral.add(summary.sumCollateral).eq(0)) {
+      console.log({ acc, summary });
+      return { isLoading: false, data: [], error: null };
     }
 
-    const scoresByAccount: Record<string, AccountScores> = {};
-    const accountScores: Array<AccountScores> = []
-    const summaryByAccount: Record<string, AccountPositionsSummary> = groupPositionsByAccount(positions.data);
-    const perfOrderedByPnl: Array<AccountPerf> = accountPerf.data.sort((a, b) => a.totalPnl.gt(b.totalPnl) ? -1 : 1);
+    const scores = {
+      id: acc.account + ":" + period,
+      rank: i + 1,
+      account: acc.account,
+      absPnl: acc.totalPnl,
+      relPnl: relPnl,
+      size: BigNumber.from(0), // acc.sumMaxSize.add(summary.sumMaxSize).div(acc.closedCount.add(BigNumber.from(summary.positions.length))),
+      leverage: acc.cumsumSize.add(summary.sumSize).div(acc.cumsumCollateral.add(summary.sumCollateral)),
+      wins: acc.wins,
+      losses: acc.losses,
+    };
 
-    for (let i = 0; i < perfOrderedByPnl.length; i++) {
-      const acc = perfOrderedByPnl[i];
-      const summary = summaryByAccount[acc.account];
-      const profit = acc.totalPnl.add(summary.unrealizedPnl);
-      const maxCollateral = acc.maxCollateral;
-      const relPnl = profit.div(maxCollateral).mul(BigNumber.from(100));
-      const scores = {
-        id: acc.account + ":" + period,
-        rank: i + 1,
-        account: acc.account,
-        absPnl: acc.totalPnl,
-        relPnl,
-        size: acc.sumMaxSize.add(summary.sumMaxSize).div(acc.closedCount.add(BigNumber.from(summary.positions.length))),
-        leverage: acc.cumsumSize.div(acc.cumsumCollateral),
-      };
+    data.push(scores);
+  }
 
-      scoresByAccount[acc.account] = scores;
-      accountScores.push(scores)
-    }
-  }, [
-    accountPerf.data,
-    accountPerf.data.length,
-    accountPerf.error,
-    period,
-    positions.data,
-    positions.data.length,
-    positions.error
-  ]);
-
-  return topAccounts;
+  return { isLoading: false, error: null, data };
 }

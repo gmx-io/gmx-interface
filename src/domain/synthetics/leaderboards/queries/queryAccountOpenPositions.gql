@@ -14,6 +14,7 @@ query GetAccountOpenPositions(
     account
     market
     collateralToken
+    collateralAmount
     isLong
     realizedPnl
     sizeInTokens

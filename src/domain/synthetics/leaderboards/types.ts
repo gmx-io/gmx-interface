@@ -50,6 +50,8 @@ export type AccountScores = {
   relPnl: BigNumber;
   size: BigNumber;
   leverage: BigNumber;
+  wins: BigNumber;
+  losses: BigNumber;
 };
 
 export type AccountOpenPositionJson = {
@@ -84,6 +86,7 @@ export type AccountPositionsSummary = {
   account: string;
   positions: Array<PositionScores>;
   unrealizedPnl: BigNumber;
+  sumSize: BigNumber;
   sumCollateral: BigNumber;
   sumMaxSize: BigNumber;
 };
@@ -98,7 +101,7 @@ export type PositionScores = {
   collateralToken: string;
   unrealizedPnl: BigNumber;
   entryPrice: BigNumber;
-  size: BigNumber;
+  sizeInUsd: BigNumber;
   liqPrice: BigNumber;
   collateralAmount: BigNumber;
   maxSize: BigNumber;

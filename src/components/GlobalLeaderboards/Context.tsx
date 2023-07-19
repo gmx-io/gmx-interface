@@ -37,7 +37,7 @@ export const LeaderboardContextProvider: FC<PropsWithChildren> = ({ children }) 
     topAccounts,
   };
 
-  console.log({context});
+  // console.log({context});
 
   return <LeaderboardContext.Provider value={context}>{children}</LeaderboardContext.Provider>;
 };

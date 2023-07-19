@@ -13,7 +13,15 @@ export default function PositionsLeaderboard() {
   const term = useDebounce(search, 300);
   const { topPositions } = useLeaderboardContext();
   const filteredStats = topPositions.data.filter(a => a.account.indexOf(term.toLowerCase()) >= 0);
-  const displayedStats = filteredStats.slice((page - 1) * perPage, page * perPage);
+  const displayedStats = filteredStats.slice((page - 1) * perPage, page * perPage).map(s => ({
+    id: s.id,
+    account: s.account,
+    urealizedPnl: s.unrealizedPnl.toString(),
+    market: `${ s.market } ${ s.isLong ? "Long" : "Short" }`,
+    entryPrice: s.entryPrice.toString(),
+    sizeLiqPrice: `${ s.sizeInUsd.toString() } (${ s.liqPrice.toString() })`,
+  }));
+
   const pageCount = Math.ceil(filteredStats.length / perPage);
   const handleSearchInput = ({ target }) => setSearch(target.value);
   const titles = {

@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 import { useChainId } from "lib/chains";
 import { useTokenRecentPrices } from "../tokens";
-import { PositionScores, RemoteData } from "./types";
+import { PositionScores } from "./types";
 import { useOpenPositions } from "./useOpenPositions";
 import { BigNumber, utils } from "ethers";
 
@@ -9,65 +9,43 @@ export function usePositionScores() {
   const { chainId } = useChainId();
   const { pricesData } = useTokenRecentPrices(chainId);
   const openPositions = useOpenPositions();
-  const [positionScores, setPositionScores] = useState<RemoteData<PositionScores>>({
-    isLoading: false,
-    data: [],
-    error: null,
-  });
 
-  useEffect(() => {
-    if (openPositions.error) {
-      setPositionScores(s => ({...s, isLoading: false, error: openPositions.error}));
-    } else if (!pricesData || !openPositions.data) {
-      setPositionScores(s => ({...s, error: null, isLoading: true}));
-    } else {
-      const data: Array<PositionScores> = [];
+  console.log({ pricesData, openPositions });
 
-      for (let i = 0; i < openPositions.data.length; i++) {
-        const p = openPositions.data[i];
-        const tokenAddress = utils.getAddress(p.collateralToken);
+  if (openPositions.error) {
+    return { data: [], isLoading: false, error: openPositions.error };
+  } else if (!pricesData || openPositions.isLoading) {
+    return { data: [], isLoading: true, error: null };
+  }
 
-        if (!(tokenAddress in pricesData)) {
-          setPositionScores(s => ({
-            ...s,
-            error: new Error(`Unable to find price for token ${tokenAddress}`)
-          }));
+  const data: Array<PositionScores> = [];
 
-          return;
-        }
+  for (let i = 0; i < openPositions.data.length; i++) {
+    const p = openPositions.data[i];
+    const tokenAddress = utils.getAddress(p.collateralToken);
 
-        const token = pricesData[tokenAddress];
-        const value = p.sizeInTokens.mul(p.isLong ? token.minPrice : token.maxPrice);
-        const unrealizedPnl = p.isLong ? value.sub(p.sizeInUsd) : p.sizeInTokens.sub(value);
-
-        data.push({
-          id: p.id,
-          account: p.account,
-          isLong: p.isLong,
-          market: p.market,
-          collateralToken: p.collateralToken,
-          unrealizedPnl,
-          entryPrice: p.entryPrice,
-          size: value,
-          liqPrice: BigNumber.from(0),
-          collateralAmount: p.collateralAmount,
-          maxSize: p.maxSize,
-        });
-      }
-
-      setPositionScores(s => ({
-        ...s,
-        isLoading: false,
-        error: null,
-        data,
-      }));
+    if (!(tokenAddress in pricesData)) {
+      return { data: [], isLoading: false, error: new Error(`Unable to find price for token ${tokenAddress}`) };
     }
-  }, [
-    openPositions.data,
-    openPositions.data.length,
-    openPositions.error,
-    pricesData
-  ]);
 
-  return positionScores;
+    const token = pricesData[tokenAddress];
+    const value = p.sizeInTokens.mul(p.isLong ? token.minPrice : token.maxPrice);
+    const unrealizedPnl = p.isLong ? value.sub(p.sizeInUsd) : p.sizeInTokens.sub(value);
+
+    data.push({
+      id: p.id,
+      account: p.account,
+      isLong: p.isLong,
+      market: p.market,
+      collateralToken: p.collateralToken,
+      unrealizedPnl,
+      entryPrice: p.entryPrice,
+      sizeInUsd: value,
+      liqPrice: BigNumber.from(0),
+      collateralAmount: p.collateralAmount,
+      maxSize: p.maxSize,
+    });
+  }
+
+  return { data, isLoading: false, error: null };
 };
