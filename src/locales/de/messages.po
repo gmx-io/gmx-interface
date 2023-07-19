@@ -3414,7 +3414,7 @@ msgstr "Versicherung kaufen"
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Read more"
-msgstr "Mehr lesen"
+msgstr "Mehr lesen<<<<<<< HEAD"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Realized PnL insufficient for Fees"

@@ -94,6 +94,14 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isV1Available: true,
     },
     {
+      name: "Bridged USDC (USDC.e)",
+      symbol: "USDC.e",
+      decimals: 6,
+      address: "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
+      isStable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
+    },
+    {
       name: "USD Coin",
       symbol: "USDC",
       decimals: 6,
