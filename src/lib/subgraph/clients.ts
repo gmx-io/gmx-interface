@@ -32,7 +32,7 @@ export function getGmxGraphClient(chainId: number) {
     return arbitrumGraphClient;
   } else if (chainId === AVALANCHE) {
     return avalancheGraphClient;
-  } else if (chainId === ARBITRUM_GOERLI) {
+  } else if (chainId === ARBITRUM_GOERLI || chainId === AVALANCHE_FUJI) {
     return null;
   }
 

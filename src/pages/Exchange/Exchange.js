@@ -52,6 +52,7 @@ import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/local
 import { bigNumberify, formatAmount } from "lib/numbers";
 import { getLeverage, getLeverageStr } from "lib/positions/getLeverage";
 import "./Exchange.css";
+import { getIsV1Supported } from "config/features";
 const { AddressZero } = ethers.constants;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;
@@ -526,6 +527,11 @@ export const Exchange = forwardRef((props, ref) => {
     const fromToken = getTokenInfo(infoTokens, fromTokenAddress);
     const toToken = getTokenInfo(infoTokens, toTokenAddress);
     let selectedToken = getChartToken(swapOption, fromToken, toToken, chainId);
+
+    if (!selectedToken) {
+      return;
+    }
+
     let currentTokenPriceStr = formatAmount(selectedToken.maxPrice, USD_DECIMALS, 2, true);
     let title = getPageTitle(
       currentTokenPriceStr + ` | ${selectedToken.symbol}${selectedToken.isStable ? "" : "-USD"}`
@@ -938,53 +944,56 @@ export const Exchange = forwardRef((props, ref) => {
           <div className="Exchange-lists large">{getListSection()}</div>
         </div>
         <div className="Exchange-right">
-          <SwapBox
-            pendingPositions={pendingPositions}
-            setPendingPositions={setPendingPositions}
-            setIsWaitingForPluginApproval={setIsWaitingForPluginApproval}
-            setIsWaitingForPositionRouterApproval={setIsWaitingForPositionRouterApproval}
-            approveOrderBook={approveOrderBook}
-            approvePositionRouter={approvePositionRouter}
-            isPluginApproving={isPluginApproving}
-            isPositionRouterApproving={isPositionRouterApproving}
-            isWaitingForPluginApproval={isWaitingForPluginApproval}
-            isWaitingForPositionRouterApproval={isWaitingForPositionRouterApproval}
-            orderBookApproved={orderBookApproved}
-            positionRouterApproved={positionRouterApproved}
-            orders={orders}
-            flagOrdersEnabled={flagOrdersEnabled}
-            chainId={chainId}
-            infoTokens={infoTokens}
-            active={active}
-            connectWallet={connectWallet}
-            library={library}
-            account={account}
-            positionsMap={positionsMap}
-            fromTokenAddress={fromTokenAddress}
-            setFromTokenAddress={setFromTokenAddress}
-            toTokenAddress={toTokenAddress}
-            setToTokenAddress={setToTokenAddress}
-            swapOption={swapOption}
-            setSwapOption={setSwapOption}
-            pendingTxns={pendingTxns}
-            setPendingTxns={setPendingTxns}
-            tokenSelection={tokenSelection}
-            setTokenSelection={setTokenSelection}
-            isConfirming={isConfirming}
-            setIsConfirming={setIsConfirming}
-            isPendingConfirmation={isPendingConfirmation}
-            setIsPendingConfirmation={setIsPendingConfirmation}
-            savedIsPnlInLeverage={savedIsPnlInLeverage}
-            setSavedIsPnlInLeverage={setSavedIsPnlInLeverage}
-            nativeTokenAddress={nativeTokenAddress}
-            savedSlippageAmount={savedSlippageAmount}
-            totalTokenWeights={totalTokenWeights}
-            usdgSupply={usdgSupply}
-            savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
-            minExecutionFee={minExecutionFee}
-            minExecutionFeeUSD={minExecutionFeeUSD}
-            minExecutionFeeErrorMessage={minExecutionFeeErrorMessage}
-          />
+          {getIsV1Supported(chainId) && (
+            <SwapBox
+              pendingPositions={pendingPositions}
+              setPendingPositions={setPendingPositions}
+              setIsWaitingForPluginApproval={setIsWaitingForPluginApproval}
+              setIsWaitingForPositionRouterApproval={setIsWaitingForPositionRouterApproval}
+              approveOrderBook={approveOrderBook}
+              approvePositionRouter={approvePositionRouter}
+              isPluginApproving={isPluginApproving}
+              isPositionRouterApproving={isPositionRouterApproving}
+              isWaitingForPluginApproval={isWaitingForPluginApproval}
+              isWaitingForPositionRouterApproval={isWaitingForPositionRouterApproval}
+              orderBookApproved={orderBookApproved}
+              positionRouterApproved={positionRouterApproved}
+              orders={orders}
+              flagOrdersEnabled={flagOrdersEnabled}
+              chainId={chainId}
+              infoTokens={infoTokens}
+              active={active}
+              connectWallet={connectWallet}
+              library={library}
+              account={account}
+              positionsMap={positionsMap}
+              fromTokenAddress={fromTokenAddress}
+              setFromTokenAddress={setFromTokenAddress}
+              toTokenAddress={toTokenAddress}
+              setToTokenAddress={setToTokenAddress}
+              swapOption={swapOption}
+              setSwapOption={setSwapOption}
+              pendingTxns={pendingTxns}
+              setPendingTxns={setPendingTxns}
+              tokenSelection={tokenSelection}
+              setTokenSelection={setTokenSelection}
+              isConfirming={isConfirming}
+              setIsConfirming={setIsConfirming}
+              isPendingConfirmation={isPendingConfirmation}
+              setIsPendingConfirmation={setIsPendingConfirmation}
+              savedIsPnlInLeverage={savedIsPnlInLeverage}
+              setSavedIsPnlInLeverage={setSavedIsPnlInLeverage}
+              nativeTokenAddress={nativeTokenAddress}
+              savedSlippageAmount={savedSlippageAmount}
+              totalTokenWeights={totalTokenWeights}
+              usdgSupply={usdgSupply}
+              savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
+              minExecutionFee={minExecutionFee}
+              minExecutionFeeUSD={minExecutionFeeUSD}
+              minExecutionFeeErrorMessage={minExecutionFeeErrorMessage}
+            />
+          )}
+
           <div className="Exchange-wallet-tokens">
             <div className="Exchange-wallet-tokens-content">
               <ExchangeWalletTokens tokens={tokens} infoTokens={infoTokens} onSelectToken={onSelectWalletToken} />

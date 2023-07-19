@@ -580,7 +580,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "GMX",
       symbol: "GMX",
-      address: getContract(ARBITRUM_GOERLI, "GMX"),
+      address: "",
       decimals: 18,
       imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
       isPlatformToken: true,
@@ -588,14 +588,14 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "Escrowed GMX",
       symbol: "esGMX",
-      address: getContract(ARBITRUM_GOERLI, "ES_GMX"),
+      address: "",
       decimals: 18,
       isPlatformToken: true,
     },
     {
       name: "GMX LP",
       symbol: "GLP",
-      address: getContract(ARBITRUM_GOERLI, "GLP"),
+      address: "",
       decimals: 18,
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
       isPlatformToken: true,
@@ -778,7 +778,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "GMX",
       symbol: "GMX",
-      address: getContract(AVALANCHE_FUJI, "GMX"),
+      address: "",
       decimals: 18,
       imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
       isPlatformToken: true,
@@ -786,14 +786,14 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "Escrowed GMX",
       symbol: "esGMX",
-      address: getContract(AVALANCHE_FUJI, "ES_GMX"),
+      address: "",
       decimals: 18,
       isPlatformToken: true,
     },
     {
       name: "GMX LP",
       symbol: "GLP",
-      address: getContract(AVALANCHE_FUJI, "GLP"),
+      address: "",
       decimals: 18,
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
       isPlatformToken: true,
@@ -954,7 +954,7 @@ export function getNormalizedTokenSymbol(tokenSymbol) {
 export function isChartAvailabeForToken(chainId: number, tokenSymbol: string) {
   const token = getTokenBySymbol(chainId, tokenSymbol);
 
-  if (!token || token.isChartDisabled) return false;
+  if (!token || token.isChartDisabled || token.isPlatformToken) return false;
 
   return true;
 }
