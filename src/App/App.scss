@@ -317,14 +317,19 @@
   filter: unset;
 }
 
+.Wallets-container {
+  padding-bottom: 5px;
+}
+
+
 .Wallet-btn {
   display: block;
   box-shadow: inset 0px 0px 1rem 0.5rem rgba(27, 30, 46, 0.2);
-  background: var(--dark-blue);
-  height: 5.1rem;
-  width: 26.35rem;
+  background: rgba(45, 45, 45, 0.50);
+  height: 4.9rem;
+  width: 35rem;
   border: 1px solid var(--dark-blue-border);
-  border-radius: 0.3rem;
+  border-radius: 8px;
   position: relative;
   color: white;
   font-size: 2rem;
@@ -348,16 +353,16 @@
 .Wallet-btn-approve {
   display: block;
   box-shadow: inset 0px 0px 1rem 0.5rem rgba(27, 30, 46, 0.2);
-  background: var(--dark-blue);
+  background: rgba(45, 45, 45, 0.50);
   height: 5.1rem;
-  width: 26.35rem;
+  width: 80%;
   border: 1px solid var(--dark-blue-border);
-  border-radius: 0.3rem;
+  border-radius: 8px;
   position: relative;
   color: white;
   font-size: 2rem;
-  display: flex; /* changed to flex from grid */
-  justify-content: center;
+  display: flex;
+  justify-content: left;
   padding-left: 1.85rem;
   padding-top: 1.05rem;
 }
@@ -371,6 +376,10 @@
 }
 .Wallet-btn-approve:not(:last-child) {
   margin-bottom: 1.05rem;
+}
+
+.Wallet-btn-approve:disabled {
+  opacity: 0.4;
 }
 
 .MetaMask-btn img {
@@ -462,13 +471,11 @@ button.App-connect-wallet:hover {
 }
 
 .section-title-icon {
-  /* margin-right: 1.2rem; */
   display: flex;
   align-items: center;
 }
 
 .section-title-icon img {
-  /* display: flex; */
   display: none;
 }
 
@@ -521,6 +528,22 @@ button.App-connect-wallet:hover {
   color: #b7b7bd;
   line-height: 2.15rem;
   font-size: var(--font-base);
+  color: rgba(255, 255, 255, 0.71);
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 400;
+  padding-bottom: 8px;
+}
+
+.Modal-content-wrapper {
+  padding: 8px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: #1a1a1a;
+  border-radius: 8px;
 }
 
 .Page-description span,

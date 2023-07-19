@@ -80,37 +80,35 @@ export default function ApproveTokenInput(props) {
   return (
     <div className="Approve-tokens-input-section-wrapper">
       <div className="Approve-tokens-input-section">
-        <div className="Exchange-swap-section-top">
-          <div className="muted">
-            {tokenInfo.name}: {formatAmount(tokenInfo.balance, tokenInfo.decimals, 4, true)}
-          </div>
-        </div>
+        <img src={tokenInfo.imageUrl} alt={tokenInfo.name} className="token-image" />
+
         <div className="Approve-token-input-section-bottom">
-          <div>
-            <input
-              type="number"
-              min="0"
-              placeholder="0.0"
-              className="Exchange-swap-input"
-              value={approveValue}
-              onChange={onApproveValueChange}
-            />
-          </div>
-          <div>
-            <button onClick={onMaxClick} className="Approve-token-input-max">
-              MAX
-            </button>
-          </div>
+          <input
+            type="number"
+            min="0"
+            placeholder="0.0"
+            className="Approve-swap-input"
+            value={approveValue}
+            onChange={onApproveValueChange}
+          />
+          <button onClick={onMaxClick} className="Approve-token-input-max">
+            MAX
+          </button>
         </div>
+
+        <Button
+          variant={isApproved ? "approved" : "await"}
+          className="w-20 h-full"
+          onClick={onApproveClick}
+          disabled={parseFloat(approveValue) === 0 || isApproving}
+        >
+          {isApproved ? "Approved!" : "Approve"}
+        </Button>
       </div>
-      <Button
-        variant={isApproved ? "approved" : "primary-action"}
-        className="w-20 h-full"
-        onClick={onApproveClick}
-        disabled={parseFloat(approveValue) === "0" || isApproving}
-      >
-        {isApproved ? "Approved!" : "Approve"}
-      </Button>
+
+      <div className="muted">
+        {tokenInfo.name}: {formatAmount(tokenInfo.balance, tokenInfo.decimals, 4, true)}
+      </div>
     </div>
   );
 }

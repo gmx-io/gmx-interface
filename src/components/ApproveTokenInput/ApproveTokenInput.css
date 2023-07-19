@@ -1,32 +1,44 @@
-.Approve-token-input-section-bottom {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  padding-bottom: 0.31rem;
-  position: relative; /* Added for absolute positioning of MAX button */
+.Approve-tokens-input-section-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 430px;
+  height: 100px;
+  flex-shrink: 0;
+  padding: 10px 2rem;
+  margin-bottom: 10px;
+  background: #1e1e1e;
+  border-radius: 8px;
 }
 
 .Approve-tokens-input-section {
-  min-height: 9.2rem;
-  width: 50%;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  margin-top: 1rem; /* Set the size of the top margin */
-  margin-bottom: 1rem; /* Set the size of the bottom margin */
-  background-color: rgba(0, 0, 0, 0.2); /* Set the background color to black with 20% opacity */
-  padding: 1rem;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  padding-bottom: 0.31rem;
+}
+
+.Approve-tokens-input-section-bottom {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  padding-bottom: 0.31rem;
 }
 
 .Approve-token-input-max {
   position: absolute;
-  right: 1.25rem;
-  top: 50%; /* Adjusted for center alignment */
+  right: 1rem;
   transform: translateY(-50%);
-  color: #fff;
-  z-index: 1;
-  cursor: pointer;
-  font-size: var(--font-sm);
-  background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, rgba(46, 61, 205, 1) 100%);
+  align-items: center;
+  background: #2e2e2e;
+  margin-right:180px;
+  margin-top:25px;
 }
 
 .Approve-token-input-max:hover {
@@ -34,11 +46,24 @@
   background: linear-gradient(90deg, rgba(58, 78, 252, 1) 0%, rgba(51, 68, 222, 1) 100%);
 }
 
-.Approve-tokens-input-section-wrapper {
-  display: flex;
-  align-items: center;
+.token-image {
+  width: 25px;
+  height: 25px;
+  margin-right: 1rem;
 }
 
-.Approve-tokens-input-section-wrapper > * + * {
-  margin-left: 2.5rem; /* equivalent to Tailwind's 10 spacing unit */
+.muted {
+  font-size: 14px;
+  margin-left: 2px;
+  opacity: 0.7;
+}
+
+input.Approve-swap-input {
+  width: 242.819px;
+  height: 50px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: #181717;
+  padding: 5px;
+  margin-right: 10px;
 }

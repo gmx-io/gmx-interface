@@ -70,6 +70,7 @@ import Jobs from "pages/Jobs/Jobs";
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import { Trans, t } from "@lingui/macro";
+import { AnimatePresence, motion } from "framer-motion";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { Header } from "components/Header/Header";
 import { ARBITRUM, AVALANCHE, getAlchemyWsUrl, getExplorerUrl } from "config/chains";
@@ -107,6 +108,7 @@ import { useInfoTokens } from "domain/tokens";
 import { contractFetcher } from "lib/contracts";
 import { getTokens } from "config/tokens";
 import { SwapBox } from "pages/Swap/Swap";
+import StepIndicator from "components/StepIndicator/StepIndicator";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -212,6 +214,10 @@ function FullApp() {
     setWalletModalVisible(false);
   };
 
+  const handleConnectWallet = () => {
+    setShowConnectOptions(!showConnectOptions);
+  };
+
   const userOnMobileDevice = "navigator" in window && isMobileDevice(window.navigator);
 
   const activateMetaMask = () => {
@@ -268,6 +274,7 @@ function FullApp() {
   const [redirectPopupTimestamp, setRedirectPopupTimestamp] = useLocalStorage(REDIRECT_POPUP_TIMESTAMP_KEY);
   const [selectedToPage, setSelectedToPage] = useState("");
   const [approvalsModalVisible, setApprovalsModalVisible] = useState(false);
+  const [showConnectOptions, setShowConnectOptions] = useState(false);
   const [hasTokens, setHasTokens] = useState(false);
   const connectWallet = () => setWalletModalVisible(true);
 
@@ -303,6 +310,7 @@ function FullApp() {
     localStorage.setItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY, providerName);
     activateInjectedProvider(providerName);
     connectInjectedWallet();
+    setShowConnectOptions(false);
   };
 
   const openSettings = () => {
@@ -365,6 +373,12 @@ function FullApp() {
   const nonZeroBalanceTokens = useMemo(() => {
     return [];
   }, []);
+
+  const walletVisibilityVariants = {
+    hidden: { opacity: 0, y: "-100vh" },
+    visible: { opacity: 1, y: 0, transition: { type: "ease", duration: 0.5 } },
+    exit: { opacity: 0, y: "-100vh", transition: { type: "ease", duration: 0.5 } }, // New exit property
+  };
 
   useEffect(() => {
     for (let key in infoTokens) {
@@ -630,46 +644,78 @@ function FullApp() {
         className="Connect-wallet-modal"
         isVisible={walletModalVisible}
         setIsVisible={setWalletModalVisible}
-        label={t`Connect Wallet`}
+        label={`Get Started`}
       >
-        <button className="Wallet-btn MetaMask-btn" onClick={activateMetaMask}>
-          <img src={metamaskImg} alt="MetaMask" />
-          <div>
-            <Trans>MetaMask</Trans>
-          </div>
-        </button>
-        <button className="Wallet-btn CoinbaseWallet-btn" onClick={activateCoinBase}>
-          <img src={coinbaseImg} alt="Coinbase Wallet" />
-          <div>
-            <Trans>Coinbase Wallet</Trans>
-          </div>
-        </button>
-        <button className="Wallet-btn WalletConnect-btn" onClick={activateWalletConnect}>
-          <img src={walletConnectImg} alt="WalletConnect" />
-          <div>
-            <Trans>WalletConnect</Trans>
-          </div>
-        </button>
-        {active && hasTokens && (
-          <button className="Wallet-btn-approve" onClick={handleApproveTokens}>
+        <div className="Page-description">
+          <Trans>{`Connect your wallet and agree to terms.`}</Trans>
+        </div>
+        <div className="Modal-content-wrapper">
+          <button className="Wallet-btn-approve" onClick={handleConnectWallet}>
+            <StepIndicator digit={1} />
             <div>
-              <Trans>{`Approve Tokens`}</Trans>
+              <Trans>{`Connect Wallet`}</Trans>
             </div>
           </button>
-        )}
+          <AnimatePresence>
+            {showConnectOptions && (
+              <motion.div
+                className="Wallets-container"
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                variants={walletVisibilityVariants}
+              >
+                <button className="Wallet-btn MetaMask-btn" onClick={activateMetaMask}>
+                  <img src={metamaskImg} alt="MetaMask" />
+                  <div>
+                    <Trans>MetaMask</Trans>
+                  </div>
+                </button>
+                <button className="Wallet-btn CoinbaseWallet-btn" onClick={activateCoinBase}>
+                  <img src={coinbaseImg} alt="Coinbase Wallet" />
+                  <div>
+                    <Trans>Coinbase Wallet</Trans>
+                  </div>
+                </button>
+                <button className="Wallet-btn WalletConnect-btn" onClick={activateWalletConnect}>
+                  <img src={walletConnectImg} alt="WalletConnect" />
+                  <div>
+                    <Trans>WalletConnect</Trans>
+                  </div>
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+          <button className="Wallet-btn-approve" onClick={handleApproveTokens} disabled={!(active && hasTokens)}>
+            <StepIndicator digit={2} />
+            <div>
+              <Trans>{`Enable One-Click Trading`}</Trans>
+            </div>
+          </button>
+          <button className="Wallet-btn-approve" disabled>
+            <StepIndicator digit={3} />
+            <div>
+              <Trans>{`Enable Email Notifications`}</Trans>
+            </div>
+          </button>
+        </div>
       </Modal>
+
       <Modal
         className="Approve-tokens-modal"
         isVisible={approvalsModalVisible}
         setIsVisible={setApprovalsModalVisible}
-        label={`Approve Tokens`}
+        label={`Enable 1-Click Trading`}
       >
         <ApproveTokens
           chainId={chainId}
           pendingTxns={pendingTxns}
           setPendingTxns={setPendingTxns}
           nonZeroBalanceTokens={nonZeroBalanceTokens}
-          closeApprovalsModal={() => setApprovalsModalVisible(false)}
+          closeApprovalsModal={() => {
+            setApprovalsModalVisible(false);
+            setWalletModalVisible(true);
+          }}
         />
       </Modal>
       <Modal

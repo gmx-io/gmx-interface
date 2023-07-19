@@ -31,11 +31,12 @@
 .Modal-content {
   z-index: 20;
   position: relative;
+  min-width: 498.372px;
   max-width: 100%;
   max-height: 90vh;
   overflow: auto;
-  background: #16182e;
-  border-radius: 4px;
+  background: #141414;
+  border-radius: 14px;
 }
 
 .divider {
