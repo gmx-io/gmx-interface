@@ -151,7 +151,7 @@ export function ConfirmationBox(p: Props) {
 
   const prevIsVisible = usePrevious(p.isVisible);
 
-  const { userReferralCode } = useUserReferralCode(library, chainId, account);
+  const { referralCodeForTxn } = useUserReferralCode(library, chainId, account);
 
   const [isTriggerWarningAccepted, setIsTriggerWarningAccepted] = useState(false);
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
@@ -389,7 +389,7 @@ export function ConfirmationBox(p: Props) {
       toTokenAddress: toToken.address,
       orderType: isLimit ? OrderType.LimitSwap : OrderType.MarketSwap,
       minOutputAmount: swapAmounts.minOutputAmount,
-      referralCode: userReferralCode,
+      referralCode: referralCodeForTxn,
       executionFee: executionFee.feeTokenAmount,
       allowedSlippage,
       tokensData,
@@ -428,7 +428,7 @@ export function ConfirmationBox(p: Props) {
       orderType: isLimit ? OrderType.LimitIncrease : OrderType.MarketIncrease,
       executionFee: executionFee.feeTokenAmount,
       allowedSlippage,
-      referralCode: userReferralCode,
+      referralCode: referralCodeForTxn,
       indexToken: marketInfo.indexToken,
       tokensData,
       skipSimulation: isLimit || shouldDisableValidation,
@@ -470,7 +470,7 @@ export function ConfirmationBox(p: Props) {
       orderType: decreaseAmounts.triggerOrderType,
       executionFee: executionFee.feeTokenAmount,
       allowedSlippage,
-      referralCode: userReferralCode,
+      referralCode: referralCodeForTxn,
       // Skip simulation to avoid EmptyPosition error
       // skipSimulation: !existingPosition || shouldDisableValidation,
       skipSimulation: true,

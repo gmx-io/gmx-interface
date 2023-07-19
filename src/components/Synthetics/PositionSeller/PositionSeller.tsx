@@ -315,7 +315,7 @@ export function PositionSeller(p: Props) {
       minOutputUsd: BigNumber.from(0),
       decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
       orderType: OrderType.MarketDecrease,
-      referralCode: userReferralInfo?.userReferralCode,
+      referralCode: userReferralInfo?.referralCodeForTxn,
       executionFee: executionFee.feeTokenAmount,
       allowedSlippage,
       indexToken: position.indexToken,
