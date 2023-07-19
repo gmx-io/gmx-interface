@@ -94,7 +94,21 @@ export default function TokenSelector(props: Props) {
   });
 
   const sortedFilteredTokens = useMemo(() => {
-    return filteredTokens.sort((a, b) => {
+    const tokensWithBalance = props.showBalances
+      ? filteredTokens.filter((token) => {
+          const info = infoTokens?.[token.address];
+          return info?.balance?.gt(0);
+        })
+      : [];
+
+    const tokensWithoutBalance = props.showBalances
+      ? filteredTokens.filter((token) => {
+          const info = infoTokens?.[token.address];
+          return !info?.balance || info.balance.isZero();
+        })
+      : filteredTokens;
+
+    const sortedTokensWithBalance = tokensWithBalance.sort((a, b) => {
       const aInfo = infoTokens?.[a.address];
       const bInfo = infoTokens?.[b.address];
 
@@ -106,16 +120,30 @@ export default function TokenSelector(props: Props) {
 
         return bBalanceUsd.sub(aBalanceUsd).gt(0) ? 1 : -1;
       }
+      return 0;
+    });
+
+    const sortedTokensWithoutBalance = tokensWithoutBalance.sort((a, b) => {
+      const aInfo = infoTokens?.[a.address];
+      const bInfo = infoTokens?.[b.address];
+
+      if (!aInfo || !bInfo) return 0;
+
       if (props.extendedSortData) {
         const aExtendedSortData = props.extendedSortData[aInfo.wrappedAddress || aInfo.address];
         const bExtendedSortData = props.extendedSortData[bInfo.wrappedAddress || bInfo.address];
         if (aExtendedSortData && bExtendedSortData) {
           return bExtendedSortData.sub(aExtendedSortData).gt(0) ? 1 : -1;
         }
+      } else {
+        return aInfo?.symbol > bInfo?.symbol ? 1 : -1;
       }
+
       return 0;
     });
-  }, [filteredTokens, infoTokens, props.extendedSortData]);
+
+    return [...sortedTokensWithBalance, ...sortedTokensWithoutBalance];
+  }, [filteredTokens, infoTokens, props.extendedSortData, props.showBalances]);
 
   const _handleKeyDown = (e) => {
     if (e.key === "Enter" && filteredTokens.length > 0) {
