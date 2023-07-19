@@ -73,6 +73,7 @@ export type Props = {
   isHigherSlippageAllowed: boolean;
   setIsHigherSlippageAllowed: (isAllowed: boolean) => void;
   onConnectWallet: () => void;
+  shouldDisableValidation: boolean;
 };
 
 export function PositionSeller(p: Props) {
@@ -320,6 +321,7 @@ export function PositionSeller(p: Props) {
       allowedSlippage,
       indexToken: position.indexToken,
       tokensData,
+      skipSimulation: p.shouldDisableValidation,
       setPendingOrder,
       setPendingTxns,
       setPendingPosition,
