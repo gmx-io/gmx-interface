@@ -22,7 +22,14 @@ type Props = {
 function AssetDropdown({ assetSymbol }: Props) {
   const { active } = useWeb3React();
   const { chainId } = useChainId();
-  const token = getTokenBySymbol(chainId, assetSymbol);
+
+  let token: Token;
+  try {
+    token = getTokenBySymbol(chainId, assetSymbol);
+  } catch (e) {
+    return null;
+  }
+
   const chainIcon = getIcon(chainId, "network");
 
   return (
