@@ -280,7 +280,7 @@ export function getEstimatedLiquidationTimeInHours(
   if (totalFeesPerHour.eq(0)) return 0;
 
   const hours = netValue
-    .add(priceImpactDeltaUsd.lt(0) ? priceImpactDeltaUsd : 0)
+    .add(priceImpactDeltaUsd)
     .sub(liquidationCollateralUsd)
     .div(borrowFeePerHour.abs().add(fundingFeePerHour.abs()));
 
