@@ -310,10 +310,6 @@ msgstr "取回金额"
 msgid "An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from temporary wicks."
 msgstr "高质量价格供给的总和决定了清算时间。使头寸不受暂时波动的影响<<<<<<< HEAD======="
 
-#: src/pages/Ecosystem/Ecosystem.js
-#~ msgid "Announcement"
-#~ msgstr "公告>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
-
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "App"
 msgstr ""
@@ -384,10 +380,6 @@ msgstr ""
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
 msgstr "若流动率不足以交换GLP {0} 成 {swapTokenSymbol}, 您可使用下方其他选项："
-
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "Assets Under Management"
-#~ msgstr "管理中资产"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})."
@@ -545,16 +537,8 @@ msgid "Buy GMX from decentralized exchanges"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-#~ msgid "Buy GMX from decentralized exchanges<<<<<<< HEAD======="
-#~ msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX on {0}"
 msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-#~ msgid "Buy GMX on {0}>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
-#~ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using Decentralized Exchange Aggregators:"
@@ -1049,11 +1033,6 @@ msgstr "复制"
 #: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "Copy Address"
 msgstr "复制地址"
-
-#: src/pages/Dashboard/DashboardV1.js
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "Could not add token to MetaMask"
-#~ msgstr "无法加入代币至小狐狸钱包"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Could not decrease {0} {longOrShortText}, +{1} USD, Acceptable Price: {2}"
@@ -2516,10 +2495,6 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Long Positions"
 msgstr "开仓做多"
-
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "Long positions: {0} USD, Short positions: {1} USD, {volumeLabel} volume: {2} USD"
-#~ msgstr "多头头寸:{0}USD，空头头寸：{1} USD, {volumeLabel} 数量：{2} USD"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Long {0}"
@@ -4403,10 +4378,6 @@ msgstr ""
 msgid "Total Fees"
 msgstr "费用总额"
 
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "Total Fees Distributed"
-#~ msgstr "分配费用总额"
-
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total Rebates"
 msgstr "返利总额"
@@ -4459,17 +4430,9 @@ msgstr "用户总数"
 msgid "Total Volume"
 msgstr "总量"
 
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "Total Volume Since 28 April 2021"
-#~ msgstr "自2021年4月28日以来的总成交量"
-
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 msgstr "活跃总数： {openTotal}, 已执行: {executedTotal}, 已取消: {cancelledTotal}"
-
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "Total fees earned since {0}: {1} USD<0/>Fee assets: {feeText}"
-#~ msgstr "自{0}以来赚取的费用总额: {1} USD<0/>费用资产: {feeText}"
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
@@ -4655,10 +4618,6 @@ msgstr "种类"
 #: src/components/Referrals/TradersStats.tsx
 msgid "USD Value may not be accurate since the data does not contain prices for {0}"
 msgstr ""
-
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "USDG Debt"
-#~ msgstr "USDG负债"
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/DashboardV2.js
@@ -5578,7 +5537,3 @@ msgstr "{title} 在 Arbitrum上:"
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title} on Avalanche:"
 msgstr "{title} 在 Avalanche上:"
-
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "{volumeLabel} Volume"
-#~ msgstr "{volumeLabel} 体积"

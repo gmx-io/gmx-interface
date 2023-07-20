@@ -310,10 +310,6 @@ msgstr "수령할 양"
 msgid "An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from temporary wicks."
 msgstr "고품질의 여러 가격 피드를 통해 청산 발생 시기를 결정합니다. 이것은 일시적인 가격 변화로부터 포지션을 안전하게 유지합니다.<<<<<<< HEAD======="
 
-#: src/pages/Ecosystem/Ecosystem.js
-#~ msgid "Announcement"
-#~ msgstr "공지>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
-
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "App"
 msgstr ""
@@ -384,10 +380,6 @@ msgstr ""
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
 msgstr "{0}에서 {swapTokenSymbol}로 교환할 수 있는 유동성이 GLP에 충분하지 않기 때문에, 이하의 옵션을 사용해주세요:"
-
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "Assets Under Management"
-#~ msgstr "총 운용자산"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})."
@@ -545,16 +537,8 @@ msgid "Buy GMX from decentralized exchanges"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-#~ msgid "Buy GMX from decentralized exchanges<<<<<<< HEAD======="
-#~ msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX on {0}"
 msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-#~ msgid "Buy GMX on {0}>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
-#~ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using Decentralized Exchange Aggregators:"
@@ -1049,11 +1033,6 @@ msgstr "복사"
 #: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "Copy Address"
 msgstr "주소 복사"
-
-#: src/pages/Dashboard/DashboardV1.js
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "Could not add token to MetaMask"
-#~ msgstr "메타마스크에 토큰을 추가하지 못했습니다"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Could not decrease {0} {longOrShortText}, +{1} USD, Acceptable Price: {2}"
@@ -2516,10 +2495,6 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Long Positions"
 msgstr "롱 포지션"
-
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "Long positions: {0} USD, Short positions: {1} USD, {volumeLabel} volume: {2} USD"
-#~ msgstr "롱 포지션: {0} USD, 숏 포지션: {1} USD, {volumeLabel} 거래량: {2} USD"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Long {0}"
@@ -4403,10 +4378,6 @@ msgstr ""
 msgid "Total Fees"
 msgstr "총 수수료"
 
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "Total Fees Distributed"
-#~ msgstr "총 분배된 수수료"
-
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total Rebates"
 msgstr "총 소개 보수"
@@ -4459,17 +4430,9 @@ msgstr "총 유저"
 msgid "Total Volume"
 msgstr "총 거래량"
 
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "Total Volume Since 28 April 2021"
-#~ msgstr "2021년 4월 28일 이후 총 거래량"
-
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 msgstr "전체 액티브: {openTotal}, 실행 완료: {executedTotal}, 취소 완료: {cancelledTotal}"
-
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "Total fees earned since {0}: {1} USD<0/>Fee assets: {feeText}"
-#~ msgstr "{0}이후로 얻은 총 수수료: {1} USD<0/>수수료 자산: {feeText}"
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
@@ -4655,10 +4618,6 @@ msgstr "타입"
 #: src/components/Referrals/TradersStats.tsx
 msgid "USD Value may not be accurate since the data does not contain prices for {0}"
 msgstr ""
-
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "USDG Debt"
-#~ msgstr "USDG 부채"
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/DashboardV2.js
@@ -5575,7 +5534,3 @@ msgstr "Arbitrum {title}"
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title} on Avalanche:"
 msgstr "Avalanche {title}"
-
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "{volumeLabel} Volume"
-#~ msgstr "{volumeLabel} 거래량"

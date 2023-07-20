@@ -40,12 +40,13 @@ export class TVDataProvider {
   };
 
   constructor({ resolutions }) {
-    const { lastBar, currentBar, lastBarRefreshTime, barsInfo } = initialState;
+    const { lastBar, currentBar, lastBarRefreshTime, barsInfo, chartTokenInfo } = initialState;
     this.lastBar = lastBar;
     this.currentBar = currentBar;
     this.lastBarRefreshTime = lastBarRefreshTime;
     this.barsInfo = barsInfo;
     this.supportedResolutions = resolutions;
+    this.chartTokenInfo = chartTokenInfo;
   }
 
   async getLimitBars(chainId: number, ticker: string, period: string, limit: number): Promise<Bar[]> {

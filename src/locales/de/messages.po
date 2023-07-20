@@ -381,10 +381,6 @@ msgstr ""
 msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
 msgstr "Da die Liquidität in GLP nicht ausreicht, um {0} in {swapTokenSymbol} zu tauschen, kannst du die unten stehende Option verwenden, um dies zu tun:"
 
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "Assets Under Management"
-#~ msgstr "Verwaltetes Vermögen"
-
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})."
 msgstr "Verwaltetes Vermögen: GMX-Staked (Alle Chains) + GLP-Pool ({chainName})."
@@ -1037,11 +1033,6 @@ msgstr "Kopieren"
 #: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "Copy Address"
 msgstr "Adresse kopieren"
-
-#: src/pages/Dashboard/DashboardV1.js
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "Could not add token to MetaMask"
-#~ msgstr "Token konnte nicht zu MetaMask hinzugefügt werden"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Could not decrease {0} {longOrShortText}, +{1} USD, Acceptable Price: {2}"
@@ -2501,10 +2492,6 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Long Positions"
 msgstr ""
-
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "Long positions: {0} USD, Short positions: {1} USD, {volumeLabel} volume: {2} USD"
-#~ msgstr "Long-Positionen: {0} USD, Short-Positionen: {1} USD, {volumeLabel} Volumen: {2} USD"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Long {0}"
@@ -4388,10 +4375,6 @@ msgstr ""
 msgid "Total Fees"
 msgstr "Gebühren insgesamt"
 
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "Total Fees Distributed"
-#~ msgstr "Gebühren insgesamt verteilt"
-
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total Rebates"
 msgstr "Rabatte insgesamt"
@@ -4444,17 +4427,9 @@ msgstr "User insgesamt"
 msgid "Total Volume"
 msgstr "Volumen insgesamt"
 
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "Total Volume Since 28 April 2021"
-#~ msgstr "Gesamtvolumen seit 28. April 2021"
-
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 msgstr "Insgesamt aktiv: {openTotal}, ausgeführt: {executedTotal}, cancelled: {cancelledTotal}"
-
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "Total fees earned since {0}: {1} USD<0/>Fee assets: {feeText}"
-#~ msgstr "Insgesamt verdiente Gebühren seit {0}: {1} USD<0/>Gebührenwerte: {feeText}"
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
@@ -4640,10 +4615,6 @@ msgstr "Typ"
 #: src/components/Referrals/TradersStats.tsx
 msgid "USD Value may not be accurate since the data does not contain prices for {0}"
 msgstr ""
-
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "USDG Debt"
-#~ msgstr "USDG Schulden"
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/DashboardV2.js
@@ -5560,7 +5531,3 @@ msgstr "{title} auf Arbitrum:"
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title} on Avalanche:"
 msgstr "{title} auf Avalanche:"
-
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "{volumeLabel} Volume"
-#~ msgstr "{volumeLabel} Volumen"
