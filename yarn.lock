@@ -523,7 +523,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-proposal-private-property-in-object@npm:^7.21.11":
+"@babel/plugin-proposal-private-property-in-object@npm:7.21.11":
   version: 7.21.11
   resolution: "@babel/plugin-proposal-private-property-in-object@npm:7.21.11"
   dependencies:
@@ -9955,7 +9955,7 @@ __metadata:
   resolution: "gambit-interface@workspace:."
   dependencies:
     "@apollo/client": 3.5.6
-    "@babel/plugin-proposal-private-property-in-object": ^7.21.11
+    "@babel/plugin-proposal-private-property-in-object": 7.21.11
     "@davatar/react": 1.8.1
     "@ethersproject/providers": 5.5.1
     "@ethersproject/units": 5.5.0
