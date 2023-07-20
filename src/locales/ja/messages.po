@@ -310,10 +310,6 @@ msgstr "請求額"
 msgid "An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from temporary wicks."
 msgstr "清算が発生した時点で高品質の価格フィードの集成価格が確定します。これによりポジションは一時的変動から守られます。<<<<<<< HEAD======="
 
-#: src/pages/Ecosystem/Ecosystem.js
-#~ msgid "Announcement"
-#~ msgstr "告知>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
-
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "App"
 msgstr ""
@@ -384,10 +380,6 @@ msgstr ""
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
 msgstr "{0}から{swapTokenSymbol}に交換するための流動性がGLPに十分ないため、以下の選択肢を利用してください:"
-
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "Assets Under Management"
-#~ msgstr "管理下の資産総額"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})."
@@ -545,16 +537,8 @@ msgid "Buy GMX from decentralized exchanges"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-#~ msgid "Buy GMX from decentralized exchanges<<<<<<< HEAD======="
-#~ msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX on {0}"
 msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-#~ msgid "Buy GMX on {0}>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
-#~ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using Decentralized Exchange Aggregators:"
@@ -1049,11 +1033,6 @@ msgstr "コピー"
 #: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "Copy Address"
 msgstr "アドレスのコピー"
-
-#: src/pages/Dashboard/DashboardV1.js
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "Could not add token to MetaMask"
-#~ msgstr "メタマスクにトークンを追加できませんでした"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Could not decrease {0} {longOrShortText}, +{1} USD, Acceptable Price: {2}"
@@ -2514,10 +2493,6 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Long Positions"
 msgstr "ロングポジション"
-
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "Long positions: {0} USD, Short positions: {1} USD, {volumeLabel} volume: {2} USD"
-#~ msgstr "ロングポジション: {0} USD ショートポジション: {1} USD  {volumeLabel} 取引高: {2} USD"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Long {0}"
@@ -4401,10 +4376,6 @@ msgstr ""
 msgid "Total Fees"
 msgstr "手数料総額"
 
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "Total Fees Distributed"
-#~ msgstr "分配済手数料総額"
-
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total Rebates"
 msgstr "リベート総額"
@@ -4457,17 +4428,9 @@ msgstr "ユーザー総数"
 msgid "Total Volume"
 msgstr "総取引高"
 
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "Total Volume Since 28 April 2021"
-#~ msgstr "2021年4月28日以降の総取引高"
-
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 msgstr "合計 アクティブ: {openTotal} 執行済: {executedTotal} キャンセル済: {cancelledTotal}"
-
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "Total fees earned since {0}: {1} USD<0/>Fee assets: {feeText}"
-#~ msgstr "{0}以降の手数料総額: {1} USD<0/>手数料アセット: {feeText}"
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
@@ -4653,10 +4616,6 @@ msgstr "タイプ"
 #: src/components/Referrals/TradersStats.tsx
 msgid "USD Value may not be accurate since the data does not contain prices for {0}"
 msgstr ""
-
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "USDG Debt"
-#~ msgstr "USDG負債"
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/DashboardV2.js
@@ -5573,7 +5532,3 @@ msgstr "Arbitrum上の{title}"
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title} on Avalanche:"
 msgstr "Avalanche上の{title}"
-
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "{volumeLabel} Volume"
-#~ msgstr "{volumeLabel} 取引高"

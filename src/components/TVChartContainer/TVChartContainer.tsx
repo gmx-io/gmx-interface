@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
 import { useLocalStorage, useMedia } from "react-use";
 import { defaultChartProps, disabledFeaturesOnMobile } from "./constants";
@@ -35,6 +35,7 @@ type Props = {
     minPrice: BigNumber;
     maxPrice: BigNumber;
   };
+  supportedResolutions: typeof SUPPORTED_RESOLUTIONS_V1;
 };
 
 export default function TVChartContainer({
@@ -47,6 +48,7 @@ export default function TVChartContainer({
   period,
   setPeriod,
   chartToken,
+  supportedResolutions,
 }: Props) {
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const tvWidgetRef = useRef<IChartingLibraryWidget | null>(null);
@@ -56,8 +58,6 @@ export default function TVChartContainer({
   const { datafeed } = useTVDatafeed({ dataProvider });
   const isMobile = useMedia("(max-width: 550px)");
   const symbolRef = useRef(symbol);
-
-  const supportedResolutions = useMemo(() => dataProvider?.resolutions || SUPPORTED_RESOLUTIONS_V1, [dataProvider]);
 
   useEffect(() => {
     if (chartToken.maxPrice && chartToken.minPrice && chartToken.symbol) {
@@ -173,7 +173,7 @@ export default function TVChartContainer({
     };
     // We don't want to re-initialize the chart when the symbol changes. This will make the chart flicker.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId]);
+  }, [chainId, dataProvider]);
 
   return (
     <div className="ExchangeChart-error">

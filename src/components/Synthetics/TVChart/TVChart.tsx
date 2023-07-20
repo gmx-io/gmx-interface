@@ -247,6 +247,7 @@ export function TVChart({
               symbol: chartToken.symbol,
               ...chartToken.prices,
             }}
+            supportedResolutions={SUPPORTED_RESOLUTIONS_V2}
           />
         )}
       </div>
