@@ -4,16 +4,22 @@ import PositionDropdown from "components/Exchange/PositionDropdown";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { PositionOrderInfo, isIncreaseOrderType } from "domain/synthetics/orders";
-import { PositionInfo, formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
-import { formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
+import {
+  PositionInfo,
+  formatLeverage,
+  formatLiquidationPrice,
+  usePositionsConstants,
+} from "domain/synthetics/positions";
+import { applyFactor, formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
 import { AiOutlineEdit } from "react-icons/ai";
 import { ImSpinner2 } from "react-icons/im";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/fees";
+import { getBorrowingFeeRateUsd, getFundingFeeRateUsd, getPriceImpactForPosition } from "domain/synthetics/fees";
 import { TradeMode, getTriggerThresholdType } from "domain/synthetics/trade";
 import { CHART_PERIODS } from "lib/legacy";
 import "./PositionItem.scss";
+import { useChainId } from "lib/chains";
 
 export type Props = {
   position: PositionInfo;
@@ -34,8 +40,32 @@ export function PositionItem(p: Props) {
   const { positionOrders } = p;
   const displayedPnl = p.savedShowPnlAfterFees ? p.position.pnlAfterFees : p.position.pnl;
   const displayedPnlPercentage = p.savedShowPnlAfterFees ? p.position.pnlAfterFeesPercentage : p.position.pnlPercentage;
-
+  const { chainId } = useChainId();
   const indexPriceDecimals = p.position?.indexToken?.priceDecimals;
+  const { minCollateralUsd } = usePositionsConstants(chainId);
+
+  function getLiqHours() {
+    const { marketInfo, isLong, sizeInUsd, isOpening } = p.position;
+
+    if (isOpening || !minCollateralUsd) return;
+
+    let liquidationCollateralUsd = applyFactor(sizeInUsd, marketInfo.minCollateralFactor);
+    if (liquidationCollateralUsd.lt(minCollateralUsd)) {
+      liquidationCollateralUsd = minCollateralUsd;
+    }
+    const borrowFeePerHour = getBorrowingFeeRateUsd(marketInfo, isLong, sizeInUsd, CHART_PERIODS["1d"]);
+    const fundingFeePerHour = getFundingFeeRateUsd(marketInfo, isLong, sizeInUsd, CHART_PERIODS["1d"]);
+    const priceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, sizeInUsd.mul(-1), isLong, {
+      fallbackToZero: true,
+    });
+
+    const hours = p.position.netValue
+      .add(priceImpactDeltaUsd.lt(0) ? priceImpactDeltaUsd : 0)
+      .sub(liquidationCollateralUsd)
+      .div(borrowFeePerHour.abs().add(fundingFeePerHour.abs()));
+
+    return hours.toNumber().toFixed(0);
+  }
 
   function renderNetValue() {
     return (
@@ -207,6 +237,7 @@ export function PositionItem(p: Props) {
 
   function renderLiquidationPrice() {
     let liqPriceWarning: string | undefined;
+    const hours = getLiqHours();
 
     if (!p.position.liquidationPrice) {
       if (!p.position.isLong && p.position.collateralAmount.gte(p.position.sizeInTokens)) {
@@ -227,6 +258,32 @@ export function PositionItem(p: Props) {
           position={p.isLarge ? "left-bottom" : "right-bottom"}
           handleClassName="plain"
           renderContent={() => <div>{liqPriceWarning}</div>}
+        />
+      );
+    }
+
+    if (hours) {
+      return (
+        <Tooltip
+          handle={formatLiquidationPrice(p.position.liquidationPrice, { displayDecimals: indexPriceDecimals }) || "..."}
+          position={p.isLarge ? "left-bottom" : "right-bottom"}
+          handleClassName="plain"
+          renderContent={() => (
+            <div>
+              <div>Liquidation Price is influenced by Fees, Collateral value, and Price Impact.</div>
+              <br />
+              <StatsTooltipRow
+                label={"Estimated time to Liquidation"}
+                value={hours ? `${hours} days` : "..."}
+                showDollar={false}
+              />
+              <br />
+              <div className="text-gray">
+                Estimation based on current Borrow and Funding Fees rates reducing position's Collateral over time,
+                excluding any price movement.
+              </div>
+            </div>
+          )}
         />
       );
     }
