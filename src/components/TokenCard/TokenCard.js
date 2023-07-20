@@ -180,11 +180,11 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
 
           <div className="Home-token-card-option-action">
             <div className="buy">
-              <BuyLink to="/pools" className="default-btn" network={AVALANCHE_FUJI}>
-                <Trans>Buy on Avalanche FUJI</Trans>
+              <BuyLink to="/pools" className="default-btn" network={ARBITRUM}>
+                <Trans>Buy on Arbitrum</Trans>
               </BuyLink>
-              <BuyLink to="/pools" className="default-btn" network={ARBITRUM_GOERLI}>
-                <Trans>Buy on Arbitrum Goerli</Trans>
+              <BuyLink to="/pools" className="default-btn" network={AVALANCHE}>
+                <Trans>Buy on Avalanche</Trans>
               </BuyLink>
             </div>
             {/* <a

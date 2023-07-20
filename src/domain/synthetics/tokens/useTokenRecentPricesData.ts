@@ -1,5 +1,5 @@
 import { getOracleKeeperUrl } from "config/oracleKeeper";
-import { getToken, getTokens, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { getToken, getV2Tokens, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { jsonFetcher } from "lib/fetcher";
 import { USD_DECIMALS } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
@@ -46,7 +46,7 @@ export function useTokenRecentPrices(chainId: number): TokenPricesDataResult {
           };
         });
 
-        const stableTokens = getTokens(chainId).filter((token) => token.isStable);
+        const stableTokens = getV2Tokens(chainId).filter((token) => token.isStable);
 
         stableTokens.forEach((token) => {
           if (!result[token.address]) {
@@ -62,11 +62,6 @@ export function useTokenRecentPrices(chainId: number): TokenPricesDataResult {
         if (result[wrappedToken.address] && !result[NATIVE_TOKEN_ADDRESS]) {
           result[NATIVE_TOKEN_ADDRESS] = result[wrappedToken.address];
         }
-
-        // // TODO: remove this after the oracle keeper is updated
-        // if (result["0xEe01c0CD76354C383B8c7B4e65EA88D00B06f36f"] && !result[NATIVE_TOKEN_ADDRESS]) {
-        //   result[NATIVE_TOKEN_ADDRESS] = result["0xEe01c0CD76354C383B8c7B4e65EA88D00B06f36f"];
-        // }
 
         return {
           pricesData: result,

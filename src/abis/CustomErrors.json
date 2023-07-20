@@ -349,6 +349,11 @@
       "type": "error"
     },
     {
+      "inputs": [],
+      "name": "EmptySizeDeltaInTokens",
+      "type": "error"
+    },
+    {
       "inputs": [
         {
           "internalType": "address",
@@ -511,6 +516,22 @@
         }
       ],
       "name": "InsufficientReserve",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "reservedUsd",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "maxReservedUsd",
+          "type": "uint256"
+        }
+      ],
+      "name": "InsufficientReserveForOpenInterest",
       "type": "error"
     },
     {
@@ -1514,22 +1535,6 @@
       "inputs": [
         {
           "internalType": "uint256",
-          "name": "baseSizeDeltaInTokens",
-          "type": "uint256"
-        },
-        {
-          "internalType": "int256",
-          "name": "priceImpactAmount",
-          "type": "int256"
-        }
-      ],
-      "name": "NegativeSizeDeltaInTokens",
-      "type": "error"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
           "name": "tokensWithPricesLength",
           "type": "uint256"
         }
@@ -2038,8 +2043,8 @@
       "type": "error"
     }
   ],
-  "bytecode": "0x60566037600b82828239805160001a607314602a57634e487b7160e01b600052600060045260246000fd5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea26469706673582212204638651572c419ee91a40aed5b27622e666d0e2005da0cd387937885d066861864736f6c63430008120033",
-  "deployedBytecode": "0x73000000000000000000000000000000000000000030146080604052600080fdfea26469706673582212204638651572c419ee91a40aed5b27622e666d0e2005da0cd387937885d066861864736f6c63430008120033",
+  "bytecode": "0x60566037600b82828239805160001a607314602a57634e487b7160e01b600052600060045260246000fd5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220d1757edc5d1f8308aefb387c9807a59afc7704ff6770f17f75680168e4f004c064736f6c63430008120033",
+  "deployedBytecode": "0x73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220d1757edc5d1f8308aefb387c9807a59afc7704ff6770f17f75680168e4f004c064736f6c63430008120033",
   "linkReferences": {},
   "deployedLinkReferences": {}
 }

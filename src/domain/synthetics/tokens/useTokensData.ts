@@ -1,4 +1,4 @@
-import { getAvailableTradeTokens, getTokensMap } from "config/tokens";
+import { getTokensMap, getV2Tokens } from "config/tokens";
 import { useMemo } from "react";
 import { TokensData } from "./types";
 import { useTokenBalances } from "./useTokenBalances";
@@ -9,23 +9,14 @@ type TokensDataResult = {
   pricesUpdatedAt?: number;
 };
 
-export function useAvailableTokensData(chainId: number): TokensDataResult {
-  const tokenAddresses = useMemo(
-    () => getAvailableTradeTokens(chainId, { includeSynthetic: true }).map((token) => token.address),
-    [chainId]
-  );
-
-  return useTokensData(chainId, { tokenAddresses });
-}
-
-export function useTokensData(chainId: number, { tokenAddresses }: { tokenAddresses: string[] }): TokensDataResult {
+export function useTokensData(chainId: number): TokensDataResult {
   const tokenConfigs = getTokensMap(chainId);
-  const { balancesData } = useTokenBalances(chainId, { tokenAddresses });
+  const { balancesData } = useTokenBalances(chainId);
   const { pricesData, updatedAt: pricesUpdatedAt } = useTokenRecentPrices(chainId);
 
-  const tokenKeys = tokenAddresses.join("-");
-
   return useMemo(() => {
+    const tokenAddresses = getV2Tokens(chainId).map((token) => token.address);
+
     if (!pricesData) {
       return {
         tokensData: undefined,
@@ -34,7 +25,7 @@ export function useTokensData(chainId: number, { tokenAddresses }: { tokenAddres
     }
 
     return {
-      tokensData: tokenKeys.split("-").reduce((acc: TokensData, tokenAddress) => {
+      tokensData: tokenAddresses.reduce((acc: TokensData, tokenAddress) => {
         const prices = pricesData[tokenAddress];
         const balance = balancesData?.[tokenAddress];
         const tokenConfig = tokenConfigs[tokenAddress];
@@ -52,5 +43,5 @@ export function useTokensData(chainId: number, { tokenAddresses }: { tokenAddres
       }, {} as TokensData),
       pricesUpdatedAt,
     };
-  }, [pricesData, tokenKeys, pricesUpdatedAt, balancesData, tokenConfigs]);
+  }, [chainId, pricesData, pricesUpdatedAt, balancesData, tokenConfigs]);
 }

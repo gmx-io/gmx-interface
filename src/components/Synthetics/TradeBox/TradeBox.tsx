@@ -1175,6 +1175,8 @@ export function TradeBox(p: Props) {
                   ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
                       displayDecimals: toToken?.priceDecimals,
                     })
+                  : existingPosition
+                  ? undefined
                   : "-"
               }
             />

@@ -137,7 +137,6 @@ export function MarketSelector({
         <div className="TokenSelector-tokens">
           {filteredOptions.map((option, marketIndex) => {
             const { marketInfo, balance, balanceUsd, indexName, state = {} } = option;
-
             const assetImage = importImage(
               `ic_${marketInfo.isSpotOnly ? "spot" : marketInfo.indexToken.symbol.toLowerCase()}_40.svg`
             );

@@ -1,6 +1,6 @@
 import { useWeb3React } from "@web3-react/core";
 import { getContract } from "config/contracts";
-import { getWhitelistedTokens } from "config/tokens";
+import { getWhitelistedV1Tokens } from "config/tokens";
 import { TokenInfo, useInfoTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
@@ -51,7 +51,7 @@ export default function Stats() {
   const readerAddress = getContract(chainId, "Reader");
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
 
-  const whitelistedTokens = getWhitelistedTokens(chainId);
+  const whitelistedTokens = getWhitelistedV1Tokens(chainId);
   const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
   const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
 

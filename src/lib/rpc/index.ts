@@ -12,18 +12,6 @@ import {
 import { ethers } from "ethers";
 import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 
-const arbWsProvider = new ethers.providers.WebSocketProvider(getAlchemyWsUrl());
-
-const avaxWsProvider = new ethers.providers.JsonRpcProvider("https://api.avax.network/ext/bc/C/rpc");
-avaxWsProvider.pollingInterval = 2000;
-
-const goerliWsProvider = new ethers.providers.WebSocketProvider(
-  "wss://arb-goerli.g.alchemy.com/v2/cZfd99JyN42V9Clbs_gOvA3GSBZH1-1j"
-);
-
-const fujiWsProvider = new ethers.providers.JsonRpcProvider(getRpcUrl(AVALANCHE_FUJI));
-fujiWsProvider.pollingInterval = 2000;
-
 export function getProvider(library: Web3Provider | undefined, chainId: number) {
   let provider;
 
@@ -76,23 +64,47 @@ export function useJsonRpcProvider(chainId: number) {
   return { provider };
 }
 
+let arbWsProvider: JsonRpcProvider | undefined = undefined;
+let avaxWsProvider: JsonRpcProvider | undefined = undefined;
+let goerliWsProvider: JsonRpcProvider | undefined = undefined;
+let fujiWsProvider: JsonRpcProvider | undefined = undefined;
+
 export function getWsProvider(active, chainId) {
   if (!active) {
     return;
   }
   if (chainId === ARBITRUM) {
+    if (!arbWsProvider) {
+      arbWsProvider = new ethers.providers.WebSocketProvider(getAlchemyWsUrl());
+    }
+
     return arbWsProvider;
   }
 
   if (chainId === AVALANCHE) {
+    if (!avaxWsProvider) {
+      avaxWsProvider = new ethers.providers.WebSocketProvider("wss://api.avax.network/ext/bc/C/ws");
+    }
+
     return avaxWsProvider;
   }
 
   if (chainId === ARBITRUM_GOERLI) {
+    if (!goerliWsProvider) {
+      goerliWsProvider = new ethers.providers.WebSocketProvider(
+        "wss://arb-goerli.g.alchemy.com/v2/cZfd99JyN42V9Clbs_gOvA3GSBZH1-1j"
+      );
+    }
+
     return goerliWsProvider;
   }
 
   if (chainId === AVALANCHE_FUJI) {
+    if (!fujiWsProvider) {
+      fujiWsProvider = new ethers.providers.JsonRpcProvider(getRpcUrl(AVALANCHE_FUJI));
+      fujiWsProvider.pollingInterval = 2000;
+    }
+
     return fujiWsProvider;
   }
 }

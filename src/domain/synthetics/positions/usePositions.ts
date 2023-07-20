@@ -141,38 +141,7 @@ export function usePositions(
         ] = Object.values(numbers).map(BigNumber.from);
 
         const { isLong } = flags;
-
-        const {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          referral,
-          funding,
-          borrowing,
-          // collateralPrice,
-          // positionFeeFactor,
-          // protocolFeeAmount,
-          // positionFeeReceiverFactor,
-          // feeReceiverAmount,
-          // feeAmountForPool,
-          // positionFeeAmountForPool,
-          // positionFeeAmount,
-          // totalNetCostAmount,
-          // totalNetCostUsd,
-        } = fees;
-
-        // const [
-        //   referralCode,
-        //   affiliate,
-        //   trader,
-        //   totalRebateFactor,
-        //   traderDiscountFactor,
-        //   totalRebateAmount,
-        //   traderDiscountAmount,
-        //   affiliateRewardAmount,
-        // ] = referral;
-
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const [borrowingFeeUsd, borrowingFeeAmount, borrowingFeeReceiverFactor, borrowingFeeAmountForFeeReceiver] =
-          Object.values(borrowing).map(BigNumber.from);
+        const { funding, borrowing } = fees;
 
         const [
           fundingFeeAmount,
@@ -207,7 +176,7 @@ export function usePositions(
           increasedAtBlock,
           decreasedAtBlock,
           isLong,
-          pendingBorrowingFeesUsd: borrowingFeeUsd,
+          pendingBorrowingFeesUsd: BigNumber.from(borrowing.borrowingFeeUsd),
           fundingFeeAmount,
           claimableLongTokenAmount,
           claimableShortTokenAmount,

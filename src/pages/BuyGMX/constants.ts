@@ -157,14 +157,6 @@ export const TRANSFER_EXCHANGES: Exchange[] = [
     },
   },
   {
-    name: "Multichain",
-    icon: "ic_multichain.svg",
-    links: {
-      [ARBITRUM]: "https://app.multichain.org/#/router",
-      [AVALANCHE]: "https://app.multichain.org/#/router",
-    },
-  },
-  {
     name: "O3",
     icon: "ic_o3.png",
     links: {
