@@ -310,10 +310,6 @@ msgstr "Сумма к оплате"
 msgid "An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from temporary wicks."
 msgstr "Совокупность высококачественных ценовых сигналов определяет, когда происходит ликвидация. Это позволяет обезопасить позиции от временных колебаний.<<<<<<< HEAD======="
 
-#: src/pages/Ecosystem/Ecosystem.js
-#~ msgid "Announcement"
-#~ msgstr "Объявление>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
-
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "App"
 msgstr ""
@@ -384,10 +380,6 @@ msgstr ""
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
 msgstr "Поскольку в GLP недостаточно ликвидности для обмена {0} на {swapTokenSymbol}, вы можете воспользоваться приведенной ниже опцией, чтобы сделать это:"
-
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "Assets Under Management"
-#~ msgstr "Активы под управлением"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})."
@@ -545,16 +537,8 @@ msgid "Buy GMX from decentralized exchanges"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-#~ msgid "Buy GMX from decentralized exchanges<<<<<<< HEAD======="
-#~ msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX on {0}"
 msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-#~ msgid "Buy GMX on {0}>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
-#~ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using Decentralized Exchange Aggregators:"
@@ -1049,11 +1033,6 @@ msgstr "Копировать"
 #: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "Copy Address"
 msgstr "Копировать Адрес"
-
-#: src/pages/Dashboard/DashboardV1.js
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "Could not add token to MetaMask"
-#~ msgstr "Невозможно добавить Токен в MetaMask"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Could not decrease {0} {longOrShortText}, +{1} USD, Acceptable Price: {2}"
@@ -2514,10 +2493,6 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Long Positions"
 msgstr "Лонг позиции"
-
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "Long positions: {0} USD, Short positions: {1} USD, {volumeLabel} volume: {2} USD"
-#~ msgstr "Лонг позиции: {0} USD, Шорт позиции: {1} USD, {volumeLabel} объем: {2} USD"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Long {0}"
@@ -4401,10 +4376,6 @@ msgstr ""
 msgid "Total Fees"
 msgstr "Общая сумма Комиссии"
 
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "Total Fees Distributed"
-#~ msgstr "Итого Распределено Комиссионных"
-
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total Rebates"
 msgstr "Всего Ребайтов"
@@ -4457,17 +4428,9 @@ msgstr "Всего Пользователей"
 msgid "Total Volume"
 msgstr "Общий Объем"
 
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "Total Volume Since 28 April 2021"
-#~ msgstr "Общий Объем с 28 Апреля 2021"
-
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 msgstr "Всего активных: {openTotal}, выполненных: {executedTotal}, отмененных: {cancelledTotal}"
-
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "Total fees earned since {0}: {1} USD<0/>Fee assets: {feeText}"
-#~ msgstr "Общая сумма комиссионных, заработанных с {0}: {1} USD<0/>Комиссионные средства: {feeText}"
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
@@ -4653,10 +4616,6 @@ msgstr "Вид"
 #: src/components/Referrals/TradersStats.tsx
 msgid "USD Value may not be accurate since the data does not contain prices for {0}"
 msgstr ""
-
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "USDG Debt"
-#~ msgstr "USDG Долг"
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/DashboardV2.js
@@ -5573,7 +5532,3 @@ msgstr "{title} на Arbitrum:"
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title} on Avalanche:"
 msgstr "{title} на Avalanche:"
-
-#: src/pages/Dashboard/DashboardV1.js
-#~ msgid "{volumeLabel} Volume"
-#~ msgstr "{volumeLabel} Объем"
