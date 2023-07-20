@@ -12,6 +12,7 @@ import {
   withdrawalGasLimitKey,
 } from "config/dataStore";
 import { GasLimitsConfig } from "./types";
+import { BigNumber } from "ethers";
 
 type GasLimitsResult = {
   gasLimits?: GasLimitsConfig;
@@ -68,16 +69,15 @@ export function useGasLimits(chainId: number): GasLimitsResult {
       const results = res.data.dataStore;
 
       return {
-        depositSingleToken: results.depositSingleToken.returnValues[0],
-        depositMultiToken: results.depositMultiToken.returnValues[0],
-
-        withdrawalMultiToken: results.withdrawalMultiToken.returnValues[0],
-        singleSwap: results.singleSwap.returnValues[0],
-        swapOrder: results.swapOrder.returnValues[0],
-        increaseOrder: results.increaseOrder.returnValues[0],
-        decreaseOrder: results.decreaseOrder.returnValues[0],
-        estimatedFeeBaseGasLimit: results.estimatedFeeBaseGasLimit.returnValues[0],
-        estimatedFeeMultiplierFactor: results.estimatedFeeMultiplierFactor.returnValues[0],
+        depositSingleToken: BigNumber.from(results.depositSingleToken.returnValues[0]),
+        depositMultiToken: BigNumber.from(results.depositMultiToken.returnValues[0]),
+        withdrawalMultiToken: BigNumber.from(results.withdrawalMultiToken.returnValues[0]),
+        singleSwap: BigNumber.from(results.singleSwap.returnValues[0]),
+        swapOrder: BigNumber.from(results.swapOrder.returnValues[0]),
+        increaseOrder: BigNumber.from(results.increaseOrder.returnValues[0]),
+        decreaseOrder: BigNumber.from(results.decreaseOrder.returnValues[0]),
+        estimatedFeeBaseGasLimit: BigNumber.from(results.estimatedFeeBaseGasLimit.returnValues[0]),
+        estimatedFeeMultiplierFactor: BigNumber.from(results.estimatedFeeMultiplierFactor.returnValues[0]),
       };
     },
   });

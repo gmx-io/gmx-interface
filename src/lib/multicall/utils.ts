@@ -10,13 +10,12 @@ import {
   getFallbackRpcUrl,
   getRpcUrl,
 } from "config/chains";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 import { createPublicClient, getContract as getViemContract, http } from "viem";
 import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "viem/chains";
 import { MulticallRequestConfig, MulticallResult } from "./types";
 
 import { getContract } from "config/contracts";
-import { mapValues } from "lodash";
 import { sleep } from "lib/sleep";
 
 export const MAX_TIMEOUT = 2000;
@@ -166,26 +165,12 @@ export class Multicall {
       const { contractKey, callKey } = originalKeys[i];
 
       if (status === "success") {
-        let values: any = result;
+        let values: any;
 
-        if (typeof values === "bigint") {
-          values = [BigNumber.from(values)];
-        } else if (Array.isArray(values)) {
-          values = values.map((value) => {
-            if (typeof value === "bigint") {
-              return BigNumber.from(value);
-            }
-
-            return value;
-          });
-        } else if (typeof values === "object") {
-          values = mapValues(values, (value) => {
-            if (typeof value === "bigint") {
-              return BigNumber.from(value);
-            }
-
-            return value;
-          });
+        if (Array.isArray(result) || typeof result === "object") {
+          values = result;
+        } else {
+          values = [result];
         }
 
         multicallResult.data[contractKey] = multicallResult.data[contractKey] || {};

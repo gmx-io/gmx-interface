@@ -58,9 +58,11 @@ export function useDebugExecutionPrice(
 
       // eslint-disable-next-line no-console
       console.log("useExecutionPrice", {
-        executionPrice: formatUsd(parseContractPrice(returnValues.executionPrice, marketInfo!.indexToken.decimals)),
-        priceImpactUsd: formatDeltaUsd(returnValues.priceImpactUsd),
-        priceImpactDiffUsd: formatUsd(returnValues.priceImpactDiffUsd),
+        executionPrice: formatUsd(
+          parseContractPrice(BigNumber.from(returnValues.executionPrice), marketInfo!.indexToken.decimals)
+        ),
+        priceImpactUsd: formatDeltaUsd(BigNumber.from(returnValues.priceImpactUsd)),
+        priceImpactDiffUsd: formatUsd(BigNumber.from(returnValues.priceImpactDiffUsd)),
       });
     },
   });
