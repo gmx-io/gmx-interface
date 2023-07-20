@@ -6,7 +6,7 @@ import useTVDatafeed from "domain/tradingview/useTVDatafeed";
 import { ChartData, IChartingLibraryWidget, IPositionLineAdapter } from "../../charting_library";
 import { getObjectKeyFromValue } from "domain/tradingview/utils";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
-import { getNormalizedTokenSymbol, isChartAvailabeForToken } from "config/tokens";
+import { isChartAvailabeForToken } from "config/tokens";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 import Loader from "components/Common/Loader";
 import { Token } from "domain/tokens";
@@ -65,7 +65,7 @@ export default function TVChartContainer({
       const formattedPrice = parseFloat(formatAmount(averagePrice, USD_DECIMALS, 2));
       dataProvider?.setCurrentChartToken({
         price: formattedPrice,
-        ticker: getNormalizedTokenSymbol(chartToken.symbol),
+        ticker: chartToken.symbol,
         isChartReady: chartReady,
       });
     }
