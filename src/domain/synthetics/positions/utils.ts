@@ -245,3 +245,17 @@ export function formatLeverage(leverage?: BigNumber) {
 
   return `${formatAmount(leverage, 4, 2)}x`;
 }
+
+export function formatEstimatedLiquidationTime(hours: number) {
+  if (!hours) return;
+  hours = Math.floor(hours);
+  const days = Math.floor(hours / 24);
+  if (days > 1000) {
+    return "> 1000 days";
+  }
+  if (days < 1) {
+    return `${hours} hours`;
+  }
+
+  return `${days} days`;
+}
