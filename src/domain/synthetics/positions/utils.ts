@@ -247,10 +247,9 @@ export function formatLeverage(leverage?: BigNumber) {
   return `${formatAmount(leverage, 4, 2)}x`;
 }
 
-export function getEstimatedLiquidationTime(
+export function getEstimatedLiquidationTimeInHours(
   position: PositionInfo,
-  minCollateralUsd: BigNumber | undefined,
-  period = "1h"
+  minCollateralUsd: BigNumber | undefined
 ): number {
   const { marketInfo, isLong, sizeInUsd, isOpening, netValue } = position;
 
@@ -260,11 +259,21 @@ export function getEstimatedLiquidationTime(
   if (liquidationCollateralUsd.lt(minCollateralUsd)) {
     liquidationCollateralUsd = minCollateralUsd;
   }
-  const borrowFeePerHour = getBorrowingFeeRateUsd(marketInfo, isLong, sizeInUsd, CHART_PERIODS[period]);
-  const fundingFeePerHour = getFundingFeeRateUsd(marketInfo, isLong, sizeInUsd, CHART_PERIODS[period]);
-  const priceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, sizeInUsd.mul(-1), isLong, {
+  const borrowFeePerHour = getBorrowingFeeRateUsd(marketInfo, isLong, sizeInUsd, CHART_PERIODS["1h"]);
+  const fundingFeePerHour = getFundingFeeRateUsd(marketInfo, isLong, sizeInUsd, CHART_PERIODS["1h"]);
+  const maxNegativePriceImpactUsd = applyFactor(sizeInUsd, marketInfo.maxPositionImpactFactorForLiquidations).mul(-1);
+  let priceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, sizeInUsd.mul(-1), isLong, {
     fallbackToZero: true,
   });
+
+  if (priceImpactDeltaUsd.lt(maxNegativePriceImpactUsd)) {
+    priceImpactDeltaUsd = maxNegativePriceImpactUsd;
+  }
+
+  // Ignore positive price impact
+  if (priceImpactDeltaUsd.gt(0)) {
+    priceImpactDeltaUsd = BigNumber.from(0);
+  }
 
   const totalFeesPerHour = borrowFeePerHour.abs().add(fundingFeePerHour.lt(0) ? fundingFeePerHour.abs() : 0);
 
@@ -278,7 +287,7 @@ export function getEstimatedLiquidationTime(
   return hours.toNumber();
 }
 
-export function formatEstimatedLiquidationTime(hours: number) {
+export function formatEstimatedLiquidationTime(hours?: number) {
   if (!hours) return;
   const days = Math.floor(hours / 24);
   if (days > 1000) {

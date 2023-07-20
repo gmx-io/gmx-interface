@@ -5193,10 +5193,6 @@ msgid "You will receive at least {0} {1} if this order is executed. The executio
 msgstr "해당 주문이 실행되게 되면 최소 {0} {1}을 받을 수 있습니다. 정확한 실행가격은 주문이 실행된 스왑 수수료에 의해 상이합니다."
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-#~ msgid "You will receive at least {toAmountText} if this order is executed. The execution price may vary depending on swap fees and price impact at the time the order is executed."
-#~ msgstr ""
-
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "You will receive at least {toAmountText} if this order is executed. This price is being updated in real time based on Swap Fees and Price Impact."
 msgstr ""
 

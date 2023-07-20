@@ -9,7 +9,7 @@ import {
   formatEstimatedLiquidationTime,
   formatLeverage,
   formatLiquidationPrice,
-  getEstimatedLiquidationTime,
+  getEstimatedLiquidationTimeInHours,
   usePositionsConstants,
 } from "domain/synthetics/positions";
 import { formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
@@ -216,7 +216,7 @@ export function PositionItem(p: Props) {
 
   function renderLiquidationPrice() {
     let liqPriceWarning: string | undefined;
-    const estimatedLiquidationHours = getEstimatedLiquidationTime(p.position, minCollateralUsd);
+    const estimatedLiquidationHours = getEstimatedLiquidationTimeInHours(p.position, minCollateralUsd);
 
     if (!p.position.liquidationPrice) {
       if (!p.position.isLong && p.position.collateralAmount.gte(p.position.sizeInTokens)) {
