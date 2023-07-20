@@ -2,10 +2,11 @@ import { UserReferralInfo } from "domain/referrals";
 import { MarketInfo, getCappedPoolPnl, getPoolUsdWithoutPnl } from "domain/synthetics/markets";
 import { Token, getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber } from "ethers";
-import { BASIS_POINTS_DIVISOR } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR, CHART_PERIODS } from "lib/legacy";
 import { applyFactor, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
-import { getPositionFee, getPriceImpactForPosition } from "../fees";
+import { getBorrowingFeeRateUsd, getFundingFeeRateUsd, getPositionFee, getPriceImpactForPosition } from "../fees";
 import { TokenData, convertToUsd } from "../tokens";
+import { PositionInfo } from "./types";
 
 export function getPositionKey(account: string, marketAddress: string, collateralAddress: string, isLong: boolean) {
   return `${account}:${marketAddress}:${collateralAddress}:${isLong}`;
@@ -246,15 +247,45 @@ export function formatLeverage(leverage?: BigNumber) {
   return `${formatAmount(leverage, 4, 2)}x`;
 }
 
+export function getEstimatedLiquidationTime(
+  position: PositionInfo,
+  minCollateralUsd: BigNumber | undefined,
+  period = "1h"
+): number {
+  const { marketInfo, isLong, sizeInUsd, isOpening, netValue } = position;
+
+  if (isOpening || !minCollateralUsd) return 0;
+
+  let liquidationCollateralUsd = applyFactor(sizeInUsd, marketInfo.minCollateralFactor);
+  if (liquidationCollateralUsd.lt(minCollateralUsd)) {
+    liquidationCollateralUsd = minCollateralUsd;
+  }
+  const borrowFeePerHour = getBorrowingFeeRateUsd(marketInfo, isLong, sizeInUsd, CHART_PERIODS[period]);
+  const fundingFeePerHour = getFundingFeeRateUsd(marketInfo, isLong, sizeInUsd, CHART_PERIODS[period]);
+  const priceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, sizeInUsd.mul(-1), isLong, {
+    fallbackToZero: true,
+  });
+
+  const totalFeesPerHour = borrowFeePerHour.abs().add(fundingFeePerHour.lt(0) ? fundingFeePerHour.abs() : 0);
+
+  if (totalFeesPerHour.eq(0)) return 0;
+
+  const hours = netValue
+    .add(priceImpactDeltaUsd.lt(0) ? priceImpactDeltaUsd : 0)
+    .sub(liquidationCollateralUsd)
+    .div(borrowFeePerHour.abs().add(fundingFeePerHour.abs()));
+
+  return hours.toNumber();
+}
+
 export function formatEstimatedLiquidationTime(hours: number) {
   if (!hours) return;
-  hours = Math.floor(hours);
   const days = Math.floor(hours / 24);
   if (days > 1000) {
     return "> 1000 days";
   }
-  if (days < 1) {
-    return `${hours} hours`;
+  if (hours < 24) {
+    return `${Math.floor(hours)} hours`;
   }
 
   return `${days} days`;

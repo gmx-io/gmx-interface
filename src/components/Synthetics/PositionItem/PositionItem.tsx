@@ -9,14 +9,15 @@ import {
   formatEstimatedLiquidationTime,
   formatLeverage,
   formatLiquidationPrice,
+  getEstimatedLiquidationTime,
   usePositionsConstants,
 } from "domain/synthetics/positions";
-import { applyFactor, formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
+import { formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
 import { AiOutlineEdit } from "react-icons/ai";
 import { ImSpinner2 } from "react-icons/im";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { getBorrowingFeeRateUsd, getFundingFeeRateUsd, getPriceImpactForPosition } from "domain/synthetics/fees";
+import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/fees";
 import { TradeMode, getTriggerThresholdType } from "domain/synthetics/trade";
 import { CHART_PERIODS } from "lib/legacy";
 import "./PositionItem.scss";
@@ -44,29 +45,6 @@ export function PositionItem(p: Props) {
   const { chainId } = useChainId();
   const indexPriceDecimals = p.position?.indexToken?.priceDecimals;
   const { minCollateralUsd } = usePositionsConstants(chainId);
-
-  function getLiqHours(): number {
-    const { marketInfo, isLong, sizeInUsd, isOpening } = p.position;
-
-    if (isOpening || !minCollateralUsd) return 0;
-
-    let liquidationCollateralUsd = applyFactor(sizeInUsd, marketInfo.minCollateralFactor);
-    if (liquidationCollateralUsd.lt(minCollateralUsd)) {
-      liquidationCollateralUsd = minCollateralUsd;
-    }
-    const borrowFeePerHour = getBorrowingFeeRateUsd(marketInfo, isLong, sizeInUsd, CHART_PERIODS["1h"]);
-    const fundingFeePerHour = getFundingFeeRateUsd(marketInfo, isLong, sizeInUsd, CHART_PERIODS["1h"]);
-    const priceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, sizeInUsd.mul(-1), isLong, {
-      fallbackToZero: true,
-    });
-
-    const hours = p.position.netValue
-      .add(priceImpactDeltaUsd.lt(0) ? priceImpactDeltaUsd : 0)
-      .sub(liquidationCollateralUsd)
-      .div(borrowFeePerHour.abs().add(fundingFeePerHour.abs()));
-
-    return hours.toNumber();
-  }
 
   function renderNetValue() {
     return (
@@ -238,7 +216,7 @@ export function PositionItem(p: Props) {
 
   function renderLiquidationPrice() {
     let liqPriceWarning: string | undefined;
-    const hours = getLiqHours();
+    const estimatedLiquidationHours = getEstimatedLiquidationTime(p.position, minCollateralUsd);
 
     if (!p.position.liquidationPrice) {
       if (!p.position.isLong && p.position.collateralAmount.gte(p.position.sizeInTokens)) {
@@ -263,22 +241,21 @@ export function PositionItem(p: Props) {
       );
     }
 
-    if (hours) {
+    if (estimatedLiquidationHours) {
       return (
         <Tooltip
           handle={formatLiquidationPrice(p.position.liquidationPrice, { displayDecimals: indexPriceDecimals }) || "..."}
           position={p.isLarge ? "left-bottom" : "right-bottom"}
-          handleClassName="plain"
+          handleClassName={cx("plain", { "LiqPrice-tooltip-warning": estimatedLiquidationHours < 24 * 7 })}
           renderContent={() => (
             <div>
               <div>Liquidation Price is influenced by Fees, Collateral value, and Price Impact.</div>
               <br />
               <StatsTooltipRow
                 label={"Estimated time to Liquidation"}
-                value={formatEstimatedLiquidationTime(hours)}
+                value={formatEstimatedLiquidationTime(estimatedLiquidationHours)}
                 showDollar={false}
               />
-              <br />
               <br />
               <div className="text-gray">
                 Estimation based on current Borrow and Funding Fees rates reducing position's Collateral over time,
