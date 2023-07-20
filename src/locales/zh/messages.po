@@ -85,7 +85,7 @@ msgstr "这将撤回和取消保留所有代币并暂停授权。<1/><2/>esGMX �
 msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>Other websites may show a higher value as they add positions' collaterals to the GLP pool.</1>"
 msgstr ""
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 #: src/lib/wallets/index.tsx
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr ""
@@ -1659,6 +1659,8 @@ msgstr ""
 msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 msgstr ""
 
+#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
+#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
 #: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
 msgid "Execute order simulation failed."
 msgstr ""
@@ -4238,7 +4240,7 @@ msgstr "esGMX（IOU）代币是可以转让的，如果你愿意，你可以把�
 msgid "The esGMX tokens can be staked or vested at any time."
 msgstr "esGMX代币可以在任何时候被质押或授权"
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 msgstr "标价已改变, 请考虑点击你地址旁的 \"...\" 图示来增加你的允许滑点"
 
@@ -4299,7 +4301,7 @@ msgid "There are more shorts than longs, borrow fees for longing is currently ze
 msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "There is not enough ETH in your account on Arbitrum to send this transaction.<0/><1/><2>Bridge ETH to Arbitrum</2>"
 msgstr "您在Arbitrum的账户中没有足够的ETH来发送这笔交易<0/><1/><2>转接ETH到Arbitrum</2>"
 
@@ -4544,11 +4546,11 @@ msgstr "交易"
 msgid "Transaction completed!"
 msgstr "交易完成!"
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction failed"
 msgstr "交易失败"
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings. <2>More info</2>"
 msgstr "由于RPC错误，交易失败<0/><1/>请尝试在你的钱包设置中改变RPC网址 <2>更多信息</2>"
 
@@ -4556,7 +4558,7 @@ msgstr "由于RPC错误，交易失败<0/><1/>请尝试在你的钱包设置中�
 msgid "Transaction sent."
 msgstr "交易送出"
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction was cancelled."
 msgstr "交易已取消"
 

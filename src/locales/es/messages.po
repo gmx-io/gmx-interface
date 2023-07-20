@@ -85,7 +85,7 @@ msgstr "<0>Esto retirará y desreservará todos los tokens y pausará la adquisi
 msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>Other websites may show a higher value as they add positions' collaterals to the GLP pool.</1>"
 msgstr ""
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 #: src/lib/wallets/index.tsx
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr ""
@@ -1659,6 +1659,8 @@ msgstr ""
 msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 msgstr ""
 
+#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
+#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
 #: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
 msgid "Execute order simulation failed."
 msgstr ""
@@ -4238,7 +4240,7 @@ msgstr "El token esGMX (IOU) es transferible. Puedes agregar el token a tu carte
 msgid "The esGMX tokens can be staked or vested at any time."
 msgstr "Los tokens esGMX pueden ser stakeados o adquiridos en cualquier momento."
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 msgstr "El precio de referencia ha cambiado, considera incrementar el deslizamiento permitido haciendo clic en el icono \"...\" al lado de tu dirección."
 
@@ -4299,7 +4301,7 @@ msgid "There are more shorts than longs, borrow fees for longing is currently ze
 msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "There is not enough ETH in your account on Arbitrum to send this transaction.<0/><1/><2>Bridge ETH to Arbitrum</2>"
 msgstr "No hay suficiente ETH en tu cuenta de Arbitrum para enviar esta transacción.<0/><1/><2>Envía ETH a Arbitrum desde otra red</2>"
 
@@ -4544,11 +4546,11 @@ msgstr "Transacción"
 msgid "Transaction completed!"
 msgstr "¡Transacción completada!"
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction failed"
 msgstr "Transacción fallida"
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings. <2>More info</2>"
 msgstr "La transacción falló debido a un error de RPC.<0/><1/>Por favor, prueba a cambiar la RPC url en los ajustes de tu monedero. <2>Más info</2>"
 
@@ -4556,7 +4558,7 @@ msgstr "La transacción falló debido a un error de RPC.<0/><1/>Por favor, prueb
 msgid "Transaction sent."
 msgstr "Transacción enviada."
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction was cancelled."
 msgstr "La transacción fue cancelada."
 

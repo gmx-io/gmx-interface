@@ -85,7 +85,7 @@ msgstr ""
 msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>Other websites may show a higher value as they add positions' collaterals to the GLP pool.</1>"
 msgstr ""
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 #: src/lib/wallets/index.tsx
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr ""
@@ -1659,6 +1659,8 @@ msgstr ""
 msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 msgstr ""
 
+#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
+#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
 #: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
 msgid "Execute order simulation failed."
 msgstr ""
@@ -4235,7 +4237,7 @@ msgstr ""
 msgid "The esGMX tokens can be staked or vested at any time."
 msgstr ""
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 msgstr ""
 
@@ -4296,7 +4298,7 @@ msgid "There are more shorts than longs, borrow fees for longing is currently ze
 msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "There is not enough ETH in your account on Arbitrum to send this transaction.<0/><1/><2>Bridge ETH to Arbitrum</2>"
 msgstr ""
 
@@ -4541,11 +4543,11 @@ msgstr ""
 msgid "Transaction completed!"
 msgstr ""
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction failed"
 msgstr ""
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings. <2>More info</2>"
 msgstr ""
 
@@ -4553,7 +4555,7 @@ msgstr ""
 msgid "Transaction sent."
 msgstr ""
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction was cancelled."
 msgstr ""
 

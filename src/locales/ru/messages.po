@@ -85,7 +85,7 @@ msgstr "<0>Это приведет к выводу и снятию с резер
 msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>Other websites may show a higher value as they add positions' collaterals to the GLP pool.</1>"
 msgstr ""
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 #: src/lib/wallets/index.tsx
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr "<0>Ваш кошелек не подключен к {0}.</0><1/><2>Перейти на {1}</2>"
@@ -1659,6 +1659,8 @@ msgstr ""
 msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 msgstr ""
 
+#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
+#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
 #: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
 msgid "Execute order simulation failed."
 msgstr ""
@@ -4238,7 +4240,7 @@ msgstr "Токен esGMX является переводимым. При жел�
 msgid "The esGMX tokens can be staked or vested at any time."
 msgstr "Токены esGMX могут быть размещены или наделены правами в любое время."
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 msgstr "Цена отметки изменилась, подумайте об увеличении Допустимого Скольжения, нажав на значок \"...\" рядом с вашим адресом."
 
@@ -4299,7 +4301,7 @@ msgid "There are more shorts than longs, borrow fees for longing is currently ze
 msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "There is not enough ETH in your account on Arbitrum to send this transaction.<0/><1/><2>Bridge ETH to Arbitrum</2>"
 msgstr "На вашем счету на Arbitrum недостаточно ETH для отправки этой транзакции.<0/><1/><2>Перевести ETH на Arbitrum</2>"
 
@@ -4544,11 +4546,11 @@ msgstr "Транзакция"
 msgid "Transaction completed!"
 msgstr "Транзакция завершена!"
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction failed"
 msgstr "Транзакция не прошла"
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings. <2>More info</2>"
 msgstr "Транзакция не прошла из-за ошибки RPC.<0/><1/>Попробуйте изменить RPC url в настройках вашего кошелька. <2> Дополнительная информация</2>"
 
@@ -4556,7 +4558,7 @@ msgstr "Транзакция не прошла из-за ошибки RPC.<0/><1
 msgid "Transaction sent."
 msgstr "Транзакция отправлена."
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction was cancelled."
 msgstr "Транзакция отменена."
 

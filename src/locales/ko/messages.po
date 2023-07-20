@@ -85,7 +85,7 @@ msgstr "<0>모든 토큰이 인출되고 취소되며 베스팅이 중지됩니�
 msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>Other websites may show a higher value as they add positions' collaterals to the GLP pool.</1>"
 msgstr ""
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 #: src/lib/wallets/index.tsx
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr ""
@@ -1659,6 +1659,8 @@ msgstr ""
 msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 msgstr ""
 
+#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
+#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
 #: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
 msgid "Execute order simulation failed."
 msgstr ""
@@ -4238,7 +4240,7 @@ msgstr "\"esGMX (IOU) 토큰의 주소는 {esGmxIouAddress} 입니다."
 msgid "The esGMX tokens can be staked or vested at any time."
 msgstr "esGMX는 언제든지 스테이킹하거나 베스팅 할 수 있습니다."
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 msgstr "시장 평균가가 변화되었습니다. 귀하의 주소 옆에 \"...\" 아이콘을 클릭해서 허용 가능한 슬리피지 증가를 고려해보세요."
 
@@ -4299,7 +4301,7 @@ msgid "There are more shorts than longs, borrow fees for longing is currently ze
 msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "There is not enough ETH in your account on Arbitrum to send this transaction.<0/><1/><2>Bridge ETH to Arbitrum</2>"
 msgstr "해당 트랜잭션을 처리하기위한 충분한 ETH가 귀하의 Abritrum 계정에 존재하지 않습니다.<0/><1/><2>Abritrum으로 ETH를 브릿징하세요</2>"
 
@@ -4544,11 +4546,11 @@ msgstr "거래"
 msgid "Transaction completed!"
 msgstr "트랜잭션 완료!"
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction failed"
 msgstr "트랜잭션 실패"
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings. <2>More info</2>"
 msgstr "RPC 에러로 인해 트랜잭션이 실패했스빈아.<0/><1/>지갑 설정에서 RPC url을 변경하여 시도해주세요. <2>더 자세한 정보</2>"
 
@@ -4556,7 +4558,7 @@ msgstr "RPC 에러로 인해 트랜잭션이 실패했스빈아.<0/><1/>지갑 �
 msgid "Transaction sent."
 msgstr "트랜잭션 전송됨."
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction was cancelled."
 msgstr "트랜잭션 실패됨."
 
