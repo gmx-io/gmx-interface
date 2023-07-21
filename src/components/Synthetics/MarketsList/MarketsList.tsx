@@ -185,7 +185,7 @@ export function MarketsList() {
                             <div className="App-card-info-subtitle">{stats.token.symbol}</div>
                           </div>
                           <div>
-                            <AssetDropdown assetSymbol={stats.token.symbol} assetInfo={stats.token} />
+                            <AssetDropdown assetSymbol={stats.token.symbol} />
                           </div>
                         </div>
                       </div>
@@ -260,7 +260,7 @@ export function MarketsList() {
                     />
                     <div className="token-symbol-text">{stats.token.symbol}</div>
                     <div>
-                      <AssetDropdown assetSymbol={stats.token.symbol} assetInfo={stats.token} />
+                      <AssetDropdown assetSymbol={stats.token.symbol} />
                     </div>
                   </div>
                 </div>

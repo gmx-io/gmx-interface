@@ -421,7 +421,7 @@ export function TradeBox(p: Props) {
         collateralDeltaUsd: increaseAmounts.collateralDeltaUsd,
         collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
         sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
-        sizeDeltaInTokens: increaseAmounts.indexTokenAmount,
+        sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
         indexPrice: increaseAmounts.indexPrice,
         showPnlInLeverage: savedIsPnlInLeverage,
         minCollateralUsd,

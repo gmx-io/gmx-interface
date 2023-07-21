@@ -3,16 +3,6 @@
     .Modal {
       align-items: flex-start;
       justify-content: flex-end;
-
-      .Modal-content {
-        width: 42rem;
-        position: absolute;
-        max-height: 100vh;
-        top: 0;
-        bottom: 0;
-        overflow: hidden;
-        border: none;
-      }
     }
   }
 }

@@ -8,6 +8,7 @@ import { useChainId } from "lib/chains";
 import { formatAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import "./MarketStats.scss";
+import AssetDropdown from "pages/Dashboard/AssetDropdown";
 
 type Props = {
   marketInfo?: MarketInfo;
@@ -43,6 +44,9 @@ export function MarketStats(p: Props) {
           <div className="App-card-title-mark-info">
             <div className="App-card-title-mark-title">GM{marketInfo && `: ${marketInfo.name}`}</div>
             <div className="App-card-title-mark-subtitle">GMX Market Tokens</div>
+          </div>
+          <div>
+            <AssetDropdown assetSymbol={"GM"} token={marketToken} />
           </div>
         </div>
       </div>

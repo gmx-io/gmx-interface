@@ -112,7 +112,7 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@babel/plugin-proposal-private-property-in-object": "7.21.11",
     "@lingui/cli": "3.13.3",
     "@lingui/loader": "3.13.3",
     "@lingui/macro": "3.13.3",

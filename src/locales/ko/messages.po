@@ -17,18 +17,6 @@ msgstr ""
 msgid "\"Current {0} Long\" takes into account PnL of open positions."
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "01 Sep 2021"
-msgstr "2021년 9월 1일"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "06 Jan 2022"
-msgstr "2022년 1월 6일"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "24h Volume"
-msgstr "24시간 거래량"
-
 #: src/components/Exchange/PositionSeller.js
 msgid "<0/>Profit price: {0} ${1}. This rule applies for the next {2}, until {3}."
 msgstr ""
@@ -81,11 +69,7 @@ msgstr ""
 msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
 msgstr "<0>모든 토큰이 인출되고 취소되며 베스팅이 중지됩니다.<1/><2/>GMX로 변환된 esGMX 토큰은 GMX 토큰으로 유지됩니다.<3/><4/>인출하지 않고 GMX 토큰을 수령하기 위해서는 총 보상 섹션 아래의 \"수령하기\" 버튼을 사용해주세요."
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>Other websites may show a higher value as they add positions' collaterals to the GLP pool.</1>"
-msgstr ""
-
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 #: src/lib/wallets/index.tsx
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr ""
@@ -132,10 +116,6 @@ msgstr "APR은 매주 수요일에 업데이트되며 한 주 동안 쌓인 수�
 #: src/pages/Stake/StakeV2.js
 msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week. <0/><1/>Historical GLP APRs can be checked in this <2>community dashboard</2>."
 msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "AUM"
-msgstr "AUM"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -380,10 +360,6 @@ msgstr ""
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
 msgstr "{0}에서 {swapTokenSymbol}로 교환할 수 있는 유동성이 GLP에 충분하지 않기 때문에, 이하의 옵션을 사용해주세요:"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})."
-msgstr "자산운용규모: 스테이킹된 GMX + GLP 풀 ({chainName})."
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -1146,10 +1122,6 @@ msgstr "현재 풀 양"
 msgid "Current Reserved"
 msgstr "현재 리저브"
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Current Weight"
-msgstr "현재 가중치"
-
 #: src/components/Exchange/SwapBox.js
 msgid "Current {0} long"
 msgstr ""
@@ -1172,7 +1144,6 @@ msgid "DEX Aggregator"
 msgstr "DEX 어그리게이터"
 
 #: src/components/Header/AppHeaderLinks.tsx
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Dashboard"
 msgstr "대시보드"
 
@@ -1365,10 +1336,6 @@ msgstr "연결 끊기"
 #: src/App/App.js
 msgid "Display PnL after fees"
 msgstr "수수료포함 손익 표시"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Distribution"
-msgstr "배분"
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Header/HomeHeaderLinks.tsx
@@ -1639,6 +1606,8 @@ msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} 
 msgstr ""
 
 #: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
+#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
+#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
 msgid "Execute order simulation failed."
 msgstr ""
 
@@ -1682,7 +1651,6 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Fees"
 msgstr "수수료"
 
@@ -1729,10 +1697,6 @@ msgstr "GLP를 판매하는 양에 따라서 수수료가 상이합니다. <0/>�
 msgid "Fees may vary depending on which asset you use to buy GLP. <0/>Enter the amount of GLP you want to purchase in the order form, then check here to compare fees."
 msgstr "GLP를 구매하는 양에 따라서 수수료가 상이합니다. <0/>구매하려는 GLP의 양을 주문 양식에 입력하고, 여기에서 수수료를 비교하세요."
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Fees since"
-msgstr "이후 수수료"
-
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -1747,10 +1711,6 @@ msgstr ""
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Financial reports and protocol analytics"
 msgstr "금융 보고서 및 프로토콜 분석"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Floor Price Fund"
-msgstr "하한 가격 펀드"
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Forfeit profit"
@@ -1810,15 +1770,6 @@ msgstr ""
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GBC NFTs APR tracker and rewards"
 msgstr "GBC NFT의 APR 트래커 및 보상"
-
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "GLP Index Composition"
-msgstr "GLP 인덱스 구성"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "GLP Pool"
-msgstr "GLP 풀"
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -2489,11 +2440,6 @@ msgstr ""
 msgid "Long Open Interest"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Long Positions"
-msgstr "롱 포지션"
-
 #: src/components/Exchange/SwapBox.js
 msgid "Long {0}"
 msgstr ""
@@ -2582,11 +2528,6 @@ msgstr "시장 평균가: {0}"
 msgid "Market"
 msgstr "마켓"
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Market Cap"
-msgstr "시가총액"
-
 #: src/domain/synthetics/orders/utils.ts
 msgid "Market Decrease"
 msgstr ""
@@ -2669,11 +2610,6 @@ msgstr "최대 풀 수용량인 {0}에 도달했습니다<0/><1/>다른 토큰�
 #: src/App/App.js
 msgid "Max slippage precision is 0.01%"
 msgstr "허용 가능한 최대 슬리피지는 0.01%입니다"
-
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Max {0} Capacity"
-msgstr "{0}의 최대 수용량"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -2802,7 +2738,6 @@ msgid "Minimum received"
 msgstr "최소량 수치 완료"
 
 #: src/components/Exchange/SwapBox.js
-#: src/pages/Dashboard/DashboardV2.js
 msgid "More Info"
 msgstr "더 자세한 정보"
 
@@ -2934,8 +2869,6 @@ msgstr "문자, 숫자 및 언더스코어만 가능합니다"
 msgid "Open Fee"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Home/Home.js
 msgid "Open Interest"
 msgstr "미결제 약정"
@@ -3075,14 +3008,6 @@ msgstr ""
 msgid "Overall protocol analytics"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Overview"
-msgstr "개요"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "POOL"
-msgstr "풀"
-
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "POOLS VALUE"
 msgstr ""
@@ -3090,7 +3015,6 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/DashboardV2.js
 msgid "PRICE"
 msgstr "가격"
 
@@ -3153,10 +3077,6 @@ msgstr ""
 msgid "Pending {0} approval"
 msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Platform, GLP and GM tokens."
-msgstr ""
-
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Please input a referral code to benefit from fee discounts."
 msgstr "수수료 할인의 혜택을 받으려면 추천인 코드를 입력해주세요."
@@ -3196,14 +3116,11 @@ msgstr "수수료 제외한 PnL"
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Pool"
 msgstr "풀"
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Pool Amount"
 msgstr "풀 수량"
 
@@ -3273,9 +3190,6 @@ msgstr "이전"
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -3346,12 +3260,10 @@ msgstr "가격이 시장 평균가보다 높습니다"
 msgid "Price is below Mark Price"
 msgstr "가격이 시장 평군가보다 낮습니다"
 
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Price on Arbitrum"
 msgstr "Arbitrum에서 가격"
 
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Price on Avalanche"
 msgstr "Avalanche에서 가격"
@@ -3816,11 +3728,6 @@ msgstr ""
 msgid "Short Open Interest"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Short Positions"
-msgstr "숏 포지션"
-
 #: src/components/Exchange/SwapBox.js
 msgid "Short {0}"
 msgstr ""
@@ -3885,10 +3792,6 @@ msgstr "스프레드"
 msgid "Spreadsheet for position calculations"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Stablecoin Percentage"
-msgstr "스테이블코인 비율"
-
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -3940,7 +3843,6 @@ msgid "Stake submitted! <0>View status.</0>"
 msgstr "스테이킹 제출완료! <0>상태 보기.</0>"
 
 #: src/components/Glp/GlpSwap.js
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -3967,10 +3869,6 @@ msgstr "스테이킹된 토큰"
 msgid "Staking..."
 msgstr "스테이킹중..."
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Stats"
-msgstr "통계"
-
 #: src/domain/synthetics/orders/utils.ts
 msgid "Stop Loss Decrease"
 msgstr ""
@@ -3987,11 +3885,6 @@ msgstr "제출"
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Success claimings"
 msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Supply"
-msgstr "공급량"
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/SwapBox.js
@@ -4131,7 +4024,6 @@ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/DashboardV2.js
 msgid "TOKEN"
 msgstr "토큰"
 
@@ -4142,15 +4034,6 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 msgid "Take-profit and stop-loss orders can be set after opening a position. <0/><1/>There will be a \"Close\" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>."
 msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Target Min Amount"
-msgstr "최소 목표 수량"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Target Weight"
-msgstr "목표 가중치"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram Group"
@@ -4213,7 +4096,7 @@ msgstr "\"esGMX (IOU) 토큰의 주소는 {esGmxIouAddress} 입니다."
 msgid "The esGMX tokens can be staked or vested at any time."
 msgstr "esGMX는 언제든지 스테이킹하거나 베스팅 할 수 있습니다."
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 msgstr "시장 평균가가 변화되었습니다. 귀하의 주소 옆에 \"...\" 아이콘을 클릭해서 허용 가능한 슬리피지 증가를 고려해보세요."
 
@@ -4274,7 +4157,7 @@ msgid "There are more shorts than longs, borrow fees for longing is currently ze
 msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "There is not enough ETH in your account on Arbitrum to send this transaction.<0/><1/><2>Bridge ETH to Arbitrum</2>"
 msgstr "해당 트랜잭션을 처리하기위한 충분한 ETH가 귀하의 Abritrum 계정에 존재하지 않습니다.<0/><1/><2>Abritrum으로 ETH를 브릿징하세요</2>"
 
@@ -4346,10 +4229,6 @@ msgstr "수수료를 줄이기 위해서는 다른 자산으로 지불해주세�
 msgid "To reduce fees, select a different asset to receive."
 msgstr "수수료를 줄이기 위해서는 다른 자산으로 수령해주세요."
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Tokens"
-msgstr "토큰"
-
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -4371,11 +4250,6 @@ msgstr "총 스테이킹된 자산"
 msgid "Total Claimable"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Total Fees"
-msgstr "총 수수료"
-
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total Rebates"
 msgstr "총 소개 보수"
@@ -4384,8 +4258,6 @@ msgstr "총 소개 보수"
 msgid "Total Rewards"
 msgstr "총 보상"
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -4396,10 +4268,6 @@ msgstr "총 보상"
 #: src/pages/Stake/StakeV2.js
 msgid "Total Staked"
 msgstr "총 스테이킹"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Total Stats"
-msgstr "전체 통계"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/GmList/GmList.tsx
@@ -4416,15 +4284,11 @@ msgstr "총 공급량"
 msgid "Total Trading Volume"
 msgstr "총 트레이딩 거래량"
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Home/Home.js
 msgid "Total Users"
 msgstr "총 유저"
 
 #: src/components/Referrals/AffiliatesStats.tsx
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Total Volume"
 msgstr "총 거래량"
 
@@ -4507,11 +4371,11 @@ msgstr "거래"
 msgid "Transaction completed!"
 msgstr "트랜잭션 완료!"
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction failed"
 msgstr "트랜잭션 실패"
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings. <2>More info</2>"
 msgstr "RPC 에러로 인해 트랜잭션이 실패했스빈아.<0/><1/>지갑 설정에서 RPC url을 변경하여 시도해주세요. <2>더 자세한 정보</2>"
 
@@ -4519,7 +4383,7 @@ msgstr "RPC 에러로 인해 트랜잭션이 실패했스빈아.<0/><1/>지갑 �
 msgid "Transaction sent."
 msgstr "트랜잭션 전송됨."
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction was cancelled."
 msgstr "트랜잭션 실패됨."
 
@@ -4618,7 +4482,6 @@ msgid "USD Value may not be accurate since the data does not contain prices for 
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/DashboardV2.js
 msgid "UTILIZATION"
 msgstr "이용률"
 
@@ -4738,7 +4601,6 @@ msgid "Useful Links"
 msgstr "유용한 링크"
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Utilization"
 msgstr "이용률"
 
@@ -4874,10 +4736,6 @@ msgstr "Explorer에서 보기"
 msgid "View status."
 msgstr "상태 보기."
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Volume"
-msgstr "거래량"
-
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Volume on V1"
 msgstr ""
@@ -4915,10 +4773,6 @@ msgstr "경고: 이 포지션은 차용수수료를 차감하면 담보액이 �
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "WARNING: This position has a low amount of collateral after deducting fees, deposit more collateral to reduce the position's liquidation risk."
 msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "WEIGHT"
-msgstr "비중"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
@@ -4960,10 +4814,6 @@ msgstr "지갑이 아직 연동되지 않았습니다"
 #: src/App/App.js
 msgid "WalletConnect"
 msgstr "지갑연결"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Weight"
-msgstr "가중치"
 
 #: src/components/Exchange/SwapBox.js
 msgid "When closing the position, you can select which token you would like to receive the profits in."
@@ -5260,14 +5110,6 @@ msgstr "수수료"
 msgid "hide"
 msgstr "숨기기"
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "in liquidity"
-msgstr "유동성"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "not staked"
-msgstr "스테이킹되지 않음"
-
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "pay"
 msgstr ""
@@ -5275,10 +5117,6 @@ msgstr ""
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "size"
 msgstr "사이즈"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "staked"
-msgstr "스테이킹됨"
 
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "time to liq"
@@ -5349,14 +5187,6 @@ msgstr "{0} 요구됨"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
-msgstr "{0}은 목표 가중치를 초과 했습니다.<0/><1/>토큰을 {1}로 <2>스왑</2>하는 수수료가 감소합니다."
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
-msgstr "{0}은 목표 가중치를 미달합니다.<0/><1/>{1}로 <2>GLP 구매</2>를 하거나 {2}에서 다른 토큰으로 <3>스왑</3>하는 수수료가 감소합니다."
 
 #: src/components/Exchange/SwapBox.js
 msgid "{0} is required for collateral."
@@ -5446,10 +5276,6 @@ msgstr ""
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "{actionText} {increaseText} {positionText} {sizeDeltaText}, {pricePrefix}: {0},  Market: {1}"
 msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "{chainName} Total Stats start from {totalStatsStartDate}.<0/> For detailed stats:"
-msgstr "{chainName}의 전체 통계는 {totalStatsStartDate}부터 시작됩니다.<0/> 더 자세한 통계:"
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{count, plural, one {Order} other {# Orders}}"

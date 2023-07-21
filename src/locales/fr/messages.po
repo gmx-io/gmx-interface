@@ -17,18 +17,6 @@ msgstr ""
 msgid "\"Current {0} Long\" takes into account PnL of open positions."
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "01 Sep 2021"
-msgstr "01 Sep 2021"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "06 Jan 2022"
-msgstr "06 Jan 2022"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "24h Volume"
-msgstr "Volume sur 24h"
-
 #: src/components/Exchange/PositionSeller.js
 msgid "<0/>Profit price: {0} ${1}. This rule applies for the next {2}, until {3}."
 msgstr ""
@@ -81,11 +69,7 @@ msgstr ""
 msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
 msgstr "<0>Cela retirera et libérera tous les tokens et mettra en pause l'acquisition par vesting.<1/><2/>Les tokens esGMX qui ont été convertis en GMX resteront des tokens GMX.<3/><4/>Pour réclamer les tokens GMX sans effectuer de retrait, utilisez le bouton \"Réclamer\" dans la section Récompenses totales.<5/><6/></0>\""
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>Other websites may show a higher value as they add positions' collaterals to the GLP pool.</1>"
-msgstr ""
-
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 #: src/lib/wallets/index.tsx
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr ""
@@ -132,10 +116,6 @@ msgstr "Les taux de rendement annuels sont mis à jour chaque semaine le mercred
 #: src/pages/Stake/StakeV2.js
 msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week. <0/><1/>Historical GLP APRs can be checked in this <2>community dashboard</2>."
 msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "AUM"
-msgstr "ASG"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -380,10 +360,6 @@ msgstr ""
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
 msgstr "Comme il n'y a pas assez de liquidité dans GLP pour échanger {0} vers {swapTokenSymbol}, vous pouvez utiliser l'option ci-dessous pour le faire :"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})."
-msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -1146,10 +1122,6 @@ msgstr "Montant actuel du pool"
 msgid "Current Reserved"
 msgstr "Réserves actuelles"
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Current Weight"
-msgstr "Poids actuel"
-
 #: src/components/Exchange/SwapBox.js
 msgid "Current {0} long"
 msgstr ""
@@ -1172,7 +1144,6 @@ msgid "DEX Aggregator"
 msgstr "Agrégateur DEX"
 
 #: src/components/Header/AppHeaderLinks.tsx
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
@@ -1365,10 +1336,6 @@ msgstr "Déconnecter"
 #: src/App/App.js
 msgid "Display PnL after fees"
 msgstr "Afficher PnL après les frais"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Distribution"
-msgstr "Distribution"
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Header/HomeHeaderLinks.tsx
@@ -1639,6 +1606,8 @@ msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} 
 msgstr ""
 
 #: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
+#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
+#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
 msgid "Execute order simulation failed."
 msgstr ""
 
@@ -1682,7 +1651,6 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Fees"
 msgstr "FRAIS"
 
@@ -1729,10 +1697,6 @@ msgstr "Les frais peuvent varier selon quel actif vous vendez pour du GLP. <0/>I
 msgid "Fees may vary depending on which asset you use to buy GLP. <0/>Enter the amount of GLP you want to purchase in the order form, then check here to compare fees."
 msgstr "Les frais peuvent varier selon quel actif vous vendez pour du GLP. <0/>Indiquer la somme que vous souhaitez acheter, puis vérifiez ici pour comparer les frais."
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Fees since"
-msgstr "Frais depuis"
-
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -1747,10 +1711,6 @@ msgstr ""
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Financial reports and protocol analytics"
 msgstr "Rapports financiers et analyses de protocoles"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Floor Price Fund"
-msgstr "Fond de prix plancher"
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Forfeit profit"
@@ -1810,15 +1770,6 @@ msgstr ""
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GBC NFTs APR tracker and rewards"
 msgstr "Tracker de taux de rendement annuels des NFTs GBC et récompenses"
-
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "GLP Index Composition"
-msgstr "Composition de l'indice GLP"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "GLP Pool"
-msgstr "Pool de GLP"
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -2489,11 +2440,6 @@ msgstr ""
 msgid "Long Open Interest"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Long Positions"
-msgstr "Positions long"
-
 #: src/components/Exchange/SwapBox.js
 msgid "Long {0}"
 msgstr ""
@@ -2582,11 +2528,6 @@ msgstr "Marque: {0}"
 msgid "Market"
 msgstr "Bourse"
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Market Cap"
-msgstr "Capitalisation boursière"
-
 #: src/domain/synthetics/orders/utils.ts
 msgid "Market Decrease"
 msgstr ""
@@ -2669,11 +2610,6 @@ msgstr "Capacité maximale du pool atteinte pour {0}<0/><1/> Veuillez minter GLP
 #: src/App/App.js
 msgid "Max slippage precision is 0.01%"
 msgstr "La précision maximale du glissement est de 0,01%"
-
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Max {0} Capacity"
-msgstr "Capacité {0} max"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -2802,7 +2738,6 @@ msgid "Minimum received"
 msgstr "Minimum reçu"
 
 #: src/components/Exchange/SwapBox.js
-#: src/pages/Dashboard/DashboardV2.js
 msgid "More Info"
 msgstr "Plus d'infos"
 
@@ -2934,8 +2869,6 @@ msgstr "Les lettres, les chiffres et les caractères de soulignement sont autori
 msgid "Open Fee"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Home/Home.js
 msgid "Open Interest"
 msgstr "Intérêt ouvert"
@@ -3075,14 +3008,6 @@ msgstr ""
 msgid "Overall protocol analytics"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Overview"
-msgstr "Aperçu"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "POOL"
-msgstr "POOL"
-
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "POOLS VALUE"
 msgstr ""
@@ -3090,7 +3015,6 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/DashboardV2.js
 msgid "PRICE"
 msgstr "PRIX"
 
@@ -3153,10 +3077,6 @@ msgstr ""
 msgid "Pending {0} approval"
 msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Platform, GLP and GM tokens."
-msgstr ""
-
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Please input a referral code to benefit from fee discounts."
 msgstr "Veuillez saisir un code de parrainage pour bénéficier des réductions de frais."
@@ -3196,14 +3116,11 @@ msgstr "PnL Après Frais"
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Pool"
 msgstr "Pool"
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Pool Amount"
 msgstr "Somme du pool"
 
@@ -3273,9 +3190,6 @@ msgstr "Préc"
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -3346,12 +3260,10 @@ msgstr "Le prix est supérieur à celui de la marque"
 msgid "Price is below Mark Price"
 msgstr "Le prix est inférieur à celui de la marque"
 
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Price on Arbitrum"
 msgstr "Prix sur Arbitrum"
 
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Price on Avalanche"
 msgstr "Prix sur Avalanche"
@@ -3816,11 +3728,6 @@ msgstr ""
 msgid "Short Open Interest"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Short Positions"
-msgstr "Positions Shorts"
-
 #: src/components/Exchange/SwapBox.js
 msgid "Short {0}"
 msgstr ""
@@ -3885,10 +3792,6 @@ msgstr "Marge"
 msgid "Spreadsheet for position calculations"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Stablecoin Percentage"
-msgstr "Pourcentage de stablecoins"
-
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -3940,7 +3843,6 @@ msgid "Stake submitted! <0>View status.</0>"
 msgstr "Staking soumis ! <0>Voir le statut.</0>"
 
 #: src/components/Glp/GlpSwap.js
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -3967,10 +3869,6 @@ msgstr "Tokens stakés"
 msgid "Staking..."
 msgstr "Staking en cours..."
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Stats"
-msgstr "Stats"
-
 #: src/domain/synthetics/orders/utils.ts
 msgid "Stop Loss Decrease"
 msgstr ""
@@ -3987,11 +3885,6 @@ msgstr "Soumettre"
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Success claimings"
 msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Supply"
-msgstr "Donner"
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/SwapBox.js
@@ -4131,7 +4024,6 @@ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/DashboardV2.js
 msgid "TOKEN"
 msgstr "TOKEN"
 
@@ -4142,15 +4034,6 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 msgid "Take-profit and stop-loss orders can be set after opening a position. <0/><1/>There will be a \"Close\" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>."
 msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Target Min Amount"
-msgstr "Somme cible min"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Target Weight"
-msgstr "Poids cible"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram Group"
@@ -4213,7 +4096,7 @@ msgstr "Le jeton esGMX (IOU - reconnaissance de dette) est transférable.  Vous 
 msgid "The esGMX tokens can be staked or vested at any time."
 msgstr "Les tokens esGMX peuvent être échangés ou acquis à tout moment."
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 msgstr "Le prix du marché a changé, envisagez d'augmenter votre marge autorisée en cliquant sur l'icône \"...\" à côté de votre adresse."
 
@@ -4274,7 +4157,7 @@ msgid "There are more shorts than longs, borrow fees for longing is currently ze
 msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "There is not enough ETH in your account on Arbitrum to send this transaction.<0/><1/><2>Bridge ETH to Arbitrum</2>"
 msgstr "Il n'y a pas assez d'ETH dans votre compte sur Arbitrum pour envoyer cette transaction.<0/><1/><2>Passez de l'ETH sur Arbitrum</2>"
 
@@ -4346,10 +4229,6 @@ msgstr "Pour réduire les frais, choisissez un autre actif pour payer."
 msgid "To reduce fees, select a different asset to receive."
 msgstr "Pour réduire les frais, sélectionnez un autre actif à recevoir."
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Tokens"
-msgstr "Tokens"
-
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -4371,11 +4250,6 @@ msgstr "Actifs totaux stakés"
 msgid "Total Claimable"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Total Fees"
-msgstr "Frais totaux"
-
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total Rebates"
 msgstr "Remise totale"
@@ -4384,8 +4258,6 @@ msgstr "Remise totale"
 msgid "Total Rewards"
 msgstr "Récompenses totales"
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -4396,10 +4268,6 @@ msgstr "Récompenses totales"
 #: src/pages/Stake/StakeV2.js
 msgid "Total Staked"
 msgstr "Total staké"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Total Stats"
-msgstr "Stats totales"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/GmList/GmList.tsx
@@ -4416,15 +4284,11 @@ msgstr "Réserves Totales"
 msgid "Total Trading Volume"
 msgstr "Volume total des échanges"
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Home/Home.js
 msgid "Total Users"
 msgstr "Nombre total d'utilisateurs"
 
 #: src/components/Referrals/AffiliatesStats.tsx
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Total Volume"
 msgstr "Volume total"
 
@@ -4507,11 +4371,11 @@ msgstr "Transaction"
 msgid "Transaction completed!"
 msgstr "transaction effectuée !"
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction failed"
 msgstr "Transaction échouée"
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings. <2>More info</2>"
 msgstr "La transaction a échoué en raison d'une erreur RPC.<0/><1/>Veuillez essayer de changer l'url RPC dans les paramètres de votre portefeuille. <2> Plus d'infos</2>"
 
@@ -4519,7 +4383,7 @@ msgstr "La transaction a échoué en raison d'une erreur RPC.<0/><1/>Veuillez es
 msgid "Transaction sent."
 msgstr "Transaction envoyée."
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction was cancelled."
 msgstr "Transaction annulée."
 
@@ -4618,7 +4482,6 @@ msgid "USD Value may not be accurate since the data does not contain prices for 
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/DashboardV2.js
 msgid "UTILIZATION"
 msgstr "UTILISATION"
 
@@ -4738,7 +4601,6 @@ msgid "Useful Links"
 msgstr "Liens utiles"
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Utilization"
 msgstr "Utilisation"
 
@@ -4874,10 +4736,6 @@ msgstr "Voir dans Explorer"
 msgid "View status."
 msgstr "Voir le statut"
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Volume"
-msgstr "Volume"
-
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Volume on V1"
 msgstr ""
@@ -4915,10 +4773,6 @@ msgstr "AVERTISSEMENT: Cette position a un montant de collatéral bas après dé
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "WARNING: This position has a low amount of collateral after deducting fees, deposit more collateral to reduce the position's liquidation risk."
 msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "WEIGHT"
-msgstr "POIDS"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
@@ -4960,10 +4814,6 @@ msgstr "Le portefeuille n'est pas encore connecté"
 #: src/App/App.js
 msgid "WalletConnect"
 msgstr "WalletConnect"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Weight"
-msgstr "Poids"
 
 #: src/components/Exchange/SwapBox.js
 msgid "When closing the position, you can select which token you would like to receive the profits in."
@@ -5260,14 +5110,6 @@ msgstr "frais"
 msgid "hide"
 msgstr "cacher"
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "in liquidity"
-msgstr "en liquidité"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "not staked"
-msgstr "non staké"
-
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "pay"
 msgstr ""
@@ -5275,10 +5117,6 @@ msgstr ""
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "size"
 msgstr "montant"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "staked"
-msgstr "staké"
 
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "time to liq"
@@ -5349,14 +5187,6 @@ msgstr "{0} Requis"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
-msgstr "{0} est au-dessus de son poids cible.<0/><1/>Obtenez une réduction des frais pour <2>échanger</2> les tokens pour {1}."
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
-msgstr "{0} est en dessous de son poids cible.<0/><1/>Obtenez une réduction des frais pour <2>acheter GLP</2> avec {1} et d'<3>échanger</3> {2} pour d'autres tokens."
 
 #: src/components/Exchange/SwapBox.js
 msgid "{0} is required for collateral."
@@ -5449,10 +5279,6 @@ msgstr ""
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "{actionText} {increaseText} {positionText} {sizeDeltaText}, {pricePrefix}: {0},  Market: {1}"
 msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "{chainName} Total Stats start from {totalStatsStartDate}.<0/> For detailed stats:"
-msgstr "{chainName} Stats totales à partir de {totalStatsStartDate}.<0/> Pour des stats détaillées:"
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{count, plural, one {Order} other {# Orders}}"

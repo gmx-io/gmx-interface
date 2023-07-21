@@ -180,8 +180,6 @@
   .TokenSelector .Modal .Modal-content .Modal-body {
     overflow-y: auto;
     max-height: calc(80vh - 13rem);
-    padding-right: 0.5rem;
-    margin: 1.5rem 0.8rem 1.5rem 1.5rem;
   }
 }
 

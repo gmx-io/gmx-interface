@@ -1090,7 +1090,7 @@ export default function DashboardV2() {
                             <img src={tokenImage} alt={token.symbol} width="20px" />
                             <div className="token-symbol-text">{token.symbol}</div>
                             <div>
-                              <AssetDropdown assetSymbol={token.symbol} assetInfo={token} />
+                              <AssetDropdown assetSymbol={token.symbol} />
                             </div>
                           </div>
                         </div>
