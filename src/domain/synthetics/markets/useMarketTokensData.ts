@@ -13,6 +13,7 @@ import { useMarkets } from "./useMarkets";
 import { getContractMarketPrices } from "./utils";
 import { useRef } from "react";
 import { BigNumber } from "ethers";
+import { getExplorerUrl } from "config/chains";
 
 type MarketTokensDataResult = {
   marketTokensData?: TokensData;
@@ -123,6 +124,7 @@ export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }):
           },
           totalSupply: BigNumber.from(tokenData?.totalSupply.returnValues[0]),
           balance: BigNumber.from(tokenData?.balance?.returnValues[0]),
+          explorerUrl: `${getExplorerUrl(chainId)}/token/${marketAddress}`,
         };
 
         return marketTokensMap;

@@ -1145,7 +1145,7 @@ export default function GlpSwap(props) {
                         <div className="App-card-info-subtitle">{token.symbol}</div>
                       </div>
                       <div>
-                        <AssetDropdown assetSymbol={token.symbol} assetInfo={token} />
+                        <AssetDropdown assetSymbol={token.symbol} />
                       </div>
                     </div>
                   </td>
@@ -1282,7 +1282,7 @@ export default function GlpSwap(props) {
                   <img src={tokenImage} alt={token.symbol} width="20px" />
                   <div className="token-symbol-text">{token.symbol}</div>
                   <div>
-                    <AssetDropdown assetSymbol={token.symbol} assetInfo={token} />
+                    <AssetDropdown assetSymbol={token.symbol} />
                   </div>
                 </div>
                 <div className="App-card-divider" />

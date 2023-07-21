@@ -16,18 +16,23 @@ import { addTokenToMetamask } from "lib/wallets";
 
 type Props = {
   assetSymbol: string;
-  assetInfo?: Token;
+  token?: Token;
 };
 
-function AssetDropdown({ assetSymbol }: Props) {
+function AssetDropdown({ assetSymbol, token: propsToken }: Props) {
   const { active } = useWeb3React();
   const { chainId } = useChainId();
 
   let token: Token;
-  try {
-    token = getTokenBySymbol(chainId, assetSymbol);
-  } catch (e) {
-    return null;
+
+  if (propsToken) {
+    token = propsToken;
+  } else {
+    try {
+      token = getTokenBySymbol(chainId, assetSymbol);
+    } catch (e) {
+      return null;
+    }
   }
 
   const chainIcon = getIcon(chainId, "network");
