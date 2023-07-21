@@ -260,6 +260,8 @@ export function getIncreasePositionAmounts(p: {
   });
 
   values.positionPriceImpactDeltaUsd = acceptablePriceInfo.priceImpactDeltaUsd;
+  values.acceptablePrice = acceptablePriceInfo.acceptablePrice;
+  values.acceptablePriceDeltaBps = acceptablePriceInfo.acceptablePriceDeltaBps;
 
   if (isLimit) {
     const limitAcceptablePriceInfo = getAcceptablePriceInfo({
@@ -273,9 +275,10 @@ export function getIncreasePositionAmounts(p: {
 
     values.acceptablePrice = limitAcceptablePriceInfo.acceptablePrice;
     values.acceptablePriceDeltaBps = limitAcceptablePriceInfo.acceptablePriceDeltaBps;
-  } else {
-    values.acceptablePrice = acceptablePriceInfo.acceptablePrice;
-    values.acceptablePriceDeltaBps = acceptablePriceInfo.acceptablePriceDeltaBps;
+
+    if (values.positionPriceImpactDeltaUsd.lt(limitAcceptablePriceInfo.priceImpactDeltaUsd)) {
+      values.positionPriceImpactDeltaUsd = limitAcceptablePriceInfo.priceImpactDeltaUsd;
+    }
   }
 
   let priceImpactAmount = BigNumber.from(0);
