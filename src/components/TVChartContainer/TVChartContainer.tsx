@@ -61,7 +61,14 @@ export default function TVChartContainer({
 
   useEffect(() => {
     if (chartToken.maxPrice && chartToken.minPrice && chartToken.symbol) {
-      const priceDecimals = getPriceDecimals(chainId, chartToken.symbol);
+      let priceDecimals: number;
+
+      try {
+        priceDecimals = getPriceDecimals(chainId, chartToken.symbol);
+      } catch (e) {
+        return;
+      }
+
       const averagePrice = getMidPrice(chartToken);
       const formattedPrice = parseFloat(formatAmount(averagePrice, USD_DECIMALS, priceDecimals));
       dataProvider?.setCurrentChartToken({
