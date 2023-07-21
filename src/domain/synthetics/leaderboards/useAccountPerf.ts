@@ -12,7 +12,7 @@ const filtersByPeriod = {
   [PerfPeriod.DAY]: { period: "hourly", since: daysAgo(1) },
   [PerfPeriod.WEEK]: { period: "daily", since: daysAgo(7) },
   [PerfPeriod.MONTH]: { period: "daily", since: daysAgo(30) },
-  [PerfPeriod.TOTAL]: { period: "daily" },
+  [PerfPeriod.TOTAL]: { period: "total" },
 };
 
 const fetchAccountPerfs = async (
@@ -68,6 +68,14 @@ const sumScoresByAccount = (accountPerfs: AccountPerf[], period: PerfPeriod) => 
         sumMaxSize: BigNumber.from(0),
         closedCount: BigNumber.from(0),
       };
+    } else {
+      // eslint-disable-next-line no-console
+      console.warn(`multiple account total perf entities detected for account ${accountData.account}`, {
+        account: accountData.account,
+        requestedPeriod: period,
+        returnedPeriod: accountData.period,
+        returnedTs: new Date(accountData.timestamp * 1000).toISOString(),
+      });
     }
 
     const perf = groupBy[accountData.account];
@@ -102,6 +110,7 @@ export function useAccountPerf(period: PerfPeriod) {
     }
 
     const perfByAccount: PerfByAccount = sumScoresByAccount(data, period);
+
     return Object.values(perfByAccount);
   });
 

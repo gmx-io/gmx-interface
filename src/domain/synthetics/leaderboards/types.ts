@@ -89,6 +89,7 @@ export type AccountPositionsSummary = {
   sumSize: BigNumber;
   sumCollateral: BigNumber;
   sumMaxSize: BigNumber;
+  totalCollateral: BigNumber;
 };
 
 export type PositionsSummaryByAccount = Record<string, AccountPositionsSummary>;
@@ -104,6 +105,7 @@ export type PositionScores = {
   sizeInUsd: BigNumber;
   liqPrice: BigNumber;
   collateralAmount: BigNumber;
+  collateralAmountUsd: BigNumber;
   maxSize: BigNumber;
 };
 

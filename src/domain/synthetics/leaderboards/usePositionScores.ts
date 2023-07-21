@@ -43,6 +43,7 @@ export function usePositionScores() {
       sizeInUsd: value,
       liqPrice: BigNumber.from(0),
       collateralAmount: p.collateralAmount,
+      collateralAmountUsd: p.collateralAmount.mul(token.minPrice),
       maxSize: p.maxSize,
     });
   }

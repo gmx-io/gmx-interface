@@ -26,7 +26,7 @@ export const useLeaderboardContext = () => useContext(LeaderboardContext);
 
 export const LeaderboardContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const { chainId } = useChainId();
-  const [period, setPeriod] = useState<PerfPeriod>(PerfPeriod.DAY);
+  const [period, setPeriod] = useState<PerfPeriod>(PerfPeriod.TOTAL);
   const topPositions = useTopPositions();
   const topAccounts = useTopAccounts(period);
   const context = {

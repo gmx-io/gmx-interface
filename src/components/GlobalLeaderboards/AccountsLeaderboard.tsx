@@ -7,6 +7,9 @@ import { useDebounce } from "lib/useDebounce";
 import { useState } from "react";
 import { useLeaderboardContext } from "./Context";
 import { PerfPeriod } from "domain/synthetics/leaderboards";
+import { formatAmount } from "lib/numbers";
+import { USD_DECIMALS } from "lib/legacy";
+import { BigNumber } from "ethers";
 
 export default function AccountsLeaderboard() {
   const perPage = 15;
@@ -18,10 +21,10 @@ export default function AccountsLeaderboard() {
   const displayedStats = filteredStats.slice((page - 1) * perPage, page * perPage).map(s => ({
     id: s.id,
     account: s.account,
-    absPnl: s.absPnl.toString(),
-    relPnl: s.relPnl.toString(),
-    sizeLev: `${ s.size.toString() } (${ s.leverage.toString() })`,
-    perf: `${ s.wins.toString() }/${ s.losses.toString() }`,
+    absPnl: formatAmount(s.absPnl, USD_DECIMALS, 2, true),
+    relPnl: formatAmount(s.relPnl.mul(BigNumber.from(100)), 0, 3, true),
+    sizeLev: `${ formatAmount(s.size, USD_DECIMALS, 2, true) } (${ formatAmount(s.leverage, 0, 3, true) })`,
+    perf: `${ s.wins.toNumber() }/${ s.losses.toNumber() }`,
   }));
 
   const pageCount = Math.ceil(filteredStats.length / perPage);
@@ -45,8 +48,8 @@ export default function AccountsLeaderboard() {
           type="inline"
           option={period}
           onChange={setPeriod}
-          options={[PerfPeriod.DAY, PerfPeriod.WEEK, PerfPeriod.MONTH]}
-          optionLabels={[t`24 hours`, t`7 days`, t`1 month`]}
+          options={[/* PerfPeriod.DAY, PerfPeriod.WEEK, PerfPeriod.MONTH, */PerfPeriod.TOTAL]}
+          optionLabels={[/*t`24 hours`, t`7 days`, t`1 month`, */t`Total`]}
         />
       </div>
       <Table
