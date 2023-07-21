@@ -47,7 +47,6 @@ import { contractFetcher } from "lib/contracts";
 import { formatDate } from "lib/dates";
 import { arrayURLFetcher } from "lib/fetcher";
 import { bigNumberify, expandDecimals, formatAmount, formatKeyAmount, numberWithCommas } from "lib/numbers";
-import { useMedia } from "react-use";
 import AssetDropdown from "./AssetDropdown";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
@@ -99,8 +98,6 @@ export default function DashboardV2() {
   const { active, library } = useWeb3React();
   const { chainId } = useChainId();
   const totalVolume = useTotalVolume();
-
-  const isMobile = useMedia("(max-width: 1200px)");
 
   const uniqueUsers = useUniqueUsers();
   const chainName = getChainName(chainId);
@@ -954,108 +951,123 @@ export default function DashboardV2() {
                 </div>
               </div>
             </div>
-            <div className="token-table-wrapper App-card">
-              <div className="App-card-title">
-                <Trans>GLP Index Composition</Trans> <img src={currentIcons.network} width="16" alt="Network Icon" />
-              </div>
-              <div className="App-card-divider"></div>
-              <table className="token-table">
-                <thead>
-                  <tr>
-                    <th>
-                      <Trans>TOKEN</Trans>
-                    </th>
-                    <th>
-                      <Trans>PRICE</Trans>
-                    </th>
-                    <th>
-                      <Trans>POOL</Trans>
-                    </th>
-                    <th>
-                      <Trans>WEIGHT</Trans>
-                    </th>
-                    <th>
-                      <Trans>UTILIZATION</Trans>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {visibleTokens.map((token) => {
-                    const tokenInfo = infoTokens[token.address];
-                    let utilization = bigNumberify(0);
-                    if (tokenInfo && tokenInfo.reservedAmount && tokenInfo.poolAmount && tokenInfo.poolAmount.gt(0)) {
-                      utilization = tokenInfo.reservedAmount.mul(BASIS_POINTS_DIVISOR).div(tokenInfo.poolAmount);
-                    }
-                    let maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT;
-                    if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
-                      maxUsdgAmount = tokenInfo.maxUsdgAmount;
-                    }
-                    const tokenImage = importImage("ic_" + token.symbol.toLowerCase() + "_40.svg");
-
-                    return (
-                      <tr key={token.address}>
-                        <td>
-                          <div className="token-symbol-wrapper">
-                            <div className="App-card-title-info">
-                              <div className="App-card-title-info-icon">
-                                <img src={tokenImage} alt={token.symbol} width="40" />
-                              </div>
-                              <div className="App-card-title-info-text">
-                                <div className="App-card-info-title">{token.name}</div>
-                                <div className="App-card-info-subtitle">{token.symbol}</div>
-                              </div>
-                              <div>
-                                <AssetDropdown assetSymbol={token.symbol} />
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td>${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}</td>
-                        <td>
-                          <TooltipComponent
-                            handle={`$${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`}
-                            position="right-bottom"
-                            className="nowrap"
-                            renderContent={() => {
-                              return (
-                                <>
-                                  <StatsTooltipRow
-                                    label={t`Pool Amount`}
-                                    value={`${formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 0, true)} ${
-                                      token.symbol
-                                    }`}
-                                    showDollar={false}
-                                  />
-                                  <StatsTooltipRow
-                                    label={t`Target Min Amount`}
-                                    value={`${formatKeyAmount(tokenInfo, "bufferAmount", token.decimals, 0, true)} ${
-                                      token.symbol
-                                    }`}
-                                    showDollar={false}
-                                  />
-                                  <StatsTooltipRow
-                                    label={t`Max ${tokenInfo.symbol} Capacity`}
-                                    value={formatAmount(maxUsdgAmount, 18, 0, true)}
-                                    showDollar={true}
-                                  />
-                                </>
-                              );
-                            }}
-                          />
-                        </td>
-                        <td>{getWeightText(tokenInfo)}</td>
-                        <td>{formatAmount(utilization, 2, 2, false)}%</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-
-            {isMobile && (
+            {visibleTokens.length > 0 && (
               <>
-                <div className="App-card-title-small">
-                  <Trans>GLP Index Composition</Trans> <img src={currentIcons.network} width="16" alt="Network Icon" />
+                <div className="token-table-wrapper App-card">
+                  <div className="App-card-title">
+                    <Trans>GLP Index Composition</Trans>{" "}
+                    <img src={currentIcons.network} width="16" alt="Network Icon" />
+                  </div>
+                  <div className="App-card-divider"></div>
+                  <table className="token-table">
+                    <thead>
+                      <tr>
+                        <th>
+                          <Trans>TOKEN</Trans>
+                        </th>
+                        <th>
+                          <Trans>PRICE</Trans>
+                        </th>
+                        <th>
+                          <Trans>POOL</Trans>
+                        </th>
+                        <th>
+                          <Trans>WEIGHT</Trans>
+                        </th>
+                        <th>
+                          <Trans>UTILIZATION</Trans>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {visibleTokens.map((token) => {
+                        const tokenInfo = infoTokens[token.address];
+                        let utilization = bigNumberify(0);
+                        if (
+                          tokenInfo &&
+                          tokenInfo.reservedAmount &&
+                          tokenInfo.poolAmount &&
+                          tokenInfo.poolAmount.gt(0)
+                        ) {
+                          utilization = tokenInfo.reservedAmount.mul(BASIS_POINTS_DIVISOR).div(tokenInfo.poolAmount);
+                        }
+                        let maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT;
+                        if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
+                          maxUsdgAmount = tokenInfo.maxUsdgAmount;
+                        }
+                        const tokenImage = importImage("ic_" + token.symbol.toLowerCase() + "_40.svg");
+
+                        return (
+                          <tr key={token.address}>
+                            <td>
+                              <div className="token-symbol-wrapper">
+                                <div className="App-card-title-info">
+                                  <div className="App-card-title-info-icon">
+                                    <img src={tokenImage} alt={token.symbol} width="40" />
+                                  </div>
+                                  <div className="App-card-title-info-text">
+                                    <div className="App-card-info-title">{token.name}</div>
+                                    <div className="App-card-info-subtitle">{token.symbol}</div>
+                                  </div>
+                                  <div>
+                                    <AssetDropdown assetSymbol={token.symbol} />
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                            <td>${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}</td>
+                            <td>
+                              <TooltipComponent
+                                handle={`$${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`}
+                                position="right-bottom"
+                                className="nowrap"
+                                renderContent={() => {
+                                  return (
+                                    <>
+                                      <StatsTooltipRow
+                                        label={t`Pool Amount`}
+                                        value={`${formatKeyAmount(
+                                          tokenInfo,
+                                          "managedAmount",
+                                          token.decimals,
+                                          0,
+                                          true
+                                        )} ${token.symbol}`}
+                                        showDollar={false}
+                                      />
+                                      <StatsTooltipRow
+                                        label={t`Target Min Amount`}
+                                        value={`${formatKeyAmount(
+                                          tokenInfo,
+                                          "bufferAmount",
+                                          token.decimals,
+                                          0,
+                                          true
+                                        )} ${token.symbol}`}
+                                        showDollar={false}
+                                      />
+                                      <StatsTooltipRow
+                                        label={t`Max ${tokenInfo.symbol} Capacity`}
+                                        value={formatAmount(maxUsdgAmount, 18, 0, true)}
+                                        showDollar={true}
+                                      />
+                                    </>
+                                  );
+                                }}
+                              />
+                            </td>
+                            <td>{getWeightText(tokenInfo)}</td>
+                            <td>{formatAmount(utilization, 2, 2, false)}%</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="Page-title Tab-title-section glp-composition-small">
+                  <Trans>GLP Index Composition</Trans>{" "}
+                  <img className="title-icon" src={currentIcons.network} width="24" alt="Network Icon" />
                 </div>
 
                 <div className="token-grid">
@@ -1152,6 +1164,7 @@ export default function DashboardV2() {
                 </div>
               </>
             )}
+
             {getIsSyntheticsSupported(chainId) && <MarketsList />}
           </div>
         </div>

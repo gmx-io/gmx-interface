@@ -90,8 +90,6 @@ import { CollateralSelectorRow } from "./CollateralSelectorRow";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import "./TradeBox.scss";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import Tooltip from "components/Tooltip/Tooltip";
 
 export type Props = {
   tradeType: TradeType;
