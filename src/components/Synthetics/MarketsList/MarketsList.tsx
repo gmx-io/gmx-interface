@@ -243,9 +243,9 @@ export function MarketsList() {
 
       {isMobile && (
         <>
-          <div className="App-card-title-small">
+          <div className="Page-title Tab-title-section glp-composition-small">
             <Trans>GM Pools</Trans>
-            <img className="title-icon" src={getIcon(chainId, "network")} width="16" alt="Network Icon" />
+            <img className="title-icon" src={getIcon(chainId, "network")} width="24" alt="Network Icon" />
           </div>
 
           <div className="token-grid">
