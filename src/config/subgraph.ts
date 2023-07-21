@@ -4,7 +4,7 @@ import { getSubgraphUrlKey } from "./localStorage";
 
 const SUBGRAPH_URLS = {
   [ARBITRUM]: {
-    stats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-stats/api",
+    stats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-stats/api",
 
     referrals:
       "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-referrals/version/synts-stats-230714035205-42d145e/api",
@@ -14,7 +14,7 @@ const SUBGRAPH_URLS = {
   },
 
   [ARBITRUM_GOERLI]: {
-    stats: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-stats",
+    stats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-stats/api",
     referrals:
       "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-goerli-referrals/version/synts-stats-230718155146-73cb2da/api",
     syntheticsStats:

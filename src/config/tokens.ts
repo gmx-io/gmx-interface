@@ -31,11 +31,11 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     },
     {
       name: "Bitcoin (WBTC)",
-      symbol: "WBTC",
+      symbol: "BTC",
       decimals: 8,
       address: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       isShortable: true,
-      imageUrl: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
+      imageUrl: "https://assets.coingecko.com/coins/images/26115/thumb/btcb.png?1655921693",
       coingeckoUrl: "https://www.coingecko.com/en/coins/wrapped-bitcoin",
       explorerUrl: "https://arbiscan.io/address/0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
       isV1Available: true,
@@ -92,14 +92,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
       explorerUrl: "https://arbiscan.io/token/0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
       isV1Available: true,
-    },
-    {
-      name: "Bridged USDC (USDC.e)",
-      symbol: "USDC.e",
-      decimals: 6,
-      address: "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
-      isStable: true,
-      imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
     },
     {
       name: "USD Coin",
