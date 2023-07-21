@@ -176,8 +176,8 @@ export function getIncreasePositionAmounts(p: {
 
     const baseCollateralAmount = convertToTokenAmount(
       baseCollateralUsd,
-      initialCollateralToken.decimals,
-      values.initialCollateralPrice
+      collateralToken.decimals,
+      values.collateralPrice
     )!;
 
     // TODO: collateralPrice?
