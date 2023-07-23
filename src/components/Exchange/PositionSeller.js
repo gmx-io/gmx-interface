@@ -43,7 +43,14 @@ import {
   isAddressZero,
 } from "lib/legacy";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
-import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
+import {
+  bigNumberify,
+  expandDecimals,
+  formatAmount,
+  formatAmountFree,
+  formatPercentage,
+  parseValue,
+} from "lib/numbers";
 import { getLeverage } from "lib/positions/getLeverage";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import { usePrevious } from "lib/usePrevious";
@@ -56,6 +63,7 @@ import ExchangeInfoRow from "./ExchangeInfoRow";
 import FeesTooltip from "./FeesTooltip";
 import "./PositionSeller.css";
 import { ErrorCode, ErrorDisplayType } from "./constants";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -1174,7 +1182,7 @@ export default function PositionSeller(props) {
               <div>
                 <ExchangeInfoRow
                   label={
-                    <Tooltip
+                    <TooltipWithPortal
                       handle={t`Allowed Slippage`}
                       position="left-top"
                       renderContent={() => {
@@ -1184,8 +1192,9 @@ export default function PositionSeller(props) {
                               You can change this in the settings menu on the top right of the page.
                               <br />
                               <br />
-                              Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if
-                              prices are volatile.
+                              Note that a low allowed slippage, e.g. less than{" "}
+                              {formatPercentage(bigNumberify(DEFAULT_SLIPPAGE_AMOUNT), { signed: false })}, may result
+                              in failed orders if prices are volatile.
                             </Trans>
                           </div>
                         );

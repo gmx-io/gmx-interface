@@ -28,13 +28,14 @@ import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { SLIPPAGE_BPS_KEY } from "config/localStorage";
-import { expandDecimals, formatAmount } from "lib/numbers";
+import { bigNumberify, expandDecimals, formatAmount, formatPercentage } from "lib/numbers";
 import { getToken, getWrappedToken } from "config/tokens";
 import { Plural, t, Trans } from "@lingui/macro";
 import Button from "components/Button/Button";
 import FeesTooltip from "./FeesTooltip";
 import { getTokenInfo, getUsd } from "domain/tokens";
 import SlippageInput from "components/SlippageInput/SlippageInput";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 
@@ -60,7 +61,7 @@ function renderAllowedSlippage(setAllowedSlippage, defaultSlippage) {
   return (
     <ExchangeInfoRow
       label={
-        <Tooltip
+        <TooltipWithPortal
           handle={t`Allowed Slippage`}
           position="left-top"
           renderContent={() => {
@@ -70,8 +71,9 @@ function renderAllowedSlippage(setAllowedSlippage, defaultSlippage) {
                   You can edit the default Allowed Slippage in the settings menu on the top right of the page.
                   <br />
                   <br />
-                  Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are
-                  volatile.
+                  Note that a low allowed slippage, e.g. less than{" "}
+                  {formatPercentage(bigNumberify(DEFAULT_SLIPPAGE_AMOUNT), { signed: false })}, may result in failed
+                  orders if prices are volatile.
                 </Trans>
               </div>
             );

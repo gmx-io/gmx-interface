@@ -55,8 +55,9 @@ import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
 import { getIsEquivalentTokens, getSpread } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-import { BASIS_POINTS_DIVISOR, CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR, CHART_PERIODS, DEFAULT_SLIPPAGE_AMOUNT, USD_DECIMALS } from "lib/legacy";
 import {
+  bigNumberify,
   formatAmount,
   formatDeltaUsd,
   formatPercentage,
@@ -70,6 +71,7 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./ConfirmationBox.scss";
 import SlippageInput from "components/SlippageInput/SlippageInput";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 export type Props = {
   isVisible: boolean;
@@ -822,7 +824,7 @@ export function ConfirmationBox(p: Props) {
     return (
       <ExchangeInfoRow
         label={
-          <Tooltip
+          <TooltipWithPortal
             handle={t`Allowed Slippage`}
             position="left-top"
             renderContent={() => {
@@ -832,8 +834,9 @@ export function ConfirmationBox(p: Props) {
                     You can edit the default Allowed Slippage in the settings menu on the top right of the page.
                     <br />
                     <br />
-                    Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are
-                    volatile.
+                    Note that a low allowed slippage, e.g. less than{" "}
+                    {formatPercentage(bigNumberify(DEFAULT_SLIPPAGE_AMOUNT), { signed: false })}, may result in failed
+                    orders if prices are volatile.
                   </Trans>
                 </div>
               );
