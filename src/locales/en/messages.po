@@ -4815,6 +4815,10 @@ msgstr "V2 Pools"
 msgid "V2 doesn't currently support this network"
 msgstr "V2 doesn't currently support this network"
 
+#: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
+msgid "V2 is newly live, and liquidity may be low initially."
+msgstr "V2 is newly live, and liquidity may be low initially."
+
 #: src/pages/Stake/StakeV2.js
 msgid "Vault Capacity"
 msgstr "Vault Capacity"
