@@ -230,39 +230,39 @@ export function PositionItem(p: Props) {
       }
     }
 
-    if (liqPriceWarning) {
-      return (
-        <Tooltip
-          handle={formatLiquidationPrice(p.position.liquidationPrice, { displayDecimals: indexPriceDecimals }) || "..."}
-          position={p.isLarge ? "left-bottom" : "right-bottom"}
-          handleClassName="plain"
-          renderContent={() => <div>{liqPriceWarning}</div>}
-        />
-      );
-    }
+    const getLiqPriceTooltipContent = () => (
+      <>
+        {liqPriceWarning && <div>{liqPriceWarning}</div>}
+        {estimatedLiquidationHours ? (
+          <div>
+            <div>
+              {!liqPriceWarning && "Liquidation Price is influenced by Fees, Collateral value, and Price Impact."}
+            </div>
+            <br />
+            <StatsTooltipRow
+              label={"Estimated time to Liquidation"}
+              value={formatEstimatedLiquidationTime(estimatedLiquidationHours)}
+              showDollar={false}
+            />
+            <br />
+            <div className="text-gray">
+              Estimation based on current Borrow and Funding Fees rates reducing position's Collateral over time,
+              excluding any price movement.
+            </div>
+          </div>
+        ) : (
+          ""
+        )}
+      </>
+    );
 
-    if (estimatedLiquidationHours) {
+    if (liqPriceWarning || estimatedLiquidationHours) {
       return (
         <Tooltip
           handle={formatLiquidationPrice(p.position.liquidationPrice, { displayDecimals: indexPriceDecimals }) || "..."}
           position={p.isLarge ? "left-bottom" : "right-bottom"}
           handleClassName={cx("plain", { "LiqPrice-tooltip-warning": estimatedLiquidationHours < 24 * 7 })}
-          renderContent={() => (
-            <div>
-              <div>Liquidation Price is influenced by Fees, Collateral value, and Price Impact.</div>
-              <br />
-              <StatsTooltipRow
-                label={"Estimated time to Liquidation"}
-                value={formatEstimatedLiquidationTime(estimatedLiquidationHours)}
-                showDollar={false}
-              />
-              <br />
-              <div className="text-gray">
-                Estimation based on current Borrow and Funding Fees rates reducing position's Collateral over time,
-                excluding any price movement.
-              </div>
-            </div>
-          )}
+          renderContent={getLiqPriceTooltipContent}
         />
       );
     }

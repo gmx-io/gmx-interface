@@ -279,22 +279,24 @@ export function getEstimatedLiquidationTimeInHours(
 
   if (totalFeesPerHour.eq(0)) return 0;
 
-  const hours = netValue
-    .add(priceImpactDeltaUsd)
-    .sub(liquidationCollateralUsd)
-    .div(borrowFeePerHour.abs().add(fundingFeePerHour.abs()));
+  const hours = netValue.add(priceImpactDeltaUsd).sub(liquidationCollateralUsd).div(totalFeesPerHour);
 
   return hours.toNumber();
 }
 
 export function formatEstimatedLiquidationTime(hours?: number) {
   if (!hours) return;
-  const days = Math.floor(hours / 24);
+  const days = Math.round(hours / 24);
+
+  if (hours < 1) {
+    return `< 1 hours`;
+  }
+
   if (days > 1000) {
     return "> 1000 days";
   }
   if (hours < 24) {
-    return `${Math.floor(hours)} hours`;
+    return `${Math.round(hours)} hours`;
   }
 
   return `${days} days`;
