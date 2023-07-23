@@ -878,8 +878,9 @@ export function ConfirmationBox(p: Props) {
           {renderExistingLimitOrdersWarning()}
           {renderExistingTriggerErrors()}
           {renderExistingTriggerWarning()}
-          {isLimit && renderAvailableLiquidity()}
           {renderDifferentTokensWarning()}
+
+          {isLimit && renderAvailableLiquidity()}
 
           <ExchangeInfoRow
             className="SwapBox-info-row"
