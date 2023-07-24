@@ -299,7 +299,8 @@ export function formatEstimatedLiquidationTime(hours?: number | undefined) {
     return "> 1000 days";
   }
   if (hours < 24) {
-    return `${Math.floor(hours)} hours`;
+    const hoursInt = Math.floor(hours);
+    return `${hoursInt} ${hoursInt === 1 ? "hour" : "hours"}`;
   }
 
   return `${days} days`;
