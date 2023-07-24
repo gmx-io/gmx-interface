@@ -1,6 +1,5 @@
 import { Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
-import cx from "classnames";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Checkbox from "components/Checkbox/Checkbox";
@@ -68,18 +67,9 @@ import swapImg from "img/swap.svg";
 import { useChainId } from "lib/chains";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import {
-  formatAmount,
-  formatAmountFree,
-  formatDeltaUsd,
-  formatPercentage,
-  formatTokenAmount,
-  formatUsd,
-  parseValue,
-} from "lib/numbers";
+import { formatAmount, formatAmountFree, formatDeltaUsd, formatTokenAmount, formatUsd, parseValue } from "lib/numbers";
 import { useSafeState } from "lib/useSafeState";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { AiOutlineEdit } from "react-icons/ai";
 import { IoMdSwap } from "react-icons/io";
 import { usePrevious } from "react-use";
 import { ClaimableCard } from "../ClaimableCard/ClaimableCard";
@@ -172,7 +162,6 @@ export function TradeBox(p: Props) {
     onSelectTradeMode,
     onSelectTradeType,
     onConnectWallet,
-    setIsEditingAcceptablePriceImpact,
     setIsClaiming,
     setPendingTxns,
     switchTokenAddresses,
@@ -1047,20 +1036,23 @@ export function TradeBox(p: Props) {
             )}
           </>
         )}
-        <ExchangeInfoRow
-          className="SwapBox-info-row"
-          label={t`Market`}
-          value={
-            <MarketSelector
-              label={t`Market`}
-              className="SwapBox-info-dropdown"
-              selectedIndexName={toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined}
-              markets={allMarkets || []}
-              isSideMenu
-              onSelectMarket={(indexName, marketInfo) => onSelectToTokenAddress(marketInfo.indexToken.address)}
-            />
-          }
-        />
+
+        {isTrigger && (
+          <ExchangeInfoRow
+            className="SwapBox-info-row"
+            label={t`Market`}
+            value={
+              <MarketSelector
+                label={t`Market`}
+                className="SwapBox-info-dropdown"
+                selectedIndexName={toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined}
+                markets={allMarkets || []}
+                isSideMenu
+                onSelectMarket={(indexName, marketInfo) => onSelectToTokenAddress(marketInfo.indexToken.address)}
+              />
+            }
+          />
+        )}
 
         <MarketPoolSelectorRow
           selectedMarket={marketInfo}
@@ -1131,46 +1123,6 @@ export function TradeBox(p: Props) {
                 displayDecimals: toToken?.priceDecimals,
               })
             )
-          }
-        />
-
-        {isMarket && (
-          <ExchangeInfoRow
-            className="SwapBox-info-row"
-            label={t`Price Impact`}
-            value={
-              <span className={cx({ positive: increaseAmounts?.acceptablePriceDeltaBps?.gt(0) })}>
-                {formatPercentage(increaseAmounts?.acceptablePriceDeltaBps, { signed: true }) || "-"}
-              </span>
-            }
-          />
-        )}
-
-        {isLimit && (
-          <ExchangeInfoRow
-            className="SwapBox-info-row"
-            label={t`Acceptable Price Impact`}
-            value={
-              <span
-                className="TradeBox-acceptable-price-impact"
-                onClick={() => setIsEditingAcceptablePriceImpact(true)}
-              >
-                {formatPercentage(acceptablePriceImpactBpsForLimitOrders.mul(-1), { signed: true })}
-                <span className="edit-icon" onClick={() => null}>
-                  <AiOutlineEdit fontSize={16} />
-                </span>
-              </span>
-            }
-          />
-        )}
-
-        <ExchangeInfoRow
-          className="SwapBox-info-row"
-          label={t`Acceptable Price`}
-          value={
-            formatUsd(increaseAmounts?.acceptablePrice, {
-              displayDecimals: toToken?.priceDecimals,
-            }) || "-"
           }
         />
 
@@ -1268,29 +1220,6 @@ export function TradeBox(p: Props) {
               displayDecimals: toToken?.priceDecimals,
             }) || "-"
           }`}
-        />
-
-        <ExchangeInfoRow
-          className="SwapBox-info-row"
-          label={t`Acceptable Price Impact`}
-          value={
-            <span className="TradeBox-acceptable-price-impact" onClick={() => setIsEditingAcceptablePriceImpact(true)}>
-              {formatPercentage(acceptablePriceImpactBpsForLimitOrders.mul(-1))}
-              <span className="edit-icon" onClick={() => null}>
-                <AiOutlineEdit fontSize={16} />
-              </span>
-            </span>
-          }
-        />
-
-        <ExchangeInfoRow
-          className="SwapBox-info-row"
-          label={t`Acceptable Price`}
-          value={
-            formatUsd(decreaseAmounts?.acceptablePrice, {
-              displayDecimals: toToken?.priceDecimals,
-            }) || "-"
-          }
         />
 
         {existingPosition && (
