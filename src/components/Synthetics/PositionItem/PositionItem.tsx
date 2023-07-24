@@ -261,7 +261,9 @@ export function PositionItem(p: Props) {
         <Tooltip
           handle={formatLiquidationPrice(p.position.liquidationPrice, { displayDecimals: indexPriceDecimals }) || "..."}
           position={p.isLarge ? "left-bottom" : "right-bottom"}
-          handleClassName={cx("plain", { "LiqPrice-tooltip-warning": estimatedLiquidationHours < 24 * 7 })}
+          handleClassName={cx("plain", {
+            "LiqPrice-tooltip-warning": estimatedLiquidationHours && estimatedLiquidationHours < 24 * 7,
+          })}
           renderContent={getLiqPriceTooltipContent}
         />
       );

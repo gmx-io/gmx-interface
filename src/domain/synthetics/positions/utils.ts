@@ -250,10 +250,10 @@ export function formatLeverage(leverage?: BigNumber) {
 export function getEstimatedLiquidationTimeInHours(
   position: PositionInfo,
   minCollateralUsd: BigNumber | undefined
-): number {
+): number | undefined {
   const { marketInfo, isLong, sizeInUsd, isOpening, netValue } = position;
 
-  if (isOpening || !minCollateralUsd) return 0;
+  if (isOpening || !minCollateralUsd) return;
 
   let liquidationCollateralUsd = applyFactor(sizeInUsd, marketInfo.minCollateralFactor);
   if (liquidationCollateralUsd.lt(minCollateralUsd)) {
@@ -277,16 +277,16 @@ export function getEstimatedLiquidationTimeInHours(
 
   const totalFeesPerHour = borrowFeePerHour.abs().add(fundingFeePerHour.lt(0) ? fundingFeePerHour.abs() : 0);
 
-  if (totalFeesPerHour.eq(0)) return 0;
+  if (totalFeesPerHour.eq(0)) return;
 
   const hours = netValue.add(priceImpactDeltaUsd).sub(liquidationCollateralUsd).div(totalFeesPerHour);
 
   return hours.toNumber();
 }
 
-export function formatEstimatedLiquidationTime(hours?: number) {
+export function formatEstimatedLiquidationTime(hours?: number | undefined) {
   if (!hours) return;
-  const days = Math.round(hours / 24);
+  const days = Math.floor(hours / 24);
 
   if (hours < 1) {
     return `< 1 hours`;
@@ -296,7 +296,7 @@ export function formatEstimatedLiquidationTime(hours?: number) {
     return "> 1000 days";
   }
   if (hours < 24) {
-    return `${Math.round(hours)} hours`;
+    return `${Math.floor(hours)} hours`;
   }
 
   return `${days} days`;
