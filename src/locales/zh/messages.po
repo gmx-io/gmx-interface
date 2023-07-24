@@ -2283,7 +2283,6 @@ msgstr ""
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -5375,6 +5374,7 @@ msgstr "{0}价格"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "{0} selected in order form"
 msgstr "{0}在指令表中选择"
 
@@ -5387,6 +5387,10 @@ msgstr "{0}代币已经从存入的{1}esGMX中转换为GMX，以便归属。"
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "{0} will be swapped to {1} on order execution."
+msgstr ""
+
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
+msgid "{0} {1} market selected"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js

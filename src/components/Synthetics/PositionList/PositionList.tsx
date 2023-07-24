@@ -2,7 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
 import { OrdersInfoData, PositionOrderInfo, isOrderForPosition } from "domain/synthetics/orders";
 import { PositionsInfoData } from "domain/synthetics/positions";
-import { TradeMode } from "domain/synthetics/trade";
+import { TradeMode, TradeType } from "domain/synthetics/trade";
 
 type Props = {
   onSelectPositionClick: (key: string, tradeMode?: TradeMode) => void;
@@ -15,6 +15,10 @@ type Props = {
   onOrdersClick: () => void;
   showPnlAfterFees: boolean;
   savedShowPnlAfterFees: boolean;
+  currentMarketAddress?: string;
+  currentCollateralAddress?: string;
+  currentTradeType?: TradeType;
+  openSettings: () => void;
 };
 
 export function PositionList(p: Props) {
@@ -43,6 +47,10 @@ export function PositionList(p: Props) {
               showPnlAfterFees={p.showPnlAfterFees}
               savedShowPnlAfterFees={p.savedShowPnlAfterFees}
               isLarge={false}
+              currentMarketAddress={p.currentMarketAddress}
+              currentCollateralAddress={p.currentCollateralAddress}
+              currentTradeType={p.currentTradeType}
+              openSettings={p.openSettings}
             />
           ))}
       </div>
@@ -96,6 +104,10 @@ export function PositionList(p: Props) {
                 showPnlAfterFees={p.showPnlAfterFees}
                 isLarge={true}
                 savedShowPnlAfterFees={p.savedShowPnlAfterFees}
+                currentMarketAddress={p.currentMarketAddress}
+                currentCollateralAddress={p.currentCollateralAddress}
+                currentTradeType={p.currentTradeType}
+                openSettings={p.openSettings}
               />
             ))}
         </tbody>

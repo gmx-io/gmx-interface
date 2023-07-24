@@ -559,6 +559,7 @@ function FullApp() {
                     tradePageVersion={tradePageVersion}
                     setTradePageVersion={setTradePageVersion}
                     savedSlippageAmount={savedSlippageAmount}
+                    openSettings={openSettings}
                   />
                 ) : (
                   <SyntheticsFallbackPage />

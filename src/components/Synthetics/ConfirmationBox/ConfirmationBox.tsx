@@ -1071,7 +1071,7 @@ export function ConfirmationBox(p: Props) {
           {decreaseOrdersThatWillBeExecuted?.length > 0 && (
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox isChecked={isTriggerWarningAccepted} setIsChecked={setIsTriggerWarningAccepted}>
-                <span className="muted font-sm">
+                <span className="text-warning font-sm">
                   <Trans>I am aware of the trigger orders</Trans>
                 </span>
               </Checkbox>
@@ -1293,7 +1293,7 @@ export function ConfirmationBox(p: Props) {
 
         {needPayTokenApproval && fromToken && (
           <>
-            <div className="line-divider" />
+            {!isHighPriceImpact && <div className="line-divider" />}
 
             <ApproveTokenButton
               tokenAddress={fromToken.address}

@@ -131,7 +131,9 @@ export function MarketsList() {
       }, BigNumber.from(0));
     }
 
-    return Object.values(indexMap);
+    return Object.values(indexMap).sort((a, b) => {
+      return b.totalPoolValue.gt(a.totalPoolValue) ? 1 : -1;
+    });
   }, [marketsInfoData]);
 
   return (

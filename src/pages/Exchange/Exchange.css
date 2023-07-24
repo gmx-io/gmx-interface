@@ -500,6 +500,7 @@ table.Exchange-list td {
   padding: 1.05rem;
   padding-left: 1.5rem;
 }
+
 table.Exchange-list.Orders th,
 table.Exchange-list.Orders td {
   padding-top: 1.4rem;
@@ -531,6 +532,31 @@ table.Exchange-list tr.Exchange-list-header th {
 
 table.Exchange-list th {
   opacity: 0.7;
+}
+
+table.Exchange-list .Exchange-list-item {
+  border-left: 2px solid transparent;
+}
+
+table.Exchange-list .Exchange-list-item td:first-child {
+  padding-left: 1.3rem;
+}
+
+table.Exchange-list .Exchange-list-item-active {
+  border-left: 2px solid #3a3f79;
+}
+
+.Position-card-title {
+  position: relative;
+}
+
+.Position-active-card::before {
+  content: "";
+  border-left: 2px solid #3a3f79;
+  position: absolute;
+  left: -7px;
+  bottom: -1px;
+  height: 21px;
 }
 
 .Exchange-leverage-box {
@@ -805,7 +831,6 @@ table.Exchange-list-small td {
 }
 
 .Exchange-list-title {
-  width: 3.1rem;
   display: inline-block;
   white-space: nowrap;
 }

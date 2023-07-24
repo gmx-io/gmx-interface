@@ -2283,7 +2283,6 @@ msgstr "Leftover position below 10 USD"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -5375,6 +5374,7 @@ msgstr "{0} price"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "{0} selected in order form"
 msgstr "{0} selected in order form"
 
@@ -5388,6 +5388,10 @@ msgstr "{0} tokens have been converted to GMX from the {1} esGMX deposited for v
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "{0} will be swapped to {1} on order execution."
 msgstr "{0} will be swapped to {1} on order execution."
+
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
+msgid "{0} {1} market selected"
+msgstr "{0} {1} market selected"
 
 #: src/components/Exchange/SwapBox.js
 msgid "{0} {1} not supported"
