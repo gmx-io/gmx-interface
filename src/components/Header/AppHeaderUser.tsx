@@ -8,12 +8,10 @@ import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
 import { isDevelopment } from "config/env";
-import { getIsSyntheticsSupported } from "config/features";
 import { getIcon } from "config/icons";
 import { useChainId } from "lib/chains";
 import { getAccountUrl, isHomeSite } from "lib/legacy";
 import { switchNetwork } from "lib/wallets";
-import { useHistory, useLocation } from "react-router-dom";
 import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
 import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
 import "./Header.css";
@@ -71,8 +69,6 @@ export function AppHeaderUser({
   const { chainId } = useChainId();
   const { active, account } = useWeb3React();
   const showConnectionOptions = !isHomeSite();
-  const location = useLocation();
-  const history = useHistory();
 
   const tradeLink = tradePageVersion === 1 ? "/trade" : "/v2";
 
@@ -81,19 +77,6 @@ export function AppHeaderUser({
       setWalletModalVisible(false);
     }
   }, [active, setWalletModalVisible]);
-
-  useEffect(
-    function redirectTradePage() {
-      if (location.pathname === "/trade" && tradePageVersion === 2 && getIsSyntheticsSupported(chainId)) {
-        history.replace("/v2");
-      }
-
-      if (location.pathname === "/v2" && (tradePageVersion === 1 || !getIsSyntheticsSupported(chainId))) {
-        history.replace("/trade");
-      }
-    },
-    [chainId, history, location.pathname, tradePageVersion]
-  );
 
   const onNetworkSelect = useCallback(
     (option) => {

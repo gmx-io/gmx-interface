@@ -39,6 +39,9 @@ export type MarketInfo = Market & {
   reserveFactorLong: BigNumber;
   reserveFactorShort: BigNumber;
 
+  openInterestReserveFactorLong: BigNumber;
+  openInterestReserveFactorShort: BigNumber;
+
   borrowingFactorLong: BigNumber;
   borrowingFactorShort: BigNumber;
   borrowingExponentFactorLong: BigNumber;

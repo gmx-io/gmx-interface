@@ -1,17 +1,22 @@
-import React, { useEffect, useState, useRef, useMemo } from "react";
 import cx from "classnames";
-import { useMedia } from "react-use";
-import { USD_DECIMALS, SWAP, INCREASE, getLiquidationPrice } from "lib/legacy";
+import { useEffect, useMemo, useRef, useState } from "react";
+
 import { useChartPrices } from "domain/legacy";
-import ChartTokenSelector from "./ChartTokenSelector";
-import { getTokenInfo } from "domain/tokens/utils";
-import { formatAmount, numberWithCommas } from "lib/numbers";
-import { getToken, getTokens } from "config/tokens";
-import TVChartContainer from "components/TVChartContainer/TVChartContainer";
-import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
+import { CHART_PERIODS, INCREASE, SWAP, USD_DECIMALS } from "lib/legacy";
+
 import { t } from "@lingui/macro";
-import { availableNetworksForChart } from "components/TVChartContainer/constants";
+import TVChartContainer from "components/TVChartContainer/TVChartContainer";
+import { DEFAULT_PERIOD, availableNetworksForChart } from "components/TVChartContainer/constants";
+import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
+import { getToken, getV1Tokens } from "config/tokens";
+import { SUPPORTED_RESOLUTIONS_V1 } from "config/tradingview";
+import { getTokenInfo } from "domain/tokens/utils";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { formatAmount, numberWithCommas } from "lib/numbers";
+import getLiquidationPrice from "lib/positions/getLiquidationPrice";
+import { useMedia } from "react-use";
+import ChartTokenSelector from "./ChartTokenSelector";
 
 const PRICE_LINE_TEXT_WIDTH = 15;
 
@@ -25,7 +30,7 @@ export function getChartToken(swapOption, fromToken, toToken, chainId) {
   }
 
   if (fromToken.isUsdg && toToken.isUsdg) {
-    return getTokens(chainId).find((t) => t.isStable);
+    return getV1Tokens(chainId).find((t) => t.isStable);
   }
   if (fromToken.isUsdg) {
     return toToken;
@@ -61,9 +66,15 @@ export default function ExchangeTVChart(props) {
     tradePageVersion,
     setTradePageVersion,
   } = props;
-  const [currentSeries] = useState();
-  const dataProvider = useRef();
+  let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
 
+  if (!period || !(period in CHART_PERIODS)) {
+    period = DEFAULT_PERIOD;
+  }
+
+  const [currentSeries] = useState();
+
+  const dataProvider = useRef();
   const isSmallMobile = useMedia("(max-width: 596px)");
 
   const fromToken = getTokenInfo(infoTokens, fromTokenAddress);
@@ -75,7 +86,9 @@ export default function ExchangeTVChart(props) {
   });
 
   useEffect(() => {
-    dataProvider.current = new TVDataProvider();
+    dataProvider.current = new TVDataProvider({
+      resolutions: SUPPORTED_RESOLUTIONS_V1,
+    });
   }, []);
 
   useEffect(() => {
@@ -120,13 +133,21 @@ export default function ExchangeTVChart(props) {
       .filter((p) => p.indexToken.address === chartToken.address)
       .map((position) => {
         const longOrShortText = position.isLong ? t`Long` : t`Short`;
+        const liquidationPrice = getLiquidationPrice({
+          size: position.size,
+          collateral: position.collateral,
+          averagePrice: position.averagePrice,
+          isLong: position.isLong,
+          fundingFee: position.fundingFee,
+        });
+
         return {
           open: {
             price: parseFloat(formatAmount(position.averagePrice, USD_DECIMALS, 2)),
             title: t`Open ${position.indexToken.symbol} ${longOrShortText}`,
           },
           liquidation: {
-            price: parseFloat(formatAmount(getLiquidationPrice(position), USD_DECIMALS, 2)),
+            price: parseFloat(formatAmount(liquidationPrice, USD_DECIMALS, 2)),
             title: t`Liq. ${position.indexToken.symbol} ${longOrShortText}`,
           },
         };
@@ -152,11 +173,11 @@ export default function ExchangeTVChart(props) {
   const ref = useRef(null);
 
   const currentAveragePrice =
-    chartToken.maxPrice && chartToken.minPrice ? chartToken.maxPrice.add(chartToken.minPrice).div(2) : null;
+    chartToken?.maxPrice && chartToken.minPrice ? chartToken.maxPrice.add(chartToken.minPrice).div(2) : null;
   const [priceData, updatePriceData] = useChartPrices(
     chainId,
-    chartToken.symbol,
-    chartToken.isStable,
+    chartToken?.symbol,
+    chartToken?.isStable,
     "1h",
     currentAveragePrice
   );
@@ -206,7 +227,14 @@ export default function ExchangeTVChart(props) {
             })
           );
 
-          const liquidationPrice = getLiquidationPrice(position);
+          const liquidationPrice = getLiquidationPrice({
+            size: position.size,
+            collateral: position.collateral,
+            averagePrice: position.averagePrice,
+            isLong: position.isLong,
+            fundingFee: position.fundingFee,
+          });
+
           lines.push(
             currentSeries.createPriceLine({
               price: parseFloat(formatAmount(liquidationPrice, USD_DECIMALS, 2)),
@@ -272,10 +300,6 @@ export default function ExchangeTVChart(props) {
       deltaPercentageStr = "0.00";
     }
   }
-
-  useEffect(() => {
-    dataProvider.current = new TVDataProvider();
-  }, []);
 
   if (!chartToken) {
     return null;
@@ -346,6 +370,10 @@ export default function ExchangeTVChart(props) {
             chainId={chainId}
             onSelectToken={onSelectToken}
             dataProvider={dataProvider.current}
+            period={period}
+            setPeriod={setPeriod}
+            chartToken={chartToken}
+            supportedResolutions={SUPPORTED_RESOLUTIONS_V1}
           />
         ) : (
           <p className="ExchangeChart-error">Sorry, chart is not supported on this network yet.</p>

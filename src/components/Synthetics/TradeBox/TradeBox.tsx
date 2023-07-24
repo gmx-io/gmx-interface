@@ -71,6 +71,7 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   formatAmount,
   formatAmountFree,
+  formatDeltaUsd,
   formatPercentage,
   formatTokenAmount,
   formatUsd,
@@ -88,6 +89,7 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { CollateralSelectorRow } from "./CollateralSelectorRow";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import "./TradeBox.scss";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 export type Props = {
   tradeType: TradeType;
@@ -197,6 +199,7 @@ export function TradeBox(p: Props) {
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
   const userReferralInfo = useUserReferralInfo(library, chainId, account);
+  const { showDebugValues } = useSettings();
 
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
 
@@ -421,7 +424,7 @@ export function TradeBox(p: Props) {
         collateralDeltaUsd: increaseAmounts.collateralDeltaUsd,
         collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
         sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
-        sizeDeltaInTokens: increaseAmounts.indexTokenAmount,
+        sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
         indexPrice: increaseAmounts.indexPrice,
         showPnlInLeverage: savedIsPnlInLeverage,
         minCollateralUsd,
@@ -442,7 +445,6 @@ export function TradeBox(p: Props) {
         collateralDeltaAmount: decreaseAmounts.collateralDeltaAmount,
         payedRemainingCollateralUsd: decreaseAmounts.payedRemainingCollateralUsd,
         payedRemainingCollateralAmount: decreaseAmounts.payedRemainingCollateralAmount,
-        indexPrice: decreaseAmounts.indexPrice,
         showPnlInLeverage: savedIsPnlInLeverage,
         isLong,
         minCollateralUsd,
@@ -846,6 +848,19 @@ export function TradeBox(p: Props) {
     setStage("trade");
   }, [isMarket]);
 
+  if (showDebugValues) {
+    const swapPathStats = swapAmounts?.swapPathStats || increaseAmounts?.swapPathStats;
+
+    if (swapPathStats) {
+      // eslint-disable-next-line no-console
+      console.log("Swap Path", {
+        path: swapPathStats.swapPath.map((marketAddress) => marketsInfoData?.[marketAddress]?.name).join(" -> "),
+        priceImpact: swapPathStats.swapSteps.map((step) => formatDeltaUsd(step.priceImpactDeltaUsd)).join(" -> "),
+        usdOut: swapPathStats.swapSteps.map((step) => formatUsd(step.usdOut)).join(" -> "),
+      });
+    }
+  }
+
   function renderTokenInputs() {
     return (
       <>
@@ -920,7 +935,7 @@ export function TradeBox(p: Props) {
 
         {isIncrease && (
           <BuyInputSection
-            topLeftLabel={`${tradeTypeLabels[tradeType!]}`}
+            topLeftLabel={tradeTypeLabels[tradeType!]}
             topLeftValue={formatUsd(increaseAmounts?.sizeDeltaUsd, { fallbackToZero: true })}
             topRightLabel={t`Leverage`}
             topRightValue={formatLeverage(isLeverageEnabled ? leverage : increaseAmounts?.estimatedLeverage) || "-"}
@@ -1176,6 +1191,8 @@ export function TradeBox(p: Props) {
                   ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
                       displayDecimals: toToken?.priceDecimals,
                     })
+                  : existingPosition
+                  ? undefined
                   : "-"
               }
             />
@@ -1359,7 +1376,14 @@ export function TradeBox(p: Props) {
 
       {isSwap && <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />}
       <div className="Exchange-swap-info-group">
-        {isPosition && <MarketCard isLong={isLong} marketInfo={marketInfo} allowedSlippage={allowedSlippage} />}
+        {isPosition && (
+          <MarketCard
+            isLong={isLong}
+            isIncrease={isIncrease}
+            marketInfo={marketInfo}
+            allowedSlippage={allowedSlippage}
+          />
+        )}
         {account && <ClaimableCard marketsInfoData={marketsInfoData} onClaimClick={() => setIsClaiming(true)} />}
       </div>
 
@@ -1388,7 +1412,6 @@ export function TradeBox(p: Props) {
         error={error}
         existingPosition={existingPosition}
         shouldDisableValidation={shouldDisableValidation!}
-        allowedSlippage={allowedSlippage}
         isHigherSlippageAllowed={isHigherSlippageAllowed}
         ordersData={ordersInfo}
         tokensData={tokensData}

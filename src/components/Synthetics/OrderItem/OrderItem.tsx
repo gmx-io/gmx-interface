@@ -6,16 +6,12 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   OrderInfo,
   PositionOrderInfo,
+  SwapOrderInfo,
   isDecreaseOrderType,
   isIncreaseOrderType,
   isSwapOrderType,
 } from "domain/synthetics/orders";
-import {
-  adaptToV1TokenInfo,
-  convertToTokenAmount,
-  convertToUsd,
-  getTokensRatioByAmounts,
-} from "domain/synthetics/tokens";
+import { adaptToV1TokenInfo, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { getMarkPrice } from "domain/synthetics/trade";
 import { USD_DECIMALS, getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
 import { formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
@@ -66,19 +62,12 @@ export function OrderItem(p: Props) {
     if (!isSwapOrderType(p.order.orderType)) return {};
 
     const fromToken = p.order.initialCollateralToken;
-    const fromAmount = p.order.initialCollateralDeltaAmount;
-    const toAmount = p.order.minOutputAmount;
     const toToken = p.order.targetCollateralToken;
 
     const fromTokenInfo = fromToken ? adaptToV1TokenInfo(fromToken) : undefined;
     const toTokenInfo = toToken ? adaptToV1TokenInfo(toToken) : undefined;
 
-    const tokensRatio = getTokensRatioByAmounts({
-      fromToken,
-      toToken,
-      fromTokenAmount: fromAmount,
-      toTokenAmount: toAmount,
-    });
+    const triggerRatio = (p.order as SwapOrderInfo).triggerRatio;
 
     const markExchangeRate =
       fromToken && toToken
@@ -86,10 +75,10 @@ export function OrderItem(p: Props) {
         : undefined;
 
     const swapRatioText = `${formatAmount(
-      tokensRatio.ratio,
+      triggerRatio?.ratio,
       USD_DECIMALS,
-      tokensRatio.smallestToken.isStable ? 2 : 4
-    )} ${tokensRatio.smallestToken.symbol} / ${tokensRatio.largestToken.symbol}`;
+      triggerRatio?.smallestToken.isStable ? 2 : 4
+    )} ${triggerRatio?.smallestToken.symbol} / ${triggerRatio?.largestToken.symbol}`;
 
     const markSwapRatioText = getExchangeRateDisplay(markExchangeRate, fromTokenInfo, toTokenInfo);
 
@@ -197,7 +186,7 @@ export function OrderItem(p: Props) {
             <Tooltip
               handle={swapRatioText}
               renderContent={() =>
-                t`You will receive at least ${toAmountText} if this order is executed. The execution price may vary depending on swap fees and price impact at the time the order is executed.`
+                t`You will receive at least ${toAmountText} if this order is executed. This price is being updated in real time based on Swap Fees and Price Impact.`
               }
             />
           ) : (

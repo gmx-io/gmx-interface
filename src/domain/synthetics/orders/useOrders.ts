@@ -3,8 +3,8 @@ import DataStore from "abis/DataStore.json";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import { getContract } from "config/contracts";
 import { accountOrderListKey } from "config/dataStore";
+import { BigNumber } from "ethers";
 import { useMulticall } from "lib/multicall";
-import { bigNumberify } from "lib/numbers";
 import { OrdersData } from "./types";
 
 type OrdersResult = {
@@ -46,59 +46,36 @@ export function useOrders(chainId: number): OrdersResult {
     }),
     parseResponse: (res) => {
       const count = Number(res.data.dataStore.count.returnValues[0]);
-      const orderKeys = res.data.dataStore.keys.returnValues[0];
-      const orders = res.data.reader.orders.returnValues[0];
+      const orderKeys = res.data.dataStore.keys.returnValues;
+      const orders = res.data.reader.orders.returnValues;
 
       return {
         count,
         ordersData: orders.reduce((acc: OrdersData, order, i) => {
           const key = orderKeys[i];
-          const [addresses, numbers, flags, data] = order;
-          const [
-            account,
-            receiver,
-            callbackContract,
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            uiFeeReceiver,
-            marketAddress,
-            initialCollateralTokenAddress,
-            swapPath,
-          ] = addresses;
-          const [orderType, decreasePositionSwapType, ...restNumbers] = numbers;
-          const [
-            sizeDeltaUsd,
-            initialCollateralDeltaAmount,
-            contractTriggerPrice,
-            contractAcceptablePrice,
-            executionFee,
-            callbackGasLimit,
-            minOutputAmount,
-            updatedAtBlock,
-          ] = restNumbers.map(bigNumberify);
-
-          const [isLong, shouldUnwrapNativeToken, isFrozen] = flags;
+          const { data } = order;
 
           acc[key] = {
             key,
-            account,
-            decreasePositionSwapType,
-            receiver,
-            callbackContract,
-            marketAddress,
-            initialCollateralTokenAddress,
-            swapPath,
-            sizeDeltaUsd,
-            initialCollateralDeltaAmount,
-            contractTriggerPrice,
-            contractAcceptablePrice,
-            executionFee,
-            callbackGasLimit,
-            minOutputAmount,
-            updatedAtBlock,
-            isLong,
-            shouldUnwrapNativeToken,
-            isFrozen,
-            orderType,
+            account: order.addresses.account,
+            receiver: order.addresses.receiver,
+            callbackContract: order.addresses.callbackContract,
+            marketAddress: order.addresses.market,
+            initialCollateralTokenAddress: order.addresses.initialCollateralToken,
+            swapPath: order.addresses.swapPath,
+            sizeDeltaUsd: BigNumber.from(order.numbers.sizeDeltaUsd),
+            initialCollateralDeltaAmount: BigNumber.from(order.numbers.initialCollateralDeltaAmount),
+            contractTriggerPrice: BigNumber.from(order.numbers.triggerPrice),
+            contractAcceptablePrice: BigNumber.from(order.numbers.acceptablePrice),
+            executionFee: BigNumber.from(order.numbers.executionFee),
+            callbackGasLimit: BigNumber.from(order.numbers.callbackGasLimit),
+            minOutputAmount: BigNumber.from(order.numbers.minOutputAmount),
+            updatedAtBlock: BigNumber.from(order.numbers.updatedAtBlock),
+            isLong: order.flags.isLong,
+            shouldUnwrapNativeToken: order.flags.shouldUnwrapNativeToken,
+            isFrozen: order.flags.isFrozen,
+            orderType: order.numbers.orderType,
+            decreasePositionSwapType: order.numbers.decreasePositionSwapType,
             data,
           };
 

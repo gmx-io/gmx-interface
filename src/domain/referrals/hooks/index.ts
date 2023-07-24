@@ -61,18 +61,31 @@ export function useUserReferralInfo(
   chainId: number,
   account?: string | null
 ): UserReferralInfo | undefined {
-  const { userReferralCode, userReferralCodeString, attachedOnChain } = useUserReferralCode(library, chainId, account);
+  const { userReferralCode, userReferralCodeString, attachedOnChain, referralCodeForTxn } = useUserReferralCode(
+    library,
+    chainId,
+    account
+  );
   const { codeOwner } = useCodeOwner(library, chainId, account, userReferralCode);
   const { affiliateTier: tierId } = useAffiliateTier(library, chainId, codeOwner);
   const { totalRebate, discountShare } = useTiers(library, chainId, tierId);
 
-  if (!userReferralCode || !userReferralCodeString || !codeOwner || !tierId || !totalRebate || !discountShare) {
+  if (
+    !userReferralCode ||
+    !userReferralCodeString ||
+    !codeOwner ||
+    !tierId ||
+    !totalRebate ||
+    !discountShare ||
+    !referralCodeForTxn
+  ) {
     return undefined;
   }
 
   return {
     userReferralCode,
     userReferralCodeString,
+    referralCodeForTxn,
     attachedOnChain,
     affiliate: codeOwner,
     tierId,
@@ -205,22 +218,28 @@ export function useUserReferralCode(library, chainId, account) {
     { fetcher: contractFetcher(library, ReferralStorage) }
   );
 
-  const { attachedOnChain, userReferralCode, userReferralCodeString } = useMemo(() => {
+  const { attachedOnChain, userReferralCode, userReferralCodeString, referralCodeForTxn } = useMemo(() => {
+    let attachedOnChain = false;
+    let userReferralCode: string | undefined = undefined;
+    let userReferralCodeString: string | undefined = undefined;
+    let referralCodeForTxn = ethers.constants.HashZero;
+
     if (onChainCode && !isHashZero(onChainCode)) {
-      return {
-        attachedOnChain: true,
-        userReferralCode: onChainCode,
-        userReferralCodeString: decodeReferralCode(onChainCode),
-      };
+      attachedOnChain = true;
+      userReferralCode = onChainCode;
+      userReferralCodeString = decodeReferralCode(onChainCode);
     } else if (localStorageCodeOwner && !isAddressZero(localStorageCodeOwner)) {
-      return {
-        attachedOnChain: false,
-        userReferralCode: localStorageCode!,
-        userReferralCodeString: decodeReferralCode(localStorageCode),
-      };
+      attachedOnChain = false;
+      userReferralCode = localStorageCode!;
+      userReferralCodeString = decodeReferralCode(localStorageCode!);
+      referralCodeForTxn = localStorageCode!;
     }
+
     return {
-      attachedOnChain: false,
+      attachedOnChain,
+      userReferralCode,
+      userReferralCodeString,
+      referralCodeForTxn,
     };
   }, [localStorageCode, localStorageCodeOwner, onChainCode]);
 
@@ -228,6 +247,7 @@ export function useUserReferralCode(library, chainId, account) {
     userReferralCode,
     userReferralCodeString,
     attachedOnChain,
+    referralCodeForTxn,
   };
 }
 

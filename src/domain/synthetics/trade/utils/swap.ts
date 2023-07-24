@@ -37,7 +37,6 @@ export function getSwapAmountsByFromValue(p: {
     return defaultAmounts;
   }
 
-  // TODO: refactor
   if (getIsEquivalentTokens(tokenIn, tokenOut)) {
     amountOut = amountIn;
     usdOut = usdIn;
@@ -55,7 +54,7 @@ export function getSwapAmountsByFromValue(p: {
     };
   }
 
-  const swapPathStats = findSwapPath(defaultAmounts.usdIn, { shouldApplyPriceImpact: true });
+  const swapPathStats = findSwapPath(defaultAmounts.usdIn, { byLiquidity: isLimit });
 
   if (!swapPathStats) {
     return defaultAmounts;
@@ -66,17 +65,17 @@ export function getSwapAmountsByFromValue(p: {
       return defaultAmounts;
     }
 
-    const amountInAfterFees = amountIn;
-
     amountOut = getAmountByRatio({
       fromToken: tokenIn,
       toToken: tokenOut,
-      fromTokenAmount: amountInAfterFees,
+      fromTokenAmount: amountIn,
       ratio: triggerRatio.ratio,
       shouldInvertRatio: triggerRatio.largestToken.address === tokenOut.address,
     });
 
     usdOut = convertToUsd(amountOut, tokenOut.decimals, priceOut)!;
+    usdOut = usdOut.sub(swapPathStats.totalSwapFeeUsd).add(swapPathStats.totalSwapPriceImpactDeltaUsd);
+    amountOut = convertToTokenAmount(usdOut, tokenOut.decimals, priceOut)!;
     minOutputAmount = amountOut;
   } else {
     usdOut = swapPathStats.usdOut;
@@ -153,7 +152,7 @@ export function getSwapAmountsByToValue(p: {
   }
 
   const baseUsdIn = usdOut;
-  const swapPathStats = findSwapPath(baseUsdIn, { shouldApplyPriceImpact: true });
+  const swapPathStats = findSwapPath(baseUsdIn, { byLiquidity: isLimit });
 
   if (!swapPathStats) {
     return defaultAmounts;
@@ -173,6 +172,8 @@ export function getSwapAmountsByToValue(p: {
     });
 
     usdIn = convertToUsd(amountIn, tokenIn.decimals, priceIn)!;
+    usdIn = usdIn.add(swapPathStats.totalSwapFeeUsd).sub(swapPathStats.totalSwapPriceImpactDeltaUsd);
+    amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, priceIn)!;
   } else {
     const adjustedUsdIn = swapPathStats.usdOut.gt(0)
       ? baseUsdIn.mul(usdOut).div(swapPathStats.usdOut)

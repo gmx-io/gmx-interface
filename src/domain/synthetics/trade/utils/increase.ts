@@ -2,7 +2,13 @@ import { UserReferralInfo } from "domain/referrals";
 import { getPositionFee } from "domain/synthetics/fees";
 import { MarketInfo } from "domain/synthetics/markets";
 import { OrderType } from "domain/synthetics/orders";
-import { PositionInfo, getEntryPrice, getLeverage, getLiquidationPrice } from "domain/synthetics/positions";
+import {
+  PositionInfo,
+  getEntryPrice,
+  getLeverage,
+  getLiquidationPrice,
+  getPositionPnlUsd,
+} from "domain/synthetics/positions";
 import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber } from "ethers";
@@ -170,8 +176,8 @@ export function getIncreasePositionAmounts(p: {
 
     const baseCollateralAmount = convertToTokenAmount(
       baseCollateralUsd,
-      initialCollateralToken.decimals,
-      values.initialCollateralPrice
+      collateralToken.decimals,
+      values.collateralPrice
     )!;
 
     // TODO: collateralPrice?
@@ -251,14 +257,47 @@ export function getIncreasePositionAmounts(p: {
     isLong,
     indexPrice: values.indexPrice,
     sizeDeltaUsd: values.sizeDeltaUsd,
-    maxNegativePriceImpactBps: isLimit ? savedAcceptablePriceImpactBps : undefined,
   });
 
+  values.positionPriceImpactDeltaUsd = acceptablePriceInfo.priceImpactDeltaUsd;
   values.acceptablePrice = acceptablePriceInfo.acceptablePrice;
   values.acceptablePriceDeltaBps = acceptablePriceInfo.acceptablePriceDeltaBps;
-  values.positionPriceImpactDeltaUsd = acceptablePriceInfo.priceImpactDeltaUsd;
 
-  values.sizeDeltaInTokens = convertToTokenAmount(values.sizeDeltaUsd, indexToken.decimals, values.acceptablePrice)!;
+  if (isLimit) {
+    const limitAcceptablePriceInfo = getAcceptablePriceInfo({
+      marketInfo,
+      isIncrease: true,
+      isLong,
+      indexPrice: values.indexPrice,
+      sizeDeltaUsd: values.sizeDeltaUsd,
+      maxNegativePriceImpactBps: savedAcceptablePriceImpactBps,
+    });
+
+    values.acceptablePrice = limitAcceptablePriceInfo.acceptablePrice;
+    values.acceptablePriceDeltaBps = limitAcceptablePriceInfo.acceptablePriceDeltaBps;
+
+    if (values.positionPriceImpactDeltaUsd.lt(limitAcceptablePriceInfo.priceImpactDeltaUsd)) {
+      values.positionPriceImpactDeltaUsd = limitAcceptablePriceInfo.priceImpactDeltaUsd;
+    }
+  }
+
+  let priceImpactAmount = BigNumber.from(0);
+
+  if (values.positionPriceImpactDeltaUsd.gt(0)) {
+    const price = triggerPrice || indexToken.prices.maxPrice;
+    priceImpactAmount = convertToTokenAmount(values.positionPriceImpactDeltaUsd, indexToken.decimals, price)!;
+  } else {
+    const price = triggerPrice || indexToken.prices.minPrice;
+    priceImpactAmount = convertToTokenAmount(values.positionPriceImpactDeltaUsd, indexToken.decimals, price)!;
+  }
+
+  values.sizeDeltaInTokens = convertToTokenAmount(values.sizeDeltaUsd, indexToken.decimals, values.indexPrice)!;
+
+  if (isLong) {
+    values.sizeDeltaInTokens = values.sizeDeltaInTokens.add(priceImpactAmount);
+  } else {
+    values.sizeDeltaInTokens = values.sizeDeltaInTokens.sub(priceImpactAmount);
+  }
 
   return values;
 }
@@ -310,10 +349,20 @@ export function getNextPositionValuesForIncreaseTrade(p: {
       indexToken: marketInfo.indexToken,
     }) || indexPrice;
 
+  const nextPnl = existingPosition
+    ? getPositionPnlUsd({
+        marketInfo,
+        sizeInUsd: nextSizeUsd,
+        sizeInTokens: nextSizeInTokens,
+        markPrice: indexPrice,
+        isLong,
+      })
+    : undefined;
+
   const nextLeverage = getLeverage({
     sizeInUsd: nextSizeUsd,
     collateralUsd: nextCollateralUsd,
-    pnl: showPnlInLeverage ? existingPosition?.pnl : undefined,
+    pnl: showPnlInLeverage ? nextPnl : undefined,
     pendingBorrowingFeesUsd: BigNumber.from(0), // deducted on order
     pendingFundingFeesUsd: BigNumber.from(0), // deducted on order
   });
@@ -325,7 +374,6 @@ export function getNextPositionValuesForIncreaseTrade(p: {
     sizeInTokens: nextSizeInTokens,
     collateralUsd: nextCollateralUsd,
     collateralAmount: nextCollateralAmount,
-    markPrice: nextEntryPrice,
     minCollateralUsd,
     pendingBorrowingFeesUsd: BigNumber.from(0), // deducted on order
     pendingFundingFeesUsd: BigNumber.from(0), // deducted on order

@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, MAINNET, TESTNET } from "./chains";
+import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, BCS_MAINNET, BCS_TESTNET } from "./chains";
 
 const { AddressZero } = ethers.constants;
 
@@ -11,7 +11,7 @@ export const XGMT_EXCLUDED_ACCOUNTS = [
 ];
 
 const CONTRACTS = {
-  [MAINNET]: {
+  [BCS_MAINNET]: {
     // bsc mainnet
     Treasury: "0xa44E7252a0C137748F523F112644042E5987FfC7",
     BUSD: "0xe9e7cea3dedca5984780bafc599bd69add087d56",
@@ -47,7 +47,7 @@ const CONTRACTS = {
     GMT_USDG_GMX_IOU: "0x481312655F81b5e249780A6a49735335BF6Ca7f4",
     XGMT_USDG_GMX_IOU: "0x8095F1A92526C304623483018aA28cC6E62EB1e1",
   },
-  [TESTNET]: {
+  [BCS_TESTNET]: {
     // bsc testnet
     Vault: "0x1B183979a5cd95FAF392c8002dbF0D5A1C687D9a",
     Router: "0x10800f683aa564534497a5b67F45bE3556a955AB",
@@ -119,13 +119,13 @@ const CONTRACTS = {
 
     // Synthetics
     DataStore: "0xbA2314b0f71ebC705aeEBeA672cc3bcEc510D03b",
-    EventEmitter: "0x4761B01ACFa3722640C3BA021Ac2D0D40f2F439e",
-    ExchangeRouter: "0xc4B3f4A8fF0920B8a41DF5005f7438a28d9d9a36",
-    DepositVault: "0x8d7cDa74F7924C1b2ca2cCDdD35758Eb8F9790FF",
-    WithdrawalVault: "0xecb1CaE8bE23Ce0405E94e9bd87C8121deF6f730",
-    OrderVault: "0x0915Ff0E294080677658f335Fbe506cffE4bB823",
-    SyntheticsReader: "0x3BE507a66792c4289Dd0eF00D429d5280e0A64f3",
-    SyntheticsRouter: "0xFc0892c870eC70b7381fFEA840717c2109E2eD14",
+    EventEmitter: "0x2fbE45fCb58B7106CF0a3Be9225D5Ed5A1004cc4",
+    ExchangeRouter: "0xdB7421cd7E92414029f16d45D8A15c2904052dDf",
+    DepositVault: "0x838a9bdf8736eD522A60F5f715e4F3FC2BC91A08",
+    WithdrawalVault: "0xaAac001C2a2727Ff2d484C4Ad7d2079C7094e7Ef",
+    OrderVault: "0x82aFd2590814a7Ce3d7ea6b63F80481F8b227bA9",
+    SyntheticsReader: "0x254feb5D92d01013bb6a975f2971872df622e6E7",
+    SyntheticsRouter: "0xfB8e176df6B5bB7132889C012550bEaa6288014d",
     Timelock: AddressZero,
 
     Multicall: "0x6d85594c9BD6b0833bC85AE62B360654A1e52D70",
@@ -171,18 +171,16 @@ const CONTRACTS = {
     ReferralReader: "0x8Aa382760BCdCe8644C33e6C2D52f6304A76F5c8",
 
     // Synthetics
-    DataStore: AddressZero,
-    EventEmitter: AddressZero,
-    ExchangeRouter: AddressZero,
-    DepositVault: AddressZero,
-    WithdrawalVault: AddressZero,
-    OrderVault: AddressZero,
-    SyntheticsReader: AddressZero,
-    SyntheticsReferralStorage: AddressZero,
-    SyntheticsRouter: AddressZero,
-    Synthetics: "0x8A68a039D555599Fd745f9343e8dE20C9eaFca75",
-
+    DataStore: "0xFD70de6b91282D8017aA4E741e9Ae325CAb992d8",
+    EventEmitter: "0xC8ee91A54287DB53897056e12D9819156D3822Fb",
+    ExchangeRouter: "0x3B070aA6847bd0fB56eFAdB351f49BBb7619dbc2",
+    DepositVault: "0xF89e77e8Dc11691C9e8757e84aaFbCD8A67d7A55",
+    WithdrawalVault: "0x0628D46b5D145f183AdB6Ef1f2c97eD1C4701C55",
+    OrderVault: "0x31eF83a530Fde1B38EE9A18093A333D8Bbbc40D5",
+    SyntheticsReader: "0x38d91ED96283d62182Fc6d990C24097A918a4d9b",
+    SyntheticsRouter: "0x7452c558d45f8afC8c83dAe62C3f8A5BE19c71f6",
     Timelock: "0xaa50bD556CE0Fe61D4A57718BA43177a3aB6A597",
+
     Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
   },
   [AVALANCHE]: {
@@ -227,18 +225,16 @@ const CONTRACTS = {
     ReferralReader: "0x505Ce16D3017be7D76a7C2631C0590E71A975083",
 
     // Synthetics
-    DataStore: AddressZero,
-    EventEmitter: AddressZero,
-    ExchangeRouter: AddressZero,
-    DepositVault: AddressZero,
-    WithdrawalVault: AddressZero,
-    OrderVault: AddressZero,
-    SyntheticsReader: AddressZero,
-    SyntheticsReferralStorage: AddressZero,
-    SyntheticsRouter: AddressZero,
-    SyntheticsTimelock: "0x8Ea12810271a0fD70bBEB8614B8735621abC3718",
-
+    DataStore: "0x2F0b22339414ADeD7D5F06f9D604c7fF5b2fe3f6",
+    EventEmitter: "0xDb17B211c34240B014ab6d61d4A31FA0C0e20c26",
+    ExchangeRouter: "0x79be2F4eC8A4143BaF963206cF133f3710856D0a",
+    DepositVault: "0x90c670825d0C62ede1c5ee9571d6d9a17A722DFF",
+    WithdrawalVault: "0xf5F30B10141E1F63FC11eD772931A8294a591996",
+    OrderVault: "0xD3D60D22d415aD43b7e64b510D86A30f19B1B12C",
+    SyntheticsReader: "0x1D5d64d691FBcD8C80A2FD6A9382dF0fe544cBd8",
+    SyntheticsRouter: "0x820F5FfC5b525cD4d88Cd91aCf2c28F16530Cc68",
     Timelock: "0x8A68a039D555599Fd745f9343e8dE20C9eaFca75",
+
     Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
   },
 
@@ -284,13 +280,13 @@ const CONTRACTS = {
 
     // Synthetics
     DataStore: "0xEA1BFb4Ea9A412dCCd63454AbC127431eBB0F0d4",
-    EventEmitter: "0x5973b2B2352AE3E3fa6B86AAc74c26512Ca4c433",
-    ExchangeRouter: "0xFDCdec54f90A7922B1d8e043fDc5e80fdeC4CdBa",
-    DepositVault: "0xf7dF8356cd5771A0037af683b420289b57c3A4a8",
-    WithdrawalVault: "0x3630930CBfb18Ad90AAa99d52E1288501123b3a1",
-    OrderVault: "0x51a632F68616920433CD82ed59D7893DA643Acc5",
-    SyntheticsReader: "0x7604F2A7cB31fA625d84C9034079410E0BBEddaf",
-    SyntheticsRouter: "0x460Aca682D7f7Fe5e4c5EDE7D04A7B4C59A3a0Bb",
+    EventEmitter: "0xc67D98AC5803aFD776958622CeEE332A0B2CabB9",
+    ExchangeRouter: "0x942f9c67dd68aAdF938F954Db3a2a6d0cFC7DD5F",
+    DepositVault: "0x2964d242233036C8BDC1ADC795bB4DeA6fb929f2",
+    WithdrawalVault: "0x74d49B6A630Bf519bDb6E4efc4354C420418A6A2",
+    OrderVault: "0x25D23e8E655727F2687CC808BB9589525A6F599B",
+    SyntheticsReader: "0xf5BDC7b4B452C3d22766c4306BE09a3b80A1eD2A",
+    SyntheticsRouter: "0x90Ee74Af6882026b4348F0Cfb61C1AF37E5D4Bb7",
     Timelock: AddressZero,
 
     Multicall: "0x0f53e512b49202a37c81c6085417C9a9005F2196",

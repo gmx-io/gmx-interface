@@ -431,11 +431,11 @@ export function SyntheticsPage(p: Props) {
         showPnlInLeverage={savedIsPnlInLeverage}
         onClose={onPositionSellerClose}
         setPendingTxns={setPendingTxns}
-        allowedSlippage={allowedSlippage}
         availableTokensOptions={availableTokensOptions}
         isHigherSlippageAllowed={isHigherSlippageAllowed}
         setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
         onConnectWallet={onConnectWallet}
+        shouldDisableValidation={shouldDisableValidation}
       />
 
       <PositionEditor
@@ -446,6 +446,7 @@ export function SyntheticsPage(p: Props) {
         onClose={onPositionEditorClose}
         setPendingTxns={setPendingTxns}
         onConnectWallet={onConnectWallet}
+        shouldDisableValidation={shouldDisableValidation}
       />
 
       <AcceptbablePriceImpactEditor

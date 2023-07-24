@@ -1,54 +1,53 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { useWeb3React } from "@web3-react/core";
 import { Trans, t } from "@lingui/macro";
-import useSWR from "swr";
-import { PieChart, Pie, Cell, Tooltip } from "recharts";
+import { useWeb3React } from "@web3-react/core";
 import TooltipComponent from "components/Tooltip/Tooltip";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { Cell, Pie, PieChart, Tooltip } from "recharts";
+import useSWR from "swr";
 
-import hexToRgba from "hex-to-rgba";
 import { ethers } from "ethers";
+import hexToRgba from "hex-to-rgba";
 
+import { useGmxPrice, useTotalGmxInLiquidity, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
 import {
-  USD_DECIMALS,
-  GMX_DECIMALS,
-  GLP_DECIMALS,
   BASIS_POINTS_DIVISOR,
   DEFAULT_MAX_USDG_AMOUNT,
+  GLP_DECIMALS,
+  GMX_DECIMALS,
+  USD_DECIMALS,
   getPageTitle,
   importImage,
 } from "lib/legacy";
-import { useTotalGmxInLiquidity, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
 
 import { getContract } from "config/contracts";
 
-import VaultV2 from "abis/VaultV2.json";
-import ReaderV2 from "abis/ReaderV2.json";
 import GlpManager from "abis/GlpManager.json";
+import ReaderV2 from "abis/ReaderV2.json";
+import VaultV2 from "abis/VaultV2.json";
 import Footer from "components/Footer/Footer";
 
 import "./DashboardV2.css";
 
-import AssetDropdown from "./AssetDropdown";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import SEO from "components/Common/SEO";
-import { useTotalVolume, useVolumeInfo, useFeesSummary } from "domain/stats";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
-import { getServerUrl } from "config/backend";
-import { contractFetcher } from "lib/contracts";
-import { useInfoTokens } from "domain/tokens";
-import { getTokenBySymbol, getWhitelistedTokens, GLP_POOL_COLORS } from "config/tokens";
-import { bigNumberify, expandDecimals, formatAmount, formatKeyAmount, numberWithCommas } from "lib/numbers";
-import { useChainId } from "lib/chains";
-import { formatDate } from "lib/dates";
-import { getIcons } from "config/icons";
-import { arrayURLFetcher } from "lib/fetcher";
-import { getIsSyntheticsSupported } from "config/features";
 import { MarketsList } from "components/Synthetics/MarketsList/MarketsList";
-import { useMedia } from "react-use";
+import { getServerUrl } from "config/backend";
+import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
+import { getIsSyntheticsSupported } from "config/features";
+import { getIcons } from "config/icons";
+import { GLP_POOL_COLORS, getTokenBySymbol, getWhitelistedV1Tokens } from "config/tokens";
+import { useFeesSummary, useTotalVolume, useVolumeInfo } from "domain/stats";
 import useUniqueUsers from "domain/stats/useUniqueUsers";
+import { useInfoTokens } from "domain/tokens";
+import { useChainId } from "lib/chains";
+import { contractFetcher } from "lib/contracts";
+import { formatDate } from "lib/dates";
+import { arrayURLFetcher } from "lib/fetcher";
+import { bigNumberify, expandDecimals, formatAmount, formatKeyAmount, numberWithCommas } from "lib/numbers";
+import AssetDropdown from "./AssetDropdown";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;
@@ -100,8 +99,6 @@ export default function DashboardV2() {
   const { chainId } = useChainId();
   const totalVolume = useTotalVolume();
 
-  const isMobile = useMedia("(max-width: 1200px)");
-
   const uniqueUsers = useUniqueUsers();
   const chainName = getChainName(chainId);
   const currentIcons = getIcons(chainId);
@@ -119,11 +116,11 @@ export default function DashboardV2() {
   const positionStatsInfo = getPositionStats(positionStats);
 
   function getWhitelistedTokenAddresses(chainId) {
-    const whitelistedTokens = getWhitelistedTokens(chainId);
+    const whitelistedTokens = getWhitelistedV1Tokens(chainId);
     return whitelistedTokens.map((token) => token.address);
   }
 
-  const whitelistedTokens = getWhitelistedTokens(chainId);
+  const whitelistedTokens = getWhitelistedV1Tokens(chainId);
   const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
   const visibleTokens = tokenList.filter((t) => !t.isTempHidden);
 
@@ -954,108 +951,123 @@ export default function DashboardV2() {
                 </div>
               </div>
             </div>
-            <div className="token-table-wrapper App-card">
-              <div className="App-card-title">
-                <Trans>GLP Index Composition</Trans> <img src={currentIcons.network} width="16" alt="Network Icon" />
-              </div>
-              <div className="App-card-divider"></div>
-              <table className="token-table">
-                <thead>
-                  <tr>
-                    <th>
-                      <Trans>TOKEN</Trans>
-                    </th>
-                    <th>
-                      <Trans>PRICE</Trans>
-                    </th>
-                    <th>
-                      <Trans>POOL</Trans>
-                    </th>
-                    <th>
-                      <Trans>WEIGHT</Trans>
-                    </th>
-                    <th>
-                      <Trans>UTILIZATION</Trans>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {visibleTokens.map((token) => {
-                    const tokenInfo = infoTokens[token.address];
-                    let utilization = bigNumberify(0);
-                    if (tokenInfo && tokenInfo.reservedAmount && tokenInfo.poolAmount && tokenInfo.poolAmount.gt(0)) {
-                      utilization = tokenInfo.reservedAmount.mul(BASIS_POINTS_DIVISOR).div(tokenInfo.poolAmount);
-                    }
-                    let maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT;
-                    if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
-                      maxUsdgAmount = tokenInfo.maxUsdgAmount;
-                    }
-                    const tokenImage = importImage("ic_" + token.symbol.toLowerCase() + "_40.svg");
-
-                    return (
-                      <tr key={token.symbol}>
-                        <td>
-                          <div className="token-symbol-wrapper">
-                            <div className="App-card-title-info">
-                              <div className="App-card-title-info-icon">
-                                <img src={tokenImage} alt={token.symbol} width="40" />
-                              </div>
-                              <div className="App-card-title-info-text">
-                                <div className="App-card-info-title">{token.name}</div>
-                                <div className="App-card-info-subtitle">{token.symbol}</div>
-                              </div>
-                              <div>
-                                <AssetDropdown assetSymbol={token.symbol} assetInfo={token} />
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td>${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}</td>
-                        <td>
-                          <TooltipComponent
-                            handle={`$${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`}
-                            position="right-bottom"
-                            className="nowrap"
-                            renderContent={() => {
-                              return (
-                                <>
-                                  <StatsTooltipRow
-                                    label={t`Pool Amount`}
-                                    value={`${formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 0, true)} ${
-                                      token.symbol
-                                    }`}
-                                    showDollar={false}
-                                  />
-                                  <StatsTooltipRow
-                                    label={t`Target Min Amount`}
-                                    value={`${formatKeyAmount(tokenInfo, "bufferAmount", token.decimals, 0, true)} ${
-                                      token.symbol
-                                    }`}
-                                    showDollar={false}
-                                  />
-                                  <StatsTooltipRow
-                                    label={t`Max ${tokenInfo.symbol} Capacity`}
-                                    value={formatAmount(maxUsdgAmount, 18, 0, true)}
-                                    showDollar={true}
-                                  />
-                                </>
-                              );
-                            }}
-                          />
-                        </td>
-                        <td>{getWeightText(tokenInfo)}</td>
-                        <td>{formatAmount(utilization, 2, 2, false)}%</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-
-            {isMobile && (
+            {visibleTokens.length > 0 && (
               <>
-                <div className="App-card-title-small">
-                  <Trans>GLP Index Composition</Trans> <img src={currentIcons.network} width="16" alt="Network Icon" />
+                <div className="token-table-wrapper App-card">
+                  <div className="App-card-title">
+                    <Trans>GLP Index Composition</Trans>{" "}
+                    <img src={currentIcons.network} width="16" alt="Network Icon" />
+                  </div>
+                  <div className="App-card-divider"></div>
+                  <table className="token-table">
+                    <thead>
+                      <tr>
+                        <th>
+                          <Trans>TOKEN</Trans>
+                        </th>
+                        <th>
+                          <Trans>PRICE</Trans>
+                        </th>
+                        <th>
+                          <Trans>POOL</Trans>
+                        </th>
+                        <th>
+                          <Trans>WEIGHT</Trans>
+                        </th>
+                        <th>
+                          <Trans>UTILIZATION</Trans>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {visibleTokens.map((token) => {
+                        const tokenInfo = infoTokens[token.address];
+                        let utilization = bigNumberify(0);
+                        if (
+                          tokenInfo &&
+                          tokenInfo.reservedAmount &&
+                          tokenInfo.poolAmount &&
+                          tokenInfo.poolAmount.gt(0)
+                        ) {
+                          utilization = tokenInfo.reservedAmount.mul(BASIS_POINTS_DIVISOR).div(tokenInfo.poolAmount);
+                        }
+                        let maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT;
+                        if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
+                          maxUsdgAmount = tokenInfo.maxUsdgAmount;
+                        }
+                        const tokenImage = importImage("ic_" + token.symbol.toLowerCase() + "_40.svg");
+
+                        return (
+                          <tr key={token.address}>
+                            <td>
+                              <div className="token-symbol-wrapper">
+                                <div className="App-card-title-info">
+                                  <div className="App-card-title-info-icon">
+                                    <img src={tokenImage} alt={token.symbol} width="40" />
+                                  </div>
+                                  <div className="App-card-title-info-text">
+                                    <div className="App-card-info-title">{token.name}</div>
+                                    <div className="App-card-info-subtitle">{token.symbol}</div>
+                                  </div>
+                                  <div>
+                                    <AssetDropdown assetSymbol={token.symbol} />
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                            <td>${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}</td>
+                            <td>
+                              <TooltipComponent
+                                handle={`$${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`}
+                                position="right-bottom"
+                                className="nowrap"
+                                renderContent={() => {
+                                  return (
+                                    <>
+                                      <StatsTooltipRow
+                                        label={t`Pool Amount`}
+                                        value={`${formatKeyAmount(
+                                          tokenInfo,
+                                          "managedAmount",
+                                          token.decimals,
+                                          0,
+                                          true
+                                        )} ${token.symbol}`}
+                                        showDollar={false}
+                                      />
+                                      <StatsTooltipRow
+                                        label={t`Target Min Amount`}
+                                        value={`${formatKeyAmount(
+                                          tokenInfo,
+                                          "bufferAmount",
+                                          token.decimals,
+                                          0,
+                                          true
+                                        )} ${token.symbol}`}
+                                        showDollar={false}
+                                      />
+                                      <StatsTooltipRow
+                                        label={t`Max ${tokenInfo.symbol} Capacity`}
+                                        value={formatAmount(maxUsdgAmount, 18, 0, true)}
+                                        showDollar={true}
+                                      />
+                                    </>
+                                  );
+                                }}
+                              />
+                            </td>
+                            <td>{getWeightText(tokenInfo)}</td>
+                            <td>{formatAmount(utilization, 2, 2, false)}%</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="Page-title Tab-title-section glp-composition-small">
+                  <Trans>GLP Index Composition</Trans>{" "}
+                  <img className="title-icon" src={currentIcons.network} width="24" alt="Network Icon" />
                 </div>
 
                 <div className="token-grid">
@@ -1078,7 +1090,7 @@ export default function DashboardV2() {
                             <img src={tokenImage} alt={token.symbol} width="20px" />
                             <div className="token-symbol-text">{token.symbol}</div>
                             <div>
-                              <AssetDropdown assetSymbol={token.symbol} assetInfo={token} />
+                              <AssetDropdown assetSymbol={token.symbol} />
                             </div>
                           </div>
                         </div>
@@ -1152,6 +1164,7 @@ export default function DashboardV2() {
                 </div>
               </>
             )}
+
             {getIsSyntheticsSupported(chainId) && <MarketsList />}
           </div>
         </div>

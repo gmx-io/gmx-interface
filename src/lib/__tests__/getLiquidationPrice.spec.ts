@@ -1,110 +1,52 @@
-import { getLiquidationPrice } from "lib/legacy";
-import { bigNumberify, expandDecimals } from "lib/numbers";
+import { ethers } from "ethers";
+import { formatAmount } from "lib/numbers";
+import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 
 describe("getLiquidationPrice", function () {
   const cases = [
     {
-      name: "simple by max leverage",
+      name: "New Position Long, to trigger 1% Buffer rule",
       isLong: true,
-      size: expandDecimals(50000, 30),
-      collateral: expandDecimals(10000, 30),
-      averagePrice: expandDecimals(50000, 30),
-      entryFundingRate: bigNumberify(95000),
-      cumulativeFundingRate: bigNumberify(100000),
-      expected: expandDecimals(40500, 30),
+      size: ethers.utils.parseUnits("98712.87", 30),
+      collateral: ethers.utils.parseUnits("9871.29", 30),
+      averagePrice: ethers.utils.parseUnits("23091.42", 30),
+      fundingFee: ethers.utils.parseUnits("0", 30),
+      expected: "21013.1914",
     },
     {
-      name: "liq price by fees",
+      name: "New Position Long, to trigger $5 Buffer rule",
       isLong: true,
-      size: expandDecimals(50000, 30),
-      collateral: expandDecimals(10000, 30),
-      averagePrice: expandDecimals(50000, 30),
-      entryFundingRate: bigNumberify(80000),
-      cumulativeFundingRate: bigNumberify(100000),
-      expected: expandDecimals(41055, 30),
+      size: ethers.utils.parseUnits("162.50", 30),
+      collateral: ethers.utils.parseUnits("16.25", 30),
+      averagePrice: ethers.utils.parseUnits("23245.74", 30),
+      fundingFee: ethers.utils.parseUnits("0", 30),
+      expected: "21659.6652",
     },
     {
-      name: "with size increase",
-      isLong: true,
-      size: expandDecimals(50000, 30),
-      collateral: expandDecimals(10000, 30),
-      averagePrice: expandDecimals(50000, 30),
-      entryFundingRate: bigNumberify(95000),
-      cumulativeFundingRate: bigNumberify(100000),
-      expected: expandDecimals(45525, 30),
-      sizeDelta: expandDecimals(50000, 30),
-      increaseSize: true,
+      name: "New Position Short, to trigger 1% Buffer rule",
+      isLong: false,
+      size: ethers.utils.parseUnits("99009.90", 30),
+      collateral: ethers.utils.parseUnits("9901.00", 30),
+      averagePrice: ethers.utils.parseUnits("23118.40", 30),
+      fundingFee: ethers.utils.parseUnits("0", 30),
+      expected: "25199.0583",
     },
     {
-      name: "with size decrease",
+      name: "Long Position with Positive PnL",
       isLong: true,
-      size: expandDecimals(50000, 30),
-      collateral: expandDecimals(10000, 30),
-      averagePrice: expandDecimals(50000, 30),
-      entryFundingRate: bigNumberify(95000),
-      cumulativeFundingRate: bigNumberify(100000),
-      expected: expandDecimals(30660, 30),
-      sizeDelta: expandDecimals(25000, 30),
-    },
-    {
-      name: "with pending losses",
-      isLong: true,
-      size: expandDecimals(50000, 30),
-      collateral: expandDecimals(10000, 30),
-      averagePrice: expandDecimals(50000, 30),
-      entryFundingRate: bigNumberify(95000),
-      cumulativeFundingRate: bigNumberify(100000),
-      sizeDelta: expandDecimals(25000, 30),
-      hasProfit: false,
-      delta: expandDecimals(5000, 30),
-      includeDelta: true,
-      expected: expandDecimals(35660, 30),
-    },
-    {
-      name: "with pending profit (no difference)",
-      isLong: true,
-      size: expandDecimals(50000, 30),
-      collateral: expandDecimals(10000, 30),
-      averagePrice: expandDecimals(50000, 30),
-      entryFundingRate: bigNumberify(95000),
-      cumulativeFundingRate: bigNumberify(100000),
-      sizeDelta: expandDecimals(25000, 30),
-      hasProfit: true,
-      delta: expandDecimals(5000, 30),
-      includeDelta: true,
-      expected: expandDecimals(30660, 30),
-    },
-    ////
-    {
-      name: "decrease collateral",
-      isLong: true,
-      size: expandDecimals(50000, 30),
-      collateral: expandDecimals(10000, 30),
-      averagePrice: expandDecimals(50000, 30),
-      entryFundingRate: bigNumberify(95000),
-      cumulativeFundingRate: bigNumberify(100000),
-      expected: expandDecimals(41500, 30),
-      collateralDelta: expandDecimals(1000, 30),
-    },
-    {
-      name: "increase collateral",
-      isLong: true,
-      size: expandDecimals(50000, 30),
-      collateral: expandDecimals(10000, 30),
-      averagePrice: expandDecimals(50000, 30),
-      entryFundingRate: bigNumberify(95000),
-      cumulativeFundingRate: bigNumberify(100000),
-      expected: expandDecimals(39500, 30),
-      collateralDelta: expandDecimals(1000, 30),
-      increaseCollateral: true,
+      size: ethers.utils.parseUnits("7179585.19", 30),
+      collateral: ethers.utils.parseUnits("145919.45", 30),
+      averagePrice: ethers.utils.parseUnits("1301.50", 30),
+      fundingFee: ethers.utils.parseUnits("55354.60", 30),
+      expected: "1288.0630",
     },
   ];
 
   for (const { name: caseName, expected, ...case_ } of cases) {
     it(`getLiquidationPrice: ${caseName}`, function () {
       const liqPrice = getLiquidationPrice(case_);
-
-      expect(liqPrice).toEqual(expected);
+      const formattedLiquidationPrice = formatAmount(liqPrice, 30, 4);
+      expect(formattedLiquidationPrice).toEqual(expected);
     });
   }
 });

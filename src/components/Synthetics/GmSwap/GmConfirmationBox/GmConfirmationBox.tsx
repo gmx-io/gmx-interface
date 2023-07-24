@@ -9,7 +9,7 @@ import { ExecutionFee } from "domain/synthetics/fees";
 import { useMarkets } from "domain/synthetics/markets";
 import { createDepositTxn } from "domain/synthetics/markets/createDepositTxn";
 import { createWithdrawalTxn } from "domain/synthetics/markets/createWithdrawalTxn";
-import { getNeedTokenApprove, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
+import { getNeedTokenApprove, getTokenData, useTokensData } from "domain/synthetics/tokens";
 import { TokenData } from "domain/synthetics/tokens/types";
 import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 import { GmSwapFees } from "domain/synthetics/trade";
@@ -74,7 +74,7 @@ export function GmConfirmationBox({
   const { library, account } = useWeb3React();
   const { chainId } = useChainId();
   const { marketsData } = useMarkets(chainId);
-  const { tokensData } = useAvailableTokensData(chainId);
+  const { tokensData } = useTokensData(chainId);
   const { setPendingDeposit, setPendingWithdrawal } = useSyntheticsEvents();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -317,16 +317,6 @@ export function GmConfirmationBox({
               executionFee={executionFee}
             />
             {tokensToApprove?.length > 0 && <div className="line-divider" />}
-
-            {/* {isHighPriceImpact && (
-              <div className="GmSwapBox-warnings">
-                <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
-                  <span className="text-warning font-sm">
-                    <Trans>I am aware of the high Price Impact</Trans>
-                  </span>
-                </Checkbox>
-              </div>
-            )} */}
 
             {tokensToApprove && tokensToApprove.length > 0 && (
               <div>

@@ -111,7 +111,16 @@ export function getReservedUsd(marketInfo: MarketInfo, isLong: boolean) {
 
 export function getMaxReservedUsd(marketInfo: MarketInfo, isLong: boolean) {
   const poolUsd = getPoolUsdWithoutPnl(marketInfo, isLong, "minPrice");
-  const reserveFactor = isLong ? marketInfo.reserveFactorLong : marketInfo.reserveFactorShort;
+
+  let reserveFactor = isLong ? marketInfo.reserveFactorLong : marketInfo.reserveFactorShort;
+
+  const openInterestReserveFactor = isLong
+    ? marketInfo.openInterestReserveFactorLong
+    : marketInfo.openInterestReserveFactorShort;
+
+  if (openInterestReserveFactor.lt(reserveFactor)) {
+    reserveFactor = openInterestReserveFactor;
+  }
 
   return poolUsd.mul(reserveFactor).div(PRECISION);
 }
@@ -175,7 +184,8 @@ export function getMostLiquidMarketForPosition(
   marketsInfo: MarketInfo[],
   indexTokenAddress: string,
   collateralTokenAddress: string | undefined,
-  isLong: boolean
+  isLong: boolean,
+  isIncrease: boolean
 ) {
   let bestMarket: MarketInfo | undefined;
   let bestLiquidity: BigNumber | undefined;
@@ -229,6 +239,7 @@ export function getMinPriceImpactMarket(
   marketsInfo: MarketInfo[],
   indexTokenAddress: string,
   isLong: boolean,
+  isIncrease: boolean,
   sizeDeltaUsd: BigNumber
 ) {
   let bestMarket: MarketInfo | undefined;

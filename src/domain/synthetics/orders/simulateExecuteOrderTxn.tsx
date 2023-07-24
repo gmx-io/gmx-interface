@@ -1,5 +1,5 @@
 import { Web3Provider } from "@ethersproject/providers";
-import { Trans } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import CustomErrors from "abis/CustomErrors.json";
 import DataStore from "abis/DataStore.json";
 import ExchangeRouter from "abis/ExchangeRouter.json";
@@ -11,6 +11,7 @@ import { convertTokenAddress } from "config/tokens";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
 import { BigNumber, ethers } from "ethers";
 import { callContract } from "lib/contracts";
+import { getErrorMessage } from "lib/contracts/transactionErrors";
 import { helperToast } from "lib/helperToast";
 
 export type MulticallRequest = { method: string; params: any[] }[];
@@ -77,16 +78,18 @@ export async function simulateExecuteOrderTxn(chainId: number, library: Web3Prov
     } else {
       await exchangeRouter.callStatic.multicall(simulationPayload, { value: p.value, blockTag: blockNumber });
     }
-  } catch (e) {
+  } catch (txnError) {
     const customErrors = new ethers.Contract(ethers.constants.AddressZero, CustomErrors.abi);
 
-    let isSimulationPassed = false;
-    let msg = "";
+    let msg: any = undefined;
 
     try {
-      const parsedError = customErrors.interface.parseError(e.data?.data);
+      const parsedError = customErrors.interface.parseError(txnError.data?.data);
+      const isSimulationPassed = parsedError.name === "EndOfOracleSimulation";
 
-      isSimulationPassed = parsedError.name === "EndOfOracleSimulation";
+      if (isSimulationPassed) {
+        return;
+      }
 
       const parsedArgs = Object.keys(parsedError.args).reduce((acc, k) => {
         if (!Number.isNaN(Number(k))) {
@@ -96,24 +99,33 @@ export async function simulateExecuteOrderTxn(chainId: number, library: Web3Prov
         return acc;
       }, {});
 
-      msg = `${parsedError.name} ${JSON.stringify(parsedArgs, null, 2)}`;
-    } catch (e) {
-      msg = "Unknown error";
-    }
-
-    if (isSimulationPassed) {
-      return undefined;
-    } else {
-      helperToast.error(
+      msg = (
         <div>
           <Trans>Execute order simulation failed.</Trans>
           <br />
-          <ToastifyDebug>{msg}</ToastifyDebug>
+          <ToastifyDebug>
+            {parsedError.name} {JSON.stringify(parsedArgs, null, 2)}
+          </ToastifyDebug>
+        </div>
+      );
+    } catch (e) {
+      const walletErrorMessage = getErrorMessage(chainId, txnError, t`Execute order simulation failed.`);
+      msg = walletErrorMessage.failMsg;
+    }
+
+    if (!msg) {
+      msg = (
+        <div>
+          <Trans>Execute order simulation failed.</Trans>
+          <br />
+          <ToastifyDebug>Unknown Error</ToastifyDebug>
         </div>
       );
     }
 
-    throw e;
+    helperToast.error(msg);
+
+    throw txnError;
   }
 }
 

@@ -3,7 +3,7 @@ import { MarketsInfoData } from "domain/synthetics/markets";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { useCallback, useMemo } from "react";
-import { FindSwapPath, MarketEdge } from "./types";
+import { FindSwapPath } from "./types";
 import {
   createSwapEstimator,
   findAllPaths,
@@ -14,7 +14,6 @@ import {
 } from "./utils";
 
 export type SwapRoutesResult = {
-  allPaths?: MarketEdge[][];
   maxSwapLiquidity: BigNumber;
   maxLiquiditySwapPath?: string[];
   findSwapPath: FindSwapPath;
@@ -48,56 +47,57 @@ export function useSwapRoutes(p: {
     };
   }, [marketsInfoData]);
 
-  const allPaths = useMemo(() => {
-    if (!graph || !wrappedFromAddress || !wrappedToAddress || isWrap || isUnwrap || isSameToken) {
+  const allRoutes = useMemo(() => {
+    if (!marketsInfoData || !graph || !wrappedFromAddress || !wrappedToAddress || isWrap || isUnwrap || isSameToken) {
       return undefined;
     }
 
-    let p = findAllPaths(graph, wrappedFromAddress, wrappedToAddress);
+    const paths = findAllPaths(marketsInfoData, graph, wrappedFromAddress, wrappedToAddress)
+      ?.sort((a, b) => {
+        return b.liquidity.sub(a.liquidity).gt(0) ? 1 : -1;
+      })
+      .slice(0, 5);
 
-    p = p?.sort((a, b) => {
-      return a.length - b.length;
-    });
-
-    // TODO: optimize
-    return p?.slice(0, 5);
-  }, [graph, isSameToken, isUnwrap, isWrap, wrappedFromAddress, wrappedToAddress]);
+    return paths;
+  }, [graph, isSameToken, isUnwrap, isWrap, marketsInfoData, wrappedFromAddress, wrappedToAddress]);
 
   const { maxLiquidity, maxLiquidityPath } = useMemo(() => {
     let maxLiquidity = BigNumber.from(0);
     let maxLiquidityPath: string[] | undefined = undefined;
 
-    if (!allPaths || !marketsInfoData || !wrappedFromAddress) {
+    if (!allRoutes || !marketsInfoData || !wrappedFromAddress) {
       return { maxLiquidity, maxLiquidityPath };
     }
 
-    for (const path of allPaths) {
-      const swapPath = path.map((edge) => edge.marketAddress);
-
+    for (const route of allRoutes) {
       const liquidity = getMaxSwapPathLiquidity({
         marketsInfoData,
-        swapPath,
+        swapPath: route.path,
         initialCollateralAddress: wrappedFromAddress,
       });
 
       if (liquidity.gt(maxLiquidity)) {
         maxLiquidity = liquidity;
-        maxLiquidityPath = swapPath;
+        maxLiquidityPath = route.path;
       }
     }
 
     return { maxLiquidity, maxLiquidityPath };
-  }, [allPaths, marketsInfoData, wrappedFromAddress]);
+  }, [allRoutes, marketsInfoData, wrappedFromAddress]);
 
   const findSwapPath = useCallback(
-    (usdIn: BigNumber, opts: { shouldApplyPriceImpact: boolean }) => {
-      if (!allPaths || !estimator || !marketsInfoData || !fromTokenAddress) {
+    (usdIn: BigNumber, opts: { byLiquidity?: boolean }) => {
+      if (!allRoutes?.length || !estimator || !marketsInfoData || !fromTokenAddress) {
         return undefined;
       }
 
-      const bestSwapPathEdges = getBestSwapPath(allPaths, usdIn, estimator);
+      let swapPath: string[] | undefined = undefined;
 
-      const swapPath = bestSwapPathEdges?.map((edge) => edge.marketAddress);
+      if (opts.byLiquidity) {
+        swapPath = allRoutes[0].path;
+      } else {
+        swapPath = getBestSwapPath(allRoutes, usdIn, estimator);
+      }
 
       if (!swapPath) {
         return undefined;
@@ -109,7 +109,7 @@ export function useSwapRoutes(p: {
         initialCollateralAddress: fromTokenAddress,
         wrappedNativeTokenAddress: wrappedToken.address,
         shouldUnwrapNativeToken: toTokenAddress === NATIVE_TOKEN_ADDRESS,
-        shouldApplyPriceImpact: opts.shouldApplyPriceImpact,
+        shouldApplyPriceImpact: true,
         usdIn,
       });
 
@@ -119,13 +119,12 @@ export function useSwapRoutes(p: {
 
       return swapPathStats;
     },
-    [allPaths, estimator, fromTokenAddress, marketsInfoData, toTokenAddress, wrappedToken.address]
+    [allRoutes, estimator, fromTokenAddress, marketsInfoData, toTokenAddress, wrappedToken.address]
   );
 
   return {
     maxSwapLiquidity: maxLiquidity,
     maxLiquiditySwapPath: maxLiquidityPath,
-    allPaths,
     findSwapPath,
   };
 }

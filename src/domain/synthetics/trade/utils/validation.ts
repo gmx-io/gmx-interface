@@ -188,7 +188,11 @@ export function getIncreaseError(p: {
     }
   }
 
-  if (fees.payTotalFees?.deltaUsd.lt(0) && fees?.payTotalFees?.deltaUsd.abs().gt(initialCollateralUsd || 0)) {
+  if (
+    !existingPosition &&
+    fees.payTotalFees?.deltaUsd.lt(0) &&
+    fees?.payTotalFees?.deltaUsd.abs().gt(initialCollateralUsd || 0)
+  ) {
     return [t`Fees exceed amount`];
   }
 
@@ -196,6 +200,10 @@ export function getIncreaseError(p: {
 
   if (!existingPosition && collateralUsd?.lt(_minCollateralUsd)) {
     return [t`Min order: ${formatUsd(_minCollateralUsd)}`];
+  }
+
+  if (nextPositionValues?.nextCollateralUsd?.lt(_minCollateralUsd)) {
+    return [t`Min collateral: ${formatUsd(_minCollateralUsd)}`];
   }
 
   if (!sizeDeltaUsd.gt(0)) {

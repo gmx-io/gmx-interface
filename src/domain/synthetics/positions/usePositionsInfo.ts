@@ -151,7 +151,6 @@ export function usePositionsInfo(
           sizeInTokens: position.sizeInTokens,
           collateralUsd,
           collateralAmount: position.collateralAmount,
-          markPrice,
           userReferralInfo,
           minCollateralUsd,
           pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
