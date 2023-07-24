@@ -635,8 +635,9 @@ export function ConfirmationBox(p: Props) {
       return (
         <div className="Confirmation-box-info">
           <Trans>
-            You have selected {collateralTokenSymbol} as Collateral, the Liquidation Price is higher compared to using a
-            stablecoin as collateral, since the worth of the collateral will change with its price.
+            You have selected {collateralTokenSymbol} as collateral, the Liquidation Price is higher compared to using a
+            stablecoin as collateral since the worth of the collateral will change with its price. If required, you can
+            change the collateral type using the Collateral In option in the trade box.
           </Trans>
         </div>
       );
