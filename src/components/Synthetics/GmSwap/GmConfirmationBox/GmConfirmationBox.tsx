@@ -9,7 +9,7 @@ import { ExecutionFee } from "domain/synthetics/fees";
 import { useMarkets } from "domain/synthetics/markets";
 import { createDepositTxn } from "domain/synthetics/markets/createDepositTxn";
 import { createWithdrawalTxn } from "domain/synthetics/markets/createWithdrawalTxn";
-import { getNeedTokenApprove, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
+import { getNeedTokenApprove, getTokenData, useTokensData } from "domain/synthetics/tokens";
 import { TokenData } from "domain/synthetics/tokens/types";
 import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 import { GmSwapFees } from "domain/synthetics/trade";
@@ -74,7 +74,7 @@ export function GmConfirmationBox({
   const { library, account } = useWeb3React();
   const { chainId } = useChainId();
   const { marketsData } = useMarkets(chainId);
-  const { tokensData } = useAvailableTokensData(chainId);
+  const { tokensData } = useTokensData(chainId);
   const { setPendingDeposit, setPendingWithdrawal } = useSyntheticsEvents();
 
   const [isSubmitting, setIsSubmitting] = useState(false);

@@ -85,7 +85,7 @@ msgstr ""
 msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>Other websites may show a higher value as they add positions' collaterals to the GLP pool.</1>"
 msgstr ""
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 #: src/lib/wallets/index.tsx
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr ""
@@ -204,7 +204,7 @@ msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Accrued Positive Funding Fee"
-msgstr "<<<<<<< HEAD"
+msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
@@ -265,11 +265,11 @@ msgstr ""
 
 #: src/components/ModalViews/RedirectModal.js
 msgid "Agree"
-msgstr ""
+msgstr "<<<<<<< HEAD"
 
 #: src/components/ApproveTokenButton/ApproveTokenButton.tsx
 msgid "Allow {0} to be spent"
-msgstr ""
+msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
 
 #: src/App/App.js
 #: src/components/Exchange/ConfirmationBox.js
@@ -308,11 +308,7 @@ msgstr ""
 
 #: src/pages/Home/Home.js
 msgid "An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from temporary wicks."
-msgstr ""
-
-#: src/pages/Ecosystem/Ecosystem.js
-msgid "Announcement"
-msgstr ""
+msgstr "<<<<<<< HEAD======="
 
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "App"
@@ -385,10 +381,6 @@ msgstr ""
 msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV1.js
-msgid "Assets Under Management"
-msgstr ""
-
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})."
 msgstr ""
@@ -421,7 +413,7 @@ msgstr ""
 
 #: src/pages/Home/Home.js
 msgid "Available on your preferred network"
-msgstr ""
+msgstr "<<<<<<< HEAD"
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
@@ -513,12 +505,12 @@ msgstr ""
 
 #: src/pages/Buy/Buy.js
 msgid "Buy GLP or GMX"
-msgstr ""
+msgstr "<<<<<<< HEAD"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Buy GM"
-msgstr ""
+msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Buy GMX"
@@ -570,20 +562,14 @@ msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
+#: src/components/TokenCard/TokenCard.js
 msgid "Buy on Arbitrum"
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
-msgid "Buy on Arbitrum Goerli"
-msgstr ""
-
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Buy on Avalanche"
-msgstr ""
-
-#: src/components/TokenCard/TokenCard.js
-msgid "Buy on Avalanche FUJI"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
@@ -897,9 +883,13 @@ msgstr ""
 msgid "Collateral Spread"
 msgstr ""
 
+#: src/components/Exchange/PositionSeller.js
+msgid "Collateral is not enough to cover pending Fees. Please uncheck \"Keep Leverage\" to pay the Fees with the realized PnL."
+msgstr "<<<<<<< HEAD"
+
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "Collateral value may differ due to different Price Impact at the time of execution."
-msgstr ""
+msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Community Projects"
@@ -913,6 +903,7 @@ msgstr ""
 msgid "Community-led Telegram groups."
 msgstr ""
 
+#: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Complete Account Transfer"
 msgstr ""
@@ -1041,11 +1032,6 @@ msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "Copy Address"
-msgstr ""
-
-#: src/pages/Dashboard/DashboardV1.js
-#: src/pages/Dashboard/DashboardV1.js
-msgid "Could not add token to MetaMask"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -1181,6 +1167,7 @@ msgstr ""
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
+#: src/pages/Ecosystem/Ecosystem.js
 msgid "DEX Aggregator"
 msgstr ""
 
@@ -1213,6 +1200,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Decentralized Finance Dashboard"
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Decentralized Money Market"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -1286,9 +1277,13 @@ msgstr ""
 msgid "Deposit Fee"
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
+msgid "Deposit amount is insufficient to bring leverage below the max allowed leverage of 100x"
+msgstr "<<<<<<< HEAD"
+
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
 msgid "Deposit cancelled"
-msgstr ""
+msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Deposit disabled, pending {0} upgrade"
@@ -1306,9 +1301,13 @@ msgstr ""
 msgid "Deposit failed."
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
+msgid "Deposit not enough to cover fees"
+msgstr "<<<<<<< HEAD"
+
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
 msgid "Deposit request sent"
-msgstr ""
+msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Deposit submitted!"
@@ -1640,6 +1639,8 @@ msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} 
 msgstr ""
 
 #: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
+#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
+#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
 msgid "Execute order simulation failed."
 msgstr ""
 
@@ -1683,7 +1684,6 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Fees"
 msgstr ""
@@ -1705,6 +1705,10 @@ msgstr ""
 msgid "Fees are high to swap from {0} to {1}. <0/>{2} is needed for collateral."
 msgstr ""
 
+#: src/components/Exchange/PositionSeller.js
+msgid "Fees are higher than Collateral"
+msgstr "<<<<<<< HEAD"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -1713,7 +1717,7 @@ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Fees exceed amount"
-msgstr ""
+msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Fees generated by GMX"
@@ -1763,7 +1767,6 @@ msgid "Forfeit profit and {action}"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/PositionSeller.js
 msgid "Forfeit profit not checked"
 msgstr ""
 
@@ -1937,6 +1940,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX staking calculator"
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "GMX staking calculator and guide"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -2139,11 +2146,16 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} balance"
-msgstr ""
+msgstr "<<<<<<< HEAD"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} liquidity"
+msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
+
+#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/PositionSeller.js
+msgid "Invalid Liquidation Price"
 msgstr ""
 
 #: src/pages/NftWallet/NftWallet.js
@@ -2159,10 +2171,15 @@ msgstr ""
 msgid "Invalid Receiver Address"
 msgstr ""
 
+#: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
+msgid "Invalid Transfer Addresses: Please check the url."
+msgstr "<<<<<<< HEAD"
+
 #: src/components/Synthetics/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
 msgid "Invalid acceptable Price Impact value"
-msgstr ""
+msgstr "======="
 
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2200,11 +2217,15 @@ msgstr ""
 msgid "Jobs"
 msgstr ""
 
+#: src/components/Exchange/PositionSeller.js
+msgid "Keep Leverage is not possible"
+msgstr "<<<<<<< HEAD"
+
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Keep leverage at {0}"
-msgstr ""
+msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Keep leverage at {0}x"
@@ -2236,6 +2257,10 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "Leave at least {0} {1} for gas"
+msgstr ""
+
+#: src/components/Exchange/PositionEditor.js
+msgid "Leftover Collateral not enough to cover fees"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
@@ -2468,10 +2493,6 @@ msgstr ""
 msgid "Long Positions"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV1.js
-msgid "Long positions: {0} USD, Short positions: {1} USD, {volumeLabel} volume: {2} USD"
-msgstr ""
-
 #: src/components/Exchange/SwapBox.js
 msgid "Long {0}"
 msgstr ""
@@ -2486,11 +2507,11 @@ msgstr ""
 
 #: src/pages/Actions/Actions.js
 msgid "Loss"
-msgstr ""
+msgstr "<<<<<<< HEAD"
 
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "MARKET"
-msgstr ""
+msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
 
 #: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/Exchange/PositionEditor.js
@@ -2560,9 +2581,6 @@ msgstr ""
 msgid "Market"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV1.js
-#: src/pages/Dashboard/DashboardV1.js
-#: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Market Cap"
@@ -2596,6 +2614,10 @@ msgstr ""
 msgid "Max Capacity for {0} Reached"
 msgstr ""
 
+#: src/components/Exchange/PositionSeller.js
+msgid "Max Leverage without PnL: 100x"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 msgid "Max Pool Capacity"
 msgstr ""
@@ -2620,6 +2642,10 @@ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account:"
+msgstr ""
+
+#: src/components/Exchange/PositionEditor.js
+msgid "Max leverage without PnL: {0}x"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
@@ -2801,10 +2827,14 @@ msgstr ""
 
 #: src/pages/NftWallet/NftWallet.js
 msgid "NFT Wallet"
-msgstr ""
+msgstr "<<<<<<< HEAD"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Negative Funding Fees are settled against the collateral automatically and will influence the liquidation price. Positive Funding Fees can be claimed under Claimable Funding after realizing any action on the position."
+msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
+
+#: src/components/Exchange/PositionSeller.js
+msgid "Neither Collateral nor realized PnL is enough to cover pending Fees. Please close a larger position amount."
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
@@ -2921,7 +2951,6 @@ msgstr ""
 msgid "Open in Coingecko"
 msgstr ""
 
-#: src/pages/Dashboard/AssetDropdown.tsx
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open in Explorer"
 msgstr ""
@@ -3112,7 +3141,7 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "Pay Amount"
-msgstr ""
+msgstr "<<<<<<< HEAD"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Pay:"
@@ -3121,7 +3150,7 @@ msgstr ""
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Pending {0} approval"
-msgstr ""
+msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Platform, GLP and GM tokens."
@@ -3137,6 +3166,10 @@ msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Please switch your network to Arbitrum."
+msgstr ""
+
+#: src/components/Exchange/PositionSeller.js
+msgid "Please uncheck \"Keep Leverage\", or close a larger position amount."
 msgstr ""
 
 #: src/components/Exchange/NetValueTooltip.tsx
@@ -3162,7 +3195,6 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
-#: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Pool"
 msgstr ""
@@ -3240,9 +3272,6 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#: src/pages/Dashboard/DashboardV1.js
-#: src/pages/Dashboard/DashboardV1.js
-#: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -3258,7 +3287,7 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 msgid "Price Impact"
-msgstr "<<<<<<< HEAD"
+msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
@@ -3355,6 +3384,10 @@ msgstr ""
 msgid "Protocol analytics"
 msgstr ""
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Protocol risk explorer and stats"
+msgstr ""
+
 #: src/pages/BuyGlp/BuyGlp.js
 msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
 msgstr ""
@@ -3370,6 +3403,10 @@ msgstr ""
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Read more"
+msgstr "<<<<<<< HEAD"
+
+#: src/components/Exchange/PositionSeller.js
+msgid "Realized PnL insufficient for Fees"
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -3950,9 +3987,6 @@ msgstr ""
 msgid "Success claimings"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV1.js
-#: src/pages/Dashboard/DashboardV1.js
-#: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Supply"
@@ -4178,7 +4212,7 @@ msgstr ""
 msgid "The esGMX tokens can be staked or vested at any time."
 msgstr ""
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 msgstr ""
 
@@ -4239,7 +4273,7 @@ msgid "There are more shorts than longs, borrow fees for longing is currently ze
 msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "There is not enough ETH in your account on Arbitrum to send this transaction.<0/><1/><2>Bridge ETH to Arbitrum</2>"
 msgstr ""
 
@@ -4341,10 +4375,6 @@ msgstr ""
 msgid "Total Fees"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV1.js
-msgid "Total Fees Distributed"
-msgstr ""
-
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total Rebates"
 msgstr ""
@@ -4397,16 +4427,8 @@ msgstr ""
 msgid "Total Volume"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV1.js
-msgid "Total Volume Since 28 April 2021"
-msgstr ""
-
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
-msgstr ""
-
-#: src/pages/Dashboard/DashboardV1.js
-msgid "Total fees earned since {0}: {1} USD<0/>Fee assets: {feeText}"
 msgstr ""
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
@@ -4428,7 +4450,7 @@ msgstr ""
 
 #: src/components/Common/SEO.js
 msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet on Arbitrum and Avalanche."
-msgstr ""
+msgstr "<<<<<<< HEAD"
 
 #: src/pages/Referrals/Referrals.tsx
 msgid "Traders"
@@ -4484,11 +4506,11 @@ msgstr ""
 msgid "Transaction completed!"
 msgstr ""
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction failed"
 msgstr ""
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings. <2>More info</2>"
 msgstr ""
 
@@ -4496,7 +4518,7 @@ msgstr ""
 msgid "Transaction sent."
 msgstr ""
 
-#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/transactionErrors.tsx
 msgid "Transaction was cancelled."
 msgstr ""
 
@@ -4592,10 +4614,6 @@ msgstr ""
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "USD Value may not be accurate since the data does not contain prices for {0}"
-msgstr ""
-
-#: src/pages/Dashboard/DashboardV1.js
-msgid "USDG Debt"
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
@@ -4719,7 +4737,6 @@ msgid "Useful Links"
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-#: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Utilization"
 msgstr ""
@@ -4856,7 +4873,6 @@ msgstr ""
 msgid "View status."
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Volume"
 msgstr ""
@@ -5039,6 +5055,10 @@ msgid "Yield Optimizer on Avalanche"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
+msgid "Yield Trading"
+msgstr ""
+
+#: src/pages/Ecosystem/Ecosystem.js
 msgid "Yield Vaults"
 msgstr ""
 
@@ -5086,11 +5106,11 @@ msgstr ""
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are volatile."
-msgstr ""
+msgstr ">>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
 
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 msgid "You can get a {0} better execution price in the {1} market pool.<0>Switch to {2} market pool.</0>"
-msgstr ""
+msgstr "======="
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer AVAX from other networks to Avalanche using any of the below options:"
@@ -5220,10 +5240,14 @@ msgstr ""
 
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "collateral"
-msgstr ""
+msgstr "<<<<<<< HEAD"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "earn"
+msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "esGMX OTC Market"
 msgstr ""
 
 #: src/pages/PositionsOverview/PositionsOverview.js
@@ -5503,8 +5527,4 @@ msgstr ""
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title} on Avalanche:"
-msgstr ""
-
-#: src/pages/Dashboard/DashboardV1.js
-msgid "{volumeLabel} Volume"
 msgstr ""

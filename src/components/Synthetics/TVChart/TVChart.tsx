@@ -159,7 +159,7 @@ export function TVChart({
   }
 
   useEffect(() => {
-    dataProvider.current = new SyntheticsTVDataProvider(SUPPORTED_RESOLUTIONS_V2);
+    dataProvider.current = new SyntheticsTVDataProvider({ resolutions: SUPPORTED_RESOLUTIONS_V2 });
   }, []);
 
   useEffect(
@@ -241,9 +241,13 @@ export function TVChart({
             chainId={chainId}
             onSelectToken={onSelectChartToken}
             dataProvider={dataProvider.current}
-            supportedResolutions={SUPPORTED_RESOLUTIONS_V2}
             period={period}
             setPeriod={setPeriod}
+            chartToken={{
+              symbol: chartToken.symbol,
+              ...chartToken.prices,
+            }}
+            supportedResolutions={SUPPORTED_RESOLUTIONS_V2}
           />
         )}
       </div>

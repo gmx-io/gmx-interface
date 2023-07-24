@@ -61,6 +61,7 @@ export type Props = {
   setPendingTxns: (txns: any) => void;
   onClose: () => void;
   onConnectWallet: () => void;
+  shouldDisableValidation: boolean;
 };
 
 enum Operation {
@@ -320,9 +321,10 @@ export function PositionEditor(p: Props) {
         isLong: position.isLong,
         executionFee: executionFee.feeTokenAmount,
         allowedSlippage,
-        referralCode: userReferralInfo?.userReferralCode,
+        referralCode: userReferralInfo?.referralCodeForTxn,
         indexToken: position.indexToken,
         tokensData,
+        skipSimulation: p.shouldDisableValidation,
         setPendingTxns,
         setPendingOrder,
         setPendingPosition,
@@ -355,9 +357,10 @@ export function PositionEditor(p: Props) {
         minOutputUsd: receiveUsd,
         executionFee: executionFee.feeTokenAmount,
         allowedSlippage,
-        referralCode: userReferralInfo?.userReferralCode,
+        referralCode: userReferralInfo?.referralCodeForTxn,
         indexToken: position.indexToken,
         tokensData,
+        skipSimulation: p.shouldDisableValidation,
         setPendingTxns,
         setPendingOrder,
         setPendingPosition,

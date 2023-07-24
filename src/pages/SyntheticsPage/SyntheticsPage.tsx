@@ -418,6 +418,7 @@ export function SyntheticsPage(p: Props) {
         isHigherSlippageAllowed={isHigherSlippageAllowed}
         setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
         onConnectWallet={onConnectWallet}
+        shouldDisableValidation={shouldDisableValidation}
       />
 
       <PositionEditor
@@ -428,6 +429,7 @@ export function SyntheticsPage(p: Props) {
         onClose={onPositionEditorClose}
         setPendingTxns={setPendingTxns}
         onConnectWallet={onConnectWallet}
+        shouldDisableValidation={shouldDisableValidation}
       />
 
       <AcceptbablePriceImpactEditor

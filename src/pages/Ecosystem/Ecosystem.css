@@ -1,11 +1,17 @@
-.DashboardV2-projects {
+.Ecosystem-projects {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   grid-gap: 1.5rem;
 }
 
-@media (max-width: 900px) {
-  .DashboardV2-projects {
+@media (max-width: 1000px) {
+  .Ecosystem-projects {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .Ecosystem-projects {
     grid-template-columns: 1fr;
   }
 }

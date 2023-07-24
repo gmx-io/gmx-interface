@@ -171,6 +171,15 @@ export default function Ecosystem() {
       creatorLink: "https://twitter.com/barryfried1",
       chainIds: [ARBITRUM, AVALANCHE],
     },
+    {
+      title: "SNTL esGMX Market",
+      link: "https://sntl.market/",
+      linkLabel: "sntl.market",
+      about: t`esGMX OTC Market`,
+      creatorLabel: "@sntlai",
+      creatorLink: "https://twitter.com/sntlai",
+      chainIds: [ARBITRUM, AVALANCHE],
+    },
   ];
 
   const dashboardProjects = [
@@ -273,6 +282,24 @@ export default function Ecosystem() {
       creatorLink: "https://twitter.com/gmxtrader",
       chainIds: [ARBITRUM, AVALANCHE],
     },
+    {
+      title: "Staking Rewards Calculator",
+      link: "https://www.stakingrewards.com/earn/gmx/",
+      linkLabel: "stakingrewards.com",
+      about: t`GMX staking calculator and guide`,
+      creatorLabel: "@stakingrewards",
+      creatorLink: "https://twitter.com/stakingrewards",
+      chainIds: [ARBITRUM, AVALANCHE],
+    },
+    {
+      title: "GMX Risk Monitoring",
+      link: "https://community.chaoslabs.xyz/gmx-arbitrum/ccar-perps/overview",
+      linkLabel: "chaoslabs.xyz",
+      about: t`Protocol risk explorer and stats`,
+      creatorLabel: "@chaos_labs",
+      creatorLink: "https://twitter.com/chaos_labs",
+      chainIds: [ARBITRUM, AVALANCHE],
+    },
   ];
 
   const integrations = [
@@ -281,8 +308,7 @@ export default function Ecosystem() {
       link: "debank.com",
       linkLabe: "debank.com",
       about: t`DeFi Portfolio Tracker`,
-      announcementLabel: "twitter.com",
-      announcementLink: "https://twitter.com/GMX_IO/status/1439711532884152324",
+
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
@@ -290,8 +316,7 @@ export default function Ecosystem() {
       link: "https://defillama.com",
       linkLabel: "defillama.com",
       about: t`Decentralized Finance Dashboard`,
-      announcementLabel: "twitter.com",
-      announcementLink: "https://twitter.com/GMX_IO/status/1438124768033660938",
+
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
@@ -299,8 +324,7 @@ export default function Ecosystem() {
       link: "https://dopex.io",
       linkLabel: "dopex.io",
       about: t`Decentralized Options Protocol`,
-      announcementLabel: "twitter.com",
-      announcementLink: "https://twitter.com/GMX_IO/status/1482445801523716099",
+
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
@@ -308,8 +332,7 @@ export default function Ecosystem() {
       link: "https://www.rook.fi/",
       linkLabel: "rook.fi",
       about: t`MEV Optimizer`,
-      announcementLabel: "twitter.com",
-      announcementLink: "https://twitter.com/Rook/status/1509613786600116251",
+
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
@@ -317,8 +340,7 @@ export default function Ecosystem() {
       link: "https://jonesdao.io",
       linkLabel: "jonesdao.io",
       about: t`Decentralized Options Strategies`,
-      announcementLabel: "twitter.com",
-      announcementLink: "https://twitter.com/GMX_IO/status/1482788805635678212",
+
       chainIds: [ARBITRUM],
     },
     {
@@ -326,8 +348,7 @@ export default function Ecosystem() {
       link: "https://yieldyak.com/",
       linkLabel: "yieldyak.com",
       about: t`Yield Optimizer on Avalanche`,
-      announcementLabel: "twitter.com",
-      announcementLink: "https://twitter.com/GMX_IO/status/1484601407378378754",
+
       chainIds: [AVALANCHE],
     },
     {
@@ -335,8 +356,7 @@ export default function Ecosystem() {
       link: "https://vovo.finance/",
       linkLabel: "vovo.finance",
       about: t`Structured Products`,
-      announcementLabel: "twitter.com",
-      announcementLink: "https://twitter.com/VovoFinance/status/1531517177790345217",
+
       chainIds: [ARBITRUM],
     },
     {
@@ -344,8 +364,7 @@ export default function Ecosystem() {
       link: "https://www.stabilize.finance/",
       linkLabel: "stabilize.finance",
       about: t`Yield Vaults`,
-      announcementLabel: "twitter.com",
-      announcementLink: "https://twitter.com/StabilizePro/status/1532348674986082306",
+
       chainIds: [ARBITRUM],
     },
     {
@@ -353,8 +372,7 @@ export default function Ecosystem() {
       link: "https://dodoex.io/",
       linkLabel: "dodoex.io",
       about: t`Decentralized Trading Protocol`,
-      announcementLabel: "twitter.com",
-      announcementLink: "https://twitter.com/GMX_IO/status/1438899138549145605",
+
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
@@ -362,8 +380,7 @@ export default function Ecosystem() {
       link: "https://openocean.finance/",
       linkLabel: "openocean.finance",
       about: t`DEX Aggregator`,
-      announcementLabel: "twitter.com",
-      announcementLink: "https://twitter.com/GMX_IO/status/1495780826016989191",
+
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
@@ -371,8 +388,7 @@ export default function Ecosystem() {
       link: "https://www.paraswap.io/",
       linkLabel: "paraswap.io",
       about: t`DEX Aggregator`,
-      announcementLabel: "twitter.com",
-      announcementLink: "https://twitter.com/paraswap/status/1546869879336222728",
+
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
@@ -380,8 +396,7 @@ export default function Ecosystem() {
       link: "https://1inch.io/",
       linkLabel: "1inch.io",
       about: t`DEX Aggregator`,
-      announcementLabel: "twitter.com",
-      announcementLink: "https://twitter.com/GMX_IO/status/1522247451410845696",
+
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
@@ -389,8 +404,7 @@ export default function Ecosystem() {
       link: "https://app.firebird.finance/swap",
       linkLabel: "firebird.finance",
       about: t`DEX Aggregator`,
-      announcementLabel: "twitter.com",
-      announcementLink: "https://twitter.com/financefirebird/status/1561767094064238595",
+
       chainIds: [AVALANCHE],
     },
     {
@@ -398,8 +412,7 @@ export default function Ecosystem() {
       link: "https://yieldyak.com/swap",
       linkLabel: "yieldyak.com",
       about: t`DEX Aggregator`,
-      announcementLabel: "twitter.com",
-      announcementLink: "https://twitter.com/yieldyak_/status/1484458884827947008",
+
       chainIds: [AVALANCHE],
     },
     {
@@ -407,8 +420,7 @@ export default function Ecosystem() {
       link: "https://plutusdao.io/vaults",
       linkLabel: "plutusdao.io",
       about: t`GLP autocompounding vaults`,
-      announcementLabel: "medium.com",
-      announcementLink: "https://medium.com/@plutusdao.io/product-release-plutus-vaults-d0b0252cdf03",
+
       chainIds: [ARBITRUM],
     },
     {
@@ -416,9 +428,32 @@ export default function Ecosystem() {
       link: "https://app.beefy.com/",
       linkLabel: "beefy.com",
       about: t`GLP and GMX autocompounding vaults`,
-      announcementLabel: "beefy.com",
-      announcementLink: "https://beefy.com/articles/earn-glp-with-beefy-s-new-glp-strategy-and-vaults/",
+
       chainIds: [ARBITRUM, AVALANCHE],
+    },
+    {
+      title: "Pendle Finance",
+      link: "https://app.pendle.finance/pro/markets",
+      linkLabel: "pendle.finance",
+      about: t`Yield Trading`,
+
+      chainIds: [ARBITRUM],
+    },
+    {
+      title: "ODOS",
+      link: "https://app.odos.xyz/",
+      linkLabel: "odos.xyz",
+      about: t`DEX Aggregator`,
+
+      chainIds: [ARBITRUM, AVALANCHE],
+    },
+    {
+      title: "Dolomite",
+      link: "https://app.dolomite.io/balances",
+      linkLabel: "dolomite.io",
+      about: t`Decentralized Money Market`,
+
+      chainIds: [ARBITRUM],
     },
   ];
 
@@ -464,7 +499,7 @@ export default function Ecosystem() {
               </div>
             </div>
           </div>
-          <div className="DashboardV2-projects">
+          <div className="Ecosystem-projects">
             {gmxPages.map((item) => {
               const linkLabel = item.linkLabel ? item.linkLabel : item.link;
               return (
@@ -510,7 +545,7 @@ export default function Ecosystem() {
               </Trans>
             </div>
           </div>
-          <div className="DashboardV2-projects">
+          <div className="Ecosystem-projects">
             {communityProjects.map((item) => {
               const linkLabel = item.linkLabel ? item.linkLabel : item.link;
               return (
@@ -560,7 +595,7 @@ export default function Ecosystem() {
               <Trans>GMX dashboards and analytics.</Trans>
             </div>
           </div>
-          <div className="DashboardV2-projects">
+          <div className="Ecosystem-projects">
             {dashboardProjects.map((item) => {
               const linkLabel = item.linkLabel ? item.linkLabel : item.link;
               return (
@@ -611,7 +646,7 @@ export default function Ecosystem() {
               <Trans>Projects integrated with GMX.</Trans>
             </div>
           </div>
-          <div className="DashboardV2-projects">
+          <div className="Ecosystem-projects">
             {integrations.map((item) => {
               const linkLabel = item.linkLabel ? item.linkLabel : item.link;
               return (
@@ -640,14 +675,6 @@ export default function Ecosystem() {
                       </div>
                       <div>{item.about}</div>
                     </div>
-                    <div className="App-card-row">
-                      <div className="label">
-                        <Trans>Announcement</Trans>
-                      </div>
-                      <div>
-                        <ExternalLink href={item.announcementLink}>{item.announcementLabel}</ExternalLink>
-                      </div>
-                    </div>
                   </div>
                 </div>
               );
@@ -661,7 +688,7 @@ export default function Ecosystem() {
               <Trans>Community-led Telegram groups.</Trans>
             </div>
           </div>
-          <div className="DashboardV2-projects">
+          <div className="Ecosystem-projects">
             {telegramGroups.map((item) => {
               const linkLabel = item.linkLabel ? item.linkLabel : item.link;
               return (

@@ -185,7 +185,7 @@ export function MarketsList() {
                             <div className="App-card-info-subtitle">{stats.token.symbol}</div>
                           </div>
                           <div>
-                            <AssetDropdown assetSymbol={stats.token.symbol} assetInfo={stats.token} />
+                            <AssetDropdown assetSymbol={stats.token.symbol} />
                           </div>
                         </div>
                       </div>
@@ -243,9 +243,9 @@ export function MarketsList() {
 
       {isMobile && (
         <>
-          <div className="App-card-title-small">
+          <div className="Page-title Tab-title-section glp-composition-small">
             <Trans>GM Pools</Trans>
-            <img className="title-icon" src={getIcon(chainId, "network")} width="16" alt="Network Icon" />
+            <img className="title-icon" src={getIcon(chainId, "network")} width="24" alt="Network Icon" />
           </div>
 
           <div className="token-grid">
@@ -260,7 +260,7 @@ export function MarketsList() {
                     />
                     <div className="token-symbol-text">{stats.token.symbol}</div>
                     <div>
-                      <AssetDropdown assetSymbol={stats.token.symbol} assetInfo={stats.token} />
+                      <AssetDropdown assetSymbol={stats.token.symbol} />
                     </div>
                   </div>
                 </div>

@@ -1,12 +1,10 @@
+import { Trans, t } from "@lingui/macro";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { getExplorerUrl } from "config/chains";
 import { BigNumber, Contract } from "ethers";
 import { helperToast } from "../helperToast";
-import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
-import { extractError, NETWORK_CHANGED, NOT_ENOUGH_FUNDS, RPC_ERROR, SLIPPAGE, USER_DENIED } from "./transactionErrors";
+import { getErrorMessage } from "./transactionErrors";
 import { getGasLimit, setGasPrice } from "./utils";
-import { getChainName, getExplorerUrl } from "config/chains";
-import { switchNetwork } from "lib/wallets";
-import { t, Trans } from "@lingui/macro";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 
 export async function callContract(
   chainId: number,
@@ -72,69 +70,7 @@ export async function callContract(
 
     return res;
   } catch (e) {
-    let failMsg;
-
-    let autoCloseToast: number | boolean = 5000;
-
-    const [message, type, errorData] = extractError(e);
-    switch (type) {
-      case NOT_ENOUGH_FUNDS:
-        failMsg = (
-          <Trans>
-            There is not enough ETH in your account on Arbitrum to send this transaction.
-            <br />
-            <br />
-            <ExternalLink href="https://arbitrum.io/bridge-tutorial/">Bridge ETH to Arbitrum</ExternalLink>
-          </Trans>
-        );
-        break;
-      case NETWORK_CHANGED:
-        failMsg = (
-          <Trans>
-            <div>Your wallet is not connected to {getChainName(chainId)}.</div>
-            <br />
-            <div className="clickable underline" onClick={() => switchNetwork(chainId, true)}>
-              Switch to {getChainName(chainId)}
-            </div>
-          </Trans>
-        );
-        break;
-      case USER_DENIED:
-        failMsg = t`Transaction was cancelled.`;
-        break;
-      case SLIPPAGE:
-        failMsg = t`The mark price has changed, consider increasing your Allowed Slippage by clicking on the "..." icon next to your address.`;
-        break;
-      case RPC_ERROR:
-        autoCloseToast = false;
-
-        const originalError = errorData?.error?.message || errorData?.message || message;
-
-        failMsg = (
-          <div>
-            <Trans>
-              Transaction failed due to RPC error.
-              <br />
-              <br />
-              Please try changing the RPC url in your wallet settings.{" "}
-              <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#backup-rpc-urls">More info</ExternalLink>
-            </Trans>
-            <br />
-            {originalError && <ToastifyDebug>{originalError}</ToastifyDebug>}
-          </div>
-        );
-        break;
-      default:
-        autoCloseToast = false;
-
-        failMsg = (
-          <div>
-            {opts.failMsg || t`Transaction failed`}
-            <br />
-            {message && <ToastifyDebug>{message}</ToastifyDebug>}
-          </div>
-        );
-    }
+    const { failMsg, autoCloseToast } = getErrorMessage(chainId, e, opts?.failMsg);
 
     helperToast.error(failMsg, { autoClose: autoCloseToast });
     throw e;
