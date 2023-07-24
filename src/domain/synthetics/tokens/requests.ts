@@ -52,11 +52,11 @@ export async function fetchOracleCandles(chainId: number, tokenSymbol: string, p
   const timeDiff = CHART_PERIODS[period] * limit;
   const after = Math.floor(Date.now() / 1000 - timeDiff);
 
-  const url = getOracleKeeperUrl(chainId, "/prices/candles", { tokenSymbol, period, asc: true, after, limit });
+  const url = getOracleKeeperUrl(chainId, "/prices/candles", { tokenSymbol, period, after, limit });
 
   const res = await fetch(url).then((res) => res.json());
 
-  const result = res.candles.map(parseOracleCandle);
+  const result = res.candles.map(parseOracleCandle).reverse();
 
   return result;
 }
