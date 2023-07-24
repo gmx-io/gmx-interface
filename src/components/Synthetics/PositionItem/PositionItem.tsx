@@ -262,7 +262,8 @@ export function PositionItem(p: Props) {
           handle={formatLiquidationPrice(p.position.liquidationPrice, { displayDecimals: indexPriceDecimals }) || "..."}
           position={p.isLarge ? "left-bottom" : "right-bottom"}
           handleClassName={cx("plain", {
-            "LiqPrice-tooltip-warning": estimatedLiquidationHours && estimatedLiquidationHours < 24 * 7,
+            "LiqPrice-soft-warning": estimatedLiquidationHours && estimatedLiquidationHours < 24 * 7,
+            "LiqPrice-hard-warning": estimatedLiquidationHours && estimatedLiquidationHours < 24,
           })}
           renderContent={getLiqPriceTooltipContent}
         />

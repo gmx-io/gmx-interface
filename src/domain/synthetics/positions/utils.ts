@@ -292,7 +292,7 @@ export function formatEstimatedLiquidationTime(hours?: number | undefined) {
   const days = Math.floor(hours / 24);
 
   if (hours < 1) {
-    return `< 1 hours`;
+    return `< 1 hour`;
   }
 
   if (days > 1000) {
