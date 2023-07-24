@@ -279,9 +279,12 @@ export function getEstimatedLiquidationTimeInHours(
 
   if (totalFeesPerHour.eq(0)) return;
 
-  const hours = netValue.add(priceImpactDeltaUsd).sub(liquidationCollateralUsd).div(totalFeesPerHour);
-
-  return hours.toNumber();
+  const hours = netValue
+    .add(priceImpactDeltaUsd)
+    .sub(liquidationCollateralUsd)
+    .mul(BASIS_POINTS_DIVISOR)
+    .div(totalFeesPerHour);
+  return parseFloat(formatAmount(hours, 4, 2));
 }
 
 export function formatEstimatedLiquidationTime(hours?: number | undefined) {
