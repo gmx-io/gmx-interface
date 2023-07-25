@@ -518,7 +518,7 @@ function FullApp() {
                   savedShowPnlAfterFees={savedShowPnlAfterFees}
                   savedIsPnlInLeverage={savedIsPnlInLeverage}
                   setSavedIsPnlInLeverage={setSavedIsPnlInLeverage}
-                  savedSlippageAmount={settings.savedSlippageAmount}
+                  savedSlippageAmount={settings.savedAllowedSlippage}
                   setPendingTxns={setPendingTxns}
                   pendingTxns={pendingTxns}
                   savedShouldShowPositionLines={savedShouldShowPositionLines}
@@ -544,7 +544,7 @@ function FullApp() {
               </Route>
               <Route exact path="/buy">
                 <Buy
-                  savedSlippageAmount={settings.savedSlippageAmount}
+                  savedSlippageAmount={settings.savedAllowedSlippage}
                   setPendingTxns={setPendingTxns}
                   connectWallet={connectWallet}
                 />
@@ -570,7 +570,7 @@ function FullApp() {
                     savedShowPnlAfterFees={savedShowPnlAfterFees}
                     tradePageVersion={tradePageVersion}
                     setTradePageVersion={setTradePageVersion}
-                    savedSlippageAmount={settings.savedSlippageAmount}
+                    savedSlippageAmount={settings.savedAllowedSlippage}
                     openSettings={openSettings}
                   />
                 ) : (
@@ -579,7 +579,7 @@ function FullApp() {
               </Route>
               <Route exact path="/buy_glp">
                 <BuyGlp
-                  savedSlippageAmount={settings.savedSlippageAmount}
+                  savedSlippageAmount={settings.savedAllowedSlippage}
                   setPendingTxns={setPendingTxns}
                   connectWallet={connectWallet}
                   savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}

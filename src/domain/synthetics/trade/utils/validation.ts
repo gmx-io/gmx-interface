@@ -336,6 +336,8 @@ export function getEditCollateralError(p: {
   nextLeverage: BigNumber | undefined;
   position: PositionInfo | undefined;
   isDeposit: boolean;
+  depositToken: TokenData | undefined;
+  depositAmount: BigNumber | undefined;
 }) {
   const {
     collateralDeltaAmount,
@@ -345,14 +347,17 @@ export function getEditCollateralError(p: {
     nextLeverage,
     nextLiqPrice,
     position,
+    isDeposit,
+    depositToken,
+    depositAmount,
   } = p;
 
   if (!collateralDeltaAmount || !collateralDeltaUsd || collateralDeltaAmount.eq(0) || collateralDeltaUsd?.eq(0)) {
     return [t`Enter an amount`];
   }
 
-  if (collateralDeltaAmount?.lte(0)) {
-    return [t`Amount should be greater than zero`];
+  if (isDeposit && depositToken && depositAmount && depositAmount.gt(depositToken.balance || 0)) {
+    return [t`Insufficient ${depositToken.symbol} balance`];
   }
 
   if (nextCollateralUsd && minCollateralUsd && position) {
