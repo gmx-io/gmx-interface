@@ -2176,6 +2176,10 @@ msgstr "Invalid Transfer Addresses: Please check the url."
 msgid "Invalid acceptable Price Impact value"
 msgstr "Invalid acceptable Price Impact value"
 
+#: src/App/App.js
+msgid "Invalid execution fee buffer value"
+msgstr "Invalid execution fee buffer value"
+
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -2619,6 +2623,14 @@ msgstr "Max Capacity for {0} Reached"
 msgid "Max Execution Fee"
 msgstr "Max Execution Fee"
 
+#: src/App/App.js
+msgid "Max Execution Fee Buffer"
+msgstr "Max Execution Fee Buffer"
+
+#: src/App/App.js
+msgid "Max Execution Fee buffer below {0}% may result in failed orders."
+msgstr "Max Execution Fee buffer below {0}% may result in failed orders."
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Max Leverage without PnL: 100x"
 msgstr "Max Leverage without PnL: 100x"
@@ -2644,6 +2656,10 @@ msgstr "Max amount exceeded"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max close amount exceeded"
 msgstr "Max close amount exceeded"
+
+#: src/App/App.js
+msgid "Max execution fee buffer precision is 0.01%"
+msgstr "Max execution fee buffer precision is 0.01%"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account:"
@@ -4200,6 +4216,10 @@ msgstr "The Boosted APR is from your staked Multiplier Points."
 #: src/pages/Stake/StakeV1.js
 msgid "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
 msgstr "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
+
+#: src/App/App.js
+msgid "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed."
+msgstr "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed."
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
