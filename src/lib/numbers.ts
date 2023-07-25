@@ -1,5 +1,6 @@
 import { BigNumber, BigNumberish, ethers } from "ethers";
-import { BASIS_POINTS_DIVISOR, PRECISION, USD_DECIMALS } from "./legacy";
+import { PRECISION, USD_DECIMALS } from "./legacy";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 
 const MAX_EXCEEDING_THRESHOLD = "1000000000";

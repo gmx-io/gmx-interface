@@ -1645,9 +1645,6 @@ msgid "Execute order simulation failed."
 msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
-#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Execution Fee"
 msgstr ""
 
@@ -2179,6 +2176,10 @@ msgstr "<<<<<<< HEAD"
 msgid "Invalid acceptable Price Impact value"
 msgstr "======="
 
+#: src/App/App.js
+msgid "Invalid execution fee buffer value"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -2283,7 +2284,6 @@ msgstr ""
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -2617,6 +2617,20 @@ msgstr "最大キャパシティ"
 msgid "Max Capacity for {0} Reached"
 msgstr "{0}の最大キャパシティに到達しています"
 
+#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Max Execution Fee"
+msgstr ""
+
+#: src/App/App.js
+msgid "Max Execution Fee Buffer"
+msgstr ""
+
+#: src/App/App.js
+msgid "Max Execution Fee buffer below {0}% may result in failed orders."
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Max Leverage without PnL: 100x"
 msgstr ""
@@ -2641,6 +2655,10 @@ msgstr "最大値超過"
 #: src/components/Exchange/PositionSeller.js
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max close amount exceeded"
+msgstr ""
+
+#: src/App/App.js
+msgid "Max execution fee buffer precision is 0.01%"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -4199,6 +4217,10 @@ msgstr "APRブーストはステーク済マルチプライヤーポイントに
 msgid "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
 msgstr "Gambitプロトコルはベータ版であり、参加する前に<0>ステーキングの詳細</0>を読んでください。"
 
+#: src/App/App.js
+msgid "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed."
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
 msgstr "esGMX (IOU)トークンのアドレスは{esGmxIouAddress}です。"
@@ -5375,6 +5397,7 @@ msgstr "{0} 価格"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "{0} selected in order form"
 msgstr "{0}が注文フォームで選択されました"
 
@@ -5387,6 +5410,10 @@ msgstr "{0}トークンがべスティング用に入金された{1} esGMXから
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "{0} will be swapped to {1} on order execution."
+msgstr ""
+
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
+msgid "{0} {1} market selected"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js

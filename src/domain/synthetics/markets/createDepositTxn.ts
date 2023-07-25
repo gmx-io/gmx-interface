@@ -5,6 +5,7 @@ import { callContract } from "lib/contracts";
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
 import { SetPendingDeposit } from "context/SyntheticsEvents";
+import { applySlippageToMinOut } from "../trade";
 
 type Params = {
   account: string;
@@ -46,7 +47,7 @@ export async function createDepositTxn(chainId: number, library: Web3Provider, p
   const initialLongTokenAddress = convertTokenAddress(chainId, p.initialLongTokenAddress, "wrapped");
   const initialShortTokenAddress = convertTokenAddress(chainId, p.initialShortTokenAddress, "wrapped");
 
-  const minMarketTokens = BigNumber.from(0);
+  const minMarketTokens = applySlippageToMinOut(p.allowedSlippage, p.minMarketTokens);
 
   const multicall = [
     { method: "sendWnt", params: [depositVaultAddress, wntAmount] },

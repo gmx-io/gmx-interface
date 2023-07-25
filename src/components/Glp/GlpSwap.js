@@ -5,7 +5,6 @@ import { getContract } from "config/contracts";
 import { ethers } from "ethers";
 import {
   adjustForDecimals,
-  BASIS_POINTS_DIVISOR,
   getBuyGlpFromAmount,
   getBuyGlpToAmount,
   getSellGlpFromAmount,
@@ -18,6 +17,7 @@ import {
   USD_DECIMALS,
   USDG_DECIMALS,
 } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import useSWR from "swr";

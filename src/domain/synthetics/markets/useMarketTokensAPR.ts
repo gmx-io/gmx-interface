@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 import { BigNumber } from "ethers";
-import { BASIS_POINTS_DIVISOR } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { bigNumberify, expandDecimals } from "lib/numbers";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import { useMemo } from "react";

@@ -469,7 +469,7 @@ export function OrderEditor(p: Props) {
           )}
 
           {executionFee?.feeTokenAmount.gt(0) && (
-            <ExchangeInfoRow label={t`Execution Fee`}>
+            <ExchangeInfoRow label={t`Max Execution Fee`}>
               {formatTokenAmount(
                 executionFee?.feeTokenAmount,
                 executionFee?.feeToken.decimals,

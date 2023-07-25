@@ -4,7 +4,7 @@ import { getWhitelistedV1Tokens } from "config/tokens";
 import { TokenInfo, useInfoTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
-import { BASIS_POINTS_DIVISOR } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import useSWR from "swr";
 import { getServerUrl } from "config/backend";
 import { formatDistance } from "date-fns";

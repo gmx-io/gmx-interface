@@ -55,7 +55,8 @@ import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
 import { getIsEquivalentTokens, getSpread } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-import { BASIS_POINTS_DIVISOR, CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
+import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import {
   formatAmount,
   formatDeltaUsd,
@@ -1071,7 +1072,7 @@ export function ConfirmationBox(p: Props) {
           {decreaseOrdersThatWillBeExecuted?.length > 0 && (
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox isChecked={isTriggerWarningAccepted} setIsChecked={setIsTriggerWarningAccepted}>
-                <span className="muted font-sm">
+                <span className="text-warning font-sm">
                   <Trans>I am aware of the trigger orders</Trans>
                 </span>
               </Checkbox>
@@ -1293,7 +1294,7 @@ export function ConfirmationBox(p: Props) {
 
         {needPayTokenApproval && fromToken && (
           <>
-            <div className="line-divider" />
+            {!isHighPriceImpact && <div className="line-divider" />}
 
             <ApproveTokenButton
               tokenAddress={fromToken.address}

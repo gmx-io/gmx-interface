@@ -24,7 +24,8 @@ import { getPositionKey } from "domain/synthetics/positions";
 import { usePositionsInfo } from "domain/synthetics/positions/usePositionsInfo";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT, getPageTitle } from "lib/legacy";
+import { getPageTitle } from "lib/legacy";
+import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "config/factors";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { bigNumberify, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
@@ -32,6 +33,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useMarketsInfo } from "domain/synthetics/markets";
 import { useSelectedTradeOption } from "domain/synthetics/trade/useSelectedTradeOption";
+import { TradeMode } from "domain/synthetics/trade";
+import { helperToast } from "lib/helperToast";
 
 export type Props = {
   savedIsPnlInLeverage: boolean;
@@ -45,6 +48,7 @@ export type Props = {
   setPendingTxns: (txns: any) => void;
   tradePageVersion: number;
   setTradePageVersion: (version: number) => void;
+  openSettings: () => void;
 };
 
 enum ListSection {
@@ -67,6 +71,7 @@ export function SyntheticsPage(p: Props) {
     setTradePageVersion,
     savedShowPnlAfterFees,
     savedSlippageAmount,
+    openSettings,
   } = p;
   const { chainId } = useChainId();
   const { library, account } = useWeb3React();
@@ -225,6 +230,13 @@ export function SyntheticsPage(p: Props) {
     document.title = title;
   }, [chartToken?.address, chartToken?.isStable, chartToken?.symbol, tokensData]);
 
+  function onSelectPositionClick(key: string, tradeMode?: TradeMode) {
+    const position = getByKey(positionsInfoData, key);
+    setActivePosition(getByKey(positionsInfoData, key), tradeMode);
+    const message = t`${position?.isLong ? "Long" : "Short"} ${position?.marketInfo.name} market selected`;
+    helperToast.success(message);
+  }
+
   return (
     <div className="Exchange page-layout">
       <div className="Exchange-content">
@@ -287,13 +299,15 @@ export function SyntheticsPage(p: Props) {
                 isLoading={isPositionsLoading}
                 savedIsPnlInLeverage={savedIsPnlInLeverage}
                 onOrdersClick={() => setListSection(ListSection.Orders)}
-                onSelectPositionClick={(key, tradeMode) =>
-                  setActivePosition(getByKey(positionsInfoData, key), tradeMode)
-                }
+                onSelectPositionClick={onSelectPositionClick}
                 onClosePositionClick={setClosingPositionKey}
                 onEditCollateralClick={setEditingPositionKey}
                 showPnlAfterFees={showPnlAfterFees}
                 savedShowPnlAfterFees={savedShowPnlAfterFees}
+                currentMarketAddress={marketAddress}
+                currentCollateralAddress={collateralAddress}
+                currentTradeType={tradeType}
+                openSettings={openSettings}
               />
             )}
             {listSection === ListSection.Orders && (
@@ -379,11 +393,15 @@ export function SyntheticsPage(p: Props) {
               savedIsPnlInLeverage={savedIsPnlInLeverage}
               isLoading={isPositionsLoading}
               onOrdersClick={() => setListSection(ListSection.Orders)}
-              onSelectPositionClick={(key, tradeMode) => setActivePosition(getByKey(positionsInfoData, key), tradeMode)}
+              onSelectPositionClick={onSelectPositionClick}
               onClosePositionClick={setClosingPositionKey}
               onEditCollateralClick={setEditingPositionKey}
               showPnlAfterFees={showPnlAfterFees}
               savedShowPnlAfterFees={savedShowPnlAfterFees}
+              currentMarketAddress={marketAddress}
+              currentCollateralAddress={collateralAddress}
+              currentTradeType={tradeType}
+              openSettings={openSettings}
             />
           )}
           {listSection === ListSection.Orders && (

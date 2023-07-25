@@ -66,7 +66,8 @@ import longImg from "img/long.svg";
 import shortImg from "img/short.svg";
 import swapImg from "img/swap.svg";
 import { useChainId } from "lib/chains";
-import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "lib/legacy";
+import { USD_DECIMALS } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   formatAmount,

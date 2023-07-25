@@ -8,7 +8,6 @@ import useSWR from "swr";
 import { getConstant, getExplorerUrl } from "config/chains";
 import { approvePlugin, cancelMultipleOrders, useExecutionFee } from "domain/legacy";
 import {
-  BASIS_POINTS_DIVISOR,
   LONG,
   MARGIN_FEE_BASIS_POINTS,
   SHORT,
@@ -21,6 +20,7 @@ import {
   getPositionKey,
   useAccountOrders,
 } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 
 import { getContract } from "config/contracts";
 

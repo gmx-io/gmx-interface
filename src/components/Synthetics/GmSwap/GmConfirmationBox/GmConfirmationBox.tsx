@@ -22,7 +22,7 @@ import { GmFees } from "../GmFees/GmFees";
 
 import Button from "components/Button/Button";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import { DEFAULT_SLIPPAGE_AMOUNT } from "lib/legacy";
+import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { useState } from "react";
 import "./GmConfirmationBox.scss";
 

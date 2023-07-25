@@ -917,6 +917,12 @@ button.App-button-option:disabled {
   margin-top: 1.5rem;
 }
 
+.App-settings {
+  .Modal-content {
+    width: 40rem;
+  }
+}
+
 .App-slippage-tolerance-input-container {
   position: relative;
 }
@@ -1134,7 +1140,7 @@ button.App-button {
   background: linear-gradient(45deg, rgba(115, 30, 43, 1) 0%, rgba(174, 43, 63, 1) 100%);
 }
 
-.waring {
+.warning {
   color: rgb(243, 181, 12);
 }
 

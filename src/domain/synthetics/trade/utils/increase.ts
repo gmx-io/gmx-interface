@@ -12,7 +12,7 @@ import {
 import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber } from "ethers";
-import { BASIS_POINTS_DIVISOR } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { FindSwapPath, IncreasePositionAmounts, NextPositionValues } from "../types";
 import { getAcceptablePriceInfo, getMarkPrice, getTriggerThresholdType } from "./prices";
 import { getSwapAmountsByFromValue, getSwapAmountsByToValue } from "./swap";

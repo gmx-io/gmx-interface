@@ -13,7 +13,8 @@ import {
 import { TokenData, getMidPrice } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-import { BASIS_POINTS_DIVISOR, CHART_PERIODS, importImage } from "lib/legacy";
+import { CHART_PERIODS, importImage } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { formatAmount, formatUsd } from "lib/numbers";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
 
@@ -131,7 +132,9 @@ export function MarketsList() {
       }, BigNumber.from(0));
     }
 
-    return Object.values(indexMap);
+    return Object.values(indexMap).sort((a, b) => {
+      return b.totalPoolValue.gt(a.totalPoolValue) ? 1 : -1;
+    });
   }, [marketsInfoData]);
 
   return (

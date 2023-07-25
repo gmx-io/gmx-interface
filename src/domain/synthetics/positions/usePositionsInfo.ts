@@ -1,7 +1,7 @@
 import { useWeb3React } from "@web3-react/core";
 import { useUserReferralInfo } from "domain/referrals";
 import { BigNumber } from "ethers";
-import { MAX_ALLOWED_LEVERAGE } from "lib/legacy";
+import { MAX_ALLOWED_LEVERAGE } from "config/factors";
 import { getBasisPoints } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useMemo } from "react";

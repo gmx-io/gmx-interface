@@ -4,17 +4,16 @@ import "./ConfirmationBox.css";
 import {
   USD_DECIMALS,
   PRECISION,
-  BASIS_POINTS_DIVISOR,
   LIMIT,
   MIN_PROFIT_TIME,
   INCREASE,
   getExchangeRate,
   getExchangeRateDisplay,
-  DEFAULT_SLIPPAGE_AMOUNT,
-  DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
   calculatePositionDelta,
   DECREASE,
 } from "lib/legacy";
+import { DEFAULT_SLIPPAGE_AMOUNT, DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "config/factors";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { getConstant } from "config/chains";
 import { getContract } from "config/contracts";
 
