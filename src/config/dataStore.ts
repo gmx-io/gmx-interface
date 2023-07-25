@@ -16,6 +16,7 @@ export const FEE_RECEIVER_POSITION_FACTOR_KEY = hashString("FEE_RECEIVER_POSITIO
 export const OPEN_INTEREST_KEY = hashString("OPEN_INTEREST");
 export const OPEN_INTEREST_IN_TOKENS_KEY = hashString("OPEN_INTEREST_IN_TOKENS");
 export const POOL_AMOUNT_KEY = hashString("POOL_AMOUNT");
+export const MAX_POOL_AMOUNT_KEY = hashString("MAX_POOL_AMOUNT");
 export const RESERVE_FACTOR_KEY = hashString("RESERVE_FACTOR");
 export const OPEN_INTEREST_RESERVE_FACTOR_KEY = hashString("OPEN_INTEREST_RESERVE_FACTOR");
 export const NONCE_KEY = hashString("NONCE");
@@ -236,4 +237,8 @@ export function affiliateRewardKey(market: string, token: string, account: strin
 
 export function isMarketDisabledKey(market: string) {
   return hashData(["bytes32", "address"], [IS_MARKET_DISABLED_KEY, market]);
+}
+
+export function maxPoolAmountKey(market: string, token: string) {
+  return hashData(["bytes32", "address", "address"], [MAX_POOL_AMOUNT_KEY, market, token]);
 }

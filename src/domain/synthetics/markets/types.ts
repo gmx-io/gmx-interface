@@ -29,6 +29,8 @@ export type MarketInfo = Market & {
 
   longPoolAmount: BigNumber;
   shortPoolAmount: BigNumber;
+  maxLongPoolAmount: BigNumber;
+  maxShortPoolAmount: BigNumber;
 
   longPoolAmountAdjustment: BigNumber;
   shortPoolAmountAdjustment: BigNumber;
