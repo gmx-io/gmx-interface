@@ -3,6 +3,7 @@ import { BigNumber } from "ethers";
 export type UserReferralInfo = {
   userReferralCode: string;
   userReferralCodeString: string;
+  referralCodeForTxn: string;
   attachedOnChain: boolean;
   affiliate: string;
   tierId: BigNumber;

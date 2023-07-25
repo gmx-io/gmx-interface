@@ -17,3 +17,11 @@
     margin-left: 0.8rem;
   }
 }
+
+@media (max-width: 800px) {
+  .PositionItem-collateral-tooltip {
+    .Tooltip-popup {
+      min-width: 22rem;
+    }
+  }
+}

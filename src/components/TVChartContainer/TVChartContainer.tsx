@@ -1,16 +1,20 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { TV_CHART_RELOAD_TIMESTAMP_KEY, TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
+import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
 import { useLocalStorage, useMedia } from "react-use";
 import { defaultChartProps, disabledFeaturesOnMobile } from "./constants";
 import useTVDatafeed from "domain/tradingview/useTVDatafeed";
 import { ChartData, IChartingLibraryWidget, IPositionLineAdapter } from "../../charting_library";
 import { getObjectKeyFromValue } from "domain/tradingview/utils";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
-import { TV_CHART_RELOAD_INTERVAL } from "config/tradingview";
-import { isChartAvailabeForToken } from "config/tokens";
+import { getPriceDecimals, isChartAvailabeForToken } from "config/tokens";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 import Loader from "components/Common/Loader";
 import { Token } from "domain/tokens";
+import { BigNumber } from "ethers";
+import { formatAmount } from "lib/numbers";
+import { getMidPrice } from "domain/tokens";
+import { USD_DECIMALS } from "lib/legacy";
+import { SUPPORTED_RESOLUTIONS_V1 } from "config/tradingview";
 
 export type ChartLine = {
   price: number;
@@ -23,10 +27,15 @@ type Props = {
   savedShouldShowPositionLines: boolean;
   chartLines: ChartLine[];
   onSelectToken: (token: Token) => void;
-  supportedResolutions: { [key: number]: string };
   period: string;
   setPeriod: (period: string) => void;
   dataProvider?: TVDataProvider;
+  chartToken: {
+    symbol: string;
+    minPrice: BigNumber;
+    maxPrice: BigNumber;
+  };
+  supportedResolutions: typeof SUPPORTED_RESOLUTIONS_V1;
 };
 
 export default function TVChartContainer({
@@ -36,18 +45,39 @@ export default function TVChartContainer({
   chartLines,
   onSelectToken,
   dataProvider,
-  supportedResolutions,
   period,
   setPeriod,
+  chartToken,
+  supportedResolutions,
 }: Props) {
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const tvWidgetRef = useRef<IChartingLibraryWidget | null>(null);
   const [chartReady, setChartReady] = useState(false);
   const [chartDataLoading, setChartDataLoading] = useState(true);
   const [tvCharts, setTvCharts] = useLocalStorage<ChartData[] | undefined>(TV_SAVE_LOAD_CHARTS_KEY, []);
-  const { datafeed, resetCache } = useTVDatafeed({ dataProvider, supportedResolutions });
+  const { datafeed } = useTVDatafeed({ dataProvider });
   const isMobile = useMedia("(max-width: 550px)");
   const symbolRef = useRef(symbol);
+
+  useEffect(() => {
+    if (chartToken.maxPrice && chartToken.minPrice && chartToken.symbol) {
+      let priceDecimals: number;
+
+      try {
+        priceDecimals = getPriceDecimals(chainId, chartToken.symbol);
+      } catch (e) {
+        return;
+      }
+
+      const averagePrice = getMidPrice(chartToken);
+      const formattedPrice = parseFloat(formatAmount(averagePrice, USD_DECIMALS, priceDecimals));
+      dataProvider?.setCurrentChartToken({
+        price: formattedPrice,
+        ticker: chartToken.symbol,
+        isChartReady: chartReady,
+      });
+    }
+  }, [chartToken, chartReady, dataProvider, chainId]);
 
   const drawLineOnChart = useCallback(
     (title: string, price: number) => {
@@ -70,30 +100,6 @@ export default function TVChartContainer({
     },
     [chartReady]
   );
-
-  /* Tradingview charting library only fetches the historical data once so if the tab is inactive or system is in sleep mode
-  for a long time, the historical data will be outdated. */
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === "hidden") {
-        localStorage.setItem(TV_CHART_RELOAD_TIMESTAMP_KEY, Date.now().toString());
-      } else {
-        const tvReloadTimestamp = Number(localStorage.getItem(TV_CHART_RELOAD_TIMESTAMP_KEY));
-        if (tvReloadTimestamp && Date.now() - tvReloadTimestamp > TV_CHART_RELOAD_INTERVAL) {
-          if (resetCache) {
-            resetCache();
-            tvWidgetRef.current?.activeChart().resetData();
-          }
-        }
-      }
-    };
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, [resetCache]);
 
   useEffect(
     function updateLines() {
@@ -175,7 +181,7 @@ export default function TVChartContainer({
     };
     // We don't want to re-initialize the chart when the symbol changes. This will make the chart flicker.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId]);
+  }, [chainId, dataProvider]);
 
   return (
     <div className="ExchangeChart-error">

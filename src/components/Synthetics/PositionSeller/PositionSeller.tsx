@@ -73,6 +73,7 @@ export type Props = {
   isHigherSlippageAllowed: boolean;
   setIsHigherSlippageAllowed: (isAllowed: boolean) => void;
   onConnectWallet: () => void;
+  shouldDisableValidation: boolean;
 };
 
 export function PositionSeller(p: Props) {
@@ -315,11 +316,12 @@ export function PositionSeller(p: Props) {
       minOutputUsd: BigNumber.from(0),
       decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
       orderType: OrderType.MarketDecrease,
-      referralCode: userReferralInfo?.userReferralCode,
+      referralCode: userReferralInfo?.referralCodeForTxn,
       executionFee: executionFee.feeTokenAmount,
       allowedSlippage,
       indexToken: position.indexToken,
       tokensData,
+      skipSimulation: p.shouldDisableValidation,
       setPendingOrder,
       setPendingTxns,
       setPendingPosition,

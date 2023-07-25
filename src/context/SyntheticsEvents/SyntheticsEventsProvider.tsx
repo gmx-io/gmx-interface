@@ -23,7 +23,7 @@ import { helperToast } from "lib/helperToast";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey, setByKey, updateByKey } from "lib/objects";
 import { getProvider, getWsProvider } from "lib/rpc";
-import { ReactNode, createContext, useEffect, useMemo, useRef, useState } from "react";
+import { ReactNode, createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   DepositCreatedEventData,
   DepositStatuses,
@@ -43,15 +43,19 @@ import {
   WithdrawalStatuses,
 } from "./types";
 import { parseEventLogData } from "./utils";
-import { useAvailableTokensData } from "domain/synthetics/tokens";
+import { useTokensData } from "domain/synthetics/tokens";
 
 export const SyntheticsEventsContext = createContext({});
+
+export function useSyntheticsEvents(): SyntheticsEventsContextType {
+  return useContext(SyntheticsEventsContext) as SyntheticsEventsContextType;
+}
 
 export function SyntheticsEventsProvider({ children }: { children: ReactNode }) {
   const { chainId } = useChainId();
   const { active, account: currentAccount } = useWeb3React();
 
-  const { tokensData } = useAvailableTokensData(chainId);
+  const { tokensData } = useTokensData(chainId);
   const { marketsInfoData } = useMarketsInfo(chainId);
 
   const [orderStatuses, setOrderStatuses] = useState<OrderStatuses>({});

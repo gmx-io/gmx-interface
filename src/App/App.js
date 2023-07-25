@@ -74,7 +74,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { Header } from "components/Header/Header";
 import { ARBITRUM, getExplorerUrl } from "config/chains";
 import { isDevelopment } from "config/env";
-import { getIsSyntheticsSupported } from "config/features";
+import { getIsSyntheticsSupported, getIsV1Supported } from "config/features";
 import {
   CURRENT_PROVIDER_LOCALSTORAGE_KEY,
   DISABLE_ORDER_VALIDATION_KEY,
@@ -93,6 +93,7 @@ import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { roundToTwoDecimals } from "lib/numbers";
 import { getWsProvider } from "lib/rpc";
 import {
   activateInjectedProvider,
@@ -110,7 +111,6 @@ import { MarketPoolsPage } from "pages/MarketPoolsPage/MarketPoolsPage";
 import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsFallbackPage";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
-import { roundToTwoDecimals } from "lib/numbers";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -199,6 +199,7 @@ function FullApp() {
   };
 
   const connectInjectedWallet = getInjectedHandler(activate, deactivate);
+
   const activateWalletConnect = () => {
     getWalletConnectHandler(activate, deactivate, setActivatingConnector)();
   };
@@ -351,6 +352,27 @@ function FullApp() {
     setRedirectModalVisible(true);
     setSelectedToPage(to);
   };
+
+  useEffect(
+    function redirectTradePage() {
+      if (
+        location.pathname === "/trade" &&
+        (tradePageVersion === 2 || !getIsV1Supported(chainId)) &&
+        getIsSyntheticsSupported(chainId)
+      ) {
+        history.replace("/v2");
+      }
+
+      if (
+        location.pathname === "/v2" &&
+        (tradePageVersion === 1 || !getIsSyntheticsSupported(chainId)) &&
+        getIsV1Supported(chainId)
+      ) {
+        history.replace("/trade");
+      }
+    },
+    [chainId, history, location.pathname, tradePageVersion]
+  );
 
   useEffect(() => {
     const checkPendingTxns = async () => {
@@ -537,6 +559,7 @@ function FullApp() {
                     tradePageVersion={tradePageVersion}
                     setTradePageVersion={setTradePageVersion}
                     savedSlippageAmount={savedSlippageAmount}
+                    openSettings={openSettings}
                   />
                 ) : (
                   <SyntheticsFallbackPage />

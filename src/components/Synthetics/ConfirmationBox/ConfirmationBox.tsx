@@ -151,7 +151,7 @@ export function ConfirmationBox(p: Props) {
 
   const prevIsVisible = usePrevious(p.isVisible);
 
-  const { userReferralCode } = useUserReferralCode(library, chainId, account);
+  const { referralCodeForTxn } = useUserReferralCode(library, chainId, account);
 
   const [isTriggerWarningAccepted, setIsTriggerWarningAccepted] = useState(false);
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
@@ -389,7 +389,7 @@ export function ConfirmationBox(p: Props) {
       toTokenAddress: toToken.address,
       orderType: isLimit ? OrderType.LimitSwap : OrderType.MarketSwap,
       minOutputAmount: swapAmounts.minOutputAmount,
-      referralCode: userReferralCode,
+      referralCode: referralCodeForTxn,
       executionFee: executionFee.feeTokenAmount,
       allowedSlippage,
       tokensData,
@@ -428,7 +428,7 @@ export function ConfirmationBox(p: Props) {
       orderType: isLimit ? OrderType.LimitIncrease : OrderType.MarketIncrease,
       executionFee: executionFee.feeTokenAmount,
       allowedSlippage,
-      referralCode: userReferralCode,
+      referralCode: referralCodeForTxn,
       indexToken: marketInfo.indexToken,
       tokensData,
       skipSimulation: isLimit || shouldDisableValidation,
@@ -470,7 +470,7 @@ export function ConfirmationBox(p: Props) {
       orderType: decreaseAmounts.triggerOrderType,
       executionFee: executionFee.feeTokenAmount,
       allowedSlippage,
-      referralCode: userReferralCode,
+      referralCode: referralCodeForTxn,
       // Skip simulation to avoid EmptyPosition error
       // skipSimulation: !existingPosition || shouldDisableValidation,
       skipSimulation: true,
@@ -1071,7 +1071,7 @@ export function ConfirmationBox(p: Props) {
           {decreaseOrdersThatWillBeExecuted?.length > 0 && (
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox isChecked={isTriggerWarningAccepted} setIsChecked={setIsTriggerWarningAccepted}>
-                <span className="muted font-sm">
+                <span className="text-warning font-sm">
                   <Trans>I am aware of the trigger orders</Trans>
                 </span>
               </Checkbox>
@@ -1293,7 +1293,7 @@ export function ConfirmationBox(p: Props) {
 
         {needPayTokenApproval && fromToken && (
           <>
-            <div className="line-divider" />
+            {!isHighPriceImpact && <div className="line-divider" />}
 
             <ApproveTokenButton
               tokenAddress={fromToken.address}

@@ -1,9 +1,10 @@
 import cx from "classnames";
 import { useCallback, useState, useRef } from "react";
 import { IS_TOUCH } from "config/env";
+import "./Tooltip.css";
 
-const OPEN_DELAY = 100;
-const CLOSE_DELAY = 0;
+const OPEN_DELAY = 0;
+const CLOSE_DELAY = 100;
 
 type Props = {
   handle: React.ReactNode;

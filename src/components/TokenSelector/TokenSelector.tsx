@@ -69,7 +69,7 @@ export default function TokenSelector(props: Props) {
     getTokenState = () => ({ disabled: false, message: null }),
   } = props;
 
-  const visibleTokens = tokens.filter((t) => !t.isTempHidden);
+  const visibleTokens = tokens.filter((t) => t && !t.isTempHidden);
 
   const onSelectToken = (token) => {
     setIsModalVisible(false);

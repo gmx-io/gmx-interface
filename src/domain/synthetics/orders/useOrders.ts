@@ -53,52 +53,29 @@ export function useOrders(chainId: number): OrdersResult {
         count,
         ordersData: orders.reduce((acc: OrdersData, order, i) => {
           const key = orderKeys[i];
-          const { addresses, numbers, flags, data } = order;
-          const {
-            account,
-            receiver,
-            callbackContract,
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            uiFeeReceiver,
-            market: marketAddress,
-            initialCollateralToken: initialCollateralTokenAddress,
-            swapPath,
-          } = addresses;
-          const { orderType, decreasePositionSwapType, ...restNumbers } = numbers;
-          const [
-            sizeDeltaUsd,
-            initialCollateralDeltaAmount,
-            contractTriggerPrice,
-            contractAcceptablePrice,
-            executionFee,
-            callbackGasLimit,
-            minOutputAmount,
-            updatedAtBlock,
-          ] = Object.values(restNumbers).map(BigNumber.from);
-
-          const { isLong, shouldUnwrapNativeToken, isFrozen } = flags;
+          const { data } = order;
 
           acc[key] = {
             key,
-            account,
-            decreasePositionSwapType,
-            receiver,
-            callbackContract,
-            marketAddress,
-            initialCollateralTokenAddress,
-            swapPath,
-            sizeDeltaUsd,
-            initialCollateralDeltaAmount,
-            contractTriggerPrice,
-            contractAcceptablePrice,
-            executionFee,
-            callbackGasLimit,
-            minOutputAmount,
-            updatedAtBlock,
-            isLong,
-            shouldUnwrapNativeToken,
-            isFrozen,
-            orderType,
+            account: order.addresses.account,
+            receiver: order.addresses.receiver,
+            callbackContract: order.addresses.callbackContract,
+            marketAddress: order.addresses.market,
+            initialCollateralTokenAddress: order.addresses.initialCollateralToken,
+            swapPath: order.addresses.swapPath,
+            sizeDeltaUsd: BigNumber.from(order.numbers.sizeDeltaUsd),
+            initialCollateralDeltaAmount: BigNumber.from(order.numbers.initialCollateralDeltaAmount),
+            contractTriggerPrice: BigNumber.from(order.numbers.triggerPrice),
+            contractAcceptablePrice: BigNumber.from(order.numbers.acceptablePrice),
+            executionFee: BigNumber.from(order.numbers.executionFee),
+            callbackGasLimit: BigNumber.from(order.numbers.callbackGasLimit),
+            minOutputAmount: BigNumber.from(order.numbers.minOutputAmount),
+            updatedAtBlock: BigNumber.from(order.numbers.updatedAtBlock),
+            isLong: order.flags.isLong,
+            shouldUnwrapNativeToken: order.flags.shouldUnwrapNativeToken,
+            isFrozen: order.flags.isFrozen,
+            orderType: order.numbers.orderType,
+            decreasePositionSwapType: order.numbers.decreasePositionSwapType,
             data,
           };
 

@@ -1,19 +1,11 @@
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
-import { fetchLastOracleCandles, fetchOracleCandles, fetchOracleRecentPrice } from "../tokens/requests";
+import { fetchLastOracleCandles, fetchOracleCandles } from "../tokens/requests";
 import { getChainlinkChartPricesFromGraph } from "domain/prices";
 import { sleep } from "lib/sleep";
 import { Bar } from "domain/tradingview/types";
-import { getMidPrice } from "../tokens";
-import { BigNumber } from "ethers";
 
 export class SyntheticsTVDataProvider extends TVDataProvider {
   candlesTimeout = 5000;
-
-  override async getCurrentPriceOfToken(chainId: number, ticker: string) {
-    return fetchOracleRecentPrice(chainId, ticker)
-      .then((prices) => getMidPrice(prices))
-      .catch(() => BigNumber.from(0));
-  }
 
   override async getTokenChartPrice(chainId: number, ticker: string, period: string): Promise<Bar[]> {
     return Promise.race([
@@ -35,7 +27,7 @@ export class SyntheticsTVDataProvider extends TVDataProvider {
       });
   }
 
-  override getTokenLastBars(chainId: number, ticker: string, period: string, limit: number) {
+  override getLimitBars(chainId: number, ticker: string, period: string, limit: number) {
     return fetchLastOracleCandles(chainId, ticker, period, limit);
   }
 }
