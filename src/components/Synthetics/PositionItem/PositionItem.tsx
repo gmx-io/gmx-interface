@@ -245,7 +245,7 @@ export function PositionItem(p: Props) {
               showDollar={false}
             />
             <br />
-            <div className="text-gray">
+            <div>
               Estimation based on current Borrow and Funding Fees rates reducing position's Collateral over time,
               excluding any price movement.
             </div>
