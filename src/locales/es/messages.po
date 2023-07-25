@@ -1645,9 +1645,6 @@ msgid "Execute order simulation failed."
 msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
-#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Execution Fee"
 msgstr ""
 
@@ -2615,6 +2612,12 @@ msgstr "Capacidad Máxima"
 #: src/components/Glp/GlpSwap.js
 msgid "Max Capacity for {0} Reached"
 msgstr "Capacidad Máxima para {0} Alcanzada"
+
+#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Max Execution Fee"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Max Leverage without PnL: 100x"
