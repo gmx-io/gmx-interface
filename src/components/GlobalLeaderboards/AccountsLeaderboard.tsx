@@ -9,7 +9,11 @@ import { useLeaderboardContext } from "./Context";
 import { PerfPeriod } from "domain/synthetics/leaderboards";
 import { formatAmount } from "lib/numbers";
 import { USD_DECIMALS } from "lib/legacy";
-import { BigNumber } from "ethers";
+import { BigNumberish } from "ethers";
+
+const formatUsdAmount = (x: BigNumberish, displayDecimals = 2, useCommas = false) => (
+  formatAmount(x, USD_DECIMALS, displayDecimals, useCommas)
+);
 
 export default function AccountsLeaderboard() {
   const perPage = 15;
@@ -21,9 +25,9 @@ export default function AccountsLeaderboard() {
   const displayedStats = filteredStats.slice((page - 1) * perPage, page * perPage).map(s => ({
     id: s.id,
     account: s.account,
-    absPnl: formatAmount(s.absPnl, USD_DECIMALS, 2, true),
-    relPnl: formatAmount(s.relPnl.mul(BigNumber.from(100)), 0, 3, true),
-    sizeLev: `${ formatAmount(s.size, USD_DECIMALS, 2, true) } (${ formatAmount(s.leverage, 0, 3, true) })`,
+    absPnl: formatUsdAmount(s.absPnl),
+    relPnl: formatUsdAmount(s.relPnl),
+    sizeLev: `${ formatUsdAmount(s.size) } (${ formatUsdAmount(s.leverage) })`,
     perf: `${ s.wins.toNumber() }/${ s.losses.toNumber() }`,
   }));
 

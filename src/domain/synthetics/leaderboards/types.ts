@@ -1,4 +1,5 @@
 import { BigNumber } from "ethers";
+import { Market } from "../markets";
 
 export enum PerfPeriod {
   DAY = "24 hours",
@@ -44,7 +45,6 @@ export type PerfByAccount = { [key: string]: AccountPerf };
 
 export type AccountScores = {
   id: string;
-  rank: number;
   account: string;
   absPnl: BigNumber;
   relPnl: BigNumber;
@@ -72,6 +72,7 @@ export type AccountOpenPosition = {
   id: string;
   account: string;
   market: string;
+  marketData?: Market;
   collateralToken: string;
   isLong: boolean;
   sizeInTokens: BigNumber;
