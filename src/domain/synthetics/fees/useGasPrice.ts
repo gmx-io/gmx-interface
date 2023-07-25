@@ -1,12 +1,13 @@
-import useSWR from "swr";
 import { useWeb3React } from "@web3-react/core";
+import { BASIS_POINTS_DIVISOR, DEFAULT_EXECUTION_FEE_BUFFER_BPS } from "config/factors";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { BigNumber } from "ethers";
 import { getProvider } from "lib/rpc";
-import { AVALANCHE, AVALANCHE_FUJI } from "config/chains";
-import { BASIS_POINTS_DIVISOR, DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "lib/legacy";
+import useSWR from "swr";
 
 export function useGasPrice(chainId: number) {
   const { library } = useWeb3React();
+  const settings = useSettings();
 
   const { data: gasPrice } = useSWR<BigNumber | undefined>(["gasPrice", chainId], {
     fetcher: () => {
@@ -21,7 +22,7 @@ export function useGasPrice(chainId: number) {
         try {
           let gasPrice = await provider.getGasPrice();
 
-          if ([AVALANCHE, AVALANCHE_FUJI].includes(chainId)) {
+          if (settings.shouldUseExecutionFeeBuffer) {
             const feeData = await provider.getFeeData();
 
             // the wallet provider might not return maxPriorityFeePerGas in feeData
@@ -30,9 +31,9 @@ export function useGasPrice(chainId: number) {
               gasPrice = gasPrice.add(feeData.maxPriorityFeePerGas);
             }
 
-            const bufferBasisPoints = BASIS_POINTS_DIVISOR + DEFAULT_HIGHER_SLIPPAGE_AMOUNT * 20;
+            const buffer = settings.executionFeeBufferBps || DEFAULT_EXECUTION_FEE_BUFFER_BPS[chainId];
 
-            gasPrice = gasPrice.mul(bufferBasisPoints).div(BASIS_POINTS_DIVISOR);
+            gasPrice = gasPrice.mul(BASIS_POINTS_DIVISOR + buffer).div(BASIS_POINTS_DIVISOR);
           }
 
           resolve(gasPrice);

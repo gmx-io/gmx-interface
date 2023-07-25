@@ -13,15 +13,12 @@ import { ARBITRUM, IS_NETWORK_DISABLED, getChainName, getConstant, isSupportedCh
 import { getContract } from "config/contracts";
 import * as Api from "domain/legacy";
 import {
-  BASIS_POINTS_DIVISOR,
-  DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
   DUST_BNB,
   LEVERAGE_ORDER_OPTIONS,
   LIMIT,
   LONG,
   MARGIN_FEE_BASIS_POINTS,
   MARKET,
-  MAX_ALLOWED_LEVERAGE,
   PRECISION,
   SHORT,
   STOP,
@@ -40,6 +37,8 @@ import {
   getPositionKey,
   isTriggerRatioInverted,
 } from "lib/legacy";
+import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "config/factors";
+import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
 
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tab from "../Tab/Tab";

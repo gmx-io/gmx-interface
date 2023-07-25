@@ -13,7 +13,8 @@ import {
 import { TokenData, getMidPrice } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-import { BASIS_POINTS_DIVISOR, CHART_PERIODS, importImage } from "lib/legacy";
+import { CHART_PERIODS, importImage } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { formatAmount, formatUsd } from "lib/numbers";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
 

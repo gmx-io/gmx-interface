@@ -3,7 +3,7 @@ import { MarketInfo } from "domain/synthetics/markets";
 import { OrderType } from "domain/synthetics/orders";
 import { TokenPrices, convertToTokenAmount } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
-import { BASIS_POINTS_DIVISOR } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { applyFactor, expandDecimals, getBasisPoints, roundUpMagnitudeDivision } from "lib/numbers";
 import { TriggerThresholdType } from "../types";
 

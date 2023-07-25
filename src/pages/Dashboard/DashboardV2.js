@@ -11,7 +11,6 @@ import hexToRgba from "hex-to-rgba";
 
 import { useGmxPrice, useTotalGmxInLiquidity, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
 import {
-  BASIS_POINTS_DIVISOR,
   DEFAULT_MAX_USDG_AMOUNT,
   GLP_DECIMALS,
   GMX_DECIMALS,
@@ -19,6 +18,7 @@ import {
   getPageTitle,
   importImage,
 } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 
 import { getContract } from "config/contracts";
 

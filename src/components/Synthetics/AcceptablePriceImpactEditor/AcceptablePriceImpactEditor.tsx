@@ -2,7 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
 import { helperToast } from "lib/helperToast";
-import { BASIS_POINTS_DIVISOR } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { useState } from "react";
 
 type Props = {

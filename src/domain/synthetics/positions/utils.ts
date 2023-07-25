@@ -2,7 +2,7 @@ import { UserReferralInfo } from "domain/referrals";
 import { MarketInfo, getCappedPoolPnl, getPoolUsdWithoutPnl } from "domain/synthetics/markets";
 import { Token, getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber } from "ethers";
-import { BASIS_POINTS_DIVISOR } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { applyFactor, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 import { getPositionFee, getPriceImpactForPosition } from "../fees";
 import { TokenData, convertToUsd } from "../tokens";

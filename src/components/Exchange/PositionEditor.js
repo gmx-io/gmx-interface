@@ -4,16 +4,8 @@ import { Trans, t } from "@lingui/macro";
 import { ethers } from "ethers";
 import { BsArrowRight } from "react-icons/bs";
 
-import {
-  USD_DECIMALS,
-  BASIS_POINTS_DIVISOR,
-  DEPOSIT_FEE,
-  DUST_BNB,
-  MAX_ALLOWED_LEVERAGE,
-  getFundingFee,
-  LIQUIDATION_FEE,
-  MAX_LEVERAGE,
-} from "lib/legacy";
+import { USD_DECIMALS, DEPOSIT_FEE, DUST_BNB, getFundingFee, LIQUIDATION_FEE } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE, MAX_LEVERAGE } from "config/factors";
 import { getContract } from "config/contracts";
 import Tab from "../Tab/Tab";
 import Modal from "../Modal/Modal";
