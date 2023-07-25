@@ -14,11 +14,11 @@ import { getRootUrl } from "lib/url";
 
 export const REFERRAL_CODE_REGEX = /^\w+$/; // only number, string and underscore is allowed
 export const REGEX_VERIFY_BYTES32 = /^0x[0-9a-f]{64}$/;
-const MAX_DISCOUNT_SHARE = 10000; // 100%
 
 export function removeTrailingZeros(amount) {
-  const regex = /\.?0+$/;
-  return amount.replace(regex, "");
+  const amountWithoutZeros = Number(amount);
+  if (!amountWithoutZeros) return amount;
+  return amountWithoutZeros;
 }
 
 export function isRecentReferralCodeNotExpired(referralCodeInfo) {
@@ -82,30 +82,17 @@ export const totalRebateInfo = {
   2: 25,
 };
 
-export function getDiscountSharePercentage(tierId, discountShare) {
+export function getSharePercentage(tierId, share, isRebate) {
   if (!tierId) return;
-  if (!discountShare || discountShare?.eq(0)) return tierDiscountInfo[tierId];
+  if (!share || share?.eq(0)) return isRebate ? tierRebateInfo[tierId] : tierDiscountInfo[tierId];
   const decimals = 4;
 
   const totalDiscount = totalRebateInfo[tierId];
   const discountPercentage = bigNumberify(totalDiscount)
-    .mul(discountShare)
+    .mul(isRebate ? BASIS_POINTS_DIVISOR - share : share)
     .mul(Math.pow(10, decimals))
     .div(BASIS_POINTS_DIVISOR);
 
-  return removeTrailingZeros(formatAmount(discountPercentage, decimals, 3, true));
-}
-
-export function getRebateSharePercentage(tierId, discountShare) {
-  if (!tierId) return;
-  if (!discountShare || discountShare?.eq(0)) return tierRebateInfo[tierId];
-  const decimals = 4;
-
-  const totalDiscount = totalRebateInfo[tierId];
-  const discountPercentage = bigNumberify(totalDiscount)
-    .mul(MAX_DISCOUNT_SHARE - discountShare)
-    .mul(Math.pow(10, decimals))
-    .div(BASIS_POINTS_DIVISOR);
   return removeTrailingZeros(formatAmount(discountPercentage, decimals, 3, true));
 }
 

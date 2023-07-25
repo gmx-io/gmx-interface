@@ -10,7 +10,7 @@ import { shortenAddress } from "lib/legacy";
 import EmptyMessage from "./EmptyMessage";
 import ReferralInfoCard from "./ReferralInfoCard";
 import {
-  getRebateSharePercentage,
+  getSharePercentage,
   getReferralCodeTradeUrl,
   getTierIdDisplay,
   getTwitterShareUrl,
@@ -80,7 +80,7 @@ function AffiliatesStats({
   const currentAffiliatesData = getCurrentAffiliatesData();
   const tierId = affiliateTierInfo?.tierId;
   const discountShare = affiliateTierInfo?.discountShare;
-  const currentRebatePercentage = getRebateSharePercentage(tierId, bigNumberify(discountShare | 0));
+  const currentRebatePercentage = getSharePercentage(tierId, bigNumberify(discountShare | 0), true);
 
   return (
     <div className="referral-body-container">

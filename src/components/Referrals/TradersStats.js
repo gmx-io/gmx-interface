@@ -6,7 +6,7 @@ import Modal from "../Modal/Modal";
 import Tooltip from "../Tooltip/Tooltip";
 import { shortenAddress } from "lib/legacy";
 import EmptyMessage from "./EmptyMessage";
-import { getDiscountSharePercentage, getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./referralsHelper";
+import { getSharePercentage, getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./referralsHelper";
 import { ReferralCodeForm } from "./JoinReferralCode";
 import { ARBITRUM, AVALANCHE, getExplorerUrl } from "config/chains";
 import { formatAmount } from "lib/numbers";
@@ -39,7 +39,7 @@ function TradersStats({
     currentReferralsData?.discountDistributions
   );
   const currentDiscountDistributions = getCurrentData();
-  const currentTierDiscount = getDiscountSharePercentage(traderTier, discountShare);
+  const currentTierDiscount = getSharePercentage(traderTier, discountShare);
 
   const open = () => setIsEditModalOpen(true);
   const close = () => setIsEditModalOpen(false);
