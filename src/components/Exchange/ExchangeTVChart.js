@@ -8,7 +8,7 @@ import { t } from "@lingui/macro";
 import TVChartContainer from "components/TVChartContainer/TVChartContainer";
 import { DEFAULT_PERIOD, availableNetworksForChart } from "components/TVChartContainer/constants";
 import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
-import { getToken, getV1Tokens } from "config/tokens";
+import { getPriceDecimals, getToken, getV1Tokens } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS_V1 } from "config/tradingview";
 import { getTokenInfo } from "domain/tokens/utils";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
@@ -311,6 +311,8 @@ export default function ExchangeTVChart(props) {
     setToTokenAddress(swapOption, token.address);
   };
 
+  const priceDecimal = getPriceDecimals(chainId, chartToken?.symbol);
+
   return (
     <div className="ExchangeChart tv" ref={ref}>
       <div className="ExchangeChart-top App-box App-box-border">
@@ -329,10 +331,10 @@ export default function ExchangeTVChart(props) {
           </div>
           <div>
             <div className="ExchangeChart-main-price">
-              {chartToken.maxPrice && formatAmount(chartToken.maxPrice, USD_DECIMALS, 2, true)}
+              {chartToken.maxPrice && formatAmount(chartToken.maxPrice, USD_DECIMALS, priceDecimal, true)}
             </div>
             <div className="ExchangeChart-info-label">
-              ${chartToken.minPrice && formatAmount(chartToken.minPrice, USD_DECIMALS, 2, true)}
+              ${chartToken.minPrice && formatAmount(chartToken.minPrice, USD_DECIMALS, priceDecimal, true)}
             </div>
           </div>
           {!isSmallMobile && (
@@ -348,14 +350,14 @@ export default function ExchangeTVChart(props) {
             <div className="ExchangeChart-info-label">24h High</div>
             <div>
               {!high && "-"}
-              {high && numberWithCommas(high.toFixed(2))}
+              {high && numberWithCommas(high.toFixed(priceDecimal))}
             </div>
           </div>
           <div className="ExchangeChart-additional-info">
             <div className="ExchangeChart-info-label">24h Low</div>
             <div>
               {!low && "-"}
-              {low && numberWithCommas(low.toFixed(2))}
+              {low && numberWithCommas(low.toFixed(priceDecimal))}
             </div>
           </div>
           <VersionSwitch currentVersion={tradePageVersion} setCurrentVersion={setTradePageVersion} />
