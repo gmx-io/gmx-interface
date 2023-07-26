@@ -13,7 +13,7 @@ export function usePositionsConstants(chainId: number): PositionsConstantsResult
   const { data } = useMulticall(chainId, "usePositionsConstants", {
     key: [],
 
-    refreshInterval: null,
+    refreshInterval: 60000,
 
     request: {
       dataStore: {

@@ -112,6 +112,9 @@ export type MarketInfo = Market & {
   virtualMarketId?: string;
   virtualLongTokenId?: string;
   virtualShortTokenId?: string;
+
+  // marketTokenTotalSupply: BigNumber;
+  // marketTokenBalance?: BigNumber;
 };
 
 export type MarketsData = {

@@ -22,7 +22,7 @@ export function useGasLimits(chainId: number): GasLimitsResult {
   const { data } = useMulticall(chainId, "useGasLimitsConfig", {
     key: [],
 
-    refreshInterval: null,
+    refreshInterval: 60000,
 
     request: () => ({
       dataStore: {

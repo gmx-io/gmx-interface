@@ -17,7 +17,7 @@ export function useMarkets(chainId: number): MarketsResult {
   const { data } = useMulticall(chainId, "useMarketsData", {
     key: [],
 
-    refreshInterval: null,
+    refreshInterval: 60000,
 
     request: () => ({
       reader: {
