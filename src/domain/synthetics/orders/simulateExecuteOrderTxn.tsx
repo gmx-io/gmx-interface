@@ -72,12 +72,16 @@ export async function simulateExecuteOrderTxn(chainId: number, library: Web3Prov
     if (RUN_ON_CHAIN && isDevelopment()) {
       const txn = await callContract(chainId, exchangeRouter, "multicall", [simulationPayload], {
         value: p.value,
-        gasLimit: 13 ** 6,
+        gasLimit: 10 ** 7,
       });
 
       throw new Error(`debug simulation ended ${txn.hash}`);
     } else {
-      await exchangeRouter.callStatic.multicall(simulationPayload, { value: p.value, blockTag: blockNumber });
+      await exchangeRouter.callStatic.multicall(simulationPayload, {
+        value: p.value,
+        blockTag: blockNumber,
+        gasLimit: 10 ** 7,
+      });
     }
   } catch (txnError) {
     const customErrors = new ethers.Contract(ethers.constants.AddressZero, CustomErrors.abi);
