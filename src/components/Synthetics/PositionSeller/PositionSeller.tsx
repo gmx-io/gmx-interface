@@ -42,7 +42,7 @@ import { getCommonError, getDecreaseError } from "domain/synthetics/trade/utils/
 import { getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-import { DEFAULT_SLIPPAGE_AMOUNT, USD_DECIMALS } from "lib/legacy";
+import { USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   bigNumberify,
@@ -63,6 +63,7 @@ import SlippageInput from "components/SlippageInput/SlippageInput";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 
 export type Props = {
   position?: PositionInfo;
