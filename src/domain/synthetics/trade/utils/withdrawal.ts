@@ -46,8 +46,8 @@ export function getWithdrawalAmounts(p: {
     values.longTokenUsd = values.marketTokenUsd.mul(longPoolUsd).div(totalPoolUsd);
     values.shortTokenUsd = values.marketTokenUsd.mul(shortPoolUsd).div(totalPoolUsd);
 
-    const longSwapFeeUsd = applyFactor(values.longTokenUsd, p.marketInfo.swapFeeFactor);
-    const shortSwapFeeUsd = applyFactor(values.shortTokenUsd, p.marketInfo.swapFeeFactor);
+    const longSwapFeeUsd = applyFactor(values.longTokenUsd, p.marketInfo.swapFeeFactorForNegativeImpact);
+    const shortSwapFeeUsd = applyFactor(values.shortTokenUsd, p.marketInfo.swapFeeFactorForNegativeImpact);
 
     values.swapFeeUsd = longSwapFeeUsd.add(shortSwapFeeUsd);
 
@@ -82,7 +82,7 @@ export function getWithdrawalAmounts(p: {
     }
 
     values.marketTokenUsd = values.longTokenUsd.add(values.shortTokenUsd);
-    values.swapFeeUsd = applyFactor(values.marketTokenUsd, p.marketInfo.swapFeeFactor);
+    values.swapFeeUsd = applyFactor(values.marketTokenUsd, p.marketInfo.swapFeeFactorForNegativeImpact);
 
     values.marketTokenUsd = values.marketTokenUsd.sub(values.swapFeeUsd);
     values.marketTokenAmount = usdToMarketTokenAmount(marketInfo, marketToken, values.marketTokenUsd)!;

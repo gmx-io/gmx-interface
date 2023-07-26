@@ -407,13 +407,23 @@ export function SyntheticsStats() {
                           <div>Fees factors</div>
                           <br />
                           <StatsTooltipRow
-                            label="Swap Fee Factor"
-                            value={formatFactor(market.swapFeeFactor)}
+                            label="Swap Fee Factor (Positive PI)"
+                            value={formatFactor(market.swapFeeFactorForPositiveImpact)}
                             showDollar={false}
                           />
                           <StatsTooltipRow
-                            label="Position Fee Factor"
-                            value={formatFactor(market.positionFeeFactor)}
+                            label="Swap Fee Factor (Negative PI)"
+                            value={formatFactor(market.swapFeeFactorForNegativeImpact)}
+                            showDollar={false}
+                          />
+                          <StatsTooltipRow
+                            label="Position Fee Factor (Positive PI)"
+                            value={formatFactor(market.positionFeeFactorForPositiveImpact)}
+                            showDollar={false}
+                          />
+                          <StatsTooltipRow
+                            label="Position Fee Factor (Negative PI)"
+                            value={formatFactor(market.positionFeeFactorForNegativeImpact)}
                             showDollar={false}
                           />
                           <StatsTooltipRow

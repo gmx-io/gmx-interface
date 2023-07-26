@@ -1,11 +1,18 @@
 import { Trans } from "@lingui/macro";
+import { groupBy } from "lodash";
 import Button from "components/Button/Button";
 import { getChainName } from "config/chains";
-import { MarketTokensAPRData, MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
+import {
+  MarketInfo,
+  MarketTokensAPRData,
+  MarketsInfoData,
+  getMarketIndexName,
+  getMarketPoolName,
+} from "domain/synthetics/markets";
 import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { importImage } from "lib/legacy";
-import { formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
+import { bigNumberify, formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import { useMemo } from "react";
@@ -23,30 +30,57 @@ type Props = {
 
 export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensData, marketsTokensAPRData }: Props) {
   const { chainId } = useChainId();
-
-  const marketTokens = useMemo(() => {
-    if (!marketTokensData || !marketsInfoData) {
+  const sortedMarketTokens = useMemo(() => {
+    if (!marketsInfoData) {
       return [];
     }
+    // Group markets by index token address
+    const groupedMarketList: { [marketAddress: string]: MarketInfo[] } = groupBy(
+      Object.values(marketsInfoData),
+      (market) => market.indexTokenAddress
+    );
 
-    return Object.values(marketTokensData)
-      .filter((marketToken) => {
-        const market = getByKey(marketsInfoData, marketToken.address);
-        return market && !market.isDisabled;
+    const allMarkets = Object.values(groupedMarketList)
+      .map((markets) => {
+        return markets
+          .filter((market) => {
+            const marketInfoData = getByKey(marketsInfoData, market.marketTokenAddress)!;
+            return !marketInfoData.isDisabled;
+          })
+          .map((market) => getByKey(marketTokensData, market.marketTokenAddress)!);
       })
-      .sort((a, b) => {
-        const market1 = getByKey(marketsInfoData, a.address)!;
-        const market2 = getByKey(marketsInfoData, b.address)!;
-        const indexToken1 = getTokenData(tokensData, market1.indexTokenAddress, "native");
-        const indexToken2 = getTokenData(tokensData, market2.indexTokenAddress, "native");
+      .filter((markets) => markets.length > 0);
 
-        if (!indexToken1 || !indexToken2) {
-          return 0;
-        }
+    const sortedGroups = allMarkets!.sort((a, b) => {
+      const totalMarketSupplyA = a.reduce((acc, market) => {
+        const totalSupplyUsd = convertToUsd(market?.totalSupply, market?.decimals, market?.prices.minPrice);
+        acc = acc.add(totalSupplyUsd || 0);
+        return acc;
+      }, bigNumberify(0)!);
 
-        return indexToken1.symbol.localeCompare(indexToken2.symbol);
+      const totalMarketSupplyB = b.reduce((acc, market) => {
+        const totalSupplyUsd = convertToUsd(market?.totalSupply, market?.decimals, market?.prices.minPrice);
+        acc = acc.add(totalSupplyUsd || 0);
+        return acc;
+      }, bigNumberify(0)!);
+
+      return totalMarketSupplyA.gt(totalMarketSupplyB) ? -1 : 1;
+    });
+
+    // Sort markets within each group by total supply
+    const sortedMarkets = sortedGroups.map((markets: any) => {
+      return markets.sort((a, b) => {
+        const totalSupplyUsdA = convertToUsd(a.totalSupply, a.decimals, a.prices.minPrice)!;
+        const totalSupplyUsdB = convertToUsd(b.totalSupply, b.decimals, b.prices.minPrice)!;
+        return totalSupplyUsdA.gt(totalSupplyUsdB) ? -1 : 1;
       });
-  }, [marketTokensData, marketsInfoData, tokensData]);
+    });
+
+    // Flatten the sorted markets array
+    const flattenedMarkets = sortedMarkets.flat(Infinity);
+
+    return flattenedMarkets;
+  }, [marketsInfoData, marketTokensData]);
 
   const isMobile = useMedia("(max-width: 1100px)");
 
@@ -85,21 +119,21 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
               </tr>
             </thead>
             <tbody>
-              {marketTokens.map((token) => {
-                const market = getByKey(marketsInfoData, token.address)!;
+              {sortedMarketTokens.map((token) => {
+                const market = getByKey(marketsInfoData, token?.address)!;
 
                 const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
                 const longToken = getTokenData(tokensData, market?.longTokenAddress);
                 const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
 
-                const apr = getByKey(marketsTokensAPRData, token.address);
+                const apr = getByKey(marketsTokensAPRData, token?.address);
 
-                const totalSupply = token.totalSupply;
-                const totalSupplyUsd = convertToUsd(totalSupply, token.decimals, token.prices?.minPrice);
-
-                if (!indexToken || !longToken || !shortToken) {
+                if (!token || !indexToken || !longToken || !shortToken) {
                   return null;
                 }
+
+                const totalSupply = token?.totalSupply;
+                const totalSupplyUsd = convertToUsd(totalSupply, token?.decimals, token?.prices?.minPrice);
 
                 return (
                   <tr key={token.address}>
@@ -179,12 +213,12 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
           )}
 
           <div className="token-grid">
-            {marketTokens.map((token) => {
+            {sortedMarketTokens.map((token) => {
               const apr = marketsTokensAPRData?.[token.address];
 
-              const totalSupply = token.totalSupply;
-              const totalSupplyUsd = convertToUsd(totalSupply, token.decimals, token.prices?.minPrice);
-              const market = getByKey(marketsInfoData, token.address);
+              const totalSupply = token?.totalSupply;
+              const totalSupplyUsd = convertToUsd(totalSupply, token?.decimals, token?.prices?.minPrice);
+              const market = getByKey(marketsInfoData, token?.address);
               const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
 
               if (!indexToken) {

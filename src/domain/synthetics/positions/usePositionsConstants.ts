@@ -12,6 +12,9 @@ export type PositionsConstantsResult = {
 export function usePositionsConstants(chainId: number): PositionsConstantsResult {
   const { data } = useMulticall(chainId, "usePositionsConstants", {
     key: [],
+
+    refreshInterval: null,
+
     request: {
       dataStore: {
         contractAddress: getContract(chainId, "DataStore"),

@@ -50,7 +50,7 @@ export function GmFees(p: Props) {
 
                   {p.executionFee && (
                     <StatsTooltipRow
-                      label={t`Execution Fee`}
+                      label={t`Max Execution Fee`}
                       value={formatTokenAmountWithUsd(
                         p.executionFee.feeTokenAmount.mul(-1),
                         p.executionFee.feeUsd.mul(-1),

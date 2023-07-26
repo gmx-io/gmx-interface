@@ -153,7 +153,7 @@ export function TradeFeesRow(p: Props) {
 
     const executionFeeRow = p.executionFee?.feeTokenAmount.gt(0)
       ? {
-          label: t`Execution Fee`,
+          label: t`Max Execution Fee`,
           value: formatTokenAmountWithUsd(
             p.executionFee.feeTokenAmount.mul(-1),
             p.executionFee.feeUsd.mul(-1),

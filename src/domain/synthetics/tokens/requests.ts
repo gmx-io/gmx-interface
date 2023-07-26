@@ -34,7 +34,7 @@ export async function fetchLastOracleCandles(
 ): Promise<Bar[]> {
   tokenSymbol = getNormalizedTokenSymbol(tokenSymbol);
 
-  const url = getOracleKeeperUrl(chainId, "/prices/candles/new", { tokenSymbol, limit, period });
+  const url = getOracleKeeperUrl(chainId, "/prices/candles", { tokenSymbol, limit, period });
 
   const res = await fetch(url).then((res) => res.json());
 
@@ -48,7 +48,7 @@ export async function fetchOracleCandles(chainId: number, tokenSymbol: string, p
 
   const limit = 5000;
 
-  const url = getOracleKeeperUrl(chainId, "/prices/candles/new", { tokenSymbol, period, limit });
+  const url = getOracleKeeperUrl(chainId, "/prices/candles", { tokenSymbol, period, limit });
 
   const res = await fetch(url).then((res) => res.json());
 

@@ -84,7 +84,8 @@ export type MarketInfo = Market & {
   longInterestInTokens: BigNumber;
   shortInterestInTokens: BigNumber;
 
-  positionFeeFactor: BigNumber;
+  positionFeeFactorForPositiveImpact: BigNumber;
+  positionFeeFactorForNegativeImpact: BigNumber;
   positionImpactFactorPositive: BigNumber;
   positionImpactFactorNegative: BigNumber;
   maxPositionImpactFactorPositive: BigNumber;
@@ -92,7 +93,8 @@ export type MarketInfo = Market & {
   maxPositionImpactFactorForLiquidations: BigNumber;
   positionImpactExponentFactor: BigNumber;
 
-  swapFeeFactor: BigNumber;
+  swapFeeFactorForPositiveImpact: BigNumber;
+  swapFeeFactorForNegativeImpact: BigNumber;
   swapImpactFactorPositive: BigNumber;
   swapImpactFactorNegative: BigNumber;
   swapImpactExponentFactor: BigNumber;

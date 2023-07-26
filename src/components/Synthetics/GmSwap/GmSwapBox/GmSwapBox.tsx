@@ -241,8 +241,10 @@ export function GmSwapBox(p: Props) {
       result.push(shortToken);
     }
 
-    if (result.some((token) => token.isWrapped)) {
-      result.unshift(getTokenData(tokensData, NATIVE_TOKEN_ADDRESS)!);
+    const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS)!;
+
+    if (result.some((token) => token.isWrapped) && nativeToken) {
+      result.unshift(nativeToken);
     }
 
     return result;
@@ -658,10 +660,13 @@ export function GmSwapBox(p: Props) {
         if (marketInfo) {
           setIndexName(getMarketIndexName(marketInfo));
           onSelectMarket(marketInfo?.marketTokenAddress);
+          helperToast.success(t`${marketInfo.name} selected in order form`);
         }
       }
 
-      history.replace({ search: "" });
+      if (history.location.search) {
+        history.replace({ search: "" });
+      }
     },
     [history, marketsInfoData, onSelectMarket, queryParams, setIndexName, setOperation]
   );

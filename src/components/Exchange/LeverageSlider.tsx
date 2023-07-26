@@ -1,6 +1,6 @@
 import Slider, { SliderTooltip } from "rc-slider";
 import cx from "classnames";
-import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
 import "rc-slider/assets/index.css";
 
 const leverageMarks = {

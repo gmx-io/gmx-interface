@@ -22,7 +22,7 @@ import { GmFees } from "../GmFees/GmFees";
 
 import Button from "components/Button/Button";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import { DEFAULT_SLIPPAGE_AMOUNT } from "lib/legacy";
+import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { useState } from "react";
 import "./GmConfirmationBox.scss";
 
@@ -233,7 +233,7 @@ export function GmConfirmationBox({
   })();
 
   function onCreateDeposit() {
-    if (!account || !executionFee || !marketToken || !market || !marketTokenAmount) {
+    if (!account || !executionFee || !marketToken || !market || !marketTokenAmount || !tokensData) {
       return Promise.resolve();
     }
 
@@ -249,13 +249,14 @@ export function GmConfirmationBox({
       minMarketTokens: marketTokenAmount,
       executionFee: executionFee.feeTokenAmount,
       allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
+      tokensData,
       setPendingTxns,
       setPendingDeposit,
     });
   }
 
   function onCreateWithdrawal() {
-    if (!account || !market || !marketToken || !executionFee || !longTokenAmount || !shortTokenAmount) {
+    if (!account || !market || !marketToken || !executionFee || !longTokenAmount || !shortTokenAmount || !tokensData) {
       return Promise.resolve();
     }
 
@@ -271,6 +272,7 @@ export function GmConfirmationBox({
       marketTokenAddress: marketToken.address,
       executionFee: executionFee.feeTokenAmount,
       allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
+      tokensData,
       setPendingTxns,
       setPendingWithdrawal,
     });

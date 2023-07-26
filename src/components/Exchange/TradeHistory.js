@@ -5,14 +5,13 @@ import Tooltip from "components/Tooltip/Tooltip";
 
 import {
   USD_DECIMALS,
-  MAX_LEVERAGE,
-  BASIS_POINTS_DIVISOR,
   LIQUIDATION_FEE,
   TRADES_PAGE_SIZE,
   deserialize,
   getExchangeRateDisplay,
   INCREASE,
 } from "lib/legacy";
+import { MAX_LEVERAGE, BASIS_POINTS_DIVISOR } from "config/factors";
 import { useTrades, useLiquidationsData } from "domain/legacy";
 import { getContract } from "config/contracts";
 

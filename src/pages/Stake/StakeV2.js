@@ -19,7 +19,6 @@ import { ARBITRUM, getChainName, getConstant } from "config/chains";
 import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
 import { ethers } from "ethers";
 import {
-  BASIS_POINTS_DIVISOR,
   GLP_DECIMALS,
   PLACEHOLDER_ACCOUNT,
   USD_DECIMALS,
@@ -30,6 +29,7 @@ import {
   getStakingData,
   getVestingData,
 } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 
 import useSWR from "swr";
 

@@ -7,6 +7,8 @@ import { BigNumber, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { isAddressZero } from "lib/legacy";
 import { applySlippageToMinOut } from "../trade";
+import { simulateExecuteOrderTxn } from "./simulateExecuteDepositTxn";
+import { TokensData } from "../tokens";
 
 type Params = {
   account: string;
@@ -20,11 +22,13 @@ type Params = {
   minShortTokenAmount: BigNumber;
   executionFee: BigNumber;
   allowedSlippage: number;
+  skipSimulation?: boolean;
+  tokensData: TokensData;
   setPendingTxns: (txns: any) => void;
   setPendingWithdrawal: SetPendingWithdrawal;
 };
 
-export function createWithdrawalTxn(chainId: number, library: Web3Provider, p: Params) {
+export async function createWithdrawalTxn(chainId: number, library: Web3Provider, p: Params) {
   const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, library.getSigner());
   const withdrawalVaultAddress = getContract(chainId, "WithdrawalVault");
 
@@ -67,6 +71,17 @@ export function createWithdrawalTxn(chainId: number, library: Web3Provider, p: P
   const encodedPayload = multicall
     .filter(Boolean)
     .map((call) => contract.interface.encodeFunctionData(call!.method, call!.params));
+
+  if (!p.skipSimulation) {
+    await simulateExecuteOrderTxn(chainId, library, {
+      primaryPriceOverrides: {},
+      secondaryPriceOverrides: {},
+      tokensData: p.tokensData,
+      createOrderMulticallPayload: encodedPayload,
+      method: "simulateExecuteWithdrawal",
+      value: wntAmount,
+    });
+  }
 
   return callContract(chainId, contract, "multicall", [encodedPayload], {
     value: wntAmount,

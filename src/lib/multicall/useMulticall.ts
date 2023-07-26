@@ -19,7 +19,6 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
   params: {
     key: CacheKey | SkipKey;
     refreshInterval?: number | null;
-    requireSuccess?: boolean;
     request: TConfig | ((chainId: number, key: CacheKey) => TConfig);
     parseResponse?: (result: MulticallResult<TConfig>, chainId: number, key: CacheKey) => TResult;
   }
@@ -48,9 +47,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
           throw new Error(`Multicall request is empty`);
         }
 
-        const requireSuccess = typeof params.requireSuccess === "undefined" ? true : params.requireSuccess;
-
-        const response = await executeMulticall(chainId, library, request, requireSuccess);
+        const response = await executeMulticall(chainId, library, request);
 
         // prettier-ignore
         const result = typeof params.parseResponse === "function"

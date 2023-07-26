@@ -23,7 +23,7 @@ import { helperToast } from "lib/helperToast";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey, setByKey, updateByKey } from "lib/objects";
 import { getProvider, getWsProvider } from "lib/rpc";
-import { ReactNode, createContext, useEffect, useMemo, useRef, useState } from "react";
+import { ReactNode, createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   DepositCreatedEventData,
   DepositStatuses,
@@ -46,6 +46,10 @@ import { parseEventLogData } from "./utils";
 import { useTokensData } from "domain/synthetics/tokens";
 
 export const SyntheticsEventsContext = createContext({});
+
+export function useSyntheticsEvents(): SyntheticsEventsContextType {
+  return useContext(SyntheticsEventsContext) as SyntheticsEventsContextType;
+}
 
 export function SyntheticsEventsProvider({ children }: { children: ReactNode }) {
   const { chainId } = useChainId();
@@ -450,7 +454,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             pendingOrderData={data}
             marketsInfoData={marketsInfoData}
             tokensData={tokensData}
-            toastId={toastId}
+            toastTimestamp={toastId}
           />,
           {
             autoClose: false,
@@ -466,7 +470,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             pendingDepositData={data}
             marketsInfoData={marketsInfoData}
             tokensData={tokensData}
-            toastId={toastId}
+            toastTimestamp={toastId}
           />,
           {
             autoClose: false,
@@ -482,7 +486,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             pendingWithdrawalData={data}
             marketsInfoData={marketsInfoData}
             tokensData={tokensData}
-            toastId={toastId}
+            toastTimestamp={toastId}
           />,
           {
             autoClose: false,

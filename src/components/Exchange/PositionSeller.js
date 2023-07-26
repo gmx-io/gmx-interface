@@ -21,14 +21,9 @@ import { getTokenInfo, getUsd } from "domain/tokens/utils";
 import { callContract } from "lib/contracts";
 import { formatDateTime, getTimeRemaining } from "lib/dates";
 import {
-  BASIS_POINTS_DIVISOR,
   DECREASE,
-  DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
-  DEFAULT_SLIPPAGE_AMOUNT,
   DUST_USD,
   MARKET,
-  MAX_ALLOWED_LEVERAGE,
-  MAX_LEVERAGE,
   MIN_PROFIT_TIME,
   PRECISION,
   STOP,
@@ -42,6 +37,8 @@ import {
   getProfitPrice,
   isAddressZero,
 } from "lib/legacy";
+import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
+import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE, MAX_LEVERAGE } from "config/factors";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   bigNumberify,

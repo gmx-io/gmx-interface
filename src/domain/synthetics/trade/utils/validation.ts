@@ -5,7 +5,8 @@ import { PositionInfo } from "domain/synthetics/positions";
 import { TokenData, TokensRatio } from "domain/synthetics/tokens";
 import { getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber, ethers } from "ethers";
-import { BASIS_POINTS_DIVISOR, DUST_USD, MAX_ALLOWED_LEVERAGE, USD_DECIMALS, isAddressZero } from "lib/legacy";
+import { DUST_USD, USD_DECIMALS, isAddressZero } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
 import { expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 import { GmSwapFees, NextPositionValues, SwapPathStats, TradeFees } from "../types";
 import { getMinCollateralUsdForLeverage } from "./decrease";
@@ -335,6 +336,8 @@ export function getEditCollateralError(p: {
   nextLeverage: BigNumber | undefined;
   position: PositionInfo | undefined;
   isDeposit: boolean;
+  depositToken: TokenData | undefined;
+  depositAmount: BigNumber | undefined;
 }) {
   const {
     collateralDeltaAmount,
@@ -344,14 +347,17 @@ export function getEditCollateralError(p: {
     nextLeverage,
     nextLiqPrice,
     position,
+    isDeposit,
+    depositToken,
+    depositAmount,
   } = p;
 
   if (!collateralDeltaAmount || !collateralDeltaUsd || collateralDeltaAmount.eq(0) || collateralDeltaUsd?.eq(0)) {
     return [t`Enter an amount`];
   }
 
-  if (collateralDeltaAmount?.lte(0)) {
-    return [t`Amount should be greater than zero`];
+  if (isDeposit && depositToken && depositAmount && depositAmount.gt(depositToken.balance || 0)) {
+    return [t`Insufficient ${depositToken.symbol} balance`];
   }
 
   if (nextCollateralUsd && minCollateralUsd && position) {

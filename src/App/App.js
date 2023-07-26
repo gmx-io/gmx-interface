@@ -7,14 +7,8 @@ import { SWRConfig } from "swr";
 
 import { Redirect, Route, HashRouter as Router, Switch, useHistory, useLocation } from "react-router-dom";
 
-import {
-  BASIS_POINTS_DIVISOR,
-  DEFAULT_SLIPPAGE_AMOUNT,
-  getAppBaseUrl,
-  isHomeSite,
-  isMobileDevice,
-  REFERRAL_CODE_QUERY_PARAM,
-} from "lib/legacy";
+import { BASIS_POINTS_DIVISOR, DEFAULT_EXECUTION_FEE_BUFFER_BPS } from "config/factors";
+import { getAppBaseUrl, isHomeSite, isMobileDevice, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
 
 import { decodeReferralCode, encodeReferralCode } from "domain/referrals";
 import Actions from "pages/Actions/Actions";
@@ -49,6 +43,7 @@ import "./App.scss";
 import SEO from "components/Common/SEO";
 import EventToastContainer from "components/EventToast/EventToastContainer";
 import useEventToast from "components/EventToast/useEventToast";
+import Tooltip from "components/Tooltip/Tooltip";
 import coinbaseImg from "img/coinbaseWallet.png";
 import metamaskImg from "img/metamask.png";
 import walletConnectImg from "img/walletconnect-circle-blue.svg";
@@ -84,7 +79,6 @@ import {
   SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
   SHOULD_SHOW_POSITION_LINES_KEY,
   SHOW_PNL_AFTER_FEES_KEY,
-  SLIPPAGE_BPS_KEY,
 } from "config/localStorage";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { SettingsContextProvider, useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -274,11 +268,9 @@ function FullApp() {
 
   const settings = useSettings();
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
-  const [savedSlippageAmount, setSavedSlippageAmount] = useLocalStorageSerializeKey(
-    [chainId, SLIPPAGE_BPS_KEY],
-    DEFAULT_SLIPPAGE_AMOUNT
-  );
+
   const [slippageAmount, setSlippageAmount] = useState(0);
+  const [executionFeeBufferBps, setExecutionFeeBufferBps] = useState(0);
   const [isPnlInLeverage, setIsPnlInLeverage] = useState(false);
   const [shouldDisableValidationForTesting, setShouldDisableValidationForTesting] = useState(false);
   const [showPnlAfterFees, setShowPnlAfterFees] = useState(true);
@@ -302,8 +294,12 @@ function FullApp() {
   );
 
   const openSettings = () => {
-    const slippage = parseInt(savedSlippageAmount);
+    const slippage = parseInt(settings.savedAllowedSlippage);
     setSlippageAmount(roundToTwoDecimals((slippage / BASIS_POINTS_DIVISOR) * 100));
+    if (settings.shouldUseExecutionFeeBuffer) {
+      const bps = settings.executionFeeBufferBps || DEFAULT_EXECUTION_FEE_BUFFER_BPS[chainId];
+      setExecutionFeeBufferBps(roundToTwoDecimals((bps / BASIS_POINTS_DIVISOR) * 100));
+    }
     setIsPnlInLeverage(savedIsPnlInLeverage);
     setShowPnlAfterFees(savedShowPnlAfterFees);
     setShowDebugValues(settings.showDebugValues);
@@ -327,12 +323,28 @@ function FullApp() {
       return;
     }
 
+    settings.setSavedAllowedSlippage(basisPoints);
+
+    if (settings.shouldUseExecutionFeeBuffer) {
+      const executionFeeBuffer = parseFloat(executionFeeBufferBps);
+      if (isNaN(executionFeeBuffer) || executionFeeBuffer < 0) {
+        helperToast.error(t`Invalid execution fee buffer value`);
+        return;
+      }
+      const nextExecutionBufferFeeBps = roundToTwoDecimals((executionFeeBuffer * BASIS_POINTS_DIVISOR) / 100);
+
+      if (parseInt(nextExecutionBufferFeeBps) !== parseFloat(nextExecutionBufferFeeBps)) {
+        helperToast.error(t`Max execution fee buffer precision is 0.01%`);
+        return;
+      }
+
+      settings.setExecutionFeeBufferBps(nextExecutionBufferFeeBps);
+    }
+
     setSavedIsPnlInLeverage(isPnlInLeverage);
     setSavedShowPnlAfterFees(showPnlAfterFees);
     setSavedShouldDisableValidationForTesting(shouldDisableValidationForTesting);
     setIsSettingsVisible(false);
-    setSavedSlippageAmount(basisPoints);
-    settings.setSavedAllowedSlippage(basisPoints);
     settings.setShowDebugValues(showDebugValues);
   };
 
@@ -506,7 +518,7 @@ function FullApp() {
                   savedShowPnlAfterFees={savedShowPnlAfterFees}
                   savedIsPnlInLeverage={savedIsPnlInLeverage}
                   setSavedIsPnlInLeverage={setSavedIsPnlInLeverage}
-                  savedSlippageAmount={savedSlippageAmount}
+                  savedSlippageAmount={settings.savedAllowedSlippage}
                   setPendingTxns={setPendingTxns}
                   pendingTxns={pendingTxns}
                   savedShouldShowPositionLines={savedShouldShowPositionLines}
@@ -532,7 +544,7 @@ function FullApp() {
               </Route>
               <Route exact path="/buy">
                 <Buy
-                  savedSlippageAmount={savedSlippageAmount}
+                  savedSlippageAmount={settings.savedAllowedSlippage}
                   setPendingTxns={setPendingTxns}
                   connectWallet={connectWallet}
                 />
@@ -558,7 +570,8 @@ function FullApp() {
                     savedShowPnlAfterFees={savedShowPnlAfterFees}
                     tradePageVersion={tradePageVersion}
                     setTradePageVersion={setTradePageVersion}
-                    savedSlippageAmount={savedSlippageAmount}
+                    savedSlippageAmount={settings.savedAllowedSlippage}
+                    openSettings={openSettings}
                   />
                 ) : (
                   <SyntheticsFallbackPage />
@@ -566,7 +579,7 @@ function FullApp() {
               </Route>
               <Route exact path="/buy_glp">
                 <BuyGlp
-                  savedSlippageAmount={savedSlippageAmount}
+                  savedSlippageAmount={settings.savedAllowedSlippage}
                   setPendingTxns={setPendingTxns}
                   connectWallet={connectWallet}
                   savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
@@ -690,6 +703,44 @@ function FullApp() {
             <div className="App-slippage-tolerance-input-percent">%</div>
           </div>
         </div>
+        {settings.shouldUseExecutionFeeBuffer && (
+          <div className="App-settings-row">
+            <div>
+              <Tooltip
+                handle={<Trans>Max Execution Fee Buffer</Trans>}
+                renderContent={() => (
+                  <div>
+                    <Trans>
+                      The Max Execution Fee is set to a higher value to handle potential increases in gas price during
+                      order execution. Any excess execution fee will be refunded to your account when the order is
+                      executed.
+                    </Trans>
+                  </div>
+                )}
+              />
+            </div>
+            <div className="App-slippage-tolerance-input-container">
+              <input
+                type="number"
+                className="App-slippage-tolerance-input"
+                min="0"
+                value={executionFeeBufferBps}
+                onChange={(e) => setExecutionFeeBufferBps(e.target.value)}
+              />
+              <div className="App-slippage-tolerance-input-percent">%</div>
+            </div>
+            {parseFloat(executionFeeBufferBps) <
+              (DEFAULT_EXECUTION_FEE_BUFFER_BPS[chainId] / BASIS_POINTS_DIVISOR) * 100 && (
+              <div className="warning">
+                <Trans>
+                  Max Execution Fee buffer below{" "}
+                  {(DEFAULT_EXECUTION_FEE_BUFFER_BPS[chainId] / BASIS_POINTS_DIVISOR) * 100}% may result in failed
+                  orders.
+                </Trans>
+              </div>
+            )}
+          </div>
+        )}
         <div className="Exchange-settings-row">
           <Checkbox isChecked={showPnlAfterFees} setIsChecked={setShowPnlAfterFees}>
             <Trans>Display PnL after fees</Trans>
