@@ -17,7 +17,7 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 
 export type Props = {
-  toastId: number;
+  toastTimestamp: number;
   pendingDepositData?: PendingDepositData;
   pendingWithdrawalData?: PendingWithdrawalData;
   marketsInfoData?: MarketsInfoData;
@@ -25,7 +25,7 @@ export type Props = {
 };
 
 export function GmStatusNotification({
-  toastId,
+  toastTimestamp,
   pendingDepositData,
   pendingWithdrawalData,
   marketsInfoData,
@@ -186,7 +186,7 @@ export function GmStatusNotification({
         }
 
         const matchedStatusKey = Object.values(depositStatuses).find(
-          (status) => status.createdAt > toastId && getPendingDepositKey(status.data) === pendingDepositKey
+          (status) => status.createdAt > toastTimestamp && getPendingDepositKey(status.data) === pendingDepositKey
         )?.key;
 
         if (matchedStatusKey) {
@@ -198,7 +198,7 @@ export function GmStatusNotification({
         }
 
         const matchedStatusKey = Object.values(withdrawalStatuses).find(
-          (status) => status.createdAt > toastId && getPendingWithdrawalKey(status.data) === pendingWithdrawalKey
+          (status) => status.createdAt > toastTimestamp && getPendingWithdrawalKey(status.data) === pendingWithdrawalKey
         )?.key;
 
         if (matchedStatusKey) {
@@ -212,7 +212,7 @@ export function GmStatusNotification({
       isDeposit,
       pendingDepositKey,
       pendingWithdrawalKey,
-      toastId,
+      toastTimestamp,
       withdrawalStatusKey,
       withdrawalStatuses,
     ]
@@ -224,7 +224,7 @@ export function GmStatusNotification({
 
       if (isCompleted) {
         timerId = setTimeout(() => {
-          toast.dismiss(toastId);
+          toast.dismiss(toastTimestamp);
         }, TOAST_AUTO_CLOSE_TIME);
       }
 
@@ -232,7 +232,7 @@ export function GmStatusNotification({
         clearTimeout(timerId);
       };
     },
-    [isCompleted, toastId]
+    [isCompleted, toastTimestamp]
   );
 
   return (

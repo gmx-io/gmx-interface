@@ -454,7 +454,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             pendingOrderData={data}
             marketsInfoData={marketsInfoData}
             tokensData={tokensData}
-            toastId={toastId}
+            toastTimestamp={toastId}
           />,
           {
             autoClose: false,
@@ -470,7 +470,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             pendingDepositData={data}
             marketsInfoData={marketsInfoData}
             tokensData={tokensData}
-            toastId={toastId}
+            toastTimestamp={toastId}
           />,
           {
             autoClose: false,
@@ -486,7 +486,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             pendingWithdrawalData={data}
             marketsInfoData={marketsInfoData}
             tokensData={tokensData}
-            toastId={toastId}
+            toastTimestamp={toastId}
           />,
           {
             autoClose: false,
