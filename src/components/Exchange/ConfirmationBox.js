@@ -29,7 +29,7 @@ import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { SLIPPAGE_BPS_KEY } from "config/localStorage";
 import { bigNumberify, expandDecimals, formatAmount, formatPercentage } from "lib/numbers";
-import { getToken, getWrappedToken } from "config/tokens";
+import { getPriceDecimals, getToken, getWrappedToken } from "config/tokens";
 import { Plural, t, Trans } from "@lingui/macro";
 import Button from "components/Button/Button";
 import FeesTooltip from "./FeesTooltip";
@@ -139,6 +139,9 @@ export default function ConfirmationBox(props) {
   const [isLimitOrdersVisible, setIsLimitOrdersVisible] = useState(false);
 
   const [allowedSlippage, setAllowedSlippage] = useState(savedSlippageAmount);
+
+  const existingPositionPriceDecimal = getPriceDecimals(chainId, existingPosition?.indexToken.symbol);
+  const toTokenPriceDecimal = getPriceDecimals(chainId, toToken.symbol);
 
   useEffect(() => {
     setAllowedSlippage(savedSlippageAmount);
@@ -655,32 +658,35 @@ export default function ConfirmationBox(props) {
             <ExchangeInfoRow label={t`Entry Price`}>
               {hasExistingPosition && toAmount && toAmount.gt(0) && (
                 <div className="inline-block muted">
-                  ${formatAmount(existingPosition.averagePrice, USD_DECIMALS, 2, true)}
+                  ${formatAmount(existingPosition.averagePrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
                   <BsArrowRight className="transition-arrow" />
                 </div>
               )}
-              {nextAveragePrice && `$${formatAmount(nextAveragePrice, USD_DECIMALS, 2, true)}`}
+              {nextAveragePrice &&
+                `$${formatAmount(nextAveragePrice, USD_DECIMALS, existingPositionPriceDecimal, true)}`}
               {!nextAveragePrice && `-`}
             </ExchangeInfoRow>
           )}
           {!isMarketOrder && (
             <ExchangeInfoRow label={t`Mark Price`} isTop={true}>
-              ${formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)}
+              ${formatAmount(entryMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)}
             </ExchangeInfoRow>
           )}
           {!isMarketOrder && (
             <ExchangeInfoRow label={t`Limit Price`}>
-              ${formatAmount(triggerPriceUsd, USD_DECIMALS, 2, true)}
+              ${formatAmount(triggerPriceUsd, USD_DECIMALS, toTokenPriceDecimal, true)}
             </ExchangeInfoRow>
           )}
           <ExchangeInfoRow label={t`Liq. Price`}>
             {hasExistingPosition && toAmount && toAmount.gt(0) && (
               <div className="inline-block muted">
-                ${formatAmount(existingLiquidationPrice, USD_DECIMALS, 2, true)}
+                ${formatAmount(existingLiquidationPrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
                 <BsArrowRight className="transition-arrow" />
               </div>
             )}
-            {toAmount && displayLiquidationPrice && `$${formatAmount(displayLiquidationPrice, USD_DECIMALS, 2, true)}`}
+            {toAmount &&
+              displayLiquidationPrice &&
+              `$${formatAmount(displayLiquidationPrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
             {!toAmount && displayLiquidationPrice && `-`}
             {!displayLiquidationPrice && `-`}
           </ExchangeInfoRow>
@@ -767,6 +773,8 @@ export default function ConfirmationBox(props) {
     showCollateralSpread,
     savedSlippageAmount,
     fundingRate,
+    existingPositionPriceDecimal,
+    toTokenPriceDecimal,
   ]);
 
   const renderSwapSection = useCallback(() => {

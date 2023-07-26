@@ -13,7 +13,7 @@ import TokenSelector from "components/TokenSelector/TokenSelector";
 import { ARBITRUM, IS_NETWORK_DISABLED, getChainName, getConstant } from "config/chains";
 import { getContract } from "config/contracts";
 import { CLOSE_POSITION_RECEIVE_TOKEN_KEY, SLIPPAGE_BPS_KEY } from "config/localStorage";
-import { getV1Tokens, getWrappedToken } from "config/tokens";
+import { getPriceDecimals, getV1Tokens, getWrappedToken } from "config/tokens";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { createDecreaseOrder, useHasOutdatedUi } from "domain/legacy";
 import { getTokenAmountFromUsd } from "domain/tokens";
@@ -218,6 +218,7 @@ export default function PositionSeller(props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const prevIsVisible = usePrevious(isVisible);
   const [allowedSlippage, setAllowedSlippage] = useState(savedSlippageAmount);
+  const positionPriceDecimal = getPriceDecimals(chainId, position?.indexToken?.symbol);
 
   useEffect(() => {
     setAllowedSlippage(savedSlippageAmount);
@@ -1221,13 +1222,17 @@ export default function PositionSeller(props) {
               <div className="Exchange-info-label">
                 <Trans>Mark Price</Trans>
               </div>
-              <div className="align-right">${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}</div>
+              <div className="align-right">
+                ${formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)}
+              </div>
             </div>
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">
                 <Trans>Entry Price</Trans>
               </div>
-              <div className="align-right">${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}</div>
+              <div className="align-right">
+                ${formatAmount(position.averagePrice, USD_DECIMALS, positionPriceDecimal, true)}
+              </div>
             </div>
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">
@@ -1238,15 +1243,15 @@ export default function PositionSeller(props) {
                 {(!isClosing || orderOption === STOP) && (
                   <div>
                     {(!nextLiquidationPrice || nextLiquidationPrice.eq(liquidationPrice)) && (
-                      <div>{`$${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}`}</div>
+                      <div>{`$${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}`}</div>
                     )}
                     {nextLiquidationPrice && !nextLiquidationPrice.eq(liquidationPrice) && (
                       <div>
                         <div className="inline-block muted">
-                          ${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}
+                          ${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
                           <BsArrowRight className="transition-arrow" />
                         </div>
-                        ${formatAmount(nextLiquidationPrice, USD_DECIMALS, 2, true)}
+                        ${formatAmount(nextLiquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
                       </div>
                     )}
                   </div>

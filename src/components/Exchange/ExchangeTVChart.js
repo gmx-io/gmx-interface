@@ -133,6 +133,7 @@ export default function ExchangeTVChart(props) {
       .filter((p) => p.indexToken.address === chartToken.address)
       .map((position) => {
         const longOrShortText = position.isLong ? t`Long` : t`Short`;
+        const priceDecimal = getPriceDecimals(chainId, position.indexToken.symbol);
         const liquidationPrice = getLiquidationPrice({
           size: position.size,
           collateral: position.collateral,
@@ -143,16 +144,16 @@ export default function ExchangeTVChart(props) {
 
         return {
           open: {
-            price: parseFloat(formatAmount(position.averagePrice, USD_DECIMALS, 2)),
+            price: parseFloat(formatAmount(position.averagePrice, USD_DECIMALS, priceDecimal)),
             title: t`Open ${position.indexToken.symbol} ${longOrShortText}`,
           },
           liquidation: {
-            price: parseFloat(formatAmount(liquidationPrice, USD_DECIMALS, 2)),
+            price: parseFloat(formatAmount(liquidationPrice, USD_DECIMALS, priceDecimal)),
             title: t`Liq. ${position.indexToken.symbol} ${longOrShortText}`,
           },
         };
       });
-  }, [chartToken, positions]);
+  }, [chartToken, positions, chainId]);
 
   const chartLines = useMemo(() => {
     const lines = [];
@@ -195,6 +196,7 @@ export default function ExchangeTVChart(props) {
       if (currentOrders && currentOrders.length > 0) {
         currentOrders.forEach((order) => {
           const indexToken = getToken(chainId, order.indexToken);
+          const priceDecimal = getPriceDecimals(chainId, indexToken?.symbol);
           let tokenSymbol;
           if (indexToken && indexToken.symbol) {
             tokenSymbol = indexToken.isWrapped ? indexToken.baseSymbol : indexToken.symbol;
@@ -205,16 +207,16 @@ export default function ExchangeTVChart(props) {
           const color = "#3a3e5e";
           lines.push(
             currentSeries.createPriceLine({
-              price: parseFloat(formatAmount(order.triggerPrice, USD_DECIMALS, 2)),
+              price: parseFloat(formatAmount(order.triggerPrice, USD_DECIMALS, priceDecimal)),
               color,
               title: title.padEnd(PRICE_LINE_TEXT_WIDTH, " "),
             })
           );
         });
       }
+
       if (currentPositions && currentPositions.length > 0) {
         const color = "#3a3e5e";
-
         positions.forEach((position) => {
           lines.push(
             currentSeries.createPriceLine({

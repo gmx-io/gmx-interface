@@ -83,7 +83,11 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
           label={t`Exit Price`}
           value={
             <Tooltip
-              handle={formatUsd(exitPrice) || "..."}
+              handle={
+                formatUsd(exitPrice, {
+                  displayDecimals: priceDecimals,
+                }) || "..."
+              }
               position="right-bottom"
               renderContent={() => (
                 <Trans>

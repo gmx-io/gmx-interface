@@ -111,6 +111,7 @@ export function TVChart({
       })
       .map((order) => {
         const positionOrder = order as PositionOrderInfo;
+        const priceDecimal = getPriceDecimals(chainId, positionOrder.indexToken.symbol);
 
         const longOrShortText = order.isLong ? t`Long` : t`Short`;
         const orderTypeText = isIncreaseOrderType(order.orderType) ? t`Inc.` : t`Dec.`;
@@ -118,7 +119,7 @@ export function TVChart({
 
         return {
           title: `${longOrShortText} ${orderTypeText} ${tokenSymbol}`,
-          price: parseFloat(formatAmount(positionOrder.triggerPrice, USD_DECIMALS, 2)),
+          price: parseFloat(formatAmount(positionOrder.triggerPrice, USD_DECIMALS, priceDecimal)),
         };
       });
 

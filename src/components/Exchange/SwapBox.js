@@ -62,7 +62,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import { get1InchSwapUrl } from "config/links";
-import { getToken, getTokenBySymbol, getV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
+import { getPriceDecimals, getToken, getTokenBySymbol, getV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
 import { useUserReferralCode } from "domain/referrals/hooks";
 import {
   approveTokens,
@@ -303,6 +303,7 @@ export default function SwapBox(props) {
   const fromToken = getToken(chainId, fromTokenAddress);
   const toToken = getToken(chainId, toTokenAddress);
   const shortCollateralToken = getTokenInfo(infoTokens, shortCollateralAddress);
+  const toTokenPriceDecimal = getPriceDecimals(chainId, toToken.symbol);
 
   const fromTokenInfo = getTokenInfo(infoTokens, fromTokenAddress);
   const toTokenInfo = getTokenInfo(infoTokens, toTokenAddress);
@@ -2258,14 +2259,15 @@ export default function SwapBox(props) {
               </div>
               <div className="align-right">
                 <Tooltip
-                  handle={`$${formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)}`}
+                  handle={`$${formatAmount(entryMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
                   position="right-bottom"
                   renderContent={() => {
                     return (
                       <div>
                         <Trans>
-                          The position will be opened at {formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)} USD with
-                          a max slippage of {parseFloat(savedSlippageAmount / 100.0).toFixed(2)}%.
+                          The position will be opened at{" "}
+                          {formatAmount(entryMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)} USD with a max
+                          slippage of {parseFloat(savedSlippageAmount / 100.0).toFixed(2)}%.
                           <br />
                           <br />
                           The slippage amount can be configured under Settings, found by clicking on your address at the
@@ -2288,14 +2290,14 @@ export default function SwapBox(props) {
               </div>
               <div className="align-right">
                 <Tooltip
-                  handle={`$${formatAmount(exitMarkPrice, USD_DECIMALS, 2, true)}`}
+                  handle={`$${formatAmount(exitMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
                   position="right-bottom"
                   renderContent={() => {
                     return (
                       <div>
                         <Trans>
                           If you have an existing position, the position will be closed at{" "}
-                          {formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)} USD.
+                          {formatAmount(entryMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)} USD.
                           <br />
                           <br />
                           This exit price will change with the price of the asset.

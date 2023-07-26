@@ -601,7 +601,9 @@ export function ConfirmationBox(p: Props) {
           {isLimitOrderType(order.orderType) ? t`Increase` : t`Decrease`} {order.indexToken?.symbol}{" "}
           {formatUsd(order.sizeDeltaUsd)} {order.isLong ? t`Long` : t`Short`} &nbsp;
           {order.triggerThresholdType}
-          {formatUsd(order.triggerPrice)}{" "}
+          {formatUsd(order.triggerPrice, {
+            displayDecimals: toToken?.priceDecimals,
+          })}{" "}
         </p>
         <button onClick={() => onCancelOrderClick(order.key)}>
           <Trans>Cancel</Trans>
@@ -668,7 +670,10 @@ export function ConfirmationBox(p: Props) {
         <div className="Confirmation-box-info">
           <Trans>
             You have an active Limit Order to Increase {longShortText} {order.indexToken?.symbol} {sizeText} at price{" "}
-            {formatUsd(order.triggerPrice)}.
+            {formatUsd(order.triggerPrice, {
+              displayDecimals: toToken.priceDecimals,
+            })}
+            .
           </Trans>
         </div>
       );
@@ -685,7 +690,7 @@ export function ConfirmationBox(p: Props) {
               ({isLimitOrdersVisible ? t`hide` : t`view`})
             </span>
           </div>
-          <ul className="order-list">{existingLimitOrders.map(renderOrderItem)}</ul>
+          {isLimitOrdersVisible && <ul className="order-list">{existingLimitOrders.map(renderOrderItem)}</ul>}
         </div>
       );
     }
@@ -1154,6 +1159,8 @@ export function ConfirmationBox(p: Props) {
   }
 
   function renderTriggerDecreaseSection() {
+    const existingPriceDecimals = p.existingPosition?.indexToken?.priceDecimals;
+    const toTokenPriceDecimals = toToken?.priceDecimals;
     return (
       <>
         <div>
@@ -1168,10 +1175,26 @@ export function ConfirmationBox(p: Props) {
           )}
           <ExchangeInfoRow
             label={t`Trigger Price`}
-            value={triggerPrice ? `${decreaseAmounts?.triggerThresholdType} ${formatUsd(triggerPrice)}` : "..."}
+            value={
+              triggerPrice
+                ? `${decreaseAmounts?.triggerThresholdType} ${formatUsd(triggerPrice, {
+                    displayDecimals: toTokenPriceDecimals,
+                  })}`
+                : "..."
+            }
           />
 
-          <ExchangeInfoRow isTop label={t`Mark Price`} value={p.markPrice ? formatUsd(p.markPrice) : "..."} />
+          <ExchangeInfoRow
+            isTop
+            label={t`Mark Price`}
+            value={
+              p.markPrice
+                ? formatUsd(p.markPrice, {
+                    displayDecimals: toTokenPriceDecimals,
+                  })
+                : "..."
+            }
+          />
 
           <ExchangeInfoRow
             className="SwapBox-info-row"
@@ -1182,7 +1205,11 @@ export function ConfirmationBox(p: Props) {
           <ExchangeInfoRow
             className="SwapBox-info-row"
             label={t`Acceptable Price`}
-            value={formatUsd(decreaseAmounts?.acceptablePrice) || "-"}
+            value={
+              formatUsd(decreaseAmounts?.acceptablePrice, {
+                displayDecimals: toTokenPriceDecimals,
+              }) || "-"
+            }
           />
 
           {p.existingPosition && (
@@ -1191,8 +1218,14 @@ export function ConfirmationBox(p: Props) {
               value={
                 nextPositionValues?.nextSizeUsd?.gt(0) ? (
                   <ValueTransition
-                    from={formatUsd(existingPosition?.liquidationPrice)!}
-                    to={formatUsd(nextPositionValues.nextLiqPrice)}
+                    from={
+                      formatUsd(existingPosition?.liquidationPrice, {
+                        displayDecimals: existingPriceDecimals,
+                      })!
+                    }
+                    to={formatUsd(nextPositionValues.nextLiqPrice, {
+                      displayDecimals: existingPriceDecimals,
+                    })}
                   />
                 ) : (
                   "-"
