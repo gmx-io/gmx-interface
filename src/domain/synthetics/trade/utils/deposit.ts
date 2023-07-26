@@ -1,8 +1,7 @@
-import { applySwapImpactWithCap, getPriceImpactForSwap } from "domain/synthetics/fees";
+import { applySwapImpactWithCap, getPriceImpactForSwap, getSwapFee } from "domain/synthetics/fees";
 import { MarketInfo, marketTokenAmountToUsd, usdToMarketTokenAmount } from "domain/synthetics/markets";
 import { TokenData, convertToTokenAmount, convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
-import { applyFactor } from "lib/numbers";
 import { DepositAmounts } from "../types";
 
 export function getDepositAmounts(p: {
@@ -65,7 +64,7 @@ export function getDepositAmounts(p: {
     const totalDepositUsd = values.longTokenUsd.add(values.shortTokenUsd);
 
     if (values.longTokenUsd.gt(0)) {
-      const swapFeeUsd = applyFactor(values.longTokenUsd, marketInfo.swapFeeFactor);
+      const swapFeeUsd = getSwapFee(marketInfo, values.longTokenUsd, values.swapPriceImpactDeltaUsd.gt(0));
       values.swapFeeUsd = values.swapFeeUsd.add(swapFeeUsd);
 
       values.marketTokenAmount = values.marketTokenAmount.add(
@@ -82,7 +81,7 @@ export function getDepositAmounts(p: {
     }
 
     if (values.shortTokenUsd.gt(0)) {
-      const swapFeeUsd = applyFactor(values.shortTokenUsd, marketInfo.swapFeeFactor);
+      const swapFeeUsd = getSwapFee(marketInfo, values.shortTokenUsd, values.swapPriceImpactDeltaUsd.gt(0));
       values.swapFeeUsd = values.swapFeeUsd.add(swapFeeUsd);
 
       values.marketTokenAmount = values.marketTokenAmount.add(
@@ -131,7 +130,7 @@ export function getDepositAmounts(p: {
       values.shortTokenUsd
     );
 
-    const swapFeeUsd = applyFactor(values.marketTokenUsd, marketInfo.swapFeeFactor);
+    const swapFeeUsd = getSwapFee(marketInfo, values.marketTokenUsd, values.swapPriceImpactDeltaUsd.gt(0));
     values.swapFeeUsd = values.swapFeeUsd.add(swapFeeUsd);
 
     // values.longTokenUsd = values.longTokenUsd.sub(swapFeeUsd.mul(values.longTokenUsd).div(totalDepositUsd));

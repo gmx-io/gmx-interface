@@ -78,8 +78,8 @@ export function maxPositionImpactFactorKey(market: string, isPositive: boolean) 
   return hashData(["bytes32", "address", "bool"], [MAX_POSITION_IMPACT_FACTOR_KEY, market, isPositive]);
 }
 
-export function positionFeeFactorKey(market: string) {
-  return hashData(["bytes32", "address"], [POSITION_FEE_FACTOR_KEY, market]);
+export function positionFeeFactorKey(market: string, forPositiveImpact: boolean) {
+  return hashData(["bytes32", "address", "bool"], [POSITION_FEE_FACTOR_KEY, market, forPositiveImpact]);
 }
 
 export function swapImpactFactorKey(market: string, isPositive: boolean) {
@@ -90,8 +90,8 @@ export function swapImpactExponentFactorKey(market: string) {
   return hashData(["bytes32", "address"], [SWAP_IMPACT_EXPONENT_FACTOR_KEY, market]);
 }
 
-export function swapFeeFactorKey(market: string) {
-  return hashData(["bytes32", "address"], [SWAP_FEE_FACTOR_KEY, market]);
+export function swapFeeFactorKey(market: string, forPositiveImpact: boolean) {
+  return hashData(["bytes32", "address", "bool"], [SWAP_FEE_FACTOR_KEY, market, forPositiveImpact]);
 }
 
 export function openInterestKey(market: string, collateralToken: string, isLong: boolean) {

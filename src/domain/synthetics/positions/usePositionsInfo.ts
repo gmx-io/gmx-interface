@@ -5,7 +5,7 @@ import { MAX_ALLOWED_LEVERAGE } from "config/factors";
 import { getBasisPoints } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useMemo } from "react";
-import { getPositionFee } from "../fees";
+import { getPositionFee, getPriceImpactForPosition } from "../fees";
 import { MarketsInfoData } from "../markets";
 import { TokensData, convertToTokenAmount, convertToUsd } from "../tokens";
 import { getMarkPrice } from "../trade";
@@ -97,7 +97,20 @@ export function usePositionsInfo(
           pendingFundingFeesUsd,
         });
 
-        const positionFeeInfo = getPositionFee(marketInfo, position.sizeInUsd, userReferralInfo);
+        const closingPriceImpactDeltaUsd = getPriceImpactForPosition(
+          marketInfo,
+          position.sizeInUsd.mul(-1),
+          position.isLong,
+          { fallbackToZero: true }
+        );
+
+        const positionFeeInfo = getPositionFee(
+          marketInfo,
+          position.sizeInUsd,
+          closingPriceImpactDeltaUsd.gt(0),
+          userReferralInfo
+        );
+
         const closingFeeUsd = positionFeeInfo.positionFeeUsd;
 
         const collateralUsd = convertToUsd(position.collateralAmount, collateralToken.decimals, collateralMinPrice)!;

@@ -231,9 +231,13 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
                     params: [claimableFundingAmountKey(marketAddress, market.shortTokenAddress, account)],
                   }
                 : undefined,
-              positionFeeFactor: {
+              positionFeeFactorForPositiveImpact: {
                 methodName: "getUint",
-                params: [positionFeeFactorKey(marketAddress)],
+                params: [positionFeeFactorKey(marketAddress, true)],
+              },
+              positionFeeFactorForNegativeImpact: {
+                methodName: "getUint",
+                params: [positionFeeFactorKey(marketAddress, false)],
               },
               positionImpactFactorPositive: {
                 methodName: "getUint",
@@ -271,9 +275,13 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
                 methodName: "getUint",
                 params: [positionImpactExponentFactorKey(marketAddress)],
               },
-              swapFeeFactor: {
+              swapFeeFactorForPositiveImpact: {
                 methodName: "getUint",
-                params: [swapFeeFactorKey(marketAddress)],
+                params: [swapFeeFactorKey(marketAddress, true)],
+              },
+              swapFeeFactorForNegativeImpact: {
+                methodName: "getUint",
+                params: [swapFeeFactorKey(marketAddress, false)],
               },
               swapImpactFactorPositive: {
                 methodName: "getUint",
@@ -452,7 +460,12 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
             ? BigNumber.from(dataStoreValues.claimableFundingAmountShort?.returnValues[0])
             : undefined,
 
-          positionFeeFactor: BigNumber.from(dataStoreValues.positionFeeFactor.returnValues[0]),
+          positionFeeFactorForPositiveImpact: BigNumber.from(
+            dataStoreValues.positionFeeFactorForPositiveImpact.returnValues[0]
+          ),
+          positionFeeFactorForNegativeImpact: BigNumber.from(
+            dataStoreValues.positionFeeFactorForNegativeImpact.returnValues[0]
+          ),
           positionImpactFactorPositive: BigNumber.from(dataStoreValues.positionImpactFactorPositive.returnValues[0]),
           positionImpactFactorNegative: BigNumber.from(dataStoreValues.positionImpactFactorNegative.returnValues[0]),
           maxPositionImpactFactorPositive: BigNumber.from(
@@ -465,7 +478,12 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
             dataStoreValues.maxPositionImpactFactorForLiquidations.returnValues[0]
           ),
           positionImpactExponentFactor: BigNumber.from(dataStoreValues.positionImpactExponentFactor.returnValues[0]),
-          swapFeeFactor: BigNumber.from(dataStoreValues.swapFeeFactor.returnValues[0]),
+          swapFeeFactorForPositiveImpact: BigNumber.from(
+            dataStoreValues.swapFeeFactorForPositiveImpact.returnValues[0]
+          ),
+          swapFeeFactorForNegativeImpact: BigNumber.from(
+            dataStoreValues.swapFeeFactorForNegativeImpact.returnValues[0]
+          ),
           swapImpactFactorPositive: BigNumber.from(dataStoreValues.swapImpactFactorPositive.returnValues[0]),
           swapImpactFactorNegative: BigNumber.from(dataStoreValues.swapImpactFactorNegative.returnValues[0]),
           swapImpactExponentFactor: BigNumber.from(dataStoreValues.swapImpactExponentFactor.returnValues[0]),

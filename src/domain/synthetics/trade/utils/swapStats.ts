@@ -1,4 +1,5 @@
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { getSwapFee } from "domain/synthetics/fees";
 import {
   MarketInfo,
   MarketsInfoData,
@@ -8,7 +9,6 @@ import {
 } from "domain/synthetics/markets";
 import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { BigNumber, ethers } from "ethers";
-import { applyFactor } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { applySwapImpactWithCap, getPriceImpactForSwap } from "../../fees/utils/priceImpact";
 import { SwapPathStats, SwapStats } from "../types";
@@ -217,23 +217,14 @@ export function getSwapStats(p: {
 
   const amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, priceIn)!;
 
-  const swapFeeAmount = applyFactor(amountIn, marketInfo.swapFeeFactor);
-  const swapFeeUsd = applyFactor(usdIn, marketInfo.swapFeeFactor);
-
-  const amountInAfterFees = amountIn.sub(swapFeeAmount);
-  const usdInAfterFees = usdIn.sub(swapFeeUsd);
-
-  let usdOut = usdInAfterFees;
-  let amountOut = convertToTokenAmount(usdOut, tokenOut.decimals, priceOut)!;
-
   let priceImpactDeltaUsd: BigNumber;
 
   try {
-    priceImpactDeltaUsd = getPriceImpactForSwap(marketInfo, tokenIn, tokenOut, usdInAfterFees, usdOut.mul(-1));
+    priceImpactDeltaUsd = getPriceImpactForSwap(marketInfo, tokenIn, tokenOut, usdIn, usdIn.mul(-1));
   } catch (e) {
     return {
-      swapFeeUsd,
-      swapFeeAmount,
+      swapFeeUsd: BigNumber.from(0),
+      swapFeeAmount: BigNumber.from(0),
       isWrap,
       isUnwrap,
       marketAddress: marketInfo.marketTokenAddress,
@@ -241,12 +232,21 @@ export function getSwapStats(p: {
       tokenOutAddress,
       priceImpactDeltaUsd: BigNumber.from(0),
       amountIn,
-      amountInAfterFees,
-      amountOut,
-      usdOut,
+      amountInAfterFees: amountIn,
+      amountOut: BigNumber.from(0),
+      usdOut: BigNumber.from(0),
       isOutLiquidity: true,
     };
   }
+
+  const swapFeeAmount = getSwapFee(marketInfo, amountIn, priceImpactDeltaUsd.gt(0));
+  const swapFeeUsd = getSwapFee(marketInfo, usdIn, priceImpactDeltaUsd.gt(0));
+
+  const amountInAfterFees = amountIn.sub(swapFeeAmount);
+  const usdInAfterFees = usdIn.sub(swapFeeUsd);
+
+  let usdOut = usdInAfterFees;
+  let amountOut = convertToTokenAmount(usdOut, tokenOut.decimals, priceOut)!;
 
   let cappedImpactDeltaUsd: BigNumber;
 

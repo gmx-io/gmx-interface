@@ -1,5 +1,5 @@
 import { UserReferralInfo } from "domain/referrals";
-import { getPositionFee } from "domain/synthetics/fees";
+import { getPositionFee, getPriceImpactForPosition } from "domain/synthetics/fees";
 import { MarketInfo } from "domain/synthetics/markets";
 import { OrderType } from "domain/synthetics/orders";
 import {
@@ -128,7 +128,13 @@ export function getIncreasePositionAmounts(p: {
 
     const baseCollateralUsd = convertToUsd(swapAmounts.amountOut, collateralToken.decimals, values.collateralPrice)!;
     const baseSizeDeltaUsd = baseCollateralUsd.mul(leverage).div(BASIS_POINTS_DIVISOR);
-    const basePositionFeeInfo = getPositionFee(marketInfo, baseSizeDeltaUsd, userReferralInfo);
+    const basePriceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, baseSizeDeltaUsd, isLong);
+    const basePositionFeeInfo = getPositionFee(
+      marketInfo,
+      baseSizeDeltaUsd,
+      basePriceImpactDeltaUsd.gt(0),
+      userReferralInfo
+    );
 
     values.sizeDeltaUsd = baseCollateralUsd
       .sub(basePositionFeeInfo.positionFeeUsd)
@@ -137,8 +143,12 @@ export function getIncreasePositionAmounts(p: {
 
     values.indexTokenAmount = convertToTokenAmount(values.sizeDeltaUsd, indexToken.decimals, values.indexPrice)!;
 
-    const positionFeeInfo = getPositionFee(marketInfo, values.sizeDeltaUsd, userReferralInfo);
-
+    const positionFeeInfo = getPositionFee(
+      marketInfo,
+      values.sizeDeltaUsd,
+      basePriceImpactDeltaUsd.gt(0),
+      userReferralInfo
+    );
     values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
     values.feeDiscountUsd = positionFeeInfo.discountUsd;
 
@@ -157,7 +167,14 @@ export function getIncreasePositionAmounts(p: {
     values.indexTokenAmount = indexTokenAmount;
     values.sizeDeltaUsd = convertToUsd(indexTokenAmount, indexToken.decimals, values.indexPrice)!;
 
-    const positionFeeInfo = getPositionFee(marketInfo, values.sizeDeltaUsd, userReferralInfo);
+    const basePriceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, values.sizeDeltaUsd, isLong);
+
+    const positionFeeInfo = getPositionFee(
+      marketInfo,
+      values.sizeDeltaUsd,
+      basePriceImpactDeltaUsd.gt(0),
+      userReferralInfo
+    );
 
     values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
     values.feeDiscountUsd = positionFeeInfo.discountUsd;
@@ -203,7 +220,14 @@ export function getIncreasePositionAmounts(p: {
       values.indexTokenAmount = indexTokenAmount;
       values.sizeDeltaUsd = convertToUsd(indexTokenAmount, indexToken.decimals, values.indexPrice)!;
 
-      const positionFeeInfo = getPositionFee(marketInfo, values.sizeDeltaUsd, userReferralInfo);
+      const basePriceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, values.sizeDeltaUsd, isLong);
+
+      const positionFeeInfo = getPositionFee(
+        marketInfo,
+        values.sizeDeltaUsd,
+        basePriceImpactDeltaUsd.gt(0),
+        userReferralInfo
+      );
 
       values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
       values.feeDiscountUsd = positionFeeInfo.discountUsd;

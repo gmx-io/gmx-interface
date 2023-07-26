@@ -1,3 +1,4 @@
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { UserReferralInfo } from "domain/referrals";
 import { getPositionFee } from "domain/synthetics/fees";
 import { Market, MarketInfo } from "domain/synthetics/markets";
@@ -7,10 +8,10 @@ import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics
 import { getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { DUST_USD } from "lib/legacy";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { applyFactor, getBasisPoints, roundUpDivision } from "lib/numbers";
 import { DecreasePositionAmounts, NextPositionValues } from "../types";
 import { getAcceptablePriceInfo, getMarkPrice, getTriggerDecreaseOrderType, getTriggerThresholdType } from "./prices";
+import { getSwapStats } from "./swapStats";
 
 export function getDecreasePositionAmounts(p: {
   marketInfo: MarketInfo;
@@ -142,7 +143,12 @@ export function getDecreasePositionAmounts(p: {
       }
     }
 
-    const positionFeeInfo = getPositionFee(marketInfo, values.sizeDeltaUsd, userReferralInfo);
+    const positionFeeInfo = getPositionFee(
+      marketInfo,
+      values.sizeDeltaUsd,
+      values.positionPriceImpactDeltaUsd.gt(0),
+      userReferralInfo
+    );
 
     values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
     values.feeDiscountUsd = positionFeeInfo.discountUsd;
@@ -243,7 +249,12 @@ export function getDecreasePositionAmounts(p: {
   const profitAmount = convertToTokenAmount(profitUsd, collateralToken.decimals, values.collateralPrice)!;
 
   // Fees
-  const positionFeeInfo = getPositionFee(marketInfo, values.sizeDeltaUsd, userReferralInfo);
+  const positionFeeInfo = getPositionFee(
+    marketInfo,
+    values.sizeDeltaUsd,
+    values.positionPriceImpactDeltaUsd.gt(0),
+    userReferralInfo
+  );
   const estimatedPositionFeeCost = estimateCollateralCost(
     positionFeeInfo.positionFeeUsd,
     collateralToken,
@@ -275,7 +286,15 @@ export function getDecreasePositionAmounts(p: {
   values.fundingFeeUsd = fundingFeeCost.usd;
 
   if (profitUsd.gt(0) && values.decreaseSwapType === DecreasePositionSwapType.SwapPnlTokenToCollateralToken) {
-    values.swapProfitFeeUsd = applyFactor(profitUsd, marketInfo.swapFeeFactor);
+    const swapProfitStats = getSwapStats({
+      marketInfo,
+      tokenInAddress: pnlToken.address,
+      tokenOutAddress: collateralToken.address,
+      usdIn: profitUsd,
+      shouldApplyPriceImpact: true,
+    });
+
+    values.swapProfitFeeUsd = swapProfitStats.swapFeeUsd.add(swapProfitStats.priceImpactDeltaUsd.mul(-1));
   } else {
     values.swapProfitFeeUsd = BigNumber.from(0);
   }

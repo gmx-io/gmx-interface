@@ -125,7 +125,7 @@ export function getLiquidationPrice(p: {
 
   const { indexToken } = marketInfo;
 
-  const closingFeeUsd = getPositionFee(marketInfo, sizeInUsd, userReferralInfo).positionFeeUsd;
+  const closingFeeUsd = getPositionFee(marketInfo, sizeInUsd, false, userReferralInfo).positionFeeUsd;
   const totalPendingFeesUsd = getPositionPendingFeesUsd({ pendingFundingFeesUsd, pendingBorrowingFeesUsd });
   const totalFeesUsd = totalPendingFeesUsd.add(closingFeeUsd);
 
