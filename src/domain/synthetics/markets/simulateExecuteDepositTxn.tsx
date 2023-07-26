@@ -106,7 +106,7 @@ export async function simulateExecuteOrderTxn(chainId: number, library: Web3Prov
 
       msg = (
         <div>
-          <Trans>Execute order simulation failed.</Trans>
+          <Trans>Order Error.</Trans>
           <br />
           <ToastifyDebug>
             {parsedError.name} {JSON.stringify(parsedArgs, null, 2)}
@@ -121,9 +121,9 @@ export async function simulateExecuteOrderTxn(chainId: number, library: Web3Prov
     if (!msg) {
       msg = (
         <div>
-          <Trans>Execute order simulation failed.</Trans>
+          <Trans>Order Error.</Trans>
           <br />
-          <ToastifyDebug>Unknown Error</ToastifyDebug>
+          <ToastifyDebug>Unknown Error.</ToastifyDebug>
         </div>
       );
     }
