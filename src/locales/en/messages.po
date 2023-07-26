@@ -1642,9 +1642,6 @@ msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} 
 msgstr "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 
 #: src/domain/synthetics/markets/simulateExecuteDepositTxn.tsx
-#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
-#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
-#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
 msgid "Execute order simulation failed."
 msgstr "Execute order simulation failed."
 
@@ -2533,6 +2530,10 @@ msgstr "MAX"
 msgid "MEV Optimizer"
 msgstr "MEV Optimizer"
 
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "MINTABLE"
+msgstr "MINTABLE"
+
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -2695,10 +2696,20 @@ msgstr "Max pool capacity reached for {0}<0/><1/>Please mint GLP using another t
 msgid "Max slippage precision is 0.01%"
 msgstr "Max slippage precision is 0.01%"
 
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+msgid "Max {0}"
+msgstr "Max {0}"
+
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Max {0} Capacity"
 msgstr "Max {0} Capacity"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max {0} amount exceeded"
+msgstr "Max {0} amount exceeded"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -2825,6 +2836,11 @@ msgstr "Min. Receive"
 #: src/components/Exchange/OrderEditor.js
 msgid "Minimum received"
 msgstr "Minimum received"
+
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+msgid "Mintable"
+msgstr "Mintable"
 
 #: src/components/Exchange/SwapBox.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -5383,6 +5399,14 @@ msgstr "{0} Price"
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "{0} Required"
 msgstr "{0} Required"
+
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+msgid "{0} and {1} can be used to mint GM for this market up to the specified minting caps."
+msgstr "{0} and {1} can be used to mint GM for this market up to the specified minting caps."
+
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+msgid "{0} can be used to mint GM for this market up to the specified minting caps."
+msgstr "{0} can be used to mint GM for this market up to the specified minting caps."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "{0} can not be sent to smart contract addresses. Select another token."

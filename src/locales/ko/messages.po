@@ -1642,9 +1642,6 @@ msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} 
 msgstr ""
 
 #: src/domain/synthetics/markets/simulateExecuteDepositTxn.tsx
-#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
-#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
-#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
 msgid "Execute order simulation failed."
 msgstr ""
 
@@ -2533,6 +2530,10 @@ msgstr "최대"
 msgid "MEV Optimizer"
 msgstr "MEV 옵티마이저"
 
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "MINTABLE"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -2695,10 +2696,20 @@ msgstr "최대 풀 수용량인 {0}에 도달했습니다<0/><1/>다른 토큰�
 msgid "Max slippage precision is 0.01%"
 msgstr "허용 가능한 최대 슬리피지는 0.01%입니다"
 
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+msgid "Max {0}"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Max {0} Capacity"
 msgstr "{0}의 최대 수용량"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max {0} amount exceeded"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -2825,6 +2836,11 @@ msgstr "최소 수취량"
 #: src/components/Exchange/OrderEditor.js
 msgid "Minimum received"
 msgstr "최소량 수치 완료"
+
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+msgid "Mintable"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -5383,6 +5399,14 @@ msgstr "{0} 가격"
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "{0} Required"
 msgstr "{0} 요구됨"
+
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+msgid "{0} and {1} can be used to mint GM for this market up to the specified minting caps."
+msgstr ""
+
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+msgid "{0} can be used to mint GM for this market up to the specified minting caps."
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "{0} can not be sent to smart contract addresses. Select another token."

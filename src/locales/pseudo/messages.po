@@ -1642,9 +1642,6 @@ msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} 
 msgstr ""
 
 #: src/domain/synthetics/markets/simulateExecuteDepositTxn.tsx
-#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
-#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
-#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
 msgid "Execute order simulation failed."
 msgstr ""
 
@@ -2530,6 +2527,10 @@ msgstr ""
 msgid "MEV Optimizer"
 msgstr ""
 
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "MINTABLE"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -2692,9 +2693,19 @@ msgstr ""
 msgid "Max slippage precision is 0.01%"
 msgstr ""
 
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+msgid "Max {0}"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Max {0} Capacity"
+msgstr ""
+
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max {0} amount exceeded"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
@@ -2821,6 +2832,11 @@ msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
 msgid "Minimum received"
+msgstr ""
+
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+msgid "Mintable"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -5379,6 +5395,14 @@ msgstr ""
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "{0} Required"
+msgstr ""
+
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+msgid "{0} and {1} can be used to mint GM for this market up to the specified minting caps."
+msgstr ""
+
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+msgid "{0} can be used to mint GM for this market up to the specified minting caps."
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
