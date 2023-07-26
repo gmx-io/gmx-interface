@@ -179,6 +179,7 @@ export function ConfirmationBox(p: Props) {
   const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokenAddresses: fromToken ? [fromToken.address] : [],
+    skip: !p.isVisible,
   });
 
   const needPayTokenApproval =

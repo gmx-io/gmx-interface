@@ -107,6 +107,7 @@ export function GmConfirmationBox({
   const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: routerAddress,
     tokenAddresses: payTokenAddresses,
+    skip: !isVisible,
   });
 
   const tokensToApprove = (function getTokensToApprove() {

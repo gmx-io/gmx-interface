@@ -38,6 +38,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
     ...swrOpts,
     fetcher: async () => {
       try {
+        console.log("re", name);
         // prettier-ignore
         const request = typeof params.request === "function" 
             ? params.request(chainId, params.key as CacheKey) 
