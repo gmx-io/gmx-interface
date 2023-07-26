@@ -63,10 +63,6 @@ export type MarketInfo = Market & {
 
   maxPnlFactorForTradersLong: BigNumber;
   maxPnlFactorForTradersShort: BigNumber;
-  maxPnlFactorForWithdrawalsLong: BigNumber;
-  maxPnlFactorForWithdrawalsShort: BigNumber;
-  maxPnlFactorForDepositsLong: BigNumber;
-  maxPnlFactorForDepositsShort: BigNumber;
 
   pnlLongMin: BigNumber;
   pnlLongMax: BigNumber;
@@ -112,9 +108,6 @@ export type MarketInfo = Market & {
   virtualMarketId?: string;
   virtualLongTokenId?: string;
   virtualShortTokenId?: string;
-
-  // marketTokenTotalSupply: BigNumber;
-  // marketTokenBalance?: BigNumber;
 };
 
 export type MarketsData = {

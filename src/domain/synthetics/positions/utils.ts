@@ -80,7 +80,6 @@ export function getPositionPnlUsd(p: {
     poolUsd,
     isLong,
     maximize: true,
-    pnlFactorType: "FOR_TRADERS",
   });
 
   const WEI_PRECISION = expandDecimals(1, 18);

@@ -7,7 +7,7 @@ import { getByKey } from "lib/objects";
 import { getCappedPositionImpactUsd } from "../fees";
 import { convertToContractTokenPrices, convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens";
 import { TokenData, TokensData } from "../tokens/types";
-import { ContractMarketPrices, Market, MarketInfo, PnlFactorType } from "./types";
+import { ContractMarketPrices, Market, MarketInfo } from "./types";
 
 export function getMarketFullName(p: { longToken: Token; shortToken: Token; indexToken: Token; isSpotOnly: boolean }) {
   const { indexToken, longToken, shortToken, isSpotOnly } = p;
@@ -149,9 +149,8 @@ export function getCappedPoolPnl(p: {
   poolUsd: BigNumber;
   isLong: boolean;
   maximize: boolean;
-  pnlFactorType: PnlFactorType;
 }) {
-  const { marketInfo, poolUsd, isLong, pnlFactorType, maximize } = p;
+  const { marketInfo, poolUsd, isLong, maximize } = p;
 
   let poolPnl: BigNumber;
 
@@ -165,15 +164,9 @@ export function getCappedPoolPnl(p: {
     return poolPnl;
   }
 
-  let maxPnlFactor: BigNumber;
-
-  if (pnlFactorType === "FOR_TRADERS") {
-    maxPnlFactor = isLong ? marketInfo.maxPnlFactorForTradersLong : marketInfo.maxPnlFactorForTradersShort;
-  } else if (pnlFactorType === "FOR_DEPOSITS") {
-    maxPnlFactor = isLong ? marketInfo.maxPnlFactorForDepositsLong : marketInfo.maxPnlFactorForDepositsShort;
-  } else {
-    maxPnlFactor = isLong ? marketInfo.maxPnlFactorForWithdrawalsLong : marketInfo.maxPnlFactorForWithdrawalsShort;
-  }
+  const maxPnlFactor: BigNumber = isLong
+    ? marketInfo.maxPnlFactorForTradersLong
+    : marketInfo.maxPnlFactorForTradersShort;
 
   const maxPnl = applyFactor(poolUsd, maxPnlFactor);
 
