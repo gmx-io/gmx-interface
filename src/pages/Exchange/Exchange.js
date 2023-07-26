@@ -42,7 +42,7 @@ import Tab from "components/Tab/Tab";
 
 import UsefulLinks from "components/Exchange/UsefulLinks";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { getToken, getTokenBySymbol, getV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
+import { getPriceDecimals, getToken, getTokenBySymbol, getV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
 import { useInfoTokens } from "domain/tokens";
 import { getTokenInfo } from "domain/tokens/utils";
 import { useChainId } from "lib/chains";
@@ -527,12 +527,13 @@ export const Exchange = forwardRef((props, ref) => {
     const fromToken = getTokenInfo(infoTokens, fromTokenAddress);
     const toToken = getTokenInfo(infoTokens, toTokenAddress);
     let selectedToken = getChartToken(swapOption, fromToken, toToken, chainId);
+    const selectedTokenPriceDecimal = getPriceDecimals(chainId, selectedToken?.symbol);
 
     if (!selectedToken) {
       return;
     }
 
-    let currentTokenPriceStr = formatAmount(selectedToken.maxPrice, USD_DECIMALS, 2, true);
+    let currentTokenPriceStr = formatAmount(selectedToken.maxPrice, USD_DECIMALS, selectedTokenPriceDecimal, true);
     let title = getPageTitle(
       currentTokenPriceStr + ` | ${selectedToken.symbol}${selectedToken.isStable ? "" : "-USD"}`
     );

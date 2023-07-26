@@ -4046,10 +4046,6 @@ msgstr "Intercambio activo: {0}, ejecutado: {1}, cancelado: {2}"
 msgid "Swap amount exceeds Available Liquidity."
 msgstr ""
 
-#: src/components/Exchange/SwapBox.js
-#~ msgid "Swap amount exceeds available liquidity."
-#~ msgstr ""
-
 #: src/components/Exchange/PositionSeller.js
 msgid "Swap amount from {0} to {1} exceeds {2} acceptable amount. Can only receive {3}."
 msgstr ""

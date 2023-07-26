@@ -24,6 +24,7 @@ import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { getTokenInfo, getUsd } from "domain/tokens/utils";
 import { formatAmount } from "lib/numbers";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { getPriceDecimals } from "config/tokens";
 
 function getOrderTitle(order, indexTokenSymbol) {
   const orderTypeText = order.type === INCREASE ? t`Increase` : t`Decrease`;
@@ -248,6 +249,7 @@ export default function OrdersList(props) {
       }
 
       const indexToken = getTokenInfo(infoTokens, order.indexToken);
+      const indexTokenPriceDecimal = getPriceDecimals(chainId, indexToken.symbol);
 
       // Longs Increase: max price
       // Longs Decrease: min price
@@ -327,11 +329,11 @@ export default function OrdersList(props) {
             )}
           </td>
           <td>
-            {triggerPricePrefix} {formatAmount(order.triggerPrice, USD_DECIMALS, 2, true)}
+            {triggerPricePrefix} {formatAmount(order.triggerPrice, USD_DECIMALS, indexTokenPriceDecimal, true)}
           </td>
           <td>
             <Tooltip
-              handle={formatAmount(markPrice, USD_DECIMALS, 2, true)}
+              handle={formatAmount(markPrice, USD_DECIMALS, indexTokenPriceDecimal, true)}
               position="right-bottom"
               renderContent={() => {
                 return (

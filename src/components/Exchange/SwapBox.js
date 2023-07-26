@@ -304,6 +304,7 @@ export default function SwapBox(props) {
   const toToken = getToken(chainId, toTokenAddress);
   const shortCollateralToken = getTokenInfo(infoTokens, shortCollateralAddress);
   const toTokenPriceDecimal = getPriceDecimals(chainId, toToken.symbol);
+  const existingPositionPriceDecimal = getPriceDecimals(chainId, existingPosition?.indexToken?.symbol);
 
   const fromTokenInfo = getTokenInfo(infoTokens, fromTokenAddress);
   const toTokenInfo = getTokenInfo(infoTokens, toTokenAddress);
@@ -2120,11 +2121,11 @@ export default function SwapBox(props) {
                 <div className="align-right">
                   {hasExistingPosition && toAmount && toAmount.gt(0) && (
                     <div className="inline-block muted">
-                      ${formatAmount(existingPosition.averagePrice, USD_DECIMALS, 2, true)}
+                      ${formatAmount(existingPosition.averagePrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
                       <BsArrowRight className="transition-arrow" />
                     </div>
                   )}
-                  {nextAveragePrice && `$${formatAmount(nextAveragePrice, USD_DECIMALS, 2, true)}`}
+                  {nextAveragePrice && `$${formatAmount(nextAveragePrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
                   {!nextAveragePrice && `-`}
                 </div>
               </div>
@@ -2135,13 +2136,13 @@ export default function SwapBox(props) {
                 <div className="align-right">
                   {hasExistingPosition && toAmount && toAmount.gt(0) && (
                     <div className="inline-block muted">
-                      ${formatAmount(existingLiquidationPrice, USD_DECIMALS, 2, true)}
+                      ${formatAmount(existingLiquidationPrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
                       <BsArrowRight className="transition-arrow" />
                     </div>
                   )}
                   {toAmount &&
                     displayLiquidationPrice &&
-                    `$${formatAmount(displayLiquidationPrice, USD_DECIMALS, 2, true)}`}
+                    `$${formatAmount(displayLiquidationPrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
                   {!toAmount && displayLiquidationPrice && `-`}
                   {!displayLiquidationPrice && `-`}
                 </div>

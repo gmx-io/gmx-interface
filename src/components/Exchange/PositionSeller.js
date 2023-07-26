@@ -1214,7 +1214,8 @@ export default function PositionSeller(props) {
                 </div>
                 <div className="align-right">
                   {!triggerPriceUsd && "-"}
-                  {triggerPriceUsd && `${triggerPricePrefix} ${formatAmount(triggerPriceUsd, USD_DECIMALS, 2, true)}`}
+                  {triggerPriceUsd &&
+                    `${triggerPricePrefix} ${formatAmount(triggerPriceUsd, USD_DECIMALS, positionPriceDecimal, true)}`}
                 </div>
               </div>
             )}

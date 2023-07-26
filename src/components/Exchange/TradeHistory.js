@@ -24,6 +24,7 @@ import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { t, Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Button from "components/Button/Button";
+import { getPriceDecimals } from "config/tokens";
 
 const { AddressZero } = ethers.constants;
 
@@ -190,6 +191,7 @@ export default function TradeHistory(props) {
 
       if (tradeData.action === "CreateIncreasePosition") {
         const indexToken = getTokenInfo(infoTokens, params.indexToken, true, nativeTokenAddress);
+        const indexTokenPriceDecimal = getPriceDecimals(chainId, indexToken.symbol);
         if (!indexToken) {
           return defaultMsg;
         }
@@ -206,13 +208,14 @@ export default function TradeHistory(props) {
         )} USD, Acceptable Price: ${params.isLong ? "<" : ">"} ${formatAmount(
           params.acceptablePrice,
           USD_DECIMALS,
-          2,
+          indexTokenPriceDecimal,
           true
         )} USD`;
       }
 
       if (tradeData.action === "CreateDecreasePosition") {
         const indexToken = getTokenInfo(infoTokens, params.indexToken, true, nativeTokenAddress);
+        const indexTokenPriceDecimal = getPriceDecimals(chainId, indexToken.symbol);
         if (!indexToken) {
           return defaultMsg;
         }
@@ -229,13 +232,14 @@ export default function TradeHistory(props) {
         )} USD, Acceptable Price: ${params.isLong ? ">" : "<"} ${formatAmount(
           params.acceptablePrice,
           USD_DECIMALS,
-          2,
+          indexTokenPriceDecimal,
           true
         )} USD`;
       }
 
       if (tradeData.action === "CancelIncreasePosition") {
         const indexToken = getTokenInfo(infoTokens, params.indexToken, true, nativeTokenAddress);
+        const indexTokenPriceDecimal = getPriceDecimals(chainId, indexToken.symbol);
         if (!indexToken) {
           return defaultMsg;
         }
@@ -257,7 +261,7 @@ export default function TradeHistory(props) {
             </Trans>
             <Tooltip
               position="center-top"
-              handle={`${formatAmount(params.acceptablePrice, USD_DECIMALS, 2, true)} USD`}
+              handle={`${formatAmount(params.acceptablePrice, USD_DECIMALS, indexTokenPriceDecimal, true)} USD`}
               renderContent={() => (
                 <Trans>Try increasing the "Allowed Slippage", under the Settings menu on the top right.</Trans>
               )}
@@ -268,6 +272,7 @@ export default function TradeHistory(props) {
 
       if (tradeData.action === "CancelDecreasePosition") {
         const indexToken = getTokenInfo(infoTokens, params.indexToken, true, nativeTokenAddress);
+        const indexTokenPriceDecimal = getPriceDecimals(chainId, indexToken.symbol);
         if (!indexToken) {
           return defaultMsg;
         }
@@ -285,7 +290,7 @@ export default function TradeHistory(props) {
             </Trans>
             <Tooltip
               position="right-top"
-              handle={`${formatAmount(params.acceptablePrice, USD_DECIMALS, 2, true)} USD`}
+              handle={`${formatAmount(params.acceptablePrice, USD_DECIMALS, indexTokenPriceDecimal, true)} USD`}
               renderContent={() => (
                 <Trans>Try increasing the "Allowed Slippage", under the Settings menu on the top right</Trans>
               )}
@@ -300,6 +305,7 @@ export default function TradeHistory(props) {
         }
 
         const indexToken = getTokenInfo(infoTokens, params.indexToken, true, nativeTokenAddress);
+        const indexTokenPriceDecimal = getPriceDecimals(chainId, indexToken.symbol);
         if (!indexToken) {
           return defaultMsg;
         }
@@ -313,7 +319,12 @@ export default function TradeHistory(props) {
           USD_DECIMALS,
           2,
           true
-        )} USD, ${indexToken.symbol} Price: ${formatAmount(params.price, USD_DECIMALS, 2, true)} USD`;
+        )} USD, ${indexToken.symbol} Price: ${formatAmount(
+          params.price,
+          USD_DECIMALS,
+          indexTokenPriceDecimal,
+          true
+        )} USD`;
       }
 
       if (tradeData.action === "DecreasePosition-Long" || tradeData.action === "DecreasePosition-Short") {
@@ -322,6 +333,7 @@ export default function TradeHistory(props) {
         }
 
         const indexToken = getTokenInfo(infoTokens, params.indexToken, true, nativeTokenAddress);
+        const indexTokenPriceDecimal = getPriceDecimals(chainId, indexToken.symbol);
         if (!indexToken) {
           return defaultMsg;
         }
@@ -338,19 +350,21 @@ export default function TradeHistory(props) {
             <>
               {renderLiquidationTooltip(liquidationData, t`Partial Liquidation`)}&nbsp;
               {indexToken.symbol} {longOrShortText}, -{formatAmount(params.sizeDelta, USD_DECIMALS, 2, true)} USD,{" "}
-              {indexToken.symbol}&nbsp; Price: ${formatAmount(params.price, USD_DECIMALS, 2, true)} USD
+              {indexToken.symbol}&nbsp; Price: ${formatAmount(params.price, USD_DECIMALS, indexTokenPriceDecimal, true)}{" "}
+              USD
             </>
           );
         }
         const actionDisplay = isLiquidation ? t`Partially Liquidated` : t`Decreased`;
         return t`${actionDisplay} ${indexToken.symbol} ${longOrShortText},
         -${formatAmount(params.sizeDelta, USD_DECIMALS, 2, true)} USD,
-        ${indexToken.symbol} Price: ${formatAmount(params.price, USD_DECIMALS, 2, true)} USD
+        ${indexToken.symbol} Price: ${formatAmount(params.price, USD_DECIMALS, indexTokenPriceDecimal, true)} USD
       `;
       }
 
       if (tradeData.action === "LiquidatePosition-Long" || tradeData.action === "LiquidatePosition-Short") {
         const indexToken = getTokenInfo(infoTokens, params.indexToken, true, nativeTokenAddress);
+        const indexTokenPriceDecimal = getPriceDecimals(chainId, indexToken.symbol);
         if (!indexToken) {
           return defaultMsg;
         }
@@ -360,14 +374,15 @@ export default function TradeHistory(props) {
             <Trans>
               {renderLiquidationTooltip(liquidationData, t`Liquidated`)}&nbsp; {indexToken.symbol} {longOrShortText}, -
               {formatAmount(params.size, USD_DECIMALS, 2, true)} USD,&nbsp;
-              {indexToken.symbol} Price: ${formatAmount(params.markPrice, USD_DECIMALS, 2, true)} USD
+              {indexToken.symbol} Price: ${formatAmount(params.markPrice, USD_DECIMALS, indexTokenPriceDecimal, true)}{" "}
+              USD
             </Trans>
           );
         }
         return t`
         Liquidated ${indexToken.symbol} ${longOrShortText},
         -${formatAmount(params.size, USD_DECIMALS, 2, true)} USD,
-        ${indexToken.symbol} Price: ${formatAmount(params.markPrice, USD_DECIMALS, 2, true)} USD
+        ${indexToken.symbol} Price: ${formatAmount(params.markPrice, USD_DECIMALS, indexTokenPriceDecimal, true)} USD
       `;
       }
 
@@ -401,6 +416,7 @@ export default function TradeHistory(props) {
       ) {
         const order = deserialize(params.order);
         const indexToken = getTokenInfo(infoTokens, order.indexToken);
+        const indexTokenPriceDecimal = getPriceDecimals(chainId, indexToken.symbol);
         if (!indexToken) {
           return defaultMsg;
         }
@@ -408,7 +424,7 @@ export default function TradeHistory(props) {
         const priceDisplay = `${order.triggerAboveThreshold ? ">" : "<"} ${formatAmount(
           order.triggerPrice,
           USD_DECIMALS,
-          2,
+          indexTokenPriceDecimal,
           true
         )}`;
         return t`
