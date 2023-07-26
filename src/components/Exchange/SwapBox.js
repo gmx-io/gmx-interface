@@ -1970,6 +1970,7 @@ export default function SwapBox(props) {
                   tokens={toTokens}
                   infoTokens={infoTokens}
                   showTokenImgInDropdown={true}
+                  showBalances={false}
                 />
               </BuyInputSection>
             </React.Fragment>

@@ -1,5 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import { groupBy } from "lodash";
 import { useWeb3React } from "@web3-react/core";
 import cx from "classnames";
 import Button from "components/Button/Button";
@@ -28,7 +27,6 @@ import {
   MarketsInfoData,
   getAvailableUsdLiquidityForPosition,
   getMarketIndexName,
-  useMarketTokensData,
 } from "domain/synthetics/markets";
 import { OrderInfo, OrdersInfoData } from "domain/synthetics/orders";
 import {
@@ -216,24 +214,21 @@ export function TradeBox(p: Props) {
 
   const [toTokenInputValue, setToTokenInputValue] = useSafeState("");
   const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : BigNumber.from(0);
-  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
 
   const groupedMarketsTotalSupply = useMemo(() => {
-    if (!marketsInfoData || !marketTokensData) return;
-    const groupedMarketsInfo: { [indexTokenAddress: string]: MarketInfo[] } = groupBy(
-      Object.values(marketsInfoData),
-      (market) => market.indexTokenAddress
-    );
+    if (!marketsInfoData) return;
 
-    return Object.entries(groupedMarketsInfo).reduce((acc, [indexTokenAddress, marketsInfo]) => {
-      const totalSupply = marketsInfo
-        .map((marketInfo) => marketTokensData[marketInfo.marketTokenAddress])
-        .reduce((acc, marketToken) => acc.add(marketToken.totalSupply || 0), BigNumber.from(0));
-
-      acc[indexTokenAddress] = totalSupply;
+    const markets = Object.values(marketsInfoData || {}).sort((a, b) => {
+      return a.indexToken.symbol.localeCompare(b.indexToken.symbol);
+    });
+    return markets.reduce((acc, marketInfo) => {
+      if (marketInfo.isSpotOnly || marketInfo.isDisabled) {
+        return acc;
+      }
+      acc[marketInfo.indexTokenAddress] = marketInfo.poolValueMax;
       return acc;
     }, {});
-  }, [marketsInfoData, marketTokensData]);
+  }, [marketsInfoData]);
 
   const markPrice = useMemo(() => {
     if (!toToken) {
