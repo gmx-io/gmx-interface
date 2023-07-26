@@ -19,6 +19,7 @@ type Props = {
   currentCollateralAddress?: string;
   currentTradeType?: TradeType;
   openSettings: () => void;
+  hideActions?: boolean;
 };
 
 export function PositionList(p: Props) {
@@ -107,6 +108,7 @@ export function PositionList(p: Props) {
                 currentCollateralAddress={p.currentCollateralAddress}
                 currentTradeType={p.currentTradeType}
                 openSettings={p.openSettings}
+                hideActions={p.hideActions}
               />
             ))}
         </tbody>

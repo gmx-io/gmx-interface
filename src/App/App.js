@@ -105,6 +105,7 @@ import { MarketPoolsPage } from "pages/MarketPoolsPage/MarketPoolsPage";
 import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsFallbackPage";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
+import SyntheticsActions from "pages/SyntheticsActions/SyntheticsActions";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -605,6 +606,18 @@ function FullApp() {
               </Route>
               <Route exact path="/claim_es_gmx">
                 <ClaimEsGmx setPendingTxns={setPendingTxns} />
+              </Route>
+              <Route exact path="/actions/v2">
+                <SyntheticsActions
+                  savedIsPnlInLeverage={savedIsPnlInLeverage}
+                  savedShowPnlAfterFees={savedShowPnlAfterFees}
+                />
+              </Route>
+              <Route exact path="/actions/v2/:account">
+                <SyntheticsActions
+                  savedIsPnlInLeverage={savedIsPnlInLeverage}
+                  savedShowPnlAfterFees={savedShowPnlAfterFees}
+                />
               </Route>
               <Route exact path="/actions">
                 <Actions />

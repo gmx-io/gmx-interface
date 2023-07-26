@@ -1,15 +1,15 @@
 import { Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import Checkbox from "components/Checkbox/Checkbox";
+import { MarketsInfoData } from "domain/synthetics/markets";
 import { OrdersInfoData, isLimitOrderType, isTriggerDecreaseOrderType } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { PositionsInfoData } from "domain/synthetics/positions";
+import { TokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { Dispatch, SetStateAction, useState } from "react";
 import { OrderEditor } from "../OrderEditor/OrderEditor";
 import { OrderItem } from "../OrderItem/OrderItem";
-import { MarketsInfoData } from "domain/synthetics/markets";
-import { TokensData } from "domain/synthetics/tokens";
 
 type Props = {
   hideActions?: boolean;
@@ -132,6 +132,7 @@ export function OrderList(p: Props) {
                 isCanceling={canellingOrdersKeys.includes(order.key)}
                 onCancelOrder={() => onCancelOrder(order.key)}
                 onEditOrder={() => setEditingOrderKey(order.key)}
+                hideActions={p.hideActions}
               />
             ))}
         </tbody>

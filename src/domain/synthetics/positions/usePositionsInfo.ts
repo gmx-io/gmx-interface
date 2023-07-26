@@ -29,15 +29,16 @@ type PositionsInfoResult = {
 export function usePositionsInfo(
   chainId: number,
   p: {
+    account: string | null | undefined;
     marketsInfoData?: MarketsInfoData;
     tokensData?: TokensData;
     pricesUpdatedAt?: number;
     showPnlInLeverage: boolean;
   }
 ): PositionsInfoResult {
-  const { showPnlInLeverage, marketsInfoData, tokensData } = p;
+  const { showPnlInLeverage, marketsInfoData, tokensData, account } = p;
 
-  const { account, library } = useWeb3React();
+  const { library } = useWeb3React();
   const { positionsData } = usePositions(chainId, p);
   const { minCollateralUsd } = usePositionsConstants(chainId);
   const userReferralInfo = useUserReferralInfo(library, chainId, account);

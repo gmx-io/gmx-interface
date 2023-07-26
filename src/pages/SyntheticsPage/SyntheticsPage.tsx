@@ -82,9 +82,14 @@ export function SyntheticsPage(p: Props) {
     tokensData,
     pricesUpdatedAt,
     showPnlInLeverage: savedIsPnlInLeverage,
+    account,
   });
 
-  const { ordersInfoData, isLoading: isOrdersLoading } = useOrdersInfo(chainId, { marketsInfoData, tokensData });
+  const { ordersInfoData, isLoading: isOrdersLoading } = useOrdersInfo(chainId, {
+    account,
+    marketsInfoData,
+    tokensData,
+  });
 
   const {
     tradeType,
@@ -331,7 +336,12 @@ export function SyntheticsPage(p: Props) {
               />
             )}
             {listSection === ListSection.Trades && (
-              <TradeHistory marketsInfoData={marketsInfoData} tokensData={tokensData} shouldShowPaginationButtons />
+              <TradeHistory
+                account={account}
+                marketsInfoData={marketsInfoData}
+                tokensData={tokensData}
+                shouldShowPaginationButtons
+              />
             )}
             {listSection === ListSection.Claims && (
               <ClaimHistory marketsInfoData={marketsInfoData} tokensData={tokensData} shouldShowPaginationButtons />
@@ -425,7 +435,12 @@ export function SyntheticsPage(p: Props) {
             />
           )}
           {listSection === ListSection.Trades && (
-            <TradeHistory marketsInfoData={marketsInfoData} tokensData={tokensData} shouldShowPaginationButtons />
+            <TradeHistory
+              account={account}
+              marketsInfoData={marketsInfoData}
+              tokensData={tokensData}
+              shouldShowPaginationButtons
+            />
           )}
           {listSection === ListSection.Claims && (
             <ClaimHistory marketsInfoData={marketsInfoData} tokensData={tokensData} shouldShowPaginationButtons />

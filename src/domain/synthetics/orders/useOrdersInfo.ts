@@ -17,10 +17,11 @@ export function useOrdersInfo(
   p: {
     marketsInfoData?: MarketsInfoData;
     tokensData?: TokensData;
+    account: string | null | undefined;
   }
 ): AggregatedOrdersDataResult {
-  const { marketsInfoData, tokensData } = p;
-  const { ordersData } = useOrders(chainId);
+  const { marketsInfoData, tokensData, account } = p;
+  const { ordersData } = useOrders(chainId, { account });
 
   const wrappedToken = getWrappedToken(chainId);
 

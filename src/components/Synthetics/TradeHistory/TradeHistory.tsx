@@ -13,6 +13,7 @@ type Props = {
   shouldShowPaginationButtons: boolean;
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
+  account: string | null | undefined;
 };
 
 export function TradeHistory(p: Props) {
@@ -22,6 +23,7 @@ export function TradeHistory(p: Props) {
 
   const { minCollateralUsd } = usePositionsConstants(chainId);
   const { tradeActions, isLoading: isHistoryLoading } = useTradeHistory(chainId, {
+    account: p.account,
     marketsInfoData,
     tokensData,
     pageIndex,

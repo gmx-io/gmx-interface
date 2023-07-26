@@ -1,4 +1,3 @@
-import { useWeb3React } from "@web3-react/core";
 import DataStore from "abis/DataStore.json";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import { getContract } from "config/contracts";
@@ -13,8 +12,8 @@ type OrdersResult = {
 
 const DEFAULT_COUNT = 1000;
 
-export function useOrders(chainId: number): OrdersResult {
-  const { account } = useWeb3React();
+export function useOrders(chainId: number, p: { account?: string | null }): OrdersResult {
+  const { account } = p;
 
   const { data } = useMulticall(chainId, "useOrdersData", {
     key: account ? [account] : null,
