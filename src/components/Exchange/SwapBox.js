@@ -1790,7 +1790,7 @@ export default function SwapBox(props) {
   }
 
   const ERROR_TOOLTIP_MSG = {
-    [ErrorCode.InsufficientLiquiditySwap]: t`Swap amount exceeds available liquidity.`,
+    [ErrorCode.InsufficientLiquiditySwap]: t`Swap amount exceeds Available Liquidity.`,
     [ErrorCode.InsufficientLiquidityLeverage]: (
       <Trans>
         <p>{toToken.symbol} is required for collateral.</p>
