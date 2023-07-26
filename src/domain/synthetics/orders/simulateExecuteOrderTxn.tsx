@@ -26,6 +26,7 @@ type SimulateExecuteOrderParams = {
   primaryPriceOverrides: PriceOverrides;
   tokensData: TokensData;
   value: BigNumber;
+  method?: string;
 };
 
 // only for debugging empty reverts
@@ -56,7 +57,7 @@ export async function simulateExecuteOrderTxn(chainId: number, library: Web3Prov
 
   const simulationPayload = [
     ...p.createOrderMulticallPayload,
-    exchangeRouter.interface.encodeFunctionData("simulateExecuteOrder", [
+    exchangeRouter.interface.encodeFunctionData(p.method || "simulateExecuteOrder", [
       nextKey,
       {
         primaryTokens: primaryTokens,

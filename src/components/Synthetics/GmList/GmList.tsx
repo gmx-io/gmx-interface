@@ -128,12 +128,12 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
 
                 const apr = getByKey(marketsTokensAPRData, token?.address);
 
-                const totalSupply = token?.totalSupply;
-                const totalSupplyUsd = convertToUsd(totalSupply, token?.decimals, token?.prices?.minPrice);
-
-                if (!indexToken || !longToken || !shortToken) {
+                if (!token || !indexToken || !longToken || !shortToken) {
                   return null;
                 }
+
+                const totalSupply = token?.totalSupply;
+                const totalSupplyUsd = convertToUsd(totalSupply, token?.decimals, token?.prices?.minPrice);
 
                 return (
                   <tr key={token.address}>
@@ -216,9 +216,9 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
             {sortedMarketTokens.map((token) => {
               const apr = marketsTokensAPRData?.[token.address];
 
-              const totalSupply = token.totalSupply;
-              const totalSupplyUsd = convertToUsd(totalSupply, token.decimals, token.prices?.minPrice);
-              const market = getByKey(marketsInfoData, token.address);
+              const totalSupply = token?.totalSupply;
+              const totalSupplyUsd = convertToUsd(totalSupply, token?.decimals, token?.prices?.minPrice);
+              const market = getByKey(marketsInfoData, token?.address);
               const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
 
               if (!indexToken) {
