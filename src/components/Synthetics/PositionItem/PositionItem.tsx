@@ -4,7 +4,14 @@ import PositionDropdown from "components/Exchange/PositionDropdown";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { PositionOrderInfo, isIncreaseOrderType } from "domain/synthetics/orders";
-import { PositionInfo, formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
+import {
+  PositionInfo,
+  formatEstimatedLiquidationTime,
+  formatLeverage,
+  formatLiquidationPrice,
+  getEstimatedLiquidationTimeInHours,
+  usePositionsConstants,
+} from "domain/synthetics/positions";
 import { formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
 import { AiOutlineEdit } from "react-icons/ai";
 import { ImSpinner2 } from "react-icons/im";
@@ -14,6 +21,7 @@ import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/
 import { TradeMode, TradeType, getTriggerThresholdType } from "domain/synthetics/trade";
 import { CHART_PERIODS } from "lib/legacy";
 import "./PositionItem.scss";
+import { useChainId } from "lib/chains";
 
 export type Props = {
   position: PositionInfo;
@@ -38,8 +46,9 @@ export function PositionItem(p: Props) {
   const { positionOrders } = p;
   const displayedPnl = p.savedShowPnlAfterFees ? p.position.pnlAfterFees : p.position.pnl;
   const displayedPnlPercentage = p.savedShowPnlAfterFees ? p.position.pnlAfterFeesPercentage : p.position.pnlPercentage;
-
+  const { chainId } = useChainId();
   const indexPriceDecimals = p.position?.indexToken?.priceDecimals;
+  const { minCollateralUsd } = usePositionsConstants(chainId);
 
   const isCurrentTradeTypeLong = p.currentTradeType === TradeType.Long;
   const isCurrentMarket =
@@ -217,6 +226,7 @@ export function PositionItem(p: Props) {
 
   function renderLiquidationPrice() {
     let liqPriceWarning: string | undefined;
+    const estimatedLiquidationHours = getEstimatedLiquidationTimeInHours(p.position, minCollateralUsd);
 
     if (!p.position.liquidationPrice) {
       if (!p.position.isLong && p.position.collateralAmount.gte(p.position.sizeInTokens)) {
@@ -230,13 +240,42 @@ export function PositionItem(p: Props) {
       }
     }
 
-    if (liqPriceWarning) {
+    const getLiqPriceTooltipContent = () => (
+      <>
+        {liqPriceWarning && <div>{liqPriceWarning}</div>}
+        {estimatedLiquidationHours ? (
+          <div>
+            <div>
+              {!liqPriceWarning && "Liquidation Price is influenced by Fees, Collateral value, and Price Impact."}
+            </div>
+            <br />
+            <StatsTooltipRow
+              label={"Estimated time to Liquidation"}
+              value={formatEstimatedLiquidationTime(estimatedLiquidationHours)}
+              showDollar={false}
+            />
+            <br />
+            <div>
+              Estimation based on current Borrow and Funding Fees rates reducing position's Collateral over time,
+              excluding any price movement.
+            </div>
+          </div>
+        ) : (
+          ""
+        )}
+      </>
+    );
+
+    if (liqPriceWarning || estimatedLiquidationHours) {
       return (
         <Tooltip
           handle={formatLiquidationPrice(p.position.liquidationPrice, { displayDecimals: indexPriceDecimals }) || "..."}
           position={p.isLarge ? "left-bottom" : "right-bottom"}
-          handleClassName="plain"
-          renderContent={() => <div>{liqPriceWarning}</div>}
+          handleClassName={cx("plain", {
+            "LiqPrice-soft-warning": estimatedLiquidationHours && estimatedLiquidationHours < 24 * 7,
+            "LiqPrice-hard-warning": estimatedLiquidationHours && estimatedLiquidationHours < 24,
+          })}
+          renderContent={getLiqPriceTooltipContent}
         />
       );
     }

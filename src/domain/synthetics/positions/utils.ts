@@ -2,10 +2,12 @@ import { UserReferralInfo } from "domain/referrals";
 import { MarketInfo, getCappedPoolPnl, getPoolUsdWithoutPnl } from "domain/synthetics/markets";
 import { Token, getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber } from "ethers";
+import { CHART_PERIODS } from "lib/legacy";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { applyFactor, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
-import { getPositionFee, getPriceImpactForPosition } from "../fees";
+import { getBorrowingFeeRateUsd, getFundingFeeRateUsd, getPositionFee, getPriceImpactForPosition } from "../fees";
 import { TokenData, convertToUsd } from "../tokens";
+import { PositionInfo } from "./types";
 
 export function getPositionKey(account: string, marketAddress: string, collateralAddress: string, isLong: boolean) {
   return `${account}:${marketAddress}:${collateralAddress}:${isLong}`;
@@ -244,4 +246,63 @@ export function formatLeverage(leverage?: BigNumber) {
   if (!leverage) return undefined;
 
   return `${formatAmount(leverage, 4, 2)}x`;
+}
+
+export function getEstimatedLiquidationTimeInHours(
+  position: PositionInfo,
+  minCollateralUsd: BigNumber | undefined
+): number | undefined {
+  const { marketInfo, isLong, sizeInUsd, isOpening, netValue } = position;
+
+  if (isOpening || !minCollateralUsd) return;
+
+  let liquidationCollateralUsd = applyFactor(sizeInUsd, marketInfo.minCollateralFactor);
+  if (liquidationCollateralUsd.lt(minCollateralUsd)) {
+    liquidationCollateralUsd = minCollateralUsd;
+  }
+  const borrowFeePerHour = getBorrowingFeeRateUsd(marketInfo, isLong, sizeInUsd, CHART_PERIODS["1h"]);
+  const fundingFeePerHour = getFundingFeeRateUsd(marketInfo, isLong, sizeInUsd, CHART_PERIODS["1h"]);
+  const maxNegativePriceImpactUsd = applyFactor(sizeInUsd, marketInfo.maxPositionImpactFactorForLiquidations).mul(-1);
+  let priceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, sizeInUsd.mul(-1), isLong, {
+    fallbackToZero: true,
+  });
+
+  if (priceImpactDeltaUsd.lt(maxNegativePriceImpactUsd)) {
+    priceImpactDeltaUsd = maxNegativePriceImpactUsd;
+  }
+
+  // Ignore positive price impact
+  if (priceImpactDeltaUsd.gt(0)) {
+    priceImpactDeltaUsd = BigNumber.from(0);
+  }
+
+  const totalFeesPerHour = borrowFeePerHour.abs().add(fundingFeePerHour.lt(0) ? fundingFeePerHour.abs() : 0);
+
+  if (totalFeesPerHour.eq(0)) return;
+
+  const hours = netValue
+    .add(priceImpactDeltaUsd)
+    .sub(liquidationCollateralUsd)
+    .mul(BASIS_POINTS_DIVISOR)
+    .div(totalFeesPerHour);
+  return parseFloat(formatAmount(hours, 4, 2));
+}
+
+export function formatEstimatedLiquidationTime(hours?: number | undefined) {
+  if (!hours) return;
+  const days = Math.floor(hours / 24);
+
+  if (hours < 1) {
+    return `< 1 hour`;
+  }
+
+  if (days > 1000) {
+    return "> 1000 days";
+  }
+  if (hours < 24) {
+    const hoursInt = Math.floor(hours);
+    return `${hoursInt} ${hoursInt === 1 ? "hour" : "hours"}`;
+  }
+
+  return `${days} days`;
 }

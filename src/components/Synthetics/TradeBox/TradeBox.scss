@@ -126,6 +126,16 @@
   }
 }
 
+.LiqPrice-soft-warning {
+  color: rgb(243, 181, 12);
+  text-decoration-color: rgb(243, 181, 12);
+}
+
+.LiqPrice-hard-warning {
+  color: #fa3c58;
+  text-decoration-color: #fa3c58;
+}
+
 @media (max-width: 900px) {
   .SwapBox-content {
     flex-wrap: wrap;
