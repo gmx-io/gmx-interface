@@ -121,7 +121,6 @@ export function usePositions(
           sizeInUsd: BigNumber.from(numbers.sizeInUsd),
           sizeInTokens: BigNumber.from(numbers.sizeInTokens),
           collateralAmount: BigNumber.from(numbers.collateralAmount),
-          borrowingFactor: BigNumber.from(numbers.borrowingFactor),
           increasedAtBlock: BigNumber.from(numbers.increasedAtBlock),
           decreasedAtBlock: BigNumber.from(numbers.decreasedAtBlock),
           isLong: flags.isLong,
@@ -272,7 +271,6 @@ function applyEventChanges(position: Position, event: PositionIncreaseEvent | Po
   nextPosition.sizeInUsd = event.sizeInUsd;
   nextPosition.sizeInTokens = event.sizeInTokens;
   nextPosition.collateralAmount = event.collateralAmount;
-  nextPosition.borrowingFactor = event.borrowingFactor;
   nextPosition.pendingBorrowingFeesUsd = BigNumber.from(0);
   nextPosition.fundingFeeAmount = BigNumber.from(0);
   nextPosition.claimableLongTokenAmount = BigNumber.from(0);
@@ -306,7 +304,6 @@ function getPendingMockPosition(pendingUpdate: PendingPositionUpdate): Position 
     sizeInTokens: pendingUpdate.sizeDeltaInTokens || BigNumber.from(0),
     increasedAtBlock: pendingUpdate.updatedAtBlock,
     decreasedAtBlock: BigNumber.from(0),
-    borrowingFactor: BigNumber.from(0),
     pendingBorrowingFeesUsd: BigNumber.from(0),
     fundingFeeAmount: BigNumber.from(0),
     claimableLongTokenAmount: BigNumber.from(0),

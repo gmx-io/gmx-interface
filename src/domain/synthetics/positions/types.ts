@@ -12,7 +12,6 @@ export type Position = {
   sizeInUsd: BigNumber;
   sizeInTokens: BigNumber;
   collateralAmount: BigNumber;
-  borrowingFactor: BigNumber;
   pendingBorrowingFeesUsd: BigNumber;
   increasedAtBlock: BigNumber;
   decreasedAtBlock: BigNumber;
