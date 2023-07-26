@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import { IS_NETWORK_DISABLED, getChainName } from "config/chains";
-import { MarketInfo } from "domain/synthetics/markets";
+import { MarketInfo, getMintableMarketTokens } from "domain/synthetics/markets";
 import { PositionInfo } from "domain/synthetics/positions";
 import { TokenData, TokensRatio } from "domain/synthetics/tokens";
 import { getIsEquivalentTokens } from "domain/tokens";
@@ -422,7 +422,7 @@ export function getGmSwapError(p: {
     isHighPriceImpactAccepted,
   } = p;
 
-  if (!marketInfo) {
+  if (!marketInfo || !marketToken) {
     return [t`Loading...`];
   }
 
@@ -435,8 +435,18 @@ export function getGmSwapError(p: {
       .add(longTokenUsd || 0)
       .add(shortTokenUsd || 0);
 
+    const mintableInfo = getMintableMarketTokens(marketInfo, marketToken);
+
     if (fees?.totalFees?.deltaUsd.lt(0) && fees.totalFees.deltaUsd.abs().gt(totalCollateralUsd)) {
       return [t`Fees exceed Pay amount`];
+    }
+
+    if (longTokenAmount?.gt(mintableInfo.longDepositCapacityAmount)) {
+      return [t`Max ${longToken?.symbol} amount exceeded`];
+    }
+
+    if (shortTokenAmount?.gt(mintableInfo.shortDepositCapacityAmount)) {
+      return [t`Max ${shortToken?.symbol} amount exceeded`];
     }
   } else if (fees?.totalFees?.deltaUsd.lt(0) && fees.totalFees.deltaUsd.abs().gt(marketTokenUsd || BigNumber.from(0))) {
     return [t`Fees exceed Pay amount`];

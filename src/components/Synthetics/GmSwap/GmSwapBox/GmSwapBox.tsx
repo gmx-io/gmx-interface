@@ -614,14 +614,14 @@ export function GmSwapBox(p: Props) {
     ]
   );
 
-  useEffect(
-    function updateMode() {
-      if (!availableModes.includes(mode)) {
-        setMode(availableModes[0]);
-      }
-    },
-    [availableModes, mode, operation, setMode]
-  );
+  // useEffect(
+  //   function updateMode() {
+  //     if (!availableModes.includes(mode)) {
+  //       setMode(availableModes[0]);
+  //     }
+  //   },
+  //   [availableModes, mode, operation, setMode]
+  // );
 
   useEffect(
     function updateIndexToken() {

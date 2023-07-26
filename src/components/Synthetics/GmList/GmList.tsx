@@ -8,6 +8,7 @@ import {
   MarketsInfoData,
   getMarketIndexName,
   getMarketPoolName,
+  getMintableMarketTokens,
 } from "domain/synthetics/markets";
 import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
@@ -115,6 +116,9 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
                 <th>
                   <Trans>TOTAL SUPPLY</Trans>
                 </th>
+                <th>
+                  <Trans>MINTABLE</Trans>
+                </th>
                 <th></th>
               </tr>
             </thead>
@@ -125,6 +129,7 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
                 const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
                 const longToken = getTokenData(tokensData, market?.longTokenAddress);
                 const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
+                const mintableInfo = market && token ? getMintableMarketTokens(market, token) : undefined;
 
                 const apr = getByKey(marketsTokensAPRData, token?.address);
 
@@ -178,6 +183,13 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
                       <br />({formatUsd(totalSupplyUsd)})
                     </td>
 
+                    <td className="GmList-last-column">
+                      {formatTokenAmount(mintableInfo?.mintableAmount, token.decimals, "GM", {
+                        useCommas: true,
+                      })}
+                      <br />({formatUsd(mintableInfo?.mintableUsd)})
+                    </td>
+
                     <td className="GmList-actions">
                       <Button
                         className="GmList-action"
@@ -220,6 +232,7 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
               const totalSupplyUsd = convertToUsd(totalSupply, token?.decimals, token?.prices?.minPrice);
               const market = getByKey(marketsInfoData, token?.address);
               const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
+              const mintableInfo = market && token ? getMintableMarketTokens(market, token) : undefined;
 
               if (!indexToken) {
                 return null;
@@ -272,6 +285,16 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
                       <div>
                         {" "}
                         {formatTokenAmount(totalSupply, token.decimals, "GM")} ({formatUsd(totalSupplyUsd)})
+                      </div>
+                    </div>
+                    <div className="App-card-row">
+                      <div className="label">
+                        <Trans>Mintable</Trans>
+                      </div>
+                      <div>
+                        {" "}
+                        {formatTokenAmount(mintableInfo?.mintableAmount, token.decimals, "GM", { useCommas: true })} (
+                        {formatUsd(mintableInfo?.mintableUsd)})
                       </div>
                     </div>
                     <div className="App-card-divider"></div>

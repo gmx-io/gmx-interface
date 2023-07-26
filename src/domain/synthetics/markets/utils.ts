@@ -272,6 +272,60 @@ export function getTotalClaimableFundingUsd(markets: MarketInfo[]) {
   }, BigNumber.from(0));
 }
 
+export function getMaxPoolUsd(marketInfo: MarketInfo, isLong: boolean) {
+  if (isLong) {
+    return convertToUsd(
+      marketInfo.maxLongPoolAmount,
+      marketInfo.longToken.decimals,
+      getMidPrice(marketInfo.longToken.prices)
+    )!;
+  } else {
+    return convertToUsd(
+      marketInfo.maxShortPoolAmount,
+      marketInfo.shortToken.decimals,
+      getMidPrice(marketInfo.shortToken.prices)
+    )!;
+  }
+}
+
+export function getDepositCollateralCapacityAmount(marketInfo: MarketInfo, isLong: boolean) {
+  const poolAmount = isLong ? marketInfo.longPoolAmount : marketInfo.shortPoolAmount;
+  const maxPoolAmount = isLong ? marketInfo.maxLongPoolAmount : marketInfo.maxShortPoolAmount;
+
+  const capacityAmount = maxPoolAmount.sub(poolAmount);
+
+  return capacityAmount.gt(0) ? capacityAmount : BigNumber.from(0);
+}
+
+export function getDepositCollateralCapacityUsd(marketInfo: MarketInfo, isLong: boolean) {
+  const poolUsd = getPoolUsdWithoutPnl(marketInfo, isLong, "midPrice");
+  const maxPoolUsd = getMaxPoolUsd(marketInfo, isLong);
+
+  const capacityUsd = maxPoolUsd.sub(poolUsd);
+
+  return capacityUsd.gt(0) ? capacityUsd : BigNumber.from(0);
+}
+
+export function getMintableMarketTokens(marketInfo: MarketInfo, marketToken: TokenData) {
+  const longDepositCapacityAmount = getDepositCollateralCapacityAmount(marketInfo, true);
+  const shortDepositCapacityAmount = getDepositCollateralCapacityAmount(marketInfo, false);
+
+  const longDepositCapacityUsd = getDepositCollateralCapacityUsd(marketInfo, true);
+  const shortDepositCapacityUsd = getDepositCollateralCapacityUsd(marketInfo, false);
+
+  const mintableUsd = longDepositCapacityUsd.add(shortDepositCapacityUsd);
+  const mintableAmount = usdToMarketTokenAmount(marketInfo, marketToken, mintableUsd);
+
+  return {
+    mintableAmount,
+    mintableUsd,
+    longDepositCapacityUsd,
+    shortDepositCapacityUsd,
+    longDepositCapacityAmount,
+    shortDepositCapacityAmount,
+  };
+}
+
 export function usdToMarketTokenAmount(marketInfo: MarketInfo, marketToken: TokenData, usdValue: BigNumber) {
   const supply = marketToken.totalSupply!;
   const poolValue = marketInfo.poolValueMax!;
