@@ -13,7 +13,7 @@ import TokenSelector from "components/TokenSelector/TokenSelector";
 import { ARBITRUM, IS_NETWORK_DISABLED, getChainName, getConstant } from "config/chains";
 import { getContract } from "config/contracts";
 import { CLOSE_POSITION_RECEIVE_TOKEN_KEY, SLIPPAGE_BPS_KEY } from "config/localStorage";
-import { getV1Tokens, getWrappedToken } from "config/tokens";
+import { getPriceDecimals, getV1Tokens, getWrappedToken } from "config/tokens";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { createDecreaseOrder, useHasOutdatedUi } from "domain/legacy";
 import { getTokenAmountFromUsd } from "domain/tokens";
@@ -40,7 +40,14 @@ import {
 import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE, MAX_LEVERAGE } from "config/factors";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
-import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
+import {
+  bigNumberify,
+  expandDecimals,
+  formatAmount,
+  formatAmountFree,
+  formatPercentage,
+  parseValue,
+} from "lib/numbers";
 import { getLeverage } from "lib/positions/getLeverage";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import { usePrevious } from "lib/usePrevious";
@@ -53,6 +60,7 @@ import ExchangeInfoRow from "./ExchangeInfoRow";
 import FeesTooltip from "./FeesTooltip";
 import "./PositionSeller.css";
 import { ErrorCode, ErrorDisplayType } from "./constants";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -207,6 +215,7 @@ export default function PositionSeller(props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const prevIsVisible = usePrevious(isVisible);
   const [allowedSlippage, setAllowedSlippage] = useState(savedSlippageAmount);
+  const positionPriceDecimal = getPriceDecimals(chainId, position?.indexToken?.symbol);
 
   useEffect(() => {
     setAllowedSlippage(savedSlippageAmount);
@@ -1171,7 +1180,7 @@ export default function PositionSeller(props) {
               <div>
                 <ExchangeInfoRow
                   label={
-                    <Tooltip
+                    <TooltipWithPortal
                       handle={t`Allowed Slippage`}
                       position="left-top"
                       renderContent={() => {
@@ -1181,8 +1190,9 @@ export default function PositionSeller(props) {
                               You can change this in the settings menu on the top right of the page.
                               <br />
                               <br />
-                              Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if
-                              prices are volatile.
+                              Note that a low allowed slippage, e.g. less than{" "}
+                              {formatPercentage(bigNumberify(DEFAULT_SLIPPAGE_AMOUNT), { signed: false })}, may result
+                              in failed orders if prices are volatile.
                             </Trans>
                           </div>
                         );
@@ -1201,7 +1211,8 @@ export default function PositionSeller(props) {
                 </div>
                 <div className="align-right">
                   {!triggerPriceUsd && "-"}
-                  {triggerPriceUsd && `${triggerPricePrefix} ${formatAmount(triggerPriceUsd, USD_DECIMALS, 2, true)}`}
+                  {triggerPriceUsd &&
+                    `${triggerPricePrefix} ${formatAmount(triggerPriceUsd, USD_DECIMALS, positionPriceDecimal, true)}`}
                 </div>
               </div>
             )}
@@ -1209,13 +1220,17 @@ export default function PositionSeller(props) {
               <div className="Exchange-info-label">
                 <Trans>Mark Price</Trans>
               </div>
-              <div className="align-right">${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}</div>
+              <div className="align-right">
+                ${formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)}
+              </div>
             </div>
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">
                 <Trans>Entry Price</Trans>
               </div>
-              <div className="align-right">${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}</div>
+              <div className="align-right">
+                ${formatAmount(position.averagePrice, USD_DECIMALS, positionPriceDecimal, true)}
+              </div>
             </div>
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">
@@ -1226,15 +1241,15 @@ export default function PositionSeller(props) {
                 {(!isClosing || orderOption === STOP) && (
                   <div>
                     {(!nextLiquidationPrice || nextLiquidationPrice.eq(liquidationPrice)) && (
-                      <div>{`$${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}`}</div>
+                      <div>{`$${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}`}</div>
                     )}
                     {nextLiquidationPrice && !nextLiquidationPrice.eq(liquidationPrice) && (
                       <div>
                         <div className="inline-block muted">
-                          ${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}
+                          ${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
                           <BsArrowRight className="transition-arrow" />
                         </div>
-                        ${formatAmount(nextLiquidationPrice, USD_DECIMALS, 2, true)}
+                        ${formatAmount(nextLiquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
                       </div>
                     )}
                   </div>

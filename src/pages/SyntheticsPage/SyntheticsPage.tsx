@@ -158,7 +158,6 @@ export function SyntheticsPage(p: Props) {
   const [selectedOrdersKeys, setSelectedOrdersKeys] = useState<{ [key: string]: boolean }>({});
   const selectedOrdersKeysArr = Object.keys(selectedOrdersKeys).filter((key) => selectedOrdersKeys[key]);
   const [isCancelOrdersProcessig, setIsCancelOrdersProcessig] = useState(false);
-
   const existingOrder = useMemo(() => {
     if (!selectedPositionKey) {
       return undefined;
@@ -217,7 +216,16 @@ export function SyntheticsPage(p: Props) {
     cancelOrdersTxn(chainId, library, {
       orderKeys: selectedOrdersKeysArr,
       setPendingTxns: setPendingTxns,
-    }).finally(() => setIsCancelOrdersProcessig(false));
+    })
+      .then(async (tx) => {
+        const receipt = await tx.wait();
+        if (receipt.status === 1) {
+          setSelectedOrdersKeys({});
+        }
+      })
+      .finally(() => {
+        setIsCancelOrdersProcessig(false);
+      });
   }
 
   useEffect(() => {

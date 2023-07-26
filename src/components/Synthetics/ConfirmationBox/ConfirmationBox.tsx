@@ -56,8 +56,10 @@ import { getIsEquivalentTokens, getSpread } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { BASIS_POINTS_DIVISOR, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
+
 import {
+  bigNumberify,
   formatAmount,
   formatDeltaUsd,
   formatPercentage,
@@ -71,6 +73,7 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./ConfirmationBox.scss";
 import SlippageInput from "components/SlippageInput/SlippageInput";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 export type Props = {
   isVisible: boolean;
@@ -600,7 +603,9 @@ export function ConfirmationBox(p: Props) {
           {isLimitOrderType(order.orderType) ? t`Increase` : t`Decrease`} {order.indexToken?.symbol}{" "}
           {formatUsd(order.sizeDeltaUsd)} {order.isLong ? t`Long` : t`Short`} &nbsp;
           {order.triggerThresholdType}
-          {formatUsd(order.triggerPrice)}{" "}
+          {formatUsd(order.triggerPrice, {
+            displayDecimals: toToken?.priceDecimals,
+          })}{" "}
         </p>
         <button onClick={() => onCancelOrderClick(order.key)}>
           <Trans>Cancel</Trans>
@@ -634,8 +639,9 @@ export function ConfirmationBox(p: Props) {
       return (
         <div className="Confirmation-box-info">
           <Trans>
-            You have selected {collateralTokenSymbol} as Collateral, the Liquidation Price is higher compared to using a
-            stablecoin as collateral, since the worth of the collateral will change with its price.
+            You have selected {collateralTokenSymbol} as collateral, the Liquidation Price is higher compared to using a
+            stablecoin as collateral since the worth of the collateral will change with its price. If required, you can
+            change the collateral type using the Collateral In option in the trade box.
           </Trans>
         </div>
       );
@@ -666,7 +672,10 @@ export function ConfirmationBox(p: Props) {
         <div className="Confirmation-box-info">
           <Trans>
             You have an active Limit Order to Increase {longShortText} {order.indexToken?.symbol} {sizeText} at price{" "}
-            {formatUsd(order.triggerPrice)}.
+            {formatUsd(order.triggerPrice, {
+              displayDecimals: toToken.priceDecimals,
+            })}
+            .
           </Trans>
         </div>
       );
@@ -683,7 +692,7 @@ export function ConfirmationBox(p: Props) {
               ({isLimitOrdersVisible ? t`hide` : t`view`})
             </span>
           </div>
-          <ul className="order-list">{existingLimitOrders.map(renderOrderItem)}</ul>
+          {isLimitOrdersVisible && <ul className="order-list">{existingLimitOrders.map(renderOrderItem)}</ul>}
         </div>
       );
     }
@@ -823,7 +832,7 @@ export function ConfirmationBox(p: Props) {
     return (
       <ExchangeInfoRow
         label={
-          <Tooltip
+          <TooltipWithPortal
             handle={t`Allowed Slippage`}
             position="left-top"
             renderContent={() => {
@@ -833,8 +842,9 @@ export function ConfirmationBox(p: Props) {
                     You can edit the default Allowed Slippage in the settings menu on the top right of the page.
                     <br />
                     <br />
-                    Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are
-                    volatile.
+                    Note that a low allowed slippage, e.g. less than{" "}
+                    {formatPercentage(bigNumberify(DEFAULT_SLIPPAGE_AMOUNT), { signed: false })}, may result in failed
+                    orders if prices are volatile.
                   </Trans>
                 </div>
               );
@@ -879,8 +889,9 @@ export function ConfirmationBox(p: Props) {
           {renderExistingLimitOrdersWarning()}
           {renderExistingTriggerErrors()}
           {renderExistingTriggerWarning()}
-          {isLimit && renderAvailableLiquidity()}
           {renderDifferentTokensWarning()}
+
+          {isLimit && renderAvailableLiquidity()}
 
           <ExchangeInfoRow
             className="SwapBox-info-row"
@@ -1150,6 +1161,8 @@ export function ConfirmationBox(p: Props) {
   }
 
   function renderTriggerDecreaseSection() {
+    const existingPriceDecimals = p.existingPosition?.indexToken?.priceDecimals;
+    const toTokenPriceDecimals = toToken?.priceDecimals;
     return (
       <>
         <div>
@@ -1164,10 +1177,26 @@ export function ConfirmationBox(p: Props) {
           )}
           <ExchangeInfoRow
             label={t`Trigger Price`}
-            value={triggerPrice ? `${decreaseAmounts?.triggerThresholdType} ${formatUsd(triggerPrice)}` : "..."}
+            value={
+              triggerPrice
+                ? `${decreaseAmounts?.triggerThresholdType} ${formatUsd(triggerPrice, {
+                    displayDecimals: toTokenPriceDecimals,
+                  })}`
+                : "..."
+            }
           />
 
-          <ExchangeInfoRow isTop label={t`Mark Price`} value={p.markPrice ? formatUsd(p.markPrice) : "..."} />
+          <ExchangeInfoRow
+            isTop
+            label={t`Mark Price`}
+            value={
+              p.markPrice
+                ? formatUsd(p.markPrice, {
+                    displayDecimals: toTokenPriceDecimals,
+                  })
+                : "..."
+            }
+          />
 
           <ExchangeInfoRow
             className="SwapBox-info-row"
@@ -1178,7 +1207,11 @@ export function ConfirmationBox(p: Props) {
           <ExchangeInfoRow
             className="SwapBox-info-row"
             label={t`Acceptable Price`}
-            value={formatUsd(decreaseAmounts?.acceptablePrice) || "-"}
+            value={
+              formatUsd(decreaseAmounts?.acceptablePrice, {
+                displayDecimals: toTokenPriceDecimals,
+              }) || "-"
+            }
           />
 
           {p.existingPosition && (
@@ -1187,8 +1220,14 @@ export function ConfirmationBox(p: Props) {
               value={
                 nextPositionValues?.nextSizeUsd?.gt(0) ? (
                   <ValueTransition
-                    from={formatUsd(existingPosition?.liquidationPrice)!}
-                    to={formatUsd(nextPositionValues.nextLiqPrice)}
+                    from={
+                      formatUsd(existingPosition?.liquidationPrice, {
+                        displayDecimals: existingPriceDecimals,
+                      })!
+                    }
+                    to={formatUsd(nextPositionValues.nextLiqPrice, {
+                      displayDecimals: existingPriceDecimals,
+                    })}
                   />
                 ) : (
                   "-"

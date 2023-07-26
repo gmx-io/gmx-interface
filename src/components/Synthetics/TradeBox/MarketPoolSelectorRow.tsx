@@ -56,6 +56,9 @@ export function MarketPoolSelectorRow(p: Props) {
       return (
         <div className="MarketSelector-tooltip-row">
           <Trans>Insufficient liquidity in any {indexToken?.symbol}/USD market pools for your order.</Trans>
+          <br />
+          <br />
+          <Trans>V2 is newly live, and liquidity may be low initially.</Trans>
         </div>
       );
     }

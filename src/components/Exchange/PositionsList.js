@@ -18,6 +18,7 @@ import { bigNumberify, formatAmount } from "lib/numbers";
 import { AiOutlineEdit } from "react-icons/ai";
 import useAccountType, { AccountType } from "lib/wallets/useAccountType";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
+import { getPriceDecimals } from "config/tokens";
 
 const getOrdersForPosition = (account, position, orders, nativeTokenAddress) => {
   if (!orders || orders.length === 0) {
@@ -227,6 +228,8 @@ export default function PositionsList(props) {
                 fundingFee: position.fundingFee,
               });
 
+              const positionPriceDecimal = getPriceDecimals(chainId, position.indexToken.symbol);
+
               const hasPositionProfit = position[showPnlAfterFees ? "hasProfitAfterFees" : "hasProfit"];
               const positionDelta =
                 position[showPnlAfterFees ? "pendingDeltaAfterFees" : "pendingDelta"] || bigNumberify(0);
@@ -349,19 +352,19 @@ export default function PositionsList(props) {
                         <div className="label">
                           <Trans>Entry Price</Trans>
                         </div>
-                        <div>${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}</div>
+                        <div>${formatAmount(position.averagePrice, USD_DECIMALS, positionPriceDecimal, true)}</div>
                       </div>
                       <div className="App-card-row">
                         <div className="label">
                           <Trans>Mark Price</Trans>
                         </div>
-                        <div>${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}</div>
+                        <div>${formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)}</div>
                       </div>
                       <div className="App-card-row">
                         <div className="label">
                           <Trans>Liq. Price</Trans>
                         </div>
-                        <div>${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}</div>
+                        <div>${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}</div>
                       </div>
                     </div>
                     <div className="App-card-divider" />
@@ -489,6 +492,7 @@ export default function PositionsList(props) {
                 fundingFee: position.fundingFee,
               }) || bigNumberify(0);
 
+            const positionPriceDecimal = getPriceDecimals(chainId, position.indexToken.symbol);
             const positionOrders = getOrdersForPosition(account, position, orders, nativeTokenAddress);
             const hasOrderError = !!positionOrders.find((order) => order.error);
             const hasPositionProfit = position[showPnlAfterFees ? "hasProfitAfterFees" : "hasProfit"];
@@ -585,13 +589,14 @@ export default function PositionsList(props) {
                                 <Trans>Active Orders</Trans>
                               </strong>
                               {positionOrders.map((order) => {
+                                const priceDecimal = getPriceDecimals(chainId, order.indexToken.symbol);
                                 return (
                                   <div
                                     key={`${order.isLong}-${order.type}-${order.index}`}
                                     className="Position-list-order active-order-tooltip"
                                   >
                                     {order.triggerAboveThreshold ? ">" : "<"}{" "}
-                                    {formatAmount(order.triggerPrice, 30, 2, true)}:
+                                    {formatAmount(order.triggerPrice, 30, priceDecimal, true)}:
                                     {order.type === INCREASE ? " +" : " -"}${formatAmount(order.sizeDelta, 30, 2, true)}
                                     {order.error && <div className="negative active-oredr-error">{order.error}</div>}
                                   </div>
@@ -656,13 +661,13 @@ export default function PositionsList(props) {
                   </div>
                 </td>
                 <td className="clickable" onClick={() => onPositionClick(position)}>
-                  ${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}
+                  ${formatAmount(position.averagePrice, USD_DECIMALS, positionPriceDecimal, true)}
                 </td>
                 <td className="clickable" onClick={() => onPositionClick(position)}>
-                  ${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}
+                  ${formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)}
                 </td>
                 <td className="clickable" onClick={() => onPositionClick(position)}>
-                  ${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}
+                  ${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
                 </td>
 
                 <td>

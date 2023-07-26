@@ -44,6 +44,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Arbitrum",
       symbol: "ARB",
       decimals: 18,
+      priceDecimals: 3,
       address: "0x912CE59144191C1204E64559FE8253a0e49E6548",
       imageUrl: "https://assets.coingecko.com/coins/images/16547/small/photo_2023-03-29_21.47.00.jpeg?1680097630",
       coingeckoUrl: "https://www.coingecko.com/en/coins/arbitrum",
@@ -62,6 +63,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Chainlink",
       symbol: "LINK",
       decimals: 18,
+      priceDecimals: 3,
       address: "0xf97f4df75117a78c1A5a0DBb814Af92458539FB4",
       isStable: false,
       isShortable: true,
@@ -74,6 +76,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Uniswap",
       symbol: "UNI",
       decimals: 18,
+      priceDecimals: 3,
       address: "0xFa7F8980b0f1E64A2062791cc3b0871572f1F7f0",
       isStable: false,
       isShortable: true,
@@ -177,6 +180,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "XRP",
       symbol: "XRP",
       decimals: 6,
+      priceDecimals: 4,
       address: "0xc14e065b0067dE91534e032868f5Ac6ecf2c6868",
       imageUrl: "https://assets.coingecko.com/coins/images/44/small/xrp-symbol-white-128.png?1605778731",
       coingeckoUrl: "https://www.coingecko.com/en/coins/xrp",
@@ -342,6 +346,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Chainlink",
       symbol: "LINK",
       decimals: 18,
+      priceDecimals: 3,
       address: "0x5947BB275c521040051D82396192181b413227A3",
       isStable: false,
       isShortable: true,
@@ -381,6 +386,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "XRP",
       symbol: "XRP",
       decimals: 6,
+      priceDecimals: 4,
       address: "0x34B2885D617cE2ddeD4F60cCB49809fc17bb58Af",
       imageUrl: "https://assets.coingecko.com/coins/images/44/small/xrp-symbol-white-128.png?1605778731",
       coingeckoUrl: "https://www.coingecko.com/en/coins/xrp",
@@ -547,6 +553,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Uniswap",
       symbol: "UNI",
       decimals: 18,
+      priceDecimals: 3,
       address: "0x6DEbb9cC48819941F797a2F0c63f9168C19fD057",
       isSynthetic: true,
       coingeckoUrl: "https://www.coingecko.com/en/coins/uniswap",
@@ -565,6 +572,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Chainlink",
       symbol: "LINK",
       decimals: 18,
+      priceDecimals: 3,
       address: "0x55602A94239a7926D92da5C53Fb96E80372382aa",
       isSynthetic: true,
       coingeckoUrl: "https://www.coingecko.com/en/coins/chainlink",
@@ -573,6 +581,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "XRP",
       symbol: "XRP",
       decimals: 6,
+      priceDecimals: 4,
       address: "0xF1C2093383453831e8c90ecf809691123116dAaC",
       isSynthetic: true,
       imageUrl: "https://assets.coingecko.com/coins/images/44/small/xrp-symbol-white-128.png?1605778731",
@@ -744,6 +753,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Uniswap",
       symbol: "UNI",
       decimals: 18,
+      priceDecimals: 3,
       address: "0xF62dC1d2452d0893735D22945Af53C290b158eAF",
       isSynthetic: true,
       coingeckoUrl: "https://www.coingecko.com/en/coins/uniswap",
@@ -762,6 +772,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Chainlink",
       symbol: "LINK",
       decimals: 18,
+      priceDecimals: 3,
       address: "0x6BD09E8D65AD5cc761DF62454452d4EC1545e647",
       isSynthetic: true,
       isShortable: true,
@@ -771,6 +782,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "XRP",
       symbol: "XRP",
       decimals: 6,
+      priceDecimals: 4,
       address: "0xF1C2093383453831e8c90ecf809691123116dAaC",
       isSynthetic: true,
       imageUrl: "https://assets.coingecko.com/coins/images/44/small/xrp-symbol-white-128.png?1605778731",
@@ -960,7 +972,8 @@ export function isChartAvailabeForToken(chainId: number, tokenSymbol: string) {
   return true;
 }
 
-export function getPriceDecimals(chainId: number, tokenSymbol: string) {
+export function getPriceDecimals(chainId: number, tokenSymbol?: string) {
+  if (!tokenSymbol) return 2;
   const token = getTokenBySymbol(chainId, tokenSymbol);
   if (!token) return 2;
   return token.priceDecimals ?? 2;

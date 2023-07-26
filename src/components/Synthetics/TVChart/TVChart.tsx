@@ -3,9 +3,9 @@ import cx from "classnames";
 import { Dropdown, DropdownOption } from "components/Dropdown/Dropdown";
 import TVChartContainer, { ChartLine } from "components/TVChartContainer/TVChartContainer";
 import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
-import { convertTokenAddress, getToken, isChartAvailabeForToken } from "config/tokens";
+import { convertTokenAddress, getPriceDecimals, getToken, isChartAvailabeForToken } from "config/tokens";
 import { OrdersInfoData, PositionOrderInfo, isIncreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
-import { PositionsInfoData, formatLiquidationPrice } from "domain/synthetics/positions";
+import { PositionsInfoData } from "domain/synthetics/positions";
 import { TokensData, getCandlesDelta, getMidPrice, getTokenData } from "domain/synthetics/tokens";
 import { useLastCandles } from "domain/synthetics/tokens/useLastCandles";
 import { SyntheticsTVDataProvider } from "domain/synthetics/tradingview/SyntheticsTVDataProvider";
@@ -111,6 +111,7 @@ export function TVChart({
       })
       .map((order) => {
         const positionOrder = order as PositionOrderInfo;
+        const priceDecimal = getPriceDecimals(chainId, positionOrder.indexToken.symbol);
 
         const longOrShortText = order.isLong ? t`Long` : t`Short`;
         const orderTypeText = isIncreaseOrderType(order.orderType) ? t`Inc.` : t`Dec.`;
@@ -118,11 +119,12 @@ export function TVChart({
 
         return {
           title: `${longOrShortText} ${orderTypeText} ${tokenSymbol}`,
-          price: parseFloat(formatAmount(positionOrder.triggerPrice, USD_DECIMALS, 2)),
+          price: parseFloat(formatAmount(positionOrder.triggerPrice, USD_DECIMALS, priceDecimal)),
         };
       });
 
     const positionLines = Object.values(positionsInfo || {}).reduce((acc, position) => {
+      const priceDecimal = getPriceDecimals(chainId, position.indexToken.symbol);
       if (
         position.marketInfo &&
         convertTokenAddress(chainId, position.marketInfo.indexTokenAddress, "wrapped") ===
@@ -130,11 +132,11 @@ export function TVChart({
       ) {
         const longOrShortText = position.isLong ? t`Long` : t`Short`;
         const tokenSymbol = getTokenData(tokensData, position.marketInfo?.indexTokenAddress, "native")?.symbol;
-        const liquidationPrice = formatLiquidationPrice(position?.liquidationPrice);
+        const liquidationPrice = formatAmount(position?.liquidationPrice, USD_DECIMALS, priceDecimal);
 
         acc.push({
           title: t`Open ${longOrShortText} ${tokenSymbol}`,
-          price: parseFloat(formatAmount(position.entryPrice, USD_DECIMALS, 2)),
+          price: parseFloat(formatAmount(position.entryPrice, USD_DECIMALS, priceDecimal)),
         });
         if (liquidationPrice && liquidationPrice !== "NA") {
           acc.push({

@@ -42,9 +42,10 @@ import { getCommonError, getDecreaseError } from "domain/synthetics/trade/utils/
 import { getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-import { USD_DECIMALS } from "lib/legacy";
+import { DEFAULT_SLIPPAGE_AMOUNT, USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
+  bigNumberify,
   formatAmountFree,
   formatDeltaUsd,
   formatPercentage,
@@ -61,6 +62,7 @@ import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPric
 import SlippageInput from "components/SlippageInput/SlippageInput";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 export type Props = {
   position?: PositionInfo;
@@ -392,7 +394,7 @@ export function PositionSeller(p: Props) {
               <div>
                 <ExchangeInfoRow
                   label={
-                    <Tooltip
+                    <TooltipWithPortal
                       handle={t`Allowed Slippage`}
                       position="left-top"
                       renderContent={() => {
@@ -403,8 +405,9 @@ export function PositionSeller(p: Props) {
                               page.
                               <br />
                               <br />
-                              Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if
-                              prices are volatile.
+                              Note that a low allowed slippage, e.g. less than{" "}
+                              {formatPercentage(bigNumberify(DEFAULT_SLIPPAGE_AMOUNT), { signed: false })}, may result
+                              in failed orders if prices are volatile.
                             </Trans>
                           </div>
                         );
