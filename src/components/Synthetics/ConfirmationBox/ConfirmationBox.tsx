@@ -84,6 +84,8 @@ export type Props = {
   markPrice?: BigNumber;
   markRatio?: TokensRatio;
   triggerPrice?: BigNumber;
+  fixedTriggerThresholdType?: TriggerThresholdType;
+  fixedTriggerOrderType?: OrderType.LimitDecrease | OrderType.StopLossDecrease;
   triggerRatio?: TokensRatio;
   marketInfo?: MarketInfo;
   collateralToken?: TokenData;
@@ -120,6 +122,8 @@ export function ConfirmationBox(p: Props) {
     markPrice,
     markRatio,
     triggerPrice,
+    fixedTriggerThresholdType,
+    fixedTriggerOrderType,
     triggerRatio,
     marketInfo,
     collateralToken,
@@ -449,7 +453,8 @@ export function ConfirmationBox(p: Props) {
       !marketInfo ||
       !collateralToken ||
       !decreaseAmounts?.acceptablePrice ||
-      decreaseAmounts.triggerOrderType === undefined ||
+      fixedTriggerOrderType === undefined ||
+      fixedTriggerThresholdType === undefined ||
       !decreaseAmounts.triggerPrice ||
       !executionFee ||
       !tokensData ||
@@ -472,7 +477,7 @@ export function ConfirmationBox(p: Props) {
       minOutputUsd: BigNumber.from(0),
       isLong,
       decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
-      orderType: decreaseAmounts.triggerOrderType,
+      orderType: fixedTriggerOrderType,
       executionFee: executionFee.feeTokenAmount,
       allowedSlippage,
       referralCode: referralCodeForTxn,
@@ -1180,7 +1185,7 @@ export function ConfirmationBox(p: Props) {
             label={t`Trigger Price`}
             value={
               triggerPrice
-                ? `${decreaseAmounts?.triggerThresholdType} ${formatUsd(triggerPrice, {
+                ? `${fixedTriggerThresholdType} ${formatUsd(triggerPrice, {
                     displayDecimals: toTokenPriceDecimals,
                   })}`
                 : "..."

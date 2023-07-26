@@ -1,14 +1,14 @@
 import { t } from "@lingui/macro";
 import { IS_NETWORK_DISABLED, getChainName } from "config/chains";
+import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
 import { MarketInfo, getMintableMarketTokens } from "domain/synthetics/markets";
 import { PositionInfo } from "domain/synthetics/positions";
 import { TokenData, TokensRatio } from "domain/synthetics/tokens";
 import { getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber, ethers } from "ethers";
 import { DUST_USD, USD_DECIMALS, isAddressZero } from "lib/legacy";
-import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
 import { expandDecimals, formatAmount, formatUsd } from "lib/numbers";
-import { GmSwapFees, NextPositionValues, SwapPathStats, TradeFees } from "../types";
+import { GmSwapFees, NextPositionValues, SwapPathStats, TradeFees, TriggerThresholdType } from "../types";
 import { getMinCollateralUsdForLeverage } from "./decrease";
 
 export function getCommonError(p: { chainId: number; isConnected: boolean; hasOutdatedUi: boolean }) {
@@ -253,12 +253,14 @@ export function getDecreaseError(p: {
   receiveToken: TokenData | undefined;
   isTrigger: boolean;
   triggerPrice: BigNumber | undefined;
+  markPrice: BigNumber | undefined;
   existingPosition: PositionInfo | undefined;
   nextPositionValues: NextPositionValues | undefined;
   isLong: boolean;
   isContractAccount: boolean;
   minCollateralUsd: BigNumber | undefined;
   isNotEnoughReceiveTokenLiquidity: boolean;
+  fixedTriggerThresholdType: TriggerThresholdType | undefined;
 }) {
   const {
     marketInfo,
@@ -266,6 +268,7 @@ export function getDecreaseError(p: {
     inputSizeUsd,
     isTrigger,
     triggerPrice,
+    markPrice,
     existingPosition,
     isContractAccount,
     receiveToken,
@@ -273,6 +276,7 @@ export function getDecreaseError(p: {
     isLong,
     minCollateralUsd,
     isNotEnoughReceiveTokenLiquidity,
+    fixedTriggerThresholdType,
   } = p;
 
   if (isContractAccount && isAddressZero(receiveToken?.address)) {
@@ -300,6 +304,14 @@ export function getDecreaseError(p: {
       if (!isLong && triggerPrice?.gte(existingPosition.liquidationPrice)) {
         return [t`Price above Liq. Price`];
       }
+    }
+
+    if (fixedTriggerThresholdType === TriggerThresholdType.Above && triggerPrice.lt(markPrice || 0)) {
+      return [t`Price below Mark Price`];
+    }
+
+    if (fixedTriggerThresholdType === TriggerThresholdType.Below && triggerPrice.gt(markPrice || 0)) {
+      return [t`Price above Mark Price`];
     }
   }
 

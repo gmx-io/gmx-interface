@@ -12,7 +12,9 @@ import Tab from "components/Tab/Tab";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { getKeepLeverageKey, getLeverageEnabledKey, getLeverageKey } from "config/localStorage";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useUserReferralInfo } from "domain/referrals/hooks";
 import {
   estimateExecuteDecreaseOrderGasLimit,
@@ -28,7 +30,7 @@ import {
   getAvailableUsdLiquidityForPosition,
   getMarketIndexName,
 } from "domain/synthetics/markets";
-import { OrderInfo, OrdersInfoData } from "domain/synthetics/orders";
+import { OrderInfo, OrderType, OrdersInfoData } from "domain/synthetics/orders";
 import {
   PositionInfo,
   PositionsInfoData,
@@ -43,6 +45,7 @@ import {
   TradeFeesType,
   TradeMode,
   TradeType,
+  TriggerThresholdType,
   getDecreasePositionAmounts,
   getIncreasePositionAmounts,
   getMarkPrice,
@@ -67,7 +70,6 @@ import shortImg from "img/short.svg";
 import swapImg from "img/swap.svg";
 import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   formatAmount,
@@ -90,7 +92,6 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { CollateralSelectorRow } from "./CollateralSelectorRow";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import "./TradeBox.scss";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 export type Props = {
   tradeType: TradeType;
@@ -206,6 +207,11 @@ export function TradeBox(p: Props) {
 
   const [stage, setStage] = useState<"trade" | "confirmation" | "processing">("trade");
   const [focusedInput, setFocusedInput] = useState<"from" | "to">();
+
+  const [fixedTriggerThresholdType, setFixedTriggerThresholdType] = useState<TriggerThresholdType>();
+  const [fixedTriggerOrderType, setFixedTriggerOrderType] = useState<
+    OrderType.LimitDecrease | OrderType.StopLossDecrease
+  >();
 
   const [fromTokenInputValue, setFromTokenInputValue] = useSafeState("");
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigNumber.from(0);
@@ -668,6 +674,7 @@ export function TradeBox(p: Props) {
         inputSizeUsd: closeSizeUsd,
         sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
         triggerPrice,
+        markPrice,
         existingPosition,
         isContractAccount: false,
         receiveToken: existingPosition?.collateralToken,
@@ -676,6 +683,7 @@ export function TradeBox(p: Props) {
         isTrigger: true,
         minCollateralUsd,
         isNotEnoughReceiveTokenLiquidity: false,
+        fixedTriggerThresholdType: stage === "confirmation" ? fixedTriggerThresholdType : undefined,
       });
     }
 
@@ -707,6 +715,7 @@ export function TradeBox(p: Props) {
     minCollateralUsd,
     nextPositionValues,
     shortLiquidity,
+    stage,
     swapAmounts?.swapPathStats,
     swapAmounts?.usdIn,
     swapAmounts?.usdOut,
@@ -715,6 +724,7 @@ export function TradeBox(p: Props) {
     toTokenAmount,
     triggerPrice,
     triggerRatio,
+    fixedTriggerThresholdType,
   ]);
 
   const submitButtonText = useMemo(() => {
@@ -739,6 +749,11 @@ export function TradeBox(p: Props) {
     if (!account) {
       onConnectWallet();
       return;
+    }
+
+    if (isTrigger && decreaseAmounts?.triggerThresholdType && decreaseAmounts?.triggerOrderType) {
+      setFixedTriggerOrderType(decreaseAmounts.triggerOrderType);
+      setFixedTriggerThresholdType(decreaseAmounts.triggerThresholdType);
     }
 
     setStage("confirmation");
@@ -1397,6 +1412,8 @@ export function TradeBox(p: Props) {
         markPrice={markPrice}
         markRatio={markRatio}
         triggerPrice={triggerPrice}
+        fixedTriggerThresholdType={fixedTriggerThresholdType}
+        fixedTriggerOrderType={fixedTriggerOrderType}
         triggerRatio={triggerRatio}
         marketInfo={marketInfo}
         collateralToken={collateralToken}
