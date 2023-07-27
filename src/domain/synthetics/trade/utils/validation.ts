@@ -320,7 +320,7 @@ export function getDecreaseError(p: {
   }
 
   if (existingPosition) {
-    if (inputSizeUsd?.gt(existingPosition.sizeInUsd)) {
+    if (!isTrigger && inputSizeUsd?.gt(existingPosition.sizeInUsd)) {
       return [t`Max close amount exceeded`];
     }
 

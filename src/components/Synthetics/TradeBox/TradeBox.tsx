@@ -34,6 +34,7 @@ import { OrderInfo, OrderType, OrdersInfoData } from "domain/synthetics/orders";
 import {
   PositionInfo,
   PositionsInfoData,
+  formatAcceptablePrice,
   formatLeverage,
   formatLiquidationPrice,
   usePositionsConstants,
@@ -212,6 +213,7 @@ export function TradeBox(p: Props) {
   const [fixedTriggerOrderType, setFixedTriggerOrderType] = useState<
     OrderType.LimitDecrease | OrderType.StopLossDecrease
   >();
+  const [fixedTriggerAcceptablePrice, setFixedTriggerAcceptablePrice] = useState<BigNumber>();
 
   const [fromTokenInputValue, setFromTokenInputValue] = useSafeState("");
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigNumber.from(0);
@@ -751,9 +753,15 @@ export function TradeBox(p: Props) {
       return;
     }
 
-    if (isTrigger && decreaseAmounts?.triggerThresholdType && decreaseAmounts?.triggerOrderType) {
+    if (
+      isTrigger &&
+      decreaseAmounts?.triggerThresholdType &&
+      decreaseAmounts?.triggerOrderType &&
+      decreaseAmounts.acceptablePrice
+    ) {
       setFixedTriggerOrderType(decreaseAmounts.triggerOrderType);
       setFixedTriggerThresholdType(decreaseAmounts.triggerThresholdType);
+      setFixedTriggerAcceptablePrice(decreaseAmounts.acceptablePrice);
     }
 
     setStage("confirmation");
@@ -1184,7 +1192,7 @@ export function TradeBox(p: Props) {
           className="SwapBox-info-row"
           label={t`Acceptable Price`}
           value={
-            formatUsd(increaseAmounts?.acceptablePrice, {
+            formatAcceptablePrice(increaseAmounts?.acceptablePrice, {
               displayDecimals: toToken?.priceDecimals,
             }) || "-"
           }
@@ -1290,12 +1298,19 @@ export function TradeBox(p: Props) {
           className="SwapBox-info-row"
           label={t`Acceptable Price Impact`}
           value={
-            <span className="TradeBox-acceptable-price-impact" onClick={() => setIsEditingAcceptablePriceImpact(true)}>
-              {formatPercentage(acceptablePriceImpactBpsForLimitOrders.mul(-1))}
-              <span className="edit-icon" onClick={() => null}>
-                <AiOutlineEdit fontSize={16} />
+            decreaseAmounts?.triggerOrderType === OrderType.StopLossDecrease ? (
+              "NA"
+            ) : (
+              <span
+                className="TradeBox-acceptable-price-impact"
+                onClick={() => setIsEditingAcceptablePriceImpact(true)}
+              >
+                {formatPercentage(acceptablePriceImpactBpsForLimitOrders.mul(-1))}
+                <span className="edit-icon" onClick={() => null}>
+                  <AiOutlineEdit fontSize={16} />
+                </span>
               </span>
-            </span>
+            )
           }
         />
 
@@ -1303,7 +1318,7 @@ export function TradeBox(p: Props) {
           className="SwapBox-info-row"
           label={t`Acceptable Price`}
           value={
-            formatUsd(decreaseAmounts?.acceptablePrice, {
+            formatAcceptablePrice(decreaseAmounts?.acceptablePrice, {
               displayDecimals: toToken?.priceDecimals,
             }) || "-"
           }
@@ -1414,6 +1429,7 @@ export function TradeBox(p: Props) {
         triggerPrice={triggerPrice}
         fixedTriggerThresholdType={fixedTriggerThresholdType}
         fixedTriggerOrderType={fixedTriggerOrderType}
+        fixedTriggerAcceptablePrice={fixedTriggerAcceptablePrice}
         triggerRatio={triggerRatio}
         marketInfo={marketInfo}
         collateralToken={collateralToken}

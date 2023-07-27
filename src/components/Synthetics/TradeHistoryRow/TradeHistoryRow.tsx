@@ -22,6 +22,7 @@ import "./TradeHistoryRow.scss";
 import { getTriggerThresholdType } from "domain/synthetics/trade";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { Link } from "react-router-dom";
+import { formatAcceptablePrice } from "domain/synthetics/positions";
 
 type Props = {
   tradeAction: TradeAction;
@@ -145,9 +146,12 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
           ? tradeAction.executionPrice
           : tradeAction.acceptablePrice;
 
-      return t`${actionText} ${increaseText} ${positionText} ${sizeDeltaText}, ${pricePrefix}: ${formatUsd(price, {
-        displayDecimals: priceDecimals,
-      })},  Market: ${tradeAction.marketInfo.name}`;
+      return t`${actionText} ${increaseText} ${positionText} ${sizeDeltaText}, ${pricePrefix}: ${formatAcceptablePrice(
+        price,
+        {
+          displayDecimals: priceDecimals,
+        }
+      )},  Market: ${tradeAction.marketInfo.name}`;
     } else {
       const collateralText = formatTokenAmount(collateralDeltaAmount, collateralToken.decimals, collateralToken.symbol);
 

@@ -1,7 +1,7 @@
 import { UserReferralInfo } from "domain/referrals";
 import { MarketInfo, getCappedPoolPnl, getPoolUsdWithoutPnl } from "domain/synthetics/markets";
 import { Token, getIsEquivalentTokens } from "domain/tokens";
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { CHART_PERIODS } from "lib/legacy";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { applyFactor, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
@@ -219,6 +219,14 @@ export function formatLiquidationPrice(liquidationPrice?: BigNumber, opts: { dis
   }
 
   return formatUsd(liquidationPrice, { ...opts, maxThreshold: "1000000" });
+}
+
+export function formatAcceptablePrice(acceptablePrice?: BigNumber, opts: { displayDecimals?: number } = {}) {
+  if (acceptablePrice && (acceptablePrice.eq(0) || acceptablePrice.gte(ethers.constants.MaxInt256))) {
+    return "NA";
+  }
+
+  return formatUsd(acceptablePrice, { ...opts });
 }
 
 export function getLeverage(p: {

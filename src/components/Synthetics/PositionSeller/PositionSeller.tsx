@@ -24,6 +24,7 @@ import { MarketsInfoData } from "domain/synthetics/markets";
 import { OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
 import {
   PositionInfo,
+  formatAcceptablePrice,
   formatLeverage,
   formatLiquidationPrice,
   usePositionsConstants,
@@ -448,7 +449,7 @@ export function PositionSeller(p: Props) {
               <ExchangeInfoRow
                 label={t`Acceptable Price`}
                 value={
-                  formatUsd(decreaseAmounts?.acceptablePrice, {
+                  formatAcceptablePrice(decreaseAmounts?.acceptablePrice, {
                     displayDecimals: indexPriceDecimals,
                   }) || "-"
                 }

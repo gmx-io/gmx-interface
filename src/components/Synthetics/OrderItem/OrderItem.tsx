@@ -5,6 +5,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   OrderInfo,
+  OrderType,
   PositionOrderInfo,
   SwapOrderInfo,
   isDecreaseOrderType,
@@ -207,9 +208,13 @@ export function OrderItem(p: Props) {
             <>
               <StatsTooltipRow
                 label={t`Acceptable Price`}
-                value={`${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.acceptablePrice, {
-                  displayDecimals: priceDecimals,
-                })}`}
+                value={
+                  positionOrder.orderType === OrderType.StopLossDecrease
+                    ? "NA"
+                    : `${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.acceptablePrice, {
+                        displayDecimals: priceDecimals,
+                      })}`
+                }
                 showDollar={false}
               />
             </>
@@ -309,13 +314,6 @@ export function OrderItem(p: Props) {
             <div className="App-card-row">
               <div className="label">
                 <Trans>Trigger Price</Trans>
-              </div>
-              <div>{renderTriggerPrice()}</div>
-            </div>
-
-            <div className="App-card-row">
-              <div className="label">
-                <Trans>Acceptable Price</Trans>
               </div>
               <div>{renderTriggerPrice()}</div>
             </div>
