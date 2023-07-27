@@ -264,10 +264,10 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
                     <div className="mobile-token-card">
                       <img
                         src={importImage(
-                          "ic_" + (market?.isSpotOnly ? "spot" : indexToken?.symbol.toLocaleLowerCase()) + "_40.svg"
+                          "ic_" + (market?.isSpotOnly ? "spot" : indexToken?.symbol.toLocaleLowerCase()) + "_24.svg"
                         )}
                         alt={indexToken.symbol}
-                        width="40"
+                        width="20"
                       />
                       <div className="token-symbol-text">{market?.name}</div>
                       <div>
