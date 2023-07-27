@@ -25,6 +25,27 @@
     }
   }
 
+  &.approve-done {
+    display: flex;
+    width: 380px;
+    height: 47px;
+    padding: 15.5px 0px 17.5px 0px;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    border-radius: 4px;
+    background: #13F287;
+    margin-top: 10px;
+
+    &:not([disabled]):hover {
+      opacity: 0.8;
+    }
+
+    &:not([disabled]):active {
+      opacity: 0.8;
+    }
+  }
+
   &.approved {
     display: flex;
     flex-direction: row;

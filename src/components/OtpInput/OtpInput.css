@@ -1,0 +1,19 @@
+.input-container {
+  display: flex;
+  gap: 5px;
+}
+
+.input-box {
+  display: flex;
+  width: 52.78px;
+  height: 52.78px;
+  padding: 13.476px;
+  align-items: center;  
+  justify-content: center; 
+  flex-shrink: 0;
+  border-radius: 8.984px;
+  border: 1.123px solid rgba(255, 255, 255, 0.07);
+  background: #232323;
+  text-align: center; 
+}
+

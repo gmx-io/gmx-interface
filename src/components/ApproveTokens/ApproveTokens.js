@@ -27,7 +27,7 @@ export default function ApproveTokens(props) {
           setPendingTxns={setPendingTxns}
         />
       ))}
-      <Button variant="primary-action" className="w-20 h-full" onClick={closeApprovalsModal}>
+      <Button variant="approve-done" className="w-20 h-full" onClick={closeApprovalsModal}>
         {`Done`}
       </Button>
     </div>

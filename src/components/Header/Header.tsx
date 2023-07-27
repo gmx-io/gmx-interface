@@ -34,6 +34,7 @@ type Props = {
   disconnectAccountAndCloseSettings: () => void;
   openSettings: () => void;
   setWalletModalVisible: (visible: boolean) => void;
+  setDoesUserHaveEmail: (visible: boolean) => void;
   redirectPopupTimestamp: number;
   showRedirectModal: (to: string) => void;
 };
@@ -42,6 +43,7 @@ export function Header({
   disconnectAccountAndCloseSettings,
   openSettings,
   setWalletModalVisible,
+  setDoesUserHaveEmail,
   redirectPopupTimestamp,
   showRedirectModal,
 }: Props) {
@@ -110,6 +112,7 @@ export function Header({
               disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
               openSettings={openSettings}
               setWalletModalVisible={setWalletModalVisible}
+              setDoesUserHaveEmail={setDoesUserHaveEmail}
               redirectPopupTimestamp={redirectPopupTimestamp}
               showRedirectModal={showRedirectModal}
             />
@@ -133,6 +136,7 @@ export function Header({
                 openSettings={openSettings}
                 small
                 setWalletModalVisible={setWalletModalVisible}
+                setDoesUserHaveEmail={setDoesUserHaveEmail}
                 redirectPopupTimestamp={redirectPopupTimestamp}
                 showRedirectModal={showRedirectModal}
               />

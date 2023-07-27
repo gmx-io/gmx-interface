@@ -3,7 +3,7 @@ import cx from "classnames";
 import ButtonLink from "./ButtonLink";
 import "./Button.scss";
 
-type ButtonVariant = "primary" | "primary-action" | "semi-clear" | "clear" | "approved" | "await";
+type ButtonVariant = "primary" | "primary-action" | "semi-clear" | "clear" | "approved" | "await" | "approve-done";
 
 type ButtonProps = HTMLProps<HTMLButtonElement> & {
   children: ReactNode;
