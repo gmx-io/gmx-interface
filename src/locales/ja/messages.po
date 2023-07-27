@@ -29,10 +29,6 @@ msgstr "2022年1月6日"
 msgid "24h Volume"
 msgstr "24時間取引高"
 
-#: src/components/Exchange/PositionSeller.js
-#~ msgid "<0/>Profit price: {0} ${1}. This rule applies for the next {2}, until {3}."
-#~ msgstr ""
-
 #: src/App/App.js
 msgid "<0>Install Coinbase Wallet</0> to start using GMX."
 msgstr ""
@@ -106,10 +102,6 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} available liquidity. Reduce the \"Pay\" size, or change the \"Collateral In\" token.</1>"
 msgstr ""
-
-#: src/components/Exchange/SwapBox.js
-#~ msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} available liquidity. Reduce the \"Pay\" size, or use {4} as the \"Pay\" token to use it for collateral.</1><2>You can buy {5} on 1inch.</2>"
-#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
@@ -410,6 +402,10 @@ msgstr "利用可能な流動性"
 #: src/components/Glp/GlpSwap.js
 msgid "Available amount to deposit into GLP."
 msgstr "GLPに入金可能な金額"
+
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "Available amount to deposit into the specific GM pool."
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -1642,10 +1638,6 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.js
 msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 msgstr ""
-
-#: src/domain/synthetics/markets/simulateExecuteDepositTxn.tsx
-#~ msgid "Execute order simulation failed."
-#~ msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
 msgid "Execution Fee"
@@ -3031,11 +3023,6 @@ msgstr "オープン中..."
 msgid "Order"
 msgstr "注文"
 
-#: src/domain/synthetics/markets/simulateExecuteDepositTxn.tsx
-#: src/domain/synthetics/markets/simulateExecuteDepositTxn.tsx
-#~ msgid "Order Error."
-#~ msgstr ""
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 msgid "Order cancelled"
@@ -3412,10 +3399,6 @@ msgstr "Avalanche上の価格"
 msgid "Profit"
 msgstr "利益"
 
-#: src/components/Exchange/PositionSeller.js
-#~ msgid "Profit price: {0} ${1}. This rule applies for the next {2}, until {3}."
-#~ msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
 msgstr ""
@@ -3444,14 +3427,6 @@ msgstr ""
 #: src/pages/BuyGlp/BuyGlp.js
 msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverage trading."
 msgstr ""
-
-#: src/pages/BuyGlp/BuyGlp.js
-#~ msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
-#~ msgstr "<0>GLPトークン</0>を購入して、スワップとレバレッジ取引からの手数料を{nativeTokenSymbol}トークンで得る。"
-
-#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-#~ msgid "Purchase <0>GM Tokens.</0>"
-#~ msgstr ""
 
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
 msgid "Purchase <0>GM Tokens</0> to earn fees from swaps and leverage trading."
@@ -3545,10 +3520,6 @@ msgstr "売却までの規定時間に達していません"
 #: src/pages/Home/Home.js
 msgid "Reduce Liquidation Risks"
 msgstr "清算リスクを減らす"
-
-#: src/components/Exchange/PositionSeller.js
-#~ msgid "Reducing the position at the current price will forfeit a <0>pending profit</0> of {deltaStr}. <1/>"
-#~ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Code"
@@ -4365,10 +4336,6 @@ msgstr "このコードは{0}上で他の人がすでに取得済です。この
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
 msgstr "このコードは{0}上ではまだ登録されていないため、紹介報酬を受け取ることはできません。<0/><1/>ネットワークを切り替えて、{1}上でこのコードを作成してください。"
-
-#: src/components/Exchange/PositionSeller.js
-#~ msgid "This order will forfeit a <0>profit</0> of {deltaStr}. <1/>"
-#~ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "This position was liquidated as the max leverage of 100x was exceeded."
@@ -5416,6 +5383,10 @@ msgstr "{0}が必要です"
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "{0} and {1} can be used to mint GM for this market up to the specified minting caps."
+msgstr ""
+
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "{0} and {1} can be used to mint GM tokens for this market up to the specified minting caps."
 msgstr ""
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx

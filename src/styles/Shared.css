@@ -423,6 +423,11 @@ button.btn-link:hover .logout-icon {
   flex-direction: column;
 }
 
+.items-center {
+  display: flex;
+  align-items: center;
+}
+
 .w-full {
   width: 100%;
 }
@@ -461,4 +466,8 @@ button.btn-link:hover .logout-icon {
 
 .text-warning {
   color: rgb(243, 181, 12);
+}
+
+.ml-xs {
+  margin-left: 0.5rem;
 }

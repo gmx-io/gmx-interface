@@ -1,7 +1,6 @@
 import { Trans } from "@lingui/macro";
 import { groupBy } from "lodash";
 import Button from "components/Button/Button";
-import { getChainName } from "config/chains";
 import {
   MarketInfo,
   MarketTokensAPRData,
@@ -20,6 +19,9 @@ import { useMemo } from "react";
 import { useMedia } from "react-use";
 import { Operation } from "../GmSwap/GmSwapBox/GmSwapBox";
 import "./GmList.scss";
+import Tooltip from "components/Tooltip/Tooltip";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { getIcons } from "config/icons";
 
 type Props = {
   hideTitle?: boolean;
@@ -29,8 +31,69 @@ type Props = {
   marketsTokensAPRData?: MarketTokensAPRData;
 };
 
+function renderMintableAmount({ mintableInfo, market, token, longToken, shortToken }) {
+  return (
+    <Tooltip
+      handle={
+        <>
+          {formatTokenAmount(mintableInfo?.mintableAmount, token.decimals, "GM", {
+            useCommas: true,
+          })}
+          <br />({formatUsd(mintableInfo?.mintableUsd)})
+        </>
+      }
+      className="text-none"
+      position="right-bottom"
+      renderContent={() => (
+        <>
+          <p className="text-white">
+            <Trans>
+              {longToken.symbol} and {shortToken.symbol} can be used to mint GM tokens for this market up to the
+              specified minting caps.
+            </Trans>
+          </p>
+          <br />
+          <StatsTooltipRow
+            label={`Max ${longToken.symbol}`}
+            value={[
+              formatTokenAmount(mintableInfo?.longDepositCapacityAmount, longToken.decimals, longToken.symbol, {
+                useCommas: true,
+                displayDecimals: longToken.isStable ? 0 : 2,
+              }),
+              `(${formatTokenAmount(market.longPoolAmount, longToken.decimals, "", {
+                useCommas: true,
+                displayDecimals: longToken.isStable ? 0 : 2,
+              })} / ${formatTokenAmount(market.maxLongPoolAmount, longToken.decimals, longToken.symbol, {
+                useCommas: true,
+                displayDecimals: longToken.isStable ? 0 : 2,
+              })})`,
+            ]}
+          />
+          <StatsTooltipRow
+            label={`Max ${shortToken.symbol}`}
+            value={[
+              formatTokenAmount(mintableInfo?.shortDepositCapacityAmount, shortToken.decimals, shortToken.symbol, {
+                useCommas: true,
+                displayDecimals: shortToken.isStable ? 0 : 2,
+              }),
+
+              `(${formatTokenAmount(market.shortPoolAmount, shortToken.decimals, "", {
+                useCommas: true,
+                displayDecimals: shortToken.isStable ? 0 : 2,
+              })} / ${formatTokenAmount(market.maxShortPoolAmount, shortToken.decimals, shortToken.symbol, {
+                useCommas: true,
+                displayDecimals: shortToken.isStable ? 0 : 2,
+              })})`,
+            ]}
+          />
+        </>
+      )}
+    />
+  );
+}
 export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensData, marketsTokensAPRData }: Props) {
   const { chainId } = useChainId();
+  const currentIcons = getIcons(chainId);
   const sortedMarketTokens = useMemo(() => {
     if (!marketsInfoData) {
       return [];
@@ -92,7 +155,8 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
           {!hideTitle && (
             <>
               <div className="App-card-title">
-                <Trans>GM ({getChainName(chainId)})</Trans>
+                <Trans>GM Markets Pools</Trans>
+                <img src={currentIcons.network} width="16" alt="Network Icon" />
               </div>
               <div className="App-card-divider"></div>
             </>
@@ -108,17 +172,27 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
                   <Trans>PRICE</Trans>
                 </th>
                 <th>
+                  <Trans>TOTAL SUPPLY</Trans>
+                </th>
+                <th>
+                  <Tooltip
+                    handle={<Trans>MINTABLE</Trans>}
+                    className="text-none"
+                    position="right-bottom"
+                    renderContent={() => (
+                      <p className="text-white">
+                        <Trans>Available amount to deposit into the specific GM pool.</Trans>
+                      </p>
+                    )}
+                  />
+                </th>
+                <th>
                   <Trans>WALLET</Trans>
                 </th>
                 <th>
                   <Trans>APR</Trans>
                 </th>
-                <th>
-                  <Trans>TOTAL SUPPLY</Trans>
-                </th>
-                <th>
-                  <Trans>MINTABLE</Trans>
-                </th>
+
                 <th></th>
               </tr>
             </thead>
@@ -169,26 +243,28 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
                     </td>
                     <td>{formatUsd(token.prices?.minPrice)}</td>
 
-                    <td>
-                      {formatTokenAmount(token.balance, token.decimals, "GM", { useCommas: true })}
-                      <br />({formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice)) || "..."})
-                    </td>
-
-                    <td>{apr ? `${formatAmount(apr, 2, 2)}%` : "..."}</td>
-
                     <td className="GmList-last-column">
                       {formatTokenAmount(totalSupply, token.decimals, "GM", {
                         useCommas: true,
                       })}
                       <br />({formatUsd(totalSupplyUsd)})
                     </td>
-
                     <td className="GmList-last-column">
-                      {formatTokenAmount(mintableInfo?.mintableAmount, token.decimals, "GM", {
-                        useCommas: true,
+                      {renderMintableAmount({
+                        mintableInfo,
+                        market,
+                        token,
+                        longToken,
+                        shortToken,
                       })}
-                      <br />({formatUsd(mintableInfo?.mintableUsd)})
                     </td>
+
+                    <td>
+                      {formatTokenAmount(token.balance, token.decimals, "GM", { useCommas: true })}
+                      <br />({formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice)) || "..."})
+                    </td>
+
+                    <td>{apr ? `${formatAmount(apr, 2, 2)}%` : "..."}</td>
 
                     <td className="GmList-actions">
                       <Button
@@ -218,8 +294,9 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
         <>
           {!hideTitle && (
             <div className="App-card-title">
-              <span>
-                <Trans>GM ({getChainName(chainId)})</Trans>
+              <span className="items-center">
+                <Trans>GM Markets Pools</Trans>
+                <img className="ml-xs" src={currentIcons.network} width="16" alt="Network Icon" />
               </span>
             </div>
           )}
@@ -232,6 +309,8 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
               const totalSupplyUsd = convertToUsd(totalSupply, token?.decimals, token?.prices?.minPrice);
               const market = getByKey(marketsInfoData, token?.address);
               const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
+              const longToken = getTokenData(tokensData, market?.longTokenAddress);
+              const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
               const mintableInfo = market && token ? getMintableMarketTokens(market, token) : undefined;
 
               if (!indexToken) {
@@ -265,6 +344,38 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
                     </div>
                     <div className="App-card-row">
                       <div className="label">
+                        <Trans>Total Supply</Trans>
+                      </div>
+                      <div>
+                        {" "}
+                        {formatTokenAmount(totalSupply, token.decimals, "GM")} ({formatUsd(totalSupplyUsd)})
+                      </div>
+                    </div>
+                    <div className="App-card-row">
+                      <div className="label">
+                        <Tooltip
+                          handle={<Trans>Mintable</Trans>}
+                          className="text-none"
+                          position="left-bottom"
+                          renderContent={() => (
+                            <p className="text-white">
+                              <Trans>Available amount to deposit into the specific GM pool.</Trans>
+                            </p>
+                          )}
+                        />
+                      </div>
+                      <div>
+                        {renderMintableAmount({
+                          mintableInfo,
+                          market,
+                          token,
+                          longToken,
+                          shortToken,
+                        })}
+                      </div>
+                    </div>
+                    <div className="App-card-row">
+                      <div className="label">
                         <Trans>Wallet</Trans>
                       </div>
                       <div>
@@ -278,25 +389,7 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
                       </div>
                       <div>{apr ? `${formatAmount(apr, 2, 2)}%` : "..."}</div>
                     </div>
-                    <div className="App-card-row">
-                      <div className="label">
-                        <Trans>Total Supply</Trans>
-                      </div>
-                      <div>
-                        {" "}
-                        {formatTokenAmount(totalSupply, token.decimals, "GM")} ({formatUsd(totalSupplyUsd)})
-                      </div>
-                    </div>
-                    <div className="App-card-row">
-                      <div className="label">
-                        <Trans>Mintable</Trans>
-                      </div>
-                      <div>
-                        {" "}
-                        {formatTokenAmount(mintableInfo?.mintableAmount, token.decimals, "GM", { useCommas: true })} (
-                        {formatUsd(mintableInfo?.mintableUsd)})
-                      </div>
-                    </div>
+
                     <div className="App-card-divider"></div>
                     <div className="App-card-buttons m-0">
                       <Button variant="secondary" to={`/pools?operation=${Operation.Deposit}&market=${token.address}`}>
