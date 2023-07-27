@@ -2050,7 +2050,7 @@ export default function SwapBox(props) {
                 <span className="muted">Leverage slider</span>
               </ToggleSwitch>
               {isLeverageSliderEnabled && (
-                <LeverageSlider isLong={isLong} leverageOption={leverageOption} onChange={setLeverageOption} />
+                <LeverageSlider isPositive={isLong} value={leverageOption} onChange={setLeverageOption} />
               )}
               {isShort && (
                 <div className="Exchange-info-row">
