@@ -30,8 +30,8 @@ msgid "24h Volume"
 msgstr "24小时数量"
 
 #: src/components/Exchange/PositionSeller.js
-msgid "<0/>Profit price: {0} ${1}. This rule applies for the next {2}, until {3}."
-msgstr ""
+#~ msgid "<0/>Profit price: {0} ${1}. This rule applies for the next {2}, until {3}."
+#~ msgstr ""
 
 #: src/App/App.js
 msgid "<0>Install Coinbase Wallet</0> to start using GMX."
@@ -3413,8 +3413,8 @@ msgid "Profit"
 msgstr "盈利"
 
 #: src/components/Exchange/PositionSeller.js
-msgid "Profit price: {0} ${1}. This rule applies for the next {2}, until {3}."
-msgstr ""
+#~ msgid "Profit price: {0} ${1}. This rule applies for the next {2}, until {3}."
+#~ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
@@ -3547,8 +3547,8 @@ msgid "Reduce Liquidation Risks"
 msgstr "降低清算风险"
 
 #: src/components/Exchange/PositionSeller.js
-msgid "Reducing the position at the current price will forfeit a <0>pending profit</0> of {deltaStr}. <1/>"
-msgstr ""
+#~ msgid "Reducing the position at the current price will forfeit a <0>pending profit</0> of {deltaStr}. <1/>"
+#~ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Code"
@@ -4367,8 +4367,8 @@ msgid "This code is not yet registered on {0}, you will not receive rebates ther
 msgstr "此代码尚未在{0}上注册，你将不会收到回扣<0/><1/>切换你的网络，在{1}上创建此代码"
 
 #: src/components/Exchange/PositionSeller.js
-msgid "This order will forfeit a <0>profit</0> of {deltaStr}. <1/>"
-msgstr ""
+#~ msgid "This order will forfeit a <0>profit</0> of {deltaStr}. <1/>"
+#~ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "This position was liquidated as the max leverage of 100x was exceeded."
