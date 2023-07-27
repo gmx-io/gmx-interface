@@ -31,66 +31,6 @@ type Props = {
   marketsTokensAPRData?: MarketTokensAPRData;
 };
 
-function renderMintableAmount({ mintableInfo, market, token, longToken, shortToken }) {
-  return (
-    <Tooltip
-      handle={
-        <>
-          {formatTokenAmount(mintableInfo?.mintableAmount, token.decimals, "GM", {
-            useCommas: true,
-          })}
-          <br />({formatUsd(mintableInfo?.mintableUsd)})
-        </>
-      }
-      className="text-none"
-      position="right-bottom"
-      renderContent={() => (
-        <>
-          <p className="text-white">
-            <Trans>
-              {longToken.symbol} and {shortToken.symbol} can be used to mint GM tokens for this market up to the
-              specified minting caps.
-            </Trans>
-          </p>
-          <br />
-          <StatsTooltipRow
-            label={`Max ${longToken.symbol}`}
-            value={[
-              formatTokenAmount(mintableInfo?.longDepositCapacityAmount, longToken.decimals, longToken.symbol, {
-                useCommas: true,
-                displayDecimals: longToken.isStable ? 0 : 2,
-              }),
-              `(${formatTokenAmount(market.longPoolAmount, longToken.decimals, "", {
-                useCommas: true,
-                displayDecimals: longToken.isStable ? 0 : 2,
-              })} / ${formatTokenAmount(market.maxLongPoolAmount, longToken.decimals, longToken.symbol, {
-                useCommas: true,
-                displayDecimals: longToken.isStable ? 0 : 2,
-              })})`,
-            ]}
-          />
-          <StatsTooltipRow
-            label={`Max ${shortToken.symbol}`}
-            value={[
-              formatTokenAmount(mintableInfo?.shortDepositCapacityAmount, shortToken.decimals, shortToken.symbol, {
-                useCommas: true,
-                displayDecimals: shortToken.isStable ? 0 : 2,
-              }),
-
-              `(${formatTokenAmount(market.shortPoolAmount, shortToken.decimals, "", {
-                useCommas: true,
-                displayDecimals: shortToken.isStable ? 0 : 2,
-              })} / ${formatTokenAmount(market.maxShortPoolAmount, shortToken.decimals, shortToken.symbol, {
-                useCommas: true,
-                displayDecimals: shortToken.isStable ? 0 : 2,
-              })})`,
-            ]}
-          />
-        </>
-      )}
-    />
-  );
-}
 export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensData, marketsTokensAPRData }: Props) {
   const { chainId } = useChainId();
   const currentIcons = getIcons(chainId);
@@ -410,5 +350,66 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
         </>
       )}
     </div>
+  );
+}
+
+function renderMintableAmount({ mintableInfo, market, token, longToken, shortToken }) {
+  return (
+    <Tooltip
+      handle={
+        <>
+          {formatTokenAmount(mintableInfo?.mintableAmount, token.decimals, "GM", {
+            useCommas: true,
+          })}
+          <br />({formatUsd(mintableInfo?.mintableUsd)})
+        </>
+      }
+      className="text-none"
+      position="right-bottom"
+      renderContent={() => (
+        <>
+          <p className="text-white">
+            <Trans>
+              {longToken.symbol} and {shortToken.symbol} can be used to mint GM tokens for this market up to the
+              specified minting caps.
+            </Trans>
+          </p>
+          <br />
+          <StatsTooltipRow
+            label={`Max ${longToken.symbol}`}
+            value={[
+              formatTokenAmount(mintableInfo?.longDepositCapacityAmount, longToken.decimals, longToken.symbol, {
+                useCommas: true,
+                displayDecimals: longToken.isStable ? 0 : 2,
+              }),
+              `(${formatTokenAmount(market.longPoolAmount, longToken.decimals, "", {
+                useCommas: true,
+                displayDecimals: longToken.isStable ? 0 : 2,
+              })} / ${formatTokenAmount(market.maxLongPoolAmount, longToken.decimals, longToken.symbol, {
+                useCommas: true,
+                displayDecimals: longToken.isStable ? 0 : 2,
+              })})`,
+            ]}
+          />
+          <StatsTooltipRow
+            label={`Max ${shortToken.symbol}`}
+            value={[
+              formatTokenAmount(mintableInfo?.shortDepositCapacityAmount, shortToken.decimals, shortToken.symbol, {
+                useCommas: true,
+                displayDecimals: shortToken.isStable ? 0 : 2,
+              }),
+
+              `(${formatTokenAmount(market.shortPoolAmount, shortToken.decimals, "", {
+                useCommas: true,
+                displayDecimals: shortToken.isStable ? 0 : 2,
+              })} / ${formatTokenAmount(market.maxShortPoolAmount, shortToken.decimals, shortToken.symbol, {
+                useCommas: true,
+                displayDecimals: shortToken.isStable ? 0 : 2,
+              })})`,
+            ]}
+          />
+        </>
+      )}
+    />
   );
 }

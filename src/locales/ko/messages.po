@@ -404,6 +404,7 @@ msgid "Available amount to deposit into GLP."
 msgstr "GLP에 예치할 수 있는 양"
 
 #: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
 msgid "Available amount to deposit into the specific GM pool."
 msgstr ""
 
@@ -1841,7 +1842,12 @@ msgstr "{0} 업그레이드를 위해 GLP 판매가 비활성화되었습니다"
 
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
-msgid "GM ({0})"
+#~ msgid "GM ({0})"
+#~ msgstr ""
+
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "GM Markets Pools"
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx

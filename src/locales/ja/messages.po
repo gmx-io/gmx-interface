@@ -404,6 +404,7 @@ msgid "Available amount to deposit into GLP."
 msgstr "GLPに入金可能な金額"
 
 #: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
 msgid "Available amount to deposit into the specific GM pool."
 msgstr ""
 
@@ -1841,7 +1842,12 @@ msgstr "{0}アップグレード未完了のためGLP売却は停止中です"
 
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
-msgid "GM ({0})"
+#~ msgid "GM ({0})"
+#~ msgstr ""
+
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "GM Markets Pools"
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx

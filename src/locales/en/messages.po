@@ -404,6 +404,7 @@ msgid "Available amount to deposit into GLP."
 msgstr "Available amount to deposit into GLP."
 
 #: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
 msgid "Available amount to deposit into the specific GM pool."
 msgstr "Available amount to deposit into the specific GM pool."
 
@@ -1841,8 +1842,13 @@ msgstr "GLP sell disabled, pending {0} upgrade"
 
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
-msgid "GM ({0})"
-msgstr "GM ({0})"
+#~ msgid "GM ({0})"
+#~ msgstr "GM ({0})"
+
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "GM Markets Pools"
+msgstr "GM Markets Pools"
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx

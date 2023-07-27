@@ -404,6 +404,7 @@ msgid "Available amount to deposit into GLP."
 msgstr "可供存入GLP的金额"
 
 #: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
 msgid "Available amount to deposit into the specific GM pool."
 msgstr ""
 
@@ -1841,7 +1842,12 @@ msgstr "GLP售卖已禁止，等待{0}升级"
 
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
-msgid "GM ({0})"
+#~ msgid "GM ({0})"
+#~ msgstr ""
+
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "GM Markets Pools"
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx

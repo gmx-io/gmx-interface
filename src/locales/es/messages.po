@@ -404,6 +404,7 @@ msgid "Available amount to deposit into GLP."
 msgstr "Cantidad disponible para depositar en GLP."
 
 #: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
 msgid "Available amount to deposit into the specific GM pool."
 msgstr ""
 
@@ -1841,7 +1842,12 @@ msgstr "Venta de GLP desactivada, actualización {0} pendiente"
 
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
-msgid "GM ({0})"
+#~ msgid "GM ({0})"
+#~ msgstr ""
+
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "GM Markets Pools"
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
