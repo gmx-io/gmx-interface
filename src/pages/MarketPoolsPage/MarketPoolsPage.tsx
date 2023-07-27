@@ -101,6 +101,7 @@ export function MarketPoolsPage(p: Props) {
           marketTokensData={depositMarketTokensData}
           marketsInfoData={marketsInfoData}
           tokensData={tokensData}
+          shouldScrollToTop={true}
         />
       </div>
       <Footer />

@@ -1961,6 +1961,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
             marketTokensData={marketTokensData}
             marketsInfoData={marketsInfoData}
             tokensData={tokensData}
+            shouldScrollToTop
           />
         </div>
       )}
