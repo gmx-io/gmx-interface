@@ -11,7 +11,7 @@ type MarketsResult = {
   marketsAddresses?: string[];
 };
 
-const MARKETS_COUNT = 100;
+const MARKETS_COUNT = 3;
 
 export function useMarkets(chainId: number): MarketsResult {
   const { data } = useMulticall(chainId, "useMarketsData", {
