@@ -2,6 +2,7 @@ import { t } from "@lingui/macro";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
 import { convertTokenAddress } from "config/tokens";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
+import cx from "classnames";
 import {
   PendingDepositData,
   PendingWithdrawalData,
@@ -43,6 +44,8 @@ export function GmStatusNotification({
   const withdrawalStatus = getByKey(withdrawalStatuses, withdrawalStatusKey);
 
   const isCompleted = isDeposit ? Boolean(depositStatus?.executedTxnHash) : Boolean(withdrawalStatus?.executedTxnHash);
+
+  const hasError = isDeposit ? Boolean(depositStatus?.cancelledTxnHash) : Boolean(withdrawalStatus?.cancelledTxnHash);
 
   const pendingDepositKey = useMemo(() => {
     if (pendingDepositData) {
@@ -239,12 +242,16 @@ export function GmStatusNotification({
 
   return (
     <div className="StatusNotification">
-      <div className="StatusNotification-title">{title}</div>
+      <div className="StatusNotification-content">
+        <div className="StatusNotification-title">{title}</div>
 
-      <div className="StatusNotification-items">
-        {creationStatus}
-        {executionStatus}
+        <div className="StatusNotification-items">
+          {creationStatus}
+          {executionStatus}
+        </div>
       </div>
+
+      <div className={cx("StatusNotification-background", { error: hasError })}></div>
     </div>
   );
 }
