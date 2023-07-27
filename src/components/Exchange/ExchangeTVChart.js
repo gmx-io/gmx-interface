@@ -317,7 +317,7 @@ export default function ExchangeTVChart(props) {
 
   return (
     <div className="ExchangeChart tv" ref={ref}>
-      <div className="ExchangeChart-top App-box App-box-border">
+      <div className="TVChart-top-card ExchangeChart-top App-box App-box-border">
         <div className="ExchangeChart-top-inner">
           <div>
             <div className="ExchangeChart-title">
@@ -331,14 +331,16 @@ export default function ExchangeTVChart(props) {
               />
             </div>
           </div>
-          <div>
-            <div className="ExchangeChart-main-price">
-              {chartToken.maxPrice && formatAmount(chartToken.maxPrice, USD_DECIMALS, priceDecimal, true)}
+          {!isSmallMobile && (
+            <div>
+              <div className="ExchangeChart-main-price">
+                ${chartToken.maxPrice && formatAmount(chartToken.maxPrice, USD_DECIMALS, priceDecimal, true)}
+              </div>
+              <div className="ExchangeChart-info-label">
+                ${chartToken.minPrice && formatAmount(chartToken.minPrice, USD_DECIMALS, priceDecimal, true)}
+              </div>
             </div>
-            <div className="ExchangeChart-info-label">
-              ${chartToken.minPrice && formatAmount(chartToken.minPrice, USD_DECIMALS, priceDecimal, true)}
-            </div>
-          </div>
+          )}
           {!isSmallMobile && (
             <div>
               <div className="ExchangeChart-info-label">24h Change</div>

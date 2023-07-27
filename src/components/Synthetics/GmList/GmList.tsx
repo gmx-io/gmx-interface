@@ -95,7 +95,7 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
           {!hideTitle && (
             <>
               <div className="App-card-title">
-                <Trans>GM Markets Pools</Trans>
+                <Trans>GM Pools</Trans>
                 <img src={currentIcons.network} width="16" alt="Network Icon" />
               </div>
               <div className="App-card-divider"></div>
@@ -235,7 +235,7 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
           {!hideTitle && (
             <div className="App-card-title">
               <span className="items-center">
-                <Trans>GM Markets Pools</Trans>
+                <Trans>GM Pools</Trans>
                 <img className="ml-xs" src={currentIcons.network} width="16" alt="Network Icon" />
               </span>
             </div>

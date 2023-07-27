@@ -1925,7 +1925,7 @@ export default function SwapBox(props) {
             <React.Fragment>
               <BuyInputSection
                 topLeftLabel={t`Pay`}
-                topLeftValue={fromUsdMin && `${formatAmount(fromUsdMin, USD_DECIMALS, 2, true)} USD`}
+                topLeftValue={fromUsdMin && `$${formatAmount(fromUsdMin, USD_DECIMALS, 2, true)}`}
                 topRightLabel={t`Balance`}
                 topRightValue={fromBalance && `${formatAmount(fromBalance, fromToken.decimals, 4, true)}`}
                 onClickTopRightLabel={setFromValueToMaximumAvailable}
@@ -1953,7 +1953,7 @@ export default function SwapBox(props) {
               <BuyInputSection
                 topLeftLabel={getToLabel()}
                 topRightLabel={isSwap ? t`Balance` : t`Leverage`}
-                topLeftValue={toUsdMax && `${formatAmount(toUsdMax, USD_DECIMALS, 2, true)} USD`}
+                topLeftValue={toUsdMax && `$${formatAmount(toUsdMax, USD_DECIMALS, 2, true)}`}
                 topRightValue={
                   isSwap
                     ? formatAmount(toBalance, toToken.decimals, 4, true)
