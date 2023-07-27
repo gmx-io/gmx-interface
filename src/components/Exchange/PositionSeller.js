@@ -6,7 +6,6 @@ import { BsArrowRight } from "react-icons/bs";
 
 import PositionRouter from "abis/PositionRouter.json";
 import Button from "components/Button/Button";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import SlippageInput from "components/SlippageInput/SlippageInput";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenSelector from "components/TokenSelector/TokenSelector";
@@ -19,7 +18,6 @@ import { createDecreaseOrder, useHasOutdatedUi } from "domain/legacy";
 import { getTokenAmountFromUsd } from "domain/tokens";
 import { getTokenInfo, getUsd } from "domain/tokens/utils";
 import { callContract } from "lib/contracts";
-import { formatDateTime, getTimeRemaining } from "lib/dates";
 import {
   DECREASE,
   DUST_USD,
@@ -960,48 +958,6 @@ export default function PositionSeller(props) {
     );
   }, [existingOrder, infoTokens, longOrShortText]);
 
-  function renderMinProfitWarning() {
-    if (MIN_PROFIT_TIME === 0) {
-      return null;
-    }
-
-    if (profitPrice && nextDelta.eq(0) && nextHasProfit) {
-      const minProfitExpiration = position.lastIncreasedTime + MIN_PROFIT_TIME;
-
-      if (orderOption === MARKET) {
-        return (
-          <div className="Confirmation-box-warning">
-            <Trans>
-              Reducing the position at the current price will forfeit a&nbsp;
-              <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change">
-                pending profit
-              </ExternalLink>{" "}
-              of {deltaStr}. <br />
-            </Trans>
-            <Trans>
-              <br />
-              Profit price: {position.isLong ? ">" : "<"} ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}. This rule
-              applies for the next {getTimeRemaining(minProfitExpiration)}, until {formatDateTime(minProfitExpiration)}.
-            </Trans>
-          </div>
-        );
-      }
-      return (
-        <div className="Confirmation-box-warning">
-          <Trans>
-            This order will forfeit a&nbsp;
-            <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change">profit</ExternalLink> of{" "}
-            {deltaStr}. <br />
-          </Trans>
-          <Trans>
-            Profit price: {position.isLong ? ">" : "<"} ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}. This rule
-            applies for the next {getTimeRemaining(minProfitExpiration)}, until {formatDateTime(minProfitExpiration)}.
-          </Trans>
-        </div>
-      );
-    }
-  }
-
   const profitPrice = getProfitPrice(orderOption === MARKET ? position.markPrice : triggerPriceUsd, position);
 
   let triggerPricePrefix;
@@ -1155,7 +1111,6 @@ export default function PositionSeller(props) {
               </div>
             </div>
           )}
-          {renderMinProfitWarning()}
           {renderReceiveSpreadWarning()}
           {shouldShowExistingOrderWarning && renderExistingOrderWarning()}
           <div className="PositionEditor-info-box">

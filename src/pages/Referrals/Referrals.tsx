@@ -137,7 +137,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
                 Get fee discounts and earn rebates through the GMX referral program.
                 <br />
                 For more information, please read the{" "}
-                <ExternalLink href="https://gmxio.gitbook.io/gmx/referrals">referral program details</ExternalLink>.
+                <ExternalLink href="https://docs.gmx.io/docs/referrals">referral program details</ExternalLink>.
               </Trans>
             </div>
           </div>
