@@ -884,6 +884,7 @@ export function GmSwapBox(p: Props) {
         <div className="App-card-divider" />
 
         <GmFees
+          isDeposit={isDeposit}
           totalFees={fees?.totalFees}
           swapFee={fees?.swapFee}
           swapPriceImpact={fees?.swapPriceImpact}

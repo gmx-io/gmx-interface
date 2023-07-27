@@ -15,14 +15,14 @@ import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowan
 import { GmSwapFees } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-import { formatTokenAmount, formatTokenAmountWithUsd } from "lib/numbers";
+import { formatTokenAmountWithUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { uniq } from "lodash";
 import { GmFees } from "../GmFees/GmFees";
 
 import Button from "components/Button/Button";
-import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
+import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useState } from "react";
 import "./GmConfirmationBox.scss";
 
@@ -164,7 +164,7 @@ export function GmConfirmationBox({
     marketToken?.decimals
   );
 
-  const operationText = isDeposit ? t`Deposit` : t`Withdrawal`;
+  const operationText = isDeposit ? t`Buy` : t`Sell`;
 
   const isAllowanceLoaded = Boolean(tokensAllowanceData);
 
@@ -185,7 +185,7 @@ export function GmConfirmationBox({
 
     if (isSubmitting) {
       return {
-        text: isDeposit ? t`Creating Deposit...` : t`Creating Withdrawal...`,
+        text: isDeposit ? t`Buying GM...` : t`Selling GM...`,
         disabled: true,
       };
     }
@@ -207,7 +207,7 @@ export function GmConfirmationBox({
     }
 
     const operationText = isDeposit ? t`Buy` : `Sell`;
-    const text = t`Confirm ${operationText} ${formatTokenAmount(marketTokenAmount, marketToken?.decimals)} GM`;
+    const text = t`Confirm ${operationText}`;
 
     return {
       text,
@@ -314,6 +314,7 @@ export function GmConfirmationBox({
             </div>
 
             <GmFees
+              isDeposit={isDeposit}
               totalFees={fees?.totalFees}
               swapFee={fees?.swapFee}
               swapPriceImpact={fees?.swapPriceImpact}
