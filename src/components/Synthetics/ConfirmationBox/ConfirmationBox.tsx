@@ -50,6 +50,7 @@ import {
   SwapAmounts,
   TradeFees,
   TriggerThresholdType,
+  applySlippageToMinOut,
 } from "domain/synthetics/trade";
 import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
 import { getIsEquivalentTokens, getSpread } from "domain/tokens";
@@ -1155,7 +1156,13 @@ export function ConfirmationBox(p: Props) {
           )}
 
           <ExchangeInfoRow label={t`Min. Receive`} isTop>
-            {formatTokenAmount(swapAmounts?.minOutputAmount, toToken?.decimals, toToken?.symbol)}
+            {isMarket && swapAmounts?.minOutputAmount
+              ? formatTokenAmount(
+                  applySlippageToMinOut(allowedSlippage, swapAmounts.minOutputAmount),
+                  toToken?.decimals,
+                  toToken?.symbol
+                )
+              : formatTokenAmount(swapAmounts?.minOutputAmount, toToken?.decimals, toToken?.symbol)}
           </ExchangeInfoRow>
 
           {isHighPriceImpact && <div className="line-divider" />}
