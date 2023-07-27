@@ -32,7 +32,7 @@ export default function BuyGlp(props) {
           <div className="Page-description">
             <Trans>
               Purchase <ExternalLink href="https://gmxio.gitbook.io/gmx/glp">GLP tokens</ExternalLink> to earn{" "}
-              {nativeTokenSymbol} fees from swaps and leverages trading.
+              {nativeTokenSymbol} fees from swaps and leverage trading.
             </Trans>
             <br />
             <Trans>

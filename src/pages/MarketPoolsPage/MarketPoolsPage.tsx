@@ -64,7 +64,8 @@ export function MarketPoolsPage(p: Props) {
             </div>
             <div className="Page-description">
               <Trans>
-                Purchase <ExternalLink href="https://gmxio.gitbook.io/gmx/gm">GM Tokens.</ExternalLink>
+                Purchase <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v2">GM Tokens</ExternalLink>{" "}
+                to earn fees from swaps and leverage trading.
               </Trans>
               <br />
             </div>

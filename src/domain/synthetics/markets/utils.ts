@@ -19,7 +19,7 @@ export function getMarketIndexName(p: { indexToken: Token; isSpotOnly: boolean }
   const { indexToken, isSpotOnly } = p;
 
   if (isSpotOnly) {
-    return `SPOT-ONLY`;
+    return `SWAP-ONLY`;
   }
 
   return `${indexToken.baseSymbol || indexToken.symbol}/USD`;

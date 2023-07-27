@@ -1644,8 +1644,8 @@ msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} 
 msgstr ""
 
 #: src/domain/synthetics/markets/simulateExecuteDepositTxn.tsx
-msgid "Execute order simulation failed."
-msgstr ""
+#~ msgid "Execute order simulation failed."
+#~ msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
 msgid "Execution Fee"
@@ -3033,8 +3033,8 @@ msgstr "注文"
 
 #: src/domain/synthetics/markets/simulateExecuteDepositTxn.tsx
 #: src/domain/synthetics/markets/simulateExecuteDepositTxn.tsx
-msgid "Order Error."
-msgstr ""
+#~ msgid "Order Error."
+#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
@@ -3442,11 +3442,19 @@ msgid "Protocol risk explorer and stats"
 msgstr ""
 
 #: src/pages/BuyGlp/BuyGlp.js
-msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
-msgstr "<0>GLPトークン</0>を購入して、スワップとレバレッジ取引からの手数料を{nativeTokenSymbol}トークンで得る。"
+msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverage trading."
+msgstr ""
+
+#: src/pages/BuyGlp/BuyGlp.js
+#~ msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
+#~ msgstr "<0>GLPトークン</0>を購入して、スワップとレバレッジ取引からの手数料を{nativeTokenSymbol}トークンで得る。"
 
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-msgid "Purchase <0>GM Tokens.</0>"
+#~ msgid "Purchase <0>GM Tokens.</0>"
+#~ msgstr ""
+
+#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
+msgid "Purchase <0>GM Tokens</0> to earn fees from swaps and leverage trading."
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js

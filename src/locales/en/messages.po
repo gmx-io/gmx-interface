@@ -1644,8 +1644,8 @@ msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} 
 msgstr "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 
 #: src/domain/synthetics/markets/simulateExecuteDepositTxn.tsx
-msgid "Execute order simulation failed."
-msgstr "Execute order simulation failed."
+#~ msgid "Execute order simulation failed."
+#~ msgstr "Execute order simulation failed."
 
 #: src/components/Exchange/FeesTooltip.tsx
 msgid "Execution Fee"
@@ -3033,8 +3033,8 @@ msgstr "Order"
 
 #: src/domain/synthetics/markets/simulateExecuteDepositTxn.tsx
 #: src/domain/synthetics/markets/simulateExecuteDepositTxn.tsx
-msgid "Order Error."
-msgstr "Order Error."
+#~ msgid "Order Error."
+#~ msgstr "Order Error."
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
@@ -3442,12 +3442,20 @@ msgid "Protocol risk explorer and stats"
 msgstr "Protocol risk explorer and stats"
 
 #: src/pages/BuyGlp/BuyGlp.js
-msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
-msgstr "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
+msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverage trading."
+msgstr "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverage trading."
+
+#: src/pages/BuyGlp/BuyGlp.js
+#~ msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
+#~ msgstr "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
 
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-msgid "Purchase <0>GM Tokens.</0>"
-msgstr "Purchase <0>GM Tokens.</0>"
+#~ msgid "Purchase <0>GM Tokens.</0>"
+#~ msgstr "Purchase <0>GM Tokens.</0>"
+
+#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
+msgid "Purchase <0>GM Tokens</0> to earn fees from swaps and leverage trading."
+msgstr "Purchase <0>GM Tokens</0> to earn fees from swaps and leverage trading."
 
 #: src/pages/Stake/StakeV2.js
 msgid "Purchase Insurance"
