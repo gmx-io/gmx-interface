@@ -21,17 +21,21 @@ export function useTradeHistory(
   chainId: number,
   p: {
     account: string | null | undefined;
+    forAllAccounts?: boolean;
     marketsInfoData?: MarketsInfoData;
     tokensData?: TokensData;
     pageIndex: number;
     pageSize: number;
   }
 ) {
-  const { pageIndex, pageSize, marketsInfoData, tokensData, account } = p;
+  const { pageIndex, pageSize, marketsInfoData, tokensData, account, forAllAccounts } = p;
 
   const client = getSyntheticsGraphClient(chainId);
 
-  const key = chainId && client && account ? [chainId, "useTradeHistory", account, pageIndex, pageSize] : null;
+  const key =
+    chainId && client && (account || forAllAccounts)
+      ? [chainId, "useTradeHistory", account, forAllAccounts, pageIndex, pageSize]
+      : null;
 
   const { data, error } = useSWR<RawTradeAction[]>(key, {
     fetcher: async () => {
@@ -44,7 +48,7 @@ export function useTradeHistory(
             first: ${first},
             orderBy: transaction__timestamp,
             orderDirection: desc,
-            where: { account: "${account!.toLowerCase()}" }
+            ${!forAllAccounts && account ? `where: { account: "${account!.toLowerCase()}" }` : ""}
         ) {
             id
             eventName

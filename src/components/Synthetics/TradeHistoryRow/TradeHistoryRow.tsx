@@ -21,10 +21,12 @@ import { LiquidationTooltip } from "./LiquidationTooltip";
 import "./TradeHistoryRow.scss";
 import { getTriggerThresholdType } from "domain/synthetics/trade";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { Link } from "react-router-dom";
 
 type Props = {
   tradeAction: TradeAction;
   minCollateralUsd: BigNumber;
+  shouldDisplayAccount?: boolean;
 };
 
 function getOrderActionText(tradeAction: TradeAction) {
@@ -178,7 +180,7 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
 export function TradeHistoryRow(p: Props) {
   const { chainId } = useChainId();
   const { showDebugValues } = useSettings();
-  const { tradeAction, minCollateralUsd } = p;
+  const { tradeAction, minCollateralUsd, shouldDisplayAccount } = p;
 
   const msg = useMemo(() => {
     if (isSwapOrderType(tradeAction.orderType!)) {
@@ -192,7 +194,15 @@ export function TradeHistoryRow(p: Props) {
 
   return (
     <div className="TradeHistoryRow App-box App-box-border">
-      <div className="muted TradeHistoryRow-time">{formatDateTime(tradeAction.transaction.timestamp)}</div>
+      <div className="muted TradeHistoryRow-time">
+        {formatDateTime(tradeAction.transaction.timestamp)}{" "}
+        {shouldDisplayAccount && (
+          <span>
+            {" "}
+            (<Link to={`/actions/${tradeAction.account}`}>{tradeAction.account}</Link>)
+          </span>
+        )}
+      </div>
       <ExternalLink className="plain" href={`${getExplorerUrl(chainId)}tx/${tradeAction.transaction.hash}`}>
         {msg}
       </ExternalLink>
