@@ -1846,9 +1846,11 @@ msgstr "{0} 업그레이드를 위해 GLP 판매가 비활성화되었습니다"
 
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
-msgid "GM Markets Pools"
-msgstr ""
+#~ msgid "GM Markets Pools"
+#~ msgstr ""
 
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "GM Pools"

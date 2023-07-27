@@ -1846,9 +1846,11 @@ msgstr "Продажа GLP приостановлена, ожидается {0} 
 
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
-msgid "GM Markets Pools"
-msgstr ""
+#~ msgid "GM Markets Pools"
+#~ msgstr ""
 
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "GM Pools"

@@ -1846,9 +1846,11 @@ msgstr "GLP sell disabled, pending {0} upgrade"
 
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
-msgid "GM Markets Pools"
-msgstr "GM Markets Pools"
+#~ msgid "GM Markets Pools"
+#~ msgstr "GM Markets Pools"
 
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "GM Pools"
