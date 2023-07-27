@@ -186,6 +186,7 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
                     <td className="GmList-last-column">
                       {formatTokenAmount(totalSupply, token.decimals, "GM", {
                         useCommas: true,
+                        displayDecimals: 2,
                       })}
                       <br />({formatUsd(totalSupplyUsd)})
                     </td>
@@ -200,7 +201,7 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
                     </td>
 
                     <td>
-                      {formatTokenAmount(token.balance, token.decimals, "GM", { useCommas: true })}
+                      {formatTokenAmount(token.balance, token.decimals, "GM", { useCommas: true, displayDecimals: 2 })}
                       <br />({formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice)) || "..."})
                     </td>
 
@@ -288,7 +289,11 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
                       </div>
                       <div>
                         {" "}
-                        {formatTokenAmount(totalSupply, token.decimals, "GM")} ({formatUsd(totalSupplyUsd)})
+                        {formatTokenAmount(totalSupply, token.decimals, "GM", {
+                          useCommas: true,
+                          displayDecimals: 2,
+                        })}{" "}
+                        ({formatUsd(totalSupplyUsd)})
                       </div>
                     </div>
                     <div className="App-card-row">
@@ -319,8 +324,11 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
                         <Trans>Wallet</Trans>
                       </div>
                       <div>
-                        {formatTokenAmount(token.balance, token.decimals, "GM")} (
-                        {formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice))})
+                        {formatTokenAmount(token.balance, token.decimals, "GM", {
+                          useCommas: true,
+                          displayDecimals: 2,
+                        })}{" "}
+                        ({formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice))})
                       </div>
                     </div>
                     <div className="App-card-row">
@@ -360,6 +368,7 @@ function renderMintableAmount({ mintableInfo, market, token, longToken, shortTok
         <>
           {formatTokenAmount(mintableInfo?.mintableAmount, token.decimals, "GM", {
             useCommas: true,
+            displayDecimals: 2,
           })}
           <br />({formatUsd(mintableInfo?.mintableUsd)})
         </>
