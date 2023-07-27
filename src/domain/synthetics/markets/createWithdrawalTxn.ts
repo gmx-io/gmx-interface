@@ -7,8 +7,8 @@ import { BigNumber, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { isAddressZero } from "lib/legacy";
 import { applySlippageToMinOut } from "../trade";
-import { simulateExecuteOrderTxn } from "./simulateExecuteDepositTxn";
 import { TokensData } from "../tokens";
+import { simulateExecuteOrderTxn } from "../orders/simulateExecuteOrderTxn";
 
 type Params = {
   account: string;
