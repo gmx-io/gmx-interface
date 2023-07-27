@@ -1644,8 +1644,8 @@ msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} 
 msgstr ""
 
 #: src/domain/synthetics/markets/simulateExecuteDepositTxn.tsx
-msgid "Execute order simulation failed."
-msgstr ""
+#~ msgid "Execute order simulation failed."
+#~ msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
 msgid "Execution Fee"
@@ -3030,8 +3030,8 @@ msgstr "Order"
 
 #: src/domain/synthetics/markets/simulateExecuteDepositTxn.tsx
 #: src/domain/synthetics/markets/simulateExecuteDepositTxn.tsx
-msgid "Order Error."
-msgstr ""
+#~ msgid "Order Error."
+#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
