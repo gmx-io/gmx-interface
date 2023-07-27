@@ -1,6 +1,15 @@
 import { ethers } from "ethers";
 import { getContract } from "./contracts";
-import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, AVALANCHE_FUJI, MAINNET, SEPOLIA_TESTNET, TESTNET } from "./chains";
+import {
+  ARBITRUM,
+  ARBITRUM_TESTNET,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  MAINNET,
+  SEPOLIA_TESTNET,
+  TESTNET,
+  OPTIMISM_GOERLI_TESTNET,
+} from "./chains";
 import { Token } from "domain/tokens";
 
 export const TOKENS: { [chainId: number]: Token[] } = {
@@ -434,6 +443,59 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/325/small/Tether.png?1668148663",
     },
   ],
+  [OPTIMISM_GOERLI_TESTNET]: [
+    {
+      name: "Ethereum",
+      symbol: "ETH",
+      decimals: 18,
+      address: ethers.constants.AddressZero,
+      isNative: true,
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
+    },
+    // {
+    //   name: "USD Gambit",
+    //   symbol: "USDG",
+    //   decimals: 18,
+    //   address: "0xfa55A08911E424D03D40fFea5257E06b22bAe0C6",
+    //   isUsdg: true,
+    //   imageUrl: "https://assets.coingecko.com/coins/images/15886/small/usdg-02.png",
+    // },
+    {
+      name: "Wrapped Ethereum (WETH)",
+      symbol: "ETH",
+      address: "0x743E73cAe7E5B9838a5eb2CfAd3A4c8aCf41614d",
+      isWrapped: true,
+      decimals: 18,
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/2518/small/weth.png?1628852295",
+    },
+    {
+      name: "DAI",
+      symbol: "DAI",
+      address: "0x1eB733DA495C92CDCaA1F0591895d63C8F028AfC",
+      decimals: 18,
+      isStable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/9956/small/4943.png?1636636734",
+    },
+    {
+      name: "Link",
+      symbol: "LINK",
+      address: "0xfcf789E040305b647832Bb037384dCeCbbbB02D1",
+      decimals: 18,
+      isStable: false,
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/877/small/chainlink-new-logo.png?1547034700",
+    },
+    {
+      name: "USD Tether",
+      symbol: "USDT",
+      address: "0x3aA11a6519E823091e408f5f8fc744e5035b4d6D",
+      decimals: 6,
+      isStable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/325/small/Tether.png?1668148663",
+    },
+  ],
 };
 
 export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
@@ -503,6 +565,28 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
     },
   ],
+  [OPTIMISM_GOERLI_TESTNET]: [
+    {
+      name: "GMX",
+      symbol: "GMX",
+      address: getContract(OPTIMISM_GOERLI_TESTNET, "GMX"),
+      decimals: 18,
+      imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
+    },
+    {
+      name: "Escrowed GMX",
+      symbol: "esGMX",
+      address: getContract(OPTIMISM_GOERLI_TESTNET, "ES_GMX"),
+      decimals: 18,
+    },
+    {
+      name: "GMX LP",
+      symbol: "GLP",
+      address: getContract(OPTIMISM_GOERLI_TESTNET, "GLP"),
+      decimals: 18,
+      imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
+    },
+  ],
 };
 
 export const PLATFORM_TOKENS: { [chainId: number]: { [symbol: string]: Token } } = {
@@ -553,6 +637,22 @@ export const PLATFORM_TOKENS: { [chainId: number]: { [symbol: string]: Token } }
       symbol: "GLP",
       decimals: 18,
       address: getContract(SEPOLIA_TESTNET, "StakedGlpTracker"), // address of fsGLP token because user only holds fsGLP
+      imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
+    },
+  },
+  [OPTIMISM_GOERLI_TESTNET]: {
+    GMX: {
+      name: "GMX",
+      symbol: "GMX",
+      decimals: 18,
+      address: getContract(OPTIMISM_GOERLI_TESTNET, "GMX"),
+      imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
+    },
+    GLP: {
+      name: "GMX LP",
+      symbol: "GLP",
+      decimals: 18,
+      address: getContract(OPTIMISM_GOERLI_TESTNET, "StakedGlpTracker"), // address of fsGLP token because user only holds fsGLP
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
     },
   },
@@ -685,6 +785,28 @@ export const ICONLINKS = {
       reserves: "https://portfolio.nansen.ai/dashboard/gmx?chain=ARBITRUM",
     },
   },
+  [OPTIMISM_GOERLI_TESTNET]: {
+    ETH: {
+      coingecko: "https://www.coingecko.com/en/coins/weth",
+      avalanche: "https://testnet.snowtrace.io/address/0x8226EC2c1926c9162b6F815153d10018A7ccdf07",
+    },
+    USDC: {
+      coingecko: "https://www.coingecko.com/en/coins/usd-coin",
+      avalanche: "https://testnet.snowtrace.io/address/0xC492c8d82DC576Ad870707bb40EDb63E2026111E",
+    },
+    USDT: {
+      coingecko: "https://assets.coingecko.com/coins/images/325/small/Tether.png?1668148663",
+      avalanche: "https://testnet.snowtrace.io/address/0xC492c8d82DC576Ad870707bb40EDb63E2026111E",
+    },
+    GMX: {
+      coingecko: "https://www.coingecko.com/en/coins/gmx",
+      arbitrum: "https://arbiscan.io/address/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a",
+    },
+    GLP: {
+      arbitrum: "https://arbiscan.io/token/0x1aDDD80E6039594eE970E5872D247bf0414C8903",
+      reserves: "https://portfolio.nansen.ai/dashboard/gmx?chain=ARBITRUM",
+    },
+  },
 };
 
 export const GLP_POOL_COLORS = {
@@ -707,7 +829,7 @@ export const TOKENS_BY_SYMBOL_MAP: { [chainId: number]: { [symbol: string]: Toke
 export const WRAPPED_TOKENS_MAP: { [chainId: number]: Token } = {};
 export const NATIVE_TOKENS_MAP: { [chainId: number]: Token } = {};
 
-const CHAIN_IDS = [MAINNET, TESTNET, ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, AVALANCHE_FUJI, SEPOLIA_TESTNET];
+const CHAIN_IDS = [MAINNET, TESTNET, ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, AVALANCHE_FUJI, SEPOLIA_TESTNET, OPTIMISM_GOERLI_TESTNET];
 
 for (let j = 0; j < CHAIN_IDS.length; j++) {
   const chainId = CHAIN_IDS[j];

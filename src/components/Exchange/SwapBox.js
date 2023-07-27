@@ -1629,7 +1629,6 @@ export default function SwapBox(props) {
   };
 
   function approveFromToken() {
-    // @todo approve
     approveTokens({
       setIsApproving,
       library,

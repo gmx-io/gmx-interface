@@ -11,7 +11,7 @@ import cx from "classnames";
 import { Trans } from "@lingui/macro";
 import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
 import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
-import { ARBITRUM, SEPOLIA_TESTNET, getChainName } from "config/chains";
+import { ARBITRUM, OPTIMISM_GOERLI_TESTNET, SEPOLIA_TESTNET, getChainName } from "config/chains";
 import { switchNetwork } from "lib/wallets";
 import { useChainId } from "lib/chains";
 import { isDevelopment } from "config/env";
@@ -41,6 +41,13 @@ if (isDevelopment()) {
   NETWORK_OPTIONS.push({
     label: getChainName(SEPOLIA_TESTNET),
     value: SEPOLIA_TESTNET,
+    icon: getIcon(SEPOLIA_TESTNET, "network"),
+    color: "#264f79",
+  });
+  NETWORK_OPTIONS.push({
+    label: getChainName(OPTIMISM_GOERLI_TESTNET),
+    value: OPTIMISM_GOERLI_TESTNET,
+    // @todo get new logo
     icon: getIcon(SEPOLIA_TESTNET, "network"),
     color: "#264f79",
   });

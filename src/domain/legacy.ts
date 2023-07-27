@@ -20,6 +20,7 @@ import {
   ARBITRUM_TESTNET,
   AVALANCHE,
   SEPOLIA_TESTNET,
+  OPTIMISM_GOERLI_TESTNET,
   getConstant,
   getHighExecutionFee,
 } from "config/chains";
@@ -389,7 +390,12 @@ export function useExecutionFee(library, active, chainId, infoTokens) {
 
   let multiplier;
 
-  if (chainId === ARBITRUM || chainId === ARBITRUM_TESTNET || chainId === SEPOLIA_TESTNET) {
+  if (
+    chainId === ARBITRUM ||
+    chainId === ARBITRUM_TESTNET ||
+    chainId === SEPOLIA_TESTNET ||
+    chainId === OPTIMISM_GOERLI_TESTNET
+  ) {
     multiplier = 2150000;
   }
 

@@ -8,7 +8,7 @@ import { useWeb3React } from "@web3-react/core";
 
 import APRLabel from "../APRLabel/APRLabel";
 import { HeaderLink } from "../Header/HeaderLink";
-import { ARBITRUM, AVALANCHE, SEPOLIA_TESTNET } from "config/chains";
+import { ARBITRUM, AVALANCHE, OPTIMISM_GOERLI_TESTNET, SEPOLIA_TESTNET } from "config/chains";
 import { switchNetwork } from "lib/wallets";
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -102,9 +102,9 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
           </div>
           <div className="Home-token-card-option-action">
             <div className="buy">
-              {chainId === SEPOLIA_TESTNET ? (
+              {chainId === OPTIMISM_GOERLI_TESTNET ? (
                 <BuyLink to="/buy_glp" className="default-btn" network={SEPOLIA_TESTNET}>
-                  <Trans>Buy on Sepolia</Trans>
+                  <Trans>{`Buy on Optimism-Goerli`}</Trans>
                 </BuyLink>
               ) : (
                 <BuyLink to="/buy_glp" className="default-btn" network={AVALANCHE}>

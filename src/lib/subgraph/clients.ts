@@ -18,7 +18,6 @@ export function getGmxGraphClient(chainId: number) {
   } else if (chainId === ARBITRUM_TESTNET) {
     return null;
   } else if (chainId === SEPOLIA_TESTNET) {
-    // @todo implement subgraph
     return null;
   }
 
