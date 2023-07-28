@@ -128,56 +128,6 @@ export function getAmountByRatio(p: {
   return p.fromTokenAmount.mul(adjustedDecimalsRatio).div(PRECISION);
 }
 
-export function getCandlesDelta(candles: Bar[], currentAveragePrice: BigNumber, periodInSeconds: number) {
-  const currentPrice = parseFloat(formatAmount(currentAveragePrice, USD_DECIMALS, 2));
-
-  if (!candles.length) {
-    return undefined;
-  }
-
-  const result: Partial<{
-    high: number;
-    low: number;
-    delta: number;
-    deltaPrice: number;
-    deltaPercentage: number;
-    deltaPercentageStr: string;
-  }> = {};
-
-  const now = Math.round(Date.now() / 1000);
-  const timeThreshold = now - periodInSeconds;
-
-  for (const candle of candles) {
-    if (candle.time < timeThreshold) {
-      break;
-    }
-
-    if (!result.high || candle.high > result.high) {
-      result.high = candle.high;
-    }
-
-    if (!result.low || candle.low < result.low) {
-      result.low = candle.low;
-    }
-
-    result.deltaPrice = candle.open;
-  }
-
-  result.delta = currentPrice - result.deltaPrice!;
-  result.deltaPercentage = (result.delta * 100) / currentPrice;
-
-  if (result.deltaPercentage > 0) {
-    result.deltaPercentageStr = `+${result.deltaPercentage.toFixed(2)}%`;
-  } else {
-    result.deltaPercentageStr = `${result.deltaPercentage.toFixed(2)}%`;
-  }
-  if (result.deltaPercentage === 0) {
-    result.deltaPercentageStr = "0.00";
-  }
-
-  return result as Required<typeof result>;
-}
-
 export function getMidPrice(prices: TokenPrices) {
   return prices.minPrice.add(prices.maxPrice).div(2);
 }

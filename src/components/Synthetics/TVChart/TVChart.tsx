@@ -6,8 +6,8 @@ import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 import { convertTokenAddress, getPriceDecimals, getToken, isChartAvailabeForToken } from "config/tokens";
 import { OrdersInfoData, PositionOrderInfo, isIncreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import { PositionsInfoData } from "domain/synthetics/positions";
-import { TokensData, getCandlesDelta, getMidPrice, getTokenData } from "domain/synthetics/tokens";
-import { useLastCandles } from "domain/synthetics/tokens/useLastCandles";
+import { TokensData, getTokenData } from "domain/synthetics/tokens";
+import { use24hPriceDelta } from "domain/synthetics/tokens/use24PriceDelta";
 import { SyntheticsTVDataProvider } from "domain/synthetics/tradingview/SyntheticsTVDataProvider";
 import { Token } from "domain/tokens";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
@@ -75,19 +75,7 @@ export function TVChart({
       }
     : undefined;
 
-  const currentAveragePrice = chartToken?.prices ? getMidPrice(chartToken.prices) : undefined;
-
-  const { candles } = useLastCandles(chainId, chartToken?.symbol, period);
-
-  const period24Hours = 24 * 60 * 60;
-
-  const candlesDelta = useMemo(() => {
-    if (!candles || !currentAveragePrice) {
-      return undefined;
-    }
-
-    return getCandlesDelta(candles, currentAveragePrice, period24Hours);
-  }, [candles, currentAveragePrice, period24Hours]);
+  const dayPriceDelta = use24hPriceDelta(chainId, chartToken?.symbol);
 
   const chartLines = useMemo(() => {
     if (!chartTokenAddress) {
@@ -205,11 +193,11 @@ export function TVChart({
               <div className="ExchangeChart-info-label">24h Change</div>
               <div
                 className={cx({
-                  positive: candlesDelta?.deltaPercentage && candlesDelta?.deltaPercentage > 0,
-                  negative: candlesDelta?.deltaPercentage && candlesDelta?.deltaPercentage < 0,
+                  positive: dayPriceDelta?.deltaPercentage && dayPriceDelta?.deltaPercentage > 0,
+                  negative: dayPriceDelta?.deltaPercentage && dayPriceDelta?.deltaPercentage < 0,
                 })}
               >
-                {candlesDelta?.deltaPercentageStr || "-"}
+                {dayPriceDelta?.deltaPercentageStr || "-"}
               </div>
             </div>
           )}
@@ -218,16 +206,16 @@ export function TVChart({
               <div className="ExchangeChart-additional-info">
                 <div className="ExchangeChart-info-label">24h High</div>
                 <div>
-                  {candlesDelta?.high
-                    ? numberWithCommas(candlesDelta.high.toFixed(chartToken?.priceDecimals || 2))
+                  {dayPriceDelta?.high
+                    ? numberWithCommas(dayPriceDelta.high.toFixed(chartToken?.priceDecimals || 2))
                     : "-"}
                 </div>
               </div>
               <div className="ExchangeChart-additional-info">
                 <div className="ExchangeChart-info-label">24h Low</div>
                 <div>
-                  {candlesDelta?.low
-                    ? numberWithCommas(candlesDelta?.low.toFixed(chartToken?.priceDecimals || 2))
+                  {dayPriceDelta?.low
+                    ? numberWithCommas(dayPriceDelta?.low.toFixed(chartToken?.priceDecimals || 2))
                     : "-"}
                 </div>
               </div>
