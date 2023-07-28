@@ -34,6 +34,7 @@ import { OrderInfo, OrderType, OrdersInfoData } from "domain/synthetics/orders";
 import {
   PositionInfo,
   PositionsInfoData,
+  formatAcceptablePrice,
   formatLeverage,
   formatLiquidationPrice,
   usePositionsConstants,
@@ -212,6 +213,7 @@ export function TradeBox(p: Props) {
   const [fixedTriggerOrderType, setFixedTriggerOrderType] = useState<
     OrderType.LimitDecrease | OrderType.StopLossDecrease
   >();
+  const [fixedTriggerAcceptablePrice, setFixedTriggerAcceptablePrice] = useState<BigNumber>();
 
   const [fromTokenInputValue, setFromTokenInputValue] = useSafeState("");
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigNumber.from(0);
@@ -751,9 +753,15 @@ export function TradeBox(p: Props) {
       return;
     }
 
-    if (isTrigger && decreaseAmounts?.triggerThresholdType && decreaseAmounts?.triggerOrderType) {
+    if (
+      isTrigger &&
+      decreaseAmounts?.triggerThresholdType &&
+      decreaseAmounts?.triggerOrderType &&
+      decreaseAmounts.acceptablePrice
+    ) {
       setFixedTriggerOrderType(decreaseAmounts.triggerOrderType);
       setFixedTriggerThresholdType(decreaseAmounts.triggerThresholdType);
+      setFixedTriggerAcceptablePrice(decreaseAmounts.acceptablePrice);
     }
 
     setStage("confirmation");
@@ -825,11 +833,17 @@ export function TradeBox(p: Props) {
       const needUpdateMarket =
         !marketAddress || !marketsOptions.availableMarkets.find((m) => m.marketTokenAddress === marketAddress);
 
+      if (needUpdateMarket && marketsOptions.marketWithPosition) {
+        onSelectMarketAddress(marketsOptions.marketWithPosition.marketTokenAddress);
+        return;
+      }
+
       const optimalMarket =
         marketsOptions.minPriceImpactMarket || marketsOptions.maxLiquidityMarket || marketsOptions.availableMarkets[0];
 
       if (needUpdateMarket && optimalMarket) {
         onSelectMarketAddress(optimalMarket.marketTokenAddress);
+        return;
       }
     },
     [
@@ -839,10 +853,27 @@ export function TradeBox(p: Props) {
       isPosition,
       marketAddress,
       marketsOptions.availableMarkets,
+      marketsOptions.collateralWithPosition,
+      marketsOptions.marketWithPosition,
       marketsOptions.maxLiquidityMarket,
       marketsOptions.minPriceImpactMarket,
+      onSelectCollateralAddress,
       onSelectMarketAddress,
     ]
+  );
+
+  const prevMarketAddress = usePrevious(marketAddress);
+  useEffect(
+    function updatePositionCollateral() {
+      if (!isPosition) {
+        return;
+      }
+
+      if (marketAddress && prevMarketAddress !== marketAddress && marketsOptions.collateralWithPosition) {
+        onSelectCollateralAddress(marketsOptions.collateralWithPosition.address);
+      }
+    },
+    [isPosition, marketAddress, marketsOptions.collateralWithPosition, onSelectCollateralAddress, prevMarketAddress]
   );
 
   function onSwitchTokens() {
@@ -1188,7 +1219,7 @@ export function TradeBox(p: Props) {
           className="SwapBox-info-row"
           label={t`Acceptable Price`}
           value={
-            formatUsd(increaseAmounts?.acceptablePrice, {
+            formatAcceptablePrice(increaseAmounts?.acceptablePrice, {
               displayDecimals: toToken?.priceDecimals,
             }) || "-"
           }
@@ -1294,12 +1325,19 @@ export function TradeBox(p: Props) {
           className="SwapBox-info-row"
           label={t`Acceptable Price Impact`}
           value={
-            <span className="TradeBox-acceptable-price-impact" onClick={() => setIsEditingAcceptablePriceImpact(true)}>
-              {formatPercentage(acceptablePriceImpactBpsForLimitOrders.mul(-1))}
-              <span className="edit-icon" onClick={() => null}>
-                <AiOutlineEdit fontSize={16} />
+            decreaseAmounts?.triggerOrderType === OrderType.StopLossDecrease ? (
+              "NA"
+            ) : (
+              <span
+                className="TradeBox-acceptable-price-impact"
+                onClick={() => setIsEditingAcceptablePriceImpact(true)}
+              >
+                {formatPercentage(acceptablePriceImpactBpsForLimitOrders.mul(-1))}
+                <span className="edit-icon" onClick={() => null}>
+                  <AiOutlineEdit fontSize={16} />
+                </span>
               </span>
-            </span>
+            )
           }
         />
 
@@ -1307,7 +1345,7 @@ export function TradeBox(p: Props) {
           className="SwapBox-info-row"
           label={t`Acceptable Price`}
           value={
-            formatUsd(decreaseAmounts?.acceptablePrice, {
+            formatAcceptablePrice(decreaseAmounts?.acceptablePrice, {
               displayDecimals: toToken?.priceDecimals,
             }) || "-"
           }
@@ -1418,6 +1456,7 @@ export function TradeBox(p: Props) {
         triggerPrice={triggerPrice}
         fixedTriggerThresholdType={fixedTriggerThresholdType}
         fixedTriggerOrderType={fixedTriggerOrderType}
+        fixedTriggerAcceptablePrice={fixedTriggerAcceptablePrice}
         triggerRatio={triggerRatio}
         marketInfo={marketInfo}
         collateralToken={collateralToken}

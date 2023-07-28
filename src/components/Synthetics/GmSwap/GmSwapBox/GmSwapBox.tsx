@@ -662,6 +662,10 @@ export function GmSwapBox(p: Props) {
           onSelectMarket(marketInfo?.marketTokenAddress);
           helperToast.success(t`${marketInfo.name} selected in order form`);
         }
+
+        if (queryParams.get("scroll") === "1") {
+          window.scrollTo({ top: 0, left: 0 });
+        }
       }
 
       if (history.location.search) {
@@ -884,6 +888,7 @@ export function GmSwapBox(p: Props) {
         <div className="App-card-divider" />
 
         <GmFees
+          isDeposit={isDeposit}
           totalFees={fees?.totalFees}
           swapFee={fees?.swapFee}
           swapPriceImpact={fees?.swapPriceImpact}

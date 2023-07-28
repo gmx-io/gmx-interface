@@ -482,6 +482,7 @@ msgstr ""
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "Buy"
 msgstr "구매"
 
@@ -495,6 +496,10 @@ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy ETH directly on Arbitrum or transfer it there."
+msgstr ""
+
+#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+msgid "Buy Fee"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -581,6 +586,18 @@ msgstr ""
 msgid "Buy or Transfer ETH to Arbitrum"
 msgstr ""
 
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Buy order cancelled"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Buy order executed"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Buy request sent"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 msgid "Buy submitted."
 msgstr "구매 제출 완료"
@@ -597,6 +614,14 @@ msgstr ""
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "Buy {swapTokenSymbol} on 1inch"
 msgstr "{swapTokenSymbol}을 1inch에서 구매하기"
+
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+msgid "Buying GM..."
+msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Buying {indexName} with {tokensText}"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Buying..."
@@ -970,12 +995,13 @@ msgid "Confirm Trigger Order"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "Confirm {operationText}"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-msgid "Confirm {operationText} {0} GM"
-msgstr ""
+#~ msgid "Confirm {operationText} {0} GM"
+#~ msgstr ""
 
 #: src/components/Header/AppHeaderUser.tsx
 msgid "Connect"
@@ -1107,8 +1133,8 @@ msgid "Created limit order for {0} {1}: {2} USD!"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-msgid "Creating Deposit..."
-msgstr ""
+#~ msgid "Creating Deposit..."
+#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
@@ -1119,8 +1145,8 @@ msgid "Creating Order..."
 msgstr "주문 생성중..."
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-msgid "Creating Withdrawal..."
-msgstr ""
+#~ msgid "Creating Withdrawal..."
+#~ msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Creating..."
@@ -1265,7 +1291,6 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1283,16 +1308,16 @@ msgid "Deposit amount is insufficient to bring leverage below the max allowed le
 msgstr "<<<<<<< HEAD"
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-msgid "Deposit cancelled"
-msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
+#~ msgid "Deposit cancelled"
+#~ msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Deposit disabled, pending {0} upgrade"
 msgstr "{0} 업그레이드를 위해 예치가 비활성화되었습니다"
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-msgid "Deposit executed"
-msgstr ""
+#~ msgid "Deposit executed"
+#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Deposit failed!"
@@ -1307,8 +1332,8 @@ msgid "Deposit not enough to cover fees"
 msgstr "<<<<<<< HEAD"
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-msgid "Deposit request sent"
-msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
+#~ msgid "Deposit request sent"
+#~ msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Deposit submitted!"
@@ -1343,8 +1368,8 @@ msgid "Depositing {0} to {positionText}"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-msgid "Depositing {tokensText} to {0}"
-msgstr ""
+#~ msgid "Depositing {tokensText} to {0}"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/pages/Stake/StakeV2.js
@@ -1612,6 +1637,12 @@ msgstr "새로운 가격 입력"
 msgid "Entry Price"
 msgstr "진입 가격"
 
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "Error submitting order"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Escrowed GMX"
@@ -1637,7 +1668,11 @@ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
-msgstr ""
+msgstr "<<<<<<< HEAD======="
+
+#: src/domain/synthetics/markets/simulateExecuteDepositTxn.tsx
+#~ msgid "Execute order simulation failed."
+#~ msgstr ">>>>>>> 3ce6efc5b53295af6c4c20d0753bdf2f6fd57f55"
 
 #: src/components/Exchange/FeesTooltip.tsx
 msgid "Execution Fee"
@@ -1768,12 +1803,20 @@ msgid "Freeze"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-msgid "Fulfilling Deposit request"
+msgid "Fulfilling Buy request"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-msgid "Fulfilling Withdrawal request"
+#~ msgid "Fulfilling Deposit request"
+#~ msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Fulfilling Sell request"
 msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+#~ msgid "Fulfilling Withdrawal request"
+#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 msgid "Fulfilling order request"
@@ -3028,7 +3071,12 @@ msgstr "여는 중..."
 #: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Order"
-msgstr "주문"
+msgstr "주문<<<<<<< HEAD======="
+
+#: src/domain/synthetics/markets/simulateExecuteDepositTxn.tsx
+#: src/domain/synthetics/markets/simulateExecuteDepositTxn.tsx
+#~ msgid "Order Error."
+#~ msgstr ">>>>>>> 3ce6efc5b53295af6c4c20d0753bdf2f6fd57f55"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
@@ -3328,6 +3376,7 @@ msgid "Price"
 msgstr "가격"
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
@@ -3728,7 +3777,12 @@ msgstr "자신에게 전송하는 것은 지원되지 않습니다"
 
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "Sell"
+msgstr ""
+
+#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+msgid "Sell Fee"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -3753,9 +3807,29 @@ msgstr "판매 실패"
 msgid "Sell for {0}"
 msgstr "{0}로 판매"
 
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Sell order cancelled"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Sell order executed"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Sell request sent"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 msgid "Sell submitted!"
 msgstr "판매 제출 완료!"
+
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+msgid "Selling GM..."
+msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Selling {indexName}"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Selling..."
@@ -3770,12 +3844,20 @@ msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr "GMX의 베스팅 볼트에서 모든 토큰을 인출했습니다."
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-msgid "Sending Deposit request"
+msgid "Sending Buy request"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-msgid "Sending Withdrawal request"
+#~ msgid "Sending Deposit request"
+#~ msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Sending Sell request"
 msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+#~ msgid "Sending Withdrawal request"
+#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 msgid "Sending order request"
@@ -4044,7 +4126,6 @@ msgid "Swap"
 msgstr "스왑"
 
 #: src/components/Exchange/FeesTooltip.tsx
-#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 msgid "Swap Fee"
 msgstr ""
 
@@ -4064,7 +4145,6 @@ msgstr ""
 msgid "Swap Order submitted!"
 msgstr ""
 
-#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap Price Impact"
@@ -4661,16 +4741,24 @@ msgid "UTILIZATION"
 msgstr "이용률"
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-msgid "Unknown deposit"
+msgid "Unknown buy GM order"
 msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+#~ msgid "Unknown deposit"
+#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 msgid "Unknown order"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-msgid "Unknown withdrawal"
+msgid "Unknown sell GM order"
 msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+#~ msgid "Unknown withdrawal"
+#~ msgstr ""
 
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -5046,32 +5134,32 @@ msgid "Withdraw {0} USD from {1} {longOrShortText}"
 msgstr "{1} {longOrShortText} {0} USD 인출"
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-msgid "Withdrawal"
-msgstr ""
+#~ msgid "Withdrawal"
+#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-msgid "Withdrawal cancelled"
-msgstr ""
+#~ msgid "Withdrawal cancelled"
+#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-msgid "Withdrawal executed"
-msgstr ""
+#~ msgid "Withdrawal executed"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Withdrawal failed."
 msgstr "인출 실패."
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-msgid "Withdrawal request sent"
-msgstr ""
+#~ msgid "Withdrawal request sent"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Withdrawal submitted."
 msgstr "인출 제출 완료."
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-msgid "Withdrawing from {0}"
-msgstr ""
+#~ msgid "Withdrawing from {0}"
+#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 msgid "Withdrawing {0} from {positionText}"

@@ -33,7 +33,13 @@ import {
 } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
-import { PositionInfo, formatLeverage, formatLiquidationPrice, getPositionKey } from "domain/synthetics/positions";
+import {
+  PositionInfo,
+  formatAcceptablePrice,
+  formatLeverage,
+  formatLiquidationPrice,
+  getPositionKey,
+} from "domain/synthetics/positions";
 import {
   TokenData,
   TokensData,
@@ -50,6 +56,7 @@ import {
   SwapAmounts,
   TradeFees,
   TriggerThresholdType,
+  applySlippageToMinOut,
 } from "domain/synthetics/trade";
 import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
 import { getIsEquivalentTokens, getSpread } from "domain/tokens";
@@ -74,6 +81,7 @@ import "./ConfirmationBox.scss";
 import SlippageInput from "components/SlippageInput/SlippageInput";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { helperToast } from "lib/helperToast";
 
 export type Props = {
   isVisible: boolean;
@@ -86,6 +94,7 @@ export type Props = {
   triggerPrice?: BigNumber;
   fixedTriggerThresholdType?: TriggerThresholdType;
   fixedTriggerOrderType?: OrderType.LimitDecrease | OrderType.StopLossDecrease;
+  fixedTriggerAcceptablePrice?: BigNumber;
   triggerRatio?: TokensRatio;
   marketInfo?: MarketInfo;
   collateralToken?: TokenData;
@@ -124,6 +133,7 @@ export function ConfirmationBox(p: Props) {
     triggerPrice,
     fixedTriggerThresholdType,
     fixedTriggerOrderType,
+    fixedTriggerAcceptablePrice,
     triggerRatio,
     marketInfo,
     collateralToken,
@@ -387,6 +397,7 @@ export function ConfirmationBox(p: Props) {
       !executionFee ||
       typeof allowedSlippage !== "number"
     ) {
+      helperToast.error(t`Error submitting order`);
       return Promise.resolve();
     }
 
@@ -418,6 +429,7 @@ export function ConfirmationBox(p: Props) {
       !marketInfo ||
       typeof allowedSlippage !== "number"
     ) {
+      helperToast.error(t`Error submitting order`);
       return Promise.resolve();
     }
 
@@ -452,14 +464,15 @@ export function ConfirmationBox(p: Props) {
       !account ||
       !marketInfo ||
       !collateralToken ||
-      !decreaseAmounts?.acceptablePrice ||
       fixedTriggerOrderType === undefined ||
       fixedTriggerThresholdType === undefined ||
-      !decreaseAmounts.triggerPrice ||
+      !fixedTriggerAcceptablePrice ||
+      !decreaseAmounts?.triggerPrice ||
       !executionFee ||
       !tokensData ||
       typeof allowedSlippage !== "number"
     ) {
+      helperToast.error(t`Error submitting order`);
       return Promise.resolve();
     }
 
@@ -471,7 +484,7 @@ export function ConfirmationBox(p: Props) {
       initialCollateralAddress: collateralToken.address,
       receiveTokenAddress: collateralToken.address,
       triggerPrice: decreaseAmounts.triggerPrice,
-      acceptablePrice: decreaseAmounts.acceptablePrice,
+      acceptablePrice: fixedTriggerAcceptablePrice,
       sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
       sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
       minOutputUsd: BigNumber.from(0),
@@ -976,7 +989,7 @@ export function ConfirmationBox(p: Props) {
             className="SwapBox-info-row"
             label={t`Acceptable Price`}
             value={
-              formatUsd(increaseAmounts?.acceptablePrice, {
+              formatAcceptablePrice(increaseAmounts?.acceptablePrice, {
                 displayDecimals: toTokenPriceDecimals,
               }) || "-"
             }
@@ -1155,7 +1168,13 @@ export function ConfirmationBox(p: Props) {
           )}
 
           <ExchangeInfoRow label={t`Min. Receive`} isTop>
-            {formatTokenAmount(swapAmounts?.minOutputAmount, toToken?.decimals, toToken?.symbol)}
+            {isMarket && swapAmounts?.minOutputAmount
+              ? formatTokenAmount(
+                  applySlippageToMinOut(allowedSlippage, swapAmounts.minOutputAmount),
+                  toToken?.decimals,
+                  toToken?.symbol
+                )
+              : formatTokenAmount(swapAmounts?.minOutputAmount, toToken?.decimals, toToken?.symbol)}
           </ExchangeInfoRow>
 
           {isHighPriceImpact && <div className="line-divider" />}
@@ -1207,14 +1226,18 @@ export function ConfirmationBox(p: Props) {
           <ExchangeInfoRow
             className="SwapBox-info-row"
             label={t`Acceptable Price Impact`}
-            value={formatPercentage(decreaseAmounts?.acceptablePriceDeltaBps) || "-"}
+            value={
+              decreaseAmounts?.triggerOrderType === OrderType.StopLossDecrease
+                ? "NA"
+                : formatPercentage(decreaseAmounts?.acceptablePriceDeltaBps) || "-"
+            }
           />
 
           <ExchangeInfoRow
             className="SwapBox-info-row"
             label={t`Acceptable Price`}
             value={
-              formatUsd(decreaseAmounts?.acceptablePrice, {
+              formatAcceptablePrice(fixedTriggerAcceptablePrice, {
                 displayDecimals: toTokenPriceDecimals,
               }) || "-"
             }
@@ -1310,7 +1333,7 @@ export function ConfirmationBox(p: Props) {
 
           <TradeFeesRow {...fees} executionFee={p.executionFee} feesType="decrease" warning={p.executionFee?.warning} />
 
-          {decreaseAmounts?.receiveUsd && (
+          {existingPosition && decreaseAmounts?.receiveUsd && (
             <ExchangeInfoRow
               label={t`Receive`}
               value={formatTokenAmountWithUsd(

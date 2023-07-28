@@ -11,7 +11,6 @@ import { useMarketsInfo } from "domain/synthetics/markets";
 import { useOrdersInfo } from "domain/synthetics/orders/useOrdersInfo";
 import { usePositionsInfo } from "domain/synthetics/positions";
 import { useChainId } from "lib/chains";
-import { useWeb3React } from "@web3-react/core";
 
 export default function SyntheticsActions({
   savedIsPnlInLeverage,
@@ -21,15 +20,12 @@ export default function SyntheticsActions({
   savedShowPnlAfterFees: boolean;
 }) {
   const { account: paramsAccount } = useParams<{ account?: string }>();
-  const { account } = useWeb3React();
 
   const { chainId } = useChainId();
 
   let checkSummedAccount: string | undefined;
 
-  if (account) {
-    checkSummedAccount = ethers.utils.getAddress(account);
-  } else if (paramsAccount && ethers.utils.isAddress(paramsAccount)) {
+  if (paramsAccount && ethers.utils.isAddress(paramsAccount)) {
     checkSummedAccount = ethers.utils.getAddress(paramsAccount);
   }
 
@@ -42,7 +38,7 @@ export default function SyntheticsActions({
     account: checkSummedAccount,
   });
   const { ordersInfoData, isLoading: isOrdersLoading } = useOrdersInfo(chainId, {
-    account,
+    account: checkSummedAccount,
     marketsInfoData,
     tokensData,
   });
@@ -99,6 +95,7 @@ export default function SyntheticsActions({
         </div>
         <TradeHistory
           account={checkSummedAccount}
+          forAllAccounts={!checkSummedAccount}
           marketsInfoData={marketsInfoData}
           tokensData={tokensData}
           shouldShowPaginationButtons

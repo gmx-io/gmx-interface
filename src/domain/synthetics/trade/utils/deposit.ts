@@ -119,8 +119,6 @@ export function getDepositAmounts(p: {
       values.shortTokenUsd = values.marketTokenUsd;
     }
 
-    // const totalDepositUsd = values.longTokenUsd.add(values.shortTokenUsd);
-
     // TODO: add to original amounts
     values.swapPriceImpactDeltaUsd = getPriceImpactForSwap(
       marketInfo,
@@ -133,7 +131,22 @@ export function getDepositAmounts(p: {
     const swapFeeUsd = getSwapFee(marketInfo, values.marketTokenUsd, values.swapPriceImpactDeltaUsd.gt(0));
     values.swapFeeUsd = values.swapFeeUsd.add(swapFeeUsd);
 
-    // values.longTokenUsd = values.longTokenUsd.sub(swapFeeUsd.mul(values.longTokenUsd).div(totalDepositUsd));
+    let totalDepositUsd = values.longTokenUsd.add(values.shortTokenUsd);
+
+    values.longTokenUsd = values.longTokenUsd.add(swapFeeUsd.mul(values.longTokenUsd).div(totalDepositUsd));
+    values.shortTokenUsd = values.shortTokenUsd.add(swapFeeUsd.mul(values.shortTokenUsd).div(totalDepositUsd));
+
+    totalDepositUsd = values.longTokenUsd.add(values.shortTokenUsd);
+
+    if (values.swapPriceImpactDeltaUsd.lt(0)) {
+      values.longTokenUsd = values.longTokenUsd.add(
+        values.swapPriceImpactDeltaUsd.mul(-1).mul(values.longTokenUsd).div(totalDepositUsd)
+      );
+
+      values.shortTokenUsd = values.shortTokenUsd.add(
+        values.swapPriceImpactDeltaUsd.mul(-1).mul(values.shortTokenUsd).div(totalDepositUsd)
+      );
+    }
 
     values.longTokenAmount = convertToTokenAmount(values.longTokenUsd, longToken.decimals, longTokenPrice)!;
     values.shortTokenAmount = convertToTokenAmount(values.shortTokenUsd, shortToken.decimals, shortTokenPrice)!;

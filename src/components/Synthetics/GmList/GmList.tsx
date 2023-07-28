@@ -29,9 +29,17 @@ type Props = {
   tokensData?: TokensData;
   marketTokensData?: TokensData;
   marketsTokensAPRData?: MarketTokensAPRData;
+  shouldScrollToTop?: boolean;
 };
 
-export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensData, marketsTokensAPRData }: Props) {
+export function GmList({
+  hideTitle,
+  marketTokensData,
+  marketsInfoData,
+  tokensData,
+  marketsTokensAPRData,
+  shouldScrollToTop,
+}: Props) {
   const { chainId } = useChainId();
   const currentIcons = getIcons(chainId);
   const sortedMarketTokens = useMemo(() => {
@@ -211,14 +219,18 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
                       <Button
                         className="GmList-action"
                         variant="secondary"
-                        to={`/pools?operation=${Operation.Deposit}&market=${token.address}`}
+                        to={`/pools?operation=${Operation.Deposit}&market=${token.address}&scroll=${
+                          shouldScrollToTop ? "1" : "0"
+                        }`}
                       >
                         <Trans>Buy</Trans>
                       </Button>
                       <Button
                         className="GmList-action GmList-last-action"
                         variant="secondary"
-                        to={`/pools?operation=${Operation.Withdrawal}&market=${token.address}`}
+                        to={`/pools?operation=${Operation.Withdrawal}&market=${token.address}&scroll=${
+                          shouldScrollToTop ? "1" : "0"
+                        }`}
                       >
                         <Trans>Sell</Trans>
                       </Button>
@@ -340,12 +352,19 @@ export function GmList({ hideTitle, marketTokensData, marketsInfoData, tokensDat
 
                     <div className="App-card-divider"></div>
                     <div className="App-card-buttons m-0">
-                      <Button variant="secondary" to={`/pools?operation=${Operation.Deposit}&market=${token.address}`}>
+                      <Button
+                        variant="secondary"
+                        to={`/pools?operation=${Operation.Deposit}&market=${token.address}&scroll=${
+                          shouldScrollToTop ? "1" : "0"
+                        }`}
+                      >
                         <Trans>Buy</Trans>
                       </Button>
                       <Button
                         variant="secondary"
-                        to={`/pools?operation=${Operation.Withdrawal}&market=${token.address}`}
+                        to={`/pools?operation=${Operation.Withdrawal}&market=${token.address}&scroll=${
+                          shouldScrollToTop ? "1" : "0"
+                        }`}
                       >
                         <Trans>Sell</Trans>
                       </Button>

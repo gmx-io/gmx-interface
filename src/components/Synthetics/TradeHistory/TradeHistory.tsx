@@ -14,16 +14,18 @@ type Props = {
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
   account: string | null | undefined;
+  forAllAccounts?: boolean;
 };
 
 export function TradeHistory(p: Props) {
-  const { shouldShowPaginationButtons, marketsInfoData, tokensData } = p;
+  const { shouldShowPaginationButtons, marketsInfoData, tokensData, forAllAccounts } = p;
   const { chainId } = useChainId();
   const [pageIndex, setPageIndex] = useState(0);
 
   const { minCollateralUsd } = usePositionsConstants(chainId);
   const { tradeActions, isLoading: isHistoryLoading } = useTradeHistory(chainId, {
     account: p.account,
+    forAllAccounts,
     marketsInfoData,
     tokensData,
     pageIndex,
@@ -48,7 +50,12 @@ export function TradeHistory(p: Props) {
       )}
       {!isLoading &&
         tradeActions?.map((tradeAction) => (
-          <TradeHistoryRow key={tradeAction.id} tradeAction={tradeAction} minCollateralUsd={minCollateralUsd!} />
+          <TradeHistoryRow
+            shouldDisplayAccount={forAllAccounts}
+            key={tradeAction.id}
+            tradeAction={tradeAction}
+            minCollateralUsd={minCollateralUsd!}
+          />
         ))}
       {shouldShowPaginationButtons && (
         <div>

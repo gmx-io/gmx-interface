@@ -124,7 +124,7 @@ export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }):
           },
           totalSupply: BigNumber.from(tokenData?.totalSupply.returnValues[0]),
           balance:
-            account && tokenData.balance?.returnValues[0]
+            account && tokenData.balance?.returnValues
               ? BigNumber.from(tokenData?.balance?.returnValues[0])
               : undefined,
           explorerUrl: `${getExplorerUrl(chainId)}/token/${marketAddress}`,
