@@ -821,7 +821,7 @@ export function GmSwapBox(p: Props) {
 
         <BuyInputSection
           topLeftLabel={isWithdrawal ? t`Pay` : t`Receive`}
-          topLeftValue={formatUsd(marketTokenUsd)}
+          topLeftValue={marketTokenUsd.gt(0) ? formatUsd(marketTokenUsd) : ""}
           topRightLabel={t`Balance`}
           topRightValue={formatTokenAmount(marketToken?.balance, marketToken?.decimals)}
           showMaxButton={isWithdrawal && marketToken?.balance?.gt(0) && !marketTokenAmount?.eq(marketToken.balance)}

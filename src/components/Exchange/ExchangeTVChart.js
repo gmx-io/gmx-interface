@@ -75,7 +75,7 @@ export default function ExchangeTVChart(props) {
   const [currentSeries] = useState();
 
   const dataProvider = useRef();
-  const isSmallMobile = useMedia("(max-width: 596px)");
+  const isSmallMobile = useMedia("(max-width: 470px)");
 
   const fromToken = getTokenInfo(infoTokens, fromTokenAddress);
   const toToken = getTokenInfo(infoTokens, toTokenAddress);

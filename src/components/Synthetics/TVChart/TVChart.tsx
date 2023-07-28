@@ -49,7 +49,7 @@ export function TVChart({
 }: Props) {
   const { chainId } = useChainId();
   const isMobile = useMedia("(max-width: 768px)");
-  const isSmallMobile = useMedia("(max-width: 468px)");
+  const isSmallMobile = useMedia("(max-width: 470px)");
 
   let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period-v2"], DEFAULT_PERIOD);
 
