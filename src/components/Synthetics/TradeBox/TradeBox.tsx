@@ -833,11 +833,17 @@ export function TradeBox(p: Props) {
       const needUpdateMarket =
         !marketAddress || !marketsOptions.availableMarkets.find((m) => m.marketTokenAddress === marketAddress);
 
+      if (needUpdateMarket && marketsOptions.marketWithPosition) {
+        onSelectMarketAddress(marketsOptions.marketWithPosition.marketTokenAddress);
+        return;
+      }
+
       const optimalMarket =
         marketsOptions.minPriceImpactMarket || marketsOptions.maxLiquidityMarket || marketsOptions.availableMarkets[0];
 
       if (needUpdateMarket && optimalMarket) {
         onSelectMarketAddress(optimalMarket.marketTokenAddress);
+        return;
       }
     },
     [
@@ -847,10 +853,27 @@ export function TradeBox(p: Props) {
       isPosition,
       marketAddress,
       marketsOptions.availableMarkets,
+      marketsOptions.collateralWithPosition,
+      marketsOptions.marketWithPosition,
       marketsOptions.maxLiquidityMarket,
       marketsOptions.minPriceImpactMarket,
+      onSelectCollateralAddress,
       onSelectMarketAddress,
     ]
+  );
+
+  const prevMarketAddress = usePrevious(marketAddress);
+  useEffect(
+    function updatePositionCollateral() {
+      if (!isPosition) {
+        return;
+      }
+
+      if (marketAddress && prevMarketAddress !== marketAddress && marketsOptions.collateralWithPosition) {
+        onSelectCollateralAddress(marketsOptions.collateralWithPosition.address);
+      }
+    },
+    [isPosition, marketAddress, marketsOptions.collateralWithPosition, onSelectCollateralAddress, prevMarketAddress]
   );
 
   function onSwitchTokens() {
