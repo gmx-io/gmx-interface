@@ -999,10 +999,6 @@ msgstr "Confirm Trigger Order"
 msgid "Confirm {operationText}"
 msgstr "Confirm {operationText}"
 
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-#~ msgid "Confirm {operationText} {0} GM"
-#~ msgstr "Confirm {operationText} {0} GM"
-
 #: src/components/Header/AppHeaderUser.tsx
 msgid "Connect"
 msgstr "Connect"
@@ -1132,10 +1128,6 @@ msgstr "Created At"
 msgid "Created limit order for {0} {1}: {2} USD!"
 msgstr "Created limit order for {0} {1}: {2} USD!"
 
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-#~ msgid "Creating Deposit..."
-#~ msgstr "Creating Deposit..."
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -1143,10 +1135,6 @@ msgstr "Created limit order for {0} {1}: {2} USD!"
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Creating Order..."
 msgstr "Creating Order..."
-
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-#~ msgid "Creating Withdrawal..."
-#~ msgstr "Creating Withdrawal..."
 
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Creating..."
@@ -1307,17 +1295,9 @@ msgstr "Deposit Fee"
 msgid "Deposit amount is insufficient to bring leverage below the max allowed leverage of 100x"
 msgstr "Deposit amount is insufficient to bring leverage below the max allowed leverage of 100x"
 
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-#~ msgid "Deposit cancelled"
-#~ msgstr "Deposit cancelled"
-
 #: src/components/Exchange/PositionEditor.js
 msgid "Deposit disabled, pending {0} upgrade"
 msgstr "Deposit disabled, pending {0} upgrade"
-
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-#~ msgid "Deposit executed"
-#~ msgstr "Deposit executed"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Deposit failed!"
@@ -1330,10 +1310,6 @@ msgstr "Deposit failed."
 #: src/components/Exchange/PositionEditor.js
 msgid "Deposit not enough to cover fees"
 msgstr "Deposit not enough to cover fees"
-
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-#~ msgid "Deposit request sent"
-#~ msgstr "Deposit request sent"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Deposit submitted!"
@@ -1366,10 +1342,6 @@ msgstr "Deposited!"
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 msgid "Depositing {0} to {positionText}"
 msgstr "Depositing {0} to {positionText}"
-
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-#~ msgid "Depositing {tokensText} to {0}"
-#~ msgstr "Depositing {tokensText} to {0}"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/pages/Stake/StakeV2.js
@@ -1670,10 +1642,6 @@ msgstr "Execute Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price:
 msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 msgstr "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 
-#: src/domain/synthetics/markets/simulateExecuteDepositTxn.tsx
-#~ msgid "Execute order simulation failed."
-#~ msgstr "Execute order simulation failed.>>>>>>> 3ce6efc5b53295af6c4c20d0753bdf2f6fd57f55"
-
 #: src/components/Exchange/FeesTooltip.tsx
 msgid "Execution Fee"
 msgstr "Execution Fee"
@@ -1807,16 +1775,8 @@ msgid "Fulfilling Buy request"
 msgstr "Fulfilling Buy request"
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-#~ msgid "Fulfilling Deposit request"
-#~ msgstr "Fulfilling Deposit request"
-
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
 msgid "Fulfilling Sell request"
 msgstr "Fulfilling Sell request"
-
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-#~ msgid "Fulfilling Withdrawal request"
-#~ msgstr "Fulfilling Withdrawal request"
 
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 msgid "Fulfilling order request"
@@ -1881,16 +1841,6 @@ msgstr "GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of t
 #: src/components/Glp/GlpSwap.js
 msgid "GLP sell disabled, pending {0} upgrade"
 msgstr "GLP sell disabled, pending {0} upgrade"
-
-#: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/GmList/GmList.tsx
-#~ msgid "GM ({0})"
-#~ msgstr "GM ({0})"
-
-#: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/GmList/GmList.tsx
-#~ msgid "GM Markets Pools"
-#~ msgstr "GM Markets Pools"
 
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
@@ -3073,11 +3023,6 @@ msgstr "Opening..."
 msgid "Order"
 msgstr "Order"
 
-#: src/domain/synthetics/markets/simulateExecuteDepositTxn.tsx
-#: src/domain/synthetics/markets/simulateExecuteDepositTxn.tsx
-#~ msgid "Order Error."
-#~ msgstr "Order Error.>>>>>>> 3ce6efc5b53295af6c4c20d0753bdf2f6fd57f55"
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 msgid "Order cancelled"
@@ -3848,16 +3793,8 @@ msgid "Sending Buy request"
 msgstr "Sending Buy request"
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-#~ msgid "Sending Deposit request"
-#~ msgstr "Sending Deposit request"
-
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
 msgid "Sending Sell request"
 msgstr "Sending Sell request"
-
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-#~ msgid "Sending Withdrawal request"
-#~ msgstr "Sending Withdrawal request"
 
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 msgid "Sending order request"
@@ -4744,10 +4681,6 @@ msgstr "UTILIZATION"
 msgid "Unknown buy GM order"
 msgstr "Unknown buy GM order"
 
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-#~ msgid "Unknown deposit"
-#~ msgstr "Unknown deposit"
-
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 msgid "Unknown order"
 msgstr "Unknown order"
@@ -4755,10 +4688,6 @@ msgstr "Unknown order"
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
 msgid "Unknown sell GM order"
 msgstr "Unknown sell GM order"
-
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-#~ msgid "Unknown withdrawal"
-#~ msgstr "Unknown withdrawal"
 
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -5133,33 +5062,13 @@ msgstr "Withdraw submitted."
 msgid "Withdraw {0} USD from {1} {longOrShortText}"
 msgstr "Withdraw {0} USD from {1} {longOrShortText}"
 
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-#~ msgid "Withdrawal"
-#~ msgstr "Withdrawal"
-
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-#~ msgid "Withdrawal cancelled"
-#~ msgstr "Withdrawal cancelled"
-
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-#~ msgid "Withdrawal executed"
-#~ msgstr "Withdrawal executed"
-
 #: src/components/Exchange/PositionEditor.js
 msgid "Withdrawal failed."
 msgstr "Withdrawal failed."
 
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-#~ msgid "Withdrawal request sent"
-#~ msgstr "Withdrawal request sent"
-
 #: src/components/Exchange/PositionEditor.js
 msgid "Withdrawal submitted."
 msgstr "Withdrawal submitted."
-
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-#~ msgid "Withdrawing from {0}"
-#~ msgstr "Withdrawing from {0}"
 
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 msgid "Withdrawing {0} from {positionText}"

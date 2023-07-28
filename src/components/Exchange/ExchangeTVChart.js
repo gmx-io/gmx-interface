@@ -114,6 +114,7 @@ export default function ExchangeTVChart(props) {
       })
       .map((order) => {
         const indexToken = getToken(chainId, order.indexToken);
+        const priceDecimal = getPriceDecimals(chainId, indexToken?.symbol);
         const longOrShortText = order.isLong ? t`Long` : t`Short`;
         const orderTypeText = order.type === INCREASE ? t`Inc.` : t`Dec.`;
         let tokenSymbol;
@@ -121,7 +122,10 @@ export default function ExchangeTVChart(props) {
           tokenSymbol = indexToken.isWrapped ? indexToken.baseSymbol : indexToken.symbol;
         }
         const title = `${orderTypeText} ${tokenSymbol} ${longOrShortText}`;
-        return { title, price: parseFloat(formatAmount(order.triggerPrice, USD_DECIMALS, 2)) };
+        return {
+          title,
+          price: parseFloat(formatAmount(order.triggerPrice, USD_DECIMALS, priceDecimal)),
+        };
       });
   }, [orders, chartToken, chainId]);
 
