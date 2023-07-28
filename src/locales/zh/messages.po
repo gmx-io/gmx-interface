@@ -999,10 +999,6 @@ msgstr ""
 msgid "Confirm {operationText}"
 msgstr ""
 
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-#~ msgid "Confirm {operationText} {0} GM"
-#~ msgstr ""
-
 #: src/components/Header/AppHeaderUser.tsx
 msgid "Connect"
 msgstr "连接"
@@ -1132,10 +1128,6 @@ msgstr ""
 msgid "Created limit order for {0} {1}: {2} USD!"
 msgstr ""
 
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-#~ msgid "Creating Deposit..."
-#~ msgstr ""
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -1143,10 +1135,6 @@ msgstr ""
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Creating Order..."
 msgstr "创建指令中..."
-
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-#~ msgid "Creating Withdrawal..."
-#~ msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Creating..."
@@ -1307,17 +1295,9 @@ msgstr ""
 msgid "Deposit amount is insufficient to bring leverage below the max allowed leverage of 100x"
 msgstr "<<<<<<< HEAD"
 
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-#~ msgid "Deposit cancelled"
-#~ msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
-
 #: src/components/Exchange/PositionEditor.js
 msgid "Deposit disabled, pending {0} upgrade"
 msgstr "存取已失效等待 {0} 升级"
-
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-#~ msgid "Deposit executed"
-#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Deposit failed!"
@@ -1330,10 +1310,6 @@ msgstr "存取失败"
 #: src/components/Exchange/PositionEditor.js
 msgid "Deposit not enough to cover fees"
 msgstr "<<<<<<< HEAD"
-
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-#~ msgid "Deposit request sent"
-#~ msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Deposit submitted!"
@@ -1366,10 +1342,6 @@ msgstr "存款完成"
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 msgid "Depositing {0} to {positionText}"
 msgstr ""
-
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-#~ msgid "Depositing {tokensText} to {0}"
-#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/pages/Stake/StakeV2.js
@@ -1670,10 +1642,6 @@ msgstr ""
 msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 msgstr "<<<<<<< HEAD======="
 
-#: src/domain/synthetics/markets/simulateExecuteDepositTxn.tsx
-#~ msgid "Execute order simulation failed."
-#~ msgstr ">>>>>>> 3ce6efc5b53295af6c4c20d0753bdf2f6fd57f55"
-
 #: src/components/Exchange/FeesTooltip.tsx
 msgid "Execution Fee"
 msgstr ""
@@ -1807,16 +1775,8 @@ msgid "Fulfilling Buy request"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-#~ msgid "Fulfilling Deposit request"
-#~ msgstr ""
-
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
 msgid "Fulfilling Sell request"
 msgstr ""
-
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-#~ msgid "Fulfilling Withdrawal request"
-#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 msgid "Fulfilling order request"
@@ -1881,16 +1841,6 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 msgid "GLP sell disabled, pending {0} upgrade"
 msgstr "GLP售卖已禁止，等待{0}升级"
-
-#: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/GmList/GmList.tsx
-#~ msgid "GM ({0})"
-#~ msgstr ""
-
-#: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/GmList/GmList.tsx
-#~ msgid "GM Markets Pools"
-#~ msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
@@ -3073,11 +3023,6 @@ msgstr "开仓中"
 msgid "Order"
 msgstr "订单<<<<<<< HEAD======="
 
-#: src/domain/synthetics/markets/simulateExecuteDepositTxn.tsx
-#: src/domain/synthetics/markets/simulateExecuteDepositTxn.tsx
-#~ msgid "Order Error."
-#~ msgstr ">>>>>>> 3ce6efc5b53295af6c4c20d0753bdf2f6fd57f55"
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 msgid "Order cancelled"
@@ -3848,16 +3793,8 @@ msgid "Sending Buy request"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-#~ msgid "Sending Deposit request"
-#~ msgstr ""
-
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
 msgid "Sending Sell request"
 msgstr ""
-
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-#~ msgid "Sending Withdrawal request"
-#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 msgid "Sending order request"
@@ -4744,10 +4681,6 @@ msgstr "使用方法"
 msgid "Unknown buy GM order"
 msgstr ""
 
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-#~ msgid "Unknown deposit"
-#~ msgstr ""
-
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 msgid "Unknown order"
 msgstr ""
@@ -4755,10 +4688,6 @@ msgstr ""
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
 msgid "Unknown sell GM order"
 msgstr ""
-
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-#~ msgid "Unknown withdrawal"
-#~ msgstr ""
 
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -5133,33 +5062,13 @@ msgstr "提领送出"
 msgid "Withdraw {0} USD from {1} {longOrShortText}"
 msgstr "由{1} {longOrShortText}提领{0} USD"
 
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-#~ msgid "Withdrawal"
-#~ msgstr ""
-
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-#~ msgid "Withdrawal cancelled"
-#~ msgstr ""
-
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-#~ msgid "Withdrawal executed"
-#~ msgstr ""
-
 #: src/components/Exchange/PositionEditor.js
 msgid "Withdrawal failed."
 msgstr "提领失败"
 
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-#~ msgid "Withdrawal request sent"
-#~ msgstr ""
-
 #: src/components/Exchange/PositionEditor.js
 msgid "Withdrawal submitted."
 msgstr "提领送出"
-
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-#~ msgid "Withdrawing from {0}"
-#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 msgid "Withdrawing {0} from {positionText}"
