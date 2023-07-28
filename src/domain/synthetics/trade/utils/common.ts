@@ -58,7 +58,7 @@ export function getTradeFees(p: {
         tokenOutAddress: step.tokenOutAddress,
         marketAddress: step.marketAddress,
         deltaUsd: step.swapFeeUsd.mul(-1),
-        bps: getBasisPoints(step.swapFeeUsd.mul(-1), initialCollateralUsd),
+        bps: getBasisPoints(step.swapFeeUsd.mul(-1), step.usdIn),
       }))
     : undefined;
 
