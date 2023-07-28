@@ -1,10 +1,9 @@
+import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { InfoTokens, Token, TokenInfo, getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber } from "ethers";
-import { TokensAllowanceData, TokenData, TokenPrices, TokensData, TokensRatio } from "./types";
-import { expandDecimals, formatAmount } from "lib/numbers";
-import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { PRECISION, USD_DECIMALS, adjustForDecimals } from "lib/legacy";
-import { Bar } from "domain/tradingview/types";
+import { expandDecimals, formatAmount } from "lib/numbers";
+import { TokenData, TokenPrices, TokensAllowanceData, TokensData, TokensRatio } from "./types";
 
 export function getTokenData(tokensData?: TokensData, address?: string, convertTo?: "wrapped" | "native") {
   if (!address || !tokensData?.[address]) {
