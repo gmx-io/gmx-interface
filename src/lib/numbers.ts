@@ -220,9 +220,18 @@ export function formatTokenAmount(
     displayDecimals?: number;
     fallbackToZero?: boolean;
     useCommas?: boolean;
+    minThreshold?: string;
+    maxThreshold?: string;
   } = {}
 ) {
-  const { displayDecimals = 4, showAllSignificant = false, fallbackToZero = false, useCommas = false } = opts;
+  const {
+    displayDecimals = 4,
+    showAllSignificant = false,
+    fallbackToZero = false,
+    useCommas = false,
+    minThreshold = "0",
+    maxThreshold,
+  } = opts;
 
   const symbolStr = symbol ? ` ${symbol}` : "";
 
@@ -235,11 +244,22 @@ export function formatTokenAmount(
     }
   }
 
-  const formattedAmount = showAllSignificant
-    ? formatAmountFree(amount, tokenDecimals, tokenDecimals)
-    : formatAmount(amount, tokenDecimals, displayDecimals, useCommas);
+  let amountStr: string;
 
-  return `${formattedAmount}${symbolStr}`;
+  if (showAllSignificant) {
+    amountStr = formatAmountFree(amount, tokenDecimals, tokenDecimals);
+  } else {
+    const exceedingInfo = getLimitedDisplay(amount, tokenDecimals, { maxThreshold, minThreshold });
+
+    amountStr = `${exceedingInfo.symbol} ${formatAmount(
+      exceedingInfo.value,
+      tokenDecimals,
+      displayDecimals,
+      useCommas
+    )}`;
+  }
+
+  return `${amountStr}${symbolStr}`;
 }
 
 export function formatTokenAmountWithUsd(

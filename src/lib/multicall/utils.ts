@@ -69,7 +69,7 @@ export class Multicall {
 
   constructor(public chainId: number, public provider: JsonRpcProvider) {
     this.viemClient = createPublicClient({
-      transport: http(provider.connection.url, { retryCount: 0, retryDelay: 10000000, batch: { wait: 50 } }),
+      transport: http(provider.connection.url, { retryCount: 0, retryDelay: 10000000, batch: true }),
       chain: CHAIN_BY_CHAIN_ID[chainId],
     });
     this.viemMulticallContract = getViemContract({
@@ -143,7 +143,7 @@ export class Multicall {
         }
 
         const fallbackClient = createPublicClient({
-          transport: http(rpcUrl, { retryCount: 0, retryDelay: 10000000, batch: { wait: 50 } }),
+          transport: http(rpcUrl, { retryCount: 0, retryDelay: 10000000, batch: true }),
           chain: CHAIN_BY_CHAIN_ID[this.chainId],
         });
 

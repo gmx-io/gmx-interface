@@ -10,7 +10,7 @@ import {
   getRpcUrl,
 } from "config/chains";
 import { ethers } from "ethers";
-import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
+import { JsonRpcProvider, Web3Provider, WebSocketProvider } from "@ethersproject/providers";
 
 export function getProvider(library: Web3Provider | undefined, chainId: number) {
   let provider;
@@ -64,47 +64,40 @@ export function useJsonRpcProvider(chainId: number) {
   return { provider };
 }
 
-let arbWsProvider: JsonRpcProvider | undefined = undefined;
-let avaxWsProvider: JsonRpcProvider | undefined = undefined;
-let goerliWsProvider: JsonRpcProvider | undefined = undefined;
-let fujiWsProvider: JsonRpcProvider | undefined = undefined;
+const cachedWsProviders: { [chainId: number]: WebSocketProvider | JsonRpcProvider | undefined } = {};
 
 export function getWsProvider(active, chainId) {
   if (!active) {
     return;
   }
+
+  if (cachedWsProviders[chainId]) {
+    return cachedWsProviders[chainId];
+  }
+
+  let provider: WebSocketProvider | JsonRpcProvider | undefined;
+
   if (chainId === ARBITRUM) {
-    if (!arbWsProvider) {
-      arbWsProvider = new ethers.providers.WebSocketProvider(getAlchemyWsUrl());
-    }
-
-    return arbWsProvider;
+    provider = new ethers.providers.WebSocketProvider(getAlchemyWsUrl());
   }
-
   if (chainId === AVALANCHE) {
-    if (!avaxWsProvider) {
-      avaxWsProvider = new ethers.providers.WebSocketProvider("wss://api.avax.network/ext/bc/C/ws");
-    }
-
-    return avaxWsProvider;
+    provider = new ethers.providers.WebSocketProvider("wss://api.avax.network/ext/bc/C/ws");
   }
-
   if (chainId === ARBITRUM_GOERLI) {
-    if (!goerliWsProvider) {
-      goerliWsProvider = new ethers.providers.WebSocketProvider(
-        "wss://arb-goerli.g.alchemy.com/v2/cZfd99JyN42V9Clbs_gOvA3GSBZH1-1j"
-      );
-    }
-
-    return goerliWsProvider;
+    provider = new ethers.providers.WebSocketProvider(
+      "wss://arb-goerli.g.alchemy.com/v2/cZfd99JyN42V9Clbs_gOvA3GSBZH1-1j"
+    );
   }
-
   if (chainId === AVALANCHE_FUJI) {
-    if (!fujiWsProvider) {
-      fujiWsProvider = new ethers.providers.JsonRpcProvider(getRpcUrl(AVALANCHE_FUJI));
-      fujiWsProvider.pollingInterval = 2000;
-    }
-
-    return fujiWsProvider;
+    provider = new ethers.providers.JsonRpcProvider(getRpcUrl(AVALANCHE_FUJI));
+    provider.pollingInterval = 2000;
   }
+
+  if (!provider) {
+    return;
+  }
+
+  cachedWsProviders[chainId] = provider;
+
+  return provider;
 }

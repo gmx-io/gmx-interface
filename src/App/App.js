@@ -88,7 +88,6 @@ import { helperToast } from "lib/helperToast";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { roundToTwoDecimals } from "lib/numbers";
-import { getWsProvider } from "lib/rpc";
 import {
   activateInjectedProvider,
   clearWalletConnectData,
@@ -102,10 +101,11 @@ import {
   useInactiveListener,
 } from "lib/wallets";
 import { MarketPoolsPage } from "pages/MarketPoolsPage/MarketPoolsPage";
+import SyntheticsActions from "pages/SyntheticsActions/SyntheticsActions";
 import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsFallbackPage";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
-import SyntheticsActions from "pages/SyntheticsActions/SyntheticsActions";
+import { getWsProvider } from "lib/rpc";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -124,16 +124,6 @@ const Zoom = cssTransition({
   collapseDuration: 200,
   duration: 200,
 });
-
-const SyntheticsEventsProviderWrapper = ({ children }) => {
-  const { chainId } = useChainId();
-
-  if (getIsSyntheticsSupported(chainId)) {
-    return <SyntheticsEventsProvider>{children}</SyntheticsEventsProvider>;
-  }
-
-  return <>{children}</>;
-};
 
 function FullApp() {
   const isHome = isHomeSite();
@@ -805,7 +795,7 @@ function App() {
     <SWRConfig value={{ refreshInterval: 5000 }}>
       <Web3ReactProvider getLibrary={getLibrary}>
         <SettingsContextProvider>
-          <SyntheticsEventsProviderWrapper>
+          <SyntheticsEventsProvider>
             <SEO>
               <Router>
                 <I18nProvider i18n={i18n}>
@@ -813,7 +803,7 @@ function App() {
                 </I18nProvider>
               </Router>
             </SEO>
-          </SyntheticsEventsProviderWrapper>
+          </SyntheticsEventsProvider>
         </SettingsContextProvider>
       </Web3ReactProvider>
     </SWRConfig>
