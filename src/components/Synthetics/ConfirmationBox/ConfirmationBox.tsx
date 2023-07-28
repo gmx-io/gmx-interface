@@ -547,7 +547,7 @@ export function ConfirmationBox(p: Props) {
       return (
         <div className="Confirmation-box-main">
           <div>
-            <Trans>Pay</Trans>&nbsp;
+            <Trans>Pay</Trans>
             {formatTokenAmountWithUsd(
               swapAmounts?.amountIn,
               swapAmounts?.usdIn,
@@ -557,7 +557,7 @@ export function ConfirmationBox(p: Props) {
           </div>
           <div className="Confirmation-box-main-icon"></div>
           <div>
-            <Trans>Receive</Trans>&nbsp;
+            <Trans>Receive</Trans>
             {formatTokenAmountWithUsd(swapAmounts?.amountOut, swapAmounts?.usdOut, toToken?.symbol, toToken?.decimals)}
           </div>
         </div>
@@ -568,7 +568,7 @@ export function ConfirmationBox(p: Props) {
       return (
         <div className="Confirmation-box-main">
           <span>
-            <Trans>Pay</Trans>&nbsp;
+            <Trans>Pay</Trans>
             {formatTokenAmountWithUsd(
               increaseAmounts?.initialCollateralAmount,
               increaseAmounts?.initialCollateralUsd,
@@ -578,7 +578,7 @@ export function ConfirmationBox(p: Props) {
           </span>
           <div className="Confirmation-box-main-icon"></div>
           <div>
-            {isLong ? t`Long` : t`Short`}&nbsp;
+            {isLong ? t`Long` : t`Short`}
             {formatTokenAmountWithUsd(
               increaseAmounts?.sizeDeltaInTokens,
               increaseAmounts?.sizeDeltaUsd,
