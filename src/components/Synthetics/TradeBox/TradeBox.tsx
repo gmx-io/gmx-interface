@@ -1219,9 +1219,11 @@ export function TradeBox(p: Props) {
           className="SwapBox-info-row"
           label={t`Acceptable Price`}
           value={
-            formatAcceptablePrice(increaseAmounts?.acceptablePrice, {
-              displayDecimals: toToken?.priceDecimals,
-            }) || "-"
+            increaseAmounts?.sizeDeltaUsd.gt(0)
+              ? formatAcceptablePrice(increaseAmounts.acceptablePrice, {
+                  displayDecimals: toToken?.priceDecimals,
+                })
+              : "-"
           }
         />
 
@@ -1345,9 +1347,11 @@ export function TradeBox(p: Props) {
           className="SwapBox-info-row"
           label={t`Acceptable Price`}
           value={
-            formatAcceptablePrice(decreaseAmounts?.acceptablePrice, {
-              displayDecimals: toToken?.priceDecimals,
-            }) || "-"
+            decreaseAmounts?.sizeDeltaUsd.gt(0)
+              ? formatAcceptablePrice(decreaseAmounts?.acceptablePrice, {
+                  displayDecimals: toToken?.priceDecimals,
+                })
+              : "-"
           }
         />
 

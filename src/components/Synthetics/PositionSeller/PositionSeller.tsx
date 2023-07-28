@@ -449,9 +449,11 @@ export function PositionSeller(p: Props) {
               <ExchangeInfoRow
                 label={t`Acceptable Price`}
                 value={
-                  formatAcceptablePrice(decreaseAmounts?.acceptablePrice, {
-                    displayDecimals: indexPriceDecimals,
-                  }) || "-"
+                  decreaseAmounts?.sizeDeltaUsd.gt(0)
+                    ? formatAcceptablePrice(decreaseAmounts.acceptablePrice, {
+                        displayDecimals: indexPriceDecimals,
+                      })
+                    : "-"
                 }
               />
 
