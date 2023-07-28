@@ -22,7 +22,7 @@ export default function Leaderboard() {
               <Trans>Leaderboards</Trans> <img alt="Chain Icon" src={getChainIcon(chainId)} />
             </div>
             <div className="Page-description">
-              <Trans>Addresses trading statistics. Choose between general or competitions leaderboards.</Trans>
+              <Trans>Addresses trading statistics. Choose between global or competitions leaderboards.</Trans>
             </div>
             <div style={{ marginTop: "2.5rem" }}>
               <select
@@ -30,7 +30,7 @@ export default function Leaderboard() {
                 onChange={(event) => setSelectedCompetition(event.target.value)}
                 className="transparent-btn"
               >
-                <option value="">{t`General`}</option>
+                <option value="">{t`Global`}</option>
               </select>
             </div>
           </div>

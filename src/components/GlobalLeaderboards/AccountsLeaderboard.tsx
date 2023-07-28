@@ -9,7 +9,7 @@ import { useLeaderboardContext } from "./Context";
 import { PerfPeriod } from "domain/synthetics/leaderboards";
 import { formatAmount } from "lib/numbers";
 import { USD_DECIMALS } from "lib/legacy";
-import { BigNumberish } from "ethers";
+import { BigNumber, BigNumberish } from "ethers";
 
 const formatUsdAmount = (x: BigNumberish, displayDecimals = 2, useCommas = false) => (
   formatAmount(x, USD_DECIMALS, displayDecimals, useCommas)
@@ -26,7 +26,7 @@ export default function AccountsLeaderboard() {
     id: s.id,
     account: s.account,
     absPnl: formatUsdAmount(s.absPnl),
-    relPnl: formatUsdAmount(s.relPnl),
+    relPnl: formatUsdAmount(s.relPnl.mul(BigNumber.from(100)), 1),
     sizeLev: `${ formatUsdAmount(s.size) } (${ formatUsdAmount(s.leverage) })`,
     perf: `${ s.wins.toNumber() }/${ s.losses.toNumber() }`,
   }));
@@ -53,7 +53,7 @@ export default function AccountsLeaderboard() {
           option={period}
           onChange={setPeriod}
           options={[/* PerfPeriod.DAY, PerfPeriod.WEEK, PerfPeriod.MONTH, */PerfPeriod.TOTAL]}
-          optionLabels={[/*t`24 hours`, t`7 days`, t`1 month`, */t`Total`]}
+          optionLabels={[/*t`24 hours`, t`7 days`, t`1 month`, */t`All time`]}
         />
       </div>
       <Table
