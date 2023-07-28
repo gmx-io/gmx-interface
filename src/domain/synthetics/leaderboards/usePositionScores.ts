@@ -30,7 +30,8 @@ export function usePositionScores() {
     }
 
     if (!p.marketData) {
-      return { data: [], isLoading: false, error: new Error(`Unable to identify market "${p.market}" in chain id: ${chainId}`) };
+      return { data: [], isLoading: true, error: null };
+      // new Error(`Unable to identify market "${p.market}" in chain id: ${chainId}`) };
     }
 
     const { longTokenAddress, shortTokenAddress } = p.marketData;

@@ -8,7 +8,7 @@ import { useMarkets } from "../markets";
 const fetchOpenPositions = async (
   first: number,
   skip: number,
-  markets: ReturnType<typeof useMarkets>,
+  // markets: ReturnType<typeof useMarkets>,
   orderBy: string = "sizeInUsd",
   orderDirection: "asc" | "desc" = "desc",
 ): Promise<Array<AccountOpenPosition>> => {
@@ -29,7 +29,7 @@ const fetchOpenPositions = async (
     id: p.id,
     account: p.account,
     market: p.market,
-    marketData: markets && markets.marketsData && markets.marketsData[utils.getAddress(p.market)],
+    marketData: undefined,
     collateralToken: p.collateralToken,
     isLong: p.isLong,
     sizeInTokens: BigNumber.from(p.sizeInTokens),
@@ -49,7 +49,7 @@ export function useOpenPositions(chainId: number) {
     let skip = 0;
 
     while (true) {
-      const page = await fetchOpenPositions(pageSize, skip, markets);
+      const page = await fetchOpenPositions(pageSize, skip);
       if (!page || !page.length) {
         break;
       }
@@ -59,6 +59,16 @@ export function useOpenPositions(chainId: number) {
 
     return data;
   });
+
+  if (markets.marketsData && openPositions.data) {
+    for (const p of openPositions.data) {
+      p.marketData = markets.marketsData[utils.getAddress(p.market)];
+
+      if (!p.marketData) {
+        console.warn(`No market data for ${utils.getAddress(p.market)}`, markets.marketsData);
+      }
+    }
+  }
 
   return {
     isLoading: !openPositions.data,
