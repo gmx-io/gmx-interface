@@ -104,6 +104,10 @@ export function getIncreasePositionAmounts(p: {
   values.borrowingFeeUsd = position?.pendingBorrowingFeesUsd || BigNumber.from(0);
   values.fundingFeeUsd = position?.pendingFundingFeesUsd || BigNumber.from(0);
 
+  if (!values.indexPrice.gt(0) || !values.initialCollateralPrice.gt(0) || !values.collateralPrice.gt(0)) {
+    return values;
+  }
+
   // Size and collateral
   if (strategy === "leverageByCollateral" && leverage && initialCollateralAmount?.gt(0)) {
     values.estimatedLeverage = leverage;
@@ -307,10 +311,10 @@ export function getIncreasePositionAmounts(p: {
   let priceImpactAmount = BigNumber.from(0);
 
   if (values.positionPriceImpactDeltaUsd.gt(0)) {
-    const price = triggerPrice || indexToken.prices.maxPrice;
+    const price = triggerPrice?.gt(0) ? triggerPrice : indexToken.prices.maxPrice;
     priceImpactAmount = convertToTokenAmount(values.positionPriceImpactDeltaUsd, indexToken.decimals, price)!;
   } else {
-    const price = triggerPrice || indexToken.prices.minPrice;
+    const price = triggerPrice?.gt(0) ? triggerPrice : indexToken.prices.minPrice;
     priceImpactAmount = convertToTokenAmount(values.positionPriceImpactDeltaUsd, indexToken.decimals, price)!;
   }
 
