@@ -974,7 +974,11 @@ export function isChartAvailabeForToken(chainId: number, tokenSymbol: string) {
 
 export function getPriceDecimals(chainId: number, tokenSymbol?: string) {
   if (!tokenSymbol) return 2;
-  const token = getTokenBySymbol(chainId, tokenSymbol);
-  if (!token) return 2;
-  return token.priceDecimals ?? 2;
+
+  try {
+    const token = getTokenBySymbol(chainId, tokenSymbol);
+    return token.priceDecimals ?? 2;
+  } catch (e) {
+    return 2;
+  }
 }
