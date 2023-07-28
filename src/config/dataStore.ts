@@ -170,19 +170,19 @@ export function withdrawalGasLimitKey() {
 }
 
 export function singleSwapGasLimitKey() {
-  return hashData(["bytes32"], [SINGLE_SWAP_GAS_LIMIT_KEY]);
+  return SINGLE_SWAP_GAS_LIMIT_KEY;
 }
 
 export function increaseOrderGasLimitKey() {
-  return hashData(["bytes32"], [INCREASE_ORDER_GAS_LIMIT_KEY]);
+  return INCREASE_ORDER_GAS_LIMIT_KEY;
 }
 
 export function decreaseOrderGasLimitKey() {
-  return hashData(["bytes32"], [DECREASE_ORDER_GAS_LIMIT_KEY]);
+  return DECREASE_ORDER_GAS_LIMIT_KEY;
 }
 
 export function swapOrderGasLimitKey() {
-  return hashData(["bytes32"], [SWAP_ORDER_GAS_LIMIT_KEY]);
+  return SWAP_ORDER_GAS_LIMIT_KEY;
 }
 
 export function accountOrderListKey(account: string) {

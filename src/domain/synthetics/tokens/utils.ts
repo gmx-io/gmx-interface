@@ -1,10 +1,9 @@
+import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { InfoTokens, Token, TokenInfo, getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber } from "ethers";
-import { TokensAllowanceData, TokenData, TokenPrices, TokensData, TokensRatio } from "./types";
-import { expandDecimals, formatAmount } from "lib/numbers";
-import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { PRECISION, USD_DECIMALS, adjustForDecimals } from "lib/legacy";
-import { Bar } from "domain/tradingview/types";
+import { expandDecimals, formatAmount } from "lib/numbers";
+import { TokenData, TokenPrices, TokensAllowanceData, TokensData, TokensRatio } from "./types";
 
 export function getTokenData(tokensData?: TokensData, address?: string, convertTo?: "wrapped" | "native") {
   if (!address || !tokensData?.[address]) {
@@ -126,56 +125,6 @@ export function getAmountByRatio(p: {
   const adjustedDecimalsRatio = adjustForDecimals(_ratio, fromToken.decimals, toToken.decimals);
 
   return p.fromTokenAmount.mul(adjustedDecimalsRatio).div(PRECISION);
-}
-
-export function getCandlesDelta(candles: Bar[], currentAveragePrice: BigNumber, periodInSeconds: number) {
-  const currentPrice = parseFloat(formatAmount(currentAveragePrice, USD_DECIMALS, 2));
-
-  if (!candles.length) {
-    return undefined;
-  }
-
-  const result: Partial<{
-    high: number;
-    low: number;
-    delta: number;
-    deltaPrice: number;
-    deltaPercentage: number;
-    deltaPercentageStr: string;
-  }> = {};
-
-  const now = Math.round(Date.now() / 1000);
-  const timeThreshold = now - periodInSeconds;
-
-  for (const candle of candles) {
-    if (candle.time < timeThreshold) {
-      break;
-    }
-
-    if (!result.high || candle.high > result.high) {
-      result.high = candle.high;
-    }
-
-    if (!result.low || candle.low < result.low) {
-      result.low = candle.low;
-    }
-
-    result.deltaPrice = candle.open;
-  }
-
-  result.delta = currentPrice - result.deltaPrice!;
-  result.deltaPercentage = (result.delta * 100) / currentPrice;
-
-  if (result.deltaPercentage > 0) {
-    result.deltaPercentageStr = `+${result.deltaPercentage.toFixed(2)}%`;
-  } else {
-    result.deltaPercentageStr = `${result.deltaPercentage.toFixed(2)}%`;
-  }
-  if (result.deltaPercentage === 0) {
-    result.deltaPercentageStr = "0.00";
-  }
-
-  return result as Required<typeof result>;
 }
 
 export function getMidPrice(prices: TokenPrices) {
