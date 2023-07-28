@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import {
   ARBITRUM,
   ARBITRUM_GOERLI,
@@ -10,7 +10,18 @@ import {
   getRpcUrl,
 } from "config/chains";
 import { ethers } from "ethers";
-import { JsonRpcProvider, Web3Provider, WebSocketProvider } from "@ethersproject/providers";
+import { useEffect, useState } from "react";
+
+const arbWsProvider = new ethers.providers.WebSocketProvider(getAlchemyWsUrl());
+
+const avaxWsProvider = new ethers.providers.WebSocketProvider("wss://api.avax.network/ext/bc/C/ws");
+
+const goerliWsProvider = new ethers.providers.WebSocketProvider(
+  "wss://arb-goerli.g.alchemy.com/v2/cZfd99JyN42V9Clbs_gOvA3GSBZH1-1j"
+);
+
+const fujiWsProvider = new ethers.providers.JsonRpcProvider(getRpcUrl(AVALANCHE_FUJI));
+fujiWsProvider.pollingInterval = 2000;
 
 export function getProvider(library: Web3Provider | undefined, chainId: number) {
   let provider;
@@ -64,40 +75,23 @@ export function useJsonRpcProvider(chainId: number) {
   return { provider };
 }
 
-const cachedWsProviders: { [chainId: number]: WebSocketProvider | JsonRpcProvider | undefined } = {};
-
 export function getWsProvider(active, chainId) {
   if (!active) {
     return;
   }
-
-  if (cachedWsProviders[chainId]) {
-    return cachedWsProviders[chainId];
-  }
-
-  let provider: WebSocketProvider | JsonRpcProvider | undefined;
-
   if (chainId === ARBITRUM) {
-    provider = new ethers.providers.WebSocketProvider(getAlchemyWsUrl());
+    return arbWsProvider;
   }
+
   if (chainId === AVALANCHE) {
-    provider = new ethers.providers.WebSocketProvider("wss://api.avax.network/ext/bc/C/ws");
+    return avaxWsProvider;
   }
+
   if (chainId === ARBITRUM_GOERLI) {
-    provider = new ethers.providers.WebSocketProvider(
-      "wss://arb-goerli.g.alchemy.com/v2/cZfd99JyN42V9Clbs_gOvA3GSBZH1-1j"
-    );
+    return goerliWsProvider;
   }
+
   if (chainId === AVALANCHE_FUJI) {
-    provider = new ethers.providers.JsonRpcProvider(getRpcUrl(AVALANCHE_FUJI));
-    provider.pollingInterval = 2000;
+    return fujiWsProvider;
   }
-
-  if (!provider) {
-    return;
-  }
-
-  cachedWsProviders[chainId] = provider;
-
-  return provider;
 }
