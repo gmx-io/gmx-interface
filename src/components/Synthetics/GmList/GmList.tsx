@@ -169,7 +169,7 @@ export function GmList({
                         <div className="App-card-title-info-icon">
                           <img
                             src={importImage(
-                              "ic_" + (market.isSpotOnly ? "spot" : indexToken.symbol.toLocaleLowerCase()) + "_40.svg"
+                              "ic_" + (market.isSpotOnly ? "swap" : indexToken.symbol.toLocaleLowerCase()) + "_40.svg"
                             )}
                             alt={indexToken.symbol}
                             width="40"
@@ -276,7 +276,7 @@ export function GmList({
                     <div className="mobile-token-card">
                       <img
                         src={importImage(
-                          "ic_" + (market?.isSpotOnly ? "spot" : indexToken?.symbol.toLocaleLowerCase()) + "_24.svg"
+                          "ic_" + (market?.isSpotOnly ? "swap" : indexToken?.symbol.toLocaleLowerCase()) + "_24.svg"
                         )}
                         alt={indexToken.symbol}
                         width="20"

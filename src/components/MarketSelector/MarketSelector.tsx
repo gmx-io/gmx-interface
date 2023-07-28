@@ -138,7 +138,7 @@ export function MarketSelector({
           {filteredOptions.map((option, marketIndex) => {
             const { marketInfo, balance, balanceUsd, indexName, state = {} } = option;
             const assetImage = importImage(
-              `ic_${marketInfo.isSpotOnly ? "spot" : marketInfo.indexToken.symbol.toLowerCase()}_40.svg`
+              `ic_${marketInfo.isSpotOnly ? "swap" : marketInfo.indexToken.symbol.toLowerCase()}_40.svg`
             );
 
             const marketToken = getByKey(marketTokensData, marketInfo.marketTokenAddress);
