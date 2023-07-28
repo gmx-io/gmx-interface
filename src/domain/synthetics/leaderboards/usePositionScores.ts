@@ -1,5 +1,5 @@
 import { useChainId } from "lib/chains";
-import { useTokenRecentPrices } from "../tokens";
+import { convertToUsd, useTokenRecentPrices } from "../tokens";
 import { AccountOpenPosition, PositionScores } from "./types";
 import { useOpenPositions } from "./useOpenPositions";
 import { BigNumber, utils } from "ethers";
@@ -34,25 +34,21 @@ export function usePositionScores() {
       // new Error(`Unable to identify market "${p.market}" in chain id: ${chainId}`) };
     }
 
-    const { longTokenAddress, shortTokenAddress } = p.marketData;
-    // const longToken = getToken(chainId, utils.getAddress(longTokenAddress));
-    // const shortToken = getToken(chainId, utils.getAddress(shortTokenAddress));
-
     const collateralTokenPrices = pricesData[collateralTokenAddress];
-    const longTokenPrices = pricesData[utils.getAddress(longTokenAddress)];
-    const shortTokenPrices = pricesData[utils.getAddress(shortTokenAddress)];
     const collateralToken = getToken(chainId, getAddress(collateralTokenAddress));
-    const usdDecimalPlaces = expandDecimals(1, USD_DECIMALS);
-    const collateralDecimalPlaces = expandDecimals(1, collateralToken.decimals + USD_DECIMALS);
-    const collateralAmountUsd = p.collateralAmount
-      .mul(usdDecimalPlaces)
-      .mul(collateralTokenPrices.minPrice)
-      .div(collateralDecimalPlaces);
+    const collateralAmountUsd = convertToUsd(
+      p.collateralAmount!,
+      collateralToken.decimals,
+      collateralTokenPrices.minPrice
+    )!;
 
-    const value = p.sizeInTokens
-      .mul(usdDecimalPlaces)
-      .mul(p.isLong ? longTokenPrices.minPrice : shortTokenPrices.maxPrice)
-      .div(expandDecimals(1, 18 + USD_DECIMALS));
+    const indexTokenAddress = utils.getAddress(p.marketData.indexTokenAddress);
+    const indexToken = getToken(chainId, indexTokenAddress);
+    const value = convertToUsd(
+      p.sizeInTokens!,
+      indexToken.decimals,
+      p.isLong ? pricesData[indexTokenAddress].minPrice : pricesData[indexTokenAddress].maxPrice,
+    )!;
 
     const unrealizedPnl = p.isLong ? value.sub(p.sizeInUsd) : p.sizeInUsd.sub(value);
 
