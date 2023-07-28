@@ -144,6 +144,7 @@ export type SwapStats = {
   priceImpactDeltaUsd: BigNumber;
   amountIn: BigNumber;
   amountInAfterFees: BigNumber;
+  usdIn: BigNumber;
   amountOut: BigNumber;
   usdOut: BigNumber;
 };
