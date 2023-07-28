@@ -209,7 +209,6 @@ export function getIncreasePositionAmounts(p: {
     values.swapPathStats = swapAmounts.swapPathStats;
 
     values.initialCollateralAmount = swapAmounts.amountIn;
-    // TODO: check leverage prediction
     values.initialCollateralUsd = convertToUsd(
       values.initialCollateralAmount,
       initialCollateralToken.decimals,

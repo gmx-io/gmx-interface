@@ -119,7 +119,6 @@ export function getDepositAmounts(p: {
       values.shortTokenUsd = values.marketTokenUsd;
     }
 
-    // TODO: add to original amounts
     values.swapPriceImpactDeltaUsd = getPriceImpactForSwap(
       marketInfo,
       longToken,
