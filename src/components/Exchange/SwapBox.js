@@ -1925,7 +1925,7 @@ export default function SwapBox(props) {
             <React.Fragment>
               <BuyInputSection
                 topLeftLabel={t`Pay`}
-                topLeftValue={fromUsdMin && `${formatAmount(fromUsdMin, USD_DECIMALS, 2, true)} USD`}
+                topLeftValue={fromUsdMin && `$${formatAmount(fromUsdMin, USD_DECIMALS, 2, true)}`}
                 topRightLabel={t`Balance`}
                 topRightValue={fromBalance && `${formatAmount(fromBalance, fromToken.decimals, 4, true)}`}
                 onClickTopRightLabel={setFromValueToMaximumAvailable}
@@ -1953,7 +1953,7 @@ export default function SwapBox(props) {
               <BuyInputSection
                 topLeftLabel={getToLabel()}
                 topRightLabel={isSwap ? t`Balance` : t`Leverage`}
-                topLeftValue={toUsdMax && `${formatAmount(toUsdMax, USD_DECIMALS, 2, true)} USD`}
+                topLeftValue={toUsdMax && `$${formatAmount(toUsdMax, USD_DECIMALS, 2, true)}`}
                 topRightValue={
                   isSwap
                     ? formatAmount(toBalance, toToken.decimals, 4, true)
@@ -2050,7 +2050,7 @@ export default function SwapBox(props) {
                 <span className="muted">Leverage slider</span>
               </ToggleSwitch>
               {isLeverageSliderEnabled && (
-                <LeverageSlider isLong={isLong} leverageOption={leverageOption} onChange={setLeverageOption} />
+                <LeverageSlider isPositive={isLong} value={leverageOption} onChange={setLeverageOption} />
               )}
               {isShort && (
                 <div className="Exchange-info-row">
@@ -2175,7 +2175,7 @@ export default function SwapBox(props) {
                 trigger orders. <br />
                 <br />
                 For screenshots and more information, please see the{" "}
-                <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#stop-loss-take-profit-orders">
+                <ExternalLink href="https://docs.gmx.io/docs/trading/v1#stop-loss--take-profit-orders">
                   docs
                 </ExternalLink>
                 .
@@ -2274,7 +2274,7 @@ export default function SwapBox(props) {
                           top right of the page after connecting your wallet.
                           <br />
                           <br />
-                          <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#opening-a-position">
+                          <ExternalLink href="https://docs.gmx.io/docs/trading/v1#opening-a-position">
                             More Info
                           </ExternalLink>
                         </Trans>
@@ -2303,7 +2303,7 @@ export default function SwapBox(props) {
                           This exit price will change with the price of the asset.
                           <br />
                           <br />
-                          <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#opening-a-position">
+                          <ExternalLink href="https://docs.gmx.io/docs/trading/v1#opening-a-position">
                             More Info
                           </ExternalLink>
                         </Trans>
@@ -2342,7 +2342,7 @@ export default function SwapBox(props) {
                           </div>
                         )}
                         <br />
-                        <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#opening-a-position">
+                        <ExternalLink href="https://docs.gmx.io/docs/trading/v1#opening-a-position">
                           <Trans>More Info</Trans>
                         </ExternalLink>
                       </div>

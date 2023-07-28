@@ -29,10 +29,6 @@ msgstr "06 Jan 2022"
 msgid "24h Volume"
 msgstr "24h Volume"
 
-#: src/components/Exchange/PositionSeller.js
-msgid "<0/>Profit price: {0} ${1}. This rule applies for the next {2}, until {3}."
-msgstr "<0/>Profit price: {0} ${1}. This rule applies for the next {2}, until {3}."
-
 #: src/App/App.js
 msgid "<0>Install Coinbase Wallet</0> to start using GMX."
 msgstr "<0>Install Coinbase Wallet</0> to start using GMX."
@@ -106,10 +102,6 @@ msgstr "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exc
 #: src/components/Exchange/SwapBox.js
 msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} available liquidity. Reduce the \"Pay\" size, or change the \"Collateral In\" token.</1>"
 msgstr "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} available liquidity. Reduce the \"Pay\" size, or change the \"Collateral In\" token.</1>"
-
-#: src/components/Exchange/SwapBox.js
-#~ msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} available liquidity. Reduce the \"Pay\" size, or use {4} as the \"Pay\" token to use it for collateral.</1><2>You can buy {5} on 1inch.</2>"
-#~ msgstr "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} available liquidity. Reduce the \"Pay\" size, or use {4} as the \"Pay\" token to use it for collateral.</1><2>You can buy {5} on 1inch.</2>"
 
 #: src/components/Exchange/SwapBox.js
 msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
@@ -409,6 +401,11 @@ msgstr "Available Liquidity"
 #: src/components/Glp/GlpSwap.js
 msgid "Available amount to deposit into GLP."
 msgstr "Available amount to deposit into GLP."
+
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "Available amount to deposit into the specific GM pool."
+msgstr "Available amount to deposit into the specific GM pool."
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -1675,7 +1672,7 @@ msgstr "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay}
 
 #: src/domain/synthetics/markets/simulateExecuteDepositTxn.tsx
 #~ msgid "Execute order simulation failed."
-#~ msgstr "Execute order simulation failed."
+#~ msgstr "Execute order simulation failed.>>>>>>> 3ce6efc5b53295af6c4c20d0753bdf2f6fd57f55"
 
 #: src/components/Exchange/FeesTooltip.tsx
 msgid "Execution Fee"
@@ -1887,9 +1884,16 @@ msgstr "GLP sell disabled, pending {0} upgrade"
 
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
-msgid "GM ({0})"
-msgstr "GM ({0})"
+#~ msgid "GM ({0})"
+#~ msgstr "GM ({0})"
 
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
+#~ msgid "GM Markets Pools"
+#~ msgstr "GM Markets Pools"
+
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "GM Pools"
@@ -3072,7 +3076,7 @@ msgstr "Order"
 #: src/domain/synthetics/markets/simulateExecuteDepositTxn.tsx
 #: src/domain/synthetics/markets/simulateExecuteDepositTxn.tsx
 #~ msgid "Order Error."
-#~ msgstr "Order Error."
+#~ msgstr "Order Error.>>>>>>> 3ce6efc5b53295af6c4c20d0753bdf2f6fd57f55"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
@@ -3451,10 +3455,6 @@ msgstr "Price on Avalanche"
 msgid "Profit"
 msgstr "Profit"
 
-#: src/components/Exchange/PositionSeller.js
-msgid "Profit price: {0} ${1}. This rule applies for the next {2}, until {3}."
-msgstr "Profit price: {0} ${1}. This rule applies for the next {2}, until {3}."
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
 msgstr "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
@@ -3481,12 +3481,12 @@ msgid "Protocol risk explorer and stats"
 msgstr "Protocol risk explorer and stats"
 
 #: src/pages/BuyGlp/BuyGlp.js
-msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
-msgstr "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
+msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverage trading."
+msgstr "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverage trading."
 
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-msgid "Purchase <0>GM Tokens.</0>"
-msgstr "Purchase <0>GM Tokens.</0>"
+msgid "Purchase <0>GM Tokens</0> to earn fees from swaps and leverage trading."
+msgstr "Purchase <0>GM Tokens</0> to earn fees from swaps and leverage trading."
 
 #: src/pages/Stake/StakeV2.js
 msgid "Purchase Insurance"
@@ -3576,10 +3576,6 @@ msgstr "Redemption time not yet reached"
 #: src/pages/Home/Home.js
 msgid "Reduce Liquidation Risks"
 msgstr "Reduce Liquidation Risks"
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Reducing the position at the current price will forfeit a <0>pending profit</0> of {deltaStr}. <1/>"
-msgstr "Reducing the position at the current price will forfeit a <0>pending profit</0> of {deltaStr}. <1/>"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Code"
@@ -4427,10 +4423,6 @@ msgstr "This code has been taken by someone else on {0}, you will not receive re
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
 msgstr "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
-
-#: src/components/Exchange/PositionSeller.js
-msgid "This order will forfeit a <0>profit</0> of {deltaStr}. <1/>"
-msgstr "This order will forfeit a <0>profit</0> of {deltaStr}. <1/>"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "This position was liquidated as the max leverage of 100x was exceeded."
@@ -5487,6 +5479,10 @@ msgstr "{0} Required"
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "{0} and {1} can be used to mint GM for this market up to the specified minting caps."
 msgstr "{0} and {1} can be used to mint GM for this market up to the specified minting caps."
+
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "{0} and {1} can be used to mint GM tokens for this market up to the specified minting caps."
+msgstr "{0} and {1} can be used to mint GM tokens for this market up to the specified minting caps."
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "{0} can be used to mint GM for this market up to the specified minting caps."

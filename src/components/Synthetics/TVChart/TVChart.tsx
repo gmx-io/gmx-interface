@@ -186,18 +186,20 @@ export function TVChart({
               disabled={disableSelectToken}
             />
           </div>
-          <div>
-            <div className="ExchangeChart-main-price">
-              {formatUsd(chartToken?.prices?.maxPrice, {
-                displayDecimals: chartToken?.priceDecimals,
-              }) || "..."}
+          {!isSmallMobile && (
+            <div>
+              <div className="ExchangeChart-main-price">
+                {formatUsd(chartToken?.prices?.maxPrice, {
+                  displayDecimals: chartToken?.priceDecimals,
+                }) || "..."}
+              </div>
+              <div className="ExchangeChart-info-label">
+                {formatUsd(chartToken?.prices?.minPrice, {
+                  displayDecimals: chartToken?.priceDecimals,
+                }) || "..."}
+              </div>
             </div>
-            <div className="ExchangeChart-info-label">
-              {formatUsd(chartToken?.prices?.minPrice, {
-                displayDecimals: chartToken?.priceDecimals,
-              }) || "..."}
-            </div>
-          </div>
+          )}
           {!isSmallMobile && (
             <div>
               <div className="ExchangeChart-info-label">24h Change</div>

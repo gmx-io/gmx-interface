@@ -185,6 +185,7 @@ export function OrderItem(p: Props) {
         <>
           {!p.hideActions ? (
             <Tooltip
+              position="right-bottom"
               handle={swapRatioText}
               renderContent={() =>
                 t`You will receive at least ${toAmountText} if this order is executed. This price is being updated in real time based on Swap Fees and Price Impact.`
@@ -204,6 +205,7 @@ export function OrderItem(p: Props) {
           handle={`${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.triggerPrice, {
             displayDecimals: priceDecimals,
           })}`}
+          position="right-bottom"
           renderContent={() => (
             <>
               <StatsTooltipRow

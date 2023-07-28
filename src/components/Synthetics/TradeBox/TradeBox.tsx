@@ -913,7 +913,7 @@ export function TradeBox(p: Props) {
       <>
         <BuyInputSection
           topLeftLabel={t`Pay`}
-          topLeftValue={formatUsd(isIncrease ? increaseAmounts?.initialCollateralUsd : fromUsd)}
+          topLeftValue={fromUsd?.gt(0) ? formatUsd(isIncrease ? increaseAmounts?.initialCollateralUsd : fromUsd) : ""}
           topRightLabel={t`Balance`}
           topRightValue={formatTokenAmount(fromToken?.balance, fromToken?.decimals)}
           inputValue={fromTokenInputValue}
@@ -944,16 +944,16 @@ export function TradeBox(p: Props) {
           )}
         </BuyInputSection>
 
-        <div className="AppOrder-ball-container" onClick={onSwitchTokens}>
-          <div className="AppOrder-ball">
+        <div className="Exchange-swap-ball-container">
+          <button type="button" className="Exchange-swap-ball" onClick={onSwitchTokens}>
             <IoMdSwap className="Exchange-swap-ball-icon" />
-          </div>
+          </button>
         </div>
 
         {isSwap && (
           <BuyInputSection
             topLeftLabel={t`Receive`}
-            topLeftValue={formatUsd(swapAmounts?.usdOut)}
+            topLeftValue={swapAmounts?.usdOut.gt(0) ? formatUsd(swapAmounts?.usdOut) : ""}
             topRightLabel={t`Balance`}
             topRightValue={formatTokenAmount(toToken?.balance, toToken?.decimals)}
             inputValue={toTokenInputValue}
@@ -983,7 +983,11 @@ export function TradeBox(p: Props) {
         {isIncrease && (
           <BuyInputSection
             topLeftLabel={tradeTypeLabels[tradeType!]}
-            topLeftValue={formatUsd(increaseAmounts?.sizeDeltaUsd, { fallbackToZero: true })}
+            topLeftValue={
+              increaseAmounts?.sizeDeltaUsd.gt(0)
+                ? formatUsd(increaseAmounts?.sizeDeltaUsd, { fallbackToZero: true })
+                : ""
+            }
             topRightLabel={t`Leverage`}
             topRightValue={formatLeverage(isLeverageEnabled ? leverage : increaseAmounts?.estimatedLeverage) || "-"}
             inputValue={toTokenInputValue}

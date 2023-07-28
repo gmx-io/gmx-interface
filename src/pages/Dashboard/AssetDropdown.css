@@ -1,3 +1,7 @@
+.AssetDropdown-wrapper {
+  position: relative;
+}
+
 .asset-menu-items {
   position: absolute;
   border: 1px solid #32344c;
@@ -31,7 +35,9 @@
   text-decoration: none;
   padding: 0.85rem 0.8rem;
   font-size: var(--font-sm);
+  width: 17rem;
 }
+
 .asset-item:hover {
   background: var(--dark-blue-hover);
   color: white;
@@ -43,4 +49,10 @@
 }
 .asset-item .asset-item-icon {
   max-height: 1.6rem;
+}
+
+@media (max-width: 1100px) {
+  .asset-menu-items {
+    right: 0;
+  }
 }

@@ -355,7 +355,7 @@ export default function DashboardV2() {
               )}
               <br />
               <div>
-                <ExternalLink href="https://gmxio.gitbook.io/gmx/glp">
+                <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v1">
                   <Trans>More Info</Trans>
                 </ExternalLink>
               </div>

@@ -38,66 +38,68 @@ function AssetDropdown({ assetSymbol, token: propsToken }: Props) {
   const chainIcon = getIcon(chainId, "network");
 
   return (
-    <Menu>
-      <Menu.Button as="div" className="dropdown-arrow center-both">
-        <FiChevronDown size={20} />
-      </Menu.Button>
-      <Menu.Items as="div" className="asset-menu-items">
-        <Menu.Item>
-          <>
-            {token.reservesUrl && (
-              <ExternalLink href={token.reservesUrl} className="asset-item">
-                <img className="asset-item-icon" src={nansenPortfolioIcon} alt="Proof of Reserves" />
-                <p>
-                  <Trans>Proof of Reserves</Trans>
-                </p>
-              </ExternalLink>
-            )}
-          </>
-        </Menu.Item>
-        <Menu.Item>
-          <>
-            {token.coingeckoUrl && (
-              <ExternalLink href={token.coingeckoUrl} className="asset-item">
-                <img className="asset-item-icon" src={coingeckoIcon} alt="Open in Coingecko" />
-                <p>
-                  <Trans>Open in Coingecko</Trans>
-                </p>
-              </ExternalLink>
-            )}
-          </>
-        </Menu.Item>
-        <Menu.Item>
-          <>
-            {token.explorerUrl && (
-              <ExternalLink href={token.explorerUrl} className="asset-item">
-                <img className="asset-item-icon" src={chainIcon} alt="Open in explorer" />
-                <p>
-                  <Trans>Open in Explorer</Trans>
-                </p>
-              </ExternalLink>
-            )}
-          </>
-        </Menu.Item>
-        <Menu.Item>
-          <>
-            {active && !token.isNative && (
-              <div
-                onClick={() => {
-                  addTokenToMetamask(token);
-                }}
-                className="asset-item"
-              >
-                <img className="asset-item-icon" src={metamaskIcon} alt={t`Add to Metamask`} />
-                <p>
-                  <Trans>Add to Metamask</Trans>
-                </p>
-              </div>
-            )}
-          </>
-        </Menu.Item>
-      </Menu.Items>
-    </Menu>
+    <div className="AssetDropdown-wrapper">
+      <Menu>
+        <Menu.Button as="div" className="dropdown-arrow center-both">
+          <FiChevronDown size={20} />
+        </Menu.Button>
+        <Menu.Items as="div" className="asset-menu-items">
+          <Menu.Item>
+            <>
+              {token.reservesUrl && (
+                <ExternalLink href={token.reservesUrl} className="asset-item">
+                  <img className="asset-item-icon" src={nansenPortfolioIcon} alt="Proof of Reserves" />
+                  <p>
+                    <Trans>Proof of Reserves</Trans>
+                  </p>
+                </ExternalLink>
+              )}
+            </>
+          </Menu.Item>
+          <Menu.Item>
+            <>
+              {token.coingeckoUrl && (
+                <ExternalLink href={token.coingeckoUrl} className="asset-item">
+                  <img className="asset-item-icon" src={coingeckoIcon} alt="Open in Coingecko" />
+                  <p>
+                    <Trans>Open in Coingecko</Trans>
+                  </p>
+                </ExternalLink>
+              )}
+            </>
+          </Menu.Item>
+          <Menu.Item>
+            <>
+              {token.explorerUrl && (
+                <ExternalLink href={token.explorerUrl} className="asset-item">
+                  <img className="asset-item-icon" src={chainIcon} alt="Open in explorer" />
+                  <p>
+                    <Trans>Open in Explorer</Trans>
+                  </p>
+                </ExternalLink>
+              )}
+            </>
+          </Menu.Item>
+          <Menu.Item>
+            <>
+              {active && !token.isNative && (
+                <div
+                  onClick={() => {
+                    addTokenToMetamask(token);
+                  }}
+                  className="asset-item"
+                >
+                  <img className="asset-item-icon" src={metamaskIcon} alt={t`Add to Metamask`} />
+                  <p>
+                    <Trans>Add to Metamask</Trans>
+                  </p>
+                </div>
+              )}
+            </>
+          </Menu.Item>
+        </Menu.Items>
+      </Menu>
+    </div>
   );
 }
 

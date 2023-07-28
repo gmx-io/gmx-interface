@@ -72,7 +72,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
                   right of the page after connecting your wallet.
                   <br />
                   <br />
-                  <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#opening-a-position">More Info</ExternalLink>
+                  <ExternalLink href="https://docs.gmx.io/docs/trading/v2#opening-a-position">More Info</ExternalLink>
                 </Trans>
               )}
             />
@@ -98,7 +98,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
                   This exit price will change with the price of the asset.
                   <br />
                   <br />
-                  <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#opening-a-position">More Info</ExternalLink>
+                  <ExternalLink href="https://docs.gmx.io/docs/trading/v2#opening-a-position">More Info</ExternalLink>
                 </Trans>
               )}
             />
