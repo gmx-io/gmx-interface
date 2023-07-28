@@ -681,6 +681,10 @@ msgstr "送出取消"
 msgid "Canceling {ordersText}"
 msgstr ""
 
+#: src/pages/Leaderboards/index.tsx
+msgid "Chain Icon"
+msgstr ""
+
 #: src/App/App.js
 #: src/pages/Exchange/Exchange.js
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -2962,6 +2966,10 @@ msgstr "未发现PnLs"
 
 #: src/components/Synthetics/ClaimHistory/ClaimHistory.tsx
 msgid "No claims yet"
+msgstr ""
+
+#: src/components/Table/index.tsx
+msgid "No data yet"
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js

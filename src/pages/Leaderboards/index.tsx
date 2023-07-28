@@ -4,10 +4,10 @@ import { getPageTitle } from "lib/legacy";
 import { useLocalStorage } from "react-use";
 import { t, Trans } from "@lingui/macro";
 import { useChainId } from "lib/chains";
-import { getChainIcon } from "config/chains";
 import GloballLeaderboards from "components/GlobalLeaderboards";
 
 import "./index.css";
+import { getIcon } from "config/icons";
 
 export default function Leaderboard() {
   const { chainId } = useChainId();
@@ -19,7 +19,7 @@ export default function Leaderboard() {
         <div className="section-title-block">
           <div className="section-title-content">
             <div className="Page-title">
-              <Trans>Leaderboards</Trans> <img alt="Chain Icon" src={getChainIcon(chainId)} />
+              <Trans>Leaderboards</Trans> <img alt={t`Chain Icon`} src={getIcon(chainId, "network")} />
             </div>
             <div className="Page-description">
               <Trans>Addresses trading statistics. Choose between global or competitions leaderboards.</Trans>

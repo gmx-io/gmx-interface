@@ -2,8 +2,6 @@ import { ethers } from "ethers";
 import { sample } from "lodash";
 import { NetworkMetadata } from "lib/wallets";
 import { isDevelopment } from "./env";
-import icavalanche24 from "img/ic_avalanche_24.svg";
-import icarbitrum24 from "img/ic_arbitrum_24.svg";
 
 const { parseEther } = ethers.utils;
 
@@ -278,16 +276,6 @@ export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {
     blockExplorerUrls: [getExplorerUrl(AVALANCHE_FUJI)],
   },
 };
-
-export function getChainIcon(chainId) {
-  if (chainId === AVALANCHE) {
-    return icavalanche24;
-  }
-
-  if (chainId === ARBITRUM || chainId === ARBITRUM_GOERLI) {
-    return icarbitrum24;
-  }
-}
 
 export const getConstant = (chainId: number, key: string) => {
   if (!constants[chainId]) {

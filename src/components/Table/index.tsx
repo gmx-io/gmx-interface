@@ -1,5 +1,5 @@
 import React from "react";
-import { Trans } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import { TableProps } from "./types";
 
 export default function Table<T extends Record<string, any>>({
@@ -29,7 +29,7 @@ export default function Table<T extends Record<string, any>>({
         {
           isLoading ? <tr><td colSpan={5}>Loading...</td></tr> : (
             error ? <tr><td colSpan={9}>{`Error: ${error}`}</td></tr> : (
-              !content.length ? <tr><td colSpan={9}>Not data yet</td></tr> : (
+              !content.length ? <tr><td colSpan={9}>{t`No data yet`}</td></tr> : (
                 content.map((row, i) => (
                   <tr key={row[rowKey]}>
                     {

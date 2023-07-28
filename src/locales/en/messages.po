@@ -690,6 +690,10 @@ msgstr "Cancel submitted."
 msgid "Canceling {ordersText}"
 msgstr "Canceling {ordersText}"
 
+#: src/pages/Leaderboards/index.tsx
+msgid "Chain Icon"
+msgstr "Chain Icon"
+
 #: src/App/App.js
 #: src/pages/Exchange/Exchange.js
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -2953,6 +2957,10 @@ msgstr "No PnLs found"
 #: src/components/Synthetics/ClaimHistory/ClaimHistory.tsx
 msgid "No claims yet"
 msgstr "No claims yet"
+
+#: src/components/Table/index.tsx
+msgid "No data yet"
+msgstr "No data yet"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "No esGMX to claim"
