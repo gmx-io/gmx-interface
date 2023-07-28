@@ -248,8 +248,8 @@ msgstr "추가의 리저브양이 필요합니다"
 msgid "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 msgstr "추가로, 트리거 주문은 시장가 주문이며 트리거 가격으로 결제되지 않을 수도 있습니다."
 
-#: src/components/Leaderboard/GeneralOpenLeaderboard.tsx
-#: src/components/Leaderboard/GeneralSettledLeaderboard.tsx
+#: src/components/GlobalLeaderboards/AccountsLeaderboard.tsx
+#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
 msgid "Address"
 msgstr ""
 
@@ -261,7 +261,11 @@ msgstr ""
 msgid "Affiliate Rewards Claimed"
 
 #: src/pages/Leaderboard/Leaderboard.tsx
-msgid "Addresses trading statistics. Choose between general or competitions leaderboards."
+#~ msgid "Addresses trading statistics. Choose between general or competitions leaderboards."
+#~ msgstr ""
+
+#: src/pages/Leaderboards/index.tsx
+msgid "Addresses trading statistics. Choose between global or competitions leaderboards."
 msgstr ""
 
 #: src/pages/Referrals/Referrals.tsx
@@ -279,6 +283,10 @@ msgstr "수령 후, esGMX 토큰은 7일 이내에 선택한 네트워크의 계
 #: src/components/ModalViews/RedirectModal.js
 msgid "Agree"
 msgstr "동의하기"
+
+#: src/components/GlobalLeaderboards/AccountsLeaderboard.tsx
+msgid "All time"
+msgstr ""
 
 #: src/components/ApproveTokenButton/ApproveTokenButton.tsx
 msgid "Allow {0} to be spent"
@@ -1606,7 +1614,13 @@ msgid "Entry Price"
 msgstr "진입 가격"
 
 #: src/components/Leaderboard/GeneralOpenLeaderboard.tsx
-msgid "Entry Price ($)"
+#~ msgid "Entry Price ($)"
+#~ msgstr ""
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "Error submitting order"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
@@ -1950,8 +1964,8 @@ msgid "GMX | Decentralized Perpetual Exchange"
 msgstr ""
 
 #: src/pages/Leaderboard/Leaderboard.tsx
-msgid "General"
-msgstr ""
+#~ msgid "General"
+#~ msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Generate Referral Code"
@@ -1963,6 +1977,10 @@ msgstr "공유가능한 이미지 생성중..."
 
 #: src/pages/Referrals/Referrals.tsx
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
+msgstr ""
+
+#: src/pages/Leaderboards/index.tsx
+msgid "Global"
 msgstr ""
 
 #: src/components/Header/HomeHeaderLinks.tsx
@@ -2251,7 +2269,7 @@ msgid "Leaderboard for GMX traders"
 msgstr "GMX 트레이더를 위한 리더보드"
 
 #: src/components/Header/AppHeaderLinks.tsx
-#: src/pages/Leaderboard/Leaderboard.tsx
+#: src/pages/Leaderboards/index.tsx
 msgid "Leaderboards"
 msgstr ""
 
@@ -2390,8 +2408,8 @@ msgid "Liq. Price"
 msgstr "청산가"
 
 #: src/components/Leaderboard/GeneralOpenLeaderboard.tsx
-msgid "Liq. Price ($)"
-msgstr ""
+#~ msgid "Liq. Price ($)"
+#~ msgstr ""
 
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Liq. {0} {longOrShortText}"
@@ -3264,8 +3282,8 @@ msgstr "PnL"
 
 #: src/components/Leaderboard/GeneralOpenLeaderboard.tsx
 #: src/components/Leaderboard/GeneralSettledLeaderboard.tsx
-msgid "PnL ($)"
-msgstr ""
+#~ msgid "PnL ($)"
+#~ msgstr ""
 
 #: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -3483,8 +3501,7 @@ msgstr ""
 msgid "Purchase Insurance"
 msgstr "보험 구입"
 
-#: src/components/Leaderboard/GeneralOpenLeaderboard.tsx
-#: src/components/Leaderboard/GeneralSettledLeaderboard.tsx
+#: src/components/Table/index.tsx
 msgid "Rank"
 msgstr ""
 
@@ -3975,8 +3992,8 @@ msgid "Size"
 msgstr "사이즈"
 
 #: src/components/Leaderboard/GeneralOpenLeaderboard.tsx
-msgid "Size ($)"
-msgstr ""
+#~ msgid "Size ($)"
+#~ msgstr ""
 
 #: src/App/App.js
 msgid "Slippage should be less than 5%"
@@ -4470,12 +4487,20 @@ msgid "To reduce fees, select a different asset to receive."
 msgstr "수수료를 줄이기 위해서는 다른 자산으로 수령해주세요."
 
 #: src/components/Leaderboard/GeneralOpenLeaderboard.tsx
-msgid "Token"
-msgstr ""
+#~ msgid "Token"
+#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Tokens"
 msgstr "토큰"
+
+#: src/components/GlobalLeaderboards/index.tsx
+msgid "Top Addresses"
+msgstr ""
+
+#: src/components/GlobalLeaderboards/index.tsx
+msgid "Top Open Positions"
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -5093,8 +5118,8 @@ msgid "When closing the position, you can select which token you would like to r
 msgstr "포지션을 닫을 때, 어떤 토큰으로 이익을 수취할 지 선택할 수 있습니다."
 
 #: src/components/Leaderboard/GeneralSettledLeaderboard.tsx
-msgid "Win / Loss"
-msgstr ""
+#~ msgid "Win / Loss"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -5406,6 +5431,10 @@ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
+msgstr ""
+
+#: src/components/Table/index.tsx
+msgid "{0}"
 msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx

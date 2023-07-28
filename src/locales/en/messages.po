@@ -25,6 +25,14 @@ msgstr "01 Sep 2021"
 msgid "06 Jan 2022"
 msgstr "06 Jan 2022"
 
+#: src/components/GlobalLeaderboards/AccountsLeaderboard.tsx
+#~ msgid "1 month"
+#~ msgstr "1 month"
+
+#: src/components/GlobalLeaderboards/AccountsLeaderboard.tsx
+#~ msgid "24 hours"
+#~ msgstr "24 hours"
+
 #: src/pages/Dashboard/DashboardV2.js
 msgid "24h Volume"
 msgstr "24h Volume"
@@ -248,6 +256,11 @@ msgstr "Additional reserve required"
 msgid "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 msgstr "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 
+#: src/components/GlobalLeaderboards/AccountsLeaderboard.tsx
+#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
+msgid "Address"
+msgstr "Address"
+
 #: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "Address copied to your clipboard"
 msgstr "Address copied to your clipboard"
@@ -264,78 +277,6 @@ msgstr "Addresses trading statistics. Choose between general or competitions lea
 msgid "Addresses trading statistics. Choose between global or competitions leaderboards."
 msgstr "Addresses trading statistics. Choose between global or competitions leaderboards."
 
-#: src/pages/Leaderboards/index.tsx
-msgid "Global"
-msgstr "Global"
-
-#: src/components/Header/AppHeaderLinks.tsx
-#: src/pages/Leaderboards/index.tsx
-msgid "Leaderboards"
-msgstr "Leaderboards"
-
-#: src/components/GlobalLeaderboards/index.tsx
-msgid "Top Addresses"
-msgstr "Top Addresses"
-
-#: src/components/GlobalLeaderboards/index.tsx
-msgid "Top Open Positions"
-msgstr "Top Open Positions"
-
-#: src/components/GlobalLeaderboards/AccountsLeaderboard.tsx
-#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
-msgid "Address"
-msgstr "Address"
-
-#: src/components/GlobalLeaderboards/AccountsLeaderboard.tsx
-#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
-msgid "P&L ($)"
-msgstr "P&L ($)"
-
-#: src/components/GlobalLeaderboards/AccountsLeaderboard.tsx
-#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
-msgid "Rank"
-msgstr "Rank"
-
-#: src/components/GlobalLeaderboards/AccountsLeaderboard.tsx
-msgid "P&L (%)"
-msgstr "P&L (%)"
-
-#: src/components/GlobalLeaderboards/AccountsLeaderboard.tsx
-msgid "Size (Lev)"
-msgstr "Size (Lev)"
-
-#: src/components/GlobalLeaderboards/AccountsLeaderboard.tsx
-msgid "Win/Loss"
-msgstr "Win/Loss"
-
-#: src/components/GlobalLeaderboards/AccountsLeaderboard.tsx
-msgid "24 hours"
-msgstr "24 hours"
-
-#: src/components/GlobalLeaderboards/AccountsLeaderboard.tsx
-msgid "7 days"
-msgstr "7 days"
-
-#: src/components/GlobalLeaderboards/AccountsLeaderboard.tsx
-msgid "1 month"
-msgstr "1 month"
-
-#: src/components/GlobalLeaderboards/AccountsLeaderboard.tsx
-msgid "All time"
-msgstr "All time"
-
-#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
-msgid "Entry"
-msgstr "Entry"
-
-#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
-msgid "Token (L/S)"
-msgstr "Token (L/S)"
-
-#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
-msgid "Size (Liq)"
-msgstr "Size (Liq)"
-
 #: src/pages/Referrals/Referrals.tsx
 msgid "Affiliates"
 msgstr "Affiliates"
@@ -351,6 +292,10 @@ msgstr "After claiming, the esGMX tokens will be airdropped to your account on t
 #: src/components/ModalViews/RedirectModal.js
 msgid "Agree"
 msgstr "Agree"
+
+#: src/components/GlobalLeaderboards/AccountsLeaderboard.tsx
+msgid "All time"
+msgstr "All time"
 
 #: src/components/ApproveTokenButton/ApproveTokenButton.tsx
 msgid "Allow {0} to be spent"
@@ -1660,6 +1605,10 @@ msgstr "Enter new Price"
 msgid "Enter new amount or price"
 msgstr "Enter new amount or price"
 
+#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
+#~ msgid "Entry"
+#~ msgstr "Entry"
+
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -1676,6 +1625,12 @@ msgstr "Enter new amount or price"
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Entry Price"
 msgstr "Entry Price"
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "Error submitting order"
+msgstr "Error submitting order"
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -2029,6 +1984,10 @@ msgstr "Generating shareable image..."
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 msgstr "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 
+#: src/pages/Leaderboards/index.tsx
+msgid "Global"
+msgstr "Global"
+
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Governance"
 msgstr "Governance"
@@ -2314,6 +2273,11 @@ msgstr "Leaderboard"
 msgid "Leaderboard for GMX traders"
 msgstr "Leaderboard for GMX traders"
 
+#: src/components/Header/AppHeaderLinks.tsx
+#: src/pages/Leaderboards/index.tsx
+msgid "Leaderboards"
+msgstr "Leaderboards"
+
 #: src/components/Exchange/PositionEditor.js
 msgid "Leave at least {0} ETH for gas"
 msgstr "Leave at least {0} ETH for gas"
@@ -2428,7 +2392,6 @@ msgstr "Link copied to clipboard."
 
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
-#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
 msgid "Liq Price"
 msgstr "Liq Price"
 
@@ -3199,6 +3162,15 @@ msgstr "Overall protocol analytics"
 msgid "Overview"
 msgstr "Overview"
 
+#: src/components/GlobalLeaderboards/AccountsLeaderboard.tsx
+#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
+#~ msgid "P&L ($)"
+#~ msgstr "P&L ($)"
+
+#: src/components/GlobalLeaderboards/AccountsLeaderboard.tsx
+#~ msgid "P&L (%)"
+#~ msgstr "P&L (%)"
+
 #: src/pages/Dashboard/DashboardV2.js
 msgid "POOL"
 msgstr "POOL"
@@ -3518,6 +3490,10 @@ msgstr "Purchase <0>GM Tokens</0> to earn fees from swaps and leverage trading."
 #: src/pages/Stake/StakeV2.js
 msgid "Purchase Insurance"
 msgstr "Purchase Insurance"
+
+#: src/components/Table/index.tsx
+msgid "Rank"
+msgstr "Rank"
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
@@ -4004,6 +3980,14 @@ msgstr "Single"
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Size"
 msgstr "Size"
+
+#: src/components/GlobalLeaderboards/AccountsLeaderboard.tsx
+#~ msgid "Size (Lev)"
+#~ msgstr "Size (Lev)"
+
+#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
+#~ msgid "Size (Liq)"
+#~ msgstr "Size (Liq)"
 
 #: src/App/App.js
 msgid "Slippage should be less than 5%"
@@ -4492,9 +4476,21 @@ msgstr "To reduce fees, select a different asset to pay with."
 msgid "To reduce fees, select a different asset to receive."
 msgstr "To reduce fees, select a different asset to receive."
 
+#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
+#~ msgid "Token (L/S)"
+#~ msgstr "Token (L/S)"
+
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Tokens"
 msgstr "Tokens"
+
+#: src/components/GlobalLeaderboards/index.tsx
+msgid "Top Addresses"
+msgstr "Top Addresses"
+
+#: src/components/GlobalLeaderboards/index.tsx
+msgid "Top Open Positions"
+msgstr "Top Open Positions"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -5111,6 +5107,10 @@ msgstr "Weight"
 msgid "When closing the position, you can select which token you would like to receive the profits in."
 msgstr "When closing the position, you can select which token you would like to receive the profits in."
 
+#: src/components/GlobalLeaderboards/AccountsLeaderboard.tsx
+#~ msgid "Win/Loss"
+#~ msgstr "Win/Loss"
+
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -5422,6 +5422,10 @@ msgstr "{0, plural, one {Cancel order} other {Cancel # orders}}"
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 msgstr "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
+
+#: src/components/Table/index.tsx
+msgid "{0}"
+msgstr "{0}"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "{0} Approved!"
