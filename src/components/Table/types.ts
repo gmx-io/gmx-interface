@@ -5,7 +5,7 @@ export type TableHeader = {
 
 export type TableProps<T extends Record<string, any>> = {
   enumerate: boolean;
-  enumerateFrom?: number;
+  offset?: number;
   isLoading: boolean;
   error: Error | null;
   content: Array<T>;

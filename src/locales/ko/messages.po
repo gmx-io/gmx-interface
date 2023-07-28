@@ -1621,6 +1621,10 @@ msgstr "진입 가격"
 #~ msgid "Entry Price ($)"
 #~ msgstr ""
 
+#: src/components/Table/index.tsx
+msgid "Error"
+msgstr ""
+
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -2460,6 +2464,7 @@ msgstr "유동성 데이터를 불러오지 못하였습니다."
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+#: src/components/Table/index.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Loading..."

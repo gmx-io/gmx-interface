@@ -13,7 +13,8 @@ export default function PositionsLeaderboard() {
   const term = useDebounce(search, 300);
   const { topPositions } = useLeaderboardContext();
   const filteredStats = topPositions.data.filter(a => a.account.indexOf(term.toLowerCase()) >= 0);
-  const displayedStats = filteredStats.slice((page - 1) * perPage, page * perPage).map(s => ({
+  const firstItemIndex = (page - 1) * perPage;
+  const displayedStats = filteredStats.slice(firstItemIndex, page * perPage).map(s => ({
     id: s.id,
     account: s.account,
     urealizedPnl: s.unrealizedPnl.toString(),
@@ -39,7 +40,7 @@ export default function PositionsLeaderboard() {
       </div>
       <Table
         enumerate={true}
-        enumerateFrom={perPage * page}
+        offset={firstItemIndex}
         isLoading={topPositions.isLoading}
         error={topPositions.error}
         content={displayedStats}

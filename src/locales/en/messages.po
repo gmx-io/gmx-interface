@@ -1630,6 +1630,10 @@ msgstr "Enter new amount or price"
 msgid "Entry Price"
 msgstr "Entry Price"
 
+#: src/components/Table/index.tsx
+msgid "Error"
+msgstr "Error"
+
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -2464,6 +2468,7 @@ msgstr "Liquidity data not loaded"
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+#: src/components/Table/index.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Loading..."

@@ -22,7 +22,8 @@ export default function AccountsLeaderboard() {
   const term = useDebounce(search, 300);
   const { topAccounts, period, setPeriod } = useLeaderboardContext();
   const filteredStats = topAccounts.data.filter(a => a.account.indexOf(term.toLowerCase()) >= 0);
-  const displayedStats = filteredStats.slice((page - 1) * perPage, page * perPage).map(s => ({
+  const firstItemIndex = (page - 1) * perPage;
+  const displayedStats = filteredStats.slice(firstItemIndex, page * perPage).map(s => ({
     id: s.id,
     account: s.account,
     absPnl: formatUsdAmount(s.absPnl),
@@ -46,8 +47,6 @@ export default function AccountsLeaderboard() {
       <div className="leaderboard-header">
         <TableFilterSearch label={t`Address`} value={search} onInput={handleSearchInput}/>
         <Tab
-          enumerate={true}
-          enumerateFrom={perPage * page}
           className="Exchange-swap-order-type-tabs"
           type="inline"
           option={period}
@@ -58,6 +57,7 @@ export default function AccountsLeaderboard() {
       </div>
       <Table
         enumerate={true}
+        offset={firstItemIndex}
         isLoading={topAccounts.isLoading}
         error={topAccounts.error}
         content={displayedStats}

@@ -4,7 +4,7 @@ import { TableProps } from "./types";
 
 export default function Table<T extends Record<string, any>>({
   enumerate = false,
-  enumerateFrom = 0,
+  offset = 0,
   isLoading,
   error,
   content,
@@ -27,14 +27,14 @@ export default function Table<T extends Record<string, any>>({
           }
         </tr>
         {
-          isLoading ? <tr><td colSpan={5}>Loading...</td></tr> : (
-            error ? <tr><td colSpan={9}>{`Error: ${error}`}</td></tr> : (
+          isLoading ? <tr><td colSpan={5}>{t`Loading...`}</td></tr> : (
+            error ? <tr><td colSpan={9}>{t`Error` + ": " + String(error)}</td></tr> : (
               !content.length ? <tr><td colSpan={9}>{t`No data yet`}</td></tr> : (
                 content.map((row, i) => (
                   <tr key={row[rowKey]}>
                     {
                       enumerate && (
-                        <td key={`${row[rowKey]}_rank`}>{`${enumerateFrom + i + 1}`}</td>
+                        <td key={`${row[rowKey]}_rank`}>{`${offset + i + 1}`}</td>
                       )
                     }
                     {

@@ -1621,6 +1621,10 @@ msgstr "Prix d'entrée"
 #~ msgid "Entry Price ($)"
 #~ msgstr ""
 
+#: src/components/Table/index.tsx
+msgid "Error"
+msgstr ""
+
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -2460,6 +2464,7 @@ msgstr "Les données de liquidité ne sont pas chargées"
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+#: src/components/Table/index.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Loading..."
