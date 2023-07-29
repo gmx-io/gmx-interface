@@ -1,5 +1,6 @@
 import { useWeb3React } from "@web3-react/core";
-import { BASIS_POINTS_DIVISOR, DEFAULT_EXECUTION_FEE_BUFFER_BPS } from "config/factors";
+import { EXECUTION_FEE_CONFIG_V2 } from "config/chains";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { BigNumber } from "ethers";
 import { getProvider } from "lib/rpc";
@@ -9,8 +10,10 @@ export function useGasPrice(chainId: number) {
   const { library } = useWeb3React();
   const settings = useSettings();
 
+  const executionFeeConfig = EXECUTION_FEE_CONFIG_V2[chainId];
+
   const { data: gasPrice } = useSWR<BigNumber | undefined>(
-    ["gasPrice", chainId, settings.shouldUseExecutionFeeBuffer, settings.executionFeeBufferBps],
+    ["gasPrice", chainId, executionFeeConfig.shouldUseMaxPriorityFeePerGas, settings.executionFeeBufferBps],
     {
       fetcher: () => {
         return new Promise(async (resolve, reject) => {
@@ -24,7 +27,7 @@ export function useGasPrice(chainId: number) {
           try {
             let gasPrice = await provider.getGasPrice();
 
-            if (settings.shouldUseExecutionFeeBuffer) {
+            if (executionFeeConfig.shouldUseMaxPriorityFeePerGas) {
               const feeData = await provider.getFeeData();
 
               // the wallet provider might not return maxPriorityFeePerGas in feeData
@@ -32,10 +35,11 @@ export function useGasPrice(chainId: number) {
               if (feeData && feeData.maxPriorityFeePerGas) {
                 gasPrice = gasPrice.add(feeData.maxPriorityFeePerGas);
               }
+            }
 
-              const buffer = settings.executionFeeBufferBps || DEFAULT_EXECUTION_FEE_BUFFER_BPS[chainId];
-
-              gasPrice = gasPrice.mul(BASIS_POINTS_DIVISOR + buffer).div(BASIS_POINTS_DIVISOR);
+            if (settings.executionFeeBufferBps) {
+              const buffer = gasPrice.mul(settings.executionFeeBufferBps).div(BASIS_POINTS_DIVISOR);
+              gasPrice = gasPrice.add(buffer);
             }
 
             resolve(gasPrice);

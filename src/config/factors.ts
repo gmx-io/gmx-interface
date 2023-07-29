@@ -1,5 +1,4 @@
 import { expandDecimals } from "lib/numbers";
-import { AVALANCHE, AVALANCHE_FUJI } from "./chains";
 
 export const BASIS_POINTS_DIVISOR = 10000;
 
@@ -13,8 +12,3 @@ export const DEFAULT_HIGHER_SLIPPAGE_AMOUNT = 100;
 // V2
 export const HIGH_PRICE_IMPACT_BPS = 80; // 0.8%
 export const DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS = 100; // 1%
-
-export const DEFAULT_EXECUTION_FEE_BUFFER_BPS = {
-  [AVALANCHE]: 2000, // 20%
-  [AVALANCHE_FUJI]: 2000, // 20%
-};

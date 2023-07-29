@@ -7,7 +7,7 @@ import { SWRConfig } from "swr";
 
 import { Redirect, Route, HashRouter as Router, Switch, useHistory, useLocation } from "react-router-dom";
 
-import { BASIS_POINTS_DIVISOR, DEFAULT_EXECUTION_FEE_BUFFER_BPS } from "config/factors";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { getAppBaseUrl, isHomeSite, isMobileDevice, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
 
 import { decodeReferralCode, encodeReferralCode } from "domain/referrals";
@@ -67,7 +67,7 @@ import { I18nProvider } from "@lingui/react";
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { Header } from "components/Header/Header";
-import { ARBITRUM, getExplorerUrl } from "config/chains";
+import { ARBITRUM, EXECUTION_FEE_CONFIG_V2, getExplorerUrl } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getIsSyntheticsSupported, getIsV1Supported } from "config/features";
 import {
@@ -88,6 +88,7 @@ import { helperToast } from "lib/helperToast";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { roundToTwoDecimals } from "lib/numbers";
+import { getWsProvider } from "lib/rpc";
 import {
   activateInjectedProvider,
   clearWalletConnectData,
@@ -105,7 +106,6 @@ import SyntheticsActions from "pages/SyntheticsActions/SyntheticsActions";
 import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsFallbackPage";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
-import { getWsProvider } from "lib/rpc";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -287,8 +287,8 @@ function FullApp() {
   const openSettings = () => {
     const slippage = parseInt(settings.savedAllowedSlippage);
     setSlippageAmount(roundToTwoDecimals((slippage / BASIS_POINTS_DIVISOR) * 100));
-    if (settings.shouldUseExecutionFeeBuffer) {
-      const bps = settings.executionFeeBufferBps || DEFAULT_EXECUTION_FEE_BUFFER_BPS[chainId];
+    if (settings.executionFeeBufferBps !== undefined) {
+      const bps = settings.executionFeeBufferBps;
       setExecutionFeeBufferBps(roundToTwoDecimals((bps / BASIS_POINTS_DIVISOR) * 100));
     }
     setIsPnlInLeverage(savedIsPnlInLeverage);
@@ -733,12 +733,12 @@ function FullApp() {
               <div className="App-slippage-tolerance-input-percent">%</div>
             </div>
             {parseFloat(executionFeeBufferBps) <
-              (DEFAULT_EXECUTION_FEE_BUFFER_BPS[chainId] / BASIS_POINTS_DIVISOR) * 100 && (
+              (EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps / BASIS_POINTS_DIVISOR) * 100 && (
               <div className="warning">
                 <Trans>
                   Max Execution Fee buffer below{" "}
-                  {(DEFAULT_EXECUTION_FEE_BUFFER_BPS[chainId] / BASIS_POINTS_DIVISOR) * 100}% may result in failed
-                  orders.
+                  {(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps / BASIS_POINTS_DIVISOR) * 100}% may result in
+                  failed orders.
                 </Trans>
               </div>
             )}

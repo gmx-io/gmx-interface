@@ -1,9 +1,10 @@
 import { isDevelopment } from "config/env";
 import { SHOW_DEBUG_VALUES_KEY, getAllowedSlippageKey, getExecutionFeeBufferBpsKey } from "config/localStorage";
 import { useChainId } from "lib/chains";
-import { DEFAULT_EXECUTION_FEE_BUFFER_BPS, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
+import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { ReactNode, createContext, useContext, useMemo } from "react";
+import { ReactNode, createContext, useContext, useEffect, useMemo } from "react";
+import { EXECUTION_FEE_CONFIG_V2 } from "config/chains";
 
 export type SettingsContextType = {
   showDebugValues: boolean;
@@ -31,10 +32,16 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
   const [executionFeeBufferBps, setExecutionFeeBufferBps] = useLocalStorageSerializeKey(
     getExecutionFeeBufferBpsKey(chainId),
-    DEFAULT_EXECUTION_FEE_BUFFER_BPS[chainId]
+    EXECUTION_FEE_CONFIG_V2[chainId]?.defaultBufferBps
   );
 
-  const shouldUseExecutionFeeBuffer = Boolean(DEFAULT_EXECUTION_FEE_BUFFER_BPS[chainId]);
+  const shouldUseExecutionFeeBuffer = Boolean(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps);
+
+  useEffect(() => {
+    if (shouldUseExecutionFeeBuffer && executionFeeBufferBps === undefined) {
+      setExecutionFeeBufferBps(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps);
+    }
+  }, [chainId, executionFeeBufferBps, setExecutionFeeBufferBps, shouldUseExecutionFeeBuffer]);
 
   const contextState: SettingsContextType = useMemo(() => {
     return {
