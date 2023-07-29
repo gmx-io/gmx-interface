@@ -1,8 +1,9 @@
 import { useWeb3React } from "@web3-react/core";
-import { EXECUTION_FEE_CONFIG_V2 } from "config/chains";
+import { EXECUTION_FEE_CONFIG_V2, GAS_PRICE_ADJUSTMENT_MAP } from "config/chains";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { BigNumber } from "ethers";
+import { bigNumberify } from "lib/numbers";
 import { getProvider } from "lib/rpc";
 import useSWR from "swr";
 
@@ -41,8 +42,9 @@ export function useGasPrice(chainId: number) {
               const buffer = gasPrice.mul(settings.executionFeeBufferBps).div(BASIS_POINTS_DIVISOR);
               gasPrice = gasPrice.add(buffer);
             }
+            const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] || bigNumberify(0);
 
-            resolve(gasPrice);
+            resolve(gasPrice.add(premium));
           } catch (e) {
             // eslint-disable-next-line no-console
             console.error(e);
