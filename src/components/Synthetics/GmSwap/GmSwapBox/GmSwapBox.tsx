@@ -50,7 +50,6 @@ import { useHistory, useLocation } from "react-router-dom";
 import "./GmSwapBox.scss";
 import Checkbox from "components/Checkbox/Checkbox";
 import Tooltip from "components/Tooltip/Tooltip";
-import { DUST_BNB } from "lib/legacy";
 
 export enum Operation {
   Deposit = "Deposit",
@@ -757,15 +756,6 @@ export function GmSwapBox(p: Props) {
           topLeftValue={formatUsd(firstTokenUsd)}
           topRightLabel={t`Balance`}
           topRightValue={formatTokenAmount(firstToken?.balance, firstToken?.decimals)}
-          onClickTopRightLabel={() => {
-            if (firstToken?.balance) {
-              const maxAvailableAmount = firstToken.isNative
-                ? firstToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
-                : firstToken.balance;
-              setFirstTokenInputValue(formatAmountFree(maxAvailableAmount, firstToken.decimals));
-              onFocusedCollateralInputChange(firstToken.address);
-            }
-          }}
           showMaxButton={isDeposit && firstToken?.balance?.gt(0) && !firstTokenAmount?.eq(firstToken.balance)}
           inputValue={firstTokenInputValue}
           onInputValueChange={(e) => {
@@ -776,10 +766,7 @@ export function GmSwapBox(p: Props) {
           }}
           onClickMax={() => {
             if (firstToken?.balance) {
-              const maxAvailableAmount = firstToken.isNative
-                ? firstToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
-                : firstToken.balance;
-              setFirstTokenInputValue(formatAmountFree(maxAvailableAmount, firstToken.decimals));
+              setFirstTokenInputValue(formatAmountFree(firstToken.balance, firstToken.decimals));
               onFocusedCollateralInputChange(firstToken.address);
             }
           }}
@@ -815,21 +802,9 @@ export function GmSwapBox(p: Props) {
                 onFocusedCollateralInputChange(secondToken.address);
               }
             }}
-            onClickTopRightLabel={() => {
-              if (secondToken?.balance) {
-                const maxAvailableAmount = secondToken.isNative
-                  ? secondToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
-                  : secondToken.balance;
-                setSecondTokenInputValue(formatAmountFree(maxAvailableAmount, secondToken.decimals));
-                onFocusedCollateralInputChange(secondToken.address);
-              }
-            }}
             onClickMax={() => {
               if (secondToken?.balance) {
-                const maxAvailableAmount = secondToken.isNative
-                  ? secondToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
-                  : secondToken.balance;
-                setSecondTokenInputValue(formatAmountFree(maxAvailableAmount, secondToken.decimals));
+                setSecondTokenInputValue(formatAmountFree(secondToken.balance, secondToken.decimals));
                 onFocusedCollateralInputChange(secondToken.address);
               }
             }}
@@ -854,12 +829,6 @@ export function GmSwapBox(p: Props) {
           onInputValueChange={(e) => {
             setMarketTokenInputValue(e.target.value);
             setFocusedInput("market");
-          }}
-          onClickTopRightLabel={() => {
-            if (marketToken?.balance) {
-              setMarketTokenInputValue(formatAmountFree(marketToken.balance, marketToken.decimals));
-              setFocusedInput("market");
-            }
           }}
           onClickMax={() => {
             if (marketToken?.balance) {
