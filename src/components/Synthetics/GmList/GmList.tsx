@@ -387,9 +387,13 @@ function renderMintableAmount({ mintableInfo, market, token, longToken, shortTok
         <>
           {formatTokenAmount(mintableInfo?.mintableAmount, token.decimals, "GM", {
             useCommas: true,
-            displayDecimals: 2,
+            displayDecimals: 0,
           })}
-          <br />({formatUsd(mintableInfo?.mintableUsd)})
+          <br />(
+          {formatUsd(mintableInfo?.mintableUsd, {
+            displayDecimals: 0,
+          })}
+          )
         </>
       }
       className="text-none"
@@ -408,14 +412,14 @@ function renderMintableAmount({ mintableInfo, market, token, longToken, shortTok
             value={[
               formatTokenAmount(mintableInfo?.longDepositCapacityAmount, longToken.decimals, longToken.symbol, {
                 useCommas: true,
-                displayDecimals: longToken.isStable ? 0 : 2,
+                displayDecimals: 0,
               }),
               `(${formatTokenAmount(market.longPoolAmount, longToken.decimals, "", {
                 useCommas: true,
-                displayDecimals: longToken.isStable ? 0 : 2,
+                displayDecimals: 0,
               })} / ${formatTokenAmount(market.maxLongPoolAmount, longToken.decimals, longToken.symbol, {
                 useCommas: true,
-                displayDecimals: longToken.isStable ? 0 : 2,
+                displayDecimals: 0,
               })})`,
             ]}
           />
@@ -424,15 +428,14 @@ function renderMintableAmount({ mintableInfo, market, token, longToken, shortTok
             value={[
               formatTokenAmount(mintableInfo?.shortDepositCapacityAmount, shortToken.decimals, shortToken.symbol, {
                 useCommas: true,
-                displayDecimals: shortToken.isStable ? 0 : 2,
+                displayDecimals: 0,
               }),
-
               `(${formatTokenAmount(market.shortPoolAmount, shortToken.decimals, "", {
                 useCommas: true,
-                displayDecimals: shortToken.isStable ? 0 : 2,
+                displayDecimals: 0,
               })} / ${formatTokenAmount(market.maxShortPoolAmount, shortToken.decimals, shortToken.symbol, {
                 useCommas: true,
-                displayDecimals: shortToken.isStable ? 0 : 2,
+                displayDecimals: 0,
               })})`,
             ]}
           />

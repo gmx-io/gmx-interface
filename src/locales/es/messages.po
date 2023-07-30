@@ -1689,8 +1689,8 @@ msgid "Fees and Price Impact"
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-msgid "Fees are high"
-msgstr ""
+#~ msgid "Fees are high"
+#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Fees are high to swap from {0} to {1}."
