@@ -597,24 +597,6 @@ export function ConfirmationBox(p: Props) {
     );
   }
 
-  function renderFeeWarning() {
-    if (!fees?.totalFees) {
-      return null;
-    }
-
-    const shouldShowWarning = fees.totalFees.deltaUsd.lt(0) && fees.totalFees.bps.abs().gt(600);
-
-    if (!shouldShowWarning) {
-      return null;
-    }
-
-    return (
-      <div className="Confirmation-box-warning">
-        <Trans>Fees are high</Trans>
-      </div>
-    );
-  }
-
   function renderOrderItem(order: PositionOrderInfo) {
     return (
       <li key={order.key} className="font-sm">
@@ -904,7 +886,6 @@ export function ConfirmationBox(p: Props) {
         <div>
           {renderMain()}
           {renderCollateralSpreadWarning()}
-          {isMarket && renderFeeWarning()}
           {renderExistingLimitOrdersWarning()}
           {renderExistingTriggerErrors()}
           {renderExistingTriggerWarning()}
@@ -1120,7 +1101,6 @@ export function ConfirmationBox(p: Props) {
       <>
         <div>
           {renderMain()}
-          {renderFeeWarning()}
           {renderSwapSpreadWarining()}
           {isLimit && renderLimitPriceWarning()}
           {swapSpreadInfo.showSpread && swapSpreadInfo.spread && (

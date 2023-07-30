@@ -248,7 +248,7 @@ function FullApp() {
 
   const [tradePageVersion, setTradePageVersion] = useLocalStorageSerializeKey(
     [chainId, TRADE_LINK_KEY],
-    getIsSyntheticsSupported(chainId) ? 2 : 1
+    getIsV1Supported(chainId) ? 1 : 2
   );
   const [walletModalVisible, setWalletModalVisible] = useState(false);
   const [redirectModalVisible, setRedirectModalVisible] = useState(false);
