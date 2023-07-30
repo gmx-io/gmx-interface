@@ -246,11 +246,9 @@ export function GmList({
       {isMobile && (
         <>
           {!hideTitle && (
-            <div className="App-card-title">
-              <span className="items-center">
-                <Trans>GM Pools</Trans>
-                <img className="ml-xs" src={currentIcons.network} width="16" alt="Network Icon" />
-              </span>
+            <div className="Page-title glp-composition-small title-small">
+              <Trans>GM Pools</Trans>
+              <img className="title-icon" src={currentIcons.network} width="24" alt="Network Icon" />
             </div>
           )}
 
