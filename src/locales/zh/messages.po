@@ -4277,7 +4277,11 @@ msgid "The mark price has changed, consider increasing your Allowed Slippage by 
 msgstr "标价已改变, 请考虑点击你地址旁的 \"...\" 图示来增加你的允许滑点"
 
 #: src/domain/synthetics/fees/utils/executionFee.ts
-msgid "The network cost to send transactions is high at the moment, please check the \"Execution Fee\" value before proceeding."
+#~ msgid "The network cost to send transactions is high at the moment, please check the \"Execution Fee\" value before proceeding."
+#~ msgstr ""
+
+#: src/domain/synthetics/fees/utils/executionFee.ts
+msgid "The network cost to send transactions is high at the moment, please check the \"Max Execution Fee\" value before proceeding."
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx

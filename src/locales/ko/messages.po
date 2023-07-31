@@ -4277,7 +4277,11 @@ msgid "The mark price has changed, consider increasing your Allowed Slippage by 
 msgstr "시장 평균가가 변화되었습니다. 귀하의 주소 옆에 \"...\" 아이콘을 클릭해서 허용 가능한 슬리피지 증가를 고려해보세요."
 
 #: src/domain/synthetics/fees/utils/executionFee.ts
-msgid "The network cost to send transactions is high at the moment, please check the \"Execution Fee\" value before proceeding."
+#~ msgid "The network cost to send transactions is high at the moment, please check the \"Execution Fee\" value before proceeding."
+#~ msgstr ""
+
+#: src/domain/synthetics/fees/utils/executionFee.ts
+msgid "The network cost to send transactions is high at the moment, please check the \"Max Execution Fee\" value before proceeding."
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx

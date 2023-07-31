@@ -4277,8 +4277,12 @@ msgid "The mark price has changed, consider increasing your Allowed Slippage by 
 msgstr "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 
 #: src/domain/synthetics/fees/utils/executionFee.ts
-msgid "The network cost to send transactions is high at the moment, please check the \"Execution Fee\" value before proceeding."
-msgstr "The network cost to send transactions is high at the moment, please check the \"Execution Fee\" value before proceeding."
+#~ msgid "The network cost to send transactions is high at the moment, please check the \"Execution Fee\" value before proceeding."
+#~ msgstr "The network cost to send transactions is high at the moment, please check the \"Execution Fee\" value before proceeding."
+
+#: src/domain/synthetics/fees/utils/executionFee.ts
+msgid "The network cost to send transactions is high at the moment, please check the \"Max Execution Fee\" value before proceeding."
+msgstr "The network cost to send transactions is high at the moment, please check the \"Max Execution Fee\" value before proceeding."
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "The order will only execute if the Min. Receive is met and there is sufficient liquidity."
