@@ -274,12 +274,8 @@ export function formatTokenAmount(
     amountStr = formatAmountFree(amount, tokenDecimals, tokenDecimals);
   } else {
     const exceedingInfo = getLimitedDisplay(amount, tokenDecimals, { maxThreshold, minThreshold });
-    amountStr = `${exceedingInfo.symbol ? " " : ""}${formatAmount(
-      exceedingInfo.value,
-      tokenDecimals,
-      displayDecimals,
-      useCommas
-    )}`;
+    const symbol = exceedingInfo.symbol ? `${exceedingInfo.symbol} ` : "";
+    amountStr = `${symbol}${formatAmount(exceedingInfo.value, tokenDecimals, displayDecimals, useCommas)}`;
   }
 
   return `${amountStr}${symbolStr}`;
