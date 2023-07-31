@@ -3162,6 +3162,7 @@ msgstr "Partnerships and Integrations"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
@@ -3181,8 +3182,8 @@ msgid "Pay Amount"
 msgstr "Pay Amount"
 
 #: src/components/Glp/GlpSwap.js
-msgid "Pay:"
-msgstr "Pay:"
+#~ msgid "Pay:"
+#~ msgstr "Pay:"
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
@@ -3482,6 +3483,7 @@ msgstr "Rebates on V2"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
@@ -3496,7 +3498,6 @@ msgstr "Rebates on V2"
 msgid "Receive"
 msgstr "Receive"
 
-#: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Receive:"
 msgstr "Receive:"

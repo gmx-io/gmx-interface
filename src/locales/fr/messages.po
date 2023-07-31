@@ -3162,6 +3162,7 @@ msgstr "Partenariats et intégrations"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
@@ -3181,8 +3182,8 @@ msgid "Pay Amount"
 msgstr "Somme à payer"
 
 #: src/components/Glp/GlpSwap.js
-msgid "Pay:"
-msgstr ""
+#~ msgid "Pay:"
+#~ msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
@@ -3482,6 +3483,7 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
@@ -3496,7 +3498,6 @@ msgstr ""
 msgid "Receive"
 msgstr "Recevoir"
 
-#: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Receive:"
 msgstr ""
