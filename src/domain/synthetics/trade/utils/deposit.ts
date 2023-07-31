@@ -132,19 +132,23 @@ export function getDepositAmounts(p: {
 
     let totalDepositUsd = values.longTokenUsd.add(values.shortTokenUsd);
 
-    values.longTokenUsd = values.longTokenUsd.add(swapFeeUsd.mul(values.longTokenUsd).div(totalDepositUsd));
-    values.shortTokenUsd = values.shortTokenUsd.add(swapFeeUsd.mul(values.shortTokenUsd).div(totalDepositUsd));
+    // Adjust long and short token amounts to account for swap fee and price impact
+    if (totalDepositUsd.gt(0)) {
+      values.longTokenUsd = values.longTokenUsd.add(swapFeeUsd.mul(values.longTokenUsd).div(totalDepositUsd));
+      values.shortTokenUsd = values.shortTokenUsd.add(swapFeeUsd.mul(values.shortTokenUsd).div(totalDepositUsd));
 
-    totalDepositUsd = values.longTokenUsd.add(values.shortTokenUsd);
+      totalDepositUsd = values.longTokenUsd.add(values.shortTokenUsd);
 
-    if (values.swapPriceImpactDeltaUsd.lt(0)) {
-      values.longTokenUsd = values.longTokenUsd.add(
-        values.swapPriceImpactDeltaUsd.mul(-1).mul(values.longTokenUsd).div(totalDepositUsd)
-      );
+      // Ignore positive price impact
+      if (values.swapPriceImpactDeltaUsd.lt(0) && totalDepositUsd.gt(0)) {
+        values.longTokenUsd = values.longTokenUsd.add(
+          values.swapPriceImpactDeltaUsd.mul(-1).mul(values.longTokenUsd).div(totalDepositUsd)
+        );
 
-      values.shortTokenUsd = values.shortTokenUsd.add(
-        values.swapPriceImpactDeltaUsd.mul(-1).mul(values.shortTokenUsd).div(totalDepositUsd)
-      );
+        values.shortTokenUsd = values.shortTokenUsd.add(
+          values.swapPriceImpactDeltaUsd.mul(-1).mul(values.shortTokenUsd).div(totalDepositUsd)
+        );
+      }
     }
 
     values.longTokenAmount = convertToTokenAmount(values.longTokenUsd, longToken.decimals, longTokenPrice)!;
