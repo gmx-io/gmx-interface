@@ -27,6 +27,25 @@ const CHAIN_BY_CHAIN_ID = {
   [AVALANCHE]: avalanche,
 };
 
+const BATCH_CONFIG = {
+  [AVALANCHE_FUJI]: {
+    batchSize: 1000,
+    wait: 0,
+  },
+  [ARBITRUM_GOERLI]: {
+    batchSize: 1000,
+    wait: 0,
+  },
+  [ARBITRUM]: {
+    batchSize: 30,
+    wait: 0,
+  },
+  [AVALANCHE]: {
+    batchSize: 5,
+    wait: 0,
+  },
+};
+
 export async function executeMulticall(
   chainId: number,
   library: Web3Provider | undefined,
@@ -72,7 +91,7 @@ export class Multicall {
       transport: http(provider.connection.url, {
         retryCount: 0,
         retryDelay: 10000000,
-        batch: false,
+        batch: BATCH_CONFIG[chainId],
       }),
       chain: CHAIN_BY_CHAIN_ID[chainId],
     });
@@ -147,7 +166,7 @@ export class Multicall {
         }
 
         const fallbackClient = createPublicClient({
-          transport: http(rpcUrl, { retryCount: 0, retryDelay: 10000000, batch: true }),
+          transport: http(rpcUrl, { retryCount: 0, retryDelay: 10000000, batch: BATCH_CONFIG[this.chainId] }),
           chain: CHAIN_BY_CHAIN_ID[this.chainId],
         });
 
