@@ -70,7 +70,7 @@ import longImg from "img/long.svg";
 import shortImg from "img/short.svg";
 import swapImg from "img/swap.svg";
 import { useChainId } from "lib/chains";
-import { USD_DECIMALS } from "lib/legacy";
+import { DUST_BNB, USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   formatAmount,
@@ -908,6 +908,16 @@ export function TradeBox(p: Props) {
     }
   }
 
+  function onMaxClick() {
+    if (fromToken?.balance) {
+      const maxAvailableAmount = fromToken.isNative
+        ? fromToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
+        : fromToken.balance;
+      setFocusedInput("from");
+      setFromTokenInputValue(formatAmountFree(maxAvailableAmount, fromToken.decimals));
+    }
+  }
+
   function renderTokenInputs() {
     return (
       <>
@@ -916,18 +926,14 @@ export function TradeBox(p: Props) {
           topLeftValue={fromUsd?.gt(0) ? formatUsd(isIncrease ? increaseAmounts?.initialCollateralUsd : fromUsd) : ""}
           topRightLabel={t`Balance`}
           topRightValue={formatTokenAmount(fromToken?.balance, fromToken?.decimals)}
+          onClickTopRightLabel={onMaxClick}
           inputValue={fromTokenInputValue}
           onInputValueChange={(e) => {
             setFocusedInput("from");
             setFromTokenInputValue(e.target.value);
           }}
           showMaxButton={isNotMatchAvailableBalance}
-          onClickMax={() => {
-            if (fromToken?.balance) {
-              setFocusedInput("from");
-              setFromTokenInputValue(formatAmountFree(fromToken.balance, fromToken.decimals));
-            }
-          }}
+          onClickMax={onMaxClick}
         >
           {fromTokenAddress && (
             <TokenSelector
@@ -1025,6 +1031,7 @@ export function TradeBox(p: Props) {
         topRightValue={existingPosition?.sizeInUsd ? formatUsd(existingPosition.sizeInUsd) : undefined}
         inputValue={closeSizeInputValue}
         onInputValueChange={(e) => setCloseSizeInputValue(e.target.value)}
+        onClickTopRightLabel={() => setCloseSizeInputValue(formatAmount(existingPosition?.sizeInUsd, USD_DECIMALS, 2))}
         showMaxButton={existingPosition?.sizeInUsd.gt(0) && !closeSizeUsd?.eq(existingPosition.sizeInUsd)}
         onClickMax={() => setCloseSizeInputValue(formatAmount(existingPosition?.sizeInUsd, USD_DECIMALS, 2))}
       >

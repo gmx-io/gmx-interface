@@ -1090,10 +1090,10 @@ export default function PositionSeller(props) {
                 <div
                   className="muted align-right clickable"
                   onClick={() => {
-                    setTriggerPriceValue(formatAmountFree(position.markPrice, USD_DECIMALS, 2));
+                    setTriggerPriceValue(formatAmountFree(position.markPrice, USD_DECIMALS, positionPriceDecimal));
                   }}
                 >
-                  <Trans>Mark: {formatAmount(position.markPrice, USD_DECIMALS, 2, true)}</Trans>
+                  <Trans>Mark: {formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)}</Trans>
                 </div>
               </div>
               <div className="Exchange-swap-section-bottom">

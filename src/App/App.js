@@ -248,7 +248,7 @@ function FullApp() {
 
   const [tradePageVersion, setTradePageVersion] = useLocalStorageSerializeKey(
     [chainId, TRADE_LINK_KEY],
-    getIsSyntheticsSupported(chainId) ? 2 : 1
+    getIsV1Supported(chainId) ? 1 : 2
   );
   const [walletModalVisible, setWalletModalVisible] = useState(false);
   const [redirectModalVisible, setRedirectModalVisible] = useState(false);
@@ -717,8 +717,11 @@ function FullApp() {
                     <Trans>
                       The Max Execution Fee is set to a higher value to handle potential increases in gas price during
                       order execution. Any excess execution fee will be refunded to your account when the order is
-                      executed.
+                      executed. Only applicable to GMX V2.
                     </Trans>
+                    <br />
+                    <br />
+                    <ExternalLink href="https://docs.gmx.io/docs/trading/v2#execution-fee">Read more</ExternalLink>
                   </div>
                 )}
               />
