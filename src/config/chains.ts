@@ -72,15 +72,15 @@ export const EXECUTION_FEE_CONFIG_V2: {
 } = {
   [AVALANCHE]: {
     shouldUseMaxPriorityFeePerGas: true,
-    defaultBufferBps: 2000, // 20%
+    defaultBufferBps: 1000, // 10%
   },
   [AVALANCHE_FUJI]: {
     shouldUseMaxPriorityFeePerGas: true,
-    defaultBufferBps: 2000, // 20%
+    defaultBufferBps: 1000, // 10%
   },
   [ARBITRUM]: {
     shouldUseMaxPriorityFeePerGas: false,
-    defaultBufferBps: 2000, // 20%
+    defaultBufferBps: 1000, // 10%
   },
   [ARBITRUM_GOERLI]: {
     shouldUseMaxPriorityFeePerGas: false,
