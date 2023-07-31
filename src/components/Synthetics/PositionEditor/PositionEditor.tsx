@@ -552,7 +552,12 @@ export function PositionEditor(p: Props) {
             )}
 
             <div className="Exchange-swap-button-container Confirmation-box-row">
-              <Button className="w-full" variant="primary-action" onClick={onSubmit} disabled={Boolean(error)}>
+              <Button
+                className="w-full"
+                variant="primary-action"
+                onClick={onSubmit}
+                disabled={Boolean(error) && !p.shouldDisableValidation}
+              >
                 {error || operationLabels[operation]}
               </Button>
             </div>

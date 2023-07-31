@@ -71,6 +71,7 @@ type Props = {
   onConnectWallet: () => void;
   setPendingTxns: (txns: any) => void;
   operation: Operation;
+  shouldDisableValidation?: boolean;
   mode: Mode;
   setMode: Dispatch<SetStateAction<Mode>>;
   setOperation: Dispatch<SetStateAction<Operation>>;
@@ -94,7 +95,16 @@ function showMarketToast(market) {
 }
 
 export function GmSwapBox(p: Props) {
-  const { operation, mode, setMode, setOperation, onSelectMarket, marketsInfoData, tokensData } = p;
+  const {
+    operation,
+    mode,
+    setMode,
+    setOperation,
+    onSelectMarket,
+    marketsInfoData,
+    tokensData,
+    shouldDisableValidation,
+  } = p;
   const { search } = useLocation();
   const history = useHistory();
   const queryParams = useMemo(() => new URLSearchParams(search), [search]);
@@ -409,19 +419,22 @@ export function GmSwapBox(p: Props) {
       };
     }
 
+    const onSubmit = () => {
+      setStage("confirmation");
+    };
+
     if (error) {
       return {
         text: error,
         error,
-        isDisabled: true,
+        isDisabled: !shouldDisableValidation,
+        onSubmit,
       };
     }
 
     return {
       text: isDeposit ? t`Buy GM` : t`Sell GM`,
-      onSubmit: () => {
-        setStage("confirmation");
-      },
+      onSubmit,
     };
   }, [
     account,
@@ -439,6 +452,7 @@ export function GmSwapBox(p: Props) {
     p.onConnectWallet,
     shortCollateralLiquidityUsd,
     shortTokenInputState?.token,
+    shouldDisableValidation,
   ]);
 
   function onFocusedCollateralInputChange(tokenAddress: string) {
@@ -996,6 +1010,7 @@ export function GmSwapBox(p: Props) {
         isHighPriceImpact={isHighPriceImpact!}
         isHighPriceImpactAccepted={isHighPriceImpactAccepted}
         setIsHighPriceImpactAccepted={setIsHighPriceImpactAccepted}
+        shouldDisableValidation={shouldDisableValidation}
       />
     </div>
   );

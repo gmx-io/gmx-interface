@@ -20,6 +20,7 @@ import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR
 type Props = {
   connectWallet: () => void;
   setPendingTxns: (txns: any) => void;
+  shouldDisableValidation?: boolean;
 };
 
 export function MarketPoolsPage(p: Props) {
@@ -80,6 +81,7 @@ export function MarketPoolsPage(p: Props) {
               onConnectWallet={p.connectWallet}
               selectedMarketAddress={selectedMarketKey}
               markets={markets}
+              shouldDisableValidation={p.shouldDisableValidation}
               marketsInfoData={marketsInfoData}
               tokensData={tokensData}
               onSelectMarket={setSelectedMarketKey}

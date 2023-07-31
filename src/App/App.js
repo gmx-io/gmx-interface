@@ -264,6 +264,7 @@ function FullApp() {
   const [executionFeeBufferBps, setExecutionFeeBufferBps] = useState(0);
   const [isPnlInLeverage, setIsPnlInLeverage] = useState(false);
   const [shouldDisableValidationForTesting, setShouldDisableValidationForTesting] = useState(false);
+
   const [showPnlAfterFees, setShowPnlAfterFees] = useState(true);
   const [showDebugValues, setShowDebugValues] = useState(false);
 
@@ -276,8 +277,14 @@ function FullApp() {
     [chainId, SHOW_PNL_AFTER_FEES_KEY],
     true
   );
-  const [savedShouldDisableValidationForTesting, setSavedShouldDisableValidationForTesting] =
-    useLocalStorageSerializeKey([chainId, DISABLE_ORDER_VALIDATION_KEY], false);
+
+  let [savedShouldDisableValidationForTesting, setSavedShouldDisableValidationForTesting] = useLocalStorageSerializeKey(
+    [chainId, DISABLE_ORDER_VALIDATION_KEY],
+    false
+  );
+  if (!isDevelopment()) {
+    savedShouldDisableValidationForTesting = false;
+  }
 
   const [savedShouldShowPositionLines, setSavedShouldShowPositionLines] = useLocalStorageSerializeKey(
     [chainId, SHOULD_SHOW_POSITION_LINES_KEY],
@@ -543,7 +550,11 @@ function FullApp() {
               </Route>
               <Route exact path="/pools">
                 {getIsSyntheticsSupported(chainId) ? (
-                  <MarketPoolsPage connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
+                  <MarketPoolsPage
+                    shouldDisableValidation={savedShouldDisableValidationForTesting}
+                    connectWallet={connectWallet}
+                    setPendingTxns={setPendingTxns}
+                  />
                 ) : (
                   <SyntheticsFallbackPage />
                 )}
@@ -554,7 +565,7 @@ function FullApp() {
                   <SyntheticsPage
                     onConnectWallet={connectWallet}
                     savedIsPnlInLeverage={savedIsPnlInLeverage}
-                    shouldDisableValidation={shouldDisableValidationForTesting}
+                    shouldDisableValidation={savedShouldDisableValidationForTesting}
                     savedShouldShowPositionLines={savedShouldShowPositionLines}
                     setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
                     setPendingTxns={setPendingTxns}
