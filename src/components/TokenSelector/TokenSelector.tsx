@@ -40,7 +40,7 @@ type Props = {
   getTokenState?: (info: TokenInfo) => TokenState | undefined;
   disableBodyScrollLock?: boolean;
   onSelectToken: (token: Token) => void;
-  extendedSortData?: { [key: string]: BigNumber } | undefined;
+  extendedSortSequence?: string[] | undefined;
 };
 
 export default function TokenSelector(props: Props) {
@@ -67,6 +67,7 @@ export default function TokenSelector(props: Props) {
     showSymbolImage = false,
     showNewCaret = false,
     getTokenState = () => ({ disabled: false, message: null }),
+    extendedSortSequence,
   } = props;
 
   const visibleTokens = tokens.filter((t) => t && !t.isTempHidden);
@@ -128,28 +129,21 @@ export default function TokenSelector(props: Props) {
 
       if (!aInfo || !bInfo) return 0;
 
-      if (props.extendedSortData) {
-        const aExtendedSortData = props.extendedSortData[aInfo.wrappedAddress || aInfo.address];
-        const bExtendedSortData = props.extendedSortData[bInfo.wrappedAddress || bInfo.address];
+      if (extendedSortSequence) {
+        return extendedSortSequence.indexOf(aInfo.address) - extendedSortSequence.indexOf(bInfo.address);
 
-        if (aExtendedSortData && bExtendedSortData) {
-          const difference = bExtendedSortData.sub(aExtendedSortData);
-
-          // If the extended sort data values are the same, prioritize the one with wrappedAddress
-          if (difference.eq(0)) {
-            if (aInfo.wrappedAddress && !bInfo.wrappedAddress) return -1;
-            if (!aInfo.wrappedAddress && bInfo.wrappedAddress) return 1;
-          }
-
-          return difference.gt(0) ? 1 : -1;
-        }
+        // If the extended sort data values are the same, prioritize the one with wrappedAddress
+        // if (difference.eq(0)) {
+        //   if (aInfo.wrappedAddress && !bInfo.wrappedAddress) return -1;
+        //   if (!aInfo.wrappedAddress && bInfo.wrappedAddress) return 1;
+        // }
       }
 
       return 0;
     });
 
     return [...sortedTokensWithBalance, ...sortedTokensWithoutBalance];
-  }, [filteredTokens, infoTokens, props.extendedSortData, showBalances]);
+  }, [filteredTokens, infoTokens, extendedSortSequence, showBalances]);
 
   const _handleKeyDown = (e) => {
     if (e.key === "Enter" && filteredTokens.length > 0) {

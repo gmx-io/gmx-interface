@@ -231,13 +231,13 @@ export function TradeBox(p: Props) {
   const [toTokenInputValue, setToTokenInputValue] = useSafeState("");
   const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : BigNumber.from(0);
 
-  const indexTokenWithPoolValue = useMemo(() => {
+  const indexTokenSortedWithPoolValue = useMemo(() => {
     if (!marketsInfoData) return;
 
     const markets = Object.values(marketsInfoData || {}).sort((a, b) => {
       return a.indexToken.symbol.localeCompare(b.indexToken.symbol);
     });
-    return markets.reduce((acc, marketInfo) => {
+    const marketsWithPoolValue = markets.reduce((acc, marketInfo) => {
       if (marketInfo.isSpotOnly || marketInfo.isDisabled) {
         return acc;
       }
@@ -246,40 +246,61 @@ export function TradeBox(p: Props) {
 
       return acc;
     }, {});
+
+    return Object.keys(marketsWithPoolValue).sort((a, b) => {
+      return marketsWithPoolValue[b].gt(marketsWithPoolValue[a]) ? 1 : -1;
+    });
   }, [marketsInfoData]);
 
-  const tokensWithPoolValue = useMemo(() => {
+  const sortedTokenToFollow = useMemo(() => {
     if (!marketsInfoData) return;
 
-    const markets = Object.values(marketsInfoData || {}).sort((a, b) => {
-      return a.indexToken.symbol.localeCompare(b.indexToken.symbol);
-    });
-    return markets.reduce((acc, marketInfo) => {
-      if (marketInfo.isDisabled) {
-        return acc;
-      }
+    const markets = Object.values(marketsInfoData || {})
+      .sort((a, b) => {
+        return a.indexToken.symbol.localeCompare(b.indexToken.symbol);
+      })
+      .filter((marketInfo) => !marketInfo.isDisabled);
 
+    const longTokens = markets.reduce((acc, marketInfo) => {
       const longPoolAmountUsd = convertToUsd(
         marketInfo.longPoolAmount,
         marketInfo.longToken.decimals,
         getMidPrice(marketInfo.longToken.prices)
       )!;
 
+      acc[marketInfo.longToken.address] = (acc[marketInfo.longToken.address] || BigNumber.from(0)).add(
+        longPoolAmountUsd
+      );
+
+      return acc;
+    }, {});
+
+    const shortTokens = markets.reduce((acc, marketInfo) => {
+      if (longTokens[marketInfo.shortToken.address]) {
+        return acc;
+      }
       const shortPoolAmountUsd = convertToUsd(
         marketInfo.shortPoolAmount,
         marketInfo.shortToken.decimals,
         getMidPrice(marketInfo.shortToken.prices)
       )!;
 
-      acc[marketInfo.longToken.address] = (acc[marketInfo.longToken.address] || BigNumber.from(0)).add(
-        longPoolAmountUsd
-      );
       acc[marketInfo.shortToken.address] = (acc[marketInfo.shortToken.address] || BigNumber.from(0)).add(
         shortPoolAmountUsd
       );
 
       return acc;
     }, {});
+
+    const sortedLongTokens = Object.keys(longTokens).sort((a, b) => {
+      return longTokens[b].gt(longTokens[a]) ? 1 : -1;
+    });
+
+    const sortedShortTokens = Object.keys(shortTokens).sort((a, b) => {
+      return shortTokens[b].gt(shortTokens[a]) ? 1 : -1;
+    });
+
+    return sortedLongTokens.concat(sortedShortTokens);
   }, [marketsInfoData]);
 
   const markPrice = useMemo(() => {
@@ -998,7 +1019,7 @@ export function TradeBox(p: Props) {
               className="GlpSwap-from-token"
               showSymbolImage={true}
               showTokenImgInDropdown={true}
-              extendedSortData={tokensWithPoolValue}
+              extendedSortSequence={sortedTokenToFollow}
             />
           )}
         </BuyInputSection>
@@ -1034,7 +1055,7 @@ export function TradeBox(p: Props) {
                 showSymbolImage={true}
                 showBalances={true}
                 showTokenImgInDropdown={true}
-                extendedSortData={indexTokenWithPoolValue}
+                extendedSortSequence={indexTokenSortedWithPoolValue}
               />
             )}
           </BuyInputSection>
@@ -1069,7 +1090,7 @@ export function TradeBox(p: Props) {
                 showSymbolImage={true}
                 showBalances={false}
                 showTokenImgInDropdown={true}
-                extendedSortData={indexTokenWithPoolValue}
+                extendedSortSequence={indexTokenSortedWithPoolValue}
               />
             )}
           </BuyInputSection>
