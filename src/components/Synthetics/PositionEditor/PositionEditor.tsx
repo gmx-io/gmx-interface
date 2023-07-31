@@ -254,6 +254,8 @@ export function PositionEditor(p: Props) {
       minCollateralUsd,
       isDeposit,
       position,
+      depositToken: collateralToken,
+      depositAmount: collateralDeltaAmount,
     });
 
     const error = commonError[0] || editCollateralError[0];
@@ -274,7 +276,7 @@ export function PositionEditor(p: Props) {
     chainId,
     collateralDeltaAmount,
     collateralDeltaUsd,
-    collateralToken?.symbol,
+    collateralToken,
     isDeposit,
     isSubmitting,
     minCollateralUsd,

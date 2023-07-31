@@ -6,6 +6,7 @@ export const SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY = "eagerconnect";
 export const CURRENT_PROVIDER_LOCALSTORAGE_KEY = "currentprovider";
 export const LANGUAGE_LOCALSTORAGE_KEY = "LANGUAGE_KEY";
 export const SLIPPAGE_BPS_KEY = "Exchange-swap-slippage-basis-points-v3";
+export const EXECUTION_FEE_BUFFER_BPS_KEY = "execution-fee-buffer-basis-points";
 export const CLOSE_POSITION_RECEIVE_TOKEN_KEY = "Close-position-receive-token";
 export const IS_PNL_IN_LEVERAGE_KEY = "Exchange-swap-is-pnl-in-leverage";
 export const SHOW_PNL_AFTER_FEES_KEY = "Exchange-swap-show-pnl-after-fees";
@@ -73,4 +74,8 @@ export function getAcceptablePriceImpactBpsKey(chainId: number) {
 
 export function getAllowedSlippageKey(chainId: number) {
   return [chainId, SLIPPAGE_BPS_KEY];
+}
+
+export function getExecutionFeeBufferBpsKey(chainId: number) {
+  return [chainId, EXECUTION_FEE_BUFFER_BPS_KEY];
 }

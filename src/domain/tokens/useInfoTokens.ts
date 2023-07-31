@@ -5,13 +5,8 @@ import { getContract } from "config/contracts";
 import { getV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
 import { BigNumber } from "ethers";
 import { contractFetcher } from "lib/contracts";
-import {
-  BASIS_POINTS_DIVISOR,
-  DEFAULT_MAX_USDG_AMOUNT,
-  MAX_PRICE_DEVIATION_BASIS_POINTS,
-  USD_DECIMALS,
-  USDG_ADDRESS,
-} from "lib/legacy";
+import { DEFAULT_MAX_USDG_AMOUNT, MAX_PRICE_DEVIATION_BASIS_POINTS, USD_DECIMALS, USDG_ADDRESS } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { bigNumberify, expandDecimals } from "lib/numbers";
 import useSWR from "swr";
 import { InfoTokens, Token, TokenInfo } from "./types";

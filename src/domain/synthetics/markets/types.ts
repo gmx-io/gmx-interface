@@ -30,6 +30,9 @@ export type MarketInfo = Market & {
   longPoolAmount: BigNumber;
   shortPoolAmount: BigNumber;
 
+  maxLongPoolAmount: BigNumber;
+  maxShortPoolAmount: BigNumber;
+
   longPoolAmountAdjustment: BigNumber;
   shortPoolAmountAdjustment: BigNumber;
 
@@ -63,10 +66,6 @@ export type MarketInfo = Market & {
 
   maxPnlFactorForTradersLong: BigNumber;
   maxPnlFactorForTradersShort: BigNumber;
-  maxPnlFactorForWithdrawalsLong: BigNumber;
-  maxPnlFactorForWithdrawalsShort: BigNumber;
-  maxPnlFactorForDepositsLong: BigNumber;
-  maxPnlFactorForDepositsShort: BigNumber;
 
   pnlLongMin: BigNumber;
   pnlLongMax: BigNumber;
@@ -84,7 +83,8 @@ export type MarketInfo = Market & {
   longInterestInTokens: BigNumber;
   shortInterestInTokens: BigNumber;
 
-  positionFeeFactor: BigNumber;
+  positionFeeFactorForPositiveImpact: BigNumber;
+  positionFeeFactorForNegativeImpact: BigNumber;
   positionImpactFactorPositive: BigNumber;
   positionImpactFactorNegative: BigNumber;
   maxPositionImpactFactorPositive: BigNumber;
@@ -92,7 +92,8 @@ export type MarketInfo = Market & {
   maxPositionImpactFactorForLiquidations: BigNumber;
   positionImpactExponentFactor: BigNumber;
 
-  swapFeeFactor: BigNumber;
+  swapFeeFactorForPositiveImpact: BigNumber;
+  swapFeeFactorForNegativeImpact: BigNumber;
   swapImpactFactorPositive: BigNumber;
   swapImpactFactorNegative: BigNumber;
   swapImpactExponentFactor: BigNumber;

@@ -13,7 +13,7 @@ const defaultValue = {};
 
 export function useTokensAllowanceData(
   chainId: number,
-  p: { spenderAddress?: string; tokenAddresses: string[] }
+  p: { spenderAddress?: string; tokenAddresses: string[]; skip?: boolean }
 ): TokenAllowanceResult {
   const { spenderAddress, tokenAddresses } = p;
   const { account } = useWeb3React();
@@ -22,7 +22,7 @@ export function useTokensAllowanceData(
 
   const { data } = useMulticall(chainId, "useTokenAllowance", {
     key:
-      account && spenderAddress && tokenAddresses.length > 0 && !isNativeToken
+      !p.skip && account && spenderAddress && tokenAddresses.length > 0 && !isNativeToken
         ? [account, spenderAddress, tokenAddresses.join("-")]
         : null,
 

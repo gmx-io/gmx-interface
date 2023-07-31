@@ -33,7 +33,13 @@ import {
 } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
-import { PositionInfo, formatLeverage, formatLiquidationPrice, getPositionKey } from "domain/synthetics/positions";
+import {
+  PositionInfo,
+  formatAcceptablePrice,
+  formatLeverage,
+  formatLiquidationPrice,
+  getPositionKey,
+} from "domain/synthetics/positions";
 import {
   TokenData,
   TokensData,
@@ -50,13 +56,17 @@ import {
   SwapAmounts,
   TradeFees,
   TriggerThresholdType,
+  applySlippageToMinOut,
 } from "domain/synthetics/trade";
 import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
 import { getIsEquivalentTokens, getSpread } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-import { BASIS_POINTS_DIVISOR, CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
+import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
+
 import {
+  bigNumberify,
   formatAmount,
   formatDeltaUsd,
   formatPercentage,
@@ -70,6 +80,8 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./ConfirmationBox.scss";
 import SlippageInput from "components/SlippageInput/SlippageInput";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { helperToast } from "lib/helperToast";
 
 export type Props = {
   isVisible: boolean;
@@ -80,6 +92,9 @@ export type Props = {
   markPrice?: BigNumber;
   markRatio?: TokensRatio;
   triggerPrice?: BigNumber;
+  fixedTriggerThresholdType?: TriggerThresholdType;
+  fixedTriggerOrderType?: OrderType.LimitDecrease | OrderType.StopLossDecrease;
+  fixedTriggerAcceptablePrice?: BigNumber;
   triggerRatio?: TokensRatio;
   marketInfo?: MarketInfo;
   collateralToken?: TokenData;
@@ -116,6 +131,9 @@ export function ConfirmationBox(p: Props) {
     markPrice,
     markRatio,
     triggerPrice,
+    fixedTriggerThresholdType,
+    fixedTriggerOrderType,
+    fixedTriggerAcceptablePrice,
     triggerRatio,
     marketInfo,
     collateralToken,
@@ -175,6 +193,7 @@ export function ConfirmationBox(p: Props) {
   const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokenAddresses: fromToken ? [fromToken.address] : [],
+    skip: !p.isVisible,
   });
 
   const needPayTokenApproval =
@@ -378,6 +397,7 @@ export function ConfirmationBox(p: Props) {
       !executionFee ||
       typeof allowedSlippage !== "number"
     ) {
+      helperToast.error(t`Error submitting order`);
       return Promise.resolve();
     }
 
@@ -409,6 +429,7 @@ export function ConfirmationBox(p: Props) {
       !marketInfo ||
       typeof allowedSlippage !== "number"
     ) {
+      helperToast.error(t`Error submitting order`);
       return Promise.resolve();
     }
 
@@ -443,13 +464,15 @@ export function ConfirmationBox(p: Props) {
       !account ||
       !marketInfo ||
       !collateralToken ||
-      !decreaseAmounts?.acceptablePrice ||
-      decreaseAmounts.triggerOrderType === undefined ||
-      !decreaseAmounts.triggerPrice ||
+      fixedTriggerOrderType === undefined ||
+      fixedTriggerThresholdType === undefined ||
+      !fixedTriggerAcceptablePrice ||
+      !decreaseAmounts?.triggerPrice ||
       !executionFee ||
       !tokensData ||
       typeof allowedSlippage !== "number"
     ) {
+      helperToast.error(t`Error submitting order`);
       return Promise.resolve();
     }
 
@@ -461,13 +484,13 @@ export function ConfirmationBox(p: Props) {
       initialCollateralAddress: collateralToken.address,
       receiveTokenAddress: collateralToken.address,
       triggerPrice: decreaseAmounts.triggerPrice,
-      acceptablePrice: decreaseAmounts.acceptablePrice,
+      acceptablePrice: fixedTriggerAcceptablePrice,
       sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
       sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
       minOutputUsd: BigNumber.from(0),
       isLong,
       decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
-      orderType: decreaseAmounts.triggerOrderType,
+      orderType: fixedTriggerOrderType,
       executionFee: executionFee.feeTokenAmount,
       allowedSlippage,
       referralCode: referralCodeForTxn,
@@ -524,7 +547,7 @@ export function ConfirmationBox(p: Props) {
       return (
         <div className="Confirmation-box-main">
           <div>
-            <Trans>Pay</Trans>&nbsp;
+            <Trans>Pay</Trans>
             {formatTokenAmountWithUsd(
               swapAmounts?.amountIn,
               swapAmounts?.usdIn,
@@ -534,7 +557,7 @@ export function ConfirmationBox(p: Props) {
           </div>
           <div className="Confirmation-box-main-icon"></div>
           <div>
-            <Trans>Receive</Trans>&nbsp;
+            <Trans>Receive</Trans>
             {formatTokenAmountWithUsd(swapAmounts?.amountOut, swapAmounts?.usdOut, toToken?.symbol, toToken?.decimals)}
           </div>
         </div>
@@ -545,7 +568,7 @@ export function ConfirmationBox(p: Props) {
       return (
         <div className="Confirmation-box-main">
           <span>
-            <Trans>Pay</Trans>&nbsp;
+            <Trans>Pay</Trans>
             {formatTokenAmountWithUsd(
               increaseAmounts?.initialCollateralAmount,
               increaseAmounts?.initialCollateralUsd,
@@ -555,7 +578,7 @@ export function ConfirmationBox(p: Props) {
           </span>
           <div className="Confirmation-box-main-icon"></div>
           <div>
-            {isLong ? t`Long` : t`Short`}&nbsp;
+            {isLong ? t`Long` : t`Short`}
             {formatTokenAmountWithUsd(
               increaseAmounts?.sizeDeltaInTokens,
               increaseAmounts?.sizeDeltaUsd,
@@ -599,7 +622,9 @@ export function ConfirmationBox(p: Props) {
           {isLimitOrderType(order.orderType) ? t`Increase` : t`Decrease`} {order.indexToken?.symbol}{" "}
           {formatUsd(order.sizeDeltaUsd)} {order.isLong ? t`Long` : t`Short`} &nbsp;
           {order.triggerThresholdType}
-          {formatUsd(order.triggerPrice)}{" "}
+          {formatUsd(order.triggerPrice, {
+            displayDecimals: toToken?.priceDecimals,
+          })}{" "}
         </p>
         <button onClick={() => onCancelOrderClick(order.key)}>
           <Trans>Cancel</Trans>
@@ -633,8 +658,9 @@ export function ConfirmationBox(p: Props) {
       return (
         <div className="Confirmation-box-info">
           <Trans>
-            You have selected {collateralTokenSymbol} as Collateral, the Liquidation Price is higher compared to using a
-            stablecoin as collateral, since the worth of the collateral will change with its price.
+            You have selected {collateralTokenSymbol} as collateral, the Liquidation Price is higher compared to using a
+            stablecoin as collateral since the worth of the collateral will change with its price. If required, you can
+            change the collateral type using the Collateral In option in the trade box.
           </Trans>
         </div>
       );
@@ -665,7 +691,10 @@ export function ConfirmationBox(p: Props) {
         <div className="Confirmation-box-info">
           <Trans>
             You have an active Limit Order to Increase {longShortText} {order.indexToken?.symbol} {sizeText} at price{" "}
-            {formatUsd(order.triggerPrice)}.
+            {formatUsd(order.triggerPrice, {
+              displayDecimals: toToken.priceDecimals,
+            })}
+            .
           </Trans>
         </div>
       );
@@ -682,7 +711,7 @@ export function ConfirmationBox(p: Props) {
               ({isLimitOrdersVisible ? t`hide` : t`view`})
             </span>
           </div>
-          <ul className="order-list">{existingLimitOrders.map(renderOrderItem)}</ul>
+          {isLimitOrdersVisible && <ul className="order-list">{existingLimitOrders.map(renderOrderItem)}</ul>}
         </div>
       );
     }
@@ -822,7 +851,7 @@ export function ConfirmationBox(p: Props) {
     return (
       <ExchangeInfoRow
         label={
-          <Tooltip
+          <TooltipWithPortal
             handle={t`Allowed Slippage`}
             position="left-top"
             renderContent={() => {
@@ -832,8 +861,9 @@ export function ConfirmationBox(p: Props) {
                     You can edit the default Allowed Slippage in the settings menu on the top right of the page.
                     <br />
                     <br />
-                    Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are
-                    volatile.
+                    Note that a low allowed slippage, e.g. less than{" "}
+                    {formatPercentage(bigNumberify(DEFAULT_SLIPPAGE_AMOUNT), { signed: false })}, may result in failed
+                    orders if prices are volatile.
                   </Trans>
                 </div>
               );
@@ -878,8 +908,9 @@ export function ConfirmationBox(p: Props) {
           {renderExistingLimitOrdersWarning()}
           {renderExistingTriggerErrors()}
           {renderExistingTriggerWarning()}
-          {isLimit && renderAvailableLiquidity()}
           {renderDifferentTokensWarning()}
+
+          {isLimit && renderAvailableLiquidity()}
 
           <ExchangeInfoRow
             className="SwapBox-info-row"
@@ -958,7 +989,7 @@ export function ConfirmationBox(p: Props) {
             className="SwapBox-info-row"
             label={t`Acceptable Price`}
             value={
-              formatUsd(increaseAmounts?.acceptablePrice, {
+              formatAcceptablePrice(increaseAmounts?.acceptablePrice, {
                 displayDecimals: toTokenPriceDecimals,
               }) || "-"
             }
@@ -1137,7 +1168,13 @@ export function ConfirmationBox(p: Props) {
           )}
 
           <ExchangeInfoRow label={t`Min. Receive`} isTop>
-            {formatTokenAmount(swapAmounts?.minOutputAmount, toToken?.decimals, toToken?.symbol)}
+            {isMarket && swapAmounts?.minOutputAmount
+              ? formatTokenAmount(
+                  applySlippageToMinOut(allowedSlippage, swapAmounts.minOutputAmount),
+                  toToken?.decimals,
+                  toToken?.symbol
+                )
+              : formatTokenAmount(swapAmounts?.minOutputAmount, toToken?.decimals, toToken?.symbol)}
           </ExchangeInfoRow>
 
           {isHighPriceImpact && <div className="line-divider" />}
@@ -1149,6 +1186,8 @@ export function ConfirmationBox(p: Props) {
   }
 
   function renderTriggerDecreaseSection() {
+    const existingPriceDecimals = p.existingPosition?.indexToken?.priceDecimals;
+    const toTokenPriceDecimals = toToken?.priceDecimals;
     return (
       <>
         <div>
@@ -1163,21 +1202,45 @@ export function ConfirmationBox(p: Props) {
           )}
           <ExchangeInfoRow
             label={t`Trigger Price`}
-            value={triggerPrice ? `${decreaseAmounts?.triggerThresholdType} ${formatUsd(triggerPrice)}` : "..."}
+            value={
+              triggerPrice
+                ? `${fixedTriggerThresholdType} ${formatUsd(triggerPrice, {
+                    displayDecimals: toTokenPriceDecimals,
+                  })}`
+                : "..."
+            }
           />
 
-          <ExchangeInfoRow isTop label={t`Mark Price`} value={p.markPrice ? formatUsd(p.markPrice) : "..."} />
+          <ExchangeInfoRow
+            isTop
+            label={t`Mark Price`}
+            value={
+              p.markPrice
+                ? formatUsd(p.markPrice, {
+                    displayDecimals: toTokenPriceDecimals,
+                  })
+                : "..."
+            }
+          />
 
           <ExchangeInfoRow
             className="SwapBox-info-row"
             label={t`Acceptable Price Impact`}
-            value={formatPercentage(decreaseAmounts?.acceptablePriceDeltaBps) || "-"}
+            value={
+              decreaseAmounts?.triggerOrderType === OrderType.StopLossDecrease
+                ? "NA"
+                : formatPercentage(decreaseAmounts?.acceptablePriceDeltaBps) || "-"
+            }
           />
 
           <ExchangeInfoRow
             className="SwapBox-info-row"
             label={t`Acceptable Price`}
-            value={formatUsd(decreaseAmounts?.acceptablePrice) || "-"}
+            value={
+              formatAcceptablePrice(fixedTriggerAcceptablePrice, {
+                displayDecimals: toTokenPriceDecimals,
+              }) || "-"
+            }
           />
 
           {p.existingPosition && (
@@ -1186,8 +1249,14 @@ export function ConfirmationBox(p: Props) {
               value={
                 nextPositionValues?.nextSizeUsd?.gt(0) ? (
                   <ValueTransition
-                    from={formatUsd(existingPosition?.liquidationPrice)!}
-                    to={formatUsd(nextPositionValues.nextLiqPrice)}
+                    from={
+                      formatUsd(existingPosition?.liquidationPrice, {
+                        displayDecimals: existingPriceDecimals,
+                      })!
+                    }
+                    to={formatUsd(nextPositionValues.nextLiqPrice, {
+                      displayDecimals: existingPriceDecimals,
+                    })}
                   />
                 ) : (
                   "-"
@@ -1264,7 +1333,7 @@ export function ConfirmationBox(p: Props) {
 
           <TradeFeesRow {...fees} executionFee={p.executionFee} feesType="decrease" warning={p.executionFee?.warning} />
 
-          {decreaseAmounts?.receiveUsd && (
+          {existingPosition && decreaseAmounts?.receiveUsd && (
             <ExchangeInfoRow
               label={t`Receive`}
               value={formatTokenAmountWithUsd(

@@ -110,7 +110,7 @@ export function getErrorMessage(chainId: number, ex: TxError, txnMessage?: strin
             <br />
             <br />
             Please try changing the RPC url in your wallet settings.{" "}
-            <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#backup-rpc-urls">More info</ExternalLink>
+            <ExternalLink href="https://docs.gmx.io/docs/trading/v1#rpc-urls">More info</ExternalLink>
           </Trans>
           <br />
           {originalError && <ToastifyDebug>{originalError}</ToastifyDebug>}

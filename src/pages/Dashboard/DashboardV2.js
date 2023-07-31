@@ -11,7 +11,6 @@ import hexToRgba from "hex-to-rgba";
 
 import { useGmxPrice, useTotalGmxInLiquidity, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
 import {
-  BASIS_POINTS_DIVISOR,
   DEFAULT_MAX_USDG_AMOUNT,
   GLP_DECIMALS,
   GMX_DECIMALS,
@@ -19,6 +18,7 @@ import {
   getPageTitle,
   importImage,
 } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 
 import { getContract } from "config/contracts";
 
@@ -355,7 +355,7 @@ export default function DashboardV2() {
               )}
               <br />
               <div>
-                <ExternalLink href="https://gmxio.gitbook.io/gmx/glp">
+                <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v1">
                   <Trans>More Info</Trans>
                 </ExternalLink>
               </div>
@@ -524,7 +524,8 @@ export default function DashboardV2() {
                         <Trans>
                           <p>Total value of tokens in GLP pool ({chainName}).</p>
                           <p>
-                            Other websites may show a higher value as they add positions' collaterals to the GLP pool.
+                            This value may be higher on other websites due to the collateral of positions being included
+                            in the calculation.
                           </p>
                         </Trans>
                       )}

@@ -4,7 +4,8 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { PositionTradeAction } from "domain/synthetics/tradeHistory";
 import { BigNumber } from "ethers";
-import { BASIS_POINTS_DIVISOR, PRECISION } from "lib/legacy";
+import { PRECISION } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 
 type Props = {

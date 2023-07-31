@@ -12,7 +12,6 @@ export type Position = {
   sizeInUsd: BigNumber;
   sizeInTokens: BigNumber;
   collateralAmount: BigNumber;
-  borrowingFactor: BigNumber;
   pendingBorrowingFeesUsd: BigNumber;
   increasedAtBlock: BigNumber;
   decreasedAtBlock: BigNumber;
@@ -20,13 +19,7 @@ export type Position = {
   fundingFeeAmount: BigNumber;
   claimableLongTokenAmount: BigNumber;
   claimableShortTokenAmount: BigNumber;
-  longTokenFundingAmountPerSize: BigNumber;
-  shortTokenFundingAmountPerSize: BigNumber;
-  latestLongTokenFundingAmountPerSize: BigNumber;
-  latestShortTokenFundingAmountPerSize: BigNumber;
-  hasPendingLongTokenFundingFee: boolean;
-  hasPendingShortTokenFundingFee: boolean;
-  isOpening: boolean;
+  isOpening?: boolean;
   pendingUpdate?: PendingPositionUpdate;
   data: string;
 };

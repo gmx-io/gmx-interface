@@ -19,22 +19,22 @@ type Props = {
   currentCollateralAddress?: string;
   currentTradeType?: TradeType;
   openSettings: () => void;
+  hideActions?: boolean;
 };
 
 export function PositionList(p: Props) {
   const positions = Object.values(p.positionsData || {});
   const orders = Object.values(p.ordersData || {});
-  const isDataLoading = p.isLoading;
 
   return (
     <div>
       {positions.length === 0 && (
         <div className="Exchange-empty-positions-list-note App-card small">
-          {isDataLoading ? t`Loading...` : t`No open positions`}
+          {p.isLoading ? t`Loading...` : t`No open positions`}
         </div>
       )}
       <div className="Exchange-list small">
-        {!isDataLoading &&
+        {!p.isLoading &&
           positions.map((position) => (
             <PositionItem
               key={position.key}
@@ -84,12 +84,12 @@ export function PositionList(p: Props) {
             <tr>
               <td colSpan={15}>
                 <div className="Exchange-empty-positions-list-note">
-                  {isDataLoading ? t`Loading...` : t`No open positions`}
+                  {p.isLoading ? t`Loading...` : t`No open positions`}
                 </div>
               </td>
             </tr>
           )}
-          {!isDataLoading &&
+          {!p.isLoading &&
             positions.map((position) => (
               <PositionItem
                 key={position.key}
@@ -108,6 +108,7 @@ export function PositionList(p: Props) {
                 currentCollateralAddress={p.currentCollateralAddress}
                 currentTradeType={p.currentTradeType}
                 openSettings={p.openSettings}
+                hideActions={p.hideActions}
               />
             ))}
         </tbody>

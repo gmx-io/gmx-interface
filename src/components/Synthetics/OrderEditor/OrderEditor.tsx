@@ -14,7 +14,12 @@ import {
   isSwapOrderType,
   isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
-import { PositionsInfoData, formatLiquidationPrice, getPositionKey } from "domain/synthetics/positions";
+import {
+  PositionsInfoData,
+  formatAcceptablePrice,
+  formatLiquidationPrice,
+  getPositionKey,
+} from "domain/synthetics/positions";
 import {
   TokensData,
   TokensRatio,
@@ -89,13 +94,18 @@ export function OrderEditor(p: Props) {
   const [triggerPirceInputValue, setTriggerPriceInputValue] = useState("");
   const triggerPrice = parseValue(triggerPirceInputValue || "0", USD_DECIMALS)!;
 
-  const { acceptablePrice } = getAcceptablePrice({
+  let { acceptablePrice } = getAcceptablePrice({
     isIncrease: isIncreaseOrderType(p.order.orderType),
     isLong: p.order.isLong,
     indexPrice: triggerPrice,
     acceptablePriceImpactBps: acceptablePriceImpactBps,
     sizeDeltaUsd: p.order.sizeDeltaUsd,
   });
+
+  // For SL orders Acceptable Price is not applicable and set to 0 or MaxUnit256
+  if (p.order.orderType === OrderType.StopLossDecrease) {
+    acceptablePrice = (p.order as PositionOrderInfo).acceptablePrice;
+  }
 
   // Swaps
   const fromToken = getTokenData(tokensData, p.order.initialCollateralTokenAddress);
@@ -426,7 +436,7 @@ export function OrderEditor(p: Props) {
             <>
               <ExchangeInfoRow
                 label={t`Acceptable Price`}
-                value={formatUsd(acceptablePrice, { displayDecimals: indexPriceDecimals })}
+                value={formatAcceptablePrice(acceptablePrice, { displayDecimals: indexPriceDecimals })}
               />
 
               {existingPosition && (

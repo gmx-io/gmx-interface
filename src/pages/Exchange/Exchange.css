@@ -592,7 +592,7 @@ table.Exchange-list .Exchange-list-item-active {
 .Confirmation-box-info a,
 .Confirmation-box-warning,
 .Confirmation-box-warning a {
-  font-size: var(--font-sm);
+  font-size: 1.3rem;
   text-align: center;
   margin-top: 1rem;
   margin-bottom: 1.5rem;

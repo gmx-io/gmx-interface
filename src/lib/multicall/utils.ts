@@ -11,7 +11,7 @@ import {
   getRpcUrl,
 } from "config/chains";
 import { ethers } from "ethers";
-import { createPublicClient, getContract as getViemContract, http } from "viem";
+import { PublicClient, createPublicClient, getContract as getViemContract, http } from "viem";
 import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "viem/chains";
 import { MulticallRequestConfig, MulticallResult } from "./types";
 
@@ -30,20 +30,18 @@ const CHAIN_BY_CHAIN_ID = {
 export async function executeMulticall(
   chainId: number,
   library: Web3Provider | undefined,
-  request: MulticallRequestConfig<any>,
-  requireSucess: boolean
+  request: MulticallRequestConfig<any>
 ) {
   const multicall = await Multicall.getInstance(chainId, library ? library.getSigner().provider : undefined);
 
-  return multicall.call(request, requireSucess, MAX_TIMEOUT);
+  return multicall.call(request, MAX_TIMEOUT);
 }
 
 export class Multicall {
-  viemClient: any;
+  viemClient: PublicClient;
   viemMulticallContract: any;
 
   static instance: Multicall | undefined = undefined;
-  static providerInstance: ethers.providers.Provider | undefined = undefined;
 
   static async getInstance(chainId: number, customProvider?: JsonRpcProvider) {
     if (customProvider && !customProvider.network) {
@@ -81,7 +79,7 @@ export class Multicall {
     });
   }
 
-  async call(request: MulticallRequestConfig<any>, requireSuccess: boolean, maxTimeout: number) {
+  async call(request: MulticallRequestConfig<any>, maxTimeout: number) {
     const originalKeys: {
       contractKey: string;
       callKey: string;
@@ -103,7 +101,9 @@ export class Multicall {
       Object.keys(contractCallConfig.calls).forEach((callKey) => {
         const call = contractCallConfig.calls[callKey];
 
-        if (!call) return;
+        if (!call) {
+          return;
+        }
 
         abis[contractCallConfig.contractAddress] =
           abis[contractCallConfig.contractAddress] || contractCallConfig.abi.concat(CustomErrors.abi);
@@ -125,12 +125,16 @@ export class Multicall {
     });
 
     const response: any = await Promise.race([
-      this.viemClient.multicall({ contracts: encodedPayload }),
+      this.viemClient.multicall({ contracts: encodedPayload as any }),
       sleep(maxTimeout).then(() => Promise.reject("multicall timeout")),
     ])
       .catch((e) => {
         // eslint-disable-next-line no-console
-        console.log("multicall error:", e);
+        console.groupCollapsed("multicall error:");
+        // eslint-disable-next-line no-console
+        console.error(e);
+        // eslint-disable-next-line no-console
+        console.groupEnd();
 
         const rpcUrl = getFallbackRpcUrl(this.chainId);
 
@@ -150,7 +154,11 @@ export class Multicall {
       })
       .catch((e) => {
         // eslint-disable-next-line no-console
-        console.error("multicall error:", e);
+        console.groupCollapsed("multicall error:");
+        // eslint-disable-next-line no-console
+        console.error(e);
+        // eslint-disable-next-line no-console
+        console.groupEnd();
 
         throw e;
       });

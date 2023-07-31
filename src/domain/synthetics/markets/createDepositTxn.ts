@@ -6,6 +6,8 @@ import ExchangeRouter from "abis/ExchangeRouter.json";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
 import { SetPendingDeposit } from "context/SyntheticsEvents";
 import { applySlippageToMinOut } from "../trade";
+import { simulateExecuteOrderTxn } from "../orders/simulateExecuteOrderTxn";
+import { TokensData } from "../tokens";
 
 type Params = {
   account: string;
@@ -19,6 +21,8 @@ type Params = {
   minMarketTokens: BigNumber;
   executionFee: BigNumber;
   allowedSlippage: number;
+  tokensData: TokensData;
+  skipSimulation?: boolean;
   setPendingTxns: (txns: any) => void;
   setPendingDeposit: SetPendingDeposit;
 };
@@ -84,6 +88,17 @@ export async function createDepositTxn(chainId: number, library: Web3Provider, p
   const encodedPayload = multicall
     .filter(Boolean)
     .map((call) => contract.interface.encodeFunctionData(call!.method, call!.params));
+
+  if (!p.skipSimulation) {
+    await simulateExecuteOrderTxn(chainId, library, {
+      primaryPriceOverrides: {},
+      secondaryPriceOverrides: {},
+      tokensData: p.tokensData,
+      createOrderMulticallPayload: encodedPayload,
+      method: "simulateExecuteDeposit",
+      value: wntAmount,
+    });
+  }
 
   return callContract(chainId, contract, "multicall", [encodedPayload], {
     value: wntAmount,

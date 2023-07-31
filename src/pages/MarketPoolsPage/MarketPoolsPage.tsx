@@ -37,7 +37,10 @@ export function MarketPoolsPage(p: Props) {
   });
 
   const [operation, setOperation] = useState<Operation>(Operation.Deposit);
-  const [mode, setMode] = useState<Mode>(Mode.Single);
+  let [mode, setMode] = useState<Mode>(Mode.Single);
+  if (operation === Operation.Withdrawal) {
+    mode = Mode.Pair;
+  }
 
   const [selectedMarketKey, setSelectedMarketKey] = useLocalStorageSerializeKey<string | undefined>(
     getSyntheticsDepositMarketKey(chainId),
@@ -61,7 +64,8 @@ export function MarketPoolsPage(p: Props) {
             </div>
             <div className="Page-description">
               <Trans>
-                Purchase <ExternalLink href="https://gmxio.gitbook.io/gmx/gm">GM Tokens.</ExternalLink>
+                Purchase <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v2">GM Tokens</ExternalLink>{" "}
+                to earn fees from swaps and leverage trading.
               </Trans>
               <br />
             </div>
@@ -98,6 +102,7 @@ export function MarketPoolsPage(p: Props) {
           marketTokensData={depositMarketTokensData}
           marketsInfoData={marketsInfoData}
           tokensData={tokensData}
+          shouldScrollToTop={true}
         />
       </div>
       <Footer />

@@ -24,7 +24,8 @@ import { getPositionKey } from "domain/synthetics/positions";
 import { usePositionsInfo } from "domain/synthetics/positions/usePositionsInfo";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT, getPageTitle } from "lib/legacy";
+import { getPageTitle } from "lib/legacy";
+import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "config/factors";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { bigNumberify, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
@@ -81,9 +82,14 @@ export function SyntheticsPage(p: Props) {
     tokensData,
     pricesUpdatedAt,
     showPnlInLeverage: savedIsPnlInLeverage,
+    account,
   });
 
-  const { ordersInfoData, isLoading: isOrdersLoading } = useOrdersInfo(chainId, { marketsInfoData, tokensData });
+  const { ordersInfoData, isLoading: isOrdersLoading } = useOrdersInfo(chainId, {
+    account,
+    marketsInfoData,
+    tokensData,
+  });
 
   const {
     tradeType,
@@ -157,7 +163,6 @@ export function SyntheticsPage(p: Props) {
   const [selectedOrdersKeys, setSelectedOrdersKeys] = useState<{ [key: string]: boolean }>({});
   const selectedOrdersKeysArr = Object.keys(selectedOrdersKeys).filter((key) => selectedOrdersKeys[key]);
   const [isCancelOrdersProcessig, setIsCancelOrdersProcessig] = useState(false);
-
   const existingOrder = useMemo(() => {
     if (!selectedPositionKey) {
       return undefined;
@@ -216,7 +221,16 @@ export function SyntheticsPage(p: Props) {
     cancelOrdersTxn(chainId, library, {
       orderKeys: selectedOrdersKeysArr,
       setPendingTxns: setPendingTxns,
-    }).finally(() => setIsCancelOrdersProcessig(false));
+    })
+      .then(async (tx) => {
+        const receipt = await tx.wait();
+        if (receipt.status === 1) {
+          setSelectedOrdersKeys({});
+        }
+      })
+      .finally(() => {
+        setIsCancelOrdersProcessig(false);
+      });
   }
 
   useEffect(() => {
@@ -322,7 +336,12 @@ export function SyntheticsPage(p: Props) {
               />
             )}
             {listSection === ListSection.Trades && (
-              <TradeHistory marketsInfoData={marketsInfoData} tokensData={tokensData} shouldShowPaginationButtons />
+              <TradeHistory
+                account={account}
+                marketsInfoData={marketsInfoData}
+                tokensData={tokensData}
+                shouldShowPaginationButtons
+              />
             )}
             {listSection === ListSection.Claims && (
               <ClaimHistory marketsInfoData={marketsInfoData} tokensData={tokensData} shouldShowPaginationButtons />
@@ -416,7 +435,12 @@ export function SyntheticsPage(p: Props) {
             />
           )}
           {listSection === ListSection.Trades && (
-            <TradeHistory marketsInfoData={marketsInfoData} tokensData={tokensData} shouldShowPaginationButtons />
+            <TradeHistory
+              account={account}
+              marketsInfoData={marketsInfoData}
+              tokensData={tokensData}
+              shouldShowPaginationButtons
+            />
           )}
           {listSection === ListSection.Claims && (
             <ClaimHistory marketsInfoData={marketsInfoData} tokensData={tokensData} shouldShowPaginationButtons />

@@ -16,6 +16,9 @@ const MARKETS_COUNT = 100;
 export function useMarkets(chainId: number): MarketsResult {
   const { data } = useMulticall(chainId, "useMarketsData", {
     key: [],
+
+    refreshInterval: 60000,
+
     request: () => ({
       reader: {
         contractAddress: getContract(chainId, "SyntheticsReader"),

@@ -24,6 +24,7 @@ import { MarketsInfoData } from "domain/synthetics/markets";
 import { OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
 import {
   PositionInfo,
+  formatAcceptablePrice,
   formatLeverage,
   formatLiquidationPrice,
   usePositionsConstants,
@@ -45,6 +46,7 @@ import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
+  bigNumberify,
   formatAmountFree,
   formatDeltaUsd,
   formatPercentage,
@@ -61,6 +63,8 @@ import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPric
 import SlippageInput from "components/SlippageInput/SlippageInput";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 
 export type Props = {
   position?: PositionInfo;
@@ -248,7 +252,9 @@ export function PositionSeller(p: Props) {
       receiveToken,
       isTrigger: false,
       triggerPrice: undefined,
+      fixedTriggerThresholdType: undefined,
       existingPosition: position,
+      markPrice,
       nextPositionValues,
       isLong: position.isLong,
       isContractAccount: false,
@@ -276,6 +282,7 @@ export function PositionSeller(p: Props) {
     isHighPriceImpactAccepted,
     isNotEnoughReceiveTokenLiquidity,
     isSubmitting,
+    markPrice,
     minCollateralUsd,
     nextPositionValues,
     position,
@@ -392,7 +399,7 @@ export function PositionSeller(p: Props) {
               <div>
                 <ExchangeInfoRow
                   label={
-                    <Tooltip
+                    <TooltipWithPortal
                       handle={t`Allowed Slippage`}
                       position="left-top"
                       renderContent={() => {
@@ -403,8 +410,9 @@ export function PositionSeller(p: Props) {
                               page.
                               <br />
                               <br />
-                              Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if
-                              prices are volatile.
+                              Note that a low allowed slippage, e.g. less than{" "}
+                              {formatPercentage(bigNumberify(DEFAULT_SLIPPAGE_AMOUNT), { signed: false })}, may result
+                              in failed orders if prices are volatile.
                             </Trans>
                           </div>
                         );
@@ -441,9 +449,11 @@ export function PositionSeller(p: Props) {
               <ExchangeInfoRow
                 label={t`Acceptable Price`}
                 value={
-                  formatUsd(decreaseAmounts?.acceptablePrice, {
-                    displayDecimals: indexPriceDecimals,
-                  }) || "-"
+                  decreaseAmounts?.sizeDeltaUsd.gt(0)
+                    ? formatAcceptablePrice(decreaseAmounts.acceptablePrice, {
+                        displayDecimals: indexPriceDecimals,
+                      })
+                    : "-"
                 }
               />
 

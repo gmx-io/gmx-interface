@@ -1,5 +1,4 @@
 import { gql } from "@apollo/client";
-import { useWeb3React } from "@web3-react/core";
 import { getWrappedToken } from "config/tokens";
 import { MarketsInfoData } from "domain/synthetics/markets";
 import { TokensData, parseContractPrice } from "domain/synthetics/tokens";
@@ -20,14 +19,23 @@ export type TradeHistoryResult = {
 
 export function useTradeHistory(
   chainId: number,
-  p: { marketsInfoData?: MarketsInfoData; tokensData?: TokensData; pageIndex: number; pageSize: number }
+  p: {
+    account: string | null | undefined;
+    forAllAccounts?: boolean;
+    marketsInfoData?: MarketsInfoData;
+    tokensData?: TokensData;
+    pageIndex: number;
+    pageSize: number;
+  }
 ) {
-  const { pageIndex, pageSize, marketsInfoData, tokensData } = p;
-  const { account } = useWeb3React();
+  const { pageIndex, pageSize, marketsInfoData, tokensData, account, forAllAccounts } = p;
 
   const client = getSyntheticsGraphClient(chainId);
 
-  const key = chainId && client && account ? [chainId, "useTradeHistory", account, pageIndex, pageSize] : null;
+  const key =
+    chainId && client && (account || forAllAccounts)
+      ? [chainId, "useTradeHistory", account, forAllAccounts, pageIndex, pageSize]
+      : null;
 
   const { data, error } = useSWR<RawTradeAction[]>(key, {
     fetcher: async () => {
@@ -40,7 +48,7 @@ export function useTradeHistory(
             first: ${first},
             orderBy: transaction__timestamp,
             orderDirection: desc,
-            where: { account: "${account!.toLowerCase()}" }
+            ${!forAllAccounts && account ? `where: { account: "${account!.toLowerCase()}" }` : ""}
         ) {
             id
             eventName

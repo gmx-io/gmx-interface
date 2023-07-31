@@ -7,7 +7,7 @@ import { getByKey } from "lib/objects";
 import { getCappedPositionImpactUsd } from "../fees";
 import { convertToContractTokenPrices, convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens";
 import { TokenData, TokensData } from "../tokens/types";
-import { ContractMarketPrices, Market, MarketInfo, PnlFactorType } from "./types";
+import { ContractMarketPrices, Market, MarketInfo } from "./types";
 
 export function getMarketFullName(p: { longToken: Token; shortToken: Token; indexToken: Token; isSpotOnly: boolean }) {
   const { indexToken, longToken, shortToken, isSpotOnly } = p;
@@ -19,7 +19,7 @@ export function getMarketIndexName(p: { indexToken: Token; isSpotOnly: boolean }
   const { indexToken, isSpotOnly } = p;
 
   if (isSpotOnly) {
-    return `SPOT-ONLY`;
+    return `SWAP-ONLY`;
   }
 
   return `${indexToken.baseSymbol || indexToken.symbol}/USD`;
@@ -149,9 +149,8 @@ export function getCappedPoolPnl(p: {
   poolUsd: BigNumber;
   isLong: boolean;
   maximize: boolean;
-  pnlFactorType: PnlFactorType;
 }) {
-  const { marketInfo, poolUsd, isLong, pnlFactorType, maximize } = p;
+  const { marketInfo, poolUsd, isLong, maximize } = p;
 
   let poolPnl: BigNumber;
 
@@ -165,15 +164,9 @@ export function getCappedPoolPnl(p: {
     return poolPnl;
   }
 
-  let maxPnlFactor: BigNumber;
-
-  if (pnlFactorType === "FOR_TRADERS") {
-    maxPnlFactor = isLong ? marketInfo.maxPnlFactorForTradersLong : marketInfo.maxPnlFactorForTradersShort;
-  } else if (pnlFactorType === "FOR_DEPOSITS") {
-    maxPnlFactor = isLong ? marketInfo.maxPnlFactorForDepositsLong : marketInfo.maxPnlFactorForDepositsShort;
-  } else {
-    maxPnlFactor = isLong ? marketInfo.maxPnlFactorForWithdrawalsLong : marketInfo.maxPnlFactorForWithdrawalsShort;
-  }
+  const maxPnlFactor: BigNumber = isLong
+    ? marketInfo.maxPnlFactorForTradersLong
+    : marketInfo.maxPnlFactorForTradersShort;
 
   const maxPnl = applyFactor(poolUsd, maxPnlFactor);
 
@@ -277,6 +270,60 @@ export function getTotalClaimableFundingUsd(markets: MarketInfo[]) {
 
     return acc.add(usdLong || 0).add(usdShort || 0);
   }, BigNumber.from(0));
+}
+
+export function getMaxPoolUsd(marketInfo: MarketInfo, isLong: boolean) {
+  if (isLong) {
+    return convertToUsd(
+      marketInfo.maxLongPoolAmount,
+      marketInfo.longToken.decimals,
+      getMidPrice(marketInfo.longToken.prices)
+    )!;
+  } else {
+    return convertToUsd(
+      marketInfo.maxShortPoolAmount,
+      marketInfo.shortToken.decimals,
+      getMidPrice(marketInfo.shortToken.prices)
+    )!;
+  }
+}
+
+export function getDepositCollateralCapacityAmount(marketInfo: MarketInfo, isLong: boolean) {
+  const poolAmount = isLong ? marketInfo.longPoolAmount : marketInfo.shortPoolAmount;
+  const maxPoolAmount = isLong ? marketInfo.maxLongPoolAmount : marketInfo.maxShortPoolAmount;
+
+  const capacityAmount = maxPoolAmount.sub(poolAmount);
+
+  return capacityAmount.gt(0) ? capacityAmount : BigNumber.from(0);
+}
+
+export function getDepositCollateralCapacityUsd(marketInfo: MarketInfo, isLong: boolean) {
+  const poolUsd = getPoolUsdWithoutPnl(marketInfo, isLong, "midPrice");
+  const maxPoolUsd = getMaxPoolUsd(marketInfo, isLong);
+
+  const capacityUsd = maxPoolUsd.sub(poolUsd);
+
+  return capacityUsd.gt(0) ? capacityUsd : BigNumber.from(0);
+}
+
+export function getMintableMarketTokens(marketInfo: MarketInfo, marketToken: TokenData) {
+  const longDepositCapacityAmount = getDepositCollateralCapacityAmount(marketInfo, true);
+  const shortDepositCapacityAmount = getDepositCollateralCapacityAmount(marketInfo, false);
+
+  const longDepositCapacityUsd = getDepositCollateralCapacityUsd(marketInfo, true);
+  const shortDepositCapacityUsd = getDepositCollateralCapacityUsd(marketInfo, false);
+
+  const mintableUsd = longDepositCapacityUsd.add(shortDepositCapacityUsd);
+  const mintableAmount = usdToMarketTokenAmount(marketInfo, marketToken, mintableUsd);
+
+  return {
+    mintableAmount,
+    mintableUsd,
+    longDepositCapacityUsd,
+    shortDepositCapacityUsd,
+    longDepositCapacityAmount,
+    shortDepositCapacityAmount,
+  };
 }
 
 export function usdToMarketTokenAmount(marketInfo: MarketInfo, marketToken: TokenData, usdValue: BigNumber) {

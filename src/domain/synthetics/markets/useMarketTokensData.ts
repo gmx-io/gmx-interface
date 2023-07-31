@@ -123,7 +123,10 @@ export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }):
             maxPrice: maxPrice?.gt(0) ? maxPrice : expandDecimals(1, USD_DECIMALS),
           },
           totalSupply: BigNumber.from(tokenData?.totalSupply.returnValues[0]),
-          balance: BigNumber.from(tokenData?.balance?.returnValues[0]),
+          balance:
+            account && tokenData.balance?.returnValues
+              ? BigNumber.from(tokenData?.balance?.returnValues[0])
+              : undefined,
           explorerUrl: `${getExplorerUrl(chainId)}/token/${marketAddress}`,
         };
 

@@ -3,9 +3,7 @@ import DataStore from "abis/DataStore.json";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import { getContract } from "config/contracts";
 import {
-  MAX_PNL_FACTOR_FOR_DEPOSITS_KEY,
   MAX_PNL_FACTOR_FOR_TRADERS_KEY,
-  MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY,
   borrowingExponentFactorKey,
   borrowingFactorKey,
   claimableFundingAmountKey,
@@ -13,6 +11,7 @@ import {
   fundingFactorKey,
   isMarketDisabledKey,
   maxPnlFactorKey,
+  maxPoolAmountKey,
   maxPositionImpactFactorForLiquidationsKey,
   maxPositionImpactFactorKey,
   minCollateralFactorForOpenInterest,
@@ -135,6 +134,14 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
                 methodName: "getUint",
                 params: [poolAmountKey(marketAddress, market.shortTokenAddress)],
               },
+              maxLongPoolAmount: {
+                methodName: "getUint",
+                params: [maxPoolAmountKey(marketAddress, market.longTokenAddress)],
+              },
+              maxShortPoolAmount: {
+                methodName: "getUint",
+                params: [maxPoolAmountKey(marketAddress, market.shortTokenAddress)],
+              },
               longPoolAmountAdjustment: {
                 methodName: "getUint",
                 params: [poolAmountAdjustmentKey(marketAddress, market.longTokenAddress)],
@@ -203,22 +210,6 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
                 methodName: "getUint",
                 params: [maxPnlFactorKey(MAX_PNL_FACTOR_FOR_TRADERS_KEY, marketAddress, false)],
               },
-              maxPnlFactorForDepositsLong: {
-                methodName: "getUint",
-                params: [maxPnlFactorKey(MAX_PNL_FACTOR_FOR_DEPOSITS_KEY, marketAddress, true)],
-              },
-              maxPnlFactorForDepositsShort: {
-                methodName: "getUint",
-                params: [maxPnlFactorKey(MAX_PNL_FACTOR_FOR_DEPOSITS_KEY, marketAddress, false)],
-              },
-              maxPnlFactorForWithdrawalsLong: {
-                methodName: "getUint",
-                params: [maxPnlFactorKey(MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY, marketAddress, true)],
-              },
-              maxPnlFactorForWithdrawalsShort: {
-                methodName: "getUint",
-                params: [maxPnlFactorKey(MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY, marketAddress, false)],
-              },
               claimableFundingAmountLong: account
                 ? {
                     methodName: "getUint",
@@ -231,9 +222,13 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
                     params: [claimableFundingAmountKey(marketAddress, market.shortTokenAddress, account)],
                   }
                 : undefined,
-              positionFeeFactor: {
+              positionFeeFactorForPositiveImpact: {
                 methodName: "getUint",
-                params: [positionFeeFactorKey(marketAddress)],
+                params: [positionFeeFactorKey(marketAddress, true)],
+              },
+              positionFeeFactorForNegativeImpact: {
+                methodName: "getUint",
+                params: [positionFeeFactorKey(marketAddress, false)],
               },
               positionImpactFactorPositive: {
                 methodName: "getUint",
@@ -271,9 +266,13 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
                 methodName: "getUint",
                 params: [positionImpactExponentFactorKey(marketAddress)],
               },
-              swapFeeFactor: {
+              swapFeeFactorForPositiveImpact: {
                 methodName: "getUint",
-                params: [swapFeeFactorKey(marketAddress)],
+                params: [swapFeeFactorKey(marketAddress, true)],
+              },
+              swapFeeFactorForNegativeImpact: {
+                methodName: "getUint",
+                params: [swapFeeFactorKey(marketAddress, false)],
               },
               swapImpactFactorPositive: {
                 methodName: "getUint",
@@ -400,6 +399,8 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
           shortInterestInTokens,
           longPoolAmount: BigNumber.from(dataStoreValues.longPoolAmount.returnValues[0]),
           shortPoolAmount: BigNumber.from(dataStoreValues.shortPoolAmount.returnValues[0]),
+          maxLongPoolAmount: BigNumber.from(dataStoreValues.maxLongPoolAmount.returnValues[0]),
+          maxShortPoolAmount: BigNumber.from(dataStoreValues.maxShortPoolAmount.returnValues[0]),
           longPoolAmountAdjustment: BigNumber.from(dataStoreValues.longPoolAmountAdjustment.returnValues[0]),
           shortPoolAmountAdjustment: BigNumber.from(dataStoreValues.shortPoolAmountAdjustment.returnValues[0]),
           poolValueMin: BigNumber.from(poolValueInfoMin.poolValue),
@@ -426,20 +427,15 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
           pnlShortMin: BigNumber.from(poolValueInfoMin.shortPnl),
           netPnlMax: BigNumber.from(poolValueInfoMax.netPnl),
           netPnlMin: BigNumber.from(poolValueInfoMin.netPnl),
+
           maxPnlFactorForTradersLong: BigNumber.from(dataStoreValues.maxPnlFactorForTradersLong.returnValues[0]),
           maxPnlFactorForTradersShort: BigNumber.from(dataStoreValues.maxPnlFactorForTradersShort.returnValues[0]),
-          maxPnlFactorForDepositsLong: BigNumber.from(dataStoreValues.maxPnlFactorForDepositsLong.returnValues[0]),
-          maxPnlFactorForDepositsShort: BigNumber.from(dataStoreValues.maxPnlFactorForDepositsShort.returnValues[0]),
-          maxPnlFactorForWithdrawalsLong: BigNumber.from(
-            dataStoreValues.maxPnlFactorForWithdrawalsLong.returnValues[0]
-          ),
-          maxPnlFactorForWithdrawalsShort: BigNumber.from(
-            dataStoreValues.maxPnlFactorForWithdrawalsShort.returnValues[0]
-          ),
+
           minCollateralFactor: BigNumber.from(dataStoreValues.minCollateralFactor.returnValues[0]),
           minCollateralFactorForOpenInterestLong: BigNumber.from(
             dataStoreValues.minCollateralFactorForOpenInterestLong.returnValues[0]
           ),
+
           minCollateralFactorForOpenInterestShort: BigNumber.from(
             dataStoreValues.minCollateralFactorForOpenInterestShort.returnValues[0]
           ),
@@ -452,7 +448,12 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
             ? BigNumber.from(dataStoreValues.claimableFundingAmountShort?.returnValues[0])
             : undefined,
 
-          positionFeeFactor: BigNumber.from(dataStoreValues.positionFeeFactor.returnValues[0]),
+          positionFeeFactorForPositiveImpact: BigNumber.from(
+            dataStoreValues.positionFeeFactorForPositiveImpact.returnValues[0]
+          ),
+          positionFeeFactorForNegativeImpact: BigNumber.from(
+            dataStoreValues.positionFeeFactorForNegativeImpact.returnValues[0]
+          ),
           positionImpactFactorPositive: BigNumber.from(dataStoreValues.positionImpactFactorPositive.returnValues[0]),
           positionImpactFactorNegative: BigNumber.from(dataStoreValues.positionImpactFactorNegative.returnValues[0]),
           maxPositionImpactFactorPositive: BigNumber.from(
@@ -465,7 +466,12 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
             dataStoreValues.maxPositionImpactFactorForLiquidations.returnValues[0]
           ),
           positionImpactExponentFactor: BigNumber.from(dataStoreValues.positionImpactExponentFactor.returnValues[0]),
-          swapFeeFactor: BigNumber.from(dataStoreValues.swapFeeFactor.returnValues[0]),
+          swapFeeFactorForPositiveImpact: BigNumber.from(
+            dataStoreValues.swapFeeFactorForPositiveImpact.returnValues[0]
+          ),
+          swapFeeFactorForNegativeImpact: BigNumber.from(
+            dataStoreValues.swapFeeFactorForNegativeImpact.returnValues[0]
+          ),
           swapImpactFactorPositive: BigNumber.from(dataStoreValues.swapImpactFactorPositive.returnValues[0]),
           swapImpactFactorNegative: BigNumber.from(dataStoreValues.swapImpactFactorNegative.returnValues[0]),
           swapImpactExponentFactor: BigNumber.from(dataStoreValues.swapImpactExponentFactor.returnValues[0]),

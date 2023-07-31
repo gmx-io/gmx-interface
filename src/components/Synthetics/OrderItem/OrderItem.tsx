@@ -5,6 +5,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   OrderInfo,
+  OrderType,
   PositionOrderInfo,
   SwapOrderInfo,
   isDecreaseOrderType,
@@ -184,6 +185,7 @@ export function OrderItem(p: Props) {
         <>
           {!p.hideActions ? (
             <Tooltip
+              position="right-bottom"
               handle={swapRatioText}
               renderContent={() =>
                 t`You will receive at least ${toAmountText} if this order is executed. This price is being updated in real time based on Swap Fees and Price Impact.`
@@ -203,13 +205,18 @@ export function OrderItem(p: Props) {
           handle={`${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.triggerPrice, {
             displayDecimals: priceDecimals,
           })}`}
+          position="right-bottom"
           renderContent={() => (
             <>
               <StatsTooltipRow
                 label={t`Acceptable Price`}
-                value={`${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.acceptablePrice, {
-                  displayDecimals: priceDecimals,
-                })}`}
+                value={
+                  positionOrder.orderType === OrderType.StopLossDecrease
+                    ? "NA"
+                    : `${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.acceptablePrice, {
+                        displayDecimals: priceDecimals,
+                      })}`
+                }
                 showDollar={false}
               />
             </>
@@ -309,13 +316,6 @@ export function OrderItem(p: Props) {
             <div className="App-card-row">
               <div className="label">
                 <Trans>Trigger Price</Trans>
-              </div>
-              <div>{renderTriggerPrice()}</div>
-            </div>
-
-            <div className="App-card-row">
-              <div className="label">
-                <Trans>Acceptable Price</Trans>
               </div>
               <div>{renderTriggerPrice()}</div>
             </div>

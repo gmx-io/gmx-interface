@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
 import Slider, { SliderTooltip, Handle } from "rc-slider";
 import "rc-slider/assets/index.css";
 import "./LeverageSlider.scss";

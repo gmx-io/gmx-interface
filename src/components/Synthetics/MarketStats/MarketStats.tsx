@@ -1,14 +1,20 @@
 import { Trans, t } from "@lingui/macro";
 import { CardRow } from "components/CardRow/CardRow";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getIcon } from "config/icons";
-import { MarketInfo, MarketTokensAPRData, getPoolUsdWithoutPnl } from "domain/synthetics/markets";
+import {
+  MarketInfo,
+  MarketTokensAPRData,
+  getMintableMarketTokens,
+  getPoolUsdWithoutPnl,
+} from "domain/synthetics/markets";
 import { TokenData, convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { formatAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { formatAmount, formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import "./MarketStats.scss";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
+import "./MarketStats.scss";
 
 type Props = {
   marketInfo?: MarketInfo;
@@ -26,6 +32,8 @@ export function MarketStats(p: Props) {
 
   const marketTotalSupply = marketToken?.totalSupply;
   const marketTotalSupplyUsd = convertToUsd(marketTotalSupply, marketToken?.decimals, marketPrice);
+
+  const mintableInfo = marketInfo && marketToken ? getMintableMarketTokens(marketInfo, marketToken) : undefined;
 
   const { longToken, shortToken, longPoolAmount, shortPoolAmount } = marketInfo || {};
 
@@ -86,6 +94,92 @@ export function MarketStats(p: Props) {
             marketTotalSupply && marketTotalSupplyUsd
               ? formatTokenAmountWithUsd(marketTotalSupply, marketTotalSupplyUsd, "GM", marketToken.decimals)
               : "..."
+          }
+        />
+
+        <CardRow
+          label={t`Mintable`}
+          value={
+            mintableInfo && marketTotalSupplyUsd && marketToken ? (
+              <Tooltip
+                handle={formatTokenAmountWithUsd(
+                  mintableInfo.mintableAmount,
+                  mintableInfo.mintableUsd,
+                  "GM",
+                  marketToken.decimals
+                )}
+                position="right-bottom"
+                renderContent={() => {
+                  return (
+                    <div>
+                      {marketInfo?.isSameCollaterals ? (
+                        <Trans>
+                          {marketInfo?.longToken.symbol} can be used to mint GM for this market up to the specified
+                          minting caps.
+                        </Trans>
+                      ) : (
+                        <Trans>
+                          {marketInfo?.longToken.symbol} and {marketInfo?.shortToken.symbol} can be used to mint GM for
+                          this market up to the specified minting caps.
+                        </Trans>
+                      )}
+
+                      <br />
+                      <br />
+
+                      <StatsTooltipRow
+                        label={t`Max ${marketInfo?.longToken.symbol}`}
+                        value={[
+                          formatTokenAmount(
+                            mintableInfo?.longDepositCapacityAmount,
+                            marketInfo?.longToken.decimals,
+                            marketInfo?.longToken.symbol
+                          ),
+                          `(${formatTokenAmount(marketInfo?.longPoolAmount, marketInfo?.longToken.decimals, undefined, {
+                            displayDecimals: 0,
+                          })} / ${formatTokenAmount(
+                            marketInfo?.maxLongPoolAmount,
+                            marketInfo?.longToken.decimals,
+                            marketInfo?.longToken.symbol,
+                            { displayDecimals: 0 }
+                          )})`,
+                        ]}
+                        showDollar={false}
+                      />
+
+                      <br />
+
+                      {!marketInfo?.isSameCollaterals && (
+                        <StatsTooltipRow
+                          label={t`Max ${marketInfo?.shortToken.symbol}`}
+                          value={[
+                            formatTokenAmount(
+                              mintableInfo?.shortDepositCapacityAmount,
+                              marketInfo?.shortToken.decimals,
+                              marketInfo?.shortToken.symbol
+                            ),
+                            `(${formatTokenAmount(
+                              marketInfo?.shortPoolAmount,
+                              marketInfo?.shortToken.decimals,
+                              undefined,
+                              { displayDecimals: 0 }
+                            )} / ${formatTokenAmount(
+                              marketInfo?.maxShortPoolAmount,
+                              marketInfo?.shortToken.decimals,
+                              marketInfo?.shortToken.symbol,
+                              { displayDecimals: 0 }
+                            )})`,
+                          ]}
+                          showDollar={false}
+                        />
+                      )}
+                    </div>
+                  );
+                }}
+              />
+            ) : (
+              "..."
+            )
           }
         />
 

@@ -402,14 +402,17 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       }
 
       function handleEventLog(sender, eventName, eventNameHash, eventData, txnOpts) {
+        // console.log("handleEventLog", eventName);
         eventLogHandlers.current[eventName]?.(parseEventLogData(eventData), txnOpts);
       }
 
       function handleEventLog1(sender, eventName, eventNameHash, topic1, eventData, txnOpts) {
+        // console.log("handleEventLog1", eventName);
         eventLogHandlers.current[eventName]?.(parseEventLogData(eventData), txnOpts);
       }
 
       function handleEventLog2(msgSender, eventName, eventNameHash, topic1, topic2, eventData, txnOpts) {
+        // console.log("handleEventLog2", eventName);
         eventLogHandlers.current[eventName]?.(parseEventLogData(eventData), txnOpts);
       }
 
@@ -454,7 +457,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             pendingOrderData={data}
             marketsInfoData={marketsInfoData}
             tokensData={tokensData}
-            toastId={toastId}
+            toastTimestamp={toastId}
           />,
           {
             autoClose: false,
@@ -470,7 +473,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             pendingDepositData={data}
             marketsInfoData={marketsInfoData}
             tokensData={tokensData}
-            toastId={toastId}
+            toastTimestamp={toastId}
           />,
           {
             autoClose: false,
@@ -486,7 +489,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             pendingWithdrawalData={data}
             marketsInfoData={marketsInfoData}
             tokensData={tokensData}
-            toastId={toastId}
+            toastTimestamp={toastId}
           />,
           {
             autoClose: false,

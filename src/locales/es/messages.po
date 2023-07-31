@@ -29,10 +29,6 @@ msgstr "06 Ene 2022"
 msgid "24h Volume"
 msgstr "24h Volumen"
 
-#: src/components/Exchange/PositionSeller.js
-msgid "<0/>Profit price: {0} ${1}. This rule applies for the next {2}, until {3}."
-msgstr ""
-
 #: src/App/App.js
 msgid "<0>Install Coinbase Wallet</0> to start using GMX."
 msgstr ""
@@ -82,7 +78,7 @@ msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<
 msgstr "<0>Esto retirará y desreservará todos los tokens y pausará la adquisición.<1/><2/>Los tokens de esGMX que han sido convertidos a GMX permanecerán como tokens de GMX.<3/><4/>Para reclamar tokens de GMX sin retirarlos, utilice el botón \"Reclamar\" bajo la sección de Recompensas Totales.<5/><6/></0>"
 
 #: src/pages/Dashboard/DashboardV2.js
-msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>Other websites may show a higher value as they add positions' collaterals to the GLP pool.</1>"
+msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>This value may be higher on other websites due to the collateral of positions being included in the calculation.</1>"
 msgstr ""
 
 #: src/lib/contracts/transactionErrors.tsx
@@ -95,6 +91,10 @@ msgid "<0>{0} is required for collateral.</0><1>Short amount for {1} with {2} ex
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
+msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} Available Liquidity. Reduce the \"Pay\" size, or use {4} as the \"Pay\" token to use it for collateral.</1><2>You can buy {5} on 1inch.</2>"
+msgstr ""
+
+#: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} acceptable amount. Reduce the \"Pay\" size, or use {4} as the \"Pay\" token to use it for collateral.</1><2>You can buy {5} on 1inch.</2>"
 msgstr ""
@@ -104,12 +104,8 @@ msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exce
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
-msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} available liquidity. Reduce the \"Pay\" size, or use {4} as the \"Pay\" token to use it for collateral.</1><2>You can buy {5} on 1inch.</2>"
-msgstr ""
-
-#: src/components/Exchange/SwapBox.js
 msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
-msgstr ""
+msgstr "Se registra el valor en USD de tu {0} garantía en el momento que la posición se abre."
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/GmList/GmList.tsx
@@ -171,7 +167,6 @@ msgstr "Acepta que las órdenes no tienen garantía de ejecución y que las órd
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -189,6 +184,7 @@ msgstr ""
 
 #: src/pages/Actions/Actions.js
 #: src/pages/OrdersOverview/OrdersOverview.js
+#: src/pages/SyntheticsActions/SyntheticsActions.tsx
 msgid "Account"
 msgstr "Cuenta"
 
@@ -214,6 +210,7 @@ msgid "Acknowledge high Price Impact"
 msgstr ""
 
 #: src/pages/Actions/Actions.js
+#: src/pages/SyntheticsActions/SyntheticsActions.tsx
 msgid "Actions"
 msgstr "Acciones"
 
@@ -265,11 +262,11 @@ msgstr "Tras reclamar, los tokens esGMX serán enviados a su cuenta en la red se
 
 #: src/components/ModalViews/RedirectModal.js
 msgid "Agree"
-msgstr "Aceptar<<<<<<< HEAD"
+msgstr "Aceptar"
 
 #: src/components/ApproveTokenButton/ApproveTokenButton.tsx
 msgid "Allow {0} to be spent"
-msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
+msgstr ""
 
 #: src/App/App.js
 #: src/components/Exchange/ConfirmationBox.js
@@ -298,7 +295,6 @@ msgstr "Cantidad de traders que ha referido."
 
 #: src/components/Exchange/PositionEditor.js
 #: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Amount should be greater than zero"
 msgstr ""
 
@@ -308,15 +304,15 @@ msgstr "Cantidad a reclamar"
 
 #: src/pages/Home/Home.js
 msgid "An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from temporary wicks."
-msgstr "Un conjunto de fuentes de precios de alta calidad determinan cuando se producen las liquidaciones. Esto mantiene las posiciones a salvo de altibajos temporales.<<<<<<< HEAD"
+msgstr "Un conjunto de fuentes de precios de alta calidad determinan cuando se producen las liquidaciones. Esto mantiene las posiciones a salvo de altibajos temporales."
 
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "App"
-msgstr "Aplicación>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
+msgstr "Aplicación"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "App disabled, pending {0} upgrade"
-msgstr "======="
+msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval failed"
@@ -406,6 +402,11 @@ msgstr "Liquidez Disponible"
 msgid "Available amount to deposit into GLP."
 msgstr "Cantidad disponible para depositar en GLP."
 
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "Available amount to deposit into the specific GM pool."
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
@@ -413,7 +414,7 @@ msgstr "Cantidad disponible para retirar de GLP. Fondos no utilizados por posici
 
 #: src/pages/Home/Home.js
 msgid "Available on your preferred network"
-msgstr "Disponible en su red preferida<<<<<<< HEAD"
+msgstr "Disponible en su red preferida"
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
@@ -481,6 +482,7 @@ msgstr ""
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "Buy"
 msgstr "Comprar"
 
@@ -496,6 +498,10 @@ msgstr ""
 msgid "Buy ETH directly on Arbitrum or transfer it there."
 msgstr ""
 
+#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+msgid "Buy Fee"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -505,12 +511,12 @@ msgstr "Comprar GLP"
 
 #: src/pages/Buy/Buy.js
 msgid "Buy GLP or GMX"
-msgstr "<<<<<<< HEAD"
+msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Buy GM"
-msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Buy GMX"
@@ -580,6 +586,18 @@ msgstr ""
 msgid "Buy or Transfer ETH to Arbitrum"
 msgstr ""
 
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Buy order cancelled"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Buy order executed"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Buy request sent"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 msgid "Buy submitted."
 msgstr "Compra enviada."
@@ -596,6 +614,14 @@ msgstr ""
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "Buy {swapTokenSymbol} on 1inch"
 msgstr "Comprar {swapTokenSymbol} en 1inch"
+
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+msgid "Buying GM..."
+msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Buying {indexName} with {tokensText}"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Buying..."
@@ -812,11 +838,11 @@ msgstr "Cerrar al precio de ejecución"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close without profit"
-msgstr "<<<<<<< HEAD"
+msgstr ""
 
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Close {0} {1}"
-msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close {longOrShortText} {0}"
@@ -885,11 +911,11 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Collateral is not enough to cover pending Fees. Please uncheck \"Keep Leverage\" to pay the Fees with the realized PnL."
-msgstr "<<<<<<< HEAD"
+msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "Collateral value may differ due to different Price Impact at the time of execution."
-msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Community Projects"
@@ -969,11 +995,8 @@ msgid "Confirm Trigger Order"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-msgid "Confirm {operationText}"
-msgstr ""
-
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-msgid "Confirm {operationText} {0} GM"
+msgid "Confirm {operationText}"
 msgstr ""
 
 #: src/components/Header/AppHeaderUser.tsx
@@ -1095,7 +1118,7 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Create {0} Order"
-msgstr ""
+msgstr "Crear {0} Orden"
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Created At"
@@ -1103,11 +1126,7 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Created limit order for {0} {1}: {2} USD!"
-msgstr ""
-
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-msgid "Creating Deposit..."
-msgstr ""
+msgstr "Orden límite creada para {0} {1}: {2} USD!"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
@@ -1116,10 +1135,6 @@ msgstr ""
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Creating Order..."
 msgstr "Creando Order..."
-
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-msgid "Creating Withdrawal..."
-msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Creating..."
@@ -1152,11 +1167,11 @@ msgstr "Actual peso"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Current {0} long"
-msgstr ""
+msgstr "Actual {0} a largo "
 
 #: src/components/Exchange/SwapBox.js
 msgid "Current {0} shorts"
-msgstr ""
+msgstr "Actual {0} a corto "
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "Current {0} {longShortText}"
@@ -1264,7 +1279,6 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1279,19 +1293,11 @@ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Deposit amount is insufficient to bring leverage below the max allowed leverage of 100x"
-msgstr "<<<<<<< HEAD"
-
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-msgid "Deposit cancelled"
-msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Deposit disabled, pending {0} upgrade"
 msgstr "Depósitos desactivados, actualización {0} pendiente"
-
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-msgid "Deposit executed"
-msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Deposit failed!"
@@ -1303,11 +1309,7 @@ msgstr "Depósito fallido."
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Deposit not enough to cover fees"
-msgstr "<<<<<<< HEAD"
-
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-msgid "Deposit request sent"
-msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Deposit submitted!"
@@ -1339,10 +1341,6 @@ msgstr "¡Depositado!"
 
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 msgid "Depositing {0} to {positionText}"
-msgstr ""
-
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-msgid "Depositing {tokensText} to {0}"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
@@ -1611,6 +1609,12 @@ msgstr "Introduce el nuevo Precio"
 msgid "Entry Price"
 msgstr "Precio de Entrada"
 
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "Error submitting order"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Escrowed GMX"
@@ -1636,12 +1640,6 @@ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
-msgstr ""
-
-#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
-#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
-#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
-msgid "Execute order simulation failed."
 msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
@@ -1704,7 +1702,7 @@ msgstr "Las comisiones son altas para intercambiar de {0} a {1}. <0/>{2} se requ
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Fees are higher than Collateral"
-msgstr "<<<<<<< HEAD"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -1714,7 +1712,7 @@ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Fees exceed amount"
-msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Fees generated by GMX"
@@ -1741,7 +1739,7 @@ msgstr "Las comisiones se mostrarán una vez que haya introducido una cantidad e
 
 #: src/components/Exchange/SwapBox.js
 msgid "Fetching token info..."
-msgstr ""
+msgstr "Obteniendo información de los tokens..."
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Financial reports and protocol analytics"
@@ -1773,11 +1771,11 @@ msgid "Freeze"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-msgid "Fulfilling Deposit request"
+msgid "Fulfilling Buy request"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-msgid "Fulfilling Withdrawal request"
+msgid "Fulfilling Sell request"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
@@ -1846,9 +1844,6 @@ msgstr "Venta de GLP desactivada, actualización {0} pendiente"
 
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
-msgid "GM ({0})"
-msgstr ""
-
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "GM Pools"
@@ -1974,11 +1969,11 @@ msgstr "Gobernanza"
 
 #: src/components/Exchange/SwapBox.js
 msgid "High Slippage, Swap Anyway"
-msgstr ""
+msgstr "Alto Deslizamiento, Intercambiar de todos modos"
 
 #: src/components/Exchange/SwapBox.js
 msgid "High USDG Slippage, Long Anyway"
-msgstr ""
+msgstr "Alto Deslizamiento de USDG, ir Largo de todas formas"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -1991,7 +1986,7 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "If you have an existing position, the position will be closed at {0} USD.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
-msgstr ""
+msgstr "Si tienes una posicion existente, la posicion se cerrará a {0} USD.<0/><1/>Este precio de salida cambiará con el precio del activo.<2/><3/><4>Más Info</4>"
 
 #: src/components/Exchange/PositionShare.js
 msgid "Image generation error, please refresh and try again."
@@ -2017,7 +2012,7 @@ msgstr "Red Incorrecta"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Incorrect network"
-msgstr ""
+msgstr "Red incorrecta"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
@@ -2128,7 +2123,7 @@ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient receive token liquidity"
-msgstr "Insuficiente liquidez del token a recibir"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Insufficient staked tokens"
@@ -2142,13 +2137,14 @@ msgstr "Insuficientes tokens stakeados"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} balance"
-msgstr "Balance {0} insuficiente<<<<<<< HEAD"
+msgstr "Balance {0} insuficiente"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} liquidity"
-msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
@@ -2170,11 +2166,15 @@ msgstr "Dirección del Receptor Inválida"
 
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Invalid Transfer Addresses: Please check the url."
-msgstr "<<<<<<< HEAD"
+msgstr ""
 
 #: src/components/Synthetics/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
 msgid "Invalid acceptable Price Impact value"
-msgstr "======="
+msgstr ""
+
+#: src/App/App.js
+msgid "Invalid execution fee buffer value"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -2216,13 +2216,13 @@ msgstr "Trabajos"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Keep Leverage is not possible"
-msgstr "<<<<<<< HEAD"
+msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Keep leverage at {0}"
-msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Keep leverage at {0}x"
@@ -2254,7 +2254,7 @@ msgstr "Deja al menos {0} ETH para el gas"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "Leave at least {0} {1} for gas"
-msgstr ""
+msgstr "Deja al menos {0} {1} para el gas"
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Leftover Collateral not enough to cover fees"
@@ -2262,11 +2262,11 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Leftover collateral below 5 USD"
-msgstr "<<<<<<< HEAD"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Leftover collateral below {0} USD"
-msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Leftover position below 10 USD"
@@ -2289,7 +2289,7 @@ msgstr "Apalancamiento"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Leverage disabled, pending {0} upgrade"
-msgstr ""
+msgstr "Apalancamiento desactivado, actualización {0} pendiente"
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Leverage slider"
@@ -2333,7 +2333,7 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Limit order creation failed."
-msgstr ""
+msgstr "Falló la creación de la orden límite."
 
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 msgid "Limit order for"
@@ -2341,7 +2341,7 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Limit order submitted!"
-msgstr ""
+msgstr "¡Orden limite enviada!"
 
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
@@ -2412,7 +2412,7 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "Liquidity data not loaded"
-msgstr ""
+msgstr "Datos de liquidez no cargados"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -2494,7 +2494,7 @@ msgstr "Posiciones largas"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Long {0}"
-msgstr ""
+msgstr "Largo {0}"
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Longing..."
@@ -2506,11 +2506,11 @@ msgstr "Parece que no tienes un código de referido para compartir. <0/> ¡Crea 
 
 #: src/pages/Actions/Actions.js
 msgid "Loss"
-msgstr "Pérdida<<<<<<< HEAD"
+msgstr "Pérdida"
 
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "MARKET"
-msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
+msgstr ""
 
 #: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/Exchange/PositionEditor.js
@@ -2523,6 +2523,10 @@ msgstr "MÁX"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "MEV Optimizer"
 msgstr "Optimizador de MEV"
+
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "MINTABLE"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -2619,6 +2623,14 @@ msgstr "Capacidad Máxima para {0} Alcanzada"
 msgid "Max Execution Fee"
 msgstr ""
 
+#: src/App/App.js
+msgid "Max Execution Fee Buffer"
+msgstr ""
+
+#: src/App/App.js
+msgid "Max Execution Fee buffer below {0}% may result in failed orders."
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Max Leverage without PnL: 100x"
 msgstr ""
@@ -2643,6 +2655,10 @@ msgstr "Superado el importe máximo"
 #: src/components/Exchange/PositionSeller.js
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max close amount exceeded"
+msgstr ""
+
+#: src/App/App.js
+msgid "Max execution fee buffer precision is 0.01%"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -2674,10 +2690,20 @@ msgstr "Capacidad máxima de reserva alcanzada para {0}<0/><1/>Por favor, acuñe
 msgid "Max slippage precision is 0.01%"
 msgstr "La precisión máxima del deslizamiento es de 0.01%"
 
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+msgid "Max {0}"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Max {0} Capacity"
 msgstr "Capacidad {0} máxima"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max {0} amount exceeded"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -2686,7 +2712,7 @@ msgstr "Máx. {0} dentro"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Max {0} long capacity"
-msgstr ""
+msgstr "Capacidad Máx. {0} largos"
 
 #: src/components/Exchange/SwapBox.js
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2701,7 +2727,7 @@ msgstr "Máx. {0} fuera"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Max {0} short capacity"
-msgstr ""
+msgstr "Capacidad Máx. {0} cortos"
 
 #: src/components/Exchange/SwapBox.js
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2780,7 +2806,7 @@ msgstr "Apalancamiento Mín.: 1.1x"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Min order: 10 USD"
-msgstr ""
+msgstr "Orden Mín. 10 USD"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min order: {0}"
@@ -2804,6 +2830,11 @@ msgstr "Min. a Recibir"
 #: src/components/Exchange/OrderEditor.js
 msgid "Minimum received"
 msgstr "Mínimo recibido"
+
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+msgid "Mintable"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -2832,11 +2863,11 @@ msgstr "NFT ID"
 
 #: src/pages/NftWallet/NftWallet.js
 msgid "NFT Wallet"
-msgstr "Monedero NFT<<<<<<< HEAD"
+msgstr "Monedero NFT"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Negative Funding Fees are settled against the collateral automatically and will influence the liquidation price. Positive Funding Fees can be claimed under Claimable Funding after realizing any action on the position."
-msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Neither Collateral nor realized PnL is enough to cover pending Fees. Please close a larger position amount."
@@ -2950,7 +2981,7 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Open a position"
-msgstr ""
+msgstr "Abre una posición"
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open in Coingecko"
@@ -3015,7 +3046,7 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Order creation failed."
-msgstr "<<<<<<< HEAD"
+msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 msgid "Order executed"
@@ -3023,7 +3054,7 @@ msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 msgid "Order request sent"
-msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
+msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Order size exceeds position"
@@ -3058,6 +3089,7 @@ msgstr "¡Orden actualizada!"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
+#: src/pages/SyntheticsActions/SyntheticsActions.tsx
 msgid "Orders"
 msgstr "Órdenes"
 
@@ -3146,7 +3178,7 @@ msgstr "Pagar"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "Pay Amount"
-msgstr "Importe a pagar<<<<<<< HEAD"
+msgstr "Importe a pagar"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Pay:"
@@ -3155,7 +3187,7 @@ msgstr ""
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Pending {0} approval"
-msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Platform, GLP and GM tokens."
@@ -3234,6 +3266,7 @@ msgstr ""
 
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
+#: src/pages/SyntheticsActions/SyntheticsActions.tsx
 msgid "Positions"
 msgstr "Posiciones"
 
@@ -3288,6 +3321,7 @@ msgid "Price"
 msgstr "Precio"
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
@@ -3316,6 +3350,7 @@ msgstr "Precio superior al de liquidación"
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Price above Mark Price"
 msgstr "Precio superior al Precio de Referencia"
 
@@ -3333,6 +3368,7 @@ msgstr "Precio inferior al de liquidación"
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Price below Mark Price"
@@ -3364,10 +3400,6 @@ msgstr "Precio en Avalanche"
 msgid "Profit"
 msgstr "Ganancia"
 
-#: src/components/Exchange/PositionSeller.js
-msgid "Profit price: {0} ${1}. This rule applies for the next {2}, until {3}."
-msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
 msgstr ""
@@ -3394,11 +3426,11 @@ msgid "Protocol risk explorer and stats"
 msgstr ""
 
 #: src/pages/BuyGlp/BuyGlp.js
-msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
-msgstr "Comprar <0>GLP tokens</0> para ganar {nativeTokenSymbol} recompensas de intercambios y operaciones con apalancamiento."
+msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverage trading."
+msgstr ""
 
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-msgid "Purchase <0>GM Tokens.</0>"
+msgid "Purchase <0>GM Tokens</0> to earn fees from swaps and leverage trading."
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
@@ -3408,7 +3440,7 @@ msgstr "Comprar Seguro"
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Read more"
-msgstr "Leer más<<<<<<< HEAD"
+msgstr "Leer más"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Realized PnL insufficient for Fees"
@@ -3489,10 +3521,6 @@ msgstr "Tiempo de redención aún no alcanzado"
 #: src/pages/Home/Home.js
 msgid "Reduce Liquidation Risks"
 msgstr "Reducir Riesgos de Liquidación"
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Reducing the position at the current price will forfeit a <0>pending profit</0> of {deltaStr}. <1/>"
-msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Code"
@@ -3579,7 +3607,7 @@ msgstr "Solicitar depósito de {0} {1} en {2} {longOrShortText}."
 
 #: src/components/Exchange/SwapBox.js
 msgid "Requested increase of {tokenSymbol} {longOrShortText} by {0} USD."
-msgstr ""
+msgstr "Solicitar incremento de {tokenSymbol} {longOrShortText} en {0} USD."
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Requested withdrawal of {0} USD from {1} {longOrShortText}."
@@ -3694,7 +3722,12 @@ msgstr "No se admite la autotransferencia"
 
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "Sell"
+msgstr ""
+
+#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+msgid "Sell Fee"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -3719,9 +3752,29 @@ msgstr "Venta fallida."
 msgid "Sell for {0}"
 msgstr "Vender por {0}"
 
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Sell order cancelled"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Sell order executed"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Sell request sent"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 msgid "Sell submitted!"
 msgstr "¡Venta enviada!"
+
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+msgid "Selling GM..."
+msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Selling {indexName}"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Selling..."
@@ -3736,11 +3789,11 @@ msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr "El remitente ha retirado todos los tokens del Cajas de Adquisición GMX"
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-msgid "Sending Deposit request"
+msgid "Sending Buy request"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-msgid "Sending Withdrawal request"
+msgid "Sending Sell request"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
@@ -3827,7 +3880,7 @@ msgstr "Posiciones en Corto"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Short {0}"
-msgstr ""
+msgstr "Corto {0}"
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Shorting..."
@@ -4010,7 +4063,6 @@ msgid "Swap"
 msgstr "Intercambiar"
 
 #: src/components/Exchange/FeesTooltip.tsx
-#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 msgid "Swap Fee"
 msgstr ""
 
@@ -4020,17 +4072,16 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Swap Order created!"
-msgstr ""
+msgstr "¡Orden de Intercambio creada!"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Swap Order creation failed."
-msgstr ""
+msgstr "Falló la creación de la Orden de Intercambio."
 
 #: src/components/Exchange/SwapBox.js
 msgid "Swap Order submitted!"
-msgstr ""
+msgstr "¡Orden de Intercambio enviada!"
 
-#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap Price Impact"
@@ -4045,7 +4096,7 @@ msgid "Swap active: {0}, executed: {1}, cancelled: {2}"
 msgstr "Intercambio activo: {0}, ejecutado: {1}, cancelado: {2}"
 
 #: src/components/Exchange/SwapBox.js
-msgid "Swap amount exceeds available liquidity."
+msgid "Swap amount exceeds Available Liquidity."
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
@@ -4070,7 +4121,7 @@ msgstr "Intercambiar en 1inch"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Swap submitted!"
-msgstr ""
+msgstr "¡Intercambio Enviado!"
 
 #: src/components/Exchange/SwapBox.js
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
@@ -4092,7 +4143,7 @@ msgstr "Intercambiar {0} en 1inch"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Swap {0} submitted!"
-msgstr ""
+msgstr "¡Intercambio {0} enviado!"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap {0} to {1}"
@@ -4123,7 +4174,7 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "Swapped {0} {1} for {2} {3}!"
-msgstr ""
+msgstr "Intercambiar {0} {1} por {2} {3}!"
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Swapping..."
@@ -4131,7 +4182,7 @@ msgstr "Intercambiando..."
 
 #: src/components/Exchange/SwapBox.js
 msgid "Swaps disabled, pending {0} upgrade"
-msgstr ""
+msgstr "Intercambios desactivados, actualización {0} pendiente"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
@@ -4145,7 +4196,7 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Take-profit and stop-loss orders can be set after opening a position. <0/><1/>There will be a \"Close\" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>."
-msgstr ""
+msgstr "Las órdenes de take-profit y stop-loss se pueden poner después de abrir una posición. <0/><1/>Habrá un botón de \"Cerrar\" en cada fila de posiciones, hacer clic mostrará la opción para establecer las órdenes de activación. <2/><3/>Para capturas de pantalla y más información, por favor mira los <4>docs</4>."
 
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -4201,13 +4252,17 @@ msgstr "El APR aumentado es de sus Puntos Multiplicadores stakeados."
 msgid "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
 msgstr "El protocolo Gambit se encuentra en beta, por favor lea los <0>detalles de staking</0>antes de participar."
 
+#: src/App/App.js
+msgid "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed."
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
 msgstr "La dirección del token esGMX (IOU) es {esGmxIouAddress}."
 
 #: src/components/Exchange/SwapBox.js
 msgid "The borrow fee is calculated as (assets borrowed) / (total assets in pool) * 0.01% per hour."
-msgstr ""
+msgstr "La tasa de préstamo es calculada como (activos prestados) / (total de activos en la reserva) * 0.01% por hora."
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "The esGMX (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."
@@ -4247,7 +4302,7 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
-msgstr ""
+msgstr "La posición se abrirá a {0} USD con un deslizamiento máximo de {1}%.<0/><1/>La cantidad de deslizamiento se puede configurar desde Ajustes, que se encuentra haciendo clic en tu dirección en la esquina superior derecha de la página después de conectar tu monedero.<2/><3/><4>Más Info</4>"
 
 #: src/components/Exchange/OrdersList.js
 msgid "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
@@ -4271,11 +4326,11 @@ msgstr "La página web es una instancia desplegada y mantenida del código abier
 
 #: src/components/Exchange/SwapBox.js
 msgid "There are more longs than shorts, borrow fees for shorting is currently zero"
-msgstr ""
+msgstr "Hay más largos que cortos, la tasa de préstamo para entrar a corto es cero en estos momentos"
 
 #: src/components/Exchange/SwapBox.js
 msgid "There are more shorts than longs, borrow fees for longing is currently zero"
-msgstr ""
+msgstr "Hay más cortos que largos, la tasa de préstamo para entrar a largo es cero en estos momentos"
 
 #: src/domain/tokens/approveTokens.tsx
 #: src/lib/contracts/transactionErrors.tsx
@@ -4305,10 +4360,6 @@ msgstr "Este código ya ha sido cogido por alguien más en {0}, no recibirás re
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
 msgstr "Este código no está registrado en {0}, por lo que no recibirás reembolsos ahí.<0/><1/>Cambia de red para crear este código en {1}."
-
-#: src/components/Exchange/PositionSeller.js
-msgid "This order will forfeit a <0>profit</0> of {deltaStr}. <1/>"
-msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "This position was liquidated as the max leverage of 100x was exceeded."
@@ -4455,7 +4506,7 @@ msgstr "Opere en GMX y gane <0>$250.000</0> en premios! Activo hasta el 30 de No
 
 #: src/components/Common/SEO.js
 msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet on Arbitrum and Avalanche."
-msgstr "<<<<<<< HEAD"
+msgstr ""
 
 #: src/pages/Referrals/Referrals.tsx
 msgid "Traders"
@@ -4586,11 +4637,11 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Trigger order disabled, pending {0} upgrade"
-msgstr "<<<<<<< HEAD"
+msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 msgid "Trigger order for"
-msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right"
@@ -4627,7 +4678,7 @@ msgid "UTILIZATION"
 msgstr "UTILIZACIÓN"
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-msgid "Unknown deposit"
+msgid "Unknown buy GM order"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
@@ -4635,7 +4686,7 @@ msgid "Unknown order"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-msgid "Unknown withdrawal"
+msgid "Unknown sell GM order"
 msgstr ""
 
 #: src/pages/Stake/StakeV1.js
@@ -4817,6 +4868,10 @@ msgstr ""
 msgid "V2 doesn't currently support this network"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
+msgid "V2 is newly live, and liquidity may be low initially."
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 msgid "Vault Capacity"
 msgstr "Capacidad del Baúl"
@@ -4971,7 +5026,7 @@ msgstr "Peso"
 
 #: src/components/Exchange/SwapBox.js
 msgid "When closing the position, you can select which token you would like to receive the profits in."
-msgstr ""
+msgstr "Al cerrar la posición, puedes seleccionar en que token deseas recibir las ganancias."
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -5007,33 +5062,13 @@ msgstr "Retiro enviado."
 msgid "Withdraw {0} USD from {1} {longOrShortText}"
 msgstr "Retirar {0} USD de {1} {longOrShortText}"
 
-#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
-msgid "Withdrawal"
-msgstr ""
-
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-msgid "Withdrawal cancelled"
-msgstr ""
-
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-msgid "Withdrawal executed"
-msgstr ""
-
 #: src/components/Exchange/PositionEditor.js
 msgid "Withdrawal failed."
 msgstr "Retiro fallido."
 
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-msgid "Withdrawal request sent"
-msgstr ""
-
 #: src/components/Exchange/PositionEditor.js
 msgid "Withdrawal submitted."
 msgstr "Retiro enviado."
-
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-msgid "Withdrawing from {0}"
-msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 msgid "Withdrawing {0} from {positionText}"
@@ -5093,10 +5128,10 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "You can change the \"Collateral In\" token above to find lower fees"
-msgstr ""
+msgstr "Puedes cambiar el \"Garantía En\" token arriba para encontrar menores comisiones"
 
 #: src/components/Exchange/PositionSeller.js
-msgid "You can change this in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are volatile."
+msgid "You can change this in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than {0}, may result in failed orders if prices are volatile."
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
@@ -5110,12 +5145,12 @@ msgstr "Actualmente puede adquirir un máximo de {0} tokens esGMX a razón de {1
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-msgid "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are volatile."
-msgstr ">>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
+msgid "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than {0}, may result in failed orders if prices are volatile."
+msgstr ""
 
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 msgid "You can get a {0} better execution price in the {1} market pool.<0>Switch to {2} market pool.</0>"
-msgstr "======="
+msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer AVAX from other networks to Avalanche using any of the below options:"
@@ -5143,7 +5178,7 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "You have an active order to decrease {longOrShortText} {sizeInToken} {0} (${1}) at {prefix} {2}"
-msgstr "<<<<<<< HEAD"
+msgstr ""
 
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 msgid "You have an existing order in the {0} market pool. <0>Switch to {1} market pool.</0>"
@@ -5159,7 +5194,7 @@ msgstr ""
 
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
 msgid "You have an existing position with {0} as collateral. <0>Switch to {1} collateral.</0>"
-msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "You have multiple existing Increase {longOrShortText} {0} limit orders"
@@ -5175,15 +5210,15 @@ msgid "You have not deposited any tokens for vesting."
 msgstr "No has depositado ningún token para su adquisición."
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-msgid "You have selected {collateralTokenSymbol} as Collateral, the Liquidation Price is higher compared to using a stablecoin as collateral, since the worth of the collateral will change with its price."
-msgstr ""
-
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "You have selected {collateralTokenSymbol} as Collateral, the Liquidation Price will vary based on the price of {collateralTokenSymbol}."
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "You have selected {collateralTokenSymbol} as collateral to short {indexTokenSymbol}."
+msgstr ""
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "You have selected {collateralTokenSymbol} as collateral, the Liquidation Price is higher compared to using a stablecoin as collateral since the worth of the collateral will change with its price. If required, you can change the collateral type using the Collateral In option in the trade box."
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
@@ -5245,11 +5280,11 @@ msgstr "cuenta"
 
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "collateral"
-msgstr "garantía<<<<<<< HEAD"
+msgstr "garantía"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "earn"
-msgstr "=======>>>>>>> 9bbc1b8594821a8a107b6a5ae2ad9cadb1a8b604"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "esGMX OTC Market"
@@ -5350,6 +5385,18 @@ msgstr "{0} Precio"
 msgid "{0} Required"
 msgstr "{0} Requerido"
 
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+msgid "{0} and {1} can be used to mint GM for this market up to the specified minting caps."
+msgstr ""
+
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "{0} and {1} can be used to mint GM tokens for this market up to the specified minting caps."
+msgstr ""
+
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+msgid "{0} can be used to mint GM for this market up to the specified minting caps."
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr ""
@@ -5364,7 +5411,7 @@ msgstr "{0} está por debajo de su peso objetivo.<0/><1/>Consigue menores comisi
 
 #: src/components/Exchange/SwapBox.js
 msgid "{0} is required for collateral."
-msgstr ""
+msgstr "{0} es requerido como garantía."
 
 #: src/components/Glp/GlpSwap.js
 msgid "{0} pool exceeded, try different token"

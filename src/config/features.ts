@@ -1,13 +1,6 @@
-import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI } from "./chains";
+import { ARBITRUM, AVALANCHE } from "./chains";
 
 export function getIsSyntheticsSupported(chainId: number) {
-  if (
-    document.location.hostname.includes("testnet.gmx-interface.pages.dev") ||
-    document.location.hostname.includes("app.gmxtest.io")
-  ) {
-    return [AVALANCHE_FUJI, ARBITRUM_GOERLI].includes(chainId);
-  }
-
   return true;
 }
 

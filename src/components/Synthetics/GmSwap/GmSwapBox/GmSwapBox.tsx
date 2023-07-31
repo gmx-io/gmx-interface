@@ -241,8 +241,10 @@ export function GmSwapBox(p: Props) {
       result.push(shortToken);
     }
 
-    if (result.some((token) => token.isWrapped)) {
-      result.unshift(getTokenData(tokensData, NATIVE_TOKEN_ADDRESS)!);
+    const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS)!;
+
+    if (result.some((token) => token.isWrapped) && nativeToken) {
+      result.unshift(nativeToken);
     }
 
     return result;
@@ -612,14 +614,14 @@ export function GmSwapBox(p: Props) {
     ]
   );
 
-  useEffect(
-    function updateMode() {
-      if (!availableModes.includes(mode)) {
-        setMode(availableModes[0]);
-      }
-    },
-    [availableModes, mode, operation, setMode]
-  );
+  // useEffect(
+  //   function updateMode() {
+  //     if (!availableModes.includes(mode)) {
+  //       setMode(availableModes[0]);
+  //     }
+  //   },
+  //   [availableModes, mode, operation, setMode]
+  // );
 
   useEffect(
     function updateIndexToken() {
@@ -660,8 +662,15 @@ export function GmSwapBox(p: Props) {
           onSelectMarket(marketInfo?.marketTokenAddress);
           helperToast.success(t`${marketInfo.name} selected in order form`);
         }
+
+        if (queryParams.get("scroll") === "1") {
+          window.scrollTo({ top: 0, left: 0 });
+        }
       }
-      history.replace({ search: "" });
+
+      if (history.location.search) {
+        history.replace({ search: "" });
+      }
     },
     [history, marketsInfoData, onSelectMarket, queryParams, setIndexName, setOperation]
   );
@@ -879,6 +888,7 @@ export function GmSwapBox(p: Props) {
         <div className="App-card-divider" />
 
         <GmFees
+          isDeposit={isDeposit}
           totalFees={fees?.totalFees}
           swapFee={fees?.swapFee}
           swapPriceImpact={fees?.swapPriceImpact}

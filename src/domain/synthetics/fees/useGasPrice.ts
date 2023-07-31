@@ -1,49 +1,59 @@
-import useSWR from "swr";
 import { useWeb3React } from "@web3-react/core";
+import { EXECUTION_FEE_CONFIG_V2, GAS_PRICE_ADJUSTMENT_MAP } from "config/chains";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { BigNumber } from "ethers";
+import { bigNumberify } from "lib/numbers";
 import { getProvider } from "lib/rpc";
-import { AVALANCHE, AVALANCHE_FUJI } from "config/chains";
-import { BASIS_POINTS_DIVISOR, DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "lib/legacy";
+import useSWR from "swr";
 
 export function useGasPrice(chainId: number) {
   const { library } = useWeb3React();
+  const settings = useSettings();
 
-  const { data: gasPrice } = useSWR<BigNumber | undefined>(["gasPrice", chainId], {
-    fetcher: () => {
-      return new Promise(async (resolve, reject) => {
-        const provider = getProvider(library, chainId);
+  const executionFeeConfig = EXECUTION_FEE_CONFIG_V2[chainId];
 
-        if (!provider) {
-          resolve(undefined);
-          return;
-        }
+  const { data: gasPrice } = useSWR<BigNumber | undefined>(
+    ["gasPrice", chainId, executionFeeConfig.shouldUseMaxPriorityFeePerGas, settings.executionFeeBufferBps],
+    {
+      fetcher: () => {
+        return new Promise(async (resolve, reject) => {
+          const provider = getProvider(library, chainId);
 
-        try {
-          let gasPrice = await provider.getGasPrice();
-
-          if ([AVALANCHE, AVALANCHE_FUJI].includes(chainId)) {
-            const feeData = await provider.getFeeData();
-
-            // the wallet provider might not return maxPriorityFeePerGas in feeData
-            // in which case we should fallback to the usual getGasPrice flow handled below
-            if (feeData && feeData.maxPriorityFeePerGas) {
-              gasPrice = gasPrice.add(feeData.maxPriorityFeePerGas);
-            }
-
-            const bufferBasisPoints = BASIS_POINTS_DIVISOR + DEFAULT_HIGHER_SLIPPAGE_AMOUNT * 20;
-
-            gasPrice = gasPrice.mul(bufferBasisPoints).div(BASIS_POINTS_DIVISOR);
+          if (!provider) {
+            resolve(undefined);
+            return;
           }
 
-          resolve(gasPrice);
-        } catch (e) {
-          // eslint-disable-next-line no-console
-          console.error(e);
-          reject(e);
-        }
-      });
-    },
-  });
+          try {
+            let gasPrice = await provider.getGasPrice();
+
+            if (executionFeeConfig.shouldUseMaxPriorityFeePerGas) {
+              const feeData = await provider.getFeeData();
+
+              // the wallet provider might not return maxPriorityFeePerGas in feeData
+              // in which case we should fallback to the usual getGasPrice flow handled below
+              if (feeData && feeData.maxPriorityFeePerGas) {
+                gasPrice = gasPrice.add(feeData.maxPriorityFeePerGas);
+              }
+            }
+
+            if (settings.executionFeeBufferBps) {
+              const buffer = gasPrice.mul(settings.executionFeeBufferBps).div(BASIS_POINTS_DIVISOR);
+              gasPrice = gasPrice.add(buffer);
+            }
+            const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] || bigNumberify(0);
+
+            resolve(gasPrice.add(premium));
+          } catch (e) {
+            // eslint-disable-next-line no-console
+            console.error(e);
+            reject(e);
+          }
+        });
+      },
+    }
+  );
 
   return { gasPrice };
 }

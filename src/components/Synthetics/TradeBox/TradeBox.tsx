@@ -12,7 +12,9 @@ import Tab from "components/Tab/Tab";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { getKeepLeverageKey, getLeverageEnabledKey, getLeverageKey } from "config/localStorage";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useUserReferralInfo } from "domain/referrals/hooks";
 import {
   estimateExecuteDecreaseOrderGasLimit,
@@ -28,10 +30,11 @@ import {
   getAvailableUsdLiquidityForPosition,
   getMarketIndexName,
 } from "domain/synthetics/markets";
-import { OrderInfo, OrdersInfoData } from "domain/synthetics/orders";
+import { OrderInfo, OrderType, OrdersInfoData } from "domain/synthetics/orders";
 import {
   PositionInfo,
   PositionsInfoData,
+  formatAcceptablePrice,
   formatLeverage,
   formatLiquidationPrice,
   usePositionsConstants,
@@ -43,6 +46,7 @@ import {
   TradeFeesType,
   TradeMode,
   TradeType,
+  TriggerThresholdType,
   getDecreasePositionAmounts,
   getIncreasePositionAmounts,
   getMarkPrice,
@@ -66,7 +70,7 @@ import longImg from "img/long.svg";
 import shortImg from "img/short.svg";
 import swapImg from "img/swap.svg";
 import { useChainId } from "lib/chains";
-import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "lib/legacy";
+import { USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   formatAmount,
@@ -89,7 +93,6 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { CollateralSelectorRow } from "./CollateralSelectorRow";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import "./TradeBox.scss";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 export type Props = {
   tradeType: TradeType;
@@ -205,6 +208,12 @@ export function TradeBox(p: Props) {
 
   const [stage, setStage] = useState<"trade" | "confirmation" | "processing">("trade");
   const [focusedInput, setFocusedInput] = useState<"from" | "to">();
+
+  const [fixedTriggerThresholdType, setFixedTriggerThresholdType] = useState<TriggerThresholdType>();
+  const [fixedTriggerOrderType, setFixedTriggerOrderType] = useState<
+    OrderType.LimitDecrease | OrderType.StopLossDecrease
+  >();
+  const [fixedTriggerAcceptablePrice, setFixedTriggerAcceptablePrice] = useState<BigNumber>();
 
   const [fromTokenInputValue, setFromTokenInputValue] = useSafeState("");
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigNumber.from(0);
@@ -682,6 +691,7 @@ export function TradeBox(p: Props) {
         inputSizeUsd: closeSizeUsd,
         sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
         triggerPrice,
+        markPrice,
         existingPosition,
         isContractAccount: false,
         receiveToken: existingPosition?.collateralToken,
@@ -690,6 +700,7 @@ export function TradeBox(p: Props) {
         isTrigger: true,
         minCollateralUsd,
         isNotEnoughReceiveTokenLiquidity: false,
+        fixedTriggerThresholdType: stage === "confirmation" ? fixedTriggerThresholdType : undefined,
       });
     }
 
@@ -721,6 +732,7 @@ export function TradeBox(p: Props) {
     minCollateralUsd,
     nextPositionValues,
     shortLiquidity,
+    stage,
     swapAmounts?.swapPathStats,
     swapAmounts?.usdIn,
     swapAmounts?.usdOut,
@@ -729,6 +741,7 @@ export function TradeBox(p: Props) {
     toTokenAmount,
     triggerPrice,
     triggerRatio,
+    fixedTriggerThresholdType,
   ]);
 
   const submitButtonText = useMemo(() => {
@@ -753,6 +766,17 @@ export function TradeBox(p: Props) {
     if (!account) {
       onConnectWallet();
       return;
+    }
+
+    if (
+      isTrigger &&
+      decreaseAmounts?.triggerThresholdType &&
+      decreaseAmounts?.triggerOrderType &&
+      decreaseAmounts.acceptablePrice
+    ) {
+      setFixedTriggerOrderType(decreaseAmounts.triggerOrderType);
+      setFixedTriggerThresholdType(decreaseAmounts.triggerThresholdType);
+      setFixedTriggerAcceptablePrice(decreaseAmounts.acceptablePrice);
     }
 
     setStage("confirmation");
@@ -824,11 +848,17 @@ export function TradeBox(p: Props) {
       const needUpdateMarket =
         !marketAddress || !marketsOptions.availableMarkets.find((m) => m.marketTokenAddress === marketAddress);
 
+      if (needUpdateMarket && marketsOptions.marketWithPosition) {
+        onSelectMarketAddress(marketsOptions.marketWithPosition.marketTokenAddress);
+        return;
+      }
+
       const optimalMarket =
         marketsOptions.minPriceImpactMarket || marketsOptions.maxLiquidityMarket || marketsOptions.availableMarkets[0];
 
       if (needUpdateMarket && optimalMarket) {
         onSelectMarketAddress(optimalMarket.marketTokenAddress);
+        return;
       }
     },
     [
@@ -838,10 +868,27 @@ export function TradeBox(p: Props) {
       isPosition,
       marketAddress,
       marketsOptions.availableMarkets,
+      marketsOptions.collateralWithPosition,
+      marketsOptions.marketWithPosition,
       marketsOptions.maxLiquidityMarket,
       marketsOptions.minPriceImpactMarket,
+      onSelectCollateralAddress,
       onSelectMarketAddress,
     ]
+  );
+
+  const prevMarketAddress = usePrevious(marketAddress);
+  useEffect(
+    function updatePositionCollateral() {
+      if (!isPosition) {
+        return;
+      }
+
+      if (marketAddress && prevMarketAddress !== marketAddress && marketsOptions.collateralWithPosition) {
+        onSelectCollateralAddress(marketsOptions.collateralWithPosition.address);
+      }
+    },
+    [isPosition, marketAddress, marketsOptions.collateralWithPosition, onSelectCollateralAddress, prevMarketAddress]
   );
 
   function onSwitchTokens() {
@@ -881,7 +928,7 @@ export function TradeBox(p: Props) {
       <>
         <BuyInputSection
           topLeftLabel={t`Pay`}
-          topLeftValue={formatUsd(isIncrease ? increaseAmounts?.initialCollateralUsd : fromUsd)}
+          topLeftValue={fromUsd?.gt(0) ? formatUsd(isIncrease ? increaseAmounts?.initialCollateralUsd : fromUsd) : ""}
           topRightLabel={t`Balance`}
           topRightValue={formatTokenAmount(fromToken?.balance, fromToken?.decimals)}
           inputValue={fromTokenInputValue}
@@ -913,16 +960,16 @@ export function TradeBox(p: Props) {
           )}
         </BuyInputSection>
 
-        <div className="AppOrder-ball-container" onClick={onSwitchTokens}>
-          <div className="AppOrder-ball">
+        <div className="Exchange-swap-ball-container">
+          <button type="button" className="Exchange-swap-ball" onClick={onSwitchTokens}>
             <IoMdSwap className="Exchange-swap-ball-icon" />
-          </div>
+          </button>
         </div>
 
         {isSwap && (
           <BuyInputSection
             topLeftLabel={t`Receive`}
-            topLeftValue={formatUsd(swapAmounts?.usdOut)}
+            topLeftValue={swapAmounts?.usdOut.gt(0) ? formatUsd(swapAmounts?.usdOut) : ""}
             topRightLabel={t`Balance`}
             topRightValue={formatTokenAmount(toToken?.balance, toToken?.decimals)}
             inputValue={toTokenInputValue}
@@ -953,7 +1000,11 @@ export function TradeBox(p: Props) {
         {isIncrease && (
           <BuyInputSection
             topLeftLabel={tradeTypeLabels[tradeType!]}
-            topLeftValue={formatUsd(increaseAmounts?.sizeDeltaUsd, { fallbackToZero: true })}
+            topLeftValue={
+              increaseAmounts?.sizeDeltaUsd.gt(0)
+                ? formatUsd(increaseAmounts?.sizeDeltaUsd, { fallbackToZero: true })
+                : ""
+            }
             topRightLabel={t`Leverage`}
             topRightValue={formatLeverage(isLeverageEnabled ? leverage : increaseAmounts?.estimatedLeverage) || "-"}
             inputValue={toTokenInputValue}
@@ -1186,9 +1237,11 @@ export function TradeBox(p: Props) {
           className="SwapBox-info-row"
           label={t`Acceptable Price`}
           value={
-            formatUsd(increaseAmounts?.acceptablePrice, {
-              displayDecimals: toToken?.priceDecimals,
-            }) || "-"
+            increaseAmounts?.sizeDeltaUsd.gt(0)
+              ? formatAcceptablePrice(increaseAmounts.acceptablePrice, {
+                  displayDecimals: toToken?.priceDecimals,
+                })
+              : "-"
           }
         />
 
@@ -1292,12 +1345,19 @@ export function TradeBox(p: Props) {
           className="SwapBox-info-row"
           label={t`Acceptable Price Impact`}
           value={
-            <span className="TradeBox-acceptable-price-impact" onClick={() => setIsEditingAcceptablePriceImpact(true)}>
-              {formatPercentage(acceptablePriceImpactBpsForLimitOrders.mul(-1))}
-              <span className="edit-icon" onClick={() => null}>
-                <AiOutlineEdit fontSize={16} />
+            decreaseAmounts?.triggerOrderType === OrderType.StopLossDecrease ? (
+              "NA"
+            ) : (
+              <span
+                className="TradeBox-acceptable-price-impact"
+                onClick={() => setIsEditingAcceptablePriceImpact(true)}
+              >
+                {formatPercentage(acceptablePriceImpactBpsForLimitOrders.mul(-1))}
+                <span className="edit-icon" onClick={() => null}>
+                  <AiOutlineEdit fontSize={16} />
+                </span>
               </span>
-            </span>
+            )
           }
         />
 
@@ -1305,9 +1365,11 @@ export function TradeBox(p: Props) {
           className="SwapBox-info-row"
           label={t`Acceptable Price`}
           value={
-            formatUsd(decreaseAmounts?.acceptablePrice, {
-              displayDecimals: toToken?.priceDecimals,
-            }) || "-"
+            decreaseAmounts?.sizeDeltaUsd.gt(0)
+              ? formatAcceptablePrice(decreaseAmounts?.acceptablePrice, {
+                  displayDecimals: toToken?.priceDecimals,
+                })
+              : "-"
           }
         />
 
@@ -1414,6 +1476,9 @@ export function TradeBox(p: Props) {
         markPrice={markPrice}
         markRatio={markRatio}
         triggerPrice={triggerPrice}
+        fixedTriggerThresholdType={fixedTriggerThresholdType}
+        fixedTriggerOrderType={fixedTriggerOrderType}
+        fixedTriggerAcceptablePrice={fixedTriggerAcceptablePrice}
         triggerRatio={triggerRatio}
         marketInfo={marketInfo}
         collateralToken={collateralToken}

@@ -21,6 +21,9 @@ type GasLimitsResult = {
 export function useGasLimits(chainId: number): GasLimitsResult {
   const { data } = useMulticall(chainId, "useGasLimitsConfig", {
     key: [],
+
+    refreshInterval: 60000,
+
     request: () => ({
       dataStore: {
         contractAddress: getContract(chainId, "DataStore"),
