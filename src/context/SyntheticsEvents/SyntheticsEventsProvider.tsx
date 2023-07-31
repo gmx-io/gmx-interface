@@ -23,7 +23,7 @@ import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey, setByKey, updateByKey } from "lib/objects";
-import { getProvider, useWsProvider } from "lib/rpc";
+import { getPollingProvider, getProvider, useWsProvider } from "lib/rpc";
 import { ReactNode, createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   DepositCreatedEventData,
@@ -389,14 +389,19 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
   useEffect(
     function subscribe() {
-      if (!wsProvider) {
+      const pollingProvider = getPollingProvider(chainId);
+
+      if (!wsProvider && !pollingProvider) {
         return;
       }
 
-      let EventEmitterContract: ethers.Contract | undefined;
+      const eventEmitterInstances: ethers.Contract[] = [];
 
       try {
-        EventEmitterContract = new ethers.Contract(getContract(chainId, "EventEmitter"), EventEmitter.abi, wsProvider);
+        eventEmitterInstances.push(
+          new ethers.Contract(getContract(chainId, "EventEmitter"), EventEmitter.abi, wsProvider),
+          new ethers.Contract(getContract(chainId, "EventEmitter"), EventEmitter.abi, pollingProvider)
+        );
       } catch (e) {
         // ...ignore on unsupported chains
       }
@@ -416,14 +421,18 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         eventLogHandlers.current[eventName]?.(parseEventLogData(eventData), txnOpts);
       }
 
-      EventEmitterContract?.on("EventLog", handleEventLog);
-      EventEmitterContract?.on("EventLog1", handleEventLog1);
-      EventEmitterContract?.on("EventLog2", handleEventLog2);
+      eventEmitterInstances.forEach((contract) => {
+        contract.on("EventLog", handleEventLog);
+        contract.on("EventLog1", handleEventLog1);
+        contract.on("EventLog2", handleEventLog2);
+      });
 
       return () => {
-        EventEmitterContract?.off("EventLog", handleEventLog);
-        EventEmitterContract?.off("EventLog1", handleEventLog1);
-        EventEmitterContract?.off("EventLog2", handleEventLog2);
+        eventEmitterInstances.forEach((contract) => {
+          contract.off("EventLog", handleEventLog);
+          contract.off("EventLog1", handleEventLog1);
+          contract.off("EventLog2", handleEventLog2);
+        });
       };
     },
     [chainId, wsProvider]

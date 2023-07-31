@@ -41,7 +41,7 @@ const BATCH_CONFIG = {
     wait: 0,
   },
   [AVALANCHE]: {
-    batchSize: 5,
+    batchSize: 20,
     wait: 0,
   },
 };

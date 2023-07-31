@@ -28,7 +28,7 @@ export function getProvider(library: Web3Provider | undefined, chainId: number) 
   );
 }
 
-export function createWsProvider(chainId: number) {
+export function getWsProvider(chainId: number) {
   if (chainId === ARBITRUM) {
     return new ethers.providers.WebSocketProvider(getAlchemyWsUrl());
   }
@@ -46,6 +46,21 @@ export function createWsProvider(chainId: number) {
     provider.pollingInterval = 2000;
     return provider;
   }
+}
+
+const POLLING_PROVIDERS_CACHE: { [chainId: number]: JsonRpcProvider | undefined } = {};
+
+export function getPollingProvider(chainId: number) {
+  if (POLLING_PROVIDERS_CACHE[chainId]) {
+    return POLLING_PROVIDERS_CACHE[chainId];
+  }
+
+  const provider = new ethers.providers.JsonRpcProvider(getRpcUrl(chainId));
+  provider.pollingInterval = 10000;
+
+  POLLING_PROVIDERS_CACHE[chainId] = provider;
+
+  return provider;
 }
 
 export function getFallbackProvider(chainId: number) {
@@ -98,7 +113,7 @@ export function useWsProvider(active: boolean, chainId: number) {
   const [needToReconnect, setNeedToReconnect] = useState(false);
 
   const initializeProvider = useCallback((chainId: number) => {
-    const newProvider = createWsProvider(chainId);
+    const newProvider = getWsProvider(chainId);
 
     if (!newProvider) {
       return;
@@ -175,9 +190,6 @@ export function useWsProvider(active: boolean, chainId: number) {
   if (!active) {
     return undefined;
   }
-
-  // eslint-disable-next-line no-console
-  console.log("ws ready", (provider as WebSocketProvider)?._wsReady);
 
   return provider;
 }
