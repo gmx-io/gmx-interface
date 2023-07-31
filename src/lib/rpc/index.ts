@@ -121,11 +121,9 @@ export function useWsProvider(active: boolean, chainId: number) {
 
     function healthCheck() {
       setTimeout(() => {
-        const isWsReady = isWebsocketProvider(newProvider) ? newProvider._wsReady : newProvider?.network;
         const lastBlockUpdatedAt = WS_LAST_BLOCK_UPDATED_AT[chainId];
 
         if (
-          !isWsReady ||
           !lastBlockUpdatedAt ||
           Number.isNaN(lastBlockUpdatedAt) ||
           Date.now() - lastBlockUpdatedAt > WS_MAX_BLOCK_UPDATE_DELAY
