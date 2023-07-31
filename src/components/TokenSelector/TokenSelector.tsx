@@ -129,6 +129,8 @@ export default function TokenSelector(props: Props) {
 
       if (!aInfo || !bInfo) return 0;
 
+      if (aInfo.isNative || bInfo.isNative) return 1;
+
       if (props.extendedSortData) {
         const aExtendedSortData = props.extendedSortData[aInfo.wrappedAddress || aInfo.address];
         const bExtendedSortData = props.extendedSortData[bInfo.wrappedAddress || bInfo.address];

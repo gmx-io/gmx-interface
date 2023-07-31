@@ -231,7 +231,7 @@ export function TradeBox(p: Props) {
       return a.indexToken.symbol.localeCompare(b.indexToken.symbol);
     });
     return markets.reduce((acc, marketInfo) => {
-      if (marketInfo.isSpotOnly || marketInfo.isDisabled) {
+      if (marketInfo.isDisabled) {
         return acc;
       }
       acc[marketInfo.indexTokenAddress] = marketInfo.poolValueMax;
