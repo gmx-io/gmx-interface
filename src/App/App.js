@@ -88,7 +88,7 @@ import { helperToast } from "lib/helperToast";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { roundToTwoDecimals } from "lib/numbers";
-import { getWsProvider } from "lib/rpc";
+import { useWsProvider } from "lib/rpc";
 import {
   activateInjectedProvider,
   clearWalletConnectData,
@@ -423,12 +423,13 @@ function FullApp() {
     return () => clearInterval(interval);
   }, [library, pendingTxns, chainId]);
 
+  const wsProvider = useWsProvider(active, chainId);
+
   const vaultAddress = getContract(chainId, "Vault");
   const positionRouterAddress = getContract(chainId, "PositionRouter");
 
   useEffect(() => {
     const wsVaultAbi = chainId === ARBITRUM ? VaultV2.abi : VaultV2b.abi;
-    const wsProvider = getWsProvider(active, chainId);
     if (!wsProvider) {
       return;
     }
@@ -468,7 +469,7 @@ function FullApp() {
       wsPositionRouter.off("CancelIncreasePosition", onCancelIncreasePosition);
       wsPositionRouter.off("CancelDecreasePosition", onCancelDecreasePosition);
     };
-  }, [active, chainId, vaultAddress, positionRouterAddress]);
+  }, [chainId, vaultAddress, positionRouterAddress, wsProvider]);
 
   return (
     <>

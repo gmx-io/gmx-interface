@@ -15,6 +15,7 @@ import {
   isMarketOrderType,
 } from "domain/synthetics/orders";
 import { getPositionKey } from "domain/synthetics/positions";
+import { useTokensData } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
@@ -22,7 +23,7 @@ import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey, setByKey, updateByKey } from "lib/objects";
-import { getProvider, getWsProvider } from "lib/rpc";
+import { getProvider, useWsProvider } from "lib/rpc";
 import { ReactNode, createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   DepositCreatedEventData,
@@ -43,7 +44,6 @@ import {
   WithdrawalStatuses,
 } from "./types";
 import { parseEventLogData } from "./utils";
-import { useTokensData } from "domain/synthetics/tokens";
 
 export const SyntheticsEventsContext = createContext({});
 
@@ -385,10 +385,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     },
   };
 
+  const wsProvider = useWsProvider(active, chainId);
+
   useEffect(
     function subscribe() {
-      const wsProvider = getWsProvider(active, chainId);
-
       if (!wsProvider) {
         return;
       }
@@ -426,7 +426,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         EventEmitterContract?.off("EventLog2", handleEventLog2);
       };
     },
-    [active, chainId]
+    [chainId, wsProvider]
   );
 
   const contextState: SyntheticsEventsContextType = useMemo(() => {
