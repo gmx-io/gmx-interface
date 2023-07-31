@@ -56,17 +56,17 @@ export function useTopAccounts(period: PerfPeriod) {
     const openPositions = openPositionsByAccount[perf.account] || defaultSummary(perf.account);
 
     const profit = perf.totalPnl.add(openPositions.unrealizedPnl);
-    const maxCollateral = openPositions.totalCollateral.sub(perf.totalPnl);
+    const maxCollateral = perf.maxCollateral;
     const relPnl = profit.mul(expandDecimals(1, USD_DECIMALS)).div(maxCollateral);
 
-    if (perf.account.toLowerCase() === "0xde518bd3e2ade6873473eb32cfe4ca75f6d7f44e") {
+    if (perf.account.toLowerCase() === "0xfb11f15f206bda02c224edc744b0e50e46137046") {
       const { formatAmount } = require("lib/numbers");
 
       console.info({
         perf,
         openPositions,
         profit: formatAmount(profit, USD_DECIMALS),
-        maxCollateral: formatAmount(maxCollateral, USD_DECIMALS),
+        maxCollateral: formatAmount(perf.maxCollateral, USD_DECIMALS),
         totalCollateral: formatAmount(perf.totalCollateral, USD_DECIMALS),
         realizedPnl: formatAmount(perf.totalPnl, USD_DECIMALS),
         unrealizedPnl: formatAmount(openPositions.unrealizedPnl, USD_DECIMALS),
