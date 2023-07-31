@@ -122,20 +122,26 @@ export default function TokenSelector(props: Props) {
       }
       return 0;
     });
-
     const sortedTokensWithoutBalance = tokensWithoutBalance.sort((a, b) => {
       const aInfo = infoTokens?.[a.address];
       const bInfo = infoTokens?.[b.address];
 
       if (!aInfo || !bInfo) return 0;
 
-      if (aInfo.isNative || bInfo.isNative) return 1;
-
       if (props.extendedSortData) {
         const aExtendedSortData = props.extendedSortData[aInfo.wrappedAddress || aInfo.address];
         const bExtendedSortData = props.extendedSortData[bInfo.wrappedAddress || bInfo.address];
+
         if (aExtendedSortData && bExtendedSortData) {
-          return bExtendedSortData.sub(aExtendedSortData).gt(0) ? 1 : -1;
+          const difference = bExtendedSortData.sub(aExtendedSortData);
+
+          // If the extended sort data values are the same, prioritize the one with wrappedAddress
+          if (difference.eq(0)) {
+            if (aInfo.wrappedAddress && !bInfo.wrappedAddress) return -1;
+            if (!aInfo.wrappedAddress && bInfo.wrappedAddress) return 1;
+          }
+
+          return difference.gt(0) ? 1 : -1;
         }
       }
 

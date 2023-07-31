@@ -39,7 +39,14 @@ import {
   formatLiquidationPrice,
   usePositionsConstants,
 } from "domain/synthetics/positions";
-import { TokenData, TokensData, TokensRatio, convertToUsd, getTokensRatioByPrice } from "domain/synthetics/tokens";
+import {
+  TokenData,
+  TokensData,
+  TokensRatio,
+  convertToUsd,
+  getMidPrice,
+  getTokensRatioByPrice,
+} from "domain/synthetics/tokens";
 import {
   AvailableTokenOptions,
   SwapAmounts,
@@ -224,7 +231,24 @@ export function TradeBox(p: Props) {
   const [toTokenInputValue, setToTokenInputValue] = useSafeState("");
   const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : BigNumber.from(0);
 
-  const groupedMarketsTotalSupply = useMemo(() => {
+  const indexTokenWithPoolValue = useMemo(() => {
+    if (!marketsInfoData) return;
+
+    const markets = Object.values(marketsInfoData || {}).sort((a, b) => {
+      return a.indexToken.symbol.localeCompare(b.indexToken.symbol);
+    });
+    return markets.reduce((acc, marketInfo) => {
+      if (marketInfo.isSpotOnly || marketInfo.isDisabled) {
+        return acc;
+      }
+
+      acc[marketInfo.indexTokenAddress] = marketInfo.poolValueMax;
+
+      return acc;
+    }, {});
+  }, [marketsInfoData]);
+
+  const tokensWithPoolValue = useMemo(() => {
     if (!marketsInfoData) return;
 
     const markets = Object.values(marketsInfoData || {}).sort((a, b) => {
@@ -234,7 +258,26 @@ export function TradeBox(p: Props) {
       if (marketInfo.isDisabled) {
         return acc;
       }
-      acc[marketInfo.indexTokenAddress] = marketInfo.poolValueMax;
+
+      const longPoolAmountUsd = convertToUsd(
+        marketInfo.longPoolAmount,
+        marketInfo.longToken.decimals,
+        getMidPrice(marketInfo.longToken.prices)
+      )!;
+
+      const shortPoolAmountUsd = convertToUsd(
+        marketInfo.shortPoolAmount,
+        marketInfo.shortToken.decimals,
+        getMidPrice(marketInfo.shortToken.prices)
+      )!;
+
+      acc[marketInfo.longToken.address] = (acc[marketInfo.longToken.address] || BigNumber.from(0)).add(
+        longPoolAmountUsd
+      );
+      acc[marketInfo.shortToken.address] = (acc[marketInfo.shortToken.address] || BigNumber.from(0)).add(
+        shortPoolAmountUsd
+      );
+
       return acc;
     }, {});
   }, [marketsInfoData]);
@@ -955,7 +998,7 @@ export function TradeBox(p: Props) {
               className="GlpSwap-from-token"
               showSymbolImage={true}
               showTokenImgInDropdown={true}
-              extendedSortData={groupedMarketsTotalSupply}
+              extendedSortData={tokensWithPoolValue}
             />
           )}
         </BuyInputSection>
@@ -991,7 +1034,7 @@ export function TradeBox(p: Props) {
                 showSymbolImage={true}
                 showBalances={true}
                 showTokenImgInDropdown={true}
-                extendedSortData={groupedMarketsTotalSupply}
+                extendedSortData={indexTokenWithPoolValue}
               />
             )}
           </BuyInputSection>
@@ -1026,7 +1069,7 @@ export function TradeBox(p: Props) {
                 showSymbolImage={true}
                 showBalances={false}
                 showTokenImgInDropdown={true}
-                extendedSortData={groupedMarketsTotalSupply}
+                extendedSortData={indexTokenWithPoolValue}
               />
             )}
           </BuyInputSection>
