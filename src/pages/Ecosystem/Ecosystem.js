@@ -203,11 +203,11 @@ export default function Ecosystem() {
     },
     {
       title: "GMX Analytics",
-      link: "https://gmxstats.com/",
-      linkLabel: "gmxstats.com",
+      link: "https://gmxstats.info/",
+      linkLabel: "gmxstats.info",
       about: t`Financial reports and protocol analytics`,
-      creatorLabel: "@CryptoMessiah",
-      creatorLink: "https://t.me/LarpCapital",
+      creatorLabel: "@sliux",
+      creatorLink: "https://twitter.com/sliux",
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {

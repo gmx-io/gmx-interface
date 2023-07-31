@@ -1,4 +1,5 @@
 import { Menu } from "@headlessui/react";
+import cx from "classnames";
 import { useWeb3React } from "@web3-react/core";
 import coingeckoIcon from "img/ic_coingecko_16.svg";
 import metamaskIcon from "img/ic_metamask_16.svg";
@@ -17,9 +18,10 @@ import { addTokenToMetamask } from "lib/wallets";
 type Props = {
   assetSymbol: string;
   token?: Token;
+  tooltipPosition?: "left" | "right";
 };
 
-function AssetDropdown({ assetSymbol, token: propsToken }: Props) {
+function AssetDropdown({ assetSymbol, token: propsToken, tooltipPosition = "right" }: Props) {
   const { active } = useWeb3React();
   const { chainId } = useChainId();
 
@@ -43,7 +45,7 @@ function AssetDropdown({ assetSymbol, token: propsToken }: Props) {
         <Menu.Button as="div" className="dropdown-arrow center-both">
           <FiChevronDown size={20} />
         </Menu.Button>
-        <Menu.Items as="div" className="asset-menu-items">
+        <Menu.Items as="div" className={cx("asset-menu-items", { "position-left": tooltipPosition === "left" })}>
           <Menu.Item>
             <>
               {token.reservesUrl && (

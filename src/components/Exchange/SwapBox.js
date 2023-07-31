@@ -2009,9 +2009,9 @@ export default function SwapBox(props) {
             <BuyInputSection
               topLeftLabel={t`Price`}
               topRightLabel={t`Mark`}
-              topRightValue={formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)}
+              topRightValue={formatAmount(entryMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)}
               onClickTopRightLabel={() => {
-                setTriggerPriceValue(formatAmountFree(entryMarkPrice, USD_DECIMALS, 2));
+                setTriggerPriceValue(formatAmountFree(entryMarkPrice, USD_DECIMALS, toTokenPriceDecimal));
               }}
               showMaxButton={false}
               inputValue={triggerPriceValue}

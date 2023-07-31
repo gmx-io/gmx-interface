@@ -29,7 +29,7 @@ export function getExecutionFee(
   const isFeeHigh = feeUsd.gt(expandDecimals(getHighExecutionFee(chainId), USD_DECIMALS));
 
   const warning = isFeeHigh
-    ? t`The network cost to send transactions is high at the moment, please check the "Execution Fee" value before proceeding.`
+    ? t`The network cost to send transactions is high at the moment, please check the "Max Execution Fee" value before proceeding.`
     : undefined;
 
   return {
