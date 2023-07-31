@@ -64,6 +64,29 @@ export const EXECUTION_FEE_MULTIPLIER_MAP = {
   [AVALANCHE_FUJI]: 700000,
 };
 
+export const EXECUTION_FEE_CONFIG_V2: {
+  [chainId: number]: {
+    shouldUseMaxPriorityFeePerGas: boolean;
+    defaultBufferBps?: number;
+  };
+} = {
+  [AVALANCHE]: {
+    shouldUseMaxPriorityFeePerGas: true,
+    defaultBufferBps: 1000, // 10%
+  },
+  [AVALANCHE_FUJI]: {
+    shouldUseMaxPriorityFeePerGas: true,
+    defaultBufferBps: 1000, // 10%
+  },
+  [ARBITRUM]: {
+    shouldUseMaxPriorityFeePerGas: false,
+    defaultBufferBps: 1000, // 10%
+  },
+  [ARBITRUM_GOERLI]: {
+    shouldUseMaxPriorityFeePerGas: false,
+  },
+};
+
 const constants = {
   [BCS_MAINNET]: {
     nativeTokenSymbol: "BNB",

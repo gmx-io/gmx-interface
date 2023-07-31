@@ -59,37 +59,14 @@ export const limitDecimals = (amount: BigNumberish, maxDecimals?: number) => {
   if (maxDecimals === undefined) {
     return amountStr;
   }
-
   if (maxDecimals === 0) {
-    let [displayed, tail] = amountStr.split(".");
-
-    const lastDigit = Number(displayed[displayed.length - 1]);
-    const droppedDigit = Number(tail?.[0]);
-
-    if (droppedDigit >= 5 && !Number.isNaN(lastDigit)) {
-      return `${displayed.substr(0, displayed.length - 1)}${lastDigit + 1}`;
-    } else {
-      return displayed;
-    }
+    return amountStr.split(".")[0];
   }
-
   const dotIndex = amountStr.indexOf(".");
-
   if (dotIndex !== -1) {
     let decimals = amountStr.length - dotIndex - 1;
     if (decimals > maxDecimals) {
-      const nextLength = amountStr.length - (decimals - maxDecimals);
-
-      const lastDigit = Number(amountStr[nextLength - 1]);
-      const droppedDigit = Number(amountStr[nextLength]);
-
-      amountStr = amountStr.substr(0, nextLength);
-
-      if (droppedDigit >= 5 && !Number.isNaN(lastDigit)) {
-        return `${amountStr.substr(0, nextLength - 1)}${lastDigit + 1}`;
-      } else {
-        return amountStr.substr(0, nextLength);
-      }
+      amountStr = amountStr.substr(0, amountStr.length - (decimals - maxDecimals));
     }
   }
 
@@ -131,7 +108,6 @@ export const formatAmount = (
   if (displayDecimals !== 0) {
     amountStr = padDecimals(amountStr, displayDecimals);
   }
-
   if (useCommas) {
     return numberWithCommas(amountStr);
   }
