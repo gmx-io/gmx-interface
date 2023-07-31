@@ -4253,7 +4253,11 @@ msgid "The Gambit protocol is in beta, please read the <0>staking details</0>be
 msgstr "Протокол Gambit находится в стадии бета-тестирования, пожалуйста, прочитайте <0>детали стакинга</0>перед участием."
 
 #: src/App/App.js
-msgid "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed."
+#~ msgid "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed."
+#~ msgstr ""
+
+#: src/App/App.js
+msgid "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
