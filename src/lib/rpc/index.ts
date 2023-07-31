@@ -164,7 +164,7 @@ export function useWsProvider(active: boolean, chainId: number) {
 
       if (cachedProvider && !needToReconnect) {
         // eslint-disable-next-line no-console
-        console.log(`using cached ws provider for chain ${chainId}`, cachedProvider);
+        console.log(`using cached ws provider for chain ${chainId}`);
         setProvider(cachedProvider);
         return;
       }
