@@ -398,10 +398,11 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       const eventEmitterInstances: ethers.Contract[] = [];
 
       try {
-        eventEmitterInstances.push(
-          new ethers.Contract(getContract(chainId, "EventEmitter"), EventEmitter.abi, wsProvider),
-          new ethers.Contract(getContract(chainId, "EventEmitter"), EventEmitter.abi, pollingProvider)
-        );
+        if (wsProvider) {
+          eventEmitterInstances.push(
+            new ethers.Contract(getContract(chainId, "EventEmitter"), EventEmitter.abi, wsProvider)
+          );
+        }
       } catch (e) {
         // ...ignore on unsupported chains
       }
