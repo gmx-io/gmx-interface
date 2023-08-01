@@ -231,9 +231,8 @@ export function TradeBox(p: Props) {
   const [toTokenInputValue, setToTokenInputValue] = useSafeState("");
   const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : BigNumber.from(0);
 
-  const indexTokenSortedWithPoolValue = useMemo(() => {
+  const sortedIndexTokensWithPoolValue = useMemo(() => {
     if (!marketsInfoData) return;
-
     const markets = Object.values(marketsInfoData || {}).sort((a, b) => {
       return a.indexToken.symbol.localeCompare(b.indexToken.symbol);
     });
@@ -252,7 +251,7 @@ export function TradeBox(p: Props) {
     });
   }, [marketsInfoData]);
 
-  const sortedTokenToFollow = useMemo(() => {
+  const sortedLongAndShortTokens = useMemo(() => {
     if (!marketsInfoData) return;
 
     const markets = Object.values(marketsInfoData || {})
@@ -1019,7 +1018,7 @@ export function TradeBox(p: Props) {
               className="GlpSwap-from-token"
               showSymbolImage={true}
               showTokenImgInDropdown={true}
-              extendedSortSequence={sortedTokenToFollow}
+              extendedSortSequence={sortedLongAndShortTokens}
             />
           )}
         </BuyInputSection>
@@ -1055,7 +1054,7 @@ export function TradeBox(p: Props) {
                 showSymbolImage={true}
                 showBalances={true}
                 showTokenImgInDropdown={true}
-                extendedSortSequence={indexTokenSortedWithPoolValue}
+                extendedSortSequence={sortedIndexTokensWithPoolValue}
               />
             )}
           </BuyInputSection>
@@ -1090,7 +1089,7 @@ export function TradeBox(p: Props) {
                 showSymbolImage={true}
                 showBalances={false}
                 showTokenImgInDropdown={true}
-                extendedSortSequence={indexTokenSortedWithPoolValue}
+                extendedSortSequence={sortedIndexTokensWithPoolValue}
               />
             )}
           </BuyInputSection>
