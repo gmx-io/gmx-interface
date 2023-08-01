@@ -130,13 +130,10 @@ export default function TokenSelector(props: Props) {
       if (!aInfo || !bInfo) return 0;
 
       if (extendedSortSequence) {
-        return extendedSortSequence.indexOf(aInfo.address) - extendedSortSequence.indexOf(bInfo.address);
-
-        // If the extended sort data values are the same, prioritize the one with wrappedAddress
-        // if (difference.eq(0)) {
-        //   if (aInfo.wrappedAddress && !bInfo.wrappedAddress) return -1;
-        //   if (!aInfo.wrappedAddress && bInfo.wrappedAddress) return 1;
-        // }
+        return (
+          extendedSortSequence.indexOf(aInfo.wrappedAddress || aInfo.address) -
+          extendedSortSequence.indexOf(bInfo.wrappedAddress || bInfo.address)
+        );
       }
 
       return 0;
