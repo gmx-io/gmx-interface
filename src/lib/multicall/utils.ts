@@ -29,15 +29,15 @@ const CHAIN_BY_CHAIN_ID = {
 
 const BATCH_CONFIG = {
   [AVALANCHE_FUJI]: {
-    batchSize: 1000,
+    batchSize: 20,
     wait: 0,
   },
   [ARBITRUM_GOERLI]: {
-    batchSize: 1000,
+    batchSize: 20,
     wait: 0,
   },
   [ARBITRUM]: {
-    batchSize: 30,
+    batchSize: 20,
     wait: 0,
   },
   [AVALANCHE]: {
