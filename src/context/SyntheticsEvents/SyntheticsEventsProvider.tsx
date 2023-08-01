@@ -23,7 +23,7 @@ import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey, setByKey, updateByKey } from "lib/objects";
-import { getPollingProvider, getProvider, useWsProvider } from "lib/rpc";
+import { getProvider, useWsProvider } from "lib/rpc";
 import { ReactNode, createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   DepositCreatedEventData,
@@ -389,9 +389,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
   useEffect(
     function subscribe() {
-      const pollingProvider = getPollingProvider(chainId);
-
-      if (!wsProvider && !pollingProvider) {
+      if (!wsProvider) {
         return;
       }
 
