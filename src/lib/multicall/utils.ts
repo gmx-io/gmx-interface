@@ -29,7 +29,7 @@ const CHAIN_BY_CHAIN_ID = {
 
 const BATCH_CONFIG = {
   [AVALANCHE_FUJI]: {
-    batchSize: 20,
+    batchSize: 40,
     wait: 0,
   },
   [ARBITRUM_GOERLI]: {
