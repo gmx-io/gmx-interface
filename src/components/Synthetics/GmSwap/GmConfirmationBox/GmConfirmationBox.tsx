@@ -1,3 +1,5 @@
+import { useKey } from "react-use";
+import { useState } from "react";
 import { Trans, plural, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import cx from "classnames";
@@ -23,7 +25,6 @@ import { GmFees } from "../GmFees/GmFees";
 import Button from "components/Button/Button";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import { useState } from "react";
 import "./GmConfirmationBox.scss";
 
 type Props = {
@@ -235,6 +236,17 @@ export function GmConfirmationBox({
     };
   })();
 
+  useKey(
+    "Enter",
+    () => {
+      if (isVisible && submitButtonState.onClick) {
+        submitButtonState.onClick();
+      }
+    },
+    { event: "keyup" },
+    [isVisible, submitButtonState.onClick]
+  );
+
   function onCreateDeposit() {
     if (!account || !executionFee || !marketToken || !market || !marketTokenAmount || !tokensData) {
       return Promise.resolve();
@@ -293,14 +305,12 @@ export function GmConfirmationBox({
                 <>
                   {[longTokenText, shortTokenText].filter(Boolean).map((text) => (
                     <div key={text}>
-                      <Trans>Pay</Trans>
-                      {text}
+                      <Trans>Pay</Trans> {text}
                     </div>
                   ))}
                   <div className="Confirmation-box-main-icon"></div>
                   <div>
-                    <Trans>Receive</Trans>
-                    {marketTokenText}
+                    <Trans>Receive</Trans> {marketTokenText}
                   </div>
                 </>
               )}
@@ -346,6 +356,7 @@ export function GmConfirmationBox({
             <div className="Confirmation-box-row">
               <Button
                 className="w-full"
+                type="submit"
                 variant="primary-action"
                 onClick={submitButtonState.onClick}
                 disabled={submitButtonState.disabled}

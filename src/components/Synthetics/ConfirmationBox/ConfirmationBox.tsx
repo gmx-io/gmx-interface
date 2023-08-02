@@ -75,13 +75,14 @@ import {
   formatUsd,
 } from "lib/numbers";
 import { usePrevious } from "lib/usePrevious";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./ConfirmationBox.scss";
 import SlippageInput from "components/SlippageInput/SlippageInput";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { helperToast } from "lib/helperToast";
+import { useKey } from "react-use";
 
 export type Props = {
   isVisible: boolean;
@@ -176,6 +177,13 @@ export function ConfirmationBox(p: Props) {
   const [isLimitOrdersVisible, setIsLimitOrdersVisible] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [allowedSlippage, setAllowedSlippage] = useState(savedAllowedSlippage);
+
+  const submitButtonRef = useRef<null | HTMLDivElement>(null);
+
+  useKey("Enter", () => {
+    submitButtonRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+    onSubmit();
+  });
 
   useEffect(() => {
     setAllowedSlippage(savedAllowedSlippage);
@@ -547,7 +555,7 @@ export function ConfirmationBox(p: Props) {
       return (
         <div className="Confirmation-box-main">
           <div>
-            <Trans>Pay</Trans>
+            <Trans>Pay</Trans>{" "}
             {formatTokenAmountWithUsd(
               swapAmounts?.amountIn,
               swapAmounts?.usdIn,
@@ -557,7 +565,7 @@ export function ConfirmationBox(p: Props) {
           </div>
           <div className="Confirmation-box-main-icon"></div>
           <div>
-            <Trans>Receive</Trans>
+            <Trans>Receive</Trans>{" "}
             {formatTokenAmountWithUsd(swapAmounts?.amountOut, swapAmounts?.usdOut, toToken?.symbol, toToken?.decimals)}
           </div>
         </div>
@@ -568,7 +576,7 @@ export function ConfirmationBox(p: Props) {
       return (
         <div className="Confirmation-box-main">
           <span>
-            <Trans>Pay</Trans>
+            <Trans>Pay</Trans>{" "}
             {formatTokenAmountWithUsd(
               increaseAmounts?.initialCollateralAmount,
               increaseAmounts?.initialCollateralUsd,
@@ -578,7 +586,7 @@ export function ConfirmationBox(p: Props) {
           </span>
           <div className="Confirmation-box-main-icon"></div>
           <div>
-            {isLong ? t`Long` : t`Short`}
+            {isLong ? t`Long` : t`Short`}{" "}
             {formatTokenAmountWithUsd(
               increaseAmounts?.sizeDeltaInTokens,
               increaseAmounts?.sizeDeltaUsd,
@@ -608,7 +616,7 @@ export function ConfirmationBox(p: Props) {
             displayDecimals: toToken?.priceDecimals,
           })}{" "}
         </p>
-        <button onClick={() => onCancelOrderClick(order.key)}>
+        <button type="button" onClick={() => onCancelOrderClick(order.key)}>
           <Trans>Cancel</Trans>
         </button>
       </li>
@@ -1352,10 +1360,11 @@ export function ConfirmationBox(p: Props) {
           </>
         )}
 
-        <div className="Confirmation-box-row">
+        <div className="Confirmation-box-row" ref={submitButtonRef}>
           <Button
             variant="primary-action"
             className="w-full"
+            type="submit"
             onClick={onSubmit}
             disabled={submitButtonState.disabled && !shouldDisableValidation}
           >
