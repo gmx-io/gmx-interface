@@ -28,6 +28,30 @@ const CHAIN_BY_CHAIN_ID = {
 };
 
 const BATCH_CONFIGS = {
+  [ARBITRUM]: {
+    http: {
+      batchSize: 0, // disable batches, here batchSize is the number of eth_calls in a batch
+      wait: 0, // keep this setting in case batches are enabled in future
+    },
+    client: {
+      multicall: {
+        batchSize: 1024 * 1024, // here batchSize is the number of bytes in a multicall
+        wait: 0, // zero delay means formation of a batch in the current macro-task, like setTimeout(fn, 0)
+      },
+    },
+  },
+  [AVALANCHE]: {
+    http: {
+      batchSize: 0,
+      wait: 0,
+    },
+    client: {
+      multicall: {
+        batchSize: 1024 * 1024,
+        wait: 0,
+      },
+    },
+  },
   [AVALANCHE_FUJI]: {
     http: {
       batchSize: 40,
@@ -41,30 +65,6 @@ const BATCH_CONFIGS = {
     },
   },
   [ARBITRUM_GOERLI]: {
-    http: {
-      batchSize: 0,
-      wait: 0,
-    },
-    client: {
-      multicall: {
-        batchSize: 1024 * 1024,
-        wait: 0,
-      },
-    },
-  },
-  [ARBITRUM]: {
-    http: {
-      batchSize: 0,
-      wait: 0,
-    },
-    client: {
-      multicall: {
-        batchSize: 1024 * 1024,
-        wait: 0,
-      },
-    },
-  },
-  [AVALANCHE]: {
     http: {
       batchSize: 0,
       wait: 0,
@@ -121,6 +121,7 @@ export class Multicall {
   constructor(public chainId: number, public provider: JsonRpcProvider) {
     this.viemClient = createPublicClient({
       transport: http(provider.connection.url, {
+        // retries works strangely in viem, so we disable them
         retryCount: 0,
         retryDelay: 10000000,
         batch: BATCH_CONFIGS[chainId].http,
@@ -199,7 +200,12 @@ export class Multicall {
         }
 
         const fallbackClient = createPublicClient({
-          transport: http(rpcUrl, { retryCount: 0, retryDelay: 10000000, batch: BATCH_CONFIGS[this.chainId].http }),
+          transport: http(rpcUrl, {
+            // retries works strangely in viem, so we disable them
+            retryCount: 0,
+            retryDelay: 10000000,
+            batch: BATCH_CONFIGS[this.chainId].http,
+          }),
           chain: CHAIN_BY_CHAIN_ID[this.chainId],
           batch: BATCH_CONFIGS[this.chainId].client,
         });
