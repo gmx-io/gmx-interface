@@ -484,20 +484,16 @@ function FullApp() {
       <Helmet>
         <style type="text/css">
           {tradePageVersion === 2 &&
-            `
-            :root {
+            `:root {
               --dark-blue-bg: #101123;                 
             {
-              .theme-dark:root {
-                --dark-blue-bg: #101123;
-              }
-         `}
+          `}
         </style>
       </Helmet>
       <div
         className="App"
         style={{
-          backgroundColor: tradePageVersion === 1 ? "#101122" : "#08091b",
+          backgroundColor: tradePageVersion === 1 ? "#101124" : "#08091b",
         }}
       >
         <div className="App-content">
