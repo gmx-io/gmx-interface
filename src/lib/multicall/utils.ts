@@ -27,22 +27,54 @@ const CHAIN_BY_CHAIN_ID = {
   [AVALANCHE]: avalanche,
 };
 
-const BATCH_CONFIG = {
+const BATCH_CONFIGS = {
   [AVALANCHE_FUJI]: {
-    batchSize: 40,
-    wait: 0,
+    http: {
+      batchSize: 40,
+      wait: 0,
+    },
+    client: {
+      multicall: {
+        batchSize: 1024 * 1024,
+        wait: 0,
+      },
+    },
   },
   [ARBITRUM_GOERLI]: {
-    batchSize: 20,
-    wait: 0,
+    http: {
+      batchSize: 0,
+      wait: 0,
+    },
+    client: {
+      multicall: {
+        batchSize: 1024 * 1024,
+        wait: 0,
+      },
+    },
   },
   [ARBITRUM]: {
-    batchSize: 20,
-    wait: 0,
+    http: {
+      batchSize: 0,
+      wait: 0,
+    },
+    client: {
+      multicall: {
+        batchSize: 1024 * 1024,
+        wait: 0,
+      },
+    },
   },
   [AVALANCHE]: {
-    batchSize: 20,
-    wait: 0,
+    http: {
+      batchSize: 0,
+      wait: 0,
+    },
+    client: {
+      multicall: {
+        batchSize: 1024 * 1024,
+        wait: 0,
+      },
+    },
   },
 };
 
@@ -91,8 +123,9 @@ export class Multicall {
       transport: http(provider.connection.url, {
         retryCount: 0,
         retryDelay: 10000000,
-        batch: BATCH_CONFIG[chainId],
+        batch: BATCH_CONFIGS[chainId].http,
       }),
+      batch: BATCH_CONFIGS[chainId].client,
       chain: CHAIN_BY_CHAIN_ID[chainId],
     });
     this.viemMulticallContract = getViemContract({
@@ -166,8 +199,9 @@ export class Multicall {
         }
 
         const fallbackClient = createPublicClient({
-          transport: http(rpcUrl, { retryCount: 0, retryDelay: 10000000, batch: BATCH_CONFIG[this.chainId] }),
+          transport: http(rpcUrl, { retryCount: 0, retryDelay: 10000000, batch: BATCH_CONFIGS[this.chainId].http }),
           chain: CHAIN_BY_CHAIN_ID[this.chainId],
+          batch: BATCH_CONFIGS[this.chainId].client,
         });
 
         // eslint-disable-next-line no-console
