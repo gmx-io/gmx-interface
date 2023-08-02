@@ -16,6 +16,7 @@ import { t } from "@lingui/macro";
 import { useMedia } from "react-use";
 import { InfoTokens, Token, TokenInfo } from "domain/tokens";
 import { BigNumber } from "ethers";
+import { convertToUsd } from "domain/synthetics/tokens";
 
 type TokenState = {
   disabled?: boolean;
@@ -95,19 +96,19 @@ export default function TokenSelector(props: Props) {
   });
 
   const sortedFilteredTokens = useMemo(() => {
-    const tokensWithBalance = showBalances
-      ? filteredTokens.filter((token) => {
-          const info = infoTokens?.[token.address];
-          return info?.balance?.gt(0);
-        })
-      : [];
+    const tokensWithBalance: Token[] = [];
+    const tokensWithoutBalance: Token[] = showBalances ? [] : filteredTokens;
 
-    const tokensWithoutBalance = showBalances
-      ? filteredTokens.filter((token) => {
-          const info = infoTokens?.[token.address];
-          return !info?.balance || info.balance.isZero();
-        })
-      : filteredTokens;
+    for (const token of filteredTokens) {
+      const info = infoTokens?.[token.address];
+      if (showBalances) {
+        if (info?.balance?.gt(0)) {
+          tokensWithBalance.push(token);
+        } else {
+          tokensWithoutBalance.push(token);
+        }
+      }
+    }
 
     const sortedTokensWithBalance = tokensWithBalance.sort((a, b) => {
       const aInfo = infoTokens?.[a.address];
@@ -116,10 +117,10 @@ export default function TokenSelector(props: Props) {
       if (!aInfo || !bInfo) return 0;
 
       if (aInfo?.balance && bInfo?.balance && aInfo?.maxPrice && bInfo?.maxPrice) {
-        const aBalanceUsd = aInfo.balance.mul(aInfo.maxPrice).div(expandDecimals(1, a.decimals));
-        const bBalanceUsd = bInfo.balance.mul(bInfo.maxPrice).div(expandDecimals(1, b.decimals));
+        const aBalanceUsd = convertToUsd(aInfo.balance, a.decimals, aInfo.minPrice);
+        const bBalanceUsd = convertToUsd(bInfo.balance, b.decimals, bInfo.minPrice);
 
-        return bBalanceUsd.sub(aBalanceUsd).gt(0) ? 1 : -1;
+        return bBalanceUsd?.sub(aBalanceUsd || 0).gt(0) ? 1 : -1;
       }
       return 0;
     });
