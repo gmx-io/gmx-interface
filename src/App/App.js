@@ -480,7 +480,12 @@ function FullApp() {
 
   return (
     <>
-      <div className="App">
+      <div
+        className="App"
+        style={{
+          backgroundColor: tradePageVersion === 1 ? "#101122" : "#08091b",
+        }}
+      >
         <div className="App-content">
           <Header
             disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
