@@ -492,9 +492,13 @@ function FullApp() {
       </Helmet>
       <div
         className="App"
-        style={{
-          backgroundColor: tradePageVersion === 1 ? "#101124" : "#08091b",
-        }}
+        style={
+          tradePageVersion === 2
+            ? {
+                backgroundColor: "#08091b",
+              }
+            : {}
+        }
       >
         <div className="App-content">
           <Header
