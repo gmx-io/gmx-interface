@@ -5,6 +5,11 @@ const RED = "#fa3c58";
 const GREEN = "#0ecc83";
 export const DEFAULT_PERIOD = "4h";
 
+const chartBackgroundMap = {
+  1: "#16182e",
+  2: "#101123",
+};
+
 const chartStyleOverrides = ["candleStyle", "hollowCandleStyle", "haStyle"].reduce((acc, cv) => {
   acc[`mainSeriesProperties.${cv}.drawWick`] = true;
   acc[`mainSeriesProperties.${cv}.drawBorder`] = false;
@@ -17,10 +22,10 @@ const chartStyleOverrides = ["candleStyle", "hollowCandleStyle", "haStyle"].redu
   return acc;
 }, {});
 
-const chartOverrides = {
-  "paneProperties.background": "#16182e",
-  "paneProperties.backgroundGradientStartColor": "#16182e",
-  "paneProperties.backgroundGradientEndColor": "#16182e",
+const getChartOverrides = (tradePageVersion) => ({
+  "paneProperties.background": chartBackgroundMap[tradePageVersion],
+  "paneProperties.backgroundGradientStartColor": chartBackgroundMap[tradePageVersion],
+  "paneProperties.backgroundGradientEndColor": chartBackgroundMap[tradePageVersion],
   "paneProperties.backgroundType": "solid",
   "paneProperties.vertGridProperties.color": "rgba(35, 38, 59, 1)",
   "paneProperties.vertGridProperties.style": 2,
@@ -28,9 +33,9 @@ const chartOverrides = {
   "paneProperties.horzGridProperties.style": 2,
   "mainSeriesProperties.priceLineColor": "#3a3e5e",
   "scalesProperties.textColor": "#fff",
-  "scalesProperties.lineColor": "#16182e",
+  "scalesProperties.lineColor": chartBackgroundMap[tradePageVersion],
   ...chartStyleOverrides,
-};
+});
 
 export const disabledFeaturesOnMobile = ["header_saveload", "header_fullscreen_button"];
 
@@ -59,7 +64,7 @@ const enabledFeatures = [
   "hide_left_toolbar_by_default",
 ];
 
-export const defaultChartProps = {
+export const getDefaultChartProps = (tradePageVersion = 1) => ({
   theme: "Dark",
   locale: "en",
   library_path: "/charting_library/",
@@ -68,11 +73,11 @@ export const defaultChartProps = {
   fullscreen: false,
   autosize: true,
   header_widget_dom_node: false,
-  overrides: chartOverrides,
+  overrides: getChartOverrides(tradePageVersion),
   enabled_features: enabledFeatures,
   disabled_features: disabledFeatures,
   custom_css_url: "/tradingview-chart.css",
-  loading_screen: { backgroundColor: "#16182e", foregroundColor: "#2962ff" },
+  loading_screen: { backgroundColor: chartBackgroundMap[tradePageVersion], foregroundColor: "#2962ff" },
   favorites: {},
   custom_formatters: {
     timeFormatter: {
@@ -82,6 +87,6 @@ export const defaultChartProps = {
       format: (date) => formatTVDate(date),
     },
   },
-};
+});
 
 export const availableNetworksForChart = [ARBITRUM, AVALANCHE];

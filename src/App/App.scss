@@ -156,7 +156,7 @@
 .App-box-solid {
   position: relative;
   border-radius: 0.4rem;
-  background: #16182e;
+  background: var(--dark-blue-bg);
   font-size: var(--font-base);
 }
 
@@ -179,7 +179,7 @@
 }
 
 .App-card-long {
-  background: #16182e;
+  background: var(--dark-blue-bg);
   margin-bottom: 2.4rem;
 }
 

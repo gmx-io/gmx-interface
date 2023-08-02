@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
 import { useLocalStorage, useMedia } from "react-use";
-import { defaultChartProps, disabledFeaturesOnMobile } from "./constants";
+import { getDefaultChartProps, disabledFeaturesOnMobile } from "./constants";
 import useTVDatafeed from "domain/tradingview/useTVDatafeed";
 import { ChartData, IChartingLibraryWidget, IPositionLineAdapter } from "../../charting_library";
 import { getObjectKeyFromValue } from "domain/tradingview/utils";
@@ -36,6 +36,7 @@ type Props = {
     maxPrice: BigNumber;
   };
   supportedResolutions: typeof SUPPORTED_RESOLUTIONS_V1;
+  tradePageVersion: number;
 };
 
 export default function TVChartContainer({
@@ -49,6 +50,7 @@ export default function TVChartContainer({
   setPeriod,
   chartToken,
   supportedResolutions,
+  tradePageVersion,
 }: Props) {
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const tvWidgetRef = useRef<IChartingLibraryWidget | null>(null);
@@ -58,6 +60,7 @@ export default function TVChartContainer({
   const { datafeed } = useTVDatafeed({ dataProvider });
   const isMobile = useMedia("(max-width: 550px)");
   const symbolRef = useRef(symbol);
+  const defaultChartProps = getDefaultChartProps(tradePageVersion);
 
   useEffect(() => {
     if (chartToken.maxPrice && chartToken.minPrice && chartToken.symbol) {
@@ -81,7 +84,7 @@ export default function TVChartContainer({
 
   const drawLineOnChart = useCallback(
     (title: string, price: number) => {
-      if (chartReady && tvWidgetRef.current?.activeChart?.().dataReady()) {
+      if (chartReady && tvWidgetRef.current?.activeChart?.().dataReady(() => {})) {
         const chart = tvWidgetRef.current.activeChart();
         const positionLine = chart.createPositionLine({ disableUndo: true });
 
@@ -153,9 +156,14 @@ export default function TVChartContainer({
     tvWidgetRef.current!.onChartReady(function () {
       setChartReady(true);
       tvWidgetRef.current!.applyOverrides({
-        "paneProperties.background": "#16182e",
+        "paneProperties.background": tradePageVersion === 2 ? "#101123" : "#16182e",
         "paneProperties.backgroundType": "solid",
+        "paneProperties.separatorColor": "#ffffff",
       });
+      tvWidgetRef.current?.setCSSCustomProperty(
+        "--tv-color-pane-background",
+        tradePageVersion === 2 ? "#101123" : "#16182e"
+      );
       tvWidgetRef.current
         ?.activeChart()
         .onIntervalChanged()

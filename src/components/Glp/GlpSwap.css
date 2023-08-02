@@ -87,7 +87,7 @@
 
 .GlpSwap-token-list {
   border-radius: 4px;
-  background: #16182e;
+  background: var(--dark-blue-bg);
   padding: 1.5rem;
   padding-top: 0;
   text-align: left;

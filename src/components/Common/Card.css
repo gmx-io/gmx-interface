@@ -1,6 +1,6 @@
 .card {
   border-radius: 0.4rem;
-  background: #16182e;
+  background: var(--dark-blue-bg);
 }
 
 .card-header {
