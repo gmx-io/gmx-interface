@@ -180,10 +180,17 @@ export function ConfirmationBox(p: Props) {
 
   const submitButtonRef = useRef<null | HTMLDivElement>(null);
 
-  useKey("Enter", () => {
-    submitButtonRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-    onSubmit();
-  });
+  useKey(
+    "Enter",
+    () => {
+      if (p.isVisible) {
+        submitButtonRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+        onSubmit();
+      }
+    },
+    {},
+    [p.isVisible]
+  );
 
   useEffect(() => {
     setAllowedSlippage(savedAllowedSlippage);
