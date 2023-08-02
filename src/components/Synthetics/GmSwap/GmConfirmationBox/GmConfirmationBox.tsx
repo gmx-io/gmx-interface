@@ -243,7 +243,7 @@ export function GmConfirmationBox({
         submitButtonState.onClick();
       }
     },
-    { event: "keyup" },
+    {},
     [isVisible, submitButtonState.onClick]
   );
 
