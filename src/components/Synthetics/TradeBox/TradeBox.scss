@@ -5,11 +5,6 @@
 .SwapBox {
   border-radius: 0.4rem;
   padding: 1.5rem;
-  padding-top: 0;
-}
-
-.SwapBox-option-tabs {
-  margin: 1.5rem 0;
 }
 
 .SwapBox-option-tabs.Tab.block .Tab-option {
@@ -134,6 +129,10 @@
 .LiqPrice-hard-warning {
   color: #fa3c58;
   text-decoration-color: #fa3c58;
+}
+
+.Banner-gap {
+  margin-bottom: 1.75rem;
 }
 
 @media (max-width: 900px) {

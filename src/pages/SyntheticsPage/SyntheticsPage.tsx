@@ -1,3 +1,4 @@
+import Helmat from "react-helmet";
 import { Plural, Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import cx from "classnames";
@@ -252,6 +253,13 @@ export function SyntheticsPage(p: Props) {
 
   return (
     <div className="Exchange page-layout">
+      <Helmat>
+        <style type="text/css">{`
+            :root {
+              --main-bg-color: #08091b;                   
+             {
+         `}</style>
+      </Helmat>
       <div className="Exchange-content">
         <div className="Exchange-left">
           <TVChart

@@ -293,14 +293,12 @@ export function GmConfirmationBox({
                 <>
                   {[longTokenText, shortTokenText].filter(Boolean).map((text) => (
                     <div key={text}>
-                      <Trans>Pay</Trans>
-                      {text}
+                      <Trans>Pay</Trans> {text}
                     </div>
                   ))}
                   <div className="Confirmation-box-main-icon"></div>
                   <div>
-                    <Trans>Receive</Trans>
-                    {marketTokenText}
+                    <Trans>Receive</Trans> {marketTokenText}
                   </div>
                 </>
               )}
