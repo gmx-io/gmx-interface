@@ -1,7 +1,7 @@
-import { ARBITRUM, AVALANCHE } from "./chains";
+import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 
 export function getIsSyntheticsSupported(chainId: number) {
-  return true;
+  return [ARBITRUM, ARBITRUM_GOERLI, AVALANCHE_FUJI].includes(chainId);
 }
 
 export function getIsV1Supported(chainId: number) {
