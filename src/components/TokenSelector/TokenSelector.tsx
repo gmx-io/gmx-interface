@@ -105,7 +105,7 @@ export default function TokenSelector(props: Props) {
   };
 
   return (
-    <div className={cx("TokenSelector", { disabled }, props.className)}>
+    <div className={cx("TokenSelector", { disabled }, props.className)} onClick={(event) => event.stopPropagation()}>
       <Modal
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
