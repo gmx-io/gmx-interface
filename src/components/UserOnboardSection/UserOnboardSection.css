@@ -1,0 +1,33 @@
+.Wallet-btn-approve {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: inset 0px 0px 1rem 0.5rem rgba(27, 30, 46, 0.2);
+  background: rgba(45, 45, 45, 0.5);
+  height: 5.1rem;
+  width: 80%;
+  border: 1px solid var(--dark-blue-border);
+  border-radius: 8px;
+  position: relative;
+  color: white;
+  font-size: 2rem;
+  padding-left: 1.85rem;
+  padding-right: 1.85rem;
+}
+
+.Wallet-btn-approve:hover {
+  background: var(--dark-blue-hover);
+  border-color: var(--dark-blue-border);
+}
+
+.Wallet-btn-approve:active {
+  background: var(--dark-blue-active);
+}
+
+.Wallet-btn-approve:not(:last-child) {
+  margin-bottom: 1.05rem;
+}
+
+.Wallet-btn-approve:disabled {
+  opacity: 0.4;
+}

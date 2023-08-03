@@ -81,7 +81,6 @@ import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "con
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import Button from "components/Button/Button";
-import UsefulLinks from "./UsefulLinks";
 import { get1InchSwapUrl } from "config/links";
 import FeesTooltip from "./FeesTooltip";
 
@@ -2507,7 +2506,6 @@ export default function SwapBox(props) {
           )}
         </div>
       )}
-      <UsefulLinks className="Useful-links-swapbox" />
       <NoLiquidityErrorModal
         chainId={chainId}
         fromToken={fromToken}

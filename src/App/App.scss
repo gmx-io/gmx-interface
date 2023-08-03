@@ -321,11 +321,8 @@
   display:flex;
   flex-direction: column;
   align-items: center;
-  padding: 8px 8px;
-  gap: 0.5rem;
+  padding: 2px;
   width: 90%;
-  padding-left: 1.85rem;
-  padding-top: 1.05rem;
 }
 
 
@@ -333,8 +330,8 @@
   display: block;
   box-shadow: inset 0px 0px 1rem 0.5rem rgba(27, 30, 46, 0.2);
   background: rgba(45, 45, 45, 0.50);
-  height: 4.9rem;
-  width: 35rem;
+  height: 5.1rem;
+  width: 90%;
   border: 1px solid var(--dark-blue-border);
   border-radius: 8px;
   position: relative;
@@ -356,37 +353,6 @@
 
 .Wallet-btn:not(:last-child) {
   margin-bottom: 1.05rem;
-}
-.Wallet-btn-approve {
-  display: block;
-  box-shadow: inset 0px 0px 1rem 0.5rem rgba(27, 30, 46, 0.2);
-  background: rgba(45, 45, 45, 0.50);
-  height: 5.1rem;
-  width: 80%;
-  border: 1px solid var(--dark-blue-border);
-  border-radius: 8px;
-  position: relative;
-  color: white;
-  font-size: 2rem;
-  display: flex;
-  justify-content: left;
-  padding-left: 1.85rem;
-  padding-top: 1.05rem;
-}
-
-.Wallet-btn-approve:hover {
-  background: var(--dark-blue-hover);
-  border-color: var(--dark-blue-border);
-}
-.Wallet-btn-approve:active {
-  background: var(--dark-blue-active);
-}
-.Wallet-btn-approve:not(:last-child) {
-  margin-bottom: 1.05rem;
-}
-
-.Wallet-btn-approve:disabled {
-  opacity: 0.4;
 }
 
 .MetaMask-btn img {
@@ -1511,16 +1477,24 @@ button.App-button {
 
 .Email-input-section {
   display: flex;
-  width: 380px;
+  align-items: center;
+  width: 365px;
   height: 47px;
   padding: 12px;
-  align-items:center;
-  gap: 8px;
   flex-shrink: 0;
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.07);
   background: #232323;
 }
+
+.Email-input-section img {
+  margin-right: 5px; /* Add spacing after the image */
+}
+
+.Email-input-section input {
+  flex-grow: 1; /* Allow the input to take up the remaining space */
+}
+
 
 .Email-input-container {
     padding-bottom: 5px;

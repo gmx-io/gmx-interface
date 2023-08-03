@@ -52,7 +52,6 @@ import { bigNumberify, formatAmount } from "lib/numbers";
 import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "config/tokens";
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import UsefulLinks from "components/Exchange/UsefulLinks";
 const { AddressZero } = ethers.constants;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;
@@ -985,7 +984,6 @@ export const Exchange = forwardRef((props, ref) => {
           </div>
         </div>
         <div className="Exchange-lists small">{getListSection()}</div>
-        <UsefulLinks className="Useful-links-exchange" />
       </div>
       <Footer />
     </div>

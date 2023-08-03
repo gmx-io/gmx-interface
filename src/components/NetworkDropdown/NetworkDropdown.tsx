@@ -7,6 +7,8 @@ import { HiDotsVertical } from "react-icons/hi";
 import "./NetworkDropdown.css";
 import language24Icon from "img/ic_language24.svg";
 import settingsIcon from "img/ic_settings_16.svg";
+// import clickTradingIcon from "img/icn_1clicktrading.svg";
+// import emailIcon from "img/icn_email.svg";
 import { defaultLocale } from "lib/i18n";
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 import LanguageModalContent from "./LanguageModalContent";
@@ -15,6 +17,8 @@ import { getIcon } from "config/icons";
 
 const LANGUAGE_MODAL_KEY: string = "LANGUAGE";
 const NETWORK_MODAL_KEY: string = "NETWORK";
+
+// @todo add options to DesktopDropdown
 
 export default function NetworkDropdown(props) {
   const currentLanguage = useRef(localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY) || defaultLocale);
@@ -97,7 +101,13 @@ function NavIcons({ selectorLabel }) {
   );
 }
 
-function DesktopDropdown({ setActiveModal, selectorLabel, networkOptions, onNetworkSelect, openSettings }) {
+function DesktopDropdown({
+  setActiveModal,
+  selectorLabel,
+  networkOptions,
+  onNetworkSelect,
+  openSettings,
+}) {
   return (
     <div className="App-header-network">
       <Menu>
@@ -116,6 +126,34 @@ function DesktopDropdown({ setActiveModal, selectorLabel, networkOptions, onNetw
             />
           </div>
           <div className="network-dropdown-divider" />
+          {/* <Menu.Item>
+            <div className="network-dropdown-menu-item menu-item" onClick={setApprovalsModalVisible}>
+              <div className="menu-item-group">
+                <div className="menu-item-icon">
+                  <img className="network-dropdown-icon" src={clickTradingIcon} alt="" />
+                </div>
+                <span className="network-dropdown-item-label">
+                  <Trans>{`Enable One-Click Trading`}</Trans>
+                </span>
+              </div>
+            </div>
+          </Menu.Item> */}
+          {/* <Menu.Item>
+            <div
+              className="network-dropdown-menu-item menu-item last-dropdown-menu"
+              onClick={() => setActiveModal(LANGUAGE_MODAL_KEY)}
+            >
+              <div className="menu-item-group">
+                <div className="menu-item-icon">
+                  <img className="network-dropdown-icon" src={emailIcon} alt="" />
+                </div>
+                <span className="network-dropdown-item-label">
+                  <Trans>{`Enable Email Notifications`}</Trans>
+                </span>
+              </div>
+            </div>
+          </Menu.Item>
+          <div className="network-dropdown-divider" /> */}
           <Menu.Item>
             <div className="network-dropdown-menu-item menu-item" onClick={openSettings}>
               <div className="menu-item-group">

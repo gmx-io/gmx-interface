@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 import { supabase } from "./supabaseClient";
 
-// Function to add a user with a new wallet address
 export const addUser = async (walletAddress: string) => {
   const { data, error } = await supabase.from("users").insert([{ wallet_address: walletAddress }]);
 
@@ -25,18 +24,33 @@ export const getUserByWalletAddress = async (walletAddress: string) => {
   return data[0];
 };
 
-
 export const updateUserEmail = async (walletAddress: string, email: string) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { data: users, error } = await supabase
+  const { data: users, error: fetchError } = await supabase
     .from("users")
-    .update({ email_address: email })
-    .eq("wallet_address", walletAddress);
+    .select("email_address")
+    .eq("wallet_address", walletAddress)
+    .single();
 
-  if (error) {
-    console.error("Error updating user email:", error);
+  if (fetchError) {
+    console.error("Error fetching user data:", fetchError);
     return false;
   }
 
-  return true;
+  // If no existing email, update the record
+  if (!users?.email_address?.trim()) {
+    const { error: updateError } = await supabase
+      .from("users")
+      .update({ email_address: email })
+      .eq("wallet_address", walletAddress);
+
+    if (updateError) {
+      console.error("Error updating user email:", updateError);
+      return false;
+    }
+
+    return true;
+  } else {
+    console.log("Email already exists, not updated.");
+    return false;
+  }
 };

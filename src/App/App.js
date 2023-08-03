@@ -20,7 +20,6 @@ import Home from "pages/Home/Home";
 import AppHome from "pages/AppHome/AppHome";
 import Dashboard from "pages/Dashboard/Dashboard";
 import Stats from "pages/Stats/Stats";
-import Ecosystem from "pages/Ecosystem/Ecosystem";
 import Stake from "pages/Stake/Stake";
 import { Exchange } from "pages/Exchange/Exchange";
 import Actions from "pages/Actions/Actions";
@@ -48,6 +47,7 @@ import "styles/Input.css";
 import metamaskImg from "img/metamask.png";
 import coinbaseImg from "img/coinbaseWallet.png";
 import walletConnectImg from "img/walletconnect-circle-blue.svg";
+import emailIcn from "img/icn_email.svg";
 import useEventToast from "components/EventToast/useEventToast";
 import EventToastContainer from "components/EventToast/EventToastContainer";
 import SEO from "components/Common/SEO";
@@ -65,7 +65,6 @@ import TermsAndConditions from "pages/TermsAndConditions/TermsAndConditions";
 import { useLocalStorage } from "react-use";
 import { RedirectPopupModal } from "components/ModalViews/RedirectModal";
 import { REDIRECT_POPUP_TIMESTAMP_KEY } from "config/localStorage";
-import Jobs from "pages/Jobs/Jobs";
 
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
@@ -108,7 +107,7 @@ import { useInfoTokens } from "domain/tokens";
 import { contractFetcher } from "lib/contracts";
 import { getTokens } from "config/tokens";
 import { SwapBox } from "pages/Swap/Swap";
-import StepIndicator from "components/StepIndicator/StepIndicator";
+import UserOnboardSection from "components/UserOnboardSection/UserOnboardSection";
 import OtpInput from "components/OtpInput/OtpInput";
 import { createOtp } from "config/tool";
 import sendOtp from "external/sendOtp";
@@ -211,6 +210,7 @@ function FullApp() {
   const connectInjectedWallet = getInjectedHandler(activate, deactivate);
   const activateWalletConnect = () => {
     getWalletConnectHandler(activate, deactivate, setActivatingConnector)();
+    setActiveStep(2);
   };
 
   const handleApproveTokens = () => {
@@ -289,6 +289,7 @@ function FullApp() {
   const [generatedOtp, setGeneratedOtp] = useState(0);
   const [userEnteredOtp, setUserEnteredOtp] = useState("");
   const [doesUserHaveEmail, setDoesUserHaveEmail] = useState(false);
+  const [activeStep, setActiveStep] = useState(1);
   const connectWallet = () => setWalletModalVisible(true);
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
@@ -324,6 +325,7 @@ function FullApp() {
     localStorage.setItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY, providerName);
     activateInjectedProvider(providerName);
     connectInjectedWallet();
+    setActiveStep(2);
     setShowConnectOptions(false);
   };
 
@@ -363,30 +365,22 @@ function FullApp() {
   const handleEmailEntered = (email) => {
     // Regular expression for email validation
     const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
-
-    if (emailRegex.test(email)) {
-      return true;
-    } else {
-      return false;
-    }
+    return Boolean(emailRegex.test(email));
   };
 
   const handleEmailSubmit = async (email) => {
-    try {
-      if (handleEmailEntered(emailText)) {
-        // generate new otp
-        const otp = createOtp();
-        setGeneratedOtp(otp);
+    if (handleEmailEntered(emailText)) {
+      // generate new otp
+      const otp = createOtp();
+      setGeneratedOtp(otp);
 
-        // check if email has been sent with otp
-        const otpSentSuccessfully = await sendOtp(email, otp);
-        if (otpSentSuccessfully) {
-          setShowOtp(true);
-        }
+      // check if email has been sent with otp
+      const otpSentSuccessfully = await sendOtp(email, otp);
+      if (otpSentSuccessfully) {
+        setShowOtp(true);
       }
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
+    } else {
+      helperToast.error("Invalid Email Address.");
     }
   };
 
@@ -423,9 +417,9 @@ function FullApp() {
   }, []);
 
   const optionalSectionVisibilityVariants = {
-    hidden: { opacity: 0, y: "-100vh" },
-    visible: { opacity: 1, y: 0, transition: { type: "ease", duration: 0.5 } },
-    exit: { opacity: 0, y: "-100vh", transition: { type: "ease", duration: 0.5 } }, // New exit property
+    hidden: { opacity: 0, scaleY: 0 },
+    visible: { opacity: 1, scaleY: 1, transition: { type: "ease", duration: 1 } },
+    exit: { opacity: 0, scaleY: 0, transition: { type: "ease", duration: 1 } },
   };
 
   useEffect(() => {
@@ -490,26 +484,34 @@ function FullApp() {
   }, [library, pendingTxns, chainId]);
 
   useEffect(() => {
-    if (userEnteredOtp.length === 4) {
+    if (userEnteredOtp.match(/^\d{4}$/)) {
       if (userEnteredOtp === generatedOtp) {
         const updateEmail = async () => {
           const updateEmail = await updateUserEmail(account, emailText);
 
           if (updateEmail) {
             helperToast.success("Email verified successfully!");
+
+            // reset state vars
             setWalletModalVisible(false);
             setShowOtp(false);
-            setShowEmailVerification(false);
-            setEmailText("");
           } else {
             helperToast.error("Error updating email.");
           }
         };
 
         updateEmail();
+
+        // reset email vars
+        setShowEmailVerification(false);
+        setEmailText("");
+        setUserEnteredOtp("");
+        setActiveStep(1);
       } else {
         helperToast.error("OTP entered is incorrect.");
       }
+    } else {
+      return;
     }
   }, [userEnteredOtp, generatedOtp, account, emailText]);
 
@@ -568,6 +570,7 @@ function FullApp() {
             disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
             openSettings={openSettings}
             setWalletModalVisible={setWalletModalVisible}
+            setApprovalsModalVisible={setApprovalsModalVisible}
             setDoesUserHaveEmail={setDoesUserHaveEmail}
             redirectPopupTimestamp={redirectPopupTimestamp}
             showRedirectModal={showRedirectModal}
@@ -647,14 +650,8 @@ function FullApp() {
                   savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
                 />
               </Route>
-              <Route exact path="/jobs">
-                <Jobs />
-              </Route>
               <Route exact path="/buy_gmx">
                 <BuyGMX />
-              </Route>
-              <Route exact path="/ecosystem">
-                <Ecosystem />
               </Route>
               <Route exact path="/referrals">
                 <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
@@ -723,12 +720,15 @@ function FullApp() {
           <Trans>{`Connect your wallet and agree to terms.`}</Trans>
         </div>
         <div className="Modal-content-wrapper">
-          <button className="Wallet-btn-approve" onClick={handleConnectWallet}>
-            <StepIndicator digit={1} />
-            <div>
-              <Trans>{`Connect Wallet`}</Trans>
-            </div>
-          </button>
+          <UserOnboardSection
+            step={1}
+            text={`Connect Wallet`}
+            handleClick={handleConnectWallet}
+            disabled={false}
+            showArrow={true}
+            isActive={activeStep === 2}
+          />
+
           <AnimatePresence>
             {showConnectOptions && (
               <motion.div
@@ -737,6 +737,7 @@ function FullApp() {
                 animate="visible"
                 exit="exit"
                 variants={optionalSectionVisibilityVariants}
+                style={{ originY: 0 }}
               >
                 <button className="Wallet-btn MetaMask-btn" onClick={activateMetaMask}>
                   <img src={metamaskImg} alt="MetaMask" />
@@ -759,20 +760,25 @@ function FullApp() {
               </motion.div>
             )}
           </AnimatePresence>
-          <button className="Wallet-btn-approve" onClick={handleApproveTokens} disabled={!(active && hasTokens)}>
-            <StepIndicator digit={2} />
-            <div>
-              <Trans>{`Enable One-Click Trading`}</Trans>
-            </div>
-          </button>
+
+          <UserOnboardSection
+            step={2}
+            text={`Enable One-Click Trading`}
+            handleClick={handleApproveTokens}
+            disabled={!(active && hasTokens)}
+            showArrow={true}
+            isActive={activeStep === 3}
+          />
 
           {!doesUserHaveEmail && (
-            <button className="Wallet-btn-approve" onClick={handleEmailVerifyClick} disabled={!(active && hasTokens)}>
-              <StepIndicator digit={3} />
-              <div>
-                <Trans>{`Enable Email Notifications`}</Trans>
-              </div>
-            </button>
+            <UserOnboardSection
+              step={3}
+              text={`Enable Email Notifications`}
+              handleClick={handleEmailVerifyClick}
+              disabled={!active}
+              showArrow={true}
+              isActive={activeStep === 4}
+            />
           )}
 
           <AnimatePresence>
@@ -783,17 +789,18 @@ function FullApp() {
                 animate="visible"
                 exit="exit"
                 variants={optionalSectionVisibilityVariants}
+                style={{ originY: 0 }}
               >
-                <div className="Email-input-prompt-text">
-                  <Trans>{`Your email`}</Trans>
+                <div className="Email-input-section">
+                  <img src={emailIcn} alt="Email icon" />
+                  <input
+                    type="text"
+                    placeholder="Enter email here"
+                    value={emailText}
+                    onChange={(e) => setEmailText(e.target.value)}
+                  />
                 </div>
-                <input
-                  className="Email-input-section"
-                  type="text"
-                  placeholder="Enter email here"
-                  value={emailText}
-                  onChange={(e) => setEmailText(e.target.value)}
-                />
+
                 <Button variant="approve-done" className="w-20 h-full" onClick={() => handleEmailSubmit(emailText)}>
                   {`Done`}
                 </Button>
@@ -804,8 +811,13 @@ function FullApp() {
                     animate="visible"
                     exit="exit"
                     variants={optionalSectionVisibilityVariants}
+                    style={{ originY: 0 }}
                   >
-                    <OtpInput onOtpEntered={handleOtpEntered} />
+                    <OtpInput
+                      onOtpEntered={handleOtpEntered}
+                      generatedOtp={generatedOtp}
+                      resendHandler={() => handleEmailSubmit(emailText)}
+                    />
                   </motion.div>
                 )}
               </motion.div>
@@ -828,6 +840,7 @@ function FullApp() {
           closeApprovalsModal={() => {
             setApprovalsModalVisible(false);
             setWalletModalVisible(true);
+            setActiveStep(3);
           }}
         />
       </Modal>

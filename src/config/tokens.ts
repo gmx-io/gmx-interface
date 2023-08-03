@@ -457,10 +457,19 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     //   name: "USD Gambit",
     //   symbol: "USDG",
     //   decimals: 18,
-    //   address: "0xfa55A08911E424D03D40fFea5257E06b22bAe0C6",
+    //   address: "0xeED25Cf3A5322cE77D17cbaa108136c64651ab04",
     //   isUsdg: true,
     //   imageUrl: "https://assets.coingecko.com/coins/images/15886/small/usdg-02.png",
     // },
+    {
+      name: "USD Coin",
+      symbol: "USDC",
+      decimals: 18,
+      address: "0x6C87d812eb972f375244A7e2e84307bcF2e1904f",
+      isStable: true,
+      coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
+      imageUrl: "https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png",
+    },
     {
       name: "Wrapped Ethereum (WETH)",
       symbol: "ETH",
@@ -829,7 +838,16 @@ export const TOKENS_BY_SYMBOL_MAP: { [chainId: number]: { [symbol: string]: Toke
 export const WRAPPED_TOKENS_MAP: { [chainId: number]: Token } = {};
 export const NATIVE_TOKENS_MAP: { [chainId: number]: Token } = {};
 
-const CHAIN_IDS = [MAINNET, TESTNET, ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, AVALANCHE_FUJI, SEPOLIA_TESTNET, OPTIMISM_GOERLI_TESTNET];
+const CHAIN_IDS = [
+  MAINNET,
+  TESTNET,
+  ARBITRUM,
+  ARBITRUM_TESTNET,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  SEPOLIA_TESTNET,
+  OPTIMISM_GOERLI_TESTNET,
+];
 
 for (let j = 0; j < CHAIN_IDS.length; j++) {
   const chainId = CHAIN_IDS[j];
