@@ -10,17 +10,15 @@ function Banner({ className }) {
         GMX updated!
         <img src={sparkle} alt="sparkle" className="Banner-text-sparkle" />
       </p>
-      <div className="Banner-action items-center justify-space-between">
-        <a
-          className="Banner-link"
-          target="_blank"
-          rel="noreferrer"
-          href="https://gmxio.substack.com/p/gmx-v2-beta-is-now-live"
-        >
-          What’s new in V2?
-        </a>
+      <a
+        className="Banner-link Banner-action items-center justify-space-between"
+        target="_blank"
+        rel="noreferrer"
+        href="https://gmxio.substack.com/p/gmx-v2-beta-is-now-live"
+      >
+        <div>What’s new in V2?</div>
         <FiChevronRight fontSize={16} />
-      </div>
+      </a>
     </div>
   );
 }
