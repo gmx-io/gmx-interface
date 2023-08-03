@@ -1,3 +1,4 @@
+import "./SyntheticsPage.scss";
 import { Plural, Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import cx from "classnames";
@@ -251,7 +252,7 @@ export function SyntheticsPage(p: Props) {
   }
 
   return (
-    <div className="Exchange page-layout">
+    <div className="Exchange page-layout trade-v2">
       <div className="Exchange-content">
         <div className="Exchange-left">
           <TVChart
