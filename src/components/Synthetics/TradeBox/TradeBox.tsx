@@ -972,7 +972,7 @@ export function TradeBox(p: Props) {
           >
             {toTokenAddress && (
               <TokenSelector
-                label={t`Receive:`}
+                label={t`Receive`}
                 chainId={chainId}
                 tokenAddress={toTokenAddress}
                 onSelectToken={(token) => onSelectToTokenAddress(token.address)}
