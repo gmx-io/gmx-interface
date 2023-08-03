@@ -1,6 +1,5 @@
 import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import CustomErrors from "abis/CustomErrors.json";
-import Multicall3 from "abis/Multicall.json";
 import {
   ARBITRUM,
   ARBITRUM_GOERLI,
@@ -11,11 +10,10 @@ import {
   getRpcUrl,
 } from "config/chains";
 import { ethers } from "ethers";
-import { PublicClient, createPublicClient, getContract as getViemContract, http } from "viem";
+import { PublicClient, createPublicClient, http } from "viem";
 import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "viem/chains";
 import { MulticallRequestConfig, MulticallResult } from "./types";
 
-import { getContract } from "config/contracts";
 import { sleep } from "lib/sleep";
 
 export const MAX_TIMEOUT = 2000;
@@ -88,21 +86,28 @@ export async function executeMulticall(
   return multicall.call(request, MAX_TIMEOUT);
 }
 
+/**
+ * store instances for different chains +-
+ *
+ * if signer was passed, use signer
+ *
+ */
 export class Multicall {
-  viemClient: PublicClient;
-  viemMulticallContract: any;
-
-  static instance: Multicall | undefined = undefined;
+  static instances: {
+    [chainId: number]: Multicall | undefined;
+  } = {};
 
   static async getInstance(chainId: number, customProvider?: JsonRpcProvider) {
     if (customProvider && !customProvider.network) {
       await customProvider.ready;
     }
 
+    let instance = Multicall.instances[chainId];
+
     if (
-      !Multicall.instance ||
-      (customProvider && Multicall.instance.provider !== customProvider) ||
-      Multicall.instance.provider.network.chainId !== chainId
+      !instance ||
+      (customProvider && instance.provider !== customProvider) ||
+      instance.provider.network.chainId !== chainId
     ) {
       const rpcUrl = getRpcUrl(chainId);
       const rpcProvider = new ethers.providers.StaticJsonRpcProvider(rpcUrl, {
@@ -112,15 +117,17 @@ export class Multicall {
 
       await rpcProvider.ready;
 
-      Multicall.instance = new Multicall(chainId, rpcProvider);
+      instance = new Multicall(chainId, rpcProvider);
+
+      Multicall.instances[chainId] = instance;
     }
 
-    return Multicall.instance;
+    return instance;
   }
 
-  constructor(public chainId: number, public provider: JsonRpcProvider) {
-    this.viemClient = createPublicClient({
-      transport: http(provider.connection.url, {
+  static getViemClient(chainId: number, rpcUrl: string) {
+    return createPublicClient({
+      transport: http(rpcUrl, {
         // retries works strangely in viem, so we disable them
         retryCount: 0,
         retryDelay: 10000000,
@@ -129,11 +136,12 @@ export class Multicall {
       batch: BATCH_CONFIGS[chainId].client,
       chain: CHAIN_BY_CHAIN_ID[chainId],
     });
-    this.viemMulticallContract = getViemContract({
-      address: getContract(chainId, "Multicall") as any,
-      abi: Multicall3.abi,
-      publicClient: this.viemClient,
-    });
+  }
+
+  viemClient: PublicClient;
+
+  constructor(public chainId: number, public provider: JsonRpcProvider) {
+    this.viemClient = Multicall.getViemClient(chainId, provider.connection.url);
   }
 
   async call(request: MulticallRequestConfig<any>, maxTimeout: number) {
@@ -162,6 +170,7 @@ export class Multicall {
           return;
         }
 
+        // Add Errors ABI to each contract ABI to correctly parse errors
         abis[contractCallConfig.contractAddress] =
           abis[contractCallConfig.contractAddress] || contractCallConfig.abi.concat(CustomErrors.abi);
 
@@ -199,16 +208,7 @@ export class Multicall {
           throw e;
         }
 
-        const fallbackClient = createPublicClient({
-          transport: http(rpcUrl, {
-            // retries works strangely in viem, so we disable them
-            retryCount: 0,
-            retryDelay: 10000000,
-            batch: BATCH_CONFIGS[this.chainId].http,
-          }),
-          chain: CHAIN_BY_CHAIN_ID[this.chainId],
-          batch: BATCH_CONFIGS[this.chainId].client,
-        });
+        const fallbackClient = Multicall.getViemClient(this.chainId, rpcUrl);
 
         // eslint-disable-next-line no-console
         console.log(`using multicall fallback for chain ${this.chainId}`);

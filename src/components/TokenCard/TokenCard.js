@@ -8,15 +8,14 @@ import { useWeb3React } from "@web3-react/core";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
+import { isDevelopment } from "config/env";
 import { getIcon } from "config/icons";
+import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
 import { useChainId } from "lib/chains";
+import { formatAmount } from "lib/numbers";
 import { switchNetwork } from "lib/wallets";
 import APRLabel from "../APRLabel/APRLabel";
 import { HeaderLink } from "../Header/HeaderLink";
-import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
-import { isDevelopment } from "config/env";
-import { formatAmount } from "lib/numbers";
-import { useMarketTokensData, useMarketsInfo } from "domain/synthetics/markets";
 
 const glpIcon = getIcon("common", "glp");
 const gmxIcon = getIcon("common", "gmx");
@@ -27,22 +26,10 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
   const { chainId } = useChainId();
   const { active } = useWeb3React();
 
-  const { marketsInfoData } = useMarketsInfo(chainId);
-  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
-
-  const { avgMarketsAPR: fujiAvgMarketsAPR } = useMarketTokensAPR(AVALANCHE_FUJI, {
-    marketsInfoData,
-    marketTokensData,
-  });
-  const { avgMarketsAPR: goerliAvgMarketsAPR } = useMarketTokensAPR(ARBITRUM_GOERLI, {
-    marketsInfoData,
-    marketTokensData,
-  });
-  const { avgMarketsAPR: arbitrumAvgMarketsAPR } = useMarketTokensAPR(ARBITRUM, { marketsInfoData, marketTokensData });
-  const { avgMarketsAPR: avalancheAvgMarketsAPR } = useMarketTokensAPR(AVALANCHE, {
-    marketsInfoData,
-    marketTokensData,
-  });
+  const { avgMarketsAPR: fujiAvgMarketsAPR } = useMarketTokensAPR(AVALANCHE_FUJI);
+  const { avgMarketsAPR: goerliAvgMarketsAPR } = useMarketTokensAPR(ARBITRUM_GOERLI);
+  const { avgMarketsAPR: arbitrumAvgMarketsAPR } = useMarketTokensAPR(ARBITRUM);
+  const { avgMarketsAPR: avalancheAvgMarketsAPR } = useMarketTokensAPR(AVALANCHE);
 
   const changeNetwork = useCallback(
     (network) => {
