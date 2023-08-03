@@ -39,14 +39,7 @@ import {
   formatLiquidationPrice,
   usePositionsConstants,
 } from "domain/synthetics/positions";
-import {
-  TokenData,
-  TokensData,
-  TokensRatio,
-  convertToUsd,
-  getMidPrice,
-  getTokensRatioByPrice,
-} from "domain/synthetics/tokens";
+import { TokenData, TokensData, TokensRatio, convertToUsd, getTokensRatioByPrice } from "domain/synthetics/tokens";
 import {
   AvailableTokenOptions,
   SwapAmounts,
@@ -188,7 +181,8 @@ export function TradeBox(p: Props) {
     switchTokenAddresses,
   } = p;
   const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket } = tradeFlags;
-  const { swapTokens, indexTokens, infoTokens } = avaialbleTokenOptions;
+  const { swapTokens, indexTokens, infoTokens, sortedIndexTokensWithPoolValue, sortedLongAndShortTokens } =
+    avaialbleTokenOptions;
 
   const tradeTypeLabels = useMemo(() => {
     return {
@@ -230,77 +224,6 @@ export function TradeBox(p: Props) {
 
   const [toTokenInputValue, setToTokenInputValue] = useSafeState("");
   const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : BigNumber.from(0);
-
-  const sortedIndexTokensWithPoolValue = useMemo(() => {
-    if (!marketsInfoData) return;
-    const markets = Object.values(marketsInfoData || {}).sort((a, b) => {
-      return a.indexToken.symbol.localeCompare(b.indexToken.symbol);
-    });
-    const marketsWithPoolValue = markets.reduce((acc, marketInfo) => {
-      if (marketInfo.isSpotOnly || marketInfo.isDisabled) {
-        return acc;
-      }
-
-      acc[marketInfo.indexTokenAddress] = marketInfo.poolValueMax;
-
-      return acc;
-    }, {});
-
-    return Object.keys(marketsWithPoolValue).sort((a, b) => {
-      return marketsWithPoolValue[b].gt(marketsWithPoolValue[a]) ? 1 : -1;
-    });
-  }, [marketsInfoData]);
-
-  const sortedLongAndShortTokens = useMemo(() => {
-    if (!marketsInfoData) return;
-
-    const markets = Object.values(marketsInfoData || {})
-      .sort((a, b) => {
-        return a.indexToken.symbol.localeCompare(b.indexToken.symbol);
-      })
-      .filter((marketInfo) => !marketInfo.isDisabled);
-
-    const longTokens = markets.reduce((acc, marketInfo) => {
-      const longPoolAmountUsd = convertToUsd(
-        marketInfo.longPoolAmount,
-        marketInfo.longToken.decimals,
-        getMidPrice(marketInfo.longToken.prices)
-      )!;
-
-      acc[marketInfo.longToken.address] = (acc[marketInfo.longToken.address] || BigNumber.from(0)).add(
-        longPoolAmountUsd
-      );
-
-      return acc;
-    }, {});
-
-    const shortTokens = markets.reduce((acc, marketInfo) => {
-      if (longTokens[marketInfo.shortToken.address]) {
-        return acc;
-      }
-      const shortPoolAmountUsd = convertToUsd(
-        marketInfo.shortPoolAmount,
-        marketInfo.shortToken.decimals,
-        getMidPrice(marketInfo.shortToken.prices)
-      )!;
-
-      acc[marketInfo.shortToken.address] = (acc[marketInfo.shortToken.address] || BigNumber.from(0)).add(
-        shortPoolAmountUsd
-      );
-
-      return acc;
-    }, {});
-
-    const sortedLongTokens = Object.keys(longTokens).sort((a, b) => {
-      return longTokens[b].gt(longTokens[a]) ? 1 : -1;
-    });
-
-    const sortedShortTokens = Object.keys(shortTokens).sort((a, b) => {
-      return shortTokens[b].gt(shortTokens[a]) ? 1 : -1;
-    });
-
-    return sortedLongTokens.concat(sortedShortTokens);
-  }, [marketsInfoData]);
 
   const markPrice = useMemo(() => {
     if (!toToken) {
