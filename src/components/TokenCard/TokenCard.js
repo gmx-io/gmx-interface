@@ -29,7 +29,7 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
   const { avgMarketsAPR: fujiAvgMarketsAPR } = useMarketTokensAPR(AVALANCHE_FUJI);
   const { avgMarketsAPR: goerliAvgMarketsAPR } = useMarketTokensAPR(ARBITRUM_GOERLI);
   const { avgMarketsAPR: arbitrumAvgMarketsAPR } = useMarketTokensAPR(ARBITRUM);
-  // const { avgMarketsAPR: avalancheAvgMarketsAPR } = useMarketTokensAPR(AVALANCHE);
+  const { avgMarketsAPR: avalancheAvgMarketsAPR } = useMarketTokensAPR(AVALANCHE);
 
   const changeNetwork = useCallback(
     (network) => {
@@ -159,10 +159,12 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
             <span>
               <Trans>Arbitrum APR:</Trans> {formatAmount(arbitrumAvgMarketsAPR, 2, 2)}%
             </span>
-            {/* {", "}
-            <span>
-              <Trans>Avalanche APR:</Trans> {formatAmount(avalancheAvgMarketsAPR, 2, 2)}%
-            </span> */}
+            <>
+              {", "}
+              <span>
+                <Trans>Avalanche APR:</Trans> {formatAmount(avalancheAvgMarketsAPR, 2, 2)}%
+              </span>
+            </>
           </div>
 
           <div className="Home-token-card-option-action">
@@ -170,9 +172,10 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
               <BuyLink to="/pools" className="default-btn" network={ARBITRUM}>
                 <Trans>Buy on Arbitrum</Trans>
               </BuyLink>
-              {/* <BuyLink to="/pools" className="default-btn" network={AVALANCHE}>
+
+              <BuyLink to="/pools" className="default-btn" network={AVALANCHE}>
                 <Trans>Buy on Avalanche</Trans>
-              </BuyLink> */}
+              </BuyLink>
             </div>
             {/* <a
                 href="https://docs.gmx.io/docs/trading/v1"
