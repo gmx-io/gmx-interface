@@ -209,8 +209,16 @@ export function GmList({
                     </td>
 
                     <td>
-                      {formatTokenAmount(token.balance, token.decimals, "GM", { useCommas: true, displayDecimals: 2 })}
-                      <br />({formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice)) || "..."})
+                      {formatTokenAmount(token.balance, token.decimals, "GM", {
+                        useCommas: true,
+                        displayDecimals: 2,
+                        fallbackToZero: true,
+                      })}
+                      <br />(
+                      {formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice), {
+                        fallbackToZero: true,
+                      }) || "..."}
+                      )
                     </td>
 
                     <td>{apr ? `${formatAmount(apr, 2, 2)}%` : "..."}</td>
@@ -337,8 +345,13 @@ export function GmList({
                         {formatTokenAmount(token.balance, token.decimals, "GM", {
                           useCommas: true,
                           displayDecimals: 2,
+                          fallbackToZero: true,
                         })}{" "}
-                        ({formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice))})
+                        (
+                        {formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice), {
+                          fallbackToZero: true,
+                        })}
+                        )
                       </div>
                     </div>
                     <div className="App-card-row">
