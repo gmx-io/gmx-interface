@@ -11,7 +11,12 @@ function Banner({ className }) {
         <img src={sparkle} alt="sparkle" className="Banner-text-sparkle" />
       </p>
       <div className="Banner-action items-center justify-space-between">
-        <a className="Banner-link" href="https://gmxio.substack.com/p/gmx-v2-beta-is-now-live">
+        <a
+          className="Banner-link"
+          target="_blank"
+          rel="noreferrer"
+          href="https://gmxio.substack.com/p/gmx-v2-beta-is-now-live"
+        >
           What’s new in V2?
         </a>
         <FiChevronRight fontSize={16} />
