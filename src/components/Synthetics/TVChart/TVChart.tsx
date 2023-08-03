@@ -241,6 +241,7 @@ export function TVChart({
             }}
             supportedResolutions={SUPPORTED_RESOLUTIONS_V2}
             tradePageVersion={tradePageVersion}
+            setTradePageVersion={setTradePageVersion}
           />
         )}
       </div>

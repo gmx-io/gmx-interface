@@ -385,6 +385,7 @@ export default function ExchangeTVChart(props) {
             chartToken={chartToken}
             supportedResolutions={SUPPORTED_RESOLUTIONS_V1}
             tradePageVersion={tradePageVersion}
+            setTradePageVersion={setTradePageVersion}
           />
         ) : (
           <p className="ExchangeChart-error">Sorry, chart is not supported on this network yet.</p>
