@@ -575,6 +575,7 @@ export function PositionSeller(p: Props) {
                           )}
                         </span>
                       }
+                      extendedSortSequence={availableTokensOptions?.sortedLongAndShortTokens}
                     />
                   )
                 }
