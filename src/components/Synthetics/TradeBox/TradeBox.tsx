@@ -93,6 +93,7 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { CollateralSelectorRow } from "./CollateralSelectorRow";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import "./TradeBox.scss";
+import Banner from "components/Banner/Banner";
 
 export type Props = {
   tradeType: TradeType;
@@ -1398,48 +1399,51 @@ export function TradeBox(p: Props) {
 
   return (
     <>
-      <div className={`App-box SwapBox`}>
-        <Tab
-          icons={tradeTypeIcons}
-          options={Object.values(TradeType)}
-          optionLabels={tradeTypeLabels}
-          option={tradeType}
-          onChange={onSelectTradeType}
-          className="SwapBox-option-tabs"
-        />
+      <div>
+        <Banner className="Banner-gap" />
+        <div className={`App-box SwapBox`}>
+          <Tab
+            icons={tradeTypeIcons}
+            options={Object.values(TradeType)}
+            optionLabels={tradeTypeLabels}
+            option={tradeType}
+            onChange={onSelectTradeType}
+            className="SwapBox-option-tabs"
+          />
 
-        <Tab
-          options={availableTradeModes}
-          optionLabels={tradeModeLabels}
-          className="SwapBox-asset-options-tabs"
-          type="inline"
-          option={tradeMode}
-          onChange={onSelectTradeMode}
-        />
+          <Tab
+            options={availableTradeModes}
+            optionLabels={tradeModeLabels}
+            className="SwapBox-asset-options-tabs"
+            type="inline"
+            option={tradeMode}
+            onChange={onSelectTradeMode}
+          />
 
-        {(isSwap || isIncrease) && renderTokenInputs()}
-        {isTrigger && renderDecreaseSizeInput()}
+          {(isSwap || isIncrease) && renderTokenInputs()}
+          {isTrigger && renderDecreaseSizeInput()}
 
-        {isSwap && isLimit && renderTriggerRatioInput()}
-        {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}
+          {isSwap && isLimit && renderTriggerRatioInput()}
+          {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}
 
-        <div className="SwapBox-info-section">
-          {isPosition && renderPositionControls()}
-          {isIncrease && renderIncreaseOrderInfo()}
-          {isTrigger && renderTriggerOrderInfo()}
+          <div className="SwapBox-info-section">
+            {isPosition && renderPositionControls()}
+            {isIncrease && renderIncreaseOrderInfo()}
+            {isTrigger && renderTriggerOrderInfo()}
 
-          {feesType && <TradeFeesRow {...fees} executionFee={executionFee} feesType={feesType} />}
-        </div>
+            {feesType && <TradeFeesRow {...fees} executionFee={executionFee} feesType={feesType} />}
+          </div>
 
-        <div className="Exchange-swap-button-container">
-          <Button
-            variant="primary-action"
-            className="w-full"
-            onClick={onSubmit}
-            disabled={Boolean(error) && !shouldDisableValidation}
-          >
-            {error || submitButtonText}
-          </Button>
+          <div className="Exchange-swap-button-container">
+            <Button
+              variant="primary-action"
+              className="w-full"
+              onClick={onSubmit}
+              disabled={Boolean(error) && !shouldDisableValidation}
+            >
+              {error || submitButtonText}
+            </Button>
+          </div>
         </div>
       </div>
 
