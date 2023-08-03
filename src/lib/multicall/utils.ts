@@ -1,15 +1,6 @@
-import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
+import { Web3Provider } from "@ethersproject/providers";
 import CustomErrors from "abis/CustomErrors.json";
-import {
-  ARBITRUM,
-  ARBITRUM_GOERLI,
-  AVALANCHE,
-  AVALANCHE_FUJI,
-  CHAIN_NAMES_MAP,
-  getFallbackRpcUrl,
-  getRpcUrl,
-} from "config/chains";
-import { ethers } from "ethers";
+import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, getFallbackRpcUrl, getRpcUrl } from "config/chains";
 import { PublicClient, createPublicClient, http } from "viem";
 import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "viem/chains";
 import { MulticallRequestConfig, MulticallResult } from "./types";
@@ -81,43 +72,27 @@ export async function executeMulticall(
   library: Web3Provider | undefined,
   request: MulticallRequestConfig<any>
 ) {
-  const multicall = await Multicall.getInstance(chainId, library ? library.getSigner().provider : undefined);
+  const multicall = await Multicall.getInstance(chainId);
 
-  return multicall.call(request, MAX_TIMEOUT);
+  return multicall?.call(request, MAX_TIMEOUT);
 }
 
-/**
- * store instances for different chains +-
- *
- * if signer was passed, use signer
- *
- */
 export class Multicall {
   static instances: {
     [chainId: number]: Multicall | undefined;
   } = {};
 
-  static async getInstance(chainId: number, customProvider?: JsonRpcProvider) {
-    if (customProvider && !customProvider.network) {
-      await customProvider.ready;
-    }
-
+  static async getInstance(chainId: number) {
     let instance = Multicall.instances[chainId];
 
-    if (
-      !instance ||
-      (customProvider && instance.provider !== customProvider) ||
-      instance.provider.network.chainId !== chainId
-    ) {
+    if (!instance || instance.chainId !== chainId) {
       const rpcUrl = getRpcUrl(chainId);
-      const rpcProvider = new ethers.providers.StaticJsonRpcProvider(rpcUrl, {
-        chainId,
-        name: CHAIN_NAMES_MAP[chainId],
-      });
 
-      await rpcProvider.ready;
+      if (!rpcUrl) {
+        return undefined;
+      }
 
-      instance = new Multicall(chainId, rpcProvider);
+      instance = new Multicall(chainId, rpcUrl);
 
       Multicall.instances[chainId] = instance;
     }
@@ -140,8 +115,8 @@ export class Multicall {
 
   viemClient: PublicClient;
 
-  constructor(public chainId: number, public provider: JsonRpcProvider) {
-    this.viemClient = Multicall.getViemClient(chainId, provider.connection.url);
+  constructor(public chainId: number, public rpcUrl: string) {
+    this.viemClient = Multicall.getViemClient(chainId, rpcUrl);
   }
 
   async call(request: MulticallRequestConfig<any>, maxTimeout: number) {
