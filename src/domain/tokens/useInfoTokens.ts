@@ -1,20 +1,15 @@
-import { getContract } from "config/contracts";
-import useSWR from "swr";
-import { contractFetcher } from "lib/contracts";
-import VaultReader from "abis/VaultReader.json";
-import {
-  BASIS_POINTS_DIVISOR,
-  DEFAULT_MAX_USDG_AMOUNT,
-  MAX_PRICE_DEVIATION_BASIS_POINTS,
-  USD_DECIMALS,
-  USDG_ADDRESS,
-} from "lib/legacy";
-import { getServerUrl } from "config/backend";
-import { InfoTokens, Token, TokenInfo } from "./types";
-import { BigNumber } from "ethers";
-import { bigNumberify, expandDecimals } from "lib/numbers";
-import { getTokens, getWhitelistedTokens } from "config/tokens";
 import { Web3Provider } from "@ethersproject/providers";
+import VaultReader from "abis/VaultReader.json";
+import { getServerUrl } from "config/backend";
+import { getContract } from "config/contracts";
+import { getV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
+import { BigNumber } from "ethers";
+import { contractFetcher } from "lib/contracts";
+import { DEFAULT_MAX_USDG_AMOUNT, MAX_PRICE_DEVIATION_BASIS_POINTS, USD_DECIMALS, USDG_ADDRESS } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { bigNumberify, expandDecimals } from "lib/numbers";
+import useSWR from "swr";
+import { InfoTokens, Token, TokenInfo } from "./types";
 import { getSpread } from "./utils";
 
 export function useInfoTokens(
@@ -25,13 +20,13 @@ export function useInfoTokens(
   fundingRateInfo?: BigNumber[],
   vaultPropsLength?: number
 ) {
-  const tokens = getTokens(chainId);
+  const tokens = getV1Tokens(chainId);
   const vaultReaderAddress = getContract(chainId, "VaultReader");
   const vaultAddress = getContract(chainId, "Vault");
   const positionRouterAddress = getContract(chainId, "PositionRouter");
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
 
-  const whitelistedTokens = getWhitelistedTokens(chainId);
+  const whitelistedTokens = getWhitelistedV1Tokens(chainId);
   const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
 
   const { data: vaultTokenInfo } = useSWR<BigNumber[], any>(

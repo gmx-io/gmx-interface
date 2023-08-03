@@ -4,16 +4,8 @@ import { Trans, t } from "@lingui/macro";
 import { ethers } from "ethers";
 import { BsArrowRight } from "react-icons/bs";
 
-import {
-  USD_DECIMALS,
-  BASIS_POINTS_DIVISOR,
-  DEPOSIT_FEE,
-  DUST_BNB,
-  MAX_ALLOWED_LEVERAGE,
-  getFundingFee,
-  LIQUIDATION_FEE,
-  MAX_LEVERAGE,
-} from "lib/legacy";
+import { USD_DECIMALS, DEPOSIT_FEE, DUST_BNB, getFundingFee, LIQUIDATION_FEE } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE, MAX_LEVERAGE } from "config/factors";
 import { getContract } from "config/contracts";
 import Tab from "../Tab/Tab";
 import Modal from "../Modal/Modal";
@@ -34,6 +26,7 @@ import Button from "components/Button/Button";
 import FeesTooltip from "./FeesTooltip";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import { getLeverage } from "lib/positions/getLeverage";
+import { getPriceDecimals } from "config/tokens";
 
 const DEPOSIT = "Deposit";
 const WITHDRAW = "Withdraw";
@@ -76,6 +69,7 @@ export default function PositionEditor(props) {
   const [isSwapping, setIsSwapping] = useState(false);
   const prevIsVisible = usePrevious(isVisible);
   const longOrShortText = position?.isLong ? t`Long` : t`Short`;
+  const positionPriceDecimal = getPriceDecimals(chainId, position?.indexToken?.symbol);
 
   const routerAddress = getContract(chainId, "Router");
   const positionRouterAddress = getContract(chainId, "PositionRouter");
@@ -596,13 +590,17 @@ export default function PositionEditor(props) {
                     <div className="Exchange-info-label">
                       <Trans>Entry Price</Trans>
                     </div>
-                    <div className="align-right">${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}</div>
+                    <div className="align-right">
+                      ${formatAmount(position.averagePrice, USD_DECIMALS, positionPriceDecimal, true)}
+                    </div>
                   </div>
                   <div className="Exchange-info-row">
                     <div className="Exchange-info-label">
                       <Trans>Mark Price</Trans>
                     </div>
-                    <div className="align-right">${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}</div>
+                    <div className="align-right">
+                      ${formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)}
+                    </div>
                   </div>
                   <div className="Exchange-info-row">
                     <div className="Exchange-info-label">
@@ -611,17 +609,18 @@ export default function PositionEditor(props) {
                     <div className="align-right">
                       {!nextLiquidationPrice && (
                         <div>
-                          {!fromAmount && `$${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}`}
+                          {!fromAmount &&
+                            `$${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}`}
                           {fromAmount && "-"}
                         </div>
                       )}
                       {nextLiquidationPrice && (
                         <div>
                           <div className="inline-block muted">
-                            ${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}
+                            ${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
                             <BsArrowRight className="transition-arrow" />
                           </div>
-                          ${formatAmount(nextLiquidationPrice, USD_DECIMALS, 2, true)}
+                          ${formatAmount(nextLiquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
                         </div>
                       )}
                     </div>

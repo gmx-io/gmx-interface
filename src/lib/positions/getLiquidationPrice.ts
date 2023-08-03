@@ -1,5 +1,6 @@
 import { BigNumber } from "ethers";
-import { BASIS_POINTS_DIVISOR, LIQUIDATION_FEE, MARGIN_FEE_BASIS_POINTS, MAX_LEVERAGE } from "../legacy";
+import { LIQUIDATION_FEE, MARGIN_FEE_BASIS_POINTS } from "../legacy";
+import { BASIS_POINTS_DIVISOR, MAX_LEVERAGE } from "config/factors";
 
 type GetLiquidationParams = {
   size: BigNumber;

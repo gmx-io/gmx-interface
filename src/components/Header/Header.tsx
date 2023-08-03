@@ -35,6 +35,7 @@ type Props = {
   openSettings: () => void;
   setWalletModalVisible: (visible: boolean) => void;
   redirectPopupTimestamp: number;
+  tradePageVersion: number;
   showRedirectModal: (to: string) => void;
 };
 
@@ -44,6 +45,7 @@ export function Header({
   setWalletModalVisible,
   redirectPopupTimestamp,
   showRedirectModal,
+  tradePageVersion,
 }: Props) {
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [isNativeSelectorModalVisible, setIsNativeSelectorModalVisible] = useState(false);
@@ -112,6 +114,7 @@ export function Header({
               setWalletModalVisible={setWalletModalVisible}
               redirectPopupTimestamp={redirectPopupTimestamp}
               showRedirectModal={showRedirectModal}
+              tradePageVersion={tradePageVersion}
             />
           </div>
         </div>
@@ -139,6 +142,7 @@ export function Header({
                 setWalletModalVisible={setWalletModalVisible}
                 redirectPopupTimestamp={redirectPopupTimestamp}
                 showRedirectModal={showRedirectModal}
+                tradePageVersion={tradePageVersion}
               />
             </div>
           </div>

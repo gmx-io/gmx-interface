@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
 import { useLocalStorage, useMedia } from "react-use";
 import { defaultChartProps, disabledFeaturesOnMobile } from "./constants";
@@ -6,16 +6,17 @@ import useTVDatafeed from "domain/tradingview/useTVDatafeed";
 import { ChartData, IChartingLibraryWidget, IPositionLineAdapter } from "../../charting_library";
 import { getObjectKeyFromValue } from "domain/tradingview/utils";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
-import { getNormalizedTokenSymbol, isChartAvailabeForToken } from "config/tokens";
+import { getPriceDecimals, isChartAvailabeForToken } from "config/tokens";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 import Loader from "components/Common/Loader";
+import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { formatAmount } from "lib/numbers";
 import { getMidPrice } from "domain/tokens";
 import { USD_DECIMALS } from "lib/legacy";
 import { SUPPORTED_RESOLUTIONS_V1 } from "config/tradingview";
 
-type ChartLine = {
+export type ChartLine = {
   price: number;
   title: string;
 };
@@ -25,7 +26,7 @@ type Props = {
   chainId: number;
   savedShouldShowPositionLines: boolean;
   chartLines: ChartLine[];
-  onSelectToken: () => void;
+  onSelectToken: (token: Token) => void;
   period: string;
   setPeriod: (period: string) => void;
   dataProvider?: TVDataProvider;
@@ -34,6 +35,7 @@ type Props = {
     minPrice: BigNumber;
     maxPrice: BigNumber;
   };
+  supportedResolutions: typeof SUPPORTED_RESOLUTIONS_V1;
 };
 
 export default function TVChartContainer({
@@ -46,6 +48,7 @@ export default function TVChartContainer({
   period,
   setPeriod,
   chartToken,
+  supportedResolutions,
 }: Props) {
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const tvWidgetRef = useRef<IChartingLibraryWidget | null>(null);
@@ -56,19 +59,25 @@ export default function TVChartContainer({
   const isMobile = useMedia("(max-width: 550px)");
   const symbolRef = useRef(symbol);
 
-  const supportedResolutions = useMemo(() => dataProvider?.resolutions || SUPPORTED_RESOLUTIONS_V1, [dataProvider]);
-
   useEffect(() => {
-    if (chartToken.maxPrice && chartToken.minPrice) {
+    if (chartToken.maxPrice && chartToken.minPrice && chartToken.symbol) {
+      let priceDecimals: number;
+
+      try {
+        priceDecimals = getPriceDecimals(chainId, chartToken.symbol);
+      } catch (e) {
+        return;
+      }
+
       const averagePrice = getMidPrice(chartToken);
-      const formattedPrice = parseFloat(formatAmount(averagePrice, USD_DECIMALS, 2));
+      const formattedPrice = parseFloat(formatAmount(averagePrice, USD_DECIMALS, priceDecimals));
       dataProvider?.setCurrentChartToken({
         price: formattedPrice,
-        ticker: getNormalizedTokenSymbol(chartToken.symbol),
+        ticker: chartToken.symbol,
         isChartReady: chartReady,
       });
     }
-  }, [chartToken, chartReady, dataProvider]);
+  }, [chartToken, chartReady, dataProvider, chainId]);
 
   const drawLineOnChart = useCallback(
     (title: string, price: number) => {
@@ -172,7 +181,7 @@ export default function TVChartContainer({
     };
     // We don't want to re-initialize the chart when the symbol changes. This will make the chart flicker.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId]);
+  }, [chainId, dataProvider]);
 
   return (
     <div className="ExchangeChart-error">

@@ -1,5 +1,5 @@
 import { HistoryCallback, PeriodParams, ResolutionString, SubscribeBarsCallback } from "charting_library";
-import { getNativeToken, getTokens, isChartAvailabeForToken } from "config/tokens";
+import { getNativeToken, getPriceDecimals, getTokens, isChartAvailabeForToken } from "config/tokens";
 import { useChainId } from "lib/chains";
 import { useEffect, useMemo, useRef } from "react";
 import { TVDataProvider } from "./TVDataProvider";
@@ -96,6 +96,8 @@ export default function useTVDatafeed({ dataProvider }: Props) {
             symbolName = getNativeToken(chainId).symbol;
           }
 
+          const pricescale = Math.pow(10, getPriceDecimals(chainId, symbolName));
+
           const symbolInfo = {
             name: symbolName,
             type: "crypto",
@@ -103,7 +105,7 @@ export default function useTVDatafeed({ dataProvider }: Props) {
             ticker: symbolName,
             session: "24x7",
             minmov: 1,
-            pricescale: 100,
+            pricescale: pricescale,
             timezone: "Etc/UTC",
             has_intraday: true,
             has_daily: true,

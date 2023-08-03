@@ -1,61 +1,64 @@
-import React, { useState, useCallback, useEffect, useMemo } from "react";
-import { ethers } from "ethers";
-import cx from "classnames";
 import { Trans, t } from "@lingui/macro";
+import cx from "classnames";
+import { ethers } from "ethers";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { BsArrowRight } from "react-icons/bs";
 
+import PositionRouter from "abis/PositionRouter.json";
+import Button from "components/Button/Button";
+import SlippageInput from "components/SlippageInput/SlippageInput";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
+import TokenSelector from "components/TokenSelector/TokenSelector";
+import { ARBITRUM, IS_NETWORK_DISABLED, getChainName, getConstant } from "config/chains";
+import { getContract } from "config/contracts";
+import { CLOSE_POSITION_RECEIVE_TOKEN_KEY, SLIPPAGE_BPS_KEY } from "config/localStorage";
+import { getPriceDecimals, getV1Tokens, getWrappedToken } from "config/tokens";
+import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
+import { createDecreaseOrder, useHasOutdatedUi } from "domain/legacy";
+import { getTokenAmountFromUsd } from "domain/tokens";
+import { getTokenInfo, getUsd } from "domain/tokens/utils";
+import { callContract } from "lib/contracts";
 import {
-  DEFAULT_SLIPPAGE_AMOUNT,
-  DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
-  USD_DECIMALS,
-  DUST_USD,
-  BASIS_POINTS_DIVISOR,
-  MIN_PROFIT_TIME,
-  getMarginFee,
-  PRECISION,
-  MARKET,
-  STOP,
   DECREASE,
+  DUST_USD,
+  MARKET,
+  MIN_PROFIT_TIME,
+  PRECISION,
+  STOP,
+  USDG_DECIMALS,
+  USD_DECIMALS,
+  adjustForDecimals,
   calculatePositionDelta,
   getDeltaStr,
-  getProfitPrice,
+  getMarginFee,
   getNextToAmount,
-  USDG_DECIMALS,
-  adjustForDecimals,
+  getProfitPrice,
   isAddressZero,
-  MAX_ALLOWED_LEVERAGE,
-  MAX_LEVERAGE,
 } from "lib/legacy";
-import { ARBITRUM, getChainName, getConstant, IS_NETWORK_DISABLED } from "config/chains";
-import { createDecreaseOrder, useHasOutdatedUi } from "domain/legacy";
-import { getContract } from "config/contracts";
-import PositionRouter from "abis/PositionRouter.json";
-import Checkbox from "../Checkbox/Checkbox";
-import Tab from "../Tab/Tab";
-import Modal from "../Modal/Modal";
-import ExchangeInfoRow from "./ExchangeInfoRow";
-import Tooltip from "../Tooltip/Tooltip";
-import TokenSelector from "./TokenSelector";
-import "./PositionSeller.css";
-import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
-import { callContract } from "lib/contracts";
-import { getTokenAmountFromUsd } from "domain/tokens";
-import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
+import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
+import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE, MAX_LEVERAGE } from "config/factors";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
-import { CLOSE_POSITION_RECEIVE_TOKEN_KEY, SLIPPAGE_BPS_KEY } from "config/localStorage";
-import { getTokenInfo, getUsd } from "domain/tokens/utils";
-import { usePrevious } from "lib/usePrevious";
-import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
-import { getTokens, getWrappedToken } from "config/tokens";
-import { formatDateTime, getTimeRemaining } from "lib/dates";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import { ErrorCode, ErrorDisplayType } from "./constants";
-import FeesTooltip from "./FeesTooltip";
-import getLiquidationPrice from "lib/positions/getLiquidationPrice";
+import {
+  bigNumberify,
+  expandDecimals,
+  formatAmount,
+  formatAmountFree,
+  formatPercentage,
+  parseValue,
+} from "lib/numbers";
 import { getLeverage } from "lib/positions/getLeverage";
-import Button from "components/Button/Button";
-import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
-import SlippageInput from "components/SlippageInput/SlippageInput";
+import getLiquidationPrice from "lib/positions/getLiquidationPrice";
+import { usePrevious } from "lib/usePrevious";
+import Checkbox from "../Checkbox/Checkbox";
+import Modal from "../Modal/Modal";
+import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
+import Tab from "../Tab/Tab";
+import Tooltip from "../Tooltip/Tooltip";
+import ExchangeInfoRow from "./ExchangeInfoRow";
+import FeesTooltip from "./FeesTooltip";
+import "./PositionSeller.css";
+import { ErrorCode, ErrorDisplayType } from "./constants";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -210,6 +213,7 @@ export default function PositionSeller(props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const prevIsVisible = usePrevious(isVisible);
   const [allowedSlippage, setAllowedSlippage] = useState(savedSlippageAmount);
+  const positionPriceDecimal = getPriceDecimals(chainId, position?.indexToken?.symbol);
 
   useEffect(() => {
     setAllowedSlippage(savedSlippageAmount);
@@ -222,7 +226,7 @@ export default function PositionSeller(props) {
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
   const longOrShortText = position?.isLong ? t`Long` : t`Short`;
 
-  const toTokens = isContractAccount ? getTokens(chainId).filter((t) => !t.isNative) : getTokens(chainId);
+  const toTokens = isContractAccount ? getV1Tokens(chainId).filter((t) => !t.isNative) : getV1Tokens(chainId);
   const wrappedToken = getWrappedToken(chainId);
 
   const [savedRecieveTokenAddress, setSavedRecieveTokenAddress] = useLocalStorageByChainId(
@@ -954,48 +958,6 @@ export default function PositionSeller(props) {
     );
   }, [existingOrder, infoTokens, longOrShortText]);
 
-  function renderMinProfitWarning() {
-    if (MIN_PROFIT_TIME === 0) {
-      return null;
-    }
-
-    if (profitPrice && nextDelta.eq(0) && nextHasProfit) {
-      const minProfitExpiration = position.lastIncreasedTime + MIN_PROFIT_TIME;
-
-      if (orderOption === MARKET) {
-        return (
-          <div className="Confirmation-box-warning">
-            <Trans>
-              Reducing the position at the current price will forfeit a&nbsp;
-              <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change">
-                pending profit
-              </ExternalLink>{" "}
-              of {deltaStr}. <br />
-            </Trans>
-            <Trans>
-              <br />
-              Profit price: {position.isLong ? ">" : "<"} ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}. This rule
-              applies for the next {getTimeRemaining(minProfitExpiration)}, until {formatDateTime(minProfitExpiration)}.
-            </Trans>
-          </div>
-        );
-      }
-      return (
-        <div className="Confirmation-box-warning">
-          <Trans>
-            This order will forfeit a&nbsp;
-            <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change">profit</ExternalLink> of{" "}
-            {deltaStr}. <br />
-          </Trans>
-          <Trans>
-            Profit price: {position.isLong ? ">" : "<"} ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}. This rule
-            applies for the next {getTimeRemaining(minProfitExpiration)}, until {formatDateTime(minProfitExpiration)}.
-          </Trans>
-        </div>
-      );
-    }
-  }
-
   const profitPrice = getProfitPrice(orderOption === MARKET ? position.markPrice : triggerPriceUsd, position);
 
   let triggerPricePrefix;
@@ -1128,10 +1090,10 @@ export default function PositionSeller(props) {
                 <div
                   className="muted align-right clickable"
                   onClick={() => {
-                    setTriggerPriceValue(formatAmountFree(position.markPrice, USD_DECIMALS, 2));
+                    setTriggerPriceValue(formatAmountFree(position.markPrice, USD_DECIMALS, positionPriceDecimal));
                   }}
                 >
-                  <Trans>Mark: {formatAmount(position.markPrice, USD_DECIMALS, 2, true)}</Trans>
+                  <Trans>Mark: {formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)}</Trans>
                 </div>
               </div>
               <div className="Exchange-swap-section-bottom">
@@ -1149,7 +1111,6 @@ export default function PositionSeller(props) {
               </div>
             </div>
           )}
-          {renderMinProfitWarning()}
           {renderReceiveSpreadWarning()}
           {shouldShowExistingOrderWarning && renderExistingOrderWarning()}
           <div className="PositionEditor-info-box">
@@ -1174,7 +1135,7 @@ export default function PositionSeller(props) {
               <div>
                 <ExchangeInfoRow
                   label={
-                    <Tooltip
+                    <TooltipWithPortal
                       handle={t`Allowed Slippage`}
                       position="left-top"
                       renderContent={() => {
@@ -1184,8 +1145,9 @@ export default function PositionSeller(props) {
                               You can change this in the settings menu on the top right of the page.
                               <br />
                               <br />
-                              Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if
-                              prices are volatile.
+                              Note that a low allowed slippage, e.g. less than{" "}
+                              {formatPercentage(bigNumberify(DEFAULT_SLIPPAGE_AMOUNT), { signed: false })}, may result
+                              in failed orders if prices are volatile.
                             </Trans>
                           </div>
                         );
@@ -1204,7 +1166,8 @@ export default function PositionSeller(props) {
                 </div>
                 <div className="align-right">
                   {!triggerPriceUsd && "-"}
-                  {triggerPriceUsd && `${triggerPricePrefix} ${formatAmount(triggerPriceUsd, USD_DECIMALS, 2, true)}`}
+                  {triggerPriceUsd &&
+                    `${triggerPricePrefix} ${formatAmount(triggerPriceUsd, USD_DECIMALS, positionPriceDecimal, true)}`}
                 </div>
               </div>
             )}
@@ -1212,13 +1175,17 @@ export default function PositionSeller(props) {
               <div className="Exchange-info-label">
                 <Trans>Mark Price</Trans>
               </div>
-              <div className="align-right">${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}</div>
+              <div className="align-right">
+                ${formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)}
+              </div>
             </div>
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">
                 <Trans>Entry Price</Trans>
               </div>
-              <div className="align-right">${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}</div>
+              <div className="align-right">
+                ${formatAmount(position.averagePrice, USD_DECIMALS, positionPriceDecimal, true)}
+              </div>
             </div>
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">
@@ -1229,15 +1196,15 @@ export default function PositionSeller(props) {
                 {(!isClosing || orderOption === STOP) && (
                   <div>
                     {(!nextLiquidationPrice || nextLiquidationPrice.eq(liquidationPrice)) && (
-                      <div>{`$${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}`}</div>
+                      <div>{`$${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}`}</div>
                     )}
                     {nextLiquidationPrice && !nextLiquidationPrice.eq(liquidationPrice) && (
                       <div>
                         <div className="inline-block muted">
-                          ${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}
+                          ${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
                           <BsArrowRight className="transition-arrow" />
                         </div>
-                        ${formatAmount(nextLiquidationPrice, USD_DECIMALS, 2, true)}
+                        ${formatAmount(nextLiquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
                       </div>
                     )}
                   </div>

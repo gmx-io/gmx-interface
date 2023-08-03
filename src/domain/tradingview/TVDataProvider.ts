@@ -33,19 +33,20 @@ export class TVDataProvider {
     data: Bar[];
     ticker: string;
   };
-  chartTokenInfo: {
+  chartTokenInfo?: {
     price: number;
     ticker: string;
     isChartReady: boolean;
   };
 
   constructor({ resolutions }) {
-    const { lastBar, currentBar, lastBarRefreshTime, barsInfo } = initialState;
+    const { lastBar, currentBar, lastBarRefreshTime, barsInfo, chartTokenInfo } = initialState;
     this.lastBar = lastBar;
     this.currentBar = currentBar;
     this.lastBarRefreshTime = lastBarRefreshTime;
     this.barsInfo = barsInfo;
     this.supportedResolutions = resolutions;
+    this.chartTokenInfo = chartTokenInfo;
   }
 
   async getLimitBars(chainId: number, ticker: string, period: string, limit: number): Promise<Bar[]> {
@@ -144,7 +145,13 @@ export class TVDataProvider {
     if (!ticker || !period || !chainId) {
       throw new Error("Invalid input. Ticker, period, and chainId are required parameters.");
     }
+
+    if (!this.chartTokenInfo) {
+      return null;
+    }
+
     const currentTime = Date.now();
+
     if (
       currentTime - this.lastBarRefreshTime > LAST_BAR_REFRESH_INTERVAL ||
       this.lastBar?.ticker !== ticker ||
@@ -193,10 +200,10 @@ export class TVDataProvider {
       // eslint-disable-next-line no-console
       console.error(error);
     }
-    const currentPrice = this.chartTokenInfo.ticker === barsInfo.ticker && this.chartTokenInfo.price;
+    const currentPrice = this.chartTokenInfo?.ticker === barsInfo.ticker && this.chartTokenInfo.price;
 
     if (
-      !this.chartTokenInfo.isChartReady ||
+      !this.chartTokenInfo?.isChartReady ||
       !this.lastBar?.time ||
       !currentPrice ||
       barsInfo.ticker !== this.lastBar.ticker ||

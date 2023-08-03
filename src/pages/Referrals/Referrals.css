@@ -174,11 +174,14 @@
 }
 
 .info-card {
+  min-height: 13rem;
   background: var(--dark-blue-bg);
   border-radius: 0.4rem;
   display: flex;
   justify-content: center;
+  align-items: center;
 }
+
 .info-card .card-label {
   font-size: var(--font-md);
   line-height: 2.1rem;
@@ -188,6 +191,7 @@
   margin-bottom: 1.5rem;
   text-align: center;
 }
+
 .info-card .card-data {
   font-size: var(--font-lg);
   font-weight: normal;
@@ -195,6 +199,7 @@
   padding: 0;
   margin: 1.5rem 0;
 }
+
 .info-card .info-card-question-icon {
   vertical-align: middle;
   font-size: var(--font-sm);

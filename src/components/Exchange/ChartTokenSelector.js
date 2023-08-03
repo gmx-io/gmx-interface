@@ -1,10 +1,9 @@
-import React from "react";
 import { Menu } from "@headlessui/react";
-import { FaChevronDown } from "react-icons/fa";
 import cx from "classnames";
-import "./ChartTokenSelector.css";
+import { getV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
 import { LONG, SHORT, SWAP } from "lib/legacy";
-import { getTokens, getWhitelistedTokens } from "config/tokens";
+import { FaChevronDown } from "react-icons/fa";
+import "./ChartTokenSelector.css";
 
 export default function ChartTokenSelector(props) {
   const { chainId, selectedToken, onSelectToken, swapOption } = props;
@@ -13,8 +12,8 @@ export default function ChartTokenSelector(props) {
   const isShort = swapOption === SHORT;
   const isSwap = swapOption === SWAP;
 
-  let options = getTokens(chainId);
-  const whitelistedTokens = getWhitelistedTokens(chainId);
+  let options = getV1Tokens(chainId);
+  const whitelistedTokens = getWhitelistedV1Tokens(chainId);
   const indexTokens = whitelistedTokens.filter((token) => !token.isStable && !token.isWrapped);
   const shortableTokens = indexTokens.filter((token) => token.isShortable);
 
