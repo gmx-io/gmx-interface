@@ -95,3 +95,8 @@ html.theme-dark .toggleButton-OhcB9eH7 .background-Wp9adlfh:hover {
   fill: #464a6e;
   stroke: #464a6e;
 }
+
+html.theme-dark .color-green-D4RPB3ZC.variant-primary-D4RPB3ZC {
+  background-color: var(--active-bg);
+  border: var(--active-bg);
+}

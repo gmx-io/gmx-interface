@@ -32,7 +32,12 @@ export class SaveLoadAdapter {
 
   getAllCharts() {
     const charts = this.charts || [];
-    const filteredCharts = charts.filter((chart) => chart.appVersion === this.currentAppVersion);
+    const filteredCharts = charts.filter((chart) => {
+      if (!chart.appVersion) {
+        chart.appVersion = 1;
+      }
+      return chart.appVersion === this.currentAppVersion;
+    });
     return Promise.resolve(filteredCharts);
   }
 
@@ -57,7 +62,12 @@ export class SaveLoadAdapter {
       this.removeChart(chartData.id);
     }
 
-    chartData.timestamp = new Date().valueOf();
+    const currentTimestamp = Math.floor(Date.now() / 1000);
+    const offsetMinutes = new Date().getTimezoneOffset();
+    const offsetSeconds = offsetMinutes * 60;
+    const adjustedTimestamp = currentTimestamp - offsetSeconds;
+
+    chartData.timestamp = adjustedTimestamp;
     if (this.charts) {
       this.charts.push(chartData);
       this.setTvCharts(this.charts);
