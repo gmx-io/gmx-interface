@@ -9,7 +9,7 @@ export type EventData = {
   buttons?: {
     text: string;
     link: string;
-    newTab: boolean;
+    newTab?: boolean;
   }[];
 };
 
@@ -29,7 +29,6 @@ export const homeEventsData: EventData[] = [
       {
         text: "Use V2",
         link: "https://app.gmx.io/#/v2",
-        newTab: true,
       },
     ],
   },
@@ -50,8 +49,7 @@ export const appEventsData: EventData[] = [
       },
       {
         text: "Use V2",
-        link: "https://app.gmx.io/#/v2",
-        newTab: true,
+        link: "https://app.gmx.io/#/v2?no_redirect",
       },
     ],
   },

@@ -433,8 +433,12 @@ export function PositionEditor(p: Props) {
               topRightLabel={t`Max`}
               topRightValue={
                 isDeposit
-                  ? formatTokenAmount(collateralToken?.balance, collateralToken?.decimals)
-                  : formatTokenAmount(maxWithdrawAmount, position?.collateralToken?.decimals)
+                  ? formatTokenAmount(collateralToken?.balance, collateralToken?.decimals, "", {
+                      useCommas: true,
+                    })
+                  : formatTokenAmount(maxWithdrawAmount, position?.collateralToken?.decimals, "", {
+                      useCommas: true,
+                    })
               }
               inputValue={collateralInputValue}
               onInputValueChange={(e) => setCollateralInputValue(e.target.value)}

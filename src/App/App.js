@@ -365,6 +365,15 @@ function FullApp() {
 
   useEffect(
     function redirectTradePage() {
+      if (location.pathname === "/v2" && query.has("no_redirect")) {
+        if (tradePageVersion !== 2) {
+          setTradePageVersion(2);
+        }
+        if (history.location.search) {
+          history.replace({ search: "" });
+        }
+        return;
+      }
       if (
         location.pathname === "/trade" &&
         (tradePageVersion === 2 || !getIsV1Supported(chainId)) &&
@@ -381,7 +390,7 @@ function FullApp() {
         history.replace("/trade");
       }
     },
-    [chainId, history, location.pathname, tradePageVersion]
+    [chainId, history, location, tradePageVersion, query, setTradePageVersion]
   );
 
   useEffect(() => {
