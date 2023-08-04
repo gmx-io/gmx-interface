@@ -26,6 +26,11 @@ export const homeEventsData: EventData[] = [
         link: "https://gmxio.substack.com/p/gmx-v2-beta-is-now-live",
         newTab: true,
       },
+      {
+        text: "Use V2",
+        link: "https://app.gmx.io/#/v2",
+        newTab: true,
+      },
     ],
   },
 ];
@@ -41,6 +46,11 @@ export const appEventsData: EventData[] = [
       {
         text: "Read More",
         link: "https://gmxio.substack.com/p/gmx-v2-beta-is-now-live",
+        newTab: true,
+      },
+      {
+        text: "Use V2",
+        link: "https://app.gmx.io/#/v2",
         newTab: true,
       },
     ],
