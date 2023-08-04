@@ -4361,8 +4361,12 @@ msgid "This position was liquidated as the max leverage of 100x was exceeded."
 msgstr "Эта позиция была ликвидирована, так как было превышено максимальное кредитное плечо 100x."
 
 #: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
-msgid "This position was liquidated as the max leverage of {maxLeverageText} was exceeded.`"
+msgid "This position was liquidated as the max leverage of {maxLeverageText} was exceeded."
 msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#~ msgid "This position was liquidated as the max leverage of {maxLeverageText} was exceeded.`"
+#~ msgstr ""
 
 #: src/pages/Home/Home.js
 msgid "Three tokens create our ecosystem"

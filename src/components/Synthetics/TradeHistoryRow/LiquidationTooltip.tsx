@@ -47,7 +47,7 @@ export function LiquidationTooltip(p: Props) {
       handle={t`Liquidated`}
       renderContent={() => (
         <>
-          <Trans>This position was liquidated as the max leverage of {maxLeverageText} was exceeded.`</Trans>
+          <Trans>This position was liquidated as the max leverage of {maxLeverageText} was exceeded.</Trans>
           <br />
           <br />
           <StatsTooltipRow
