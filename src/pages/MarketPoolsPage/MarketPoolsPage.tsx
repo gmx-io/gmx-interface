@@ -32,10 +32,7 @@ export function MarketPoolsPage(p: Props) {
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
   const { marketTokensData: withdrawalMarketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
 
-  const { marketsTokensAPRData } = useMarketTokensAPR(chainId, {
-    marketsInfoData,
-    marketTokensData: withdrawalMarketTokensData,
-  });
+  const { marketsTokensAPRData } = useMarketTokensAPR(chainId);
 
   const [operation, setOperation] = useState<Operation>(Operation.Deposit);
   let [mode, setMode] = useState<Mode>(Mode.Single);

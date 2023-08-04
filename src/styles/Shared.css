@@ -7,7 +7,7 @@ body,
   padding: 0;
   color: white;
   font-size: 10px;
-  background-color: #101124;
+  background-color: var(--main-bg-color);
 }
 
 body {
@@ -51,6 +51,7 @@ input {
 }
 
 :root {
+  --main-bg-color: #101124;
   --dark-blue: #17182c;
   --dark-blue-bg: #16182e;
   --dark-blue-accent: #a0a3c4;

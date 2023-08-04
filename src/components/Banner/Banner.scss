@@ -31,3 +31,13 @@
     text-decoration: none;
   }
 }
+
+@media (max-width: 400px) {
+  .Banner-wrapper {
+    padding: 0.75rem;
+    font-size: 1.4rem;
+  }
+  .Banner-wrapper .Banner-action {
+    padding: 0.5rem 1rem;
+  }
+}

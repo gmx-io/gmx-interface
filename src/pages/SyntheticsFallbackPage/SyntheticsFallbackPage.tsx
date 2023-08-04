@@ -2,9 +2,10 @@ import Footer from "components/Footer/Footer";
 import { Trans } from "@lingui/macro";
 import { useEffect, useState } from "react";
 import { sleep } from "lib/sleep";
-import { ARBITRUM_GOERLI, AVALANCHE_FUJI, getChainName } from "config/chains";
+import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
 import { switchNetwork } from "lib/wallets";
 import { useWeb3React } from "@web3-react/core";
+import { isDevelopment } from "config/env";
 
 export function SyntheticsFallbackPage() {
   const { active } = useWeb3React();
@@ -33,12 +34,25 @@ export function SyntheticsFallbackPage() {
             </div>
 
             <br />
-            <div className="clickable underline" onClick={() => switchNetwork(AVALANCHE_FUJI, active)}>
-              {getChainName(AVALANCHE_FUJI)}
+            <div className="clickable underline" onClick={() => switchNetwork(ARBITRUM, active)}>
+              {getChainName(ARBITRUM)}
             </div>
-            <div className="clickable underline" onClick={() => switchNetwork(ARBITRUM_GOERLI, active)}>
-              {getChainName(ARBITRUM_GOERLI)}
+
+            <div className="clickable underline" onClick={() => switchNetwork(AVALANCHE, active)}>
+              {getChainName(AVALANCHE)}
             </div>
+
+            {isDevelopment() && (
+              <>
+                <div className="clickable underline" onClick={() => switchNetwork(AVALANCHE_FUJI, active)}>
+                  {getChainName(AVALANCHE_FUJI)}
+                </div>
+
+                <div className="clickable underline" onClick={() => switchNetwork(ARBITRUM_GOERLI, active)}>
+                  {getChainName(ARBITRUM_GOERLI)}
+                </div>
+              </>
+            )}
           </p>
         </div>
       </div>

@@ -49,6 +49,10 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
 
         const response = await executeMulticall(chainId, library, request);
 
+        if (!response) {
+          throw new Error(`Multicall response is empty`);
+        }
+
         // prettier-ignore
         const result = typeof params.parseResponse === "function"
             ? params.parseResponse(response, chainId, params.key as CacheKey)
