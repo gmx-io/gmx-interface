@@ -3,7 +3,7 @@ import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
 import { useLocalStorage, useMedia } from "react-use";
 import { getDefaultChartProps, disabledFeaturesOnMobile } from "./constants";
 import useTVDatafeed from "domain/tradingview/useTVDatafeed";
-import { ChartData, IChartingLibraryWidget, IPositionLineAdapter } from "../../charting_library";
+import { ChartData, IChartingLibraryWidget, IPositionLineAdapter, TimezoneId } from "../../charting_library";
 import { getObjectKeyFromValue } from "domain/tradingview/utils";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
 import { getPriceDecimals, isChartAvailabeForToken } from "config/tokens";
@@ -132,10 +132,11 @@ export default function TVChartContainer({
   useEffect(() => {
     const widgetOptions = {
       debug: false,
+      container: chartContainerRef.current,
       symbol: symbolRef.current, // Using ref to avoid unnecessary re-renders on symbol change and still have access to the latest symbol
       datafeed: datafeed,
+      timezone: "Etc/UTC" as TimezoneId,
       theme: defaultChartProps.theme,
-      container: chartContainerRef.current,
       library_path: defaultChartProps.library_path,
       locale: defaultChartProps.locale,
       loading_screen: defaultChartProps.loading_screen,
@@ -143,8 +144,6 @@ export default function TVChartContainer({
       disabled_features: isMobile
         ? defaultChartProps.disabled_features.concat(disabledFeaturesOnMobile)
         : defaultChartProps.disabled_features,
-      client_id: defaultChartProps.clientId,
-      user_id: defaultChartProps.userId,
       fullscreen: defaultChartProps.fullscreen,
       autosize: defaultChartProps.autosize,
       custom_css_url: defaultChartProps.custom_css_url,
@@ -166,11 +165,14 @@ export default function TVChartContainer({
       setChartReady(true);
       tvWidgetRef.current!.applyOverrides({
         "paneProperties.background": tradePageVersion === 2 ? "#101123" : "#16182e",
-        "paneProperties.backgroundType": "solid",
-        "paneProperties.separatorColor": "#ffffff",
       });
+
       tvWidgetRef.current?.setCSSCustomProperty(
         "--tv-color-pane-background",
+        tradePageVersion === 2 ? "#101123" : "#16182e"
+      );
+      tvWidgetRef.current?.setCSSCustomProperty(
+        "--tv-color-platform-background",
         tradePageVersion === 2 ? "#101123" : "#16182e"
       );
       tvWidgetRef.current

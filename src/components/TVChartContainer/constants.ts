@@ -5,7 +5,7 @@ const RED = "#fa3c58";
 const GREEN = "#0ecc83";
 export const DEFAULT_PERIOD = "4h";
 
-const chartBackgroundMap = {
+const chartBackgroundMap: { [key: string]: string } = {
   1: "#16182e",
   2: "#101123",
 };
@@ -24,8 +24,6 @@ const chartStyleOverrides = ["candleStyle", "hollowCandleStyle", "haStyle"].redu
 
 const getChartOverrides = (tradePageVersion) => ({
   "paneProperties.background": chartBackgroundMap[tradePageVersion],
-  "paneProperties.backgroundGradientStartColor": chartBackgroundMap[tradePageVersion],
-  "paneProperties.backgroundGradientEndColor": chartBackgroundMap[tradePageVersion],
   "paneProperties.backgroundType": "solid",
   "paneProperties.vertGridProperties.color": "rgba(35, 38, 59, 1)",
   "paneProperties.vertGridProperties.style": 2,
@@ -34,6 +32,7 @@ const getChartOverrides = (tradePageVersion) => ({
   "mainSeriesProperties.priceLineColor": "#3a3e5e",
   "scalesProperties.textColor": "#fff",
   "scalesProperties.lineColor": chartBackgroundMap[tradePageVersion],
+  timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
   ...chartStyleOverrides,
 });
 
@@ -41,13 +40,9 @@ export const disabledFeaturesOnMobile = ["header_saveload", "header_fullscreen_b
 
 const disabledFeatures = [
   "volume_force_overlay",
-  "show_logo_on_all_charts",
-  "caption_buttons_text_if_possible",
   "create_volume_indicator_by_default",
   "header_compare",
-  "compare_symbol",
   "display_market_status",
-  "header_interval_dialog_button",
   "show_interval_dialog_on_key_press",
   "header_symbol_search",
   "popup_hints",
@@ -55,6 +50,7 @@ const disabledFeatures = [
   "use_localstorage_for_settings",
   "right_bar_stays_on_scroll",
   "symbol_info",
+  "control_bar",
 ];
 const enabledFeatures = [
   "side_toolbar_in_fullscreen_mode",
@@ -65,14 +61,11 @@ const enabledFeatures = [
 ];
 
 export const getDefaultChartProps = (tradePageVersion = 1) => ({
-  theme: "Dark",
+  theme: "dark",
   locale: "en",
   library_path: "/charting_library/",
-  clientId: "tradingview.com",
-  userId: "public_user_id",
   fullscreen: false,
   autosize: true,
-  header_widget_dom_node: false,
   overrides: getChartOverrides(tradePageVersion),
   enabled_features: enabledFeatures,
   disabled_features: disabledFeatures,

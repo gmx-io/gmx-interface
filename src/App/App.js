@@ -1,4 +1,3 @@
-import { Helmet } from "react-helmet";
 import { Web3Provider } from "@ethersproject/providers";
 import { useWeb3React, Web3ReactProvider } from "@web3-react/core";
 import { ethers } from "ethers";
@@ -481,25 +480,7 @@ function FullApp() {
 
   return (
     <>
-      <Helmet>
-        <style type="text/css">
-          {tradePageVersion === 2 &&
-            `:root {
-              --dark-blue-bg: #101123;                 
-            {
-          `}
-        </style>
-      </Helmet>
-      <div
-        className="App"
-        style={
-          tradePageVersion === 2
-            ? {
-                backgroundColor: "#08091b",
-              }
-            : {}
-        }
-      >
+      <div className="App">
         <div className="App-content">
           <Header
             disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
