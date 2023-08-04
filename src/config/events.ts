@@ -28,7 +28,7 @@ export const homeEventsData: EventData[] = [
       },
       {
         text: "Use V2",
-        link: "https://app.gmx.io/#/v2",
+        link: "https://app.gmx.io/#/v2?no_redirect",
       },
     ],
   },
