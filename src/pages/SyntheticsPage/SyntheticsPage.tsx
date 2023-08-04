@@ -256,7 +256,8 @@ export function SyntheticsPage(p: Props) {
       <Helmat>
         <style type="text/css">{`
             :root {
-              --main-bg-color: #08091b;                   
+              --main-bg-color: #08091b;
+              --dark-blue-bg: #101123;               
              {
          `}</style>
       </Helmat>

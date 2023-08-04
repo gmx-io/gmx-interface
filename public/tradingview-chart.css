@@ -1,5 +1,8 @@
 .theme-dark:root {
   --dark-blue-bg: #16182e;
+  --active-bg: #2962ff;
+  --hover-bg: #3a3f798f;
+
   --tv-color-pane-background: var(--dark-blue-bg);
   --tv-color-platform-background: var(--dark-blue-bg);
   --tv-color-toolbar-button-background-active: #393e5e;
@@ -18,12 +21,12 @@
   --tv-color-popup-background: #20243f;
   --tv-color-popup-element-text: rgba(255, 255, 255, 0.7);
   --tv-color-popup-element-text-hover: rgba(255, 255, 255, 0.9);
-  --tv-color-popup-element-background-hover: #3a3f798f;
+  --tv-color-popup-element-background-hover: var(--hover-bg);
   --tv-color-popup-element-divider-background: #3a3e5e;
   --tv-color-popup-element-secondary-text: rgba(255, 255, 255, 0.7);
   --tv-color-popup-element-hint-text: rgba(255, 255, 255, 0.4);
   --tv-color-popup-element-text-active: #ffffff;
-  --tv-color-popup-element-background-active: #2962ff;
+  --tv-color-popup-element-background-active: var(--active-bg);
   --tv-color-popup-element-toolbox-text: rgba(255, 255, 255, 0.4);
   --tv-color-popup-element-toolbox-text-hover: rgba(255, 255, 255, 0.7);
   --tv-color-popup-element-toolbox-text-active-hover: rgba(255, 255, 255, 0.9);
@@ -68,17 +71,17 @@ html.theme-dark .button-neROVfUe.isInteractive-GwQQdU8S.isActive-GwQQdU8S:hover:
 
 html.theme-dark .tab-nGEmjtaX.active-nGEmjtaX,
 html.theme-dark .container-WeNdU0sq.selected-WeNdU0sq {
-  background-color: #2962ff;
+  background-color: var(--active-bg);
 }
 
 html.theme-dark .tab-nGEmjtaX:not(.active-nGEmjtaX):hover,
 html.theme-dark .itemRow-BadjY5sX:not(.active-BadjY5sX):hover,
 html.theme-dark .container-WeNdU0sq:not(.disabled-3Ywm3-oo):not(.selected-WeNdU0sq):hover {
-  background-color: #3a3f798f;
+  background-color: var(--hover-bg);
 }
 
 html.theme-dark .container-WeNdU0sq:not(.disabled-WeNdU0sq):hover.selected-WeNdU0sq {
-  background-color: #2962ff;
+  background-color: var(--active-bg);
 }
 
 html.theme-dark .size-small-D4RPB3ZC {
