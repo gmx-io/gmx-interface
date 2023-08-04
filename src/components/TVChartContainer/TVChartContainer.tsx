@@ -158,8 +158,7 @@ export default function TVChartContainer({
         setTvCharts,
         onSelectToken,
         tradePageVersion,
-        setTradePageVersion,
-        chartReady
+        setTradePageVersion
       ),
     };
     tvWidgetRef.current = new window.TradingView.widget(widgetOptions);

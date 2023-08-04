@@ -13,7 +13,6 @@ export class SaveLoadAdapter {
   onSelectToken: (token: Token) => void;
   currentAppVersion: number;
   setTradePageVersion: (version: number) => void;
-  chartReady: boolean;
 
   constructor(
     chainId: number,
@@ -21,8 +20,7 @@ export class SaveLoadAdapter {
     setTvCharts: (a: ChartDataInfo[]) => void,
     onSelectToken: (token: Token) => void,
     currentAppVersion: number,
-    setTradePageVersion: (version: number) => void,
-    chartReady: boolean
+    setTradePageVersion: (version: number) => void
   ) {
     this.charts = charts;
     this.setTvCharts = setTvCharts;
@@ -30,11 +28,12 @@ export class SaveLoadAdapter {
     this.onSelectToken = onSelectToken;
     this.currentAppVersion = currentAppVersion;
     this.setTradePageVersion = setTradePageVersion;
-    this.chartReady = chartReady;
   }
 
   getAllCharts() {
-    return Promise.resolve(this.charts);
+    const charts = this.charts || [];
+    const filteredCharts = charts.filter((chart) => chart.appVersion === this.currentAppVersion);
+    return Promise.resolve(filteredCharts);
   }
 
   removeChart(id: string) {

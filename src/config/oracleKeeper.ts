@@ -4,7 +4,7 @@ import queryString from "query-string";
 const ORACLE_KEEPER_URLS = {
   [ARBITRUM]: "https://arbitrum.gmx-oracle.io",
 
-  [AVALANCHE]: "https://avalanche.gmx-oracle.io",
+  [AVALANCHE]: "https://avalanche-2.gmx-oracle.io",
 
   [ARBITRUM_GOERLI]: "https://oracle-api-arb-goerli-xyguy.ondigitalocean.app",
 
