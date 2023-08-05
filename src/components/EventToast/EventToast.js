@@ -25,19 +25,12 @@ export default function EventToast({ event, id, onClick, t }) {
       {event.buttons && (
         <div className="toast-links">
           {event.buttons.map((button) => {
-            if (button.newTab) {
-              return (
-                <ExternalLink key={event.id + button.text} href={button.link}>
-                  {button.text}
-                </ExternalLink>
-              );
-            } else {
-              return (
-                <a key={event.id + button.text} href={button.link}>
-                  {button.text}
-                </a>
-              );
-            }
+            const newTab = button.newTab ? true : false;
+            return (
+              <ExternalLink key={event.id + button.text} href={button.link} newTab={newTab}>
+                {button.text}
+              </ExternalLink>
+            );
           })}
         </div>
       )}

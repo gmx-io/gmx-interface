@@ -169,7 +169,10 @@ export function MarketSelector({
                 <div className="Token-balance">
                   {showBalances && balance && (
                     <div className="Token-text">
-                      {balance.gt(0) && formatTokenAmount(balance, marketToken?.decimals)}
+                      {balance.gt(0) &&
+                        formatTokenAmount(balance, marketToken?.decimals, "", {
+                          useCommas: true,
+                        })}
                       {balance.eq(0) && "-"}
                     </div>
                   )}

@@ -9,7 +9,7 @@ export type EventData = {
   buttons?: {
     text: string;
     link: string;
-    newTab: boolean;
+    newTab?: boolean;
   }[];
 };
 
@@ -25,6 +25,10 @@ export const homeEventsData: EventData[] = [
         text: "Read More",
         link: "https://gmxio.substack.com/p/gmx-v2-beta-is-now-live",
         newTab: true,
+      },
+      {
+        text: "Use V2",
+        link: "https://app.gmx.io/#/v2?no_redirect",
       },
     ],
   },
@@ -42,6 +46,10 @@ export const appEventsData: EventData[] = [
         text: "Read More",
         link: "https://gmxio.substack.com/p/gmx-v2-beta-is-now-live",
         newTab: true,
+      },
+      {
+        text: "Use V2",
+        link: "https://app.gmx.io/#/v2?no_redirect",
       },
     ],
   },
