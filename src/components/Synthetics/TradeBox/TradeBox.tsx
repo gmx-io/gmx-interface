@@ -1001,7 +1001,7 @@ export function TradeBox(p: Props) {
                 showSymbolImage={true}
                 showBalances={true}
                 showTokenImgInDropdown={true}
-                extendedSortSequence={sortedIndexTokensWithPoolValue}
+                extendedSortSequence={sortedLongAndShortTokens}
               />
             )}
           </BuyInputSection>
