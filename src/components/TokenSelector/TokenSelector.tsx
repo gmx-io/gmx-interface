@@ -124,6 +124,7 @@ export default function TokenSelector(props: Props) {
       }
       return 0;
     });
+
     const sortedTokensWithoutBalance = tokensWithoutBalance.sort((a, b) => {
       const aInfo = infoTokens?.[a.address];
       const bInfo = infoTokens?.[b.address];
@@ -131,10 +132,18 @@ export default function TokenSelector(props: Props) {
       if (!aInfo || !bInfo) return 0;
 
       if (extendedSortSequence) {
-        return (
-          extendedSortSequence.indexOf(aInfo.wrappedAddress || aInfo.address) -
-          extendedSortSequence.indexOf(bInfo.wrappedAddress || bInfo.address)
-        );
+        // making sure to use the wrapped address if it exists in the extended sort sequence
+        const aAddress =
+          aInfo.wrappedAddress && extendedSortSequence.includes(aInfo.wrappedAddress)
+            ? aInfo.wrappedAddress
+            : aInfo.address;
+
+        const bAddress =
+          bInfo.wrappedAddress && extendedSortSequence.includes(bInfo.wrappedAddress)
+            ? bInfo.wrappedAddress
+            : bInfo.address;
+
+        return extendedSortSequence.indexOf(aAddress) - extendedSortSequence.indexOf(bAddress);
       }
 
       return 0;

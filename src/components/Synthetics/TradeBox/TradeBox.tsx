@@ -592,6 +592,19 @@ export function TradeBox(p: Props) {
   });
   const { availableMarkets, allMarkets } = marketsOptions;
 
+  const sortedAllMarkets = useMemo(() => {
+    if (!allMarkets) return;
+    return allMarkets.sort((a, b) => {
+      if (sortedIndexTokensWithPoolValue) {
+        return (
+          sortedIndexTokensWithPoolValue.indexOf(a.indexTokenAddress) -
+          sortedIndexTokensWithPoolValue.indexOf(b.indexTokenAddress)
+        );
+      }
+      return 0;
+    });
+  }, [allMarkets, sortedIndexTokensWithPoolValue]);
+
   const availableCollaterals = useMemo(() => {
     if (!marketInfo) {
       return [];
@@ -1122,7 +1135,7 @@ export function TradeBox(p: Props) {
               label={t`Market`}
               className="SwapBox-info-dropdown"
               selectedIndexName={toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined}
-              markets={allMarkets || []}
+              markets={sortedAllMarkets || []}
               isSideMenu
               onSelectMarket={(indexName, marketInfo) => onSelectToTokenAddress(marketInfo.indexToken.address)}
             />

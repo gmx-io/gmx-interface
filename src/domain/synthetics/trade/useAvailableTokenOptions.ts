@@ -80,7 +80,9 @@ export function useAvailableTokenOptions(
 
       if (!marketInfo.isSpotOnly) {
         indexTokens.add(indexToken);
-        indexTokensWithPoolValue[indexToken.address] = marketInfo.poolValueMax;
+        indexTokensWithPoolValue[indexToken.address] = (
+          indexTokensWithPoolValue[indexToken.address] || BigNumber.from(0)
+        ).add(marketInfo.poolValueMax);
       }
     }
 

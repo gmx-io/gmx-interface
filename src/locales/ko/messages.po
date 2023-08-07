@@ -1853,10 +1853,6 @@ msgstr ""
 msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 67% of the V2 markets generated fees."
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.js
-#~ msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 70% of the V2 markets generated fees."
-#~ msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX Announcements and Updates"
 msgstr "GMX 공지 및 업데이트"
@@ -4363,10 +4359,6 @@ msgstr "해당 포지션은 최대 레버리지인 100x를 초과하여 청산�
 #: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 msgid "This position was liquidated as the max leverage of {maxLeverageText} was exceeded."
 msgstr ""
-
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
-#~ msgid "This position was liquidated as the max leverage of {maxLeverageText} was exceeded.`"
-#~ msgstr ""
 
 #: src/pages/Home/Home.js
 msgid "Three tokens create our ecosystem"
