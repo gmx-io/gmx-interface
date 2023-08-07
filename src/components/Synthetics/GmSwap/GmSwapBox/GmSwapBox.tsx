@@ -50,6 +50,7 @@ import { useHistory, useLocation } from "react-router-dom";
 import "./GmSwapBox.scss";
 import Checkbox from "components/Checkbox/Checkbox";
 import Tooltip from "components/Tooltip/Tooltip";
+import { DUST_BNB } from "lib/legacy";
 
 export enum Operation {
   Deposit = "Deposit",
@@ -70,6 +71,7 @@ type Props = {
   onConnectWallet: () => void;
   setPendingTxns: (txns: any) => void;
   operation: Operation;
+  shouldDisableValidation?: boolean;
   mode: Mode;
   setMode: Dispatch<SetStateAction<Mode>>;
   setOperation: Dispatch<SetStateAction<Operation>>;
@@ -93,7 +95,16 @@ function showMarketToast(market) {
 }
 
 export function GmSwapBox(p: Props) {
-  const { operation, mode, setMode, setOperation, onSelectMarket, marketsInfoData, tokensData } = p;
+  const {
+    operation,
+    mode,
+    setMode,
+    setOperation,
+    onSelectMarket,
+    marketsInfoData,
+    tokensData,
+    shouldDisableValidation,
+  } = p;
   const { search } = useLocation();
   const history = useHistory();
   const queryParams = useMemo(() => new URLSearchParams(search), [search]);
@@ -408,19 +419,22 @@ export function GmSwapBox(p: Props) {
       };
     }
 
+    const onSubmit = () => {
+      setStage("confirmation");
+    };
+
     if (error) {
       return {
         text: error,
         error,
-        isDisabled: true,
+        isDisabled: !shouldDisableValidation,
+        onSubmit,
       };
     }
 
     return {
       text: isDeposit ? t`Buy GM` : t`Sell GM`,
-      onSubmit: () => {
-        setStage("confirmation");
-      },
+      onSubmit,
     };
   }, [
     account,
@@ -438,6 +452,7 @@ export function GmSwapBox(p: Props) {
     p.onConnectWallet,
     shortCollateralLiquidityUsd,
     shortTokenInputState?.token,
+    shouldDisableValidation,
   ]);
 
   function onFocusedCollateralInputChange(tokenAddress: string) {
@@ -756,6 +771,17 @@ export function GmSwapBox(p: Props) {
           topLeftValue={formatUsd(firstTokenUsd)}
           topRightLabel={t`Balance`}
           topRightValue={formatTokenAmount(firstToken?.balance, firstToken?.decimals)}
+          {...(isDeposit && {
+            onClickTopRightLabel: () => {
+              if (firstToken?.balance) {
+                const maxAvailableAmount = firstToken.isNative
+                  ? firstToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
+                  : firstToken.balance;
+                setFirstTokenInputValue(formatAmountFree(maxAvailableAmount, firstToken.decimals));
+                onFocusedCollateralInputChange(firstToken.address);
+              }
+            },
+          })}
           showMaxButton={isDeposit && firstToken?.balance?.gt(0) && !firstTokenAmount?.eq(firstToken.balance)}
           inputValue={firstTokenInputValue}
           onInputValueChange={(e) => {
@@ -766,7 +792,10 @@ export function GmSwapBox(p: Props) {
           }}
           onClickMax={() => {
             if (firstToken?.balance) {
-              setFirstTokenInputValue(formatAmountFree(firstToken.balance, firstToken.decimals));
+              const maxAvailableAmount = firstToken.isNative
+                ? firstToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
+                : firstToken.balance;
+              setFirstTokenInputValue(formatAmountFree(maxAvailableAmount, firstToken.decimals));
               onFocusedCollateralInputChange(firstToken.address);
             }
           }}
@@ -802,9 +831,23 @@ export function GmSwapBox(p: Props) {
                 onFocusedCollateralInputChange(secondToken.address);
               }
             }}
+            {...(isDeposit && {
+              onClickTopRightLabel: () => {
+                if (secondToken?.balance) {
+                  const maxAvailableAmount = secondToken.isNative
+                    ? secondToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
+                    : secondToken.balance;
+                  setSecondTokenInputValue(formatAmountFree(maxAvailableAmount, secondToken.decimals));
+                  onFocusedCollateralInputChange(secondToken.address);
+                }
+              },
+            })}
             onClickMax={() => {
               if (secondToken?.balance) {
-                setSecondTokenInputValue(formatAmountFree(secondToken.balance, secondToken.decimals));
+                const maxAvailableAmount = secondToken.isNative
+                  ? secondToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
+                  : secondToken.balance;
+                setSecondTokenInputValue(formatAmountFree(maxAvailableAmount, secondToken.decimals));
                 onFocusedCollateralInputChange(secondToken.address);
               }
             }}
@@ -821,7 +864,7 @@ export function GmSwapBox(p: Props) {
 
         <BuyInputSection
           topLeftLabel={isWithdrawal ? t`Pay` : t`Receive`}
-          topLeftValue={formatUsd(marketTokenUsd)}
+          topLeftValue={marketTokenUsd?.gt(0) ? formatUsd(marketTokenUsd) : ""}
           topRightLabel={t`Balance`}
           topRightValue={formatTokenAmount(marketToken?.balance, marketToken?.decimals)}
           showMaxButton={isWithdrawal && marketToken?.balance?.gt(0) && !marketTokenAmount?.eq(marketToken.balance)}
@@ -830,6 +873,14 @@ export function GmSwapBox(p: Props) {
             setMarketTokenInputValue(e.target.value);
             setFocusedInput("market");
           }}
+          {...(isWithdrawal && {
+            onClickTopRightLabel: () => {
+              if (marketToken?.balance) {
+                setMarketTokenInputValue(formatAmountFree(marketToken.balance, marketToken.decimals));
+                setFocusedInput("market");
+              }
+            },
+          })}
           onClickMax={() => {
             if (marketToken?.balance) {
               setMarketTokenInputValue(formatAmountFree(marketToken.balance, marketToken.decimals));
@@ -959,6 +1010,7 @@ export function GmSwapBox(p: Props) {
         isHighPriceImpact={isHighPriceImpact!}
         isHighPriceImpactAccepted={isHighPriceImpactAccepted}
         setIsHighPriceImpactAccepted={setIsHighPriceImpactAccepted}
+        shouldDisableValidation={shouldDisableValidation}
       />
     </div>
   );

@@ -47,6 +47,7 @@ type Props = {
   onSubmitted: () => void;
   onClose: () => void;
   setPendingTxns: (txns: any) => void;
+  shouldDisableValidation?: boolean;
 };
 
 export function GmConfirmationBox({
@@ -67,9 +68,7 @@ export function GmConfirmationBox({
   onSubmitted,
   onClose,
   setPendingTxns,
-  isHighPriceImpact,
-  isHighPriceImpactAccepted,
-  setIsHighPriceImpactAccepted,
+  shouldDisableValidation,
 }: Props) {
   const { library, account } = useWeb3React();
   const { chainId } = useChainId();
@@ -176,10 +175,31 @@ export function GmConfirmationBox({
       };
     }
 
+    const onSubmit = () => {
+      setIsSubmitting(true);
+
+      let txnPromise: Promise<any>;
+
+      if (isDeposit) {
+        txnPromise = onCreateDeposit();
+      } else {
+        txnPromise = onCreateWithdrawal();
+      }
+
+      txnPromise
+        .then(() => {
+          onSubmitted();
+        })
+        .finally(() => {
+          setIsSubmitting(false);
+        });
+    };
+
     if (error) {
       return {
         text: error,
-        disabled: true,
+        disabled: !shouldDisableValidation,
+        onClick: onSubmit,
       };
     }
 
@@ -211,25 +231,7 @@ export function GmConfirmationBox({
 
     return {
       text,
-      onClick: () => {
-        setIsSubmitting(true);
-
-        let txnPromise: Promise<any>;
-
-        if (isDeposit) {
-          txnPromise = onCreateDeposit();
-        } else {
-          txnPromise = onCreateWithdrawal();
-        }
-
-        txnPromise
-          .then(() => {
-            onSubmitted();
-          })
-          .finally(() => {
-            setIsSubmitting(false);
-          });
-      },
+      onClick: onSubmit,
     };
   })();
 
@@ -250,6 +252,7 @@ export function GmConfirmationBox({
       minMarketTokens: marketTokenAmount,
       executionFee: executionFee.feeTokenAmount,
       allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
+      skipSimulation: shouldDisableValidation,
       tokensData,
       setPendingTxns,
       setPendingDeposit,
@@ -274,6 +277,7 @@ export function GmConfirmationBox({
       executionFee: executionFee.feeTokenAmount,
       allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
       tokensData,
+      skipSimulation: shouldDisableValidation,
       setPendingTxns,
       setPendingWithdrawal,
     });
@@ -289,14 +293,12 @@ export function GmConfirmationBox({
                 <>
                   {[longTokenText, shortTokenText].filter(Boolean).map((text) => (
                     <div key={text}>
-                      <Trans>Pay</Trans>
-                      {text}
+                      <Trans>Pay</Trans> {text}
                     </div>
                   ))}
                   <div className="Confirmation-box-main-icon"></div>
                   <div>
-                    <Trans>Receive</Trans>
-                    {marketTokenText}
+                    <Trans>Receive</Trans> {marketTokenText}
                   </div>
                 </>
               )}

@@ -547,7 +547,7 @@ export function ConfirmationBox(p: Props) {
       return (
         <div className="Confirmation-box-main">
           <div>
-            <Trans>Pay</Trans>
+            <Trans>Pay</Trans>{" "}
             {formatTokenAmountWithUsd(
               swapAmounts?.amountIn,
               swapAmounts?.usdIn,
@@ -557,7 +557,7 @@ export function ConfirmationBox(p: Props) {
           </div>
           <div className="Confirmation-box-main-icon"></div>
           <div>
-            <Trans>Receive</Trans>
+            <Trans>Receive</Trans>{" "}
             {formatTokenAmountWithUsd(swapAmounts?.amountOut, swapAmounts?.usdOut, toToken?.symbol, toToken?.decimals)}
           </div>
         </div>
@@ -568,7 +568,7 @@ export function ConfirmationBox(p: Props) {
       return (
         <div className="Confirmation-box-main">
           <span>
-            <Trans>Pay</Trans>
+            <Trans>Pay</Trans>{" "}
             {formatTokenAmountWithUsd(
               increaseAmounts?.initialCollateralAmount,
               increaseAmounts?.initialCollateralUsd,
@@ -578,7 +578,7 @@ export function ConfirmationBox(p: Props) {
           </span>
           <div className="Confirmation-box-main-icon"></div>
           <div>
-            {isLong ? t`Long` : t`Short`}
+            {isLong ? t`Long` : t`Short`}{" "}
             {formatTokenAmountWithUsd(
               increaseAmounts?.sizeDeltaInTokens,
               increaseAmounts?.sizeDeltaUsd,
@@ -593,24 +593,6 @@ export function ConfirmationBox(p: Props) {
     return (
       <div className={cx("Confirmation-box-main ConfirmationBox-main")}>
         <Trans>Decrease</Trans>&nbsp;{indexToken?.symbol} {isLong ? t`Long` : t`Short`}
-      </div>
-    );
-  }
-
-  function renderFeeWarning() {
-    if (!fees?.totalFees) {
-      return null;
-    }
-
-    const shouldShowWarning = fees.totalFees.deltaUsd.lt(0) && fees.totalFees.bps.abs().gt(600);
-
-    if (!shouldShowWarning) {
-      return null;
-    }
-
-    return (
-      <div className="Confirmation-box-warning">
-        <Trans>Fees are high</Trans>
       </div>
     );
   }
@@ -904,7 +886,6 @@ export function ConfirmationBox(p: Props) {
         <div>
           {renderMain()}
           {renderCollateralSpreadWarning()}
-          {isMarket && renderFeeWarning()}
           {renderExistingLimitOrdersWarning()}
           {renderExistingTriggerErrors()}
           {renderExistingTriggerWarning()}
@@ -1120,7 +1101,6 @@ export function ConfirmationBox(p: Props) {
       <>
         <div>
           {renderMain()}
-          {renderFeeWarning()}
           {renderSwapSpreadWarining()}
           {isLimit && renderLimitPriceWarning()}
           {swapSpreadInfo.showSpread && swapSpreadInfo.spread && (

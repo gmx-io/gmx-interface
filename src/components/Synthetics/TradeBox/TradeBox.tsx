@@ -70,7 +70,7 @@ import longImg from "img/long.svg";
 import shortImg from "img/short.svg";
 import swapImg from "img/swap.svg";
 import { useChainId } from "lib/chains";
-import { USD_DECIMALS } from "lib/legacy";
+import { DUST_BNB, USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   formatAmount,
@@ -93,6 +93,7 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { CollateralSelectorRow } from "./CollateralSelectorRow";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import "./TradeBox.scss";
+import Banner from "components/Banner/Banner";
 
 export type Props = {
   tradeType: TradeType;
@@ -909,6 +910,16 @@ export function TradeBox(p: Props) {
     }
   }
 
+  function onMaxClick() {
+    if (fromToken?.balance) {
+      const maxAvailableAmount = fromToken.isNative
+        ? fromToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
+        : fromToken.balance;
+      setFocusedInput("from");
+      setFromTokenInputValue(formatAmountFree(maxAvailableAmount, fromToken.decimals));
+    }
+  }
+
   function renderTokenInputs() {
     return (
       <>
@@ -917,18 +928,14 @@ export function TradeBox(p: Props) {
           topLeftValue={fromUsd?.gt(0) ? formatUsd(isIncrease ? increaseAmounts?.initialCollateralUsd : fromUsd) : ""}
           topRightLabel={t`Balance`}
           topRightValue={formatTokenAmount(fromToken?.balance, fromToken?.decimals)}
+          onClickTopRightLabel={onMaxClick}
           inputValue={fromTokenInputValue}
           onInputValueChange={(e) => {
             setFocusedInput("from");
             setFromTokenInputValue(e.target.value);
           }}
           showMaxButton={isNotMatchAvailableBalance}
-          onClickMax={() => {
-            if (fromToken?.balance) {
-              setFocusedInput("from");
-              setFromTokenInputValue(formatAmountFree(fromToken.balance, fromToken.decimals));
-            }
-          }}
+          onClickMax={onMaxClick}
         >
           {fromTokenAddress && (
             <TokenSelector
@@ -967,7 +974,7 @@ export function TradeBox(p: Props) {
           >
             {toTokenAddress && (
               <TokenSelector
-                label={t`Receive:`}
+                label={t`Receive`}
                 chainId={chainId}
                 tokenAddress={toTokenAddress}
                 onSelectToken={(token) => onSelectToTokenAddress(token.address)}
@@ -1029,6 +1036,7 @@ export function TradeBox(p: Props) {
         topRightValue={existingPosition?.sizeInUsd ? formatUsd(existingPosition.sizeInUsd) : undefined}
         inputValue={closeSizeInputValue}
         onInputValueChange={(e) => setCloseSizeInputValue(e.target.value)}
+        onClickTopRightLabel={() => setCloseSizeInputValue(formatAmount(existingPosition?.sizeInUsd, USD_DECIMALS, 2))}
         showMaxButton={existingPosition?.sizeInUsd.gt(0) && !closeSizeUsd?.eq(existingPosition.sizeInUsd)}
         onClickMax={() => setCloseSizeInputValue(formatAmount(existingPosition?.sizeInUsd, USD_DECIMALS, 2))}
       >
@@ -1395,48 +1403,51 @@ export function TradeBox(p: Props) {
 
   return (
     <>
-      <div className={`App-box SwapBox`}>
-        <Tab
-          icons={tradeTypeIcons}
-          options={Object.values(TradeType)}
-          optionLabels={tradeTypeLabels}
-          option={tradeType}
-          onChange={onSelectTradeType}
-          className="SwapBox-option-tabs"
-        />
+      <div>
+        <Banner className="Banner-gap" />
+        <div className={`App-box SwapBox`}>
+          <Tab
+            icons={tradeTypeIcons}
+            options={Object.values(TradeType)}
+            optionLabels={tradeTypeLabels}
+            option={tradeType}
+            onChange={onSelectTradeType}
+            className="SwapBox-option-tabs"
+          />
 
-        <Tab
-          options={availableTradeModes}
-          optionLabels={tradeModeLabels}
-          className="SwapBox-asset-options-tabs"
-          type="inline"
-          option={tradeMode}
-          onChange={onSelectTradeMode}
-        />
+          <Tab
+            options={availableTradeModes}
+            optionLabels={tradeModeLabels}
+            className="SwapBox-asset-options-tabs"
+            type="inline"
+            option={tradeMode}
+            onChange={onSelectTradeMode}
+          />
 
-        {(isSwap || isIncrease) && renderTokenInputs()}
-        {isTrigger && renderDecreaseSizeInput()}
+          {(isSwap || isIncrease) && renderTokenInputs()}
+          {isTrigger && renderDecreaseSizeInput()}
 
-        {isSwap && isLimit && renderTriggerRatioInput()}
-        {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}
+          {isSwap && isLimit && renderTriggerRatioInput()}
+          {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}
 
-        <div className="SwapBox-info-section">
-          {isPosition && renderPositionControls()}
-          {isIncrease && renderIncreaseOrderInfo()}
-          {isTrigger && renderTriggerOrderInfo()}
+          <div className="SwapBox-info-section">
+            {isPosition && renderPositionControls()}
+            {isIncrease && renderIncreaseOrderInfo()}
+            {isTrigger && renderTriggerOrderInfo()}
 
-          {feesType && <TradeFeesRow {...fees} executionFee={executionFee} feesType={feesType} />}
-        </div>
+            {feesType && <TradeFeesRow {...fees} executionFee={executionFee} feesType={feesType} />}
+          </div>
 
-        <div className="Exchange-swap-button-container">
-          <Button
-            variant="primary-action"
-            className="w-full"
-            onClick={onSubmit}
-            disabled={Boolean(error) && !shouldDisableValidation}
-          >
-            {error || submitButtonText}
-          </Button>
+          <div className="Exchange-swap-button-container">
+            <Button
+              variant="primary-action"
+              className="w-full"
+              onClick={onSubmit}
+              disabled={Boolean(error) && !shouldDisableValidation}
+            >
+              {error || submitButtonText}
+            </Button>
+          </div>
         </div>
       </div>
 

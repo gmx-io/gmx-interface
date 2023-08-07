@@ -189,7 +189,12 @@ export const RPC_PROVIDERS = {
     // "https://arbitrum-goerli.public.blastapi.io",
   ],
   [AVALANCHE]: ["https://api.avax.network/ext/bc/C/rpc"],
-  [AVALANCHE_FUJI]: ["https://rpc.ankr.com/avalanche_fuji"],
+  [AVALANCHE_FUJI]: [
+    "https://avalanche-fuji-c-chain.publicnode.com",
+    "https://api.avax-test.network/ext/bc/C/rpc",
+    // "https://ava-testnet.public.blastapi.io/v1/avax/fuji/public",
+    // "https://rpc.ankr.com/avalanche_fuji",
+  ],
 };
 
 export const FALLBACK_PROVIDERS = {
@@ -197,8 +202,8 @@ export const FALLBACK_PROVIDERS = {
   [AVALANCHE]: ["https://avax-mainnet.gateway.pokt.network/v1/lb/626f37766c499d003aada23b"],
   [AVALANCHE_FUJI]: [
     "https://endpoints.omniatech.io/v1/avax/fuji/public",
-    "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
     "https://api.avax-test.network/ext/bc/C/rpc",
+    "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
   ],
   [ARBITRUM_GOERLI]: ["https://arb-goerli.g.alchemy.com/v2/cZfd99JyN42V9Clbs_gOvA3GSBZH1-1j"],
 };

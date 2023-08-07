@@ -88,7 +88,7 @@ import { helperToast } from "lib/helperToast";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { roundToTwoDecimals } from "lib/numbers";
-import { getWsProvider } from "lib/rpc";
+import { useWsProvider } from "lib/rpc";
 import {
   activateInjectedProvider,
   clearWalletConnectData,
@@ -248,7 +248,7 @@ function FullApp() {
 
   const [tradePageVersion, setTradePageVersion] = useLocalStorageSerializeKey(
     [chainId, TRADE_LINK_KEY],
-    getIsSyntheticsSupported(chainId) ? 2 : 1
+    getIsV1Supported(chainId) ? 1 : 2
   );
   const [walletModalVisible, setWalletModalVisible] = useState(false);
   const [redirectModalVisible, setRedirectModalVisible] = useState(false);
@@ -264,6 +264,7 @@ function FullApp() {
   const [executionFeeBufferBps, setExecutionFeeBufferBps] = useState(0);
   const [isPnlInLeverage, setIsPnlInLeverage] = useState(false);
   const [shouldDisableValidationForTesting, setShouldDisableValidationForTesting] = useState(false);
+
   const [showPnlAfterFees, setShowPnlAfterFees] = useState(true);
   const [showDebugValues, setShowDebugValues] = useState(false);
 
@@ -276,8 +277,14 @@ function FullApp() {
     [chainId, SHOW_PNL_AFTER_FEES_KEY],
     true
   );
-  const [savedShouldDisableValidationForTesting, setSavedShouldDisableValidationForTesting] =
-    useLocalStorageSerializeKey([chainId, DISABLE_ORDER_VALIDATION_KEY], false);
+
+  let [savedShouldDisableValidationForTesting, setSavedShouldDisableValidationForTesting] = useLocalStorageSerializeKey(
+    [chainId, DISABLE_ORDER_VALIDATION_KEY],
+    false
+  );
+  if (!isDevelopment()) {
+    savedShouldDisableValidationForTesting = false;
+  }
 
   const [savedShouldShowPositionLines, setSavedShouldShowPositionLines] = useLocalStorageSerializeKey(
     [chainId, SHOULD_SHOW_POSITION_LINES_KEY],
@@ -423,12 +430,13 @@ function FullApp() {
     return () => clearInterval(interval);
   }, [library, pendingTxns, chainId]);
 
+  const wsProvider = useWsProvider(active, chainId);
+
   const vaultAddress = getContract(chainId, "Vault");
   const positionRouterAddress = getContract(chainId, "PositionRouter");
 
   useEffect(() => {
     const wsVaultAbi = chainId === ARBITRUM ? VaultV2.abi : VaultV2b.abi;
-    const wsProvider = getWsProvider(active, chainId);
     if (!wsProvider) {
       return;
     }
@@ -468,7 +476,7 @@ function FullApp() {
       wsPositionRouter.off("CancelIncreasePosition", onCancelIncreasePosition);
       wsPositionRouter.off("CancelDecreasePosition", onCancelDecreasePosition);
     };
-  }, [active, chainId, vaultAddress, positionRouterAddress]);
+  }, [chainId, vaultAddress, positionRouterAddress, wsProvider]);
 
   return (
     <>
@@ -542,7 +550,11 @@ function FullApp() {
               </Route>
               <Route exact path="/pools">
                 {getIsSyntheticsSupported(chainId) ? (
-                  <MarketPoolsPage connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
+                  <MarketPoolsPage
+                    shouldDisableValidation={savedShouldDisableValidationForTesting}
+                    connectWallet={connectWallet}
+                    setPendingTxns={setPendingTxns}
+                  />
                 ) : (
                   <SyntheticsFallbackPage />
                 )}
@@ -553,7 +565,7 @@ function FullApp() {
                   <SyntheticsPage
                     onConnectWallet={connectWallet}
                     savedIsPnlInLeverage={savedIsPnlInLeverage}
-                    shouldDisableValidation={shouldDisableValidationForTesting}
+                    shouldDisableValidation={savedShouldDisableValidationForTesting}
                     savedShouldShowPositionLines={savedShouldShowPositionLines}
                     setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
                     setPendingTxns={setPendingTxns}
@@ -716,8 +728,11 @@ function FullApp() {
                     <Trans>
                       The Max Execution Fee is set to a higher value to handle potential increases in gas price during
                       order execution. Any excess execution fee will be refunded to your account when the order is
-                      executed.
+                      executed. Only applicable to GMX V2.
                     </Trans>
+                    <br />
+                    <br />
+                    <ExternalLink href="https://docs.gmx.io/docs/trading/v2#execution-fee">Read more</ExternalLink>
                   </div>
                 )}
               />

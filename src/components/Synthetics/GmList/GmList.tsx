@@ -169,7 +169,7 @@ export function GmList({
                         <div className="App-card-title-info-icon">
                           <img
                             src={importImage(
-                              "ic_" + (market.isSpotOnly ? "spot" : indexToken.symbol.toLocaleLowerCase()) + "_40.svg"
+                              "ic_" + (market.isSpotOnly ? "swap" : indexToken.symbol.toLocaleLowerCase()) + "_40.svg"
                             )}
                             alt={indexToken.symbol}
                             width="40"
@@ -181,7 +181,7 @@ export function GmList({
                             {getMarketIndexName({ indexToken, isSpotOnly: market?.isSpotOnly })}
                             {!market.isSpotOnly && (
                               <div className="Asset-dropdown-container">
-                                <AssetDropdown assetSymbol={indexToken.symbol} />
+                                <AssetDropdown assetSymbol={indexToken.symbol} tooltipPosition="left" />
                               </div>
                             )}
                           </div>
@@ -209,8 +209,16 @@ export function GmList({
                     </td>
 
                     <td>
-                      {formatTokenAmount(token.balance, token.decimals, "GM", { useCommas: true, displayDecimals: 2 })}
-                      <br />({formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice)) || "..."})
+                      {formatTokenAmount(token.balance, token.decimals, "GM", {
+                        useCommas: true,
+                        displayDecimals: 2,
+                        fallbackToZero: true,
+                      })}
+                      <br />(
+                      {formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice), {
+                        fallbackToZero: true,
+                      }) || "..."}
+                      )
                     </td>
 
                     <td>{apr ? `${formatAmount(apr, 2, 2)}%` : "..."}</td>
@@ -246,11 +254,9 @@ export function GmList({
       {isMobile && (
         <>
           {!hideTitle && (
-            <div className="App-card-title">
-              <span className="items-center">
-                <Trans>GM Pools</Trans>
-                <img className="ml-xs" src={currentIcons.network} width="16" alt="Network Icon" />
-              </span>
+            <div className="Page-title glp-composition-small title-small">
+              <Trans>GM Pools</Trans>
+              <img className="title-icon" src={currentIcons.network} width="24" alt="Network Icon" />
             </div>
           )}
 
@@ -276,14 +282,14 @@ export function GmList({
                     <div className="mobile-token-card">
                       <img
                         src={importImage(
-                          "ic_" + (market?.isSpotOnly ? "spot" : indexToken?.symbol.toLocaleLowerCase()) + "_24.svg"
+                          "ic_" + (market?.isSpotOnly ? "swap" : indexToken?.symbol.toLocaleLowerCase()) + "_24.svg"
                         )}
                         alt={indexToken.symbol}
                         width="20"
                       />
                       <div className="token-symbol-text">{market?.name}</div>
                       <div>
-                        <AssetDropdown assetSymbol={indexToken.symbol} />
+                        <AssetDropdown assetSymbol={indexToken.symbol} tooltipPosition="left" />
                       </div>
                     </div>
                   </div>
@@ -339,8 +345,13 @@ export function GmList({
                         {formatTokenAmount(token.balance, token.decimals, "GM", {
                           useCommas: true,
                           displayDecimals: 2,
+                          fallbackToZero: true,
                         })}{" "}
-                        ({formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice))})
+                        (
+                        {formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice), {
+                          fallbackToZero: true,
+                        })}
+                        )
                       </div>
                     </div>
                     <div className="App-card-row">
@@ -387,9 +398,13 @@ function renderMintableAmount({ mintableInfo, market, token, longToken, shortTok
         <>
           {formatTokenAmount(mintableInfo?.mintableAmount, token.decimals, "GM", {
             useCommas: true,
-            displayDecimals: 2,
+            displayDecimals: 0,
           })}
-          <br />({formatUsd(mintableInfo?.mintableUsd)})
+          <br />(
+          {formatUsd(mintableInfo?.mintableUsd, {
+            displayDecimals: 0,
+          })}
+          )
         </>
       }
       className="text-none"
@@ -408,14 +423,14 @@ function renderMintableAmount({ mintableInfo, market, token, longToken, shortTok
             value={[
               formatTokenAmount(mintableInfo?.longDepositCapacityAmount, longToken.decimals, longToken.symbol, {
                 useCommas: true,
-                displayDecimals: longToken.isStable ? 0 : 2,
+                displayDecimals: 0,
               }),
               `(${formatTokenAmount(market.longPoolAmount, longToken.decimals, "", {
                 useCommas: true,
-                displayDecimals: longToken.isStable ? 0 : 2,
+                displayDecimals: 0,
               })} / ${formatTokenAmount(market.maxLongPoolAmount, longToken.decimals, longToken.symbol, {
                 useCommas: true,
-                displayDecimals: longToken.isStable ? 0 : 2,
+                displayDecimals: 0,
               })})`,
             ]}
           />
@@ -424,15 +439,14 @@ function renderMintableAmount({ mintableInfo, market, token, longToken, shortTok
             value={[
               formatTokenAmount(mintableInfo?.shortDepositCapacityAmount, shortToken.decimals, shortToken.symbol, {
                 useCommas: true,
-                displayDecimals: shortToken.isStable ? 0 : 2,
+                displayDecimals: 0,
               }),
-
               `(${formatTokenAmount(market.shortPoolAmount, shortToken.decimals, "", {
                 useCommas: true,
-                displayDecimals: shortToken.isStable ? 0 : 2,
+                displayDecimals: 0,
               })} / ${formatTokenAmount(market.maxShortPoolAmount, shortToken.decimals, shortToken.symbol, {
                 useCommas: true,
-                displayDecimals: shortToken.isStable ? 0 : 2,
+                displayDecimals: 0,
               })})`,
             ]}
           />

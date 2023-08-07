@@ -156,7 +156,7 @@ export default function TokenSelector(props: Props) {
   const tokenImage = showSymbolImage ? importImage(`ic_${tokenInfo.symbol.toLowerCase()}_24.svg`) : undefined;
 
   return (
-    <div className={cx("TokenSelector", { disabled }, props.className)}>
+    <div className={cx("TokenSelector", { disabled }, props.className)} onClick={(event) => event.stopPropagation()}>
       <Modal
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}

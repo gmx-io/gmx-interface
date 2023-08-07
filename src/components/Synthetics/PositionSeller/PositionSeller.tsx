@@ -595,7 +595,12 @@ export function PositionSeller(p: Props) {
             )}
 
             <div className="Exchange-swap-button-container">
-              <Button className="w-full" variant="primary-action" disabled={Boolean(error)} onClick={onSubmit}>
+              <Button
+                className="w-full"
+                variant="primary-action"
+                disabled={Boolean(error) && !p.shouldDisableValidation}
+                onClick={onSubmit}
+              >
                 {error || t`Close`}
               </Button>
             </div>

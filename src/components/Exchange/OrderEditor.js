@@ -24,6 +24,7 @@ import { useChainId } from "lib/chains";
 import { t, Trans } from "@lingui/macro";
 import Button from "components/Button/Button";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
+import { getPriceDecimals, getToken } from "config/tokens";
 
 export default function OrderEditor(props) {
   const {
@@ -44,6 +45,7 @@ export default function OrderEditor(props) {
   const { chainId } = useChainId();
 
   const position = order.type !== SWAP ? getPositionForOrder(account, order, positionsMap) : null;
+
   const liquidationPrice =
     order.type === DECREASE && position
       ? getLiquidationPrice({
@@ -237,6 +239,8 @@ export default function OrderEditor(props) {
 
   if (order.type !== SWAP) {
     const triggerPricePrefix = order.triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW;
+    const indexTokenInfo = getToken(chainId, order.indexToken);
+    const orderPriceDecimal = getPriceDecimals(chainId, indexTokenInfo.symbol);
     return (
       <Modal
         isVisible={true}
@@ -252,10 +256,10 @@ export default function OrderEditor(props) {
             <div
               className="muted align-right clickable"
               onClick={() => {
-                setTriggerPriceValue(formatAmountFree(indexTokenMarkPrice, USD_DECIMALS, 2));
+                setTriggerPriceValue(formatAmountFree(indexTokenMarkPrice, USD_DECIMALS, orderPriceDecimal));
               }}
             >
-              <Trans>Mark: {formatAmount(indexTokenMarkPrice, USD_DECIMALS, 2)}</Trans>
+              <Trans>Mark: {formatAmount(indexTokenMarkPrice, USD_DECIMALS, orderPriceDecimal)}</Trans>
             </div>
           </div>
           <div className="Exchange-swap-section-bottom">

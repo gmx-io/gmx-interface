@@ -1,12 +1,13 @@
 import { gql } from "@apollo/client";
-import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { BigNumber } from "ethers";
 import { bigNumberify, expandDecimals } from "lib/numbers";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import { useMemo } from "react";
 import useSWR from "swr";
-import { MarketTokensAPRData, MarketsInfoData } from "./types";
-import { TokensData } from "../tokens";
+import { useMarketsInfo } from ".";
+import { MarketTokensAPRData } from "./types";
+import { useMarketTokensData } from "./useMarketTokensData";
 
 type RawCollectedFees = {
   id: string;
@@ -23,14 +24,9 @@ type MarketTokensAPRResult = {
   avgMarketsAPR?: BigNumber;
 };
 
-export function useMarketTokensAPR(
-  chainId: number,
-  p: {
-    marketsInfoData?: MarketsInfoData;
-    marketTokensData?: TokensData;
-  }
-): MarketTokensAPRResult {
-  const { marketTokensData, marketsInfoData } = p;
+export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
+  const { marketsInfoData } = useMarketsInfo(chainId);
+  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
 
   const client = getSyntheticsGraphClient(chainId);
   const marketAddresses = useMemo(

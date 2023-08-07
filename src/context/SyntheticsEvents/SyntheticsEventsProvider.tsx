@@ -15,6 +15,7 @@ import {
   isMarketOrderType,
 } from "domain/synthetics/orders";
 import { getPositionKey } from "domain/synthetics/positions";
+import { useTokensData } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
@@ -22,7 +23,7 @@ import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey, setByKey, updateByKey } from "lib/objects";
-import { getProvider, getWsProvider } from "lib/rpc";
+import { getProvider, useWsProvider } from "lib/rpc";
 import { ReactNode, createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   DepositCreatedEventData,
@@ -43,7 +44,6 @@ import {
   WithdrawalStatuses,
 } from "./types";
 import { parseEventLogData } from "./utils";
-import { useTokensData } from "domain/synthetics/tokens";
 
 export const SyntheticsEventsContext = createContext({});
 
@@ -385,18 +385,22 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     },
   };
 
+  const wsProvider = useWsProvider(active, chainId);
+
   useEffect(
     function subscribe() {
-      const wsProvider = getWsProvider(active, chainId);
-
       if (!wsProvider) {
         return;
       }
 
-      let EventEmitterContract: ethers.Contract | undefined;
+      const eventEmitterInstances: ethers.Contract[] = [];
 
       try {
-        EventEmitterContract = new ethers.Contract(getContract(chainId, "EventEmitter"), EventEmitter.abi, wsProvider);
+        if (wsProvider) {
+          eventEmitterInstances.push(
+            new ethers.Contract(getContract(chainId, "EventEmitter"), EventEmitter.abi, wsProvider)
+          );
+        }
       } catch (e) {
         // ...ignore on unsupported chains
       }
@@ -416,17 +420,21 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         eventLogHandlers.current[eventName]?.(parseEventLogData(eventData), txnOpts);
       }
 
-      EventEmitterContract?.on("EventLog", handleEventLog);
-      EventEmitterContract?.on("EventLog1", handleEventLog1);
-      EventEmitterContract?.on("EventLog2", handleEventLog2);
+      eventEmitterInstances.forEach((contract) => {
+        contract.on("EventLog", handleEventLog);
+        contract.on("EventLog1", handleEventLog1);
+        contract.on("EventLog2", handleEventLog2);
+      });
 
       return () => {
-        EventEmitterContract?.off("EventLog", handleEventLog);
-        EventEmitterContract?.off("EventLog1", handleEventLog1);
-        EventEmitterContract?.off("EventLog2", handleEventLog2);
+        eventEmitterInstances.forEach((contract) => {
+          contract.off("EventLog", handleEventLog);
+          contract.off("EventLog1", handleEventLog1);
+          contract.off("EventLog2", handleEventLog2);
+        });
       };
     },
-    [active, chainId]
+    [chainId, wsProvider]
   );
 
   const contextState: SyntheticsEventsContextType = useMemo(() => {
