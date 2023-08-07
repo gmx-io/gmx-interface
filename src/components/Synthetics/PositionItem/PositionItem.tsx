@@ -594,7 +594,8 @@ export function PositionItem(p: Props) {
                   className="App-button-option App-card-option"
                   disabled={p.position.sizeInUsd.eq(0)}
                   onClick={() => {
-                    window.scrollTo({ top: 0 });
+                    // TODO: remove after adding trigger functionality to Modal
+                    window.scrollTo({ top: 500 });
                     p.onSelectPositionClick?.(TradeMode.Trigger);
                   }}
                 >

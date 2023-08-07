@@ -361,6 +361,7 @@ export function PositionSeller(p: Props) {
         setCloseUsdInputValue("");
         setIsHighPriceImpactAccepted(false);
         setReceiveTokenAddress(undefined);
+        setOrderOption(OrderOption.Market);
       }
     },
     [isVisible, prevIsVisible]
