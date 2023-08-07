@@ -595,10 +595,12 @@ export function TradeBox(p: Props) {
   const sortedAllMarkets = useMemo(() => {
     if (!allMarkets) return;
     return allMarkets.sort((a, b) => {
+      const aIndexToken = a.indexToken;
+      const bIndexToken = b.indexToken;
       if (sortedIndexTokensWithPoolValue) {
         return (
-          sortedIndexTokensWithPoolValue.indexOf(a.indexTokenAddress) -
-          sortedIndexTokensWithPoolValue.indexOf(b.indexTokenAddress)
+          sortedIndexTokensWithPoolValue.indexOf(aIndexToken.address) -
+          sortedIndexTokensWithPoolValue.indexOf(bIndexToken.address)
         );
       }
       return 0;
