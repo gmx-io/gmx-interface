@@ -71,6 +71,10 @@ const sumScoresByAccount = (accountPerfs: AccountPerf[], period: PerfPeriod) => 
         cumsumCollateral: BigNumber.from(0),
         sumMaxSize: BigNumber.from(0),
         closedCount: BigNumber.from(0),
+        borrowingFeeUsd: BigNumber.from(0),
+        fundingFeeUsd: BigNumber.from(0),
+        positionFeeUsd: BigNumber.from(0),
+        priceImpactUsd: BigNumber.from(0),
       };
     } else {
       // eslint-disable-next-line no-console
@@ -125,7 +129,7 @@ export function useAccountPerf(period: PerfPeriod) {
   // console.log('Total accounts:', accounts.data && accounts.data.length || 0)
 
   return {
-    isLoading: !accounts.data,
+    isLoading: !accounts.data && !accounts.error,
     data: accounts.data || [],
     error: accounts.error || null,
   } as RemoteData<AccountPerf>;

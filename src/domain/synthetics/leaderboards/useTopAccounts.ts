@@ -50,6 +50,7 @@ export function useTopAccounts(period: PerfPeriod) {
   const positions = usePositionScores();
 
   if (accountPerf.error || positions.error) {
+    console.log({accountPerf, positions});
     return { data: [], isLoading: false, error: accountPerf.error || positions.error };
   } else if (accountPerf.isLoading || positions.isLoading) {
     return { data: [], isLoading: true, error: null };
