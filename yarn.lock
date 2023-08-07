@@ -5806,6 +5806,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"bignumber.js@npm:^9.0.0":
+  version: 9.1.1
+  resolution: "bignumber.js@npm:9.1.1"
+  checksum: ad243b7e2f9120b112d670bb3d674128f0bd2ca1745b0a6c9df0433bd2c0252c43e6315d944c2ac07b4c639e7496b425e46842773cf89c6a2dcd4f31e5c4b11e
+  languageName: node
+  linkType: hard
+
 "binary-extensions@npm:^1.0.0":
   version: 1.13.1
   resolution: "binary-extensions@npm:1.13.1"
@@ -9750,6 +9757,7 @@ __metadata:
     "@web3-react/walletconnect-connector": 6.2.8
     axios: ^1.4.0
     bigdecimal: 0.6.1
+    bignumber.js: ^9.0.0
     classnames: 2.3.1
     date-fns: 2.27.0
     env-cmd: ^10.1.0

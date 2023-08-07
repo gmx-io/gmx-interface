@@ -223,8 +223,22 @@
   position: relative;
 }
 
+.App-header-faucet {
+  border: 1px solid #ffffff29;
+  height: 3.6rem;
+  border-radius: 0.4rem;
+  display: inline-flex;
+  align-items: center;
+  color: white;
+  position: relative;
+}
+
 @media (max-width: 1033px) {
   .App-header-user-address {
+    padding: 0 0px;
+  }
+
+  .App-header-faucet {
     padding: 0 0px;
   }
 

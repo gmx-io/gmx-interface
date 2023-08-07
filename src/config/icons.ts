@@ -1,5 +1,12 @@
 // eslint-disable-next-line
-import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, AVALANCHE_FUJI, OPTIMISM_GOERLI_TESTNET, SEPOLIA_TESTNET } from "config/chains";
+import {
+  ARBITRUM,
+  ARBITRUM_TESTNET,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  OPTIMISM_GOERLI_TESTNET,
+  SEPOLIA_TESTNET,
+} from "config/chains";
 import arbitrum from "img/ic_arbitrum_24.svg";
 import avalanche from "img/ic_avalanche_24.svg";
 import avalancheTestnet from "img/ic_avalanche_testnet_24.svg";

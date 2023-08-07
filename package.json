@@ -25,6 +25,7 @@
     "@web3-react/walletconnect-connector": "6.2.8",
     "axios": "^1.4.0",
     "bigdecimal": "0.6.1",
+    "bignumber.js": "^9.0.0",
     "classnames": "2.3.1",
     "date-fns": "2.27.0",
     "env-cmd": "^10.1.0",
