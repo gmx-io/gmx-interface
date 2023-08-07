@@ -2578,6 +2578,7 @@ msgstr "Mark: {0}"
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -4189,6 +4190,10 @@ msgstr "TOKEN"
 msgid "TOTAL SUPPLY"
 msgstr ""
 
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+msgid "Take-Profit and Stop-Loss orders are created in the main Tradebox.<0/><1/><2>Set Trigger Order for this position.</2><3/><4/><5>Read More</5>."
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Take-profit and stop-loss orders can be set after opening a position. <0/><1/>There will be a \"Close\" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>."
 msgstr "Take-Profit- und Stop-Loss-Orders können nach der Eröffnung einer Position gesetzt werden. <0/><1/>Auf jeder Positionszeile befindet sich ein Button \"Schließen\", durch Anklicken dieser Schaltfläche wird die Option zum Setzen von Trigger-Orders angezeigt. <2/><3/>Screenshots und weitere Informationen findest du in den <4>Dokumenten</4>."
@@ -4618,6 +4623,8 @@ msgstr "Übermitteln"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Trigger"
 msgstr "Trigger"
