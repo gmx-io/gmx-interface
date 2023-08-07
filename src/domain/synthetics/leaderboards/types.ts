@@ -23,6 +23,10 @@ export type AccountPerfJson = {
   cumsumSize: string;
   sumMaxSize: string;
   closedCount: string;
+  borrowingFeeUsd: string;
+  fundingFeeUsd: string;
+  positionFeeUsd: string;
+  priceImpactUsd: string;
 };
 
 export type AccountPerf = {
@@ -39,6 +43,10 @@ export type AccountPerf = {
   cumsumCollateral: BigNumber;
   sumMaxSize: BigNumber;
   closedCount: BigNumber;
+  borrowingFeeUsd: BigNumber;
+  fundingFeeUsd: BigNumber;
+  positionFeeUsd: BigNumber;
+  priceImpactUsd: BigNumber;
 };
 
 export type PerfByAccount = { [key: string]: AccountPerf };
@@ -66,6 +74,10 @@ export type AccountOpenPositionJson = {
   collateralAmount: string;
   entryPrice: string;
   maxSize: string;
+  borrowingFeeUsd: string;
+  fundingFeeUsd: string;
+  positionFeeUsd: string;
+  priceImpactUsd: string;
 };
 
 export type AccountOpenPosition = {
@@ -81,6 +93,10 @@ export type AccountOpenPosition = {
   collateralAmount: BigNumber;
   entryPrice: BigNumber;
   maxSize: BigNumber;
+  borrowingFeeUsd: BigNumber;
+  fundingFeeUsd: BigNumber;
+  positionFeeUsd: BigNumber;
+  priceImpactUsd: BigNumber;
 };
 
 export type AccountPositionsSummary = {
@@ -91,6 +107,10 @@ export type AccountPositionsSummary = {
   sumCollateral: BigNumber;
   sumMaxSize: BigNumber;
   totalCollateral: BigNumber;
+  borrowingFeeUsd: BigNumber;
+  fundingFeeUsd: BigNumber;
+  positionFeeUsd: BigNumber;
+  priceImpactUsd: BigNumber;
 };
 
 export type PositionsSummaryByAccount = Record<string, AccountPositionsSummary>;
@@ -108,6 +128,10 @@ export type PositionScores = {
   collateralAmount: BigNumber;
   collateralAmountUsd: BigNumber;
   maxSize: BigNumber;
+  borrowingFeeUsd: BigNumber;
+  fundingFeeUsd: BigNumber;
+  positionFeeUsd: BigNumber;
+  priceImpactUsd: BigNumber;
 };
 
 export type DataByPeriod<T> = {

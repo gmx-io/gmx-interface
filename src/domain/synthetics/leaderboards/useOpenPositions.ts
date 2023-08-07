@@ -38,6 +38,10 @@ const fetchOpenPositions = async (
     collateralAmount: BigNumber.from(p.collateralAmount),
     entryPrice: BigNumber.from(p.entryPrice),
     maxSize: BigNumber.from(p.maxSize),
+    borrowingFeeUsd: BigNumber.from(p.borrowingFeeUsd),
+    fundingFeeUsd: BigNumber.from(p.fundingFeeUsd),
+    positionFeeUsd: BigNumber.from(p.positionFeeUsd),
+    priceImpactUsd: BigNumber.from(p.priceImpactUsd),
   }));
 };
 
@@ -63,10 +67,6 @@ export function useOpenPositions(chainId: number) {
   if (markets.marketsData && openPositions.data) {
     for (const p of openPositions.data) {
       p.marketData = markets.marketsData[utils.getAddress(p.market)];
-
-      if (!p.marketData) {
-        console.warn(`No market data for ${utils.getAddress(p.market)}`, markets.marketsData);
-      }
     }
   }
 

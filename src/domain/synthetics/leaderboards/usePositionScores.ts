@@ -5,8 +5,6 @@ import { useOpenPositions } from "./useOpenPositions";
 import { BigNumber, utils } from "ethers";
 import { getToken } from "config/tokens";
 import { getAddress } from "ethers/lib/utils";
-import { USD_DECIMALS } from "lib/legacy";
-import { expandDecimals } from "lib/numbers";
 
 export function usePositionScores() {
   const { chainId } = useChainId();
@@ -82,6 +80,10 @@ export function usePositionScores() {
       collateralAmount: p.collateralAmount,
       collateralAmountUsd,
       maxSize: p.maxSize,
+      borrowingFeeUsd: p.borrowingFeeUsd,
+      fundingFeeUsd: p.fundingFeeUsd,
+      positionFeeUsd: p.positionFeeUsd,
+      priceImpactUsd: p.priceImpactUsd,
     });
   }
 

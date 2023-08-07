@@ -4,13 +4,17 @@ import { BigNumber } from "ethers";
 import { expandDecimals } from "lib/numbers";
 import { USD_DECIMALS } from "lib/legacy";
 
-const defaultSummary = (account) => ({
+const defaultSummary = (account: string): AccountPositionsSummary => ({
   account,
   unrealizedPnl: BigNumber.from(0),
   sumSize: BigNumber.from(0),
   sumCollateral: BigNumber.from(0),
   sumMaxSize: BigNumber.from(0),
   totalCollateral: BigNumber.from(0),
+  borrowingFeeUsd: BigNumber.from(0),
+  fundingFeeUsd: BigNumber.from(0),
+  positionFeeUsd: BigNumber.from(0),
+  priceImpactUsd: BigNumber.from(0),
   positions: [],
 });
 
@@ -32,6 +36,10 @@ const groupPositionsByAccount = (positions: Array<PositionScores>): PositionsSum
     summary.sumCollateral = summary.sumCollateral.add(p.collateralAmountUsd);
     summary.sumMaxSize = summary.sumMaxSize.add(p.maxSize);
     summary.totalCollateral = summary.totalCollateral.add(p.collateralAmountUsd);
+    summary.borrowingFeeUsd = summary.borrowingFeeUsd.add(p.borrowingFeeUsd);
+    summary.fundingFeeUsd = summary.fundingFeeUsd.add(p.fundingFeeUsd);
+    summary.positionFeeUsd = summary.positionFeeUsd.add(p.positionFeeUsd);
+    summary.priceImpactUsd = summary.priceImpactUsd.add(p.priceImpactUsd);
   }
 
   return groupBy;
@@ -57,25 +65,12 @@ export function useTopAccounts(period: PerfPeriod) {
 
     const profit = perf.totalPnl.add(openPositions.unrealizedPnl);
     const maxCollateral = perf.maxCollateral;
-    const relPnl = profit.mul(expandDecimals(1, USD_DECIMALS)).div(maxCollateral);
-
-    if (perf.account.toLowerCase() === "0xfb11f15f206bda02c224edc744b0e50e46137046") {
-      const { formatAmount } = require("lib/numbers");
-
-      console.info({
-        perf,
-        openPositions,
-        profit: formatAmount(profit, USD_DECIMALS),
-        maxCollateral: formatAmount(perf.maxCollateral, USD_DECIMALS),
-        totalCollateral: formatAmount(perf.totalCollateral, USD_DECIMALS),
-        realizedPnl: formatAmount(perf.totalPnl, USD_DECIMALS),
-        unrealizedPnl: formatAmount(openPositions.unrealizedPnl, USD_DECIMALS),
-        relPnl: formatAmount(relPnl, USD_DECIMALS),
-      });
+    if (maxCollateral.isZero()) {
+      throw new Error(`Account ${perf.account} max collateral is 0, please verify data integrity`);
     }
-
-    const cumsumCollateral = perf.cumsumCollateral; // .add(openPositions.sumCollateral);
-    const cumsumSize = perf.cumsumSize; // .add(openPositions.sumSize);
+    const relPnl = profit.mul(expandDecimals(1, USD_DECIMALS)).div(maxCollateral);
+    const cumsumCollateral = perf.cumsumCollateral;
+    const cumsumSize = perf.cumsumSize;
 
     if (cumsumCollateral.isZero()) {
       throw new Error(`Account ${perf.account} collateral history is 0, please verify data integrity`);

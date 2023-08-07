@@ -26,5 +26,9 @@ query GetAccountPerformance(
     cumsumCollateral
     sumMaxSize
     closedCount
+    borrowingFeeUsd
+    fundingFeeUsd
+    positionFeeUsd
+    priceImpactUsd
   }
 }

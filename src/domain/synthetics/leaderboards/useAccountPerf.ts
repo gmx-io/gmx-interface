@@ -45,6 +45,10 @@ const fetchAccountPerfs = async (
     cumsumCollateral: BigNumber.from(a.cumsumCollateral),
     sumMaxSize: BigNumber.from(a.sumMaxSize),
     closedCount: BigNumber.from(a.closedCount),
+    borrowingFeeUsd: BigNumber.from(a.borrowingFeeUsd),
+    fundingFeeUsd: BigNumber.from(a.fundingFeeUsd),
+    positionFeeUsd: BigNumber.from(a.positionFeeUsd),
+    priceImpactUsd: BigNumber.from(a.priceImpactUsd),
   }));
 };
 
@@ -89,6 +93,10 @@ const sumScoresByAccount = (accountPerfs: AccountPerf[], period: PerfPeriod) => 
     perf.cumsumCollateral = perf.cumsumCollateral.add(accountData.cumsumCollateral);
     perf.sumMaxSize = perf.sumMaxSize.add(accountData.sumMaxSize);
     perf.closedCount = perf.closedCount.add(accountData.closedCount);
+    perf.borrowingFeeUsd = perf.borrowingFeeUsd.add(accountData.borrowingFeeUsd);
+    perf.fundingFeeUsd = perf.fundingFeeUsd.add(accountData.fundingFeeUsd);
+    perf.positionFeeUsd = perf.positionFeeUsd.add(accountData.positionFeeUsd);
+    perf.priceImpactUsd = perf.priceImpactUsd.add(accountData.priceImpactUsd);
   }
 
   return groupBy;
@@ -113,6 +121,8 @@ export function useAccountPerf(period: PerfPeriod) {
 
     return Object.values(perfByAccount);
   });
+
+  // console.log('Total accounts:', accounts.data && accounts.data.length || 0)
 
   return {
     isLoading: !accounts.data,

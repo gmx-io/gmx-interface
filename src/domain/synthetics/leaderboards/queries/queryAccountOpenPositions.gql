@@ -21,5 +21,9 @@ query GetAccountOpenPositions(
     sizeInUsd
     entryPrice
     maxSize
+    borrowingFeeUsd
+    fundingFeeUsd
+    positionFeeUsd
+    priceImpactUsd
   }
 }
