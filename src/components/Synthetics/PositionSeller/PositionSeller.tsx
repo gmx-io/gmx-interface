@@ -68,6 +68,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Tab from "components/Tab/Tab";
+import { useMedia } from "react-use";
 
 export type Props = {
   position?: PositionInfo;
@@ -110,6 +111,7 @@ export function PositionSeller(p: Props) {
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
   const userReferralInfo = useUserReferralInfo(library, chainId, account);
 
+  const isMobile = useMedia("(max-width: 1100px)");
   const isVisible = Boolean(position);
   const prevIsVisible = usePrevious(isVisible);
 
@@ -409,7 +411,8 @@ export function PositionSeller(p: Props) {
                 className="link-underline"
                 onClick={() => {
                   onSelectPositionClick(position.key, TradeMode.Trigger);
-                  window.scrollTo({ top: 0 });
+                  // TODO: remove after adding trigger functionality to Modal
+                  window.scrollTo({ top: isMobile ? 500 : 0 });
                   p.onClose();
                 }}
               >

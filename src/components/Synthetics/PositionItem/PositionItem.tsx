@@ -22,6 +22,7 @@ import { TradeMode, TradeType, getTriggerThresholdType } from "domain/synthetics
 import { CHART_PERIODS } from "lib/legacy";
 import "./PositionItem.scss";
 import { useChainId } from "lib/chains";
+import { useMedia } from "react-use";
 
 export type Props = {
   position: PositionInfo;
@@ -47,6 +48,7 @@ export function PositionItem(p: Props) {
   const displayedPnl = p.savedShowPnlAfterFees ? p.position.pnlAfterFees : p.position.pnl;
   const displayedPnlPercentage = p.savedShowPnlAfterFees ? p.position.pnlAfterFeesPercentage : p.position.pnlPercentage;
   const { chainId } = useChainId();
+  const isMobile = useMedia("(max-width: 1100px)");
   const indexPriceDecimals = p.position?.indexToken?.priceDecimals;
   const { minCollateralUsd } = usePositionsConstants(chainId);
 
@@ -595,7 +597,7 @@ export function PositionItem(p: Props) {
                   disabled={p.position.sizeInUsd.eq(0)}
                   onClick={() => {
                     // TODO: remove after adding trigger functionality to Modal
-                    window.scrollTo({ top: 500 });
+                    window.scrollTo({ top: isMobile ? 500 : 0 });
                     p.onSelectPositionClick?.(TradeMode.Trigger);
                   }}
                 >
