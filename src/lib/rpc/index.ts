@@ -28,7 +28,11 @@ export function getProvider(library: Web3Provider | undefined, chainId: number) 
   );
 }
 
-export function getWsProvider(chainId: number) {
+export function getWsProvider(active: boolean, chainId: number) {
+  if (!active) {
+    return;
+  }
+
   if (chainId === ARBITRUM) {
     return new ethers.providers.WebSocketProvider(getAlchemyWsUrl());
   }
@@ -111,35 +115,38 @@ export function useWsProvider(active: boolean, chainId: number) {
   const [provider, setProvider] = useState<WebSocketProvider | JsonRpcProvider>();
   const [needToReconnect, setNeedToReconnect] = useState(false);
 
-  const initializeProvider = useCallback((chainId: number) => {
-    const newProvider = getWsProvider(chainId);
+  const initializeProvider = useCallback(
+    (chainId: number) => {
+      const newProvider = getWsProvider(active, chainId);
 
-    if (!newProvider) {
-      return;
-    }
+      if (!newProvider) {
+        return;
+      }
 
-    if (isWebsocketProvider(newProvider)) {
-      newProvider._websocket.onclose = () => {
-        // eslint-disable-next-line no-console
-        console.log(`ws provider for chain ${chainId} disconnected`);
+      if (isWebsocketProvider(newProvider)) {
+        newProvider._websocket.onclose = () => {
+          // eslint-disable-next-line no-console
+          console.log(`ws provider for chain ${chainId} disconnected`);
 
-        newProvider.removeAllListeners();
-        WS_PROVIDERS_CACHE[chainId] = undefined;
-        setNeedToReconnect(true);
-      };
-    }
+          newProvider.removeAllListeners();
+          WS_PROVIDERS_CACHE[chainId] = undefined;
+          setNeedToReconnect(true);
+        };
+      }
 
-    function healthCheck() {
-      setTimeout(() => {
-        // setNeedToReconnect(true);
-        healthCheck();
-      }, WS_KEEP_ALIVE_INTERVAL);
-    }
+      function healthCheck() {
+        setTimeout(() => {
+          setNeedToReconnect(true);
+          healthCheck();
+        }, WS_KEEP_ALIVE_INTERVAL);
+      }
 
-    healthCheck();
+      healthCheck();
 
-    return newProvider;
-  }, []);
+      return newProvider;
+    },
+    [active]
+  );
 
   useEffect(
     function updateProvider() {

@@ -45,6 +45,21 @@ import {
 } from "./types";
 import { parseEventLogData } from "./utils";
 
+export const DEPOSIT_CREATED_HASH = ethers.utils.id("DepositCreated");
+export const DEPOSIT_EXECUTED_HASH = ethers.utils.id("DepositExecuted");
+export const DEPOSIT_CANCELLED_HASH = ethers.utils.id("DepositCancelled");
+
+export const WITHDRAWAL_CREATED_HASH = ethers.utils.id("WithdrawalCreated");
+export const WITHDRAWAL_EXECUTED_HASH = ethers.utils.id("WithdrawalExecuted");
+export const WITHDRAWAL_CANCELLED_HASH = ethers.utils.id("WithdrawalCancelled");
+
+export const ORDER_CREATED_HASH = ethers.utils.id("OrderCreated");
+export const ORDER_EXECUTED_HASH = ethers.utils.id("OrderExecuted");
+export const ORDER_CANCELLED_HASH = ethers.utils.id("OrderCancelled");
+
+export const POSITION_INCREASE_HASH = ethers.utils.id("PositionIncrease");
+export const POSITION_DECREASE_HASH = ethers.utils.id("PositionDecrease");
+
 export const SyntheticsEventsContext = createContext({});
 
 export function useSyntheticsEvents(): SyntheticsEventsContextType {
@@ -389,21 +404,16 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
   useEffect(
     function subscribe() {
-      if (!wsProvider) {
+      if (!wsProvider || !currentAccount) {
         return;
       }
 
-      const eventEmitterInstances: ethers.Contract[] = [];
+      const addressHash = ethers.utils.defaultAbiCoder.encode(["address"], [currentAccount]);
 
-      try {
-        if (wsProvider) {
-          eventEmitterInstances.push(
-            new ethers.Contract(getContract(chainId, "EventEmitter"), EventEmitter.abi, wsProvider)
-          );
-        }
-      } catch (e) {
-        // ...ignore on unsupported chains
-      }
+      const eventEmitter = new ethers.Contract(getContract(chainId, "EventEmitter"), EventEmitter.abi, wsProvider);
+      const EVENT_LOG_TOPIC = eventEmitter.interface.getEventTopic("EventLog");
+      const EVENT_LOG1_TOPIC = eventEmitter.interface.getEventTopic("EventLog1");
+      const EVENT_LOG2_TOPIC = eventEmitter.interface.getEventTopic("EventLog2");
 
       function handleEventLog(sender, eventName, eventNameHash, eventData, txnOpts) {
         // console.log("handleEventLog", eventName);
@@ -420,21 +430,76 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         eventLogHandlers.current[eventName]?.(parseEventLogData(eventData), txnOpts);
       }
 
-      eventEmitterInstances.forEach((contract) => {
-        contract.on("EventLog", handleEventLog);
-        contract.on("EventLog1", handleEventLog1);
-        contract.on("EventLog2", handleEventLog2);
+      function handleCommonLog(e) {
+        const txnOpts: EventTxnParams = {
+          transactionHash: e.transactionHash,
+          blockNumber: e.blockNumber,
+        };
+
+        try {
+          const parsed = eventEmitter.interface.parseLog(e);
+
+          if (parsed.name === "EventLog") {
+            handleEventLog(parsed.args[0], parsed.args[1], parsed.args[2], parsed.args[3], txnOpts);
+          } else if (parsed.name === "EventLog1") {
+            handleEventLog1(parsed.args[0], parsed.args[1], parsed.args[2], parsed.args[3], parsed.args[4], txnOpts);
+          } else if (parsed.name === "EventLog2") {
+            handleEventLog2(
+              parsed.args[0],
+              parsed.args[1],
+              parsed.args[2],
+              parsed.args[3],
+              parsed.args[4],
+              parsed.args[5],
+              txnOpts
+            );
+          }
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.error("error parsing event", e);
+        }
+      }
+
+      const filters = [
+        // DEPOSITS AND WITHDRAWALS
+        {
+          address: getContract(chainId, "EventEmitter"),
+          topics: [EVENT_LOG1_TOPIC, [DEPOSIT_CREATED_HASH, WITHDRAWAL_CREATED_HASH], addressHash],
+        },
+        {
+          address: getContract(chainId, "EventEmitter"),
+          topics: [
+            EVENT_LOG_TOPIC,
+            [DEPOSIT_CANCELLED_HASH, DEPOSIT_EXECUTED_HASH, WITHDRAWAL_CANCELLED_HASH, WITHDRAWAL_EXECUTED_HASH],
+          ],
+        },
+        // ORDERS
+        {
+          address: getContract(chainId, "EventEmitter"),
+          topics: [EVENT_LOG2_TOPIC, ORDER_CREATED_HASH, null, addressHash],
+        },
+        {
+          address: getContract(chainId, "EventEmitter"),
+          topics: [EVENT_LOG1_TOPIC, [ORDER_CANCELLED_HASH, ORDER_EXECUTED_HASH]],
+        },
+        // POSITIONS
+        {
+          address: getContract(chainId, "EventEmitter"),
+          topics: [EVENT_LOG1_TOPIC, [POSITION_INCREASE_HASH, POSITION_DECREASE_HASH], addressHash],
+        },
+      ];
+
+      filters.forEach((filter) => {
+        wsProvider.on(filter, handleCommonLog);
       });
 
       return () => {
-        eventEmitterInstances.forEach((contract) => {
-          contract.off("EventLog", handleEventLog);
-          contract.off("EventLog1", handleEventLog1);
-          contract.off("EventLog2", handleEventLog2);
+        filters.forEach((filter) => {
+          wsProvider.off(filter, handleCommonLog);
         });
       };
     },
-    [chainId, wsProvider]
+    [chainId, currentAccount, wsProvider]
   );
 
   const contextState: SyntheticsEventsContextType = useMemo(() => {
