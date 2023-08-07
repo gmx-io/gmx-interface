@@ -182,8 +182,14 @@ export function TradeBox(p: Props) {
     switchTokenAddresses,
   } = p;
   const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket } = tradeFlags;
-  const { swapTokens, indexTokens, infoTokens, sortedIndexTokensWithPoolValue, sortedLongAndShortTokens } =
-    avaialbleTokenOptions;
+  const {
+    swapTokens,
+    indexTokens,
+    infoTokens,
+    sortedIndexTokensWithPoolValue,
+    sortedLongAndShortTokens,
+    sortedAllMarkets,
+  } = avaialbleTokenOptions;
 
   const tradeTypeLabels = useMemo(() => {
     return {
@@ -590,22 +596,7 @@ export function TradeBox(p: Props) {
     hasExistingOrder: Boolean(existingOrder),
     hasExistingPosition: Boolean(existingPosition),
   });
-  const { availableMarkets, allMarkets } = marketsOptions;
-
-  const sortedAllMarkets = useMemo(() => {
-    if (!allMarkets) return;
-    return allMarkets.sort((a, b) => {
-      const aIndexToken = a.indexToken;
-      const bIndexToken = b.indexToken;
-      if (sortedIndexTokensWithPoolValue) {
-        return (
-          sortedIndexTokensWithPoolValue.indexOf(aIndexToken.address) -
-          sortedIndexTokensWithPoolValue.indexOf(bIndexToken.address)
-        );
-      }
-      return 0;
-    });
-  }, [allMarkets, sortedIndexTokensWithPoolValue]);
+  const { availableMarkets } = marketsOptions;
 
   const availableCollaterals = useMemo(() => {
     if (!marketInfo) {

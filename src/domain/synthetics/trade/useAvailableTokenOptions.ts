@@ -1,5 +1,5 @@
 import { NATIVE_TOKEN_ADDRESS, getTokensMap } from "config/tokens";
-import { MarketsInfoData } from "domain/synthetics/markets";
+import { MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
 import { InfoTokens, Token, getMidPrice } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { getByKey } from "lib/objects";
@@ -13,6 +13,7 @@ export type AvailableTokenOptions = {
   indexTokens: TokenData[];
   sortedIndexTokensWithPoolValue: string[];
   sortedLongAndShortTokens: string[];
+  sortedAllMarkets: MarketInfo[];
 };
 
 export function useAvailableTokenOptions(
@@ -30,7 +31,7 @@ export function useAvailableTokenOptions(
       .sort((a, b) => {
         return a.indexToken.symbol.localeCompare(b.indexToken.symbol);
       });
-
+    const allMarkets = new Set<MarketInfo>();
     const tokensMap = getTokensMap(chainId);
     const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
 
@@ -80,6 +81,7 @@ export function useAvailableTokenOptions(
 
       if (!marketInfo.isSpotOnly) {
         indexTokens.add(indexToken);
+        allMarkets.add(marketInfo);
         indexTokensWithPoolValue[indexToken.address] = (
           indexTokensWithPoolValue[indexToken.address] || BigNumber.from(0)
         ).add(marketInfo.poolValueMax);
@@ -88,6 +90,13 @@ export function useAvailableTokenOptions(
 
     const sortedIndexTokensWithPoolValue = Object.keys(indexTokensWithPoolValue).sort((a, b) => {
       return indexTokensWithPoolValue[b].gt(indexTokensWithPoolValue[a]) ? 1 : -1;
+    });
+
+    const sortedAllMarkets = Array.from(allMarkets).sort((a, b) => {
+      return (
+        sortedIndexTokensWithPoolValue.indexOf(a.indexToken.address) -
+        sortedIndexTokensWithPoolValue.indexOf(b.indexToken.address)
+      );
     });
 
     const sortedLongTokens = Object.keys(longTokensWithPoolValue).sort((a, b) => {
@@ -107,6 +116,7 @@ export function useAvailableTokenOptions(
       infoTokens: adaptToV1InfoTokens(tokensData || {}),
       sortedIndexTokensWithPoolValue,
       sortedLongAndShortTokens,
+      sortedAllMarkets,
     };
   }, [chainId, marketsInfoData, tokensData]);
 }
