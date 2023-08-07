@@ -50,7 +50,6 @@ export function useTopAccounts(period: PerfPeriod) {
   const positions = usePositionScores();
 
   if (accountPerf.error || positions.error) {
-    console.log({accountPerf, positions});
     return { data: [], isLoading: false, error: accountPerf.error || positions.error };
   } else if (accountPerf.isLoading || positions.isLoading) {
     return { data: [], isLoading: true, error: null };
@@ -63,8 +62,13 @@ export function useTopAccounts(period: PerfPeriod) {
   for (let i = 0; i < perfOrderedByPnl.length; i++) {
     const perf = perfOrderedByPnl[i];
     const openPositions = openPositionsByAccount[perf.account] || defaultSummary(perf.account);
+    const totalPnl = perf.totalPnl
+      .sub(openPositions.borrowingFeeUsd)
+      .sub(openPositions.fundingFeeUsd)
+      .sub(openPositions.positionFeeUsd)
+      .add(openPositions.priceImpactUsd);
 
-    const profit = perf.totalPnl.add(openPositions.unrealizedPnl);
+    const profit = totalPnl.add(openPositions.unrealizedPnl);
     const maxCollateral = perf.maxCollateral;
     if (maxCollateral.isZero()) {
       throw new Error(`Account ${perf.account} max collateral is 0, please verify data integrity`);
@@ -84,7 +88,7 @@ export function useTopAccounts(period: PerfPeriod) {
     const scores = {
       id: perf.account + ":" + period,
       account: perf.account,
-      absPnl: perf.totalPnl,
+      absPnl: profit,
       relPnl,
       size,
       leverage,
