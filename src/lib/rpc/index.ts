@@ -105,8 +105,7 @@ export function isWebsocketProvider(provider: any): provider is WebSocketProvide
 
 const WS_PROVIDERS_CACHE: { [chainId: number]: WebSocketProvider | JsonRpcProvider | undefined } = {};
 const WS_LAST_BLOCK_UPDATED_AT: { [chainId: number]: number } = {};
-const WS_MAX_BLOCK_UPDATE_DELAY = 1000 * 5;
-const WS_HEALTH_CHECK_INTERVAL = 1000;
+const WS_KEEP_ALIVE_INTERVAL = 5 * 60_000;
 
 export function useWsProvider(active: boolean, chainId: number) {
   const [provider, setProvider] = useState<WebSocketProvider | JsonRpcProvider>();
@@ -118,10 +117,6 @@ export function useWsProvider(active: boolean, chainId: number) {
     if (!newProvider) {
       return;
     }
-
-    newProvider.on("block", () => {
-      WS_LAST_BLOCK_UPDATED_AT[chainId] = Date.now();
-    });
 
     if (isWebsocketProvider(newProvider)) {
       newProvider._websocket.onclose = () => {
@@ -136,21 +131,9 @@ export function useWsProvider(active: boolean, chainId: number) {
 
     function healthCheck() {
       setTimeout(() => {
-        const lastBlockUpdatedAt = WS_LAST_BLOCK_UPDATED_AT[chainId];
-
-        if (
-          !lastBlockUpdatedAt ||
-          Number.isNaN(lastBlockUpdatedAt) ||
-          Date.now() - lastBlockUpdatedAt > WS_MAX_BLOCK_UPDATE_DELAY
-        ) {
-          // eslint-disable-next-line no-console
-          console.log(`ws provider health check failed for chain ${chainId}, reconnecting...`);
-          setNeedToReconnect(true);
-          return;
-        }
-
+        // setNeedToReconnect(true);
         healthCheck();
-      }, WS_HEALTH_CHECK_INTERVAL);
+      }, WS_KEEP_ALIVE_INTERVAL);
     }
 
     healthCheck();

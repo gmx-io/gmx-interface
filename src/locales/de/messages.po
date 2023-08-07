@@ -1688,10 +1688,6 @@ msgstr "Gebühren"
 msgid "Fees and Price Impact"
 msgstr ""
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#~ msgid "Fees are high"
-#~ msgstr ""
-
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Fees are high to swap from {0} to {1}."
 msgstr "Der Wechsel von {0} zu {1} ist mit hohen Gebühren verbunden."
@@ -1854,8 +1850,12 @@ msgid "GM Token pricing includes positions' Pending PnL, Impact Pool Amount and 
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
-msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 70% of the V2 markets generated fees."
+msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 67% of the V2 markets generated fees."
 msgstr ""
+
+#: src/components/TokenCard/TokenCard.js
+#~ msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 70% of the V2 markets generated fees."
+#~ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX Announcements and Updates"
@@ -3181,10 +3181,6 @@ msgstr "Bezahlen"
 msgid "Pay Amount"
 msgstr "Betrag bezahlen"
 
-#: src/components/Glp/GlpSwap.js
-#~ msgid "Pay:"
-#~ msgstr ""
-
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Pending {0} approval"
@@ -3440,6 +3436,7 @@ msgstr "Versicherung kaufen"
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
+#: src/components/TokenCard/TokenCard.js
 msgid "Read more"
 msgstr "Mehr lesen"
 
@@ -3498,10 +3495,6 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Receive"
 msgstr "Empfangen"
-
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#~ msgid "Receive:"
-#~ msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/NftWallet/NftWallet.js
@@ -4255,10 +4248,6 @@ msgid "The Gambit protocol is in beta, please read the <0>staking details</0>be
 msgstr "Das Gambit-Protokoll befindet sich in der Beta-Phase, bitte lese die <0>Details zum Staking</0>, bevor du teilnimmst."
 
 #: src/App/App.js
-#~ msgid "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed."
-#~ msgstr ""
-
-#: src/App/App.js
 msgid "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
 msgstr ""
 
@@ -4281,10 +4270,6 @@ msgstr "Die esGMX-Tokens können jederzeit gestaket oder gevested werden."
 #: src/lib/contracts/transactionErrors.tsx
 msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 msgstr "Der Mark-Preis hat sich geändert. Erhöhe dein zulässiges Slippage, indem du auf das Symbol \"...\" neben deiner Adresse klickst."
-
-#: src/domain/synthetics/fees/utils/executionFee.ts
-#~ msgid "The network cost to send transactions is high at the moment, please check the \"Execution Fee\" value before proceeding."
-#~ msgstr ""
 
 #: src/domain/synthetics/fees/utils/executionFee.ts
 msgid "The network cost to send transactions is high at the moment, please check the \"Max Execution Fee\" value before proceeding."
@@ -4376,8 +4361,12 @@ msgid "This position was liquidated as the max leverage of 100x was exceeded."
 msgstr "Diese Position wurde liquidiert, da die maximale Hebelwirkung von 100x überschritten wurde."
 
 #: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
-msgid "This position was liquidated as the max leverage of {maxLeverageText} was exceeded.`"
+msgid "This position was liquidated as the max leverage of {maxLeverageText} was exceeded."
 msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#~ msgid "This position was liquidated as the max leverage of {maxLeverageText} was exceeded.`"
+#~ msgstr ""
 
 #: src/pages/Home/Home.js
 msgid "Three tokens create our ecosystem"

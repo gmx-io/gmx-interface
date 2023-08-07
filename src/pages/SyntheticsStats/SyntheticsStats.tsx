@@ -10,6 +10,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
 import {
+  getAvailableUsdLiquidityForCollateral,
   getMarketIndexName,
   getMarketPoolName,
   getMaxReservedUsd,
@@ -87,6 +88,9 @@ export function SyntheticsStats() {
             const longPoolUsd = convertToUsd(market.longPoolAmount, market.longToken.decimals, midLongPrice);
             const shortPoolUsd = convertToUsd(market.shortPoolAmount, market.shortToken.decimals, midShortPrice);
             const totalPoolUsd = longPoolUsd?.add(shortPoolUsd || 0);
+
+            const longCollateralLiquidityUsd = getAvailableUsdLiquidityForCollateral(market, true);
+            const shortCollateralLiquidityUsd = getAvailableUsdLiquidityForCollateral(market, false);
 
             const swapImpactUsdLong = convertToUsd(
               market.swapImpactPoolAmountLong,
@@ -180,6 +184,7 @@ export function SyntheticsStats() {
                         <>
                           <StatsTooltipRow label="Pool USD Long" value={formatAmountHuman(longPoolUsd, 30)} />
                           <StatsTooltipRow label="Pool USD Short" value={formatAmountHuman(shortPoolUsd, 30)} />
+
                           <StatsTooltipRow
                             label={`Swap Imapct Amount ${market.longToken.symbol}`}
                             value={formatAmountHuman(swapImpactUsdLong, 30)}
@@ -271,32 +276,48 @@ export function SyntheticsStats() {
                   </div>
                 </td>
                 <td>
-                  <div className="cell">
-                    {market.isSpotOnly ? (
-                      "..."
-                    ) : (
-                      <>
-                        <div style={{ marginBottom: "4px" }}>
-                          ${formatAmountHuman(reservedUsdLong, 30)} / ${formatAmountHuman(maxReservedUsdLong, 30)}
+                  <Tooltip
+                    handle={
+                      market.isSpotOnly ? (
+                        formatAmountHuman(longCollateralLiquidityUsd, 30)
+                      ) : (
+                        <div className="cell">
+                          <div style={{ marginBottom: "4px" }}>
+                            ${formatAmountHuman(reservedUsdLong, 30)} / ${formatAmountHuman(maxReservedUsdLong, 30)}
+                          </div>
+                          <ShareBar share={reservedUsdLong} total={maxReservedUsdLong} />
                         </div>
-                        <ShareBar share={reservedUsdLong} total={maxReservedUsdLong} />
-                      </>
+                      )
+                    }
+                    renderContent={() => (
+                      <StatsTooltipRow
+                        label={`Max ${market.longToken.symbol} Out`}
+                        value={formatAmountHuman(longCollateralLiquidityUsd, 30)}
+                      />
                     )}
-                  </div>
+                  />
                 </td>
                 <td>
-                  <div className="cell">
-                    {market.isSpotOnly ? (
-                      "..."
-                    ) : (
-                      <>
-                        <div style={{ marginBottom: "4px" }}>
-                          ${formatAmountHuman(reservedUsdShort, 30)} / ${formatAmountHuman(maxReservedUsdShort, 30)}
+                  <Tooltip
+                    handle={
+                      market.isSpotOnly ? (
+                        formatAmountHuman(shortCollateralLiquidityUsd, 30)
+                      ) : (
+                        <div className="cell">
+                          <div style={{ marginBottom: "4px" }}>
+                            ${formatAmountHuman(reservedUsdShort, 30)} / ${formatAmountHuman(maxReservedUsdShort, 30)}
+                          </div>
+                          <ShareBar share={reservedUsdShort} total={maxReservedUsdShort} />
                         </div>
-                        <ShareBar share={reservedUsdShort} total={maxReservedUsdShort} />
-                      </>
+                      )
+                    }
+                    renderContent={() => (
+                      <StatsTooltipRow
+                        label={`Max ${market.shortToken.symbol} Out`}
+                        value={formatAmountHuman(shortCollateralLiquidityUsd, 30)}
+                      />
                     )}
-                  </div>
+                  />
                 </td>
                 <td>
                   <div className="cell">

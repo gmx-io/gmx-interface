@@ -1688,10 +1688,6 @@ msgstr "수수료"
 msgid "Fees and Price Impact"
 msgstr ""
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#~ msgid "Fees are high"
-#~ msgstr ""
-
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Fees are high to swap from {0} to {1}."
 msgstr "{0}을 {1}로 스왑하는 수수료가 높습니다."
@@ -1854,8 +1850,12 @@ msgid "GM Token pricing includes positions' Pending PnL, Impact Pool Amount and 
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
-msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 70% of the V2 markets generated fees."
+msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 67% of the V2 markets generated fees."
 msgstr ""
+
+#: src/components/TokenCard/TokenCard.js
+#~ msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 70% of the V2 markets generated fees."
+#~ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX Announcements and Updates"
@@ -3181,10 +3181,6 @@ msgstr "지불"
 msgid "Pay Amount"
 msgstr "지불액"
 
-#: src/components/Glp/GlpSwap.js
-#~ msgid "Pay:"
-#~ msgstr ""
-
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Pending {0} approval"
@@ -3440,6 +3436,7 @@ msgstr "보험 구입"
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
+#: src/components/TokenCard/TokenCard.js
 msgid "Read more"
 msgstr "더 알아보기"
 
@@ -3498,10 +3495,6 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Receive"
 msgstr "수령하기"
-
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#~ msgid "Receive:"
-#~ msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/NftWallet/NftWallet.js
@@ -4255,10 +4248,6 @@ msgid "The Gambit protocol is in beta, please read the <0>staking details</0>be
 msgstr "해당 Gambit 프로토콜은 베타 버전입니다. 참여하기 전에 <0>스테이킹 세부사항</0>을 참조해주세요."
 
 #: src/App/App.js
-#~ msgid "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed."
-#~ msgstr ""
-
-#: src/App/App.js
 msgid "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
 msgstr ""
 
@@ -4281,10 +4270,6 @@ msgstr "esGMX는 언제든지 스테이킹하거나 베스팅 할 수 있습니�
 #: src/lib/contracts/transactionErrors.tsx
 msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 msgstr "시장 평균가가 변화되었습니다. 귀하의 주소 옆에 \"...\" 아이콘을 클릭해서 허용 가능한 슬리피지 증가를 고려해보세요."
-
-#: src/domain/synthetics/fees/utils/executionFee.ts
-#~ msgid "The network cost to send transactions is high at the moment, please check the \"Execution Fee\" value before proceeding."
-#~ msgstr ""
 
 #: src/domain/synthetics/fees/utils/executionFee.ts
 msgid "The network cost to send transactions is high at the moment, please check the \"Max Execution Fee\" value before proceeding."
@@ -4376,8 +4361,12 @@ msgid "This position was liquidated as the max leverage of 100x was exceeded."
 msgstr "해당 포지션은 최대 레버리지인 100x를 초과하여 청산되었습니다."
 
 #: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
-msgid "This position was liquidated as the max leverage of {maxLeverageText} was exceeded.`"
+msgid "This position was liquidated as the max leverage of {maxLeverageText} was exceeded."
 msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#~ msgid "This position was liquidated as the max leverage of {maxLeverageText} was exceeded.`"
+#~ msgstr ""
 
 #: src/pages/Home/Home.js
 msgid "Three tokens create our ecosystem"

@@ -139,7 +139,7 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
         <div className="Home-token-card-option-info">
           <div className="Home-token-card-option-title">
             <Trans>
-              GM is the liquidity provider token for GMX V2 markets. Accrues 70% of the V2 markets generated fees.
+              GM is the liquidity provider token for GMX V2 markets. Accrues 67% of the V2 markets generated fees.
             </Trans>
           </div>
 
@@ -177,14 +177,14 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
                 <Trans>Buy on Avalanche</Trans>
               </BuyLink>
             </div>
-            {/* <a
-                href="https://docs.gmx.io/docs/trading/v1"
-                target="_blank"
-                rel="noreferrer"
-                className="default-btn read-more"
-              >
-                <Trans>Read more</Trans>
-              </a> */}
+            <a
+              href="https://docs.gmx.io/docs/providing-liquidity/v2"
+              target="_blank"
+              rel="noreferrer"
+              className="default-btn read-more"
+            >
+              <Trans>Read more</Trans>
+            </a>
           </div>
         </div>
       </div>

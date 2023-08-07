@@ -927,7 +927,9 @@ export function TradeBox(p: Props) {
           topLeftLabel={t`Pay`}
           topLeftValue={fromUsd?.gt(0) ? formatUsd(isIncrease ? increaseAmounts?.initialCollateralUsd : fromUsd) : ""}
           topRightLabel={t`Balance`}
-          topRightValue={formatTokenAmount(fromToken?.balance, fromToken?.decimals)}
+          topRightValue={formatTokenAmount(fromToken?.balance, fromToken?.decimals, "", {
+            useCommas: true,
+          })}
           onClickTopRightLabel={onMaxClick}
           inputValue={fromTokenInputValue}
           onInputValueChange={(e) => {
@@ -964,7 +966,9 @@ export function TradeBox(p: Props) {
             topLeftLabel={t`Receive`}
             topLeftValue={swapAmounts?.usdOut.gt(0) ? formatUsd(swapAmounts?.usdOut) : ""}
             topRightLabel={t`Balance`}
-            topRightValue={formatTokenAmount(toToken?.balance, toToken?.decimals)}
+            topRightValue={formatTokenAmount(toToken?.balance, toToken?.decimals, "", {
+              useCommas: true,
+            })}
             inputValue={toTokenInputValue}
             onInputValueChange={(e) => {
               setFocusedInput("to");
