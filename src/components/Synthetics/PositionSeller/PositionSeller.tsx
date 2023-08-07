@@ -32,6 +32,7 @@ import {
 import { TokensData } from "domain/synthetics/tokens";
 import {
   AvailableTokenOptions,
+  TradeMode,
   getDecreasePositionAmounts,
   getMarkPrice,
   getNextPositionValuesForDecreaseTrade,
@@ -65,6 +66,8 @@ import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import Tab from "components/Tab/Tab";
 
 export type Props = {
   position?: PositionInfo;
@@ -78,7 +81,13 @@ export type Props = {
   setIsHigherSlippageAllowed: (isAllowed: boolean) => void;
   onConnectWallet: () => void;
   shouldDisableValidation: boolean;
+  onSelectPositionClick: (key: string, tradeMode: TradeMode) => void;
 };
+
+enum OrderOption {
+  Market = "Market",
+  Trigger = "Trigger",
+}
 
 export function PositionSeller(p: Props) {
   const {
@@ -90,6 +99,7 @@ export function PositionSeller(p: Props) {
     setPendingTxns,
     availableTokensOptions,
     onConnectWallet,
+    onSelectPositionClick,
   } = p;
 
   const { chainId } = useChainId();
@@ -102,6 +112,14 @@ export function PositionSeller(p: Props) {
 
   const isVisible = Boolean(position);
   const prevIsVisible = usePrevious(isVisible);
+
+  const ORDER_OPTION_LABELS = {
+    [OrderOption.Market]: t`Market`,
+    [OrderOption.Trigger]: t`Trigger`,
+  };
+
+  const [orderOption, setOrderOption] = useState(OrderOption.Market);
+  const isTrigger = orderOption === OrderOption.Trigger;
 
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
@@ -373,7 +391,40 @@ export function PositionSeller(p: Props) {
         }
         allowContentTouchMove
       >
-        {position && (
+        <Tab
+          options={Object.values(OrderOption)}
+          option={orderOption}
+          optionLabels={ORDER_OPTION_LABELS}
+          onChange={setOrderOption}
+        />
+
+        {position && isTrigger && (
+          <div className="Exchange-swap-section Exchange-trigger-order-info">
+            <Trans>
+              Take-Profit and Stop-Loss orders are created in the main Tradebox.
+              <br />
+              <br />
+              <div
+                className="link-underline"
+                onClick={() => {
+                  onSelectPositionClick(position.key, TradeMode.Trigger);
+                  window.scrollTo({ top: 0 });
+                  p.onClose();
+                }}
+              >
+                Set Trigger Order for this position.
+              </div>
+              <br />
+              <br />
+              <ExternalLink href="https://docs.gmx.io/docs/trading/v2#stop-loss--take-profit-orders">
+                Read More
+              </ExternalLink>
+              .
+            </Trans>
+          </div>
+        )}
+
+        {!isTrigger && position && (
           <>
             <BuyInputSection
               topLeftLabel={t`Close`}

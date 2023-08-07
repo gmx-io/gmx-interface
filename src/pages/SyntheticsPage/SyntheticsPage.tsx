@@ -468,6 +468,7 @@ export function SyntheticsPage(p: Props) {
         setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
         onConnectWallet={onConnectWallet}
         shouldDisableValidation={shouldDisableValidation}
+        onSelectPositionClick={onSelectPositionClick}
       />
 
       <PositionEditor

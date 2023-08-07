@@ -590,13 +590,16 @@ export function PositionItem(p: Props) {
                 >
                   <Trans>Edit Collateral</Trans>
                 </button>
-                {/* <button
-                  className="Exchange-list-action App-button-option App-card-option"
-                  onClick={p.onShareClick}
+                <button
+                  className="App-button-option App-card-option"
                   disabled={p.position.sizeInUsd.eq(0)}
+                  onClick={() => {
+                    window.scrollTo({ top: 0 });
+                    p.onSelectPositionClick?.(TradeMode.Trigger);
+                  }}
                 >
-                  <Trans>Share</Trans>
-                </button> */}
+                  <Trans>Trigger</Trans>
+                </button>
               </div>
             </>
           )}
