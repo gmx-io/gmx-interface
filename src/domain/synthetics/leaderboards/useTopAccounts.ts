@@ -1,4 +1,4 @@
-import { AccountPerf, AccountPositionsSummary, AccountScores, PerfPeriod, PositionScores, PositionsSummaryByAccount } from "./types";
+import { AccountPositionsSummary, AccountScores, PerfPeriod, PositionScores, PositionsSummaryByAccount } from "./types";
 import { useAccountPerf, usePositionScores } from "./index";
 import { BigNumber } from "ethers";
 import { expandDecimals } from "lib/numbers";
@@ -57,16 +57,24 @@ export function useTopAccounts(period: PerfPeriod) {
 
   const data: Array<AccountScores> = []
   const openPositionsByAccount: Record<string, AccountPositionsSummary> = groupPositionsByAccount(positions.data);
-  const perfOrderedByPnl: Array<AccountPerf> = accountPerf.data.sort((a, b) => a.totalPnl.gt(b.totalPnl) ? -1 : 1);
 
-  for (let i = 0; i < perfOrderedByPnl.length; i++) {
-    const perf = perfOrderedByPnl[i];
+  for (let i = 0; i < accountPerf.data.length; i++) {
+    const perf = accountPerf.data[i];
     const openPositions = openPositionsByAccount[perf.account] || defaultSummary(perf.account);
     const totalPnl = perf.totalPnl
       .sub(openPositions.borrowingFeeUsd)
       .sub(openPositions.fundingFeeUsd)
       .sub(openPositions.positionFeeUsd)
       .add(openPositions.priceImpactUsd);
+
+    // console.log({
+    //   pnlWithFees: formatUsd(perf.totalPnl),
+    //   borrowingFees: formatUsd(openPositions.borrowingFeeUsd),
+    //   fundingFeeUsd: formatUsd(openPositions.fundingFeeUsd),
+    //   positionFeeUsd: formatUsd(openPositions.positionFeeUsd),
+    //   priceImpactUsd: formatUsd(openPositions.priceImpactUsd),
+    //   totalPnl: formatUsd(totalPnl),
+    // });
 
     const profit = totalPnl.add(openPositions.unrealizedPnl);
     const maxCollateral = perf.maxCollateral;
@@ -88,7 +96,8 @@ export function useTopAccounts(period: PerfPeriod) {
     const scores = {
       id: perf.account + ":" + period,
       account: perf.account,
-      absPnl: profit,
+      absPnl: totalPnl,
+      // absPnl: profit,
       relPnl,
       size,
       leverage,
@@ -99,5 +108,7 @@ export function useTopAccounts(period: PerfPeriod) {
     data.push(scores);
   }
 
-  return { isLoading: false, error: null, data };
+  const orderedData: Array<AccountScores> = data.sort((a, b) => a.absPnl.gt(b.absPnl) ? -1 : 1);
+
+  return { isLoading: false, error: null, data: orderedData };
 }
