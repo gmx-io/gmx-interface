@@ -37,7 +37,7 @@ export function getWsProvider(active: boolean, chainId: number) {
   if (chainId === ARBITRUM) {
     if (isMobileDevice(window.navigator)) {
       const provider = new ethers.providers.JsonRpcProvider(getRpcUrl(ARBITRUM));
-      provider.pollingInterval = 5000;
+      provider.pollingInterval = 10000;
       return provider;
     }
 
