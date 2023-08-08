@@ -5,11 +5,13 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   FALLBACK_PROVIDERS,
+  getAlchemyHttpUrl,
   getAlchemyWsUrl,
   getFallbackRpcUrl,
   getRpcUrl,
 } from "config/chains";
 import { ethers } from "ethers";
+import { isMobileDevice } from "lib/legacy";
 import { useCallback, useEffect, useState } from "react";
 
 export function getProvider(library: Web3Provider | undefined, chainId: number) {
@@ -34,6 +36,12 @@ export function getWsProvider(active: boolean, chainId: number) {
   }
 
   if (chainId === ARBITRUM) {
+    if (isMobileDevice(window.navigator)) {
+      const provider = new ethers.providers.JsonRpcProvider(getAlchemyHttpUrl());
+      provider.pollingInterval = 5000;
+      return provider;
+    }
+
     return new ethers.providers.WebSocketProvider(getAlchemyWsUrl());
   }
 
