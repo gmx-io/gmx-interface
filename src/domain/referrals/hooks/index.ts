@@ -280,6 +280,26 @@ export function useCodeOwner(library, chainId, account, code) {
   };
 }
 
+export function useReferrerDiscountShare(library, chainId, owner) {
+  const referralStorageAddress = getContract(chainId, "ReferralStorage");
+  const { data: discountShare, mutate: mutateDiscountShare } = useSWR<BigNumber | undefined>(
+    owner && [
+      `ReferralStorage:referrerDiscountShares`,
+      chainId,
+      referralStorageAddress,
+      "referrerDiscountShares",
+      owner.toLowerCase(),
+    ],
+    {
+      fetcher: contractFetcher(library, ReferralStorage),
+    }
+  );
+  return {
+    discountShare,
+    mutateDiscountShare,
+  };
+}
+
 export async function validateReferralCodeExists(referralCode, chainId) {
   const referralCodeBytes32 = encodeReferralCode(referralCode);
   const referralCodeOwner = await getReferralCodeOwner(chainId, referralCodeBytes32);

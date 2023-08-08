@@ -10,9 +10,16 @@ import { ARBITRUM, AVALANCHE } from "config/chains";
 import { bigNumberify, formatAmount } from "lib/numbers";
 import { t } from "@lingui/macro";
 import { getRootUrl } from "lib/url";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 
 export const REFERRAL_CODE_REGEX = /^\w+$/; // only number, string and underscore is allowed
 export const REGEX_VERIFY_BYTES32 = /^0x[0-9a-f]{64}$/;
+
+export function removeTrailingZeros(amount) {
+  const amountWithoutZeros = Number(amount);
+  if (!amountWithoutZeros) return amount;
+  return amountWithoutZeros;
+}
 
 export function isRecentReferralCodeNotExpired(referralCodeInfo) {
   const REFERRAL_DATA_MAX_TIME = 60000 * 5; // 5 minutes
@@ -68,6 +75,26 @@ export const tierDiscountInfo = {
   1: 10,
   2: 10,
 };
+
+export const totalRebateInfo = {
+  0: 10,
+  1: 20,
+  2: 25,
+};
+
+export function getSharePercentage(tierId, share, isRebate) {
+  if (!tierId) return;
+  if (!share || share?.eq(0)) return isRebate ? tierRebateInfo[tierId] : tierDiscountInfo[tierId];
+  const decimals = 4;
+
+  const totalDiscount = totalRebateInfo[tierId];
+  const discountPercentage = bigNumberify(totalDiscount)
+    .mul(isRebate ? BASIS_POINTS_DIVISOR - share : share)
+    .mul(Math.pow(10, decimals))
+    .div(BASIS_POINTS_DIVISOR);
+
+  return removeTrailingZeros(formatAmount(discountPercentage, decimals, 3, true));
+}
 
 function areObjectsWithSameKeys(obj1, obj2) {
   return Object.keys(obj1).every((key) => key in obj2);

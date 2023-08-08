@@ -20,7 +20,7 @@ import EmptyMessage from "./EmptyMessage";
 import { ReferralCodeForm } from "./JoinReferralCode";
 import ReferralInfoCard from "./ReferralInfoCard";
 import "./TradersStats.scss";
-import { getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./referralsHelper";
+import { getSharePercentage, getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./referralsHelper";
 import usePagination from "./usePagination";
 
 type Props = {
@@ -30,6 +30,7 @@ type Props = {
   userReferralCodeString?: string;
   setPendingTxns: (txns: string[]) => void;
   pendingTxns: string[];
+  discountShare: BigNumber | undefined;
 };
 
 function TradersStats({
@@ -39,6 +40,7 @@ function TradersStats({
   userReferralCodeString,
   setPendingTxns,
   pendingTxns,
+  discountShare,
 }: Props) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const editModalRef = useRef<HTMLDivElement>(null);
@@ -56,6 +58,7 @@ function TradersStats({
   );
 
   const currentDiscountDistributions = getCurrentData();
+  const currentTierDiscount = getSharePercentage(traderTier, discountShare);
 
   const open = () => setIsEditModalOpen(true);
   const close = () => setIsEditModalOpen(false);
@@ -71,14 +74,25 @@ function TradersStats({
             {traderTier && (
               <div className="tier">
                 <Tooltip
-                  handle={t`Tier ${getTierIdDisplay(traderTier)} (${tierDiscountInfo[traderTier]}% discount)`}
+                  handle={t`Tier ${getTierIdDisplay(traderTier)} (${currentTierDiscount}% discount)`}
                   position="right-bottom"
+                  className={discountShare?.gt(0) ? "tier-discount-warning" : ""}
                   renderContent={() => (
                     <p className="text-white">
                       <Trans>
-                        You will receive a {tierDiscountInfo[traderTier]}% discount on your opening and closing fees,
-                        this discount will be airdropped to your account every Wednesday
+                        You will receive a {currentTierDiscount}% discount on your opening and closing fees, this
+                        discount will be airdropped to your account every Wednesday.
                       </Trans>
+                      {discountShare?.gt(0) && (
+                        <>
+                          <br />
+                          <br />
+                          <Trans>
+                            The owner of this Referral Code has set a custom discount of {currentTierDiscount}% instead
+                            of the standard {tierDiscountInfo[traderTier]}% for Tier {getTierIdDisplay(traderTier)}.
+                          </Trans>
+                        </>
+                      )}
                     </p>
                   )}
                 />

@@ -31,11 +31,11 @@ import EmptyMessage from "./EmptyMessage";
 import ReferralInfoCard from "./ReferralInfoCard";
 import {
   getReferralCodeTradeUrl,
+  getSharePercentage,
   getTierIdDisplay,
   getTwitterShareUrl,
   getUSDValue,
   isRecentReferralCodeNotExpired,
-  tierRebateInfo,
 } from "./referralsHelper";
 import usePagination from "./usePagination";
 
@@ -106,6 +106,8 @@ function AffiliatesStats({
 
   const currentAffiliatesData = getCurrentAffiliatesData();
   const tierId = affiliateTierInfo?.tierId;
+  const discountShare = affiliateTierInfo?.discountShare;
+  const currentRebatePercentage = getSharePercentage(tierId, BigNumber.from(discountShare || 0), true);
 
   const totalClaimableRewardsUsd = useMemo(() => {
     if (!affiliateRewardsData || !marketsInfoData) {
@@ -262,7 +264,7 @@ function AffiliatesStats({
               <p className="title">
                 <Trans>Referral Codes</Trans>{" "}
                 <span className="sub-title">
-                  {affiliateTierInfo && t`Tier ${getTierIdDisplay(tierId)} (${tierRebateInfo[tierId]}% rebate)`}
+                  {affiliateTierInfo && t`Tier ${getTierIdDisplay(tierId)} (${currentRebatePercentage}% rebate)`}
                 </span>
               </p>
               <Button variant="secondary" onClick={open}>
