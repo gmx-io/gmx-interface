@@ -75,13 +75,14 @@ import {
   formatUsd,
 } from "lib/numbers";
 import { usePrevious } from "lib/usePrevious";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./ConfirmationBox.scss";
 import SlippageInput from "components/SlippageInput/SlippageInput";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { helperToast } from "lib/helperToast";
+import { useKey } from "react-use";
 
 export type Props = {
   isVisible: boolean;
@@ -176,6 +177,7 @@ export function ConfirmationBox(p: Props) {
   const [isLimitOrdersVisible, setIsLimitOrdersVisible] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [allowedSlippage, setAllowedSlippage] = useState(savedAllowedSlippage);
+  const submitButtonRef = useRef<null | HTMLDivElement>(null);
 
   useEffect(() => {
     setAllowedSlippage(savedAllowedSlippage);
@@ -370,6 +372,18 @@ export function ConfirmationBox(p: Props) {
     isTriggerWarningAccepted,
     needPayTokenApproval,
   ]);
+
+  useKey(
+    "Enter",
+    () => {
+      if (p.isVisible && !submitButtonState.disabled) {
+        submitButtonRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+        onSubmit();
+      }
+    },
+    {},
+    [p.isVisible, submitButtonState.disabled]
+  );
 
   function onCancelOrderClick(key: string): void {
     cancelOrdersTxn(chainId, library, { orderKeys: [key], setPendingTxns: p.setPendingTxns });
@@ -608,7 +622,7 @@ export function ConfirmationBox(p: Props) {
             displayDecimals: toToken?.priceDecimals,
           })}{" "}
         </p>
-        <button onClick={() => onCancelOrderClick(order.key)}>
+        <button type="button" onClick={() => onCancelOrderClick(order.key)}>
           <Trans>Cancel</Trans>
         </button>
       </li>
@@ -1352,10 +1366,11 @@ export function ConfirmationBox(p: Props) {
           </>
         )}
 
-        <div className="Confirmation-box-row">
+        <div className="Confirmation-box-row" ref={submitButtonRef}>
           <Button
             variant="primary-action"
             className="w-full"
+            type="submit"
             onClick={onSubmit}
             disabled={submitButtonState.disabled && !shouldDisableValidation}
           >
