@@ -5,7 +5,6 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   FALLBACK_PROVIDERS,
-  getAlchemyHttpUrl,
   getAlchemyWsUrl,
   getFallbackRpcUrl,
   getRpcUrl,
@@ -37,7 +36,7 @@ export function getWsProvider(active: boolean, chainId: number) {
 
   if (chainId === ARBITRUM) {
     if (isMobileDevice(window.navigator)) {
-      const provider = new ethers.providers.JsonRpcProvider(getAlchemyHttpUrl());
+      const provider = new ethers.providers.JsonRpcProvider(getRpcUrl(ARBITRUM));
       provider.pollingInterval = 5000;
       return provider;
     }
