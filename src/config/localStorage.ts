@@ -33,6 +33,7 @@ export const SYNTHETICS_COLLATERAL_DEPOSIT_TOKEN_KEY = "synthetics-collateral-de
 export const SYNTHETICS_LIST_SECTION_KEY = "synthetics-list-section";
 export const SYNTHETICS_COLLATERAL_EDIT_TOKEN_KEY = "synthetics-collateral-edit-token";
 export const PRODUCTION_PREVIEW_KEY = "production-preview";
+export const REQUIRED_UI_VERSION_KEY = "required-ui-version";
 
 export const getSubgraphUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
 
