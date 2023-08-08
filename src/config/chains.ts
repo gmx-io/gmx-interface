@@ -302,14 +302,14 @@ export function getFallbackRpcUrl(chainId: number): string | undefined {
 
 export function getAlchemyHttpUrl() {
   if (ALCHEMY_WHITELISTED_DOMAINS.includes(window.location.host)) {
-    return "https://arb-mainnet.g.alchemy.com/v2/fAf753tOLwc9yIbUYU0Eyn9zxBs9RZqz";
+    return "https://arb-mainnet.g.alchemy.com/v2/RcaXYTizJs51m-w9SnRyDrxSZhE5H9Mf";
   }
   return "https://arb-mainnet.g.alchemy.com/v2/hxBqIr-vfpJ105JPYLei_ibbJLe66k46";
 }
 
 export function getAlchemyWsUrl() {
   if (ALCHEMY_WHITELISTED_DOMAINS.includes(window.location.host)) {
-    return "wss://arb-mainnet.g.alchemy.com/v2/fAf753tOLwc9yIbUYU0Eyn9zxBs9RZqz";
+    return "wss://arb-mainnet.g.alchemy.com/v2/RcaXYTizJs51m-w9SnRyDrxSZhE5H9Mf";
   }
   return "wss://arb-mainnet.g.alchemy.com/v2/hxBqIr-vfpJ105JPYLei_ibbJLe66k46";
 }
