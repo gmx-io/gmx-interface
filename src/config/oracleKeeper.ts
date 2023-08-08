@@ -4,7 +4,7 @@ import queryString from "query-string";
 const ORACLE_KEEPER_URLS = {
   [ARBITRUM]: "https://arbitrum.gmx-oracle.io",
 
-  [AVALANCHE]: "https://avalanche-2.gmx-oracle.io",
+  [AVALANCHE]: "https://avalanche.gmx-oracle.io",
 
   [ARBITRUM_GOERLI]: "https://oracle-api-arb-goerli-xyguy.ondigitalocean.app",
 
@@ -22,14 +22,7 @@ export function getOracleKeeperBaseUrl(chainId: number) {
 export function getOracleKeeperUrl(chainId: number, path: string, query?: any) {
   const qs = query ? `?${queryString.stringify(query)}` : "";
 
-  let baseUrl: string;
-
-  // TODO: remove after fix oracle keeper
-  if (chainId === AVALANCHE && path.includes("/tickers")) {
-    baseUrl = "https://avalanche.gmx-oracle.io";
-  } else {
-    baseUrl = getOracleKeeperBaseUrl(chainId);
-  }
+  const baseUrl = getOracleKeeperBaseUrl(chainId);
 
   return `${baseUrl}${path}${qs}`;
 }
