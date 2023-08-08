@@ -730,6 +730,15 @@ export function TradeBox(p: Props) {
     fixedTriggerThresholdType,
   ]);
 
+  const isSubmitButtonDisabled = useMemo(() => {
+    if (!account) {
+      return false;
+    }
+    if (error) {
+      return true;
+    }
+  }, [error, account]);
+
   const submitButtonText = useMemo(() => {
     if (error) {
       return error;
@@ -1443,7 +1452,7 @@ export function TradeBox(p: Props) {
               variant="primary-action"
               className="w-full"
               onClick={onSubmit}
-              disabled={Boolean(error) && !shouldDisableValidation}
+              disabled={isSubmitButtonDisabled && !shouldDisableValidation}
             >
               {error || submitButtonText}
             </Button>
