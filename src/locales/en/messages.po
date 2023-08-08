@@ -617,13 +617,17 @@ msgstr "Buy {nativeTokenSymbol}"
 msgid "Buy {swapTokenSymbol} on 1inch"
 msgstr "Buy {swapTokenSymbol} on 1inch"
 
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Buying GM ({indexName}) with {tokensText}"
+msgstr "Buying GM ({indexName}) with {tokensText}"
+
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "Buying GM..."
 msgstr "Buying GM..."
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-msgid "Buying {indexName} GM with {tokensText}"
-msgstr "Buying {indexName} GM with {tokensText}"
+#~ msgid "Buying {indexName} GM with {tokensText}"
+#~ msgstr "Buying {indexName} GM with {tokensText}"
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
 #~ msgid "Buying {indexName} with {tokensText}"
@@ -3777,13 +3781,17 @@ msgstr "Sell request sent"
 msgid "Sell submitted!"
 msgstr "Sell submitted!"
 
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Selling GM ({indexName})"
+msgstr "Selling GM ({indexName})"
+
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "Selling GM..."
 msgstr "Selling GM..."
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-msgid "Selling {indexName}"
-msgstr "Selling {indexName}"
+#~ msgid "Selling {indexName}"
+#~ msgstr "Selling {indexName}"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Selling..."

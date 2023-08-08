@@ -617,13 +617,17 @@ msgstr ""
 msgid "Buy {swapTokenSymbol} on 1inch"
 msgstr "{swapTokenSymbol}を1inchで購入"
 
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Buying GM ({indexName}) with {tokensText}"
+msgstr ""
+
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "Buying GM..."
 msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-msgid "Buying {indexName} GM with {tokensText}"
-msgstr ""
+#~ msgid "Buying {indexName} GM with {tokensText}"
+#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
 #~ msgid "Buying {indexName} with {tokensText}"
@@ -3777,13 +3781,17 @@ msgstr ""
 msgid "Sell submitted!"
 msgstr "売却申し込み完了!"
 
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+msgid "Selling GM ({indexName})"
+msgstr ""
+
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "Selling GM..."
 msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-msgid "Selling {indexName}"
-msgstr ""
+#~ msgid "Selling {indexName}"
+#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Selling..."

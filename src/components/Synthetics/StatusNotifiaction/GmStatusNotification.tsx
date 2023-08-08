@@ -97,8 +97,7 @@ export function GmStatusNotification({
 
       const marketInfo = getByKey(marketsInfoData, pendingDepositData.marketAddress);
       const indexName = marketInfo ? getMarketIndexName(marketInfo) : "";
-
-      return t`Buying ${indexName} GM with ${tokensText}`;
+      return t`Buying GM (${indexName}) with ${tokensText}`;
     } else {
       if (!pendingWithdrawalData) {
         return t`Unknown sell GM order`;
@@ -107,7 +106,7 @@ export function GmStatusNotification({
       const marketInfo = getByKey(marketsInfoData, pendingWithdrawalData.marketAddress);
       const indexName = marketInfo ? getMarketIndexName(marketInfo) : "";
 
-      return t`Selling ${indexName}`;
+      return t`Selling GM (${indexName})`;
     }
   }, [chainId, isDeposit, marketsInfoData, pendingDepositData, pendingWithdrawalData, tokensData]);
 
