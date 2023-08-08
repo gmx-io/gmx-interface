@@ -248,6 +248,10 @@ msgstr "Additionally, trigger orders are market orders and are not guaranteed to
 msgid "Address copied to your clipboard"
 msgstr "Address copied to your clipboard"
 
+#: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
+msgid "Affiliate Rewards Claimed"
+msgstr "Affiliate Rewards Claimed"
+
 #: src/pages/Referrals/Referrals.tsx
 msgid "Affiliates"
 msgstr "Affiliates"
@@ -618,8 +622,12 @@ msgid "Buying GM..."
 msgstr "Buying GM..."
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-msgid "Buying {indexName} with {tokensText}"
-msgstr "Buying {indexName} with {tokensText}"
+msgid "Buying {indexName} GM with {tokensText}"
+msgstr "Buying {indexName} GM with {tokensText}"
+
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+#~ msgid "Buying {indexName} with {tokensText}"
+#~ msgstr "Buying {indexName} with {tokensText}"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Buying..."
@@ -745,8 +753,8 @@ msgstr "Claim failed."
 
 #: src/domain/synthetics/markets/claimCollateralTxn.ts
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
-msgid "Claim request sent"
-msgstr "Claim request sent"
+#~ msgid "Claim request sent"
+#~ msgstr "Claim request sent"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Claim submitted!"
@@ -1775,6 +1783,10 @@ msgstr "Fulfilling Sell request"
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 msgid "Fulfilling order request"
 msgstr "Fulfilling order request"
+
+#: src/domain/synthetics/markets/claimCollateralTxn.ts
+msgid "Funding Claimed"
+msgstr "Funding Claimed"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx

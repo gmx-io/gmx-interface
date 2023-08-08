@@ -248,6 +248,10 @@ msgstr "Además, las órdenes de activación son órdenes de mercado y no se gar
 msgid "Address copied to your clipboard"
 msgstr ""
 
+#: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
+msgid "Affiliate Rewards Claimed"
+msgstr ""
+
 #: src/pages/Referrals/Referrals.tsx
 msgid "Affiliates"
 msgstr ""
@@ -618,8 +622,12 @@ msgid "Buying GM..."
 msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-msgid "Buying {indexName} with {tokensText}"
+msgid "Buying {indexName} GM with {tokensText}"
 msgstr ""
+
+#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+#~ msgid "Buying {indexName} with {tokensText}"
+#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Buying..."
@@ -745,8 +753,8 @@ msgstr "Reclamación fallida."
 
 #: src/domain/synthetics/markets/claimCollateralTxn.ts
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
-msgid "Claim request sent"
-msgstr ""
+#~ msgid "Claim request sent"
+#~ msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Claim submitted!"
@@ -1774,6 +1782,10 @@ msgstr ""
 
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
 msgid "Fulfilling order request"
+msgstr ""
+
+#: src/domain/synthetics/markets/claimCollateralTxn.ts
+msgid "Funding Claimed"
 msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
