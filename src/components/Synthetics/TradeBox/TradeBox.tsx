@@ -1119,20 +1119,22 @@ export function TradeBox(p: Props) {
             )}
           </>
         )}
-        <ExchangeInfoRow
-          className="SwapBox-info-row"
-          label={t`Market`}
-          value={
-            <MarketSelector
-              label={t`Market`}
-              className="SwapBox-info-dropdown"
-              selectedIndexName={toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined}
-              markets={allMarkets || []}
-              isSideMenu
-              onSelectMarket={(indexName, marketInfo) => onSelectToTokenAddress(marketInfo.indexToken.address)}
-            />
-          }
-        />
+        {isTrigger && (
+          <ExchangeInfoRow
+            className="SwapBox-info-row"
+            label={t`Market`}
+            value={
+              <MarketSelector
+                label={t`Market`}
+                className="SwapBox-info-dropdown"
+                selectedIndexName={toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined}
+                markets={allMarkets || []}
+                isSideMenu
+                onSelectMarket={(indexName, marketInfo) => onSelectToTokenAddress(marketInfo.indexToken.address)}
+              />
+            }
+          />
+        )}
 
         <MarketPoolSelectorRow
           selectedMarket={marketInfo}
