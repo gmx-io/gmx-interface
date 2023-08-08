@@ -30,6 +30,7 @@ import { bigNumberify, expandDecimals, parseValue } from "lib/numbers";
 import { getTokenBySymbol } from "config/tokens";
 import { t } from "@lingui/macro";
 import { REQUIRED_UI_VERSION_KEY } from "config/localStorage";
+import { useWeb3React } from "@web3-react/core";
 
 export * from "./prices";
 
@@ -449,7 +450,9 @@ export function useStakedGmxSupply(library, active) {
 }
 
 export function useHasOutdatedUi() {
-  const url = getServerUrl(ARBITRUM, `/ui_version?client_version=${UI_VERSION}`);
+  const { active } = useWeb3React();
+
+  const url = getServerUrl(ARBITRUM, `/ui_version?client_version=${UI_VERSION}&active=${active}`);
   const { data, mutate } = useSWR([url], {
     // @ts-ignore
     fetcher: (...args) => fetch(...args).then((res) => res.text()),
