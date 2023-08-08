@@ -96,8 +96,8 @@ export function useTopAccounts(period: PerfPeriod) {
     const scores = {
       id: perf.account + ":" + period,
       account: perf.account,
-      absPnl: totalPnl,
-      // absPnl: profit,
+      // absPnl: totalPnl,
+      absPnl: profit,
       relPnl,
       size,
       leverage,
