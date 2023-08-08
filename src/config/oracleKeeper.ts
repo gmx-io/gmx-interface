@@ -4,7 +4,7 @@ import queryString from "query-string";
 const ORACLE_KEEPER_URLS = {
   [ARBITRUM]: "https://arbitrum.gmx-oracle.io",
 
-  [AVALANCHE]: "https://avalanche-2.gmx-oracle.io",
+  [AVALANCHE]: "https://avalanche.gmx-oracle.io",
 
   [ARBITRUM_GOERLI]: "https://oracle-api-arb-goerli-xyguy.ondigitalocean.app",
 
@@ -22,5 +22,7 @@ export function getOracleKeeperBaseUrl(chainId: number) {
 export function getOracleKeeperUrl(chainId: number, path: string, query?: any) {
   const qs = query ? `?${queryString.stringify(query)}` : "";
 
-  return `${getOracleKeeperBaseUrl(chainId)}${path}${qs}`;
+  const baseUrl = getOracleKeeperBaseUrl(chainId);
+
+  return `${baseUrl}${path}${qs}`;
 }
