@@ -51,6 +51,7 @@ import "./GmSwapBox.scss";
 import Checkbox from "components/Checkbox/Checkbox";
 import Tooltip from "components/Tooltip/Tooltip";
 import { DUST_BNB } from "lib/legacy";
+import { useHasOutdatedUi } from "domain/legacy";
 
 export enum Operation {
   Deposit = "Deposit",
@@ -117,6 +118,7 @@ export function GmSwapBox(p: Props) {
   const { gasLimits } = useGasLimits(chainId);
   const { gasPrice } = useGasPrice(chainId);
 
+  const { data: hasOutdatedUi } = useHasOutdatedUi();
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
   const { marketTokensData: withdrawalMarketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
 
@@ -388,7 +390,7 @@ export function GmSwapBox(p: Props) {
     const commonError = getCommonError({
       chainId,
       isConnected: true,
-      hasOutdatedUi: false,
+      hasOutdatedUi,
     })[0];
 
     const swapError = getGmSwapError({
@@ -438,9 +440,14 @@ export function GmSwapBox(p: Props) {
     };
   }, [
     account,
-    amounts,
+    amounts?.longTokenAmount,
+    amounts?.longTokenUsd,
+    amounts?.marketTokenUsd,
+    amounts?.shortTokenAmount,
+    amounts?.shortTokenUsd,
     chainId,
     fees,
+    hasOutdatedUi,
     isDeposit,
     isHighPriceImpact,
     isHighPriceImpactAccepted,
