@@ -5260,7 +5260,11 @@ msgstr "이전을 수락하려면 이 페이지에 있어야 합니다. 필요�
 #~ msgstr "포지션을 열고 닫을 때 {0}% 할인을 받을 수 있습니다. 이 할인분은 매주 수요일 귀하의 계정으로 에어드랍됩니다."
 
 #: src/components/Referrals/TradersStats.tsx
-msgid "You will receive a {currentTierDiscount}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
+#~ msgid "You will receive a {currentTierDiscount}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
+#~ msgstr ""
+
+#: src/components/Referrals/TradersStats.tsx
+msgid "You will receive a {currentTierDiscount}% discount on your opening and closing fees. This discount on V1 will be airdropped to your account every Wednesday. For trades on V2, discounts are applied automatically and will reduce your fees when you make a trade."
 msgstr ""
 
 #: src/components/Exchange/OrdersList.js

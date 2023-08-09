@@ -5260,7 +5260,11 @@ msgstr "Tendrá que estar en esta página para aceptar la transferencia, <0>haga
 #~ msgstr "Recibirá un descuento del {0}% en sus comisiones de apertura y cierre, este descuento será enviado a su cuenta cada miércoles"
 
 #: src/components/Referrals/TradersStats.tsx
-msgid "You will receive a {currentTierDiscount}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
+#~ msgid "You will receive a {currentTierDiscount}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
+#~ msgstr ""
+
+#: src/components/Referrals/TradersStats.tsx
+msgid "You will receive a {currentTierDiscount}% discount on your opening and closing fees. This discount on V1 will be airdropped to your account every Wednesday. For trades on V2, discounts are applied automatically and will reduce your fees when you make a trade."
 msgstr ""
 
 #: src/components/Exchange/OrdersList.js

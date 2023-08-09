@@ -5260,7 +5260,11 @@ msgstr "你需要在此页面上接受转让，<0>点击这里</0>，若需要�
 #~ msgstr "你将收到{0}%的开盘费和成交费折扣，此折扣将在每周三空投到你账户"
 
 #: src/components/Referrals/TradersStats.tsx
-msgid "You will receive a {currentTierDiscount}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
+#~ msgid "You will receive a {currentTierDiscount}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
+#~ msgstr ""
+
+#: src/components/Referrals/TradersStats.tsx
+msgid "You will receive a {currentTierDiscount}% discount on your opening and closing fees. This discount on V1 will be airdropped to your account every Wednesday. For trades on V2, discounts are applied automatically and will reduce your fees when you make a trade."
 msgstr ""
 
 #: src/components/Exchange/OrdersList.js
