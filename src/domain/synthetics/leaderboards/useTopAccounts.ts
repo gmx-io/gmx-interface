@@ -3,6 +3,9 @@ import { useAccountPerf, usePositionScores } from "./index";
 import { BigNumber } from "ethers";
 import { expandDecimals } from "lib/numbers";
 import { USD_DECIMALS } from "lib/legacy";
+import { usePositionsInfo } from "./usePositionsInfo";
+import { useChainId } from "lib/chains";
+import { useMarketsInfo } from "../markets";
 
 const defaultSummary = (account: string): AccountPositionsSummary => ({
   account,
@@ -47,7 +50,17 @@ const groupPositionsByAccount = (positions: Array<PositionScores>): PositionsSum
 
 export function useTopAccounts(period: PerfPeriod) {
   const accountPerf = useAccountPerf(period);
+  const { chainId } = useChainId();
   const positions = usePositionScores();
+  const { pricesUpdatedAt } = useMarketsInfo(chainId);
+  const positionsInfo = usePositionsInfo(
+    chainId,
+    positions.isLoading || positions.error ? [] : positions.data.map(p => p.id),
+    positions.isLoading || positions.error ? [] : positions.data.map(p => p.contractMarketPrices),
+    pricesUpdatedAt
+  );
+
+  console.log({positions, positionsInfo});
 
   if (accountPerf.error || positions.error) {
     return { data: [], isLoading: false, error: accountPerf.error || positions.error };

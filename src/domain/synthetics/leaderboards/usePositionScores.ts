@@ -5,11 +5,13 @@ import { useOpenPositions } from "./useOpenPositions";
 import { BigNumber, utils } from "ethers";
 import { getToken } from "config/tokens";
 import { getAddress } from "ethers/lib/utils";
+import { getContractMarketPrices, useMarketsInfo } from "../markets";
 
 export function usePositionScores() {
   const { chainId } = useChainId();
   const { pricesData } = useTokenRecentPrices(chainId);
   const openPositions = useOpenPositions(chainId);
+  const { tokensData } = useMarketsInfo(chainId);
 
   if (openPositions.error) {
     return { data: [], isLoading: false, error: openPositions.error };
@@ -49,29 +51,23 @@ export function usePositionScores() {
     )!;
 
     const unrealizedPnl = p.isLong ? value.sub(p.sizeInUsd) : p.sizeInUsd.sub(value);
+    if (!tokensData || !p.marketData) {
+      continue;
+    }
 
-    // if (p.account.toLocaleLowerCase() === "0xde518bd3e2ade6873473eb32cfe4ca75f6d7f44e") {
-    // if (p.account.toLocaleLowerCase() === "0xd5fba05de4b2d303d03052e8afbf31a767bd908e") {
-    //   const { formatAmount } = require("lib/numbers");
-    //   console.log({
-    //     isLong: p.isLong,
-    //     sizeInTokens: formatAmount(p.sizeInTokens, 18),
-    //     shortTokenPrice: formatAmount(shortTokenPrices.minPrice, USD_DECIMALS),
-    //     longTokenPrice: formatAmount(longTokenPrices.maxPrice, USD_DECIMALS),
-    //     value: formatAmount(value, USD_DECIMALS),
-    //     collateralToken,
-    //     longToken,
-    //     shortToken,
-    //     collateralAmountUsd: formatAmount(collateralAmountUsd, USD_DECIMALS),
-    //     unrealizedPnl: formatAmount(unrealizedPnl, USD_DECIMALS),
-    //   });
-    // }
+    const contractMarketPrices = getContractMarketPrices(tokensData, p.marketData);
+
+    if (!contractMarketPrices) {
+      continue;
+    }
 
     data.push({
       id: p.id,
       account: p.account,
       isLong: p.isLong,
       market: p.market,
+      marketData: p.marketData,
+      contractMarketPrices,
       collateralToken: p.collateralToken,
       unrealizedPnl,
       entryPrice: p.entryPrice,

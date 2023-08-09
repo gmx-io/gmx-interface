@@ -1,5 +1,5 @@
 import { BigNumber } from "ethers";
-import { Market } from "../markets";
+import { ContractMarketPrices, Market } from "../markets";
 
 export enum PerfPeriod {
   DAY = "24 hours",
@@ -119,6 +119,8 @@ export type PositionScores = {
   id: string;
   account: string;
   market: string;
+  marketData: Market;
+  contractMarketPrices: ContractMarketPrices;
   isLong: boolean;
   collateralToken: string;
   unrealizedPnl: BigNumber;
