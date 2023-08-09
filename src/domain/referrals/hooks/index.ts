@@ -68,7 +68,8 @@ export function useUserReferralInfo(
   );
   const { codeOwner } = useCodeOwner(library, chainId, account, userReferralCode);
   const { affiliateTier: tierId } = useAffiliateTier(library, chainId, codeOwner);
-  const { totalRebate, discountShare } = useTiers(library, chainId, tierId);
+  const { totalRebate } = useTiers(library, chainId, tierId);
+  const { discountShare } = useReferrerDiscountShare(library, chainId, codeOwner);
 
   if (
     !userReferralCode ||
@@ -118,6 +119,7 @@ export function useTiers(library: Web3Provider | undefined, chainId: number, tie
       fetcher: contractFetcher(library, ReferralStorage),
     }
   );
+
   return {
     totalRebate,
     discountShare,
