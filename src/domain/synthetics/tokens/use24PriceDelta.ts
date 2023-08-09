@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import useSWR from "swr";
-import { fetch24hPrices } from "./requests";
+import { fetch24hPrices } from "./oracleKeeperRequests";
 
 export function use24hPriceDelta(chainId: number, tokenSymbol?: string) {
   const { data } = useSWR([chainId, "use24hPriceDelta"], { fetcher: (chainId) => fetch24hPrices(chainId) });

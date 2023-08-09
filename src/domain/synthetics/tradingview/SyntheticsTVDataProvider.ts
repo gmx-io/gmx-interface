@@ -1,5 +1,5 @@
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
-import { fetchLastOracleCandles, fetchOracleCandles } from "../tokens/requests";
+import { fetchLastOracleCandles, fetchOracleCandles } from "domain/synthetics/tokens";
 import { getChainlinkChartPricesFromGraph } from "domain/prices";
 import { sleep } from "lib/sleep";
 import { Bar } from "domain/tradingview/types";

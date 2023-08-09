@@ -2,7 +2,7 @@ import { getToken, getV2Tokens, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "co
 import { USD_DECIMALS } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
 import useSWR from "swr";
-import { fetchTickers } from "./requests";
+import { fetchTickers } from "./oracleKeeperRequests";
 import { TokenPricesData } from "./types";
 import { parseOraclePrice } from "./utils";
 
