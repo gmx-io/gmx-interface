@@ -2,9 +2,9 @@ import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 import queryString from "query-string";
 
 const ORACLE_KEEPER_URLS = {
-  [ARBITRUM]: "https://arbitrum.gmx-oracle.io",
+  [ARBITRUM]: "https://arbitrum-2.gmx-oracle.io",
 
-  [AVALANCHE]: "https://avalanche.gmx-oracle.io",
+  [AVALANCHE]: "https://avalanche-2.gmx-oracle.io",
 
   [ARBITRUM_GOERLI]: "https://oracle-api-arb-goerli-xyguy.ondigitalocean.app",
 
