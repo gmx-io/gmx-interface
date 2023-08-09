@@ -105,7 +105,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isV1Available: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
       coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
-      explorerUrl: "https://arbiscan.io/token/0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
+      explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
     {
       name: "Tether",
