@@ -114,6 +114,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/325/thumb/Tether-logo.png?1598003707",
+      explorerUrl: "https://arbiscan.io/address/0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
       isV1Available: true,
     },
     {
@@ -155,6 +156,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
       decimals: 8,
       imageUrl: "https://assets.coingecko.com/coins/images/1/small/bitcoin.png?1547033579",
+      explorerUrl: "https://arbiscan.io/address/0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
       coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
     },
     {
