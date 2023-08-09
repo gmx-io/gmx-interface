@@ -1,29 +1,87 @@
-import { getOracleKeeperUrl } from "config/oracleKeeper";
-import { getNormalizedTokenSymbol, getTokenBySymbol } from "config/tokens";
+import { getOracleKeeperUrlKey } from "config/localStorage";
+import { getOracleKeeperRandomUrl } from "config/oracleKeeper";
+import { getNormalizedTokenSymbol } from "config/tokens";
 import { timezoneOffset } from "domain/prices";
 import { Bar } from "domain/tradingview/types";
-import { TokenPrices } from "./types";
-import { parseOraclePrice } from "./utils";
+import { buildUrl } from "lib/buildUrl";
 
-export async function fetchOracleRecentPrice(chainId: number, tokenSymbol: string): Promise<TokenPrices> {
-  const url = getOracleKeeperUrl(chainId, "/prices/tickers");
+export type TickersResponse = {
+  minPrice: string;
+  maxPrice: string;
+  oracleDecimals: number;
+  tokenSymbol: string;
+  tokenAddress: string;
+  updatedAt: number;
+}[];
 
-  tokenSymbol = getNormalizedTokenSymbol(tokenSymbol);
+export type DayPriceCandle = {
+  tokenSymbol: string;
+  high: number;
+  low: number;
+  open: number;
+  close: number;
+};
 
-  const token = getTokenBySymbol(chainId, tokenSymbol);
+function getCurrentOracleKeeperUrl(chainId: number) {
+  let url = localStorage.getItem(getOracleKeeperUrlKey(chainId));
 
-  const res = await fetch(url).then((res) => res.json());
-
-  const priceItem = res.find((item) => item.tokenSymbol === tokenSymbol);
-
-  if (!priceItem) {
-    throw new Error(`no price for ${tokenSymbol} found`);
+  if (!url) {
+    url = getOracleKeeperRandomUrl(chainId);
+    localStorage.setItem(getOracleKeeperUrlKey(chainId), url);
   }
 
-  const minPrice = parseOraclePrice(priceItem.minPrice, token.decimals, priceItem.oracleDecimals);
-  const maxPrice = parseOraclePrice(priceItem.maxPrice, token.decimals, priceItem.oracleDecimals);
+  return url;
+}
 
-  return { minPrice, maxPrice };
+function updateOracleKeeperUrl(chainId: number) {
+  const currentUrl = getCurrentOracleKeeperUrl(chainId);
+  const nextUrl = getOracleKeeperRandomUrl(chainId, [currentUrl]);
+
+  // eslint-disable-next-line no-console
+  console.log(`switch oracle keeper to ${nextUrl}`);
+
+  localStorage.setItem(getOracleKeeperUrlKey(chainId), nextUrl);
+}
+
+export function fetchTickers(chainId: number): Promise<TickersResponse> {
+  const baseUrl = getCurrentOracleKeeperUrl(chainId);
+
+  return fetch(buildUrl(baseUrl, "/prices/tickers"))
+    .then((res) => res.json())
+    .then((res) => {
+      if (!res.length) {
+        throw new Error("Invalid tickers response");
+      }
+
+      return res;
+    })
+    .catch((e) => {
+      // eslint-disable-next-line no-console
+      console.error(e);
+      updateOracleKeeperUrl(chainId);
+
+      throw e;
+    });
+}
+
+export function fetch24hPrices(chainId: number): Promise<DayPriceCandle[]> {
+  const baseUrl = getCurrentOracleKeeperUrl(chainId);
+
+  return fetch(buildUrl(baseUrl, "/prices/24h"))
+    .then((res) => res.json())
+    .then((res) => {
+      if (!res?.length) {
+        throw new Error("Invalid 24h prices response");
+      }
+
+      return res;
+    })
+    .catch((e) => {
+      // eslint-disable-next-line no-console
+      console.error(e);
+      updateOracleKeeperUrl(chainId);
+      throw e;
+    });
 }
 
 export async function fetchLastOracleCandles(
@@ -34,13 +92,23 @@ export async function fetchLastOracleCandles(
 ): Promise<Bar[]> {
   tokenSymbol = getNormalizedTokenSymbol(tokenSymbol);
 
-  const url = getOracleKeeperUrl(chainId, "/prices/candles", { tokenSymbol, limit, period });
+  const baseUrl = getCurrentOracleKeeperUrl(chainId);
 
-  const res = await fetch(url).then((res) => res.json());
+  return fetch(buildUrl(baseUrl, "/prices/candles", { tokenSymbol, period, limit }))
+    .then((res) => res.json())
+    .then((res) => {
+      if (!Array.isArray(res.candles) || (res.candles.length === 0 && limit > 0)) {
+        throw new Error("Invalid candles response");
+      }
 
-  const result = res.candles.map(parseOracleCandle);
-
-  return result;
+      return res.candles.map(parseOracleCandle);
+    })
+    .catch((e) => {
+      // eslint-disable-next-line no-console
+      console.error(e);
+      updateOracleKeeperUrl(chainId);
+      throw e;
+    });
 }
 
 export async function fetchOracleCandles(chainId: number, tokenSymbol: string, period: string): Promise<Bar[]> {
@@ -48,13 +116,9 @@ export async function fetchOracleCandles(chainId: number, tokenSymbol: string, p
 
   const limit = 5000;
 
-  const url = getOracleKeeperUrl(chainId, "/prices/candles", { tokenSymbol, period, limit });
+  const result = await fetchLastOracleCandles(chainId, tokenSymbol, period, limit);
 
-  const res = await fetch(url).then((res) => res.json());
-
-  const result = res.candles.map(parseOracleCandle).reverse();
-
-  return result;
+  return result.reverse();
 }
 
 function parseOracleCandle(rawCandle: number[]): Bar {

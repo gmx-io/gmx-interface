@@ -1,20 +1,10 @@
-import { getOracleKeeperUrl } from "config/oracleKeeper";
 import { getToken, getV2Tokens, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { jsonFetcher } from "lib/fetcher";
 import { USD_DECIMALS } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
 import useSWR from "swr";
+import { fetchTickers } from "./requests";
 import { TokenPricesData } from "./types";
 import { parseOraclePrice } from "./utils";
-
-type BackendResponse = {
-  minPrice: string;
-  maxPrice: string;
-  oracleDecimals: number;
-  tokenSymbol: string;
-  tokenAddress: string;
-  updatedAt: number;
-}[];
 
 type TokenPricesDataResult = {
   pricesData?: TokenPricesData;
@@ -22,11 +12,9 @@ type TokenPricesDataResult = {
 };
 
 export function useTokenRecentPrices(chainId: number): TokenPricesDataResult {
-  const url = getOracleKeeperUrl(chainId, "/prices/tickers");
-
-  const { data } = useSWR(url, {
-    fetcher: (...args) =>
-      jsonFetcher(...args).then((priceItems: BackendResponse) => {
+  const { data } = useSWR([chainId, "useTokenRecentPrices"], {
+    fetcher: (chainId) =>
+      fetchTickers(chainId).then((priceItems) => {
         const result: TokenPricesData = {};
 
         priceItems.forEach((priceItem) => {
