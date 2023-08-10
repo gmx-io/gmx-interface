@@ -37,9 +37,11 @@ function parseOracleCandle(rawCandle: number[]): Bar {
 }
 
 export function getCurrentOracleKeeperIndex(chainId: number) {
-  let index = Number(localStorage.getItem(getOracleKeeperUrlKey(chainId)));
+  const storedIndex = localStorage.getItem(getOracleKeeperUrlKey(chainId));
 
-  if (Number.isNaN(index)) {
+  let index = typeof storedIndex === "string" && !Number.isNaN(storedIndex) ? Number(storedIndex) : undefined;
+
+  if (!index) {
     index = getOracleKeeperRandomIndex(chainId);
     localStorage.setItem(getOracleKeeperUrlKey(chainId), String(index));
   }
@@ -52,7 +54,7 @@ export function useOracleKeeperFetcher(chainId: number) {
   const oracleKeeperUrl = getOracleKeeperUrl(chainId, oracleKeeperIndex);
 
   return useMemo(() => {
-    function updateOracleKeeperUrl(chainId: number) {
+    function updateOracleKeeperUrl() {
       const nextIndex = getOracleKeeperRandomIndex(chainId, [oracleKeeperIndex]);
 
       // eslint-disable-next-line no-console
@@ -74,7 +76,7 @@ export function useOracleKeeperFetcher(chainId: number) {
         .catch((e) => {
           // eslint-disable-next-line no-console
           console.error(e);
-          updateOracleKeeperUrl(chainId);
+          updateOracleKeeperUrl();
 
           throw e;
         });
@@ -93,7 +95,7 @@ export function useOracleKeeperFetcher(chainId: number) {
         .catch((e) => {
           // eslint-disable-next-line no-console
           console.error(e);
-          updateOracleKeeperUrl(chainId);
+          updateOracleKeeperUrl();
           throw e;
         });
     }
@@ -111,7 +113,7 @@ export function useOracleKeeperFetcher(chainId: number) {
         .catch((e) => {
           // eslint-disable-next-line no-console
           console.error(e);
-          updateOracleKeeperUrl(chainId);
+          updateOracleKeeperUrl();
           throw e;
         });
     }

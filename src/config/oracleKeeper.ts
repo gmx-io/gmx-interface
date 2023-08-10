@@ -1,4 +1,4 @@
-import { sample } from "lodash";
+import { sample, random } from "lodash";
 import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 
 const ORACLE_KEEPER_URLS = {
@@ -24,17 +24,16 @@ export function getOracleKeeperUrl(chainId: number, index: number) {
 }
 
 export function getOracleKeeperRandomIndex(chainId: number, bannedIndexes?: number[]): number {
-  let urls = ORACLE_KEEPER_URLS[chainId] || ORACLE_KEEPER_URLS.default;
+  const urls = ORACLE_KEEPER_URLS[chainId] || ORACLE_KEEPER_URLS.default;
 
   if (bannedIndexes?.length) {
     const filteredUrls = urls.filter((url, i) => !bannedIndexes.includes(i));
 
     if (filteredUrls.length) {
-      urls = filteredUrls;
+      const url = sample(filteredUrls);
+      return urls.indexOf(url);
     }
   }
 
-  const url = sample(urls);
-
-  return urls.indexOf(url);
+  return random(0, urls.length - 1);
 }
