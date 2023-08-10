@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ReactNode } from "react";
+import React, { useState, useEffect, ReactNode, useMemo } from "react";
 import cx from "classnames";
 
 import { BiChevronDown } from "react-icons/bi";
@@ -16,6 +16,7 @@ import { t } from "@lingui/macro";
 import { useMedia } from "react-use";
 import { InfoTokens, Token, TokenInfo } from "domain/tokens";
 import { BigNumber } from "ethers";
+import { convertToUsd } from "domain/synthetics/tokens";
 
 type TokenState = {
   disabled?: boolean;
@@ -40,6 +41,7 @@ type Props = {
   getTokenState?: (info: TokenInfo) => TokenState | undefined;
   disableBodyScrollLock?: boolean;
   onSelectToken: (token: Token) => void;
+  extendedSortSequence?: string[] | undefined;
 };
 
 export default function TokenSelector(props: Props) {
@@ -66,6 +68,7 @@ export default function TokenSelector(props: Props) {
     showSymbolImage = false,
     showNewCaret = false,
     getTokenState = () => ({ disabled: false, message: null }),
+    extendedSortSequence,
   } = props;
 
   const visibleTokens = tokens.filter((t) => t && !t.isTempHidden);
@@ -81,12 +84,6 @@ export default function TokenSelector(props: Props) {
     }
   }, [isModalVisible]);
 
-  if (!tokenInfo) {
-    return null;
-  }
-
-  const tokenImage = showSymbolImage ? importImage(`ic_${tokenInfo.symbol.toLowerCase()}_24.svg`) : undefined;
-
   const onSearchKeywordChange = (e) => {
     setSearchKeyword(e.target.value);
   };
@@ -98,11 +95,74 @@ export default function TokenSelector(props: Props) {
     );
   });
 
+  const sortedFilteredTokens = useMemo(() => {
+    const tokensWithBalance: Token[] = [];
+    const tokensWithoutBalance: Token[] = showBalances ? [] : filteredTokens;
+
+    for (const token of filteredTokens) {
+      const info = infoTokens?.[token.address];
+      if (showBalances) {
+        if (info?.balance?.gt(0)) {
+          tokensWithBalance.push(token);
+        } else {
+          tokensWithoutBalance.push(token);
+        }
+      }
+    }
+
+    const sortedTokensWithBalance = tokensWithBalance.sort((a, b) => {
+      const aInfo = infoTokens?.[a.address];
+      const bInfo = infoTokens?.[b.address];
+
+      if (!aInfo || !bInfo) return 0;
+
+      if (aInfo?.balance && bInfo?.balance && aInfo?.maxPrice && bInfo?.maxPrice) {
+        const aBalanceUsd = convertToUsd(aInfo.balance, a.decimals, aInfo.minPrice);
+        const bBalanceUsd = convertToUsd(bInfo.balance, b.decimals, bInfo.minPrice);
+
+        return bBalanceUsd?.sub(aBalanceUsd || 0).gt(0) ? 1 : -1;
+      }
+      return 0;
+    });
+
+    const sortedTokensWithoutBalance = tokensWithoutBalance.sort((a, b) => {
+      const aInfo = infoTokens?.[a.address];
+      const bInfo = infoTokens?.[b.address];
+
+      if (!aInfo || !bInfo) return 0;
+
+      if (extendedSortSequence) {
+        // making sure to use the wrapped address if it exists in the extended sort sequence
+        const aAddress =
+          aInfo.wrappedAddress && extendedSortSequence.includes(aInfo.wrappedAddress)
+            ? aInfo.wrappedAddress
+            : aInfo.address;
+
+        const bAddress =
+          bInfo.wrappedAddress && extendedSortSequence.includes(bInfo.wrappedAddress)
+            ? bInfo.wrappedAddress
+            : bInfo.address;
+
+        return extendedSortSequence.indexOf(aAddress) - extendedSortSequence.indexOf(bAddress);
+      }
+
+      return 0;
+    });
+
+    return [...sortedTokensWithBalance, ...sortedTokensWithoutBalance];
+  }, [filteredTokens, infoTokens, extendedSortSequence, showBalances]);
+
   const _handleKeyDown = (e) => {
     if (e.key === "Enter" && filteredTokens.length > 0) {
       onSelectToken(filteredTokens[0]);
     }
   };
+
+  if (!tokenInfo) {
+    return null;
+  }
+
+  const tokenImage = showSymbolImage ? importImage(`ic_${tokenInfo.symbol.toLowerCase()}_24.svg`) : undefined;
 
   return (
     <div className={cx("TokenSelector", { disabled }, props.className)} onClick={(event) => event.stopPropagation()}>
@@ -128,7 +188,7 @@ export default function TokenSelector(props: Props) {
         )}
       >
         <div className="TokenSelector-tokens">
-          {filteredTokens.map((token, tokenIndex) => {
+          {sortedFilteredTokens.map((token, tokenIndex) => {
             const tokenPopupImage = importImage(`ic_${token.symbol.toLowerCase()}_40.svg`);
             let info = infoTokens?.[token.address] || ({} as TokenInfo);
 
