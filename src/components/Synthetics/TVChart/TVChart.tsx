@@ -150,7 +150,6 @@ export function TVChart({
   }
 
   useEffect(() => {
-    setDataProvider(undefined);
     setDataProvider(new SyntheticsTVDataProvider({ resolutions: SUPPORTED_RESOLUTIONS_V2, oracleKeeperFetcher }));
   }, [oracleKeeperFetcher]);
 
