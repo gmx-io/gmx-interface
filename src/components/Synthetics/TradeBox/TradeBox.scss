@@ -1,0 +1,153 @@
+.SwapBox-info-dropdown {
+  margin-right: -0.4rem;
+}
+
+.SwapBox {
+  border-radius: 0.4rem;
+  padding: 1.5rem;
+}
+
+.SwapBox-option-tabs.Tab.block .Tab-option {
+  padding: 1.05rem;
+}
+
+.SwapBox-option-tabs.Tab.block .Tab-option-icon {
+  margin-top: -0.155rem;
+  transform: scale(0.75);
+  vertical-align: middle;
+  margin-right: 0.8rem;
+}
+
+.SwapBox-asset-options-tabs {
+  margin: 1.5rem 0;
+}
+
+.SwapBox-info-section {
+  margin-bottom: 0.8rem;
+}
+
+.SwapBox-form-layout {
+  display: flex;
+  flex-direction: column;
+}
+
+.SwapBox-warnings {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.SwapBox-slider-settings {
+  font-size: var(--font-sm);
+  margin-bottom: 0.8rem;
+}
+
+.SwapBox-slider-settings .Checkbox {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  direction: rtl;
+}
+
+.SwapBox-info-section {
+  margin-bottom: 1.1rem;
+}
+
+.SwapBox-info-row {
+  opacity: 1;
+  margin-bottom: 0.5rem;
+
+  .Exchange-info-label {
+    opacity: 1;
+    color: rgba(255, 255, 255, 0.7);
+  }
+}
+
+.SwapBox-section {
+  margin-top: 1.25rem;
+}
+
+.SwapBox-warnings {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.SwapBox-market-selector {
+  margin-bottom: 0.8rem;
+}
+
+.SwapBox-market-selector-dropdown {
+  .Dropdown-options {
+    top: 2.8rem;
+    text-align: right;
+  }
+
+  .Dropdown-current-arrow {
+    margin-left: 0.8rem;
+  }
+}
+
+.TradeBox-acceptable-price-impact {
+  display: flex;
+  cursor: pointer;
+
+  .edit-icon {
+    opacity: 0.7;
+    margin-left: 0.4rem;
+    margin-bottom: -0.3rem;
+  }
+}
+
+.MarketSelector-tooltip {
+  position: relative;
+
+  .Tooltip-handle {
+    color: rgb(243, 181, 12);
+    text-decoration-color: rgb(243, 181, 12);
+  }
+
+  .MarketSelector-tooltip-content {
+    color: white;
+  }
+
+  .MarketSelector-tooltip-row-action {
+    margin-top: 1rem;
+  }
+
+  .MarketSelector-tooltip-row {
+    margin-top: 2rem;
+  }
+
+  .MarketSelector-tooltip-row:first-child {
+    margin-top: 0;
+  }
+}
+
+.LiqPrice-soft-warning {
+  color: rgb(243, 181, 12);
+  text-decoration-color: rgb(243, 181, 12);
+}
+
+.LiqPrice-hard-warning {
+  color: #fa3c58;
+  text-decoration-color: #fa3c58;
+}
+
+.Banner-gap {
+  margin-bottom: 1.75rem;
+}
+
+@media (max-width: 900px) {
+  .SwapBox-content {
+    flex-wrap: wrap;
+  }
+
+  .SwapBox-content .GlpSwap-stats-card {
+    margin: 0;
+    margin-bottom: 3.1rem;
+    max-width: 100%;
+  }
+
+  .SwapBox-content .GlpSwap-box {
+    margin: 0;
+    max-width: 100%;
+  }
+}

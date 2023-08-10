@@ -37,7 +37,7 @@ export function HomeHeaderLinks({ small, clickCloseIcon, redirectPopupTimestamp,
     },
     {
       label: t`Docs`,
-      link: "https://gmxio.gitbook.io/gmx/",
+      link: "https://docs.gmx.io/",
     },
   ];
   return (

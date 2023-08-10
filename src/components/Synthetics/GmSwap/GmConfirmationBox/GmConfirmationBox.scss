@@ -1,0 +1,26 @@
+.GmConfirmationBox {
+  .Modal-body {
+    overflow-x: hidden;
+  }
+}
+
+.GmConfirmationBox-main {
+  display: flex;
+  flex-direction: column;
+}
+
+.GmConfirmationBox-approve-tokens {
+  display: flex;
+  flex-direction: column;
+}
+
+.GmConfirmationBox-approve-token {
+  height: 2.2rem;
+  display: flex;
+  align-items: center;
+  margin-top: 0.5rem;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}

@@ -1,0 +1,31 @@
+.MarketSelector {
+  &.side-menu {
+    .Modal {
+      align-items: flex-start;
+      justify-content: flex-end;
+    }
+  }
+}
+
+.collaterals-logo {
+  display: flex;
+
+  .collateral-logo-first {
+    position: relative;
+  }
+
+  .collateral-logo-second {
+    margin-left: -2rem;
+  }
+}
+
+@media (max-width: 1100px) {
+  .MarketSelector {
+    &.side-menu {
+      .Modal {
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+}

@@ -31,15 +31,14 @@
     "date-fns": "2.27.0",
     "env-cmd": "^10.1.0",
     "eth-testing": "1.9.1",
-    "ethereum-multicall": "2.15.0",
     "ethers": "5.6.8",
     "framer-motion": "4.1.17",
     "graphql": "15.8.0",
     "hex-to-rgba": "2.0.1",
     "html-to-image": "^1.10.8",
-    "krasulya-lightweight-charts": "3.4.3",
     "lodash": "4.17.21",
     "qrcode.react": "^3.1.0",
+    "query-string": "7.1.1",
     "rc-slider": "9.7.5",
     "react": "17.0.2",
     "react-dom": "17.0.2",
@@ -54,9 +53,10 @@
     "react-toastify": "6.0.9",
     "react-use": "17.3.1",
     "recharts": "2.1.8",
-    "sass": "^1.55.0",
+    "sass": "1.55.0",
     "swr": "0.4.2",
     "typescript": "4.7.4",
+    "viem": "1.1.4",
     "web-vitals": "1.1.2"
   },
   "resolutions": {
@@ -67,9 +67,9 @@
     "start-home": "yarn lingui:prepare && PORT=3010 env-cmd -e development-home react-app-rewired start",
     "start-app": "yarn lingui:prepare && PORT=3011 env-cmd -e development-app react-app-rewired start",
     "start-win": "set PORT=3010&react-app-rewired start",
-    "build": "INLINE_RUNTIME_CHUNK=false yarn test:ci && react-app-rewired build",
+    "build": "INLINE_RUNTIME_CHUNK=false react-app-rewired build",
     "build-home": "INLINE_RUNTIME_CHUNK=false env-cmd -e production-home react-app-rewired build",
-    "build-app": "INLINE_RUNTIME_CHUNK=false env-cmd -e production-app yarn test:ci && react-app-rewired build",
+    "build-app": "INLINE_RUNTIME_CHUNK=false env-cmd -e production-app react-app-rewired build",
     "test": "react-app-rewired test",
     "test:ci": "react-app-rewired test --watchAll=false",
     "eject": "react-scripts eject",
@@ -94,6 +94,8 @@
   "browserslist": {
     "production": [
       ">0.2%",
+      "not ie <= 99",
+      "not android <= 4.4.4",
       "not dead",
       "not op_mini all"
     ],
@@ -103,7 +105,14 @@
       "last 1 safari version"
     ]
   },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": [
+      "./jest-env.js"
+    ]
+  },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "7.21.11",
     "@lingui/cli": "3.13.3",
     "@lingui/loader": "3.13.3",
     "@lingui/macro": "3.13.3",
@@ -117,7 +126,7 @@
   },
   "lint-staged": {
     "src/**/*.{js,ts,jsx,tsx}": [
-      "eslint --fix ./src",
+      "eslint --fix --max-warnings=0 ./src",
       "prettier --write"
     ]
   },

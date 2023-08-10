@@ -10,7 +10,7 @@ import gmxLogo from "img/gmx-logo-with-name.svg";
 import "./PositionShare.css";
 import { QRCodeSVG } from "qrcode.react";
 import { getHomeUrl, getRootShareApiUrl, getTwitterIntentURL, USD_DECIMALS } from "lib/legacy";
-import { useAffiliateCodes } from "domain/referrals";
+import { useAffiliateCodes } from "domain/referrals/hooks";
 import SpinningLoader from "../Common/SpinningLoader";
 import useLoadImage from "lib/useLoadImage";
 import shareBgImg from "img/position-share-bg.png";
@@ -18,6 +18,8 @@ import { helperToast } from "lib/helperToast";
 import { formatAmount } from "lib/numbers";
 import downloadImage from "lib/downloadImage";
 import Button from "components/Button/Button";
+import { getPriceDecimals } from "config/tokens";
+import { useChainId } from "lib/chains";
 const ROOT_SHARE_URL = getRootShareApiUrl();
 const UPLOAD_URL = ROOT_SHARE_URL + "/api/upload";
 const UPLOAD_SHARE = ROOT_SHARE_URL + "/api/s";
@@ -124,9 +126,11 @@ function PositionShareCard({
   uploadedImageError,
   sharePositionBgImg,
 }) {
+  const { chainId } = useChainId();
   const isMobile = useMedia("(max-width: 400px)");
   const { code, success } = userAffiliateCode;
   const { deltaAfterFeesPercentageStr, isLong, leverage, indexToken, averagePrice, markPrice } = position;
+  const positionPriceDecimal = getPriceDecimals(chainId, indexToken.symbol);
 
   const homeURL = getHomeUrl();
   return (
@@ -142,11 +146,11 @@ function PositionShareCard({
         <div className="prices">
           <div>
             <p>Entry Price</p>
-            <p className="price">${formatAmount(averagePrice, USD_DECIMALS, 2, true)}</p>
+            <p className="price">${formatAmount(averagePrice, USD_DECIMALS, positionPriceDecimal, true)}</p>
           </div>
           <div>
             <p>Index Price</p>
-            <p className="price">${formatAmount(markPrice, USD_DECIMALS, 2, true)}</p>
+            <p className="price">${formatAmount(markPrice, USD_DECIMALS, positionPriceDecimal, true)}</p>
           </div>
         </div>
         <div className="referral-code">

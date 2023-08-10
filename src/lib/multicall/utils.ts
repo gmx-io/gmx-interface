@@ -1,130 +1,248 @@
 import { Web3Provider } from "@ethersproject/providers";
-import { CHAIN_NAMES_MAP, getRpcUrl } from "config/chains";
-import { ContractCallContext, Multicall } from "ethereum-multicall";
-import { CallContext, ContractCallResults } from "ethereum-multicall/dist/esm/models";
-import { ethers } from "ethers";
-import { bigNumberify } from "lib/numbers";
-import { getFallbackProvider } from "lib/rpc";
-import { sleep } from "lib/sleep";
+import CustomErrors from "abis/CustomErrors.json";
+import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, getFallbackRpcUrl, getRpcUrl } from "config/chains";
+import { PublicClient, createPublicClient, http } from "viem";
+import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "viem/chains";
 import { MulticallRequestConfig, MulticallResult } from "./types";
 
+import { sleep } from "lib/sleep";
+
 export const MAX_TIMEOUT = 2000;
+
+const CHAIN_BY_CHAIN_ID = {
+  [AVALANCHE_FUJI]: avalancheFuji,
+  [ARBITRUM_GOERLI]: arbitrumGoerli,
+  [ARBITRUM]: arbitrum,
+  [AVALANCHE]: avalanche,
+};
+
+const BATCH_CONFIGS = {
+  [ARBITRUM]: {
+    http: {
+      batchSize: 0, // disable batches, here batchSize is the number of eth_calls in a batch
+      wait: 0, // keep this setting in case batches are enabled in future
+    },
+    client: {
+      multicall: {
+        batchSize: 1024 * 1024, // here batchSize is the number of bytes in a multicall
+        wait: 0, // zero delay means formation of a batch in the current macro-task, like setTimeout(fn, 0)
+      },
+    },
+  },
+  [AVALANCHE]: {
+    http: {
+      batchSize: 0,
+      wait: 0,
+    },
+    client: {
+      multicall: {
+        batchSize: 1024 * 1024,
+        wait: 0,
+      },
+    },
+  },
+  [AVALANCHE_FUJI]: {
+    http: {
+      batchSize: 40,
+      wait: 0,
+    },
+    client: {
+      multicall: {
+        batchSize: 1024 * 1024,
+        wait: 0,
+      },
+    },
+  },
+  [ARBITRUM_GOERLI]: {
+    http: {
+      batchSize: 0,
+      wait: 0,
+    },
+    client: {
+      multicall: {
+        batchSize: 1024 * 1024,
+        wait: 0,
+      },
+    },
+  },
+};
 
 export async function executeMulticall(
   chainId: number,
   library: Web3Provider | undefined,
   request: MulticallRequestConfig<any>
 ) {
-  // Try to use rpc provider of the connected wallet
-  let provider = library ? library.getSigner().provider : undefined;
+  const multicall = await Multicall.getInstance(chainId);
 
-  // Wait for initialization to chech the network
-  await provider?.ready;
+  return multicall?.call(request, MAX_TIMEOUT);
+}
 
-  // If the wallet is not connected or the network does not match the chainId of the request, create a new rpc provider
-  if (!provider || provider.network?.chainId !== chainId) {
-    const rpcUrl = getRpcUrl(chainId);
+export class Multicall {
+  static instances: {
+    [chainId: number]: Multicall | undefined;
+  } = {};
 
-    provider = new ethers.providers.StaticJsonRpcProvider(rpcUrl, { chainId, name: CHAIN_NAMES_MAP[chainId] });
-  }
+  static async getInstance(chainId: number) {
+    let instance = Multicall.instances[chainId];
 
-  const multicall = getMulticallLib(provider);
+    if (!instance || instance.chainId !== chainId) {
+      const rpcUrl = getRpcUrl(chainId);
 
-  const formattedReq = formatMulticallRequest(request);
+      if (!rpcUrl) {
+        return undefined;
+      }
 
-  const requestPromise = Promise.race([
-    multicall.call(formattedReq),
-    sleep(MAX_TIMEOUT).then(() => Promise.reject("rpc timeout")),
-  ]).catch((e) => {
-    const fallbackProvider = getFallbackProvider(chainId);
+      instance = new Multicall(chainId, rpcUrl);
 
-    if (!fallbackProvider) {
-      throw e;
+      Multicall.instances[chainId] = instance;
     }
 
-    // eslint-disable-next-line no-console
-    console.log(`using multicall fallback for chain ${chainId}`);
-
-    const multicall = getMulticallLib(fallbackProvider);
-
-    return multicall.call(formattedReq);
-  });
-
-  return requestPromise
-    .then((res) => formatMulticallResult(res.results))
-    .catch((e) => {
-      // eslint-disable-next-line no-console
-      console.error("multicall error", e);
-
-      throw e;
-    });
-}
-
-function getMulticallLib(provider: ethers.providers.Provider) {
-  return new Multicall({
-    // @ts-ignore inconsistent provider types
-    ethersProvider: provider,
-    tryAggregate: true,
-  });
-}
-
-function formatMulticallRequest(requestConfig: MulticallRequestConfig<any>): ContractCallContext[] {
-  const result = Object.keys(requestConfig).reduce((contracts, contractField) => {
-    const contractConfig = requestConfig[contractField];
-
-    // ignore empty contract configs
-    if (!contractConfig || Object.keys(contractConfig.calls).length === 0) return contracts;
-
-    contracts.push({
-      reference: contractField,
-      ...contractConfig,
-      calls: Object.keys(contractConfig.calls).reduce((calls, callField) => {
-        const callConfig = contractConfig.calls[callField];
-
-        // ignore empty calls
-        if (!callConfig) return calls;
-
-        calls.push({
-          reference: callField,
-          methodName: callConfig.methodName,
-          methodParameters: callConfig.params,
-        });
-
-        return calls;
-      }, [] as CallContext[]),
-    });
-
-    return contracts;
-  }, [] as ContractCallContext[]);
-
-  return result;
-}
-
-function formatMulticallResult(response: ContractCallResults["results"]): MulticallResult<any> {
-  const result = Object.keys(response).reduce((acc, contractReference) => {
-    const contractResponse = response[contractReference].callsReturnContext;
-
-    const callsResults = contractResponse.reduce((callsObj, call) => {
-      callsObj[call.reference] = call;
-
-      callsObj[call.reference].returnValues = call.returnValues?.map(formatReturnValue);
-
-      return callsObj;
-    }, {});
-
-    acc[contractReference] = callsResults;
-
-    return acc;
-  }, {} as MulticallResult<any>);
-
-  return result;
-}
-
-function formatReturnValue(val: any) {
-  // etherium-multicall doesn't parse BigNumbers automatically
-  if (val?.type === "BigNumber") {
-    return bigNumberify(val);
+    return instance;
   }
 
-  return val;
+  static getViemClient(chainId: number, rpcUrl: string) {
+    return createPublicClient({
+      transport: http(rpcUrl, {
+        // retries works strangely in viem, so we disable them
+        retryCount: 0,
+        retryDelay: 10000000,
+        batch: BATCH_CONFIGS[chainId].http,
+      }),
+      batch: BATCH_CONFIGS[chainId].client,
+      chain: CHAIN_BY_CHAIN_ID[chainId],
+    });
+  }
+
+  viemClient: PublicClient;
+
+  constructor(public chainId: number, public rpcUrl: string) {
+    this.viemClient = Multicall.getViemClient(chainId, rpcUrl);
+  }
+
+  async call(request: MulticallRequestConfig<any>, maxTimeout: number) {
+    const originalKeys: {
+      contractKey: string;
+      callKey: string;
+    }[] = [];
+
+    const abis: any = {};
+
+    const encodedPayload: { address: string; abi: any; functionName: string; args: any }[] = [];
+
+    const contractKeys = Object.keys(request);
+
+    contractKeys.forEach((contractKey) => {
+      const contractCallConfig = request[contractKey];
+
+      if (!contractCallConfig) {
+        return;
+      }
+
+      Object.keys(contractCallConfig.calls).forEach((callKey) => {
+        const call = contractCallConfig.calls[callKey];
+
+        if (!call) {
+          return;
+        }
+
+        // Add Errors ABI to each contract ABI to correctly parse errors
+        abis[contractCallConfig.contractAddress] =
+          abis[contractCallConfig.contractAddress] || contractCallConfig.abi.concat(CustomErrors.abi);
+
+        const abi = abis[contractCallConfig.contractAddress];
+
+        originalKeys.push({
+          contractKey,
+          callKey,
+        });
+
+        encodedPayload.push({
+          address: contractCallConfig.contractAddress,
+          functionName: call.methodName,
+          abi,
+          args: call.params,
+        });
+      });
+    });
+
+    const response: any = await Promise.race([
+      this.viemClient.multicall({ contracts: encodedPayload as any }),
+      sleep(maxTimeout).then(() => Promise.reject("multicall timeout")),
+    ])
+      .catch((e) => {
+        // eslint-disable-next-line no-console
+        console.groupCollapsed("multicall error:");
+        // eslint-disable-next-line no-console
+        console.error(e);
+        // eslint-disable-next-line no-console
+        console.groupEnd();
+
+        const rpcUrl = getFallbackRpcUrl(this.chainId);
+
+        if (!rpcUrl) {
+          throw e;
+        }
+
+        const fallbackClient = Multicall.getViemClient(this.chainId, rpcUrl);
+
+        // eslint-disable-next-line no-console
+        console.log(`using multicall fallback for chain ${this.chainId}`);
+
+        return fallbackClient.multicall({ contracts: encodedPayload as any });
+      })
+      .catch((e) => {
+        // eslint-disable-next-line no-console
+        console.groupCollapsed("multicall error:");
+        // eslint-disable-next-line no-console
+        console.error(e);
+        // eslint-disable-next-line no-console
+        console.groupEnd();
+
+        throw e;
+      });
+
+    const multicallResult: MulticallResult<any> = {
+      success: true,
+      errors: {},
+      data: {},
+    };
+
+    response.forEach(({ result, status, error }, i) => {
+      const { contractKey, callKey } = originalKeys[i];
+
+      if (status === "success") {
+        let values: any;
+
+        if (Array.isArray(result) || typeof result === "object") {
+          values = result;
+        } else {
+          values = [result];
+        }
+
+        multicallResult.data[contractKey] = multicallResult.data[contractKey] || {};
+        multicallResult.data[contractKey][callKey] = {
+          contractKey,
+          callKey,
+          returnValues: values,
+          success: true,
+        };
+      } else {
+        multicallResult.success = false;
+
+        multicallResult.errors[contractKey] = multicallResult.errors[contractKey] || {};
+        multicallResult.errors[contractKey][callKey] = error;
+
+        multicallResult.data[contractKey] = multicallResult.data[contractKey] || {};
+        multicallResult.data[contractKey][callKey] = {
+          contractKey,
+          callKey,
+          returnValues: [],
+          success: false,
+          error: error,
+        };
+      }
+    });
+
+    return multicallResult;
+  }
 }

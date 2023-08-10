@@ -10,7 +10,6 @@
   justify-content: flex-end;
   padding-top: 6.2rem;
   position: relative;
-  /* height: 52.581rem; */
   padding-bottom: 6.4rem;
   background: url("img/Artwork_gmx.svg");
   background-repeat: no-repeat;
@@ -222,12 +221,12 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-column-gap: 1.5rem;
+  grid-row-gap: 1.5rem;
 }
 
 .Home-token-card-option {
   position: relative;
   padding: 2.325rem;
-  border-radius: 1.3rem;
   max-width: 59.2rem;
   background: #16182e;
   box-shadow: 0px 0.5rem 1.3rem #00000085;

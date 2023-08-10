@@ -1,56 +1,60 @@
-import React, { useState, useCallback } from "react";
 import { Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
+import { useCallback, useState } from "react";
 
-import Modal from "components/Modal/Modal";
 import Checkbox from "components/Checkbox/Checkbox";
-import Tooltip from "components/Tooltip/Tooltip";
 import Footer from "components/Footer/Footer";
+import Modal from "components/Modal/Modal";
+import Tooltip from "components/Tooltip/Tooltip";
 
-import Vault from "abis/Vault.json";
-import ReaderV2 from "abis/ReaderV2.json";
-import Vester from "abis/Vester.json";
-import RewardRouter from "abis/RewardRouter.json";
-import RewardReader from "abis/RewardReader.json";
-import Token from "abis/Token.json";
 import GlpManager from "abis/GlpManager.json";
+import ReaderV2 from "abis/ReaderV2.json";
+import RewardReader from "abis/RewardReader.json";
+import RewardRouter from "abis/RewardRouter.json";
+import Token from "abis/Token.json";
+import Vault from "abis/Vault.json";
+import Vester from "abis/Vester.json";
 
+import { ARBITRUM, getChainName, getConstant } from "config/chains";
+import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
 import { ethers } from "ethers";
 import {
   GLP_DECIMALS,
-  USD_DECIMALS,
-  BASIS_POINTS_DIVISOR,
   PLACEHOLDER_ACCOUNT,
+  USD_DECIMALS,
   getBalanceAndSupplyData,
   getDepositBalanceData,
-  getVestingData,
-  getStakingData,
-  getProcessedData,
   getPageTitle,
+  getProcessedData,
+  getStakingData,
+  getVestingData,
 } from "lib/legacy";
-import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
-import { ARBITRUM, getChainName, getConstant } from "config/chains";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 
 import useSWR from "swr";
 
 import { getContract } from "config/contracts";
 
-import "./StakeV2.css";
+import Button from "components/Button/Button";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import SEO from "components/Common/SEO";
-import StatsTooltip from "components/StatsTooltip/StatsTooltip";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { getServerUrl } from "config/backend";
-import { callContract, contractFetcher } from "lib/contracts";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { helperToast } from "lib/helperToast";
-import { approveTokens } from "domain/tokens";
-import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, formatKeyAmount, parseValue } from "lib/numbers";
-import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import GMXAprTooltip from "components/Stake/GMXAprTooltip";
-import Button from "components/Button/Button";
+import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { GmList } from "components/Synthetics/GmList/GmList";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import { getServerUrl } from "config/backend";
+import { getIsSyntheticsSupported } from "config/features";
+import { useMarketTokensData, useMarketsInfo } from "domain/synthetics/markets";
+import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
+import { approveTokens } from "domain/tokens";
+import { useChainId } from "lib/chains";
+import { callContract, contractFetcher } from "lib/contracts";
+import { helperToast } from "lib/helperToast";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, formatKeyAmount, parseValue } from "lib/numbers";
+import "./StakeV2.css";
 
 const { AddressZero } = ethers.constants;
 
@@ -160,7 +164,7 @@ function StakeModal(props) {
         <BuyInputSection
           topLeftLabel={t`Stake`}
           topRightLabel={t`Max`}
-          tokenBalance={formatAmount(maxAmount, 18, 4, true)}
+          topRightValue={formatAmount(maxAmount, 18, 4, true)}
           onClickTopRightLabel={() => setValue(formatAmountFree(maxAmount, 18, 18))}
           inputValue={value}
           onInputValueChange={(e) => setValue(e.target.value)}
@@ -273,7 +277,7 @@ function UnstakeModal(props) {
         <BuyInputSection
           topLeftLabel={t`Unstake`}
           topRightLabel={t`Max`}
-          tokenBalance={formatAmount(maxAmount, 18, 4, true)}
+          topRightValue={formatAmount(maxAmount, 18, 4, true)}
           onClickTopRightLabel={() => setValue(formatAmountFree(maxAmount, 18, 18))}
           inputValue={value}
           onInputValueChange={(e) => setValue(e.target.value)}
@@ -290,7 +294,7 @@ function UnstakeModal(props) {
           <div className="Modal-note">
             <Trans>
               Unstaking will burn&nbsp;
-              <ExternalLink className="display-inline" href="https://gmxio.gitbook.io/gmx/rewards">
+              <ExternalLink className="display-inline" href="https://docs.gmx.io/docs/tokenomics/rewards">
                 {formatAmount(burnAmount, 18, 4, true)} Multiplier Points
               </ExternalLink>
               .&nbsp;
@@ -408,7 +412,7 @@ function VesterDepositModal(props) {
           <BuyInputSection
             topLeftLabel={t`Deposit`}
             topRightLabel={t`Max`}
-            tokenBalance={formatAmount(maxAmount, 18, 4, true)}
+            topRightValue={formatAmount(maxAmount, 18, 4, true)}
             onClickTopRightLabel={() => setValue(formatAmountFree(maxAmount, 18, 18))}
             inputValue={value}
             onInputValueChange={(e) => setValue(e.target.value)}
@@ -975,6 +979,10 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     feeGlpTrackerAddress,
   ];
 
+  const { marketsInfoData, tokensData } = useMarketsInfo(chainId);
+  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
+  const { marketsTokensAPRData } = useMarketTokensAPR(chainId, { marketsInfoData, marketTokensData });
+
   const { data: walletBalances } = useSWR(
     [
       `StakeV2:walletBalances:${active}`,
@@ -1279,7 +1287,10 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
           return (
             <Trans>
               Boost your rewards with Multiplier Points.&nbsp;
-              <ExternalLink href="https://gmxio.gitbook.io/gmx/rewards#multiplier-points">More info</ExternalLink>.
+              <ExternalLink href="https://docs.gmx.io/docs/tokenomics/rewards#multiplier-points">
+                More info
+              </ExternalLink>
+              .
             </Trans>
           );
         }}
@@ -1420,8 +1431,8 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
           </div>
           <div className="Page-description">
             <Trans>
-              Stake <ExternalLink href="https://gmxio.gitbook.io/gmx/tokenomics">GMX</ExternalLink> and{" "}
-              <ExternalLink href="https://gmxio.gitbook.io/gmx/glp">GLP</ExternalLink> to earn rewards.
+              Stake <ExternalLink href="https://docs.gmx.io/docs/tokenomics/gmx-token">GMX</ExternalLink> and{" "}
+              <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v1">GLP</ExternalLink> to earn rewards.
             </Trans>
           </div>
           {earnMsg && <div className="Page-description">{earnMsg}</div>}
@@ -1582,7 +1593,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                         ` ($${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)})`
                       }
                       renderContent={() => (
-                        <StatsTooltip
+                        <ChainsStatsTooltipRow
                           showDollar={false}
                           title={t`Staked`}
                           avaxValue={avaxGmxStaked}
@@ -1946,6 +1957,18 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         </div>
       </div>
 
+      {getIsSyntheticsSupported(chainId) && (
+        <div className="StakeV2-section">
+          <GmList
+            marketsTokensAPRData={marketsTokensAPRData}
+            marketTokensData={marketTokensData}
+            marketsInfoData={marketsInfoData}
+            tokensData={tokensData}
+            shouldScrollToTop
+          />
+        </div>
+      )}
+
       <div>
         <div className="Tab-title-section">
           <div className="Page-title">
@@ -1956,8 +1979,10 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               Convert esGMX tokens to GMX tokens.
               <br />
               Please read the{" "}
-              <ExternalLink href="https://gmxio.gitbook.io/gmx/rewards#vesting">vesting details</ExternalLink> before
-              using the vaults.
+              <ExternalLink href="https://docs.gmx.io/docs/tokenomics/rewards#vesting">
+                vesting details
+              </ExternalLink>{" "}
+              before using the vaults.
             </Trans>
           </div>
         </div>

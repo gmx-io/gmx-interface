@@ -1,5 +1,5 @@
 import { BigNumber } from "ethers";
-import { BASIS_POINTS_DIVISOR } from "../legacy";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { formatAmount } from "lib/numbers";
 
 type GetLeverageParams = {

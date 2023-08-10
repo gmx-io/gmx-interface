@@ -18,6 +18,7 @@ import { useChainId } from "./chains";
 import { isValidTimestamp } from "./dates";
 import { t } from "@lingui/macro";
 import { isLocal } from "config/env";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 
 const { AddressZero } = ethers.constants;
 
@@ -27,10 +28,6 @@ export const PLACEHOLDER_ACCOUNT = ethers.Wallet.createRandom().address;
 export const MIN_PROFIT_TIME = 0;
 
 export const USDG_ADDRESS = getContract(CHAIN_ID, "USDG");
-
-export const BASIS_POINTS_DIVISOR = 10000;
-export const MAX_LEVERAGE = 100 * BASIS_POINTS_DIVISOR;
-export const MAX_ALLOWED_LEVERAGE = 50 * BASIS_POINTS_DIVISOR;
 
 export const MAX_PRICE_DEVIATION_BASIS_POINTS = 750;
 export const DEFAULT_GAS_LIMIT = 1 * 1000 * 1000;
@@ -72,9 +69,6 @@ export const STOP = "Stop";
 export const LEVERAGE_ORDER_OPTIONS = [MARKET, LIMIT, STOP];
 export const SWAP_ORDER_OPTIONS = [MARKET, LIMIT];
 export const SWAP_OPTIONS = [LONG, SHORT, SWAP];
-export const DEFAULT_SLIPPAGE_AMOUNT = 30;
-export const DEFAULT_HIGHER_SLIPPAGE_AMOUNT = 100;
-
 export const REFERRAL_CODE_QUERY_PARAM = "ref";
 export const MAX_REFERRAL_CODE_LENGTH = 20;
 
@@ -953,6 +947,7 @@ export function isMobileDevice(navigator) {
 }
 
 export const CHART_PERIODS = {
+  "1m": 60,
   "5m": 60 * 5,
   "15m": 60 * 15,
   "1h": 60 * 60,
@@ -1318,11 +1313,6 @@ export function getOrderError(account, order, positionsMap, position) {
       return t`Order cannot be executed as the remaining position would be smaller than $5.00`;
     }
   }
-}
-
-export function arrayURLFetcher(...urlArr) {
-  const fetcher = (url) => fetch(url).then((res) => res.json());
-  return Promise.all(urlArr.map(fetcher));
 }
 
 export function shouldShowRedirectModal(timestamp) {

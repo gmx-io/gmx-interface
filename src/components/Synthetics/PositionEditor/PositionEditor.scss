@@ -1,0 +1,24 @@
+.PositionEditor-tabs {
+  margin-top: 0 !important;
+
+  .Tab {
+    margin-top: 0 !important;
+  }
+}
+
+.PositionEditor-modal {
+  .Modal-body {
+    overflow-x: hidden;
+  }
+}
+
+.Edit-collateral-token-selector {
+  .Modal {
+    .Modal-content {
+      width: 38rem;
+      max-height: 80vh;
+      top: auto;
+      bottom: auto;
+    }
+  }
+}
