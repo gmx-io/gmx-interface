@@ -4,21 +4,21 @@ import { Dropdown, DropdownOption } from "components/Dropdown/Dropdown";
 import TVChartContainer, { ChartLine } from "components/TVChartContainer/TVChartContainer";
 import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 import { convertTokenAddress, getPriceDecimals, getToken, isChartAvailabeForToken } from "config/tokens";
+import { SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { OrdersInfoData, PositionOrderInfo, isIncreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import { PositionsInfoData } from "domain/synthetics/positions";
 import { TokensData, getTokenData } from "domain/synthetics/tokens";
 import { use24hPriceDelta } from "domain/synthetics/tokens/use24PriceDelta";
+import { useOracleKeeperFetcher } from "domain/synthetics/tokens/useOracleKeeperFetcher";
 import { SyntheticsTVDataProvider } from "domain/synthetics/tradingview/SyntheticsTVDataProvider";
 import { Token } from "domain/tokens";
-import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatUsd, numberWithCommas } from "lib/numbers";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useMedia } from "react-use";
 import "./TVChart.scss";
-import { SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 
 export type Props = {
   ordersInfo?: OrdersInfoData;
@@ -50,6 +50,8 @@ export function TVChart({
   const { chainId } = useChainId();
   const isMobile = useMedia("(max-width: 768px)");
   const isSmallMobile = useMedia("(max-width: 470px)");
+  const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
+  const [dataProvider, setDataProvider] = useState<SyntheticsTVDataProvider>();
 
   let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period-v2"], DEFAULT_PERIOD);
 
@@ -57,7 +59,6 @@ export function TVChart({
     period = DEFAULT_PERIOD;
   }
 
-  const dataProvider = useRef<TVDataProvider>();
   const chartToken = getTokenData(tokensData, chartTokenAddress);
 
   const tokenOptions: DropdownOption[] =
@@ -149,8 +150,9 @@ export function TVChart({
   }
 
   useEffect(() => {
-    dataProvider.current = new SyntheticsTVDataProvider({ resolutions: SUPPORTED_RESOLUTIONS_V2 });
-  }, []);
+    setDataProvider(undefined);
+    setDataProvider(new SyntheticsTVDataProvider({ resolutions: SUPPORTED_RESOLUTIONS_V2, oracleKeeperFetcher }));
+  }, [oracleKeeperFetcher]);
 
   useEffect(
     function updatePeriod() {
@@ -232,7 +234,7 @@ export function TVChart({
             symbol={chartToken.symbol}
             chainId={chainId}
             onSelectToken={onSelectChartToken}
-            dataProvider={dataProvider.current}
+            dataProvider={dataProvider}
             period={period}
             setPeriod={setPeriod}
             chartToken={{

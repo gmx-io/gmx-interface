@@ -2,8 +2,8 @@ import { getToken, getV2Tokens, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "co
 import { USD_DECIMALS } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
 import useSWR from "swr";
-import { fetchTickers } from "./oracleKeeperRequests";
 import { TokenPricesData } from "./types";
+import { useOracleKeeperFetcher } from "./useOracleKeeperFetcher";
 import { parseOraclePrice } from "./utils";
 
 type TokenPricesDataResult = {
@@ -12,9 +12,11 @@ type TokenPricesDataResult = {
 };
 
 export function useTokenRecentPrices(chainId: number): TokenPricesDataResult {
-  const { data } = useSWR([chainId, "useTokenRecentPrices"], {
+  const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
+
+  const { data } = useSWR([chainId, oracleKeeperFetcher.oracleKeeperUrl, "useTokenRecentPrices"], {
     fetcher: (chainId) =>
-      fetchTickers(chainId).then((priceItems) => {
+      oracleKeeperFetcher.fetchTickers().then((priceItems) => {
         const result: TokenPricesData = {};
 
         priceItems.forEach((priceItem) => {

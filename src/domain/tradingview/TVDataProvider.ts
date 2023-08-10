@@ -38,6 +38,7 @@ export class TVDataProvider {
     ticker: string;
     isChartReady: boolean;
   };
+  shouldResetCache: boolean = false;
 
   constructor({ resolutions }) {
     const { lastBar, currentBar, lastBarRefreshTime, barsInfo, chartTokenInfo } = initialState;
@@ -47,6 +48,10 @@ export class TVDataProvider {
     this.barsInfo = barsInfo;
     this.supportedResolutions = resolutions;
     this.chartTokenInfo = chartTokenInfo;
+  }
+
+  resetCache() {
+    this.shouldResetCache = true;
   }
 
   async getLimitBars(chainId: number, ticker: string, period: string, limit: number): Promise<Bar[]> {
@@ -69,7 +74,7 @@ export class TVDataProvider {
     periodParams: PeriodParams
   ): Promise<Bar[]> {
     const barsInfo = this.barsInfo;
-    if (!barsInfo.data.length || barsInfo.ticker !== ticker || barsInfo.period !== period) {
+    if (this.shouldResetCache || !barsInfo.data.length || barsInfo.ticker !== ticker || barsInfo.period !== period) {
       try {
         const bars = await this.getTokenChartPrice(chainId, ticker, period);
         const filledBars = fillBarGaps(bars, CHART_PERIODS[period]);
@@ -81,10 +86,12 @@ export class TVDataProvider {
         this.barsInfo.data = filledBars;
         this.barsInfo.ticker = ticker;
         this.barsInfo.period = period;
+        this.shouldResetCache = false;
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error(error);
         this.barsInfo = initialState.barsInfo;
+        this.shouldResetCache = false;
       }
     }
 
