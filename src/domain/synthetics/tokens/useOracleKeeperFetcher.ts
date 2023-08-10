@@ -57,6 +57,8 @@ function updateOracleKeeperUrl(chainId: number) {
   localStorage.setItem(getOracleKeeperUrlKey(chainId), nextUrl);
 }
 
+let count = 0;
+
 export function useOracleKeeperFetcher(chainId: number) {
   const oracleKeeperUrl = getCurrentOracleKeeperUrl(chainId);
 
@@ -67,6 +69,13 @@ export function useOracleKeeperFetcher(chainId: number) {
         .then((res) => {
           if (!res.length) {
             throw new Error("Invalid tickers response");
+          }
+
+          count++;
+
+          if (count > 3) {
+            throw new Error("Invalid tickers response");
+            count = 0;
           }
 
           return res;
@@ -104,6 +113,10 @@ export function useOracleKeeperFetcher(chainId: number) {
         .then((res) => {
           if (!Array.isArray(res.candles) || (res.candles.length === 0 && limit > 0)) {
             throw new Error("Invalid candles response");
+          }
+
+          if (oracleKeeperUrl.includes("-2")) {
+            return res.candles.map(parseOracleCandle).reverse();
           }
 
           return res.candles.map(parseOracleCandle);
