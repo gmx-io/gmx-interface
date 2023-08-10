@@ -38,6 +38,16 @@ export function OrderStatusNotification({ pendingOrderData, marketsInfoData, tok
   const pendingOrderKey = useMemo(() => getPendingOrderKey(pendingOrderData), [pendingOrderData]);
   const orderStatus = getByKey(orderStatuses, orderStatusKey);
 
+  // eslint-disable-next-line no-console
+  console.log("OrderNotification", {
+    toastTimestamp,
+    pendingOrderData,
+    orderStatus,
+    pendingOrderKey,
+    orderStatusKey,
+    orderStatuses,
+  });
+
   const isCompleted = isMarketOrderType(pendingOrderData.orderType)
     ? Boolean(orderStatus?.executedTxnHash)
     : Boolean(orderStatus?.createdTxnHash);
@@ -173,10 +183,20 @@ export function OrderStatusNotification({ pendingOrderData, marketsInfoData, tok
         return;
       }
 
-      const matchedStatusKey = Object.values(orderStatuses).find(
-        (orderStatus) =>
-          orderStatus.createdAt > toastTimestamp && getPendingOrderKey(orderStatus.data) === pendingOrderKey
-      )?.key;
+      const matchedStatusKey = Object.values(orderStatuses).find((orderStatus) => {
+        // eslint-disable-next-line no-console
+        console.log(
+          "trymatch",
+          orderStatus.createdAt > toastTimestamp,
+          orderStatus.createdAt,
+          toastTimestamp,
+          getPendingOrderKey(orderStatus.data),
+          pendingOrderKey,
+          getPendingOrderKey(orderStatus.data) === pendingOrderKey
+        );
+
+        return getPendingOrderKey(orderStatus.data) === pendingOrderKey;
+      })?.key;
 
       if (matchedStatusKey) {
         setOrderStatusKey(matchedStatusKey);
