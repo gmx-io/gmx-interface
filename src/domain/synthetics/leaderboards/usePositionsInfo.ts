@@ -2,94 +2,93 @@
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import { getContract } from "config/contracts";
 import { BigNumber, ethers } from "ethers";
-import { useMulticall } from "lib/multicall";
-import { useRef } from "react";
-import { PositionsData, getPositionKey, useOptimisticPositions } from "../positions";
+import { PositionsData, getPositionKey } from "../positions";
 import { ContractMarketPrices } from "../markets";
+import useSWR from "swr";
+import { useWeb3React } from "@web3-react/core";
 
 type PositionsResult = {
-  positionsData?: PositionsData;
-  allPossiblePositionsKeys?: string[];
+  isLoading: boolean;
+  data: PositionsData;
+  error: Error | null;
 };
+
+const parsePositionsInfo = (positionKeys: string[], positions: { [key: string]: any, [key: number]: any }[]) => (
+  positions.reduce((positionsMap: PositionsData, positionInfo, i) => {
+    const { position, fees } = positionInfo;
+    const { addresses, numbers, flags, data } = position;
+    const { account, market: marketAddress, collateralToken: collateralTokenAddress } = addresses;
+
+    // Empty position
+    if (BigNumber.from(numbers.increasedAtBlock).eq(0)) {
+      return positionsMap;
+    }
+
+    const positionKey = getPositionKey(account, marketAddress, collateralTokenAddress, flags.isLong);
+    const contractPositionKey = positionKeys[i];
+
+    positionsMap[positionKey] = {
+      key: positionKey,
+      contractKey: contractPositionKey,
+      account,
+      marketAddress,
+      collateralTokenAddress,
+      sizeInUsd: BigNumber.from(numbers.sizeInUsd),
+      sizeInTokens: BigNumber.from(numbers.sizeInTokens),
+      collateralAmount: BigNumber.from(numbers.collateralAmount),
+      increasedAtBlock: BigNumber.from(numbers.increasedAtBlock),
+      decreasedAtBlock: BigNumber.from(numbers.decreasedAtBlock),
+      isLong: flags.isLong,
+      pendingBorrowingFeesUsd: BigNumber.from(fees.borrowing.borrowingFeeUsd),
+      fundingFeeAmount: BigNumber.from(fees.funding.fundingFeeAmount),
+      claimableLongTokenAmount: BigNumber.from(fees.funding.claimableLongTokenAmount),
+      claimableShortTokenAmount: BigNumber.from(fees.funding.claimableShortTokenAmount),
+      data,
+    };
+
+    return positionsMap;
+  },
+  {} as PositionsData
+));
 
 export function usePositionsInfo(
   chainId: number,
   positionKeys: string[],
   marketPrices: ContractMarketPrices[],
-  pricesUpdatedAt?: number,
 ): PositionsResult {
-  const positionsDataCache = useRef<PositionsData>();
-  const { data: positionsData } = useMulticall(chainId, "usePositionsData", {
-    key: positionKeys.length ? [positionKeys.join("-"), pricesUpdatedAt] : null,
-    refreshInterval: null, // Refresh on every prices update
-    request: () => ({
-      reader: {
-        contractAddress: getContract(chainId, "SyntheticsReader"),
-        abi: SyntheticsReader.abi,
-        calls: {
-          positions: {
-            methodName: "getAccountPositionInfoList",
-            params: [
-              getContract(chainId, "DataStore"),
-              getContract(chainId, "ReferralStorage"),
-              positionKeys,
-              marketPrices,
-              ethers.constants.AddressZero, // uiFeeReceiver
-            ],
-          },
-        },
-      },
-    }),
-    parseResponse: (res) => {
-      const positions = res.data.reader.positions.returnValues;
+  const { library } = useWeb3React();
+  const keys = [...positionKeys].sort((a, b) => a < b ? -1 : 1).join("-");
+  const method = "getAccountPositionInfoList";
+  const contractName = "SyntheticsReader";
+  const { data, error } = useSWR<PositionsData>([
+    chainId,
+    contractName,
+    method,
+    keys
+  ], async () => {
+    if (!positionKeys.length) {
+      return {};
+    }
+    if (positionKeys.length !== marketPrices.length) {
+      throw new Error("The numbers of market prices and position keys do not match");
+    }
 
-      return positions.reduce((positionsMap: PositionsData, positionInfo, i) => {
-        const { position, fees } = positionInfo;
-        const { addresses, numbers, flags, data } = position;
-        const { account, market: marketAddress, collateralToken: collateralTokenAddress } = addresses;
+    const contract = new ethers.Contract(
+      getContract(chainId, contractName),
+      SyntheticsReader.abi,
+      library.getSigner()
+    );
 
-        // Empty position
-        if (BigNumber.from(numbers.increasedAtBlock).eq(0)) {
-          return positionsMap;
-        }
+    const args = [
+      getContract(chainId, "DataStore"),
+      getContract(chainId, "ReferralStorage"),
+      positionKeys,
+      marketPrices,
+      ethers.constants.AddressZero, // uiFeeReceiver
+    ];
 
-        const positionKey = getPositionKey(account, marketAddress, collateralTokenAddress, flags.isLong);
-        const contractPositionKey = positionKeys[i];
-
-        positionsMap[positionKey] = {
-          key: positionKey,
-          contractKey: contractPositionKey,
-          account,
-          marketAddress,
-          collateralTokenAddress,
-          sizeInUsd: BigNumber.from(numbers.sizeInUsd),
-          sizeInTokens: BigNumber.from(numbers.sizeInTokens),
-          collateralAmount: BigNumber.from(numbers.collateralAmount),
-          increasedAtBlock: BigNumber.from(numbers.increasedAtBlock),
-          decreasedAtBlock: BigNumber.from(numbers.decreasedAtBlock),
-          isLong: flags.isLong,
-          pendingBorrowingFeesUsd: BigNumber.from(fees.borrowing.borrowingFeeUsd),
-          fundingFeeAmount: BigNumber.from(fees.funding.fundingFeeAmount),
-          claimableLongTokenAmount: BigNumber.from(fees.funding.claimableLongTokenAmount),
-          claimableShortTokenAmount: BigNumber.from(fees.funding.claimableShortTokenAmount),
-          data,
-        };
-
-        return positionsMap;
-      }, {} as PositionsData);
-    },
+    return parsePositionsInfo(positionKeys, await contract[method](...args)) as PositionsData ;
   });
 
-  if (positionsData) {
-    positionsDataCache.current = positionsData;
-  }
-
-  const optimisticPositionsData = useOptimisticPositions({
-    positionsData: positionsDataCache.current,
-    allPositionsKeys: positionKeys,
-  });
-
-  return {
-    positionsData: optimisticPositionsData,
-  };
+  return { isLoading: !data, data: data || {}, error: error || null };
 }

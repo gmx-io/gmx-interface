@@ -5,7 +5,7 @@ import { expandDecimals } from "lib/numbers";
 import { USD_DECIMALS } from "lib/legacy";
 import { usePositionsInfo } from "./usePositionsInfo";
 import { useChainId } from "lib/chains";
-import { useMarketsInfo } from "../markets";
+import { Position } from "../positions";
 
 const defaultSummary = (account: string): AccountPositionsSummary => ({
   account,
@@ -21,7 +21,7 @@ const defaultSummary = (account: string): AccountPositionsSummary => ({
   positions: [],
 });
 
-const groupPositionsByAccount = (positions: Array<PositionScores>): PositionsSummaryByAccount => {
+const groupPositionsByAccount = (positions: Array<PositionScores & { data?: Position }>): PositionsSummaryByAccount => {
   const groupBy: PositionsSummaryByAccount = {};
 
   for (const p of positions) {
@@ -52,24 +52,25 @@ export function useTopAccounts(period: PerfPeriod) {
   const accountPerf = useAccountPerf(period);
   const { chainId } = useChainId();
   const positions = usePositionScores();
-  const { pricesUpdatedAt } = useMarketsInfo(chainId);
-  const positionsInfo = usePositionsInfo(
+  const positionsData = usePositionsInfo(
     chainId,
-    positions.isLoading || positions.error ? [] : positions.data.map(p => p.id),
-    positions.isLoading || positions.error ? [] : positions.data.map(p => p.contractMarketPrices),
-    pricesUpdatedAt
+    (positions.data || []).map(p => p.id),
+    (positions.data || []).map(p => p.contractMarketPrices),
   );
 
-  console.log({positions, positionsInfo});
-
-  if (accountPerf.error || positions.error) {
+  if (accountPerf.error || positions.error || positionsData.error) {
     return { data: [], isLoading: false, error: accountPerf.error || positions.error };
   } else if (accountPerf.isLoading || positions.isLoading) {
     return { data: [], isLoading: true, error: null };
   }
 
+  const positionsWithData: Array<PositionScores & { data?: Position }> = [];
+  for (const p of positions.data) {
+    positionsWithData.push({...p, data: positionsData[p.id] as Position});
+  }
+
   const data: Array<AccountScores> = []
-  const openPositionsByAccount: Record<string, AccountPositionsSummary> = groupPositionsByAccount(positions.data);
+  const openPositionsByAccount: Record<string, AccountPositionsSummary> = groupPositionsByAccount(positionsWithData);
 
   for (let i = 0; i < accountPerf.data.length; i++) {
     const perf = accountPerf.data[i];
