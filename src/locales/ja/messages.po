@@ -1021,6 +1021,7 @@ msgstr "接続"
 #: src/components/Referrals/AddAffiliateCode.js
 #: src/components/Referrals/JoinReferralCode.js
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -1034,8 +1035,8 @@ msgid "Connect Wallet"
 msgstr "ウォレット接続"
 
 #: src/domain/synthetics/trade/utils/validation.ts
-msgid "Connect wallet"
-msgstr ""
+#~ msgid "Connect wallet"
+#~ msgstr ""
 
 #: src/lib/wallets/index.tsx
 msgid "Connected to {0}"
