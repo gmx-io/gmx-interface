@@ -42,7 +42,7 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
 
       const marketFeesQuery = (marketAddress: string, tokenAddress: string) => `
             _${marketAddress}_${tokenAddress}: collectedMarketFeesInfos(
-               where: { 
+               where: {
                     marketAddress: "${marketAddress.toLowerCase()}",
                     tokenAddress: "${tokenAddress.toLowerCase()}",
                     period: "1h",
@@ -88,7 +88,7 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
         if (marketToken.totalSupply?.gt(0)) {
           const feesPerMarketToken = feesUsdForPeriod.mul(expandDecimals(1, 18)).div(marketToken.totalSupply);
           const weeksInYear = 52;
-          const apr = feesPerMarketToken.mul(BASIS_POINTS_DIVISOR).div(marketToken.prices.minPrice).mul(weeksInYear);
+          const apr = feesPerMarketToken.mul(BASIS_POINTS_DIVISOR).mul(weeksInYear).div(marketToken.prices.minPrice);
 
           acc[marketAddress] = apr;
         } else {

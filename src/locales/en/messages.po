@@ -1853,10 +1853,6 @@ msgstr "GM Token pricing includes positions' Pending PnL, Impact Pool Amount and
 msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 67% of the V2 markets generated fees."
 msgstr "GM is the liquidity provider token for GMX V2 markets. Accrues 67% of the V2 markets generated fees."
 
-#: src/components/TokenCard/TokenCard.js
-#~ msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 70% of the V2 markets generated fees."
-#~ msgstr "GM is the liquidity provider token for GMX V2 markets. Accrues 70% of the V2 markets generated fees."
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX Announcements and Updates"
 msgstr "GMX Announcements and Updates"
@@ -4368,10 +4364,6 @@ msgstr "This position was liquidated as the max leverage of 100x was exceeded."
 #: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 msgid "This position was liquidated as the max leverage of {maxLeverageText} was exceeded."
 msgstr "This position was liquidated as the max leverage of {maxLeverageText} was exceeded."
-
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
-#~ msgid "This position was liquidated as the max leverage of {maxLeverageText} was exceeded.`"
-#~ msgstr "This position was liquidated as the max leverage of {maxLeverageText} was exceeded.`"
 
 #: src/pages/Home/Home.js
 msgid "Three tokens create our ecosystem"

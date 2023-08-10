@@ -183,7 +183,14 @@ export function TradeBox(p: Props) {
     switchTokenAddresses,
   } = p;
   const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket } = tradeFlags;
-  const { swapTokens, indexTokens, infoTokens } = avaialbleTokenOptions;
+  const {
+    swapTokens,
+    indexTokens,
+    infoTokens,
+    sortedIndexTokensWithPoolValue,
+    sortedLongAndShortTokens,
+    sortedAllMarkets,
+  } = avaialbleTokenOptions;
 
   const tradeTypeLabels = useMemo(() => {
     return {
@@ -591,7 +598,7 @@ export function TradeBox(p: Props) {
     hasExistingOrder: Boolean(existingOrder),
     hasExistingPosition: Boolean(existingPosition),
   });
-  const { availableMarkets, allMarkets } = marketsOptions;
+  const { availableMarkets } = marketsOptions;
 
   const availableCollaterals = useMemo(() => {
     if (!marketInfo) {
@@ -947,6 +954,7 @@ export function TradeBox(p: Props) {
               className="GlpSwap-from-token"
               showSymbolImage={true}
               showTokenImgInDropdown={true}
+              extendedSortSequence={sortedLongAndShortTokens}
             />
           )}
         </BuyInputSection>
@@ -984,6 +992,7 @@ export function TradeBox(p: Props) {
                 showSymbolImage={true}
                 showBalances={true}
                 showTokenImgInDropdown={true}
+                extendedSortSequence={sortedLongAndShortTokens}
               />
             )}
           </BuyInputSection>
@@ -1018,6 +1027,7 @@ export function TradeBox(p: Props) {
                 showSymbolImage={true}
                 showBalances={false}
                 showTokenImgInDropdown={true}
+                extendedSortSequence={sortedIndexTokensWithPoolValue}
               />
             )}
           </BuyInputSection>
@@ -1116,7 +1126,7 @@ export function TradeBox(p: Props) {
               label={t`Market`}
               className="SwapBox-info-dropdown"
               selectedIndexName={toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined}
-              markets={allMarkets || []}
+              markets={sortedAllMarkets || []}
               isSideMenu
               onSelectMarket={(indexName, marketInfo) => onSelectToTokenAddress(marketInfo.indexToken.address)}
             />
