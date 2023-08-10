@@ -49,20 +49,22 @@ export function getCurrentOracleKeeperIndex(chainId: number) {
   return index;
 }
 
+function updateOracleKeeperUrl(chainId: number, currentIndex: number) {
+  const nextIndex = getOracleKeeperRandomIndex(chainId, [currentIndex]);
+
+  // eslint-disable-next-line no-console
+  console.log(`switch oracle keeper to ${getOracleKeeperUrl(chainId, nextIndex)}`);
+
+  localStorage.setItem(getOracleKeeperUrlKey(chainId), String(nextIndex));
+}
+
 export function useOracleKeeperFetcher(chainId: number) {
   const oracleKeeperIndex = getCurrentOracleKeeperIndex(chainId);
   const oracleKeeperUrl = getOracleKeeperUrl(chainId, oracleKeeperIndex);
 
+  console.log("render wtf");
+
   return useMemo(() => {
-    function updateOracleKeeperUrl() {
-      const nextIndex = getOracleKeeperRandomIndex(chainId, [oracleKeeperIndex]);
-
-      // eslint-disable-next-line no-console
-      console.log(`switch oracle keeper to ${getOracleKeeperUrl(chainId, nextIndex)}`);
-
-      localStorage.setItem(getOracleKeeperUrlKey(chainId), String(nextIndex));
-    }
-
     function fetchTickers(): Promise<TickersResponse> {
       return fetch(buildUrl(oracleKeeperUrl!, "/prices/tickers"))
         .then((res) => res.json())
@@ -71,12 +73,17 @@ export function useOracleKeeperFetcher(chainId: number) {
             throw new Error("Invalid tickers response");
           }
 
+          const brokenOracleIndex = localStorage.getItem("broken-oracle-index");
+          if (brokenOracleIndex && Number(brokenOracleIndex) === oracleKeeperIndex) {
+            throw new Error("Invalid tickers response");
+          }
+
           return res;
         })
         .catch((e) => {
           // eslint-disable-next-line no-console
           console.error(e);
-          updateOracleKeeperUrl();
+          updateOracleKeeperUrl(chainId, oracleKeeperIndex);
 
           throw e;
         });
@@ -95,7 +102,7 @@ export function useOracleKeeperFetcher(chainId: number) {
         .catch((e) => {
           // eslint-disable-next-line no-console
           console.error(e);
-          updateOracleKeeperUrl();
+          updateOracleKeeperUrl(chainId, oracleKeeperIndex);
           throw e;
         });
     }
@@ -113,7 +120,7 @@ export function useOracleKeeperFetcher(chainId: number) {
         .catch((e) => {
           // eslint-disable-next-line no-console
           console.error(e);
-          updateOracleKeeperUrl();
+          updateOracleKeeperUrl(chainId, oracleKeeperIndex);
           throw e;
         });
     }
