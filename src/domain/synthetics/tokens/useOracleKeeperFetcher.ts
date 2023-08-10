@@ -1,5 +1,5 @@
 import { getOracleKeeperUrlKey } from "config/localStorage";
-import { getOracleKeeperRandomUrl } from "config/oracleKeeper";
+import { getOracleKeeperRandomIndex, getOracleKeeperUrl } from "config/oracleKeeper";
 import { timezoneOffset } from "domain/prices";
 import { Bar } from "domain/tradingview/types";
 import { buildUrl } from "lib/buildUrl";
@@ -36,31 +36,31 @@ function parseOracleCandle(rawCandle: number[]): Bar {
   };
 }
 
-export function getCurrentOracleKeeperUrl(chainId: number) {
-  let url = localStorage.getItem(getOracleKeeperUrlKey(chainId));
+export function getCurrentOracleKeeperIndex(chainId: number) {
+  let index = Number(localStorage.getItem(getOracleKeeperUrlKey(chainId)));
 
-  if (!url) {
-    url = getOracleKeeperRandomUrl(chainId);
-    localStorage.setItem(getOracleKeeperUrlKey(chainId), url);
+  if (Number.isNaN(index)) {
+    index = getOracleKeeperRandomIndex(chainId);
+    localStorage.setItem(getOracleKeeperUrlKey(chainId), String(index));
   }
 
-  return url;
-}
-
-function updateOracleKeeperUrl(chainId: number) {
-  const currentUrl = getCurrentOracleKeeperUrl(chainId);
-  const nextUrl = getOracleKeeperRandomUrl(chainId, [currentUrl]);
-
-  // eslint-disable-next-line no-console
-  console.log(`switch oracle keeper to ${nextUrl}`);
-
-  localStorage.setItem(getOracleKeeperUrlKey(chainId), nextUrl);
+  return index;
 }
 
 export function useOracleKeeperFetcher(chainId: number) {
-  const oracleKeeperUrl = getCurrentOracleKeeperUrl(chainId);
+  const oracleKeeperIndex = getCurrentOracleKeeperIndex(chainId);
+  const oracleKeeperUrl = getOracleKeeperUrl(chainId, oracleKeeperIndex);
 
   return useMemo(() => {
+    function updateOracleKeeperUrl(chainId: number) {
+      const nextIndex = getOracleKeeperRandomIndex(chainId, [oracleKeeperIndex]);
+
+      // eslint-disable-next-line no-console
+      console.log(`switch oracle keeper to ${getOracleKeeperUrl(chainId, nextIndex)}`);
+
+      localStorage.setItem(getOracleKeeperUrlKey(chainId), String(nextIndex));
+    }
+
     function fetchTickers(): Promise<TickersResponse> {
       return fetch(buildUrl(oracleKeeperUrl!, "/prices/tickers"))
         .then((res) => res.json())
@@ -122,5 +122,5 @@ export function useOracleKeeperFetcher(chainId: number) {
       fetch24hPrices,
       fetchOracleCandles,
     };
-  }, [chainId, oracleKeeperUrl]);
+  }, [chainId, oracleKeeperIndex, oracleKeeperUrl]);
 }

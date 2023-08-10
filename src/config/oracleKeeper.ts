@@ -13,16 +13,28 @@ const ORACLE_KEEPER_URLS = {
   default: ["https://gmx-oracle-keeper-ro-avax-fuji-d4il9.ondigitalocean.app"],
 };
 
-export function getOracleKeeperRandomUrl(chainId: number, bannedUrls?: string[]): string {
+export function getOracleKeeperUrl(chainId: number, index: number) {
+  const urls = ORACLE_KEEPER_URLS[chainId] || ORACLE_KEEPER_URLS.default;
+
+  if (index > urls.length - 1) {
+    return urls[0];
+  }
+
+  return urls[index];
+}
+
+export function getOracleKeeperRandomIndex(chainId: number, bannedIndexes?: number[]): number {
   let urls = ORACLE_KEEPER_URLS[chainId] || ORACLE_KEEPER_URLS.default;
 
-  if (bannedUrls?.length) {
-    const filteredUrls = urls.filter((url) => !bannedUrls.includes(url));
+  if (bannedIndexes?.length) {
+    const filteredUrls = urls.filter((url, i) => !bannedIndexes.includes(i));
 
     if (filteredUrls.length) {
       urls = filteredUrls;
     }
   }
 
-  return sample(urls);
+  const url = sample(urls);
+
+  return urls.indexOf(url);
 }
