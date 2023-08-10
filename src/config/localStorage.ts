@@ -39,7 +39,7 @@ export const REQUIRED_UI_VERSION_KEY = "required-ui-version";
 export const getSubgraphUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
 
 export function getOracleKeeperUrlKey(chainId: number) {
-  return `${chainId}:${ORACLE_KEEPER_URL_KEY}`;
+  return [chainId, ORACLE_KEEPER_URL_KEY];
 }
 
 export function getSyntheticsDepositIndexTokenKey(chainId: number) {

@@ -1,10 +1,16 @@
 import { isDevelopment } from "config/env";
-import { SHOW_DEBUG_VALUES_KEY, getAllowedSlippageKey, getExecutionFeeBufferBpsKey } from "config/localStorage";
+import {
+  SHOW_DEBUG_VALUES_KEY,
+  getAllowedSlippageKey,
+  getExecutionFeeBufferBpsKey,
+  getOracleKeeperUrlKey,
+} from "config/localStorage";
 import { useChainId } from "lib/chains";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { ReactNode, createContext, useContext, useEffect, useMemo } from "react";
 import { EXECUTION_FEE_CONFIG_V2 } from "config/chains";
+import { getOracleKeeperRandomIndex } from "config/oracleKeeper";
 
 export type SettingsContextType = {
   showDebugValues: boolean;
@@ -14,6 +20,8 @@ export type SettingsContextType = {
   setExecutionFeeBufferBps: (val: number) => void;
   executionFeeBufferBps: number | undefined;
   shouldUseExecutionFeeBuffer: boolean;
+  oracleKeeperUrlIndex: number;
+  setOracleKeeperUrlIndex: (index: number) => void;
 };
 
 export const SettingsContext = createContext({});
@@ -35,6 +43,11 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     EXECUTION_FEE_CONFIG_V2[chainId]?.defaultBufferBps
   );
 
+  const [oracleKeeperUrlIndex, setOracleKeeperUrlIndex] = useLocalStorageSerializeKey(
+    getOracleKeeperUrlKey(chainId),
+    getOracleKeeperRandomIndex(chainId)
+  );
+
   const shouldUseExecutionFeeBuffer = Boolean(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps);
 
   useEffect(() => {
@@ -52,6 +65,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       executionFeeBufferBps,
       setExecutionFeeBufferBps,
       shouldUseExecutionFeeBuffer,
+      oracleKeeperUrlIndex: oracleKeeperUrlIndex!,
+      setOracleKeeperUrlIndex,
     };
   }, [
     showDebugValues,
@@ -61,6 +76,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     executionFeeBufferBps,
     setExecutionFeeBufferBps,
     shouldUseExecutionFeeBuffer,
+    oracleKeeperUrlIndex,
+    setOracleKeeperUrlIndex,
   ]);
 
   return <SettingsContext.Provider value={contextState}>{children}</SettingsContext.Provider>;

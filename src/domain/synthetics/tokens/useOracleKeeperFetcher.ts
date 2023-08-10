@@ -1,5 +1,5 @@
-import { getOracleKeeperUrlKey } from "config/localStorage";
-import { getOracleKeeperRandomUrl } from "config/oracleKeeper";
+import { getOracleKeeperRandomIndex, getOracleKeeperUrl } from "config/oracleKeeper";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { timezoneOffset } from "domain/prices";
 import { Bar } from "domain/tradingview/types";
 import { buildUrl } from "lib/buildUrl";
@@ -36,33 +36,21 @@ function parseOracleCandle(rawCandle: number[]): Bar {
   };
 }
 
-export function getCurrentOracleKeeperUrl(chainId: number) {
-  let url = localStorage.getItem(getOracleKeeperUrlKey(chainId));
-
-  if (!url) {
-    url = getOracleKeeperRandomUrl(chainId);
-    localStorage.setItem(getOracleKeeperUrlKey(chainId), url);
-  }
-
-  return url;
-}
-
-function updateOracleKeeperUrl(chainId: number) {
-  const currentUrl = getCurrentOracleKeeperUrl(chainId);
-  const nextUrl = getOracleKeeperRandomUrl(chainId, [currentUrl]);
-
-  // eslint-disable-next-line no-console
-  console.log(`switch oracle keeper to ${nextUrl}`);
-
-  localStorage.setItem(getOracleKeeperUrlKey(chainId), nextUrl);
-}
-
-let count = 0;
-
 export function useOracleKeeperFetcher(chainId: number) {
-  const oracleKeeperUrl = getCurrentOracleKeeperUrl(chainId);
+  const { oracleKeeperUrlIndex, setOracleKeeperUrlIndex } = useSettings();
+
+  const oracleKeeperUrl = getOracleKeeperUrl(chainId, oracleKeeperUrlIndex);
 
   return useMemo(() => {
+    function updateOracleKeeperUrl(chainId: number, currentUrl: string) {
+      const nextIndex = getOracleKeeperRandomIndex(chainId, [oracleKeeperUrlIndex]);
+
+      // eslint-disable-next-line no-console
+      console.log(`switch oracle keeper to ${getOracleKeeperUrl(chainId, nextIndex)}`);
+
+      setOracleKeeperUrlIndex(nextIndex);
+    }
+
     function fetchTickers(): Promise<TickersResponse> {
       return fetch(buildUrl(oracleKeeperUrl!, "/prices/tickers"))
         .then((res) => res.json())
@@ -71,19 +59,12 @@ export function useOracleKeeperFetcher(chainId: number) {
             throw new Error("Invalid tickers response");
           }
 
-          count++;
-
-          if (count > 3) {
-            throw new Error("Invalid tickers response");
-            count = 0;
-          }
-
           return res;
         })
         .catch((e) => {
           // eslint-disable-next-line no-console
           console.error(e);
-          updateOracleKeeperUrl(chainId);
+          updateOracleKeeperUrl(chainId, oracleKeeperUrl);
 
           throw e;
         });
@@ -102,7 +83,7 @@ export function useOracleKeeperFetcher(chainId: number) {
         .catch((e) => {
           // eslint-disable-next-line no-console
           console.error(e);
-          updateOracleKeeperUrl(chainId);
+          updateOracleKeeperUrl(chainId, oracleKeeperUrl);
           throw e;
         });
     }
@@ -115,16 +96,12 @@ export function useOracleKeeperFetcher(chainId: number) {
             throw new Error("Invalid candles response");
           }
 
-          if (oracleKeeperUrl.includes("-2")) {
-            return res.candles.map(parseOracleCandle).reverse();
-          }
-
           return res.candles.map(parseOracleCandle);
         })
         .catch((e) => {
           // eslint-disable-next-line no-console
           console.error(e);
-          updateOracleKeeperUrl(chainId);
+          updateOracleKeeperUrl(chainId, oracleKeeperUrl);
           throw e;
         });
     }
@@ -135,5 +112,5 @@ export function useOracleKeeperFetcher(chainId: number) {
       fetch24hPrices,
       fetchOracleCandles,
     };
-  }, [chainId, oracleKeeperUrl]);
+  }, [chainId, oracleKeeperUrl, oracleKeeperUrlIndex, setOracleKeeperUrlIndex]);
 }
