@@ -24,6 +24,7 @@ const defaultSummary = (account: string): AccountPositionsSummary => ({
 const groupPositionsByAccount = (positions: Array<PositionScores & { data?: Position }>): PositionsSummaryByAccount => {
   const groupBy: PositionsSummaryByAccount = {};
 
+  // console.log({position: positions[0]});
   for (const p of positions) {
     const { account } = p;
 

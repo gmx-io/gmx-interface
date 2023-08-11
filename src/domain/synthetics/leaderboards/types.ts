@@ -85,7 +85,8 @@ export type AccountOpenPosition = {
   id: string;
   account: string;
   market: string;
-  marketData?: Market;
+  marketData: Market;
+  contractMarketPrices: ContractMarketPrices;
   collateralToken: string;
   isLong: boolean;
   sizeInTokens: BigNumber;
@@ -118,6 +119,7 @@ export type PositionsSummaryByAccount = Record<string, AccountPositionsSummary>;
 
 export type PositionScores = {
   id: string;
+  info: Position;
   account: string;
   market: string;
   marketData: Market;

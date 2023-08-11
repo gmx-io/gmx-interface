@@ -1,37 +1,37 @@
 import { useChainId } from "lib/chains";
 import { convertToUsd, useTokenRecentPrices } from "../tokens";
 import { AccountOpenPosition, PositionScores } from "./types";
-import { useOpenPositions } from "./useOpenPositions";
-import { BigNumber, utils } from "ethers";
+import { useAccountOpenPositions } from "./useOpenPositions";
+import { BigNumber } from "ethers";
 import { getToken } from "config/tokens";
 import { getAddress } from "ethers/lib/utils";
-import { getContractMarketPrices, useMarketsInfo } from "../markets";
+import { usePositionsInfo } from "./usePositionsInfo";
+import { getPositionKey } from "../positions";
 
 export function usePositionScores() {
   const { chainId } = useChainId();
   const { pricesData } = useTokenRecentPrices(chainId);
-  const openPositions = useOpenPositions(chainId);
-  const { tokensData } = useMarketsInfo(chainId);
+  const accountOpenPositions = useAccountOpenPositions(chainId);
+  const positionsByKey = usePositionsInfo(
+    chainId,
+    accountOpenPositions.data.map(p => p.id),
+    accountOpenPositions.data.map(p => p.contractMarketPrices)
+  );
 
-  if (openPositions.error) {
-    return { data: [], isLoading: false, error: openPositions.error };
-  } else if (!pricesData || openPositions.isLoading) {
+  if (accountOpenPositions.error) {
+    return { data: [], isLoading: false, error: accountOpenPositions.error };
+  } else if (!pricesData || accountOpenPositions.isLoading) {
     return { data: [], isLoading: true, error: null };
   }
 
   const data: Array<PositionScores> = [];
 
-  for (let i = 0; i < openPositions.data.length; i++) {
-    const p: AccountOpenPosition = openPositions.data[i];
-    const collateralTokenAddress = utils.getAddress(p.collateralToken);
+  for (let i = 0; i < accountOpenPositions.data.length; i++) {
+    const p: AccountOpenPosition = accountOpenPositions.data[i];
+    const collateralTokenAddress = getAddress(p.collateralToken);
 
     if (!(collateralTokenAddress in pricesData)) {
       return { data: [], isLoading: false, error: new Error(`Unable to find price for token ${collateralTokenAddress}`) };
-    }
-
-    if (!p.marketData) {
-      return { data: [], isLoading: true, error: null };
-      // new Error(`Unable to identify market "${p.market}" in chain id: ${chainId}`) };
     }
 
     const collateralTokenPrices = pricesData[collateralTokenAddress];
@@ -42,7 +42,7 @@ export function usePositionScores() {
       collateralTokenPrices.minPrice
     )!;
 
-    const indexTokenAddress = utils.getAddress(p.marketData.indexTokenAddress);
+    const indexTokenAddress = getAddress(p.marketData.indexTokenAddress);
     const indexToken = getToken(chainId, indexTokenAddress);
     const value = convertToUsd(
       p.sizeInTokens!,
@@ -51,23 +51,21 @@ export function usePositionScores() {
     )!;
 
     const unrealizedPnl = p.isLong ? value.sub(p.sizeInUsd) : p.sizeInUsd.sub(value);
-    if (!tokensData || !p.marketData) {
-      continue;
-    }
-
-    const contractMarketPrices = getContractMarketPrices(tokensData, p.marketData);
-
-    if (!contractMarketPrices) {
-      continue;
-    }
+    const key = getPositionKey(
+      getAddress(p.account),
+      getAddress(p.market),
+      getAddress(p.collateralToken),
+      p.isLong
+    );
 
     data.push({
       id: p.id,
+      info: positionsByKey.data[key],
       account: p.account,
       isLong: p.isLong,
       market: p.market,
       marketData: p.marketData,
-      contractMarketPrices,
+      contractMarketPrices: p.contractMarketPrices,
       collateralToken: p.collateralToken,
       unrealizedPnl,
       entryPrice: p.entryPrice,
