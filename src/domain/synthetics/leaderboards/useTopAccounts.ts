@@ -18,6 +18,10 @@ const defaultSummary = (account: string): AccountPositionsSummary => ({
   fundingFeeUsd: BigNumber.from(0),
   positionFeeUsd: BigNumber.from(0),
   priceImpactUsd: BigNumber.from(0),
+  closingFeeUsd: BigNumber.from(0),
+  pendingFundingFeesUsd: BigNumber.from(0),
+  pendingClaimableFundingFeesUsd: BigNumber.from(0),
+  pendingBorrowingFeesUsd: BigNumber.from(0),
   positions: [],
 });
 
@@ -44,6 +48,10 @@ const groupPositionsByAccount = (positions: Array<PositionScores & { data?: Posi
     summary.fundingFeeUsd = summary.fundingFeeUsd.add(p.fundingFeeUsd);
     summary.positionFeeUsd = summary.positionFeeUsd.add(p.positionFeeUsd);
     summary.priceImpactUsd = summary.priceImpactUsd.add(p.priceImpactUsd);
+    summary.closingFeeUsd = summary.closingFeeUsd.add(p.priceImpactUsd);
+    summary.pendingFundingFeesUsd = summary.pendingFundingFeesUsd.add(p.priceImpactUsd);
+    summary.pendingClaimableFundingFeesUsd = summary.pendingClaimableFundingFeesUsd.add(p.priceImpactUsd);
+    summary.pendingBorrowingFeesUsd = summary.pendingBorrowingFeesUsd.add(p.priceImpactUsd);
   }
 
   return groupBy;
@@ -82,6 +90,11 @@ export function useTopAccounts(period: PerfPeriod) {
       .sub(openPositions.positionFeeUsd)
       .add(openPositions.priceImpactUsd);
 
+    const unrealizedPnl = openPositions.unrealizedPnl
+      .add(openPositions.pendingBorrowingFeesUsd)
+      .add(openPositions.pendingFundingFeesUsd)
+      .add(openPositions.closingFeeUsd);
+
     // console.log({
     //   pnlWithFees: formatUsd(perf.totalPnl),
     //   borrowingFees: formatUsd(openPositions.borrowingFeeUsd),
@@ -89,9 +102,14 @@ export function useTopAccounts(period: PerfPeriod) {
     //   positionFeeUsd: formatUsd(openPositions.positionFeeUsd),
     //   priceImpactUsd: formatUsd(openPositions.priceImpactUsd),
     //   totalPnl: formatUsd(totalPnl),
+    //   uPnlWithFees: formatUsd(openPositions.unrealizedPnl),
+    //   pBorrowingFees: formatUsd(openPositions.pendingBorrowingFeesUsd),
+    //   pFundingFeeUsd: formatUsd(openPositions.pendingFundingFeesUsd),
+    //   closinfFeeUsd: formatUsd(openPositions.closingFeeUsd),
+    //   uPnl: formatUsd(unrealizedPnl)
     // });
 
-    const profit = totalPnl.add(openPositions.unrealizedPnl);
+    const profit = totalPnl.add(unrealizedPnl);
     const maxCollateral = perf.maxCollateral;
     if (maxCollateral.isZero()) {
       throw new Error(`Account ${perf.account} max collateral is 0, please verify data integrity`);

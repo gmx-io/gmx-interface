@@ -113,6 +113,10 @@ export type AccountPositionsSummary = {
   fundingFeeUsd: BigNumber;
   positionFeeUsd: BigNumber;
   priceImpactUsd: BigNumber;
+  closingFeeUsd: BigNumber;
+  pendingFundingFeesUsd: BigNumber;
+  pendingClaimableFundingFeesUsd: BigNumber;
+  pendingBorrowingFeesUsd: BigNumber;
 };
 
 export type PositionsSummaryByAccount = Record<string, AccountPositionsSummary>;
