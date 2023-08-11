@@ -19,7 +19,7 @@ import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, getConstant, getHighExecutionFee 
 import { DECREASE, getOrderKey, INCREASE, SWAP, USD_DECIMALS } from "lib/legacy";
 
 import { groupBy } from "lodash";
-import { UI_VERSION } from "config/env";
+import { UI_VERSION, isDevelopment } from "config/env";
 import { getServerBaseUrl, getServerUrl } from "config/backend";
 import { getGmxGraphClient, nissohGraphClient } from "lib/subgraph/clients";
 import { callContract, contractFetcher } from "lib/contracts";
@@ -29,6 +29,8 @@ import { getProvider } from "lib/rpc";
 import { bigNumberify, expandDecimals, parseValue } from "lib/numbers";
 import { getTokenBySymbol } from "config/tokens";
 import { t } from "@lingui/macro";
+import { REQUIRED_UI_VERSION_KEY } from "config/localStorage";
+import { useWeb3React } from "@web3-react/core";
 
 export * from "./prices";
 
@@ -448,7 +450,9 @@ export function useStakedGmxSupply(library, active) {
 }
 
 export function useHasOutdatedUi() {
-  const url = getServerUrl(ARBITRUM, "/ui_version");
+  const { active } = useWeb3React();
+
+  const url = getServerUrl(ARBITRUM, `/ui_version?client_version=${UI_VERSION}&active=${active}`);
   const { data, mutate } = useSWR([url], {
     // @ts-ignore
     fetcher: (...args) => fetch(...args).then((res) => res.text()),
@@ -458,6 +462,11 @@ export function useHasOutdatedUi() {
 
   if (data && parseFloat(data) > parseFloat(UI_VERSION)) {
     hasOutdatedUi = true;
+  }
+
+  if (isDevelopment()) {
+    const localStorageVersion = localStorage.getItem(REQUIRED_UI_VERSION_KEY);
+    hasOutdatedUi = Boolean(localStorageVersion && parseFloat(localStorageVersion) > parseFloat(UI_VERSION));
   }
 
   return { data: hasOutdatedUi, mutate };

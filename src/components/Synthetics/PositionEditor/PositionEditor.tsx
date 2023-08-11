@@ -52,6 +52,7 @@ import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionEditor.scss";
+import { useHasOutdatedUi } from "domain/legacy";
 
 export type Props = {
   position?: PositionInfo;
@@ -79,6 +80,7 @@ export function PositionEditor(p: Props) {
   const { minCollateralUsd } = usePositionsConstants(chainId);
   const routerAddress = getContract(chainId, "SyntheticsRouter");
   const userReferralInfo = useUserReferralInfo(library, chainId, account);
+  const { data: hasOutdatedUi } = useHasOutdatedUi();
 
   const isVisible = Boolean(position);
   const prevIsVisible = usePrevious(isVisible);
@@ -242,7 +244,7 @@ export function PositionEditor(p: Props) {
     const commonError = getCommonError({
       chainId,
       isConnected: Boolean(account),
-      hasOutdatedUi: false,
+      hasOutdatedUi,
     });
 
     const editCollateralError = getEditCollateralError({
@@ -277,6 +279,7 @@ export function PositionEditor(p: Props) {
     collateralDeltaAmount,
     collateralDeltaUsd,
     collateralToken,
+    hasOutdatedUi,
     isDeposit,
     isSubmitting,
     minCollateralUsd,

@@ -49,7 +49,7 @@ export function GmList({
     // Group markets by index token address
     const groupedMarketList: { [marketAddress: string]: MarketInfo[] } = groupBy(
       Object.values(marketsInfoData),
-      (market) => market.indexTokenAddress
+      (market) => market[market.isSpotOnly ? "marketTokenAddress" : "indexTokenAddress"]
     );
 
     const allMarkets = Object.values(groupedMarketList)

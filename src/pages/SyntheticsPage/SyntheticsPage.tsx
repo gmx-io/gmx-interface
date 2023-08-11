@@ -123,7 +123,7 @@ export function SyntheticsPage(p: Props) {
   );
 
   const { isSwap, isLong } = tradeFlags;
-  const { indexTokens } = availableTokensOptions;
+  const { indexTokens, sortedIndexTokensWithPoolValue } = availableTokensOptions;
 
   const { chartToken, availableChartTokens } = useMemo(() => {
     if (!fromTokenAddress || !toTokenAddress) {
@@ -136,15 +136,21 @@ export function SyntheticsPage(p: Props) {
 
       const chartToken = isSwap && toToken?.isStable && !fromToken?.isStable ? fromToken : toToken;
       const availableChartTokens = isSwap ? [chartToken] : indexTokens;
+      const sortedAvailableChartTokens = availableChartTokens.sort((a, b) => {
+        if (sortedIndexTokensWithPoolValue) {
+          return sortedIndexTokensWithPoolValue.indexOf(a.address) - sortedIndexTokensWithPoolValue.indexOf(b.address);
+        }
+        return 0;
+      });
 
       return {
         chartToken,
-        availableChartTokens,
+        availableChartTokens: sortedAvailableChartTokens,
       };
     } catch (e) {
       return {};
     }
-  }, [chainId, fromTokenAddress, indexTokens, isSwap, toTokenAddress]);
+  }, [chainId, fromTokenAddress, indexTokens, isSwap, toTokenAddress, sortedIndexTokensWithPoolValue]);
 
   const [closingPositionKey, setClosingPositionKey] = useState<string>();
   const closingPosition = getByKey(positionsInfoData, closingPositionKey);
@@ -468,6 +474,7 @@ export function SyntheticsPage(p: Props) {
         setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
         onConnectWallet={onConnectWallet}
         shouldDisableValidation={shouldDisableValidation}
+        onSelectPositionClick={onSelectPositionClick}
       />
 
       <PositionEditor

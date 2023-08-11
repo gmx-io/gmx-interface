@@ -94,6 +94,7 @@ import { CollateralSelectorRow } from "./CollateralSelectorRow";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import "./TradeBox.scss";
 import Banner from "components/Banner/Banner";
+import { useHasOutdatedUi } from "domain/legacy";
 
 export type Props = {
   tradeType: TradeType;
@@ -182,7 +183,14 @@ export function TradeBox(p: Props) {
     switchTokenAddresses,
   } = p;
   const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket } = tradeFlags;
-  const { swapTokens, indexTokens, infoTokens } = avaialbleTokenOptions;
+  const {
+    swapTokens,
+    indexTokens,
+    infoTokens,
+    sortedIndexTokensWithPoolValue,
+    sortedLongAndShortTokens,
+    sortedAllMarkets,
+  } = avaialbleTokenOptions;
 
   const tradeTypeLabels = useMemo(() => {
     return {
@@ -204,6 +212,7 @@ export function TradeBox(p: Props) {
   const { gasLimits } = useGasLimits(chainId);
   const userReferralInfo = useUserReferralInfo(library, chainId, account);
   const { showDebugValues } = useSettings();
+  const { data: hasOutdatedUi } = useHasOutdatedUi();
 
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
 
@@ -589,7 +598,7 @@ export function TradeBox(p: Props) {
     hasExistingOrder: Boolean(existingOrder),
     hasExistingPosition: Boolean(existingPosition),
   });
-  const { availableMarkets, allMarkets } = marketsOptions;
+  const { availableMarkets } = marketsOptions;
 
   const availableCollaterals = useMemo(() => {
     if (!marketInfo) {
@@ -627,7 +636,7 @@ export function TradeBox(p: Props) {
     const commonError = getCommonError({
       chainId,
       isConnected: Boolean(account),
-      hasOutdatedUi: false,
+      hasOutdatedUi,
     });
 
     let tradeError: string[] | undefined[] = [undefined];
@@ -692,41 +701,37 @@ export function TradeBox(p: Props) {
 
     return commonError[0] || tradeError[0];
   }, [
-    account,
     chainId,
-    closeSizeUsd,
-    collateralToken,
-    decreaseAmounts?.sizeDeltaUsd,
-    existingPosition,
-    fees,
-    fromToken,
-    fromTokenAmount,
-    increaseAmounts?.collateralDeltaUsd,
-    increaseAmounts?.initialCollateralUsd,
-    increaseAmounts?.sizeDeltaUsd,
-    increaseAmounts?.swapPathStats,
-    isIncrease,
-    isLimit,
-    isLong,
+    account,
+    hasOutdatedUi,
     isSwap,
+    isIncrease,
     isTrigger,
-    isWrapOrUnwrap,
-    longLiquidity,
-    markPrice,
-    markRatio,
-    marketInfo,
-    minCollateralUsd,
-    nextPositionValues,
-    shortLiquidity,
-    stage,
-    swapAmounts?.swapPathStats,
-    swapAmounts?.usdIn,
-    swapAmounts?.usdOut,
-    swapOutLiquidity,
+    fromToken,
     toToken,
+    fromTokenAmount,
+    swapAmounts,
     toTokenAmount,
-    triggerPrice,
+    swapOutLiquidity,
+    isLimit,
+    isWrapOrUnwrap,
     triggerRatio,
+    markRatio,
+    fees,
+    marketInfo,
+    increaseAmounts,
+    collateralToken,
+    existingPosition,
+    minCollateralUsd,
+    longLiquidity,
+    shortLiquidity,
+    isLong,
+    markPrice,
+    triggerPrice,
+    nextPositionValues,
+    closeSizeUsd,
+    decreaseAmounts?.sizeDeltaUsd,
+    stage,
     fixedTriggerThresholdType,
   ]);
 
@@ -958,6 +963,7 @@ export function TradeBox(p: Props) {
               className="GlpSwap-from-token"
               showSymbolImage={true}
               showTokenImgInDropdown={true}
+              extendedSortSequence={sortedLongAndShortTokens}
             />
           )}
         </BuyInputSection>
@@ -995,6 +1001,7 @@ export function TradeBox(p: Props) {
                 showSymbolImage={true}
                 showBalances={true}
                 showTokenImgInDropdown={true}
+                extendedSortSequence={sortedLongAndShortTokens}
               />
             )}
           </BuyInputSection>
@@ -1029,6 +1036,7 @@ export function TradeBox(p: Props) {
                 showSymbolImage={true}
                 showBalances={false}
                 showTokenImgInDropdown={true}
+                extendedSortSequence={sortedIndexTokensWithPoolValue}
               />
             )}
           </BuyInputSection>
@@ -1128,7 +1136,7 @@ export function TradeBox(p: Props) {
                 label={t`Market`}
                 className="SwapBox-info-dropdown"
                 selectedIndexName={toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined}
-                markets={allMarkets || []}
+                markets={sortedAllMarkets || []}
                 isSideMenu
                 onSelectMarket={(indexName, marketInfo) => onSelectToTokenAddress(marketInfo.indexToken.address)}
               />
