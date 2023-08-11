@@ -5,7 +5,7 @@ import { useDebounce } from "lib/useDebounce";
 import { useState } from "react";
 import { useLeaderboardContext } from "./Context";
 import { t } from "@lingui/macro";
-import { formatAmount, formatUsd } from "lib/numbers";
+import { formatUsd } from "lib/numbers";
 
 export default function PositionsLeaderboard() {
   const perPage = 15;
@@ -19,7 +19,7 @@ export default function PositionsLeaderboard() {
     id: p.id,
     account: p.account,
     unrealizedPnl: formatUsd(p.unrealizedPnl),
-    market: `${ p.info.marketInfo.name.split(" ")[0] } ${ p.isLong ? "Long" : "Short" }`,
+    market: `${ p.info.marketInfo.name.split(" ")[0] } ${ p.isLong ? t`Long` : t`Short` }`,
     entryPrice: formatUsd(p.info.entryPrice),
     sizeLiqPrice: `${
       formatUsd(p.info.sizeInUsd)
@@ -31,11 +31,11 @@ export default function PositionsLeaderboard() {
   const pageCount = Math.ceil(filteredStats.length / perPage);
   const handleSearchInput = ({ target }) => setSearch(target.value);
   const titles = {
-    account: {title: "Address"},
-    unrealizedPnl: {title: "P&L ($)"},
-    market: {title: "Token (L/S)"},
-    entryPrice: {title: "Entry"},
-    sizeLiqPrice: {title: "Size (Liq)"},
+    account: {title: t`Address`},
+    unrealizedPnl: {title: t`P&L ($)`},
+    market: {title: t`Token (L/S)`},
+    entryPrice: {title: t`Entry`},
+    sizeLiqPrice: {title: t`Size (Liq)`},
   };
 
   return (
