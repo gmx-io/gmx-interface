@@ -1,5 +1,4 @@
 import { gql } from "@apollo/client";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { BigNumber } from "ethers";
 import { bigNumberify, expandDecimals } from "lib/numbers";
 import { getSyntheticsGraphClient } from "lib/subgraph";
@@ -14,8 +13,9 @@ type RawCollectedFees = {
   period: string;
   marketAddress: string;
   tokenAddress: string;
+  feeUsdPerPoolUsd: string;
   feeUsdForPool: string;
-  cummulativeFeeUsdForPool: string;
+  poolValue: string;
   timestampGroup: number;
 };
 
@@ -40,23 +40,24 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
     fetcher: async () => {
       const nowInSecods = Math.floor(Date.now() / 1000);
 
+      // request data for the last 7 days + 30 minutes
       const marketFeesQuery = (marketAddress: string, tokenAddress: string) => `
             _${marketAddress}_${tokenAddress}: collectedMarketFeesInfos(
                where: {
                     marketAddress: "${marketAddress.toLowerCase()}",
                     tokenAddress: "${tokenAddress.toLowerCase()}",
                     period: "1h",
-                    timestampGroup_gte: ${nowInSecods - 3600 * 24 * 7}
+                    timestampGroup_gte: ${nowInSecods - 3600 * 24 * 7 - 1800}
                 },
                 orderBy: timestampGroup,
-                orderDirection: desc,
             ) {
                 id
                 period
                 marketAddress
                 tokenAddress
+                feeUsdPerPoolUsd
                 feeUsdForPool
-                cummulativeFeeUsdForPool
+                poolValue
                 timestampGroup
             }
         `;
@@ -74,26 +75,20 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
 
       const marketTokensAPRData: MarketTokensAPRData = marketAddresses.reduce((acc, marketAddress) => {
         const market = marketsInfoData![marketAddress]!;
-        const marketToken = marketTokensData![marketAddress]!;
 
         const feeItems = [
           ...response[`_${marketAddress}_${market.longTokenAddress}`],
           ...response[`_${marketAddress}_${market.shortTokenAddress}`],
         ];
 
-        const feesUsdForPeriod = feeItems.reduce((acc, rawCollectedFees: RawCollectedFees) => {
-          return acc.add(bigNumberify(rawCollectedFees.feeUsdForPool));
+        const feeUsdPerPoolUsdForPeriod = feeItems.reduce((acc, rawCollectedFees: RawCollectedFees) => {
+          return acc.add(bigNumberify(rawCollectedFees.feeUsdPerPoolUsd));
         }, BigNumber.from(0));
 
-        if (marketToken.totalSupply?.gt(0)) {
-          const feesPerMarketToken = feesUsdForPeriod.mul(expandDecimals(1, 18)).div(marketToken.totalSupply);
-          const weeksInYear = 52;
-          const apr = feesPerMarketToken.mul(BASIS_POINTS_DIVISOR).mul(weeksInYear).div(marketToken.prices.minPrice);
+        const weeksInYear = 52;
+        const apr = feeUsdPerPoolUsdForPeriod.mul(weeksInYear).div(expandDecimals(1, 26));
 
-          acc[marketAddress] = apr;
-        } else {
-          acc[marketAddress] = BigNumber.from(0);
-        }
+        acc[marketAddress] = apr;
 
         return acc;
       }, {} as MarketTokensAPRData);
