@@ -50,6 +50,7 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
                     timestampGroup_gte: ${nowInSecods - 3600 * 24 * 7 - 1800}
                 },
                 orderBy: timestampGroup,
+                first: 1000
             ) {
                 id
                 period
