@@ -50,6 +50,7 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
                 },
                 orderBy: timestampGroup,
                 orderDirection: desc,
+                first: 1000
             ) {
                 id
                 period
