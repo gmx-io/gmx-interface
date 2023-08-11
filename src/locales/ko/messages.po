@@ -372,10 +372,6 @@ msgstr "승인중..."
 msgid "Arbitrum APR:"
 msgstr "Arbitrum APR:"
 
-#: src/components/TokenCard/TokenCard.js
-#~ msgid "Arbitrum Goerli APR:"
-#~ msgstr ""
-
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
 msgstr "{0}에서 {swapTokenSymbol}로 교환할 수 있는 유동성이 GLP에 충분하지 않기 때문에, 이하의 옵션을 사용해주세요:"
@@ -423,10 +419,6 @@ msgstr "선택한 네트워크에서 이용가능"
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
 msgstr "Avalanche APR:"
-
-#: src/components/TokenCard/TokenCard.js
-#~ msgid "Avalanche FUJI APR:"
-#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -625,14 +617,6 @@ msgstr ""
 msgid "Buying GM..."
 msgstr ""
 
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-#~ msgid "Buying {indexName} GM with {tokensText}"
-#~ msgstr ""
-
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-#~ msgid "Buying {indexName} with {tokensText}"
-#~ msgstr ""
-
 #: src/components/Glp/GlpSwap.js
 msgid "Buying..."
 msgstr "구매중..."
@@ -754,11 +738,6 @@ msgstr "수령 실패"
 #: src/pages/Stake/StakeV2.js
 msgid "Claim failed."
 msgstr "수령 실패"
-
-#: src/domain/synthetics/markets/claimCollateralTxn.ts
-#: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
-#~ msgid "Claim request sent"
-#~ msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Claim submitted!"
@@ -1033,10 +1012,6 @@ msgstr "연동"
 #: src/pages/Stake/StakeV2.js
 msgid "Connect Wallet"
 msgstr "지갑 연동"
-
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "Connect wallet"
-#~ msgstr ""
 
 #: src/lib/wallets/index.tsx
 msgid "Connected to {0}"
@@ -1867,14 +1842,6 @@ msgstr ""
 #: src/components/TokenCard/TokenCard.js
 msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees."
 msgstr ""
-
-#: src/components/TokenCard/TokenCard.js
-#~ msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 67% of the V2 markets generated fees."
-#~ msgstr ""
-
-#: src/components/TokenCard/TokenCard.js
-#~ msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 70% of the V2 markets generated fees."
-#~ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX Announcements and Updates"
@@ -3790,10 +3757,6 @@ msgstr ""
 msgid "Selling GM..."
 msgstr ""
 
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
-#~ msgid "Selling {indexName}"
-#~ msgstr ""
-
 #: src/components/Glp/GlpSwap.js
 msgid "Selling..."
 msgstr "판매중..."
@@ -4386,10 +4349,6 @@ msgstr "해당 포지션은 최대 레버리지인 100x를 초과하여 청산�
 #: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 msgid "This position was liquidated as the max leverage of {maxLeverageText} was exceeded."
 msgstr ""
-
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
-#~ msgid "This position was liquidated as the max leverage of {maxLeverageText} was exceeded.`"
-#~ msgstr ""
 
 #: src/pages/Home/Home.js
 msgid "Three tokens create our ecosystem"
