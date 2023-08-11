@@ -1,4 +1,3 @@
-import { StaticJsonRpcProvider } from "@ethersproject/providers";
 import { t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import EventEmitter from "abis/EventEmitter.json";
@@ -23,7 +22,7 @@ import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey, setByKey, updateByKey } from "lib/objects";
-import { getProvider, useWsProvider } from "lib/rpc";
+import { useWsProvider } from "lib/rpc";
 import { ReactNode, createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   DepositCreatedEventData,
@@ -75,8 +74,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
   const [orderStatuses, setOrderStatuses] = useState<OrderStatuses>({});
   const [depositStatuses, setDepositStatuses] = useState<DepositStatuses>({});
-
   const [withdrawalStatuses, setWithdrawalStatuses] = useState<WithdrawalStatuses>({});
+
   const [pendingPositionsUpdates, setPendingPositionsUpdates] = useState<PendingPositionsUpdates>({});
   const [positionIncreaseEvents, setPositionIncreaseEvents] = useState<PositionIncreaseEvent[]>([]);
   const [positionDecreaseEvents, setPositionDecreaseEvents] = useState<PositionDecreaseEvent[]>([]);
@@ -570,22 +569,23 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           }
         );
       },
-      async setPendingPosition(update: Omit<PendingPositionUpdate, "updatedAt" | "updatedAtBlock">) {
-        const provider = getProvider(undefined, chainId) as StaticJsonRpcProvider;
+      async setPendingPosition(update: PendingPositionUpdate) {
+        setPendingPositionsUpdates((old) => setByKey(old, update.positionKey, update));
+      },
 
-        const currentBlock = await provider.getBlockNumber();
+      setOrderStatusViewed(key: string) {
+        setOrderStatuses((old) => updateByKey(old, key, { isViewed: true }));
+      },
 
-        setPendingPositionsUpdates((old) =>
-          setByKey(old, update.positionKey, {
-            ...update,
-            updatedAt: Date.now(),
-            updatedAtBlock: BigNumber.from(currentBlock),
-          })
-        );
+      setDepositStatusViewed(key: string) {
+        setDepositStatuses((old) => updateByKey(old, key, { isViewed: true }));
+      },
+
+      setWithdrawalStatusViewed(key: string) {
+        setWithdrawalStatuses((old) => updateByKey(old, key, { isViewed: true }));
       },
     };
   }, [
-    chainId,
     depositStatuses,
     marketsInfoData,
     orderStatuses,

@@ -31,22 +31,12 @@ type Props = {
 export function OrderStatusNotification({ pendingOrderData, marketsInfoData, tokensData, toastTimestamp }: Props) {
   const { chainId } = useChainId();
   const wrappedNativeToken = getWrappedToken(chainId);
-  const { orderStatuses } = useSyntheticsEvents();
+  const { orderStatuses, setOrderStatusViewed } = useSyntheticsEvents();
 
   const [orderStatusKey, setOrderStatusKey] = useState<string>();
 
   const pendingOrderKey = useMemo(() => getPendingOrderKey(pendingOrderData), [pendingOrderData]);
   const orderStatus = getByKey(orderStatuses, orderStatusKey);
-
-  // eslint-disable-next-line no-console
-  console.log("OrderNotification", {
-    toastTimestamp,
-    pendingOrderData,
-    orderStatus,
-    pendingOrderKey,
-    orderStatusKey,
-    orderStatuses,
-  });
 
   const isCompleted = isMarketOrderType(pendingOrderData.orderType)
     ? Boolean(orderStatus?.executedTxnHash)
@@ -184,25 +174,15 @@ export function OrderStatusNotification({ pendingOrderData, marketsInfoData, tok
       }
 
       const matchedStatusKey = Object.values(orderStatuses).find((orderStatus) => {
-        // eslint-disable-next-line no-console
-        console.log(
-          "trymatch",
-          orderStatus.createdAt > toastTimestamp,
-          orderStatus.createdAt,
-          toastTimestamp,
-          getPendingOrderKey(orderStatus.data),
-          pendingOrderKey,
-          getPendingOrderKey(orderStatus.data) === pendingOrderKey
-        );
-
-        return getPendingOrderKey(orderStatus.data) === pendingOrderKey;
+        return !orderStatus.isViewed && getPendingOrderKey(orderStatus.data) === pendingOrderKey;
       })?.key;
 
       if (matchedStatusKey) {
         setOrderStatusKey(matchedStatusKey);
+        setOrderStatusViewed(matchedStatusKey);
       }
     },
-    [orderStatus, orderStatusKey, orderStatuses, pendingOrderKey, toastTimestamp]
+    [orderStatus, orderStatusKey, orderStatuses, pendingOrderKey, setOrderStatusViewed, toastTimestamp]
   );
 
   useEffect(
