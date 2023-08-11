@@ -119,7 +119,7 @@ const getPositionsInfoData = (
   tokensData: TokensData,
   minCollateralUsd: BigNumber,
   showPnlInLeverage: boolean = true,
-) => {
+): PositionsInfoData => {
   return Object.keys(positionsData).reduce((acc: PositionsInfoData, positionKey: string) => {
     const position = getByKey(positionsData, positionKey)!;
 

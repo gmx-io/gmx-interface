@@ -1,6 +1,6 @@
 import { BigNumber } from "ethers";
 import { ContractMarketPrices, Market } from "../markets";
-import { Position } from "../positions";
+import { Position, PositionInfo } from "../positions";
 
 export enum PerfPeriod {
   DAY = "24 hours",
@@ -119,7 +119,7 @@ export type PositionsSummaryByAccount = Record<string, AccountPositionsSummary>;
 
 export type PositionScores = {
   id: string;
-  info: Position;
+  info: PositionInfo;
   account: string;
   market: string;
   marketData: Market;

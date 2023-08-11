@@ -5,6 +5,7 @@ import { useDebounce } from "lib/useDebounce";
 import { useState } from "react";
 import { useLeaderboardContext } from "./Context";
 import { t } from "@lingui/macro";
+import { formatAmount, formatUsd } from "lib/numbers";
 
 export default function PositionsLeaderboard() {
   const perPage = 15;
@@ -14,13 +15,17 @@ export default function PositionsLeaderboard() {
   const { topPositions } = useLeaderboardContext();
   const filteredStats = topPositions.data.filter(a => a.account.indexOf(term.toLowerCase()) >= 0);
   const firstItemIndex = (page - 1) * perPage;
-  const displayedStats = filteredStats.slice(firstItemIndex, page * perPage).map(s => ({
-    id: s.id,
-    account: s.account,
-    urealizedPnl: s.unrealizedPnl.toString(),
-    market: `${ s.market } ${ s.isLong ? "Long" : "Short" }`,
-    entryPrice: s.entryPrice.toString(),
-    sizeLiqPrice: `${ s.sizeInUsd.toString() } (${ s.liqPrice.toString() })`,
+  const displayedStats = filteredStats.slice(firstItemIndex, page * perPage).map(p => ({
+    id: p.id,
+    account: p.account,
+    unrealizedPnl: formatUsd(p.unrealizedPnl),
+    market: `${ p.info.marketInfo.name.split(" ")[0] } ${ p.isLong ? "Long" : "Short" }`,
+    entryPrice: formatUsd(p.info.entryPrice),
+    sizeLiqPrice: `${
+      formatUsd(p.info.sizeInUsd)
+    } (${
+      formatUsd(p.info.liquidationPrice)
+    })`,
   }));
 
   const pageCount = Math.ceil(filteredStats.length / perPage);
