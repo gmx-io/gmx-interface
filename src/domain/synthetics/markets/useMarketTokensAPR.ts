@@ -42,7 +42,7 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
 
       const marketFeesQuery = (marketAddress: string, tokenAddress: string) => `
             _${marketAddress}_${tokenAddress}: collectedMarketFeesInfos(
-               where: { 
+               where: {
                     marketAddress: "${marketAddress.toLowerCase()}",
                     tokenAddress: "${tokenAddress.toLowerCase()}",
                     period: "1h",
@@ -50,6 +50,7 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
                 },
                 orderBy: timestampGroup,
                 orderDirection: desc,
+                first: 1000
             ) {
                 id
                 period
