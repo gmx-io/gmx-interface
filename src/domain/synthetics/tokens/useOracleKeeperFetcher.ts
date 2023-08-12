@@ -45,6 +45,12 @@ export function useOracleKeeperFetcher(chainId: number) {
     function switchOracleKeeper() {
       const nextIndex = getOracleKeeperRandomIndex(chainId, [oracleKeeperIndex]);
 
+      if (nextIndex === oracleKeeperIndex) {
+        // eslint-disable-next-line no-console
+        console.error(`no available oracle keeper for chain ${chainId}`);
+        return;
+      }
+
       // eslint-disable-next-line no-console
       console.log(`switch oracle keeper to ${getOracleKeeperUrl(chainId, nextIndex)}`);
 
