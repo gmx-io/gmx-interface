@@ -22,7 +22,7 @@ export const LEVERAGE_ENABLED_KEY = "leverage-enabled";
 export const KEEP_LEVERAGE_FOR_DECREASE_KEY = "Exchange-keep-leverage";
 export const TRADE_LINK_KEY = "trade-link";
 export const SHOW_DEBUG_VALUES_KEY = "show-debug-values";
-export const ORACLE_KEEPER_URL_KEY = "oracle-keeper-url";
+export const ORACLE_KEEPER_INSTANCES_CONFIG_KEY = "oracle-keeper-instances-config";
 
 export const SYNTHETICS_TRADE_OPTIONS = "synthetics-trade-options";
 export const SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BPS_KEY = "synthetics-acceptable-price-impact-bps";
@@ -37,10 +37,6 @@ export const PRODUCTION_PREVIEW_KEY = "production-preview";
 export const REQUIRED_UI_VERSION_KEY = "required-ui-version";
 
 export const getSubgraphUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
-
-export function getOracleKeeperUrlKey(chainId: number) {
-  return `${chainId}:${ORACLE_KEEPER_URL_KEY}`;
-}
 
 export function getSyntheticsDepositIndexTokenKey(chainId: number) {
   return [chainId, SYNTHETICS_DEPOSIT_INDEX_TOKEN_KEY];

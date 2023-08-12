@@ -1,5 +1,5 @@
-import { getOracleKeeperUrlKey } from "config/localStorage";
 import { getOracleKeeperRandomIndex, getOracleKeeperUrl } from "config/oracleKeeper";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { timezoneOffset } from "domain/prices";
 import { Bar } from "domain/tradingview/types";
 import { buildUrl } from "lib/buildUrl";
@@ -36,35 +36,21 @@ function parseOracleCandle(rawCandle: number[]): Bar {
   };
 }
 
-export function getCurrentOracleKeeperIndex(chainId: number) {
-  const storedIndex = localStorage.getItem(getOracleKeeperUrlKey(chainId));
-
-  let index = typeof storedIndex === "string" && !Number.isNaN(storedIndex) ? Number(storedIndex) : undefined;
-
-  if (!index) {
-    index = getOracleKeeperRandomIndex(chainId);
-    localStorage.setItem(getOracleKeeperUrlKey(chainId), String(index));
-  }
-
-  return index;
-}
-
-function updateOracleKeeperUrl(chainId: number, currentIndex: number) {
-  const nextIndex = getOracleKeeperRandomIndex(chainId, [currentIndex]);
-
-  // eslint-disable-next-line no-console
-  console.log(`switch oracle keeper to ${getOracleKeeperUrl(chainId, nextIndex)}`);
-
-  localStorage.setItem(getOracleKeeperUrlKey(chainId), String(nextIndex));
-}
-
 export function useOracleKeeperFetcher(chainId: number) {
-  const oracleKeeperIndex = getCurrentOracleKeeperIndex(chainId);
+  const { oracleKeeperInstancesConfig, setOracleKeeperInstancesConfig } = useSettings();
+  const oracleKeeperIndex = oracleKeeperInstancesConfig[chainId];
   const oracleKeeperUrl = getOracleKeeperUrl(chainId, oracleKeeperIndex);
 
-  console.log("render wtf");
-
   return useMemo(() => {
+    function switchOracleKeeper() {
+      const nextIndex = getOracleKeeperRandomIndex(chainId, [oracleKeeperIndex]);
+
+      // eslint-disable-next-line no-console
+      console.log(`switch oracle keeper to ${getOracleKeeperUrl(chainId, nextIndex)}`);
+
+      setOracleKeeperInstancesConfig({ ...oracleKeeperInstancesConfig, [chainId]: nextIndex });
+    }
+
     function fetchTickers(): Promise<TickersResponse> {
       return fetch(buildUrl(oracleKeeperUrl!, "/prices/tickers"))
         .then((res) => res.json())
@@ -73,17 +59,12 @@ export function useOracleKeeperFetcher(chainId: number) {
             throw new Error("Invalid tickers response");
           }
 
-          const brokenOracleIndex = localStorage.getItem("broken-oracle-index");
-          if (brokenOracleIndex && Number(brokenOracleIndex) === oracleKeeperIndex) {
-            throw new Error("Invalid tickers response");
-          }
-
           return res;
         })
         .catch((e) => {
           // eslint-disable-next-line no-console
           console.error(e);
-          updateOracleKeeperUrl(chainId, oracleKeeperIndex);
+          switchOracleKeeper();
 
           throw e;
         });
@@ -102,7 +83,7 @@ export function useOracleKeeperFetcher(chainId: number) {
         .catch((e) => {
           // eslint-disable-next-line no-console
           console.error(e);
-          updateOracleKeeperUrl(chainId, oracleKeeperIndex);
+          switchOracleKeeper();
           throw e;
         });
     }
@@ -120,7 +101,7 @@ export function useOracleKeeperFetcher(chainId: number) {
         .catch((e) => {
           // eslint-disable-next-line no-console
           console.error(e);
-          updateOracleKeeperUrl(chainId, oracleKeeperIndex);
+          switchOracleKeeper();
           throw e;
         });
     }
@@ -131,5 +112,5 @@ export function useOracleKeeperFetcher(chainId: number) {
       fetch24hPrices,
       fetchOracleCandles,
     };
-  }, [chainId, oracleKeeperIndex, oracleKeeperUrl]);
+  }, [chainId, oracleKeeperIndex, oracleKeeperInstancesConfig, oracleKeeperUrl, setOracleKeeperInstancesConfig]);
 }
