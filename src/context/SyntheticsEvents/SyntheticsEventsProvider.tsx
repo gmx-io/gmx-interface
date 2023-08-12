@@ -24,6 +24,7 @@ import { helperToast } from "lib/helperToast";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey, setByKey, updateByKey } from "lib/objects";
 import { getProvider, useWsProvider } from "lib/rpc";
+import { useHasPageLostFocus } from "lib/useHasPageLostFocus";
 import { ReactNode, createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   DepositCreatedEventData,
@@ -44,6 +45,7 @@ import {
   WithdrawalStatuses,
 } from "./types";
 import { parseEventLogData } from "./utils";
+import { WS_BLUR_UNSUBSCRIBE_TIMEOUT } from "config/ui";
 
 export const DEPOSIT_CREATED_HASH = ethers.utils.id("DepositCreated");
 export const DEPOSIT_EXECUTED_HASH = ethers.utils.id("DepositExecuted");
@@ -69,6 +71,7 @@ export function useSyntheticsEvents(): SyntheticsEventsContextType {
 export function SyntheticsEventsProvider({ children }: { children: ReactNode }) {
   const { chainId } = useChainId();
   const { active, account: currentAccount } = useWeb3React();
+  const hasLostFocus = useHasPageLostFocus(WS_BLUR_UNSUBSCRIBE_TIMEOUT, ["/trade", "/v2", "/pools"], "V2 Events");
 
   const { tokensData } = useTokensData(chainId);
   const { marketsInfoData } = useMarketsInfo(chainId);
@@ -404,7 +407,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
   useEffect(
     function subscribe() {
-      if (!wsProvider || !currentAccount) {
+      if (hasLostFocus || !wsProvider || !currentAccount) {
         return;
       }
 
@@ -499,7 +502,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         });
       };
     },
-    [chainId, currentAccount, wsProvider]
+    [chainId, currentAccount, hasLostFocus, wsProvider]
   );
 
   const contextState: SyntheticsEventsContextType = useMemo(() => {

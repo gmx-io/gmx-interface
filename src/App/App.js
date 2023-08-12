@@ -80,7 +80,7 @@ import {
   SHOULD_SHOW_POSITION_LINES_KEY,
   SHOW_PNL_AFTER_FEES_KEY,
 } from "config/localStorage";
-import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
+import { TOAST_AUTO_CLOSE_TIME, WS_BLUR_UNSUBSCRIBE_TIMEOUT } from "config/ui";
 import { SettingsContextProvider, useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
 import { useChainId } from "lib/chains";
@@ -106,6 +106,7 @@ import SyntheticsActions from "pages/SyntheticsActions/SyntheticsActions";
 import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsFallbackPage";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
+import { useHasPageLostFocus } from "lib/useHasPageLostFocus";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -132,6 +133,8 @@ function FullApp() {
   const { chainId } = useChainId();
   const location = useLocation();
   const history = useHistory();
+  const hasLostFocus = useHasPageLostFocus(WS_BLUR_UNSUBSCRIBE_TIMEOUT, ["/trade", "/v2"], "V1 Events");
+
   useEventToast();
   const [activatingConnector, setActivatingConnector] = useState();
   useEffect(() => {
@@ -446,7 +449,7 @@ function FullApp() {
 
   useEffect(() => {
     const wsVaultAbi = chainId === ARBITRUM ? VaultV2.abi : VaultV2b.abi;
-    if (!wsProvider) {
+    if (hasLostFocus || !wsProvider) {
       return;
     }
 
@@ -485,7 +488,7 @@ function FullApp() {
       wsPositionRouter.off("CancelIncreasePosition", onCancelIncreasePosition);
       wsPositionRouter.off("CancelDecreasePosition", onCancelDecreasePosition);
     };
-  }, [chainId, vaultAddress, positionRouterAddress, wsProvider]);
+  }, [chainId, vaultAddress, positionRouterAddress, wsProvider, hasLostFocus]);
 
   return (
     <>
@@ -819,15 +822,15 @@ function App() {
     <SWRConfig value={{ refreshInterval: 5000 }}>
       <Web3ReactProvider getLibrary={getLibrary}>
         <SettingsContextProvider>
-          <SyntheticsEventsProvider>
-            <SEO>
-              <Router>
+          <SEO>
+            <Router>
+              <SyntheticsEventsProvider>
                 <I18nProvider i18n={i18n}>
                   <FullApp />
                 </I18nProvider>
-              </Router>
-            </SEO>
-          </SyntheticsEventsProvider>
+              </SyntheticsEventsProvider>
+            </Router>
+          </SEO>
         </SettingsContextProvider>
       </Web3ReactProvider>
     </SWRConfig>
