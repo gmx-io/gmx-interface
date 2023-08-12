@@ -48,7 +48,7 @@ export function useOracleKeeperFetcher(chainId: number) {
       // eslint-disable-next-line no-console
       console.log(`switch oracle keeper to ${getOracleKeeperUrl(chainId, nextIndex)}`);
 
-      setOracleKeeperInstancesConfig({ ...oracleKeeperInstancesConfig, [chainId]: nextIndex });
+      setOracleKeeperInstancesConfig((old) => ({ ...old, [chainId]: nextIndex }));
     }
 
     function fetchTickers(): Promise<TickersResponse> {
@@ -112,5 +112,5 @@ export function useOracleKeeperFetcher(chainId: number) {
       fetch24hPrices,
       fetchOracleCandles,
     };
-  }, [chainId, oracleKeeperIndex, oracleKeeperInstancesConfig, oracleKeeperUrl, setOracleKeeperInstancesConfig]);
+  }, [chainId, oracleKeeperIndex, oracleKeeperUrl, setOracleKeeperInstancesConfig]);
 }

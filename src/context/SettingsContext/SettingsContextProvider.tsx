@@ -8,7 +8,7 @@ import {
 import { useChainId } from "lib/chains";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { ReactNode, createContext, useContext, useEffect, useMemo } from "react";
+import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useEffect, useMemo } from "react";
 import { EXECUTION_FEE_CONFIG_V2, SUPPORTED_CHAIN_IDS } from "config/chains";
 import { getOracleKeeperRandomIndex } from "config/oracleKeeper";
 
@@ -21,7 +21,7 @@ export type SettingsContextType = {
   executionFeeBufferBps: number | undefined;
   shouldUseExecutionFeeBuffer: boolean;
   oracleKeeperInstancesConfig: { [chainId: number]: number };
-  setOracleKeeperInstancesConfig: (val: { [chainId: number]: number }) => void;
+  setOracleKeeperInstancesConfig: Dispatch<SetStateAction<{ [chainId: number]: number } | undefined>>;
 };
 
 export const SettingsContext = createContext({});
