@@ -965,7 +965,13 @@ export function getNormalizedTokenSymbol(tokenSymbol) {
 }
 
 export function isChartAvailabeForToken(chainId: number, tokenSymbol: string) {
-  const token = getTokenBySymbol(chainId, tokenSymbol);
+  let token;
+
+  try {
+    token = getTokenBySymbol(chainId, tokenSymbol);
+  } catch (e) {
+    return false;
+  }
 
   if (!token || token.isChartDisabled || token.isPlatformToken) return false;
 
