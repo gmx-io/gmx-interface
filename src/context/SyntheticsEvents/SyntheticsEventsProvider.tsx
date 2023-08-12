@@ -1,8 +1,8 @@
 import { t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import EventEmitter from "abis/EventEmitter.json";
-import { GmStatusNotification } from "components/Synthetics/StatusNotifiaction/GmStatusNotification";
-import { OrderStatusNotification } from "components/Synthetics/StatusNotifiaction/OrderStatusNotification";
+import { GmStatusNotification } from "components/Synthetics/StatusNotification/GmStatusNotification";
+import { OrderStatusNotification } from "components/Synthetics/StatusNotification/OrderStatusNotification";
 import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
 import { getToken, getWrappedToken } from "config/tokens";
