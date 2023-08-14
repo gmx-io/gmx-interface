@@ -1,9 +1,13 @@
+import { UserReferralInfo } from "domain/referrals";
 import { MarketInfo, getCappedPoolPnl, getPoolUsdWithoutPnl } from "domain/synthetics/markets";
-import { Token } from "domain/tokens";
-import { BigNumber } from "ethers";
-import { BASIS_POINTS_DIVISOR } from "lib/legacy";
-import { applyFactor, expandDecimals, formatAmount } from "lib/numbers";
-import { convertToUsd } from "../tokens";
+import { Token, getIsEquivalentTokens } from "domain/tokens";
+import { BigNumber, ethers } from "ethers";
+import { CHART_PERIODS } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { applyFactor, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
+import { getBorrowingFeeRateUsd, getFundingFeeRateUsd, getPositionFee, getPriceImpactForPosition } from "../fees";
+import { TokenData, convertToUsd } from "../tokens";
+import { PositionInfo } from "./types";
 
 export function getPositionKey(account: string, marketAddress: string, collateralAddress: string, isLong: boolean) {
   return `${account}:${marketAddress}:${collateralAddress}:${isLong}`;
@@ -76,7 +80,6 @@ export function getPositionPnlUsd(p: {
     poolUsd,
     isLong,
     maximize: true,
-    pnlFactorType: "FOR_TRADERS",
   });
 
   const WEI_PRECISION = expandDecimals(1, 18);
@@ -90,101 +93,140 @@ export function getPositionPnlUsd(p: {
 
 export function getLiquidationPrice(p: {
   sizeInUsd: BigNumber;
+  sizeInTokens: BigNumber;
+  collateralAmount: BigNumber;
   collateralUsd: BigNumber;
-  pnl: BigNumber;
-  markPrice: BigNumber;
-  closingFeeUsd: BigNumber;
-  maxPriceImpactFactor: BigNumber | undefined;
+  collateralToken: TokenData;
+  marketInfo: MarketInfo;
   pendingFundingFeesUsd: BigNumber;
   pendingBorrowingFeesUsd: BigNumber;
-  minCollateralFactor: BigNumber;
   minCollateralUsd: BigNumber;
   isLong: boolean;
+  useMaxPriceImpact?: boolean;
+  userReferralInfo: UserReferralInfo | undefined;
 }) {
   const {
     sizeInUsd,
+    sizeInTokens,
     collateralUsd,
-    pnl,
-    markPrice,
-    closingFeeUsd,
-    maxPriceImpactFactor,
+    collateralAmount,
+    marketInfo,
+    collateralToken,
     pendingFundingFeesUsd,
     pendingBorrowingFeesUsd,
-    minCollateralFactor,
     minCollateralUsd,
     isLong,
+    userReferralInfo,
+    useMaxPriceImpact,
   } = p;
 
-  if (!sizeInUsd.gt(0)) {
+  if (!sizeInUsd.gt(0) || !sizeInTokens.gt(0)) {
     return undefined;
   }
 
+  const { indexToken } = marketInfo;
+
+  const closingFeeUsd = getPositionFee(marketInfo, sizeInUsd, false, userReferralInfo).positionFeeUsd;
   const totalPendingFeesUsd = getPositionPendingFeesUsd({ pendingFundingFeesUsd, pendingBorrowingFeesUsd });
+  const totalFeesUsd = totalPendingFeesUsd.add(closingFeeUsd);
 
-  const maxNegativePriceImpactUsd = maxPriceImpactFactor
-    ? applyFactor(sizeInUsd, maxPriceImpactFactor)
-    : BigNumber.from(0);
+  const maxNegativePriceImpactUsd = applyFactor(sizeInUsd, marketInfo.maxPositionImpactFactorForLiquidations).mul(-1);
 
-  const totalFeesUsd = totalPendingFeesUsd.add(closingFeeUsd).add(maxNegativePriceImpactUsd);
+  let priceImpactDeltaUsd: BigNumber = BigNumber.from(0);
 
-  const remainingCollateralUsd = collateralUsd.sub(totalFeesUsd).add(pnl);
+  if (useMaxPriceImpact) {
+    priceImpactDeltaUsd = maxNegativePriceImpactUsd;
+  } else {
+    priceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, sizeInUsd.mul(-1), isLong, { fallbackToZero: true });
 
-  const liqPriceForFees = getLiquidationPriceFromDelta({
-    liquidationAmountUsd: totalFeesUsd,
-    sizeInUsd,
-    collateralUsd: remainingCollateralUsd,
-    markPrice,
-    isLong,
-  });
+    if (priceImpactDeltaUsd.lt(maxNegativePriceImpactUsd)) {
+      priceImpactDeltaUsd = maxNegativePriceImpactUsd;
+    }
 
-  let minCollateralUsdForMaxLeverage = applyFactor(sizeInUsd, minCollateralFactor);
-
-  if (minCollateralUsdForMaxLeverage.lt(minCollateralUsd)) {
-    minCollateralUsdForMaxLeverage = minCollateralUsd;
+    // Ignore positive price impact
+    if (priceImpactDeltaUsd.gt(0)) {
+      priceImpactDeltaUsd = BigNumber.from(0);
+    }
   }
 
-  const liqPriceForMaxLeverage = getLiquidationPriceFromDelta({
-    liquidationAmountUsd: minCollateralUsdForMaxLeverage,
-    sizeInUsd,
-    collateralUsd: remainingCollateralUsd,
-    markPrice,
-    isLong,
-  });
+  let liquidationCollateralUsd = applyFactor(sizeInUsd, marketInfo.minCollateralFactor);
+  if (liquidationCollateralUsd.lt(minCollateralUsd)) {
+    liquidationCollateralUsd = minCollateralUsd;
+  }
 
   let liquidationPrice: BigNumber;
 
-  if (isLong) {
-    // return the higher price
-    liquidationPrice = liqPriceForFees.gt(liqPriceForMaxLeverage) ? liqPriceForFees : liqPriceForMaxLeverage;
+  if (getIsEquivalentTokens(collateralToken, indexToken)) {
+    if (isLong) {
+      const denominator = sizeInTokens.add(collateralAmount);
+
+      if (denominator.eq(0)) {
+        return undefined;
+      }
+
+      liquidationPrice = sizeInUsd
+        .add(liquidationCollateralUsd)
+        .sub(priceImpactDeltaUsd)
+        .add(totalFeesUsd)
+        .div(denominator)
+        .mul(expandDecimals(1, indexToken.decimals));
+    } else {
+      const denominator = sizeInTokens.sub(collateralAmount);
+
+      if (denominator.eq(0)) {
+        return undefined;
+      }
+
+      liquidationPrice = sizeInUsd
+        .sub(liquidationCollateralUsd)
+        .add(priceImpactDeltaUsd)
+        .sub(totalFeesUsd)
+        .div(denominator)
+        .mul(expandDecimals(1, indexToken.decimals));
+    }
   } else {
-    liquidationPrice = liqPriceForFees.lt(liqPriceForMaxLeverage) ? liqPriceForFees : liqPriceForMaxLeverage;
+    if (sizeInTokens.eq(0)) {
+      return undefined;
+    }
+
+    const remainingCollateralUsd = collateralUsd.add(priceImpactDeltaUsd).sub(totalPendingFeesUsd).sub(closingFeeUsd);
+
+    if (isLong) {
+      liquidationPrice = liquidationCollateralUsd
+        .sub(remainingCollateralUsd)
+        .add(sizeInUsd)
+        .div(sizeInTokens)
+        .mul(expandDecimals(1, indexToken.decimals));
+    } else {
+      liquidationPrice = liquidationCollateralUsd
+        .sub(remainingCollateralUsd)
+        .sub(sizeInUsd)
+        .div(sizeInTokens.mul(-1))
+        .mul(expandDecimals(1, indexToken.decimals));
+    }
   }
 
-  if (liquidationPrice.lt(0)) {
-    return BigNumber.from(0);
+  if (liquidationPrice.lte(0)) {
+    return undefined;
   }
 
   return liquidationPrice;
 }
 
-export function getLiquidationPriceFromDelta(p: {
-  liquidationAmountUsd: BigNumber;
-  sizeInUsd: BigNumber;
-  collateralUsd: BigNumber;
-  markPrice: BigNumber;
-  isLong: boolean;
-}) {
-  if (p.liquidationAmountUsd.gt(p.collateralUsd)) {
-    const liquidationDelta = p.liquidationAmountUsd.sub(p.collateralUsd);
-    const priceDelta = liquidationDelta.mul(p.markPrice).div(p.sizeInUsd);
-
-    return p.isLong ? p.markPrice.add(priceDelta) : p.markPrice.sub(priceDelta);
+export function formatLiquidationPrice(liquidationPrice?: BigNumber, opts: { displayDecimals?: number } = {}) {
+  if (!liquidationPrice || liquidationPrice.lte(0)) {
+    return "NA";
   }
 
-  const liquidationDelta = p.collateralUsd.sub(p.liquidationAmountUsd);
-  const priceDelta = liquidationDelta.mul(p.markPrice).div(p.sizeInUsd);
+  return formatUsd(liquidationPrice, { ...opts, maxThreshold: "1000000" });
+}
 
-  return p.isLong ? p.markPrice.sub(priceDelta) : p.markPrice.add(priceDelta);
+export function formatAcceptablePrice(acceptablePrice?: BigNumber, opts: { displayDecimals?: number } = {}) {
+  if (acceptablePrice && (acceptablePrice.eq(0) || acceptablePrice.gte(ethers.constants.MaxInt256))) {
+    return "NA";
+  }
+
+  return formatUsd(acceptablePrice, { ...opts });
 }
 
 export function getLeverage(p: {
@@ -194,7 +236,7 @@ export function getLeverage(p: {
   pendingFundingFeesUsd: BigNumber;
   pendingBorrowingFeesUsd: BigNumber;
 }) {
-  const { pnl, sizeInUsd: sizeUsd, collateralUsd, pendingBorrowingFeesUsd, pendingFundingFeesUsd } = p;
+  const { pnl, sizeInUsd, collateralUsd, pendingBorrowingFeesUsd, pendingFundingFeesUsd } = p;
 
   const totalPendingFeesUsd = getPositionPendingFeesUsd({ pendingFundingFeesUsd, pendingBorrowingFeesUsd });
 
@@ -204,11 +246,70 @@ export function getLeverage(p: {
     return undefined;
   }
 
-  return sizeUsd.mul(BASIS_POINTS_DIVISOR).div(remainingCollateralUsd);
+  return sizeInUsd.mul(BASIS_POINTS_DIVISOR).div(remainingCollateralUsd);
 }
 
 export function formatLeverage(leverage?: BigNumber) {
   if (!leverage) return undefined;
 
   return `${formatAmount(leverage, 4, 2)}x`;
+}
+
+export function getEstimatedLiquidationTimeInHours(
+  position: PositionInfo,
+  minCollateralUsd: BigNumber | undefined
+): number | undefined {
+  const { marketInfo, isLong, sizeInUsd, isOpening, netValue } = position;
+
+  if (isOpening || !minCollateralUsd) return;
+
+  let liquidationCollateralUsd = applyFactor(sizeInUsd, marketInfo.minCollateralFactor);
+  if (liquidationCollateralUsd.lt(minCollateralUsd)) {
+    liquidationCollateralUsd = minCollateralUsd;
+  }
+  const borrowFeePerHour = getBorrowingFeeRateUsd(marketInfo, isLong, sizeInUsd, CHART_PERIODS["1h"]);
+  const fundingFeePerHour = getFundingFeeRateUsd(marketInfo, isLong, sizeInUsd, CHART_PERIODS["1h"]);
+  const maxNegativePriceImpactUsd = applyFactor(sizeInUsd, marketInfo.maxPositionImpactFactorForLiquidations).mul(-1);
+  let priceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, sizeInUsd.mul(-1), isLong, {
+    fallbackToZero: true,
+  });
+
+  if (priceImpactDeltaUsd.lt(maxNegativePriceImpactUsd)) {
+    priceImpactDeltaUsd = maxNegativePriceImpactUsd;
+  }
+
+  // Ignore positive price impact
+  if (priceImpactDeltaUsd.gt(0)) {
+    priceImpactDeltaUsd = BigNumber.from(0);
+  }
+
+  const totalFeesPerHour = borrowFeePerHour.abs().add(fundingFeePerHour.lt(0) ? fundingFeePerHour.abs() : 0);
+
+  if (totalFeesPerHour.eq(0)) return;
+
+  const hours = netValue
+    .add(priceImpactDeltaUsd)
+    .sub(liquidationCollateralUsd)
+    .mul(BASIS_POINTS_DIVISOR)
+    .div(totalFeesPerHour);
+  return parseFloat(formatAmount(hours, 4, 2));
+}
+
+export function formatEstimatedLiquidationTime(hours?: number | undefined) {
+  if (!hours) return;
+  const days = Math.floor(hours / 24);
+
+  if (hours < 1) {
+    return `< 1 hour`;
+  }
+
+  if (days > 1000) {
+    return "> 1000 days";
+  }
+  if (hours < 24) {
+    const hoursInt = Math.floor(hours);
+    return `${hoursInt} ${hoursInt === 1 ? "hour" : "hours"}`;
+  }
+
+  return `${days} days`;
 }

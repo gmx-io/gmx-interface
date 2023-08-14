@@ -6,18 +6,16 @@ import ConnectWalletButton from "../Common/ConnectWalletButton";
 
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
-import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
+import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getIcon } from "config/icons";
 import { useChainId } from "lib/chains";
 import { getAccountUrl, isHomeSite } from "lib/legacy";
 import { switchNetwork } from "lib/wallets";
-import { useHistory, useLocation } from "react-router-dom";
 import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
 import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
 import "./Header.css";
 import { HeaderLink } from "./HeaderLink";
-import { getIsSyntheticsSupported } from "config/features";
 
 type Props = {
   openSettings: () => void;
@@ -46,9 +44,9 @@ const NETWORK_OPTIONS = [
 
 if (isDevelopment()) {
   NETWORK_OPTIONS.push({
-    label: getChainName(ARBITRUM_TESTNET),
-    value: ARBITRUM_TESTNET,
-    icon: getIcon(ARBITRUM_TESTNET, "network"),
+    label: getChainName(ARBITRUM_GOERLI),
+    value: ARBITRUM_GOERLI,
+    icon: getIcon(ARBITRUM_GOERLI, "network"),
     color: "#264f79",
   });
   NETWORK_OPTIONS.push({
@@ -71,8 +69,6 @@ export function AppHeaderUser({
   const { chainId } = useChainId();
   const { active, account } = useWeb3React();
   const showConnectionOptions = !isHomeSite();
-  const location = useLocation();
-  const history = useHistory();
 
   const tradeLink = tradePageVersion === 1 ? "/trade" : "/v2";
 
@@ -81,19 +77,6 @@ export function AppHeaderUser({
       setWalletModalVisible(false);
     }
   }, [active, setWalletModalVisible]);
-
-  useEffect(
-    function redirectTradePage() {
-      if (location.pathname === "/trade" && tradePageVersion === 2 && getIsSyntheticsSupported(chainId)) {
-        history.replace("/v2");
-      }
-
-      if (location.pathname === "/v2" && (tradePageVersion === 1 || !getIsSyntheticsSupported(chainId))) {
-        history.replace("/trade");
-      }
-    },
-    [chainId, history, location.pathname, tradePageVersion]
-  );
 
   const onNetworkSelect = useCallback(
     (option) => {

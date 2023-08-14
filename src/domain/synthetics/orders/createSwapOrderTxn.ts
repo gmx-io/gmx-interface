@@ -47,6 +47,7 @@ export async function createSwapOrderTxn(chainId: number, library: Web3Provider,
   const initialCollateralTokenAddress = convertTokenAddress(chainId, p.fromTokenAddress, "wrapped");
 
   const shouldApplySlippage = isMarketOrderType(p.orderType);
+
   const minOutputAmount = shouldApplySlippage
     ? applySlippageToMinOut(p.allowedSlippage, p.minOutputAmount)
     : p.minOutputAmount;

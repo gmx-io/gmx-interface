@@ -2,7 +2,6 @@ import { Trans, plural, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import cx from "classnames";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
-import Checkbox from "components/Checkbox/Checkbox";
 import Modal from "components/Modal/Modal";
 import { getContract } from "config/contracts";
 import { getToken } from "config/tokens";
@@ -10,25 +9,26 @@ import { ExecutionFee } from "domain/synthetics/fees";
 import { useMarkets } from "domain/synthetics/markets";
 import { createDepositTxn } from "domain/synthetics/markets/createDepositTxn";
 import { createWithdrawalTxn } from "domain/synthetics/markets/createWithdrawalTxn";
-import { getNeedTokenApprove, getTokenData, useAvailableTokensData } from "domain/synthetics/tokens";
+import { getNeedTokenApprove, getTokenData, useTokensData } from "domain/synthetics/tokens";
 import { TokenData } from "domain/synthetics/tokens/types";
 import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 import { GmSwapFees } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-import { formatTokenAmount, formatTokenAmountWithUsd } from "lib/numbers";
+import { formatTokenAmountWithUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { uniq } from "lodash";
 import { GmFees } from "../GmFees/GmFees";
 
 import Button from "components/Button/Button";
+import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import "./GmConfirmationBox.scss";
-import { DEFAULT_SLIPPAGE_AMOUNT } from "lib/legacy";
 import { useState } from "react";
+import "./GmConfirmationBox.scss";
 
 type Props = {
-  marketToken: TokenData;
+  isVisible: boolean;
+  marketToken?: TokenData;
   longToken?: TokenData;
   shortToken?: TokenData;
   marketTokenAmount: BigNumber;
@@ -37,7 +37,7 @@ type Props = {
   longTokenUsd?: BigNumber;
   shortTokenAmount?: BigNumber;
   shortTokenUsd?: BigNumber;
-  fees: GmSwapFees;
+  fees?: GmSwapFees;
   error?: string;
   isDeposit: boolean;
   executionFee?: ExecutionFee;
@@ -47,9 +47,11 @@ type Props = {
   onSubmitted: () => void;
   onClose: () => void;
   setPendingTxns: (txns: any) => void;
+  shouldDisableValidation?: boolean;
 };
 
 export function GmConfirmationBox({
+  isVisible,
   marketToken,
   longToken,
   shortToken,
@@ -66,14 +68,12 @@ export function GmConfirmationBox({
   onSubmitted,
   onClose,
   setPendingTxns,
-  isHighPriceImpact,
-  isHighPriceImpactAccepted,
-  setIsHighPriceImpactAccepted,
+  shouldDisableValidation,
 }: Props) {
   const { library, account } = useWeb3React();
   const { chainId } = useChainId();
   const { marketsData } = useMarkets(chainId);
-  const { tokensData } = useAvailableTokensData(chainId);
+  const { tokensData } = useTokensData(chainId);
   const { setPendingDeposit, setPendingWithdrawal } = useSyntheticsEvents();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -83,6 +83,10 @@ export function GmConfirmationBox({
   const routerAddress = getContract(chainId, "SyntheticsRouter");
 
   const payTokenAddresses = (function getPayTokenAddresses() {
+    if (!marketToken) {
+      return [];
+    }
+
     const addresses: string[] = [];
 
     if (isDeposit) {
@@ -102,6 +106,7 @@ export function GmConfirmationBox({
   const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: routerAddress,
     tokenAddresses: payTokenAddresses,
+    skip: !isVisible,
   });
 
   const tokensToApprove = (function getTokensToApprove() {
@@ -154,11 +159,11 @@ export function GmConfirmationBox({
   const marketTokenText = formatTokenAmountWithUsd(
     marketTokenAmount,
     marketTokenUsd,
-    marketToken.symbol,
-    marketToken.decimals
+    marketToken?.symbol,
+    marketToken?.decimals
   );
 
-  const operationText = isDeposit ? t`Deposit` : t`Withdrawal`;
+  const operationText = isDeposit ? t`Buy` : t`Sell`;
 
   const isAllowanceLoaded = Boolean(tokensAllowanceData);
 
@@ -170,28 +175,42 @@ export function GmConfirmationBox({
       };
     }
 
+    const onSubmit = () => {
+      setIsSubmitting(true);
+
+      let txnPromise: Promise<any>;
+
+      if (isDeposit) {
+        txnPromise = onCreateDeposit();
+      } else {
+        txnPromise = onCreateWithdrawal();
+      }
+
+      txnPromise
+        .then(() => {
+          onSubmitted();
+        })
+        .finally(() => {
+          setIsSubmitting(false);
+        });
+    };
+
     if (error) {
       return {
         text: error,
-        disabled: true,
+        disabled: !shouldDisableValidation,
+        onClick: onSubmit,
       };
     }
 
     if (isSubmitting) {
       return {
-        text: isDeposit ? t`Creating Deposit...` : t`Creating Withdrawal...`,
+        text: isDeposit ? t`Buying GM...` : t`Selling GM...`,
         disabled: true,
       };
     }
 
-    if (isHighPriceImpact && !isHighPriceImpactAccepted) {
-      return {
-        text: t`Need to accept Price Impact`,
-        disabled: true,
-      };
-    }
-
-    if (tokensToApprove.length > 0) {
+    if (tokensToApprove.length > 0 && marketToken) {
       const symbols = tokensToApprove.map((address) => {
         return address === marketToken.address ? "GM" : getTokenData(tokensData, address)!.symbol;
       });
@@ -208,33 +227,16 @@ export function GmConfirmationBox({
     }
 
     const operationText = isDeposit ? t`Buy` : `Sell`;
-    const text = t`Confirm ${operationText} ${formatTokenAmount(marketTokenAmount, marketToken.decimals)} GM`;
+    const text = t`Confirm ${operationText}`;
 
     return {
       text,
-      onClick: () => {
-        setIsSubmitting(true);
-
-        let txnPromise: Promise<any>;
-        if (isDeposit) {
-          txnPromise = onCreateDeposit();
-        } else {
-          txnPromise = onCreateWithdrawal();
-        }
-
-        txnPromise
-          .then(() => {
-            onSubmitted();
-          })
-          .finally(() => {
-            setIsSubmitting(false);
-          });
-      },
+      onClick: onSubmit,
     };
   })();
 
   function onCreateDeposit() {
-    if (!account || !executionFee || !marketToken || !market || !marketTokenAmount) {
+    if (!account || !executionFee || !marketToken || !market || !marketTokenAmount || !tokensData) {
       return Promise.resolve();
     }
 
@@ -250,13 +252,15 @@ export function GmConfirmationBox({
       minMarketTokens: marketTokenAmount,
       executionFee: executionFee.feeTokenAmount,
       allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
+      skipSimulation: shouldDisableValidation,
+      tokensData,
       setPendingTxns,
       setPendingDeposit,
     });
   }
 
   function onCreateWithdrawal() {
-    if (!account || !market || !executionFee || !longTokenAmount || !shortTokenAmount) {
+    if (!account || !market || !marketToken || !executionFee || !longTokenAmount || !shortTokenAmount || !tokensData) {
       return Promise.resolve();
     }
 
@@ -272,6 +276,8 @@ export function GmConfirmationBox({
       marketTokenAddress: marketToken.address,
       executionFee: executionFee.feeTokenAmount,
       allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
+      tokensData,
+      skipSimulation: shouldDisableValidation,
       setPendingTxns,
       setPendingWithdrawal,
     });
@@ -279,81 +285,74 @@ export function GmConfirmationBox({
 
   return (
     <div className="Confirmation-box GmConfirmationBox">
-      <Modal isVisible={true} setIsVisible={onClose} label={t`Confirm ${operationText}`} allowContentTouchMove>
-        <div className={cx("Confirmation-box-main GmConfirmationBox-main")}>
-          {isDeposit && (
-            <>
-              {[longTokenText, shortTokenText].filter(Boolean).map((text) => (
-                <div key={text}>
-                  <Trans>Pay</Trans>&nbsp;{text}
-                </div>
-              ))}
-              <div className="Confirmation-box-main-icon"></div>
-              <div>
-                <Trans>Receive</Trans>&nbsp;{marketTokenText}
-              </div>
-            </>
-          )}
-          {!isDeposit && (
-            <>
-              <div>
-                <Trans>Pay</Trans>&nbsp;{marketTokenText}
-              </div>
-              <div className="Confirmation-box-main-icon"></div>
-              {[longTokenText, shortTokenText].filter(Boolean).map((text) => (
-                <div key={text}>
-                  <Trans>Receive</Trans>&nbsp;{text}
-                </div>
-              ))}
-            </>
-          )}
-        </div>
-
-        <GmFees
-          totalFees={fees?.totalFees}
-          swapFee={fees?.swapFee}
-          swapPriceImpact={fees?.swapPriceImpact}
-          executionFee={executionFee}
-        />
-
-        {isHighPriceImpact && (
-          <div className="GmSwapBox-warnings">
-            <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
-              <span className="muted font-sm">
-                <Trans>I am aware of the high Price Impact</Trans>
-              </span>
-            </Checkbox>
-          </div>
-        )}
-
-        {tokensToApprove && tokensToApprove.length > 0 && (
+      <Modal isVisible={isVisible} setIsVisible={onClose} label={t`Confirm ${operationText}`} allowContentTouchMove>
+        {isVisible && (
           <>
-            <div className="App-card-divider" />
+            <div className={cx("Confirmation-box-main GmConfirmationBox-main")}>
+              {isDeposit && (
+                <>
+                  {[longTokenText, shortTokenText].filter(Boolean).map((text) => (
+                    <div key={text}>
+                      <Trans>Pay</Trans> {text}
+                    </div>
+                  ))}
+                  <div className="Confirmation-box-main-icon"></div>
+                  <div>
+                    <Trans>Receive</Trans> {marketTokenText}
+                  </div>
+                </>
+              )}
+              {!isDeposit && (
+                <>
+                  <div>
+                    <Trans>Pay</Trans>&nbsp;{marketTokenText}
+                  </div>
+                  <div className="Confirmation-box-main-icon"></div>
+                  {[longTokenText, shortTokenText].filter(Boolean).map((text) => (
+                    <div key={text}>
+                      <Trans>Receive</Trans>&nbsp;{text}
+                    </div>
+                  ))}
+                </>
+              )}
+            </div>
 
-            <div>
-              {tokensToApprove.map((address) => (
-                <div>
-                  <ApproveTokenButton
-                    key={address}
-                    tokenAddress={address}
-                    tokenSymbol={address === marketToken.address ? "GM" : getToken(chainId, address).symbol}
-                    spenderAddress={routerAddress}
-                  />
-                </div>
-              ))}
+            <GmFees
+              isDeposit={isDeposit}
+              totalFees={fees?.totalFees}
+              swapFee={fees?.swapFee}
+              swapPriceImpact={fees?.swapPriceImpact}
+              executionFee={executionFee}
+            />
+            {tokensToApprove?.length > 0 && <div className="line-divider" />}
+
+            {tokensToApprove && tokensToApprove.length > 0 && (
+              <div>
+                {tokensToApprove.map((address) => (
+                  <div key={address}>
+                    <ApproveTokenButton
+                      key={address}
+                      tokenAddress={address}
+                      tokenSymbol={address === marketToken?.address ? "GM" : getToken(chainId, address).symbol}
+                      spenderAddress={routerAddress}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="Confirmation-box-row">
+              <Button
+                className="w-full"
+                variant="primary-action"
+                onClick={submitButtonState.onClick}
+                disabled={submitButtonState.disabled}
+              >
+                {submitButtonState.text}
+              </Button>
             </div>
           </>
         )}
-        <div className="Confirmation-box-row">
-          <Button
-            className="w-100"
-            variant="primary-action"
-            onClick={submitButtonState.onClick}
-            disabled={submitButtonState.disabled}
-          >
-            {submitButtonState.text}
-          </Button>
-        </div>
       </Modal>
     </div>
   );

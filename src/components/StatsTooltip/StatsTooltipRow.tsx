@@ -7,6 +7,7 @@ type Props = {
   label: string | ReactNode;
   value: number | string | string[] | number[] | ReactNode;
   showDollar?: boolean;
+  showColon?: boolean;
 };
 
 export default function StatsTooltipRow({ label, value, className, showDollar = true }: Props) {

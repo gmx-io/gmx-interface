@@ -1,22 +1,20 @@
 import { Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
-import { getTotalClaimableFundingUsd, useMarketsInfo } from "domain/synthetics/markets";
-import { useChainId } from "lib/chains";
+import { MarketsInfoData, getTotalClaimableFundingUsd } from "domain/synthetics/markets";
 import { formatUsd } from "lib/numbers";
 
-import "./ClaimableCard.scss";
 import Tooltip from "components/Tooltip/Tooltip";
+import "./ClaimableCard.scss";
 
 type Props = {
+  marketsInfoData?: MarketsInfoData;
   onClaimClick: () => void;
 };
 
 export function ClaimableCard(p: Props) {
-  const { onClaimClick } = p;
+  const { onClaimClick, marketsInfoData } = p;
   const { account } = useWeb3React();
-  const { chainId } = useChainId();
-  const { marketsInfoData } = useMarketsInfo(chainId);
 
   const markets = Object.values(marketsInfoData || {});
 
@@ -25,7 +23,7 @@ export function ClaimableCard(p: Props) {
   return (
     <div className="Exchange-swap-market-box App-box App-box-border">
       <div className="App-card-title">
-        <Trans>Claimable funding</Trans>
+        <Trans>Claimable Funding</Trans>
       </div>
       <div className="App-card-divider" />
 
@@ -36,7 +34,7 @@ export function ClaimableCard(p: Props) {
             handle={formatUsd(totalClaimableFundingUsd)}
             position="right-bottom"
             renderContent={() => {
-              return t`Positive Funding Fees for a position are claimable once an action is taken on it.`;
+              return t`Positive Funding Fees for a position become claimable after the position is increased, decreased or closed.`;
             }}
           />
         }

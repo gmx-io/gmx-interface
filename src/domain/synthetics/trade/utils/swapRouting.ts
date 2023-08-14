@@ -1,8 +1,7 @@
-import { VirtualInventoryForSwapsData } from "domain/synthetics/fees";
 import { MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
 import { BigNumber } from "ethers";
-import { MarketEdge, MarketsGraph, SwapEstimator } from "../types";
-import { getSwapStats } from "./swapStats";
+import { MarketEdge, MarketsGraph, SwapEstimator, SwapRoute } from "../types";
+import { getMaxSwapPathLiquidity, getSwapStats } from "./swapStats";
 
 export function getMarketsGraph(markets: MarketInfo[]): MarketsGraph {
   const graph: MarketsGraph = {
@@ -18,12 +17,14 @@ export function getMarketsGraph(markets: MarketInfo[]): MarketsGraph {
     }
 
     const longShortEdge: MarketEdge = {
+      marketInfo: market,
       marketAddress: marketTokenAddress,
       from: longTokenAddress,
       to: shortTokenAddress,
     };
 
     const shortLongEdge: MarketEdge = {
+      marketInfo: market,
       marketAddress: marketTokenAddress,
       from: shortTokenAddress,
       to: longTokenAddress,
@@ -40,10 +41,7 @@ export function getMarketsGraph(markets: MarketInfo[]): MarketsGraph {
   return graph;
 }
 
-export const createSwapEstimator = (
-  marketsInfoData: MarketsInfoData,
-  virtualInventoryForSwaps: VirtualInventoryForSwapsData
-): SwapEstimator => {
+export const createSwapEstimator = (marketsInfoData: MarketsInfoData): SwapEstimator => {
   return (e: MarketEdge, usdIn: BigNumber) => {
     const marketInfo = marketsInfoData[e.marketAddress];
 
@@ -53,7 +51,6 @@ export const createSwapEstimator = (
       tokenInAddress: e.from,
       tokenOutAddress: e.to,
       shouldApplyPriceImpact: true,
-      virtualInventoryForSwaps,
     });
 
     const isOutLiquidity = swapStats?.isOutLiquidity;
@@ -71,23 +68,23 @@ export const createSwapEstimator = (
   };
 };
 
-export function getBestSwapPath(paths: MarketEdge[][], usdIn: BigNumber, estimator: SwapEstimator) {
-  if (paths.length === 0) {
+export function getBestSwapPath(routes: SwapRoute[], usdIn: BigNumber, estimator: SwapEstimator) {
+  if (routes.length === 0) {
     return undefined;
   }
 
-  let bestPath = paths[0];
+  let bestPath = routes[0].path;
   let bestUsdOut = BigNumber.from(0);
 
-  for (const path of paths) {
+  for (const route of routes) {
     try {
-      const pathUsdOut = path.reduce((prevUsdOut, edge) => {
+      const pathUsdOut = route.edged.reduce((prevUsdOut, edge) => {
         const { usdOut } = estimator(edge, prevUsdOut);
         return usdOut;
       }, usdIn);
 
       if (pathUsdOut.gt(bestUsdOut)) {
-        bestPath = path;
+        bestPath = route.path;
         bestUsdOut = pathUsdOut;
       }
     } catch (e) {
@@ -98,8 +95,14 @@ export function getBestSwapPath(paths: MarketEdge[][], usdIn: BigNumber, estimat
   return bestPath;
 }
 
-export function findAllPaths(graph: MarketsGraph, from: string, to: string, maxDepth = 3) {
-  const paths: MarketEdge[][] = [];
+export function findAllPaths(
+  marketsInfoData: MarketsInfoData,
+  graph: MarketsGraph,
+  from: string,
+  to: string,
+  maxDepth = 3
+) {
+  const routes: SwapRoute[] = [];
 
   const edges = graph.abjacencyList[from];
 
@@ -108,20 +111,25 @@ export function findAllPaths(graph: MarketsGraph, from: string, to: string, maxD
   }
 
   for (const e of edges) {
-    dfs(e, [], {});
+    dfs(e, [], [], {});
   }
 
-  function dfs(edge: MarketEdge, path: MarketEdge[], visited: { [edgeId: string]: boolean }) {
+  function dfs(edge: MarketEdge, path: string[], pathEdges: MarketEdge[], visited: { [edgeId: string]: boolean }) {
     // avoid too deep paths and cycles
     if (path.length >= maxDepth || visited[edge.marketAddress]) {
       return;
     }
 
     visited[edge.marketAddress] = true;
-    path.push(edge);
+    pathEdges.push(edge);
+    path.push(edge.marketAddress);
 
     if (edge.to === to) {
-      paths.push(path);
+      routes.push({
+        edged: pathEdges,
+        path: path,
+        liquidity: getMaxSwapPathLiquidity({ marketsInfoData, swapPath: path, initialCollateralAddress: from }),
+      });
       return;
     }
 
@@ -132,9 +140,9 @@ export function findAllPaths(graph: MarketsGraph, from: string, to: string, maxD
     }
 
     for (const e of edges) {
-      dfs(e, [...path], { ...visited });
+      dfs(e, [...path], [...pathEdges], { ...visited });
     }
   }
 
-  return paths;
+  return routes;
 }

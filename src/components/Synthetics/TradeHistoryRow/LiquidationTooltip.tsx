@@ -4,7 +4,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { PositionTradeAction } from "domain/synthetics/tradeHistory";
 import { BigNumber } from "ethers";
-import { BASIS_POINTS_DIVISOR, PRECISION } from "lib/legacy";
+import { PRECISION } from "lib/legacy";
 import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 
 type Props = {
@@ -38,7 +38,7 @@ export function LiquidationTooltip(p: Props) {
   const borrowingFeeUsd = convertToUsd(borrowingFeeAmount, initialCollateralToken?.decimals, collateralTokenPriceMin);
   const fundingFeeUsd = convertToUsd(fundingFeeAmount, initialCollateralToken?.decimals, collateralTokenPriceMin);
 
-  const maxLeverageText = (Number(maxLeverage) / BASIS_POINTS_DIVISOR).toFixed(1) + "x";
+  const maxLeverageText = Number(maxLeverage).toFixed(1) + "x";
 
   return (
     <Tooltip
@@ -46,7 +46,7 @@ export function LiquidationTooltip(p: Props) {
       handle={t`Liquidated`}
       renderContent={() => (
         <>
-          <Trans>This position was liquidated as the max leverage of {maxLeverageText} was exceeded.`</Trans>
+          <Trans>This position was liquidated as the max leverage of {maxLeverageText} was exceeded.</Trans>
           <br />
           <br />
           <StatsTooltipRow

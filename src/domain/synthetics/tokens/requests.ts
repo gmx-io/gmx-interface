@@ -1,10 +1,9 @@
 import { getOracleKeeperUrl } from "config/oracleKeeper";
 import { getNormalizedTokenSymbol, getTokenBySymbol } from "config/tokens";
-import { Bar } from "domain/tradingview/types";
-import { CHART_PERIODS } from "lib/legacy";
-import { parseOraclePrice } from "./utils";
 import { timezoneOffset } from "domain/prices";
+import { Bar } from "domain/tradingview/types";
 import { TokenPrices } from "./types";
+import { parseOraclePrice } from "./utils";
 
 export async function fetchOracleRecentPrice(chainId: number, tokenSymbol: string): Promise<TokenPrices> {
   const url = getOracleKeeperUrl(chainId, "/prices/tickers");
@@ -49,14 +48,11 @@ export async function fetchOracleCandles(chainId: number, tokenSymbol: string, p
 
   const limit = 5000;
 
-  const timeDiff = CHART_PERIODS[period] * limit;
-  const after = Math.floor(Date.now() / 1000 - timeDiff);
-
-  const url = getOracleKeeperUrl(chainId, "/prices/candles", { tokenSymbol, period, asc: true, after, limit });
+  const url = getOracleKeeperUrl(chainId, "/prices/candles", { tokenSymbol, period, limit });
 
   const res = await fetch(url).then((res) => res.json());
 
-  const result = res.candles.map(parseOracleCandle);
+  const result = res.candles.map(parseOracleCandle).reverse();
 
   return result;
 }

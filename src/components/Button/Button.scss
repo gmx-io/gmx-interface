@@ -3,11 +3,22 @@
   font-size: var(--font-sm);
   display: inline-flex;
   align-items: center;
-  justify-content: center;
   text-decoration: none;
   font-weight: normal;
   padding: 1.1rem 1.6rem;
   border: none;
+
+  &.center {
+    justify-content: center;
+  }
+
+  &.left {
+    justify-content: start;
+  }
+
+  &.right {
+    justify-content: end;
+  }
 
   &.primary {
     background: var(--primary-btn-bg);
@@ -26,7 +37,7 @@
   }
 
   &.primary-action {
-    background: linear-gradient(90deg, #2d42fc, #2e3dcd);
+    background: var(--primary-btn-bg);
     color: #fff;
     border-radius: 0.3rem;
     padding: 1.65rem 1.6rem;
@@ -34,39 +45,24 @@
 
     &:not([disabled]):hover {
       background: var(--primary-btn-hover);
-      box-shadow: 0 0 0.4rem 0.5rem rgb(45 66 252 / 20%);
+      box-shadow: 0 0 0.4rem 0.5rem rgb(45 66 252 / 10%);
     }
 
     &:not([disabled]):active {
       background-color: var(--primary-btn-active);
-      box-shadow: 0 0 0.4rem 0.6rem rgb(45 66 252 / 20%);
+      box-shadow: 0 0 0.4rem 0.6rem rgb(45 66 252 / 10%);
     }
   }
 
-  &.semi-clear {
-    background: rgb(43, 55, 94);
-    color: #fff;
+  &.secondary {
+    background-color: rgba(180, 187, 255, 0.1);
     border-radius: var(--border-radius-sm);
+    color: #fff;
+    padding: 1.1rem 1.25rem;
+    font-weight: normal;
+    position: relative;
     line-height: 1;
     letter-spacing: 0;
-
-    &:not([disabled]):hover {
-      background: rgb(54, 69, 117);
-    }
-
-    &:not([disabled]):active {
-      background: rgb(64, 82, 141);
-    }
-  }
-
-  &.clear {
-    background-color: transparent;
-    border: 1px solid var(--dark-blue-border);
-    border-radius: var(--border-radius-sm);
-    color: #fff;
-    padding: 0.75rem 1.25rem;
-    font-weight: normal;
-    justify-content: left;
 
     > .btn-image {
       display: inline-flex;
@@ -77,18 +73,26 @@
       margin-right: 1.15rem;
     }
 
+    > .arrow-icon {
+      position: absolute;
+      right: 0.5rem;
+      top: 0.5rem;
+      max-width: 0.8rem;
+    }
+
     &:not([disabled]):hover {
-      background: var(--dark-blue-hover);
+      background: rgba(80, 87, 126, 0.6);
     }
 
     &:not([disabled]):active {
-      background: var(--dark-blue-active);
+      background: rgba(80, 87, 126, 0.7);
     }
   }
 
+  &.disabled,
   &:disabled {
     box-shadow: none;
     cursor: not-allowed;
-    opacity: 0.9;
+    opacity: 0.8;
   }
 }

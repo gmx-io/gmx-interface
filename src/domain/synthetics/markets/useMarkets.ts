@@ -1,10 +1,10 @@
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import { getContract } from "config/contracts";
+import { convertTokenAddress, getToken } from "config/tokens";
+import { ethers } from "ethers";
 import { useMulticall } from "lib/multicall";
 import { MarketsData } from "./types";
-import { convertTokenAddress, getToken } from "config/tokens";
 import { getMarketFullName } from "./utils";
-import { ethers } from "ethers";
 
 type MarketsResult = {
   marketsData?: MarketsData;
@@ -16,6 +16,9 @@ const MARKETS_COUNT = 100;
 export function useMarkets(chainId: number): MarketsResult {
   const { data } = useMulticall(chainId, "useMarketsData", {
     key: [],
+
+    refreshInterval: 60000,
+
     request: () => ({
       reader: {
         contractAddress: getContract(chainId, "SyntheticsReader"),
@@ -29,32 +32,30 @@ export function useMarkets(chainId: number): MarketsResult {
       },
     }),
     parseResponse: (res) => {
-      return res.reader.markets.returnValues.reduce(
+      return res.data.reader.markets.returnValues.reduce(
         (acc: { marketsData: MarketsData; marketsAddresses: string[] }, marketValues) => {
-          const [marketTokenAddress, indexTokenAddress, longTokenAddress, shortTokenAddress, data] = marketValues;
-
           try {
-            const indexToken = getToken(chainId, convertTokenAddress(chainId, indexTokenAddress, "native"));
-            const longToken = getToken(chainId, longTokenAddress);
-            const shortToken = getToken(chainId, shortTokenAddress);
+            const indexToken = getToken(chainId, convertTokenAddress(chainId, marketValues.indexToken, "native"));
+            const longToken = getToken(chainId, marketValues.longToken);
+            const shortToken = getToken(chainId, marketValues.shortToken);
 
-            const isSameCollaterals = longTokenAddress === shortTokenAddress;
-            const isSpotOnly = indexTokenAddress === ethers.constants.AddressZero;
+            const isSameCollaterals = marketValues.longToken === marketValues.shortToken;
+            const isSpotOnly = marketValues.indexToken === ethers.constants.AddressZero;
 
             const name = getMarketFullName({ indexToken, longToken, shortToken, isSpotOnly });
 
-            acc.marketsData[marketTokenAddress] = {
-              marketTokenAddress,
-              indexTokenAddress,
-              longTokenAddress,
-              shortTokenAddress,
+            acc.marketsData[marketValues.marketToken] = {
+              marketTokenAddress: marketValues.marketToken,
+              indexTokenAddress: marketValues.indexToken,
+              longTokenAddress: marketValues.longToken,
+              shortTokenAddress: marketValues.shortToken,
               isSameCollaterals,
               isSpotOnly,
               name,
-              data,
+              data: "",
             };
 
-            acc.marketsAddresses.push(marketTokenAddress);
+            acc.marketsAddresses.push(marketValues.marketToken);
           } catch (e) {
             // eslint-disable-next-line no-console
             console.warn("unsupported market", e);

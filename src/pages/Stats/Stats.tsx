@@ -1,10 +1,10 @@
 import { useWeb3React } from "@web3-react/core";
 import { getContract } from "config/contracts";
-import { getWhitelistedTokens } from "config/tokens";
+import { getWhitelistedV1Tokens } from "config/tokens";
 import { TokenInfo, useInfoTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
-import { BASIS_POINTS_DIVISOR } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import useSWR from "swr";
 import { getServerUrl } from "config/backend";
 import { formatDistance } from "date-fns";
@@ -51,7 +51,7 @@ export default function Stats() {
   const readerAddress = getContract(chainId, "Reader");
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
 
-  const whitelistedTokens = getWhitelistedTokens(chainId);
+  const whitelistedTokens = getWhitelistedV1Tokens(chainId);
   const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
   const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
 
@@ -107,7 +107,7 @@ export default function Stats() {
     if (
       !isLong &&
       tokenInfo.maxGlobalShortSize &&
-      tokenInfo.guaranteedUsd?.mul(11).div(10).gt(tokenInfo.maxGlobalShortSize)
+      tokenInfo.globalShortSize?.mul(11).div(10).gt(tokenInfo.maxGlobalShortSize)
     ) {
       className = "warn";
     }

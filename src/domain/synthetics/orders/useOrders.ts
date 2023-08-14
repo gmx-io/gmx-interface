@@ -1,28 +1,22 @@
-import { useWeb3React } from "@web3-react/core";
 import DataStore from "abis/DataStore.json";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import { getContract } from "config/contracts";
 import { accountOrderListKey } from "config/dataStore";
+import { BigNumber } from "ethers";
 import { useMulticall } from "lib/multicall";
-import { bigNumberify } from "lib/numbers";
-import { useEffect, useState } from "react";
 import { OrdersData } from "./types";
 
 type OrdersResult = {
   ordersData?: OrdersData;
 };
 
-const DEFAULT_COUNT = 100;
+const DEFAULT_COUNT = 1000;
 
-export function useOrders(chainId: number): OrdersResult {
-  const { account } = useWeb3React();
-
-  const [ordersData, setOrdersData] = useState<OrdersData>({});
-  const [startIndex, setStartIndex] = useState(0);
-  const [endIndex, setEndIndex] = useState(DEFAULT_COUNT);
+export function useOrders(chainId: number, p: { account?: string | null }): OrdersResult {
+  const { account } = p;
 
   const { data } = useMulticall(chainId, "useOrdersData", {
-    key: account ? [account, startIndex, endIndex] : null,
+    key: account ? [account] : null,
     request: () => ({
       dataStore: {
         contractAddress: getContract(chainId, "DataStore"),
@@ -34,7 +28,7 @@ export function useOrders(chainId: number): OrdersResult {
           },
           keys: {
             methodName: "getBytes32ValuesAt",
-            params: [accountOrderListKey(account!), startIndex, endIndex],
+            params: [accountOrderListKey(account!), 0, DEFAULT_COUNT],
           },
         },
       },
@@ -44,66 +38,43 @@ export function useOrders(chainId: number): OrdersResult {
         calls: {
           orders: {
             methodName: "getAccountOrders",
-            params: [getContract(chainId, "DataStore"), account, startIndex, endIndex],
+            params: [getContract(chainId, "DataStore"), account, 0, DEFAULT_COUNT],
           },
         },
       },
     }),
     parseResponse: (res) => {
-      const count = Number(res.dataStore.count.returnValues[0]);
-      const orderKeys = res.dataStore.keys.returnValues;
-      const orders = res.reader.orders.returnValues;
+      const count = Number(res.data.dataStore.count.returnValues[0]);
+      const orderKeys = res.data.dataStore.keys.returnValues;
+      const orders = res.data.reader.orders.returnValues;
 
       return {
         count,
         ordersData: orders.reduce((acc: OrdersData, order, i) => {
           const key = orderKeys[i];
-          const [addresses, numbers, flags, data] = order;
-          const [
-            account,
-            receiver,
-            callbackContract,
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            uiFeeReceiver,
-            marketAddress,
-            initialCollateralTokenAddress,
-            swapPath,
-          ] = addresses;
-          const [orderType, decreasePositionSwapType, ...restNumbers] = numbers;
-          const [
-            sizeDeltaUsd,
-            initialCollateralDeltaAmount,
-            contractTriggerPrice,
-            contractAcceptablePrice,
-            executionFee,
-            callbackGasLimit,
-            minOutputAmount,
-            updatedAtBlock,
-          ] = restNumbers.map(bigNumberify);
-
-          const [isLong, shouldUnwrapNativeToken, isFrozen] = flags;
+          const { data } = order;
 
           acc[key] = {
             key,
-            account,
-            decreasePositionSwapType,
-            receiver,
-            callbackContract,
-            marketAddress,
-            initialCollateralTokenAddress,
-            swapPath,
-            sizeDeltaUsd,
-            initialCollateralDeltaAmount,
-            contractTriggerPrice,
-            contractAcceptablePrice,
-            executionFee,
-            callbackGasLimit,
-            minOutputAmount,
-            updatedAtBlock,
-            isLong,
-            shouldUnwrapNativeToken,
-            isFrozen,
-            orderType,
+            account: order.addresses.account,
+            receiver: order.addresses.receiver,
+            callbackContract: order.addresses.callbackContract,
+            marketAddress: order.addresses.market,
+            initialCollateralTokenAddress: order.addresses.initialCollateralToken,
+            swapPath: order.addresses.swapPath,
+            sizeDeltaUsd: BigNumber.from(order.numbers.sizeDeltaUsd),
+            initialCollateralDeltaAmount: BigNumber.from(order.numbers.initialCollateralDeltaAmount),
+            contractTriggerPrice: BigNumber.from(order.numbers.triggerPrice),
+            contractAcceptablePrice: BigNumber.from(order.numbers.acceptablePrice),
+            executionFee: BigNumber.from(order.numbers.executionFee),
+            callbackGasLimit: BigNumber.from(order.numbers.callbackGasLimit),
+            minOutputAmount: BigNumber.from(order.numbers.minOutputAmount),
+            updatedAtBlock: BigNumber.from(order.numbers.updatedAtBlock),
+            isLong: order.flags.isLong,
+            shouldUnwrapNativeToken: order.flags.shouldUnwrapNativeToken,
+            isFrozen: order.flags.isFrozen,
+            orderType: order.numbers.orderType,
+            decreasePositionSwapType: order.numbers.decreasePositionSwapType,
             data,
           };
 
@@ -113,28 +84,7 @@ export function useOrders(chainId: number): OrdersResult {
     },
   });
 
-  useEffect(() => {
-    if (!account) {
-      setOrdersData({});
-      setStartIndex(0);
-      setEndIndex(DEFAULT_COUNT);
-      return;
-    }
-
-    if (data?.count && data.count > endIndex) {
-      setStartIndex(endIndex);
-      setEndIndex(data.count);
-    }
-
-    if (data?.ordersData) {
-      setOrdersData((old) => ({
-        ...old,
-        ...data.ordersData,
-      }));
-    }
-  }, [account, data?.count, data?.ordersData, endIndex]);
-
   return {
-    ordersData,
+    ordersData: data?.ordersData,
   };
 }

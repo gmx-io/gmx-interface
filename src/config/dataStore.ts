@@ -16,7 +16,9 @@ export const FEE_RECEIVER_POSITION_FACTOR_KEY = hashString("FEE_RECEIVER_POSITIO
 export const OPEN_INTEREST_KEY = hashString("OPEN_INTEREST");
 export const OPEN_INTEREST_IN_TOKENS_KEY = hashString("OPEN_INTEREST_IN_TOKENS");
 export const POOL_AMOUNT_KEY = hashString("POOL_AMOUNT");
+export const MAX_POOL_AMOUNT_KEY = hashString("MAX_POOL_AMOUNT");
 export const RESERVE_FACTOR_KEY = hashString("RESERVE_FACTOR");
+export const OPEN_INTEREST_RESERVE_FACTOR_KEY = hashString("OPEN_INTEREST_RESERVE_FACTOR");
 export const NONCE_KEY = hashString("NONCE");
 export const BORROWING_FACTOR_KEY = hashString("BORROWING_FACTOR");
 export const BORROWING_EXPONENT_FACTOR_KEY = hashString("BORROWING_EXPONENT_FACTOR");
@@ -76,8 +78,8 @@ export function maxPositionImpactFactorKey(market: string, isPositive: boolean) 
   return hashData(["bytes32", "address", "bool"], [MAX_POSITION_IMPACT_FACTOR_KEY, market, isPositive]);
 }
 
-export function positionFeeFactorKey(market: string) {
-  return hashData(["bytes32", "address"], [POSITION_FEE_FACTOR_KEY, market]);
+export function positionFeeFactorKey(market: string, forPositiveImpact: boolean) {
+  return hashData(["bytes32", "address", "bool"], [POSITION_FEE_FACTOR_KEY, market, forPositiveImpact]);
 }
 
 export function swapImpactFactorKey(market: string, isPositive: boolean) {
@@ -88,8 +90,8 @@ export function swapImpactExponentFactorKey(market: string) {
   return hashData(["bytes32", "address"], [SWAP_IMPACT_EXPONENT_FACTOR_KEY, market]);
 }
 
-export function swapFeeFactorKey(market: string) {
-  return hashData(["bytes32", "address"], [SWAP_FEE_FACTOR_KEY, market]);
+export function swapFeeFactorKey(market: string, forPositiveImpact: boolean) {
+  return hashData(["bytes32", "address", "bool"], [SWAP_FEE_FACTOR_KEY, market, forPositiveImpact]);
 }
 
 export function openInterestKey(market: string, collateralToken: string, isLong: boolean) {
@@ -109,6 +111,10 @@ export function poolAmountKey(market: string, token: string) {
 
 export function reserveFactorKey(market: string, isLong: boolean) {
   return hashData(["bytes32", "address", "bool"], [RESERVE_FACTOR_KEY, market, isLong]);
+}
+
+export function openInterestReserveFactorKey(market: string, isLong: boolean) {
+  return hashData(["bytes32", "address", "bool"], [OPEN_INTEREST_RESERVE_FACTOR_KEY, market, isLong]);
 }
 
 export function borrowingFactorKey(market: string, isLong: boolean) {
@@ -159,24 +165,24 @@ export function depositGasLimitKey(singleToken: boolean) {
   return hashData(["bytes32", "bool"], [DEPOSIT_GAS_LIMIT_KEY, singleToken]);
 }
 
-export function withdrawalGasLimitKey(singleToken: boolean) {
-  return hashData(["bytes32", "bool"], [WITHDRAWAL_GAS_LIMIT_KEY, singleToken]);
+export function withdrawalGasLimitKey() {
+  return hashData(["bytes32"], [WITHDRAWAL_GAS_LIMIT_KEY]);
 }
 
 export function singleSwapGasLimitKey() {
-  return hashData(["bytes32"], [SINGLE_SWAP_GAS_LIMIT_KEY]);
+  return SINGLE_SWAP_GAS_LIMIT_KEY;
 }
 
 export function increaseOrderGasLimitKey() {
-  return hashData(["bytes32"], [INCREASE_ORDER_GAS_LIMIT_KEY]);
+  return INCREASE_ORDER_GAS_LIMIT_KEY;
 }
 
 export function decreaseOrderGasLimitKey() {
-  return hashData(["bytes32"], [DECREASE_ORDER_GAS_LIMIT_KEY]);
+  return DECREASE_ORDER_GAS_LIMIT_KEY;
 }
 
 export function swapOrderGasLimitKey() {
-  return hashData(["bytes32"], [SWAP_ORDER_GAS_LIMIT_KEY]);
+  return SWAP_ORDER_GAS_LIMIT_KEY;
 }
 
 export function accountOrderListKey(account: string) {
@@ -231,4 +237,8 @@ export function affiliateRewardKey(market: string, token: string, account: strin
 
 export function isMarketDisabledKey(market: string) {
   return hashData(["bytes32", "address"], [IS_MARKET_DISABLED_KEY, market]);
+}
+
+export function maxPoolAmountKey(market: string, token: string) {
+  return hashData(["bytes32", "address", "address"], [MAX_POOL_AMOUNT_KEY, market, token]);
 }

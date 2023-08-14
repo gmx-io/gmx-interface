@@ -1,5 +1,5 @@
 import { MarketInfo } from "domain/synthetics/markets";
-import { mockMarketsData } from "domain/synthetics/testUtils/mocks";
+import { mockMarketsInfoData, mockTokensData } from "domain/synthetics/testUtils/mocks";
 import { MarketEdge, SwapEstimator, findAllPaths, getBestSwapPath, getMarketsGraph } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
 
@@ -15,10 +15,10 @@ const marketsKeys = [
   "ETH-USDC-USDC",
 ];
 
-const marketsData = mockMarketsData(marketsKeys);
-// const feeConfigs = mockFeeConfigsData(marketsKeys);
+const tokensData = mockTokensData();
+const marketsInfoData = mockMarketsInfoData(tokensData, marketsKeys);
 
-const graph = getMarketsGraph(Object.values(marketsData) as MarketInfo[]);
+const graph = getMarketsGraph(Object.values(marketsInfoData) as MarketInfo[]);
 
 const BASE_FEE = BigNumber.from(-1);
 
@@ -168,20 +168,19 @@ describe("swapPath", () => {
       it(`${name}: ${from} -> ${to}`, () => {
         const mockEstimator: SwapEstimator = (e: MarketEdge, usdIn: BigNumber) => {
           const fees = feeOverrides?.[e.marketAddress]?.[`${e.from}-${e.to}`] || BASE_FEE;
-
           return {
             usdOut: usdIn.add(fees),
           };
         };
+        const allRoutes = findAllPaths(marketsInfoData, graph, from, to);
 
-        const allPaths = findAllPaths(graph, from, to);
+        const allPathsResult = allRoutes?.map((route) => route.path);
 
-        const allPathsResult = allPaths?.map((path) => path.map((p) => p.marketAddress));
         let pathResult: string[] | undefined = undefined;
 
-        if (allPaths) {
-          const result = getBestSwapPath(allPaths, BigNumber.from(5), mockEstimator);
-          pathResult = result?.map((p) => p.marketAddress);
+        if (allRoutes) {
+          const result = getBestSwapPath(allRoutes, BigNumber.from(5), mockEstimator);
+          pathResult = result;
         }
 
         expect(pathResult).toEqual(expected);
@@ -189,91 +188,4 @@ describe("swapPath", () => {
       });
     }
   });
-
-  // describe("with fee estimaton", () => {
-  //   const tests = [
-  //     {
-  //       name: "default by markets order",
-  //       from: "ETH",
-  //       to: "AVAX",
-  //       expected: ["ETH-ETH-USDC", "AVAX-AVAX-USDC"],
-  //       expectedImpactDeltaUsd: BigNumber.from(0),
-  //       poolsData: mockPoolsData(tokensData, marketsKeys),
-  //       openInterestData: mockOpenInterestData(marketsData, tokensData),
-  //       // ETH
-  //       usdIn: expandDecimals(300, 30),
-  //     },
-  //     {
-  //       name: "by negative price impact",
-  //       from: "ETH",
-  //       to: "AVAX",
-  //       expected: ["SOL-ETH-USDC", "AVAX-AVAX-USDC"],
-  //       expectedImpactDeltaUsd: expandDecimals(-1, 27), // -0.001$
-  //       poolsData: mockPoolsData(tokensData, marketsKeys, {
-  //         "ETH-ETH-USDC": {
-  //           // inbalanced
-  //           longPoolAmount: expandDecimals(5, 18), // ETH
-  //           shortPoolAmount: expandDecimals(1500, 6), // USDC
-  //         },
-  //         "SOL-ETH-USDC": {
-  //           // balanced
-  //           longPoolAmount: expandDecimals(5, 18), // ETH
-  //           shortPoolAmount: expandDecimals(5000, 6), // USDC
-  //         },
-  //       }),
-  //       openInterestData: mockOpenInterestData(marketsData, tokensData),
-  //       // ETH
-  //       usdIn: expandDecimals(300, 30),
-  //     },
-  //     {
-  //       name: "by positive price impact",
-  //       from: "ETH",
-  //       to: "AVAX",
-  //       expected: ["SOL-ETH-USDC", "AVAX-AVAX-USDC"],
-  //       expectedImpactDeltaUsd: expandDecimals(0, 30),
-  //       poolsData: mockPoolsData(tokensData, marketsKeys, {
-  //         "SOL-ETH-USDC": {
-  //           // balanced
-  //           longPoolAmount: expandDecimals(3, 18), // ETH
-  //           shortPoolAmount: expandDecimals(4000, 6), // USDC
-  //         },
-  //       }),
-  //       openInterestData: mockOpenInterestData(marketsData, tokensData),
-  //       // ETH
-  //       usdIn: expandDecimals(500, 30),
-  //     },
-  //     {
-  //       name: "by liquidity",
-  //       from: "ETH",
-  //       to: "AVAX",
-  //       expected: ["SOL-ETH-USDC", "AVAX-AVAX-USDC"],
-  //       expectedImpactDeltaUsd: expandDecimals(0, 30),
-  //       poolsData: mockPoolsData(tokensData, marketsKeys),
-  //       openInterestData: mockOpenInterestData(marketsData, tokensData, {
-  //         "ETH-ETH-USDC": {
-  //           // High reserved USDC
-  //           shortInterestInTokens: expandDecimals(1, 18), // ETH
-  //         },
-  //       }),
-  //       // ETH
-  //       usdIn: expandDecimals(500, 30),
-  //     },
-  //   ];
-
-  //   for (const { name, from, to, expected, poolsData, usdIn, expectedImpactDeltaUsd, openInterestData } of tests) {
-  //     it(`${name}: ${from} -> ${to}`, () => {
-  //       const estimator = createSwapEstimator(marketsData, poolsData, openInterestData, tokensData, feeConfigs);
-
-  //       const fromToken = getTokenData(tokensData, from)!;
-  //       const amountIn = convertToTokenAmount(usdIn, fromToken.decimals, fromToken.prices?.minPrice);
-
-  //       const result = findBestSwapPath(graph, from, to, usdIn, estimator);
-  //       const path = result?.map((p) => p.marketAddress);
-  //       const fees = getSwapPathStats(marketsData, poolsData, tokensData, feeConfigs, path, from, usdIn);
-
-  //       expect(path).toEqual(expected);
-  //       expect(formatUsd(fees?.totalPriceImpact.deltaUsd)).toEqual(formatUsd(expectedImpactDeltaUsd));
-  //     });
-  //   }
-  // });
 });

@@ -7,15 +7,15 @@ import { isHomeSite } from "lib/legacy";
 import { useWeb3React } from "@web3-react/core";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
+import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
+import { isDevelopment } from "config/env";
 import { getIcon } from "config/icons";
+import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
 import { useChainId } from "lib/chains";
+import { formatAmount } from "lib/numbers";
 import { switchNetwork } from "lib/wallets";
 import APRLabel from "../APRLabel/APRLabel";
 import { HeaderLink } from "../Header/HeaderLink";
-import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
-import { isDevelopment } from "config/env";
-import { formatAmount } from "lib/numbers";
 
 const glpIcon = getIcon("common", "glp");
 const gmxIcon = getIcon("common", "gmx");
@@ -27,6 +27,7 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
   const { active } = useWeb3React();
 
   const { avgMarketsAPR: fujiAvgMarketsAPR } = useMarketTokensAPR(AVALANCHE_FUJI);
+  const { avgMarketsAPR: goerliAvgMarketsAPR } = useMarketTokensAPR(ARBITRUM_GOERLI);
   const { avgMarketsAPR: arbitrumAvgMarketsAPR } = useMarketTokensAPR(ARBITRUM);
   const { avgMarketsAPR: avalancheAvgMarketsAPR } = useMarketTokensAPR(AVALANCHE);
 
@@ -90,7 +91,7 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
                 <Trans>Buy on Avalanche</Trans>
               </BuyLink>
             </div>
-            <ExternalLink href="https://gmxio.gitbook.io/gmx/tokenomics" className="default-btn read-more">
+            <ExternalLink href="https://docs.gmx.io/docs/category/tokenomics" className="default-btn read-more">
               <Trans>Read more</Trans>
             </ExternalLink>
           </div>
@@ -120,7 +121,7 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
               </BuyLink>
             </div>
             <a
-              href="https://gmxio.gitbook.io/gmx/glp"
+              href="https://docs.gmx.io/docs/providing-liquidity/v1"
               target="_blank"
               rel="noreferrer"
               className="default-btn read-more"
@@ -138,7 +139,7 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
         <div className="Home-token-card-option-info">
           <div className="Home-token-card-option-title">
             <Trans>
-              GM is the liquidity provider token for GMX V2 markets. Accrues 70% of the V2 markets generated fees.
+              GM is the liquidity provider token for GMX V2 markets. Accrues 67% of the V2 markets generated fees.
             </Trans>
           </div>
 
@@ -149,31 +150,41 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
                   <Trans>Avalanche FUJI APR:</Trans> {formatAmount(fujiAvgMarketsAPR, 2, 2)}%
                 </span>
                 {", "}
+                <span>
+                  <Trans>Arbitrum Goerli APR:</Trans> {formatAmount(goerliAvgMarketsAPR, 2, 2)}%
+                </span>
+                {", "}
               </>
             )}
             <span>
               <Trans>Arbitrum APR:</Trans> {formatAmount(arbitrumAvgMarketsAPR, 2, 2)}%
             </span>
-            {", "}
-            <span>
-              <Trans>Avalanche APR:</Trans> {formatAmount(avalancheAvgMarketsAPR, 2, 2)}%
-            </span>
+            <>
+              {", "}
+              <span>
+                <Trans>Avalanche APR:</Trans> {formatAmount(avalancheAvgMarketsAPR, 2, 2)}%
+              </span>
+            </>
           </div>
 
           <div className="Home-token-card-option-action">
             <div className="buy">
-              <BuyLink to="/pools" className="default-btn" network={AVALANCHE_FUJI}>
-                <Trans>Buy on Avalanche FUJI</Trans>
+              <BuyLink to="/pools" className="default-btn" network={ARBITRUM}>
+                <Trans>Buy on Arbitrum</Trans>
+              </BuyLink>
+
+              <BuyLink to="/pools" className="default-btn" network={AVALANCHE}>
+                <Trans>Buy on Avalanche</Trans>
               </BuyLink>
             </div>
-            {/* <a
-                href="https://gmxio.gitbook.io/gmx/glp"
-                target="_blank"
-                rel="noreferrer"
-                className="default-btn read-more"
-              >
-                <Trans>Read more</Trans>
-              </a> */}
+            <a
+              href="https://docs.gmx.io/docs/providing-liquidity/v2"
+              target="_blank"
+              rel="noreferrer"
+              className="default-btn read-more"
+            >
+              <Trans>Read more</Trans>
+            </a>
           </div>
         </div>
       </div>

@@ -1,25 +1,25 @@
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, ETH_MAINNET } from "./chains";
+import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, ETH_MAINNET } from "./chains";
 import { isDevelopment } from "./env";
 import { getSubgraphUrlKey } from "./localStorage";
 
 const SUBGRAPH_URLS = {
   [ARBITRUM]: {
-    // stats: "https://api.thegraph.com/subgraphs/name/gdev8317/gmx-arbitrum-stats
-    stats: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-stats",
-    // referrals: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-arbitrum-referrals",
-    // TODO: Test refferals updates
-    referrals:
-      "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-referrals/version/synts-stats-230509054500-2deb6a4/api",
+    stats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-stats/api",
+    referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-referrals/api",
     nissohVault: "https://api.thegraph.com/subgraphs/name/nissoh/gmx-vault",
+    syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-arbitrum-stats/api",
+  },
+
+  [ARBITRUM_GOERLI]: {
+    stats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-stats/api",
+    referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-goerli-referrals/api",
+    syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-goerli-stats/api",
   },
 
   [AVALANCHE]: {
-    // stats: "https://api.thegraph.com/subgraphs/name/gdev8317/gmx-avalanche-staging", // testing
-    stats: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-stats",
-    // TODO: Test refferals updates
-    // referrals: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-referrals",
-    referrals:
-      "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-avalanche-referrals/version/synts-stats-230509054250-2deb6a4/api",
+    stats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-avalanche-stats/api",
+    referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-avalanche-referrals/api",
+    syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-avalanche-stats/api",
   },
 
   [AVALANCHE_FUJI]: {
@@ -46,5 +46,5 @@ export function getSubgraphUrl(chainId: number, subgraph: string) {
     }
   }
 
-  return SUBGRAPH_URLS[chainId]?.[subgraph];
+  return SUBGRAPH_URLS?.[chainId]?.[subgraph];
 }

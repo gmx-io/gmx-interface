@@ -265,7 +265,7 @@ function AffiliatesStats({
                   {affiliateTierInfo && t`Tier ${getTierIdDisplay(tierId)} (${tierRebateInfo[tierId]}% rebate)`}
                 </span>
               </p>
-              <Button variant="clear" onClick={open}>
+              <Button variant="secondary" onClick={open}>
                 <FiPlus />{" "}
                 <span className="ml-small">
                   <Trans>Create</Trans>
@@ -434,10 +434,10 @@ function AffiliatesStats({
                       if (rebate.tokens[0] === esGmxAddress) {
                         rebateType = t`V1 esGMX`;
                       } else {
-                        rebateType = t`V1 AIRDROP`;
+                        rebateType = t`V1 Airdrop`;
                       }
                     } else if (rebate.typeId === RebateDistributionType.Claim) {
-                      rebateType = t`V2 CLAIM`;
+                      rebateType = t`V2 Claim`;
                     }
 
                     const amountsByTokens = rebate.tokens.reduce((acc, tokenAddress, i) => {
@@ -481,29 +481,28 @@ function AffiliatesStats({
                                     &nbsp;
                                   </>
                                 )}
-
-                                {getUSDValue(totalUsd)}
+                                ${getUSDValue(totalUsd)}
                               </div>
                             }
                             renderContent={() => (
                               <>
+                                {tokensWithoutPrices.length > 0 && (
+                                  <>
+                                    <Trans>
+                                      USD Value may not be accurate since the data does not contain prices for{" "}
+                                      {tokensWithoutPrices
+                                        .map((address) => getToken(chainId, address).symbol)
+                                        .join(", ")}
+                                    </Trans>
+                                    <br />
+                                    <br />
+                                  </>
+                                )}
                                 {Object.keys(amountsByTokens).map((tokenAddress) => {
                                   const token = getToken(chainId, tokenAddress);
 
                                   return (
                                     <>
-                                      {tokensWithoutPrices.length > 0 && (
-                                        <>
-                                          <Trans>
-                                            USD Value may not be accurate since the data does not contain prices for{" "}
-                                            {tokensWithoutPrices
-                                              .map((address) => getToken(chainId, address).symbol)
-                                              .join(", ")}
-                                          </Trans>
-                                          <br />
-                                          <br />
-                                        </>
-                                      )}
                                       <StatsTooltipRow
                                         key={tokenAddress}
                                         showDollar={false}

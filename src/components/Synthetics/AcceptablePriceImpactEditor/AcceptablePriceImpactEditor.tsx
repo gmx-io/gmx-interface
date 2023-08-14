@@ -2,10 +2,11 @@ import { Trans, t } from "@lingui/macro";
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
 import { helperToast } from "lib/helperToast";
-import { BASIS_POINTS_DIVISOR } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { useState } from "react";
 
 type Props = {
+  isVisible: boolean;
   onClose: () => void;
   savedAcceptablePriceImpactBps: number;
   saveAcceptablePriceImpactBps: (acceptablePriceImpactBps: number) => void;
@@ -34,7 +35,7 @@ export function AcceptbablePriceImpactEditor(p: Props) {
   }
 
   return (
-    <Modal className="App-settings" isVisible={true} setIsVisible={p.onClose} label={t`Edit`}>
+    <Modal className="App-settings" isVisible={p.isVisible} setIsVisible={p.onClose} label={t`Edit`}>
       <div className="App-settings-row">
         <div>
           <Trans>Acceptable Price Impact</Trans>
@@ -51,7 +52,7 @@ export function AcceptbablePriceImpactEditor(p: Props) {
         </div>
       </div>
 
-      <Button className="w-100" variant="primary-action" onClick={onSubmit}>{t`Save`}</Button>
+      <Button className="w-full" variant="primary-action" onClick={onSubmit}>{t`Save`}</Button>
     </Modal>
   );
 }

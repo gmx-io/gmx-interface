@@ -1,5 +1,5 @@
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { VirtualInventoryForSwapsData } from "domain/synthetics/fees";
+import { getSwapFee } from "domain/synthetics/fees";
 import {
   MarketInfo,
   MarketsInfoData,
@@ -9,7 +9,6 @@ import {
 } from "domain/synthetics/markets";
 import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { BigNumber, ethers } from "ethers";
-import { applyFactor } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { applySwapImpactWithCap, getPriceImpactForSwap } from "../../fees/utils/priceImpact";
 import { SwapPathStats, SwapStats } from "../types";
@@ -123,7 +122,6 @@ export function getSwapPathStats(p: {
   usdIn: BigNumber;
   shouldUnwrapNativeToken: boolean;
   shouldApplyPriceImpact: boolean;
-  virtualInventoryForSwaps: VirtualInventoryForSwapsData;
 }): SwapPathStats | undefined {
   const {
     marketsInfoData,
@@ -133,7 +131,6 @@ export function getSwapPathStats(p: {
     shouldUnwrapNativeToken,
     shouldApplyPriceImpact,
     wrappedNativeTokenAddress,
-    virtualInventoryForSwaps,
   } = p;
 
   if (swapPath.length === 0) {
@@ -166,7 +163,6 @@ export function getSwapPathStats(p: {
       tokenOutAddress,
       usdIn: usdOut,
       shouldApplyPriceImpact,
-      virtualInventoryForSwaps,
     });
 
     tokenInAddress = swapStep.tokenOutAddress;
@@ -204,9 +200,8 @@ export function getSwapStats(p: {
   tokenOutAddress: string;
   usdIn: BigNumber;
   shouldApplyPriceImpact: boolean;
-  virtualInventoryForSwaps: VirtualInventoryForSwapsData;
 }): SwapStats {
-  const { marketInfo, tokenInAddress, tokenOutAddress, usdIn, shouldApplyPriceImpact, virtualInventoryForSwaps } = p;
+  const { marketInfo, tokenInAddress, tokenOutAddress, usdIn, shouldApplyPriceImpact } = p;
 
   const isWrap = tokenInAddress === NATIVE_TOKEN_ADDRESS;
   const isUnwrap = tokenOutAddress === NATIVE_TOKEN_ADDRESS;
@@ -222,29 +217,14 @@ export function getSwapStats(p: {
 
   const amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, priceIn)!;
 
-  const swapFeeAmount = applyFactor(amountIn, marketInfo.swapFeeFactor);
-  const swapFeeUsd = applyFactor(usdIn, marketInfo.swapFeeFactor);
-
-  const amountInAfterFees = amountIn.sub(swapFeeAmount);
-  const usdInAfterFees = usdIn.sub(swapFeeUsd);
-
-  let usdOut = usdInAfterFees;
-  let amountOut = convertToTokenAmount(usdOut, tokenOut.decimals, priceOut)!;
-
   let priceImpactDeltaUsd: BigNumber;
 
   try {
-    priceImpactDeltaUsd = getPriceImpactForSwap(
-      marketInfo,
-      virtualInventoryForSwaps,
-      tokenIn.address,
-      amountInAfterFees,
-      amountOut.mul(-1)
-    );
+    priceImpactDeltaUsd = getPriceImpactForSwap(marketInfo, tokenIn, tokenOut, usdIn, usdIn.mul(-1));
   } catch (e) {
     return {
-      swapFeeUsd,
-      swapFeeAmount,
+      swapFeeUsd: BigNumber.from(0),
+      swapFeeAmount: BigNumber.from(0),
       isWrap,
       isUnwrap,
       marketAddress: marketInfo.marketTokenAddress,
@@ -252,20 +232,30 @@ export function getSwapStats(p: {
       tokenOutAddress,
       priceImpactDeltaUsd: BigNumber.from(0),
       amountIn,
-      amountInAfterFees,
-      amountOut,
-      usdOut,
+      amountInAfterFees: amountIn,
+      usdIn,
+      amountOut: BigNumber.from(0),
+      usdOut: BigNumber.from(0),
       isOutLiquidity: true,
     };
   }
 
+  const swapFeeAmount = getSwapFee(marketInfo, amountIn, priceImpactDeltaUsd.gt(0));
+  const swapFeeUsd = getSwapFee(marketInfo, usdIn, priceImpactDeltaUsd.gt(0));
+
+  const amountInAfterFees = amountIn.sub(swapFeeAmount);
+  const usdInAfterFees = usdIn.sub(swapFeeUsd);
+
+  let usdOut = usdInAfterFees;
+  let amountOut = convertToTokenAmount(usdOut, tokenOut.decimals, priceOut)!;
+
   let cappedImpactDeltaUsd: BigNumber;
 
   if (priceImpactDeltaUsd.gt(0)) {
-    const positiveImpactAmount = applySwapImpactWithCap(marketInfo, tokenOut.address, priceImpactDeltaUsd);
+    const positiveImpactAmount = applySwapImpactWithCap(marketInfo, tokenOut, priceImpactDeltaUsd);
     cappedImpactDeltaUsd = convertToUsd(positiveImpactAmount, tokenOut.decimals, priceOut)!;
   } else {
-    const negativeImpactAmount = applySwapImpactWithCap(marketInfo, tokenIn.address, priceImpactDeltaUsd);
+    const negativeImpactAmount = applySwapImpactWithCap(marketInfo, tokenIn, priceImpactDeltaUsd);
     cappedImpactDeltaUsd = convertToUsd(negativeImpactAmount, tokenIn.decimals, priceIn)!;
   }
 
@@ -297,6 +287,7 @@ export function getSwapStats(p: {
     priceImpactDeltaUsd: cappedImpactDeltaUsd,
     amountIn,
     amountInAfterFees,
+    usdIn,
     amountOut,
     usdOut,
     isOutLiquidity,

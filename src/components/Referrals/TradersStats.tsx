@@ -233,7 +233,7 @@ function TradersStats({
                     return (
                       <tr key={index}>
                         <td data-label="Date">{formatDate(rebate.timestamp)}</td>
-                        <td data-label="Type">V1 AIRDROP</td>
+                        <td data-label="Type">V1 Airdrop</td>
                         <td data-label="Amount">
                           <Tooltip
                             handle={
@@ -244,29 +244,28 @@ function TradersStats({
                                     &nbsp;
                                   </>
                                 )}
-
-                                {getUSDValue(totalUsd)}
+                                ${getUSDValue(totalUsd)}
                               </div>
                             }
                             renderContent={() => (
                               <>
+                                {tokensWithoutPrices.length > 0 && (
+                                  <>
+                                    <Trans>
+                                      USD Value may not be accurate since the data does not contain prices for{" "}
+                                      {tokensWithoutPrices
+                                        .map((address) => getToken(chainId, address).symbol)
+                                        .join(", ")}
+                                    </Trans>
+                                    <br />
+                                    <br />
+                                  </>
+                                )}
                                 {Object.keys(amountsByTokens).map((tokenAddress) => {
                                   const token = getToken(chainId, tokenAddress);
 
                                   return (
                                     <>
-                                      {tokensWithoutPrices.length > 0 && (
-                                        <>
-                                          <Trans>
-                                            USD Value may not be accurate since the data does not contain prices for{" "}
-                                            {tokensWithoutPrices
-                                              .map((address) => getToken(chainId, address).symbol)
-                                              .join(", ")}
-                                          </Trans>
-                                          <br />
-                                          <br />
-                                        </>
-                                      )}
                                       <StatsTooltipRow
                                         key={tokenAddress}
                                         showDollar={false}

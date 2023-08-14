@@ -22,7 +22,6 @@ export type SwapFeeItem = FeeItem & {
 export type GasLimitsConfig = {
   depositSingleToken: BigNumber;
   depositMultiToken: BigNumber;
-  withdrawalSingleToken: BigNumber;
   withdrawalMultiToken: BigNumber;
   singleSwap: BigNumber;
   swapOrder: BigNumber;
@@ -30,14 +29,4 @@ export type GasLimitsConfig = {
   decreaseOrder: BigNumber;
   estimatedFeeBaseGasLimit: BigNumber;
   estimatedFeeMultiplierFactor: BigNumber;
-};
-
-export type VirtualInventoryForSwapsData = {
-  [marketAddress: string]: {
-    [tokenAddress: string]: BigNumber;
-  };
-};
-
-export type VirtualInventoryForPositionsData = {
-  [tokenAddress: string]: BigNumber;
 };

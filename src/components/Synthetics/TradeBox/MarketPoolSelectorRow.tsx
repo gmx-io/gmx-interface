@@ -1,9 +1,9 @@
 import { Trans, t } from "@lingui/macro";
-import { Dropdown, DropdownOption } from "components/Dropdown/Dropdown";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import Tooltip from "components/Tooltip/Tooltip";
+import { Market, MarketInfo, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { AvailableMarketsOptions } from "domain/synthetics/trade/useAvailableMarketsOptions";
-import { Market, MarketInfo, getMarketPoolName } from "domain/synthetics/markets";
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { formatPercentage } from "lib/numbers";
@@ -42,6 +42,8 @@ export function MarketPoolSelectorRow(p: Props) {
     minPriceImpactBps,
   } = marketsOptions || {};
 
+  const indexName = indexToken ? getMarketIndexName({ indexToken, isSpotOnly: false }) : undefined;
+
   const isSelectedMarket = useCallback(
     (market: Market) => {
       return selectedMarket && market.marketTokenAddress === selectedMarket.marketTokenAddress;
@@ -54,6 +56,9 @@ export function MarketPoolSelectorRow(p: Props) {
       return (
         <div className="MarketSelector-tooltip-row">
           <Trans>Insufficient liquidity in any {indexToken?.symbol}/USD market pools for your order.</Trans>
+          <br />
+          <br />
+          <Trans>V2 is newly live, and liquidity may be low initially.</Trans>
         </div>
       );
     }
@@ -151,12 +156,6 @@ export function MarketPoolSelectorRow(p: Props) {
     selectedMarket,
   ]);
 
-  const dropdownOptions: DropdownOption[] =
-    availableMarkets?.map((market) => ({
-      value: market.marketTokenAddress,
-      label: getMarketPoolName(market),
-    })) || [];
-
   return (
     <ExchangeInfoRow
       className="SwapBox-info-row"
@@ -174,14 +173,14 @@ export function MarketPoolSelectorRow(p: Props) {
       }
       value={
         <>
-          <Dropdown
-            className="SwapBox-market-selector-dropdown"
-            selectedOption={dropdownOptions.find((o) => o.value === selectedMarket?.marketTokenAddress)}
-            placeholder={"-"}
-            options={dropdownOptions}
-            onSelect={(option) => {
-              onSelectMarketAddress(option.value);
-            }}
+          <PoolSelector
+            label={t`Pool`}
+            className="SwapBox-info-dropdown"
+            selectedIndexName={indexName}
+            selectedMarketAddress={selectedMarket?.marketTokenAddress}
+            markets={availableMarkets || []}
+            isSideMenu
+            onSelectMarket={(marketInfo) => onSelectMarketAddress(marketInfo.marketTokenAddress)}
           />
         </>
       }

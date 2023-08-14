@@ -3,6 +3,7 @@ import Token from "abis/Token.json";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { useMulticall } from "lib/multicall";
 import { TokensAllowanceData } from "./types";
+import { BigNumber } from "ethers";
 
 type TokenAllowanceResult = {
   tokensAllowanceData?: TokensAllowanceData;
@@ -12,7 +13,7 @@ const defaultValue = {};
 
 export function useTokensAllowanceData(
   chainId: number,
-  p: { spenderAddress?: string; tokenAddresses: string[] }
+  p: { spenderAddress?: string; tokenAddresses: string[]; skip?: boolean }
 ): TokenAllowanceResult {
   const { spenderAddress, tokenAddresses } = p;
   const { account } = useWeb3React();
@@ -21,7 +22,7 @@ export function useTokensAllowanceData(
 
   const { data } = useMulticall(chainId, "useTokenAllowance", {
     key:
-      account && spenderAddress && tokenAddresses.length > 0 && !isNativeToken
+      !p.skip && account && spenderAddress && tokenAddresses.length > 0 && !isNativeToken
         ? [account, spenderAddress, tokenAddresses.join("-")]
         : null,
 
@@ -44,8 +45,8 @@ export function useTokensAllowanceData(
         }, {}),
 
     parseResponse: (res) =>
-      Object.keys(res).reduce((tokenAllowance: TokensAllowanceData, address) => {
-        tokenAllowance[address] = res[address].allowance.returnValues[0];
+      Object.keys(res.data).reduce((tokenAllowance: TokensAllowanceData, address) => {
+        tokenAllowance[address] = BigNumber.from(res.data[address].allowance.returnValues[0]);
 
         return tokenAllowance;
       }, {} as TokensAllowanceData),

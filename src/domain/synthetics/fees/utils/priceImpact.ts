@@ -2,38 +2,37 @@ import { MarketInfo, getTokenPoolType } from "domain/synthetics/markets";
 import { TokenData, convertToTokenAmount, convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { applyFactor, bigNumberify, expandDecimals, roundUpMagnitudeDivision } from "lib/numbers";
-import { VirtualInventoryForPositionsData, VirtualInventoryForSwapsData } from "../types";
 
-export function getPriceImpactAmount(p: {
+export function getPriceImpactByAcceptablePrice(p: {
   sizeDeltaUsd: BigNumber;
   acceptablePrice: BigNumber;
-  markPrice: BigNumber;
+  indexPrice: BigNumber;
   isLong: boolean;
   isIncrease: boolean;
 }) {
-  const { sizeDeltaUsd, acceptablePrice, markPrice, isLong, isIncrease } = p;
+  const { sizeDeltaUsd, acceptablePrice, indexPrice: markPrice, isLong, isIncrease } = p;
 
   const shouldFlipPriceDiff = isIncrease ? !isLong : isLong;
 
   let priceDiff = markPrice.sub(acceptablePrice).mul(shouldFlipPriceDiff ? -1 : 1);
 
-  const priceImpactUsd = sizeDeltaUsd.mul(priceDiff).div(acceptablePrice);
+  const priceImpactDeltaUsd = sizeDeltaUsd.mul(priceDiff).div(acceptablePrice);
 
-  if (priceImpactUsd.gt(0)) {
-    return roundUpMagnitudeDivision(priceImpactUsd, markPrice);
-  }
+  const priceImpactDeltaAmount = priceImpactDeltaUsd.div(markPrice);
 
-  return priceImpactUsd.div(markPrice);
+  return {
+    priceImpactDeltaUsd,
+    priceImpactDeltaAmount,
+  };
 }
 
-export function applySwapImpactWithCap(marketInfo: MarketInfo, tokenAddress: string, priceImpactDeltaUsd: BigNumber) {
-  const tokenPoolType = getTokenPoolType(marketInfo, tokenAddress);
+export function applySwapImpactWithCap(marketInfo: MarketInfo, token: TokenData, priceImpactDeltaUsd: BigNumber) {
+  const tokenPoolType = getTokenPoolType(marketInfo, token.address);
 
   if (!tokenPoolType) {
-    throw new Error(`Token ${tokenAddress} is not a collateral of market ${marketInfo.marketTokenAddress}`);
+    throw new Error(`Token ${token.address} is not a collateral of the market ${marketInfo.marketTokenAddress}`);
   }
 
-  const token = tokenPoolType === "long" ? marketInfo.longToken : marketInfo.shortToken;
   const isLongCollateral = tokenPoolType === "long";
   const price = priceImpactDeltaUsd.gt(0) ? token.prices.maxPrice : token.prices.minPrice;
 
@@ -60,11 +59,11 @@ export function applySwapImpactWithCap(marketInfo: MarketInfo, tokenAddress: str
 
 export function getCappedPositionImpactUsd(
   marketInfo: MarketInfo,
-  virtualInventoryForPositions: VirtualInventoryForPositionsData,
   sizeDeltaUsd: BigNumber,
-  isLong: boolean
+  isLong: boolean,
+  opts: { fallbackToZero?: boolean } = {}
 ) {
-  const priceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, virtualInventoryForPositions, sizeDeltaUsd, isLong);
+  const priceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, sizeDeltaUsd, isLong, opts);
 
   if (priceImpactDeltaUsd.lt(0)) {
     return priceImpactDeltaUsd;
@@ -87,7 +86,7 @@ export function getCappedPositionImpactUsd(
   }
 
   const maxPriceImpactFactor = marketInfo.maxPositionImpactFactorPositive;
-  const maxPriceImpactUsdBasedOnMaxPriceImpactFactor = applyFactor(sizeDeltaUsd, maxPriceImpactFactor);
+  const maxPriceImpactUsdBasedOnMaxPriceImpactFactor = applyFactor(sizeDeltaUsd.abs(), maxPriceImpactFactor);
 
   if (cappedImpactUsd.gt(maxPriceImpactUsdBasedOnMaxPriceImpactFactor)) {
     cappedImpactUsd = maxPriceImpactUsdBasedOnMaxPriceImpactFactor;
@@ -98,9 +97,9 @@ export function getCappedPositionImpactUsd(
 
 export function getPriceImpactForPosition(
   marketInfo: MarketInfo,
-  virtualInventoryForPositions: VirtualInventoryForPositionsData,
   sizeDeltaUsd: BigNumber,
-  isLong: boolean
+  isLong: boolean,
+  opts: { fallbackToZero?: boolean } = {}
 ) {
   const { longInterestUsd, shortInterestUsd } = marketInfo;
 
@@ -119,20 +118,19 @@ export function getPriceImpactForPosition(
     factorPositive: marketInfo.positionImpactFactorPositive,
     factorNegative: marketInfo.positionImpactFactorNegative,
     exponentFactor: marketInfo.positionImpactExponentFactor,
+    fallbackToZero: opts.fallbackToZero,
   });
 
   if (priceImpactUsd.gt(0)) {
     return priceImpactUsd;
   }
 
-  const virtualInventory = virtualInventoryForPositions[marketInfo.indexTokenAddress];
-
-  if (!virtualInventory) {
+  if (!marketInfo.virtualInventoryForPositions.abs().gt(0)) {
     return priceImpactUsd;
   }
 
   const virtualInventoryParams = getNextOpenInterestForVirtualInventory({
-    virtualInventory,
+    virtualInventory: marketInfo.virtualInventoryForPositions,
     usdDelta: sizeDeltaUsd,
     isLong: isLong!,
   });
@@ -145,6 +143,7 @@ export function getPriceImpactForPosition(
     factorPositive: marketInfo.positionImpactFactorPositive,
     factorNegative: marketInfo.positionImpactFactorNegative,
     exponentFactor: marketInfo.positionImpactExponentFactor,
+    fallbackToZero: opts.fallbackToZero,
   });
 
   return priceImpactUsdForVirtualInventory.lt(priceImpactUsd!) ? priceImpactUsdForVirtualInventory : priceImpactUsd;
@@ -152,20 +151,26 @@ export function getPriceImpactForPosition(
 
 export function getPriceImpactForSwap(
   marketInfo: MarketInfo,
-  virtualInventoryForSwaps: VirtualInventoryForSwapsData,
-  fromTokenAddress: string,
-  fromDeltaAmount: BigNumber,
-  toDeltaAmount: BigNumber
+  tokenA: TokenData,
+  tokenB: TokenData,
+  usdDeltaTokenA: BigNumber,
+  usdDeltaTokenB: BigNumber,
+  opts: { fallbackToZero?: boolean } = {}
 ) {
-  const { longToken, shortToken } = marketInfo;
+  const tokenAPoolType = getTokenPoolType(marketInfo, tokenA.address);
+  const tokenBPoolType = getTokenPoolType(marketInfo, tokenB.address);
 
-  const fromTokenPoolType = getTokenPoolType(marketInfo, fromTokenAddress);
+  if (
+    tokenAPoolType === undefined ||
+    tokenBPoolType === undefined ||
+    (tokenAPoolType === tokenBPoolType && !marketInfo.isSameCollaterals)
+  ) {
+    throw new Error(`Invalid tokens to swap ${marketInfo.marketTokenAddress} ${tokenA.address} ${tokenB.address}`);
+  }
 
-  const longDeltaAmount = fromTokenPoolType === "long" ? fromDeltaAmount : toDeltaAmount;
-  const shortDeltaAmount = fromTokenPoolType === "short" ? fromDeltaAmount : toDeltaAmount;
-
-  const longDeltaUsd = convertToUsd(longDeltaAmount, longToken.decimals, getMidPrice(longToken.prices))!;
-  const shortDeltaUsd = convertToUsd(shortDeltaAmount, shortToken.decimals, getMidPrice(shortToken.prices))!;
+  const [longToken, shortToken] = tokenAPoolType === "long" ? [tokenA, tokenB] : [tokenB, tokenA];
+  const [longDeltaUsd, shortDeltaUsd] =
+    tokenAPoolType === "long" ? [usdDeltaTokenA, usdDeltaTokenB] : [usdDeltaTokenB, usdDeltaTokenA];
 
   const { longPoolUsd, shortPoolUsd, nextLongPoolUsd, nextShortPoolUsd } = getNextPoolAmountsParams({
     marketInfo,
@@ -185,16 +190,17 @@ export function getPriceImpactForSwap(
     factorPositive: marketInfo.swapImpactFactorPositive,
     factorNegative: marketInfo.swapImpactFactorNegative,
     exponentFactor: marketInfo.swapImpactExponentFactor,
+    fallbackToZero: opts.fallbackToZero,
   });
 
   if (priceImpactUsd.gt(0)) {
     return priceImpactUsd;
   }
 
-  const virtualInventoryLong = virtualInventoryForSwaps[marketInfo.marketTokenAddress]?.[marketInfo.longTokenAddress];
-  const virtualInventoryShort = virtualInventoryForSwaps[marketInfo.marketTokenAddress]?.[marketInfo.shortTokenAddress];
+  const virtualInventoryLong = marketInfo.virtualPoolAmountForLongToken;
+  const virtualInventoryShort = marketInfo.virtualPoolAmountForShortToken;
 
-  if (!virtualInventoryLong || !virtualInventoryShort) {
+  if (!virtualInventoryLong.gt(0) || !virtualInventoryShort.gt(0)) {
     return priceImpactUsd;
   }
 
@@ -216,6 +222,7 @@ export function getPriceImpactForSwap(
     factorPositive: marketInfo.swapImpactFactorPositive,
     factorNegative: marketInfo.swapImpactFactorNegative,
     exponentFactor: marketInfo.swapImpactExponentFactor,
+    fallbackToZero: opts.fallbackToZero,
   });
 
   return priceImpactUsdForVirtualInventory.lt(priceImpactUsd!) ? priceImpactUsdForVirtualInventory : priceImpactUsd;
@@ -318,11 +325,16 @@ export function getPriceImpactUsd(p: {
   factorPositive: BigNumber;
   factorNegative: BigNumber;
   exponentFactor: BigNumber;
+  fallbackToZero?: boolean;
 }) {
   const { nextLongUsd, nextShortUsd } = p;
 
   if (nextLongUsd.lt(0) || nextShortUsd.lt(0)) {
-    throw new Error("Negative pool amount");
+    if (p.fallbackToZero) {
+      return BigNumber.from(0);
+    } else {
+      throw new Error("Negative pool amount");
+    }
   }
 
   const currentDiff = p.currentLongUsd.sub(p.currentShortUsd).abs();
@@ -404,7 +416,7 @@ export function applyImpactFactor(diff: BigNumber, factor: BigNumber, exponent: 
   // Pow and convert back to BigNumber with 30 decimals
   let result = bigNumberify(BigInt(Math.round(_diff ** _exponent * 10 ** 30)))!;
 
-  result = result.mul(factor).div(expandDecimals(1, 30)).div(2);
+  result = result.mul(factor).div(expandDecimals(1, 30));
 
   return result;
 }

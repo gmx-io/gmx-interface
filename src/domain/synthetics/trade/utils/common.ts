@@ -26,6 +26,7 @@ export function getTradeFlags(tradeType: TradeType, tradeMode: TradeMode) {
 }
 
 export function getTradeFees(p: {
+  isIncrease: boolean;
   initialCollateralUsd: BigNumber;
   sizeDeltaUsd: BigNumber;
   swapSteps: SwapStats[];
@@ -35,8 +36,10 @@ export function getTradeFees(p: {
   borrowingFeeUsd: BigNumber;
   fundingFeeUsd: BigNumber;
   feeDiscountUsd: BigNumber;
+  swapProfitFeeUsd: BigNumber;
 }): TradeFees {
   const {
+    isIncrease,
     initialCollateralUsd,
     sizeDeltaUsd,
     swapSteps,
@@ -46,21 +49,22 @@ export function getTradeFees(p: {
     borrowingFeeUsd,
     fundingFeeUsd,
     feeDiscountUsd,
+    swapProfitFeeUsd,
   } = p;
 
-  const swapBasis = initialCollateralUsd;
-
-  const swapFees: SwapFeeItem[] | undefined = swapBasis.gt(0)
+  const swapFees: SwapFeeItem[] | undefined = initialCollateralUsd.gt(0)
     ? swapSteps.map((step) => ({
         tokenInAddress: step.tokenInAddress,
         tokenOutAddress: step.tokenOutAddress,
         marketAddress: step.marketAddress,
         deltaUsd: step.swapFeeUsd.mul(-1),
-        bps: getBasisPoints(step.swapFeeUsd.mul(-1), swapBasis),
+        bps: !step.usdIn.eq(0) ? getBasisPoints(step.swapFeeUsd.mul(-1), step.usdIn) : BigNumber.from(0),
       }))
     : undefined;
 
-  const swapPriceImpact = getFeeItem(swapPriceImpactDeltaUsd, swapBasis);
+  const swapProfitFee = getFeeItem(swapProfitFeeUsd.mul(-1), initialCollateralUsd);
+
+  const swapPriceImpact = getFeeItem(swapPriceImpactDeltaUsd, initialCollateralUsd);
 
   const positionFeeBeforeDiscount = getFeeItem(positionFeeUsd.add(feeDiscountUsd).mul(-1), sizeDeltaUsd);
   const positionFeeAfterDiscount = getFeeItem(positionFeeUsd.mul(-1), sizeDeltaUsd);
@@ -73,6 +77,7 @@ export function getTradeFees(p: {
 
   const totalFees = getTotalFeeItem([
     ...(swapFees || []),
+    swapProfitFee,
     swapPriceImpact,
     positionFeeAfterDiscount,
     positionPriceImpact,
@@ -82,15 +87,19 @@ export function getTradeFees(p: {
 
   const payTotalFees = getTotalFeeItem([
     ...(swapFees || []),
+    swapProfitFee,
     swapPriceImpact,
     positionFeeAfterDiscount,
-    positionPriceImpact,
+    borrowFee,
+    fundingFee,
+    !isIncrease ? positionPriceImpact : undefined,
   ]);
 
   return {
     totalFees,
     payTotalFees,
     swapFees,
+    swapProfitFee,
     swapPriceImpact,
     positionFee: positionFeeBeforeDiscount,
     positionPriceImpact,

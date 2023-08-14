@@ -4,10 +4,11 @@ import SEO from "components/Common/SEO";
 import { getPageTitle } from "lib/legacy";
 import "./ReferralTerms.css";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { t } from "@lingui/macro";
 
 export default function ReferralTerms() {
   return (
-    <SEO title={getPageTitle("Referral Terms")}>
+    <SEO title={getPageTitle(t`Referral Terms`)}>
       <div className="default-container Page page-layout">
         <div>
           <div className="Page-title-section center">
@@ -89,8 +90,8 @@ export default function ReferralTerms() {
               <p className="body-text">
                 The Rebates and Discounts percentages for the default tier Tier 1, and instructions to upgrade to Tier 2
                 and Tier 3, are contained in{" "}
-                <ExternalLink href="https://gmxio.gitbook.io/gmx/referrals">
-                  https://gmxio.gitbook.io/gmx/referrals.
+                <ExternalLink href="https://docs.gmx.io/docs/referrals">
+                  https://docs.gmx.io/docs/referrals.
                 </ExternalLink>
               </p>
             </div>

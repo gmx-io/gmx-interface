@@ -2,7 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
 import { OrdersInfoData, PositionOrderInfo, isOrderForPosition } from "domain/synthetics/orders";
 import { PositionsInfoData } from "domain/synthetics/positions";
-import { TradeMode } from "domain/synthetics/trade";
+import { TradeMode, TradeType } from "domain/synthetics/trade";
 
 type Props = {
   onSelectPositionClick: (key: string, tradeMode?: TradeMode) => void;
@@ -14,22 +14,27 @@ type Props = {
   isLoading: boolean;
   onOrdersClick: () => void;
   showPnlAfterFees: boolean;
+  savedShowPnlAfterFees: boolean;
+  currentMarketAddress?: string;
+  currentCollateralAddress?: string;
+  currentTradeType?: TradeType;
+  openSettings: () => void;
+  hideActions?: boolean;
 };
 
 export function PositionList(p: Props) {
   const positions = Object.values(p.positionsData || {});
   const orders = Object.values(p.ordersData || {});
-  const isDataLoading = p.isLoading;
 
   return (
     <div>
+      {positions.length === 0 && (
+        <div className="Exchange-empty-positions-list-note App-card small">
+          {p.isLoading ? t`Loading...` : t`No open positions`}
+        </div>
+      )}
       <div className="Exchange-list small">
-        {positions.length === 0 && (
-          <div className="Exchange-empty-positions-list-note App-card">
-            {isDataLoading ? t`Loading...` : t`No open positions`}
-          </div>
-        )}
-        {!isDataLoading &&
+        {!p.isLoading &&
           positions.map((position) => (
             <PositionItem
               key={position.key}
@@ -40,7 +45,12 @@ export function PositionList(p: Props) {
               onOrdersClick={p.onOrdersClick}
               onSelectPositionClick={(tradeMode?: TradeMode) => p.onSelectPositionClick(position.key, tradeMode)}
               showPnlAfterFees={p.showPnlAfterFees}
+              savedShowPnlAfterFees={p.savedShowPnlAfterFees}
               isLarge={false}
+              currentMarketAddress={p.currentMarketAddress}
+              currentCollateralAddress={p.currentCollateralAddress}
+              currentTradeType={p.currentTradeType}
+              openSettings={p.openSettings}
             />
           ))}
       </div>
@@ -74,12 +84,12 @@ export function PositionList(p: Props) {
             <tr>
               <td colSpan={15}>
                 <div className="Exchange-empty-positions-list-note">
-                  {isDataLoading ? t`Loading...` : t`No open positions`}
+                  {p.isLoading ? t`Loading...` : t`No open positions`}
                 </div>
               </td>
             </tr>
           )}
-          {!isDataLoading &&
+          {!p.isLoading &&
             positions.map((position) => (
               <PositionItem
                 key={position.key}
@@ -93,6 +103,12 @@ export function PositionList(p: Props) {
                 onSelectPositionClick={(tradeMode?: TradeMode) => p.onSelectPositionClick(position.key, tradeMode)}
                 showPnlAfterFees={p.showPnlAfterFees}
                 isLarge={true}
+                savedShowPnlAfterFees={p.savedShowPnlAfterFees}
+                currentMarketAddress={p.currentMarketAddress}
+                currentCollateralAddress={p.currentCollateralAddress}
+                currentTradeType={p.currentTradeType}
+                openSettings={p.openSettings}
+                hideActions={p.hideActions}
               />
             ))}
         </tbody>

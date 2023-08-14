@@ -1,4 +1,3 @@
-import { i18n } from "@lingui/core";
 import { t, Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -22,8 +21,7 @@ function getFeeLabel(type: FeeType) {
     deposit: t`Deposit Fee`,
     execution: t`Execution Fee`,
   };
-
-  return i18n._(labels[type]);
+  return labels[type];
 }
 
 function getExecutionFeeStr(chainId, executionFee, executionFeeUsd) {
@@ -126,7 +124,7 @@ function FeesTooltip({
           <br />
           <div className="PositionSeller-fee-item">
             <Trans>
-              <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#fees">More Info</ExternalLink> about fees.
+              <ExternalLink href="https://docs.gmx.io/docs/trading/v1#fees">More Info</ExternalLink> about fees.
             </Trans>
           </div>
         </div>

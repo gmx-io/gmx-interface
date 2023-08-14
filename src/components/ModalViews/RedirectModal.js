@@ -38,7 +38,7 @@ export function RedirectPopupModal({
       <br />
       <Trans>
         Alternative links can be found in the{" "}
-        <ExternalLink href="https://gmxio.gitbook.io/gmx/app-links">docs</ExternalLink>.
+        <ExternalLink href="https://docs.gmx.io/docs/community/frontends">docs</ExternalLink>.
         <br />
         <br />
         By clicking Agree you accept the <ExternalLink href="https://gmx.io/#/terms-and-conditions">
@@ -53,7 +53,7 @@ export function RedirectPopupModal({
           <Trans>Don't show this message again for 30 days.</Trans>
         </Checkbox>
       </div>
-      <Button variant="primary-action" className="w-100" to={appRedirectUrl} onClick={onClickAgree}>
+      <Button variant="primary-action" className="w-full" to={appRedirectUrl} onClick={onClickAgree}>
         <Trans>Agree</Trans>
       </Button>
     </Modal>

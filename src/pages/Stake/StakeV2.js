@@ -1,56 +1,60 @@
-import React, { useState, useCallback } from "react";
 import { Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
+import { useCallback, useState } from "react";
 
-import Modal from "components/Modal/Modal";
 import Checkbox from "components/Checkbox/Checkbox";
-import Tooltip from "components/Tooltip/Tooltip";
 import Footer from "components/Footer/Footer";
+import Modal from "components/Modal/Modal";
+import Tooltip from "components/Tooltip/Tooltip";
 
-import Vault from "abis/Vault.json";
-import ReaderV2 from "abis/ReaderV2.json";
-import Vester from "abis/Vester.json";
-import RewardRouter from "abis/RewardRouter.json";
-import RewardReader from "abis/RewardReader.json";
-import Token from "abis/Token.json";
 import GlpManager from "abis/GlpManager.json";
+import ReaderV2 from "abis/ReaderV2.json";
+import RewardReader from "abis/RewardReader.json";
+import RewardRouter from "abis/RewardRouter.json";
+import Token from "abis/Token.json";
+import Vault from "abis/Vault.json";
+import Vester from "abis/Vester.json";
 
+import { ARBITRUM, getChainName, getConstant } from "config/chains";
+import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
 import { ethers } from "ethers";
 import {
   GLP_DECIMALS,
-  USD_DECIMALS,
-  BASIS_POINTS_DIVISOR,
   PLACEHOLDER_ACCOUNT,
+  USD_DECIMALS,
   getBalanceAndSupplyData,
   getDepositBalanceData,
-  getVestingData,
-  getStakingData,
-  getProcessedData,
   getPageTitle,
+  getProcessedData,
+  getStakingData,
+  getVestingData,
 } from "lib/legacy";
-import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
-import { ARBITRUM, getChainName, getConstant } from "config/chains";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 
 import useSWR from "swr";
 
 import { getContract } from "config/contracts";
 
-import "./StakeV2.css";
+import Button from "components/Button/Button";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import SEO from "components/Common/SEO";
-import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { getServerUrl } from "config/backend";
-import { callContract, contractFetcher } from "lib/contracts";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { helperToast } from "lib/helperToast";
-import { approveTokens } from "domain/tokens";
-import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, formatKeyAmount, parseValue } from "lib/numbers";
-import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import GMXAprTooltip from "components/Stake/GMXAprTooltip";
-import Button from "components/Button/Button";
+import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { GmList } from "components/Synthetics/GmList/GmList";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { getServerUrl } from "config/backend";
 import { getIsSyntheticsSupported } from "config/features";
+import { useMarketTokensData, useMarketsInfo } from "domain/synthetics/markets";
+import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
+import { approveTokens } from "domain/tokens";
+import { useChainId } from "lib/chains";
+import { callContract, contractFetcher } from "lib/contracts";
+import { helperToast } from "lib/helperToast";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, formatKeyAmount, parseValue } from "lib/numbers";
+import "./StakeV2.css";
 
 const { AddressZero } = ethers.constants;
 
@@ -157,32 +161,20 @@ function StakeModal(props) {
   return (
     <div className="StakeModal">
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
-        <div className="Exchange-swap-section">
-          <div className="Exchange-swap-section-top">
-            <div className="muted">
-              <div className="Exchange-swap-usd">
-                <Trans>Stake</Trans>
-              </div>
-            </div>
-            <div className="muted align-right clickable" onClick={() => setValue(formatAmountFree(maxAmount, 18, 18))}>
-              <Trans>Max: {formatAmount(maxAmount, 18, 4, true)}</Trans>
-            </div>
-          </div>
-          <div className="Exchange-swap-section-bottom">
-            <div>
-              <input
-                type="number"
-                placeholder="0.0"
-                className="Exchange-swap-input"
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-              />
-            </div>
-            <div className="PositionEditor-token-symbol">{stakingTokenSymbol}</div>
-          </div>
-        </div>
+        <BuyInputSection
+          topLeftLabel={t`Stake`}
+          topRightLabel={t`Max`}
+          topRightValue={formatAmount(maxAmount, 18, 4, true)}
+          onClickTopRightLabel={() => setValue(formatAmountFree(maxAmount, 18, 18))}
+          inputValue={value}
+          onInputValueChange={(e) => setValue(e.target.value)}
+          showMaxButton={false}
+        >
+          {stakingTokenSymbol}
+        </BuyInputSection>
+
         <div className="Exchange-swap-button-container">
-          <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+          <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
             {getPrimaryText()}
           </Button>
         </div>
@@ -282,30 +274,17 @@ function UnstakeModal(props) {
   return (
     <div className="StakeModal">
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
-        <div className="Exchange-swap-section">
-          <div className="Exchange-swap-section-top">
-            <div className="muted">
-              <div className="Exchange-swap-usd">
-                <Trans>Unstake</Trans>
-              </div>
-            </div>
-            <div className="muted align-right clickable" onClick={() => setValue(formatAmountFree(maxAmount, 18, 18))}>
-              <Trans>Max: {formatAmount(maxAmount, 18, 4, true)}</Trans>
-            </div>
-          </div>
-          <div className="Exchange-swap-section-bottom">
-            <div>
-              <input
-                type="number"
-                placeholder="0.0"
-                className="Exchange-swap-input"
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-              />
-            </div>
-            <div className="PositionEditor-token-symbol">{unstakingTokenSymbol}</div>
-          </div>
-        </div>
+        <BuyInputSection
+          topLeftLabel={t`Unstake`}
+          topRightLabel={t`Max`}
+          topRightValue={formatAmount(maxAmount, 18, 4, true)}
+          onClickTopRightLabel={() => setValue(formatAmountFree(maxAmount, 18, 18))}
+          inputValue={value}
+          onInputValueChange={(e) => setValue(e.target.value)}
+          showMaxButton={false}
+        >
+          {unstakingTokenSymbol}
+        </BuyInputSection>
         {reservedAmount && reservedAmount.gt(0) && (
           <div className="Modal-note">
             You have {formatAmount(reservedAmount, 18, 2, true)} tokens reserved for vesting.
@@ -315,7 +294,7 @@ function UnstakeModal(props) {
           <div className="Modal-note">
             <Trans>
               Unstaking will burn&nbsp;
-              <ExternalLink className="display-inline" href="https://gmxio.gitbook.io/gmx/rewards">
+              <ExternalLink className="display-inline" href="https://docs.gmx.io/docs/tokenomics/rewards">
                 {formatAmount(burnAmount, 18, 4, true)} Multiplier Points
               </ExternalLink>
               .&nbsp;
@@ -326,7 +305,7 @@ function UnstakeModal(props) {
           </div>
         )}
         <div className="Exchange-swap-button-container">
-          <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+          <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
             {getPrimaryText()}
           </Button>
         </div>
@@ -427,36 +406,21 @@ function VesterDepositModal(props) {
   };
 
   return (
-    <SEO title={getPageTitle("Earn")}>
+    <SEO title={getPageTitle(t`Earn`)}>
       <div className="StakeModal">
         <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title} className="non-scrollable">
-          <div className="Exchange-swap-section">
-            <div className="Exchange-swap-section-top">
-              <div className="muted">
-                <div className="Exchange-swap-usd">
-                  <Trans>Deposit</Trans>
-                </div>
-              </div>
-              <div
-                className="muted align-right clickable"
-                onClick={() => setValue(formatAmountFree(maxAmount, 18, 18))}
-              >
-                <Trans>Max: {formatAmount(maxAmount, 18, 4, true)}</Trans>
-              </div>
-            </div>
-            <div className="Exchange-swap-section-bottom">
-              <div>
-                <input
-                  type="number"
-                  placeholder="0.0"
-                  className="Exchange-swap-input"
-                  value={value}
-                  onChange={(e) => setValue(e.target.value)}
-                />
-              </div>
-              <div className="PositionEditor-token-symbol">esGMX</div>
-            </div>
-          </div>
+          <BuyInputSection
+            topLeftLabel={t`Deposit`}
+            topRightLabel={t`Max`}
+            topRightValue={formatAmount(maxAmount, 18, 4, true)}
+            onClickTopRightLabel={() => setValue(formatAmountFree(maxAmount, 18, 18))}
+            inputValue={value}
+            onInputValueChange={(e) => setValue(e.target.value)}
+            showMaxButton={false}
+          >
+            esGMX
+          </BuyInputSection>
+
           <div className="VesterDepositModal-info-rows">
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">
@@ -469,14 +433,14 @@ function VesterDepositModal(props) {
                 <Trans>Vault Capacity</Trans>
               </div>
               <div className="align-right">
-                <Tooltip
+                <TooltipWithPortal
                   handle={`${formatAmount(nextDepositAmount, 18, 2, true)} / ${formatAmount(
                     maxVestableAmount,
                     18,
                     2,
                     true
                   )}`}
-                  position="right-bottom"
+                  position="right-top"
                   renderContent={() => {
                     return (
                       <div>
@@ -504,7 +468,7 @@ function VesterDepositModal(props) {
                 <Trans>Reserve Amount</Trans>
               </div>
               <div className="align-right">
-                <Tooltip
+                <TooltipWithPortal
                   handle={`${formatAmount(
                     reserveAmount && reserveAmount.gte(additionalReserveAmount)
                       ? reserveAmount
@@ -513,7 +477,7 @@ function VesterDepositModal(props) {
                     2,
                     true
                   )} / ${formatAmount(maxReserveAmount, 18, 2, true)}`}
-                  position="right-bottom"
+                  position="right-top"
                   renderContent={() => {
                     return (
                       <>
@@ -544,7 +508,7 @@ function VesterDepositModal(props) {
             </div>
           </div>
           <div className="Exchange-swap-button-container">
-            <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+            <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
               {getPrimaryText()}
             </Button>
           </div>
@@ -593,7 +557,7 @@ function VesterWithdrawModal(props) {
           </div>
         </Trans>
         <div className="Exchange-swap-button-container">
-          <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={isWithdrawing}>
+          <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={isWithdrawing}>
             {!isWithdrawing && "Confirm Withdraw"}
             {isWithdrawing && "Confirming..."}
           </Button>
@@ -786,7 +750,7 @@ function CompoundModal(props) {
           </div>
         </div>
         <div className="Exchange-swap-button-container">
-          <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+          <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
             {getPrimaryText()}
           </Button>
         </div>
@@ -902,7 +866,7 @@ function ClaimModal(props) {
           </div>
         </div>
         <div className="Exchange-swap-button-container">
-          <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+          <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
             {getPrimaryText()}
           </Button>
         </div>
@@ -1014,6 +978,10 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     stakedGlpTrackerAddress,
     feeGlpTrackerAddress,
   ];
+
+  const { marketsInfoData, tokensData } = useMarketsInfo(chainId);
+  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
+  const { marketsTokensAPRData } = useMarketTokensAPR(chainId, { marketsInfoData, marketTokensData });
 
   const { data: walletBalances } = useSWR(
     [
@@ -1319,7 +1287,10 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
           return (
             <Trans>
               Boost your rewards with Multiplier Points.&nbsp;
-              <ExternalLink href="https://gmxio.gitbook.io/gmx/rewards#multiplier-points">More info</ExternalLink>.
+              <ExternalLink href="https://docs.gmx.io/docs/tokenomics/rewards#multiplier-points">
+                More info
+              </ExternalLink>
+              .
             </Trans>
           );
         }}
@@ -1460,8 +1431,8 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
           </div>
           <div className="Page-description">
             <Trans>
-              Stake <ExternalLink href="https://gmxio.gitbook.io/gmx/tokenomics">GMX</ExternalLink> and{" "}
-              <ExternalLink href="https://gmxio.gitbook.io/gmx/glp">GLP</ExternalLink> to earn rewards.
+              Stake <ExternalLink href="https://docs.gmx.io/docs/tokenomics/gmx-token">GMX</ExternalLink> and{" "}
+              <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v1">GLP</ExternalLink> to earn rewards.
             </Trans>
           </div>
           {earnMsg && <div className="Page-description">{earnMsg}</div>}
@@ -1650,21 +1621,21 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               </div>
               <div className="App-card-divider" />
               <div className="App-card-buttons m-0">
-                <Button variant="semi-clear" to="/buy_gmx">
+                <Button variant="secondary" to="/buy_gmx">
                   <Trans>Buy GMX</Trans>
                 </Button>
                 {active && (
-                  <Button variant="semi-clear" onClick={() => showStakeGmxModal()}>
+                  <Button variant="secondary" onClick={() => showStakeGmxModal()}>
                     <Trans>Stake</Trans>
                   </Button>
                 )}
                 {active && (
-                  <Button variant="semi-clear" onClick={() => showUnstakeGmxModal()}>
+                  <Button variant="secondary" onClick={() => showUnstakeGmxModal()}>
                     <Trans>Unstake</Trans>
                   </Button>
                 )}
                 {active && (
-                  <Button variant="semi-clear" to="/begin_account_transfer">
+                  <Button variant="secondary" to="/begin_account_transfer">
                     <Trans>Transfer Account</Trans>
                   </Button>
                 )}
@@ -1724,17 +1695,17 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 <div className="App-card-divider"></div>
                 <div className="App-card-buttons m-0">
                   {active && (
-                    <Button variant="semi-clear" onClick={() => setIsCompoundModalVisible(true)}>
+                    <Button variant="secondary" onClick={() => setIsCompoundModalVisible(true)}>
                       <Trans>Compound</Trans>
                     </Button>
                   )}
                   {active && (
-                    <Button variant="semi-clear" onClick={() => setIsClaimModalVisible(true)}>
+                    <Button variant="secondary" onClick={() => setIsClaimModalVisible(true)}>
                       <Trans>Claim</Trans>
                     </Button>
                   )}
                   {!active && (
-                    <Button variant="semi-clear" onClick={() => connectWallet()}>
+                    <Button variant="secondary" onClick={() => connectWallet()}>
                       <Trans>Connect Wallet</Trans>
                     </Button>
                   )}
@@ -1878,15 +1849,15 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               </div>
               <div className="App-card-divider"></div>
               <div className="App-card-buttons m-0">
-                <Button variant="semi-clear" to="/buy_glp">
+                <Button variant="secondary" to="/buy_glp">
                   <Trans>Buy GLP</Trans>
                 </Button>
-                <Button variant="semi-clear" to="/buy_glp#redeem">
+                <Button variant="secondary" to="/buy_glp#redeem">
                   <Trans>Sell GLP</Trans>
                 </Button>
                 {hasInsurance && (
                   <Button
-                    variant="semi-clear"
+                    variant="secondary"
                     to="https://app.insurace.io/Insurance/Cart?id=124&referrer=545066382753150189457177837072918687520318754040"
                   >
                     <Trans>Purchase Insurance</Trans>
@@ -1966,17 +1937,17 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               <div className="App-card-divider"></div>
               <div className="App-card-buttons m-0">
                 {active && (
-                  <Button variant="semi-clear" onClick={() => showStakeEsGmxModal()}>
+                  <Button variant="secondary" onClick={() => showStakeEsGmxModal()}>
                     <Trans>Stake</Trans>
                   </Button>
                 )}
                 {active && (
-                  <Button variant="semi-clear" onClick={() => showUnstakeEsGmxModal()}>
+                  <Button variant="secondary" onClick={() => showUnstakeEsGmxModal()}>
                     <Trans>Unstake</Trans>
                   </Button>
                 )}
                 {!active && (
-                  <Button variant="semi-clear" onClick={() => connectWallet()}>
+                  <Button variant="secondary" onClick={() => connectWallet()}>
                     <Trans> Connect Wallet</Trans>
                   </Button>
                 )}
@@ -1988,7 +1959,13 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
 
       {getIsSyntheticsSupported(chainId) && (
         <div className="StakeV2-section">
-          <GmList />
+          <GmList
+            marketsTokensAPRData={marketsTokensAPRData}
+            marketTokensData={marketTokensData}
+            marketsInfoData={marketsInfoData}
+            tokensData={tokensData}
+            shouldScrollToTop
+          />
         </div>
       )}
 
@@ -2002,8 +1979,10 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               Convert esGMX tokens to GMX tokens.
               <br />
               Please read the{" "}
-              <ExternalLink href="https://gmxio.gitbook.io/gmx/rewards#vesting">vesting details</ExternalLink> before
-              using the vaults.
+              <ExternalLink href="https://docs.gmx.io/docs/tokenomics/rewards#vesting">
+                vesting details
+              </ExternalLink>{" "}
+              before using the vaults.
             </Trans>
           </div>
         </div>
@@ -2106,17 +2085,17 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 <div className="App-card-divider"></div>
                 <div className="App-card-buttons m-0">
                   {!active && (
-                    <Button variant="semi-clear" onClick={() => connectWallet()}>
+                    <Button variant="secondary" onClick={() => connectWallet()}>
                       <Trans>Connect Wallet</Trans>
                     </Button>
                   )}
                   {active && (
-                    <Button variant="semi-clear" onClick={() => showGmxVesterDepositModal()}>
+                    <Button variant="secondary" onClick={() => showGmxVesterDepositModal()}>
                       <Trans>Deposit</Trans>
                     </Button>
                   )}
                   {active && (
-                    <Button variant="semi-clear" onClick={() => showGmxVesterWithdrawModal()}>
+                    <Button variant="secondary" onClick={() => showGmxVesterWithdrawModal()}>
                       <Trans>Withdraw</Trans>
                     </Button>
                   )}
@@ -2193,17 +2172,17 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 <div className="App-card-divider"></div>
                 <div className="App-card-buttons m-0">
                   {!active && (
-                    <Button variant="semi-clear" onClick={() => connectWallet()}>
+                    <Button variant="secondary" onClick={() => connectWallet()}>
                       <Trans>Connect Wallet</Trans>
                     </Button>
                   )}
                   {active && (
-                    <Button variant="semi-clear" onClick={() => showGlpVesterDepositModal()}>
+                    <Button variant="secondary" onClick={() => showGlpVesterDepositModal()}>
                       <Trans>Deposit</Trans>
                     </Button>
                   )}
                   {active && (
-                    <Button variant="semi-clear" onClick={() => showGlpVesterWithdrawModal()}>
+                    <Button variant="secondary" onClick={() => showGlpVesterWithdrawModal()}>
                       <Trans>Withdraw</Trans>
                     </Button>
                   )}

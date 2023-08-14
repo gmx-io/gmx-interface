@@ -122,7 +122,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   const TAB_OPTION_LABELS = { [TRADERS]: t`Traders`, [AFFILIATES]: t`Affiliates` };
 
   return (
-    <SEO title={getPageTitle("Referrals")}>
+    <SEO title={getPageTitle(t`Referrals`)}>
       <div className="default-container page-layout Referrals">
         <div className="section-title-block">
           <div className="section-title-icon" />
@@ -137,7 +137,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
                 Get fee discounts and earn rebates through the GMX referral program.
                 <br />
                 For more information, please read the{" "}
-                <ExternalLink href="https://gmxio.gitbook.io/gmx/referrals">referral program details</ExternalLink>.
+                <ExternalLink href="https://docs.gmx.io/docs/referrals">referral program details</ExternalLink>.
               </Trans>
             </div>
           </div>

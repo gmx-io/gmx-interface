@@ -7,7 +7,7 @@ body,
   padding: 0;
   color: white;
   font-size: 10px;
-  background-color: #101124;
+  background-color: var(--main-bg-color);
 }
 
 body {
@@ -51,15 +51,17 @@ input {
 }
 
 :root {
+  --main-bg-color: #101124;
   --dark-blue: #17182c;
   --dark-blue-bg: #16182e;
   --dark-blue-accent: #a0a3c4;
   --primary-btn-bg: #2d42fc;
-  --primary-btn-hover: #4f60fc;
-  --primary-btn-active: #5f6ffd;
+  --primary-btn-hover: #4d5ffa;
+  --primary-btn-active: #5264fc;
   --dark-blue-hover: #808aff14;
   --dark-blue-border: #ffffff29;
   --dark-blue-active: #818cef33;
+  --text-gray: rgba(255, 255, 255, 0.7);
   --avax-red: #e84143;
   --arbitrum-blue: #28a0f0;
   --border-radius-sm: 0.4rem;
@@ -391,9 +393,18 @@ button.btn-link:hover .logout-icon {
   margin: 0 !important;
 }
 
+.mb-xs {
+  margin-top: 0.5rem;
+}
+
+.mt-xs {
+  margin-top: 0.5rem;
+}
+
 .mt-sm {
   margin-top: 1rem;
 }
+
 .mt-md {
   margin-top: 1.5rem;
 }
@@ -422,7 +433,12 @@ button.btn-link:hover .logout-icon {
   flex-direction: column;
 }
 
-.w-100 {
+.items-center {
+  display: flex;
+  align-items: center;
+}
+
+.w-full {
   width: 100%;
 }
 
@@ -441,7 +457,6 @@ button.btn-link:hover .logout-icon {
 .nowrap {
   white-space: nowrap;
 }
-
 .gap-right > *:not(:last-child) {
   margin-right: 1rem;
 }
@@ -449,4 +464,20 @@ button.btn-link:hover .logout-icon {
 .debug-key {
   overflow-wrap: break-word;
   max-width: 30rem;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.text-gray {
+  color: var(--text-gray);
+}
+
+.text-warning {
+  color: rgb(243, 181, 12);
+}
+
+.ml-xs {
+  margin-left: 0.5rem;
 }

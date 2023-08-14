@@ -5,6 +5,7 @@ import { affiliateRewardKey } from "config/dataStore";
 import { useMarkets } from "domain/synthetics/markets";
 import { useMulticall } from "lib/multicall";
 import { AffiliateRewardsData } from "./types";
+import { BigNumber } from "ethers";
 
 export type AffiliateRewardsResult = {
   affiliateRewardsData?: AffiliateRewardsData;
@@ -44,13 +45,13 @@ export function useAffiliateRewards(chainId: number) {
 
       marketsAddresses!.forEach((marketAddress) => {
         const market = marketsData![marketAddress];
-        const longTokenAmount = res.dataStore[`${marketAddress}-${market.longTokenAddress}`].returnValues[0];
-        const shortTokenAmount = res.dataStore[`${marketAddress}-${market.shortTokenAddress}`].returnValues[0];
+        const longTokenAmount = res.data.dataStore[`${marketAddress}-${market.longTokenAddress}`].returnValues[0];
+        const shortTokenAmount = res.data.dataStore[`${marketAddress}-${market.shortTokenAddress}`].returnValues[0];
 
         result[marketAddress] = {
           marketAddress,
-          longTokenAmount: longTokenAmount,
-          shortTokenAmount: shortTokenAmount,
+          longTokenAmount: BigNumber.from(longTokenAmount),
+          shortTokenAmount: BigNumber.from(shortTokenAmount),
         };
       });
 

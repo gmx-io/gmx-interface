@@ -1,7 +1,7 @@
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS, PRECISION } from "lib/legacy";
 
-import { BigNumber, BigNumberish } from "ethers";
+import { BigNumber, BigNumberish, ethers } from "ethers";
 import { formatAmount, formatUsd } from "lib/numbers";
 
 import cx from "classnames";
@@ -9,17 +9,17 @@ import { ShareBar } from "components/ShareBar/ShareBar";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
-import { useVirtualInventory } from "domain/synthetics/fees/useVirtualInventory";
 import {
+  getAvailableUsdLiquidityForCollateral,
   getMarketIndexName,
   getMarketPoolName,
   getMaxReservedUsd,
   getReservedUsd,
   useMarketsInfo,
 } from "domain/synthetics/markets";
+import { usePositionsConstants } from "domain/synthetics/positions";
 import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import "./SyntheticsStats.scss";
-import { usePositionsConstants } from "domain/synthetics/positions";
 
 function formatAmountHuman(amount: BigNumberish | undefined, tokenDecimals: number) {
   const n = Number(formatAmount(amount, tokenDecimals));
@@ -50,10 +50,6 @@ export function SyntheticsStats() {
 
   const { marketsInfoData } = useMarketsInfo(chainId);
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
-  const { virtualInventoryForPositions, virtualInventoryForSwaps } = useVirtualInventory(chainId);
-  // const { swapTokens, infoTokens } = useAvailableTokenOptions(chainId);
-
-  // const [fromTokenAddress, setFromTokenAddress] = useState(NATIVE_TOKEN_ADDRESS);
 
   const markets = Object.values(marketsInfoData || {});
 
@@ -93,6 +89,9 @@ export function SyntheticsStats() {
             const shortPoolUsd = convertToUsd(market.shortPoolAmount, market.shortToken.decimals, midShortPrice);
             const totalPoolUsd = longPoolUsd?.add(shortPoolUsd || 0);
 
+            const longCollateralLiquidityUsd = getAvailableUsdLiquidityForCollateral(market, true);
+            const shortCollateralLiquidityUsd = getAvailableUsdLiquidityForCollateral(market, false);
+
             const swapImpactUsdLong = convertToUsd(
               market.swapImpactPoolAmountLong,
               market.longToken.decimals,
@@ -110,11 +109,9 @@ export function SyntheticsStats() {
               market.indexToken.prices.minPrice
             );
 
-            const virtualInventoryPositions = virtualInventoryForPositions?.[market.indexToken.address];
-            const virtualInventorySwapsLong =
-              virtualInventoryForSwaps?.[market.marketTokenAddress]?.[market.longTokenAddress];
-            const virtualInventorySwapsShort =
-              virtualInventoryForSwaps?.[market.marketTokenAddress]?.[market.shortTokenAddress];
+            const virtualInventoryPositions = market.virtualInventoryForPositions;
+            const virtualInventorySwapsLong = market.virtualPoolAmountForLongToken;
+            const virtualInventorySwapsShort = market.virtualPoolAmountForShortToken;
 
             const reservedUsdLong = getReservedUsd(market, true);
             const maxReservedUsdLong = getMaxReservedUsd(market, true);
@@ -138,6 +135,40 @@ export function SyntheticsStats() {
                         renderContent={() => (
                           <>
                             <StatsTooltipRow label="Key" value={market.marketTokenAddress} showDollar={false} />
+                            <br />
+                            <StatsTooltipRow
+                              label="Virtual Market Id"
+                              value={
+                                <div className="debug-key">
+                                  {market.virtualMarketId !== ethers.constants.HashZero ? market.virtualMarketId : "-"}
+                                </div>
+                              }
+                              showDollar={false}
+                            />
+                            <br />
+                            <StatsTooltipRow
+                              label="Virtual Long Token Id"
+                              value={
+                                <div className="debug-key">
+                                  {market.virtualLongTokenId !== ethers.constants.HashZero
+                                    ? market.virtualLongTokenId
+                                    : "-"}
+                                </div>
+                              }
+                              showDollar={false}
+                            />
+                            <br />
+                            <StatsTooltipRow
+                              label="Virtual Short Token Id"
+                              value={
+                                <div className="debug-key">
+                                  {market.virtualShortTokenId !== ethers.constants.HashZero
+                                    ? market.virtualShortTokenId
+                                    : "-"}
+                                </div>
+                              }
+                              showDollar={false}
+                            />
                           </>
                         )}
                       />
@@ -153,6 +184,7 @@ export function SyntheticsStats() {
                         <>
                           <StatsTooltipRow label="Pool USD Long" value={formatAmountHuman(longPoolUsd, 30)} />
                           <StatsTooltipRow label="Pool USD Short" value={formatAmountHuman(shortPoolUsd, 30)} />
+
                           <StatsTooltipRow
                             label={`Swap Imapct Amount ${market.longToken.symbol}`}
                             value={formatAmountHuman(swapImpactUsdLong, 30)}
@@ -244,32 +276,48 @@ export function SyntheticsStats() {
                   </div>
                 </td>
                 <td>
-                  <div className="cell">
-                    {market.isSpotOnly ? (
-                      "..."
-                    ) : (
-                      <>
-                        <div style={{ marginBottom: "4px" }}>
-                          ${formatAmountHuman(reservedUsdLong, 30)} / ${formatAmountHuman(maxReservedUsdLong, 30)}
+                  <Tooltip
+                    handle={
+                      market.isSpotOnly ? (
+                        formatAmountHuman(longCollateralLiquidityUsd, 30)
+                      ) : (
+                        <div className="cell">
+                          <div style={{ marginBottom: "4px" }}>
+                            ${formatAmountHuman(reservedUsdLong, 30)} / ${formatAmountHuman(maxReservedUsdLong, 30)}
+                          </div>
+                          <ShareBar share={reservedUsdLong} total={maxReservedUsdLong} />
                         </div>
-                        <ShareBar share={reservedUsdLong} total={maxReservedUsdLong} />
-                      </>
+                      )
+                    }
+                    renderContent={() => (
+                      <StatsTooltipRow
+                        label={`Max ${market.longToken.symbol} Out`}
+                        value={formatAmountHuman(longCollateralLiquidityUsd, 30)}
+                      />
                     )}
-                  </div>
+                  />
                 </td>
                 <td>
-                  <div className="cell">
-                    {market.isSpotOnly ? (
-                      "..."
-                    ) : (
-                      <>
-                        <div style={{ marginBottom: "4px" }}>
-                          ${formatAmountHuman(reservedUsdShort, 30)} / ${formatAmountHuman(maxReservedUsdShort, 30)}
+                  <Tooltip
+                    handle={
+                      market.isSpotOnly ? (
+                        formatAmountHuman(shortCollateralLiquidityUsd, 30)
+                      ) : (
+                        <div className="cell">
+                          <div style={{ marginBottom: "4px" }}>
+                            ${formatAmountHuman(reservedUsdShort, 30)} / ${formatAmountHuman(maxReservedUsdShort, 30)}
+                          </div>
+                          <ShareBar share={reservedUsdShort} total={maxReservedUsdShort} />
                         </div>
-                        <ShareBar share={reservedUsdShort} total={maxReservedUsdShort} />
-                      </>
+                      )
+                    }
+                    renderContent={() => (
+                      <StatsTooltipRow
+                        label={`Max ${market.shortToken.symbol} Out`}
+                        value={formatAmountHuman(shortCollateralLiquidityUsd, 30)}
+                      />
                     )}
-                  </div>
+                  />
                 </td>
                 <td>
                   <div className="cell">
@@ -380,13 +428,23 @@ export function SyntheticsStats() {
                           <div>Fees factors</div>
                           <br />
                           <StatsTooltipRow
-                            label="Swap Fee Factor"
-                            value={formatFactor(market.swapFeeFactor)}
+                            label="Swap Fee Factor (Positive PI)"
+                            value={formatFactor(market.swapFeeFactorForPositiveImpact)}
                             showDollar={false}
                           />
                           <StatsTooltipRow
-                            label="Position Fee Factor"
-                            value={formatFactor(market.positionFeeFactor)}
+                            label="Swap Fee Factor (Negative PI)"
+                            value={formatFactor(market.swapFeeFactorForNegativeImpact)}
+                            showDollar={false}
+                          />
+                          <StatsTooltipRow
+                            label="Position Fee Factor (Positive PI)"
+                            value={formatFactor(market.positionFeeFactorForPositiveImpact)}
+                            showDollar={false}
+                          />
+                          <StatsTooltipRow
+                            label="Position Fee Factor (Negative PI)"
+                            value={formatFactor(market.positionFeeFactorForNegativeImpact)}
                             showDollar={false}
                           />
                           <StatsTooltipRow

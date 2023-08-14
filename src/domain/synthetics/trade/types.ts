@@ -1,6 +1,7 @@
 import { BigNumber } from "ethers";
 import { FeeItem, SwapFeeItem } from "domain/synthetics/fees";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
+import { MarketInfo } from "../markets";
 
 export enum TradeType {
   Long = "Long",
@@ -33,59 +34,83 @@ export type SwapAmounts = {
 export type IncreasePositionAmounts = {
   initialCollateralAmount: BigNumber;
   initialCollateralUsd: BigNumber;
-  collateralAmountAfterFees: BigNumber;
-  collateralUsdAfterFees: BigNumber;
+
+  collateralDeltaAmount: BigNumber;
+  collateralDeltaUsd: BigNumber;
+
+  swapPathStats: SwapPathStats | undefined;
+
+  indexTokenAmount: BigNumber;
+
   sizeDeltaUsd: BigNumber;
   sizeDeltaInTokens: BigNumber;
-  swapPathStats: SwapPathStats | undefined;
-  positionFeeUsd: BigNumber;
-  feeDiscountUsd: BigNumber;
-  positionPriceImpactDeltaUsd: BigNumber;
-  markPrice: BigNumber;
-  entryPrice: BigNumber;
-  triggerPrice?: BigNumber;
+
+  estimatedLeverage?: BigNumber;
+
+  indexPrice: BigNumber;
   initialCollateralPrice: BigNumber;
   collateralPrice: BigNumber;
-  acceptablePrice: BigNumber | undefined;
-  acceptablePriceImpactBps: BigNumber | undefined;
+  triggerPrice?: BigNumber;
+  triggerThresholdType?: TriggerThresholdType;
+  acceptablePrice: BigNumber;
+  acceptablePriceDeltaBps: BigNumber;
+
+  positionFeeUsd: BigNumber;
+  feeDiscountUsd: BigNumber;
+  borrowingFeeUsd: BigNumber;
+  fundingFeeUsd: BigNumber;
+  positionPriceImpactDeltaUsd: BigNumber;
 };
 
 export type DecreasePositionAmounts = {
+  isFullClose: boolean;
   sizeDeltaUsd: BigNumber;
   sizeDeltaInTokens: BigNumber;
   collateralDeltaUsd: BigNumber;
   collateralDeltaAmount: BigNumber;
-  pnlDelta: BigNumber;
-  receiveTokenAmount: BigNumber;
-  receiveUsd: BigNumber;
+
+  indexPrice: BigNumber;
+  collateralPrice: BigNumber;
+  triggerPrice?: BigNumber;
+  acceptablePrice: BigNumber;
+  acceptablePriceDeltaBps: BigNumber;
+
+  estimatedPnl: BigNumber;
+  estimatedPnlPercentage: BigNumber;
+  realizedPnl: BigNumber;
+
   positionFeeUsd: BigNumber;
   feeDiscountUsd: BigNumber;
+  borrowingFeeUsd: BigNumber;
+  fundingFeeUsd: BigNumber;
+  swapProfitFeeUsd: BigNumber;
   positionPriceImpactDeltaUsd: BigNumber;
-  // Mark price or trigger price
-  exitPrice: BigNumber;
-  // The pnl including exitPrice
-  exitPnl: BigNumber;
-  exitPnlPercentage: BigNumber;
-  triggerPrice?: BigNumber;
+  priceImpactDiffUsd: BigNumber;
+  payedRemainingCollateralAmount: BigNumber;
+
+  payedOutputUsd: BigNumber;
+  payedRemainingCollateralUsd: BigNumber;
+
+  receiveTokenAmount: BigNumber;
+  receiveUsd: BigNumber;
+
   triggerOrderType?: OrderType.LimitDecrease | OrderType.StopLossDecrease;
-  triggerPricePrefix?: TriggerThresholdType;
+  triggerThresholdType?: TriggerThresholdType;
   decreaseSwapType: DecreasePositionSwapType;
-  acceptablePrice: BigNumber | undefined;
-  acceptablePriceImpactBps: BigNumber | undefined;
 };
 
 export type DepositAmounts = {
   marketTokenAmount: BigNumber;
   marketTokenUsd: BigNumber;
-  longTokenAmount?: BigNumber;
-  longTokenUsd?: BigNumber;
-  shortTokenAmount?: BigNumber;
-  shortTokenUsd?: BigNumber;
+  longTokenAmount: BigNumber;
+  longTokenUsd: BigNumber;
+  shortTokenAmount: BigNumber;
+  shortTokenUsd: BigNumber;
   swapFeeUsd: BigNumber;
   swapPriceImpactDeltaUsd: BigNumber;
 };
 
-export type WithdrawalAmounts = {
+export type WitdhrawalAmounts = {
   marketTokenAmount: BigNumber;
   marketTokenUsd: BigNumber;
   longTokenAmount: BigNumber;
@@ -93,6 +118,7 @@ export type WithdrawalAmounts = {
   longTokenUsd: BigNumber;
   shortTokenUsd: BigNumber;
   swapFeeUsd: BigNumber;
+  swapPriceImpactDeltaUsd: BigNumber;
 };
 
 export type NextPositionValues = {
@@ -118,6 +144,7 @@ export type SwapStats = {
   priceImpactDeltaUsd: BigNumber;
   amountIn: BigNumber;
   amountInAfterFees: BigNumber;
+  usdIn: BigNumber;
   amountOut: BigNumber;
   usdOut: BigNumber;
 };
@@ -137,10 +164,17 @@ export type SwapPathStats = {
 
 export type MarketEdge = {
   marketAddress: string;
+  marketInfo: MarketInfo;
   // from token
   from: string;
   // to token
   to: string;
+};
+
+export type SwapRoute = {
+  edged: MarketEdge[];
+  path: string[];
+  liquidity: BigNumber;
 };
 
 export type MarketsGraph = {
@@ -155,7 +189,7 @@ export type SwapEstimator = (
   usdOut: BigNumber;
 };
 
-export type FindSwapPath = (usdIn: BigNumber, opts: { shouldApplyPriceImpact: boolean }) => SwapPathStats | undefined;
+export type FindSwapPath = (usdIn: BigNumber, opts: { byLiquidity?: boolean }) => SwapPathStats | undefined;
 
 export type TradeFeesType = "swap" | "increase" | "decrease" | "edit";
 
@@ -170,6 +204,7 @@ export type TradeFees = {
   borrowFee?: FeeItem;
   fundingFee?: FeeItem;
   feeDiscountUsd?: BigNumber;
+  swapProfitFee?: FeeItem;
 };
 
 export type GmSwapFees = {

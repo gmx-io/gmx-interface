@@ -15,6 +15,7 @@ import {
   isMarketOrderType,
 } from "domain/synthetics/orders";
 import { getPositionKey } from "domain/synthetics/positions";
+import { useTokensData } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
@@ -22,8 +23,8 @@ import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey, setByKey, updateByKey } from "lib/objects";
-import { getProvider, getWsProvider } from "lib/rpc";
-import { ReactNode, createContext, useEffect, useMemo, useRef, useState } from "react";
+import { getProvider, useWsProvider } from "lib/rpc";
+import { ReactNode, createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   DepositCreatedEventData,
   DepositStatuses,
@@ -43,15 +44,33 @@ import {
   WithdrawalStatuses,
 } from "./types";
 import { parseEventLogData } from "./utils";
-import { useAvailableTokensData } from "domain/synthetics/tokens";
+
+export const DEPOSIT_CREATED_HASH = ethers.utils.id("DepositCreated");
+export const DEPOSIT_EXECUTED_HASH = ethers.utils.id("DepositExecuted");
+export const DEPOSIT_CANCELLED_HASH = ethers.utils.id("DepositCancelled");
+
+export const WITHDRAWAL_CREATED_HASH = ethers.utils.id("WithdrawalCreated");
+export const WITHDRAWAL_EXECUTED_HASH = ethers.utils.id("WithdrawalExecuted");
+export const WITHDRAWAL_CANCELLED_HASH = ethers.utils.id("WithdrawalCancelled");
+
+export const ORDER_CREATED_HASH = ethers.utils.id("OrderCreated");
+export const ORDER_EXECUTED_HASH = ethers.utils.id("OrderExecuted");
+export const ORDER_CANCELLED_HASH = ethers.utils.id("OrderCancelled");
+
+export const POSITION_INCREASE_HASH = ethers.utils.id("PositionIncrease");
+export const POSITION_DECREASE_HASH = ethers.utils.id("PositionDecrease");
 
 export const SyntheticsEventsContext = createContext({});
+
+export function useSyntheticsEvents(): SyntheticsEventsContextType {
+  return useContext(SyntheticsEventsContext) as SyntheticsEventsContextType;
+}
 
 export function SyntheticsEventsProvider({ children }: { children: ReactNode }) {
   const { chainId } = useChainId();
   const { active, account: currentAccount } = useWeb3React();
 
-  const { tokensData } = useAvailableTokensData(chainId);
+  const { tokensData } = useTokensData(chainId);
   const { marketsInfoData } = useMarketsInfo(chainId);
 
   const [orderStatuses, setOrderStatuses] = useState<OrderStatuses>({});
@@ -381,45 +400,106 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     },
   };
 
+  const wsProvider = useWsProvider(active, chainId);
+
   useEffect(
     function subscribe() {
-      const wsProvider = getWsProvider(active, chainId);
-
-      if (!wsProvider) {
+      if (!wsProvider || !currentAccount) {
         return;
       }
 
-      let EventEmitterContract: ethers.Contract | undefined;
+      const addressHash = ethers.utils.defaultAbiCoder.encode(["address"], [currentAccount]);
 
-      try {
-        EventEmitterContract = new ethers.Contract(getContract(chainId, "EventEmitter"), EventEmitter.abi, wsProvider);
-      } catch (e) {
-        // ...ignore on unsupported chains
-      }
+      const eventEmitter = new ethers.Contract(getContract(chainId, "EventEmitter"), EventEmitter.abi, wsProvider);
+      const EVENT_LOG_TOPIC = eventEmitter.interface.getEventTopic("EventLog");
+      const EVENT_LOG1_TOPIC = eventEmitter.interface.getEventTopic("EventLog1");
+      const EVENT_LOG2_TOPIC = eventEmitter.interface.getEventTopic("EventLog2");
 
       function handleEventLog(sender, eventName, eventNameHash, eventData, txnOpts) {
+        // console.log("handleEventLog", eventName);
         eventLogHandlers.current[eventName]?.(parseEventLogData(eventData), txnOpts);
       }
 
       function handleEventLog1(sender, eventName, eventNameHash, topic1, eventData, txnOpts) {
+        // console.log("handleEventLog1", eventName);
         eventLogHandlers.current[eventName]?.(parseEventLogData(eventData), txnOpts);
       }
 
       function handleEventLog2(msgSender, eventName, eventNameHash, topic1, topic2, eventData, txnOpts) {
+        // console.log("handleEventLog2", eventName);
         eventLogHandlers.current[eventName]?.(parseEventLogData(eventData), txnOpts);
       }
 
-      EventEmitterContract?.on("EventLog", handleEventLog);
-      EventEmitterContract?.on("EventLog1", handleEventLog1);
-      EventEmitterContract?.on("EventLog2", handleEventLog2);
+      function handleCommonLog(e) {
+        const txnOpts: EventTxnParams = {
+          transactionHash: e.transactionHash,
+          blockNumber: e.blockNumber,
+        };
+
+        try {
+          const parsed = eventEmitter.interface.parseLog(e);
+
+          if (parsed.name === "EventLog") {
+            handleEventLog(parsed.args[0], parsed.args[1], parsed.args[2], parsed.args[3], txnOpts);
+          } else if (parsed.name === "EventLog1") {
+            handleEventLog1(parsed.args[0], parsed.args[1], parsed.args[2], parsed.args[3], parsed.args[4], txnOpts);
+          } else if (parsed.name === "EventLog2") {
+            handleEventLog2(
+              parsed.args[0],
+              parsed.args[1],
+              parsed.args[2],
+              parsed.args[3],
+              parsed.args[4],
+              parsed.args[5],
+              txnOpts
+            );
+          }
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.error("error parsing event", e);
+        }
+      }
+
+      const filters = [
+        // DEPOSITS AND WITHDRAWALS
+        {
+          address: getContract(chainId, "EventEmitter"),
+          topics: [EVENT_LOG1_TOPIC, [DEPOSIT_CREATED_HASH, WITHDRAWAL_CREATED_HASH], addressHash],
+        },
+        {
+          address: getContract(chainId, "EventEmitter"),
+          topics: [
+            EVENT_LOG_TOPIC,
+            [DEPOSIT_CANCELLED_HASH, DEPOSIT_EXECUTED_HASH, WITHDRAWAL_CANCELLED_HASH, WITHDRAWAL_EXECUTED_HASH],
+          ],
+        },
+        // ORDERS
+        {
+          address: getContract(chainId, "EventEmitter"),
+          topics: [EVENT_LOG2_TOPIC, ORDER_CREATED_HASH, null, addressHash],
+        },
+        {
+          address: getContract(chainId, "EventEmitter"),
+          topics: [EVENT_LOG1_TOPIC, [ORDER_CANCELLED_HASH, ORDER_EXECUTED_HASH]],
+        },
+        // POSITIONS
+        {
+          address: getContract(chainId, "EventEmitter"),
+          topics: [EVENT_LOG1_TOPIC, [POSITION_INCREASE_HASH, POSITION_DECREASE_HASH], addressHash],
+        },
+      ];
+
+      filters.forEach((filter) => {
+        wsProvider.on(filter, handleCommonLog);
+      });
 
       return () => {
-        EventEmitterContract?.off("EventLog", handleEventLog);
-        EventEmitterContract?.off("EventLog1", handleEventLog1);
-        EventEmitterContract?.off("EventLog2", handleEventLog2);
+        filters.forEach((filter) => {
+          wsProvider.off(filter, handleCommonLog);
+        });
       };
     },
-    [active, chainId]
+    [chainId, currentAccount, wsProvider]
   );
 
   const contextState: SyntheticsEventsContextType = useMemo(() => {
@@ -450,7 +530,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             pendingOrderData={data}
             marketsInfoData={marketsInfoData}
             tokensData={tokensData}
-            toastId={toastId}
+            toastTimestamp={toastId}
           />,
           {
             autoClose: false,
@@ -466,7 +546,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             pendingDepositData={data}
             marketsInfoData={marketsInfoData}
             tokensData={tokensData}
-            toastId={toastId}
+            toastTimestamp={toastId}
           />,
           {
             autoClose: false,
@@ -482,7 +562,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             pendingWithdrawalData={data}
             marketsInfoData={marketsInfoData}
             tokensData={tokensData}
-            toastId={toastId}
+            toastTimestamp={toastId}
           />,
           {
             autoClose: false,

@@ -1,19 +1,32 @@
 import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
 import { MarketInfo } from "domain/synthetics/markets";
 import { BigNumber } from "ethers";
+import { PRECISION } from "lib/legacy";
 import { applyFactor, getBasisPoints } from "lib/numbers";
 import { FeeItem } from "../types";
-import { PRECISION } from "lib/legacy";
 
 export * from "./executionFee";
 export * from "./priceImpact";
 
+export function getSwapFee(marketInfo: MarketInfo, swapAmount: BigNumber, forPositiveImpact: boolean) {
+  const factor = forPositiveImpact
+    ? marketInfo.swapFeeFactorForPositiveImpact
+    : marketInfo.swapFeeFactorForNegativeImpact;
+
+  return applyFactor(swapAmount, factor);
+}
+
 export function getPositionFee(
   marketInfo: MarketInfo,
   sizeDeltaUsd: BigNumber,
+  forPositiveImpact: boolean,
   referralInfo: { totalRebateFactor: BigNumber; discountFactor: BigNumber } | undefined
 ) {
-  let positionFeeUsd = applyFactor(sizeDeltaUsd, marketInfo.positionFeeFactor);
+  const factor = forPositiveImpact
+    ? marketInfo.positionFeeFactorForPositiveImpact
+    : marketInfo.positionFeeFactorForNegativeImpact;
+
+  let positionFeeUsd = applyFactor(sizeDeltaUsd, factor);
 
   if (!referralInfo) {
     return { positionFeeUsd, discountUsd: BigNumber.from(0), totalRebateUsd: BigNumber.from(0) };
@@ -90,11 +103,11 @@ export function getIsHighPriceImpact(positionPriceImpact?: FeeItem, swapPriceImp
 }
 
 export function getFeeItem(feeDeltaUsd?: BigNumber, basis?: BigNumber): FeeItem | undefined {
-  if (!feeDeltaUsd || !basis?.gt(0)) return undefined;
+  if (!feeDeltaUsd) return undefined;
 
   return {
     deltaUsd: feeDeltaUsd,
-    bps: getBasisPoints(feeDeltaUsd, basis),
+    bps: basis?.gt(0) ? getBasisPoints(feeDeltaUsd, basis) : BigNumber.from(0),
   };
 }
 

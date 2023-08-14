@@ -1,13 +1,13 @@
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
-import { PRECISION } from "lib/legacy";
-import { applyFactor } from "lib/numbers";
+import { PRECISION, USD_DECIMALS } from "lib/legacy";
+import { applyFactor, expandDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { VirtualInventoryForPositionsData, getCappedPositionImpactUsd } from "../fees";
-import { convertToContractTokenPrices, convertToUsd, getMidPrice } from "../tokens";
-import { TokensData } from "../tokens/types";
-import { ContractMarketPrices, Market, MarketInfo, PnlFactorType } from "./types";
+import { getCappedPositionImpactUsd } from "../fees";
+import { convertToContractTokenPrices, convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens";
+import { TokenData, TokensData } from "../tokens/types";
+import { ContractMarketPrices, Market, MarketInfo } from "./types";
 
 export function getMarketFullName(p: { longToken: Token; shortToken: Token; indexToken: Token; isSpotOnly: boolean }) {
   const { indexToken, longToken, shortToken, isSpotOnly } = p;
@@ -19,7 +19,7 @@ export function getMarketIndexName(p: { indexToken: Token; isSpotOnly: boolean }
   const { indexToken, isSpotOnly } = p;
 
   if (isSpotOnly) {
-    return `SPOT-ONLY`;
+    return `SWAP-ONLY`;
   }
 
   return `${indexToken.baseSymbol || indexToken.symbol}/USD`;
@@ -111,7 +111,16 @@ export function getReservedUsd(marketInfo: MarketInfo, isLong: boolean) {
 
 export function getMaxReservedUsd(marketInfo: MarketInfo, isLong: boolean) {
   const poolUsd = getPoolUsdWithoutPnl(marketInfo, isLong, "minPrice");
-  const reserveFactor = isLong ? marketInfo.reserveFactorLong : marketInfo.reserveFactorShort;
+
+  let reserveFactor = isLong ? marketInfo.reserveFactorLong : marketInfo.reserveFactorShort;
+
+  const openInterestReserveFactor = isLong
+    ? marketInfo.openInterestReserveFactorLong
+    : marketInfo.openInterestReserveFactorShort;
+
+  if (openInterestReserveFactor.lt(reserveFactor)) {
+    reserveFactor = openInterestReserveFactor;
+  }
 
   return poolUsd.mul(reserveFactor).div(PRECISION);
 }
@@ -128,11 +137,24 @@ export function getAvailableUsdLiquidityForPosition(marketInfo: MarketInfo, isLo
 }
 
 export function getAvailableUsdLiquidityForCollateral(marketInfo: MarketInfo, isLong: boolean) {
-  const reservedUsd = getReservedUsd(marketInfo, isLong);
-
   const poolUsd = getPoolUsdWithoutPnl(marketInfo, isLong, "minPrice");
 
-  return poolUsd.sub(reservedUsd);
+  if (marketInfo.isSpotOnly) {
+    return poolUsd;
+  }
+
+  const reservedUsd = getReservedUsd(marketInfo, isLong);
+  const maxReserveFactor = isLong ? marketInfo.reserveFactorLong : marketInfo.reserveFactorShort;
+
+  if (maxReserveFactor.eq(0)) {
+    return BigNumber.from(0);
+  }
+
+  const minPoolUsd = reservedUsd.mul(PRECISION).div(maxReserveFactor);
+
+  const liqudiity = poolUsd.sub(minPoolUsd);
+
+  return liqudiity;
 }
 
 export function getCappedPoolPnl(p: {
@@ -140,9 +162,8 @@ export function getCappedPoolPnl(p: {
   poolUsd: BigNumber;
   isLong: boolean;
   maximize: boolean;
-  pnlFactorType: PnlFactorType;
 }) {
-  const { marketInfo, poolUsd, isLong, pnlFactorType, maximize } = p;
+  const { marketInfo, poolUsd, isLong, maximize } = p;
 
   let poolPnl: BigNumber;
 
@@ -156,15 +177,9 @@ export function getCappedPoolPnl(p: {
     return poolPnl;
   }
 
-  let maxPnlFactor: BigNumber;
-
-  if (pnlFactorType === "FOR_TRADERS") {
-    maxPnlFactor = isLong ? marketInfo.maxPnlFactorForTradersLong : marketInfo.maxPnlFactorForTradersShort;
-  } else if (pnlFactorType === "FOR_DEPOSITS") {
-    maxPnlFactor = isLong ? marketInfo.maxPnlFactorForDepositsLong : marketInfo.maxPnlFactorForDepositsShort;
-  } else {
-    maxPnlFactor = isLong ? marketInfo.maxPnlFactorForWithdrawalsLong : marketInfo.maxPnlFactorForWithdrawalsShort;
-  }
+  const maxPnlFactor: BigNumber = isLong
+    ? marketInfo.maxPnlFactorForTradersLong
+    : marketInfo.maxPnlFactorForTradersShort;
 
   const maxPnl = applyFactor(poolUsd, maxPnlFactor);
 
@@ -175,7 +190,8 @@ export function getMostLiquidMarketForPosition(
   marketsInfo: MarketInfo[],
   indexTokenAddress: string,
   collateralTokenAddress: string | undefined,
-  isLong: boolean
+  isLong: boolean,
+  isIncrease: boolean
 ) {
   let bestMarket: MarketInfo | undefined;
   let bestLiquidity: BigNumber | undefined;
@@ -227,9 +243,9 @@ export function getMostLiquidMarketForSwap(marketsInfo: MarketInfo[], toTokenAdd
 
 export function getMinPriceImpactMarket(
   marketsInfo: MarketInfo[],
-  virtualInventoryForPositions: VirtualInventoryForPositionsData,
   indexTokenAddress: string,
   isLong: boolean,
+  isIncrease: boolean,
   sizeDeltaUsd: BigNumber
 ) {
   let bestMarket: MarketInfo | undefined;
@@ -240,12 +256,7 @@ export function getMinPriceImpactMarket(
     const liquidity = getAvailableUsdLiquidityForPosition(marketInfo, isLong);
 
     if (isMarketIndexToken(marketInfo, indexTokenAddress) && liquidity.gt(sizeDeltaUsd)) {
-      const priceImpactDeltaUsd = getCappedPositionImpactUsd(
-        marketInfo,
-        virtualInventoryForPositions,
-        sizeDeltaUsd,
-        isLong
-      );
+      const priceImpactDeltaUsd = getCappedPositionImpactUsd(marketInfo, sizeDeltaUsd, isLong);
 
       if (!bestImpactDeltaUsd || priceImpactDeltaUsd.gt(bestImpactDeltaUsd)) {
         bestMarket = marketInfo;
@@ -260,22 +271,105 @@ export function getMinPriceImpactMarket(
   };
 }
 
-export function getClaimableFundingAmount(marketInfo: MarketInfo, isLong: boolean) {
-  return isLong ? marketInfo.claimableFundingAmountLong : marketInfo.claimableFundingAmountShort;
-}
-
 export function getTotalClaimableFundingUsd(markets: MarketInfo[]) {
   return markets.reduce((acc, market) => {
     const { longToken, shortToken } = market;
 
-    const amountLong = getClaimableFundingAmount(market, true);
-    const amountShort = getClaimableFundingAmount(market, false);
+    const amountLong = market.claimableFundingAmountLong;
+    const amountShort = market.claimableFundingAmountShort;
 
-    const usdLong = convertToUsd(amountLong, longToken.decimals, longToken.prices.minPrice)!;
-    const usdShort = convertToUsd(amountShort, shortToken.decimals, shortToken.prices.minPrice)!;
+    const usdLong = convertToUsd(amountLong, longToken.decimals, longToken.prices.minPrice);
+    const usdShort = convertToUsd(amountShort, shortToken.decimals, shortToken.prices.minPrice);
 
-    return acc.add(usdLong).add(usdShort);
+    return acc.add(usdLong || 0).add(usdShort || 0);
   }, BigNumber.from(0));
+}
+
+export function getMaxPoolUsd(marketInfo: MarketInfo, isLong: boolean) {
+  if (isLong) {
+    return convertToUsd(
+      marketInfo.maxLongPoolAmount,
+      marketInfo.longToken.decimals,
+      getMidPrice(marketInfo.longToken.prices)
+    )!;
+  } else {
+    return convertToUsd(
+      marketInfo.maxShortPoolAmount,
+      marketInfo.shortToken.decimals,
+      getMidPrice(marketInfo.shortToken.prices)
+    )!;
+  }
+}
+
+export function getDepositCollateralCapacityAmount(marketInfo: MarketInfo, isLong: boolean) {
+  const poolAmount = isLong ? marketInfo.longPoolAmount : marketInfo.shortPoolAmount;
+  const maxPoolAmount = isLong ? marketInfo.maxLongPoolAmount : marketInfo.maxShortPoolAmount;
+
+  const capacityAmount = maxPoolAmount.sub(poolAmount);
+
+  return capacityAmount.gt(0) ? capacityAmount : BigNumber.from(0);
+}
+
+export function getDepositCollateralCapacityUsd(marketInfo: MarketInfo, isLong: boolean) {
+  const poolUsd = getPoolUsdWithoutPnl(marketInfo, isLong, "midPrice");
+  const maxPoolUsd = getMaxPoolUsd(marketInfo, isLong);
+
+  const capacityUsd = maxPoolUsd.sub(poolUsd);
+
+  return capacityUsd.gt(0) ? capacityUsd : BigNumber.from(0);
+}
+
+export function getMintableMarketTokens(marketInfo: MarketInfo, marketToken: TokenData) {
+  const longDepositCapacityAmount = getDepositCollateralCapacityAmount(marketInfo, true);
+  const shortDepositCapacityAmount = getDepositCollateralCapacityAmount(marketInfo, false);
+
+  const longDepositCapacityUsd = getDepositCollateralCapacityUsd(marketInfo, true);
+  const shortDepositCapacityUsd = getDepositCollateralCapacityUsd(marketInfo, false);
+
+  const mintableUsd = longDepositCapacityUsd.add(shortDepositCapacityUsd);
+  const mintableAmount = usdToMarketTokenAmount(marketInfo, marketToken, mintableUsd);
+
+  return {
+    mintableAmount,
+    mintableUsd,
+    longDepositCapacityUsd,
+    shortDepositCapacityUsd,
+    longDepositCapacityAmount,
+    shortDepositCapacityAmount,
+  };
+}
+
+export function usdToMarketTokenAmount(marketInfo: MarketInfo, marketToken: TokenData, usdValue: BigNumber) {
+  const supply = marketToken.totalSupply!;
+  const poolValue = marketInfo.poolValueMax!;
+  // if the supply and poolValue is zero, use 1 USD as the token price
+  if (supply.eq(0) && poolValue.eq(0)) {
+    return convertToTokenAmount(usdValue, marketToken.decimals, expandDecimals(1, USD_DECIMALS))!;
+  }
+
+  // if the supply is zero and the poolValue is more than zero,
+  // then include the poolValue for the amount of tokens minted so that
+  // the market token price after mint would be 1 USD
+  if (supply.eq(0) && poolValue.gt(0)) {
+    return convertToTokenAmount(usdValue.add(poolValue), marketToken.decimals, expandDecimals(1, USD_DECIMALS))!;
+  }
+
+  if (poolValue.eq(0)) {
+    return BigNumber.from(0);
+  }
+
+  return supply.mul(usdValue).div(poolValue);
+}
+
+export function marketTokenAmountToUsd(marketInfo: MarketInfo, marketToken: TokenData, amount: BigNumber) {
+  const supply = marketToken.totalSupply!;
+  const poolValue = marketInfo.poolValueMax!;
+
+  const price = supply.eq(0)
+    ? expandDecimals(1, USD_DECIMALS)
+    : poolValue.mul(expandDecimals(1, marketToken.decimals)).div(supply);
+
+  return convertToUsd(amount, marketToken.decimals, price)!;
 }
 
 export function getContractMarketPrices(tokensData: TokensData, market: Market): ContractMarketPrices | undefined {

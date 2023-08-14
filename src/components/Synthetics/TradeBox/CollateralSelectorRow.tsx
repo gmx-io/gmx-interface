@@ -115,7 +115,7 @@ export function CollateralSelectorRow(p: Props) {
         availableCollaterals && (
           <TokenSelector
             label={t`Collateral In`}
-            className="GlpSwap-from-token"
+            className="GlpSwap-from-token SwapBox-info-dropdown"
             chainId={chainId}
             tokenAddress={selectedCollateralAddress}
             onSelectToken={(token) => {

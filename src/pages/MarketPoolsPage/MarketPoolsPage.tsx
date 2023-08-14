@@ -1,6 +1,7 @@
 import { Trans } from "@lingui/macro";
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import Footer from "components/Footer/Footer";
 import { GmSwapBox, Mode, Operation } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";
 import { MarketStats } from "components/Synthetics/MarketStats/MarketStats";
 import { getSyntheticsDepositMarketKey } from "config/localStorage";
@@ -14,23 +15,30 @@ import { getTokenData } from "domain/synthetics/tokens";
 import { getByKey } from "lib/objects";
 import "./MarketPoolsPage.scss";
 import { GmList } from "components/Synthetics/GmList/GmList";
+import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
 
 type Props = {
   connectWallet: () => void;
   setPendingTxns: (txns: any) => void;
+  shouldDisableValidation?: boolean;
 };
 
 export function MarketPoolsPage(p: Props) {
   const { chainId } = useChainId();
 
-  const { marketsInfoData = {} } = useMarketsInfo(chainId);
+  const { marketsInfoData = {}, tokensData } = useMarketsInfo(chainId);
   const markets = Object.values(marketsInfoData);
 
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
   const { marketTokensData: withdrawalMarketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
 
+  const { marketsTokensAPRData } = useMarketTokensAPR(chainId);
+
   const [operation, setOperation] = useState<Operation>(Operation.Deposit);
-  const [mode, setMode] = useState<Mode>(Mode.Single);
+  let [mode, setMode] = useState<Mode>(Mode.Single);
+  if (operation === Operation.Withdrawal) {
+    mode = Mode.Pair;
+  }
 
   const [selectedMarketKey, setSelectedMarketKey] = useLocalStorageSerializeKey<string | undefined>(
     getSyntheticsDepositMarketKey(chainId),
@@ -54,7 +62,8 @@ export function MarketPoolsPage(p: Props) {
             </div>
             <div className="Page-description">
               <Trans>
-                Purchase <ExternalLink href="https://gmxio.gitbook.io/gmx/gd">GM tokens</ExternalLink>
+                Purchase <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v2">GM Tokens</ExternalLink>{" "}
+                to earn fees from swaps and leverage trading.
               </Trans>
               <br />
             </div>
@@ -62,13 +71,16 @@ export function MarketPoolsPage(p: Props) {
         </div>
 
         <div className="MarketPoolsPage-content">
-          <MarketStats marketInfo={marketInfo} marketToken={marketToken} />
+          <MarketStats marketsTokensAPRData={marketsTokensAPRData} marketInfo={marketInfo} marketToken={marketToken} />
 
           <div className="MarketPoolsPage-swap-box">
             <GmSwapBox
               onConnectWallet={p.connectWallet}
               selectedMarketAddress={selectedMarketKey}
               markets={markets}
+              shouldDisableValidation={p.shouldDisableValidation}
+              marketsInfoData={marketsInfoData}
+              tokensData={tokensData}
               onSelectMarket={setSelectedMarketKey}
               setPendingTxns={p.setPendingTxns}
               operation={operation}
@@ -84,8 +96,15 @@ export function MarketPoolsPage(p: Props) {
             <Trans>Select a Market</Trans>
           </div>
         </div>
-        <GmList />
+        <GmList
+          marketsTokensAPRData={marketsTokensAPRData}
+          marketTokensData={depositMarketTokensData}
+          marketsInfoData={marketsInfoData}
+          tokensData={tokensData}
+          shouldScrollToTop={true}
+        />
       </div>
+      <Footer />
     </SEO>
   );
 }

@@ -12,6 +12,7 @@ type Props = {
   swapFee?: FeeItem;
   swapPriceImpact?: FeeItem;
   executionFee?: ExecutionFee;
+  isDeposit: boolean;
 };
 
 export function GmFees(p: Props) {
@@ -32,7 +33,7 @@ export function GmFees(p: Props) {
                 <div>
                   {p.swapPriceImpact?.deltaUsd.abs().gt(0) && (
                     <StatsTooltipRow
-                      label={t`Swap Price Impact`}
+                      label={t`Price Impact`}
                       value={formatDeltaUsd(p.swapPriceImpact.deltaUsd, p.swapPriceImpact.bps)!}
                       showDollar={false}
                     />
@@ -41,7 +42,7 @@ export function GmFees(p: Props) {
                   {p.swapFee && (
                     <>
                       <StatsTooltipRow
-                        label={t`Swap Fee`}
+                        label={p.isDeposit ? t`Buy Fee` : t`Sell Fee`}
                         value={formatDeltaUsd(p.swapFee.deltaUsd, p.swapFee.bps)!}
                         showDollar={false}
                       />
@@ -50,10 +51,10 @@ export function GmFees(p: Props) {
 
                   {p.executionFee && (
                     <StatsTooltipRow
-                      label={t`Execution Fee`}
+                      label={t`Max Execution Fee`}
                       value={formatTokenAmountWithUsd(
-                        p.executionFee.feeTokenAmount,
-                        p.executionFee.feeUsd,
+                        p.executionFee.feeTokenAmount.mul(-1),
+                        p.executionFee.feeUsd.mul(-1),
                         p.executionFee.feeToken.symbol,
                         p.executionFee.feeToken.decimals
                       )}

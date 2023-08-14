@@ -5,20 +5,17 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   OrderInfo,
+  OrderType,
   PositionOrderInfo,
+  SwapOrderInfo,
   isDecreaseOrderType,
   isIncreaseOrderType,
   isSwapOrderType,
 } from "domain/synthetics/orders";
-import {
-  adaptToV1TokenInfo,
-  convertToTokenAmount,
-  convertToUsd,
-  getTokensRatioByAmounts,
-} from "domain/synthetics/tokens";
+import { adaptToV1TokenInfo, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { getMarkPrice } from "domain/synthetics/trade";
-import { getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
-import { formatTokenAmount, formatUsd } from "lib/numbers";
+import { USD_DECIMALS, getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
+import { formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
 
 type Props = {
   order: OrderInfo;
@@ -66,34 +63,24 @@ export function OrderItem(p: Props) {
     if (!isSwapOrderType(p.order.orderType)) return {};
 
     const fromToken = p.order.initialCollateralToken;
-    const fromAmount = p.order.initialCollateralDeltaAmount;
-    const toAmount = p.order.minOutputAmount;
     const toToken = p.order.targetCollateralToken;
 
     const fromTokenInfo = fromToken ? adaptToV1TokenInfo(fromToken) : undefined;
     const toTokenInfo = toToken ? adaptToV1TokenInfo(toToken) : undefined;
 
-    const tokensRatio =
-      fromToken &&
-      toToken &&
-      getTokensRatioByAmounts({
-        fromToken,
-        toToken,
-        fromTokenAmount: fromAmount,
-        toTokenAmount: toAmount,
-      });
+    const triggerRatio = (p.order as SwapOrderInfo).triggerRatio;
 
     const markExchangeRate =
       fromToken && toToken
         ? getExchangeRate(adaptToV1TokenInfo(fromToken), adaptToV1TokenInfo(toToken), false)
         : undefined;
 
-    const [largest, smallest] =
-      tokensRatio?.largestToken.address === fromToken?.address
-        ? [fromTokenInfo, toTokenInfo]
-        : [toTokenInfo, fromTokenInfo];
+    const swapRatioText = `${formatAmount(
+      triggerRatio?.ratio,
+      USD_DECIMALS,
+      triggerRatio?.smallestToken.isStable ? 2 : 4
+    )} ${triggerRatio?.smallestToken.symbol} / ${triggerRatio?.largestToken.symbol}`;
 
-    const swapRatioText = tokensRatio.ratio.gt(0) ? getExchangeRateDisplay(tokensRatio?.ratio, largest, smallest) : "0";
     const markSwapRatioText = getExchangeRateDisplay(markExchangeRate, fromTokenInfo, toTokenInfo);
 
     return { swapRatioText, markSwapRatioText };
@@ -105,7 +92,7 @@ export function OrderItem(p: Props) {
         <Tooltip
           className="order-error"
           handle={p.order.title}
-          position="right-bottom"
+          position="center-bottom"
           handleClassName="plain"
           renderContent={() => <span className="negative">{p.error}</span>}
         />
@@ -120,11 +107,18 @@ export function OrderItem(p: Props) {
               handle={p.order.title}
               position="left-bottom"
               renderContent={() => (
-                <StatsTooltipRow
-                  label={"Key"}
-                  value={<div className="debug-key muted">{p.order.key}</div>}
-                  showDollar={false}
-                />
+                <>
+                  <StatsTooltipRow
+                    label={"Key"}
+                    value={<div className="debug-key muted">{p.order.key}</div>}
+                    showDollar={false}
+                  />
+                  <StatsTooltipRow
+                    label={"Amount"}
+                    value={<div className="debug-key muted">{p.order.minOutputAmount.toString()}</div>}
+                    showDollar={false}
+                  />
+                </>
               )}
             />
           );
@@ -191,9 +185,10 @@ export function OrderItem(p: Props) {
         <>
           {!p.hideActions ? (
             <Tooltip
+              position="right-bottom"
               handle={swapRatioText}
               renderContent={() =>
-                t`You will receive at least ${toAmountText} if this order is executed. The execution price may vary depending on swap fees and price impact at the time the order is executed.`
+                t`You will receive at least ${toAmountText} if this order is executed. This price is being updated in real time based on Swap Fees and Price Impact.`
               }
             />
           ) : (
@@ -210,13 +205,18 @@ export function OrderItem(p: Props) {
           handle={`${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.triggerPrice, {
             displayDecimals: priceDecimals,
           })}`}
+          position="right-bottom"
           renderContent={() => (
             <>
               <StatsTooltipRow
                 label={t`Acceptable Price`}
-                value={`${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.acceptablePrice, {
-                  displayDecimals: priceDecimals,
-                })}`}
+                value={
+                  positionOrder.orderType === OrderType.StopLossDecrease
+                    ? "NA"
+                    : `${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.acceptablePrice, {
+                        displayDecimals: priceDecimals,
+                      })}`
+                }
                 showDollar={false}
               />
             </>
@@ -303,84 +303,79 @@ export function OrderItem(p: Props) {
   function renderSmall() {
     return (
       <div className="App-card">
-        <div className="App-card-title-small">{renderTitle()}</div>
-        <div className="App-card-divider" />
-        <div className="App-card-content">
-          {showDebugValues && (
-            <div className="App-card-row">
-              <div className="label">Key</div>
-              <div className="debug-key muted">{p.order.key}</div>
-            </div>
-          )}
-          <div className="App-card-row">
-            <div className="label">
-              <Trans>Trigger Price</Trans>
-            </div>
-            <div>{renderTriggerPrice()}</div>
-          </div>
-
-          <div className="App-card-row">
-            <div className="label">
-              <Trans>Acceptable Price</Trans>
-            </div>
-            <div>{renderTriggerPrice()}</div>
-          </div>
-
-          <div className="App-card-row">
-            <div className="label">
-              <Trans>Mark Price</Trans>
-            </div>
-            <div>{renderMarkPrice()}</div>
-          </div>
-
-          {isIncreaseOrderType(p.order.orderType) && (
+        <div>
+          <div className="App-card-title-small">{renderTitle()}</div>
+          <div className="App-card-divider" />
+          <div className="App-card-content">
+            {showDebugValues && (
+              <div className="App-card-row">
+                <div className="label">Key</div>
+                <div className="debug-key muted">{p.order.key}</div>
+              </div>
+            )}
             <div className="App-card-row">
               <div className="label">
-                <Trans>Collateral</Trans>
+                <Trans>Trigger Price</Trans>
               </div>
-              <div>
-                {isCollateralSwap ? (
-                  <Tooltip
-                    handle={getCollateralText()}
-                    position="right-bottom"
-                    renderContent={() => {
-                      return (
-                        <Trans>
-                          {formatTokenAmount(
-                            p.order.initialCollateralDeltaAmount,
-                            p.order.initialCollateralToken.decimals,
-                            p.order.initialCollateralToken.symbol
-                          )}{" "}
-                          will be swapped to {p.order.targetCollateralToken.symbol} on order execution.
-                        </Trans>
-                      );
-                    }}
-                  />
-                ) : (
-                  getCollateralText()
-                )}
-              </div>
+              <div>{renderTriggerPrice()}</div>
             </div>
-          )}
 
-          {!p.hideActions && (
-            <>
-              <div className="App-card-divider"></div>
-              <div className="App-card-options">
-                {p.onEditOrder && (
-                  <button className="App-button-option App-card-option" onClick={p.onEditOrder}>
-                    <Trans>Edit</Trans>
-                  </button>
-                )}
-
-                {p.onCancelOrder && (
-                  <button className="App-button-option App-card-option" onClick={p.onCancelOrder}>
-                    <Trans>Cancel</Trans>
-                  </button>
-                )}
+            <div className="App-card-row">
+              <div className="label">
+                <Trans>Mark Price</Trans>
               </div>
-            </>
-          )}
+              <div>{renderMarkPrice()}</div>
+            </div>
+
+            {isIncreaseOrderType(p.order.orderType) && (
+              <div className="App-card-row">
+                <div className="label">
+                  <Trans>Collateral</Trans>
+                </div>
+                <div>
+                  {isCollateralSwap ? (
+                    <Tooltip
+                      handle={getCollateralText()}
+                      position="right-bottom"
+                      renderContent={() => {
+                        return (
+                          <Trans>
+                            {formatTokenAmount(
+                              p.order.initialCollateralDeltaAmount,
+                              p.order.initialCollateralToken.decimals,
+                              p.order.initialCollateralToken.symbol
+                            )}{" "}
+                            will be swapped to {p.order.targetCollateralToken.symbol} on order execution.
+                          </Trans>
+                        );
+                      }}
+                    />
+                  ) : (
+                    getCollateralText()
+                  )}
+                </div>
+              </div>
+            )}
+
+            {!p.hideActions && (
+              <>
+                <div className="App-card-divider"></div>
+                <div className="App-card-options">
+                  {p.onEditOrder && (
+                    <button className="App-button-option App-card-option" onClick={p.onEditOrder}>
+                      <Trans>Edit</Trans>
+                    </button>
+                  )}
+
+                  {p.onCancelOrder && (
+                    <button className="App-button-option App-card-option" onClick={p.onCancelOrder}>
+                      <Trans>Cancel</Trans>
+                    </button>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
     );

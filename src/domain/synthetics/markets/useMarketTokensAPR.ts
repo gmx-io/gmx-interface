@@ -1,12 +1,13 @@
 import { gql } from "@apollo/client";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { BigNumber } from "ethers";
-import { BASIS_POINTS_DIVISOR } from "lib/legacy";
 import { bigNumberify, expandDecimals } from "lib/numbers";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import { useMemo } from "react";
 import useSWR from "swr";
-import { useMarketTokensData, useMarketsInfo } from ".";
+import { useMarketsInfo } from ".";
 import { MarketTokensAPRData } from "./types";
+import { useMarketTokensData } from "./useMarketTokensData";
 
 type RawCollectedFees = {
   id: string;
@@ -41,7 +42,7 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
 
       const marketFeesQuery = (marketAddress: string, tokenAddress: string) => `
             _${marketAddress}_${tokenAddress}: collectedMarketFeesInfos(
-               where: { 
+               where: {
                     marketAddress: "${marketAddress.toLowerCase()}",
                     tokenAddress: "${tokenAddress.toLowerCase()}",
                     period: "1h",
@@ -49,6 +50,7 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
                 },
                 orderBy: timestampGroup,
                 orderDirection: desc,
+                first: 1000
             ) {
                 id
                 period
@@ -69,7 +71,7 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
         return acc;
       }, "");
 
-      const { data: response } = await client!.query({ query: gql(`{${queryBody}}`) });
+      const { data: response } = await client!.query({ query: gql(`{${queryBody}}`), fetchPolicy: "no-cache" });
 
       const marketTokensAPRData: MarketTokensAPRData = marketAddresses.reduce((acc, marketAddress) => {
         const market = marketsInfoData![marketAddress]!;
@@ -87,7 +89,7 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
         if (marketToken.totalSupply?.gt(0)) {
           const feesPerMarketToken = feesUsdForPeriod.mul(expandDecimals(1, 18)).div(marketToken.totalSupply);
           const weeksInYear = 52;
-          const apr = feesPerMarketToken.mul(BASIS_POINTS_DIVISOR).div(marketToken.prices.minPrice).mul(weeksInYear);
+          const apr = feesPerMarketToken.mul(BASIS_POINTS_DIVISOR).mul(weeksInYear).div(marketToken.prices.minPrice);
 
           acc[marketAddress] = apr;
         } else {

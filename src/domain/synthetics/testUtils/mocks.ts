@@ -1,9 +1,12 @@
-import { MarketsData } from "domain/synthetics/markets";
+import { MarketsData, MarketsInfoData, getMarketFullName } from "domain/synthetics/markets";
 import { TokenData, TokensData, convertToTokenAmount, getTokenData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
-import { getByKey } from "lib/objects";
+
+export function usdToToken(usd: number, token: TokenData) {
+  return convertToTokenAmount(expandDecimals(usd, 30), token.decimals, token.prices?.minPrice)!;
+}
 
 export function mockTokensData(overrides: { [symbol: string]: TokenData } = {}): TokensData {
   const tokens: TokensData = {
@@ -116,14 +119,11 @@ export function mockMarketsData(marketKeys: string[]): MarketsData {
   }, {} as MarketsData);
 }
 
-/**
- * @param marketKeys - array of market keys in the following format: indexToken-longToken-shortToken
- */
-export function mockPoolsData(
+export function mockMarketsInfoData(
   tokensData: TokensData,
   marketKeys: string[],
   overrides: { [marketKey: string]: Partial<any> } = {}
-): any {
+): MarketsInfoData {
   return marketKeys.reduce((acc, key) => {
     const [indexTokenAddress, longTokenAddress, shortTokenAddress] = key.split("-");
 
@@ -131,20 +131,39 @@ export function mockPoolsData(
     const longToken = getTokenData(tokensData, longTokenAddress)!;
     const shortToken = getTokenData(tokensData, shortTokenAddress)!;
 
+    const isSpotOnly = indexTokenAddress === "SPOT";
+
     acc[key] = {
+      isDisabled: false,
+
+      marketTokenAddress: key,
+      indexTokenAddress,
+      longTokenAddress,
+      shortTokenAddress,
+
+      isSameCollaterals: longTokenAddress === shortTokenAddress,
+      isSpotOnly,
+
+      name: getMarketFullName({ longToken, shortToken, indexToken, isSpotOnly }),
+
+      longToken,
+      shortToken,
+      indexToken,
+
       longPoolAmount: usdToToken(1000, longToken),
       shortPoolAmount: usdToToken(1000, shortToken),
+
+      maxLongPoolAmount: usdToToken(10000, longToken),
+      maxShortPoolAmount: usdToToken(10000, shortToken),
+
+      poolValueMax: expandDecimals(2000, USD_DECIMALS),
+      poolValueMin: expandDecimals(2000, USD_DECIMALS),
 
       reserveFactorLong: expandDecimals(5, 29),
       reserveFactorShort: expandDecimals(5, 29),
 
-      totalBorrowingLong: BigNumber.from(0),
-      totalBorrowingShort: BigNumber.from(0),
-
-      cummulativeBorrowingFactorLong: BigNumber.from(0),
-      cummulativeBorrowingFactorShort: BigNumber.from(0),
-
-      borrowingFeeReceiverFactor: BigNumber.from(0),
+      openInterestReserveFactorLong: expandDecimals(5, 29),
+      openInterestReserveFactorShort: expandDecimals(5, 29),
 
       positionImpactPoolAmount: usdToToken(1000, indexToken),
 
@@ -156,26 +175,11 @@ export function mockPoolsData(
 
       pnlLongMax: expandDecimals(5000, USD_DECIMALS),
       pnlLongMin: expandDecimals(5000, USD_DECIMALS),
-      pnlShortMax: expandDecimals(5000, USD_DECIMALS),
-      pnlShortMin: expandDecimals(5000, USD_DECIMALS),
+      pnlShortMax: expandDecimals(-5000, USD_DECIMALS),
+      pnlShortMin: expandDecimals(-5000, USD_DECIMALS),
 
-      maxPnlFactorLong: expandDecimals(5, 29),
-      maxPnlFactorShort: expandDecimals(5, 29),
-
-      maxPnlFactorForWithdrawalsLong: expandDecimals(5, 29),
-      maxPnlFactorForWithdrawalsShort: expandDecimals(5, 29),
-
-      ...(overrides[key] || {}),
-    };
-
-    return acc;
-  }, {} as any);
-}
-
-export function mockFeeConfigsData(marketsKeys: string[], overrides: { [marketKey: string]: Partial<any> } = {}): any {
-  return marketsKeys.reduce((acc, key) => {
-    acc[key] = {
-      positionFeeFactor: expandDecimals(5, 26),
+      positionFeeFactorForPositiveImpact: expandDecimals(5, 26),
+      positionFeeFactorForNegativeImpact: expandDecimals(5, 26),
       positionImpactFactorPositive: expandDecimals(2, 23),
       positionImpactFactorNegative: expandDecimals(1, 23),
       maxPositionImpactFactorPositive: expandDecimals(2, 23),
@@ -183,7 +187,9 @@ export function mockFeeConfigsData(marketsKeys: string[], overrides: { [marketKe
       maxPositionImpactFactorForLiquidations: expandDecimals(1, 23),
       positionImpactExponentFactor: expandDecimals(2, 30),
 
-      swapFeeFactor: expandDecimals(2, 27),
+      swapFeeFactorForPositiveImpact: expandDecimals(2, 27),
+      swapFeeFactorForNegativeImpact: expandDecimals(2, 27),
+
       swapImpactFactorPositive: expandDecimals(2, 23),
       swapImpactFactorNegative: expandDecimals(1, 23),
       swapImpactExponentFactor: expandDecimals(2, 30),
@@ -192,36 +198,42 @@ export function mockFeeConfigsData(marketsKeys: string[], overrides: { [marketKe
       borrowingFactorPerSecondForLongs: BigNumber.from(0),
       borrowingFactorPerSecondForShorts: BigNumber.from(0),
 
+      borrowingExponentFactorLong: BigNumber.from(0),
+      borrowingExponentFactorShort: BigNumber.from(0),
+      fundingFactor: BigNumber.from(0),
+      fundingExponentFactor: BigNumber.from(0),
+
+      totalBorrowingFees: BigNumber.from(0),
+      minCollateralFactor: BigNumber.from(0),
+
+      minCollateralFactorForOpenInterestLong: BigNumber.from(0),
+      minCollateralFactorForOpenInterestShort: BigNumber.from(0),
+
+      longPoolAmountAdjustment: BigNumber.from(0),
+      shortPoolAmountAdjustment: BigNumber.from(0),
+      borrowingFactorLong: BigNumber.from(0),
+      borrowingFactorShort: BigNumber.from(0),
+
       fundingFactorPerSecond: BigNumber.from(0),
       longsPayShorts: false,
 
-      ...(overrides[key] || {}),
-    };
-    return acc;
-  }, {} as any);
-}
-
-export function mockOpenInterestData(
-  marketsData: MarketsData,
-  tokensData: TokensData,
-  overrides: { [marketKey: string]: Partial<any> } = {}
-): any {
-  return Object.keys(marketsData).reduce((acc, key) => {
-    const market = getByKey(marketsData, key)!;
-    const indexToken = getTokenData(tokensData, market.indexTokenAddress)!;
-
-    acc[key] = {
       longInterestUsd: expandDecimals(500, USD_DECIMALS),
       shortInterestUsd: expandDecimals(500, USD_DECIMALS),
       longInterestInTokens: usdToToken(500, indexToken),
       shortInterestInTokens: usdToToken(500, indexToken),
+
+      maxPnlFactorForTradersLong: expandDecimals(1, 30),
+      maxPnlFactorForTradersShort: expandDecimals(1, 30),
+
+      data: "",
+
+      virtualPoolAmountForLongToken: BigNumber.from(0),
+      virtualPoolAmountForShortToken: BigNumber.from(0),
+      virtualInventoryForPositions: BigNumber.from(0),
+
       ...(overrides[key] || {}),
     };
 
     return acc;
-  }, {} as any);
-}
-
-export function usdToToken(usd: number, token: TokenData) {
-  return convertToTokenAmount(expandDecimals(usd, 30), token.decimals, token.prices?.minPrice)!;
+  }, {} as MarketsInfoData);
 }

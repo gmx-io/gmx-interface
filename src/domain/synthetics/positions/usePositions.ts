@@ -1,71 +1,78 @@
 import { useWeb3React } from "@web3-react/core";
+import DataStore from "abis/DataStore.json";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import { getContract } from "config/contracts";
-import { hashedPositionKey } from "config/dataStore";
-import { ethers } from "ethers";
+import { accountPositionListKey, hashedPositionKey } from "config/dataStore";
+import {
+  PendingPositionUpdate,
+  PositionDecreaseEvent,
+  PositionIncreaseEvent,
+  useSyntheticsEvents,
+} from "context/SyntheticsEvents";
+import { BigNumber, ethers } from "ethers";
 import { useMulticall } from "lib/multicall";
-import { bigNumberify } from "lib/numbers";
+import { getByKey } from "lib/objects";
 import { useMemo, useRef } from "react";
-import { ContractMarketPrices, getContractMarketPrices, useMarkets } from "../markets";
-import { useAvailableTokensData } from "../tokens";
-import { PositionsData } from "./types";
-import { getPositionKey } from "./utils";
+import { ContractMarketPrices, MarketsData, getContractMarketPrices } from "../markets";
+import { TokensData } from "../tokens";
+import { Position, PositionsData } from "./types";
+import { getPositionKey, parsePositionKey } from "./utils";
+
+const MAX_PENDING_UPDATE_AGE = 600 * 1000; // 10 minutes
 
 type PositionsResult = {
   positionsData?: PositionsData;
   allPossiblePositionsKeys?: string[];
 };
 
-export function usePositions(chainId: number): PositionsResult {
+export function usePositions(
+  chainId: number,
+  p: {
+    marketsInfoData?: MarketsData;
+    tokensData?: TokensData;
+    pricesUpdatedAt?: number;
+  }
+): PositionsResult {
+  const { marketsInfoData, tokensData, pricesUpdatedAt } = p;
   const { account } = useWeb3React();
-  const { marketsData } = useMarkets(chainId);
-  const { tokensData, pricesUpdatedAt } = useAvailableTokensData(chainId);
 
+  // Use ref to cache data from previos key with old prices
   const positionsDataCache = useRef<PositionsData>();
 
-  const keysAndPrices = useMemo(() => {
-    if (!account || !marketsData || !tokensData) {
-      return undefined;
-    }
+  const { data: existingPositionsKeysSet } = useMulticall(chainId, "usePositions-keys", {
+    key: account ? [account, pricesUpdatedAt] : null,
 
-    const markets = Object.values(marketsData);
+    // Refresh on every prices update
+    refreshInterval: null,
 
-    const positionsKeys: string[] = [];
-    const contractPositionsKeys: string[] = [];
-    const marketsPrices: ContractMarketPrices[] = [];
+    request: () => ({
+      dataStore: {
+        contractAddress: getContract(chainId, "DataStore"),
+        abi: DataStore.abi,
+        calls: {
+          keys: {
+            methodName: "getBytes32ValuesAt",
+            params: [accountPositionListKey(account!), 0, 1000],
+          },
+        },
+      },
+    }),
+    parseResponse: (res) => {
+      return new Set(res.data.dataStore.keys.returnValues as string[]);
+    },
+  });
 
-    for (const market of markets) {
-      const marketPrices = getContractMarketPrices(tokensData, market);
-
-      if (!marketPrices) {
-        continue;
-      }
-
-      const collaterals = market.isSameCollaterals
-        ? [market.longTokenAddress]
-        : [market.longTokenAddress, market.shortTokenAddress];
-
-      for (const collateralAddress of collaterals) {
-        for (const isLong of [true, false]) {
-          const positionKey = getPositionKey(account, market.marketTokenAddress, collateralAddress, isLong);
-          const contractPositionKey = hashedPositionKey(account, market.marketTokenAddress, collateralAddress, isLong);
-
-          positionsKeys.push(positionKey);
-          contractPositionsKeys.push(contractPositionKey);
-          marketsPrices.push(marketPrices);
-        }
-      }
-    }
-
-    return {
-      positionsKeys,
-      contractPositionsKeys,
-      marketsPrices,
-    };
-  }, [account, marketsData, tokensData]);
+  const keysAndPrices = useKeysAndPricesParams({
+    marketsInfoData,
+    tokensData,
+    account,
+    existingPositionsKeysSet,
+  });
 
   const { data: positionsData } = useMulticall(chainId, "usePositionsData", {
-    key: keysAndPrices?.positionsKeys.length ? [keysAndPrices.positionsKeys.join("-"), pricesUpdatedAt] : null,
+    key: keysAndPrices.contractPositionsKeys.length
+      ? [keysAndPrices.contractPositionsKeys.join("-"), pricesUpdatedAt]
+      : null,
 
     // Refresh on every prices update
     refreshInterval: null,
@@ -90,73 +97,20 @@ export function usePositions(chainId: number): PositionsResult {
       },
     }),
     parseResponse: (res) => {
-      const positions = res.reader.positions.returnValues;
+      const positions = res.data.reader.positions.returnValues;
 
       return positions.reduce((positionsMap: PositionsData, positionInfo, i) => {
-        const [positionProps, positionFees] = positionInfo;
-        const [addresses, numbers, flags, data] = positionProps;
-        const [account, marketAddress, collateralTokenAddress] = addresses;
-
-        const [
-          sizeInUsd,
-          sizeInTokens,
-          collateralAmount,
-          borrowingFactor,
-          longTokenFundingAmountPerSize,
-          shortTokenFundingAmountPerSize,
-          increasedAtBlock,
-          decreasedAtBlock,
-        ] = numbers.map(bigNumberify);
-
-        const [isLong] = flags;
-
-        const [
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          referral,
-          funding,
-          borrowing,
-          // collateralPrice,
-          // positionFeeFactor,
-          // protocolFeeAmount,
-          // positionFeeReceiverFactor,
-          // feeReceiverAmount,
-          // feeAmountForPool,
-          // positionFeeAmountForPool,
-          // positionFeeAmount,
-          // totalNetCostAmount,
-          // totalNetCostUsd,
-        ] = positionFees;
-
-        // const [
-        //   referralCode,
-        //   affiliate,
-        //   trader,
-        //   totalRebateFactor,
-        //   traderDiscountFactor,
-        //   totalRebateAmount,
-        //   traderDiscountAmount,
-        //   affiliateRewardAmount,
-        // ] = referral;
-
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const [borrowingFeeUsd, borrowingFeeAmount, borrowingFeeReceiverFactor, borrowingFeeAmountForFeeReceiver] =
-          borrowing.map(bigNumberify);
-
-        const [
-          fundingFeeAmount,
-          claimableLongTokenAmount,
-          claimableShortTokenAmount,
-          latestLongTokenFundingAmountPerSize,
-          latestShortTokenFundingAmountPerSize,
-        ] = funding.map(bigNumberify);
-
-        const positionKey = keysAndPrices!.positionsKeys[i];
-        const contractPositionKey = keysAndPrices!.contractPositionsKeys[i];
+        const { position, fees } = positionInfo;
+        const { addresses, numbers, flags, data } = position;
+        const { account, market: marketAddress, collateralToken: collateralTokenAddress } = addresses;
 
         // Empty position
-        if (increasedAtBlock.eq(0)) {
+        if (BigNumber.from(numbers.increasedAtBlock).eq(0)) {
           return positionsMap;
         }
+
+        const positionKey = getPositionKey(account, marketAddress, collateralTokenAddress, flags.isLong);
+        const contractPositionKey = keysAndPrices!.contractPositionsKeys[i];
 
         positionsMap[positionKey] = {
           key: positionKey,
@@ -164,24 +118,16 @@ export function usePositions(chainId: number): PositionsResult {
           account,
           marketAddress,
           collateralTokenAddress,
-          sizeInUsd,
-          sizeInTokens,
-          collateralAmount,
-          borrowingFactor,
-          longTokenFundingAmountPerSize,
-          shortTokenFundingAmountPerSize,
-          increasedAtBlock,
-          decreasedAtBlock,
-          isLong,
-          pendingBorrowingFeesUsd: borrowingFeeUsd,
-          fundingFeeAmount,
-          claimableLongTokenAmount,
-          claimableShortTokenAmount,
-          latestLongTokenFundingAmountPerSize,
-          latestShortTokenFundingAmountPerSize,
-          hasPendingLongTokenFundingFee: false,
-          hasPendingShortTokenFundingFee: false,
-          isOpening: false,
+          sizeInUsd: BigNumber.from(numbers.sizeInUsd),
+          sizeInTokens: BigNumber.from(numbers.sizeInTokens),
+          collateralAmount: BigNumber.from(numbers.collateralAmount),
+          increasedAtBlock: BigNumber.from(numbers.increasedAtBlock),
+          decreasedAtBlock: BigNumber.from(numbers.decreasedAtBlock),
+          isLong: flags.isLong,
+          pendingBorrowingFeesUsd: BigNumber.from(fees.borrowing.borrowingFeeUsd),
+          fundingFeeAmount: BigNumber.from(fees.funding.fundingFeeAmount),
+          claimableLongTokenAmount: BigNumber.from(fees.funding.claimableLongTokenAmount),
+          claimableShortTokenAmount: BigNumber.from(fees.funding.claimableShortTokenAmount),
           data,
         };
 
@@ -194,8 +140,177 @@ export function usePositions(chainId: number): PositionsResult {
     positionsDataCache.current = positionsData;
   }
 
-  return {
+  const optimisticPositionsData = useOptimisticPositions({
     positionsData: positionsDataCache.current,
-    allPossiblePositionsKeys: keysAndPrices?.positionsKeys,
+    allPositionsKeys: keysAndPrices?.allPositionsKeys,
+  });
+
+  return {
+    positionsData: optimisticPositionsData,
+  };
+}
+
+function useKeysAndPricesParams(p: {
+  account: string | null | undefined;
+  marketsInfoData: MarketsData | undefined;
+  tokensData: TokensData | undefined;
+  existingPositionsKeysSet: Set<string> | undefined;
+}) {
+  const { account, marketsInfoData, tokensData, existingPositionsKeysSet } = p;
+
+  return useMemo(() => {
+    const values = {
+      allPositionsKeys: [] as string[],
+      contractPositionsKeys: [] as string[],
+      marketsPrices: [] as ContractMarketPrices[],
+    };
+
+    if (!account || !marketsInfoData || !tokensData) {
+      return values;
+    }
+
+    const markets = Object.values(marketsInfoData);
+
+    for (const market of markets) {
+      const marketPrices = getContractMarketPrices(tokensData, market);
+
+      if (!marketPrices) {
+        continue;
+      }
+
+      const collaterals = market.isSameCollaterals
+        ? [market.longTokenAddress]
+        : [market.longTokenAddress, market.shortTokenAddress];
+
+      for (const collateralAddress of collaterals) {
+        for (const isLong of [true, false]) {
+          const positionKey = getPositionKey(account, market.marketTokenAddress, collateralAddress, isLong);
+          values.allPositionsKeys.push(positionKey);
+
+          const contractPositionKey = hashedPositionKey(account, market.marketTokenAddress, collateralAddress, isLong);
+
+          if (existingPositionsKeysSet?.has(contractPositionKey)) {
+            values.contractPositionsKeys.push(contractPositionKey);
+            values.marketsPrices.push(marketPrices);
+          }
+        }
+      }
+    }
+
+    return values;
+  }, [account, existingPositionsKeysSet, marketsInfoData, tokensData]);
+}
+
+export function useOptimisticPositions(p: {
+  positionsData: PositionsData | undefined;
+  allPositionsKeys: string[] | undefined;
+}): PositionsData | undefined {
+  const { positionsData, allPositionsKeys } = p;
+  const { positionDecreaseEvents, positionIncreaseEvents, pendingPositionsUpdates } = useSyntheticsEvents();
+
+  return useMemo(() => {
+    if (!allPositionsKeys) {
+      return undefined;
+    }
+
+    return allPositionsKeys.reduce((acc, key) => {
+      const now = Date.now();
+
+      const lastIncreaseEvent = positionIncreaseEvents.filter((e) => e.positionKey === key).pop();
+      const lastDecreaseEvent = positionDecreaseEvents.filter((e) => e.positionKey === key).pop();
+
+      const pendingUpdate =
+        pendingPositionsUpdates[key] && pendingPositionsUpdates[key]!.updatedAt + MAX_PENDING_UPDATE_AGE > now
+          ? pendingPositionsUpdates[key]
+          : undefined;
+
+      let position: Position;
+
+      if (getByKey(positionsData, key)) {
+        position = { ...getByKey(positionsData, key)! };
+      } else if (pendingUpdate && pendingUpdate.isIncrease) {
+        position = getPendingMockPosition(pendingUpdate);
+      } else {
+        return acc;
+      }
+
+      if (
+        lastIncreaseEvent &&
+        lastIncreaseEvent.increasedAtBlock.gt(position.increasedAtBlock) &&
+        lastIncreaseEvent.increasedAtBlock.gt(lastDecreaseEvent?.decreasedAtBlock || 0)
+      ) {
+        position = applyEventChanges(position, lastIncreaseEvent);
+      } else if (
+        lastDecreaseEvent &&
+        lastDecreaseEvent.decreasedAtBlock.gt(position.decreasedAtBlock) &&
+        lastDecreaseEvent.decreasedAtBlock.gt(lastIncreaseEvent?.increasedAtBlock || 0)
+      ) {
+        position = applyEventChanges(position, lastDecreaseEvent);
+      }
+
+      if (
+        pendingUpdate &&
+        ((pendingUpdate.isIncrease && pendingUpdate.updatedAtBlock.gt(position.increasedAtBlock)) ||
+          (!pendingUpdate.isIncrease && pendingUpdate.updatedAtBlock.gt(position.decreasedAtBlock)))
+      ) {
+        position.pendingUpdate = pendingUpdate;
+      }
+
+      if (position.sizeInUsd.gt(0)) {
+        acc[key] = position;
+      }
+
+      return acc;
+    }, {} as PositionsData);
+  }, [allPositionsKeys, pendingPositionsUpdates, positionDecreaseEvents, positionIncreaseEvents, positionsData]);
+}
+
+function applyEventChanges(position: Position, event: PositionIncreaseEvent | PositionDecreaseEvent) {
+  const nextPosition = { ...position };
+
+  nextPosition.sizeInUsd = event.sizeInUsd;
+  nextPosition.sizeInTokens = event.sizeInTokens;
+  nextPosition.collateralAmount = event.collateralAmount;
+  nextPosition.pendingBorrowingFeesUsd = BigNumber.from(0);
+  nextPosition.fundingFeeAmount = BigNumber.from(0);
+  nextPosition.claimableLongTokenAmount = BigNumber.from(0);
+  nextPosition.claimableShortTokenAmount = BigNumber.from(0);
+  nextPosition.pendingUpdate = undefined;
+  nextPosition.isOpening = false;
+
+  if ((event as PositionIncreaseEvent).increasedAtBlock) {
+    nextPosition.increasedAtBlock = (event as PositionIncreaseEvent).increasedAtBlock;
+  }
+
+  if ((event as PositionDecreaseEvent).decreasedAtBlock) {
+    nextPosition.decreasedAtBlock = (event as PositionDecreaseEvent).decreasedAtBlock;
+  }
+
+  return nextPosition;
+}
+
+function getPendingMockPosition(pendingUpdate: PendingPositionUpdate): Position {
+  const { account, marketAddress, collateralAddress, isLong } = parsePositionKey(pendingUpdate.positionKey);
+
+  return {
+    key: pendingUpdate.positionKey,
+    contractKey: hashedPositionKey(account, marketAddress, collateralAddress, isLong),
+    account,
+    marketAddress,
+    collateralTokenAddress: collateralAddress,
+    isLong,
+    sizeInUsd: pendingUpdate.sizeDeltaUsd || BigNumber.from(0),
+    collateralAmount: pendingUpdate.collateralDeltaAmount || BigNumber.from(0),
+    sizeInTokens: pendingUpdate.sizeDeltaInTokens || BigNumber.from(0),
+    increasedAtBlock: pendingUpdate.updatedAtBlock,
+    decreasedAtBlock: BigNumber.from(0),
+    pendingBorrowingFeesUsd: BigNumber.from(0),
+    fundingFeeAmount: BigNumber.from(0),
+    claimableLongTokenAmount: BigNumber.from(0),
+    claimableShortTokenAmount: BigNumber.from(0),
+    data: "0x",
+
+    isOpening: true,
+    pendingUpdate: pendingUpdate,
   };
 }

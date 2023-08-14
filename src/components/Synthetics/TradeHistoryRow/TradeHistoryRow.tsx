@@ -21,10 +21,13 @@ import { LiquidationTooltip } from "./LiquidationTooltip";
 import "./TradeHistoryRow.scss";
 import { getTriggerThresholdType } from "domain/synthetics/trade";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { Link } from "react-router-dom";
+import { formatAcceptablePrice } from "domain/synthetics/positions";
 
 type Props = {
   tradeAction: TradeAction;
   minCollateralUsd: BigNumber;
+  shouldDisplayAccount?: boolean;
 };
 
 function getOrderActionText(tradeAction: TradeAction) {
@@ -108,7 +111,7 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
   const sizeDeltaText = `${isIncreaseOrderType(tradeAction.orderType!) ? "+" : "-"}${formatUsd(sizeDeltaUsd)}`;
 
   if (isLimitOrderType(tradeAction.orderType!) || isTriggerDecreaseOrderType(tradeAction.orderType!)) {
-    const acceptablePrice = tradeAction.acceptablePrice;
+    const triggerPrice = tradeAction.triggerPrice;
     const executionPrice = tradeAction.executionPrice;
     const pricePrefix = getTriggerThresholdType(tradeAction.orderType!, tradeAction.isLong!);
     const actionText = getOrderActionText(tradeAction);
@@ -122,7 +125,7 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
 
     return t`${actionText} Order: ${increaseText} ${positionText} ${sizeDeltaText}, ${
       indexToken.symbol
-    } Price: ${pricePrefix} ${formatUsd(acceptablePrice, { displayDecimals: priceDecimals })}, Market: ${
+    } Price: ${pricePrefix} ${formatUsd(triggerPrice, { displayDecimals: priceDecimals })}, Market: ${
       tradeAction.marketInfo.name
     }`;
   }
@@ -143,9 +146,12 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
           ? tradeAction.executionPrice
           : tradeAction.acceptablePrice;
 
-      return t`${actionText} ${increaseText} ${positionText} ${sizeDeltaText}, ${pricePrefix}: ${formatUsd(price, {
-        displayDecimals: priceDecimals,
-      })},  Market: ${tradeAction.marketInfo.name}`;
+      return t`${actionText} ${increaseText} ${positionText} ${sizeDeltaText}, ${pricePrefix}: ${formatAcceptablePrice(
+        price,
+        {
+          displayDecimals: priceDecimals,
+        }
+      )},  Market: ${tradeAction.marketInfo.name}`;
     } else {
       const collateralText = formatTokenAmount(collateralDeltaAmount, collateralToken.decimals, collateralToken.symbol);
 
@@ -178,7 +184,7 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
 export function TradeHistoryRow(p: Props) {
   const { chainId } = useChainId();
   const { showDebugValues } = useSettings();
-  const { tradeAction, minCollateralUsd } = p;
+  const { tradeAction, minCollateralUsd, shouldDisplayAccount } = p;
 
   const msg = useMemo(() => {
     if (isSwapOrderType(tradeAction.orderType!)) {
@@ -192,7 +198,15 @@ export function TradeHistoryRow(p: Props) {
 
   return (
     <div className="TradeHistoryRow App-box App-box-border">
-      <div className="muted TradeHistoryRow-time">{formatDateTime(tradeAction.transaction.timestamp)}</div>
+      <div className="muted TradeHistoryRow-time">
+        {formatDateTime(tradeAction.transaction.timestamp)}{" "}
+        {shouldDisplayAccount && (
+          <span>
+            {" "}
+            (<Link to={`/actions/v2/${tradeAction.account}`}>{tradeAction.account}</Link>)
+          </span>
+        )}
+      </div>
       <ExternalLink className="plain" href={`${getExplorerUrl(chainId)}tx/${tradeAction.transaction.hash}`}>
         {msg}
       </ExternalLink>

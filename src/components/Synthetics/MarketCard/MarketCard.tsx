@@ -21,9 +21,10 @@ export type Props = {
   marketInfo?: MarketInfo;
   allowedSlippage?: number;
   isLong: boolean;
+  isIncrease: boolean;
 };
 
-export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
+export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: Props) {
   const { indexToken } = marketInfo || {};
 
   const entryPrice = isLong ? indexToken?.prices?.maxPrice : indexToken?.prices?.minPrice;
@@ -71,7 +72,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
                   right of the page after connecting your wallet.
                   <br />
                   <br />
-                  <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#opening-a-position">More Info</ExternalLink>
+                  <ExternalLink href="https://docs.gmx.io/docs/trading/v2#opening-a-position">More Info</ExternalLink>
                 </Trans>
               )}
             />
@@ -82,7 +83,11 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
           label={t`Exit Price`}
           value={
             <Tooltip
-              handle={formatUsd(exitPrice) || "..."}
+              handle={
+                formatUsd(exitPrice, {
+                  displayDecimals: priceDecimals,
+                }) || "..."
+              }
               position="right-bottom"
               renderContent={() => (
                 <Trans>
@@ -93,7 +98,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
                   This exit price will change with the price of the asset.
                   <br />
                   <br />
-                  <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#opening-a-position">More Info</ExternalLink>
+                  <ExternalLink href="https://docs.gmx.io/docs/trading/v2#opening-a-position">More Info</ExternalLink>
                 </Trans>
               )}
             />

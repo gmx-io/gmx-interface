@@ -12,6 +12,9 @@ export type PositionsConstantsResult = {
 export function usePositionsConstants(chainId: number): PositionsConstantsResult {
   const { data } = useMulticall(chainId, "usePositionsConstants", {
     key: [],
+
+    refreshInterval: 60000,
+
     request: {
       dataStore: {
         contractAddress: getContract(chainId, "DataStore"),
@@ -28,10 +31,12 @@ export function usePositionsConstants(chainId: number): PositionsConstantsResult
         },
       },
     },
-    parseResponse: (res) => ({
-      minCollateralUsd: res.dataStore.minCollateralUsd.returnValues[0] as BigNumber,
-      minPositionSizeIsd: res.dataStore.minPositionSizeUsd.returnValues[0] as BigNumber,
-    }),
+    parseResponse: (res) => {
+      return {
+        minCollateralUsd: BigNumber.from(res.data.dataStore.minCollateralUsd.returnValues[0]),
+        minPositionSizeUsd: BigNumber.from(res.data.dataStore.minPositionSizeUsd.returnValues[0]),
+      };
+    },
   });
 
   return data || {};

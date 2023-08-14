@@ -1,31 +1,19 @@
+import { Trans, t } from "@lingui/macro";
 import React, { useEffect, useMemo, useState } from "react";
 import Tooltip from "../Tooltip/Tooltip";
-import { t, Trans } from "@lingui/macro";
-import Slider, { SliderTooltip } from "rc-slider";
-import "rc-slider/assets/index.css";
-import "./SwapBox.css";
+import "./SwapBox.scss";
 
-import cx from "classnames";
-import useSWR from "swr";
 import { ethers } from "ethers";
+import useSWR from "swr";
 
-import { IoMdSwap } from "react-icons/io";
 import { BsArrowRight } from "react-icons/bs";
+import { IoMdSwap } from "react-icons/io";
 
+import { ARBITRUM, IS_NETWORK_DISABLED, getChainName, getConstant, isSupportedChain } from "config/chains";
+import { getContract } from "config/contracts";
+import * as Api from "domain/legacy";
 import {
-  adjustForDecimals,
-  BASIS_POINTS_DIVISOR,
-  calculatePositionDelta,
-  DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
   DUST_BNB,
-  getExchangeRate,
-  getExchangeRateDisplay,
-  getLeverage,
-  getLiquidationPrice,
-  getNextFromAmount,
-  getNextToAmount,
-  getPositionKey,
-  isTriggerRatioInverted,
   LEVERAGE_ORDER_OPTIONS,
   LIMIT,
   LONG,
@@ -37,20 +25,25 @@ import {
   SWAP,
   SWAP_OPTIONS,
   SWAP_ORDER_OPTIONS,
-  USD_DECIMALS,
   USDG_ADDRESS,
   USDG_DECIMALS,
-  MAX_ALLOWED_LEVERAGE,
+  USD_DECIMALS,
+  adjustForDecimals,
+  calculatePositionDelta,
+  getExchangeRate,
+  getExchangeRateDisplay,
+  getNextFromAmount,
+  getNextToAmount,
+  getPositionKey,
+  isTriggerRatioInverted,
 } from "lib/legacy";
-import { ARBITRUM, getChainName, getConstant, IS_NETWORK_DISABLED, isSupportedChain } from "config/chains";
-import * as Api from "domain/legacy";
-import { getContract } from "config/contracts";
+import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "config/factors";
+import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
 
-import Checkbox from "../Checkbox/Checkbox";
-import Tab from "../Tab/Tab";
 import TokenSelector from "components/TokenSelector/TokenSelector";
-import ExchangeInfoRow from "./ExchangeInfoRow";
+import Tab from "../Tab/Tab";
 import ConfirmationBox from "./ConfirmationBox";
+import ExchangeInfoRow from "./ExchangeInfoRow";
 import OrdersToa from "./OrdersToa";
 
 import PositionRouter from "abis/PositionRouter.json";
@@ -62,28 +55,33 @@ import longImg from "img/long.svg";
 import shortImg from "img/short.svg";
 import swapImg from "img/swap.svg";
 
+import Button from "components/Button/Button";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
+import { get1InchSwapUrl } from "config/links";
+import { getPriceDecimals, getToken, getTokenBySymbol, getV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
 import { useUserReferralCode } from "domain/referrals/hooks";
-import NoLiquidityErrorModal from "./NoLiquidityErrorModal";
-import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
-import { callContract, contractFetcher } from "lib/contracts";
 import {
   approveTokens,
   getMostAbundantStableToken,
   replaceNativeTokenAddress,
   shouldRaiseGasError,
 } from "domain/tokens";
-import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
-import { helperToast } from "lib/helperToast";
 import { getTokenInfo, getUsd } from "domain/tokens/utils";
-import { usePrevious } from "lib/usePrevious";
+import { callContract, contractFetcher } from "lib/contracts";
+import { helperToast } from "lib/helperToast";
+import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
 import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
-import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "config/tokens";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import { ErrorCode, ErrorDisplayType } from "./constants";
-import Button from "components/Button/Button";
-import UsefulLinks from "./UsefulLinks";
-import { get1InchSwapUrl } from "config/links";
+import { getLeverage } from "lib/positions/getLeverage";
+import getLiquidationPrice from "lib/positions/getLiquidationPrice";
+import { usePrevious } from "lib/usePrevious";
+import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import FeesTooltip from "./FeesTooltip";
+import NoLiquidityErrorModal from "./NoLiquidityErrorModal";
+import UsefulLinks from "./UsefulLinks";
+import { ErrorCode, ErrorDisplayType } from "./constants";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -92,21 +90,6 @@ const SWAP_ICONS = {
 };
 
 const { AddressZero } = ethers.constants;
-
-const leverageSliderHandle = (props) => {
-  const { value, dragging, index, ...restProps } = props;
-  return (
-    <SliderTooltip
-      prefixCls="rc-slider-tooltip"
-      overlay={`${parseFloat(value).toFixed(2)}x`}
-      visible={dragging}
-      placement="top"
-      key={index}
-    >
-      <Slider.Handle value={value} {...restProps} />
-    </SliderTooltip>
-  );
-};
 
 function getNextAveragePrice({ size, sizeDelta, hasProfit, delta, nextPrice, isLong }) {
   if (!size || !sizeDelta || !delta || !nextPrice) {
@@ -258,8 +241,8 @@ export default function SwapBox(props) {
   const existingPosition = positionKey ? positionsMap[positionKey] : undefined;
   const hasExistingPosition = existingPosition && existingPosition.size && existingPosition.size.gt(0);
 
-  const whitelistedTokens = getWhitelistedTokens(chainId);
-  const tokens = getTokens(chainId);
+  const whitelistedTokens = getWhitelistedV1Tokens(chainId);
+  const tokens = getV1Tokens(chainId);
   const fromTokens = tokens;
   const stableTokens = tokens.filter((token) => token.isStable);
   const indexTokens = whitelistedTokens.filter((token) => !token.isStable && !token.isWrapped);
@@ -319,6 +302,8 @@ export default function SwapBox(props) {
   const fromToken = getToken(chainId, fromTokenAddress);
   const toToken = getToken(chainId, toTokenAddress);
   const shortCollateralToken = getTokenInfo(infoTokens, shortCollateralAddress);
+  const toTokenPriceDecimal = getPriceDecimals(chainId, toToken.symbol);
+  const existingPositionPriceDecimal = getPriceDecimals(chainId, existingPosition?.indexToken?.symbol);
 
   const fromTokenInfo = getTokenInfo(infoTokens, fromTokenAddress);
   const toTokenInfo = getTokenInfo(infoTokens, toTokenAddress);
@@ -335,7 +320,7 @@ export default function SwapBox(props) {
         </div>
         <div className="align-right">
           <Tooltip
-            handle={`$${formatAmount(toTokenInfo.maxAvailableLong, USD_DECIMALS, 2, true)}`}
+            handle={`$${formatAmount(toTokenInfo?.maxAvailableLong, USD_DECIMALS, 2, true)}`}
             position="right-bottom"
             renderContent={() => {
               return (
@@ -389,9 +374,9 @@ export default function SwapBox(props) {
   }, [toTokenInfo, fromTokenInfo]);
 
   const maxToTokenOut = useMemo(() => {
-    const value = toTokenInfo.availableAmount?.gt(toTokenInfo.poolAmount?.sub(toTokenInfo.bufferAmount))
+    const value = toTokenInfo?.availableAmount?.gt(toTokenInfo.poolAmount?.sub(toTokenInfo.bufferAmount))
       ? toTokenInfo.poolAmount?.sub(toTokenInfo.bufferAmount)
-      : toTokenInfo.availableAmount;
+      : toTokenInfo?.availableAmount;
 
     if (!value) {
       return bigNumberify(0);
@@ -577,7 +562,6 @@ export default function SwapBox(props) {
             totalTokenWeights,
             isSwap
           );
-
           let fromUsdMinAfterFee = fromUsdMin;
           if (feeBasisPoints) {
             fromUsdMinAfterFee = fromUsdMin.mul(BASIS_POINTS_DIVISOR - feeBasisPoints).div(BASIS_POINTS_DIVISOR);
@@ -681,6 +665,9 @@ export default function SwapBox(props) {
   }
 
   let leverage = bigNumberify(0);
+  let nextDelta = bigNumberify(0);
+  let nextHasProfit = false;
+
   if (fromUsdMin && toUsdMax && fromUsdMin.gt(0)) {
     const fees = toUsdMax.mul(MARGIN_FEE_BASIS_POINTS).div(BASIS_POINTS_DIVISOR);
     if (fromUsdMin.sub(fees).gt(0)) {
@@ -690,8 +677,6 @@ export default function SwapBox(props) {
 
   let nextAveragePrice = isMarketOrder ? entryMarkPrice : triggerPriceUsd;
   if (hasExistingPosition) {
-    let nextDelta, nextHasProfit;
-
     if (isMarketOrder) {
       nextDelta = existingPosition.delta;
       nextHasProfit = existingPosition.hasProfit;
@@ -709,42 +694,6 @@ export default function SwapBox(props) {
       nextPrice: isMarketOrder ? entryMarkPrice : triggerPriceUsd,
       isLong,
     });
-  }
-
-  const liquidationPrice = getLiquidationPrice({
-    isLong,
-    size: hasExistingPosition ? existingPosition.size : bigNumberify(0),
-    collateral: hasExistingPosition ? existingPosition.collateral : bigNumberify(0),
-    averagePrice: nextAveragePrice,
-    entryFundingRate: hasExistingPosition ? existingPosition.entryFundingRate : bigNumberify(0),
-    cumulativeFundingRate: hasExistingPosition ? existingPosition.cumulativeFundingRate : bigNumberify(0),
-    sizeDelta: toUsdMax,
-    collateralDelta: fromUsdMin,
-    increaseCollateral: true,
-    increaseSize: true,
-  });
-
-  const existingLiquidationPrice = existingPosition ? getLiquidationPrice(existingPosition) : undefined;
-  let displayLiquidationPrice = liquidationPrice ? liquidationPrice : existingLiquidationPrice;
-
-  if (hasExistingPosition) {
-    const collateralDelta = fromUsdMin ? fromUsdMin : bigNumberify(0);
-    const sizeDelta = toUsdMax ? toUsdMax : bigNumberify(0);
-    leverage = getLeverage({
-      size: existingPosition.size,
-      sizeDelta,
-      collateral: existingPosition.collateral,
-      collateralDelta,
-      increaseCollateral: true,
-      entryFundingRate: existingPosition.entryFundingRate,
-      cumulativeFundingRate: existingPosition.cumulativeFundingRate,
-      increaseSize: true,
-      hasProfit: existingPosition.hasProfit,
-      delta: existingPosition.delta,
-      includeDelta: savedIsPnlInLeverage,
-    });
-  } else if (hasLeverageOption) {
-    leverage = bigNumberify(parseInt(leverageOption * BASIS_POINTS_DIVISOR));
   }
 
   const getSwapError = () => {
@@ -1753,20 +1702,6 @@ export default function SwapBox(props) {
     feeBps = feeBasisPoints;
   }
 
-  const leverageMarks = {
-    2: "2x",
-    5: "5x",
-    10: "10x",
-    15: "15x",
-    20: "20x",
-    25: "25x",
-    30: "30x",
-    35: "35x",
-    40: "40x",
-    45: "45x",
-    50: "50x",
-  };
-
   if (!fromToken || !toToken) {
     return null;
   }
@@ -1784,6 +1719,40 @@ export default function SwapBox(props) {
     if (shortCollateralToken.fundingRate.eq(0)) {
       // hasZeroBorrowFee = true
     }
+  }
+
+  const fromUsdMinAfterFees = fromUsdMin?.sub(swapFees ?? 0).sub(positionFee ?? 0) || bigNumberify(0);
+  const liquidationPrice = getLiquidationPrice({
+    isLong,
+    size: hasExistingPosition ? existingPosition.size.add(toUsdMax || 0) : toUsdMax ?? bigNumberify(0),
+    collateral: hasExistingPosition
+      ? existingPosition.collateralAfterFee.add(fromUsdMinAfterFees)
+      : fromUsdMinAfterFees ?? bigNumberify(0),
+    averagePrice: nextAveragePrice ?? bigNumberify(0),
+  });
+
+  const existingLiquidationPrice = existingPosition
+    ? getLiquidationPrice({
+        isLong: existingPosition.isLong,
+        size: existingPosition.size,
+        collateral: existingPosition.collateral,
+        averagePrice: existingPosition.averagePrice,
+        fundingFee: existingPosition.fundingFee,
+      })
+    : undefined;
+
+  const displayLiquidationPrice = liquidationPrice ? liquidationPrice : existingLiquidationPrice;
+
+  if (hasExistingPosition) {
+    leverage = getLeverage({
+      size: existingPosition.size.add(toUsdMax || 0),
+      collateral: existingPosition.collateralAfterFee.add(fromUsdMinAfterFees),
+      delta: nextDelta,
+      hasProfit: nextHasProfit,
+      includeDelta: savedIsPnlInLeverage,
+    });
+  } else if (hasLeverageOption) {
+    leverage = bigNumberify(parseInt(leverageOption * BASIS_POINTS_DIVISOR));
   }
 
   function getFundingRate() {
@@ -1821,12 +1790,12 @@ export default function SwapBox(props) {
   }
 
   const ERROR_TOOLTIP_MSG = {
-    [ErrorCode.InsufficientLiquiditySwap]: t`Swap amount exceeds available liquidity.`,
+    [ErrorCode.InsufficientLiquiditySwap]: t`Swap amount exceeds Available Liquidity.`,
     [ErrorCode.InsufficientLiquidityLeverage]: (
       <Trans>
         <p>{toToken.symbol} is required for collateral.</p>
         <p>
-          Swap amount from {fromToken.symbol} to {toToken.symbol} exceeds {toToken.symbol} available liquidity. Reduce
+          Swap amount from {fromToken.symbol} to {toToken.symbol} exceeds {toToken.symbol} Available Liquidity. Reduce
           the "Pay" size, or use {toToken.symbol} as the "Pay" token to use it for collateral.
         </p>
         <ExternalLink href={get1InchSwapUrl(chainId, fromToken.symbol, toToken.symbol)}>
@@ -1900,7 +1869,7 @@ export default function SwapBox(props) {
         <Tooltip
           isHandlerDisabled
           handle={
-            <Button variant="primary-action" className="w-100" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+            <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
               {primaryTextMessage}
             </Button>
           }
@@ -1914,7 +1883,7 @@ export default function SwapBox(props) {
       <Button
         type="submit"
         variant="primary-action"
-        className="w-100"
+        className="w-full"
         onClick={onClickPrimary}
         disabled={!isPrimaryEnabled()}
       >
@@ -1954,186 +1923,103 @@ export default function SwapBox(props) {
           </div>
           {showFromAndToSection && (
             <React.Fragment>
-              <div className="Exchange-swap-section">
-                <div className="Exchange-swap-section-top">
-                  <div className="muted">
-                    {fromUsdMin && (
-                      <div className="Exchange-swap-usd">
-                        <Trans>Pay: {formatAmount(fromUsdMin, USD_DECIMALS, 2, true)} USD</Trans>
-                      </div>
-                    )}
-                    {!fromUsdMin && t`Pay`}
-                  </div>
-                  {fromBalance && (
-                    <div className="muted align-right clickable" onClick={setFromValueToMaximumAvailable}>
-                      <Trans>Balance: {formatAmount(fromBalance, fromToken.decimals, 4, true)}</Trans>
-                    </div>
-                  )}
-                </div>
-                <div className="Exchange-swap-section-bottom">
-                  <div className="Exchange-swap-input-container">
-                    <input
-                      type="number"
-                      min="0"
-                      step="any"
-                      placeholder="0.0"
-                      className="Exchange-swap-input"
-                      value={fromValue}
-                      onChange={onFromValueChange}
-                    />
-                    {shouldShowMaxButton() && (
-                      <div className="Exchange-swap-max" onClick={setFromValueToMaximumAvailable}>
-                        <Trans>MAX</Trans>
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    <TokenSelector
-                      label={t`Pay`}
-                      chainId={chainId}
-                      tokenAddress={fromTokenAddress}
-                      onSelectToken={onSelectFromToken}
-                      tokens={fromTokens}
-                      infoTokens={infoTokens}
-                      showMintingCap={false}
-                      showTokenImgInDropdown={true}
-                    />
-                  </div>
-                </div>
-              </div>
+              <BuyInputSection
+                topLeftLabel={t`Pay`}
+                topLeftValue={fromUsdMin && `$${formatAmount(fromUsdMin, USD_DECIMALS, 2, true)}`}
+                topRightLabel={t`Balance`}
+                topRightValue={fromBalance && `${formatAmount(fromBalance, fromToken.decimals, 4, true)}`}
+                onClickTopRightLabel={setFromValueToMaximumAvailable}
+                showMaxButton={shouldShowMaxButton()}
+                inputValue={fromValue}
+                onInputValueChange={onFromValueChange}
+                onClickMax={setFromValueToMaximumAvailable}
+              >
+                <TokenSelector
+                  label={t`Pay`}
+                  chainId={chainId}
+                  tokenAddress={fromTokenAddress}
+                  onSelectToken={onSelectFromToken}
+                  tokens={fromTokens}
+                  infoTokens={infoTokens}
+                  showMintingCap={false}
+                  showTokenImgInDropdown={true}
+                />
+              </BuyInputSection>
               <div className="Exchange-swap-ball-container">
-                <div className="Exchange-swap-ball" onClick={switchTokens}>
+                <button type="button" className="Exchange-swap-ball" onClick={switchTokens}>
                   <IoMdSwap className="Exchange-swap-ball-icon" />
-                </div>
+                </button>
               </div>
-              <div className="Exchange-swap-section">
-                <div className="Exchange-swap-section-top">
-                  <div className="muted">
-                    {toUsdMax && (
-                      <div className="Exchange-swap-usd">
-                        {getToLabel()}: {formatAmount(toUsdMax, USD_DECIMALS, 2, true)} USD
-                      </div>
-                    )}
-                    {!toUsdMax && getToLabel()}
-                  </div>
-                  {toBalance && isSwap && (
-                    <div className="muted align-right">
-                      <Trans>Balance</Trans>: {formatAmount(toBalance, toToken.decimals, 4, true)}
-                    </div>
-                  )}
-                  {(isLong || isShort) && hasLeverageOption && (
-                    <div className="muted align-right">
-                      <Trans>Leverage</Trans>: {parseFloat(leverageOption).toFixed(2)}x
-                    </div>
-                  )}
-                </div>
-                <div className="Exchange-swap-section-bottom">
-                  <div>
-                    <input
-                      type="number"
-                      min="0"
-                      step="any"
-                      placeholder="0.0"
-                      className="Exchange-swap-input"
-                      value={toValue}
-                      onChange={onToValueChange}
-                    />
-                  </div>
-                  <div>
-                    <TokenSelector
-                      label={getTokenLabel()}
-                      chainId={chainId}
-                      tokenAddress={toTokenAddress}
-                      onSelectToken={onSelectToToken}
-                      tokens={toTokens}
-                      infoTokens={infoTokens}
-                      showTokenImgInDropdown={true}
-                    />
-                  </div>
-                </div>
-              </div>
+              <BuyInputSection
+                topLeftLabel={getToLabel()}
+                topRightLabel={isSwap ? t`Balance` : t`Leverage`}
+                topLeftValue={toUsdMax && `$${formatAmount(toUsdMax, USD_DECIMALS, 2, true)}`}
+                topRightValue={
+                  isSwap
+                    ? formatAmount(toBalance, toToken.decimals, 4, true)
+                    : `${parseFloat(leverageOption).toFixed(2)}x`
+                }
+                showMaxButton={false}
+                inputValue={toValue}
+                onInputValueChange={onToValueChange}
+              >
+                <TokenSelector
+                  label={getTokenLabel()}
+                  chainId={chainId}
+                  tokenAddress={toTokenAddress}
+                  onSelectToken={onSelectToToken}
+                  tokens={toTokens}
+                  infoTokens={infoTokens}
+                  showTokenImgInDropdown={true}
+                  showBalances={false}
+                />
+              </BuyInputSection>
             </React.Fragment>
           )}
           {showTriggerRatioSection && (
-            <div className="Exchange-swap-section">
-              <div className="Exchange-swap-section-top">
-                <div className="muted">
-                  <Trans>Price</Trans>
-                </div>
-                {fromTokenInfo && toTokenInfo && (
-                  <div
-                    className="muted align-right clickable"
-                    onClick={() => {
-                      setTriggerRatioValue(
-                        formatAmountFree(
-                          getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted),
-                          USD_DECIMALS,
-                          10
-                        )
-                      );
-                    }}
-                  >
-                    {formatAmount(getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted), USD_DECIMALS, 4)}
+            <BuyInputSection
+              topLeftLabel={t`Price`}
+              topRightLabel={formatAmount(
+                getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted),
+                USD_DECIMALS,
+                4
+              )}
+              onClickTopRightLabel={() => {
+                setTriggerRatioValue(
+                  formatAmountFree(getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted), USD_DECIMALS, 10)
+                );
+              }}
+              showMaxButton={false}
+              inputValue={triggerRatioValue}
+              onInputValueChange={onTriggerRatioChange}
+            >
+              {(() => {
+                if (!toTokenInfo || !fromTokenInfo) return;
+                const [tokenA, tokenB] = triggerRatioInverted
+                  ? [toTokenInfo, fromTokenInfo]
+                  : [fromTokenInfo, toTokenInfo];
+                return (
+                  <div className="PositionEditor-token-symbol">
+                    {tokenA.symbol}&nbsp;per&nbsp;{tokenB.symbol}
                   </div>
-                )}
-              </div>
-              <div className="Exchange-swap-section-bottom">
-                <div className="Exchange-swap-input-container">
-                  <input
-                    type="number"
-                    min="0"
-                    step="any"
-                    placeholder="0.0"
-                    className="Exchange-swap-input small"
-                    value={triggerRatioValue}
-                    onChange={onTriggerRatioChange}
-                  />
-                </div>
-                {(() => {
-                  if (!toTokenInfo) return;
-                  if (!fromTokenInfo) return;
-                  const [tokenA, tokenB] = triggerRatioInverted
-                    ? [toTokenInfo, fromTokenInfo]
-                    : [fromTokenInfo, toTokenInfo];
-                  return (
-                    <div className="PositionEditor-token-symbol">
-                      {tokenA.symbol}&nbsp;per&nbsp;{tokenB.symbol}
-                    </div>
-                  );
-                })()}
-              </div>
-            </div>
+                );
+              })()}
+            </BuyInputSection>
           )}
           {showTriggerPriceSection && (
-            <div className="Exchange-swap-section">
-              <div className="Exchange-swap-section-top">
-                <div className="muted">
-                  <Trans>Price</Trans>
-                </div>
-                <div
-                  className="muted align-right clickable"
-                  onClick={() => {
-                    setTriggerPriceValue(formatAmountFree(entryMarkPrice, USD_DECIMALS, 2));
-                  }}
-                >
-                  <Trans>Mark: {formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)}</Trans>
-                </div>
-              </div>
-              <div className="Exchange-swap-section-bottom">
-                <div className="Exchange-swap-input-container">
-                  <input
-                    type="number"
-                    min="0"
-                    placeholder="0.0"
-                    className="Exchange-swap-input"
-                    value={triggerPriceValue}
-                    onChange={onTriggerPriceChange}
-                    step="any"
-                  />
-                </div>
-                <div className="PositionEditor-token-symbol">USD</div>
-              </div>
-            </div>
+            <BuyInputSection
+              topLeftLabel={t`Price`}
+              topRightLabel={t`Mark`}
+              topRightValue={formatAmount(entryMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)}
+              onClickTopRightLabel={() => {
+                setTriggerPriceValue(formatAmountFree(entryMarkPrice, USD_DECIMALS, toTokenPriceDecimal));
+              }}
+              showMaxButton={false}
+              inputValue={triggerPriceValue}
+              onInputValueChange={onTriggerPriceChange}
+            >
+              USD
+            </BuyInputSection>
           )}
           {isSwap && (
             <div className="Exchange-swap-box-info">
@@ -2157,28 +2043,15 @@ export default function SwapBox(props) {
           )}
           {(isLong || isShort) && !isStopOrder && (
             <div className="Exchange-leverage-box">
-              <div className="Exchange-leverage-slider-settings">
-                <Checkbox isChecked={isLeverageSliderEnabled} setIsChecked={setIsLeverageSliderEnabled}>
-                  <span className="muted">Leverage slider</span>
-                </Checkbox>
-              </div>
+              <ToggleSwitch
+                className="Exchange-leverage-toggle-wrapper"
+                isChecked={isLeverageSliderEnabled}
+                setIsChecked={setIsLeverageSliderEnabled}
+              >
+                <span className="muted">Leverage slider</span>
+              </ToggleSwitch>
               {isLeverageSliderEnabled && (
-                <div
-                  className={cx("Exchange-leverage-slider", "App-slider", {
-                    positive: isLong,
-                    negative: isShort,
-                  })}
-                >
-                  <Slider
-                    min={1.1}
-                    max={MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR}
-                    step={0.1}
-                    marks={leverageMarks}
-                    handle={leverageSliderHandle}
-                    onChange={(value) => setLeverageOption(value)}
-                    defaultValue={leverageOption}
-                  />
-                </div>
+                <LeverageSlider isPositive={isLong} value={leverageOption} onChange={setLeverageOption} />
               )}
               {isShort && (
                 <div className="Exchange-info-row">
@@ -2248,11 +2121,11 @@ export default function SwapBox(props) {
                 <div className="align-right">
                   {hasExistingPosition && toAmount && toAmount.gt(0) && (
                     <div className="inline-block muted">
-                      ${formatAmount(existingPosition.averagePrice, USD_DECIMALS, 2, true)}
+                      ${formatAmount(existingPosition.averagePrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
                       <BsArrowRight className="transition-arrow" />
                     </div>
                   )}
-                  {nextAveragePrice && `$${formatAmount(nextAveragePrice, USD_DECIMALS, 2, true)}`}
+                  {nextAveragePrice && `$${formatAmount(nextAveragePrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
                   {!nextAveragePrice && `-`}
                 </div>
               </div>
@@ -2263,13 +2136,13 @@ export default function SwapBox(props) {
                 <div className="align-right">
                   {hasExistingPosition && toAmount && toAmount.gt(0) && (
                     <div className="inline-block muted">
-                      ${formatAmount(existingLiquidationPrice, USD_DECIMALS, 2, true)}
+                      ${formatAmount(existingLiquidationPrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
                       <BsArrowRight className="transition-arrow" />
                     </div>
                   )}
                   {toAmount &&
                     displayLiquidationPrice &&
-                    `$${formatAmount(displayLiquidationPrice, USD_DECIMALS, 2, true)}`}
+                    `$${formatAmount(displayLiquidationPrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
                   {!toAmount && displayLiquidationPrice && `-`}
                   {!displayLiquidationPrice && `-`}
                 </div>
@@ -2303,7 +2176,7 @@ export default function SwapBox(props) {
                 trigger orders. <br />
                 <br />
                 For screenshots and more information, please see the{" "}
-                <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#stop-loss-take-profit-orders">
+                <ExternalLink href="https://docs.gmx.io/docs/trading/v1#stop-loss--take-profit-orders">
                   docs
                 </ExternalLink>
                 .
@@ -2313,202 +2186,206 @@ export default function SwapBox(props) {
           <div className="Exchange-swap-button-container">{renderPrimaryButton()}</div>
         </div>
       </form>
-      {isSwap && (
-        <div className="Exchange-swap-market-box App-box App-box-border">
-          <div className="Exchange-swap-market-box-title">
-            <Trans>Swap</Trans>
-          </div>
-          <div className="App-card-divider"></div>
-          <div className="Exchange-info-row">
-            <div className="Exchange-info-label">
-              <Trans>{fromToken.symbol} Price</Trans>
+      <div className="Exchange-swap-info-group">
+        {isSwap && (
+          <div className="Exchange-swap-market-box App-box App-box-border">
+            <div className="Exchange-swap-market-box-title">
+              <Trans>Swap</Trans>
             </div>
-            <div className="align-right">
-              ${fromTokenInfo && formatAmount(fromTokenInfo.minPrice, USD_DECIMALS, 2, true)}
+            <div className="App-card-divider"></div>
+            <div className="Exchange-info-row">
+              <div className="Exchange-info-label">
+                <Trans>{fromToken.symbol} Price</Trans>
+              </div>
+              <div className="align-right">
+                ${fromTokenInfo && formatAmount(fromTokenInfo.minPrice, USD_DECIMALS, 2, true)}
+              </div>
             </div>
-          </div>
-          <div className="Exchange-info-row">
-            <div className="Exchange-info-label">
-              <Trans>{toToken.symbol} Price</Trans>
+            <div className="Exchange-info-row">
+              <div className="Exchange-info-label">
+                <Trans>{toToken.symbol} Price</Trans>
+              </div>
+              <div className="align-right">
+                ${toTokenInfo && formatAmount(toTokenInfo.maxPrice, USD_DECIMALS, 2, true)}
+              </div>
             </div>
-            <div className="align-right">
-              ${toTokenInfo && formatAmount(toTokenInfo.maxPrice, USD_DECIMALS, 2, true)}
-            </div>
-          </div>
-          <div className="Exchange-info-row">
-            <div className="Exchange-info-label">
-              <Trans>Available Liquidity</Trans>
-            </div>
-
-            <div className="align-right al-swap">
-              <Tooltip
-                handle={`$${formatAmount(maxSwapAmountUsd, USD_DECIMALS, 2, true)}`}
-                position="right-bottom"
-                renderContent={() => {
-                  return (
-                    <div>
-                      <StatsTooltipRow
-                        label={t`Max ${fromTokenInfo.symbol} in`}
-                        value={[
-                          `${formatAmount(maxFromTokenIn, fromTokenInfo.decimals, 0, true)} ${fromTokenInfo.symbol}`,
-                          `($${formatAmount(maxFromTokenInUSD, USD_DECIMALS, 0, true)})`,
-                        ]}
-                      />
-                      <StatsTooltipRow
-                        label={t`Max ${toTokenInfo.symbol} out`}
-                        value={[
-                          `${formatAmount(maxToTokenOut, toTokenInfo.decimals, 0, true)} ${toTokenInfo.symbol}`,
-                          `($${formatAmount(maxToTokenOutUSD, USD_DECIMALS, 0, true)})`,
-                        ]}
-                      />
-                    </div>
-                  );
-                }}
-              />
-            </div>
-          </div>
-          {!isMarketOrder && (
-            <ExchangeInfoRow label={t`Price`}>
-              {getExchangeRateDisplay(getExchangeRate(fromTokenInfo, toTokenInfo), fromToken, toToken)}
-            </ExchangeInfoRow>
-          )}
-        </div>
-      )}
-      {(isLong || isShort) && (
-        <div className="Exchange-swap-market-box App-box App-box-border">
-          <div className="Exchange-swap-market-box-title">
-            {isLong ? t`Long` : t`Short`}&nbsp;{toToken.symbol}
-          </div>
-          <div className="App-card-divider" />
-          <div className="Exchange-info-row">
-            <div className="Exchange-info-label">
-              <Trans>Entry Price</Trans>
-            </div>
-            <div className="align-right">
-              <Tooltip
-                handle={`$${formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)}`}
-                position="right-bottom"
-                renderContent={() => {
-                  return (
-                    <div>
-                      <Trans>
-                        The position will be opened at {formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)} USD with a
-                        max slippage of {parseFloat(savedSlippageAmount / 100.0).toFixed(2)}%.
-                        <br />
-                        <br />
-                        The slippage amount can be configured under Settings, found by clicking on your address at the
-                        top right of the page after connecting your wallet.
-                        <br />
-                        <br />
-                        <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#opening-a-position">
-                          More Info
-                        </ExternalLink>
-                      </Trans>
-                    </div>
-                  );
-                }}
-              />
-            </div>
-          </div>
-          <div className="Exchange-info-row">
-            <div className="Exchange-info-label">
-              <Trans>Exit Price</Trans>
-            </div>
-            <div className="align-right">
-              <Tooltip
-                handle={`$${formatAmount(exitMarkPrice, USD_DECIMALS, 2, true)}`}
-                position="right-bottom"
-                renderContent={() => {
-                  return (
-                    <div>
-                      <Trans>
-                        If you have an existing position, the position will be closed at{" "}
-                        {formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)} USD.
-                        <br />
-                        <br />
-                        This exit price will change with the price of the asset.
-                        <br />
-                        <br />
-                        <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#opening-a-position">
-                          More Info
-                        </ExternalLink>
-                      </Trans>
-                    </div>
-                  );
-                }}
-              />
-            </div>
-          </div>
-          <div className="Exchange-info-row">
-            <div className="Exchange-info-label">
-              <Trans>Borrow Fee</Trans>
-            </div>
-            <div className="align-right">
-              <Tooltip
-                handle={borrowFeeText}
-                position="right-bottom"
-                renderContent={() => {
-                  return (
-                    <div>
-                      {hasZeroBorrowFee && (
-                        <div>
-                          {isLong && t`There are more shorts than longs, borrow fees for longing is currently zero`}
-                          {isShort && t`There are more longs than shorts, borrow fees for shorting is currently zero`}
-                        </div>
-                      )}
-                      {!hasZeroBorrowFee && (
-                        <div>
-                          <Trans>
-                            The borrow fee is calculated as (assets borrowed) / (total assets in pool) * 0.01% per hour.
-                          </Trans>
-                          <br />
-                          <br />
-                          {isShort && t`You can change the "Collateral In" token above to find lower fees`}
-                        </div>
-                      )}
-                      <br />
-                      <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#opening-a-position">
-                        <Trans>More Info</Trans>
-                      </ExternalLink>
-                    </div>
-                  );
-                }}
-              >
-                {!hasZeroBorrowFee && null}
-              </Tooltip>
-            </div>
-          </div>
-          {renderAvailableLongLiquidity()}
-          {isShort && toTokenInfo.hasMaxAvailableShort && (
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">
                 <Trans>Available Liquidity</Trans>
               </div>
-              <div className="align-right">
+
+              <div className="align-right al-swap">
                 <Tooltip
-                  handle={`$${formatAmount(toTokenInfo.maxAvailableShort, USD_DECIMALS, 2, true)}`}
+                  handle={`$${formatAmount(maxSwapAmountUsd, USD_DECIMALS, 2, true)}`}
                   position="right-bottom"
                   renderContent={() => {
                     return (
-                      <>
+                      <div>
                         <StatsTooltipRow
-                          label={t`Max ${toTokenInfo.symbol} short capacity`}
-                          value={formatAmount(toTokenInfo.maxGlobalShortSize, USD_DECIMALS, 0, true)}
+                          label={t`Max ${fromTokenInfo.symbol} in`}
+                          value={[
+                            `${formatAmount(maxFromTokenIn, fromTokenInfo.decimals, 0, true)} ${fromTokenInfo.symbol}`,
+                            `($${formatAmount(maxFromTokenInUSD, USD_DECIMALS, 0, true)})`,
+                          ]}
                         />
                         <StatsTooltipRow
-                          label={t`Current ${toTokenInfo.symbol} shorts`}
-                          value={formatAmount(toTokenInfo.globalShortSize, USD_DECIMALS, 0, true)}
+                          label={t`Max ${toTokenInfo.symbol} out`}
+                          value={[
+                            `${formatAmount(maxToTokenOut, toTokenInfo.decimals, 0, true)} ${toTokenInfo.symbol}`,
+                            `($${formatAmount(maxToTokenOutUSD, USD_DECIMALS, 0, true)})`,
+                          ]}
                         />
-                      </>
+                      </div>
                     );
                   }}
-                ></Tooltip>
+                />
               </div>
             </div>
-          )}
-        </div>
-      )}
-      <UsefulLinks className="Useful-links-swapbox" />
+            {!isMarketOrder && (
+              <ExchangeInfoRow label={t`Price`}>
+                {getExchangeRateDisplay(getExchangeRate(fromTokenInfo, toTokenInfo), fromToken, toToken)}
+              </ExchangeInfoRow>
+            )}
+          </div>
+        )}
+        {(isLong || isShort) && (
+          <div className="Exchange-swap-market-box App-box App-box-border">
+            <div className="Exchange-swap-market-box-title">
+              {isLong ? t`Long` : t`Short`}&nbsp;{toToken.symbol}
+            </div>
+            <div className="App-card-divider" />
+            <div className="Exchange-info-row">
+              <div className="Exchange-info-label">
+                <Trans>Entry Price</Trans>
+              </div>
+              <div className="align-right">
+                <Tooltip
+                  handle={`$${formatAmount(entryMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
+                  position="right-bottom"
+                  renderContent={() => {
+                    return (
+                      <div>
+                        <Trans>
+                          The position will be opened at{" "}
+                          {formatAmount(entryMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)} USD with a max
+                          slippage of {parseFloat(savedSlippageAmount / 100.0).toFixed(2)}%.
+                          <br />
+                          <br />
+                          The slippage amount can be configured under Settings, found by clicking on your address at the
+                          top right of the page after connecting your wallet.
+                          <br />
+                          <br />
+                          <ExternalLink href="https://docs.gmx.io/docs/trading/v1#opening-a-position">
+                            More Info
+                          </ExternalLink>
+                        </Trans>
+                      </div>
+                    );
+                  }}
+                />
+              </div>
+            </div>
+            <div className="Exchange-info-row">
+              <div className="Exchange-info-label">
+                <Trans>Exit Price</Trans>
+              </div>
+              <div className="align-right">
+                <Tooltip
+                  handle={`$${formatAmount(exitMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
+                  position="right-bottom"
+                  renderContent={() => {
+                    return (
+                      <div>
+                        <Trans>
+                          If you have an existing position, the position will be closed at{" "}
+                          {formatAmount(entryMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)} USD.
+                          <br />
+                          <br />
+                          This exit price will change with the price of the asset.
+                          <br />
+                          <br />
+                          <ExternalLink href="https://docs.gmx.io/docs/trading/v1#opening-a-position">
+                            More Info
+                          </ExternalLink>
+                        </Trans>
+                      </div>
+                    );
+                  }}
+                />
+              </div>
+            </div>
+            <div className="Exchange-info-row">
+              <div className="Exchange-info-label">
+                <Trans>Borrow Fee</Trans>
+              </div>
+              <div className="align-right">
+                <Tooltip
+                  handle={borrowFeeText}
+                  position="right-bottom"
+                  renderContent={() => {
+                    return (
+                      <div>
+                        {hasZeroBorrowFee && (
+                          <div>
+                            {isLong && t`There are more shorts than longs, borrow fees for longing is currently zero`}
+                            {isShort && t`There are more longs than shorts, borrow fees for shorting is currently zero`}
+                          </div>
+                        )}
+                        {!hasZeroBorrowFee && (
+                          <div>
+                            <Trans>
+                              The borrow fee is calculated as (assets borrowed) / (total assets in pool) * 0.01% per
+                              hour.
+                            </Trans>
+                            <br />
+                            <br />
+                            {isShort && t`You can change the "Collateral In" token above to find lower fees`}
+                          </div>
+                        )}
+                        <br />
+                        <ExternalLink href="https://docs.gmx.io/docs/trading/v1#opening-a-position">
+                          <Trans>More Info</Trans>
+                        </ExternalLink>
+                      </div>
+                    );
+                  }}
+                >
+                  {!hasZeroBorrowFee && null}
+                </Tooltip>
+              </div>
+            </div>
+            {renderAvailableLongLiquidity()}
+            {isShort && toTokenInfo.hasMaxAvailableShort && (
+              <div className="Exchange-info-row">
+                <div className="Exchange-info-label">
+                  <Trans>Available Liquidity</Trans>
+                </div>
+                <div className="align-right">
+                  <Tooltip
+                    handle={`$${formatAmount(toTokenInfo.maxAvailableShort, USD_DECIMALS, 2, true)}`}
+                    position="right-bottom"
+                    renderContent={() => {
+                      return (
+                        <>
+                          <StatsTooltipRow
+                            label={t`Max ${toTokenInfo.symbol} short capacity`}
+                            value={formatAmount(toTokenInfo.maxGlobalShortSize, USD_DECIMALS, 0, true)}
+                          />
+                          <StatsTooltipRow
+                            label={t`Current ${toTokenInfo.symbol} shorts`}
+                            value={formatAmount(toTokenInfo.globalShortSize, USD_DECIMALS, 0, true)}
+                          />
+                        </>
+                      );
+                    }}
+                  ></Tooltip>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+        <UsefulLinks className="Useful-links-swapbox" />
+      </div>
       <NoLiquidityErrorModal
         chainId={chainId}
         fromToken={fromToken}
@@ -2567,7 +2444,6 @@ export default function SwapBox(props) {
           entryMarkPrice={entryMarkPrice}
           swapFees={swapFees}
           positionFee={positionFee}
-          fundingRate={getFundingRate()}
         />
       )}
     </div>

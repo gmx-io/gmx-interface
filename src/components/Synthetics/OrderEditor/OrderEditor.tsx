@@ -1,29 +1,44 @@
 import { Trans, t } from "@lingui/macro";
+import cx from "classnames";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Modal from "components/Modal/Modal";
-import { useMarketsInfo } from "domain/synthetics/markets";
+import { MarketsInfoData } from "domain/synthetics/markets";
 import {
   OrderInfo,
   OrderType,
   PositionOrderInfo,
+  SwapOrderInfo,
   isDecreaseOrderType,
   isIncreaseOrderType,
   isLimitOrderType,
   isSwapOrderType,
   isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
-import { PositionsInfoData, getPositionKey } from "domain/synthetics/positions";
 import {
+  PositionsInfoData,
+  formatAcceptablePrice,
+  formatLiquidationPrice,
+  getPositionKey,
+} from "domain/synthetics/positions";
+import {
+  TokensData,
   TokensRatio,
+  convertToTokenAmount,
   getAmountByRatio,
   getTokenData,
-  getTokensRatioByAmounts,
   getTokensRatioByPrice,
-  useAvailableTokensData,
 } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
-import { bigNumberify, formatAmount, formatAmountFree, formatTokenAmount, formatUsd, parseValue } from "lib/numbers";
+import {
+  bigNumberify,
+  formatAmount,
+  formatAmountFree,
+  formatDeltaUsd,
+  formatTokenAmount,
+  formatUsd,
+  parseValue,
+} from "lib/numbers";
 import { useEffect, useMemo, useState } from "react";
 
 import { useWeb3React } from "@web3-react/core";
@@ -49,20 +64,21 @@ import Button from "components/Button/Button";
 import "./OrderEditor.scss";
 
 type Props = {
-  positionsData: PositionsInfoData;
+  positionsData?: PositionsInfoData;
+  marketsInfoData?: MarketsInfoData;
+  tokensData?: TokensData;
   order: OrderInfo;
   onClose: () => void;
   setPendingTxns: (txns: any) => void;
 };
 
 export function OrderEditor(p: Props) {
+  const { marketsInfoData, tokensData } = p;
   const { chainId } = useChainId();
   const { library } = useWeb3React();
 
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
-  const { tokensData } = useAvailableTokensData(chainId);
-  const { marketsInfoData } = useMarketsInfo(chainId);
   const [savedAcceptablePriceImpactBps] = useLocalStorageSerializeKey(
     [chainId, SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BPS_KEY],
     DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS
@@ -78,13 +94,18 @@ export function OrderEditor(p: Props) {
   const [triggerPirceInputValue, setTriggerPriceInputValue] = useState("");
   const triggerPrice = parseValue(triggerPirceInputValue || "0", USD_DECIMALS)!;
 
-  const { acceptablePrice } = getAcceptablePrice({
+  let { acceptablePrice } = getAcceptablePrice({
     isIncrease: isIncreaseOrderType(p.order.orderType),
     isLong: p.order.isLong,
     indexPrice: triggerPrice,
     acceptablePriceImpactBps: acceptablePriceImpactBps,
     sizeDeltaUsd: p.order.sizeDeltaUsd,
   });
+
+  // For SL orders Acceptable Price is not applicable and set to 0 or MaxUnit256
+  if (p.order.orderType === OrderType.StopLossDecrease) {
+    acceptablePrice = (p.order as PositionOrderInfo).acceptablePrice;
+  }
 
   // Swaps
   const fromToken = getTokenData(tokensData, p.order.initialCollateralTokenAddress);
@@ -132,17 +153,31 @@ export function OrderEditor(p: Props) {
     } as TokensRatio;
   }, [markRatio, triggerRatioInputValue]);
 
-  // TODO: fix
-  const minOutputAmount =
-    fromToken && toToken && triggerRatio
-      ? getAmountByRatio({
-          fromToken,
-          toToken,
-          fromTokenAmount: p.order.initialCollateralDeltaAmount,
-          ratio: triggerRatio?.ratio,
-          shouldInvertRatio: isRatioInverted,
-        })
-      : p.order.minOutputAmount;
+  let minOutputAmount = p.order.minOutputAmount;
+
+  if (fromToken && toToken && triggerRatio) {
+    minOutputAmount = getAmountByRatio({
+      fromToken,
+      toToken,
+      fromTokenAmount: p.order.initialCollateralDeltaAmount,
+      ratio: triggerRatio?.ratio,
+      shouldInvertRatio: !isRatioInverted,
+    });
+
+    const priceImpactAmount = convertToTokenAmount(
+      p.order.swapPathStats?.totalSwapPriceImpactDeltaUsd,
+      p.order.targetCollateralToken.decimals,
+      p.order.targetCollateralToken.prices.minPrice
+    );
+
+    const swapFeeAmount = convertToTokenAmount(
+      p.order.swapPathStats?.totalSwapFeeUsd,
+      p.order.targetCollateralToken.decimals,
+      p.order.targetCollateralToken.prices.minPrice
+    );
+
+    minOutputAmount = minOutputAmount.add(priceImpactAmount || 0).sub(swapFeeAmount || 0);
+  }
 
   const market = getByKey(marketsInfoData, p.order.marketAddress);
   const indexToken = getTokenData(tokensData, market?.indexTokenAddress);
@@ -325,15 +360,7 @@ export function OrderEditor(p: Props) {
       if (isInited) return;
 
       if (isSwapOrderType(p.order.orderType)) {
-        const ratio =
-          fromToken &&
-          toToken &&
-          getTokensRatioByAmounts({
-            fromToken,
-            toToken,
-            fromTokenAmount: p.order.initialCollateralDeltaAmount,
-            toTokenAmount: p.order.minOutputAmount,
-          });
+        const ratio = (p.order as SwapOrderInfo).triggerRatio;
 
         if (ratio) {
           setTriggerRatioInputValue(formatAmount(ratio.ratio, USD_DECIMALS, 2));
@@ -371,7 +398,7 @@ export function OrderEditor(p: Props) {
 
             <BuyInputSection
               topLeftLabel={t`Price`}
-              topRightLabel={t`Mark:`}
+              topRightLabel={t`Mark`}
               topRightValue={formatUsd(markPrice, { displayDecimals: indexPriceDecimals })}
               onClickTopRightLabel={() =>
                 setTriggerPriceInputValue(formatAmount(markPrice, USD_DECIMALS, indexPriceDecimals || 2))
@@ -409,19 +436,50 @@ export function OrderEditor(p: Props) {
             <>
               <ExchangeInfoRow
                 label={t`Acceptable Price`}
-                value={formatUsd(acceptablePrice, { displayDecimals: indexPriceDecimals })}
+                value={formatAcceptablePrice(acceptablePrice, { displayDecimals: indexPriceDecimals })}
               />
-              {existingPosition?.liquidationPrice && (
+
+              {existingPosition && (
                 <ExchangeInfoRow
                   label={t`Liq. Price`}
-                  value={formatUsd(existingPosition.liquidationPrice, { displayDecimals: indexPriceDecimals })}
+                  value={formatLiquidationPrice(existingPosition.liquidationPrice, {
+                    displayDecimals: indexPriceDecimals,
+                  })}
                 />
               )}
             </>
           )}
 
+          {isSwapOrderType(p.order.orderType) && (
+            <>
+              <ExchangeInfoRow
+                label={t`Swap Price Impact`}
+                value={
+                  <span
+                    className={cx({
+                      positive: p.order.swapPathStats?.totalSwapPriceImpactDeltaUsd?.gt(0),
+                    })}
+                  >
+                    {formatDeltaUsd(p.order.swapPathStats?.totalSwapPriceImpactDeltaUsd)}
+                  </span>
+                }
+              />
+
+              <ExchangeInfoRow label={t`Swap Fees`} value={formatUsd(p.order.swapPathStats?.totalSwapFeeUsd)} />
+
+              <ExchangeInfoRow
+                label={t`Min. Receive`}
+                value={formatTokenAmount(
+                  minOutputAmount,
+                  p.order.targetCollateralToken.decimals,
+                  p.order.targetCollateralToken.symbol
+                )}
+              />
+            </>
+          )}
+
           {executionFee?.feeTokenAmount.gt(0) && (
-            <ExchangeInfoRow label={t`Execution Fee`}>
+            <ExchangeInfoRow label={t`Max Execution Fee`}>
               {formatTokenAmount(
                 executionFee?.feeTokenAmount,
                 executionFee?.feeToken.decimals,
@@ -434,7 +492,7 @@ export function OrderEditor(p: Props) {
 
         <div className="Exchange-swap-button-container">
           <Button
-            className="w-100"
+            className="w-full"
             variant="primary-action"
             onClick={submitButtonState.onClick}
             disabled={submitButtonState.disabled}

@@ -1,11 +1,10 @@
+.SwapBox-info-dropdown {
+  margin-right: -0.4rem;
+}
+
 .SwapBox {
   border-radius: 0.4rem;
   padding: 1.5rem;
-  padding-top: 0;
-}
-
-.SwapBox-option-tabs {
-  margin: 1.5rem 0;
 }
 
 .SwapBox-option-tabs.Tab.block .Tab-option {
@@ -120,6 +119,20 @@
   .MarketSelector-tooltip-row:first-child {
     margin-top: 0;
   }
+}
+
+.LiqPrice-soft-warning {
+  color: rgb(243, 181, 12);
+  text-decoration-color: rgb(243, 181, 12);
+}
+
+.LiqPrice-hard-warning {
+  color: #fa3c58;
+  text-decoration-color: #fa3c58;
+}
+
+.Banner-gap {
+  margin-bottom: 1.75rem;
 }
 
 @media (max-width: 900px) {

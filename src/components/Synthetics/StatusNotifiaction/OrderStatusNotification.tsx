@@ -17,18 +17,18 @@ import { useChainId } from "lib/chains";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useEffect, useMemo, useState } from "react";
-import "./StatusNotification.scss";
 import { toast } from "react-toastify";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
+import "./StatusNotification.scss";
 
 type Props = {
-  toastId: number;
+  toastTimestamp: number;
   pendingOrderData: PendingOrderData;
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
 };
 
-export function OrderStatusNotification({ pendingOrderData, marketsInfoData, tokensData, toastId }: Props) {
+export function OrderStatusNotification({ pendingOrderData, marketsInfoData, tokensData, toastTimestamp }: Props) {
   const { chainId } = useChainId();
   const wrappedNativeToken = getWrappedToken(chainId);
   const { orderStatuses } = useSyntheticsEvents();
@@ -174,14 +174,15 @@ export function OrderStatusNotification({ pendingOrderData, marketsInfoData, tok
       }
 
       const matchedStatusKey = Object.values(orderStatuses).find(
-        (orderStatus) => orderStatus.createdAt > toastId && getPendingOrderKey(orderStatus.data) === pendingOrderKey
+        (orderStatus) =>
+          orderStatus.createdAt > toastTimestamp && getPendingOrderKey(orderStatus.data) === pendingOrderKey
       )?.key;
 
       if (matchedStatusKey) {
         setOrderStatusKey(matchedStatusKey);
       }
     },
-    [orderStatus, orderStatusKey, orderStatuses, pendingOrderKey, toastId]
+    [orderStatus, orderStatusKey, orderStatuses, pendingOrderKey, toastTimestamp]
   );
 
   useEffect(
@@ -190,7 +191,7 @@ export function OrderStatusNotification({ pendingOrderData, marketsInfoData, tok
 
       if (isCompleted) {
         timerId = setTimeout(() => {
-          toast.dismiss(toastId);
+          toast.dismiss(toastTimestamp);
         }, TOAST_AUTO_CLOSE_TIME);
       }
 
@@ -198,7 +199,7 @@ export function OrderStatusNotification({ pendingOrderData, marketsInfoData, tok
         clearTimeout(timerId);
       };
     },
-    [isCompleted, toastId]
+    [isCompleted, toastTimestamp]
   );
 
   return (

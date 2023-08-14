@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { t, Trans } from "@lingui/macro";
 import { toJpeg } from "html-to-image";
-import cx from "classnames";
 import { BiCopy } from "react-icons/bi";
 import { RiFileDownloadLine } from "react-icons/ri";
 import { FiTwitter } from "react-icons/fi";
@@ -18,6 +17,9 @@ import shareBgImg from "img/position-share-bg.png";
 import { helperToast } from "lib/helperToast";
 import { formatAmount } from "lib/numbers";
 import downloadImage from "lib/downloadImage";
+import Button from "components/Button/Button";
+import { getPriceDecimals } from "config/tokens";
+import { useChainId } from "lib/chains";
 const ROOT_SHARE_URL = getRootShareApiUrl();
 const UPLOAD_URL = ROOT_SHARE_URL + "/api/upload";
 const UPLOAD_SHARE = ROOT_SHARE_URL + "/api/s";
@@ -99,25 +101,18 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
       {uploadedImageError && <span className="error">{uploadedImageError}</span>}
 
       <div className="actions">
-        <button disabled={!uploadedImageInfo} className="mr-base App-button-option" onClick={handleCopy}>
+        <Button variant="secondary" disabled={!uploadedImageInfo} className="mr-base" onClick={handleCopy}>
           <BiCopy className="icon" />
           <Trans>Copy</Trans>
-        </button>
-        <button disabled={!uploadedImageInfo} className="mr-base App-button-option" onClick={handleDownload}>
+        </Button>
+        <Button variant="secondary" disabled={!uploadedImageInfo} className="mr-base" onClick={handleDownload}>
           <RiFileDownloadLine className="icon" />
           <Trans>Download</Trans>
-        </button>
-        <div className={cx("tweet-link-container", { disabled: !uploadedImageInfo })}>
-          <a
-            target="_blank"
-            className={cx("tweet-link App-button-option", { disabled: !uploadedImageInfo })}
-            rel="noreferrer"
-            href={tweetLink}
-          >
-            <FiTwitter className="icon" />
-            <Trans>Tweet</Trans>
-          </a>
-        </div>
+        </Button>
+        <Button newTab variant="secondary" disabled={!uploadedImageInfo} className="mr-base" to={tweetLink}>
+          <FiTwitter className="icon" />
+          <Trans>Tweet</Trans>
+        </Button>
       </div>
     </Modal>
   );
@@ -131,9 +126,11 @@ function PositionShareCard({
   uploadedImageError,
   sharePositionBgImg,
 }) {
+  const { chainId } = useChainId();
   const isMobile = useMedia("(max-width: 400px)");
   const { code, success } = userAffiliateCode;
   const { deltaAfterFeesPercentageStr, isLong, leverage, indexToken, averagePrice, markPrice } = position;
+  const positionPriceDecimal = getPriceDecimals(chainId, indexToken.symbol);
 
   const homeURL = getHomeUrl();
   return (
@@ -149,11 +146,11 @@ function PositionShareCard({
         <div className="prices">
           <div>
             <p>Entry Price</p>
-            <p className="price">${formatAmount(averagePrice, USD_DECIMALS, 2, true)}</p>
+            <p className="price">${formatAmount(averagePrice, USD_DECIMALS, positionPriceDecimal, true)}</p>
           </div>
           <div>
             <p>Index Price</p>
-            <p className="price">${formatAmount(markPrice, USD_DECIMALS, 2, true)}</p>
+            <p className="price">${formatAmount(markPrice, USD_DECIMALS, positionPriceDecimal, true)}</p>
           </div>
         </div>
         <div className="referral-code">

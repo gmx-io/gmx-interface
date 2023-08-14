@@ -1,13 +1,15 @@
 import { t } from "@lingui/macro";
 import { IS_NETWORK_DISABLED, getChainName } from "config/chains";
-import { MarketInfo } from "domain/synthetics/markets";
+import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
+import { MarketInfo, getMintableMarketTokens } from "domain/synthetics/markets";
 import { PositionInfo } from "domain/synthetics/positions";
 import { TokenData, TokensRatio } from "domain/synthetics/tokens";
 import { getIsEquivalentTokens } from "domain/tokens";
-import { BigNumber } from "ethers";
-import { BASIS_POINTS_DIVISOR, DUST_USD, MAX_ALLOWED_LEVERAGE, USD_DECIMALS, isAddressZero } from "lib/legacy";
+import { BigNumber, ethers } from "ethers";
+import { DUST_USD, USD_DECIMALS, isAddressZero } from "lib/legacy";
 import { expandDecimals, formatAmount, formatUsd } from "lib/numbers";
-import { NextPositionValues, SwapPathStats, TradeFees } from "../types";
+import { GmSwapFees, NextPositionValues, SwapPathStats, TradeFees, TriggerThresholdType } from "../types";
+import { getMinCollateralUsdForLeverage } from "./decrease";
 
 export function getCommonError(p: { chainId: number; isConnected: boolean; hasOutdatedUi: boolean }) {
   const { chainId, isConnected, hasOutdatedUi } = p;
@@ -187,7 +189,11 @@ export function getIncreaseError(p: {
     }
   }
 
-  if (fees.payTotalFees?.deltaUsd.lt(0) && fees?.payTotalFees?.deltaUsd.abs().gt(initialCollateralUsd || 0)) {
+  if (
+    !existingPosition &&
+    fees.payTotalFees?.deltaUsd.lt(0) &&
+    fees?.payTotalFees?.deltaUsd.abs().gt(initialCollateralUsd || 0)
+  ) {
     return [t`Fees exceed amount`];
   }
 
@@ -195,6 +201,14 @@ export function getIncreaseError(p: {
 
   if (!existingPosition && collateralUsd?.lt(_minCollateralUsd)) {
     return [t`Min order: ${formatUsd(_minCollateralUsd)}`];
+  }
+
+  if (nextPositionValues?.nextCollateralUsd?.lt(_minCollateralUsd)) {
+    return [t`Min collateral: ${formatUsd(_minCollateralUsd)}`];
+  }
+
+  if (!sizeDeltaUsd.gt(0)) {
+    return [t`Enter a size`];
   }
 
   if (!isLimit) {
@@ -234,22 +248,27 @@ export function getIncreaseError(p: {
 
 export function getDecreaseError(p: {
   marketInfo: MarketInfo | undefined;
+  inputSizeUsd: BigNumber | undefined;
   sizeDeltaUsd: BigNumber | undefined;
   receiveToken: TokenData | undefined;
   isTrigger: boolean;
   triggerPrice: BigNumber | undefined;
+  markPrice: BigNumber | undefined;
   existingPosition: PositionInfo | undefined;
   nextPositionValues: NextPositionValues | undefined;
   isLong: boolean;
   isContractAccount: boolean;
   minCollateralUsd: BigNumber | undefined;
   isNotEnoughReceiveTokenLiquidity: boolean;
+  fixedTriggerThresholdType: TriggerThresholdType | undefined;
 }) {
   const {
     marketInfo,
     sizeDeltaUsd,
+    inputSizeUsd,
     isTrigger,
     triggerPrice,
+    markPrice,
     existingPosition,
     isContractAccount,
     receiveToken,
@@ -257,6 +276,7 @@ export function getDecreaseError(p: {
     isLong,
     minCollateralUsd,
     isNotEnoughReceiveTokenLiquidity,
+    fixedTriggerThresholdType,
   } = p;
 
   if (isContractAccount && isAddressZero(receiveToken?.address)) {
@@ -276,7 +296,7 @@ export function getDecreaseError(p: {
       return [t`Enter a trigger price`];
     }
 
-    if (existingPosition?.liquidationPrice) {
+    if (existingPosition?.liquidationPrice && existingPosition.liquidationPrice !== ethers.constants.MaxUint256) {
       if (isLong && triggerPrice.lte(existingPosition.liquidationPrice)) {
         return [t`Price below Liq. Price`];
       }
@@ -285,6 +305,14 @@ export function getDecreaseError(p: {
         return [t`Price above Liq. Price`];
       }
     }
+
+    if (fixedTriggerThresholdType === TriggerThresholdType.Above && triggerPrice.lt(markPrice || 0)) {
+      return [t`Price below Mark Price`];
+    }
+
+    if (fixedTriggerThresholdType === TriggerThresholdType.Below && triggerPrice.gt(markPrice || 0)) {
+      return [t`Price above Mark Price`];
+    }
   }
 
   if (nextPositionValues?.nextLeverage && nextPositionValues?.nextLeverage.gt(MAX_ALLOWED_LEVERAGE)) {
@@ -292,7 +320,7 @@ export function getDecreaseError(p: {
   }
 
   if (existingPosition) {
-    if (sizeDeltaUsd.gt(existingPosition.sizeInUsd)) {
+    if (!isTrigger && inputSizeUsd?.gt(existingPosition.sizeInUsd)) {
       return [t`Max close amount exceeded`];
     }
 
@@ -320,6 +348,8 @@ export function getEditCollateralError(p: {
   nextLeverage: BigNumber | undefined;
   position: PositionInfo | undefined;
   isDeposit: boolean;
+  depositToken: TokenData | undefined;
+  depositAmount: BigNumber | undefined;
 }) {
   const {
     collateralDeltaAmount,
@@ -329,24 +359,29 @@ export function getEditCollateralError(p: {
     nextLeverage,
     nextLiqPrice,
     position,
+    isDeposit,
+    depositToken,
+    depositAmount,
   } = p;
 
   if (!collateralDeltaAmount || !collateralDeltaUsd || collateralDeltaAmount.eq(0) || collateralDeltaUsd?.eq(0)) {
     return [t`Enter an amount`];
   }
 
-  if (collateralDeltaAmount?.lte(0)) {
-    return [t`Amount should be greater than zero`];
+  if (isDeposit && depositToken && depositAmount && depositAmount.gt(depositToken.balance || 0)) {
+    return [t`Insufficient ${depositToken.symbol} balance`];
   }
 
-  if (nextCollateralUsd && minCollateralUsd) {
-    if (nextCollateralUsd.lt(minCollateralUsd)) {
-      return [t`Min residual collateral: ${formatAmount(minCollateralUsd, USD_DECIMALS, 2)} USD`];
+  if (nextCollateralUsd && minCollateralUsd && position) {
+    const minCollateralUsdForLeverage = getMinCollateralUsdForLeverage(position);
+
+    if (nextCollateralUsd.lt(minCollateralUsdForLeverage)) {
+      return [t`Min collateral: ${formatAmount(minCollateralUsdForLeverage, USD_DECIMALS, 2)} USD`];
     }
   }
 
   if (nextLiqPrice && position?.markPrice) {
-    if (position?.isLong && position?.markPrice.lt(nextLiqPrice)) {
+    if (position?.isLong && nextLiqPrice.lt(ethers.constants.MaxUint256) && position?.markPrice.lt(nextLiqPrice)) {
       return [t`Invalid liq. price`];
     }
 
@@ -359,5 +394,105 @@ export function getEditCollateralError(p: {
     return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
   }
 
-  return [false];
+  return [undefined];
+}
+
+export function getGmSwapError(p: {
+  isDeposit: boolean;
+  marketInfo: MarketInfo | undefined;
+  marketToken: TokenData | undefined;
+  longToken: TokenData | undefined;
+  shortToken: TokenData | undefined;
+  longTokenAmount: BigNumber | undefined;
+  shortTokenAmount: BigNumber | undefined;
+  longTokenUsd: BigNumber | undefined;
+  shortTokenUsd: BigNumber | undefined;
+  marketTokenAmount: BigNumber | undefined;
+  marketTokenUsd: BigNumber | undefined;
+  longTokenLiquidityUsd: BigNumber | undefined;
+  shortTokenLiquidityUsd: BigNumber | undefined;
+  fees: GmSwapFees | undefined;
+  isHighPriceImpact: boolean;
+  isHighPriceImpactAccepted: boolean;
+}) {
+  const {
+    isDeposit,
+    marketInfo,
+    marketToken,
+    longToken,
+    shortToken,
+    longTokenAmount,
+    shortTokenAmount,
+    longTokenUsd,
+    shortTokenUsd,
+    marketTokenAmount,
+    marketTokenUsd,
+    longTokenLiquidityUsd,
+    shortTokenLiquidityUsd,
+    fees,
+    isHighPriceImpact,
+    isHighPriceImpactAccepted,
+  } = p;
+
+  if (!marketInfo || !marketToken) {
+    return [t`Loading...`];
+  }
+
+  if (isHighPriceImpact && !isHighPriceImpactAccepted) {
+    return [t`Price Impact not yet acknowledged`];
+  }
+
+  if (isDeposit) {
+    const totalCollateralUsd = BigNumber.from(0)
+      .add(longTokenUsd || 0)
+      .add(shortTokenUsd || 0);
+
+    const mintableInfo = getMintableMarketTokens(marketInfo, marketToken);
+
+    if (fees?.totalFees?.deltaUsd.lt(0) && fees.totalFees.deltaUsd.abs().gt(totalCollateralUsd)) {
+      return [t`Fees exceed Pay amount`];
+    }
+
+    if (longTokenAmount?.gt(mintableInfo.longDepositCapacityAmount)) {
+      return [t`Max ${longToken?.symbol} amount exceeded`];
+    }
+
+    if (shortTokenAmount?.gt(mintableInfo.shortDepositCapacityAmount)) {
+      return [t`Max ${shortToken?.symbol} amount exceeded`];
+    }
+  } else if (fees?.totalFees?.deltaUsd.lt(0) && fees.totalFees.deltaUsd.abs().gt(marketTokenUsd || BigNumber.from(0))) {
+    return [t`Fees exceed Pay amount`];
+  }
+
+  if (longTokenAmount?.lt(0) || shortTokenAmount?.lt(0) || marketTokenAmount?.lt(0)) {
+    return [t`Amount should be greater than zero`];
+  }
+
+  if (!marketTokenAmount?.gt(0)) {
+    return [t`Enter an amount`];
+  }
+
+  if (isDeposit) {
+    if (longTokenAmount?.gt(longToken?.balance || 0)) {
+      return [t`Insufficient ${longToken?.symbol} balance`];
+    }
+
+    if (shortTokenAmount?.gt(shortToken?.balance || 0)) {
+      return [t`Insufficient ${shortToken?.symbol} balance`];
+    }
+  } else {
+    if (marketTokenAmount.gt(marketToken?.balance || 0)) {
+      return [t`Insufficient ${marketToken?.symbol} balance`];
+    }
+
+    if (longTokenUsd?.gt(longTokenLiquidityUsd || 0)) {
+      return [t`Insufficient ${longToken?.symbol} liquidity`];
+    }
+
+    if (shortTokenUsd?.gt(shortTokenLiquidityUsd || 0)) {
+      return [t`Insufficient ${shortToken?.symbol} liquidity`];
+    }
+  }
+
+  return [undefined];
 }

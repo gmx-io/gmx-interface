@@ -1,23 +1,23 @@
+import {
+  MarketInfo,
+  MarketsInfoData,
+  getAvailableUsdLiquidityForPosition,
+  getMinPriceImpactMarket,
+  getMostLiquidMarketForPosition,
+  isMarketIndexToken,
+} from "domain/synthetics/markets";
+import { PositionsInfoData } from "domain/synthetics/positions";
+import { TokenData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useMemo } from "react";
-import {
-  MarketInfo,
-  getAvailableUsdLiquidityForPosition,
-  getMinPriceImpactMarket,
-  getMostLiquidMarketForPosition,
-  isMarketIndexToken,
-  useMarketsInfo,
-} from "domain/synthetics/markets";
 import { OrdersInfoData, PositionOrderInfo, isIncreaseOrderType } from "../orders";
-import { PositionsInfoData } from "domain/synthetics/positions";
-import { TokenData } from "domain/synthetics/tokens";
 import { getAcceptablePrice, getMarkPrice } from "./utils";
-import { useVirtualInventory } from "../fees/useVirtualInventory";
 
 export type AvailableMarketsOptions = {
+  allMarkets?: MarketInfo[];
   availableMarkets?: MarketInfo[];
   marketWithPosition?: MarketInfo;
   collateralWithPosition?: TokenData;
@@ -29,21 +29,20 @@ export type AvailableMarketsOptions = {
   isNoSufficientLiquidityInAnyMarket?: boolean;
 };
 
-export function useAvailableMarketsOptions(
-  chainId: number,
-  p: {
-    isIncrease: boolean;
-    disable?: boolean;
-    indexToken: TokenData | undefined;
-    isLong: boolean;
-    increaseSizeUsd: BigNumber | undefined;
-    positionsInfo: PositionsInfoData | undefined;
-    ordersInfo: OrdersInfoData | undefined;
-    hasExistingPosition: boolean;
-    hasExistingOrder: boolean;
-  }
-): AvailableMarketsOptions {
+export function useAvailableMarketsOptions(p: {
+  marketsInfoData?: MarketsInfoData;
+  isIncrease: boolean;
+  disable?: boolean;
+  indexToken: TokenData | undefined;
+  isLong: boolean;
+  increaseSizeUsd: BigNumber | undefined;
+  positionsInfo: PositionsInfoData | undefined;
+  ordersInfo: OrdersInfoData | undefined;
+  hasExistingPosition: boolean;
+  hasExistingOrder: boolean;
+}): AvailableMarketsOptions {
   const {
+    marketsInfoData,
     disable,
     positionsInfo,
     ordersInfo,
@@ -55,17 +54,16 @@ export function useAvailableMarketsOptions(
     isLong,
   } = p;
 
-  const { marketsInfoData } = useMarketsInfo(chainId);
-  const { virtualInventoryForPositions } = useVirtualInventory(chainId);
-
   return useMemo(() => {
-    if (disable || !indexToken || isLong === undefined || !virtualInventoryForPositions) {
+    if (disable || !indexToken || isLong === undefined) {
       return {};
     }
 
-    const availableMarkets = Object.values(marketsInfoData || {}).filter(
-      (market) => isMarketIndexToken(market, indexToken.address) && !market.isSpotOnly && !market.isDisabled
+    const allMarkets = Object.values(marketsInfoData || {}).filter(
+      (market) => !market.isSpotOnly && !market.isDisabled
     );
+
+    const availableMarkets = allMarkets.filter((market) => isMarketIndexToken(market, indexToken.address));
 
     const liquidMarkets = increaseSizeUsd
       ? availableMarkets.filter((marketInfo) => {
@@ -75,7 +73,7 @@ export function useAvailableMarketsOptions(
         })
       : availableMarkets;
 
-    const result: AvailableMarketsOptions = { availableMarkets };
+    const result: AvailableMarketsOptions = { allMarkets, availableMarkets };
 
     if (isIncrease && liquidMarkets.length === 0) {
       result.isNoSufficientLiquidityInAnyMarket = true;
@@ -83,7 +81,13 @@ export function useAvailableMarketsOptions(
       return result;
     }
 
-    result.maxLiquidityMarket = getMostLiquidMarketForPosition(liquidMarkets, indexToken.address, undefined, isLong);
+    result.maxLiquidityMarket = getMostLiquidMarketForPosition(
+      liquidMarkets,
+      indexToken.address,
+      undefined,
+      isLong,
+      isIncrease
+    );
 
     if (!hasExistingPosition) {
       const positions = Object.values(positionsInfo || {});
@@ -122,13 +126,13 @@ export function useAvailableMarketsOptions(
     ) {
       const { bestMarket, bestImpactDeltaUsd } = getMinPriceImpactMarket(
         liquidMarkets,
-        virtualInventoryForPositions,
         indexToken.address,
         isLong,
+        isIncrease,
         increaseSizeUsd.gt(0) ? increaseSizeUsd : expandDecimals(1000, USD_DECIMALS)
       );
 
-      const { acceptablePriceImpactBps } = getAcceptablePrice({
+      const { priceDiffBps: acceptablePriceImpactBps } = getAcceptablePrice({
         isIncrease: true,
         isLong,
         indexPrice: getMarkPrice({ prices: indexToken.prices, isLong, isIncrease: true }),
@@ -144,10 +148,9 @@ export function useAvailableMarketsOptions(
   }, [
     disable,
     indexToken,
-    increaseSizeUsd,
     isLong,
-    virtualInventoryForPositions,
     marketsInfoData,
+    increaseSizeUsd,
     isIncrease,
     hasExistingPosition,
     hasExistingOrder,

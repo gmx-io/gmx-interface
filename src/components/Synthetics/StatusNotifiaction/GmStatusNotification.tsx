@@ -2,6 +2,7 @@ import { t } from "@lingui/macro";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
 import { convertTokenAddress } from "config/tokens";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
+import cx from "classnames";
 import {
   PendingDepositData,
   PendingWithdrawalData,
@@ -9,7 +10,7 @@ import {
   getPendingWithdrawalKey,
   useSyntheticsEvents,
 } from "context/SyntheticsEvents";
-import { MarketsInfoData } from "domain/synthetics/markets";
+import { MarketsInfoData, getMarketIndexName } from "domain/synthetics/markets";
 import { TokenData, TokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
@@ -17,7 +18,7 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 
 export type Props = {
-  toastId: number;
+  toastTimestamp: number;
   pendingDepositData?: PendingDepositData;
   pendingWithdrawalData?: PendingWithdrawalData;
   marketsInfoData?: MarketsInfoData;
@@ -25,7 +26,7 @@ export type Props = {
 };
 
 export function GmStatusNotification({
-  toastId,
+  toastTimestamp,
   pendingDepositData,
   pendingWithdrawalData,
   marketsInfoData,
@@ -44,6 +45,8 @@ export function GmStatusNotification({
 
   const isCompleted = isDeposit ? Boolean(depositStatus?.executedTxnHash) : Boolean(withdrawalStatus?.executedTxnHash);
 
+  const hasError = isDeposit ? Boolean(depositStatus?.cancelledTxnHash) : Boolean(withdrawalStatus?.cancelledTxnHash);
+
   const pendingDepositKey = useMemo(() => {
     if (pendingDepositData) {
       return getPendingDepositKey(pendingDepositData);
@@ -59,7 +62,7 @@ export function GmStatusNotification({
   const title = useMemo(() => {
     if (isDeposit) {
       if (!pendingDepositData) {
-        return t`Unknown deposit`;
+        return t`Unknown buy GM order`;
       }
 
       let longToken: TokenData | undefined;
@@ -93,16 +96,18 @@ export function GmStatusNotification({
         .join(" and ");
 
       const marketInfo = getByKey(marketsInfoData, pendingDepositData.marketAddress);
+      const indexName = marketInfo ? getMarketIndexName(marketInfo) : "";
 
-      return t`Depositing ${tokensText} to ${marketInfo?.name}`;
+      return t`Buying ${indexName} with ${tokensText}`;
     } else {
       if (!pendingWithdrawalData) {
-        return t`Unknown withdrawal`;
+        return t`Unknown sell GM order`;
       }
 
       const marketInfo = getByKey(marketsInfoData, pendingWithdrawalData.marketAddress);
+      const indexName = marketInfo ? getMarketIndexName(marketInfo) : "";
 
-      return t`Withdrawing from ${marketInfo?.name}`;
+      return t`Selling ${indexName}`;
     }
   }, [chainId, isDeposit, marketsInfoData, pendingDepositData, pendingWithdrawalData, tokensData]);
 
@@ -112,18 +117,18 @@ export function GmStatusNotification({
     let createdTxnHash: string | undefined;
 
     if (isDeposit) {
-      text = t`Sending Deposit request`;
+      text = t`Sending Buy request`;
 
       if (depositStatus?.createdTxnHash) {
-        text = t`Deposit request sent`;
+        text = t`Buy request sent`;
         status = "success";
         createdTxnHash = depositStatus?.createdTxnHash;
       }
     } else {
-      text = t`Sending Withdrawal request`;
+      text = t`Sending Sell request`;
 
       if (withdrawalStatus?.createdTxnHash) {
-        text = t`Withdrawal request sent`;
+        text = t`Sell request sent`;
         status = "success";
         createdTxnHash = withdrawalStatus?.createdTxnHash;
       }
@@ -138,38 +143,38 @@ export function GmStatusNotification({
     let txnHash: string | undefined;
 
     if (isDeposit) {
-      text = t`Fulfilling Deposit request`;
+      text = t`Fulfilling Buy request`;
 
       if (depositStatus?.createdTxnHash) {
         status = "loading";
       }
 
       if (depositStatus?.executedTxnHash) {
-        text = t`Deposit executed`;
+        text = t`Buy order executed`;
         status = "success";
         txnHash = depositStatus?.executedTxnHash;
       }
 
       if (depositStatus?.cancelledTxnHash) {
-        text = t`Deposit cancelled`;
+        text = t`Buy order cancelled`;
         status = "error";
         txnHash = depositStatus?.cancelledTxnHash;
       }
     } else {
-      text = t`Fulfilling Withdrawal request`;
+      text = t`Fulfilling Sell request`;
 
       if (withdrawalStatus?.createdTxnHash) {
         status = "loading";
       }
 
       if (withdrawalStatus?.executedTxnHash) {
-        text = t`Withdrawal executed`;
+        text = t`Sell order executed`;
         status = "success";
         txnHash = withdrawalStatus?.executedTxnHash;
       }
 
       if (withdrawalStatus?.cancelledTxnHash) {
-        text = t`Withdrawal cancelled`;
+        text = t`Sell order cancelled`;
         status = "error";
         txnHash = withdrawalStatus?.cancelledTxnHash;
       }
@@ -186,7 +191,7 @@ export function GmStatusNotification({
         }
 
         const matchedStatusKey = Object.values(depositStatuses).find(
-          (status) => status.createdAt > toastId && getPendingDepositKey(status.data) === pendingDepositKey
+          (status) => status.createdAt > toastTimestamp && getPendingDepositKey(status.data) === pendingDepositKey
         )?.key;
 
         if (matchedStatusKey) {
@@ -198,7 +203,7 @@ export function GmStatusNotification({
         }
 
         const matchedStatusKey = Object.values(withdrawalStatuses).find(
-          (status) => status.createdAt > toastId && getPendingWithdrawalKey(status.data) === pendingWithdrawalKey
+          (status) => status.createdAt > toastTimestamp && getPendingWithdrawalKey(status.data) === pendingWithdrawalKey
         )?.key;
 
         if (matchedStatusKey) {
@@ -212,7 +217,7 @@ export function GmStatusNotification({
       isDeposit,
       pendingDepositKey,
       pendingWithdrawalKey,
-      toastId,
+      toastTimestamp,
       withdrawalStatusKey,
       withdrawalStatuses,
     ]
@@ -224,7 +229,7 @@ export function GmStatusNotification({
 
       if (isCompleted) {
         timerId = setTimeout(() => {
-          toast.dismiss(toastId);
+          toast.dismiss(toastTimestamp);
         }, TOAST_AUTO_CLOSE_TIME);
       }
 
@@ -232,17 +237,21 @@ export function GmStatusNotification({
         clearTimeout(timerId);
       };
     },
-    [isCompleted, toastId]
+    [isCompleted, toastTimestamp]
   );
 
   return (
     <div className="StatusNotification">
-      <div className="StatusNotification-title">{title}</div>
+      <div className="StatusNotification-content">
+        <div className="StatusNotification-title">{title}</div>
 
-      <div className="StatusNotification-items">
-        {creationStatus}
-        {executionStatus}
+        <div className="StatusNotification-items">
+          {creationStatus}
+          {executionStatus}
+        </div>
       </div>
+
+      <div className={cx("StatusNotification-background", { error: hasError })}></div>
     </div>
   );
 }

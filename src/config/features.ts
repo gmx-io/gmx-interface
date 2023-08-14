@@ -1,10 +1,9 @@
-import { AVALANCHE_FUJI } from "./chains";
-import { isDevelopment } from "./env";
+import { ARBITRUM, AVALANCHE } from "./chains";
 
 export function getIsSyntheticsSupported(chainId: number) {
-  if (isDevelopment()) {
-    return [AVALANCHE_FUJI].includes(chainId);
-  }
+  return true;
+}
 
-  return false;
+export function getIsV1Supported(chainId: number) {
+  return [AVALANCHE, ARBITRUM].includes(chainId);
 }

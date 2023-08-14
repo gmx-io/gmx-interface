@@ -3,19 +3,28 @@ import { useChainId } from "lib/chains";
 import { useState } from "react";
 import { useClaimCollateralHistory } from "domain/synthetics/claimHistory";
 import { ClaimHistoryRow } from "../ClaimHistoryRow/ClaimHistoryRow";
+import { MarketsInfoData } from "domain/synthetics/markets";
+import { TokensData } from "domain/synthetics/tokens";
 
 const PAGE_SIZE = 100;
 
 type Props = {
   shouldShowPaginationButtons: boolean;
+  marketsInfoData?: MarketsInfoData;
+  tokensData?: TokensData;
 };
 
 export function ClaimHistory(p: Props) {
-  const { shouldShowPaginationButtons } = p;
+  const { shouldShowPaginationButtons, marketsInfoData, tokensData } = p;
   const { chainId } = useChainId();
   const [pageIndex, setPageIndex] = useState(0);
 
-  const { claimActions, isLoading } = useClaimCollateralHistory(chainId, { pageIndex, pageSize: PAGE_SIZE });
+  const { claimActions, isLoading } = useClaimCollateralHistory(chainId, {
+    marketsInfoData,
+    tokensData,
+    pageIndex,
+    pageSize: PAGE_SIZE,
+  });
 
   const isEmpty = claimActions?.length === 0;
 

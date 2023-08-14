@@ -4,6 +4,8 @@ import Checkbox from "components/Checkbox/Checkbox";
 import { OrdersInfoData, getOrderError, isLimitOrderType, isTriggerDecreaseOrderType } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { PositionsInfoData, getPositionKey } from "domain/synthetics/positions";
+import { MarketsInfoData } from "domain/synthetics/markets";
+import { TokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { Dispatch, SetStateAction, useState } from "react";
 import { OrderEditor } from "../OrderEditor/OrderEditor";
@@ -13,6 +15,8 @@ import { getByKey } from "lib/objects";
 type Props = {
   hideActions?: boolean;
   ordersData?: OrdersInfoData;
+  marketsInfoData?: MarketsInfoData;
+  tokensData?: TokensData;
   positionsData?: PositionsInfoData;
   setSelectedOrdersKeys?: Dispatch<SetStateAction<{ [key: string]: boolean }>>;
   selectedOrdersKeys?: { [key: string]: boolean };
@@ -21,6 +25,7 @@ type Props = {
 };
 
 export function OrderList(p: Props) {
+  const { marketsInfoData, tokensData, positionsData } = p;
   const { chainId } = useChainId();
   const { library } = useWeb3React();
 
@@ -59,19 +64,32 @@ export function OrderList(p: Props) {
 
   return (
     <>
+      {orders.length === 0 && (
+        <div className="Exchange-empty-positions-list-note App-card small">
+          {p.isLoading ? t`Loading...` : t`No open orders`}
+        </div>
+      )}
       <div className="Exchange-list Orders small">
-        {orders.length === 0 && (
-          <div className="Exchange-empty-positions-list-note App-card">
-            {p.isLoading ? t`Loading...` : t`No open orders`}
-          </div>
-        )}
         {!p.isLoading &&
           orders.map((order) => {
             const position = getByKey(
               p.positionsData,
               getPositionKey(order.account, order.marketAddress, order.initialCollateralTokenAddress, order.isLong)
             );
-            return <OrderItem key={order.key} order={order} isLarge={false} error={getOrderError(order, position)} />;
+            const errorMsg = getOrderError(order, position);
+            return (
+              <OrderItem
+                key={order.key}
+                order={order}
+                isLarge={false}
+                isSelected={p.selectedOrdersKeys?.[order.key]}
+                onSelectOrder={() => onSelectOrder(order.key)}
+                isCanceling={canellingOrdersKeys.includes(order.key)}
+                onCancelOrder={() => onCancelOrder(order.key)}
+                onEditOrder={() => setEditingOrderKey(order.key)}
+                error={errorMsg}
+              />
+            );
           })}
       </div>
 
@@ -118,6 +136,7 @@ export function OrderList(p: Props) {
                 p.positionsData,
                 getPositionKey(order.account, order.marketAddress, order.initialCollateralTokenAddress, order.isLong)
               );
+              const errorMsg = getOrderError(order, position);
               return (
                 <OrderItem
                   isSelected={p.selectedOrdersKeys?.[order.key]}
@@ -128,7 +147,8 @@ export function OrderList(p: Props) {
                   isCanceling={canellingOrdersKeys.includes(order.key)}
                   onCancelOrder={() => onCancelOrder(order.key)}
                   onEditOrder={() => setEditingOrderKey(order.key)}
-                  error={getOrderError(order, position)}
+                  hideActions={p.hideActions}
+                  error={errorMsg}
                 />
               );
             })}
@@ -137,7 +157,9 @@ export function OrderList(p: Props) {
 
       {editingOrder && (
         <OrderEditor
-          positionsData={p.positionsData || {}}
+          marketsInfoData={marketsInfoData}
+          tokensData={tokensData}
+          positionsData={positionsData}
           order={editingOrder}
           onClose={() => setEditingOrderKey(undefined)}
           setPendingTxns={p.setPendingTxns}
