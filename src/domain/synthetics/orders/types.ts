@@ -2,6 +2,7 @@ import { MarketInfo } from "domain/synthetics/markets";
 import { BigNumber } from "ethers";
 import { TokenData, TokensRatio } from "../tokens";
 import { SwapPathStats, TriggerThresholdType } from "../trade";
+import { ReactNode } from "react";
 
 export enum OrderType {
   // the order will be cancelled if the minOutputAmount cannot be fulfilled
@@ -56,6 +57,7 @@ export type Order = {
 
 export type SwapOrderInfo = Order & {
   title: string;
+  titleWithIcon: ReactNode;
   swapPathStats?: SwapPathStats;
   triggerRatio?: TokensRatio;
   initialCollateralToken: TokenData;
@@ -64,6 +66,7 @@ export type SwapOrderInfo = Order & {
 
 export type PositionOrderInfo = Order & {
   title: string;
+  titleWithIcon: ReactNode;
   marketInfo: MarketInfo;
   swapPathStats?: SwapPathStats;
   indexToken: TokenData;

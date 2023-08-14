@@ -91,7 +91,7 @@ export function OrderItem(p: Props) {
       return (
         <Tooltip
           className="order-error"
-          handle={p.order.title}
+          handle={p.order.titleWithIcon}
           position="right-bottom"
           handleClassName="plain"
           renderContent={() => <span className="negative">{p.error}</span>}
@@ -104,7 +104,7 @@ export function OrderItem(p: Props) {
         if (showDebugValues) {
           return (
             <Tooltip
-              handle={p.order.title}
+              handle={p.order.titleWithIcon}
               position="left-bottom"
               renderContent={() => (
                 <>
@@ -123,14 +123,14 @@ export function OrderItem(p: Props) {
             />
           );
         }
-        return p.order.title;
+        return p.order.titleWithIcon;
       }
 
       const positionOrder = p.order as PositionOrderInfo;
 
       return (
         <Tooltip
-          handle={positionOrder.title}
+          handle={positionOrder.titleWithIcon}
           position="left-bottom"
           renderContent={() => {
             return (
@@ -169,7 +169,7 @@ export function OrderItem(p: Props) {
         />
       );
     } else {
-      return p.order.title;
+      return p.order.titleWithIcon;
     }
   }
 
