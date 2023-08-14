@@ -133,7 +133,7 @@ function FullApp() {
   const { chainId } = useChainId();
   const location = useLocation();
   const history = useHistory();
-  const hasLostFocus = useHasPageLostFocus(WS_BLUR_UNSUBSCRIBE_TIMEOUT, ["/trade", "/v2"], "V1 Events");
+  const hasV1LostFocus = useHasPageLostFocus(WS_BLUR_UNSUBSCRIBE_TIMEOUT, ["/trade", "/v2", "/buy_glp"], "V1 Events");
 
   useEventToast();
   const [activatingConnector, setActivatingConnector] = useState();
@@ -449,7 +449,7 @@ function FullApp() {
 
   useEffect(() => {
     const wsVaultAbi = chainId === ARBITRUM ? VaultV2.abi : VaultV2b.abi;
-    if (hasLostFocus || !wsProvider) {
+    if (hasV1LostFocus || !wsProvider) {
       return;
     }
 
@@ -488,7 +488,7 @@ function FullApp() {
       wsPositionRouter.off("CancelIncreasePosition", onCancelIncreasePosition);
       wsPositionRouter.off("CancelDecreasePosition", onCancelDecreasePosition);
     };
-  }, [chainId, vaultAddress, positionRouterAddress, wsProvider, hasLostFocus]);
+  }, [chainId, vaultAddress, positionRouterAddress, wsProvider, hasV1LostFocus]);
 
   return (
     <>
@@ -818,8 +818,9 @@ function App() {
     const defaultLanguage = localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY) || defaultLocale;
     dynamicActivate(defaultLanguage);
   }, []);
+
   return (
-    <SWRConfig value={{ refreshInterval: 5000 }}>
+    <SWRConfig value={{ refreshInterval: 5000, refreshWhenHidden: false, refreshWhenOffline: false }}>
       <Web3ReactProvider getLibrary={getLibrary}>
         <SettingsContextProvider>
           <SEO>
