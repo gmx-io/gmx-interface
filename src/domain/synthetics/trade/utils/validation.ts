@@ -208,7 +208,7 @@ export function getIncreaseError(p: {
   }
 
   if (!sizeDeltaUsd.gt(0)) {
-    return [t`Enter a size`];
+    return [t`Enter an amount`];
   }
 
   if (!isLimit) {
@@ -288,7 +288,7 @@ export function getDecreaseError(p: {
   }
 
   if (!sizeDeltaUsd?.gt(0)) {
-    return [t`Enter a size`];
+    return [t`Enter an amount`];
   }
 
   if (isTrigger) {
