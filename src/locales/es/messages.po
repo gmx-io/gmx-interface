@@ -1521,7 +1521,6 @@ msgid "Enter a new ratio"
 msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Enter a new size or price"
 msgstr ""
 
@@ -1539,8 +1538,8 @@ msgstr ""
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
-msgid "Enter a size"
-msgstr ""
+#~ msgid "Enter a size"
+#~ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter a trigger price"
@@ -1556,6 +1555,9 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -1577,6 +1579,10 @@ msgstr ""
 #: src/components/Exchange/OrderEditor.js
 msgid "Enter new Price"
 msgstr "Introduce el nuevo Precio"
+
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+msgid "Enter new amount or price"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
