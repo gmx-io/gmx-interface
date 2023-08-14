@@ -48,6 +48,7 @@ import { formatDate } from "lib/dates";
 import { arrayURLFetcher } from "lib/fetcher";
 import { bigNumberify, expandDecimals, formatAmount, formatKeyAmount, numberWithCommas } from "lib/numbers";
 import AssetDropdown from "./AssetDropdown";
+import useMarketStats from "domain/synthetics/markets/useMarketStats";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;
@@ -98,7 +99,7 @@ export default function DashboardV2() {
   const { active, library } = useWeb3React();
   const { chainId } = useChainId();
   const totalVolume = useTotalVolume();
-
+  const { totalGMLiquidity } = useMarketStats();
   const uniqueUsers = useUniqueUsers();
   const chainName = getChainName(chainId);
   const currentIcons = getIcons(chainId);
@@ -255,7 +256,7 @@ export default function DashboardV2() {
 
   let tvl;
   if (glpMarketCap && gmxPrice && totalStakedGmx) {
-    tvl = glpMarketCap.add(gmxPrice.mul(totalStakedGmx).div(expandDecimals(1, GMX_DECIMALS)));
+    tvl = glpMarketCap.add(gmxPrice.mul(totalStakedGmx).div(expandDecimals(1, GMX_DECIMALS))).add(totalGMLiquidity);
   }
 
   const ethFloorPriceFund = expandDecimals(350 + 148 + 384, 18);
@@ -507,7 +508,7 @@ export default function DashboardV2() {
                       handle={`$${formatAmount(tvl, USD_DECIMALS, 0, true)}`}
                       position="right-bottom"
                       renderContent={() => (
-                        <span>{t`Assets Under Management: GMX staked (All chains) + GLP pool (${chainName}).`}</span>
+                        <span>{t`Assets Under Management: GMX staked (All chains) + GLP pool (${chainName}) +  GM Pools (${chainName}).`}</span>
                       )}
                     />
                   </div>
@@ -523,6 +524,26 @@ export default function DashboardV2() {
                       renderContent={() => (
                         <Trans>
                           <p>Total value of tokens in GLP pool ({chainName}).</p>
+                          <p>
+                            This value may be higher on other websites due to the collateral of positions being included
+                            in the calculation.
+                          </p>
+                        </Trans>
+                      )}
+                    />
+                  </div>
+                </div>
+                <div className="App-card-row">
+                  <div className="label">
+                    <Trans>GM Pools</Trans>
+                  </div>
+                  <div>
+                    <TooltipComponent
+                      handle={`$${formatAmount(totalGMLiquidity, USD_DECIMALS, 0, true)}`}
+                      position="right-bottom"
+                      renderContent={() => (
+                        <Trans>
+                          <p>GM Pools total liquidity in ({chainName}).</p>
                           <p>
                             This value may be higher on other websites due to the collateral of positions being included
                             in the calculation.
