@@ -673,8 +673,8 @@ table.Exchange-list .Exchange-list-item-active {
   margin-bottom: 1.05rem;
   border-radius: 0.3rem;
   background: linear-gradient(90deg, rgba(30, 34, 61, 0.9) 0%, rgba(38, 43, 71, 0.9) 100%);
-  outline: 1px solid transparent;
-  outline-offset: -1px;
+  outline: 0.05rem solid transparent;
+  outline-offset: -0.05rem;
 }
 
 .Exchange-swap-section:hover {

@@ -42,6 +42,7 @@ import { arrayURLFetcher } from "lib/fetcher";
 import { bigNumberify, expandDecimals, formatAmount, formatKeyAmount, numberWithCommas } from "lib/numbers";
 import AssetDropdown from "./AssetDropdown";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import PageTitle from "components/PageTitle/PageTitle";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;
@@ -466,14 +467,11 @@ export default function DashboardV2() {
   return (
     <SEO title={getPageTitle(t`Dashboard`)}>
       <div className="default-container DashboardV2 page-layout">
-        <div className="section-title-block">
-          <div className="section-title-icon"></div>
-          <div className="section-title-content">
-            <div className="Page-title">
-              <Trans>Stats</Trans>
-              <img className="ml-xs Page-title-icon" src={currentIcons.network} alt="Network Icon" />
-            </div>
-            <div className="Page-description">
+        <PageTitle
+          title={t`Stats`}
+          isTop
+          subtitle={
+            <div>
               <Trans>
                 {chainName} Total Stats start from {totalStatsStartDate}.<br /> For detailed stats:
               </Trans>{" "}
@@ -483,8 +481,8 @@ export default function DashboardV2() {
               )}
               .
             </div>
-          </div>
-        </div>
+          }
+        />
         <div className="DashboardV2-content">
           <div className="DashboardV2-cards">
             <div className="App-card">
@@ -719,15 +717,7 @@ export default function DashboardV2() {
               </div>
             </div>
           </div>
-          <div className="Tab-title-section">
-            <div className="Page-title">
-              <Trans>Tokens</Trans>
-              <img className="ml-xs Page-title-icon" src={currentIcons.network} alt="Network Icon" />
-            </div>
-            <div className="Page-description">
-              <Trans>Platform, GLP and GM tokens.</Trans>
-            </div>
-          </div>
+          <PageTitle title={t`Tokens`} subtitle={t`Platform, GLP and GM tokens.`} />
           <div className="DashboardV2-token-cards">
             <div className="stats-wrapper stats-wrapper--gmx">
               <div className="App-card">
@@ -1061,9 +1051,8 @@ export default function DashboardV2() {
                   </table>
                 </div>
 
-                <div className="Page-title Tab-title-section glp-composition-small">
-                  <Trans>GLP Index Composition</Trans>
-                  <img className="ml-xs Page-title-icon" src={currentIcons.network} width="24" alt="Network Icon" />
+                <div className="glp-composition-small">
+                  <PageTitle title={t`GLP Index Composition`} />
                 </div>
 
                 <div className="token-grid">

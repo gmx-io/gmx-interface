@@ -56,6 +56,7 @@ import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, formatKeyAmount, parseValue } from "lib/numbers";
 import "./StakeV2.css";
+import PageTitle from "components/PageTitle/PageTitle";
 
 const { AddressZero } = ethers.constants;
 
@@ -1442,22 +1443,20 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         library={library}
         chainId={chainId}
       />
-      <div className="section-title-block">
-        <div className="section-title-icon"></div>
-        <div className="section-title-content">
-          <div className="Page-title">
-            <Trans>Earn</Trans>
-            <img className="ml-xs Page-title-icon" alt="GMX" src={icons.network} />
-          </div>
-          <div className="Page-description">
+
+      <PageTitle
+        isTop
+        title={t`Earn`}
+        subtitle={
+          <div>
             <Trans>
               Stake <ExternalLink href="https://docs.gmx.io/docs/tokenomics/gmx-token">GMX</ExternalLink> and{" "}
               <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v1">GLP</ExternalLink> to earn rewards.
             </Trans>
+            {earnMsg && <div className="Page-description">{earnMsg}</div>}
           </div>
-          {earnMsg && <div className="Page-description">{earnMsg}</div>}
-        </div>
-      </div>
+        }
+      />
       <div className="StakeV2-content">
         <div className="StakeV2-cards">
           <div className="App-card StakeV2-gmx-card">
@@ -2003,12 +2002,9 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
       )}
 
       <div>
-        <div className="Tab-title-section">
-          <div className="Page-title">
-            <Trans>Vest</Trans>
-            <img className="ml-xs Page-title-icon" alt="GMX" src={icons.network} />
-          </div>
-          <div className="Page-description">
+        <PageTitle
+          title={t`Vest`}
+          subtitle={
             <Trans>
               Convert esGMX tokens to GMX tokens.
               <br />
@@ -2018,8 +2014,8 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               </ExternalLink>{" "}
               before using the vaults.
             </Trans>
-          </div>
-        </div>
+          }
+        />
         <div>
           <div className="StakeV2-cards">
             <div className="App-card StakeV2-gmx-card">

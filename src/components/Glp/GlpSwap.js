@@ -40,7 +40,7 @@ import Vester from "abis/Vester.json";
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ARBITRUM, FEES_HIGH_BPS, getChainName, IS_NETWORK_DISABLED } from "config/chains";
-import { getIcon, getIcons } from "config/icons";
+import { getIcon } from "config/icons";
 import { getNativeToken, getToken, getV1Tokens, getWhitelistedV1Tokens, getWrappedToken } from "config/tokens";
 import { approveTokens, useInfoTokens } from "domain/tokens";
 import { getTokenInfo, getUsd } from "domain/tokens/utils";
@@ -55,6 +55,7 @@ import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import "./GlpSwap.css";
 import SwapErrorModal from "./SwapErrorModal";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import PageTitle from "components/PageTitle/PageTitle";
 
 const { AddressZero } = ethers.constants;
 
@@ -127,7 +128,6 @@ export default function GlpSwap(props) {
   const [anchorOnSwapAmount, setAnchorOnSwapAmount] = useState(true);
   const [feeBasisPoints, setFeeBasisPoints] = useState("");
   const [modalError, setModalError] = useState(false);
-  const currentIcons = getIcons(chainId);
 
   const readerAddress = getContract(chainId, "Reader");
   const rewardReaderAddress = getContract(chainId, "RewardReader");
@@ -972,28 +972,30 @@ export default function GlpSwap(props) {
           </form>
         </div>
       </div>
-      <div className="Tab-title-section">
-        <div className="Page-title">
-          <Trans>Save on Fees</Trans>
-          <img className="ml-xs Page-title-icon" src={currentIcons.network} alt="Network Icon" />
-        </div>
-        {isBuying && (
-          <div className="Page-description">
-            <Trans>
-              Fees may vary depending on which asset you use to buy GLP. <br />
-              Enter the amount of GLP you want to purchase in the order form, then check here to compare fees.
-            </Trans>
+
+      <PageTitle
+        title={t`Save on Fees`}
+        subtitle={
+          <div>
+            {isBuying && (
+              <div className="Page-description">
+                <Trans>
+                  Fees may vary depending on which asset you use to buy GLP. <br />
+                  Enter the amount of GLP you want to purchase in the order form, then check here to compare fees.
+                </Trans>
+              </div>
+            )}
+            {!isBuying && (
+              <div className="Page-description">
+                <Trans>
+                  Fees may vary depending on which asset you sell GLP for. <br />
+                  Enter the amount of GLP you want to redeem in the order form, then check here to compare fees.
+                </Trans>
+              </div>
+            )}
           </div>
-        )}
-        {!isBuying && (
-          <div className="Page-description">
-            <Trans>
-              Fees may vary depending on which asset you sell GLP for. <br />
-              Enter the amount of GLP you want to redeem in the order form, then check here to compare fees.
-            </Trans>
-          </div>
-        )}
-      </div>
+        }
+      />
       <div className="GlpSwap-token-list">
         {/* <div className="GlpSwap-token-list-content"> */}
         <table className="token-table">
