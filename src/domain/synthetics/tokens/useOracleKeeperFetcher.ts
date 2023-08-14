@@ -45,6 +45,10 @@ export function useOracleKeeperFetcher(chainId: number) {
 
   return useMemo(() => {
     const switchOracleKeeper = () => {
+      if (fallbackTimerId) {
+        return;
+      }
+
       const nextIndex = getOracleKeeperNextIndex(chainId, oracleKeeperIndex);
 
       if (nextIndex === oracleKeeperIndex) {
@@ -56,12 +60,12 @@ export function useOracleKeeperFetcher(chainId: number) {
       // eslint-disable-next-line no-console
       console.log(`switch oracle keeper to ${getOracleKeeperUrl(chainId, nextIndex)}`);
 
-      if (!fallbackTimerId) {
-        fallbackTimerId = setTimeout(() => {
-          setOracleKeeperInstancesConfig((old) => ({ ...old, [chainId]: nextIndex }));
-          fallbackTimerId = undefined;
-        }, 5000);
-      }
+      fallbackTimerId = setTimeout(() => {
+        setOracleKeeperInstancesConfig((old) => {
+          return { ...old, [chainId]: nextIndex };
+        });
+        fallbackTimerId = undefined;
+      }, 5000);
     };
 
     function fetchTickers(): Promise<TickersResponse> {
