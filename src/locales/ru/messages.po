@@ -4869,8 +4869,8 @@ msgid "V2 Claim"
 msgstr ""
 
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-msgid "V2 Pools"
-msgstr ""
+#~ msgid "V2 Pools"
+#~ msgstr ""
 
 #: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
 msgid "V2 doesn't currently support this network"
