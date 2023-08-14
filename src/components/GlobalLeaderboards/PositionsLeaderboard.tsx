@@ -19,7 +19,7 @@ export default function PositionsLeaderboard() {
     id: p.id,
     account: p.account,
     unrealizedPnl: formatUsd(p.unrealizedPnl),
-    market: `${ p.info.marketInfo.name.split(" ")[0] } ${ p.isLong ? t`Long` : t`Short` }`,
+    market: `${ p.info.marketInfo.name } ${ p.isLong ? t`Long` : t`Short` }`,
     entryPrice: formatUsd(p.info.entryPrice),
     sizeLiqPrice: `${
       formatUsd(p.info.sizeInUsd)
