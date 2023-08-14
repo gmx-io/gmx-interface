@@ -3,9 +3,6 @@ import { useAccountPerf, usePositionScores } from "./index";
 import { BigNumber } from "ethers";
 import { expandDecimals } from "lib/numbers";
 import { USD_DECIMALS } from "lib/legacy";
-import { usePositionsInfo } from "./usePositionsInfo";
-import { useChainId } from "lib/chains";
-import { Position } from "../positions";
 
 const defaultSummary = (account: string): AccountPositionsSummary => ({
   account,
@@ -14,100 +11,79 @@ const defaultSummary = (account: string): AccountPositionsSummary => ({
   sumCollateral: BigNumber.from(0),
   sumMaxSize: BigNumber.from(0),
   totalCollateral: BigNumber.from(0),
-  borrowingFeeUsd: BigNumber.from(0),
-  fundingFeeUsd: BigNumber.from(0),
-  positionFeeUsd: BigNumber.from(0),
   priceImpactUsd: BigNumber.from(0),
+  collectedBorrowingFeesUsd: BigNumber.from(0),
+  collectedFundingFeesUsd: BigNumber.from(0),
+  collectedPositionFeesUsd: BigNumber.from(0),
   closingFeeUsd: BigNumber.from(0),
   pendingFundingFeesUsd: BigNumber.from(0),
   pendingClaimableFundingFeesUsd: BigNumber.from(0),
   pendingBorrowingFeesUsd: BigNumber.from(0),
-  positions: [],
+  openPositionsCount: 0,
 });
 
-const groupPositionsByAccount = (positions: Array<PositionScores & { data?: Position }>): PositionsSummaryByAccount => {
-  const groupBy: PositionsSummaryByAccount = {};
+const groupPositionsByAccount = (positions: Array<PositionScores>): PositionsSummaryByAccount => {
+  const groupping: PositionsSummaryByAccount = {};
+  const groupping2: PositionsSummaryByAccount = {};
 
-  // console.log({position: positions[0]});
   for (const p of positions) {
     const { account } = p;
 
-    if (!groupBy[account]) {
-      groupBy[account] = defaultSummary(account);
+    if (!groupping[account]) {
+      groupping[account] = defaultSummary(account);
+    }
+    if (!groupping2[account]) {
+      groupping2[account] = defaultSummary(account);
     }
 
-    const summary = groupBy[account];
+    const summary = groupping[account];
 
-    summary.positions.push(p);
+    summary.openPositionsCount++;
+
     summary.unrealizedPnl = summary.unrealizedPnl.add(p.unrealizedPnl);
     summary.sumSize = summary.sumSize.add(p.sizeInUsd)
     summary.sumCollateral = summary.sumCollateral.add(p.collateralAmountUsd);
     summary.sumMaxSize = summary.sumMaxSize.add(p.maxSize);
     summary.totalCollateral = summary.totalCollateral.add(p.collateralAmountUsd);
-    summary.borrowingFeeUsd = summary.borrowingFeeUsd.add(p.borrowingFeeUsd);
-    summary.fundingFeeUsd = summary.fundingFeeUsd.add(p.fundingFeeUsd);
-    summary.positionFeeUsd = summary.positionFeeUsd.add(p.positionFeeUsd);
+    summary.collectedBorrowingFeesUsd = summary.collectedBorrowingFeesUsd.add(p.borrowingFeeUsd);
+    summary.collectedFundingFeesUsd = summary.collectedFundingFeesUsd.add(p.fundingFeeUsd);
+    summary.collectedPositionFeesUsd = summary.collectedPositionFeesUsd.add(p.positionFeeUsd);
     summary.priceImpactUsd = summary.priceImpactUsd.add(p.priceImpactUsd);
-    summary.closingFeeUsd = summary.closingFeeUsd.add(p.priceImpactUsd);
-    summary.pendingFundingFeesUsd = summary.pendingFundingFeesUsd.add(p.priceImpactUsd);
-    summary.pendingClaimableFundingFeesUsd = summary.pendingClaimableFundingFeesUsd.add(p.priceImpactUsd);
-    summary.pendingBorrowingFeesUsd = summary.pendingBorrowingFeesUsd.add(p.priceImpactUsd);
+    summary.closingFeeUsd = summary.closingFeeUsd.add(p.info.closingFeeUsd);
+    summary.pendingFundingFeesUsd = summary.pendingFundingFeesUsd.add(p.info.pendingFundingFeesUsd);
+    summary.pendingClaimableFundingFeesUsd = summary.pendingClaimableFundingFeesUsd.add(p.info.pendingClaimableFundingFeesUsd);
+    summary.pendingBorrowingFeesUsd = summary.pendingBorrowingFeesUsd.add(p.info.pendingBorrowingFeesUsd);
   }
 
-  return groupBy;
+  return groupping;
 };
 
 export function useTopAccounts(period: PerfPeriod) {
   const accountPerf = useAccountPerf(period);
-  const { chainId } = useChainId();
   const positions = usePositionScores();
-  const positionsData = usePositionsInfo(
-    chainId,
-    (positions.data || []).map(p => p.id),
-    (positions.data || []).map(p => p.contractMarketPrices),
-  );
 
-  if (accountPerf.error || positions.error || positionsData.error) {
+  if (accountPerf.error || positions.error) {
     return { data: [], isLoading: false, error: accountPerf.error || positions.error };
   } else if (accountPerf.isLoading || positions.isLoading) {
     return { data: [], isLoading: true, error: null };
   }
 
-  const positionsWithData: Array<PositionScores & { data?: Position }> = [];
-  for (const p of positions.data) {
-    positionsWithData.push({...p, data: positionsData[p.id] as Position});
-  }
-
   const data: Array<AccountScores> = []
-  const openPositionsByAccount: Record<string, AccountPositionsSummary> = groupPositionsByAccount(positionsWithData);
+  const openPositionsByAccount: Record<string, AccountPositionsSummary> = groupPositionsByAccount(positions.data);
 
   for (let i = 0; i < accountPerf.data.length; i++) {
     const perf = accountPerf.data[i];
     const openPositions = openPositionsByAccount[perf.account] || defaultSummary(perf.account);
     const totalPnl = perf.totalPnl
-      .sub(openPositions.borrowingFeeUsd)
-      .sub(openPositions.fundingFeeUsd)
-      .sub(openPositions.positionFeeUsd)
+      .sub(openPositions.collectedBorrowingFeesUsd)
+      .sub(openPositions.collectedFundingFeesUsd)
+      .sub(openPositions.collectedPositionFeesUsd)
       .add(openPositions.priceImpactUsd);
 
     const unrealizedPnl = openPositions.unrealizedPnl
-      .add(openPositions.pendingBorrowingFeesUsd)
-      .add(openPositions.pendingFundingFeesUsd)
-      .add(openPositions.closingFeeUsd);
-
-    // console.log({
-    //   pnlWithFees: formatUsd(perf.totalPnl),
-    //   borrowingFees: formatUsd(openPositions.borrowingFeeUsd),
-    //   fundingFeeUsd: formatUsd(openPositions.fundingFeeUsd),
-    //   positionFeeUsd: formatUsd(openPositions.positionFeeUsd),
-    //   priceImpactUsd: formatUsd(openPositions.priceImpactUsd),
-    //   totalPnl: formatUsd(totalPnl),
-    //   uPnlWithFees: formatUsd(openPositions.unrealizedPnl),
-    //   pBorrowingFees: formatUsd(openPositions.pendingBorrowingFeesUsd),
-    //   pFundingFeeUsd: formatUsd(openPositions.pendingFundingFeesUsd),
-    //   closinfFeeUsd: formatUsd(openPositions.closingFeeUsd),
-    //   uPnl: formatUsd(unrealizedPnl)
-    // });
+      .sub(openPositions.pendingBorrowingFeesUsd)
+      .sub(openPositions.pendingFundingFeesUsd)
+      .sub(openPositions.closingFeeUsd);
 
     const profit = totalPnl.add(unrealizedPnl);
     const maxCollateral = perf.maxCollateral;
@@ -123,13 +99,12 @@ export function useTopAccounts(period: PerfPeriod) {
     }
 
     const sumMaxSize = perf.sumMaxSize.add(openPositions.sumMaxSize);
-    const positionsCount = perf.closedCount.add(BigNumber.from(openPositions.positions.length));
+    const positionsCount = perf.closedCount.add(BigNumber.from(openPositions.openPositionsCount));
     const leverage = cumsumSize.mul(expandDecimals(1, USD_DECIMALS)).div(cumsumCollateral);
     const size = sumMaxSize.div(positionsCount);
     const scores = {
       id: perf.account + ":" + period,
       account: perf.account,
-      // absPnl: totalPnl,
       absPnl: profit,
       relPnl,
       size,

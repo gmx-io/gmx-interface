@@ -1,6 +1,6 @@
 import { useChainId } from "lib/chains";
 import { convertToUsd, useTokenRecentPrices } from "../tokens";
-import { AccountOpenPosition, PositionScores } from "./types";
+import { AccountOpenPosition, PositionScores, RemoteData } from "./types";
 import { useAccountOpenPositions } from "./useOpenPositions";
 import { BigNumber } from "ethers";
 import { getToken } from "config/tokens";
@@ -8,7 +8,7 @@ import { getAddress } from "ethers/lib/utils";
 import { usePositionsInfo } from "./usePositionsInfo";
 import { getPositionKey } from "../positions";
 
-export function usePositionScores() {
+export function usePositionScores(): RemoteData<PositionScores> {
   const { chainId } = useChainId();
   const { pricesData } = useTokenRecentPrices(chainId);
   const accountOpenPositions = useAccountOpenPositions(chainId);
@@ -20,7 +20,11 @@ export function usePositionScores() {
 
   if (accountOpenPositions.error) {
     return { data: [], isLoading: false, error: accountOpenPositions.error };
-  } else if (!pricesData || accountOpenPositions.isLoading) {
+  } else if (
+    !pricesData ||
+    !accountOpenPositions.data ||
+    accountOpenPositions.data.length !== Object.keys(positionsByKey.data).length
+  ) {
     return { data: [], isLoading: true, error: null };
   }
 

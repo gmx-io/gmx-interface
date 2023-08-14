@@ -99,13 +99,15 @@ export function usePositionsInfo(
     return parsePositionsInfo(positionKeys, await contract[method](...args)) as PositionsData ;
   });
 
-  const isLoading = !marketsInfoData || !tokensData || !positionsData || !minCollateralUsd;
+  const positionsCount = Object.keys(positionsData || {}).length;
+  const positionsLoaded = positionsCount === positionKeys.length;
+  const isLoading = !(positionsLoaded && marketsInfoData && tokensData && minCollateralUsd);
 
   return {
     isLoading,
     error,
     data: isLoading ? {} : getPositionsInfoData(
-      positionsData,
+      positionsData!,
       marketsInfoData,
       tokensData,
       minCollateralUsd

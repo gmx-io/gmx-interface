@@ -1,6 +1,6 @@
 import { BigNumber } from "ethers";
 import { ContractMarketPrices, Market } from "../markets";
-import { Position, PositionInfo } from "../positions";
+import { PositionInfo } from "../positions";
 
 export enum PerfPeriod {
   DAY = "24 hours",
@@ -103,20 +103,20 @@ export type AccountOpenPosition = {
 
 export type AccountPositionsSummary = {
   account: string;
-  positions: Array<PositionScores & { data?: Position }>;
   unrealizedPnl: BigNumber;
   sumSize: BigNumber;
   sumCollateral: BigNumber;
   sumMaxSize: BigNumber;
   totalCollateral: BigNumber;
-  borrowingFeeUsd: BigNumber;
-  fundingFeeUsd: BigNumber;
-  positionFeeUsd: BigNumber;
   priceImpactUsd: BigNumber;
-  closingFeeUsd: BigNumber;
+  collectedFundingFeesUsd: BigNumber;
+  collectedBorrowingFeesUsd: BigNumber;
+  collectedPositionFeesUsd: BigNumber;
   pendingFundingFeesUsd: BigNumber;
   pendingClaimableFundingFeesUsd: BigNumber;
   pendingBorrowingFeesUsd: BigNumber;
+  closingFeeUsd: BigNumber;
+  openPositionsCount: number;
 };
 
 export type PositionsSummaryByAccount = Record<string, AccountPositionsSummary>;

@@ -18,7 +18,7 @@ export default function PositionsLeaderboard() {
   const displayedStats = filteredStats.slice(firstItemIndex, page * perPage).map(p => ({
     id: p.id,
     account: p.account,
-    unrealizedPnl: formatUsd(p.unrealizedPnl),
+    unrealizedPnl: formatUsd(p.info.pnlAfterFees),
     market: `${ p.info.marketInfo.name } ${ p.isLong ? t`Long` : t`Short` }`,
     entryPrice: formatUsd(p.info.entryPrice),
     sizeLiqPrice: `${
