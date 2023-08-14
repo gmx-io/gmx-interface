@@ -36,7 +36,7 @@ function parseOracleCandle(rawCandle: number[]): Bar {
   };
 }
 
-let fallbackTimerId: any;
+let fallbackThrottleTimerId: any;
 
 export function useOracleKeeperFetcher(chainId: number) {
   const { oracleKeeperInstancesConfig, setOracleKeeperInstancesConfig } = useSettings();
@@ -45,7 +45,7 @@ export function useOracleKeeperFetcher(chainId: number) {
 
   return useMemo(() => {
     const switchOracleKeeper = () => {
-      if (fallbackTimerId) {
+      if (fallbackThrottleTimerId) {
         return;
       }
 
@@ -60,11 +60,12 @@ export function useOracleKeeperFetcher(chainId: number) {
       // eslint-disable-next-line no-console
       console.log(`switch oracle keeper to ${getOracleKeeperUrl(chainId, nextIndex)}`);
 
-      fallbackTimerId = setTimeout(() => {
-        setOracleKeeperInstancesConfig((old) => {
-          return { ...old, [chainId]: nextIndex };
-        });
-        fallbackTimerId = undefined;
+      setOracleKeeperInstancesConfig((old) => {
+        return { ...old, [chainId]: nextIndex };
+      });
+
+      fallbackThrottleTimerId = setTimeout(() => {
+        fallbackThrottleTimerId = undefined;
       }, 5000);
     };
 
