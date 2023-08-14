@@ -250,6 +250,7 @@ msgstr "Außerdem handelt es sich bei Trigger-Order um Markt-Orders, bei denen n
 
 #: src/components/GlobalLeaderboards/AccountsLeaderboard.tsx
 #: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
+#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
 msgid "Address"
 msgstr ""
 
@@ -1598,6 +1599,9 @@ msgstr "Neuen Preis eingeben"
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Enter new amount or price"
+
+#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
+msgid "Entry"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -2491,6 +2495,7 @@ msgstr "Lädt..."
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -3188,6 +3193,10 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Overview"
 msgstr "Übersicht"
+
+#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
+msgid "P&L ($)"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "POOL"
@@ -3913,6 +3922,7 @@ msgstr "Position teilen"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -4007,6 +4017,10 @@ msgstr "Größe"
 #: src/components/Leaderboard/GeneralOpenLeaderboard.tsx
 #~ msgid "Size ($)"
 #~ msgstr ""
+
+#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
+msgid "Size (Liq)"
+msgstr ""
 
 #: src/App/App.js
 msgid "Slippage should be less than 5%"
@@ -4502,6 +4516,10 @@ msgstr "Um die Gebühren zu senken, wähle einen anderen Vermögenswert aus, den
 #: src/components/Leaderboard/GeneralOpenLeaderboard.tsx
 #~ msgid "Token"
 #~ msgstr ""
+
+#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
+msgid "Token (L/S)"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Tokens"
