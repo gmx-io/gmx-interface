@@ -1,4 +1,4 @@
-import { getOracleKeeperRandomIndex, getOracleKeeperUrl } from "config/oracleKeeper";
+import { getOracleKeeperNextIndex, getOracleKeeperUrl } from "config/oracleKeeper";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { timezoneOffset } from "domain/prices";
 import { Bar } from "domain/tradingview/types";
@@ -36,14 +36,16 @@ function parseOracleCandle(rawCandle: number[]): Bar {
   };
 }
 
+let fallbackTimerId: any;
+
 export function useOracleKeeperFetcher(chainId: number) {
   const { oracleKeeperInstancesConfig, setOracleKeeperInstancesConfig } = useSettings();
   const oracleKeeperIndex = oracleKeeperInstancesConfig[chainId];
   const oracleKeeperUrl = getOracleKeeperUrl(chainId, oracleKeeperIndex);
 
   return useMemo(() => {
-    function switchOracleKeeper() {
-      const nextIndex = getOracleKeeperRandomIndex(chainId, [oracleKeeperIndex]);
+    const switchOracleKeeper = () => {
+      const nextIndex = getOracleKeeperNextIndex(chainId, oracleKeeperIndex);
 
       if (nextIndex === oracleKeeperIndex) {
         // eslint-disable-next-line no-console
@@ -54,8 +56,13 @@ export function useOracleKeeperFetcher(chainId: number) {
       // eslint-disable-next-line no-console
       console.log(`switch oracle keeper to ${getOracleKeeperUrl(chainId, nextIndex)}`);
 
-      setOracleKeeperInstancesConfig((old) => ({ ...old, [chainId]: nextIndex }));
-    }
+      if (!fallbackTimerId) {
+        fallbackTimerId = setTimeout(() => {
+          setOracleKeeperInstancesConfig((old) => ({ ...old, [chainId]: nextIndex }));
+          fallbackTimerId = undefined;
+        }, 5000);
+      }
+    };
 
     function fetchTickers(): Promise<TickersResponse> {
       return fetch(buildUrl(oracleKeeperUrl!, "/prices/tickers"))
