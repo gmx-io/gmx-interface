@@ -1,26 +1,19 @@
+import { Trans, t } from "@lingui/macro";
 import React, { useEffect, useMemo, useState } from "react";
 import Tooltip from "../Tooltip/Tooltip";
-import { t, Trans } from "@lingui/macro";
 import "./SwapBox.scss";
 
-import useSWR from "swr";
 import { ethers } from "ethers";
+import useSWR from "swr";
 
-import { IoMdSwap } from "react-icons/io";
 import { BsArrowRight } from "react-icons/bs";
+import { IoMdSwap } from "react-icons/io";
 
+import { ARBITRUM, IS_NETWORK_DISABLED, getChainName, getConstant, isSupportedChain } from "config/chains";
+import { getContract } from "config/contracts";
+import * as Api from "domain/legacy";
 import {
-  adjustForDecimals,
-  BASIS_POINTS_DIVISOR,
-  calculatePositionDelta,
-  DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
   DUST_BNB,
-  getExchangeRate,
-  getExchangeRateDisplay,
-  getNextFromAmount,
-  getNextToAmount,
-  getPositionKey,
-  isTriggerRatioInverted,
   LEVERAGE_ORDER_OPTIONS,
   LIMIT,
   LONG,
@@ -32,19 +25,25 @@ import {
   SWAP,
   SWAP_OPTIONS,
   SWAP_ORDER_OPTIONS,
-  USD_DECIMALS,
   USDG_ADDRESS,
   USDG_DECIMALS,
-  MAX_ALLOWED_LEVERAGE,
+  USD_DECIMALS,
+  adjustForDecimals,
+  calculatePositionDelta,
+  getExchangeRate,
+  getExchangeRateDisplay,
+  getNextFromAmount,
+  getNextToAmount,
+  getPositionKey,
+  isTriggerRatioInverted,
 } from "lib/legacy";
-import { ARBITRUM, getChainName, getConstant, IS_NETWORK_DISABLED, isSupportedChain } from "config/chains";
-import * as Api from "domain/legacy";
-import { getContract } from "config/contracts";
+import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "config/factors";
+import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
 
+import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tab from "../Tab/Tab";
-import TokenSelector from "./TokenSelector";
-import ExchangeInfoRow from "./ExchangeInfoRow";
 import ConfirmationBox from "./ConfirmationBox";
+import ExchangeInfoRow from "./ExchangeInfoRow";
 import OrdersToa from "./OrdersToa";
 
 import PositionRouter from "abis/PositionRouter.json";
@@ -56,33 +55,33 @@ import longImg from "img/long.svg";
 import shortImg from "img/short.svg";
 import swapImg from "img/swap.svg";
 
-import { useUserReferralCode } from "domain/referrals";
-import NoLiquidityErrorModal from "./NoLiquidityErrorModal";
-import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
-import { callContract, contractFetcher } from "lib/contracts";
+import Button from "components/Button/Button";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
+import { get1InchSwapUrl } from "config/links";
+import { getPriceDecimals, getToken, getTokenBySymbol, getV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
+import { useUserReferralCode } from "domain/referrals/hooks";
 import {
   approveTokens,
   getMostAbundantStableToken,
   replaceNativeTokenAddress,
   shouldRaiseGasError,
 } from "domain/tokens";
-import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
-import { helperToast } from "lib/helperToast";
 import { getTokenInfo, getUsd } from "domain/tokens/utils";
-import { usePrevious } from "lib/usePrevious";
+import { callContract, contractFetcher } from "lib/contracts";
+import { helperToast } from "lib/helperToast";
+import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
 import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
-import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "config/tokens";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import { ErrorCode, ErrorDisplayType } from "./constants";
-import Button from "components/Button/Button";
-import UsefulLinks from "./UsefulLinks";
-import { get1InchSwapUrl } from "config/links";
-import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import { getLeverage } from "lib/positions/getLeverage";
-import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
-import LeverageSlider from "./LeverageSlider";
-import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import getLiquidationPrice from "lib/positions/getLiquidationPrice";
+import { usePrevious } from "lib/usePrevious";
+import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import FeesTooltip from "./FeesTooltip";
+import NoLiquidityErrorModal from "./NoLiquidityErrorModal";
+import UsefulLinks from "./UsefulLinks";
+import { ErrorCode, ErrorDisplayType } from "./constants";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -242,8 +241,8 @@ export default function SwapBox(props) {
   const existingPosition = positionKey ? positionsMap[positionKey] : undefined;
   const hasExistingPosition = existingPosition && existingPosition.size && existingPosition.size.gt(0);
 
-  const whitelistedTokens = getWhitelistedTokens(chainId);
-  const tokens = getTokens(chainId);
+  const whitelistedTokens = getWhitelistedV1Tokens(chainId);
+  const tokens = getV1Tokens(chainId);
   const fromTokens = tokens;
   const stableTokens = tokens.filter((token) => token.isStable);
   const indexTokens = whitelistedTokens.filter((token) => !token.isStable && !token.isWrapped);
@@ -303,6 +302,8 @@ export default function SwapBox(props) {
   const fromToken = getToken(chainId, fromTokenAddress);
   const toToken = getToken(chainId, toTokenAddress);
   const shortCollateralToken = getTokenInfo(infoTokens, shortCollateralAddress);
+  const toTokenPriceDecimal = getPriceDecimals(chainId, toToken.symbol);
+  const existingPositionPriceDecimal = getPriceDecimals(chainId, existingPosition?.indexToken?.symbol);
 
   const fromTokenInfo = getTokenInfo(infoTokens, fromTokenAddress);
   const toTokenInfo = getTokenInfo(infoTokens, toTokenAddress);
@@ -319,7 +320,7 @@ export default function SwapBox(props) {
         </div>
         <div className="align-right">
           <Tooltip
-            handle={`$${formatAmount(toTokenInfo.maxAvailableLong, USD_DECIMALS, 2, true)}`}
+            handle={`$${formatAmount(toTokenInfo?.maxAvailableLong, USD_DECIMALS, 2, true)}`}
             position="right-bottom"
             renderContent={() => {
               return (
@@ -373,9 +374,9 @@ export default function SwapBox(props) {
   }, [toTokenInfo, fromTokenInfo]);
 
   const maxToTokenOut = useMemo(() => {
-    const value = toTokenInfo.availableAmount?.gt(toTokenInfo.poolAmount?.sub(toTokenInfo.bufferAmount))
+    const value = toTokenInfo?.availableAmount?.gt(toTokenInfo.poolAmount?.sub(toTokenInfo.bufferAmount))
       ? toTokenInfo.poolAmount?.sub(toTokenInfo.bufferAmount)
-      : toTokenInfo.availableAmount;
+      : toTokenInfo?.availableAmount;
 
     if (!value) {
       return bigNumberify(0);
@@ -1789,12 +1790,12 @@ export default function SwapBox(props) {
   }
 
   const ERROR_TOOLTIP_MSG = {
-    [ErrorCode.InsufficientLiquiditySwap]: t`Swap amount exceeds available liquidity.`,
+    [ErrorCode.InsufficientLiquiditySwap]: t`Swap amount exceeds Available Liquidity.`,
     [ErrorCode.InsufficientLiquidityLeverage]: (
       <Trans>
         <p>{toToken.symbol} is required for collateral.</p>
         <p>
-          Swap amount from {fromToken.symbol} to {toToken.symbol} exceeds {toToken.symbol} available liquidity. Reduce
+          Swap amount from {fromToken.symbol} to {toToken.symbol} exceeds {toToken.symbol} Available Liquidity. Reduce
           the "Pay" size, or use {toToken.symbol} as the "Pay" token to use it for collateral.
         </p>
         <ExternalLink href={get1InchSwapUrl(chainId, fromToken.symbol, toToken.symbol)}>
@@ -1924,9 +1925,9 @@ export default function SwapBox(props) {
             <React.Fragment>
               <BuyInputSection
                 topLeftLabel={t`Pay`}
+                topLeftValue={fromUsdMin && `$${formatAmount(fromUsdMin, USD_DECIMALS, 2, true)}`}
                 topRightLabel={t`Balance`}
-                balance={fromUsdMin && `${formatAmount(fromUsdMin, USD_DECIMALS, 2, true)} USD`}
-                tokenBalance={fromBalance && `${formatAmount(fromBalance, fromToken.decimals, 4, true)}`}
+                topRightValue={fromBalance && `${formatAmount(fromBalance, fromToken.decimals, 4, true)}`}
                 onClickTopRightLabel={setFromValueToMaximumAvailable}
                 showMaxButton={shouldShowMaxButton()}
                 inputValue={fromValue}
@@ -1952,8 +1953,8 @@ export default function SwapBox(props) {
               <BuyInputSection
                 topLeftLabel={getToLabel()}
                 topRightLabel={isSwap ? t`Balance` : t`Leverage`}
-                balance={toUsdMax && `${formatAmount(toUsdMax, USD_DECIMALS, 2, true)} USD`}
-                tokenBalance={
+                topLeftValue={toUsdMax && `$${formatAmount(toUsdMax, USD_DECIMALS, 2, true)}`}
+                topRightValue={
                   isSwap
                     ? formatAmount(toBalance, toToken.decimals, 4, true)
                     : `${parseFloat(leverageOption).toFixed(2)}x`
@@ -1970,6 +1971,7 @@ export default function SwapBox(props) {
                   tokens={toTokens}
                   infoTokens={infoTokens}
                   showTokenImgInDropdown={true}
+                  showBalances={false}
                 />
               </BuyInputSection>
             </React.Fragment>
@@ -2008,9 +2010,9 @@ export default function SwapBox(props) {
             <BuyInputSection
               topLeftLabel={t`Price`}
               topRightLabel={t`Mark`}
-              tokenBalance={formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)}
+              topRightValue={formatAmount(entryMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)}
               onClickTopRightLabel={() => {
-                setTriggerPriceValue(formatAmountFree(entryMarkPrice, USD_DECIMALS, 2));
+                setTriggerPriceValue(formatAmountFree(entryMarkPrice, USD_DECIMALS, toTokenPriceDecimal));
               }}
               showMaxButton={false}
               inputValue={triggerPriceValue}
@@ -2049,7 +2051,7 @@ export default function SwapBox(props) {
                 <span className="muted">Leverage slider</span>
               </ToggleSwitch>
               {isLeverageSliderEnabled && (
-                <LeverageSlider isLong={isLong} leverageOption={leverageOption} setLeverageOption={setLeverageOption} />
+                <LeverageSlider isPositive={isLong} value={leverageOption} onChange={setLeverageOption} />
               )}
               {isShort && (
                 <div className="Exchange-info-row">
@@ -2119,11 +2121,11 @@ export default function SwapBox(props) {
                 <div className="align-right">
                   {hasExistingPosition && toAmount && toAmount.gt(0) && (
                     <div className="inline-block muted">
-                      ${formatAmount(existingPosition.averagePrice, USD_DECIMALS, 2, true)}
+                      ${formatAmount(existingPosition.averagePrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
                       <BsArrowRight className="transition-arrow" />
                     </div>
                   )}
-                  {nextAveragePrice && `$${formatAmount(nextAveragePrice, USD_DECIMALS, 2, true)}`}
+                  {nextAveragePrice && `$${formatAmount(nextAveragePrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
                   {!nextAveragePrice && `-`}
                 </div>
               </div>
@@ -2134,13 +2136,13 @@ export default function SwapBox(props) {
                 <div className="align-right">
                   {hasExistingPosition && toAmount && toAmount.gt(0) && (
                     <div className="inline-block muted">
-                      ${formatAmount(existingLiquidationPrice, USD_DECIMALS, 2, true)}
+                      ${formatAmount(existingLiquidationPrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
                       <BsArrowRight className="transition-arrow" />
                     </div>
                   )}
                   {toAmount &&
                     displayLiquidationPrice &&
-                    `$${formatAmount(displayLiquidationPrice, USD_DECIMALS, 2, true)}`}
+                    `$${formatAmount(displayLiquidationPrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
                   {!toAmount && displayLiquidationPrice && `-`}
                   {!displayLiquidationPrice && `-`}
                 </div>
@@ -2174,7 +2176,7 @@ export default function SwapBox(props) {
                 trigger orders. <br />
                 <br />
                 For screenshots and more information, please see the{" "}
-                <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#stop-loss-take-profit-orders">
+                <ExternalLink href="https://docs.gmx.io/docs/trading/v1#stop-loss--take-profit-orders">
                   docs
                 </ExternalLink>
                 .
@@ -2258,21 +2260,22 @@ export default function SwapBox(props) {
               </div>
               <div className="align-right">
                 <Tooltip
-                  handle={`$${formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)}`}
+                  handle={`$${formatAmount(entryMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
                   position="right-bottom"
                   renderContent={() => {
                     return (
                       <div>
                         <Trans>
-                          The position will be opened at {formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)} USD with
-                          a max slippage of {parseFloat(savedSlippageAmount / 100.0).toFixed(2)}%.
+                          The position will be opened at{" "}
+                          {formatAmount(entryMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)} USD with a max
+                          slippage of {parseFloat(savedSlippageAmount / 100.0).toFixed(2)}%.
                           <br />
                           <br />
                           The slippage amount can be configured under Settings, found by clicking on your address at the
                           top right of the page after connecting your wallet.
                           <br />
                           <br />
-                          <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#opening-a-position">
+                          <ExternalLink href="https://docs.gmx.io/docs/trading/v1#opening-a-position">
                             More Info
                           </ExternalLink>
                         </Trans>
@@ -2288,20 +2291,20 @@ export default function SwapBox(props) {
               </div>
               <div className="align-right">
                 <Tooltip
-                  handle={`$${formatAmount(exitMarkPrice, USD_DECIMALS, 2, true)}`}
+                  handle={`$${formatAmount(exitMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
                   position="right-bottom"
                   renderContent={() => {
                     return (
                       <div>
                         <Trans>
                           If you have an existing position, the position will be closed at{" "}
-                          {formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)} USD.
+                          {formatAmount(entryMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)} USD.
                           <br />
                           <br />
                           This exit price will change with the price of the asset.
                           <br />
                           <br />
-                          <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#opening-a-position">
+                          <ExternalLink href="https://docs.gmx.io/docs/trading/v1#opening-a-position">
                             More Info
                           </ExternalLink>
                         </Trans>
@@ -2340,7 +2343,7 @@ export default function SwapBox(props) {
                           </div>
                         )}
                         <br />
-                        <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#opening-a-position">
+                        <ExternalLink href="https://docs.gmx.io/docs/trading/v1#opening-a-position">
                           <Trans>More Info</Trans>
                         </ExternalLink>
                       </div>

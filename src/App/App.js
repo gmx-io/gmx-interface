@@ -1,79 +1,75 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
-import { SWRConfig } from "swr";
-import { ethers } from "ethers";
-import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
+import { useWeb3React, Web3ReactProvider } from "@web3-react/core";
+import { ethers } from "ethers";
 import useScrollToTop from "lib/useScrollToTop";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { SWRConfig } from "swr";
 
-import { Switch, Route, HashRouter as Router, Redirect, useLocation, useHistory } from "react-router-dom";
+import { Redirect, Route, HashRouter as Router, Switch, useHistory, useLocation } from "react-router-dom";
 
-import {
-  DEFAULT_SLIPPAGE_AMOUNT,
-  BASIS_POINTS_DIVISOR,
-  getAppBaseUrl,
-  isHomeSite,
-  isMobileDevice,
-  REFERRAL_CODE_QUERY_PARAM,
-} from "lib/legacy";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { getAppBaseUrl, isHomeSite, isMobileDevice, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
 
-import Home from "pages/Home/Home";
-import Dashboard from "pages/Dashboard/Dashboard";
-import Stats from "pages/Stats/Stats";
-import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
-import Ecosystem from "pages/Ecosystem/Ecosystem";
-import Stake from "pages/Stake/Stake";
-import { Exchange } from "pages/Exchange/Exchange";
+import { decodeReferralCode, encodeReferralCode } from "domain/referrals";
 import Actions from "pages/Actions/Actions";
+import BeginAccountTransfer from "pages/BeginAccountTransfer/BeginAccountTransfer";
+import Buy from "pages/Buy/Buy";
+import BuyGlp from "pages/BuyGlp/BuyGlp";
+import BuyGMX from "pages/BuyGMX/BuyGMX";
+import ClaimEsGmx from "pages/ClaimEsGmx/ClaimEsGmx";
+import CompleteAccountTransfer from "pages/CompleteAccountTransfer/CompleteAccountTransfer";
+import Dashboard from "pages/Dashboard/Dashboard";
+import Ecosystem from "pages/Ecosystem/Ecosystem";
+import { Exchange } from "pages/Exchange/Exchange";
+import Home from "pages/Home/Home";
+import NftWallet from "pages/NftWallet/NftWallet";
 import OrdersOverview from "pages/OrdersOverview/OrdersOverview";
 import PositionsOverview from "pages/PositionsOverview/PositionsOverview";
 import Referrals from "pages/Referrals/Referrals";
-import BuyGlp from "pages/BuyGlp/BuyGlp";
-import BuyGMX from "pages/BuyGMX/BuyGMX";
-import Buy from "pages/Buy/Buy";
-import NftWallet from "pages/NftWallet/NftWallet";
-import ClaimEsGmx from "pages/ClaimEsGmx/ClaimEsGmx";
-import BeginAccountTransfer from "pages/BeginAccountTransfer/BeginAccountTransfer";
-import CompleteAccountTransfer from "pages/CompleteAccountTransfer/CompleteAccountTransfer";
+import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
+import Stake from "pages/Stake/Stake";
+import Stats from "pages/Stats/Stats";
 
+import Checkbox from "components/Checkbox/Checkbox";
+import Modal from "components/Modal/Modal";
 import { cssTransition, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Modal from "components/Modal/Modal";
-import Checkbox from "components/Checkbox/Checkbox";
 
-import "styles/Shared.css";
 import "styles/Font.css";
-import "./App.scss";
 import "styles/Input.css";
+import "styles/Shared.css";
+import "./App.scss";
 
-import metamaskImg from "img/metamask.png";
-import coinbaseImg from "img/coinbaseWallet.png";
-import walletConnectImg from "img/walletconnect-circle-blue.svg";
-import useEventToast from "components/EventToast/useEventToast";
-import EventToastContainer from "components/EventToast/EventToastContainer";
 import SEO from "components/Common/SEO";
+import EventToastContainer from "components/EventToast/EventToastContainer";
+import useEventToast from "components/EventToast/useEventToast";
+import Tooltip from "components/Tooltip/Tooltip";
+import coinbaseImg from "img/coinbaseWallet.png";
+import metamaskImg from "img/metamask.png";
+import walletConnectImg from "img/walletconnect-circle-blue.svg";
 import useRouteQuery from "lib/useRouteQuery";
-import { encodeReferralCode, decodeReferralCode } from "domain/referrals";
 
-import { getContract } from "config/contracts";
+import PositionRouter from "abis/PositionRouter.json";
 import VaultV2 from "abis/VaultV2.json";
 import VaultV2b from "abis/VaultV2b.json";
-import PositionRouter from "abis/PositionRouter.json";
+import { RedirectPopupModal } from "components/ModalViews/RedirectModal";
+import { getContract } from "config/contracts";
+import { REDIRECT_POPUP_TIMESTAMP_KEY, TRADE_LINK_KEY } from "config/localStorage";
+import Jobs from "pages/Jobs/Jobs";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
 import ReferralTerms from "pages/ReferralTerms/ReferralTerms";
 import TermsAndConditions from "pages/TermsAndConditions/TermsAndConditions";
 import { useLocalStorage } from "react-use";
-import { RedirectPopupModal } from "components/ModalViews/RedirectModal";
-import { REDIRECT_POPUP_TIMESTAMP_KEY } from "config/localStorage";
-import Jobs from "pages/Jobs/Jobs";
 
 import { i18n } from "@lingui/core";
+import { t, Trans } from "@lingui/macro";
 import { I18nProvider } from "@lingui/react";
-import { Trans, t } from "@lingui/macro";
-import { defaultLocale, dynamicActivate } from "lib/i18n";
+import Button from "components/Button/Button";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import { Header } from "components/Header/Header";
-import { ARBITRUM, AVALANCHE, getAlchemyWsUrl, getExplorerUrl } from "config/chains";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { helperToast } from "lib/helperToast";
+import { ARBITRUM, EXECUTION_FEE_CONFIG_V2, getExplorerUrl } from "config/chains";
+import { isDevelopment } from "config/env";
+import { getIsSyntheticsSupported, getIsV1Supported } from "config/features";
 import {
   CURRENT_PROVIDER_LOCALSTORAGE_KEY,
   DISABLE_ORDER_VALIDATION_KEY,
@@ -83,8 +79,16 @@ import {
   SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
   SHOULD_SHOW_POSITION_LINES_KEY,
   SHOW_PNL_AFTER_FEES_KEY,
-  SLIPPAGE_BPS_KEY,
 } from "config/localStorage";
+import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
+import { SettingsContextProvider, useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
+import { useChainId } from "lib/chains";
+import { helperToast } from "lib/helperToast";
+import { defaultLocale, dynamicActivate } from "lib/i18n";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { roundToTwoDecimals } from "lib/numbers";
+import { useWsProvider } from "lib/rpc";
 import {
   activateInjectedProvider,
   clearWalletConnectData,
@@ -97,11 +101,11 @@ import {
   useHandleUnsupportedNetwork,
   useInactiveListener,
 } from "lib/wallets";
-import { useChainId } from "lib/chains";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import { isDevelopment } from "config/env";
-import Button from "components/Button/Button";
-import { roundToTwoDecimals } from "lib/numbers";
+import { MarketPoolsPage } from "pages/MarketPoolsPage/MarketPoolsPage";
+import SyntheticsActions from "pages/SyntheticsActions/SyntheticsActions";
+import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsFallbackPage";
+import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
+import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -120,23 +124,6 @@ const Zoom = cssTransition({
   collapseDuration: 200,
   duration: 200,
 });
-
-const arbWsProvider = new ethers.providers.WebSocketProvider(getAlchemyWsUrl());
-
-const avaxWsProvider = new ethers.providers.WebSocketProvider("wss://api.avax.network/ext/bc/C/ws");
-
-function getWsProvider(active, chainId) {
-  if (!active) {
-    return;
-  }
-  if (chainId === ARBITRUM) {
-    return arbWsProvider;
-  }
-
-  if (chainId === AVALANCHE) {
-    return avaxWsProvider;
-  }
-}
 
 function FullApp() {
   const isHome = isHomeSite();
@@ -168,7 +155,7 @@ function FullApp() {
 
     if (referralCode && referralCode.length <= 20) {
       const encodedReferralCode = encodeReferralCode(referralCode);
-      if (encodeReferralCode !== ethers.constants.HashZero) {
+      if (encodedReferralCode !== ethers.constants.HashZero) {
         localStorage.setItem(REFERRAL_CODE_KEY, encodedReferralCode);
         const queryParams = new URLSearchParams(location.search);
         if (queryParams.has(REFERRAL_CODE_QUERY_PARAM)) {
@@ -259,6 +246,10 @@ function FullApp() {
     connectInjectedWallet();
   };
 
+  const [tradePageVersion, setTradePageVersion] = useLocalStorageSerializeKey(
+    [chainId, TRADE_LINK_KEY],
+    getIsV1Supported(chainId) ? 1 : 2
+  );
   const [walletModalVisible, setWalletModalVisible] = useState(false);
   const [redirectModalVisible, setRedirectModalVisible] = useState(false);
   const [shouldHideRedirectModal, setShouldHideRedirectModal] = useState(false);
@@ -266,15 +257,16 @@ function FullApp() {
   const [selectedToPage, setSelectedToPage] = useState("");
   const connectWallet = () => setWalletModalVisible(true);
 
+  const settings = useSettings();
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
-  const [savedSlippageAmount, setSavedSlippageAmount] = useLocalStorageSerializeKey(
-    [chainId, SLIPPAGE_BPS_KEY],
-    DEFAULT_SLIPPAGE_AMOUNT
-  );
+
   const [slippageAmount, setSlippageAmount] = useState(0);
+  const [executionFeeBufferBps, setExecutionFeeBufferBps] = useState(0);
   const [isPnlInLeverage, setIsPnlInLeverage] = useState(false);
   const [shouldDisableValidationForTesting, setShouldDisableValidationForTesting] = useState(false);
+
   const [showPnlAfterFees, setShowPnlAfterFees] = useState(true);
+  const [showDebugValues, setShowDebugValues] = useState(false);
 
   const [savedIsPnlInLeverage, setSavedIsPnlInLeverage] = useLocalStorageSerializeKey(
     [chainId, IS_PNL_IN_LEVERAGE_KEY],
@@ -285,8 +277,14 @@ function FullApp() {
     [chainId, SHOW_PNL_AFTER_FEES_KEY],
     true
   );
-  const [savedShouldDisableValidationForTesting, setSavedShouldDisableValidationForTesting] =
-    useLocalStorageSerializeKey([chainId, DISABLE_ORDER_VALIDATION_KEY], false);
+
+  let [savedShouldDisableValidationForTesting, setSavedShouldDisableValidationForTesting] = useLocalStorageSerializeKey(
+    [chainId, DISABLE_ORDER_VALIDATION_KEY],
+    false
+  );
+  if (!isDevelopment()) {
+    savedShouldDisableValidationForTesting = false;
+  }
 
   const [savedShouldShowPositionLines, setSavedShouldShowPositionLines] = useLocalStorageSerializeKey(
     [chainId, SHOULD_SHOW_POSITION_LINES_KEY],
@@ -294,10 +292,15 @@ function FullApp() {
   );
 
   const openSettings = () => {
-    const slippage = parseInt(savedSlippageAmount);
+    const slippage = parseInt(settings.savedAllowedSlippage);
     setSlippageAmount(roundToTwoDecimals((slippage / BASIS_POINTS_DIVISOR) * 100));
+    if (settings.executionFeeBufferBps !== undefined) {
+      const bps = settings.executionFeeBufferBps;
+      setExecutionFeeBufferBps(roundToTwoDecimals((bps / BASIS_POINTS_DIVISOR) * 100));
+    }
     setIsPnlInLeverage(savedIsPnlInLeverage);
     setShowPnlAfterFees(savedShowPnlAfterFees);
+    setShowDebugValues(settings.showDebugValues);
     setShouldDisableValidationForTesting(savedShouldDisableValidationForTesting);
     setIsSettingsVisible(true);
   };
@@ -318,11 +321,29 @@ function FullApp() {
       return;
     }
 
+    settings.setSavedAllowedSlippage(basisPoints);
+
+    if (settings.shouldUseExecutionFeeBuffer) {
+      const executionFeeBuffer = parseFloat(executionFeeBufferBps);
+      if (isNaN(executionFeeBuffer) || executionFeeBuffer < 0) {
+        helperToast.error(t`Invalid execution fee buffer value`);
+        return;
+      }
+      const nextExecutionBufferFeeBps = roundToTwoDecimals((executionFeeBuffer * BASIS_POINTS_DIVISOR) / 100);
+
+      if (parseInt(nextExecutionBufferFeeBps) !== parseFloat(nextExecutionBufferFeeBps)) {
+        helperToast.error(t`Max execution fee buffer precision is 0.01%`);
+        return;
+      }
+
+      settings.setExecutionFeeBufferBps(nextExecutionBufferFeeBps);
+    }
+
     setSavedIsPnlInLeverage(isPnlInLeverage);
     setSavedShowPnlAfterFees(showPnlAfterFees);
     setSavedShouldDisableValidationForTesting(shouldDisableValidationForTesting);
-    setSavedSlippageAmount(basisPoints);
     setIsSettingsVisible(false);
+    settings.setShowDebugValues(showDebugValues);
   };
 
   const localStorageCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
@@ -341,6 +362,36 @@ function FullApp() {
     setRedirectModalVisible(true);
     setSelectedToPage(to);
   };
+
+  useEffect(
+    function redirectTradePage() {
+      if (location.pathname === "/v2" && query.has("no_redirect")) {
+        if (tradePageVersion !== 2) {
+          setTradePageVersion(2);
+        }
+        if (history.location.search) {
+          history.replace({ search: "" });
+        }
+        return;
+      }
+      if (
+        location.pathname === "/trade" &&
+        (tradePageVersion === 2 || !getIsV1Supported(chainId)) &&
+        getIsSyntheticsSupported(chainId)
+      ) {
+        history.replace("/v2");
+      }
+
+      if (
+        location.pathname === "/v2" &&
+        (tradePageVersion === 1 || !getIsSyntheticsSupported(chainId)) &&
+        getIsV1Supported(chainId)
+      ) {
+        history.replace("/trade");
+      }
+    },
+    [chainId, history, location, tradePageVersion, query, setTradePageVersion]
+  );
 
   useEffect(() => {
     const checkPendingTxns = async () => {
@@ -388,12 +439,13 @@ function FullApp() {
     return () => clearInterval(interval);
   }, [library, pendingTxns, chainId]);
 
+  const wsProvider = useWsProvider(active, chainId);
+
   const vaultAddress = getContract(chainId, "Vault");
   const positionRouterAddress = getContract(chainId, "PositionRouter");
 
   useEffect(() => {
     const wsVaultAbi = chainId === ARBITRUM ? VaultV2.abi : VaultV2b.abi;
-    const wsProvider = getWsProvider(active, chainId);
     if (!wsProvider) {
       return;
     }
@@ -433,7 +485,7 @@ function FullApp() {
       wsPositionRouter.off("CancelIncreasePosition", onCancelIncreasePosition);
       wsPositionRouter.off("CancelDecreasePosition", onCancelDecreasePosition);
     };
-  }, [active, chainId, vaultAddress, positionRouterAddress]);
+  }, [chainId, vaultAddress, positionRouterAddress, wsProvider]);
 
   return (
     <>
@@ -445,6 +497,7 @@ function FullApp() {
             setWalletModalVisible={setWalletModalVisible}
             redirectPopupTimestamp={redirectPopupTimestamp}
             showRedirectModal={showRedirectModal}
+            tradePageVersion={tradePageVersion}
           />
           {isHome && (
             <Switch>
@@ -473,32 +526,72 @@ function FullApp() {
                   savedShowPnlAfterFees={savedShowPnlAfterFees}
                   savedIsPnlInLeverage={savedIsPnlInLeverage}
                   setSavedIsPnlInLeverage={setSavedIsPnlInLeverage}
-                  savedSlippageAmount={savedSlippageAmount}
+                  savedSlippageAmount={settings.savedAllowedSlippage}
                   setPendingTxns={setPendingTxns}
                   pendingTxns={pendingTxns}
                   savedShouldShowPositionLines={savedShouldShowPositionLines}
                   setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
                   connectWallet={connectWallet}
                   savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
+                  tradePageVersion={tradePageVersion}
+                  setTradePageVersion={setTradePageVersion}
                   openSettings={openSettings}
                 />
               </Route>
               <Route exact path="/dashboard">
                 <Dashboard />
               </Route>
+              <Route exact path="/stats">
+                <Stats />
+              </Route>
+              <Route exact path="/stats/v2">
+                {getIsSyntheticsSupported(chainId) ? <SyntheticsStats /> : <SyntheticsFallbackPage />}
+              </Route>
               <Route exact path="/earn">
                 <Stake setPendingTxns={setPendingTxns} connectWallet={connectWallet} />
               </Route>
               <Route exact path="/buy">
                 <Buy
-                  savedSlippageAmount={savedSlippageAmount}
+                  savedSlippageAmount={settings.savedAllowedSlippage}
                   setPendingTxns={setPendingTxns}
                   connectWallet={connectWallet}
                 />
               </Route>
+              <Route exact path="/pools">
+                {getIsSyntheticsSupported(chainId) ? (
+                  <MarketPoolsPage
+                    shouldDisableValidation={savedShouldDisableValidationForTesting}
+                    connectWallet={connectWallet}
+                    setPendingTxns={setPendingTxns}
+                  />
+                ) : (
+                  <SyntheticsFallbackPage />
+                )}
+              </Route>
+
+              <Route exact path="/v2">
+                {getIsSyntheticsSupported(chainId) ? (
+                  <SyntheticsPage
+                    onConnectWallet={connectWallet}
+                    savedIsPnlInLeverage={savedIsPnlInLeverage}
+                    shouldDisableValidation={savedShouldDisableValidationForTesting}
+                    savedShouldShowPositionLines={savedShouldShowPositionLines}
+                    setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
+                    setPendingTxns={setPendingTxns}
+                    showPnlAfterFees={showPnlAfterFees}
+                    savedShowPnlAfterFees={savedShowPnlAfterFees}
+                    tradePageVersion={tradePageVersion}
+                    setTradePageVersion={setTradePageVersion}
+                    savedSlippageAmount={settings.savedAllowedSlippage}
+                    openSettings={openSettings}
+                  />
+                ) : (
+                  <SyntheticsFallbackPage />
+                )}
+              </Route>
               <Route exact path="/buy_glp">
                 <BuyGlp
-                  savedSlippageAmount={savedSlippageAmount}
+                  savedSlippageAmount={settings.savedAllowedSlippage}
                   setPendingTxns={setPendingTxns}
                   connectWallet={connectWallet}
                   savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
@@ -524,6 +617,18 @@ function FullApp() {
               </Route>
               <Route exact path="/claim_es_gmx">
                 <ClaimEsGmx setPendingTxns={setPendingTxns} />
+              </Route>
+              <Route exact path="/actions/v2">
+                <SyntheticsActions
+                  savedIsPnlInLeverage={savedIsPnlInLeverage}
+                  savedShowPnlAfterFees={savedShowPnlAfterFees}
+                />
+              </Route>
+              <Route exact path="/actions/v2/:account">
+                <SyntheticsActions
+                  savedIsPnlInLeverage={savedIsPnlInLeverage}
+                  savedShowPnlAfterFees={savedShowPnlAfterFees}
+                />
               </Route>
               <Route exact path="/actions">
                 <Actions />
@@ -560,7 +665,7 @@ function FullApp() {
         limit={1}
         transition={Zoom}
         position="bottom-right"
-        autoClose={7000}
+        autoClose={TOAST_AUTO_CLOSE_TIME}
         hideProgressBar={true}
         newestOnTop={false}
         closeOnClick={false}
@@ -622,6 +727,47 @@ function FullApp() {
             <div className="App-slippage-tolerance-input-percent">%</div>
           </div>
         </div>
+        {settings.shouldUseExecutionFeeBuffer && (
+          <div className="App-settings-row">
+            <div>
+              <Tooltip
+                handle={<Trans>Max Execution Fee Buffer</Trans>}
+                renderContent={() => (
+                  <div>
+                    <Trans>
+                      The Max Execution Fee is set to a higher value to handle potential increases in gas price during
+                      order execution. Any excess execution fee will be refunded to your account when the order is
+                      executed. Only applicable to GMX V2.
+                    </Trans>
+                    <br />
+                    <br />
+                    <ExternalLink href="https://docs.gmx.io/docs/trading/v2#execution-fee">Read more</ExternalLink>
+                  </div>
+                )}
+              />
+            </div>
+            <div className="App-slippage-tolerance-input-container">
+              <input
+                type="number"
+                className="App-slippage-tolerance-input"
+                min="0"
+                value={executionFeeBufferBps}
+                onChange={(e) => setExecutionFeeBufferBps(e.target.value)}
+              />
+              <div className="App-slippage-tolerance-input-percent">%</div>
+            </div>
+            {parseFloat(executionFeeBufferBps) <
+              (EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps / BASIS_POINTS_DIVISOR) * 100 && (
+              <div className="warning">
+                <Trans>
+                  Max Execution Fee buffer below{" "}
+                  {(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps / BASIS_POINTS_DIVISOR) * 100}% may result in
+                  failed orders.
+                </Trans>
+              </div>
+            )}
+          </div>
+        )}
         <div className="Exchange-settings-row">
           <Checkbox isChecked={showPnlAfterFees} setIsChecked={setShowPnlAfterFees}>
             <Trans>Display PnL after fees</Trans>
@@ -647,6 +793,14 @@ function FullApp() {
           </div>
         )}
 
+        {isDevelopment() && (
+          <div className="Exchange-settings-row">
+            <Checkbox isChecked={showDebugValues} setIsChecked={setShowDebugValues}>
+              <Trans>Show debug values</Trans>
+            </Checkbox>
+          </div>
+        )}
+
         <Button variant="primary-action" className="w-full mt-md" onClick={saveAndCloseSettings}>
           <Trans>Save</Trans>
         </Button>
@@ -664,13 +818,17 @@ function App() {
   return (
     <SWRConfig value={{ refreshInterval: 5000 }}>
       <Web3ReactProvider getLibrary={getLibrary}>
-        <SEO>
-          <Router>
-            <I18nProvider i18n={i18n}>
-              <FullApp />
-            </I18nProvider>
-          </Router>
-        </SEO>
+        <SettingsContextProvider>
+          <SyntheticsEventsProvider>
+            <SEO>
+              <Router>
+                <I18nProvider i18n={i18n}>
+                  <FullApp />
+                </I18nProvider>
+              </Router>
+            </SEO>
+          </SyntheticsEventsProvider>
+        </SettingsContextProvider>
       </Web3ReactProvider>
     </SWRConfig>
   );

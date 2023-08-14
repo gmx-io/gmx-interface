@@ -73,9 +73,7 @@ export const defaultChartProps = {
   disabled_features: disabledFeatures,
   custom_css_url: "/tradingview-chart.css",
   loading_screen: { backgroundColor: "#16182e", foregroundColor: "#2962ff" },
-  favorites: {
-    intervals: ["5", "15", "60", "240", "1D"],
-  },
+  favorites: {},
   custom_formatters: {
     timeFormatter: {
       format: (date) => formatTVTime(date),

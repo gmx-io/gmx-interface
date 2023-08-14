@@ -1,57 +1,58 @@
-import React, { useEffect, useState, useMemo, useCallback, forwardRef, useImperativeHandle } from "react";
-import { Trans, t, Plural } from "@lingui/macro";
+import { Plural, Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
-import useSWR from "swr";
-import { ethers } from "ethers";
 import cx from "classnames";
+import { ethers } from "ethers";
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
+import useSWR from "swr";
 
-import {
-  BASIS_POINTS_DIVISOR,
-  MARGIN_FEE_BASIS_POINTS,
-  SWAP,
-  LONG,
-  SHORT,
-  USD_DECIMALS,
-  getPositionKey,
-  getPositionContractKey,
-  getDeltaStr,
-  useAccountOrders,
-  getPageTitle,
-  getFundingFee,
-} from "lib/legacy";
 import { getConstant, getExplorerUrl } from "config/chains";
-import { approvePlugin, useExecutionFee, cancelMultipleOrders } from "domain/legacy";
+import { approvePlugin, cancelMultipleOrders, useExecutionFee } from "domain/legacy";
+import {
+  LONG,
+  MARGIN_FEE_BASIS_POINTS,
+  SHORT,
+  SWAP,
+  USD_DECIMALS,
+  getDeltaStr,
+  getFundingFee,
+  getPageTitle,
+  getPositionContractKey,
+  getPositionKey,
+  useAccountOrders,
+} from "lib/legacy";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 
 import { getContract } from "config/contracts";
 
 import Reader from "abis/ReaderV2.json";
-import VaultV2 from "abis/VaultV2.json";
 import Router from "abis/Router.json";
 import Token from "abis/Token.json";
+import VaultV2 from "abis/VaultV2.json";
 
 import Checkbox from "components/Checkbox/Checkbox";
-import SwapBox from "components/Exchange/SwapBox";
-import ExchangeTVChart, { getChartToken } from "components/Exchange/ExchangeTVChart";
-import PositionsList from "components/Exchange/PositionsList";
-import OrdersList from "components/Exchange/OrdersList";
-import TradeHistory from "components/Exchange/TradeHistory";
-import ExchangeWalletTokens from "components/Exchange/ExchangeWalletTokens";
 import ExchangeBanner from "components/Exchange/ExchangeBanner";
-import Tab from "components/Tab/Tab";
+import ExchangeTVChart, { getChartToken } from "components/Exchange/ExchangeTVChart";
+import ExchangeWalletTokens from "components/Exchange/ExchangeWalletTokens";
+import OrdersList from "components/Exchange/OrdersList";
+import PositionsList from "components/Exchange/PositionsList";
+import SwapBox from "components/Exchange/SwapBox";
+import TradeHistory from "components/Exchange/TradeHistory";
 import Footer from "components/Footer/Footer";
+import Tab from "components/Tab/Tab";
 
-import "./Exchange.css";
-import { contractFetcher } from "lib/contracts";
-import { useInfoTokens } from "domain/tokens";
-import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
-import { helperToast } from "lib/helperToast";
-import { getTokenInfo } from "domain/tokens/utils";
-import { bigNumberify, formatAmount } from "lib/numbers";
-import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "config/tokens";
-import { useChainId } from "lib/chains";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import UsefulLinks from "components/Exchange/UsefulLinks";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { getPriceDecimals, getToken, getTokenBySymbol, getV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
+import { useInfoTokens } from "domain/tokens";
+import { getTokenInfo } from "domain/tokens/utils";
+import { useChainId } from "lib/chains";
+import { contractFetcher } from "lib/contracts";
+import { helperToast } from "lib/helperToast";
+import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
+import { bigNumberify, formatAmount } from "lib/numbers";
 import { getLeverage, getLeverageStr } from "lib/positions/getLeverage";
+import "./Exchange.css";
+import { getIsV1Supported } from "config/features";
 const { AddressZero } = ethers.constants;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;
@@ -353,6 +354,8 @@ export const Exchange = forwardRef((props, ref) => {
     setSavedShouldShowPositionLines,
     connectWallet,
     savedShouldDisableValidationForTesting,
+    tradePageVersion,
+    setTradePageVersion,
     openSettings,
   } = props;
   const [showBanner, setShowBanner] = useLocalStorageSerializeKey("showBanner", true);
@@ -391,7 +394,7 @@ export const Exchange = forwardRef((props, ref) => {
   const readerAddress = getContract(chainId, "Reader");
   const usdgAddress = getContract(chainId, "USDG");
 
-  const whitelistedTokens = getWhitelistedTokens(chainId);
+  const whitelistedTokens = getWhitelistedV1Tokens(chainId);
   const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
 
   const positionQuery = getPositionQuery(whitelistedTokens, nativeTokenAddress);
@@ -461,7 +464,7 @@ export const Exchange = forwardRef((props, ref) => {
   const [isConfirming, setIsConfirming] = useState(false);
   const [isPendingConfirmation, setIsPendingConfirmation] = useState(false);
 
-  const tokens = getTokens(chainId);
+  const tokens = getV1Tokens(chainId);
 
   const tokenAddresses = tokens.map((token) => token.address);
   const { data: tokenBalances } = useSWR(active && [active, chainId, readerAddress, "getTokenBalances", account], {
@@ -524,7 +527,13 @@ export const Exchange = forwardRef((props, ref) => {
     const fromToken = getTokenInfo(infoTokens, fromTokenAddress);
     const toToken = getTokenInfo(infoTokens, toTokenAddress);
     let selectedToken = getChartToken(swapOption, fromToken, toToken, chainId);
-    let currentTokenPriceStr = formatAmount(selectedToken.maxPrice, USD_DECIMALS, 2, true);
+    const selectedTokenPriceDecimal = getPriceDecimals(chainId, selectedToken?.symbol);
+
+    if (!selectedToken) {
+      return;
+    }
+
+    let currentTokenPriceStr = formatAmount(selectedToken.maxPrice, USD_DECIMALS, selectedTokenPriceDecimal, true);
     let title = getPageTitle(
       currentTokenPriceStr + ` | ${selectedToken.symbol}${selectedToken.isStable ? "" : "-USD"}`
     );
@@ -921,6 +930,8 @@ export const Exchange = forwardRef((props, ref) => {
         savedShouldShowPositionLines={savedShouldShowPositionLines}
         orders={orders}
         setToTokenAddress={setToTokenAddress}
+        tradePageVersion={tradePageVersion}
+        setTradePageVersion={setTradePageVersion}
       />
     );
   };
@@ -934,53 +945,56 @@ export const Exchange = forwardRef((props, ref) => {
           <div className="Exchange-lists large">{getListSection()}</div>
         </div>
         <div className="Exchange-right">
-          <SwapBox
-            pendingPositions={pendingPositions}
-            setPendingPositions={setPendingPositions}
-            setIsWaitingForPluginApproval={setIsWaitingForPluginApproval}
-            setIsWaitingForPositionRouterApproval={setIsWaitingForPositionRouterApproval}
-            approveOrderBook={approveOrderBook}
-            approvePositionRouter={approvePositionRouter}
-            isPluginApproving={isPluginApproving}
-            isPositionRouterApproving={isPositionRouterApproving}
-            isWaitingForPluginApproval={isWaitingForPluginApproval}
-            isWaitingForPositionRouterApproval={isWaitingForPositionRouterApproval}
-            orderBookApproved={orderBookApproved}
-            positionRouterApproved={positionRouterApproved}
-            orders={orders}
-            flagOrdersEnabled={flagOrdersEnabled}
-            chainId={chainId}
-            infoTokens={infoTokens}
-            active={active}
-            connectWallet={connectWallet}
-            library={library}
-            account={account}
-            positionsMap={positionsMap}
-            fromTokenAddress={fromTokenAddress}
-            setFromTokenAddress={setFromTokenAddress}
-            toTokenAddress={toTokenAddress}
-            setToTokenAddress={setToTokenAddress}
-            swapOption={swapOption}
-            setSwapOption={setSwapOption}
-            pendingTxns={pendingTxns}
-            setPendingTxns={setPendingTxns}
-            tokenSelection={tokenSelection}
-            setTokenSelection={setTokenSelection}
-            isConfirming={isConfirming}
-            setIsConfirming={setIsConfirming}
-            isPendingConfirmation={isPendingConfirmation}
-            setIsPendingConfirmation={setIsPendingConfirmation}
-            savedIsPnlInLeverage={savedIsPnlInLeverage}
-            setSavedIsPnlInLeverage={setSavedIsPnlInLeverage}
-            nativeTokenAddress={nativeTokenAddress}
-            savedSlippageAmount={savedSlippageAmount}
-            totalTokenWeights={totalTokenWeights}
-            usdgSupply={usdgSupply}
-            savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
-            minExecutionFee={minExecutionFee}
-            minExecutionFeeUSD={minExecutionFeeUSD}
-            minExecutionFeeErrorMessage={minExecutionFeeErrorMessage}
-          />
+          {getIsV1Supported(chainId) && (
+            <SwapBox
+              pendingPositions={pendingPositions}
+              setPendingPositions={setPendingPositions}
+              setIsWaitingForPluginApproval={setIsWaitingForPluginApproval}
+              setIsWaitingForPositionRouterApproval={setIsWaitingForPositionRouterApproval}
+              approveOrderBook={approveOrderBook}
+              approvePositionRouter={approvePositionRouter}
+              isPluginApproving={isPluginApproving}
+              isPositionRouterApproving={isPositionRouterApproving}
+              isWaitingForPluginApproval={isWaitingForPluginApproval}
+              isWaitingForPositionRouterApproval={isWaitingForPositionRouterApproval}
+              orderBookApproved={orderBookApproved}
+              positionRouterApproved={positionRouterApproved}
+              orders={orders}
+              flagOrdersEnabled={flagOrdersEnabled}
+              chainId={chainId}
+              infoTokens={infoTokens}
+              active={active}
+              connectWallet={connectWallet}
+              library={library}
+              account={account}
+              positionsMap={positionsMap}
+              fromTokenAddress={fromTokenAddress}
+              setFromTokenAddress={setFromTokenAddress}
+              toTokenAddress={toTokenAddress}
+              setToTokenAddress={setToTokenAddress}
+              swapOption={swapOption}
+              setSwapOption={setSwapOption}
+              pendingTxns={pendingTxns}
+              setPendingTxns={setPendingTxns}
+              tokenSelection={tokenSelection}
+              setTokenSelection={setTokenSelection}
+              isConfirming={isConfirming}
+              setIsConfirming={setIsConfirming}
+              isPendingConfirmation={isPendingConfirmation}
+              setIsPendingConfirmation={setIsPendingConfirmation}
+              savedIsPnlInLeverage={savedIsPnlInLeverage}
+              setSavedIsPnlInLeverage={setSavedIsPnlInLeverage}
+              nativeTokenAddress={nativeTokenAddress}
+              savedSlippageAmount={savedSlippageAmount}
+              totalTokenWeights={totalTokenWeights}
+              usdgSupply={usdgSupply}
+              savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
+              minExecutionFee={minExecutionFee}
+              minExecutionFeeUSD={minExecutionFeeUSD}
+              minExecutionFeeErrorMessage={minExecutionFeeErrorMessage}
+            />
+          )}
+
           <div className="Exchange-wallet-tokens">
             <div className="Exchange-wallet-tokens-content">
               <ExchangeWalletTokens tokens={tokens} infoTokens={infoTokens} onSelectToken={onSelectWalletToken} />

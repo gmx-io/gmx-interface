@@ -6,15 +6,22 @@ type Props = {
   href: string;
   children: React.ReactNode;
   className?: string;
+  newTab?: boolean;
 };
 
-function ExternalLink({ href, children, className }: Props) {
+function ExternalLink({ href, children, className, newTab = true }: Props) {
   const classNames = cx("link-underline", className);
-  return (
-    <a href={href} className={classNames} target="_blank" rel="noopener noreferrer">
-      {children}
-    </a>
-  );
+  const props = {
+    href,
+    className: classNames,
+    ...(newTab
+      ? {
+          target: "_blank",
+          rel: "noopener noreferrer",
+        }
+      : {}),
+  };
+  return <a {...props}>{children}</a>;
 }
 
 export default ExternalLink;

@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import { InjectedConnector } from "@web3-react/injected-connector";
 import {
   ARBITRUM,
-  ARBITRUM_TESTNET,
+  ARBITRUM_GOERLI,
   AVALANCHE,
   AVALANCHE_FUJI,
   DEFAULT_CHAIN_ID,
   getChainName,
   getRpcUrl,
-  MAINNET,
+  BCS_MAINNET,
   NETWORK_METADATA,
   SUPPORTED_CHAIN_IDS,
 } from "config/chains";
@@ -91,7 +91,7 @@ export const getWalletConnectConnector = () => {
     rpcMap: {
       [AVALANCHE]: getRpcUrl(AVALANCHE)!,
       [ARBITRUM]: getRpcUrl(ARBITRUM)!,
-      [ARBITRUM_TESTNET]: getRpcUrl(ARBITRUM_TESTNET)!,
+      [ARBITRUM_GOERLI]: getRpcUrl(ARBITRUM_GOERLI)!,
       [AVALANCHE_FUJI]: getRpcUrl(AVALANCHE_FUJI)!,
     },
     showQrModal: true,
@@ -225,7 +225,7 @@ export function useInactiveListener(suppress = false) {
 }
 
 export const addBscNetwork = async () => {
-  return addNetwork(NETWORK_METADATA[MAINNET]);
+  return addNetwork(NETWORK_METADATA[BCS_MAINNET]);
 };
 
 export const addNetwork = async (metadata: NetworkMetadata) => {

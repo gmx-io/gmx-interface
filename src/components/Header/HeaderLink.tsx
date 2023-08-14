@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { MouseEventHandler, ReactNode } from "react";
 import { NavLink } from "react-router-dom";
 import cx from "classnames";
 import { getAppBaseUrl, getHomeUrl } from "lib/legacy";
@@ -15,6 +15,7 @@ type Props = {
   shouldShowRedirectModal?: boolean;
   showRedirectModal: (to: string) => void;
   redirectPopupTimestamp: number;
+  onClick?: MouseEventHandler<HTMLDivElement | HTMLAnchorElement>;
   children?: ReactNode;
 };
 
@@ -26,6 +27,7 @@ export function HeaderLink({
   children,
   redirectPopupTimestamp,
   showRedirectModal,
+  onClick,
 }: Props) {
   const isOnHomePage = window.location.pathname === "/";
   const isHome = isHomeSite();
@@ -33,14 +35,22 @@ export function HeaderLink({
   if (isHome && !(isHomeLink && !isOnHomePage)) {
     if (shouldShowRedirectModal(redirectPopupTimestamp)) {
       return (
-        <div className={cx("a", className, { active: isHomeLink })} onClick={() => showRedirectModal(to)}>
+        <div
+          className={cx("a", className, { active: isHomeLink })}
+          onClick={(e) => {
+            if (onClick) {
+              onClick(e);
+            }
+            showRedirectModal(to);
+          }}
+        >
           {children}
         </div>
       );
     } else {
       const baseUrl = getAppBaseUrl();
       return (
-        <a className={cx("a", className, { active: isHomeLink })} href={baseUrl + to}>
+        <a className={cx("a", className, { active: isHomeLink })} href={baseUrl + to} onClick={onClick}>
           {children}
         </a>
       );
@@ -49,14 +59,14 @@ export function HeaderLink({
 
   if (isHomeLink) {
     return (
-      <a href={getHomeUrl()} className={cx(className)}>
+      <a href={getHomeUrl()} className={cx(className)} onClick={onClick}>
         {children}
       </a>
     );
   }
 
   return (
-    <NavLink activeClassName="active" className={cx(className)} exact={exact} to={to}>
+    <NavLink activeClassName="active" className={cx(className)} exact={exact} to={to} onClick={onClick}>
       {children}
     </NavLink>
   );

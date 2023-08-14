@@ -22,6 +22,10 @@
   margin-bottom: 0;
 }
 
+.Checkbox.fullRow .Checkbox-icon {
+  margin-right: 0;
+}
+
 .Checkbox.disabled .Checkbox-icon {
   color: #47509e;
 }
@@ -34,4 +38,13 @@
   display: inline-block;
   vertical-align: middle;
   font-size: var(--font-sm);
+}
+
+.Checkbox.fullRow {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  direction: rtl;
+  font-size: var(--font-sm);
+  margin-bottom: 0.465rem;
 }

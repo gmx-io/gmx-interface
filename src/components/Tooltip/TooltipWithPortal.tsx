@@ -5,7 +5,7 @@ import "./Tooltip.css";
 import { IS_TOUCH } from "config/env";
 import Portal from "../Common/Portal";
 
-const OPEN_DELAY = 100;
+const OPEN_DELAY = 0;
 const CLOSE_DELAY = 100;
 
 type Props = {
@@ -14,6 +14,7 @@ type Props = {
   position?: string;
   trigger?: string;
   className?: string;
+  portalClassName?: string;
   disableHandleStyle?: boolean;
   handleClassName?: string;
   isHandlerDisabled?: boolean;

@@ -1,21 +1,20 @@
+import { getExplorerUrl } from "config/chains";
+import { getVisibleV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
 import { BigNumber, ethers } from "ethers";
 import {
-  adjustForDecimals,
   DUST_BNB,
-  getFeeBasisPoints,
   MARKET,
   MINT_BURN_FEE_BASIS_POINTS,
   PRECISION,
   TAX_BASIS_POINTS,
-  USD_DECIMALS,
   USDG_ADDRESS,
   USDG_DECIMALS,
+  USD_DECIMALS,
+  adjustForDecimals,
+  getFeeBasisPoints,
 } from "lib/legacy";
-import { getVisibleTokens, getWhitelistedTokens } from "config/tokens";
-import { getExplorerUrl } from "config/chains";
-import { InfoTokens, Token, TokenInfo } from "./types";
 import { bigNumberify, expandDecimals } from "lib/numbers";
-
+import { InfoTokens, Token, TokenInfo, TokenPrices } from "./types";
 const { AddressZero } = ethers.constants;
 
 export function getTokenUrl(chainId: number, address: string) {
@@ -23,6 +22,26 @@ export function getTokenUrl(chainId: number, address: string) {
     return getExplorerUrl(chainId);
   }
   return getExplorerUrl(chainId) + "token/" + address;
+}
+
+export function getIsEquivalentTokens(token1: Token, token2: Token) {
+  if (token1.address === token2.address) {
+    return true;
+  }
+
+  if (token1.wrappedAddress === token2.address || token2.wrappedAddress === token1.address) {
+    return true;
+  }
+
+  return false;
+}
+
+export function getIsWrap(token1: Token, token2: Token) {
+  return token1.isNative && token2.isWrapped;
+}
+
+export function getIsUnwrap(token1: Token, token2: Token) {
+  return token1.isWrapped && token2.isNative;
 }
 
 export function getUsd(
@@ -132,7 +151,7 @@ export function getLowestFeeTokenForBuyGlp(
     return;
   }
 
-  const tokens = getVisibleTokens(chainId);
+  const tokens = getVisibleV1Tokens(chainId);
 
   const usdgAmount = toAmount.mul(glpPrice).div(PRECISION);
 
@@ -181,7 +200,7 @@ export function getLowestFeeTokenForBuyGlp(
 }
 
 export function getMostAbundantStableToken(chainId: number, infoTokens: InfoTokens) {
-  const whitelistedTokens = getWhitelistedTokens(chainId);
+  const whitelistedTokens = getWhitelistedV1Tokens(chainId);
   let availableAmount;
   let stableToken = whitelistedTokens.find((t) => t.isStable);
 
@@ -241,4 +260,8 @@ export const replaceNativeTokenAddress = (path: string[], nativeTokenAddress: st
 export function getSpread(p: { minPrice: BigNumber; maxPrice: BigNumber }): BigNumber {
   const diff = p.maxPrice.sub(p.minPrice);
   return diff.mul(PRECISION).div(p.maxPrice.add(p.minPrice).div(2));
+}
+
+export function getMidPrice(prices: TokenPrices) {
+  return prices.minPrice.add(prices.maxPrice).div(2);
 }

@@ -1,18 +1,22 @@
-import React, { useEffect, useState, useRef, useMemo } from "react";
 import cx from "classnames";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-import { USD_DECIMALS, SWAP, INCREASE } from "lib/legacy";
 import { useChartPrices } from "domain/legacy";
+import { CHART_PERIODS, INCREASE, SWAP, USD_DECIMALS } from "lib/legacy";
 
-import ChartTokenSelector from "./ChartTokenSelector";
-import { getTokenInfo } from "domain/tokens/utils";
-import { formatAmount, numberWithCommas } from "lib/numbers";
-import { getToken, getTokens } from "config/tokens";
-import TVChartContainer from "components/TVChartContainer/TVChartContainer";
 import { t } from "@lingui/macro";
-import { availableNetworksForChart } from "components/TVChartContainer/constants";
+import TVChartContainer from "components/TVChartContainer/TVChartContainer";
+import { DEFAULT_PERIOD, availableNetworksForChart } from "components/TVChartContainer/constants";
+import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
+import { getPriceDecimals, getToken, getV1Tokens } from "config/tokens";
+import { SUPPORTED_RESOLUTIONS_V1 } from "config/tradingview";
+import { getTokenInfo } from "domain/tokens/utils";
 import { TVDataProvider } from "domain/tradingview/TVDataProvider";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { formatAmount, numberWithCommas } from "lib/numbers";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
+import { useMedia } from "react-use";
+import ChartTokenSelector from "./ChartTokenSelector";
 
 const PRICE_LINE_TEXT_WIDTH = 15;
 
@@ -26,7 +30,7 @@ export function getChartToken(swapOption, fromToken, toToken, chainId) {
   }
 
   if (fromToken.isUsdg && toToken.isUsdg) {
-    return getTokens(chainId).find((t) => t.isStable);
+    return getV1Tokens(chainId).find((t) => t.isStable);
   }
   if (fromToken.isUsdg) {
     return toToken;
@@ -59,10 +63,19 @@ export default function ExchangeTVChart(props) {
     savedShouldShowPositionLines,
     orders,
     setToTokenAddress,
+    tradePageVersion,
+    setTradePageVersion,
   } = props;
+  let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
+
+  if (!period || !(period in CHART_PERIODS)) {
+    period = DEFAULT_PERIOD;
+  }
+
   const [currentSeries] = useState();
 
   const dataProvider = useRef();
+  const isSmallMobile = useMedia("(max-width: 470px)");
 
   const fromToken = getTokenInfo(infoTokens, fromTokenAddress);
   const toToken = getTokenInfo(infoTokens, toTokenAddress);
@@ -73,7 +86,9 @@ export default function ExchangeTVChart(props) {
   });
 
   useEffect(() => {
-    dataProvider.current = new TVDataProvider();
+    dataProvider.current = new TVDataProvider({
+      resolutions: SUPPORTED_RESOLUTIONS_V1,
+    });
   }, []);
 
   useEffect(() => {
@@ -99,6 +114,7 @@ export default function ExchangeTVChart(props) {
       })
       .map((order) => {
         const indexToken = getToken(chainId, order.indexToken);
+        const priceDecimal = getPriceDecimals(chainId, indexToken?.symbol);
         const longOrShortText = order.isLong ? t`Long` : t`Short`;
         const orderTypeText = order.type === INCREASE ? t`Inc.` : t`Dec.`;
         let tokenSymbol;
@@ -106,7 +122,10 @@ export default function ExchangeTVChart(props) {
           tokenSymbol = indexToken.isWrapped ? indexToken.baseSymbol : indexToken.symbol;
         }
         const title = `${orderTypeText} ${tokenSymbol} ${longOrShortText}`;
-        return { title, price: parseFloat(formatAmount(order.triggerPrice, USD_DECIMALS, 2)) };
+        return {
+          title,
+          price: parseFloat(formatAmount(order.triggerPrice, USD_DECIMALS, priceDecimal)),
+        };
       });
   }, [orders, chartToken, chainId]);
 
@@ -118,6 +137,7 @@ export default function ExchangeTVChart(props) {
       .filter((p) => p.indexToken.address === chartToken.address)
       .map((position) => {
         const longOrShortText = position.isLong ? t`Long` : t`Short`;
+        const priceDecimal = getPriceDecimals(chainId, position.indexToken.symbol);
         const liquidationPrice = getLiquidationPrice({
           size: position.size,
           collateral: position.collateral,
@@ -128,16 +148,16 @@ export default function ExchangeTVChart(props) {
 
         return {
           open: {
-            price: parseFloat(formatAmount(position.averagePrice, USD_DECIMALS, 2)),
+            price: parseFloat(formatAmount(position.averagePrice, USD_DECIMALS, priceDecimal)),
             title: t`Open ${position.indexToken.symbol} ${longOrShortText}`,
           },
           liquidation: {
-            price: parseFloat(formatAmount(liquidationPrice, USD_DECIMALS, 2)),
+            price: parseFloat(formatAmount(liquidationPrice, USD_DECIMALS, priceDecimal)),
             title: t`Liq. ${position.indexToken.symbol} ${longOrShortText}`,
           },
         };
       });
-  }, [chartToken, positions]);
+  }, [chartToken, positions, chainId]);
 
   const chartLines = useMemo(() => {
     const lines = [];
@@ -158,11 +178,11 @@ export default function ExchangeTVChart(props) {
   const ref = useRef(null);
 
   const currentAveragePrice =
-    chartToken.maxPrice && chartToken.minPrice ? chartToken.maxPrice.add(chartToken.minPrice).div(2) : null;
+    chartToken?.maxPrice && chartToken.minPrice ? chartToken.maxPrice.add(chartToken.minPrice).div(2) : null;
   const [priceData, updatePriceData] = useChartPrices(
     chainId,
-    chartToken.symbol,
-    chartToken.isStable,
+    chartToken?.symbol,
+    chartToken?.isStable,
     "1h",
     currentAveragePrice
   );
@@ -180,6 +200,7 @@ export default function ExchangeTVChart(props) {
       if (currentOrders && currentOrders.length > 0) {
         currentOrders.forEach((order) => {
           const indexToken = getToken(chainId, order.indexToken);
+          const priceDecimal = getPriceDecimals(chainId, indexToken?.symbol);
           let tokenSymbol;
           if (indexToken && indexToken.symbol) {
             tokenSymbol = indexToken.isWrapped ? indexToken.baseSymbol : indexToken.symbol;
@@ -190,16 +211,16 @@ export default function ExchangeTVChart(props) {
           const color = "#3a3e5e";
           lines.push(
             currentSeries.createPriceLine({
-              price: parseFloat(formatAmount(order.triggerPrice, USD_DECIMALS, 2)),
+              price: parseFloat(formatAmount(order.triggerPrice, USD_DECIMALS, priceDecimal)),
               color,
               title: title.padEnd(PRICE_LINE_TEXT_WIDTH, " "),
             })
           );
         });
       }
+
       if (currentPositions && currentPositions.length > 0) {
         const color = "#3a3e5e";
-
         positions.forEach((position) => {
           lines.push(
             currentSeries.createPriceLine({
@@ -296,9 +317,11 @@ export default function ExchangeTVChart(props) {
     setToTokenAddress(swapOption, token.address);
   };
 
+  const priceDecimal = getPriceDecimals(chainId, chartToken?.symbol);
+
   return (
     <div className="ExchangeChart tv" ref={ref}>
-      <div className="ExchangeChart-top App-box App-box-border">
+      <div className="TVChart-top-card ExchangeChart-top App-box App-box-border">
         <div className="ExchangeChart-top-inner">
           <div>
             <div className="ExchangeChart-title">
@@ -312,35 +335,40 @@ export default function ExchangeTVChart(props) {
               />
             </div>
           </div>
-          <div>
-            <div className="ExchangeChart-main-price">
-              {chartToken.maxPrice && formatAmount(chartToken.maxPrice, USD_DECIMALS, 2, true)}
+          {!isSmallMobile && (
+            <div>
+              <div className="ExchangeChart-main-price">
+                ${chartToken.maxPrice && formatAmount(chartToken.maxPrice, USD_DECIMALS, priceDecimal, true)}
+              </div>
+              <div className="ExchangeChart-info-label">
+                ${chartToken.minPrice && formatAmount(chartToken.minPrice, USD_DECIMALS, priceDecimal, true)}
+              </div>
             </div>
-            <div className="ExchangeChart-info-label">
-              ${chartToken.minPrice && formatAmount(chartToken.minPrice, USD_DECIMALS, 2, true)}
+          )}
+          {!isSmallMobile && (
+            <div>
+              <div className="ExchangeChart-info-label">24h Change</div>
+              <div className={cx({ positive: deltaPercentage > 0, negative: deltaPercentage < 0 })}>
+                {!deltaPercentageStr && "-"}
+                {deltaPercentageStr && deltaPercentageStr}
+              </div>
             </div>
-          </div>
-          <div>
-            <div className="ExchangeChart-info-label">24h Change</div>
-            <div className={cx({ positive: deltaPercentage > 0, negative: deltaPercentage < 0 })}>
-              {!deltaPercentageStr && "-"}
-              {deltaPercentageStr && deltaPercentageStr}
-            </div>
-          </div>
+          )}
           <div className="ExchangeChart-additional-info">
             <div className="ExchangeChart-info-label">24h High</div>
             <div>
               {!high && "-"}
-              {high && numberWithCommas(high.toFixed(2))}
+              {high && numberWithCommas(high.toFixed(priceDecimal))}
             </div>
           </div>
           <div className="ExchangeChart-additional-info">
             <div className="ExchangeChart-info-label">24h Low</div>
             <div>
               {!low && "-"}
-              {low && numberWithCommas(low.toFixed(2))}
+              {low && numberWithCommas(low.toFixed(priceDecimal))}
             </div>
           </div>
+          <VersionSwitch currentVersion={tradePageVersion} setCurrentVersion={setTradePageVersion} />
         </div>
       </div>
       <div className="ExchangeChart-bottom App-box App-box-border">
@@ -352,6 +380,10 @@ export default function ExchangeTVChart(props) {
             chainId={chainId}
             onSelectToken={onSelectToken}
             dataProvider={dataProvider.current}
+            period={period}
+            setPeriod={setPeriod}
+            chartToken={chartToken}
+            supportedResolutions={SUPPORTED_RESOLUTIONS_V1}
           />
         ) : (
           <p className="ExchangeChart-error">Sorry, chart is not supported on this network yet.</p>

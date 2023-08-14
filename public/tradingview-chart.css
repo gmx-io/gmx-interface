@@ -5,8 +5,8 @@
   --tv-color-platform-background: var(--dark-blue-bg);
   --tv-color-pane-background-secondary: var(--dark-blue-bg);
   --tv-color-toolbar-button-text-hover: #b2b5be;
-  --tv-color-toolbar-button-background-hover: #1e223de6;
-  --tv-color-toolbar-button-text-active: #2962ff;
+  --tv-color-toolbar-button-background-hover: #272942;
+  --tv-color-toolbar-button-text-active: #ffffff;
   --tv-color-toolbar-toggle-button-background-active: #3a3e5e;
   --tv-color-toolbar-toggle-button-background-active-hover: #3a3e5e;
   --tv-color-toolbar-button-background-expanded: var(--dark-blue-bg);
@@ -35,6 +35,30 @@ html.theme-dark .toggleButton-3zv4iS2j .background-3zv4iS2j:hover {
 
 html.theme-dark .menuWrap-g78rwseC {
   background-color: #20243f !important;
+}
+
+html.theme-dark .button-2Vpz_LXc.isInteractive-2Vpz_LXc.isGrouped-2Vpz_LXc {
+  height: 26px;
+  border-radius: 4px;
+  margin: 0 1px;
+}
+
+html.theme-dark .button-2Vpz_LXc.isInteractive-2Vpz_LXc.isGrouped-2Vpz_LXc .value-2y-wa9jT {
+  padding: 0 2px;
+}
+
+html.theme-dark .button-2Vpz_LXc:not(.isActive-2Vpz_LXc):hover {
+  background-color: #272942;
+}
+
+html.theme-dark .button-2Vpz_LXc.isInteractive-2Vpz_LXc.isActive-2Vpz_LXc {
+  color: #fff !important;
+  background-color: #393e5e;
+}
+
+html.theme-dark .button-2Vpz_LXc.isInteractive-2Vpz_LXc.isActive-2Vpz_LXc:hover::before {
+  color: #fff !important;
+  background-color: #393e5e;
 }
 
 html.theme-dark .item-2IihgTnv:not(.isActive-2IihgTnv) {

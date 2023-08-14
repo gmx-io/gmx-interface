@@ -1,11 +1,16 @@
+import { ReactNode } from "react";
+import cx from "classnames";
 import "./StatsTooltip.css";
+
 type Props = {
-  label: string;
-  value: number | string | string[] | number[];
+  className?: string;
+  label: string | ReactNode;
+  value: number | string | string[] | number[] | ReactNode;
   showDollar?: boolean;
+  showColon?: boolean;
 };
 
-export default function StatsTooltipRow({ label, value, showDollar = true }: Props) {
+export default function StatsTooltipRow({ label, value, className, showDollar = true }: Props) {
   function renderValue() {
     if (Array.isArray(value)) {
       return (
@@ -23,9 +28,18 @@ export default function StatsTooltipRow({ label, value, showDollar = true }: Pro
       </span>
     );
   }
+
+  function renderLabel() {
+    if (typeof label === "string") {
+      return `${label}:`;
+    }
+
+    return label;
+  }
+
   return (
-    <div className="Tooltip-row">
-      <span className="label">{label}:</span>
+    <div className={cx("Tooltip-row", className)}>
+      <span className="label">{renderLabel()}</span>
       {renderValue()}
     </div>
   );
