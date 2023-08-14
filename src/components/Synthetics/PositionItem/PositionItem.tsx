@@ -23,6 +23,7 @@ import { CHART_PERIODS } from "lib/legacy";
 import "./PositionItem.scss";
 import { useChainId } from "lib/chains";
 import { useMedia } from "react-use";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 
 export type Props = {
   position: PositionInfo;
@@ -337,7 +338,17 @@ export function PositionItem(p: Props) {
           {/* title */}
           <div className="Exchange-list-title">
             <Tooltip
-              handle={p.position.marketInfo.indexToken.symbol}
+              handle={
+                <>
+                  <TokenIcon
+                    className="PositionList-token-icon"
+                    symbol={p.position.marketInfo.indexToken.symbol}
+                    displaySize={20}
+                    importSize={24}
+                  />
+                  {p.position.marketInfo.indexToken.symbol}
+                </>
+              }
               position="left-bottom"
               handleClassName="plain"
               renderContent={() => (
@@ -466,7 +477,13 @@ export function PositionItem(p: Props) {
       <div className="App-card">
         <div>
           <div className={cx("App-card-title Position-card-title", { "Position-active-card": isCurrentMarket })}>
-            <span className="Exchange-list-title" onClick={() => p.onSelectPositionClick?.()}>
+            <span className="Exchange-list-title inline-flex" onClick={() => p.onSelectPositionClick?.()}>
+              <TokenIcon
+                className="PositionList-token-icon"
+                symbol={p.position.marketInfo.indexToken?.symbol}
+                displaySize={20}
+                importSize={24}
+              />
               {p.position.marketInfo.indexToken?.symbol}
             </span>
             <div>
