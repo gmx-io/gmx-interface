@@ -70,6 +70,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import Tab from "components/Tab/Tab";
 import { useMedia } from "react-use";
 import { useHasOutdatedUi } from "domain/legacy";
+import { POSITION_CLOSE_SUGGESTION_LISTS } from "config/ui";
 
 export type Props = {
   position?: PositionInfo;
@@ -112,6 +113,7 @@ export function PositionSeller(p: Props) {
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
   const userReferralInfo = useUserReferralInfo(library, chainId, account);
   const { data: hasOutdatedUi } = useHasOutdatedUi();
+  const [isPercentagePanelVisible, setIsPercentagePanelVisible] = useState(false);
 
   const isMobile = useMedia("(max-width: 1100px)");
   const isVisible = Boolean(position);
@@ -433,22 +435,41 @@ export function PositionSeller(p: Props) {
 
         {!isTrigger && position && (
           <>
-            <BuyInputSection
-              topLeftLabel={t`Close`}
-              topRightLabel={t`Max`}
-              topRightValue={formatUsd(maxCloseSize)}
-              inputValue={closeUsdInputValue}
-              onInputValueChange={(e) => setCloseUsdInputValue(e.target.value)}
-              showMaxButton={maxCloseSize?.gt(0) && !closeSizeUsd?.eq(maxCloseSize)}
-              onClickMax={() => setCloseUsdInputValue(formatAmountFree(maxCloseSize, USD_DECIMALS))}
-            >
-              USD
-            </BuyInputSection>
+            <div className="relative">
+              <BuyInputSection
+                topLeftLabel={t`Close`}
+                topRightLabel={t`Max`}
+                topRightValue={formatUsd(maxCloseSize)}
+                inputValue={closeUsdInputValue}
+                onInputValueChange={(e) => setCloseUsdInputValue(e.target.value)}
+                showMaxButton={maxCloseSize?.gt(0) && !closeSizeUsd?.eq(maxCloseSize)}
+                onClickMax={() => setCloseUsdInputValue(formatAmountFree(maxCloseSize, USD_DECIMALS))}
+                onFocus={() => setIsPercentagePanelVisible(true)}
+                onBlur={() => setIsPercentagePanelVisible(false)}
+              >
+                USD
+              </BuyInputSection>
+              {isPercentagePanelVisible && (
+                <ul className="Percentage-list">
+                  {POSITION_CLOSE_SUGGESTION_LISTS.map((percentage) => (
+                    <li
+                      key={percentage}
+                      onMouseDown={() => {
+                        setCloseUsdInputValue(formatAmountFree(maxCloseSize.mul(percentage).div(100), USD_DECIMALS, 2));
+                        setIsPercentagePanelVisible(false);
+                      }}
+                    >
+                      {percentage}%
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
 
             <div className="PositionEditor-info-box">
               <div className="PositionEditor-keep-leverage-settings">
                 <ToggleSwitch isChecked={keepLeverage ?? false} setIsChecked={setKeepLeverage}>
-                  <span className="muted font-sm">
+                  <span className="text-gray font-sm">
                     <Trans>Keep leverage at {position?.leverage ? formatLeverage(position.leverage) : "..."}</Trans>
                   </span>
                 </ToggleSwitch>
@@ -645,7 +666,7 @@ export function PositionSeller(p: Props) {
             {isHighPriceImpact && (
               <div className="PositionSeller-price-impact-warning">
                 <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
-                  <span className="muted font-sm">
+                  <span className="text-gray font-sm">
                     <Trans>Acknowledge high Price Impact</Trans>
                   </span>
                 </Checkbox>

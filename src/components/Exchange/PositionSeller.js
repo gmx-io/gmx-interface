@@ -13,7 +13,7 @@ import { ARBITRUM, IS_NETWORK_DISABLED, getChainName, getConstant } from "config
 import { getContract } from "config/contracts";
 import { CLOSE_POSITION_RECEIVE_TOKEN_KEY, SLIPPAGE_BPS_KEY } from "config/localStorage";
 import { getPriceDecimals, getV1Tokens, getWrappedToken } from "config/tokens";
-import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
+import { POSITION_CLOSE_SUGGESTION_LISTS, TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { createDecreaseOrder, useHasOutdatedUi } from "domain/legacy";
 import { getTokenAmountFromUsd } from "domain/tokens";
 import { getTokenInfo, getUsd } from "domain/tokens/utils";
@@ -59,8 +59,6 @@ import FeesTooltip from "./FeesTooltip";
 import "./PositionSeller.css";
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-
-const PERCENTAGE_SUGGESTION_LISTS = [10, 25, 50, 75];
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -1042,7 +1040,7 @@ export default function PositionSeller(props) {
               onChange={onOrderOptionChange}
             />
           )}
-          <div>
+          <div className="relative">
             <div className="Exchange-swap-section">
               <div className="Exchange-swap-section-top">
                 <div className="muted">
@@ -1089,7 +1087,7 @@ export default function PositionSeller(props) {
             </div>
             {isPercentagePanelVisible && (
               <ul className="Percentage-list">
-                {PERCENTAGE_SUGGESTION_LISTS.map((percentage) => (
+                {POSITION_CLOSE_SUGGESTION_LISTS.map((percentage) => (
                   <li
                     key={percentage}
                     onMouseDown={() => {
@@ -1142,13 +1140,13 @@ export default function PositionSeller(props) {
             {hasPendingProfit && orderOption !== STOP && (
               <div className="PositionEditor-accept-profit-warning">
                 <Checkbox isChecked={isProfitWarningAccepted} setIsChecked={setIsProfitWarningAccepted}>
-                  <span className="muted">Forfeit profit</span>
+                  <span className="text-gray">Forfeit profit</span>
                 </Checkbox>
               </div>
             )}
             <div className="PositionEditor-keep-leverage-settings">
               <ToggleSwitch isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
-                <span className="muted font-sm">
+                <span className="text-gray font-sm">
                   <Trans>Keep leverage at {formatAmount(position.leverage, 4, 2)}x</Trans>
                 </span>
               </ToggleSwitch>
