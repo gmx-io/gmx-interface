@@ -33,7 +33,8 @@ export function GmStatusNotification({
   tokensData,
 }: Props) {
   const { chainId } = useChainId();
-  const { depositStatuses, withdrawalStatuses } = useSyntheticsEvents();
+  const { depositStatuses, withdrawalStatuses, setDepositStatusViewed, setWithdrawalStatusViewed } =
+    useSyntheticsEvents();
 
   const isDeposit = Boolean(pendingDepositData);
 
@@ -190,11 +191,12 @@ export function GmStatusNotification({
         }
 
         const matchedStatusKey = Object.values(depositStatuses).find(
-          (status) => status.createdAt > toastTimestamp && getPendingDepositKey(status.data) === pendingDepositKey
+          (status) => !status.isViewed && getPendingDepositKey(status.data) === pendingDepositKey
         )?.key;
 
         if (matchedStatusKey) {
           setDepositStatusKey(matchedStatusKey);
+          setDepositStatusViewed(matchedStatusKey);
         }
       } else {
         if (withdrawalStatusKey) {
@@ -202,11 +204,12 @@ export function GmStatusNotification({
         }
 
         const matchedStatusKey = Object.values(withdrawalStatuses).find(
-          (status) => status.createdAt > toastTimestamp && getPendingWithdrawalKey(status.data) === pendingWithdrawalKey
+          (status) => !status.isViewed && getPendingWithdrawalKey(status.data) === pendingWithdrawalKey
         )?.key;
 
         if (matchedStatusKey) {
           setWithdrawalStatusKey(matchedStatusKey);
+          setWithdrawalStatusViewed(matchedStatusKey);
         }
       }
     },
@@ -216,6 +219,8 @@ export function GmStatusNotification({
       isDeposit,
       pendingDepositKey,
       pendingWithdrawalKey,
+      setDepositStatusViewed,
+      setWithdrawalStatusViewed,
       toastTimestamp,
       withdrawalStatusKey,
       withdrawalStatuses,
