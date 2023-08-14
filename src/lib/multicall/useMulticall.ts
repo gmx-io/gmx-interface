@@ -18,40 +18,58 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
   name: string,
   params: {
     key: CacheKey | SkipKey;
-    refreshInterval?: number;
+    refreshInterval?: number | null;
     request: TConfig | ((chainId: number, key: CacheKey) => TConfig);
     parseResponse?: (result: MulticallResult<TConfig>, chainId: number, key: CacheKey) => TResult;
   }
 ) {
   const { library } = useWeb3React();
 
-  const swrFullKey = Array.isArray(params.key) && chainId && name ? [chainId, name, ...params.key] : null;
+  let swrFullKey = Array.isArray(params.key) && chainId && name ? [chainId, name, ...params.key] : null;
 
   const swrOpts: any = {};
 
   // SWR resets global options if pass undefined explicitly
-  if (params.refreshInterval) {
+  if (params.refreshInterval !== undefined) {
     swrOpts.refreshInterval = params.refreshInterval;
   }
 
-  const swrResult = useSWR<TResult | undefined>(swrFullKey, {
+  const { data } = useSWR<TResult | undefined>(swrFullKey, {
     ...swrOpts,
     fetcher: async () => {
-      // prettier-ignore
-      const request = typeof params.request === "function" 
-        ? params.request(chainId, params.key as CacheKey) 
-        : params.request;
+      try {
+        // prettier-ignore
+        const request = typeof params.request === "function" 
+            ? params.request(chainId, params.key as CacheKey) 
+            : params.request;
 
-      const response = await executeMulticall(chainId, library, request);
+        if (Object.keys(request).length === 0) {
+          throw new Error(`Multicall request is empty`);
+        }
 
-      // prettier-ignore
-      const result = typeof params.parseResponse === "function" 
-            ? params.parseResponse(response, chainId, params.key as CacheKey) 
+        const response = await executeMulticall(chainId, library, request);
+
+        if (!response) {
+          throw new Error(`Multicall response is empty`);
+        }
+
+        // prettier-ignore
+        const result = typeof params.parseResponse === "function"
+            ? params.parseResponse(response, chainId, params.key as CacheKey)
             : response;
 
-      return result as TResult;
+        return result as TResult;
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error(`Multicall request failed: ${name}`, e);
+
+        throw e;
+      }
     },
   });
 
-  return swrResult;
+  return {
+    data,
+    isLoading: Boolean(swrFullKey) && !data,
+  };
 }

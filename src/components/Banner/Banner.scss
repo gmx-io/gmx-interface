@@ -1,0 +1,43 @@
+.Banner-wrapper {
+  background: linear-gradient(270deg, rgba(49, 54, 85, 0.9) 0%, rgba(37, 40, 65, 0.9) 100%);
+  border-radius: var(--border-radius-sm);
+  padding: 1rem 1.6rem;
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  font-size: 1.6rem;
+
+  .Banner-text {
+    margin: 0;
+    position: relative;
+  }
+  .Banner-text-sparkle {
+    position: absolute;
+    height: 10px;
+    top: -5px;
+  }
+  .Banner-action {
+    background: rgba(180, 187, 255, 0.1);
+    padding: 0.65rem 1.5rem;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+
+    &:hover {
+      background: rgba(80, 87, 126, 0.6);
+      color: white;
+    }
+  }
+  .Banner-link {
+    text-decoration: none;
+  }
+}
+
+@media (max-width: 400px) {
+  .Banner-wrapper {
+    padding: 0.75rem;
+    font-size: 1.4rem;
+  }
+  .Banner-wrapper .Banner-action {
+    padding: 0.5rem 1rem;
+  }
+}

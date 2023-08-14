@@ -23,7 +23,7 @@ import { contractFetcher } from "lib/contracts";
 import { useInfoTokens } from "domain/tokens";
 import { getTokenInfo } from "domain/tokens/utils";
 import { formatAmount } from "lib/numbers";
-import { getToken, getTokens, getWhitelistedTokens } from "config/tokens";
+import { getToken, getV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
 import { useChainId } from "lib/chains";
 
 const USD_DECIMALS = 30;
@@ -48,8 +48,8 @@ export default function Actions({ savedIsPnlInLeverage, savedShowPnlAfterFees })
     fetcher: (...args) => fetch(...args).then((res) => res.json()),
   });
 
-  const tokens = getTokens(chainId);
-  const whitelistedTokens = getWhitelistedTokens(chainId);
+  const tokens = getV1Tokens(chainId);
+  const whitelistedTokens = getWhitelistedV1Tokens(chainId);
   const positionQuery = getPositionQuery(whitelistedTokens, nativeTokenAddress);
 
   const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);

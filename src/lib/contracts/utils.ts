@@ -1,5 +1,5 @@
 import { Provider } from "@ethersproject/providers";
-import { Contract } from "ethers";
+import { BigNumber, Contract } from "ethers";
 import { GAS_PRICE_ADJUSTMENT_MAP, MAX_GAS_PRICE_MAP } from "config/chains";
 import { bigNumberify } from "../numbers";
 
@@ -29,7 +29,7 @@ export async function setGasPrice(txnOpts: any, provider: Provider, chainId: num
   return;
 }
 
-export async function getGasLimit(contract: Contract, method, params = [], value) {
+export async function getGasLimit(contract: Contract, method, params: any[] = [], value?: BigNumber | number) {
   const defaultValue = bigNumberify(0);
 
   if (!value) {

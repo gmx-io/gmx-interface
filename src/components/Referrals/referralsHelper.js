@@ -5,7 +5,7 @@ import {
   getTwitterIntentURL,
   REFERRAL_CODE_QUERY_PARAM,
 } from "lib/legacy";
-import { encodeReferralCode, getReferralCodeOwner } from "domain/referrals";
+import { getReferralCodeOwner, encodeReferralCode } from "domain/referrals";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { bigNumberify, formatAmount } from "lib/numbers";
 import { t } from "@lingui/macro";
@@ -102,6 +102,16 @@ export const getSampleReferrarStat = (code = "", ownerOnOtherNetwork = "", accou
     trades: 0,
     volume: bigNumberify(0),
     time: Date.now(),
+    v1Data: {
+      volume: bigNumberify(0),
+      totalRebateUsd: bigNumberify(0),
+      discountUsd: bigNumberify(0),
+    },
+    v2Data: {
+      volume: bigNumberify(0),
+      totalRebateUsd: bigNumberify(0),
+      discountUsd: bigNumberify(0),
+    },
     ownerOnOtherChain: {
       code: encodeReferralCode(code),
       codeString: code,

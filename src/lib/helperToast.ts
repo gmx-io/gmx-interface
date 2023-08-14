@@ -9,4 +9,8 @@ export const helperToast = {
     toast.dismiss();
     toast.error(content, opts);
   },
+  info: (content: ToastContent, opts?: ToastOptions) => {
+    toast.dismiss();
+    toast(content, opts);
+  },
 };

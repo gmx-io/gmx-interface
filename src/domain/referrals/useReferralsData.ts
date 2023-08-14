@@ -1,9 +1,10 @@
 import { ethers } from "ethers";
 import { bigNumberify } from "lib/numbers";
 import { useEffect, useState } from "react";
-import { decodeReferralCode, getGraphClient, useUserCodesOnAllChain } from ".";
+import { decodeReferralCode, useUserCodesOnAllChain } from ".";
 import { gql } from "@apollo/client";
 import { SUPPORTED_CHAIN_IDS } from "config/chains";
+import { getReferralsGraphClient } from "lib/subgraph";
 const DISTRIBUTION_TYPE_REBATES = "1";
 const DISTRIBUTION_TYPE_DISCOUNT = "2";
 
@@ -76,9 +77,9 @@ export default function useReferralsData(account) {
     setLoading(true);
 
     async function getChainReferralData(chainId: number) {
-      const graphClient = getGraphClient(chainId);
+      const graphClient = getReferralsGraphClient(chainId);
       if (!graphClient) return null;
-      return getGraphClient(chainId)
+      return getReferralsGraphClient(chainId)
         .query({
           query,
           variables: {
