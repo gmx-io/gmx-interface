@@ -21,12 +21,11 @@ export function useHasPageLostFocus(lostFocusTimeout: number, whiteListedPages?:
         setHasLostFocus(true);
       }, lostFocusTimeout);
     } else {
-      if (hasLostFocus) {
-        setHasLostFocus(false);
-      }
-
       if (timerId.current) {
         clearTimeout(timerId.current);
+      }
+      if (hasLostFocus) {
+        setHasLostFocus(false);
       }
     }
 
