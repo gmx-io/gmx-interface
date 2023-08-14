@@ -609,7 +609,7 @@ msgstr "Buy {nativeTokenSymbol}"
 msgid "Buy {swapTokenSymbol} on 1inch"
 msgstr "Buy {swapTokenSymbol} on 1inch"
 
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Buying GM ({indexName}) with {tokensText}"
 msgstr "Buying GM ({indexName}) with {tokensText}"
 
@@ -3753,7 +3753,7 @@ msgstr "Sell request sent"
 msgid "Sell submitted!"
 msgstr "Sell submitted!"
 
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Selling GM ({indexName})"
 msgstr "Selling GM ({indexName})"
 

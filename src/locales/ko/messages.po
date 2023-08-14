@@ -609,7 +609,7 @@ msgstr ""
 msgid "Buy {swapTokenSymbol} on 1inch"
 msgstr "{swapTokenSymbol}을 1inch에서 구매하기"
 
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Buying GM ({indexName}) with {tokensText}"
 msgstr ""
 
@@ -3750,7 +3750,7 @@ msgstr ""
 msgid "Sell submitted!"
 msgstr "판매 제출 완료!"
 
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Selling GM ({indexName})"
 msgstr ""
 
