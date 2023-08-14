@@ -1249,7 +1249,8 @@ msgstr "Decentralized<0/>Perpetual Exchange"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
 msgstr "Decrease"
@@ -2017,7 +2018,8 @@ msgstr "Incorrect network"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase"
 msgstr "Increase"
@@ -2299,11 +2301,11 @@ msgstr "Leverage slider"
 msgid "Limit"
 msgstr "Limit"
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Decrease"
 msgstr "Limit Decrease"
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Increase"
 msgstr "Limit Increase"
 
@@ -2323,7 +2325,7 @@ msgid "Limit Price"
 msgstr "Limit Price"
 
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Swap"
 msgstr "Limit Swap"
 
@@ -2464,7 +2466,8 @@ msgstr "Loading..."
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.tsx
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
@@ -2590,15 +2593,15 @@ msgstr "Market"
 msgid "Market Cap"
 msgstr "Market Cap"
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Market Decrease"
 msgstr "Market Decrease"
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Market Increase"
 msgstr "Market Increase"
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Market Swap"
 msgstr "Market Swap"
 
@@ -3855,7 +3858,8 @@ msgstr "Share Position"
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.tsx
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
@@ -4033,7 +4037,7 @@ msgstr "Staking..."
 msgid "Stats"
 msgstr "Stats"
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Stop Loss Decrease"
 msgstr "Stop Loss Decrease"
 
@@ -4166,7 +4170,7 @@ msgstr "Swap {0} {1} for {2} {3}"
 msgid "Swap {0} {1} for{2} USDG"
 msgstr "Swap {0} {1} for{2} USDG"
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Swap {fromTokenText} for {toTokenText}"
 msgstr "Swap {fromTokenText} for {toTokenText}"
 
@@ -5526,7 +5530,7 @@ msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger ord
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
 msgstr "{increaseOrDecreaseText} {tokenText} by {sizeText}"
 

@@ -275,7 +275,7 @@ export function OrderItem(p: Props) {
           </td>
         )}
         <td className="Exchange-list-item-type">{isDecreaseOrderType(p.order.orderType) ? t`Trigger` : t`Limit`}</td>
-        <td>{renderTitle()}</td>
+        <td className="Order-list-card-title">{renderTitle()}</td>
         <td>{renderTriggerPrice()}</td>
         <td>{renderMarkPrice()}</td>
         {!p.hideActions && (
@@ -304,7 +304,7 @@ export function OrderItem(p: Props) {
     return (
       <div className="App-card">
         <div>
-          <div className="App-card-title-small">{renderTitle()}</div>
+          <div className="Order-list-card-title">{renderTitle()}</div>
           <div className="App-card-divider" />
           <div className="App-card-content">
             {showDebugValues && (

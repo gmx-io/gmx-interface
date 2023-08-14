@@ -1249,7 +1249,8 @@ msgstr "Décentralisé <0/>Bourse perpétuelle"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
 msgstr "Diminuer"
@@ -2017,7 +2018,8 @@ msgstr "Réseau incorrect"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase"
 msgstr "Augmenter"
@@ -2299,11 +2301,11 @@ msgstr ""
 msgid "Limit"
 msgstr "Limite"
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Decrease"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Increase"
 msgstr ""
 
@@ -2323,7 +2325,7 @@ msgid "Limit Price"
 msgstr "Prix de limite"
 
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Swap"
 msgstr ""
 
@@ -2461,7 +2463,8 @@ msgstr "Chargement..."
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.tsx
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
@@ -2587,15 +2590,15 @@ msgstr "Bourse"
 msgid "Market Cap"
 msgstr "Capitalisation boursière"
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Market Decrease"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Market Increase"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Market Swap"
 msgstr ""
 
@@ -3852,7 +3855,8 @@ msgstr "Partager la Position"
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.tsx
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
@@ -4030,7 +4034,7 @@ msgstr "Staking en cours..."
 msgid "Stats"
 msgstr "Stats"
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Stop Loss Decrease"
 msgstr ""
 
@@ -4163,7 +4167,7 @@ msgstr ""
 msgid "Swap {0} {1} for{2} USDG"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Swap {fromTokenText} for {toTokenText}"
 msgstr ""
 
@@ -5520,7 +5524,7 @@ msgstr "{existingTriggerOrderLength, plural, one {Vous avez une commande de déc
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr "{existingTriggerOrderLength, plural, one {Vous avez une commande de déclenchement active qui pourrait être exécutée immédiatement après l'ouverture de cette position. Veuillez annuler la commande ou accepter la confirmation pour continuer.} other {Vous avez # commandes de déclenchement actives qui pourraient être exécutées immédiatement après l'ouverture de cette position. Veuillez annuler les commandes ou accepter la confirmation pour continuer.}}"
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
 msgstr ""
 

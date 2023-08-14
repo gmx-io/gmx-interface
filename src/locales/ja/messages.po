@@ -1249,7 +1249,8 @@ msgstr "分散型<0/>パーペチュアル取引所"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
 msgstr "減額"
@@ -2017,7 +2018,8 @@ msgstr "誤ったネットワーク"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase"
 msgstr "増加"
@@ -2299,11 +2301,11 @@ msgstr ""
 msgid "Limit"
 msgstr "指値"
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Decrease"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Increase"
 msgstr ""
 
@@ -2323,7 +2325,7 @@ msgid "Limit Price"
 msgstr "指値"
 
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Swap"
 msgstr ""
 
@@ -2461,7 +2463,8 @@ msgstr "ロード中"
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.tsx
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
@@ -2587,15 +2590,15 @@ msgstr "マーケット"
 msgid "Market Cap"
 msgstr "時価総額"
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Market Decrease"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Market Increase"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Market Swap"
 msgstr ""
 
@@ -3852,7 +3855,8 @@ msgstr "ポジションをシェアする"
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.tsx
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
@@ -4030,7 +4034,7 @@ msgstr "ステーク中..."
 msgid "Stats"
 msgstr "統計"
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Stop Loss Decrease"
 msgstr ""
 
@@ -4163,7 +4167,7 @@ msgstr ""
 msgid "Swap {0} {1} for{2} USDG"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Swap {fromTokenText} for {toTokenText}"
 msgstr ""
 
@@ -5520,7 +5524,7 @@ msgstr "{existingTriggerOrderLength, plural, one {このポジションに影響
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr "{existingTriggerOrderLength, plural, one {このポジションをオープンした後ただちに執行される可能性があるアクティブなトリガー注文があります。注文をキャンセルするか、または確認を押して続けてください。} other {このポジションをオープンした後ただちに執行される可能性があるアクティブなトリガー注文が#あります。注文をキャンセルするか、または確認を押して続けてください。}}"
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
 msgstr ""
 
