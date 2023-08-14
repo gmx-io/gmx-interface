@@ -77,8 +77,8 @@ export function useOracleKeeperFetcher(chainId: number) {
             throw new Error("Invalid tickers response");
           }
 
-          const brokenOracleIndex = localStorage.getItem("broken-oracle-index");
-          if (brokenOracleIndex && Number(brokenOracleIndex) === oracleKeeperIndex) {
+          const brokenOracleIndex = localStorage.getItem("broken-oracle");
+          if (brokenOracleIndex && JSON.parse(brokenOracleIndex).includes(oracleKeeperIndex)) {
             throw new Error("Invalid tickers response");
           }
 
