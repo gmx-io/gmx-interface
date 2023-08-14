@@ -5,32 +5,39 @@ import { Trans } from "@lingui/macro";
 
 type Props = {
   topLeftLabel: string;
-  topRightLabel: string;
-  inputValue: string | number;
-  showMaxButton: boolean;
-  staticInput: boolean;
-  children: ReactNode;
-  balance?: string | number;
-  tokenBalance?: string | number;
-  onClickMax?: () => void;
-  onInputValueChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+  topLeftValue?: string;
+  topRightLabel?: string;
+  topRightValue?: string;
   onClickTopRightLabel?: () => void;
+  inputValue?: number | string;
+  onInputValueChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+  onClickMax?: () => void;
+  onFocus?: () => void;
+  onBlur?: () => void;
+  showMaxButton?: boolean;
+  staticInput?: boolean;
+  children?: ReactNode;
 };
 
-export default function BuyInputSection({
-  topLeftLabel,
-  topRightLabel,
-  onClickTopRightLabel,
-  inputValue,
-  onInputValueChange,
-  onClickMax,
-  showMaxButton,
-  staticInput,
-  balance,
-  tokenBalance,
-  children,
-}: Props) {
+export default function BuyInputSection(props: Props) {
+  const {
+    topLeftLabel,
+    topLeftValue,
+    topRightLabel,
+    topRightValue,
+    onClickTopRightLabel,
+    inputValue,
+    onInputValueChange,
+    onClickMax,
+    onFocus,
+    onBlur,
+    showMaxButton,
+    staticInput,
+    children,
+  } = props;
+
   const inputRef = useRef<HTMLInputElement>(null);
+  const seperator = ":";
 
   function handleBoxClick() {
     if (inputRef.current) {
@@ -43,11 +50,15 @@ export default function BuyInputSection({
       <div className="buy-input-top-row">
         <div className="text-gray">
           {topLeftLabel}
-          {balance && `: ${balance}`}
+          {topLeftValue && `${seperator} ${topLeftValue}`}
         </div>
         <div className={cx("align-right", { clickable: onClickTopRightLabel })} onClick={onClickTopRightLabel}>
           <span className="text-gray">{topRightLabel}</span>
-          {tokenBalance && <span className="Exchange-swap-label">:&nbsp;{tokenBalance}</span>}
+          {topRightValue && (
+            <span className="Exchange-swap-label">
+              {topRightLabel ? seperator : ""}&nbsp;{topRightValue}
+            </span>
+          )}
         </div>
       </div>
       <div className="Exchange-swap-section-bottom">
@@ -62,6 +73,8 @@ export default function BuyInputSection({
               value={inputValue}
               onChange={onInputValueChange}
               ref={inputRef}
+              onFocus={onFocus}
+              onBlur={onBlur}
             />
           )}
           {staticInput && <div className="InputSection-static-input">{inputValue}</div>}

@@ -4,15 +4,8 @@ import { Trans, t } from "@lingui/macro";
 import { ethers } from "ethers";
 import { BsArrowRight } from "react-icons/bs";
 
-import {
-  USD_DECIMALS,
-  BASIS_POINTS_DIVISOR,
-  DEPOSIT_FEE,
-  DUST_BNB,
-  getLiquidationPrice,
-  MAX_ALLOWED_LEVERAGE,
-  getFundingFee,
-} from "lib/legacy";
+import { USD_DECIMALS, DEPOSIT_FEE, DUST_BNB, getFundingFee, LIQUIDATION_FEE } from "lib/legacy";
+import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE, MAX_LEVERAGE } from "config/factors";
 import { getContract } from "config/contracts";
 import Tab from "../Tab/Tab";
 import Modal from "../Modal/Modal";
@@ -31,6 +24,9 @@ import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValu
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import Button from "components/Button/Button";
 import FeesTooltip from "./FeesTooltip";
+import getLiquidationPrice from "lib/positions/getLiquidationPrice";
+import { getLeverage } from "lib/positions/getLeverage";
+import { getPriceDecimals } from "config/tokens";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 const DEPOSIT = "Deposit";
@@ -55,7 +51,6 @@ export default function PositionEditor(props) {
     pendingTxns,
     setPendingTxns,
     getUsd,
-    getLeverage,
     savedIsPnlInLeverage,
     positionRouterApproved,
     isWaitingForPositionRouterApproval,
@@ -75,6 +70,7 @@ export default function PositionEditor(props) {
   const [isSwapping, setIsSwapping] = useState(false);
   const prevIsVisible = usePrevious(isVisible);
   const longOrShortText = position?.isLong ? t`Long` : t`Short`;
+  const positionPriceDecimal = getPriceDecimals(chainId, position?.indexToken?.symbol);
 
   const routerAddress = getContract(chainId, "Router");
   const positionRouterAddress = getContract(chainId, "PositionRouter");
@@ -115,8 +111,15 @@ export default function PositionEditor(props) {
   if (position) {
     title = t`Edit ${longOrShortText} ${position.indexToken.symbol}`;
     collateralToken = position.collateralToken;
-    liquidationPrice = getLiquidationPrice(position);
     fundingFee = getFundingFee(position);
+
+    liquidationPrice = getLiquidationPrice({
+      size: position.size,
+      collateral: position.collateral,
+      averagePrice: position.averagePrice,
+      isLong: position.isLong,
+      fundingFee,
+    });
 
     if (isDeposit) {
       fromAmount = parseValue(fromValue, collateralToken.decimals);
@@ -151,13 +154,13 @@ export default function PositionEditor(props) {
         depositFeeUSD = convertedAmount.mul(DEPOSIT_FEE).div(BASIS_POINTS_DIVISOR);
       }
 
+      nextCollateral = isDeposit
+        ? position.collateralAfterFee.add(collateralDelta)
+        : position.collateralAfterFee.sub(collateralDelta);
+
       nextLeverage = getLeverage({
         size: position.size,
-        collateral: position.collateral,
-        collateralDelta,
-        increaseCollateral: isDeposit,
-        entryFundingRate: position.entryFundingRate,
-        cumulativeFundingRate: position.cumulativeFundingRate,
+        collateral: nextCollateral,
         hasProfit: position.hasProfit,
         delta: position.delta,
         includeDelta: savedIsPnlInLeverage,
@@ -165,30 +168,20 @@ export default function PositionEditor(props) {
 
       nextLeverageExcludingPnl = getLeverage({
         size: position.size,
-        collateral: position.collateral,
-        collateralDelta,
-        increaseCollateral: isDeposit,
-        entryFundingRate: position.entryFundingRate,
-        cumulativeFundingRate: position.cumulativeFundingRate,
+        collateral: nextCollateral,
         hasProfit: position.hasProfit,
         delta: position.delta,
         includeDelta: false,
       });
 
+      // nextCollateral is prev collateral + deposit amount - borrow fee - deposit fee
+      // in case of withdrawal nextCollateral is prev collateral - withdraw amount - borrow fee
       nextLiquidationPrice = getLiquidationPrice({
         isLong: position.isLong,
         size: position.size,
-        collateral: position.collateral,
+        collateral: nextCollateral,
         averagePrice: position.averagePrice,
-        entryFundingRate: position.entryFundingRate,
-        cumulativeFundingRate: position.cumulativeFundingRate,
-        collateralDelta,
-        increaseCollateral: isDeposit,
       });
-
-      nextCollateral = isDeposit
-        ? position.collateralAfterFee.add(collateralDelta)
-        : position.collateralAfterFee.sub(collateralDelta);
     }
   }
 
@@ -228,6 +221,26 @@ export default function PositionEditor(props) {
     if (nextLeverage && nextLeverage.gt(MAX_ALLOWED_LEVERAGE)) {
       return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
     }
+
+    if (fromAmount && isDeposit && nextLiquidationPrice) {
+      const isInvalidLiquidationPrice = position.isLong
+        ? nextLiquidationPrice.gte(position.markPrice)
+        : nextLiquidationPrice.lte(position.markPrice);
+
+      if (isInvalidLiquidationPrice) {
+        return [t`Invalid liq. price`, ErrorDisplayType.Tooltip, ErrorCode.InsufficientDepositAmount];
+      }
+    }
+
+    if (position.hasProfit) {
+      if (nextCollateral.lte(position.closingFee.add(LIQUIDATION_FEE))) {
+        return isDeposit ? [t`Deposit not enough to cover fees`] : [t`Leftover Collateral not enough to cover fees`];
+      }
+      if (nextLeverageExcludingPnl && nextLeverageExcludingPnl.gt(MAX_LEVERAGE)) {
+        return [t`Max leverage without PnL: ${(MAX_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
+      }
+    }
+
     return [false];
   };
 
@@ -468,6 +481,7 @@ export default function PositionEditor(props) {
   };
   const ERROR_TOOLTIP_MSG = {
     [ErrorCode.InvalidLiqPrice]: t`Liquidation price would cross mark price.`,
+    [ErrorCode.InsufficientDepositAmount]: t`Deposit amount is insufficient to bring leverage below the max allowed leverage of 100x`,
   };
 
   function renderPrimaryButton() {
@@ -589,13 +603,17 @@ export default function PositionEditor(props) {
                     <div className="Exchange-info-label">
                       <Trans>Entry Price</Trans>
                     </div>
-                    <div className="align-right">${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}</div>
+                    <div className="align-right">
+                      ${formatAmount(position.averagePrice, USD_DECIMALS, positionPriceDecimal, true)}
+                    </div>
                   </div>
                   <div className="Exchange-info-row">
                     <div className="Exchange-info-label">
                       <Trans>Mark Price</Trans>
                     </div>
-                    <div className="align-right">${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}</div>
+                    <div className="align-right">
+                      ${formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)}
+                    </div>
                   </div>
                   <div className="Exchange-info-row">
                     <div className="Exchange-info-label">
@@ -604,17 +622,18 @@ export default function PositionEditor(props) {
                     <div className="align-right">
                       {!nextLiquidationPrice && (
                         <div>
-                          {!fromAmount && `$${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}`}
+                          {!fromAmount &&
+                            `$${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}`}
                           {fromAmount && "-"}
                         </div>
                       )}
                       {nextLiquidationPrice && (
                         <div>
                           <div className="inline-block muted">
-                            ${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}
+                            ${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
                             <BsArrowRight className="transition-arrow" />
                           </div>
-                          ${formatAmount(nextLiquidationPrice, USD_DECIMALS, 2, true)}
+                          ${formatAmount(nextLiquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
                         </div>
                       )}
                     </div>

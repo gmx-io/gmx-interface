@@ -22,23 +22,18 @@ export default function EventToast({ event, id, onClick, t }) {
       ) : (
         <p className="toast-body">{event.bodyText}</p>
       )}
-      <div className="toast-links">
-        {event.buttons.map((button) => {
-          if (button.newTab) {
+      {event.buttons && (
+        <div className="toast-links">
+          {event.buttons.map((button) => {
+            const newTab = button.newTab ? true : false;
             return (
-              <ExternalLink key={event.id + button.text} href={button.link}>
+              <ExternalLink key={event.id + button.text} href={button.link} newTab={newTab}>
                 {button.text}
               </ExternalLink>
             );
-          } else {
-            return (
-              <a key={event.id + button.text} href={button.link}>
-                {button.text}
-              </a>
-            );
-          }
-        })}
-      </div>
+          })}
+        </div>
+      )}
     </div>
   );
 }

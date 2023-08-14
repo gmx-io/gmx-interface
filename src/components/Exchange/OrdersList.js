@@ -25,6 +25,7 @@ import { getTokenInfo, getUsd } from "domain/tokens/utils";
 import { formatAmount } from "lib/numbers";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import { getPriceDecimals } from "config/tokens";
 
 function getOrderTitle(order, indexTokenSymbol) {
   const orderTypeText = order.type === INCREASE ? t`Increase` : t`Decrease`;
@@ -261,6 +262,7 @@ export default function OrdersList(props) {
       }
 
       const indexToken = getTokenInfo(infoTokens, order.indexToken);
+      const indexTokenPriceDecimal = getPriceDecimals(chainId, indexToken.symbol);
 
       // Longs Increase: max price
       // Longs Decrease: min price
@@ -340,11 +342,11 @@ export default function OrdersList(props) {
             )}
           </td>
           <td>
-            {triggerPricePrefix} {formatAmount(order.triggerPrice, USD_DECIMALS, 2, true)}
+            {triggerPricePrefix} {formatAmount(order.triggerPrice, USD_DECIMALS, indexTokenPriceDecimal, true)}
           </td>
           <td>
             <Tooltip
-              handle={formatAmount(markPrice, USD_DECIMALS, 2, true)}
+              handle={formatAmount(markPrice, USD_DECIMALS, indexTokenPriceDecimal, true)}
               position="right-bottom"
               renderContent={() => {
                 return (
@@ -355,7 +357,7 @@ export default function OrdersList(props) {
                     </p>
                     <p>
                       This can also cause limit/triggers to not be executed if the price is not reached for long enough.{" "}
-                      <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#stop-loss-take-profit-orders">
+                      <ExternalLink href="https://docs.gmx.io/docs/trading/v1#stop-loss--take-profit-orders">
                         Read more
                       </ExternalLink>
                       .

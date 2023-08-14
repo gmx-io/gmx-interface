@@ -18,6 +18,7 @@ import { useChainId } from "./chains";
 import { isValidTimestamp } from "./dates";
 import { t } from "@lingui/macro";
 import { isLocal } from "config/env";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 
 const { AddressZero } = ethers.constants;
 
@@ -27,10 +28,6 @@ export const PLACEHOLDER_ACCOUNT = ethers.Wallet.createRandom().address;
 export const MIN_PROFIT_TIME = 0;
 
 export const USDG_ADDRESS = getContract(CHAIN_ID, "USDG");
-
-export const BASIS_POINTS_DIVISOR = 10000;
-export const MAX_LEVERAGE = 100 * BASIS_POINTS_DIVISOR;
-export const MAX_ALLOWED_LEVERAGE = 50 * BASIS_POINTS_DIVISOR;
 
 export const MAX_PRICE_DEVIATION_BASIS_POINTS = 750;
 export const DEFAULT_GAS_LIMIT = 1 * 1000 * 1000;
@@ -72,9 +69,6 @@ export const STOP = "Stop";
 export const LEVERAGE_ORDER_OPTIONS = [MARKET, LIMIT, STOP];
 export const SWAP_ORDER_OPTIONS = [MARKET, LIMIT];
 export const SWAP_OPTIONS = [LONG, SHORT, SWAP];
-export const DEFAULT_SLIPPAGE_AMOUNT = 30;
-export const DEFAULT_HIGHER_SLIPPAGE_AMOUNT = 100;
-
 export const REFERRAL_CODE_QUERY_PARAM = "ref";
 export const MAX_REFERRAL_CODE_LENGTH = 20;
 
@@ -91,24 +85,6 @@ export function deserialize(data) {
 
 export function isHomeSite() {
   return process.env.REACT_APP_IS_HOME_SITE === "true";
-}
-
-export function getLiquidationPriceFromDelta({ liquidationAmount, size, collateral, averagePrice, isLong }) {
-  if (!size || size.eq(0)) {
-    return;
-  }
-
-  if (liquidationAmount.gt(collateral)) {
-    const liquidationDelta = liquidationAmount.sub(collateral);
-    const priceDelta = liquidationDelta.mul(averagePrice).div(size);
-
-    return isLong ? averagePrice.add(priceDelta) : averagePrice.sub(priceDelta);
-  }
-
-  const liquidationDelta = collateral.sub(liquidationAmount);
-  const priceDelta = liquidationDelta.mul(averagePrice).div(size);
-
-  return isLong ? averagePrice.sub(priceDelta) : averagePrice.add(priceDelta);
 }
 
 export function getMarginFee(sizeDelta) {
@@ -696,86 +672,6 @@ export function getDeltaStr({ delta, deltaPercentage, hasProfit }) {
   return { deltaStr, deltaPercentageStr };
 }
 
-export function getLeverage({
-  size,
-  sizeDelta,
-  increaseSize,
-  collateral,
-  collateralDelta,
-  increaseCollateral,
-  entryFundingRate,
-  cumulativeFundingRate,
-  hasProfit,
-  delta,
-  includeDelta,
-}) {
-  if (!size && !sizeDelta) {
-    return;
-  }
-  if (!collateral && !collateralDelta) {
-    return;
-  }
-
-  let nextSize = size ? size : bigNumberify(0);
-  if (sizeDelta) {
-    if (increaseSize) {
-      nextSize = size.add(sizeDelta);
-    } else {
-      if (sizeDelta.gte(size)) {
-        return;
-      }
-      nextSize = size.sub(sizeDelta);
-    }
-  }
-
-  let remainingCollateral = collateral ? collateral : bigNumberify(0);
-  if (collateralDelta) {
-    if (increaseCollateral) {
-      remainingCollateral = collateral.add(collateralDelta);
-    } else {
-      if (collateralDelta.gte(collateral)) {
-        return;
-      }
-      remainingCollateral = collateral.sub(collateralDelta);
-    }
-  }
-
-  if (delta && includeDelta) {
-    if (hasProfit) {
-      remainingCollateral = remainingCollateral.add(delta);
-    } else {
-      if (delta.gt(remainingCollateral)) {
-        return;
-      }
-
-      remainingCollateral = remainingCollateral.sub(delta);
-    }
-  }
-
-  if (remainingCollateral.eq(0)) {
-    return;
-  }
-
-  remainingCollateral = sizeDelta
-    ? remainingCollateral.mul(BASIS_POINTS_DIVISOR - MARGIN_FEE_BASIS_POINTS).div(BASIS_POINTS_DIVISOR)
-    : remainingCollateral;
-  if (entryFundingRate && cumulativeFundingRate) {
-    const fundingFee = size.mul(cumulativeFundingRate.sub(entryFundingRate)).div(FUNDING_RATE_PRECISION);
-    remainingCollateral = remainingCollateral.sub(fundingFee);
-  }
-
-  return nextSize.mul(BASIS_POINTS_DIVISOR).div(remainingCollateral);
-}
-
-export function getLeverageStr(leverage) {
-  if (leverage && ethers.BigNumber.isBigNumber(leverage)) {
-    if (leverage.lt(0)) {
-      return "> 100x";
-    }
-    return `${formatAmount(leverage, 4, 2, true)}x`;
-  }
-}
-
 export function getFundingFee(data: {
   size: BigNumber;
   entryFundingRate?: BigNumber;
@@ -788,103 +684,6 @@ export function getFundingFee(data: {
   }
 
   return;
-}
-
-export function getLiquidationPrice(data) {
-  let {
-    isLong,
-    size,
-    collateral,
-    averagePrice,
-    entryFundingRate,
-    cumulativeFundingRate,
-    sizeDelta,
-    collateralDelta,
-    increaseCollateral,
-    increaseSize,
-    delta,
-    hasProfit,
-    includeDelta,
-  } = data;
-  if (!size || !collateral || !averagePrice) {
-    return;
-  }
-
-  let nextSize = size ? size : bigNumberify(0);
-  let remainingCollateral = collateral;
-
-  if (sizeDelta) {
-    if (increaseSize) {
-      nextSize = size.add(sizeDelta);
-    } else {
-      if (sizeDelta.gte(size)) {
-        return;
-      }
-      nextSize = size.sub(sizeDelta);
-    }
-
-    const marginFee = getMarginFee(sizeDelta);
-    remainingCollateral = remainingCollateral.sub(marginFee);
-
-    if (includeDelta && !hasProfit) {
-      const adjustedDelta = sizeDelta.mul(delta).div(size);
-      remainingCollateral = remainingCollateral.sub(adjustedDelta);
-    }
-  }
-
-  if (collateralDelta) {
-    if (increaseCollateral) {
-      remainingCollateral = remainingCollateral.add(collateralDelta);
-    } else {
-      if (collateralDelta.gte(remainingCollateral)) {
-        return;
-      }
-      remainingCollateral = remainingCollateral.sub(collateralDelta);
-    }
-  }
-
-  let positionFee = getMarginFee(size).add(LIQUIDATION_FEE);
-
-  if (entryFundingRate && cumulativeFundingRate) {
-    const fundingFee = size.mul(cumulativeFundingRate.sub(entryFundingRate)).div(FUNDING_RATE_PRECISION);
-    positionFee = positionFee.add(fundingFee);
-  }
-
-  const liquidationPriceForFees = getLiquidationPriceFromDelta({
-    liquidationAmount: positionFee,
-    size: nextSize,
-    collateral: remainingCollateral,
-    averagePrice,
-    isLong,
-  });
-
-  const liquidationPriceForMaxLeverage = getLiquidationPriceFromDelta({
-    liquidationAmount: nextSize.mul(BASIS_POINTS_DIVISOR).div(MAX_LEVERAGE),
-    size: nextSize,
-    collateral: remainingCollateral,
-    averagePrice,
-    isLong,
-  });
-
-  if (!liquidationPriceForFees) {
-    return liquidationPriceForMaxLeverage;
-  }
-
-  if (!liquidationPriceForMaxLeverage) {
-    return liquidationPriceForFees;
-  }
-
-  if (isLong) {
-    // return the higher price
-    return liquidationPriceForFees.gt(liquidationPriceForMaxLeverage)
-      ? liquidationPriceForFees
-      : liquidationPriceForMaxLeverage;
-  }
-
-  // return the lower price
-  return liquidationPriceForFees.lt(liquidationPriceForMaxLeverage)
-    ? liquidationPriceForFees
-    : liquidationPriceForMaxLeverage;
 }
 
 export function getPositionKey(
@@ -1148,6 +947,7 @@ export function isMobileDevice(navigator) {
 }
 
 export const CHART_PERIODS = {
+  "1m": 60,
   "5m": 60 * 5,
   "15m": 60 * 15,
   "1h": 60 * 60,
@@ -1457,7 +1257,7 @@ export function getTradePageUrl() {
 }
 
 export function importImage(name) {
-  let tokenImage: { default: string } | null = null;
+  let tokenImage = "";
 
   try {
     tokenImage = require("img/" + name);
@@ -1466,7 +1266,7 @@ export function importImage(name) {
     console.error(error);
   }
 
-  return tokenImage?.default;
+  return tokenImage;
 }
 
 export function getTwitterIntentURL(text, url = "", hashtag = "") {
@@ -1513,11 +1313,6 @@ export function getOrderError(account, order, positionsMap, position) {
       return t`Order cannot be executed as the remaining position would be smaller than $5.00`;
     }
   }
-}
-
-export function arrayURLFetcher(...urlArr) {
-  const fetcher = (url) => fetch(url).then((res) => res.json());
-  return Promise.all(urlArr.map(fetcher));
 }
 
 export function shouldShowRedirectModal(timestamp) {

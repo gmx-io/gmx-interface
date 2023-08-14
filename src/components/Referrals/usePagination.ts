@@ -17,7 +17,7 @@ export const paginate = ({ total, current, size }) => {
   };
 };
 
-export default function usePagination(items = [], size = 10) {
+export default function usePagination<T>(items: T[] = [], size = 10) {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(Math.ceil(items.length / size));
 
@@ -25,7 +25,7 @@ export default function usePagination(items = [], size = 10) {
     setTotalPages(Math.ceil(items.length / size));
   }, [items, size]);
 
-  function getCurrentData() {
+  function getCurrentData(): T[] {
     const { start, end } = paginate({ total: items.length, current: currentPage, size });
     return items.slice(start, end + 1);
   }

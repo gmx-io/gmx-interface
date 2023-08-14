@@ -1,0 +1,14 @@
+.ApproveTokenButton {
+  width: 100%;
+  user-select: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--font-sm);
+  direction: ltr !important;
+}
+
+.ApproveTokenButton-spin {
+  color: #3749e6;
+}

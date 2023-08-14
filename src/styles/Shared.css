@@ -7,7 +7,7 @@ body,
   padding: 0;
   color: white;
   font-size: 10px;
-  background-color: #101124;
+  background-color: var(--main-bg-color);
 }
 
 body {
@@ -55,6 +55,7 @@ input {
 }
 
 :root {
+  --main-bg-color: #101124;
   --dark-blue: #17182c;
   --dark-blue-bg: #16182e;
   --dark-blue-accent: #a0a3c4;
@@ -151,6 +152,10 @@ td {
 
 .strong {
   font-weight: bold;
+}
+
+.text-center {
+  text-align: center;
 }
 
 .clickable {
@@ -250,9 +255,6 @@ a.plain {
 .default-btn:active {
   background: var(--primary-btn-active);
   border: none;
-  padding-left: 1.6rem;
-  padding-right: 1.6rem;
-  box-sizing: border-box;
   overflow: hidden;
 }
 
@@ -426,6 +428,11 @@ button.btn-link:hover .logout-icon {
   flex-direction: column;
 }
 
+.items-center {
+  display: flex;
+  align-items: center;
+}
+
 .w-full {
   width: 100%;
 }
@@ -447,6 +454,11 @@ button.btn-link:hover .logout-icon {
 }
 .gap-right > *:not(:last-child) {
   margin-right: 1rem;
+}
+
+.debug-key {
+  overflow-wrap: break-word;
+  max-width: 30rem;
 }
 
 .cursor-pointer {
@@ -493,4 +505,11 @@ button.btn-link:hover .logout-icon {
 }
 .m-md {
   margin: 1.5rem;
+}
+.text-warning {
+  color: rgb(243, 181, 12);
+}
+
+.ml-xs {
+  margin-left: 0.5rem;
 }

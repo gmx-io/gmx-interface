@@ -16,31 +16,30 @@ type Props = {
 
 type HomeLink = { label: string; link: string; isHomeLink?: boolean | false };
 
-const HOME_MENUS: HomeLink[] = [
-  {
-    label: t`App`,
-    isHomeLink: true,
-    link: "/trade",
-  },
-  {
-    label: t`Protocol`,
-    link: "https://github.com/gmx-io",
-  },
-  {
-    label: t`Governance`,
-    link: "https://gov.gmx.io/",
-  },
-  {
-    label: t`Voting`,
-    link: "https://snapshot.org/#/gmx.eth",
-  },
-  {
-    label: t`Docs`,
-    link: "https://gmxio.gitbook.io/gmx/",
-  },
-];
-
 export function HomeHeaderLinks({ small, clickCloseIcon, redirectPopupTimestamp, showRedirectModal }: Props) {
+  const HOME_MENUS: HomeLink[] = [
+    {
+      label: t`App`,
+      isHomeLink: true,
+      link: "/trade",
+    },
+    {
+      label: t`Protocol`,
+      link: "https://github.com/gmx-io",
+    },
+    {
+      label: t`Governance`,
+      link: "https://gov.gmx.io/",
+    },
+    {
+      label: t`Voting`,
+      link: "https://snapshot.org/#/gmx.eth",
+    },
+    {
+      label: t`Docs`,
+      link: "https://docs.gmx.io/",
+    },
+  ];
   return (
     <div className="App-header-links">
       {small && (

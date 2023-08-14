@@ -1,0 +1,55 @@
+.LeverageSlider {
+  margin-top: 1.5rem;
+  margin-bottom: 3.4rem;
+  padding: 0 0.8rem;
+
+  .rc-slider-tooltip-inner {
+    box-shadow: none;
+    padding: 0.465rem 0.8rem;
+    background: #303652;
+  }
+
+  .rc-slider-tooltip {
+    z-index: 5;
+  }
+
+  .rc-slider-tooltip-placement-top .rc-slider-tooltip-arrow {
+    border-top-color: #303652;
+  }
+
+  .rc-slider-rail {
+    background: linear-gradient(90deg, rgba(30, 34, 61, 1) 0%, rgba(40, 45, 74, 1) 100%);
+  }
+
+  .rc-slider-track {
+    background: linear-gradient(90deg, rgba(46, 61, 205, 1) 0%, rgba(45, 66, 252, 1) 100%);
+  }
+  .rc-slider-dot {
+    border: none;
+    border-radius: 1px;
+    width: 2px;
+    margin-left: -1px;
+    background: rgba(40, 45, 74, 1);
+  }
+  .rc-slider-dot-active {
+    background: #3d51ff;
+  }
+  .rc-slider-handle {
+    background: #303652;
+    border: solid 2px rgba(45, 66, 252, 1);
+  }
+
+  .rc-slider-handle:active {
+    box-shadow: 0 0 0.4rem 0.6rem rgba(45, 66, 252, 0.2);
+  }
+  .rc-slider-mark-text,
+  .rc-slider-mark-text-active {
+    color: white;
+    opacity: 0.5;
+  }
+
+  .rc-slider-mark-text:hover,
+  .rc-slider-mark-text-active:hover {
+    opacity: 1;
+  }
+}

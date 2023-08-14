@@ -4,7 +4,7 @@ import cx from "classnames";
 import { FaChevronDown } from "react-icons/fa";
 import "./ChartTokenSelector.scss";
 import { LONG, SHORT, SWAP, USDG_DECIMALS, USD_DECIMALS } from "lib/legacy";
-import { getTokens, getWhitelistedTokens } from "config/tokens";
+import { getTokens, getWhitelistedV1Tokens } from "config/tokens";
 import { bigNumberify, expandDecimals, formatAmount } from "lib/numbers";
 import { InfoTokens, Token } from "domain/tokens/types";
 import { getUsd } from "domain/tokens";
@@ -71,7 +71,7 @@ export default function ChartTokenSelector(props: Props) {
   const isSwap = swapOption === SWAP;
 
   let options = getTokens(chainId);
-  const whitelistedTokens = getWhitelistedTokens(chainId);
+  const whitelistedTokens = getWhitelistedV1Tokens(chainId);
   const indexTokens = whitelistedTokens.filter((token) => !token.isStable && !token.isWrapped);
   const shortableTokens = indexTokens.filter((token) => token.isShortable);
   const swapTokens = whitelistedTokens.filter((token) => !token.isWrapped && !token.isTempHidden);
