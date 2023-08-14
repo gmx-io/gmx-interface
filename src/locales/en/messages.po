@@ -586,15 +586,15 @@ msgstr "Buy or Transfer AVAX to Avalanche"
 msgid "Buy or Transfer ETH to Arbitrum"
 msgstr "Buy or Transfer ETH to Arbitrum"
 
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Buy order cancelled"
 msgstr "Buy order cancelled"
 
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Buy order executed"
 msgstr "Buy order executed"
 
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Buy request sent"
 msgstr "Buy request sent"
 
@@ -619,7 +619,7 @@ msgstr "Buy {swapTokenSymbol} on 1inch"
 msgid "Buying GM..."
 msgstr "Buying GM..."
 
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Buying {indexName} with {tokensText}"
 msgstr "Buying {indexName} with {tokensText}"
 
@@ -1271,7 +1271,7 @@ msgstr "Decreased"
 msgid "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
 msgstr "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
 
-#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Decreasing"
 msgstr "Decreasing"
 
@@ -1339,7 +1339,7 @@ msgstr "Deposited {0} into {positionText}"
 msgid "Deposited!"
 msgstr "Deposited!"
 
-#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Depositing {0} to {positionText}"
 msgstr "Depositing {0} to {positionText}"
 
@@ -1766,15 +1766,15 @@ msgstr "Forfeit profit not checked"
 msgid "Freeze"
 msgstr "Freeze"
 
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Fulfilling Buy request"
 msgstr "Fulfilling Buy request"
 
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Fulfilling Sell request"
 msgstr "Fulfilling Sell request"
 
-#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Fulfilling order request"
 msgstr "Fulfilling order request"
 
@@ -2046,7 +2046,7 @@ msgstr "Increased {positionText}, +{0}"
 msgid "Increased {tokenSymbol} {longOrShortText}, +{0} USD."
 msgstr "Increased {tokenSymbol} {longOrShortText}, +{0} USD."
 
-#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Increasing"
 msgstr "Increasing"
 
@@ -2322,7 +2322,7 @@ msgstr "Limit Order Price will vary based on Fees and Price Impact to guarantee 
 msgid "Limit Price"
 msgstr "Limit Price"
 
-#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/domain/synthetics/orders/utils.ts
 msgid "Limit Swap"
 msgstr "Limit Swap"
@@ -2331,7 +2331,7 @@ msgstr "Limit Swap"
 msgid "Limit order creation failed."
 msgstr "Limit order creation failed."
 
-#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Limit order for"
 msgstr "Limit order for"
 
@@ -2457,7 +2457,7 @@ msgstr "Loading..."
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -3021,7 +3021,7 @@ msgid "Order"
 msgstr "Order"
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Order cancelled"
 msgstr "Order cancelled"
 
@@ -3045,11 +3045,11 @@ msgstr "Order created!"
 msgid "Order creation failed."
 msgstr "Order creation failed."
 
-#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Order executed"
 msgstr "Order executed"
 
-#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Order request sent"
 msgstr "Order request sent"
 
@@ -3744,15 +3744,15 @@ msgstr "Sell failed."
 msgid "Sell for {0}"
 msgstr "Sell for {0}"
 
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order cancelled"
 msgstr "Sell order cancelled"
 
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order executed"
 msgstr "Sell order executed"
 
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sell request sent"
 msgstr "Sell request sent"
 
@@ -3764,7 +3764,7 @@ msgstr "Sell submitted!"
 msgid "Selling GM..."
 msgstr "Selling GM..."
 
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Selling {indexName}"
 msgstr "Selling {indexName}"
 
@@ -3780,15 +3780,15 @@ msgstr "Sender has withdrawn all tokens from GLP Vesting Vault"
 msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr "Sender has withdrawn all tokens from GMX Vesting Vault"
 
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sending Buy request"
 msgstr "Sending Buy request"
 
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sending Sell request"
 msgstr "Sending Sell request"
 
-#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Sending order request"
 msgstr "Sending order request"
 
@@ -3839,7 +3839,7 @@ msgstr "Share Position"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -4047,7 +4047,7 @@ msgstr "Supply"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
@@ -4637,7 +4637,7 @@ msgstr "Trigger Price"
 msgid "Trigger order disabled, pending {0} upgrade"
 msgstr "Trigger order disabled, pending {0} upgrade"
 
-#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Trigger order for"
 msgstr "Trigger order for"
 
@@ -4675,15 +4675,15 @@ msgstr "USD Value may not be accurate since the data does not contain prices for
 msgid "UTILIZATION"
 msgstr "UTILIZATION"
 
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown buy GM order"
 msgstr "Unknown buy GM order"
 
-#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Unknown order"
 msgstr "Unknown order"
 
-#: src/components/Synthetics/StatusNotifiaction/GmStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown sell GM order"
 msgstr "Unknown sell GM order"
 
@@ -5068,7 +5068,7 @@ msgstr "Withdrawal failed."
 msgid "Withdrawal submitted."
 msgstr "Withdrawal submitted."
 
-#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Withdrawing {0} from {positionText}"
 msgstr "Withdrawing {0} from {positionText}"
 
@@ -5569,11 +5569,11 @@ msgstr "{nativeTokenSymbol} can not be sent to smart contract addresses. Select 
 msgid "{orderTypeLabel} {positionText}, -{0}"
 msgstr "{orderTypeLabel} {positionText}, -{0}"
 
-#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "{orderTypeText} {0} for {1}"
 msgstr "{orderTypeText} {0} for {1}"
 
-#: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "{orderTypeText} {0} {longShortText}: {sign}{1}"
 msgstr "{orderTypeText} {0} {longShortText}: {sign}{1}"
 
