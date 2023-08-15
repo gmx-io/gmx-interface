@@ -15,15 +15,17 @@ export function useHasPageLostFocus(lostFocusTimeout: number, whiteListedPages?:
 
   const timerId = useRef<any>();
 
+  if (timerId.current && Date.now() - timerId.current > lostFocusTimeout) {
+    if (!hasLostFocus) {
+      setHasLostFocus(true);
+    }
+  }
+
   useEffect(() => {
     if (!isFocused) {
-      timerId.current = setTimeout(() => {
-        setHasLostFocus(true);
-      }, lostFocusTimeout);
+      timerId.current = Date.now();
     } else {
-      if (timerId.current) {
-        clearTimeout(timerId.current);
-      }
+      timerId.current = undefined;
       if (hasLostFocus) {
         setHasLostFocus(false);
       }

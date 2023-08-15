@@ -133,7 +133,7 @@ function FullApp() {
   const { chainId } = useChainId();
   const location = useLocation();
   const history = useHistory();
-  const hasV1LostFocus = useHasPageLostFocus(WS_BLUR_UNSUBSCRIBE_TIMEOUT, ["/trade", "/v2", "/buy_glp"], "V1 Events");
+  const hasV1LostFocus = useHasPageLostFocus(WS_BLUR_UNSUBSCRIBE_TIMEOUT, ["/trade", "/v2"], "V1 Events");
 
   useEventToast();
   const [activatingConnector, setActivatingConnector] = useState();

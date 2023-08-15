@@ -136,7 +136,9 @@ export function useWsProvider(active: boolean, chainId: number) {
 
       function healthCheck() {
         setTimeout(() => {
-          setNeedToReconnect(true);
+          // setNeedToReconnect(true);
+          // WS_PROVIDERS_CACHE[chainId] = undefined;
+          // newProvider?.removeAllListeners();
           healthCheck();
         }, WS_KEEP_ALIVE_INTERVAL);
       }
