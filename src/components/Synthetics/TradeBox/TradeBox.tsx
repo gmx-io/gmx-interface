@@ -735,6 +735,15 @@ export function TradeBox(p: Props) {
     fixedTriggerThresholdType,
   ]);
 
+  const isSubmitButtonDisabled = useMemo(() => {
+    if (!account) {
+      return false;
+    }
+    if (error) {
+      return true;
+    }
+  }, [error, account]);
+
   const submitButtonText = useMemo(() => {
     if (error) {
       return error;
@@ -1118,20 +1127,22 @@ export function TradeBox(p: Props) {
             )}
           </>
         )}
-        <ExchangeInfoRow
-          className="SwapBox-info-row"
-          label={t`Market`}
-          value={
-            <MarketSelector
-              label={t`Market`}
-              className="SwapBox-info-dropdown"
-              selectedIndexName={toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined}
-              markets={sortedAllMarkets || []}
-              isSideMenu
-              onSelectMarket={(indexName, marketInfo) => onSelectToTokenAddress(marketInfo.indexToken.address)}
-            />
-          }
-        />
+        {isTrigger && (
+          <ExchangeInfoRow
+            className="SwapBox-info-row"
+            label={t`Market`}
+            value={
+              <MarketSelector
+                label={t`Market`}
+                className="SwapBox-info-dropdown"
+                selectedIndexName={toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined}
+                markets={sortedAllMarkets || []}
+                isSideMenu
+                onSelectMarket={(indexName, marketInfo) => onSelectToTokenAddress(marketInfo.indexToken.address)}
+              />
+            }
+          />
+        )}
 
         <MarketPoolSelectorRow
           selectedMarket={marketInfo}
@@ -1457,7 +1468,7 @@ export function TradeBox(p: Props) {
                 variant="primary-action"
                 className="w-full"
                 onClick={onSubmit}
-                disabled={Boolean(error) && !shouldDisableValidation}
+                disabled={isSubmitButtonDisabled && !shouldDisableValidation}
               >
                 {error || submitButtonText}
               </Button>

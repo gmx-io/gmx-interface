@@ -265,9 +265,13 @@
 }
 
 .Home-token-card-option-action {
-  margin-top: 1.9375rem;
+  margin-top: 2rem;
   display: flex;
   justify-content: space-between;
+}
+
+.Token-card-buy {
+  margin-top: 3rem;
 }
 
 .Home-token-card-option-action > .buy a:first-child,

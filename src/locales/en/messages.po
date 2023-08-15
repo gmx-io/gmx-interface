@@ -248,6 +248,10 @@ msgstr "Additionally, trigger orders are market orders and are not guaranteed to
 msgid "Address copied to your clipboard"
 msgstr "Address copied to your clipboard"
 
+#: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
+msgid "Affiliate Rewards Claimed"
+msgstr "Affiliate Rewards Claimed"
+
 #: src/pages/Referrals/Referrals.tsx
 msgid "Affiliates"
 msgstr "Affiliates"
@@ -365,13 +369,8 @@ msgstr "Approving..."
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
-#: src/components/TokenCard/TokenCard.js
 msgid "Arbitrum APR:"
 msgstr "Arbitrum APR:"
-
-#: src/components/TokenCard/TokenCard.js
-msgid "Arbitrum Goerli APR:"
-msgstr "Arbitrum Goerli APR:"
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
@@ -418,13 +417,8 @@ msgstr "Available on your preferred network"
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
-#: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
 msgstr "Avalanche APR:"
-
-#: src/components/TokenCard/TokenCard.js
-msgid "Avalanche FUJI APR:"
-msgstr "Avalanche FUJI APR:"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -615,13 +609,13 @@ msgstr "Buy {nativeTokenSymbol}"
 msgid "Buy {swapTokenSymbol} on 1inch"
 msgstr "Buy {swapTokenSymbol} on 1inch"
 
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Buying GM ({indexName}) with {tokensText}"
+msgstr "Buying GM ({indexName}) with {tokensText}"
+
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "Buying GM..."
 msgstr "Buying GM..."
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Buying {indexName} with {tokensText}"
-msgstr "Buying {indexName} with {tokensText}"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Buying..."
@@ -744,11 +738,6 @@ msgstr "Claim failed"
 #: src/pages/Stake/StakeV2.js
 msgid "Claim failed."
 msgstr "Claim failed."
-
-#: src/domain/synthetics/markets/claimCollateralTxn.ts
-#: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
-msgid "Claim request sent"
-msgstr "Claim request sent"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Claim submitted!"
@@ -1011,6 +1000,7 @@ msgstr "Connect"
 #: src/components/Referrals/AddAffiliateCode.js
 #: src/components/Referrals/JoinReferralCode.js
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -1022,10 +1012,6 @@ msgstr "Connect"
 #: src/pages/Stake/StakeV2.js
 msgid "Connect Wallet"
 msgstr "Connect Wallet"
-
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Connect wallet"
-msgstr "Connect wallet"
 
 #: src/lib/wallets/index.tsx
 msgid "Connected to {0}"
@@ -1535,7 +1521,6 @@ msgid "Enter a new ratio"
 msgstr "Enter a new ratio"
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Enter a new size or price"
 msgstr "Enter a new size or price"
 
@@ -1549,12 +1534,6 @@ msgstr "Enter a price"
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Enter a ratio"
 msgstr "Enter a ratio"
-
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Enter a size"
-msgstr "Enter a size"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter a trigger price"
@@ -1570,6 +1549,9 @@ msgstr "Enter a trigger price"
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -1591,6 +1573,10 @@ msgstr "Enter and exit positions with minimal spread and low price impact. Get t
 #: src/components/Exchange/OrderEditor.js
 msgid "Enter new Price"
 msgstr "Enter new Price"
+
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+msgid "Enter new amount or price"
+msgstr "Enter new amount or price"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
@@ -1778,6 +1764,10 @@ msgstr "Fulfilling Sell request"
 msgid "Fulfilling order request"
 msgstr "Fulfilling order request"
 
+#: src/domain/synthetics/markets/claimCollateralTxn.ts
+msgid "Funding Claimed"
+msgstr "Funding Claimed"
+
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
@@ -1850,8 +1840,8 @@ msgid "GM Token pricing includes positions' Pending PnL, Impact Pool Amount and 
 msgstr "GM Token pricing includes positions' Pending PnL, Impact Pool Amount and Borrow Fees."
 
 #: src/components/TokenCard/TokenCard.js
-msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 67% of the V2 markets generated fees."
-msgstr "GM is the liquidity provider token for GMX V2 markets. Accrues 67% of the V2 markets generated fees."
+msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees."
+msgstr "GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees."
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX Announcements and Updates"
@@ -3760,13 +3750,13 @@ msgstr "Sell request sent"
 msgid "Sell submitted!"
 msgstr "Sell submitted!"
 
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "Selling GM ({indexName})"
+msgstr "Selling GM ({indexName})"
+
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "Selling GM..."
 msgstr "Selling GM..."
-
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Selling {indexName}"
-msgstr "Selling {indexName}"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Selling..."
