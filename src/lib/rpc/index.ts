@@ -109,7 +109,7 @@ export function isWebsocketProvider(provider: any): provider is WebSocketProvide
 
 const WS_PROVIDERS_CACHE: { [chainId: number]: WebSocketProvider | JsonRpcProvider | undefined } = {};
 const WS_LAST_BLOCK_UPDATED_AT: { [chainId: number]: number } = {};
-const WS_KEEP_ALIVE_INTERVAL = 5 * 60_000;
+// const WS_KEEP_ALIVE_INTERVAL = 5 * 60_000;
 
 export function useWsProvider(active: boolean, chainId: number) {
   const [provider, setProvider] = useState<WebSocketProvider | JsonRpcProvider>();
