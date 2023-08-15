@@ -124,6 +124,7 @@ export default function SwapBox(props) {
     swapOption,
     setSwapOption,
     positionsMap,
+    positions,
     pendingTxns,
     setPendingTxns,
     tokenSelection,
@@ -1861,6 +1862,17 @@ export default function SwapBox(props) {
   const currentExecutionFee = isMarketOrder ? minExecutionFee : executionFee;
   const currentExecutionFeeUsd = isMarketOrder ? minExecutionFeeUSD : executionFeeUsd;
 
+  const existingCurrentIndexShortPosition =
+    isShort &&
+    positions
+      ?.filter((p) => !p.isLong)
+      ?.find((position) => position?.indexToken?.address.toLowerCase() === toTokenAddress.toLowerCase());
+  const existingCurrentIndexCollateralToken = existingCurrentIndexShortPosition?.collateralToken;
+
+  const isExistingAndCollateralTokenDifferent =
+    existingCurrentIndexCollateralToken &&
+    existingCurrentIndexCollateralToken.address.toLowerCase() !== shortCollateralAddress?.toLowerCase();
+
   function renderPrimaryButton() {
     const [errorMessage, errorType, errorCode] = getError();
     const primaryTextMessage = getPrimaryText();
@@ -2055,9 +2067,35 @@ export default function SwapBox(props) {
               )}
               {isShort && (
                 <div className="Exchange-info-row">
-                  <div className="Exchange-info-label">
-                    <Trans>Collateral In</Trans>
-                  </div>
+                  {isExistingAndCollateralTokenDifferent ? (
+                    <Tooltip
+                      position="left-bottom"
+                      className="Collateral-warning"
+                      handle={<Trans>Collateral In</Trans>}
+                      renderContent={() => (
+                        <span>
+                          <Trans>
+                            You have an existing position with {existingCurrentIndexCollateralToken?.symbol} as
+                            collateral.
+                          </Trans>
+                          <br />
+                          <br />
+                          <div
+                            onClick={() => {
+                              setShortCollateralAddress(existingCurrentIndexCollateralToken?.address);
+                            }}
+                            className="text-gray underline cursor-pointer"
+                          >
+                            <Trans>Switch to {existingCurrentIndexCollateralToken?.symbol} collateral.</Trans>
+                          </div>
+                        </span>
+                      )}
+                    />
+                  ) : (
+                    <div className="Exchange-info-label">
+                      <Trans>Collateral In</Trans>
+                    </div>
+                  )}
 
                   <div className="align-right">
                     <TokenSelector
