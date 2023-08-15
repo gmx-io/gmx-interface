@@ -127,23 +127,22 @@ export function useWsProvider(active: boolean, chainId: number) {
         newProvider._websocket.onclose = () => {
           // eslint-disable-next-line no-console
           console.log(`ws provider for chain ${chainId} disconnected`);
-
           newProvider.removeAllListeners();
           WS_PROVIDERS_CACHE[chainId] = undefined;
           setNeedToReconnect(true);
         };
       }
 
-      function healthCheck() {
-        setTimeout(() => {
-          // setNeedToReconnect(true);
-          // WS_PROVIDERS_CACHE[chainId] = undefined;
-          // newProvider?.removeAllListeners();
-          healthCheck();
-        }, WS_KEEP_ALIVE_INTERVAL);
-      }
+      // function healthCheck() {
+      //   setTimeout(() => {
+      //     // setNeedToReconnect(true);
+      //     // WS_PROVIDERS_CACHE[chainId] = undefined;
+      //     // newProvider?.removeAllListeners();
+      //     healthCheck();
+      //   }, WS_KEEP_ALIVE_INTERVAL);
+      // }
 
-      healthCheck();
+      // healthCheck();
 
       return newProvider;
     },
