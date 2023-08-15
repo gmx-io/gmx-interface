@@ -2283,6 +2283,10 @@ msgstr ""
 msgid "Leverage"
 msgstr ""
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Leverage Trading Terminal"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Leverage disabled, pending {0} upgrade"
 msgstr ""

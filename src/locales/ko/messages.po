@@ -2283,6 +2283,10 @@ msgstr ""
 msgid "Leverage"
 msgstr "레버리지"
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Leverage Trading Terminal"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Leverage disabled, pending {0} upgrade"
 msgstr "{0} 업그레이드를 위해 레버리지가 비활성화되었습니다."

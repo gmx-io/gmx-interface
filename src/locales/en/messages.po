@@ -2283,6 +2283,10 @@ msgstr "Leftover position below 10 USD"
 msgid "Leverage"
 msgstr "Leverage"
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Leverage Trading Terminal"
+msgstr "Leverage Trading Terminal"
+
 #: src/components/Exchange/SwapBox.js
 msgid "Leverage disabled, pending {0} upgrade"
 msgstr "Leverage disabled, pending {0} upgrade"
