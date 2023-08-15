@@ -108,7 +108,7 @@ export default function ChartTokenSelector(props: Props) {
           <>
             <Popover.Button as="div">
               <button className={cx("chart-token-selector", { "chart-token-label--active": open })}>
-                <span className="chart-token-selector--current items-center">
+                <span className="chart-token-selector--current inline-items-center">
                   <TokenIcon
                     className="chart-token-current-icon"
                     symbol={selectedToken.symbol}
@@ -150,7 +150,7 @@ export default function ChartTokenSelector(props: Props) {
                         return (
                           <Popover.Button as="tr" key={option.symbol} onClick={() => onSelect(option)}>
                             <td className="token-item">
-                              <span className="items-center">
+                              <span className="inline-items-center">
                                 <TokenIcon
                                   className="ChartToken-list-icon"
                                   symbol={option.symbol}

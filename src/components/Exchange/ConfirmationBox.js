@@ -35,7 +35,7 @@ import FeesTooltip from "./FeesTooltip";
 import { getTokenInfo, getUsd } from "domain/tokens";
 import SlippageInput from "components/SlippageInput/SlippageInput";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import TokenIcon from "components/TokenIcon/TokenIcon";
+import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 
@@ -55,15 +55,6 @@ function getSwapSpreadInfo(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddres
       isHigh: value.gt(HIGH_SPREAD_THRESHOLD),
     };
   }
-}
-
-function renderSymbolWithIcon(symbol) {
-  return (
-    <span className="items-center">
-      <TokenIcon className="mr-xs" symbol={symbol} importSize={24} displaySize={18} />
-      {symbol}
-    </span>
-  );
 }
 
 function renderAllowedSlippage(setAllowedSlippage, defaultSlippage) {
@@ -528,13 +519,13 @@ export default function ConfirmationBox(props) {
         <div className="Confirmation-box-main">
           <div>
             <Trans>Pay</Trans>&nbsp;{formatAmount(fromAmount, fromToken.decimals, 4, true)}{" "}
-            {renderSymbolWithIcon(fromToken.symbol)} ($
+            <TokenWithIcon symbol={fromToken.symbol} displaySize={18} /> ($
             {formatAmount(fromUsdMin, USD_DECIMALS, 2, true)})
           </div>
           <div className="Confirmation-box-main-icon"></div>
           <div>
             <Trans>Receive</Trans>&nbsp;{formatAmount(toAmount, toToken.decimals, 4, true)}{" "}
-            {renderSymbolWithIcon(toToken.symbol)} ($
+            <TokenWithIcon symbol={toToken.symbol} displaySize={18} /> ($
             {formatAmount(toUsdMax, USD_DECIMALS, 2, true)})
           </div>
         </div>
@@ -545,14 +536,14 @@ export default function ConfirmationBox(props) {
       <div className="Confirmation-box-main">
         <span>
           <Trans>Pay</Trans>&nbsp;{formatAmount(fromAmount, fromToken.decimals, 4, true)}{" "}
-          {renderSymbolWithIcon(fromToken.symbol)} ($
+          <TokenWithIcon symbol={fromToken.symbol} displaySize={18} /> ($
           {formatAmount(fromUsdMin, USD_DECIMALS, 2, true)})
         </span>
         <div className="Confirmation-box-main-icon"></div>
         <div>
           {isLong ? t`Long` : t`Short`}&nbsp;
-          {formatAmount(toAmount, toToken.decimals, 4, true)} {renderSymbolWithIcon(toToken.symbol)} ($
-          {formatAmount(toUsdMax, USD_DECIMALS, 2, true)})
+          {formatAmount(toAmount, toToken.decimals, 4, true)} <TokenWithIcon symbol={toToken.symbol} displaySize={18} />{" "}
+          (${formatAmount(toUsdMax, USD_DECIMALS, 2, true)})
         </div>
       </div>
     );

@@ -473,7 +473,7 @@ button.btn-link:hover .logout-icon {
   display: inline-flex;
 }
 
-.items-center {
+.inline-items-center {
   display: inline-flex;
   align-items: center;
 }

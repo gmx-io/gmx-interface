@@ -854,7 +854,7 @@ export default function GlpSwap(props) {
                 onClickMax={fillMaxAmount}
                 topLeftValue={payBalance}
               >
-                <div className="selected-token items-center">
+                <div className="selected-token inline-items-center">
                   <img className="mr-xs" width={20} src={glpIcon} alt="GLP" />
                   GLP
                 </div>
@@ -884,7 +884,7 @@ export default function GlpSwap(props) {
                 onInputValueChange={onGlpValueChange}
                 defaultTokenName={"GLP"}
               >
-                <div className="selected-token items-center">
+                <div className="selected-token inline-items-center">
                   <img className="mr-xs" width={20} src={glpIcon} alt="GLP" />
                   GLP
                 </div>

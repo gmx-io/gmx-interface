@@ -25,16 +25,7 @@ import { t, Trans } from "@lingui/macro";
 import Button from "components/Button/Button";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import { getPriceDecimals, getToken } from "config/tokens";
-import TokenIcon from "components/TokenIcon/TokenIcon";
-
-function renderSymbolWithIcon(symbol) {
-  return (
-    <span>
-      <TokenIcon className="mr-xs Order-editor-icon" symbol={symbol} importSize={24} displaySize={18} />
-      {symbol}
-    </span>
-  );
-}
+import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 
 export default function OrderEditor(props) {
   const {
@@ -363,7 +354,9 @@ export default function OrderEditor(props) {
             const [tokenA, tokenB] = triggerRatioInverted ? [toTokenInfo, fromTokenInfo] : [fromTokenInfo, toTokenInfo];
             return (
               <div className="PositionEditor-token-symbol Order-editor-tokens">
-                {renderSymbolWithIcon(tokenA.symbol)}&nbsp;/&nbsp;{renderSymbolWithIcon(tokenB.symbol)}
+                <TokenWithIcon className="Order-editor-icon" symbol={tokenA.symbol} displaySize={18} />
+                &nbsp;/&nbsp;
+                <TokenWithIcon className="Order-editor-icon" symbol={tokenB.symbol} displaySize={18} />
               </div>
             );
           })()}

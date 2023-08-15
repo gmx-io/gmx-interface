@@ -82,7 +82,7 @@ import FeesTooltip from "./FeesTooltip";
 import NoLiquidityErrorModal from "./NoLiquidityErrorModal";
 import UsefulLinks from "./UsefulLinks";
 import { ErrorCode, ErrorDisplayType } from "./constants";
-import TokenIcon from "components/TokenIcon/TokenIcon";
+import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -91,15 +91,6 @@ const SWAP_ICONS = {
 };
 
 const { AddressZero } = ethers.constants;
-
-function renderSymbolWithIcon(symbol) {
-  return (
-    <span>
-      <TokenIcon className="mr-xs Swap-limit-icon" symbol={symbol} importSize={24} displaySize={18} />
-      {symbol}
-    </span>
-  );
-}
 
 function getNextAveragePrice({ size, sizeDelta, hasProfit, delta, nextPrice, isLong }) {
   if (!size || !sizeDelta || !delta || !nextPrice) {
@@ -2015,7 +2006,9 @@ export default function SwapBox(props) {
                   : [fromTokenInfo, toTokenInfo];
                 return (
                   <div className="PositionEditor-token-symbol">
-                    {renderSymbolWithIcon(tokenA.symbol)}&nbsp;per&nbsp;{renderSymbolWithIcon(tokenB.symbol)}
+                    <TokenWithIcon className="Swap-limit-icon" symbol={tokenA.symbol} displaySize={18} />
+                    &nbsp;per&nbsp;
+                    <TokenWithIcon className="Swap-limit-icon" symbol={tokenB.symbol} displaySize={18} />
                   </div>
                 );
               })()}

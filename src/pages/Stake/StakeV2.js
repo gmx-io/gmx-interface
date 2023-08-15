@@ -1461,7 +1461,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         <div className="StakeV2-cards">
           <div className="App-card StakeV2-gmx-card">
             <div className="App-card-title">
-              <div className="items-center">
+              <div className="inline-items-center">
                 <img className="mr-xs" alt="GMX" src={icons.gmx} height={20} />
                 GMX
               </div>
@@ -1739,7 +1739,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
           </div>
           <div className="App-card">
             <div className="App-card-title">
-              <div className="items-center">
+              <div className="inline-items-center">
                 <img className="mr-xs" alt="GLP" src={icons.glp} height={20} />
                 GLP
               </div>
@@ -1897,7 +1897,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
           </div>
           <div className="App-card">
             <div className="App-card-title">
-              <div className="items-center">
+              <div className="inline-items-center">
                 <img className="mr-xs" alt="GLP" src={icons.esgmx} height={20} />
                 <Trans>Escrowed GMX</Trans>
               </div>
@@ -2020,7 +2020,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
           <div className="StakeV2-cards">
             <div className="App-card StakeV2-gmx-card">
               <div className="App-card-title">
-                <div className="items-center">
+                <div className="inline-items-center">
                   <img className="mr-xs" alt="GMX" src={icons.gmx} height={20} />
                   <Trans>GMX Vault</Trans>
                 </div>
@@ -2137,7 +2137,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
             </div>
             <div className="App-card StakeV2-gmx-card">
               <div className="App-card-title">
-                <div className="items-center">
+                <div className="inline-items-center">
                   <img className="mr-xs" alt="GLP" src={icons.glp} height={20} />
                   <Trans>GLP Vault</Trans>
                 </div>

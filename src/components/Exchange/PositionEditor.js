@@ -561,7 +561,7 @@ export default function PositionEditor(props) {
                         </button>
                       )}
                     </div>
-                    <div className="PositionEditor-token-symbol items-center">
+                    <div className="PositionEditor-token-symbol inline-items-center">
                       {isDeposit ? (
                         <>
                           <TokenIcon

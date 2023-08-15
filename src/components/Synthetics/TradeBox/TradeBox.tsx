@@ -95,7 +95,7 @@ import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import "./TradeBox.scss";
 import Banner from "components/Banner/Banner";
 import { useHasOutdatedUi } from "domain/legacy";
-import TokenIcon from "components/TokenIcon/TokenIcon";
+import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 
 export type Props = {
   tradeType: TradeType;
@@ -246,15 +246,6 @@ export function TradeBox(p: Props) {
 
     return getMarkPrice({ prices: toToken.prices, isIncrease, isLong });
   }, [isIncrease, isLong, isSwap, toToken]);
-
-  function renderSymbolWithIcon(symbol) {
-    return (
-      <span className="items-center">
-        <TokenIcon className="mr-xs" symbol={symbol} importSize={24} displaySize={18} />
-        {symbol}
-      </span>
-    );
-  }
 
   const [closeSizeInputValue, setCloseSizeInputValue] = useState("");
   const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
@@ -1100,8 +1091,9 @@ export function TradeBox(p: Props) {
       >
         {markRatio && (
           <>
-            {renderSymbolWithIcon(markRatio.smallestToken.symbol)} per 
-            {renderSymbolWithIcon(markRatio.largestToken.symbol)}
+            <TokenWithIcon symbol={markRatio.smallestToken.symbol} displaySize={18} />
+             per 
+            <TokenWithIcon symbol={markRatio.largestToken.symbol} displaySize={18} />
           </>
         )}
       </BuyInputSection>

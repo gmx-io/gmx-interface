@@ -246,7 +246,7 @@ export default function TokenSelector(props: Props) {
         </div>
       ) : (
         <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
-          <span className="items-center">
+          <span className="inline-items-center">
             {showSymbolImage && (
               <TokenIcon
                 className="TokenSelector-box-symbol"
