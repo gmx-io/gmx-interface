@@ -108,6 +108,7 @@ export class Multicall {
         retryDelay: 10000000,
         batch: BATCH_CONFIGS[chainId].http,
       }),
+      pollingInterval: undefined,
       batch: BATCH_CONFIGS[chainId].client,
       chain: CHAIN_BY_CHAIN_ID[chainId],
     });
