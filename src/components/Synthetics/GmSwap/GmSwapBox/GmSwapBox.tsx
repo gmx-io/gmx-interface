@@ -52,6 +52,7 @@ import Checkbox from "components/Checkbox/Checkbox";
 import Tooltip from "components/Tooltip/Tooltip";
 import { DUST_BNB } from "lib/legacy";
 import { useHasOutdatedUi } from "domain/legacy";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 
 export enum Operation {
   Deposit = "Deposit",
@@ -93,6 +94,15 @@ const getAvailableModes = (operation: Operation, market?: Market) => {
 function showMarketToast(market) {
   if (!market?.name) return;
   helperToast.success(t`${market?.name} selected in order form`);
+}
+
+function renderSymbolWithIcon(symbol) {
+  return (
+    <span className="items-center">
+      <TokenIcon className="mr-xs" symbol={symbol} importSize={24} displaySize={18} />
+      {symbol}
+    </span>
+  );
 }
 
 export function GmSwapBox(p: Props) {
@@ -822,7 +832,7 @@ export function GmSwapBox(p: Props) {
               showTokenImgInDropdown={true}
             />
           ) : (
-            <div className="selected-token">{firstToken?.symbol}</div>
+            <div className="selected-token">{renderSymbolWithIcon(firstToken?.symbol)}</div>
           )}
         </BuyInputSection>
 
@@ -863,7 +873,7 @@ export function GmSwapBox(p: Props) {
               }
             }}
           >
-            <div className="selected-token">{secondToken?.symbol}</div>
+            <div className="selected-token">{renderSymbolWithIcon(secondToken?.symbol)}</div>
           </BuyInputSection>
         )}
 

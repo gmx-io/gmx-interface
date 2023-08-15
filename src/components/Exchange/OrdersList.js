@@ -33,7 +33,7 @@ function getOrderTitle(order, indexTokenSymbol) {
   const sizeDeltaText = formatAmount(order.sizeDelta, USD_DECIMALS, 2, true);
   const symbolWithIcon = (
     <>
-      <TokenIcon className="mx-xs" symbol={indexTokenSymbol} displaySize={15} importSize={24} />
+      <TokenIcon className="mx-xs" symbol={indexTokenSymbol} displaySize={18} importSize={24} />
       {indexTokenSymbol}
     </>
   );
@@ -184,10 +184,10 @@ export default function OrdersList(props) {
               fromTokenInfo.isStable || fromTokenInfo.isUsdg ? 2 : 4,
               true
             )}
-            <TokenIcon className="mx-xs" symbol={fromTokenInfo.symbol} displaySize={15} importSize={24} />
+            <TokenIcon className="mx-xs" symbol={fromTokenInfo.symbol} displaySize={18} importSize={24} />
             {fromTokenInfo.symbol} for{" "}
             {formatAmount(order.minOut, toTokenInfo.decimals, toTokenInfo.isStable || toTokenInfo.isUsdg ? 2 : 4, true)}
-            <TokenIcon className="mx-xs" symbol={toTokenInfo.symbol} displaySize={15} importSize={24} />
+            <TokenIcon className="mx-xs" symbol={toTokenInfo.symbol} displaySize={18} importSize={24} />
             {toTokenInfo.symbol}
           </>
         );
@@ -403,10 +403,10 @@ export default function OrdersList(props) {
         const titleText = (
           <>
             Swap {formatAmount(order.amountIn, fromTokenInfo.decimals, fromTokenInfo.isStable ? 2 : 4, true)}
-            <TokenIcon className="mx-xs" symbol={fromTokenInfo.symbol} displaySize={15} importSize={24} />
+            <TokenIcon className="mx-xs" symbol={fromTokenInfo.symbol} displaySize={18} importSize={24} />
             {fromTokenInfo.symbol} for{" "}
             {formatAmount(order.minOut, toTokenInfo.decimals, toTokenInfo.isStable ? 2 : 4, true)}
-            <TokenIcon className="mx-xs" symbol={toTokenInfo.symbol} displaySize={15} importSize={24} />
+            <TokenIcon className="mx-xs" symbol={toTokenInfo.symbol} displaySize={18} importSize={24} />
             {toTokenInfo.symbol}
           </>
         );
@@ -487,7 +487,7 @@ export default function OrdersList(props) {
       return (
         <div key={`${order.isLong}-${order.type}-${order.index}`} className="App-card">
           <div className="App-card-content">
-            <div className="App-card-title-small">
+            <div className="Order-list-card-title">
               {error ? (
                 <Tooltip
                   className="order-error"

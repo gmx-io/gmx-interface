@@ -20,6 +20,7 @@ import useAccountType, { AccountType } from "lib/wallets/useAccountType";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import { getPriceDecimals } from "config/tokens";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import Button from "components/Button/Button";
 
 const getOrdersForPosition = (account, position, orders, nativeTokenAddress) => {
   if (!orders || orders.length === 0) {
@@ -414,23 +415,25 @@ export default function PositionsList(props) {
                   {!hideActions && (
                     <div>
                       <div className="App-card-divider"></div>
-                      <div className="App-card-options">
-                        <button
-                          className="App-button-option App-card-option"
+                      <div className="Position-item-actions">
+                        <Button
+                          variant="secondary"
+                          className="mr-base"
                           disabled={position.size.eq(0)}
                           onClick={() => sellPosition(position)}
                         >
                           <Trans>Close</Trans>
-                        </button>
-                        <button
-                          className="App-button-option App-card-option"
+                        </Button>
+                        <Button
+                          variant="secondary"
+                          className="mr-base"
                           disabled={position.size.eq(0)}
                           onClick={() => editPosition(position)}
                         >
                           <Trans>Edit Collateral</Trans>
-                        </button>
-                        <button
-                          className="Exchange-list-action App-button-option App-card-option"
+                        </Button>
+                        <Button
+                          variant="secondary"
                           onClick={() => {
                             setPositionToShare(position);
                             setIsPositionShareModalOpen(true);
@@ -438,7 +441,7 @@ export default function PositionsList(props) {
                           disabled={position.size.eq(0)}
                         >
                           <Trans>Share</Trans>
-                        </button>
+                        </Button>
                       </div>
                     </div>
                   )}

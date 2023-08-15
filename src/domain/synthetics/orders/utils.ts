@@ -8,7 +8,6 @@ import { MarketsInfoData } from "../markets";
 import { getSwapPathOutputAddresses, getSwapPathStats, getTriggerThresholdType } from "../trade";
 import { TokensData, convertToTokenAmount, convertToUsd, getTokensRatioByAmounts, parseContractPrice } from "../tokens";
 import { getByKey } from "lib/objects";
-import TokenIcon from "components/TokenIcon/TokenIcon";
 
 export function isVisibleOrder(orderType: OrderType) {
   return isLimitOrderType(orderType) || isTriggerDecreaseOrderType(orderType) || isLimitSwapOrderType(orderType);
@@ -84,38 +83,6 @@ export function getSwapOrderTitle(p: {
   return t`Swap ${fromTokenText} for ${toTokenText}`;
 }
 
-export function getSwapOrderTitleWithIcon(p: {
-  initialCollateralToken: Token;
-  targetCollateralToken: Token;
-  initialCollateralAmount: BigNumber;
-  minOutputAmount: BigNumber;
-}) {
-  const { initialCollateralToken, initialCollateralAmount, targetCollateralToken, minOutputAmount } = p;
-
-  const fromTokenText = formatTokenAmount(initialCollateralAmount, initialCollateralToken.decimals, "");
-  const fromTokenWithIcon = (
-    <>
-      <TokenIcon className="mx-xs" symbol={initialCollateralToken.symbol} displaySize={15} importSize={24} />
-      {fromTokenText}
-    </>
-  );
-
-  const toTokenText = formatTokenAmount(minOutputAmount, targetCollateralToken.decimals, "");
-
-  const toTokenWithIcon = (
-    <>
-      <TokenIcon className="mx-xs" symbol={targetCollateralToken.symbol} displaySize={15} importSize={24} />
-      {toTokenText}
-    </>
-  );
-
-  return (
-    <>
-      Swap {fromTokenText} {fromTokenWithIcon} for {toTokenText} {toTokenWithIcon}
-    </>
-  );
-}
-
 export function getPositionOrderTitle(p: {
   orderType: OrderType;
   isLong: boolean;
@@ -130,32 +97,6 @@ export function getPositionOrderTitle(p: {
   const increaseOrDecreaseText = isIncreaseOrderType(orderType) ? t`Increase` : t`Decrease`;
 
   return t`${increaseOrDecreaseText} ${tokenText} by ${sizeText}`;
-}
-
-export function getPositionOrderTitleWithIcon(p: {
-  orderType: OrderType;
-  isLong: boolean;
-  indexToken: Token;
-  sizeDeltaUsd: BigNumber;
-}) {
-  const { orderType, isLong, indexToken, sizeDeltaUsd } = p;
-
-  const symbolWithIcon = (
-    <>
-      <TokenIcon className="mx-xs" symbol={indexToken.symbol} displaySize={15} importSize={24} />
-      {indexToken.symbol}
-    </>
-  );
-
-  const longShortText = isLong ? t`Long` : t`Short`;
-  const sizeText = formatUsd(sizeDeltaUsd);
-  const increaseOrDecreaseText = isIncreaseOrderType(orderType) ? t`Increase` : t`Decrease`;
-
-  return (
-    <>
-      {increaseOrDecreaseText} {symbolWithIcon} {longShortText} by {sizeText}
-    </>
-  );
 }
 
 export function getOrderTypeLabel(orderType: OrderType) {
@@ -237,19 +178,11 @@ export function getOrderInfo(
       initialCollateralAmount: order.initialCollateralDeltaAmount,
     });
 
-    const titleWithIcon = getSwapOrderTitleWithIcon({
-      initialCollateralToken,
-      targetCollateralToken,
-      minOutputAmount: order.minOutputAmount,
-      initialCollateralAmount: order.initialCollateralDeltaAmount,
-    });
-
     const orderInfo: SwapOrderInfo = {
       ...order,
       swapPathStats,
       triggerRatio,
       title,
-      titleWithIcon,
       initialCollateralToken,
       targetCollateralToken,
     };
@@ -279,13 +212,6 @@ export function getOrderInfo(
       sizeDeltaUsd: order.sizeDeltaUsd,
     });
 
-    const titleWithIcon = getPositionOrderTitleWithIcon({
-      orderType: order.orderType,
-      isLong: order.isLong,
-      indexToken,
-      sizeDeltaUsd: order.sizeDeltaUsd,
-    });
-
     const acceptablePrice = parseContractPrice(order.contractAcceptablePrice, indexToken.decimals);
     const triggerPrice = parseContractPrice(order.contractTriggerPrice, indexToken.decimals);
 
@@ -308,7 +234,6 @@ export function getOrderInfo(
     const orderInfo: PositionOrderInfo = {
       ...order,
       title,
-      titleWithIcon,
       swapPathStats,
       marketInfo,
       indexToken,

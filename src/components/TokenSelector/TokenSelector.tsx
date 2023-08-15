@@ -246,15 +246,17 @@ export default function TokenSelector(props: Props) {
         </div>
       ) : (
         <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
-          {showSymbolImage && (
-            <TokenIcon
-              className="TokenSelector-box-symbol"
-              symbol={tokenInfo.symbol}
-              importSize={24}
-              displaySize={20}
-            />
-          )}
-          {tokenInfo.symbol}
+          <span className="items-center">
+            {showSymbolImage && (
+              <TokenIcon
+                className="TokenSelector-box-symbol"
+                symbol={tokenInfo.symbol}
+                importSize={24}
+                displaySize={18}
+              />
+            )}
+            {tokenInfo.symbol}
+          </span>
           {showNewCaret && <img src={dropDownIcon} alt="Dropdown Icon" className="TokenSelector-box-caret" />}
           {!showNewCaret && <BiChevronDown className="TokenSelector-caret" />}
         </div>

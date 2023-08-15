@@ -1248,9 +1248,9 @@ msgstr "탈중앙화<0/>퍼페추얼 거래소"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#: src/domain/synthetics/orders/utils.tsx
-#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
 msgstr "감소"
@@ -2017,9 +2017,9 @@ msgstr "잘못된 네트워크입니다"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#: src/domain/synthetics/orders/utils.tsx
-#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase"
 msgstr "증가"
@@ -2301,11 +2301,11 @@ msgstr ""
 msgid "Limit"
 msgstr "지정가"
 
-#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.ts
 msgid "Limit Decrease"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.ts
 msgid "Limit Increase"
 msgstr ""
 
@@ -2325,7 +2325,7 @@ msgid "Limit Price"
 msgstr "지정가"
 
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
-#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.ts
 msgid "Limit Swap"
 msgstr ""
 
@@ -2452,6 +2452,7 @@ msgstr "로딩중..."
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -2463,8 +2464,7 @@ msgstr "로딩중..."
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
-#: src/domain/synthetics/orders/utils.tsx
-#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
@@ -2590,15 +2590,15 @@ msgstr "마켓"
 msgid "Market Cap"
 msgstr "시가총액"
 
-#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.ts
 msgid "Market Decrease"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.ts
 msgid "Market Increase"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.ts
 msgid "Market Swap"
 msgstr ""
 
@@ -3844,6 +3844,7 @@ msgstr "포지션 공유"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -3855,8 +3856,7 @@ msgstr "포지션 공유"
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
-#: src/domain/synthetics/orders/utils.tsx
-#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
@@ -4034,7 +4034,7 @@ msgstr "스테이킹중..."
 msgid "Stats"
 msgstr "통계"
 
-#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.ts
 msgid "Stop Loss Decrease"
 msgstr ""
 
@@ -4167,7 +4167,7 @@ msgstr ""
 msgid "Swap {0} {1} for{2} USDG"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.ts
 msgid "Swap {fromTokenText} for {toTokenText}"
 msgstr ""
 
@@ -4872,10 +4872,6 @@ msgstr ""
 msgid "V2 Claim"
 msgstr ""
 
-#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-#~ msgid "V2 Pools"
-#~ msgstr ""
-
 #: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
 msgid "V2 doesn't currently support this network"
 msgstr ""
@@ -5524,7 +5520,7 @@ msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger ord
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 
-#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.ts
 msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
 msgstr ""
 

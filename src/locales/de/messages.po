@@ -1248,9 +1248,9 @@ msgstr "Dezentralisierte<0/>Perpetual Börse"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#: src/domain/synthetics/orders/utils.tsx
-#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
 msgstr "Verringern"
@@ -2017,9 +2017,9 @@ msgstr "Falsches Netzwerk"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#: src/domain/synthetics/orders/utils.tsx
-#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase"
 msgstr "Erhöhen"
@@ -2301,11 +2301,11 @@ msgstr ""
 msgid "Limit"
 msgstr "Limit"
 
-#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.ts
 msgid "Limit Decrease"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.ts
 msgid "Limit Increase"
 msgstr ""
 
@@ -2325,7 +2325,7 @@ msgid "Limit Price"
 msgstr "Limit Preis"
 
 #: src/components/Synthetics/StatusNotifiaction/OrderStatusNotification.tsx
-#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.ts
 msgid "Limit Swap"
 msgstr ""
 
@@ -2452,6 +2452,7 @@ msgstr "Lädt..."
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -2463,8 +2464,7 @@ msgstr "Lädt..."
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
-#: src/domain/synthetics/orders/utils.tsx
-#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
@@ -2590,15 +2590,15 @@ msgstr "Markt"
 msgid "Market Cap"
 msgstr "Marktkapitalisierung"
 
-#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.ts
 msgid "Market Decrease"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.ts
 msgid "Market Increase"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.ts
 msgid "Market Swap"
 msgstr ""
 
@@ -3844,6 +3844,7 @@ msgstr "Position teilen"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -3855,8 +3856,7 @@ msgstr "Position teilen"
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
-#: src/domain/synthetics/orders/utils.tsx
-#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
@@ -4034,7 +4034,7 @@ msgstr "Staken..."
 msgid "Stats"
 msgstr "Statistiken"
 
-#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.ts
 msgid "Stop Loss Decrease"
 msgstr ""
 
@@ -4167,7 +4167,7 @@ msgstr ""
 msgid "Swap {0} {1} for{2} USDG"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.ts
 msgid "Swap {fromTokenText} for {toTokenText}"
 msgstr ""
 
@@ -4872,10 +4872,6 @@ msgstr ""
 msgid "V2 Claim"
 msgstr ""
 
-#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-#~ msgid "V2 Pools"
-#~ msgstr ""
-
 #: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
 msgid "V2 doesn't currently support this network"
 msgstr ""
@@ -5524,7 +5520,7 @@ msgstr "{existingTriggerOrderLength, plural, one {Du hast einen aktiven Triggera
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr "{existingTriggerOrderLength, plural, one {Du hast eine aktiven Trigger-Order, die unmittelbar nach dem Öffnen dieser Position ausgeführt werden könnte. Bitte storniere den Auftrag oder akzeptiere die Bestätigung, um fortzufahren.} other {Du hast # aktive Trigger-Orders, die sofort ausgeführt werden könnten, nachdem du diese Position eröffnet hast. Bitte storniere die Aufträge oder akzeptieren die Bestätigung, um fortzufahren.}}"
 
-#: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/orders/utils.ts
 msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
 msgstr ""
 

@@ -95,7 +95,7 @@ const { AddressZero } = ethers.constants;
 function renderSymbolWithIcon(symbol) {
   return (
     <span>
-      <TokenIcon className="mr-xs Swap-limit-icon" symbol={symbol} importSize={24} displaySize={20} />
+      <TokenIcon className="mr-xs Swap-limit-icon" symbol={symbol} importSize={24} displaySize={18} />
       {symbol}
     </span>
   );

@@ -513,3 +513,7 @@ button.btn-link:hover .logout-icon {
 .ml-xs {
   margin-left: 0.5rem;
 }
+
+.nobr {
+  white-space: nowrap;
+}

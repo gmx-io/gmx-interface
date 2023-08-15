@@ -80,6 +80,7 @@ export function OrderList(p: Props) {
               isCanceling={canellingOrdersKeys.includes(order.key)}
               onCancelOrder={() => onCancelOrder(order.key)}
               onEditOrder={() => setEditingOrderKey(order.key)}
+              marketsInfoData={marketsInfoData}
             />
           ))}
       </div>
@@ -133,6 +134,7 @@ export function OrderList(p: Props) {
                 onCancelOrder={() => onCancelOrder(order.key)}
                 onEditOrder={() => setEditingOrderKey(order.key)}
                 hideActions={p.hideActions}
+                marketsInfoData={marketsInfoData}
               />
             ))}
         </tbody>
