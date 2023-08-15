@@ -1432,30 +1432,37 @@ export function TradeBox(p: Props) {
             onChange={onSelectTradeMode}
           />
 
-          {(isSwap || isIncrease) && renderTokenInputs()}
-          {isTrigger && renderDecreaseSizeInput()}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              onSubmit();
+            }}
+          >
+            {(isSwap || isIncrease) && renderTokenInputs()}
+            {isTrigger && renderDecreaseSizeInput()}
 
-          {isSwap && isLimit && renderTriggerRatioInput()}
-          {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}
+            {isSwap && isLimit && renderTriggerRatioInput()}
+            {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}
 
-          <div className="SwapBox-info-section">
-            {isPosition && renderPositionControls()}
-            {isIncrease && renderIncreaseOrderInfo()}
-            {isTrigger && renderTriggerOrderInfo()}
+            <div className="SwapBox-info-section">
+              {isPosition && renderPositionControls()}
+              {isIncrease && renderIncreaseOrderInfo()}
+              {isTrigger && renderTriggerOrderInfo()}
 
-            {feesType && <TradeFeesRow {...fees} executionFee={executionFee} feesType={feesType} />}
-          </div>
+              {feesType && <TradeFeesRow {...fees} executionFee={executionFee} feesType={feesType} />}
+            </div>
 
-          <div className="Exchange-swap-button-container">
-            <Button
-              variant="primary-action"
-              className="w-full"
-              onClick={onSubmit}
-              disabled={Boolean(error) && !shouldDisableValidation}
-            >
-              {error || submitButtonText}
-            </Button>
-          </div>
+            <div className="Exchange-swap-button-container">
+              <Button
+                variant="primary-action"
+                className="w-full"
+                onClick={onSubmit}
+                disabled={Boolean(error) && !shouldDisableValidation}
+              >
+                {error || submitButtonText}
+              </Button>
+            </div>
+          </form>
         </div>
       </div>
 

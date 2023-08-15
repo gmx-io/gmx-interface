@@ -772,16 +772,40 @@ export function GmSwapBox(p: Props) {
         onChange={setMode}
       />
 
-      <div className={cx("GmSwapBox-form-layout", { reverse: isWithdrawal })}>
-        <BuyInputSection
-          topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
-          topLeftValue={formatUsd(firstTokenUsd)}
-          topRightLabel={t`Balance`}
-          topRightValue={formatTokenAmount(firstToken?.balance, firstToken?.decimals, "", {
-            useCommas: true,
-          })}
-          {...(isDeposit && {
-            onClickTopRightLabel: () => {
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          submitState.onSubmit();
+        }}
+      >
+        <div className={cx("GmSwapBox-form-layout", { reverse: isWithdrawal })}>
+          <BuyInputSection
+            topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
+            topLeftValue={formatUsd(firstTokenUsd)}
+            topRightLabel={t`Balance`}
+            topRightValue={formatTokenAmount(firstToken?.balance, firstToken?.decimals, "", {
+              useCommas: true,
+            })}
+            {...(isDeposit && {
+              onClickTopRightLabel: () => {
+                if (firstToken?.balance) {
+                  const maxAvailableAmount = firstToken.isNative
+                    ? firstToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
+                    : firstToken.balance;
+                  setFirstTokenInputValue(formatAmountFree(maxAvailableAmount, firstToken.decimals));
+                  onFocusedCollateralInputChange(firstToken.address);
+                }
+              },
+            })}
+            showMaxButton={isDeposit && firstToken?.balance?.gt(0) && !firstTokenAmount?.eq(firstToken.balance)}
+            inputValue={firstTokenInputValue}
+            onInputValueChange={(e) => {
+              if (firstToken) {
+                setFirstTokenInputValue(e.target.value);
+                onFocusedCollateralInputChange(firstToken.address);
+              }
+            }}
+            onClickMax={() => {
               if (firstToken?.balance) {
                 const maxAvailableAmount = firstToken.isNative
                   ? firstToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
@@ -789,61 +813,53 @@ export function GmSwapBox(p: Props) {
                 setFirstTokenInputValue(formatAmountFree(maxAvailableAmount, firstToken.decimals));
                 onFocusedCollateralInputChange(firstToken.address);
               }
-            },
-          })}
-          showMaxButton={isDeposit && firstToken?.balance?.gt(0) && !firstTokenAmount?.eq(firstToken.balance)}
-          inputValue={firstTokenInputValue}
-          onInputValueChange={(e) => {
-            if (firstToken) {
-              setFirstTokenInputValue(e.target.value);
-              onFocusedCollateralInputChange(firstToken.address);
-            }
-          }}
-          onClickMax={() => {
-            if (firstToken?.balance) {
-              const maxAvailableAmount = firstToken.isNative
-                ? firstToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
-                : firstToken.balance;
-              setFirstTokenInputValue(formatAmountFree(maxAvailableAmount, firstToken.decimals));
-              onFocusedCollateralInputChange(firstToken.address);
-            }
-          }}
-        >
-          {firstTokenAddress && isSingle ? (
-            <TokenSelector
-              label={t`Pay`}
-              chainId={chainId}
-              tokenAddress={firstTokenAddress}
-              onSelectToken={(token) => setFirstTokenAddress(token.address)}
-              tokens={tokenOptions}
-              infoTokens={infoTokens}
-              className="GlpSwap-from-token"
-              showSymbolImage={true}
-              showTokenImgInDropdown={true}
-            />
-          ) : (
-            <div className="selected-token">{firstToken?.symbol}</div>
-          )}
-        </BuyInputSection>
-
-        {isPair && secondTokenAddress && (
-          <BuyInputSection
-            topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
-            topLeftValue={formatUsd(secondTokenUsd)}
-            topRightLabel={t`Balance`}
-            topRightValue={formatTokenAmount(secondToken?.balance, secondToken?.decimals, "", {
-              useCommas: true,
-            })}
-            inputValue={secondTokenInputValue}
-            showMaxButton={isDeposit && secondToken?.balance?.gt(0) && !secondTokenAmount?.eq(secondToken.balance)}
-            onInputValueChange={(e) => {
-              if (secondToken) {
-                setSecondTokenInputValue(e.target.value);
-                onFocusedCollateralInputChange(secondToken.address);
-              }
             }}
-            {...(isDeposit && {
-              onClickTopRightLabel: () => {
+          >
+            {firstTokenAddress && isSingle ? (
+              <TokenSelector
+                label={t`Pay`}
+                chainId={chainId}
+                tokenAddress={firstTokenAddress}
+                onSelectToken={(token) => setFirstTokenAddress(token.address)}
+                tokens={tokenOptions}
+                infoTokens={infoTokens}
+                className="GlpSwap-from-token"
+                showSymbolImage={true}
+                showTokenImgInDropdown={true}
+              />
+            ) : (
+              <div className="selected-token">{firstToken?.symbol}</div>
+            )}
+          </BuyInputSection>
+
+          {isPair && secondTokenAddress && (
+            <BuyInputSection
+              topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
+              topLeftValue={formatUsd(secondTokenUsd)}
+              topRightLabel={t`Balance`}
+              topRightValue={formatTokenAmount(secondToken?.balance, secondToken?.decimals, "", {
+                useCommas: true,
+              })}
+              inputValue={secondTokenInputValue}
+              showMaxButton={isDeposit && secondToken?.balance?.gt(0) && !secondTokenAmount?.eq(secondToken.balance)}
+              onInputValueChange={(e) => {
+                if (secondToken) {
+                  setSecondTokenInputValue(e.target.value);
+                  onFocusedCollateralInputChange(secondToken.address);
+                }
+              }}
+              {...(isDeposit && {
+                onClickTopRightLabel: () => {
+                  if (secondToken?.balance) {
+                    const maxAvailableAmount = secondToken.isNative
+                      ? secondToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
+                      : secondToken.balance;
+                    setSecondTokenInputValue(formatAmountFree(maxAvailableAmount, secondToken.decimals));
+                    onFocusedCollateralInputChange(secondToken.address);
+                  }
+                },
+              })}
+              onClickMax={() => {
                 if (secondToken?.balance) {
                   const maxAvailableAmount = secondToken.isNative
                     ? secondToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
@@ -851,152 +867,143 @@ export function GmSwapBox(p: Props) {
                   setSecondTokenInputValue(formatAmountFree(maxAvailableAmount, secondToken.decimals));
                   onFocusedCollateralInputChange(secondToken.address);
                 }
+              }}
+            >
+              <div className="selected-token">{secondToken?.symbol}</div>
+            </BuyInputSection>
+          )}
+
+          <div className="AppOrder-ball-container" onClick={onSwitchSide}>
+            <div className="AppOrder-ball">
+              <IoMdSwap className="Exchange-swap-ball-icon" />
+            </div>
+          </div>
+
+          <BuyInputSection
+            topLeftLabel={isWithdrawal ? t`Pay` : t`Receive`}
+            topLeftValue={marketTokenUsd?.gt(0) ? formatUsd(marketTokenUsd) : ""}
+            topRightLabel={t`Balance`}
+            topRightValue={formatTokenAmount(marketToken?.balance, marketToken?.decimals, "", {
+              useCommas: true,
+            })}
+            showMaxButton={isWithdrawal && marketToken?.balance?.gt(0) && !marketTokenAmount?.eq(marketToken.balance)}
+            inputValue={marketTokenInputValue}
+            onInputValueChange={(e) => {
+              setMarketTokenInputValue(e.target.value);
+              setFocusedInput("market");
+            }}
+            {...(isWithdrawal && {
+              onClickTopRightLabel: () => {
+                if (marketToken?.balance) {
+                  setMarketTokenInputValue(formatAmountFree(marketToken.balance, marketToken.decimals));
+                  setFocusedInput("market");
+                }
               },
             })}
             onClickMax={() => {
-              if (secondToken?.balance) {
-                const maxAvailableAmount = secondToken.isNative
-                  ? secondToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
-                  : secondToken.balance;
-                setSecondTokenInputValue(formatAmountFree(maxAvailableAmount, secondToken.decimals));
-                onFocusedCollateralInputChange(secondToken.address);
-              }
-            }}
-          >
-            <div className="selected-token">{secondToken?.symbol}</div>
-          </BuyInputSection>
-        )}
-
-        <div className="AppOrder-ball-container" onClick={onSwitchSide}>
-          <div className="AppOrder-ball">
-            <IoMdSwap className="Exchange-swap-ball-icon" />
-          </div>
-        </div>
-
-        <BuyInputSection
-          topLeftLabel={isWithdrawal ? t`Pay` : t`Receive`}
-          topLeftValue={marketTokenUsd?.gt(0) ? formatUsd(marketTokenUsd) : ""}
-          topRightLabel={t`Balance`}
-          topRightValue={formatTokenAmount(marketToken?.balance, marketToken?.decimals, "", {
-            useCommas: true,
-          })}
-          showMaxButton={isWithdrawal && marketToken?.balance?.gt(0) && !marketTokenAmount?.eq(marketToken.balance)}
-          inputValue={marketTokenInputValue}
-          onInputValueChange={(e) => {
-            setMarketTokenInputValue(e.target.value);
-            setFocusedInput("market");
-          }}
-          {...(isWithdrawal && {
-            onClickTopRightLabel: () => {
               if (marketToken?.balance) {
                 setMarketTokenInputValue(formatAmountFree(marketToken.balance, marketToken.decimals));
                 setFocusedInput("market");
               }
-            },
-          })}
-          onClickMax={() => {
-            if (marketToken?.balance) {
-              setMarketTokenInputValue(formatAmountFree(marketToken.balance, marketToken.decimals));
-              setFocusedInput("market");
-            }
-          }}
-        >
-          <div className="selected-token">GM</div>
-        </BuyInputSection>
-      </div>
-
-      <div className="GmSwapBox-info-section">
-        <ExchangeInfoRow
-          className="SwapBox-info-row"
-          label={t`Market`}
-          value={
-            <MarketSelector
-              label={t`Market`}
-              className="SwapBox-info-dropdown"
-              selectedIndexName={indexName}
-              markets={markets}
-              marketTokensData={marketTokensData}
-              marketsInfoData={marketsInfoData}
-              isSideMenu
-              showBalances
-              onSelectMarket={(marketName, marketInfo) => {
-                setIndexName(marketName);
-                showMarketToast(marketInfo);
-              }}
-            />
-          }
-        />
-
-        <ExchangeInfoRow
-          className="SwapBox-info-row"
-          label={t`Pool`}
-          value={
-            <PoolSelector
-              label={t`Pool`}
-              className="SwapBox-info-dropdown"
-              selectedIndexName={indexName}
-              selectedMarketAddress={marketAddress}
-              markets={markets}
-              marketTokensData={marketTokensData}
-              marketsInfoData={marketsInfoData}
-              isSideMenu
-              showBalances
-              onSelectMarket={(marketInfo) => {
-                onMarketChange(marketInfo.marketTokenAddress);
-                showMarketToast(marketInfo);
-              }}
-            />
-          }
-        />
-
-        <div className="App-card-divider" />
-
-        <GmFees
-          isDeposit={isDeposit}
-          totalFees={fees?.totalFees}
-          swapFee={fees?.swapFee}
-          swapPriceImpact={fees?.swapPriceImpact}
-          executionFee={executionFee}
-        />
-      </div>
-
-      {isHighPriceImpact && (
-        <>
-          <div className="App-card-divider" />
-          <Checkbox
-            className="GmSwapBox-warning"
-            asRow
-            isChecked={isHighPriceImpactAccepted}
-            setIsChecked={setIsHighPriceImpactAccepted}
+            }}
           >
-            {isSingle ? (
-              <Tooltip
-                className="warning-tooltip"
-                handle={<Trans>Acknowledge high Price Impact</Trans>}
-                position="left-top"
-                renderContent={() => (
-                  <div>{t`Consider selecting and using the "Pair" option to reduce the Price Impact.`}</div>
-                )}
-              />
-            ) : (
-              <span className="muted font-sm">
-                <Trans>Acknowledge high Price Impact</Trans>
-              </span>
-            )}
-          </Checkbox>
-        </>
-      )}
+            <div className="selected-token">GM</div>
+          </BuyInputSection>
+        </div>
 
-      <div className="Exchange-swap-button-container">
-        <Button
-          className="w-full"
-          variant="primary-action"
-          onClick={submitState.onSubmit}
-          disabled={submitState.isDisabled}
-        >
-          {submitState.text}
-        </Button>
-      </div>
+        <div className="GmSwapBox-info-section">
+          <ExchangeInfoRow
+            className="SwapBox-info-row"
+            label={t`Market`}
+            value={
+              <MarketSelector
+                label={t`Market`}
+                className="SwapBox-info-dropdown"
+                selectedIndexName={indexName}
+                markets={markets}
+                marketTokensData={marketTokensData}
+                marketsInfoData={marketsInfoData}
+                isSideMenu
+                showBalances
+                onSelectMarket={(marketName, marketInfo) => {
+                  setIndexName(marketName);
+                  showMarketToast(marketInfo);
+                }}
+              />
+            }
+          />
+
+          <ExchangeInfoRow
+            className="SwapBox-info-row"
+            label={t`Pool`}
+            value={
+              <PoolSelector
+                label={t`Pool`}
+                className="SwapBox-info-dropdown"
+                selectedIndexName={indexName}
+                selectedMarketAddress={marketAddress}
+                markets={markets}
+                marketTokensData={marketTokensData}
+                marketsInfoData={marketsInfoData}
+                isSideMenu
+                showBalances
+                onSelectMarket={(marketInfo) => {
+                  onMarketChange(marketInfo.marketTokenAddress);
+                  showMarketToast(marketInfo);
+                }}
+              />
+            }
+          />
+
+          <div className="App-card-divider" />
+
+          <GmFees
+            isDeposit={isDeposit}
+            totalFees={fees?.totalFees}
+            swapFee={fees?.swapFee}
+            swapPriceImpact={fees?.swapPriceImpact}
+            executionFee={executionFee}
+          />
+        </div>
+
+        {isHighPriceImpact && (
+          <>
+            <div className="App-card-divider" />
+            <Checkbox
+              className="GmSwapBox-warning"
+              asRow
+              isChecked={isHighPriceImpactAccepted}
+              setIsChecked={setIsHighPriceImpactAccepted}
+            >
+              {isSingle ? (
+                <Tooltip
+                  className="warning-tooltip"
+                  handle={<Trans>Acknowledge high Price Impact</Trans>}
+                  position="left-top"
+                  renderContent={() => (
+                    <div>{t`Consider selecting and using the "Pair" option to reduce the Price Impact.`}</div>
+                  )}
+                />
+              ) : (
+                <span className="muted font-sm">
+                  <Trans>Acknowledge high Price Impact</Trans>
+                </span>
+              )}
+            </Checkbox>
+          </>
+        )}
+
+        <div className="Exchange-swap-button-container">
+          <Button
+            className="w-full"
+            variant="primary-action"
+            onClick={submitState.onSubmit}
+            disabled={submitState.isDisabled}
+          >
+            {submitState.text}
+          </Button>
+        </div>
+      </form>
 
       <GmConfirmationBox
         isVisible={stage === "confirmation"}
