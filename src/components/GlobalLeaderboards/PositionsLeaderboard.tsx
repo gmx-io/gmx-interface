@@ -16,16 +16,12 @@ export default function PositionsLeaderboard() {
   const filteredStats = topPositions.data.filter(a => a.account.indexOf(term.toLowerCase()) >= 0);
   const firstItemIndex = (page - 1) * perPage;
   const displayedStats = filteredStats.slice(firstItemIndex, page * perPage).map(p => ({
-    id: p.id,
+    id: p.key,
     account: p.account,
-    unrealizedPnl: formatUsd(p.info.pnlAfterFees),
-    market: `${ p.info.marketInfo.name } ${ p.isLong ? t`Long` : t`Short` }`,
-    entryPrice: formatUsd(p.info.entryPrice),
-    sizeLiqPrice: `${
-      formatUsd(p.info.sizeInUsd)
-    } (${
-      formatUsd(p.info.liquidationPrice)
-    })`,
+    unrealizedPnl: formatUsd(p.unrealizedPnlAfterFees),
+    market: `${ p.marketInfo.name } ${ p.isLong ? t`Long` : t`Short` }`,
+    entryPrice: formatUsd(p.entryPrice),
+    sizeLiqPrice: `${formatUsd(p.sizeInUsd)} (${formatUsd(p.liquidationPrice)})`
   }));
 
   const pageCount = Math.ceil(filteredStats.length / perPage);

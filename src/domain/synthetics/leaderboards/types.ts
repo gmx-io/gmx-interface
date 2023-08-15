@@ -1,6 +1,6 @@
 import { BigNumber } from "ethers";
-import { ContractMarketPrices, Market } from "../markets";
-import { PositionInfo } from "../positions";
+import { TokenData } from "../tokens";
+import { MarketInfo } from "../markets";
 
 export enum PerfPeriod {
   DAY = "24 hours",
@@ -81,26 +81,6 @@ export type AccountOpenPositionJson = {
   priceImpactUsd: string;
 };
 
-export type AccountOpenPosition = {
-  id: string;
-  account: string;
-  market: string;
-  marketData: Market;
-  contractMarketPrices: ContractMarketPrices;
-  collateralToken: string;
-  isLong: boolean;
-  sizeInTokens: BigNumber;
-  sizeInUsd: BigNumber;
-  realizedPnl: BigNumber;
-  collateralAmount: BigNumber;
-  entryPrice: BigNumber;
-  maxSize: BigNumber;
-  borrowingFeeUsd: BigNumber;
-  fundingFeeUsd: BigNumber;
-  positionFeeUsd: BigNumber;
-  priceImpactUsd: BigNumber;
-};
-
 export type AccountPositionsSummary = {
   account: string;
   unrealizedPnl: BigNumber;
@@ -121,26 +101,28 @@ export type AccountPositionsSummary = {
 
 export type PositionsSummaryByAccount = Record<string, AccountPositionsSummary>;
 
-export type PositionScores = {
-  id: string;
-  info: PositionInfo;
+export type AccountOpenPosition = {
+  key: string;
   account: string;
-  market: string;
-  marketData: Market;
-  contractMarketPrices: ContractMarketPrices;
   isLong: boolean;
-  collateralToken: string;
+  marketInfo: MarketInfo,
+  collateralToken: TokenData;
   unrealizedPnl: BigNumber;
+  unrealizedPnlAfterFees: BigNumber;
   entryPrice: BigNumber;
   sizeInUsd: BigNumber;
-  liqPrice: BigNumber;
   collateralAmount: BigNumber;
   collateralAmountUsd: BigNumber;
   maxSize: BigNumber;
-  borrowingFeeUsd: BigNumber;
-  fundingFeeUsd: BigNumber;
-  positionFeeUsd: BigNumber;
   priceImpactUsd: BigNumber;
+  collectedBorrowingFeesUsd: BigNumber;
+  collectedFundingFeesUsd: BigNumber;
+  collectedPositionFeesUsd: BigNumber;
+  pendingFundingFeesUsd: BigNumber;
+  pendingClaimableFundingFeesUsd: BigNumber;
+  pendingBorrowingFeesUsd: BigNumber;
+  closingFeeUsd: BigNumber;
+  liquidationPrice?: BigNumber;
 };
 
 export type DataByPeriod<T> = {
@@ -171,7 +153,7 @@ export type RemoteData<T> = {
 
 export type LeaderboardContextType = {
   chainId: number;
-  topPositions: RemoteData<PositionScores>;
+  topPositions: RemoteData<AccountOpenPosition>;
   topAccounts: RemoteData<AccountScores>;
   period: PerfPeriod;
   setPeriod: (_: PerfPeriod) => void;

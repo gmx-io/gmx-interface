@@ -1,8 +1,8 @@
-import { PositionScores, RemoteData } from "./types";
-import { usePositionScores } from "./usePositionScores";
+import { AccountOpenPosition, RemoteData } from "./types";
+import { useAccountOpenPositions } from "./useOpenPositions";
 
-export function useTopPositions(): RemoteData<PositionScores> {
-  const { isLoading, data, error } = usePositionScores();
+export function useTopPositions(): RemoteData<AccountOpenPosition> {
+  const { isLoading, data, error } = useAccountOpenPositions();
   const orderedData = [...data].sort((a, b) => (
     a.unrealizedPnl.gt(b.unrealizedPnl) ? -1 : 1
   ));

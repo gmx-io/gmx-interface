@@ -1,5 +1,5 @@
-import { AccountPositionsSummary, AccountScores, PerfPeriod, PositionScores, PositionsSummaryByAccount } from "./types";
-import { useAccountPerf, usePositionScores } from "./index";
+import { AccountPositionsSummary, AccountScores, PerfPeriod, AccountOpenPosition, PositionsSummaryByAccount } from "./types";
+import { useAccountOpenPositions, useAccountPerf } from "./index";
 import { BigNumber } from "ethers";
 import { expandDecimals } from "lib/numbers";
 import { USD_DECIMALS } from "lib/legacy";
@@ -22,9 +22,8 @@ const defaultSummary = (account: string): AccountPositionsSummary => ({
   openPositionsCount: 0,
 });
 
-const groupPositionsByAccount = (positions: Array<PositionScores>): PositionsSummaryByAccount => {
+const groupPositionsByAccount = (positions: Array<AccountOpenPosition>): PositionsSummaryByAccount => {
   const groupping: PositionsSummaryByAccount = {};
-  const groupping2: PositionsSummaryByAccount = {};
 
   for (const p of positions) {
     const { account } = p;
@@ -32,27 +31,23 @@ const groupPositionsByAccount = (positions: Array<PositionScores>): PositionsSum
     if (!groupping[account]) {
       groupping[account] = defaultSummary(account);
     }
-    if (!groupping2[account]) {
-      groupping2[account] = defaultSummary(account);
-    }
 
     const summary = groupping[account];
 
     summary.openPositionsCount++;
-
     summary.unrealizedPnl = summary.unrealizedPnl.add(p.unrealizedPnl);
     summary.sumSize = summary.sumSize.add(p.sizeInUsd)
     summary.sumCollateral = summary.sumCollateral.add(p.collateralAmountUsd);
     summary.sumMaxSize = summary.sumMaxSize.add(p.maxSize);
     summary.totalCollateral = summary.totalCollateral.add(p.collateralAmountUsd);
-    summary.collectedBorrowingFeesUsd = summary.collectedBorrowingFeesUsd.add(p.borrowingFeeUsd);
-    summary.collectedFundingFeesUsd = summary.collectedFundingFeesUsd.add(p.fundingFeeUsd);
-    summary.collectedPositionFeesUsd = summary.collectedPositionFeesUsd.add(p.positionFeeUsd);
     summary.priceImpactUsd = summary.priceImpactUsd.add(p.priceImpactUsd);
-    summary.closingFeeUsd = summary.closingFeeUsd.add(p.info.closingFeeUsd);
-    summary.pendingFundingFeesUsd = summary.pendingFundingFeesUsd.add(p.info.pendingFundingFeesUsd);
-    summary.pendingClaimableFundingFeesUsd = summary.pendingClaimableFundingFeesUsd.add(p.info.pendingClaimableFundingFeesUsd);
-    summary.pendingBorrowingFeesUsd = summary.pendingBorrowingFeesUsd.add(p.info.pendingBorrowingFeesUsd);
+    summary.collectedBorrowingFeesUsd = summary.collectedBorrowingFeesUsd.add(p.collectedBorrowingFeesUsd);
+    summary.collectedFundingFeesUsd = summary.collectedFundingFeesUsd.add(p.collectedFundingFeesUsd);
+    summary.collectedPositionFeesUsd = summary.collectedPositionFeesUsd.add(p.collectedPositionFeesUsd);
+    summary.pendingFundingFeesUsd = summary.pendingFundingFeesUsd.add(p.pendingFundingFeesUsd);
+    summary.pendingClaimableFundingFeesUsd = summary.pendingClaimableFundingFeesUsd.add(p.pendingClaimableFundingFeesUsd);
+    summary.pendingBorrowingFeesUsd = summary.pendingBorrowingFeesUsd.add(p.pendingBorrowingFeesUsd);
+    summary.closingFeeUsd = summary.closingFeeUsd.add(p.closingFeeUsd);
   }
 
   return groupping;
@@ -60,7 +55,7 @@ const groupPositionsByAccount = (positions: Array<PositionScores>): PositionsSum
 
 export function useTopAccounts(period: PerfPeriod) {
   const accountPerf = useAccountPerf(period);
-  const positions = usePositionScores();
+  const positions = useAccountOpenPositions();
 
   if (accountPerf.error || positions.error) {
     return { data: [], isLoading: false, error: accountPerf.error || positions.error };

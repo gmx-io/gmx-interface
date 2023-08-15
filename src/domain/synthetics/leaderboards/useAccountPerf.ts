@@ -3,6 +3,7 @@ import { BigNumber } from "ethers";
 import { PerfPeriod, AccountPerf, AccountPerfJson, PerfByAccount, RemoteData } from "./types";
 import { queryAccountPerformance } from "./queries";
 import { arbitrumGoerliLeaderboardsClient as graph } from "lib/subgraph/clients";
+import { getAddress } from "ethers/lib/utils";
 
 const daysAgo = (x: number) => (
   new Date(Date.now() - 1000 * 60 * 60 * 24 * x).setHours(0, 0, 0, 0) / 1000
@@ -33,7 +34,7 @@ const fetchAccountPerfs = async (
 
   return res.data.accountPerfs.map(a => ({
     id: a.account,
-    account: a.account,
+    account: getAddress(a.account),
     period: period,
     timestamp: a.timestamp,
     wins: BigNumber.from(a.wins),
