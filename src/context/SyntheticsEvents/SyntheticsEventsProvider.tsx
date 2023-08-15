@@ -1,12 +1,12 @@
-import { StaticJsonRpcProvider } from "@ethersproject/providers";
 import { t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import EventEmitter from "abis/EventEmitter.json";
-import { GmStatusNotification } from "components/Synthetics/StatusNotifiaction/GmStatusNotification";
-import { OrderStatusNotification } from "components/Synthetics/StatusNotifiaction/OrderStatusNotification";
+import { GmStatusNotification } from "components/Synthetics/StatusNotification/GmStatusNotification";
+import { OrderStatusNotification } from "components/Synthetics/StatusNotification/OrderStatusNotification";
 import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
 import { getToken, getWrappedToken } from "config/tokens";
+import { WS_BLUR_UNSUBSCRIBE_TIMEOUT } from "config/ui";
 import { useMarketsInfo } from "domain/synthetics/markets";
 import {
   isDecreaseOrderType,
@@ -23,7 +23,7 @@ import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey, setByKey, updateByKey } from "lib/objects";
-import { getProvider, useWsProvider } from "lib/rpc";
+import { useWsProvider } from "lib/rpc";
 import { useHasPageLostFocus } from "lib/useHasPageLostFocus";
 import { ReactNode, createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -45,7 +45,6 @@ import {
   WithdrawalStatuses,
 } from "./types";
 import { parseEventLogData } from "./utils";
-import { WS_BLUR_UNSUBSCRIBE_TIMEOUT } from "config/ui";
 
 export const DEPOSIT_CREATED_HASH = ethers.utils.id("DepositCreated");
 export const DEPOSIT_EXECUTED_HASH = ethers.utils.id("DepositExecuted");
@@ -78,8 +77,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
   const [orderStatuses, setOrderStatuses] = useState<OrderStatuses>({});
   const [depositStatuses, setDepositStatuses] = useState<DepositStatuses>({});
-
   const [withdrawalStatuses, setWithdrawalStatuses] = useState<WithdrawalStatuses>({});
+
   const [pendingPositionsUpdates, setPendingPositionsUpdates] = useState<PendingPositionsUpdates>({});
   const [positionIncreaseEvents, setPositionIncreaseEvents] = useState<PositionIncreaseEvent[]>([]);
   const [positionDecreaseEvents, setPositionDecreaseEvents] = useState<PositionDecreaseEvent[]>([]);
@@ -573,22 +572,23 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           }
         );
       },
-      async setPendingPosition(update: Omit<PendingPositionUpdate, "updatedAt" | "updatedAtBlock">) {
-        const provider = getProvider(undefined, chainId) as StaticJsonRpcProvider;
+      async setPendingPosition(update: PendingPositionUpdate) {
+        setPendingPositionsUpdates((old) => setByKey(old, update.positionKey, update));
+      },
 
-        const currentBlock = await provider.getBlockNumber();
+      setOrderStatusViewed(key: string) {
+        setOrderStatuses((old) => updateByKey(old, key, { isViewed: true }));
+      },
 
-        setPendingPositionsUpdates((old) =>
-          setByKey(old, update.positionKey, {
-            ...update,
-            updatedAt: Date.now(),
-            updatedAtBlock: BigNumber.from(currentBlock),
-          })
-        );
+      setDepositStatusViewed(key: string) {
+        setDepositStatuses((old) => updateByKey(old, key, { isViewed: true }));
+      },
+
+      setWithdrawalStatusViewed(key: string) {
+        setWithdrawalStatuses((old) => updateByKey(old, key, { isViewed: true }));
       },
     };
   }, [
-    chainId,
     depositStatuses,
     marketsInfoData,
     orderStatuses,

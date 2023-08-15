@@ -33,7 +33,8 @@ export function GmStatusNotification({
   tokensData,
 }: Props) {
   const { chainId } = useChainId();
-  const { depositStatuses, withdrawalStatuses } = useSyntheticsEvents();
+  const { depositStatuses, withdrawalStatuses, setDepositStatusViewed, setWithdrawalStatusViewed } =
+    useSyntheticsEvents();
 
   const isDeposit = Boolean(pendingDepositData);
 
@@ -97,8 +98,7 @@ export function GmStatusNotification({
 
       const marketInfo = getByKey(marketsInfoData, pendingDepositData.marketAddress);
       const indexName = marketInfo ? getMarketIndexName(marketInfo) : "";
-
-      return t`Buying ${indexName} with ${tokensText}`;
+      return t`Buying GM (${indexName}) with ${tokensText}`;
     } else {
       if (!pendingWithdrawalData) {
         return t`Unknown sell GM order`;
@@ -107,7 +107,7 @@ export function GmStatusNotification({
       const marketInfo = getByKey(marketsInfoData, pendingWithdrawalData.marketAddress);
       const indexName = marketInfo ? getMarketIndexName(marketInfo) : "";
 
-      return t`Selling ${indexName}`;
+      return t`Selling GM (${indexName})`;
     }
   }, [chainId, isDeposit, marketsInfoData, pendingDepositData, pendingWithdrawalData, tokensData]);
 
@@ -191,11 +191,12 @@ export function GmStatusNotification({
         }
 
         const matchedStatusKey = Object.values(depositStatuses).find(
-          (status) => status.createdAt > toastTimestamp && getPendingDepositKey(status.data) === pendingDepositKey
+          (status) => !status.isViewed && getPendingDepositKey(status.data) === pendingDepositKey
         )?.key;
 
         if (matchedStatusKey) {
           setDepositStatusKey(matchedStatusKey);
+          setDepositStatusViewed(matchedStatusKey);
         }
       } else {
         if (withdrawalStatusKey) {
@@ -203,11 +204,12 @@ export function GmStatusNotification({
         }
 
         const matchedStatusKey = Object.values(withdrawalStatuses).find(
-          (status) => status.createdAt > toastTimestamp && getPendingWithdrawalKey(status.data) === pendingWithdrawalKey
+          (status) => !status.isViewed && getPendingWithdrawalKey(status.data) === pendingWithdrawalKey
         )?.key;
 
         if (matchedStatusKey) {
           setWithdrawalStatusKey(matchedStatusKey);
+          setWithdrawalStatusViewed(matchedStatusKey);
         }
       }
     },
@@ -217,6 +219,8 @@ export function GmStatusNotification({
       isDeposit,
       pendingDepositKey,
       pendingWithdrawalKey,
+      setDepositStatusViewed,
+      setWithdrawalStatusViewed,
       toastTimestamp,
       withdrawalStatusKey,
       withdrawalStatuses,

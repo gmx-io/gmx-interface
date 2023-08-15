@@ -735,6 +735,15 @@ export function TradeBox(p: Props) {
     fixedTriggerThresholdType,
   ]);
 
+  const isSubmitButtonDisabled = useMemo(() => {
+    if (!account) {
+      return false;
+    }
+    if (error) {
+      return true;
+    }
+  }, [error, account]);
+
   const submitButtonText = useMemo(() => {
     if (error) {
       return error;
@@ -1118,20 +1127,22 @@ export function TradeBox(p: Props) {
             )}
           </>
         )}
-        <ExchangeInfoRow
-          className="SwapBox-info-row"
-          label={t`Market`}
-          value={
-            <MarketSelector
-              label={t`Market`}
-              className="SwapBox-info-dropdown"
-              selectedIndexName={toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined}
-              markets={sortedAllMarkets || []}
-              isSideMenu
-              onSelectMarket={(indexName, marketInfo) => onSelectToTokenAddress(marketInfo.indexToken.address)}
-            />
-          }
-        />
+        {isTrigger && (
+          <ExchangeInfoRow
+            className="SwapBox-info-row"
+            label={t`Market`}
+            value={
+              <MarketSelector
+                label={t`Market`}
+                className="SwapBox-info-dropdown"
+                selectedIndexName={toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined}
+                markets={sortedAllMarkets || []}
+                isSideMenu
+                onSelectMarket={(indexName, marketInfo) => onSelectToTokenAddress(marketInfo.indexToken.address)}
+              />
+            }
+          />
+        )}
 
         <MarketPoolSelectorRow
           selectedMarket={marketInfo}
@@ -1432,30 +1443,37 @@ export function TradeBox(p: Props) {
             onChange={onSelectTradeMode}
           />
 
-          {(isSwap || isIncrease) && renderTokenInputs()}
-          {isTrigger && renderDecreaseSizeInput()}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              onSubmit();
+            }}
+          >
+            {(isSwap || isIncrease) && renderTokenInputs()}
+            {isTrigger && renderDecreaseSizeInput()}
 
-          {isSwap && isLimit && renderTriggerRatioInput()}
-          {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}
+            {isSwap && isLimit && renderTriggerRatioInput()}
+            {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}
 
-          <div className="SwapBox-info-section">
-            {isPosition && renderPositionControls()}
-            {isIncrease && renderIncreaseOrderInfo()}
-            {isTrigger && renderTriggerOrderInfo()}
+            <div className="SwapBox-info-section">
+              {isPosition && renderPositionControls()}
+              {isIncrease && renderIncreaseOrderInfo()}
+              {isTrigger && renderTriggerOrderInfo()}
 
-            {feesType && <TradeFeesRow {...fees} executionFee={executionFee} feesType={feesType} />}
-          </div>
+              {feesType && <TradeFeesRow {...fees} executionFee={executionFee} feesType={feesType} />}
+            </div>
 
-          <div className="Exchange-swap-button-container">
-            <Button
-              variant="primary-action"
-              className="w-full"
-              onClick={onSubmit}
-              disabled={Boolean(error) && !shouldDisableValidation}
-            >
-              {error || submitButtonText}
-            </Button>
-          </div>
+            <div className="Exchange-swap-button-container">
+              <Button
+                variant="primary-action"
+                className="w-full"
+                onClick={onSubmit}
+                disabled={isSubmitButtonDisabled && !shouldDisableValidation}
+              >
+                {error || submitButtonText}
+              </Button>
+            </div>
+          </form>
         </div>
       </div>
 

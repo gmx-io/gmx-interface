@@ -31,7 +31,7 @@ type Props = {
 export function OrderStatusNotification({ pendingOrderData, marketsInfoData, tokensData, toastTimestamp }: Props) {
   const { chainId } = useChainId();
   const wrappedNativeToken = getWrappedToken(chainId);
-  const { orderStatuses } = useSyntheticsEvents();
+  const { orderStatuses, setOrderStatusViewed } = useSyntheticsEvents();
 
   const [orderStatusKey, setOrderStatusKey] = useState<string>();
 
@@ -173,16 +173,16 @@ export function OrderStatusNotification({ pendingOrderData, marketsInfoData, tok
         return;
       }
 
-      const matchedStatusKey = Object.values(orderStatuses).find(
-        (orderStatus) =>
-          orderStatus.createdAt > toastTimestamp && getPendingOrderKey(orderStatus.data) === pendingOrderKey
-      )?.key;
+      const matchedStatusKey = Object.values(orderStatuses).find((orderStatus) => {
+        return !orderStatus.isViewed && getPendingOrderKey(orderStatus.data) === pendingOrderKey;
+      })?.key;
 
       if (matchedStatusKey) {
         setOrderStatusKey(matchedStatusKey);
+        setOrderStatusViewed(matchedStatusKey);
       }
     },
-    [orderStatus, orderStatusKey, orderStatuses, pendingOrderKey, toastTimestamp]
+    [orderStatus, orderStatusKey, orderStatuses, pendingOrderKey, setOrderStatusViewed, toastTimestamp]
   );
 
   useEffect(
