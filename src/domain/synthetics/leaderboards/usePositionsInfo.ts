@@ -1,17 +1,27 @@
-
-import SyntheticsReader from "abis/SyntheticsReader.json";
-import { getContract } from "config/contracts";
-import { BigNumber, ethers } from "ethers";
-import { PositionsData, PositionsInfoData, getEntryPrice, getLeverage, getLiquidationPrice, getPositionKey, getPositionNetValue, getPositionPendingFeesUsd, getPositionPnlUsd, usePositionsConstants } from "../positions";
-import { ContractMarketPrices, MarketsInfoData, useMarketsInfo } from "../markets";
 import useSWR from "swr";
 import { useWeb3React } from "@web3-react/core";
-import { TokensData, convertToTokenAmount, convertToUsd } from "../tokens";
+import { BigNumber, ethers } from "ethers";
+import SyntheticsReader from "abis/SyntheticsReader.json";
+import { MAX_ALLOWED_LEVERAGE } from "config/factors";
+import { getContract } from "config/contracts";
+import { getBasisPoints } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getMarkPrice } from "../trade";
 import { getPositionFee, getPriceImpactForPosition } from "../fees";
-import { getBasisPoints } from "lib/numbers";
-import { MAX_ALLOWED_LEVERAGE } from "config/factors";
+import { TokensData, convertToTokenAmount, convertToUsd } from "../tokens";
+import { ContractMarketPrices, MarketsInfoData, useMarketsInfo } from "../markets";
+import {
+  PositionsData,
+  PositionsInfoData,
+  getEntryPrice,
+  getLeverage,
+  getLiquidationPrice,
+  getPositionKey,
+  getPositionNetValue,
+  getPositionPendingFeesUsd,
+  getPositionPnlUsd,
+  usePositionsConstants
+} from "../positions";
 
 type PositionsResult = {
   isLoading: boolean;
@@ -19,10 +29,18 @@ type PositionsResult = {
   error: Error | null;
 };
 
-const parsePositionsInfo = (positionKeys: string[], positions: { [key: string]: any, [key: number]: any }[]) => (
-  positions.reduce((positionsMap: PositionsData, positionInfo, i) => {
-    const { position, fees } = positionInfo;
-    const { addresses, numbers, flags, data } = position;
+type PositionJson = { [key: string]: any, [key: number]: any };
+
+const parsePositionsInfo = (
+  positionKeys: string[],
+  positions: PositionJson[],
+  marketsInfoData: MarketsInfoData,
+  tokensData: TokensData,
+  minCollateralUsd: BigNumber,
+  showPnlInLeverage: boolean = true,
+) => (
+  positions.reduce((positionsMap: PositionsInfoData, positionInfo, i) => {
+    const { position: { addresses, numbers, flags, data }, fees } = positionInfo;
     const { account, market: marketAddress, collateralToken: collateralTokenAddress } = addresses;
 
     // Empty position
@@ -32,8 +50,7 @@ const parsePositionsInfo = (positionKeys: string[], positions: { [key: string]: 
 
     const positionKey = getPositionKey(account, marketAddress, collateralTokenAddress, flags.isLong);
     const contractPositionKey = positionKeys[i];
-
-    positionsMap[positionKey] = {
+    const position = {
       key: positionKey,
       contractKey: contractPositionKey,
       account,
@@ -52,86 +69,13 @@ const parsePositionsInfo = (positionKeys: string[], positions: { [key: string]: 
       data,
     };
 
-    return positionsMap;
-  },
-  {} as PositionsData
-));
-
-export function usePositionsInfo(
-  chainId: number,
-  positionKeys: string[],
-  marketPrices: ContractMarketPrices[],
-): PositionsResult {
-
-  const { library } = useWeb3React();
-  const keys = [...positionKeys].sort((a, b) => a < b ? -1 : 1).join("-");
-  const method = "getAccountPositionInfoList";
-  const contractName = "SyntheticsReader";
-  const { minCollateralUsd } = usePositionsConstants(chainId);
-  const { marketsInfoData, tokensData } = useMarketsInfo(chainId);
-  const { data: positionsData, error } = useSWR<PositionsData>([
-    chainId,
-    contractName,
-    method,
-    keys
-  ], async () => {
-    if (!positionKeys.length) {
-      return {};
-    }
-    if (positionKeys.length !== marketPrices.length) {
-      throw new Error("The numbers of market prices and position keys do not match");
-    }
-
-    const contract = new ethers.Contract(
-      getContract(chainId, contractName),
-      SyntheticsReader.abi,
-      library.getSigner()
-    );
-
-    const args = [
-      getContract(chainId, "DataStore"),
-      getContract(chainId, "ReferralStorage"),
-      positionKeys,
-      marketPrices,
-      ethers.constants.AddressZero, // uiFeeReceiver
-    ];
-
-    return parsePositionsInfo(positionKeys, await contract[method](...args)) as PositionsData ;
-  });
-
-  const positionsCount = Object.keys(positionsData || {}).length;
-  const positionsLoaded = positionsCount === positionKeys.length;
-  const isLoading = !(positionsLoaded && marketsInfoData && tokensData && minCollateralUsd);
-
-  return {
-    isLoading,
-    error,
-    data: isLoading ? {} : getPositionsInfoData(
-      positionsData!,
-      marketsInfoData,
-      tokensData,
-      minCollateralUsd
-    )
-  };
-}
-
-const getPositionsInfoData = (
-  positionsData: PositionsData,
-  marketsInfoData: MarketsInfoData,
-  tokensData: TokensData,
-  minCollateralUsd: BigNumber,
-  showPnlInLeverage: boolean = true,
-): PositionsInfoData => {
-  return Object.keys(positionsData).reduce((acc: PositionsInfoData, positionKey: string) => {
-    const position = getByKey(positionsData, positionKey)!;
-
     const marketInfo = getByKey(marketsInfoData, position.marketAddress);
     const indexToken = marketInfo?.indexToken;
     const pnlToken = position.isLong ? marketInfo?.longToken : marketInfo?.shortToken;
     const collateralToken = getByKey(tokensData, position.collateralTokenAddress);
 
     if (!marketInfo || !indexToken || !pnlToken || !collateralToken) {
-      return acc;
+      return positionsMap;
     }
 
     const markPrice = getMarkPrice({ prices: indexToken.prices, isLong: position.isLong, isIncrease: false });
@@ -243,7 +187,7 @@ const getPositionsInfoData = (
       isLong: position.isLong,
     });
 
-    acc[positionKey] = {
+    positionsMap[positionKey] = {
       ...position,
       marketInfo,
       indexToken,
@@ -267,6 +211,66 @@ const getPositionsInfoData = (
       pendingClaimableFundingFeesUsd,
     };
 
-    return acc;
-  }, {} as PositionsInfoData);
-};
+    return positionsMap;
+  },
+  {} as PositionsData
+));
+
+export function usePositionsInfo(
+  chainId: number,
+  positionKeys: string[],
+  marketPrices: ContractMarketPrices[],
+): PositionsResult {
+
+  const { library } = useWeb3React();
+  const keys = [...positionKeys].sort((a, b) => a < b ? -1 : 1).join("-");
+  const method = "getAccountPositionInfoList";
+  const contractName = "SyntheticsReader";
+  const { minCollateralUsd } = usePositionsConstants(chainId);
+  const { marketsInfoData, tokensData } = useMarketsInfo(chainId);
+  const { data: positionsData, error } = useSWR<Array<PositionJson>>([
+    chainId,
+    contractName,
+    method,
+    keys
+  ], () => {
+    if (!positionKeys.length) {
+      return {};
+    }
+    if (positionKeys.length !== marketPrices.length) {
+      throw new Error("The numbers of market prices and position keys do not match");
+    }
+
+    const contract = new ethers.Contract(
+      getContract(chainId, contractName),
+      SyntheticsReader.abi,
+      library.getSigner()
+    );
+
+    const args = [
+      getContract(chainId, "DataStore"),
+      getContract(chainId, "ReferralStorage"),
+      positionKeys,
+      marketPrices,
+      ethers.constants.AddressZero, // uiFeeReceiver
+    ];
+
+    return contract[method](...args);
+  });
+
+  const positionsCount = Object.keys(positionsData || {}).length;
+  const positionsLoaded = positionsCount === positionKeys.length;
+  const isLoading = !(positionsLoaded && marketsInfoData && tokensData && minCollateralUsd);
+
+  return {
+    isLoading,
+    error,
+    data: isLoading ? {} : parsePositionsInfo(
+      positionKeys,
+      positionsData!,
+      marketsInfoData,
+      tokensData,
+      minCollateralUsd
+    )
+  };
+}

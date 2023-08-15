@@ -1,8 +1,15 @@
-import { AccountPositionsSummary, AccountScores, PerfPeriod, AccountOpenPosition, PositionsSummaryByAccount } from "./types";
-import { useAccountOpenPositions, useAccountPerf } from "./index";
 import { BigNumber } from "ethers";
-import { expandDecimals } from "lib/numbers";
 import { USD_DECIMALS } from "lib/legacy";
+import { expandDecimals } from "lib/numbers";
+import { useAccountOpenPositions, useAccountPerf } from ".";
+import {
+  AccountPositionsSummary,
+  TopAccountsRow,
+  PerfPeriod,
+  AccountOpenPosition,
+  PositionsSummaryByAccount
+} from "./types";
+
 
 const defaultSummary = (account: string): AccountPositionsSummary => ({
   account,
@@ -63,7 +70,7 @@ export function useTopAccounts(period: PerfPeriod) {
     return { data: [], isLoading: true, error: null };
   }
 
-  const data: Array<AccountScores> = []
+  const data: Array<TopAccountsRow> = []
   const openPositionsByAccount: Record<string, AccountPositionsSummary> = groupPositionsByAccount(positions.data);
 
   for (let i = 0; i < accountPerf.data.length; i++) {
@@ -111,7 +118,7 @@ export function useTopAccounts(period: PerfPeriod) {
     data.push(scores);
   }
 
-  const orderedData: Array<AccountScores> = data.sort((a, b) => a.absPnl.gt(b.absPnl) ? -1 : 1);
+  const orderedData: Array<TopAccountsRow> = data.sort((a, b) => a.absPnl.gt(b.absPnl) ? -1 : 1);
 
   return { isLoading: false, error: null, data: orderedData };
 }

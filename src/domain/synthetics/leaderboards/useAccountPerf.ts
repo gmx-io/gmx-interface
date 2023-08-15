@@ -22,7 +22,7 @@ const fetchAccountPerfs = async (
   skip: number,
   orderBy: string = "totalPnl",
   orderDirection: "asc" | "desc" = "desc",
-): Promise<Array<AccountPerf>> => {
+): Promise<Array<AccountPerfJson>> => {
   if (!(period in filtersByPeriod)) {
     throw new Error(`Invalid period "${period}"`);
   }
@@ -32,37 +32,34 @@ const fetchAccountPerfs = async (
     variables: { first, skip, orderBy, orderDirection, ...filtersByPeriod[period] }
   });
 
-  return res.data.accountPerfs.map(a => ({
-    id: a.account,
-    account: getAddress(a.account),
-    period: period,
-    timestamp: a.timestamp,
-    wins: BigNumber.from(a.wins),
-    losses: BigNumber.from(a.losses),
-    totalPnl: BigNumber.from(a.totalPnl),
-    totalCollateral: BigNumber.from(a.totalCollateral),
-    maxCollateral: BigNumber.from(a.maxCollateral),
-    cumsumSize: BigNumber.from(a.cumsumSize),
-    cumsumCollateral: BigNumber.from(a.cumsumCollateral),
-    sumMaxSize: BigNumber.from(a.sumMaxSize),
-    closedCount: BigNumber.from(a.closedCount),
-    borrowingFeeUsd: BigNumber.from(a.borrowingFeeUsd),
-    fundingFeeUsd: BigNumber.from(a.fundingFeeUsd),
-    positionFeeUsd: BigNumber.from(a.positionFeeUsd),
-    priceImpactUsd: BigNumber.from(a.priceImpactUsd),
-  }));
+  return res.data.accountPerfs;
 };
 
-const sumScoresByAccount = (accountPerfs: AccountPerf[], period: PerfPeriod) => {
-  const groupBy = {};
+const sumPerfByAccount = (accountPerfs: AccountPerfJson[], period: PerfPeriod) => {
+  const aggregation = {};
 
-  for (const accountData of accountPerfs) {
-    if (!groupBy[accountData.account]) {
-      groupBy[accountData.account] = {
-        id: accountData.account,
-        account: accountData.account,
-        period: period,
-        timestamp: accountData.timestamp,
+  for (const perfJson of accountPerfs) {
+    const account = getAddress(perfJson.account);
+    const wins = BigNumber.from(perfJson.wins);
+    const losses = BigNumber.from(perfJson.losses);
+    const totalPnl = BigNumber.from(perfJson.totalPnl);
+    const totalCollateral = BigNumber.from(perfJson.totalCollateral);
+    const maxCollateral = BigNumber.from(perfJson.maxCollateral);
+    const cumsumSize = BigNumber.from(perfJson.cumsumSize);
+    const cumsumCollateral = BigNumber.from(perfJson.cumsumCollateral);
+    const sumMaxSize = BigNumber.from(perfJson.sumMaxSize);
+    const closedCount = BigNumber.from(perfJson.closedCount);
+    const borrowingFeeUsd = BigNumber.from(perfJson.borrowingFeeUsd);
+    const fundingFeeUsd = BigNumber.from(perfJson.fundingFeeUsd);
+    const positionFeeUsd = BigNumber.from(perfJson.positionFeeUsd);
+    const priceImpactUsd = BigNumber.from(perfJson.priceImpactUsd);
+
+    if (!aggregation[account]) {
+      aggregation[account] = {
+        id: account,
+        account,
+        period,
+        timestamp: perfJson.timestamp,
         wins: BigNumber.from(0),
         losses: BigNumber.from(0),
         totalPnl: BigNumber.from(0),
@@ -79,38 +76,38 @@ const sumScoresByAccount = (accountPerfs: AccountPerf[], period: PerfPeriod) => 
       };
     } else {
       // eslint-disable-next-line no-console
-      console.warn(`multiple account total perf entities detected for account ${accountData.account}`, {
-        account: accountData.account,
+      console.warn(`multiple account total perf entities detected for account ${account}`, {
+        account,
         requestedPeriod: period,
-        returnedPeriod: accountData.period,
-        returnedTs: new Date(accountData.timestamp * 1000).toISOString(),
+        returnedPeriod: perfJson.period,
+        returnedTs: new Date(perfJson.timestamp * 1000).toISOString(),
       });
     }
 
-    const perf = groupBy[accountData.account];
+    const perf = aggregation[account];
 
-    perf.wins = perf.wins.add(accountData.wins);
-    perf.losses = perf.losses.add(accountData.losses);
-    perf.totalPnl = perf.totalPnl.add(accountData.totalPnl);
-    perf.totalCollateral = perf.totalCollateral.add(accountData.totalCollateral);
-    perf.maxCollateral = perf.maxCollateral.lt(accountData.maxCollateral) ? accountData.maxCollateral : perf.maxCollateral;
-    perf.cumsumSize = perf.cumsumSize.add(accountData.cumsumSize);
-    perf.cumsumCollateral = perf.cumsumCollateral.add(accountData.cumsumCollateral);
-    perf.sumMaxSize = perf.sumMaxSize.add(accountData.sumMaxSize);
-    perf.closedCount = perf.closedCount.add(accountData.closedCount);
-    perf.borrowingFeeUsd = perf.borrowingFeeUsd.add(accountData.borrowingFeeUsd);
-    perf.fundingFeeUsd = perf.fundingFeeUsd.add(accountData.fundingFeeUsd);
-    perf.positionFeeUsd = perf.positionFeeUsd.add(accountData.positionFeeUsd);
-    perf.priceImpactUsd = perf.priceImpactUsd.add(accountData.priceImpactUsd);
+    perf.wins = perf.wins.add(wins);
+    perf.losses = perf.losses.add(losses);
+    perf.totalPnl = perf.totalPnl.add(totalPnl);
+    perf.totalCollateral = perf.totalCollateral.add(totalCollateral);
+    perf.maxCollateral = perf.maxCollateral.lt(maxCollateral) ? maxCollateral : perf.maxCollateral;
+    perf.cumsumSize = perf.cumsumSize.add(cumsumSize);
+    perf.cumsumCollateral = perf.cumsumCollateral.add(cumsumCollateral);
+    perf.sumMaxSize = perf.sumMaxSize.add(sumMaxSize);
+    perf.closedCount = perf.closedCount.add(closedCount);
+    perf.borrowingFeeUsd = perf.borrowingFeeUsd.add(borrowingFeeUsd);
+    perf.fundingFeeUsd = perf.fundingFeeUsd.add(fundingFeeUsd);
+    perf.positionFeeUsd = perf.positionFeeUsd.add(positionFeeUsd);
+    perf.priceImpactUsd = perf.priceImpactUsd.add(priceImpactUsd);
   }
 
-  return groupBy;
+  return aggregation;
 };
 
 export function useAccountPerf(period: PerfPeriod) {
   const accounts = useSWR("leaderboards/accounts", async () => {
     const pageSize = 1000;
-    let data: Array<AccountPerf> = [];
+    let data: Array<AccountPerfJson> = [];
     let skip = 0;
 
     while (true) {
@@ -122,16 +119,14 @@ export function useAccountPerf(period: PerfPeriod) {
       skip += pageSize;
     }
 
-    const perfByAccount: PerfByAccount = sumScoresByAccount(data, period);
-
-    return Object.values(perfByAccount);
+    return data;
   });
 
-  // console.log('Total accounts:', accounts.data && accounts.data.length || 0)
+  const data: PerfByAccount = sumPerfByAccount(accounts.data || [], period);
 
   return {
     isLoading: !accounts.data && !accounts.error,
-    data: accounts.data || [],
+    data: data ? Object.values(data) : [],
     error: accounts.error || null,
   } as RemoteData<AccountPerf>;
 };

@@ -52,7 +52,7 @@ export type AccountPerf = {
 
 export type PerfByAccount = { [key: string]: AccountPerf };
 
-export type AccountScores = {
+export type TopAccountsRow = {
   id: string;
   account: string;
   absPnl: BigNumber;
@@ -154,7 +154,7 @@ export type RemoteData<T> = {
 export type LeaderboardContextType = {
   chainId: number;
   topPositions: RemoteData<AccountOpenPosition>;
-  topAccounts: RemoteData<AccountScores>;
+  topAccounts: RemoteData<TopAccountsRow>;
   period: PerfPeriod;
   setPeriod: (_: PerfPeriod) => void;
 };
