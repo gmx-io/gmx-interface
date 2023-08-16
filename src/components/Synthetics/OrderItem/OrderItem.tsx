@@ -1,4 +1,5 @@
 import { Trans, t } from "@lingui/macro";
+import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -184,7 +185,7 @@ export function OrderItem(p: Props) {
       const fromTokenText = formatTokenAmount(initialCollateralDeltaAmount, initialCollateralToken.decimals, "");
       const fromTokenWithIcon = (
         <span className="nobr">
-          <TokenIcon className="mr-xs ml-xxs" symbol={initialCollateralToken.symbol} displaySize={18} importSize={24} />
+          <TokenIcon className="mr-xs ml-xxs" symbol={initialCollateralToken.symbol} displaySize={20} importSize={24} />
           {fromTokenText}
         </span>
       );
@@ -193,7 +194,7 @@ export function OrderItem(p: Props) {
 
       const toTokenWithIcon = (
         <span className="nobr">
-          <TokenIcon className="mr-xs ml-xxs" symbol={targetCollateralToken.symbol} displaySize={18} importSize={24} />
+          <TokenIcon className="mr-xs ml-xxs" symbol={targetCollateralToken.symbol} displaySize={20} importSize={24} />
           {toTokenText}
         </span>
       );
@@ -211,7 +212,7 @@ export function OrderItem(p: Props) {
       const symbolWithIcon = (
         <span>
           {indexToken && (
-            <TokenIcon className="mr-xs ml-xxs" symbol={indexToken?.symbol} displaySize={18} importSize={24} />
+            <TokenIcon className="mr-xs ml-xxs" symbol={indexToken?.symbol} displaySize={20} importSize={24} />
           )}
           {indexToken?.symbol}
         </span>
@@ -416,17 +417,17 @@ export function OrderItem(p: Props) {
             {!p.hideActions && (
               <>
                 <div className="App-card-divider"></div>
-                <div className="App-card-options">
+                <div className="remove-top-margin">
                   {p.onEditOrder && (
-                    <button className="App-button-option App-card-option" onClick={p.onEditOrder}>
+                    <Button variant="secondary" className="mr-md mt-md" onClick={p.onEditOrder}>
                       <Trans>Edit</Trans>
-                    </button>
+                    </Button>
                   )}
 
                   {p.onCancelOrder && (
-                    <button className="App-button-option App-card-option" onClick={p.onCancelOrder}>
-                      <Trans>Cancel</Trans>
-                    </button>
+                    <Button variant="secondary" className="mt-md" onClick={p.onCancelOrder}>
+                      <Trans>Edit</Trans>
+                    </Button>
                   )}
                 </div>
               </>

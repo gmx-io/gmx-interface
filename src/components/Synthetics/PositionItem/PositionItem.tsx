@@ -24,6 +24,7 @@ import "./PositionItem.scss";
 import { useChainId } from "lib/chains";
 import { useMedia } from "react-use";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import Button from "components/Button/Button";
 
 export type Props = {
   position: PositionInfo;
@@ -594,23 +595,26 @@ export function PositionItem(p: Props) {
           {!p.hideActions && (
             <>
               <div className="App-card-divider"></div>
-              <div className="App-card-options">
-                <button
-                  className="App-button-option App-card-option"
+              <div className="remove-top-margin">
+                <Button
+                  variant="secondary"
+                  className="mr-md mt-md"
                   disabled={p.position.sizeInUsd.eq(0)}
                   onClick={p.onClosePositionClick}
                 >
-                  <Trans>Close</Trans>
-                </button>
-                <button
-                  className="App-button-option App-card-option"
+                  <Trans>Edit</Trans>
+                </Button>
+                <Button
+                  variant="secondary"
+                  className="mr-md mt-md"
                   disabled={p.position.sizeInUsd.eq(0)}
                   onClick={p.onEditCollateralClick}
                 >
-                  <Trans>Edit Collateral</Trans>
-                </button>
-                <button
-                  className="App-button-option App-card-option"
+                  <Trans>Cancel</Trans>
+                </Button>
+                <Button
+                  variant="secondary"
+                  className="mt-md"
                   disabled={p.position.sizeInUsd.eq(0)}
                   onClick={() => {
                     // TODO: remove after adding trigger functionality to Modal
@@ -619,7 +623,7 @@ export function PositionItem(p: Props) {
                   }}
                 >
                   <Trans>Trigger</Trans>
-                </button>
+                </Button>
               </div>
             </>
           )}

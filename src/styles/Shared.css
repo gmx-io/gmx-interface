@@ -403,7 +403,6 @@ button.btn-link:hover .logout-icon {
 .mt-md {
   margin-top: 1.5rem;
 }
-
 .page-layout {
   min-height: calc(100vh - 62px);
   display: flex;
@@ -443,7 +442,8 @@ button.btn-link:hover .logout-icon {
 .font-base {
   font-size: var(--font-base);
 }
-.mr-base {
+
+.mr-md {
   margin-right: 1.5rem;
 }
 .default-cursor.App-cta {

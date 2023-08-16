@@ -4,8 +4,7 @@
   justify-content: space-between;
 }
 
-.Exchange-trigger-order-info,
-.Exchange-trigger-order-info a {
+.Exchange-trigger-order-info {
   color: rgba(255, 255, 255, 0.7);
   border: 1px solid #23263b;
 }
@@ -842,8 +841,8 @@ table.Exchange-list-small td {
   margin-right: 0.5rem;
 }
 
-.Position-item-actions {
-  padding-top: 0.45rem;
+.remove-top-margin {
+  margin-top: -1.05rem;
 }
 
 .Exchange-list-info-label {

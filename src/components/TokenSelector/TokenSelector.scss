@@ -35,6 +35,10 @@
   border-radius: 0.6rem;
   text-align: right;
   white-space: nowrap;
+
+  .Token-symbol-text {
+    line-height: 0.85;
+  }
 }
 
 .TokenSelector-box:hover {

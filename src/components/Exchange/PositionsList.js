@@ -415,10 +415,10 @@ export default function PositionsList(props) {
                   {!hideActions && (
                     <div>
                       <div className="App-card-divider"></div>
-                      <div className="Position-item-actions">
+                      <div className="remove-top-margin">
                         <Button
                           variant="secondary"
-                          className="mr-base"
+                          className="mr-md mt-md"
                           disabled={position.size.eq(0)}
                           onClick={() => sellPosition(position)}
                         >
@@ -426,7 +426,7 @@ export default function PositionsList(props) {
                         </Button>
                         <Button
                           variant="secondary"
-                          className="mr-base"
+                          className="mr-md mt-md"
                           disabled={position.size.eq(0)}
                           onClick={() => editPosition(position)}
                         >
@@ -434,6 +434,7 @@ export default function PositionsList(props) {
                         </Button>
                         <Button
                           variant="secondary"
+                          className="mt-md"
                           onClick={() => {
                             setPositionToShare(position);
                             setIsPositionShareModalOpen(true);

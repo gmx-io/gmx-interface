@@ -1091,9 +1091,9 @@ export function TradeBox(p: Props) {
       >
         {markRatio && (
           <>
-            <TokenWithIcon symbol={markRatio.smallestToken.symbol} displaySize={18} />
+            <TokenWithIcon symbol={markRatio.smallestToken.symbol} displaySize={20} />
              per 
-            <TokenWithIcon symbol={markRatio.largestToken.symbol} displaySize={18} />
+            <TokenWithIcon symbol={markRatio.largestToken.symbol} displaySize={20} />
           </>
         )}
       </BuyInputSection>

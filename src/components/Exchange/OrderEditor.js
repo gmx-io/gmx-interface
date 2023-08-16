@@ -354,9 +354,9 @@ export default function OrderEditor(props) {
             const [tokenA, tokenB] = triggerRatioInverted ? [toTokenInfo, fromTokenInfo] : [fromTokenInfo, toTokenInfo];
             return (
               <div className="PositionEditor-token-symbol Order-editor-tokens">
-                <TokenWithIcon className="Order-editor-icon" symbol={tokenA.symbol} displaySize={18} />
+                <TokenWithIcon className="Order-editor-icon" symbol={tokenA.symbol} displaySize={20} />
                 &nbsp;/&nbsp;
-                <TokenWithIcon className="Order-editor-icon" symbol={tokenB.symbol} displaySize={18} />
+                <TokenWithIcon className="Order-editor-icon" symbol={tokenB.symbol} displaySize={20} />
               </div>
             );
           })()}

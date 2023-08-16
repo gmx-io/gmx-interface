@@ -6,7 +6,7 @@ import { BiChevronDown } from "react-icons/bi";
 import Modal from "../Modal/Modal";
 
 import dropDownIcon from "img/DROP_DOWN.svg";
-import "./TokenSelector.css";
+import "./TokenSelector.scss";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 import { bigNumberify, expandDecimals, formatAmount } from "lib/numbers";
 import { getToken } from "config/tokens";
@@ -248,14 +248,9 @@ export default function TokenSelector(props: Props) {
         <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
           <span className="inline-items-center">
             {showSymbolImage && (
-              <TokenIcon
-                className="TokenSelector-box-symbol"
-                symbol={tokenInfo.symbol}
-                importSize={24}
-                displaySize={18}
-              />
+              <TokenIcon className="mr-xs" symbol={tokenInfo.symbol} importSize={24} displaySize={20} />
             )}
-            {tokenInfo.symbol}
+            <span className="Token-symbol-text">{tokenInfo.symbol}</span>
           </span>
           {showNewCaret && <img src={dropDownIcon} alt="Dropdown Icon" className="TokenSelector-box-caret" />}
           {!showNewCaret && <BiChevronDown className="TokenSelector-caret" />}

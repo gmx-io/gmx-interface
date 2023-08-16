@@ -2006,9 +2006,9 @@ export default function SwapBox(props) {
                   : [fromTokenInfo, toTokenInfo];
                 return (
                   <div className="PositionEditor-token-symbol">
-                    <TokenWithIcon className="Swap-limit-icon" symbol={tokenA.symbol} displaySize={18} />
+                    <TokenWithIcon className="Swap-limit-icon" symbol={tokenA.symbol} displaySize={20} />
                     &nbsp;per&nbsp;
-                    <TokenWithIcon className="Swap-limit-icon" symbol={tokenB.symbol} displaySize={18} />
+                    <TokenWithIcon className="Swap-limit-icon" symbol={tokenB.symbol} displaySize={20} />
                   </div>
                 );
               })()}

@@ -519,13 +519,13 @@ export default function ConfirmationBox(props) {
         <div className="Confirmation-box-main">
           <div>
             <Trans>Pay</Trans>&nbsp;{formatAmount(fromAmount, fromToken.decimals, 4, true)}{" "}
-            <TokenWithIcon symbol={fromToken.symbol} displaySize={18} /> ($
+            <TokenWithIcon symbol={fromToken.symbol} displaySize={20} /> ($
             {formatAmount(fromUsdMin, USD_DECIMALS, 2, true)})
           </div>
           <div className="Confirmation-box-main-icon"></div>
           <div>
             <Trans>Receive</Trans>&nbsp;{formatAmount(toAmount, toToken.decimals, 4, true)}{" "}
-            <TokenWithIcon symbol={toToken.symbol} displaySize={18} /> ($
+            <TokenWithIcon symbol={toToken.symbol} displaySize={20} /> ($
             {formatAmount(toUsdMax, USD_DECIMALS, 2, true)})
           </div>
         </div>
@@ -536,13 +536,13 @@ export default function ConfirmationBox(props) {
       <div className="Confirmation-box-main">
         <span>
           <Trans>Pay</Trans>&nbsp;{formatAmount(fromAmount, fromToken.decimals, 4, true)}{" "}
-          <TokenWithIcon symbol={fromToken.symbol} displaySize={18} /> ($
+          <TokenWithIcon symbol={fromToken.symbol} displaySize={20} /> ($
           {formatAmount(fromUsdMin, USD_DECIMALS, 2, true)})
         </span>
         <div className="Confirmation-box-main-icon"></div>
         <div>
           {isLong ? t`Long` : t`Short`}&nbsp;
-          {formatAmount(toAmount, toToken.decimals, 4, true)} <TokenWithIcon symbol={toToken.symbol} displaySize={18} />{" "}
+          {formatAmount(toAmount, toToken.decimals, 4, true)} <TokenWithIcon symbol={toToken.symbol} displaySize={20} />{" "}
           (${formatAmount(toUsdMax, USD_DECIMALS, 2, true)})
         </div>
       </div>

@@ -26,6 +26,7 @@ import { formatAmount } from "lib/numbers";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { getPriceDecimals } from "config/tokens";
+import Button from "components/Button/Button";
 
 function getOrderTitle(order, indexTokenSymbol) {
   const orderTypeText = order.type === INCREASE ? t`Increase` : t`Decrease`;
@@ -33,7 +34,7 @@ function getOrderTitle(order, indexTokenSymbol) {
   const sizeDeltaText = formatAmount(order.sizeDelta, USD_DECIMALS, 2, true);
   const symbolWithIcon = (
     <>
-      <TokenIcon className="mx-xs" symbol={indexTokenSymbol} displaySize={18} importSize={24} />
+      <TokenIcon className="mx-xs" symbol={indexTokenSymbol} displaySize={20} importSize={24} />
       {indexTokenSymbol}
     </>
   );
@@ -184,10 +185,10 @@ export default function OrdersList(props) {
               fromTokenInfo.isStable || fromTokenInfo.isUsdg ? 2 : 4,
               true
             )}
-            <TokenIcon className="mx-xs" symbol={fromTokenInfo.symbol} displaySize={18} importSize={24} />
+            <TokenIcon className="mx-xs" symbol={fromTokenInfo.symbol} displaySize={20} importSize={24} />
             {fromTokenInfo.symbol} for{" "}
             {formatAmount(order.minOut, toTokenInfo.decimals, toTokenInfo.isStable || toTokenInfo.isUsdg ? 2 : 4, true)}
-            <TokenIcon className="mx-xs" symbol={toTokenInfo.symbol} displaySize={18} importSize={24} />
+            <TokenIcon className="mx-xs" symbol={toTokenInfo.symbol} displaySize={20} importSize={24} />
             {toTokenInfo.symbol}
           </>
         );
@@ -403,10 +404,10 @@ export default function OrdersList(props) {
         const titleText = (
           <>
             Swap {formatAmount(order.amountIn, fromTokenInfo.decimals, fromTokenInfo.isStable ? 2 : 4, true)}
-            <TokenIcon className="mx-xs" symbol={fromTokenInfo.symbol} displaySize={18} importSize={24} />
+            <TokenIcon className="mx-xs" symbol={fromTokenInfo.symbol} displaySize={20} importSize={24} />
             {fromTokenInfo.symbol} for{" "}
             {formatAmount(order.minOut, toTokenInfo.decimals, toTokenInfo.isStable ? 2 : 4, true)}
-            <TokenIcon className="mx-xs" symbol={toTokenInfo.symbol} displaySize={18} importSize={24} />
+            <TokenIcon className="mx-xs" symbol={toTokenInfo.symbol} displaySize={20} importSize={24} />
             {toTokenInfo.symbol}
           </>
         );
@@ -457,13 +458,13 @@ export default function OrdersList(props) {
               {!hideActions && (
                 <>
                   <div className="App-card-divider"></div>
-                  <div className="App-card-options">
-                    <button className="App-button-option App-card-option" onClick={() => onEditClick(order)}>
+                  <div className="remove-top-margin">
+                    <Button variant="secondary" className="mr-md mt-md" onClick={() => onEditClick(order)}>
                       <Trans>Edit</Trans>
-                    </button>
-                    <button className="App-button-option App-card-option" onClick={() => onCancelClick(order)}>
+                    </Button>
+                    <Button variant="secondary" className="mt-md" onClick={() => onCancelClick(order)}>
                       <Trans>Cancel</Trans>
-                    </button>
+                    </Button>
                   </div>
                 </>
               )}
@@ -545,13 +546,13 @@ export default function OrdersList(props) {
             {!hideActions && (
               <>
                 <div className="App-card-divider"></div>
-                <div className="App-card-options">
-                  <button className="App-button-option App-card-option" onClick={() => onEditClick(order)}>
+                <div className="remove-top-margin">
+                  <Button variant="secondary" className="mr-md mt-md" onClick={() => onEditClick(order)}>
                     <Trans>Edit</Trans>
-                  </button>
-                  <button className="App-button-option App-card-option" onClick={() => onCancelClick(order)}>
+                  </Button>
+                  <Button variant="secondary" className="mt-md" onClick={() => onCancelClick(order)}>
                     <Trans>Cancel</Trans>
-                  </button>
+                  </Button>
                 </div>
               </>
             )}

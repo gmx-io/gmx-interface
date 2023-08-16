@@ -1899,7 +1899,9 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
             <div className="App-card-title">
               <div className="inline-items-center">
                 <img className="mr-xs" alt="GLP" src={icons.esgmx} height={20} />
-                <Trans>Escrowed GMX</Trans>
+                <span>
+                  <Trans>Escrowed GMX</Trans>
+                </span>
               </div>
             </div>
             <div className="App-card-divider"></div>
