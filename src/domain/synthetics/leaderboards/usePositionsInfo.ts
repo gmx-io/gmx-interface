@@ -31,15 +31,15 @@ type PositionsResult = {
 
 type PositionJson = { [key: string]: any, [key: number]: any };
 
-const parsePositionsInfo = (
-  positionKeys: string[],
-  positions: PositionJson[],
+function parsePositionsInfo(
+  positionKeys: string[] = [],
+  positions: PositionJson[] = [],
   marketsInfoData: MarketsInfoData,
   tokensData: TokensData,
   minCollateralUsd: BigNumber,
   showPnlInLeverage: boolean = true,
-) => (
-  positions.reduce((positionsMap: PositionsInfoData, positionInfo, i) => {
+) {
+  return positions.reduce((positionsMap: PositionsInfoData, positionInfo, i) => {
     const { position: { addresses, numbers, flags, data }, fees } = positionInfo;
     const { account, market: marketAddress, collateralToken: collateralTokenAddress } = addresses;
 
@@ -213,8 +213,8 @@ const parsePositionsInfo = (
 
     return positionsMap;
   },
-  {} as PositionsData
-));
+  {} as PositionsData);
+};
 
 export function usePositionsInfo(
   chainId: number,
@@ -260,7 +260,13 @@ export function usePositionsInfo(
 
   const positionsCount = Object.keys(positionsData || {}).length;
   const positionsLoaded = positionsCount === positionKeys.length;
-  const isLoading = !(positionsLoaded && marketsInfoData && tokensData && minCollateralUsd);
+  const isLoading = !(
+    Array.isArray(positionsData) &&
+    positionsLoaded &&
+    marketsInfoData &&
+    tokensData &&
+    minCollateralUsd
+  );
 
   return {
     isLoading,

@@ -11,6 +11,10 @@ export default function Table<T extends Record<string, any>>({
   titles,
   rowKey
 }: TableProps<T>) {
+  let errorMsg: string | null = null;
+  if (error) {
+    errorMsg = error instanceof Error ? error.message : JSON.stringify(error);
+  }
   return (
     <table className="Exchange-list large App-box">
       <tbody>
@@ -27,9 +31,9 @@ export default function Table<T extends Record<string, any>>({
           }
         </tr>
         {
-          isLoading ? <tr><td colSpan={5}>{t`Loading...`}</td></tr> : (
-            error ? <tr><td colSpan={9}>{t`Error` + ": " + String(error)}</td></tr> : (
-              !content.length ? <tr><td colSpan={9}>{t`No data yet`}</td></tr> : (
+          isLoading ? <tr><td colSpan={5}>{ t`Loading...` }</td></tr> : (
+            error ? <tr><td colSpan={9}>{ t`Error` + ": " + errorMsg }</td></tr> : (
+              !content.length ? <tr><td colSpan={9}>{ t`No data yet` }</td></tr> : (
                 content.map((row, i) => (
                   <tr key={row[rowKey]}>
                     {
