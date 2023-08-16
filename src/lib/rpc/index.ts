@@ -107,6 +107,14 @@ export function isWebsocketProvider(provider: any): provider is WebSocketProvide
   return provider._websocket;
 }
 
+// CLOSED
+export enum WSReadyState {
+  CLOSED = 3,
+  CLOSING = 2,
+  CONNECTING = 0,
+  OPEN = 1,
+}
+
 const WS_PROVIDERS_CACHE: { [chainId: number]: WebSocketProvider | JsonRpcProvider | undefined } = {};
 const WS_LAST_BLOCK_UPDATED_AT: { [chainId: number]: number } = {};
 // const WS_KEEP_ALIVE_INTERVAL = 5 * 60_000;
@@ -132,17 +140,6 @@ export function useWsProvider(active: boolean, chainId: number) {
           setNeedToReconnect(true);
         };
       }
-
-      // function healthCheck() {
-      //   setTimeout(() => {
-      //     // setNeedToReconnect(true);
-      //     // WS_PROVIDERS_CACHE[chainId] = undefined;
-      //     // newProvider?.removeAllListeners();
-      //     healthCheck();
-      //   }, WS_KEEP_ALIVE_INTERVAL);
-      // }
-
-      // healthCheck();
 
       return newProvider;
     },
@@ -176,6 +173,13 @@ export function useWsProvider(active: boolean, chainId: number) {
       console.log(`ws provider updated for chain ${chainId}`);
     },
     [active, chainId, initializeProvider, needToReconnect]
+  );
+
+  // eslint-disable-next-line no-console
+  console.log(
+    "WS READY",
+    (provider as WebSocketProvider)?._websocket,
+    (provider as WebSocketProvider)?._websocket?.readyState
   );
 
   if (!active) {

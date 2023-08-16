@@ -2,6 +2,8 @@ import { useWeb3React } from "@web3-react/core";
 import useSWR from "swr";
 import { CacheKey, MulticallRequestConfig, MulticallResult, SkipKey } from "./types";
 import { executeMulticall } from "./utils";
+import { useHasPageLostFocus } from "lib/useHasPageLostFocus";
+import { WS_BLUR_UNSUBSCRIBE_TIMEOUT } from "config/ui";
 
 /**
  * A hook to fetch data from contracts via multicall.
@@ -24,8 +26,10 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
   }
 ) {
   const { library } = useWeb3React();
+  const hasLostFocus = useHasPageLostFocus(WS_BLUR_UNSUBSCRIBE_TIMEOUT);
 
-  let swrFullKey = Array.isArray(params.key) && chainId && name ? [chainId, name, ...params.key] : null;
+  let swrFullKey =
+    !hasLostFocus && Array.isArray(params.key) && chainId && name ? [chainId, name, ...params.key] : null;
 
   const swrOpts: any = {};
 
