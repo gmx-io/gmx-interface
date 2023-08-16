@@ -19,7 +19,6 @@ import {
   useCodeOwner,
   useReferralsData,
   useReferrerDiscountShare,
-  useTiers,
   useUserReferralCode,
 } from "domain/referrals";
 import { ethers } from "ethers";
@@ -61,8 +60,6 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   const { discountShare } = useReferrerDiscountShare(library, chainId, codeOwner);
   const networkIcon = getIcon(chainId, "network");
 
-  const { totalRebate } = useTiers(library, chainId, traderTier);
-
   function handleCreateReferralCode(referralCode) {
     return registerReferralCode(chainId, referralCode, library, {
       sentMsg: t`Referral code submitted!`,
@@ -86,7 +83,6 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
           setRecentlyAddedCodes={setRecentlyAddedCodes}
           recentlyAddedCodes={recentlyAddedCodes}
           chainId={chainId}
-          totalRebate={totalRebate}
         />
       );
     } else {
@@ -123,7 +119,6 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
         pendingTxns={pendingTxns}
         traderTier={traderTier}
         discountShare={discountShare}
-        totalRebate={totalRebate}
       />
     );
   }

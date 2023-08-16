@@ -5,7 +5,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getExplorerUrl } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getNativeToken, getToken } from "config/tokens";
-import { TotalReferralsStats } from "domain/referrals";
+import { TotalReferralsStats, useTiers } from "domain/referrals";
 import { BigNumber } from "ethers";
 import { formatDate } from "lib/dates";
 import { shortenAddress } from "lib/legacy";
@@ -22,6 +22,7 @@ import ReferralInfoCard from "./ReferralInfoCard";
 import "./TradersStats.scss";
 import { getSharePercentage, getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./referralsHelper";
 import usePagination from "./usePagination";
+import { useWeb3React } from "@web3-react/core";
 
 type Props = {
   referralsData?: TotalReferralsStats;
@@ -31,7 +32,6 @@ type Props = {
   setPendingTxns: (txns: string[]) => void;
   pendingTxns: string[];
   discountShare: BigNumber | undefined;
-  totalRebate: BigNumber | undefined;
 };
 
 function TradersStats({
@@ -42,8 +42,8 @@ function TradersStats({
   setPendingTxns,
   pendingTxns,
   discountShare,
-  totalRebate,
 }: Props) {
+  const { library } = useWeb3React();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const editModalRef = useRef<HTMLDivElement>(null);
 
@@ -60,6 +60,7 @@ function TradersStats({
   );
 
   const currentDiscountDistributions = getCurrentData();
+  const { totalRebate } = useTiers(library, chainId, traderTier);
   const currentTierDiscount = getSharePercentage(traderTier, discountShare, totalRebate);
 
   const open = () => setIsEditModalOpen(true);

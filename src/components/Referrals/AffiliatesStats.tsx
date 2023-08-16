@@ -7,7 +7,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getExplorerUrl } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getNativeToken, getToken, getTokenBySymbol } from "config/tokens";
-import { RebateDistributionType, ReferralCodeStats, TotalReferralsStats } from "domain/referrals";
+import { RebateDistributionType, ReferralCodeStats, TotalReferralsStats, useTiers } from "domain/referrals";
 import { useMarketsInfo } from "domain/synthetics/markets";
 import { useAffiliateRewards } from "domain/synthetics/referrals/useAffiliateRewards";
 import { getTotalClaimableAffiliateRewardsUsd } from "domain/synthetics/referrals/utils";
@@ -38,6 +38,7 @@ import {
   isRecentReferralCodeNotExpired,
 } from "./referralsHelper";
 import usePagination from "./usePagination";
+import { useWeb3React } from "@web3-react/core";
 
 type Props = {
   chainId: number;
@@ -45,7 +46,6 @@ type Props = {
   handleCreateReferralCode: (code: string) => void;
   setRecentlyAddedCodes: (codes: ReferralCodeStats[]) => void;
   recentlyAddedCodes?: ReferralCodeStats[];
-  totalRebate: BigNumber;
 };
 
 function AffiliatesStats({
@@ -54,8 +54,8 @@ function AffiliatesStats({
   recentlyAddedCodes,
   handleCreateReferralCode,
   setRecentlyAddedCodes,
-  totalRebate,
 }: Props) {
+  const { library } = useWeb3React();
   const [isAddReferralCodeModalOpen, setIsAddReferralCodeModalOpen] = useState(false);
   const addNewModalRef = useRef<HTMLDivElement>(null);
 
@@ -109,6 +109,7 @@ function AffiliatesStats({
   const currentAffiliatesData = getCurrentAffiliatesData();
   const tierId = affiliateTierInfo?.tierId;
   const discountShare = affiliateTierInfo?.discountShare;
+  const { totalRebate } = useTiers(library, chainId, tierId);
   const currentRebatePercentage = getSharePercentage(tierId, BigNumber.from(discountShare || 0), totalRebate, true);
 
   const totalClaimableRewardsUsd = useMemo(() => {
