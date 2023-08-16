@@ -5,7 +5,7 @@ import { queryAccountOpenPositions } from "./queries"
 import { arbitrumGoerliLeaderboardsClient as graph } from "lib/subgraph/clients";
 import { AccountOpenPositionJson, AccountOpenPosition } from "./types";
 import { ContractMarketPrices, getContractMarketPrices, useMarketsInfo } from "../markets";
-import { convertToUsd, useTokenRecentPrices } from "../tokens";
+import { convertToUsd } from "../tokens";
 import { useChainId } from "lib/chains";
 import { usePositionsInfo } from "./usePositionsInfo";
 import { PositionsInfoData, getPositionKey } from "../positions";
@@ -110,7 +110,6 @@ const fetchAccountOpenPositions = async () => {
 
 export function useAccountOpenPositions() {
   const { chainId } = useChainId();
-  const { pricesData } = useTokenRecentPrices(chainId);
   const { tokensData, marketsInfoData } = useMarketsInfo(chainId);
   const positions = useSWR('/leaderboards/positions', fetchAccountOpenPositions);
   const keys: string[] = [];
@@ -130,7 +129,6 @@ export function useAccountOpenPositions() {
   const positionsInfo = usePositionsInfo(chainId, keys, prices);
   const error = positions.error || positionsInfo.error;
   const isLoading = !error && !(
-    pricesData &&
     tokensData &&
     positions.data &&
     marketsInfoData &&

@@ -16,22 +16,27 @@ export default function PositionsLeaderboard() {
   const filteredStats = topPositions.data.filter(a => a.account.indexOf(term.toLowerCase()) >= 0);
   const firstItemIndex = (page - 1) * perPage;
   const displayedStats = filteredStats.slice(firstItemIndex, page * perPage).map(p => ({
-    id: p.key,
-    account: p.account,
-    unrealizedPnl: formatUsd(p.unrealizedPnlAfterFees),
-    market: `${ p.marketInfo.name } ${ p.isLong ? t`Long` : t`Short` }`,
-    entryPrice: formatUsd(p.entryPrice),
-    sizeLiqPrice: `${formatUsd(p.sizeInUsd)} (${formatUsd(p.liquidationPrice)})`
+    id: { value: p.key, },
+    account: { value: p.account },
+    unrealizedPnl: { value: formatUsd(p.unrealizedPnlAfterFees) },
+    market: [{
+      value: p.marketInfo.name
+    }, {
+      value: p.isLong ? t`Long` : t`Short`,
+      className: p.isLong ? "positive" : "negative",
+    }],
+    entryPrice: { value: formatUsd(p.entryPrice) },
+    sizeLiqPrice: { value: `${formatUsd(p.sizeInUsd)} (${formatUsd(p.liquidationPrice)})` }
   }));
 
   const pageCount = Math.ceil(filteredStats.length / perPage);
   const handleSearchInput = ({ target }) => setSearch(target.value);
   const titles = {
-    account: {title: t`Address`},
-    unrealizedPnl: {title: t`P&L ($)`},
-    market: {title: t`Token (L/S)`},
-    entryPrice: {title: t`Entry`},
-    sizeLiqPrice: {title: t`Size (Liq)`},
+    account: { title: t`Address` },
+    unrealizedPnl: { title: t`P&L ($)` },
+    market: { title: t`Position` },
+    entryPrice: { title: t`Entry` },
+    sizeLiqPrice: { title: t`Size (Liq. Price)` },
   };
 
   return (
@@ -40,15 +45,15 @@ export default function PositionsLeaderboard() {
         <TableFilterSearch label={t`Address`} value={search} onInput={handleSearchInput}/>
       </div>
       <Table
-        enumerate={true}
-        offset={firstItemIndex}
-        isLoading={topPositions.isLoading}
-        error={topPositions.error}
-        content={displayedStats}
-        titles={titles}
-        rowKey={"id"}
+        enumerate={ true }
+        offset={ firstItemIndex }
+        isLoading={ topPositions.isLoading }
+        error={ topPositions.error }
+        content={ displayedStats }
+        titles={ titles }
+        rowKey={ "id" }
       />
-      <Pagination page={page} pageCount={pageCount} onPageChange={setPage}/>
+      <Pagination page={ page } pageCount={ pageCount } onPageChange={ setPage }/>
     </div>
   );
 }
