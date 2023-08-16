@@ -105,7 +105,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isV1Available: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
       coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
-      explorerUrl: "https://arbiscan.io/token/0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
+      explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
     {
       name: "Tether",
@@ -114,6 +114,8 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/325/thumb/Tether-logo.png?1598003707",
+      explorerUrl: "https://arbiscan.io/address/0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/tether",
       isV1Available: true,
     },
     {
@@ -155,6 +157,8 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
       decimals: 8,
       imageUrl: "https://assets.coingecko.com/coins/images/1/small/bitcoin.png?1547033579",
+      //TODO: remove explorerUrl in future
+      explorerUrl: "https://arbiscan.io/address/0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
       coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
     },
     {
