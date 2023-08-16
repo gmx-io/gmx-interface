@@ -31,6 +31,7 @@ type Props = {
   setPendingTxns: (txns: string[]) => void;
   pendingTxns: string[];
   discountShare: BigNumber | undefined;
+  totalRebate: BigNumber | undefined;
 };
 
 function TradersStats({
@@ -41,6 +42,7 @@ function TradersStats({
   setPendingTxns,
   pendingTxns,
   discountShare,
+  totalRebate,
 }: Props) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const editModalRef = useRef<HTMLDivElement>(null);
@@ -58,7 +60,7 @@ function TradersStats({
   );
 
   const currentDiscountDistributions = getCurrentData();
-  const currentTierDiscount = getSharePercentage(traderTier, discountShare);
+  const currentTierDiscount = getSharePercentage(traderTier, discountShare, totalRebate);
 
   const open = () => setIsEditModalOpen(true);
   const close = () => setIsEditModalOpen(false);

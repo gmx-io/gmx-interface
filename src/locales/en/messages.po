@@ -1853,10 +1853,6 @@ msgstr "GM Token pricing includes positions' Pending PnL, Impact Pool Amount and
 msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 67% of the V2 markets generated fees."
 msgstr "GM is the liquidity provider token for GMX V2 markets. Accrues 67% of the V2 markets generated fees."
 
-#: src/components/TokenCard/TokenCard.js
-#~ msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 70% of the V2 markets generated fees."
-#~ msgstr "GM is the liquidity provider token for GMX V2 markets. Accrues 70% of the V2 markets generated fees."
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX Announcements and Updates"
 msgstr "GMX Announcements and Updates"
@@ -4373,21 +4369,9 @@ msgstr "This position was liquidated as the max leverage of 100x was exceeded."
 msgid "This position was liquidated as the max leverage of {maxLeverageText} was exceeded."
 msgstr "This position was liquidated as the max leverage of {maxLeverageText} was exceeded."
 
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
-#~ msgid "This position was liquidated as the max leverage of {maxLeverageText} was exceeded.`"
-#~ msgstr "This position was liquidated as the max leverage of {maxLeverageText} was exceeded.`"
-
 #: src/pages/Home/Home.js
 msgid "Three tokens create our ecosystem"
 msgstr "Three tokens create our ecosystem"
-
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "Tier {0} ({1}% discount)"
-#~ msgstr "Tier {0} ({1}% discount)"
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#~ msgid "Tier {0} ({1}% rebate)"
-#~ msgstr "Tier {0} ({1}% rebate)"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Tier {0} ({currentRebatePercentage}% rebate)"
@@ -5254,14 +5238,6 @@ msgstr "You need to select {swapTokenSymbol} as the \"Pay\" token to use it for 
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed."
 msgstr "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed."
-
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday"
-#~ msgstr "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday"
-
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "You will receive a {currentTierDiscount}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
-#~ msgstr "You will receive a {currentTierDiscount}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "You will receive a {currentTierDiscount}% discount on your opening and closing fees. This discount on V1 will be airdropped to your account every Wednesday. For trades on V2, discounts are applied automatically and will reduce your fees when you make a trade."

@@ -7,19 +7,13 @@ import {
 } from "lib/legacy";
 import { getReferralCodeOwner, encodeReferralCode } from "domain/referrals";
 import { ARBITRUM, AVALANCHE } from "config/chains";
-import { bigNumberify, formatAmount } from "lib/numbers";
+import { bigNumberify, formatAmount, removeTrailingZeros } from "lib/numbers";
 import { t } from "@lingui/macro";
 import { getRootUrl } from "lib/url";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 
 export const REFERRAL_CODE_REGEX = /^\w+$/; // only number, string and underscore is allowed
 export const REGEX_VERIFY_BYTES32 = /^0x[0-9a-f]{64}$/;
-
-export function removeTrailingZeros(amount) {
-  const amountWithoutZeros = Number(amount);
-  if (!amountWithoutZeros) return amount;
-  return amountWithoutZeros;
-}
 
 export function isRecentReferralCodeNotExpired(referralCodeInfo) {
   const REFERRAL_DATA_MAX_TIME = 60000 * 5; // 5 minutes
@@ -82,17 +76,17 @@ export const totalRebateInfo = {
   2: 25,
 };
 
-export function getSharePercentage(tierId, share, isRebate) {
-  if (!tierId) return;
-  if (!share || share?.eq(0)) return isRebate ? tierRebateInfo[tierId] : tierDiscountInfo[tierId];
+export function getSharePercentage(tierId, discountShare, totalRebate, isRebate) {
+  if (!tierId || !totalRebate) return;
+  if (!discountShare || discountShare?.eq(0)) return isRebate ? tierRebateInfo[tierId] : tierDiscountInfo[tierId];
   const decimals = 4;
 
-  const totalDiscount = totalRebateInfo[tierId];
-  const discountPercentage = bigNumberify(totalDiscount)
-    .mul(isRebate ? BASIS_POINTS_DIVISOR - share : share)
+  const discount = totalRebate
+    .mul(isRebate ? BASIS_POINTS_DIVISOR - discountShare : discountShare)
     .mul(Math.pow(10, decimals))
     .div(BASIS_POINTS_DIVISOR);
 
+  const discountPercentage = discount.div(100);
   return removeTrailingZeros(formatAmount(discountPercentage, decimals, 3, true));
 }
 

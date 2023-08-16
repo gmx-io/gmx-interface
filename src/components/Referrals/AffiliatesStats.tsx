@@ -45,6 +45,7 @@ type Props = {
   handleCreateReferralCode: (code: string) => void;
   setRecentlyAddedCodes: (codes: ReferralCodeStats[]) => void;
   recentlyAddedCodes?: ReferralCodeStats[];
+  totalRebate: BigNumber;
 };
 
 function AffiliatesStats({
@@ -53,6 +54,7 @@ function AffiliatesStats({
   recentlyAddedCodes,
   handleCreateReferralCode,
   setRecentlyAddedCodes,
+  totalRebate,
 }: Props) {
   const [isAddReferralCodeModalOpen, setIsAddReferralCodeModalOpen] = useState(false);
   const addNewModalRef = useRef<HTMLDivElement>(null);
@@ -107,7 +109,7 @@ function AffiliatesStats({
   const currentAffiliatesData = getCurrentAffiliatesData();
   const tierId = affiliateTierInfo?.tierId;
   const discountShare = affiliateTierInfo?.discountShare;
-  const currentRebatePercentage = getSharePercentage(tierId, BigNumber.from(discountShare || 0), true);
+  const currentRebatePercentage = getSharePercentage(tierId, BigNumber.from(discountShare || 0), totalRebate, true);
 
   const totalClaimableRewardsUsd = useMemo(() => {
     if (!affiliateRewardsData || !marketsInfoData) {

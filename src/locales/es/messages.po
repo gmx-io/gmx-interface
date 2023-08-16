@@ -1853,10 +1853,6 @@ msgstr ""
 msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 67% of the V2 markets generated fees."
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.js
-#~ msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 70% of the V2 markets generated fees."
-#~ msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX Announcements and Updates"
 msgstr "Anuncios y Actualizaciones de GMX"
@@ -4373,21 +4369,9 @@ msgstr "Esta posición fue liquidada debido a que el apalancamiento máximo de 1
 msgid "This position was liquidated as the max leverage of {maxLeverageText} was exceeded."
 msgstr ""
 
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
-#~ msgid "This position was liquidated as the max leverage of {maxLeverageText} was exceeded.`"
-#~ msgstr ""
-
 #: src/pages/Home/Home.js
 msgid "Three tokens create our ecosystem"
 msgstr ""
-
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "Tier {0} ({1}% discount)"
-#~ msgstr "Nivel {0} ({1}% de descuento)"
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#~ msgid "Tier {0} ({1}% rebate)"
-#~ msgstr "Tier {0} ({1}% reembolso)"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Tier {0} ({currentRebatePercentage}% rebate)"
@@ -5254,14 +5238,6 @@ msgstr "Tienes que seleccionar {swapTokenSymbol} como el token de \"Pagar\" para
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed."
 msgstr "Tendrá que estar en esta página para aceptar la transferencia, <0>haga clic aquí</0> para copiar el enlace a esta página si es necesario."
-
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday"
-#~ msgstr "Recibirá un descuento del {0}% en sus comisiones de apertura y cierre, este descuento será enviado a su cuenta cada miércoles"
-
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "You will receive a {currentTierDiscount}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday."
-#~ msgstr ""
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "You will receive a {currentTierDiscount}% discount on your opening and closing fees. This discount on V1 will be airdropped to your account every Wednesday. For trades on V2, discounts are applied automatically and will reduce your fees when you make a trade."
