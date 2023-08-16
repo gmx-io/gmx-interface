@@ -65,7 +65,11 @@ export function MarketStats(p: Props) {
           label={t`Price`}
           value={
             <Tooltip
-              handle={formatUsd(marketPrice) || "..."}
+              handle={
+                formatUsd(marketPrice, {
+                  displayDecimals: 3,
+                }) || "..."
+              }
               position="right-bottom"
               renderContent={() => {
                 return (

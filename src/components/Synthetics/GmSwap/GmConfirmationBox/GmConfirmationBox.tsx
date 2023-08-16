@@ -25,6 +25,7 @@ import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useState } from "react";
 import "./GmConfirmationBox.scss";
+import { useKey } from "react-use";
 
 type Props = {
   isVisible: boolean;
@@ -235,6 +236,17 @@ export function GmConfirmationBox({
     };
   })();
 
+  useKey(
+    "Enter",
+    () => {
+      if (isVisible && submitButtonState.onClick && !submitButtonState.disabled) {
+        submitButtonState.onClick();
+      }
+    },
+    {},
+    [isVisible, submitButtonState]
+  );
+
   function onCreateDeposit() {
     if (!account || !executionFee || !marketToken || !market || !marketTokenAmount || !tokensData) {
       return Promise.resolve();
@@ -345,6 +357,7 @@ export function GmConfirmationBox({
               <Button
                 className="w-full"
                 variant="primary-action"
+                type="submit"
                 onClick={submitButtonState.onClick}
                 disabled={submitButtonState.disabled}
               >

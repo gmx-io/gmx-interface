@@ -49,7 +49,7 @@ export function GmList({
     // Group markets by index token address
     const groupedMarketList: { [marketAddress: string]: MarketInfo[] } = groupBy(
       Object.values(marketsInfoData),
-      (market) => market.indexTokenAddress
+      (market) => market[market.isSpotOnly ? "marketTokenAddress" : "indexTokenAddress"]
     );
 
     const allMarkets = Object.values(groupedMarketList)
@@ -189,7 +189,11 @@ export function GmList({
                         </div>
                       </div>
                     </td>
-                    <td>{formatUsd(token.prices?.minPrice)}</td>
+                    <td>
+                      {formatUsd(token.prices?.minPrice, {
+                        displayDecimals: 3,
+                      })}
+                    </td>
 
                     <td className="GmList-last-column">
                       {formatTokenAmount(totalSupply, token.decimals, "GM", {
@@ -299,7 +303,11 @@ export function GmList({
                       <div className="label">
                         <Trans>Price</Trans>
                       </div>
-                      <div>{formatUsd(token.prices?.minPrice)}</div>
+                      <div>
+                        {formatUsd(token.prices?.minPrice, {
+                          displayDecimals: 3,
+                        })}
+                      </div>
                     </div>
                     <div className="App-card-row">
                       <div className="label">

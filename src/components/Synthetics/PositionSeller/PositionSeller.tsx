@@ -69,6 +69,7 @@ import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Tab from "components/Tab/Tab";
 import { useMedia } from "react-use";
+import { useHasOutdatedUi } from "domain/legacy";
 
 export type Props = {
   position?: PositionInfo;
@@ -110,6 +111,7 @@ export function PositionSeller(p: Props) {
   const { gasLimits } = useGasLimits(chainId);
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
   const userReferralInfo = useUserReferralInfo(library, chainId, account);
+  const { data: hasOutdatedUi } = useHasOutdatedUi();
 
   const isMobile = useMedia("(max-width: 1100px)");
   const isVisible = Boolean(position);
@@ -262,7 +264,7 @@ export function PositionSeller(p: Props) {
     const commonError = getCommonError({
       chainId,
       isConnected: Boolean(account),
-      hasOutdatedUi: false,
+      hasOutdatedUi,
     });
 
     const decreaseError = getDecreaseError({
@@ -297,7 +299,8 @@ export function PositionSeller(p: Props) {
     account,
     chainId,
     closeSizeUsd,
-    decreaseAmounts?.sizeDeltaUsd,
+    decreaseAmounts,
+    hasOutdatedUi,
     isHighPriceImpact,
     isHighPriceImpactAccepted,
     isNotEnoughReceiveTokenLiquidity,
@@ -630,6 +633,7 @@ export function PositionSeller(p: Props) {
                           )}
                         </span>
                       }
+                      extendedSortSequence={availableTokensOptions?.sortedLongAndShortTokens}
                     />
                   )
                 }
