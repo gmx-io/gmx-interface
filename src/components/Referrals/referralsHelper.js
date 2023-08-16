@@ -70,12 +70,6 @@ export const tierDiscountInfo = {
   2: 10,
 };
 
-export const totalRebateInfo = {
-  0: 10,
-  1: 20,
-  2: 25,
-};
-
 export function getSharePercentage(tierId, discountShare, totalRebate, isRebate) {
   if (!tierId || !totalRebate) return;
   if (!discountShare || discountShare?.eq(0)) return isRebate ? tierRebateInfo[tierId] : tierDiscountInfo[tierId];
